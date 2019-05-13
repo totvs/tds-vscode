@@ -10,7 +10,6 @@ export function getDAP(){
 	let pathDAP = "";
 	let ext = extensions.getExtension("TOTVS.totvs-developer-studio");
 	if (ext) {
-		//Trocar o codigo hardcoded abaixo para pegar o da configuração no arquivo package.json
 		if (process.platform === "win32") {
 			pathDAP = ext.extensionPath + "\\node_modules\\@totvs\\tds-da\\bin\\windows\\debugAdapter.exe";
 		}
