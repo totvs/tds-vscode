@@ -253,7 +253,3 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
   <https://marketplace.visualstudio.com/items?itemName=alefragnani.numbered-bookmarks>
 
   ![Toggle](https://github.com/alefragnani/vscode-numbered-bookmarks/raw/master/images/numbered-bookmarks-toggle.png)
-
-## Problemas Conhecidos
-
-* NT.
