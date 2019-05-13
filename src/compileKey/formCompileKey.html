@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>${d.localize["tds.webview.title"]}</title><!--Include-->
+</head>
+<style>${d.css}</style>
+
+<body>
+	<div class="mainContainer">
+		<div class="formWrap" style="background-image: none">
+
+			<form name="form_init" id="form_init">
+
+				<div class="logo">
+					<span class="formTitle">${d.localize["tds.webview.title"]}</span>
+					<!--Compile Key-->
+				</div>
+				<div class="wrap-input">
+					<label for="compileKeyFile">${d.localize["tds.webview.compile.key.file"]}</label>
+					<!--Compile Key File-->
+					<input class="inputText" type="text" id="compileKeyFile" name="compileKeyFile" disabled>
+					<input class="inputText" type="file" accept='.aut' id="btn-File" name="btn-File"
+						for="compileKeyFile" onchange="readFile()"/>
+				</div>
+
+				<div class="wrap-input">
+					<label for="MachineID">${d.localize["tds.webview.compile.key.machine.id"]}</label>
+					<!--Machine ID-->
+					<input class="inputText" type="text" id="MachineID" name="MachineID" disabled >
+				</div>
+
+				<div class="wrap-input">
+					<label for="GeneratedIn">${d.localize["tds.webview.compile.key.generated"]}</label>
+					<!--Generated In-->
+					<input class="inputText" type="text" id="GeneratedInID" name="GeneratedIn" >
+				</div>
+
+				<div class="wrap-input">
+					<label for="ExpireIn">${d.localize["tds.webview.compile.key.expire"]}</label>
+					<!--Expire In-->
+					<input class="inputText" type="text" id="ExpireInID" name="ExpireIn" >
+				</div>
+
+				<div class="wrap-input">
+					<label for="Token">${d.localize["tds.webview.compile.key.token"]}</label>
+					<!--Token-->
+					<input class="inputText" type="text" id="TokenID" name="Token" >
+				</div>
+
+				<div class="wrap-input">
+					<label for="Overwrite">${d.localize["tds.webview.compile.key.overwrite"]}</label>
+					<!--Allow Overwrite default -->
+					<input class="" type="checkbox" id="OverwriteID" name="Token">
+				</div>
+
+				<div class="wrap-submit">
+					<input class="btn-submit" id="validateID" type="submit" value=" Validate Key " onclick="validate()" />
+					&nbsp <!--espaco-->
+					<input class="btn-submit" id="cleanID" type="submit" value=" Clean Key " onclick="clean()" />
+				</div>
+
+				<div>
+					<br>
+				</div>
+
+				<div class="wrap-submit">
+					<input class="btn-submit" id="submitID" type="submit" value=" Save " onclick="save(false)" />
+					&nbsp <!--espaco-->
+					<input class="btn-submit" id="submitID" type="submit" value=" Save/Close " onclick="save(true)" />
+				</div>
+
+				<p>* ${d.localize["tds.webview.compile.key.setting"]} <i>%HOME_USER%/.totvsls/servers.json</i></p>
+				<!--These settings can be changed in-->
+			</form>
+		</div>
+	</div>
+	<hr>
+
+</body>
+
+<script>
+	const vscode = acquireVsCodeApi();
+	var defaultID;
+
+	function validate(){
+		var id = document.getElementById('MachineID').value;
+		var generated = document.getElementById('GeneratedInID').value;
+		var expire = document.getElementById('ExpireInID').value;
+		var token = document.getElementById('TokenID').value;
+		var overwrite = document.getElementById('OverwriteID').checked;
+
+		vscode.postMessage({
+			command: 'validateKey',
+			'id': id,
+			'generated': generated,
+			'expire': expire,
+			'token': token,
+			'overwrite': overwrite
+		});
+	}
+
+	function clean(){
+		var id = document.getElementById('MachineID');
+		var path = document.getElementById('compileKeyFile');
+		var generated = document.getElementById('GeneratedInID');
+		var expire = document.getElementById('ExpireInID');
+		var token = document.getElementById('TokenID');
+		var overwrite = document.getElementById('OverwriteID');
+
+		id.value = "";
+		path.value = "";
+		generated.value = "";
+		expire.value = "";
+		token.value = "";
+		overwrite.checked = false;
+
+		path.disabled = false;
+		generated.disabled = false;
+		expire.disabled = false;
+		token.disabled = false;
+		overwrite.disabled = false;
+
+		vscode.postMessage({
+			command: 'getID'
+		});
+
+		vscode.postMessage({
+			command: 'cleanKey'
+		});
+	}
+
+	function readFile(){
+		var input = document.getElementById('btn-File');
+		var filePath = input.files[0].path;
+		vscode.postMessage({
+			command: 'readFile',
+			path: filePath
+		});
+	}
+
+	function save(close) {
+		var input = document.getElementById('btn-File');
+		var filePath = "";
+
+		if(input.files[0]){
+			filePath = input.files[0].path;
+		}
+
+		var id = document.getElementById('MachineID').value;
+		var generated = document.getElementById('GeneratedInID').value;
+		var expire = document.getElementById('ExpireInID').value;
+		var token = document.getElementById('TokenID').value;
+		var overwrite = document.getElementById('OverwriteID').checked;
+
+		// manter os mesmos campos do identity
+		vscode.postMessage({
+			command: 'saveKey',
+			'close': close,
+			'path': filePath,
+			'id': id,
+			'generated': generated,
+			'expire': expire,
+			'token': token,
+			'overwrite': overwrite
+		});
+	}
+
+	window.addEventListener('message', event => {
+		const message = event.data; // The JSON data our extension sent
+
+		switch (message.command) {
+			case 'setCurrentKey':
+				var path = document.getElementById('compileKeyFile');
+				var id = document.getElementById('MachineID');
+				var generated = document.getElementById('GeneratedInID');
+				var expire = document.getElementById('ExpireInID');
+				var token = document.getElementById('TokenID');
+				var overwrite = document.getElementById('OverwriteID');
+
+				if( message.path){
+					path.value = message.path;
+				}
+
+				id.value = message.id.toUpperCase();
+				generated.value = message.issued;
+				expire.value = message.expiry;
+				token.value = message.authorizationToken.toUpperCase();
+
+				overwrite.checked = message.canOverride;
+				path.disabled = true;
+				generated.disabled = true;
+				expire.disabled = true;
+				token.disabled = true;
+				overwrite.disabled = true;
+				break;
+			case 'setID':
+				document.getElementById('MachineID').value = message.id;
+				defaultID = message.id;
+				break;
+		}
+	});
+</script>
+
+</html>

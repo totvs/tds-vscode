@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>${d.localize["tds.webview.title"]}</title><!--Generate Web Service Protheus-->
+</head>
+<style>${d.css}</style>
+
+<body>
+		<div class="mainContainer">
+				<div class="formWrap"
+					style="background-image: none">
+
+					<form name="form_init" id="form_init">
+
+							<div class="logo">
+								<span class="formTitle">${d.localize["tds.webview.title"]}</span><!--Generate Web Service Protheus-->
+							</div>
+
+							<p>${d.localize["tds.webview.ws.URL"]}</p><!--URL WS-->
+							<div class="wrap-input">
+								<input class="inputText" type="text" id="btn-FileURL" name="btn-FileURL" required>
+							</div>
+
+							<p>${d.localize["tds.webview.ws.path"]}</p><!--File directory:-->
+							<div class="wrap-input">
+								<textarea class="inputText" id="filePath" required></textarea>
+								<input class="inputText" type="file" id="btn-FilePath" name="btn-FilePath" onchange='chfillData(event);' webkitdirectory directory/>
+							</div>
+
+							<p>${d.localize["tds.webview.ws.name"]}</p><!--File Name-->
+							<div class="wrap-input">
+								<input class="inputText" type="text" id="btn-FileName" name="btn-FileName" required placeholder="Ex: webService.prw">
+							</div>
+
+							<div class="wrap-submit">
+									<input class="btn-submit" id="submitID" type="submit" value="Save" onclick="save(false)" />
+									<input class="btn-submit" id="submitID" type="submit" value="Save/Close" onclick="save(true)"/>
+							</div>
+						</form>
+				</div>
+			</div>
+			<hr>
+
+</body>
+
+<script>
+	const vscode = acquireVsCodeApi();
+
+	function chfillData(event){
+	  var input = event.target;
+	  var path = document.getElementById('filePath');
+
+	  path.value = input.files[0].path;
+	};
+
+	function save(close) {
+		const url = document.getElementById('btn-FileURL').value.trim();
+		const path = document.getElementById('filePath').value.trim();
+		const fileName = document.getElementById('btn-FileName').value.trim();
+
+		if(url && path && fileName){
+			vscode.postMessage({
+				command: 'wsClose',
+				'url': url,
+				'path': path,
+				'fileName': fileName,
+				'close': close
+			});
+		}
+	}
+</script>
+
+</html>

@@ -1,0 +1,164 @@
+import * as vscode from 'vscode';
+import * as path from 'path';
+import * as nls from 'vscode-nls';
+import * as fs from 'fs';
+import { languageClient } from '../extension';
+import Utils from '../utils';
+
+let localize = nls.loadMessageBundle();
+const compile = require('template-literal');
+const localizeHTML = {
+	"tds.webview.title": localize("tds.webview.title", "Compile Key"),
+	"tds.webview.compile.key.file": localize("tds.webview.compile.key.file", "Compile Key File"),
+	"tds.webview.compile.key.machine.id": localize("tds.webview.compile.key.machine.id", "Machine ID"),
+	"tds.webview.compile.key.generated": localize("tds.webview.compile.key.generated", "Generated"),
+	"tds.webview.compile.key.expire": localize("tds.webview.compile.key.expire", "Expire"),
+	"tds.webview.compile.key.token": localize("tds.webview.compile.key.token", "Token"),
+	"tds.webview.compile.key.overwrite": localize("tds.webview.compile.key.overwrite", "Allow overwrite default"),
+	"tds.webview.compile.key.setting": localize("tds.webview.compile.key.setting", "These settings can also be changed in")
+}
+
+export function compileKeyPage(context: vscode.ExtensionContext) {
+
+	let extensionPath = '';
+	if (!context || context === undefined) {
+		let ext = vscode.extensions.getExtension("TOTVS.totvs-developer-studio");
+		if (ext) {
+			extensionPath = ext.extensionPath;
+		}
+	} else {
+		extensionPath = context.extensionPath;
+	}
+	const currentPanel = vscode.window.createWebviewPanel(
+		'totvs-developer-studio.compile.key',
+		'Compile Key',
+		vscode.ViewColumn.One,
+		{
+			enableScripts: true,
+			localResourceRoots: [vscode.Uri.file(path.join(extensionPath, 'src', 'compileKey'))],
+			retainContextWhenHidden: true
+		}
+	);
+
+	currentPanel.webview.html = getWebViewContent(context, localizeHTML);
+
+	const compileKey = Utils.getPermissionsInfos();
+
+	if (compileKey.authorizationToken && !compileKey.userId) {
+		const generated = new Date(compileKey.issued);
+		const expiry = new Date(compileKey.expiry);
+		const canOverride: boolean = compileKey.buildType == "0";
+		setCurrentKey(currentPanel, compileKey.path, compileKey.machineId, generated.toLocaleDateString(), expiry.toLocaleDateString(), compileKey.tokenKey, canOverride);
+	} else {
+		getId(currentPanel);
+	}
+
+	currentPanel.webview.onDidReceiveMessage(message => {
+		switch (message.command) {
+			case 'saveKey':
+				if (message.token) {
+					validateKey(message, true);
+				}
+				if (message.close) {
+					currentPanel.dispose();
+				}
+			case 'readFile':
+				const compileKey = Utils.readCompileKeyFile(message.path);
+				compileKey.path = message.path;
+				var canOverride: boolean = compileKey.permission == "1";
+				setCurrentKey(currentPanel, compileKey.path, compileKey.id, compileKey.generation, compileKey.validation, compileKey.key, canOverride);
+				return;
+			case 'validateKey':
+				if (message.token) {
+					validateKey(message, false);
+				} else {
+					vscode.window.showErrorMessage("All parameters are required for valid key");
+				}
+			case 'cleanKey':
+				const config = Utils.getServersConfig();
+
+				if (config.permissions.authorizationToken) {
+					const infos = {
+						"authorizationToken": ""
+					}
+					Utils.savePermissionsInfos(infos);
+				}
+			case 'getId':
+				getId(currentPanel);
+		}
+	},
+		undefined,
+		context.subscriptions
+	);
+}
+
+function setCurrentKey(currentPanel, path, id, issued, expiry, authorizationToken, canOverride: boolean) {
+	currentPanel.webview.postMessage({
+		command: "setCurrentKey",
+		'path': path,
+		'id': id,
+		'issued': issued,
+		'expiry': expiry,
+		'authorizationToken': authorizationToken,
+		'canOverride': canOverride
+	});
+}
+
+function getId(currentPanel) {
+	languageClient.sendRequest('$totvsserver/getId')
+		.then((response: any) => {
+			if (response.id) {
+				currentPanel.webview.postMessage({
+					command: "setID",
+					'id': response.id
+				});
+			}
+		}, (err) => {
+			vscode.window.showErrorMessage(err);
+		});
+}
+
+function validateKey(message, save) {
+	if (message.token) {
+		let canOverride = "0";
+		if (message.overwrite == true) {
+			canOverride = "1";
+		}
+
+		languageClient.sendRequest('$totvsserver/validKey', {
+			"keyInfo": {
+				'id': message.id,
+				'issued': message.generated,
+				'expiry': message.expire,
+				'canOverride': canOverride,
+				'token': message.token
+			}
+		}).then((response: any) => {
+			if (message.path) {
+				response.path = message.path;
+			}
+			if (response.buildType == 0 || response.buildType == 2) {
+				response.tokenKey = message.token;
+				Utils.savePermissionsInfos(response);
+			}
+		}, (err) => {
+			console.log(err);
+			vscode.window.showErrorMessage("Error valid key");
+		});
+	} else {
+		vscode.window.showErrorMessage("Empty key");
+	}
+}
+
+function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
+
+	const htmlOnDiskPath = vscode.Uri.file(path.join(context.extensionPath, 'src', 'compileKey', 'formCompileKey.html'));
+	const cssOniskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
+
+	const htmlContent = fs.readFileSync(htmlOnDiskPath.with({ scheme: 'vscode-resource' }).fsPath);
+	const cssContent = fs.readFileSync(cssOniskPath.with({ scheme: 'vscode-resource' }).fsPath);
+
+	let runTemplate = compile(htmlContent);
+
+	return runTemplate({ css: cssContent, localize: localizeHTML });
+}

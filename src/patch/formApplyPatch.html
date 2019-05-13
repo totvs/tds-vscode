@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>${d.localize["tds.webview.patch.apply"]}</title><!--Patch Apply-->
+</head>
+<style>${d.css}</style>
+
+<body>
+	<div class="mainContainer">
+			<div class="formWrap"
+				style="background-image: none;">
+
+				<form name="form_init" id="form_init" onsubmit="save()">
+
+						<div class="logo">
+								<span class="formTitle">${d.localize["tds.webview.patch.apply"]}</span><!--Patch Apply-->
+						</div>
+
+						<div class="wrap-input">
+							<label for="serverName">${d.localize["tds.webview.server.name"]}</label><!--Server Name-->
+							<input class="inputText" type="text" id="serverNameID" name="serverName" disabled>
+						</div>
+
+						<div class="wrap-input">
+							<label for="serverAddress">${d.localize["tds.webview.address"]}</label><!--Address-->
+							<input class="inputText" type="text" id="serverAddressID" name="serverAddress" disabled>
+						</div>
+
+						<div class="wrap-input">
+							<label for="serverEnvironment">${d.localize["tds.webview.environment"]}</label><!--Environment-->
+							<input class="inputText" type="text" id="serverEnvironmentID" name="serverEnvironment" disabled>
+						</div>
+
+						<div class="wrap-input">
+							<label for="patchFile">Patch File</label><!--Patch File-->
+							<input class="inputText" type="text" id="FilePatch" name="FilePatch" disabled>
+							<input class="inputText" type="file" accept='PatchFile/*.ptm' id="btn-File" name="btn-File"/>
+						</div>
+
+						<div class="wrap-submit">
+								<input class="btn-submit" id="submitID" type="submit" value="Apply" onclick="patchApply(false);"/>
+						</div>
+
+						<div class="wrap-submit">
+							<input class="btn-submit" id="submitID" type="submit" value="Apply/Close" onclick="patchApply(true);"/>
+					</div>
+
+					</form>
+			</div>
+		</div>
+</body>
+<script>
+	const vscode = acquireVsCodeApi();
+
+	window.onload = function() {
+		data = {main: []}
+		FilePatch = document.getElementById("FilePatch");
+	}
+
+	function patchApply(close) {
+		let patchFile = "";
+
+		if (document.getElementById('btn-File').files.length>0)
+			patchFile = document.getElementById('btn-File').files[0].path;
+		vscode.postMessage({
+			command: 'patchApply',
+			patchFile: patchFile,
+			"close" : close
+		});
+	}
+
+	// Carrega arquivo do Patch a ser aplicado
+	function fillData(event){
+	  var input = event.target;
+      var reader = new FileReader();
+
+      FilePatch.value = input.files[0].path;
+
+      reader.readAsBinaryString(input.files[0]);
+    };
+
+	window.addEventListener('message', event => {
+
+		const message = event.data; // The JSON data our extension sent
+
+		switch (message.command) {
+			case 'setCurrentServer':
+				const server = message.serverCurrent;
+				document.getElementById('serverNameID').value = server.name;
+				document.getElementById('serverAddressID').value = server.address + ":" + server.port
+				document.getElementById('serverEnvironmentID').value = server.environment
+				break;
+		}
+	});
+</script>
+
+</html>

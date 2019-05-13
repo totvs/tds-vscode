@@ -1,0 +1,11 @@
+out
+node_modules
+.vscode-test/
+*.vsix
+*.map
+nls.*
+.vscode/mapa timestamp.txt
+totvsls.log
+totvsls-full.log
+totvsls_in.log
+totvsls_out.log

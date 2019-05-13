@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>${d.localize["tds.webview.launcher.welcome"]}</title><!--Welcome-->
+</head>
+<style>${d.css}</style>
+
+<body>
+		<div class="mainContainer">
+				<div class="formWrap">
+
+					<form name="form_init" id="form_init">
+							<span class="formTitle">${d.localize["tds.webview.launcher.launcherTitle"]}</span><!--Launcher Config-->
+
+							<div class="wrap-input dropdown">
+								<label for="launcher">${d.localize["tds.webview.launcher.name"]}</label><!--Choose launcher:-->
+								<!--<select class="comboBox" id="launchersID" onchange="launcherChanged()"></select>-->
+								<input id="launcherNameID" class="comboBox" name="launcher" list="launcherListID" onchange="launcherChanged()"/>
+								<datalist id="launcherListID">
+								</datalist>
+							</div>
+
+							<div class="wrap-input">
+								<label for="program">${d.localize["tds.webview.launcher.program"]}</label><!--Program:-->
+								<!--input id="programID" class="inputText" name="program" type="text"-->
+								<input id="programID" class="comboBox" name="program" list="programVariablesID">
+								<datalist id="programVariablesID">
+									<option value="\$\{command:AskForProgramName}"></option>
+								</datalist>
+							</div>
+
+							<div class="wrap-input">
+								<label for="smartClient">${d.localize["tds.webview.launcher.smartclient"]}</label><!--SmartClient:-->
+								<input class="inputText" type="file" accept='.exe,application/exe,*.*'  id="smartClientID" name="smartClient"/>
+							</div>
+
+							<div class="checkboxGroup">
+								<p>Opções:</p>
+								<input id="enableMultiThreadID" class="checkbox" name="enableMultiThread" type="checkbox" value="enableMultiThread">
+								<label class="checkboxLabel" for="enableMultiThread">${d.localize["tds.webview.launcher.multiThread"]}</label><!--Enable multiple threads-->
+								<br>
+								<input id="enableProfileID" class="checkbox" name="enableProfile" type="checkbox" value="enableProfile">
+								<label class="checkboxLabel" for="enableProfile">${d.localize["tds.webview.launcher.profile"]}</label><!--Enable Profile-->
+								<br>
+							</div>
+
+							<div class="checkboxGroup">
+								<p>Argumentos:</p>
+								<input id="multiSessionID" class="checkbox" name="multiSessions" type="checkbox" value="multiSessions" checked>
+								<label class="checkboxLabel" for="multiSessions">${d.localize["tds.webview.launcher.multiSession"]}</label><!--(-M) Multiple sessions-->
+								<br>
+								<input id="accessibilityModeID" class="checkbox" name="accessibilityMode" type="checkbox" value="accessibilityMode">
+								<label class="checkboxLabel" for="accessibilityMode">${d.localize["tds.webview.launcher.acc"]}</label><!--(-AC) Accessibility module-->
+								<br>
+								<input id="noNotShowSplashID" class="checkbox" name="doNotShowSplash" type="checkbox" value="doNotShowSplash">
+								<label class="checkboxLabel" for="doNotShowSplash">${d.localize["tds.webview.launcher.splash"]}</label><!--(-Q) Don't display 'splash'-->
+								<br>
+								<input id="hasLanguageID" class="checkbox" name="language" type="checkbox" value="language">
+								<label class="checkboxLabel" for="language">${d.localize["tds.webview.launcher.language"]}</label><!--(-L) Language-->
+								<br>
+								<input id="ignoreFilesID" class="checkbox" name="ignoreFiles" type="checkbox" value="ignoreFiles" checked>
+								<label class="checkboxLabel" for="ignoreFiles">${d.localize["tds.webview.launcher.ignoreFiles"]}</label><!--Ignore files not in Workspace-->
+								<br>
+								<select id="languageID" class="comboBox" style="margin-bottom: 10px">
+									<option id="" value=""></option>
+									<option id="ptID" value="PT">${d.localize["tds.webview.launcher.langPT"]}</option><!--Portuguese-->
+									<option id="enID" value="EN">${d.localize["tds.webview.launcher.langEN"]}</option><!--English-->
+									<option id="esID" value="ES">${d.localize["tds.webview.launcher.langES"]}</option><!--Spanish-->
+									<option id="esID" value="ES">${d.localize["tds.webview.launcher.langRU"]}</option><!--Russian-->
+								</select>
+							</div>
+							<div class="wrap-submit">
+								<input class="btn-submit" id="submitID" type="submit" value="${d.localize['tds.webview.launcher.save']}" onclick="saveLaunchConfig(false)" /><!--Save-->
+								<input class="btn-submit" id="submitID" type="submit" value="${d.localize['tds.webview.launcher.saveClose']}" onclick="saveLaunchConfig(true)" /><!--Save/Close-->
+							</div>
+
+							<p>* ${d.localize["tds.webview.launcher.bottomInfo"]}<i>./vscode/launch.json</i></p><!--This config could be altered editing file-->
+					</form>
+				</div>
+		</div>
+		<!----hr-->
+</body>
+
+<script>
+	const comboBox = getElementLauncherList();
+	smBin = "";
+	// Handle the message inside the webview
+	window.addEventListener('message', event => {
+		const launhConfig = event.data; // The JSON data our extension sent
+		let index = 0;
+		comboBox.innerText = null; //Zera o combo
+		launhConfig.configurations.forEach(element => {
+			let option = document.createElement("option");
+			option.text = element.name;
+			option.value = element.name;
+			option.data = element;
+			comboBox.appendChild(option);
+			if(getElementLauncherName().value === element.name) {
+				//Atualiza o elemento corrente caso ele ja esteja selecionado.
+				//Esse processo normalmente ocorre quando o usuario altera uma informação manualmente no json
+				//e a pagina ainda esta aberta, portanto é necessario atualizar os campos pois pode ocorrer
+				//do item que foi atualizado manualmente ser o mesmo do que estava previamente selecionado.
+				updateAllFields(element);
+			}
+			index+=1;
+		});
+	});
+
+	function launcherChanged() {
+		const comboBox = getElementLauncherList();
+		let selectedLauncher = comboBox.value;
+		let input = getElementLauncherName();
+		if(comboBox.options !== undefined) {
+			for(let i=0 ; i < comboBox.options.length ; i++) {
+				if(comboBox.options[i].value == input.value) {
+					selectedLauncher = comboBox.options[i];
+					break;
+				}
+			}
+
+			let element = selectedLauncher !== undefined ? selectedLauncher.data : undefined;
+			updateAllFields(element);
+		}
+
+	}
+
+	const vscode = acquireVsCodeApi();
+
+	function saveLaunchConfig(close) {
+		if (getElementSmartclientBin().files[0].path != "" & getElementSmartclientBin().files[0].path != undefined) {
+		  smBin = getElementSmartclientBin().files[0].path;
+		}
+
+		vscode.postMessage({
+			command: 'saveLaunchConfig',
+			launcherName: 			getElementLauncherName().value,
+			program: 				getElementProgram().value,
+			smartclientBin: 		smBin,
+			enableMultiThread: 		getElementEnableMultiThread().checked,
+			enableProfile: 			getElementEnableProfile().checked,
+			isMultiSession: 		getElementMultiSession().checked,
+			isAccessibilityMode: 	getElementAccessibilityMode().checked,
+			doNotShowSplash: 		getElementDoNotShowSplash().checked,
+			hasLanguage: 			getElementHasLanguage().checked,
+			language: 				getElementLanguage().value,
+			ignoreFiles:			getElementIgnoreFiles().checked,
+			'close':                close
+		});
+	}
+
+	function updateAllFields(element) {
+		getElementProgram().value 					= element !== undefined ? element.program : "";
+		const dT = new DataTransfer(); // specs compliant (as of March 2018 only Chrome)
+		if (element !== undefined) {
+			dT.items.add(new File(['Smartclient'], element.smartclientBin,));
+			getElementSmartclientBin().files 			= dT.files;
+			smBin = element.smartclientBin;
+		}
+
+		getElementEnableMultiThread().checked 		= element !== undefined ? element.enableMultiThread: false;
+		getElementEnableProfile().checked 			= element !== undefined ? element.enableProfile : false;
+		getElementMultiSession().checked 			= element !== undefined ? element.isMultiSession : true;
+		getElementAccessibilityMode().checked 		= element !== undefined ? element.isAccessibilityMode : false;
+		getElementDoNotShowSplash().checked 		= element !== undefined ? element.doNotShowSplash : false;
+		getElementHasLanguage().checked 			= element !== undefined && element.language !== undefined && element.language.length > 0;
+		getElementLanguage().value 					= element !== undefined ? element.language : "";
+		getElementIgnoreFiles().value				= element !== undefined ? element.ignoreFiles: false;
+	}
+
+	function getElementLauncherList() { return document.getElementById('launcherListID'); }
+	function getElementLauncherName() { return document.getElementById("launcherNameID"); }
+	function getElementProgram() { return document.getElementById("programID"); }
+	function getElementSmartclientBin() { return document.getElementById("smartClientID"); }
+	function getElementEnableMultiThread() { return document.getElementById("enableMultiThreadID"); }
+	function getElementEnableProfile() { return document.getElementById("enableProfileID"); }
+	function getElementMultiSession() { return document.getElementById("multiSessionID"); }
+	function getElementAccessibilityMode() { return document.getElementById("accessibilityModeID"); }
+	function getElementDoNotShowSplash() { return document.getElementById("noNotShowSplashID"); }
+	function getElementHasLanguage() { return document.getElementById("hasLanguageID"); }
+	function getElementLanguage() { return document.getElementById("languageID"); }
+	function getElementIgnoreFiles() { return document.getElementById("ignoreFilesID"); }
+
+</script>
+
+</html>

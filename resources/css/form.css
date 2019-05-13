@@ -1,0 +1,315 @@
+textarea:focus, input:focus {
+	border-color: transparent !important;
+}
+
+.mainContainer {
+	width: 100%;
+	min-height: 100vh;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	padding: 15px;
+	box-sizing: border-box;
+}
+
+.formWrap_old {
+	width: 500px;
+	box-sizing: border-box;
+	background-position-x: 0%;
+	background-position-y: 0%;
+	background-repeat: repeat;
+	background-attachment: scroll;
+	background-image: linear-gradient(170deg,#424242,#424242);
+	background-size: auto;
+	background-origin: padding-box;
+	background-clip: border-box;
+	border-radius: 20px;
+	overflow: hidden;
+	padding-top: 40px;
+	padding-right: 55px;
+	padding-bottom: 65px;
+	padding-left: 55px;
+	margin: 0px;
+}
+
+.formWrap {
+	width: 500px;
+	background-color: #F3F3F3/*#FAFAFA*/;
+	box-sizing: border-box;
+	background-position-x: 0%;
+	background-position-y: 0%;
+
+	padding-top: 40px;
+	padding-right: 55px;
+	padding-bottom: 40px;
+	padding-left: 55px;
+	margin: 0px;
+
+	border-left: 5px solid #EA9B3E;
+}
+
+.logo{
+	display:block;
+	background-repeat: no-repeat;
+	background-image: url('data:image/png;base64,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');
+}
+
+.formTitle {
+	display: block;
+	line-height: 1.2;
+	font-size: 39px;
+	text-align: center;
+	padding-bottom: 35px;
+	color: #3C3734 /*#fff*/; /*Mansano: Inserido*/
+}
+
+.wrap-input {
+	position: relative;
+	width: 100%;
+	border-bottom-color: #3C3734 /*#fff*/;/*Mansano: era: rgba(255,255,255,0,24);*/
+	border-bottom-style: solid;
+	border-bottom-width: 2px;
+	margin-bottom: 27px;
+}
+
+.inputText {
+	height: 45px;
+	display: block;
+	width: 100%;
+	background: transparent;
+	font-size: 15px;
+	color: #3C3734 /*#fff*/;
+	line-height: 1.2;
+	padding:0 5px;
+
+	/*colocar para todos os botoes?*/
+	outline: none;
+	border: none;
+	overflow:visible;
+	margin: 0;
+	touch-action: manipulation;
+	box-sizing: border-box;
+}
+
+.inputWithButton {
+	display: inline;
+	width: 80%; /*O VSCode, informa que essa propriedade nao tem efeito aqui, mas parece ter sim, se remove esse parametro o texto ocupa a linha toda*/
+}
+
+.inputButton {
+	/*Usar essa classe para que um botao fique na mesma linha de um input*/
+	display: inline;
+}
+
+.inputText:hover {
+	border-color: dimgray;
+	border-style: solid;
+	border-width: 1px;
+}
+
+.inputText::placeholder{
+	color: #999;
+}
+
+.focus-input {
+	position: absolute;
+	display: block;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	pointer-events: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+.focus-input::before {
+	content: "";
+	display: block;
+	position: absolute;
+	bottom: -2px;
+	left: 0;
+	width: 0;
+	height: 2px;
+	transition: all 0.4s;
+	background: #3C3734 /*#fff*/;
+	box-sizing: inherit;
+}
+
+.comboBox {
+	height: 45px;
+	display: block;
+	width: 100%;
+	background: transparent;
+	font-size: 15px;
+	color: #3C3734 /*#fff*/;
+	line-height: 1.2;
+	padding:0 5px;
+
+	outline: none;
+	border: none;
+	overflow:visible;
+	margin: 0;
+	touch-action: manipulation;
+	box-sizing: border-box;
+}
+
+.comboBox:hover {
+	border-color: dimgray;
+	border-style: solid;
+	border-width: 1px;
+}
+
+/*select option*/
+select {
+	background: #fff;
+	color: #000;
+}
+
+.select-default {
+	font-family: sans-serif;
+	width: 250px;
+	height: 300px;
+	overflow-x: auto;
+}
+
+.select-unique {
+	font-family: sans-serif;
+	width: 600px;
+	height: 450px;
+	overflow-x: auto;
+}
+
+.option-default {
+	clear: both;
+	display: inline;
+	float: left;
+}
+
+.select-default::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(200,200,200,0.3);
+	box-shadow: transparent;
+	/*border-radius: 7px;*/
+	background-color: #F5F5F5;
+}
+
+.select-default::-webkit-scrollbar
+{
+	width: 12px;
+	background-color: #F5F5F5;
+}
+
+.select-default::-webkit-scrollbar-thumb
+{
+	/*border-radius: 7px;*/
+	-webkit-box-shadow: inset 0 0 6px rgba(200,200,200,.3);
+	box-shadow: transparent;
+	background-color: #A0A0A0;
+}
+
+input::-webkit-calendar-picker-indicator {
+	background-color: inherit;
+}
+
+.wrap-button {
+	padding-top: 23px;
+	margin: 0px;
+	padding: 0px;
+	box-sizing: border-box;
+}
+
+.wrap-submit {
+	align-content: center;
+	justify-content: center;
+}
+
+.btn-submit {
+
+	/*
+	font-family: sans-serif;
+	font-size: 16px;
+
+	color: white;
+	background-color: #3C3734;
+
+	line-height: 1.2;
+	text-transform: uppercase;
+	justify-content: center;
+	align-items: center;
+	padding: 0 15px;
+	height: 25px;
+	border-radius: 2px;
+
+	transition: all 0.4s;
+	outline: none;
+	border: none;
+	overflow: visible;
+	touch-action: manipulation;
+	box-sizing: border-box;
+	*/
+	color: white;
+	background-color: #3C3734;
+
+	line-height: 1.2;
+	text-transform: uppercase;
+	justify-content: center;
+	align-items: center;
+	padding: 0 15px;
+	/*min-width: 120px;*/
+	height: 25px;
+	border-radius: 2px;
+
+	outline: none;
+	border: 1px solid;
+	overflow: visible;
+	touch-action: manipulation;
+	box-sizing: border-box;
+	padding: 1px;
+
+}
+
+.btn-submit:hover {
+	color: white;
+	background-color: #3C3734;
+	border: 2px solid #EA9B3E;
+	cursor: pointer;
+}
+
+/*
+.btn-default:hover {
+	color: white;
+	background-color: #3C3734;
+	border: 1px solid #EA9B3E;
+	cursor: pointer;
+}
+*/
+
+/*
+.btn-submit:hover:before {
+	opacity: 0;
+}
+*/
+
+p {
+	color: #3C3734 /*#fff*/;
+	font-size: 18px;
+	font-family: Arial;
+}
+
+label {
+	color: #3C3734 /*#fff*/;
+	font-size: 18px;
+	font-family: Arial;
+	/*display:block;*/
+	width:x;
+	height:y;
+	text-align:top;
+}
+
+.checkboxLabel {
+	font-size: 13px;
+	text-align: center;
+	color: #3C3734;
+}

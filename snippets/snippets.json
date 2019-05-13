@@ -1,0 +1,174 @@
+{
+	"for_loop": {
+		"prefix": "for",
+		"body": [
+			"for ${1:var} := ${2:value} to ${3:value}",
+			"\t$0",
+			"next"
+		],
+		"description": "For loop"
+	},
+	"if": {
+		"prefix": "if",
+		"body": [
+			"if ${1:conditions}",
+			"\t$0",
+			"endif"
+		],
+		"description": "Simple If statement"
+	},
+	"else_if" : {
+		"prefix": "elseif",
+		"body": [
+			"elseif ${1:conditions}",
+			"\t$0"
+		],
+		"description": "ElseIf statement"
+	},
+	"else": {
+		"prefix": "else",
+		"body": [
+			"else",
+			"\t$0"
+		],
+		"description": "Else statement"
+	},
+	"while":{
+		"prefix": "while",
+		"body": [
+			"while ${1:condition}",
+			"\t$0",
+			"end"
+		],
+		"description": "While statement"
+	},
+	"do_case": {
+		"prefix": "do",
+		"body": [
+			"Do Case",
+			"Case ${1}",
+			"\t$2",
+			"Otherwise",
+			"\t$3",
+			"EndCase"
+		],
+		"description": "Case statement"
+	},
+	"Static Function":{
+		"prefix": "Static",
+		"body":[
+			"/*/{Protheus.doc} ${1:nomeStaticFunction}",
+			"\t(long_description)",
+			"\t@type  Static Function",
+			"\t@author ${2:user}",
+			"\t@since ${3:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}",
+			"\t@version ${4:version}",
+			"\t@param ${5:param_name}, ${6:param_type}, ${7:param_descr}",
+			"\t@return ${8:return_var}, ${9:return_type}, ${10:return_description}",
+			"\t@example",
+			"\t(examples)",
+			"\t@see (links_or_references)",
+			"\t/*/",
+			"Static Function ${1:nomeStaticFunction}(${5:param_name})",
+			"\t$0",
+			"Return ${8:return_var}"
+		],
+		"description": "Declaração de uma Static Function ja com o Protheus.doc"
+
+	},
+	"Function":{
+		"prefix": "Function",
+		"body":[
+			"/*/{Protheus.doc} ${1:nomeFunction}",
+			"\t(long_description)",
+			"\t@type  Function",
+			"\t@author ${2:user}",
+			"\t@since ${3:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}",
+			"\t@version ${4:version}",
+			"\t@param ${5:param_name}, ${6:param_type}, ${7:param_descr}",
+			"\t@return ${8:return_var}, ${9:return_type}, ${10:return_description}",
+			"\t@example",
+			"\t(examples)",
+			"\t@see (links_or_references)",
+			"\t/*/",
+			"Function ${1:nomeFunction}(${5:param_name})",
+			"\t$0",
+			"Return ${8:return_var}"
+		],
+		"description": "Declaração de uma Function ja com o Protheus.doc"
+	},
+  	"Main Function":{
+		"prefix": "Main",
+		"body":[
+			"/*/{Protheus.doc} ${1:nomeFunction}",
+			"\t(long_description)",
+			"\t@type  Function",
+			"\t@author ${2:user}",
+			"\t@since ${3:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}",
+			"\t@version ${4:version}",
+			"\t@param ${5:param_name}, ${6:param_type}, ${7:param_descr}",
+			"\t@return ${8:return_var}, ${9:return_type}, ${10:return_description}",
+			"\t@example",
+			"\t(examples)",
+			"\t@see (links_or_references)",
+			"\t/*/",
+			"Main Function ${1:nomeFunction}(${5:param_name})",
+			"\t$0",
+			"Return ${8:return_var}"
+		],
+		"description": "Declaração de uma Main Function ja com o Protheus.doc"
+	},
+	"User Function":{
+		"prefix": "User",
+		"body": [
+			"/*/{Protheus.doc} User Function ${1:nomeFunction}",
+			"\t(long_description)",
+			"\t@type  Function",
+			"\t@author ${2:user}",
+			"\t@since ${3:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}",
+			"\t@version ${4:version}",
+			"\t@param ${5:param_name}, ${6:param_type}, ${7:param_descr}",
+			"\t@return ${8:return_var}, ${9:return_type}, ${10:return_description}",
+			"\t@example",
+			"\t(examples)",
+			"\t@see (links_or_references)",
+			"\t/*/",
+			"User Function ${1:nomeUserFunction}(${5:param_name})",
+			"\t$0",
+			"Return ${8:return_var}"
+		],
+		"description": "Declaração de User Function"
+	},
+	"Class":{
+		"prefix": "Class",
+		"body":[
+			"/*/{Protheus.doc} ${1:className}",
+			"\t(long_description)",
+			"\t@author ${2:user}",
+			"\t@since ${3:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}",
+			"\t@version ${4:version}",
+			"\t/*/",
+			"Class ${1:className}",
+			"\t$0",
+			"EndClass"
+		],
+		"description": "Declaração de uma classe ja com o Protheus.doc"
+	},
+	"Method":{
+		"prefix": "Method",
+		"body":[
+			"/*/{Protheus.doc} ${1:methodName}",
+			"\t(long_description)",
+			"\t@author ${2:user}",
+			"\t@since ${3:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}",
+			"\t@version ${4:version}",
+			"\t@param ${5:param_name}, ${6:param_type}, ${7:param_descr}",
+			"\t@return ${8:return_var}, ${9:return_type}, ${10:return_description}",
+			"\t/*/",
+			"Method ${1:methodName}(${5:param_name})",
+			"\t$0",
+			"Return ${8:return_var}"
+		],
+		"description": "Declaração de um Método de uma classe ja com o Protheus.doc"
+	}
+}

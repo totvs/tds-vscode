@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "ES6",
+        "sourceMap": true,
+
+        "noImplicitAny": false,
+        "removeComments": false,
+        "noUnusedLocals": true,
+        "noImplicitThis": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+
+        "lib": [
+            "es2015"
+        ]
+    },
+    "exclude": [
+        "node_modules/",
+        "testapp/",
+        "testdata/"
+    ]
+}
