@@ -43,7 +43,7 @@
 	},
 	"dependencies": {
 		"@totvs/tds-da": "^1.0.16",
-		"@totvs/tds-ls": "^1.0.18",
+		"@totvs/tds-ls": "^1.0.19",
 		"await-notify": "1.0.1",
 		"cheerio": "^1.0.0-rc.3",
 		"fs": "0.0.1-security",
