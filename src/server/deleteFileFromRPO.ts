@@ -29,7 +29,7 @@ export function deleteFileFromRPO(context: any): void {
 				retainContextWhenHidden: true
 			}
 		);
-		let ext = extensions.getExtension("TOTVS.totvs-developer-studio");
+		let ext = extensions.getExtension("TOTVS.tds-vscode");
 		if(ext) {
 			currentPanel.webview.html = getWebViewContent(ext,localizeHTML);
 		}

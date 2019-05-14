@@ -69,11 +69,11 @@ export function patchApply(context: any,isWorkspace: boolean): void {
 								vscode.window.showErrorMessage(localize("tds.webview.patch.apply.fail","Apply Patch Fail. Please input patch file."));
 							}else{
 								//vscode.window.showInformationMessage(localize("tds.webview.patch.apply.start","Started Patch Apply"));
-								const identityInfos = Utils.getPermissionsInfos();
+								const permissionsInfos = Utils.getPermissionsInfos();
 								languageClient.sendRequest('$totvsserver/patchApply', {
 									"patchApplyInfo": {
 										"connectionToken": server.token,
-										"authenticateToken" : identityInfos.authorizationToken,
+										"authenticateToken" : permissionsInfos.authorizationToken,
 										"environment": server.environment,
 										"patchUri": patchUri,
 										"isLocal": true,
@@ -113,11 +113,11 @@ export function patchApply(context: any,isWorkspace: boolean): void {
 					vscode.window.showWarningMessage(localize("tds.webview.patch.apply.file","Are you sure you want apply patch {0} from RPO?",path.basename(filename)), localize('tds.vscode.yes','Yes'), localize('tds.vscode.no','No')).then(clicked => {
 						if (clicked === localize('tds.vscode.yes','Yes')) {
 							const patchUri = vscode.Uri.file(patchFile).toString();
-							const identityInfos = Utils.getPermissionsInfos();
+							const permissionsInfos = Utils.getPermissionsInfos();
 								languageClient.sendRequest('$totvsserver/patchApply', {
 									"patchApplyInfo": {
 										"connectionToken": server.token,
-										"authenticateToken" : identityInfos.authorizationToken,
+										"authenticateToken" : permissionsInfos.authorizationToken,
 										"environment": server.environment,
 										"patchUri": patchUri,
 										"isLocal": true,

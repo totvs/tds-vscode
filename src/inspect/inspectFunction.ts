@@ -29,7 +29,7 @@ export function inspectFunctions(context: vscode.ExtensionContext) {
 	if (server) {
 		let extensionPath = "";
 		if (!context || context === undefined) {
-			let ext = vscode.extensions.getExtension("TOTVS.totvs-developer-studio");
+			let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
 			if (ext) {
 				extensionPath = ext.extensionPath;
 			}

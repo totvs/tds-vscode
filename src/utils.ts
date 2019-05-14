@@ -27,10 +27,10 @@ export default class Utils {
 	}
 
 	/**
-	 * Subscrição para evento de login no identity
+	 * Subscrição para evento de chave de compilação.
 	 */
-	static get onDidLoginIdentity(): vscode.Event<string> {
-		return Utils._onDidLoginIdentity.event;
+	static get onDidSelectedKey(): vscode.Event<string>{
+		return Utils._onDidSelectedKey.event;
 	}
 
 	/**
@@ -39,9 +39,9 @@ export default class Utils {
 	private static _onDidSelectedServer = new vscode.EventEmitter<SelectServer>();
 
 	/**
-	 * Emite a notificação de login no identity
+	 * Emite a notificação de seleção de chave de compilação
 	 */
-	private static _onDidLoginIdentity = new vscode.EventEmitter<string>();
+	private static _onDidSelectedKey = new vscode.EventEmitter<string>();
 
 	/**
 	 * Gera um id de servidor
@@ -273,8 +273,8 @@ export default class Utils {
 		config.permissions = infos;
 
 		this.persistServersInfo(config);
-		Utils._onDidLoginIdentity.fire(infos);
-	}
+		Utils._onDidSelectedKey.fire(infos);
+		}
 
 	/**
 	 * Recupera a lista de includes do arquivod servers.json

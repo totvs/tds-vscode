@@ -155,7 +155,6 @@
 		var token = document.getElementById('TokenID').value;
 		var overwrite = document.getElementById('OverwriteID').checked;
 
-		// manter os mesmos campos do identity
 		vscode.postMessage({
 			command: 'saveKey',
 			'close': close,

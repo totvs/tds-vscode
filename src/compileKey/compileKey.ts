@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as nls from 'vscode-nls';
 import * as fs from 'fs';
-import { languageClient } from '../extension';
+import { languageClient, permissionStatusBarItem } from '../extension';
 import Utils from '../utils';
 
 let localize = nls.loadMessageBundle();
@@ -22,7 +22,7 @@ export function compileKeyPage(context: vscode.ExtensionContext) {
 
 	let extensionPath = '';
 	if (!context || context === undefined) {
-		let ext = vscode.extensions.getExtension("TOTVS.totvs-developer-studio");
+		let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
 		if (ext) {
 			extensionPath = ext.extensionPath;
 		}
@@ -161,4 +161,37 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 	let runTemplate = compile(htmlContent);
 
 	return runTemplate({ css: cssContent, localize: localizeHTML });
+}
+
+export function updatePermissionBarItem(infos: any | undefined): void {
+	if (infos.authorizationToken) {
+		const expiryDate: Date = new Date(infos.expiry);
+
+		if (expiryDate.getTime() >= new Date().getTime()) {
+			const newLine = "\n";
+			permissionStatusBarItem.text = 'Permissions: Logged in';
+			if (infos.machineId) {
+				permissionStatusBarItem.tooltip = infos.machineId + newLine;
+			}else if(infos.userId){
+				permissionStatusBarItem.tooltip = infos.userId + newLine;
+
+			}
+			permissionStatusBarItem.tooltip += "Expires in " + expiryDate.toLocaleString() + newLine;
+
+			if (infos.buildType == 0) {
+				permissionStatusBarItem.tooltip += "Allow compile functions and overwrite default TOTVS";
+			} else if (infos.buildType == 1) {
+				permissionStatusBarItem.tooltip += "Allow only compile users functions";
+			} else if (infos.buildType == 2) {
+				permissionStatusBarItem.tooltip += "Allow compile functions";
+			}
+		} else {
+			permissionStatusBarItem.text = 'Permissions: Expired in ' + expiryDate.toLocaleString();
+			permissionStatusBarItem.tooltip = "";
+		}
+	} else {
+		permissionStatusBarItem.text = 'Permissions: NOT logged in';
+		permissionStatusBarItem.tooltip = "";
+	}
+	permissionStatusBarItem.show();
 }

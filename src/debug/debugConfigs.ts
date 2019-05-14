@@ -8,7 +8,7 @@ let lastProgramExecuted;
 
 export function getDAP(){
 	let pathDAP = "";
-	let ext = extensions.getExtension("TOTVS.totvs-developer-studio");
+	let ext = extensions.getExtension("TOTVS.tds-vscode");
 	if (ext) {
 		if (process.platform === "win32") {
 			pathDAP = ext.extensionPath + "\\node_modules\\@totvs\\tds-da\\bin\\windows\\debugAdapter.exe";
