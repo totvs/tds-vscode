@@ -17,53 +17,56 @@ const localizeHTML = {
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
-export default  function showInclude(context: vscode.ExtensionContext) {
-		if (currentPanel) {
-			currentPanel.reveal();
-		} else {
-			currentPanel = vscode.window.createWebviewPanel(
-				'totvs-developer-studio.include',
-				localize("tds.webview.title", "Include"),
-				vscode.ViewColumn.One,
-				{
-					enableScripts: true,
-					retainContextWhenHidden: true
-				}
-			);
+export default function showInclude(context: vscode.ExtensionContext) {
+	if (currentPanel) {
+		currentPanel.reveal();
+	} else {
+		currentPanel = vscode.window.createWebviewPanel(
+			'totvs-developer-studio.include',
+			localize("tds.webview.title", "Include"),
+			vscode.ViewColumn.One,
+			{
+				enableScripts: true,
+				retainContextWhenHidden: true
+			}
+		);
 
-			currentPanel.webview.html = getWebViewContent(context, localizeHTML);
-			currentPanel.onDidDispose(
-				() => {
-					currentPanel = undefined;
-				},
-				null,
-				context.subscriptions
-			);
+		currentPanel.webview.html = getWebViewContent(context, localizeHTML);
+		currentPanel.onDidDispose(
+			() => {
+				currentPanel = undefined;
+			},
+			null,
+			context.subscriptions
+		);
 
-			const includePath = Utils.getIncludes();
+		const includeString: string = Utils.getIncludes().toString();
+		const aux = includeString.replace(/,/g, ";");
+		if (aux) {
 			currentPanel.webview.postMessage({
 				command: "setCurrentInclude",
-				include: includePath
+				include: aux
 			});
-
-			currentPanel.webview.onDidReceiveMessage(message => {
-				switch (message.command) {
-					case 'includeClose':
-						const includePath = message.include;
-
-						Utils.saveIncludePath(includePath);
-						if (currentPanel) {
-							if (message.close) {
-								currentPanel.dispose();
-							}
-						}
-						return;
-				}
-			},
-				undefined,
-				context.subscriptions
-			);
 		}
+
+		currentPanel.webview.onDidReceiveMessage(message => {
+			switch (message.command) {
+				case 'includeClose':
+					const includePath = message.include;
+
+					Utils.saveIncludePath(includePath);
+					if (currentPanel) {
+						if (message.close) {
+							currentPanel.dispose();
+						}
+					}
+					return;
+			}
+		},
+			undefined,
+			context.subscriptions
+		);
+	}
 }
 
 function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {

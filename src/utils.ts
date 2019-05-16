@@ -279,7 +279,7 @@ export default class Utils {
 	/**
 	 * Recupera a lista de includes do arquivod servers.json
 	 */
-	static getIncludes(absolutePath: boolean = false) {
+	static getIncludes(absolutePath: boolean = false):Array<string> {
 		const servers = this.getServersConfig();
 		const includes: Array<string> = servers.includes as Array<string>;
 
@@ -311,11 +311,10 @@ export default class Utils {
 				});
 			}
 
-			return includes;
 		} else {
 			vscode.window.showWarningMessage(localize("tds.webview.utils.listFolders", 'List of folders to search for definitions not configured.'));
-			return undefined;
 		}
+		return includes;
 	}
 
 	/**
