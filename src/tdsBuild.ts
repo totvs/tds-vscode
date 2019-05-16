@@ -249,6 +249,9 @@ export function buildFolder(folders: string[], recompile: boolean) {
  */
 async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 	const includes: Array<string> = utils.getIncludes(true) || [];
+	if(!includes.toString()){
+		return;
+	}
 	//TODO: verificar se a salva automática esta ativa. Se não ativa, recomendar que seja ativada
 	//		const setting = this.configurationService.inspect('files.autoSave');
 	//		if (vscode.workspace.getConfiguration('files.autoSave').inspect() === 'off') {

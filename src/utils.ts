@@ -283,7 +283,7 @@ export default class Utils {
 		const servers = this.getServersConfig();
 		const includes: Array<string> = servers.includes as Array<string>;
 
-		if (servers.includes) {
+		if (includes.toString()) {
 			if (absolutePath) {
 				const ws: string = vscode.workspace.rootPath || '';
 				includes.forEach((value, index, elements) => {

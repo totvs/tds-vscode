@@ -40,15 +40,17 @@ export default function showInclude(context: vscode.ExtensionContext) {
 			context.subscriptions
 		);
 
-		const includeString: string = Utils.getIncludes().toString();
-		const aux = includeString.replace(/,/g, ";");
-		if (aux) {
-			currentPanel.webview.postMessage({
-				command: "setCurrentInclude",
-				include: aux
-			});
+		const includes = Utils.getIncludes();
+		const includeString: string = includes.toString();
+		if (includeString) {
+			const aux = includeString.replace(/,/g, ";");
+			if (aux) {
+				currentPanel.webview.postMessage({
+					command: "setCurrentInclude",
+					include: aux
+				});
+			}
 		}
-
 		currentPanel.webview.onDidReceiveMessage(message => {
 			switch (message.command) {
 				case 'includeClose':
