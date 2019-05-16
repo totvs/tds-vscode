@@ -3,7 +3,6 @@ import Utils from "./utils";
 import * as path from 'path';
 import { MultiStepInput } from "./multiStepInput";
 import { authenticate } from "./serversView";
-import { authenticateIdentity } from "./identity/identity";
 
 import * as nls from 'vscode-nls';
 let localize = nls.loadMessageBundle();
@@ -215,91 +214,6 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 
 	server.label = server.name; //FIX: quebra-galho necessário para a árvore de servidores
 	authenticate(server, environment, state.username, state.password);
-}
-
-/**
- * Coleta os dados necessarios para conectar ao Identity
- */
-
-export async function inputIdentityParameters() {
-	//const VALIDADE_TIME_OUT = 1000;
-	const title = 'Login Identity';
-
-	let TOTAL_STEPS = 2;
-	let USERNAME_STEP = 1;
-	let PASSWROD_STEP = 2;
-
-	interface State {
-		title: string;
-		step: number;
-		totalSteps: number;
-		username: string;
-		password: string;
-	}
-
-	async function collectInputs() {
-		const state = {} as Partial<State>;
-		const identityInfo = Utils.getPermissionsInfos();
-		if(identityInfo){
-			state.username= identityInfo.userId;
-		}
-		await MultiStepInput.run(input => inputUsername(input, state));
-
-		return state as State;
-	}
-
-	async function inputUsername(input: MultiStepInput, state: Partial<State>) {
-		state.username = await input.showInputBox({
-			title: title,
-			step: USERNAME_STEP,
-			totalSteps: TOTAL_STEPS,
-			value: state.username || '',
-			prompt: 'Identificação do usuário',
-			validate: validateRequiredValue,
-			shouldResume: shouldResume,
-			password: false
-		});
-
-		return (input: MultiStepInput) => inputPassword(input, state);
-	}
-
-	async function inputPassword(input: MultiStepInput, state: Partial<State>) {
-		state.password = await input.showInputBox({
-			title: title,
-			step: PASSWROD_STEP,
-			totalSteps: TOTAL_STEPS,
-			value: state.password || '',
-			prompt: 'Senha de acesso',
-			validate: allTrueValue,
-			shouldResume: shouldResume,
-			password: true
-		});
-	}
-
-	function shouldResume() {
-		// Could show a notification with the option to resume.
-		return new Promise<boolean>((resolve, reject) => {
-			return false;
-		});
-	}
-
-	async function allTrueValue(value: string) {
-		// ...validate...
-		//await new Promise(resolve => setTimeout(resolve, VALIDADE_TIME_OUT));
-
-		return undefined;
-	}
-
-	async function validateRequiredValue(value: string) {
-		// ...validate...
-		//Nao esta claro o motivo desse timeout, pois o resolve nunca é passado e sempre é esperado o total do timeout antes de continuar
-		//await new Promise(resolve => setTimeout(resolve, VALIDADE_TIME_OUT));
-		return value === '' ? 'Informação requerida' : undefined;
-	}
-
-	const state = await collectInputs();
-
-	authenticateIdentity(state.username, state.password);
 }
 
 export function serverAuthentication(args, context){

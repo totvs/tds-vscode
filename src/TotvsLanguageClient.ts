@@ -52,7 +52,7 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 	}
 
 	let dir = "";
-	let ext = vscode.extensions.getExtension("TOTVS.totvs-developer-studio");
+	let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
 	if(ext !== undefined) {
 		dir = ext.extensionPath;
 	}
@@ -178,7 +178,7 @@ function getClientConfig(context: ExtensionContext) {
 	};
 
 	//let dir = "";
-	//let ext = vscode.extensions.getExtension("TOTVS.totvs-developer-studio");
+	//let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
 	//if(ext !== undefined) {
 	//	dir = ext.extensionPath;
 	//}

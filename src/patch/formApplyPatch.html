@@ -40,6 +40,12 @@
 							<input class="inputText" type="file" accept='PatchFile/*.ptm' id="btn-File" name="btn-File"/>
 						</div>
 
+						<div class="wrap-input">
+							<label for="ApplyOld">${d.localize["tds.webview.applyOld"]}</label>
+							<!--Apply fontes mais antigos -->
+							<input class="" type="checkbox" id="ApplyOldID" name="ApplyOld">
+						</div>
+
 						<div class="wrap-submit">
 								<input class="btn-submit" id="submitID" type="submit" value="Apply" onclick="patchApply(false);"/>
 						</div>
@@ -65,11 +71,14 @@
 
 		if (document.getElementById('btn-File').files.length>0)
 			patchFile = document.getElementById('btn-File').files[0].path;
-		vscode.postMessage({
-			command: 'patchApply',
-			patchFile: patchFile,
-			"close" : close
-		});
+			let applyOld =document.getElementById('ApplyOldID').checked;
+
+			vscode.postMessage({
+				command: 'patchApply',
+				patchFile: patchFile,
+				'applyOld': applyOld,
+				'close' : close
+			});
 	}
 
 	// Carrega arquivo do Patch a ser aplicado

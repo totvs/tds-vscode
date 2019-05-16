@@ -27,10 +27,10 @@ export default class Utils {
 	}
 
 	/**
-	 * Subscrição para evento de login no identity
+	 * Subscrição para evento de chave de compilação.
 	 */
-	static get onDidLoginIdentity(): vscode.Event<string> {
-		return Utils._onDidLoginIdentity.event;
+	static get onDidSelectedKey(): vscode.Event<string>{
+		return Utils._onDidSelectedKey.event;
 	}
 
 	/**
@@ -39,9 +39,9 @@ export default class Utils {
 	private static _onDidSelectedServer = new vscode.EventEmitter<SelectServer>();
 
 	/**
-	 * Emite a notificação de login no identity
+	 * Emite a notificação de seleção de chave de compilação
 	 */
-	private static _onDidLoginIdentity = new vscode.EventEmitter<string>();
+	private static _onDidSelectedKey = new vscode.EventEmitter<string>();
 
 	/**
 	 * Gera um id de servidor
@@ -273,13 +273,13 @@ export default class Utils {
 		config.permissions = infos;
 
 		this.persistServersInfo(config);
-		Utils._onDidLoginIdentity.fire(infos);
-	}
+		Utils._onDidSelectedKey.fire(infos);
+		}
 
 	/**
 	 * Recupera a lista de includes do arquivod servers.json
 	 */
-	static getIncludes(absolutePath: boolean = false) {
+	static getIncludes(absolutePath: boolean = false):Array<string> {
 		const servers = this.getServersConfig();
 		const includes: Array<string> = servers.includes as Array<string>;
 
@@ -311,11 +311,10 @@ export default class Utils {
 				});
 			}
 
-			return includes;
 		} else {
 			vscode.window.showWarningMessage(localize("tds.webview.utils.listFolders", 'List of folders to search for definitions not configured.'));
-			return undefined;
 		}
+		return includes;
 	}
 
 	/**

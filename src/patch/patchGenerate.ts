@@ -30,7 +30,7 @@ export function patchGenerate(context: vscode.ExtensionContext) {
 		const server = Utils.getCurrentServer();
 		let extensionPath = "";
 		if(!context || context === undefined) {
-			let ext = vscode.extensions.getExtension("TOTVS.totvs-developer-studio");
+			let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
 			if(ext) {
 				extensionPath = ext.extensionPath;
 			}
@@ -191,11 +191,11 @@ export class ObjectsResult {
 // }
 
 function sendPatchGenerateMessage(server, patchMaster, patchDest, patchType, patchName, filesPath) {
-	const identityInfos = Utils.getPermissionsInfos();
+	const permissionsInfos = Utils.getPermissionsInfos();
 	languageClient.sendRequest('$totvsserver/patchGenerate', {
 		"patchGenerateInfo": {
 			"connectionToken": server.token,
-			"authorizationToken": identityInfos.authorizationToken,
+			"authorizationToken": permissionsInfos.authorizationToken,
 			"environment": server.environment,
 			"patchMaster": patchMaster,
 			"patchDest": patchDest,

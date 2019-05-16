@@ -11,8 +11,7 @@ import { window, commands, debug, extensions, workspace, ExtensionContext, Uri }
 import { ProgressLocation, StatusBarAlignment } from 'vscode';
 import { jumpToUriAtPosition } from './vscodeUtils';
 import { ServersExplorer, updateStatusBarItem } from './serversView';
-import { identityLogin, identityLogout, identitySelectAction, updatePermissionBarItem } from './identity/identity';
-import { compileKeyPage } from './compileKey/compileKey';
+import { compileKeyPage, updatePermissionBarItem } from './compileKey/compileKey';
 import { getLanguageClient } from './TotvsLanguageClient';
 import { patchGenerate, patchGenerateFromFolder } from './patch/patchGenerate';
 import { patchApply } from './patch/patchApply';
@@ -51,7 +50,7 @@ export function activate(context: ExtensionContext) {
 	console.log(localize('tds.console.congratulations', 'Congratulations, your extension "totvs-developer-studio" is now active!'));
 	context.subscriptions.push(commands.registerCommand('tds.getDAP', () => getDAP()));
 
-	if (extensions.getExtension("TOTVS.totvs-developer-studio")) {
+	if (extensions.getExtension("TOTVS.tds-vscode")) {
 		//Load Language Client and start Language Server
 		languageClient = getLanguageClient(context);
 		context.subscriptions.push(languageClient.start());
@@ -263,13 +262,6 @@ export function activate(context: ExtensionContext) {
 	//Abre uma caixa de informações para login no servidor protheus.
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.serverAuthentication', (...args) => serverAuthentication(args, context)));
 
-	//Inicia o login com o identity.
-	commands.registerCommand("totvs-developer-studio.identity.login", () => identityLogin());
-	//Inicia o logout com o identity.
-	commands.registerCommand("totvs-developer-studio.identity.logout", () => identityLogout());
-	//Abre uma caixa de seleção para o login ou logout no identity ou abrir a chave de compilação.
-	commands.registerCommand("totvs-developer-studio.permissions.selectAction", () => identitySelectAction());
-
 	//Compile key
 	commands.registerCommand("totvs-developer-studio.compile.key", () => compileKeyPage(context));
 
@@ -282,11 +274,11 @@ export function activate(context: ExtensionContext) {
 	context.subscriptions.push(totvsStatusBarItem);
 	context.subscriptions.push(Utils.onDidSelectedServer(updateStatusBarItem));
 
-	//inicializa item de barra para permissões (identity e chave de compilação)
+	//inicializa item de barra para permissões para exibir infomações da chave de compilação.
 	permissionStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 200);
-	permissionStatusBarItem.command = 'totvs-developer-studio.permissions.selectAction';
+	permissionStatusBarItem.command = 'totvs-developer-studio.compile.key';
 	context.subscriptions.push(permissionStatusBarItem);
-	context.subscriptions.push(Utils.onDidLoginIdentity(updatePermissionBarItem));
+	context.subscriptions.push(Utils.onDidSelectedKey(updatePermissionBarItem));
 
 	updateStatusBarItem(undefined);
 	updatePermissionBarItem(Utils.getPermissionsInfos());

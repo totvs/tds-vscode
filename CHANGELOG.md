@@ -1,7 +1,7 @@
-# Change Log
-All notable changes to the "totvs-developer-studio" extension will be documented in this file.
-
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
-- Initial release
+# Versão 0.28
+ * Adicionado EndDo a lista de palavras reservadas.
+ * Remoção de Login com Identity.
+ * Disponibilidade no Marketplace do VSCode.
+ * Ajuste de parametros da aplicação de patch.
+ * Opção de Exportar Lista de Objetos.
+ * Opção de Exportar Lista de Funções.

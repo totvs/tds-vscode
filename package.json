@@ -2,7 +2,7 @@
 	"name": "tds-vscode",
 	"displayName": "Totvs Developer Studio for VSCode",
 	"description": "%tds.package.description%",
-	"version": "0.0.24",
+	"version": "0.0.28",
 	"publisher": "TOTVS",
 	"author": {
 		"name": "TOTVS",
@@ -42,8 +42,8 @@
 		"publish": "vsce publish"
 	},
 	"dependencies": {
-		"@totvs/tds-da": "^1.0.16",
-		"@totvs/tds-ls": "^1.0.18",
+		"@totvs/tds-da": "^1.0.17",
+		"@totvs/tds-ls": "^1.0.19",
 		"await-notify": "1.0.1",
 		"cheerio": "^1.0.0-rc.3",
 		"fs": "0.0.1-security",
@@ -99,9 +99,6 @@
 		"onCommand:totvs-developer-studio.delete",
 		"onCommand:totvs-developer-studio.patchGenerate.fromRPO",
 		"onCommand:totvs-developer-studio.patchGenerate.fromFolder",
-		"onCommand:totvs-developer-studio.identity.login",
-		"onCommand:totvs-developer-studio.identity.logout",
-		"onCommand:totvs-developer-studio.permissions.selectAction",
 		"onCommand:totvs-developer-studio.patchApply",
 		"onCommand:totvs-developer-studio.patchApply.fromFile",
 		"onCommand:totvs-developer-studio.welcomePage",
@@ -362,21 +359,6 @@
 			{
 				"command": "totvs-developer-studio.compile.key",
 				"title": "%tds.package.compile.key%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.identity.login",
-				"title": "%tds.package.identity.login%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.identity.logout",
-				"title": "%tds.package.identity.logout%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.permissions.selectAction",
-				"title": "%tds.package.identity.selectAction%",
 				"category": "TOTVS"
 			},
 			{
@@ -765,19 +747,9 @@
 					"group": "ABtotvsServer@4"
 				},
 				{
-					"command": "totvs-developer-studio.identity.login",
-					"when": "view == totvs_server",
-					"group": "BtotvsIdentity@1"
-				},
-				{
 					"command": "totvs-developer-studio.compile.key",
 					"when": "view == totvs_server",
 					"group": "BBtotvsCompileKey@1"
-				},
-				{
-					"command": "totvs-developer-studio.identity.logout",
-					"when": "view == totvs_server",
-					"group": "BtotvsIdentity@2"
 				},
 				{
 					"command": "totvs-developer-studio.include",
@@ -834,10 +806,6 @@
 				},
 				{
 					"command": "totvs-developer-studio.rename",
-					"when": "1 == 0"
-				},
-				{
-					"command": "totvs-developer-studio.permissions.selectAction",
 					"when": "1 == 0"
 				},
 				{

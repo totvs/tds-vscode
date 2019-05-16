@@ -151,12 +151,12 @@ export function deletePrograms(programs: string[]) {
 	try {
 		if (server) {
 			//vscode.window.showInformationMessage("Compilação iniciada");
-			const identityInfos = Utils.getPermissionsInfos();
+			const permissionsInfos = Utils.getPermissionsInfos();
 
 			languageClient.sendRequest('$totvsserver/deletePrograms', {
 				"deleteProgramsInfo": {
 					"connectionToken": server.token,
-					"authorizationToken": identityInfos.authorizationToken,
+					"authorizationToken": permissionsInfos.authorizationToken,
 					"environment": server.environment,
 					"programs": programs
 				}
@@ -277,7 +277,7 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 
 	if (server) {
 		//vscode.window.showInformationMessage("Compilação iniciada");
-		const identityInfos = Utils.getPermissionsInfos();
+		const permissionsInfos = Utils.getPermissionsInfos();
 		let includesUris: Array<string> = [];
 		for (let idx = 0; idx < includes.length; idx++) {
 			includesUris.push(vscode.Uri.file(includes[idx]).toString());
@@ -289,7 +289,7 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 		languageClient.sendRequest('$totvsserver/compilation', {
 			"compilationInfo": {
 				"connectionToken": server.token,
-				"authorizationToken": identityInfos.authorizationToken,
+				"authorizationToken": permissionsInfos.authorizationToken,
 				"environment": server.environment,
 				"includeUris": includesUris,
 				"fileUris": filesUris,
