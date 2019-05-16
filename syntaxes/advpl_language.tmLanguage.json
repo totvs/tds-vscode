@@ -5,8 +5,8 @@
     "patterns": [
         {"include": "#directives"},
         {"include": "#comments"},
-		{"include": "#varDeclaration"},
 		{"include": "#function-decl"},
+		{"include": "#varDeclaration"},
 		{"include": "#class-decl"},
 		{"include": "#method-decl"},
 		{"include": "#wsstruct-decl"},
