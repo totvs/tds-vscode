@@ -30,7 +30,7 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Localize os diretórios de Includes que necessitar para seus projetos.
 * Pressione o botão `Salvar` para concluir.
 
-![Welcome Screen](https://raw.githubusercontent.com/TOTVSTEC/tds-images/master/welcome_screen.gif)
+![Welcome Page](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Welcome.gif)
 
 ### Cadastro de servidores utilizando o assistente
 
@@ -39,7 +39,7 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Clique no botão `Salvar`.
 * Existe o atalho que para abertura do assistente: `CTRL + SHIFT + P` digite `TOTVS: Add Server`.
 
-![New server](https://raw.githubusercontent.com/TOTVSTEC/tds-images/master/new_server.gif)
+![New server](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/AddServer.gif)
 
 ### Conexão com servidores
 
@@ -49,6 +49,8 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Informe `ambiente`, `usuário` e `senha` (pode ser "em branco") para prosseguir.
 * Aguarde o termino da conexão.
 * A conexão com servidores pode ser efetuada pela seleção do texto `[Selecionar servidor/ambiente]` na barra de ferramentas. Ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Select Server`.
+
+![Connect Server](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/ConnectServer.gif)
 
 ## Configurações de Debug
 
@@ -96,6 +98,8 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Será aberto um assistente de configuração de launcher que permite criar uma nova configuração ou editar uma configuração já existente.
 * Preencha as informações e clique em `Save`.
 
+![New Launcher](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/CreateLauncher.gif)
+
 ### Iniciando um debug
 
 * Caso necessário, verifique se os dados do arquivo `launch.json` estão corretos.
@@ -106,6 +110,8 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Será exibido um campo para digitação do fonte que deseja depurar, ex: `u_teste`.
 * Pressione `Enter` para iniciar a depuração.
 
+![Start Debug](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/StartDebug.gif)
+
 ### Usando Debug Console
 
 * É possível verificar os valores de variáveis e executar métodos durante o debug com o Debug Console.
@@ -113,6 +119,8 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Quando a depuração "parar" ao breakpoint, abra a visão `Debug Console` na parte inferior da tela.
 * Digite uma operação ou variável AdvPL disponivel em seu ambiente de depuração.
 * Analise os dados retornados de acordo com sua necessidade.
+
+![Debug Console](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/DebugConsole.gif)
 
 ## Patch
 
@@ -133,7 +141,7 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Escolha o `nome do arquivo` de Patch desejado. (Quando não informado, o patch será gerado com o nome do RPO).
 * Efetue e geração do Patch pressionando o botão `Gerar`.
 
-![Patch Generate](https://raw.githubusercontent.com/TOTVSTEC/tds-images/master/patch_generate.gif)
+![Patch Generate](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/GeneratePatchWizard.gif)
 
 ### Gerando um Patch (From Folder) utilizando o menu de contexto
 
@@ -143,6 +151,8 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Abrirá uma janela para selecionar onde deseja que o fonte seja salvo. Selecione um pasta.
 * Uma janela será aberta para coletar o nome do patch que será gerado. (Quando não informado, o patch será gerado com o nome do RPO).
 * Após as confirmações o patch será gerado no caminho desejado.
+
+![Patch Generate Folder](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/GeneratePatchWizardFromFolder.gif)
 
 ### Aplicando Patch utilizando o assistente
 
@@ -156,6 +166,8 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * No campo `Patch File` selecione o patch que deseja aplicar.
 * Confirme a aplicação.
 
+![Patch Apply](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/ApplyPatch.gif)
+
 ### Aplicando Patch utilizando o menu de contexto
 
 * Para aplicar um patch conecte-se ao servidor.
@@ -163,6 +175,8 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Selecione o patch com o botão direito do mouse.
 * Selecione a opção `Patch Apply from file`.
 * Confirme a aplicação e o patch será aplicado.
+
+![Patch Apply from File](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/ApplyPatchMenu.gif)
 
 ## RPO
 
@@ -174,12 +188,16 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 * As mensagens de inicio e fim da desfragmentação serão exibidos no canto inferior direito.
 
+![Defrag RPO](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/DefragRPO.gif)
+
 ### Deletar recursos do RPO
 
 * Para deletar algum recurso do RPO, conecte-se ao servidor.
 * Com o menu de contexto em cima do arquivo que deseja excluir, selecione a opção `Delete File/Resource from RPO`.
 * Confirme a exclusão.
 * A confirmação da exclusão será exibida no console e em mensagens no canto inferior esquerdo.
+
+![Delete File RPO](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/DeleteFromRPO.gif)
 
 ### Inspetor de Objetos do RPO
 
@@ -188,12 +206,16 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Abrirá um assistente com todos os arquivos que fazem parte do RPO, utilize o filtro para encontrar algum arquivo específico.
 * Também é possível abrir o assistente pelo atalho `CTRL + SHIFT + P` digitando `TOTVS: Inspector of the Objects`.
 
+![Inspector Object](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/InspectObject.gif)
+
 ### Inspetor de Funções do RPO
 
 * Para visualizar as funções que fazem parte do RPO, conecte-se ao servidor.
 * Com o menu de contexto em cima do servidor, selecione a opção `Inspector of the Functions`.
 * Abrirá um assistente com todos as funções que fazem parte do RPO, utilize o filtro para encontrar alguma função específica.
 * Também é possível abrir o assistente pelo atalho `CTRL + SHIFT + P` digitando `TOTVS: Inspector of the Functions`.
+
+![Inspector Function](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/InspectFunction.gif)
 
 ## Configurações de Compilação
 
@@ -215,6 +237,7 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 * Suporte de chave de compilação em Linux e MAC a partir de 17/05/2019.
 
+![Compile Key](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/CompileKey.gif)
 
 ### Configuração de Include
 
@@ -225,6 +248,8 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Já existe por padrão o diretório `"C:/totvs/includes"`.
 * Para adicionar uma nova configuração de include separe por vírgula ou substitua o path existente.
   Ex:`"includes": ["C:/totvs/includes1","C:/totvs/includes2", "C:/totvs/includes3"]`.
+
+![Configure Include](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Include.gif)
 
 ### Arquivos do pré compilador
 
@@ -237,6 +262,8 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Preencha o campo `URL`, selecione um diretório e escreva o nome e extensão do arquivo protheus que será gerado no diretório especificado.
 * Após preencher, uma mensagem de sucesso avisará que tudo foi criado corretamente.
 
+![Generate WS](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/GenerateWS.gif)
+
 ## Suporte
 
 ### Capturador de Logs
@@ -247,17 +274,17 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 * Reproduza o problema e selecione a opção `CTRL + SHIFT + P` digite `TOTVS: Off Logger Capture` ou na Barra inferior clique sobre o texto `Capturando logs...`. Os capturador será encerrado e um arquivo chamado `tdsSupport.zip` será gerado. Anexe esse arquivo ao chamado.
 
+![Logger](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Logger.gif)
+
 ### Desenvolvimento Colaborativo
 
 * Se deseja contribuir com o desenvolvimento do plugin, acesse [Git Hub TDS-VSCODE](https://github.com/totvs/tds-vscode), faça seu commit que iremos analisar!
 
 ## Plugins recomendados
 
-* Numbered Bookmarks.
+* TDS Monitor for VSCODE.
 
-  Permite uso de bookmarks no estilo Delphi numerados de 1 a 9.
+  Permite monitor servidores protheus.
 
-  <https://marketplace.visualstudio.com/items?itemName=alefragnani.numbered-bookmarks>
-
-  ![Toggle](https://github.com/alefragnani/vscode-numbered-bookmarks/raw/master/images/numbered-bookmarks-toggle.png)
+  <https://marketplace.visualstudio.com/items?itemName=totvs.tds-monitor>
 
