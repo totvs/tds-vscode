@@ -198,8 +198,8 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 ## Configurações de Compilação
 
 ### Compilando Function e Main Function com Chave de compilação
+
 * Este processo está sendo revisto e pode sofrer alterações.
-* Este processe só é válido para Windows.
 
 * Para aplicar uma chave de compilação, clique com o botão direito na visão de servidores e selecione a opção `Compile key`.
 * Abrirá um assistente para selecionar a chave que deseja. Todos os arquivos .aut podem ser selecionados.
@@ -208,6 +208,13 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Clique sobre o botão de `Validate` para verificar se a chave é válida.
 
 * OBS: A chave só será salva ao clicar no botão `Save` ou `Save/Close` caso a chave seja válida.
+
+## Chave de compilação
+
+* A partir de 17/05/2019 todas as chaves devem ser regeradas utilizando o ID exibido no nosso plugin do VSCode. Isse se faz necessário para suporte de Linux e MAC.
+
+* Suporte de chave de compilação em Linux e MAC a partir de 17/05/2019.
+
 
 ### Configuração de Include
 
@@ -253,4 +260,4 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
   <https://marketplace.visualstudio.com/items?itemName=alefragnani.numbered-bookmarks>
 
   ![Toggle](https://github.com/alefragnani/vscode-numbered-bookmarks/raw/master/images/numbered-bookmarks-toggle.png)
-  
+
