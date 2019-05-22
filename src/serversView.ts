@@ -66,7 +66,14 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 				}
 
 			}
-			return Promise.resolve(this.localServerItems);
+
+			return Promise.resolve(this.localServerItems.sort((srv1, srv2) => {
+				const label1 = srv1.label.toLowerCase();
+      			const label2 = srv2.label.toLowerCase();
+				if (label1 > label2) { return 1; }
+				if (label1 < label2) { return -1; }
+				return 0;
+			}));
 		}
 	}
 
