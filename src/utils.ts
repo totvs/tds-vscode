@@ -138,6 +138,7 @@ export default class Utils {
 					'environment': element.environment
 				};
 				servers.connectedServer = server;
+				servers.lastConnectedServer = server;
 				Utils._onDidSelectedServer.fire(server);
 			}
 		});
@@ -168,6 +169,7 @@ export default class Utils {
 		const allConfigs = this.getServersConfig();
 
 		allConfigs.connectedServer = {};
+		allConfigs.lastConnectedServer = {};
 		this.persistServersInfo(allConfigs);
 		Utils.cancelSelectServer();
 	}
