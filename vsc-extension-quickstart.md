@@ -219,6 +219,20 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 ## Configurações de Compilação
 
+### Enconding
+
+Tivemos reportes de problemas de encode abrindo fontes antes salvos no TDS, isso ocorre porque o encode original do VSCode é UTF8 e o do TDS é outro.
+Para garantir a compilação é necessário compatibilizar o encode da seguinte maneira:
+ * No estado original o Fonte será mostrado desta maneira:<br/>
+ ![Encoding 1](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding1.png)
+ * **Antes de editar/salvar qualquer fonte no VS** entre nas configurações do VS `Ctrl + ,`.
+ * No campo de busca digite `encode` e selecione `iso885916`.<br/>
+ ![Encoding 2](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding2.png)
+ * Abra o fonte com o novo encode (reforçando que NÃO DEVE tê-lo salvo antes em UTF8)<br/>
+ ![Encoding 3](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding3.png)
+ * Compile e/ou recompile o fonte e execute-o.<br/>
+ ![Encoding 4](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding4.png)
+
 ### Compilando Function e Main Function com Chave de compilação
 
 * Este processo está sendo revisto e pode sofrer alterações.
