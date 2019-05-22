@@ -556,12 +556,10 @@ function sendAuthenticateRequest(serverItem: ServerItem, environment: string, us
 			}
 			return true;
 		} else {
-			console.log(localize("tds.webview.serversView.errorConnServer", 'Error connecting server'));
 			vscode.window.showErrorMessage(localize("tds.webview.serversView.errorConnServer", 'Error connecting server'));
 			return false;
 		}
 	}, err => {
-		console.log(err);
 		vscode.window.showErrorMessage(err);
 	});
 }
@@ -571,6 +569,59 @@ export class AuthenticationNode {
 	id: any;
 	osType: number;
 	connectionToken: string;
+}
+
+export function reconnectLastServer() {
+	const servers = Utils.getServersConfig();
+	if (servers.lastConnectedServer.id) {
+		if (servers.configurations) {
+			servers.configurations.forEach(element => {
+				if (element.id === servers.lastConnectedServer.id) {
+					let serverItem: ServerItem = new ServerItem(element.name, element.address, element.port, vscode.TreeItemCollapsibleState.None, element.id, element.buildVersion, undefined, {
+						command: '',
+						title: '',
+						arguments: [element.name]
+					});
+					sendReconnectRequest(serverItem, servers.lastConnectedServer.token);
+				}
+			});
+		}
+	}
+}
+
+function sendReconnectRequest(serverItem: ServerItem, connectionToken: string) {
+	languageClient.sendRequest('$totvsserver/reconnect', {
+		reconnectInfo: {
+			connectionToken: connectionToken,
+			serverName: serverItem.label
+		}
+	}).then((reconnectNode: ReconnectNode) => {
+		let token: string = reconnectNode.connectionToken;
+		if (token) {
+			let environment: string = reconnectNode.environment;
+			let user: string = reconnectNode.user;
+			//vscode.window.showInformationMessage('Server ' + serverItem.label + ' connected!');
+			Utils.saveSelectServer(serverItem.id, token, serverItem.label, environment, user);
+			if (treeDataProvider !== undefined) {
+				connectedServerItem = serverItem;
+				connectedServerItem.currentEnvironment = environment;
+				connectedServerItem.token = token;
+				treeDataProvider.refresh();
+			}
+			return true;
+		} else {
+			vscode.window.showErrorMessage(localize("tds.webview.serversView.errorConnServer", 'Error reconnecting server'));
+			return false;
+		}
+	}, err => {
+		vscode.window.showErrorMessage(err);
+	});
+}
+
+export class ReconnectNode {
+	connectionToken: string;
+	environment: string;
+	user: string;
 }
 
 export class NodeInfo {

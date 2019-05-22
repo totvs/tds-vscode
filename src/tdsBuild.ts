@@ -4,6 +4,7 @@ import utils from './utils';
 import path = require('path');
 import fs = require('fs');
 import Utils from './utils';
+//import { verifyEditorState, ConfirmResult as EditorStateResult } from './verifyEditorState';
 
 import * as nls from 'vscode-nls';
 let localize = nls.loadMessageBundle();
@@ -109,7 +110,7 @@ function getAllFiles(folders: Array<string>): string[] {
 function build(folders: string[], files: string[], recompile: boolean) {
 	try {
 		vscode.window.withProgress({
-			location: vscode.ProgressLocation.Window,
+			location: vscode.ProgressLocation.Window, //vscode.ProgressLocation.Notification
 			title: "Compilação de pastas.",
 			cancellable: true,
 		}, async (progress, token) => {
@@ -133,13 +134,14 @@ function build(folders: string[], files: string[], recompile: boolean) {
 			return Promise.resolve(true);
 		}).then((result) => {
 			if (result) {
-				languageClient.warn(localize("tds.webview.tdsBuild.compileFolder", 'Folder and sub-folder compilation done.'));
+				console.log(localize("tds.webview.tdsBuild.compileFolder", 'Folder and sub-folder compilation done.'));
 			} else {
-				languageClient.error(localize("tds.webview.tdsBuild.compileFolder2", 'Compilation of folder and sub-folders canceled by user.'));
+				console.log(localize("tds.webview.tdsBuild.compileFolder2", 'Compilation of folder and sub-folders canceled by user.'));
 			}
 		});
 	} catch (error) {
-		languageClient.error(error);
+		console.log(error);
+		vscode.window.showErrorMessage(error);
 	}
 }
 
@@ -166,13 +168,14 @@ export function deletePrograms(programs: string[]) {
 				// 	vscode.window.showErrorMessage(message);
 				// }
 			}, (err) => {
-				languageClient.error(err);
+				vscode.window.showErrorMessage(err);
 			});
 		} else {
-			languageClient.error(localize("tds.webview.tdsBuild.noServer", 'No server connected'));
+			vscode.window.showErrorMessage(localize("tds.webview.tdsBuild.noServer", 'No server connected'));
 		}
 	} catch (error) {
-		languageClient.error(error);
+		console.log(error);
+		vscode.window.showErrorMessage(error);
 	}
 
 }
@@ -182,13 +185,15 @@ export function deletePrograms(programs: string[]) {
  */
 export function buildFile(filename: string) {
 	if (!ignoreResource(filename)) {
-		languageClient.info(localize("tds.webview.tdsBuild.compileBegin", "Resource compilation started. Resource: {0}", filename));
+		console.log(localize("tds.webview.tdsBuild.compileBegin", "Resource compilation started. Resource: {0}", filename));
 		const compileOptions = _getCompileOptionsDefault();
 		compileOptions.recompile = true;
 		buildCode([filename], compileOptions);
-		languageClient.info('Compilação de recurso finalizada.');
+
+		console.log('Compilação de recurso finalizada.');
 	} else {
-		languageClient.warn(localize("tds.webview.tdsBuild.resourceInList", "Resource appears in the list of files to ignore. Resource: {0}", filename));
+		console.log(localize("tds.webview.tdsBuild.resourceInList", "Resource appears in the list of files to ignore. Resource: {0}", filename));
+		vscode.window.showWarningMessage(localize("tds.webview.tdsBuild.", 'Resource appears in the list of files to ignore.'));
 	}
 }
 
@@ -200,7 +205,7 @@ export function buildFiles(files: string[], recompile: boolean) {
  * Builds a folder.
  */
 export function buildFolder(folders: string[], recompile: boolean) {
-	languageClient.info(localize("tds.webview.tdsBuild.compileFolder3", "Folder and sub-folder compilation started. It may take some time. Total folders: {0}", folders.length));
+	console.log(localize("tds.webview.tdsBuild.compileFolder3", "Folder and sub-folder compilation started. It may take some time. Total folders: {0}", folders.length));
 	build(folders, [], recompile);
 	// try {
 	// 	vscode.window.withProgress({
@@ -228,13 +233,13 @@ export function buildFolder(folders: string[], recompile: boolean) {
 	// 		return Promise.resolve(true);
 	// 	}).then((result) => {
 	// 		if (result) {
-	// 			languageClient.info('Compilação de pasta e sub-pastas finalizada.');
+	// 			console.log('Compilação de pasta e sub-pastas finalizada.');
 	// 		} else {
-	// 			languageClient.info('Compilação de pasta e sub-pastas cancelada por solicitação do usuário.');
+	// 			console.log('Compilação de pasta e sub-pastas cancelada por solicitação do usuário.');
 	// 		}localize("tds.webview.tdsBuild.
 	// 	});
 	// } catch (error) {
-	// 	languageClient.info(error);
+	// 	console.log(error);
 	// 	vscode.window.showErrorMessage(error);
 	// }
 }
@@ -244,7 +249,7 @@ export function buildFolder(folders: string[], recompile: boolean) {
  */
 async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 	const includes: Array<string> = utils.getIncludes(true) || [];
-	if (!includes.toString()) {
+	if(!includes.toString()){
 		return;
 	}
 	//TODO: verificar se a salva automática esta ativa. Se não ativa, recomendar que seja ativada
@@ -261,13 +266,13 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 
 	if (count !== 0) {
 		if (!vscode.workspace.saveAll(false)) {
-			languageClient.warn(localize("tds.webview.tdsBuild.canceled", 'Operation canceled because it is not possible to save edited files.'));
+			vscode.window.showWarningMessage(localize("tds.webview.tdsBuild.canceled", 'Operation canceled because it is not possible to save edited files.'));
 			return;
 		}
-		languageClient.warn(localize("tds.webview.tdsBuild.saved", 'Files saved successfully.'));
+		vscode.window.showWarningMessage(localize("tds.webview.tdsBuild.saved", 'Files saved successfully.'));
 	}
 	//	 else if (stateResult === EditorStateResult.CANCEL) {
-	//		languageClient.warn('Operação cancelada por solicitação do usuário.');
+	//		vscode.window.showWarningMessage('Operação cancelada por solicitação do usuário.');
 	//		return;
 	//}
 
@@ -307,10 +312,10 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 			// 	});
 			// }
 		}, (err) => {
-			languageClient.error(err);
+			vscode.window.showErrorMessage(err);
 		});
 	} else {
-		languageClient.error(localize("tds.webview.tdsBuild.noServer", 'No server connected'));
+		vscode.window.showErrorMessage(localize("tds.webview.tdsBuild.noServer", 'No server connected'));
 	}
 }
 
@@ -319,7 +324,7 @@ export class CompileResult {
 }
 
 export class DeleteProgramResult {
-	message: string;
+	message: string
 }
 
 export function commandBuildFile(context) {
@@ -341,7 +346,7 @@ export function commandBuildFile(context) {
 }
 
 export function commandBuildFolder(context) {
-	languageClient.info(context);
+	console.log(context);
 	buildFolder([context.fsPath], false);
 }
 

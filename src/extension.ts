@@ -121,7 +121,6 @@ export function activate(context: ExtensionContext) {
 				statusIcon.text = localize('tds.vscode.statusIcon.text1', 'advpl: loading');
 				statusIcon.tooltip = localize('tds.vscode.statusIcon.tooltip1', 'advpl is loading project metadata (ie, compile_commands.json)');
 				statusIcon.show();
-
 				languageClient.onReady().then(() => {
 					languageClient.onNotification('$totvsserver/progress', (args) => {
 						let indexRequestCount = args.indexRequestCount || 0;
@@ -202,9 +201,6 @@ export function activate(context: ExtensionContext) {
 			});
 		})();
 	}
-
-	//Inicia o arquivo de servidores limpo.
-	Utils.clearConnectedServerConfig();
 
 	// Ação para pegar o nome da função quer quer iniciar o debug
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.getProgramName', () => getProgramName()));
