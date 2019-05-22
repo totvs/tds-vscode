@@ -556,10 +556,12 @@ function sendAuthenticateRequest(serverItem: ServerItem, environment: string, us
 			}
 			return true;
 		} else {
+			console.log(localize("tds.webview.serversView.errorConnServer", 'Error connecting server'));
 			vscode.window.showErrorMessage(localize("tds.webview.serversView.errorConnServer", 'Error connecting server'));
 			return false;
 		}
 	}, err => {
+		console.log(err);
 		vscode.window.showErrorMessage(err);
 	});
 }
