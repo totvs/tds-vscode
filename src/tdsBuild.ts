@@ -133,13 +133,13 @@ function build(folders: string[], files: string[], recompile: boolean) {
 			return Promise.resolve(true);
 		}).then((result) => {
 			if (result) {
-				languageClient.(localize("tds.webview.tdsBuild.compileFolder", 'Folder and sub-folder compilation done.'));
+				languageClient.warn(localize("tds.webview.tdsBuild.compileFolder", 'Folder and sub-folder compilation done.'));
 			} else {
-				log(localize("tds.webview.tdsBuild.compileFolder2", 'Compilation of folder and sub-folders canceled by user.'));
+				languageClient.error(localize("tds.webview.tdsBuild.compileFolder2", 'Compilation of folder and sub-folders canceled by user.'));
 			}
 		});
 	} catch (error) {
-		logError(error);
+		languageClient.error(error);
 	}
 }
 
@@ -166,13 +166,13 @@ export function deletePrograms(programs: string[]) {
 				// 	vscode.window.showErrorMessage(message);
 				// }
 			}, (err) => {
-				logError(err);
+				languageClient.error(err);
 			});
 		} else {
-			logError(localize("tds.webview.tdsBuild.noServer", 'No server connected'));
+			languageClient.error(localize("tds.webview.tdsBuild.noServer", 'No server connected'));
 		}
 	} catch (error) {
-		logError(error);
+		languageClient.error(error);
 	}
 
 }
@@ -182,13 +182,13 @@ export function deletePrograms(programs: string[]) {
  */
 export function buildFile(filename: string) {
 	if (!ignoreResource(filename)) {
-		log(localize("tds.webview.tdsBuild.compileBegin", "Resource compilation started. Resource: {0}", filename));
+		languageClient.info(localize("tds.webview.tdsBuild.compileBegin", "Resource compilation started. Resource: {0}", filename));
 		const compileOptions = _getCompileOptionsDefault();
 		compileOptions.recompile = true;
 		buildCode([filename], compileOptions);
-		log('Compilação de recurso finalizada.');
+		languageClient.info('Compilação de recurso finalizada.');
 	} else {
-		logWarning(localize("tds.webview.tdsBuild.resourceInList", "Resource appears in the list of files to ignore. Resource: {0}", filename));
+		languageClient.warn(localize("tds.webview.tdsBuild.resourceInList", "Resource appears in the list of files to ignore. Resource: {0}", filename));
 	}
 }
 
@@ -200,7 +200,7 @@ export function buildFiles(files: string[], recompile: boolean) {
  * Builds a folder.
  */
 export function buildFolder(folders: string[], recompile: boolean) {
-	log(localize("tds.webview.tdsBuild.compileFolder3", "Folder and sub-folder compilation started. It may take some time. Total folders: {0}", folders.length));
+	languageClient.info(localize("tds.webview.tdsBuild.compileFolder3", "Folder and sub-folder compilation started. It may take some time. Total folders: {0}", folders.length));
 	build(folders, [], recompile);
 	// try {
 	// 	vscode.window.withProgress({
@@ -228,13 +228,13 @@ export function buildFolder(folders: string[], recompile: boolean) {
 	// 		return Promise.resolve(true);
 	// 	}).then((result) => {
 	// 		if (result) {
-	// 			log('Compilação de pasta e sub-pastas finalizada.');
+	// 			languageClient.info('Compilação de pasta e sub-pastas finalizada.');
 	// 		} else {
-	// 			log('Compilação de pasta e sub-pastas cancelada por solicitação do usuário.');
+	// 			languageClient.info('Compilação de pasta e sub-pastas cancelada por solicitação do usuário.');
 	// 		}localize("tds.webview.tdsBuild.
 	// 	});
 	// } catch (error) {
-	// 	log(error);
+	// 	languageClient.info(error);
 	// 	vscode.window.showErrorMessage(error);
 	// }
 }
@@ -261,13 +261,13 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 
 	if (count !== 0) {
 		if (!vscode.workspace.saveAll(false)) {
-			logWarning(localize("tds.webview.tdsBuild.canceled", 'Operation canceled because it is not possible to save edited files.'));
+			languageClient.warn(localize("tds.webview.tdsBuild.canceled", 'Operation canceled because it is not possible to save edited files.'));
 			return;
 		}
-		logWarning(localize("tds.webview.tdsBuild.saved", 'Files saved successfully.'));
+		languageClient.warn(localize("tds.webview.tdsBuild.saved", 'Files saved successfully.'));
 	}
 	//	 else if (stateResult === EditorStateResult.CANCEL) {
-	//		logWarning('Operação cancelada por solicitação do usuário.');
+	//		languageClient.warn('Operação cancelada por solicitação do usuário.');
 	//		return;
 	//}
 
@@ -307,10 +307,10 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 			// 	});
 			// }
 		}, (err) => {
-			logError(err);
+			languageClient.error(err);
 		});
 	} else {
-		logError(localize("tds.webview.tdsBuild.noServer", 'No server connected'));
+		languageClient.error(localize("tds.webview.tdsBuild.noServer", 'No server connected'));
 	}
 }
 
@@ -341,7 +341,7 @@ export function commandBuildFile(context) {
 }
 
 export function commandBuildFolder(context) {
-	log(context);
+	languageClient.info(context);
 	buildFolder([context.fsPath], false);
 }
 

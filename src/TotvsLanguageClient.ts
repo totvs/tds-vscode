@@ -1,5 +1,5 @@
-import { CodeLens, commands, DecorationOptions, DecorationRangeBehavior, DecorationRenderOptions, ExtensionContext, Position, ProviderResult, Range, TextDocument, ThemeColor, window, workspace, TextEditorDecorationType } from 'vscode';
-import { CancellationToken, LanguageClient, LanguageClientOptions, ProvideCodeLensesSignature, ServerOptions, ErrorHandler, Message, ErrorAction, CloseAction, RevealOutputChannelOn } from 'vscode-languageclient/lib/main';
+import { CodeLens, commands, DecorationOptions, DecorationRangeBehavior, DecorationRenderOptions, ExtensionContext, Position, ProviderResult, Range, TextDocument, ThemeColor, window, workspace, TextEditorDecorationType, Disposable } from 'vscode';
+import { CancellationToken, LanguageClient, LanguageClientOptions, ProvideCodeLensesSignature, ServerOptions, RevealOutputChannelOn } from 'vscode-languageclient/lib/main';
 import * as ls from 'vscode-languageserver-types';
 import vscode = require('vscode');
 import { chmodSync } from 'fs';
@@ -14,51 +14,85 @@ enum NotificationLevel {
 }
 
 class XLanguageClient extends LanguageClient {
+	_showErrorMessage: any;
+	_showWarningMessage: any;
+	_showInformationMessage: any;
 
-	protected log(message: any, level: NotificationLevel): boolean {
-		console.log(message);
+	public start(): Disposable {
 
-		let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("totvsLanguageServer");
-		let levelOption = config.get("editor.show.notification");
+		return super.start();
+	}
 
-		if (levelOption === "off") {
-			return false;
-		} else if ((levelOption === "errors") && ((level === NotificationLevel.ERROR) || (level === NotificationLevel.WARNING))) {
-			return true;
-		} else if ((levelOption === "warning") && (level === NotificationLevel.WARNING)) {
-			return true;
-		} else if (levelOption === "all") {
-			return true;
-		}
+	public hookMessages() {
+		this._showErrorMessage = vscode.window.showErrorMessage;
+		vscode.window.showErrorMessage = showErrorMessage;
 
+		this._showWarningMessage = vscode.window.showWarningMessage;
+		vscode.window.showWarningMessage = showWarningMessage;
+
+		this._showInformationMessage = vscode.window.showInformationMessage;
+		vscode.window.showInformationMessage = showInformationMessage;
+
+	}
+
+	public stop(): Thenable<void> {
+		const result = super.stop();
+
+		vscode.window.showInformationMessage = this._showInformationMessage;
+		vscode.window.showErrorMessage = this._showErrorMessage;
+		vscode.window.showWarningMessage = this._showWarningMessage;
+
+		return result;
+	}
+}
+
+function showErrorMessage(message: string, ...params: any): Thenable<string | undefined> {
+	if (canShow(NotificationLevel.ERROR)) {
+		return languageClient._showErrorMessage(message, params);
+	}
+
+	return Promise.resolve(undefined);
+}
+
+function showWarningMessage(message: string, ...params: any): Thenable<string | undefined> {
+	if (canShow(NotificationLevel.WARNING)) {
+		return languageClient._showWarningMessage(message, params);
+	}
+
+	return Promise.resolve(undefined);
+}
+
+function showInformationMessage(message: string, ...params: any): Thenable<string | undefined> {
+	if (canShow(NotificationLevel.INFO)) {
+		return languageClient._showInformationMessage(message, params);
+	}
+
+	return Promise.resolve(undefined);
+}
+
+function canShow(level: NotificationLevel): boolean {
+	let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("totvsLanguageServer");
+	let levelOption = config.get("editor.show.notification");
+
+	if (levelOption === "off") {
 		return false;
+	} else if ((levelOption === "errors") && ((level === NotificationLevel.ERROR) || (level === NotificationLevel.WARNING))) {
+		return true;
+	} else if ((levelOption === "warning") && (level === NotificationLevel.WARNING)) {
+		return true;
+	} else if (levelOption === "all") {
+		return true;
 	}
 
-	public info(message: string, data?: any): void {
-		if (this.log(message, NotificationLevel.INFO)) {
-			super.info(message, data);
-		}
-	}
-
-	public warn(message: string, data?: any): void {
-		if (this.log(message, NotificationLevel.WARNING)) {
-			super.warn(message, data);
-		}
-	}
-
-	public error(message: string, data?: any): void {
-		if (this.log(message, NotificationLevel.ERROR)) {
-			super.error(message, data);
-		}
-	}
-
+	return false;
 }
 
 export let sessionKey: string;
+export let languageClient: XLanguageClient;
 
 export function getLanguageClient(context: ExtensionContext): LanguageClient {
 
-	let clientConfig = getClientConfig(context);
+	let clientConfig = getClientConfig();
 	//if (!clientConfig)
 	//	return undefined;
 
@@ -173,7 +207,7 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 
 	};
 
-	let languageClient = new XLanguageClient(
+	languageClient = new XLanguageClient(
 		//'AdvPL', 'AdvPL',
 		'totvsLanguageServer', 'TOTVS AdvPL Language Server',
 		serverOptions,
@@ -182,9 +216,10 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 	//let command = serverOptions.command;
 
 	languageClient.onReady().then(async () => {
+		languageClient.hookMessages();
+
 		if (languageClient.initializeResult) {
 			sessionKey = languageClient.initializeResult.rsaPubKey;
-			// window.showInformationMessage('rsaPubKey: '+ sessionKey);
 		}
 	}).catch(e => {
 		// TODO: remove cquery.launch.workingDirectory after July 2018
@@ -198,7 +233,7 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 //Internal Functions
 
 
-function getClientConfig(context: ExtensionContext) {
+function getClientConfig() {
 
 	function resolveVariablesInString(value: string) {
 		let rootPath = workspace.rootPath !== undefined ? workspace.rootPath : '';
