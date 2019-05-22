@@ -3,7 +3,7 @@ import { CancellationToken, LanguageClient, LanguageClientOptions, ProvideCodeLe
 import * as ls from 'vscode-languageserver-types';
 import vscode = require('vscode');
 import { chmodSync } from 'fs';
-
+import { reconnectLastServer} from './serversView';
 import * as nls from 'vscode-nls';
 let localize = nls.loadMessageBundle();
 
@@ -221,6 +221,8 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 		if (languageClient.initializeResult) {
 			sessionKey = languageClient.initializeResult.rsaPubKey;
 		}
+		reconnectLastServer();
+
 	}).catch(e => {
 		// TODO: remove cquery.launch.workingDirectory after July 2018
 		window.showErrorMessage(e);
