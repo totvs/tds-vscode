@@ -4,7 +4,6 @@ import utils from './utils';
 import path = require('path');
 import fs = require('fs');
 import Utils from './utils';
-//import { verifyEditorState, ConfirmResult as EditorStateResult } from './verifyEditorState';
 
 import * as nls from 'vscode-nls';
 let localize = nls.loadMessageBundle();
@@ -110,7 +109,7 @@ function getAllFiles(folders: Array<string>): string[] {
 function build(folders: string[], files: string[], recompile: boolean) {
 	try {
 		vscode.window.withProgress({
-			location: vscode.ProgressLocation.Window, //vscode.ProgressLocation.Notification
+			location: vscode.ProgressLocation.Window,
 			title: "Compilação de pastas.",
 			cancellable: true,
 		}, async (progress, token) => {
@@ -134,14 +133,13 @@ function build(folders: string[], files: string[], recompile: boolean) {
 			return Promise.resolve(true);
 		}).then((result) => {
 			if (result) {
-				console.log(localize("tds.webview.tdsBuild.compileFolder", 'Folder and sub-folder compilation done.'));
+				languageClient.(localize("tds.webview.tdsBuild.compileFolder", 'Folder and sub-folder compilation done.'));
 			} else {
-				console.log(localize("tds.webview.tdsBuild.compileFolder2", 'Compilation of folder and sub-folders canceled by user.'));
+				log(localize("tds.webview.tdsBuild.compileFolder2", 'Compilation of folder and sub-folders canceled by user.'));
 			}
 		});
 	} catch (error) {
-		console.log(error);
-		vscode.window.showErrorMessage(error);
+		logError(error);
 	}
 }
 
@@ -168,14 +166,13 @@ export function deletePrograms(programs: string[]) {
 				// 	vscode.window.showErrorMessage(message);
 				// }
 			}, (err) => {
-				vscode.window.showErrorMessage(err);
+				logError(err);
 			});
 		} else {
-			vscode.window.showErrorMessage(localize("tds.webview.tdsBuild.noServer", 'No server connected'));
+			logError(localize("tds.webview.tdsBuild.noServer", 'No server connected'));
 		}
 	} catch (error) {
-		console.log(error);
-		vscode.window.showErrorMessage(error);
+		logError(error);
 	}
 
 }
@@ -185,15 +182,13 @@ export function deletePrograms(programs: string[]) {
  */
 export function buildFile(filename: string) {
 	if (!ignoreResource(filename)) {
-		console.log(localize("tds.webview.tdsBuild.compileBegin", "Resource compilation started. Resource: {0}", filename));
+		log(localize("tds.webview.tdsBuild.compileBegin", "Resource compilation started. Resource: {0}", filename));
 		const compileOptions = _getCompileOptionsDefault();
 		compileOptions.recompile = true;
 		buildCode([filename], compileOptions);
-
-		console.log('Compilação de recurso finalizada.');
+		log('Compilação de recurso finalizada.');
 	} else {
-		console.log(localize("tds.webview.tdsBuild.resourceInList", "Resource appears in the list of files to ignore. Resource: {0}", filename));
-		vscode.window.showWarningMessage(localize("tds.webview.tdsBuild.", 'Resource appears in the list of files to ignore.'));
+		logWarning(localize("tds.webview.tdsBuild.resourceInList", "Resource appears in the list of files to ignore. Resource: {0}", filename));
 	}
 }
 
@@ -205,7 +200,7 @@ export function buildFiles(files: string[], recompile: boolean) {
  * Builds a folder.
  */
 export function buildFolder(folders: string[], recompile: boolean) {
-	console.log(localize("tds.webview.tdsBuild.compileFolder3", "Folder and sub-folder compilation started. It may take some time. Total folders: {0}", folders.length));
+	log(localize("tds.webview.tdsBuild.compileFolder3", "Folder and sub-folder compilation started. It may take some time. Total folders: {0}", folders.length));
 	build(folders, [], recompile);
 	// try {
 	// 	vscode.window.withProgress({
@@ -233,13 +228,13 @@ export function buildFolder(folders: string[], recompile: boolean) {
 	// 		return Promise.resolve(true);
 	// 	}).then((result) => {
 	// 		if (result) {
-	// 			console.log('Compilação de pasta e sub-pastas finalizada.');
+	// 			log('Compilação de pasta e sub-pastas finalizada.');
 	// 		} else {
-	// 			console.log('Compilação de pasta e sub-pastas cancelada por solicitação do usuário.');
+	// 			log('Compilação de pasta e sub-pastas cancelada por solicitação do usuário.');
 	// 		}localize("tds.webview.tdsBuild.
 	// 	});
 	// } catch (error) {
-	// 	console.log(error);
+	// 	log(error);
 	// 	vscode.window.showErrorMessage(error);
 	// }
 }
@@ -249,7 +244,7 @@ export function buildFolder(folders: string[], recompile: boolean) {
  */
 async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 	const includes: Array<string> = utils.getIncludes(true) || [];
-	if(!includes.toString()){
+	if (!includes.toString()) {
 		return;
 	}
 	//TODO: verificar se a salva automática esta ativa. Se não ativa, recomendar que seja ativada
@@ -266,13 +261,13 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 
 	if (count !== 0) {
 		if (!vscode.workspace.saveAll(false)) {
-			vscode.window.showWarningMessage(localize("tds.webview.tdsBuild.canceled", 'Operation canceled because it is not possible to save edited files.'));
+			logWarning(localize("tds.webview.tdsBuild.canceled", 'Operation canceled because it is not possible to save edited files.'));
 			return;
 		}
-		vscode.window.showWarningMessage(localize("tds.webview.tdsBuild.saved", 'Files saved successfully.'));
+		logWarning(localize("tds.webview.tdsBuild.saved", 'Files saved successfully.'));
 	}
 	//	 else if (stateResult === EditorStateResult.CANCEL) {
-	//		vscode.window.showWarningMessage('Operação cancelada por solicitação do usuário.');
+	//		logWarning('Operação cancelada por solicitação do usuário.');
 	//		return;
 	//}
 
@@ -312,10 +307,10 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 			// 	});
 			// }
 		}, (err) => {
-			vscode.window.showErrorMessage(err);
+			logError(err);
 		});
 	} else {
-		vscode.window.showErrorMessage(localize("tds.webview.tdsBuild.noServer", 'No server connected'));
+		logError(localize("tds.webview.tdsBuild.noServer", 'No server connected'));
 	}
 }
 
@@ -324,7 +319,7 @@ export class CompileResult {
 }
 
 export class DeleteProgramResult {
-	message: string
+	message: string;
 }
 
 export function commandBuildFile(context) {
@@ -346,7 +341,7 @@ export function commandBuildFile(context) {
 }
 
 export function commandBuildFolder(context) {
-	console.log(context);
+	log(context);
 	buildFolder([context.fsPath], false);
 }
 

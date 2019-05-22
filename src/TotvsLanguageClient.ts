@@ -1,11 +1,58 @@
 import { CodeLens, commands, DecorationOptions, DecorationRangeBehavior, DecorationRenderOptions, ExtensionContext, Position, ProviderResult, Range, TextDocument, ThemeColor, window, workspace, TextEditorDecorationType } from 'vscode';
-import { CancellationToken, LanguageClient, LanguageClientOptions, ProvideCodeLensesSignature, RevealOutputChannelOn, ServerOptions } from 'vscode-languageclient/lib/main';
+import { CancellationToken, LanguageClient, LanguageClientOptions, ProvideCodeLensesSignature, ServerOptions, ErrorHandler, Message, ErrorAction, CloseAction, RevealOutputChannelOn } from 'vscode-languageclient/lib/main';
 import * as ls from 'vscode-languageserver-types';
 import vscode = require('vscode');
 import { chmodSync } from 'fs';
 
 import * as nls from 'vscode-nls';
 let localize = nls.loadMessageBundle();
+
+enum NotificationLevel {
+	ERROR,
+	WARNING,
+	INFO
+}
+
+class XLanguageClient extends LanguageClient {
+
+	protected log(message: any, level: NotificationLevel): boolean {
+		console.log(message);
+
+		let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("totvsLanguageServer");
+		let levelOption = config.get("editor.show.notification");
+
+		if (levelOption === "off") {
+			return false;
+		} else if ((levelOption === "errors") && ((level === NotificationLevel.ERROR) || (level === NotificationLevel.WARNING))) {
+			return true;
+		} else if ((levelOption === "warning") && (level === NotificationLevel.WARNING)) {
+			return true;
+		} else if (levelOption === "all") {
+			return true;
+		}
+
+		return false;
+	}
+
+	public info(message: string, data?: any): void {
+		if (this.log(message, NotificationLevel.INFO)) {
+			super.info(message, data);
+		}
+	}
+
+	public warn(message: string, data?: any): void {
+		if (this.log(message, NotificationLevel.WARNING)) {
+			super.warn(message, data);
+		}
+	}
+
+	public error(message: string, data?: any): void {
+		if (this.log(message, NotificationLevel.ERROR)) {
+			super.error(message, data);
+		}
+	}
+
+}
 
 export let sessionKey: string;
 
@@ -25,10 +72,10 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 
 			if (!clientConfig || JSON.stringify(clientConfig[key]) !== JSON.stringify(clientConfig[key])) {
 				const kReload = localize("tds.webview.totvsLanguegeClient.reload", 'Reload');
-				const message = localize("tds.webview.totvsLanguegeClient.pleaseReload","Please reload to apply the 'AdvPL.{0}' configuration change.", key);
+				const message = localize("tds.webview.totvsLanguegeClient.pleaseReload", "Please reload to apply the 'AdvPL.{0}' configuration change.", key);
 
 				window.showInformationMessage(message, kReload).then(selected => {
-					if (selected == kReload){
+					if (selected === kReload) {
 						commands.executeCommand('workbench.action.reloadWindow');
 					}
 				});
@@ -53,15 +100,15 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 
 	let dir = "";
 	let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
-	if(ext !== undefined) {
+	if (ext !== undefined) {
 		dir = ext.extensionPath;
 	}
 	let advpls;
-	if (process.platform == "win32") {
+	if (process.platform === "win32") {
 		advpls = dir + "/node_modules/@totvs/tds-ls/bin/windows/advpls.exe";
-	} else if (process.platform == "linux") {
+	} else if (process.platform === "linux") {
 		advpls = dir + "/node_modules/@totvs/tds-ls/bin/linux/advpls";
-		chmodSync(advpls,'755');
+		chmodSync(advpls, '755');
 	}
 
 	let serverOptions: ServerOptions = {
@@ -74,10 +121,10 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 	//console.log(`Starting ${serverOptions.command} in ${serverOptions.options.cwd}`);
 
 	// Inline code lens.
-    let decorationOpts: DecorationRenderOptions = {
+	let decorationOpts: DecorationRenderOptions = {
 		after: {
-		  fontStyle: 'italic',
-		  color: new ThemeColor('editorCodeLens.foreground'),
+			fontStyle: 'italic',
+			color: new ThemeColor('editorCodeLens.foreground'),
 		},
 		rangeBehavior: DecorationRangeBehavior.ClosedClosed,
 	};
@@ -85,25 +132,25 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 	let codeLensDecoration = window.createTextEditorDecorationType(decorationOpts);
 
 	function provideCodeLens(document: TextDocument, token: CancellationToken,
-        next: ProvideCodeLensesSignature): ProviderResult<CodeLens[]> {
-      let config = workspace.getConfiguration('AdvPL');
-      let enableInlineCodeLens = config.get('codeLens.renderInline', false);
-      if (!enableInlineCodeLens) {
-		return next(document, token);
-	  }
-      // We run the codeLens request ourselves so we can intercept the response.
-      return languageClient.sendRequest('textDocument/codeLens', {
-            textDocument: {
-              uri: document.uri.toString(),
-            },
-          })
-          .then((a: ls.CodeLens[]): CodeLens[] => {
-            let result: CodeLens[] =
-                languageClient.protocol2CodeConverter.asCodeLenses(a);
-            displayCodeLens(document, result, codeLensDecoration);
-            return [];
-          });
-    };
+		next: ProvideCodeLensesSignature): ProviderResult<CodeLens[]> {
+		let config = workspace.getConfiguration('AdvPL');
+		let enableInlineCodeLens = config.get('codeLens.renderInline', false);
+		if (!enableInlineCodeLens) {
+			return next(document, token);
+		}
+		// We run the codeLens request ourselves so we can intercept the response.
+		return languageClient.sendRequest('textDocument/codeLens', {
+			textDocument: {
+				uri: document.uri.toString(),
+			},
+		})
+			.then((a: ls.CodeLens[]): CodeLens[] => {
+				let result: CodeLens[] =
+					languageClient.protocol2CodeConverter.asCodeLenses(a);
+				displayCodeLens(document, result, codeLensDecoration);
+				return [];
+			});
+	}
 
 	// Options to control the language client
 	let clientOptions: LanguageClientOptions = {
@@ -122,16 +169,18 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 			console.log(e);
 			return false;
 		},
-		//errorHandler: new CqueryErrorHandler(workspace.getConfiguration('cquery'))
-	}
+		//errorHandler: new AdvplErrorHandler(workspace.getConfiguration('totvsLanguageServer'))
 
-	let languageClient = new LanguageClient(
+	};
+
+	let languageClient = new XLanguageClient(
 		//'AdvPL', 'AdvPL',
 		'totvsLanguageServer', 'TOTVS AdvPL Language Server',
 		serverOptions,
 		clientOptions);
 
 	//let command = serverOptions.command;
+
 	languageClient.onReady().then(async () => {
 		if (languageClient.initializeResult) {
 			sessionKey = languageClient.initializeResult.rsaPubKey;
@@ -139,8 +188,7 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 		}
 	}).catch(e => {
 		// TODO: remove cquery.launch.workingDirectory after July 2018
-		window.showErrorMessage(
-			e);
+		window.showErrorMessage(e);
 	});
 	//context.subscriptions.push(languageClient.start());
 
@@ -224,36 +272,38 @@ function getClientConfig(context: ExtensionContext) {
 
 function displayCodeLens(document: TextDocument, allCodeLens: CodeLens[], codeLensDecoration: TextEditorDecorationType) {
 	for (let editor of window.visibleTextEditors) {
-	  if (editor.document != document)
-		continue;
-
-	  let opts: DecorationOptions[] = [];
-
-	  for (let codeLens of allCodeLens) {
-		// FIXME: show a real warning or disable on-the-side code lens.
-		if (!codeLens.isResolved) {
-		  console.error(localize("tds.webview.totvsLanguegeClient.codeLensNotResolved", 'Code lens is not resolved'));
+		if (editor.document !== document) {
+			continue;
 		}
 
-		// Default to after the content.
-		let position = codeLens.range.end;
+		let opts: DecorationOptions[] = [];
 
-		// If multiline push to the end of the first line - works better for
-		// functions.
-		if (codeLens.range.start.line != codeLens.range.end.line)
-		  position = new Position(codeLens.range.start.line, 1000000);
+		for (let codeLens of allCodeLens) {
+			// FIXME: show a real warning or disable on-the-side code lens.
+			if (!codeLens.isResolved) {
+				console.error(localize("tds.webview.totvsLanguegeClient.codeLensNotResolved", 'Code lens is not resolved'));
+			}
 
-		let range = new Range(position, position);
-		let title = codeLens.command === undefined ? '' : codeLens.command.title;
-		let opt: DecorationOptions = {
-		  range: range,
-		  renderOptions:
-			{after: {contentText: ' ' + title + ' '}}
-		};
+			// Default to after the content.
+			let position = codeLens.range.end;
 
-		opts.push(opt);
-	  }
+			// If multiline push to the end of the first line - works better for
+			// functions.
+			if (codeLens.range.start.line !== codeLens.range.end.line) {
+				position = new Position(codeLens.range.start.line, 1000000);
+			}
 
-	  editor.setDecorations(codeLensDecoration, opts);
+			let range = new Range(position, position);
+			let title = codeLens.command === undefined ? '' : codeLens.command.title;
+			let opt: DecorationOptions = {
+				range: range,
+				renderOptions:
+					{ after: { contentText: ' ' + title + ' ' } }
+			};
+
+			opts.push(opt);
+		}
+
+		editor.setDecorations(codeLensDecoration, opts);
 	}
-  }
+}
