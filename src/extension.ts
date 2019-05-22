@@ -121,7 +121,6 @@ export function activate(context: ExtensionContext) {
 				statusIcon.text = localize('tds.vscode.statusIcon.text1', 'advpl: loading');
 				statusIcon.tooltip = localize('tds.vscode.statusIcon.tooltip1', 'advpl is loading project metadata (ie, compile_commands.json)');
 				statusIcon.show();
-
 				languageClient.onReady().then(() => {
 					languageClient.onNotification('$totvsserver/progress', (args) => {
 						let indexRequestCount = args.indexRequestCount || 0;

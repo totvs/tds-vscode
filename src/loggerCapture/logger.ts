@@ -4,7 +4,7 @@ import Utils from '../utils';
 import * as zlib from 'zlib';
 import * as fs from 'fs';
 import * as tmp from 'tmp';
-let logFile: string;
+var logFile: string;
 let logStatusBarItem: vscode.StatusBarItem;
 
 export function onCaptureLoggers(context: ExtensionContext) {
@@ -16,10 +16,10 @@ export function onCaptureLoggers(context: ExtensionContext) {
 				const tmpFile = tmp.fileSync({ prefix: "vscode-tds-infos", postfix: ".log" });
 				logFile = tmpFile.name;
 				const newLine: String = "\n--------------------------------------------------\n";
-				const tab = "\t";
+				const tab = "\t"
 				const fs = require('fs');
 
-				let data = "Iniciando Log em " + new Date().toString() + newLine;
+				var data = "Iniciando Log em " + new Date().toString() + newLine;
 				data += "VSCode Version: " + vscode.version + "\n";
 				data += tab + "AppName : " + vscode.env.appName + "\n";
 				data += tab + "AppRoot : " + vscode.env.appRoot + "\n";
@@ -43,7 +43,7 @@ export function onCaptureLoggers(context: ExtensionContext) {
 				//A gravacao esta separada para diminuir o consumo de memoria.
 				vscode.extensions.all.forEach(element => {
 					if (!element.id.startsWith("vscode.") && !element.id.startsWith("ms-vscode.")) {
-						let version = tab + "ID: " + element.id + "\n";
+						var version = tab + "ID: " + element.id + "\n";
 						version += tab + "Active: " + element.isActive + "\n";
 						version += tab + "PackageJSON: " + JSON.stringify(element.packageJSON) + "\n\n";
 
@@ -53,7 +53,7 @@ export function onCaptureLoggers(context: ExtensionContext) {
 					}
 				});
 
-				let final = "--------------------------------------------------\n" + "Finalizando log em " + new Date().toString() + newLine;
+				var final = "--------------------------------------------------\n" + "Finalizando log em " + new Date().toString() + newLine;
 
 				//A gravacao esta separada para diminuir o consumo de memoria.
 				fs.appendFileSync(logFile, final, { flag: "a" }, (err) => {
@@ -81,7 +81,7 @@ export function offCaptureLoggers() {
 		const gzip = zlib.createGzip();
 		const input = fs.createReadStream(logFile);
 
-		let filePathZip: string = vscode.workspace.rootPath + '\\tdsSupport.zip';
+		var filePathZip: string = vscode.workspace.rootPath + '\\tdsSupport.zip';
 
 		if (fs.existsSync(filePathZip)) {
 			filePathZip = vscode.workspace.rootPath + '\\tdsSupport' + Date.now() + '.zip';

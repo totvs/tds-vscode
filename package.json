@@ -222,24 +222,6 @@
 					"type": "string",
 					"default": "",
 					"description": "%tds.package.web.navigator.debug%"
-				},
-				"totvsLanguageServer.editor.show.notification": {
-					"scope": "window",
-					"type": "string",
-					"enum": [
-						"off",
-						"errors",
-						"warning",
-						"all"
-					],
-					"enumDescriptions": [
-						"%tds.package.editor.notification.show.none%",
-						"%tds.package.editor.notification.show.only_errors%",
-						"%tds.package.editor.notification.show.errors_and_warnings%",
-						"%tds.package.editor.notification.show.all%"
-					],
-					"default": "all",
-					"description": "%tds.package.editor.notification.show%"
 				}
 			}
 		},
