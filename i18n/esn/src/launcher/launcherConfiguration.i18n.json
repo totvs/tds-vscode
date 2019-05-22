@@ -20,5 +20,7 @@
 	"tds.webview.launcher.langES": "Español",
 	"tds.webview.launcher.langRU": "Ruso",
 	"tds.webview.launcher.save": "Grabar",
-	"tds.webview.launcher.saveClose": "Grabar/Cerrar"
+	"tds.webview.launcher.saveClose": "Grabar/Cerrar",
+	"tds.webview.launcher.bottomInfo": "Esta configuración puede ser modificada, editando el archivo",
+	"tds.webview.launcher.ignoreFiles": "Ignorar archvos no encontrados en el WorkSpace (depuración)"
 }

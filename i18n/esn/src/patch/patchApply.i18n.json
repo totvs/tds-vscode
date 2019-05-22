@@ -10,10 +10,8 @@
 	"tds.webview.environment": "Ambiente",
 	"tds.webview.patch.file": "Archivo de Patch",
 	"tds.webview.patch.apply.fail": "Falló la aplicación del patch. Por favor, coloque el patch.",
-	"tds.webview.patch.apply.start": "Patch iniciado",
-	"tds.webview.patch.applied": "Patch aplicado!",
-	"tds.webview.server.not.connected": "El servidor no está conectado.",
 	"tds.webview.patch.apply.file": "Confirma la aplicación del patch {0} en el RPO?",
 	"tds.vscode.yes": "Si",
-	"tds.vscode.no": "No"
+	"tds.vscode.no": "No",
+	"tds.webview.server.not.connected": "El servidor no está conectado."
 }

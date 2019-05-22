@@ -13,5 +13,6 @@
 		"/.svn": true,
 		"/CVS": true,
 		"out": true
-	}
+	},
+	"totvsLanguageServer.welcomePage": false
 }
