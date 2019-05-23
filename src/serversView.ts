@@ -17,7 +17,7 @@ const localizeHTML = {
 	"tds.webview.newServer.port": localize("tds.webview.newServer.port", "Port"),
 	"tds.webview.newServer.save": localize("tds.webview.newServer.save", "Save"),
 	"tds.webview.newServer.saveClose": localize("tds.webview.newServer.saveClose", "Save/Close")
-}
+};
 
 export let connectedServerItem: ServerItem | undefined;
 
@@ -69,7 +69,7 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 
 			return Promise.resolve(this.localServerItems.sort((srv1, srv2) => {
 				const label1 = srv1.label.toLowerCase();
-      			const label2 = srv2.label.toLowerCase();
+				const label2 = srv2.label.toLowerCase();
 				if (label1 > label2) { return 1; }
 				if (label1 < label2) { return -1; }
 				return 0;
@@ -414,11 +414,11 @@ export class ServersExplorer {
 					placeHolder: localize("tds.webview.serversView.renameServer", "Rename the server"),
 					value: serverItem.label
 				}).then((newName: string) => {
-					Utils.updateServerName(serverItem.id, newName)
+					Utils.updateServerName(serverItem.id, newName);
 				});
 			}
 
-		})
+		});
 
 		vscode.commands.registerCommand('totvs-developer-studio.add', () => {
 
@@ -462,10 +462,10 @@ export class ServersExplorer {
 										return;
 									}, (err) => {
 										vscode.window.showErrorMessage(err);
-									})
+									});
 								}
 							} else {
-								vscode.window.showErrorMessage(localize("tds.webview.serversView.addServerFail", "Add Server Fail. Name, port and Address are need"))
+								vscode.window.showErrorMessage(localize("tds.webview.serversView.addServerFail", "Add Server Fail. Name, port and Address are need"));
 							}
 
 							if (currentPanel) {

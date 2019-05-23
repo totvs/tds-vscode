@@ -34,7 +34,8 @@
 
 							<div class="wrap-input">
 								<label for="smartClient">${d.localize["tds.webview.launcher.smartclient"]}</label><!--SmartClient:-->
-								<input class="inputText" type="file" accept='.exe,application/exe,*.*'  id="smartClientID" name="smartClient"/>
+								<input class="inputText" type="text" id="ClientPatch" name="ClientPatch" placeholder="Ex: C:/totvs/smartclient/smartclient.exe...">
+								<input class="inputText" type="file" accept='.exe,application/exe,*.*'  id="smartClientID" name="smartClient" onchange="setTextArea()"/>
 							</div>
 
 							<div class="checkboxGroup">
@@ -130,8 +131,8 @@
 	const vscode = acquireVsCodeApi();
 
 	function saveLaunchConfig(close) {
-		if (getElementSmartclientBin().files[0].path != "" & getElementSmartclientBin().files[0].path != undefined) {
-		  smBin = getElementSmartclientBin().files[0].path;
+		if (getElementSmartclientBin().value!= "" & getElementSmartclientBin().value != undefined) {
+		  smBin = getElementSmartclientBin().value;
 		}
 
 		vscode.postMessage({
@@ -153,11 +154,8 @@
 
 	function updateAllFields(element) {
 		getElementProgram().value 					= element !== undefined ? element.program : "";
-		const dT = new DataTransfer(); // specs compliant (as of March 2018 only Chrome)
 		if (element !== undefined) {
-			dT.items.add(new File(['Smartclient'], element.smartclientBin,));
-			getElementSmartclientBin().files 			= dT.files;
-			smBin = element.smartclientBin;
+			getElementSmartclientBin().value 			= element.smartclientBin;
 		}
 
 		getElementEnableMultiThread().checked 		= element !== undefined ? element.enableMultiThread: false;
@@ -173,7 +171,7 @@
 	function getElementLauncherList() { return document.getElementById('launcherListID'); }
 	function getElementLauncherName() { return document.getElementById("launcherNameID"); }
 	function getElementProgram() { return document.getElementById("programID"); }
-	function getElementSmartclientBin() { return document.getElementById("smartClientID"); }
+	function getElementSmartclientBin() { return document.getElementById("ClientPatch"); }
 	function getElementEnableMultiThread() { return document.getElementById("enableMultiThreadID"); }
 	function getElementEnableProfile() { return document.getElementById("enableProfileID"); }
 	function getElementMultiSession() { return document.getElementById("multiSessionID"); }
@@ -183,6 +181,11 @@
 	function getElementLanguage() { return document.getElementById("languageID"); }
 	function getElementIgnoreFiles() { return document.getElementById("ignoreFilesID"); }
 
+ function setTextArea(){
+		var input = document.getElementById('smartClientID');
+		var filePath = input.files[0].path;
+		var textArea = document.getElementById('ClientPatch').value = filePath;
+	}
 </script>
 
 </html>
