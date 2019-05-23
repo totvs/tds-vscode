@@ -134,11 +134,11 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 
 	//let command = serverOptions.command;
 	languageClient.onReady().then(async () => {
-		if (languageClient.initializeResult) {
-			sessionKey = languageClient.initializeResult.rsaPubKey;
-			// window.showInformationMessage('rsaPubKey: '+ sessionKey);
+		const configADVPL = vscode.workspace.getConfiguration('totvsLanguageServer');//transformar em configuracao de workspace
+		let isReconnectLastServer = configADVPL.get('reconnectLastServer');
+		if (isReconnectLastServer) {
+			reconnectLastServer();
 		}
-		reconnectLastServer();
 	}).catch(e => {
 		// TODO: remove cquery.launch.workingDirectory after July 2018
 		window.showErrorMessage(
