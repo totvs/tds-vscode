@@ -21,7 +21,7 @@
 				<div class="wrap-input">
 					<label for="compileKeyFile">${d.localize["tds.webview.compile.key.file"]}</label>
 					<!--Compile Key File-->
-					<input class="inputText" type="text" id="compileKeyFile" name="compileKeyFile" placeholder="Ex: C:/compileKey.aut...">
+					<input class="inputText" type="text" id="compileKeyFile" name="compileKeyFile" disabled>
 					<input class="inputText" type="file" accept='.aut' id="btn-File" name="btn-File"
 						for="compileKeyFile" onchange="readFile()"/>
 				</div>
@@ -135,7 +135,6 @@
 	function readFile(){
 		var input = document.getElementById('btn-File');
 		var filePath = input.files[0].path;
-		var textArea = document.getElementById('compileKeyFile').value = filePath;
 		vscode.postMessage({
 			command: 'readFile',
 			path: filePath

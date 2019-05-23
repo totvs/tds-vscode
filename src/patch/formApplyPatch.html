@@ -36,8 +36,8 @@
 
 						<div class="wrap-input">
 							<label for="patchFile">Patch File</label><!--Patch File-->
-							<input class="inputText" type="text" id="FilePatch" name="FilePatch" placeholder="Ex: C:/totvs/patchs/tttp120.ptm...">
-							<input class="inputText" type="file" accept='PatchFile/*.ptm' id="btn-File" name="btn-File" onchange="setTextArea()"/>
+							<input class="inputText" type="text" id="FilePatch" name="FilePatch" disabled>
+							<input class="inputText" type="file" accept='PatchFile/*.ptm' id="btn-File" name="btn-File"/>
 						</div>
 
 						<div class="wrap-input">
@@ -67,16 +67,18 @@
 	}
 
 	function patchApply(close) {
-		let patchFile = document.getElementById('FilePatch').value;
+		let patchFile = "";
 
-		let applyOld =document.getElementById('ApplyOldID').checked;
+		if (document.getElementById('btn-File').files.length>0)
+			patchFile = document.getElementById('btn-File').files[0].path;
+			let applyOld =document.getElementById('ApplyOldID').checked;
 
-		vscode.postMessage({
-			command: 'patchApply',
-			patchFile: patchFile,
-			'applyOld': applyOld,
-			'close' : close
-		});
+			vscode.postMessage({
+				command: 'patchApply',
+				patchFile: patchFile,
+				'applyOld': applyOld,
+				'close' : close
+			});
 	}
 
 	// Carrega arquivo do Patch a ser aplicado
@@ -102,12 +104,6 @@
 				break;
 		}
 	});
-
-	function setTextArea(){
-		var input = document.getElementById('btn-File');
-		var filePath = input.files[0].path;
-		var textArea = document.getElementById('FilePatch').value = filePath;
-	}
 </script>
 
 </html>
