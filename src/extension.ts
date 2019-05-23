@@ -202,9 +202,6 @@ export function activate(context: ExtensionContext) {
 		})();
 	}
 
-	//Inicia o arquivo de servidores limpo.
-	Utils.clearConnectedServerConfig();
-
 	// Ação para pegar o nome da função quer quer iniciar o debug
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.getProgramName', () => getProgramName()));
 	//Ação para desfragmentar o RPO do servidor corrente.
