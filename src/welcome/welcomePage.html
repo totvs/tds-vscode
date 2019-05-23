@@ -22,13 +22,13 @@
 							<p>${d.localize["tds.webview.path.smartclient"]}</p><!--Path to your SmartClient-->
 
 							<div class="wrap-input">
-								<input class="inputText" type="text" id="smartClientBin" value="C:/totvs/bin/smartclient/smartclient.exe" placeholder="C:/totvs/bin/smartclient/smartclient.exe">
+								<input class="inputText" type="text" id="smartClientBin" value="C:/totvs/bin/smartclient/smartclient.exe" placeholder="Ex: C:/totvs/smartclient.exe...">
 								<input class="inputText" type="file" accept='.exe,application/exe,*.*' id="btn-File" name="btn-File" onchange='binfillData(event);'/>
 							</div>
 
 							<p>${d.localize["tds.webview.dir.include"]}<b>*${d.localize["tds.webview.dir.include2"]}</b></p><!--Includes directory:--><!--Allows multiple-->
 							<div class="wrap-input">
-								<textarea class="inputText" id="includePath" placeholder="C:/totvs/includes"></textarea>
+								<textarea class="inputText" id="includePath" placeholder="Ex: C:/totvs/includes..."></textarea>
 								<input class="inputText" type="file" id="btn-FileInclude" name="btn-FileInclude" onchange='chfillData(event);' webkitdirectory directory multiple/>
 							</div>
 
