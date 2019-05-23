@@ -134,14 +134,13 @@ function build(folders: string[], files: string[], recompile: boolean) {
 			return Promise.resolve(true);
 		}).then((result) => {
 			if (result) {
-				console.log(localize("tds.webview.tdsBuild.compileFolder", 'Folder and sub-folder compilation done.'));
+				languageClient.info(localize("tds.webview.tdsBuild.compileFolder", 'Folder and sub-folder compilation done.'));
 			} else {
-				console.log(localize("tds.webview.tdsBuild.compileFolder2", 'Compilation of folder and sub-folders canceled by user.'));
+				languageClient.warn(localize("tds.webview.tdsBuild.compileFolder2", 'Compilation of folder and sub-folders canceled by user.'));
 			}
 		});
 	} catch (error) {
-		console.log(error);
-		vscode.window.showErrorMessage(error);
+		languageClient.error(error);
 	}
 }
 
@@ -174,8 +173,7 @@ export function deletePrograms(programs: string[]) {
 			vscode.window.showErrorMessage(localize("tds.webview.tdsBuild.noServer", 'No server connected'));
 		}
 	} catch (error) {
-		console.log(error);
-		vscode.window.showErrorMessage(error);
+		languageClient.error(error);
 	}
 
 }
@@ -185,15 +183,14 @@ export function deletePrograms(programs: string[]) {
  */
 export function buildFile(filename: string) {
 	if (!ignoreResource(filename)) {
-		console.log(localize("tds.webview.tdsBuild.compileBegin", "Resource compilation started. Resource: {0}", filename));
+		languageClient.info(localize("tds.webview.tdsBuild.compileBegin", "Resource compilation started. Resource: {0}", filename));
 		const compileOptions = _getCompileOptionsDefault();
 		compileOptions.recompile = true;
 		buildCode([filename], compileOptions);
 
-		console.log('Compilação de recurso finalizada.');
+		languageClient.info('Compilação de recurso finalizada.');
 	} else {
-		console.log(localize("tds.webview.tdsBuild.resourceInList", "Resource appears in the list of files to ignore. Resource: {0}", filename));
-		vscode.window.showWarningMessage(localize("tds.webview.tdsBuild.", 'Resource appears in the list of files to ignore.'));
+		languageClient.warn(localize("tds.webview.tdsBuild.resourceInList", "Resource appears in the list of files to ignore. Resource: {0}", filename));
 	}
 }
 
@@ -205,7 +202,7 @@ export function buildFiles(files: string[], recompile: boolean) {
  * Builds a folder.
  */
 export function buildFolder(folders: string[], recompile: boolean) {
-	console.log(localize("tds.webview.tdsBuild.compileFolder3", "Folder and sub-folder compilation started. It may take some time. Total folders: {0}", folders.length));
+	languageClient.info(localize("tds.webview.tdsBuild.compileFolder3", "Folder and sub-folder compilation started. It may take some time. Total folders: {0}", folders.length));
 	build(folders, [], recompile);
 	// try {
 	// 	vscode.window.withProgress({
@@ -233,13 +230,13 @@ export function buildFolder(folders: string[], recompile: boolean) {
 	// 		return Promise.resolve(true);
 	// 	}).then((result) => {
 	// 		if (result) {
-	// 			console.log('Compilação de pasta e sub-pastas finalizada.');
+	// 			languageClient.info('Compilação de pasta e sub-pastas finalizada.');
 	// 		} else {
-	// 			console.log('Compilação de pasta e sub-pastas cancelada por solicitação do usuário.');
+	// 			languageClient.info('Compilação de pasta e sub-pastas cancelada por solicitação do usuário.');
 	// 		}localize("tds.webview.tdsBuild.
 	// 	});
 	// } catch (error) {
-	// 	console.log(error);
+	// 	languageClient.error(error);
 	// 	vscode.window.showErrorMessage(error);
 	// }
 }
@@ -346,7 +343,7 @@ export function commandBuildFile(context) {
 }
 
 export function commandBuildFolder(context) {
-	console.log(context);
+	languageClient.info(context);
 	buildFolder([context.fsPath], false);
 }
 
