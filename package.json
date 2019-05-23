@@ -153,7 +153,7 @@
 				"extensions": [
 					".ptm",
 					".upd",
-					"pak"
+					".pak"
 				]
 			}
 		],
@@ -207,6 +207,11 @@
 					"type": "boolean",
 					"default": true,
 					"description": "%tds.package.show.welcome.first.initialize%"
+				},
+				"totvsLanguageServer.reconnectLastServer": {
+					"type": "boolean",
+					"default": true,
+					"description": "%tds.package.reconnectLastServer%"
 				},
 				"totvsLanguageServer.compilation.generatePpoFile": {
 					"type": "boolean",
