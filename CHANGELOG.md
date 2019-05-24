@@ -77,5 +77,3 @@ Quer mudar o encoding para o padrão Windows1252?
  * Ajuste de parametros da aplicação de patch.
  * Opção de Exportar Lista de Objetos.
  * Opção de Exportar Lista de Funções.
-
-
