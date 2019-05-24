@@ -44,11 +44,11 @@
 Quer mudar o encoding para o padrão Windows1252?
 
  **Sim:** Todos os fontes AdvPL serão abertos como Windows1252 (definido no arquivo settings.json);
- 
+
  **Não:** Arquivos serão abertos com o encode padrão do próprio VSCode, e a pergunta será repetida na próxima vez  que iniciar o VS;
- 
+
  **Não pergunte novamente:** Arquivos serão abertos com o encode padrão do próprio VSCode, e a pergunta não será repetida novamente para essa workspace.
- 
+
  **Observação:**
 
  Em casos específicos, como na compilação de fontes em Cirílico (Russo), o encode poderá ser definido manualmente no arquivo settings.json de sua workspace, abaixo um exemplo de como usar o cirílico (Windows1251)
@@ -60,7 +60,7 @@ Quer mudar o encoding para o padrão Windows1252?
 		},
 		"totvsLanguageServer.askEncodingChange": false
 	}
-	
+
 ## Intelisense omite variáveis e funções locais: [Issue 8](https://github.com/totvs/tds-vscode/issues/8)
 ### Melhoria:
 * Definir sugestão de variáveis durante a codificação.
@@ -86,8 +86,9 @@ Quer mudar o encoding para o padrão Windows1252?
 	* basic: executa o autocompletar padrão do VSCode
 	* rpo: inclui informações disponíveis no RPO do ambiente corrente.
 
-![issue15a](https://user-images.githubusercontent.com/949914/58345582-186efb80-7e2f-11e9-9166-31740902568e.png)
-![issue15b](https://user-images.githubusercontent.com/949914/58345584-186efb80-7e2f-11e9-8f24-b8f5831a0400.png)
+![issue15a](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/autocomplete/basic.PNG)
+</br>
+![issue15b](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/autocomplete/complete.PNG)
 
 ----
 # Versão 0.1.0
