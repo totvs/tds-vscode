@@ -32,6 +32,7 @@ import { onCaptureLoggers, offCaptureLoggers } from './loggerCapture/logger';
 import { TotvsConfigurationWebProvider } from './debug/TotvsConfigurationWebProvider';
 import { TotvsConfigurationProvider } from './debug/TotvsConfigurationProvider';
 import { getDAP, getProgramName } from './debug/debugConfigs';
+import { toglleAutocompleteBehavior, updateSettingsBarItem } from './server/languageServerSettings';
 
 export let languageClient: LanguageClient;
 // metodo de tradução
@@ -40,6 +41,9 @@ export let localize = nls.loadMessageBundle();
 export let totvsStatusBarItem: vscode.StatusBarItem;
 // barra de permissoes
 export let permissionStatusBarItem: vscode.StatusBarItem;
+
+// barra de configurações
+export let settingsStatusBarItem: vscode.StatusBarItem;
 
 export function parseUri(u): Uri {
 	return Uri.parse(u);
@@ -94,7 +98,7 @@ export function activate(context: ExtensionContext) {
 			commands.registerCommand('advpl.callers', makeRefHandler('$advpl/callers'));
 			commands.registerCommand('advpl.base', makeRefHandler('$advpl/base', true));
 
-		});
+		})();
 
 		// The language client does not correctly deserialize arguments, so we have a
 		// wrapper command that does it for us.
@@ -109,6 +113,14 @@ export function activate(context: ExtensionContext) {
 			commands.registerCommand('advpl.goto',
 				(uri: string, position: ls.Position, locations: ls.Location[]) => {
 					jumpToUriAtPosition(p2c.asUri(uri), p2c.asPosition(position), false /*preserveFocus*/);
+				});
+		})();
+
+		// Commands for configuring LS behavior and other components
+		(() => {
+			commands.registerCommand('totvs-developer-studio.toglle.autocomplete.behavior',
+				() => {
+					toglleAutocompleteBehavior();
 				});
 		})();
 
@@ -277,8 +289,16 @@ export function activate(context: ExtensionContext) {
 	context.subscriptions.push(permissionStatusBarItem);
 	context.subscriptions.push(Utils.onDidSelectedKey(updatePermissionBarItem));
 
+	//inicialliza item de barra de configurações
+	settingsStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+	context.subscriptions.push(settingsStatusBarItem);
+	context.subscriptions.push(workspace.onDidChangeConfiguration(() => {
+		updateSettingsBarItem();
+	}));
+
 	updateStatusBarItem(undefined);
 	updatePermissionBarItem(Utils.getPermissionsInfos());
+	updateSettingsBarItem();
 
 	//Commandos do capturador de logs.
 	commands.registerCommand("totvs-developer-studio.logger.on", () => onCaptureLoggers(context));
