@@ -5,6 +5,7 @@
 	"tds.package.trace.vscode.server": "Traces the communication between VS Code and the language server.",
 	"tds.package.show.welcome.first.initialize": "Show Welcome Page in First Initialize",
 	"tds.package.show.ask.encoding": "Ask for change encoding for CP1252",
+	"tds.package.reconnectLastServer": "Reconnect last connected server on startup.",
 	"tds.package.generate.ppo": "Generate PPO file.",
 	"tds.package.show.precompile": "Show pre compiler command.",
 	"tds.package.web.navigator.debug": "Web navigator (debug with SmartClientHtml).",

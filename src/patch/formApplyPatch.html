@@ -69,14 +69,14 @@
 	function patchApply(close) {
 		let patchFile = document.getElementById('FilePatch').value;
 
-		let applyOld =document.getElementById('ApplyOldID').checked;
+			let applyOld =document.getElementById('ApplyOldID').checked;
 
-		vscode.postMessage({
-			command: 'patchApply',
-			patchFile: patchFile,
-			'applyOld': applyOld,
-			'close' : close
-		});
+			vscode.postMessage({
+				command: 'patchApply',
+				patchFile: patchFile,
+				'applyOld': applyOld,
+				'close' : close
+			});
 	}
 
 	// Carrega arquivo do Patch a ser aplicado
