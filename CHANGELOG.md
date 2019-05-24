@@ -44,8 +44,11 @@
 Quer mudar o encoding para o padrão Windows1252?
 
  **Sim:** Todos os fontes AdvPL serão abertos como Windows1252 (definido no arquivo settings.json);
+ 
  **Não:** Arquivos serão abertos com o encode padrão do próprio VSCode, e a pergunta será repetida na próxima vez  que iniciar o VS;
+ 
  **Não pergunte novamente:** Arquivos serão abertos com o encode padrão do próprio VSCode, e a pergunta não será repetida novamente para essa workspace.
+ 
  **Observação:**
 
  Em casos específicos, como na compilação de fontes em Cirílico (Russo), o encode poderá ser definido manualmente no arquivo settings.json de sua workspace, abaixo um exemplo de como usar o cirílico (Windows1251)
