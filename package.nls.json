@@ -81,5 +81,8 @@
 	"tds.vscode.question.change.encoding" : "Do you want to change the encoding to default TOTVS (Windows-1252)?",
 	"tds.vscode.yes": "Yes",
 	"tds.vscode.no": "No",
-	"tds.vscode.noAskAgain" : "Don't ask again"
+	"tds.vscode.noAskAgain" : "Don't ask again",
+	"tds.package.editor.toggle.autocomplete": "Toglle Autocomplete Behavior.",
+    "tds.package.editor.toggle.autocomplete.basic": "Standard VS Cdoe procedure.",
+    "tds.package.editor.toggle.autocomplete.rpo": "Search in the RPO of the current environment."
 }

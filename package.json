@@ -251,6 +251,20 @@
 					],
 					"default": "all",
 					"description": "%tds.package.editor.notification.show%"
+				},
+				"totvsLanguageServer.editor.toggle.autocomplete": {
+					"scope": "window",
+					"type": "string",
+					"enum": [
+						"basic",
+						"rpo"
+					],
+					"enumDescriptions": [
+						"%tds.package.editor.toggle.autocomplete.basic%",
+						"%tds.package.editor.toggle.autocomplete.rpo%"
+					],
+					"default": "rpo",
+					"description": "%tds.package.editor.toggle.autocomplete%"
 				}
 			}
 		},
@@ -424,6 +438,11 @@
 				"command": "totvs-developer-studio.ws.show",
 				"title": "%tds.package.ws.show%",
 				"category": "TOTVS"
+			},
+			{
+				"command": "totvs-developer-studio.toglle.autocomplete.behavior",
+				"title": "%tds.toglle.autocomplete.behavior%",
+				"category": "TOTVS"
 			}
 		],
 		"keybindings": [
@@ -431,6 +450,11 @@
 				"command": "totvs-developer-studio.build.file",
 				"key": "ctrl+f9",
 				"mac": "cmd+f9",
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "totvs-developer-studio.toglle.autocomplete.behavior",
+				"key": "ctrl+alt+space",
 				"when": "editorTextFocus"
 			}
 		],
