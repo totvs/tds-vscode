@@ -257,13 +257,13 @@
 					"type": "string",
 					"enum": [
 						"Basic",
-						"RPO"
+						"LS"
 					],
 					"enumDescriptions": [
 						"%tds.package.editor.toggle.autocomplete.basic%",
-						"%tds.package.editor.toggle.autocomplete.rpo%"
+						"%tds.package.editor.toggle.autocomplete.ls%"
 					],
-					"default": "RPO",
+					"default": "LS",
 					"description": "%tds.package.editor.toggle.autocomplete%"
 				}
 			}

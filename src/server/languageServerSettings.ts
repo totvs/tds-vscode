@@ -16,7 +16,7 @@ export function toglleAutocompleteBehavior() {
 	let behavior = config.get('editor.toggle.autocomplete');
 
 	if (behavior === 'Basic') {
-		behavior = 'RPO';
+		behavior = 'LS';
 	} else {
 		behavior = 'Basic';
 	}

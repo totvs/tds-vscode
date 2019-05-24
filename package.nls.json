@@ -84,5 +84,5 @@
 	"tds.vscode.noAskAgain" : "Don't ask again",
 	"tds.package.editor.toggle.autocomplete": "Toglle Autocomplete Behavior.",
     "tds.package.editor.toggle.autocomplete.basic": "Standard VS Cdoe procedure.",
-    "tds.package.editor.toggle.autocomplete.rpo": "Search in the RPO of the current environment."
+    "tds.package.editor.toggle.autocomplete.ls": "Search in the Language Server of the current environment."
 }
