@@ -290,7 +290,7 @@ export function activate(context: ExtensionContext) {
 	context.subscriptions.push(Utils.onDidSelectedKey(updatePermissionBarItem));
 
 	//inicialliza item de barra de configurações
-	settingsStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+	settingsStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 	context.subscriptions.push(settingsStatusBarItem);
 	context.subscriptions.push(workspace.onDidChangeConfiguration(() => {
 		updateSettingsBarItem();

@@ -256,14 +256,14 @@
 					"scope": "window",
 					"type": "string",
 					"enum": [
-						"basic",
-						"rpo"
+						"Basic",
+						"RPO"
 					],
 					"enumDescriptions": [
 						"%tds.package.editor.toggle.autocomplete.basic%",
 						"%tds.package.editor.toggle.autocomplete.rpo%"
 					],
-					"default": "rpo",
+					"default": "RPO",
 					"description": "%tds.package.editor.toggle.autocomplete%"
 				}
 			}
