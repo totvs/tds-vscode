@@ -81,5 +81,5 @@
 	"tds.vscode.question.change.encoding" : "Do you want to change the encoding to default TOTVS (CP1252)?",
 	"tds.vscode.yes": "Yes",
 	"tds.vscode.no": "No",
-	"tds.vscode.noAskAgain" : "No ask again"
+	"tds.vscode.noAskAgain" : "Don't ask again"
 }

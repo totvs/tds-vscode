@@ -295,7 +295,7 @@ export function deactivate() {
 
 function verifyEncoding() {
 
-	const textNoAsk = localize('tds.vscode.noAskAgain', 'No ask again');
+	const textNoAsk = localize('tds.vscode.noAskAgain', "Don't ask again");
 	const textNo = localize('tds.vscode.no', 'No');
 	const textYes = localize('tds.vscode.yes', 'Yes');
 	const textQuestion = localize('tds.vscode.question.change.encoding', 'Do you want to change the encoding to default TOTVS (CP1252)?'); // Deseja alterar o encoding para o padrão TOTVS (CP1252)?
