@@ -44,11 +44,11 @@
 Quer mudar o encoding para o padrão Windows1252?
 
  **Sim:** Todos os fontes AdvPL serão abertos como Windows1252 (definido no arquivo settings.json);
-
+ 
  **Não:** Arquivos serão abertos com o encode padrão do próprio VSCode, e a pergunta será repetida na próxima vez  que iniciar o VS;
-
+ 
  **Não pergunte novamente:** Arquivos serão abertos com o encode padrão do próprio VSCode, e a pergunta não será repetida novamente para essa workspace.
-
+ 
  **Observação:**
 
  Em casos específicos, como na compilação de fontes em Cirílico (Russo), o encode poderá ser definido manualmente no arquivo settings.json de sua workspace, abaixo um exemplo de como usar o cirílico (Windows1251)
@@ -60,6 +60,35 @@ Quer mudar o encoding para o padrão Windows1252?
 		},
 		"totvsLanguageServer.askEncodingChange": false
 	}
+	
+## Intelisense omite variáveis e funções locais: [Issue 8](https://github.com/totvs/tds-vscode/issues/8)
+### Melhoria:
+* Definir sugestão de variáveis durante a codificação.
+### Solução:
+* Implementada opção para desabilitar o autocomplete vindo do LSP (Ctrl+Alt+Space), assim, priorizando a apresentação das variavíes contidos no fonte em edição.
+
+## Permitir configurar quais notificações serão exibidas: [Issue 25](https://github.com/totvs/tds-vscode/issues/25)
+### Melhoria:
+* Permitir configurar atraves do painel de configuração da extenção AdvPL quais notificações serão exibidas (Nenhuma, Apenas Erros, Erros + Warnings ou Todas).
+### Solução:
+* Adicionado opção de configuração, onde o usuário define qual o nível de mensagem que será notificada via 'popup'. Independente da configuração, todas as mensagens serão apresentadas no log de console "AdvPL".
+
+![issue25](https://user-images.githubusercontent.com/949914/58205040-01f06500-7cb4-11e9-9a6d-a4b7ef361326.png)
+
+## Auto-Complete: Identificação de variáveis: [Issue 15](https://github.com/totvs/tds-vscode/issues/15)
+### Melhoria:
+* mplementar processo de identificação de variáveis do fonte corrente para ser informado no auto-complete.
+### Solução:
+* Implementado de opção para troca de comportamento do auto-complete:
+	* Acesse 'setttings', opção "Totvs Language Server › Editor › Toggle: Autocomplete"
+	* No editor, acione o atalho ctrl+alt+space
+* Na barra de status será apresentado o comportamento atual, sendo:
+	* basic: executa o autocompletar padrão do VSCode
+	* rpo: inclui informações disponíveis no RPO do ambiente corrente.
+
+![issue15a](https://user-images.githubusercontent.com/949914/58345582-186efb80-7e2f-11e9-9166-31740902568e.png)
+![issue15b](https://user-images.githubusercontent.com/949914/58345584-186efb80-7e2f-11e9-8f24-b8f5831a0400.png)
+
 ----
 # Versão 0.1.0
 * Alteração de ícone TOTVS.
