@@ -303,9 +303,43 @@ export function activate(context: ExtensionContext) {
 	//Commandos do capturador de logs.
 	commands.registerCommand("totvs-developer-studio.logger.on", () => onCaptureLoggers(context));
 	commands.registerCommand("totvs-developer-studio.logger.off", () => offCaptureLoggers());
+
+	//Verifica questões de encoding
+	verifyEncoding();
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {
 	Utils.deleteSelectServer();
+}
+
+function verifyEncoding() {
+
+	const textNoAsk = localize('tds.vscode.noAskAgain', "Don't ask again");
+	const textNo = localize('tds.vscode.no', 'No');
+	const textYes = localize('tds.vscode.yes', 'Yes');
+	const textQuestion = localize('tds.vscode.question.change.encoding', 'Do you want to change the encoding to default TOTVS (CP1252)?'); // Deseja alterar o encoding para o padrão TOTVS (CP1252)?
+
+	let questionAgain = true;
+
+	const configADVPL = vscode.workspace.getConfiguration('totvsLanguageServer');
+	const questionEncodingConfig = configADVPL.get("askEncodingChange");
+	const defaultConfig = vscode.workspace.getConfiguration();
+	const defaultEncoding = defaultConfig.get("files.encoding");
+	if (defaultEncoding != "windows1252" && questionEncodingConfig != false) {
+		window.showWarningMessage(textQuestion, textYes, textNo, textNoAsk).then(clicked => {
+			if (clicked == textYes) {
+				const jsonEncoding = {
+					"files.encoding": "windows1252"
+				}
+				defaultConfig.update("[advpl]", jsonEncoding);
+				questionAgain = false;
+			} else if (clicked == textNo) {
+				questionAgain = true;
+			} else if(clicked == textNoAsk){
+				questionAgain= false;
+			}
+			configADVPL.update("askEncodingChange", questionAgain);
+		});
+	}
 }
