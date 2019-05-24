@@ -161,6 +161,11 @@ export default class Utils {
 		if (servers.connectedServer.id) {
 			let server = {};
 			servers.connectedServer = server;
+			const configADVPL = vscode.workspace.getConfiguration('totvsLanguageServer');//transformar em configuracao de workspace
+			let isReconnectLastServer = configADVPL.get('reconnectLastServer');
+			if (!isReconnectLastServer) {
+				servers.lastConnectedServer = {};
+			}
 			this.persistServersInfo(servers);
 		}
 	}
