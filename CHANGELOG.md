@@ -102,7 +102,7 @@ Quer mudar o encoding para o padrão Windows1252?
 * Melhorias nas mensagens de compilação.
 * Liberação de chave de compilação válida pra LINUX e MAC.
 
-# Versão 0.28
+# Versão 0.0.28
  * Adicionado EndDo a lista de palavras reservadas.
  * Remoção de Login com Identity.
  * Disponibilidade no Marketplace do VSCode.
