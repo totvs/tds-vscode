@@ -1,4 +1,4 @@
-# Versão 0.2.0
+# Versão 0.2.1
 
 ## Salvar senha do ambiente: [Issue 5](https://github.com/totvs/tds-vscode/issues/5)
 ### Melhoria:
