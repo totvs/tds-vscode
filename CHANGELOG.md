@@ -60,35 +60,37 @@ Quer mudar o encoding para o padrão Windows1252?
 		},
 		"totvsLanguageServer.askEncodingChange": false
 	}
-
-## Intelisense omite variáveis e funções locais: [Issue 8](https://github.com/totvs/tds-vscode/issues/8)
+----
+## Intelisense omite variáveis e funções locais: [Issue 8](https://github.com/totvs/tds-vscode/issues/8) relativo a [Issue 15](https://github.com/totvs/tds-vscode/issues/15)
 ### Melhoria:
 * Definir sugestão de variáveis durante a codificação.
 ### Solução:
 * Implementada opção para desabilitar o autocomplete vindo do LSP (Ctrl+Alt+Space), assim, priorizando a apresentação das variavíes contidos no fonte em edição.
 
+----
+## Auto-Complete: Identificação de variáveis: [Issue 15](https://github.com/totvs/tds-vscode/issues/15) relativo a [Issue 8](https://github.com/totvs/tds-vscode/issues/8)
+### Melhoria:
+* Implementar processo de identificação de variáveis do fonte corrente para ser informado no auto-complete.
+### Solução:
+* Implementado de opção para troca de comportamento do auto-complete:
+	* Acesse 'setttings', opção "Totvs Language Server › Editor › Toggle: Autocomplete"
+	* No editor, acione o atalho ctrl+alt+space
+* Na barra de status será apresentado o comportamento atual, sendo:
+	* Basic: executa o autocompletar padrão do VSCode.
+	* LS: inclui informações disponíveis no RPO padrão.
+
+![issue15a](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/autocomplete/basic.PNG)
+</br>
+![issue15b](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/autocomplete/complete.PNG)
+
+----
 ## Permitir configurar quais notificações serão exibidas: [Issue 25](https://github.com/totvs/tds-vscode/issues/25)
 ### Melhoria:
 * Permitir configurar atraves do painel de configuração da extenção AdvPL quais notificações serão exibidas (Nenhuma, Apenas Erros, Erros + Warnings ou Todas).
 ### Solução:
 * Adicionado opção de configuração, onde o usuário define qual o nível de mensagem que será notificada via 'popup'. Independente da configuração, todas as mensagens serão apresentadas no log de console "AdvPL".
 
-![issue25](https://user-images.githubusercontent.com/949914/58205040-01f06500-7cb4-11e9-9a6d-a4b7ef361326.png)
-
-## Auto-Complete: Identificação de variáveis: [Issue 15](https://github.com/totvs/tds-vscode/issues/15)
-### Melhoria:
-* mplementar processo de identificação de variáveis do fonte corrente para ser informado no auto-complete.
-### Solução:
-* Implementado de opção para troca de comportamento do auto-complete:
-	* Acesse 'setttings', opção "Totvs Language Server › Editor › Toggle: Autocomplete"
-	* No editor, acione o atalho ctrl+alt+space
-* Na barra de status será apresentado o comportamento atual, sendo:
-	* basic: executa o autocompletar padrão do VSCode
-	* rpo: inclui informações disponíveis no RPO do ambiente corrente.
-
-![issue15a](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/autocomplete/basic.PNG)
-</br>
-![issue15b](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/autocomplete/complete.PNG)
+![issue25](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/config/notification.PNG)
 
 ----
 # Versão 0.1.0
