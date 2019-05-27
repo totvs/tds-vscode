@@ -90,7 +90,7 @@ Quer mudar o encoding para o padrão Windows1252?
 ### Solução:
 * Adicionado opção de configuração, onde o usuário define qual o nível de mensagem que será notificada via 'popup'. Independente da configuração, todas as mensagens serão apresentadas no log de console "AdvPL".
 
-![issue25](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/config/notification.PNG)
+![issue25](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/configs/notification.png)
 
 ----
 # Versão 0.1.0
