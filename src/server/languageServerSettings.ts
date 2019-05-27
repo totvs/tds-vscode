@@ -11,7 +11,7 @@ export function updateSettingsBarItem(): void {
 	settingsStatusBarItem.show();
 }
 
-export function toglleAutocompleteBehavior() {
+export function toggleAutocompleteBehavior() {
 	let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('totvsLanguageServer');
 	let behavior = config.get('editor.toggle.autocomplete');
 

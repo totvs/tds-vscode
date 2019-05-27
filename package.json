@@ -2,7 +2,7 @@
 	"name": "tds-vscode",
 	"displayName": "Totvs Developer Studio for VSCode",
 	"description": "%tds.package.description%",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"publisher": "TOTVS",
 	"author": {
 		"name": "TOTVS",
@@ -42,8 +42,8 @@
 		"publish": "vsce publish"
 	},
 	"dependencies": {
-		"@totvs/tds-da": "^1.0.17",
-		"@totvs/tds-ls": "^1.0.21",
+		"@totvs/tds-da": "^1.0.18",
+		"@totvs/tds-ls": "^1.0.22",
 		"await-notify": "1.0.1",
 		"cheerio": "^1.0.0-rc.3",
 		"fs": "0.0.1-security",
@@ -68,7 +68,7 @@
 		"mocha": "5.2.0",
 		"tslint": "5.11.0",
 		"typescript": "3.1.6",
-		"vsce": "^1.61.0",
+		"vsce": "^1.62.0",
 		"vscode": "^1.1.34",
 		"vscode-debugadapter-testsupport": "1.32.0",
 		"vscode-nls-dev": "^3.2.6"
@@ -440,8 +440,8 @@
 				"category": "TOTVS"
 			},
 			{
-				"command": "totvs-developer-studio.toglle.autocomplete.behavior",
-				"title": "%tds.toglle.autocomplete.behavior%",
+				"command": "totvs-developer-studio.toggle.autocomplete.behavior",
+				"title": "%tds.toggle.autocomplete.behavior%",
 				"category": "TOTVS"
 			}
 		],
@@ -453,7 +453,7 @@
 				"when": "editorTextFocus"
 			},
 			{
-				"command": "totvs-developer-studio.toglle.autocomplete.behavior",
+				"command": "totvs-developer-studio.toggle.autocomplete.behavior",
 				"key": "ctrl+alt+space",
 				"when": "editorTextFocus"
 			}
