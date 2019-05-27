@@ -440,8 +440,8 @@
 				"category": "TOTVS"
 			},
 			{
-				"command": "totvs-developer-studio.toglle.autocomplete.behavior",
-				"title": "%tds.toglle.autocomplete.behavior%",
+				"command": "totvs-developer-studio.toggle.autocomplete.behavior",
+				"title": "%tds.toggle.autocomplete.behavior%",
 				"category": "TOTVS"
 			}
 		],
@@ -453,7 +453,7 @@
 				"when": "editorTextFocus"
 			},
 			{
-				"command": "totvs-developer-studio.toglle.autocomplete.behavior",
+				"command": "totvs-developer-studio.toggle.autocomplete.behavior",
 				"key": "ctrl+alt+space",
 				"when": "editorTextFocus"
 			}

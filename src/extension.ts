@@ -32,7 +32,7 @@ import { onCaptureLoggers, offCaptureLoggers } from './loggerCapture/logger';
 import { TotvsConfigurationWebProvider } from './debug/TotvsConfigurationWebProvider';
 import { TotvsConfigurationProvider } from './debug/TotvsConfigurationProvider';
 import { getDAP, getProgramName } from './debug/debugConfigs';
-import { toglleAutocompleteBehavior, updateSettingsBarItem } from './server/languageServerSettings';
+import { toggleAutocompleteBehavior, updateSettingsBarItem } from './server/languageServerSettings';
 
 export let languageClient: LanguageClient;
 // metodo de tradução
@@ -118,9 +118,9 @@ export function activate(context: ExtensionContext) {
 
 		// Commands for configuring LS behavior and other components
 		(() => {
-			commands.registerCommand('totvs-developer-studio.toglle.autocomplete.behavior',
+			commands.registerCommand('totvs-developer-studio.toggle.autocomplete.behavior',
 				() => {
-					toglleAutocompleteBehavior();
+					toggleAutocompleteBehavior();
 				});
 		})();
 
