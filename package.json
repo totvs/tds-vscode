@@ -132,15 +132,15 @@
 				],
 				"extensions": [
 					".prw",
-					".ppo",
+					".prg",
 					".prx",
-					".aph",
-					".apl",
-					".apw",
-					".ppx",
 					".ppp",
+					".ch",
 					".tlpp",
-					".ch"
+					".aph",
+					".ahu",
+					".apl",
+					".apw"
 				],
 				"configuration": "./language-configuration.json"
 			},
