@@ -281,7 +281,12 @@ export default class Utils {
 
 		this.persistServersInfo(config);
 		Utils._onDidSelectedKey.fire(infos);
-		}
+	}
+
+	static removeExpiredAuthorization() {
+		vscode.window.showWarningMessage(localize("tds.webview.utils.removeExpiredAuthorization", 'Expired authorization token deleted'));
+		Utils.savePermissionsInfos({}); // remove expired authorization key
+	}
 
 	/**
 	 * Recupera a lista de includes do arquivod servers.json

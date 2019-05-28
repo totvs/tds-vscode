@@ -160,6 +160,9 @@ export function deletePrograms(programs: string[]) {
 					"programs": programs
 				}
 			}).then((response: DeleteProgramResult) => {
+				if (response.returnCode == 40840) { // AuthorizationTokenExpiredError
+					Utils.removeExpiredAuthorization();
+				}
 				// const message: string  = response.message;
 				// if(message == "Success"){
 				// 	vscode.window.showInformationMessage("Program " + path.basename(filename) + " deleted succesfully from RPO!");
@@ -296,6 +299,9 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 				"compileOptions": compileOptions
 			}
 		}).then((response: CompileResult) => {
+			if (response.returnCode == 40840) { // AuthorizationTokenExpiredError
+				Utils.removeExpiredAuthorization();
+			}
 			// const results: Array<Array<string>> = response.resourceResults;
 			// if(results !== undefined) {
 			// 	results.forEach((element: any) => {
@@ -317,11 +323,11 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 }
 
 export class CompileResult {
-	resourceResults: Array<Array<string>>;
+	returnCode: number;
 }
 
 export class DeleteProgramResult {
-	message: string
+	returnCode: number;
 }
 
 export function commandBuildFile(context) {
