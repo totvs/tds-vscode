@@ -29,7 +29,7 @@ export default class Utils {
 	/**
 	 * Subscrição para evento de chave de compilação.
 	 */
-	static get onDidSelectedKey(): vscode.Event<string>{
+	static get onDidSelectedKey(): vscode.Event<string> {
 		return Utils._onDidSelectedKey.event;
 	}
 
@@ -291,7 +291,7 @@ export default class Utils {
 	/**
 	 * Recupera a lista de includes do arquivod servers.json
 	 */
-	static getIncludes(absolutePath: boolean = false):Array<string> {
+	static getIncludes(absolutePath: boolean = false): Array<string> {
 		const servers = this.getServersConfig();
 		const includes: Array<string> = servers.includes as Array<string>;
 
@@ -366,32 +366,45 @@ export default class Utils {
 		const launch = Utils.getLaunchConfig();
 		if (!launch) {
 			let fs = require("fs");
-			//Essa configuracao veio do package.json. Deveria ler de la, mas nao consegui
-			const sampleLaunch = {
-				"version": "0.2.0",
-				"configurations": [
-					{
-						"type": "totvs_language_debug",
-						"request": "launch",
-						"name": "Totvs Language Debug",
-						"program": "${command:AskForProgramName}",
-						"cwb": "${workspaceFolder}",
-						"smartclientBin": ""
+			let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
+			if (ext) {
+				let sampleLaunch = {
+					"version": "0.2.0",
+					"configurations": []
+				};
+
+				let pkg = ext.packageJSON;
+				let contributes = pkg["contributes"];
+				let debug = (contributes["debuggers"] as any[]).filter((element: any) => {
+					return element.type === "totvs_language_debug";
+				});
+
+				if (debug.length === 1) {
+					let initCfg = (debug[0]["initialConfigurations"]  as any[]).filter((element: any) => {
+						return element.request === "launch";
+					});
+
+					if (initCfg.length === 1) {
+						sampleLaunch = {
+							"version": "0.2.0",
+							"configurations": [ (initCfg[0] as never) ]
+						};
 					}
-				]
+				}
+
+				if (!fs.existsSync(Utils.getVSCodePath())) {
+					fs.mkdirSync(Utils.getVSCodePath());
+				}
+
+				let launchJson = Utils.getLaunchConfigFile();
+
+				fs.writeFileSync(launchJson, JSON.stringify(sampleLaunch, null, "\t"), (err) => {
+					if (err) {
+						console.error(err);
+					}
+				});
 			};
 
-			if (!fs.existsSync(Utils.getVSCodePath())) {
-				fs.mkdirSync(Utils.getVSCodePath());
-			}
-
-			let launchJson = Utils.getLaunchConfigFile();
-
-			fs.writeFileSync(launchJson, JSON.stringify(sampleLaunch, null, "\t"), (err) => {
-				if (err) {
-					console.error(err);
-				}
-			});
 		}
 	}
 	/**
