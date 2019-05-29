@@ -348,12 +348,12 @@ export function commandBuildFile(context) {
 	}
 }
 
-export function commandBuildFolder(context) {
+export function commandBuildFolder(context, recompile: boolean) {
 	languageClient.info(context);
-	buildFolder([context.fsPath], false);
+	buildFolder([context.fsPath], recompile);
 }
 
-export function commandBuildWorkspace() {
+export function commandBuildWorkspace(recompile: boolean) {
 	const wfolders: vscode.WorkspaceFolder[] | undefined = vscode.workspace.workspaceFolders;
 	if (wfolders) {
 		let folders: string[] = [];
@@ -362,6 +362,6 @@ export function commandBuildWorkspace() {
 			folders.push(value.uri.fsPath);
 		});
 
-		buildFolder(folders, false);
+		buildFolder(folders, recompile);
 	}
 }
