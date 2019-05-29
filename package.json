@@ -249,7 +249,7 @@
 						"%tds.package.editor.notification.show.errors_and_warnings%",
 						"%tds.package.editor.notification.show.all%"
 					],
-					"default": "all",
+					"default": "errors and warnings",
 					"description": "%tds.package.editor.notification.show%"
 				},
 				"totvsLanguageServer.editor.toggle.autocomplete": {

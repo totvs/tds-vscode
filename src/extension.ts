@@ -227,12 +227,16 @@ export function activate(context: ExtensionContext) {
 
 	//Compila um fonte/recurso selecionado
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.build.file', (context) => commandBuildFile(context)));
+
 	//Compila todos os arquivos dentro de uma pasta.
-	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.build.folder', (context) => commandBuildFolder(context)));
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.build.folder', (context) => commandBuildFolder(context, false)));
+	//Recompila todos os arquivos dentro de uma pasta.
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.rebuild.folder', (context) => commandBuildFolder(context, true)));
+
 	//Compila todos os arquivos dentro de um workspace.
-	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.build.workspace', () => commandBuildWorkspace()));
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.build.workspace', () => commandBuildWorkspace(false)));
 	//Recompila todos os arquivos dentro de um workspace. Mesmo metodo pra 2 comandos diferentes
-	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.rebuild.workspace', () => commandBuildWorkspace()));
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.rebuild.workspace', () => commandBuildWorkspace(true)));
 
 	//View
 	let viewServer = new ServersExplorer(context);
