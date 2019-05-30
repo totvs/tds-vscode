@@ -1,5 +1,7 @@
 # TOTVS Developer Studio Code
 
+[![Build Status](https://travis-ci.org/rogeriorc/tds-vscode.svg?branch=master)](https://travis-ci.org/rogeriorc/tds-vscode)
+
 O plugin do TOTVS Developer Studio Code disponibiliza uma suíte de desenvolvimento para o ecossistema Protheus.
 Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP (Debug Adapter Protocol), ambos amplamente utilizados e extensíveis à outras IDEs de mercado, como Atom, Visual Studio, Eclipse, Eclipse Theia, Vim e Emacs.
 

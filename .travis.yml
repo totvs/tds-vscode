@@ -8,11 +8,6 @@ matrix:
   include:
     - os: linux
       dist: trusty
-      addons:
-        apt:
-          packages:
-            - libdbus-glib-1-dev
-            - libdbus-1-dev
     - os: osx
 
 before_install:
