@@ -68,14 +68,18 @@ export default class Utils {
  * Retorna o path completo do launch.json
  */
 	static getLaunchConfigFile() {
-		return vscode.workspace.rootPath + "/.vscode/launch.json";
+		let rootPath: string = vscode.workspace.rootPath || process.cwd();
+
+		return path.join(rootPath, ".vscode", "launch.json");
 	}
 
 	/**
 	 * Retorna o path da pastar .vscode dentro do workspace
 	 */
 	static getVSCodePath() {
-		return vscode.workspace.rootPath + "/.vscode";
+		let rootPath: string = vscode.workspace.rootPath || process.cwd();
+
+		return path.join(rootPath, ".vscode");
 	}
 
 	/**
@@ -154,7 +158,7 @@ export default class Utils {
 	}
 
 	/**
-	 *Deleta o servidor logado por ultimo do servers.json
+	 * Deleta o servidor logado por ultimo do servers.json
 	 */
 	static deleteSelectServer() {
 		const servers = this.getServersConfig();
@@ -180,8 +184,8 @@ export default class Utils {
 	}
 
 	/**
- *Deleta o servidor logado por ultimo do servers.json
- */
+	 * Deleta o servidor logado por ultimo do servers.json
+	 */
 	static deleteServer(id: string) {
 		const allConfigs = this.getServersConfig();
 
@@ -213,9 +217,9 @@ export default class Utils {
 	}
 
 	/**
- * Grava no arquivo launch.json uma nova configuracao de launchs
- * @param JSONServerInfo
- */
+	 * Grava no arquivo launch.json uma nova configuracao de launchs
+	 * @param JSONServerInfo
+	 */
 	static persistLaunchsInfo(JSONLaunchInfo) {
 		let fs = require('fs');
 		fs.writeFileSync(Utils.getLaunchConfigFile(), JSON.stringify(JSONLaunchInfo, null, "\t"), (err) => {
