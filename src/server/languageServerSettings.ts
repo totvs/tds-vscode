@@ -1,12 +1,15 @@
 import { languageClient, settingsStatusBarItem } from '../extension';
 import * as vscode from 'vscode';
+import * as nls from 'vscode-nls';
+
+let localize = nls.loadMessageBundle();
 
 export function updateSettingsBarItem(): void {
 	let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('totvsLanguageServer');
 	let behavior = config.get('editor.toggle.autocomplete');
 
 	settingsStatusBarItem.text = `${behavior}`;
-	settingsStatusBarItem.tooltip = 'Auto complete type	';
+	settingsStatusBarItem.tooltip = localize("tds.vscode.lssettings.auto.complete",'Auto complete type') + '  ';
 
 	settingsStatusBarItem.show();
 }

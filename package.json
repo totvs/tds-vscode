@@ -36,7 +36,7 @@
 		"compile": "tsc -p ./src",
 		"tslint": "tslint ./src/**/*.ts",
 		"watch": "tsc -w -p ./src",
-		"test": "mocha -u tdd ./out/tests/",
+		"test": "node node_modules/vscode/bin/test",
 		"postinstall": "node ./node_modules/vscode/bin/install",
 		"package": "vsce package",
 		"publish": "vsce publish"
@@ -508,7 +508,7 @@
 				"configurationAttributes": {
 					"launch": {
 						"required": [
-							"program"
+							"program", "smartclientBin"
 						],
 						"properties": {
 							"program": {
@@ -581,8 +581,6 @@
 						"program": "${command:AskForProgramName}",
 						"cwb": "${workspaceFolder}",
 						"smartclientBin": "C:/totvs/bin/smartclient/smartclient.exe",
-						"serverItem": "tcp",
-						"environment": "environment",
 						"isMultiSession": true
 					}
 				],
@@ -593,8 +591,9 @@
 						"body": {
 							"type": "totvs_language_debug",
 							"request": "launch",
-							"name": "%tds.package.totvs_language_debug%",
-							"program": "${command:AskForProgramName}",
+							"name": "${1:%tds.package.totvs_language_debug%}",
+							"program": "^\"\\${command:AskForProgramName}\"",
+							"smartclientBin": "${2:C:/totvs/bin/smartclient/smartclient.exe}",
 							"isMultiSession": true
 						}
 					}
@@ -610,7 +609,7 @@
 				"configurationAttributes": {
 					"launch": {
 						"required": [
-							"program"
+							"program", "smartclientUrl"
 						],
 						"properties": {
 							"program": {
@@ -687,29 +686,16 @@
 				},
 				"initialConfigurations": [
 					{
-						"type": "totvs_language_debug",
+						"type": "totvs_language_web_debug",
 						"request": "launch",
 						"name": "%tds.package.totvs_language_debug%",
 						"program": "${command:AskForProgramName}",
 						"cwb": "${workspaceFolder}",
-						"smartclientBin": "C:/totvs/bin/smartclient/smartclient.exe",
-						"serverItem": "tcp",
-						"environment": "environment",
+						"smartclientUrl": "http://localhost:8080",
 						"isMultiSession": true
 					}
 				],
 				"configurationSnippets": [
-					{
-						"label": "%tds.package.totvs_language_debug%",
-						"description": "%tds.package.configurationSnippets.description%",
-						"body": {
-							"type": "totvs_language_debug",
-							"request": "launch",
-							"name": "%tds.package.totvs_language_debug%",
-							"program": "${command:AskForProgramName}",
-							"isMultiSession": true
-						}
-					},
 					{
 						"label": "%tds.package.totvs_language_debug.web%",
 						"description": "%tds.package.configurationSnippets.description.web%",
@@ -717,7 +703,7 @@
 							"type": "totvs_language_web_debug",
 							"request": "launch",
 							"name": "%tds.package.totvs_language_debug.web%",
-							"program": "${command:AskForProgramName}",
+							"program": "^\"\\${command:AskForProgramName}\"",
 							"isMultiSession": true,
 							"smartclientUrl": "http://localhost:8080"
 						}

@@ -22,7 +22,7 @@ export function deleteFileFromRPO(context: any): void {
 	if(context.contextValue === "serverItem") {
 		const currentPanel = window.createWebviewPanel(
 			'totvs-developer-studio.delete.file.fromRPO',
-			'Delete File From RPO',
+			localize('tds.vscode.deleteFile','Delete File From RPO'),
 			ViewColumn.One,
 			{
 				enableScripts: true,
