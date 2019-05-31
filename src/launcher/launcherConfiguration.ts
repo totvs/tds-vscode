@@ -43,7 +43,7 @@ export default class LauncherConfiguration {
 
 			currentPanel = vscode.window.createWebviewPanel(
 				'totvs-developer-studio.configure.launcher',
-				'Launcher Configuration',
+				localize("tds.vscode.launcher.configuration",'Launcher Configuration'),
 				vscode.ViewColumn.One,
 				{
 					enableScripts: true,
@@ -101,7 +101,7 @@ export default class LauncherConfiguration {
 							currentPanel.webview.postMessage(launchersInfo);
 						}
 
-						vscode.window.showInformationMessage("Executor "+message.launcherName+" salvo.");
+						vscode.window.showInformationMessage(localize("tds.vscode.launcher.executor","Executor") + " " +message.launcherName+ " " + localize("tds.vscode.launcher.saved","saved."));
 
 						if (currentPanel) {
 							if(message.close){

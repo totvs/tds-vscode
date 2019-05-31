@@ -72,14 +72,13 @@
 				}
 			]
 		},
-        "varDeclaration": {
+		"varDeclaration": {
             "patterns": [
                 {
-                    "name": "variable.language.declaration",
                     "match" : "(?i)^\\s*\\b(local|static|private|public|default)\\b\\s+(\\w+)(?:\\s+(as)\\s+(array|block|codeblock|character|char|date|logical|numeric|object))?",
 					"captures": {
-						"1": {"name": "variable.language.declaration"},
-						"2": {"name": "variable.other.advpl"},
+						"1": {"name": "variable.language.declaration.advpl"},
+						"2": {"name": "variable.name.advpl"},
 						"3": {"name": "keyword.control.as.advpl"},
 						"4": {"name": "storage.type.advpl"}
 					}

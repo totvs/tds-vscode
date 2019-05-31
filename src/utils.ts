@@ -29,7 +29,7 @@ export default class Utils {
 	/**
 	 * Subscrição para evento de chave de compilação.
 	 */
-	static get onDidSelectedKey(): vscode.Event<string>{
+	static get onDidSelectedKey(): vscode.Event<string> {
 		return Utils._onDidSelectedKey.event;
 	}
 
@@ -68,14 +68,18 @@ export default class Utils {
  * Retorna o path completo do launch.json
  */
 	static getLaunchConfigFile() {
-		return vscode.workspace.rootPath + "/.vscode/launch.json";
+		let rootPath: string = vscode.workspace.rootPath || process.cwd();
+
+		return path.join(rootPath, ".vscode", "launch.json");
 	}
 
 	/**
 	 * Retorna o path da pastar .vscode dentro do workspace
 	 */
 	static getVSCodePath() {
-		return vscode.workspace.rootPath + "/.vscode";
+		let rootPath: string = vscode.workspace.rootPath || process.cwd();
+
+		return path.join(rootPath, ".vscode");
 	}
 
 	/**
@@ -154,7 +158,7 @@ export default class Utils {
 	}
 
 	/**
-	 *Deleta o servidor logado por ultimo do servers.json
+	 * Deleta o servidor logado por ultimo do servers.json
 	 */
 	static deleteSelectServer() {
 		const servers = this.getServersConfig();
@@ -180,8 +184,8 @@ export default class Utils {
 	}
 
 	/**
- *Deleta o servidor logado por ultimo do servers.json
- */
+	 * Deleta o servidor logado por ultimo do servers.json
+	 */
 	static deleteServer(id: string) {
 		const allConfigs = this.getServersConfig();
 
@@ -213,9 +217,9 @@ export default class Utils {
 	}
 
 	/**
- * Grava no arquivo launch.json uma nova configuracao de launchs
- * @param JSONServerInfo
- */
+	 * Grava no arquivo launch.json uma nova configuracao de launchs
+	 * @param JSONServerInfo
+	 */
 	static persistLaunchsInfo(JSONLaunchInfo) {
 		let fs = require('fs');
 		fs.writeFileSync(Utils.getLaunchConfigFile(), JSON.stringify(JSONLaunchInfo, null, "\t"), (err) => {
@@ -281,12 +285,17 @@ export default class Utils {
 
 		this.persistServersInfo(config);
 		Utils._onDidSelectedKey.fire(infos);
-		}
+	}
+
+	static removeExpiredAuthorization() {
+		vscode.window.showWarningMessage(localize("tds.webview.utils.removeExpiredAuthorization", 'Expired authorization token deleted'));
+		Utils.savePermissionsInfos({}); // remove expired authorization key
+	}
 
 	/**
 	 * Recupera a lista de includes do arquivod servers.json
 	 */
-	static getIncludes(absolutePath: boolean = false):Array<string> {
+	static getIncludes(absolutePath: boolean = false): Array<string> {
 		const servers = this.getServersConfig();
 		const includes: Array<string> = servers.includes as Array<string>;
 
@@ -361,32 +370,45 @@ export default class Utils {
 		const launch = Utils.getLaunchConfig();
 		if (!launch) {
 			let fs = require("fs");
-			//Essa configuracao veio do package.json. Deveria ler de la, mas nao consegui
-			const sampleLaunch = {
-				"version": "0.2.0",
-				"configurations": [
-					{
-						"type": "totvs_language_debug",
-						"request": "launch",
-						"name": "Totvs Language Debug",
-						"program": "${command:AskForProgramName}",
-						"cwb": "${workspaceFolder}",
-						"smartclientBin": ""
+			let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
+			if (ext) {
+				let sampleLaunch = {
+					"version": "0.2.0",
+					"configurations": []
+				};
+
+				let pkg = ext.packageJSON;
+				let contributes = pkg["contributes"];
+				let debug = (contributes["debuggers"] as any[]).filter((element: any) => {
+					return element.type === "totvs_language_debug";
+				});
+
+				if (debug.length === 1) {
+					let initCfg = (debug[0]["initialConfigurations"]  as any[]).filter((element: any) => {
+						return element.request === "launch";
+					});
+
+					if (initCfg.length === 1) {
+						sampleLaunch = {
+							"version": "0.2.0",
+							"configurations": [ (initCfg[0] as never) ]
+						};
 					}
-				]
+				}
+
+				if (!fs.existsSync(Utils.getVSCodePath())) {
+					fs.mkdirSync(Utils.getVSCodePath());
+				}
+
+				let launchJson = Utils.getLaunchConfigFile();
+
+				fs.writeFileSync(launchJson, JSON.stringify(sampleLaunch, null, "\t"), (err) => {
+					if (err) {
+						console.error(err);
+					}
+				});
 			};
 
-			if (!fs.existsSync(Utils.getVSCodePath())) {
-				fs.mkdirSync(Utils.getVSCodePath());
-			}
-
-			let launchJson = Utils.getLaunchConfigFile();
-
-			fs.writeFileSync(launchJson, JSON.stringify(sampleLaunch, null, "\t"), (err) => {
-				if (err) {
-					console.error(err);
-				}
-			});
 		}
 	}
 	/**

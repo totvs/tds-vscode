@@ -17,7 +17,7 @@ import { patchGenerate, patchGenerateFromFolder } from './patch/patchGenerate';
 import { patchApply } from './patch/patchApply';
 import Utils from './utils';
 import { LanguageClient } from 'vscode-languageclient';
-import { commandBuildFile, commandBuildFolder, commandBuildWorkspace } from './tdsBuild';
+import { commandBuildFile, commandBuildFolder, commandBuildWorkspace, commandBuildOpenEditors } from './tdsBuild';
 import { deleteFileFromRPO } from './server/deleteFileFromRPO';
 import { defragRpo } from './server/defragRPO';
 import { serverAuthentication } from './inputConnectionParameters';
@@ -226,13 +226,24 @@ export function activate(context: ExtensionContext) {
 	context.subscriptions.push(commands.registerCommand("totvs-developer-studio.inspectorFunctions", () => inspectFunctions(context)));
 
 	//Compila um fonte/recurso selecionado
-	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.build.file', (context) => commandBuildFile(context)));
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.build.file', (context) => commandBuildFile(context, false)));
+	//Recompila um fonte/recurso selecionado
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.rebuild.file', (context) => commandBuildFile(context, true)));
+
 	//Compila todos os arquivos dentro de uma pasta.
-	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.build.folder', (context) => commandBuildFolder(context)));
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.build.folder', (context) => commandBuildFolder(context, false)));
+	//Recompila todos os arquivos dentro de uma pasta.
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.rebuild.folder', (context) => commandBuildFolder(context, true)));
+
 	//Compila todos os arquivos dentro de um workspace.
-	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.build.workspace', () => commandBuildWorkspace()));
-	//Recompila todos os arquivos dentro de um workspace. Mesmo metodo pra 2 comandos diferentes
-	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.rebuild.workspace', () => commandBuildWorkspace()));
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.build.workspace', () => commandBuildWorkspace(false)));
+	//Recompila todos os arquivos dentro de um workspace.
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.rebuild.workspace', () => commandBuildWorkspace(true)));
+
+	//Compila todos os fontes abertos
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.build.openEditors', (context) => commandBuildOpenEditors(false)));
+	//Recompila todos os fontes abertos
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.rebuild.openEditors', (context) => commandBuildOpenEditors(true)));
 
 	//View
 	let viewServer = new ServersExplorer(context);

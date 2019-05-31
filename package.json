@@ -36,7 +36,7 @@
 		"compile": "tsc -p ./src",
 		"tslint": "tslint ./src/**/*.ts",
 		"watch": "tsc -w -p ./src",
-		"test": "mocha -u tdd ./out/tests/",
+		"test": "node node_modules/vscode/bin/test",
 		"postinstall": "node ./node_modules/vscode/bin/install",
 		"package": "vsce package",
 		"publish": "vsce publish"
@@ -79,10 +79,13 @@
 		"onDebug",
 		"onCommand:totvs-developer-studio.getProgramName",
 		"onCommand:totvs-developer-studio.build.file",
+		"onCommand:totvs-developer-studio.rebuild.file",
 		"onCommand:totvs-developer-studio.build.folder",
-		"onCommand:totvs-developer-studio.build.workspace",
 		"onCommand:totvs-developer-studio.rebuild.folder",
+		"onCommand:totvs-developer-studio.build.workspace",
 		"onCommand:totvs-developer-studio.rebuild.workspace",
+		"onCommand:totvs-developer-studio.build.openEditors",
+		"onCommand:totvs-developer-studio.rebuild.openEditors",
 		"onCommand:totvs-developer-studio.delete.file.fromRPO",
 		"onCommand:totvs-developer-studio.configure.launcher",
 		"onCommand:totvs-developer-studio.inspectorFunctions",
@@ -132,15 +135,15 @@
 				],
 				"extensions": [
 					".prw",
-					".ppo",
+					".prg",
 					".prx",
-					".aph",
-					".apl",
-					".apw",
-					".ppx",
 					".ppp",
+					".ch",
 					".tlpp",
-					".ch"
+					".aph",
+					".ahu",
+					".apl",
+					".apw"
 				],
 				"configuration": "./language-configuration.json"
 			},
@@ -249,7 +252,7 @@
 						"%tds.package.editor.notification.show.errors_and_warnings%",
 						"%tds.package.editor.notification.show.all%"
 					],
-					"default": "all",
+					"default": "errors and warnings",
 					"description": "%tds.package.editor.notification.show%"
 				},
 				"totvsLanguageServer.editor.toggle.autocomplete": {
@@ -298,6 +301,12 @@
 				"category": "TOTVS"
 			},
 			{
+				"command": "totvs-developer-studio.rebuild.file",
+				"title": "%tds.package.rebuild.file.title%",
+				"description": "%tds.package.rebuild.file.description%",
+				"category": "TOTVS"
+			},
+			{
 				"command": "totvs-developer-studio.build.folder",
 				"title": "%tds.package.build.folder.title%",
 				"description": "%tds.package.build.folder.description%",
@@ -319,6 +328,18 @@
 				"command": "totvs-developer-studio.rebuild.workspace",
 				"title": "%tds.package.rebuild.workspace.title%",
 				"description": "%tds.package.rebuild.workspace.description%",
+				"category": "TOTVS"
+			},
+			{
+				"command": "totvs-developer-studio.build.openEditors",
+				"title": "%tds.package.build.openEditors.title%",
+				"description": "%tds.package.build.openEditors.description%",
+				"category": "TOTVS"
+			},
+			{
+				"command": "totvs-developer-studio.rebuild.openEditors",
+				"title": "%tds.package.rebuild.openEditors.title%",
+				"description": "%tds.package.rebuild.openEditors.description%",
 				"category": "TOTVS"
 			},
 			{
@@ -453,6 +474,22 @@
 				"when": "editorTextFocus"
 			},
 			{
+				"command": "totvs-developer-studio.rebuild.file",
+				"key": "ctrl+shift+f9",
+				"mac": "cmd+shift+f9",
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "totvs-developer-studio.build.openEditors",
+				"key": "ctrl+f10",
+				"mac": "cmd+f10"
+			},
+			{
+				"command": "totvs-developer-studio.rebuild.openEditors",
+				"key": "ctrl+shift+f10",
+				"mac": "cmd+shift+f10"
+			},
+			{
 				"command": "totvs-developer-studio.toggle.autocomplete.behavior",
 				"key": "ctrl+alt+space",
 				"when": "editorTextFocus"
@@ -471,7 +508,7 @@
 				"configurationAttributes": {
 					"launch": {
 						"required": [
-							"program"
+							"program", "smartclientBin"
 						],
 						"properties": {
 							"program": {
@@ -544,8 +581,6 @@
 						"program": "${command:AskForProgramName}",
 						"cwb": "${workspaceFolder}",
 						"smartclientBin": "C:/totvs/bin/smartclient/smartclient.exe",
-						"serverItem": "tcp",
-						"environment": "environment",
 						"isMultiSession": true
 					}
 				],
@@ -556,8 +591,9 @@
 						"body": {
 							"type": "totvs_language_debug",
 							"request": "launch",
-							"name": "%tds.package.totvs_language_debug%",
-							"program": "${command:AskForProgramName}",
+							"name": "${1:%tds.package.totvs_language_debug%}",
+							"program": "^\"\\${command:AskForProgramName}\"",
+							"smartclientBin": "${2:C:/totvs/bin/smartclient/smartclient.exe}",
 							"isMultiSession": true
 						}
 					}
@@ -573,7 +609,7 @@
 				"configurationAttributes": {
 					"launch": {
 						"required": [
-							"program"
+							"program", "smartclientUrl"
 						],
 						"properties": {
 							"program": {
@@ -650,29 +686,16 @@
 				},
 				"initialConfigurations": [
 					{
-						"type": "totvs_language_debug",
+						"type": "totvs_language_web_debug",
 						"request": "launch",
 						"name": "%tds.package.totvs_language_debug%",
 						"program": "${command:AskForProgramName}",
 						"cwb": "${workspaceFolder}",
-						"smartclientBin": "C:/totvs/bin/smartclient/smartclient.exe",
-						"serverItem": "tcp",
-						"environment": "environment",
+						"smartclientUrl": "http://localhost:8080",
 						"isMultiSession": true
 					}
 				],
 				"configurationSnippets": [
-					{
-						"label": "%tds.package.totvs_language_debug%",
-						"description": "%tds.package.configurationSnippets.description%",
-						"body": {
-							"type": "totvs_language_debug",
-							"request": "launch",
-							"name": "%tds.package.totvs_language_debug%",
-							"program": "${command:AskForProgramName}",
-							"isMultiSession": true
-						}
-					},
 					{
 						"label": "%tds.package.totvs_language_debug.web%",
 						"description": "%tds.package.configurationSnippets.description.web%",
@@ -680,7 +703,7 @@
 							"type": "totvs_language_web_debug",
 							"request": "launch",
 							"name": "%tds.package.totvs_language_debug.web%",
-							"program": "${command:AskForProgramName}",
+							"program": "^\"\\${command:AskForProgramName}\"",
 							"isMultiSession": true,
 							"smartclientUrl": "http://localhost:8080"
 						}
@@ -724,24 +747,29 @@
 				},
 				{
 					"command": "totvs-developer-studio.build.file",
-					"alt": "totvs-developer-studio.build.file",
+					"alt": "totvs-developer-studio.rebuild.file",
 					"group": "totvsBuild@3"
+				},
+				{
+					"command": "totvs-developer-studio.build.openEditors",
+					"alt": "totvs-developer-studio.rebuild.openEditors",
+					"group": "totvsBuild@4"
 				},
 				{
 					"when": "resourceLangId == totvs_patch",
 					"command": "totvs-developer-studio.patchApply.fromFile",
 					"alt": "totvs-developer-studio.patchApply.fromFile",
-					"group": "totvsBuild@3"
+					"group": "totvsBuild@5"
 				},
 				{
 					"command": "totvs-developer-studio.delete.file.fromRPO",
 					"alt": "totvs-developer-studio.delete.file.fromRPO",
-					"group": "totvsBuild@4"
+					"group": "totvsBuild@6"
 				},
 				{
 					"when": "explorerResourceIsFolder",
 					"command": "totvs-developer-studio.patchGenerate.fromFolder",
-					"group": "totvsBuild@5"
+					"group": "totvsBuild@7"
 				}
 			],
 			"view/item/context": [

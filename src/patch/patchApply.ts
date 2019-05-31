@@ -88,6 +88,9 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 										"applyOldProgram": message.applyOld
 									}
 								}).then((response: PatchResult) => {
+									if (response.returnCode == 40840) { // AuthorizationTokenExpiredError
+										Utils.removeExpiredAuthorization();
+									}
 									if (message.applyOld) {
 										vscode.window.showInformationMessage('Old files applied.');
 									}
@@ -129,6 +132,9 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 									"applyOldProgram": false
 								}
 							}).then((response: PatchResult) => {
+								if (response.returnCode == 40840) { // AuthorizationTokenExpiredError
+									Utils.removeExpiredAuthorization();
+								}
 								// const message: string  = response.message;
 								// if(message == "Success"){
 								// 	vscode.window.showInformationMessage(localize("tds.webview.patch.applied","Patch Applied!"));
@@ -166,5 +172,5 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 }
 
 class PatchResult {
-	message: string;
+	returnCode: number;
 }
