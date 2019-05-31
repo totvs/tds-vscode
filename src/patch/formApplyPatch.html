@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>${d.localize["tds.webview.patch.apply"]}</title><!--Patch Apply-->
 </head>
-<style>${d.css}</style>
-
+	<style>
+		${d.css}
+	</style>
+	<!--<link rel="stylesheet" type="text/css" href="../../resources/css/table_materialize.css">-->
 <body>
 	<div class="mainContainer">
 			<div class="formWrap"
@@ -36,9 +37,21 @@
 
 						<div class="wrap-input">
 							<label for="patchFile">Patch File</label><!--Patch File-->
-							<input class="inputText" type="text" id="FilePatch" name="FilePatch" placeholder="Ex: C:/totvs/patchs/tttp120.ptm...">
-							<input class="inputText" type="file" accept='PatchFile/*.ptm' id="btn-File" name="btn-File" onchange="setTextArea()"/>
+							<!--input class="inputText" type="text" id="FilePatch" name="FilePatch" placeholder="Ex: C:/totvs/patchs/tttp120.ptm..."-->
+							<div class="material-table z-depth-3 hoverable">
+								<table id="tableInfos" class="mdl-data-table" width="100%">
+									<thead>
+										<tr class='mdl-data-table__cell--non-numeric'>
+											<th>${d.localize["tds.webview.col01"]}</th>
+											<th>${d.localize["tds.webview.col02"]}</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
 						</div>
+						<input class="inputText" type="file" accept='PatchFile/*.ptm' id="btn-File" name="btn-File" onchange="setTextArea(event)" multiple/>
 
 						<div class="wrap-input">
 							<label for="ApplyOld">${d.localize["tds.webview.applyOld"]}</label>
@@ -59,55 +72,96 @@
 		</div>
 </body>
 <script>
-	const vscode = acquireVsCodeApi();
+		${ d.script }
+		var filesString = new Array();
+		const vscode = acquireVsCodeApi();
+		var tableAPI = $('#tableInfos').dataTable({
+			ordering: false,
+			scrollX: true,
+			select: true,
+			rowReorder: true,
+			columnDefs: [
+				{
+					targets: [0, 1],
+					className: 'mdl-data-table__cell--non-numeric'
+				},
+				{
+					orderable: true,
+					className: 'reorder',
+					targets: [0,1]
+				}
+			],
+			dom: 'Bfrtip',
+			buttons: [
+				{
+					text: 'Delete Selected',
+					exportOptions: {
+						modifier: {
+							selected: null
+						}
+					},
+					action: function (e, dt, node, config) {
+						tableAPI.rows('.selected').remove().draw();
+					}
+				}
+			]
+		}).api();
 
-	window.onload = function() {
-		data = {main: []}
-		FilePatch = document.getElementById("FilePatch");
-	}
+		function patchApply(close) {
+				var patchs = tableAPI.data();
+				var completePaths = new Array();
+				for (var i = 0; i < patchs.length; i++) {
+					completePaths.push(patchs[i][1]);
+				};
 
-	function patchApply(close) {
-		let patchFile = document.getElementById('FilePatch').value;
+				let applyOld = document.getElementById('ApplyOldID').checked;
 
-			let applyOld =document.getElementById('ApplyOldID').checked;
+				vscode.postMessage({
+					command: 'patchApply',
+					patchFile: completePaths,
+					'applyOld': applyOld,
+					'close': close
+				});
+			}
 
-			vscode.postMessage({
-				command: 'patchApply',
-				patchFile: patchFile,
-				'applyOld': applyOld,
-				'close' : close
+			window.addEventListener('message', event => {
+				const message = event.data; // The JSON data our extension sent
+				switch (message.command) {
+					case 'setCurrentServer':
+						const server = message.serverCurrent;
+						document.getElementById('serverNameID').value = server.name;
+						document.getElementById('serverAddressID').value = server.address + ":" + server.port;
+						document.getElementById('serverEnvironmentID').value = server.environment
+						break;
+				}
 			});
-	}
 
-	// Carrega arquivo do Patch a ser aplicado
-	function fillData(event){
-	  var input = event.target;
-      var reader = new FileReader();
+			function setTextArea(event) {
+				var input = event.target;
+				var files = input.files;
 
-      FilePatch.value = input.files[0].path;
+				for (var i = 0; i < files.length; i++) {
+					var fullPath = files[i].path;
+					var filename = fullPath.substring(fullPath.lastIndexOf('\\\\') + 1);
+					if (!searchPatch(fullPath)) {
+						row = new Array(filename, fullPath);
+						tableAPI.row.add(row).draw();
+					}
+				}
+			}
 
-      reader.readAsBinaryString(input.files[0]);
-    };
+			function searchPatch(fullPath) {
+				var result = false;
+				var patchs = tableAPI.data();
+				for (var i = 0; i < patchs.length; i++) {
+					if (patchs[i][1] == fullPath) {
+						result = true;
+						return result;
+					}
+				};
 
-	window.addEventListener('message', event => {
-
-		const message = event.data; // The JSON data our extension sent
-
-		switch (message.command) {
-			case 'setCurrentServer':
-				const server = message.serverCurrent;
-				document.getElementById('serverNameID').value = server.name;
-				document.getElementById('serverAddressID').value = server.address + ":" + server.port
-				document.getElementById('serverEnvironmentID').value = server.environment
-				break;
-		}
-	});
-
-	function setTextArea(){
-		var input = document.getElementById('btn-File');
-		var filePath = input.files[0].path;
-		var textArea = document.getElementById('FilePatch').value = filePath;
-	}
+				return result;
+			}
 </script>
 
 </html>

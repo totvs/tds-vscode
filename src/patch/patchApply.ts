@@ -16,7 +16,9 @@ const localizeHTML = {
 	"tds.webview.address": localize("tds.webview.address", "Address"),
 	"tds.webview.environment": localize("tds.webview.environment", "Environment"),
 	"tds.webview.patch.file": localize("tds.webview.patch.file", "Patch File"),
-	"tds.webview.applyOld": localize("tds.webview.applyOld", "Apply old files")
+	"tds.webview.applyOld": localize("tds.webview.applyOld", "Apply old files"),
+	"tds.webview.col01": localize("tds.webview.col01", "Patch Name"),
+	"tds.webview.col02": localize("tds.webview.col02", "Patch Full Path")
 };
 
 
@@ -64,7 +66,11 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 				currentPanel.webview.onDidReceiveMessage(message => {
 					switch (message.command) {
 						case 'patchApply':
-							const patchUri = vscode.Uri.file(message.patchFile).toString();
+							let patchUris: Array<string> = [];
+							message.patchFile.forEach(element => {
+								const uri = vscode.Uri.file(element).toString();
+								patchUris.push(uri);
+							});
 
 							if (message.patchFile === "") {
 								vscode.window.showErrorMessage(localize("tds.webview.patch.apply.fail", "Apply Patch Fail. Please input patch file."));
@@ -76,7 +82,7 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 										"connectionToken": server.token,
 										"authenticateToken": permissionsInfos.authorizationToken,
 										"environment": server.environment,
-										"patchUri": patchUri,
+										"patchUris": patchUris,
 										"isLocal": true,
 										"validatePatch": false,
 										"applyOldProgram": message.applyOld
@@ -147,14 +153,16 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 
 	const htmlOnDiskPath = vscode.Uri.file(path.join(context.extensionPath, 'src', 'patch', 'formApplyPatch.html'));
-	const cssOniskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
+	const cssOniskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'table_materialize.css'));
+	const tableScriptPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'script', 'table_materialize.js'));
 
 	const htmlContent = fs.readFileSync(htmlOnDiskPath.with({ scheme: 'vscode-resource' }).fsPath);
 	const cssContent = fs.readFileSync(cssOniskPath.with({ scheme: 'vscode-resource' }).fsPath);
+	const scriptContent = fs.readFileSync(tableScriptPath.with({ scheme: 'vscode-resource' }).fsPath);
 
 	let runTemplate = compile(htmlContent);
 
-	return runTemplate({ css: cssContent, localize: localizeHTML });
+	return runTemplate({ css: cssContent, localize: localizeHTML, script: scriptContent });
 }
 
 class PatchResult {
