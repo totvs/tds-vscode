@@ -68,14 +68,18 @@ export default class Utils {
  * Retorna o path completo do launch.json
  */
 	static getLaunchConfigFile() {
-		return vscode.workspace.rootPath + "/.vscode/launch.json";
+		let rootPath: string = vscode.workspace.rootPath || process.cwd();
+
+		return path.join(rootPath, ".vscode", "launch.json");
 	}
 
 	/**
 	 * Retorna o path da pastar .vscode dentro do workspace
 	 */
 	static getVSCodePath() {
-		return vscode.workspace.rootPath + "/.vscode";
+		let rootPath: string = vscode.workspace.rootPath || process.cwd();
+
+		return path.join(rootPath, ".vscode");
 	}
 
 	/**
@@ -147,6 +151,55 @@ export default class Utils {
 	}
 
 	/**
+	 * Salva o servidor logado por ultimo.
+	 * @param id Id do servidor logado
+	 * @param token Token que o LS gerou em cima das informacoes de login
+	 * @param environment Ambiente utilizado no login
+	 */
+	static saveConnectionToken(id: string, token: string, environment: string) {
+		const servers = this.getServersConfig();
+		let found: boolean = false;
+		let key = id + ":" + environment;
+		if (servers.savedTokens) {
+			servers.savedTokens.forEach(element => {
+				if (element[0] === key) {
+					found = true; // update token
+					element[1] = { "id": id, "token": token };
+				}
+			});
+		}
+		if (!found) {
+			if (!servers.savedTokens) {
+				let emptySavedTokens: Array<[string, object]> = [];
+				servers.savedTokens = emptySavedTokens;
+			}
+			servers.savedTokens.push([ key, { "id": id, "token": token } ]);
+		}
+		this.persistServersInfo(servers);
+	}
+
+		/**
+	 * Salva o servidor logado por ultimo.
+	 * @param id Id do servidor logado
+	 * @param environment Ambiente utilizado no login
+	 */
+	static removeSavedConnectionToken(id: string, environment: string) {
+		const servers = this.getServersConfig();
+		if (servers.savedTokens) {
+			let key = id + ":" + environment;
+			servers.savedTokens.forEach(element => {
+				if (element[0] === key) {
+					const index = servers.indexOf(element, 0);
+					servers.splice(index, 1);
+					this.persistServersInfo(servers);
+					return;
+				}
+			});
+		}
+	}
+
+
+	/**
 	 * Notifica o cancelamento de seleção de servidor/ambiente
 	 */
 	static cancelSelectServer() {
@@ -154,7 +207,7 @@ export default class Utils {
 	}
 
 	/**
-	 *Deleta o servidor logado por ultimo do servers.json
+	 * Deleta o servidor logado por ultimo do servers.json
 	 */
 	static deleteSelectServer() {
 		const servers = this.getServersConfig();
@@ -180,8 +233,8 @@ export default class Utils {
 	}
 
 	/**
- *Deleta o servidor logado por ultimo do servers.json
- */
+	 * Deleta o servidor logado por ultimo do servers.json
+	 */
 	static deleteServer(id: string) {
 		const allConfigs = this.getServersConfig();
 
@@ -213,9 +266,9 @@ export default class Utils {
 	}
 
 	/**
- * Grava no arquivo launch.json uma nova configuracao de launchs
- * @param JSONServerInfo
- */
+	 * Grava no arquivo launch.json uma nova configuracao de launchs
+	 * @param JSONServerInfo
+	 */
 	static persistLaunchsInfo(JSONLaunchInfo) {
 		let fs = require('fs');
 		fs.writeFileSync(Utils.getLaunchConfigFile(), JSON.stringify(JSONLaunchInfo, null, "\t"), (err) => {
@@ -431,10 +484,30 @@ export default class Utils {
 	}
 
 	/**
+ 	*Recupera um servidor pelo id informado.
+ 	* @param id id do servidor alvo.
+ 	*/
+	 static getServerById(id: string, serversConfig: any) {
+		let server;
+		if (serversConfig.configurations) {
+			const configs = serversConfig.configurations;
+			configs.forEach(element => {
+				if (element.id === id) {
+					server = element;
+					if (server.environments === undefined) {
+						server.environments = [];
+					}
+				}
+			});
+		}
+		return server;
+	}
+
+	/**
  	*Recupera um servidor pelo nome informado.
  	* @param name nome do servidor alvo.
  	*/
-	static getServerForNameWithConfig(name: string, serversConfig: any) {
+	 static getServerForNameWithConfig(name: string, serversConfig: any) {
 		let server;
 
 		if (serversConfig.configurations) {

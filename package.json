@@ -36,7 +36,7 @@
 		"compile": "tsc -p ./src",
 		"tslint": "tslint ./src/**/*.ts",
 		"watch": "tsc -w -p ./src",
-		"test": "mocha -u tdd ./out/tests/",
+		"test": "node node_modules/vscode/bin/test",
 		"postinstall": "node ./node_modules/vscode/bin/install",
 		"package": "vsce package",
 		"publish": "vsce publish"
@@ -80,10 +80,13 @@
 		"onCommand:totvs-developer-studio.getProgramArguments",
 		"onCommand:totvs-developer-studio.getProgramName",
 		"onCommand:totvs-developer-studio.build.file",
+		"onCommand:totvs-developer-studio.rebuild.file",
 		"onCommand:totvs-developer-studio.build.folder",
-		"onCommand:totvs-developer-studio.build.workspace",
 		"onCommand:totvs-developer-studio.rebuild.folder",
+		"onCommand:totvs-developer-studio.build.workspace",
 		"onCommand:totvs-developer-studio.rebuild.workspace",
+		"onCommand:totvs-developer-studio.build.openEditors",
+		"onCommand:totvs-developer-studio.rebuild.openEditors",
 		"onCommand:totvs-developer-studio.delete.file.fromRPO",
 		"onCommand:totvs-developer-studio.configure.launcher",
 		"onCommand:totvs-developer-studio.inspectorFunctions",
@@ -299,6 +302,12 @@
 				"category": "TOTVS"
 			},
 			{
+				"command": "totvs-developer-studio.rebuild.file",
+				"title": "%tds.package.rebuild.file.title%",
+				"description": "%tds.package.rebuild.file.description%",
+				"category": "TOTVS"
+			},
+			{
 				"command": "totvs-developer-studio.build.folder",
 				"title": "%tds.package.build.folder.title%",
 				"description": "%tds.package.build.folder.description%",
@@ -320,6 +329,18 @@
 				"command": "totvs-developer-studio.rebuild.workspace",
 				"title": "%tds.package.rebuild.workspace.title%",
 				"description": "%tds.package.rebuild.workspace.description%",
+				"category": "TOTVS"
+			},
+			{
+				"command": "totvs-developer-studio.build.openEditors",
+				"title": "%tds.package.build.openEditors.title%",
+				"description": "%tds.package.build.openEditors.description%",
+				"category": "TOTVS"
+			},
+			{
+				"command": "totvs-developer-studio.rebuild.openEditors",
+				"title": "%tds.package.rebuild.openEditors.title%",
+				"description": "%tds.package.rebuild.openEditors.description%",
 				"category": "TOTVS"
 			},
 			{
@@ -457,6 +478,22 @@
 				"key": "ctrl+f9",
 				"mac": "cmd+f9",
 				"when": "editorTextFocus"
+			},
+			{
+				"command": "totvs-developer-studio.rebuild.file",
+				"key": "ctrl+shift+f9",
+				"mac": "cmd+shift+f9",
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "totvs-developer-studio.build.openEditors",
+				"key": "ctrl+f10",
+				"mac": "cmd+f10"
+			},
+			{
+				"command": "totvs-developer-studio.rebuild.openEditors",
+				"key": "ctrl+shift+f10",
+				"mac": "cmd+shift+f10"
 			},
 			{
 				"command": "totvs-developer-studio.toggle.autocomplete.behavior",
@@ -748,24 +785,29 @@
 				},
 				{
 					"command": "totvs-developer-studio.build.file",
-					"alt": "totvs-developer-studio.build.file",
+					"alt": "totvs-developer-studio.rebuild.file",
 					"group": "totvsBuild@3"
+				},
+				{
+					"command": "totvs-developer-studio.build.openEditors",
+					"alt": "totvs-developer-studio.rebuild.openEditors",
+					"group": "totvsBuild@4"
 				},
 				{
 					"when": "resourceLangId == totvs_patch",
 					"command": "totvs-developer-studio.patchApply.fromFile",
 					"alt": "totvs-developer-studio.patchApply.fromFile",
-					"group": "totvsBuild@3"
+					"group": "totvsBuild@5"
 				},
 				{
 					"command": "totvs-developer-studio.delete.file.fromRPO",
 					"alt": "totvs-developer-studio.delete.file.fromRPO",
-					"group": "totvsBuild@4"
+					"group": "totvsBuild@6"
 				},
 				{
 					"when": "explorerResourceIsFolder",
 					"command": "totvs-developer-studio.patchGenerate.fromFolder",
-					"group": "totvsBuild@5"
+					"group": "totvsBuild@7"
 				}
 			],
 			"view/item/context": [
