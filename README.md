@@ -92,6 +92,8 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 "totvsLanguageServer.web.navigator": "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
 ``}``
 
+Veja detalhes sobre como usar as diretivas [${command:}](https://link) e [passagem de parâmetros](https:link).
+
 ### Criando uma configuração de debug com assistente
 
 * Para abrir o assistente de nova configuração de debug, pressione o atalho `CTRL + SHIFT + P` e digite `TOTVS: Configure Launchers`.

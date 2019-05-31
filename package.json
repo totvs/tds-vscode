@@ -77,6 +77,7 @@
 	"activationEvents": [
 		"onLanguage:advpl",
 		"onDebug",
+		"onCommand:totvs-developer-studio.getProgramArguments",
 		"onCommand:totvs-developer-studio.getProgramName",
 		"onCommand:totvs-developer-studio.build.file",
 		"onCommand:totvs-developer-studio.build.folder",
@@ -339,6 +340,11 @@
 				"description": "%tds.package.getProgramName.description%"
 			},
 			{
+				"command": "totvs-developer-studio.getProgramArguments",
+				"title": "Argumentos",
+				"description": "Argumentos a serem repassados ao programa que será executado"
+			},
+			{
 				"command": "totvs-developer-studio.connect",
 				"title": "%tds.package.connect%"
 			},
@@ -532,7 +538,13 @@
 								"type": "boolean",
 								"description": "Make the debugger ignore break events in files not found in WorkSpace",
 								"default": false
+							},
+							"programArguments": {
+								"type": "array",
+								"description": "Arguments that will be passed to the called program / function (key -A)",
+								"default": ["${command:AskForProgramArguments}"]
 							}
+
 						}
 					}
 				},
@@ -559,10 +571,25 @@
 							"smartclientBin": "${2:C:/totvs/bin/smartclient/smartclient.exe}",
 							"isMultiSession": true
 						}
+					},
+					{
+						"label": "%tds.package.totvs_language_debug% with arguments",
+						"description": "A new configuration for 'debugging' a user selected AdvPL file with arguments.",
+						"body": {
+							"type": "totvs_language_debug",
+							"request": "launch",
+							"name": "${1:%tds.package.totvs_language_debug%}",
+							"program": "^\"\\${command:AskForProgramName}\"",
+							"programArguments": ["^\"\\${command:AskForProgramArguments}\""],
+							"smartclientBin": "${2:C:/totvs/bin/smartclient/smartclient.exe}",
+							"isMultiSession": true
+						}
 					}
+
 				],
 				"variables": {
-					"AskForProgramName": "totvs-developer-studio.getProgramName"
+					"AskForProgramName": "totvs-developer-studio.getProgramName",
+					"AskForProgramArguments": "totvs-developer-studio.getProgramArguments"
 				}
 			},
 			{
@@ -643,6 +670,16 @@
 								"type": "string",
 								"description": "%tds.package.properties.logFile.description%",
 								"default": "${workspaceFolder}\\daplog.log"
+							},
+							"ignoreFiles": {
+								"type": "boolean",
+								"description": "Make the debugger ignore break events in files not found in WorkSpace",
+								"default": false
+							},
+							"programArguments": {
+								"type": "array",
+								"description": "Arguments that will be passed to the called program / function (key -A)",
+								"default": ["${command:AskForProgramArguments}"]
 							}
 						}
 					}
@@ -673,7 +710,8 @@
 					}
 				],
 				"variables": {
-					"AskForProgramName": "totvs-developer-studio.getProgramName"
+					"AskForProgramName": "totvs-developer-studio.getProgramName",
+					"AskForProgramArguments": "totvs-developer-studio.getProgramArguments"
 				}
 			}
 		],
@@ -849,6 +887,10 @@
 				},
 				{
 					"command": "totvs-developer-studio.getProgramName",
+					"when": "1 == 0"
+				},
+				{
+					"command": "totvs-developer-studio.getProgramArguments",
 					"when": "1 == 0"
 				},
 				{
