@@ -184,11 +184,11 @@ export function deletePrograms(programs: string[]) {
 /**
  * Builds a file.
  */
-export function buildFile(filename: string) {
+export function buildFile(filename: string, recompile: boolean) {
 	if (!ignoreResource(filename)) {
 		languageClient.info(localize("tds.webview.tdsBuild.compileBegin", "Resource compilation started. Resource: {0}", filename));
 		const compileOptions = _getCompileOptionsDefault();
-		compileOptions.recompile = true;
+		compileOptions.recompile = recompile;
 		buildCode([filename], compileOptions);
 
 		languageClient.info('Compilação de recurso finalizada.');
@@ -330,7 +330,7 @@ export class DeleteProgramResult {
 	returnCode: number;
 }
 
-export function commandBuildFile(context) {
+export function commandBuildFile(context, recompile: boolean) {
 	let editor: vscode.TextEditor | undefined;
 	let filename: string | undefined = undefined;
 	if (context === undefined) { //A ação veio pelo ctrl+f9
@@ -344,7 +344,7 @@ export function commandBuildFile(context) {
 		filename = context.fsPath;
 	}
 	if (filename !== undefined) {
-		buildFile(filename);
+		buildFile(filename, recompile);
 	}
 }
 
@@ -365,3 +365,110 @@ export function commandBuildWorkspace(recompile: boolean) {
 		buildFolder(folders, recompile);
 	}
 }
+
+export async function commandBuildOpenEditors(recompile: boolean) {
+	let delayNext = 250;
+	let files: string[] = [];
+	let filename: string | undefined = undefined;
+	let editor = vscode.window.activeTextEditor;
+	let nextEditor = editor;
+	if (!editor) {
+		vscode.window.showInformationMessage(localize('tds.vscode.editornotactive', 'No editor is active, cannot find current file to build.'));
+		return;
+	}
+	if (editor.viewColumn) {
+		filename = editor.document.uri.fsPath;
+		files.push(filename);
+	}
+	else {
+		vscode.commands.executeCommand("workbench.action.nextEditor");
+		await delay(delayNext);
+		editor = vscode.window.activeTextEditor;
+		if (editor) {
+			if (editor.viewColumn) {
+				filename = editor.document.uri.fsPath;
+				files.push(filename);
+			}
+			else {
+				vscode.window.showWarningMessage("[SKIPPING] Editor file is not fully open");
+			}
+		}
+	}
+	do {
+		vscode.commands.executeCommand("workbench.action.nextEditor");
+		await delay(delayNext);
+		nextEditor = vscode.window.activeTextEditor;
+		if (nextEditor && !sameEditor(editor as vscode.TextEditor, nextEditor as vscode.TextEditor)) {
+			if (nextEditor.viewColumn) {
+				filename = nextEditor.document.uri.fsPath;
+				files.push(filename);
+			}
+			else {
+				vscode.window.showWarningMessage("[SKIPPING] Editor file is not fully open");
+			}
+		} else {
+			break;
+		}
+	} while (true);
+	// check if there are files to compile
+	if (files.length > 0) {
+		const compileOptions = _getCompileOptionsDefault();
+		compileOptions.recompile = recompile;
+		buildCode(files, compileOptions);
+	} else {
+		vscode.window.showWarningMessage("There is nothing to compile");
+	}
+}
+
+function delay(ms: number) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function sameEditor(editor: vscode.TextEditor, nextEditor: vscode.TextEditor) {
+	if (editor === undefined && nextEditor === undefined) return true;
+	if (editor === undefined || nextEditor === undefined) return false;
+	return (editor.viewColumn === nextEditor.viewColumn) && ((editor as any)._id === (nextEditor as any)._id);
+}
+
+// async function wait(timeout: number = 500): Promise<vscode.TextEditor> {
+// 	const nextEditor = await new Promise<vscode.TextEditor>((resolve, reject) => {
+// 		let timer: any;
+
+// 		_resolver = (editor: vscode.TextEditor) => {
+// 			if (timer) {
+// 				clearTimeout(timer as any);
+// 				timer = 0;
+// 				resolve(editor);
+// 			}
+// 		};
+
+// 		timer = setTimeout(() => {
+// 			resolve(vscode.window.activeTextEditor);
+// 			timer = 0;
+// 		}, timeout) as any;
+// 	});
+// 	return nextEditor;
+// }
+
+// private _resolver: ((value?: TextEditor | PromiseLike<TextEditor>) => void) | undefined;
+
+// async wait(timeout: number = 500): Promise<TextEditor> {
+// 	const editor = await new Promise<TextEditor>((resolve, reject) => {
+// 		let timer: any;
+
+// 		this._resolver = (editor: TextEditor) => {
+// 			if (timer) {
+// 				clearTimeout(timer as any);
+// 				timer = 0;
+// 				resolve(editor);
+// 			}
+// 		};
+
+// 		timer = setTimeout(() => {
+// 			resolve(window.activeTextEditor);
+// 			timer = 0;
+// 		}, timeout) as any;
+// 	});
+// 	this._resolver = undefined;
+// 	return editor;
+// }
