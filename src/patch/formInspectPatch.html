@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>${d.localize["tds.webview.inspect.patch"]}</title>
+	<!--Patch Inspect-->
+</head>
+
+<style>
+	${d.css}
+	#parent {
+		display: table;
+		width: 600px;
+		height: 500px;
+	}
+	#child {
+		display: table-cell;
+		vertical-align: middle;
+	}
+	#loading {
+		z-index: 20;
+		position: relative;
+		left: 280px;
+		top: -325px;
+	}
+</style>
+
+<body>
+	<div class="mainContainer">
+		<div class="formWrap" style="width: 720px;">
+
+			<div class="logo">
+				<span class="formTitle">${d.localize["tds.webview.inspect.patch"]}</span>
+				<!--Patch Inspect-->
+			</div>
+			<br>
+			<input class="inputText" type="file" accept='PatchFile/*.ptm' id="btn-File" name="btn-File"
+				onchange="setTextArea(event)" multiple />
+			<div class="wrap-input">
+				<div class="material-table z-depth-3 hoverable">
+					<table id="tableInfos" class="mdl-data-table" width="100%">
+						<thead>
+							<tr class='mdl-data-table__cell--non-numeric'>
+								<th>${d.localize["tds.webview.inspect.col01"]}</th>
+								<th>${d.localize["tds.webview.inspect.col02"]}</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="wrap-submit">
+				<!--Export-->
+				<input class="btn-submit" id="submitID" type="button" value='${d.localize["tds.webview.inspect.export.close"]}'
+					onclick="fechar()" />
+				<!--Close-->
+			</div>
+			<!--div id="loading">
+				<svg width='36' height='36' version='1.1' xmlns='http://www.w3.org/2000/svg'>
+					<g transform='translate(18,18)'>
+						<g transform='rotate(45)'>
+							<circle fill='none' stroke='#424142' cx='0' cy='0' r='16' stroke-width='3' />
+							<line x1='-13' y1='-13' x2='13' y2='13' stroke='#CCCCCC' stroke-width='4' />
+							<animateTransform attributeName='transform' type='rotate' values='0; 360' dur='2s'
+								repeatCount='indefinite' rotate='auto' />
+						</g>
+					</g>
+					<circle fill='#CCCCCC' cx='18' cy='18' r='11' stroke-width='3' />
+					<g transform='translate(18,18)'>
+						<g transform='rotate(45)'>
+							<circle fill='none' stroke='#9C9A9C' cx='0' cy='0' r='11' stroke-width='3' />
+							<circle fill='#CCCCCC' cx='2' cy='0' r='11.5' stroke-width='3' />
+							<line x1='0' y1='13' x2='2' y2='-12' stroke='#CCCCCC' stroke-width='5' />
+							<line x1='2' y1='14' x2='4' y2='-14' stroke='#CCCCCC' stroke-width='2' />
+							<line x1='4' y1='13' x2='6' y2='-13' stroke='#CCCCCC' stroke-width='2' />
+							<animateTransform attributeName='transform' type='rotate' values='360; 0' dur='1.3s'
+								repeatCount='indefinite' rotate='auto' />
+						</g>
+					</g>
+				</svg>
+			</div-->
+		</div>
+	</div>
+</body>
+
+
+<script>
+	${ d.script }
+	const vscode = acquireVsCodeApi();
+
+	var tableAPI = $('#tableInfos').dataTable({
+		ordering: true,
+		scrollX: true,
+		columnDefs: [
+			{
+				targets: [0, 1],
+				className: 'mdl-data-table__cell--non-numeric'
+			},
+			{
+				orderable: true,
+				className: 'reorder',
+				targets: [0, 1]
+			}
+		],
+	}).api();
+
+	function setTextArea(event) {
+		var input = event.target;
+		var files = input.files;
+
+		var fullPath = files[0].path;
+
+		vscode.postMessage({
+			command: "patchInfo",
+			patchFile: fullPath
+		});
+	}
+
+	function fechar() {
+		vscode.postMessage({
+			"command": 'close'
+		});
+	}
+
+	window.addEventListener('message', event => {
+			for (var i=0; i < event.data.length; i++) {
+				console.log(event.data[i].name);
+				var row = new Array(event.data[i].name, event.data[i].date);
+
+				tableAPI.row.add(row);
+			}
+
+			tableAPI.draw();
+		});
+</script>
+</html>

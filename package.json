@@ -105,6 +105,7 @@
 		"onCommand:totvs-developer-studio.patchGenerate.fromFolder",
 		"onCommand:totvs-developer-studio.patchApply",
 		"onCommand:totvs-developer-studio.patchApply.fromFile",
+		"onCommand:totvs-developer-studio.patchInspector",
 		"onCommand:totvs-developer-studio.welcomePage",
 		"onCommand:totvs-developer-studio.include",
 		"onCommand:totvs-developer-studio.ws.show",
@@ -281,6 +282,12 @@
 				"command": "totvs-developer-studio.inspectorFunctions",
 				"title": "%tds.package.inspector.function.title%",
 				"description": "tds.package.inspector.function.description",
+				"category": "TOTVS"
+			},
+			{
+				"command": "totvs-developer-studio.patchInspector",
+				"title": "%tds.package.inspector.patch.title%",
+				"description": "tds.package.inspector.patch.description",
 				"category": "TOTVS"
 			},
 			{

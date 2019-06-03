@@ -24,6 +24,7 @@ import { serverAuthentication } from './inputConnectionParameters';
 import * as nls from 'vscode-nls';
 import { inspectObject } from './inspect/inspectObject';
 import { inspectFunctions } from './inspect/inspectFunction';
+import { patchInspector } from './patch/inspectPatch';
 import { showWelcomePage } from './welcome/welcomePage';
 import showInclude from './include/include';
 import showWSPage from './WebService/generateWS';
@@ -270,6 +271,8 @@ export function activate(context: ExtensionContext) {
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.patchApply.fromFile', (context) => patchApply(context, true)));
 	//Gera um patch de acordo com os arquivos contidos em uma pasta
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.patchGenerate.fromFolder', (context) => patchGenerateFromFolder(context)));
+	//Verifica o conteudo de um patch
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.patchInspector', () => patchInspector(context)));
 
 	//Adiciona página de Includes
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.include', () => showInclude(context)));

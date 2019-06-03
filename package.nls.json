@@ -15,6 +15,7 @@
 	"tds.package.editor.notification.show.errors_and_warnings": "Errors and warnings",
 	"tds.package.editor.notification.show.all": "All",
 	"tds.package.inspector.function.title": "Functions inspector",
+	"tds.package.inspector.patch.title": "Patch inspector",
 	"tds.package.inspector.function.description": "Functions inspector",
 	"tds.package.inspector.object.title": "Object inspector",
 	"tds.package.inspector.object.description": "Object inspector",
