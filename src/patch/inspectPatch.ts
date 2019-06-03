@@ -8,7 +8,7 @@ import * as nls from 'vscode-nls';
 let localize = nls.loadMessageBundle();
 
 const localizeHTML = {
-	"tds.webview.inspect.patch": localize("tds.webview.inspect.patch", "Patch Inspect"),
+	"tds.webview.inspect.patch": localize("tds.webview.inspect.patch", "Patch Infos"),
 	"tds.webview.inspect.ignore.files": localize("tds.webview.inspect.ignore.files", "Ignore files"),
 	"tds.webview.inspect.export.files": localize("tds.webview.inspect.export.files", "Export to file"),
 	"tds.webview.inspect.export.files2": localize("tds.webview.inspect.export.files2", "Export items filted to file"),
@@ -19,7 +19,7 @@ const localizeHTML = {
 	"tds.webview.inspect.col02": localize("tds.webview.inspect.col02", "Date"),
 }
 
-export function patchInspector(context: vscode.ExtensionContext) {
+export function patchInfos(context: vscode.ExtensionContext, args: any) {
 	const server = Utils.getCurrentServer();
 	const authorizationToken = Utils.getPermissionsInfos().authorizationToken;
 
@@ -58,56 +58,43 @@ export function patchInspector(context: vscode.ExtensionContext) {
 		currentPanel.webview.onDidReceiveMessage(message => {
 			switch (message.command) {
 				case 'patchInfo':
-					const patchURI = vscode.Uri.file(message.patchFile).toString();
-					languageClient.sendRequest('$totvsserver/patchInfo', {
-						"patchInfoInfo": {
-							"connectionToken": server.token,
-							"authorizationToken": authorizationToken,
-							"environment": server.environment,
-							"patchUri": patchURI,
-							"isLocal": true
-						}
-					}).then((response: any) => {
-						currentPanel.webview.postMessage(response.patchInfos);
-					}, (err) => {
-						vscode.window.showErrorMessage(err);
-					});
+					sendPatchInfo(message.patchFile, server, authorizationToken, currentPanel);
 					return;
 				case 'close':
 					currentPanel.dispose();
-					break;
-				case 'exportData':
-					const allItems = message.items[0];
-					let pathFile = vscode.workspace.rootPath + "/inspectorObject.txt";
-					const textString = allItems.join("\n");
-
-					if (fs.existsSync(pathFile)) {
-						let r = Math.random().toString(36).substring(7);
-						pathFile = vscode.workspace.rootPath + "/inspectorObject" + r + ".txt";
-					}
-
-					var setting: vscode.Uri = vscode.Uri.parse("untitled:" + pathFile);
-					vscode.workspace.openTextDocument(setting).then((a: vscode.TextDocument) => {
-						vscode.window.showTextDocument(a, 1, false).then(e => {
-							e.edit(edit => {
-								edit.insert(new vscode.Position(0, 0), textString);
-							});
-						});
-					}, (error: any) => {
-						console.error(error);
-						debugger;
-					});
 					break;
 			}
 		},
 			undefined,
 			context.subscriptions
 		);
+
+		if (args) {
+			if (args.fsPath) {
+				sendPatchInfo(args.fsPath, server, authorizationToken, currentPanel);
+			}
+		}
 	} else {
 		vscode.window.showErrorMessage("There is no server connected.");
 	}
 }
 
+function sendPatchInfo(patchFile, server, authorizationToken, currentPanel) {
+	const patchURI = vscode.Uri.file(patchFile).toString();
+	languageClient.sendRequest('$totvsserver/patchInfo', {
+		"patchInfoInfo": {
+			"connectionToken": server.token,
+			"authorizationToken": authorizationToken,
+			"environment": server.environment,
+			"patchUri": patchURI,
+			"isLocal": true
+		}
+	}).then((response: any) => {
+		currentPanel.webview.postMessage(response.patchInfos);
+	}, (err) => {
+		vscode.window.showErrorMessage(err);
+	});
+}
 
 function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 
