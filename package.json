@@ -2,7 +2,7 @@
 	"name": "tds-vscode",
 	"displayName": "Totvs Developer Studio for VSCode",
 	"description": "%tds.package.description%",
-	"version": "0.2.1",
+	"version": "0.3.1",
 	"publisher": "TOTVS",
 	"author": {
 		"name": "TOTVS",
@@ -42,8 +42,8 @@
 		"publish": "vsce publish"
 	},
 	"dependencies": {
-		"@totvs/tds-da": "^1.0.18",
-		"@totvs/tds-ls": "^1.0.22",
+		"@totvs/tds-da": "^1.0.19",
+		"@totvs/tds-ls": "^1.0.23",
 		"await-notify": "1.0.1",
 		"cheerio": "^1.0.0-rc.3",
 		"fs": "0.0.1-security",
@@ -77,6 +77,7 @@
 	"activationEvents": [
 		"onLanguage:advpl",
 		"onDebug",
+		"onCommand:totvs-developer-studio.getProgramArguments",
 		"onCommand:totvs-developer-studio.getProgramName",
 		"onCommand:totvs-developer-studio.build.file",
 		"onCommand:totvs-developer-studio.rebuild.file",
@@ -104,6 +105,8 @@
 		"onCommand:totvs-developer-studio.patchGenerate.fromFolder",
 		"onCommand:totvs-developer-studio.patchApply",
 		"onCommand:totvs-developer-studio.patchApply.fromFile",
+		"onCommand:totvs-developer-studio.patchInfos",
+		"onCommand:totvs-developer-studio.patchInfos.fromFile",
 		"onCommand:totvs-developer-studio.welcomePage",
 		"onCommand:totvs-developer-studio.include",
 		"onCommand:totvs-developer-studio.ws.show",
@@ -283,6 +286,12 @@
 				"category": "TOTVS"
 			},
 			{
+				"command": "totvs-developer-studio.patchInfos",
+				"title": "%tds.package.inspector.patch.title%",
+				"description": "tds.package.inspector.patch.description",
+				"category": "TOTVS"
+			},
+			{
 				"command": "totvs-developer-studio.inspectorObjects",
 				"title": "%tds.package.inspector.object.title%",
 				"description": "%tds.package.inspector.object.description%",
@@ -358,6 +367,11 @@
 				"command": "totvs-developer-studio.getProgramName",
 				"title": "%tds.package.getProgramName.title%",
 				"description": "%tds.package.getProgramName.description%"
+			},
+			{
+				"command": "totvs-developer-studio.getProgramArguments",
+				"title": "Argumentos",
+				"description": "Argumentos a serem repassados ao programa que será executado"
 			},
 			{
 				"command": "totvs-developer-studio.connect",
@@ -446,6 +460,11 @@
 				"category": "TOTVS"
 			},
 			{
+				"command": "totvs-developer-studio.patchInfos.fromFile",
+				"title": "%tds.package.patchInfos.fromFile%",
+				"category": "TOTVS"
+			},
+			{
 				"command": "totvs-developer-studio.welcomePage",
 				"title": "%tds.package.welcomePage%",
 				"category": "TOTVS"
@@ -508,7 +527,8 @@
 				"configurationAttributes": {
 					"launch": {
 						"required": [
-							"program", "smartclientBin"
+							"program",
+							"smartclientBin"
 						],
 						"properties": {
 							"program": {
@@ -569,6 +589,13 @@
 								"type": "boolean",
 								"description": "Make the debugger ignore break events in files not found in WorkSpace",
 								"default": false
+							},
+							"programArguments": {
+								"type": "array",
+								"description": "Arguments that will be passed to the called program / function (key -A)",
+								"default": [
+									"${command:AskForProgramArguments}"
+								]
 							}
 						}
 					}
@@ -596,10 +623,26 @@
 							"smartclientBin": "${2:C:/totvs/bin/smartclient/smartclient.exe}",
 							"isMultiSession": true
 						}
+					},
+					{
+						"label": "%tds.package.totvs_language_debug% with arguments",
+						"description": "A new configuration for 'debugging' a user selected AdvPL file with arguments.",
+						"body": {
+							"type": "totvs_language_debug",
+							"request": "launch",
+							"name": "${1:%tds.package.totvs_language_debug%}",
+							"program": "^\"\\${command:AskForProgramName}\"",
+							"programArguments": [
+								"^\"\\${command:AskForProgramArguments}\""
+							],
+							"smartclientBin": "${2:C:/totvs/bin/smartclient/smartclient.exe}",
+							"isMultiSession": true
+						}
 					}
 				],
 				"variables": {
-					"AskForProgramName": "totvs-developer-studio.getProgramName"
+					"AskForProgramName": "totvs-developer-studio.getProgramName",
+					"AskForProgramArguments": "totvs-developer-studio.getProgramArguments"
 				}
 			},
 			{
@@ -609,7 +652,8 @@
 				"configurationAttributes": {
 					"launch": {
 						"required": [
-							"program", "smartclientUrl"
+							"program",
+							"smartclientUrl"
 						],
 						"properties": {
 							"program": {
@@ -680,6 +724,18 @@
 								"type": "string",
 								"description": "%tds.package.properties.logFile.description%",
 								"default": "${workspaceFolder}\\daplog.log"
+							},
+							"ignoreFiles": {
+								"type": "boolean",
+								"description": "Make the debugger ignore break events in files not found in WorkSpace",
+								"default": false
+							},
+							"programArguments": {
+								"type": "array",
+								"description": "Arguments that will be passed to the called program / function (key -A)",
+								"default": [
+									"${command:AskForProgramArguments}"
+								]
 							}
 						}
 					}
@@ -710,7 +766,8 @@
 					}
 				],
 				"variables": {
-					"AskForProgramName": "totvs-developer-studio.getProgramName"
+					"AskForProgramName": "totvs-developer-studio.getProgramName",
+					"AskForProgramArguments": "totvs-developer-studio.getProgramArguments"
 				}
 			}
 		],
@@ -760,6 +817,12 @@
 					"command": "totvs-developer-studio.patchApply.fromFile",
 					"alt": "totvs-developer-studio.patchApply.fromFile",
 					"group": "totvsBuild@5"
+				},
+				{
+					"when": "resourceLangId == totvs_patch",
+					"command": "totvs-developer-studio.patchInfos.fromFile",
+					"alt": "totvs-developer-studio.patchInfos.fromFile",
+					"group": "totvsBuild@8"
 				},
 				{
 					"command": "totvs-developer-studio.delete.file.fromRPO",
@@ -866,6 +929,10 @@
 					"when": "1 == 0"
 				},
 				{
+					"command": "totvs-developer-studio.patchInfos.fromFile",
+					"when": "1 == 0"
+				},
+				{
 					"command": "totvs-developer-studio.build.folder",
 					"when": "1 == 0"
 				},
@@ -891,6 +958,10 @@
 				},
 				{
 					"command": "totvs-developer-studio.getProgramName",
+					"when": "1 == 0"
+				},
+				{
+					"command": "totvs-developer-studio.getProgramArguments",
 					"when": "1 == 0"
 				},
 				{

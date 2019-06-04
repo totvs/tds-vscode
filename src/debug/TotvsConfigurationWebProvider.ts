@@ -48,7 +48,7 @@ export class TotvsConfigurationWebProvider implements DebugConfigurationProvider
 
 			if (!config.cwb || (config.cwb === '')) {
 				config.cwb = vscode.workspace.rootPath;
-				window.showInformationMessage(localize('tds.vscode.cwb_warning', "Parameter cwb not informed. Setting to ${1}", config.cwb));
+				window.showInformationMessage(localize('tds.vscode.cwb_warning', 'Parameter cwb not informed. Setting to {0}', config.cwb));
 			}
 
 			const cfg = vscode.workspace.getConfiguration("totvsLanguageServer");

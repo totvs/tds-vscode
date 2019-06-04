@@ -42,11 +42,11 @@
 ### Solução:
 * Na realidade era possível mas a interface estava um pouco confusa, então alteramos a interface para melhorar a usabilidade.
 ----
-## Permitir passagem de parâmetros para a função principal (-A): [Issue 36](https://github.com/totvs/tds-vscode/issues/36)
-### Problema:
-* Permitir passagem de parâmetros para a função principal através do parâmetro -A na chamada do SmartClient.
+## Permitir passagem de parâmetros para a função principal (-A): [#36](https://github.com/totvs/tds-vscode/issues/36)
+### Melhoria
+Permitir passagem de parâmetros para a função principal através do parâmetro -A na chamada do SmartClient.
 ### Solução:
-* Adicionado tratamento para aceitar o parametro -A na execução do SmartClient.
+Implementado a passagem de parâmetro conforme documentado em https://github.com/totvs/tds-vscode/wiki/Configura%C3%A7%C3%A3o-de-debug:-diretivas-$%7Bcommand:%7D
 ----
 ## Permitir visualizar o conteúdo de um patch antes de aplicar: [Issue 38](https://github.com/totvs/tds-vscode/issues/38)
 ### Melhoria:

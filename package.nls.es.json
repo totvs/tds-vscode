@@ -8,6 +8,7 @@
 	"tds.package.show.precompile": "Exhibe los comandos de precompilaci�n.",
 	"tds.package.web.navigator.debug": "Navegador Web (depurar con SmartClient HTML).",
 	"tds.package.inspector.function.title": "Inspector de funciones.",
+	"tds.package.inspector.patch.title": "Inspector de patchs.",
 	"tds.package.inspector.function.description": "Inspector de funciones",
 	"tds.package.inspector.object.title": "Inspector de objetos",
 	"tds.package.inspector.object.description": "Inspector de objetos",

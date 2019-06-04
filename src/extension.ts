@@ -24,6 +24,7 @@ import { serverAuthentication } from './inputConnectionParameters';
 import * as nls from 'vscode-nls';
 import { inspectObject } from './inspect/inspectObject';
 import { inspectFunctions } from './inspect/inspectFunction';
+import { patchInfos } from './patch/inspectPatch';
 import { showWelcomePage } from './welcome/welcomePage';
 import showInclude from './include/include';
 import showWSPage from './WebService/generateWS';
@@ -31,7 +32,7 @@ import launcherConfig from './launcher/launcherConfiguration';
 import { onCaptureLoggers, offCaptureLoggers } from './loggerCapture/logger';
 import { TotvsConfigurationWebProvider } from './debug/TotvsConfigurationWebProvider';
 import { TotvsConfigurationProvider } from './debug/TotvsConfigurationProvider';
-import { getDAP, getProgramName } from './debug/debugConfigs';
+import { getDAP, getProgramName, getProgramArguments } from './debug/debugConfigs';
 import { toggleAutocompleteBehavior, updateSettingsBarItem } from './server/languageServerSettings';
 
 export let languageClient: LanguageClient;
@@ -214,8 +215,9 @@ export function activate(context: ExtensionContext) {
 		})();
 	}
 
-	// Ação para pegar o nome da função quer quer iniciar o debug
+	// Ação para pegar o nome da função e argumentos para  iniciar o debug
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.getProgramName', () => getProgramName()));
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.getProgramArguments', () => getProgramArguments()));
 	//Ação para desfragmentar o RPO do servidor corrente.
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.defragRPO', () => defragRpo()));
 	//Ação para deletar um fonte selecionado do RPO.
@@ -269,6 +271,10 @@ export function activate(context: ExtensionContext) {
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.patchApply.fromFile', (context) => patchApply(context, true)));
 	//Gera um patch de acordo com os arquivos contidos em uma pasta
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.patchGenerate.fromFolder', (context) => patchGenerateFromFolder(context)));
+	//Verifica o conteudo de um patch
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.patchInfos', () => patchInfos(context, null)));
+	//Verifica o conteudo de um patch pelo menu de contexto em arquivos de patch
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.patchInfos.fromFile', (args) => patchInfos(context, args)));
 
 	//Adiciona página de Includes
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.include', () => showInclude(context)));
@@ -337,17 +343,17 @@ function verifyEncoding() {
 	const questionEncodingConfig = configADVPL.get("askEncodingChange");
 	const defaultConfig = vscode.workspace.getConfiguration();
 	const defaultEncoding = defaultConfig.get("files.encoding");
-	if (defaultEncoding != "windows1252" && questionEncodingConfig != false) {
+	if (defaultEncoding !== "windows1252" && questionEncodingConfig !== false) {
 		window.showWarningMessage(textQuestion, textYes, textNo, textNoAsk).then(clicked => {
-			if (clicked == textYes) {
+			if (clicked === textYes) {
 				const jsonEncoding = {
 					"files.encoding": "windows1252"
-				}
+				};
 				defaultConfig.update("[advpl]", jsonEncoding);
 				questionAgain = false;
-			} else if (clicked == textNo) {
+			} else if (clicked === textNo) {
 				questionAgain = true;
-			} else if(clicked == textNoAsk){
+			} else if(clicked === textNoAsk){
 				questionAgain= false;
 			}
 			configADVPL.update("askEncodingChange", questionAgain);
