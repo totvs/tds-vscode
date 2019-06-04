@@ -42,6 +42,18 @@
 ### Solução:
 * Na realidade era possível mas a interface estava um pouco confusa, então alteramos a interface para melhorar a usabilidade.
 ----
+## Permitir passagem de parâmetros para a função principal (-A): [Issue 36](https://github.com/totvs/tds-vscode/issues/36)
+### Problema:
+* Permitir passagem de parâmetros para a função principal através do parâmetro -A na chamada do SmartClient.
+### Solução:
+* Adicionado tratamento para aceitar o parametro -A na execução do SmartClient.
+----
+## Permitir visualizar o conteúdo de um patch antes de aplicar: [Issue 38](https://github.com/totvs/tds-vscode/issues/38)
+### Melhoria:
+* Deveria ser possível visualizar o conteúdo de um patch antes de aplicar.
+### Solução:
+* Implementada a visualização do conteudo de Patches atraves do comando "TOTVS: Patch Infos".
+----
 
 # Versão 0.2.1
 
