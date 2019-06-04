@@ -1,3 +1,12 @@
+# Versão 0.3.1
+
+ #36
+## Permitir passagem de parâmetros para a função principal (-A): [#36>](https://github.com/totvs/tds-vscode/issues/36)
+### Melhoria
+Permitir passagem de parâmetros para a função principal através do parâmetro -A na chamada do SmartClient.
+### Solução:
+Implementado a passagem de parâmetro conforme documentado em https://github.com/totvs/tds-vscode/wiki/Configura%C3%A7%C3%A3o-de-debug:-diretivas-$%7Bcommand:%7D
+
 # Versão 0.2.1
 
 ## Salvar senha do ambiente: [Issue 5](https://github.com/totvs/tds-vscode/issues/5)
