@@ -42,7 +42,7 @@
 ### Solução:
 * Na realidade era possível mas a interface estava um pouco confusa, então alteramos a interface para melhorar a usabilidade.
 ----
-## Permitir passagem de parâmetros para a função principal (-A): [#36](https://github.com/totvs/tds-vscode/issues/36)
+## Permitir passagem de parâmetros para a função principal (-A): [Issue 36](https://github.com/totvs/tds-vscode/issues/36)
 ### Melhoria
 Permitir passagem de parâmetros para a função principal através do parâmetro -A na chamada do SmartClient.
 ### Solução:
@@ -53,6 +53,12 @@ Implementado a passagem de parâmetro conforme documentado em https://github.com
 * Deveria ser possível visualizar o conteúdo de um patch antes de aplicar.
 ### Solução:
 * Implementada a visualização do conteudo de Patches atraves do comando "TOTVS: Patch Infos".
+----
+## Geração de patch não respeita filtro *: [Issue 70](https://github.com/totvs/tds-vscode/issues/70)
+### Problema:
+* Ao tentar gerar um patch e realizar o filtro com caracter "*" o resultado não é apresentando.
+### Solução:
+* Os caracteres "*" serão removidos do filtro, pois o componente utilizado entende como a pesquisa pelo caracter "*".
 ----
 
 # Versão 0.2.1

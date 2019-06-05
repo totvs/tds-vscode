@@ -182,10 +182,10 @@
 			filterData = srcAll.filter(el => !el.includes(".TRES"));
 		}
 		else if (query != "*" && CheckIgnoreTRes.checked == false){
-			filterData = srcAll.filter(el => el.includes(query));
+			filterData = srcAll.filter(el => el.includes(query.replace(/\\*/g,"")));
 		}
 		else if (query != "*" && CheckIgnoreTRes.checked == true){
-			filterData = srcAll.filter(el => el.includes(query) && !el.includes(".TRES"));
+			filterData = srcAll.filter(el => el.includes(query.replace(/\\*/g,"")) && !el.includes(".TRES"));
 		}
 
 		/* TODO: Separar resource e program com o optgroup

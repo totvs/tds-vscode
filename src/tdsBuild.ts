@@ -322,8 +322,16 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 	}
 }
 
+export class CompileInfo {
+	status: string;
+	filePath: string;
+	message: string;
+	detail: string;
+}
+
 export class CompileResult {
 	returnCode: number;
+	compileInfos: Array<CompileInfo>;
 }
 
 export class DeleteProgramResult {
@@ -378,7 +386,9 @@ export async function commandBuildOpenEditors(recompile: boolean) {
 	}
 	if (editor.viewColumn) {
 		filename = editor.document.uri.fsPath;
-		files.push(filename);
+		if (files.indexOf(filename) == -1) {
+			files.push(filename);
+		}
 	}
 	else {
 		vscode.commands.executeCommand("workbench.action.nextEditor");
@@ -387,7 +397,9 @@ export async function commandBuildOpenEditors(recompile: boolean) {
 		if (editor) {
 			if (editor.viewColumn) {
 				filename = editor.document.uri.fsPath;
-				files.push(filename);
+				if (files.indexOf(filename) == -1) {
+					files.push(filename);
+				}
 			}
 			else {
 				vscode.window.showWarningMessage("[SKIPPING] Editor file is not fully open");
@@ -401,7 +413,9 @@ export async function commandBuildOpenEditors(recompile: boolean) {
 		if (nextEditor && !sameEditor(editor as vscode.TextEditor, nextEditor as vscode.TextEditor)) {
 			if (nextEditor.viewColumn) {
 				filename = nextEditor.document.uri.fsPath;
-				files.push(filename);
+				if (files.indexOf(filename) == -1) {
+					files.push(filename);
+				}
 			}
 			else {
 				vscode.window.showWarningMessage("[SKIPPING] Editor file is not fully open");
