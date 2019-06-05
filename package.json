@@ -247,15 +247,17 @@
 						"none",
 						"only errors",
 						"errors and warnings",
+						"errors warnings and infos",
 						"all"
 					],
 					"enumDescriptions": [
 						"%tds.package.editor.notification.show.none%",
 						"%tds.package.editor.notification.show.only_errors%",
 						"%tds.package.editor.notification.show.errors_and_warnings%",
+						"%tds.package.editor.notification.show.errors_warnings_and_infos%",
 						"%tds.package.editor.notification.show.all%"
 					],
-					"default": "errors and warnings",
+					"default": "errors warnings and infos",
 					"description": "%tds.package.editor.notification.show%"
 				},
 				"totvsLanguageServer.editor.toggle.autocomplete": {
