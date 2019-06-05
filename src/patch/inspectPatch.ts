@@ -7,6 +7,8 @@ const compile = require('template-literal');
 import * as nls from 'vscode-nls';
 let localize = nls.loadMessageBundle();
 
+let currentPanel: vscode.WebviewPanel | undefined = undefined;
+
 const localizeHTML = {
 	"tds.webview.inspect.patch": localize("tds.webview.inspect.patch", "Patch Infos"),
 	"tds.webview.inspect.ignore.files": localize("tds.webview.inspect.ignore.files", "Ignore files"),
@@ -34,49 +36,63 @@ export function patchInfos(context: vscode.ExtensionContext, args: any) {
 			extensionPath = context.extensionPath;
 		}
 
-		const currentPanel = vscode.window.createWebviewPanel(
-			'totvs-developer-studio.inspect.patch',
-			'Inspetor de Patch',
-			vscode.ViewColumn.One,
-			{
-				enableScripts: true,
-				localResourceRoots: [vscode.Uri.file(path.join(extensionPath, 'src', 'patch'))],
-				retainContextWhenHidden: true
-			}
-		);
+		if (!currentPanel) {
+			currentPanel = vscode.window.createWebviewPanel(
+				'totvs-developer-studio.inspect.patch',
+				'Inspetor de Patch',
+				vscode.ViewColumn.One,
+				{
+					enableScripts: true,
+					localResourceRoots: [vscode.Uri.file(path.join(extensionPath, 'src', 'patch'))],
+					retainContextWhenHidden: true
+				}
+			);
 
-		currentPanel.webview.html = getWebViewContent(context, localizeHTML);
+			currentPanel.webview.html = getWebViewContent(context, localizeHTML);
 
-		currentPanel.onDidDispose(
-			() => {
-				//currentPanel = undefined;
+			currentPanel.onDidDispose(
+				() => {
+					currentPanel = undefined;
+				},
+				null,
+				context.subscriptions
+			);
+
+			currentPanel.webview.onDidReceiveMessage(message => {
+				switch (message.command) {
+					case 'patchInfo':
+						sendPatchInfo(message.patchFile, server, authorizationToken, currentPanel);
+						return;
+					case 'close':
+						if (currentPanel) {
+							currentPanel.dispose();
+						}
+						break;
+				}
 			},
-			null,
-			context.subscriptions
-		);
-
-		currentPanel.webview.onDidReceiveMessage(message => {
-			switch (message.command) {
-				case 'patchInfo':
-					sendPatchInfo(message.patchFile, server, authorizationToken, currentPanel);
-					return;
-				case 'close':
-					currentPanel.dispose();
-					break;
-			}
-		},
-			undefined,
-			context.subscriptions
-		);
+				undefined,
+				context.subscriptions
+			);
+		}else{
+			currentPanel.reveal();
+		}
 
 		if (args) {
 			if (args.fsPath) {
+				sendPatchPath(args.fsPath, currentPanel);
 				sendPatchInfo(args.fsPath, server, authorizationToken, currentPanel);
 			}
 		}
 	} else {
 		vscode.window.showErrorMessage("There is no server connected.");
 	}
+}
+
+function sendPatchPath(path, currentPanel) {
+	currentPanel.webview.postMessage({
+		command: "setPatchPath",
+		'path': path
+	});
 }
 
 function sendPatchInfo(patchFile, server, authorizationToken, currentPanel) {
@@ -90,7 +106,10 @@ function sendPatchInfo(patchFile, server, authorizationToken, currentPanel) {
 			"isLocal": true
 		}
 	}).then((response: any) => {
-		currentPanel.webview.postMessage(response.patchInfos);
+		currentPanel.webview.postMessage({
+			command: 'setData',
+			data: response.patchInfos
+		});
 	}, (err) => {
 		vscode.window.showErrorMessage(err);
 	});

@@ -104,6 +104,13 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 								}
 							}
 							return;
+						case 'patchInfo':
+							vscode.window.showInformationMessage("PatchInfo");
+							var args = {
+								fsPath : message.file
+							}
+							vscode.commands.executeCommand('totvs-developer-studio.patchInfos.fromFile', args);
+							return;
 					}
 				},
 					undefined,

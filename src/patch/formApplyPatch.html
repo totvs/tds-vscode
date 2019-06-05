@@ -103,6 +103,22 @@
 					action: function (e, dt, node, config) {
 						tableAPI.rows('.selected').remove().draw();
 					}
+				},
+				{
+					text: 'Patch Info',
+					exportOptions: {
+						modifier: {
+							selected: null
+						}
+					},
+					action: function (e, dt, node, config) {
+						var data = tableAPI.row('.selected').data();
+
+						vscode.postMessage({
+							command: 'patchInfo',
+							file: data[1]
+						});
+					}
 				}
 			]
 		}).api();

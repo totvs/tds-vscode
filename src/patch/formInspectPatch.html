@@ -36,8 +36,12 @@
 				<!--Patch Inspect-->
 			</div>
 			<br>
-			<input class="inputText" type="file" accept='PatchFile/*.ptm' id="btn-File" name="btn-File"
-				onchange="setTextArea(event)" multiple />
+			<div class="wrap-input">
+				<label for="patchFile">Patch File: </label><!--Patch File-->
+				<input class="inputText" type="text" id="FilePatch" name="FilePatch" placeholder="Ex: C:/totvs/patchs/tttp120.ptm...">
+				<input class="inputText" type="file" accept='PatchFile/*.ptm' id="btn-File" name="btn-File"
+					onchange="setTextArea(event)" multiple />
+			</div>
 			<div class="wrap-input">
 				<div class="material-table z-depth-3 hoverable">
 					<table id="tableInfos" class="mdl-data-table" width="100%">
@@ -89,6 +93,8 @@
 
 		var fullPath = files[0].path;
 
+		document.getElementById('FilePatch').value = fullPath;
+
 		vscode.postMessage({
 			command: "patchInfo",
 			patchFile: fullPath
@@ -102,14 +108,19 @@
 	}
 
 	window.addEventListener('message', event => {
-			for (var i=0; i < event.data.length; i++) {
-				console.log(event.data[i].name);
-				var row = new Array(event.data[i].name, event.data[i].date);
+		const message = event.data;
+		switch (message.command) {
+			case 'setPatchPath' :
+				document.getElementById('FilePatch').value = message.path;
+			case 'setData' :
+				for (var i=0; i < message.data.length; i++) {
+					var row = new Array(message.data[i].name, message.data[i].date);
 
-				tableAPI.row.add(row);
-			}
+					tableAPI.row.add(row);
+				}
 
-			tableAPI.draw();
+				tableAPI.draw();
+		}
 		});
 </script>
 </html>
