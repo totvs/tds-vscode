@@ -1,5 +1,12 @@
 # Versão 0.3.1
 
+## Exibir tabeas e conteúdo: [Issue 20](https://github.com/totvs/tds-vscode/issues/20)
+### Melhoria:
+* Implementar o sincronismo de tabelas durante a depuração.
+### Solução:
+* Implementado o sicronismo de tabelas, o qual aparecerá como um escopo de variável e ao chamar pela visão "Debug Console" prefixando o nome da tabela com o comando "table:" (Ex: table:SM0)
+----
+
 ## Barra invoca intelisense: [Issue 16](https://github.com/totvs/tds-vscode/issues/16)
 ### Problema:
 * Ao digitar o caractere "/" dentro de uma função, o intelisense é invocado sugerindo a ultima função usada dele.

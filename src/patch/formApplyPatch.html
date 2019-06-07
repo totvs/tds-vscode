@@ -36,8 +36,8 @@
 						</div>
 
 						<div class="wrap-input">
-							<label for="patchFile">Patch File</label><!--Patch File-->
-							<!--input class="inputText" type="text" id="FilePatch" name="FilePatch" placeholder="Ex: C:/totvs/patchs/tttp120.ptm..."-->
+							<label for="patchFile">Patch File</label>
+						<br></br>
 							<div class="material-table z-depth-3 hoverable">
 								<table id="tableInfos" class="mdl-data-table" width="100%">
 									<thead>
@@ -83,7 +83,7 @@
 			columnDefs: [
 				{
 					targets: [0, 1],
-					className: 'mdl-data-table__cell--non-numeric'
+					className: 'mdl-data-table__cell--non-numeric tableColor'
 				},
 				{
 					orderable: true,
@@ -95,6 +95,7 @@
 			buttons: [
 				{
 					text: 'Delete Selected',
+					className: "btn-submit",
 					exportOptions: {
 						modifier: {
 							selected: null
@@ -106,6 +107,7 @@
 				},
 				{
 					text: 'Patch Info',
+					className: "btn-submit",
 					exportOptions: {
 						modifier: {
 							selected: null
