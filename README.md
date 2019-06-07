@@ -141,7 +141,9 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
 "name": "Totvs Language Debug",
 "program": "${command:AskForProgramName}",
 "cwb": "${workspaceFolder}",
-"smartclientBin": "/home/mansano/_c/totvs12/bin/smartclient/smartclient"
+"smartclientBin": "/home/mansano/_c/totvs12/bin/smartclient/smartclient",
+"isMultiSession": true,
+"enableTableSync": true
 ``}``
 
     * Tipo: _totvs_language_web_debug_, usa o SmartClient Html.
@@ -153,7 +155,9 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
 "name": "Totvs Language Debug",
 "program": "${command:AskForProgramName}",
 "cwb": "${workspaceFolder}",
-"smartclientUrl": "<http://localhost:8080>"
+"smartclientUrl": "<http://localhost:8080>",
+"isMultiSession": true,
+"enableTableSync": true
 ``}``
 
 *Nota:* Abra o arquivo `settings.json` e informe a chave "", com o caminho completo do seu navegador web.
@@ -186,13 +190,20 @@ Veja detalhes sobre como usar as diretivas [${command:}](https://link) e [passag
 
 ### Usando Debug Console
 
-* É possível verificar os valores de variáveis e executar métodos durante o debug com o Debug Console.
+* É possível verificar os valores de variáveis, conteúdo de tabelas e executar métodos durante o debug com o Debug Console.
 * Coloque um breakpoint em um ponto necessário de seu fonte.
 * Quando a depuração "parar" ao breakpoint, abra a visão `Debug Console` na parte inferior da tela.
 * Digite uma operação ou variável AdvPL disponivel em seu ambiente de depuração.
+* Para verificar o conteúdo de uma tabela aberta, digite o seguinte comando: table:nome_da_tabela (ex.: table:SM0)
 * Analise os dados retornados de acordo com sua necessidade.
 
 ![Debug Console](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/DebugConsole.gif)
+
+### Sincronismo de tabelas durante o debug
+* O sincronismo de tabelas pode ser alterado por configuração de "launcher" pelo parâmetro: enableTableSync
+* Ele vem habilitado por padrão em uma nova configuração de execução.
+* É possível alterar essa opção durante uma depuração pelo comando: "TOTVS: Toggle table sync". Note que ao usuar esse comando, o parâmetro do launcher é alterado, portanto a próxima depuração irá utilizar essa definição. Ou seja, caso tenha sido desabilitado, a próxima depuração iniciará com o sincronismo de tabelas desabilitado também.
+
 
 ## Patch
 
