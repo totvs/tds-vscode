@@ -140,6 +140,7 @@ function updateElement(element: any, message: any) {
 	element.doNotShowSplash = message.doNotShowSplash;
 	element.language = message.hasLanguage ? message.language : "";
 	element.ignoreFiles = message.ignoreFiles;
+	element.enableTableSync = true;
 }
 
 function saveNewLauncher(message: any, launchersInfo: any): void {

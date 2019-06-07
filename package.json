@@ -396,6 +396,11 @@
 				"category": "TOTVS"
 			},
 			{
+				"command": "totvs-developer-studio.toggleTableSync",
+				"title": "%tds.command.debug.toggleTableSync%",
+				"category": "TOTVS"
+			},
+			{
 				"command": "totvs-developer-studio.config",
 				"title": "%tds.package.config%",
 				"icon": {
@@ -575,7 +580,12 @@
 							},
 							"ignoreFiles": {
 								"type": "boolean",
-								"description": "Make the debugger ignore break events in files not found in WorkSpace",
+								"description": "%tds.package.properties.ignoreFiles.description%",
+								"default": false
+							},
+							"enableTableSync": {
+								"type": "boolean",
+								"description": "%tds.package.properties.toggleTableSync.description%",
 								"default": false
 							},
 							"programArguments": {
@@ -596,7 +606,8 @@
 						"program": "${command:AskForProgramName}",
 						"cwb": "${workspaceFolder}",
 						"smartclientBin": "C:/totvs/bin/smartclient/smartclient.exe",
-						"isMultiSession": true
+						"isMultiSession": true,
+						"enableTableSync": true
 					}
 				],
 				"configurationSnippets": [
@@ -609,7 +620,8 @@
 							"name": "${1:%tds.package.totvs_language_debug%}",
 							"program": "^\"\\${command:AskForProgramName}\"",
 							"smartclientBin": "${2:C:/totvs/bin/smartclient/smartclient.exe}",
-							"isMultiSession": true
+							"isMultiSession": true,
+							"enableTableSync": true
 						}
 					},
 					{
@@ -624,7 +636,8 @@
 								"^\"\\${command:AskForProgramArguments}\""
 							],
 							"smartclientBin": "${2:C:/totvs/bin/smartclient/smartclient.exe}",
-							"isMultiSession": true
+							"isMultiSession": true,
+							"enableTableSync": true
 						}
 					}
 				],
@@ -713,6 +726,11 @@
 								"description": "%tds.package.properties.logFile.description%",
 								"default": "${workspaceFolder}\\daplog.log"
 							},
+							"enableTableSync" : {
+								"type": "boolean",
+								"description": "%tds.package.properties.toggleTableSync.description%",
+								"default": true
+							},
 							"ignoreFiles": {
 								"type": "boolean",
 								"description": "Make the debugger ignore break events in files not found in WorkSpace",
@@ -735,11 +753,25 @@
 						"name": "%tds.package.totvs_language_debug%",
 						"program": "${command:AskForProgramName}",
 						"cwb": "${workspaceFolder}",
+						"environment": "environment",
 						"smartclientUrl": "http://localhost:8080",
-						"isMultiSession": true
+						"isMultiSession": true,
+						"enableTableSync": true
 					}
 				],
 				"configurationSnippets": [
+					{
+						"label": "%tds.package.totvs_language_debug%",
+						"description": "%tds.package.configurationSnippets.description%",
+						"body": {
+							"type": "totvs_language_debug",
+							"request": "launch",
+							"name": "%tds.package.totvs_language_debug%",
+							"program": "${command:AskForProgramName}",
+							"isMultiSession": true,
+							"enableTableSync": true
+						}
+					},
 					{
 						"label": "%tds.package.totvs_language_debug.web%",
 						"description": "%tds.package.configurationSnippets.description.web%",
@@ -749,6 +781,7 @@
 							"name": "%tds.package.totvs_language_debug.web%",
 							"program": "^\"\\${command:AskForProgramName}\"",
 							"isMultiSession": true,
+							"enableTableSync": true,
 							"smartclientUrl": "http://localhost:8080"
 						}
 					}

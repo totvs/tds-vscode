@@ -15,12 +15,12 @@
 	"tds.package.editor.notification.show.errors_and_warnings": "Errors and Warnings",
 	"tds.package.editor.notification.show.errors_warnings_and_infos": "Errors Warnings and Infos",
 	"tds.package.editor.notification.show.all": "All",
-	"tds.package.inspector.function.title": "Functions inspector",
 	"tds.package.inspector.patch.title": "Patch Infos",
 	"tds.package.patchInfos.fromFile": "Patch Infos",
+	"tds.package.inspector.function.title": "Functions inspector",
 	"tds.package.inspector.function.description": "Functions inspector",
-	"tds.package.inspector.object.title": "Object inspector",
-	"tds.package.inspector.object.description": "Object inspector",
+	"tds.package.inspector.object.title": "Objects inspector",
+	"tds.package.inspector.object.description": "Objects inspector",
 	"tds.package.defrag.rpo.title": "Defrag RPO",
 	"tds.package.defrag.rpo.description": "Defrag current RPO",
 	"tds.package.build.file.title": "Compile Selection",
@@ -77,6 +77,8 @@
 	"tds.package.properties.doNotShowSplash.description": "If the splash screen must not show (-Q)",
 	"tds.package.properties.language.description": "Informs the language to start the execution (-L)",
 	"tds.package.properties.logFile.description": "DAP logfile for troubleshooting only",
+	"tds.package.properties.ignoreFiles.description": "Make the debugger ignore break events in files not found in WorkSpace",
+	"tds.package.properties.toggleTableSync.description": "Enables or disables the tables sync with the server",
 	"tds.package.totvs_language_debug.web": "Totvs Language Web Debug (SmartClient HTML)",
 	"tds.package.server.view": "Servers",
 	"tds.package.properties.program.description.web": "Program/Function name",
@@ -94,5 +96,6 @@
 	"tds.toggle.autocomplete.behavior": "Toggle Autocomplete Behavior",
 	"tds.package.editor.toggle.autocomplete": "Toggle Autocomplete Behavior.",
     "tds.package.editor.toggle.autocomplete.basic": "Standard VS Cdoe procedure.",
-    "tds.package.editor.toggle.autocomplete.ls": "Search in the Language Server of the current environment."
+	"tds.package.editor.toggle.autocomplete.ls": "Search in the Language Server of the current environment.",
+	"tds.command.debug.toggleTableSync": "Toggle table sync"
 }

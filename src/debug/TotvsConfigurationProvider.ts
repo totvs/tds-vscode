@@ -22,8 +22,8 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 	 * Massage a debug configuration just before a debug session is being launched,
 	 * e.g. add all missing attributes to the debug configuration.
 	 */
+	//resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): ProviderResult<DebugConfiguration> {
 	async resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): Promise<ProviderResult<DebugConfiguration>> {
-
 		if (connectedServerItem !== undefined) {
 			config.type = TotvsConfigurationProvider.type;
 			config.serverAddress = connectedServerItem.address;

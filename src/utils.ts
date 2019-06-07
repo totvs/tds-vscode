@@ -4,11 +4,33 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as stripJsonComments from 'strip-json-comments';
 import * as ini from 'ini';
+import { languageClient, localize } from './extension';
 
 const homedir = require('os').homedir();
 
-import * as nls from 'vscode-nls';
-let localize = nls.loadMessageBundle();
+export enum MESSAGETYPE {
+	/**
+	 * Type for informative and resumed messages
+	 * i.e.: Inform only the begining and the end of a compilation process.
+	 */
+	Info = "Info",
+
+	/**
+	 * Type for error messages
+	 */
+	Error = "Error",
+
+	/**
+	 * Type for warning messages
+	 */
+	Warning = "Warning",
+
+	/**
+	 * Type for detailed messages
+	 * i.e.: During a compilation process, inform the status of each file and it's result.
+	 */
+	Log = "Log"
+}
 
 export interface SelectServer {
 	name: string;
@@ -416,8 +438,8 @@ export default class Utils {
 	 * Cria o arquivo launch.json caso ele nao exista.
 	 */
 	static createLaunchConfig() {
-		const launch = Utils.getLaunchConfig();
-		if (!launch) {
+		const launchConfig = Utils.getLaunchConfig();
+		if (!launchConfig) {
 			let fs = require("fs");
 			let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
 			if (ext) {
@@ -606,6 +628,56 @@ export default class Utils {
 		}
 		return undefined;
 	}
+
+	/**
+	 * Logs the informed messaged in the console and/or shows a dialog
+	 * Please note that the dialog opening respects the dialog settings defined by the user in editor.show.notification
+	 * @param message - The message to be shown
+	 * @param messageType - The message type
+	 * @param showDialog - If it must show a dialog.
+	 */
+	static logMessage(message: string, messageType: MESSAGETYPE, showDialog: boolean) {
+		let config = vscode.workspace.getConfiguration('totvsLanguageServer');
+		let notificationLevel = config.get('editor.show.notification');
+		switch (messageType) {
+			case MESSAGETYPE.Error:
+				languageClient !== undefined ? languageClient.error(message) : console.log(message);
+				if (showDialog && notificationLevel !== "none") {
+					vscode.window.showErrorMessage(message);
+				}
+				break;
+			case MESSAGETYPE.Info:
+				languageClient !== undefined ? languageClient.info(message) : console.log(message);
+				if (showDialog && notificationLevel === "all" || notificationLevel === "errors warnings and infos") {
+					vscode.window.showInformationMessage(message);
+				}
+				break;
+			case MESSAGETYPE.Warning:
+				languageClient !== undefined ? languageClient.warn(message) : console.log(message);
+				if (showDialog && (notificationLevel === "all" || notificationLevel === "errors warnings and infos" || notificationLevel === "errors and warnings")) {
+					vscode.window.showWarningMessage(message);
+				}
+				break;
+			case MESSAGETYPE.Log:
+				let time = this.timeAsHHMMSS(new Date());
+				languageClient !== undefined ? languageClient.outputChannel.appendLine("[Log   + "+time+"] " + message) : console.log(message);
+				if (showDialog && notificationLevel === "all") {
+					vscode.window.showInformationMessage(message);
+				}
+				break;
+		}
+	}
+
+	static timeAsHHMMSS(date): string {
+		return this.leftpad(date.getHours(), 2)
+				  + ':' + this.leftpad(date.getMinutes(), 2)
+				  + ':' + this.leftpad(date.getSeconds(), 2);
+	  }
+
+	static leftpad(val, resultLength = 2, leftpadChar = '0'): string {
+		return (String(leftpadChar).repeat(resultLength)
+		  + String(val)).slice(String(val).length);
+	 }
 
 	static getAllFilesRecursive(folders: Array<string>): string[] {
 		const files: string[] = [];
