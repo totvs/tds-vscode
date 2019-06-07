@@ -221,7 +221,7 @@ export function activate(context: ExtensionContext) {
 	//Ação para desfragmentar o RPO do servidor corrente.
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.defragRPO', () => defragRpo()));
 	//Ação para deletar um fonte selecionado do RPO.
-	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.delete.file.fromRPO', (context) => deleteFileFromRPO(context)));
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.delete.file.fromRPO', (context, files) => deleteFileFromRPO(context, files)));
 	//Ação par abrir a tela de inspetor de objetos.
 	context.subscriptions.push(commands.registerCommand("totvs-developer-studio.inspectorObjects", () => inspectObject(context)));
 	//Ação par abrir a tela de inspetor de funções.
@@ -348,8 +348,8 @@ function verifyEncoding() {
 				questionAgain = false;
 			} else if (clicked === textNo) {
 				questionAgain = true;
-			} else if(clicked === textNoAsk){
-				questionAgain= false;
+			} else if (clicked === textNoAsk) {
+				questionAgain = false;
 			}
 			configADVPL.update("askEncodingChange", questionAgain);
 		});

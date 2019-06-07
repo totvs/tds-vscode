@@ -173,16 +173,16 @@ export default class Utils {
 				let emptySavedTokens: Array<[string, object]> = [];
 				servers.savedTokens = emptySavedTokens;
 			}
-			servers.savedTokens.push([ key, { "id": id, "token": token } ]);
+			servers.savedTokens.push([key, { "id": id, "token": token }]);
 		}
 		this.persistServersInfo(servers);
 	}
 
-		/**
-	 * Salva o servidor logado por ultimo.
-	 * @param id Id do servidor logado
-	 * @param environment Ambiente utilizado no login
-	 */
+	/**
+ * Salva o servidor logado por ultimo.
+ * @param id Id do servidor logado
+ * @param environment Ambiente utilizado no login
+ */
 	static removeSavedConnectionToken(id: string, environment: string) {
 		const servers = this.getServersConfig();
 		if (servers.savedTokens) {
@@ -433,14 +433,14 @@ export default class Utils {
 				});
 
 				if (debug.length === 1) {
-					let initCfg = (debug[0]["initialConfigurations"]  as any[]).filter((element: any) => {
+					let initCfg = (debug[0]["initialConfigurations"] as any[]).filter((element: any) => {
 						return element.request === "launch";
 					});
 
 					if (initCfg.length === 1) {
 						sampleLaunch = {
 							"version": "0.2.0",
-							"configurations": [ (initCfg[0] as never) ]
+							"configurations": [(initCfg[0] as never)]
 						};
 					}
 				}
@@ -487,7 +487,7 @@ export default class Utils {
  	*Recupera um servidor pelo id informado.
  	* @param id id do servidor alvo.
  	*/
-	 static getServerById(id: string, serversConfig: any) {
+	static getServerById(id: string, serversConfig: any) {
 		let server;
 		if (serversConfig.configurations) {
 			const configs = serversConfig.configurations;
@@ -507,7 +507,7 @@ export default class Utils {
  	*Recupera um servidor pelo nome informado.
  	* @param name nome do servidor alvo.
  	*/
-	 static getServerForNameWithConfig(name: string, serversConfig: any) {
+	static getServerForNameWithConfig(name: string, serversConfig: any) {
 		let server;
 
 		if (serversConfig.configurations) {
@@ -606,4 +606,80 @@ export default class Utils {
 		}
 		return undefined;
 	}
+
+	static getAllFilesRecursive(folders: Array<string>): string[] {
+		const files: string[] = [];
+
+		folders.forEach((folder) => {
+			if (fs.lstatSync(folder).isDirectory()) {
+				fs.readdirSync(folder).forEach(file => {
+					if (!Utils.ignoreResource(file)) {
+						const fn = path.join(folder, file);
+						const ss = fs.statSync(fn);
+						if (ss.isDirectory()) {
+							files.push(...Utils.getAllFilesRecursive([fn]));
+						} else {
+							files.push(fn);
+						}
+					}
+				});
+			} else {
+				files.push(folder);
+			}
+		});
+
+		return files;
+	}
+	static ignoreResource(fileName: string): boolean {
+
+		return processIgnoreList(ignoreListExpressions, path.basename(fileName));
+	}
+}
+
+//TODO: pegar a lista de arquivos a ignorar da configuração
+const ignoreListExpressions: Array<RegExp> = [];
+ignoreListExpressions.push(/^\..*/ig); //começa com ponto (normalmente são de controle/configuração)
+ignoreListExpressions.push(/(\.)$/ig); // sem extensão (não é possivel determinar se é fonte ou recurso)
+ignoreListExpressions.push((/(\.ch)$/ig)); // arquivos de definição e trabalho
+ignoreListExpressions.push((/(\.erx_.*)$/ig)); // arquivos de definição e trabalho
+ignoreListExpressions.push((/(\.ppx_.*)$/ig)); // arquivos de definição e trabalho
+ignoreListExpressions.push((/(\.err_.*)$/ig)); // arquivos de definição e trabalho
+
+//lista de arquivos/pastas normalmente ignorados
+ignoreListExpressions.push(/(.*)?(#.*#)$/ig);
+ignoreListExpressions.push(/(.*)?(\.#*)$/ig);
+ignoreListExpressions.push(/(.*)?(%.*%)$/ig);
+ignoreListExpressions.push(/(.*)?(\._.*)$/ig);
+ignoreListExpressions.push(/(.*)?(CVS)$/ig);
+ignoreListExpressions.push(/(.*)?.*(CVS)$/ig);
+ignoreListExpressions.push(/(.*)?(\.cvsignore)$/ig);
+ignoreListExpressions.push(/(.*)?(SCCS)$/ig);
+ignoreListExpressions.push(/(.*)?.*\/SCCS\/.*$/ig);
+ignoreListExpressions.push(/(.*)?(vssver\.scc)$/ig);
+ignoreListExpressions.push(/(.*)?(\.svn)$/ig);
+ignoreListExpressions.push(/(.*)?(\.DS_Store)$/ig);
+ignoreListExpressions.push(/(.*)?(\.git)$/ig);
+ignoreListExpressions.push(/(.*)?(\.gitattributes)$/ig);
+ignoreListExpressions.push(/(.*)?(\.gitignore)$/ig);
+ignoreListExpressions.push(/(.*)?(\.gitmodules)$/ig);
+ignoreListExpressions.push(/(.*)?(\.hg)$/ig);
+ignoreListExpressions.push(/(.*)?(\.hgignore)$/ig);
+ignoreListExpressions.push(/(.*)?(\.hgsub)$/ig);
+ignoreListExpressions.push(/(.*)?(\.hgsubstate)$/ig);
+ignoreListExpressions.push(/(.*)?(\.hgtags)$/ig);
+ignoreListExpressions.push(/(.*)?(\.bzr)$/ig);
+ignoreListExpressions.push(/(.*)?(\.bzrignore)$/ig);
+
+function processIgnoreList(ignoreList: Array<RegExp>, testName: string): boolean {
+	let result: boolean = false;
+
+	for (let index = 0; index < ignoreList.length; index++) {
+		const regexp = ignoreList[index];
+		if (regexp.test(testName)) {
+			result = true;
+			break;
+		}
+	}
+
+	return result;
 }
