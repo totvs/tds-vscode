@@ -1,8 +1,11 @@
-import { extensions, QuickPickItem, Disposable, QuickPick } from 'vscode';
+import {debug, DebugSession, Disposable, extensions, QuickPick, QuickPickItem, window} from 'vscode';
 import { chmodSync } from 'fs';
-import Utils from '../utils';
-import { window } from 'vscode';
+import Utils, { MESSAGETYPE } from '../utils';
 import { localize } from '../extension';
+
+let isTableSyncEnabled = false;
+let debugSession: DebugSession | undefined;
+const ignoreValue: string[] = [',', '(', ')' ];
 
 export function getDAP() {
 	let pathDAP = "";
@@ -110,11 +113,8 @@ export function extractProgram(value: string): string {
 	const groups: string[] = value.split(/(\w+)+/i).filter((value) => {
 		return value && value.trim().length > 0;
 	});
-
 	return (groups && groups.length > 0) ? groups[0] : "";
 }
-
-const ignoreValue: string[] = [',', '(', ')' ];
 
 export function extractArgs(value: string): string[] {
 	const groups: string[] = value.replace(/-a=/gi, "").split(/(\w+)+/i).filter((value) => {
@@ -126,6 +126,54 @@ export function extractArgs(value: string): string[] {
 
 export async function getProgramArguments() {
 	return await pickProgramArguments();
+}
+
+export function toggleTableSync() {
+	if(debugSession !== undefined) {
+		let launchConfig = Utils.getLaunchConfig();
+		launchConfig.configurations.forEach(launchElement => {
+			if(debugSession !== undefined && launchElement.name === debugSession.name) {
+				isTableSyncEnabled = !launchElement.enableTableSync;
+				sendChangeTableSyncSetting();
+				launchElement.enableTableSync = isTableSyncEnabled;
+				if(isTableSyncEnabled) {
+					Utils.logMessage(localize('tds.debug.tableSync.enabled', "Tables synchronism enabled"), MESSAGETYPE.Info,true);
+				} else {
+					Utils.logMessage(localize('tds.debug.tableSync.disabled', "Tables synchronism disabled"), MESSAGETYPE.Info,true);
+				}
+			}
+		});
+		Utils.saveLaunchConfig(launchConfig);
+	} else {
+		Utils.logMessage(
+			localize('tds.debug.tableSync.disabled', "The command to (Dis)Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually"),
+		MESSAGETYPE.Error,true);
+	}
+}
+
+debug.onDidChangeActiveDebugSession((newDebugSession) => {
+ 	debugSession = newDebugSession;
+})
+
+function sendChangeTableSyncSetting(): void {
+	if(debugSession === undefined) {
+		debugSession = debug.activeDebugSession;
+	}
+	if(debugSession !== undefined) {
+		const settingsArray = [
+			{key:"enableTableSync", value: isTableSyncEnabled}
+		];
+		const arg = {settings: settingsArray};
+
+		debugSession.customRequest("$changeSettings", arg).then((value: any) => {
+			//let status = isTableSyncEnabled ? localize('tds.debug.tableSync.satus.enabled',"enabled") : localize('tds.debug.tableSync.satus.disabled',"disabled");
+			//Utils.logMessage(localize('tds.debug.tableSync.satus',`Tables synchronism ${status}`) , MESSAGETYPE.Info, true);
+
+		}).then(undefined, err => {
+			console.error(err.message);
+			Utils.logMessage(err.message,MESSAGETYPE.Error, true);
+		 });
+	}
 }
 
 async function pickProgramArguments() {

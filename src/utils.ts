@@ -4,11 +4,16 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as stripJsonComments from 'strip-json-comments';
 import * as ini from 'ini';
+import { languageClient, localize } from './extension';
 
 const homedir = require('os').homedir();
 
-import * as nls from 'vscode-nls';
-let localize = nls.loadMessageBundle();
+export enum MESSAGETYPE {
+	Info = "Info",
+	Error = "Error",
+	Warning = "Warning",
+	Log = "Log"
+}
 
 export interface SelectServer {
 	name: string;
@@ -173,16 +178,16 @@ export default class Utils {
 				let emptySavedTokens: Array<[string, object]> = [];
 				servers.savedTokens = emptySavedTokens;
 			}
-			servers.savedTokens.push([ key, { "id": id, "token": token } ]);
+			servers.savedTokens.push([key, { "id": id, "token": token }]);
 		}
 		this.persistServersInfo(servers);
 	}
 
-		/**
-	 * Salva o servidor logado por ultimo.
-	 * @param id Id do servidor logado
-	 * @param environment Ambiente utilizado no login
-	 */
+	/**
+ * Salva o servidor logado por ultimo.
+ * @param id Id do servidor logado
+ * @param environment Ambiente utilizado no login
+ */
 	static removeSavedConnectionToken(id: string, environment: string) {
 		const servers = this.getServersConfig();
 		if (servers.savedTokens) {
@@ -416,8 +421,8 @@ export default class Utils {
 	 * Cria o arquivo launch.json caso ele nao exista.
 	 */
 	static createLaunchConfig() {
-		const launch = Utils.getLaunchConfig();
-		if (!launch) {
+		const launchConfig = Utils.getLaunchConfig();
+		if (!launchConfig) {
 			let fs = require("fs");
 			let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
 			if (ext) {
@@ -433,14 +438,14 @@ export default class Utils {
 				});
 
 				if (debug.length === 1) {
-					let initCfg = (debug[0]["initialConfigurations"]  as any[]).filter((element: any) => {
+					let initCfg = (debug[0]["initialConfigurations"] as any[]).filter((element: any) => {
 						return element.request === "launch";
 					});
 
 					if (initCfg.length === 1) {
 						sampleLaunch = {
 							"version": "0.2.0",
-							"configurations": [ (initCfg[0] as never) ]
+							"configurations": [(initCfg[0] as never)]
 						};
 					}
 				}
@@ -487,7 +492,7 @@ export default class Utils {
  	*Recupera um servidor pelo id informado.
  	* @param id id do servidor alvo.
  	*/
-	 static getServerById(id: string, serversConfig: any) {
+	static getServerById(id: string, serversConfig: any) {
 		let server;
 		if (serversConfig.configurations) {
 			const configs = serversConfig.configurations;
@@ -507,7 +512,7 @@ export default class Utils {
  	*Recupera um servidor pelo nome informado.
  	* @param name nome do servidor alvo.
  	*/
-	 static getServerForNameWithConfig(name: string, serversConfig: any) {
+	static getServerForNameWithConfig(name: string, serversConfig: any) {
 		let server;
 
 		if (serversConfig.configurations) {
@@ -606,4 +611,133 @@ export default class Utils {
 		}
 		return undefined;
 	}
+
+	/**
+	 * Loga a mensagem informada no console e/ou mostra um dialog.
+	 ** Note que a abertura do dialog esta respeita a configuração por tipo de avisos definida pelo usuario em: editor.show.notification
+	 * @param message - A mensagem a ser apresentada
+	 * @param messageType - O tipo da mensagem a ser apresentada
+	 * @param logToConsole - Se deve logar no console
+	 * @param showDialog - Se deve mostrar o dialog
+	 */
+	static logMessage(message: string, messageType: MESSAGETYPE, showDialog: boolean) {
+		let config = vscode.workspace.getConfiguration('totvsLanguageServer');
+		let notificationLevel = config.get('editor.show.notification');
+		switch (messageType) {
+			case MESSAGETYPE.Error:
+				languageClient.error(message);
+				if (showDialog && notificationLevel !== "none") {
+					vscode.window.showErrorMessage(message);
+				}
+				break;
+			case MESSAGETYPE.Info:
+				languageClient.info(message);
+				if (showDialog && notificationLevel === "all") {
+					vscode.window.showInformationMessage(message);
+				}
+				break;
+			case MESSAGETYPE.Warning:
+				languageClient.warn(message);
+				if (showDialog && (notificationLevel === "all" || notificationLevel === "errors and warnings")) {
+					vscode.window.showWarningMessage(message);
+				}
+				break;
+			case MESSAGETYPE.Log:
+				//let today = this.timeAsHHMMSS(new Date());
+				//let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+				let time = this.timeAsHHMMSS(new Date());
+				languageClient.outputChannel.appendLine("[Log   + "+time+"] " + message);
+				if (showDialog && notificationLevel === "Log") {
+					vscode.window.showInformationMessage(message);
+				}
+				break;
+		}
+	}
+
+	static timeAsHHMMSS(date): string {
+		return this.leftpad(date.getHours(), 2)
+				  + ':' + this.leftpad(date.getMinutes(), 2)
+				  + ':' + this.leftpad(date.getSeconds(), 2);
+	  }
+
+	static leftpad(val, resultLength = 2, leftpadChar = '0'): string {
+		return (String(leftpadChar).repeat(resultLength)
+		  + String(val)).slice(String(val).length);
+	 }
+
+	static getAllFilesRecursive(folders: Array<string>): string[] {
+		const files: string[] = [];
+
+		folders.forEach((folder) => {
+			if (fs.lstatSync(folder).isDirectory()) {
+				fs.readdirSync(folder).forEach(file => {
+					if (!Utils.ignoreResource(file)) {
+						const fn = path.join(folder, file);
+						const ss = fs.statSync(fn);
+						if (ss.isDirectory()) {
+							files.push(...Utils.getAllFilesRecursive([fn]));
+						} else {
+							files.push(fn);
+						}
+					}
+				});
+			} else {
+				files.push(folder);
+			}
+		});
+
+		return files;
+	}
+	static ignoreResource(fileName: string): boolean {
+
+		return processIgnoreList(ignoreListExpressions, path.basename(fileName));
+	}
+}
+
+//TODO: pegar a lista de arquivos a ignorar da configuração
+const ignoreListExpressions: Array<RegExp> = [];
+ignoreListExpressions.push(/^\..*/ig); //começa com ponto (normalmente são de controle/configuração)
+ignoreListExpressions.push(/(\.)$/ig); // sem extensão (não é possivel determinar se é fonte ou recurso)
+ignoreListExpressions.push((/(\.ch)$/ig)); // arquivos de definição e trabalho
+ignoreListExpressions.push((/(\.erx_.*)$/ig)); // arquivos de definição e trabalho
+ignoreListExpressions.push((/(\.ppx_.*)$/ig)); // arquivos de definição e trabalho
+ignoreListExpressions.push((/(\.err_.*)$/ig)); // arquivos de definição e trabalho
+
+//lista de arquivos/pastas normalmente ignorados
+ignoreListExpressions.push(/(.*)?(#.*#)$/ig);
+ignoreListExpressions.push(/(.*)?(\.#*)$/ig);
+ignoreListExpressions.push(/(.*)?(%.*%)$/ig);
+ignoreListExpressions.push(/(.*)?(\._.*)$/ig);
+ignoreListExpressions.push(/(.*)?(CVS)$/ig);
+ignoreListExpressions.push(/(.*)?.*(CVS)$/ig);
+ignoreListExpressions.push(/(.*)?(\.cvsignore)$/ig);
+ignoreListExpressions.push(/(.*)?(SCCS)$/ig);
+ignoreListExpressions.push(/(.*)?.*\/SCCS\/.*$/ig);
+ignoreListExpressions.push(/(.*)?(vssver\.scc)$/ig);
+ignoreListExpressions.push(/(.*)?(\.svn)$/ig);
+ignoreListExpressions.push(/(.*)?(\.DS_Store)$/ig);
+ignoreListExpressions.push(/(.*)?(\.git)$/ig);
+ignoreListExpressions.push(/(.*)?(\.gitattributes)$/ig);
+ignoreListExpressions.push(/(.*)?(\.gitignore)$/ig);
+ignoreListExpressions.push(/(.*)?(\.gitmodules)$/ig);
+ignoreListExpressions.push(/(.*)?(\.hg)$/ig);
+ignoreListExpressions.push(/(.*)?(\.hgignore)$/ig);
+ignoreListExpressions.push(/(.*)?(\.hgsub)$/ig);
+ignoreListExpressions.push(/(.*)?(\.hgsubstate)$/ig);
+ignoreListExpressions.push(/(.*)?(\.hgtags)$/ig);
+ignoreListExpressions.push(/(.*)?(\.bzr)$/ig);
+ignoreListExpressions.push(/(.*)?(\.bzrignore)$/ig);
+
+function processIgnoreList(ignoreList: Array<RegExp>, testName: string): boolean {
+	let result: boolean = false;
+
+	for (let index = 0; index < ignoreList.length; index++) {
+		const regexp = ignoreList[index];
+		if (regexp.test(testName)) {
+			result = true;
+			break;
+		}
+	}
+
+	return result;
 }
