@@ -31,7 +31,8 @@ import launcherConfig from './launcher/launcherConfiguration';
 import { onCaptureLoggers, offCaptureLoggers } from './loggerCapture/logger';
 import { TotvsConfigurationWebProvider } from './debug/TotvsConfigurationWebProvider';
 import { TotvsConfigurationProvider } from './debug/TotvsConfigurationProvider';
-import { getDAP, getProgramName } from './debug/debugConfigs';
+import { getDAP, getProgramName} from './debug/debugConfigs';
+import { toggleTableSync } from './debug/debugConfigs';
 import { toggleAutocompleteBehavior, updateSettingsBarItem } from './server/languageServerSettings';
 
 export let languageClient: LanguageClient;
@@ -303,6 +304,8 @@ export function activate(context: ExtensionContext) {
 	//Commandos do capturador de logs.
 	commands.registerCommand("totvs-developer-studio.logger.on", () => onCaptureLoggers(context));
 	commands.registerCommand("totvs-developer-studio.logger.off", () => offCaptureLoggers());
+
+	commands.registerCommand("totvs-developer-studio.toggleTableSync", () => toggleTableSync());
 
 	//Verifica questões de encoding
 	verifyEncoding();

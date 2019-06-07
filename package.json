@@ -373,6 +373,11 @@
 				"category": "TOTVS"
 			},
 			{
+				"command": "totvs-developer-studio.toggleTableSync",
+				"title": "%tds.command.debug.toggleTableSync%",
+				"category": "TOTVS"
+			},
+			{
 				"command": "totvs-developer-studio.config",
 				"title": "%tds.package.config%",
 				"icon": {
@@ -530,7 +535,12 @@
 							},
 							"ignoreFiles": {
 								"type": "boolean",
-								"description": "Make the debugger ignore break events in files not found in WorkSpace",
+								"description": "%tds.package.properties.ignoreFiles.description%",
+								"default": false
+							},
+							"enableTableSync": {
+								"type": "boolean",
+								"description": "%tds.package.properties.toggleTableSync.description%",
 								"default": false
 							}
 						}
@@ -546,7 +556,8 @@
 						"smartclientBin": "C:/totvs/bin/smartclient/smartclient.exe",
 						"serverItem": "tcp",
 						"environment": "environment",
-						"isMultiSession": true
+						"isMultiSession": true,
+						"enableTableSync": true
 					}
 				],
 				"configurationSnippets": [
@@ -558,7 +569,8 @@
 							"request": "launch",
 							"name": "%tds.package.totvs_language_debug%",
 							"program": "${command:AskForProgramName}",
-							"isMultiSession": true
+							"isMultiSession": true,
+							"enableTableSync": true
 						}
 					}
 				],
@@ -644,6 +656,11 @@
 								"type": "string",
 								"description": "%tds.package.properties.logFile.description%",
 								"default": "${workspaceFolder}\\daplog.log"
+							},
+							"enableTableSync" : {
+								"type": "boolean",
+								"description": "%tds.package.properties.enableTableSync.description%",
+								"default": true
 							}
 						}
 					}
@@ -658,7 +675,8 @@
 						"smartclientBin": "C:/totvs/bin/smartclient/smartclient.exe",
 						"serverItem": "tcp",
 						"environment": "environment",
-						"isMultiSession": true
+						"isMultiSession": true,
+						"enableTableSync": true
 					}
 				],
 				"configurationSnippets": [
@@ -670,7 +688,8 @@
 							"request": "launch",
 							"name": "%tds.package.totvs_language_debug%",
 							"program": "${command:AskForProgramName}",
-							"isMultiSession": true
+							"isMultiSession": true,
+							"enableTableSync": true
 						}
 					},
 					{
@@ -682,6 +701,7 @@
 							"name": "%tds.package.totvs_language_debug.web%",
 							"program": "${command:AskForProgramName}",
 							"isMultiSession": true,
+							"enableTableSync": true,
 							"smartclientUrl": "http://localhost:8080"
 						}
 					}

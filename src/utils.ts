@@ -4,11 +4,16 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as stripJsonComments from 'strip-json-comments';
 import * as ini from 'ini';
+import { languageClient, localize } from './extension';
 
 const homedir = require('os').homedir();
 
-import * as nls from 'vscode-nls';
-let localize = nls.loadMessageBundle();
+export enum MESSAGETYPE {
+	Info = "Info",
+	Error = "Error",
+	Warning = "Warning",
+	Log = "Log"
+}
 
 export interface SelectServer {
 	name: string;
@@ -29,7 +34,7 @@ export default class Utils {
 	/**
 	 * Subscrição para evento de chave de compilação.
 	 */
-	static get onDidSelectedKey(): vscode.Event<string>{
+	static get onDidSelectedKey(): vscode.Event<string> {
 		return Utils._onDidSelectedKey.event;
 	}
 
@@ -281,12 +286,12 @@ export default class Utils {
 
 		this.persistServersInfo(config);
 		Utils._onDidSelectedKey.fire(infos);
-		}
+	}
 
 	/**
 	 * Recupera a lista de includes do arquivod servers.json
 	 */
-	static getIncludes(absolutePath: boolean = false):Array<string> {
+	static getIncludes(absolutePath: boolean = false): Array<string> {
 		const servers = this.getServersConfig();
 		const includes: Array<string> = servers.includes as Array<string>;
 
@@ -358,8 +363,8 @@ export default class Utils {
 	 * Cria o arquivo launch.json caso ele nao exista.
 	 */
 	static createLaunchConfig() {
-		const launch = Utils.getLaunchConfig();
-		if (!launch) {
+		const launchConfig = Utils.getLaunchConfig();
+		if (!launchConfig) {
 			let fs = require("fs");
 			//Essa configuracao veio do package.json. Deveria ler de la, mas nao consegui
 			const sampleLaunch = {
@@ -515,4 +520,58 @@ export default class Utils {
 		}
 		return undefined;
 	}
+
+	/**
+	 * Loga a mensagem informada no console e/ou mostra um dialog.
+	 ** Note que a abertura do dialog esta respeita a configuração por tipo de avisos definida pelo usuario em: editor.show.notification
+	 * @param message - A mensagem a ser apresentada
+	 * @param messageType - O tipo da mensagem a ser apresentada
+	 * @param logToConsole - Se deve logar no console
+	 * @param showDialog - Se deve mostrar o dialog
+	 */
+	static logMessage(message: string, messageType: MESSAGETYPE, showDialog: boolean) {
+		let config = vscode.workspace.getConfiguration('totvsLanguageServer');
+		let notificationLevel = config.get('editor.show.notification');
+		switch (messageType) {
+			case MESSAGETYPE.Error:
+				languageClient.error(message);
+				if (showDialog && notificationLevel !== "none") {
+					vscode.window.showErrorMessage(message);
+				}
+				break;
+			case MESSAGETYPE.Info:
+				languageClient.info(message);
+				if (showDialog && notificationLevel === "all") {
+					vscode.window.showInformationMessage(message);
+				}
+				break;
+			case MESSAGETYPE.Warning:
+				languageClient.warn(message);
+				if (showDialog && (notificationLevel === "all" || notificationLevel === "errors and warnings")) {
+					vscode.window.showWarningMessage(message);
+				}
+				break;
+			case MESSAGETYPE.Log:
+				//let today = this.timeAsHHMMSS(new Date());
+				//let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+				let time = this.timeAsHHMMSS(new Date());
+				languageClient.outputChannel.appendLine("[Log   + "+time+"] " + message);
+				if (showDialog && notificationLevel === "Log") {
+					vscode.window.showInformationMessage(message);
+				}
+				break;
+		}
+	}
+
+	static timeAsHHMMSS(date): string {
+		return this.leftpad(date.getHours(), 2)
+				  + ':' + this.leftpad(date.getMinutes(), 2)
+				  + ':' + this.leftpad(date.getSeconds(), 2);
+	  }
+
+	static leftpad(val, resultLength = 2, leftpadChar = '0'): string {
+		return (String(leftpadChar).repeat(resultLength)
+		  + String(val)).slice(String(val).length);
+	 }
+
 }

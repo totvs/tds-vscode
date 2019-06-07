@@ -22,7 +22,6 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 	 * e.g. add all missing attributes to the debug configuration.
 	 */
 	resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): ProviderResult<DebugConfiguration> {
-
 		if (connectedServerItem !== undefined) {
 
 			// if launch.json is missing or empty
