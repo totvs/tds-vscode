@@ -91,61 +91,26 @@ function getAllFiles(folders: Array<string>): string[] {
 	const files: string[] = [];
 
 	folders.forEach((folder) => {
-		fs.readdirSync(folder).forEach(file => {
-			if (!ignoreResource(file)) {
-				const fn = path.join(folder, file);
-				const ss = fs.statSync(fn);
-				if (ss.isDirectory()) {
-					files.push(...getAllFiles([fn]));
-				} else {
-					files.push(fn);
+		if (fs.lstatSync(folder).isDirectory()) {
+			fs.readdirSync(folder).forEach(file => {
+				if (!ignoreResource(file)) {
+					const fn = path.join(folder, file);
+					const ss = fs.statSync(fn);
+					if (ss.isDirectory()) {
+						files.push(...getAllFiles([fn]));
+					} else {
+						files.push(fn);
+					}
 				}
-			}
-		});
+			});
+		} else {
+			files.push(folder);
+		}
 	});
 
 	return files;
 }
-
-function build(folders: string[], files: string[], recompile: boolean) {
-	try {
-		vscode.window.withProgress({
-			location: vscode.ProgressLocation.Window, //vscode.ProgressLocation.Notification
-			title: "Compilação de pastas.",
-			cancellable: true,
-		}, async (progress, token) => {
-			token.onCancellationRequested(() => {
-				return Promise.resolve(false);
-			});
-
-			//let files: string[] = [];
-			progress.report({ message: localize("tds.webview.tdsBuild.listResource", 'Obtendo lista de recursos'), increment: 0 });
-			if ((!files || files.length === 0) && folders.length > 0) {
-				files = await getAllFiles(folders);
-			}
-
-			progress.report({ message: localize("tds.webview.tdsBuild.gettingResource", 'Getting resource list'), increment: 0 });
-			{
-				const compileOptions = _getCompileOptionsDefault();
-				compileOptions.recompile = recompile;
-				buildCode(files, compileOptions);
-			}
-
-			return Promise.resolve(true);
-		}).then((result) => {
-			if (result) {
-				languageClient.info(localize("tds.webview.tdsBuild.compileFolder", 'Folder and sub-folder compilation done.'));
-			} else {
-				languageClient.warn(localize("tds.webview.tdsBuild.compileFolder2", 'Compilation of folder and sub-folders canceled by user.'));
-			}
-		});
-	} catch (error) {
-		languageClient.error(error);
-	}
-}
-
 export function deletePrograms(programs: string[]) {
-
 	const server = utils.getCurrentServer();
 	try {
 		if (server) {
@@ -184,64 +149,13 @@ export function deletePrograms(programs: string[]) {
 /**
  * Builds a file.
  */
-export function buildFile(filename: string, recompile: boolean) {
-	if (!ignoreResource(filename)) {
-		languageClient.info(localize("tds.webview.tdsBuild.compileBegin", "Resource compilation started. Resource: {0}", filename));
-		const compileOptions = _getCompileOptionsDefault();
-		compileOptions.recompile = recompile;
-		buildCode([filename], compileOptions);
+export function buildFile(filename: string[], recompile: boolean) {
+	//languageClient.info(localize("tds.webview.tdsBuild.compileBegin", "Resource compilation started. Resource: {0}", filename));
+	const compileOptions = _getCompileOptionsDefault();
+	compileOptions.recompile = recompile;
+	buildCode(filename, compileOptions);
 
-		languageClient.info('Compilação de recurso finalizada.');
-	} else {
-		languageClient.warn(localize("tds.webview.tdsBuild.resourceInList", "Resource appears in the list of files to ignore. Resource: {0}", filename));
-	}
-}
-
-export function buildFiles(files: string[], recompile: boolean) {
-	build([], files, recompile);
-}
-
-/**
- * Builds a folder.
- */
-export function buildFolder(folders: string[], recompile: boolean) {
-	languageClient.info(localize("tds.webview.tdsBuild.compileFolder3", "Folder and sub-folder compilation started. It may take some time. Total folders: {0}", folders.length));
-	build(folders, [], recompile);
-	// try {
-	// 	vscode.window.withProgress({
-	// 		location: vscode.ProgressLocation.Window, //vscode.ProgressLocation.Notification
-	// 		title: "Compilação de pastas.",
-	// 		cancellable: true,
-	// 	}, async (progress, token) => {
-	// 		token.onCancellationRequested(() => {
-	// 			return Promise.resolve(false);
-	// 		});
-
-	// 		let files: string[] = [];
-	// 		progress.report({ message: 'Obtendo lista de recursos', increment: 0 });
-	// 		{
-	// 			files = await getAllFiles(folders);
-	// 		}
-
-	// 		progress.report({ message: 'Obtendo lista de recursos', increment: 0 });
-	// 		{
-	// 			const compileOptions = _getCompileOptionsDefault();
-	// 			compileOptions.recompile = recompile;
-	// 			buildCode(files, compileOptions);
-	// 		}
-
-	// 		return Promise.resolve(true);
-	// 	}).then((result) => {
-	// 		if (result) {
-	// 			languageClient.info('Compilação de pasta e sub-pastas finalizada.');
-	// 		} else {
-	// 			languageClient.info('Compilação de pasta e sub-pastas cancelada por solicitação do usuário.');
-	// 		}localize("tds.webview.tdsBuild.
-	// 	});
-	// } catch (error) {
-	// 	languageClient.error(error);
-	// 	vscode.window.showErrorMessage(error);
-	// }
+	languageClient.info('Compilação de recurso finalizada.');
 }
 
 /**
@@ -249,18 +163,10 @@ export function buildFolder(folders: string[], recompile: boolean) {
  */
 async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 	const includes: Array<string> = utils.getIncludes(true) || [];
-	if(!includes.toString()){
+	if (!includes.toString()) {
 		return;
 	}
-	//TODO: verificar se a salva automática esta ativa. Se não ativa, recomendar que seja ativada
-	//		const setting = this.configurationService.inspect('files.autoSave');
-	//		if (vscode.workspace.getConfiguration('files.autoSave').inspect() === 'off') {
-	//
-	//		}
 
-	// Por solicitação do Mansano, a salva é efetuada de forma automática, sem confirmação e sem verificação da configuração do VSCode
-	//	const stateResult: EditorStateResult = await verifyEditorState();
-	//	if (stateResult === EditorStateResult.SAVE) {
 	const resourcesToConfirm: vscode.TextDocument[] = vscode.workspace.textDocuments.filter(d => !d.isUntitled && d.isDirty);
 	const count = resourcesToConfirm.length;
 
@@ -271,24 +177,23 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 		}
 		vscode.window.showWarningMessage(localize("tds.webview.tdsBuild.saved", 'Files saved successfully.'));
 	}
-	//	 else if (stateResult === EditorStateResult.CANCEL) {
-	//		vscode.window.showWarningMessage('Operação cancelada por solicitação do usuário.');
-	//		return;
-	//}
 
 	const server = utils.getCurrentServer();
 
 	if (server) {
-		//vscode.window.showInformationMessage("Compilação iniciada");
 		const permissionsInfos = Utils.getPermissionsInfos();
 		let includesUris: Array<string> = [];
 		for (let idx = 0; idx < includes.length; idx++) {
 			includesUris.push(vscode.Uri.file(includes[idx]).toString());
 		}
 		let filesUris: Array<string> = [];
-		for (let idx = 0; idx < filesPaths.length; idx++) {
-			filesUris.push(vscode.Uri.file(filesPaths[idx]).toString());
-		}
+		filesPaths.forEach(file => {
+			if (!ignoreResource(file)) {
+				filesUris.push(vscode.Uri.file(file).toString());
+			} else {
+				languageClient.warn(localize("tds.webview.tdsBuild.resourceInList", "Resource appears in the list of files to ignore. Resource: {0}", file));
+			}
+		});
 		languageClient.sendRequest('$totvsserver/compilation', {
 			"compilationInfo": {
 				"connectionToken": server.token,
@@ -299,21 +204,9 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 				"compileOptions": compileOptions
 			}
 		}).then((response: CompileResult) => {
-			if (response.returnCode == 40840) { // AuthorizationTokenExpiredError
+			if (response.returnCode == 40840) {
 				Utils.removeExpiredAuthorization();
 			}
-			// const results: Array<Array<string>> = response.resourceResults;
-			// if(results !== undefined) {
-			// 	results.forEach((element: any) => {
-			// 		const message = path.parse(element.filePath).base + ": " + element.result;
-			// 		const result = element.result.toUpperCase();
-			// 		if (result.includes("ERR")) {
-			// 			vscode.window.showErrorMessage(message);
-			// 		} else {
-			// 			vscode.window.showInformationMessage(message);
-			// 		}
-			// 	});
-			// }
 		}, (err) => {
 			vscode.window.showErrorMessage(err);
 		});
@@ -338,7 +231,7 @@ export class DeleteProgramResult {
 	returnCode: number;
 }
 
-export function commandBuildFile(context, recompile: boolean) {
+export function commandBuildFile(context, recompile: boolean, files) {
 	let editor: vscode.TextEditor | undefined;
 	let filename: string | undefined = undefined;
 	if (context === undefined) { //A ação veio pelo ctrl+f9
@@ -348,17 +241,32 @@ export function commandBuildFile(context, recompile: boolean) {
 			return;
 		}
 		filename = editor.document.uri.fsPath;
-	} else if (context.fsPath && context.fsPath !== undefined) { //A ação veio pelo menu de contexto por exemplo, e/ou com o fsPath preenchido corretamente
-		filename = context.fsPath;
 	}
-	if (filename !== undefined) {
-		buildFile(filename, recompile);
+	if (files) {
+		const arrayFiles: string[] = changeToArrayString(files);
+		var allFiles = getAllFiles(arrayFiles);
+		buildFile(allFiles, recompile);
+	} else {
+		if (filename != undefined) {
+			buildFile([filename], recompile);
+		}
 	}
 }
 
-export function commandBuildFolder(context, recompile: boolean) {
-	languageClient.info(context);
-	buildFolder([context.fsPath], recompile);
+function changeToArrayString(allFiles) {
+	let arrayFiles: string[] = [];
+
+	allFiles.forEach(element => {
+		if(element.fsPath){
+			arrayFiles.push(element.fsPath);
+		}else{
+			if(fs.existsSync(element)){
+				arrayFiles.push(element);
+			}
+		}
+	});
+
+	return arrayFiles;
 }
 
 export function commandBuildWorkspace(recompile: boolean) {
@@ -370,7 +278,9 @@ export function commandBuildWorkspace(recompile: boolean) {
 			folders.push(value.uri.fsPath);
 		});
 
-		buildFolder(folders, recompile);
+		var allFiles = getAllFiles(folders);
+
+		buildFile(allFiles, recompile);
 	}
 }
 
@@ -443,46 +353,3 @@ function sameEditor(editor: vscode.TextEditor, nextEditor: vscode.TextEditor) {
 	if (editor === undefined || nextEditor === undefined) return false;
 	return (editor.viewColumn === nextEditor.viewColumn) && ((editor as any)._id === (nextEditor as any)._id);
 }
-
-// async function wait(timeout: number = 500): Promise<vscode.TextEditor> {
-// 	const nextEditor = await new Promise<vscode.TextEditor>((resolve, reject) => {
-// 		let timer: any;
-
-// 		_resolver = (editor: vscode.TextEditor) => {
-// 			if (timer) {
-// 				clearTimeout(timer as any);
-// 				timer = 0;
-// 				resolve(editor);
-// 			}
-// 		};
-
-// 		timer = setTimeout(() => {
-// 			resolve(vscode.window.activeTextEditor);
-// 			timer = 0;
-// 		}, timeout) as any;
-// 	});
-// 	return nextEditor;
-// }
-
-// private _resolver: ((value?: TextEditor | PromiseLike<TextEditor>) => void) | undefined;
-
-// async wait(timeout: number = 500): Promise<TextEditor> {
-// 	const editor = await new Promise<TextEditor>((resolve, reject) => {
-// 		let timer: any;
-
-// 		this._resolver = (editor: TextEditor) => {
-// 			if (timer) {
-// 				clearTimeout(timer as any);
-// 				timer = 0;
-// 				resolve(editor);
-// 			}
-// 		};
-
-// 		timer = setTimeout(() => {
-// 			resolve(window.activeTextEditor);
-// 			timer = 0;
-// 		}, timeout) as any;
-// 	});
-// 	this._resolver = undefined;
-// 	return editor;
-// }

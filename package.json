@@ -81,8 +81,6 @@
 		"onCommand:totvs-developer-studio.getProgramName",
 		"onCommand:totvs-developer-studio.build.file",
 		"onCommand:totvs-developer-studio.rebuild.file",
-		"onCommand:totvs-developer-studio.build.folder",
-		"onCommand:totvs-developer-studio.rebuild.folder",
 		"onCommand:totvs-developer-studio.build.workspace",
 		"onCommand:totvs-developer-studio.rebuild.workspace",
 		"onCommand:totvs-developer-studio.build.openEditors",
@@ -315,18 +313,6 @@
 				"command": "totvs-developer-studio.rebuild.file",
 				"title": "%tds.package.rebuild.file.title%",
 				"description": "%tds.package.rebuild.file.description%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.build.folder",
-				"title": "%tds.package.build.folder.title%",
-				"description": "%tds.package.build.folder.description%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.rebuild.folder",
-				"title": "%tds.package.rebuild.folder.title%",
-				"description": "%tds.package.rebuild.folder.description%",
 				"category": "TOTVS"
 			},
 			{
@@ -799,12 +785,6 @@
 					"group": "totvsBuild@1"
 				},
 				{
-					"when": "explorerResourceIsFolder",
-					"command": "totvs-developer-studio.build.folder",
-					"alt": "totvs-developer-studio.rebuild.folder",
-					"group": "totvsBuild@2"
-				},
-				{
 					"command": "totvs-developer-studio.build.file",
 					"alt": "totvs-developer-studio.rebuild.file",
 					"group": "totvsBuild@3"
@@ -932,14 +912,6 @@
 				},
 				{
 					"command": "totvs-developer-studio.patchInfos.fromFile",
-					"when": "1 == 0"
-				},
-				{
-					"command": "totvs-developer-studio.build.folder",
-					"when": "1 == 0"
-				},
-				{
-					"command": "totvs-developer-studio.rebuild.folder",
 					"when": "1 == 0"
 				},
 				{
