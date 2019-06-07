@@ -60,6 +60,12 @@ Implementado a passagem de parâmetro conforme documentado em https://github.com
 ### Solução:
 * Os caracteres "*" serão removidos do filtro, pois o componente utilizado entende como a pesquisa pelo caracter "*".
 ----
+## Inspetor de funções não mostra o arquivo: [Issue 73](https://github.com/totvs/tds-vscode/issues/73)
+### Melhoria:
+* O inspetor de funções mostra apenas a lista de funções, mas não mostra em que arquivo fonte está escrita a função.
+### Solução:
+* Adicionada as informações de fonte e linha retornados pelo appserver.
+----
 
 # Versão 0.2.1
 
