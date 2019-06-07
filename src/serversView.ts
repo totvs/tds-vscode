@@ -517,7 +517,7 @@ export class ServersExplorer {
 }
 
 export function authenticate(serverItem: ServerItem, environment: string, username: string, password: string) {
-	if (connectedServerItem !== undefined && connectedServerItem.id === serverItem.id) {
+	if (connectedServerItem !== undefined && connectedServerItem.id === serverItem.id && connectedServerItem.currentEnvironment === serverItem.currentEnvironment) {
 		vscode.window.showInformationMessage(localize("tds.webview.serversView.alreadyDisconn", "The server selected is already connected."));
 	}
 	//vscode.window.showInformationMessage("Initializing connection with server " + serverItem.label);
@@ -548,6 +548,7 @@ function sendAuthenticateRequest(serverItem: ServerItem, environment: string, us
 		if (token) {
 			//vscode.window.showInformationMessage('Server ' + serverItem.label + ' connected!');
 			Utils.saveSelectServer(serverItem.id, token, serverItem.label, environment, user);
+			Utils.saveConnectionToken(serverItem.id, token, environment);
 			if (treeDataProvider !== undefined) {
 				connectedServerItem = serverItem;
 				connectedServerItem.currentEnvironment = environment;
@@ -569,6 +570,31 @@ export class AuthenticationNode {
 	id: any;
 	osType: number;
 	connectionToken: string;
+}
+
+export function reconnectServer(reconnectionInfo): boolean {
+	if (reconnectionInfo.id && reconnectionInfo.token) {
+		const servers = Utils.getServersConfig();
+		if (servers.configurations) {
+			servers.configurations.forEach(element => {
+				if (element.id === reconnectionInfo.id) {
+					let serverItem: ServerItem = new ServerItem(element.name, element.address, element.port, vscode.TreeItemCollapsibleState.None, element.id, element.buildVersion, undefined, {
+						command: '',
+						title: '',
+						arguments: [element.name]
+					});
+					if (connectedServerItem !== undefined) {
+						vscode.commands.executeCommand('totvs-developer-studio.disconnect', connectedServerItem).then(() => {
+							return sendReconnectRequest(serverItem, reconnectionInfo.token);
+						});
+					} else {
+						return sendReconnectRequest(serverItem, reconnectionInfo.token);
+					}
+				}
+			});
+		}
+	}
+	return false;
 }
 
 export function reconnectLastServer() {

@@ -6,5 +6,6 @@
 {
 	"tds.webview.utils.reviewList": "Revise a lista de pastas para procurar pelas configurações (.ch). Não reconhecido como pasta: {0}",
 	"tds.webview.utils.reviewList2": "Revise a lista de pastas para procurar configurações (.ch). Pasta inválida: {0}",
-	"tds.webview.utils.listFolders": "Lista de pastas para procura de definições não configurada."
+	"tds.webview.utils.listFolders": "Lista de pastas para procura de definições não configurada.",
+	"tds.webview.utils.removeExpiredAuthorization": "Apagando o símbolo de conexão expirado"
 }

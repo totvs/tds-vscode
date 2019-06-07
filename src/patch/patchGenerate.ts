@@ -3,7 +3,7 @@ import path = require('path');
 import fs = require('fs');
 import Utils from '../utils';
 import { languageClient } from '../extension';
-import { buildFiles } from '../tdsBuild';
+import { commandBuildFile } from '../tdsBuild';
 import * as nls from 'vscode-nls';
 
 let localize = nls.loadMessageBundle();
@@ -152,7 +152,7 @@ export function patchGenerateFromFolder(context: any) {
 					readFiles(context.fsPath, allFilesNames, allFilesFullPath, (err) => {
 						vscode.window.showErrorMessage(err);
 					});
-					buildFiles(allFilesFullPath, false);
+					commandBuildFile(context, false, allFilesFullPath);
 					let destFolder = fileUri[0].toString();
 					sendPatchGenerateMessage(server, "" , destFolder, 3, patchName, allFilesNames);
 					//});
@@ -164,7 +164,7 @@ export function patchGenerateFromFolder(context: any) {
 }
 
 export class PatchResult {
-	message: string;
+	returnCode: number;
 }
 
 export class inspectorObject {
@@ -205,6 +205,9 @@ function sendPatchGenerateMessage(server, patchMaster, patchDest, patchType, pat
 			"patchFiles": filesPath
 		}
 	}).then((response: PatchResult) => {
+		if (response.returnCode == 40840) { // AuthorizationTokenExpiredError
+			Utils.removeExpiredAuthorization();
+		}
 		// const message: string = response.message;
 		// if (message == "Success") {
 		// 	vscode.window.showInformationMessage(localize("tds.webview.patch.generate.success","Patch Generated Success "));

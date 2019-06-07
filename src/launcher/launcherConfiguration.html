@@ -33,6 +33,14 @@
 							</div>
 
 							<div class="wrap-input">
+								<label for="programArguments">${d.localize["tds.webview.launcher.program.arguments"]}</label><!--Program Arguments (-A):-->
+								<input id="programArgumentsID" class="comboBox" name="programArguments" list="programLastArgumentsID">
+								<datalist id="programLastArgumentsID">
+									<option value="\$\{command:AskForProgramArguments}"></option>
+								</datalist>
+							</div>
+
+							<div class="wrap-input">
 								<label for="smartClient">${d.localize["tds.webview.launcher.smartclient"]}</label><!--SmartClient:-->
 								<input class="inputText" type="text" id="ClientPatch" name="ClientPatch" placeholder="Ex: C:/totvs/smartclient/smartclient.exe...">
 								<input class="inputText" type="file" accept='.exe,application/exe,*.*'  id="smartClientID" name="smartClient" onchange="setTextArea()"/>
@@ -139,6 +147,7 @@
 			command: 'saveLaunchConfig',
 			launcherName: 			getElementLauncherName().value,
 			program: 				getElementProgram().value,
+			programArguments: 		getElementProgramArguments().value,
 			smartclientBin: 		smBin,
 			enableMultiThread: 		getElementEnableMultiThread().checked,
 			enableProfile: 			getElementEnableProfile().checked,
@@ -154,6 +163,7 @@
 
 	function updateAllFields(element) {
 		getElementProgram().value 					= element !== undefined ? element.program : "";
+		getElementProgramArguments().value			= element !== undefined ? element.programArguments : "";
 		if (element !== undefined) {
 			getElementSmartclientBin().value 			= element.smartclientBin;
 		}
@@ -171,6 +181,7 @@
 	function getElementLauncherList() { return document.getElementById('launcherListID'); }
 	function getElementLauncherName() { return document.getElementById("launcherNameID"); }
 	function getElementProgram() { return document.getElementById("programID"); }
+	function getElementProgramArguments() { return document.getElementById("programArgumentsID"); }
 	function getElementSmartclientBin() { return document.getElementById("ClientPatch"); }
 	function getElementEnableMultiThread() { return document.getElementById("enableMultiThreadID"); }
 	function getElementEnableProfile() { return document.getElementById("enableProfileID"); }

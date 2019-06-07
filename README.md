@@ -1,5 +1,7 @@
 # TOTVS Developer Studio Code
 
+[![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode)
+
 O plugin do TOTVS Developer Studio Code disponibiliza uma suíte de desenvolvimento para o ecossistema Protheus.
 Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP (Debug Adapter Protocol), ambos amplamente utilizados e extensíveis à outras IDEs de mercado, como Atom, Visual Studio, Eclipse, Eclipse Theia, Vim e Emacs.
 
@@ -91,6 +93,8 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 "totvsLanguageServer.welcomePage": false,
 "totvsLanguageServer.web.navigator": "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
 ``}``
+
+Veja detalhes sobre como usar as diretivas [${command:}](https://link) e [passagem de parâmetros](https:link).
 
 ### Criando uma configuração de debug com assistente
 
@@ -219,7 +223,7 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 ## Configurações de Compilação
 
-### Enconding
+### Encoding
 
 Tivemos reportes de problemas de encode abrindo fontes antes salvos no TDS, isso ocorre porque o encode original do VSCode é UTF8 e o do TDS é outro.
 Para garantir a compilação é necessário compatibilizar o encode da seguinte maneira:
@@ -302,4 +306,12 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
   Permite monitor servidores protheus.
 
   <https://marketplace.visualstudio.com/items?itemName=totvs.tds-monitor>
+
+* Numbered Bookmarks.
+
+  Permite uso de bookmarks no estilo Delphi numerados de 1 a 9.
+
+  <https://marketplace.visualstudio.com/items?itemName=alefragnani.numbered-bookmarks>
+
+  ![Toggle](https://github.com/alefragnani/vscode-numbered-bookmarks/raw/master/images/numbered-bookmarks-toggle.png)
 

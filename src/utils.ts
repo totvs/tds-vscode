@@ -73,14 +73,18 @@ export default class Utils {
  * Retorna o path completo do launch.json
  */
 	static getLaunchConfigFile() {
-		return vscode.workspace.rootPath + "/.vscode/launch.json";
+		let rootPath: string = vscode.workspace.rootPath || process.cwd();
+
+		return path.join(rootPath, ".vscode", "launch.json");
 	}
 
 	/**
 	 * Retorna o path da pastar .vscode dentro do workspace
 	 */
 	static getVSCodePath() {
-		return vscode.workspace.rootPath + "/.vscode";
+		let rootPath: string = vscode.workspace.rootPath || process.cwd();
+
+		return path.join(rootPath, ".vscode");
 	}
 
 	/**
@@ -152,6 +156,55 @@ export default class Utils {
 	}
 
 	/**
+	 * Salva o servidor logado por ultimo.
+	 * @param id Id do servidor logado
+	 * @param token Token que o LS gerou em cima das informacoes de login
+	 * @param environment Ambiente utilizado no login
+	 */
+	static saveConnectionToken(id: string, token: string, environment: string) {
+		const servers = this.getServersConfig();
+		let found: boolean = false;
+		let key = id + ":" + environment;
+		if (servers.savedTokens) {
+			servers.savedTokens.forEach(element => {
+				if (element[0] === key) {
+					found = true; // update token
+					element[1] = { "id": id, "token": token };
+				}
+			});
+		}
+		if (!found) {
+			if (!servers.savedTokens) {
+				let emptySavedTokens: Array<[string, object]> = [];
+				servers.savedTokens = emptySavedTokens;
+			}
+			servers.savedTokens.push([key, { "id": id, "token": token }]);
+		}
+		this.persistServersInfo(servers);
+	}
+
+	/**
+ * Salva o servidor logado por ultimo.
+ * @param id Id do servidor logado
+ * @param environment Ambiente utilizado no login
+ */
+	static removeSavedConnectionToken(id: string, environment: string) {
+		const servers = this.getServersConfig();
+		if (servers.savedTokens) {
+			let key = id + ":" + environment;
+			servers.savedTokens.forEach(element => {
+				if (element[0] === key) {
+					const index = servers.indexOf(element, 0);
+					servers.splice(index, 1);
+					this.persistServersInfo(servers);
+					return;
+				}
+			});
+		}
+	}
+
+
+	/**
 	 * Notifica o cancelamento de seleção de servidor/ambiente
 	 */
 	static cancelSelectServer() {
@@ -159,7 +212,7 @@ export default class Utils {
 	}
 
 	/**
-	 *Deleta o servidor logado por ultimo do servers.json
+	 * Deleta o servidor logado por ultimo do servers.json
 	 */
 	static deleteSelectServer() {
 		const servers = this.getServersConfig();
@@ -185,8 +238,8 @@ export default class Utils {
 	}
 
 	/**
- *Deleta o servidor logado por ultimo do servers.json
- */
+	 * Deleta o servidor logado por ultimo do servers.json
+	 */
 	static deleteServer(id: string) {
 		const allConfigs = this.getServersConfig();
 
@@ -218,9 +271,9 @@ export default class Utils {
 	}
 
 	/**
- * Grava no arquivo launch.json uma nova configuracao de launchs
- * @param JSONServerInfo
- */
+	 * Grava no arquivo launch.json uma nova configuracao de launchs
+	 * @param JSONServerInfo
+	 */
 	static persistLaunchsInfo(JSONLaunchInfo) {
 		let fs = require('fs');
 		fs.writeFileSync(Utils.getLaunchConfigFile(), JSON.stringify(JSONLaunchInfo, null, "\t"), (err) => {
@@ -286,6 +339,11 @@ export default class Utils {
 
 		this.persistServersInfo(config);
 		Utils._onDidSelectedKey.fire(infos);
+	}
+
+	static removeExpiredAuthorization() {
+		vscode.window.showWarningMessage(localize("tds.webview.utils.removeExpiredAuthorization", 'Expired authorization token deleted'));
+		Utils.savePermissionsInfos({}); // remove expired authorization key
 	}
 
 	/**
@@ -366,32 +424,45 @@ export default class Utils {
 		const launchConfig = Utils.getLaunchConfig();
 		if (!launchConfig) {
 			let fs = require("fs");
-			//Essa configuracao veio do package.json. Deveria ler de la, mas nao consegui
-			const sampleLaunch = {
-				"version": "0.2.0",
-				"configurations": [
-					{
-						"type": "totvs_language_debug",
-						"request": "launch",
-						"name": "Totvs Language Debug",
-						"program": "${command:AskForProgramName}",
-						"cwb": "${workspaceFolder}",
-						"smartclientBin": ""
+			let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
+			if (ext) {
+				let sampleLaunch = {
+					"version": "0.2.0",
+					"configurations": []
+				};
+
+				let pkg = ext.packageJSON;
+				let contributes = pkg["contributes"];
+				let debug = (contributes["debuggers"] as any[]).filter((element: any) => {
+					return element.type === "totvs_language_debug";
+				});
+
+				if (debug.length === 1) {
+					let initCfg = (debug[0]["initialConfigurations"] as any[]).filter((element: any) => {
+						return element.request === "launch";
+					});
+
+					if (initCfg.length === 1) {
+						sampleLaunch = {
+							"version": "0.2.0",
+							"configurations": [(initCfg[0] as never)]
+						};
 					}
-				]
+				}
+
+				if (!fs.existsSync(Utils.getVSCodePath())) {
+					fs.mkdirSync(Utils.getVSCodePath());
+				}
+
+				let launchJson = Utils.getLaunchConfigFile();
+
+				fs.writeFileSync(launchJson, JSON.stringify(sampleLaunch, null, "\t"), (err) => {
+					if (err) {
+						console.error(err);
+					}
+				});
 			};
 
-			if (!fs.existsSync(Utils.getVSCodePath())) {
-				fs.mkdirSync(Utils.getVSCodePath());
-			}
-
-			let launchJson = Utils.getLaunchConfigFile();
-
-			fs.writeFileSync(launchJson, JSON.stringify(sampleLaunch, null, "\t"), (err) => {
-				if (err) {
-					console.error(err);
-				}
-			});
 		}
 	}
 	/**
@@ -407,6 +478,26 @@ export default class Utils {
 
 			configs.forEach(element => {
 				if (element.id === ID) {
+					server = element;
+					if (server.environments === undefined) {
+						server.environments = [];
+					}
+				}
+			});
+		}
+		return server;
+	}
+
+	/**
+ 	*Recupera um servidor pelo id informado.
+ 	* @param id id do servidor alvo.
+ 	*/
+	static getServerById(id: string, serversConfig: any) {
+		let server;
+		if (serversConfig.configurations) {
+			const configs = serversConfig.configurations;
+			configs.forEach(element => {
+				if (element.id === id) {
 					server = element;
 					if (server.environments === undefined) {
 						server.environments = [];
@@ -574,4 +665,79 @@ export default class Utils {
 		  + String(val)).slice(String(val).length);
 	 }
 
+	static getAllFilesRecursive(folders: Array<string>): string[] {
+		const files: string[] = [];
+
+		folders.forEach((folder) => {
+			if (fs.lstatSync(folder).isDirectory()) {
+				fs.readdirSync(folder).forEach(file => {
+					if (!Utils.ignoreResource(file)) {
+						const fn = path.join(folder, file);
+						const ss = fs.statSync(fn);
+						if (ss.isDirectory()) {
+							files.push(...Utils.getAllFilesRecursive([fn]));
+						} else {
+							files.push(fn);
+						}
+					}
+				});
+			} else {
+				files.push(folder);
+			}
+		});
+
+		return files;
+	}
+	static ignoreResource(fileName: string): boolean {
+
+		return processIgnoreList(ignoreListExpressions, path.basename(fileName));
+	}
+}
+
+//TODO: pegar a lista de arquivos a ignorar da configuração
+const ignoreListExpressions: Array<RegExp> = [];
+ignoreListExpressions.push(/^\..*/ig); //começa com ponto (normalmente são de controle/configuração)
+ignoreListExpressions.push(/(\.)$/ig); // sem extensão (não é possivel determinar se é fonte ou recurso)
+ignoreListExpressions.push((/(\.ch)$/ig)); // arquivos de definição e trabalho
+ignoreListExpressions.push((/(\.erx_.*)$/ig)); // arquivos de definição e trabalho
+ignoreListExpressions.push((/(\.ppx_.*)$/ig)); // arquivos de definição e trabalho
+ignoreListExpressions.push((/(\.err_.*)$/ig)); // arquivos de definição e trabalho
+
+//lista de arquivos/pastas normalmente ignorados
+ignoreListExpressions.push(/(.*)?(#.*#)$/ig);
+ignoreListExpressions.push(/(.*)?(\.#*)$/ig);
+ignoreListExpressions.push(/(.*)?(%.*%)$/ig);
+ignoreListExpressions.push(/(.*)?(\._.*)$/ig);
+ignoreListExpressions.push(/(.*)?(CVS)$/ig);
+ignoreListExpressions.push(/(.*)?.*(CVS)$/ig);
+ignoreListExpressions.push(/(.*)?(\.cvsignore)$/ig);
+ignoreListExpressions.push(/(.*)?(SCCS)$/ig);
+ignoreListExpressions.push(/(.*)?.*\/SCCS\/.*$/ig);
+ignoreListExpressions.push(/(.*)?(vssver\.scc)$/ig);
+ignoreListExpressions.push(/(.*)?(\.svn)$/ig);
+ignoreListExpressions.push(/(.*)?(\.DS_Store)$/ig);
+ignoreListExpressions.push(/(.*)?(\.git)$/ig);
+ignoreListExpressions.push(/(.*)?(\.gitattributes)$/ig);
+ignoreListExpressions.push(/(.*)?(\.gitignore)$/ig);
+ignoreListExpressions.push(/(.*)?(\.gitmodules)$/ig);
+ignoreListExpressions.push(/(.*)?(\.hg)$/ig);
+ignoreListExpressions.push(/(.*)?(\.hgignore)$/ig);
+ignoreListExpressions.push(/(.*)?(\.hgsub)$/ig);
+ignoreListExpressions.push(/(.*)?(\.hgsubstate)$/ig);
+ignoreListExpressions.push(/(.*)?(\.hgtags)$/ig);
+ignoreListExpressions.push(/(.*)?(\.bzr)$/ig);
+ignoreListExpressions.push(/(.*)?(\.bzrignore)$/ig);
+
+function processIgnoreList(ignoreList: Array<RegExp>, testName: string): boolean {
+	let result: boolean = false;
+
+	for (let index = 0; index < ignoreList.length; index++) {
+		const regexp = ignoreList[index];
+		if (regexp.test(testName)) {
+			result = true;
+			break;
+		}
+	}
+
+	return result;
 }

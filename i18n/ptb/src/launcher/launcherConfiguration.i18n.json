@@ -8,6 +8,7 @@
 	"tds.webview.launcher.launcherTitle": "Configura executor",
 	"tds.webview.launcher.name": "Escolhe executor:",
 	"tds.webview.launcher.program": "Programa:",
+	"tds.webview.launcher.program.arguments":"Argumentos (-A):",
 	"tds.webview.launcher.smartclient": "SmartClient:",
 	"tds.webview.launcher.multiThread": "Habilita multiplas threads",
 	"tds.webview.launcher.profile": "Habilita Profile",

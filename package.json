@@ -2,7 +2,7 @@
 	"name": "tds-vscode",
 	"displayName": "Totvs Developer Studio for VSCode",
 	"description": "%tds.package.description%",
-	"version": "0.2.0",
+	"version": "0.3.1",
 	"publisher": "TOTVS",
 	"author": {
 		"name": "TOTVS",
@@ -36,14 +36,14 @@
 		"compile": "tsc -p ./src",
 		"tslint": "tslint ./src/**/*.ts",
 		"watch": "tsc -w -p ./src",
-		"test": "mocha -u tdd ./out/tests/",
+		"test": "node node_modules/vscode/bin/test",
 		"postinstall": "node ./node_modules/vscode/bin/install",
 		"package": "vsce package",
 		"publish": "vsce publish"
 	},
 	"dependencies": {
-		"@totvs/tds-da": "^1.0.18",
-		"@totvs/tds-ls": "^1.0.22",
+		"@totvs/tds-da": "^1.0.19",
+		"@totvs/tds-ls": "^1.0.23",
 		"await-notify": "1.0.1",
 		"cheerio": "^1.0.0-rc.3",
 		"fs": "0.0.1-security",
@@ -77,12 +77,14 @@
 	"activationEvents": [
 		"onLanguage:advpl",
 		"onDebug",
+		"onCommand:totvs-developer-studio.getProgramArguments",
 		"onCommand:totvs-developer-studio.getProgramName",
 		"onCommand:totvs-developer-studio.build.file",
-		"onCommand:totvs-developer-studio.build.folder",
+		"onCommand:totvs-developer-studio.rebuild.file",
 		"onCommand:totvs-developer-studio.build.workspace",
-		"onCommand:totvs-developer-studio.rebuild.folder",
 		"onCommand:totvs-developer-studio.rebuild.workspace",
+		"onCommand:totvs-developer-studio.build.openEditors",
+		"onCommand:totvs-developer-studio.rebuild.openEditors",
 		"onCommand:totvs-developer-studio.delete.file.fromRPO",
 		"onCommand:totvs-developer-studio.configure.launcher",
 		"onCommand:totvs-developer-studio.inspectorFunctions",
@@ -101,6 +103,8 @@
 		"onCommand:totvs-developer-studio.patchGenerate.fromFolder",
 		"onCommand:totvs-developer-studio.patchApply",
 		"onCommand:totvs-developer-studio.patchApply.fromFile",
+		"onCommand:totvs-developer-studio.patchInfos",
+		"onCommand:totvs-developer-studio.patchInfos.fromFile",
 		"onCommand:totvs-developer-studio.welcomePage",
 		"onCommand:totvs-developer-studio.include",
 		"onCommand:totvs-developer-studio.ws.show",
@@ -132,15 +136,15 @@
 				],
 				"extensions": [
 					".prw",
-					".ppo",
+					".prg",
 					".prx",
-					".aph",
-					".apl",
-					".apw",
-					".ppx",
 					".ppp",
+					".ch",
 					".tlpp",
-					".ch"
+					".aph",
+					".ahu",
+					".apl",
+					".apw"
 				],
 				"configuration": "./language-configuration.json"
 			},
@@ -241,15 +245,17 @@
 						"none",
 						"only errors",
 						"errors and warnings",
+						"errors warnings and infos",
 						"all"
 					],
 					"enumDescriptions": [
 						"%tds.package.editor.notification.show.none%",
 						"%tds.package.editor.notification.show.only_errors%",
 						"%tds.package.editor.notification.show.errors_and_warnings%",
+						"%tds.package.editor.notification.show.errors_warnings_and_infos%",
 						"%tds.package.editor.notification.show.all%"
 					],
-					"default": "all",
+					"default": "errors warnings and infos",
 					"description": "%tds.package.editor.notification.show%"
 				},
 				"totvsLanguageServer.editor.toggle.autocomplete": {
@@ -280,6 +286,12 @@
 				"category": "TOTVS"
 			},
 			{
+				"command": "totvs-developer-studio.patchInfos",
+				"title": "%tds.package.inspector.patch.title%",
+				"description": "tds.package.inspector.patch.description",
+				"category": "TOTVS"
+			},
+			{
 				"command": "totvs-developer-studio.inspectorObjects",
 				"title": "%tds.package.inspector.object.title%",
 				"description": "%tds.package.inspector.object.description%",
@@ -298,15 +310,9 @@
 				"category": "TOTVS"
 			},
 			{
-				"command": "totvs-developer-studio.build.folder",
-				"title": "%tds.package.build.folder.title%",
-				"description": "%tds.package.build.folder.description%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.rebuild.folder",
-				"title": "%tds.package.rebuild.folder.title%",
-				"description": "%tds.package.rebuild.folder.description%",
+				"command": "totvs-developer-studio.rebuild.file",
+				"title": "%tds.package.rebuild.file.title%",
+				"description": "%tds.package.rebuild.file.description%",
 				"category": "TOTVS"
 			},
 			{
@@ -319,6 +325,18 @@
 				"command": "totvs-developer-studio.rebuild.workspace",
 				"title": "%tds.package.rebuild.workspace.title%",
 				"description": "%tds.package.rebuild.workspace.description%",
+				"category": "TOTVS"
+			},
+			{
+				"command": "totvs-developer-studio.build.openEditors",
+				"title": "%tds.package.build.openEditors.title%",
+				"description": "%tds.package.build.openEditors.description%",
+				"category": "TOTVS"
+			},
+			{
+				"command": "totvs-developer-studio.rebuild.openEditors",
+				"title": "%tds.package.rebuild.openEditors.title%",
+				"description": "%tds.package.rebuild.openEditors.description%",
 				"category": "TOTVS"
 			},
 			{
@@ -337,6 +355,11 @@
 				"command": "totvs-developer-studio.getProgramName",
 				"title": "%tds.package.getProgramName.title%",
 				"description": "%tds.package.getProgramName.description%"
+			},
+			{
+				"command": "totvs-developer-studio.getProgramArguments",
+				"title": "Argumentos",
+				"description": "Argumentos a serem repassados ao programa que será executado"
 			},
 			{
 				"command": "totvs-developer-studio.connect",
@@ -430,6 +453,11 @@
 				"category": "TOTVS"
 			},
 			{
+				"command": "totvs-developer-studio.patchInfos.fromFile",
+				"title": "%tds.package.patchInfos.fromFile%",
+				"category": "TOTVS"
+			},
+			{
 				"command": "totvs-developer-studio.welcomePage",
 				"title": "%tds.package.welcomePage%",
 				"category": "TOTVS"
@@ -458,6 +486,22 @@
 				"when": "editorTextFocus"
 			},
 			{
+				"command": "totvs-developer-studio.rebuild.file",
+				"key": "ctrl+shift+f9",
+				"mac": "cmd+shift+f9",
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "totvs-developer-studio.build.openEditors",
+				"key": "ctrl+f10",
+				"mac": "cmd+f10"
+			},
+			{
+				"command": "totvs-developer-studio.rebuild.openEditors",
+				"key": "ctrl+shift+f10",
+				"mac": "cmd+shift+f10"
+			},
+			{
 				"command": "totvs-developer-studio.toggle.autocomplete.behavior",
 				"key": "ctrl+alt+space",
 				"when": "editorTextFocus"
@@ -476,7 +520,8 @@
 				"configurationAttributes": {
 					"launch": {
 						"required": [
-							"program"
+							"program",
+							"smartclientBin"
 						],
 						"properties": {
 							"program": {
@@ -542,6 +587,13 @@
 								"type": "boolean",
 								"description": "%tds.package.properties.toggleTableSync.description%",
 								"default": false
+							},
+							"programArguments": {
+								"type": "array",
+								"description": "Arguments that will be passed to the called program / function (key -A)",
+								"default": [
+									"${command:AskForProgramArguments}"
+								]
 							}
 						}
 					}
@@ -554,8 +606,6 @@
 						"program": "${command:AskForProgramName}",
 						"cwb": "${workspaceFolder}",
 						"smartclientBin": "C:/totvs/bin/smartclient/smartclient.exe",
-						"serverItem": "tcp",
-						"environment": "environment",
 						"isMultiSession": true,
 						"enableTableSync": true
 					}
@@ -567,15 +617,33 @@
 						"body": {
 							"type": "totvs_language_debug",
 							"request": "launch",
-							"name": "%tds.package.totvs_language_debug%",
-							"program": "${command:AskForProgramName}",
+							"name": "${1:%tds.package.totvs_language_debug%}",
+							"program": "^\"\\${command:AskForProgramName}\"",
+							"smartclientBin": "${2:C:/totvs/bin/smartclient/smartclient.exe}",
+							"isMultiSession": true,
+							"enableTableSync": true
+						}
+					},
+					{
+						"label": "%tds.package.totvs_language_debug% with arguments",
+						"description": "A new configuration for 'debugging' a user selected AdvPL file with arguments.",
+						"body": {
+							"type": "totvs_language_debug",
+							"request": "launch",
+							"name": "${1:%tds.package.totvs_language_debug%}",
+							"program": "^\"\\${command:AskForProgramName}\"",
+							"programArguments": [
+								"^\"\\${command:AskForProgramArguments}\""
+							],
+							"smartclientBin": "${2:C:/totvs/bin/smartclient/smartclient.exe}",
 							"isMultiSession": true,
 							"enableTableSync": true
 						}
 					}
 				],
 				"variables": {
-					"AskForProgramName": "totvs-developer-studio.getProgramName"
+					"AskForProgramName": "totvs-developer-studio.getProgramName",
+					"AskForProgramArguments": "totvs-developer-studio.getProgramArguments"
 				}
 			},
 			{
@@ -585,7 +653,8 @@
 				"configurationAttributes": {
 					"launch": {
 						"required": [
-							"program"
+							"program",
+							"smartclientUrl"
 						],
 						"properties": {
 							"program": {
@@ -659,22 +728,33 @@
 							},
 							"enableTableSync" : {
 								"type": "boolean",
-								"description": "%tds.package.properties.enableTableSync.description%",
+								"description": "%tds.package.properties.toggleTableSync.description%",
 								"default": true
+							},
+							"ignoreFiles": {
+								"type": "boolean",
+								"description": "Make the debugger ignore break events in files not found in WorkSpace",
+								"default": false
+							},
+							"programArguments": {
+								"type": "array",
+								"description": "Arguments that will be passed to the called program / function (key -A)",
+								"default": [
+									"${command:AskForProgramArguments}"
+								]
 							}
 						}
 					}
 				},
 				"initialConfigurations": [
 					{
-						"type": "totvs_language_debug",
+						"type": "totvs_language_web_debug",
 						"request": "launch",
 						"name": "%tds.package.totvs_language_debug%",
 						"program": "${command:AskForProgramName}",
 						"cwb": "${workspaceFolder}",
-						"smartclientBin": "C:/totvs/bin/smartclient/smartclient.exe",
-						"serverItem": "tcp",
 						"environment": "environment",
+						"smartclientUrl": "http://localhost:8080",
 						"isMultiSession": true,
 						"enableTableSync": true
 					}
@@ -699,7 +779,7 @@
 							"type": "totvs_language_web_debug",
 							"request": "launch",
 							"name": "%tds.package.totvs_language_debug.web%",
-							"program": "${command:AskForProgramName}",
+							"program": "^\"\\${command:AskForProgramName}\"",
 							"isMultiSession": true,
 							"enableTableSync": true,
 							"smartclientUrl": "http://localhost:8080"
@@ -707,7 +787,8 @@
 					}
 				],
 				"variables": {
-					"AskForProgramName": "totvs-developer-studio.getProgramName"
+					"AskForProgramName": "totvs-developer-studio.getProgramName",
+					"AskForProgramArguments": "totvs-developer-studio.getProgramArguments"
 				}
 			}
 		],
@@ -737,31 +818,36 @@
 					"group": "totvsBuild@1"
 				},
 				{
-					"when": "explorerResourceIsFolder",
-					"command": "totvs-developer-studio.build.folder",
-					"alt": "totvs-developer-studio.rebuild.folder",
-					"group": "totvsBuild@2"
+					"command": "totvs-developer-studio.build.file",
+					"alt": "totvs-developer-studio.rebuild.file",
+					"group": "totvsBuild@3"
 				},
 				{
-					"command": "totvs-developer-studio.build.file",
-					"alt": "totvs-developer-studio.build.file",
-					"group": "totvsBuild@3"
+					"command": "totvs-developer-studio.build.openEditors",
+					"alt": "totvs-developer-studio.rebuild.openEditors",
+					"group": "totvsBuild@4"
 				},
 				{
 					"when": "resourceLangId == totvs_patch",
 					"command": "totvs-developer-studio.patchApply.fromFile",
 					"alt": "totvs-developer-studio.patchApply.fromFile",
-					"group": "totvsBuild@3"
+					"group": "totvsBuild@5"
+				},
+				{
+					"when": "resourceLangId == totvs_patch",
+					"command": "totvs-developer-studio.patchInfos.fromFile",
+					"alt": "totvs-developer-studio.patchInfos.fromFile",
+					"group": "totvsBuild@8"
 				},
 				{
 					"command": "totvs-developer-studio.delete.file.fromRPO",
 					"alt": "totvs-developer-studio.delete.file.fromRPO",
-					"group": "totvsBuild@4"
+					"group": "totvsBuild@6"
 				},
 				{
 					"when": "explorerResourceIsFolder",
 					"command": "totvs-developer-studio.patchGenerate.fromFolder",
-					"group": "totvsBuild@5"
+					"group": "totvsBuild@7"
 				}
 			],
 			"view/item/context": [
@@ -858,11 +944,7 @@
 					"when": "1 == 0"
 				},
 				{
-					"command": "totvs-developer-studio.build.folder",
-					"when": "1 == 0"
-				},
-				{
-					"command": "totvs-developer-studio.rebuild.folder",
+					"command": "totvs-developer-studio.patchInfos.fromFile",
 					"when": "1 == 0"
 				},
 				{
@@ -883,6 +965,10 @@
 				},
 				{
 					"command": "totvs-developer-studio.getProgramName",
+					"when": "1 == 0"
+				},
+				{
+					"command": "totvs-developer-studio.getProgramArguments",
 					"when": "1 == 0"
 				},
 				{

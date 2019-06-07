@@ -18,6 +18,13 @@
 					<span class="formTitle">${d.localize["tds.webview.title"]}</span>
 					<!--Compile Key-->
 				</div>
+
+				<div class="wrap-input">
+					<label for="MachineID">${d.localize["tds.webview.compile.machine.id"]}</label>
+					<!--Machine ID-->
+					<input class="inputText" type="text" id="MachineID" name="MachineID" disabled >
+				</div>
+
 				<div class="wrap-input">
 					<label for="compileKeyFile">${d.localize["tds.webview.compile.key.file"]}</label>
 					<!--Compile Key File-->
@@ -27,9 +34,9 @@
 				</div>
 
 				<div class="wrap-input">
-					<label for="MachineID">${d.localize["tds.webview.compile.key.machine.id"]}</label>
+					<label for="KeyID">${d.localize["tds.webview.compile.key.id"]}</label>
 					<!--Machine ID-->
-					<input class="inputText" type="text" id="MachineID" name="MachineID" disabled >
+					<input class="inputText" type="text" id="KeyID" name="KeyID" >
 				</div>
 
 				<div class="wrap-input">
@@ -54,6 +61,10 @@
 					<label for="Overwrite">${d.localize["tds.webview.compile.key.overwrite"]}</label>
 					<!--Allow Overwrite default -->
 					<input class="" type="checkbox" id="OverwriteID" name="Token">
+				</div>
+
+				<div class="wrap-output">
+					<p id="OutputMessage"></p>
 				</div>
 
 				<div class="wrap-submit">
@@ -86,7 +97,7 @@
 	var defaultID;
 
 	function validate(){
-		var id = document.getElementById('MachineID').value;
+		var id = document.getElementById('KeyID').value;
 		var generated = document.getElementById('GeneratedInID').value;
 		var expire = document.getElementById('ExpireInID').value;
 		var token = document.getElementById('TokenID').value;
@@ -103,7 +114,7 @@
 	}
 
 	function clean(){
-		var id = document.getElementById('MachineID');
+		var id = document.getElementById('KeyID');
 		var path = document.getElementById('compileKeyFile');
 		var generated = document.getElementById('GeneratedInID');
 		var expire = document.getElementById('ExpireInID');
@@ -124,12 +135,11 @@
 		overwrite.disabled = false;
 
 		vscode.postMessage({
-			command: 'getID'
-		});
-
-		vscode.postMessage({
 			command: 'cleanKey'
 		});
+
+		document.getElementById('OutputMessage').innerHTML = "";
+		document.getElementById('OutputMessage').style = "";
 	}
 
 	function readFile(){
@@ -140,6 +150,8 @@
 			command: 'readFile',
 			path: filePath
 		});
+		document.getElementById('OutputMessage').innerHTML = "";
+		document.getElementById('OutputMessage').style = "";
 	}
 
 	function save(close) {
@@ -150,7 +162,7 @@
 			filePath = input.files[0].path;
 		}
 
-		var id = document.getElementById('MachineID').value;
+		var id = document.getElementById('KeyID').value;
 		var generated = document.getElementById('GeneratedInID').value;
 		var expire = document.getElementById('ExpireInID').value;
 		var token = document.getElementById('TokenID').value;
@@ -174,7 +186,7 @@
 		switch (message.command) {
 			case 'setCurrentKey':
 				var path = document.getElementById('compileKeyFile');
-				var id = document.getElementById('MachineID');
+				var id = document.getElementById('KeyID');
 				var generated = document.getElementById('GeneratedInID');
 				var expire = document.getElementById('ExpireInID');
 				var token = document.getElementById('TokenID');
@@ -199,6 +211,16 @@
 			case 'setID':
 				document.getElementById('MachineID').value = message.id;
 				defaultID = message.id;
+				break;
+			case 'setOutputMessage':
+				style = "color: black";
+				if (message.type === "success") {
+					style = "color: green";
+				} else  if (message.type === "error") {
+					style = "color: red";
+				}
+				document.getElementById('OutputMessage').style = style;
+				document.getElementById('OutputMessage').innerHTML = message.output;
 				break;
 		}
 	});
