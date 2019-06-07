@@ -9,9 +9,26 @@ import { languageClient, localize } from './extension';
 const homedir = require('os').homedir();
 
 export enum MESSAGETYPE {
+	/**
+	 * Type for informative and resumed messages
+	 * i.e.: Inform only the begining and the end of a compilation process.
+	 */
 	Info = "Info",
+
+	/**
+	 * Type for error messages
+	 */
 	Error = "Error",
+
+	/**
+	 * Type for warning messages
+	 */
 	Warning = "Warning",
+
+	/**
+	 * Type for detailed messages
+	 * i.e.: During a compilation process, inform the status of each file and it's result.
+	 */
 	Log = "Log"
 }
 
@@ -613,41 +630,38 @@ export default class Utils {
 	}
 
 	/**
-	 * Loga a mensagem informada no console e/ou mostra um dialog.
-	 ** Note que a abertura do dialog esta respeita a configuração por tipo de avisos definida pelo usuario em: editor.show.notification
-	 * @param message - A mensagem a ser apresentada
-	 * @param messageType - O tipo da mensagem a ser apresentada
-	 * @param logToConsole - Se deve logar no console
-	 * @param showDialog - Se deve mostrar o dialog
+	 * Logs the informed messaged in the console and/or shows a dialog
+	 * Please note that the dialog opening respects the dialog settings defined by the user in editor.show.notification
+	 * @param message - The message to be shown
+	 * @param messageType - The message type
+	 * @param showDialog - If it must show a dialog.
 	 */
 	static logMessage(message: string, messageType: MESSAGETYPE, showDialog: boolean) {
 		let config = vscode.workspace.getConfiguration('totvsLanguageServer');
 		let notificationLevel = config.get('editor.show.notification');
 		switch (messageType) {
 			case MESSAGETYPE.Error:
-				languageClient.error(message);
+				languageClient !== undefined ? languageClient.error(message) : console.log(message);
 				if (showDialog && notificationLevel !== "none") {
 					vscode.window.showErrorMessage(message);
 				}
 				break;
 			case MESSAGETYPE.Info:
-				languageClient.info(message);
-				if (showDialog && notificationLevel === "all") {
+				languageClient !== undefined ? languageClient.info(message) : console.log(message);
+				if (showDialog && notificationLevel === "all" || notificationLevel === "errors warnings and infos") {
 					vscode.window.showInformationMessage(message);
 				}
 				break;
 			case MESSAGETYPE.Warning:
-				languageClient.warn(message);
-				if (showDialog && (notificationLevel === "all" || notificationLevel === "errors and warnings")) {
+				languageClient !== undefined ? languageClient.warn(message) : console.log(message);
+				if (showDialog && (notificationLevel === "all" || notificationLevel === "errors warnings and infos" || notificationLevel === "errors and warnings")) {
 					vscode.window.showWarningMessage(message);
 				}
 				break;
 			case MESSAGETYPE.Log:
-				//let today = this.timeAsHHMMSS(new Date());
-				//let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 				let time = this.timeAsHHMMSS(new Date());
-				languageClient.outputChannel.appendLine("[Log   + "+time+"] " + message);
-				if (showDialog && notificationLevel === "Log") {
+				languageClient !== undefined ? languageClient.outputChannel.appendLine("[Log   + "+time+"] " + message) : console.log(message);
+				if (showDialog && notificationLevel === "all") {
 					vscode.window.showInformationMessage(message);
 				}
 				break;
