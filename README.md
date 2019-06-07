@@ -54,6 +54,74 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 ![Connect Server](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/ConnectServer.gif)
 
+## Compilação
+
+### Compilando fonte do editor corrente
+
+* Para compilar o fonte do editor corrente acione o atalho `CTRL + F9`. Ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Compile Selection`.
+
+* Para recompilar o fonte do editor corrente acione o atalho `CTRL + SHIFT + F9`.
+
+### Compilando todos os fontes abertos
+
+* Para compilar todos os fontes dos editores abertos acione o atalho `CTRL + F10`. Ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Compile Open Editors`.
+
+* Para recompilar todos os fontes dos editores abertos acione o atalho `CTRL + SHIFT + F10`.
+
+## Configurações de Compilação
+
+### Encoding
+
+Tivemos reportes de problemas de encode abrindo fontes antes salvos no TDS, isso ocorre porque o encode original do VSCode é UTF8 e o do TDS é outro.
+Para garantir a compilação é necessário compatibilizar o encode da seguinte maneira:
+ * No estado original o Fonte será mostrado desta maneira:<br/>
+ ![Encoding 1](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding1.png)
+ * **Antes de editar/salvar qualquer fonte no VS** entre nas configurações do VS `Ctrl + ,`.
+ * No campo de busca digite `encode` e selecione `Windows1252`.<br/>
+ * Abra o fonte com o novo encode (reforçando que NÃO DEVE tê-lo salvo antes em UTF8)<br/>
+ ![Encoding 3](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding3.png)
+ * Compile e/ou recompile o fonte e execute-o.<br/>
+ ![Encoding 4](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding4.png)
+
+ Na abertura do workspace, perguntamos se o usuário deseja alterar o encoding para o padrão TOTVS e essa configuração é feita automaticamente.
+
+### Compilando Function e Main Function com Chave de compilação
+
+* Este processo está sendo revisto e pode sofrer alterações.
+
+* Para aplicar uma chave de compilação, clique com o botão direito na visão de servidores e selecione a opção `Compile key`.
+* Abrirá um assistente para selecionar a chave que deseja. Todos os arquivos .aut podem ser selecionados.
+* Também é possível abrir o assistente pelo atalho `CTRL + SHIFT + P` digirantando `TOTVS: Compile Key`.
+* Após selecionar a chave, ela será lida e os campos preenchidos com suas informações.
+* Clique sobre o botão de `Validate` para verificar se a chave é válida.
+
+* OBS: A chave só será salva ao clicar no botão `Save` ou `Save/Close` caso a chave seja válida.
+
+## Chave de compilação
+
+* A partir de 17/05/2019 todas as chaves devem ser regeradas utilizando o ID exibido no nosso plugin do VSCode. Isse se faz necessário para suporte de Linux e MAC.
+
+* Suporte de chave de compilação em Linux e MAC a partir de 17/05/2019.
+
+![Compile Key](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/CompileKey.gif)
+
+### Configuração de Include
+
+* Na visão de servidores, clique com o menu de contexto e selecione a opção `Include`.
+* Também é possível configurar pelo assistente: `CTRL + SHIFT + P` digite `TOTVS: Include`.
+
+* As configurações de include ficam no arquivo `%USERHOME%/.totvsls/servers.json`. Abra esse arquivo.
+* Já existe por padrão o diretório `"C:/totvs/includes"`.
+* Para adicionar uma nova configuração de include separe por vírgula ou substitua o path existente.
+  Ex:`"includes": ["C:/totvs/includes1","C:/totvs/includes2", "C:/totvs/includes3"]`.
+
+![Configure Include](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Include.gif)
+
+### Arquivos do pré compilador
+
+* Para manter os arquivos gerados pelo pré-compilador, habilite a opção nas preferencias em: `File | Preferences | Settings | Extensions | AdvPL | Leave PPO File`.
+* Caso queira um log completo das operações efetuadas pelo pré-compilador, habilite a opção: `File | Preferences | Settings | Extensions | AdvPL | Show Pre Compiler`.
+
 ## Configurações de Debug
 
 ### Criando manualmente uma configuração de debug
@@ -206,74 +274,20 @@ Veja detalhes sobre como usar as diretivas [${command:}](https://link) e [passag
 ### Inspetor de Objetos do RPO
 
 * Para visualizar os arquivos que fazem parte do RPO, conecte-se ao servidor.
-* Com o menu de contexto em cima do servidor, selecione a opção `Inspector of the Objects`.
+* Com o menu de contexto em cima do servidor, selecione a opção `Objects inspector`.
 * Abrirá um assistente com todos os arquivos que fazem parte do RPO, utilize o filtro para encontrar algum arquivo específico.
-* Também é possível abrir o assistente pelo atalho `CTRL + SHIFT + P` digitando `TOTVS: Inspector of the Objects`.
+* Também é possível abrir o assistente pelo atalho `CTRL + SHIFT + P` digitando `TOTVS: Objects inspector`.
 
-![Inspector Object](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/InspectObject.gif)
+![Objects inspector](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/InspectObject.gif)
 
 ### Inspetor de Funções do RPO
 
 * Para visualizar as funções que fazem parte do RPO, conecte-se ao servidor.
-* Com o menu de contexto em cima do servidor, selecione a opção `Inspector of the Functions`.
+* Com o menu de contexto em cima do servidor, selecione a opção `Functions inspector`.
 * Abrirá um assistente com todos as funções que fazem parte do RPO, utilize o filtro para encontrar alguma função específica.
-* Também é possível abrir o assistente pelo atalho `CTRL + SHIFT + P` digitando `TOTVS: Inspector of the Functions`.
+* Também é possível abrir o assistente pelo atalho `CTRL + SHIFT + P` digitando `TOTVS: Functions inspector`.
 
-![Inspector Function](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/InspectFunction.gif)
-
-## Configurações de Compilação
-
-### Encoding
-
-Tivemos reportes de problemas de encode abrindo fontes antes salvos no TDS, isso ocorre porque o encode original do VSCode é UTF8 e o do TDS é outro.
-Para garantir a compilação é necessário compatibilizar o encode da seguinte maneira:
- * No estado original o Fonte será mostrado desta maneira:<br/>
- ![Encoding 1](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding1.png)
- * **Antes de editar/salvar qualquer fonte no VS** entre nas configurações do VS `Ctrl + ,`.
- * No campo de busca digite `encode` e selecione `Windows1252`.<br/>
- * Abra o fonte com o novo encode (reforçando que NÃO DEVE tê-lo salvo antes em UTF8)<br/>
- ![Encoding 3](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding3.png)
- * Compile e/ou recompile o fonte e execute-o.<br/>
- ![Encoding 4](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding4.png)
-
- Na abertura do workspace, perguntamos se o usuário deseja alterar o encoding para o padrão TOTVS e essa configuração é feita automaticamente.
-
-### Compilando Function e Main Function com Chave de compilação
-
-* Este processo está sendo revisto e pode sofrer alterações.
-
-* Para aplicar uma chave de compilação, clique com o botão direito na visão de servidores e selecione a opção `Compile key`.
-* Abrirá um assistente para selecionar a chave que deseja. Todos os arquivos .aut podem ser selecionados.
-* Também é possível abrir o assistente pelo atalho `CTRL + SHIFT + P` digirantando `TOTVS: Compile Key`.
-* Após selecionar a chave, ela será lida e os campos preenchidos com suas informações.
-* Clique sobre o botão de `Validate` para verificar se a chave é válida.
-
-* OBS: A chave só será salva ao clicar no botão `Save` ou `Save/Close` caso a chave seja válida.
-
-## Chave de compilação
-
-* A partir de 17/05/2019 todas as chaves devem ser regeradas utilizando o ID exibido no nosso plugin do VSCode. Isse se faz necessário para suporte de Linux e MAC.
-
-* Suporte de chave de compilação em Linux e MAC a partir de 17/05/2019.
-
-![Compile Key](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/CompileKey.gif)
-
-### Configuração de Include
-
-* Na visão de servidores, clique com o menu de contexto e selecione a opção `Include`.
-* Também é possível configurar pelo assistente: `CTRL + SHIFT + P` digite `TOTVS: Include`.
-
-* As configurações de include ficam no arquivo `%USERHOME%/.totvsls/servers.json`. Abra esse arquivo.
-* Já existe por padrão o diretório `"C:/totvs/includes"`.
-* Para adicionar uma nova configuração de include separe por vírgula ou substitua o path existente.
-  Ex:`"includes": ["C:/totvs/includes1","C:/totvs/includes2", "C:/totvs/includes3"]`.
-
-![Configure Include](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Include.gif)
-
-### Arquivos do pré compilador
-
-* Para manter os arquivos gerados pelo pré-compilador, habilite a opção nas preferencias em: `File | Preferences | Settings | Extensions | AdvPL | Leave PPO File`.
-* Caso queira um log completo das operações efetuadas pelo pré-compilador, habilite a opção: `File | Preferences | Settings | Extensions | AdvPL | Show Pre Compiler`.
+![Functions inspector](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/InspectFunction.gif)
 
 ## Geração de Client WS Protheus
 * É possível gerar arquivos ADVPL a partir de clients WSDL.
