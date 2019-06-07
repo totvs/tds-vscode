@@ -266,7 +266,7 @@ input::-webkit-calendar-picker-indicator {
 	overflow: visible;
 	touch-action: manipulation;
 	box-sizing: border-box;
-	padding: 1px;
+	padding: 4px;
 
 }
 
