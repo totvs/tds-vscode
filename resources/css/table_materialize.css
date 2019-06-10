@@ -52,6 +52,12 @@ textarea:focus, input:focus {
 	border-left: 5px solid #EA9B3E;
 }
 
+.tableColor {
+	color: #3C3734 /*#fff*/;
+	font-size: 12px;
+	font-family: Arial;
+}
+
 .logo{
 	display:block;
 	background-repeat: no-repeat;
@@ -269,11 +275,11 @@ input::-webkit-calendar-picker-indicator {
 	overflow: visible;
 	touch-action: manipulation;
 	box-sizing: border-box;
-	padding: 1px;
+	padding: 4 px;
 
 }
 
-.btn-submit:hover {
+.totvs-btn-submit:hover {
 	color: white;
 	background-color: #3C3734;
 	border: 2px solid #EA9B3E;

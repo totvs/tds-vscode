@@ -40,7 +40,7 @@
 							<div id="parent">
 								<div id="child">
 									<p>
-										<input id="FilterInput" type="text" value="*" placeholder="${d.localize['tds.webview.patch.filter']}" style="width: 245px;" onFocusOut="filterLeft();"><!--Filter, ex: MAT or * All (slow)-->
+										<input id="FilterInput" type="text" value="" placeholder="${d.localize['tds.webview.patch.filter']}" style="width: 245px;" onFocusOut="filterLeft();"><!--Filter, ex: MAT or * All (slow)-->
 									</p>
 
 									<select class="select-default" id="SelectL" multiple="multiple">
@@ -118,19 +118,20 @@
 			command: 'inspectorObjects'
 		});
 		window.addEventListener('message', event => {
-			for (var i=0; i<event.data.length; i++) {
-					var tempItem = event.data[i].name + " - ";
+			srcAll = event.data;
+			//for (var i=0; i<event.data.length; i++) {
+			//		var tempItem = event.data[i].name + " - ";
 					// if (event.data[i].type == "T"){
 					// 	tempItem += "PROGRAM - ";
 					// }
 					// else{
 					// 	tempItem += "RESOURCE - "
 					// }
-					tempItem += event.data[i].date;
-					srcAll.push(tempItem);
-			}
+			//		tempItem += event.data[i].date;
+			//		srcAll.push(tempItem);
+			//}
 
-			FilterInput.value = "*";
+			FilterInput.value = "";
 			SelectLCount.innerHTML =  "${d.localize['tds.webview.patch.items.showing']}" + ": " + srcAll.length;//Items showing
 			filterLeft();
 		});
@@ -175,7 +176,9 @@
     let lenQuery = query.length;
 		let filterData;
 
-		if (query === "*" && CheckIgnoreTRes.checked == false){
+		if (query === "") {
+			filterData = [ "<< Use filter to display objects >>" ];
+		} else if (query === "*" && CheckIgnoreTRes.checked == false){
 			filterData = [...srcAll]; // Spread é a clonagem mais rapida de Arrays
 		}
 		else if (query === "*" && CheckIgnoreTRes.checked == true){
@@ -283,7 +286,7 @@
 
 		var i = 0;
 		srcR.forEach ( index => {
-			srcR[i] = index.replace(/( - .*)/,"");
+			srcR[i] = index.replace(/( \\(.*\\))/,"");
 			i++;
 		});
 
