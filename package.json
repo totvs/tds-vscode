@@ -726,7 +726,7 @@
 								"description": "%tds.package.properties.logFile.description%",
 								"default": "${workspaceFolder}\\daplog.log"
 							},
-							"enableTableSync" : {
+							"enableTableSync": {
 								"type": "boolean",
 								"description": "%tds.package.properties.toggleTableSync.description%",
 								"default": true
