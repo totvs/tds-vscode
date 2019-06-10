@@ -94,11 +94,12 @@
 			command: 'inspectorObjects'
 		});
 		window.addEventListener('message', event => {
-			for (var i=0; i<event.data.length; i++) {
-					var tempItem = event.data[i].name + " - ";
-					tempItem += event.data[i].date;
-					srcAll.push(tempItem);
-			}
+			srcAll = event.data;
+			// for (var i=0; i<event.data.length; i++) {
+			// 		var tempItem = event.data[i].name + " - ";
+			// 		tempItem += event.data[i].date;
+			// 		srcAll.push(tempItem);
+			// }
 
 			FilterInput.value = "*";
 			SelectLCount.innerHTML =  "Items showing" + ": " + srcAll.length;//Items showing
@@ -146,10 +147,10 @@
 			filterData = srcAll.filter(el => !el.includes(".TRES"));
 		}
 		else if (query != "*" && CheckIgnoreTRes.checked == false){
-			filterData = srcAll.filter(el => el.includes(query));
+			filterData = srcAll.filter(el => el.includes(query.replace(/\\*/g,"")));
 		}
 		else if (query != "*" && CheckIgnoreTRes.checked == true){
-			filterData = srcAll.filter(el => el.includes(query) && !el.includes(".TRES"));
+			filterData = srcAll.filter(el => el.includes(query.replace(/\\*/g,"")) && !el.includes(".TRES"));
 		}
 
 		SelectL.innerHTML = "";

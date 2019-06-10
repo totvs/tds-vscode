@@ -130,7 +130,7 @@
 			filterData = [...srcAll]; // Spread é a clonagem mais rapida de Arrays
 		}
 		else if (query != "*"){
-			filterData = srcAll.filter(el => el.includes(query));
+			filterData = srcAll.filter(el => el.includes(query.replace(/\\*/g,"")));
 		}
 
 		SelectL.innerHTML = "";
