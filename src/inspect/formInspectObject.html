@@ -39,7 +39,7 @@
 							<div id="parent">
 								<div id="child">
 									<p>
-										<input id="FilterInput" type="text" value="*" placeholder="Filter, ex: MAT or * All (slow)" style="width: 595px;" onFocusOut="filterLeft();"><!--Filter, ex: MAT or * All (slow)-->
+										<input id="FilterInput" type="text" value="" placeholder="Filter, ex: MAT or * All (slow)" style="width: 595px;" onFocusOut="filterLeft();"><!--Filter, ex: MAT or * All (slow)-->
 									</p>
 
 									<select class="select-unique" id="SelectL" multiple="multiple">
@@ -101,7 +101,7 @@
 			// 		srcAll.push(tempItem);
 			// }
 
-			FilterInput.value = "*";
+			FilterInput.value = "";
 			SelectLCount.innerHTML =  "Items showing" + ": " + srcAll.length;//Items showing
 			filterLeft();
 		});
@@ -140,7 +140,9 @@
 		let query = FilterInput.value ? FilterInput.value.toUpperCase() : "";
     let lenQuery = query.length;
 
-		if (query === "*" && CheckIgnoreTRes.checked == false){
+		if (query === "") {
+			filterData = [ "<< Use filter to display objects >>" ];
+		} else if (query === "*" && CheckIgnoreTRes.checked == false){
 			filterData = [...srcAll]; // Spread é a clonagem mais rapida de Arrays
 		}
 		else if (query === "*" && CheckIgnoreTRes.checked == true){
