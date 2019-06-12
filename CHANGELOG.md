@@ -1,6 +1,6 @@
-# Versão 0.3.3
+# Versão 0.3.5
 
-## Exibir tabela com o resultado da compilação
+## Exibir tabela com o resultado da compilação [Issue 68](https://github.com/totvs/tds-vscode/issues/68)
 ### Melhoria:
 * Implementar uma opção de exibir os resultados da compilação quando compilado multiplos arquivos.
 ### Solução:
