@@ -1,5 +1,5 @@
 /*---------------------------------------------------------
- * Copyright (C) Microsoft Corporation. All rights reserved.
+ * Copyright (C) TOTVS S.A. All rights reserved.
  *--------------------------------------------------------*/
 
 'use strict';
@@ -32,9 +32,10 @@ import launcherConfig from './launcher/launcherConfiguration';
 import { onCaptureLoggers, offCaptureLoggers } from './loggerCapture/logger';
 import { TotvsConfigurationWebProvider } from './debug/TotvsConfigurationWebProvider';
 import { TotvsConfigurationProvider } from './debug/TotvsConfigurationProvider';
-import { getDAP, getProgramName, getProgramArguments} from './debug/debugConfigs';
+import { getDAP, getProgramName, getProgramArguments } from './debug/debugConfigs';
 import { toggleTableSync } from './debug/debugConfigs';
 import { toggleAutocompleteBehavior, updateSettingsBarItem } from './server/languageServerSettings';
+import { advplDocumentFormattingEditProvider, advplDocumentRangeFormattingEditProvider, advplResourceFormatting } from './formatter/advplFormatting';
 
 export let languageClient: LanguageClient;
 // metodo de tradução
@@ -319,8 +320,42 @@ export function activate(context: ExtensionContext) {
 
 	commands.registerCommand("totvs-developer-studio.toggleTableSync", () => toggleTableSync());
 
+	// Inicialização do formatador Adv/PL
+	context.subscriptions.push(
+		vscode.commands.registerCommand('totvs-developer-studio.run.formatter', (args: any[]) => {
+			console.log("formatador ativado");
+
+			if (instanceOfUri(args)) {
+				advplResourceFormatting([args.fsPath]);
+			} else if (instanceOfUriArray(args)) {
+				const map: string[] = args.map<string>((uri: Uri) => {
+					return uri.fsPath;
+				});
+				advplResourceFormatting(map);
+			}
+		})
+	);
+
+
+	vscode.languages.registerDocumentFormattingEditProvider('advpl',
+		advplDocumentFormattingEditProvider()
+	);
+
+	vscode.languages.registerDocumentRangeFormattingEditProvider('advpl',
+		advplDocumentRangeFormattingEditProvider()
+	);
+
+
 	//Verifica questões de encoding
 	verifyEncoding();
+}
+
+function instanceOfUri(object: any): object is Uri {
+	return 'scheme' in object;
+}
+
+function instanceOfUriArray(object: any): object is Uri[] {
+	return Array.isArray(object);
 }
 
 // this method is called when your extension is deactivated
