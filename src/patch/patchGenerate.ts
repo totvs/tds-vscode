@@ -3,7 +3,7 @@ import path = require('path');
 import fs = require('fs');
 import Utils from '../utils';
 import { languageClient } from '../extension';
-import { commandBuildFile } from '../tdsBuild';
+import { commandBuildFile } from '../compile/tdsBuild';
 import * as nls from 'vscode-nls';
 
 let localize = nls.loadMessageBundle();
