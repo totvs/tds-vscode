@@ -1,5 +1,11 @@
 # Versão 0.3.3
 
+## Exibir tabela com o resultado da compilação
+### Melhoria:
+* Implementar uma opção de exibir os resultados da compilação quando compilado multiplos arquivos.
+### Solução:
+* Implementar uma tabela com todos os dados de compilação, exibindo quais arquivos foram compilados, quais tem erros, com opção e filtro e ordenação.
+----
 ## Exibir tabelas e conteúdo: [Issue 20](https://github.com/totvs/tds-vscode/issues/20)
 ### Melhoria:
 * Implementar o sincronismo de tabelas durante a depuração.

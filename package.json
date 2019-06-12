@@ -218,6 +218,12 @@
 					"default": true,
 					"description": "%tds.package.show.ask.encoding%"
 				},
+				"totvsLanguageServer.askCompileResult": {
+					"scope": "window",
+					"type": "boolean",
+					"default": true,
+					"description": "%tds.package.show.ask.compile.result%"
+				},
 				"totvsLanguageServer.reconnectLastServer": {
 					"type": "boolean",
 					"default": true,

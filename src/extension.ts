@@ -17,7 +17,7 @@ import { patchGenerate, patchGenerateFromFolder } from './patch/patchGenerate';
 import { patchApply } from './patch/patchApply';
 import Utils from './utils';
 import { LanguageClient } from 'vscode-languageclient';
-import { commandBuildFile, commandBuildWorkspace, commandBuildOpenEditors } from './tdsBuild';
+import { commandBuildFile, commandBuildWorkspace, commandBuildOpenEditors } from './compile/tdsBuild';
 import { deleteFileFromRPO } from './server/deleteFileFromRPO';
 import { defragRpo } from './server/defragRPO';
 import { serverAuthentication } from './inputConnectionParameters';
@@ -229,19 +229,19 @@ export function activate(context: ExtensionContext) {
 	context.subscriptions.push(commands.registerCommand("totvs-developer-studio.inspectorFunctions", () => inspectFunctions(context)));
 
 	//Compila os fontes/recursos selecionados
-	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.build.file', (context, files) => commandBuildFile(context, false, files)));
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.build.file', (args, files) => commandBuildFile(context, false, files)));
 	//Recompila os fontes/recursos selecionados
-	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.rebuild.file', (context, files) => commandBuildFile(context, true, files)));
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.rebuild.file', (args, files) => commandBuildFile(context, true, files)));
 
 	//Compila todos os arquivos dentro de um workspace.
-	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.build.workspace', () => commandBuildWorkspace(false)));
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.build.workspace', () => commandBuildWorkspace(false, context)));
 	//Recompila todos os arquivos dentro de um workspace.
-	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.rebuild.workspace', () => commandBuildWorkspace(true)));
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.rebuild.workspace', () => commandBuildWorkspace(true, context)));
 
 	//Compila todos os fontes abertos
-	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.build.openEditors', (context) => commandBuildOpenEditors(false)));
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.build.openEditors', () => commandBuildOpenEditors(false, context)));
 	//Recompila todos os fontes abertos
-	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.rebuild.openEditors', (context) => commandBuildOpenEditors(true)));
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.rebuild.openEditors', () => commandBuildOpenEditors(true, context)));
 
 	//View
 	let viewServer = new ServersExplorer(context);

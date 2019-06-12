@@ -68,6 +68,22 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 * Para recompilar todos os fontes dos editores abertos acione o atalho `CTRL + SHIFT + F10`.
 
+### Resultado da compilação
+
+* Para analisar o resultado da compilação de múltiplos arquivos, exite a opção de abrir uma tabela com informações de todos os arquivos que foram compilados.
+
+* Para exibir essa tabela, selecione mais de um arquivo, compile e após a compilação será apresentada a pergunta a seguir: Clique em `Yes`.
+
+![ShowCompileResult](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/compile/askCompileResult.PNG)
+
+* A tabela abaixo será exibida, ordenada pela coluna de resultado.
+
+![TableCompileResult](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/compile/CompileResults.PNG)
+
+* Exite nas preferencias uma maneira de habilitar e desabilitar a pergunta sobre a abertura da tabela.
+
+* Clique em `File | Preferences | Settings` e digite `totvsLanguageServer.askCompileResult` no campo de pesquisa.
+
 ## Configurações de Compilação
 
 ### Encoding

@@ -1,8 +1,9 @@
 import vscode = require('vscode');
-import { languageClient } from './extension';
-import utils from './utils';
+import { languageClient } from '../extension';
+import utils from '../utils';
 import fs = require('fs');
-import Utils from './utils';
+import Utils from '../utils';
+import { showCompileResult } from './buildResult';
 
 import * as nls from 'vscode-nls';
 let localize = nls.loadMessageBundle();
@@ -35,11 +36,11 @@ function _getCompileOptionsDefault(): CompileOptions {
 /**
  * Builds a file.
  */
-export function buildFile(filename: string[], recompile: boolean) {
+export function buildFile(filename: string[], recompile: boolean, context: vscode.ExtensionContext) {
 	//languageClient.info(localize("tds.webview.tdsBuild.compileBegin", "Resource compilation started. Resource: {0}", filename));
 	const compileOptions = _getCompileOptionsDefault();
 	compileOptions.recompile = recompile;
-	buildCode(filename, compileOptions);
+	buildCode(filename, compileOptions, context);
 
 	languageClient.info('Compilação de recurso finalizada.');
 }
@@ -47,7 +48,7 @@ export function buildFile(filename: string[], recompile: boolean) {
 /**
  * Build a file list.
  */
-async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
+async function buildCode(filesPaths: string[], compileOptions: CompileOptions, context: vscode.ExtensionContext) {
 	const includes: Array<string> = utils.getIncludes(true) || [];
 	if (!includes.toString()) {
 		return;
@@ -93,6 +94,9 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 			if (response.returnCode == 40840) {
 				Utils.removeExpiredAuthorization();
 			}
+			if(response.compileInfos.length > 1){
+				verifyCompileResult(response, context);
+			}
 		}, (err) => {
 			vscode.window.showErrorMessage(err);
 		});
@@ -101,16 +105,26 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 	}
 }
 
-export class CompileInfo {
-	status: string;
-	filePath: string;
-	message: string;
-	detail: string;
-}
+function verifyCompileResult(response, context){
+	const textNoAsk = localize('tds.vscode.noAskAgain', "Don't ask again");
+	const textNo = localize('tds.vscode.no', 'No');
+	const textYes = localize('tds.vscode.yes', 'Yes');
+	const textQuestion = localize('tds.vscode.question.showCompileResult', 'Show table with compile results?');
 
-export class CompileResult {
-	returnCode: number;
-	compileInfos: Array<CompileInfo>;
+	let questionAgain = true;
+
+	const configADVPL = vscode.workspace.getConfiguration('totvsLanguageServer');
+	const questionEncodingConfig = configADVPL.get("askCompileResult");
+	if (questionEncodingConfig !== false) {
+		vscode.window.showInformationMessage(textQuestion, textYes, textNo, textNoAsk).then(clicked => {
+			if (clicked === textYes) {
+				showCompileResult(response.compileInfos, context);
+			} else if (clicked === textNoAsk) {
+				questionAgain = false;
+			}
+			configADVPL.update("askCompileResult", questionAgain);
+		});
+	}
 }
 
 export function commandBuildFile(context, recompile: boolean, files) {
@@ -127,10 +141,10 @@ export function commandBuildFile(context, recompile: boolean, files) {
 	if (files) {
 		const arrayFiles: string[] = changeToArrayString(files);
 		var allFiles = Utils.getAllFilesRecursive(arrayFiles);
-		buildFile(allFiles, recompile);
+		buildFile(allFiles, recompile, context);
 	} else {
 		if (filename != undefined) {
-			buildFile([filename], recompile);
+			buildFile([filename], recompile, context);
 		}
 	}
 }
@@ -151,7 +165,7 @@ function changeToArrayString(allFiles) {
 	return arrayFiles;
 }
 
-export function commandBuildWorkspace(recompile: boolean) {
+export function commandBuildWorkspace(recompile: boolean, context: vscode.ExtensionContext) {
 	const wfolders: vscode.WorkspaceFolder[] | undefined = vscode.workspace.workspaceFolders;
 	if (wfolders) {
 		let folders: string[] = [];
@@ -162,11 +176,11 @@ export function commandBuildWorkspace(recompile: boolean) {
 
 		var allFiles = Utils.getAllFilesRecursive(folders);
 
-		buildFile(allFiles, recompile);
+		buildFile(allFiles, recompile, context);
 	}
 }
 
-export async function commandBuildOpenEditors(recompile: boolean) {
+export async function commandBuildOpenEditors(recompile: boolean, context: vscode.ExtensionContext) {
 	let delayNext = 250;
 	let files: string[] = [];
 	let filename: string | undefined = undefined;
@@ -220,7 +234,7 @@ export async function commandBuildOpenEditors(recompile: boolean) {
 	if (files.length > 0) {
 		const compileOptions = _getCompileOptionsDefault();
 		compileOptions.recompile = recompile;
-		buildCode(files, compileOptions);
+		buildCode(files, compileOptions, context);
 	} else {
 		vscode.window.showWarningMessage("There is nothing to compile");
 	}
