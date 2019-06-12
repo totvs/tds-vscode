@@ -130,7 +130,9 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 	}
 
 	async function inputUsername(input: MultiStepInput, state: Partial<State>, serversConfig: any) {
-		let key = (state.server ? (state.server as QuickPickItem).detail : "") + ":" + (state.environment ? (state.environment as QuickPickItem).label : "");
+		let serverId = (typeof state.server === "string") ? state.server : (state.server as QuickPickItem).detail;
+		let environmentName = (typeof state.environment === "string") ? state.environment : (state.environment as QuickPickItem).label;
+		let key = serverId + ":" + environmentName;
 		let savedTokens: [string, object] = serversConfig.savedTokens;
 		if (savedTokens) {
 			for (let idx = 0; idx < savedTokens.length; idx++) {
