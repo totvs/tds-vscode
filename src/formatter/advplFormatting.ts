@@ -1,7 +1,8 @@
-import { DocumentFormattingEditProvider, TextDocument, FormattingOptions, CancellationToken, ProviderResult, TextEdit, DocumentRangeFormattingEditProvider, Uri } from 'vscode';
+import { DocumentFormattingEditProvider, TextDocument, FormattingOptions, CancellationToken, ProviderResult, TextEdit, DocumentRangeFormattingEditProvider } from 'vscode';
 import { FormattingRules, RuleMatch } from './formmatingRules';
 import * as fs from 'fs';
 import * as vscode from 'vscode';
+import * as path from 'path';
 
 class AdvplDocumentFormatting implements DocumentFormattingEditProvider {
 	lineContinue: boolean = false;
@@ -72,19 +73,82 @@ export function advplDocumentRangeFormattingEditProvider() {
 	return advplDocumentRangeFormatter;
 }
 
-export function advplResourceFormatting(uriList: Uri[]) {
-	uriList.forEach((uri: Uri) => {
-		const fi: fs.Stats = fs.lstatSync(uri.fsPath);
-		if (fi.isDirectory) {
-			let filenames = fs.readdirSync(uri.fsPath);
-			let subUri: Uri[] = filenames.map<Uri>((elemen: string) => {
-				return Uri.parse(elemen);
+export function advplResourceFormatting(resources: string[]) {
+	const targetResources: string[] = getResourceList(resources);
+
+	if (targetResources.length === 0) {
+		vscode.window.showInformationMessage("Nenhum recurso localizado.");
+	} else {
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Window,
+			title: "Formatação",
+			cancellable: true
+		}, (progress, token) => {
+			token.onCancellationRequested(() => {
+				vscode.window.showWarningMessage("Formatação de recursos cancelada.");
 			});
-			advplResourceFormatting(subUri);
+			const total = targetResources.length;
+			const increment: number = 100 / total;
+
+			targetResources.forEach((resource: string, index) => {
+				let uri: vscode.Uri = vscode.Uri.file(resource);
+				const relPath = path.relative(resource, uri.toString(false));
+				progress.report({ increment: increment, message: `${relPath} (${index + 1}/${total})` });
+
+				vscode.workspace.openTextDocument(uri).then((document: TextDocument) => {
+					if (document.languageId === "advpl") {
+						const options: FormattingOptions = {
+							insertSpaces: false,
+							tabSize: 4
+						};
+
+						const providerResult: ProviderResult<TextEdit[]> = advplDocumentFormatter.provideDocumentFormattingEdits(document, options, token);
+						if (Array.isArray(providerResult)) {
+							const wsEdit: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
+							wsEdit.set(uri, providerResult);
+							vscode.workspace.applyEdit(wsEdit).then((value:boolean) => {
+								if (!value) {
+									vscode.window.showErrorMessage("falhou");
+								}
+							});
+						}
+					}
+
+					const p = new Promise(resolve => {
+						setTimeout(() => {
+							resolve();
+						}, 2000);
+					});
+
+					return p;
+				});
+			});
+
+			const p = new Promise(resolve => {
+				setTimeout(() => {
+					resolve();
+				}, 5000);
+			});
+
+			return p;
+		});
+	}
+}
+
+function getResourceList(resources: string[]): string[] {
+	const resultList: string[] = [];
+
+	resources.forEach((resourcePath: string) => {
+		const fi: fs.Stats = fs.lstatSync(resourcePath);
+		if (fi.isDirectory()) {
+			let filenames = fs.readdirSync(resourcePath).map<string>((filename: string) => {
+				return path.join(resourcePath, filename);
+			});
+			resultList.push(...getResourceList(filenames));
 		} else {
-			vscode.workspace.openTextDocument(uri).then((document: TextDocument) => {
-				console.log(`>>> formatar ${uri}`);
-			});
+			resultList.push(resourcePath);
 		}
 	});
+
+	return resultList;
 }

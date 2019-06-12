@@ -326,9 +326,12 @@ export function activate(context: ExtensionContext) {
 			console.log("formatador ativado");
 
 			if (instanceOfUri(args)) {
-				advplResourceFormatting([args]);
+				advplResourceFormatting([args.fsPath]);
 			} else if (instanceOfUriArray(args)) {
-				advplResourceFormatting(args);
+				const map: string[] = args.map<string>((uri: Uri) => {
+					return uri.fsPath;
+				});
+				advplResourceFormatting(map);
 			}
 		})
 	);
