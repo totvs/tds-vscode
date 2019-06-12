@@ -476,6 +476,16 @@
 				"command": "totvs-developer-studio.toggle.autocomplete.behavior",
 				"title": "%tds.toggle.autocomplete.behavior%",
 				"category": "TOTVS"
+			},
+			{
+				"command": "totvs-developer-studio.run.formatter",
+				"title": "Formatar",
+				"description": "Aplica formatação em arquivo fontes AdvPL e e suas variações.",
+				"category": "TOTVS",
+				"icon": {
+					"light": "resources/light/formatter.png",
+					"dark": "resources/dark/formatter.png"
+				}
 			}
 		],
 		"keybindings": [
@@ -726,7 +736,7 @@
 								"description": "%tds.package.properties.logFile.description%",
 								"default": "${workspaceFolder}\\daplog.log"
 							},
-							"enableTableSync" : {
+							"enableTableSync": {
 								"type": "boolean",
 								"description": "%tds.package.properties.toggleTableSync.description%",
 								"default": true
@@ -848,6 +858,16 @@
 					"when": "explorerResourceIsFolder",
 					"command": "totvs-developer-studio.patchGenerate.fromFolder",
 					"group": "totvsBuild@7"
+				},
+				{
+					"when": "explorerResourceIsFolder",
+					"command": "totvs-developer-studio.run.formatter",
+					"group": "totvsSource@1"
+				},
+				{
+					"when": "resourceLangId == advpl",
+					"command": "totvs-developer-studio.run.formatter",
+					"group": "totvsSource@2"
 				}
 			],
 			"view/item/context": [
