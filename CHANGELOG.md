@@ -11,7 +11,7 @@
 * Indentação de código fonte Adv/PL.
 ### Solução:
 * Implementado procedimentos na extensão:
-  1. Acione menu de contexto do editor, opção "_Format Document_ (`shitt+alt+F`)".
+  1. Acione menu de contexto do editor, opção "_Format Document_ (`SHIFT + ALT + F`)".
   1. Menu de contexto de um recurso (arquivo fonte) ou pasta, opção "_Format_".
 ----
 ## Exibir tabelas e conteúdo: [Issue 20](https://github.com/totvs/tds-vscode/issues/20)
@@ -54,7 +54,7 @@
 ### Problema:
 * Implementar um atalho para compilação de todos fontes abertos no editor.
 ### Solução:
-* Implementado comando e atalho (CTRL+F10/CTRL+SHIFT+F10) para compilar/recompilar todos o fontes abertos no editor.
+* Implementado comando e atalho (`CTRL + F10` / `CTRL + SHIFT + F10`) para compilar/recompilar todos o fontes abertos no editor.
 ----
 ## Chave de compilação necessita de um arquivo .AUT: [Issue 40](https://github.com/totvs/tds-vscode/issues/40)
 ### Problema:
