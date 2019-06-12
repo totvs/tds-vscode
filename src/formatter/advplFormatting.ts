@@ -73,17 +73,21 @@ export function advplDocumentRangeFormattingEditProvider() {
 	return advplDocumentRangeFormatter;
 }
 
-export function advplResourceFormatting(resources: string[]) {
+export async function advplResourceFormatting(resources: string[]) {
 	const targetResources: string[] = getResourceList(resources);
 
 	if (targetResources.length === 0) {
 		vscode.window.showInformationMessage("Nenhum recurso localizado.");
 	} else {
-		vscode.window.withProgress({
-			location: vscode.ProgressLocation.Window,
+		vscode.window.showInformationMessage("Formatação em lote iniciada.");
+
+		let lc = await vscode.window.withProgress({
+			location: vscode.ProgressLocation.Notification,
 			title: "Formatação",
 			cancellable: true
 		}, (progress, token) => {
+			let lineCount = 0;
+
 			token.onCancellationRequested(() => {
 				vscode.window.showWarningMessage("Formatação de recursos cancelada.");
 			});
@@ -91,12 +95,16 @@ export function advplResourceFormatting(resources: string[]) {
 			const increment: number = 100 / total;
 
 			targetResources.forEach((resource: string, index) => {
-				let uri: vscode.Uri = vscode.Uri.file(resource);
-				const relPath = path.relative(resource, uri.toString(false));
-				progress.report({ increment: increment, message: `${relPath} (${index + 1}/${total})` });
+				const uri: vscode.Uri = vscode.Uri.file(resource);
 
-				vscode.workspace.openTextDocument(uri).then((document: TextDocument) => {
+				// setTimeout(() => {
+				// 	progress.report({ increment: increment * index, message: `${uri.toString(false)} (${index + 1}/${total})` });
+				// }, 1000);
+
+				vscode.workspace.openTextDocument(uri).then(async (document: TextDocument) => {
 					if (document.languageId === "advpl") {
+						lineCount += document.lineCount;
+						//FIX: pegar de configuração
 						const options: FormattingOptions = {
 							insertSpaces: false,
 							tabSize: 4
@@ -104,34 +112,29 @@ export function advplResourceFormatting(resources: string[]) {
 
 						const providerResult: ProviderResult<TextEdit[]> = advplDocumentFormatter.provideDocumentFormattingEdits(document, options, token);
 						if (Array.isArray(providerResult)) {
+							progress.report({ increment: increment * index, message: `${uri.toString(false)} (${index + 1}/${total})` });
+
 							const wsEdit: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
 							wsEdit.set(uri, providerResult);
-							vscode.workspace.applyEdit(wsEdit).then((value:boolean) => {
-								if (!value) {
-									vscode.window.showErrorMessage("falhou");
-								}
+							await vscode.workspace.applyEdit(wsEdit).then((value: boolean) => {
+							}, (reason) => {
+								vscode.window.showErrorMessage(`Formatação(erro): ${reason}`);
+								console.log(reason);
 							});
 						}
 					}
-
-					const p = new Promise(resolve => {
-						setTimeout(() => {
-							resolve();
-						}, 2000);
-					});
-
-					return p;
 				});
 			});
 
 			const p = new Promise(resolve => {
 				setTimeout(() => {
-					resolve();
+					resolve(lineCount);
 				}, 5000);
 			});
 
 			return p;
 		});
+		vscode.window.showInformationMessage(`Formatação finalizada. Foram processadas ${lc} linhas em ${targetResources.length} arquivos.`);
 	}
 }
 
