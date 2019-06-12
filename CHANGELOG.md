@@ -1,4 +1,4 @@
-# Versão 0.3.3
+# Versão 0.3.5
 
 ## Exibir tabela com o resultado da compilação [Issue 68](https://github.com/totvs/tds-vscode/issues/68)
 ### Melhoria:
