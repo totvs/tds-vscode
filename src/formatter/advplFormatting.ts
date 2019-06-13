@@ -3,6 +3,7 @@ import { FormattingRules, RuleMatch } from './formmatingRules';
 import * as fs from 'fs';
 import * as vscode from 'vscode';
 import * as path from 'path';
+import { isUndefined } from 'util';
 
 class AdvplDocumentFormatting implements DocumentFormattingEditProvider {
 	lineContinue: boolean = false;
@@ -104,10 +105,24 @@ export async function advplResourceFormatting(resources: string[]) {
 				vscode.workspace.openTextDocument(uri).then(async (document: TextDocument) => {
 					if (document.languageId === "advpl") {
 						lineCount += document.lineCount;
-						//FIX: pegar de configuração
+
+						let cfg = vscode.workspace.getConfiguration("[advpl]");
+						let _insertSpaces: boolean | undefined = cfg.get("editor.insertSpaces");
+						let _tabSize: number | undefined = cfg.get("editor.tabSize");
+
+						if (isUndefined(_insertSpaces)) {
+							cfg = vscode.workspace.getConfiguration();
+							_insertSpaces = cfg.get("editor.insertSpaces");
+						}
+
+						if (isUndefined(_tabSize)) {
+							cfg = vscode.workspace.getConfiguration();
+							_tabSize = cfg.get("editor.tabSize");
+						}
+
 						const options: FormattingOptions = {
-							insertSpaces: false,
-							tabSize: 4
+							insertSpaces: _insertSpaces?_insertSpaces:false,
+							tabSize: _tabSize?_tabSize:4
 						};
 
 						const providerResult: ProviderResult<TextEdit[]> = advplDocumentFormatter.provideDocumentFormattingEdits(document, options, token);
