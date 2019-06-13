@@ -14,9 +14,9 @@ const localizeHTML = {
 	"tds.webview.compile.col04": localize("tds.webview.compile.col04", "Full Path")
 }
 
-export function showCompileResult(infos: CompileInfo[], context: vscode.ExtensionContext) {
+export function showCompileResult(infos: CompileInfo[], context: any) {
 	let extensionPath = "";
-	if (!context || context === undefined) {
+	if (!context.extensionPath || context.extensionPath === undefined) {
 		let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
 		if (ext) {
 			extensionPath = ext.extensionPath;
@@ -36,7 +36,7 @@ export function showCompileResult(infos: CompileInfo[], context: vscode.Extensio
 		}
 	);
 
-	currentPanel.webview.html = getWebViewContent(context, localizeHTML);
+	currentPanel.webview.html = getWebViewContent(extensionPath, localizeHTML);
 
 	currentPanel.onDidDispose(
 		() => {
@@ -64,11 +64,11 @@ export function showCompileResult(infos: CompileInfo[], context: vscode.Extensio
 	);
 }
 
-function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
+function getWebViewContent(extensionPath, localizeHTML) {
 
-	const htmlOnDiskPath = vscode.Uri.file(path.join(context.extensionPath, 'src', 'compile', 'compileResult.html'));
-	const cssOniskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'table_materialize.css'));
-	const tableScriptPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'script', 'table_materialize.js'));
+	const htmlOnDiskPath = vscode.Uri.file(path.join(extensionPath, 'src', 'compile', 'compileResult.html'));
+	const cssOniskPath = vscode.Uri.file(path.join(extensionPath, 'resources', 'css', 'table_materialize.css'));
+	const tableScriptPath = vscode.Uri.file(path.join(extensionPath, 'resources', 'script', 'table_materialize.js'));
 
 	const htmlContent = fs.readFileSync(htmlOnDiskPath.with({ scheme: 'vscode-resource' }).fsPath);
 	const cssContent = fs.readFileSync(cssOniskPath.with({ scheme: 'vscode-resource' }).fsPath);

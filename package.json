@@ -2,7 +2,7 @@
 	"name": "tds-vscode",
 	"displayName": "Totvs Developer Studio for VSCode",
 	"description": "%tds.package.description%",
-	"version": "0.3.1",
+	"version": "0.3.5",
 	"publisher": "TOTVS",
 	"author": {
 		"name": "TOTVS",
@@ -42,8 +42,8 @@
 		"publish": "vsce publish"
 	},
 	"dependencies": {
-		"@totvs/tds-da": "^1.0.21",
-		"@totvs/tds-ls": "^1.0.25",
+		"@totvs/tds-da": "^1.0.23",
+		"@totvs/tds-ls": "^1.0.26",
 		"await-notify": "1.0.1",
 		"cheerio": "^1.0.0-rc.3",
 		"fs": "0.0.1-security",
