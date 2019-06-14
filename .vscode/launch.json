@@ -16,18 +16,6 @@
 			}
 		},
 		{
-			"type": "cppvsdbg",
-			"request": "launch",
-			"name": "Server",
-			"cwd": "${workspaceFolder}/out",
-			"program": "${workspaceFolder}/out/debugAdapter.exe",
-			"internalConsoleOptions": "openOnSessionStart",
-			"stopAtEntry": false,
-			"args": [
-				""
-			]
-		},
-		{
 			"type": "node",
 			"request": "launch",
 			"name": "Tests",
@@ -41,12 +29,6 @@
 			],
 			"outFiles": [ "${workspaceFolder}/out/**/*.js" ],
 			"internalConsoleOptions": "openOnSessionStart"
-		}
-	],
-	"compounds": [
-		{
-			"name": "Extension + Server",
-			"configurations": [ "Extension", "Server" ],
 		}
 	]
 }

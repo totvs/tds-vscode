@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>${d.localize["tds.webview.inspect.patch"]}</title>
+	<!--Patch Inspect-->
+</head>
+
+<style>
+	${d.css}
+	#parent {
+		display: table;
+		width: 600px;
+		height: 500px;
+	}
+	#child {
+		display: table-cell;
+		vertical-align: middle;
+	}
+	#loading {
+		z-index: 20;
+		position: relative;
+		left: 280px;
+		top: -325px;
+	}
+</style>
+
+<body>
+	<div class="mainContainer">
+		<div class="formWrap" style="width: 720px;">
+
+			<div class="logo">
+				<span class="formTitle">${d.localize["tds.webview.inspect.patch"]}</span>
+				<!--Patch Inspect-->
+			</div>
+			<br>
+			<div class="wrap-input">
+				<label for="patchFile">Patch File: </label><!--Patch File-->
+				<input class="inputText" type="text" id="FilePatch" name="FilePatch" placeholder="Ex: C:/totvs/patchs/tttp120.ptm...">
+				<input class="inputText" type="file" accept='PatchFile/*.ptm' id="btn-File" name="btn-File"
+					onchange="setTextArea(event)" multiple />
+			</div>
+			<div class="wrap-input">
+				<div class="material-table z-depth-3 hoverable">
+					<table id="tableInfos" class="mdl-data-table" width="100%">
+						<thead>
+							<tr class='mdl-data-table__cell--non-numeric'>
+								<th>${d.localize["tds.webview.inspect.col01"]}</th>
+								<th>${d.localize["tds.webview.inspect.col02"]}</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="wrap-submit">
+				<input class="btn-submit" id="submitID" type="button" value='${d.localize["tds.webview.inspect.export.close"]}'
+					onclick="fechar()" />
+				<!--Close-->
+			</div>
+		</div>
+	</div>
+</body>
+
+
+<script>
+	${ d.script }
+	const vscode = acquireVsCodeApi();
+
+	var tableAPI = $('#tableInfos').dataTable({
+		ordering: true,
+		scrollX: true,
+		columnDefs: [
+			{
+				targets: [0, 1],
+				className: 'mdl-data-table__cell--non-numeric tableColor'
+			},
+			{
+				orderable: true,
+				className: 'reorder',
+				targets: [0, 1]
+			}
+		],
+	}).api();
+
+	function setTextArea(event) {
+		var input = event.target;
+		var files = input.files;
+
+		var fullPath = files[0].path;
+
+		document.getElementById('FilePatch').value = fullPath;
+
+		vscode.postMessage({
+			command: "patchInfo",
+			patchFile: fullPath
+		});
+	}
+
+	function fechar() {
+		vscode.postMessage({
+			"command": 'close'
+		});
+	}
+
+	window.addEventListener('message', event => {
+		const message = event.data;
+		switch (message.command) {
+			case 'setPatchPath' :
+				document.getElementById('FilePatch').value = message.path;
+			case 'setData' :
+				for (var i=0; i < message.data.length; i++) {
+					var row = new Array(message.data[i].name, message.data[i].date);
+
+					tableAPI.row.add(row);
+				}
+
+				tableAPI.draw();
+		}
+		});
+</script>
+</html>
