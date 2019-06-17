@@ -193,6 +193,11 @@ export class FormattingRules {
 			begin: /^(\s+)?(begin)(\s+)?(sequence)/i,
 			middle: /^(\s+)?(recover)(\s+)?(sequence)/i,
 			end: /^(\s+)?(end)(\s+)?(sequence)?/i
+		},
+		{
+			id: 'function',
+			begin: /^(\s+)?((\w+)(\s+))?(function)(\s+)(\w+)/i,
+			end: /^(\s+)?(return)(\s+)/i
 		}
 		];
 	}
