@@ -22,6 +22,11 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Inspetor de funções do RPO.
 * Geração de WS Protheus.
 
+## Conheça mais em:
+>[TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 1](https://www.youtube.com/watch?v=MwIu01Ztfvg)<br/>
+>[TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 2](https://www.youtube.com/watch?v=Cz4N0XWCXHY)<br/>
+>[TOTVS - TDS-VSCode - Desenvolvimento colaborativo](https://www.youtube.com/watch?v=IGWh5ejxhHU)<br/>
+
 ## Configurações Gerais
 
 ### Tela de boas vindas
@@ -67,6 +72,22 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Para compilar todos os fontes dos editores abertos acione o atalho `CTRL + F10`. Ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Compile Open Editors`.
 
 * Para recompilar todos os fontes dos editores abertos acione o atalho `CTRL + SHIFT + F10`.
+
+### Resultado da compilação
+
+* Para analisar o resultado da compilação de múltiplos arquivos, exite a opção de abrir uma tabela com informações de todos os arquivos que foram compilados.
+
+* Para exibir essa tabela, selecione mais de um arquivo, compile e após a compilação será apresentada a pergunta a seguir: Clique em `Yes`.
+
+![ShowCompileResult](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/compile/askCompileResult.PNG)
+
+* A tabela abaixo será exibida, ordenada pela coluna de resultado.
+
+![TableCompileResult](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/compile/CompileResults.PNG)
+
+* Exite nas preferencias uma maneira de habilitar e desabilitar a pergunta sobre a abertura da tabela.
+
+* Clique em `File | Preferences | Settings` e digite `totvsLanguageServer.askCompileResult` no campo de pesquisa.
 
 ## Configurações de Compilação
 
@@ -336,6 +357,23 @@ Veja detalhes sobre como usar as diretivas [${command:}](https://link) e [passag
 ### Desenvolvimento Colaborativo
 
 * Se deseja contribuir com o desenvolvimento do plugin, acesse [Git Hub TDS-VSCODE](https://github.com/totvs/tds-vscode), faça seu commit que iremos analisar!
+* Veja também nosso vídeo de como contribuir.
+
+>[TOTVS - TDS-VSCode - Desenvolvimento colaborativo](https://www.youtube.com/watch?v=IGWh5ejxhHU)<br/>
+
+## Problemas Conhecidos
+
+### Reconexão em Linux.
+
+* Quando conectamos em um servidor, salvamos usuário e senha para o seu determinado ambiente e ao reiniciar o VSCode (ou desconectar e conetar novamente) fazemos a reconexão automática do ultimo servidor selecionado sem precisar informar usuário e senha novamente. Existe um problema com o nosso algoritmo de decriptografia para Linux e não efetua a reconexão (não pede novamente usuário e senha para validação). Para contornar esse problema, clique sobre o ícone de engrenagem na visão de servidores:
+
+![Config](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/errosConhecidos/config.jpg)
+
+* Após abrir a configuração, vá até o final do arquivo e apague a sessão `savedTokens` (toda a parte selecionada, conforme a imagem). A cada conexão essa sessão será criada e para se conectar será necessário apaga-la.
+
+![Ini](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/errosConhecidos/ini.jpg)
+
+* Já estamos atuando no problema, não é necessário abertura de chamado para o caso.
 
 ## Plugins recomendados
 

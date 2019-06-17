@@ -1,13 +1,19 @@
-# Versão 0.3.3
+# Versão 0.3.5
 
+## Exibir tabela com o resultado da compilação [Issue 68](https://github.com/totvs/tds-vscode/issues/68)
+### Melhoria:
+* Implementar uma opção de exibir os resultados da compilação quando compilado multiplos arquivos.
+### Solução:
+* Implementar uma tabela com todos os dados de compilação, exibindo quais arquivos foram compilados, quais tem erros, com opção e filtro e ordenação.
+----
 ## Indentação de código [Issue 3](https://github.com/totvs/tds-vscode/issues/3)
 ### Melhoria:
 * Indentação de código fonte Adv/PL.
 ### Solução:
 * Implementado procedimentos na extensão:
-  1. Acione menu de contexto do editor, opção "_Format Document_ (`shitt+alt+F`)".
+  1. Acione menu de contexto do editor, opção "_Format Document_ (`SHIFT + ALT + F`)".
   1. Menu de contexto de um recurso (arquivo fonte) ou pasta, opção "_Format_".
-
+----
 ## Exibir tabelas e conteúdo: [Issue 20](https://github.com/totvs/tds-vscode/issues/20)
 ### Melhoria:
 * Implementar o sincronismo de tabelas durante a depuração.
@@ -48,7 +54,7 @@
 ### Problema:
 * Implementar um atalho para compilação de todos fontes abertos no editor.
 ### Solução:
-* Implementado comando e atalho (CTRL+F10/CTRL+SHIFT+F10) para compilar/recompilar todos o fontes abertos no editor.
+* Implementado comando e atalho (`CTRL + F10` / `CTRL + SHIFT + F10`) para compilar/recompilar todos o fontes abertos no editor.
 ----
 ## Chave de compilação necessita de um arquivo .AUT: [Issue 40](https://github.com/totvs/tds-vscode/issues/40)
 ### Problema:
@@ -58,9 +64,9 @@
 ----
 ## Permitir passagem de parâmetros para a função principal (-A): [Issue 36](https://github.com/totvs/tds-vscode/issues/36)
 ### Melhoria
-Permitir passagem de parâmetros para a função principal através do parâmetro -A na chamada do SmartClient.
+* Permitir passagem de parâmetros para a função principal através do parâmetro -A na chamada do SmartClient.
 ### Solução:
-Implementado a passagem de parâmetro conforme documentado em https://github.com/totvs/tds-vscode/wiki/Configura%C3%A7%C3%A3o-de-debug:-diretivas-$%7Bcommand:%7D
+* Implementado a passagem de parâmetro conforme documentado em https://github.com/totvs/tds-vscode/wiki/Configura%C3%A7%C3%A3o-de-debug:-diretivas-$%7Bcommand:%7D
 ----
 ## Permitir visualizar o conteúdo de um patch antes de aplicar: [Issue 38](https://github.com/totvs/tds-vscode/issues/38)
 ### Melhoria:

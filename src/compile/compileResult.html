@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>${d.localize["tds.webview.build.result"]}</title><!--Compile Result-->
+</head>
+
+<style>
+		${d.css}
+    #parent {
+      display: table;
+      width: 900px;
+      height: 500px;
+    }
+    #child {
+        display: table-cell;
+        vertical-align: middle;
+		}
+</style>
+
+<body>
+		<div class="mainContainer">
+				<div class="formWrap"
+					style="width: 1000px;">
+
+					<div class="logo">
+						<span class="formTitle">${d.localize["tds.webview.build.result"]}</span>
+						<br>
+					</div>
+							<div id="parent">
+								<div class="material-table z-depth-3 hoverable">
+									<table id="tableInfos" class="mdl-data-table" width="100%">
+										<thead>
+											<tr class='mdl-data-table__cell--non-numeric'>
+												<th>${d.localize["tds.webview.compile.col01"]}</th>
+												<th>${d.localize["tds.webview.compile.col02"]}</th>
+												<th>${d.localize["tds.webview.compile.col03"]}</th>
+												<th>${d.localize["tds.webview.compile.col04"]}</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<div class="wrap-submit">
+								<input class="btn-submit" id="submitID" type="button" value="Close" onclick="fechar()"/><!--Close-->
+							</div>
+				</div>
+			</div>
+</body>
+<script>
+	${ d.script }
+	const vscode = acquireVsCodeApi();
+	window.onload = () => {
+		var tableAPI = $('#tableInfos').dataTable({
+			ordering: true,
+			scrollX: true,
+			pageLength: 50,
+			columnDefs: [
+				{
+					targets: [0, 1, 2, 3],
+					className: 'mdl-data-table__cell--non-numeric tableColor',
+					orderable: true,
+				},
+				{
+					targets: [1],
+					className : 'order'
+				}
+			]
+		}).api();
+
+		vscode.postMessage({
+			command: 'getData'
+		});
+
+		window.addEventListener('message', event => {
+			const message = event.data;
+			switch (message.command) {
+				case "setData":
+					for(var i = 0; i < message.data.length ; i++){
+						var fullPath = message.data[i].filePath;
+						var fileName = fullPath.substring(fullPath.lastIndexOf('/') + 1);
+
+						var row = new Array(fileName, message.data[i].status, message.data[i].message , fullPath);
+						tableAPI.row.add(row);
+						}
+				tableAPI.draw();
+				tableAPI.order( [ 1, 'asc'] ).draw();
+			}
+		});
+	};
+	function fechar() {
+		vscode.postMessage({
+			"command": 'close'
+		});
+	}
+</script>
+</html>
