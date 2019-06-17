@@ -36,6 +36,7 @@ import { getDAP, getProgramName, getProgramArguments } from './debug/debugConfig
 import { toggleTableSync } from './debug/debugConfigs';
 import { toggleAutocompleteBehavior, updateSettingsBarItem } from './server/languageServerSettings';
 import { advplDocumentFormattingEditProvider, advplDocumentRangeFormattingEditProvider, advplResourceFormatting } from './formatter/advplFormatting';
+import { processDebugCustomEvent } from './debug/debugEvents';
 
 export let languageClient: LanguageClient;
 // metodo de tradução
@@ -337,6 +338,7 @@ export function activate(context: ExtensionContext) {
 	);
 
 
+	//formatadores
 	vscode.languages.registerDocumentFormattingEditProvider('advpl',
 		advplDocumentFormattingEditProvider()
 	);
@@ -345,6 +347,10 @@ export function activate(context: ExtensionContext) {
 		advplDocumentRangeFormattingEditProvider()
 	);
 
+	//debug
+	vscode.debug.onDidReceiveDebugSessionCustomEvent((e: vscode.DebugSessionCustomEvent) => {
+		processDebugCustomEvent(e);
+	});
 
 	//Verifica questões de encoding
 	verifyEncoding();

@@ -78,8 +78,8 @@
         ]
     ],
     "indentationRules": {
-        "increaseIndentPattern": "((if)|(else(if)?)|(while))(.*)$",
-        "decreaseIndentPattern": "((endif)|(else(if)?)|(enddo))(.*)$"
+        "increaseIndentPattern": "((#)(\\s*)(ifdef|ifndef)|(begin)(\\s+)(report)(\\s+)(query)|(begin)(\\s+)(transaction)|(beginsql)(\\s+)(\\w+)|(do)(\\s+)(case)|(try)|(class)(\\s+)(\\w+)|(wsclient)(\\s+)(\\w+)|(for)(\\s+)(\\w+)|(if)(.*)|(structure)|(do)?(\\s*)(while)|(wsrestful)|(wsservice)|(wsstruct)|(begin)(\\s*)(sequence)|((\\w+)(\\s+))?(function)(\\s+)(\\w+)|(method)(\\s+)(\\w+)(\\s*)(.*)(\\s+)(class)(\\s+)(\\w+)|(#)(\\s*)(else)|(case|otherwise)|(catch)|((else)|(elseif))|(recover)(\\s*)(sequence))(.*)$",
+        "decreaseIndentPattern": "((end)(\\s+)(report)(\\s+)(query)|(end)(\\s+)(transaction)?|(endsql)|(end)(\\s*)(case)|(end)(\\s*)(try)?|(end)(\\s*)(class)?|(endwsclient)|(next)|(end)(\\s*)(if)?|(end)(\\s*)(structure)|(end)?(\\s*)(do)|(end)(\\s*)(wsrestful)|(end)(\\s*)(wsservice)|(end)(\\s*)(wsstruct)|(end)(\\s*)(sequence)?|(#)(\\s*)(else)|(case|otherwise)|(catch)|((else)|(elseif))|(recover)(\\s*)(sequence))(.*)$"
     },
     "folding": {
         "markers": {

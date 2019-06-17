@@ -94,105 +94,105 @@ export class FormattingRules {
 	// ? = 0 ou mais ocorrências
 	// ^ = inicio da linha
 	// /i = ignorar caixa
-	
+
 
 
 	private getOpenStructures(): OpenStructureRule[] {
 		return [{
 			id: 'function',
-			expression: /^(\s+)?((\w+)(\s+))?(function)(\s+)(\w+)/i
+			expression: /^(\s*)((\w+)(\s+))?(function)(\s+)(\w+)/i
 		}, {
 			id: 'method',
-			expression: /^(\s+)?(method)(\s+)(\w+)(\s+)?(.*)(\s+)(class)(\s+)(\w+)/i
+			expression: /^(\s*)(method)(\s+)(\w+)(\s*)(.*)(\s+)(class)(\s+)(\w+)/i
 		}];
 
 	}
 	private getClosedStructures(): ClosedStructureRule[] {
 		return [{
 			id: '#ifdef/#ifndef',
-			begin: /^(\s+)?(#)(\s+)?(ifdef|ifndef)/i,
-			middle: /^(\s+)?(#)(\s+)?(else)/i,
-			end: /^(\s+)?(#)(\s+)?(endif)/i
+			begin: /^(\s*)(#)(\s*)(ifdef|ifndef)/i,
+			middle: /^(\s*)(#)(\s*)(else)/i,
+			end: /^(\s*)(#)(\s*)(endif)/i
 		},
 		{
-			id: 'BEGIN REPORT QUERY',
-			begin: /^(\s+)?(begin)(\s+)(report)(\s+)(query)/i,
-			end: /^(\s+)?(end)(\s+)(report)(\s+)(query)/i,
+			id: 'begin report query',
+			begin: /^(\s*)(begin)(\s+)(report)(\s+)(query)/i,
+			end: /^(\s*)(end)(\s+)(report)(\s+)(query)/i,
 		},
 		{
-			id: 'BEGIN TRANSACTION',
-			begin: /^(\s+)?(begin)(\s+)(transaction)/i,
-			end: /^(\s+)?(end)(\s+)(transaction)?/i,
+			id: 'begin transaction',
+			begin: /^(\s*)(begin)(\s+)(transaction)/i,
+			end: /^(\s*)(end)(\s+)(transaction)?/i,
 		},
 		{
-			id: 'B E G I N S Q L ( A L I A S)?',
-			begin: /^(\s+)?(beginsql)(\s+)(\w+)/i,
-			end: /^(\s+)?(endsql)/i,
+			id: 'beginsql (alias)?',
+			begin: /^(\s*)(beginsql)(\s+)(\w+)/i,
+			end: /^(\s*)(endsql)/i,
 		},
 		{
-			id: 'DO C A S E',
-			begin: /^(\s+)?(do)(\s+)(case)/i,
-			middle: /^(\s+)?(case|otherwise)/i,
-			end: /^(\s+)?(end)(\s+)?(case)/i
+			id: 'do case',
+			begin: /^(\s*)(do)(\s+)(case)/i,
+			middle: /^(\s*)(case|otherwise)/i,
+			end: /^(\s*)(end)(\s*)(case)/i
 		},
 		{
-			id: 'C A T C H',
-			begin: /^(\s+)?(try)/i,
-			middle: /^(\s+)?(catch)/i,
-			end: /^(\s+)?(end)(\s+)?(try)?/i
+			id: 'try..catch',
+			begin: /^(\s*)(try)/i,
+			middle: /^(\s*)(catch)/i,
+			end: /^(\s*)(end)(\s*)(try)?/i
 		},
 		{
-			id: 'C L A S S',
-			begin: /^(\s+)?(class)(\s+)(\w+)/i,
-			end: /^(\s+)?(end)(\s+)?(class)?/i
+			id: 'class',
+			begin: /^(\s*)(class)(\s+)(\w+)/i,
+			end: /^(\s*)(end)(\s*)(class)?/i
 		},
 		{
-			id: 'E N D W S C L I E N T',
-			begin: /^(\s+)?(wsclient)(\s+)(\w+)/i,
-			end: /^(\s+)?(endwsclient)/i
+			id: 'endwsclient',
+			begin: /^(\s*)(wsclient)(\s+)(\w+)/i,
+			end: /^(\s*)(endwsclient)/i
 		},
 
 		{
-			id: 'F O R',
-			begin: /^(\s+)?(for)(\s+)(\w+)/i,
-			end: /^(\s+)?(next)/i
+			id: 'for',
+			begin: /^(\s*)(for)(\s+)(\w+)/i,
+			end: /^(\s*)(next)/i
 		},
 		{
-			id: 'I F',
-			begin: /^(\s+)?(if)(.*)+/i,
-			middle: /^(\s+)?((else)|(elseif))/i,
-			end: /^(\s+)?(end)(\s+)?(if)?/i,
+			id: 'if',
+			begin: /^(\s*)(if)(.*)+/i,
+			middle: /^(\s*)((else)|(elseif))/i,
+			end: /^(\s*)(end)(\s*)(if)?/i,
 		},
 		{
-			id: 'S T R U C T U R E',
-			begin: /^(\s+)?(structure)/i,
-			end: /^(\s+)?(end)(\s+)?(structure)/i
+			id: 'structure',
+			begin: /^(\s*)(structure)/i,
+			end: /^(\s*)(end)(\s*)(structure)/i
 		},
 		{
-			id: 'W H I L E',
-			begin: /^(\s+)?(do)?(\s+)?(while)/i,
-			end: /^(\s+)?(end)?(\s+)?(do)/i
+			id: 'while',
+			begin: /^(\s*)(do)?(\s*)(while)/i,
+			end: /^(\s*)(end)?(\s*)(do)/i
 		},
 		{
-			id: 'W S R E S T F U L',
-			begin: /^(\s+)?(wsrestful)/i,
-			end: /^(\s+)?(end)(\s+)?(wsrestful)/i
+			id: 'wsrestful',
+			begin: /^(\s*)(wsrestful)/i,
+			end: /^(\s*)(end)(\s*)(wsrestful)/i
 		},
 		{
-			id: 'W S S E R V I C E',
-			begin: /^(\s+)?(wsservice)/i,
-			end: /^(\s+)?(end)(\s+)?(wsservice)/i
+			id: 'wsservice',
+			begin: /^(\s*)(wsservice)/i,
+			end: /^(\s*)(end)(\s*)(wsservice)/i
 		},
 		{
-			id: 'W S S T R U C T',
-			begin: /^(\s+)?(wsstruct)/i,
-			end: /^(\s+)?(end)(\s+)?(wsstruct)/i
+			id: 'wsstruct',
+			begin: /^(\s*)(wsstruct)/i,
+			end: /^(\s*)(end)(\s*)(wsstruct)/i
 		},
 		{
-			id: 'B E G I N (WS)? S E Q U E N C E',
-			begin: /^(\s+)?(begin)(\s+)?(sequence)/i,
-			middle: /^(\s+)?(recover)(\s+)?(sequence)/i,
-			end: /^(\s+)?(end)(\s+)?(sequence)?/i
+			id: 'begin sequence',
+			begin: /^(\s*)(begin)(\s*)(sequence)/i,
+			middle: /^(\s*)(recover)(\s*)(sequence)/i,
+			end: /^(\s*)(end)(\s*)(sequence)?/i
 		}
 		];
 	}
