@@ -1,9 +1,9 @@
 import { DocumentFormattingEditProvider, TextDocument, FormattingOptions, CancellationToken, ProviderResult, TextEdit, DocumentRangeFormattingEditProvider } from 'vscode';
-import { FormattingRules, RuleMatch } from './formmatingRules';
-import * as fs from 'fs';
-import * as vscode from 'vscode';
-import * as path from 'path';
-import { isUndefined } from 'util';
+//import { FormattingRules, RuleMatch} from './formmatingRules';
+//import * as fs from 'fs';
+//import * as vscode from 'vscode';
+//import * as path from 'path';
+//import { isUndefined } from 'util';
 
 class AdvplDocumentFormatting implements DocumentFormattingEditProvider {
 	lineContinue: boolean = false;
@@ -11,13 +11,13 @@ class AdvplDocumentFormatting implements DocumentFormattingEditProvider {
 	provideDocumentFormattingEdits(document: TextDocument,
 		options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
 
-		const formattingRules = new FormattingRules();
-		const tab: string = options.insertSpaces ? ' '.repeat(options.tabSize) : '\t';
-		let identBlock: string = "";
-		let cont: number = 0;
+		//const formattingRules = new FormattingRules();
+		//const tab: string = options.insertSpaces ? ' '.repeat(options.tabSize) : '\t';
+		//let identBlock: string = "";
+		//let cont: number = 0;
 
 		let result: TextEdit[] = [];
-		const lc = document.lineCount;
+		//const lc = document.lineCount;
 
 		/*for (let nl = 0; nl < lc; nl++) {
 			const line = document.lineAt(nl);
@@ -75,7 +75,7 @@ export function advplDocumentRangeFormattingEditProvider() {
 }
 
 export async function advplResourceFormatting(resources: string[]) {
-	const targetResources: string[] = getResourceList(resources);
+	//const targetResources: string[] = getResourceList(resources);
 
 /*	if (targetResources.length === 0) {
 		vscode.window.showInformationMessage("Nenhum recurso localizado.");
@@ -153,7 +153,7 @@ export async function advplResourceFormatting(resources: string[]) {
 	}*/
 }
 
-function getResourceList(resources: string[]): string[] {
+/*function getResourceList(resources: string[]): string[] {
 	const resultList: string[] = [];
 
 	resources.forEach((resourcePath: string) => {
@@ -169,4 +169,4 @@ function getResourceList(resources: string[]): string[] {
 	});
 
 	return resultList;
-}
+}*/
