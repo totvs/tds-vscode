@@ -7,6 +7,7 @@ import { isUndefined } from 'util';
 
 class AdvplDocumentFormatting implements DocumentFormattingEditProvider {
 	lineContinue: boolean = false;
+	ignore_at: string | null = null;
 
 	provideDocumentFormattingEdits(document: TextDocument,
 		options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
@@ -26,29 +27,56 @@ class AdvplDocumentFormatting implements DocumentFormattingEditProvider {
 				let ruleMatch: RuleMatch | null = formattingRules.getLastMatch();
 
 				if (ruleMatch) {
-					if (ruleMatch.decrement) {
+					const rule = ruleMatch.rule;
+
+					if (rule.id === this.ignore_at) {
+						this.ignore_at = null;
+					}
+
+					if (rule.ignore_at) {
+						this.ignore_at = rule.ignore_at;
+					}
+
+					if (!rule.increment && !rule.decrement && !rule.reset) {
+						continue;
+					}
+
+					if (rule.reset) {
+						cont = 0;
+						identBlock = "";
+					}
+
+					if (rule.decrement) {
 						cont = cont < 1 ? 0 : cont - 1;
 						identBlock = tab.repeat(cont);
 					}
-				}
 
-				const newLine: string = line.text.replace(/(\s*)?/, identBlock + (this.lineContinue ? tab : "")).trimRight();
-				result.push(TextEdit.replace(line.range, newLine));
-				this.lineContinue = newLine.endsWith(';');
+					const newLine: string = line.text.replace(/(\s*)?/, identBlock + (this.lineContinue ? tab : "")).trimRight();
+					result.push(TextEdit.replace(line.range, newLine));
+					this.lineContinue = newLine.endsWith(';');
 
-				if (ruleMatch) {
-					if (ruleMatch.increment) {
+					if (rule.increment) {
 						cont++;
 						identBlock = tab.repeat(cont);
 					}
 				}
 			} else {
-				let newLine: string = '';
-				if (!line.isEmptyOrWhitespace) {
-					newLine = line.text.replace(/(\s*)?/, identBlock + (this.lineContinue ? tab : "")).trimRight();
+				if (!this.ignore_at) {
+					let newLine: string = '';
+					if (!line.isEmptyOrWhitespace) {
+						newLine = line.text.replace(/(\s*)?/, identBlock + (this.lineContinue ? tab : "")).trimRight();
+					}
+
+					const regExpResult = newLine.match(/^(\s+)(return)/i);
+					if (regExpResult) {
+						const ws = regExpResult[1];
+						if (ws === tab) {
+							newLine = newLine.trim();
+						}
+					}
+					result.push(TextEdit.replace(line.range, newLine));
+					this.lineContinue = newLine.endsWith(';');
 				}
-				result.push(TextEdit.replace(line.range, newLine));
-				this.lineContinue = newLine.endsWith(';');
 			}
 		}
 
@@ -98,10 +126,6 @@ export async function advplResourceFormatting(resources: string[]) {
 			targetResources.forEach((resource: string, index) => {
 				const uri: vscode.Uri = vscode.Uri.file(resource);
 
-				// setTimeout(() => {
-				// 	progress.report({ increment: increment * index, message: `${uri.toString(false)} (${index + 1}/${total})` });
-				// }, 1000);
-
 				vscode.workspace.openTextDocument(uri).then(async (document: TextDocument) => {
 					if (document.languageId === "advpl") {
 						lineCount += document.lineCount;
@@ -121,8 +145,8 @@ export async function advplResourceFormatting(resources: string[]) {
 						}
 
 						const options: FormattingOptions = {
-							insertSpaces: _insertSpaces?_insertSpaces:false,
-							tabSize: _tabSize?_tabSize:4
+							insertSpaces: _insertSpaces ? _insertSpaces : false,
+							tabSize: _tabSize ? _tabSize : 4
 						};
 
 						const providerResult: ProviderResult<TextEdit[]> = advplDocumentFormatter.provideDocumentFormattingEdits(document, options, token);
