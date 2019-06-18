@@ -19,7 +19,7 @@ class AdvplDocumentFormatting implements DocumentFormattingEditProvider {
 		let result: TextEdit[] = [];
 		const lc = document.lineCount;
 
-		for (let nl = 0; nl < lc; nl++) {
+		/*for (let nl = 0; nl < lc; nl++) {
 			const line = document.lineAt(nl);
 
 			if ((!line.isEmptyOrWhitespace) && (formattingRules.match(line.text))) {
@@ -50,7 +50,7 @@ class AdvplDocumentFormatting implements DocumentFormattingEditProvider {
 				result.push(TextEdit.replace(line.range, newLine));
 				this.lineContinue = newLine.endsWith(';');
 			}
-		}
+		}*/
 
 		return result;
 	}
@@ -77,7 +77,7 @@ export function advplDocumentRangeFormattingEditProvider() {
 export async function advplResourceFormatting(resources: string[]) {
 	const targetResources: string[] = getResourceList(resources);
 
-	if (targetResources.length === 0) {
+/*	if (targetResources.length === 0) {
 		vscode.window.showInformationMessage("Nenhum recurso localizado.");
 	} else {
 		vscode.window.showInformationMessage("Formatação em lote iniciada.");
@@ -150,7 +150,7 @@ export async function advplResourceFormatting(resources: string[]) {
 			return p;
 		});
 		vscode.window.showInformationMessage(`Formatação finalizada. Foram processadas ${lc} linhas em ${targetResources.length} arquivos.`);
-	}
+	}*/
 }
 
 function getResourceList(resources: string[]): string[] {
