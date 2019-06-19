@@ -30,13 +30,13 @@ const SPACES: string = ' '.repeat(11);
 //const REVERSE_VIDEO = "\u001B[7m"; //não funcionou
 //const INVISIBLE_TEXT = "\u001B[8m";
 
-const BLACK = "\u001B[30m";
-const RED = "\u001B[31;m";
-const GREEN = "\u001B[32m";
-const YELLOW = "\u001B[33m";
+//const BLACK = "\u001B[30m";
+//const RED = "\u001B[31;m";
+//const GREEN = "\u001B[32m";
+//const YELLOW = "\u001B[33m";
 //const BLUE = "\u001B[34m";
 //const MAGENTA = "\u001B[35m";
-const CYAN = "\u001B[36m";
+//const CYAN = "\u001B[36m";
 //const WHITE = "\u001B[37m";
 
 //const BACKGROUND_BLACK = "\u001B[40m";
@@ -48,13 +48,13 @@ const CYAN = "\u001B[36m";
 //const BACKGROUND_CYAN = "\u001B[46m";
 //const BACKGROUND_WHITE = "\u001B[47m";
 
-const COLOR_TABLE = {
+/*const COLOR_TABLE = {
 	'INFO': GREEN,
 	'WARN': YELLOW,
 	'ERROR': RED,
 	'CONSOLE': BLACK,
 	'TIME': CYAN
-};
+};*/
 
 export function processDebugCustomEvent(event: vscode.DebugSessionCustomEvent) {
 	if (event.session.type.startsWith(DEBUG_TYPE)) {
