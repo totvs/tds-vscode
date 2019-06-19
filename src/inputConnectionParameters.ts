@@ -1,4 +1,4 @@
-import { ExtensionContext, QuickInputButton, Uri, QuickPickItem } from "vscode";
+import { ExtensionContext, QuickInputButton, Uri, QuickPickItem, workspace } from "vscode";
 import Utils from "./utils";
 import * as path from 'path';
 import { MultiStepInput } from "./multiStepInput";
@@ -130,17 +130,21 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 	}
 
 	async function inputUsername(input: MultiStepInput, state: Partial<State>, serversConfig: any) {
-		let serverId = (typeof state.server === "string") ? state.server : (state.server as QuickPickItem).detail;
-		let environmentName = (typeof state.environment === "string") ? state.environment : (state.environment as QuickPickItem).label;
-		let key = serverId + ":" + environmentName;
-		let savedTokens: [string, object] = serversConfig.savedTokens;
-		if (savedTokens) {
-			for (let idx = 0; idx < savedTokens.length; idx++) {
-				if (savedTokens[idx][0] === key) {
-					let reconnectionInfo = savedTokens[idx][1];
-					if (reconnectionInfo) {
-						state.reconnectionInfo = reconnectionInfo;
-						return;
+		const configADVPL = workspace.getConfiguration('totvsLanguageServer');
+		let useReconnectionToken = configADVPL.get('useReconnectionToken');
+		if (useReconnectionToken) {
+			let serverId = (typeof state.server === "string") ? state.server : (state.server as QuickPickItem).detail;
+			let environmentName = (typeof state.environment === "string") ? state.environment : (state.environment as QuickPickItem).label;
+			let key = serverId + ":" + environmentName;
+			let savedTokens: [string, object] = serversConfig.savedTokens;
+			if (savedTokens) {
+				for (let idx = 0; idx < savedTokens.length; idx++) {
+					if (savedTokens[idx][0] === key) {
+						let reconnectionInfo = savedTokens[idx][1];
+						if (reconnectionInfo) {
+							state.reconnectionInfo = reconnectionInfo;
+							return;
+						}
 					}
 				}
 			}
