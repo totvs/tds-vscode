@@ -2,7 +2,7 @@
 	"name": "tds-vscode",
 	"displayName": "Totvs Developer Studio for VSCode",
 	"description": "%tds.package.description%",
-	"version": "0.3.7",
+	"version": "0.3.10",
 	"publisher": "TOTVS",
 	"author": {
 		"name": "TOTVS",
@@ -42,8 +42,8 @@
 		"publish": "vsce publish"
 	},
 	"dependencies": {
-		"@totvs/tds-da": "^1.0.24",
-		"@totvs/tds-ls": "^1.0.27",
+		"@totvs/tds-da": "^1.0.27",
+		"@totvs/tds-ls": "^1.0.30",
 		"await-notify": "1.0.1",
 		"cheerio": "^1.0.0-rc.3",
 		"fs": "0.0.1-security",
@@ -174,8 +174,7 @@
 				"path": "./snippets/snippets.json"
 			}
 		],
-		"configurationDefaults": {
-		},
+		"configurationDefaults": {},
 		"configuration": {
 			"type": "object",
 			"title": "AdvPL",
