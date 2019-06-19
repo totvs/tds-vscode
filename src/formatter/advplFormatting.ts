@@ -3,7 +3,7 @@ import { FormattingRules, RuleMatch } from './formmatingRules';
 import * as fs from 'fs';
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { isUndefined } from 'util';
+import { getFormattingOptions } from './configFormatting';
 
 class AdvplDocumentFormatting implements DocumentFormattingEditProvider {
 	lineContinue: boolean = false;
@@ -86,7 +86,7 @@ class AdvplDocumentFormatting implements DocumentFormattingEditProvider {
 
 class AdvplDocumentRangeFormatting implements DocumentRangeFormattingEditProvider {
 
-	provideDocumentRangeFormattingEdits(document: TextDocument, range: import("vscode").Range, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
+	provideDocumentRangeFormattingEdits(document: TextDocument, range: vscode.Range, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
 		throw new Error("Method not implemented.");
 	}
 }
@@ -130,25 +130,7 @@ export async function advplResourceFormatting(resources: string[]) {
 					if (document.languageId === "advpl") {
 						lineCount += document.lineCount;
 
-						let cfg = vscode.workspace.getConfiguration("[advpl]");
-						let _insertSpaces: boolean | undefined = cfg.get("editor.insertSpaces");
-						let _tabSize: number | undefined = cfg.get("editor.tabSize");
-
-						if (isUndefined(_insertSpaces)) {
-							cfg = vscode.workspace.getConfiguration();
-							_insertSpaces = cfg.get("editor.insertSpaces");
-						}
-
-						if (isUndefined(_tabSize)) {
-							cfg = vscode.workspace.getConfiguration();
-							_tabSize = cfg.get("editor.tabSize");
-						}
-
-						const options: FormattingOptions = {
-							insertSpaces: _insertSpaces ? _insertSpaces : false,
-							tabSize: _tabSize ? _tabSize : 4
-						};
-
+						const options: FormattingOptions = getFormattingOptions();
 						const providerResult: ProviderResult<TextEdit[]> = advplDocumentFormatter.provideDocumentFormattingEdits(document, options, token);
 						if (Array.isArray(providerResult)) {
 							progress.report({ increment: increment * index, message: `${uri.toString(false)} (${index + 1}/${total})` });
