@@ -81,9 +81,11 @@ export function processDebugCustomEvent(event: vscode.DebugSessionCustomEvent) {
 				}
 
 				if (level === eLogLevelEvent.ellConsole) {
-					console.appendLine(`${COLOR_TABLE['TIME']}[${time}]      ${COLOR_TABLE['CONSOLE']}: ${message}`);
+					console.appendLine(`[${time}]      : ${message}`);
+					//console.appendLine(`${COLOR_TABLE['TIME']}[${time}]      ${COLOR_TABLE['CONSOLE']}: ${message}`);
 				} else {
-					console.appendLine(`${COLOR_TABLE['TIME']}[${time}] ${COLOR_TABLE[level]}${level}${COLOR_TABLE['CONSOLE']}: ${message}`);
+					console.appendLine(`[${time}] ${level}: ${message}`);
+					//console.appendLine(`${COLOR_TABLE['TIME']}[${time}] ${COLOR_TABLE[level]}${level}${COLOR_TABLE['CONSOLE']}: ${message}`);
 				}
 			} else {
 				console.appendLine("<evento desconhecido>");
