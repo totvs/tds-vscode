@@ -225,6 +225,11 @@
 					"default": true,
 					"description": "%tds.package.reconnectLastServer%"
 				},
+				"totvsLanguageServer.useReconnectionToken": {
+					"type": "boolean",
+					"default": true,
+					"description": "%tds.package.useReconnectionToken%"
+				},
 				"totvsLanguageServer.compilation.generatePpoFile": {
 					"type": "boolean",
 					"default": false,
