@@ -324,8 +324,13 @@ export function activate(context: ExtensionContext) {
 	// Inicialização do formatador Adv/PL
 	context.subscriptions.push(
 		vscode.commands.registerCommand('totvs-developer-studio.run.formatter', (args: any[]) => {
-			console.log("formatador ativado");
-
+			//console.log("formatador ativado");
+			if(args === undefined) {
+				let aeditor = vscode.window.activeTextEditor;
+				if(aeditor !== undefined) {
+					args = [aeditor.document.uri]
+				}
+			}
 			if (instanceOfUri(args)) {
 				advplResourceFormatting([args.fsPath]);
 			} else if (instanceOfUriArray(args)) {
@@ -357,11 +362,11 @@ export function activate(context: ExtensionContext) {
 }
 
 function instanceOfUri(object: any): object is Uri {
-	return 'scheme' in object;
+	return object !== undefined && 'scheme' in object;
 }
 
 function instanceOfUriArray(object: any): object is Uri[] {
-	return Array.isArray(object);
+	return object !== undefined && Array.isArray(object);
 }
 
 // this method is called when your extension is deactivated

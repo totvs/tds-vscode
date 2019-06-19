@@ -486,7 +486,7 @@
 			},
 			{
 				"command": "totvs-developer-studio.run.formatter",
-				"title": "Formatar",
+				"title": "Format",
 				"description": "Aplica formatação em arquivo fontes AdvPL e e suas variações.",
 				"category": "TOTVS",
 				"icon": {
