@@ -23,27 +23,3 @@ export function getFormattingOptions(): FormattingOptions {
 	};
 
 }
-
-export function formatOnSave(): boolean {
-	let cfg = vscode.workspace.getConfiguration("[advpl]");
-	let format: boolean | undefined = cfg.get("editor.formatOnSave");
-
-	if (isUndefined(format)) {
-		cfg = vscode.workspace.getConfiguration();
-		format = cfg.get("editor.formatOnSave", false);
-	}
-
-	return format;
-}
-
-export function formatOnPaste(): boolean {
-	let cfg = vscode.workspace.getConfiguration("[advpl]");
-	let format: boolean | undefined = cfg.get("editor.formatOnPaste");
-
-	if (isUndefined(format)) {
-		cfg = vscode.workspace.getConfiguration();
-		format = cfg.get("editor.formatOnPaste", false);
-	}
-
-	return format;
-}

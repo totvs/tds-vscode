@@ -175,10 +175,6 @@
 			}
 		],
 		"configurationDefaults": {
-			"[advpl]": {
-				"editor.insertSpaces": false,
-				"editor.formatOnSave": true
-			}
 		},
 		"configuration": {
 			"type": "object",
