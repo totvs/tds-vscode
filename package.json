@@ -127,8 +127,48 @@
 		"workspaceContains:servers.json"
 	],
 	"contributes": {
-		"languages": [
-			{
+		"colors": [{
+			"id": "terminal.ansiBlack",
+			"description": "Cor de texto apresentado no console de depuração.",
+			"defaults": {
+				"dark": "#CCCCCC",
+				"light": "#555555",
+				"highContrast": "#ffffff"
+			}
+		}, {
+			"id": "terminal.ansiGreen",
+			"description": "Cor da identifcação do nível de mensagem 'Informação'.",
+			"defaults": {
+				"dark": "#5aa85a",
+				"light": "#5aa85a",
+				"highContrast": "#5aa85a"
+			}
+		}, {
+			"id": "terminal.ansiYellow",
+			"description": "Cor da identifcação do nível de mensagem 'Aviso'.",
+			"defaults": {
+				"dark": "#d8d53c",
+				"light": "#d8d53c",
+				"highContrast": "#d8d53c"
+			}
+		}, {
+			"id": "terminal.ansiRed",
+			"description": "Cor da identifcação do nível de mensagem 'Erro'.",
+			"defaults": {
+				"dark": "#eb1313",
+				"light": "#eb1313",
+				"highContrast": "#eb1313"
+			}
+		}, {
+			"id": "terminal.ansiCyan",
+			"description": "Cor da identifcação da hora do evento.",
+			"defaults": {
+				"dark": "#11c9cf",
+				"light": "#11c9cf",
+				"highContrast": "#11c9cf"
+			}
+		}],
+		"languages": [{
 				"id": "advpl",
 				"aliases": [
 					"AdvPL",
@@ -161,21 +201,16 @@
 				]
 			}
 		],
-		"grammars": [
-			{
-				"language": "advpl",
-				"scopeName": "source.advpl",
-				"path": "./syntaxes/advpl_language.tmLanguage.json"
-			}
-		],
-		"snippets": [
-			{
-				"language": "advpl",
-				"path": "./snippets/snippets.json"
-			}
-		],
-		"configurationDefaults": {
-		},
+		"grammars": [{
+			"language": "advpl",
+			"scopeName": "source.advpl",
+			"path": "./syntaxes/advpl_language.tmLanguage.json"
+		}],
+		"snippets": [{
+			"language": "advpl",
+			"path": "./snippets/snippets.json"
+		}],
+		"configurationDefaults": {},
 		"configuration": {
 			"type": "object",
 			"title": "AdvPL",
@@ -281,8 +316,7 @@
 				}
 			}
 		},
-		"commands": [
-			{
+		"commands": [{
 				"command": "totvs-developer-studio.getDAP",
 				"title": "Get DAP"
 			},
@@ -495,8 +529,7 @@
 				}
 			}
 		],
-		"keybindings": [
-			{
+		"keybindings": [{
 				"command": "totvs-developer-studio.build.file",
 				"key": "ctrl+f9",
 				"mac": "cmd+f9",
@@ -524,13 +557,10 @@
 				"when": "editorTextFocus"
 			}
 		],
-		"breakpoints": [
-			{
-				"language": "advpl"
-			}
-		],
-		"debuggers": [
-			{
+		"breakpoints": [{
+			"language": "advpl"
+		}],
+		"debuggers": [{
 				"type": "totvs_language_debug",
 				"label": "%tds.package.totvs_language_debug%",
 				"adapterExecutableCommand": "tds.getDAP",
@@ -615,20 +645,17 @@
 						}
 					}
 				},
-				"initialConfigurations": [
-					{
-						"type": "totvs_language_debug",
-						"request": "launch",
-						"name": "%tds.package.totvs_language_debug%",
-						"program": "${command:AskForProgramName}",
-						"cwb": "${workspaceFolder}",
-						"smartclientBin": "C:/totvs/bin/smartclient/smartclient.exe",
-						"isMultiSession": true,
-						"enableTableSync": true
-					}
-				],
-				"configurationSnippets": [
-					{
+				"initialConfigurations": [{
+					"type": "totvs_language_debug",
+					"request": "launch",
+					"name": "%tds.package.totvs_language_debug%",
+					"program": "${command:AskForProgramName}",
+					"cwb": "${workspaceFolder}",
+					"smartclientBin": "C:/totvs/bin/smartclient/smartclient.exe",
+					"isMultiSession": true,
+					"enableTableSync": true
+				}],
+				"configurationSnippets": [{
 						"label": "%tds.package.totvs_language_debug%",
 						"description": "A new configuration for 'debugging' a user selected AdvPL file.",
 						"body": {
@@ -763,21 +790,18 @@
 						}
 					}
 				},
-				"initialConfigurations": [
-					{
-						"type": "totvs_language_web_debug",
-						"request": "launch",
-						"name": "%tds.package.totvs_language_debug%",
-						"program": "${command:AskForProgramName}",
-						"cwb": "${workspaceFolder}",
-						"environment": "environment",
-						"smartclientUrl": "http://localhost:8080",
-						"isMultiSession": true,
-						"enableTableSync": true
-					}
-				],
-				"configurationSnippets": [
-					{
+				"initialConfigurations": [{
+					"type": "totvs_language_web_debug",
+					"request": "launch",
+					"name": "%tds.package.totvs_language_debug%",
+					"program": "${command:AskForProgramName}",
+					"cwb": "${workspaceFolder}",
+					"environment": "environment",
+					"smartclientUrl": "http://localhost:8080",
+					"isMultiSession": true,
+					"enableTableSync": true
+				}],
+				"configurationSnippets": [{
 						"label": "%tds.package.totvs_language_debug%",
 						"description": "%tds.package.configurationSnippets.description%",
 						"body": {
@@ -810,25 +834,20 @@
 			}
 		],
 		"viewsContainers": {
-			"activitybar": [
-				{
-					"id": "totvs-plataform",
-					"title": "TOTVS",
-					"icon": "imagens/totvs24x24.png"
-				}
-			]
+			"activitybar": [{
+				"id": "totvs-plataform",
+				"title": "TOTVS",
+				"icon": "imagens/totvs24x24.png"
+			}]
 		},
 		"views": {
-			"totvs-plataform": [
-				{
-					"id": "totvs_server",
-					"name": "%tds.package.server.view%"
-				}
-			]
+			"totvs-plataform": [{
+				"id": "totvs_server",
+				"name": "%tds.package.server.view%"
+			}]
 		},
 		"menus": {
-			"explorer/context": [
-				{
+			"explorer/context": [{
 					"when": "explorerResourceIsFolder",
 					"command": "totvs-developer-studio.build.workspace",
 					"alt": "totvs-developer-studio.rebuild.workspace",
@@ -877,8 +896,7 @@
 					"group": "totvsSource@2"
 				}
 			],
-			"view/item/context": [
-				{
+			"view/item/context": [{
 					"command": "totvs-developer-studio.connect",
 					"when": "view == totvs_server && viewItem == serverItem",
 					"group": "AAtotvsServer@1"
@@ -953,8 +971,7 @@
 					"group": "EtotvsRPO@1"
 				}
 			],
-			"view/title": [
-				{
+			"view/title": [{
 					"command": "totvs-developer-studio.add",
 					"when": "view == totvs_server",
 					"group": "navigation"
@@ -965,8 +982,7 @@
 					"group": "navigation"
 				}
 			],
-			"commandPalette": [
-				{
+			"commandPalette": [{
 					"command": "totvs-developer-studio.patchGenerate.fromFolder",
 					"when": "1 == 0"
 				},
