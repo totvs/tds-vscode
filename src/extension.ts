@@ -36,6 +36,7 @@ import { getDAP, getProgramName, getProgramArguments } from './debug/debugConfig
 import { toggleTableSync } from './debug/debugConfigs';
 import { toggleAutocompleteBehavior, updateSettingsBarItem } from './server/languageServerSettings';
 import { advplDocumentFormattingEditProvider, advplDocumentRangeFormattingEditProvider, advplResourceFormatting } from './formatter/advplFormatting';
+import { processDebugCustomEvent } from './debug/debugEvents';
 
 export let languageClient: LanguageClient;
 // metodo de tradução
@@ -323,8 +324,13 @@ export function activate(context: ExtensionContext) {
 	// Inicialização do formatador Adv/PL
 	context.subscriptions.push(
 		vscode.commands.registerCommand('totvs-developer-studio.run.formatter', (args: any[]) => {
-			console.log("formatador ativado");
-
+			//console.log("formatador ativado");
+			if(args === undefined) {
+				let aeditor = vscode.window.activeTextEditor;
+				if(aeditor !== undefined) {
+					args = [aeditor.document.uri]
+				}
+			}
 			if (instanceOfUri(args)) {
 				advplResourceFormatting([args.fsPath]);
 			} else if (instanceOfUriArray(args)) {
@@ -337,6 +343,7 @@ export function activate(context: ExtensionContext) {
 	);
 
 
+	//formatadores
 	vscode.languages.registerDocumentFormattingEditProvider('advpl',
 		advplDocumentFormattingEditProvider()
 	);
@@ -345,17 +352,21 @@ export function activate(context: ExtensionContext) {
 		advplDocumentRangeFormattingEditProvider()
 	);
 
+	//debug
+	vscode.debug.onDidReceiveDebugSessionCustomEvent((e: vscode.DebugSessionCustomEvent) => {
+		processDebugCustomEvent(e);
+	});
 
 	//Verifica questões de encoding
 	verifyEncoding();
 }
 
 function instanceOfUri(object: any): object is Uri {
-	return 'scheme' in object;
+	return object !== undefined && 'scheme' in object;
 }
 
 function instanceOfUriArray(object: any): object is Uri[] {
-	return Array.isArray(object);
+	return object !== undefined && Array.isArray(object);
 }
 
 // this method is called when your extension is deactivated

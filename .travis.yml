@@ -2,7 +2,11 @@ sudo: false
 
 language: node_js
 node_js:
-- "node"
+- "8"
+- "9"
+- "10"
+- "11"
+- "12"
 
 matrix:
   include:
