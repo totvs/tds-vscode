@@ -1,5 +1,23 @@
+# Versão 0.3.10
+## Identação de código [Issue 91](https://github.com/totvs/tds-vscode/issues/91)
+### Melhoria:
+* Não alterar a posição do return.
+### Solução:
+* Desligar a formatação na salva do fonte e não alterar a posição do return na formatação
+----
+## Recompatibilização com servidores 131227 [Issue 90](https://github.com/totvs/tds-vscode/issues/90) relativo a [Issue 86](https://github.com/totvs/tds-vscode/issues/86)
+### Problema:
+* Ao se conectar a um servidor com build inferior a 170117 o servidor não conectava.
+### Solução:
+* Corrigir o LS para suportar build 131227.
+-----
+## Perda de conexão [Issue 86](https://github.com/totvs/tds-vscode/issues/86) relativo a [Issue 90](https://github.com/totvs/tds-vscode/issues/90)
+### Problema:
+* Cada vez que é feito uma operação no server o vscode exibe uma informação de conexão perdida e faz a reconexão com o server.
+### Solução:
+* Corrigir o LS.
+-----
 # Versão 0.3.5
-
 ## Exibir tabela com o resultado da compilação [Issue 68](https://github.com/totvs/tds-vscode/issues/68)
 ### Melhoria:
 * Implementar uma opção de exibir os resultados da compilação quando compilado multiplos arquivos.
