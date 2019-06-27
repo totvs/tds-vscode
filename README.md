@@ -83,7 +83,9 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 ### Resultado da compilação
 
-* Para analisar o resultado da compilação de múltiplos arquivos, exite a opção de abrir uma tabela com informações de todos os arquivos que foram compilados.
+* Todas as informações sobre os arquivos compilados serão exibidos na visão `Output` (seleção `AdvPL`).
+
+* Para analisar o resultado da compilação de múltiplos arquivos, existe a opção de abrir uma tabela com informações de todos os arquivos que foram compilados.
 
 * Para exibir essa tabela, selecione mais de um arquivo, compile e após a compilação será apresentada a pergunta a seguir: Clique em `Yes`.
 
@@ -93,7 +95,7 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 ![TableCompileResult](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/compile/CompileResults.PNG)
 
-* Exite nas preferencias uma maneira de habilitar e desabilitar a pergunta sobre a abertura da tabela.
+* Existe nas preferências uma maneira de habilitar e desabilitar a pergunta sobre a abertura da tabela.
 
 * Clique em `File | Preferences | Settings` e digite `totvsLanguageServer.askCompileResult` no campo de pesquisa.
 
