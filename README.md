@@ -29,6 +29,14 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 ## Configurações Gerais
 
+### Console de saída (Output) AdvPL
+
+* Todas as mensagens emitidas serão exibidas na visão `Output` (Console de saída) e seleção `AdvPL`.
+* Se a visão `Output` não estiver visível ela pode ser ativada através do menu `View | Output` ou do atalho `CTRL + SHIFT + U`.
+* Certifique-se que a opção `AdvPL` esteja selecionada no combo (dropdown) da visão `Output`.
+
+![Output AdvPL](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Output.gif)
+
 ### Tela de boas vindas
 
 * A tela da boa vindas permite configurar a localização do SmartClient e dos diretórios de Includes que serão utilizados durante a compilação dos códigos fontes.
