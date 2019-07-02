@@ -1,6 +1,6 @@
 {
 	"name": "tds-vscode",
-	"displayName": "Totvs Developer Studio for VSCode",
+	"displayName": "Totvs Developer Studio for VSCode (AdvPL e 4GL)",
 	"description": "%tds.package.description%",
 	"version": "0.3.11",
 	"publisher": "TOTVS",
@@ -10,7 +10,11 @@
 	},
 	"license": "MIT",
 	"keywords": [
-		"multi-root ready"
+		"multi-root ready",
+		"advpl",
+		"4gl",
+		"tds",
+		"totvs"
 	],
 	"engines": {
 		"vscode": "^1.29.0",
