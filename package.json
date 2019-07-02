@@ -1,6 +1,6 @@
 {
 	"name": "tds-vscode",
-	"displayName": "Totvs Developer Studio for VSCode (AdvPL e 4GL)",
+	"displayName": "Totvs Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
 	"description": "%tds.package.description%",
 	"version": "0.3.11",
 	"publisher": "TOTVS",
@@ -12,6 +12,7 @@
 	"keywords": [
 		"multi-root ready",
 		"advpl",
+		"tlpp",
 		"4gl",
 		"tds",
 		"totvs"
