@@ -46,7 +46,6 @@
 		"@totvs/tds-ls": "^1.0.30",
 		"await-notify": "1.0.1",
 		"cheerio": "^1.0.0-rc.3",
-		"fs": "0.0.1-security",
 		"ini": "^1.3.5",
 		"strip-json-comments": "^2.0.1",
 		"template-literal": "^1.0.3",
@@ -127,6 +126,53 @@
 		"workspaceContains:servers.json"
 	],
 	"contributes": {
+		"colors": [
+			{
+				"id": "terminal.ansiBlack",
+				"description": "Cor de texto apresentado no console de depuração.",
+				"defaults": {
+					"dark": "#CCCCCC",
+					"light": "#555555",
+					"highContrast": "#ffffff"
+				}
+			},
+			{
+				"id": "terminal.ansiGreen",
+				"description": "Cor da identifcação do nível de mensagem 'Informação'.",
+				"defaults": {
+					"dark": "#5aa85a",
+					"light": "#5aa85a",
+					"highContrast": "#5aa85a"
+				}
+			},
+			{
+				"id": "terminal.ansiYellow",
+				"description": "Cor da identifcação do nível de mensagem 'Aviso'.",
+				"defaults": {
+					"dark": "#d8d53c",
+					"light": "#d8d53c",
+					"highContrast": "#d8d53c"
+				}
+			},
+			{
+				"id": "terminal.ansiRed",
+				"description": "Cor da identifcação do nível de mensagem 'Erro'.",
+				"defaults": {
+					"dark": "#eb1313",
+					"light": "#eb1313",
+					"highContrast": "#eb1313"
+				}
+			},
+			{
+				"id": "terminal.ansiCyan",
+				"description": "Cor da identifcação da hora do evento.",
+				"defaults": {
+					"dark": "#11c9cf",
+					"light": "#11c9cf",
+					"highContrast": "#11c9cf"
+				}
+			}
+		],
 		"languages": [
 			{
 				"id": "advpl",

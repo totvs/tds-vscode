@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "W:\\totvs\\tds-vscode.wiki"
+		}
+	],
+	"settings": {
+		"javascript.validate.enable": false,
+		"typescript.tsdk": "node_modules/typescript/lib"
+	}
+}
