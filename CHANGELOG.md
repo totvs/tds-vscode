@@ -1,3 +1,22 @@
+#Versão 0.3.11
+##Gerar saída para console [Issue 60](https://github.com/totvs/tds-vscode/issues/60)
+### Melhoria:
+* Adicionar uma forma de gerar uma saída no console durante a depuração sem precisar compilar.
+### Solução:
+* Implementado a funcionalidade de "logpoint" do VsCode no Language Server.
+----
+## Demora na execução de debug [Issue 95](https://github.com/totvs/tds-vscode/issues/95)
+### Problema:
+* A depuração apresenta problemas de performance e na abertura da aba de variaveis e tabelas.
+### Solução:
+* Feito uma série de pequenas correções no servidor DAP.
+----
+## Erro ao aplicar patch [Issue 96] (https://github.com/totvs/tds-vscode/issues/96)
+### Problema:
+* Erro "Patch URI list not informed" ao aplicar patch
+### Solução:
+*  Correções internas no Language Server
+----
 # Versão 0.3.10
 ## Identação de código [Issue 91](https://github.com/totvs/tds-vscode/issues/91)
 ### Melhoria:
