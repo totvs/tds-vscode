@@ -213,8 +213,6 @@ Veja detalhes sobre como usar as diretivas [${command:}](https://link) e [passag
 * Para verificar o conteúdo de uma tabela aberta, digite o seguinte comando: table:nome_da_tabela (ex.: table:SM0)
 * Analise os dados retornados de acordo com sua necessidade.
 
-Em [Debug Console: configuração visual](https://github.com/totvs/tds-vscode/wiki/Debug-Console:-configura%C3%A7%C3%A3o-visual), você tem detalhes de como customizar o visual desta visão.
-
 ![Debug Console](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/DebugConsole.gif)
 
 ### Sincronismo de tabelas durante o debug

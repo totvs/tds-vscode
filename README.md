@@ -29,14 +29,6 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 ## Configurações Gerais
 
-### Console de saída (Output) AdvPL
-
-* Todas as mensagens emitidas serão exibidas na visão `Output` (Console de saída) e seleção `AdvPL`.
-* Se a visão `Output` não estiver visível ela pode ser ativada através do menu `View | Output` ou do atalho `CTRL + SHIFT + U`.
-* Certifique-se que a opção `AdvPL` esteja selecionada no combo (dropdown) da visão `Output`.
-
-![Output AdvPL](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Output.gif)
-
 ### Tela de boas vindas
 
 * A tela da boa vindas permite configurar a localização do SmartClient e dos diretórios de Includes que serão utilizados durante a compilação dos códigos fontes.
@@ -83,9 +75,7 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 ### Resultado da compilação
 
-* Todas as informações sobre os arquivos compilados serão exibidos na visão `Output` (seleção `AdvPL`).
-
-* Para analisar o resultado da compilação de múltiplos arquivos, existe a opção de abrir uma tabela com informações de todos os arquivos que foram compilados.
+* Para analisar o resultado da compilação de múltiplos arquivos, exite a opção de abrir uma tabela com informações de todos os arquivos que foram compilados.
 
 * Para exibir essa tabela, selecione mais de um arquivo, compile e após a compilação será apresentada a pergunta a seguir: Clique em `Yes`.
 
@@ -95,7 +85,7 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 ![TableCompileResult](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/compile/CompileResults.PNG)
 
-* Existe nas preferências uma maneira de habilitar e desabilitar a pergunta sobre a abertura da tabela.
+* Exite nas preferencias uma maneira de habilitar e desabilitar a pergunta sobre a abertura da tabela.
 
 * Clique em `File | Preferences | Settings` e digite `totvsLanguageServer.askCompileResult` no campo de pesquisa.
 
@@ -227,8 +217,6 @@ Veja detalhes sobre como usar as diretivas [${command:}](https://link) e [passag
 * Digite uma operação ou variável AdvPL disponivel em seu ambiente de depuração.
 * Para verificar o conteúdo de uma tabela aberta, digite o seguinte comando: table:nome_da_tabela (ex.: table:SM0)
 * Analise os dados retornados de acordo com sua necessidade.
-
-Em [Debug Console: configuração visual](https://github.com/totvs/tds-vscode/wiki/Debug-Console:-configura%C3%A7%C3%A3o-visual), você tem detalhes de como customizar o visual desta visão.
 
 ![Debug Console](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/DebugConsole.gif)
 
