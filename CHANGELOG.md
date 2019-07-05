@@ -1,3 +1,10 @@
+#Versão 0.3.12
+##Correção emeregencial de problema no pré compilador [Issue 111](https://github.com/totvs/tds-vscode/issues/111)
+### Problema:
+* Ao compilar fontes que possuam a instrução %NotDel% ocorre problema no pre compilador.
+### Solulção:
+* Correção interna no pré compilador.
+----
 #Versão 0.3.11
 ##Gerar saída para console [Issue 60](https://github.com/totvs/tds-vscode/issues/60)
 ### Melhoria:
