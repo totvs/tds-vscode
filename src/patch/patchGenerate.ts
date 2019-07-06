@@ -222,13 +222,23 @@ function sendPatchGenerateMessage(server, patchMaster, patchDest, patchType, pat
 function readFiles(dirname: string, allFilesNames: Array<String>, allFilesFullPath: Array<string>, onError: any) {
 	let filenames = fs.readdirSync(dirname);
 
+	// Filtro por extensão de arquivo conhecidos
+
+	let aTpFilesToCompile = ['.PRW','.PRX','.PRG','.APW','.APH','.TRES','.PNG','.BMP','.RES','.APL','.TLPP','.4GL'];
+
+
 	filenames.forEach(function(filename) {
 		let fullPath = path.join(dirname, filename);
-		if(fs.statSync(fullPath).isDirectory()) {
+		if(fs.statSync(fullPath).isDirectory() && fs.statSync(fullPath)) {
 			readFiles(fullPath, allFilesNames, allFilesFullPath, onError);
 		} else  {
-			allFilesNames.push(filename);
-			allFilesFullPath.push(fullPath);
+
+			if(aTpFilesToCompile.indexOf(path.extname(filename).toUpperCase()) != -1 ){
+
+		    	allFilesNames.push(filename);
+			    allFilesFullPath.push(fullPath);
+
+			}
 		}
 	});
 }
