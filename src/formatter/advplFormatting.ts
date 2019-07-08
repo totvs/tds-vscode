@@ -13,6 +13,7 @@ class AdvplDocumentFormatting implements DocumentFormattingEditProvider {
 		options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
 
 		const formattingRules = new FormattingRules();
+		let rules: FormattingRules = formattingRules;
 		const tab: string = options.insertSpaces ? ' '.repeat(options.tabSize) : '\t';
 		let identBlock: string = "";
 		let cont: number = 0;
@@ -24,8 +25,8 @@ class AdvplDocumentFormatting implements DocumentFormattingEditProvider {
 		for (let nl = 0; nl < lc; nl++) {
 			const line = document.lineAt(nl);
 
-			if ((!line.isEmptyOrWhitespace) && (formattingRules.match(line.text))) {
-				let ruleMatch: RuleMatch | null = formattingRules.getLastMatch();
+			if ((!line.isEmptyOrWhitespace) && (rules.match(line.text))) {
+				let ruleMatch: RuleMatch | null = rules.getLastMatch();
 
 				if (ruleMatch) {
 					const rule = ruleMatch.rule;
@@ -59,6 +60,13 @@ class AdvplDocumentFormatting implements DocumentFormattingEditProvider {
 					if (rule.increment) {
 						cont++;
 						identBlock = tab.repeat(cont);
+					}
+
+					if (rule.subrules) {
+						rules = rule.subrules;
+						if (rules.getRules().length === 0) {
+							rules = formattingRules;
+						}
 					}
 				}
 			} else {
