@@ -244,8 +244,8 @@
 		},
 		"function-call" : {
 			"name": "meta.function.call.advpl",
-			"begin": "\\s*(\\w+)(\\()",
-			"end" : "(\\))",
+			"begin": "(\\w+)(?=\\()",
+			"end" : "(?<=\\))",
 			"beginCaptures": {
 				"1" : {"name": "entity.name.function.call.functionName.advpl"}
 			},
