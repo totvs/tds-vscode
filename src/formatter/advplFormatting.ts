@@ -19,6 +19,7 @@ class AdvplDocumentFormatting implements DocumentFormattingEditProvider {
 
 		let result: TextEdit[] = [];
 		const lc = document.lineCount;
+		this.ignore_at = null;
 
 		for (let nl = 0; nl < lc; nl++) {
 			const line = document.lineAt(nl);

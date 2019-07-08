@@ -104,22 +104,40 @@ export class FormattingRules {
 			increment: true,
 			decrement: true,
 			reset: false
-		},
-		{
-			id: 'start comment block (start line)',
-			expression: /^(\/\*)/i,
+		}, {
+			//as regras de PDOC devem ser executadas antes do bloco de comentários
+			id: 'start pdoc block',
+			expression: /^(\/\*\/{Protheus\.doc})/i,
 			increment: false,
 			decrement: false,
 			reset: false,
-			ignore_at: 'end comment block (start line)'
+			ignore_at: 'end pdoc block'
 		}, {
-			id: 'end comment block (start line)' ,
-			expression: /^(\*\/)/i,
+			id: 'end pdoc block',
+			expression: /(\/\*\/)/i,
 			increment: false,
 			decrement: false,
 			reset: false
-		},
-		{
+		}, {
+			id: 'comment block (line)',
+			expression: /^(\s*)(\/\*)(.*)(\*\/)/i,
+			increment: false,
+			decrement: false,
+			reset: false
+		}, {
+			id: 'start comment block',
+			expression: /^(\s*)(\/\*)/i,
+			increment: false,
+			decrement: false,
+			reset: false,
+			ignore_at: 'end comment block'
+		}, {
+			id: 'end comment block',
+			expression: /^(\s*)(\*\/)/i,
+			increment: false,
+			decrement: false,
+			reset: false
+		}, {
 			id: 'begin report query',
 			expression: /^(\s*)(begin)(\s+)(report)(\s+)(query)/i,
 			increment: true,
