@@ -281,16 +281,17 @@
 					"2": {"name": "variable.object.property.advpl"},
 					"3": {"name": "variable.object.property.advpl"}
 			},
-			"end": "(?i)(?=\\s+(as|data|method|end\\s*class))(?:\\s+(as)\\s+((array)\\s(of)\\s+)?(?:(array|block|codeblock|character|char|date|logical|numeric|object|string)|(\\w+))\\s*)?(optional)?",
+			"end": "(?i)(?=\\s*(as|data|method|end\\s*class))(?:\\s+(as)\\s+((array)\\s(of)\\s+)?(?:(array|block|codeblock|character|char|date|logical|numeric|object|string)|(\\w+))\\s*)?(optional)?",
 			"endCaptures": {
-				"1": {"name": "keyword.control.as.advpl"},
-				"2": {"name": "keyword.control.array.advpl"},
-				"3": {"name": "storage.type.advpl"},
+				"1": {"name": "storage.modifier.advpl"},
+				"2": {"name": "keyword.control.as.advpl"},
+				"3": {"name": "keyword.control.array.advpl"},
 				"4": {"name": "storage.type.advpl"},
 				"5": {"name": "storage.type.advpl"},
 				"6": {"name": "storage.type.advpl"},
-				"7": {"name": "storage.type.advpl"},
-				"8": {"name": "keyword.control.optional.advpl"}
+				"7": {"name": "variable.object.property.advpl"},
+				"8": {"name": "storage.type.advpl"},
+				"9": {"name": "keyword.control.optional.advpl"}
 			},
 			"patterns": [
 				{"include": "#expression"}
@@ -298,7 +299,7 @@
 		},
 		"class-decl-content-method" : {
 			"name": "meta.class.declaration.content.method.advpl",
-			"begin": "(?i)(method)\\s*",
+			"begin": "(?i)\\s*(method)\\s*",
 			"beginCaptures": {
 				"1": {"name": "storage.type.method.advpl"}
 			},
