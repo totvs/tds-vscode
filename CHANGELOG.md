@@ -1,12 +1,19 @@
+# Versão 0.3.13
+## Correção na identificação de declaração de classe pelo Syntax Highlight [Issue 116] (https://github.com/totvs/tds-vscode/issues/116)
+### Problema:
+* Em uma classe, caso seja removido os espaços, ou tabs, no inicio da linha onde estão as declarações de variaveis e métodos, corrompia toda a pintura do fonte
+### Solução:
+* Correão na expressão regular de identificação de variáveis e métodos na declaração de classes
+----
 # Versão 0.3.12
-## Correção emeregencial de problema no pré compilador [Issue 111](https://github.com/totvs/tds-vscode/issues/111)
+## Correção emeregencial de problema no pré compilador [Issue 111] (https://github.com/totvs/tds-vscode/issues/111)
 ### Problema:
 * Ao compilar fontes que possuam a instrução %NotDel% ocorre problema no pre compilador.
 ### Solulção:
 * Correção interna no pré compilador.
 ----
 # Versão 0.3.11
-## Gerar saída para console [Issue 60](https://github.com/totvs/tds-vscode/issues/60)
+## Gerar saída para console [Issue 60] (https://github.com/totvs/tds-vscode/issues/60)
 ### Melhoria:
 * Adicionar uma forma de gerar uma saída no console durante a depuração sem precisar compilar.
 ### Solução:
