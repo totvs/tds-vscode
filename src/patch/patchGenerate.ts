@@ -224,7 +224,22 @@ function readFiles(dirname: string, allFilesNames: Array<String>, allFilesFullPa
 
 	// Filtro por extensão de arquivo conhecidos
 
-	let aTpFilesToCompile = ['.PRW','.PRX','.PRG','.APW','.APH','.TRES','.PNG','.BMP','.RES','.APL','.TLPP','.4GL'];
+	let configADVPL = vscode.workspace.getConfiguration('totvsLanguageServer');//busca o arquivo de configuração
+
+	let extensionsADVPL: any;
+
+	extensionsADVPL = configADVPL.get("extensions_folder_patch",true) ; // Le a chave especifica
+
+	let aTpFilesToCompile = extensionsADVPL.split(",");
+
+	if (aTpFilesToCompile.length > 0){
+
+		aTpFilesToCompile = extensionsADVPL
+
+	}
+
+
+	//let aTpFilesToCompile = ['.PRW','.PRX','.PRG','.APW','.APH','.TRES','.PNG','.BMP','.RES','.APL','.TLPP','.4GL'];
 
 
 	filenames.forEach(function(filename) {
@@ -233,10 +248,25 @@ function readFiles(dirname: string, allFilesNames: Array<String>, allFilesFullPa
 			readFiles(fullPath, allFilesNames, allFilesFullPath, onError);
 		} else  {
 
+			if (aTpFilesToCompile.length > 0){
+
+				aTpFilesToCompile = extensionsADVPL
+
+
 			if(aTpFilesToCompile.indexOf(path.extname(filename).toUpperCase()) != -1 ){
 
 		    	allFilesNames.push(filename);
-			    allFilesFullPath.push(fullPath);
+				allFilesFullPath.push(fullPath);
+
+			}
+
+			else{
+
+				allFilesNames.push(filename);
+				allFilesFullPath.push(fullPath);
+
+
+			}
 
 			}
 		}
