@@ -14,6 +14,6 @@ export function defragRpo() {
 			}
 		});
 	} else {
-		vscode.window.showErrorMessage(localize('tds.vscode.servernotconnected', 'Não há servidor conectado'));
+		vscode.window.showErrorMessage(localize('tds.vscode.servernotconnected', 'There is no server connected'));
 	}
 }

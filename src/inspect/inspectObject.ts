@@ -88,7 +88,7 @@ export function inspectObject(context: vscode.ExtensionContext) {
 						pathFile = vscode.workspace.rootPath + "/inspectorObject" + r + ".txt";
 					}
 
-					var setting: vscode.Uri = vscode.Uri.parse("untitled:" + pathFile);
+					let setting: vscode.Uri = vscode.Uri.parse("untitled:" + pathFile);
 					vscode.workspace.openTextDocument(setting).then((a: vscode.TextDocument) => {
 						vscode.window.showTextDocument(a, 1, false).then(e => {
 							e.edit(edit => {

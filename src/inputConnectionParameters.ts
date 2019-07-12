@@ -1,8 +1,8 @@
-import { ExtensionContext, QuickInputButton, Uri, QuickPickItem } from "vscode";
+import { ExtensionContext, QuickInputButton, Uri, QuickPickItem, workspace } from "vscode";
 import Utils from "./utils";
 import * as path from 'path';
 import { MultiStepInput } from "./multiStepInput";
-import { authenticate } from "./serversView";
+import { authenticate, reconnectServer } from "./serversView";
 
 import * as nls from 'vscode-nls';
 let localize = nls.loadMessageBundle();
@@ -40,7 +40,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 	const serversConfig = Utils.getServersConfig();
 
 	const servers: QuickPickItem[] = serversConfig.configurations
-		.map(element => ({ label: element.name, description: `${element.address}:${element.port}` }));
+		.map(element => ({ detail: element.id, label: element.name, description: `${element.address}:${element.port}` }));
 
 	interface State {
 		title: string;
@@ -50,13 +50,14 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 		environment: QuickPickItem | string;
 		username: string;
 		password: string;
+		reconnectionInfo: object;
 	}
 
 	async function collectInputs() {
 		const state = {} as Partial<State>;
 
 		if (serverParam) {
-			state.server = serverParam.label;
+			state.server = serverParam.id;
 			TOTAL_STEPS -= 1;
 			SERVER_STEP -= 1;
 			ENVIRONEMNT_STEP -= 1;
@@ -103,17 +104,17 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 			});
 
 			if (pick instanceof NewEnvironmentButton) {
-				return (input: MultiStepInput) => inputEnvironment(input, state);
+				return (input: MultiStepInput) => inputEnvironment(input, state, serversConfig);
 			}
 			state.environment = pick;
 
-			return (input: MultiStepInput) => inputUsername(input, state);
+			return (input: MultiStepInput) => inputUsername(input, state, serversConfig);
 		} else {
-			return (input: MultiStepInput) => inputEnvironment(input, state);
+			return (input: MultiStepInput) => inputEnvironment(input, state, serversConfig);
 		}
 	}
 
-	async function inputEnvironment(input: MultiStepInput, state: Partial<State>) {
+	async function inputEnvironment(input: MultiStepInput, state: Partial<State>, serversConfig: any) {
 		state.environment = await input.showInputBox({
 			title: title,
 			step: ENVIRONEMNT_STEP,
@@ -125,10 +126,30 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 			password: false
 		});
 
-		return (input: MultiStepInput) => inputUsername(input, state);
+		return (input: MultiStepInput) => inputUsername(input, state, serversConfig);
 	}
 
-	async function inputUsername(input: MultiStepInput, state: Partial<State>) {
+	async function inputUsername(input: MultiStepInput, state: Partial<State>, serversConfig: any) {
+		const configADVPL = workspace.getConfiguration('totvsLanguageServer');
+		let useReconnectionToken = configADVPL.get('useReconnectionToken');
+		if (useReconnectionToken) {
+			let serverId = (typeof state.server === "string") ? state.server : (state.server as QuickPickItem).detail;
+			let environmentName = (typeof state.environment === "string") ? state.environment : (state.environment as QuickPickItem).label;
+			let key = serverId + ":" + environmentName;
+			let savedTokens: [string, object] = serversConfig.savedTokens;
+			if (savedTokens) {
+				for (let idx = 0; idx < savedTokens.length; idx++) {
+					if (savedTokens[idx][0] === key) {
+						let reconnectionInfo = savedTokens[idx][1];
+						if (reconnectionInfo) {
+							state.reconnectionInfo = reconnectionInfo;
+							return;
+						}
+					}
+				}
+			}
+		}
+
 		state.username = await input.showInputBox({
 			title: title,
 			step: USERNAME_STEP,
@@ -140,10 +161,10 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 			password: false
 		});
 
-		return (input: MultiStepInput) => inputPassword(input, state);
+		return (input: MultiStepInput) => inputPassword(input, state, serversConfig);
 	}
 
-	async function inputPassword(input: MultiStepInput, state: Partial<State>) {
+	async function inputPassword(input: MultiStepInput, state: Partial<State>, serversConfig: any) {
 		state.password = await input.showInputBox({
 			title: title,
 			step: PASSWROD_STEP,
@@ -196,8 +217,8 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 
 		let target;
 		if (state.server) {
-			target = Utils.getServerForNameWithConfig((typeof state.server !== 'string') ? state.server.label : state.server, serversConfig);
-
+			//target = Utils.getServerForNameWithConfig((typeof state.server !== 'string') ? state.server.label : state.server, serversConfig);
+			target = Utils.getServerById((typeof state.server !== 'string') ? (state.server.detail ? state.server.detail : "") : state.server, serversConfig);
 			if (target) {
 				state.environment = target.environment;
 				state.username = target.username;
@@ -208,12 +229,24 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 			.map(name => ({ label: name }));
 	}
 
-	const state = await collectInputs();
-	const server = Utils.getServerForNameWithConfig((typeof state.server !== 'string') ? state.server.label : state.server, serversConfig);
-	const environment = (typeof state.environment !== 'string') ? state.environment.label : state.environment;
+	async function main() {
+		const state = await collectInputs();
+		if (state.reconnectionInfo) {
+			if (!reconnectServer(state.reconnectionInfo)) {
+				// falha ao reconectar
+			}
+		}
+		else {
+			//const server = Utils.getServerForNameWithConfig((typeof state.server !== 'string') ? state.server.label : state.server, serversConfig);
+			const server = Utils.getServerById((typeof state.server !== 'string') ? (state.server.detail ? state.server.detail : "") : state.server, serversConfig);
+			const environment = (typeof state.environment !== 'string') ? state.environment.label : state.environment;
 
-	server.label = server.name; //FIX: quebra-galho necessário para a árvore de servidores
-	authenticate(server, environment, state.username, state.password);
+			server.label = server.name; //FIX: quebra-galho necessário para a árvore de servidores
+			authenticate(server, environment, state.username, state.password);
+		}
+	}
+
+	main();
 }
 
 export function serverAuthentication(args, context){

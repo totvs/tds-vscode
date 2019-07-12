@@ -3,28 +3,82 @@
         // symbol used for single line comment. Remove this entry if your language does not support line comments
         "lineComment": "//",
         // symbols used for start and end a block comment. Remove this entry if your language does not support block comments
-        "blockComment": [ "/*", "*/" ]
+        "blockComment": [
+            "/*",
+            "*/"
+        ]
     },
     // symbols used as brackets
     "brackets": [
-        ["{", "}"],
-        ["[", "]"],
-        ["(", ")"]
+        [
+            "{",
+            "}"
+        ],
+        [
+            "[",
+            "]"
+        ],
+        [
+            "(",
+            ")"
+        ]
     ],
     // symbols that are auto closed when typing
     "autoClosingPairs": [
-        ["{", "}"],
-        ["[", "]"],
-        ["(", ")"],
-        ["\"", "\""],
-        ["'", "'"]
+        [
+            "{",
+            "}"
+        ],
+        [
+            "[",
+            "]"
+        ],
+        [
+            "(",
+            ")"
+        ],
+        {
+            "open": "'",
+            "close": "'",
+            "notIn": [
+                "string",
+                "comment"
+            ]
+        },
+        {
+            "open": "\"",
+            "close": "\"",
+            "notIn": [
+                "string",
+                "comment"
+            ]
+        },
     ],
     // symbols that that can be used to surround a selection
     "surroundingPairs": [
-        ["{", "}"],
-        ["[", "]"],
-        ["(", ")"],
-        ["\"", "\""],
-        ["'", "'"]
-    ]
+        [
+            "{",
+            "}"
+        ],
+        [
+            "[",
+            "]"
+        ],
+        [
+            "(",
+            ")"
+        ],
+        [
+            "\"",
+            "\""
+        ],
+        [
+            "'",
+            "'"
+        ]
+    ],
+    "indentationRules": {
+        "increaseIndentPattern": "((#)(\\s*)(ifdef|ifndef)|(begin)(\\s+)(report)(\\s+)(query)|(begin)(\\s+)(transaction)|(beginsql)(\\s+)(\\w+)|(do)(\\s+)(case)|(try)|(class)(\\s+)(\\w+)|(wsclient)(\\s+)(\\w+)|(for)(\\s+)(\\w+)|(if)(.*)|(structure)|(do)?(\\s*)(while)|(wsrestful)|(wsservice)|(wsstruct)|(begin)(\\s*)(sequence)|((\\w+)(\\s+))?(function)(\\s+)(\\w+)|(method)(\\s+)(\\w+)(\\s*)(.*)(\\s+)(class)(\\s+)(\\w+)|(#)(\\s*)(else)|(case|otherwise)|(catch)|((else)|(elseif))|(recover)(\\s*)(sequence))(.*)$",
+        "decreaseIndentPattern": "((end)(\\s+)(report)(\\s+)(query)|(end)(\\s+)(transaction)?|(endsql)|(end)(\\s*)(case)|(end)(\\s*)(try)?|(end)(\\s*)(class)?|(endwsclient)|(next)|(end)(\\s*)(if)?|(end)(\\s*)(structure)|(end)?(\\s*)(do)|(end)(\\s*)(wsrestful)|(end)(\\s*)(wsservice)|(end)(\\s*)(wsstruct)|(end)(\\s*)(sequence)?|(#)(\\s*)(else)|(case|otherwise)|(catch)|((else)|(elseif))|(recover)(\\s*)(sequence))(.*)$"
+    }
 }

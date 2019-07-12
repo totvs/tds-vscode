@@ -8,6 +8,7 @@
 	"tds.webview.launcher.launcherTitle": "?",
 	"tds.webview.launcher.name": "?",
 	"tds.webview.launcher.program": "?",
+	"tds.webview.launcher.program.arguments":"?",
 	"tds.webview.launcher.smartclient": "?",
 	"tds.webview.launcher.multiThread": "?",
 	"tds.webview.launcher.profile": "?",

@@ -1,12 +1,13 @@
-import {extensions} from 'vscode';
+import {debug, DebugSession, Disposable, extensions, QuickPick, QuickPickItem, window} from 'vscode';
 import { chmodSync } from 'fs';
-import Utils from '../utils';
-import {window} from 'vscode';
-import {localize} from '../extension';
+import Utils, { MESSAGETYPE } from '../utils';
+import { localize } from '../extension';
 
-let lastProgramExecuted;
+let isTableSyncEnabled = false;
+let debugSession: DebugSession | undefined;
+const ignoreValue: string[] = [',', '(', ')' ];
 
-export function getDAP(){
+export function getDAP() {
 	let pathDAP = "";
 	let ext = extensions.getExtension("TOTVS.tds-vscode");
 	if (ext) {
@@ -22,20 +23,220 @@ export function getDAP(){
 	return { command: pathDAP };
 }
 
-export function getProgramName(){
+class QuickPickProgram implements QuickPickItem {
+
+	label: string;
+	description: string;
+	args: string[] = [];
+
+	constructor(program: string, args: string[]) {
+		this.label = program;
+		this.setArgs(args);
+	}
+
+	public setArgs(args: string[]) {
+		this.args = args;
+		this.description = this.args.join(" ");
+	}
+}
+
+export async function getProgramName() {
+	const disposables: Disposable[] = [];
+
 	let config = Utils.getLaunchConfig();
+	let lastProgramExecuted = "";
+	let lastPrograms: QuickPickProgram[] = [];
+
 	if (config.lastProgramExecuted) {
 		lastProgramExecuted = config.lastProgramExecuted;
 	}
-	return window.showInputBox({
-		placeHolder: localize('tds.vscode.getProgramName', "Please enter the name of an AdvPL function"),
-		value: lastProgramExecuted !== undefined ? lastProgramExecuted : ""
-	}).then((programName) => {
-		if (programName !== undefined) {
-			config.lastProgramExecuted = programName;
-			Utils.saveLaunchConfig(config);
-		}
-		//Se nao retornar o program name aqui, o debug nao funciona
-		return programName;
+
+	if (config.lastPrograms) {
+		lastPrograms = config.lastPrograms;
+	} else {
+		config.lastPrograms = lastPrograms;
+	}
+
+	try {
+		return await new Promise<string | undefined>((resolve, reject) => {
+			const qp: QuickPick<QuickPickProgram> = window.createQuickPick<QuickPickProgram>();
+			qp.title = localize('tds.vscode.getProgramName', "Please enter the name of an AdvPL function");
+			qp.items = lastPrograms;
+			qp.value = lastProgramExecuted;
+			qp.matchOnDescription = true;
+			qp.placeholder = localize('tds.vscode.getProgramName', "Please enter the name of an AdvPL function");
+
+			disposables.push(qp.onDidChangeSelection(selection => {
+				if (selection[0]) {
+					qp.value = selection[0].label + ' ' + selection[0].description;
+				}
+			}));
+
+			disposables.push(qp.onDidAccept(e => {
+				if (qp.value) {
+					qp.hide();
+				}
+			}));
+
+			qp.onDidHide(() => {
+				const program = extractProgram(qp.value);
+
+				if (program && program.length > 0) {
+					const args = extractArgs(qp.value);
+					const argsAux = args.join(" ");
+
+					config.lastProgramExecuted = program;
+
+					const find: boolean = config.lastPrograms.some((element: QuickPickProgram) => {
+						return (element.label.toLowerCase() === program.toLowerCase()) &&
+							(element.description === argsAux);
+					});
+
+					if (!find) {
+						config.lastPrograms.push(new QuickPickProgram(program, args));
+						Utils.saveLaunchConfig(config);
+					}
+				}
+
+				resolve(qp.value);
+				qp.dispose();
+			});
+
+			qp.show();
+		});
+	} finally {
+		disposables.forEach(d => d.dispose());
+	}
+}
+
+export function extractProgram(value: string): string {
+	const groups: string[] = value.split(/(\w+)+/i).filter((value) => {
+		return value && value.trim().length > 0;
 	});
+	return (groups && groups.length > 0) ? groups[0] : "";
+}
+
+export function extractArgs(value: string): string[] {
+	const groups: string[] = value.replace(/-a=/gi, "").split(/(\w+)+/i).filter((value) => {
+		return value && value.trim().length > 0 && !ignoreValue.some((char) => value.trim() === char);
+	});
+
+	return (groups && groups.length > 1) ? groups.slice(1) : [];
+}
+
+export async function getProgramArguments() {
+	return await pickProgramArguments();
+}
+
+export function toggleTableSync() {
+	if(debugSession !== undefined) {
+		let launchConfig = Utils.getLaunchConfig();
+		launchConfig.configurations.forEach(launchElement => {
+			if(debugSession !== undefined && launchElement.name === debugSession.name) {
+				isTableSyncEnabled = !launchElement.enableTableSync;
+				sendChangeTableSyncSetting();
+				launchElement.enableTableSync = isTableSyncEnabled;
+				if(isTableSyncEnabled) {
+					Utils.logMessage(localize('tds.debug.tableSync.enabled', "Tables synchronism enabled"), MESSAGETYPE.Info,true);
+				} else {
+					Utils.logMessage(localize('tds.debug.tableSync.disabled', "Tables synchronism disabled"), MESSAGETYPE.Info,true);
+				}
+			}
+		});
+		Utils.saveLaunchConfig(launchConfig);
+	} else {
+		Utils.logMessage(
+			localize('tds.debug.tableSync.disabled', "The command to (Dis)Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually"),
+		MESSAGETYPE.Error,true);
+	}
+}
+
+debug.onDidChangeActiveDebugSession((newDebugSession) => {
+ 	debugSession = newDebugSession;
+})
+
+function sendChangeTableSyncSetting(): void {
+	if(debugSession === undefined) {
+		debugSession = debug.activeDebugSession;
+	}
+	if(debugSession !== undefined) {
+		const settingsArray = [
+			{key:"enableTableSync", value: isTableSyncEnabled}
+		];
+		const arg = {settings: settingsArray};
+
+		debugSession.customRequest("$changeSettings", arg).then((value: any) => {
+			//let status = isTableSyncEnabled ? localize('tds.debug.tableSync.satus.enabled',"enabled") : localize('tds.debug.tableSync.satus.disabled',"disabled");
+			//Utils.logMessage(localize('tds.debug.tableSync.satus',`Tables synchronism ${status}`) , MESSAGETYPE.Info, true);
+
+		}).then(undefined, err => {
+			console.error(err.message);
+			Utils.logMessage(err.message,MESSAGETYPE.Error, true);
+		 });
+	}
+}
+
+async function pickProgramArguments() {
+	const disposables: Disposable[] = [];
+
+	let config = Utils.getLaunchConfig();
+	let lastProgramExecuted = "";
+	let lastPrograms: QuickPickProgram[] = [];
+
+	if (config.lastProgramExecuted) {
+		lastProgramExecuted = config.lastProgramExecuted;
+	}
+
+	lastPrograms = config.lastPrograms.filter((element: QuickPickProgram) => {
+		return (element.label.toLowerCase() === lastProgramExecuted.toLowerCase());
+	});
+
+	lastPrograms.forEach(element => {
+		element.label = element.description;
+		element.description = '';
+	});
+
+	try {
+		return await new Promise<string[] | undefined>((resolve, reject) => {
+			const qp: QuickPick<QuickPickProgram> = window.createQuickPick<QuickPickProgram>();
+			qp.title = localize('tds.vscode.getProgramArguments', "Informe lista de argumentos separados por vírgula");
+			qp.items = lastPrograms;
+			qp.placeholder = localize('tds.vscode.getProgramArguments', "Informe lista de argumentos separados por vírgula");
+
+			disposables.push(qp.onDidChangeSelection(selection => {
+				if (selection[0]) {
+					qp.value = selection[0].label;
+				}
+			}));
+
+			disposables.push(qp.onDidAccept(e => {
+				if (qp.value) {
+					qp.hide();
+				}
+			}));
+
+			qp.onDidHide(() => {
+				const program = lastProgramExecuted;
+				const description = qp.value.toLowerCase();
+
+				const args = extractArgs(qp.value);
+
+				const find: boolean = config.lastPrograms.some((element: QuickPickProgram) => {
+					return (element.label.toLowerCase() === description);
+				});
+
+				if (!find) {
+					config.lastPrograms.push(new QuickPickProgram(program, args));
+					Utils.saveLaunchConfig(config);
+				}
+
+				resolve(args);
+				qp.dispose();
+			});
+
+			qp.show();
+		});
+	} finally {
+		disposables.forEach(d => d.dispose());
+	}
 }

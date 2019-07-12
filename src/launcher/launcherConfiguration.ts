@@ -16,6 +16,7 @@ const localizeHTML = {
 	"tds.webview.launcher.launcherTitle": localize("tds.webview.launcher.launcherTitle","Launcher Config"),
 	"tds.webview.launcher.name": localize("tds.webview.launcher.name","Choose launcher:"),
 	"tds.webview.launcher.program": localize("tds.webview.launcher.program","Program:"),
+	"tds.webview.launcher.program.arguments": localize("tds.webview.launcher.program.arguments","Arguments (-A):"),
 	"tds.webview.launcher.smartclient": localize("tds.webview.launcher.smartclient","SmartClient:"),
 	"tds.webview.launcher.multiThread": localize("tds.webview.launcher.multiThread","Enable multiple threads"),
 	"tds.webview.launcher.profile": localize("tds.webview.launcher.profile","Enable Profile"),
@@ -31,7 +32,7 @@ const localizeHTML = {
 	"tds.webview.launcher.saveClose": localize("tds.webview.launcher.saveClose","Save/Close"),
 	"tds.webview.launcher.bottomInfo": localize("tds.webview.launcher.bottomInfo","This config could be altered editing file"),
 	"tds.webview.launcher.ignoreFiles": localize("tds.webview.launcher.ignoreFiles", "Ignore files not found in WorkSpace (debugging)")
-}
+};
 
 export default class LauncherConfiguration {
 	static show(context: vscode.ExtensionContext) {
@@ -43,7 +44,7 @@ export default class LauncherConfiguration {
 
 			currentPanel = vscode.window.createWebviewPanel(
 				'totvs-developer-studio.configure.launcher',
-				'Launcher Configuration',
+				localize("tds.vscode.launcher.configuration",'Launcher Configuration'),
 				vscode.ViewColumn.One,
 				{
 					enableScripts: true,
@@ -101,7 +102,7 @@ export default class LauncherConfiguration {
 							currentPanel.webview.postMessage(launchersInfo);
 						}
 
-						vscode.window.showInformationMessage("Executor "+message.launcherName+" salvo.");
+						vscode.window.showInformationMessage(localize("tds.vscode.launcher.executor","Executor") + " " +message.launcherName+ " " + localize("tds.vscode.launcher.saved","saved."));
 
 						if (currentPanel) {
 							if(message.close){
@@ -131,6 +132,7 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML){
 function updateElement(element: any, message: any) {
 	element.smartclientBin = message.smartclientBin;
 	element.program = message.program;
+	element.programArguments = message.programArguments;
 	element.enableMultiThread = message.enableMultiThread;
 	element.enableProfile = message.enableProfile;
 	element.isMultiSession = message.isMultiSession;
@@ -138,6 +140,7 @@ function updateElement(element: any, message: any) {
 	element.doNotShowSplash = message.doNotShowSplash;
 	element.language = message.hasLanguage ? message.language : "";
 	element.ignoreFiles = message.ignoreFiles;
+	element.enableTableSync = true;
 }
 
 function saveNewLauncher(message: any, launchersInfo: any): void {
