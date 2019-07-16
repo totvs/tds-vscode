@@ -18,6 +18,10 @@ export function getDAP() {
 			pathDAP = ext.extensionPath + "/node_modules/@totvs/tds-da/bin/linux/debugAdapter";
 			chmodSync(pathDAP, '755');
 		}
+		else if (process.platform === "darwin") {
+			pathDAP = ext.extensionPath + "/node_modules/@totvs/tds-da/bin/mac/debugAdapter";
+			chmodSync(pathDAP, '755');
+		}
 
 	}
 	return { command: pathDAP };
