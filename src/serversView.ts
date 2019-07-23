@@ -148,12 +148,13 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 
 		serverConfig.configurations.forEach(element => {
 			let environmentsServer = new Array<EnvSection>();
-
-			element.environments.forEach(environment => {
-				const env = new EnvSection(environment, element.name, vscode.TreeItemCollapsibleState.None,
-					{command: 'totvs_server.selectEnvironment',	title: '', arguments: [environment]}, environment);
-				environmentsServer.push(env);
-			});
+			if(element.environments){
+				element.environments.forEach(environment => {
+					const env = new EnvSection(environment, element.name, vscode.TreeItemCollapsibleState.None,
+						{command: 'totvs_server.selectEnvironment',	title: '', arguments: [environment]}, environment);
+					environmentsServer.push(env);
+				});
+			}
 
 			listServer.push(serverItem(element.name, element.address, element.port, element.id, element.buildVersion, environmentsServer));
 			listServer[listServer.length-1].collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
