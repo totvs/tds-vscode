@@ -87,6 +87,12 @@ export class FormattingRules {
 				decrement: false,
 				reset: true
 			}, {
+				id: 'wsmethod',
+				expression: /^(\s*)(wsmethod)(\s+)(\w+)(\s*)(.*)(\s+)(wsservice)(\s+)(\w+)/i,
+				increment: true,
+				decrement: false,
+				reset: true
+			}, {
 				id: 'comment line (start line)',
 				expression: /^(\/\/)(.*)/i,
 				increment: false,
