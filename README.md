@@ -239,6 +239,20 @@ Veja detalhes sobre como usar as diretivas [${command:}](https://link) e [passag
 
 ![Debug Table Sync](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/TableSync-DebugCommands.gif)
 
+### Debug no MacOS
+
+* Para iniciar o debug usando MacOS é necessário usar um SmartClient com versão igual ou superior a 17.3.0.9. Caso possua uma versão inferior será necessário ativar a chave "enableMultiThread" no arquivo `launch.json` como no exemplo abaixo:
+
+```json
+{
+  "configurations": [
+    {
+      "enableMultiThread": true
+    }
+  ]
+}
+```
+
 ## Patch
 
 ### Gerando um Patch (From RPO) utilizando o assistente.
