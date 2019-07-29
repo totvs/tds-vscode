@@ -33,11 +33,21 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 * A tela da boa vindas permite configurar a localização do SmartClient e dos diretórios de Includes que serão utilizados durante a compilação dos códigos fontes.
 * Esta tela será apresentada na primeira execução do plugin, assim que o primeiro fonte AdvPL for aberto.
-* Localize o `SmartClient.exe` (Windows) ou `smartclient` (Linux).
+* Localize o `SmartClient.exe` (Windows) ou `smartclient` (Linux e Mac). O binário no MacOS encontra-se em `smartclient.app/Contents/MacOS/smartclient`
 * Localize os diretórios de Includes que necessitar para seus projetos.
 * Pressione o botão `Salvar` para concluir.
 
 ![Welcome Page](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Welcome.gif)
+
+### Tela de boas vindas no Linux e MacOS
+
+* Na janela para escolha da pasta/arquivo é necessário mudar o filtro de `Custom Files` para `All Files`.
+
+![Welcome Page on Linux](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/welcome/Welcome_Linux1.png)
+
+![Welcome Page on MacOS 1](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/welcome/Welcome_MacOS1.png)
+![Welcome Page on MacOS 2](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/welcome/Welcome_MacOS2.png)
+![Welcome Page on MacOS 3](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/welcome/Welcome_MacOS3.png)
 
 ### Cadastro de servidores utilizando o assistente
 
