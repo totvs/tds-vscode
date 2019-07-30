@@ -404,3 +404,297 @@ function verifyEncoding() {
 		});
 	}
 }
+
+
+
+
+interface IAdvplSymbol {
+    /**
+     * Nome do Símbolo - Será exibido na outline
+     */
+    name: string;
+
+    /**
+     * Detalhe do símbolo - Informação complementar que será exibida na outline
+     */
+    detail: string;
+
+    /**
+     * Identificação do nível do símbolo
+     */
+    level: Number;
+
+    /**
+	 * O tipo desse símbolo.
+	 */
+    kind: vscode.SymbolKind;
+
+    /**
+	 * O intervalo que inclui esse símbolo não inclui espaço em branco inicial / final, mas todo o restante, por exemplo, comentários e código.
+	 */
+    range: vscode.Range;
+
+    /**
+     * O intervalo que deve ser selecionado e revela quando este símbolo está sendo escolhido, por exemplo, o nome de uma função.
+     */
+    selectionRange: vscode.Range;
+
+}
+
+enum LevelType {
+    UserFunction = 0,
+	StaticFunction = 0,
+	MainFunction = 0,
+	WsRestfulFunction = 0,
+    WsFunction = 0,
+    WsMethodFunction = 0,
+    WsStructFunction = 0,
+    LocalVariables = 1,
+	PrivateVariables = 1,
+	PublicVariables = 1,
+    WsDataVariables = 1,
+    WsMethodDeclaration = 1
+}
+
+ class AdvplSymbol implements IAdvplSymbol {
+    name: string;
+    detail: string;
+    level: LevelType;
+    kind: vscode.SymbolKind;
+    range: vscode.Range;
+    selectionRange: vscode.Range;
+
+    constructor(name: string, detail: string, level: LevelType, kind: vscode.SymbolKind, range: vscode.Range, selectionRange: vscode.Range) {
+        this.name = name;
+        this.detail = detail;
+        this.level = level;
+        this.kind = kind;
+        this.range = range;
+        this.selectionRange = selectionRange;
+    }
+
+    public getDocumentSymbol(): vscode.DocumentSymbol {
+        return new vscode.DocumentSymbol(
+            this.name,
+            this.detail,
+            this.kind,
+            this.range,
+            this.range,
+        )
+    }
+
+}
+
+class AdvplSymbolsProvider implements vscode.DocumentSymbolProvider {
+
+    private compareSymbolWithLine(line: vscode.TextLine, symbol: string[]): Boolean {
+        let ret = true;
+
+        symbol.every(function (_value, _index, _arr) {
+            ret = line.text.toUpperCase().includes(_value.toUpperCase());
+            return ret;
+        });
+
+        return ret;
+    }
+
+    public provideDocumentSymbols(document: vscode.TextDocument,
+        token: vscode.CancellationToken): Thenable<vscode.DocumentSymbol[]> {
+
+        return new Promise((resolve, reject) => {
+
+            let symbols: vscode.DocumentSymbol[] = [];
+            let advplSymbols = [];
+
+            // Percorre o arquivo para encontrar os simbolos Advpl
+            for (let i = 0; i < document.lineCount; i++) {
+                let line = document.lineAt(i);
+
+                if (this.compareSymbolWithLine(line, ["User", "Function"])) {
+                    advplSymbols.push(
+						new AdvplSymbol(
+							line.text,
+							"User Function AdvPL",
+							LevelType.UserFunction,
+							vscode.SymbolKind.Function,
+							line.range,
+							line.range
+						)
+					);
+                }
+
+                if (this.compareSymbolWithLine(line, ["Static", "Function"])) {
+                    advplSymbols.push(
+						new AdvplSymbol(
+                        	line.text,
+                            "Static Function AdvPL",
+                            LevelType.StaticFunction,
+                            vscode.SymbolKind.Function,
+                            line.range,
+                            line.range
+                        )
+					);
+				}
+
+				if (this.compareSymbolWithLine(line, ["Main ", "Function"])) {
+                    advplSymbols.push(
+						new AdvplSymbol(
+							line.text,
+							"Main Function AdvPL",
+							LevelType.MainFunction,
+							vscode.SymbolKind.Function,
+							line.range,
+							line.range
+						)
+					);
+                }
+
+                if (this.compareSymbolWithLine(line, ["WSSERVICE ", "DESCRIPTION"])) {
+                    advplSymbols.push(
+						new AdvplSymbol(
+							line.text,
+							"WSDL WebService Function AdvPL",
+							LevelType.WSFunction,
+							vscode.SymbolKind.Function,
+							line.range,
+							line.range
+						)
+					);
+                }
+
+                if (this.compareSymbolWithLine(line, ["WSRESTFUL ", "DESCRIPTION"])) {
+                    advplSymbols.push(
+						new AdvplSymbol(
+							line.text,
+							"Restful WebService Function AdvPL",
+							LevelType.WSRestfulFunction,
+							vscode.SymbolKind.Function,
+							line.range,
+							line.range
+						)
+					);
+                }
+
+                if (this.compareSymbolWithLine(line, ["WSMETHOD ", "WSSERVICE"])) {
+                    advplSymbols.push(
+						new AdvplSymbol(
+							line.text,
+							"WebService Method AdvPL",
+							LevelType.WSMethodFunction,
+							vscode.SymbolKind.Function,
+							line.range,
+							line.range
+						)
+					);
+                }
+
+                if (this.compareSymbolWithLine(line, ["WSSTRUCT "])) {
+                    advplSymbols.push(
+						new AdvplSymbol(
+							line.text,
+							"WsStruct Method AdvPL",
+							LevelType.WsStructFunction,
+							vscode.SymbolKind.Function,
+							line.range,
+							line.range
+						)
+					);
+                }
+
+                if (this.compareSymbolWithLine(line, ["Local "])) {
+                    advplSymbols.push(
+						new AdvplSymbol(
+                            line.text,
+                            "Local Variable AdvPL",
+                            LevelType.LocalVariables,
+                            vscode.SymbolKind.Variable,
+                            line.range,
+                            line.range
+                        )
+					);
+				}
+
+				if (this.compareSymbolWithLine(line, ["Private "])) {
+                    advplSymbols.push(
+						new AdvplSymbol(
+							line.text,
+							"Private Variable AdvPL",
+							LevelType.PrivateVariables,
+							vscode.SymbolKind.Variable,
+							line.range,
+							line.range
+						)
+					);
+                }
+
+                if (this.compareSymbolWithLine(line, ["Public "])) {
+                    advplSymbols.push(
+						new AdvplSymbol(
+							line.text,
+							"Public Variable AdvPL",
+							LevelType.PublicVariables,
+							vscode.SymbolKind.Variable,
+							line.range,
+							line.range
+						)
+					);
+                }
+
+                if (this.compareSymbolWithLine(line, ["WSDATA ", "AS"])) {
+                    advplSymbols.push(
+						new AdvplSymbol(
+							line.text,
+							"WebService WsData Variable AdvPL",
+							LevelType.WsDataVariables,
+							vscode.SymbolKind.Variable,
+							line.range,
+							line.range
+						)
+					);
+                }
+
+                if (this.compareSymbolWithLine(line, ["WSMETHOD ", "DESCRIPTION"])) {
+                    advplSymbols.push(
+						new AdvplSymbol(
+							line.text,
+							"WebService Method Declaration AdvPL",
+							LevelType.WSMethodDeclaration,
+							vscode.SymbolKind.Variable,
+							line.range,
+							line.range
+						)
+					);
+                }
+            }
+
+
+			let elementParent: number;
+			let elementChild: number;
+
+            advplSymbols.forEach(element => {
+
+				if (element.level === 0) { /* Add symbol */
+
+                    elementParent = symbols.push(
+                        element.getDocumentSymbol()
+					) - 1;
+
+				}
+				else if (element.level === 1) {	/* Add child symbol */
+
+                    elementChild = symbols[elementParent].children.push(
+                        element.getDocumentSymbol()
+                    ) - 1;
+				}
+				else if (element.level === 2) {
+                    symbols[elementChild].children.push(
+                        element.getDocumentSymbol()
+                    );
+                }
+            });
+
+            resolve(symbols);
+		});
+    }
+}
+
