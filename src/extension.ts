@@ -218,6 +218,9 @@ export function activate(context: ExtensionContext) {
 		})();
 	}
 
+
+	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider({ language: "Advpl" }, new AdvplSymbolsProvider()));
+
 	// Ação para pegar o nome da função e argumentos para  iniciar o debug
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.getProgramName', () => getProgramName()));
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.getProgramArguments', () => getProgramArguments()));
