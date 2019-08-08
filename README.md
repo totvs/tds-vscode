@@ -73,9 +73,11 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 ### Compilando fonte do editor corrente
 
-* Para compilar o fonte do editor corrente acione o atalho `CTRL + F9`. Ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Compile Selection`.
+* Para compilar o fonte do editor corrente acione o atalho `CTRL + F9` ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Compile File`.
 
-* Para recompilar o fonte do editor corrente acione o atalho `CTRL + SHIFT + F9`.
+* Para recompilar o fonte do editor corrente acione o atalho `CTRL + SHIFT + F9` ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Recompile File`.
+
+> Ao alterar apenas arquivos externos ao fonte, por exemplo um fonte .CH, é necessário "forçar" a opção recompilar para que as alterações no .CH sejam refletidas no fonte a ser compilado no RPO.
 
 ### Compilando todos os fontes abertos
 
