@@ -127,13 +127,14 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 					vscode.window.showWarningMessage(localize("tds.webview.patch.apply.file", "Are you sure you want apply patch {0} from RPO?", path.basename(filename)), localize('tds.vscode.yes', 'Yes'), localize('tds.vscode.no', 'No')).then(clicked => {
 						if (clicked === localize('tds.vscode.yes', 'Yes')) {
 							const patchUri = vscode.Uri.file(patchFile).toString();
+							const patchUris = [ patchUri ];
 							const permissionsInfos = Utils.getPermissionsInfos();
 							languageClient.sendRequest('$totvsserver/patchApply', {
 								"patchApplyInfo": {
 									"connectionToken": server.token,
 									"authenticateToken": permissionsInfos.authorizationToken,
 									"environment": server.environment,
-									"patchUri": patchUri,
+									"patchUris": patchUris,
 									"isLocal": true,
 									"validatePatch": false,
 									"applyOldProgram": false
