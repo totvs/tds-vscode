@@ -1,4 +1,16 @@
 # Versão 0.3.13
+## Removido a opção para inicalizar o plugin do TDS VsCode simplemsmente ao lançar uma depuração qualquer [Issue 124] (https://github.com/totvs/tds-vscode/issues/124)
+### Problema:
+* O Plugin do TDS VsCode era ativado sempre que uma depuração era iniciada, mesmo que fosse de outra linguagem
+### Solução:
+* Removido o parametro "onDebug" dos eventos que ativam a extensão.
+----
+## Alterado mensagem de falha ao fazer o "StartBuild" para incluir sugestão de que o servidor pode estar off-line [Issue 135] (https://github.com/totvs/tds-vscode/issues/135)
+### Problema:
+* Caso o usuario peça uma compilação e por algum motivo o servidor não está mais on-line, a mensagem de erro apresentada não era clara sobre essa situação.
+### Solução:
+* Mensagem de erro alterada incluindo informação para o usuario que a falha pode ter ocorrido pois o servidor está off-line
+----
 ## Correção na identificação de declaração de classe pelo Syntax Highlight [Issue 116] (https://github.com/totvs/tds-vscode/issues/116)
 ### Problema:
 * Em uma classe, caso seja removido os espaços, ou tabs, no inicio da linha onde estão as declarações de variaveis e métodos, corrompia toda a pintura do fonte
