@@ -3,52 +3,89 @@ import { FormattingRules, RuleMatch } from './formmatingRules';
 import * as fs from 'fs';
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { isUndefined } from 'util';
+import { getFormattingOptions } from './configFormatting';
 
 class AdvplDocumentFormatting implements DocumentFormattingEditProvider {
 	lineContinue: boolean = false;
+	ignore_at: string | null = null;
 
 	provideDocumentFormattingEdits(document: TextDocument,
 		options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
 
 		const formattingRules = new FormattingRules();
+		let rules: FormattingRules = formattingRules;
 		const tab: string = options.insertSpaces ? ' '.repeat(options.tabSize) : '\t';
 		let identBlock: string = "";
 		let cont: number = 0;
 
 		let result: TextEdit[] = [];
 		const lc = document.lineCount;
+		this.ignore_at = null;
 
 		for (let nl = 0; nl < lc; nl++) {
 			const line = document.lineAt(nl);
 
-			if ((!line.isEmptyOrWhitespace) && (formattingRules.match(line.text))) {
-				let ruleMatch: RuleMatch | null = formattingRules.getLastMatch();
+			if ((!line.isEmptyOrWhitespace) && (rules.match(line.text))) {
+				let ruleMatch: RuleMatch | null = rules.getLastMatch();
 
 				if (ruleMatch) {
-					if (ruleMatch.decrement) {
+					const rule = ruleMatch.rule;
+
+					if (rule.id === this.ignore_at) {
+						this.ignore_at = null;
+					}
+
+					if (rule.ignore_at) {
+						this.ignore_at = rule.ignore_at;
+					}
+
+					if (!rule.increment && !rule.decrement && !rule.reset) {
+						continue;
+					}
+
+					if (rule.reset) {
+						cont = 0;
+						identBlock = "";
+					}
+
+					if (rule.decrement) {
 						cont = cont < 1 ? 0 : cont - 1;
 						identBlock = tab.repeat(cont);
 					}
-				}
 
-				const newLine: string = line.text.replace(/(\s*)?/, identBlock + (this.lineContinue ? tab : "")).trimRight();
-				result.push(TextEdit.replace(line.range, newLine));
-				this.lineContinue = newLine.endsWith(';');
+					const newLine: string = line.text.replace(/(\s*)?/, identBlock + (this.lineContinue ? tab : "")).trimRight();
+					result.push(TextEdit.replace(line.range, newLine));
+					this.lineContinue = newLine.endsWith(';');
 
-				if (ruleMatch) {
-					if (ruleMatch.increment) {
+					if (rule.increment) {
 						cont++;
 						identBlock = tab.repeat(cont);
 					}
+
+					if (rule.subrules) {
+						rules = rule.subrules;
+						if (rules.getRules().length === 0) {
+							rules = formattingRules;
+						}
+					}
 				}
 			} else {
-				let newLine: string = '';
-				if (!line.isEmptyOrWhitespace) {
-					newLine = line.text.replace(/(\s*)?/, identBlock + (this.lineContinue ? tab : "")).trimRight();
+				if (!this.ignore_at) {
+					let newLine: string = '';
+					if (!line.isEmptyOrWhitespace) {
+						newLine = line.text.replace(/(\s*)?/, identBlock + (this.lineContinue ? tab : "")).trimRight();
+					}
+
+					const regExpResult = newLine.match(/^(\s+)(return)/i);
+					if (regExpResult) {
+						const ws = regExpResult[1];
+						if (ws === tab) {
+							newLine = newLine.trim();
+						}
+					}
+					result.push(TextEdit.replace(line.range, newLine));
+					this.lineContinue = newLine.endsWith(';');
 				}
-				result.push(TextEdit.replace(line.range, newLine));
-				this.lineContinue = newLine.endsWith(';');
 			}
 		}
 
@@ -58,7 +95,7 @@ class AdvplDocumentFormatting implements DocumentFormattingEditProvider {
 
 class AdvplDocumentRangeFormatting implements DocumentRangeFormattingEditProvider {
 
-	provideDocumentRangeFormattingEdits(document: TextDocument, range: import("vscode").Range, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
+	provideDocumentRangeFormattingEdits(document: TextDocument, range: vscode.Range, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
 		throw new Error("Method not implemented.");
 	}
 }
@@ -98,33 +135,11 @@ export async function advplResourceFormatting(resources: string[]) {
 			targetResources.forEach((resource: string, index) => {
 				const uri: vscode.Uri = vscode.Uri.file(resource);
 
-				// setTimeout(() => {
-				// 	progress.report({ increment: increment * index, message: `${uri.toString(false)} (${index + 1}/${total})` });
-				// }, 1000);
-
 				vscode.workspace.openTextDocument(uri).then(async (document: TextDocument) => {
 					if (document.languageId === "advpl") {
 						lineCount += document.lineCount;
 
-						let cfg = vscode.workspace.getConfiguration("[advpl]");
-						let _insertSpaces: boolean | undefined = cfg.get("editor.insertSpaces");
-						let _tabSize: number | undefined = cfg.get("editor.tabSize");
-
-						if (isUndefined(_insertSpaces)) {
-							cfg = vscode.workspace.getConfiguration();
-							_insertSpaces = cfg.get("editor.insertSpaces");
-						}
-
-						if (isUndefined(_tabSize)) {
-							cfg = vscode.workspace.getConfiguration();
-							_tabSize = cfg.get("editor.tabSize");
-						}
-
-						const options: FormattingOptions = {
-							insertSpaces: _insertSpaces?_insertSpaces:false,
-							tabSize: _tabSize?_tabSize:4
-						};
-
+						const options: FormattingOptions = getFormattingOptions();
 						const providerResult: ProviderResult<TextEdit[]> = advplDocumentFormatter.provideDocumentFormattingEdits(document, options, token);
 						if (Array.isArray(providerResult)) {
 							progress.report({ increment: increment * index, message: `${uri.toString(false)} (${index + 1}/${total})` });

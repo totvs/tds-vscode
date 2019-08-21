@@ -109,9 +109,9 @@ export default class Utils {
 	 */
 	static getServersConfig() {
 		let fs = require('fs');
-		let exist = fs.existsSync(this.getServerConfigFile());
+		let exist = fs.existsSync(Utils.getServerConfigFile());
 		if (exist) {
-			let json = fs.readFileSync(this.getServerConfigFile()).toString();
+			let json = fs.readFileSync(Utils.getServerConfigFile()).toString();
 			return JSON.parse(json);
 		}
 	}
@@ -121,9 +121,9 @@ export default class Utils {
 	 */
 	static getLaunchConfig() {
 		let fs = require('fs');
-		let exist = fs.existsSync(this.getLaunchConfigFile());
+		let exist = fs.existsSync(Utils.getLaunchConfigFile());
 		if (exist) {
-			let json = fs.readFileSync(this.getLaunchConfigFile()).toString();
+			let json = fs.readFileSync(Utils.getLaunchConfigFile()).toString();
 			return JSON.parse(stripJsonComments(json));
 		}
 	}
@@ -145,7 +145,7 @@ export default class Utils {
 	 * @param environment Ambiente utilizado no login
 	 */
 	static saveSelectServer(id: string, token: string, name: string, environment: string, username: string) {
-		const servers = this.getServersConfig();
+		const servers = Utils.getServersConfig();
 
 		servers.configurations.forEach(element => {
 			if (element.id === id) {
@@ -169,7 +169,7 @@ export default class Utils {
 			}
 		});
 
-		this.persistServersInfo(servers);
+		Utils.persistServersInfo(servers);
 	}
 
 	/**
@@ -179,7 +179,7 @@ export default class Utils {
 	 * @param environment Ambiente utilizado no login
 	 */
 	static saveConnectionToken(id: string, token: string, environment: string) {
-		const servers = this.getServersConfig();
+		const servers = Utils.getServersConfig();
 		let found: boolean = false;
 		let key = id + ":" + environment;
 		if (servers.savedTokens) {
@@ -197,7 +197,7 @@ export default class Utils {
 			}
 			servers.savedTokens.push([key, { "id": id, "token": token }]);
 		}
-		this.persistServersInfo(servers);
+		Utils.persistServersInfo(servers);
 	}
 
 	/**
@@ -206,14 +206,14 @@ export default class Utils {
  * @param environment Ambiente utilizado no login
  */
 	static removeSavedConnectionToken(id: string, environment: string) {
-		const servers = this.getServersConfig();
+		const servers = Utils.getServersConfig();
 		if (servers.savedTokens) {
 			let key = id + ":" + environment;
 			servers.savedTokens.forEach(element => {
 				if (element[0] === key) {
 					const index = servers.indexOf(element, 0);
 					servers.splice(index, 1);
-					this.persistServersInfo(servers);
+					Utils.persistServersInfo(servers);
 					return;
 				}
 			});
@@ -232,7 +232,7 @@ export default class Utils {
 	 * Deleta o servidor logado por ultimo do servers.json
 	 */
 	static deleteSelectServer() {
-		const servers = this.getServersConfig();
+		const servers = Utils.getServersConfig();
 		if (servers.connectedServer.id) {
 			let server = {};
 			servers.connectedServer = server;
@@ -241,16 +241,16 @@ export default class Utils {
 			if (!isReconnectLastServer) {
 				servers.lastConnectedServer = {};
 			}
-			this.persistServersInfo(servers);
+			Utils.persistServersInfo(servers);
 		}
 	}
 
 	static clearConnectedServerConfig() {
-		const allConfigs = this.getServersConfig();
+		const allConfigs = Utils.getServersConfig();
 
 		allConfigs.connectedServer = {};
 		allConfigs.lastConnectedServer = {};
-		this.persistServersInfo(allConfigs);
+		Utils.persistServersInfo(allConfigs);
 		Utils.cancelSelectServer();
 	}
 
@@ -258,7 +258,7 @@ export default class Utils {
 	 * Deleta o servidor logado por ultimo do servers.json
 	 */
 	static deleteServer(id: string) {
-		const allConfigs = this.getServersConfig();
+		const allConfigs = Utils.getServersConfig();
 
 		if (allConfigs.configurations) {
 			const configs = allConfigs.configurations;
@@ -267,7 +267,7 @@ export default class Utils {
 				if (element.id === id) {
 					const index = configs.indexOf(element, 0);
 					configs.splice(index, 1);
-					this.persistServersInfo(allConfigs);
+					Utils.persistServersInfo(allConfigs);
 					return;
 				}
 			});
@@ -304,7 +304,7 @@ export default class Utils {
 	 * Cria uma nova configuracao de servidor no servers.json
 	 */
 	static createNewServer(typeServer, serverName, port, address, buildVersion): string | undefined {
-		this.createServerConfig();
+		Utils.createServerConfig();
 		const serverConfig = Utils.getServersConfig();
 
 		if (serverConfig.configurations) {
@@ -329,7 +329,7 @@ export default class Utils {
 	 * Recupera o ultimo servidor logado
 	 */
 	static getCurrentServer() {
-		const servers = this.getServersConfig();
+		const servers = Utils.getServersConfig();
 
 		if (servers.connectedServer.id) {
 			return servers.connectedServer;
@@ -339,7 +339,7 @@ export default class Utils {
 	}
 
 	static getPermissionsInfos() {
-		const servers = this.getServersConfig();
+		const servers = Utils.getServersConfig();
 
 		const permissions = servers.permissions;
 		if (permissions) {
@@ -354,7 +354,7 @@ export default class Utils {
 
 		config.permissions = infos;
 
-		this.persistServersInfo(config);
+		Utils.persistServersInfo(config);
 		Utils._onDidSelectedKey.fire(infos);
 	}
 
@@ -367,7 +367,7 @@ export default class Utils {
 	 * Recupera a lista de includes do arquivod servers.json
 	 */
 	static getIncludes(absolutePath: boolean = false): Array<string> {
-		const servers = this.getServersConfig();
+		const servers = Utils.getServersConfig();
 		const includes: Array<string> = servers.includes as Array<string>;
 
 		if (includes.toString()) {
@@ -488,7 +488,7 @@ export default class Utils {
 	 */
 	static getServerForID(ID: string) {
 		let server;
-		const allConfigs = this.getServersConfig();
+		const allConfigs = Utils.getServersConfig();
 
 		if (allConfigs.configurations) {
 			const configs = allConfigs.configurations;
@@ -568,11 +568,11 @@ export default class Utils {
 	 *Salva uma nova configuracao de include.
 	 */
 	static saveIncludePath(path) {
-		const servers = this.getServersConfig();
+		const servers = Utils.getServersConfig();
 
 		servers.includes = path;
 
-		this.persistServersInfo(servers);
+		Utils.persistServersInfo(servers);
 	}
 
 	/**
@@ -585,11 +585,11 @@ export default class Utils {
 		if (!id || !buildVersion) {
 			return result;
 		}
-		const serverConfig = this.getServersConfig();
+		const serverConfig = Utils.getServersConfig();
 		serverConfig.configurations.forEach(element => {
 			if (element.id === id) {
 				element.buildVersion = buildVersion;
-				this.persistServersInfo(serverConfig);
+				Utils.persistServersInfo(serverConfig);
 				result = true;
 			}
 		});
@@ -607,11 +607,11 @@ export default class Utils {
 		if (!id || !newName) {
 			return result;
 		}
-		const serverConfig = this.getServersConfig();
+		const serverConfig = Utils.getServersConfig();
 		serverConfig.configurations.forEach(element => {
 			if (element.id === id) {
 				element.name = newName;
-				this.persistServersInfo(serverConfig);
+				Utils.persistServersInfo(serverConfig);
 				result = true;
 			}
 		});
@@ -659,7 +659,7 @@ export default class Utils {
 				}
 				break;
 			case MESSAGETYPE.Log:
-				let time = this.timeAsHHMMSS(new Date());
+				let time = Utils.timeAsHHMMSS(new Date());
 				languageClient !== undefined ? languageClient.outputChannel.appendLine("[Log   + "+time+"] " + message) : console.log(message);
 				if (showDialog && notificationLevel === "all") {
 					vscode.window.showInformationMessage(message);
@@ -669,9 +669,9 @@ export default class Utils {
 	}
 
 	static timeAsHHMMSS(date): string {
-		return this.leftpad(date.getHours(), 2)
-				  + ':' + this.leftpad(date.getMinutes(), 2)
-				  + ':' + this.leftpad(date.getSeconds(), 2);
+		return Utils.leftpad(date.getHours(), 2)
+				  + ':' + Utils.leftpad(date.getMinutes(), 2)
+				  + ':' + Utils.leftpad(date.getSeconds(), 2);
 	  }
 
 	static leftpad(val, resultLength = 2, leftpadChar = '0'): string {

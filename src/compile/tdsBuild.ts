@@ -37,12 +37,9 @@ function _getCompileOptionsDefault(): CompileOptions {
  * Builds a file.
  */
 export function buildFile(filename: string[], recompile: boolean, context: vscode.ExtensionContext) {
-	//languageClient.info(localize("tds.webview.tdsBuild.compileBegin", "Resource compilation started. Resource: {0}", filename));
 	const compileOptions = _getCompileOptionsDefault();
 	compileOptions.recompile = recompile;
 	buildCode(filename, compileOptions, context);
-
-	languageClient.info('Compilação de recurso finalizada.');
 }
 
 /**

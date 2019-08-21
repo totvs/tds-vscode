@@ -1,5 +1,68 @@
+# Versão 0.3.13
+## Removido a opção para inicalizar o plugin do TDS VsCode simplemsmente ao lançar uma depuração qualquer [Issue 124] (https://github.com/totvs/tds-vscode/issues/124)
+### Problema:
+* O Plugin do TDS VsCode era ativado sempre que uma depuração era iniciada, mesmo que fosse de outra linguagem
+### Solução:
+* Removido o parametro "onDebug" dos eventos que ativam a extensão.
+----
+## Alterado mensagem de falha ao fazer o "StartBuild" para incluir sugestão de que o servidor pode estar off-line [Issue 135] (https://github.com/totvs/tds-vscode/issues/135)
+### Problema:
+* Caso o usuario peça uma compilação e por algum motivo o servidor não está mais on-line, a mensagem de erro apresentada não era clara sobre essa situação.
+### Solução:
+* Mensagem de erro alterada incluindo informação para o usuario que a falha pode ter ocorrido pois o servidor está off-line
+----
+## Correção na identificação de declaração de classe pelo Syntax Highlight [Issue 116] (https://github.com/totvs/tds-vscode/issues/116)
+### Problema:
+* Em uma classe, caso seja removido os espaços, ou tabs, no inicio da linha onde estão as declarações de variaveis e métodos, corrompia toda a pintura do fonte
+### Solução:
+* Correão na expressão regular de identificação de variáveis e métodos na declaração de classes
+----
+# Versão 0.3.12
+## Correção emeregencial de problema no pré compilador [Issue 111] (https://github.com/totvs/tds-vscode/issues/111)
+### Problema:
+* Ao compilar fontes que possuam a instrução %NotDel% ocorre problema no pre compilador.
+### Solulção:
+* Correção interna no pré compilador.
+----
+# Versão 0.3.11
+## Gerar saída para console [Issue 60] (https://github.com/totvs/tds-vscode/issues/60)
+### Melhoria:
+* Adicionar uma forma de gerar uma saída no console durante a depuração sem precisar compilar.
+### Solução:
+* Implementado a funcionalidade de "logpoint" do VsCode no Language Server.
+----
+## Demora na execução de debug [Issue 95](https://github.com/totvs/tds-vscode/issues/95)
+### Problema:
+* A depuração apresenta problemas de performance e na abertura da aba de variaveis e tabelas.
+### Solução:
+* Feito uma série de pequenas correções no servidor DAP.
+----
+## Erro ao aplicar patch [Issue 96] (https://github.com/totvs/tds-vscode/issues/96)
+### Problema:
+* Erro "Patch URI list not informed" ao aplicar patch
+### Solução:
+*  Correções internas no Language Server
+----
+# Versão 0.3.10
+## Identação de código [Issue 91](https://github.com/totvs/tds-vscode/issues/91)
+### Melhoria:
+* Não alterar a posição do return.
+### Solução:
+* Desligar a formatação na salva do fonte e não alterar a posição do return na formatação
+----
+## Recompatibilização com servidores 131227 [Issue 90](https://github.com/totvs/tds-vscode/issues/90) relativo a [Issue 86](https://github.com/totvs/tds-vscode/issues/86)
+### Problema:
+* Ao se conectar a um servidor com build inferior a 170117 o servidor não conectava.
+### Solução:
+* Corrigir o LS para suportar build 131227.
+-----
+## Perda de conexão [Issue 86](https://github.com/totvs/tds-vscode/issues/86) relativo a [Issue 90](https://github.com/totvs/tds-vscode/issues/90)
+### Problema:
+* Cada vez que é feito uma operação no server o vscode exibe uma informação de conexão perdida e faz a reconexão com o server.
+### Solução:
+* Corrigir o LS.
+-----
 # Versão 0.3.5
-
 ## Exibir tabela com o resultado da compilação [Issue 68](https://github.com/totvs/tds-vscode/issues/68)
 ### Melhoria:
 * Implementar uma opção de exibir os resultados da compilação quando compilado multiplos arquivos.
