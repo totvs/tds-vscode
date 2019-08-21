@@ -518,8 +518,8 @@ export class ServersExplorer {
 			if (treeDataProvider !== undefined) {
 				treeDataProvider.refresh();
 			}
-			if (showSucess) {
 				vscode.window.showInformationMessage(localize("tds.webview.serversView.serverSaved", "Saved server ") + serverName);
+			if (serverId != undefined && showSucess) {
 			}
 			return serverId;
 		}
