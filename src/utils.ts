@@ -320,6 +320,13 @@ export default class Utils {
 
 		if (serverConfig.configurations) {
 			const servers = serverConfig.configurations;
+
+			var serverDuplicated = servers.find(function(element) {
+				return element.name === serverName;
+			});
+			if (serverDuplicated){
+				vscode.window.showErrorMessage(localize("tds.webview.serversView.serverNameDuplicated", "Server name already exists"));
+			} else {
 			const serverId: string = Utils.generateRandomID();
 			servers.push({
 				id: serverId,
@@ -333,6 +340,7 @@ export default class Utils {
 
 			Utils.persistServersInfo(serverConfig);
 			return serverId;
+		}
 		}
 		return undefined;
 	}

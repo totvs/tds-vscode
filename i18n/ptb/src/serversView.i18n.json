@@ -17,6 +17,7 @@
 	"tds.webview.serversView.renameServer": "Renomeia o Servidor",
 	"tds.webview.serversView.addServerFail": "Adicionar falha do servidor. Nome, porta e endereço são necessários",
 	"tds.webview.serversView.serverSaved": "Servidor salvo",
+	"tds.webview.serversView.serverNameDuplicated": "O nome do servidor já existe",
 	"tds.webview.serversView.alreadyDisconn": "O servidor selecionado já está conectado.",
 	"tds.webview.serversView.errorConnServer": "Erro ao conectar o servidor"
 }
