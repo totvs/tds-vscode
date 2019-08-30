@@ -2,7 +2,7 @@
 	"name": "tds-vscode",
 	"displayName": "Totvs Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
 	"description": "%tds.package.description%",
-	"version": "0.3.12",
+	"version": "0.3.13",
 	"publisher": "TOTVS",
 	"author": {
 		"name": "TOTVS",
