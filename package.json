@@ -47,8 +47,8 @@
 		"publish": "vsce publish"
 	},
 	"dependencies": {
-		"@totvs/tds-da": "^1.0.29",
-		"@totvs/tds-ls": "^1.0.34",
+		"@totvs/tds-da": "^1.0.32",
+		"@totvs/tds-ls": "^1.0.38",
 		"await-notify": "1.0.1",
 		"cheerio": "^1.0.0-rc.3",
 		"ini": "^1.3.5",
