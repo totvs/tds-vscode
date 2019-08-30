@@ -1,4 +1,10 @@
 # Versão 0.3.13
+## Impmentado notificação de "Exceptions" informadas pelo servidor na visão "Debug Console" [Issue 99] (https://github.com/totvs/tds-vscode/issues/99#)
+### Problema:
+* Quando é lançado uma exceção pelo servidor o plugin não mostra no console.
+### Solução:
+* Alterado o Servidor DAP para receber mensagens de Exception do servidor e enviar uma mensagem de log para o Client
+----
 ## Removido a opção para inicalizar o plugin do TDS VsCode simplemsmente ao lançar uma depuração qualquer [Issue 124] (https://github.com/totvs/tds-vscode/issues/124)
 ### Problema:
 * O Plugin do TDS VsCode era ativado sempre que uma depuração era iniciada, mesmo que fosse de outra linguagem
