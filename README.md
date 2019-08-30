@@ -29,15 +29,33 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 ## Configurações Gerais
 
+### Console de saída (Output) AdvPL
+
+* Todas as mensagens emitidas serão exibidas na visão `Output` (Console de saída) e seleção `AdvPL`.
+* Se a visão `Output` não estiver visível ela pode ser ativada através do menu `View | Output` ou do atalho `CTRL + SHIFT + U`.
+* Certifique-se que a opção `AdvPL` esteja selecionada no combo (dropdown) da visão `Output`.
+
+![Output AdvPL](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Output.gif)
+
 ### Tela de boas vindas
 
 * A tela da boa vindas permite configurar a localização do SmartClient e dos diretórios de Includes que serão utilizados durante a compilação dos códigos fontes.
 * Esta tela será apresentada na primeira execução do plugin, assim que o primeiro fonte AdvPL for aberto.
-* Localize o `SmartClient.exe` (Windows) ou `smartclient` (Linux).
+* Localize o `SmartClient.exe` (Windows) ou `smartclient` (Linux e Mac). O binário no MacOS encontra-se em `smartclient.app/Contents/MacOS/smartclient`
 * Localize os diretórios de Includes que necessitar para seus projetos.
 * Pressione o botão `Salvar` para concluir.
 
 ![Welcome Page](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Welcome.gif)
+
+### Tela de boas vindas no Linux e MacOS
+
+* Na janela para escolha da pasta/arquivo é necessário mudar o filtro de `Custom Files` para `All Files`.
+
+![Welcome Page on Linux](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/welcome/Welcome_Linux1.png)
+
+![Welcome Page on MacOS 1](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/welcome/Welcome_MacOS1.png)
+![Welcome Page on MacOS 2](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/welcome/Welcome_MacOS2.png)
+![Welcome Page on MacOS 3](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/welcome/Welcome_MacOS3.png)
 
 ### Cadastro de servidores utilizando o assistente
 
@@ -63,9 +81,11 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 ### Compilando fonte do editor corrente
 
-* Para compilar o fonte do editor corrente acione o atalho `CTRL + F9`. Ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Compile Selection`.
+* Para compilar o fonte do editor corrente acione o atalho `CTRL + F9` ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Compile File`.
 
-* Para recompilar o fonte do editor corrente acione o atalho `CTRL + SHIFT + F9`.
+* Para recompilar o fonte do editor corrente acione o atalho `CTRL + SHIFT + F9` ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Recompile File`.
+
+> Ao alterar apenas arquivos externos ao fonte, por exemplo um fonte .CH, é necessário "forçar" a opção recompilar para que as alterações no .CH sejam refletidas no fonte a ser compilado no RPO.
 
 ### Compilando todos os fontes abertos
 
@@ -75,7 +95,9 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 ### Resultado da compilação
 
-* Para analisar o resultado da compilação de múltiplos arquivos, exite a opção de abrir uma tabela com informações de todos os arquivos que foram compilados.
+* Todas as informações sobre os arquivos compilados serão exibidos na visão `Output` (seleção `AdvPL`).
+
+* Para analisar o resultado da compilação de múltiplos arquivos, existe a opção de abrir uma tabela com informações de todos os arquivos que foram compilados.
 
 * Para exibir essa tabela, selecione mais de um arquivo, compile e após a compilação será apresentada a pergunta a seguir: Clique em `Yes`.
 
@@ -85,7 +107,7 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 ![TableCompileResult](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/compile/CompileResults.PNG)
 
-* Exite nas preferencias uma maneira de habilitar e desabilitar a pergunta sobre a abertura da tabela.
+* Existe nas preferências uma maneira de habilitar e desabilitar a pergunta sobre a abertura da tabela.
 
 * Clique em `File | Preferences | Settings` e digite `totvsLanguageServer.askCompileResult` no campo de pesquisa.
 
@@ -218,6 +240,8 @@ Veja detalhes sobre como usar as diretivas [${command:}](https://link) e [passag
 * Para verificar o conteúdo de uma tabela aberta, digite o seguinte comando: table:nome_da_tabela (ex.: table:SM0)
 * Analise os dados retornados de acordo com sua necessidade.
 
+Em [Debug Console: configuração visual](https://github.com/totvs/tds-vscode/wiki/Debug-Console:-configura%C3%A7%C3%A3o-visual), você tem detalhes de como customizar o visual desta visão.
+
 ![Debug Console](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/DebugConsole.gif)
 
 ### Sincronismo de tabelas durante o debug
@@ -238,6 +262,20 @@ Veja detalhes sobre como usar as diretivas [${command:}](https://link) e [passag
 * É possível visualizar o conteúdo de uma tabela aberta usando a visão "Debug Console". Para isso digite o seguinte comando na visão: table:nome_da_tabela (ex.: table:SM0)
 
 ![Debug Table Sync](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/TableSync-DebugCommands.gif)
+
+### Debug no MacOS
+
+* Para iniciar o debug usando MacOS é necessário usar um SmartClient com versão igual ou superior a 17.3.0.9. Caso possua uma versão inferior será necessário ativar a chave "enableMultiThread" no arquivo `launch.json` como no exemplo abaixo:
+
+```json
+{
+  "configurations": [
+    {
+      "enableMultiThread": true
+    }
+  ]
+}
+```
 
 ## Patch
 

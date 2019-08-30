@@ -66,6 +66,9 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 	} else if (process.platform === "linux") {
 		advpls = dir + "/node_modules/@totvs/tds-ls/bin/linux/advpls";
 		chmodSync(advpls, '755');
+	} else if (process.platform === "darwin") {
+		advpls = dir + "/node_modules/@totvs/tds-ls/bin/mac/advpls";
+		chmodSync(advpls, '755');
 	}
 
 	let serverOptions: ServerOptions = {

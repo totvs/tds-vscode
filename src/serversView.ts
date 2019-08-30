@@ -7,6 +7,7 @@ import { languageClient, totvsStatusBarItem } from './extension';
 import { inputConnectionParameters } from './inputConnectionParameters';
 import { SelectServer } from './utils';
 
+
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
 
@@ -23,8 +24,8 @@ export let connectedServerItem: ServerItem | undefined;
 
 export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | EnvSection> {
 
-	private _onDidChangeTreeData: vscode.EventEmitter<ServerItem | undefined> = new vscode.EventEmitter<ServerItem | undefined>();
-	readonly onDidChangeTreeData: vscode.Event<ServerItem | undefined> = this._onDidChangeTreeData.event;
+	private _onDidChangeTreeData: vscode.EventEmitter<ServerItem | EnvSection | undefined> = new vscode.EventEmitter<ServerItem | undefined>();
+	readonly onDidChangeTreeData: vscode.Event<ServerItem | EnvSection | undefined> = this._onDidChangeTreeData.event;
 
 	public localServerItems: Array<ServerItem>;
 
@@ -54,7 +55,25 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 				return Promise.resolve(element.environments);
 			}
 			else {
-				return Promise.resolve([]);
+
+				const servers = Utils.getServersConfig();
+				const listOfEnvironments = servers.configurations[element.id].environments;
+				if (listOfEnvironments.size > 0) {
+					treeDataProvider.localServerItems[element.id].environments = listOfEnvironments.map(env => new EnvSection(env, element.label, vscode.TreeItemCollapsibleState.None, {
+						command: 'totvs_server.selectEnvironment',
+						title: '',
+						arguments: [env]
+					}));
+					treeDataProvider.localServerItems[element.id].collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
+					//Workaround: Bug que nao muda visualmente o collapsibleState se o label permanecer intalterado
+					treeDataProvider.localServerItems[element.id].label = treeDataProvider.localServerItems[element.id].label.endsWith(' ') ? treeDataProvider.localServerItems[element.id].label.trim() : treeDataProvider.localServerItems[element.id].label + ' ';
+					treeDataProvider.refresh();
+					element.environments = listOfEnvironments;
+					Promise.resolve(new EnvSection(element.label, element.currentEnvironment, element.collapsibleState, undefined, listOfEnvironments));
+				}
+				else {
+					return Promise.resolve([]);
+				}
 			}
 		} else {
 			if (!this.localServerItems) {
@@ -66,15 +85,15 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 				}
 
 			}
-
-			return Promise.resolve(this.localServerItems.sort((srv1, srv2) => {
-				const label1 = srv1.label.toLowerCase();
-      			const label2 = srv2.label.toLowerCase();
-				if (label1 > label2) { return 1; }
-				if (label1 < label2) { return -1; }
-				return 0;
-			}));
 		}
+
+		return Promise.resolve(this.localServerItems.sort((srv1, srv2) => {
+			const label1 = srv1.label.toLowerCase();
+			const label2 = srv2.label.toLowerCase();
+			if (label1 > label2) { return 1; }
+			if (label1 < label2) { return -1; }
+			return 0;
+		}));
 	}
 
 	private addServersConfigListener(): void {
@@ -118,18 +137,27 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 	 */
 	private setConfigWithServerConfig() {
 		const serverConfig = Utils.getServersConfig();
-		const serverItem = (serverItem: string, address: string, port: number, id: string, buildVersion: string): ServerItem => {
-			return new ServerItem(serverItem, address, port, vscode.TreeItemCollapsibleState.None, id, buildVersion, undefined, {
+		const serverItem = (serverItem: string, address: string, port: number, id: string, buildVersion: string, environments: Array<EnvSection>): ServerItem => {
+			return new ServerItem(serverItem, address, port, vscode.TreeItemCollapsibleState.None, id, buildVersion, environments , {
 				command: '',
 				title: '',
 				arguments: [serverItem]
 			});
 		};
-
 		const listServer = new Array<ServerItem>();
 
 		serverConfig.configurations.forEach(element => {
-			listServer.push(serverItem(element.name, element.address, element.port, element.id, element.buildVersion));
+			let environmentsServer = new Array<EnvSection>();
+			if(element.environments){
+				element.environments.forEach(environment => {
+					const env = new EnvSection(environment, element.name, vscode.TreeItemCollapsibleState.None,
+						{command: 'totvs_server.selectEnvironment',	title: '', arguments: [environment]}, environment);
+					environmentsServer.push(env);
+				});
+			}
+
+			listServer.push(serverItem(element.name, element.address, element.port, element.id, element.buildVersion, environmentsServer));
+			listServer[listServer.length-1].collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
 		});
 
 		return listServer;
@@ -294,14 +322,19 @@ export class EnvSection extends vscode.TreeItem {
 		public label: string,
 		public readonly serverItemParent: string,
 		public collapsibleState: vscode.TreeItemCollapsibleState,
-		public readonly command?: vscode.Command
+		public readonly command?: vscode.Command,
+		public environments?: string[]
 	) {
 		super(label, collapsibleState);
 	}
 
+	get tooltip(): string {
+		return `${this.label}: ${this.serverItemParent}`;
+	}
+
 	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', 'environment.svg'),
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'environment.svg')
+		light: path.join(__filename, '..', '..', 'resources', 'light', connectedServerItem !== undefined && connectedServerItem.currentEnvironment == this.label ? 'environment.connected.svg' : 'environment.svg'),
+		dark: path.join(__filename, '..', '..', 'resources', 'dark', connectedServerItem !== undefined && connectedServerItem.currentEnvironment == this.label ? 'environment.connected.svg' : 'environment.svg')
 	};
 
 	contextValue = 'envSection';
@@ -342,19 +375,6 @@ export class ServersExplorer {
 						vscode.window.showErrorMessage(err.message);
 					});
 				}
-				//commands.executeCommand('totvs-developer-studio.serverAuthentication', serverItem.server, serverItem.port, serverItem.timeStamp, serverItem.id, serverItem.label);
-
-				//Comentado a criacao de ambientes. Para reatilet é só preencher a lista de ambientes abaixo.
-				/*const listOfEnvironments = ['P12'];
-				treeDataProvider.localServerItems[ix].environments = listOfEnvironments.map(env => new EnvSection(env, serverItem.label, vscode.TreeItemCollapsibleState.None, {
-					command: 'totvs_server.selectEnvironment',
-					title: '',
-					arguments: [env]
-				}));
-				treeDataProvider.localServerItems[ix].collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
-				//Workaround: Bug que nao muda visualmente o collapsibleState se o label permanecer intalterado
-				treeDataProvider.localServerItems[ix].label = treeDataProvider.localServerItems[ix].label.endsWith(' ') ? treeDataProvider.localServerItems[ix].label.trim() : treeDataProvider.localServerItems[ix].label + ' ';
-				treeDataProvider.refresh();*/
 			}
 		});
 		vscode.commands.registerCommand('totvs-developer-studio.disconnect', (serverItem: ServerItem) => {
@@ -395,6 +415,10 @@ export class ServersExplorer {
 				});
 				config.update("configurations", configs);
 			}
+			/**
+			 * TODO: Aplicar a seleção a partir do menu de contexto dos environments listados
+			 */
+
 		});
 
 		let currentPanel: vscode.WebviewPanel | undefined = undefined;
@@ -578,7 +602,7 @@ export function reconnectServer(reconnectionInfo): boolean {
 		if (servers.configurations) {
 			servers.configurations.forEach(element => {
 				if (element.id === reconnectionInfo.id) {
-					let serverItem: ServerItem = new ServerItem(element.name, element.address, element.port, vscode.TreeItemCollapsibleState.None, element.id, element.buildVersion, undefined, {
+					let serverItem: ServerItem = new ServerItem(element.name, element.address, element.port, vscode.TreeItemCollapsibleState.None, element.id, element.buildVersion, element.environments, {
 						command: '',
 						title: '',
 						arguments: [element.name]
@@ -603,7 +627,7 @@ export function reconnectLastServer() {
 		if (servers.configurations) {
 			servers.configurations.forEach(element => {
 				if (element.id === servers.lastConnectedServer.id) {
-					let serverItem: ServerItem = new ServerItem(element.name, element.address, element.port, vscode.TreeItemCollapsibleState.None, element.id, element.buildVersion, undefined, {
+					let serverItem: ServerItem = new ServerItem(element.name, element.address, element.port, vscode.TreeItemCollapsibleState.None, element.id, element.buildVersion, element.environments, {
 						command: '',
 						title: '',
 						arguments: [element.name]
