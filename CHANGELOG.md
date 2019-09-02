@@ -1,12 +1,37 @@
+# Versão 0.3.13
+## Impmentado notificação de "Exceptions" informadas pelo servidor na visão "Debug Console" [Issue 99] (https://github.com/totvs/tds-vscode/issues/99#)
+### Problema:
+* Quando é lançado uma exceção pelo servidor o plugin não mostra no console.
+### Solução:
+* Alterado o Servidor DAP para receber mensagens de Exception do servidor e enviar uma mensagem de log para o Client
+----
+## Removido a opção para inicalizar o plugin do TDS VsCode simplemsmente ao lançar uma depuração qualquer [Issue 124] (https://github.com/totvs/tds-vscode/issues/124)
+### Problema:
+* O Plugin do TDS VsCode era ativado sempre que uma depuração era iniciada, mesmo que fosse de outra linguagem
+### Solução:
+* Removido o parametro "onDebug" dos eventos que ativam a extensão.
+----
+## Alterado mensagem de falha ao fazer o "StartBuild" para incluir sugestão de que o servidor pode estar off-line [Issue 135] (https://github.com/totvs/tds-vscode/issues/135)
+### Problema:
+* Caso o usuario peça uma compilação e por algum motivo o servidor não está mais on-line, a mensagem de erro apresentada não era clara sobre essa situação.
+### Solução:
+* Mensagem de erro alterada incluindo informação para o usuario que a falha pode ter ocorrido pois o servidor está off-line
+----
+## Correção na identificação de declaração de classe pelo Syntax Highlight [Issue 116] (https://github.com/totvs/tds-vscode/issues/116)
+### Problema:
+* Em uma classe, caso seja removido os espaços, ou tabs, no inicio da linha onde estão as declarações de variaveis e métodos, corrompia toda a pintura do fonte
+### Solução:
+* Correão na expressão regular de identificação de variáveis e métodos na declaração de classes
+----
 # Versão 0.3.12
-## Correção emeregencial de problema no pré compilador [Issue 111](https://github.com/totvs/tds-vscode/issues/111)
+## Correção emeregencial de problema no pré compilador [Issue 111] (https://github.com/totvs/tds-vscode/issues/111)
 ### Problema:
 * Ao compilar fontes que possuam a instrução %NotDel% ocorre problema no pre compilador.
 ### Solulção:
 * Correção interna no pré compilador.
 ----
 # Versão 0.3.11
-## Gerar saída para console [Issue 60](https://github.com/totvs/tds-vscode/issues/60)
+## Gerar saída para console [Issue 60] (https://github.com/totvs/tds-vscode/issues/60)
 ### Melhoria:
 * Adicionar uma forma de gerar uma saída no console durante a depuração sem precisar compilar.
 ### Solução:
