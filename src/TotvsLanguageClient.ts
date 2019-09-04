@@ -11,6 +11,8 @@ let localize = nls.loadMessageBundle();
 
 export let sessionKey: string;
 
+export let isLSInitialized = false;
+
 export function getLanguageClient(context: ExtensionContext): LanguageClient {
 
 	let clientConfig = getClientConfig(context);
@@ -140,6 +142,8 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 
 	//let command = serverOptions.command;
 	languageClient.onReady().then(async () => {
+		isLSInitialized = true;
+
 		const configADVPL = vscode.workspace.getConfiguration('totvsLanguageServer');//transformar em configuracao de workspace
 
 		syncSettings();
