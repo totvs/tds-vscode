@@ -269,6 +269,11 @@
 					"default": true,
 					"description": "%tds.package.show.ask.compile.result%"
 				},
+				"totvsLanguageServer.clearConsoleBeforeCompile": {
+					"type": "boolean",
+					"default": false,
+					"description": "%tds.package.show.clear.console.before.compile%"
+				},
 				"totvsLanguageServer.reconnectLastServer": {
 					"type": "boolean",
 					"default": true,
