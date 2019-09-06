@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as nls from 'vscode-nls';
 import * as fs from 'fs';
 import { languageClient, permissionStatusBarItem } from '../extension';
+import {isLSInitialized} from '../TotvsLanguageClient'
 import Utils from '../utils';
 
 let localize = nls.loadMessageBundle();
@@ -22,6 +23,17 @@ const localizeHTML = {
 }
 
 export function compileKeyPage(context: vscode.ExtensionContext) {
+
+	if(!isLSInitialized) {
+		languageClient.onReady().then(async () => {
+			initializePage(context);
+		});
+	} else {
+		initializePage(context);
+	}
+}
+
+function initializePage(context: vscode.ExtensionContext) {
 
 	let extensionPath = '';
 	if (!context || context === undefined) {
@@ -48,7 +60,7 @@ export function compileKeyPage(context: vscode.ExtensionContext) {
 	getId(currentPanel);
 
 	const compileKey = Utils.getPermissionsInfos();
-	if (compileKey.authorizationToken && !compileKey.userId) {
+	if (compileKey !== "" && compileKey.authorizationToken && !compileKey.userId) {
 		const generated = new Date(compileKey.issued);
 		const expiry = new Date(compileKey.expiry);
 		const canOverride: boolean = compileKey.buildType == "0";
