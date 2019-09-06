@@ -1,30 +1,47 @@
+# Versao 0.3.14
+## Inclusão de PullRequest [PullRequest 155](https://github.com/totvs/tds-vscode/pull/155)
+### PullRequest:
+* Inclusão de palavras reservadas
+----
+## Corrigido problema ao abrir a tela de "Compile Key"
+### Problema:
+* Ao abrir a tela de "Compile Key" sem que antes algum processo tenha iniciado o Language Server, esse último era iniciado após a abertura da tela ocasionando um erro para definir o Id da máquina
+### Solução:
+* Alterado o processo de abertura da tela de "Compile Key" para que se caso nao exista um "LS no ar", aguardar a inicialização do mesmo para continuar com a abertura da página.
+----
+## Corrigido problema que fazia com que breakpoints removidos cotinuassem a realizar paradas na depuração [Issue 121](https://github.com/totvs/tds-vscode/issues/121)
+### Problema:
+* Durante a depuração, em um loop por exemplo, caso um breakpoint fosse removido e usuario pedisse um "Run", esse breakpoint continuava sendo considerado e a parada era realizada.
+### Solução:
+* Realizado correção no processo de sincronismo de breakpoints pelo debug adapter.
+----
 # Versão 0.3.13
-## Impmentado notificação de "Exceptions" informadas pelo servidor na visão "Debug Console" [Issue 99] (https://github.com/totvs/tds-vscode/issues/99#)
+## Impmentado notificação de "Exceptions" informadas pelo servidor na visão "Debug Console" [Issue 99](https://github.com/totvs/tds-vscode/issues/99#)
 ### Problema:
 * Quando é lançado uma exceção pelo servidor o plugin não mostra no console.
 ### Solução:
 * Alterado o Servidor DAP para receber mensagens de Exception do servidor e enviar uma mensagem de log para o Client
 ----
-## Removido a opção para inicalizar o plugin do TDS VsCode simplemsmente ao lançar uma depuração qualquer [Issue 124] (https://github.com/totvs/tds-vscode/issues/124)
+## Removido a opção para inicalizar o plugin do TDS VsCode simplemsmente ao lançar uma depuração qualquer [Issue 124](https://github.com/totvs/tds-vscode/issues/124)
 ### Problema:
 * O Plugin do TDS VsCode era ativado sempre que uma depuração era iniciada, mesmo que fosse de outra linguagem
 ### Solução:
 * Removido o parametro "onDebug" dos eventos que ativam a extensão.
 ----
-## Alterado mensagem de falha ao fazer o "StartBuild" para incluir sugestão de que o servidor pode estar off-line [Issue 135] (https://github.com/totvs/tds-vscode/issues/135)
+## Alterado mensagem de falha ao fazer o "StartBuild" para incluir sugestão de que o servidor pode estar off-line [Issue 135](https://github.com/totvs/tds-vscode/issues/135)
 ### Problema:
 * Caso o usuario peça uma compilação e por algum motivo o servidor não está mais on-line, a mensagem de erro apresentada não era clara sobre essa situação.
 ### Solução:
 * Mensagem de erro alterada incluindo informação para o usuario que a falha pode ter ocorrido pois o servidor está off-line
 ----
-## Correção na identificação de declaração de classe pelo Syntax Highlight [Issue 116] (https://github.com/totvs/tds-vscode/issues/116)
+## Correção na identificação de declaração de classe pelo Syntax Highlight [Issue 116](https://github.com/totvs/tds-vscode/issues/116)
 ### Problema:
 * Em uma classe, caso seja removido os espaços, ou tabs, no inicio da linha onde estão as declarações de variaveis e métodos, corrompia toda a pintura do fonte
 ### Solução:
 * Correão na expressão regular de identificação de variáveis e métodos na declaração de classes
 ----
 # Versão 0.3.12
-## Correção emeregencial de problema no pré compilador [Issue 111] (https://github.com/totvs/tds-vscode/issues/111)
+## Correção emeregencial de problema no pré compilador [Issue 111](https://github.com/totvs/tds-vscode/issues/111)
 ### Problema:
 * Ao compilar fontes que possuam a instrução %NotDel% ocorre problema no pre compilador.
 ### Solulção:
@@ -43,7 +60,7 @@
 ### Solução:
 * Feito uma série de pequenas correções no servidor DAP.
 ----
-## Erro ao aplicar patch [Issue 96] (https://github.com/totvs/tds-vscode/issues/96)
+## Erro ao aplicar patch [Issue 96](https://github.com/totvs/tds-vscode/issues/96)
 ### Problema:
 * Erro "Patch URI list not informed" ao aplicar patch
 ### Solução:
