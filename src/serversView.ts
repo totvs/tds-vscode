@@ -138,7 +138,7 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 	private setConfigWithServerConfig() {
 		const serverConfig = Utils.getServersConfig();
 		const serverItem = (serverItem: string, address: string, port: number, id: string, buildVersion: string, environments: Array<EnvSection>): ServerItem => {
-			return new ServerItem(serverItem, address, port, vscode.TreeItemCollapsibleState.None, id, buildVersion, environments , {
+			return new ServerItem(serverItem, address, port, vscode.TreeItemCollapsibleState.None, id, buildVersion, environments, {
 				command: '',
 				title: '',
 				arguments: [serverItem]
@@ -148,16 +148,16 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 
 		serverConfig.configurations.forEach(element => {
 			let environmentsServer = new Array<EnvSection>();
-			if(element.environments){
+			if (element.environments) {
 				element.environments.forEach(environment => {
 					const env = new EnvSection(environment, element.name, vscode.TreeItemCollapsibleState.None,
-						{command: 'totvs_server.selectEnvironment',	title: '', arguments: [environment]}, environment);
+						{ command: 'totvs_server.selectEnvironment', title: '', arguments: [environment] }, environment);
 					environmentsServer.push(env);
 				});
 			}
 
 			listServer.push(serverItem(element.name, element.address, element.port, element.id, element.buildVersion, environmentsServer));
-			listServer[listServer.length-1].collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+			listServer[listServer.length - 1].collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
 		});
 
 		return listServer;
@@ -518,8 +518,8 @@ export class ServersExplorer {
 			if (treeDataProvider !== undefined) {
 				treeDataProvider.refresh();
 			}
-				vscode.window.showInformationMessage(localize("tds.webview.serversView.serverSaved", "Saved server ") + serverName);
 			if (serverId != undefined && showSucess) {
+				vscode.window.showInformationMessage(localize("tds.webview.serversView.serverSaved", "Saved server ") + serverName);
 			}
 			return serverId;
 		}
