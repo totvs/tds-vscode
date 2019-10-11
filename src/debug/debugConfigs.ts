@@ -98,8 +98,8 @@ export async function getProgramName() {
 
 					if (!find) {
 						config.lastPrograms.push(new QuickPickProgram(program, args));
-						Utils.saveLaunchConfig(config);
 					}
+					Utils.saveLaunchConfig(config);
 				}
 
 				resolve(qp.value);

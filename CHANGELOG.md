@@ -1,3 +1,10 @@
+# Versão 0.3.16
+## Corrigido travamento no Debug (Avaliação de Objetos) [Issue 170](https://github.com/totvs/tds-vscode/issues/170#)
+### Problema:
+* Ao depurar objetos ocorria um erro que travava o debug.
+### Solução:
+* Corrigida a avaliação de objetos no DebugAdapter.
+----
 # Versão 0.3.15
 ## Adicionada proteção durante debug de tabelas [Issue 165](https://github.com/totvs/tds-vscode/issues/165#)
 ### Problema:

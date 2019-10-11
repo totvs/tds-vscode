@@ -33,9 +33,9 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 
 	let TOTAL_STEPS = 4;
 	let SERVER_STEP = 1;
-	let ENVIRONEMNT_STEP = 2;
+	let ENVIRONMENT_STEP = 2;
 	let USERNAME_STEP = 3;
-	let PASSWROD_STEP = 4;
+	let PASSWORD_STEP = 4;
 
 	const serversConfig = Utils.getServersConfig();
 
@@ -60,9 +60,9 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 			state.server = serverParam.id;
 			TOTAL_STEPS -= 1;
 			SERVER_STEP -= 1;
-			ENVIRONEMNT_STEP -= 1;
+			ENVIRONMENT_STEP -= 1;
 			USERNAME_STEP -= 1;
-			PASSWROD_STEP -= 1;
+			PASSWORD_STEP -= 1;
 
 			await MultiStepInput.run(input => pickEnvironment(input, state, serversConfig));
 		} else {
@@ -94,7 +94,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 		if (environments.length > 0) {
 			const pick = await input.showQuickPick({
 				title: title,
-				step: ENVIRONEMNT_STEP,
+				step: ENVIRONMENT_STEP,
 				totalSteps: TOTAL_STEPS,
 				placeholder: localize('tds.vscode.select_environment','Select environment'),
 				items: environments,
@@ -117,7 +117,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 	async function inputEnvironment(input: MultiStepInput, state: Partial<State>, serversConfig: any) {
 		state.environment = await input.showInputBox({
 			title: title,
-			step: ENVIRONEMNT_STEP,
+			step: ENVIRONMENT_STEP,
 			totalSteps: TOTAL_STEPS,
 			value: typeof state.environment === 'string' ? state.environment : '',
 			prompt: 'Informe o nome do ambiente',
@@ -150,6 +150,14 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 			}
 		}
 
+		// if Logix skip username and password input
+		if (state.server) {
+			const server = Utils.getServerById((typeof state.server !== 'string') ? (state.server.detail ? state.server.detail : "") : state.server, serversConfig);
+			if (server !== undefined && server.type === "totvs_server_logix") {
+				return;
+			}
+		}
+
 		state.username = await input.showInputBox({
 			title: title,
 			step: USERNAME_STEP,
@@ -167,7 +175,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 	async function inputPassword(input: MultiStepInput, state: Partial<State>, serversConfig: any) {
 		state.password = await input.showInputBox({
 			title: title,
-			step: PASSWROD_STEP,
+			step: PASSWORD_STEP,
 			totalSteps: TOTAL_STEPS,
 			value: state.password || '',
 			prompt: 'Senha de acesso',

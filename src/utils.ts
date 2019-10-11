@@ -137,6 +137,17 @@ export default class Utils {
 		});
 	}
 
+	// XXX terminar implementacao
+	static updateSavedTokens(id: string, environment: string, token: string) {
+		const servers = Utils.getServersConfig();
+		// procurar o token atual
+		servers.savedTokens.forEach(element => {
+			// atualizar o token
+		});
+		// persistir a configuracao
+		Utils.persistServersInfo(servers);
+	}
+
 	/**
 	 * Salva o servidor logado por ultimo.
 	 * @param id Id do servidor logado

@@ -137,8 +137,8 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 	 */
 	private setConfigWithServerConfig() {
 		const serverConfig = Utils.getServersConfig();
-		const serverItem = (serverItem: string, address: string, port: number, id: string, buildVersion: string, environments: Array<EnvSection>): ServerItem => {
-			return new ServerItem(serverItem, address, port, vscode.TreeItemCollapsibleState.None, id, buildVersion, environments , {
+		const serverItem = (serverItem: string, type: string, address: string, port: number, id: string, buildVersion: string, environments: Array<EnvSection>): ServerItem => {
+			return new ServerItem(serverItem, address, type, port, vscode.TreeItemCollapsibleState.None, id, buildVersion, environments , {
 				command: '',
 				title: '',
 				arguments: [serverItem]
@@ -156,7 +156,7 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 				});
 			}
 
-			listServer.push(serverItem(element.name, element.address, element.port, element.id, element.buildVersion, environmentsServer));
+			listServer.push(serverItem(element.name, element.type, element.address, element.port, element.id, element.buildVersion, environmentsServer));
 			listServer[listServer.length-1].collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
 		});
 
@@ -234,8 +234,8 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 	private getTCPSecsInIniFile(scIniPath: string): ServerItem[] {
 		if (this.pathExists(scIniPath)) {
 
-			const toTCPSec = (serverItem: string, address: string, port: number, id: string, buildVersion: string): ServerItem => {
-				return new ServerItem(serverItem, address, port, vscode.TreeItemCollapsibleState.None, id, buildVersion, undefined, {
+			const toTCPSec = (serverItem: string, type: string, address: string, port: number, id: string, buildVersion: string): ServerItem => {
+				return new ServerItem(serverItem, type, address, port, vscode.TreeItemCollapsibleState.None, id, buildVersion, undefined, {
 					command: 'totvs-developer-studio.selectNode',
 					title: '',
 					arguments: [serverItem]
@@ -258,7 +258,7 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 					let key = /^\[(.+)\]/igm.exec(match);
 
 					if (key !== null) {
-						tcpSecs.push(toTCPSec(key[1], address[1], parseInt(port[1]), Utils.generateRandomID(), ""));
+						tcpSecs.push(toTCPSec(key[1], "totvs_server_protheus", address[1], parseInt(port[1]), Utils.generateRandomID(), ""));
 					}
 				}
 			}
@@ -289,6 +289,7 @@ export class ServerItem extends vscode.TreeItem {
 
 	constructor(
 		public label: string,
+		public readonly type: string,
 		public readonly address: string,
 		public readonly port: number,
 		public collapsibleState: vscode.TreeItemCollapsibleState,
@@ -545,6 +546,15 @@ export function authenticate(serverItem: ServerItem, environment: string, userna
 		vscode.window.showInformationMessage(localize("tds.webview.serversView.alreadyDisconn", "The server selected is already connected."));
 	}
 	//vscode.window.showInformationMessage("Initializing connection with server " + serverItem.label);
+	if (serverItem.type === "totvs_server_logix") {
+		if (connectedServerItem !== undefined) {
+			vscode.commands.executeCommand('totvs-developer-studio.disconnect', connectedServerItem).then(() => {
+				sendLogixAuthenticateRequest(serverItem, environment);
+			});
+		} else {
+			sendLogixAuthenticateRequest(serverItem, environment);
+		}
+	} else {
 	if (connectedServerItem !== undefined) {
 		vscode.commands.executeCommand('totvs-developer-studio.disconnect', connectedServerItem).then(() => {
 			sendAuthenticateRequest(serverItem, environment, username, password);
@@ -553,12 +563,14 @@ export function authenticate(serverItem: ServerItem, environment: string, userna
 		sendAuthenticateRequest(serverItem, environment, username, password);
 	}
 }
+}
 
 function sendAuthenticateRequest(serverItem: ServerItem, environment: string, user: string, password: string) {
 	languageClient.sendRequest('$totvsserver/authentication', {
 		authenticationInfo: {
 			connType: 1,
 			identification: serverItem.id,
+			serverType: 1, // XXX
 			server: serverItem.address,
 			port: serverItem.port,
 			buildVersion: serverItem.buildVersion,
@@ -589,6 +601,40 @@ function sendAuthenticateRequest(serverItem: ServerItem, environment: string, us
 	});
 }
 
+function sendLogixAuthenticateRequest(serverItem: ServerItem, environment: string) {
+	languageClient.sendRequest('$totvsserver/authentication', {
+		authenticationInfo: {
+			connType: 1,
+			identification: serverItem.id,
+			serverType: 2, // XXX
+			server: serverItem.address,
+			port: serverItem.port,
+			buildVersion: serverItem.buildVersion,
+			environment: environment,
+			autoReconnect: true
+		}
+	}).then((authenticationNode: AuthenticationNode) => {
+		let token: string = authenticationNode.connectionToken;
+		if (token) {
+			//vscode.window.showInformationMessage('Server ' + serverItem.label + ' connected!');
+			Utils.saveSelectServer(serverItem.id, token, serverItem.label, environment, "logix");
+			Utils.saveConnectionToken(serverItem.id, token, environment);
+			if (treeDataProvider !== undefined) {
+				connectedServerItem = serverItem;
+				connectedServerItem.currentEnvironment = environment;
+				connectedServerItem.token = token;
+				treeDataProvider.refresh();
+			}
+			return true;
+		} else {
+			vscode.window.showErrorMessage(localize("tds.webview.serversView.errorConnServer", 'Error connecting server'));
+			return false;
+		}
+	}, err => {
+		vscode.window.showErrorMessage(err);
+	});
+}
+
 export class AuthenticationNode {
 	// These properties come directly from the language server.
 	id: any;
@@ -602,7 +648,7 @@ export function reconnectServer(reconnectionInfo): boolean {
 		if (servers.configurations) {
 			servers.configurations.forEach(element => {
 				if (element.id === reconnectionInfo.id) {
-					let serverItem: ServerItem = new ServerItem(element.name, element.address, element.port, vscode.TreeItemCollapsibleState.None, element.id, element.buildVersion, element.environments, {
+					let serverItem: ServerItem = new ServerItem(element.name, element.type, element.address, element.port, vscode.TreeItemCollapsibleState.None, element.id, element.buildVersion, element.environments, {
 						command: '',
 						title: '',
 						arguments: [element.name]
@@ -627,7 +673,7 @@ export function reconnectLastServer() {
 		if (servers.configurations) {
 			servers.configurations.forEach(element => {
 				if (element.id === servers.lastConnectedServer.id) {
-					let serverItem: ServerItem = new ServerItem(element.name, element.address, element.port, vscode.TreeItemCollapsibleState.None, element.id, element.buildVersion, element.environments, {
+					let serverItem: ServerItem = new ServerItem(element.name, element.type, element.address, element.port, vscode.TreeItemCollapsibleState.None, element.id, element.buildVersion, element.environments, {
 						command: '',
 						title: '',
 						arguments: [element.name]
@@ -651,6 +697,9 @@ function sendReconnectRequest(serverItem: ServerItem, connectionToken: string) {
 			let environment: string = reconnectNode.environment;
 			let user: string = reconnectNode.user;
 			//vscode.window.showInformationMessage('Server ' + serverItem.label + ' connected!');
+			if (token !== connectionToken) {
+				Utils.updateSavedTokens(serverItem.id, environment, token);
+			}
 			Utils.saveSelectServer(serverItem.id, token, serverItem.label, environment, user);
 			if (treeDataProvider !== undefined) {
 				connectedServerItem = serverItem;
