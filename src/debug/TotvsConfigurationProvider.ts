@@ -26,13 +26,8 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 	async resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): Promise<ProviderResult<DebugConfiguration>> {
 		if (connectedServerItem !== undefined) {
 			config.type = TotvsConfigurationProvider.type;
-			config.serverAddress = connectedServerItem.address;
-			config.serverPort = connectedServerItem.port;
-			config.buildVersion = connectedServerItem.buildVersion;
 			config.environment = connectedServerItem.currentEnvironment;
-			config.serverName = connectedServerItem.label;
-			config.authToken = connectedServerItem.token;
-			config.publicKey = sessionKey;
+			config.token = connectedServerItem.token;
 
 			let workspaceFolders = vscode.workspace.workspaceFolders;
 			if (workspaceFolders) {

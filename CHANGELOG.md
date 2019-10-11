@@ -1,3 +1,17 @@
+# Versão 0.3.16
+## Corrigido travamento no Debug (Avaliação de Objetos) [Issue 170](https://github.com/totvs/tds-vscode/issues/170#)
+### Problema:
+* Ao depurar objetos ocorria um erro que travava o debug.
+### Solução:
+* Corrigida a avaliação de objetos no DebugAdapter.
+----
+# Versão 0.3.15
+## Adicionada proteção durante debug de tabelas [Issue 165](https://github.com/totvs/tds-vscode/issues/165#)
+### Problema:
+* Ao depurar tabelas ocorria um erro que derrubava o DebugAdapter.
+### Solução:
+* Adicionada uma proteção para tratar esse erro no AppServer que derrubava o DebugAdapter.
+----
 # Versao 0.3.14
 ## Inclusão de PullRequest [PullRequest 155](https://github.com/totvs/tds-vscode/pull/155)
 ### PullRequest:
@@ -16,7 +30,7 @@
 * Realizado correção no processo de sincronismo de breakpoints pelo debug adapter.
 ----
 # Versão 0.3.13
-## Impmentado notificação de "Exceptions" informadas pelo servidor na visão "Debug Console" [Issue 99](https://github.com/totvs/tds-vscode/issues/99#)
+## Implementado notificação de "Exceptions" informadas pelo servidor na visão "Debug Console" [Issue 99](https://github.com/totvs/tds-vscode/issues/99#)
 ### Problema:
 * Quando é lançado uma exceção pelo servidor o plugin não mostra no console.
 ### Solução:
