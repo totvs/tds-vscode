@@ -1,12 +1,25 @@
+# Versão 0.3.17
+## Corrigido travamento na carga do Smartclient durante o Debug [Issue 186](https://github.com/totvs/tds-vscode/issues/186)
+### Problema:
+* Ao iniciar a depuração o smartclient inicia a carga mas fica travado.
+### Solução:
+* Corrigida a inicialização do smartclient.
+----
 # Versão 0.3.16
-## Corrigido travamento no Debug (Avaliação de Objetos) [Issue 170](https://github.com/totvs/tds-vscode/issues/170#)
+## Corrigido travamento no Debug (Avaliação de Objetos) [Issue 170](https://github.com/totvs/tds-vscode/issues/170)
 ### Problema:
 * Ao depurar objetos ocorria um erro que travava o debug.
 ### Solução:
 * Corrigida a avaliação de objetos no DebugAdapter.
 ----
+## Corrigido a salva do último programa executado [Issue 89](https://github.com/totvs/tds-vscode/issues/89)
+### Problema:
+* Ao digitar um nome de programa a ser executado pela depuração, este não era salvo para exibição na próxima execução.
+### Solução:
+* Corrigida a salva do nome do último programa executado.
+----
 # Versão 0.3.15
-## Adicionada proteção durante debug de tabelas [Issue 165](https://github.com/totvs/tds-vscode/issues/165#)
+## Adicionada proteção durante debug de tabelas [Issue 165](https://github.com/totvs/tds-vscode/issues/165)
 ### Problema:
 * Ao depurar tabelas ocorria um erro que derrubava o DebugAdapter.
 ### Solução:
