@@ -1,6 +1,6 @@
 import { WorkspaceFolder, DebugConfigurationProvider, DebugConfiguration, CancellationToken, ProviderResult, window } from 'vscode';
 import { connectedServerItem } from '../serversView';
-import { sessionKey } from '../TotvsLanguageClient';
+//import { sessionKey } from '../TotvsLanguageClient';
 import * as vscode from 'vscode';
 import * as Net from 'net';
 import {localize} from '../extension';
