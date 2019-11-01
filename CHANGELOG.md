@@ -1,3 +1,10 @@
+# Versão 0.3.18
+## Corrigido travamento do Debug (stacktrace e evalute) [Issue 193](https://github.com/totvs/tds-vscode/issues/193)
+### Problema:
+* Ao depurar fontes onde trafegavam informações, no stacktrace ou evaluate, com acentuação ocorria um problema no encoding e desconectava o Debug.
+### Solução:
+* Corrigido o tratamento de encoding.
+----
 # Versão 0.3.17
 ## Corrigido travamento na carga do Smartclient durante o Debug [Issue 186](https://github.com/totvs/tds-vscode/issues/186)
 ### Problema:
