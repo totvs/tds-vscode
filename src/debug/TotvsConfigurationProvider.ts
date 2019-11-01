@@ -4,7 +4,7 @@ import { connectedServerItem } from '../serversView';
 import * as vscode from 'vscode';
 import * as Net from 'net';
 import {localize} from '../extension';
-import { extractProgram, extractArgs } from './debugConfigs';
+import { extractProgram, extractArgs, setDapArgs } from './debugConfigs';
 
 /*
  * Set the following compile time flag to true if the
@@ -78,6 +78,16 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 				// make VS Code connect to debug server instead of launching debug adapter
 				config.debugServer = 8588;//this._server.address().port;
 			}
+
+			let setDapArgsArr: string[] =  [];
+			if (config.logFile) {
+				const ws: string = vscode.workspace.rootPath || '';
+				setDapArgsArr.push("--log-file=" + config.logFile.replace('${workspaceFolder}', ws));
+			}
+			if (config.waitForAttach) {
+				setDapArgsArr.push("--wait-for-attach=" + config.waitForAttach);
+			}
+			setDapArgs(setDapArgsArr);
 
 			return config;
 		} else {

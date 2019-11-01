@@ -5,6 +5,7 @@ import { localize } from '../extension';
 
 let isTableSyncEnabled = false;
 let debugSession: DebugSession | undefined;
+let dapArgs: string[] = [];
 const ignoreValue: string[] = [',', '(', ')' ];
 
 export function getDAP() {
@@ -22,9 +23,12 @@ export function getDAP() {
 			pathDAP = ext.extensionPath + "/node_modules/@totvs/tds-da/bin/mac/debugAdapter";
 			chmodSync(pathDAP, '755');
 		}
-
 	}
-	return { command: pathDAP };
+	return { command: pathDAP, args: dapArgs };
+}
+
+export function setDapArgs(dapArgs_: string[]) {
+	dapArgs = dapArgs_;
 }
 
 class QuickPickProgram implements QuickPickItem {
