@@ -38,6 +38,12 @@
 					</span>
 				</div>
 
+				<div>
+					<input id="secureID" class="checkbox" name="secure" type="checkbox" value="1">
+					<label class="checkboxLabel" for="secure">${d.localize["tds.webview.newServer.secure"]}</label>
+				</div>
+				<br>
+
 				<div class="wrap-submit">
 					<input class="btn-submit" id="submitID" type="submit" value="${d.localize['tds.webview.newServer.save']}" onclick="saveServer(false)" /> <!--Save-->
 					<input class="btn-submit" id="submitID" type="submit" value="${d.localize['tds.webview.newServer.saveClose']}" onclick="saveServer(true)" /> <!--Save/Close-->
@@ -54,13 +60,15 @@
 		const addressID = document.getElementById('addressID').value;
 		const serverNameID = document.getElementById('nameID').value;
 		const portID = document.getElementById('portID').value;
+		const secureID = document.getElementById('secureID').value;
 
 		vscode.postMessage({
 			command: 'saveServer',
 			address: addressID,
 			serverName: serverNameID,
 			port: portID,
-			'close': close
+			'close': close,
+			secure: secureID
 		});
 	}
 </script>

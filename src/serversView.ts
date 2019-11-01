@@ -17,7 +17,8 @@ const localizeHTML = {
 	"tds.webview.newServer.address": localize("tds.webview.newServer.address", "Address"),
 	"tds.webview.newServer.port": localize("tds.webview.newServer.port", "Port"),
 	"tds.webview.newServer.save": localize("tds.webview.newServer.save", "Save"),
-	"tds.webview.newServer.saveClose": localize("tds.webview.newServer.saveClose", "Save/Close")
+	"tds.webview.newServer.saveClose": localize("tds.webview.newServer.saveClose", "Save/Close"),
+	"tds.webview.newServer.secure": localize("tds.webview.newServer.secure", "Secure(SSL)")
 }
 
 export let connectedServerItem: ServerItem | undefined;
@@ -137,8 +138,8 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 	 */
 	private setConfigWithServerConfig() {
 		const serverConfig = Utils.getServersConfig();
-		const serverItem = (serverItem: string, type: string, address: string, port: number, id: string, buildVersion: string, environments: Array<EnvSection>): ServerItem => {
-			return new ServerItem(serverItem, address, type, port, vscode.TreeItemCollapsibleState.None, id, buildVersion, environments , {
+		const serverItem = (serverItem: string, type: string, address: string, port: number, secure: number, id: string, buildVersion: string, environments: Array<EnvSection>): ServerItem => {
+			return new ServerItem(serverItem, type, address, port, secure, vscode.TreeItemCollapsibleState.None , id, buildVersion, environments , {
 				command: '',
 				title: '',
 				arguments: [serverItem]
@@ -156,7 +157,7 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 				});
 			}
 
-			listServer.push(serverItem(element.name, element.type, element.address, element.port, element.id, element.buildVersion, environmentsServer));
+			listServer.push(serverItem(element.name, element.type, element.address, element.port, element.secure, element.id, element.buildVersion, environmentsServer));
 			listServer[listServer.length-1].collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
 		});
 
@@ -205,7 +206,7 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 		Utils.createServerConfig();
 
 		serverItems.forEach(element => {
-			/*const id = */Utils.createNewServer("totvs_server_protheus", element.label, element.port, element.address, element.buildVersion);
+			/*const id = */Utils.createNewServer("totvs_server_protheus", element.label, element.port, element.address, element.buildVersion, element.secure);
 
 			//A principio parece ser um exagero tentar validar TODOS os servidores ao salvar.
 			//Caso essa informação venha do ini do smartclient por exemplo, pode ter um numero muito
@@ -234,8 +235,8 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 	private getTCPSecsInIniFile(scIniPath: string): ServerItem[] {
 		if (this.pathExists(scIniPath)) {
 
-			const toTCPSec = (serverItem: string, type: string, address: string, port: number, id: string, buildVersion: string): ServerItem => {
-				return new ServerItem(serverItem, type, address, port, vscode.TreeItemCollapsibleState.None, id, buildVersion, undefined, {
+			const toTCPSec = (serverItem: string, type: string, address: string, port: number, secure: number, id: string, buildVersion: string): ServerItem => {
+				return new ServerItem(serverItem, type, address, port, secure, vscode.TreeItemCollapsibleState.None, id, buildVersion, undefined, {
 					command: 'totvs-developer-studio.selectNode',
 					title: '',
 					arguments: [serverItem]
@@ -253,12 +254,18 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 				let match = matches[0];
 				let address = /^SERVER\s?=(?:\s+)?(.+)/im.exec(match);
 				let port = /^PORT\s?=(?:\s+)?(.+)/im.exec(match);
+				let secure = /^SECURECONNECTION\s?=(?:\s+)?(.+)/im.exec(match);
+				let secureInt = 0;
+
+				if (secure!==null) {
+					secureInt = parseInt(secure[1]);
+				}
 
 				if ((address !== null) && (port !== null)) {
 					let key = /^\[(.+)\]/igm.exec(match);
 
 					if (key !== null) {
-						tcpSecs.push(toTCPSec(key[1], "totvs_server_protheus", address[1], parseInt(port[1]), Utils.generateRandomID(), ""));
+						tcpSecs.push(toTCPSec(key[1], "totvs_server_protheus", address[1], parseInt(port[1]), secureInt, Utils.generateRandomID(), ""));
 					}
 				}
 			}
@@ -292,6 +299,7 @@ export class ServerItem extends vscode.TreeItem {
 		public readonly type: string,
 		public readonly address: string,
 		public readonly port: number,
+		public secure: number,
 		public collapsibleState: vscode.TreeItemCollapsibleState,
 		public id: string,
 		public buildVersion: string,
@@ -359,7 +367,8 @@ export class ServersExplorer {
 					languageClient.sendRequest('$totvsserver/validation', {
 						validationInfo: {
 							server: serverItem.address,
-							port: serverItem.port
+							port: serverItem.port,
+							bSecure: serverItem.secure
 						}
 					}).then((validInfoNode: NodeInfo) => {
 						//retornou uma versao valida no servidor.
@@ -475,12 +484,13 @@ export class ServersExplorer {
 						case 'saveServer':
 							const typeServer = "totvs_server_protheus";
 							if (message.serverName && message.port && message.address) {
-								const serverId = createServer(typeServer, message.serverName, message.port, message.address, "", true);
+								const serverId = createServer(typeServer, message.serverName, message.port, message.address, message.secure, "", true);
 								if (serverId !== undefined) {
 									languageClient.sendRequest('$totvsserver/validation', {
 										validationInfo: {
 											server: message.address,
 											port: parseInt(message.port),
+											bSecure: parseInt(message.secure)
 										}
 									}).then((validInfoNode: NodeInfo) => {
 										Utils.updateBuildVersion(serverId, validInfoNode.buildVersion);
@@ -513,8 +523,8 @@ export class ServersExplorer {
 			}
 		});
 
-		function createServer(typeServer: string, serverName: string, port: number, address: string, buildVersion: string, showSucess: boolean): string | undefined {
-			const serverId = Utils.createNewServer(typeServer, serverName, port, address, buildVersion);
+		function createServer(typeServer: string, serverName: string, port: number, address: string, secure: number, buildVersion: string, showSucess: boolean): string | undefined {
+			const serverId = Utils.createNewServer(typeServer, serverName, port, address, buildVersion, secure);
 
 			if (treeDataProvider !== undefined) {
 				treeDataProvider.refresh();
@@ -566,7 +576,7 @@ export function authenticate(serverItem: ServerItem, environment: string, userna
 }
 
 function sendAuthenticateRequest(serverItem: ServerItem, environment: string, user: string, password: string) {
-	languageClient.sendRequest('$totvsserver/authentication', {
+	 languageClient.sendRequest('$totvsserver/authentication', {
 		authenticationInfo: {
 			connType: 1,
 			identification: serverItem.id,
@@ -574,6 +584,7 @@ function sendAuthenticateRequest(serverItem: ServerItem, environment: string, us
 			server: serverItem.address,
 			port: serverItem.port,
 			buildVersion: serverItem.buildVersion,
+			bSecure: serverItem.secure,
 			environment: environment,
 			user: user,
 			password: password,
@@ -648,7 +659,7 @@ export function reconnectServer(reconnectionInfo): boolean {
 		if (servers.configurations) {
 			servers.configurations.forEach(element => {
 				if (element.id === reconnectionInfo.id) {
-					let serverItem: ServerItem = new ServerItem(element.name, element.type, element.address, element.port, vscode.TreeItemCollapsibleState.None, element.id, element.buildVersion, element.environments, {
+					let serverItem: ServerItem = new ServerItem(element.name, element.type, element.address, element.port, element.secure, vscode.TreeItemCollapsibleState.None, element.id, element.buildVersion, element.environments, {
 						command: '',
 						title: '',
 						arguments: [element.name]
@@ -673,7 +684,7 @@ export function reconnectLastServer() {
 		if (servers.configurations) {
 			servers.configurations.forEach(element => {
 				if (element.id === servers.lastConnectedServer.id) {
-					let serverItem: ServerItem = new ServerItem(element.name, element.type, element.address, element.port, vscode.TreeItemCollapsibleState.None, element.id, element.buildVersion, element.environments, {
+					let serverItem: ServerItem = new ServerItem(element.name, element.type, element.address, element.port, element.secure, vscode.TreeItemCollapsibleState.None, element.id, element.buildVersion, element.environments, {
 						command: '',
 						title: '',
 						arguments: [element.name]

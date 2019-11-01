@@ -314,7 +314,7 @@ export default class Utils {
 	/**
 	 * Cria uma nova configuracao de servidor no servers.json
 	 */
-	static createNewServer(typeServer, serverName, port, address, buildVersion): string | undefined {
+	static createNewServer(typeServer, serverName, port, address, buildVersion, secure): string | undefined {
 		Utils.createServerConfig();
 		const serverConfig = Utils.getServersConfig();
 
@@ -327,6 +327,7 @@ export default class Utils {
 				name: serverName,
 				port: parseInt(port),
 				address: address,
+				secure: parseInt(secure),
 				buildVersion: buildVersion
 			});
 
