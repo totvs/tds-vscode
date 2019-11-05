@@ -127,10 +127,10 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 		revealOutputChannelOn: RevealOutputChannelOn.Never,
 		initializationOptions: clientConfig,
 		middleware: { provideCodeLenses: provideCodeLens },
-		initializationFailedHandler: (e) => {
-			console.log(e);
-			return false;
-		},
+		// initializationFailedHandler: (e) => {
+		// 	console.log(e);
+		// 	return false;
+		// },
 		//errorHandler: new CqueryErrorHandler(workspace.getConfiguration('cquery'))
 	};
 

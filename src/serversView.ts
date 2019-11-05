@@ -31,6 +31,11 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 	public localServerItems: Array<ServerItem>;
 
 	constructor() {
+		// check if there is an open folder
+		if (vscode.workspace.workspaceFolders === undefined) {
+			vscode.window.showErrorMessage("No folder opened.");
+			return;
+		}
 		this.addServersConfigListener();
 		this.addLaunchJsonListener();
 	}
@@ -353,6 +358,91 @@ const treeDataProvider = new ServerItemProvider();
 export class ServersExplorer {
 
 	constructor(context: vscode.ExtensionContext) {
+		let currentPanel: vscode.WebviewPanel | undefined = undefined;
+
+		vscode.commands.registerCommand('totvs-developer-studio.add', () => {
+			if (vscode.workspace.workspaceFolders === undefined) {
+				vscode.window.showErrorMessage("No folder opened.");
+				return;
+			}
+
+			if (currentPanel) {
+				currentPanel.reveal();
+			} else {
+				currentPanel = vscode.window.createWebviewPanel(
+					'totvs-developer-studio.add',
+					'Novo Servidor',
+					vscode.ViewColumn.One,
+					{
+						enableScripts: true,
+						localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, 'src', 'server'))],
+						retainContextWhenHidden: true
+					}
+				);
+
+				currentPanel.webview.html = getWebViewContent(context, localizeHTML);
+				currentPanel.onDidDispose(
+					() => {
+						currentPanel = undefined;
+					},
+					null,
+					context.subscriptions
+				);
+
+				currentPanel.webview.onDidReceiveMessage(message => {
+					switch (message.command) {
+						case 'saveServer':
+							const typeServer = "totvs_server_protheus";
+							if (message.serverName && message.port && message.address) {
+								const serverId = createServer(typeServer, message.serverName, message.port, message.address, message.secure, "", true);
+								if (serverId !== undefined) {
+									languageClient.sendRequest('$totvsserver/validation', {
+										validationInfo: {
+											server: message.address,
+											port: parseInt(message.port),
+											bSecure: parseInt(message.secure)
+										}
+									}).then((validInfoNode: NodeInfo) => {
+										Utils.updateBuildVersion(serverId, validInfoNode.buildVersion);
+										return;
+									}, (err) => {
+										vscode.window.showErrorMessage(err);
+									})
+								}
+							} else {
+								vscode.window.showErrorMessage(localize("tds.webview.serversView.addServerFail", "Add Server Fail. Name, port and Address are need"))
+							}
+
+							if (currentPanel) {
+								if (message.close) {
+									currentPanel.dispose();
+								}
+							}
+					}
+				},
+					undefined,
+					context.subscriptions
+				);
+			}
+		});
+
+		vscode.commands.registerCommand('totvs-developer-studio.config', () => {
+			if (vscode.workspace.workspaceFolders === undefined) {
+				vscode.window.showErrorMessage("No folder opened.");
+				return;
+			}
+				const servers = Utils.getServerConfigFile();
+			if (servers) {
+				vscode.window.showTextDocument(vscode.Uri.file(servers));
+			}
+		});
+
+		// check if there is an open folder
+		if (vscode.workspace.workspaceFolders === undefined) {
+			vscode.window.showErrorMessage("No folder opened.");
+			return;
+		}
+
 		vscode.window.createTreeView('totvs_server', { treeDataProvider });
 
 		vscode.window.registerTreeDataProvider('totvs_server', treeDataProvider);
@@ -431,8 +521,6 @@ export class ServersExplorer {
 
 		});
 
-		let currentPanel: vscode.WebviewPanel | undefined = undefined;
-
 		vscode.commands.registerCommand('totvs-developer-studio.delete', (serverItem: ServerItem) => {
 			let ix = treeDataProvider.localServerItems.indexOf(serverItem);
 			if (ix >= 0) {
@@ -453,75 +541,6 @@ export class ServersExplorer {
 			}
 
 		})
-
-		vscode.commands.registerCommand('totvs-developer-studio.add', () => {
-
-			if (currentPanel) {
-				currentPanel.reveal();
-			} else {
-				currentPanel = vscode.window.createWebviewPanel(
-					'totvs-developer-studio.add',
-					'Novo Servidor',
-					vscode.ViewColumn.One,
-					{
-						enableScripts: true,
-						localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, 'src', 'server'))],
-						retainContextWhenHidden: true
-					}
-				);
-
-				currentPanel.webview.html = getWebViewContent(context, localizeHTML);
-				currentPanel.onDidDispose(
-					() => {
-						currentPanel = undefined;
-					},
-					null,
-					context.subscriptions
-				);
-
-				currentPanel.webview.onDidReceiveMessage(message => {
-					switch (message.command) {
-						case 'saveServer':
-							const typeServer = "totvs_server_protheus";
-							if (message.serverName && message.port && message.address) {
-								const serverId = createServer(typeServer, message.serverName, message.port, message.address, message.secure, "", true);
-								if (serverId !== undefined) {
-									languageClient.sendRequest('$totvsserver/validation', {
-										validationInfo: {
-											server: message.address,
-											port: parseInt(message.port),
-											bSecure: parseInt(message.secure)
-										}
-									}).then((validInfoNode: NodeInfo) => {
-										Utils.updateBuildVersion(serverId, validInfoNode.buildVersion);
-										return;
-									}, (err) => {
-										vscode.window.showErrorMessage(err);
-									})
-								}
-							} else {
-								vscode.window.showErrorMessage(localize("tds.webview.serversView.addServerFail", "Add Server Fail. Name, port and Address are need"))
-							}
-
-							if (currentPanel) {
-								if (message.close) {
-									currentPanel.dispose();
-								}
-							}
-					}
-				},
-					undefined,
-					context.subscriptions
-				);
-			}
-		});
-
-		vscode.commands.registerCommand('totvs-developer-studio.config', () => {
-			const servers = Utils.getServerConfigFile();
-			if (servers) {
-				vscode.window.showTextDocument(vscode.Uri.file(servers));
-			}
-		});
 
 		function createServer(typeServer: string, serverName: string, port: number, address: string, secure: number, buildVersion: string, showSucess: boolean): string | undefined {
 			const serverId = Utils.createNewServer(typeServer, serverName, port, address, buildVersion, secure);

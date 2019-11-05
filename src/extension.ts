@@ -248,7 +248,7 @@ export function activate(context: ExtensionContext) {
 	//View
 	let viewServer = new ServersExplorer(context);
 	if (!viewServer) {
-		console.error(localize('tds.vscode.server_vision_not_load', 'Visão "Servidores" não incializada.'));
+		console.error(localize('tds.vscode.server_vision_not_load', 'Visão "Servidores" não inicializada.'));
 	}
 
 	// Registra uma configuração de debug
@@ -375,6 +375,11 @@ export function deactivate() {
 }
 
 function verifyEncoding() {
+	// check if there is an open folder
+	if (vscode.workspace.workspaceFolders === undefined) {
+		vscode.window.showErrorMessage("No folder opened.");
+		return;
+	}
 
 	const textNoAsk = localize('tds.vscode.noAskAgain', "Don't ask again");
 	const textNo = localize('tds.vscode.no', 'No');
