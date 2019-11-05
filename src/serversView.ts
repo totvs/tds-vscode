@@ -468,7 +468,7 @@ export class ServersExplorer {
 							//continua a autenticacao.
 							inputConnectionParameters(context, serverItem);
 						} else {
-							vscode.window.showErrorMessage(localize("tds.webview.serversView.cloudNotConn", "Cloud not connect to server"));
+							vscode.window.showErrorMessage(localize("tds.webview.serversView.cloudNotConn", "Could not connect to server"));
 						}
 						return;
 					}, (err) => {

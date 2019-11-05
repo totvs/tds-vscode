@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import * as Net from 'net';
 import { sessionKey } from '../TotvsLanguageClient';
 import {localize} from '../extension';
+import { setDapArgs } from './debugConfigs';
 /*
  * Set the following compile time flag to true if the
  * debug adapter should run inside the extension host.
@@ -43,8 +44,20 @@ export class TotvsConfigurationWebProvider implements DebugConfigurationProvider
 
 			config.environment = connectedServerItem.currentEnvironment;
 			config.serverName = connectedServerItem.label;
-			config.authToken = connectedServerItem.token;
 			config.publicKey = sessionKey;
+			config.token = connectedServerItem.token;
+
+			let workspaceFolders = vscode.workspace.workspaceFolders;
+			if (workspaceFolders) {
+				let wsPaths = new Array(workspaceFolders.length);
+				let i = 0;
+				for (const workspaceFolder of workspaceFolders) {
+					const workspaceFolderPath = workspaceFolder.uri.fsPath;
+					wsPaths[i] = workspaceFolderPath;
+					i++;
+				}
+				config.workspaceFolders = wsPaths;
+			}
 
 			if (!config.cwb || (config.cwb === '')) {
 				config.cwb = vscode.workspace.rootPath;
@@ -81,6 +94,15 @@ export class TotvsConfigurationWebProvider implements DebugConfigurationProvider
 				// make VS Code connect to debug server instead of launching debug adapter
 				config.debugServer = 8588;//this._server.address().port;
 			}
+			let setDapArgsArr: string[] =  [];
+			if (config.logFile) {
+				const ws: string = vscode.workspace.rootPath || '';
+				setDapArgsArr.push("--log-file=" + config.logFile.replace('${workspaceFolder}', ws));
+			}
+			if (config.waitForAttach) {
+				setDapArgsArr.push("--wait-for-attach=" + config.waitForAttach);
+			}
+			setDapArgs(setDapArgsArr);
 
 			return config;
 		} else {

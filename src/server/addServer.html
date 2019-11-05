@@ -60,7 +60,7 @@
 		const addressID = document.getElementById('addressID').value;
 		const serverNameID = document.getElementById('nameID').value;
 		const portID = document.getElementById('portID').value;
-		const secureID = document.getElementById('secureID').value;
+		const secureID = document.getElementById('secureID').checked ? 1 : 0;
 
 		vscode.postMessage({
 			command: 'saveServer',
