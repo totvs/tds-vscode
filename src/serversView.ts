@@ -19,7 +19,7 @@ const localizeHTML = {
 	"tds.webview.newServer.save": localize("tds.webview.newServer.save", "Save"),
 	"tds.webview.newServer.saveClose": localize("tds.webview.newServer.saveClose", "Save/Close"),
 	"tds.webview.newServer.secure": localize("tds.webview.newServer.secure", "Secure(SSL)")
-}
+};
 
 export let connectedServerItem: ServerItem | undefined;
 
@@ -154,10 +154,10 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 
 		serverConfig.configurations.forEach(element => {
 			let environmentsServer = new Array<EnvSection>();
-			if(element.environments){
+			if (element.environments) {
 				element.environments.forEach(environment => {
 					const env = new EnvSection(environment, element.name, vscode.TreeItemCollapsibleState.None,
-						{command: 'totvs_server.selectEnvironment',	title: '', arguments: [environment]}, environment);
+						{ command: 'totvs_server.selectEnvironment', title: '', arguments: [environment] }, environment);
 					environmentsServer.push(env);
 				});
 			}
@@ -347,8 +347,8 @@ export class EnvSection extends vscode.TreeItem {
 	}
 
 	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', connectedServerItem !== undefined && connectedServerItem.currentEnvironment == this.label ? 'environment.connected.svg' : 'environment.svg'),
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', connectedServerItem !== undefined && connectedServerItem.currentEnvironment == this.label ? 'environment.connected.svg' : 'environment.svg')
+		light: path.join(__filename, '..', '..', 'resources', 'light', connectedServerItem !== undefined && connectedServerItem.currentEnvironment === this.label ? 'environment.connected.svg' : 'environment.svg'),
+		dark: path.join(__filename, '..', '..', 'resources', 'dark', connectedServerItem !== undefined && connectedServerItem.currentEnvironment === this.label ? 'environment.connected.svg' : 'environment.svg')
 	};
 
 	contextValue = 'envSection';
@@ -407,10 +407,10 @@ export class ServersExplorer {
 										return;
 									}, (err) => {
 										vscode.window.showErrorMessage(err);
-									})
+									});
 								}
 							} else {
-								vscode.window.showErrorMessage(localize("tds.webview.serversView.addServerFail", "Add Server Fail. Name, port and Address are need"))
+								vscode.window.showErrorMessage(localize("tds.webview.serversView.addServerFail", "Add Server Fail. Name, port and Address are need"));
 							}
 
 							if (currentPanel) {
@@ -536,11 +536,11 @@ export class ServersExplorer {
 					placeHolder: localize("tds.webview.serversView.renameServer", "Rename the server"),
 					value: serverItem.label
 				}).then((newName: string) => {
-					Utils.updateServerName(serverItem.id, newName)
+					Utils.updateServerName(serverItem.id, newName);
 				});
 			}
 
-		})
+		});
 
 		function createServer(typeServer: string, serverName: string, port: number, address: string, secure: number, buildVersion: string, showSucess: boolean): string | undefined {
 			const serverId = Utils.createNewServer(typeServer, serverName, port, address, buildVersion, secure);
@@ -548,7 +548,7 @@ export class ServersExplorer {
 			if (treeDataProvider !== undefined) {
 				treeDataProvider.refresh();
 			}
-			if (showSucess) {
+			if (serverId !== undefined && showSucess) {
 				vscode.window.showInformationMessage(localize("tds.webview.serversView.serverSaved", "Saved server ") + serverName);
 			}
 			return serverId;
@@ -595,7 +595,7 @@ export function authenticate(serverItem: ServerItem, environment: string, userna
 }
 
 function sendAuthenticateRequest(serverItem: ServerItem, environment: string, user: string, password: string) {
-	 languageClient.sendRequest('$totvsserver/authentication', {
+	languageClient.sendRequest('$totvsserver/authentication', {
 		authenticationInfo: {
 			connType: 1,
 			identification: serverItem.id,

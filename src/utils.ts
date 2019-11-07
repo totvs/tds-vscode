@@ -320,19 +320,24 @@ export default class Utils {
 
 		if (serverConfig.configurations) {
 			const servers = serverConfig.configurations;
-			const serverId: string = Utils.generateRandomID();
-			servers.push({
-				id: serverId,
-				type: typeServer,
-				name: serverName,
-				port: parseInt(port),
-				address: address,
-				secure: parseInt(secure),
-				buildVersion: buildVersion
-			});
 
-			Utils.persistServersInfo(serverConfig);
-			return serverId;
+			if (servers.find(element => { return element.name === serverName; })) {
+				vscode.window.showErrorMessage(localize("tds.webview.serversView.serverNameDuplicated", "Server name already exists"));
+				return undefined;
+			} else {
+				const serverId: string = Utils.generateRandomID();
+				servers.push({
+					id: serverId,
+					type: typeServer,
+					name: serverName,
+					port: parseInt(port),
+					address: address,
+					buildVersion: buildVersion
+				});
+
+				Utils.persistServersInfo(serverConfig);
+				return serverId;
+			}
 		}
 		return undefined;
 	}
@@ -490,8 +495,7 @@ export default class Utils {
 						console.error(err);
 					}
 				});
-			};
-
+			}
 		}
 	}
 	/**
@@ -672,7 +676,7 @@ export default class Utils {
 				break;
 			case MESSAGETYPE.Log:
 				let time = Utils.timeAsHHMMSS(new Date());
-				languageClient !== undefined ? languageClient.outputChannel.appendLine("[Log   + "+time+"] " + message) : console.log(message);
+				languageClient !== undefined ? languageClient.outputChannel.appendLine("[Log   + " + time + "] " + message) : console.log(message);
 				if (showDialog && notificationLevel === "all") {
 					vscode.window.showInformationMessage(message);
 				}
@@ -682,14 +686,14 @@ export default class Utils {
 
 	static timeAsHHMMSS(date): string {
 		return Utils.leftpad(date.getHours(), 2)
-				  + ':' + Utils.leftpad(date.getMinutes(), 2)
-				  + ':' + Utils.leftpad(date.getSeconds(), 2);
-	  }
+			+ ':' + Utils.leftpad(date.getMinutes(), 2)
+			+ ':' + Utils.leftpad(date.getSeconds(), 2);
+	}
 
 	static leftpad(val, resultLength = 2, leftpadChar = '0'): string {
 		return (String(leftpadChar).repeat(resultLength)
-		  + String(val)).slice(String(val).length);
-	 }
+			+ String(val)).slice(String(val).length);
+	}
 
 	static getAllFilesRecursive(folders: Array<string>): string[] {
 		const files: string[] = [];
