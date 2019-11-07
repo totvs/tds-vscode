@@ -17,7 +17,6 @@
 	"tds.webview.serversView.renameServer": "?",
 	"tds.webview.serversView.addServerFail": "?",
 	"tds.webview.serversView.serverSaved": "?",
-	"tds.webview.serversView.serverNameDuplicated": "?",
 	"tds.webview.serversView.alreadyDisconn": "?",
 	"tds.webview.serversView.errorConnServer": "?"
 }

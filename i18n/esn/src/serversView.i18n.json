@@ -17,7 +17,6 @@
 	"tds.webview.serversView.renameServer": "Renombrar el Servidor",
 	"tds.webview.serversView.addServerFail": "Agregar FailServer. Se debe informar Nombre, Direccion y Puerto",
 	"tds.webview.serversView.serverSaved": "Servidor grabado",
-	"tds.webview.serversView.serverNameDuplicated": "El nombre del servidor ya existe",
 	"tds.webview.serversView.alreadyDisconn": "El servidor selecionado ya está conectado.",
 	"tds.webview.serversView.errorConnServer": "Error al conectar con el servidor"
 }
