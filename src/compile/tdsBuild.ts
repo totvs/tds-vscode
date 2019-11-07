@@ -51,6 +51,12 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions, c
 		return;
 	}
 
+	const configADVPL = vscode.workspace.getConfiguration('totvsLanguageServer');
+	const shouldClearConsole = configADVPL.get("clearConsoleBeforeCompile");
+	if (shouldClearConsole !== false) {
+		languageClient.outputChannel.clear();
+	}
+
 	const resourcesToConfirm: vscode.TextDocument[] = vscode.workspace.textDocuments.filter(d => !d.isUntitled && d.isDirty);
 	const count = resourcesToConfirm.length;
 
