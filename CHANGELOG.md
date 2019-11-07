@@ -1,3 +1,10 @@
+# Versão 0.3.20
+## Corrigido o problema de conexão [Issue 207](https://github.com/totvs/tds-vscode/issues/207)
+### Problema:
+* Ao cadastrar um novo servidor e tentar conectar ocorre falha na conexão.
+### Solução:
+* Corrigido o cadastro do servidor referente ao valor do novo parâmetro 'secure'.
+----
 # Versão 0.3.18
 ## Corrigido travamento do Debug (stacktrace e evalute) [Issue 193](https://github.com/totvs/tds-vscode/issues/193)
 ### Problema:

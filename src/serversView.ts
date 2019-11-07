@@ -31,6 +31,11 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 	public localServerItems: Array<ServerItem>;
 
 	constructor() {
+		// check if there is an open folder
+		if (vscode.workspace.workspaceFolders === undefined) {
+			vscode.window.showErrorMessage("No folder opened.");
+			return;
+		}
 		this.addServersConfigListener();
 		this.addLaunchJsonListener();
 	}
@@ -353,108 +358,13 @@ const treeDataProvider = new ServerItemProvider();
 export class ServersExplorer {
 
 	constructor(context: vscode.ExtensionContext) {
-		vscode.window.createTreeView('totvs_server', { treeDataProvider });
-
-		vscode.window.registerTreeDataProvider('totvs_server', treeDataProvider);
-		vscode.commands.registerCommand('totvs-developer-studio.connect', (serverItem: ServerItem) => {
-			let ix = treeDataProvider.localServerItems.indexOf(serverItem);
-			if (ix >= 0) {
-				//Verifica se ha um buildVersion cadastrado.
-				if (serverItem.buildVersion) {
-					inputConnectionParameters(context, serverItem);
-				} else {
-					//Há build no servidor.
-					languageClient.sendRequest('$totvsserver/validation', {
-						validationInfo: {
-							server: serverItem.address,
-							port: serverItem.port,
-							bSecure: serverItem.secure
-						}
-					}).then((validInfoNode: NodeInfo) => {
-						//retornou uma versao valida no servidor.
-						const updated = Utils.updateBuildVersion(serverItem.id, validInfoNode.buildVersion);
-						serverItem.buildVersion = validInfoNode.buildVersion;
-						if (updated) {
-							//continua a autenticacao.
-							inputConnectionParameters(context, serverItem);
-						} else {
-							vscode.window.showErrorMessage(localize("tds.webview.serversView.cloudNotConn", "Cloud not connect to server"));
-						}
-						return;
-					}, (err) => {
-						vscode.window.showErrorMessage(err.message);
-					});
-				}
-			}
-		});
-		vscode.commands.registerCommand('totvs-developer-studio.disconnect', (serverItem: ServerItem) => {
-			if (connectedServerItem !== undefined && serverItem.id === connectedServerItem.id) {
-				languageClient.sendRequest('$totvsserver/disconnect', {
-					disconnectInfo: {
-						connectionToken: connectedServerItem.token,
-						serverName: connectedServerItem.label
-					}
-				}).then((disconnectInfo: DisconnectReturnInfo) => {
-					if (disconnectInfo !== undefined && disconnectInfo.code === undefined) {
-						connectedServerItem = undefined;
-						Utils.clearConnectedServerConfig();
-						if (treeDataProvider !== undefined) {
-							treeDataProvider.refresh();
-						}
-					}
-				}, (err) => {
-					Utils.clearConnectedServerConfig();
-					if (treeDataProvider !== undefined) {
-						treeDataProvider.refresh();
-					}
-					handleError(err);
-				});
-			} else {
-				vscode.window.showInformationMessage(localize("tds.webview.serversView.alreadyConn", "Server is already disconnected"));
-			}
-		});
-		vscode.commands.registerCommand('totvs-developer-studio.selectenv', (environment: EnvSection) => {
-			const config = vscode.workspace.getConfiguration("launch", null);
-			const configs = config.get<any[]>("configurations");
-			if (configs) {
-				configs.forEach(element => {
-					if (element.type === 'totvs_language_debug') {
-						element.serverItem = environment.serverItemParent.trim();
-						element.environment = environment.label;
-					}
-				});
-				config.update("configurations", configs);
-			}
-			/**
-			 * TODO: Aplicar a seleção a partir do menu de contexto dos environments listados
-			 */
-
-		});
-
 		let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
-		vscode.commands.registerCommand('totvs-developer-studio.delete', (serverItem: ServerItem) => {
-			let ix = treeDataProvider.localServerItems.indexOf(serverItem);
-			if (ix >= 0) {
-				Utils.deleteServer(serverItem.id);
-			}
-
-		});
-
-		vscode.commands.registerCommand('totvs-developer-studio.rename', (serverItem: ServerItem) => {
-			let ix = treeDataProvider.localServerItems.indexOf(serverItem);
-			if (ix >= 0) {
-				vscode.window.showInputBox({
-					placeHolder: localize("tds.webview.serversView.renameServer", "Rename the server"),
-					value: serverItem.label
-				}).then((newName: string) => {
-					Utils.updateServerName(serverItem.id, newName)
-				});
-			}
-
-		})
-
 		vscode.commands.registerCommand('totvs-developer-studio.add', () => {
+			if (vscode.workspace.workspaceFolders === undefined) {
+				vscode.window.showErrorMessage("No folder opened.");
+				return;
+			}
 
 			if (currentPanel) {
 				currentPanel.reveal();
@@ -517,11 +427,120 @@ export class ServersExplorer {
 		});
 
 		vscode.commands.registerCommand('totvs-developer-studio.config', () => {
-			const servers = Utils.getServerConfigFile();
+			if (vscode.workspace.workspaceFolders === undefined) {
+				vscode.window.showErrorMessage("No folder opened.");
+				return;
+			}
+				const servers = Utils.getServerConfigFile();
 			if (servers) {
 				vscode.window.showTextDocument(vscode.Uri.file(servers));
 			}
 		});
+
+		// check if there is an open folder
+		if (vscode.workspace.workspaceFolders === undefined) {
+			vscode.window.showErrorMessage("No folder opened.");
+			return;
+		}
+
+		vscode.window.createTreeView('totvs_server', { treeDataProvider });
+
+		vscode.window.registerTreeDataProvider('totvs_server', treeDataProvider);
+		vscode.commands.registerCommand('totvs-developer-studio.connect', (serverItem: ServerItem) => {
+			let ix = treeDataProvider.localServerItems.indexOf(serverItem);
+			if (ix >= 0) {
+				//Verifica se ha um buildVersion cadastrado.
+				if (serverItem.buildVersion) {
+					inputConnectionParameters(context, serverItem);
+				} else {
+					//Há build no servidor.
+					languageClient.sendRequest('$totvsserver/validation', {
+						validationInfo: {
+							server: serverItem.address,
+							port: serverItem.port,
+							bSecure: serverItem.secure
+						}
+					}).then((validInfoNode: NodeInfo) => {
+						//retornou uma versao valida no servidor.
+						const updated = Utils.updateBuildVersion(serverItem.id, validInfoNode.buildVersion);
+						serverItem.buildVersion = validInfoNode.buildVersion;
+						if (updated) {
+							//continua a autenticacao.
+							inputConnectionParameters(context, serverItem);
+						} else {
+							vscode.window.showErrorMessage(localize("tds.webview.serversView.cloudNotConn", "Could not connect to server"));
+						}
+						return;
+					}, (err) => {
+						vscode.window.showErrorMessage(err.message);
+					});
+				}
+			}
+		});
+		vscode.commands.registerCommand('totvs-developer-studio.disconnect', (serverItem: ServerItem) => {
+			if (connectedServerItem !== undefined && serverItem.id === connectedServerItem.id) {
+				languageClient.sendRequest('$totvsserver/disconnect', {
+					disconnectInfo: {
+						connectionToken: connectedServerItem.token,
+						serverName: connectedServerItem.label
+					}
+				}).then((disconnectInfo: DisconnectReturnInfo) => {
+					if (disconnectInfo !== undefined && disconnectInfo.code === undefined) {
+						connectedServerItem = undefined;
+						Utils.clearConnectedServerConfig();
+						if (treeDataProvider !== undefined) {
+							treeDataProvider.refresh();
+						}
+					}
+				}, (err) => {
+					Utils.clearConnectedServerConfig();
+					if (treeDataProvider !== undefined) {
+						treeDataProvider.refresh();
+					}
+					handleError(err);
+				});
+			} else {
+				vscode.window.showInformationMessage(localize("tds.webview.serversView.alreadyConn", "Server is already disconnected"));
+			}
+		});
+		vscode.commands.registerCommand('totvs-developer-studio.selectenv', (environment: EnvSection) => {
+			const config = vscode.workspace.getConfiguration("launch", null);
+			const configs = config.get<any[]>("configurations");
+			if (configs) {
+				configs.forEach(element => {
+					if (element.type === 'totvs_language_debug') {
+						element.serverItem = environment.serverItemParent.trim();
+						element.environment = environment.label;
+					}
+				});
+				config.update("configurations", configs);
+			}
+			/**
+			 * TODO: Aplicar a seleção a partir do menu de contexto dos environments listados
+			 */
+
+		});
+
+		vscode.commands.registerCommand('totvs-developer-studio.delete', (serverItem: ServerItem) => {
+			let ix = treeDataProvider.localServerItems.indexOf(serverItem);
+			if (ix >= 0) {
+				Utils.deleteServer(serverItem.id);
+			}
+
+		});
+
+		vscode.commands.registerCommand('totvs-developer-studio.rename', (serverItem: ServerItem) => {
+			let ix = treeDataProvider.localServerItems.indexOf(serverItem);
+			if (ix >= 0) {
+				vscode.window.showInputBox({
+					placeHolder: localize("tds.webview.serversView.renameServer", "Rename the server"),
+					value: serverItem.label
+				}).then((newName: string) => {
+					Utils.updateServerName(serverItem.id, newName)
+				});
+			}
+
+		})
 
 		function createServer(typeServer: string, serverName: string, port: number, address: string, secure: number, buildVersion: string, showSucess: boolean): string | undefined {
 			const serverId = Utils.createNewServer(typeServer, serverName, port, address, buildVersion, secure);
