@@ -97,6 +97,8 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 * Todas as informações sobre os arquivos compilados serão exibidos na visão `Output` (seleção `AdvPL`).
 
+* Caso queira limpar o console antes da compilação, habilite a opção: `File | Preferences | Settings | Extensions | AdvPL | Clear Console Before Compile`.
+
 * Para analisar o resultado da compilação de múltiplos arquivos, existe a opção de abrir uma tabela com informações de todos os arquivos que foram compilados.
 
 * Para exibir essa tabela, selecione mais de um arquivo, compile e após a compilação será apresentada a pergunta a seguir: Clique em `Yes`.

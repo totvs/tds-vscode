@@ -6,6 +6,7 @@
 	"tds.package.show.welcome.first.initialize": "Show Welcome Page in First Initialize",
 	"tds.package.show.ask.encoding": "Ask for change encoding for Windows-1252",
 	"tds.package.show.ask.compile.result": "Ask for show table with compile results",
+	"tds.package.show.clear.console.before.compile": "Clear console before compile",
 	"tds.package.reconnectLastServer": "Reconnect last connected server on startup.",
 	"tds.package.useReconnectionToken": "Use reconnection token to login.",
 	"tds.package.generate.ppo": "Generate PPO file.",
