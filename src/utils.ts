@@ -5,6 +5,7 @@ import * as path from 'path';
 import * as stripJsonComments from 'strip-json-comments';
 import * as ini from 'ini';
 import { languageClient, localize } from './extension';
+import { ServerItem } from './serversView';
 
 const homedir = require('os').homedir();
 
@@ -314,7 +315,7 @@ export default class Utils {
 	/**
 	 * Cria uma nova configuracao de servidor no servers.json
 	 */
-	static createNewServer(typeServer, serverName, port, address, buildVersion, secure): string | undefined {
+	static createNewServer(typeServer, serverName, port, address, buildVersion, secure, includes): string | undefined {
 		Utils.createServerConfig();
 		const serverConfig = Utils.getServersConfig();
 
@@ -332,7 +333,8 @@ export default class Utils {
 					name: serverName,
 					port: parseInt(port),
 					address: address,
-					buildVersion: buildVersion
+					buildVersion: buildVersion,
+					includes: includes
 				});
 
 				Utils.persistServersInfo(serverConfig);
@@ -383,9 +385,14 @@ export default class Utils {
 	/**
 	 * Recupera a lista de includes do arquivod servers.json
 	 */
-	static getIncludes(absolutePath: boolean = false): Array<string> {
-		const servers = Utils.getServersConfig();
-		const includes: Array<string> = servers.includes as Array<string>;
+	static getIncludes(absolutePath: boolean = false, server: any = undefined): Array<string> {
+		let includes: Array<string>;
+		if(server !== undefined && server.includes !== undefined && server.includes.length > 0) {
+			includes = server.includes as Array<string>;
+		} else {
+			const servers = Utils.getServersConfig();
+			includes = servers.includes as Array<string>;
+		}
 
 		if (includes.toString()) {
 			if (absolutePath) {
