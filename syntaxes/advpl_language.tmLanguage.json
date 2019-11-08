@@ -28,7 +28,7 @@
             "patterns": [
                 {
                     "name": "keyword.control.advpl_language",
-                    "match": "(?i)\\b(activate|case|centered|class|constructor|data|define|dialog|do|else|elseif|end|endcase|endclass|endfunction|endif|for|from|function|get|if|main|method|next|nil|of|otherwise|pixel|return|to|user|var|while|enddo|select|where|and|or|between|loop|exit)\\b"
+                    "match": "(?i)\\b(activate|alias|and|beginsql|between|case|centered|class|constructor|data|define|dialog|do|else|elseif|end|endcase|endclass|enddo|endfunction|endif|endsql|exit|for|from|function|get|if|loop|main|method|next|nil|of|or|otherwise|pixel|return|select|to|user|var|while|where)\\b"
                 }
             ]
         },
