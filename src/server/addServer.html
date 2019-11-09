@@ -38,6 +38,12 @@
 					</span>
 				</div>
 
+				<p>${d.localize["tds.webview.dir.include"]}<b>*${d.localize["tds.webview.dir.include2"]}</b></p><!--Includes directory:--><!--Allows multiple-->
+				<div class="wrap-input">
+					<textarea class="inputText" id="includePath" placeholder="Ex: C:/totvs/includes..."></textarea>
+					<input class="inputText" type="file" id="btn-FileInclude" name="btn-FileInclude" onchange='chfillData(event);' webkitdirectory directory multiple/>
+				</div>
+
 				<div>
 					<input id="secureID" class="checkbox" name="secure" type="checkbox" value="1">
 					<label class="checkboxLabel" for="secure">${d.localize["tds.webview.newServer.secure"]}</label>
@@ -56,11 +62,27 @@
 <script>
 	const vscode = acquireVsCodeApi();
 
+// Carrega path das pastas include
+	function chfillData(event){
+	  var input = event.target;
+      var reader = new FileReader();
+
+	  if (includePath.value=="" || includePath.value=="C:/totvs/includes")
+		includePath.value = input.files[0].path;
+	  else
+	  	includePath.value = includePath.value + ";" + input.files[0].path;
+
+
+      reader.readAsBinaryString(input.files[0]);
+	};
+
+
 	function saveServer(close) {
 		const addressID = document.getElementById('addressID').value;
 		const serverNameID = document.getElementById('nameID').value;
 		const portID = document.getElementById('portID').value;
 		const secureID = document.getElementById('secureID').checked ? 1 : 0;
+		const includePath = document.getElementById('includePath').value.split(";");
 
 		vscode.postMessage({
 			command: 'saveServer',
@@ -68,7 +90,8 @@
 			serverName: serverNameID,
 			port: portID,
 			'close': close,
-			secure: secureID
+			secure: secureID,
+			includes: includePath
 		});
 	}
 </script>

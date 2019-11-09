@@ -46,10 +46,8 @@ export function buildFile(filename: string[], recompile: boolean, context: vscod
  * Build a file list.
  */
 async function buildCode(filesPaths: string[], compileOptions: CompileOptions, context: vscode.ExtensionContext) {
-	const includes: Array<string> = utils.getIncludes(true) || [];
-	if (!includes.toString()) {
-		return;
-	}
+
+	const server = utils.getCurrentServer();
 
 	const configADVPL = vscode.workspace.getConfiguration('totvsLanguageServer');
 	const shouldClearConsole = configADVPL.get("clearConsoleBeforeCompile");
@@ -68,9 +66,14 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions, c
 		vscode.window.showWarningMessage(localize("tds.webview.tdsBuild.saved", 'Files saved successfully.'));
 	}
 
-	const server = utils.getCurrentServer();
-
 	if (server) {
+		//Só faz sentido processar os includes se existir um servidor selecionado onde sera compilado.
+		let serverItem = utils.getServerForID(server.id);
+		const includes: Array<string> = utils.getIncludes(true, serverItem) || [];
+		if (!includes.toString()) {
+			return;
+		}
+
 		const permissionsInfos = Utils.getPermissionsInfos();
 		let includesUris: Array<string> = [];
 		for (let idx = 0; idx < includes.length; idx++) {
