@@ -23,7 +23,7 @@ const localizeHTML = {
 	"tds.webview.patch.items.generate.close": localize("tds.webview.patch.items.generate.close","Generate/Close"),
 	"tds.webview.patch.message1": localize("tds.webview.patch.message1","The generated patch is based on the files from RPO. Be sure that the included fonts are compiled."),
 	"tds.webview.patch.items.showing": localize("tds.webview.patch.items.showing","Items showing")
-}
+};
 
 export function patchGenerate(context: vscode.ExtensionContext) {
 	{
@@ -64,7 +64,7 @@ export function patchGenerate(context: vscode.ExtensionContext) {
 
 			if (allInfoServer) {
 				server.address = allInfoServer.address;
-				server.port = allInfoServer.port
+				server.port = allInfoServer.port;
 			}
 
 			// currentPanel.webview.postMessage({
@@ -86,7 +86,7 @@ export function patchGenerate(context: vscode.ExtensionContext) {
 							// const message: string = response.message;
 							// if (message == "Success") {
 							// 	vscode.window.showInformationMessage(localize("tds.webview.sources.loaded","Sources loaded from the Repository: ") + response.objects.length);
-							 	currentPanel.webview.postMessage(response.objects)
+								currentPanel.webview.postMessage(response.objects);
 							// } else {
 							// 	vscode.window.showErrorMessage(message);
 							// }
@@ -99,7 +99,7 @@ export function patchGenerate(context: vscode.ExtensionContext) {
 						const patchName = message.patchName;
 						const patchDest = vscode.Uri.file(message.patchDest).toString();
 
-						if (patchDest == "" || filesPath.length == 0) {
+						if (patchDest === "" || filesPath.length === 0) {
 							vscode.window.showErrorMessage(localize("tds.webview.patch.generate.fail","Generate Patch Fail. Please destination directory and sources/resources list."));
 						} else {
 							//vscode.window.showInformationMessage(localize("tds.webview.patch.generate.start","Start Generate Patch"));
@@ -205,7 +205,7 @@ function sendPatchGenerateMessage(server, patchMaster, patchDest, patchType, pat
 			"patchFiles": filesPath
 		}
 	}).then((response: PatchResult) => {
-		if (response.returnCode == 40840) { // AuthorizationTokenExpiredError
+		if (response.returnCode === 40840) { // AuthorizationTokenExpiredError
 			Utils.removeExpiredAuthorization();
 		}
 		// const message: string = response.message;

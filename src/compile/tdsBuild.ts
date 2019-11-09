@@ -97,7 +97,7 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions, c
 				"compileOptions": compileOptions
 			}
 		}).then((response: CompileResult) => {
-			if (response.returnCode == 40840) {
+			if (response.returnCode === 40840) {
 				Utils.removeExpiredAuthorization();
 			}
 			if(response.compileInfos.length > 1){
@@ -146,10 +146,10 @@ export function commandBuildFile(context, recompile: boolean, files) {
 	}
 	if (files) {
 		const arrayFiles: string[] = changeToArrayString(files);
-		var allFiles = Utils.getAllFilesRecursive(arrayFiles);
+		let allFiles = Utils.getAllFilesRecursive(arrayFiles);
 		buildFile(allFiles, recompile, context);
 	} else {
-		if (filename != undefined) {
+		if (filename !== undefined) {
 			buildFile([filename], recompile, context);
 		}
 	}
@@ -180,7 +180,7 @@ export function commandBuildWorkspace(recompile: boolean, context: vscode.Extens
 			folders.push(value.uri.fsPath);
 		});
 
-		var allFiles = Utils.getAllFilesRecursive(folders);
+		let allFiles = Utils.getAllFilesRecursive(folders);
 
 		buildFile(allFiles, recompile, context);
 	}
@@ -198,7 +198,7 @@ export async function commandBuildOpenEditors(recompile: boolean, context: vscod
 	}
 	if (editor.viewColumn) {
 		filename = editor.document.uri.fsPath;
-		if (files.indexOf(filename) == -1) {
+		if (files.indexOf(filename) === -1) {
 			files.push(filename);
 		}
 	}
@@ -209,7 +209,7 @@ export async function commandBuildOpenEditors(recompile: boolean, context: vscod
 		if (editor) {
 			if (editor.viewColumn) {
 				filename = editor.document.uri.fsPath;
-				if (files.indexOf(filename) == -1) {
+				if (files.indexOf(filename) === -1) {
 					files.push(filename);
 				}
 			}
@@ -225,7 +225,7 @@ export async function commandBuildOpenEditors(recompile: boolean, context: vscod
 		if (nextEditor && !sameEditor(editor as vscode.TextEditor, nextEditor as vscode.TextEditor)) {
 			if (nextEditor.viewColumn) {
 				filename = nextEditor.document.uri.fsPath;
-				if (files.indexOf(filename) == -1) {
+				if (files.indexOf(filename) === -1) {
 					files.push(filename);
 				}
 			}
@@ -251,7 +251,13 @@ function delay(ms: number) {
 }
 
 function sameEditor(editor: vscode.TextEditor, nextEditor: vscode.TextEditor) {
-	if (editor === undefined && nextEditor === undefined) return true;
-	if (editor === undefined || nextEditor === undefined) return false;
+	if (editor === undefined && nextEditor === undefined) {
+		return true;
+	}
+
+	if (editor === undefined || nextEditor === undefined) {
+		return false;
+	}
+	
 	return (editor.viewColumn === nextEditor.viewColumn) && ((editor as any)._id === (nextEditor as any)._id);
 }

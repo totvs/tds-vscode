@@ -5,7 +5,6 @@ import * as path from 'path';
 import * as stripJsonComments from 'strip-json-comments';
 import * as ini from 'ini';
 import { languageClient, localize } from './extension';
-import { ServerItem } from './serversView';
 
 const homedir = require('os').homedir();
 
