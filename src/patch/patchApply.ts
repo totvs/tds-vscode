@@ -1,6 +1,8 @@
 import vscode = require('vscode');
 import path = require('path');
 import fs = require('fs');
+import os = require('os');
+import JSZip = require('jszip');
 import Utils from '../utils';
 import { languageClient } from '../extension';
 import * as nls from 'vscode-nls';
@@ -63,7 +65,7 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 					serverCurrent: server
 				});
 
-				currentPanel.webview.onDidReceiveMessage(message => {
+				currentPanel.webview.onDidReceiveMessage(async message => {
 					switch (message.command) {
 						case 'patchApply':
 							let patchUris: Array<string> = [];
@@ -88,7 +90,7 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 										"applyOldProgram": message.applyOld
 									}
 								}).then((response: PatchResult) => {
-									if (response.returnCode == 40840) { // AuthorizationTokenExpiredError
+									if (response.returnCode === 40840) { // AuthorizationTokenExpiredError
 										Utils.removeExpiredAuthorization();
 									}
 									if (message.applyOld) {
@@ -103,12 +105,41 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 									currentPanel.dispose();
 								}
 							}
+
+						case 'extractPatchsFiles':
+							vscode.window.showWarningMessage("Checking zip files");
+
+							extractPatchsFiles(message.files)
+								.then((files) => {
+									if (files.length === 0) {
+										vscode.window.showWarningMessage("No patch file found in zip files.");
+									} else {
+										for (let index = 0; index < files.length; index++) {
+											const element = files[index];
+											if (currentPanel) {
+												currentPanel.webview.postMessage({
+													command: 'addFilepath',
+													file: element
+												});
+											}
+										}
+									}
+								})
+								.catch((reason: any) => {
+									vscode.window.showErrorMessage(reason);
+									console.debug(reason);
+								});
 							return;
+
+						case 'showDuplicateWarning':
+							vscode.window.showWarningMessage("Already selected. File: " + message.filename);
+							return;
+
 						case 'patchInfo':
 							vscode.window.showInformationMessage("PatchInfo");
-							var args = {
-								fsPath : message.file
-							}
+							const args = {
+								fsPath: message.file
+							};
 							vscode.commands.executeCommand('totvs-developer-studio.patchInfos.fromFile', args);
 							return;
 					}
@@ -127,7 +158,7 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 					vscode.window.showWarningMessage(localize("tds.webview.patch.apply.file", "Are you sure you want apply patch {0} from RPO?", path.basename(filename)), localize('tds.vscode.yes', 'Yes'), localize('tds.vscode.no', 'No')).then(clicked => {
 						if (clicked === localize('tds.vscode.yes', 'Yes')) {
 							const patchUri = vscode.Uri.file(patchFile).toString();
-							const patchUris = [ patchUri ];
+							const patchUris = [patchUri];
 							const permissionsInfos = Utils.getPermissionsInfos();
 							languageClient.sendRequest('$totvsserver/patchApply', {
 								"patchApplyInfo": {
@@ -140,7 +171,7 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 									"applyOldProgram": false
 								}
 							}).then((response: PatchResult) => {
-								if (response.returnCode == 40840) { // AuthorizationTokenExpiredError
+								if (response.returnCode === 40840) { // AuthorizationTokenExpiredError
 									Utils.removeExpiredAuthorization();
 								}
 								// const message: string  = response.message;
@@ -162,6 +193,37 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 			vscode.window.showErrorMessage(localize("tds.webview.server.not.connected", "No server connected."));
 		}
 	}
+}
+
+function extractPatchsFiles(zipfilenames: string[]): Promise<string[]> {
+
+	return new Promise((resolve, reject) => {
+		let files: string[] = [];
+		const tmpPath = fs.mkdtempSync(path.join(os.tmpdir(), 'tds-'));
+
+		zipfilenames.forEach(zipfilename => {
+			const zip = new JSZip();
+			const data = fs.readFileSync(zipfilename);
+
+			zip.loadAsync(data).then(function (contents) {
+				Object.keys(contents.files).forEach(function (filename) {
+					if (filename.toLowerCase().endsWith("ptm")) {
+						const dest = path.join(tmpPath, filename);
+						files.push(dest);
+						zip.file(filename).async('nodebuffer')
+							.then(function (content: any) {
+								fs.writeFileSync(dest, content);
+							})
+							.catch((reason: any)=>{
+								reject(reason);
+							});
+					}
+				});
+				resolve(files);
+			});
+
+		});
+	});
 }
 
 function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {

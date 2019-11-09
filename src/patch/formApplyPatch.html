@@ -51,7 +51,7 @@
 								</table>
 							</div>
 						</div>
-						<input class="inputText" type="file" accept='PatchFile/*.ptm' id="btn-File" name="btn-File" onchange="setTextArea(event)" multiple/>
+						<input class="inputText" type="file" accept='.ptm,.zip,.upd' id="btn-File" name="btn-File" onchange="setTextArea(event)" multiple/>
 
 						<div class="wrap-input">
 							<label for="ApplyOld">${d.localize["tds.webview.applyOld"]}</label>
@@ -72,8 +72,7 @@
 		</div>
 </body>
 <script>
-		${ d.script }
-		var filesString = new Array();
+		${d.script}
 		const vscode = acquireVsCodeApi();
 		var tableAPI = $('#tableInfos').dataTable({
 			ordering: false,
@@ -151,34 +150,58 @@
 						document.getElementById('serverAddressID').value = server.address + ":" + server.port;
 						document.getElementById('serverEnvironmentID').value = server.environment
 						break;
+					case 'addFilepath':
+						addFile(message.file);
+						break;
 				}
 			});
 
 			function setTextArea(event) {
-				var input = event.target;
-				var files = input.files;
+				const input = event.target;
+				const files = input.files;
 
 				for (var i = 0; i < files.length; i++) {
-					var fullPath = files[i].path;
-					var filename = fullPath.substring(fullPath.lastIndexOf('\\\\') + 1);
+					addFile(files[i].path);
+				}
+			}
+
+			function addFile(filePath) {
+				const fnProc = function(filename, fullPath) {
 					if (!searchPatch(fullPath)) {
 						row = new Array(filename, fullPath);
 						tableAPI.row.add(row).draw();
+					} else {
+						vscode.postMessage({
+							command: 'showDuplicateWarning',
+							filename: filename
+						});
 					}
+				}
+
+				var fullPath = filePath;
+				var filename = fullPath.substring(fullPath.lastIndexOf('\\\\') + 1);
+				var ext = filename.substring(filename.length - 3).toLowerCase();
+
+				if (ext === 'zip') {
+					vscode.postMessage({
+						command: 'extractPatchsFiles',
+						files: [fullPath]
+					})
+				} else {
+					fnProc(filename, fullPath);
 				}
 			}
 
 			function searchPatch(fullPath) {
-				var result = false;
 				var patchs = tableAPI.data();
+
 				for (var i = 0; i < patchs.length; i++) {
 					if (patchs[i][1] == fullPath) {
-						result = true;
-						return result;
+						return true;
 					}
 				};
 
-				return result;
+				return false;
 			}
 </script>
 

@@ -328,7 +328,7 @@ export function activate(context: ExtensionContext) {
 			if(args === undefined) {
 				let aeditor = vscode.window.activeTextEditor;
 				if(aeditor !== undefined) {
-					args = [aeditor.document.uri]
+					args = [aeditor.document.uri];
 				}
 			}
 			if (instanceOfUri(args)) {
