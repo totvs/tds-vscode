@@ -1,4 +1,40 @@
 # Versão 0.3.20
+## Corrigido parada de breakpoint mesmo após ter sido removido [Issue 121](https://github.com/totvs/tds-vscode/issues/121)
+### Problema:
+* Mesmo após remover um breakpoint, o servidor ainda mandava uma informação de parada de depuração
+### Solução:
+* Correção interna no processo do debug adapter.
+----
+## Corrigido problema de demora de sincronização de variáveis durante a depuração [Issue 142](https://github.com/totvs/tds-vscode/issues/142)
+### Problema:
+* Ao expandir um grupo de variaveis ocorre uma demora excesiva para que elas sejam apresentadas.
+### Solução:
+* Alterado o debug Adapter para realizar uma busca mais eficiente dos fontes quando ocorrer uma parada.
+----
+## Corrigido identação automática ao digitar a palavra "do" [Issue 152](https://github.com/totvs/tds-vscode/issues/152)
+### Problema:
+* Ao escrever  algo que contenha a palavra "do", o código da linha com esta é indentado, realizando um recuo.
+### Solução:
+* Corrigido processo de identação em relação à palavra "do"
+----
+## Corrigido erro de identação em Embedded Sql [Issue 156](https://github.com/totvs/tds-vscode/issues/156)
+### Problema:
+* Quando existe um código de embedded Sql com o operador UNION ALL a formatação não funciona corretamente.
+### Solução:
+* Corrigido processo de identação para Embedded Sql
+----
+##  Corrigido erro de identação em WsRestful e End WsRestful [Issue 164](https://github.com/totvs/tds-vscode/issues/164)
+### Problema:
+* A identação dos comandos WsRestful, WsData, WsMethod e End WsRestful não são tratadas corretamente
+### Solução:
+* Corrigido processo de identação para de WsRestful, WsData, WsMethod e End WsRestful
+----
+## Corrigido erro de identação em BeginSQL e EndSQL [Issue 188](https://github.com/totvs/tds-vscode/issues/188)
+### Problema:
+* A identação em comandos BeginSQL e EndSQL não funcionam corretamente
+### Solução:
+* Corrigido processo de identação dos comandos BeginSQL e EndSQL
+----
 ## Corrigido o problema de conexão [Issue 207](https://github.com/totvs/tds-vscode/issues/207)
 ### Problema:
 * Ao cadastrar um novo servidor e tentar conectar ocorre falha na conexão.
