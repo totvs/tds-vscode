@@ -59,7 +59,9 @@
 		"tmp": "^0.1.0",
 		"vscode-debugadapter": "1.32.1",
 		"vscode-languageclient": "^4.4.2",
-		"vscode-nls": "^4.1.1"
+		"vscode-nls": "^4.1.1",
+		"watch": "^1.0.2",
+		"zlib": "^1.0.5"
 	},
 	"devDependencies": {
 		"@types/jszip": "^3.1.6",
@@ -235,6 +237,14 @@
 					"type": "array",
 					"default": [],
 					"description": "%tds.package.args.for.lsp%"
+				},
+				"totvsLanguageServer.extensions.folder.patch": {
+					"scope":"resource",
+					"type": "array",
+					"default": [
+						".PRW",".PRX",".PRG",".APW",".APH",".TRES",".PNG",".BMP",".RES",".APL",".TLPP",".4GL"
+					],
+					"description": "%tds.package.extensions_folder_patch%"
 				},
 				"totvsLanguageServer.maxNumberOfProblems": {
 					"scope": "resource",
