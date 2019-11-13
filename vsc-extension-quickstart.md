@@ -59,6 +59,7 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 ### Compilando fonte do editor corrente
 
 * Para compilar o fonte do editor corrente acione o atalho `CTRL + F9`. Ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Compile Selection`.
+A compilação efetuada a partir do editor, sempre irá recompilar o fonte, mantendo assim o mesmo comportamento do TDS-Eclipse.
 
 * Para recompilar o fonte do editor corrente acione o atalho `CTRL + SHIFT + F9`.
 
