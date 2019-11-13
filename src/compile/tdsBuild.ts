@@ -143,6 +143,7 @@ export function commandBuildFile(context, recompile: boolean, files) {
 			return;
 		}
 		filename = editor.document.uri.fsPath;
+		recompile = true;
 	}
 	if (files) {
 		const arrayFiles: string[] = changeToArrayString(files);
@@ -258,6 +259,6 @@ function sameEditor(editor: vscode.TextEditor, nextEditor: vscode.TextEditor) {
 	if (editor === undefined || nextEditor === undefined) {
 		return false;
 	}
-	
+
 	return (editor.viewColumn === nextEditor.viewColumn) && ((editor as any)._id === (nextEditor as any)._id);
 }
