@@ -149,6 +149,7 @@ export function commandBuildFile(context, recompile: boolean, files) {
 			return;
 		}
 		filename = editor.document.uri.fsPath;
+		recompile = true;
 	}
 	if (files) {
 		const arrayFiles: string[] = changeToArrayString(files);

@@ -239,10 +239,21 @@
 					"description": "%tds.package.args.for.lsp%"
 				},
 				"totvsLanguageServer.extensions.folder.patch": {
-					"scope":"resource",
+					"scope": "resource",
 					"type": "array",
 					"default": [
-						".PRW",".PRX",".PRG",".APW",".APH",".TRES",".PNG",".BMP",".RES",".APL",".TLPP",".4GL"
+						".PRW",
+						".PRX",
+						".PRG",
+						".APW",
+						".APH",
+						".TRES",
+						".PNG",
+						".BMP",
+						".RES",
+						".APL",
+						".TLPP",
+						".4GL"
 					],
 					"description": "%tds.package.extensions_folder_patch%"
 				},
