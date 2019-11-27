@@ -1,5 +1,5 @@
 import {debug, DebugSession, Disposable, extensions, QuickPick, QuickPickItem, window} from 'vscode';
-import { chmodSync } from 'fs';
+import { statSync, chmodSync } from 'fs';
 import Utils, { MESSAGETYPE } from '../utils';
 import { localize } from '../extension';
 
@@ -17,11 +17,15 @@ export function getDAP() {
 		}
 		else if (process.platform === "linux") {
 			pathDAP = ext.extensionPath + "/node_modules/@totvs/tds-da/bin/linux/debugAdapter";
-			chmodSync(pathDAP, '755');
+			if (statSync(pathDAP).mode != 33261) {
+				chmodSync(pathDAP, '755');
+			}
 		}
 		else if (process.platform === "darwin") {
 			pathDAP = ext.extensionPath + "/node_modules/@totvs/tds-da/bin/mac/debugAdapter";
-			chmodSync(pathDAP, '755');
+			if (statSync(pathDAP).mode != 33261) {
+				chmodSync(pathDAP, '755');
+			}
 		}
 	}
 	return { command: pathDAP, args: dapArgs };
