@@ -97,6 +97,12 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions, c
 				"compileOptions": compileOptions
 			}
 		}).then((response: CompileResult) => {
+			// Exibe aba problems casa haja erro ou warning
+			if (response.compileInfos[0].status === "FATAL" ||
+				response.compileInfos[0].status === "WARNING"){
+					vscode.commands.executeCommand("workbench.action.problems.focus");
+				}
+
 			if (response.returnCode === 40840) {
 				Utils.removeExpiredAuthorization();
 			}
