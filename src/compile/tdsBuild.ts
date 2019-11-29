@@ -100,20 +100,23 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions, c
 			if (response.returnCode === 40840) {
 				Utils.removeExpiredAuthorization();
 			}
-			if(response.compileInfos.length > 1){
+			if (response.compileInfos.length > 0) {
 				// Exibe aba problems casa haja pelo menos um erro ou warning
 				let showProblems = false;
 				for (let index = 0; index < response.compileInfos.length; index++) {
 					const compileInfo = response.compileInfos[index];
-					if (compileInfo.status === "FATAL" || compileInfo.status === "WARNING") {
+					if (compileInfo.status === "FATAL" || compileInfo.status === "ERROR" || compileInfo.status === "WARN") {
 						showProblems = true;
 						break;
 					}
 				}
 				if (showProblems) {
+					// focus
 					vscode.commands.executeCommand("workbench.action.problems.focus");
 				}
-				verifyCompileResult(response, context);
+				if (context !== undefined) {
+					verifyCompileResult(response, context);
+				}
 			}
 		}, (err) => {
 			vscode.window.showErrorMessage(err);
@@ -132,8 +135,8 @@ function verifyCompileResult(response, context){
 	let questionAgain = true;
 
 	const configADVPL = vscode.workspace.getConfiguration('totvsLanguageServer');
-	const questionEncodingConfig = configADVPL.get("askCompileResult");
-	if (questionEncodingConfig !== false) {
+	const askCompileResult = configADVPL.get("askCompileResult");
+	if (askCompileResult !== false) {
 		vscode.window.showInformationMessage(textQuestion, textYes, textNo, textNoAsk).then(clicked => {
 			if (clicked === textYes) {
 				showCompileResult(response.compileInfos, context);
