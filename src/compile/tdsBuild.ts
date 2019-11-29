@@ -97,16 +97,22 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions, c
 				"compileOptions": compileOptions
 			}
 		}).then((response: CompileResult) => {
-			// Exibe aba problems casa haja erro ou warning
-			if (response.compileInfos[0].status === "FATAL" ||
-				response.compileInfos[0].status === "WARNING"){
-					vscode.commands.executeCommand("workbench.action.problems.focus");
-				}
-
 			if (response.returnCode === 40840) {
 				Utils.removeExpiredAuthorization();
 			}
 			if(response.compileInfos.length > 1){
+				// Exibe aba problems casa haja pelo menos um erro ou warning
+				let showProblems = false;
+				for (let index = 0; index < response.compileInfos.length; index++) {
+					const compileInfo = response.compileInfos[index];
+					if (compileInfo.status === "FATAL" || compileInfo.status === "WARNING") {
+						showProblems = true;
+						break;
+					}
+				}
+				if (showProblems) {
+					vscode.commands.executeCommand("workbench.action.problems.focus");
+				}
 				verifyCompileResult(response, context);
 			}
 		}, (err) => {
