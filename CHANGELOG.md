@@ -1,7 +1,20 @@
+# Versão 0.3.21
+## Corrigida indentação de código BeginSQL e EndSQL [Issue 214](https://github.com/totvs/tds-vscode/issues/214)
+### Problema:
+* Indentação de código BeginSQL e EndSQL na formatação por trecho incorreta.
+### Solução:
+* Correção no processo de formatação entre BeginSQL e EndSQL.
+----
+## Focar na janela de "problemas" quando ocorrer "erro de compilação" [Issue 172](https://github.com/totvs/tds-vscode/issues/172)
+### Problema:
+* Focar na janela de "problemas" quando ocorrer "erro de compilação".
+### Solução:
+* Adicionada verificação se houve problema na compilação e muda o foco para aba de "Problemas".
+----
 # Versão 0.3.20
 ## Corrigido parada de breakpoint mesmo após ter sido removido [Issue 121](https://github.com/totvs/tds-vscode/issues/121)
 ### Problema:
-* Mesmo após remover um breakpoint, o servidor ainda mandava uma informação de parada de depuração
+* Mesmo após remover um breakpoint, o servidor ainda mandava uma informação de parada de depuração.
 ### Solução:
 * Correção interna no processo do debug adapter.
 ----
@@ -15,25 +28,25 @@
 ### Problema:
 * Ao escrever  algo que contenha a palavra "do", o código da linha com esta é indentado, realizando um recuo.
 ### Solução:
-* Corrigido processo de identação em relação à palavra "do"
+* Corrigido processo de identação em relação à palavra "do".
 ----
 ## Corrigido erro de identação em Embedded Sql [Issue 156](https://github.com/totvs/tds-vscode/issues/156)
 ### Problema:
 * Quando existe um código de embedded Sql com o operador UNION ALL a formatação não funciona corretamente.
 ### Solução:
-* Corrigido processo de identação para Embedded Sql
+* Corrigido processo de identação para Embedded Sql.
 ----
 ##  Corrigido erro de identação em WsRestful e End WsRestful [Issue 164](https://github.com/totvs/tds-vscode/issues/164)
 ### Problema:
-* A identação dos comandos WsRestful, WsData, WsMethod e End WsRestful não são tratadas corretamente
+* A identação dos comandos WsRestful, WsData, WsMethod e End WsRestful não são tratadas corretamente.
 ### Solução:
-* Corrigido processo de identação para de WsRestful, WsData, WsMethod e End WsRestful
+* Corrigido processo de identação para de WsRestful, WsData, WsMethod e End WsRestful.
 ----
 ## Corrigido erro de identação em BeginSQL e EndSQL [Issue 188](https://github.com/totvs/tds-vscode/issues/188)
 ### Problema:
-* A identação em comandos BeginSQL e EndSQL não funcionam corretamente
+* A identação em comandos BeginSQL e EndSQL não funcionam corretamente.
 ### Solução:
-* Corrigido processo de identação dos comandos BeginSQL e EndSQL
+* Corrigido processo de identação dos comandos BeginSQL e EndSQL.
 ----
 ## Corrigido o problema de conexão [Issue 207](https://github.com/totvs/tds-vscode/issues/207)
 ### Problema:
@@ -78,11 +91,11 @@
 # Versao 0.3.14
 ## Inclusão de PullRequest [PullRequest 155](https://github.com/totvs/tds-vscode/pull/155)
 ### PullRequest:
-* Inclusão de palavras reservadas
+* Inclusão de palavras reservadas.
 ----
 ## Corrigido problema ao abrir a tela de "Compile Key"
 ### Problema:
-* Ao abrir a tela de "Compile Key" sem que antes algum processo tenha iniciado o Language Server, esse último era iniciado após a abertura da tela ocasionando um erro para definir o Id da máquina
+* Ao abrir a tela de "Compile Key" sem que antes algum processo tenha iniciado o Language Server, esse último era iniciado após a abertura da tela ocasionando um erro para definir o Id da máquina.
 ### Solução:
 * Alterado o processo de abertura da tela de "Compile Key" para que se caso nao exista um "LS no ar", aguardar a inicialização do mesmo para continuar com a abertura da página.
 ----
@@ -97,11 +110,11 @@
 ### Problema:
 * Quando é lançado uma exceção pelo servidor o plugin não mostra no console.
 ### Solução:
-* Alterado o Servidor DAP para receber mensagens de Exception do servidor e enviar uma mensagem de log para o Client
+* Alterado o Servidor DAP para receber mensagens de Exception do servidor e enviar uma mensagem de log para o Client.
 ----
 ## Removido a opção para inicalizar o plugin do TDS VsCode simplemsmente ao lançar uma depuração qualquer [Issue 124](https://github.com/totvs/tds-vscode/issues/124)
 ### Problema:
-* O Plugin do TDS VsCode era ativado sempre que uma depuração era iniciada, mesmo que fosse de outra linguagem
+* O Plugin do TDS VsCode era ativado sempre que uma depuração era iniciada, mesmo que fosse de outra linguagem.
 ### Solução:
 * Removido o parametro "onDebug" dos eventos que ativam a extensão.
 ----
@@ -109,13 +122,13 @@
 ### Problema:
 * Caso o usuario peça uma compilação e por algum motivo o servidor não está mais on-line, a mensagem de erro apresentada não era clara sobre essa situação.
 ### Solução:
-* Mensagem de erro alterada incluindo informação para o usuario que a falha pode ter ocorrido pois o servidor está off-line
+* Mensagem de erro alterada incluindo informação para o usuario que a falha pode ter ocorrido pois o servidor está off-line.
 ----
 ## Correção na identificação de declaração de classe pelo Syntax Highlight [Issue 116](https://github.com/totvs/tds-vscode/issues/116)
 ### Problema:
-* Em uma classe, caso seja removido os espaços, ou tabs, no inicio da linha onde estão as declarações de variaveis e métodos, corrompia toda a pintura do fonte
+* Em uma classe, caso seja removido os espaços, ou tabs, no inicio da linha onde estão as declarações de variaveis e métodos, corrompia toda a pintura do fonte.
 ### Solução:
-* Correão na expressão regular de identificação de variáveis e métodos na declaração de classes
+* Correão na expressão regular de identificação de variáveis e métodos na declaração de classes.
 ----
 # Versão 0.3.12
 ## Correção emeregencial de problema no pré compilador [Issue 111](https://github.com/totvs/tds-vscode/issues/111)
@@ -139,16 +152,16 @@
 ----
 ## Erro ao aplicar patch [Issue 96](https://github.com/totvs/tds-vscode/issues/96)
 ### Problema:
-* Erro "Patch URI list not informed" ao aplicar patch
+* Erro "Patch URI list not informed" ao aplicar patch.
 ### Solução:
-*  Correções internas no Language Server
+*  Correções internas no Language Server.
 ----
 # Versão 0.3.10
 ## Identação de código [Issue 91](https://github.com/totvs/tds-vscode/issues/91)
 ### Melhoria:
 * Não alterar a posição do return.
 ### Solução:
-* Desligar a formatação na salva do fonte e não alterar a posição do return na formatação
+* Desligar a formatação na salva do fonte e não alterar a posição do return na formatação.
 ----
 ## Recompatibilização com servidores 131227 [Issue 90](https://github.com/totvs/tds-vscode/issues/90) relativo a [Issue 86](https://github.com/totvs/tds-vscode/issues/86)
 ### Problema:
@@ -181,7 +194,7 @@
 ### Melhoria:
 * Implementar o sincronismo de tabelas durante a depuração.
 ### Solução:
-* Implementado o sincronismo de tabelas, o qual aparecerá como um escopo de variável e ao chamar pela visão "Debug Console" prefixando o nome da tabela com o comando "table:" (Ex: table:SM0)
+* Implementado o sincronismo de tabelas, o qual aparecerá como um escopo de variável e ao chamar pela visão "Debug Console" prefixando o nome da tabela com o comando "table:" (Ex: table:SM0).
 ----
 ## Barra invoca intelisense: [Issue 16](https://github.com/totvs/tds-vscode/issues/16)
 ### Problema:
@@ -254,39 +267,39 @@
 
 ## Salvar senha do ambiente: [Issue 5](https://github.com/totvs/tds-vscode/issues/5)
 ### Melhoria:
-* Salvar a senha do ambiente para permitir a reconexão automática
+* Salvar a senha do ambiente para permitir a reconexão automática.
 ### Solução:
-* Usuário e senha serão salvos (encriptados) para permitir a reconexão no ambiente
+* Usuário e senha serão salvos (encriptados) para permitir a reconexão no ambiente.
 ----
 ## Conteúdos strings não são apresentadas como sendo tipo string: [Issue 7](https://github.com/totvs/tds-vscode/issues/7)
 ### Problema:
 * Variável caracter apresentada sem aspas no Debug Console, caso tivesse conteúdo numérico poderia confundir o desenvolvedor mais desatento.
 ### Solução:
-* Cercado com aspas o retorno da variável no Debug Console, reforçando ser caracter
+* Cercado com aspas o retorno da variável no Debug Console, reforçando ser caracter.
 ----
 ## Ordenação alfabética dos Servidores: [Issue 19](https://github.com/totvs/tds-vscode/issues/19)
 ### Melhoria:
-* Novos servidores inseridos na ordem de criação, dificultando a localização
+* Novos servidores inseridos na ordem de criação, dificultando a localização.
 ### Solução:
-* Ordenado alfabeticamente o servidor após sua inclusão
+* Ordenado alfabeticamente o servidor após sua inclusão.
 ----
 ## Iniciar conectado no ambiente anterior: [Issue 21](https://github.com/totvs/tds-vscode/issues/21) e relativo [Issue 5](https://github.com/totvs/tds-vscode/issues/5)
 ### Melhoria:
-* Conectar automaticamente o ambiente Protheus na abertura da workspace
+* Conectar automaticamente o ambiente Protheus na abertura da workspace.
 ### Solução:
-* Com o armazenamento protegido da senha, faremos a reconexão automática no ambiente de desenvolvimento
+* Com o armazenamento protegido da senha, faremos a reconexão automática no ambiente de desenvolvimento.
 ----
 ## Abas exibidas, porém sem variáveis: [Issue 22](https://github.com/totvs/tds-vscode/issues/22)
 ### Melhoria:
-* Não apresentar as pastas de variáveis na sessão Debug, durante a depuração, caso não haja nenhuma variável disponível para o tipo em questão (local, public, private, static)
+* Não apresentar as pastas de variáveis na sessão Debug, durante a depuração, caso não haja nenhuma variável disponível para o tipo em questão (local, public, private, static).
 ### Solução:
-* Abas de variáveis serão exibidas apenas quando tiverem conteúdo
+* Abas de variáveis serão exibidas apenas quando tiverem conteúdo.
 ----
 ## Localização do strings para Espanhol: [Issue 34](https://github.com/totvs/tds-vscode/issues/34)
 ### Melhoria:
-* Traduzir extensão para o Espanhol
+* Traduzir extensão para o Espanhol.
 ### Solução:
-* Traduzida extensão para o Espanhol
+* Traduzida extensão para o Espanhol.
 ----
 ## Encoding sugerido: [Issue 37](https://github.com/totvs/tds-vscode/issues/37)
 ### Melhoria:
@@ -303,7 +316,7 @@ Quer mudar o encoding para o padrão Windows1252?
 
  **Observação:**
 
- Em casos específicos, como na compilação de fontes em Cirílico (Russo), o encode poderá ser definido manualmente no arquivo settings.json de sua workspace, abaixo um exemplo de como usar o cirílico (Windows1251)
+ Em casos específicos, como na compilação de fontes em Cirílico (Russo), o encode poderá ser definido manualmente no arquivo settings.json de sua workspace, abaixo um exemplo de como usar o cirílico (Windows1251).
 
 	{
 		"totvsLanguageServer.welcomePage": false,
