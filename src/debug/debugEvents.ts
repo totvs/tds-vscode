@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 
 const DEBUG_TYPE: string = "totvs_language_debug";
+const WEB_DEBUG_TYPE: string = "totvs_language_web_debug";
 
 interface LogBody {
 	time: string;
@@ -57,7 +58,7 @@ const SPACES: string = ' '.repeat(11);
 };*/
 
 export function processDebugCustomEvent(event: vscode.DebugSessionCustomEvent) {
-	if (event.session.type.startsWith(DEBUG_TYPE)) {
+	if (event.session.type.startsWith(DEBUG_TYPE) || event.session.type.startsWith(WEB_DEBUG_TYPE)) {
 		const console = vscode.debug.activeDebugConsole;
 
 		if (event.event === 'TDA/log') {

@@ -2,7 +2,7 @@ import { CodeLens, commands, DecorationOptions, DecorationRangeBehavior, Decorat
 import { CancellationToken, LanguageClient, LanguageClientOptions, ProvideCodeLensesSignature, RevealOutputChannelOn, ServerOptions } from 'vscode-languageclient/lib/main';
 import * as ls from 'vscode-languageserver-types';
 import vscode = require('vscode');
-import { chmodSync } from 'fs';
+import { statSync, chmodSync } from 'fs';
 import { reconnectLastServer } from './serversView';
 
 import * as nls from 'vscode-nls';
@@ -67,10 +67,14 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 		advpls = dir + "/node_modules/@totvs/tds-ls/bin/windows/advpls.exe";
 	} else if (process.platform === "linux") {
 		advpls = dir + "/node_modules/@totvs/tds-ls/bin/linux/advpls";
-		chmodSync(advpls, '755');
+		if (statSync(advpls).mode != 33261) {
+			chmodSync(advpls, '755');
+		}
 	} else if (process.platform === "darwin") {
 		advpls = dir + "/node_modules/@totvs/tds-ls/bin/mac/advpls";
-		chmodSync(advpls, '755');
+		if (statSync(advpls).mode != 33261) {
+			chmodSync(advpls, '755');
+		}
 	}
 
 	let serverOptions: ServerOptions = {

@@ -105,6 +105,7 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 									currentPanel.dispose();
 								}
 							}
+							return;
 
 						case 'extractPatchsFiles':
 							vscode.window.showWarningMessage("Checking zip files");
