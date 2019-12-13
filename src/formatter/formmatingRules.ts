@@ -110,11 +110,10 @@ export class FormattingRules {
 				increment: true,
 				decrement: true,
 				reset: false
-			},
-			{
+			}, {
 				id: '#endif',
 				expression: /^(\s*)(#)(\s*)(endif)/i,
-				increment: true,
+				increment: false,
 				decrement: true,
 				reset: false
 			}, {
