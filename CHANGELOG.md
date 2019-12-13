@@ -1,4 +1,16 @@
 # Versão 0.3.21
+## Extensão permite adicionar o mesmo server várias vezes [Issue 58](https://github.com/totvs/tds-vscode/issues/58)
+### Problema:
+* Extensão permite adicionar o mesmo server várias vezes.
+### Solução:
+* Correção do problema no momento da inclusão ou renomeação da conexão.
+----
+## Configuração Debug WebApp [Issue 195](https://github.com/totvs/tds-vscode/issues/195)
+### Problema:
+* Falha no inicio da depuração via WebApp.
+### Correção:
+* Corrigida situação no momento do inicio da depuração.
+----
 ## Corrigida indentação de código BeginSQL e EndSQL [Issue 214](https://github.com/totvs/tds-vscode/issues/214)
 ### Problema:
 * Indentação de código BeginSQL e EndSQL na formatação por trecho incorreta.
