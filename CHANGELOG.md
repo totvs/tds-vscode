@@ -1,3 +1,10 @@
+# Versão 0.3.22
+## Ao formatar o documento a identação fica errada quando existe #ifdef [Issue 230](https://github.com/totvs/tds-vscode/issues/230)
+### Problema:
+* Ao formatar o documento a identação fica errada quando existe #ifdef.
+### Solução:
+* Corrigida a regra para identação do #endif.
+----
 # Versão 0.3.21
 ## Extensão permite adicionar o mesmo server várias vezes [Issue 58](https://github.com/totvs/tds-vscode/issues/58)
 ### Problema:
