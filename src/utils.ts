@@ -333,6 +333,7 @@ export default class Utils {
 					port: parseInt(port),
 					address: address,
 					buildVersion: buildVersion,
+					secure: secure,
 					includes: includes
 				});
 
