@@ -20,7 +20,7 @@
             "patterns": [
                 {
                     "name": "keyword.control.directive",
-                    "match": "(?i)#\\b(define|endif|ifdef|ifndef|include|xcommand|xtranslate)\\b"
+                    "match": "(?i)#\\b(define|endif|else|ifdef|ifndef|include|xcommand|xtranslate)\\b"
                 }
             ]
         },
