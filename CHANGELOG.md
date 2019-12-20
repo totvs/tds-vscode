@@ -1,3 +1,10 @@
+# Versão 0.3.23
+## Connection terminated by administrator [Issue 189](https://github.com/totvs/tds-vscode/issues/189)
+### Problema:
+* Depuração derruba o servidor exibindo a mensagem "Connection terminated by administrator".
+### Solução:
+* Corrigida ação interna da mensagem idle da depuração.
+----
 # Versão 0.3.22
 ## Ao formatar o documento a identação fica errada quando existe #ifdef [Issue 230](https://github.com/totvs/tds-vscode/issues/230)
 ### Problema:
