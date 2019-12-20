@@ -325,6 +325,12 @@ export default class Utils {
 				vscode.window.showErrorMessage(localize("tds.webview.serversView.serverNameDuplicated", "Server name already exists"));
 				return undefined;
 			} else {
+				let validate_includes: string[] = [];
+				includes.forEach(element => {
+					if (element !== undefined && element.length > 0) {
+						validate_includes.push(element);
+					}
+				});
 				const serverId: string = Utils.generateRandomID();
 				servers.push({
 					id: serverId,
@@ -334,7 +340,7 @@ export default class Utils {
 					address: address,
 					buildVersion: buildVersion,
 					secure: secure,
-					includes: includes
+					includes: validate_includes
 				});
 
 				Utils.persistServersInfo(serverConfig);
