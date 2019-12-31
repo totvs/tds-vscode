@@ -33,7 +33,20 @@ export function compileKeyPage(context: vscode.ExtensionContext) {
 	}
 }
 
-function initializePage(context: vscode.ExtensionContext) {
+	// Formata data no formato aaaa-mm-dd
+	// para apresentacao pelo campo do tipo date
+	function strZero(nr, n){
+		return Array(n-String(nr).length+1).join('0')+nr;
+	}
+	function formatDate(date) {
+		var data = new Date( date ),
+			day  = strZero( data.getDate().toString() ,2),
+			month  = strZero( (data.getMonth()+1).toString() ,2), //+1 pois no getMonth Janeiro começa com zero.
+			year = data.getFullYear();
+		return [year, month, day].join('-');
+	}
+
+	function initializePage(context: vscode.ExtensionContext) {
 
 	let extensionPath = '';
 	if (!context || context === undefined) {
@@ -61,10 +74,10 @@ function initializePage(context: vscode.ExtensionContext) {
 
 	const compileKey = Utils.getPermissionsInfos();
 	if (compileKey !== "" && compileKey.authorizationToken && !compileKey.userId) {
-		const generated = new Date(compileKey.issued);
-		const expiry = new Date(compileKey.expiry);
+		const generated = formatDate(compileKey.issued);
+		const expiry = formatDate(compileKey.expiry);
 		const canOverride: boolean = compileKey.buildType == "0";
-		setCurrentKey(currentPanel, compileKey.path, compileKey.machineId, generated.toLocaleDateString(), expiry.toLocaleDateString(), compileKey.tokenKey, canOverride);
+		setCurrentKey(currentPanel, compileKey.path, compileKey.machineId, generated, expiry, compileKey.tokenKey, canOverride);
 	}
 
 	currentPanel.webview.onDidReceiveMessage(message => {

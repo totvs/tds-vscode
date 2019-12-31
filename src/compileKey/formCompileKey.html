@@ -20,11 +20,10 @@
 					<!--Compile Key-->
 				</div>
 
-				<div class="wrap-input">
+				<!-- <div class="wrap-input">
 					<label for="MachineID" title="This machine ID">${d.localize["tds.webview.compile.machine.id"]}</label>
-					<!--Machine ID-->
 					<input class="inputText" type="text" id="MachineID" name="MachineID" disabled >
-				</div>
+				</div> -->
 
 				<div class="wrap-input">
 					<label for="compileKeyFile">${d.localize["tds.webview.compile.key.file"]}</label>
@@ -37,19 +36,19 @@
 				<div class="wrap-input">
 					<label for="KeyID" title="Your compile key ID">${d.localize["tds.webview.compile.key.id"]}</label>
 					<!--Machine ID-->
-					<input class="inputText" type="text" id="KeyID" name="KeyID" >
+					<input class="inputText" type="text" id="KeyID" name="KeyID" disabled>
 				</div>
 
 				<div class="wrap-input">
 					<label for="GeneratedIn">${d.localize["tds.webview.compile.key.generated"]}</label>
 					<!--Generated In-->
-					<input class="inputText" type="text" id="GeneratedInID" name="GeneratedIn" >
+					<input class="inputText" type="date" id="GeneratedInID" name="GeneratedIn">
 				</div>
 
 				<div class="wrap-input">
 					<label for="ExpireIn">${d.localize["tds.webview.compile.key.expire"]}</label>
 					<!--Expire In-->
-					<input class="inputText" type="text" id="ExpireInID" name="ExpireIn" >
+					<input class="inputText" type="date" id="ExpireInID" name="ExpireIn" >
 				</div>
 
 				<div class="wrap-input">
@@ -97,6 +96,19 @@
 	const vscode = acquireVsCodeApi();
 	var defaultID;
 
+	function strZero(nr, n){
+		return Array(n-String(nr).length+1).join('0')+nr;
+	}
+
+	// Garante que a data sera enviada no formato dd/mm/aaaa
+	function formatDateToKey(date) {
+		var data = new Date( date.split('-').join("/") ),
+			day  = strZero( data.getDate().toString() ,2),
+			month  = strZero( (data.getMonth()+1).toString() ,2), //+1 pois no getMonth Janeiro começa com zero.
+			year = data.getFullYear();
+		return [day, month, year].join('/');
+	}
+
 	function validate(){
 		var id = document.getElementById('KeyID').value;
 		var generated = document.getElementById('GeneratedInID').value;
@@ -107,8 +119,8 @@
 		vscode.postMessage({
 			command: 'validateKey',
 			'id': id,
-			'generated': generated,
-			'expire': expire,
+			'generated': formatDateToKey( generated ),
+			'expire': formatDateToKey( expire ),
 			'token': token,
 			'overwrite': overwrite
 		});
@@ -122,12 +134,12 @@
 		var token = document.getElementById('TokenID');
 		var overwrite = document.getElementById('OverwriteID');
 
-		id.value = "";
+		// id.value = "";
 		path.value = "";
 		generated.value = "";
 		expire.value = "";
 		token.value = "";
-		overwrite.checked = false;
+		overwrite.checked = true;
 
 		path.disabled = false;
 		generated.disabled = false;
@@ -174,8 +186,8 @@
 			'close': close,
 			'path': filePath,
 			'id': id,
-			'generated': generated,
-			'expire': expire,
+			'generated': formatDateToKey( generated ),
+			'expire': formatDateToKey( expire ),
 			'token': token,
 			'overwrite': overwrite
 		});
@@ -210,7 +222,8 @@
 				overwrite.disabled = true;
 				break;
 			case 'setID':
-				document.getElementById('MachineID').value = message.id;
+				// document.getElementById('MachineID').value = message.id;
+				document.getElementById('KeyID').value = message.id;
 				defaultID = message.id;
 				break;
 			case 'setOutputMessage':
