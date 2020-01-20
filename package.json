@@ -64,7 +64,7 @@
 		"zlib": "^1.0.5"
 	},
 	"devDependencies": {
-		"@types/jszip": "^3.1.6",
+		"@types/jszip": "^3.1.7",
 		"@types/mocha": "5.2.5",
 		"@types/node": "8.9.3",
 		"del": "^4.1.1",
@@ -76,7 +76,7 @@
 		"mocha": "5.2.0",
 		"tslint": "5.11.0",
 		"typescript": "3.1.6",
-		"vsce": "^1.69.0",
+		"vsce": "^1.71.0",
 		"vscode": "^1.1.36",
 		"vscode-debugadapter-testsupport": "1.32.0",
 		"vscode-nls-dev": "^3.3.1"
