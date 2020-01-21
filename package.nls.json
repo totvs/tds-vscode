@@ -102,5 +102,8 @@
     "tds.package.editor.toggle.autocomplete.basic": "Standard VS Cdoe procedure.",
 	"tds.package.editor.toggle.autocomplete.ls": "Search in the Language Server of the current environment.",
 	"tds.command.debug.toggleTableSync": "Toggle table sync",
-	"tds.package.extensions_folder_patch": "Lista de extensões permitidas para compilar via pasta"
+	"tds.package.extensions_folder_patch": "Lista de extensões permitidas para compilar via pasta",
+	"tds.package.tdsreplay.configure.launcher.title": "TDS Replay: Configure Launchers",
+	"tds.package.tdsreplay.configure.launcher.description": "Page to help on the TDS Replay launch configurations.",
+	"tds.package.tdsreplay.debug": "TDS Replay Debug"
 }

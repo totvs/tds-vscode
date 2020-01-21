@@ -32,6 +32,9 @@ import launcherConfig from './launcher/launcherConfiguration';
 import { onCaptureLoggers, offCaptureLoggers } from './loggerCapture/logger';
 import { TotvsConfigurationWebProvider } from './debug/TotvsConfigurationWebProvider';
 import { TotvsConfigurationProvider } from './debug/TotvsConfigurationProvider';
+import tdsReplayLauncherConfig from './launcher/tdsReplay/tdsReplayLauncherConfig';
+import { TDSReplayTimeLineView } from "./debug/TDSReplayTimeLineView";
+import { TotvsConfigurationTdsReplayProvider } from './debug/TotvsConfigurationTdsReplayProvider';
 import { getDAP, getProgramName, getProgramArguments } from './debug/debugConfigs';
 import { toggleTableSync } from './debug/debugConfigs';
 import { toggleAutocompleteBehavior, updateSettingsBarItem } from './server/languageServerSettings';
@@ -64,6 +67,8 @@ export function activate(context: ExtensionContext) {
 		context.subscriptions.push(languageClient.start());
 
 		let p2c = languageClient.protocol2CodeConverter;
+
+		//createTimeLineDataProvider();
 
 		//General commands.
 		(() => {
@@ -251,10 +256,19 @@ export function activate(context: ExtensionContext) {
 		console.error(localize('tds.vscode.server_vision_not_load', 'Visão "Servidores" não inicializada.'));
 	}
 
+	let viewTDSReplayTimeLine = new TDSReplayTimeLineView(context);
+	if (!viewTDSReplayTimeLine) {
+		console.error(localize('tds.vscode.tdsreplay_timelines_not_load', 'Visão TDS Replay - TimeLines não inicializada.'));
+	}
+
 	// Registra uma configuração de debug
 	const provider = new TotvsConfigurationProvider();
 	context.subscriptions.push(debug.registerDebugConfigurationProvider(TotvsConfigurationProvider.type, provider));
 	context.subscriptions.push(provider);
+
+	const tdsReplayProvider = new TotvsConfigurationTdsReplayProvider();
+	context.subscriptions.push(debug.registerDebugConfigurationProvider(TotvsConfigurationTdsReplayProvider.type, tdsReplayProvider));
+	context.subscriptions.push(tdsReplayProvider);
 
 	// Registra uma configuração de debug web
 	const webProvider = new TotvsConfigurationWebProvider();
@@ -291,6 +305,10 @@ export function activate(context: ExtensionContext) {
 
 	// Abre a tela de configuração de launchers
 	commands.registerCommand("totvs-developer-studio.configure.launcher", () => launcherConfig.show(context));
+
+			// Abre a tela de configuração de launchers
+	commands.registerCommand("totvs-developer-studio.tdsreplay.configure.launcher", () => tdsReplayLauncherConfig.show(context));
+
 
 	//inicialliza item de barra de status de servidor conectado ou não.
 	totvsStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);

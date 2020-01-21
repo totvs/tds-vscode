@@ -741,6 +741,81 @@
 				}
 			},
 			{
+				"type": "totvs_tdsreplay_debug",
+				"label": "%tds.package.tdsreplay.debug%",
+				"adapterExecutableCommand": "tds.getDAP",
+				"configurationAttributes": {
+					"launch": {
+						"required": [
+							"tdsReplayFile"
+						],
+						"properties": {
+							"cwb": {
+								"type": "string",
+								"description": "%tds.package.properties.cwb.description%",
+								"default": "${workspaceFolder}"
+							},
+							"tdsReplayFile" : {
+								"type": "string",
+								"description" : "The TDS Replay File recorder by the server.",
+								"default" : ""
+							},
+							"password" : {
+								"type": "string",
+								"description" : "The password of the TDS Replay File",
+								"default" : ""
+							},
+							"includeSources" : {
+								"type": "string",
+								"description" : "The sources that must be included when importing the information. WildCards (*) can be used.",
+								"default" : "*"
+							},
+							"excludeSources" : {
+								"type": "string",
+								"description" : "The sources that must be excluded when importing the information. WildCards (*) can be used.",
+								"default" : ""
+							},
+							"logFile": {
+								"type": "string",
+								"default": "${workspaceFolder}\\tdsreplayimport.log"
+							},
+							"enableVerbose": {
+								"type": "boolean",
+								"default": false
+							}
+						}
+					}
+				},
+				"initialConfigurations": [
+					{
+						"type": "totvs_tdsreplay_debug",
+						"request": "launch",
+						"name": "${1:%tds.package.tdsreplay.debug%}",
+						"cwb": "${workspaceFolder}",
+						"tdsReplayFile": "",
+						"password": "",
+						"includeSources": "",
+						"excludeSources": ""
+					}
+				],
+				"configurationSnippets": [
+					{
+						"label": "%tds.package.tdsreplay.debug%",
+						"description": "A new configuration for 'debugging' a TDS Replay file.",
+						"body": {
+							"type": "totvs_tdsreplay_debug",
+							"request": "launch",
+							"name": "${1:%tds.package.tdsreplay.debug%}",
+							"cwb": "${workspaceFolder}",
+							"tdsReplayFile": "",
+							"password": "",
+							"includeSources": "",
+							"excludeSources": ""
+						}
+					}
+				]
+			},
+			{
 				"type": "totvs_language_web_debug",
 				"label": "%tds.package.totvs_language_debug.web%",
 				"adapterExecutableCommand": "tds.getDAP",
@@ -900,6 +975,12 @@
 				{
 					"id": "totvs_server",
 					"name": "%tds.package.server.view%"
+				}
+			],
+			"debug": [
+				{
+					"id": "tdsreplay.timeline",
+					"name": "TDS Replay - Timelines"
 				}
 			]
 		},

@@ -1,7 +1,11 @@
 import * as vscode from "vscode";
+import {TotvsConfigurationProvider} from "./TotvsConfigurationProvider";
+import {TotvsConfigurationTdsReplayProvider} from "./TotvsConfigurationTdsReplayProvider";
+import { createTimeLine,refreshTimeLineView, selectTimeLine, clearTimeLineView } from "./TDSReplayTimeLineView";
 
-const DEBUG_TYPE: string = "totvs_language_debug";
+const DEBUG_TYPE = TotvsConfigurationProvider.type;
 const WEB_DEBUG_TYPE: string = "totvs_language_web_debug";
+const REPLAY_DEBUG_TYPE = TotvsConfigurationTdsReplayProvider.type;
 
 interface LogBody {
 	time: string;
@@ -58,40 +62,70 @@ const SPACES: string = ' '.repeat(11);
 };*/
 
 export function processDebugCustomEvent(event: vscode.DebugSessionCustomEvent) {
-	if (event.session.type.startsWith(DEBUG_TYPE) || event.session.type.startsWith(WEB_DEBUG_TYPE)) {
+	if (event.session.type.startsWith(DEBUG_TYPE) || event.session.type.startsWith(WEB_DEBUG_TYPE) || event.session.type.startsWith(REPLAY_DEBUG_TYPE)) {
 		const console = vscode.debug.activeDebugConsole;
 
 		if (event.event === 'TDA/log') {
-			if (instanceOfLogBody(event.body)) {
-				const body = event.body;
-				const notify = body.notify;
-				const level = body.level;
-				const message = body.message.replace("\n", "\n" + SPACES);
-				const time = body.time;
-
-				if (notify) {
-					if (level === eLogLevelEvent.ellError) {
-						vscode.window.showErrorMessage(message);
-					}
-					else if (level === eLogLevelEvent.ellInformation) {
-						vscode.window.showInformationMessage(message);
-					}
-					else if (level === eLogLevelEvent.ellWarning) {
-						vscode.window.showWarningMessage(message);
-					}
-				}
-
-				if (level === eLogLevelEvent.ellConsole) {
-					console.appendLine(`[${time}]      : ${message}`);
-					//console.appendLine(`${COLOR_TABLE['TIME']}[${time}]      ${COLOR_TABLE['CONSOLE']}: ${message}`);
-				} else {
-					console.appendLine(`[${time}] ${level}: ${message}`);
-					//console.appendLine(`${COLOR_TABLE['TIME']}[${time}] ${COLOR_TABLE[level]}${level}${COLOR_TABLE['CONSOLE']}: ${message}`);
-				}
-			} else {
-				console.appendLine("<evento desconhecido>");
-				console.appendLine(JSON.stringify(event.event));
-			}
+			processLogEvent(event, console);
+		} else if(event.event === 'TDA/addTimeLine')  {
+			processAddTimeLineEvent(event, console);
+		} else if(event.event === 'TDA/selectTimeLine')  {
+			processSelectTimeLineEvent(event, console);
 		}
 	}
+}
+
+function processLogEvent(event: vscode.DebugSessionCustomEvent, console: vscode.DebugConsole) {
+	if (event.event === 'TDA/log') {
+		if (instanceOfLogBody(event.body)) {
+			const body = event.body;
+			const notify = body.notify;
+			const level = body.level;
+			const message = body.message.replace("\n", "\n" + SPACES);
+			const time = body.time;
+
+			if (notify) {
+				if (level === eLogLevelEvent.ellError) {
+					vscode.window.showErrorMessage(message);
+				}
+				else if (level === eLogLevelEvent.ellInformation) {
+					vscode.window.showInformationMessage(message);
+				}
+				else if (level === eLogLevelEvent.ellWarning) {
+					vscode.window.showWarningMessage(message);
+				}
+			}
+
+			if (level === eLogLevelEvent.ellConsole) {
+				console.appendLine(`[${time}]      : ${message}`);
+				//console.appendLine(`${COLOR_TABLE['TIME']}[${time}]      ${COLOR_TABLE['CONSOLE']}: ${message}`);
+			} else {
+				console.appendLine(`[${time}] ${level}: ${message}`);
+				//console.appendLine(`${COLOR_TABLE['TIME']}[${time}] ${COLOR_TABLE[level]}${level}${COLOR_TABLE['CONSOLE']}: ${message}`);
+			}
+		} else {
+			console.appendLine("<evento desconhecido>");
+			console.appendLine(JSON.stringify(event.event));
+		}
+	}
+}
+
+function processAddTimeLineEvent(event: vscode.DebugSessionCustomEvent, console: vscode.DebugConsole) {
+	const timeLines = event.body.timeLines;
+	if(timeLines.length > 0) {
+		for(let index = 0; index < timeLines.length; index++) {
+			let timeLine = timeLines[index];
+			createTimeLine(timeLine.id, timeLine.timeStamp, timeLine.srcName, timeLine.line);
+			//let timeStampAsNumber : number = parseInt(timeLine.timeStamp);
+			//console.appendLine(timeStampAsNumber.toString());
+			//console.appendLine(timeLine.id + " - " + timeLine.timeStamp + " - " + timeLine.srcName + " - " + timeLine.line);
+		}
+	} else {
+		clearTimeLineView();
+	}
+	refreshTimeLineView();
+}
+
+function processSelectTimeLineEvent(event: vscode.DebugSessionCustomEvent, console: vscode.DebugConsole) {
+	selectTimeLine(event.body.id);
 }
