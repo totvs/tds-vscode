@@ -5,6 +5,7 @@ import Utils from './utils';
 import * as nls from 'vscode-nls';
 import { languageClient, totvsStatusBarItem } from './extension';
 import { inputConnectionParameters } from './inputConnectionParameters';
+import { inputAuthenticationParameters } from './inputAuthenticationParameters';
 import { SelectServer } from './utils';
 
 
@@ -67,7 +68,7 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 				const servers = Utils.getServersConfig();
 				const listOfEnvironments = servers.configurations[element.id].environments;
 				if (listOfEnvironments.size > 0) {
-					treeDataProvider.localServerItems[element.id].environments = listOfEnvironments.map(env => new EnvSection(env, element.label, vscode.TreeItemCollapsibleState.None, {
+					treeDataProvider.localServerItems[element.id].environments = listOfEnvironments.map(env => new EnvSection(env, element.name, vscode.TreeItemCollapsibleState.None, {
 						command: 'totvs_server.selectEnvironment',
 						title: '',
 						arguments: [env]
@@ -77,7 +78,7 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 					treeDataProvider.localServerItems[element.id].label = treeDataProvider.localServerItems[element.id].label.endsWith(' ') ? treeDataProvider.localServerItems[element.id].label.trim() : treeDataProvider.localServerItems[element.id].label + ' ';
 					treeDataProvider.refresh();
 					element.environments = listOfEnvironments;
-					Promise.resolve(new EnvSection(element.label, element.currentEnvironment, element.collapsibleState, undefined, listOfEnvironments));
+					Promise.resolve(new EnvSection(element.name, element.currentEnvironment, element.collapsibleState, undefined, listOfEnvironments));
 				}
 				else {
 					return Promise.resolve([]);
@@ -96,8 +97,8 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 		}
 
 		return Promise.resolve(this.localServerItems.sort((srv1, srv2) => {
-			const label1 = srv1.label.toLowerCase();
-			const label2 = srv2.label.toLowerCase();
+			const label1 = srv1.name.toLowerCase();
+			const label2 = srv2.name.toLowerCase();
 			if (label1 > label2) { return 1; }
 			if (label1 < label2) { return -1; }
 			return 0;
@@ -302,7 +303,7 @@ export class ServerItem extends vscode.TreeItem {
 	public currentEnvironment: string;
 
 	constructor(
-		public label: string,
+		public name: string,
 		public readonly type: string,
 		public readonly address: string,
 		public readonly port: number,
@@ -314,7 +315,7 @@ export class ServerItem extends vscode.TreeItem {
 		public includes?: string[],
 		public readonly command?: vscode.Command
 	) {
-		super(label, collapsibleState);
+		super(name, collapsibleState);
 	}
 
 	get tooltip(): string {
@@ -397,16 +398,15 @@ export class ServersExplorer {
 						case 'saveServer':
 							const typeServer = "totvs_server_protheus";
 							if (message.serverName && message.port && message.address) {
-								const serverId = createServer(typeServer, message.serverName, message.port, message.address, message.secure, "", true, message.includes);
+								const serverId = createServer(typeServer, message.serverName, message.port, message.address, 0, "", true, message.includes);
 								if (serverId !== undefined) {
 									languageClient.sendRequest('$totvsserver/validation', {
 										validationInfo: {
 											server: message.address,
-											port: parseInt(message.port),
-											bSecure: parseInt(message.secure)
+											port: parseInt(message.port)
 										}
 									}).then((validInfoNode: NodeInfo) => {
-										Utils.updateBuildVersion(serverId, validInfoNode.buildVersion);
+										Utils.updateBuildVersion(serverId, validInfoNode.buildVersion, validInfoNode.secure);
 										return;
 									}, (err) => {
 										vscode.window.showErrorMessage(err);
@@ -460,12 +460,11 @@ export class ServersExplorer {
 					languageClient.sendRequest('$totvsserver/validation', {
 						validationInfo: {
 							server: serverItem.address,
-							port: serverItem.port,
-							bSecure: serverItem.secure
+							port: serverItem.port
 						}
 					}).then((validInfoNode: NodeInfo) => {
 						//retornou uma versao valida no servidor.
-						const updated = Utils.updateBuildVersion(serverItem.id, validInfoNode.buildVersion);
+						const updated = Utils.updateBuildVersion(serverItem.id, validInfoNode.buildVersion, validInfoNode.secure);
 						serverItem.buildVersion = validInfoNode.buildVersion;
 						if (updated) {
 							//continua a autenticacao.
@@ -573,34 +572,30 @@ export class ServersExplorer {
 
 }
 
-export function authenticate(serverItem: ServerItem, environment: string, username: string, password: string) {
+export function connectServer(serverItem: ServerItem, environment: string) {
 	if (connectedServerItem !== undefined && connectedServerItem.id === serverItem.id && connectedServerItem.currentEnvironment === serverItem.currentEnvironment) {
 		vscode.window.showInformationMessage(localize("tds.webview.serversView.alreadyDisconn", "The server selected is already connected."));
 	}
 	//vscode.window.showInformationMessage("Initializing connection with server " + serverItem.label);
-	if (serverItem.type === "totvs_server_logix") {
-		if (connectedServerItem !== undefined) {
-			vscode.commands.executeCommand('totvs-developer-studio.disconnect', connectedServerItem).then(() => {
-				sendLogixAuthenticateRequest(serverItem, environment);
-			});
-		} else {
-			sendLogixAuthenticateRequest(serverItem, environment);
-		}
-	} else {
 	if (connectedServerItem !== undefined) {
 		vscode.commands.executeCommand('totvs-developer-studio.disconnect', connectedServerItem).then(() => {
-			sendAuthenticateRequest(serverItem, environment, username, password);
+			sendConnectRequest(serverItem, environment);
 		});
 	} else {
-		sendAuthenticateRequest(serverItem, environment, username, password);
+		sendConnectRequest(serverItem, environment);
 	}
 }
+
+export function authenticate(serverItem: ServerItem, environment: string, username: string, password: string) {
+	//vscode.window.showInformationMessage("Initializing connection with server " + serverItem.label);
+	sendAuthenticateRequest(serverItem, environment, username, password);
 }
 
-function sendAuthenticateRequest(serverItem: ServerItem, environment: string, user: string, password: string) {
-	languageClient.sendRequest('$totvsserver/authentication', {
-		authenticationInfo: {
+function sendConnectRequest(serverItem: ServerItem, environment: string) {
+	languageClient.sendRequest('$totvsserver/connect', {
+		connectionInfo: {
 			connType: 1,
+			serverName: serverItem.name,
 			identification: serverItem.id,
 			serverType: 1, // XXX
 			server: serverItem.address,
@@ -608,15 +603,47 @@ function sendAuthenticateRequest(serverItem: ServerItem, environment: string, us
 			buildVersion: serverItem.buildVersion,
 			bSecure: serverItem.secure,
 			environment: environment,
-			user: user,
-			password: password,
 			autoReconnect: true
+		}
+	}).then((connectionNode: ConnectionNode) => {
+		let token: string = connectionNode.connectionToken;
+		if (token) {
+			Utils.saveSelectServer(serverItem.id, token, serverItem.name, environment, "");
+			Utils.saveConnectionToken(serverItem.id, token, environment);
+			if (treeDataProvider !== undefined) {
+				connectedServerItem = serverItem;
+				connectedServerItem.currentEnvironment = environment;
+				connectedServerItem.token = token;
+				if (connectionNode.needAuthentication) {
+					inputAuthenticationParameters(serverItem, environment);
+				}
+				else {
+					treeDataProvider.refresh();
+				}
+			}
+			return true;
+		} else {
+			vscode.window.showErrorMessage(localize("tds.webview.serversView.errorConnServer", 'Error connecting server'));
+			return false;
+		}
+	}, err => {
+		vscode.window.showErrorMessage(err);
+	});
+}
+
+function sendAuthenticateRequest(serverItem: ServerItem, environment: string, user: string, password: string) {
+	languageClient.sendRequest('$totvsserver/authentication', {
+		authenticationInfo: {
+			connectionToken: serverItem.token,
+			environment: environment,
+			user: user,
+			password: password
 		}
 	}).then((authenticationNode: AuthenticationNode) => {
 		let token: string = authenticationNode.connectionToken;
 		if (token) {
 			//vscode.window.showInformationMessage('Server ' + serverItem.label + ' connected!');
-			Utils.saveSelectServer(serverItem.id, token, serverItem.label, environment, user);
+			Utils.saveSelectServer(serverItem.id, token, serverItem.name, environment, user);
 			Utils.saveConnectionToken(serverItem.id, token, environment);
 			if (treeDataProvider !== undefined) {
 				connectedServerItem = serverItem;
@@ -634,38 +661,12 @@ function sendAuthenticateRequest(serverItem: ServerItem, environment: string, us
 	});
 }
 
-function sendLogixAuthenticateRequest(serverItem: ServerItem, environment: string) {
-	languageClient.sendRequest('$totvsserver/authentication', {
-		authenticationInfo: {
-			connType: 1,
-			identification: serverItem.id,
-			serverType: 2, // XXX
-			server: serverItem.address,
-			port: serverItem.port,
-			buildVersion: serverItem.buildVersion,
-			environment: environment,
-			autoReconnect: true
-		}
-	}).then((authenticationNode: AuthenticationNode) => {
-		let token: string = authenticationNode.connectionToken;
-		if (token) {
-			//vscode.window.showInformationMessage('Server ' + serverItem.label + ' connected!');
-			Utils.saveSelectServer(serverItem.id, token, serverItem.label, environment, "logix");
-			Utils.saveConnectionToken(serverItem.id, token, environment);
-			if (treeDataProvider !== undefined) {
-				connectedServerItem = serverItem;
-				connectedServerItem.currentEnvironment = environment;
-				connectedServerItem.token = token;
-				treeDataProvider.refresh();
-			}
-			return true;
-		} else {
-			vscode.window.showErrorMessage(localize("tds.webview.serversView.errorConnServer", 'Error connecting server'));
-			return false;
-		}
-	}, err => {
-		vscode.window.showErrorMessage(err);
-	});
+export class ConnectionNode {
+	// These properties come directly from the language server.
+	id: any;
+	osType: number;
+	connectionToken: string;
+	needAuthentication: boolean;
 }
 
 export class AuthenticationNode {
@@ -675,7 +676,7 @@ export class AuthenticationNode {
 	connectionToken: string;
 }
 
-export function reconnectServer(reconnectionInfo): boolean {
+export function reconnectServer(reconnectionInfo, environment: string): boolean {
 	if (reconnectionInfo.id && reconnectionInfo.token) {
 		const servers = Utils.getServersConfig();
 		if (servers.configurations) {
@@ -691,10 +692,10 @@ export function reconnectServer(reconnectionInfo): boolean {
 					);
 					if (connectedServerItem !== undefined) {
 						vscode.commands.executeCommand('totvs-developer-studio.disconnect', connectedServerItem).then(() => {
-							return sendReconnectRequest(serverItem, reconnectionInfo.token);
+							return sendReconnectRequest(serverItem, reconnectionInfo.token, environment);
 						});
 					} else {
-						return sendReconnectRequest(serverItem, reconnectionInfo.token);
+						return sendReconnectRequest(serverItem, reconnectionInfo.token, environment);
 					}
 				}
 			});
@@ -717,14 +718,14 @@ export function reconnectLastServer() {
 							arguments: [element.name]
 						}
 					);
-					sendReconnectRequest(serverItem, servers.lastConnectedServer.token);
+					sendReconnectRequest(serverItem, servers.lastConnectedServer.token, servers.lastConnectedServer.environment);
 				}
 			});
 		}
 	}
 }
 
-function sendReconnectRequest(serverItem: ServerItem, connectionToken: string) {
+function sendReconnectRequest(serverItem: ServerItem, connectionToken: string, environment: string) {
 	languageClient.sendRequest('$totvsserver/reconnect', {
 		reconnectInfo: {
 			connectionToken: connectionToken,
@@ -739,7 +740,7 @@ function sendReconnectRequest(serverItem: ServerItem, connectionToken: string) {
 			if (token !== connectionToken) {
 				Utils.updateSavedTokens(serverItem.id, environment, token);
 			}
-			Utils.saveSelectServer(serverItem.id, token, serverItem.label, environment, user);
+			Utils.saveSelectServer(serverItem.id, token, serverItem.name, environment, user);
 			if (treeDataProvider !== undefined) {
 				connectedServerItem = serverItem;
 				connectedServerItem.currentEnvironment = environment;
@@ -753,6 +754,7 @@ function sendReconnectRequest(serverItem: ServerItem, connectionToken: string) {
 		}
 	}, err => {
 		vscode.window.showErrorMessage(err);
+		Utils.removeSavedConnectionToken(serverItem.id, environment);
 	});
 }
 
@@ -765,6 +767,7 @@ export class ReconnectNode {
 export class NodeInfo {
 	id: any;
 	buildVersion: string;
+	secure: number;
 }
 
 class DisconnectReturnInfo {
