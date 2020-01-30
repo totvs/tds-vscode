@@ -18,7 +18,7 @@
 	"tds.package.inspector.object.description": "Inspector de objetos",
 	"tds.package.defrag.rpo.title": "Desfragmenta el RPO",
 	"tds.package.defrag.rpo.description": "Desfragmenta el RPO actual",
-	"tds.package.build.file.title": "Compilar Archivo",
+	"tds.package.build.file.title": "Compilar Archivo/Carpeta",
 	"tds.package.build.file.description": "Compila un archivo en el servidor TOTVS",
 	"tds.package.build.folder.title": "Compilar Carpeta",
 	"tds.package.build.folder.description": "Compila el contenido de una carpeta en el servidor TOTVS",
