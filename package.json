@@ -570,6 +570,11 @@
 					"light": "resources/light/formatter.png",
 					"dark": "resources/dark/formatter.png"
 				}
+			},
+			{
+				"command": "totvs-developer-studio.tdsreplay.configure.launcher",
+				"title" : "%tds.package.configure.launcher.title%",
+				"category": "TDSReplay"
 			}
 		],
 		"keybindings": [
@@ -777,7 +782,11 @@
 							},
 							"logFile": {
 								"type": "string",
-								"default": "${workspaceFolder}\\tdsreplayimport.log"
+								"default": "${workspaceFolder}\\tdsreplayDAP.log"
+							},
+							"verboseLogFile": {
+								"type": "string",
+								"default": "${workspaceFolder}\\tdsreplayVerboseLog.log"
 							},
 							"enableVerbose": {
 								"type": "boolean",

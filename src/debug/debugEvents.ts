@@ -2,6 +2,8 @@ import * as vscode from "vscode";
 import {TotvsConfigurationProvider} from "./TotvsConfigurationProvider";
 import {TotvsConfigurationTdsReplayProvider} from "./TotvsConfigurationTdsReplayProvider";
 import { createTimeLine,refreshTimeLineView, selectTimeLine, clearTimeLineView } from "./TDSReplayTimeLineView";
+import utils, { MESSAGETYPE } from "../utils";
+import ShowProgressController from "../ui.dialogs/showProgressController"
 
 const DEBUG_TYPE = TotvsConfigurationProvider.type;
 const WEB_DEBUG_TYPE: string = "totvs_language_web_debug";
@@ -13,6 +15,25 @@ interface LogBody {
 	notify: boolean;
 	message: string;
 }
+
+let context;
+let showProgressController = new ShowProgressController();
+
+export class DebugEvent {
+	constructor(pContext: vscode.ExtensionContext) {
+		context = pContext;
+
+		vscode.debug.onDidTerminateDebugSession(event => {
+
+		});
+
+	}
+
+	processShowProgressEvent(title:string, mainMessage: string, detailMessage: string, currentWork, totalWork) {
+		showProgressController.showProgress(context, title, mainMessage, detailMessage, currentWork, totalWork);
+	}
+}
+
 
 function instanceOfLogBody(object: any): object is LogBody {
 	return "level" in object;
@@ -63,19 +84,21 @@ const SPACES: string = ' '.repeat(11);
 
 export function processDebugCustomEvent(event: vscode.DebugSessionCustomEvent) {
 	if (event.session.type.startsWith(DEBUG_TYPE) || event.session.type.startsWith(WEB_DEBUG_TYPE) || event.session.type.startsWith(REPLAY_DEBUG_TYPE)) {
-		const console = vscode.debug.activeDebugConsole;
+		const debugConsole = vscode.debug.activeDebugConsole;
 
 		if (event.event === 'TDA/log') {
-			processLogEvent(event, console);
+			processLogEvent(event, debugConsole);
 		} else if(event.event === 'TDA/addTimeLine')  {
-			processAddTimeLineEvent(event, console);
+			processAddTimeLineEvent(event, debugConsole);
 		} else if(event.event === 'TDA/selectTimeLine')  {
-			processSelectTimeLineEvent(event, console);
+			processSelectTimeLineEvent(event, debugConsole);
+		} else if (event.event === 'TDA/showProgress') {
+			processShowProgressEvent(event);
 		}
 	}
 }
 
-function processLogEvent(event: vscode.DebugSessionCustomEvent, console: vscode.DebugConsole) {
+function processLogEvent(event: vscode.DebugSessionCustomEvent, debugConsole: vscode.DebugConsole) {
 	if (event.event === 'TDA/log') {
 		if (instanceOfLogBody(event.body)) {
 			const body = event.body;
@@ -97,15 +120,16 @@ function processLogEvent(event: vscode.DebugSessionCustomEvent, console: vscode.
 			}
 
 			if (level === eLogLevelEvent.ellConsole) {
-				console.appendLine(`[${time}]      : ${message}`);
+				debugConsole.appendLine(`[${time}]      : ${message}`);
 				//console.appendLine(`${COLOR_TABLE['TIME']}[${time}]      ${COLOR_TABLE['CONSOLE']}: ${message}`);
 			} else {
-				console.appendLine(`[${time}] ${level}: ${message}`);
-				//console.appendLine(`${COLOR_TABLE['TIME']}[${time}] ${COLOR_TABLE[level]}${level}${COLOR_TABLE['CONSOLE']}: ${message}`);
+				debugConsole.appendLine(`[${time}] ${level}: ${message}`);
+				utils.logMessage(`[${time}] ${level}: ${message}`, MESSAGETYPE.Info, true);
+				//debugConsole.appendLine(`${COLOR_TABLE['TIME']}[${time}] ${COLOR_TABLE[level]}${level}${COLOR_TABLE['CONSOLE']}: ${message}`);
 			}
 		} else {
-			console.appendLine("<evento desconhecido>");
-			console.appendLine(JSON.stringify(event.event));
+			debugConsole.appendLine("<evento desconhecido>");
+			debugConsole.appendLine(JSON.stringify(event.event));
 		}
 	}
 }
@@ -113,6 +137,8 @@ function processLogEvent(event: vscode.DebugSessionCustomEvent, console: vscode.
 function processAddTimeLineEvent(event: vscode.DebugSessionCustomEvent, console: vscode.DebugConsole) {
 	const timeLines = event.body.timeLines;
 	if(timeLines.length > 0) {
+		event.body.currentPage;
+		event.body.totalPages;
 		for(let index = 0; index < timeLines.length; index++) {
 			let timeLine = timeLines[index];
 			createTimeLine(timeLine.id, timeLine.timeStamp, timeLine.srcName, timeLine.line);
@@ -128,4 +154,9 @@ function processAddTimeLineEvent(event: vscode.DebugSessionCustomEvent, console:
 
 function processSelectTimeLineEvent(event: vscode.DebugSessionCustomEvent, console: vscode.DebugConsole) {
 	selectTimeLine(event.body.id);
+}
+
+
+function processShowProgressEvent(event: vscode.DebugSessionCustomEvent) {
+	showProgressController.showProgress(context, event.body.title, event.body.mainMessage, event.body.detailMessage, event.body.currentWork, event.body.totalWork);
 }

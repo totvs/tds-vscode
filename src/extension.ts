@@ -8,7 +8,7 @@ import * as ls from 'vscode-languageserver-types';
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import { window, commands, debug, extensions, workspace, ExtensionContext, Uri } from 'vscode';
-import { ProgressLocation, StatusBarAlignment } from 'vscode';
+import { ProgressLocation, StatusBarAlignment, Command } from 'vscode';
 import { jumpToUriAtPosition } from './vscodeUtils';
 import { ServersExplorer, updateStatusBarItem } from './serversView';
 import { compileKeyPage, updatePermissionBarItem } from './compileKey/compileKey';
@@ -39,7 +39,8 @@ import { getDAP, getProgramName, getProgramArguments } from './debug/debugConfig
 import { toggleTableSync } from './debug/debugConfigs';
 import { toggleAutocompleteBehavior, updateSettingsBarItem } from './server/languageServerSettings';
 import { advplDocumentFormattingEditProvider, advplDocumentRangeFormattingEditProvider, advplResourceFormatting } from './formatter/advplFormatting';
-import { processDebugCustomEvent } from './debug/debugEvents';
+import { processDebugCustomEvent, DebugEvent } from './debug/debugEvents';
+//import ShowProgressControllerDialog from './ui.dialogs/showProgressController';
 
 export let languageClient: LanguageClient;
 // metodo de tradução
@@ -57,6 +58,8 @@ export function parseUri(u): Uri {
 }
 
 export function activate(context: ExtensionContext) {
+
+	let dbgEv = new DebugEvent(context); //Cria a instancia para ja informar o debug context
 
 	console.log(localize('tds.console.congratulations', 'Congratulations, your extension "totvs-developer-studio" is now active!'));
 	context.subscriptions.push(commands.registerCommand('tds.getDAP', () => getDAP()));

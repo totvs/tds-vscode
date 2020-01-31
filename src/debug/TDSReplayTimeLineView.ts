@@ -1,4 +1,13 @@
 import * as vscode from 'vscode';
+//import path = require('path');
+//import * as fs from 'fs';
+import * as nls from 'vscode-nls';
+//let localize = nls.loadMessageBundle();
+//const timeLineController = require('template-literal');
+
+//const localizeHTML = {
+	//"tds.webview.title": localize("tds.webview.title", "TimeLine"),
+//}
 
 export class TimeLineItem extends vscode.TreeItem {
 
@@ -55,13 +64,16 @@ export class TimeLineItemProvider implements vscode.TreeDataProvider<TimeLineIte
 	}
 }
 
-
+//let currentPanel: vscode.WebviewPanel | undefined = undefined;
 const treeDataProvider = new TimeLineItemProvider();
 export class TDSReplayTimeLineView {
 
 	constructor(context: vscode.ExtensionContext) {
+
 		timeLineTreeView = vscode.window.createTreeView('tdsreplay.timeline', { treeDataProvider });
 		vscode.window.registerTreeDataProvider('tdsreplay.timeline', treeDataProvider);
+		//this.initializePage(context);
+		//currentPanel?.reveal();
 
 		vscode.commands.registerCommand('timeline.selection', selectedItem => {
 			if(vscode.debug.activeDebugSession) {
@@ -74,7 +86,52 @@ export class TDSReplayTimeLineView {
 		});
 	}
 
+	// initializePage(context: vscode.ExtensionContext) {
+	// 	currentPanel = vscode.window.createWebviewPanel(
+	// 		'totvs-developer-studio.tdsreplay.timeLine',
+	// 		localize("tds.webview.title", "TimeLine"),
+	// 		vscode.ViewColumn.One,
+	// 		{
+	// 			enableScripts: true,
+	// 			retainContextWhenHidden: true
+	// 		}
+	// 	);
+
+	// 	currentPanel.webview.html = getWebViewContent(context, localizeHTML);
+	// 	currentPanel.onDidDispose(
+	// 		() => {
+	// 			currentPanel = undefined;
+	// 		},
+	// 		null,
+	// 		context.subscriptions
+	// 	);
+
+	// 	currentPanel.webview.onDidReceiveMessage(message => {
+	// 		switch (message.command) {
+	// 			case '':
+	// 				return;
+	// 		}
+	// 	},
+	// 		undefined,
+	// 		context.subscriptions
+	// 	);
+	// }
+
 }
+
+
+// function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
+
+// 	const htmlOnDiskPath = vscode.Uri.file(path.join(context.extensionPath, 'src', 'debug', 'timeLine.html'));
+// 	const cssOniskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
+
+// 	const htmlContent = fs.readFileSync(htmlOnDiskPath.with({ scheme: 'vscode-resource' }).fsPath);
+// 	const cssContent = fs.readFileSync(cssOniskPath.with({ scheme: 'vscode-resource' }).fsPath);
+
+// 	let runTemplate = timeLineController(htmlContent);
+
+// 	return runTemplate({ css: cssContent, localize: localizeHTML });
+// }
 
 
 export function createTimeLine(id: number, timeStamp:string, srcName: string, line: number) {
@@ -133,4 +190,4 @@ export function clearTimeLineView() {
 vscode.debug.onDidTerminateDebugSession(event => {
 	clearTimeLineView();
 	refreshTimeLineView();
-})
+});
