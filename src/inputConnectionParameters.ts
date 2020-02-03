@@ -3,7 +3,7 @@ import { ExtensionContext, QuickInputButton, Uri, QuickPickItem, workspace } fro
 import Utils from "./utils";
 import * as path from 'path';
 import { MultiStepInput } from "./multiStepInput";
-import { connectServer, reconnectServer } from "./serversView";
+import { connectServer, reconnectServer, ServerItem, EnvSection } from "./serversView";
 
 import * as nls from 'vscode-nls';
 let localize = nls.loadMessageBundle();
@@ -52,13 +52,16 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 	async function collectConnectInputs() {
 		const state = {} as Partial<State>;
 
-		if (serverParam) {
+		if (serverParam instanceof ServerItem) {
 			state.server = serverParam.id;
 			CONNECT_TOTAL_STEPS -= 1;
 			CONNECT_SERVER_STEP -= 1;
 			CONNECT_ENVIRONMENT_STEP -= 1;
 
 			await MultiStepInput.run(input => pickEnvironment(input, state, serversConfig));
+	 	} else if (serverParam instanceof EnvSection) {
+			 state.server = serverParam.serverItemParent.id;
+			 state.environment = serverParam.label;
 		} else {
 			await MultiStepInput.run(input => pickServer(input, state, serversConfig));
 		}
@@ -200,7 +203,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 	main();
 }
 
-export function serverAuthentication(args, context){
+export function serverSelection(args, context){
 	if (args && args.length > 0) {
 		inputConnectionParameters(context, args[0]);
 	} else {

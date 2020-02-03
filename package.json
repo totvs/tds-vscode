@@ -100,7 +100,7 @@
 		"onCommand:totvs-developer-studio.delete.file.fromRPO",
 		"onCommand:totvs-developer-studio.getDAP",
 		"onCommand:totvs-developer-studio.connect",
-		"onCommand:totvs-developer-studio.serverAuthentication",
+		"onCommand:totvs-developer-studio.serverSelection",
 		"onCommand:totvs-developer-studio.disconnect",
 		"onCommand:totvs-developer-studio.add",
 		"onCommand:totvs-developer-studio.config",
@@ -450,8 +450,8 @@
 				"title": "%tds.package.connect%"
 			},
 			{
-				"command": "totvs-developer-studio.serverAuthentication",
-				"title": "%tds.package.serverAuthentication%",
+				"command": "totvs-developer-studio.serverSelection",
+				"title": "%tds.package.serverSelection%",
 				"category": "TOTVS"
 			},
 			{

@@ -50,7 +50,7 @@
 	"tds.package.getProgramName.title": "Ask for program name",
 	"tds.package.getProgramName.description": "Ask for program name.",
 	"tds.package.connect": "Connect",
-	"tds.package.serverAuthentication": "Select Server",
+	"tds.package.serverSelection": "Select Server",
 	"tds.package.rename": "Rename",
 	"tds.package.disconnect": "Disconnect",
 	"tds.package.selectenv": "Select",

@@ -68,8 +68,8 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 				const servers = Utils.getServersConfig();
 				const listOfEnvironments = servers.configurations[element.id].environments;
 				if (listOfEnvironments.size > 0) {
-					treeDataProvider.localServerItems[element.id].environments = listOfEnvironments.map(env => new EnvSection(env, element.name, vscode.TreeItemCollapsibleState.None, {
-						command: 'totvs_server.selectEnvironment',
+					treeDataProvider.localServerItems[element.id].environments = listOfEnvironments.map(env => new EnvSection(env, element, vscode.TreeItemCollapsibleState.None, {
+						command: 'totvs-developer-studio.environmentSelection',
 						title: '',
 						arguments: [env]
 					}));
@@ -78,7 +78,7 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 					treeDataProvider.localServerItems[element.id].label = treeDataProvider.localServerItems[element.id].label.endsWith(' ') ? treeDataProvider.localServerItems[element.id].label.trim() : treeDataProvider.localServerItems[element.id].label + ' ';
 					treeDataProvider.refresh();
 					element.environments = listOfEnvironments;
-					Promise.resolve(new EnvSection(element.name, element.currentEnvironment, element.collapsibleState, undefined, listOfEnvironments));
+					Promise.resolve(new EnvSection(element.name, element, element.collapsibleState, undefined, listOfEnvironments));
 				}
 				else {
 					return Promise.resolve([]);
@@ -159,8 +159,8 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 			let environmentsServer = new Array<EnvSection>();
 			if (element.environments) {
 				element.environments.forEach(environment => {
-					const env = new EnvSection(environment, element.name, vscode.TreeItemCollapsibleState.None,
-						{ command: 'totvs_server.selectEnvironment', title: '', arguments: [environment] }, environment);
+					const env = new EnvSection(environment, element, vscode.TreeItemCollapsibleState.None,
+						{ command: 'totvs-developer-studio.environmentSelection', title: '', arguments: [environment] }, environment);
 					environmentsServer.push(env);
 				});
 			}
@@ -245,7 +245,7 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 
 			const toTCPSec = (serverItem: string, type: string, address: string, port: number, secure: number, id: string, buildVersion: string): ServerItem => {
 				return new ServerItem(serverItem, type, address, port, secure, vscode.TreeItemCollapsibleState.None, id, buildVersion, undefined, undefined, {
-					command: 'totvs-developer-studio.selectNode',
+					command: '',
 					title: '',
 					arguments: [serverItem]
 				});
@@ -338,7 +338,7 @@ export class EnvSection extends vscode.TreeItem {
 
 	constructor(
 		public label: string,
-		public readonly serverItemParent: string,
+		public readonly serverItemParent: ServerItem,
 		public collapsibleState: vscode.TreeItemCollapsibleState,
 		public readonly command?: vscode.Command,
 		public environments?: string[]
@@ -347,12 +347,12 @@ export class EnvSection extends vscode.TreeItem {
 	}
 
 	get tooltip(): string {
-		return `${this.label}: ${this.serverItemParent}`;
+		return `${this.label} @ ${this.serverItemParent.name}`;
 	}
 
 	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', connectedServerItem !== undefined && connectedServerItem.currentEnvironment === this.label ? 'environment.connected.svg' : 'environment.svg'),
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', connectedServerItem !== undefined && connectedServerItem.currentEnvironment === this.label ? 'environment.connected.svg' : 'environment.svg')
+		light: path.join(__filename, '..', '..', 'resources', 'light', connectedServerItem !== undefined && connectedServerItem.id === this.serverItemParent.id && connectedServerItem.currentEnvironment === this.label ? 'environment.connected.svg' : 'environment.svg'),
+		dark: path.join(__filename, '..', '..', 'resources', 'dark', connectedServerItem !== undefined && connectedServerItem.id === this.serverItemParent.id && connectedServerItem.currentEnvironment === this.label ? 'environment.connected.svg' : 'environment.svg')
 	};
 
 	contextValue = 'envSection';
@@ -506,21 +506,7 @@ export class ServersExplorer {
 			}
 		});
 		vscode.commands.registerCommand('totvs-developer-studio.selectenv', (environment: EnvSection) => {
-			const config = vscode.workspace.getConfiguration("launch", null);
-			const configs = config.get<any[]>("configurations");
-			if (configs) {
-				configs.forEach(element => {
-					if (element.type === 'totvs_language_debug') {
-						element.serverItem = environment.serverItemParent.trim();
-						element.environment = environment.label;
-					}
-				});
-				config.update("configurations", configs);
-			}
-			/**
-			 * TODO: Aplicar a seleção a partir do menu de contexto dos environments listados
-			 */
-
+			inputConnectionParameters(context, environment);
 		});
 
 		vscode.commands.registerCommand('totvs-developer-studio.delete', (serverItem: ServerItem) => {

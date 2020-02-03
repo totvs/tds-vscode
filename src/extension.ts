@@ -20,7 +20,7 @@ import { LanguageClient } from 'vscode-languageclient';
 import { commandBuildFile, commandBuildWorkspace, commandBuildOpenEditors } from './compile/tdsBuild';
 import { deleteFileFromRPO } from './server/deleteFileFromRPO';
 import { defragRpo } from './server/defragRPO';
-import { serverAuthentication } from './inputConnectionParameters';
+import { serverSelection } from './inputConnectionParameters';
 import * as nls from 'vscode-nls';
 import { inspectObject } from './inspect/inspectObject';
 import { inspectFunctions } from './inspect/inspectFunction';
@@ -283,8 +283,8 @@ export function activate(context: ExtensionContext) {
 	//Mostra a pagina de Welcome.
 	showWelcomePage(context, false);
 
-	//Abre uma caixa de informações para login no servidor protheus.
-	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.serverAuthentication', (...args) => serverAuthentication(args, context)));
+	//Abre uma caixa de informações para login no servidor protheus selecionado.
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.serverSelection', (...args) => serverSelection(args, context)));
 
 	//Compile key
 	commands.registerCommand("totvs-developer-studio.compile.key", () => compileKeyPage(context));
@@ -294,7 +294,7 @@ export function activate(context: ExtensionContext) {
 
 	//inicialliza item de barra de status de servidor conectado ou não.
 	totvsStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-	totvsStatusBarItem.command = 'totvs-developer-studio.serverAuthentication';
+	totvsStatusBarItem.command = 'totvs-developer-studio.serverSelection';
 	context.subscriptions.push(totvsStatusBarItem);
 	context.subscriptions.push(Utils.onDidSelectedServer(updateStatusBarItem));
 

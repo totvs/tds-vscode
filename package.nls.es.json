@@ -31,7 +31,7 @@
 	"tds.package.getProgramName.title": "Preguntar nombre del programa",
 	"tds.package.getProgramName.description": "Preguntar nombre del programa.",
 	"tds.package.connect": "Conectar",
-	"tds.package.serverAuthentication": "Seleccionar el servidor TOTVS",
+	"tds.package.serverSelection": "Seleccionar el servidor TOTVS",
 	"tds.package.rename": "Renombrar",
 	"tds.package.disconnect": "Desconectar",
 	"tds.package.selectenv": "Seleccionar",
