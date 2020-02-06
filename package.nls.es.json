@@ -74,5 +74,6 @@
 	"tds.package.properties.wsCacheFiles.description.web": "Activar/desactivar el cach� inicial de archivos de carpeta del workspace (DAP)",
 	"tds.package.properties.webNavigator.description.web": "Navegador Web.",
 	"tds.package.configurationSnippets.description": "Una nueva configuraci�n para 'depurar' un usuario que seleccion� el archivo AdvPL.",
-	"tds.package.configurationSnippets.description.web": "Una nueva configuraci�n para 'depurar' un usuario que seleccion� el archivo AdvPL usando el SmartClient HTML."
+	"tds.package.configurationSnippets.description.web": "Una nueva configuraci�n para 'depurar' un usuario que seleccion� el archivo AdvPL usando el SmartClient HTML.",
+	"tds.package.workspaceServerConfig": "Use el workspace para mantener la configuraci�n del servidor."
 }
