@@ -1,3 +1,22 @@
+# Versão 0.4.0
+## Erro de compilação [Issue 270](https://github.com/totvs/tds-vscode/issues/270)
+### Problema:
+* Se a variável utilizada na instrução `For` não estiver declarada como `Local` o AppServer informa um 'warning', mas como a mensagem estava fora do padrão estabelecido, a mensagem se tornava um 'error'.
+### Solução:
+* Melhorado o tratamento das mensagens de 'error/warning' para exibir corretamente esta mensagem.
+----
+## Opção "Select" no menu contextual do conexão ambiente não esta funcionando [Issue 253](https://github.com/totvs/tds-vscode/issues/253)
+### Problema:
+* Ao clicar em `Select` no menu de contexto de um 'environment' não acontece nada.
+### Solução:
+* Corrigida a implementação do `Select` no menu de contexto dos 'environments'.
+----
+## Não consigo compilar fontes Vs Code [Issue 239](https://github.com/totvs/tds-vscode/issues/239)
+### Problema:
+* Alguns erro do pré compilador não eram exibidos corretamente na visão `Problems`.
+### Solução:
+* Corrigido o tratamento de mensagens de erro do pré compilador que indicavam a linha 0 (que não existe).
+----
 # Versão 0.3.23
 ## Connection terminated by administrator [Issue 189](https://github.com/totvs/tds-vscode/issues/189)
 ### Problema:
