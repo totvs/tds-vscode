@@ -1,4 +1,5 @@
 # Versão 0.4.0
+
 ## Erro de compilação [Issue 270](https://github.com/totvs/tds-vscode/issues/270)
 ### Problema:
 * Se a variável utilizada na instrução `For` não estiver declarada como `Local` o AppServer informa um 'warning', mas como a mensagem estava fora do padrão estabelecido, a mensagem se tornava um 'error'.
@@ -17,21 +18,27 @@
 ### Solução:
 * Corrigido o tratamento de mensagens de erro do pré compilador que indicavam a linha 0 (que não existe).
 ----
+
 # Versão 0.3.23
+
 ## Connection terminated by administrator [Issue 189](https://github.com/totvs/tds-vscode/issues/189)
 ### Problema:
 * Depuração derruba o servidor exibindo a mensagem "Connection terminated by administrator".
 ### Solução:
 * Corrigida ação interna da mensagem idle da depuração.
 ----
+
 # Versão 0.3.22
+
 ## Ao formatar o documento a identação fica errada quando existe #ifdef [Issue 230](https://github.com/totvs/tds-vscode/issues/230)
 ### Problema:
 * Ao formatar o documento a identação fica errada quando existe #ifdef.
 ### Solução:
 * Corrigida a regra para identação do #endif.
 ----
+
 # Versão 0.3.21
+
 ## Extensão permite adicionar o mesmo server várias vezes [Issue 58](https://github.com/totvs/tds-vscode/issues/58)
 ### Problema:
 * Extensão permite adicionar o mesmo server várias vezes.
@@ -56,7 +63,9 @@
 ### Solução:
 * Adicionada verificação se houve problema na compilação e muda o foco para aba de "Problemas".
 ----
+
 # Versão 0.3.20
+
 ## Corrigido parada de breakpoint mesmo após ter sido removido [Issue 121](https://github.com/totvs/tds-vscode/issues/121)
 ### Problema:
 * Mesmo após remover um breakpoint, o servidor ainda mandava uma informação de parada de depuração.
@@ -99,21 +108,27 @@
 ### Solução:
 * Corrigido o cadastro do servidor referente ao valor do novo parâmetro 'secure'.
 ----
+
 # Versão 0.3.18
+
 ## Corrigido travamento do Debug (stacktrace e evalute) [Issue 193](https://github.com/totvs/tds-vscode/issues/193)
 ### Problema:
 * Ao depurar fontes onde trafegavam informações, no stacktrace ou evaluate, com acentuação ocorria um problema no encoding e desconectava o Debug.
 ### Solução:
 * Corrigido o tratamento de encoding.
 ----
+
 # Versão 0.3.17
+
 ## Corrigido travamento na carga do Smartclient durante o Debug [Issue 186](https://github.com/totvs/tds-vscode/issues/186)
 ### Problema:
 * Ao iniciar a depuração o smartclient inicia a carga mas fica travado.
 ### Solução:
 * Corrigida a inicialização do smartclient.
 ----
+
 # Versão 0.3.16
+
 ## Corrigido travamento no Debug (Avaliação de Objetos) [Issue 170](https://github.com/totvs/tds-vscode/issues/170)
 ### Problema:
 * Ao depurar objetos ocorria um erro que travava o debug.
@@ -126,14 +141,18 @@
 ### Solução:
 * Corrigida a salva do nome do último programa executado.
 ----
+
 # Versão 0.3.15
+
 ## Adicionada proteção durante debug de tabelas [Issue 165](https://github.com/totvs/tds-vscode/issues/165)
 ### Problema:
 * Ao depurar tabelas ocorria um erro que derrubava o DebugAdapter.
 ### Solução:
 * Adicionada uma proteção para tratar esse erro no AppServer que derrubava o DebugAdapter.
 ----
+
 # Versao 0.3.14
+
 ## Inclusão de PullRequest [PullRequest 155](https://github.com/totvs/tds-vscode/pull/155)
 ### PullRequest:
 * Inclusão de palavras reservadas.
@@ -150,7 +169,9 @@
 ### Solução:
 * Realizado correção no processo de sincronismo de breakpoints pelo debug adapter.
 ----
+
 # Versão 0.3.13
+
 ## Implementado notificação de "Exceptions" informadas pelo servidor na visão "Debug Console" [Issue 99](https://github.com/totvs/tds-vscode/issues/99#)
 ### Problema:
 * Quando é lançado uma exceção pelo servidor o plugin não mostra no console.
@@ -175,15 +196,19 @@
 ### Solução:
 * Correão na expressão regular de identificação de variáveis e métodos na declaração de classes.
 ----
+
 # Versão 0.3.12
-## Correção emeregencial de problema no pré compilador [Issue 111](https://github.com/totvs/tds-vscode/issues/111)
+
+## Correção emergencial de problema no pré compilador [Issue 111](https://github.com/totvs/tds-vscode/issues/111)
 ### Problema:
 * Ao compilar fontes que possuam a instrução %NotDel% ocorre problema no pre compilador.
 ### Solulção:
 * Correção interna no pré compilador.
 ----
+
 # Versão 0.3.11
-## Gerar saída para console [Issue 60] (https://github.com/totvs/tds-vscode/issues/60)
+
+## Gerar saída para console [Issue 60](https://github.com/totvs/tds-vscode/issues/60)
 ### Melhoria:
 * Adicionar uma forma de gerar uma saída no console durante a depuração sem precisar compilar.
 ### Solução:
@@ -201,7 +226,9 @@
 ### Solução:
 *  Correções internas no Language Server.
 ----
+
 # Versão 0.3.10
+
 ## Identação de código [Issue 91](https://github.com/totvs/tds-vscode/issues/91)
 ### Melhoria:
 * Não alterar a posição do return.
@@ -220,7 +247,9 @@
 ### Solução:
 * Corrigir o LS.
 -----
+
 # Versão 0.3.5
+
 ## Exibir tabela com o resultado da compilação [Issue 68](https://github.com/totvs/tds-vscode/issues/68)
 ### Melhoria:
 * Implementar uma opção de exibir os resultados da compilação quando compilado multiplos arquivos.
@@ -399,7 +428,9 @@ Quer mudar o encoding para o padrão Windows1252?
 ![issue25](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/configs/notification.png)
 
 ----
+
 # Versão 0.1.0
+
 * Alteração de ícone TOTVS.
 * Definição de Licença Apache 2.0.
 * Opção de aplicar patch com fontes mais antigo que o RPO.
@@ -409,7 +440,9 @@ Quer mudar o encoding para o padrão Windows1252?
 * Liberação de chave de compilação válida pra LINUX e MAC.
 
 ----
+
 # Versão 0.0.28
+
  * Adicionado EndDo a lista de palavras reservadas.
  * Remoção de Login com Identity.
  * Disponibilidade no Marketplace do VSCode.
