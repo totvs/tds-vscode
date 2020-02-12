@@ -1,5 +1,11 @@
 # Versão 0.4.0
 
+## Compile/Recompile open Editors [Issue 276](https://github.com/totvs/tds-vscode/issues/276)
+### Problema:
+* A opção de compilar/recompilar os editores abertos parou de funcionar após atualização Windows/VS Code.
+### Solução:
+* Ajustada a forma de comparação entre editores que foi alterada com a atualização.
+----
 ## Erro de compilação [Issue 270](https://github.com/totvs/tds-vscode/issues/270)
 ### Problema:
 * Se a variável utilizada na instrução `For` não estiver declarada como `Local` o AppServer informa um 'warning', mas como a mensagem estava fora do padrão estabelecido, a mensagem se tornava um 'error'.
