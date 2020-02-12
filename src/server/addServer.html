@@ -44,10 +44,6 @@
 					<input class="inputText" type="file" id="btn-FileInclude" name="btn-FileInclude" onchange='chfillData(event);' webkitdirectory directory multiple/>
 				</div>
 
-				<div>
-					<input id="secureID" class="checkbox" name="secure" type="checkbox" value="1">
-					<label class="checkboxLabel" for="secure">${d.localize["tds.webview.newServer.secure"]}</label>
-				</div>
 				<br>
 
 				<div class="wrap-submit">
@@ -81,7 +77,6 @@
 		const addressID = document.getElementById('addressID').value;
 		const serverNameID = document.getElementById('nameID').value;
 		const portID = document.getElementById('portID').value;
-		const secureID = document.getElementById('secureID').checked ? 1 : 0;
 		const includePath = document.getElementById('includePath').value.split(";");
 
 		vscode.postMessage({
@@ -90,7 +85,6 @@
 			serverName: serverNameID,
 			port: portID,
 			'close': close,
-			secure: secureID,
 			includes: includePath
 		});
 	}

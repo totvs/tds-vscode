@@ -2,7 +2,7 @@
 	"name": "tds-vscode",
 	"displayName": "Totvs Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
 	"description": "%tds.package.description%",
-	"version": "0.3.23",
+	"version": "0.4.0",
 	"publisher": "TOTVS",
 	"author": {
 		"name": "TOTVS",
@@ -55,7 +55,7 @@
 		"@material-ui/icons": "^4.9.1",
 		"@material-ui/lab": "^4.0.0-alpha.41",
 		"@totvs/tds-da": "^1.0.43",
-		"@totvs/tds-ls": "^1.0.47",
+		"@totvs/tds-ls": "^1.1.2",
 		"@types/react": "16.8.24",
 		"@types/react-dom": "16.0.5",
 		"await-notify": "1.0.1",
@@ -78,7 +78,7 @@
 		"zlib": "^1.0.5"
 	},
 	"devDependencies": {
-		"@types/jszip": "^3.1.6",
+		"@types/jszip": "^3.1.7",
 		"@types/mocha": "5.2.5",
 		"@types/node": "8.9.3",
 		"del": "^4.1.1",
@@ -91,7 +91,7 @@
 		"npm-run-all": "^4.1.5",
 		"tslint": "5.11.0",
 		"typescript": "3.1.6",
-		"vsce": "^1.69.0",
+		"vsce": "^1.71.0",
 		"vscode": "^1.1.36",
 		"vscode-debugadapter-testsupport": "1.32.0",
 		"vscode-nls-dev": "^3.3.1",
@@ -117,7 +117,7 @@
 		"onCommand:totvs-developer-studio.delete.file.fromRPO",
 		"onCommand:totvs-developer-studio.getDAP",
 		"onCommand:totvs-developer-studio.connect",
-		"onCommand:totvs-developer-studio.serverAuthentication",
+		"onCommand:totvs-developer-studio.serverSelection",
 		"onCommand:totvs-developer-studio.disconnect",
 		"onCommand:totvs-developer-studio.add",
 		"onCommand:totvs-developer-studio.config",
@@ -467,8 +467,8 @@
 				"title": "%tds.package.connect%"
 			},
 			{
-				"command": "totvs-developer-studio.serverAuthentication",
-				"title": "%tds.package.serverAuthentication%",
+				"command": "totvs-developer-studio.serverSelection",
+				"title": "%tds.package.serverSelection%",
 				"category": "TOTVS"
 			},
 			{

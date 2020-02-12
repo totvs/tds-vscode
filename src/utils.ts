@@ -165,7 +165,9 @@ export default class Utils {
 				} else if (element.environments.indexOf(environment) === -1) {
 					element.environments.push(environment);
 				}
-				element.username = username;
+				if (username) {
+					element.username = username;
+				}
 				element.environment = environment;
 
 				let server: SelectServer = {
@@ -211,8 +213,8 @@ export default class Utils {
 		Utils.persistServersInfo(servers);
 	}
 
-	/**
- * Salva o servidor logado por ultimo.
+/**
+ * Remove o token salvo do servidor/environment.
  * @param id Id do servidor logado
  * @param environment Ambiente utilizado no login
  */
@@ -222,8 +224,8 @@ export default class Utils {
 			let key = id + ":" + environment;
 			servers.savedTokens.forEach(element => {
 				if (element[0] === key) {
-					const index = servers.indexOf(element, 0);
-					servers.splice(index, 1);
+					const index = servers.savedTokens.indexOf(element, 0);
+					servers.savedTokens.splice(index, 1);
 					Utils.persistServersInfo(servers);
 					return;
 				}
@@ -609,7 +611,7 @@ export default class Utils {
 	 * @param id ID do server que sera atualizado
 	 * @param buildVersion Nova build do servidor
 	 */
-	static updateBuildVersion(id: string, buildVersion: string) {
+	static updateBuildVersion(id: string, buildVersion: string, secure: number) {
 		let result = false;
 		if (!id || !buildVersion) {
 			return result;
@@ -618,6 +620,7 @@ export default class Utils {
 		serverConfig.configurations.forEach(element => {
 			if (element.id === id) {
 				element.buildVersion = buildVersion;
+				element.secure = secure;
 				Utils.persistServersInfo(serverConfig);
 				result = true;
 			}

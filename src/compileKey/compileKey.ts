@@ -10,9 +10,9 @@ let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
 const localizeHTML = {
 	"tds.webview.title": localize("tds.webview.title", "Compile Key"),
-	"tds.webview.compile.machine.id": localize("tds.webview.compile.machine.id", "Machine ID"),
+	"tds.webview.compile.machine.id": localize("tds.webview.compile.machine.id", "This Machine ID"),
 	"tds.webview.compile.key.file": localize("tds.webview.compile.key.file", "Compile Key File"),
-	"tds.webview.compile.key.id": localize("tds.webview.compile.key.id", "Key ID"),
+	"tds.webview.compile.key.id": localize("tds.webview.compile.key.id", "Compile Key ID"),
 	"tds.webview.compile.key.generated": localize("tds.webview.compile.key.generated", "Generated"),
 	"tds.webview.compile.key.expire": localize("tds.webview.compile.key.expire", "Expire"),
 	"tds.webview.compile.key.token": localize("tds.webview.compile.key.token", "Token"),
@@ -32,19 +32,6 @@ export function compileKeyPage(context: vscode.ExtensionContext) {
 		initializePage(context);
 	}
 }
-
-	// Formata data no formato aaaa-mm-dd
-	// para apresentacao pelo campo do tipo date
-	function strZero(nr, n){
-		return Array(n-String(nr).length+1).join('0')+nr;
-	}
-	function formatDate(date) {
-		var data = new Date( date ),
-			day  = strZero( data.getDate().toString() ,2),
-			month  = strZero( (data.getMonth()+1).toString() ,2), //+1 pois no getMonth Janeiro começa com zero.
-			year = data.getFullYear();
-		return [year, month, day].join('-');
-	}
 
 	function initializePage(context: vscode.ExtensionContext) {
 
@@ -74,8 +61,8 @@ export function compileKeyPage(context: vscode.ExtensionContext) {
 
 	const compileKey = Utils.getPermissionsInfos();
 	if (compileKey !== "" && compileKey.authorizationToken && !compileKey.userId) {
-		const generated = formatDate(compileKey.issued);
-		const expiry = formatDate(compileKey.expiry);
+		const generated = compileKey.issued;
+		const expiry = compileKey.expire;
 		const canOverride: boolean = compileKey.buildType == "0";
 		setCurrentKey(currentPanel, compileKey.path, compileKey.machineId, generated, expiry, compileKey.tokenKey, canOverride);
 	}
@@ -152,7 +139,7 @@ function getId(currentPanel) {
 		});
 }
 
-function validateKey(currentPanel, message, save) {
+function validateKey(currentPanel, message, close: boolean) {
 	if (message.token) {
 		let canOverride = "0";
 		if (message.overwrite == true) {
@@ -174,18 +161,26 @@ function validateKey(currentPanel, message, save) {
 			}
 			if (response.buildType == 0 || response.buildType == 1 || response.buildType == 2) {
 				response.tokenKey = message.token;
-				Utils.savePermissionsInfos(response);
+				response.machineId = message.id;
+				response.issued = message.generated;
+				response.expire = message.expire;
+				response.userId = "";
+				if (close) {
+					Utils.savePermissionsInfos(response);
+				}
 				outputMessageText = localizeHTML["tds.webview.compile.key.validated"];
 				outputMessageType = "success"
 			} else {
 				outputMessageText = localizeHTML["tds.webview.compile.key.invalid"]
 				outputMessageType = "error"
 			}
-			currentPanel.webview.postMessage({
-				command: "setOutputMessage",
-				output: outputMessageText,
-				type: outputMessageType
-			});
+			if (!close) {
+				currentPanel.webview.postMessage({
+					command: "setOutputMessage",
+					output: outputMessageText,
+					type: outputMessageType
+				});
+			}
 	}, (err) => {
 			console.log(err);
 			vscode.window.showErrorMessage("Error valid key");
@@ -210,7 +205,7 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 
 export function updatePermissionBarItem(infos: any | undefined): void {
 	if (infos.authorizationToken) {
-		const expiryDate: Date = new Date(infos.expiry);
+		const expiryDate: Date = new Date(infos.expire);
 
 		if (expiryDate.getTime() >= new Date().getTime()) {
 			const newLine = "\n";
