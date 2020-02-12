@@ -275,5 +275,5 @@ function sameEditor(editor: vscode.TextEditor, nextEditor: vscode.TextEditor) {
 		return false;
 	}
 
-	return (editor.viewColumn === nextEditor.viewColumn) && ((editor as any)._id === (nextEditor as any)._id);
+	return editor.document === nextEditor.document;
 }
