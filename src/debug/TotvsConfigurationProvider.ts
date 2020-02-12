@@ -1,4 +1,4 @@
-import { WorkspaceFolder, DebugConfigurationProvider, DebugConfiguration, CancellationToken, ProviderResult, window } from 'vscode';
+import { WorkspaceFolder, DebugConfigurationProvider, DebugConfiguration, CancellationToken, window } from 'vscode';
 import { connectedServerItem } from '../serversView';
 //import { sessionKey } from '../TotvsLanguageClient';
 import * as vscode from 'vscode';
@@ -23,8 +23,10 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 	 * e.g. add all missing attributes to the debug configuration.
 	 */
 	//resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): ProviderResult<DebugConfiguration> {
-	async resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): Promise<ProviderResult<DebugConfiguration>> {
-		if (connectedServerItem !== undefined) {
+	//async resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): Promise<ProviderResult<DebugConfiguration>> {
+	//Parece que mudaram novamente o tipo de retorno dessa funcao, por isso essa nova declaracao.
+	async resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): Promise<DebugConfiguration> {
+		if (undefined && connectedServerItem !== undefined) {
 			config.type = TotvsConfigurationProvider.type;
 			config.environment = connectedServerItem.currentEnvironment;
 			config.token = connectedServerItem.token;
@@ -89,7 +91,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 			}
 			setDapArgs(setDapArgsArr);
 
-			return config;
+			return Promise.resolve(config);
 		} else {
 			window.showErrorMessage(localize('tds.vscode.server_not_connected', "Nenhum servidor conectado"));
 			return null;

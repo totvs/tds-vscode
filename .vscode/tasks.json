@@ -9,6 +9,11 @@
 				"$tsc-watch"
 			],
 			"isBackground": true,
+			"group": "build"
+		},
+		{
+			"type": "npm",
+			"script": "compile",
 			"group": {
 				"kind": "build",
 				"isDefault": true

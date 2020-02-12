@@ -1,4 +1,4 @@
-import { WorkspaceFolder, DebugConfigurationProvider, DebugConfiguration, CancellationToken, ProviderResult, window } from 'vscode';
+import { WorkspaceFolder, DebugConfigurationProvider, DebugConfiguration, CancellationToken, window } from 'vscode';
 import * as vscode from 'vscode';
 import {localize} from '../extension';
 import { setDapArgs } from './debugConfigs';
@@ -17,7 +17,7 @@ export class TotvsConfigurationTdsReplayProvider implements DebugConfigurationPr
 	 * e.g. add all missing attributes to the debug configuration.
 	 */
 	//resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): ProviderResult<DebugConfiguration> {
-	async resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): Promise<ProviderResult<DebugConfiguration>> {
+	async resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): Promise<DebugConfiguration> {
 		if (config.tdsReplayFile !== undefined && config.tdsReplayFile.trim().length != 0) {
 
 			let workspaceFolders = vscode.workspace.workspaceFolders;

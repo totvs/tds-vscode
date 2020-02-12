@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
 import {TotvsConfigurationProvider} from "./TotvsConfigurationProvider";
 import {TotvsConfigurationTdsReplayProvider} from "./TotvsConfigurationTdsReplayProvider";
-import { createTimeLine,refreshTimeLineView, selectTimeLine, clearTimeLineView } from "./TDSReplayTimeLineView";
 import utils, { MESSAGETYPE } from "../utils";
 import ShowProgressController from "../ui.dialogs/showProgressController"
+import { CreateTDSReplayTimeLineWebView } from './tdsreplay/CreateTDSReplayTimeLineWebView';
 
 const DEBUG_TYPE = TotvsConfigurationProvider.type;
 const WEB_DEBUG_TYPE: string = "totvs_language_web_debug";
@@ -18,17 +18,14 @@ interface LogBody {
 
 let context;
 let showProgressController = new ShowProgressController();
+export let createTimeLineWebView: CreateTDSReplayTimeLineWebView = null;
 
 export class DebugEvent {
 	constructor(pContext: vscode.ExtensionContext) {
 		context = pContext;
-
-		vscode.debug.onDidTerminateDebugSession(event => {
-
-		});
-
+		//vscode.debug.onDidTerminateDebugSession(event => {
+		//});
 	}
-
 	processShowProgressEvent(title:string, mainMessage: string, detailMessage: string, currentWork, totalWork) {
 		showProgressController.showProgress(context, title, mainMessage, detailMessage, currentWork, totalWork);
 	}
@@ -134,26 +131,23 @@ function processLogEvent(event: vscode.DebugSessionCustomEvent, debugConsole: vs
 	}
 }
 
-function processAddTimeLineEvent(event: vscode.DebugSessionCustomEvent, console: vscode.DebugConsole) {
-	const timeLines = event.body.timeLines;
-	if(timeLines.length > 0) {
-		event.body.currentPage;
-		event.body.totalPages;
-		for(let index = 0; index < timeLines.length; index++) {
-			let timeLine = timeLines[index];
-			createTimeLine(timeLine.id, timeLine.timeStamp, timeLine.srcName, timeLine.line);
-			//let timeStampAsNumber : number = parseInt(timeLine.timeStamp);
-			//console.appendLine(timeStampAsNumber.toString());
-			//console.appendLine(timeLine.id + " - " + timeLine.timeStamp + " - " + timeLine.srcName + " - " + timeLine.line);
-		}
+function processAddTimeLineEvent(debugEvent: vscode.DebugSessionCustomEvent, console: vscode.DebugConsole) {
+	if(createTimeLineWebView === null) {
+		createTimeLineWebView = new CreateTDSReplayTimeLineWebView(context, debugEvent);
 	} else {
-		clearTimeLineView();
+		if(createTimeLineWebView.isDisposed()) {
+			createTimeLineWebView.reveal();
+		}
+		createTimeLineWebView.postAddTimeLineEvent(debugEvent);
 	}
-	refreshTimeLineView();
 }
 
-function processSelectTimeLineEvent(event: vscode.DebugSessionCustomEvent, console: vscode.DebugConsole) {
-	selectTimeLine(event.body.id);
+function processSelectTimeLineEvent(event: vscode.DebugSessionCustomEvent, debugConsole: vscode.DebugConsole) {
+	if(createTimeLineWebView !== null) {
+		//console.log("RECEIVED SELECT TIME LINE FROM SERVER: ");
+		//console.log(event.body.id)
+		createTimeLineWebView.selectTimeLine(event.body.id);
+	 }
 }
 
 

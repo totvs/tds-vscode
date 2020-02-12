@@ -38,25 +38,39 @@
 	},
 	"scripts": {
 		"prepare": "tsc -p ./src",
-		"compile": "tsc -p ./src",
+		"compile": "npm run cleanup && npm-run-all compile:*",
+		"watch": "npm-run-all -p watch:*",
+		"compile:extension": "tsc -p ./src",
+		"compile:views": "webpack --mode development",
+		"watch:extension": "tsc -w -p ./src",
+		"watch:views": "webpack --watch --mode development",
 		"tslint": "tslint ./src/**/*.ts",
-		"watch": "tsc -w -p ./src",
 		"test": "node node_modules/vscode/bin/test",
 		"postinstall": "node ./node_modules/vscode/bin/install",
 		"package": "vsce package",
 		"publish": "vsce publish"
 	},
 	"dependencies": {
+		"@material-ui/core": "^4.9.1",
+		"@material-ui/icons": "^4.9.1",
+		"@material-ui/lab": "^4.0.0-alpha.41",
 		"@totvs/tds-da": "^1.0.43",
 		"@totvs/tds-ls": "^1.0.47",
+		"@types/react": "16.8.24",
+		"@types/react-dom": "16.0.5",
 		"await-notify": "1.0.1",
 		"cheerio": "^1.0.0-rc.3",
+		"css-loader": "^3.4.2",
 		"ini": "^1.3.5",
 		"jslib": "^1.1.0",
 		"jszip": "^3.2.2",
+		"react": "^16.12.0",
+		"react-dom": "^16.12.0",
 		"strip-json-comments": "^2.0.1",
+		"style-loader": "^1.1.3",
 		"template-literal": "^1.0.3",
 		"tmp": "^0.1.0",
+		"ts-loader": "^6.2.1",
 		"vscode-debugadapter": "1.32.1",
 		"vscode-languageclient": "^4.4.2",
 		"vscode-nls": "^4.1.1",
@@ -74,12 +88,15 @@
 		"gulp-typescript": "^5.0.1",
 		"gulp-util": "^3.0.8",
 		"mocha": "5.2.0",
+		"npm-run-all": "^4.1.5",
 		"tslint": "5.11.0",
 		"typescript": "3.1.6",
 		"vsce": "^1.69.0",
 		"vscode": "^1.1.36",
 		"vscode-debugadapter-testsupport": "1.32.0",
-		"vscode-nls-dev": "^3.3.1"
+		"vscode-nls-dev": "^3.3.1",
+		"webpack": "^4.41.5",
+		"webpack-cli": "^3.3.10"
 	},
 	"main": "./out/extension",
 	"activationEvents": [
@@ -573,7 +590,12 @@
 			},
 			{
 				"command": "totvs-developer-studio.tdsreplay.configure.launcher",
-				"title" : "%tds.package.configure.launcher.title%",
+				"title": "%tds.package.configure.launcher.title%",
+				"category": "TDSReplay"
+			},
+			{
+				"command": "totvs-developer-studio.tdsreplay.webview.timeLine",
+				"title": "Open TimeLine Webview",
 				"category": "TDSReplay"
 			}
 		],
@@ -760,25 +782,25 @@
 								"description": "%tds.package.properties.cwb.description%",
 								"default": "${workspaceFolder}"
 							},
-							"tdsReplayFile" : {
+							"tdsReplayFile": {
 								"type": "string",
-								"description" : "The TDS Replay File recorder by the server.",
-								"default" : ""
+								"description": "The TDS Replay File recorder by the server.",
+								"default": ""
 							},
-							"password" : {
+							"password": {
 								"type": "string",
-								"description" : "The password of the TDS Replay File",
-								"default" : ""
+								"description": "The password of the TDS Replay File",
+								"default": ""
 							},
-							"includeSources" : {
+							"includeSources": {
 								"type": "string",
-								"description" : "The sources that must be included when importing the information. WildCards (*) can be used.",
-								"default" : "*"
+								"description": "The sources that must be included when importing the information. WildCards (*) can be used.",
+								"default": "*"
 							},
-							"excludeSources" : {
+							"excludeSources": {
 								"type": "string",
-								"description" : "The sources that must be excluded when importing the information. WildCards (*) can be used.",
-								"default" : ""
+								"description": "The sources that must be excluded when importing the information. WildCards (*) can be used.",
+								"default": ""
 							},
 							"logFile": {
 								"type": "string",
@@ -985,12 +1007,6 @@
 					"id": "totvs_server",
 					"name": "%tds.package.server.view%"
 				}
-			],
-			"debug": [
-				{
-					"id": "tdsreplay.timeline",
-					"name": "TDS Replay - Timelines"
-				}
 			]
 		},
 		"menus": {
@@ -1176,6 +1192,10 @@
 				{
 					"command": "totvs-developer-studio.welcomePage",
 					"when": "1 == 0"
+				},
+				{
+					"command": "totvs-developer-studio.tdsreplay.webview.timeLine",
+					"when": "debugType == totvs_tdsreplay_debug"
 				}
 			]
 		}

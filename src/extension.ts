@@ -7,8 +7,7 @@ import * as vscode from 'vscode';
 import * as ls from 'vscode-languageserver-types';
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import { window, commands, debug, extensions, workspace, ExtensionContext, Uri } from 'vscode';
-import { ProgressLocation, StatusBarAlignment, Command } from 'vscode';
+import { window, commands, debug, extensions, workspace, ExtensionContext, Uri, ProgressLocation, StatusBarAlignment } from 'vscode';
 import { jumpToUriAtPosition } from './vscodeUtils';
 import { ServersExplorer, updateStatusBarItem } from './serversView';
 import { compileKeyPage, updatePermissionBarItem } from './compileKey/compileKey';
@@ -33,14 +32,11 @@ import { onCaptureLoggers, offCaptureLoggers } from './loggerCapture/logger';
 import { TotvsConfigurationWebProvider } from './debug/TotvsConfigurationWebProvider';
 import { TotvsConfigurationProvider } from './debug/TotvsConfigurationProvider';
 import tdsReplayLauncherConfig from './launcher/tdsReplay/tdsReplayLauncherConfig';
-import { TDSReplayTimeLineView } from "./debug/TDSReplayTimeLineView";
 import { TotvsConfigurationTdsReplayProvider } from './debug/TotvsConfigurationTdsReplayProvider';
-import { getDAP, getProgramName, getProgramArguments } from './debug/debugConfigs';
-import { toggleTableSync } from './debug/debugConfigs';
+import { getDAP, getProgramName, getProgramArguments, toggleTableSync } from './debug/debugConfigs';
 import { toggleAutocompleteBehavior, updateSettingsBarItem } from './server/languageServerSettings';
 import { advplDocumentFormattingEditProvider, advplDocumentRangeFormattingEditProvider, advplResourceFormatting } from './formatter/advplFormatting';
-import { processDebugCustomEvent, DebugEvent } from './debug/debugEvents';
-//import ShowProgressControllerDialog from './ui.dialogs/showProgressController';
+import { processDebugCustomEvent, DebugEvent, createTimeLineWebView } from './debug/debugEvents';
 
 export let languageClient: LanguageClient;
 // metodo de tradução
@@ -53,13 +49,15 @@ export let permissionStatusBarItem: vscode.StatusBarItem;
 // barra de configurações
 export let settingsStatusBarItem: vscode.StatusBarItem;
 
+let _debugEvent = undefined;
+
 export function parseUri(u): Uri {
 	return Uri.parse(u);
 }
 
 export function activate(context: ExtensionContext) {
 
-	let dbgEv = new DebugEvent(context); //Cria a instancia para ja informar o debug context
+	new DebugEvent(context); //Cria a instancia para ja informar o debug context
 
 	console.log(localize('tds.console.congratulations', 'Congratulations, your extension "totvs-developer-studio" is now active!'));
 	context.subscriptions.push(commands.registerCommand('tds.getDAP', () => getDAP()));
@@ -259,10 +257,15 @@ export function activate(context: ExtensionContext) {
 		console.error(localize('tds.vscode.server_vision_not_load', 'Visão "Servidores" não inicializada.'));
 	}
 
-	let viewTDSReplayTimeLine = new TDSReplayTimeLineView(context);
-	if (!viewTDSReplayTimeLine) {
-		console.error(localize('tds.vscode.tdsreplay_timelines_not_load', 'Visão TDS Replay - TimeLines não inicializada.'));
-	}
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.tdsreplay.webview.timeLine', () => {
+		if(_debugEvent !== undefined) {
+			if(createTimeLineWebView !== null) {
+				createTimeLineWebView.reveal();
+			}
+		} else {
+			vscode.window.showErrorMessage("TDS Replay não iniciado.");
+		}
+	}));
 
 	// Registra uma configuração de debug
 	const provider = new TotvsConfigurationProvider();
@@ -374,9 +377,14 @@ export function activate(context: ExtensionContext) {
 	);
 
 	//debug
-	vscode.debug.onDidReceiveDebugSessionCustomEvent((e: vscode.DebugSessionCustomEvent) => {
-		processDebugCustomEvent(e);
+	vscode.debug.onDidReceiveDebugSessionCustomEvent((debugEvent: vscode.DebugSessionCustomEvent) => {
+		_debugEvent = debugEvent;
+		processDebugCustomEvent(debugEvent);
 	});
+
+	vscode.debug.onDidTerminateDebugSession(() => {
+		_debugEvent = undefined;
+	})
 
 	//Verifica questões de encoding
 	verifyEncoding();
