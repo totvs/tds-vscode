@@ -26,7 +26,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 	//async resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): Promise<ProviderResult<DebugConfiguration>> {
 	//Parece que mudaram novamente o tipo de retorno dessa funcao, por isso essa nova declaracao.
 	async resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): Promise<DebugConfiguration> {
-		if (undefined && connectedServerItem !== undefined) {
+		if (connectedServerItem !== undefined) {
 			config.type = TotvsConfigurationProvider.type;
 			config.environment = connectedServerItem.currentEnvironment;
 			config.token = connectedServerItem.token;

@@ -1,5 +1,9 @@
-# Versão 0.4.0
+# Versão 1.0.0
 
+## Exibir o console (Output) durante a compilação [Pull Request 271](https://github.com/totvs/tds-vscode/pull/271)
+### Melhoria:
+* Adicionada opção nas preferência para exibir o console (Output) ao acionar uma compilação.
+----
 ## Compile/Recompile open Editors [Issue 276](https://github.com/totvs/tds-vscode/issues/276)
 ### Problema:
 * A opção de compilar/recompilar os editores abertos parou de funcionar após atualização Windows/VS Code.
