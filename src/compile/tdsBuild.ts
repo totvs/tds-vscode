@@ -53,6 +53,7 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions, c
 	const shouldClearConsole = configADVPL.get("clearConsoleBeforeCompile");
 	if (shouldClearConsole !== false) {
 		languageClient.outputChannel.clear();
+		languageClient.outputChannel.show();
 	}
 
 	const resourcesToConfirm: vscode.TextDocument[] = vscode.workspace.textDocuments.filter(d => !d.isUntitled && d.isDirty);
