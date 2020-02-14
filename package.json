@@ -51,10 +51,10 @@
 		"publish": "vsce publish"
 	},
 	"dependencies": {
-		"@material-ui/core": "^4.9.1",
+		"@material-ui/core": "^4.9.2",
 		"@material-ui/icons": "^4.9.1",
-		"@material-ui/lab": "^4.0.0-alpha.41",
-		"@totvs/tds-da": "^1.0.43",
+		"@material-ui/lab": "^4.0.0-alpha.42",
+		"@totvs/tds-da": "^1.1.0",
 		"@totvs/tds-ls": "^1.1.2",
 		"@types/react": "16.8.24",
 		"@types/react-dom": "16.0.5",
@@ -95,8 +95,8 @@
 		"vscode": "^1.1.36",
 		"vscode-debugadapter-testsupport": "1.32.0",
 		"vscode-nls-dev": "^3.3.1",
-		"webpack": "^4.41.5",
-		"webpack-cli": "^3.3.10"
+		"webpack": "^4.41.6",
+		"webpack-cli": "^3.3.11"
 	},
 	"main": "./out/extension",
 	"activationEvents": [
@@ -787,6 +787,11 @@
 								"description": "The TDS Replay File recorder by the server.",
 								"default": ""
 							},
+							"ignoreFiles": {
+								"type": "boolean",
+								"description": "%tds.package.properties.ignoreFiles.description%",
+								"default": false
+							},
 							"password": {
 								"type": "string",
 								"description": "The password of the TDS Replay File",
@@ -824,6 +829,7 @@
 						"name": "${1:%tds.package.tdsreplay.debug%}",
 						"cwb": "${workspaceFolder}",
 						"tdsReplayFile": "",
+						"ignoreFiles": false,
 						"password": "",
 						"includeSources": "",
 						"excludeSources": ""
@@ -838,6 +844,7 @@
 							"request": "launch",
 							"name": "${1:%tds.package.tdsreplay.debug%}",
 							"cwb": "${workspaceFolder}",
+							"ignoreFiles": false,
 							"tdsReplayFile": "",
 							"password": "",
 							"includeSources": "",

@@ -48,32 +48,6 @@ export class TotvsConfigurationTdsReplayProvider implements DebugConfigurationPr
 				setDapArgsArr.push("--log-file=" + config.logFile.replace('${workspaceFolder}', ws));
 			}
 
-			// setDapArgsArr.push("--tdsReplayFile=" + config.tdsReplayFile); //Atenção, esse comando deve ser usado apenas em aplicações baseadas em DAP.
-
-			// let mustImport;
-			// await this.verifyIfMustImport(config).then((value) => {mustImport = value});
-			// if(mustImport) {
-			// 	//--importTDSReplay=<The compacted File> --password=teste --include=<Source list to include> --enableVerbose --logFile=D:\temp\testeNewReplay\importLog.txt			setDapArgs(setDapArgsArr);
-			// 	setDapArgsArr.push("--import");
-			// 	if(config.password !== undefined && config.password.trim().length > 0) {
-			// 		setDapArgsArr.push("--password=" + config.password);
-			// 	}
-			// 	if(config.includeSources !== undefined && config.includeSources.trim().length > 0) {
-			// 		setDapArgsArr.push("--include=" + config.includeSources);
-			// 	}
-			// 	if(config.excludeSources !== undefined && config.excludeSources.trim().length > 0) {
-			// 		setDapArgsArr.push("--exclude=" + config.excludeSources);
-			// 	}
-			// 	if(config.enableVerbose !== undefined && config.enableVerbose) {
-			// 		setDapArgsArr.push("--enableVerbose=" + config.enableVerbose);
-			// 		if (config.logFile) {
-			// 			const ws: string = vscode.workspace.rootPath || '';
-			// 			setDapArgsArr.push("--logFile=" + config.logFile.replace('${workspaceFolder}', ws));
-			// 		}
-			// 	}
-			// }
-			// setDapArgsArr.push("--keepExtractedFiles"); //NAO COMITAR COM ESSA OPCAO
-
 			setDapArgs(setDapArgsArr);
 
 			return config;

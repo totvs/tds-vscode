@@ -131,6 +131,7 @@ function saveNewLauncher(message: any, launchersInfo: any): void {
 		type: "totvs_tdsreplay_debug",
 		request: "launch",
 		cwb: "${workspaceRoot}",
+		ignoreFiles: true,
 		name: message.launcherName
 	};
 	updateElement(element, message);
