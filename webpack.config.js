@@ -2,11 +2,14 @@ const path = require("path");
 
 module.exports = {
   target: 'node',
+  //O webpack, pega todos os fontes tsx e os compacta em um unico arquivo .js. Isso é feito para contornar algumas limitações e alguns browsers que não aceitam a instrução import.
+  //O entry pode ser definido com um objeto. A chave, ou no nome da propriedade, nesse caso sera o nome de saida do arquivo.
   entry: {
-    index: "./src/debug/tdsreplay/app/index.tsx"
+    timeLineView: "./src/debug/tdsreplay/app/index.tsx"
   },
   output: {
-    path: path.resolve(__dirname, "./out/debug/tdsreplay"),
+    path: path.resolve(__dirname, "./out/debug/tdsreplay/app"),
+    //O [name] abaixo é o que foi definido no "entry" acima, ou seja, o arquivo gerado tera  o nome timeLineView.js
     filename: "[name].js"
   },
   devtool: "eval-source-map",

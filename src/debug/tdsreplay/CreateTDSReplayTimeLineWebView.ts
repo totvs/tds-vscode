@@ -57,13 +57,15 @@ private initializePanel(): void {
 
   private getWebviewContent(): string {
     // Local path to main script run in the webview
+    //Essa instrução deve apontar para o arquivo compactado, gerado pelo webpack, definido no webpack.config.js
     const reactAppPathOnDisk = Uri.file(
       path.join(
         this._extensionPath,
         "out",
         "debug",
         "tdsreplay",
-        "TDSReplayTimeLineWebView.js"
+        "app",
+        "timeLineView.js"
       )
     );
 

@@ -47,6 +47,11 @@ const tableStyles = makeStyles(_theme => ({
 	},
 	selectedTableRow: {
 		backgroundColor: "grey !important"
+	},
+	srcNotFound: {
+		backgroundColor: "LIGHTCORAL !important",
+		textDecoration: "line-through black",
+		WebkitTextDecorationStyle: "solid"
 	}
 }));
 
@@ -154,13 +159,10 @@ export default function TimeLineTable() {
 	//console.log("itemsPerPage:" + jsonBody.itemsPerPage);
 	//console.log("currentPage: " + jsonBody.currentPage);
 	//console.log("totalPages: " + jsonBody.totalPages);
-	//console.log("TimeLineCount: " + jsonBody.timeLines.length);
+	///console.log("TimeLineCount: " + jsonBody.timeLines.length);
 	//console.log("totaItems: " + jsonBody.totalItems);
 
 	const [selectedRow, setSelectedRow] = React.useState(jsonBody.currentSelectedTimeLineId); //Id da timeline inicial a ser selecionada. 500 para selcionar a primeira pois o replay sempre ira parar na primeira linha
-	//const [rowsPerPage, setRowsPerPage] = React.useState(parseInt(body.itemsPerPage));
-
-	//const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
 	const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
 		//console.log("handleChangePage (newPage: " + newPage + ")");
@@ -221,14 +223,17 @@ export default function TimeLineTable() {
 					break;
 				case 'addTimeLines':
 					//console.log("------> addTimeLines");
-					//console.log("ADDTIMELINE EVENT received");
 					setJsonBody((body) => {
 						if(event !== undefined) {
 							event.preventDefault();
 						}
 						body = message.data.body;
+						//console.log("Setando o body: ");
+						//console.log(body.timeLines.length);
 						return body;
 					});
+					//console.log("Após setar o body, valor do state jsonBody: ");
+					//console.log(jsonBody.tomeLines.length);
 					//console.log("FirstTimeLineID: "+message.data.body.currentSelectedTimeLineId);
 					selectTimeLineInTable(message.data.body.currentSelectedTimeLineId);
 					break;
@@ -243,16 +248,24 @@ export default function TimeLineTable() {
 		const classes = tableStyles();
 		let items = [];
 		let timeLines = jsonBody.timeLines;
-		//console.log("Criando TIMELINES:")
-		let timeLineFoundInPage = false;
+		console.log("Criando TIMELINES:")
+		//let timeLineFoundInPage = false;
 		for (let index = 0; index < jsonBody.timeLines.length; index++) {
 			let timeLine = timeLines[index];
 			let isSelected: boolean = timeLine.id === parseInt(jsonBody.currentSelectedTimeLineId);
-			let bg = (jsonBody.currentSelectedTimeLineId !== undefined && isSelected) ? classes.selectedTableRow : classes.tableRow;
-			if (isSelected) {
-				timeLineFoundInPage = true;
-				//console.log(jsonBody.currentSelectedTimeLineId + " - TIMLINEID = SELECTEDROW : " + isSelected) + " className = " + bg;
+			let notFoundText = "";
+			let bg;
+			if(!timeLine.srcFoundInWS || timeLine.srcFoundInWS == "false") {
+				bg = classes.srcNotFound;
+				notFoundText = "Source not found in Workspace. This timeline is not available to select"
+			} else {
+				bg = (jsonBody.currentSelectedTimeLineId !== undefined && isSelected) ? classes.selectedTableRow : classes.tableRow;
 			}
+
+			//if (isSelected) {
+			//	timeLineFoundInPage = true;
+				//console.log(jsonBody.currentSelectedTimeLineId + " - TIMLINEID = SELECTEDROW : " + isSelected) + " className = " + bg;
+			//}
 			/*
 			let date = new Date(timeStampAsNumber);
 	//let date = new Date();
@@ -274,12 +287,18 @@ export default function TimeLineTable() {
 			*/
 			items.push(
 				<TableRow
+					title = {notFoundText}
 					hover
 					tabIndex={-1}
 					id={timeLine.id}
 					key={timeLine.id}
 					className={bg}
-					onClick={(event) => { sendSelectTimeLineRequest(event, event.currentTarget.id) }}
+					onClick={
+						timeLine.srcFoundInWS ?
+						(event) => { sendSelectTimeLineRequest(event, event.currentTarget.id) }
+						:
+					(event) => {/*does nothing*/}
+					}
 					selected={isSelected}>
 					<TableCell component="th" scope="row">{timeLine.timeStamp}</TableCell>
 					<TableCell align="left">{timeLine.srcName}</TableCell>
@@ -287,10 +306,10 @@ export default function TimeLineTable() {
 				</TableRow>
 			);
 		}
-		if(!timeLineFoundInPage) {
+		//if(!timeLineFoundInPage) {
 			//console.log("TimeLine nao encontrado nessa pagina, mudando de pagina");
-			handleChangePage(null,jsonBody.currentPage+1);
-		}
+		//	handleChangePage(null,jsonBody.currentPage+1);
+		//}
 		//console.log("Retornando do createTimeLineItem LOOP");
 		return items;
 	}

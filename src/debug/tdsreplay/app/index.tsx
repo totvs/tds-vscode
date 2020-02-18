@@ -4,6 +4,11 @@ import * as ReactDOM from "react-dom";
 import "./index.css";
 import TDSReplayTimeLineWebView from "./TDSReplayTimeLineWebView";
 
+interface Props {
+  value:string,
+  name:string
+}
+
 declare global {
   interface Window {
     acquireVsCodeApi(): any;

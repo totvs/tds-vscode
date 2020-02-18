@@ -1,6 +1,6 @@
 import React from "react";
 
-export default class ErrorBoundary extends React.Component {
+export default class ErrorBoundary extends React.Component<any,any> {
   constructor(props) {
     super(props);
 
