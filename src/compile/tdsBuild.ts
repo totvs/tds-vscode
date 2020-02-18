@@ -53,6 +53,9 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions, c
 	const shouldClearConsole = configADVPL.get("clearConsoleBeforeCompile");
 	if (shouldClearConsole !== false) {
 		languageClient.outputChannel.clear();
+	}
+	const showConsoleOnCompile = configADVPL.get("showConsoleOnCompile");
+	if (showConsoleOnCompile !== false) {
 		languageClient.outputChannel.show();
 	}
 
