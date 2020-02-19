@@ -71,11 +71,21 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Após executar o cadastro de ao menos um servidor.
 * Vá para visão de servidores (Acesso pelo ícone da TOTVS na lateral esquerda do VSCode).
 * Clique com o botão direito e selecione a opção `Connect`.
-* Informe `ambiente`, `usuário` e `senha` (pode ser "em branco") para prosseguir.
-* Aguarde o termino da conexão.
-* A conexão com servidores pode ser efetuada pela seleção do texto `[Selecionar servidor/ambiente]` na barra de ferramentas. Ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Select Server`.
+* Selecione um `ambiente` da lista de ambientes, se nenhum ambiente estiver cadastrado, informe um ambiente válido.
+* Se necessário informe o `usuário` e `senha` para prosseguir.
+* Aguarde o término da conexão.
+
+> A conexão com servidores pode ser efetuada pela seleção do texto `[Selecionar servidor/ambiente]` na barra de ferramentas.
+> Ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Select Server`.
 
 ![Connect Server](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/ConnectServer.gif)
+
+### Cadastro de múltiplos ambientes
+
+* Para cadastrar outros ambientes de um servidor, inicie uma nova conexão neste servidor.
+* Os ambientes já cadastrados anteriormente serão exibidos em uma lista.
+* Clique no ícone `"+"` no canto superior direito da lista.
+* Informe o novo `ambiente` e prossiga com a conexão normalmente.
 
 ## Compilação
 

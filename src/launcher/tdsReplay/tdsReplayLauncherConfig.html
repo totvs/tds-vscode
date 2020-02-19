@@ -43,6 +43,11 @@
 								<input class="inputText" type="text" id="excludeSrcID" name="ExcludeSource">
 							</div>
 
+							<div class="checkboxGroup">
+								<input id="ignoreSourcesNotFoundID" class="checkbox" name="ignoreSourcesNotFound" type="checkbox" value="ignoreSourcesNotFound" checked>
+								<label class="checkboxLabel" for="ignoreSourcesNotFound">${d.localize["tds.webview.launcher.ignoreFiles"]}</label><!--Ignore files not in Workspace-->
+							</div>
+							<br>
 							<div class="wrap-submit">
 								<input class="btn-submit" id="submitID" type="submit" value="${d.localize['tds.webview.launcher.save']}" onclick="saveLaunchConfig(false)" /><!--Save-->
 								<input class="btn-submit" id="submitID" type="submit" value="${d.localize['tds.webview.launcher.saveClose']}" onclick="saveLaunchConfig(true)" /><!--Save/Close-->
@@ -108,6 +113,7 @@
 			password: 				getPassword().value,
 			includeSources: 		getIncludeSrc().value,
 			excludeSources: 		getExcludeSrc().value,
+			ignoreSourcesNotFound:	getElementIgnoreFiles().checked,
 			'close':                close
 		});
 	}
@@ -117,6 +123,7 @@
 		getPassword().value 			= element !== undefined ? element.password : "";
 		getIncludeSrc().value 			= element !== undefined ? element.includeSources : "";
 		getExcludeSrc().value 			= element !== undefined ? element.excludeSources : "";
+		getElementIgnoreFiles().value	= element !== undefined ? element.ignoreSourcesNotFound: false;
 	}
 
 	function getElementLauncherList() { return document.getElementById('launcherListID'); }
@@ -125,6 +132,7 @@
 	function getPassword() 			  { return document.getElementById("passwordID"); }
 	function getIncludeSrc() 		  { return document.getElementById("includeSrcID"); }
 	function getExcludeSrc() 		  { return document.getElementById("excludeSrcID"); }
+	function getElementIgnoreFiles()  { return document.getElementById("ignoreSourcesNotFoundID"); }
 
 	function setTextArea(){
 		var input = document.getElementById('tdsReplayFileID');

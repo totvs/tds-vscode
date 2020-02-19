@@ -7,5 +7,6 @@ export enum CommandAction {
     SetTimeLine,
     ChangeRowsPerPage,
     ChangePage,
-    ChangeItemsPerPage
+    ChangeItemsPerPage,
+    SetIgnoreSourcesNotFound
 }

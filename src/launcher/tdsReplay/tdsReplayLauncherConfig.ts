@@ -21,7 +21,8 @@ const localizeHTML = {
 	"tds.webview.launcher.excludeSrc": localize("tds.webview.launcher.excludeSrc","Exclude Sources:"),
 	"tds.webview.launcher.save": localize("tds.webview.launcher.save","Save"),
 	"tds.webview.launcher.saveClose": localize("tds.webview.launcher.saveClose","Save/Close"),
-	"tds.webview.launcher.bottomInfo": localize("tds.webview.launcher.bottomInfo","This config could be altered editing file")
+	"tds.webview.launcher.bottomInfo": localize("tds.webview.launcher.bottomInfo","This config could be altered editing file"),
+	"tds.webview.launcher.ignoreFiles": localize("tds.webview.launcher.ignoreFiles", "Ignore files not found in WorkSpace (debugging)")
 };
 
 export default class LauncherConfiguration {
@@ -124,6 +125,7 @@ function updateElement(element: any, message: any) {
 	element.password = message.password;
 	element.includeSources = message.includeSources;
 	element.excludeSources = message.excludeSources;
+	element.ignoreSourcesNotFound = message.ignoreSourcesNotFound;
 }
 
 function saveNewLauncher(message: any, launchersInfo: any): void {
@@ -131,7 +133,7 @@ function saveNewLauncher(message: any, launchersInfo: any): void {
 		type: "totvs_tdsreplay_debug",
 		request: "launch",
 		cwb: "${workspaceRoot}",
-		ignoreFiles: true,
+		ignoreSourcesNotFound: true,
 		name: message.launcherName
 	};
 	updateElement(element, message);

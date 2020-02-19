@@ -8,6 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Switch from '@material-ui/core/Switch';
 import IconButton from '@material-ui/core/IconButton';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
@@ -16,6 +17,7 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 import { myVscode } from "./TDSReplayTimeLineWebView";
 import { ICommand, CommandAction } from "../Command";
 import { DebugSessionCustomEvent } from "vscode";
+import { FormControlLabel } from '@material-ui/core';
 
 const useStyles1 = makeStyles((theme: Theme) =>
 	createStyles({
@@ -49,8 +51,9 @@ const tableStyles = makeStyles(_theme => ({
 		backgroundColor: "grey !important"
 	},
 	srcNotFound: {
-		backgroundColor: "LIGHTCORAL !important",
-		textDecoration: "line-through black",
+		backgroundColor: "rgb(255,204,204) !important",
+		//backgroundColor: "LIGHTCORAL !important",
+		//textDecoration: "line-through black",
 		WebkitTextDecorationStyle: "solid"
 	}
 }));
@@ -154,6 +157,8 @@ export default function TimeLineTable() {
 
 	const classes = tableStyles();
 	const [jsonBody, setJsonBody] = React.useState(debugEvent.body);
+	const [dense, setDense] = React.useState(false);
+	const [ignoreSourcesNotfound, setIgnoreSourcesNotfound] = React.useState(true);
 
 	//console.log("current TimeLine ID:" + jsonBody.currentSelectedTimeLineId);
 	//console.log("itemsPerPage:" + jsonBody.itemsPerPage);
@@ -163,6 +168,19 @@ export default function TimeLineTable() {
 	//console.log("totaItems: " + jsonBody.totalItems);
 
 	const [selectedRow, setSelectedRow] = React.useState(jsonBody.currentSelectedTimeLineId); //Id da timeline inicial a ser selecionada. 500 para selcionar a primeira pois o replay sempre ira parar na primeira linha
+
+	const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setDense(event.target.checked);
+	};
+
+	const handleIgnoreSourceNotFount = (event: React.ChangeEvent<HTMLInputElement>) => {
+		let command: ICommand = {
+			action: CommandAction.SetIgnoreSourcesNotFound,
+			content: {isIgnoreSourceNotFound: event.target.checked}
+		}
+		myVscode.postMessage(command)
+		setIgnoreSourcesNotfound(event.target.checked);
+	}
 
 	const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
 		//console.log("handleChangePage (newPage: " + newPage + ")");
@@ -323,7 +341,7 @@ export default function TimeLineTable() {
 	return (
 		<Paper className={classes.root}>
 			<TableContainer className={classes.container}>
-				<Table stickyHeader aria-label="sticky table" ref={table}>
+				<Table stickyHeader aria-label="sticky table" ref={table} size={dense ? 'medium' : 'small'}>
 					<TableHead>
 						<TableRow>
 							{columns.map(column => (
@@ -356,6 +374,14 @@ export default function TimeLineTable() {
 				onChangeRowsPerPage={handleChangeRowsPerPage}
 				ActionsComponent={TablePaginationActions}
 			/>
+		 <FormControlLabel
+			control={<Switch checked={dense} onChange={handleChangeDense} />}
+			label="Dense padding"
+		/>
+		 <FormControlLabel
+			control={<Switch checked={ignoreSourcesNotfound} onChange={handleIgnoreSourceNotFount} />}
+			label="Ignore Source Not Found"
+		/>
 		</Paper>
 	);
 }
