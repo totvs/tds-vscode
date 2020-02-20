@@ -1,6 +1,8 @@
 import { debug, commands, Disposable, window, WebviewPanel, ExtensionContext, DebugSessionCustomEvent, ViewColumn, Uri } from 'vscode';
 import * as path from "path";
 import { ICommand, CommandAction } from "./Command";
+import Utils, { MESSAGETYPE } from "../../utils";
+import { DebugEvent } from '../debugEvents';
 
 export class CreateTDSReplayTimeLineWebView {
   protected _panel: WebviewPanel | undefined;
@@ -9,11 +11,13 @@ export class CreateTDSReplayTimeLineWebView {
   private _disposables: Disposable[] = [];
   private _debugEvent: DebugSessionCustomEvent;
   private _isDisposed = false;
+  private _isIgnoreSourcesNotFound = true;
 
-  constructor(context: ExtensionContext, debugEvent: DebugSessionCustomEvent) {
+  constructor(context: ExtensionContext, debugEvent: DebugSessionCustomEvent, isIgnoreSourcesNotFound: boolean) {
     this._extensionPath = context.extensionPath;
     this._debugEvent = debugEvent;
     this._context = context;
+    this._isIgnoreSourcesNotFound = isIgnoreSourcesNotFound;
 
     this.initializePanel();
 
@@ -71,6 +75,7 @@ private initializePanel(): void {
 
     const reactAppUri = reactAppPathOnDisk.with({ scheme: "vscode-resource" });
 
+    this._debugEvent.body["ignoreSourcesNotFound"] = this._isIgnoreSourcesNotFound;
     const configJson = JSON.stringify(this._debugEvent);
 
     return `<!DOCTYPE html>
@@ -115,8 +120,11 @@ private initializePanel(): void {
     });
   }
 
-  public postAddTimeLineEvent(debugEvent: DebugSessionCustomEvent) {
+  public postAddTimeLineEvent(debugEvent: DebugSessionCustomEvent, isIgnoreSourceNotFound: boolean) {
     //Envio de mensagem para página
+    this._isIgnoreSourcesNotFound = isIgnoreSourceNotFound;
+    this._debugEvent = debugEvent;
+    debugEvent.body["ignoreSourcesNotFound"] = this._isIgnoreSourcesNotFound;
     this._panel.webview.postMessage({
       command: "addTimeLines",
       data: debugEvent
@@ -140,6 +148,9 @@ function handleMessageReceived(command: ICommand) {
       break;
     case CommandAction.ChangeItemsPerPage:
       handleChangeItemsPerPageCommand(command);
+      break;
+    case CommandAction.SetIgnoreSourcesNotFound:
+      handleSetIgnoreSourcesNotFound(command);
       break;
   }
 }
@@ -179,5 +190,29 @@ function handleChangeItemsPerPageCommand(command: ICommand) {
     }
     //console.log("Enviando requisição para trocar a quantidade de items por pagina");
     debug.activeDebugSession.customRequest("TDA/changeItemsPerPage", requestJson);
+  }
+}
+
+function handleSetIgnoreSourcesNotFound(command: ICommand) {
+  if(debug.activeDebugSession) {
+
+    let debugSession = debug.activeDebugSession;
+    let launchConfig = Utils.getLaunchConfig();
+
+    for (var key = 0; key < launchConfig.configurations.length; key++) {
+      var launchElement = launchConfig.configurations[key];
+      if(debugSession !== undefined && launchElement.name === debugSession.name) {
+        launchElement.ignoreSourcesNotFound = command.content.isIgnoreSourceNotFound;
+        break;
+      }
+    }
+
+    Utils.saveLaunchConfig(launchConfig);
+
+
+    let requestJson = {
+      "isIgnoreSourceNotFound": command.content.isIgnoreSourceNotFound
+    }
+    debug.activeDebugSession.customRequest("TDA/setIgnoreSourcesNotFound", requestJson);
   }
 }

@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import {TotvsConfigurationProvider} from "./TotvsConfigurationProvider";
 import {TotvsConfigurationTdsReplayProvider} from "./TotvsConfigurationTdsReplayProvider";
-import utils, { MESSAGETYPE } from "../utils";
+import Utils, { MESSAGETYPE } from "../utils";
 import ShowProgressController from "../ui.dialogs/showProgressController"
 import { CreateTDSReplayTimeLineWebView } from './tdsreplay/CreateTDSReplayTimeLineWebView';
 
@@ -121,7 +121,7 @@ function processLogEvent(event: vscode.DebugSessionCustomEvent, debugConsole: vs
 				//console.appendLine(`${COLOR_TABLE['TIME']}[${time}]      ${COLOR_TABLE['CONSOLE']}: ${message}`);
 			} else {
 				debugConsole.appendLine(`[${time}] ${level}: ${message}`);
-				utils.logMessage(`[${time}] ${level}: ${message}`, MESSAGETYPE.Info, true);
+				Utils.logMessage(`[${time}] ${level}: ${message}`, MESSAGETYPE.Info, true);
 				//debugConsole.appendLine(`${COLOR_TABLE['TIME']}[${time}] ${COLOR_TABLE[level]}${level}${COLOR_TABLE['CONSOLE']}: ${message}`);
 			}
 		} else {
@@ -133,12 +133,14 @@ function processLogEvent(event: vscode.DebugSessionCustomEvent, debugConsole: vs
 
 function processAddTimeLineEvent(debugEvent: vscode.DebugSessionCustomEvent, console: vscode.DebugConsole) {
 	if(createTimeLineWebView === null) {
-		createTimeLineWebView = new CreateTDSReplayTimeLineWebView(context, debugEvent);
+		let isIgnoreSourceNotFound: boolean = getIgnoreSourceNotFoundValue();
+		createTimeLineWebView = new CreateTDSReplayTimeLineWebView(context, debugEvent, isIgnoreSourceNotFound);
 	} else {
 		if(createTimeLineWebView.isDisposed()) {
 			createTimeLineWebView.reveal();
 		}
-		createTimeLineWebView.postAddTimeLineEvent(debugEvent);
+		let isIgnoreSourceNotFound: boolean = getIgnoreSourceNotFoundValue();
+		createTimeLineWebView.postAddTimeLineEvent(debugEvent, isIgnoreSourceNotFound);
 	}
 }
 
@@ -150,6 +152,31 @@ function processSelectTimeLineEvent(event: vscode.DebugSessionCustomEvent, debug
 	 }
 }
 
+function getIgnoreSourceNotFoundValue(): boolean {
+	let debugSession = vscode.debug.activeDebugSession;
+	let launchConfig = Utils.getLaunchConfig();
+	let isIgnoreSourceNotFound: boolean = true;
+
+	for (var key = 0; key < launchConfig.configurations.length; key++) {
+		var launchElement = launchConfig.configurations[key];
+		if(debugSession !== undefined && launchElement.name === debugSession.name) {
+			if(launchElement.ignoreSourcesNotFound !== undefined) {
+				isIgnoreSourceNotFound = launchElement.ignoreSourcesNotFound;
+				break;
+			}
+		}
+	}
+
+	// launchConfig.configurations.forEach(launchElement => {
+	// 	if(debugSession !== undefined && launchElement.name === debugSession.name) {
+	// 		if(launchElement.ignoreSourcesNotFound !== undefined) {
+	// 			isIgnoreSourceNotFound = launchElement.ignoreSourcesNotFound;
+	// 		}
+	// 	}
+	// });
+
+	return isIgnoreSourceNotFound;
+}
 
 function processShowProgressEvent(event: vscode.DebugSessionCustomEvent) {
 	showProgressController.showProgress(context, event.body.title, event.body.mainMessage, event.body.detailMessage, event.body.currentWork, event.body.totalWork);

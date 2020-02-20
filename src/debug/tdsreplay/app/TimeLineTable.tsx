@@ -158,8 +158,11 @@ export default function TimeLineTable() {
 	const classes = tableStyles();
 	const [jsonBody, setJsonBody] = React.useState(debugEvent.body);
 	const [dense, setDense] = React.useState(false);
-	const [ignoreSourcesNotfound, setIgnoreSourcesNotfound] = React.useState(true);
+	const [ignoreSourcesNotfound, setIgnoreSourcesNotfound] = React.useState(debugEvent.body.ignoreSourcesNotFound);
 
+
+	console.log("DEbugEvent:" + debugEvent.body.ignoreSourcesNotFound);
+	console.log("Do state:" + ignoreSourcesNotfound);
 	//console.log("current TimeLine ID:" + jsonBody.currentSelectedTimeLineId);
 	//console.log("itemsPerPage:" + jsonBody.itemsPerPage);
 	//console.log("currentPage: " + jsonBody.currentPage);
@@ -176,10 +179,15 @@ export default function TimeLineTable() {
 	const handleIgnoreSourceNotFount = (event: React.ChangeEvent<HTMLInputElement>) => {
 		let command: ICommand = {
 			action: CommandAction.SetIgnoreSourcesNotFound,
-			content: {isIgnoreSourceNotFound: event.target.checked}
+			content: { isIgnoreSourceNotFound: event.target.checked }
 		}
-		myVscode.postMessage(command)
-		setIgnoreSourcesNotfound(event.target.checked);
+		myVscode.postMessage(command);
+		setIgnoreSourcesNotfound((oldValue) => {
+			if(event !== undefined) {
+				event.preventDefault();
+			}
+			return event.target.checked;
+		});
 	}
 
 	const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -246,12 +254,14 @@ export default function TimeLineTable() {
 							event.preventDefault();
 						}
 						body = message.data.body;
-						//console.log("Setando o body: ");
-						//console.log(body.timeLines.length);
 						return body;
 					});
-					//console.log("Após setar o body, valor do state jsonBody: ");
-					//console.log(jsonBody.tomeLines.length);
+					setIgnoreSourcesNotfound((value) => {
+						if(event !== undefined) {
+							event.preventDefault(); //Impede que a pagina seja atualizada nessa alteração para que seja atualizada apenas uma vez ao selecionar a timeline
+						}
+						return message.data.body.ignoreSourcesNotFound;
+					})
 					//console.log("FirstTimeLineID: "+message.data.body.currentSelectedTimeLineId);
 					selectTimeLineInTable(message.data.body.currentSelectedTimeLineId);
 					break;
