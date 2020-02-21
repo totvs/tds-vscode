@@ -69,19 +69,22 @@
 		let index = 0;
 		comboBox.innerText = null; //Zera o combo
 		launhConfig.configurations.forEach(element => {
-			let option = document.createElement("option");
-			option.text = element.name;
-			option.value = element.name;
-			option.data = element;
-			comboBox.appendChild(option);
-			if(getElementLauncherName().value === element.name) {
-				//Atualiza o elemento corrente caso ele ja esteja selecionado.
-				//Esse processo normalmente ocorre quando o usuario altera uma informação manualmente no json
-				//e a pagina ainda esta aberta, portanto é necessario atualizar os campos pois pode ocorrer
-				//do item que foi atualizado manualmente ser o mesmo do que estava previamente selecionado.
-				updateAllFields(element);
+			//Adiciona os launchers no combo, porem filtra apenas os launchers com o id do replay:
+			if(element.type == "totvs_tdsreplay_debug") {
+				let option = document.createElement("option");
+				option.text = element.name;
+				option.value = element.name;
+				option.data = element;
+				comboBox.appendChild(option);
+				if(getElementLauncherName().value === element.name) {
+					//Atualiza o elemento corrente caso ele ja esteja selecionado.
+					//Esse processo normalmente ocorre quando o usuario altera uma informação manualmente no json
+					//e a pagina ainda esta aberta, portanto é necessario atualizar os campos pois pode ocorrer
+					//do item que foi atualizado manualmente ser o mesmo do que estava previamente selecionado.
+					updateAllFields(element);
+				}
+				index+=1;
 			}
-			index+=1;
 		});
 	});
 
@@ -128,7 +131,7 @@
 
 	function getElementLauncherList() { return document.getElementById('launcherListID'); }
 	function getElementLauncherName() { return document.getElementById("launcherNameID"); }
-	function getTdsReplayFile() 	  { return document.getElementById("tdsReplayFileID"); }
+	function getTdsReplayFile() 	  { return document.getElementById("TDSReplayFile"); }
 	function getPassword() 			  { return document.getElementById("passwordID"); }
 	function getIncludeSrc() 		  { return document.getElementById("includeSrcID"); }
 	function getExcludeSrc() 		  { return document.getElementById("excludeSrcID"); }
