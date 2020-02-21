@@ -1,4 +1,4 @@
-# Versão 1.0.0
+# Versão 1.0.1
 
 ## Exibir o console (Output) durante a compilação [Pull Request 271](https://github.com/totvs/tds-vscode/pull/271)
 ### Melhoria:
