@@ -29,6 +29,14 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 ## Configurações Gerais
 
+### Conexão com AppServer 19.3.0.2 (release 27) ou superior
+
+A partir da release 27 a configuração de conexão segura (SSL) pode ser obrigatória para todas as conexões, inclusive para compilação e depuração.
+
+Com essa implementação se torna necessária a inclusão de uma conexão com o AppServer com a opção SSL ligada, conforme imagem abaixo.
+
+![VSCode-SSL](https://raw.githubusercontent.com/ricardomansano/Exemplos/master/VSCodeSSL.png)
+
 ### Console de saída (Output) AdvPL
 
 * Todas as mensagens emitidas serão exibidas na visão `Output` (Console de saída) e seleção `AdvPL`.
