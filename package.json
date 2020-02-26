@@ -208,7 +208,9 @@
 					".aph",
 					".ahu",
 					".apl",
-					".apw"
+					".apw",
+					".4gl",
+					".pem"
 				],
 				"configuration": "./language-configuration.json"
 			},
