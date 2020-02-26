@@ -19,6 +19,7 @@ import { LanguageClient } from 'vscode-languageclient';
 import { commandBuildFile, commandBuildWorkspace, commandBuildOpenEditors } from './compile/tdsBuild';
 import { deleteFileFromRPO } from './server/deleteFileFromRPO';
 import { defragRpo } from './server/defragRPO';
+import { rpoCheckIntegrity }  from  './server/rpoCheckIntegrity';
 import { serverSelection } from './inputConnectionParameters';
 import * as nls from 'vscode-nls';
 import { inspectObject } from './inspect/inspectObject';
@@ -229,6 +230,8 @@ export function activate(context: ExtensionContext) {
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.getProgramArguments', () => getProgramArguments()));
 	//Ação para desfragmentar o RPO do servidor corrente.
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.defragRPO', () => defragRpo()));
+	//Ação para checar a integridade do RPO do servidor corrente.
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.rpoCheckIntegrity', () => rpoCheckIntegrity()));
 	//Ação para deletar um fonte selecionado do RPO.
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.delete.file.fromRPO', (context, files) => deleteFileFromRPO(context, files)));
 	//Ação par abrir a tela de inspetor de objetos.
