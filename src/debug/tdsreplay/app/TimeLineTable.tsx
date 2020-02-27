@@ -69,7 +69,7 @@ interface Column {
 const columns: Column[] = [
 	{
 		id: 'TimeStamp',
-		label: 'TimeStamp',
+		label: 'Time',
 		minWidth: 10,
 		align: 'left'
 	},
