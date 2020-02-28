@@ -1,7 +1,9 @@
+import { ServerItem } from './serversView';
 /*---------------------------------------------------------
  * Copyright (C) TOTVS S.A. All rights reserved.
  *--------------------------------------------------------*/
 
+// tslint:disable-next-line: no-unused-expression
 'use strict';
 import * as vscode from 'vscode';
 import * as ls from 'vscode-languageserver-types';
@@ -37,6 +39,7 @@ import { getDAP, getProgramName, getProgramArguments, toggleTableSync } from './
 import { toggleAutocompleteBehavior, updateSettingsBarItem } from './server/languageServerSettings';
 import { advplDocumentFormattingEditProvider, advplDocumentRangeFormattingEditProvider, advplResourceFormatting } from './formatter/advplFormatting';
 import { processDebugCustomEvent, DebugEvent, createTimeLineWebView } from './debug/debugEvents';
+import { updateMonitorView, toggleServerToMonitor } from './monitor/createMonitorLoader';
 
 export let languageClient: LanguageClient;
 // metodo de tradução
@@ -57,7 +60,7 @@ export function parseUri(u): Uri {
 
 export function activate(context: ExtensionContext) {
 
-	new DebugEvent(context); //Cria a instancia para ja informar o debug context
+	//new DebugEvent(context); //Cria a instancia para ja informar o debug context
 
 	console.log(localize('tds.console.congratulations', 'Congratulations, your extension "totvs-developer-studio" is now active!'));
 	context.subscriptions.push(commands.registerCommand('tds.getDAP', () => getDAP()));
@@ -257,9 +260,17 @@ export function activate(context: ExtensionContext) {
 		console.error(localize('tds.vscode.server_vision_not_load', 'Visão "Servidores" não inicializada.'));
 	}
 
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.monitor', () => {
+		updateMonitorView();
+	}));
+
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.monitor.toggle', (args: any) => {
+		toggleServerToMonitor(args as ServerItem);
+	}));
+
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.tdsreplay.webview.timeLine', () => {
-		if(_debugEvent !== undefined) {
-			if(createTimeLineWebView !== null) {
+		if (_debugEvent !== undefined) {
+			if (createTimeLineWebView !== null) {
 				createTimeLineWebView.reveal();
 			}
 		} else {
@@ -312,7 +323,7 @@ export function activate(context: ExtensionContext) {
 	// Abre a tela de configuração de launchers
 	commands.registerCommand("totvs-developer-studio.configure.launcher", () => launcherConfig.show(context));
 
-			// Abre a tela de configuração de launchers
+	// Abre a tela de configuração de launchers
 	commands.registerCommand("totvs-developer-studio.tdsreplay.configure.launcher", () => tdsReplayLauncherConfig.show(context));
 
 
@@ -349,9 +360,9 @@ export function activate(context: ExtensionContext) {
 	context.subscriptions.push(
 		vscode.commands.registerCommand('totvs-developer-studio.run.formatter', (args: any[]) => {
 			//console.log("formatador ativado");
-			if(args === undefined) {
+			if (args === undefined) {
 				let aeditor = vscode.window.activeTextEditor;
-				if(aeditor !== undefined) {
+				if (aeditor !== undefined) {
 					args = [aeditor.document.uri];
 				}
 			}
@@ -384,7 +395,7 @@ export function activate(context: ExtensionContext) {
 
 	vscode.debug.onDidTerminateDebugSession(() => {
 		_debugEvent = undefined;
-	})
+	});
 
 	//Verifica questões de encoding
 	verifyEncoding();
