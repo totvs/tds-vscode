@@ -17,9 +17,9 @@ declare global {
 }
 
 const vscode = window.acquireVsCodeApi();
-
+//vscode={vscode} initialData={window.initialData}
 ReactDOM.render(
-  <MonitorView vscode={vscode} initialData={window.initialData} />,
+  <MonitorView  />,
   document.getElementById("root")
 );
 

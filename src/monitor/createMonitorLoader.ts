@@ -5,26 +5,17 @@ import { ServerItem } from "../serversView";
 import { isNullOrUndefined } from "util";
 
 let monitorView: CreateMonitorLoader = undefined;
-const monitorViews: Array<ServerItem> = new Array<ServerItem>();
 
 export function updateMonitorView() {
   if (isNullOrUndefined(monitorView)) {
     monitorView = new CreateMonitorLoader();
   }
-
-   monitorView.serverList = monitorViews;
 }
 
 export function toggleServerToMonitor(server: ServerItem) {
-  const pos = monitorViews.indexOf(server);
-
-  if (pos === -1) {
-    monitorViews.push(server);
-  } else {
-    monitorViews.splice(pos, 1);
-  }
-
   updateMonitorView();
+
+  monitorView.toggleServerToMonitor(server);
 }
 
 let EXEC_NUM = 1;
@@ -34,13 +25,25 @@ export class CreateMonitorLoader {
   private readonly _extensionPath: string;
   private _disposables: vscode.Disposable[] = [];
   private _isDisposed: boolean = false;
+  private _serverList: ServerItem[] = Array<ServerItem>();
 
-  public set serverList(serverList: Array<ServerItem>) {
-    console.log("setServerList " + EXEC_NUM);
-    EXEC_NUM++;
+  public toggleServerToMonitor(server: ServerItem) {
+
+    let pos = this._serverList.indexOf(server);
+
+    this._serverList = Array<ServerItem>();
+    this._serverList.push(server);
+
+    // if (pos === -1) {
+    //   this._serverList.push(server);
+    // } else {
+    //   this._serverList.splice(pos, 1);
+    // }
+
     this._panel.webview.postMessage({
-      command: CommandAction.UpdateData,
-      data: serverList
+      command: CommandAction.ToggleServer,
+      data: this._serverList,
+      current: server.id
     });
   }
 
@@ -73,7 +76,7 @@ export class CreateMonitorLoader {
         console.log("---> ");
         console.log(command);
         switch (command.action) {
-          case CommandAction.LoadData:
+          case CommandAction.ToggleServer:
             break;
 
         }

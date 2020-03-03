@@ -1,51 +1,54 @@
 import React from "react";
-import MonitorTable from "./monitorTable";
+import MonitorTabs from "./monitorTabs";
 import ErrorBoundary2 from "./errorBoundary2";
+import { makeStyles, Theme } from "@material-ui/core";
+import { CommandAction } from "../command";
+import MonitorPanel from "./monitorPanel";
 
-interface IConfigProps {
-  vscode: any;
-  initialData: any;
-}
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.paper,
+    display: "flex",
+    height: 224
+  },
+  tabs: {
+    borderRight: `1px solid ${theme.palette.divider}`
+  }
+}));
 
-export interface IConfigState {
-  //config: IServerItem;
-}
+let listener = undefined;
 
-export let myVscode: any;
+export default function MonitorView() {
+  const classes = useStyles();
+  const [serverList, setServerList] = React.useState([]);
+  const [current, setCurrent] = React.useState("");
 
-export default class MonitorView extends React.Component<
-  IConfigProps,
-  IConfigState
-> {
-  constructor(props: any) {
-    console.log("MonitorView: constructor.0");
+  if (listener === undefined) {
+    listener = (event: any) => {
+      const message = event.data; // The JSON data our extension sent
+      console.log(">> listaner em execução " + message.command);
 
-    super(props);
-
-    myVscode = props.vscode; //TODO: rever código. QB
-
-    let oldState = this.props.vscode.getState();
-    if (oldState) {
-      // console.log("Maintaning old state");
-      this.state = oldState;
-    } else {
-      // console.log("Setting new state");
-      let initialData = this.props.initialData;
-      this.state = { config: initialData };
-      this.props.vscode.setState(this.state);
-    }
+      switch (message.command) {
+        case CommandAction.ToggleServer: {
+          setServerList(message.data);
+          setCurrent(message.current);
+          break;
+        }
+      }
+    };
+    window.addEventListener("message", listener);
   }
 
-    render() {
-    return (
-      <React.Fragment>
-        <ErrorBoundary2>
-          <MonitorTable />
-        </ErrorBoundary2>
-      </React.Fragment>
-    );
-  }
+  const server = serverList.find((value) => {
+    return (value.id === current);
+  });
 
-
-
+  return (
+    <React.Fragment>
+      <ErrorBoundary2>
+        <MonitorPanel server={server} />
+      </ErrorBoundary2>
+    </React.Fragment>
+  );
 }

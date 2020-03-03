@@ -5,5 +5,5 @@ export interface ICommand {
 
 export enum CommandAction {
     UpdateData,
-    LoadData
+    ToggleServer
 }
