@@ -1,8 +1,11 @@
+import { languageClient } from './../extension';
 import * as vscode from "vscode";
 import * as path from "path";
 import { ICommand, CommandAction } from "./command";
 import { ServerItem } from "../serversView";
 import { isNullOrUndefined } from "util";
+import IMonitorUser from "./monitorUser";
+import Utils from '../utils';
 
 let monitorView: CreateMonitorLoader = undefined;
 
@@ -26,24 +29,33 @@ export class CreateMonitorLoader {
   private _disposables: vscode.Disposable[] = [];
   private _isDisposed: boolean = false;
   private _serverList: ServerItem[] = Array<ServerItem>();
+  private _xspeed: number = 0;
 
-  public toggleServerToMonitor(server: ServerItem) {
 
-    let pos = this._serverList.indexOf(server);
+  public set speed(v : number) {
+    this._xspeed = v;
+
+    this._panel.webview.postMessage({
+      command: CommandAction.SetSpeedUpdate,
+      data: this._xspeed
+    });
+
+  }
+
+  public toggleServerToMonitor(serverItem: ServerItem) { /*TreeItem*/
+
+    const server = Utils.getServerById(serverItem.id);
+    const server2 = Utils.getCurrentServer();
+
+    let pos = this._serverList.indexOf(server2);
 
     this._serverList = Array<ServerItem>();
-    this._serverList.push(server);
-
-    // if (pos === -1) {
-    //   this._serverList.push(server);
-    // } else {
-    //   this._serverList.splice(pos, 1);
-    // }
+    this._serverList.push(server2);
 
     this._panel.webview.postMessage({
       command: CommandAction.ToggleServer,
       data: this._serverList,
-      current: server.id
+      current: server2.id
     });
   }
 
@@ -73,14 +85,7 @@ export class CreateMonitorLoader {
 
     this._panel.webview.onDidReceiveMessage(
       (command: ICommand) => {
-        console.log("---> ");
-        console.log(command);
-        switch (command.action) {
-          case CommandAction.ToggleServer:
-            break;
-
-        }
-        //this.updatePanel(config);
+        this.handleMessage(command);
       },
       undefined,
       this._disposables
@@ -88,8 +93,47 @@ export class CreateMonitorLoader {
   }
 
   public reveal() {
-    if(!this._isDisposed) {
+    if (!this._isDisposed) {
       this._panel.reveal();
+    }
+  }
+
+  public async getUsers(server: ServerItem): Promise<IMonitorUser[]> {
+    return languageClient
+      .sendRequest('$totvsmonitor/getUsers', {
+        getUsersInfo: {
+          connectionToken: server.token
+        }
+      })
+      .then((response: any) => {
+        return response.mntUsers;
+      },
+        ((error: Error) => {
+          return null;
+        })
+      );
+  }
+
+  private async handleMessage(command: ICommand) {
+    switch (command.action) {
+      case CommandAction.SetSpeedUpdate:
+        {
+          this.speed = command.content.value;
+
+          break;
+        }
+      case CommandAction.UpdateUsers: {
+        const users = await this.getUsers(command.content);
+
+        this._panel.webview.postMessage({
+          command: CommandAction.UpdateUsers,
+          data: users
+        });
+
+        this.speed = this._xspeed;
+
+        break;
+      }
     }
   }
 

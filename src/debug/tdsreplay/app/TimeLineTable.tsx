@@ -188,7 +188,7 @@ export default function TimeLineTable() {
 			}
 			return event.target.checked;
 		});
-	}
+	};
 
 	const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
 		//console.log("handleChangePage (newPage: " + newPage + ")");

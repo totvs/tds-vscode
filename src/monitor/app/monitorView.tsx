@@ -1,9 +1,9 @@
 import React from "react";
-import MonitorTabs from "./monitorTabs";
 import ErrorBoundary2 from "./errorBoundary2";
 import { makeStyles, Theme } from "@material-ui/core";
 import { CommandAction } from "../command";
 import MonitorPanel from "./monitorPanel";
+import IMonitorUser from "../monitorUser";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -19,7 +19,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 let listener = undefined;
 
-export default function MonitorView() {
+interface IMonitorView {
+  vscode: any;
+}
+
+export default function MonitorView(props: IMonitorView) {
   const classes = useStyles();
   const [serverList, setServerList] = React.useState([]);
   const [current, setCurrent] = React.useState("");
@@ -27,7 +31,6 @@ export default function MonitorView() {
   if (listener === undefined) {
     listener = (event: any) => {
       const message = event.data; // The JSON data our extension sent
-      console.log(">> listaner em execução " + message.command);
 
       switch (message.command) {
         case CommandAction.ToggleServer: {
@@ -37,17 +40,18 @@ export default function MonitorView() {
         }
       }
     };
+
     window.addEventListener("message", listener);
   }
 
-  const server = serverList.find((value) => {
-    return (value.id === current);
+  const server = serverList.find(value => {
+    return value.id === current;
   });
 
   return (
     <React.Fragment>
       <ErrorBoundary2>
-        <MonitorPanel server={server} />
+        <MonitorPanel server={server} vscode={props.vscode} />
       </ErrorBoundary2>
     </React.Fragment>
   );
