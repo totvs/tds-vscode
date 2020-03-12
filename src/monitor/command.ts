@@ -4,8 +4,13 @@ export interface ICommand {
 }
 
 export enum CommandAction {
-  UpdateData,
   ToggleServer,
   SetSpeedUpdate,
-  UpdateUsers
+  UpdateUsers,
+  ToggleAGroup,
+  LockServer,
+  SendMessage,
+  KillConnection,
+  StopServer,
+  ToggleWriteLogServer
 }

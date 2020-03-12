@@ -26,12 +26,38 @@ export function LockIcon(props: any) {
   );
 }
 
+export function UnlockIcon(props: any) {
+  return (
+    <SvgIcon {...props}>
+      <path d="M0 0h24v24H0V0z" fill="none" />
+      <path
+        d="M6 20h12V10H6v10zm6-7c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z"
+        opacity=".3"
+      />
+      <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" />
+    </SvgIcon>
+  );
+}
+
 export function MessageIcon(props: any) {
   return (
     <SvgIcon {...props}>
       <path d="M0 0h24v24H0V0z" fill="none" />
       <path d="M20 8l-8 5-8-5v10h16zm0-2H4l8 4.99z" opacity=".3" />
       <path d="M4 20h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2zM20 6l-8 4.99L4 6h16zM4 8l8 5 8-5v10H4V8z" />
+    </SvgIcon>
+  );
+}
+
+export function DisconnectIcon(props: any) {
+  return (
+    <SvgIcon {...props}>
+      <path d="M0 0h24v24H0V0z" fill="none" />
+      <path
+        d="M12 4c-4.41 0-8 3.59-8 8s3.59 8 8 8 8-3.59 8-8-3.59-8-8-8zm4 10.59L14.59 16 12 13.41 9.41 16 8 14.59 10.59 12 8 9.41 9.41 8 12 10.59 14.59 8 16 9.41 13.41 12 16 14.59z"
+        opacity=".3"
+      />
+      <path d="M14.59 8L12 10.59 9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41zM12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
     </SvgIcon>
   );
 }
@@ -53,7 +79,7 @@ export function Speed0Icon(props: any) {
   return (
     <SvgIcon {...props}>
       <path d="M 0,0 H 24 V 24 H 0 Z" fill="none" />
-      <path d="M 11.99,5 V 1 l -5,5 5,5 V 7 c 3.31,0 6,2.69 6,6 0,3.31 -2.69,6 -6,6 -3.31,0 -6,-2.69 -6,-6 h -2 c 0,4.42 3.58,8 8,8 4.42,0 8,-3.58 8,-8 0,-4.42 -3.58,-8 -8,-8 z"/>
+      <path d="M 11.99,5 V 1 l -5,5 5,5 V 7 c 3.31,0 6,2.69 6,6 0,3.31 -2.69,6 -6,6 -3.31,0 -6,-2.69 -6,-6 h -2 c 0,4.42 3.58,8 8,8 4.42,0 8,-3.58 8,-8 0,-4.42 -3.58,-8 -8,-8 z" />
     </SvgIcon>
   );
 }
@@ -98,9 +124,12 @@ export function StopIcon(props: any) {
 export function WriteLogIcon(props: any) {
   return (
     <SvgIcon {...props}>
-      <path d="M0 0h24v24H0V0z" fill="none" />
-      <path d="M8 8h8v8H8z" opacity=".3" />
-      <path d="M6 18h12V6H6v12zM8 8h8v8H8V8z" />
+        <path d="M0 0h24v24H0V0z" fill="none" />
+        <path
+          d="M12 4c-4.41 0-8 3.59-8 8s3.59 8 8 8 8-3.59 8-8-3.59-8-8-8zm4 10.59L14.59 16 12 13.41 9.41 16 8 14.59 10.59 12 8 9.41 9.41 8 12 10.59 14.59 8 16 9.41 13.41 12 16 14.59z"
+          opacity=".3"
+        />
+        <path d="M14.59 8L12 10.59 9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41zM12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
     </SvgIcon>
   );
 }

@@ -24,18 +24,21 @@ interface IMonitorView {
 }
 
 export default function MonitorView(props: IMonitorView) {
-  const classes = useStyles();
-  const [serverList, setServerList] = React.useState([]);
-  const [current, setCurrent] = React.useState("");
+  const [targetServer, setTargetServer] = React.useState();
+  const [titles, setTitles] = React.useState<string[]>([]);
 
   if (listener === undefined) {
-    listener = (event: any) => {
+    listener = (event: MessageEvent) => {
       const message = event.data; // The JSON data our extension sent
 
       switch (message.command) {
         case CommandAction.ToggleServer: {
-          setServerList(message.data);
-          setCurrent(message.current);
+          setTargetServer(message.current);
+          setTitles([
+            message.server.name,
+            message.server.address + ":" + message.server.port
+          ]);
+
           break;
         }
       }
@@ -43,15 +46,15 @@ export default function MonitorView(props: IMonitorView) {
 
     window.addEventListener("message", listener);
   }
-
-  const server = serverList.find(value => {
-    return value.id === current;
-  });
-
+  
   return (
     <React.Fragment>
       <ErrorBoundary2>
-        <MonitorPanel server={server} vscode={props.vscode} />
+        <MonitorPanel
+          targetServer={targetServer}
+          titles={titles}
+          vscode={props.vscode}
+        />
       </ErrorBoundary2>
     </React.Fragment>
   );

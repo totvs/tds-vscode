@@ -20,14 +20,11 @@ import Paper from "@material-ui/core/Paper";
 import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
-import GroupIcon from "@material-ui/icons/Group";
-import GroupSharpIcon from "@material-ui/icons/GroupSharp";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import {
   LockIcon,
+  UnlockIcon,
   MessageIcon,
   AgroupIcon,
   SettingsIcon,
@@ -36,52 +33,40 @@ import {
   Speed0Icon,
   Speed5Icon,
   Speed10Icon,
-  Speed30Icon
+  Speed30Icon,
+  DisconnectIcon
 } from "./monitorIcons";
 import { CommandAction, ICommand } from "../command";
-import { Select, MenuItem, Chip } from "@material-ui/core";
 import IMonitorUser from "../monitorUser";
+import SpeedButton from "./speedButton";
+import SendMessageDialog from "./sendMessageDialog";
+import DisconnecttUserDialog from "./disconnectUserDialog";
+import Dialog from "@material-ui/core/Dialog";
+import {
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button
+} from "@material-ui/core";
 
-interface Data {
+interface IConnectionData {
+  username: string;
+  computerName: string;
+  threadId: number;
   server: string;
+  mainName: string;
   environment: string;
-  machine: string;
-  threadID: number;
-  userServer: string;
-  program: string;
-  conexoes: number;
-  timeElapsed: string;
-  directions: number;
-  directionsSeconds: number;
-  observation: string;
-  memory: number;
+  loginTime: string;
+  elapsedTime: string;
+  totalInstrCount: number;
+  instrCountPerSec: number;
+  remark: string;
+  memUsed: number;
   sid: string;
-  rpo: string;
-  inactivity: number;
-  connectionType: string;
-}
-
-function createData(data: any): Data {
-  //data["loginTime"]
-  //data["ctreeTaskId"]
-  return {
-    server: data["server"],
-    environment: data["environment"],
-    machine: data["computerName"],
-    threadID: data["threadId"],
-    userServer: data["username"],
-    program: data["mainName"],
-    conexoes: 0,
-    timeElapsed: data["elapsedTime"],
-    directions: data["totalInstrCount"],
-    directionsSeconds: data["instrCountPerSec"],
-    observation: data["remark"],
-    memory: data["memUsed"],
-    sid: data["sid"],
-    rpo: "",
-    inactivity: data["inactiveTime"],
-    connectionType: data["clientType"]
-  };
+  ctreeTaskId: number;
+  clientType: string;
+  inactiveTime: string;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -122,75 +107,28 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
 }
 
 interface HeadCell {
-  disablePadding: boolean;
-  id: keyof Data;
+  id: keyof IConnectionData;
   label: string;
-  numeric: boolean;
-  //format: (value: number) => {value.toFixed(2)};
+  numeric?: boolean;
 }
 
 const headCells: HeadCell[] = [
-  { id: "server", numeric: false, disablePadding: false, label: "Servidor" },
-  {
-    id: "environment",
-    numeric: false,
-    disablePadding: false,
-    label: "Ambiente"
-  },
-  { id: "machine", numeric: false, disablePadding: false, label: "Máquina" },
-  {
-    id: "threadID",
-    numeric: false,
-    disablePadding: false,
-    label: "Thread ID"
-  },
-  {
-    id: "userServer",
-    numeric: false,
-    disablePadding: false,
-    label: "Usuário"
-  },
-  { id: "program", numeric: false, disablePadding: false, label: "Programa" },
-  { id: "conexoes", numeric: false, disablePadding: false, label: "Conexões" },
-  {
-    id: "timeElapsed",
-    numeric: false,
-    disablePadding: false,
-    label: "Tempo Decorrido"
-  },
-  {
-    id: "directions",
-    numeric: false,
-    disablePadding: false,
-    label: "Instrucoes"
-  },
-  {
-    id: "directionsSeconds",
-    numeric: false,
-    disablePadding: false,
-    label: "Instrucoes/seg"
-  },
-  {
-    id: "observation",
-    numeric: false,
-    disablePadding: false,
-    label: "Observações"
-  },
-  { id: "memory", numeric: false, disablePadding: false, label: "Memória" },
-  { id: "sid", numeric: false, disablePadding: false, label: "SID" },
-  { id: "rpo", numeric: false, disablePadding: false, label: "RPO" },
-  {
-    id: "inactivity",
-    numeric: false,
-    disablePadding: false,
-    label: "Tempo de Inatividade"
-  },
-  {
-    id: "connectionType",
-    numeric: false,
-    disablePadding: false,
-    label: "Tipo de Conexao"
-  }
+  { id: "server", label: "Servidor" },
+  { id: "environment", label: "Ambiente" },
+  { id: "username", label: "Usuário" },
+  { id: "computerName", label: "Estação" },
+  { id: "threadId", label: "Thread", numeric: true },
+  { id: "mainName", label: "Programa" },
+  { id: "loginTime", label: "Conexão" },
+  { id: "elapsedTime", label: "Tempo Decorrido" },
+  { id: "inactiveTime", label: "Tempo Inatividade" },
+  { id: "totalInstrCount", label: "Total Instruções", numeric: true },
+  { id: "instrCountPerSec", label: "Instruções/seg", numeric: true },
+  { id: "remark", label: "Comentário" },
+  { id: "memUsed", label: "Memória em Uso", numeric: true },
+  { id: "sid", label: "SID" },
+  { id: "ctreeTaskId", label: "CTree ID" },
+  { id: "clientType", label: "Tipo Conexão" }
 ];
 
 interface EnhancedTableProps {
@@ -198,7 +136,7 @@ interface EnhancedTableProps {
   numSelected: number;
   onRequestSort: (
     event: React.MouseEvent<unknown>,
-    property: keyof Data
+    property: keyof IConnectionData
   ) => void;
   onSelectAllClick: (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -219,7 +157,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     rowCount,
     onRequestSort
   } = props;
-  const createSortHandler = (property: keyof Data) => (
+  const createSortHandler = (property: keyof IConnectionData) => (
     event: React.MouseEvent<unknown>
   ) => {
     onRequestSort(event, property);
@@ -240,7 +178,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? "right" : "left"}
-            padding={headCell.disablePadding ? "none" : "default"}
+            padding="default"
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
@@ -265,7 +203,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      paddingLeft: theme.spacing(2),
+      paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1)
     },
     highlight:
@@ -308,128 +246,294 @@ interface EnhancedTableToolbarProps {
   title: string;
   subtitle: string;
   speed: number;
+  lockServer: boolean;
+  targetServer: IMonitorServer;
+  selecteds: IConnectionData[];
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { numSelected, title, subtitle, speed } = props;
+  const {
+    vscode,
+    numSelected,
+    title,
+    subtitle,
+    speed,
+    lockServer,
+    targetServer,
+    selecteds
+  } = props;
+  const [openSendMessageDialog, setOpenSendMessageDialog] = React.useState(
+    false
+  );
+  const [openDesconnectUserDialog, setDisconnectUserDialog] = React.useState(
+    false
+  );
+  const [openStopServerDialog, setOpenStopServerDialog] = React.useState(false);
 
-  const handleButtonClick = (
+  const handleLockButtonClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     args?: any
   ) => {
     event.preventDefault();
     const id = event.currentTarget.id;
 
-    console.log(event.currentTarget.tagName + " " + event.currentTarget.id); // alerts BUTTON
+    let command: ICommand = {
+      action: CommandAction.LockServer,
+      content: { server: targetServer, lock: id === "btnLockServer" }
+    };
+
+    vscode.postMessage(command);
   };
 
-  const handleSpeedButtonChange = (
-    event: React.ChangeEvent<{ name?: string; value: unknown }>
+  const handleSendMessageButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    event.preventDefault();
+    setOpenSendMessageDialog(true);
+  };
+
+  const handleDisconnectUserButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    event.preventDefault();
+    setDisconnectUserDialog(true);
+  };
+
+  const handleStopButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    event.preventDefault();
+    setOpenStopServerDialog(true);
+  };
+
+  const handleCloseStopServerDialog = (event: any, reason: string) => {
+    console.log("handleCloseStopServerDialog " + reason);
+
+    if (reason === "_YES_") {
+      let command: ICommand = {
+        action: CommandAction.StopServer,
+        content: {
+          server: targetServer
+        }
+      };
+
+      vscode.postMessage(command);
+    }
+
+    setOpenStopServerDialog(false);
+  };
+
+  const doDisconnectUser = (confirmed: boolean, killNow: boolean) => {
+    event.preventDefault();
+
+    setDisconnectUserDialog(false);
+
+    if (confirmed) {
+      let command: ICommand = {
+        action: CommandAction.KillConnection,
+        content: {
+          server: targetServer,
+          recipients: selecteds,
+          killnow: killNow
+        }
+      };
+
+      vscode.postMessage(command);
+    }
+  };
+
+  const doSendMessage = (confirmed: boolean, message: string) => {
+    event.preventDefault();
+    setOpenSendMessageDialog(false);
+
+    if (confirmed) {
+      let command: ICommand = {
+        action: CommandAction.SendMessage,
+        content: {
+          server: targetServer,
+          recipients: selecteds,
+          message: message
+        }
+      };
+
+      vscode.postMessage(command);
+    }
+  };
+
+  const handleAgroupButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    args?: any
   ) => {
     event.preventDefault();
 
     let command: ICommand = {
-      action: CommandAction.SetSpeedUpdate,
-      content: { value: Number.parseInt(event.target.value as string) }
+      action: CommandAction.ToggleAGroup,
+      content: true
     };
 
-    props.vscode.postMessage(command);
+    vscode.postMessage(command);
   };
 
+  const handleWriteLogButtonClick = () => {
+    let command: ICommand = {
+      action: CommandAction.ToggleWriteLogServer,
+      content: { server: targetServer }
+    };
+
+    vscode.postMessage(command);
+  };
+
+  const speeds = [0, 5, 10, 30];
+  const handleSpeedButtonChange = (index: number) => {
+    let command: ICommand = {
+      action: CommandAction.SetSpeedUpdate,
+      content: { speed: speeds[index], server: targetServer }
+    };
+
+    vscode.postMessage(command);
+  };
+
+  const speedOptions = [
+    <Tooltip title="Por solicitação">
+      <IconButton size="small">
+        <Speed0Icon />
+      </IconButton>
+    </Tooltip>,
+    <Tooltip title="A cada 5 segundos">
+      <IconButton size="small">
+        <Speed5Icon />
+      </IconButton>
+    </Tooltip>,
+    <Tooltip title="A cada 10 segundos">
+      <IconButton size="small">
+        <Speed10Icon />
+      </IconButton>
+    </Tooltip>,
+    <Tooltip title="A cada 30 segundos">
+      <IconButton size="small">
+        <Speed30Icon />
+      </IconButton>
+    </Tooltip>
+  ];
+
   return (
-    <Toolbar
-      variant="dense"
-      className={clsx(classes.root, {
-        [classes.highlight]: numSelected > 0
-      })}
-    >
+    <Toolbar variant="dense" className={classes.root}>
       <Typography className={classes.title} variant="h6" id="tableTitle">
         <span className={classes.upperCase}>{title}</span>&nbsp;
         <span className={classes.subtitle}>{subtitle}</span>
       </Typography>
 
       <div className={classes.toolbarButtons}>
-        <Tooltip title="Bloquear novas conexões">
-          <IconButton id="btnLockServer" onClick={handleButtonClick}>
-            <LockIcon />
-          </IconButton>
-        </Tooltip>
+        {lockServer ? (
+          <Tooltip title="Desbloquear novas conexões">
+            <IconButton id="btnUnlockServer" onClick={handleLockButtonClick}>
+              <UnlockIcon />
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <Tooltip title="Bloquear novas conexões">
+            <IconButton id="btnLockServer" onClick={handleLockButtonClick}>
+              <LockIcon />
+            </IconButton>
+          </Tooltip>
+        )}
         <Tooltip title="Enviar mensagem aos usuários">
-          <IconButton id="btnSendMessage" onClick={handleButtonClick}>
-            <MessageIcon />
-          </IconButton>
+          <span>
+            <IconButton
+              id="btnSendMessage"
+              onClick={handleSendMessageButtonClick}
+              disabled={numSelected === 0}
+            >
+              <MessageIcon />
+            </IconButton>
+          </span>
         </Tooltip>
         <Tooltip title="Desconectar usuário">
-          <IconButton id="btnDesconnectUser" onClick={handleButtonClick}>
-            <DeleteIcon />
-          </IconButton>
+          <span>
+            <IconButton
+              id="btnDesconnectUser"
+              onClick={handleDisconnectUserButtonClick}
+              disabled={numSelected === 0}
+            >
+              <DisconnectIcon />
+            </IconButton>
+          </span>
         </Tooltip>
-        <Tooltip title="Para o servidor">
-          <IconButton id="btnStopServer" onClick={handleButtonClick}>
+        <Tooltip title="Parar o servidor">
+          <IconButton id="btnStopServer" onClick={handleStopButtonClick}>
             <StopIcon />
           </IconButton>
         </Tooltip>
 
-        <Select
-          id="btnSpeedButton"
-          value={speed}
-          onChange={event => handleSpeedButtonChange(event)}
-        >
-          <MenuItem value="0" key="0">
-            <Tooltip title="Por solicitação">
-              <IconButton size="small">
-                <Speed0Icon />
-              </IconButton>
-            </Tooltip>
-          </MenuItem>
-          <MenuItem value="5" key="5">
-            <Tooltip title="A cada 5 segundos">
-              <IconButton size="small">
-                <Speed5Icon />
-              </IconButton>
-            </Tooltip>
-          </MenuItem>
-          <MenuItem value="10" key="10">
-            <Tooltip title="A cada 10 segundos">
-              <IconButton size="small">
-                <Speed10Icon />
-              </IconButton>
-            </Tooltip>
-          </MenuItem>
-          <MenuItem value="30" key="30">
-            <Tooltip title="A cada 30 segundos">
-              <IconButton size="small">
-                <Speed30Icon />
-              </IconButton>
-            </Tooltip>
-          </MenuItem>
-        </Select>
-
         <Tooltip title="Gravar monitor">
-          <IconButton id="btnWriteLog" onClick={handleButtonClick}>
+          <IconButton id="btnWriteLog" onClick={handleWriteLogButtonClick}>
             <WriteLogIcon />
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="Agrupar">
-          <IconButton id="btnAgroup" onClick={handleButtonClick}>
+        <SpeedButton
+          options={speedOptions}
+          callback={handleSpeedButtonChange}
+          value={speeds.indexOf(speed)}
+        />
+      </div>
+
+      <Dialog
+        open={openStopServerDialog}
+        onClose={handleCloseStopServerDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Confirma a parada do servidor?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Ao confirmar a parada do servidor, o mesmo será encerrado
+            imediatamente. A sua reinicialização só será possível acessando o
+            servidor localmente.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => handleCloseStopServerDialog(null, "_NO_")}
+            color="primary"
+          >
+            Não
+          </Button>
+          <Button
+            onClick={() => handleCloseStopServerDialog(null, "_YES_")}
+            color="primary"
+            autoFocus
+          >
+            Sim
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <SendMessageDialog
+        open={openSendMessageDialog}
+        recipients={selecteds.map(element => element.username)}
+        onClose={doSendMessage}
+      />
+
+      <DisconnecttUserDialog
+        open={openDesconnectUserDialog}
+        recipients={selecteds.map(element => element.username)}
+        onClose={doDisconnectUser}
+      />
+    </Toolbar>
+  );
+
+  /*
+          <Tooltip title="Agrupar">
+          <IconButton id="btnAgroup" onClick={handleAgroupButtonClick}>
             <AgroupIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Configurar">
-          <IconButton id="btnSettings" onClick={handleButtonClick}>
-            <SettingsIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Filtro">
-          <IconButton id="btnFilterList" onClick={handleButtonClick}>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      </div>
-    </Toolbar>
-  );
+
+  */
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -454,74 +558,73 @@ const useStyles = makeStyles((theme: Theme) =>
       position: "absolute",
       top: 20,
       width: 1
+    },
+    collumn: {
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      paddingLeft: theme.spacing(0),
+      paddingRight: theme.spacing(1),
+      maxWidth: "30em",
+      minWidth: "8em"
+    },
+    collumnCB: {
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(0),
+      width: "4em"
     }
   })
 );
 
 interface IMonitorPanel {
   vscode: any;
-  server: IMonitorServer;
+  targetServer: any;
+  titles: string[];
 }
 
 let listener = undefined;
 
 export default function MonitorPanel(props: IMonitorPanel) {
   const classes = useStyles();
-  const server = props.server;
-
-  if (!server) {
-    return <Typography>Carregando...</Typography>;
-  }
-
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<keyof Data>("server");
+  const [orderBy, setOrderBy] = React.useState<keyof IConnectionData>("server");
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [speed, setSpeed] = React.useState<number>(0);
-  const [timer, setTimer] = React.useState<number>(0);
+  const [timer, setTimer] = React.useState<number>();
   const [rows, setRows] = React.useState([]);
-
-  const updateUsers = (server: IMonitorServer) => {
-    window.clearInterval(timer);
-
-    let command: ICommand = {
-      action: CommandAction.UpdateUsers,
-      content: server
-    };
-
-    props.vscode.postMessage(command);
-  };
+  const [lock, setLock] = React.useState(false);
 
   if (listener === undefined) {
     listener = (event: MessageEvent) => {
       const message = event.data; // The JSON data our extension sent
+
       switch (message.command) {
         case CommandAction.SetSpeedUpdate: {
           setSpeed(message.data);
 
-          if (message.data > 0) {
-            setTimer(window.setInterval(updateUsers, message.data, server));
-          } else {
+          if (timer) {
             window.clearInterval(timer);
+          }
+          if (message.data > 0) {
+            setTimer(window.setInterval(updateUsers, message.data * 1000));
           }
 
           break;
         }
         case CommandAction.UpdateUsers: {
+          window.clearInterval(timer);
           const result = message.data as IMonitorUser[];
 
-          console.log("listener: updateUsers");
-          console.log(result.length);
-          let users = [];
+          setRows(result);
 
-          for (let index = 0; index < result.length; index++) {
-            const element = result[index];
-            element["server"] = server.name;
-            users.push(createData(element));
-          }
-
-          setRows(users);
+          break;
+        }
+        case CommandAction.LockServer: {
+          setLock(message.data);
 
           break;
         }
@@ -533,12 +636,20 @@ export default function MonitorPanel(props: IMonitorPanel) {
     };
 
     window.addEventListener("message", listener);
-    updateUsers(server);
   }
+
+  const updateUsers = () => {
+    let command: ICommand = {
+      action: CommandAction.UpdateUsers,
+      content: props.targetServer
+    };
+
+    props.vscode.postMessage(command);
+  };
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: keyof Data
+    property: keyof IConnectionData
   ) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -547,19 +658,20 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map(n => n.name);
+      const newSelecteds = rows.map(n => n.threadId);
       setSelected(newSelecteds);
       return;
     }
+
     setSelected([]);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event: React.MouseEvent<unknown>, threadId: string) => {
+    const selectedIndex = selected.indexOf(threadId);
     let newSelected: string[] = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, threadId);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -585,19 +697,30 @@ export default function MonitorPanel(props: IMonitorPanel) {
     setPage(0);
   };
 
-  const isSelected = (name: string) => selected.indexOf(name) !== -1;
+  const isSelected = (threadId: string) => {
+    return selected.indexOf(threadId) !== -1;
+  };
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+
+  if (!props.targetServer) {
+    return <Typography>Inicializando...</Typography>;
+  }
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
           numSelected={selected.length}
-          title={server.name}
-          subtitle={server.address + ":" + server.port}
+          selecteds={rows.filter(
+            value => selected.indexOf(value.threadId) !== -1
+          )}
+          title={props.titles[0]}
+          subtitle={props.titles[1]}
           speed={speed}
+          lockServer={lock}
+          targetServer={props.targetServer}
           vscode={props.vscode}
         />
         <TableContainer>
@@ -615,27 +738,33 @@ export default function MonitorPanel(props: IMonitorPanel) {
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.threadId);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={event => handleClick(event, row.name)}
+                      onClick={event => handleClick(event, row.threadId)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={row.threadId}
                       selected={isItemSelected}
                     >
-                      <TableCell padding="checkbox">
+                      <TableCell
+                        className={classes.collumnCB}
+                        padding="checkbox"
+                      >
                         <Checkbox
                           checked={isItemSelected}
                           inputProps={{ "aria-labelledby": labelId }}
                         />
                       </TableCell>
                       {headCells.map(headCell => (
-                        <TableCell>
+                        <TableCell
+                          className={classes.collumn}
+                          align={headCell.numeric ? "right" : "left"}
+                        >
                           {row[headCell.id]}
                         </TableCell>
                       ))}

@@ -1155,16 +1155,16 @@
           "command": "totvs-developer-studio.defragRPO",
           "when": "view == totvs_server && viewItem == serverItem",
           "group": "EtotvsRPO@1"
-        },
-        {
-          "command": "totvs-developer-studio.monitor.toggle",
-          "when": "view == totvs_server && viewItem == serverItem",
-          "group": "inline"
         }
       ],
       "view/title": [
         {
           "command": "totvs-developer-studio.add",
+          "when": "view == totvs_server",
+          "group": "navigation"
+        },
+        {
+          "command": "totvs-developer-studio.monitor.toggle",
           "when": "view == totvs_server",
           "group": "navigation"
         },
