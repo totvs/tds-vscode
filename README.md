@@ -93,10 +93,11 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 * Após conectado a um servidor, acione o ícone de monitoramento existente no título da visão de servidores.
 
-![Monitor Server](https://raw.githubusercontent.com/totvs/tds-vscode/blob/dev/imagens/gifs/monitor%20server.png)
+![Monitor Server](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/monitor%20server.png)
 
-![Monitor Server](https://raw.githubusercontent.com/totvs/tds-vscode/blob/dev/imagens/gifs/monitor%20server%202.png)
+![Monitor Server](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/monitor%20server%202.png)
 
+> Detalhes de uso em []().
 
 ## Compilação
 
