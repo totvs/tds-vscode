@@ -28,6 +28,7 @@
         "node_modules/",
         "../out/",
         "test/",
-        "**/debug/tdsreplay/app"
+        "**/debug/tdsreplay/app",
+        "**/monitor/app"
     ]
 }

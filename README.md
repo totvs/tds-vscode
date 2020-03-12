@@ -21,6 +21,7 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Inspetor de objetos do RPO.
 * Inspetor de funções do RPO.
 * Geração de WS Protheus.
+* Monitoranebti de servudires Protheus.
 
 ## Conheça mais em:
 >[TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 1](https://www.youtube.com/watch?v=MwIu01Ztfvg)<br/>
@@ -86,6 +87,10 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Os ambientes já cadastrados anteriormente serão exibidos em uma lista.
 * Clique no ícone `"+"` no canto superior direito da lista.
 * Informe o novo `ambiente` e prossiga com a conexão normalmente.
+
+### Monitoramento de servidores
+
+* Após conectado a um servidor, acione o ícone de monitoramento existente no título da visão de servidores.
 
 ## Compilação
 
