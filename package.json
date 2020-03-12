@@ -58,7 +58,7 @@
 		"@totvs/tds-ls": "^1.1.4",
 		"@types/jszip": "^3.1.7",
 		"@types/node": "13.7.1",
-		"@types/react": "^16.9.21",
+		"@types/react": "^16.9.23",
 		"cheerio": "^1.0.0-rc.3",
 		"ini": "^1.3.5",
 		"jszip": "^3.2.2",
@@ -74,6 +74,7 @@
 		"vscode-nls-dev": "^3.3.1"
 	},
 	"devDependencies": {
+		"@types/react-dom": "^16.9.5",
 		"cleanup": "^0.3.0",
 		"css-loader": "^3.4.2",
 		"del": "^4.1.1",
@@ -129,6 +130,7 @@
 		"onCommand:totvs-developer-studio.logger.on",
 		"onCommand:totvs-developer-studio.logger.off",
 		"onCommand:totvs-developer-studio.compile.key",
+		"onCommand:totvs-developer-studio.monitor",
 		"onView:totvs_server",
 		"workspaceContains:.tds",
 		"workspaceContains:*.prw",
@@ -604,6 +606,20 @@
 				"command": "totvs-developer-studio.tdsreplay.webview.timeLine",
 				"title": "Open TimeLine Webview",
 				"category": "TDSReplay"
+			},
+			{
+				"command": "totvs-developer-studio.monitor",
+				"title": "Visão Monitor",
+				"category": "TOTVS"
+			},
+			{
+				"command": "totvs-developer-studio.monitor.toggle",
+				"title": "Monitorar",
+				"category": "TOTVS",
+				"icon": {
+					"light": "resources/light/monitor.png",
+					"dark": "resources/dark/monitor.png"
+				}
 			}
 		],
 		"keybindings": [
@@ -1162,12 +1178,21 @@
 					"group": "navigation"
 				},
 				{
+					"command": "totvs-developer-studio.monitor.toggle",
+					"when": "view == totvs_server",
+					"group": "navigation"
+				},
+				{
 					"command": "totvs-developer-studio.config",
 					"when": "view == totvs_server",
 					"group": "navigation"
 				}
 			],
 			"commandPalette": [
+				{
+					"command": "totvs-developer-studio.monitor.toggle",
+					"when": "1 == 0"
+				},
 				{
 					"command": "totvs-developer-studio.patchGenerate.fromFolder",
 					"when": "1 == 0"

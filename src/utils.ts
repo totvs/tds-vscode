@@ -546,7 +546,7 @@ export default class Utils {
  	*Recupera um servidor pelo id informado.
  	* @param id id do servidor alvo.
  	*/
-	static getServerById(id: string, serversConfig: any) {
+	static getServerById(id: string, serversConfig: any = Utils.getServersConfig()) {
 		let server;
 		if (serversConfig.configurations) {
 			const configs = serversConfig.configurations;
