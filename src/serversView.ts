@@ -578,12 +578,19 @@ export function authenticate(serverItem: ServerItem, environment: string, userna
 }
 
 function sendConnectRequest(serverItem: ServerItem, environment: string) {
+	let thisServerType = 0;
+	if (serverItem.type === "totvs_server_protheus") {
+		thisServerType = 1;
+	}
+	else if (serverItem.type === "totvs_server_logix") {
+		thisServerType = 2;
+	}
 	languageClient.sendRequest('$totvsserver/connect', {
 		connectionInfo: {
 			connType: 1,
 			serverName: serverItem.name,
 			identification: serverItem.id,
-			serverType: 1, // XXX
+			serverType: thisServerType,
 			server: serverItem.address,
 			port: serverItem.port,
 			buildVersion: serverItem.buildVersion,

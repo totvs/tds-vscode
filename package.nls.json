@@ -28,6 +28,8 @@
 	"tds.package.inspector.object.description": "Objects inspector",
 	"tds.package.defrag.rpo.title": "Defrag RPO",
 	"tds.package.defrag.rpo.description": "Defrag current RPO",
+	"tds.package.rpo.check.integrity.title": "RPO check integrity",
+	"tds.package.rpo.check.integrity.description": "Check current RPO integrity",
 	"tds.package.build.file.title": "Compile File/Folder",
 	"tds.package.build.file.description": "Compile a file in TOTVS Servers",
 	"tds.package.rebuild.file.title": "Recompile File",

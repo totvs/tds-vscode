@@ -71,26 +71,26 @@ interface Column {
 }
 
 const columns: Column[] = [
-  {
-    id: "TimeStamp",
-    label: "TimeStamp",
-    minWidth: 10,
-    align: "left"
-  },
-  {
-    id: "SourceName",
-    label: "Source Name",
-    minWidth: 10,
-    align: "left"
-    //format: (value: number) => value.toLocaleString(),
-  },
-  {
-    id: "Line",
-    label: "Line",
-    minWidth: 10,
-    align: "left"
-    //format: (value: number) => value.toLocaleString(),
-  }
+	{
+		id: 'TimeStamp',
+		label: 'Time',
+		minWidth: 10,
+		align: 'left'
+	},
+	{
+		id: 'SourceName',
+		label: 'Source Name',
+		minWidth: 10,
+		align: 'left'
+		//format: (value: number) => value.toLocaleString(),
+	},
+	{
+		id: 'Line',
+		label: 'Line',
+		minWidth: 10,
+		align: 'left'
+		//format: (value: number) => value.toLocaleString(),
+	}
 ];
 
 interface TablePaginationActionsProps {

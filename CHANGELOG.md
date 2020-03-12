@@ -1,5 +1,9 @@
 # Versão 1.0.1
 
+## Implementar a verificação de integridade do RPO [Issue 288](https://github.com/totvs/tds-vscode/issues/288)
+### Melhoria:
+* Implementada a verificação de integridade do RPO no menu de contexto do servidor conectado, similar a opção de desfragmentação do RPO.
+----
 ## Exibir o console (Output) durante a compilação [Pull Request 271](https://github.com/totvs/tds-vscode/pull/271)
 ### Melhoria:
 * Adicionada opção nas preferência para exibir o console (Output) ao acionar uma compilação.
