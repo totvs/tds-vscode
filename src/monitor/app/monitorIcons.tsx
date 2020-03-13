@@ -1,7 +1,7 @@
 import React from "react";
 import { SvgIcon } from "@material-ui/core";
 
-export function AgroupIcon(props: any) {
+export function GroupingIcon(props: any) {
   return (
     <SvgIcon {...props}>
       <path d="M0 0h24v24H0z" fill="none" />

@@ -5,7 +5,7 @@ import { ICommand, CommandAction } from "./command";
 import { ServerItem } from "../serversView";
 import { isNullOrUndefined } from "util";
 import IMonitorUser from "./monitorUser";
-import Utils from '../utils';
+import Utils, { SelectServer } from '../utils';
 
 let monitorView: CreateMonitorLoader = undefined;
 
@@ -79,6 +79,11 @@ export class CreateMonitorLoader {
     const ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
     this._extensionPath = ext.extensionPath;
 
+    this._disposables.push(Utils.onDidSelectedServer((newServer: SelectServer) => {
+      toggleServerToMonitor(undefined);
+    }));
+
+    
     this._panel = vscode.window.createWebviewPanel(
       "createMonitorView",
       "Monitor",

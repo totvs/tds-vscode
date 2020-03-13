@@ -46,14 +46,14 @@ export default function MonitorView(props: IMonitorView) {
 
     window.addEventListener("message", listener);
   }
-  
+
   return (
     <React.Fragment>
       <ErrorBoundary2>
         <MonitorPanel
           targetServer={targetServer}
-          titles={titles}
           vscode={props.vscode}
+          titles={titles}
         />
       </ErrorBoundary2>
     </React.Fragment>
