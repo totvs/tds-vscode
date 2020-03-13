@@ -49,17 +49,15 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 			}
 
 			if (!config.program) {
-				return window.showInformationMessage(localize('tds.vscode.program_not_found', "Cannot find a program to debug")).then(_ => {
-					return undefined;	// abort launch
-				});
+				window.showInformationMessage(localize('tds.vscode.program_not_found', "Cannot find a program to debug"));
+				return undefined;	// abort launch
 			}
 
 			if (config.program === "${command:AskForProgramName}") {
 				const value = await vscode.commands.executeCommand("totvs-developer-studio.getProgramName");
 				if (!value) {
-					return window.showInformationMessage(localize('tds.vscode.program_not_found', "Cannot find a program to debug")).then(_ => {
-						return undefined;	// abort launch
-					});
+					window.showInformationMessage(localize('tds.vscode.program_not_found', "Cannot find a program to debug"));
+					return undefined;	// abort launch
 				}
 				config.program = extractProgram(value as string);
 				config.programArguments = extractArgs(value as string);
