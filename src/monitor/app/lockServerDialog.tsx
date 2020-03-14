@@ -1,15 +1,11 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
-import { blue } from "@material-ui/core/colors";
 import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  Button,
-  TextField
-} from "@material-ui/core";
+  Button} from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 
 export interface LockServerDialogProps {

@@ -3,19 +3,7 @@ import ErrorBoundary2 from "./errorBoundary2";
 import { makeStyles, Theme } from "@material-ui/core";
 import { CommandAction } from "../command";
 import MonitorPanel from "./monitorPanel";
-import IMonitorUser from "../monitorUser";
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
-    display: "flex",
-    height: 224
-  },
-  tabs: {
-    borderRight: `1px solid ${theme.palette.divider}`
-  }
-}));
 
 let listener = undefined;
 

@@ -25,18 +25,24 @@ export interface IConnectionData {
 }
 
 export const cellDefaultStyle = {
-	cellStyle: {
-	  whiteSpace: "nowrap",
-	  overflow: "hidden",
-	  textOverflow: "ellipsis",
-	  maxWidth: "30em",
-	  minWidth: "8em"
-	},
-	headerStyle: {
-	  whiteSpace: "nowrap",
-	  overflow: "hidden",
-	  textOverflow: "ellipsis",
-	  maxWidth: "30em",
-	  minWidth: "8em"
-	}
-  };
+  cellStyle: {
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "30em",
+    minWidth: "8em",
+    padding: "0px",
+    paddingLeft: "5px",
+    paddingRight: "5px"
+  },
+  headerStyle: {
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "30em",
+    minWidth: "8em",
+    padding: "0px",
+    paddingLeft: "5px",
+    paddingRight: "5px"
+  }
+};

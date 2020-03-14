@@ -1,55 +1,25 @@
 import React, { forwardRef } from "react";
-import MaterialTable, { MTableToolbar } from "material-table";
+import MaterialTable from "material-table";
 import {
   createStyles,
   lighten,
   makeStyles,
   Theme
 } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TablePagination from "@material-ui/core/TablePagination";
-import TableRow from "@material-ui/core/TableRow";
-import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import DeleteIcon from "@material-ui/icons/Delete";
-import FilterListIcon from "@material-ui/icons/FilterList";
 import {
   LockIcon,
   UnlockIcon,
   MessageIcon,
   GroupingIcon,
-  SettingsIcon,
   StopIcon,
   WriteLogIcon,
-  Speed0Icon,
-  Speed5Icon,
-  Speed10Icon,
-  Speed30Icon,
   DisconnectIcon
 } from "./monitorIcons";
 import { CommandAction, ICommand } from "../command";
 import IMonitorUser from "../monitorUser";
-import SpeedButton from "./speedButton";
 import SendMessageDialog from "./sendMessageDialog";
-import DisconnecttUserDialog from "./disconnectUserDialog";
-import Dialog from "@material-ui/core/Dialog";
-import {
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Button,
-  Chip
-} from "@material-ui/core";
 import AddBox from "@material-ui/icons/AddBox";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
 import Check from "@material-ui/icons/Check";
@@ -129,48 +99,6 @@ const tableIcons = {
   ))
 };
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: "100%"
-    },
-    paper: {
-      width: "100%",
-      marginBottom: theme.spacing(2)
-    },
-    table: {
-      minWidth: 750
-    },
-    visuallyHidden: {
-      border: 0,
-      clip: "rect(0 0 0 0)",
-      height: 1,
-      margin: -1,
-      overflow: "hidden",
-      padding: 0,
-      position: "absolute",
-      top: 20,
-      width: 1
-    },
-    collumn: {
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      paddingLeft: theme.spacing(0),
-      paddingRight: theme.spacing(1),
-      maxWidth: "30em",
-      minWidth: "8em"
-    },
-    collumnCB: {
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(0),
-      width: "4em"
-    }
-  })
-);
-
 const headCells: HeadCell[] = [
   { field: "server", title: "Servidor", ...cellDefaultStyle },
   { field: "environment", title: "Ambiente", ...cellDefaultStyle },
@@ -245,16 +173,11 @@ interface IMonitorPanel {
   vscode: any;
   targetServer: any;
   titles: string[];
+  locked?: boolean;
 }
 
 let listener = undefined;
 
-interface CustomActionsProps {
-  vscode: any;
-  targetServer: any;
-  speed: number;
-  lockServer: boolean;
-}
 
 /*
   <SpeedButton
@@ -281,24 +204,19 @@ function Title(props: ITitleProps) {
 }
 
 export default function MonitorPanel(props: IMonitorPanel) {
-  const classes = useStyles();
   const [grouping, setGrouping] = React.useState(false);
   const [filtering, setFiltering] = React.useState(false);
   const [selected, setSelected] = React.useState<IConnectionData[]>([]);
-  const [speed, setSpeed] = React.useState<number>(0);
+  const [, setSpeed] = React.useState<number>(0);
   const [timer, setTimer] = React.useState<number>();
   const [rows, setRows] = React.useState([]);
-  const [openLockServerDialog, setOpenLockServerDialog] = React.useState(false);
-  const [openUnlockServerDialog, setOpenUnlockServerDialog] = React.useState(
-    false
-  );
-  const [openStopServerDialog, setOpenStopServerDialog] = React.useState(false);
-  const [openSendMessageDialog, setOpenSendMessageDialog] = React.useState(
-    false
-  );
-  const [openDisconnectUserDialog, setOpenDisconnectUserDialog] = React.useState(
-    false
-  );
+  const [openDialog, setOpenDialog] = React.useState({
+    lockServer: false,
+    unlockServer: false,
+    stopServer: false,
+    sendMessage: false,
+    disconnectUser: false
+  });
 
   if (listener === undefined) {
     listener = (event: MessageEvent) => {
@@ -349,16 +267,14 @@ export default function MonitorPanel(props: IMonitorPanel) {
   }
 
   const handleLockButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    args?: any
-  ) => {
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>  ) => {
     event.preventDefault();
 
-    setOpenLockServerDialog(true);
+    setOpenDialog({ ...openDialog, lockServer: true });
   };
 
   const doLockServer = (confirm: boolean) => {
-    setOpenLockServerDialog(false);
+    setOpenDialog({ ...openDialog, lockServer: false });
 
     if (confirm) {
       let command: ICommand = {
@@ -370,7 +286,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   };
 
   const doUnlockServer = (confirm: boolean) => {
-    setOpenUnlockServerDialog(false);
+    setOpenDialog({ ...openDialog, unlockServer: true });
 
     if (confirm) {
       let command: ICommand = {
@@ -382,23 +298,20 @@ export default function MonitorPanel(props: IMonitorPanel) {
   };
 
   const handleUnlockButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    args?: any
-  ) => {
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>  ) => {
     event.preventDefault();
-
-    setOpenUnlockServerDialog(true);
+    setOpenDialog({ ...openDialog, unlockServer: false });
   };
 
   const handleStopButtonClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     event.preventDefault();
-    setOpenStopServerDialog(true);
+    setOpenDialog({ ...openDialog, stopServer: true });
   };
 
   const doStopServer = (killNow: boolean) => {
-    setOpenStopServerDialog(false);
+    setOpenDialog({ ...openDialog, stopServer: false });
 
     let command: ICommand = {
       action: CommandAction.StopServer,
@@ -409,25 +322,25 @@ export default function MonitorPanel(props: IMonitorPanel) {
   };
 
   const handleSendMessageButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    rows: IConnectionData[]
-  ) => {
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>  ) => {
     event.preventDefault();
-
-    setOpenSendMessageDialog(true);
+    setOpenDialog({ ...openDialog, sendMessage: true });
   };
 
   const handleDisconnectUserButtonClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     event.preventDefault();
-    setOpenDisconnectUserDialog(true);
+    setOpenDialog({ ...openDialog, disconnectUser: true });
   };
 
-  const doDisconnectUser = (confirmed: boolean, killNow: boolean, recipients: any[]) => {
+  const doDisconnectUser = (
+    confirmed: boolean,
+    killNow: boolean,
+    recipients: any[]
+  ) => {
     event.preventDefault();
-
-    setOpenDisconnectUserDialog(false);
+    setOpenDialog({ ...openDialog, disconnectUser: false });
 
     if (confirmed) {
       let command: ICommand = {
@@ -443,9 +356,13 @@ export default function MonitorPanel(props: IMonitorPanel) {
     }
   };
 
-  const doSendMessage = (confirmed: boolean, message: string, recipients: any[]) => {
+  const doSendMessage = (
+    confirmed: boolean,
+    message: string,
+    recipients: any[]
+  ) => {
     event.preventDefault();
-    setOpenSendMessageDialog(false);
+    setOpenDialog({ ...openDialog, sendMessage: false });
 
     if (confirmed) {
       let command: ICommand = {
@@ -470,41 +387,10 @@ export default function MonitorPanel(props: IMonitorPanel) {
     props.vscode.postMessage(command);
   };
 
-  const speeds = [0, 5, 10, 30];
-  const handleSpeedButtonChange = (index: number) => {
-    let command: ICommand = {
-      action: CommandAction.SetSpeedUpdate,
-      content: { speed: speeds[index], server: props.targetServer }
-    };
 
-    props.vscode.postMessage(command);
-  };
-
-  const speedOptions = [
-    <Tooltip title="Por solicitação">
-      <IconButton size="small">
-        <Speed0Icon />
-      </IconButton>
-    </Tooltip>,
-    <Tooltip title="A cada 5 segundos">
-      <IconButton size="small">
-        <Speed5Icon />
-      </IconButton>
-    </Tooltip>,
-    <Tooltip title="A cada 10 segundos">
-      <IconButton size="small">
-        <Speed10Icon />
-      </IconButton>
-    </Tooltip>,
-    <Tooltip title="A cada 30 segundos">
-      <IconButton size="small">
-        <Speed30Icon />
-      </IconButton>
-    </Tooltip>
-  ];
 
   const actions = [];
-  if (!openLockServerDialog) {
+  if (!props.locked) {
     actions.push({
       icon: () => <LockIcon />,
       tooltip: "Lock server",
@@ -524,48 +410,54 @@ export default function MonitorPanel(props: IMonitorPanel) {
     icon: () => <MessageIcon />,
     tooltip: "Send message to all users",
     isFreeAction: true,
-    onClick: (event: any, rows) => handleSendMessageButtonClick(event, rows)
+    onClick: (event: any) => handleSendMessageButtonClick(event)
   });
+
   actions.push({
     icon: () => <MessageIcon />,
     tooltip: "Send message to selected users",
     isFreeAction: false,
-    onClick: (event: any, rows) => handleSendMessageButtonClick(event, rows)
+    onClick: (event: any) => handleSendMessageButtonClick(event)
   });
+
   actions.push({
     icon: () => <DisconnectIcon />,
     tooltip: "Disconnect user",
     isFreeAction: true,
     onClick: (event: any) => handleDisconnectUserButtonClick(event)
   });
+
   actions.push({
     icon: () => <StopIcon />,
     tooltip: "Stop server",
     isFreeAction: true,
     onClick: (event: any) => handleStopButtonClick(event)
   });
+
   actions.push({
     icon: () => <WriteLogIcon />,
     tooltip: "Write log",
     isFreeAction: true,
-    onClick: (event: any) => handleWriteLogButtonClick()
+    onClick: () => handleWriteLogButtonClick()
   });
+
   actions.push({
     icon: () => <GroupingIcon />,
     tooltip: "Grouping on/off",
     isFreeAction: true,
-    onClick: (event: any) => setGrouping(!grouping)
+    onClick: () => setGrouping(!grouping)
   });
+
   actions.push({
     icon: () => <FilterList />,
     tooltip: "Filtering on/off",
     isFreeAction: true,
-    onClick: (event: any) => setFiltering(!filtering)
+    onClick: () => setFiltering(!filtering)
   });
 
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
+    <div >
+      <Paper>
         <MaterialTable
           icons={tableIcons}
           columns={headCells}
@@ -576,7 +468,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
             grouping: grouping,
             filtering: filtering,
             exportButton: false,
-            exportCsv: (columns, data) => {}
+            exportCsv: () => {}
           }}
           onSelectionChange={rows => setSelected(rows)}
           onRowClick={(evt, selectedRow) => this.setState({ selectedRow })}
@@ -585,23 +477,23 @@ export default function MonitorPanel(props: IMonitorPanel) {
       </Paper>
 
       <SendMessageDialog
-        open={openSendMessageDialog}
+        open={openDialog.sendMessage}
         recipients={selected.length === 0 ? rows : selected}
         onClose={doSendMessage}
       />
 
       <DisconnectUserDialog
-        open={openDisconnectUserDialog}
+        open={openDialog.disconnectUser}
         recipients={selected.length === 0 ? rows : selected}
         onClose={doDisconnectUser}
       />
 
-      <StopServerDialog open={openStopServerDialog} onClose={doStopServer} />
+      <StopServerDialog open={openDialog.stopServer} onClose={doStopServer} />
 
-      <LockServerDialog open={openLockServerDialog} onClose={doLockServer} />
+      <LockServerDialog open={openDialog.lockServer} onClose={doLockServer} />
 
       <UnlockServerDialog
-        open={openUnlockServerDialog}
+        open={openDialog.unlockServer}
         onClose={doUnlockServer}
       />
     </div>
