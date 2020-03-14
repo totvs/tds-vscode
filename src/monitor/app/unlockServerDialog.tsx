@@ -1,8 +1,5 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
 import { blue } from "@material-ui/core/colors";
@@ -11,37 +8,19 @@ import {
   DialogContentText,
   DialogActions,
   Button,
-  TextField,
-  Paper
-} from "@material-ui/core";
-import MaterialTable from "material-table";
-import { HeadCell, cellDefaultStyle } from "./monitorInterface";
+  TextField} from "@material-ui/core";
 
-const useStyles = makeStyles({
-  avatar: {
-    backgroundColor: blue[100],
-    color: blue[600]
-  }
-});
 
-export interface SendMessageDialogProps {
+export interface UnlockServerDialogProps {
   open: boolean;
-  recipients: any[];
-  onClose: (confirmed: boolean, message: string, recipients: any) => void;
+  onClose: (confirmed: boolean) => void;
 }
 
-const headCells: HeadCell[] = [
-  { field: "server", title: "Servidor", ...cellDefaultStyle },
-  { field: "environment", title: "Ambiente", ...cellDefaultStyle },
-  { field: "username", title: "Usuário", ...cellDefaultStyle },
-  { field: "remark", title: "Comentário", ...cellDefaultStyle }
-];
-
-export default function SendMessageDialog(props: SendMessageDialogProps) {
-  const { onClose, recipients, open } = props;
+export default function UnlockServerDialog(props: UnlockServerDialogProps) {
+  const { onClose, open } = props;
 
   const handleClose = (event: {}, reason: string) => {
-    onClose(reason === "send", messageRef.current.value, recipients);
+    onClose(reason === "OK");
   };
 
   const messageRef = React.useRef<HTMLTextAreaElement>();
@@ -62,40 +41,32 @@ export default function SendMessageDialog(props: SendMessageDialogProps) {
       open={open}
       scroll="paper"
       fullWidth
-      maxWidth="lg"
+      maxWidth="md"
     >
-      <DialogTitle>Envio de mensagem</DialogTitle>
+      <DialogTitle>Bloquear novas conexões?</DialogTitle>
       <DialogContent dividers={true}>
         <DialogContentText ref={descriptionElementRef} tabIndex={-1}>
           <TextField
             inputRef={messageRef}
             required
             label="Mensagem"
-            defaultValue=""
+            defaultValue="Ao confirmar a liberação de novas conexões, os usuários podem
+            conectar-se novamente a esse servidor."
             variant="outlined"
             multiline
             rows={3}
             rowsMax={10}
             fullWidth
+            disabled={true}
           />
-          <Paper>
-            <MaterialTable
-              columns={headCells}
-              data={recipients}
-              options={{
-                toolbar: false,
-                showTitle: false
-              }}
-            />
-          </Paper>
         </DialogContentText>
         <DialogActions>
           <Button
             onClick={event => {
-              handleClose(event, "send");
+              handleClose(event, "OK");
             }}
           >
-            Enviar
+            OK
           </Button>
           <Button
             onClick={() => {

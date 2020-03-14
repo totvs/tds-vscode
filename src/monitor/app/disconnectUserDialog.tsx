@@ -12,57 +12,39 @@ import {
   DialogActions,
   Button,
   Checkbox,
-  FormControlLabel
+  FormControlLabel,
+  Paper
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
+import MaterialTable from "material-table";
+import { HeadCell, cellDefaultStyle } from "./monitorInterface";
 
-const useStyles = makeStyles({
-  avatar: {
-    backgroundColor: blue[100],
-    color: blue[600]
-  }
-});
-
-export interface DisconnecttUserDialogProps {
+export interface DisconnectUserDialogProps {
   open: boolean;
-  recipients: string[];
-  onClose: (confirmed: boolean, killNow: boolean) => void;
+  recipients: any[];
+  onClose: (confirmed: boolean, killNow: boolean, recipients: any[]) => void;
 }
 
-export default function DisconnecttUserDialog(
-  props: DisconnecttUserDialogProps
+const headCells: HeadCell[] = [
+  { field: "server", title: "Servidor", ...cellDefaultStyle },
+  { field: "environment", title: "Ambiente", ...cellDefaultStyle },
+  { field: "username", title: "Usuário", ...cellDefaultStyle },
+  { field: "remark", title: "Comentário", ...cellDefaultStyle }
+];
+
+export default function DisconnectUserDialog(
+  props: DisconnectUserDialogProps
 ) {
   const { onClose, recipients, open } = props;
   const [ isKillNow, setKillNow ] = React.useState(false);
 
   const handleClose = (event: {}, reason: string) => {
-    onClose(reason === "desconnect", isKillNow);
-    //setOpen(false);
+    onClose(reason === "OK", isKillNow, recipients);
   };
-
-  const descriptionElementRef = React.useRef<HTMLElement>(null);
-
-  React.useEffect(() => {
-    if (open) {
-      const { current: descriptionElement } = descriptionElementRef;
-      if (descriptionElement !== null) {
-        descriptionElement.focus();
-      }
-    }
-  }, [open]);
 
   const killNowClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     setKillNow(event.target.checked);
   };
-
-  let recipientsName = [];
-  for (let index = 0; index < recipients.length; index++) {
-    const element = recipients[index];
-
-    if (recipientsName.indexOf(element) === -1) {
-      recipientsName.push(element);
-    }
-  }
 
   return (
     <Dialog
@@ -74,7 +56,7 @@ export default function DisconnecttUserDialog(
     >
       <DialogTitle>Encerra conexões de usuários</DialogTitle>
       <DialogContent dividers={true}>
-        <DialogContentText ref={descriptionElementRef} tabIndex={-1}>
+        <DialogContentText tabIndex={-1}>
           <Alert severity="warning">
             Os usuários abaixo listados terão suas conexões encerradas.
           </Alert>
@@ -88,23 +70,24 @@ export default function DisconnecttUserDialog(
             }
             label="Encerrar conexões imediatamente."
           />
-          <List dense={true}>
-            {recipientsName.map(name => {
-              return (
-                <ListItem key={name}>
-                  <ListItemText primary={name} />
-                </ListItem>
-              );
-            })}
-          </List>
+          <Paper>
+            <MaterialTable
+              columns={headCells}
+              data={recipients}
+              options={{
+                toolbar: false,
+                showTitle: false
+              }}
+            />
+          </Paper>
         </DialogContentText>
         <DialogActions>
           <Button
             onClick={event => {
-              handleClose(event, "desconnect");
+              handleClose(event, "OK");
             }}
           >
-            Enviar
+            OK
           </Button>
           <Button
             onClick={() => {
