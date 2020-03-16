@@ -206,7 +206,7 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 export function updatePermissionBarItem(infos: any | undefined): void {
 	if (infos.authorizationToken) {
 		const [dd, mm, yyyy] = infos.expire.split("/");
-		const expiryDate: Date = new Date(`${yyyy}-${mm}-${dd} 00:00:00`);
+		const expiryDate: Date = new Date(`${yyyy}-${mm}-${dd} 23:59:59`);
 		if (expiryDate.getTime() >= new Date().getTime()) {
 			const newLine = "\n";
 			permissionStatusBarItem.text = 'Permissions: Logged in';

@@ -43,7 +43,7 @@ private initializePanel(): void {
         enableScripts: true,
         localResourceRoots: [
           Uri.file(
-            path.join(this._extensionPath, "out", "debug", "tdsreplay")
+            path.join(this._extensionPath, "out", "webpack")
           )
         ]
       }
@@ -55,7 +55,7 @@ private initializePanel(): void {
       this._isDisposed = true;
     });
 
-    this._panel.webview.onDidReceiveMessage((command: ICommand) => { handleMessageReceived(command) }, undefined, this._disposables);
+    this._panel.webview.onDidReceiveMessage((command: ICommand) => { handleMessageReceived(command); }, undefined, this._disposables);
     this._isDisposed = false;
   }
 
@@ -66,9 +66,7 @@ private initializePanel(): void {
       path.join(
         this._extensionPath,
         "out",
-        "debug",
-        "tdsreplay",
-        "app",
+        "webpack",
         "timeLineView.js"
       )
     );
@@ -187,7 +185,7 @@ function handleChangeItemsPerPageCommand(command: ICommand) {
     let requestJson = {
       "itemsPerPage": parseInt(command.content.itemsPerPage),
       "currentSelectedTimeLineId" : parseInt(command.content.currentSelectedTimeLineId)
-    }
+    };
     //console.log("Enviando requisição para trocar a quantidade de items por pagina");
     debug.activeDebugSession.customRequest("TDA/changeItemsPerPage", requestJson);
   }
@@ -199,8 +197,8 @@ function handleSetIgnoreSourcesNotFound(command: ICommand) {
     let debugSession = debug.activeDebugSession;
     let launchConfig = Utils.getLaunchConfig();
 
-    for (var key = 0; key < launchConfig.configurations.length; key++) {
-      var launchElement = launchConfig.configurations[key];
+    for (let key = 0; key < launchConfig.configurations.length; key++) {
+      let launchElement = launchConfig.configurations[key];
       if(debugSession !== undefined && launchElement.name === debugSession.name) {
         launchElement.ignoreSourcesNotFound = command.content.isIgnoreSourceNotFound;
         break;
@@ -212,7 +210,7 @@ function handleSetIgnoreSourcesNotFound(command: ICommand) {
 
     let requestJson = {
       "isIgnoreSourceNotFound": command.content.isIgnoreSourceNotFound
-    }
+    };
     debug.activeDebugSession.customRequest("TDA/setIgnoreSourcesNotFound", requestJson);
   }
 }

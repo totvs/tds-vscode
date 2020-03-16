@@ -112,8 +112,11 @@ export default class Utils {
 		let exist = fs.existsSync(Utils.getServerConfigFile());
 		if (exist) {
 			let json = fs.readFileSync(Utils.getServerConfigFile()).toString();
-			return JSON.parse(json);
+			if (json) {
+				return JSON.parse(json);
+			}
 		}
+		return "";
 	}
 
 	/**
@@ -124,8 +127,11 @@ export default class Utils {
 		let exist = fs.existsSync(Utils.getLaunchConfigFile());
 		if (exist) {
 			let json = fs.readFileSync(Utils.getLaunchConfigFile()).toString();
-			return JSON.parse(stripJsonComments(json));
+			if (json) {
+				return JSON.parse(stripJsonComments(json));
+			}
 		}
+		return "";
 	}
 
 	static saveLaunchConfig(config: JSON) {
@@ -540,7 +546,7 @@ export default class Utils {
  	*Recupera um servidor pelo id informado.
  	* @param id id do servidor alvo.
  	*/
-	static getServerById(id: string, serversConfig: any) {
+	static getServerById(id: string, serversConfig: any = Utils.getServersConfig()) {
 		let server;
 		if (serversConfig.configurations) {
 			const configs = serversConfig.configurations;

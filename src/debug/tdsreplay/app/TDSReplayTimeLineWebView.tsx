@@ -11,13 +11,11 @@ export interface IConfigState {
   //config: IServerItem;
 }
 
-export let myVscode: any;
-
 export default class TDSReplayTimeLineWebView extends React.Component<IConfigProps,IConfigState> {
+  private vscode: any;
   constructor(props: any) {
     super(props);
-
-    myVscode = props.vscode; //TODO: rever código. QB
+    this.vscode = props.vscode;
 
     let oldState = this.props.vscode.getState();
     if (oldState) {
@@ -35,7 +33,7 @@ export default class TDSReplayTimeLineWebView extends React.Component<IConfigPro
         return (
       <React.Fragment>
         <ErrorBoundary>
-        <TimeLineTable/>
+        <TimeLineTable vscode={this.vscode}/>
         </ErrorBoundary>
       </React.Fragment>
     );

@@ -99,14 +99,16 @@ export class TotvsConfigurationTdsReplayProvider implements DebugConfigurationPr
 			if (fs.existsSync(dbMapFile)) {
 				//ler o arquivo .dbmap para pegar o local onde deve estar o arquivo do tds replay
 				let json = fs.readFileSync(dbMapFile).toString();
-				let jsonParsed = JSON.parse(json);
-				//A rotina abaixo é um exemplo de como ler um json sem saber explicitamente as chaves...
-				//for(var exKey in jsonParsed) {
-				//	console.log("key:"+exKey+", value:"+jsonParsed[exKey]);
-				//	console.log("");
-				//}
-				if(jsonParsed.hasOwnProperty(tdsReplayFile)) {
-					tdsReplayFileLocation = jsonParsed[tdsReplayFile];
+				if (json) {
+					let jsonParsed = JSON.parse(json);
+					//A rotina abaixo é um exemplo de como ler um json sem saber explicitamente as chaves...
+					//for(var exKey in jsonParsed) {
+					//	console.log("key:"+exKey+", value:"+jsonParsed[exKey]);
+					//	console.log("");
+					//}
+					if(jsonParsed.hasOwnProperty(tdsReplayFile)) {
+						tdsReplayFileLocation = jsonParsed[tdsReplayFile];
+					}
 				}
 			}
 		}
