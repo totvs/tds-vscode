@@ -318,11 +318,11 @@ export class ServerItem extends vscode.TreeItem {
 		super(name, collapsibleState);
 	}
 
-	get tooltip(): string {
+	public getTooltip(): string {
 		return `Server=${this.address} | Port=${this.port}`;
 	}
 
-	get description(): string {
+	public description(): string {
 		return `${this.address}:${this.port}`;
 	}
 
@@ -346,7 +346,7 @@ export class EnvSection extends vscode.TreeItem {
 		super(label, collapsibleState);
 	}
 
-	get tooltip(): string {
+	public getTooltip(): string {
 		return `${this.label} @ ${this.serverItemParent.name}`;
 	}
 
