@@ -132,7 +132,6 @@
 		"onCommand:totvs-developer-studio.logger.on",
 		"onCommand:totvs-developer-studio.logger.off",
 		"onCommand:totvs-developer-studio.compile.key",
-		"onCommand:totvs-developer-studio.monitor",
 		"onView:totvs_server",
 		"workspaceContains:.tds",
 		"workspaceContains:*.prw",
@@ -608,20 +607,6 @@
 				"command": "totvs-developer-studio.tdsreplay.webview.timeLine",
 				"title": "Open TimeLine Webview",
 				"category": "TDSReplay"
-			},
-			{
-				"command": "totvs-developer-studio.monitor",
-				"title": "Visão Monitor",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.monitor.toggle",
-				"title": "Monitorar",
-				"category": "TOTVS",
-				"icon": {
-					"light": "resources/light/monitor.png",
-					"dark": "resources/dark/monitor.png"
-				}
 			}
 		],
 		"keybindings": [
@@ -1180,21 +1165,12 @@
 					"group": "navigation"
 				},
 				{
-					"command": "totvs-developer-studio.monitor.toggle",
-					"when": "view == totvs_server",
-					"group": "navigation"
-				},
-				{
 					"command": "totvs-developer-studio.config",
 					"when": "view == totvs_server",
 					"group": "navigation"
 				}
 			],
 			"commandPalette": [
-				{
-					"command": "totvs-developer-studio.monitor.toggle",
-					"when": "1 == 0"
-				},
 				{
 					"command": "totvs-developer-studio.patchGenerate.fromFolder",
 					"when": "1 == 0"
