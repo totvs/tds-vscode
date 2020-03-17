@@ -21,13 +21,12 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Inspetor de objetos do RPO.
 * Inspetor de funções do RPO.
 * Geração de WS Protheus.
-* Monitoramento de servidores Protheus.
 
 ## Conheça mais em
 
->[TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 1](https://www.youtube.com/watch?v=MwIu01Ztfvg)<br/>
->[TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 2](https://www.youtube.com/watch?v=Cz4N0XWCXHY)<br/>
->[TOTVS - TDS-VSCode - Desenvolvimento colaborativo](https://www.youtube.com/watch?v=IGWh5ejxhHU)<br/>
+>[TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 1](https://www.youtube.com/watch?v=MwIu01Ztfvg)
+>[TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 2](https://www.youtube.com/watch?v=Cz4N0XWCXHY)
+>[TOTVS - TDS-VSCode - Desenvolvimento colaborativo](https://www.youtube.com/watch?v=IGWh5ejxhHU)
 
 ## Configurações Gerais
 
@@ -89,16 +88,6 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Clique no ícone `"+"` no canto superior direito da lista.
 * Informe o novo `ambiente` e prossiga com a conexão normalmente.
 
-### Monitoramento de servidores
-
-* Após conectado a um servidor, acione o ícone de monitoramento existente no título da visão de servidores.
-
-![Monitor Server](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/monitor%20server.png)
-
-![Monitor Server](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/monitor%20server%202.png)
-
-> Detalhes de uso em []().
-
 ## Compilação
 
 ### Compilando fonte do editor corrente
@@ -142,13 +131,14 @@ A compilação efetuada a partir do editor, sempre irá recompilar o fonte, mant
 
 Tivemos reportes de problemas de encode abrindo fontes antes salvos no TDS, isso ocorre porque o encode original do VSCode é UTF8 e o do TDS é outro.
 Para garantir a compilação é necessário compatibilizar o encode da seguinte maneira:
- * No estado original o Fonte será mostrado desta maneira:<br/>
+
+* No estado original o Fonte será mostrado desta maneira:<br/>
  ![Encoding 1](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding1.png)
- * **Antes de editar/salvar qualquer fonte no VS** entre nas configurações do VS `Ctrl + ,`.
- * No campo de busca digite `encode` e selecione `Windows1252`.<br/>
- * Abra o fonte com o novo encode (reforçando que NÃO DEVE tê-lo salvo antes em UTF8)<br/>
+* **Antes de editar/salvar qualquer fonte no VS** entre nas configurações do VS `Ctrl + ,`.
+* No campo de busca digite `encode` e selecione `Windows1252`.<br/>
+* Abra o fonte com o novo encode (reforçando que NÃO DEVE tê-lo salvo antes em UTF8)<br/>
  ![Encoding 3](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding3.png)
- * Compile e/ou recompile o fonte e execute-o.<br/>
+* Compile e/ou recompile o fonte e execute-o.<br/>
  ![Encoding 4](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding4.png)
 
  Na abertura do workspace, perguntamos se o usuário deseja alterar o encoding para o padrão TOTVS e essa configuração é feita automaticamente.

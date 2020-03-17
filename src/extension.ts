@@ -40,7 +40,6 @@ import { getDAP, getProgramName, getProgramArguments, toggleTableSync } from './
 import { toggleAutocompleteBehavior, updateSettingsBarItem } from './server/languageServerSettings';
 import { advplDocumentFormattingEditProvider, advplDocumentRangeFormattingEditProvider, advplResourceFormatting } from './formatter/advplFormatting';
 import { processDebugCustomEvent, DebugEvent, createTimeLineWebView } from './debug/debugEvents';
-import { updateMonitorView, toggleServerToMonitor } from './monitor/createMonitorLoader';
 
 export let languageClient: LanguageClient;
 // metodo de tradução
@@ -262,14 +261,6 @@ export function activate(context: ExtensionContext) {
 	if (!viewServer) {
 		console.error(localize('tds.vscode.server_vision_not_load', 'Visão "Servidores" não inicializada.'));
 	}
-
-	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.monitor', () => {
-		updateMonitorView();
-	}));
-
-	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.monitor.toggle', (args: any) => {
-		toggleServerToMonitor(args as ServerItem);
-	}));
 
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.tdsreplay.webview.timeLine', () => {
 		if (_debugEvent !== undefined) {
