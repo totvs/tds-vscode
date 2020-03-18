@@ -17,7 +17,7 @@ const es = require('event-stream');
 const minimist = require('minimist');
 
 const translationProjectName = 'vscode-extensions';
-const translationExtensionName = 'totvs-developer-studio';
+const translationExtensionName = 'tds-vscode';
 
 const defaultLanguages = [
     { id: 'es', folderName: 'esn' },
@@ -38,7 +38,7 @@ const lintSources = [
     'src'
 ].map(tsFolder => tsFolder + '/**/*.ts');
 
-const tsProject = ts.createProject('tsconfig.json', { jsx: "react", target: "ES5",esModuleInterop: true, });
+const tsProject = ts.createProject('tsconfig.json', { jsx: "react", target: "ES5",esModuleInterop: true });
 function doBuild(buildNls, failOnError) {
     return () => {
         let gotError = false;
