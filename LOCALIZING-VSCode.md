@@ -18,14 +18,14 @@ Durante todas as Releases as traduções são atualizadas.
 
 Geração do arquivo XLF para tradução em qualquer aplicação de mercado.
 
-> mkdir totvs-tds
-> cd tds-totvs
-> git clone <branch dev>
-> cd <branch dev>
-> npm install
-> npm install --global gulp-cli
-> gulp clean
-> gulp translations-export
+>mkdir totvs-tds
+>cd tds-totvs
+>git clone <branch dev>
+>cd <branch dev>
+>npm install
+>npm install --global gulp-cli
+>gulp clean
+>gulp translations-export
 
 O Arquivo tds-vscode.xlf sera gerado no diretorio "totvs-tds\tds-vscode-translations-export\vscode-extensions"
 
@@ -33,17 +33,17 @@ O Arquivo tds-vscode.xlf sera gerado no diretorio "totvs-tds\tds-vscode-translat
 
 Importação do arquivo tds-vscode.xlf, já traduzido para algum idioma.
 
-> mkdir totvs-tds
-> cd tds-totvs
-> mkdir tds-vscode-import
+>mkdir totvs-tds
+>cd tds-totvs
+>mkdir tds-vscode-import
 >cd tds-vscode-import
 >mkdir <idioma> (ru,pt-br,es)
 (Copie o arquivo tds-vscode.xlf para o diretorio)
-> cd ../
+>cd ../
 >git clone <branch dev>
-> cd <branch dev>
-> npm install
-> npm install --global gulp-cli
-> gulp translations-import
+>cd <branch dev>
+>npm install
+>npm install --global gulp-cli
+>gulp translations-import
 
 Os arquivo de tradução serão atulizados.
