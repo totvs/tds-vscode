@@ -48,7 +48,7 @@
 		"test": "node node_modules/vscode/bin/test",
 		"postinstall": "node ./node_modules/vscode/bin/install",
 		"package": "npm run compile && vsce package",
-		"publish": "vsce publish"
+		"publish": "npm run compile && vsce publish"
 	},
 	"dependencies": {
 		"@material-ui/core": "^4.9.5",
