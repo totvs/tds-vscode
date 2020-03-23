@@ -740,9 +740,22 @@ export default class Utils {
 
 		return files;
 	}
-	static ignoreResource(fileName: string): boolean {
 
+	static ignoreResource(fileName: string): boolean {
 		return processIgnoreList(ignoreListExpressions, path.basename(fileName));
+	}
+
+	static checkDir(selectedDir: string): string {
+		if (fs.existsSync(selectedDir)) {
+			if (!fs.lstatSync(selectedDir).isDirectory()) {
+				selectedDir = path.dirname(selectedDir);
+			}
+			if (fs.lstatSync(selectedDir).isDirectory()) {
+				return selectedDir;
+			}
+		}
+		vscode.window.showErrorMessage(selectedDir + " does not exist or it is not a directory.")
+		return "";
 	}
 }
 

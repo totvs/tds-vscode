@@ -53,16 +53,22 @@ export default function showInclude(context: vscode.ExtensionContext) {
 		}
 		currentPanel.webview.onDidReceiveMessage(message => {
 			switch (message.command) {
+				case 'checkDir':
+					var checkedDir = Utils.checkDir(message.selectedDir);
+					currentPanel.webview.postMessage({
+						command: "checkedDir",
+						checkedDir: checkedDir
+					});
+					break;
 				case 'includeClose':
 					const includePath = message.include;
-
 					Utils.saveIncludePath(includePath);
 					if (currentPanel) {
 						if (message.close) {
 							currentPanel.dispose();
 						}
 					}
-					return;
+					break;
 			}
 		},
 			undefined,

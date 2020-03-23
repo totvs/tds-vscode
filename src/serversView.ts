@@ -8,7 +8,6 @@ import { inputConnectionParameters } from './inputConnectionParameters';
 import { inputAuthenticationParameters } from './inputAuthenticationParameters';
 import { SelectServer } from './utils';
 
-
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
 
@@ -395,6 +394,13 @@ export class ServersExplorer {
 
 				currentPanel.webview.onDidReceiveMessage(message => {
 					switch (message.command) {
+						case 'checkDir':
+							var checkedDir = Utils.checkDir(message.selectedDir);
+							currentPanel.webview.postMessage({
+								command: "checkedDir",
+								checkedDir: checkedDir
+							});
+							break;
 						case 'saveServer':
 							const typeServer = "totvs_server_protheus";
 							if (message.serverName && message.port && message.address) {

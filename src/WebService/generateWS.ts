@@ -44,6 +44,13 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 
 			currentPanel.webview.onDidReceiveMessage(message => {
 				switch (message.command) {
+					case 'checkDir':
+						var checkedDir = Utils.checkDir(message.selectedDir);
+						currentPanel.webview.postMessage({
+							command: "checkedDir",
+							checkedDir: checkedDir
+						});
+						break;
 					case 'wsClose':
 						const extension:string = message.fileName.split('.').pop().toLowerCase();
 						if( extension !== "prw" && extension !== "prx" && extension !== "tlpp"){
