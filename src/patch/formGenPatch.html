@@ -68,7 +68,7 @@
 							<div class="wrap-input">
 								<label for="NamePatch">${d.localize["tds.webview.patch.directory"]}</label><!--Patch Generation Directory-->
 								<input class="inputText" type="text" id="FilePatch" name="FilePatch" placeholder="Ex: C:/totvs/patchs...">
-								<input class="inputText" type="file" id="btn-PatchDir" onchange="setTextArea()" style="top: 5px; left: -8px; position: relative;" name="btn-PatchDir" webkitdirectory directory multiple/>
+								<input class="inputText" type="file" id="btn-PatchDir" onchange="checkDir(event)" style="top: 5px; left: -8px; position: relative;" name="btn-PatchDir" webkitdirectory directory/>
 								<label for="NamePatch">${d.localize["tds.webview.patch.file.name.patch"]}</label><!--Patch file name-->
 								<input class="inputText" type="text" id="NamePatch" placeholder="${d.localize['tds.webview.patch.file.name']}"><!--File name-->
 							</div>
@@ -279,6 +279,17 @@
     SelectRCount.innerHTML = "${d.localize['tds.webview.patch.items']}" +  ": 0";
 	};
 
+	function checkDir(event) {
+		var input = event.target;
+		if (input.files.length > 0) {
+			var selectedDir = input.files[0].path;
+			vscode.postMessage({
+				command: 'checkDir',
+				selectedDir: selectedDir
+			});
+		}
+	}
+
 	function patchGenerate(close) {
 		let NamePatchValue = NamePatch.value ? NamePatch.value: "";
 		let DirPatch = document.getElementById('FilePatch').value;
@@ -303,6 +314,10 @@
 	window.addEventListener('message', event => {
 		const message = event.data; // The JSON data our extension sent
 		switch (message.command) {
+			case 'checkedDir':
+				var checkedDir = message.checkedDir;
+				FilePatch.value = checkedDir;
+				break;
 			// case 'setCurrentServer':
 			// 	const server = message.serverCurrent;
 
@@ -315,10 +330,5 @@
 		}
 	});
 
-	function setTextArea(){
-		var input = document.getElementById('btn-PatchDir');
-		var filePath = input.files[0].path;
-		var textArea = document.getElementById('FilePatch').value = filePath;
-	}
 </script>
 </html>

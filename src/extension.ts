@@ -1,14 +1,15 @@
+import { ServerItem } from './serversView';
 /*---------------------------------------------------------
  * Copyright (C) TOTVS S.A. All rights reserved.
  *--------------------------------------------------------*/
 
+// tslint:disable-next-line: no-unused-expression
 'use strict';
 import * as vscode from 'vscode';
 import * as ls from 'vscode-languageserver-types';
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import { window, commands, debug, extensions, workspace, ExtensionContext, Uri } from 'vscode';
-import { ProgressLocation, StatusBarAlignment } from 'vscode';
+import { window, commands, debug, extensions, workspace, ExtensionContext, Uri, ProgressLocation, StatusBarAlignment } from 'vscode';
 import { jumpToUriAtPosition } from './vscodeUtils';
 import { ServersExplorer, updateStatusBarItem } from './serversView';
 import { compileKeyPage, updatePermissionBarItem } from './compileKey/compileKey';
@@ -20,7 +21,8 @@ import { LanguageClient } from 'vscode-languageclient';
 import { commandBuildFile, commandBuildWorkspace, commandBuildOpenEditors } from './compile/tdsBuild';
 import { deleteFileFromRPO } from './server/deleteFileFromRPO';
 import { defragRpo } from './server/defragRPO';
-import { serverAuthentication } from './inputConnectionParameters';
+import { rpoCheckIntegrity }  from  './server/rpoCheckIntegrity';
+import { serverSelection } from './inputConnectionParameters';
 import * as nls from 'vscode-nls';
 import { inspectObject } from './inspect/inspectObject';
 import { inspectFunctions } from './inspect/inspectFunction';
@@ -32,11 +34,12 @@ import launcherConfig from './launcher/launcherConfiguration';
 import { onCaptureLoggers, offCaptureLoggers } from './loggerCapture/logger';
 import { TotvsConfigurationWebProvider } from './debug/TotvsConfigurationWebProvider';
 import { TotvsConfigurationProvider } from './debug/TotvsConfigurationProvider';
-import { getDAP, getProgramName, getProgramArguments } from './debug/debugConfigs';
-import { toggleTableSync } from './debug/debugConfigs';
+import tdsReplayLauncherConfig from './launcher/tdsReplay/tdsReplayLauncherConfig';
+import { TotvsConfigurationTdsReplayProvider } from './debug/TotvsConfigurationTdsReplayProvider';
+import { getDAP, getProgramName, getProgramArguments, toggleTableSync } from './debug/debugConfigs';
 import { toggleAutocompleteBehavior, updateSettingsBarItem } from './server/languageServerSettings';
 import { advplDocumentFormattingEditProvider, advplDocumentRangeFormattingEditProvider, advplResourceFormatting } from './formatter/advplFormatting';
-import { processDebugCustomEvent } from './debug/debugEvents';
+import { processDebugCustomEvent, DebugEvent, createTimeLineWebView } from './debug/debugEvents';
 
 export let languageClient: LanguageClient;
 // metodo de tradução
@@ -49,11 +52,15 @@ export let permissionStatusBarItem: vscode.StatusBarItem;
 // barra de configurações
 export let settingsStatusBarItem: vscode.StatusBarItem;
 
+let _debugEvent = undefined;
+
 export function parseUri(u): Uri {
 	return Uri.parse(u);
 }
 
 export function activate(context: ExtensionContext) {
+
+	//new DebugEvent(context); //Cria a instancia para ja informar o debug context
 
 	console.log(localize('tds.console.congratulations', 'Congratulations, your extension "totvs-developer-studio" is now active!'));
 	context.subscriptions.push(commands.registerCommand('tds.getDAP', () => getDAP()));
@@ -64,6 +71,8 @@ export function activate(context: ExtensionContext) {
 		context.subscriptions.push(languageClient.start());
 
 		let p2c = languageClient.protocol2CodeConverter;
+
+		//createTimeLineDataProvider();
 
 		//General commands.
 		(() => {
@@ -223,6 +232,8 @@ export function activate(context: ExtensionContext) {
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.getProgramArguments', () => getProgramArguments()));
 	//Ação para desfragmentar o RPO do servidor corrente.
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.defragRPO', () => defragRpo()));
+	//Ação para checar a integridade do RPO do servidor corrente.
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.rpoCheckIntegrity', () => rpoCheckIntegrity()));
 	//Ação para deletar um fonte selecionado do RPO.
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.delete.file.fromRPO', (context, files) => deleteFileFromRPO(context, files)));
 	//Ação par abrir a tela de inspetor de objetos.
@@ -251,10 +262,24 @@ export function activate(context: ExtensionContext) {
 		console.error(localize('tds.vscode.server_vision_not_load', 'Visão "Servidores" não inicializada.'));
 	}
 
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.tdsreplay.webview.timeLine', () => {
+		if (_debugEvent !== undefined) {
+			if (createTimeLineWebView !== null) {
+				createTimeLineWebView.reveal();
+			}
+		} else {
+			vscode.window.showErrorMessage("TDS Replay não iniciado.");
+		}
+	}));
+
 	// Registra uma configuração de debug
 	const provider = new TotvsConfigurationProvider();
 	context.subscriptions.push(debug.registerDebugConfigurationProvider(TotvsConfigurationProvider.type, provider));
 	context.subscriptions.push(provider);
+
+	const tdsReplayProvider = new TotvsConfigurationTdsReplayProvider();
+	context.subscriptions.push(debug.registerDebugConfigurationProvider(TotvsConfigurationTdsReplayProvider.type, tdsReplayProvider));
+	context.subscriptions.push(tdsReplayProvider);
 
 	// Registra uma configuração de debug web
 	const webProvider = new TotvsConfigurationWebProvider();
@@ -283,8 +308,8 @@ export function activate(context: ExtensionContext) {
 	//Mostra a pagina de Welcome.
 	showWelcomePage(context, false);
 
-	//Abre uma caixa de informações para login no servidor protheus.
-	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.serverAuthentication', (...args) => serverAuthentication(args, context)));
+	//Abre uma caixa de informações para login no servidor protheus selecionado.
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.serverSelection', (...args) => serverSelection(args, context)));
 
 	//Compile key
 	commands.registerCommand("totvs-developer-studio.compile.key", () => compileKeyPage(context));
@@ -292,9 +317,13 @@ export function activate(context: ExtensionContext) {
 	// Abre a tela de configuração de launchers
 	commands.registerCommand("totvs-developer-studio.configure.launcher", () => launcherConfig.show(context));
 
+	// Abre a tela de configuração de launchers
+	commands.registerCommand("totvs-developer-studio.tdsreplay.configure.launcher", () => tdsReplayLauncherConfig.show(context));
+
+
 	//inicialliza item de barra de status de servidor conectado ou não.
 	totvsStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-	totvsStatusBarItem.command = 'totvs-developer-studio.serverAuthentication';
+	totvsStatusBarItem.command = 'totvs-developer-studio.serverSelection';
 	context.subscriptions.push(totvsStatusBarItem);
 	context.subscriptions.push(Utils.onDidSelectedServer(updateStatusBarItem));
 
@@ -325,9 +354,9 @@ export function activate(context: ExtensionContext) {
 	context.subscriptions.push(
 		vscode.commands.registerCommand('totvs-developer-studio.run.formatter', (args: any[]) => {
 			//console.log("formatador ativado");
-			if(args === undefined) {
+			if (args === undefined) {
 				let aeditor = vscode.window.activeTextEditor;
-				if(aeditor !== undefined) {
+				if (aeditor !== undefined) {
 					args = [aeditor.document.uri];
 				}
 			}
@@ -353,8 +382,13 @@ export function activate(context: ExtensionContext) {
 	);
 
 	//debug
-	vscode.debug.onDidReceiveDebugSessionCustomEvent((e: vscode.DebugSessionCustomEvent) => {
-		processDebugCustomEvent(e);
+	vscode.debug.onDidReceiveDebugSessionCustomEvent((debugEvent: vscode.DebugSessionCustomEvent) => {
+		_debugEvent = debugEvent;
+		processDebugCustomEvent(debugEvent);
+	});
+
+	vscode.debug.onDidTerminateDebugSession(() => {
+		_debugEvent = undefined;
 	});
 
 	//Verifica questões de encoding

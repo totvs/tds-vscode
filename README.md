@@ -22,10 +22,11 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Inspetor de funções do RPO.
 * Geração de WS Protheus.
 
-## Conheça mais em:
->[TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 1](https://www.youtube.com/watch?v=MwIu01Ztfvg)<br/>
->[TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 2](https://www.youtube.com/watch?v=Cz4N0XWCXHY)<br/>
->[TOTVS - TDS-VSCode - Desenvolvimento colaborativo](https://www.youtube.com/watch?v=IGWh5ejxhHU)<br/>
+## Conheça mais em
+
+>[TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 1](https://www.youtube.com/watch?v=MwIu01Ztfvg)
+>[TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 2](https://www.youtube.com/watch?v=Cz4N0XWCXHY)
+>[TOTVS - TDS-VSCode - Desenvolvimento colaborativo](https://www.youtube.com/watch?v=IGWh5ejxhHU)
 
 ## Configurações Gerais
 
@@ -79,11 +80,21 @@ Com essa implementação se torna necessária a inclusão de uma conexão com o 
 * Após executar o cadastro de ao menos um servidor.
 * Vá para visão de servidores (Acesso pelo ícone da TOTVS na lateral esquerda do VSCode).
 * Clique com o botão direito e selecione a opção `Connect`.
-* Informe `ambiente`, `usuário` e `senha` (pode ser "em branco") para prosseguir.
-* Aguarde o termino da conexão.
-* A conexão com servidores pode ser efetuada pela seleção do texto `[Selecionar servidor/ambiente]` na barra de ferramentas. Ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Select Server`.
+* Selecione um `ambiente` da lista de ambientes, se nenhum ambiente estiver cadastrado, informe um ambiente válido.
+* Se necessário informe o `usuário` e `senha` para prosseguir.
+* Aguarde o término da conexão.
+
+> A conexão com servidores pode ser efetuada pela seleção do texto `[Selecionar servidor/ambiente]` na barra de ferramentas.
+> Ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Select Server`.
 
 ![Connect Server](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/ConnectServer.gif)
+
+### Cadastro de múltiplos ambientes
+
+* Para cadastrar outros ambientes de um servidor, inicie uma nova conexão neste servidor.
+* Os ambientes já cadastrados anteriormente serão exibidos em uma lista.
+* Clique no ícone `"+"` no canto superior direito da lista.
+* Informe o novo `ambiente` e prossiga com a conexão normalmente.
 
 ## Compilação
 
@@ -128,13 +139,14 @@ A compilação efetuada a partir do editor, sempre irá recompilar o fonte, mant
 
 Tivemos reportes de problemas de encode abrindo fontes antes salvos no TDS, isso ocorre porque o encode original do VSCode é UTF8 e o do TDS é outro.
 Para garantir a compilação é necessário compatibilizar o encode da seguinte maneira:
- * No estado original o Fonte será mostrado desta maneira:<br/>
+
+* No estado original o Fonte será mostrado desta maneira:<br/>
  ![Encoding 1](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding1.png)
- * **Antes de editar/salvar qualquer fonte no VS** entre nas configurações do VS `Ctrl + ,`.
- * No campo de busca digite `encode` e selecione `Windows1252`.<br/>
- * Abra o fonte com o novo encode (reforçando que NÃO DEVE tê-lo salvo antes em UTF8)<br/>
+* **Antes de editar/salvar qualquer fonte no VS** entre nas configurações do VS `Ctrl + ,`.
+* No campo de busca digite `encode` e selecione `Windows1252`.<br/>
+* Abra o fonte com o novo encode (reforçando que NÃO DEVE tê-lo salvo antes em UTF8)<br/>
  ![Encoding 3](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding3.png)
- * Compile e/ou recompile o fonte e execute-o.<br/>
+* Compile e/ou recompile o fonte e execute-o.<br/>
  ![Encoding 4](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding4.png)
 
  Na abertura do workspace, perguntamos se o usuário deseja alterar o encoding para o padrão TOTVS e essa configuração é feita automaticamente.

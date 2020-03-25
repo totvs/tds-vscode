@@ -1,4 +1,4 @@
-import { WorkspaceFolder, DebugConfigurationProvider, DebugConfiguration, CancellationToken, ProviderResult, window } from 'vscode';
+import { WorkspaceFolder, DebugConfigurationProvider, DebugConfiguration, CancellationToken, window } from 'vscode';
 import { connectedServerItem } from '../serversView';
 //import { sessionKey } from '../TotvsLanguageClient';
 import * as vscode from 'vscode';
@@ -23,7 +23,9 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 	 * e.g. add all missing attributes to the debug configuration.
 	 */
 	//resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): ProviderResult<DebugConfiguration> {
-	async resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): Promise<ProviderResult<DebugConfiguration>> {
+	//async resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): Promise<ProviderResult<DebugConfiguration>> {
+	//Parece que mudaram novamente o tipo de retorno dessa funcao, por isso essa nova declaracao.
+	async resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): Promise<DebugConfiguration> {
 		if (connectedServerItem !== undefined) {
 			config.type = TotvsConfigurationProvider.type;
 			config.environment = connectedServerItem.currentEnvironment;
@@ -47,17 +49,15 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 			}
 
 			if (!config.program) {
-				return window.showInformationMessage(localize('tds.vscode.program_not_found', "Cannot find a program to debug")).then(_ => {
-					return undefined;	// abort launch
-				});
+				window.showInformationMessage(localize('tds.vscode.program_not_found', "Cannot find a program to debug"));
+				return undefined;	// abort launch
 			}
 
 			if (config.program === "${command:AskForProgramName}") {
 				const value = await vscode.commands.executeCommand("totvs-developer-studio.getProgramName");
 				if (!value) {
-					return window.showInformationMessage(localize('tds.vscode.program_not_found', "Cannot find a program to debug")).then(_ => {
-						return undefined;	// abort launch
-					});
+					window.showInformationMessage(localize('tds.vscode.program_not_found', "Cannot find a program to debug"));
+					return undefined;	// abort launch
 				}
 				config.program = extractProgram(value as string);
 				config.programArguments = extractArgs(value as string);
@@ -89,7 +89,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 			}
 			setDapArgs(setDapArgsArr);
 
-			return config;
+			return Promise.resolve(config);
 		} else {
 			window.showErrorMessage(localize('tds.vscode.server_not_connected', "Nenhum servidor conectado"));
 			return null;

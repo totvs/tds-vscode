@@ -13,7 +13,7 @@ const localizeHTML = {
 	"tds.webview.ws.URL": localize("tds.webview.ws.URL", "URL Web Service"),
 	"tds.webview.ws.path": localize("tds.webview.ws.path", "File Directory"),
 	"tds.webview.ws.name": localize("tds.webview.ws.name", "File Name")
-}
+};
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
@@ -44,11 +44,18 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 
 			currentPanel.webview.onDidReceiveMessage(message => {
 				switch (message.command) {
+					case 'checkDir':
+						var checkedDir = Utils.checkDir(message.selectedDir);
+						currentPanel.webview.postMessage({
+							command: "checkedDir",
+							checkedDir: checkedDir
+						});
+						break;
 					case 'wsClose':
 						const extension:string = message.fileName.split('.').pop().toLowerCase();
-						if( extension != "prw" && extension != "prx" && extension != "tlpp"){
+						if( extension !== "prw" && extension !== "prx" && extension !== "tlpp"){
 							vscode.window.showErrorMessage("Is need a extension prw, prx or tlpp");
-							return
+							return;
 						}
 						server = Utils.getCurrentServer();
 						languageClient.sendRequest('$totvsserver/wsdlGenerate', {

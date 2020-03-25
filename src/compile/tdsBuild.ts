@@ -54,6 +54,10 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions, c
 	if (shouldClearConsole !== false) {
 		languageClient.outputChannel.clear();
 	}
+	const showConsoleOnCompile = configADVPL.get("showConsoleOnCompile");
+	if (showConsoleOnCompile !== false) {
+		languageClient.outputChannel.show();
+	}
 
 	const resourcesToConfirm: vscode.TextDocument[] = vscode.workspace.textDocuments.filter(d => !d.isUntitled && d.isDirty);
 	const count = resourcesToConfirm.length;
@@ -275,5 +279,5 @@ function sameEditor(editor: vscode.TextEditor, nextEditor: vscode.TextEditor) {
 		return false;
 	}
 
-	return (editor.viewColumn === nextEditor.viewColumn) && ((editor as any)._id === (nextEditor as any)._id);
+	return editor.document === nextEditor.document;
 }

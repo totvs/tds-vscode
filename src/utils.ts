@@ -112,8 +112,11 @@ export default class Utils {
 		let exist = fs.existsSync(Utils.getServerConfigFile());
 		if (exist) {
 			let json = fs.readFileSync(Utils.getServerConfigFile()).toString();
-			return JSON.parse(json);
+			if (json) {
+				return JSON.parse(json);
+			}
 		}
+		return "";
 	}
 
 	/**
@@ -124,8 +127,11 @@ export default class Utils {
 		let exist = fs.existsSync(Utils.getLaunchConfigFile());
 		if (exist) {
 			let json = fs.readFileSync(Utils.getLaunchConfigFile()).toString();
-			return JSON.parse(stripJsonComments(json));
+			if (json) {
+				return JSON.parse(stripJsonComments(json));
+			}
 		}
+		return "";
 	}
 
 	static saveLaunchConfig(config: JSON) {
@@ -165,7 +171,9 @@ export default class Utils {
 				} else if (element.environments.indexOf(environment) === -1) {
 					element.environments.push(environment);
 				}
-				element.username = username;
+				if (username) {
+					element.username = username;
+				}
 				element.environment = environment;
 
 				let server: SelectServer = {
@@ -211,8 +219,8 @@ export default class Utils {
 		Utils.persistServersInfo(servers);
 	}
 
-	/**
- * Salva o servidor logado por ultimo.
+/**
+ * Remove o token salvo do servidor/environment.
  * @param id Id do servidor logado
  * @param environment Ambiente utilizado no login
  */
@@ -222,8 +230,8 @@ export default class Utils {
 			let key = id + ":" + environment;
 			servers.savedTokens.forEach(element => {
 				if (element[0] === key) {
-					const index = servers.indexOf(element, 0);
-					servers.splice(index, 1);
+					const index = servers.savedTokens.indexOf(element, 0);
+					servers.savedTokens.splice(index, 1);
 					Utils.persistServersInfo(servers);
 					return;
 				}
@@ -538,7 +546,7 @@ export default class Utils {
  	*Recupera um servidor pelo id informado.
  	* @param id id do servidor alvo.
  	*/
-	static getServerById(id: string, serversConfig: any) {
+	static getServerById(id: string, serversConfig: any = Utils.getServersConfig()) {
 		let server;
 		if (serversConfig.configurations) {
 			const configs = serversConfig.configurations;
@@ -609,7 +617,7 @@ export default class Utils {
 	 * @param id ID do server que sera atualizado
 	 * @param buildVersion Nova build do servidor
 	 */
-	static updateBuildVersion(id: string, buildVersion: string) {
+	static updateBuildVersion(id: string, buildVersion: string, secure: number) {
 		let result = false;
 		if (!id || !buildVersion) {
 			return result;
@@ -618,6 +626,7 @@ export default class Utils {
 		serverConfig.configurations.forEach(element => {
 			if (element.id === id) {
 				element.buildVersion = buildVersion;
+				element.secure = secure;
 				Utils.persistServersInfo(serverConfig);
 				result = true;
 			}
@@ -731,9 +740,22 @@ export default class Utils {
 
 		return files;
 	}
-	static ignoreResource(fileName: string): boolean {
 
+	static ignoreResource(fileName: string): boolean {
 		return processIgnoreList(ignoreListExpressions, path.basename(fileName));
+	}
+
+	static checkDir(selectedDir: string): string {
+		if (fs.existsSync(selectedDir)) {
+			if (!fs.lstatSync(selectedDir).isDirectory()) {
+				selectedDir = path.dirname(selectedDir);
+			}
+			if (fs.lstatSync(selectedDir).isDirectory()) {
+				return selectedDir;
+			}
+		}
+		vscode.window.showErrorMessage(selectedDir + " does not exist or it is not a directory.")
+		return "";
 	}
 }
 

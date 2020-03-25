@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>${d.localize["tds.webview.launcher.welcome"]}</title><!--Welcome-->
+</head>
+<style>${d.css}</style>
+
+<body>
+		<div class="mainContainer">
+				<div class="formWrap">
+
+					<form name="form_init" id="form_init">
+							<span class="formTitle">${d.localize["tds.webview.launcher.launcherTitle"]}</span><!--Launcher Config-->
+
+							<div class="wrap-input dropdown">
+								<label for="launcher">${d.localize["tds.webview.launcher.name"]}</label><!--Choose launcher:-->
+								<input id="launcherNameID" class="comboBox" name="launcher" list="launcherListID" onchange="launcherChanged()"/>
+								<datalist id="launcherListID">
+								</datalist>
+							</div>
+
+							<div class="wrap-input">
+								<label for="tdsReplayFile">${d.localize["tds.webview.launcher.file"]}</label><!--File:-->
+								<input class="inputText" type="text" id="TDSReplayFile" name="TDSReplayFile">
+								<input class="inputText" type="file" accept='*.*'  id="tdsReplayFileID" name="tdsReplayFile" onchange="setTextArea()"/>
+							</div>
+
+							<div class="wrap-input">
+								<label for="password">${d.localize["tds.webview.launcher.pwd"]}</label><!--password:-->
+								<input class="inputText" type="password" id="passwordID" name="password">
+							</div>
+
+							<div class="wrap-input">
+								<label for="IncludeSource">${d.localize["tds.webview.launcher.includeSrc"]}</label><!--IncludeSource:-->
+								<input class="inputText" type="text" id="includeSrcID" name="IncludeSource">
+							</div>
+
+							<div class="wrap-input">
+								<label for="ExcludeSource">${d.localize["tds.webview.launcher.excludeSrc"]}</label><!--ExcludeSource:-->
+								<input class="inputText" type="text" id="excludeSrcID" name="ExcludeSource">
+							</div>
+
+							<div class="checkboxGroup">
+								<input id="ignoreSourcesNotFoundID" class="checkbox" name="ignoreSourcesNotFound" type="checkbox" value="ignoreSourcesNotFound" checked>
+								<label class="checkboxLabel" for="ignoreSourcesNotFound">${d.localize["tds.webview.launcher.ignoreFiles"]}</label><!--Ignore files not in Workspace-->
+							</div>
+							<br>
+							<div class="wrap-submit">
+								<input class="btn-submit" id="submitID" type="submit" value="${d.localize['tds.webview.launcher.save']}" onclick="saveLaunchConfig(false)" /><!--Save-->
+								<input class="btn-submit" id="submitID" type="submit" value="${d.localize['tds.webview.launcher.saveClose']}" onclick="saveLaunchConfig(true)" /><!--Save/Close-->
+							</div>
+
+							<p>* ${d.localize["tds.webview.launcher.bottomInfo"]}<i>./vscode/launch.json</i></p><!--This config could be altered editing file-->
+					</form>
+				</div>
+		</div>
+		<!----hr-->
+</body>
+
+<script>
+	const comboBox = getElementLauncherList();
+	smBin = "";
+	// Handle the message inside the webview
+	window.addEventListener('message', event => {
+		const launhConfig = event.data; // The JSON data our extension sent
+		let index = 0;
+		comboBox.innerText = null; //Zera o combo
+		launhConfig.configurations.forEach(element => {
+			//Adiciona os launchers no combo, porem filtra apenas os launchers com o id do replay:
+			if(element.type == "totvs_tdsreplay_debug") {
+				let option = document.createElement("option");
+				option.text = element.name;
+				option.value = element.name;
+				option.data = element;
+				comboBox.appendChild(option);
+				if(getElementLauncherName().value === element.name) {
+					//Atualiza o elemento corrente caso ele ja esteja selecionado.
+					//Esse processo normalmente ocorre quando o usuario altera uma informação manualmente no json
+					//e a pagina ainda esta aberta, portanto é necessario atualizar os campos pois pode ocorrer
+					//do item que foi atualizado manualmente ser o mesmo do que estava previamente selecionado.
+					updateAllFields(element);
+				}
+				index+=1;
+			}
+		});
+	});
+
+	function launcherChanged() {
+		const comboBox = getElementLauncherList();
+		let selectedLauncher = comboBox.value;
+		let input = getElementLauncherName();
+		if(comboBox.options !== undefined) {
+			for(let i=0 ; i < comboBox.options.length ; i++) {
+				if(comboBox.options[i].value == input.value) {
+					selectedLauncher = comboBox.options[i];
+					break;
+				}
+			}
+
+			let element = selectedLauncher !== undefined ? selectedLauncher.data : undefined;
+			updateAllFields(element);
+		}
+
+	}
+
+	const vscode = acquireVsCodeApi();
+
+	function saveLaunchConfig(close) {
+		vscode.postMessage({
+			command: 'saveLaunchConfig',
+			launcherName: 			getElementLauncherName().value,
+			tdsReplayFile: 			getTdsReplayFile().value,
+			password: 				getPassword().value,
+			includeSources: 		getIncludeSrc().value,
+			excludeSources: 		getExcludeSrc().value,
+			ignoreSourcesNotFound:	getElementIgnoreFiles().checked,
+			'close':                close
+		});
+	}
+
+	function updateAllFields(element) {
+		getTdsReplayFile().value 		= element !== undefined ? element.tdsReplayFile : "";
+		getPassword().value 			= element !== undefined ? element.password : "";
+		getIncludeSrc().value 			= element !== undefined ? element.includeSources : "";
+		getExcludeSrc().value 			= element !== undefined ? element.excludeSources : "";
+		getElementIgnoreFiles().value	= element !== undefined ? element.ignoreSourcesNotFound: false;
+	}
+
+	function getElementLauncherList() { return document.getElementById('launcherListID'); }
+	function getElementLauncherName() { return document.getElementById("launcherNameID"); }
+	function getTdsReplayFile() 	  { return document.getElementById("TDSReplayFile"); }
+	function getPassword() 			  { return document.getElementById("passwordID"); }
+	function getIncludeSrc() 		  { return document.getElementById("includeSrcID"); }
+	function getExcludeSrc() 		  { return document.getElementById("excludeSrcID"); }
+	function getElementIgnoreFiles()  { return document.getElementById("ignoreSourcesNotFoundID"); }
+
+	function setTextArea(){
+		var input = document.getElementById('tdsReplayFileID');
+		var filePath = input.files[0].path;
+		var textArea = document.getElementById('TDSReplayFile').value = filePath;
+	}
+</script>
+
+</html>

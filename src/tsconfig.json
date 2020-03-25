@@ -1,17 +1,34 @@
 {
-	"compilerOptions": {
-		"module": "commonjs",
-		"target": "es6",
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "ES6",
+        "outDir": "../out",
+        "sourceMap": true,
 
-		"noImplicitAny": false,
-		"removeComments": false,
-		"noUnusedLocals": true,
-		"noImplicitThis": true,
-		"inlineSourceMap": false,
-		"sourceMap": true,
-		"outDir": "../out",
-		"preserveConstEnums": true,
-		"strictNullChecks": true,
-		"noUnusedParameters": false
-	}
+        "noImplicitAny": false,
+        "removeComments": false,
+        "noUnusedLocals": false,
+        "noImplicitThis": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": false,
+
+        "lib": [
+            "es2015",
+            "dom"
+        ],
+
+        "jsx": "react",
+
+        "declaration": true,
+        "declarationMap": true,
+        "strict": false,   /* enable all strict type-checking options */
+        "noUnusedParameters": false
+    },
+    "exclude": [
+        "node_modules/",
+        "../out/",
+        "test/",
+        "**/debug/tdsreplay/app",
+        "**/monitor/app"
+    ]
 }

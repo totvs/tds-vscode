@@ -35,6 +35,7 @@ export function setDapArgs(dapArgs_: string[]) {
 	dapArgs = dapArgs_;
 }
 
+
 class QuickPickProgram implements QuickPickItem {
 
 	label: string;
@@ -79,40 +80,43 @@ export async function getProgramName() {
 			qp.placeholder = localize('tds.vscode.getProgramName', "Please enter the name of an AdvPL function");
 
 			disposables.push(qp.onDidChangeSelection(selection => {
-				if (selection[0]) {
-					qp.value = selection[0].label + ' ' + selection[0].description;
+				if (!qp.value && selection[0]) {
+				 	qp.value = selection[0].label + ' ' + selection[0].description;
 				}
 			}));
 
 			disposables.push(qp.onDidAccept(e => {
 				if (qp.value) {
-					qp.hide();
-				}
-			}));
+					const program = extractProgram(qp.value);
 
-			qp.onDidHide(() => {
-				const program = extractProgram(qp.value);
+					if (program && program.length > 0) {
+						const args = extractArgs(qp.value);
+						const argsAux = args.join(" ");
 
-				if (program && program.length > 0) {
-					const args = extractArgs(qp.value);
-					const argsAux = args.join(" ");
+						config.lastProgramExecuted = program;
 
-					config.lastProgramExecuted = program;
+						const find: boolean = config.lastPrograms.some((element: QuickPickProgram) => {
+							return (element.label.toLowerCase() === program.toLowerCase()) &&
+								(element.description === argsAux);
+						});
 
-					const find: boolean = config.lastPrograms.some((element: QuickPickProgram) => {
-						return (element.label.toLowerCase() === program.toLowerCase()) &&
-							(element.description === argsAux);
-					});
-
-					if (!find) {
-						config.lastPrograms.push(new QuickPickProgram(program, args));
+						if (!find) {
+							config.lastPrograms.push(new QuickPickProgram(program, args));
+						}
+						Utils.saveLaunchConfig(config);
 					}
-					Utils.saveLaunchConfig(config);
 				}
-
+				else {
+					qp.value = "";
+				}
 				resolve(qp.value);
 				qp.dispose();
-			});
+			}));
+
+			disposables.push(qp.onDidHide(e => {
+				resolve("");
+				qp.dispose();
+			}));
 
 			qp.show();
 		});
@@ -122,14 +126,14 @@ export async function getProgramName() {
 }
 
 export function extractProgram(value: string): string {
-	const groups: string[] = value.split(/(\w+)+/i).filter((value) => {
+	const groups: string[] = value.split(/([\w\.]+)+/i).filter((value) => {
 		return value && value.trim().length > 0;
 	});
 	return (groups && groups.length > 0) ? groups[0] : "";
 }
 
 export function extractArgs(value: string): string[] {
-	const groups: string[] = value.replace(/-a=/gi, "").split(/(\w+)+/i).filter((value) => {
+	const groups: string[] = value.replace(/-a=/gi, "").split(/([\w\.]+)+/i).filter((value) => {
 		return value && value.trim().length > 0 && !ignoreValue.some((char) => value.trim() === char);
 	});
 

@@ -55,9 +55,16 @@ export default class welcomePage {
 
 			currentPanel.webview.onDidReceiveMessage(message => {
 				switch (message.command) {
+					case 'checkDir':
+						var checkedDir = Utils.checkDir(message.selectedDir);
+						currentPanel.webview.postMessage({
+							command: "checkedDir",
+							checkedDir: checkedDir
+						});
+						break;
 					case 'welcomeClose':
 						const smartClientBin = message.smartClientBin;
-						const includePath = message.include;
+						const includePath = message.includes;
 
 						Utils.saveIncludePath(includePath);
 						saveSmartClientBin(smartClientBin);
