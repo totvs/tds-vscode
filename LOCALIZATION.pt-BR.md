@@ -1,3 +1,5 @@
+*Leia isto em outros idiomas: [Inglês](LOCALIZATION.md), [Português](LOCALIZATION.pt-BR.md)*
+
 # Localizando TDS-VSCode
 
 O tds-vscode permite a tradução de duas formas.
