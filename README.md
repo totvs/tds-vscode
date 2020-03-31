@@ -336,7 +336,7 @@ Em [Debug Console: configuração visual](https://github.com/totvs/tds-vscode/wi
 * No campo `Patch File` selecione o patch que deseja aplicar.
 * Confirme a aplicação.
 
-> A opção "Apply old files", i.e., aplicar fontes antigos, somente deve ser marcada se desejar sobrescrever programas que já se encontram mais atualizados no RPO. Se não tiver certeza, mantenha esta opção desmarcada.
+> A opção "Apply old files" (Aplicar fontes antigos) somente deve ser marcada se desejar sobrescrever programas que já se encontram mais atualizados no RPO. Se não tiver certeza, mantenha esta opção desmarcada.
 
 ![Patch Apply](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/ApplyPatch.gif)
 
