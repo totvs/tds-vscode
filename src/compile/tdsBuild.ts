@@ -242,6 +242,10 @@ export async function commandBuildOpenEditors(recompile: boolean, context: vscod
 		vscode.commands.executeCommand("workbench.action.nextEditor");
 		await delay(delayNext);
 		nextEditor = vscode.window.activeTextEditor;
+		if (!nextEditor) {
+			// arquivo que não pode ser aberto pelo editor (binarios ou requerem confirmacao do usuario)
+			continue;
+		}
 		if (nextEditor && !sameEditor(editor as vscode.TextEditor, nextEditor as vscode.TextEditor)) {
 			if (nextEditor.viewColumn) {
 				filename = nextEditor.document.uri.fsPath;
@@ -253,6 +257,7 @@ export async function commandBuildOpenEditors(recompile: boolean, context: vscod
 				vscode.window.showWarningMessage("[SKIPPING] Editor file is not fully open");
 			}
 		} else {
+			// retornou ao primeiro editor
 			break;
 		}
 	} while (true);

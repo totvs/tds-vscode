@@ -1,3 +1,12 @@
+# Versão 1.0.2
+
+## Erro ao compilar fontes em aberto (.app junto) [Issue 334](https://github.com/totvs/tds-vscode/issues/334)
+### Problema:
+* Ao compilar arquivos em editores abertos o processo para ao encontrar um arquivo que não pode ser aberto sem a intervenção do usuário, como por exemplo um pdf.
+### Solução:
+* Ao encontrar um arquivo que não pode ser aberto ele passa para o próximo editor aberto.
+----
+
 # Versão 1.0.1
 
 ## Seleção de diretório seleciona o primeiro arquivo do diretório [Issue 317](https://github.com/totvs/tds-vscode/issues/317)
