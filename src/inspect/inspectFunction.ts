@@ -5,6 +5,7 @@ import Utils from '../utils';
 import { languageClient } from '../extension';
 const compile = require('template-literal');
 import * as nls from 'vscode-nls';
+import { ResponseError } from 'vscode-languageclient';
 let localize = nls.loadMessageBundle();
 
 const localizeHTML = {
@@ -68,8 +69,8 @@ export function inspectFunctions(context: vscode.ExtensionContext) {
 						}
 					}).then((response: InspectorFunctionResult) => {
 						currentPanel.webview.postMessage(response.functions);
-					}, (err) => {
-						vscode.window.showErrorMessage(err);
+					}, (err: ResponseError<object>) => {
+						vscode.window.showErrorMessage(err.message);
 					});
 					return;
 				case 'close':

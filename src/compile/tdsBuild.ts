@@ -6,6 +6,7 @@ import Utils from '../utils';
 import { showCompileResult } from './buildResult';
 
 import * as nls from 'vscode-nls';
+import { ResponseError } from 'vscode-languageclient';
 let localize = nls.loadMessageBundle();
 
 interface CompileOptions {
@@ -122,8 +123,8 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions, c
 					verifyCompileResult(response, context);
 				}
 			}
-		}, (err) => {
-			vscode.window.showErrorMessage(err);
+		}, (err: ResponseError<object>) => {
+			vscode.window.showErrorMessage(err.message);
 		});
 	} else {
 		vscode.window.showErrorMessage(localize("tds.webview.tdsBuild.noServer", 'No server connected'));

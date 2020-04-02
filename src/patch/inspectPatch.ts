@@ -5,6 +5,7 @@ import Utils from '../utils';
 import { languageClient } from '../extension';
 const compile = require('template-literal');
 import * as nls from 'vscode-nls';
+import { ResponseError } from 'vscode-languageclient';
 let localize = nls.loadMessageBundle();
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
@@ -110,8 +111,8 @@ function sendPatchInfo(patchFile, server, authorizationToken, currentPanel) {
 			command: 'setData',
 			data: response.patchInfos
 		});
-	}, (err) => {
-		vscode.window.showErrorMessage(err);
+	}, (err: ResponseError<object>) => {
+		vscode.window.showErrorMessage(err.message);
 	});
 }
 

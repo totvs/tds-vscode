@@ -5,6 +5,7 @@ import Utils from '../utils';
 import { languageClient } from '../extension';
 import { commandBuildFile } from '../compile/tdsBuild';
 import * as nls from 'vscode-nls';
+import { ResponseError } from 'vscode-languageclient';
 
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
@@ -97,8 +98,8 @@ export function patchGenerate(context: vscode.ExtensionContext) {
 							// } else {
 							// 	vscode.window.showErrorMessage(message);
 							// }
-						}, (err) => {
-							vscode.window.showErrorMessage(err);
+						}, (err: ResponseError<object>) => {
+							vscode.window.showErrorMessage(err.message);
 						});
 						break;
 					case 'patchGenerate':
@@ -221,8 +222,8 @@ function sendPatchGenerateMessage(server, patchMaster, patchDest, patchType, pat
 		// } else {
 		// 	vscode.window.showErrorMessage(message);
 		// }
-	}, (err) => {
-		vscode.window.showErrorMessage(err);
+	}, (err: ResponseError<object>) => {
+		vscode.window.showErrorMessage(err.message);
 	});
 }
 

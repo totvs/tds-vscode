@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as nls from 'vscode-nls';
 import { languageClient } from '../extension';
 import Utils from '../utils';
+import { ResponseError } from 'vscode-languageclient';
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
 
@@ -82,8 +83,8 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 									currentPanel.dispose();
 								}
 							}
-						}, (err) => {
-							vscode.window.showErrorMessage(err);
+						}, (err: ResponseError<object>) => {
+							vscode.window.showErrorMessage(err.message);
 						});
 						return;
 				}

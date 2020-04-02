@@ -7,6 +7,7 @@ import { languageClient, totvsStatusBarItem } from './extension';
 import { inputConnectionParameters } from './inputConnectionParameters';
 import { inputAuthenticationParameters } from './inputAuthenticationParameters';
 import { SelectServer } from './utils';
+import { ResponseError } from 'vscode-languageclient';
 
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
@@ -414,8 +415,8 @@ export class ServersExplorer {
 									}).then((validInfoNode: NodeInfo) => {
 										Utils.updateBuildVersion(serverId, validInfoNode.buildVersion, validInfoNode.secure);
 										return;
-									}, (err) => {
-										vscode.window.showErrorMessage(err);
+									}, (err: ResponseError<object>) => {
+										vscode.window.showErrorMessage(err.message);
 									});
 								}
 							} else {
@@ -479,7 +480,7 @@ export class ServersExplorer {
 							vscode.window.showErrorMessage(localize("tds.webview.serversView.cloudNotConn", "Could not connect to server"));
 						}
 						return;
-					}, (err) => {
+					}, (err: ResponseError<object>) => {
 						vscode.window.showErrorMessage(err.message);
 					});
 				}
@@ -500,7 +501,7 @@ export class ServersExplorer {
 							treeDataProvider.refresh();
 						}
 					}
-				}, (err) => {
+				}, (err: ResponseError<object>) => {
 					Utils.clearConnectedServerConfig();
 					if (treeDataProvider !== undefined) {
 						treeDataProvider.refresh();
@@ -625,8 +626,8 @@ function sendConnectRequest(serverItem: ServerItem, environment: string) {
 			vscode.window.showErrorMessage(localize("tds.webview.serversView.errorConnServer", 'Error connecting server'));
 			return false;
 		}
-	}, err => {
-		vscode.window.showErrorMessage(err);
+	}, (err: ResponseError<object>) => {
+		vscode.window.showErrorMessage(err.message);
 	});
 }
 
@@ -655,8 +656,8 @@ function sendAuthenticateRequest(serverItem: ServerItem, environment: string, us
 			vscode.window.showErrorMessage(localize("tds.webview.serversView.errorConnServer", 'Error connecting server'));
 			return false;
 		}
-	}, err => {
-		vscode.window.showErrorMessage(err);
+	}, (err: ResponseError<object>) => {
+		vscode.window.showErrorMessage(err.message);
 	});
 }
 
@@ -751,8 +752,8 @@ function sendReconnectRequest(serverItem: ServerItem, connectionToken: string, e
 			vscode.window.showErrorMessage(localize("tds.webview.serversView.errorConnServer", 'Error reconnecting server'));
 			return false;
 		}
-	}, err => {
-		vscode.window.showErrorMessage(err);
+	}, (err: ResponseError<object>) => {
+		vscode.window.showErrorMessage(err.message);
 		Utils.removeSavedConnectionToken(serverItem.id, environment);
 	});
 }

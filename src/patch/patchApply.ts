@@ -6,6 +6,7 @@ import JSZip = require('jszip');
 import Utils from '../utils';
 import { languageClient } from '../extension';
 import * as nls from 'vscode-nls';
+import { ResponseError } from 'vscode-languageclient';
 
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
@@ -96,8 +97,8 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 									if (message.applyOld) {
 										vscode.window.showInformationMessage('Old files applied.');
 									}
-								}, (err) => {
-									vscode.window.showErrorMessage(err);
+								}, (err: ResponseError<object>) => {
+									vscode.window.showErrorMessage(err.message);
 								});
 							}
 							if (currentPanel) {
@@ -181,8 +182,8 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 								// }else {
 								// 	vscode.window.showErrorMessage(message);
 								// }
-							}, (err) => {
-								vscode.window.showErrorMessage(err);
+							}, (err: ResponseError<object>) => {
+								vscode.window.showErrorMessage(err.message);
 							});
 
 						}
