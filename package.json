@@ -114,6 +114,7 @@
 		"onCommand:totvs-developer-studio.delete.file.fromRPO",
 		"onCommand:totvs-developer-studio.getDAP",
 		"onCommand:totvs-developer-studio.connect",
+		"onCommand:totvs-developer-studio.reconnect",
 		"onCommand:totvs-developer-studio.serverSelection",
 		"onCommand:totvs-developer-studio.disconnect",
 		"onCommand:totvs-developer-studio.add",
@@ -323,11 +324,6 @@
 					"default": true,
 					"description": "%tds.package.reconnectLastServer%"
 				},
-				"totvsLanguageServer.useReconnectionToken": {
-					"type": "boolean",
-					"default": true,
-					"description": "%tds.package.useReconnectionToken%"
-				},
 				"totvsLanguageServer.compilation.generatePpoFile": {
 					"type": "boolean",
 					"default": false,
@@ -475,6 +471,10 @@
 			{
 				"command": "totvs-developer-studio.connect",
 				"title": "%tds.package.connect%"
+			},
+			{
+				"command": "totvs-developer-studio.reconnect",
+				"title": "%tds.package.reconnect%"
 			},
 			{
 				"command": "totvs-developer-studio.serverSelection",
@@ -1084,6 +1084,11 @@
 					"group": "AAtotvsServer@1"
 				},
 				{
+					"command": "totvs-developer-studio.reconnect",
+					"when": "view == totvs_server && viewItem == serverItem",
+					"group": "AAtotvsServer@1"
+				},
+				{
 					"command": "totvs-developer-studio.disconnect",
 					"when": "view == totvs_server && viewItem == serverItem",
 					"group": "AAtotvsServer@2"
@@ -1189,6 +1194,10 @@
 				},
 				{
 					"command": "totvs-developer-studio.connect",
+					"when": "1 == 0"
+				},
+				{
+					"command": "totvs-developer-studio.reconnect",
 					"when": "1 == 0"
 				},
 				{

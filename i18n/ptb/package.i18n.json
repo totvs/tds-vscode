@@ -29,6 +29,7 @@
 	"tds.package.getProgramName.title": "Pergunta o nome do programa",
 	"tds.package.getProgramName.description": "Pergunta o nome do programa.",
 	"tds.package.connect": "Conecta",
+	"tds.package.reconnect": "Reconecta",
 	"tds.package.serverSelection": "Seleciona o Servidor",
 	"tds.package.rename": "Renomeia",
 	"tds.package.disconnect": "Desconecta",

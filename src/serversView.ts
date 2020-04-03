@@ -24,6 +24,13 @@ const localizeHTML = {
 	"tds.webview.dir.include2" : localize("tds.webview.dir.include2", "Allow multiple directories")
 };
 
+export const connTypeIds = [ 'CONNT_DEBUGGER', 'CONNT_MONITOR' ] as const;
+export type connTypeId = typeof connTypeIds[number];
+export const connType: Record<connTypeId, number> = {
+	CONNT_DEBUGGER: 3,
+	CONNT_MONITOR: 13
+} as const;
+
 export let connectedServerItem: ServerItem | undefined;
 
 export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | EnvSection> {
@@ -461,7 +468,7 @@ export class ServersExplorer {
 			if (ix >= 0) {
 				//Verifica se ha um buildVersion cadastrado.
 				if (serverItem.buildVersion) {
-					inputConnectionParameters(context, serverItem);
+					inputConnectionParameters(context, serverItem, 'CONNT_DEBUGGER', false);
 				} else {
 					//Há build no servidor.
 					languageClient.sendRequest('$totvsserver/validation', {
@@ -475,14 +482,25 @@ export class ServersExplorer {
 						serverItem.buildVersion = validInfoNode.buildVersion;
 						if (updated) {
 							//continua a autenticacao.
-							inputConnectionParameters(context, serverItem);
+							inputConnectionParameters(context, serverItem, 'CONNT_DEBUGGER', false);
 						} else {
-							vscode.window.showErrorMessage(localize("tds.webview.serversView.cloudNotConn", "Could not connect to server"));
+							vscode.window.showErrorMessage(localize("tds.webview.serversView.couldNotConn", "Could not connect to server"));
 						}
 						return;
 					}, (err: ResponseError<object>) => {
 						vscode.window.showErrorMessage(err.message);
 					});
+				}
+			}
+		});
+		vscode.commands.registerCommand('totvs-developer-studio.reconnect', (serverItem: ServerItem) => {
+			let ix = treeDataProvider.localServerItems.indexOf(serverItem);
+			if (ix >= 0) {
+				//Verifica se ha um buildVersion cadastrado.
+				if (serverItem.buildVersion) {
+					inputConnectionParameters(context, serverItem, 'CONNT_DEBUGGER', true);
+				} else {
+					vscode.window.showErrorMessage(localize("tds.webview.serversView.couldNotReconn", "Could not reconnect to server"));
 				}
 			}
 		});
@@ -513,7 +531,7 @@ export class ServersExplorer {
 			}
 		});
 		vscode.commands.registerCommand('totvs-developer-studio.selectenv', (environment: EnvSection) => {
-			inputConnectionParameters(context, environment);
+			inputConnectionParameters(context, environment, 'CONNT_DEBUGGER', false);
 		});
 
 		vscode.commands.registerCommand('totvs-developer-studio.delete', (serverItem: ServerItem) => {
@@ -565,17 +583,17 @@ export class ServersExplorer {
 
 }
 
-export function connectServer(serverItem: ServerItem, environment: string) {
+export function connectServer(serverItem: ServerItem, environment: string, connType: connTypeId) {
 	if (connectedServerItem !== undefined && connectedServerItem.id === serverItem.id && connectedServerItem.currentEnvironment === serverItem.currentEnvironment) {
 		vscode.window.showInformationMessage(localize("tds.webview.serversView.alreadyDisconn", "The server selected is already connected."));
 	}
 	//vscode.window.showInformationMessage("Initializing connection with server " + serverItem.label);
 	if (connectedServerItem !== undefined) {
 		vscode.commands.executeCommand('totvs-developer-studio.disconnect', connectedServerItem).then(() => {
-			sendConnectRequest(serverItem, environment);
+			sendConnectRequest(serverItem, environment, connType);
 		});
 	} else {
-		sendConnectRequest(serverItem, environment);
+		sendConnectRequest(serverItem, environment, connType);
 	}
 }
 
@@ -584,7 +602,7 @@ export function authenticate(serverItem: ServerItem, environment: string, userna
 	sendAuthenticateRequest(serverItem, environment, username, password);
 }
 
-function sendConnectRequest(serverItem: ServerItem, environment: string) {
+function sendConnectRequest(serverItem: ServerItem, environment: string, _connType: connTypeId) {
 	let thisServerType = 0;
 	if (serverItem.type === "totvs_server_protheus") {
 		thisServerType = 1;
@@ -594,7 +612,7 @@ function sendConnectRequest(serverItem: ServerItem, environment: string) {
 	}
 	languageClient.sendRequest('$totvsserver/connect', {
 		connectionInfo: {
-			connType: 1,
+			connType: connType[_connType],
 			serverName: serverItem.name,
 			identification: serverItem.id,
 			serverType: thisServerType,
@@ -676,7 +694,7 @@ export class AuthenticationNode {
 	connectionToken: string;
 }
 
-export function reconnectServer(reconnectionInfo, environment: string): boolean {
+export function reconnectServer(reconnectionInfo, environment: string, connType: connTypeId): boolean {
 	if (reconnectionInfo.id && reconnectionInfo.token) {
 		const servers = Utils.getServersConfig();
 		if (servers.configurations) {
@@ -692,10 +710,10 @@ export function reconnectServer(reconnectionInfo, environment: string): boolean 
 					);
 					if (connectedServerItem !== undefined) {
 						vscode.commands.executeCommand('totvs-developer-studio.disconnect', connectedServerItem).then(() => {
-							return sendReconnectRequest(serverItem, reconnectionInfo.token, environment);
+							return sendReconnectRequest(serverItem, reconnectionInfo.token, environment, connType);
 						});
 					} else {
-						return sendReconnectRequest(serverItem, reconnectionInfo.token, environment);
+						return sendReconnectRequest(serverItem, reconnectionInfo.token, environment, connType);
 					}
 				}
 			});
@@ -718,18 +736,19 @@ export function reconnectLastServer() {
 							arguments: [element.name]
 						}
 					);
-					sendReconnectRequest(serverItem, servers.lastConnectedServer.token, servers.lastConnectedServer.environment);
+					sendReconnectRequest(serverItem, servers.lastConnectedServer.token, servers.lastConnectedServer.environment, 'CONNT_DEBUGGER');
 				}
 			});
 		}
 	}
 }
 
-function sendReconnectRequest(serverItem: ServerItem, connectionToken: string, environment: string) {
+function sendReconnectRequest(serverItem: ServerItem, connectionToken: string, environment: string, _connType: connTypeId) {
 	languageClient.sendRequest('$totvsserver/reconnect', {
 		reconnectInfo: {
 			connectionToken: connectionToken,
-			serverName: serverItem.label
+			serverName: serverItem.label,
+			connType: connType[_connType]
 		}
 	}).then((reconnectNode: ReconnectNode) => {
 		let token: string = reconnectNode.connectionToken;

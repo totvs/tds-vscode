@@ -30,6 +30,7 @@
 	"tds.package.getProgramName.title": "?",
 	"tds.package.getProgramName.description": "?",
 	"tds.package.connect": "?",
+	"tds.package.reconnect": "?",
 	"tds.package.serverSelection": "?",
 	"tds.package.rename": "?",
 	"tds.package.disconnect": "?",
