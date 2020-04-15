@@ -30,9 +30,9 @@
 								<input class="inputText" type="file" id="btn-FilePath" name="btn-FilePath" onchange='checkDir(event);' webkitdirectory directory/>
 							</div>
 
-							<p>${d.localize["tds.webview.ws.name"]}</p><!--File Name-->
+							<p>${d.localize["tds.webview.ws.name"]}</p><!--Output File Name-->
 							<div class="wrap-input">
-								<input class="inputText" type="text" id="btn-FileName" name="btn-FileName" required placeholder="Ex: webService.prw">
+								<input class="inputText" type="text" id="btn-OutputFileName" name="btn-OutputFileName" required placeholder="Ex: webService.prw">
 							</div>
 
 							<div class="wrap-submit">
@@ -70,14 +70,14 @@
 	function save(close) {
 		const url = document.getElementById('btn-FileURL').value.trim();
 		const path = document.getElementById('filePath').value.trim();
-		const fileName = document.getElementById('btn-FileName').value.trim();
+		const outputFileName = document.getElementById('btn-OutputFileName').value.trim();
 
-		if(url && path && fileName){
+		if(url && path && outputFileName){
 			vscode.postMessage({
 				command: 'wsClose',
 				'url': url,
 				'path': path,
-				'fileName': fileName,
+				'outputFileName': outputFileName,
 				'close': close
 			});
 		}
