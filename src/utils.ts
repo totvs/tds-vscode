@@ -108,30 +108,40 @@ export default class Utils {
 	 * Retorna todo o conteudo do servers.json
 	 */
 	static getServersConfig() {
+		let config: any = {};
 		let fs = require('fs');
 		let exist = fs.existsSync(Utils.getServerConfigFile());
 		if (exist) {
 			let json = fs.readFileSync(Utils.getServerConfigFile()).toString();
 			if (json) {
-				return JSON.parse(json);
+				try {
+					config = JSON.parse(stripJsonComments(json));
+				}
+				catch (e) {
+				}
 			}
 		}
-		return "";
+		return config;
 	}
 
 	/**
 	 * Retorna todo o conteudo do launch.json
 	 */
 	static getLaunchConfig() {
+		let config: any = {};
 		let fs = require('fs');
 		let exist = fs.existsSync(Utils.getLaunchConfigFile());
 		if (exist) {
 			let json = fs.readFileSync(Utils.getLaunchConfigFile()).toString();
 			if (json) {
-				return JSON.parse(stripJsonComments(json));
+				try {
+					config = JSON.parse(stripJsonComments(json));
+				}
+				catch (e) {
+				}
 			}
 		}
-		return "";
+		return config;
 	}
 
 	static saveLaunchConfig(config: JSON) {
