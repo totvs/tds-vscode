@@ -144,7 +144,7 @@ function verifyCompileResult(response, context){
 	if (askCompileResult !== false) {
 		vscode.window.showInformationMessage(textQuestion, textYes, textNo, textNoAsk).then(clicked => {
 			if (clicked === textYes) {
-				showCompileResult(response.compileInfos, context);
+				showCompileResult(response, context);
 			} else if (clicked === textNoAsk) {
 				questionAgain = false;
 			}

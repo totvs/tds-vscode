@@ -73,6 +73,14 @@ textarea:focus, input:focus {
 	color: #3C3734 /*#fff*/; /*Mansano: Inserido*/
 }
 
+.formMessage {
+	display: block;
+	line-height: 1.2;
+	font-size: 18px;
+	text-align: center;
+	color: #3C3734;
+}
+
 .wrap-input {
 	position: relative;
 	width: 100%;

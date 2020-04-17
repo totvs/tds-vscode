@@ -14,7 +14,7 @@ const localizeHTML = {
 	"tds.webview.compile.col04": localize("tds.webview.compile.col04", "Full Path")
 }
 
-export function showCompileResult(infos: CompileInfo[], context: any) {
+export function showCompileResult(response: CompileResult, context: any) {
 	let extensionPath = "";
 	if (!context.extensionPath || context.extensionPath === undefined) {
 		let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
@@ -51,7 +51,8 @@ export function showCompileResult(infos: CompileInfo[], context: any) {
 			case 'getData':
 				currentPanel.webview.postMessage({
 					command: "setData",
-					'data': infos
+					code: response.returnCode,
+					data: response.compileInfos
 				});
 				break
 			case 'close':
