@@ -6,6 +6,7 @@ Os problemas estão divididos em **"Gerais"** e **"Depuração"** então procure
 
 > **"Issues"** abertas sem as **"Informações importantes"** serão analisadas somente após receberem tais informações,
 
+
 ## Problemas Gerais
 
 São problemas que ocorrem desde a inicialização do **TDS VS Code** até a operação normal do dia-a-dia como compilar, gerar e aplicar patches, etc. Excluindo-se apenas a Depuração que é tratada em outra seção.
@@ -14,6 +15,11 @@ São problemas que ocorrem desde a inicialização do **TDS VS Code** até a ope
 
 Já tivemos diversos relatos onde o problema era relacionado com acentuações nas pastas do projeto/workspace em uso.
 **Solução:** Remova quaisquer acentuações que existam no projeto/workspace que estiver trabalhando.
+
+### Maiúsculas e Minúsculas (*Case*)
+
+É sabido que no Windows o *case* (maiúsculas e minúsculas) não importa, mas no Linux e Mac, que são S.O. baseados no Unix, o *case* faz diferença. Devido ao uso de bibliotecas internas do AppServer, o *case* do arquivos no Linux e Mac são convertidos para minúsculas sempre, causando problemas quando existem caracteres em letras maiúsculas.
+**Solução:** Utilize somente letras minúsculas em todo o caminho, inclusive no nome dos arquivos quando utilizar o **TDS VS Code** em Linux ou Mac.
 
 ### Falhas gerais na inicialização (command 'totvs-developer-studio.add' not found)
 
@@ -59,6 +65,7 @@ Tivemos um relato onde o problema estava relacionado ao nome do usuário conter 
 Tivemos relatos de problemas na instalação do **TDS VS Code** em *S.O.* do tipo *Windows Server*. Nossas suspeitas são de que este tipos de *S.O.* não posssuem *DLLs*, que existem na distribuições voltadas para Desktops, e que são necessárias para o funcionamento do *VS Code*.
 **Solução:** Utilize um *S.O.* diferente de *Windows Server*.
 
+
 ## Problemas em Depuração
 
 São problemas que ocorrem especificamente durante a depuração de um programa.
@@ -70,7 +77,9 @@ Apesar de já descrita na seção de **"Problemas Gerais"** existem problemas qu
 
 ### Depuração não inicia
 
-Se a depuração não inicia, verifique se o Smartclient utilizado é o correto para a versão do AppServer utilizado. **Solução:** Ao invés de iniciar a depuração com o `F5` utilize o `CTRL + F5` e veja se o Smartclient executa corretamente. Se o Smartclient não executar assim, reveja as configurações de depuração (launch.json).
+Se a depuração não inicia, verifique se o Smartclient utilizado é o correto para a versão do AppServer utilizado.
+**Solução:** Ao invés de iniciar a depuração com o `F5` utilize o `CTRL + F5` e veja se o Smartclient executa corretamente. Se o Smartclient não executar assim, reveja as configurações de depuração (launch.json).
+
 
 # Gerando Informações sobre o Problema
 
@@ -153,6 +162,9 @@ O arquivo **"settings.json"** deve ficar como a seguir, observem a vírgula que 
     "totvsLanguageServer.askEncodingChange": false
 }
 ```
+
+> Reinicie seu TDS VS Code após esta configuração para que surta efeito.
+
 Os arquivos **"totvsls.log"**, **"totvsls_in.log"** e **"totvsls_out.log"** serão gerados na raiz do projeto aberto.
 
 Se o problema for relacionado a depuração, além dos logs **"Gerais"** deve ser gerado o log de **"Depuração"**. Adicione a linha abaixo, na seção *"configurations"* em seu arquivo **"launch.json"** dentro da pasta *".vscode"* de seu projeto aberto.
