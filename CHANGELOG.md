@@ -1,5 +1,11 @@
 # Versão 1.0.2
 
+## Problema na compilação com binário 7.00.191205P [Issue 292](https://github.com/totvs/tds-vscode/issues/292)
+### Problema:
+* Ao compilar pastas/workspaces com muitos arquivos o TDS VS Code travava e/ou caia.
+### Solução:
+* Limitada a exibição de notificações caso o número de arquivos ultrapasse um certo valor. Exibindo apenas as informações consolidadas após o término da compilação.
+----
 ## Separar a ação de conectar e reconectar em um servidor [Issue 344](https://github.com/totvs/tds-vscode/issues/344)
 ### Melhoria:
 * Separadas as ações de conectar e reconectar. O connect se comporta como se fosse uma nova conexão independentemente de existir um token de reconexão. E o reconnect utiliza o token de reconexão se existir ou se comporta como o connect se ainda não existir um token de reconexão.
