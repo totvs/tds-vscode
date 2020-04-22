@@ -1,5 +1,11 @@
 # Versão 1.0.2
 
+## Protheus ao compilar Files/Folder [Issue 329](https://github.com/totvs/tds-vscode/issues/329)
+### Problema:
+* Erro ao compilar pasta.
+### Solução:
+* O problema era com apenas um arquivo cujo retorno de erro do AppServer estava fora do padrão. Melhorado o tratamento para capturar este erro fora do padrão e exibir ao usuário.
+----
 ## Problema na compilação com binário 7.00.191205P [Issue 292](https://github.com/totvs/tds-vscode/issues/292)
 ### Problema:
 * Ao compilar pastas/workspaces com muitos arquivos o TDS VS Code travava e/ou caia.
