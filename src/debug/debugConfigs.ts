@@ -126,14 +126,14 @@ export async function getProgramName() {
 }
 
 export function extractProgram(value: string): string {
-	const groups: string[] = value.split(/([\w\.]+)+/i).filter((value) => {
+	const groups: string[] = value.split(/([\w\.\-]+)+/i).filter((value) => {
 		return value && value.trim().length > 0;
 	});
 	return (groups && groups.length > 0) ? groups[0] : "";
 }
 
 export function extractArgs(value: string): string[] {
-	const groups: string[] = value.replace(/-a=/gi, "").split(/([\w\.]+)+/i).filter((value) => {
+	const groups: string[] = value.replace(/-a=/gi, "").split(/([\w\.\-]+)+/i).filter((value) => {
 		return value && value.trim().length > 0 && !ignoreValue.some((char) => value.trim() === char);
 	});
 
