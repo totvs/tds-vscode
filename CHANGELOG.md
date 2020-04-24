@@ -1,5 +1,11 @@
 # Versão 1.0.2
 
+## Configuração "totvsLanguageServer.extensions.folder.patch" não está sendo respeitada [Issue 297](https://github.com/totvs/tds-vscode/issues/297)
+### Problema:
+* A compilação não respeita o filtro de extensões definidas em "totvsLanguageServer.extensions.folder.patch".
+### Solução/Melhoria:
+* O problema era que esta configuração foi criada apenas para a compilação durante a geração de patches. A configuração foi alterada para "totvsLanguageServer.folder.extensionsAllowed" e será utilizada na compilação, seja apenas compilação, seja na geração de patches. Além disso foi adicionada a opção de desabilitar o filtro nos Setting em "Folder: Enable Extensions Filter".
+----
 ## Protheus ao compilar Files/Folder [Issue 329](https://github.com/totvs/tds-vscode/issues/329)
 ### Problema:
 * Erro ao compilar pasta.

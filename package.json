@@ -215,7 +215,7 @@
 					".apl",
 					".apw",
 					".4gl",
-					".pem"
+					".per"
 				],
 				"configuration": "./language-configuration.json"
 			},
@@ -255,24 +255,34 @@
 					"default": [],
 					"description": "%tds.package.args.for.lsp%"
 				},
-				"totvsLanguageServer.extensions.folder.patch": {
+				"totvsLanguageServer.folder.enableExtensionsFilter": {
+					"scope": "window",
+					"type": "boolean",
+					"default": true,
+					"description": "%tds.package.folder.enable.extensions.filter%"
+				},
+				"totvsLanguageServer.folder.extensionsAllowed": {
 					"scope": "resource",
 					"type": "array",
 					"default": [
 						".PRW",
 						".PRX",
 						".PRG",
+						".PPP",
+						".CH",
+						".TLPP",
 						".APW",
 						".APH",
+						".APL",
+						".AHU",
 						".TRES",
 						".PNG",
 						".BMP",
 						".RES",
-						".APL",
-						".TLPP",
-						".4GL"
+						".4GL",
+						".PER"
 					],
-					"description": "%tds.package.extensions_folder_patch%"
+					"description": "%tds.package.folder.extensions.allowed%"
 				},
 				"totvsLanguageServer.maxNumberOfProblems": {
 					"scope": "resource",
