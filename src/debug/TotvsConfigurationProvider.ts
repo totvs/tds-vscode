@@ -1,10 +1,10 @@
-import { WorkspaceFolder, DebugConfigurationProvider, DebugConfiguration, CancellationToken, window } from 'vscode';
+import { WorkspaceFolder, DebugConfigurationProvider, DebugConfiguration, CancellationToken, window, ProviderResult, DebugAdapterExecutable } from 'vscode';
 import { connectedServerItem } from '../serversView';
 //import { sessionKey } from '../TotvsLanguageClient';
 import * as vscode from 'vscode';
 import * as Net from 'net';
 import {localize} from '../extension';
-import { extractProgram, extractArgs, setDapArgs } from './debugConfigs';
+import { extractProgram, extractArgs, setDapArgs, getDAP } from './debugConfigs';
 
 /*
  * Set the following compile time flag to true if the
@@ -17,6 +17,11 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 	static type = 'totvs_language_debug';
 
 	private _server?: Net.Server;
+
+	debugAdapterExecutable?(folder: WorkspaceFolder | undefined, token?: CancellationToken): ProviderResult<DebugAdapterExecutable> {
+		let dap = getDAP();
+		return new vscode.DebugAdapterExecutable(dap.command, dap.args);
+	}
 
 	/**
 	 * Massage a debug configuration just before a debug session is being launched,

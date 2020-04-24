@@ -329,9 +329,7 @@ export class ServerItem extends vscode.TreeItem {
 		return `Server=${this.address} | Port=${this.port}`;
 	}
 
-	public description(): string {
-		return `${this.address}:${this.port}`;
-	}
+	description = `${this.address}:${this.port}`;
 
 	iconPath = {
 		light: path.join(__filename, '..', '..', 'resources', 'light', connectedServerItem !== undefined && this.id === connectedServerItem.id ? 'server.connected.svg' : 'server.svg'),

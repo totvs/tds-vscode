@@ -2,6 +2,7 @@ import {debug, DebugSession, Disposable, extensions, QuickPick, QuickPickItem, w
 import { statSync, chmodSync } from 'fs';
 import Utils, { MESSAGETYPE } from '../utils';
 import { localize } from '../extension';
+import * as path from 'path';
 
 let isTableSyncEnabled = false;
 let debugSession: DebugSession | undefined;
@@ -13,16 +14,16 @@ export function getDAP() {
 	let ext = extensions.getExtension("TOTVS.tds-vscode");
 	if (ext) {
 		if (process.platform === "win32") {
-			pathDAP = ext.extensionPath + "\\node_modules\\@totvs\\tds-da\\bin\\windows\\debugAdapter.exe";
+			pathDAP = path.join(ext.extensionPath, "/node_modules/@totvs/tds-da/bin/windows/debugAdapter.exe");
 		}
 		else if (process.platform === "linux") {
-			pathDAP = ext.extensionPath + "/node_modules/@totvs/tds-da/bin/linux/debugAdapter";
+			pathDAP = path.join(ext.extensionPath, "/node_modules/@totvs/tds-da/bin/linux/debugAdapter");
 			if (statSync(pathDAP).mode != 33261) {
 				chmodSync(pathDAP, '755');
 			}
 		}
 		else if (process.platform === "darwin") {
-			pathDAP = ext.extensionPath + "/node_modules/@totvs/tds-da/bin/mac/debugAdapter";
+			pathDAP = path.join(ext.extensionPath, "/node_modules/@totvs/tds-da/bin/mac/debugAdapter");
 			if (statSync(pathDAP).mode != 33261) {
 				chmodSync(pathDAP, '755');
 			}
