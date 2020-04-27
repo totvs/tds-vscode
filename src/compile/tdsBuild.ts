@@ -200,11 +200,10 @@ function changeToArrayString(allFiles) {
 }
 
 export function commandBuildWorkspace(recompile: boolean, context: vscode.ExtensionContext) {
-	const wfolders: vscode.WorkspaceFolder[] | undefined = vscode.workspace.workspaceFolders;
-	if (wfolders) {
+	if (vscode.workspace.workspaceFolders) {
 		let folders: string[] = [];
 
-		wfolders.forEach((value) => {
+		vscode.workspace.workspaceFolders.forEach((value) => {
 			folders.push(value.uri.fsPath);
 		});
 
