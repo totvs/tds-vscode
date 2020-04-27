@@ -36,6 +36,7 @@ import { TotvsConfigurationWebProvider } from './debug/TotvsConfigurationWebProv
 import { TotvsConfigurationProvider } from './debug/TotvsConfigurationProvider';
 import tdsReplayLauncherConfig from './launcher/tdsReplay/tdsReplayLauncherConfig';
 import { TotvsConfigurationTdsReplayProvider } from './debug/TotvsConfigurationTdsReplayProvider';
+import { TotvsDebugAdapterDescriptorFactory } from './debug/TotvsDebugAdapterDescriptorFactory'
 import { getDAP, getProgramName, getProgramArguments, toggleTableSync } from './debug/debugConfigs';
 import { toggleAutocompleteBehavior, updateSettingsBarItem } from './server/languageServerSettings';
 import { advplDocumentFormattingEditProvider, advplDocumentRangeFormattingEditProvider, advplResourceFormatting } from './formatter/advplFormatting';
@@ -285,6 +286,8 @@ export function activate(context: ExtensionContext) {
 	const webProvider = new TotvsConfigurationWebProvider();
 	context.subscriptions.push(debug.registerDebugConfigurationProvider(TotvsConfigurationWebProvider.type, webProvider));
 	context.subscriptions.push(webProvider);
+
+	context.subscriptions.push(debug.registerDebugAdapterDescriptorFactory('totvs_language_debug', new TotvsDebugAdapterDescriptorFactory()));
 
 	//Abre a tela de geração de patch com seleção de arquivos do RPO.
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.patchGenerate.fromRPO', () => patchGenerate(context)));
