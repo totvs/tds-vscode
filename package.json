@@ -283,12 +283,6 @@
 					],
 					"description": "%tds.package.folder.extensions.allowed%"
 				},
-				"totvsLanguageServer.maxNumberOfProblems": {
-					"scope": "resource",
-					"type": "number",
-					"default": 100,
-					"description": "%tds.package.max.problems.server%"
-				},
 				"totvsLanguageServer.trace.server": {
 					"scope": "window",
 					"type": "string",
