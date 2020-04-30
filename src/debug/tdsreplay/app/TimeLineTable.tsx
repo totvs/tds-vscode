@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, RefObject } from "react";
 import {
   makeStyles,
   useTheme,
@@ -183,7 +183,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   const vscode = props.vscode;
   const debugEvent = vscode.getState().config;
 
-  const table = React.createRef();
+  const tableElement: RefObject<HTMLTableElement> = React.createRef();
 
   const classes = tableStyles();
   const [jsonBody, setJsonBody] = React.useState(debugEvent.body);
@@ -405,7 +405,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         <Table
           stickyHeader
           aria-label="sticky table"
-          ref={table}
+          ref={tableElement}
           size={dense ? "medium" : "small"}
         >
           <TableHead>
