@@ -92,6 +92,12 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions, c
 				languageClient.warn(localize("tds.webview.tdsBuild.resourceInList", "Resource appears in the list of files to ignore. Resource: {0}", file));
 			}
 		});
+
+		let extensionsAllowed:string[];
+		if (configADVPL.get("folder.enableExtensionsFilter", true)) {
+			extensionsAllowed = configADVPL.get("folder.extensionsAllowed", []); // Le a chave especifica
+		}
+
 		languageClient.sendRequest('$totvsserver/compilation', {
 			"compilationInfo": {
 				"connectionToken": server.token,
@@ -99,7 +105,8 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions, c
 				"environment": server.environment,
 				"includeUris": includesUris,
 				"fileUris": filesUris,
-				"compileOptions": compileOptions
+				"compileOptions": compileOptions,
+				"extensionsAllowed": extensionsAllowed
 			}
 		}).then((response: CompileResult) => {
 			if (response.returnCode === 40840) {
@@ -193,11 +200,10 @@ function changeToArrayString(allFiles) {
 }
 
 export function commandBuildWorkspace(recompile: boolean, context: vscode.ExtensionContext) {
-	const wfolders: vscode.WorkspaceFolder[] | undefined = vscode.workspace.workspaceFolders;
-	if (wfolders) {
+	if (vscode.workspace.workspaceFolders) {
 		let folders: string[] = [];
 
-		wfolders.forEach((value) => {
+		vscode.workspace.workspaceFolders.forEach((value) => {
 			folders.push(value.uri.fsPath);
 		});
 

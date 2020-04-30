@@ -11,7 +11,8 @@ const localizeHTML = {
 	"tds.webview.compile.col01": localize("tds.webview.compile.col01", "File Name"),
 	"tds.webview.compile.col02": localize("tds.webview.compile.col02", "Result"),
 	"tds.webview.compile.col03": localize("tds.webview.compile.col03", "Message"),
-	"tds.webview.compile.col04": localize("tds.webview.compile.col04", "Full Path")
+	"tds.webview.compile.col04": localize("tds.webview.compile.col04", "Detail"),
+	"tds.webview.compile.col05": localize("tds.webview.compile.col05", "Path")
 }
 
 export function showCompileResult(response: CompileResult, context: any) {
