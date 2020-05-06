@@ -1,5 +1,11 @@
 # Versão 1.0.2
 
+## Exibir apenas os arquivos com Erros na tabela de resultados da compilação quando ocorrer problemas nas compilações [Issue 347](https://github.com/totvs/tds-vscode/issues/347)
+### Problema:
+* Quando ocorrem erros (Error/Fatal) durante a compilação o processo é abortado e ocorre o "rollback". Porém a tabela com o resultado da compilação exibe os fontes sem erros como se estivessem compilados no RPO causando confusão uma vez que eles não estarão no RPO.
+### Solução/Melhoria:
+* Filtrar a tabela de resultados da compilação para exibir apenas os arquivos com erros quando o processo for abortado.
+----
 ## Configuração "totvsLanguageServer.extensions.folder.patch" não está sendo respeitada [Issue 297](https://github.com/totvs/tds-vscode/issues/297)
 ### Problema:
 * A compilação não respeita o filtro de extensões definidas em "totvsLanguageServer.extensions.folder.patch".

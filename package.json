@@ -2,7 +2,7 @@
 	"name": "tds-vscode",
 	"displayName": "Totvs Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
 	"description": "%tds.package.description%",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"publisher": "TOTVS",
 	"author": {
 		"name": "TOTVS",
@@ -53,8 +53,8 @@
 		"@material-ui/core": "^4.9.5",
 		"@material-ui/icons": "^4.9.1",
 		"@material-ui/lab": "^4.0.0-alpha.45",
-		"@totvs/tds-da": "^1.1.3",
-		"@totvs/tds-ls": "^1.1.4",
+		"@totvs/tds-da": "^1.1.4",
+		"@totvs/tds-ls": "^1.1.7",
 		"@types/jszip": "^3.1.7",
 		"@types/node": "13.7.1",
 		"@types/react": "^16.9.23",
@@ -142,6 +142,8 @@
 		"workspaceContains:*.ppp",
 		"workspaceContains:*.tlpp",
 		"workspaceContains:*.ch",
+		"workspaceContains:*.4gl",
+		"workspaceContains:*.per",
 		"workspaceContains:*.ptm",
 		"workspaceContains:*.upd",
 		"workspaceContains:*.pak",
@@ -203,11 +205,12 @@
 					"advpl"
 				],
 				"extensions": [
+					".ch",
 					".prw",
 					".prg",
 					".prx",
+					".ppx",
 					".ppp",
-					".ch",
 					".tlpp",
 					".aph",
 					".ahu",
@@ -267,8 +270,8 @@
 						".PRW",
 						".PRX",
 						".PRG",
+						".PPX",
 						".PPP",
-						".CH",
 						".TLPP",
 						".APW",
 						".APH",
@@ -282,12 +285,6 @@
 						".PER"
 					],
 					"description": "%tds.package.folder.extensions.allowed%"
-				},
-				"totvsLanguageServer.maxNumberOfProblems": {
-					"scope": "resource",
-					"type": "number",
-					"default": 100,
-					"description": "%tds.package.max.problems.server%"
 				},
 				"totvsLanguageServer.trace.server": {
 					"scope": "window",

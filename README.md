@@ -2,46 +2,43 @@
 
 [![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode)
 
-O plugin do TOTVS Developer Studio Code disponibiliza uma suíte de desenvolvimento para o ecossistema Protheus.
+A extensão TOTVS Developer Studio Code disponibiliza uma suíte de desenvolvimento para o ecossistema Protheus.
 Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP (Debug Adapter Protocol), ambos amplamente utilizados e extensíveis à outras IDEs de mercado, como Atom, Visual Studio, Eclipse, Eclipse Theia, Vim e Emacs.
 
-> [Lista de IDEs com suporte ao LSP](https://microsoft.github.io/language-server-protocol/implementors/tools).
-[Lista de IDEs com suporte ao DAP](https://microsoft.github.io/debug-adapter-protocol/implementors/tools).
+> [Lista de IDEs com suporte ao LSP](https://microsoft.github.io/language-server-protocol/implementors/tools)\
+> [Lista de IDEs com suporte ao DAP](https://microsoft.github.io/debug-adapter-protocol/implementors/tools)
 
-## Funcionalidades
+## Principais funcionalidades
 
+* Comunicação baseada nos protocolos LSP/DAP
 * Syntax Highlight
-* Comunicação baseada nos protocolos LSP/DAP.
-* Compilação de fontes, pastas e da área de trabalho.
-* Depuração de fontes (Local e WebApp).
-* Geração de Patch.
-* Aplicação de Patch.
-* Deleção de fontes do RPO.
-* Desfragmentação do RPO.
-* Inspetor de objetos do RPO.
-* Inspetor de funções do RPO.
-* Geração de WS Protheus.
+* Compilação de fontes, pastas e da área de trabalho
+* Depuração de fontes (Local e WebApp)
+* Geração de Patch
+* Aplicação de Patch
+* Informação de Patch
+* Deleção de fontes do RPO
+* Desfragmentação do RPO
+* Verificação de integridade do RPO
+* Inspetor de objetos do RPO
+* Inspetor de funções do RPO
+* Geração de WS Protheus
 
 ## Conheça mais em
 
->[TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 1](https://www.youtube.com/watch?v=MwIu01Ztfvg)
->[TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 2](https://www.youtube.com/watch?v=Cz4N0XWCXHY)
->[TOTVS - TDS-VSCode - Desenvolvimento colaborativo](https://www.youtube.com/watch?v=IGWh5ejxhHU)
+> [TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 1](https://www.youtube.com/watch?v=MwIu01Ztfvg)\
+> [TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 2](https://www.youtube.com/watch?v=Cz4N0XWCXHY)\
+> [TOTVS - TDS-VSCode - Desenvolvimento colaborativo](https://www.youtube.com/watch?v=IGWh5ejxhHU)
 
 ## Configurações Gerais
-
-### Console de saída (Output) AdvPL
-
-* Todas as mensagens emitidas serão exibidas na visão `Output` (Console de saída) e seleção `AdvPL`.
-* Se a visão `Output` não estiver visível ela pode ser ativada através do menu `View | Output` ou do atalho `CTRL + SHIFT + U`.
-* Certifique-se que a opção `AdvPL` esteja selecionada no combo (dropdown) da visão `Output`.
-
-![Output AdvPL](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Output.gif)
 
 ### Tela de boas vindas
 
 * A tela da boa vindas permite configurar a localização do SmartClient e dos diretórios de Includes que serão utilizados durante a compilação dos códigos fontes.
-* Esta tela será apresentada na primeira execução do plugin, assim que o primeiro fonte AdvPL for aberto.
+* Esta tela será apresentada na primeira execução do plugin, assim que o primeiro fonte AdvPL for aberto ou quando uma nova pasta de trabalho for aberta.
+
+> Caso não queira ver esta tela de boas vindas novamente desmarque a opção `File | Preferences | Settings | Extensions | AdvPL | Welcome Page`.
+
 * Localize o `SmartClient.exe` (Windows) ou `smartclient` (Linux e Mac). O binário no MacOS encontra-se em `smartclient.app/Contents/MacOS/smartclient`
 * Localize os diretórios de Includes que necessitar para seus projetos.
 * Pressione o botão `Salvar` para concluir.
@@ -57,6 +54,21 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 ![Welcome Page on MacOS 1](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/welcome/Welcome_MacOS1.png)
 ![Welcome Page on MacOS 2](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/welcome/Welcome_MacOS2.png)
 ![Welcome Page on MacOS 3](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/welcome/Welcome_MacOS3.png)
+
+### Console de saída (Output) AdvPL
+
+* Todas as mensagens emitidas serão exibidas na visão `Output` (Console de saída) e seleção `AdvPL`.
+* Se a visão `Output` não estiver visível ela pode ser ativada através do menu `View | Output` ou do atalho `CTRL + SHIFT + U`.
+* Certifique-se que a opção `AdvPL` esteja selecionada no combo (dropdown) da visão `Output`.
+
+![Output AdvPL](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Output.gif)
+
+### Notificações
+
+* Além do Console de saída, algumas mensagens são exibidas em notificações tipo toast (popup no canto inferior direito).
+* Você pode configurar quais as mensagens serão exibidas caso ache a quantidade de notificações excessiva em `File | Preferences | Settings | Extensions | AdvPL | Editor > Show: Notification`.
+
+## TOTVS: SERVERS
 
 ### Cadastro de servidores utilizando o assistente
 
@@ -76,7 +88,7 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Se necessário informe o `usuário` e `senha` para prosseguir.
 * Aguarde o término da conexão.
 
-> A conexão com servidores pode ser efetuada pela seleção do texto `[Selecionar servidor/ambiente]` na barra de ferramentas.
+> A conexão com servidores pode ser efetuada pela seleção do texto `[Selecionar servidor/ambiente]` na barra de ferramentas.\
 > Ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Select Server`.
 
 ![Connect Server](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/ConnectServer.gif)
@@ -88,6 +100,22 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 * Clique no ícone `"+"` no canto superior direito da lista.
 * Informe o novo `ambiente` e prossiga com a conexão normalmente.
 
+### Conexão vs Reconexão
+
+No menu de contexto dos servidores você pode optar por efetuar um `Connect` ou um `Reconnect`.
+
+Ao utilizar o `Connect` o `ambiente` será requisitado como de costume e caso necessário será requisitado o `usuário` e `senha` para efetuar a conexão.
+
+Já ao se utilizar o `Reconnect` o `ambiente` será requisitado porém caso já tenha ocorrido uma conexão prévia bem sucedida o `usuário` e `senha` não serão requisitados. Os dados da conexão prévia serão reutilizados.
+
+### Reconexão automática
+
+Ao abrir o TDS VS Code ele pode se reconectar automaticamente ao último servidor conectado antes de fechar o TDS VS Code.
+
+> A reconexão automatica pode ser habilitada/desabilitada em `File | Preferences | Settings | Extensions | AdvPL | Reconnect Last Server`.
+
+Se não houver nenhum servidor conectado ao fechar o TDS VS Code esta configuração será desconsiderada.
+
 ## Compilação
 
 ### Compilando fonte do editor corrente
@@ -97,7 +125,7 @@ A compilação efetuada a partir do editor, sempre irá recompilar o fonte, mant
 
 * Para recompilar o fonte do editor corrente acione o atalho `CTRL + SHIFT + F9` ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Recompile File`.
 
-> Ao alterar apenas arquivos externos ao fonte, por exemplo um fonte .CH, é necessário "forçar" a opção recompilar para que as alterações no .CH sejam refletidas no fonte a ser compilado no RPO.
+> Ao alterar apenas arquivos externos ao fonte, por exemplo um fonte `.CH`, é necessário "forçar" a opção recompilar para que as alterações no `.CH` sejam refletidas no fonte a ser compilado no RPO.
 
 ### Compilando todos os fontes abertos
 
@@ -108,6 +136,8 @@ A compilação efetuada a partir do editor, sempre irá recompilar o fonte, mant
 ### Resultado da compilação
 
 * Todas as informações sobre os arquivos compilados serão exibidos na visão `Output` (seleção `AdvPL`).
+
+> Para que a visão `Output` seja automaticamente visualizada ao iniciar a compilação marque a opção `File | Preferences | Settings | Extensions | AdvPL | Show Console On Compile`.
 
 * Caso queira limpar o console antes da compilação, habilite a opção: `File | Preferences | Settings | Extensions | AdvPL | Clear Console Before Compile`.
 
@@ -121,9 +151,9 @@ A compilação efetuada a partir do editor, sempre irá recompilar o fonte, mant
 
 ![TableCompileResult](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/compile/CompileResults.PNG)
 
-* Existe nas preferências uma maneira de habilitar e desabilitar a pergunta sobre a abertura da tabela.
+* Você pode habilitar/desabilitar esta pergunta sobre a abertura da tabela de resultados da compilação.
 
-* Clique em `File | Preferences | Settings` e digite `totvsLanguageServer.askCompileResult` no campo de pesquisa.
+* Marque/desmarque a opção `File | Preferences | Settings | Extensions | AdvPL | Ask Compile Result` conforme sua preferência.
 
 ## Configurações de Compilação
 
@@ -143,9 +173,19 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
 
  Na abertura do workspace, perguntamos se o usuário deseja alterar o encoding para o padrão TOTVS e essa configuração é feita automaticamente.
 
+ * Marque/desmarque a opção `File | Preferences | Settings | Extensions | AdvPL | Ask Encoding Change` conforme sua preferência.
+
+### Filtro de extensões de arquivos
+
+Por padrão, somente serão compilados os fontes/recursos cujas extensões estiverem na lista de extensões permitidas configurada.
+
+A lista pode ser visualizada em `File | Preferences | Settings | Extensions | AdvPL | Folder: Extensions Allowed`.
+
+Este filtro pode ser desativado completamente, permitindo que quaisquer extensões de arquivos sejam compiladas no RPO, ao desmarcar a opção `File | Preferences | Settings | Extensions | AdvPL | Folder: Enable Extensions Filter`.
+
 ### Compilando Function e Main Function com Chave de compilação
 
-* Este processo está sendo revisto e pode sofrer alterações.
+> Este processo está sendo revisto e pode sofrer alterações.
 
 * Para aplicar uma chave de compilação, clique com o botão direito na visão de servidores e selecione a opção `Compile key`.
 * Abrirá um assistente para selecionar a chave que deseja. Todos os arquivos .aut podem ser selecionados.
@@ -157,7 +197,7 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
 
 ## Chave de compilação
 
-* A partir de 17/05/2019 todas as chaves devem ser regeradas utilizando o ID exibido no nosso plugin do VSCode. Isse se faz necessário para suporte de Linux e MAC.
+> A partir de 17/05/2019 todas as chaves devem ser regeradas utilizando o ID exibido no nosso plugin do VSCode. Isse se faz necessário para suporte de Linux e MAC.
 
 * Suporte de chave de compilação em Linux e MAC a partir de 17/05/2019.
 
@@ -177,7 +217,7 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
 
 ### Arquivos do pré compilador
 
-* Para manter os arquivos gerados pelo pré-compilador, habilite a opção nas preferencias em: `File | Preferences | Settings | Extensions | AdvPL | Leave PPO File`.
+* Para manter os arquivos gerados pelo pré-compilador, habilite a opção nas preferencias em: `File | Preferences | Settings | Extensions | AdvPL | Generate Ppo File`.
 * Caso queira um log completo das operações efetuadas pelo pré-compilador, habilite a opção: `File | Preferences | Settings | Extensions | AdvPL | Show Pre Compiler`.
 
 ## Configurações de Debug
@@ -193,36 +233,43 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
     * Tipo: _totvs_language_debug_, usa o SmartClient Desktop.
       Preencha o arquivo `launch.json` de acordo com seu ambiente e necessidas, como no exemplo abaixo.
 
->``{``
-"type": "totvs_language_debug",
-"request": "launch",
-"name": "Totvs Language Debug",
-"program": "${command:AskForProgramName}",
-"cwb": "${workspaceFolder}",
-"smartclientBin": "/home/mansano/_c/totvs12/bin/smartclient/smartclient",
-"isMultiSession": true,
-"enableTableSync": true
-``}``
+```json
+{
+  "type": "totvs_language_debug",
+  "request": "launch",
+  "name": "Totvs Language Debug",
+  "program": "${command:AskForProgramName}",
+  "cwb": "${workspaceFolder}",
+  "smartclientBin": "/home/mansano/_c/totvs12/bin/smartclient/smartclient",
+  "isMultiSession": true,
+  "enableTableSync": true
+}
+```
 
     * Tipo: _totvs_language_web_debug_, usa o SmartClient Html.
       Preencha o arquivo `launch.json` de acordo com seu ambiente e necessidas, como no exemplo abaixo..
 
->``{``
-"type": "totvs_language_web_debug",
-"request": "launch",
-"name": "Totvs Language Debug",
-"program": "${command:AskForProgramName}",
-"cwb": "${workspaceFolder}",
-"smartclientUrl": "<http://localhost:8080>",
-"isMultiSession": true,
-"enableTableSync": true
-``}``
+```json
+{
+  "type": "totvs_language_web_debug",
+  "request": "launch",
+  "name": "Totvs Language Debug",
+  "program": "${command:AskForProgramName}",
+  "cwb": "${workspaceFolder}",
+  "smartclientUrl": "<http://localhost:8080>",
+  "isMultiSession": true,
+  "enableTableSync": true
+}
+```
 
-*Nota:* Abra o arquivo `settings.json` e informe a chave "", com o caminho completo do seu navegador web.
->``{``
-"totvsLanguageServer.welcomePage": false,
-"totvsLanguageServer.web.navigator": "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
-``}``
+> Configure o caminho completo do seu navegador web em `File | Preferences | Settings | Extensions | AdvPL | Web: Navigator`
+
+```json
+{
+  "totvsLanguageServer.welcomePage": false,
+  "totvsLanguageServer.web.navigator": "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
+}
+```
 
 Veja detalhes sobre como usar as diretivas [${command:}](https://link) e [passagem de parâmetros](https:link).
 
@@ -263,12 +310,12 @@ Em [Debug Console: configuração visual](https://github.com/totvs/tds-vscode/wi
 
 ![Debug Table Sync](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/TableSync-ShowingTables.gif)
 
-* O sincronismo de tabelas pode ser alterado por configuração de "launcher" pelo parâmetro: enableTableSync
+* O sincronismo de tabelas pode ser alterado por configuração de "launcher" pelo parâmetro: `enableTableSync`
 * Ele vem habilitado por padrão em uma nova configuração de execução.
 
 ![Debug Table Sync](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/TableSync-EnableTableSyncProperty.gif)
 
-* É possível alterar essa opção durante uma depuração pelo comando: "TOTVS: Toggle table sync". Note que ao usuar esse comando, o parâmetro do launcher é alterado, portanto a próxima depuração irá utilizar essa definição. Ou seja, caso tenha sido desabilitado, a próxima depuração iniciará com o sincronismo de tabelas desabilitado também.
+* É possível alterar essa opção durante uma depuração pelo comando: "TOTVS: Toggle table sync". Note que ao usar esse comando, o parâmetro do launcher é alterado, portanto a próxima depuração irá utilizar essa definição. Ou seja, caso tenha sido desabilitado, a próxima depuração iniciará com o sincronismo de tabelas desabilitado também.
 
 ![Debug Table Sync](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/TableSync-CommandToggleTableSync.gif)
 
@@ -318,7 +365,7 @@ Em [Debug Console: configuração visual](https://github.com/totvs/tds-vscode/wi
 * Para gerar um patch conecte-se ao servidor.
 * Clique com o botão direito em cima da pasta de contém os fontes que farão parte do patch.
 * Selecione a opção `Patch Generation (From Folder)`.
-* Abrirá uma janela para selecionar onde deseja que o fonte seja salvo. Selecione um pasta.
+* Abrirá uma janela para selecionar onde deseja que o fonte seja salvo. Selecione a pasta de destino onde o patch será gerado.
 * Uma janela será aberta para coletar o nome do patch que será gerado. (Quando não informado, o patch será gerado com o nome do RPO).
 * Após as confirmações o patch será gerado no caminho desejado.
 
@@ -391,7 +438,8 @@ Em [Debug Console: configuração visual](https://github.com/totvs/tds-vscode/wi
 
 ![Functions inspector](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/InspectFunction.gif)
 
-## Geração de Client WS Protheus
+### Geração de Client WS Protheus
+
 * É possível gerar arquivos ADVPL a partir de clients WSDL.
 * Abra o assistente com o atalho `CTRL + SHIFT + P` e digite `TOTVS: Generate WS Protheus`.
 * Preencha o campo `URL`, selecione um diretório e escreva o nome e extensão do arquivo protheus que será gerado no diretório especificado.
@@ -411,26 +459,30 @@ Em [Debug Console: configuração visual](https://github.com/totvs/tds-vscode/wi
 
 ![Logger](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Logger.gif)
 
-### Desenvolvimento Colaborativo
+## Resolução de problemas
 
-* Se deseja contribuir com o desenvolvimento do plugin, acesse [Git Hub TDS-VSCODE](https://github.com/totvs/tds-vscode), faça seu commit que iremos analisar!
+* Veja alguns problemas conhecidos e como resolvê-los.
+
+> [TROUBLESHOOTING](https://github.com/totvs/tds-vscode/blob/master/TROUBLESHOOTING.md)
+
+Se não conseguir resolvê-los com isso, abra um Issue com o maior número de informações possíveis e envie os logs gerados pelas instruções na página de "Troubleshooting".
+
+> Acesse [Nova Issue](https://github.com/totvs/tds-vscode/issues/new/choose) e selecione "Bug report".
+
+## Melhorias
+
+Se você sentiu a falta de alguma funcionalidade interessante deixe sua idéia registrada.
+
+> Acesse [Nova Issue](https://github.com/totvs/tds-vscode/issues/new/choose) e selecione "Feature request".
+
+Ou se preferir colabore conosco e faça você mesmo. Veja como colaborar a seguir.
+
+## Desenvolvimento Colaborativo
+
+* Se desejar contribuir com o desenvolvimento do plugin, acesse [Git Hub TDS-VSCODE](https://github.com/totvs/tds-vscode), faça um fork do projeto, crie uma "Pull Request" que iremos analisar!
 * Veja também nosso vídeo de como contribuir.
 
->[TOTVS - TDS-VSCode - Desenvolvimento colaborativo](https://www.youtube.com/watch?v=IGWh5ejxhHU)<br/>
-
-## Problemas Conhecidos
-
-### Reconexão em Linux.
-
-* Quando conectamos em um servidor, salvamos usuário e senha para o seu determinado ambiente e ao reiniciar o VSCode (ou desconectar e conetar novamente) fazemos a reconexão automática do ultimo servidor selecionado sem precisar informar usuário e senha novamente. Existe um problema com o nosso algoritmo de decriptografia para Linux e não efetua a reconexão (não pede novamente usuário e senha para validação). Para contornar esse problema, clique sobre o ícone de engrenagem na visão de servidores:
-
-![Config](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/errosConhecidos/config.jpg)
-
-* Após abrir a configuração, vá até o final do arquivo e apague a sessão `savedTokens` (toda a parte selecionada, conforme a imagem). A cada conexão essa sessão será criada e para se conectar será necessário apaga-la.
-
-![Ini](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/errosConhecidos/ini.jpg)
-
-* Já estamos atuando no problema, não é necessário abertura de chamado para o caso.
+> [TOTVS - TDS-VSCode - Desenvolvimento colaborativo](https://www.youtube.com/watch?v=IGWh5ejxhHU)<br/>
 
 ## Plugins recomendados
 
