@@ -41,6 +41,18 @@ Os problemas mais frequentes que causam falha na compilação estão associadas 
 **Solução:** Verifique as configurações de *includes* no arquivo "servers.json" (na pasta ".totvsls" em sua pasta de usuário). Os *includes* podem ser definidos por servidores (em "configurations") e no nível geral *includes*. Se não estiver definido no servidor o *includes* geral será utilizado. Note que os *includes* devem ser os diretórios onde os arquivos `.ch` estão localizados.
 > de qualquer formam, os erros ocorridos durante a compilação de um fonte devem aparecer na visão "Problems" do **TDS VS Code** ou exibidos na visão "Output - AdvPL". Se nenhuma informação sobre o erro for apresentada, crie uma nova "Issue".
 
+### File extension not in the allowed extensions list
+
+Se encontrar uma mensagem como a seguir é porque, por padrão, somente serão compilados os fontes/recursos cujas extensões estiverem na lista de extensões permitidas configurada.
+
+> [SKIPPED] File extension for <file.ext> is not in the allowed extensions list.
+
+A lista pode ser visualizada e alterada em `File | Preferences | Settings | Extensions | AdvPL | Folder: Extensions Allowed`.
+
+Este filtro pode ser desativado completamente, permitindo que quaisquer extensões de arquivos sejam compiladas no RPO, ao desmarcar a opção `File | Preferences | Settings | Extensions | AdvPL | Folder: Enable Extensions Filter`.
+
+> Ao cadastrar uma nova extensão utilize o formato `".EXT"` (iniciado por um ponto e com as todas as letras em maíusculas).
+
 ### Falha de conexão (Retrieve connection error)
 
 Se ocorrer um erro com a mensagem do tipo:
