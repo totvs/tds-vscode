@@ -1,3 +1,10 @@
+# Versão T.B.D.
+
+## Possibilidade de exportar arquivo com as informações do conteúdo do patch [Issue 301](https://github.com/totvs/tds-vscode/issues/301)
+### Melhoria:
+* Adicionada a funcionalidade para exportar um arquivo com as informações do conteúdo do patch em 'Patch Infos'.
+----
+
 # Versão 1.0.2
 
 ## Exibir apenas os arquivos com Erros na tabela de resultados da compilação quando ocorrer problemas nas compilações [Issue 347](https://github.com/totvs/tds-vscode/issues/347)
