@@ -1,12 +1,15 @@
 import * as vscode from 'vscode';
 import path = require('path');
 import fs = require('fs');
+import os = require('os');
 import Utils from '../utils';
 import { languageClient } from '../extension';
 const compile = require('template-literal');
 import * as nls from 'vscode-nls';
 import { ResponseError } from 'vscode-languageclient';
 let localize = nls.loadMessageBundle();
+
+let patchInfosData;
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
@@ -63,7 +66,10 @@ export function patchInfos(context: vscode.ExtensionContext, args: any) {
 				switch (message.command) {
 					case 'patchInfo':
 						sendPatchInfo(message.patchFile, server, authorizationToken, currentPanel);
-						return;
+						break;
+					case 'exportPatchInfo':
+						exportPatchInfo();
+						break;
 					case 'close':
 						if (currentPanel) {
 							currentPanel.dispose();
@@ -96,6 +102,23 @@ function sendPatchPath(path, currentPanel) {
 	});
 }
 
+function exportPatchInfo() {
+	if (patchInfosData) {
+		let patchInfos = patchInfosData;
+		var data = "NAME".padEnd(80, ' ') + "TYPE".padEnd(10, ' ') + "BUILD".padEnd(15, ' ')
+				 + "DATE".padEnd(20, ' ') + "SIZE".padStart(12, ' ') + os.EOL;
+		for (let index = 0; index < patchInfos.length; index++) {
+			const element = patchInfos[index];
+			var output = element.name.padEnd(80, ' ') + element.type.padEnd(10, ' ') + element.buildType.padEnd(15, ' ')
+			+ element.date.padEnd(20, ' ') + element.size.padStart(12, ' ');
+			data += output + os.EOL;
+		}
+		vscode.window.showSaveDialog({ saveLabel: "Export" }).then(exportFile => {
+			fs.writeFileSync(exportFile.fsPath, data);
+		});
+	}
+}
+
 function sendPatchInfo(patchFile, server, authorizationToken, currentPanel) {
 	const patchURI = vscode.Uri.file(patchFile).toString();
 	languageClient.sendRequest('$totvsserver/patchInfo', {
@@ -107,6 +130,7 @@ function sendPatchInfo(patchFile, server, authorizationToken, currentPanel) {
 			"isLocal": true
 		}
 	}).then((response: any) => {
+		patchInfosData = response.patchInfos;
 		currentPanel.webview.postMessage({
 			command: 'setData',
 			data: response.patchInfos
