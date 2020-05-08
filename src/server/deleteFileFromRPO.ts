@@ -5,6 +5,7 @@ import fs = require('fs');
 import { extensions, window, Uri, ViewColumn } from 'vscode';
 import * as nls from 'vscode-nls';
 import Utils from '../utils';
+import { ResponseError } from 'vscode-languageclient';
 
 let localize = nls.config({ locale: 'en' })();
 const compile = require('template-literal');
@@ -71,15 +72,17 @@ export function deleteFileFromRPO(context: any, selectedFiles): void {
 function changeToArrayString(allFiles) {
 	let arrayFiles: string[] = [];
 
-	allFiles.forEach(element => {
-		if (element.fsPath) {
-			arrayFiles.push(element.fsPath);
-		} else {
-			if (fs.existsSync(element)) {
-				arrayFiles.push(element);
+	if(allFiles !== undefined) {
+		allFiles.forEach(element => {
+			if (element.fsPath) {
+				arrayFiles.push(element.fsPath);
+			} else {
+				if (fs.existsSync(element)) {
+					arrayFiles.push(element);
+				}
 			}
-		}
-	});
+		});
+	}
 
 	return arrayFiles;
 }
@@ -108,8 +111,8 @@ export function deletePrograms(programs: string[]) {
 				// }else {
 				// 	vscode.window.showErrorMessage(message);
 				// }
-			}, (err) => {
-				vscode.window.showErrorMessage(err);
+			}, (err: ResponseError<object>) => {
+				vscode.window.showErrorMessage(err.message);
 			});
 		} else {
 			vscode.window.showErrorMessage(localize("tds.webview.tdsBuild.noServer", 'No server connected'));

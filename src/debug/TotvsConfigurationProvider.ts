@@ -1,10 +1,9 @@
 import { WorkspaceFolder, DebugConfigurationProvider, DebugConfiguration, CancellationToken, window } from 'vscode';
 import { connectedServerItem } from '../serversView';
-//import { sessionKey } from '../TotvsLanguageClient';
 import * as vscode from 'vscode';
 import * as Net from 'net';
-import {localize} from '../extension';
-import { extractProgram, extractArgs, setDapArgs } from './debugConfigs';
+import { localize } from '../extension';
+import { extractProgram, extractArgs, setDapArgs, getDAP } from './debugConfigs';
 
 /*
  * Set the following compile time flag to true if the

@@ -7,6 +7,7 @@ import { languageClient, totvsStatusBarItem } from './extension';
 import { inputConnectionParameters } from './inputConnectionParameters';
 import { inputAuthenticationParameters } from './inputAuthenticationParameters';
 import { SelectServer } from './utils';
+import { ResponseError } from 'vscode-languageclient';
 
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
@@ -22,6 +23,13 @@ const localizeHTML = {
 	"tds.webview.dir.include" : localize("tds.webview.dir.include", "Includes directory"),
 	"tds.webview.dir.include2" : localize("tds.webview.dir.include2", "Allow multiple directories")
 };
+
+export const connTypeIds = [ 'CONNT_DEBUGGER', 'CONNT_MONITOR' ] as const;
+export type connTypeId = typeof connTypeIds[number];
+export const connType: Record<connTypeId, number> = {
+	CONNT_DEBUGGER: 3,
+	CONNT_MONITOR: 13
+} as const;
 
 export let connectedServerItem: ServerItem | undefined;
 
@@ -321,9 +329,7 @@ export class ServerItem extends vscode.TreeItem {
 		return `Server=${this.address} | Port=${this.port}`;
 	}
 
-	public description(): string {
-		return `${this.address}:${this.port}`;
-	}
+	description = `${this.address}:${this.port}`;
 
 	iconPath = {
 		light: path.join(__filename, '..', '..', 'resources', 'light', connectedServerItem !== undefined && this.id === connectedServerItem.id ? 'server.connected.svg' : 'server.svg'),
@@ -414,8 +420,8 @@ export class ServersExplorer {
 									}).then((validInfoNode: NodeInfo) => {
 										Utils.updateBuildVersion(serverId, validInfoNode.buildVersion, validInfoNode.secure);
 										return;
-									}, (err) => {
-										vscode.window.showErrorMessage(err);
+									}, (err: ResponseError<object>) => {
+										vscode.window.showErrorMessage(err.message);
 									});
 								}
 							} else {
@@ -460,7 +466,7 @@ export class ServersExplorer {
 			if (ix >= 0) {
 				//Verifica se ha um buildVersion cadastrado.
 				if (serverItem.buildVersion) {
-					inputConnectionParameters(context, serverItem);
+					inputConnectionParameters(context, serverItem, 'CONNT_DEBUGGER', false);
 				} else {
 					//Há build no servidor.
 					languageClient.sendRequest('$totvsserver/validation', {
@@ -474,14 +480,25 @@ export class ServersExplorer {
 						serverItem.buildVersion = validInfoNode.buildVersion;
 						if (updated) {
 							//continua a autenticacao.
-							inputConnectionParameters(context, serverItem);
+							inputConnectionParameters(context, serverItem, 'CONNT_DEBUGGER', false);
 						} else {
-							vscode.window.showErrorMessage(localize("tds.webview.serversView.cloudNotConn", "Could not connect to server"));
+							vscode.window.showErrorMessage(localize("tds.webview.serversView.couldNotConn", "Could not connect to server"));
 						}
 						return;
-					}, (err) => {
+					}, (err: ResponseError<object>) => {
 						vscode.window.showErrorMessage(err.message);
 					});
+				}
+			}
+		});
+		vscode.commands.registerCommand('totvs-developer-studio.reconnect', (serverItem: ServerItem) => {
+			let ix = treeDataProvider.localServerItems.indexOf(serverItem);
+			if (ix >= 0) {
+				//Verifica se ha um buildVersion cadastrado.
+				if (serverItem.buildVersion) {
+					inputConnectionParameters(context, serverItem, 'CONNT_DEBUGGER', true);
+				} else {
+					vscode.window.showErrorMessage(localize("tds.webview.serversView.couldNotReconn", "Could not reconnect to server"));
 				}
 			}
 		});
@@ -500,7 +517,7 @@ export class ServersExplorer {
 							treeDataProvider.refresh();
 						}
 					}
-				}, (err) => {
+				}, (err: ResponseError<object>) => {
 					Utils.clearConnectedServerConfig();
 					if (treeDataProvider !== undefined) {
 						treeDataProvider.refresh();
@@ -512,7 +529,7 @@ export class ServersExplorer {
 			}
 		});
 		vscode.commands.registerCommand('totvs-developer-studio.selectenv', (environment: EnvSection) => {
-			inputConnectionParameters(context, environment);
+			inputConnectionParameters(context, environment, 'CONNT_DEBUGGER', false);
 		});
 
 		vscode.commands.registerCommand('totvs-developer-studio.delete', (serverItem: ServerItem) => {
@@ -564,17 +581,17 @@ export class ServersExplorer {
 
 }
 
-export function connectServer(serverItem: ServerItem, environment: string) {
+export function connectServer(serverItem: ServerItem, environment: string, connType: connTypeId) {
 	if (connectedServerItem !== undefined && connectedServerItem.id === serverItem.id && connectedServerItem.currentEnvironment === serverItem.currentEnvironment) {
 		vscode.window.showInformationMessage(localize("tds.webview.serversView.alreadyDisconn", "The server selected is already connected."));
 	}
 	//vscode.window.showInformationMessage("Initializing connection with server " + serverItem.label);
 	if (connectedServerItem !== undefined) {
 		vscode.commands.executeCommand('totvs-developer-studio.disconnect', connectedServerItem).then(() => {
-			sendConnectRequest(serverItem, environment);
+			sendConnectRequest(serverItem, environment, connType);
 		});
 	} else {
-		sendConnectRequest(serverItem, environment);
+		sendConnectRequest(serverItem, environment, connType);
 	}
 }
 
@@ -583,7 +600,7 @@ export function authenticate(serverItem: ServerItem, environment: string, userna
 	sendAuthenticateRequest(serverItem, environment, username, password);
 }
 
-function sendConnectRequest(serverItem: ServerItem, environment: string) {
+function sendConnectRequest(serverItem: ServerItem, environment: string, _connType: connTypeId) {
 	let thisServerType = 0;
 	if (serverItem.type === "totvs_server_protheus") {
 		thisServerType = 1;
@@ -593,7 +610,7 @@ function sendConnectRequest(serverItem: ServerItem, environment: string) {
 	}
 	languageClient.sendRequest('$totvsserver/connect', {
 		connectionInfo: {
-			connType: 1,
+			connType: connType[_connType],
 			serverName: serverItem.name,
 			identification: serverItem.id,
 			serverType: thisServerType,
@@ -625,8 +642,8 @@ function sendConnectRequest(serverItem: ServerItem, environment: string) {
 			vscode.window.showErrorMessage(localize("tds.webview.serversView.errorConnServer", 'Error connecting server'));
 			return false;
 		}
-	}, err => {
-		vscode.window.showErrorMessage(err);
+	}, (err: ResponseError<object>) => {
+		vscode.window.showErrorMessage(err.message);
 	});
 }
 
@@ -655,8 +672,8 @@ function sendAuthenticateRequest(serverItem: ServerItem, environment: string, us
 			vscode.window.showErrorMessage(localize("tds.webview.serversView.errorConnServer", 'Error connecting server'));
 			return false;
 		}
-	}, err => {
-		vscode.window.showErrorMessage(err);
+	}, (err: ResponseError<object>) => {
+		vscode.window.showErrorMessage(err.message);
 	});
 }
 
@@ -675,7 +692,7 @@ export class AuthenticationNode {
 	connectionToken: string;
 }
 
-export function reconnectServer(reconnectionInfo, environment: string): boolean {
+export function reconnectServer(reconnectionInfo, environment: string, connType: connTypeId): boolean {
 	if (reconnectionInfo.id && reconnectionInfo.token) {
 		const servers = Utils.getServersConfig();
 		if (servers.configurations) {
@@ -691,10 +708,10 @@ export function reconnectServer(reconnectionInfo, environment: string): boolean 
 					);
 					if (connectedServerItem !== undefined) {
 						vscode.commands.executeCommand('totvs-developer-studio.disconnect', connectedServerItem).then(() => {
-							return sendReconnectRequest(serverItem, reconnectionInfo.token, environment);
+							return sendReconnectRequest(serverItem, reconnectionInfo.token, environment, connType);
 						});
 					} else {
-						return sendReconnectRequest(serverItem, reconnectionInfo.token, environment);
+						return sendReconnectRequest(serverItem, reconnectionInfo.token, environment, connType);
 					}
 				}
 			});
@@ -717,18 +734,19 @@ export function reconnectLastServer() {
 							arguments: [element.name]
 						}
 					);
-					sendReconnectRequest(serverItem, servers.lastConnectedServer.token, servers.lastConnectedServer.environment);
+					sendReconnectRequest(serverItem, servers.lastConnectedServer.token, servers.lastConnectedServer.environment, 'CONNT_DEBUGGER');
 				}
 			});
 		}
 	}
 }
 
-function sendReconnectRequest(serverItem: ServerItem, connectionToken: string, environment: string) {
+function sendReconnectRequest(serverItem: ServerItem, connectionToken: string, environment: string, _connType: connTypeId) {
 	languageClient.sendRequest('$totvsserver/reconnect', {
 		reconnectInfo: {
 			connectionToken: connectionToken,
-			serverName: serverItem.label
+			serverName: serverItem.label,
+			connType: connType[_connType]
 		}
 	}).then((reconnectNode: ReconnectNode) => {
 		let token: string = reconnectNode.connectionToken;
@@ -751,8 +769,8 @@ function sendReconnectRequest(serverItem: ServerItem, connectionToken: string, e
 			vscode.window.showErrorMessage(localize("tds.webview.serversView.errorConnServer", 'Error reconnecting server'));
 			return false;
 		}
-	}, err => {
-		vscode.window.showErrorMessage(err);
+	}, (err: ResponseError<object>) => {
+		vscode.window.showErrorMessage(err.message);
 		Utils.removeSavedConnectionToken(serverItem.id, environment);
 	});
 }

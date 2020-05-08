@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, RefObject } from "react";
 import {
   makeStyles,
   useTheme,
@@ -183,7 +183,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   const vscode = props.vscode;
   const debugEvent = vscode.getState().config;
 
-  const table = React.createRef();
+  const tableElement: RefObject<HTMLTableElement> = React.createRef();
 
   const classes = tableStyles();
   const [jsonBody, setJsonBody] = React.useState(debugEvent.body);
@@ -317,7 +317,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     const classes = tableStyles();
     let items = [];
     let timeLines = jsonBody.timeLines;
-    console.log("Criando TIMELINES:");
+    //console.log("Criando TIMELINES:");
     //let timeLineFoundInPage = false;
     for (let index = 0; index < jsonBody.timeLines.length; index++) {
       let timeLine = timeLines[index];
@@ -336,29 +336,6 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
             : classes.tableRow;
       }
 
-      //if (isSelected) {
-      //	timeLineFoundInPage = true;
-      //console.log(jsonBody.currentSelectedTimeLineId + " - TIMLINEID = SELECTEDROW : " + isSelected) + " className = " + bg;
-      //}
-      /*
-			let date = new Date(timeStampAsNumber);
-	//let date = new Date();
-
-	let year = date.getFullYear();
-	let month = date.getMonth() + 1;
-	let day = date.getDate();
-	let hour = date.getHours();
-	let minutes = date.getMinutes();
-	let seconds = date.getSeconds();
-
-//	let month = ("0" + (date.getMonth() + 1)).substr(-2);
-//	let day = ("0" + date.getDate()).substr(-2);
-//	let hour = ("0" + date.getHours()).substr(-2);
-//	let minutes = ("0" + date.getMinutes()).substr(-2);
-//	let seconds = ("0" + date.getSeconds()).substr(-2);
-
-	let formattedDate = day + "/" + month + "/" + year + "-" + hour + ":" + minutes + ":" + seconds;
-			*/
       items.push(
         <TableRow
           title={notFoundText}
@@ -405,7 +382,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         <Table
           stickyHeader
           aria-label="sticky table"
-          ref={table}
+          ref={tableElement}
           size={dense ? "medium" : "small"}
         >
           <TableHead>

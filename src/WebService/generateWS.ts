@@ -4,15 +4,16 @@ import * as fs from 'fs';
 import * as nls from 'vscode-nls';
 import { languageClient } from '../extension';
 import Utils from '../utils';
+import { ResponseError } from 'vscode-languageclient';
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
 
 
 const localizeHTML = {
 	"tds.webview.title": localize("tds.webview.title", "Generate WS Protheus"),
-	"tds.webview.ws.URL": localize("tds.webview.ws.URL", "URL Web Service"),
+	"tds.webview.ws.URL": localize("tds.webview.ws.URL", "URL Web Service / WSDL FIle"),
 	"tds.webview.ws.path": localize("tds.webview.ws.path", "File Directory"),
-	"tds.webview.ws.name": localize("tds.webview.ws.name", "File Name")
+	"tds.webview.ws.name": localize("tds.webview.ws.name", "Output File Name")
 };
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
@@ -52,20 +53,22 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 						});
 						break;
 					case 'wsClose':
-						const extension:string = message.fileName.split('.').pop().toLowerCase();
-						if( extension !== "prw" && extension !== "prx" && extension !== "tlpp"){
-							vscode.window.showErrorMessage("Is need a extension prw, prx or tlpp");
+						const extension:string = message.outputFileName.split('.').pop().toLowerCase();
+						if( extension !== "prw" && extension !== "prx" && extension !== "tlpp") {
+							vscode.window.showErrorMessage("The output file must have one of the following extensions: .prw, .prx or .tlpp");
 							return;
 						}
 						server = Utils.getCurrentServer();
+						const permissionsInfos = Utils.getPermissionsInfos();
 						languageClient.sendRequest('$totvsserver/wsdlGenerate', {
 							"wsdlGenerateInfo": {
 								"connectionToken": server.token,
+								"authorizationToken" : permissionsInfos.authorizationToken,
 								"environment": server.environment,
 								"wsdlUrl": message.url
 							}
 						}).then((response: any) => {
-							const pathFile = message.path + "//" + message.fileName;
+							const pathFile = message.path + "//" + message.outputFileName;
 
 							if (fs.existsSync(pathFile)){
 								vscode.window.showWarningMessage("The file exists. Would like overwrite? ", 'Yes', 'No').then(clicked => {
@@ -82,8 +85,8 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 									currentPanel.dispose();
 								}
 							}
-						}, (err) => {
-							vscode.window.showErrorMessage(err);
+						}, (err: ResponseError<object>) => {
+							vscode.window.showErrorMessage(err.message);
 						});
 						return;
 				}

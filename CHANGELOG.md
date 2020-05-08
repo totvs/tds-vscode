@@ -1,3 +1,40 @@
+# Versão 1.0.2
+
+## Exibir apenas os arquivos com Erros na tabela de resultados da compilação quando ocorrer problemas nas compilações [Issue 347](https://github.com/totvs/tds-vscode/issues/347)
+### Problema:
+* Quando ocorrem erros (Error/Fatal) durante a compilação o processo é abortado e ocorre o "rollback". Porém a tabela com o resultado da compilação exibe os fontes sem erros como se estivessem compilados no RPO causando confusão uma vez que eles não estarão no RPO.
+### Solução/Melhoria:
+* Filtrar a tabela de resultados da compilação para exibir apenas os arquivos com erros quando o processo for abortado.
+----
+## Configuração "totvsLanguageServer.extensions.folder.patch" não está sendo respeitada [Issue 297](https://github.com/totvs/tds-vscode/issues/297)
+### Problema:
+* A compilação não respeita o filtro de extensões definidas em "totvsLanguageServer.extensions.folder.patch".
+### Solução/Melhoria:
+* O problema era que esta configuração foi criada apenas para a compilação durante a geração de patches. A configuração foi alterada para "totvsLanguageServer.folder.extensionsAllowed" e será utilizada na compilação, seja apenas compilação, seja na geração de patches. Além disso foi adicionada a opção de desabilitar o filtro nos Setting em "Folder: Enable Extensions Filter".
+----
+## Protheus ao compilar Files/Folder [Issue 329](https://github.com/totvs/tds-vscode/issues/329)
+### Problema:
+* Erro ao compilar pasta.
+### Solução:
+* O problema era com apenas um arquivo cujo retorno de erro do AppServer estava fora do padrão. Melhorado o tratamento para capturar este erro fora do padrão e exibir ao usuário.
+----
+## Problema na compilação com binário 7.00.191205P [Issue 292](https://github.com/totvs/tds-vscode/issues/292)
+### Problema:
+* Ao compilar pastas/workspaces com muitos arquivos o TDS VS Code travava e/ou caia.
+### Solução:
+* Limitada a exibição de notificações caso o número de arquivos ultrapasse um certo valor. Exibindo apenas as informações consolidadas após o término da compilação.
+----
+## Separar a ação de conectar e reconectar em um servidor [Issue 344](https://github.com/totvs/tds-vscode/issues/344)
+### Melhoria:
+* Separadas as ações de conectar e reconectar. O connect se comporta como se fosse uma nova conexão independentemente de existir um token de reconexão. E o reconnect utiliza o token de reconexão se existir ou se comporta como o connect se ainda não existir um token de reconexão.
+----
+## Erro ao compilar fontes em aberto (.app junto) [Issue 334](https://github.com/totvs/tds-vscode/issues/334)
+### Problema:
+* Ao compilar arquivos em editores abertos o processo para ao encontrar um arquivo que não pode ser aberto sem a intervenção do usuário, como por exemplo um pdf.
+### Solução:
+* Ao encontrar um arquivo que não pode ser aberto ele passa para o próximo editor aberto.
+----
+
 # Versão 1.0.1
 
 ## Seleção de diretório seleciona o primeiro arquivo do diretório [Issue 317](https://github.com/totvs/tds-vscode/issues/317)

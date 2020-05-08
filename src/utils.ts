@@ -108,30 +108,40 @@ export default class Utils {
 	 * Retorna todo o conteudo do servers.json
 	 */
 	static getServersConfig() {
+		let config: any = {};
 		let fs = require('fs');
 		let exist = fs.existsSync(Utils.getServerConfigFile());
 		if (exist) {
 			let json = fs.readFileSync(Utils.getServerConfigFile()).toString();
 			if (json) {
-				return JSON.parse(json);
+				try {
+					config = JSON.parse(stripJsonComments(json));
+				}
+				catch (e) {
+				}
 			}
 		}
-		return "";
+		return config;
 	}
 
 	/**
 	 * Retorna todo o conteudo do launch.json
 	 */
 	static getLaunchConfig() {
+		let config: any = {};
 		let fs = require('fs');
 		let exist = fs.existsSync(Utils.getLaunchConfigFile());
 		if (exist) {
 			let json = fs.readFileSync(Utils.getLaunchConfigFile()).toString();
 			if (json) {
-				return JSON.parse(stripJsonComments(json));
+				try {
+					config = JSON.parse(stripJsonComments(json));
+				}
+				catch (e) {
+				}
 			}
 		}
-		return "";
+		return config;
 	}
 
 	static saveLaunchConfig(config: JSON) {
@@ -731,6 +741,8 @@ export default class Utils {
 						} else {
 							files.push(fn);
 						}
+					} else {
+						vscode.window.showWarningMessage("File/folder '" + file + "' was ignored.");
 					}
 				});
 			} else {
@@ -761,12 +773,11 @@ export default class Utils {
 
 //TODO: pegar a lista de arquivos a ignorar da configuração
 const ignoreListExpressions: Array<RegExp> = [];
-ignoreListExpressions.push(/^\..*/ig); //começa com ponto (normalmente são de controle/configuração)
-ignoreListExpressions.push(/(\.)$/ig); // sem extensão (não é possivel determinar se é fonte ou recurso)
-ignoreListExpressions.push((/(\.ch)$/ig)); // arquivos de definição e trabalho
-ignoreListExpressions.push((/(\.erx_.*)$/ig)); // arquivos de definição e trabalho
-ignoreListExpressions.push((/(\.ppx_.*)$/ig)); // arquivos de definição e trabalho
-ignoreListExpressions.push((/(\.err_.*)$/ig)); // arquivos de definição e trabalho
+ignoreListExpressions.push(/(.*)?(\.vscode)$/ig); //.vscode
+//ignoreListExpressions.push(/(\.)$/ig); // sem extensão (não é possivel determinar se é fonte ou recurso)
+ignoreListExpressions.push(/(.+)(\.erx_)$/ig); // arquivos de definição e trabalho
+ignoreListExpressions.push(/(.+)(\.ppx_)$/ig); // arquivos de definição e trabalho
+ignoreListExpressions.push(/(.+)(\.err)$/ig); // arquivos de definição e trabalho
 
 //lista de arquivos/pastas normalmente ignorados
 ignoreListExpressions.push(/(.*)?(#.*#)$/ig);

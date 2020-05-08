@@ -1,6 +1,7 @@
 import Utils from '../utils';
 import { languageClient, localize } from '../extension';
 import * as vscode from 'vscode';
+import { ResponseError } from 'vscode-languageclient';
 
 export function rpoCheckIntegrity() {
 	const server = Utils.getCurrentServer();
@@ -17,6 +18,8 @@ export function rpoCheckIntegrity() {
 			} else {
 				vscode.window.showInformationMessage(response.message);
 			}
+		}, (err: ResponseError<object>) => {
+			vscode.window.showErrorMessage(err.message);
 		});
 	} else {
 		vscode.window.showErrorMessage(localize('tds.vscode.servernotconnected', 'There is no server connected'));

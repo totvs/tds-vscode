@@ -3,7 +3,7 @@ import { ExtensionContext, QuickInputButton, Uri, QuickPickItem, workspace } fro
 import Utils from "./utils";
 import * as path from 'path';
 import { MultiStepInput } from "./multiStepInput";
-import { connectServer, reconnectServer, ServerItem, EnvSection } from "./serversView";
+import { connectServer, reconnectServer, ServerItem, EnvSection, connTypeId, connTypeIds } from "./serversView";
 
 import * as nls from 'vscode-nls';
 let localize = nls.loadMessageBundle();
@@ -16,7 +16,7 @@ let localize = nls.loadMessageBundle();
  *
  * This first part uses the helper class `MultiStepInput` that wraps the API for the multi-step case.
  */
-export async function inputConnectionParameters(context: ExtensionContext, serverParam: any) {
+export async function inputConnectionParameters(context: ExtensionContext, serverParam: any, connType: connTypeId, reconnect: boolean) {
 
 	//const VALIDADE_TIME_OUT = 1000;
 	const title = 'Conexão';
@@ -68,8 +68,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 
 		// reconnection token requires server and environment informations
 		const configADVPL = workspace.getConfiguration('totvsLanguageServer');
-		let useReconnectionToken = configADVPL.get('useReconnectionToken');
-		if (useReconnectionToken) {
+		if (reconnect) {
 			let serverId = (typeof state.server === "string") ? state.server : (state.server as QuickPickItem).detail;
 			let environmentName = (typeof state.environment === "string") ? state.environment : (state.environment as QuickPickItem).label;
 			let key = serverId + ":" + environmentName;
@@ -190,13 +189,13 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 		const connectState = await collectConnectInputs();
 		if (connectState.reconnectionInfo) {
 			let environmentName = (typeof connectState.environment === "string") ? connectState.environment : (connectState.environment as QuickPickItem).label;
-			reconnectServer(connectState.reconnectionInfo, environmentName);
+			reconnectServer(connectState.reconnectionInfo, environmentName, connType);
 		}
 		else {
 			const server = Utils.getServerById((typeof connectState.server !== 'string') ? (connectState.server.detail ? connectState.server.detail : "") : connectState.server, serversConfig);
 			const environment = (typeof connectState.environment !== 'string') ? connectState.environment.label : connectState.environment;
 			server.name = server.name; //FIX: quebra-galho necessário para a árvore de servidores
-			connectServer(server, environment);
+			connectServer(server, environment, connType);
 		}
 	}
 
@@ -205,8 +204,8 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 
 export function serverSelection(args, context){
 	if (args && args.length > 0) {
-		inputConnectionParameters(context, args[0]);
+		inputConnectionParameters(context, args[0], 'CONNT_DEBUGGER', false);
 	} else {
-		inputConnectionParameters(context, undefined);
+		inputConnectionParameters(context, undefined, 'CONNT_DEBUGGER', false);
 	}
 }

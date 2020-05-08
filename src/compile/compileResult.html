@@ -29,6 +29,9 @@
 						<span class="formTitle">${d.localize["tds.webview.build.result"]}</span>
 						<br>
 					</div>
+					<div id="compilation_aborted" hidden>
+						<span class="formMessage" style="color: red;">Compilation aborted</span>
+					</div>
 							<div id="parent">
 								<div class="material-table z-depth-3 hoverable">
 									<table id="tableInfos" class="mdl-data-table" width="100%">
@@ -38,6 +41,7 @@
 												<th>${d.localize["tds.webview.compile.col02"]}</th>
 												<th>${d.localize["tds.webview.compile.col03"]}</th>
 												<th>${d.localize["tds.webview.compile.col04"]}</th>
+												<th>${d.localize["tds.webview.compile.col05"]}</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -61,7 +65,7 @@
 			pageLength: 50,
 			columnDefs: [
 				{
-					targets: [0, 1, 2, 3],
+					targets: [0, 1, 2, 3, 4],
 					className: 'mdl-data-table__cell--non-numeric tableColor',
 					orderable: true,
 				},
@@ -80,13 +84,19 @@
 			const message = event.data;
 			switch (message.command) {
 				case "setData":
-					for(var i = 0; i < message.data.length ; i++){
-						var fullPath = message.data[i].filePath;
+					code = message.code;
+					if (code == -1) { // abort compile
+						var compilation_aborted = document.getElementById('compilation_aborted');
+						compilation_aborted.hidden = false;
+					}
+					infos = message.data;
+					for (var i = 0; i < infos.length; i++) {
+						var fullPath = infos[i].filePath;
 						var fileName = fullPath.substring(fullPath.lastIndexOf('/') + 1);
 
-						var row = new Array(fileName, message.data[i].status, message.data[i].message , fullPath);
+						var row = new Array(fileName, infos[i].status, infos[i].message , infos[i].detail, fullPath);
 						tableAPI.row.add(row);
-						}
+					}
 				tableAPI.draw();
 				tableAPI.order( [ 1, 'asc'] ).draw();
 			}

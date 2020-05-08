@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import { languageClient, permissionStatusBarItem } from '../extension';
 import {isLSInitialized} from '../TotvsLanguageClient'
 import Utils from '../utils';
+import { ResponseError } from 'vscode-languageclient';
 
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
@@ -134,8 +135,8 @@ function getId(currentPanel) {
 					'id': response.id
 				});
 			}
-		}, (err) => {
-			vscode.window.showErrorMessage(err);
+		}, (err: ResponseError<object>) => {
+			vscode.window.showErrorMessage(err.message);
 		});
 }
 
@@ -181,9 +182,8 @@ function validateKey(currentPanel, message, close: boolean) {
 					type: outputMessageType
 				});
 			}
-	}, (err) => {
-			console.log(err);
-			vscode.window.showErrorMessage("Error valid key");
+	}, (err: ResponseError<object>) => {
+			vscode.window.showErrorMessage(err.message);
 		});
 	} else {
 		vscode.window.showErrorMessage("Empty key");

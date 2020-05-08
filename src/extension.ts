@@ -36,6 +36,7 @@ import { TotvsConfigurationWebProvider } from './debug/TotvsConfigurationWebProv
 import { TotvsConfigurationProvider } from './debug/TotvsConfigurationProvider';
 import tdsReplayLauncherConfig from './launcher/tdsReplay/tdsReplayLauncherConfig';
 import { TotvsConfigurationTdsReplayProvider } from './debug/TotvsConfigurationTdsReplayProvider';
+import { TotvsDebugAdapterDescriptorFactory } from './debug/TotvsDebugAdapterDescriptorFactory'
 import { getDAP, getProgramName, getProgramArguments, toggleTableSync } from './debug/debugConfigs';
 import { toggleAutocompleteBehavior, updateSettingsBarItem } from './server/languageServerSettings';
 import { advplDocumentFormattingEditProvider, advplDocumentRangeFormattingEditProvider, advplResourceFormatting } from './formatter/advplFormatting';
@@ -277,14 +278,20 @@ export function activate(context: ExtensionContext) {
 	context.subscriptions.push(debug.registerDebugConfigurationProvider(TotvsConfigurationProvider.type, provider));
 	context.subscriptions.push(provider);
 
+	context.subscriptions.push(debug.registerDebugAdapterDescriptorFactory(TotvsConfigurationProvider.type, new TotvsDebugAdapterDescriptorFactory(context)));
+
 	const tdsReplayProvider = new TotvsConfigurationTdsReplayProvider();
 	context.subscriptions.push(debug.registerDebugConfigurationProvider(TotvsConfigurationTdsReplayProvider.type, tdsReplayProvider));
 	context.subscriptions.push(tdsReplayProvider);
+
+	context.subscriptions.push(debug.registerDebugAdapterDescriptorFactory(TotvsConfigurationTdsReplayProvider.type, new TotvsDebugAdapterDescriptorFactory(context)));
 
 	// Registra uma configuração de debug web
 	const webProvider = new TotvsConfigurationWebProvider();
 	context.subscriptions.push(debug.registerDebugConfigurationProvider(TotvsConfigurationWebProvider.type, webProvider));
 	context.subscriptions.push(webProvider);
+
+	context.subscriptions.push(debug.registerDebugAdapterDescriptorFactory(TotvsConfigurationWebProvider.type, new TotvsDebugAdapterDescriptorFactory(context)));
 
 	//Abre a tela de geração de patch com seleção de arquivos do RPO.
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.patchGenerate.fromRPO', () => patchGenerate(context)));
