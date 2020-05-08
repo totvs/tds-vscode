@@ -10,7 +10,7 @@ const compile = require('template-literal');
 
 
 const localizeHTML = {
-	"tds.webview.title": localize("tds.webview.title", "Generate WS Protheus"),
+	"tds.webview.title": localize("tds.webview.title", "Generate WS"),
 	"tds.webview.ws.URL": localize("tds.webview.ws.URL", "URL Web Service / WSDL FIle"),
 	"tds.webview.ws.path": localize("tds.webview.ws.path", "File Directory"),
 	"tds.webview.ws.name": localize("tds.webview.ws.name", "Output File Name")
