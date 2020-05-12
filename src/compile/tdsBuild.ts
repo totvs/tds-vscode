@@ -1,12 +1,13 @@
-import vscode = require('vscode');
+import * as vscode from 'vscode';
 import { languageClient } from '../extension';
 import utils from '../utils';
-import fs = require('fs');
+import * as fs from 'fs';
 import Utils from '../utils';
 import { showCompileResult } from './buildResult';
-
+import { CompileResult } from './compileResult';
 import * as nls from 'vscode-nls';
 import { ResponseError } from 'vscode-languageclient';
+
 let localize = nls.loadMessageBundle();
 
 interface CompileOptions {

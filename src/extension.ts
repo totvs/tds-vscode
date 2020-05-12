@@ -1,7 +1,6 @@
-import { ServerItem } from './serversView';
 /*---------------------------------------------------------
- * Copyright (C) TOTVS S.A. All rights reserved.
- *--------------------------------------------------------*/
+* Copyright (C) TOTVS S.A. All rights reserved.
+*--------------------------------------------------------*/
 
 // tslint:disable-next-line: no-unused-expression
 'use strict';
@@ -13,7 +12,6 @@ import { window, commands, debug, extensions, workspace, ExtensionContext, Uri, 
 import { jumpToUriAtPosition } from './vscodeUtils';
 import { ServersExplorer, updateStatusBarItem } from './serversView';
 import { compileKeyPage, updatePermissionBarItem } from './compileKey/compileKey';
-import { getLanguageClient } from './TotvsLanguageClient';
 import { patchGenerate, patchGenerateFromFolder } from './patch/patchGenerate';
 import { patchApply } from './patch/patchApply';
 import Utils from './utils';
@@ -21,7 +19,7 @@ import { LanguageClient } from 'vscode-languageclient';
 import { commandBuildFile, commandBuildWorkspace, commandBuildOpenEditors } from './compile/tdsBuild';
 import { deleteFileFromRPO } from './server/deleteFileFromRPO';
 import { defragRpo } from './server/defragRPO';
-import { rpoCheckIntegrity }  from  './server/rpoCheckIntegrity';
+import { rpoCheckIntegrity } from './server/rpoCheckIntegrity';
 import { serverSelection } from './inputConnectionParameters';
 import * as nls from 'vscode-nls';
 import { inspectObject } from './inspect/inspectObject';
@@ -36,11 +34,13 @@ import { TotvsConfigurationWebProvider } from './debug/TotvsConfigurationWebProv
 import { TotvsConfigurationProvider } from './debug/TotvsConfigurationProvider';
 import tdsReplayLauncherConfig from './launcher/tdsReplay/tdsReplayLauncherConfig';
 import { TotvsConfigurationTdsReplayProvider } from './debug/TotvsConfigurationTdsReplayProvider';
-import { TotvsDebugAdapterDescriptorFactory } from './debug/TotvsDebugAdapterDescriptorFactory'
+import { TotvsDebugAdapterDescriptorFactory } from './debug/TotvsDebugAdapterDescriptorFactory';
 import { getDAP, getProgramName, getProgramArguments, toggleTableSync } from './debug/debugConfigs';
 import { toggleAutocompleteBehavior, updateSettingsBarItem } from './server/languageServerSettings';
 import { advplDocumentFormattingEditProvider, advplDocumentRangeFormattingEditProvider, advplResourceFormatting } from './formatter/advplFormatting';
 import { processDebugCustomEvent, DebugEvent, createTimeLineWebView } from './debug/debugEvents';
+import { openMonitorView } from './monitor/monitorLoader';
+import { getLanguageClient } from './langServer/TotvsLanguageClient';
 
 export let languageClient: LanguageClient;
 // metodo de tradução
@@ -187,7 +187,7 @@ export function activate(context: ExtensionContext) {
 			// avoid that.
 			const kGracePeriodMs = 250;
 
-			let timeout: NodeJS.Timer | undefined;
+			let timeout: any;
 			let resolvePromise: any;
 			languageClient.onReady().then(() => {
 				languageClient.onNotification('$totvsserver/queryDbStatus', (args) => {
@@ -312,9 +312,6 @@ export function activate(context: ExtensionContext) {
 	//Adicona página de geração de WSDL
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.ws.show', () => showWSPage(context)));
 
-	//Mostra a pagina de Welcome.
-	showWelcomePage(context, false);
-
 	//Abre uma caixa de informações para login no servidor protheus selecionado.
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.serverSelection', (...args) => serverSelection(args, context)));
 
@@ -397,6 +394,15 @@ export function activate(context: ExtensionContext) {
 	vscode.debug.onDidTerminateDebugSession(() => {
 		_debugEvent = undefined;
 	});
+
+	//monitor
+	context.subscriptions.push(vscode.commands.registerCommand('tds-monitor.open-monitor-view', () => {
+		vscode.window.setStatusBarMessage("Aguarde. Iniciando monitoramento...", 5000);
+		openMonitorView();
+	}));
+
+	//Mostra a pagina de Welcome.
+	showWelcomePage(context, false);
 
 	//Verifica questões de encoding
 	verifyEncoding();

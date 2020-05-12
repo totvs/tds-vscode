@@ -1,5 +1,5 @@
-import vscode = require('vscode');
-import path = require('path');
+import * as vscode from 'vscode';
+import * as path from 'path';
 import * as fs from 'fs';
 import Utils from '../utils';
 
@@ -13,7 +13,7 @@ const localizeHTML = {
 	"tds.webview.dir.include": localize("tds.webview.dir.include", "Includes directory:"),
 	"tds.webview.dir.include2": localize("tds.webview.dir.include2", "Allow multiple directories"),
 	"tds.webview.dir.include.info": localize("tds.webview.dir.include.info", "These settings can also be changed in")
-}
+};
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
@@ -54,7 +54,7 @@ export default function showInclude(context: vscode.ExtensionContext) {
 		currentPanel.webview.onDidReceiveMessage(message => {
 			switch (message.command) {
 				case 'checkDir':
-					var checkedDir = Utils.checkDir(message.selectedDir);
+					let checkedDir = Utils.checkDir(message.selectedDir);
 					currentPanel.webview.postMessage({
 						command: "checkedDir",
 						checkedDir: checkedDir

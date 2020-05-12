@@ -1,5 +1,5 @@
-import vscode = require('vscode');
-import path = require('path');
+import * as vscode from 'vscode';
+import * as path from 'path';
 import * as fs from 'fs';
 import * as nls from 'vscode-nls';
 import { languageClient } from '../extension';
@@ -46,7 +46,7 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 			currentPanel.webview.onDidReceiveMessage(message => {
 				switch (message.command) {
 					case 'checkDir':
-						var checkedDir = Utils.checkDir(message.selectedDir);
+						let checkedDir = Utils.checkDir(message.selectedDir);
 						currentPanel.webview.postMessage({
 							command: "checkedDir",
 							checkedDir: checkedDir

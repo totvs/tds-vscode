@@ -627,7 +627,7 @@ export default class Utils {
 	 * @param id ID do server que sera atualizado
 	 * @param buildVersion Nova build do servidor
 	 */
-	static updateBuildVersion(id: string, buildVersion: string, secure: number) {
+	static updateBuildVersion(id: string, buildVersion: string, secure: boolean) {
 		let result = false;
 		if (!id || !buildVersion) {
 			return result;
@@ -766,8 +766,44 @@ export default class Utils {
 				return selectedDir;
 			}
 		}
-		vscode.window.showErrorMessage(selectedDir + " does not exist or it is not a directory.")
+		vscode.window.showErrorMessage(selectedDir + " does not exist or it is not a directory.");
 		return "";
+	}
+
+	static deepCopy(obj: any): any {
+		let copy: any;
+
+		// Handle the 3 simple types, and null or undefined
+		if (null === obj || "object" !== typeof obj) {
+			return obj;
+		}
+
+		// Handle Date
+		if (obj instanceof Date) {
+			copy = new Date();
+			copy.setTime(obj.getTime());
+			return copy;
+		}
+
+		// Handle Array
+		if (obj instanceof Array) {
+			copy = [];
+			for (let i = 0, len = obj.length; i < len; i++) {
+				copy[i] = Utils.deepCopy(obj[i]);
+			}
+			return copy;
+		}
+
+		// Handle Object
+		if (obj instanceof Object) {
+			copy = {};
+			for (let attr in obj) {
+				if (obj.hasOwnProperty(attr)) { copy[attr] = Utils.deepCopy(obj[attr]); }
+			}
+			return copy;
+		}
+
+		throw new Error("Unable to copy obj! Its type isn't supported.");
 	}
 }
 
@@ -817,3 +853,4 @@ function processIgnoreList(ignoreList: Array<RegExp>, testName: string): boolean
 
 	return result;
 }
+

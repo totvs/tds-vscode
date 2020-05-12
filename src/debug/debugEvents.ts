@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import {TotvsConfigurationProvider} from "./TotvsConfigurationProvider";
 import {TotvsConfigurationTdsReplayProvider} from "./TotvsConfigurationTdsReplayProvider";
 import Utils, { MESSAGETYPE } from "../utils";
-import ShowProgressController from "../ui.dialogs/showProgressController"
+import ShowProgressController from "../ui.dialogs/showProgressController";
 import { CreateTDSReplayTimeLineWebView } from './tdsreplay/CreateTDSReplayTimeLineWebView';
 
 const DEBUG_TYPE = TotvsConfigurationProvider.type;
@@ -157,8 +157,8 @@ function getIgnoreSourceNotFoundValue(): boolean {
 	let launchConfig = Utils.getLaunchConfig();
 	let isIgnoreSourceNotFound: boolean = true;
 
-	for (var key = 0; key < launchConfig.configurations.length; key++) {
-		var launchElement = launchConfig.configurations[key];
+	for (let key = 0; key < launchConfig.configurations.length; key++) {
+		let launchElement = launchConfig.configurations[key];
 		if(debugSession !== undefined && launchElement.name === debugSession.name) {
 			if(launchElement.ignoreSourcesNotFound !== undefined) {
 				isIgnoreSourceNotFound = launchElement.ignoreSourcesNotFound;

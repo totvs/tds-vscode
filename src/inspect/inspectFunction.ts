@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import path = require('path');
-import fs = require('fs');
+import * as path from 'path';
+import * as fs from 'fs';
 import Utils from '../utils';
 import { languageClient } from '../extension';
 const compile = require('template-literal');
@@ -22,7 +22,7 @@ const localizeHTML = {
 	"tds.webview.inspect.items.generate.close": localize("tds.webview.inspect.items.generate.close", "Generate/Close"),
 	"tds.webview.inspect.message1": localize("tds.webview.inspect.message1", "The generated patch is based on the files from RPO. Be sure that the included fonts are compiled."),
 	"tds.webview.inspect.items.showing": localize("tds.webview.inspect.items.showing", "Items showing")
-}
+};
 
 export function inspectFunctions(context: vscode.ExtensionContext) {
 	const server = Utils.getCurrentServer();

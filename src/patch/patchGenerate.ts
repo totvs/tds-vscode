@@ -1,6 +1,6 @@
-import vscode = require('vscode');
-import path = require('path');
-import fs = require('fs');
+import * as vscode from 'vscode';
+import * as path from 'path';
+import * as fs from 'fs';
 import Utils from '../utils';
 import { languageClient } from '../extension';
 import { commandBuildFile } from '../compile/tdsBuild';
@@ -76,7 +76,7 @@ export function patchGenerate(context: vscode.ExtensionContext) {
 			currentPanel.webview.onDidReceiveMessage(message => {
 				switch (message.command) {
 					case 'checkDir':
-						var checkedDir = Utils.checkDir(message.selectedDir);
+						let checkedDir = Utils.checkDir(message.selectedDir);
 						currentPanel.webview.postMessage({
 							command: "checkedDir",
 							checkedDir: checkedDir
@@ -175,7 +175,7 @@ export class PatchResult {
 	returnCode: number;
 }
 
-export class inspectorObject {
+export class InspectorObject {
 	name: string;
 	type: string;
 	date: string;
@@ -183,7 +183,7 @@ export class inspectorObject {
 
 export class ObjectsResult {
 	message: string;
-	objects: Array<inspectorObject>;
+	objects: Array<InspectorObject>;
 }
 
 // function getWizardGeneratePatch(extensionPath: string) {

@@ -1,11 +1,11 @@
-//import * as vscode from 'vscode';
-import { ExtensionContext, QuickInputButton, Uri, QuickPickItem, workspace } from "vscode";
-import Utils from "./utils";
-import * as path from 'path';
-import { MultiStepInput } from "./multiStepInput";
-import { connectServer, reconnectServer, ServerItem, EnvSection, connTypeId, connTypeIds } from "./serversView";
-
 import * as nls from 'vscode-nls';
+import * as path from 'path';
+import Utils from "./utils";
+import { ConnTypeIds } from './langServer/protocolMessages';
+import { ExtensionContext, QuickInputButton, Uri, QuickPickItem, workspace } from "vscode";
+import { MultiStepInput } from "./multiStepInput";
+import { connectServer, reconnectServer, ServerItem, EnvSection } from "./serversView";
+
 let localize = nls.loadMessageBundle();
 
 /**
@@ -16,13 +16,13 @@ let localize = nls.loadMessageBundle();
  *
  * This first part uses the helper class `MultiStepInput` that wraps the API for the multi-step case.
  */
-export async function inputConnectionParameters(context: ExtensionContext, serverParam: any, connType: connTypeId, reconnect: boolean) {
+export async function inputConnectionParameters(context: ExtensionContext, serverParam: any, connType: ConnTypeIds, reconnect: boolean) {
 
 	//const VALIDADE_TIME_OUT = 1000;
 	const title = 'Conexão';
 
 	class NewEnvironmentButton implements QuickInputButton {
-		constructor(public iconPath: { light: Uri; dark: Uri; }, public tooltip: string) {}
+		constructor(public iconPath: { light: Uri; dark: Uri; }, public tooltip: string) { }
 	}
 
 	const addEnvironmentButton = new NewEnvironmentButton({
@@ -59,15 +59,14 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 			CONNECT_ENVIRONMENT_STEP -= 1;
 
 			await MultiStepInput.run(input => pickEnvironment(input, state, serversConfig));
-	 	} else if (serverParam instanceof EnvSection) {
-			 state.server = serverParam.serverItemParent.id;
-			 state.environment = serverParam.label;
+		} else if (serverParam instanceof EnvSection) {
+			state.server = serverParam.serverItemParent.id;
+			state.environment = serverParam.label;
 		} else {
 			await MultiStepInput.run(input => pickServer(input, state, serversConfig));
 		}
 
 		// reconnection token requires server and environment informations
-		const configADVPL = workspace.getConfiguration('totvsLanguageServer');
 		if (reconnect) {
 			let serverId = (typeof state.server === "string") ? state.server : (state.server as QuickPickItem).detail;
 			let environmentName = (typeof state.environment === "string") ? state.environment : (state.environment as QuickPickItem).label;
@@ -113,7 +112,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 				title: title,
 				step: CONNECT_ENVIRONMENT_STEP,
 				totalSteps: CONNECT_TOTAL_STEPS,
-				placeholder: localize('tds.vscode.select_environment','Select environment'),
+				placeholder: localize('tds.vscode.select_environment', 'Select environment'),
 				items: environments,
 				activeItem: typeof state.environment !== 'string' ? state.environment : undefined,
 				buttons: [addEnvironmentButton],
@@ -125,21 +124,25 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 			}
 			state.environment = pick;
 		} else {
-			return (input: MultiStepInput) => inputEnvironment(input, state, serversConfig);
+			state.environment = "";
 		}
+
+		return (input: MultiStepInput) => inputEnvironment(input, state, serversConfig);
 	}
 
 	async function inputEnvironment(input: MultiStepInput, state: Partial<State>, serversConfig: any) {
-		state.environment = await input.showInputBox({
-			title: title,
-			step: CONNECT_ENVIRONMENT_STEP,
-			totalSteps: CONNECT_TOTAL_STEPS,
-			value: typeof state.environment === 'string' ? state.environment : '',
-			prompt: 'Informe o nome do ambiente',
-			shouldResume: shouldResume,
-			validate: validateRequiredValue,
-			password: false
-		});
+		if (state.environment === "") {
+			state.environment = await input.showInputBox({
+				title: title,
+				step: CONNECT_ENVIRONMENT_STEP,
+				totalSteps: CONNECT_TOTAL_STEPS,
+				value: typeof state.environment === 'string' ? state.environment : '',
+				prompt: 'Informe o nome do ambiente',
+				shouldResume: shouldResume,
+				validate: validateRequiredValue,
+				password: false
+			});
+		}
 	}
 
 	function shouldResume() {
@@ -202,10 +205,10 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 	main();
 }
 
-export function serverSelection(args, context){
+export function serverSelection(args, context) {
 	if (args && args.length > 0) {
-		inputConnectionParameters(context, args[0], 'CONNT_DEBUGGER', false);
+		inputConnectionParameters(context, args[0], ConnTypeIds.CONNT_DEBUGGER, false);
 	} else {
-		inputConnectionParameters(context, undefined, 'CONNT_DEBUGGER', false);
+		inputConnectionParameters(context, undefined, ConnTypeIds.CONNT_DEBUGGER, false);
 	}
 }

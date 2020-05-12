@@ -119,7 +119,7 @@ export class TotvsConfigurationTdsReplayProvider implements DebugConfigurationPr
 		let isTheSameFilter = true;
 		let lastIncludeFilterUsed;
 		let lastExcludeFilterUsed;
-		var allLines = fs.readFileSync(filterFile).toString().split("\n");
+		let allLines = fs.readFileSync(filterFile).toString().split("\n");
 		if(allLines !== undefined && allLines.length > 0) {
 			if(allLines.length > 2) {
 				lastIncludeFilterUsed = allLines[1];

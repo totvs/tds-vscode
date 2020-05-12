@@ -1,12 +1,11 @@
 import { CodeLens, commands, DecorationOptions, DecorationRangeBehavior, DecorationRenderOptions, ExtensionContext, Position, ProviderResult, Range, TextDocument, ThemeColor, window, workspace, TextEditorDecorationType } from 'vscode';
 import { CancellationToken, LanguageClient, LanguageClientOptions, ProvideCodeLensesSignature, RevealOutputChannelOn, ServerOptions } from 'vscode-languageclient/lib/main';
 import * as ls from 'vscode-languageserver-types';
-import vscode = require('vscode');
+import * as vscode from 'vscode';
 import { statSync, chmodSync } from 'fs';
-import { reconnectLastServer } from './serversView';
-
 import * as nls from 'vscode-nls';
-import { syncSettings } from './server/languageServerSettings';
+import { syncSettings } from '../server/languageServerSettings';
+
 let localize = nls.loadMessageBundle();
 
 export let sessionKey: string;
@@ -67,12 +66,12 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 		advpls = dir + "/node_modules/@totvs/tds-ls/bin/windows/advpls.exe";
 	} else if (process.platform === "linux") {
 		advpls = dir + "/node_modules/@totvs/tds-ls/bin/linux/advpls";
-		if (statSync(advpls).mode != 33261) {
+		if (statSync(advpls).mode !== 33261) {
 			chmodSync(advpls, '755');
 		}
 	} else if (process.platform === "darwin") {
 		advpls = dir + "/node_modules/@totvs/tds-ls/bin/mac/advpls";
-		if (statSync(advpls).mode != 33261) {
+		if (statSync(advpls).mode !== 33261) {
 			chmodSync(advpls, '755');
 		}
 	}
@@ -139,30 +138,30 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 	};
 
 	let languageClient = new LanguageClient(
-		//'AdvPL', 'AdvPL',
-		'totvsLanguageServer', 'TOTVS AdvPL Language Server',
+		'totvsLanguageServer',
+		'TOTVS AdvPL Language Server',
 		serverOptions,
 		clientOptions);
 
 	//let command = serverOptions.command;
-	languageClient.onReady().then(async () => {
-		isLSInitialized = true;
+	languageClient.onReady()
+		.then(async () => {
+			isLSInitialized = true;
 
-		const configADVPL = vscode.workspace.getConfiguration('totvsLanguageServer');//transformar em configuracao de workspace
+			const configADVPL = vscode.workspace.getConfiguration('totvsLanguageServer');//transformar em configuracao de workspace
 
-		syncSettings();
+			syncSettings();
 
-		let isReconnectLastServer = configADVPL.get('reconnectLastServer');
-		if (isReconnectLastServer) {
-			reconnectLastServer();
-		}
+			let isReconnectLastServer = configADVPL.get('reconnectLastServer');
+			if (isReconnectLastServer) {
+				//reconnectLastServer();
+			}
 
-	}).catch(e => {
-		// TODO: remove cquery.launch.workingDirectory after July 2018
-		window.showErrorMessage(
-			e);
-	});
-	//context.subscriptions.push(languageClient.start());
+		}).catch(e => {
+			// TODO: remove cquery.launch.workingDirectory after July 2018
+			window.showErrorMessage(
+				e);
+		});
 
 	return languageClient;
 }

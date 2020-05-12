@@ -1,5 +1,5 @@
-import vscode = require('vscode');
-import path = require('path');
+import * as vscode from 'vscode';
+import * as path from 'path';
 import Utils from '../utils';
 import * as fs from 'fs';
 import * as nls from 'vscode-nls';

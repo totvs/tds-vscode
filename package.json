@@ -2,7 +2,7 @@
 	"name": "tds-vscode",
 	"displayName": "Totvs Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
 	"description": "%tds.package.description%",
-	"version": "1.0.2",
+	"version": "1.1.2",
 	"publisher": "TOTVS",
 	"author": {
 		"name": "TOTVS",
@@ -15,7 +15,9 @@
 		"tlpp",
 		"4gl",
 		"tds",
-		"totvs"
+		"totvs",
+		"monitor",
+		"protheus"
 	],
 	"engines": {
 		"vscode": "^1.29.0",
@@ -50,9 +52,9 @@
 		"publish": "npm run compile && vsce publish"
 	},
 	"dependencies": {
-		"@material-ui/core": "^4.9.5",
+		"@material-ui/core": "^4.9.11",
 		"@material-ui/icons": "^4.9.1",
-		"@material-ui/lab": "^4.0.0-alpha.45",
+		"@material-ui/lab": "^4.0.0-alpha.50",
 		"@totvs/tds-da": "^1.1.4",
 		"@totvs/tds-ls": "^1.1.8",
 		"@types/jszip": "^3.1.7",
@@ -76,6 +78,7 @@
 		"vscode-nls-dev": "^3.3.1"
 	},
 	"devDependencies": {
+		"@types/ini": "^1.3.30",
 		"@types/react-dom": "^16.9.5",
 		"cleanup": "^0.3.0",
 		"css-loader": "^3.5.3",
@@ -378,6 +381,24 @@
 					],
 					"default": "LS",
 					"description": "%tds.package.editor.toggle.autocomplete%"
+				},
+				"totvsMonitor.update.speed": {
+					"scope": "window",
+					"type": "string",
+					"enum": [
+						"Short",
+						"Normal",
+						"Long",
+						"Manual"
+					],
+					"enumDescriptions": [
+						"%totvsMonitor.update.speed.short%",
+						"%totvsMonitor.update.speed.normal%",
+						"%totvsMonitor.update.speed.long%",
+						"%totvsMonitor.update.speed.manual%"
+					],
+					"default": "Normal",
+					"description": "%totvsMonitor.update.speed%"
 				}
 			}
 		},
@@ -613,6 +634,15 @@
 				"command": "totvs-developer-studio.tdsreplay.webview.timeLine",
 				"title": "Open TimeLine Webview",
 				"category": "TDSReplay"
+			},
+			{
+				"command": "tds-monitor.open-monitor-view",
+				"title": "%tds-monitor.open-monitor-view%",
+				"category": "TOTVSMonitor",
+				"icon": {
+					"light": "resources/light/monitor.png",
+					"dark": "resources/dark/monitor.png"
+				}
 			}
 		],
 		"keybindings": [
@@ -1169,6 +1199,11 @@
 			"view/title": [
 				{
 					"command": "totvs-developer-studio.add",
+					"when": "view == totvs_server",
+					"group": "navigation"
+				},
+				{
+					"command": "tds-monitor.open-monitor-view",
 					"when": "view == totvs_server",
 					"group": "navigation"
 				},

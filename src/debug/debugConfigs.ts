@@ -170,7 +170,7 @@ export function toggleTableSync() {
 
 debug.onDidChangeActiveDebugSession((newDebugSession) => {
  	debugSession = newDebugSession;
-})
+});
 
 function sendChangeTableSyncSetting(): void {
 	if(debugSession === undefined) {

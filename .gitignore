@@ -10,3 +10,4 @@ totvsls-full.log
 totvsls_in.log
 totvsls_out.log
 .editorconfig
+package-lock.json

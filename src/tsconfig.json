@@ -6,7 +6,7 @@
         "sourceMap": true,
 
         "noImplicitAny": false,
-        "removeComments": false,
+        "removeComments": true,
         "noUnusedLocals": false,
         "noImplicitThis": true,
         "noFallthroughCasesInSwitch": true,
