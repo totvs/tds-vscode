@@ -1,5 +1,11 @@
 # Versão T.B.D.
 
+## Erro ao adicionar servidor [Issue 367](https://github.com/totvs/tds-vscode/issues/367)
+### Problema:
+* Ao adicionar servidor está sendo apresentada a mensagem: "Cannot read property 'length' of undefined".
+### Solução/Melhoria:
+* O processo de inicialização permitia a criação do servers.json com apenas a seção "includes". Adicionadas validações para que o arquivo mínimo seja criado ao instalar a extensão.
+----
 ## Possibilidade de exportar arquivo com as informações do conteúdo do patch [Issue 301](https://github.com/totvs/tds-vscode/issues/301)
 ### Melhoria:
 * Adicionada a funcionalidade para exportar um arquivo com as informações do conteúdo do patch em 'Patch Infos'.
