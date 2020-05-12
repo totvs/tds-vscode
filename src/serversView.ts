@@ -113,10 +113,8 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 	}
 
 	private addServersConfigListener(): void {
+		Utils.createServerConfig();
 		let serversJson = Utils.getServerConfigFile();
-		if (!fs.existsSync(serversJson)) {
-			Utils.createServerConfig();
-		}
 		//Caso o arquivo servers.json seja encontrado, registra o listener já na inicialização.
 		fs.watch(serversJson, { encoding: 'buffer' }, (eventType, filename) => {
 			if (filename && eventType === 'change') {
@@ -218,7 +216,6 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 	}
 
 	private saveServers(serverItems: ServerItem[]) {
-		Utils.createServerConfig();
 
 		serverItems.forEach(element => {
 			/*const id = */Utils.createNewServer("totvs_server_protheus", element.label, element.port, element.address, element.buildVersion, element.secure, element.includes);

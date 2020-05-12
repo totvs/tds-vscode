@@ -109,16 +109,13 @@ export default class Utils {
 	 */
 	static getServersConfig() {
 		let config: any = {};
-		let fs = require('fs');
-		let exist = fs.existsSync(Utils.getServerConfigFile());
-		if (exist) {
-			let json = fs.readFileSync(Utils.getServerConfigFile()).toString();
-			if (json) {
-				try {
-					config = JSON.parse(stripJsonComments(json));
-				}
-				catch (e) {
-				}
+		let serversJson = Utils.getServerConfigFile();
+		let json = fs.readFileSync(serversJson).toString();
+		if (json) {
+			try {
+				config = JSON.parse(stripJsonComments(json));
+			}
+			catch (e) {
 			}
 		}
 		return config;
@@ -333,7 +330,6 @@ export default class Utils {
 	 * Cria uma nova configuracao de servidor no servers.json
 	 */
 	static createNewServer(typeServer, serverName, port, address, buildVersion, secure, includes): string | undefined {
-		Utils.createServerConfig();
 		const serverConfig = Utils.getServersConfig();
 
 		if (serverConfig.configurations) {
@@ -456,32 +452,29 @@ export default class Utils {
 	 * Cria o arquivo servers.json caso ele nao exista.
 	 */
 	static createServerConfig() {
-		const servers = Utils.getServersConfig();
-		if (!servers) {
-			let fs = require("fs");
+		if (!fs.existsSync(Utils.getServerConfigPath())) {
+			fs.mkdirSync(Utils.getServerConfigPath());
+		}
+		let serversJson = Utils.getServerConfigFile();
+		if (!fs.existsSync(serversJson)) {
 			const sampleServer = {
 				version: "0.2.0",
-				includes: ["C:/totvs/includes"],
+				includes: [ "" ],
 				permissions: {
 					authorizationtoken: ""
 				},
 				connectedServer: {},
 				configurations: []
 			};
-
-			if (!fs.existsSync(Utils.getServerConfigPath())) {
-				fs.mkdirSync(Utils.getServerConfigPath());
+			try {
+				fs.writeFileSync(serversJson, JSON.stringify(sampleServer, null, "\t"));
 			}
-
-			let serversJson = Utils.getServerConfigFile();
-
-			fs.writeFileSync(serversJson, JSON.stringify(sampleServer, null, "\t"), (err) => {
-				if (err) {
-					console.error(err);
-				}
-			});
+			catch (err) {
+				console.error(err);
+			}
 		}
 	}
+
 	/**
 	 * Cria o arquivo launch.json caso ele nao exista.
 	 */
