@@ -64,6 +64,9 @@ export function activate(context: ExtensionContext) {
 	//new DebugEvent(context); //Cria a instancia para ja informar o debug context
 
 	console.log(localize('tds.console.congratulations', 'Congratulations, your extension "totvs-developer-studio" is now active!'));
+
+	Utils.createServerConfig();
+
 	context.subscriptions.push(commands.registerCommand('tds.getDAP', () => getDAP()));
 
 	if (extensions.getExtension("TOTVS.tds-vscode")) {
