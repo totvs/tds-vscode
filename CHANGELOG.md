@@ -1,9 +1,15 @@
 # Versão T.B.D.
 
+## Problema ao tentar gerar cliente WSDL [Issue 369](https://github.com/totvs/tds-vscode/issues/369)
+### Problema:
+* Problema ao tentar gerar cliente WSDL sem ter uma chave de compilação aplicada. Ocorre o erro "Authorization token was not informed.".
+### Solução:
+* Foi realizada correção para remover esta validação pois a chave não é obrigatória nestes casos.
+----
 ## Erro ao adicionar servidor [Issue 367](https://github.com/totvs/tds-vscode/issues/367)
 ### Problema:
 * Ao adicionar servidor está sendo apresentada a mensagem: "Cannot read property 'length' of undefined".
-### Solução/Melhoria:
+### Solução:
 * O processo de inicialização permitia a criação do servers.json com apenas a seção "includes". Adicionadas validações para que o arquivo mínimo seja criado ao instalar a extensão.
 ----
 ## Possibilidade de exportar arquivo com as informações do conteúdo do patch [Issue 301](https://github.com/totvs/tds-vscode/issues/301)
