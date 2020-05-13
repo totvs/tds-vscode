@@ -126,6 +126,7 @@
 		"onCommand:totvs-developer-studio.patchApply.fromFile",
 		"onCommand:totvs-developer-studio.patchInfos",
 		"onCommand:totvs-developer-studio.patchInfos.fromFile",
+		"onCommand:totvs-developer-studio.patchValidate.fromFile",
 		"onCommand:totvs-developer-studio.welcomePage",
 		"onCommand:totvs-developer-studio.include",
 		"onCommand:totvs-developer-studio.ws.show",
@@ -567,6 +568,11 @@
 			{
 				"command": "totvs-developer-studio.patchApply.fromFile",
 				"title": "%tds.package.patchApply.fromFile%",
+				"category": "TOTVS"
+			},
+			{
+				"command": "totvs-developer-studio.patchValidate.fromFile",
+				"title": "%tds.package.patchValidate.fromFile%",
 				"category": "TOTVS"
 			},
 			{
@@ -1055,9 +1061,15 @@
 				},
 				{
 					"when": "resourceLangId == totvs_patch",
+					"command": "totvs-developer-studio.patchValidate.fromFile",
+					"alt": "totvs-developer-studio.patchValidate.fromFile",
+					"group": "totvsBuild@8"
+				},
+				{
+					"when": "resourceLangId == totvs_patch",
 					"command": "totvs-developer-studio.patchInfos.fromFile",
 					"alt": "totvs-developer-studio.patchInfos.fromFile",
-					"group": "totvsBuild@8"
+					"group": "totvsBuild@9"
 				},
 				{
 					"command": "totvs-developer-studio.delete.file.fromRPO",
@@ -1181,6 +1193,10 @@
 			"commandPalette": [
 				{
 					"command": "totvs-developer-studio.patchGenerate.fromFolder",
+					"when": "1 == 0"
+				},
+				{
+					"command": "totvs-developer-studio.patchValidate.fromFile",
 					"when": "1 == 0"
 				},
 				{

@@ -1,5 +1,11 @@
 # Versão T.B.D.
 
+## Senha não fica salva [Issue 371](https://github.com/totvs/tds-vscode/issues/371)
+### Problema:
+* Ao trocar de ambiente pela seleção de servidor/ambiente na barra inferior, mesmo com o token salvo previamente, a extensão está solicitando o usuário e senha do ambiente novamente.
+### Solução/Melhoria:
+* A seleção de servidor/ambiente estava com a ação de "Conexão" e foi alterada para "Reconexão" para agilizar a conexão pela barra inferior.
+----
 ## Problema ao tentar gerar cliente WSDL [Issue 369](https://github.com/totvs/tds-vscode/issues/369)
 ### Problema:
 * Problema ao tentar gerar cliente WSDL sem ter uma chave de compilação aplicada. Ocorre o erro "Authorization token was not informed.".

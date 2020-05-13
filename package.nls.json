@@ -21,6 +21,7 @@
 	"tds.package.editor.notification.show.all": "All",
 	"tds.package.inspector.patch.title": "Patch Infos",
 	"tds.package.patchInfos.fromFile": "Patch Infos",
+	"tds.package.patchValidate.fromFile": "Patch Validate",
 	"tds.package.inspector.function.title": "Functions inspector",
 	"tds.package.inspector.function.description": "Functions inspector",
 	"tds.package.inspector.object.title": "Objects inspector",
