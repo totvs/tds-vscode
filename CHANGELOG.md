@@ -1,4 +1,4 @@
-# Versão T.B.D.
+# Versão 1.0.3
 
 ## Senha não fica salva [Issue 371](https://github.com/totvs/tds-vscode/issues/371)
 ### Problema:
