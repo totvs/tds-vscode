@@ -582,7 +582,7 @@ export function connectServer(serverItem: ServerItem, environment: string, connT
 				.then((result: any) => {
 					if (result) {
 						Utils.saveConnectionToken(serverItem.id, result.token, environment);
-						Utils.saveSelectServer(serverItem.id, result.token, serverItem.name, environment, "");
+						Utils.saveSelectServer(serverItem.id, result.token, serverItem.name, environment, "", "");
 						if (treeDataProvider !== undefined) {
 							connectedServerItem = serverItem;
 							connectedServerItem.currentEnvironment = environment;
@@ -609,7 +609,7 @@ export function authenticate(serverItem: ServerItem, environment: string, userna
 				let token: string = result.token;
 				if (token) {
 					//vscode.window.showInformationMessage('Server ' + serverItem.label + ' connected!');
-					Utils.saveSelectServer(serverItem.id, token, serverItem.name, environment, username);
+					Utils.saveSelectServer(serverItem.id, token, serverItem.name, environment, username, password);
 					Utils.saveConnectionToken(serverItem.id, token, environment);
 					if (treeDataProvider !== undefined) {
 						connectedServerItem = serverItem;
@@ -672,7 +672,8 @@ export function reconnectLastServer() {
 							arguments: [element.name]
 						}
 					);
-					//reconnectServer(serverItem, servers.lastConnectedServer.token, servers.lastConnectedServer.environment, ConnTypeIds.CONNT_DEBUGGER);
+					const token = servers.lastConnectedServer.token;
+					reconnectServer( {serverItem, token} , servers.lastConnectedServer.environment, ConnTypeIds.CONNT_DEBUGGER);
 				}
 			});
 		}

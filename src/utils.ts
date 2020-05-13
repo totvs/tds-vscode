@@ -38,6 +38,8 @@ export interface SelectServer {
 	token: string;
 	environment: string;
 	environments?: string[];
+	username: string;
+	password: string;
 }
 
 export default class Utils {
@@ -153,15 +155,30 @@ export default class Utils {
 		});
 	}
 
-	// XXX terminar implementacao
-	static updateSavedTokens(id: string, environment: string, token: string) {
+	static updateSavedToken(id: string, environment: string, token: string) {
 		const servers = Utils.getServersConfig();
-		// procurar o token atual
-		servers.savedTokens.forEach(element => {
-			// atualizar o token
-		});
+
+		if (!servers.savedTokens) {
+			servers.savedTokens = [];
+		}
+
+		const data = { "id": id, "environment": environment};
+		servers.savedTokens[id+":"+environment] = data;
+
 		// persistir a configuracao
 		Utils.persistServersInfo(servers);
+	}
+
+	static getSavedTokens(id: string, environment: string): undefined | string {
+		const servers = Utils.getServersConfig();
+		let token = undefined;
+
+		if (servers.savedTokens && servers.savedTokens[id+":"+environment]) {
+			const data = servers.savedTokens[id+":"+environment];
+			token = data.token;
+		}
+
+		return token;
 	}
 
 	/**
@@ -171,7 +188,7 @@ export default class Utils {
 	 * @param name Nome do servidor logado
 	 * @param environment Ambiente utilizado no login
 	 */
-	static saveSelectServer(id: string, token: string, name: string, environment: string, username: string) {
+	static saveSelectServer(id: string, token: string, name: string, environment: string, username: string, password: string) {
 		const servers = Utils.getServersConfig();
 
 		servers.configurations.forEach(element => {
@@ -181,16 +198,17 @@ export default class Utils {
 				} else if (element.environments.indexOf(environment) === -1) {
 					element.environments.push(environment);
 				}
-				if (username) {
-					element.username = username;
-				}
+				element.username = username;
+				element.password = password;
 				element.environment = environment;
 
 				let server: SelectServer = {
 					'name': element.name,
 					'id': element.id,
 					'token': token,
-					'environment': element.environment
+					'environment': element.environment,
+					'username': element.username,
+					'password': element.password
 				};
 				servers.connectedServer = server;
 				servers.lastConnectedServer = server;
@@ -229,11 +247,11 @@ export default class Utils {
 		Utils.persistServersInfo(servers);
 	}
 
-/**
- * Remove o token salvo do servidor/environment.
- * @param id Id do servidor logado
- * @param environment Ambiente utilizado no login
- */
+	/**
+	 * Remove o token salvo do servidor/environment.
+	 * @param id Id do servidor logado
+	 * @param environment Ambiente utilizado no login
+	 */
 	static removeSavedConnectionToken(id: string, environment: string) {
 		const servers = Utils.getServersConfig();
 		if (servers.savedTokens) {
@@ -411,7 +429,7 @@ export default class Utils {
 	 */
 	static getIncludes(absolutePath: boolean = false, server: any = undefined): Array<string> {
 		let includes: Array<string>;
-		if(server !== undefined && server.includes !== undefined && server.includes.length > 0) {
+		if (server !== undefined && server.includes !== undefined && server.includes.length > 0) {
 			includes = server.includes as Array<string>;
 		} else {
 			const servers = Utils.getServersConfig();
