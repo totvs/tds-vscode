@@ -93,13 +93,14 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 			}
 		} else {
 			if (!this.localServerItems) {
-				const serverConfig = Utils.getServersConfig();
-				if (serverConfig.configurations.length <= 0) { //se o servers.json existe
-					this.localServerItems = this.setConfigWithSmartClient();
-				} else {
-					this.localServerItems = this.setConfigWithServerConfig();
-				}
-
+				this.localServerItems = this.setConfigWithServerConfig();
+				// XXX rever processo pois possivelmente sobrescreveria o localServerItems
+				// const serverConfig = Utils.getServersConfig();
+				// if (serverConfig.configurations.length <= 0) { //se o servers.json existe mas não possui configurations cadastrados ainda
+				// 	this.localServerItems = this.setConfigWithSmartClient();
+				// } else {
+				// 	this.localServerItems = this.setConfigWithServerConfig();
+				// }
 			}
 		}
 
@@ -133,15 +134,16 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 
 		if (fs.existsSync(launchJson)) { //Caso o arquivo launch.json seja encontrado, registra o listener já na inicialização.
 			fs.watch(launchJson, { encoding: 'buffer' }, (eventType, filename) => {
-				const serverConfig = Utils.getServersConfig();
-				if (filename && eventType === 'change') {
-					if (serverConfig.configurations.length > 0) {
-						this.localServerItems = this.setConfigWithServerConfig();
-					} else {
-						this.localServerItems = this.setConfigWithSmartClient();
-					}
-					this.refresh();
-				}
+				// XXX rever processo pois possivelmente sobrescreveria o localServerItems
+				// const serverConfig = Utils.getServersConfig();
+				// if (filename && eventType === 'change') {
+				// 	if (serverConfig.configurations.length > 0) {
+				// 		this.localServerItems = this.setConfigWithServerConfig();
+				// 	} else {
+				// 		this.localServerItems = this.setConfigWithSmartClient();
+				// 	}
+				// 	this.refresh();
+				// }
 			});
 		}
 	}
@@ -281,7 +283,8 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 					}
 				}
 			}
-			this.localServerItems = tcpSecs;
+			// XXX rever processo pois possivelmente sobrescreveria o localServerItems
+			// this.localServerItems = tcpSecs;
 			return tcpSecs;
 		} else {
 			return [];
