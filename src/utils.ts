@@ -125,20 +125,20 @@ export default class Utils {
 	 * Retorna todo o conteudo do launch.json
 	 */
 	static getLaunchConfig() {
-		let config: any = {};
-		let fs = require('fs');
 		let exist = fs.existsSync(Utils.getLaunchConfigFile());
 		if (exist) {
 			let json = fs.readFileSync(Utils.getLaunchConfigFile()).toString();
 			if (json) {
 				try {
-					config = JSON.parse(stripJsonComments(json));
+					return JSON.parse(stripJsonComments(json));
 				}
 				catch (e) {
+					console.error(e);
+					return {};
 				}
 			}
 		}
-		return config;
+		return undefined;
 	}
 
 	static saveLaunchConfig(config: JSON) {

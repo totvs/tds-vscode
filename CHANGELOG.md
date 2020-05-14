@@ -1,5 +1,11 @@
-# Versão T.B.D.
+# Versão 1.0.3
 
+## Problema ao criar launchers a partir das configurações do Smartclient na inicialização [Issue 377](https://github.com/totvs/tds-vscode/issues/377)
+### Problema:
+* Selecione um smartclient na tela de boas vindas e salve. Os launchers não estão sendo gerados corretamente..
+### Solução:
+* A geração inicial do arquivo launch.json estava incompleto e foi corrigida.
+----
 ## Senha não fica salva [Issue 371](https://github.com/totvs/tds-vscode/issues/371)
 ### Problema:
 * Ao trocar de ambiente pela seleção de servidor/ambiente na barra inferior, mesmo com o token salvo previamente, a extensão está solicitando o usuário e senha do ambiente novamente.
