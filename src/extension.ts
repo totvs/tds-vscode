@@ -67,6 +67,7 @@ export function activate(context: ExtensionContext) {
 	console.log(localize('tds.console.congratulations', 'Congratulations, your extension "totvs-developer-studio" is now active!'));
 
 	Utils.createServerConfig();
+	Utils.createLaunchConfig();
 
 	context.subscriptions.push(commands.registerCommand('tds.getDAP', () => getDAP()));
 
