@@ -173,7 +173,7 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
 function getClientConfig(context: ExtensionContext) {
 
 	function resolveVariablesInString(value: string) {
-		let rootPath = workspace.rootPath !== undefined ? workspace.rootPath : '';
+		let rootPath: string = vscode.workspace.rootPath || process.cwd();
 		return value.replace('${workspaceFolder}', rootPath);
 	}
 

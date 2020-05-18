@@ -137,6 +137,14 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 							vscode.window.showWarningMessage("Already selected. File: " + message.filename);
 							return;
 
+						case 'patchValidate':
+							vscode.window.showInformationMessage("PatchValidate");
+							const validateArgs = {
+								fsPath: message.file
+							};
+							vscode.commands.executeCommand('totvs-developer-studio.patchValidate.fromFile', validateArgs);
+							return;
+
 						case 'patchInfo':
 							vscode.window.showInformationMessage("PatchInfo");
 							const args = {

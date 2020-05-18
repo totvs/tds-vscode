@@ -41,6 +41,7 @@ import { getDAP, getProgramName, getProgramArguments, toggleTableSync } from './
 import { toggleAutocompleteBehavior, updateSettingsBarItem } from './server/languageServerSettings';
 import { advplDocumentFormattingEditProvider, advplDocumentRangeFormattingEditProvider, advplResourceFormatting } from './formatter/advplFormatting';
 import { processDebugCustomEvent, DebugEvent, createTimeLineWebView } from './debug/debugEvents';
+import { patchValidates } from './patch/patchValidate';
 
 export let languageClient: LanguageClient;
 // metodo de tradução
@@ -64,6 +65,10 @@ export function activate(context: ExtensionContext) {
 	//new DebugEvent(context); //Cria a instancia para ja informar o debug context
 
 	console.log(localize('tds.console.congratulations', 'Congratulations, your extension "totvs-developer-studio" is now active!'));
+
+	Utils.createServerConfig();
+	Utils.createLaunchConfig();
+
 	context.subscriptions.push(commands.registerCommand('tds.getDAP', () => getDAP()));
 
 	if (extensions.getExtension("TOTVS.tds-vscode")) {
@@ -305,6 +310,8 @@ export function activate(context: ExtensionContext) {
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.patchInfos', () => patchInfos(context, null)));
 	//Verifica o conteudo de um patch pelo menu de contexto em arquivos de patch
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.patchInfos.fromFile', (args) => patchInfos(context, args)));
+	//Valida o conteudo de um patch pelo menu de contexto em arquivos de patch
+	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.patchValidate.fromFile', (args) => patchValidates(context, args)));
 
 	//Adiciona página de Includes
 	context.subscriptions.push(commands.registerCommand('totvs-developer-studio.include', () => showInclude(context)));

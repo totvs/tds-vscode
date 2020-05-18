@@ -9,23 +9,24 @@ import * as nls from 'vscode-nls';
 import { ResponseError } from 'vscode-languageclient';
 let localize = nls.loadMessageBundle();
 
-let patchInfosData;
+let patchValidatesData;
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
 const localizeHTML = {
-	"tds.webview.inspect.patch": localize("tds.webview.inspect.patch", "Patch Infos"),
-	"tds.webview.inspect.ignore.files": localize("tds.webview.inspect.ignore.files", "Ignore files"),
-	"tds.webview.inspect.export.files": localize("tds.webview.inspect.export.files", "Export to file"),
-	"tds.webview.inspect.export.files2": localize("tds.webview.inspect.export.files2", "Export items filted to file"),
-	"tds.webview.inspect.export.close": localize("tds.webview.inspect.export.close", "Close"),
-	"tds.webview.inspect.filter": localize("tds.webview.inspect.filter", "Filter, ex: MAT or * All (slow)"),
-	"tds.webview.inspect.items.showing": localize("tds.webview.inspect.items.showing", "Items showing"),
-	"tds.webview.inspect.col01": localize("tds.webview.inspect.col01", "Name"),
-	"tds.webview.inspect.col02": localize("tds.webview.inspect.col02", "Date"),
+	"tds.webview.validate.patch": localize("tds.webview.validate.patch", "Patch Validate"),
+	"tds.webview.validate.ignore.files": localize("tds.webview.validate.ignore.files", "Ignore files"),
+	"tds.webview.validate.export.files": localize("tds.webview.validate.export.files", "Export to file"),
+	"tds.webview.validate.export.files2": localize("tds.webview.validate.export.files2", "Export items filted to file"),
+	"tds.webview.validate.export.close": localize("tds.webview.validate.export.close", "Close"),
+	"tds.webview.validate.filter": localize("tds.webview.validate.filter", "Filter, ex: MAT or * All (slow)"),
+	"tds.webview.validate.items.showing": localize("tds.webview.validate.items.showing", "Items showing"),
+	"tds.webview.validate.col01": localize("tds.webview.validate.col01", "File"),
+	"tds.webview.validate.col02": localize("tds.webview.validate.col02", "Date Patch"),
+	"tds.webview.validate.col03": localize("tds.webview.validate.col02", "Date Rpo"),
 }
 
-export function patchInfos(context: vscode.ExtensionContext, args: any) {
+export function patchValidates(context: vscode.ExtensionContext, args: any) {
 	const server = Utils.getCurrentServer();
 	const authorizationToken = Utils.getPermissionsInfos().authorizationToken;
 
@@ -42,8 +43,8 @@ export function patchInfos(context: vscode.ExtensionContext, args: any) {
 
 		if (!currentPanel) {
 			currentPanel = vscode.window.createWebviewPanel(
-				'totvs-developer-studio.inspect.patch',
-				'Inspetor de Patch',
+				'totvs-developer-studio.validate.patch',
+				'Patch Validate',
 				vscode.ViewColumn.One,
 				{
 					enableScripts: true,
@@ -64,11 +65,11 @@ export function patchInfos(context: vscode.ExtensionContext, args: any) {
 
 			currentPanel.webview.onDidReceiveMessage(message => {
 				switch (message.command) {
-					case 'patchInfo':
-						sendPatchInfo(message.patchFile, server, authorizationToken, currentPanel);
+					case 'patchValidate':
+						sendPatchValidate(message.patchFile, server, authorizationToken, currentPanel);
 						break;
-					case 'exportPatchInfo':
-						exportPatchInfo();
+					case 'exportPatchValidate':
+						exportPatchValidate();
 						break;
 					case 'close':
 						if (currentPanel) {
@@ -87,7 +88,7 @@ export function patchInfos(context: vscode.ExtensionContext, args: any) {
 		if (args) {
 			if (args.fsPath) {
 				sendPatchPath(args.fsPath, currentPanel);
-				sendPatchInfo(args.fsPath, server, authorizationToken, currentPanel);
+				sendPatchValidate(args.fsPath, server, authorizationToken, currentPanel);
 			}
 		}
 	} else {
@@ -102,15 +103,13 @@ function sendPatchPath(path, currentPanel) {
 	});
 }
 
-function exportPatchInfo() {
-	if (patchInfosData) {
-		let patchInfos = patchInfosData;
-		var data = "NAME".padEnd(80, ' ') + "TYPE".padEnd(10, ' ') + "BUILD".padEnd(15, ' ')
-				 + "DATE".padEnd(20, ' ') + "SIZE".padStart(12, ' ') + os.EOL;
-		for (let index = 0; index < patchInfos.length; index++) {
-			const element = patchInfos[index];
-			var output = element.name.padEnd(80, ' ') + element.type.padEnd(10, ' ') + element.buildType.padEnd(15, ' ')
-			+ element.date.padEnd(20, ' ') + element.size.padStart(12, ' ');
+function exportPatchValidate() {
+	if (patchValidatesData) {
+		let patchValidates = patchValidatesData;
+		var data = "FILE".padEnd(80, ' ') + "DATE PATCH".padEnd(20, ' ') + "DATE RPO".padEnd(20, ' ') + os.EOL;
+		for (let index = 0; index < patchValidates.length; index++) {
+			const element = patchValidates[index];
+			var output = element.name.padEnd(80, ' ') + element.date.padEnd(20, ' ') + element.size.padEnd(20, ' ');
 			data += output + os.EOL;
 		}
 		vscode.window.showSaveDialog({ saveLabel: "Export" }).then(exportFile => {
@@ -119,10 +118,10 @@ function exportPatchInfo() {
 	}
 }
 
-function sendPatchInfo(patchFile, server, authorizationToken, currentPanel) {
+function sendPatchValidate(patchFile, server, authorizationToken, currentPanel) {
 	const patchURI = vscode.Uri.file(patchFile).toString();
-	languageClient.sendRequest('$totvsserver/patchInfo', {
-		"patchInfoInfo": {
+	languageClient.sendRequest('$totvsserver/patchValidate', {
+		"patchValidateInfo": {
 			"connectionToken": server.token,
 			"authorizationToken": authorizationToken,
 			"environment": server.environment,
@@ -130,10 +129,10 @@ function sendPatchInfo(patchFile, server, authorizationToken, currentPanel) {
 			"isLocal": true
 		}
 	}).then((response: any) => {
-		patchInfosData = response.patchInfos;
+		patchValidatesData = response.patchValidates;
 		currentPanel.webview.postMessage({
 			command: 'setData',
-			data: response.patchInfos
+			data: response.patchValidates
 		});
 	}, (err: ResponseError<object>) => {
 		vscode.window.showErrorMessage(err.message);
@@ -142,7 +141,7 @@ function sendPatchInfo(patchFile, server, authorizationToken, currentPanel) {
 
 function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 
-	const htmlOnDiskPath = vscode.Uri.file(path.join(context.extensionPath, 'src', 'patch', 'formInspectPatch.html'));
+	const htmlOnDiskPath = vscode.Uri.file(path.join(context.extensionPath, 'src', 'patch', 'formValidatePatch.html'));
 	const cssOniskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'table_materialize.css'));
 	const tableScriptPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'script', 'table_materialize.js'));
 	//const cssOniskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));

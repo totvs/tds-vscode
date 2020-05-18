@@ -2,7 +2,7 @@
 	"name": "tds-vscode",
 	"displayName": "Totvs Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
 	"description": "%tds.package.description%",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"publisher": "TOTVS",
 	"author": {
 		"name": "TOTVS",
@@ -53,8 +53,8 @@
 		"@material-ui/core": "^4.9.5",
 		"@material-ui/icons": "^4.9.1",
 		"@material-ui/lab": "^4.0.0-alpha.45",
-		"@totvs/tds-da": "^1.1.4",
-		"@totvs/tds-ls": "^1.1.7",
+		"@totvs/tds-da": "^1.1.5",
+		"@totvs/tds-ls": "^1.1.9",
 		"@types/jszip": "^3.1.7",
 		"@types/node": "13.7.1",
 		"@types/react": "^16.9.23",
@@ -126,6 +126,7 @@
 		"onCommand:totvs-developer-studio.patchApply.fromFile",
 		"onCommand:totvs-developer-studio.patchInfos",
 		"onCommand:totvs-developer-studio.patchInfos.fromFile",
+		"onCommand:totvs-developer-studio.patchValidate.fromFile",
 		"onCommand:totvs-developer-studio.welcomePage",
 		"onCommand:totvs-developer-studio.include",
 		"onCommand:totvs-developer-studio.ws.show",
@@ -567,6 +568,11 @@
 			{
 				"command": "totvs-developer-studio.patchApply.fromFile",
 				"title": "%tds.package.patchApply.fromFile%",
+				"category": "TOTVS"
+			},
+			{
+				"command": "totvs-developer-studio.patchValidate.fromFile",
+				"title": "%tds.package.patchValidate.fromFile%",
 				"category": "TOTVS"
 			},
 			{
@@ -1055,9 +1061,15 @@
 				},
 				{
 					"when": "resourceLangId == totvs_patch",
+					"command": "totvs-developer-studio.patchValidate.fromFile",
+					"alt": "totvs-developer-studio.patchValidate.fromFile",
+					"group": "totvsBuild@8"
+				},
+				{
+					"when": "resourceLangId == totvs_patch",
 					"command": "totvs-developer-studio.patchInfos.fromFile",
 					"alt": "totvs-developer-studio.patchInfos.fromFile",
-					"group": "totvsBuild@8"
+					"group": "totvsBuild@9"
 				},
 				{
 					"command": "totvs-developer-studio.delete.file.fromRPO",
@@ -1181,6 +1193,10 @@
 			"commandPalette": [
 				{
 					"command": "totvs-developer-studio.patchGenerate.fromFolder",
+					"when": "1 == 0"
+				},
+				{
+					"command": "totvs-developer-studio.patchValidate.fromFile",
 					"when": "1 == 0"
 				},
 				{

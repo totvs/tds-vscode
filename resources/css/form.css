@@ -13,28 +13,8 @@ textarea:focus, input:focus {
 	box-sizing: border-box;
 }
 
-.formWrap_old {
-	width: 500px;
-	box-sizing: border-box;
-	background-position-x: 0%;
-	background-position-y: 0%;
-	background-repeat: repeat;
-	background-attachment: scroll;
-	background-image: linear-gradient(170deg,#424242,#424242);
-	background-size: auto;
-	background-origin: padding-box;
-	background-clip: border-box;
-	border-radius: 20px;
-	overflow: hidden;
-	padding-top: 40px;
-	padding-right: 55px;
-	padding-bottom: 65px;
-	padding-left: 55px;
-	margin: 0px;
-}
-
 .formWrap {
-	width: 500px;
+	width: 512px;
 	background-color: #F3F3F3/*#FAFAFA*/;
 	box-sizing: border-box;
 	background-position-x: 0%;

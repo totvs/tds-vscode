@@ -14,16 +14,19 @@ São problemas que ocorrem desde a inicialização do **TDS VS Code** até a ope
 ### Pastas com acentuação
 
 Já tivemos diversos relatos onde o problema era relacionado com acentuações nas pastas do projeto/workspace em uso.
+
 **Solução:** Remova quaisquer acentuações que existam no projeto/workspace que estiver trabalhando.
 
 ### Maiúsculas e Minúsculas (*Case*)
 
 É sabido que no Windows o *case* (maiúsculas e minúsculas) não importa, mas no Linux e Mac, que são S.O. baseados no Unix, o *case* faz diferença. Devido ao uso de bibliotecas internas do AppServer, o *case* do arquivos no Linux e Mac são convertidos para minúsculas sempre, causando problemas quando existem caracteres em letras maiúsculas.
+
 **Solução:** Utilize somente letras minúsculas em todo o caminho, inclusive no nome dos arquivos quando utilizar o **TDS VS Code** em Linux ou Mac.
 
 ### Falhas gerais na inicialização (command 'totvs-developer-studio.add' not found)
 
 Tivemos relatos de problemas de problemas ao utilizar o **TDS VS Code** sem uma pasta aberta (projeto/workspace).
+
 **Solução:** Sempre abra um projeto/workspace ao utilizar o **TDS VS Code**.
 
 ### Erro ao adicionar servidores
@@ -33,19 +36,35 @@ Se durante a inicialização ocorrer um erro semelhante a:
 ou ao tentar salvar um novo servidor ocorrer um erro semelhante a:
 `Unexpected token , in JSON at position 18507`
 É bem provável que tenha editado o arquivo "servers.json" e "corrompido" sua estrutura.
+
 **Solução:** Verifique se consegue identificar o problema no arquivo "servers.json" utilizando um parser de JSON. Normalmente é apenas a falta ou sobra de uma simples vírgula que causa o problema. Se não encontrar o problema no arquivo JSON, você sempre poderá apagar este arquivo, porém terá que cadastrar os servidores novamente.
 
 ### Compilação de fontes
 
 Os problemas mais frequentes que causam falha na compilação estão associadas a configuração de *includes*.
+
 **Solução:** Verifique as configurações de *includes* no arquivo "servers.json" (na pasta ".totvsls" em sua pasta de usuário). Os *includes* podem ser definidos por servidores (em "configurations") e no nível geral *includes*. Se não estiver definido no servidor o *includes* geral será utilizado. Note que os *includes* devem ser os diretórios onde os arquivos `.ch` estão localizados.
+
 > de qualquer formam, os erros ocorridos durante a compilação de um fonte devem aparecer na visão "Problems" do **TDS VS Code** ou exibidos na visão "Output - AdvPL". Se nenhuma informação sobre o erro for apresentada, crie uma nova "Issue".
+
+### File extension not in the allowed extensions list
+
+Se encontrar uma mensagem como a seguir é porque, por padrão, somente serão compilados os fontes/recursos cujas extensões estiverem na lista de extensões permitidas configurada.
+
+> [SKIPPED] File extension for <file.ext> is not in the allowed extensions list.
+
+A lista pode ser visualizada e alterada em `File | Preferences | Settings | Extensions | AdvPL | Folder: Extensions Allowed`.
+
+Este filtro pode ser desativado completamente, permitindo que quaisquer extensões de arquivos sejam compiladas no RPO, ao desmarcar a opção `File | Preferences | Settings | Extensions | AdvPL | Folder: Enable Extensions Filter`.
+
+> Ao cadastrar uma nova extensão utilize o formato `".EXT"` (iniciado por um ponto e com as todas as letras em maíusculas).
 
 ### Falha de conexão (Retrieve connection error)
 
 Se ocorrer um erro com a mensagem do tipo:
 `Retrieve connection error: Connection is not authenticated but requires authentication`
 Indica que o token de reconexão pode conter dados incorretos.
+
 **Solução:** Acione `File > Preferences > Settings` ( ou `CTRL + ,` ) e localize AdvPL em Extensions. Procure a opção "Use reconnection token" e desabilite temporariamente. Tente se conectar novamente e os dados do token de reconexão serão atualizados com os novos dados da conexão.
 
 ### Falha ao compilar, gerar/aplicar patches (Novo AppServer Lobo Guará 19)
@@ -53,16 +72,19 @@ Indica que o token de reconexão pode conter dados incorretos.
 A operação falha com uma mensagem semelhante a:
 `[FATAL] Aborting: the user must be logged in before xxxxx.`
 Certifique-se de que seu AppServer está atualizado, pois se for uma versão RC (Release Candidate), do tipo `Build Version: 19.3.0.1_RC13`, é possível que esteja com um problema que foi corrigido no *AppServer*.
+
 **Solução:** Pegue a última versão do portal e tente novamente.
 
 ### Usuário com acentuação
 
 Tivemos um relato onde o problema estava relacionado ao nome do usuário conter acentuação.
+
 **Solução:** Utilize um usuário que não contenha nenhum tipo de acentuação.
 
 ### Windows Server
 
 Tivemos relatos de problemas na instalação do **TDS VS Code** em *S.O.* do tipo *Windows Server*. Nossas suspeitas são de que este tipos de *S.O.* não posssuem *DLLs*, que existem na distribuições voltadas para Desktops, e que são necessárias para o funcionamento do *VS Code*.
+
 **Solução:** Utilize um *S.O.* diferente de *Windows Server*.
 
 
@@ -73,11 +95,13 @@ São problemas que ocorrem especificamente durante a depuração de um programa.
 ### Pastas com acentuação
 
 Apesar de já descrita na seção de **"Problemas Gerais"** existem problemas que ocorrem ao adicionar um *Ponto de Parada* em fontes cujos caminhos contem acentuação em qualquer nível.
+
 **Solução:** Remova quaisquer acentuações que existam no projeto/workspace que estiver trabalhando.
 
 ### Depuração não inicia
 
 Se a depuração não inicia, verifique se o Smartclient utilizado é o correto para a versão do AppServer utilizado.
+
 **Solução:** Ao invés de iniciar a depuração com o `F5` utilize o `CTRL + F5` e veja se o Smartclient executa corretamente. Se o Smartclient não executar assim, reveja as configurações de depuração (launch.json).
 
 

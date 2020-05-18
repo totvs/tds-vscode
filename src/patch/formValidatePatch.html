@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>${d.localize["tds.webview.inspect.patch"]}</title>
+	<title>${d.localize["tds.webview.validate.patch"]}</title>
 	<!--Patch Inspect-->
 </head>
 
@@ -33,7 +33,7 @@
 		     style="width: 768px;">
 
 			<div class="logo">
-				<span class="formTitle">${d.localize["tds.webview.inspect.patch"]}</span>
+				<span class="formTitle">${d.localize["tds.webview.validate.patch"]}</span>
 				<!--Patch Inspect-->
 			</div>
 			<br>
@@ -48,8 +48,9 @@
 					<table id="tableInfos" class="mdl-data-table" width="100%">
 						<thead>
 							<tr class='mdl-data-table__cell--non-numeric'>
-								<th>${d.localize["tds.webview.inspect.col01"]}</th>
-								<th>${d.localize["tds.webview.inspect.col02"]}</th>
+								<th>${d.localize["tds.webview.validate.col01"]}</th>
+								<th>${d.localize["tds.webview.validate.col02"]}</th>
+								<th>${d.localize["tds.webview.validate.col03"]}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -59,9 +60,9 @@
 			</div>
 
 			<div class="wrap-submit">
-				<input class="btn-submit" id="submitID" type="button" value='${d.localize["tds.webview.inspect.export.files"]}'
-					onclick="exportPatchInfo()" />
-				<input class="btn-submit" id="submitID" type="button" value='${d.localize["tds.webview.inspect.export.close"]}'
+				<input class="btn-submit" id="submitID" type="button" value='${d.localize["tds.webview.validate.export.files"]}'
+					onclick="exportPatchValidate()" />
+				<input class="btn-submit" id="submitID" type="button" value='${d.localize["tds.webview.validate.export.close"]}'
 					onclick="fechar()" />
 				<!--Close-->
 			</div>
@@ -79,13 +80,13 @@
 		scrollX: true,
 		columnDefs: [
 			{
-				targets: [0, 1],
+				targets: [0, 1, 2],
 				className: 'mdl-data-table__cell--non-numeric tableColor'
 			},
 			{
 				orderable: true,
 				className: 'reorder',
-				targets: [0, 1]
+				targets: [0, 1, 2]
 			}
 		],
 	}).api();
@@ -102,14 +103,14 @@
 		tableAPI.draw();
 
 		vscode.postMessage({
-			command: "patchInfo",
+			command: "patchValidate",
 			patchFile: fullPath
 		});
 	}
 
-	function exportPatchInfo() {
+	function exportPatchValidate() {
 		vscode.postMessage({
-			command: "exportPatchInfo"
+			command: "exportPatchValidate"
 		});
 	}
 
@@ -126,7 +127,7 @@
 				document.getElementById('FilePatch').value = message.path;
 			case 'setData' :
 				for (var i=0; i < message.data.length; i++) {
-					var row = new Array(message.data[i].name, message.data[i].date);
+					var row = new Array(message.data[i].file, message.data[i].datePatch, message.data[i].dateRpo);
 					tableAPI.row.add(row);
 				}
 				tableAPI.draw();

@@ -1,3 +1,34 @@
+# Versão 1.0.3
+
+## Problema ao criar launchers a partir das configurações do Smartclient na inicialização [Issue 377](https://github.com/totvs/tds-vscode/issues/377)
+### Problema:
+* Selecione um smartclient na tela de boas vindas e salve. Os launchers não estão sendo gerados corretamente..
+### Solução:
+* A geração inicial do arquivo launch.json estava incompleto e foi corrigida.
+----
+## Senha não fica salva [Issue 371](https://github.com/totvs/tds-vscode/issues/371)
+### Problema:
+* Ao trocar de ambiente pela seleção de servidor/ambiente na barra inferior, mesmo com o token salvo previamente, a extensão está solicitando o usuário e senha do ambiente novamente.
+### Solução/Melhoria:
+* A seleção de servidor/ambiente estava com a ação de "Conexão" e foi alterada para "Reconexão" para agilizar a conexão pela barra inferior.
+----
+## Problema ao tentar gerar cliente WSDL [Issue 369](https://github.com/totvs/tds-vscode/issues/369)
+### Problema:
+* Problema ao tentar gerar cliente WSDL sem ter uma chave de compilação aplicada. Ocorre o erro "Authorization token was not informed.".
+### Solução:
+* Foi realizada correção para remover esta validação pois a chave não é obrigatória nestes casos.
+----
+## Erro ao adicionar servidor [Issue 367](https://github.com/totvs/tds-vscode/issues/367)
+### Problema:
+* Ao adicionar servidor está sendo apresentada a mensagem: "Cannot read property 'length' of undefined".
+### Solução:
+* O processo de inicialização permitia a criação do servers.json com apenas a seção "includes". Adicionadas validações para que o arquivo mínimo seja criado ao instalar a extensão.
+----
+## Possibilidade de exportar arquivo com as informações do conteúdo do patch [Issue 301](https://github.com/totvs/tds-vscode/issues/301)
+### Melhoria:
+* Adicionada a funcionalidade para exportar um arquivo com as informações do conteúdo do patch em 'Patch Infos'.
+----
+
 # Versão 1.0.2
 
 ## Exibir apenas os arquivos com Erros na tabela de resultados da compilação quando ocorrer problemas nas compilações [Issue 347](https://github.com/totvs/tds-vscode/issues/347)
