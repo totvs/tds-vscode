@@ -5,6 +5,12 @@ import Utils, { MESSAGETYPE } from "../utils";
 import ShowProgressController from "../ui.dialogs/showProgressController"
 import { CreateTDSReplayTimeLineWebView } from './tdsreplay/CreateTDSReplayTimeLineWebView';
 
+import { getLanguageClient } from '../TotvsLanguageClient';
+import { LanguageClient } from 'vscode-languageclient';
+
+let languageClient: LanguageClient;
+
+
 const DEBUG_TYPE = TotvsConfigurationProvider.type;
 const WEB_DEBUG_TYPE: string = "totvs_language_web_debug";
 const REPLAY_DEBUG_TYPE = TotvsConfigurationTdsReplayProvider.type;
@@ -23,6 +29,10 @@ export let createTimeLineWebView: CreateTDSReplayTimeLineWebView = null;
 export class DebugEvent {
 	constructor(pContext: vscode.ExtensionContext) {
 		context = pContext;
+		if(languageClient === undefined) {
+			languageClient = getLanguageClient(context);
+			//languageClient.clientOptions.outputChannelName = "TDS Replay";
+		}
 		//vscode.debug.onDidTerminateDebugSession(event => {
 		//});
 	}
@@ -90,7 +100,7 @@ export function processDebugCustomEvent(event: vscode.DebugSessionCustomEvent) {
 		} else if(event.event === 'TDA/selectTimeLine')  {
 			processSelectTimeLineEvent(event, debugConsole);
 		} else if (event.event === 'TDA/showProgress') {
-			processShowProgressEvent(event);
+			processShowProgressEvent(event, debugConsole);
 		}
 	}
 }
@@ -178,6 +188,11 @@ function getIgnoreSourceNotFoundValue(): boolean {
 	return isIgnoreSourceNotFound;
 }
 
-function processShowProgressEvent(event: vscode.DebugSessionCustomEvent) {
-	showProgressController.showProgress(context, event.body.title, event.body.mainMessage, event.body.detailMessage, event.body.currentWork, event.body.totalWork);
+function processShowProgressEvent(event: vscode.DebugSessionCustomEvent, debugConsole: vscode.DebugConsole) {
+
+	//showProgressController.showProgress(context, event.body.title, event.body.mainMessage, event.body.detailMessage, event.body.currentWork, event.body.totalWork);
+	//debugConsole.appendLine(`${event.body.currentWork} de ${event.body.totalWork}`);
+	languageClient.outputChannel.appendLine(`${event.body.detailMessage} (${event.body.currentWork}%)`)
+	//languageClient.outputChannel.appendLine(`${event.body.currentWork} de ${event.body.totalWork}`);
+	//console.log(`${event.body.currentWork} de ${event.body.totalWork}`);
 }
