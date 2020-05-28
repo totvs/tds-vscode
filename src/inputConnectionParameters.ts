@@ -126,7 +126,6 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 		} else {
 			state.environment = "";
 		}
-
 		return (input: MultiStepInput) => inputEnvironment(input, state, serversConfig);
 	}
 

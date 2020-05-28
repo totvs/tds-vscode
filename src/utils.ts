@@ -38,8 +38,7 @@ export interface SelectServer {
 	token: string;
 	environment: string;
 	environments?: string[];
-	username: string;
-	password: string;
+	username: string
 }
 
 export default class Utils {
@@ -110,7 +109,7 @@ export default class Utils {
 	 * Retorna todo o conteudo do servers.json
 	 */
 	static getServersConfig() {
-		let config: any = {};
+		let config: any = undefined;
 		let fs = require('fs');
 		let exist = fs.existsSync(Utils.getServerConfigFile());
 		if (exist) {
@@ -207,8 +206,7 @@ export default class Utils {
 					'id': element.id,
 					'token': token,
 					'environment': element.environment,
-					'username': element.username,
-					'password': element.password
+					'username': element.username
 				};
 				servers.connectedServer = server;
 				servers.lastConnectedServer = server;
