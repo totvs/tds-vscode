@@ -134,6 +134,8 @@ function getId(currentPanel) {
 					command: "setID",
 					'id': response.id
 				});
+			} else {
+				vscode.window.showErrorMessage("Couldn't get [Machine ID].");
 			}
 		}, (err: ResponseError<object>) => {
 			vscode.window.showErrorMessage(err.message);
