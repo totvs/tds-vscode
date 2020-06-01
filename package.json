@@ -89,7 +89,7 @@
 		"style-loader": "^1.2.1",
 		"ts-loader": "^6.2.2",
 		"tslint": "5.11.0",
-		"vsce": "^1.74.0",
+		"vsce": "^1.75.0",
 		"webpack": "^4.42.0",
 		"webpack-cli": "^3.3.10",
 		"lodash.template": ">=4.5.0"
@@ -217,11 +217,21 @@
 					".aph",
 					".ahu",
 					".apl",
-					".apw",
-					".4gl",
-					".per"
+					".apw"
 				],
-				"configuration": "./language-configuration.json"
+				"configuration": "./advpl-language-configuration.json"
+			},
+			{
+				"id": "4gl",
+				"aliases": [
+					"fourgl"
+				],
+				"extensions": [
+					".4gl",
+					".per",
+					".sql"
+				],
+				"configuration": "./4gl-language-configuration.json"
 			},
 			{
 				"id": "totvs_patch",
