@@ -1,11 +1,15 @@
 # Versão 1.0.4
 
-## Conexao com Appserver com erro - Smartclient 19.3.0.5 (com SSL desligado) [Issue 390](https://github.com/totvs/tds-vscode/issues/390)
+## Conexão com Appserver com erro - Smartclient 19.3.0.5 (com SSL desligado) [Issue 390](https://github.com/totvs/tds-vscode/issues/390)
 ### Problema:
 * Após da actualizacao do binário do smartclient 19.3.0.5 quando tento lancar um debug com o TDS-VSCode, tenho a janela com siguiente erro: "ERR0027: TOTVS | SmartClient conectou com TOTVS | Application Server mas houve erro no início de validação de conexão."
 ### Solução:
 * Ajustado a geração da configuração para depuração.
 ----
+
+## [4GL] Sintaxe 4GL não é reconhecida no editor
+
+## [4GL] Autocompletar no editor para fontes 4GL
 
 # Versão 1.0.3
 
