@@ -43,6 +43,7 @@ import { advplDocumentFormattingEditProvider, advplDocumentRangeFormattingEditPr
 import { processDebugCustomEvent, DebugEvent, createTimeLineWebView } from './debug/debugEvents';
 import { patchValidates } from './patch/patchValidate';
 import { Outline4GlDocumentSymbolProvider } from "./outline/outline4Gl"
+import { OutlineAdvplDocumentSymbolProvider } from './outline/outlineAdvpl';
 
 export let languageClient: LanguageClient;
 // metodo de tradução
@@ -410,11 +411,16 @@ export function activate(context: ExtensionContext) {
 	//Outline 4GL
 	context.subscriptions.push(
 		vscode.languages.registerDocumentSymbolProvider(
-			{
-				scheme: "file",
-				language: "4GL",
-			},
+			"4gl",
 			new Outline4GlDocumentSymbolProvider()
+		)
+	);
+
+	//Outline 4GL
+	context.subscriptions.push(
+		vscode.languages.registerDocumentSymbolProvider(
+			"advpl",
+			new OutlineAdvplDocumentSymbolProvider()
 		)
 	);
 
