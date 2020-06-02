@@ -49,5 +49,24 @@ Ao lançar o executor do TDS Replay, será iniciado primeiramente o `processo de
 
   ![Time Line Example](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/TDSReplay/TimeLineExample1.PNG)
 
+  Nesse ponto, o processo funciona praticamente como uma `depuração normal`. Note que ao usar um `Step Over` (ou `F10` no VSCode) a linha correspondente da execução será posicionada também na visão de Linha do Tempo. É possível também selecionar diretamente na linha do tempo, fazendo que a depuração seja posicionada exatamente no fonte e linha selecionados.
+
+> Obs.: Note abaixo, que ao desabilitar a opção `Ignore Source Not Found`, os fontes não encontrados aparecem na cor `vermelha`, apenas para `verificação`, e `não podem ser selecionados`. Note também, como `aumenta o número de páginas`.
+
+
+ ![Ingore Source Not Found unchecked](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/TDSReplay/TimeLineView-IgnoreSourceNotFoundUnchecked.PNG)
+
+ ## Variáveis
+
+ Como mostrado na imagem abaixo, a visão Debug Console funciona como na visão AdvPL Commands do TDS Eclipse, onde é possível informar valores de variáveis para serem mostrados. Porém o TDS Replay possui uma limitação onde não é possível entrar expressões para serem avaliadas, já que essa execução não possui um servidor e nem é uma depuração em tempo real.
+
+   ![Watch Variables](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/TDSReplay/WatchViewAndDebugConsole.PNG)
+
+   É importante observar também que se caso um fonte tenha sido `filtrado na importação`, e uma `variável` teve seu valor `atribuído nesse fonte`, será mostrado a seguinte mensagem: `N/A (Value exists in a source that was filtered)` conforme mostrado na figura abaixo.
+
+![Variable Filtered](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/TDSReplay/VariableFilteredEx.PNG)
+
+
+
 
 
