@@ -97,6 +97,7 @@
 	"main": "./out/extension",
 	"activationEvents": [
 		"onLanguage:advpl",
+		"onLanguage:4gl",
 		"onCommand:totvs-developer-studio.getProgramArguments",
 		"onCommand:totvs-developer-studio.getProgramName",
 		"onCommand:totvs-developer-studio.build.file",
@@ -224,12 +225,13 @@
 			{
 				"id": "4gl",
 				"aliases": [
-					"fourgl"
+					"4GL"
 				],
 				"extensions": [
 					".4gl",
 					".per",
-					".sql"
+					".sql",
+					".msg"
 				],
 				"configuration": "./4gl-language-configuration.json"
 			},
@@ -251,15 +253,35 @@
 				"language": "advpl",
 				"scopeName": "source.advpl",
 				"path": "./syntaxes/advpl_language.tmLanguage.json"
+			},
+			{
+				"language": "4gl",
+				"scopeName": "source.4gl",
+				"path": "./syntaxes/4gl_language.tmLanguage.json"
 			}
 		],
 		"snippets": [
 			{
 				"language": "advpl",
-				"path": "./snippets/snippets.json"
+				"path": "./snippets/advpl_snippets.json"
+			},
+			{
+				"language": "4gl",
+				"path": "./snippets/4gl_snippets.json"
 			}
 		],
-		"configurationDefaults": {},
+		"configurationDefaults": {
+			"[4gl]": {
+				"files.encoding": "windows1252",
+				"files.insertFinalNewline": true,
+				"files.eol": "\r\n"
+			},
+			"[advpl]": {
+				"files.encoding": "windows1252",
+				"files.insertFinalNewline": true,
+				"files.eol": "\r\n"
+			}
+		},
 		"configuration": {
 			"type": "object",
 			"title": "AdvPL",

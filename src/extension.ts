@@ -21,7 +21,7 @@ import { LanguageClient } from 'vscode-languageclient';
 import { commandBuildFile, commandBuildWorkspace, commandBuildOpenEditors } from './compile/tdsBuild';
 import { deleteFileFromRPO } from './server/deleteFileFromRPO';
 import { defragRpo } from './server/defragRPO';
-import { rpoCheckIntegrity }  from  './server/rpoCheckIntegrity';
+import { rpoCheckIntegrity } from './server/rpoCheckIntegrity';
 import { serverSelection } from './inputConnectionParameters';
 import * as nls from 'vscode-nls';
 import { inspectObject } from './inspect/inspectObject';
@@ -42,6 +42,7 @@ import { toggleAutocompleteBehavior, updateSettingsBarItem } from './server/lang
 import { advplDocumentFormattingEditProvider, advplDocumentRangeFormattingEditProvider, advplResourceFormatting } from './formatter/advplFormatting';
 import { processDebugCustomEvent, DebugEvent, createTimeLineWebView } from './debug/debugEvents';
 import { patchValidates } from './patch/patchValidate';
+import { Outline4GlDocumentSymbolProvider } from "./outline/outline4Gl"
 
 export let languageClient: LanguageClient;
 // metodo de tradução
@@ -405,8 +406,21 @@ export function activate(context: ExtensionContext) {
 		_debugEvent = undefined;
 	});
 
+
+	//Outline 4GL
+	context.subscriptions.push(
+		vscode.languages.registerDocumentSymbolProvider(
+			{
+				scheme: "file",
+				language: "4GL",
+			},
+			new Outline4GlDocumentSymbolProvider()
+		)
+	);
+
 	//Verifica questões de encoding
-	verifyEncoding();
+	//Não é mais necessários. Ver "package.json", sessão "configurationDefaults".
+	//verifyEncoding();
 }
 
 function instanceOfUri(object: any): object is Uri {
@@ -422,6 +436,7 @@ export function deactivate() {
 	Utils.deleteSelectServer();
 }
 
+/*
 function verifyEncoding() {
 	// check if there is an open folder
 	if (vscode.workspace.workspaceFolders === undefined) {
@@ -447,6 +462,7 @@ function verifyEncoding() {
 					"files.encoding": "windows1252"
 				};
 				defaultConfig.update("[advpl]", jsonEncoding);
+				defaultConfig.update("[4gl]", jsonEncoding);
 				questionAgain = false;
 			} else if (clicked === textNo) {
 				questionAgain = true;
@@ -457,3 +473,4 @@ function verifyEncoding() {
 		});
 	}
 }
+*/

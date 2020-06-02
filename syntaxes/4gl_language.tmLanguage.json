@@ -1,473 +1,68 @@
 {
-    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-    "name": "4GL",
+    "name": "4gl",
     "scopeName": "source.4gl",
-    "patterns": [
-        {"include": "#directives"},
-        {"include": "#comments"},
-		{"include": "#function-decl"},
-		{"include": "#varDeclaration"},
-		{"include": "#class-decl"},
-		{"include": "#method-decl"},
-		{"include": "#wsstruct-decl"},
-		{"include": "#wsmethod-decl"},
-		{"include": "#wsscr-decl"},
-		{"include": "#keywords"},
-		{"include": "#expression"}
+    "fileTypes": [
+      "4gl",
+      "per"
     ],
-    "repository": {
-        "directives": {
-            "patterns": [
-                {
-                    "name": "keyword.control.directive",
-                    "match": "(?i)#\\b(define|endif|else|ifdef|ifndef|include|xcommand|xtranslate)\\b"
-                }
-            ]
-        },
-        "keywords": {
-            "patterns": [
-                {
-                    "name": "keyword.control.advpl_language",
-                    "match": "(?i)\\b(activate|alias|and|beginsql|between|case|centered|class|constructor|data|define|dialog|do|else|elseif|end|endcase|endclass|enddo|endfunction|endif|endsql|exit|for|from|function|get|if|loop|main|method|next|nil|of|or|otherwise|pixel|return|select|to|user|var|while|where)\\b"
-                }
-            ]
-        },
-        "operators": {
-            "patterns": [
-                {
-                    "name": "constant.language.logical",
-                    "match": "(?i)(\\.t\\.|\\.f\\.|true|false|\\.and\\.|\\.or\\.)"
-                },
-                {
-                    "name": "keyword.operator.assignment",
-                    "match": ":=|\\*=|(?<!\\()/=|%=|\\+=|\\-="
-                },
-                {
-                    "name": "keyword.operator.comparison",
-                    "match": "==|!=|<=|>=|<>|<|>"
-                },
-                {
-                    "name": "keyword.operator.increment",
-                    "match": "\\+\\+"
-                },
-                {
-                    "name": "keyword.operator.decrement",
-                    "match": "--"
-                },
-                {
-                    "name": "keyword.operator.atithmetic",
-                    "match": "%|\\*|/|\\+|-"
-                }
-            ]
-		},
-		"separators" : {
-			"patterns": [
-				{
-					"name": "entity.name.function.separator.comma",
-					"match": "(,)"
-				},
-				{
-					"name": "entity.name.function.separator.semicolon",
-					"match": "(;)"
-				}
-			]
-		},
-		"varDeclaration": {
-            "patterns": [
-                {
-                    "match" : "(?i)^\\s*\\b(local|static|private|public|default)\\b\\s+(\\w+)(?:\\s+(as)\\s+(array|block|codeblock|character|char|date|logical|numeric|object))?",
-					"captures": {
-						"1": {"name": "variable.language.declaration.advpl"},
-						"2": {"name": "variable.name.advpl"},
-						"3": {"name": "keyword.control.as.advpl"},
-						"4": {"name": "storage.type.advpl"}
-					}
-                }
-            ]
-        },
-        "comments": {
-            "patterns": [
-                {
-                    "name": "comment.block.advpl",
-                    "begin": "/\\*",
-                    "end": "\\*/"
-                },
-                {
-                    "name": "comment.line.double-slash",
-                    "begin": "(?=//)",
-                    "end": "(?=$)"
-                }
-            ]
-        },
-        "string": {
-            "patterns": [
-                {
-                    "name": "string.quoted.double.advpl",
-                    "begin": "\"",
-                    "end": "(?=$)|\""
-                },
-                {
-                    "name": "string.quoted.single.advpl",
-                    "begin": "'",
-                    "end": "(?=$)|'"
-                }
-            ]
-        },
-		"number": {
-			"name": "constant.numeric.advpl",
-			"patterns": [
-				{"include": "#number-float"},
-				{"include": "#number-dec"},
-				{"include": "#number-hex"},
-				{"include": "#number-oct"},
-				{"include": "#number-bin"},
-				{"include": "#number-long"},
-				{
-					"name": "invalid.illegal.name.advpl",
-					"match": "\\b[0-9]+\\w+"
-				}
-			]
-		},
-		"number-float": {
-			"name": "constant.numeric.float.advpl",
-			"match": "(?x)\n  (?<! \\w)(?:\n    (?:\n      \\.[0-9](?: _?[0-9] )*\n      |\n      [0-9](?: _?[0-9] )* \\. [0-9](?: _?[0-9] )*\n      |\n      [0-9](?: _?[0-9] )* \\.\n    ) (?: [eE][+-]?[0-9](?: _?[0-9] )* )?\n    |\n    [0-9](?: _?[0-9] )* (?: [eE][+-]?[0-9](?: _?[0-9] )* )\n  )([jJ])?\\b\n",
-			"captures": {
-				"1": {"name": "storage.type.imaginary.number.advpl"}
-			},
-			"patterns": []
-		},
-		"number-dec": {
-			"name": "constant.numeric.dec.advpl",
-			"match": "(?x)\n  (?<![\\w\\.])(?:\n      [0-9](?: _?[0-9] )*\n      |\n      0+\n      |\n      [0-9](?: _?[0-9] )* ([jJ])\n      |\n      0 ([0-9]+)(?![eE\\.])\n  )\\b\n",
-			"captures": {
-				"1": {"name": "storage.type.imaginary.number.advpl"},
-				"2": {"name": "invalid.illegal.dec.advpl"},
-				"3": {"name": "invalid.illegal.dec.advpl"}
-			},
-			"patterns": []
-		},
-		"number-hex": {
-			"name": "constant.numeric.hex.advpl",
-			"match": "(?x)\n  (?<![\\w\\.])\n    (0[xX]) (_?[0-9a-fA-F])+\n  \\b\n",
-			"captures": {
-				"1": {"name": "storage.type.number.advpl"}
-			},
-			"patterns": []
-		},
-		"number-oct": {
-			"name": "constant.numeric.oct.advpl",
-			"match": "(?x)\n  (?<![\\w\\.])\n    (0[oO]) (_?[0-7])+\n  \\b\n",
-			"captures": {
-				"1": {"name": "storage.type.number.advpl"}
-			},
-			"patterns": []
-		},
-		"number-bin": {
-			"name": "constant.numeric.bin.advpl",
-			"match": "(?x)\n  (?<![\\w\\.])\n    (0[bB]) (_?[01])+\n  \\b\n",
-			"captures": {
-				"1": {"name": "storage.type.number.advpl"}
-			},
-			"patterns": []
-		},
-		"number-long": {
-			"name": "constant.numeric.bin.advpl",
-			"comment": "this is to support advpl syntax for long ints",
-			"match": "(?x)\n  (?<![\\w\\.])\n    ([1-9][0-9]* | 0) ([lL])\n  \\b\n",
-			"captures": {
-				"2": {"name": "storage.type.number.advpl"}
-			},
-			"patterns": []
-		},
-		"data-type": {
-			"name": "variable.parameter.type.advpl",
-			"match": "(?i)\\s*(as)\\s+(array|block|codeblock|character|char|date|logical|numeric|object|string)",
-			"captures" : {
-				"1": {"name": "keyword.control.keyword.as.advpl"},
-            	"2": {"name": "storage.type.name.advpl"}
-			},
-			"patterns" : []
-		},
-		"regularVariable" : {
-			"name": "variable.other.name.advpl",
-			"match": "(\\w+)",
-			"patterns": []
-		},
-		"objectVariable" : {
-			"name": "entity.name.type.object.advpl",
-			"match": "((::)?(\\w+)(?!:=)(?=:))|::o\\w+|o\\w+",
-			"patterns": []
-		},
-		"function-decl": {
-			"name": "meta.function.declaration.advpl",
-			"patterns": [
-				{"include": "#function-decl-body"},
-				{"include" : "#data-type"}
-			]
-		},
-		"function-decl-body": {
-			"name": "meta.function.declaration.body.advpl",
-			"begin": "(?i)^\\s*(?:(html|main|project|pyme|static|template|user|web|webuser)\\s+)?(function)\\s+(\\w+)",
-			"end": "(?<=\\)|\\s)",
-			"captures": {
-				"1" : {"name": "storage.modifier.function.modifier.advpl"},
-				"2" : {"name": "storage.type.function.keyword.advpl"},
-				"3" : {"name": "entity.name.function.declaration.functionName.advpl"}
-			},
-			"patterns": [
-				{"include": "#function-decl-parameters"}
-			]
-		},
-		"function-decl-parameters": {
-			"name": "meta.brace.round.function-decl.advpl",
-			"begin": "\\s*(\\()\\s*",
-			"end": "(\\))",
-			"patterns": [
-				{"include": "#function-decl-parameter-variable"},
-				{"include": "#function-decl-parameter-comma"},
-				{"include": "#comments"},
-				{"include" : "#data-type"}
-			]
-		},
-		"function-decl-parameter-variable": {
-			"name": "variable.parameter.name.advpl",
-			"match": "\\w+",
-			"patterns": []
-		},
-		"function-decl-parameter-comma": {
-			"name": "variable.parameter.separator.comma",
-			"match": "(,)",
-			"captures" : {
-				"1" : {"name": "entity.name.function.separator.comma"}
-			},
-			"patterns": []
-		},
-		"function-call" : {
-			"name": "meta.function.call.advpl",
-			"begin": "(\\w+)(?=\\()",
-			"end" : "(?<=\\))",
-			"beginCaptures": {
-				"1" : {"name": "entity.name.function.call.functionName.advpl"}
-			},
-			"patterns": [
-				{"include": "#comments"},
-				{"include" : "#expression"}
-			]
-		},
-		"class-decl" : {
-			"name": "meta.class.declaration.advpl",
-			"begin" : "(?i)^\\s*(class)\\s+(\\w+)(?:(?:\\s+(inherit(?:\\sfrom)|from|of)\\s+(\\w+)))?",
-			"beginCaptures": {
-				"1": {"name": "storage.type.class.advpl"},
-            	"2": {"name": "entity.name.type.class.advpl"},
-            	"3": {"name": "storage.type.class.advpl"},
-            	"4": {"name": "entity.name.type.class.advpl"}
-			},
-			"end" : "(?i)(end\\s*class)",
-			"endCaptures": {
-            	"1": {"name": "storage.type.class.advpl"}
-			},
-			"patterns": [
-				{"include": "#comments"},
-				{"include": "#class-decl-content-data"},
-				{"include": "#class-decl-content-method"}
-			]
-		},
-		"class-decl-content-data" : {
-			"name": "meta.class.declaration.content.data.advpl",
-			"begin": "(?i)\\b((?:ws)?data)\\s+(\\w+)",
-            "beginCaptures": {
-                    "1": {"name": "storage.modifier.advpl"},
-					"2": {"name": "variable.object.property.advpl"},
-					"3": {"name": "variable.object.property.advpl"}
-			},
-			"end": "(?i)(?=\\s*(as|data|method|end\\s*class))(?:\\s+(as)\\s+((array)\\s(of)\\s+)?(?:(array|block|codeblock|character|char|date|logical|numeric|object|string)|(\\w+))\\s*)?(optional)?",
-			"endCaptures": {
-				"1": {"name": "storage.modifier.advpl"},
-				"2": {"name": "keyword.control.as.advpl"},
-				"3": {"name": "keyword.control.array.advpl"},
-				"4": {"name": "storage.type.advpl"},
-				"5": {"name": "storage.type.advpl"},
-				"6": {"name": "storage.type.advpl"},
-				"7": {"name": "variable.object.property.advpl"},
-				"8": {"name": "storage.type.advpl"},
-				"9": {"name": "keyword.control.optional.advpl"}
-			},
-			"patterns": [
-				{"include": "#expression"}
-			]
-		},
-		"class-decl-content-method" : {
-			"name": "meta.class.declaration.content.method.advpl",
-			"begin": "(?i)\\s*(method)\\s*",
-			"beginCaptures": {
-				"1": {"name": "storage.type.method.advpl"}
-			},
-			"end": ";|$",
-			"patterns": [
-				{ "include": "#class-decl-content-method-call"},
-				{ "include": "#expression"},
-				{ "include": "#data-type"}
-			]
-		},
-		"class-decl-content-method-call": {
-			"name": "meta.function.method.call.advpl",
-			"begin": "\\s*(\\w+)(\\()",
-			"end" : "(\\))",
-			"beginCaptures": {
-				"1" : {"name": "entity.name.function.method.call.name.advpl"}
-			},
-			"patterns": [
-				{"include": "#comments"},
-				{"include": "#expression"}
-			]
-		},
-		"method-decl" : {
-			"name": "meta.method.declaration.advpl",
-			"patterns": [
-				{"include": "#method-decl-body"},
-				{"include": "#data-type"}
-			]
-		},
-		"method-decl-body" : {
-			"name": "meta.method.declaration.body.advpl",
-			"begin": "(?i)^\\s*(method)\\s+(\\w+)",
-			"beginCaptures": {
-				"1": {"name": "storage.type.method.advpl"},
-				"2": {"name": "entity.name.function.advpl"}
-			},
-			"end": "(?<=\\)|\\s)(\\s+(?i:class)\\s+(\\w+))?",
-			"endCaptures": {
-				"1": {"name": "storage.type.class.advpl"},
-				"2": {"name": "entity.name.type.method.advpl"}
-			},
-			"patterns":[
-				{"include":"#function-decl-parameters"}
-			]
-		},
-		"wsstruct-decl": {
-        	"name": "meta.wsstruct.declaration.advpl",
-        	"begin": "(?i)^\\s*(wsstruct)\\s+(\\w+)",
-        	"beginCaptures": {
-				"1": {"name": "storage.type.wsstruct.advpl"},
-				"2": {"name": "entity.name.type.object.advpl"}
-			},
-			"end": "(?i)^\\s*(endwsstruct)",
-			"endCaptures": {
-				"1": {"name": "storage.type.wsstruct.advpl"}
-			},
-        	"patterns": [
-                {"include": "#comments"},
-                {"include": "#wsdata"},
-                {
-					"match": "(?i)(wsmethod)\\s+(\\w+)(\\s+description)?",
-                	"captures": {
-                    	"1": {"name": "storage.type.method.advpl"},
-                    	"2": {"name": "entity.name.function.advpl"},
-						"3": {"name": "keyword.control.struct.advpl"}
-					}
-				}
-			]
-		},
-		"wsdata": {
-        	"patterns": [
-            	{
-                	"match": "(?i)((?:ws)?data)\\s+(\\w+)(?:\\s+(as)\\s+(array of\\s+)?(?:(string|date|integer|float|boolean|character)|(\\w+))\\s*)?(optional)?",
-                	"captures": {
-                    	"1": {"name": "storage.modifier.advpl"},
-                    	"2": {"name": "variable.object.property.advpl"},
-                    	"3": {"name": "keyword.control.as.advpl"},
-                    	"4": {"name": "keyword.control.arrayof.advpl"},
-                    	"5": {"name": "storage.type.advpl"},
-                    	"6": {"name": "entity.name.type.class.advpl"},
-						"7": {"name": "keyword.control.optional.advpl"}
-					}
-				}
-			]
-		},
-		"wsmethod-decl": {
-			"begin": "(?i)^\\s*(wsmethod)\\s+(\\w+)",
-			"beginCaptures": {
-				"1": {"name": "storage.type.wsmethod.advpl"},
-				"2": {"name": "entity.name.function.advpl"}
-			},
-			"end": "(?i)(wsservice|wsclient|wsrestful|wsrest)\\s+(\\w+)",
-			"endCaptures": {
-				"1": {"name": "storage.type.wstype.advpl"},
-				"2": {"name": "entity.name.type.class.advpl"}
-			},
-			"patterns": [
-				{
-					"match": "(?i)(wssend|wsreceive)",
-					"name": "storage.type.parameter.advpl"
-				},
-				{
-					"match": "(\\w+)",
-					"name": "variable.parameter.advpl"
-				},
-				{"include": "#separators"}
-			]
-		},
-		"wsscr-decl": {
-			"comment": "This is a rule for wsservice, wsclient and wsrestul, hence wsSCR",
-        	"name": "meta.wsscr.advpl",
-        	"begin": "(?i)^\\s*(?<!wsmethod)(wsservice|wsclient|wsrestful)\\s+(\\w+)(\\s+description)?",
-        	"beginCaptures": {
-            	"1": {"name": "storage.type.wsscr.advpl"},
-            	"2": {"name": "entity.name.type.wsscr.advpl"},
-            	"3": {"name": "keyword.control.wsscr.advpl"}
-			},
-        	"end": "(?i)\\s*(endwsservice|endwsclient|endwsrestful|end\\s*wsrestful)",
-        	"endCaptures": {
-				"1": {"name": "storage.type.wsscr.advpl"}
-			},
-        	"patterns": [
-				{"include": "#comments"},
-                {"include": "#string"},
-				{"include": "#wsdata"},
-				{
-                	"match": "(?i)(wsmethod)\\s+(\\w+)(\\s+(?!description)\\w+)?(\\s+(description))?",
-                	"captures": {
-                    	"1": {"name": "storage.type.wsscr.advpl"},
-                    	"2": {"name": "entity.name.function.advpl"},
-						"3": {"name": "variable.other.advpl"},
-						"4": {"name": "keyword.control.wsscr.advpl"}
-					}
-				},
-				{
-					"name": "keyword.control.wsscr.advpl",
-					"match" : "(?i)format"
-				},
-				{
-					"name": "keyword.control.wsscr.advpl",
-					"match" : "(?i)path"
-				},
-				{
-					"name": "keyword.control.wsscr.advpl",
-					"match" : "(?i)description"
-				},
-				{
-					"name": "variable.other.advpl",
-					"match" :"(?i)(produces)(\\s+\\w+)+",
-					"captures": {
-						"1": {"name": "keyword.control.wsscr.advpl"}
-					}
-				}
-			]
-		},
-		"expression": {
-			"name": "meta.expression.advpl",
-			"patterns": [
-				{"include": "#comments"},
-				{"include": "#number"},
-				{"include": "#string"},
-				{"include": "#operators"},
-				{"include": "#function-call"},
-				{"include": "#keywords"},
-				{"include": "#objectVariable"},
-				{"include": "#regularVariable"},
-				{"include": "#separators"}
-			]
-		}
-    }
-}
+    "foldingStartMarker": "(\\{\\s*(\/\/.*)?$|^\\s*\/\/ \\{\\{\\{)",
+    "foldingStopMarker": "^\\s*(\\}|\/\/ \\}\\}\\}$)",
+    "patterns": [
+      {
+        "begin": "\\{",
+        "end": "\\}",
+        "name": "comment.block.4gl",
+        "patterns": [
+          {
+            "match": "."
+          }
+        ]
+      },
+      {
+        "comment": "Comentario de linha com #",
+        "match": "#.*$",
+        "name": "comment.line.number-sign.4gl"
+      },
+      {
+        "comment": "Comentario de linha com --",
+        "match": "--.*$",
+        "name": "comment.line.4gl"
+      },
+      {
+        "comment": "String aspas simples",
+        "match": "('(?:\\\\'|.)*?')",
+        "name": "string.single.4gl"
+      },
+      {
+        "comment": "String aspas duplas",
+        "match": "(\\\"(?:\\\\\"|.)*?\\\")",
+        "name": "string.double.4gl"
+      },
+      {
+        "comment": "Operadores",
+        "match":
+          "(?i)(=|!=|\\+|-|/|<|>|,|(\\s(or|is|mod|not)(?=(\\s|$))))",
+        "name": "keyword.operator.4gl"
+      },
+      {
+        "comment": "Constantes",
+        "match": "\\b(?i)(abort|abs|absolute|accept|access|acos|ada|add|after|all|allocate|alter|and|ansi|any|append|arg_val|array|arr_count|arr_curr|as|asc|ascending|ascii|asin|at|atan|atan2|attach|attribute|attributes|audit|authorization|auto|autonext|average|avg|before|begin|between|black|blink|blue|bold|boolean|border|both|bottom|break|buffered|by|byte|call|cascade|case|catch|char|character|character_length|char_length|check|circuit|class_origin|clear|clipped|close|cluster|cobol|color|column|columns|command|comment|comments|commit|committed|composites|compress|concurrent|connect|connection|connection_alias|constant|constrained|constraint|constraints|construct|continue|control|cos|count|create|current|cursor|cyan|data|database|dataskip|date|datetime|day|dba|dbinfo|dbservername|deallocate|debug|dec|decimal|declare|default|defaults|defer|deferred|define|delete|delimiter|delimiters|desc|descending|describe|descriptor|detach|diagnostics|dialog|dim|dirty|disabled|disconnect|display|distinct|distributions|do|dormant|double|down|downshift|drop|dynamic|each|elif|else|enabled|end|entry|error|errorlog|err_get|err_print|err_quit|esc|escape|every|exception|exclusive|exec|execute|exists|exit|exp|explain|expression|extend|extent|extern|external|f1|f10|f11|f12|f13|f14|f15|f16|f17|f18|f19|f2|f20|f21|f22|f23|f24|f25|f26|f27|f28|f29|f3|f30|f31|f32|f33|f34|f35|f36|f37|f38|f39|f4|f40|f41|f42|f43|f44|f45|f46|f47|f48|f49|f5|f50|f51|f52|f53|f54|f55|f56|f57|f58|f59|f6|f60|f61|f62|f63|f64|f7|f8|f9|false|fetch|fgl|fgl_getenv|fgl_keyval|fgl_lastkey|field|field_touched|file|fillfactor|filtering|finish|first|float|flush|for|foreach|foreign|form|format|formonly|fortran|found|fraction|fragment|free|from|function|get_fldbuf|getLength|global|globals|go|goto|grant|green|group|having|header|help|hex|hide|high|hold|hour|idata|if|ilength|immediate|import|in|include|index|indexes|indicator|infield|init|initialize|input|insert|instructions|int|integer|interrupt|interval|into|int_flag|invisible|is|isam|isolation|itype|key|label|language|last|leading|left|length|let|like|line|lineno|lines|load|locate|lock|log|log10|logn|long|low|magenta|main|margin|matches|max|mdy|medium|memory|menu|message|message_length|message_text|min|minute|mod|mode|modify|module|money|month|more|name|nchar|need|new|next|nextpage|no|nocr|noentry|none|normal|not|notfound|null|nullable|number|numeric|num_args|nvarchar|octet_length|of|off|old|on|only|open|optimization|option|options|or|order|otherwise|outer|output|page|pageno|pascal|pause|pdqpriority|percent|picture|pipe|pli|pow|precision|prepare|previous|prevpage|primary|print|printer|prior|private|privileges|procedure|program|prompt|public|put|quit|quit_flag|raise|range|read|readonly|real|record|recover|red|references|referencing|register|relative|remainder|remove|rename|reoptimization|repeatable|report|required|resolution|resource|restrict|resume|return|returns|returned_sqlstate|returning|reverse|revoke|right|robin|role|rollback|rollforward|root|round|row|rowid|rowids|rows|row_count|run|scale|schema|screen|scroll|scr_line|second|section|select|serial|serializable|server_name|session|set|set_count|share|short|show|sitename|size|sizeof|skip|sleep|smallfloat|smallint|some|space|spaces|sql|sqlawarn|sqlca|sqlcode|sqlerrd|sqlerrm|sqlerror|sqlerrp|sqlstate|sqlwarning|sqrt|stability|start|startlog|static|statistics|status|stdev|step|stop|string|struct|subclass_origin|sum|switch|synonym|system|sysblobs|syschecks|syscolauth|syscoldepend|syscolumns|sysconstraints|sysdefaults|sysdepend|sysdistrib|sysfragauth|sysfragments|sysindexes|sysobjstate|sysopclstr|sysprocauth|sysprocbody|sysprocplan|sysprocedures|sysreferences|sysroleauth|syssyntable|syssynonyms|systabauth|systables|systrigbody|systriggers|sysusers|sysviews|sysviolations|tab|table|tables|tan|temp|text|then|through|thru|time|to|today|top|total|trace|trailer|trailing|transaction|trigger|triggers|trim|true|trunc|try|type|typedef|uncommitted|unconstrained|underline|union|unique|units|unload|unlock|unsigned|up|update|upshift|user|using|validate|value|values|varchar|variables|variance|varying|verify|view|violations|wait|waiting|warning|weekday|when|whenever|where|while|white|window|with|without|wordwrap|work|wrap|write|year|yellow|zerofill)\\b",
+        "name": "constant.language.4gl"
+      },
+      {
+        "comment": "Constantes Numéricas",
+        "match": "(?<!\\w)((0(x|X)[0-9a-fA-F]+)|([0-9]+(\\.[0-9]+)?))",
+        "name": "constant.numeric.4gl"
+      },
+      {
+        "comment": "Funções 4GL",
+        "match": "\\b(FGL_DRAWBOX|FGL_DYNARR_EXTENTSIZE|FGL_GETKEY|FGL_ISDYNARR_ALLOCATED|FGL_SCR_SIZE|FGL_SETCURRLINE|LENGTH|ORD|SHOWHELP)\\b",
+        "name":"keyword.other"
+      },
+      {
+        "comment": "Funções",
+        "match": "(?i)((?<=\\s)(p_open|p_close)(?=\\s*\\(.*?\\)))",
+        "name":"support.function.4gl"
+      }
+    ]
+  }
