@@ -209,14 +209,17 @@ function processShowProgressEvent(event: DebugSessionCustomEvent, debugConsole: 
 	}
 	if(!progressStarted) {
 		progressStarted = true;
-		languageClient.outputChannel.appendLine("Iniciando withProgress");
+
+		debug.onDidTerminateDebugSession(event => {
+			isFinished = true;
+		})
 
 		let withProgress = async function() {
 			window.withProgress(
 				{
 					cancellable: false,
 					location: ProgressLocation.Notification,
-					title: "Importing TDS Replay",
+					title: event.body.title,
 				},
 				async (progress, token) =>
 				{
@@ -231,10 +234,10 @@ function processShowProgressEvent(event: DebugSessionCustomEvent, debugConsole: 
 						await delay(200);
 					 	while( !isFinished && messageQueue.length > 0) {
 							item = messageQueue.pop();
+							languageClient.outputChannel.appendLine(item.message);
 					 		setTimeout(() => {
 								progress.report({message: item.message, increment: showProgressInfoEachPercent});
-							}, 3000);
-							languageClient.outputChannel.appendLine(item.message);
+							}, 500);
 						}
 					}
 
