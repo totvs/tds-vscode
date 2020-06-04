@@ -1,5 +1,7 @@
 # TDS Replay 2.0
 
+> `ATENÇÃO`: Essa funcionalidade está em desenvolvimento e por enquanto deve ser usada apenas por pessoas AUTORIZADAS.
+
 O TDS Replay permite fazer uma depuração em um arquivo gravado no ambiente em o problema ocorre, fazendo com que dessa forma não seja necessário o envio de grandes arquivos e longos processos de montagem de ambiente para reprodução do problema.
 
 ## Instalação:
