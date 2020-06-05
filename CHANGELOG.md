@@ -7,6 +7,13 @@
 * Ajustado a geração da configuração para depuração.
 ----
 
+## Ajustado geração de patch com characteres maiusculos no MAC [Issue 386](https://github.com/totvs/tds-vscode/issues/386)
+### Problema:
+* Após atualização do language server, o MAC, erroneamente, passou a recusar aplicação de patch caso existisse character maiusculo no caminho do arquivo. Esse processo deve ser apenas para Linux
+### Solução:
+* Corrigido configuração no Language Server para que o processo de validação ocorra apenas no Linux
+----
+
 # Versão 1.0.3
 
 ## Problema ao criar launchers a partir das configurações do Smartclient na inicialização [Issue 377](https://github.com/totvs/tds-vscode/issues/377)
