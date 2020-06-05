@@ -2,6 +2,12 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "..\\prettier-plugin-4gl"
 		}
-	]
+	],
+	"settings": {
+		"totvsLanguageServer.welcomePage": false
+	}
 }
