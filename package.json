@@ -236,9 +236,7 @@
 				],
 				"extensions": [
 					".4gl",
-					".per",
-					".sql",
-					".msg"
+					".per"
 				],
 				"configuration": "./4gl-language-configuration.json"
 			},
