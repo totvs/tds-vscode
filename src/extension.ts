@@ -72,7 +72,14 @@ import {
 import { patchValidates } from "./patch/patchValidate";
 import { Outline4GlDocumentSymbolProvider } from "./outline/outline4Gl";
 import { OutlineAdvplDocumentSymbolProvider } from "./outline/outlineAdvpl";
-import { fourglTypingFormatting, advplDocumentFormatter, advplDocumentRangeFormatter, documentFormatting } from "./formatter";
+import {
+  fourglTypingFormatting,
+  advplDocumentFormatter,
+  advplDocumentRangeFormatter,
+  documentFormatting,
+  fourglDocumentFormatter,
+  fourglDocumentRangeFormatter,
+} from "./formatter";
 
 export let languageClient: LanguageClient;
 // metodo de tradução
@@ -91,8 +98,8 @@ export function parseUri(u): Uri {
   return Uri.parse(u);
 }
 
-const LANG_4GL_ID = "4gl"
-const LANG_ADVPL_ID = "advpl"
+const LANG_4GL_ID = "4gl";
+const LANG_ADVPL_ID = "advpl";
 
 export function activate(context: ExtensionContext) {
   //new DebugEvent(context); //Cria a instancia para ja informar o debug context
@@ -602,6 +609,29 @@ export function activate(context: ExtensionContext) {
     })
   );
 
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "totvs-developer-studio.run.formatter",
+      (args: any[]) => {
+        //console.log("formatador ativado");
+        if (args === undefined) {
+          let aeditor = vscode.window.activeTextEditor;
+          if (aeditor !== undefined) {
+            args = [aeditor.document.uri];
+          }
+        }
+        if (instanceOfUri(args)) {
+          documentFormatting([args.fsPath]);
+        } else if (instanceOfUriArray(args)) {
+          const map: string[] = args.map<string>((uri: Uri) => {
+            return uri.fsPath;
+          });
+          documentFormatting(map);
+        }
+      }
+    )
+  );
+
   updateStatusBarItem(undefined);
   updatePermissionBarItem(Utils.getPermissionsInfos());
   updateSettingsBarItem();
@@ -675,15 +705,15 @@ function registers4GL(context: vscode.ExtensionContext) {
   );
 
   //Formatadores 4GL
-  // vscode.languages.registerDocumentFormattingEditProvider(
-  //   {language: LANG_4GL_ID },
-  //   advplDocumentFormattingEditProvider()
-  // );
+  vscode.languages.registerDocumentFormattingEditProvider(
+    { language: LANG_4GL_ID },
+    fourglDocumentFormatter
+  );
 
-  // vscode.languages.registerDocumentRangeFormattingEditProvider(
-  //   {language: LANG_4GL_ID },
-  //   advplDocumentRangeFormattingEditProvider()
-  // );
+  vscode.languages.registerDocumentRangeFormattingEditProvider(
+    { language: LANG_4GL_ID },
+    fourglDocumentRangeFormatter
+  );
 
   context.subscriptions.push(
     vscode.languages.registerOnTypeFormattingEditProvider(
@@ -695,30 +725,6 @@ function registers4GL(context: vscode.ExtensionContext) {
 }
 
 function registersAdvpl(context: vscode.ExtensionContext) {
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "totvs-developer-studio.run.formatter",
-      (args: any[]) => {
-        //console.log("formatador ativado");
-        if (args === undefined) {
-          let aeditor = vscode.window.activeTextEditor;
-          if (aeditor !== undefined) {
-            args = [aeditor.document.uri];
-          }
-        }
-        if (instanceOfUri(args)) {
-          documentFormatting([args.fsPath]);
-        } else if (instanceOfUriArray(args)) {
-          const map: string[] = args.map<string>((uri: Uri) => {
-            return uri.fsPath;
-          });
-          documentFormatting(map);
-        }
-      }
-    )
-  );
-
-  //formatadores Advpl
   context.subscriptions.push(
     vscode.languages.registerDocumentFormattingEditProvider(
       { language: LANG_ADVPL_ID },
