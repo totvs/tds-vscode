@@ -164,18 +164,24 @@ function processSelectTimeLineEvent(event: DebugSessionCustomEvent, debugConsole
 
 function getIgnoreSourceNotFoundValue(): boolean {
 	let debugSession = debug.activeDebugSession;
-	let launchConfig = Utils.getLaunchConfig();
+	let launchConfig;
 	let isIgnoreSourceNotFound: boolean = true;
+	try {
+		launchConfig = Utils.getLaunchConfig();
 
-	for (var key = 0; key < launchConfig.configurations.length; key++) {
-		var launchElement = launchConfig.configurations[key];
-		if(debugSession !== undefined && launchElement.name === debugSession.name) {
-			if(launchElement.ignoreSourcesNotFound !== undefined) {
-				isIgnoreSourceNotFound = launchElement.ignoreSourcesNotFound;
-				break;
+		for (var key = 0; key < launchConfig.configurations.length; key++) {
+			var launchElement = launchConfig.configurations[key];
+			if(debugSession !== undefined && launchElement.name === debugSession.name) {
+				if(launchElement.ignoreSourcesNotFound !== undefined) {
+					isIgnoreSourceNotFound = launchElement.ignoreSourcesNotFound;
+					break;
+				}
 			}
 		}
+	} catch(e) {
+		Utils.logInvalidLaunchJsonFile(e);
 	}
+
 
 	// launchConfig.configurations.forEach(launchElement => {
 	// 	if(debugSession !== undefined && launchElement.name === debugSession.name) {
@@ -204,7 +210,9 @@ function processShowProgressEvent(event: DebugSessionCustomEvent, debugConsole: 
 	const message: string = `${event.body.detailMessage} ( ${event.body.currentWork}% )`;
 	messageQueue.push({message: message, percent: event.body.currentWork});
 
-	if(event.body.currentWork == 100) {
+	if(event.body.currentWork == 0 && !event.body.detailMessage.includes("ERROR")) {
+		isFinished = false;
+	} else if(event.body.currentWork == 100) {
 		isFinished = true;
 	}
 	if(!progressStarted) {
@@ -212,6 +220,7 @@ function processShowProgressEvent(event: DebugSessionCustomEvent, debugConsole: 
 
 		debug.onDidTerminateDebugSession(event => {
 			isFinished = true;
+			progressStarted = false;
 		})
 
 		let withProgress = async function() {

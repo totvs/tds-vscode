@@ -134,7 +134,8 @@ export default class Utils {
 				}
 				catch (e) {
 					console.error(e);
-					return {};
+					throw e;
+					//return {};
 				}
 			}
 		}
@@ -479,47 +480,53 @@ export default class Utils {
 	 * Cria o arquivo launch.json caso ele nao exista.
 	 */
 	static createLaunchConfig() {
-		const launchConfig = Utils.getLaunchConfig();
-		if (!launchConfig) {
-			let fs = require("fs");
-			let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
-			if (ext) {
-				let sampleLaunch = {
-					"version": "0.2.0",
-					"configurations": []
-				};
+		let launchConfig = undefined;
+		try {
+			launchConfig = Utils.getLaunchConfig();
 
-				let pkg = ext.packageJSON;
-				let contributes = pkg["contributes"];
-				let debug = (contributes["debuggers"] as any[]).filter((element: any) => {
-					return element.type === "totvs_language_debug";
-				});
+			if (!launchConfig) {
+				let fs = require("fs");
+				let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
+				if (ext) {
+					let sampleLaunch = {
+						"version": "0.2.0",
+						"configurations": []
+					};
 
-				if (debug.length === 1) {
-					let initCfg = (debug[0]["initialConfigurations"] as any[]).filter((element: any) => {
-						return element.request === "launch";
+					let pkg = ext.packageJSON;
+					let contributes = pkg["contributes"];
+					let debug = (contributes["debuggers"] as any[]).filter((element: any) => {
+						return element.type === "totvs_language_debug";
 					});
 
-					if (initCfg.length === 1) {
-						sampleLaunch = {
-							"version": "0.2.0",
-							"configurations": [(initCfg[0] as never)]
-						};
+					if (debug.length === 1) {
+						let initCfg = (debug[0]["initialConfigurations"] as any[]).filter((element: any) => {
+							return element.request === "launch";
+						});
+
+						if (initCfg.length === 1) {
+							sampleLaunch = {
+								"version": "0.2.0",
+								"configurations": [(initCfg[0] as never)]
+							};
+						}
 					}
-				}
 
-				if (!fs.existsSync(Utils.getVSCodePath())) {
-					fs.mkdirSync(Utils.getVSCodePath());
-				}
-
-				let launchJson = Utils.getLaunchConfigFile();
-
-				fs.writeFileSync(launchJson, JSON.stringify(sampleLaunch, null, "\t"), (err) => {
-					if (err) {
-						console.error(err);
+					if (!fs.existsSync(Utils.getVSCodePath())) {
+						fs.mkdirSync(Utils.getVSCodePath());
 					}
-				});
+
+					let launchJson = Utils.getLaunchConfigFile();
+
+					fs.writeFileSync(launchJson, JSON.stringify(sampleLaunch, null, "\t"), (err) => {
+						if (err) {
+							console.error(err);
+						}
+					});
+				}
 			}
+		} catch(e) {
+			Utils.logInvalidLaunchJsonFile(e);
 		}
 	}
 	/**
@@ -707,6 +714,12 @@ export default class Utils {
 				}
 				break;
 		}
+	}
+
+	static logInvalidLaunchJsonFile(e) {
+		Utils.logMessage(`Ocorreu um problema ao ler o arquivo launch.json
+		(O arquivo ainda pode estar funcional, porém verifique-o para evitar comportamentos indesejados): ${e}`
+		, MESSAGETYPE.Warning, true);
 	}
 
 	static timeAsHHMMSS(date): string {

@@ -195,22 +195,28 @@ function handleSetIgnoreSourcesNotFound(command: ICommand) {
   if(debug.activeDebugSession) {
 
     let debugSession = debug.activeDebugSession;
-    let launchConfig = Utils.getLaunchConfig();
+    let launchConfig = undefined;
 
-    for (let key = 0; key < launchConfig.configurations.length; key++) {
-      let launchElement = launchConfig.configurations[key];
-      if(debugSession !== undefined && launchElement.name === debugSession.name) {
-        launchElement.ignoreSourcesNotFound = command.content.isIgnoreSourceNotFound;
-        break;
+    try {
+			launchConfig = Utils.getLaunchConfig();
+      for (let key = 0; key < launchConfig.configurations.length; key++) {
+        let launchElement = launchConfig.configurations[key];
+        if(debugSession !== undefined && launchElement.name === debugSession.name) {
+          launchElement.ignoreSourcesNotFound = command.content.isIgnoreSourceNotFound;
+          break;
+        }
       }
-    }
 
-    Utils.saveLaunchConfig(launchConfig);
+      Utils.saveLaunchConfig(launchConfig);
 
 
-    let requestJson = {
-      "isIgnoreSourceNotFound": command.content.isIgnoreSourceNotFound
-    };
-    debug.activeDebugSession.customRequest("TDA/setIgnoreSourcesNotFound", requestJson);
+      let requestJson = {
+        "isIgnoreSourceNotFound": command.content.isIgnoreSourceNotFound
+      };
+      debug.activeDebugSession.customRequest("TDA/setIgnoreSourcesNotFound", requestJson);
+
+		} catch(e) {
+      Utils.logInvalidLaunchJsonFile(e);
+		}
   }
 }
