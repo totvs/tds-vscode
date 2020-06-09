@@ -106,7 +106,8 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions, c
 				"includeUris": includesUris,
 				"fileUris": filesUris,
 				"compileOptions": compileOptions,
-				"extensionsAllowed": extensionsAllowed
+				"extensionsAllowed": extensionsAllowed,
+				"includeUrisRequired": true
 			}
 		}).then((response: CompileResult) => {
 			if (response.returnCode === 40840) {
