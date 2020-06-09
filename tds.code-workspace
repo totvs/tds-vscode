@@ -8,6 +8,7 @@
 		}
 	],
 	"settings": {
-		"totvsLanguageServer.welcomePage": false
+		"totvsLanguageServer.welcomePage": false,
+		"debug.javascript.suggestPrettyPrinting": false
 	}
 }

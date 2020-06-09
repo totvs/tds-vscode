@@ -13,14 +13,16 @@ import {
   window,
   workspace,
   TextEditorDecorationType,
+  FormattingOptions,
+  TextEdit,
 } from "vscode";
 import {
   CancellationToken,
-  LanguageClient,
   LanguageClientOptions,
   ProvideCodeLensesSignature,
   RevealOutputChannelOn,
   ServerOptions,
+  ProvideOnTypeFormattingEditsSignature,
 } from "vscode-languageclient/lib/main";
 import * as ls from "vscode-languageserver-types";
 import vscode = require("vscode");
@@ -29,6 +31,7 @@ import { reconnectLastServer } from "./serversView";
 
 import * as nls from "vscode-nls";
 import { syncSettings } from "./server/languageServerSettings";
+import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 
 let localize = nls.loadMessageBundle();
 
@@ -36,7 +39,9 @@ export let sessionKey: string;
 
 export let isLSInitialized = false;
 
-export function getLanguageClient(context: ExtensionContext): LanguageClient {
+export function getLanguageClient(
+  context: ExtensionContext
+): TotvsLanguageClientA {
   let clientConfig = getClientConfig(context);
   //if (!clientConfig)
   //	return undefined;
@@ -125,48 +130,23 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
     decorationOpts
   );
 
-  function provideCodeLens(
-    document: TextDocument,
-    token: CancellationToken,
-    next: ProvideCodeLensesSignature
-  ): ProviderResult<CodeLens[]> {
-    let config = workspace.getConfiguration("AdvPL");
-    let enableInlineCodeLens = config.get("codeLens.renderInline", false);
-    if (!enableInlineCodeLens) {
-      return next(document, token);
-    }
-    // We run the codeLens request ourselves so we can intercept the response.
-    return languageClient
-      .sendRequest("textDocument/codeLens", {
-        textDocument: {
-          uri: document.uri.toString(),
-        },
-      })
-      .then((a: ls.CodeLens[]): CodeLens[] => {
-        let result: CodeLens[] = languageClient.protocol2CodeConverter.asCodeLenses(
-          a
-        );
-        displayCodeLens(document, result, codeLensDecoration);
-        return [];
-      });
-  }
+
 
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
-    //documentSelector: ['prw'],
-    documentSelector: [
-      { scheme: "file", language: "advpl" },
-      { scheme: "file", language: "4gl" },
-    ],
+    documentSelector: [{ language: "advpl" }, { language: "4gl" }],
     // synchronize: {
     // 	configurationSection: 'cquery',
     // 	fileEvents: workspace.createFileSystemWatcher('**/.cc')
     // },
     diagnosticCollectionName: "AdvPL",
     outputChannelName: "AdvPL",
-    revealOutputChannelOn: RevealOutputChannelOn.Never,
+    revealOutputChannelOn: RevealOutputChannelOn.Error,
     initializationOptions: clientConfig,
-    middleware: { provideCodeLenses: provideCodeLens },
+    middleware: {
+      // provideCodeLenses: provideCodeLens,
+      // provideOnTypeFormattingEdits: provideOnTypeFormatting,
+    },
     // initializationFailedHandler: (e) => {
     // 	console.log(e);
     // 	return false;
@@ -174,12 +154,7 @@ export function getLanguageClient(context: ExtensionContext): LanguageClient {
     //errorHandler: new CqueryErrorHandler(workspace.getConfiguration('cquery'))
   };
 
-  let languageClient = new LanguageClient(
-    "totvsLanguageServer",
-    "TOTVS Language Server",
-    serverOptions,
-    clientOptions
-  );
+  let languageClient = new TotvsLanguageClientA(serverOptions, clientOptions);
 
   languageClient
     .onReady()

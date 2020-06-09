@@ -279,7 +279,8 @@
 			"[4gl]": {
 				"files.encoding": "windows1252",
 				"files.insertFinalNewline": true,
-				"files.eol": "\r\n"
+				"files.eol": "\r\n",
+				"editor.formatOnType": true
 			},
 			"[advpl]": {
 				"files.encoding": "windows1252",

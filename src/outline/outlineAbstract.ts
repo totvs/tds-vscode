@@ -35,7 +35,9 @@ export abstract class OutlineAbstractDocumentSymbolProvider
     const additionalRules = this.getAdditionalRules();
     const symbolRules = this.getSymbolRules();
 
-    nodes.push(additionalNode);
+    if (additionalNode !== null) {
+      nodes.push(additionalNode);
+    }
 
     for (var i = 0; i < document.lineCount; i++) {
       var line: vscode.TextLine = document.lineAt(i);
@@ -48,7 +50,11 @@ export abstract class OutlineAbstractDocumentSymbolProvider
           line,
           additionalRules
         );
-        additionalNode.children.push(...children);
+        if (additionalNode !== null) {
+          additionalNode.children.push(...children);
+        } else {
+          nodes.push(...children);
+        }
       }
 
       nodes.push(...this.doProcessRules(line, symbolRules));
