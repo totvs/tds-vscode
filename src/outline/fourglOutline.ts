@@ -8,9 +8,20 @@ const symbolRules: ISymbolRule[] = [
   { kind: vscode.SymbolKind.Function, searchExp: /^(globals)/i, group: 1 },
 ]
 
-export class Outline4GlDocumentSymbolProvider extends OutlineAbstractDocumentSymbolProvider {
+class Outline4GlDocumentSymbolProvider extends OutlineAbstractDocumentSymbolProvider {
 
   getSymbolRules(): ISymbolRule[] {
     return symbolRules;
   }
+}
+
+export function register(selector: vscode.DocumentSelector) {
+  const provider = new Outline4GlDocumentSymbolProvider();
+
+  return vscode.Disposable.from(
+    vscode.languages.registerDocumentSymbolProvider(
+      selector,
+      provider
+    ),
+  );
 }

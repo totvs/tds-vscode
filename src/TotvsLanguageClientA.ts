@@ -19,9 +19,10 @@ export class TotvsLanguageClientA extends LanguageClient {
   }
 
   registerBuiltinFeatures() {
-	  super.registerBuiltinFeatures();
+    super.registerBuiltinFeatures();
   }
 
+}
   // function provideCodeLens(
   //   document: TextDocument,
   //   token: CancellationToken,
@@ -48,29 +49,3 @@ export class TotvsLanguageClientA extends LanguageClient {
   //     });
   // }
 
-  // function provideOnTypeFormatting(
-  //   document: TextDocument,
-  //   position: Position,
-  //   ch: string,
-  //   options: FormattingOptions,
-  //   token: CancellationToken,
-  //   next: ProvideOnTypeFormattingEditsSignature
-  // ): ProviderResult<TextEdit[]> {
-  //   console.log("provideOnType");
-  //   console.log("provideOnType");
-  //   console.log("provideOnType");
-  //   console.log("provideOnType");
-  //   console.log("provideOnType");
-  //   console.log("provideOnType");
-  //   console.log("provideOnType");
-  //   console.log("provideOnType");
-  //   console.log("provideOnType");
-  //   console.log("provideOnType");
-  //   console.log("provideOnType");
-  //   console.log("provideOnType");
-  //   console.log("provideOnType");
-  //   console.log("provideOnType");
-
-  //   return [];
-  // }
-}

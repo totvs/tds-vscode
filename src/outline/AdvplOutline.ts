@@ -27,7 +27,7 @@ const includeRules: ISymbolRule[] = [
   },
 ];
 
-export class OutlineAdvplDocumentSymbolProvider extends OutlineAbstractDocumentSymbolProvider {
+class OutlineAdvplDocumentSymbolProvider extends OutlineAbstractDocumentSymbolProvider {
 
   getSymbolRules(): ISymbolRule[] {
     return symbolRules;
@@ -46,4 +46,15 @@ export class OutlineAdvplDocumentSymbolProvider extends OutlineAbstractDocumentS
       new vscode.Range(0,0,0,0)
     );
   }
+}
+
+export function register(selector: vscode.DocumentSelector) {
+  const provider = new OutlineAdvplDocumentSymbolProvider();
+
+  return vscode.Disposable.from(
+    vscode.languages.registerDocumentSymbolProvider(
+      selector,
+      provider
+    ),
+  );
 }

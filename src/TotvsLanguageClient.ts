@@ -130,8 +130,6 @@ export function getLanguageClient(
     decorationOpts
   );
 
-
-
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
     documentSelector: [{ language: "advpl" }, { language: "4gl" }],
@@ -145,7 +143,7 @@ export function getLanguageClient(
     initializationOptions: clientConfig,
     middleware: {
       // provideCodeLenses: provideCodeLens,
-      // provideOnTypeFormattingEdits: provideOnTypeFormatting,
+      //provideOnTypeFormattingEdits: provideOnTypeFormatting,
     },
     // initializationFailedHandler: (e) => {
     // 	console.log(e);
@@ -294,4 +292,23 @@ function displayCodeLens(
 
     editor.setDecorations(codeLensDecoration, opts);
   }
+}
+
+function provideOnTypeFormatting(
+  document: TextDocument,
+  position: Position,
+  ch: string,
+  options: FormattingOptions,
+  token: CancellationToken,
+  next: ProvideOnTypeFormattingEditsSignature
+): ProviderResult<TextEdit[]> {
+
+  const line: vscode.TextLine = document.lineAt(position.line-1);
+  const text: string = line.text.toLowerCase();
+  const range = line.range;
+  const result: vscode.TextEdit[] = [];
+
+  result.push(vscode.TextEdit.replace(range, text));
+  result.push(vscode.TextEdit.insert(range.start, "AAAAAAA"));
+  return result;
 }

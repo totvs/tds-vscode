@@ -70,16 +70,12 @@ import {
   createTimeLineWebView,
 } from "./debug/debugEvents";
 import { patchValidates } from "./patch/patchValidate";
-import { Outline4GlDocumentSymbolProvider } from "./outline/outline4Gl";
-import { OutlineAdvplDocumentSymbolProvider } from "./outline/outlineAdvpl";
 import {
-  fourglTypingFormatting,
-  advplDocumentFormatter,
-  advplDocumentRangeFormatter,
   documentFormatting,
-  fourglDocumentFormatter,
-  fourglDocumentRangeFormatter,
+  register4glFormatting,
+  registerAdvplFormatting,
 } from "./formatter";
+import { registerAdvplOutline, register4glOutline } from "./outline";
 
 export let languageClient: LanguageClient;
 // metodo de tradução
@@ -98,7 +94,6 @@ export function parseUri(u): Uri {
   return Uri.parse(u);
 }
 
-const LANG_4GL_ID = "4gl";
 const LANG_ADVPL_ID = "advpl";
 
 export function activate(context: ExtensionContext) {
@@ -319,15 +314,16 @@ export function activate(context: ExtensionContext) {
 
     // Send $advpl/textDocumentDidView. Always send a notification - this will
     // result in some extra work, but it shouldn't be a problem in practice.
-    (() => {
-      window.onDidChangeVisibleTextEditors((visible) => {
-        for (let editor of visible) {
-          languageClient.sendNotification("$advpl/textDocumentDidView", {
-            textDocumentUri: editor.document.uri.toString(),
-          });
-        }
-      });
-    })();
+    // TODO: O LS não faz nada. Desativado por enquanto.
+    // (() => {
+    //   window.onDidChangeVisibleTextEditors((visible) => {
+    //     for (let editor of visible) {
+    //       languageClient.sendNotification("$advpl/textDocumentDidView", {
+    //         textDocumentUri: editor.document.uri.toString(),
+    //       });
+    //     }
+    //   });
+    // })();
   }
 
   // Ação para pegar o nome da função e argumentos para  iniciar o debug
@@ -643,10 +639,12 @@ export function activate(context: ExtensionContext) {
   registersDebug(context);
 
   // Inicialização Adv/PL
-  registersAdvpl(context);
+  context.subscriptions.push(registerAdvplFormatting());
+  context.subscriptions.push(registerAdvplOutline());
 
   // Inicialização 4GL
-  registers4GL(context);
+  context.subscriptions.push(register4glFormatting());
+  context.subscriptions.push(register4glOutline());
 
   //Verifica questões de encoding
   //Não é mais necessários. Ver "package.json", sessão "configurationDefaults".
@@ -693,57 +691,6 @@ function registersDebug(context: vscode.ExtensionContext) {
     vscode.debug.onDidTerminateDebugSession(() => {
       _debugEvent = undefined;
     })
-  );
-}
-
-function registers4GL(context: vscode.ExtensionContext) {
-  context.subscriptions.push(
-    vscode.languages.registerDocumentSymbolProvider(
-      { language: LANG_4GL_ID },
-      new Outline4GlDocumentSymbolProvider()
-    )
-  );
-
-  //Formatadores 4GL
-  vscode.languages.registerDocumentFormattingEditProvider(
-    { language: LANG_4GL_ID },
-    fourglDocumentFormatter
-  );
-
-  vscode.languages.registerDocumentRangeFormattingEditProvider(
-    { language: LANG_4GL_ID },
-    fourglDocumentRangeFormatter
-  );
-
-  context.subscriptions.push(
-    vscode.languages.registerOnTypeFormattingEditProvider(
-      { language: LANG_4GL_ID },
-      fourglTypingFormatting,
-      "\n"
-    )
-  );
-}
-
-function registersAdvpl(context: vscode.ExtensionContext) {
-  context.subscriptions.push(
-    vscode.languages.registerDocumentFormattingEditProvider(
-      { language: LANG_ADVPL_ID },
-      advplDocumentFormatter
-    )
-  );
-
-  context.subscriptions.push(
-    vscode.languages.registerDocumentRangeFormattingEditProvider(
-      { language: LANG_ADVPL_ID },
-      advplDocumentRangeFormatter
-    )
-  );
-
-  context.subscriptions.push(
-    vscode.languages.registerDocumentSymbolProvider(
-      { language: LANG_ADVPL_ID },
-      new OutlineAdvplDocumentSymbolProvider()
-    )
   );
 }
 
