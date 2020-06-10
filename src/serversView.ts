@@ -125,24 +125,31 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 	}
 
 	private addLaunchJsonListener(): void {
-		let launchJson = Utils.getLaunchConfigFile();
-
-		if (!fs.existsSync(launchJson)) {
-			Utils.createLaunchConfig();
+		let launchJson = undefined;
+		try {
+			launchJson = Utils.getLaunchConfigFile();
+		} catch(e) {
+			Utils.logInvalidLaunchJsonFile(e);
 		}
 
-		if (fs.existsSync(launchJson)) { //Caso o arquivo launch.json seja encontrado, registra o listener já na inicialização.
-			fs.watch(launchJson, { encoding: 'buffer' }, (eventType, filename) => {
-				const serverConfig = Utils.getServersConfig();
-				if (filename && eventType === 'change') {
-					if (serverConfig.configurations.length > 0) {
-						this.localServerItems = this.setConfigWithServerConfig();
-					} else {
-						this.localServerItems = this.setConfigWithSmartClient();
+		if(launchJson) {
+			if (!fs.existsSync(launchJson)) {
+				Utils.createLaunchConfig();
+			}
+
+			if (fs.existsSync(launchJson)) { //Caso o arquivo launch.json seja encontrado, registra o listener já na inicialização.
+				fs.watch(launchJson, { encoding: 'buffer' }, (eventType, filename) => {
+					const serverConfig = Utils.getServersConfig();
+					if (filename && eventType === 'change') {
+						if (serverConfig.configurations.length > 0) {
+							this.localServerItems = this.setConfigWithServerConfig();
+						} else {
+							this.localServerItems = this.setConfigWithSmartClient();
+						}
+						this.refresh();
 					}
-					this.refresh();
-				}
-			});
+				});
+			}
 		}
 	}
 
@@ -182,7 +189,12 @@ export class ServerItemProvider implements vscode.TreeDataProvider<ServerItem | 
 	 * cria o arquivo servers.json
 	 */
 	private setConfigWithSmartClient() {
-		const config = Utils.getLaunchConfig();
+		let config = undefined;
+		try {
+			config = Utils.getLaunchConfig();
+		} catch(e) {
+			Utils.logInvalidLaunchJsonFile(e);
+		}
 		const configs = config.configurations;
 
 		if (!configs) {

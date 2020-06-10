@@ -322,7 +322,8 @@
 						".BMP",
 						".RES",
 						".4GL",
-						".PER"
+						".PER",
+						".JS"
 					],
 					"description": "%tds.package.folder.extensions.allowed%"
 				},

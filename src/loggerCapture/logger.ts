@@ -33,7 +33,11 @@ export function onCaptureLoggers(context: ExtensionContext) {
 				data += localize("tds.vscode.logger.path.text","Path servers.json:") + " " + Utils.getServerConfigPath() + newLine;
 				data += localize("tds.vscode.logger.content.text","Content servers.json:") + " " + JSON.stringify(Utils.getServersConfig()) + newLine;
 				data += localize("tds.vscode.logger.path.launch","Path launch.json:") + " " + Utils.getLaunchConfigFile() + newLine;
-				data += localize("tds.vscode.logger.content.launch","Content launch.json:") + " " + JSON.stringify(Utils.getLaunchConfig()) + newLine;
+				try {
+					data += localize("tds.vscode.logger.content.launch","Content launch.json:") + " " + JSON.stringify(Utils.getLaunchConfig()) + newLine;
+				} catch(e) {
+					data += localize("tds.vscode.logger.content.launch","Content launch.json:") + " It was not possible to read the launch.json file. Error:  " + e + newLine;
+				}
 				data += localize("tds.vscode.logger.root.path","Root Path Workspace:") + " " + vscode.workspace.rootPath + "\n";
 				const work: any = vscode.workspace.workspaceFolders;
 				data += tab + localize("tds.vscode.logger.folders.length","Folders length:") + " " + work.length + newLine;

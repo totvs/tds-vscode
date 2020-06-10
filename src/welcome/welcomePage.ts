@@ -85,17 +85,20 @@ export default class welcomePage {
 }
 
 function saveSmartClientBin(smartClient: string) {
-	const launchConfig = Utils.getLaunchConfig();
-
-	if (launchConfig) {
-		if (launchConfig.configurations) {
-			const configs = launchConfig.configurations;
-			configs.forEach(element => {
-				element.smartclientBin = smartClient;
-			});
-
-			Utils.persistLaunchsInfo(launchConfig);
+	let launchConfig = undefined;
+	try {
+		launchConfig = Utils.getLaunchConfig();
+		if (launchConfig) {
+			if (launchConfig.configurations) {
+				const configs = launchConfig.configurations;
+				configs.forEach(element => {
+					element.smartclientBin = smartClient;
+				});
+				Utils.persistLaunchsInfo(launchConfig);
+			}
 		}
+	} catch(e) {
+		Utils
 	}
 }
 
