@@ -2,9 +2,6 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"path": "..\\prettier-plugin-4gl"
 		}
 	],
 	"settings": {

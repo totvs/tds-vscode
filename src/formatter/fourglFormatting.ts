@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { DocumentFormatting } from "./documentFormatting";
 import { FourglFormattingRules } from "./fourglFormattingRules";
+import { parser } from "../parser";
 
 class FourglFormatting extends DocumentFormatting
   implements
@@ -23,13 +24,32 @@ class FourglFormatting extends DocumentFormatting
     options: vscode.FormattingOptions,
     token: vscode.CancellationToken
   ): Promise<vscode.TextEdit[]> {
-    const line: vscode.TextLine = document.lineAt(position.line - 1);
-    const text: string = line.text.toLowerCase();
-    const range = line.range;
     const result: vscode.TextEdit[] = [];
 
-    result.push(vscode.TextEdit.replace(range, text));
-    result.push(vscode.TextEdit.insert(range.start, "XXXXXXXXX"));
+    try {
+      const line: vscode.TextLine = document.lineAt(position.line - 1);
+      const ast = parser(document.languageId, line.text + "\n");
+
+      ast.forEach((element: any) => {
+        element.forEach((token: any) => {
+          if (token.type === "keyword") {
+            const s = line.range.start;
+            const oldValue = line.text.substr(token.offset, token.value.length);
+
+            const r = new vscode.Range(
+              s.line,
+              token.offset,
+              s.line,
+              token.offset + token.value.length
+            );
+
+            result.push(vscode.TextEdit.replace(r, token.value.toUpperCase()));
+          }
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
 
     return Promise.resolve(result);
   }
@@ -39,7 +59,7 @@ class FourglFormatting extends DocumentFormatting
     options: vscode.FormattingOptions,
     token: vscode.CancellationToken
   ): vscode.ProviderResult<vscode.TextEdit[]> {
-    return super.provideDocumentFormattingEdits(document,options,token);
+    return super.provideDocumentFormattingEdits(document, options, token);
   }
 }
 
@@ -59,4 +79,3 @@ export function register(selector: vscode.DocumentSelector): vscode.Disposable {
     vscode.languages.registerDocumentFormattingEditProvider(selector, provider)
   );
 }
-

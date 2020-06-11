@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { FormattingOptions } from 'vscode';
 
-export function _getFormattingOptions(langId: string): FormattingOptions {
+export function getFormattingOptions(langId: string): FormattingOptions {
 	let cfg = vscode.workspace.getConfiguration(langId);
 	let _insertSpaces: boolean | undefined = cfg.get("editor.insertSpaces");
 	let _tabSize: number | undefined = cfg.get("editor.tabSize");

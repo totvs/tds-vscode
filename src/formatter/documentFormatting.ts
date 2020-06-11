@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { DocumentFormattingEditProvider, TextDocument, FormattingOptions, CancellationToken, ProviderResult, TextEdit, DocumentRangeFormattingEditProvider } from 'vscode';
 import { RulesFormatting, RuleMatch } from './formattingRules';
-import { _getFormattingOptions } from "./formattingOptions";
+import { getFormattingOptions } from "./formattingOptions";
 
 export class DocumentFormatting implements DocumentFormattingEditProvider {
 	private rulesFormatting: RulesFormatting;
@@ -125,7 +125,7 @@ export async function resourceFormatting(resources: string[], documentFormatting
 					if (document.languageId !== "") {
 						lineCount += document.lineCount;
 
-						const options: FormattingOptions = _getFormattingOptions(document.languageId);
+						const options: FormattingOptions = getFormattingOptions(document.languageId);
 						const providerResult: ProviderResult<TextEdit[]> = documentFormatting.provideDocumentFormattingEdits(document, options, token);
 						if (Array.isArray(providerResult)) {
 							progress.report({ increment: increment * index, message: `${uri.toString(false)} (${index + 1}/${total})` });
