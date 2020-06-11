@@ -285,8 +285,7 @@
 						".RES",
 						".4GL",
 						".PER",
-						".JS",
-						".TS"
+						".JS"
 					],
 					"description": "%tds.package.folder.extensions.allowed%"
 				},
