@@ -1,6 +1,5 @@
 {
-//
-//Function String = "% ++^{function^}^{report^} *(*)*"
+
 const keywordList = [
   // "arg_val",
   // "arr_count",
@@ -241,66 +240,65 @@ const keywordList = [
   "YEAR"
 ]
 
-function node(_type, value, location, key) {
-    var obj = { type: _type, value: value, offset: location.start.offset };
-    //var obj = { type: _type, value: value, line: 0, column: 0 };
-
-    //console.log(value);
-
-    if (key) obj.key = key;
-
-    return obj;
-  }
-
-function nodeStr(value, location) {
-
-  return node("string", value, location);
+//Compatibilizar com Token4glType em index.ts
+const TokenType = {
+  program: 1,
+  block: 2,
+  keyword: 3,
+  string: 4,
+  operator: 5,
+  whitespace: 6,
+  lineComment: 7,
+  blockComment: 8,
+  newLine: 11,
+  unknown: 0
 }
 
-function nodeOperator(value, location) {
+function node(_type, value, info, key) {
+  var obj = { type: _type, value: value, location: location() };
 
-  return node("operator", value, location);
-}
+  if (info) obj.info = info;
+  if (key) obj.key = key;
 
-function nodeWord(value, location) {
-  const _type = keywordList.indexOf(value.toUpperCase()) === -1?"word":"keyword";
-
-  return node(_type, value, location);
-}
-
-function nodeLineComment(value, location) {
-  return node("lineComment", value, location);
-}
-
-function nodeBlockComment(value, location) {
-  return node("blockComment", value, location);
+  return obj;
 }
 
 }
 
 start
-  = SPACE
-  / l:(line) (NL+ / EOF) { return l}
+  = p:line* { return node(TokenType.program, p) }
 
 line
-  = w:(word SPACE / string / OPERATOR / SPACE)*  {
-    return w;
-  }
-  / comment
-  / SPACE?
+  = c:(SPACE* command SPACE* comment*) (NL+ / EOF) { return node(TokenType.line, c) }
+
+command
+  = (comment
+  / words
+  / string
+  / OPERATOR
+  / SPACE)+
 
 comment
-  = w:(("#" / "-" "-") (!(NL / EOF) .)*) {
-        return nodeLineComment(w.join(""), location());
+  = c:("#" (!(NL / EOF) .)*) {
+        return node(TokenType.lineComment,c);
   }
-  / w:("{" (!"}".*) "}") {
-        return nodeBlockComment(w.join(""), location());
+  / c:("--" (!(NL / EOF) .)*) {
+        return node(TokenType.lineComment,c);
+  }
+  / c:("{" (!"}".*) "}") {
+        return node(TokenType.blockComment,c);
   }
 
+words
+  = (word (SPACE / NL))+
+
 word
-  = w:(LETTER)+  {
-        return nodeWord(w.join(""), location());
-  }
+  = w:([a-zA-Z0-9_]+)  {
+    const word = w.join("");
+    const _type = keywordList.indexOf(word.toUpperCase()) === -1?TokenType.word:TokenType.keyword;
+
+  return node(_type, word);
+}
 
 string
   = double_quoted_multiline_string
@@ -309,13 +307,13 @@ string
   / single_quoted_single_line_string
 
 double_quoted_multiline_string
-  = '"""' NL? chars:multiline_string_char* '"""'  { return nodeStr(chars.join(''), location()) }
+  = s:('"""' NL? chars:multiline_string_char* '"""')  { return node(TokenType.string_double,s) }
 double_quoted_single_line_string
-  = '"' chars:string_char* '"'                    { return nodeStr(chars.join(''), location()) }
+  = '"' chars:string_char* '"'                    { return node(TokenType.string_double,chars.join(''), {subType: '"' }) }
 single_quoted_multiline_string
-  = "'''" NL? chars:multiline_literal_char* "'''" { return nodeStr(chars.join(''), location()) }
+  = "'''" NL? chars:multiline_literal_char* "'''" { return node(TokenType.string_single,chars.join(''), {subType: "'" }) }
 single_quoted_single_line_string
-  = "'" chars:literal_char* "'"                   { return nodeStr(chars.join(''), location()) }
+  = "'" chars:literal_char* "'"                   { return node(TokenType.string_single,chars.join(''), {subType: "'" }) }
 
 string_char
   = (!'"' char:. { return char })
@@ -333,19 +331,19 @@ multiline_string_delim
 multiline_literal_char
   = (!"'''" char:. { return char })
 
-LETTER = [a-z0-9]i
-
 OPERATOR
-  = o:[~!@%^&*\(\)\-+=|/{}\[\]\:;<> ,.?#_] {
-    return nodeOperator(o, location());
+  = o:[~!@%^&*()-+=|/{}[\]:;<>,.?#_] {
+    return node(TokenType.operator, o);
 }
 
-SPACE = s:[ \t\n\r]+ { return node("ws", s, location()); }
+SPACE = s:[ \t\n\r]+ {
+  return node(TokenType.whitespace, s.join(""));
+}
 
 NL
-  = s:("\n" / "\r" "\n") { return node("nl", s, location()); }
+  = s:("\n" / "\r\n") { return node(TokenType.newLine, s); }
 
-NLS              = NL / SPACE
+NLS = NL / SPACE
 
 EOF
   = !.

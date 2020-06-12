@@ -1,7 +1,8 @@
 import * as vscode from "vscode";
 import { DocumentFormatting } from "./documentFormatting";
 import { FourglFormattingRules } from "./fourglFormattingRules";
-import { parser } from "../parser";
+import { parser, Token4GlType } from "../parser";
+import { isArray } from "util";
 
 class FourglFormatting extends DocumentFormatting
   implements
@@ -28,30 +29,49 @@ class FourglFormatting extends DocumentFormatting
 
     try {
       const line: vscode.TextLine = document.lineAt(position.line - 1);
-      const ast = parser(document.languageId, line.text + "\n");
+      if (line.text.trim() !== "") {
+      const ast = parser(document.languageId, line.text + "\n"); //obrigatorio \n
+      const nodes = this.findNodes(Token4GlType.keyword, ast);
 
-      ast.forEach((element: any) => {
-        element.forEach((token: any) => {
-          if (token.type === "keyword") {
+        nodes.forEach((token: any) => {
+          if (token.type === Token4GlType.keyword) {
             const s = line.range.start;
-            const oldValue = line.text.substr(token.offset, token.value.length);
+            const offset = token.location.start.offset;
 
             const r = new vscode.Range(
               s.line,
-              token.offset,
+              offset,
               s.line,
-              token.offset + token.value.length
+              token.location.end.offset
             );
 
             result.push(vscode.TextEdit.replace(r, token.value.toUpperCase()));
           }
         });
-      });
+      }
     } catch (error) {
       console.log(error);
     }
 
     return Promise.resolve(result);
+  }
+
+  private findNodes(target: Token4GlType, node: any): any[] {
+    let result: any[] = [];
+
+    if (node === undefined || node === null) {
+      //ignorar
+    } else if (isArray(node)) {
+      node.forEach((element: any) => {
+        result = result.concat(this.findNodes(target, element));
+      });
+    } else if (node.type === target) {
+        result.push(node);
+    } else if (isArray(node.value)) {
+      result = result.concat(this.findNodes(target, node.value));
+    }
+
+    return result;
   }
 
   provideDocumentFormattingEdits(

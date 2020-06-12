@@ -56,15 +56,47 @@ function print4gl(path, options, print) {
   }
 }
 
-export function parser(vscodeLanguageId: string, code: string): any {
+export interface IParserOptions {
+  ignoreWhitespace?: boolean;
+  ignoreNewLine?: boolean;
+}
+
+const parserOptionsDefault: IParserOptions = {
+  "ignoreWhitespace": true,
+  "ignoreNewLine": false
+}
+
+export function parser(
+  vscodeLanguageId: string,
+  code: string,
+  options?: IParserOptions
+): any {
   const lang: any = languages.filter((language: any) => {
     return language.vscodeLanguageIds.includes(vscodeLanguageId);
   });
 
   if (lang) {
+    options = options ? options : parserOptionsDefault;
+    options.ignoreNewLine = options.ignoreNewLine || parserOptionsDefault.ignoreNewLine
+    options.ignoreWhitespace = options.ignoreWhitespace || parserOptionsDefault.ignoreWhitespace
+
     const parser = parsers[lang[0].parsers[0]];
-    return parser.parse(code);
+    return parser.parse(code, options);
   }
 
   return [];
+}
+
+//Compatibilizar com TokenType em 4gl.pegjs
+export enum Token4GlType {
+  program = 1,
+  block = 2,
+  keyword = 3,
+  string = 4,
+  operator = 5,
+  whitespace = 6,
+  lineComment = 7,
+  blockComment = 8,
+  newLine = 11,
+  unknown = 0,
 }
