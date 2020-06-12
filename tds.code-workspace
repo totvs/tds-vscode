@@ -3,5 +3,9 @@
 		{
 			"path": "."
 		}
-	]
+	],
+	"settings": {
+		"totvsLanguageServer.welcomePage": false,
+		"debug.javascript.suggestPrettyPrinting": false
+	}
 }

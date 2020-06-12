@@ -1,17 +1,23 @@
+# Versão 1.0.NEXT
+
+## [4GL] Liberação do editor para 4GL (BETA)
+
+### Recursos liberados
+* Sintaxe destacada conforme tipo (definição, palavra reservada, ...);
+* Árvore de estrutura (_outline_)
+
+### Ajustes
+* Processo de compilação e outros de apoio
+
+## [AdvPL] Árvore de estrutura (_outline_)
+
 # Versão 1.0.4
 
-## Conexao com Appserver com erro - Smartclient 19.3.0.5 (com SSL desligado) [Issue 390](https://github.com/totvs/tds-vscode/issues/390)
+## Conexão com Appserver com erro - Smartclient 19.3.0.5 (com SSL desligado) [Issue 390](https://github.com/totvs/tds-vscode/issues/390)
 ### Problema:
 * Após da actualizacao do binário do smartclient 19.3.0.5 quando tento lancar um debug com o TDS-VSCode, tenho a janela com siguiente erro: "ERR0027: TOTVS | SmartClient conectou com TOTVS | Application Server mas houve erro no início de validação de conexão."
 ### Solução:
 * Ajustado a geração da configuração para depuração.
-----
-
-## Ajustado geração de patch com characteres maiusculos no MAC [Issue 386](https://github.com/totvs/tds-vscode/issues/386)
-### Problema:
-* Após atualização do language server, o MAC, erroneamente, passou a recusar aplicação de patch caso existisse character maiusculo no caminho do arquivo. Esse processo deve ser apenas para Linux
-### Solução:
-* Corrigido configuração no Language Server para que o processo de validação ocorra apenas no Linux
 ----
 
 # Versão 1.0.3

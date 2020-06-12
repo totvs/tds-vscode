@@ -2,7 +2,7 @@
 	"name": "tds-vscode",
 	"displayName": "Totvs Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
 	"description": "%tds.package.description%",
-	"version": "1.0.5",
+	"version": "1.0.4",
 	"publisher": "TOTVS",
 	"author": {
 		"name": "TOTVS",
@@ -40,6 +40,7 @@
 		"prepare": "tsc -p ./src",
 		"compile": "npm-run-all compile:*",
 		"watch": "npm-run-all -p watch:*",
+		"compile:parse_4gl": "echo src/parser/4gl-parser.pegjs && pegjs -o ./src/parser/4gl-parser.js ./syntaxes/4gl.pegjs",
 		"compile:extension": "tsc -p ./src",
 		"compile:views": "webpack --mode development",
 		"watch:extension": "tsc -w -p ./src",
@@ -85,18 +86,20 @@
 		"gulp-tslint": "^8.1.4",
 		"gulp-typescript": "^5.0.1",
 		"gulp-util": "^3.0.8",
+		"lodash.template": ">=4.5.0",
 		"npm-run-all": "^4.1.5",
 		"style-loader": "^1.2.1",
 		"ts-loader": "^6.2.2",
 		"tslint": "5.11.0",
-		"vsce": "^1.74.0",
+		"vsce": "^1.75.0",
 		"webpack": "^4.42.0",
 		"webpack-cli": "^3.3.10",
-		"lodash.template": ">=4.5.0"
+		"pegjs": "^0.10.0"
 	},
 	"main": "./out/extension",
 	"activationEvents": [
 		"onLanguage:advpl",
+		"onLanguage:4gl",
 		"onCommand:totvs-developer-studio.getProgramArguments",
 		"onCommand:totvs-developer-studio.getProgramName",
 		"onCommand:totvs-developer-studio.build.file",
@@ -152,6 +155,13 @@
 		"workspaceContains:servers.json"
 	],
 	"contributes": {
+		"iconThemes": [
+			{
+				"id": "totvs-icons",
+				"label": "Totvs Icons",
+				"path": "./fileicons/xtotvs-icon-theme.json"
+			}
+		],
 		"colors": [
 			{
 				"id": "terminal.ansiBlack",
@@ -217,11 +227,20 @@
 					".aph",
 					".ahu",
 					".apl",
-					".apw",
+					".apw"
+				],
+				"configuration": "./advpl-language-configuration.json"
+			},
+			{
+				"id": "4gl",
+				"aliases": [
+					"4GL"
+				],
+				"extensions": [
 					".4gl",
 					".per"
 				],
-				"configuration": "./language-configuration.json"
+				"configuration": "./4gl-language-configuration.json"
 			},
 			{
 				"id": "totvs_patch",
@@ -241,15 +260,36 @@
 				"language": "advpl",
 				"scopeName": "source.advpl",
 				"path": "./syntaxes/advpl_language.tmLanguage.json"
+			},
+			{
+				"language": "4gl",
+				"scopeName": "source.4gl",
+				"path": "./syntaxes/4gl_language.tmLanguage.json"
 			}
 		],
 		"snippets": [
 			{
 				"language": "advpl",
-				"path": "./snippets/snippets.json"
+				"path": "./snippets/advpl_snippets.json"
+			},
+			{
+				"language": "4gl",
+				"path": "./snippets/4gl_snippets.json"
 			}
 		],
-		"configurationDefaults": {},
+		"configurationDefaults": {
+			"[4gl]": {
+				"files.encoding": "windows1252",
+				"files.insertFinalNewline": true,
+				"files.eol": "\r\n",
+				"editor.formatOnType": true
+			},
+			"[advpl]": {
+				"files.encoding": "windows1252",
+				"files.insertFinalNewline": true,
+				"files.eol": "\r\n"
+			}
+		},
 		"configuration": {
 			"type": "object",
 			"title": "AdvPL",
@@ -605,7 +645,7 @@
 			{
 				"command": "totvs-developer-studio.run.formatter",
 				"title": "Format",
-				"description": "Aplica formatação em arquivo fontes AdvPL e e suas variações.",
+				"description": "Aplica formatação em arquivo fontes TOTVS e suas variações.",
 				"category": "TOTVS",
 				"icon": {
 					"light": "resources/light/formatter.png",
@@ -1090,6 +1130,11 @@
 				},
 				{
 					"when": "resourceLangId == advpl",
+					"command": "totvs-developer-studio.run.formatter",
+					"group": "totvsSource@2"
+				},
+				{
+					"when": "resourceLangId == 4gl",
 					"command": "totvs-developer-studio.run.formatter",
 					"group": "totvsSource@2"
 				}
