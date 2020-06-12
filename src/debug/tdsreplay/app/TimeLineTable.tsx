@@ -34,11 +34,12 @@ const useStyles1 = makeStyles((theme: Theme) =>
 
 const tableStyles = makeStyles(_theme => ({
   root: {
-    width: "100%"
+    width: "100%",
   },
   tableContainer: {
     //Esse parametro faz com que o container ocupe todo espaço disponivel do webview
     flex: 1
+    //maxHeight: 610
     //flexDirection: "row",
     //flexGrow: "inherit"
   },
@@ -382,8 +383,22 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   //const theme = useTheme();
 
   return (
-    <Paper className={tableClasses.root}>
-      <TableContainer className={tableClasses.tableContainer}>
+    //<Paper className={tableClasses.root}>
+      <TableContainer className={tableClasses.tableContainer}  component={Paper}>
+        <TableHead>
+          <TableRow>
+            {columns.map(column => (
+              <TableCell
+                className={tableClasses.headCell}
+                key={column.id}
+                align={column.align}
+                style={{ minWidth: column.minWidth }}
+              >
+                {column.label}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
         <Table
           className={tableClasses.table}
           stickyHeader
@@ -391,23 +406,8 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           ref={tableElement}
           size={dense ? "medium" : "small"}
         >
-          <TableHead>
-            <TableRow>
-              {columns.map(column => (
-                <TableCell
-                  className={tableClasses.headCell}
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
           <TableBody>{createTimeLineItem(debugEvent)}</TableBody>
         </Table>
-      </TableContainer>
       <TablePagination
         className={tableClasses.pagination}
         rowsPerPageOptions={[100, 500, 1000, 1500, 2000, 3000, 5000]}
@@ -422,20 +422,21 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
         ActionsComponent={TablePaginationActions}
-      />
+        />
       <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
-      />
+        />
       <FormControlLabel
         control={
           <Switch
-            checked={ignoreSourcesNotfound}
-            onChange={handleIgnoreSourceNotFount}
+          checked={ignoreSourcesNotfound}
+          onChange={handleIgnoreSourceNotFount}
           />
         }
         label="Ignore Source Not Found"
-      />
-    </Paper>
+        />
+  </TableContainer>
+    //</Paper>
   );
 }
