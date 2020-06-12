@@ -194,27 +194,18 @@ function getIgnoreSourceNotFoundValue(): boolean {
 	return isIgnoreSourceNotFound;
 }
 
-let showProgressInfoEachPercent: number = 2;
+//let showProgressInfoEachPercent: number = 2;
 let progressStarted: boolean = false;
 let isFinished: boolean = false;
-let messageQueue: Array<{message, percent}> = new Array<{message, percent}>();
+let messageQueue: Array<{message, percent, increment}> = new Array<{message, percent, increment}>();
 
 function processShowProgressEvent(event: DebugSessionCustomEvent, debugConsole: DebugConsole) {
 
-	if(event.session) {
-		if(event.session.configuration.showProgressInfoEachPercent && event.session.configuration.showProgressInfoEachPercent != showProgressInfoEachPercent) {
-			showProgressInfoEachPercent = event.session.configuration.showProgressInfoEachPercent;
-		}
-	}
-
 	const message: string = `${event.body.detailMessage} ( ${event.body.currentWork}% )`;
-	messageQueue.push({message: message, percent: event.body.currentWork});
+	messageQueue.push({message: message, percent: event.body.currentWork, increment: event.body.increment});
 
-	if(event.body.currentWork == 0 && !event.body.detailMessage.includes("ERROR")) {
-		isFinished = false;
-	} else if(event.body.currentWork == 100) {
-		isFinished = true;
-	}
+	isFinished = !(event.body.currentWork < 100 && !event.body.detailMessage.includes("[ERROR]"));
+
 	if(!progressStarted) {
 		progressStarted = true;
 
@@ -244,15 +235,18 @@ function processShowProgressEvent(event: DebugSessionCustomEvent, debugConsole: 
 					 	while( !isFinished && messageQueue.length > 0) {
 							item = messageQueue.pop();
 							languageClient.outputChannel.appendLine(item.message);
-					 		setTimeout(() => {
-								progress.report({message: item.message, increment: showProgressInfoEachPercent});
-							}, 500);
+							if(item.percent > 0) {
+								setTimeout(() => {
+									progress.report({message: item.message, increment: item.increment});
+								}, 100);
+							}
 						}
 					}
 
 					setTimeout(() => {
+						languageClient.outputChannel.appendLine(item.message);
 						progress.report({ message: "Finalizado (100%)", increment: 100 });
-					}, 1000);
+					}, 100);
 
 					return new Promise((resolve) => {
 						setTimeout(() => {

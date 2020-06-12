@@ -36,20 +36,27 @@ const tableStyles = makeStyles(_theme => ({
   root: {
     width: "100%"
   },
-  container: {
-    maxHeight: 610
+  tableContainer: {
+    //Esse parametro faz com que o container ocupe todo espaço disponivel do webview
+    flex: 1
+    //flexDirection: "row",
+    //flexGrow: "inherit"
   },
-
+  table: {
+  },
   headCell: {
     //backgroundColor: this.props.muiTheme.palette.primary1Color,
     //color: "white"
-    //backgroundColor: "grey"
+    backgroundColor: "rgb(230,230,230)"
     //color: "white"
   },
   tableRow: {
     "&:hover": {
       backgroundColor: "gainsboro !important"
     }
+  },
+  pagination: {
+    //backgroundColor: "blue"
   },
   selectedTableRow: {
     backgroundColor: "grey !important"
@@ -90,7 +97,7 @@ const columns: Column[] = [
 		minWidth: 10,
 		align: 'left'
 		//format: (value: number) => value.toLocaleString(),
-	}
+  }
 ];
 
 interface TablePaginationActionsProps {
@@ -185,15 +192,15 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
 
   const tableElement: RefObject<HTMLTableElement> = React.createRef();
 
-  const classes = tableStyles();
+  const tableClasses = tableStyles();
   const [jsonBody, setJsonBody] = React.useState(debugEvent.body);
   const [dense, setDense] = React.useState(false);
   const [ignoreSourcesNotfound, setIgnoreSourcesNotfound] = React.useState(
     debugEvent.body.ignoreSourcesNotFound
   );
 
-  console.log("DEbugEvent:" + debugEvent.body.ignoreSourcesNotFound);
-  console.log("Do state:" + ignoreSourcesNotfound);
+  //console.log("DEbugEvent:" + debugEvent.body.ignoreSourcesNotFound);
+  //console.log("Do state:" + ignoreSourcesNotfound);
   //console.log("current TimeLine ID:" + jsonBody.currentSelectedTimeLineId);
   //console.log("itemsPerPage:" + jsonBody.itemsPerPage);
   //console.log("currentPage: " + jsonBody.currentPage);
@@ -355,9 +362,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           }
           selected={isSelected}
         >
-          <TableCell component="th" scope="row">
-            {timeLine.timeStamp}
-          </TableCell>
+          <TableCell component="th" scope="row">{timeLine.timeStamp}</TableCell>
           <TableCell align="left">{timeLine.srcName}</TableCell>
           <TableCell align="left">{timeLine.line}</TableCell>
         </TableRow>
@@ -377,9 +382,10 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   //const theme = useTheme();
 
   return (
-    <Paper className={classes.root}>
-      <TableContainer className={classes.container}>
+    <Paper className={tableClasses.root}>
+      <TableContainer className={tableClasses.tableContainer}>
         <Table
+          className={tableClasses.table}
           stickyHeader
           aria-label="sticky table"
           ref={tableElement}
@@ -389,7 +395,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
             <TableRow>
               {columns.map(column => (
                 <TableCell
-                  className={classes.headCell}
+                  className={tableClasses.headCell}
                   key={column.id}
                   align={column.align}
                   style={{ minWidth: column.minWidth }}
@@ -403,6 +409,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         </Table>
       </TableContainer>
       <TablePagination
+        className={tableClasses.pagination}
         rowsPerPageOptions={[100, 500, 1000, 1500, 2000, 3000, 5000]}
         component="div"
         count={parseInt(jsonBody.totalItems)}
