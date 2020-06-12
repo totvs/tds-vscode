@@ -1,11 +1,13 @@
 # Versão 1.0.NEXT
 
-## [4GL] Liberação do editor para 4GL
+## [4GL] Liberação do editor para 4GL (BETA)
 
 ### Recursos liberados
 * Sintaxe destacada conforme tipo (definição, palavra reservada, ...);
 * Árvore de estrutura (_outline_)
-* 
+
+### Ajustes
+* Processo de compilação e outros de apoio
 
 ## [AdvPL] Árvore de estrutura (_outline_)
 
