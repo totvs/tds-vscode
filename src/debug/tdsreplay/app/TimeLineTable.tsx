@@ -23,6 +23,44 @@ import { ICommand, CommandAction } from "../Command";
 import { DebugSessionCustomEvent } from "vscode";
 import { FormControlLabel } from "@material-ui/core";
 
+
+enum KeyCode {
+  BACKSPACE = 8,
+  COMMA = 188,
+  DELETE = 46,
+  DOWN = 40,
+  END = 35,
+  ENTER = 13,
+  ESCAPE = 27,
+  HOME = 36,
+  LEFT = 37,
+  PAGE_DOWN = 34,
+  PAGE_UP = 33,
+  PERIOD = 190,
+  RIGHT = 39,
+  SPACE = 32,
+  TAB = 9,
+  UP = 38,
+  F1 = 112,
+  F2 = 113,
+  F3 = 114,
+  F4 = 115,
+  F5 = 116,
+  F6 = 117,
+  F7 = 118,
+  F8 = 119,
+  F9 = 120,
+  F10 = 121,
+  F11 = 122,
+  F12 = 123,
+  INSERT = 45,
+  SHIFT = 16,
+  CONTROL = 17,
+  ALT = 18,
+  PAUSE_BREAK = 19,
+  CAPSLOCK = 20
+}
+
 const useStyles1 = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -34,7 +72,7 @@ const useStyles1 = makeStyles((theme: Theme) =>
 
 const tableStyles = makeStyles(_theme => ({
   root: {
-    width: "100%",
+    width: "100%"
   },
   tableContainer: {
     //Esse parametro faz com que o container ocupe todo espaço disponivel do webview
@@ -79,25 +117,25 @@ interface Column {
 }
 
 const columns: Column[] = [
-	{
-		id: 'TimeStamp',
-		label: 'Time',
-		minWidth: 10,
-		align: 'left'
-	},
-	{
-		id: 'SourceName',
-		label: 'Source Name',
-		minWidth: 10,
-		align: 'left'
-		//format: (value: number) => value.toLocaleString(),
-	},
-	{
-		id: 'Line',
-		label: 'Line',
-		minWidth: 10,
-		align: 'left'
-		//format: (value: number) => value.toLocaleString(),
+  {
+    id: 'TimeStamp',
+    label: 'Time',
+    minWidth: 10,
+    align: 'left'
+  },
+  {
+    id: 'SourceName',
+    label: 'Source Name',
+    minWidth: 10,
+    align: 'left'
+    //format: (value: number) => value.toLocaleString(),
+  },
+  {
+    id: 'Line',
+    label: 'Line',
+    minWidth: 10,
+    align: 'left'
+    //format: (value: number) => value.toLocaleString(),
   }
 ];
 
@@ -157,8 +195,8 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
         {theme.direction === "rtl" ? (
           <KeyboardArrowRight />
         ) : (
-          <KeyboardArrowLeft />
-        )}
+            <KeyboardArrowLeft />
+          )}
       </IconButton>
       <IconButton
         onClick={handleNextButtonClick}
@@ -168,8 +206,8 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
         {theme.direction === "rtl" ? (
           <KeyboardArrowLeft />
         ) : (
-          <KeyboardArrowRight />
-        )}
+            <KeyboardArrowRight />
+          )}
       </IconButton>
       <IconButton
         onClick={handleLastPageButtonClick}
@@ -259,10 +297,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     vscode.postMessage(command);
   };
 
-  const sendSelectTimeLineRequest = (
-    event: React.MouseEvent<HTMLTableRowElement, MouseEvent>,
-    id: string
-  ) => {
+  const sendSelectTimeLineRequest = (id: string) => {
     //console.log("------> postMessage Set TimeLine");
     let command: ICommand = {
       action: CommandAction.SetTimeLine,
@@ -321,6 +356,101 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     window.addEventListener("message", listener);
   }
 
+  const scrollIntoViewIfNeeded = (target: HTMLElement) => {
+    function getScrollParent(node: HTMLElement): HTMLElement {
+      if (node === null) {
+        return null;
+      }
+
+      if (node.scrollHeight > node.clientHeight) {
+        return node;
+      }
+      else {
+        return getScrollParent(node.parentNode as HTMLElement);
+      }
+    }
+
+    let parent = getScrollParent(target.parentNode as HTMLElement);
+
+    if (!parent)
+      return;
+
+    let parentComputedStyle = window.getComputedStyle(parent, null),
+      parentBorderTopWidth = parseInt(parentComputedStyle.getPropertyValue('border-top-width')),
+      overTop = target.offsetTop - parent.offsetTop < parent.scrollTop,
+      overBottom = (target.offsetTop - parent.offsetTop + target.clientHeight - parentBorderTopWidth) > (parent.scrollTop + parent.clientHeight);
+
+    if (overTop) {
+      target.scrollIntoView(true);
+    }
+    else if (overBottom) {
+      target.scrollIntoView(false);
+    }
+
+  };
+
+  const scrollToLineIfNeeded = (id: number) => {
+    const rows = Array.from(tableElement.current.querySelectorAll('tbody tr')),
+      newRow = rows.find((row) => row.id === `${id}`) as HTMLElement;
+
+    scrollIntoViewIfNeeded(newRow);
+  }
+
+  const onKeyDown = function(event: React.KeyboardEvent<HTMLTableSectionElement>, timeline: any[]) {
+    const navigateToRow = (position: number | null, offset?: number) => {
+      offset = (offset || 0);
+
+      if (position === null) {
+        const currentItem = timeline.find(item => item.id === selectedRow);
+        position = timeline.indexOf(currentItem);
+      }
+
+      let newPosition = position + offset;
+      newPosition = Math.max(newPosition, 0);
+      newPosition = Math.min(newPosition, (timeline.length - 1));
+
+      const newItem = timeline[newPosition];
+
+      //TODO: se for para navega alem dos itens na paginacao atual, recuperar
+      // os novos dados, carregar e depois setar a primeira/ultima linha
+      if (newItem) {
+        sendSelectTimeLineRequest(newItem.id);
+        scrollToLineIfNeeded(newItem.id);
+      }
+    }
+
+    //TODO: calcular corretamente a quantidade de linhas em PageUp, PageDown
+    switch (event.keyCode) {
+      case KeyCode.UP:
+        navigateToRow(null, -1);
+
+        break;
+      case KeyCode.DOWN:
+        navigateToRow(null, +1);
+
+        break;
+      case KeyCode.PAGE_UP:
+        navigateToRow(null, -10);
+
+        break;
+      case KeyCode.PAGE_DOWN:
+        navigateToRow(null, +10);
+
+        break;
+      case KeyCode.HOME:
+        navigateToRow(0);
+
+        break;
+      case KeyCode.END:
+        navigateToRow(timeline.length - 1);
+
+        break;
+      default:
+        return;
+    }
+
+  };
+
   const createTimeLineItem = (_debugEvent: DebugSessionCustomEvent) => {
     const classes = tableStyles();
     let items = [];
@@ -353,13 +483,10 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           key={timeLine.id}
           className={bg}
           onClick={
-            timeLine.srcFoundInWS
-              ? event => {
-                  sendSelectTimeLineRequest(event, event.currentTarget.id);
-                }
-              : event => {
-                  /*does nothing*/
-                }
+            (event) => {
+              if (timeLine.srcFoundInWS)
+                sendSelectTimeLineRequest(timeLine.id);
+            }
           }
           selected={isSelected}
         >
@@ -384,7 +511,14 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
 
   return (
     //<Paper className={tableClasses.root}>
-      <TableContainer className={tableClasses.tableContainer}  component={Paper}>
+    <TableContainer className={tableClasses.tableContainer} component={Paper}>
+      <Table
+        className={tableClasses.table}
+        stickyHeader
+        aria-label="sticky table"
+        ref={tableElement}
+        size={dense ? "medium" : "small"}
+      >
         <TableHead>
           <TableRow>
             {columns.map(column => (
@@ -399,15 +533,10 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
             ))}
           </TableRow>
         </TableHead>
-        <Table
-          className={tableClasses.table}
-          stickyHeader
-          aria-label="sticky table"
-          ref={tableElement}
-          size={dense ? "medium" : "small"}
-        >
-          <TableBody>{createTimeLineItem(debugEvent)}</TableBody>
-        </Table>
+        <TableBody onKeyDown={(event) => onKeyDown(event, jsonBody.timeLines)}>
+          {createTimeLineItem(debugEvent)}
+        </TableBody>
+      </Table>
       <TablePagination
         className={tableClasses.pagination}
         rowsPerPageOptions={[100, 500, 1000, 1500, 2000, 3000, 5000]}
@@ -422,21 +551,21 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
         ActionsComponent={TablePaginationActions}
-        />
+      />
       <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
-        />
+      />
       <FormControlLabel
         control={
           <Switch
-          checked={ignoreSourcesNotfound}
-          onChange={handleIgnoreSourceNotFount}
+            checked={ignoreSourcesNotfound}
+            onChange={handleIgnoreSourceNotFount}
           />
         }
         label="Ignore Source Not Found"
-        />
-  </TableContainer>
+      />
+    </TableContainer>
     //</Paper>
   );
 }
