@@ -1,3 +1,14 @@
+# Versão 1.0.NEXT
+
+## [4GL] Liberação do editor para 4GL
+
+### Recursos liberados
+* Sintaxe destacada conforme tipo (definição, palavra reservada, ...);
+* Árvore de estrutura (_outline_)
+* 
+
+## [AdvPL] Árvore de estrutura (_outline_)
+
 # Versão 1.0.4
 
 ## Conexão com Appserver com erro - Smartclient 19.3.0.5 (com SSL desligado) [Issue 390](https://github.com/totvs/tds-vscode/issues/390)
@@ -6,10 +17,6 @@
 ### Solução:
 * Ajustado a geração da configuração para depuração.
 ----
-
-## [4GL] Sintaxe 4GL não é reconhecida no editor
-
-## [4GL] Autocompletar no editor para fontes 4GL
 
 # Versão 1.0.3
 
