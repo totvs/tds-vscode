@@ -84,11 +84,11 @@ export async function getProgramName() {
 	try {
 		return await new Promise<string | undefined>((resolve, reject) => {
 			const qp: QuickPick<QuickPickProgram> = window.createQuickPick<QuickPickProgram>();
-			qp.title = localize('tds.vscode.getProgramName', "Please enter the name of an AdvPL function");
+			qp.title = localize('tds.vscode.getProgramName', "Please enter the name of an AdvPL/4GL function");
 			qp.items = lastPrograms;
 			qp.value = lastProgramExecuted;
 			qp.matchOnDescription = true;
-			qp.placeholder = localize('tds.vscode.getProgramName', "Please enter the name of an AdvPL function");
+			qp.placeholder = localize('tds.vscode.getProgramName', "Please enter the name of an AdvPL/4GL function");
 
 			disposables.push(qp.onDidChangeSelection(selection => {
 				if (!qp.value && selection[0]) {

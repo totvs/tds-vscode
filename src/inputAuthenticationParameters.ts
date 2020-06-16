@@ -6,7 +6,7 @@ import { ServerItem, authenticate } from "./serversView";
 //let localize = nls.loadMessageBundle();
 
 /**
- * Coleta os dados necessarios para logar a um servidor advpl.
+ * Coleta os dados necessarios para logar a um servidor advpl/4gl.
  *
  * A multi-step input using window.createQuickPick() and window.createInputBox().
  *

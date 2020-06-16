@@ -292,7 +292,7 @@
 		},
 		"configuration": {
 			"type": "object",
-			"title": "AdvPL",
+			"title": "Totvs",
 			"properties": {
 				"totvsLanguageServer.launch.args": {
 					"type": "array",
@@ -695,6 +695,9 @@
 		"breakpoints": [
 			{
 				"language": "advpl"
+			},
+			{
+				"language": "4gl"
 			}
 		],
 		"debuggers": [
@@ -797,7 +800,7 @@
 				"configurationSnippets": [
 					{
 						"label": "%tds.package.totvs_language_debug%",
-						"description": "A new configuration for 'debugging' a user selected AdvPL file.",
+						"description": "A new configuration for 'debugging' a user selected AdvPL/4GL file.",
 						"body": {
 							"type": "totvs_language_debug",
 							"request": "launch",
@@ -810,7 +813,7 @@
 					},
 					{
 						"label": "%tds.package.totvs_language_debug% with arguments",
-						"description": "A new configuration for 'debugging' a user selected AdvPL file with arguments.",
+						"description": "A new configuration for 'debugging' a user selected AdvPL/4GL file with arguments.",
 						"body": {
 							"type": "totvs_language_debug",
 							"request": "launch",

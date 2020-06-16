@@ -1,6 +1,6 @@
 {
 	"tds.package.description": "Totvs Developer Studio para VSCode",
-	"tds.package.args.for.lsp": "Array que contiene los parámetros não repassados ao binário do TOTVS AdvPL LS ",
+	"tds.package.args.for.lsp": "Array que contiene los parámetros não repassados ao binário do TOTVS Language Server",
 	"tds.package.max.problems.server": "Controla el número máximo de problemas encontrados en el server.",
 	"tds.package.trace.vscode.server": "Rastrea la comunicación entre VS Code y el language server.",
 	"tds.package.show.welcome.first.initialize": "Mostrar página de bienvenida la primera vez",
@@ -71,6 +71,6 @@
 	"tds.package.properties.workspaceFolders.description.web": "Ruta de acceso del workspace",
 	"tds.package.properties.wsCacheFiles.description.web": "Activar/desactivar el cache inicial de archivos de carpeta del workspace (DAP)",
 	"tds.package.properties.webNavigator.description.web": "Navegador Web.",
-	"tds.package.configurationSnippets.description": "Una nueva configuración para 'depurar' un usuario que selecciona el archivo AdvPL.",
-	"tds.package.configurationSnippets.description.web": "Una nueva configuración para 'depurar' un usuario que selecciona el archivo AdvPL usando el SmartClient HTML."
+	"tds.package.configurationSnippets.description": "Una nueva configuración para 'depurar' un usuario que selecciona el archivo AdvPL/4GL.",
+	"tds.package.configurationSnippets.description.web": "Una nueva configuración para 'depurar' un usuario que selecciona el archivo AdvPL/4GL usando el SmartClient HTML."
 }
