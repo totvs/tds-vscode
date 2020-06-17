@@ -87,7 +87,7 @@ export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
 			if (event.session.type.startsWith(REPLAY_DEBUG_TYPE)) {
 				languageClient.clientOptions.outputChannelName = "TDS Replay";
 			} else if(event.session.type.startsWith(DEBUG_TYPE)) {
-				languageClient.clientOptions.outputChannelName = "Totvs Debug Messages";
+				languageClient.clientOptions.outputChannelName = "TOTVS Debug Messages";
 			}
 		}
 

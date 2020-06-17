@@ -71,7 +71,7 @@ A compilação efetuada a partir do editor, sempre irá recompilar o fonte, mant
 
 ### Resultado da compilação
 
-* Caso queira limpar o console antes da compilação, habilite a opção: `File | Preferences | Settings | Extensions | Totvs |Clear Console Before Compile`.
+* Caso queira limpar o console antes da compilação, habilite a opção: `File | Preferences | Settings | Extensions | TOTVS |Clear Console Before Compile`.
 
 * Para analisar o resultado da compilação de múltiplos arquivos, exite a opção de abrir uma tabela com informações de todos os arquivos que foram compilados.
 
@@ -138,8 +138,8 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
 
 ### Arquivos do pré compilador
 
-* Para manter os arquivos gerados pelo pré-compilador, habilite a opção nas preferencias em: `File | Preferences | Settings | Extensions | Totvs |Leave PPO File`.
-* Caso queira um log completo das operações efetuadas pelo pré-compilador, habilite a opção: `File | Preferences | Settings | Extensions | Totvs |Show Pre Compiler`.
+* Para manter os arquivos gerados pelo pré-compilador, habilite a opção nas preferencias em: `File | Preferences | Settings | Extensions | TOTVS |Leave PPO File`.
+* Caso queira um log completo das operações efetuadas pelo pré-compilador, habilite a opção: `File | Preferences | Settings | Extensions | TOTVS |Show Pre Compiler`.
 
 ## Configurações de Debug
 
@@ -157,7 +157,7 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
 >``{``
 "type": "totvs_language_debug",
 "request": "launch",
-"name": "Totvs Language Debug",
+"name": "TOTVS Language Debug",
 "program": "${command:AskForProgramName}",
 "cwb": "${workspaceFolder}",
 "smartclientBin": "/home/mansano/_c/totvs12/bin/smartclient/smartclient",
@@ -171,7 +171,7 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
 >``{``
 "type": "totvs_language_web_debug",
 "request": "launch",
-"name": "Totvs Language Debug",
+"name": "TOTVS Language Debug",
 "program": "${command:AskForProgramName}",
 "cwb": "${workspaceFolder}",
 "smartclientUrl": "<http://localhost:8080>",

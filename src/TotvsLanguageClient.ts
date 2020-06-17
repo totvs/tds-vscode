@@ -66,7 +66,7 @@ export function getLanguageClient(
           );
           const message = localize(
             "tds.webview.totvsLanguegeClient.pleaseReload",
-            "Please reload to apply the 'Totvs.{0}' configuration change.",
+            "Please reload to apply the 'TOTVS.{0}' configuration change.",
             key
           );
 
@@ -138,7 +138,7 @@ export function getLanguageClient(
     // 	fileEvents: workspace.createFileSystemWatcher('**/.cc')
     // },
     diagnosticCollectionName: "AdvPL",
-    outputChannelName: "Totvs",
+    outputChannelName: "TOTVS LS",
     revealOutputChannelOn: RevealOutputChannelOn.Error,
     initializationOptions: clientConfig,
     middleware: {

@@ -19,7 +19,7 @@ Já tivemos diversos relatos onde o problema era relacionado com acentuações n
 
 ### Maiúsculas e Minúsculas (*Case*)
 
-É sabido que no Windows o *case* (maiúsculas e minúsculas) não importa, mas no Linux e Mac, que são S.O. baseados no Unix, o *case* faz diferença. Devido ao uso de bibliotecas internas do AppServer, o *case* do arquivos no Linux e Mac são convertidos para minúsculas sempre, causando problemas quando existem caracteres em letras maiúsculas.
+É sabido que no Windows o *case* (maiúsculas e minúsculas) não importa, mas no Linux e Mac, que são S.O. baseados no Unix, o *case* faz diferença. Devido ao uso de bibliotecas internas do **TOTVS Server**, o *case* do arquivos no Linux e Mac são convertidos para minúsculas sempre, causando problemas quando existem caracteres em letras maiúsculas.
 
 **Solução:** Utilize somente letras minúsculas em todo o caminho, inclusive no nome dos arquivos quando utilizar o **TDS VS Code** em Linux ou Mac.
 
@@ -45,7 +45,7 @@ Os problemas mais frequentes que causam falha na compilação estão associadas 
 
 **Solução:** Verifique as configurações de *includes* no arquivo "servers.json" (na pasta ".totvsls" em sua pasta de usuário). Os *includes* podem ser definidos por servidores (em "configurations") e no nível geral *includes*. Se não estiver definido no servidor o *includes* geral será utilizado. Note que os *includes* devem ser os diretórios onde os arquivos `.ch` estão localizados.
 
-> de qualquer formam, os erros ocorridos durante a compilação de um fonte devem aparecer na visão "Problems" do **TDS VS Code** ou exibidos na visão "Output - Totvs". Se nenhuma informação sobre o erro for apresentada, crie uma nova "Issue".
+> de qualquer formam, os erros ocorridos durante a compilação de um fonte devem aparecer na visão "Problems" do **TDS VS Code** ou exibidos na visão "Output - TOTVS". Se nenhuma informação sobre o erro for apresentada, crie uma nova "Issue".
 
 ### File extension not in the allowed extensions list
 
@@ -53,9 +53,9 @@ Se encontrar uma mensagem como a seguir é porque, por padrão, somente serão c
 
 > [SKIPPED] File extension for <file.ext> is not in the allowed extensions list.
 
-A lista pode ser visualizada e alterada em `File | Preferences | Settings | Extensions | Totvs |Folder: Extensions Allowed`.
+A lista pode ser visualizada e alterada em `File | Preferences | Settings | Extensions | TOTVS |Folder: Extensions Allowed`.
 
-Este filtro pode ser desativado completamente, permitindo que quaisquer extensões de arquivos sejam compiladas no RPO, ao desmarcar a opção `File | Preferences | Settings | Extensions | Totvs |Folder: Enable Extensions Filter`.
+Este filtro pode ser desativado completamente, permitindo que quaisquer extensões de arquivos sejam compiladas no RPO, ao desmarcar a opção `File | Preferences | Settings | Extensions | TOTVS |Folder: Enable Extensions Filter`.
 
 > Ao cadastrar uma nova extensão utilize o formato `".EXT"` (iniciado por um ponto e com as todas as letras em maíusculas).
 
@@ -65,13 +65,13 @@ Se ocorrer um erro com a mensagem do tipo:
 `Retrieve connection error: Connection is not authenticated but requires authentication`
 Indica que o token de reconexão pode conter dados incorretos.
 
-**Solução:** Acione `File > Preferences > Settings` ( ou `CTRL + ,` ) e localize `Totvs` em Extensions. Procure a opção "Use reconnection token" e desabilite temporariamente. Tente se conectar novamente e os dados do token de reconexão serão atualizados com os novos dados da conexão.
+**Solução:** Acione `File > Preferences > Settings` ( ou `CTRL + ,` ) e localize `TOTVS` em Extensions. Procure a opção "Use reconnection token" e desabilite temporariamente. Tente se conectar novamente e os dados do token de reconexão serão atualizados com os novos dados da conexão.
 
-### Falha ao compilar, gerar/aplicar patches (Novo AppServer Lobo Guará 19)
+### Falha ao compilar, gerar/aplicar patches (**TOTVS Server** Lobo Guará 19)
 
 A operação falha com uma mensagem semelhante a:
 `[FATAL] Aborting: the user must be logged in before xxxxx.`
-Certifique-se de que seu AppServer está atualizado, pois se for uma versão RC (Release Candidate), do tipo `Build Version: 19.3.0.1_RC13`, é possível que esteja com um problema que foi corrigido no *AppServer*.
+Certifique-se de que seu TOTVS Server está atualizado, pois se for uma versão RC (Release Candidate), do tipo `Build Version: 19.3.0.1_RC13`, é possível que esteja com um problema que foi corrigido no *TOTVS Server*.
 
 **Solução:** Pegue a última versão do portal e tente novamente.
 
@@ -100,7 +100,7 @@ Apesar de já descrita na seção de **"Problemas Gerais"** existem problemas qu
 
 ### Depuração não inicia
 
-Se a depuração não inicia, verifique se o Smartclient utilizado é o correto para a versão do AppServer utilizado.
+Se a depuração não inicia, verifique se o Smartclient utilizado é o correto para a versão do TOTVS Server utilizado.
 
 **Solução:** Ao invés de iniciar a depuração com o `F5` utilize o `CTRL + F5` e veja se o Smartclient executa corretamente. Se o Smartclient não executar assim, reveja as configurações de depuração (launch.json).
 
@@ -117,7 +117,7 @@ Para auxiliar na identificação de um problema, ao abrir uma nova **"Issue"** s
 
 E se o problema ocorrer com um servidor informe também:
 
-* Versão do **RPO (LIB)** e do **AppServer**
+* Versão do **RPO (LIB)** e do **TOTVS Server**
 
 Se possível anexe os logs de apoio do **TDS VS Code**. Veja como gerar os logs a seguir em **"Gerando logs"**
 
@@ -141,15 +141,15 @@ Para obter os dados da extensão **tds-vscode** instalada selecione a visão *"E
 
 ![tds-vscode extension version](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/tds-vscode_version.PNG)
 
-#### Versão do **RPO (LIB)** e do **AppServer**
+#### Versão do **RPO (LIB)** e do **TOTVS Server**
 
-Para obter os dados do **RPO (LIB)** e do **AppServer**, de qualquer ponto de execução de um **RPO** (acessado através de um *Smartclient*), acione `Shift + F6` e exporte as informações do **AppServer** e **RPO**:
+Para obter os dados do **RPO (LIB)** e do **TOTVS Server**, de qualquer ponto de execução de um **RPO** (acessado através de um *Smartclient*), acione `Shift + F6` e exporte as informações do **TOTVS Server** e **RPO**:
 
 ```
-Informações do AppServer
+Informações do TOTVS Server
 Tipo do servidor;Console
-AppServer Build;7.00.191205P-20200220
-Appserver version;19.3.0.2
+TOTVS Server Build;7.00.191205P-20200220
+TOTVS Server version;19.3.0.2
 Servidor 64 bits;Sim
 Servidor Unix;Não
 ```

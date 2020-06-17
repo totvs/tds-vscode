@@ -1,6 +1,6 @@
 {
 	"name": "tds-vscode",
-	"displayName": "Totvs Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
+	"displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
 	"description": "%tds.package.description%",
 	"version": "1.0.4",
 	"publisher": "TOTVS",
@@ -158,7 +158,7 @@
 		"iconThemes": [
 			{
 				"id": "totvs-icons",
-				"label": "Totvs Icons",
+				"label": "TOTVS Icons",
 				"path": "./fileicons/xtotvs-icon-theme.json"
 			}
 		],
@@ -292,7 +292,7 @@
 		},
 		"configuration": {
 			"type": "object",
-			"title": "Totvs",
+			"title": "TOTVS",
 			"properties": {
 				"totvsLanguageServer.launch.args": {
 					"type": "array",
