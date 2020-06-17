@@ -30,7 +30,7 @@ export class TotvsConfigurationWebProvider implements DebugConfigurationProvider
 				const editor = window.activeTextEditor;
 				if (editor && editor.document.languageId === 'totvs-developer-studio') {
 					config.type = TotvsConfigurationWebProvider.type;
-					config.name = 'Totvs Language Web Debug (SmartClient HTML)';
+					config.name = 'TOTVS Language Web Debug (SmartClient HTML)';
 					config.request = 'launch';
 					config.program = '${workspaceFolder}/${command:AskForProgramName}';
 					config.smartclientUrl = "http://localhost:8080";

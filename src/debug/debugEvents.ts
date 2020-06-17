@@ -8,8 +8,6 @@ import { CreateTDSReplayTimeLineWebView } from './tdsreplay/CreateTDSReplayTimeL
 import { getLanguageClient } from '../TotvsLanguageClient';
 import { LanguageClient } from 'vscode-languageclient';
 
-import {ProgressOptions} from "vscode"
-
 const DEBUG_TYPE = TotvsConfigurationProvider.type;
 const WEB_DEBUG_TYPE: string = "totvs_language_web_debug";
 const REPLAY_DEBUG_TYPE = TotvsConfigurationTdsReplayProvider.type;
@@ -89,7 +87,7 @@ export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
 			if (event.session.type.startsWith(REPLAY_DEBUG_TYPE)) {
 				languageClient.clientOptions.outputChannelName = "TDS Replay";
 			} else if(event.session.type.startsWith(DEBUG_TYPE)) {
-				languageClient.clientOptions.outputChannelName = "Totvs Debug Messages";
+				languageClient.clientOptions.outputChannelName = "TOTVS Debug Messages";
 			}
 		}
 

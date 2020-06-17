@@ -12,7 +12,6 @@ import * as ls from "vscode-languageserver-types";
 import {
   window,
   commands,
-  debug,
   extensions,
   workspace,
   ExtensionContext,
@@ -49,11 +48,7 @@ import showInclude from "./include/include";
 import showWSPage from "./WebService/generateWS";
 import launcherConfig from "./launcher/launcherConfiguration";
 import { onCaptureLoggers, offCaptureLoggers } from "./loggerCapture/logger";
-import { TotvsConfigurationWebProvider } from "./debug/TotvsConfigurationWebProvider";
-import { TotvsConfigurationProvider } from "./debug/TotvsConfigurationProvider";
 import tdsReplayLauncherConfig from "./launcher/tdsReplay/tdsReplayLauncherConfig";
-import { TotvsConfigurationTdsReplayProvider } from "./debug/TotvsConfigurationTdsReplayProvider";
-import { TotvsDebugAdapterDescriptorFactory } from "./debug/TotvsDebugAdapterDescriptorFactory";
 import {
   getDAP,
   getProgramName,
@@ -65,8 +60,6 @@ import {
   updateSettingsBarItem,
 } from "./server/languageServerSettings";
 import {
-  processDebugCustomEvent,
-  DebugEvent,
   createTimeLineWebView,
 } from "./debug/debugEvents";
 import { patchValidates } from "./patch/patchValidate";
@@ -76,6 +69,7 @@ import {
   registerAdvplFormatting,
 } from "./formatter";
 import { registerAdvplOutline, register4glOutline } from "./outline";
+import { registerDebug, _debugEvent } from "./debug";
 
 export let languageClient: LanguageClient;
 // metodo de tradução
@@ -87,8 +81,6 @@ export let permissionStatusBarItem: vscode.StatusBarItem;
 
 // barra de configurações
 export let settingsStatusBarItem: vscode.StatusBarItem;
-
-let _debugEvent = undefined;
 
 export function parseUri(u): Uri {
   return Uri.parse(u);
@@ -436,56 +428,6 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-  // Registra uma configuração de debug
-  const provider = new TotvsConfigurationProvider();
-  context.subscriptions.push(
-    debug.registerDebugConfigurationProvider(
-      TotvsConfigurationProvider.type,
-      provider
-    )
-  );
-  context.subscriptions.push(provider);
-
-  context.subscriptions.push(
-    debug.registerDebugAdapterDescriptorFactory(
-      TotvsConfigurationProvider.type,
-      new TotvsDebugAdapterDescriptorFactory(context)
-    )
-  );
-
-  const tdsReplayProvider = new TotvsConfigurationTdsReplayProvider();
-  context.subscriptions.push(
-    debug.registerDebugConfigurationProvider(
-      TotvsConfigurationTdsReplayProvider.type,
-      tdsReplayProvider
-    )
-  );
-  context.subscriptions.push(tdsReplayProvider);
-
-  context.subscriptions.push(
-    debug.registerDebugAdapterDescriptorFactory(
-      TotvsConfigurationTdsReplayProvider.type,
-      new TotvsDebugAdapterDescriptorFactory(context)
-    )
-  );
-
-  // Registra uma configuração de debug web
-  const webProvider = new TotvsConfigurationWebProvider();
-  context.subscriptions.push(
-    debug.registerDebugConfigurationProvider(
-      TotvsConfigurationWebProvider.type,
-      webProvider
-    )
-  );
-  context.subscriptions.push(webProvider);
-
-  context.subscriptions.push(
-    debug.registerDebugAdapterDescriptorFactory(
-      TotvsConfigurationWebProvider.type,
-      new TotvsDebugAdapterDescriptorFactory(context)
-    )
-  );
-
   //Abre a tela de geração de patch com seleção de arquivos do RPO.
   context.subscriptions.push(
     commands.registerCommand(
@@ -633,10 +575,10 @@ export function activate(context: ExtensionContext) {
   updateSettingsBarItem();
 
   //Capturador de logs.
-  registersLog(context);
+  registerLog(context);
 
   //debug
-  registersDebug(context);
+  registerDebug(context);
 
   // Inicialização Adv/PL
   context.subscriptions.push(registerAdvplFormatting());
@@ -664,7 +606,7 @@ export function deactivate() {
   Utils.deleteSelectServer();
 }
 
-function registersLog(context: vscode.ExtensionContext) {
+function registerLog(context: vscode.ExtensionContext) {
   commands.registerCommand("totvs-developer-studio.logger.on", () =>
     onCaptureLoggers(context)
   );
@@ -674,23 +616,6 @@ function registersLog(context: vscode.ExtensionContext) {
 
   commands.registerCommand("totvs-developer-studio.toggleTableSync", () =>
     toggleTableSync()
-  );
-}
-
-function registersDebug(context: vscode.ExtensionContext) {
-  context.subscriptions.push(
-    vscode.debug.onDidReceiveDebugSessionCustomEvent(
-      (debugEvent: vscode.DebugSessionCustomEvent) => {
-        _debugEvent = debugEvent;
-        processDebugCustomEvent(debugEvent);
-      }
-    )
-  );
-
-  context.subscriptions.push(
-    vscode.debug.onDidTerminateDebugSession(() => {
-      _debugEvent = undefined;
-    })
   );
 }
 

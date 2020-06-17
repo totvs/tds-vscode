@@ -4,16 +4,38 @@
 
 ### Recursos liberados
 * Sintaxe destacada conforme tipo (definição, palavra reservada, ...);
-* Árvore de estrutura (_outline_)
+* Árvore de estrutura (_outline_), a ser detalhada em liberações futuras.
 
 ### Ajustes
 * Processo de compilação e outros de apoio
 
+## [4GL] Liberação do depurador para 4GL (BETA)
+
+### Recursos liberados
+* Suporte a ponto de parada;
+* Avaliação de expressões;
+* Árvore de variaveis por escopo;
+* Suporte a tipos específicos do 4GL (record, image e outras)
+
+### Problemas conhecidos (SOMENTE em servidores Logix)
+
+Ao utilizar **TOTVS Server**, de versão igual ou anterior a 19.3.0.0 de 01/06/20, detectamos algumas inconsistências durante o processo de depuração:
+* Variáveis do tipo _text_, ao terem seus valores modificados por uma atribuição, pode ocasionar queda no processo;
+* Variáveis com valor _NIL_ (nulo ou indefinido), podem apresentar resultados em formato diferente quando avaliados no _watch_, do apresentado no bloco do escopo;
+
 ## [AdvPL] Árvore de estrutura (_outline_)
+* Árvore de estrutura (_outline_), a ser detalhada em liberações futuras.
+
+## Nomenclatura e ortografica
+* Padronização da nomenclatura de _AppSever_ para _TOTVS Server_;
+* Padronização da identificação _AdvPL_ para _AdvPL/4GL_, quando aplicada as duas linguagens;
+* Opção do console _Advpl_, na visão _Output_, alterada para _TOTVS LS_;
+* Na árvore da visão _settings_, identificação da extensão passou a ser _TOTVS_;
+* Correções ortográficas.
 
 # Versão 1.0.4
 
-## Conexão com Appserver com erro - Smartclient 19.3.0.5 (com SSL desligado) [Issue 390](https://github.com/totvs/tds-vscode/issues/390)
+## Conexão com *TOTVS Server* com erro - Smartclient 19.3.0.5 (com SSL desligado) [Issue 390](https://github.com/totvs/tds-vscode/issues/390)
 ### Problema:
 * Após da actualizacao do binário do smartclient 19.3.0.5 quando tento lancar um debug com o TDS-VSCode, tenho a janela com siguiente erro: "ERR0027: TOTVS | SmartClient conectou com TOTVS | Application Server mas houve erro no início de validação de conexão."
 ### Solução:
@@ -69,7 +91,7 @@
 ### Problema:
 * Erro ao compilar pasta.
 ### Solução:
-* O problema era com apenas um arquivo cujo retorno de erro do AppServer estava fora do padrão. Melhorado o tratamento para capturar este erro fora do padrão e exibir ao usuário.
+* O problema era com apenas um arquivo cujo retorno de erro do **TOTVS Server** estava fora do padrão. Melhorado o tratamento para capturar este erro fora do padrão e exibir ao usuário.
 ----
 ## Problema na compilação com binário 7.00.191205P [Issue 292](https://github.com/totvs/tds-vscode/issues/292)
 ### Problema:
@@ -110,7 +132,7 @@
 ----
 ## Erro de compilação [Issue 270](https://github.com/totvs/tds-vscode/issues/270)
 ### Problema:
-* Se a variável utilizada na instrução `For` não estiver declarada como `Local` o AppServer informa um 'warning', mas como a mensagem estava fora do padrão estabelecido, a mensagem se tornava um 'error'.
+* Se a variável utilizada na instrução `For` não estiver declarada como `Local` o *TOTVS Server* informa um 'warning', mas como a mensagem estava fora do padrão estabelecido, a mensagem se tornava um 'error'.
 ### Solução:
 * Melhorado o tratamento das mensagens de 'error/warning' para exibir corretamente esta mensagem.
 ----
@@ -256,7 +278,7 @@
 ### Problema:
 * Ao depurar tabelas ocorria um erro que derrubava o DebugAdapter.
 ### Solução:
-* Adicionada uma proteção para tratar esse erro no AppServer que derrubava o DebugAdapter.
+* Adicionada uma proteção para tratar esse erro no **TOTVS Server** que derrubava o DebugAdapter.
 ----
 
 # Versao 0.3.14
@@ -442,7 +464,7 @@
 ### Melhoria:
 * O inspetor de funções mostra apenas a lista de funções, mas não mostra em que arquivo fonte está escrita a função.
 ### Solução:
-* Adicionada as informações de fonte e linha retornados pelo appserver.
+* Adicionada as informações de fonte e linha retornados pelo *TOTVS Server*.
 ----
 
 # Versão 0.2.1
@@ -519,7 +541,7 @@ Quer mudar o encoding para o padrão Windows1252?
 * Implementar processo de identificação de variáveis do fonte corrente para ser informado no auto-complete.
 ### Solução:
 * Implementado de opção para troca de comportamento do auto-complete:
-	* Acesse 'setttings', opção "Totvs Language Server › Editor › Toggle: Autocomplete"
+	* Acesse 'setttings', opção "TOTVS Language Server › Editor › Toggle: Autocomplete"
 	* No editor, acione o atalho ctrl+alt+space
 * Na barra de status será apresentado o comportamento atual, sendo:
 	* Basic: executa o autocompletar padrão do VSCode.
