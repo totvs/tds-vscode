@@ -50,7 +50,7 @@ export class TotvsConfigurationTdsReplayProvider implements DebugConfigurationPr
 
 			setDapArgs(setDapArgsArr);
 
-			return config;
+			return Promise.resolve(config);
 		} else {
 			window.showErrorMessage(localize('tds.vscode.tdsReplay.fileNotInformed', "Arquivo do TDS Replay não informado"));
 			return null;

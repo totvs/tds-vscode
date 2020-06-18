@@ -8,14 +8,17 @@ import { processDebugCustomEvent } from "./debugEvents";
 export let _debugEvent = undefined;
 
 export const registerDebug = (context: vscode.ExtensionContext) => {
-  const provider = new TotvsConfigurationProvider();
+
+  /****** Configurações de execução do debugger regular **/
+
+  const debugProvider = new TotvsConfigurationProvider();
   context.subscriptions.push(
     vscode.debug.registerDebugConfigurationProvider(
       TotvsConfigurationProvider.type,
-      provider
+      debugProvider
     )
   );
-  context.subscriptions.push(provider);
+  context.subscriptions.push(debugProvider);
 
   context.subscriptions.push(
     vscode.debug.registerDebugAdapterDescriptorFactory(
@@ -23,6 +26,9 @@ export const registerDebug = (context: vscode.ExtensionContext) => {
       new TotvsDebugAdapterDescriptorFactory(context)
     )
   );
+
+
+  /**** Configurações de execução do debug com TDS Replay *******/
 
   const tdsReplayProvider = new TotvsConfigurationTdsReplayProvider();
   context.subscriptions.push(
@@ -33,7 +39,16 @@ export const registerDebug = (context: vscode.ExtensionContext) => {
   );
   context.subscriptions.push(tdsReplayProvider);
 
-  // Registra uma configuração de debug web
+  context.subscriptions.push(
+    vscode.debug.registerDebugAdapterDescriptorFactory(
+      TotvsConfigurationTdsReplayProvider.type,
+      new TotvsDebugAdapterDescriptorFactory(context)
+    )
+  );
+
+
+  /***** Configuração de debug web *****/
+
   const webProvider = new TotvsConfigurationWebProvider();
   context.subscriptions.push(
     vscode.debug.registerDebugConfigurationProvider(
@@ -42,6 +57,16 @@ export const registerDebug = (context: vscode.ExtensionContext) => {
     )
   );
   context.subscriptions.push(webProvider);
+
+  context.subscriptions.push(
+    vscode.debug.registerDebugAdapterDescriptorFactory(
+      TotvsConfigurationWebProvider.type,
+      new TotvsDebugAdapterDescriptorFactory(context)
+    )
+  );
+
+
+  /** Configurações gerais de debug  */
 
   context.subscriptions.push(
     vscode.debug.onDidReceiveDebugSessionCustomEvent(
