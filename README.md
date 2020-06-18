@@ -11,7 +11,7 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 ## Principais funcionalidades
 
 * Comunicação baseada nos protocolos LSP/DAP
-* Syntax Highlight
+* Sintaxe destacada
 * Compilação de fontes, pastas e da área de trabalho
 * Depuração de fontes (Local e WebApp)
 * Geração de Patch
@@ -35,9 +35,9 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 ### Tela de boas vindas
 
 * A tela da boa vindas permite configurar a localização do SmartClient e dos diretórios de Includes que serão utilizados durante a compilação dos códigos fontes.
-* Esta tela será apresentada na primeira execução do plugin, assim que o primeiro fonte AdvPL for aberto ou quando uma nova pasta de trabalho for aberta.
+* Esta tela será apresentada na primeira execução do plugin, assim que o primeiro fonte AdvPL/4GL for aberto ou quando uma nova pasta de trabalho for aberta.
 
-> Caso não queira ver esta tela de boas vindas novamente desmarque a opção `File | Preferences | Settings | Extensions | AdvPL | Welcome Page`.
+> Caso não queira ver esta tela de boas vindas novamente desmarque a opção `File | Preferences | Settings | Extensions | TOTVS | Welcome Page`.
 
 * Localize o `SmartClient.exe` (Windows) ou `smartclient` (Linux e Mac). O binário no MacOS encontra-se em `smartclient.app/Contents/MacOS/smartclient`
 * Localize os diretórios de Includes que necessitar para seus projetos.
@@ -55,18 +55,18 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 ![Welcome Page on MacOS 2](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/welcome/Welcome_MacOS2.png)
 ![Welcome Page on MacOS 3](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/welcome/Welcome_MacOS3.png)
 
-### Console de saída (Output) AdvPL
+### Console de saída (Output) TOTVS
 
-* Todas as mensagens emitidas serão exibidas na visão `Output` (Console de saída) e seleção `AdvPL`.
+* Todas as mensagens emitidas serão exibidas na visão `Output` (Console de saída) e seleção `TOTVS`.
 * Se a visão `Output` não estiver visível ela pode ser ativada através do menu `View | Output` ou do atalho `CTRL + SHIFT + U`.
-* Certifique-se que a opção `AdvPL` esteja selecionada no combo (dropdown) da visão `Output`.
+* Certifique-se que a opção `TOTVS` esteja selecionada no combo (dropdown) da visão `Output`.
 
-![Output AdvPL](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Output.gif)
+![Output TOTVS](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Output.gif)
 
 ### Notificações
 
 * Além do Console de saída, algumas mensagens são exibidas em notificações tipo toast (popup no canto inferior direito).
-* Você pode configurar quais as mensagens serão exibidas caso ache a quantidade de notificações excessiva em `File | Preferences | Settings | Extensions | AdvPL | Editor > Show: Notification`.
+* Você pode configurar quais as mensagens serão exibidas caso ache a quantidade de notificações excessiva em `File | Preferences | Settings | Extensions | TOTVS |Editor > Show: Notification`.
 
 ## TOTVS: SERVERS
 
@@ -112,7 +112,7 @@ Já ao se utilizar o `Reconnect` o `ambiente` será requisitado porém caso já 
 
 Ao abrir o TDS VS Code ele pode se reconectar automaticamente ao último servidor conectado antes de fechar o TDS VS Code.
 
-> A reconexão automatica pode ser habilitada/desabilitada em `File | Preferences | Settings | Extensions | AdvPL | Reconnect Last Server`.
+> A reconexão automatica pode ser habilitada/desabilitada em `File | Preferences | Settings | Extensions | TOTVS |Reconnect Last Server`.
 
 Se não houver nenhum servidor conectado ao fechar o TDS VS Code esta configuração será desconsiderada.
 
@@ -135,11 +135,11 @@ A compilação efetuada a partir do editor, sempre irá recompilar o fonte, mant
 
 ### Resultado da compilação
 
-* Todas as informações sobre os arquivos compilados serão exibidos na visão `Output` (seleção `AdvPL`).
+* Todas as informações sobre os arquivos compilados serão exibidos na visão `Output` (seleção `TOTVS`).
 
-> Para que a visão `Output` seja automaticamente visualizada ao iniciar a compilação marque a opção `File | Preferences | Settings | Extensions | AdvPL | Show Console On Compile`.
+> Para que a visão `Output` seja automaticamente visualizada ao iniciar a compilação marque a opção `File | Preferences | Settings | Extensions | TOTVS |Show Console On Compile`.
 
-* Caso queira limpar o console antes da compilação, habilite a opção: `File | Preferences | Settings | Extensions | AdvPL | Clear Console Before Compile`.
+* Caso queira limpar o console antes da compilação, habilite a opção: `File | Preferences | Settings | Extensions | TOTVS |Clear Console Before Compile`.
 
 * Para analisar o resultado da compilação de múltiplos arquivos, existe a opção de abrir uma tabela com informações de todos os arquivos que foram compilados.
 
@@ -153,7 +153,7 @@ A compilação efetuada a partir do editor, sempre irá recompilar o fonte, mant
 
 * Você pode habilitar/desabilitar esta pergunta sobre a abertura da tabela de resultados da compilação.
 
-* Marque/desmarque a opção `File | Preferences | Settings | Extensions | AdvPL | Ask Compile Result` conforme sua preferência.
+* Marque/desmarque a opção `File | Preferences | Settings | Extensions | TOTVS |Ask Compile Result` conforme sua preferência.
 
 ## Configurações de Compilação
 
@@ -173,15 +173,15 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
 
  Na abertura do workspace, perguntamos se o usuário deseja alterar o encoding para o padrão TOTVS e essa configuração é feita automaticamente.
 
- * Marque/desmarque a opção `File | Preferences | Settings | Extensions | AdvPL | Ask Encoding Change` conforme sua preferência.
+ * Marque/desmarque a opção `File | Preferences | Settings | Extensions | TOTVS |Ask Encoding Change` conforme sua preferência.
 
 ### Filtro de extensões de arquivos
 
 Por padrão, somente serão compilados os fontes/recursos cujas extensões estiverem na lista de extensões permitidas configurada.
 
-A lista pode ser visualizada em `File | Preferences | Settings | Extensions | AdvPL | Folder: Extensions Allowed`.
+A lista pode ser visualizada em `File | Preferences | Settings | Extensions | TOTVS |Folder: Extensions Allowed`.
 
-Este filtro pode ser desativado completamente, permitindo que quaisquer extensões de arquivos sejam compiladas no RPO, ao desmarcar a opção `File | Preferences | Settings | Extensions | AdvPL | Folder: Enable Extensions Filter`.
+Este filtro pode ser desativado completamente, permitindo que quaisquer extensões de arquivos sejam compiladas no RPO, ao desmarcar a opção `File | Preferences | Settings | Extensions | TOTVS |Folder: Enable Extensions Filter`.
 
 ### Compilando Function e Main Function com Chave de compilação
 
@@ -217,8 +217,8 @@ Este filtro pode ser desativado completamente, permitindo que quaisquer extensõ
 
 ### Arquivos do pré compilador
 
-* Para manter os arquivos gerados pelo pré-compilador, habilite a opção nas preferencias em: `File | Preferences | Settings | Extensions | AdvPL | Generate Ppo File`.
-* Caso queira um log completo das operações efetuadas pelo pré-compilador, habilite a opção: `File | Preferences | Settings | Extensions | AdvPL | Show Pre Compiler`.
+* Para manter os arquivos gerados pelo pré-compilador, habilite a opção nas preferencias em: `File | Preferences | Settings | Extensions | TOTVS |Generate Ppo File`.
+* Caso queira um log completo das operações efetuadas pelo pré-compilador, habilite a opção: `File | Preferences | Settings | Extensions | TOTVS |Show Pre Compiler`.
 
 ## Configurações de Debug
 
@@ -237,7 +237,7 @@ Este filtro pode ser desativado completamente, permitindo que quaisquer extensõ
 {
   "type": "totvs_language_debug",
   "request": "launch",
-  "name": "Totvs Language Debug",
+  "name": "TOTVS Language Debug",
   "program": "${command:AskForProgramName}",
   "cwb": "${workspaceFolder}",
   "smartclientBin": "/home/mansano/_c/totvs12/bin/smartclient/smartclient",
@@ -253,7 +253,7 @@ Este filtro pode ser desativado completamente, permitindo que quaisquer extensõ
 {
   "type": "totvs_language_web_debug",
   "request": "launch",
-  "name": "Totvs Language Debug",
+  "name": "TOTVS Language Debug",
   "program": "${command:AskForProgramName}",
   "cwb": "${workspaceFolder}",
   "smartclientUrl": "<http://localhost:8080>",
@@ -262,7 +262,7 @@ Este filtro pode ser desativado completamente, permitindo que quaisquer extensõ
 }
 ```
 
-> Configure o caminho completo do seu navegador web em `File | Preferences | Settings | Extensions | AdvPL | Web: Navigator`
+> Configure o caminho completo do seu navegador web em `File | Preferences | Settings | Extensions | TOTVS |Web: Navigator`
 
 ```json
 {
@@ -298,7 +298,7 @@ Veja detalhes sobre como usar as diretivas [${command:}](https://link) e [passag
 * É possível verificar os valores de variáveis, conteúdo de tabelas e executar métodos durante o debug com o Debug Console.
 * Coloque um breakpoint em um ponto necessário de seu fonte.
 * Quando a depuração "parar" ao breakpoint, abra a visão `Debug Console` na parte inferior da tela.
-* Digite uma operação ou variável AdvPL disponivel em seu ambiente de depuração.
+* Digite uma operação ou variável AdvPL/4GL disponivel em seu ambiente de depuração.
 * Para verificar o conteúdo de uma tabela aberta, digite o seguinte comando: table:nome_da_tabela (ex.: table:SM0)
 * Analise os dados retornados de acordo com sua necessidade.
 

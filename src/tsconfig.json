@@ -11,7 +11,7 @@
         "noImplicitThis": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": false,
-
+        "allowJs": true,
         "lib": [
             "es2015",
             "dom"

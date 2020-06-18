@@ -57,7 +57,17 @@ class QuickPickProgram implements QuickPickItem {
 export async function getProgramName() {
 	const disposables: Disposable[] = [];
 
-	let config = Utils.getLaunchConfig();
+	let config = undefined;
+
+	try {
+		config = Utils.getLaunchConfig();
+	} catch(e) {
+		Utils.logInvalidLaunchJsonFile(e);
+	}
+	if(!config) {
+		return undefined;
+	}
+
 	let lastProgramExecuted = "";
 	let lastPrograms: QuickPickProgram[] = [];
 
@@ -74,11 +84,11 @@ export async function getProgramName() {
 	try {
 		return await new Promise<string | undefined>((resolve, reject) => {
 			const qp: QuickPick<QuickPickProgram> = window.createQuickPick<QuickPickProgram>();
-			qp.title = localize('tds.vscode.getProgramName', "Please enter the name of an AdvPL function");
+			qp.title = localize('tds.vscode.getProgramName', "Please enter the name of an AdvPL/4GL function");
 			qp.items = lastPrograms;
 			qp.value = lastProgramExecuted;
 			qp.matchOnDescription = true;
-			qp.placeholder = localize('tds.vscode.getProgramName', "Please enter the name of an AdvPL function");
+			qp.placeholder = localize('tds.vscode.getProgramName', "Please enter the name of an AdvPL/4GL function");
 
 			disposables.push(qp.onDidChangeSelection(selection => {
 				if (!qp.value && selection[0]) {
@@ -147,20 +157,26 @@ export async function getProgramArguments() {
 
 export function toggleTableSync() {
 	if(debugSession !== undefined) {
-		let launchConfig = Utils.getLaunchConfig();
-		launchConfig.configurations.forEach(launchElement => {
-			if(debugSession !== undefined && launchElement.name === debugSession.name) {
-				isTableSyncEnabled = !launchElement.enableTableSync;
-				sendChangeTableSyncSetting();
-				launchElement.enableTableSync = isTableSyncEnabled;
-				if(isTableSyncEnabled) {
-					Utils.logMessage(localize('tds.debug.tableSync.enabled', "Tables synchronism enabled"), MESSAGETYPE.Info,true);
-				} else {
-					Utils.logMessage(localize('tds.debug.tableSync.disabled', "Tables synchronism disabled"), MESSAGETYPE.Info,true);
+		let launchConfig = undefined;
+
+		try {
+			launchConfig = Utils.getLaunchConfigFile();
+			launchConfig.configurations.forEach(launchElement => {
+				if(debugSession !== undefined && launchElement.name === debugSession.name) {
+					isTableSyncEnabled = !launchElement.enableTableSync;
+					sendChangeTableSyncSetting();
+					launchElement.enableTableSync = isTableSyncEnabled;
+					if(isTableSyncEnabled) {
+						Utils.logMessage(localize('tds.debug.tableSync.enabled', "Tables synchronism enabled"), MESSAGETYPE.Info,true);
+					} else {
+						Utils.logMessage(localize('tds.debug.tableSync.disabled', "Tables synchronism disabled"), MESSAGETYPE.Info,true);
+					}
 				}
-			}
-		});
-		Utils.saveLaunchConfig(launchConfig);
+			});
+			Utils.saveLaunchConfig(launchConfig);
+		} catch(e) {
+			Utils.logInvalidLaunchJsonFile(e);
+		}
 	} else {
 		Utils.logMessage(
 			localize('tds.debug.tableSync.disabled', "The command to (Dis)Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually"),
@@ -170,7 +186,7 @@ export function toggleTableSync() {
 
 debug.onDidChangeActiveDebugSession((newDebugSession) => {
  	debugSession = newDebugSession;
-});
+})
 
 function sendChangeTableSyncSetting(): void {
 	if(debugSession === undefined) {
@@ -196,7 +212,18 @@ function sendChangeTableSyncSetting(): void {
 async function pickProgramArguments() {
 	const disposables: Disposable[] = [];
 
-	let config = Utils.getLaunchConfig();
+	let config = undefined;
+
+	try {
+		config = Utils.getLaunchConfigFile();
+	} catch(e) {
+		Utils.logInvalidLaunchJsonFile(e);
+	}
+
+	if(!config) {
+		return undefined;
+	}
+
 	let lastProgramExecuted = "";
 	let lastPrograms: QuickPickProgram[] = [];
 

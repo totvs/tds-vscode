@@ -2,9 +2,9 @@ import { ProviderResult, window, CancellationToken, DebugConfiguration, Workspac
 import { connectedServerItem } from '../serversView';
 import * as vscode from 'vscode';
 import * as Net from 'net';
+import { sessionKey } from '../TotvsLanguageClient';
 import {localize} from '../extension';
 import { setDapArgs } from './debugConfigs';
-import { sessionKey } from '../langServer/TotvsLanguageClient';
 /*
  * Set the following compile time flag to true if the
  * debug adapter should run inside the extension host.
@@ -30,7 +30,7 @@ export class TotvsConfigurationWebProvider implements DebugConfigurationProvider
 				const editor = window.activeTextEditor;
 				if (editor && editor.document.languageId === 'totvs-developer-studio') {
 					config.type = TotvsConfigurationWebProvider.type;
-					config.name = 'Totvs Language Web Debug (SmartClient HTML)';
+					config.name = 'TOTVS Language Web Debug (SmartClient HTML)';
 					config.request = 'launch';
 					config.program = '${workspaceFolder}/${command:AskForProgramName}';
 					config.smartclientUrl = "http://localhost:8080";

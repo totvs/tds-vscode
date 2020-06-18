@@ -1,5 +1,5 @@
-import * as vscode from 'vscode';
-import * as path from 'path';
+import vscode = require('vscode');
+import path = require('path');
 import * as fs from 'fs';
 //import Utils from '../utils';
 
@@ -10,7 +10,7 @@ const showProgressController = require('template-literal');
 
 const localizeHTML = {
 	"tds.webview.title": localize("tds.webview.title", "Progress..."),
-};
+}
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 

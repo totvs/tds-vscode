@@ -109,11 +109,9 @@ export default class Utils {
 	 * Retorna todo o conteudo do servers.json
 	 */
 	static getServersConfig() {
-		let config: any = undefined;
-		let fs = require('fs');
-		let exist = fs.existsSync(Utils.getServerConfigFile());
-		if (exist) {
-			let json = fs.readFileSync(Utils.getServerConfigFile()).toString();
+    let config: any = {};
+    let serversJson = Utils.getServerConfigFile();
+    let json = fs.readFileSync(serversJson).toString();
 			if (json) {
 				try {
 					config = JSON.parse(stripJsonComments(json));
@@ -121,7 +119,6 @@ export default class Utils {
 				catch (e) {
 				}
 			}
-		}
 		return config;
 	}
 
@@ -129,8 +126,6 @@ export default class Utils {
 	 * Retorna todo o conteudo do launch.json
 	 */
 	static getLaunchConfig() {
-		let config: any = {};
-		let fs = require('fs');
 		let exist = fs.existsSync(Utils.getLaunchConfigFile());
 		if (exist) {
 			let json = fs.readFileSync(Utils.getLaunchConfigFile()).toString();
@@ -139,6 +134,9 @@ export default class Utils {
 					config = JSON.parse(stripJsonComments(json));
 				}
 				catch (e) {
+          console.error(e);
+					throw e;
+					//return {};
 				}
 			}
 		}
@@ -187,7 +185,7 @@ export default class Utils {
 	 * @param name Nome do servidor logado
 	 * @param environment Ambiente utilizado no login
 	 */
-	static saveSelectServer(id: string, token: string, name: string, environment: string, username: string, password: string) {
+	static saveSelectServer(id: string, token: string, name: string, environment: string, username: string) {
 		const servers = Utils.getServersConfig();
 
 		servers.configurations.forEach(element => {
@@ -198,7 +196,6 @@ export default class Utils {
 					element.environments.push(environment);
 				}
 				element.username = username;
-				element.password = password;
 				element.environment = environment;
 
 				let server: SelectServer = {
@@ -472,37 +469,35 @@ export default class Utils {
 	 * Cria o arquivo servers.json caso ele nao exista.
 	 */
 	static createServerConfig() {
-		const servers = Utils.getServersConfig();
-		if (!servers) {
-			let fs = require("fs");
+    if (!fs.existsSync(Utils.getServerConfigPath())) {
+      fs.mkdirSync(Utils.getServerConfigPath());
+    }
+    let serversJson = Utils.getServerConfigFile();
+    if (!fs.existsSync(serversJson)) {
 			const sampleServer = {
 				version: "0.2.0",
-				includes: ["C:/totvs/includes"],
+        includes: [""],
 				permissions: {
 					authorizationtoken: ""
 				},
 				connectedServer: {},
 				configurations: []
 			};
-
-			if (!fs.existsSync(Utils.getServerConfigPath())) {
-				fs.mkdirSync(Utils.getServerConfigPath());
+      try {
+        fs.writeFileSync(serversJson, JSON.stringify(sampleServer, null, "\t"));
 			}
-
-			let serversJson = Utils.getServerConfigFile();
-
-			fs.writeFileSync(serversJson, JSON.stringify(sampleServer, null, "\t"), (err) => {
-				if (err) {
+			catch (err) {
 					console.error(err);
 				}
-			});
 		}
 	}
 	/**
 	 * Cria o arquivo launch.json caso ele nao exista.
 	 */
 	static createLaunchConfig() {
-		const launchConfig = Utils.getLaunchConfig();
+		let launchConfig = undefined;
+		try {
+			launchConfig = Utils.getLaunchConfig();
 		if (!launchConfig) {
 			let fs = require("fs");
 			let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
@@ -544,6 +539,9 @@ export default class Utils {
 				});
 			}
 		}
+		} catch(e) {
+			Utils.logInvalidLaunchJsonFile(e);
+    }
 	}
 	/**
 	 *Recupera um servidor pelo ID informado.
@@ -643,7 +641,7 @@ export default class Utils {
 	 * @param id ID do server que sera atualizado
 	 * @param buildVersion Nova build do servidor
 	 */
-	static updateBuildVersion(id: string, buildVersion: string, secure: boolean) {
+  static updateBuildVersion(id: string, buildVersion: string, secure: number) {
 		let result = false;
 		if (!id || !buildVersion) {
 			return result;
@@ -732,6 +730,12 @@ export default class Utils {
 		}
 	}
 
+	static logInvalidLaunchJsonFile(e) {
+		Utils.logMessage(`Ocorreu um problema ao ler o arquivo launch.json
+		(O arquivo ainda pode estar funcional, porém verifique-o para evitar comportamentos indesejados): ${e}`
+		, MESSAGETYPE.Warning, true);
+	}
+
 	static timeAsHHMMSS(date): string {
 		return Utils.leftpad(date.getHours(), 2)
 			+ ':' + Utils.leftpad(date.getMinutes(), 2)
@@ -799,6 +803,8 @@ export default class Utils {
 			copy = new Date();
 			copy.setTime(obj.getTime());
 			return copy;
+			}
+			
 		}
 
 		// Handle Array
@@ -818,9 +824,45 @@ export default class Utils {
 			}
 			return copy;
 		}
+				throw new Error("Unable to copy obj! Its type isn't supported.");
+					}
+}
 
-		throw new Error("Unable to copy obj! Its type isn't supported.");
-	}
+  //TODO: melhorar lendo de "package.json"
+  // retorna null ao ler configuração advpl/4gl
+  // let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('languages');
+  // const advpl = config.get("advpl")["extensions"];
+  // const logix = config.get("4gl")["extensions"];
+
+  private static advpl: string[] = [
+    ".ch",
+    ".prw",
+    ".prg",
+    ".prx",
+    ".ppx",
+    ".ppp",
+    ".tlpp",
+    ".aph",
+    ".ahu",
+    ".apl",
+    ".apw",
+  ];
+
+  private static logix: string[] = [".4gl", ".per"];
+
+  static isAdvPlSource(fileName: string): boolean {
+    const ext = path.extname(fileName);
+    return this.advpl.includes(ext);
+  }
+
+  static is4glSource(fileName: string): boolean {
+    const ext = path.extname(fileName);
+    return this.logix.includes(ext);
+  }
+
+  static isResource(fileName: string): boolean {
+    return !this.isAdvPlSource(fileName) && !this.is4glSource(fileName);
+  }
 }
 
 //TODO: pegar a lista de arquivos a ignorar da configuração

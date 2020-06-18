@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import * as path from 'path';
-import * as fs from 'fs';
-import * as os from 'os';
+import path = require('path');
+import fs = require('fs');
+import os = require('os');
 import Utils from '../utils';
 import { languageClient } from '../extension';
 const compile = require('template-literal');
@@ -23,7 +23,7 @@ const localizeHTML = {
 	"tds.webview.inspect.items.showing": localize("tds.webview.inspect.items.showing", "Items showing"),
 	"tds.webview.inspect.col01": localize("tds.webview.inspect.col01", "Name"),
 	"tds.webview.inspect.col02": localize("tds.webview.inspect.col02", "Date"),
-};
+}
 
 export function patchInfos(context: vscode.ExtensionContext, args: any) {
 	const server = Utils.getCurrentServer();
@@ -105,11 +105,11 @@ function sendPatchPath(path, currentPanel) {
 function exportPatchInfo() {
 	if (patchInfosData) {
 		let patchInfos = patchInfosData;
-		let data = "NAME".padEnd(80, ' ') + "TYPE".padEnd(10, ' ') + "BUILD".padEnd(15, ' ')
+		var data = "NAME".padEnd(80, ' ') + "TYPE".padEnd(10, ' ') + "BUILD".padEnd(15, ' ')
 				 + "DATE".padEnd(20, ' ') + "SIZE".padStart(12, ' ') + os.EOL;
 		for (let index = 0; index < patchInfos.length; index++) {
 			const element = patchInfos[index];
-			let output = element.name.padEnd(80, ' ') + element.type.padEnd(10, ' ') + element.buildType.padEnd(15, ' ')
+			var output = element.name.padEnd(80, ' ') + element.type.padEnd(10, ' ') + element.buildType.padEnd(15, ' ')
 			+ element.date.padEnd(20, ' ') + element.size.padStart(12, ' ');
 			data += output + os.EOL;
 		}

@@ -1,0 +1,270 @@
+{
+    "Select": {
+        "prefix": "select",
+        "body": [
+            "SELECT ${1:fields}",
+            "FROM ${2:table}",
+            "WHERE ${3:condition}\n"
+        ],
+        "description": "Select with where"
+    },
+    "Select into": {
+        "prefix": "select",
+        "body": [
+            "SELECT ${1:fields}",
+            "INTO ${2:variables}",
+            "FROM ${3:table}",
+            "WHERE ${4:condition}\n"
+        ],
+        "description": "Select with where saving the returned values ​​in variables"
+    },
+    "insert": {
+        "prefix": "insert",
+        "body": [
+            "INSERT INTO ${1:table}",
+            "VALUES (${2:fields})",
+            "",
+            "IF STATUS <> 0 OR SQLCA.SQLERRD[3] <> 1 THEN",
+            "\t${3:#codigo}",
+            "END IF",
+            "\n"
+        ],
+        "description": "Insert with error validation"
+    },
+    "update": {
+        "prefix": "update",
+        "body": [
+            "UPDATE ${1:table}",
+            "SET ${2:fields}",
+            "WHERE ${3:condition}",
+            "",
+            "IF STATUS <> 0 OR SQLCA.SQLERRD[3] <> 1 THEN ",
+            "\t${4:#codigo}",
+            "END IF",
+            "\n"
+        ],
+        "description": "Update with Where"
+    },
+    "delete": {
+        "prefix": "delete",
+        "body": [
+            "DELETE FROM ${1:table}",
+            "WHERE ${2:condition}",
+            "",
+            "IF SQLCA.SQLERRD[3] <> 1 THEN ",
+            "\t${3:#codigo}",
+            "END IF",
+            "\n"
+        ],
+        "description": "Delete with error validation"
+    },
+    "alter": {
+        "prefix": "alter",
+        "body": [
+            "ALTER TABLE ${1:table}",
+            "\n"
+        ],
+        "description": "Perform an alter on the table"
+    },
+    "encabezado": {
+        "prefix": "header",
+        "body": [
+            "#--------------------------------------------------------------#",
+            "# SISTEMA.: ${1:system}                                            #",
+            "# PROGRAMA: $TM_FILENAME                                            #",
+            "# OBJETIVO: ${2:objective}                             #",
+            "# AUTOR...: ${3:author}                                      #",
+            "# DATA....: $CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR                                         #",
+            "# ATUALIZA: $CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR                                         #",
+            "#--------------------------------------------------------------#"
+        ],
+        "description": "Header for 4gl programs"
+    },
+    "If": {
+        "prefix": "if",
+        "body": [
+            "IF ${1:condition} THEN",
+            "\t${0:#validation}",
+            "END IF\n"
+        ],
+        "description": "If"
+    },
+    "For": {
+        "prefix": "for",
+        "body": [
+            "FOR i = ${1:1} TO ${2:cantidad}",
+            "\t$0",
+            "END FOR"
+        ],
+        "description": "Loop For"
+    },
+    "Foreach": {
+        "prefix": "foreach",
+        "body": [
+            "FOREACH ${1:cursor} INTO ${2:variable}",
+            "\t${0:#validation}",
+            "END FOREACH"
+        ],
+        "description": "Loop Foreach"
+    },
+    "Cursor For Select": {
+        "prefix": "cursor",
+        "body": [
+            "DECLARE ${1:cursor} CURSOR FOR",
+            "SELECT ${2:fields}",
+            "FROM ${3:table}",
+            "",
+            "FOREACH ${1:cursor} INTO ${4:variable}",
+            "\t$0",
+            "END FOREACH"
+        ],
+        "description": "Cursor with Select and Foreach"
+    },
+    "Funcion": {
+        "prefix": "function",
+        "body": [
+            "#---------------------------------------#",
+            "FUNCTION ${1:functionName}()",
+            "#---------------------------------------#",
+            "",
+            "    ${2:code}",
+            "",
+            "    RETURN ${2:code}",
+            "END FUNCTION     ###     $1()"
+        ],
+        "description": "Function"
+    },
+    "Report": {
+        "prefix": "report",
+        "body": [
+            "REPORT ${1:name}(${2:variables})",
+            "",
+            "DEFINE",
+            "   ${3:var1}                  ${4:tipo},",
+            "   ${5:var1}                  ${6:tipo},",
+            "   ${7:var1}                  ${8:tipo}",
+            "",
+            "OUTPUT",
+            "PAGE LENGTH ${9:length}",
+            "",
+            "FORMAT",
+            "PAGE HEADER | FIRST PAGE HEADER",
+            "PRINT \"=================================================================\"",
+            "\"==========================================\"",
+            "PRINT \"=================================================================\"",
+            "\"==========================================\" ",
+            "ON EVERY ROW",
+            "\t$10",
+            "ON LAST ROW",
+            "\t$11",
+            "END REPORT"
+        ],
+        "description": "Report"
+    },
+    "Call": {
+        "prefix": "call",
+        "body": [
+            "CALL ${1:function}(${2:parameters})"
+        ],
+        "descripcion": "Function call"
+    },
+    "Message": {
+        "prefix": "message",
+        "body": [
+            "MESSAGE \"${1:message}\" ATTRIBUTE(BLINK,BOLD)"
+        ],
+        "description": "Message"
+    },
+    "Case": {
+        "prefix": "case",
+        "body": [
+            "CASE ${1:variable} ",
+            "\t WHEN ${2:#value}",
+            "\t\t    ${3:#code}",
+            "\t WHEN ${4:value}",
+            "\t\t    ${5:#code}",
+            "\t OTHERWISE",
+            "\t\t    ${6:code}",
+            "END CASE",
+            "\n"
+        ],
+        "description": "Case"
+    },
+    "Char": {
+        "prefix": "char",
+        "body": [
+            "CHAR($1)$0"
+        ],
+        "description": "char"
+    },
+    "record": {
+        "prefix": "record",
+        "body": [
+            "${1:var} RECORD LIKE ${2:table}.*,\n"
+        ],
+        "description": "Record like table"
+    },
+    "recordvar": {
+        "prefix": "recordvar",
+        "body": [
+            "${1:var} RECORD ",
+            "\t${2:variable}\t${3:type},",
+            "\t${4:variable}\t${5:type}",
+            "END RECORD\n"
+        ],
+        "description": "Record structure"
+    },
+    "error": {
+        "prefix": "error",
+        "body": [
+            "ERROR \"${1:mensaje}\"",
+            "SLEEP ${2:sleep}"
+        ],
+        "description": "Error with sleep"
+    },
+    "display": {
+        "prefix": "display",
+        "body": [
+            "DISPLAY \"${1:valor}\"",
+            "SLEEP ${2:sleep}"
+        ],
+        "description": "Display with sleep"
+    },
+    "displaybyname": {
+        "prefix": "displaybyname",
+        "body": [
+            "DISPLAY BY NAME ${1:valor}"
+        ],
+        "description": "Display by name"
+    },
+    "prepared": {
+        "prefix": "prepared",
+        "body": [
+            "PREPARE ${1:prep} FROM ${2:sql_var}",
+            "DECLARE ${3:curs} CURSOR FOR ${1:prep}",
+            "OPEN    ${3:curs}",
+            "INITIALIZE ${4:record}.* TO NULL",
+            "FETCH ${3:curs} INTO ${4:record}.*",
+            "CLOSE ${3:curs}",
+            "FREE  ${3:curs}",
+            "\n"
+        ],
+        "description": "Generate a prepared statment and download it to the chosen record, previously you must have defined a variable to support the SQL"
+    },
+    "preparedForeach": {
+        "prefix": "preparedForeach",
+        "body": [
+            "PREPARE ${1:prep} FROM ${2:sql_var}",
+            "DECLARE ${3:curs} CURSOR FOR ${1:prep}",
+            "OPEN    ${3:curs}",
+            "\tINITIALIZE ${4:record}.* TO NULL",
+            "\tFOREACH ${3:curs} INTO ${4:record}",
+            "\t\t${5:}",
+            "\tEND FOREACH",
+            "CLOSE ${3:curs}",
+            "FREE  ${3:curs}",
+            "\n"
+        ],
+        "description": "Generate a prepared statment and use it directly in a foreach, you must have previously defined a variable to support SQL"
+    }
+}

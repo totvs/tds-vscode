@@ -27,7 +27,7 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 ### Tela de boas vindas
 
 * A tela da boa vindas permite configurar a localização do SmartClient e dos diretórios de Includes que serão utilizados durante a compilação dos códigos fontes.
-* Esta tela será apresentada na primeira execução do plugin, assim que o primeiro fonte AdvPL for aberto.
+* Esta tela será apresentada na primeira execução do plugin, assim que o primeiro fonte AdvPL/4GL for aberto.
 * Localize o `SmartClient.exe` (Windows) ou `smartclient` (Linux).
 * Localize os diretórios de Includes que necessitar para seus projetos.
 * Pressione o botão `Salvar` para concluir.
@@ -71,7 +71,7 @@ A compilação efetuada a partir do editor, sempre irá recompilar o fonte, mant
 
 ### Resultado da compilação
 
-* Caso queira limpar o console antes da compilação, habilite a opção: `File | Preferences | Settings | Extensions | AdvPL | Clear Console Before Compile`.
+* Caso queira limpar o console antes da compilação, habilite a opção: `File | Preferences | Settings | Extensions | TOTVS |Clear Console Before Compile`.
 
 * Para analisar o resultado da compilação de múltiplos arquivos, exite a opção de abrir uma tabela com informações de todos os arquivos que foram compilados.
 
@@ -138,8 +138,8 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
 
 ### Arquivos do pré compilador
 
-* Para manter os arquivos gerados pelo pré-compilador, habilite a opção nas preferencias em: `File | Preferences | Settings | Extensions | AdvPL | Leave PPO File`.
-* Caso queira um log completo das operações efetuadas pelo pré-compilador, habilite a opção: `File | Preferences | Settings | Extensions | AdvPL | Show Pre Compiler`.
+* Para manter os arquivos gerados pelo pré-compilador, habilite a opção nas preferencias em: `File | Preferences | Settings | Extensions | TOTVS |Leave PPO File`.
+* Caso queira um log completo das operações efetuadas pelo pré-compilador, habilite a opção: `File | Preferences | Settings | Extensions | TOTVS |Show Pre Compiler`.
 
 ## Configurações de Debug
 
@@ -157,7 +157,7 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
 >``{``
 "type": "totvs_language_debug",
 "request": "launch",
-"name": "Totvs Language Debug",
+"name": "TOTVS Language Debug",
 "program": "${command:AskForProgramName}",
 "cwb": "${workspaceFolder}",
 "smartclientBin": "/home/mansano/_c/totvs12/bin/smartclient/smartclient",
@@ -171,7 +171,7 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
 >``{``
 "type": "totvs_language_web_debug",
 "request": "launch",
-"name": "Totvs Language Debug",
+"name": "TOTVS Language Debug",
 "program": "${command:AskForProgramName}",
 "cwb": "${workspaceFolder}",
 "smartclientUrl": "<http://localhost:8080>",
@@ -212,7 +212,7 @@ Veja detalhes sobre como usar as diretivas [${command:}](https://link) e [passag
 * É possível verificar os valores de variáveis, conteúdo de tabelas e executar métodos durante o debug com o Debug Console.
 * Coloque um breakpoint em um ponto necessário de seu fonte.
 * Quando a depuração "parar" ao breakpoint, abra a visão `Debug Console` na parte inferior da tela.
-* Digite uma operação ou variável AdvPL disponivel em seu ambiente de depuração.
+* Digite uma operação ou variável AdvPL/4GL disponivel em seu ambiente de depuração.
 * Para verificar o conteúdo de uma tabela aberta, digite o seguinte comando: table:nome_da_tabela (ex.: table:SM0)
 * Analise os dados retornados de acordo com sua necessidade.
 

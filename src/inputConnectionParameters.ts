@@ -1,22 +1,22 @@
-import * as nls from 'vscode-nls';
-import * as path from 'path';
-import Utils from "./utils";
-import { ConnTypeIds } from './langServer/protocolMessages';
+//import * as vscode from 'vscode';
 import { ExtensionContext, QuickInputButton, Uri, QuickPickItem, workspace } from "vscode";
+import Utils from "./utils";
+import * as path from 'path';
 import { MultiStepInput } from "./multiStepInput";
-import { connectServer, reconnectServer, ServerItem, EnvSection } from "./serversView";
+import { connectServer, reconnectServer, ServerItem, EnvSection, connTypeId, connTypeIds } from "./serversView";
 
+import * as nls from 'vscode-nls';
 let localize = nls.loadMessageBundle();
 
 /**
- * Coleta os dados necessarios para conectar a um servidor advpl.
+ * Coleta os dados necessarios para conectar a um servidor advpl/4gl.
  *
  * A multi-step input using window.createQuickPick() and window.createInputBox().
  *
  *
  * This first part uses the helper class `MultiStepInput` that wraps the API for the multi-step case.
  */
-export async function inputConnectionParameters(context: ExtensionContext, serverParam: any, connType: ConnTypeIds, reconnect: boolean) {
+export async function inputConnectionParameters(context: ExtensionContext, serverParam: any, connType: connTypeId, reconnect: boolean) {
 
 	//const VALIDADE_TIME_OUT = 1000;
 	const title = 'Conexão';
@@ -67,6 +67,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 		}
 
 		// reconnection token requires server and environment informations
+		const configADVPL = workspace.getConfiguration('totvsLanguageServer');
 		if (reconnect) {
 			let serverId = (typeof state.server === "string") ? state.server : (state.server as QuickPickItem).detail;
 			let environmentName = (typeof state.environment === "string") ? state.environment : (state.environment as QuickPickItem).label;
@@ -124,13 +125,11 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 			}
 			state.environment = pick;
 		} else {
-			state.environment = "";
+			return (input: MultiStepInput) => inputEnvironment(input, state, serversConfig);
 		}
-		return (input: MultiStepInput) => inputEnvironment(input, state, serversConfig);
 	}
 
 	async function inputEnvironment(input: MultiStepInput, state: Partial<State>, serversConfig: any) {
-		if (state.environment === "") {
 			state.environment = await input.showInputBox({
 				title: title,
 				step: CONNECT_ENVIRONMENT_STEP,
@@ -142,7 +141,6 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 				password: false
 			});
 		}
-	}
 
 	function shouldResume() {
 		// Could show a notification with the option to resume.

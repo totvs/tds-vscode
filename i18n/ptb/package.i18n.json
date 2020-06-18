@@ -1,6 +1,6 @@
 {
-	"tds.package.description": "Totvs Developer Studio para vscode",
-	"tds.package.args.for.lsp": "Array contém parametros não repassados ao binário do TOTVS AdvPL LS ",
+	"tds.package.description": "TOTVS Developer Studio para vscode",
+	"tds.package.args.for.lsp": "Array contém parametros não repassados ao binário do TOTVS Language Server ",
 	"tds.package.max.problems.server": "Controla o número máximo de problemas encontrados no server.",
 	"tds.package.trace.vscode.server": "Rastreia a comunicação entre o VS Code e o language server.",
 	"tds.package.generate.ppo": "Gera o arquivo de PPO.",
@@ -44,7 +44,7 @@
 	"tds.package.patchApply.fromFile": "Aplica Patch a partir do arquivo",
 	"tds.package.welcomePage": "Página de Boas Vindas",
 	"tds.package.include": "Include",
-	"tds.package.totvs_language_debug": "Totvs Language Debug",
+	"tds.package.totvs_language_debug": "TOTVS Language Debug",
 	"tds.package.properties.program.description": "Nome do Programa/Função",
 	"tds.package.properties.trace.description": "Habilita login ao Debug Adapter Protocol.",
 	"tds.package.properties.smartclientBin.description": "Caminho completo para o SmartClient",
@@ -56,7 +56,7 @@
 	"tds.package.properties.doNotShowSplash.description": "Se a tela de splash não deve exibida (-Q)",
 	"tds.package.properties.language.description": "Informa a linguagem para inicio da execução (-L)",
 	"tds.package.properties.logFile.description": "Arquivo de lof do DAP para solução de problemas",
-	"tds.package.totvs_language_debug.web": "Totvs Language Web Debug (SmartClient HTML)",
+	"tds.package.totvs_language_debug.web": "TOTVS Language Web Debug (SmartClient HTML)",
 	"tds.package.server.view": "Servidores",
 	"tds.package.properties.program.description.web": "Nome do Programa/Função",
 	"tds.package.properties.trace.description.web": "Habilita login para o Debug Adapter Protocol.",
@@ -64,6 +64,6 @@
 	"tds.package.properties.workspaceFolders.description.web": "Paths na workspace",
 	"tds.package.properties.wsCacheFiles.description.web": "Ativar / desativar o cache inicial dos arquivos de pasta da workspace (DAP)",
 	"tds.package.properties.webNavigator.description.web": "O Navegador Web.",
-	"tds.package.configurationSnippets.description": "Uma nova configuração para 'depurar' um usuário que selecionou o arquivo AdvPL.",
-	"tds.package.configurationSnippets.description.web": "Uma nova configuração para 'depurar' um usuário que selecionou o arquivo AdvPL usando o SmartClient HTML."
+	"tds.package.configurationSnippets.description": "Uma nova configuração para 'depurar' um usuário que selecionou o arquivo AdvPL/4GL.",
+	"tds.package.configurationSnippets.description.web": "Uma nova configuração para 'depurar' um usuário que selecionou o arquivo AdvPL/4GL usando o SmartClient HTML."
 }

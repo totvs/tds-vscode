@@ -1,5 +1,5 @@
-import * as vscode from 'vscode';
-import * as path from 'path';
+import vscode = require('vscode');
+import path = require('path');
 import * as fs from 'fs';
 import Utils from '../utils';
 
@@ -17,11 +17,11 @@ const localizeHTML = {
 	"tds.webview.dir.include2": localize("tds.webview.dir.include2", "Allow multiple directories"),
 	"tds.webview.dir.include.info": localize("tds.webview.dir.include.info", "These settings can also be changed in"),
 	"tds.webview.dir.include.info.or": localize("tds.webview.dir.include.info.or", "or")
-};
+}
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
-export default class WelcomePage {
+export default class welcomePage {
 	static show(context: vscode.ExtensionContext, forcedShow: boolean) {
 		if (currentPanel) {
 			currentPanel.reveal();
@@ -56,7 +56,7 @@ export default class WelcomePage {
 			currentPanel.webview.onDidReceiveMessage(message => {
 				switch (message.command) {
 					case 'checkDir':
-						let checkedDir = Utils.checkDir(message.selectedDir);
+						var checkedDir = Utils.checkDir(message.selectedDir);
 						currentPanel.webview.postMessage({
 							command: "checkedDir",
 							checkedDir: checkedDir
@@ -85,17 +85,20 @@ export default class WelcomePage {
 }
 
 function saveSmartClientBin(smartClient: string) {
-	const launchConfig = Utils.getLaunchConfig();
-
-	if (launchConfig) {
-		if (launchConfig.configurations) {
-			const configs = launchConfig.configurations;
-			configs.forEach(element => {
-				element.smartclientBin = smartClient;
-			});
-
-			Utils.persistLaunchsInfo(launchConfig);
+	let launchConfig = undefined;
+	try {
+		launchConfig = Utils.getLaunchConfig();
+		if (launchConfig) {
+			if (launchConfig.configurations) {
+				const configs = launchConfig.configurations;
+				configs.forEach(element => {
+					element.smartclientBin = smartClient;
+				});
+				Utils.persistLaunchsInfo(launchConfig);
+			}
 		}
+	} catch(e) {
+		Utils
 	}
 }
 
@@ -117,7 +120,7 @@ export function showWelcomePage(context: ExtensionContext, forcedShow: boolean) 
 	let isShowWelcomePage = configADVPL.get('welcomePage');
 
 	if (isShowWelcomePage || forcedShow) {
-		WelcomePage.show(context, forcedShow);
+		welcomePage.show(context, forcedShow);
 		isShowWelcomePage = configADVPL.update("welcomePage", false);
 	}
 }
