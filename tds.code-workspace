@@ -3,5 +3,8 @@
 		{
 			"path": "."
 		}
-	]
+	],
+	"settings": {
+		"debug.javascript.suggestPrettyPrinting": false
+	}
 }

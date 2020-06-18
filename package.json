@@ -692,7 +692,7 @@
 			},
 			{
 				"command": "tds-monitor.open-monitor-view",
-				"title": "Open Monitor View%",
+				"title": "Open Monitor View",
 				"category": "TOTVSMonitor",
 				"icon": {
 					"light": "resources/light/monitor.png",
