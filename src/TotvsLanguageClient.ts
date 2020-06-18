@@ -25,7 +25,7 @@ import {
   ProvideOnTypeFormattingEditsSignature,
 } from "vscode-languageclient/lib/main";
 import * as ls from "vscode-languageserver-types";
-import vscode = require("vscode");
+import * as vscode from 'vscode';
 import { statSync, chmodSync } from "fs";
 import { reconnectLastServer } from "./serversView";
 

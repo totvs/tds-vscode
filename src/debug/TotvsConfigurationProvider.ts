@@ -1,9 +1,9 @@
 import { WorkspaceFolder, DebugConfigurationProvider, DebugConfiguration, CancellationToken, window } from 'vscode';
-import { connectedServerItem } from '../serversView';
 import * as vscode from 'vscode';
 import * as Net from 'net';
 import { localize } from '../extension';
 import { extractProgram, extractArgs, setDapArgs, getDAP } from './debugConfigs';
+import serverProvider from '../serverItemProvider';
 
 /*
  * Set the following compile time flag to true if the
@@ -25,6 +25,8 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 	//async resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): Promise<ProviderResult<DebugConfiguration>> {
 	//Parece que mudaram novamente o tipo de retorno dessa funcao, por isso essa nova declaracao.
 	async resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): Promise<DebugConfiguration> {
+		const connectedServerItem = serverProvider.connectedServerItem;
+
 		if (connectedServerItem !== undefined) {
 			config.type = TotvsConfigurationProvider.type;
 			config.environment = connectedServerItem.currentEnvironment;

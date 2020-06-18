@@ -1,10 +1,10 @@
 import { ProviderResult, window, CancellationToken, DebugConfiguration, WorkspaceFolder, DebugConfigurationProvider } from 'vscode';
-import { connectedServerItem } from '../serversView';
 import * as vscode from 'vscode';
 import * as Net from 'net';
 import { sessionKey } from '../TotvsLanguageClient';
 import {localize} from '../extension';
 import { setDapArgs } from './debugConfigs';
+import serverProvider from '../serverItemProvider';
 /*
  * Set the following compile time flag to true if the
  * debug adapter should run inside the extension host.
@@ -22,9 +22,9 @@ export class TotvsConfigurationWebProvider implements DebugConfigurationProvider
 	 * e.g. add all missing attributes to the debug configuration.
 	 */
 	resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): ProviderResult<DebugConfiguration> {
+		const connectedServerItem = serverProvider.connectedServerItem;
 
 		if (connectedServerItem !== undefined) {
-
 			// if launch.json is missing or empty
 			if (!config.type && !config.request && !config.name) {
 				const editor = window.activeTextEditor;

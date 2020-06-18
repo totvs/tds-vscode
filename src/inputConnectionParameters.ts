@@ -3,9 +3,11 @@ import { ExtensionContext, QuickInputButton, Uri, QuickPickItem, workspace } fro
 import Utils from "./utils";
 import * as path from 'path';
 import { MultiStepInput } from "./multiStepInput";
-import { connectServer, reconnectServer, ServerItem, EnvSection, connTypeId, connTypeIds } from "./serversView";
+import { connectServer, reconnectServer } from "./serversView";
+import { ConnTypeIds } from "./protocolMessages"
 
 import * as nls from 'vscode-nls';
+import { ServerItem, EnvSection } from "./serverItemProvider";
 let localize = nls.loadMessageBundle();
 
 /**
@@ -16,7 +18,7 @@ let localize = nls.loadMessageBundle();
  *
  * This first part uses the helper class `MultiStepInput` that wraps the API for the multi-step case.
  */
-export async function inputConnectionParameters(context: ExtensionContext, serverParam: any, connType: connTypeId, reconnect: boolean) {
+export async function inputConnectionParameters(context: ExtensionContext, serverParam: any, connType: ConnTypeIds, reconnect: boolean) {
 
 	//const VALIDADE_TIME_OUT = 1000;
 	const title = 'Conexão';
@@ -124,6 +126,8 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 				return (input: MultiStepInput) => inputEnvironment(input, state, serversConfig);
 			}
 			state.environment = pick;
+			//@acandido: verificar
+			return (input: MultiStepInput) => inputEnvironment(input, state, serversConfig);
 		} else {
 			return (input: MultiStepInput) => inputEnvironment(input, state, serversConfig);
 		}

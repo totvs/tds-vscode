@@ -539,7 +539,7 @@
 			},
 			{
 				"command": "totvs-developer-studio.connect",
-				"title": "%tds.package.connect%"
+				"title": "%tds.package.connect%",
 				"icon": {
 					"light": "resources/light/connect.png",
 					"dark": "resources/dark/connect.png"
@@ -692,7 +692,7 @@
 			},
 			{
 				"command": "tds-monitor.open-monitor-view",
-				"title": "%tds-monitor.open-monitor-view%",
+				"title": "Open Monitor View%",
 				"category": "TOTVSMonitor",
 				"icon": {
 					"light": "resources/light/monitor.png",

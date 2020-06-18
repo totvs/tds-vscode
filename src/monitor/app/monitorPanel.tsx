@@ -37,7 +37,6 @@ import LockIcon from "@material-ui/icons/Lock";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import MessageIcon from "@material-ui/icons/Message";
 import StopIcon from "@material-ui/icons/Stop";
-import { ServerItem } from "../../serversView";
 
 import {
   HeadCell,
@@ -51,6 +50,7 @@ import DisconnectUserDialog from "./disconnectUserDialog";
 import SpeedUpdateDialogDialog from "./speedUpdateDialog";
 import MonitorTheme from "../helper/theme";
 import ErrorBoundary from "../helper/errorBoundary";
+import { ServerItem } from "../../serverItemProvider";
 
 const tableIcons = {
   Add: React.forwardRef<SVGSVGElement>((props, ref) => (

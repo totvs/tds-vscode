@@ -1,4 +1,3 @@
-import { ServerItem } from "./serversView";
 /*---------------------------------------------------------
 * Copyright (C) TOTVS S.A. All rights reserved.
 *--------------------------------------------------------*/
@@ -270,7 +269,7 @@ export function activate(context: ExtensionContext) {
 			// avoid that.
 			const kGracePeriodMs = 250;
 
-      let timeout: NodeJS.Timer | undefined;
+      let timeout: any;
 			let resolvePromise: any;
 			languageClient.onReady().then(() => {
         languageClient.onNotification("$totvsserver/queryDbStatus", (args) => {

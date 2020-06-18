@@ -7,13 +7,12 @@ import {
   sendStopServer,
   sendKillConnection,
   sendAppKillConnection,
-} from "./../langServer/protocolMessages";
+} from "../protocolMessages";
 import * as vscode from "vscode";
 import * as path from "path";
 import { MonitorPanelAction, IMonitorPanelAction } from "./actions";
 import { isNullOrUndefined } from "util";
 import IMonitorUser from "./monitorUser";
-import { ServerItem } from "../serversView";
 import Utils, { SelectServer } from "../utils";
 import {
   sendDisconnectRequest,
@@ -21,8 +20,9 @@ import {
   ConnTypeIds,
   sendGetUsersRequest,
   sendAuthenticateRequest,
-} from "../langServer/protocolMessages";
+} from "../protocolMessages";
 import { languageClient } from "../extension";
+import { ServerItem } from "../serverItemProvider";
 
 const DEFAULT_SPEED = 15;
 
