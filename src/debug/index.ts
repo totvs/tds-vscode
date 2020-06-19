@@ -9,61 +9,42 @@ export let _debugEvent = undefined;
 
 export const registerDebug = (context: vscode.ExtensionContext) => {
 
+  const factory = new TotvsDebugAdapterDescriptorFactory(context);
+
   /****** Configurações de execução do debugger regular **/
 
   const debugProvider = new TotvsConfigurationProvider();
-  context.subscriptions.push(
-    vscode.debug.registerDebugConfigurationProvider(
-      TotvsConfigurationProvider.type,
-      debugProvider
-    )
+  registerDebugAdapter(
+    context,
+    TotvsConfigurationProvider.type,
+    debugProvider,
+    factory
   );
   context.subscriptions.push(debugProvider);
-
-  context.subscriptions.push(
-    vscode.debug.registerDebugAdapterDescriptorFactory(
-      TotvsConfigurationProvider.type,
-      new TotvsDebugAdapterDescriptorFactory(context)
-    )
-  );
 
 
   /**** Configurações de execução do debug com TDS Replay *******/
 
   const tdsReplayProvider = new TotvsConfigurationTdsReplayProvider();
-  context.subscriptions.push(
-    vscode.debug.registerDebugConfigurationProvider(
-      TotvsConfigurationTdsReplayProvider.type,
-      tdsReplayProvider
-    )
+  registerDebugAdapter(
+    context,
+    TotvsConfigurationTdsReplayProvider.type,
+    tdsReplayProvider,
+    factory
   );
   context.subscriptions.push(tdsReplayProvider);
-
-  context.subscriptions.push(
-    vscode.debug.registerDebugAdapterDescriptorFactory(
-      TotvsConfigurationTdsReplayProvider.type,
-      new TotvsDebugAdapterDescriptorFactory(context)
-    )
-  );
 
 
   /***** Configuração de debug web *****/
 
   const webProvider = new TotvsConfigurationWebProvider();
-  context.subscriptions.push(
-    vscode.debug.registerDebugConfigurationProvider(
-      TotvsConfigurationWebProvider.type,
-      webProvider
-    )
+  registerDebugAdapter(
+    context,
+    TotvsConfigurationWebProvider.type,
+    webProvider,
+    factory
   );
   context.subscriptions.push(webProvider);
-
-  context.subscriptions.push(
-    vscode.debug.registerDebugAdapterDescriptorFactory(
-      TotvsConfigurationWebProvider.type,
-      new TotvsDebugAdapterDescriptorFactory(context)
-    )
-  );
 
 
   /** Configurações gerais de debug  */
@@ -83,3 +64,17 @@ export const registerDebug = (context: vscode.ExtensionContext) => {
     })
   );
 };
+
+
+
+function registerDebugAdapter(context: vscode.ExtensionContext, type: string, provider: vscode.DebugConfigurationProvider, factory: vscode.DebugAdapterDescriptorFactory)
+{
+  context.subscriptions.push(
+    vscode.debug.registerDebugConfigurationProvider(type, provider)
+  );
+
+  context.subscriptions.push(
+    vscode.debug.registerDebugAdapterDescriptorFactory(type,factory)
+  );
+
+}
