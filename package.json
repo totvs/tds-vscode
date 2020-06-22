@@ -1276,7 +1276,7 @@
 				},
 				{
 					"command": "totvs-developer-studio.delete",
-					"when": "view == totvs_server && (viewItem == serverItem || viewItem == serverItemNotConnected || viewItem == envSection)",
+					"when": "view == totvs_server && (viewItem == serverItem || viewItem == serverItemNotConnected)",
 					"group": "inline"
 				},
 				{
