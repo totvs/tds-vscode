@@ -126,6 +126,7 @@
 		"onCommand:totvs-developer-studio.config",
 		"onCommand:totvs-developer-studio.selectenv",
 		"onCommand:totvs-developer-studio.delete",
+		"onCommand:totvs-developer-studio.delete.environment",
 		"onCommand:totvs-developer-studio.patchGenerate.fromRPO",
 		"onCommand:totvs-developer-studio.patchGenerate.fromFolder",
 		"onCommand:totvs-developer-studio.patchApply",
@@ -568,7 +569,11 @@
 			},
 			{
 				"command": "totvs-developer-studio.selectenv",
-				"title": "%tds.package.selectenv%"
+				"title": "%tds.package.selectenv%",
+				"icon": {
+					"light": "resources/light/environment.select.png",
+					"dark": "resources/dark/environment.select.png"
+				}
 			},
 			{
 				"title": "%tds.package.freshenIndex%",
@@ -599,6 +604,14 @@
 			},
 			{
 				"command": "totvs-developer-studio.delete",
+				"title": "%tds.package.delete%",
+				"icon": {
+					"light": "resources/light/delete.png",
+					"dark": "resources/dark/delete.png"
+				}
+			},
+			{
+				"command": "totvs-developer-studio.delete.environment",
 				"title": "%tds.package.delete%",
 				"icon": {
 					"light": "resources/light/delete.png",
@@ -1191,6 +1204,11 @@
 					"group": "AAtotvsServer@1"
 				},
 				{
+					"command": "totvs-developer-studio.reconnect",
+					"when": "view == totvs_server && viewItem == serverItemNotConnected",
+					"group": "AAtotvsServer@1"
+				},
+				{
 					"command": "totvs-developer-studio.disconnect",
 					"when": "view == totvs_server && viewItem == serverItem",
 					"group": "AAtotvsServer@2"
@@ -1222,7 +1240,8 @@
 				},
 				{
 					"command": "totvs-developer-studio.selectenv",
-					"when": "view == totvs_server && viewItem == envSection"
+					"when": "view == totvs_server && viewItem == envSection",
+					"group": "inline"
 				},
 				{
 					"command": "totvs-developer-studio.delete.file.fromRPO",
@@ -1257,6 +1276,11 @@
 				{
 					"command": "totvs-developer-studio.delete",
 					"when": "view == totvs_server && (viewItem == serverItem || viewItem == serverItemNotConnected || viewItem == envSection)",
+					"group": "inline"
+				},
+				{
+					"command": "totvs-developer-studio.delete.environment",
+					"when": "view == totvs_server && viewItem == envSection",
 					"group": "inline"
 				},
 				{

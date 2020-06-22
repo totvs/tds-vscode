@@ -16,10 +16,8 @@ import IMonitorUser from "./monitorUser";
 import Utils, { SelectServer } from "../utils";
 import {
   sendDisconnectRequest,
-  sendConnectRequest,
   ConnTypeIds,
   sendGetUsersRequest,
-  sendAuthenticateRequest,
 } from "../protocolMessages";
 import { languageClient } from "../extension";
 import { ServerItem } from "../serverItemProvider";
@@ -195,34 +193,11 @@ export class MonitorLoader {
         Utils.getServerForID(serverItem.id)
       ) as ServerItem;
 
-      // monitorItem.id += "_";
-      // monitorItem.name += "_";
-
-      // vscode.window.setStatusBarMessage(
-      //   `Conectando monitor ao servidor [${monitorItem.name}]`,
-      //   sendConnectRequest(
-      //     monitorItem,
-      //     serverItem.environment,
-      //     ConnTypeIds.CONNT_MONITOR
-      //   ).then((result: ITokenInfo) => {
-      //     if (result.sucess) {
-      //       monitorItem.token = result.token;
-      //       sendAuthenticateRequest(monitorItem, "p12", "admin", "")
-      //       .then((value: IAuthenticationInfo) => {
-      //         monitorItem.token = value.token;
-      //         this.monitorServer = monitorItem;
-      //       });
-      //     } else {
-      //       vscode.window.showErrorMessage(
-      //         `Não foi possivel efetuar a conexão [${this.monitorServer.name} ao monitor.`
-      //       );
-      //     }
-      //   }
-      //   )
-      // );
+      monitorItem.id += "_monitor";
+      monitorItem.name += "_monitor";
 
       vscode.window.setStatusBarMessage(
-        `Conectando monitor ao servidor [${monitorItem.name}]`,
+        `Conectando monitor ao servidor [${serverItem.name}]`,
         sendReconnectRequest(
           monitorItem,
           serverItem.token,

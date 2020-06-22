@@ -80,16 +80,18 @@ export function sendDisconnectRequest(
     .then(
       (disconnectInfo: DisconnectReturnInfo) => {
         if (disconnectInfo !== undefined && disconnectInfo.code === undefined) {
-          return { sucess: false, token: "", needAuthentication: false };
+          return { sucess: false, token: "", needAuthentication: (connectedServerItem.secure === 1) };
         } else {
           return {
             sucess: true,
             token: connectedServerItem.token,
-            needAuthentication: true,
+            needAuthentication: (connectedServerItem.secure === 1),
           };
         }
       },
-      (err: ResponseError<object>) => {}
+      (err: ResponseError<object>) => {
+        return { sucess: false, token: "", needAuthentication: (connectedServerItem.secure === 1) };
+      }
     );
 }
 

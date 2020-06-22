@@ -160,6 +160,7 @@ export class ServersExplorer {
 				}
 			}
 		});
+		
 		vscode.commands.registerCommand('totvs-developer-studio.disconnect', (serverItem: ServerItem) => {
 			if (serverItem.isConnected) {
 				vscode.window.setStatusBarMessage(`Desconectando do servidor [${serverItem.name}]`,
@@ -188,7 +189,10 @@ export class ServersExplorer {
 			if (ix >= 0) {
 				Utils.deleteServer(serverItem.id);
 			}
+		});
 
+		vscode.commands.registerCommand('totvs-developer-studio.delete.environment', (environmentItem: EnvSection) => {
+			Utils.deleteEnvironmentServer(environmentItem);
 		});
 
 		vscode.commands.registerCommand('totvs-developer-studio.rename', (serverItem: ServerItem) => {
@@ -279,17 +283,11 @@ export function authenticate(serverItem: ServerItem, environment: string, userna
 				return false;
 			}).then((token: string) => {
 				if (token) {
-					if (serverProvider !== undefined) {
-						const connectedServerItem = serverProvider.connectedServerItem;
-						connectedServerItem.currentEnvironment = environment;
-						connectedServerItem.token = token;
-					}
+					const connectedServerItem = serverProvider.connectedServerItem;
 
-					Utils.saveSelectServer(serverItem.id, token, serverItem.name, environment, username);
-					Utils.saveConnectionToken(serverItem.id, token, environment);
-
-					serverProvider.refresh();
-
+					connectedServerItem.currentEnvironment = environment;
+					connectedServerItem.token = token;
+					doFinishConnectProcess(serverItem, token, environment);
 				}
 			})
 	);

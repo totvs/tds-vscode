@@ -198,6 +198,7 @@ class ServerItemProvider
    */
   private setConfigWithServerConfig() {
     const serverConfig = Utils.getServersConfig();
+
     const serverItem = (
       serverItem: string,
       type: string,
@@ -244,25 +245,30 @@ class ServerItemProvider
             },
             environment
           );
+
+          if (serverConfig.savedTokens) {
+            console.log(serverConfig.savedTokens);
+
+          }
           environmentsServer.push(env);
         });
       }
-
-      listServer.push(
-        serverItem(
-          element.name,
-          element.type,
-          element.address,
-          element.port,
-          element.secure,
-          element.id,
-          element.buildVersion,
-          environmentsServer,
-          element.includes
-        )
+      const si: ServerItem = serverItem(
+        element.name,
+        element.type,
+        element.address,
+        element.port,
+        element.secure,
+        element.id,
+        element.buildVersion,
+        environmentsServer,
+        element.includes
       );
-      listServer[listServer.length - 1].collapsibleState =
-        vscode.TreeItemCollapsibleState.Collapsed;
+      // serverConfig.savedTokens.forEach((element) => {
+      //   si.token = "";
+      // });
+      si.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+      listServer.push(si);
     });
 
     return listServer;

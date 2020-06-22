@@ -126,8 +126,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 				return (input: MultiStepInput) => inputEnvironment(input, state, serversConfig);
 			}
 			state.environment = pick;
-			//@acandido: verificar
-			return (input: MultiStepInput) => inputEnvironment(input, state, serversConfig);
+			return null;
 		} else {
 			return (input: MultiStepInput) => inputEnvironment(input, state, serversConfig);
 		}

@@ -6,6 +6,7 @@ import * as stripJsonComments from "strip-json-comments";
 import * as cheerio from "cheerio";
 import * as ini from "ini";
 import { languageClient, localize } from "./extension";
+import { EnvSection } from "./serverItemProvider";
 
 const homedir = require("os").homedir();
 
@@ -117,11 +118,17 @@ export default class Utils {
     let config: any = {};
     let serversJson = Utils.getServerConfigFile();
     let json = fs.readFileSync(serversJson).toString();
+
     if (json) {
       try {
         config = JSON.parse(stripJsonComments(json));
       } catch (e) {}
     }
+
+    if (!config.savedTokens) { //garante a existencia da sessão
+      config.savedTokens = [];
+    }
+
     return config;
   }
 
@@ -235,24 +242,29 @@ export default class Utils {
    */
   static saveConnectionToken(id: string, token: string, environment: string) {
     const servers = Utils.getServersConfig();
-    let found: boolean = false;
-    let key = id + ":" + environment;
-    if (servers.savedTokens) {
-      servers.savedTokens.forEach((element) => {
-        if (element[0] === key) {
-          found = true; // update token
-          element[1] = { id: id, token: token };
-        }
-      });
-    }
-    if (!found) {
-      if (!servers.savedTokens) {
-        let emptySavedTokens: Array<[string, object]> = [];
-        servers.savedTokens = emptySavedTokens;
+
+    if (!servers.savedTokens) {
+      let emptySavedTokens: Array<[string, object]> = [];
+      servers.savedTokens = emptySavedTokens;
+    } else {
+      let found: boolean = false;
+      let key = id + ":" + environment;
+      if (servers.savedTokens) {
+        servers.savedTokens.forEach((element) => {
+          if (element[0] === key) {
+            found = true; // update token
+            element[1] = { id: id, token: token };
+          }
+        });
       }
-      servers.savedTokens.push([key, { id: id, token: token }]);
+      if (!found) {
+        servers.savedTokens.push([key, { id: id, token: token }]);
+      } else {
+        servers.savedTokens[key] = { id: id, token: token };
+      }
+
+      Utils.persistServersInfo(servers);
     }
-    Utils.persistServersInfo(servers);
   }
 
   /**
@@ -970,6 +982,32 @@ export default class Utils {
   static isResource(fileName: string): boolean {
     return !this.isAdvPlSource(fileName) && !this.is4glSource(fileName);
   }
+
+    /**
+   * Deleta o servidor logado por ultimo do servers.json
+   */
+  static deleteEnvironmentServer(envinronment: EnvSection) {
+    const allConfigs = Utils.getServersConfig();
+
+    if (allConfigs.configurations) {
+      const configs = allConfigs.configurations;
+      const id = envinronment.serverItemParent.id;
+
+      configs.forEach((element) => {
+        if (element.id === id) {
+          const index = element.environments.indexOf(envinronment.label, 0);
+
+          if (index > -1) {
+            element.environments.splice(index, 1);
+            Utils.persistServersInfo(allConfigs);
+          }
+
+          return;
+        }
+      });
+    }
+  }
+
 }
 
 //TODO: pegar a lista de arquivos a ignorar da configuração
