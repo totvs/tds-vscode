@@ -13,7 +13,7 @@ import * as path from "path";
 import { MonitorPanelAction, IMonitorPanelAction } from "./actions";
 import { isNullOrUndefined } from "util";
 import IMonitorUser from "./monitorUser";
-import Utils, { SelectServer } from "../utils";
+import Utils from "../utils";
 import {
   sendDisconnectRequest,
   ConnTypeIds,
@@ -64,9 +64,8 @@ export class MonitorLoader {
     this._extensionPath = ext.extensionPath;
 
     this._disposables.push(
-      Utils.onDidSelectedServer((newServer: SelectServer) => {
-        const server = Utils.getServerById(newServer.id);
-        monitorLoader.toggleServerToMonitor(server);
+      Utils.onDidSelectedServer((newServer: ServerItem) => {
+        monitorLoader.toggleServerToMonitor(newServer);
       })
     );
 
@@ -178,7 +177,7 @@ export class MonitorLoader {
     });
   }
 
-  public toggleServerToMonitor(serverItem: SelectServer) {
+  public toggleServerToMonitor(serverItem: ServerItem) {
     if (this.monitorServer) {
       vscode.window.setStatusBarMessage(
         `Desconectando monitor do servidor [${this.monitorServer.name}]`,

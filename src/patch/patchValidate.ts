@@ -4,12 +4,12 @@ import * as fs from 'fs';
 import * as os from 'os';
 import Utils from '../utils';
 import { languageClient } from '../extension';
-import * as compile from 'template-literal';
+const compile = require('template-literal');
 import * as nls from 'vscode-nls';
 import { ResponseError } from 'vscode-languageclient';
 let localize = nls.loadMessageBundle();
 
-let patchValidatesData;
+let patchValidatesData: any;
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 

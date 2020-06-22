@@ -1,4 +1,3 @@
-
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
@@ -6,7 +5,7 @@ import * as stripJsonComments from "strip-json-comments";
 import * as cheerio from "cheerio";
 import * as ini from "ini";
 import { languageClient, localize } from "./extension";
-import { EnvSection } from "./serverItemProvider";
+import { EnvSection, ServerItem } from "./serverItemProvider";
 
 const homedir = require("os").homedir();
 
@@ -34,20 +33,11 @@ export enum MESSAGETYPE {
   Log = "Log",
 }
 
-export interface SelectServer {
-  name: string;
-  id: string;
-  token: string;
-  environment: string;
-  environments?: string[];
-  username: string;
-}
-
 export default class Utils {
   /**
    * Subscrição para evento de seleção de servidor/ambiente.
    */
-  static get onDidSelectedServer(): vscode.Event<SelectServer> {
+  static get onDidSelectedServer(): vscode.Event<ServerItem> {
     return Utils._onDidSelectedServer.event;
   }
 
@@ -61,7 +51,7 @@ export default class Utils {
   /**
    * Emite a notificação de seleção de servidor/ambiente
    */
-  private static _onDidSelectedServer = new vscode.EventEmitter<SelectServer>();
+  private static _onDidSelectedServer = new vscode.EventEmitter<ServerItem>();
 
   /**
    * Emite a notificação de seleção de chave de compilação
@@ -217,17 +207,11 @@ export default class Utils {
         }
         element.username = username;
         element.environment = environment;
+        element.token = token;
 
-        let server: SelectServer = {
-          name: element.name,
-          id: element.id,
-          token: token,
-          environment: element.environment,
-          username: element.username,
-        };
-        servers.connectedServer = server;
-        servers.lastConnectedServer = server;
-        Utils._onDidSelectedServer.fire(server);
+        servers.connectedServer = element;
+        servers.lastConnectedServer = element;
+        Utils._onDidSelectedServer.fire(element);
       }
     });
 

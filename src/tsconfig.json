@@ -4,7 +4,6 @@
         "target": "ES6",
         "outDir": "../out",
         "sourceMap": true,
-
         "noImplicitAny": false,
         "removeComments": true,
         "noUnusedLocals": false,
@@ -16,12 +15,10 @@
             "es2015",
             "dom"
         ],
-
         "jsx": "react",
-
         "declaration": true,
         "declarationMap": true,
-        "strict": false,   /* enable all strict type-checking options */
+        "strict": false, /* enable all strict type-checking options */
         "noUnusedParameters": false
     },
     "exclude": [
