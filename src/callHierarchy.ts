@@ -11,15 +11,15 @@ enum CallType {
 }
 export class CallHierarchyNode {
   // These properties come directly from the language server.
-  id: any
-  name: string
-  location: Location
-  callType: CallType
+  id: any;
+  name: string;
+  location: Location;
+  callType: CallType;
 
   // If |numChildren| != |children.length|, then the node has not been expanded
   // and is incomplete - we need to send a new request to expand it.
-  numChildren: number
-  children: CallHierarchyNode[]
+  numChildren: number;
+  children: CallHierarchyNode[];
 }
 
 export class CallHierarchyProvider implements TreeDataProvider<CallHierarchyNode> {
@@ -34,12 +34,14 @@ export class CallHierarchyProvider implements TreeDataProvider<CallHierarchyNode
   readonly onDidChangeTreeData: Event<any> = this.onDidChangeEmitter.event;
 
   getTreeItem(element: CallHierarchyNode): TreeItem {
-    let collapseState = TreeItemCollapsibleState.None
+    let collapseState = TreeItemCollapsibleState.None;
     if (element.numChildren > 0) {
-      if (element.children.length > 0)
+      if (element.children.length > 0) {
         collapseState = TreeItemCollapsibleState.Expanded;
-      else
+      }
+      else {
         collapseState = TreeItemCollapsibleState.Collapsed;
+      }
     }
 
     let light = '';
@@ -73,12 +75,15 @@ export class CallHierarchyProvider implements TreeDataProvider<CallHierarchyNode
   }
 
   getChildren(element?: CallHierarchyNode): CallHierarchyNode[] | Thenable<CallHierarchyNode[]> {
-    if (!this.root)
+    if (!this.root) {
       return [];
-    if (!element)
+    }
+    if (!element) {
       return [this.root];
-    if (element.numChildren == element.children.length)
+    }
+    if (element.numChildren == element.children.length) {
       return element.children;
+    }
 
     return this.languageClient
       .sendRequest('$cquery/callHierarchy', {

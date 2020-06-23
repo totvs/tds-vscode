@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import path = require('path');
-import fs = require('fs');
-import os = require('os');
+import * as path from 'path';
+import * as fs from 'fs';
+import * as os from 'os';
 import Utils from '../utils';
 import { languageClient } from '../extension';
 const compile = require('template-literal');
@@ -9,7 +9,7 @@ import * as nls from 'vscode-nls';
 import { ResponseError } from 'vscode-languageclient';
 let localize = nls.loadMessageBundle();
 
-let patchValidatesData;
+let patchValidatesData: any;
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
