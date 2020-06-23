@@ -55,33 +55,32 @@ class ServerItemProvider
   }
 
   getTreeItem(element: ServerItem | EnvSection): vscode.TreeItem {
-    if (element instanceof ServerItem) {
-      // let iconPath = {
-      //   light: path.join(
-      //     __filename,
-      //     "..",
-      //     "..",
-      //     "resources",
-      //     "light",
-      //     this._connectedServerItem !== undefined &&
-      //       element.id === this._connectedServerItem.id
-      //       ? "server.connected.svg"
-      //       : "server.svg"
-      //   ),
-      //   dark: path.join(
-      //     __filename,
-      //     "..",
-      //     "..",
-      //     "resources",
-      //     "dark",
-      //     this._connectedServerItem !== undefined &&
-      //       element.id === this._connectedServerItem.id
-      //       ? "server.connected.svg"
-      //       : "server.svg"
-      //   ),
-      // };
-      // element.iconPath = iconPath;
-    }
+    // if (element instanceof ServerItem) {
+    //   let iconPath = {
+    //     light: path.join(
+    //       __filename,
+    //       "..",
+    //       "..",
+    //       "resources",
+    //       "light",
+    //       this.isConnected
+    //         ? "server.connected.svg"
+    //         : "server.svg"
+    //     ),
+    //     dark: path.join(
+    //       __filename,
+    //       "..",
+    //       "..",
+    //       "resources",
+    //       "dark",
+    //       this.isConnected
+    //         ? "server.connected.svg"
+    //         : "server.svg"
+    //     ),
+    //   };
+
+    //   element.iconPath = iconPath;
+    // }
 
     return element;
   }
@@ -290,24 +289,28 @@ export class ServerItem extends vscode.TreeItem {
 
   description = `${this.address}:${this.port}`;
 
-  // iconPath = {
-  //   light: path.join(
-  //     __filename,
-  //     "..",
-  //     "..",
-  //     "resources",
-  //     "light",
-  //     this.isConnected ? "server.connected.svg" : "server.svg"
-  //   ),
-  //   dark: path.join(
-  //     __filename,
-  //     "..",
-  //     "..",
-  //     "resources",
-  //     "dark",
-  //     this.isConnected ? "server.connected.svg" : "server.svg"
-  //   ),
-  //};
+  iconPath = {
+    light: path.join(
+      __filename,
+      "..",
+      "..",
+      "resources",
+      "light",
+      this.isConnected
+        ? "server.connected.svg"
+        : "server.svg"
+    ),
+    dark: path.join(
+      __filename,
+      "..",
+      "..",
+      "resources",
+      "dark",
+      this.isConnected
+        ? "server.connected.svg"
+        : "server.svg"
+    ),
+};
 
   contextValue = this.isConnected ? "serverItem" : "serverItemNotConnected";
 }
@@ -339,9 +342,7 @@ export class EnvSection extends vscode.TreeItem {
       "..",
       "resources",
       "light",
-      this.serverItemParent !== undefined &&
-        this.serverItemParent.id === this.serverItemParent.id &&
-        this.serverItemParent.environment === this.label
+      this.isCurrent
         ? "environment.connected.svg"
         : "environment.svg"
     ),
@@ -351,9 +352,7 @@ export class EnvSection extends vscode.TreeItem {
       "..",
       "resources",
       "dark",
-      this.serverItemParent !== undefined &&
-        this.serverItemParent.id === this.serverItemParent.id &&
-        this.serverItemParent.environment === this.label
+      this.isCurrent
         ? "environment.connected.svg"
         : "environment.svg"
     ),

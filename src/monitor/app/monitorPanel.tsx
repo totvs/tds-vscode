@@ -194,7 +194,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const [selected, setSelected] = React.useState<IConnectionData[]>([]);
   const [speed, setSpeed] = React.useState(props.speed);
   const [rows, setRows] = React.useState([]);
-  const [subtitle] = React.useState(props.targetServer.length?props.targetServer[0].name:"");
+  const [subtitle, setSubtitle] = React.useState(props.targetServer.length?props.targetServer[0].name:"");
 
   const [openDialog, setOpenDialog] = React.useState({
     lockServer: false,
@@ -218,9 +218,10 @@ export default function MonitorPanel(props: IMonitorPanel) {
           break;
         }
         case MonitorPanelAction.UpdateUsers: {
-          const result = message.data as IMonitorUser[];
+          const result = message.data.users as IMonitorUser[];
 
           setRows(result);
+          setSubtitle(message.data.serverName);
           break;
         }
         default:

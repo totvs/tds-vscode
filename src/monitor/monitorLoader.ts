@@ -382,7 +382,7 @@ export class MonitorLoader {
     if (this.monitorServer === null) {
       this._panel.webview.postMessage({
         command: MonitorPanelAction.UpdateUsers,
-        data: [],
+        data: { serverName: this.monitorServer.name.replace("_monitor", ""), users: [] },
       });
       doScheduler();
     } else {
@@ -393,7 +393,7 @@ export class MonitorLoader {
             if (users) {
               this._panel.webview.postMessage({
                 command: MonitorPanelAction.UpdateUsers,
-                data: users,
+                data: { serverName: this.monitorServer.name.replace("_monitor", ""), users: users },
               });
               if (this.writeLogServer) {
                 this.doWriteLogServer(users);
