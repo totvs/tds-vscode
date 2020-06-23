@@ -3,7 +3,7 @@ import { debug, DebugConsole, DebugSessionCustomEvent, ExtensionContext, Progres
 import {TotvsConfigurationProvider} from "./TotvsConfigurationProvider";
 import {TotvsConfigurationTdsReplayProvider} from "./TotvsConfigurationTdsReplayProvider";
 import Utils, { MESSAGETYPE } from "../utils";
-import { CreateTDSReplayTimeLineWebView } from './tdsreplay/CreateTDSReplayTimeLineWebView';
+import { CreateTDSReplayTimeLineWebView } from './tdsreplay/TDSReplayTimeLineCreator';
 
 import { getLanguageClient } from '../TotvsLanguageClient';
 import { LanguageClient } from 'vscode-languageclient';
@@ -109,7 +109,7 @@ function processLogEvent(event: DebugSessionCustomEvent, debugConsole: DebugCons
 			const body = event.body;
 			const notify = body.notify;
 			const level = body.level;
-			const message = body.message.replace("\n", "\n" + SPACES);
+			const message = body.message !== undefined ? body.message.replace("\n", "\n" + SPACES) : "";
 			const time = body.time;
 
 			if (notify) {

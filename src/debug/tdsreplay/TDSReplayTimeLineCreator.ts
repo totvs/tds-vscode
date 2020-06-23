@@ -21,6 +21,17 @@ export class CreateTDSReplayTimeLineWebView {
 
     this.initializePanel();
 
+    window.onDidChangeActiveTextEditor(editor => {
+      if(editor !== undefined) {
+        //console.log(editor);
+        //if(editor.viewColumn !== 1) {
+          //editor.viewColumn = 1;
+        //}
+      }
+    });
+
+    //window.onDidChangeTextEditorViewColumn
+
     debug.onDidTerminateDebugSession(event => {
       this._panel.dispose();
     });
@@ -110,10 +121,12 @@ private initializePanel(): void {
     }
   }
 
+  //-------------------- Envio de mensagens PARA a pagina
+
   public selectTimeLine(timeLineId: string) {
     //Envio de mensagem para a página
     this._panel.webview.postMessage({
-      command: "selectTimeLine",
+      command: CommandAction.SelectTimeLine,
       data: timeLineId
     });
   }
@@ -124,7 +137,7 @@ private initializePanel(): void {
     this._debugEvent = debugEvent;
     debugEvent.body["ignoreSourcesNotFound"] = this._isIgnoreSourcesNotFound;
     this._panel.webview.postMessage({
-      command: "addTimeLines",
+      command: CommandAction.AddTimeLines,
       data: debugEvent
     });
   }

@@ -4,9 +4,11 @@ export interface ICommand {
 }
 
 export enum CommandAction {
+    AddTimeLines,
     SetTimeLine,
     ChangeRowsPerPage,
     ChangePage,
     ChangeItemsPerPage,
-    SetIgnoreSourcesNotFound
+    SetIgnoreSourcesNotFound,
+    SelectTimeLine
 }

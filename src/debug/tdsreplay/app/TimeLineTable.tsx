@@ -225,11 +225,17 @@ interface ITimeLineTableInterface {
   vscode: any;
 }
 
+let tableElement: RefObject<HTMLTableElement> = null;
 export default function TimeLineTable(props: ITimeLineTableInterface) {
   const vscode = props.vscode;
   const debugEvent = vscode.getState().config;
 
-  const tableElement: RefObject<HTMLTableElement> = React.createRef();
+  //if(tableElement === null) {
+    tableElement = React.createRef();
+  //}
+  //console.log("***** IN");
+  //console.table(tableElement);
+  //console.log("***** OUT");
 
   const tableClasses = tableStyles();
   const [jsonBody, setJsonBody] = React.useState(debugEvent.body);
@@ -247,7 +253,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   ///console.log("TimeLineCount: " + jsonBody.timeLines.length);
   //console.log("totaItems: " + jsonBody.totalItems);
 
-  const [selectedRow, setSelectedRow] = React.useState(
+  const [selectedRowId, setSelectedRowId] = React.useState(
     jsonBody.currentSelectedTimeLineId
   ); //Id da timeline inicial a ser selecionada. 500 para selcionar a primeira pois o replay sempre ira parar na primeira linha
 
@@ -307,17 +313,19 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     selectTimeLineInTable(id);
   };
 
-  const selectTimeLineInTable = (timeLineId: string) => {
+  const selectTimeLineInTable = (timeLineIdAsString: string) => {
     //Metodo que controla a selecao de timeline
     //console.log("------> rowSelected");
+    let timeLineId: number = Number.parseInt(timeLineIdAsString);
     setJsonBody(jsonBody => {
       if (event !== undefined) {
         event.preventDefault();
       }
-      jsonBody.currentSelectedTimeLineId = timeLineId;
+      jsonBody.currentSelectedTimeLineId = timeLineIdAsString;
       return jsonBody;
     });
-    setSelectedRow(timeLineId);
+    setSelectedRowId(timeLineIdAsString);
+    scrollToLineIfNeeded(timeLineId);
     //console.log("------> rowSelected (setPageInfo finished)");
   };
 
@@ -325,13 +333,13 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     listener = event => {
       const message = event.data; // The JSON data our extension sent
       switch (message.command) {
-        case "selectTimeLine":
+        case CommandAction.SelectTimeLine:
           //console.log("------> selectTimeLine");
           let timeLineId = message.data;
           //console.log("------> TimeLineID: " + timeLineId);
           selectTimeLineInTable(timeLineId);
           break;
-        case "addTimeLines":
+        case CommandAction.AddTimeLines:
           //console.log("------> addTimeLines");
           setJsonBody(body => {
             if (event !== undefined) {
@@ -390,10 +398,18 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   };
 
   const scrollToLineIfNeeded = (id: number) => {
-    const rows = Array.from(tableElement.current.querySelectorAll('tbody tr')),
+    //console.log("*************** ENTROU no scrollIfNeeded: "+id);
+   // console.table(tableElement); //<<< - Retorna um objeto com F10, porem o current é null...
+    //console.log(tableElement.current);
+    if(tableElement.current !== null) {
+      //console.table(tableElement.current);
+      const rows = Array.from(tableElement.current.querySelectorAll('tbody tr')),
       newRow = rows.find((row) => row.id === `${id}`) as HTMLElement;
-
-    scrollIntoViewIfNeeded(newRow);
+      //console.log(newRow);
+      //tableElement.current.scrollTo()
+      scrollIntoViewIfNeeded(newRow);
+    }
+   // console.log("*************** SAIU no scrollIfNeeded");
   }
 
   const onKeyDown = function(event: React.KeyboardEvent<HTMLTableSectionElement>, timeline: any[]) {
@@ -401,7 +417,10 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
       offset = (offset || 0);
 
       if (position === null) {
-        const currentItem = timeline.find(item => item.id === selectedRow);
+        const rowId: number = Number.parseInt(selectedRowId);
+        const currentItem = timeline.find(item => {
+          return item.id === rowId;
+        });
         position = timeline.indexOf(currentItem);
       }
 
@@ -414,8 +433,8 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
       //TODO: se for para navega alem dos itens na paginacao atual, recuperar
       // os novos dados, carregar e depois setar a primeira/ultima linha
       if (newItem) {
-        sendSelectTimeLineRequest(newItem.id);
-        scrollToLineIfNeeded(newItem.id);
+        sendSelectTimeLineRequest(""+newItem.id);
+        //scrollToLineIfNeeded(newItem.id);
       }
     }
 
@@ -484,8 +503,10 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           className={bg}
           onClick={
             (event) => {
-              if (timeLine.srcFoundInWS)
-                sendSelectTimeLineRequest(timeLine.id);
+             if (timeLine.srcFoundInWS) {
+               sendSelectTimeLineRequest(event.currentTarget.id);
+             }
+                //sendSelectTimeLineRequest(timeLine.id);
             }
           }
           selected={isSelected}
@@ -505,7 +526,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   };
 
   //console.log("TimeLineTable chamado");
-  //console.log("TimeLine Selecionada: "+selectedRow)
+  //console.log("TimeLine Selecionada: "+selectedRowId)
 
   //const theme = useTheme();
 
