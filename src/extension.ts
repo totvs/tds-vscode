@@ -1,7 +1,6 @@
-import { ServerItem } from "./serversView";
 /*---------------------------------------------------------
- * Copyright (C) TOTVS S.A. All rights reserved.
- *--------------------------------------------------------*/
+* Copyright (C) TOTVS S.A. All rights reserved.
+*--------------------------------------------------------*/
 
 // tslint:disable-next-line: no-unused-expression
 "use strict";
@@ -70,6 +69,7 @@ import {
 } from "./formatter";
 import { registerAdvplOutline, register4glOutline } from "./outline";
 import { registerDebug, _debugEvent } from "./debug";
+import { openMonitorView } from "./monitor/monitorLoader";
 
 export let languageClient: LanguageClient;
 // metodo de tradução
@@ -83,7 +83,7 @@ export let permissionStatusBarItem: vscode.StatusBarItem;
 export let settingsStatusBarItem: vscode.StatusBarItem;
 
 export function parseUri(u): Uri {
-  return Uri.parse(u);
+	return Uri.parse(u);
 }
 
 const LANG_ADVPL_ID = "advpl";
@@ -105,55 +105,55 @@ export function activate(context: ExtensionContext) {
     commands.registerCommand("tds.getDAP", () => getDAP())
   );
 
-  if (extensions.getExtension("TOTVS.tds-vscode")) {
-    //Load Language Client and start Language Server
-    languageClient = getLanguageClient(context);
-    context.subscriptions.push(languageClient.start());
+	if (extensions.getExtension("TOTVS.tds-vscode")) {
+		//Load Language Client and start Language Server
+		languageClient = getLanguageClient(context);
+		context.subscriptions.push(languageClient.start());
 
-    let p2c = languageClient.protocol2CodeConverter;
+		let p2c = languageClient.protocol2CodeConverter;
 
-    //createTimeLineDataProvider();
+		//createTimeLineDataProvider();
 
-    //General commands.
-    (() => {
+		//General commands.
+		(() => {
       commands.registerCommand("advpl.freshenIndex", () => {
         languageClient.sendNotification("$advpl/freshenIndex");
-      });
-      function makeRefHandler(methodName, autoGotoIfSingle = false) {
-        return () => {
-          let position;
-          let uri;
-          if (window.activeTextEditor !== undefined) {
-            position = window.activeTextEditor.selection.active;
-            uri = window.activeTextEditor.document.uri;
-          }
-          languageClient
-            .sendRequest(methodName, {
-              textDocument: {
-                uri: uri.toString(),
-              },
+			});
+			function makeRefHandler(methodName, autoGotoIfSingle = false) {
+				return () => {
+					let position;
+					let uri;
+					if (window.activeTextEditor !== undefined) {
+						position = window.activeTextEditor.selection.active;
+						uri = window.activeTextEditor.document.uri;
+					}
+					languageClient
+						.sendRequest(methodName, {
+							textDocument: {
+								uri: uri.toString(),
+							},
               position: position,
-            })
-            .then((locations: Array<ls.Location>) => {
-              if (autoGotoIfSingle && locations.length === 1) {
-                let location = p2c.asLocation(locations[0]);
-                commands.executeCommand(
+						})
+						.then((locations: Array<ls.Location>) => {
+							if (autoGotoIfSingle && locations.length === 1) {
+								let location = p2c.asLocation(locations[0]);
+								commands.executeCommand(
                   "advpl.goto",
                   location.uri,
                   location.range.start,
                   []
                 );
-              } else {
-                commands.executeCommand(
+							} else {
+								commands.executeCommand(
                   "editor.action.showReferences",
                   uri,
                   position,
                   locations.map(p2c.asLocation)
                 );
-              }
-            });
-        };
-      }
+							}
+						});
+				};
+			}
       commands.registerCommand("advpl.vars", makeRefHandler("$advpl/vars"));
       commands.registerCommand(
         "advpl.callers",
@@ -163,14 +163,14 @@ export function activate(context: ExtensionContext) {
         "advpl.base",
         makeRefHandler("$advpl/base", true)
       );
-    })();
+		})();
 
-    // The language client does not correctly deserialize arguments, so we have a
-    // wrapper command that does it for us.
-    (() => {
+		// The language client does not correctly deserialize arguments, so we have a
+		// wrapper command that does it for us.
+		(() => {
       commands.registerCommand(
         "advpl.showReferences",
-        (uri: string, position: ls.Position, locations: ls.Location[]) => {
+				(uri: string, position: ls.Position, locations: ls.Location[]) => {
           commands.executeCommand(
             "editor.action.showReferences",
             p2c.asUri(uri),
@@ -182,7 +182,7 @@ export function activate(context: ExtensionContext) {
 
       commands.registerCommand(
         "advpl.goto",
-        (uri: string, position: ls.Position, locations: ls.Location[]) => {
+				(uri: string, position: ls.Position, locations: ls.Location[]) => {
           jumpToUriAtPosition(
             p2c.asUri(uri),
             p2c.asPosition(position),
@@ -190,24 +190,24 @@ export function activate(context: ExtensionContext) {
           );
         }
       );
-    })();
+		})();
 
-    // Commands for configuring LS behavior and other components
-    (() => {
+		// Commands for configuring LS behavior and other components
+		(() => {
       commands.registerCommand(
         "totvs-developer-studio.toggle.autocomplete.behavior",
-        () => {
-          toggleAutocompleteBehavior();
+				() => {
+					toggleAutocompleteBehavior();
         }
       );
-    })();
+		})();
 
-    // Progress
-    (() => {
+		// Progress
+		(() => {
       let config = workspace.getConfiguration(LANG_ADVPL_ID);
       let statusStyle = config.get("misc.status");
       if (statusStyle === "short" || statusStyle === "detailed") {
-        let statusIcon = window.createStatusBarItem(StatusBarAlignment.Right);
+				let statusIcon = window.createStatusBarItem(StatusBarAlignment.Right);
         statusIcon.text = localize(
           "tds.vscode.statusIcon.text1",
           "advpl: loading"
@@ -216,69 +216,69 @@ export function activate(context: ExtensionContext) {
           "tds.vscode.statusIcon.tooltip1",
           "advpl is loading project metadata (ie, compile_commands.json)"
         );
-        statusIcon.show();
-        languageClient.onReady().then(() => {
+				statusIcon.show();
+				languageClient.onReady().then(() => {
           languageClient.onNotification("$totvsserver/progress", (args) => {
-            let indexRequestCount = args.indexRequestCount || 0;
-            let doIdMapCount = args.doIdMapCount || 0;
-            let loadPreviousIndexCount = args.loadPreviousIndexCount || 0;
-            let onIdMappedCount = args.onIdMappedCount || 0;
-            let onIndexedCount = args.onIndexedCount || 0;
-            let activeThreads = args.activeThreads || 0;
+						let indexRequestCount = args.indexRequestCount || 0;
+						let doIdMapCount = args.doIdMapCount || 0;
+						let loadPreviousIndexCount = args.loadPreviousIndexCount || 0;
+						let onIdMappedCount = args.onIdMappedCount || 0;
+						let onIndexedCount = args.onIndexedCount || 0;
+						let activeThreads = args.activeThreads || 0;
             let total =
               indexRequestCount +
               doIdMapCount +
               loadPreviousIndexCount +
               onIdMappedCount +
               onIndexedCount +
-              activeThreads;
+							activeThreads;
 
             let detailedJobString =
               `indexRequest: ${indexRequestCount}, ` +
-              `doIdMap: ${doIdMapCount}, ` +
-              `loadPreviousIndex: ${loadPreviousIndexCount}, ` +
-              `onIdMapped: ${onIdMappedCount}, ` +
-              `onIndexed: ${onIndexedCount}, ` +
-              `activeThreads: ${activeThreads}`;
+							`doIdMap: ${doIdMapCount}, ` +
+							`loadPreviousIndex: ${loadPreviousIndexCount}, ` +
+							`onIdMapped: ${onIdMappedCount}, ` +
+							`onIndexed: ${onIndexedCount}, ` +
+							`activeThreads: ${activeThreads}`;
 
             if (total === 0 && statusStyle === "short") {
               statusIcon.text = localize(
                 "tds.vscode.statusIcon.text2",
                 "advpl: idle"
               );
-            } else {
+						} else {
               statusIcon.text = `advpl: ${indexRequestCount}|${total} ${localize(
                 "tds.vscode.statusIcon.text3",
                 "jobs"
               )}`;
               if (statusStyle === "detailed") {
-                statusIcon.text += ` (${detailedJobString})`;
-              }
-            }
+								statusIcon.text += ` (${detailedJobString})`;
+							}
+						}
             statusIcon.tooltip =
               localize("tds.vscode.statusIcon.tooltip2", "advpl jobs: ") +
               detailedJobString;
-          });
-        });
-      }
-    })();
+					});
+				});
+			}
+		})();
 
-    // QueryDb busy
-    (() => {
-      // Notifications have a minimum time to live. If the status changes multiple
-      // times within that interface, we will show multiple notifications. Try to
-      // avoid that.
-      const kGracePeriodMs = 250;
+		// QueryDb busy
+		(() => {
+			// Notifications have a minimum time to live. If the status changes multiple
+			// times within that interface, we will show multiple notifications. Try to
+			// avoid that.
+			const kGracePeriodMs = 250;
 
-      let timeout: NodeJS.Timer | undefined;
-      let resolvePromise: any;
-      languageClient.onReady().then(() => {
+      let timeout: any;
+			let resolvePromise: any;
+			languageClient.onReady().then(() => {
         languageClient.onNotification("$totvsserver/queryDbStatus", (args) => {
-          let isActive: boolean = args.isActive;
-          if (isActive) {
-            if (timeout) {
-              clearTimeout(timeout);
-              timeout = undefined;
+					let isActive: boolean = args.isActive;
+					if (isActive) {
+						if (timeout) {
+							clearTimeout(timeout);
+							timeout = undefined;
             } else {
               window.withProgress(
                 {
@@ -286,26 +286,26 @@ export function activate(context: ExtensionContext) {
                   title: "querydb is busy",
                 },
                 (p) => {
-                  p.report({ increment: 100 });
-                  return new Promise((resolve, reject) => {
-                    resolvePromise = resolve;
-                  });
+								p.report({ increment: 100 });
+								return new Promise((resolve, reject) => {
+									resolvePromise = resolve;
+								});
                 }
               );
-            }
-          } else if (resolvePromise) {
-            timeout = setTimeout(() => {
-              resolvePromise();
-              resolvePromise = undefined;
-              timeout = undefined;
-            }, kGracePeriodMs);
-          }
-        });
-      });
-    })();
+						}
+					} else if (resolvePromise) {
+						timeout = setTimeout(() => {
+							resolvePromise();
+							resolvePromise = undefined;
+							timeout = undefined;
+						}, kGracePeriodMs);
+					}
+				});
+			});
+		})();
 
-    // Send $advpl/textDocumentDidView. Always send a notification - this will
-    // result in some extra work, but it shouldn't be a problem in practice.
+		// Send $advpl/textDocumentDidView. Always send a notification - this will
+		// result in some extra work, but it shouldn't be a problem in practice.
     // TODO: O LS não faz nada. Desativado por enquanto.
     // (() => {
     //   window.onDidChangeVisibleTextEditors((visible) => {
@@ -316,9 +316,9 @@ export function activate(context: ExtensionContext) {
     //     }
     //   });
     // })();
-  }
+	}
 
-  // Ação para pegar o nome da função e argumentos para  iniciar o debug
+	// Ação para pegar o nome da função e argumentos para  iniciar o debug
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.getProgramName", () =>
       getProgramName()
@@ -329,46 +329,46 @@ export function activate(context: ExtensionContext) {
       getProgramArguments()
     )
   );
-  //Ação para desfragmentar o RPO do servidor corrente.
+	//Ação para desfragmentar o RPO do servidor corrente.
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.defragRPO", () =>
       defragRpo()
     )
   );
-  //Ação para checar a integridade do RPO do servidor corrente.
+	//Ação para checar a integridade do RPO do servidor corrente.
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.rpoCheckIntegrity", () =>
       rpoCheckIntegrity()
     )
   );
-  //Ação para deletar um fonte selecionado do RPO.
+	//Ação para deletar um fonte selecionado do RPO.
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.delete.file.fromRPO",
       (context, files) => deleteFileFromRPO(context, files)
     )
   );
-  //Ação par abrir a tela de inspetor de objetos.
+	//Ação par abrir a tela de inspetor de objetos.
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.inspectorObjects", () =>
       inspectObject(context)
     )
   );
-  //Ação par abrir a tela de inspetor de funções.
+	//Ação par abrir a tela de inspetor de funções.
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.inspectorFunctions", () =>
       inspectFunctions(context)
     )
   );
 
-  //Compila os fontes/recursos selecionados
+	//Compila os fontes/recursos selecionados
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.build.file",
       (args, files) => commandBuildFile(args, false, files)
     )
   );
-  //Recompila os fontes/recursos selecionados
+	//Recompila os fontes/recursos selecionados
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.rebuild.file",
@@ -376,92 +376,92 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-  //Compila todos os arquivos dentro de um workspace.
+	//Compila todos os arquivos dentro de um workspace.
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.build.workspace", () =>
       commandBuildWorkspace(false, context)
     )
   );
-  //Recompila todos os arquivos dentro de um workspace.
+	//Recompila todos os arquivos dentro de um workspace.
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.rebuild.workspace", () =>
       commandBuildWorkspace(true, context)
     )
   );
 
-  //Compila todos os fontes abertos
+	//Compila todos os fontes abertos
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.build.openEditors", () =>
       commandBuildOpenEditors(false, context)
     )
   );
-  //Recompila todos os fontes abertos
+	//Recompila todos os fontes abertos
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.rebuild.openEditors", () =>
       commandBuildOpenEditors(true, context)
     )
   );
 
-  //View
-  let viewServer = new ServersExplorer(context);
-  if (!viewServer) {
+	//View
+	let viewServer = new ServersExplorer(context);
+	if (!viewServer) {
     console.error(
       localize(
         "tds.vscode.server_vision_not_load",
         'Visão "Servidores" não inicializada.'
       )
     );
-  }
+	}
 
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.tdsreplay.webview.timeLine",
       () => {
-        if (_debugEvent !== undefined) {
-          if (createTimeLineWebView !== null) {
-            createTimeLineWebView.reveal();
-          }
-        } else {
-          vscode.window.showErrorMessage("TDS Replay não iniciado.");
-        }
+		if (_debugEvent !== undefined) {
+			if (createTimeLineWebView !== null) {
+				createTimeLineWebView.reveal();
+			}
+		} else {
+			vscode.window.showErrorMessage("TDS Replay não iniciado.");
+		}
       }
     )
   );
 
-  //Abre a tela de geração de patch com seleção de arquivos do RPO.
+	//Abre a tela de geração de patch com seleção de arquivos do RPO.
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.patchGenerate.fromRPO",
       () => patchGenerate(context)
     )
   );
-  //Abre a tela de aplicação de patch
+	//Abre a tela de aplicação de patch
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.patchApply", () =>
       patchApply(context, false)
     )
   );
-  //Aplica um patch de acordo com o arquivo selecionado.
+	//Aplica um patch de acordo com o arquivo selecionado.
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.patchApply.fromFile",
       (context) => patchApply(context, true)
     )
   );
-  //Gera um patch de acordo com os arquivos contidos em uma pasta
+	//Gera um patch de acordo com os arquivos contidos em uma pasta
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.patchGenerate.fromFolder",
       (context) => patchGenerateFromFolder(context)
     )
   );
-  //Verifica o conteudo de um patch
+	//Verifica o conteudo de um patch
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.patchInfos", () =>
       patchInfos(context, null)
     )
   );
-  //Verifica o conteudo de um patch pelo menu de contexto em arquivos de patch
+	//Verifica o conteudo de um patch pelo menu de contexto em arquivos de patch
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.patchInfos.fromFile",
@@ -476,24 +476,29 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-  //Adiciona página de Includes
+	//Adiciona página de Includes
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.include", () =>
       showInclude(context)
     )
   );
 
-  //Adicona página de geração de WSDL
+	//Adicona página de geração de WSDL
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.ws.show", () =>
       showWSPage(context)
     )
   );
 
+  //monitor
+	context.subscriptions.push(vscode.commands.registerCommand('tds-monitor.open-monitor-view', () => {
+		vscode.window.setStatusBarMessage("Aguarde. Iniciando monitoramento...", 5000);
+		openMonitorView();
+  }));
+
   //Mostra a pagina de Welcome.
   showWelcomePage(context, false);
-
-  //Abre uma caixa de informações para login no servidor protheus selecionado.
+	//Abre uma caixa de informações para login no servidor protheus selecionado.
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.serverSelection",
@@ -501,74 +506,74 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-  //Compile key
+	//Compile key
   commands.registerCommand("totvs-developer-studio.compile.key", () =>
     compileKeyPage(context)
   );
 
-  // Abre a tela de configuração de launchers
+	// Abre a tela de configuração de launchers
   commands.registerCommand("totvs-developer-studio.configure.launcher", () =>
     launcherConfig.show(context)
   );
 
-  // Abre a tela de configuração de launchers
+	// Abre a tela de configuração de launchers
   commands.registerCommand(
     "totvs-developer-studio.tdsreplay.configure.launcher",
     () => tdsReplayLauncherConfig.show(context)
   );
 
-  //inicialliza item de barra de status de servidor conectado ou não.
+	//inicialliza item de barra de status de servidor conectado ou não.
   totvsStatusBarItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Left,
     100
   );
   totvsStatusBarItem.command = "totvs-developer-studio.serverSelection";
-  context.subscriptions.push(totvsStatusBarItem);
-  context.subscriptions.push(Utils.onDidSelectedServer(updateStatusBarItem));
+	context.subscriptions.push(totvsStatusBarItem);
+	context.subscriptions.push(Utils.onDidSelectedServer(updateStatusBarItem));
 
-  //inicializa item de barra para permissões para exibir infomações da chave de compilação.
+	//inicializa item de barra para permissões para exibir infomações da chave de compilação.
   permissionStatusBarItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Left,
     200
   );
   permissionStatusBarItem.command = "totvs-developer-studio.compile.key";
-  context.subscriptions.push(permissionStatusBarItem);
-  context.subscriptions.push(Utils.onDidSelectedKey(updatePermissionBarItem));
+	context.subscriptions.push(permissionStatusBarItem);
+	context.subscriptions.push(Utils.onDidSelectedKey(updatePermissionBarItem));
 
-  //inicialliza item de barra de configurações
+	//inicialliza item de barra de configurações
   settingsStatusBarItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Right,
     100
   );
-  context.subscriptions.push(settingsStatusBarItem);
+	context.subscriptions.push(settingsStatusBarItem);
   context.subscriptions.push(
     workspace.onDidChangeConfiguration(() => {
-      updateSettingsBarItem();
+		updateSettingsBarItem();
     })
   );
 
-  context.subscriptions.push(
+	context.subscriptions.push(
     vscode.commands.registerCommand(
       "totvs-developer-studio.run.formatter",
       (args: any[]) => {
-        //console.log("formatador ativado");
-        if (args === undefined) {
-          let aeditor = vscode.window.activeTextEditor;
-          if (aeditor !== undefined) {
-            args = [aeditor.document.uri];
-          }
-        }
-        if (instanceOfUri(args)) {
+			//console.log("formatador ativado");
+			if (args === undefined) {
+				let aeditor = vscode.window.activeTextEditor;
+				if (aeditor !== undefined) {
+					args = [aeditor.document.uri];
+				}
+			}
+			if (instanceOfUri(args)) {
           documentFormatting([args.fsPath]);
-        } else if (instanceOfUriArray(args)) {
-          const map: string[] = args.map<string>((uri: Uri) => {
-            return uri.fsPath;
-          });
+			} else if (instanceOfUriArray(args)) {
+				const map: string[] = args.map<string>((uri: Uri) => {
+					return uri.fsPath;
+				});
           documentFormatting(map);
-        }
+			}
       }
     )
-  );
+	);
 
   updateStatusBarItem(undefined);
   updatePermissionBarItem(Utils.getPermissionsInfos());
@@ -577,7 +582,7 @@ export function activate(context: ExtensionContext) {
   //Capturador de logs.
   registerLog(context);
 
-  //debug
+	//debug
   registerDebug(context);
 
   // Inicialização Adv/PL
@@ -588,7 +593,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(register4glFormatting());
   context.subscriptions.push(register4glOutline());
 
-  //Verifica questões de encoding
+	//Verifica questões de encoding
   //Não é mais necessários. Ver "package.json", sessão "configurationDefaults".
   //verifyEncoding();
 }
@@ -598,12 +603,12 @@ function instanceOfUri(object: any): object is Uri {
 }
 
 function instanceOfUriArray(object: any): object is Uri[] {
-  return object !== undefined && Array.isArray(object);
+	return object !== undefined && Array.isArray(object);
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {
-  Utils.deleteSelectServer();
+	Utils.deleteSelectServer();
 }
 
 function registerLog(context: vscode.ExtensionContext) {

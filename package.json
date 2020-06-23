@@ -15,7 +15,9 @@
 		"tlpp",
 		"4gl",
 		"tds",
-		"totvs"
+		"totvs",
+		"monitor",
+		"protheus"
 	],
 	"engines": {
 		"vscode": "^1.29.0",
@@ -58,8 +60,8 @@
 		"@totvs/tds-ls": "^1.1.15",
 		"@types/jszip": "^3.1.7",
 		"@types/node": "13.7.1",
-		"@types/react": "^16.9.23",
-		"@types/vscode": "^1.44.0",
+		"@types/react": "^16.9.35",
+		"@types/vscode": "^1.45.1",
 		"cheerio": "^1.0.0-rc.3",
 		"core-js": "^3.6.4",
 		"ini": "^1.3.5",
@@ -77,7 +79,8 @@
 		"vscode-nls-dev": "^3.3.1"
 	},
 	"devDependencies": {
-		"@types/react-dom": "^16.9.5",
+		"@types/ini": "^1.3.30",
+		"@types/react-dom": "^16.9.8",
 		"cleanup": "^0.3.0",
 		"css-loader": "^3.5.3",
 		"del": "^4.1.1",
@@ -92,7 +95,7 @@
 		"ts-loader": "^6.2.2",
 		"tslint": "5.11.0",
 		"vsce": "^1.75.0",
-		"webpack": "^4.42.0",
+		"webpack": "^4.43.0",
 		"webpack-cli": "^3.3.10",
 		"pegjs": "^0.10.0"
 	},
@@ -124,6 +127,7 @@
 		"onCommand:totvs-developer-studio.config",
 		"onCommand:totvs-developer-studio.selectenv",
 		"onCommand:totvs-developer-studio.delete",
+		"onCommand:totvs-developer-studio.delete.environment",
 		"onCommand:totvs-developer-studio.patchGenerate.fromRPO",
 		"onCommand:totvs-developer-studio.patchGenerate.fromFolder",
 		"onCommand:totvs-developer-studio.patchApply",
@@ -421,6 +425,24 @@
 					],
 					"default": "LS",
 					"description": "%tds.package.editor.toggle.autocomplete%"
+				},
+				"totvsMonitor.update.speed": {
+					"scope": "window",
+					"type": "string",
+					"enum": [
+						"Short",
+						"Normal",
+						"Long",
+						"Manual"
+					],
+					"enumDescriptions": [
+						"%totvsMonitor.update.speed.short%",
+						"%totvsMonitor.update.speed.normal%",
+						"%totvsMonitor.update.speed.long%",
+						"%totvsMonitor.update.speed.manual%"
+					],
+					"default": "Normal",
+					"description": "%totvsMonitor.update.speed%"
 				}
 			}
 		},
@@ -519,7 +541,11 @@
 			},
 			{
 				"command": "totvs-developer-studio.connect",
-				"title": "%tds.package.connect%"
+				"title": "%tds.package.connect%",
+				"icon": {
+					"light": "resources/light/connect.png",
+					"dark": "resources/dark/connect.png"
+				}
 			},
 			{
 				"command": "totvs-developer-studio.reconnect",
@@ -536,11 +562,19 @@
 			},
 			{
 				"command": "totvs-developer-studio.disconnect",
-				"title": "%tds.package.disconnect%"
+				"title": "%tds.package.disconnect%",
+				"icon": {
+					"light": "resources/light/disconnect.png",
+					"dark": "resources/dark/disconnect.png"
+				}
 			},
 			{
 				"command": "totvs-developer-studio.selectenv",
-				"title": "%tds.package.selectenv%"
+				"title": "%tds.package.selectenv%",
+				"icon": {
+					"light": "resources/light/environment.select.svg",
+					"dark": "resources/dark/environment.select.svg"
+				}
 			},
 			{
 				"title": "%tds.package.freshenIndex%",
@@ -571,6 +605,14 @@
 			},
 			{
 				"command": "totvs-developer-studio.delete",
+				"title": "%tds.package.delete%",
+				"icon": {
+					"light": "resources/light/delete.png",
+					"dark": "resources/dark/delete.png"
+				}
+			},
+			{
+				"command": "totvs-developer-studio.delete.environment",
 				"title": "%tds.package.delete%",
 				"icon": {
 					"light": "resources/light/delete.png",
@@ -661,6 +703,15 @@
 				"command": "totvs-developer-studio.tdsreplay.webview.timeLine",
 				"title": "Open TimeLine Webview",
 				"category": "TDSReplay"
+			},
+			{
+				"command": "tds-monitor.open-monitor-view",
+				"title": "Open Monitor View",
+				"category": "TOTVSMonitor",
+				"icon": {
+					"light": "resources/light/monitor.png",
+					"dark": "resources/dark/monitor.png"
+				}
 			}
 		],
 		"keybindings": [
@@ -1145,18 +1196,23 @@
 			"view/item/context": [
 				{
 					"command": "totvs-developer-studio.connect",
-					"when": "view == totvs_server && viewItem == serverItem",
+					"when": "view == totvs_server && viewItem == serverItemNotConnected",
 					"group": "AAtotvsServer@1"
 				},
 				{
 					"command": "totvs-developer-studio.reconnect",
-					"when": "view == totvs_server && viewItem == serverItem",
+					"when": "view == totvs_server && viewItem == serverItemNotConnected",
 					"group": "AAtotvsServer@1"
 				},
 				{
 					"command": "totvs-developer-studio.disconnect",
 					"when": "view == totvs_server && viewItem == serverItem",
 					"group": "AAtotvsServer@2"
+				},
+				{
+					"command": "tds-monitor.open-monitor-view",
+					"when": "view == totvs_server && viewItem == serverItem",
+					"group": "AAtotvsServer@3"
 				},
 				{
 					"command": "totvs-developer-studio.patchGenerate.fromRPO",
@@ -1180,7 +1236,8 @@
 				},
 				{
 					"command": "totvs-developer-studio.selectenv",
-					"when": "view == totvs_server && viewItem == envSection"
+					"when": "view == totvs_server && viewItem == envSectionNotCurrent",
+					"group": "inline"
 				},
 				{
 					"command": "totvs-developer-studio.delete.file.fromRPO",
@@ -1214,6 +1271,21 @@
 				},
 				{
 					"command": "totvs-developer-studio.delete",
+					"when": "view == totvs_server && viewItem == serverItemNotConnected",
+					"group": "inline"
+				},
+				{
+					"command": "totvs-developer-studio.delete.environment",
+					"when": "view == totvs_server && viewItem == envSectionNotCurrent",
+					"group": "inline"
+				},
+				{
+					"command": "totvs-developer-studio.connect",
+					"when": "view == totvs_server && viewItem == serverItemNotConnected",
+					"group": "inline"
+				},
+				{
+					"command": "totvs-developer-studio.disconnect",
 					"when": "view == totvs_server && viewItem == serverItem",
 					"group": "inline"
 				},
@@ -1231,6 +1303,11 @@
 			"view/title": [
 				{
 					"command": "totvs-developer-studio.add",
+					"when": "view == totvs_server",
+					"group": "navigation"
+				},
+				{
+					"command": "tds-monitor.open-monitor-view",
 					"when": "view == totvs_server",
 					"group": "navigation"
 				},

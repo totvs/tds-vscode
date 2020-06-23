@@ -1,12 +1,14 @@
-import vscode = require("vscode");
+import * as vscode from 'vscode';
 import { languageClient } from "../extension";
 import utils from "../utils";
-import fs = require("fs");
+import * as fs from 'fs';
 import Utils from "../utils";
 import { showCompileResult } from "./buildResult";
 
 import * as nls from "vscode-nls";
 import { ResponseError } from "vscode-languageclient";
+import { CompileResult } from "./compileResult";
+import { sendCompilation } from "../protocolMessages";
 let localize = nls.loadMessageBundle();
 
 interface CompileOptions {
@@ -103,7 +105,6 @@ async function buildCode(
       }
     }
 
-    const permissionsInfos = Utils.getPermissionsInfos();
     let includesUris: Array<string> = [];
     for (let idx = 0; idx < includes.length; idx++) {
       includesUris.push(vscode.Uri.file(includes[idx]).toString());
@@ -118,30 +119,19 @@ async function buildCode(
             "tds.webview.tdsBuild.resourceInList",
             "Resource appears in the list of files to ignore. Resource: {0}",
             file
-          )
-        );
-      }
-    });
+            )
+            );
+          }
+        });
 
-    let extensionsAllowed: string[];
-    if (configADVPL.get("folder.enableExtensionsFilter", true)) {
-      extensionsAllowed = configADVPL.get("folder.extensionsAllowed", []); // Le a chave especifica
-    }
+        let extensionsAllowed: string[];
+        if (configADVPL.get("folder.enableExtensionsFilter", true)) {
+          extensionsAllowed = configADVPL.get("folder.extensionsAllowed", []); // Le a chave especifica
+        }
 
-    languageClient
-      .sendRequest("$totvsserver/compilation", {
-        compilationInfo: {
-          connectionToken: server.token,
-          authorizationToken: permissionsInfos.authorizationToken,
-          environment: server.environment,
-          includeUris: includesUris,
-          fileUris: filesUris,
-          compileOptions: compileOptions,
-          extensionsAllowed: extensionsAllowed,
-          includeUrisRequired: hasAdvplsource
-        },
-      })
-      .then(
+        const permissionsInfos = Utils.getPermissionsInfos();
+        sendCompilation(server, permissionsInfos, includesUris, filesUris, compileOptions, extensionsAllowed, hasAdvplsource)
+        .then(
         (response: CompileResult) => {
           if (response.returnCode === 40840) {
             Utils.removeExpiredAuthorization();
