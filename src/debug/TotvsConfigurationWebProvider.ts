@@ -42,7 +42,7 @@ export class TotvsConfigurationWebProvider implements DebugConfigurationProvider
 			config.serverPort = connectedServerItem.port;
 			config.buildVersion = connectedServerItem.buildVersion;
 
-			config.environment = connectedServerItem.currentEnvironment;
+			config.environment = connectedServerItem.environment;
 			config.serverName = connectedServerItem.label;
 			config.publicKey = sessionKey;
 			config.token = connectedServerItem.token;

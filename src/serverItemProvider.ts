@@ -8,11 +8,17 @@ let localize = nls.loadMessageBundle();
 
 class ServerItemProvider
   implements vscode.TreeDataProvider<ServerItem | EnvSection> {
+
   isConnected(server: ServerItem) {
     return (
       this._connectedServerItem !== undefined &&
       this._connectedServerItem.id === server.id
     );
+  }
+
+  isCurrentEnvironment(environment: EnvSection) {
+    return (this.isConnected(environment.serverItemParent) &&
+      (environment.serverItemParent.environment === environment.label));
   }
 
   private _onDidChangeTreeData: vscode.EventEmitter<
@@ -31,8 +37,8 @@ class ServerItemProvider
       vscode.window.showErrorMessage("No folder opened.");
       return;
     }
+
     this.addServersConfigListener();
-    this.addLaunchJsonListener();
   }
 
   refresh(): void {
@@ -45,36 +51,36 @@ class ServerItemProvider
 
   public set connectedServerItem(server: ServerItem) {
     this._connectedServerItem = server ? server : undefined;
-    this.refresh();
+    this.refresh(); //@acandido
   }
 
   getTreeItem(element: ServerItem | EnvSection): vscode.TreeItem {
     if (element instanceof ServerItem) {
-      let iconPath = {
-        light: path.join(
-          __filename,
-          "..",
-          "..",
-          "resources",
-          "light",
-          this._connectedServerItem !== undefined &&
-            element.id === this._connectedServerItem.id
-            ? "server.connected.svg"
-            : "server.svg"
-        ),
-        dark: path.join(
-          __filename,
-          "..",
-          "..",
-          "resources",
-          "dark",
-          this._connectedServerItem !== undefined &&
-            element.id === this._connectedServerItem.id
-            ? "server.connected.svg"
-            : "server.svg"
-        ),
-      };
-      element.iconPath = iconPath;
+      // let iconPath = {
+      //   light: path.join(
+      //     __filename,
+      //     "..",
+      //     "..",
+      //     "resources",
+      //     "light",
+      //     this._connectedServerItem !== undefined &&
+      //       element.id === this._connectedServerItem.id
+      //       ? "server.connected.svg"
+      //       : "server.svg"
+      //   ),
+      //   dark: path.join(
+      //     __filename,
+      //     "..",
+      //     "..",
+      //     "resources",
+      //     "dark",
+      //     this._connectedServerItem !== undefined &&
+      //       element.id === this._connectedServerItem.id
+      //       ? "server.connected.svg"
+      //       : "server.svg"
+      //   ),
+      // };
+      // element.iconPath = iconPath;
     }
 
     return element;
@@ -132,12 +138,7 @@ class ServerItemProvider
     } else {
       if (!this.localServerItems) {
         const serverConfig = Utils.getServersConfig();
-        if (serverConfig.configurations.length <= 0) {
-          //se o servers.json existe
-          this.localServerItems = this.setConfigWithSmartClient();
-        } else {
-          this.localServerItems = this.setConfigWithServerConfig();
-        }
+        this.localServerItems = this.setConfigWithServerConfig();
       }
     }
 
@@ -170,29 +171,6 @@ class ServerItemProvider
     });
   }
 
-  private addLaunchJsonListener(): void {
-    let launchJson = Utils.getLaunchConfigFile();
-
-    if (!fs.existsSync(launchJson)) {
-      Utils.createLaunchConfig();
-    }
-
-    if (fs.existsSync(launchJson)) {
-      //Caso o arquivo launch.json seja encontrado, registra o listener já na inicialização.
-      fs.watch(launchJson, { encoding: "buffer" }, (eventType, filename) => {
-        const serverConfig = Utils.getServersConfig();
-        if (filename && eventType === "change") {
-          if (serverConfig.configurations.length > 0) {
-            this.localServerItems = this.setConfigWithServerConfig();
-          } else {
-            this.localServerItems = this.setConfigWithSmartClient();
-          }
-          this.refresh();
-        }
-      });
-    }
-  }
-
   /**
    * Cria os itens da arvore de servidores a partir da leitura do arquivo servers.json
    */
@@ -207,6 +185,7 @@ class ServerItemProvider
       secure: number,
       id: string,
       buildVersion: string,
+      token: string,
       environments: Array<EnvSection>,
       includes: string[]
     ): ServerItem => {
@@ -219,6 +198,7 @@ class ServerItemProvider
         vscode.TreeItemCollapsibleState.None,
         id,
         buildVersion,
+        token,
         environments,
         includes,
         {
@@ -232,6 +212,8 @@ class ServerItemProvider
 
     serverConfig.configurations.forEach((element) => {
       let environmentsServer = new Array<EnvSection>();
+      let token: string = element.token ? element.token : "";
+
       if (element.environments) {
         element.environments.forEach((environment) => {
           const env = new EnvSection(
@@ -247,12 +229,17 @@ class ServerItemProvider
           );
 
           if (serverConfig.savedTokens) {
-            console.log(serverConfig.savedTokens);
-
+            serverConfig.savedTokens.forEach((savedToken) => {
+              if (savedToken[0] === element.id + ":" + element.environment) {
+                token = savedToken[1].token;
+              }
+            });
           }
+
           environmentsServer.push(env);
         });
       }
+
       const si: ServerItem = serverItem(
         element.name,
         element.type,
@@ -261,191 +248,20 @@ class ServerItemProvider
         element.secure,
         element.id,
         element.buildVersion,
+        token,
         environmentsServer,
         element.includes
       );
-      // serverConfig.savedTokens.forEach((element) => {
-      //   si.token = "";
-      // });
       si.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
       listServer.push(si);
     });
 
     return listServer;
   }
-
-  /**
-   * Inicia a arvore de servidores lendo o conteudo do smartclient.ini e
-   * cria o arquivo servers.json
-   */
-  private setConfigWithSmartClient() {
-    const config = Utils.getLaunchConfig();
-    const configs = config.configurations;
-
-    if (!configs) {
-      return new Array<ServerItem>();
-    }
-
-    let scBinConf;
-    configs.forEach((element) => {
-      if (element.type === "totvs_language_debug") {
-        scBinConf = element.smartclientBin;
-      }
-    });
-
-    if (scBinConf) {
-      const scIniPath = path.join(
-        path.dirname(scBinConf),
-        path.win32.basename(scBinConf, path.extname(scBinConf)) + ".ini"
-      );
-      if (this.pathExists(scIniPath)) {
-        const serverItems = this.getTCPSecsInIniFile(scIniPath);
-        this.saveServers(serverItems);
-        return serverItems;
-      } else {
-        vscode.window.showInformationMessage(
-          localize(
-            "tds.webview.serversView.invalidJson",
-            "launch.json has an invalid smartclientBin configuration."
-          )
-        );
-        return new Array<ServerItem>();
-      }
-    } else {
-      vscode.window.showInformationMessage(
-        localize(
-          "tds.webview.serversView.addAttrib",
-          "Add an attribute smartclientBin with a valid SmartClient path and the executable file name on launch.json."
-        )
-      );
-      return new Array<ServerItem>();
-    }
-  }
-
-  private saveServers(serverItems: ServerItem[]) {
-    Utils.createServerConfig();
-
-    serverItems.forEach((element) => {
-      /*const id = */ Utils.createNewServer(
-        "totvs_server_protheus",
-        element.label,
-        element.port,
-        element.address,
-        element.buildVersion,
-        element.secure,
-        element.includes
-      );
-
-      //A principio parece ser um exagero tentar validar TODOS os servidores ao salvar.
-      //Caso essa informação venha do ini do smartclient por exemplo, pode ter um numero muito
-      //grande de servidores cadastrados e esse processo fica bastante lento, pois caso o usuario peça
-      //para conectar um servidor, o LS tera que processar todas essas requisições que ja estarao na fila
-      //das mensagens para enfim processar a mensagem de conexão.
-
-      // languageClient.sendRequest('$totvsserver/validation', {
-      // 	validationInfo: {
-      // 		server: element.address,
-      // 		port: element.port
-      // 	}
-      // }).then((validInfoNode: NodeInfo) => {
-      // 	if (id) {
-      // 		Utils.updateBuildVersion(id, validInfoNode.buildVersion);
-      // 	}
-      // 	return;
-      // });
-    });
-  }
-
-  /**
-   * Given the path to smartclient.ini, read all its TCP Sections.
-   */
-  private getTCPSecsInIniFile(scIniPath: string): ServerItem[] {
-    if (this.pathExists(scIniPath)) {
-      const toTCPSec = (
-        serverItem: string,
-        type: string,
-        address: string,
-        port: number,
-        secure: number,
-        id: string,
-        buildVersion: string
-      ): ServerItem => {
-        return new ServerItem(
-          serverItem,
-          type,
-          address,
-          port,
-          secure,
-          vscode.TreeItemCollapsibleState.None,
-          id,
-          buildVersion,
-          undefined,
-          undefined,
-          {
-            command: "",
-            title: "",
-            arguments: [serverItem],
-          }
-        );
-      };
-
-      const scIniFileFs = fs.readFileSync(scIniPath, "utf-8");
-
-      let re = /^\[[^\]\r\n]+](?:\r?\n(?:[^[\r\n].*)?)*/gim;
-      let matches = re.exec(scIniFileFs);
-
-      const tcpSecs = new Array<ServerItem>();
-
-      while ((matches = re.exec(scIniFileFs)) !== null) {
-        let match = matches[0];
-        let address = /^SERVER\s?=(?:\s+)?(.+)/im.exec(match);
-        let port = /^PORT\s?=(?:\s+)?(.+)/im.exec(match);
-        let secure = /^SECURECONNECTION\s?=(?:\s+)?(.+)/im.exec(match);
-        let secureInt = 0;
-
-        if (secure !== null) {
-          secureInt = parseInt(secure[1]);
-        }
-
-        if (address !== null && port !== null) {
-          let key = /^\[(.+)\]/gim.exec(match);
-
-          if (key !== null) {
-            tcpSecs.push(
-              toTCPSec(
-                key[1],
-                "totvs_server_protheus",
-                address[1],
-                parseInt(port[1]),
-                secureInt,
-                Utils.generateRandomID(),
-                ""
-              )
-            );
-          }
-        }
-      }
-      this.localServerItems = tcpSecs;
-      return tcpSecs;
-    } else {
-      return [];
-    }
-  }
-
-  private pathExists(p: string): boolean {
-    try {
-      fs.accessSync(p);
-    } catch (err) {
-      return false;
-    }
-
-    return true;
-  }
 }
 
 export class ServerItem extends vscode.TreeItem {
-  public token: string;
-  public currentEnvironment: string;
+  public environment: string;
 
   public get isConnected(): boolean {
     return serverProvider.isConnected(this);
@@ -460,6 +276,7 @@ export class ServerItem extends vscode.TreeItem {
     public collapsibleState: vscode.TreeItemCollapsibleState,
     public id: string,
     public buildVersion: string,
+    public token: string,
     public environments?: Array<EnvSection>,
     public includes?: string[],
     public readonly command?: vscode.Command
@@ -473,24 +290,24 @@ export class ServerItem extends vscode.TreeItem {
 
   description = `${this.address}:${this.port}`;
 
-  iconPath = {
-    light: path.join(
-      __filename,
-      "..",
-      "..",
-      "resources",
-      "light",
-      this.isConnected ? "server.connected.svg" : "server.svg"
-    ),
-    dark: path.join(
-      __filename,
-      "..",
-      "..",
-      "resources",
-      "dark",
-      this.isConnected ? "server.connected.svg" : "server.svg"
-    ),
-  };
+  // iconPath = {
+  //   light: path.join(
+  //     __filename,
+  //     "..",
+  //     "..",
+  //     "resources",
+  //     "light",
+  //     this.isConnected ? "server.connected.svg" : "server.svg"
+  //   ),
+  //   dark: path.join(
+  //     __filename,
+  //     "..",
+  //     "..",
+  //     "resources",
+  //     "dark",
+  //     this.isConnected ? "server.connected.svg" : "server.svg"
+  //   ),
+  //};
 
   contextValue = this.isConnected ? "serverItem" : "serverItemNotConnected";
 }
@@ -506,6 +323,11 @@ export class EnvSection extends vscode.TreeItem {
     super(label, collapsibleState);
   }
 
+  public get isCurrent(): boolean {
+    return serverProvider.isCurrentEnvironment(this);
+  }
+
+
   public getTooltip(): string {
     return `${this.label} @ ${this.serverItemParent.name}`;
   }
@@ -519,7 +341,7 @@ export class EnvSection extends vscode.TreeItem {
       "light",
       this.serverItemParent !== undefined &&
         this.serverItemParent.id === this.serverItemParent.id &&
-        this.serverItemParent.currentEnvironment === this.label
+        this.serverItemParent.environment === this.label
         ? "environment.connected.svg"
         : "environment.svg"
     ),
@@ -531,13 +353,14 @@ export class EnvSection extends vscode.TreeItem {
       "dark",
       this.serverItemParent !== undefined &&
         this.serverItemParent.id === this.serverItemParent.id &&
-        this.serverItemParent.currentEnvironment === this.label
+        this.serverItemParent.environment === this.label
         ? "environment.connected.svg"
         : "environment.svg"
     ),
   };
 
-  contextValue = "envSection";
+  contextValue = this.isCurrent ? "envSection" : "envSectionNotCurrent";
+
 }
 
 const serverProvider = new ServerItemProvider();

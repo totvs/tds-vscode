@@ -333,7 +333,7 @@ export function sendCompilation(server: ServerItem, permissionsInfos, includesUr
       compilationInfo: {
         connectionToken: server.token,
         authorizationToken: permissionsInfos.authorizationToken,
-        environment: server.currentEnvironment,
+        environment: server.environment,
         includeUris: includesUris,
         fileUris: filesUris,
         compileOptions: compileOptions,

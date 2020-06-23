@@ -239,7 +239,7 @@ function doFinishConnectProcess(serverItem: ServerItem, token: string, environme
 	Utils.saveSelectServer(serverItem.id, token, serverItem.name, environment, "");
 
 	if (serverProvider !== undefined) {
-		serverItem.currentEnvironment = environment;
+		serverItem.environment = environment;
 		serverItem.token = token;
 
 		serverProvider.connectedServerItem = serverItem;
@@ -247,8 +247,8 @@ function doFinishConnectProcess(serverItem: ServerItem, token: string, environme
 }
 
 export function connectServer(serverItem: ServerItem, environment: string, connType: ConnTypeIds) {
-	if (!serverItem.isConnected && serverItem.currentEnvironment ===environment) {
-		vscode.window.showInformationMessage(localize("tds.webview.serversView.alreadyDisconn", "The server selected is already connected."));
+	if (serverItem.isConnected && serverItem.environment === environment) {
+		vscode.window.showInformationMessage(localize("tds.webview.serversView.alreadyConn", "The server selected is already connected."));
 	} else {
 
 		if (serverProvider.connectedServerItem !== undefined) {
@@ -284,7 +284,7 @@ export function authenticate(serverItem: ServerItem, environment: string, userna
 				if (token) {
 					const connectedServerItem = serverProvider.connectedServerItem;
 
-					connectedServerItem.currentEnvironment = environment;
+					connectedServerItem.environment = environment;
 					connectedServerItem.token = token;
 					doFinishConnectProcess(serverItem, token, environment);
 				}
@@ -300,7 +300,7 @@ export function reconnectServer(reconnectionInfo: any, environment: string, conn
 			servers.configurations.forEach(element => {
 				if (element.id === reconnectionInfo.id) {
 					let serverItem: ServerItem = new ServerItem(element.name, element.type, element.address, element.port, element.secure, vscode.TreeItemCollapsibleState.None, element.id,
-						element.buildVersion, element.environments, element.includes,
+						element.buildVersion, element.environments, element.includes, reconnectionInfo.token,
 						{
 							command: '',
 							title: '',
@@ -326,22 +326,15 @@ export function reconnectServer(reconnectionInfo: any, environment: string, conn
 	return false;
 }
 
-export function reconnectLastServer() {
+export function reconnectLastServer() { //@acandido
 	const servers = Utils.getServersConfig();
+
 	if (servers.lastConnectedServer.id) {
 		if (servers.configurations) {
 			servers.configurations.forEach(element => {
 				if (element.id === servers.lastConnectedServer.id) {
-					let serverItem: ServerItem = new ServerItem(element.name, element.type, element.address, element.port, element.secure, vscode.TreeItemCollapsibleState.None, element.id,
-						element.buildVersion, element.environments, element.includes,
-						{
-							command: '',
-							title: '',
-							arguments: [element.name]
-						}
-					);
 					const token = servers.lastConnectedServer.token;
-					reconnectServer({ serverItem, token }, servers.lastConnectedServer.environment, ConnTypeIds.CONNT_DEBUGGER);
+					reconnectServer({ element, token }, servers.lastConnectedServer.environment, ConnTypeIds.CONNT_DEBUGGER);
 				}
 			});
 		}
@@ -359,7 +352,7 @@ function handleError(nodeError: NodeError) {
 
 export function updateStatusBarItem(selectServer: ServerItem | undefined): void {
 	if (selectServer) {
-		totvsStatusBarItem.text = `${selectServer.name} / ${selectServer.currentEnvironment}`;
+		totvsStatusBarItem.text = `${selectServer.name} / ${selectServer.environment}`;
 	} else {
 		totvsStatusBarItem.text = localize('tds.vscode.select_server_environment', '[ Selecionar servidor/ambiente ]');
 	}

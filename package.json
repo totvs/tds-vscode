@@ -572,8 +572,8 @@
 				"command": "totvs-developer-studio.selectenv",
 				"title": "%tds.package.selectenv%",
 				"icon": {
-					"light": "resources/light/environment.select.png",
-					"dark": "resources/dark/environment.select.png"
+					"light": "resources/light/environment.select.svg",
+					"dark": "resources/dark/environment.select.svg"
 				}
 			},
 			{
@@ -1201,11 +1201,6 @@
 				},
 				{
 					"command": "totvs-developer-studio.reconnect",
-					"when": "view == totvs_server && viewItem == serverItem",
-					"group": "AAtotvsServer@1"
-				},
-				{
-					"command": "totvs-developer-studio.reconnect",
 					"when": "view == totvs_server && viewItem == serverItemNotConnected",
 					"group": "AAtotvsServer@1"
 				},
@@ -1241,7 +1236,7 @@
 				},
 				{
 					"command": "totvs-developer-studio.selectenv",
-					"when": "view == totvs_server && viewItem == envSection",
+					"when": "view == totvs_server && viewItem == envSectionNotCurrent",
 					"group": "inline"
 				},
 				{
@@ -1276,12 +1271,12 @@
 				},
 				{
 					"command": "totvs-developer-studio.delete",
-					"when": "view == totvs_server && (viewItem == serverItem || viewItem == serverItemNotConnected)",
+					"when": "view == totvs_server && viewItem == serverItemNotConnected",
 					"group": "inline"
 				},
 				{
 					"command": "totvs-developer-studio.delete.environment",
-					"when": "view == totvs_server && viewItem == envSection",
+					"when": "view == totvs_server && viewItem == envSectionNotCurrent",
 					"group": "inline"
 				},
 				{

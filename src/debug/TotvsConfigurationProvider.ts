@@ -29,7 +29,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 
 		if (connectedServerItem !== undefined) {
 			config.type = TotvsConfigurationProvider.type;
-			config.environment = connectedServerItem.currentEnvironment;
+			config.environment = connectedServerItem.environment;
 			config.token = connectedServerItem.token;
 
 			let workspaceFolders = vscode.workspace.workspaceFolders;

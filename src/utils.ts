@@ -274,7 +274,7 @@ export default class Utils {
   /**
    * Notifica o cancelamento de seleção de servidor/ambiente
    */
-  static cancelSelectServer() {
+  static cancelSelectServer() { //@acandido
     Utils._onDidSelectedServer.fire(undefined);
   }
 
