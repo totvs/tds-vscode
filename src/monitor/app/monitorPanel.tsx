@@ -167,7 +167,6 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 interface IMonitorPanel {
   speed: any;
   vscode: any;
-  targetServer: ServerItem[];
 }
 
 let listener = undefined;
@@ -194,7 +193,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const [selected, setSelected] = React.useState<IConnectionData[]>([]);
   const [speed, setSpeed] = React.useState(props.speed);
   const [rows, setRows] = React.useState([]);
-  const [subtitle, setSubtitle] = React.useState(props.targetServer.length?props.targetServer[0].name:"");
+  const [subtitle, setSubtitle] = React.useState("(inicializando)");
 
   const [openDialog, setOpenDialog] = React.useState({
     lockServer: false,
@@ -245,15 +244,11 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
     let command: IMonitorPanelAction = {
       action: MonitorPanelAction.UpdateUsers,
-      content: { server: props.targetServer },
+      content: { },
     };
 
     props.vscode.postMessage(command);
   };
-
-  if (!props.targetServer) {
-    return <Typography>Inicializando...</Typography>;
-  }
 
   const handleLockButtonClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -271,7 +266,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
     if (confirm) {
       let command: IMonitorPanelAction = {
         action: MonitorPanelAction.LockServer,
-        content: { server: props.targetServer, lock: true },
+        content: { lock: true },
       };
       props.vscode.postMessage(command);
     }
@@ -283,7 +278,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
     if (confirm) {
       let command: IMonitorPanelAction = {
         action: MonitorPanelAction.LockServer,
-        content: { server: props.targetServer, lock: false },
+        content: { lock: false },
       };
       props.vscode.postMessage(command);
     }
@@ -326,7 +321,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
     let command: IMonitorPanelAction = {
       action: MonitorPanelAction.StopServer,
-      content: { server: props.targetServer, killNow: killNow },
+      content: { killNow: killNow },
     };
 
     props.vscode.postMessage(command);
@@ -366,7 +361,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
       let command: IMonitorPanelAction = {
         action: MonitorPanelAction.KillConnection,
         content: {
-          server: props.targetServer,
           recipients: recipients,
           killnow: killNow,
         },
@@ -390,7 +384,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
       let command: IMonitorPanelAction = {
         action: MonitorPanelAction.SendMessage,
         content: {
-          server: props.targetServer,
           recipients: recipients,
           message: message,
         },
@@ -403,7 +396,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const handleWriteLogButtonClick = () => {
     let command: IMonitorPanelAction = {
       action: MonitorPanelAction.ToggleWriteLogServer,
-      content: { server: props.targetServer },
+      content: { },
     };
 
     props.vscode.postMessage(command);

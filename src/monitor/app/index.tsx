@@ -11,10 +11,9 @@ declare global {
 }
 
 const vscode = window.acquireVsCodeApi();
-const serverItems = window.initialData.serverList as ServerItem[];
 const speed = window.initialData.speed;
 
 ReactDOM.render(
-  <MonitorPanel vscode={vscode} targetServer={serverItems} speed={speed}/>,
+  <MonitorPanel vscode={vscode}  speed={speed}/>,
   document.getElementById("root")
 );

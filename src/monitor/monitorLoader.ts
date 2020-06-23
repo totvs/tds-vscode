@@ -314,7 +314,7 @@ export class MonitorLoader {
       }
       case MonitorPanelAction.LockServer: {
         const result = await this.setLockServer(
-          command.content.server,
+          this.monitorServer,
           command.content.lock
         );
         //this.lock = result;
@@ -323,7 +323,7 @@ export class MonitorLoader {
       }
       case MonitorPanelAction.SendMessage: {
         this.sendMessage(
-          command.content.server,
+          this.monitorServer,
           command.content.recipients,
           command.content.message
         );
@@ -332,12 +332,12 @@ export class MonitorLoader {
       case MonitorPanelAction.KillConnection: {
         if (command.content.killNow) {
           this.appKillConnection(
-            command.content.server,
+            this.monitorServer,
             command.content.recipients
           );
         } else {
           this.killConnection(
-            command.content.server,
+            this.monitorServer,
             command.content.recipients
           );
         }
@@ -345,8 +345,7 @@ export class MonitorLoader {
         break;
       }
       case MonitorPanelAction.StopServer: {
-        const server = command.content.server;
-        this.stopServer(server);
+        this.stopServer(this.monitorServer);
 
         break;
       }
