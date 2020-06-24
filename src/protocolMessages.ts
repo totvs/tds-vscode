@@ -209,6 +209,10 @@ export function sendValidationRequest(
   addres: string,
   port: number
 ): Thenable<IValidationInfo> {
+  if (typeof port !== "number") {
+    port = parseInt(port);
+  }
+
   return languageClient
     .sendRequest("$totvsserver/validation", {
       validationInfo: {
