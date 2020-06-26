@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import MaterialTable from "material-table";
 import { HeadCell, cellDefaultStyle } from "./monitorInterface";
-
+import { monitorIcons } from "../helper/monitorIcons";
 
 export interface SendMessageDialogProps {
   open: boolean;
@@ -69,6 +69,7 @@ export default function SendMessageDialog(props: SendMessageDialogProps) {
           />
           <Paper>
             <MaterialTable
+              icons={monitorIcons.table}
               columns={headCells}
               data={recipients}
               options={{

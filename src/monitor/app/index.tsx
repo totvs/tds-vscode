@@ -16,4 +16,4 @@ const speed = window.initialData.speed;
 ReactDOM.render(
   <MonitorPanel vscode={vscode}  speed={speed}/>,
   document.getElementById("root")
-);
+  );

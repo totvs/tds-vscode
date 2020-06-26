@@ -1,6 +1,6 @@
+import * as vscode from "vscode";
+import * as path from "path";
 import {
-  IAuthenticationInfo,
-  ITokenInfo,
   sendReconnectRequest,
   IReconnectInfo,
   sendLockServer,
@@ -8,8 +8,6 @@ import {
   sendKillConnection,
   sendAppKillConnection,
 } from "../protocolMessages";
-import * as vscode from "vscode";
-import * as path from "path";
 import { MonitorPanelAction, IMonitorPanelAction } from "./actions";
 import { isNullOrUndefined } from "util";
 import IMonitorUser from "./monitorUser";
@@ -81,32 +79,33 @@ export class MonitorLoader {
       }
     );
 
-    this._panel.iconPath = {
-      light: vscode.Uri.parse(
-        path.join(
-          "file:///",
-          __filename,
-          "..",
-          "..",
-          "..",
-          "resources",
-          "light",
-          "lock.svg"
-        )
-      ),
-      dark: vscode.Uri.parse(
-        path.join(
-          "file:///",
-          __filename,
-          "..",
-          "..",
-          "..",
-          "resources",
-          "dark",
-          "lock.svg"
-        )
-      ),
-    };
+    // this._panel.iconPath = {
+    //   light: vscode.Uri.parse(
+    //     path.join(
+    //       "file:///",
+    //       __filename,
+    //       "..",
+    //       "..",
+    //       "..",
+    //       "resources",
+    //       "light",
+    //       "lock.svg"
+    //     )
+    //   ),
+    //   dark: vscode.Uri.parse(
+    //     path.join(
+    //       "file:///",
+    //       __filename,
+    //       "..",
+    //       "..",
+    //       "..",
+    //       "resources",
+    //       "dark",
+    //       "lock.svg"
+    //     )
+    //   ),
+    // };
+
     this._panel.webview.html = this.getWebviewContent();
 
     this._panel.onDidChangeViewState((listener: vscode.WebviewPanelOnDidChangeViewStateEvent) => {

@@ -13,6 +13,7 @@ import {
 import Alert from "@material-ui/lab/Alert";
 import MaterialTable from "material-table";
 import { HeadCell, cellDefaultStyle } from "./monitorInterface";
+import { monitorIcons } from "../helper/monitorIcons";
 
 export interface DisconnectUserDialogProps {
   open: boolean;
@@ -67,6 +68,7 @@ export default function DisconnectUserDialog(
           />
           <Paper>
             <MaterialTable
+              icons={monitorIcons.table}
               columns={headCells}
               data={recipients}
               options={{
