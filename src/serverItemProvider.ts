@@ -260,7 +260,8 @@ class ServerItemProvider
 }
 
 export class ServerItem extends vscode.TreeItem {
-  public environment: string;
+  public environment: string = "";
+  public username: string = "";
 
   public get isConnected(): boolean {
     return serverProvider.isConnected(this);

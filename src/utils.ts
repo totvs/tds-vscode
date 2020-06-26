@@ -205,6 +205,7 @@ export default class Utils {
         } else if (element.environments.indexOf(environment) === -1) {
           element.environments.push(environment);
         }
+
         element.username = username;
         element.environment = environment;
         element.token = token;

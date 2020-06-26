@@ -236,7 +236,7 @@ export class ServersExplorer {
 function doFinishConnectProcess(serverItem: ServerItem, token: string, environment: string) {
 
 	Utils.saveConnectionToken(serverItem.id, token, environment);
-	Utils.saveSelectServer(serverItem.id, token, serverItem.name, environment, "");
+	Utils.saveSelectServer(serverItem.id, token, serverItem.name, environment, serverItem.username);
 
 	if (serverProvider !== undefined) {
 		serverItem.environment = environment;
@@ -284,8 +284,10 @@ export function authenticate(serverItem: ServerItem, environment: string, userna
 				if (token) {
 					const connectedServerItem = serverProvider.connectedServerItem;
 
+					connectedServerItem.username = username;
 					connectedServerItem.environment = environment;
 					connectedServerItem.token = token;
+
 					doFinishConnectProcess(serverItem, token, environment);
 				}
 			})
