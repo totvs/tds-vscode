@@ -115,8 +115,15 @@ export default class Utils {
       } catch (e) {}
     }
 
-    if (!config.savedTokens) { //garante a existencia da sessão
+    //garante a existencia da sessão
+    if (!config.savedTokens) {
       config.savedTokens = [];
+    }
+
+    //compatibilização com arquivos gravados com versão da eextensão
+    //anterior a 26/06/20
+    if (typeof config.lastConnectedServer !== "string") {
+      config.lastConnectedServer = config.lastConnectedServer.id;
     }
 
     return config;
@@ -125,8 +132,8 @@ export default class Utils {
   /**
    * Retorna todo o conteudo do launch.json
    */
-	static getLaunchConfig() {
-		let config: any;
+  static getLaunchConfig() {
+    let config: any;
     let exist = fs.existsSync(Utils.getLaunchConfigFile());
     if (exist) {
       let json = fs.readFileSync(Utils.getLaunchConfigFile()).toString();
@@ -159,10 +166,6 @@ export default class Utils {
   static updateSavedToken(id: string, environment: string, token: string) {
     const servers = Utils.getServersConfig();
 
-    if (!servers.savedTokens) {
-      servers.savedTokens = [];
-    }
-
     const data = { id: id, environment: environment };
     servers.savedTokens[id + ":" + environment] = data;
 
@@ -174,9 +177,15 @@ export default class Utils {
     const servers = Utils.getServersConfig();
     let token = undefined;
 
-    if (servers.savedTokens && servers.savedTokens[id + ":" + environment]) {
-      const data = servers.savedTokens[id + ":" + environment];
-      token = data.token;
+    if (servers.savedTokens) {
+      token = servers.savedTokens.filter((element) => {
+        return (element[0] === id + ":" + environment);
+      }).map((element) => {
+        return element[1]["token"];
+      });
+      if (token) {
+        token = token[0];
+      }
     }
 
     return token;
@@ -211,7 +220,7 @@ export default class Utils {
         element.token = token;
 
         servers.connectedServer = element;
-        servers.lastConnectedServer = element;
+        servers.lastConnectedServer = element.id;
         Utils._onDidSelectedServer.fire(element);
       }
     });
@@ -275,7 +284,8 @@ export default class Utils {
   /**
    * Notifica o cancelamento de seleção de servidor/ambiente
    */
-  static cancelSelectServer() { //@acandido
+  static cancelSelectServer() {
+    //@acandido
     Utils._onDidSelectedServer.fire(undefined);
   }
 
@@ -292,7 +302,7 @@ export default class Utils {
       ); //transformar em configuracao de workspace
       let isReconnectLastServer = configADVPL.get("reconnectLastServer");
       if (!isReconnectLastServer) {
-        servers.lastConnectedServer = {};
+        servers.lastConnectedServer = "";
       }
       Utils.persistServersInfo(servers);
     }
@@ -302,7 +312,7 @@ export default class Utils {
     const allConfigs = Utils.getServersConfig();
 
     allConfigs.connectedServer = {};
-    allConfigs.lastConnectedServer = {};
+    allConfigs.lastConnectedServer = "";
     Utils.persistServersInfo(allConfigs);
     Utils.cancelSelectServer();
   }
@@ -968,7 +978,7 @@ export default class Utils {
     return !this.isAdvPlSource(fileName) && !this.is4glSource(fileName);
   }
 
-    /**
+  /**
    * Deleta o servidor logado por ultimo do servers.json
    */
   static deleteEnvironmentServer(envinronment: EnvSection) {
@@ -992,7 +1002,6 @@ export default class Utils {
       });
     }
   }
-
 }
 
 //TODO: pegar a lista de arquivos a ignorar da configuração

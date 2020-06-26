@@ -1194,7 +1194,7 @@
 				},
 				{
 					"command": "totvs-developer-studio.reconnect",
-					"when": "view == totvs_server && viewItem == serverItemNotConnected",
+					"when": "view == totvs_server && viewItem == serverItem",
 					"group": "AAtotvsServer@1"
 				},
 				{

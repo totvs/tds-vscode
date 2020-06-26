@@ -74,12 +74,12 @@ export class ServersExplorer {
 								const serverId = createServer(typeServer, message.serverName, message.port, message.address, 0, "", true, message.includes);
 								if (serverId !== undefined) {
 									sendValidationRequest(message.address, message.port)
-									.then((validInfoNode: IValidationInfo) => {
-										Utils.updateBuildVersion(serverId, validInfoNode.build, validInfoNode.secure);
-										return;
-									}, (err: ResponseError<object>) => {
-										vscode.window.showErrorMessage(err.message);
-									});
+										.then((validInfoNode: IValidationInfo) => {
+											Utils.updateBuildVersion(serverId, validInfoNode.build, validInfoNode.secure);
+											return;
+										}, (err: ResponseError<object>) => {
+											vscode.window.showErrorMessage(err.message);
+										});
 								}
 							} else {
 								vscode.window.showErrorMessage(localize("tds.webview.serversView.addServerFail", "Add Server Fail. Name, port and Address are need"));
@@ -180,7 +180,7 @@ export class ServersExplorer {
 		});
 
 		vscode.commands.registerCommand('totvs-developer-studio.selectenv', (environment: EnvSection) => {
-			inputConnectionParameters(context, environment, ConnTypeIds.CONNT_DEBUGGER, false);
+			inputConnectionParameters(context, environment, ConnTypeIds.CONNT_DEBUGGER, true);
 		});
 
 		vscode.commands.registerCommand('totvs-developer-studio.delete', (serverItem: ServerItem) => {
@@ -276,7 +276,7 @@ export function authenticate(serverItem: ServerItem, environment: string, userna
 		sendAuthenticateRequest(serverItem, environment, username, password)
 			.then((result: IAuthenticationInfo) => {
 				let token: string = result.token;
-				return result.sucess ? token: "";
+				return result.sucess ? token : "";
 			}, (error: any) => {
 				vscode.window.showErrorMessage(error);
 				return false;
@@ -294,52 +294,52 @@ export function authenticate(serverItem: ServerItem, environment: string, userna
 	);
 }
 
+function doReconnect(
+	serverItem: ServerItem,
+	environment: string,
+	connType: ConnTypeIds
+): Thenable<boolean> {
+	const token = Utils.getSavedTokens(serverItem.id, environment);
 
-export function reconnectServer(reconnectionInfo: any, environment: string, connType: ConnTypeIds): boolean {
-	if (reconnectionInfo.id && reconnectionInfo.token) {
-		const servers = Utils.getServersConfig();
-		if (servers.configurations) {
-			servers.configurations.forEach(element => {
-				if (element.id === reconnectionInfo.id) {
-					let serverItem: ServerItem = new ServerItem(element.name, element.type, element.address, element.port, element.secure, vscode.TreeItemCollapsibleState.None, element.id,
-						element.buildVersion, element.environments, element.includes, reconnectionInfo.token,
-						{
-							command: '',
-							title: '',
-							arguments: [element.name]
-						}
-					);
-
-					const connectedServerItem = serverProvider.connectedServerItem;
-					if (connectedServerItem !== undefined) {
-						vscode.commands.executeCommand('totvs-developer-studio.disconnect', connectedServerItem);
-					}
-					vscode.window.setStatusBarMessage(`Reconectando-se ao servidor [${serverItem.name}]`,
-						sendReconnectRequest(serverItem, reconnectionInfo.token, connType)
-							.then((ri: IReconnectInfo) => {
-								return ri.sucess;
-							})
-					);
+	if (token) {
+		return sendReconnectRequest(serverItem, token, connType).then(
+			(ri: IReconnectInfo) => {
+				if (ri.sucess) {
+					doFinishConnectProcess(serverItem, ri.token, environment);
 				}
-			});
-		}
+				return ri.sucess;
+			}
+		);
+	} else {
+		return Promise.resolve(false);
 	}
-
-	return false;
 }
 
-export function reconnectLastServer() { //@acandido
+export function reconnectServer(serverItem: ServerItem, environment: string, connType: ConnTypeIds) {
+	const connectedServerItem = serverProvider.connectedServerItem;
+
+	if (connectedServerItem !== undefined) {
+		async () => await vscode.commands.executeCommand('totvs-developer-studio.disconnect', connectedServerItem);
+	}
+
+	vscode.window.setStatusBarMessage(`Reconectando-se ao servidor [${serverItem.name}]`,
+		doReconnect(serverItem, environment, connType));
+
+}
+
+export function reconnectLastServer() {
 	const servers = Utils.getServersConfig();
 
-	if (servers.lastConnectedServer.id) {
-		if (servers.configurations) {
-			servers.configurations.forEach(element => {
-				if (element.id === servers.lastConnectedServer.id) {
-					const token = servers.lastConnectedServer.token;
-					reconnectServer({ element, token }, servers.lastConnectedServer.environment, ConnTypeIds.CONNT_DEBUGGER);
-				}
-			});
-		}
+	if (servers.lastConnectedServer && servers.configurations) {
+		servers.configurations.forEach((element) => {
+			if (element.id === servers.lastConnectedServer) {
+				reconnectServer(
+					element,
+					element.environment,
+					ConnTypeIds.CONNT_DEBUGGER
+				);
+			}
+		});
 	}
 }
 
