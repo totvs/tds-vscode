@@ -9,7 +9,6 @@ import {
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import {
-  WriteLogIcon,
   DisconnectIcon,
   GroupingIcon,
 } from "../helper/monitorIcons";
@@ -393,15 +392,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
     }
   };
 
-  const handleWriteLogButtonClick = () => {
-    let command: IMonitorPanelAction = {
-      action: MonitorPanelAction.ToggleWriteLogServer,
-      content: { },
-    };
-
-    props.vscode.postMessage(command);
-  };
-
   const actions = [];
 
   const locked = false;
@@ -454,13 +444,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
     tooltip: "Stop server",
     isFreeAction: true,
     onClick: (event: any) => handleStopButtonClick(event),
-  });
-
-  actions.push({
-    icon: () => <WriteLogIcon />,
-    tooltip: "Write log",
-    isFreeAction: true,
-    onClick: () => handleWriteLogButtonClick(),
   });
 
   actions.push({

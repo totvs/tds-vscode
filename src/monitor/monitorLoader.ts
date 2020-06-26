@@ -163,10 +163,6 @@ export class MonitorLoader {
     });
   }
 
-  public set writeLogServer(v: boolean) {
-    //this._writeLogServer = v;
-  }
-
   public set lock(v: boolean) {
     this._lock = v;
 
@@ -348,11 +344,6 @@ export class MonitorLoader {
 
         break;
       }
-      case MonitorPanelAction.ToggleWriteLogServer: {
-        this.writeLogServer = !this.writeLogServer;
-
-        break;
-      }
       default:
         console.log("***** ATENÇÃO: monitorLoader.tsx");
         console.log("\tComando não reconhecido: " + command.action);
@@ -393,9 +384,6 @@ export class MonitorLoader {
                 command: MonitorPanelAction.UpdateUsers,
                 data: { serverName: this.monitorServer.name.replace("_monitor", ""), users: users },
               });
-              if (this.writeLogServer) {
-                this.doWriteLogServer(users);
-              }
             }
             doScheduler();
           },
@@ -411,10 +399,6 @@ export class MonitorLoader {
         )
       );
     }
-  }
-
-  doWriteLogServer(users: IMonitorUser[]) {
-    throw new Error("Method not implemented.");
   }
 
   private getWebviewContent(): string {

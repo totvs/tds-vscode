@@ -10,6 +10,5 @@ export enum MonitorPanelAction {
   LockServer,
   SendMessage,
   KillConnection,
-  StopServer,
-  ToggleWriteLogServer
+  StopServer
 }
