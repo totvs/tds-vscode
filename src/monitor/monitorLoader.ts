@@ -128,6 +128,13 @@ export class MonitorLoader {
     this._panel.onDidDispose((event) => {
       this._isDisposed = true;
 
+      if (this.monitorServer) {
+        vscode.window.setStatusBarMessage(
+          `Desconectando monitor do servidor [${this.monitorServer.name}]`,
+              sendDisconnectRequest(this.monitorServer)
+        );
+      }
+
       if (this._timeoutSched) {
         clearTimeout(this._timeoutSched);
       }
@@ -371,9 +378,8 @@ export class MonitorLoader {
     if (this.monitorServer === null) {
       this._panel.webview.postMessage({
         command: MonitorPanelAction.UpdateUsers,
-        data: { serverName: this.monitorServer.name.replace("_monitor", ""), users: [] },
+        data: { serverName: "(aguardando seleção)", users: [] },
       });
-      doScheduler();
     } else {
       vscode.window.setStatusBarMessage(
         `Requisitando dados ao servidor [${this.monitorServer.name}]`,
