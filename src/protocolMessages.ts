@@ -80,17 +80,25 @@ export function sendDisconnectRequest(
     .then(
       (disconnectInfo: DisconnectReturnInfo) => {
         if (disconnectInfo !== undefined && disconnectInfo.code === undefined) {
-          return { sucess: false, token: "", needAuthentication: (connectedServerItem.secure === 1) };
+          return {
+            sucess: false,
+            token: "",
+            needAuthentication: connectedServerItem.secure === 1,
+          };
         } else {
           return {
             sucess: true,
             token: connectedServerItem.token,
-            needAuthentication: (connectedServerItem.secure === 1),
+            needAuthentication: connectedServerItem.secure === 1,
           };
         }
       },
       (err: ResponseError<object>) => {
-        return { sucess: false, token: "", needAuthentication: (connectedServerItem.secure === 1) };
+        return {
+          sucess: false,
+          token: "",
+          needAuthentication: connectedServerItem.secure === 1,
+        };
       }
     );
 }
@@ -307,6 +315,30 @@ export function sendStopServer(server: ServerItem): Thenable<boolean> {
     );
 }
 
+export function sendUserMessage(
+  server: ServerItem,
+  target: any,
+  message: string
+): Thenable<string> {
+  return languageClient
+    .sendRequest("$totvsmonitor/sendUserMessage", {
+      sendUserMessageInfo: {
+        connectionToken: server.token,
+        userName: target.username,
+        computerName: target.computerName,
+        threadId: target.threadId,
+        server: target.server,
+        message: message,
+      }
+    }).then(
+      (response: any) => {
+        return response.message;
+      },
+      (error: Error) => {
+        return error.message;
+      }
+    );
+}
 export function sendAppKillConnection(
   server: ServerItem,
   target: any
@@ -331,18 +363,25 @@ export function sendAppKillConnection(
     );
 }
 
-export function sendCompilation(server: ServerItem, permissionsInfos, includesUris, filesUris, compileOptions, extensionsAllowed, hasAdvplsource): Thenable<CompileResult> {
-  return languageClient
-    .sendRequest("$totvsserver/compilation", {
-      compilationInfo: {
-        connectionToken: server.token,
-        authorizationToken: permissionsInfos.authorizationToken,
-        environment: server.environment,
-        includeUris: includesUris,
-        fileUris: filesUris,
-        compileOptions: compileOptions,
-        extensionsAllowed: extensionsAllowed,
-        includeUrisRequired: hasAdvplsource
-      },
-    });
+export function sendCompilation(
+  server: ServerItem,
+  permissionsInfos,
+  includesUris,
+  filesUris,
+  compileOptions,
+  extensionsAllowed,
+  hasAdvplsource
+): Thenable<CompileResult> {
+  return languageClient.sendRequest("$totvsserver/compilation", {
+    compilationInfo: {
+      connectionToken: server.token,
+      authorizationToken: permissionsInfos.authorizationToken,
+      environment: server.environment,
+      includeUris: includesUris,
+      fileUris: filesUris,
+      compileOptions: compileOptions,
+      extensionsAllowed: extensionsAllowed,
+      includeUrisRequired: hasAdvplsource,
+    },
+  });
 }

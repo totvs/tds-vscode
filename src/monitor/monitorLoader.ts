@@ -7,6 +7,7 @@ import {
   sendStopServer,
   sendKillConnection,
   sendAppKillConnection,
+  sendUserMessage,
 } from "../protocolMessages";
 import { MonitorPanelAction, IMonitorPanelAction } from "./actions";
 import { isNullOrUndefined } from "util";
@@ -108,11 +109,12 @@ export class MonitorLoader {
 
     this._panel.webview.html = this.getWebviewContent();
 
-    this._panel.onDidChangeViewState((listener: vscode.WebviewPanelOnDidChangeViewStateEvent) => {
-      if (this.monitorServer !== null) {
-        this.updateUsers(listener.webviewPanel.visible);
-      }
-    },
+    this._panel.onDidChangeViewState(
+      (listener: vscode.WebviewPanelOnDidChangeViewStateEvent) => {
+        if (this.monitorServer !== null) {
+          this.updateUsers(listener.webviewPanel.visible);
+        }
+      },
       undefined,
       this._disposables
     );
@@ -131,7 +133,7 @@ export class MonitorLoader {
       if (this.monitorServer) {
         vscode.window.setStatusBarMessage(
           `Desconectando monitor do servidor [${this.monitorServer.name}]`,
-              sendDisconnectRequest(this.monitorServer)
+          sendDisconnectRequest(this.monitorServer)
         );
       }
 
@@ -212,65 +214,119 @@ export class MonitorLoader {
               `Não foi possivel efetuar a conexão [${this.monitorServer.name} ao monitor.`
             );
           }
-        }
-        )
+        })
       );
     }
   }
 
-  private setLockServer(
-    server: ServerItem,
-    lock: boolean
-  ) {
-    sendLockServer(server, lock).then((result: boolean) => {
-      if (result) {
-        vscode.window.showInformationMessage("OK");
-      } else {
-        vscode.window.showInformationMessage("ERRO");
-      }
-    }, (error) => {
-
-    });
+  private setLockServer(server: ServerItem, lock: boolean) {
+    sendLockServer(server, lock).then(
+      (result: boolean) => {
+        if (result) {
+          vscode.window.showInformationMessage("OK");
+        } else {
+          vscode.window.showInformationMessage("ERRO");
+        }
+      },
+      (error) => {}
+    );
   }
 
   private stopServer(server: ServerItem) {
-    return sendStopServer(server)
-      .then(
-        (response: any) => {
-          return response.message === "OK";
-        },
-        (error: Error) => {
-          return null;
-        }
-      );
+    return sendStopServer(server).then(
+      (response: any) => {
+        return response.message === "OK";
+      },
+      (error: Error) => {
+        return null;
+      }
+    );
   }
 
   private killConnection(server: ServerItem, recipients: any[]): void {
-    recipients.forEach((recipient) => {
-      sendKillConnection(server, recipient)
-        .then(
-          (response: string) => {
-            vscode.window.showWarningMessage(response);
-          },
-          (error: Error) => {
-            vscode.window.showErrorMessage(error.message);
-          }
-        );
-    });
+    vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: "Encerrando conexões.",
+        cancellable: true,
+      },
+      (progress, token) => {
+        const total: number = recipients.length;
+        let cnt: number = 0;
+        let inc: number = recipients.length / 100;
+
+        token.onCancellationRequested(() => {
+          console.log("User canceled the operation");
+        });
+
+        recipients.forEach((recipient) => {
+          progress.report({
+            message: `Encerrando #${cnt++}/${total}`,
+            increment: inc,
+          });
+
+          sendKillConnection(server, recipient).then(
+            (response: string) => {
+              vscode.window.showWarningMessage(response);
+            },
+            (error: Error) => {
+              vscode.window.showErrorMessage(error.message);
+            }
+          );
+        });
+
+        const p = new Promise((resolve) => {
+          setTimeout(() => {
+            resolve();
+          }, 5000);
+        });
+
+        return p;
+      }
+    );
   }
 
   private appKillConnection(server: ServerItem, recipients: any[]): void {
-    recipients.forEach((recipient) => {
-      sendAppKillConnection(server, recipient)
-        .then(
-          (response: any) => {
-            vscode.window.showWarningMessage(response);
-          },
-          (error: Error) => {
-            vscode.window.showErrorMessage(error.message);
-          }
-        );
-    });
+    vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: "Encerrando conexões imediatamente.",
+        cancellable: true,
+      },
+      (progress, token) => {
+        const total: number = recipients.length;
+        let cnt: number = 0;
+        let inc: number = recipients.length / 100;
+
+        token.onCancellationRequested(() => {
+          console.log("User canceled the operation");
+        });
+
+        recipients.forEach((recipient) => {
+          progress.report({
+            message: `Encerrando #${cnt++}/${total}`,
+            increment: inc,
+          });
+
+          sendAppKillConnection(server, recipient).then(
+            (response: any) => {
+              vscode.window.showWarningMessage(response);
+            },
+            (error: Error) => {
+              vscode.window.showErrorMessage(error.message);
+            }
+          );
+        });
+
+        const p = new Promise((resolve) => {
+          setTimeout(() => {
+            resolve();
+          }, 5000);
+        });
+
+        return p;
+      }
+    );
   }
 
   private sendMessage(
@@ -278,27 +334,46 @@ export class MonitorLoader {
     recipients: any[],
     message: string
   ): void {
-    recipients.forEach((recipient) => {
-      languageClient
-        .sendRequest("$totvsmonitor/sendUserMessage", {
-          sendUserMessageInfo: {
-            connectionToken: server.token,
-            userName: recipient.username,
-            computerName: recipient.machine,
-            threadId: recipient.threadId,
-            serverName: recipient.server,
-            message: message,
-          },
-        })
-        .then(
-          (response: any) => {
-            vscode.window.showWarningMessage(response.message);
-          },
-          (error: Error) => {
-            vscode.window.showErrorMessage(error.message);
-          }
-        );
-    });
+    vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: "Enviando mensagem aos usuários.",
+        cancellable: true,
+      },
+      (progress, token) => {
+        const total: number = recipients.length;
+        let cnt: number = 0;
+        let inc: number = recipients.length / 100;
+
+        token.onCancellationRequested(() => {
+          console.log("User canceled the operation");
+        });
+
+        recipients.forEach((recipient) => {
+          progress.report({
+            message: `Enviando #${cnt++}/${total}`,
+            increment: inc,
+          });
+
+          sendUserMessage(server, recipient, message).then(
+            (response: any) => {
+              //vscode.window.showWarningMessage(response);
+            },
+            (error: Error) => {
+              vscode.window.showErrorMessage(error.message);
+            }
+          );
+        });
+
+        const p = new Promise((resolve) => {
+          setTimeout(() => {
+            resolve();
+          }, 5000);
+        });
+
+        return p;
+      }
+    );
   }
 
   private async handleMessage(command: IMonitorPanelAction) {
@@ -338,10 +413,7 @@ export class MonitorLoader {
             command.content.recipients
           );
         } else {
-          this.killConnection(
-            this.monitorServer,
-            command.content.recipients
-          );
+          this.killConnection(this.monitorServer, command.content.recipients);
         }
 
         break;
@@ -386,20 +458,33 @@ export class MonitorLoader {
         sendGetUsersRequest(this.monitorServer).then(
           (users: any) => {
             if (users) {
+              const complement = users.length
+                ? ` (${users.length} thread(s))`
+                : ` (nenhuma thread)`;
+
               this._panel.webview.postMessage({
                 command: MonitorPanelAction.UpdateUsers,
-                data: { serverName: this.monitorServer.name.replace("_monitor", ""), users: users },
+                data: {
+                  serverName:
+                    this.monitorServer.name.replace("_monitor", "") +
+                    complement,
+                  users: users,
+                },
               });
             }
             doScheduler();
           },
           (err: Error) => {
             languageClient.error(err.message, err);
-            vscode.window.showErrorMessage(err.message + '\nVer log para detalhes.');
+            vscode.window.showErrorMessage(
+              err.message + "\nVer log para detalhes."
+            );
 
             if (this._speed > 0) {
               languageClient.info("Atualização automática paralizada.");
-              languageClient.info("Favor acionar [Atualização], para reativar.");
+              languageClient.info(
+                "Favor acionar [Atualização], para reativar."
+              );
             }
           }
         )

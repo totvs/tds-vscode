@@ -6,11 +6,11 @@ import {
   makeStyles,
   Theme,
 } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import {
   DisconnectIcon,
   GroupingIcon,
+  monitorIcons,
 } from "../helper/monitorIcons";
 import { MonitorPanelAction, IMonitorPanelAction } from "../actions";
 import IMonitorUser from "../monitorUser";
@@ -49,61 +49,6 @@ import DisconnectUserDialog from "./disconnectUserDialog";
 import SpeedUpdateDialogDialog from "./speedUpdateDialog";
 import MonitorTheme from "../helper/theme";
 import ErrorBoundary from "../helper/errorBoundary";
-import { ServerItem } from "../../serverItemProvider";
-
-const tableIcons = {
-  Add: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <AddBox {...props} ref={ref} />
-  )),
-  Check: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <Check {...props} ref={ref} />
-  )),
-  Clear: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <Clear {...props} ref={ref} />
-  )),
-  Delete: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <Delete {...props} ref={ref} />
-  )),
-  DetailPanel: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <ChevronRight {...props} ref={ref} />
-  )),
-  Edit: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <Edit {...props} ref={ref} />
-  )),
-  Export: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <SaveAlt {...props} ref={ref} />
-  )),
-  Filter: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <FilterList {...props} ref={ref} />
-  )),
-  FirstPage: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <FirstPage {...props} ref={ref} />
-  )),
-  LastPage: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <LastPage {...props} ref={ref} />
-  )),
-  NextPage: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <ChevronRight {...props} ref={ref} />
-  )),
-  PreviousPage: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <ChevronLeft {...props} ref={ref} />
-  )),
-  ResetSearch: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <Clear {...props} ref={ref} />
-  )),
-  Search: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <Search {...props} ref={ref} />
-  )),
-  SortArrow: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <ArrowDownward {...props} ref={ref} />
-  )),
-  ThirdStateCheck: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <Remove {...props} ref={ref} />
-  )),
-  ViewColumn: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <ViewColumn {...props} ref={ref} />
-  )),
-};
 
 const headCells: HeadCell[] = [
   { field: "server", title: "Servidor", ...cellDefaultStyle },
@@ -479,7 +424,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
       <MonitorTheme>
         <Paper variant="outlined">
           <MaterialTable
-            icons={tableIcons}
+            icons={monitorIcons.table}
             columns={headCells}
             data={rows}
             title={
@@ -497,7 +442,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
             onSelectionChange={(rows) => setSelected(rows)}
             onRowClick={(evt, selectedRow) => this.setState({ selectedRow })}
             actions={actions}
-          />
+            />
         </Paper>
 
         <SendMessageDialog
