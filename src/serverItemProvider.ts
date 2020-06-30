@@ -50,8 +50,15 @@ class ServerItemProvider
   }
 
   public set connectedServerItem(server: ServerItem) {
-    this._connectedServerItem = server ? server : undefined;
-    this.refresh(); //@acandido
+    if (this._connectedServerItem !== server) {
+      this._connectedServerItem = server;
+
+      if (server == undefined) {
+        Utils.clearConnectedServerConfig();
+      }
+
+      this.refresh();
+    }
   }
 
   getTreeItem(element: ServerItem | EnvSection): vscode.TreeItem {

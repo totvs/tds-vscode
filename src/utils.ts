@@ -281,13 +281,6 @@ export default class Utils {
     }
   }
 
-  /**
-   * Notifica o cancelamento de seleção de servidor/ambiente
-   */
-  static cancelSelectServer() {
-    //@acandido
-    Utils._onDidSelectedServer.fire(undefined);
-  }
 
   /**
    * Deleta o servidor logado por ultimo do servers.json
@@ -314,7 +307,7 @@ export default class Utils {
     allConfigs.connectedServer = {};
     allConfigs.lastConnectedServer = "";
     Utils.persistServersInfo(allConfigs);
-    Utils.cancelSelectServer();
+    Utils._onDidSelectedServer.fire(undefined);
   }
 
   /**

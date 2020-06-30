@@ -150,6 +150,8 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const [rows, setRows] = React.useState([]);
   const [subtitle, setSubtitle] = React.useState("(inicializando)");
   const [showServerCol, setShowServerCol] = React.useState(true);
+  const [locked, setLocked] = React.useState(true);
+
   const [openDialog, setOpenDialog] = React.useState({
     lockServer: false,
     unlockServer: false,
@@ -168,6 +170,11 @@ export default function MonitorPanel(props: IMonitorPanel) {
       switch (message.command) {
         case MonitorPanelAction.SetSpeedUpdate: {
           setSpeed(message.data);
+
+          break;
+        }
+        case MonitorPanelAction.LockServer: {
+          setLocked(message.data);
 
           break;
         }
@@ -229,7 +236,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   };
 
   const doUnlockServer = (confirm: boolean) => {
-    setOpenDialog({ ...openDialog, unlockServer: true });
+    setOpenDialog({ ...openDialog, unlockServer: false });
 
     if (confirm) {
       let command: IMonitorPanelAction = {
@@ -259,7 +266,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
     event.preventDefault();
 
     setTargetRow(null);
-    setOpenDialog({ ...openDialog, unlockServer: false });
+    setOpenDialog({ ...openDialog, unlockServer: true });
   };
 
   const handleStopButtonClick = (
@@ -351,7 +358,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   const actions = [];
 
-  const locked = false;
   if (!locked) {
     actions.push({
       icon: () => <LockIcon />,

@@ -5,9 +5,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  Button,
-  TextField} from "@material-ui/core";
-
+  Button
+} from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
 
 export interface UnlockServerDialogProps {
   open: boolean;
@@ -21,18 +21,6 @@ export default function UnlockServerDialog(props: UnlockServerDialogProps) {
     onClose(reason === "OK");
   };
 
-  const messageRef = React.useRef<HTMLTextAreaElement>();
-  const descriptionElementRef = React.useRef<HTMLElement>(null);
-
-  React.useEffect(() => {
-    if (open) {
-      const { current: descriptionElement } = descriptionElementRef;
-      if (descriptionElement !== null) {
-        descriptionElement.focus();
-      }
-    }
-  }, [open]);
-
   return (
     <Dialog
       onClose={handleClose}
@@ -41,26 +29,17 @@ export default function UnlockServerDialog(props: UnlockServerDialogProps) {
       fullWidth
       maxWidth="md"
     >
-      <DialogTitle>Bloquear novas conexões?</DialogTitle>
+      <DialogTitle>Desbloquear novas conexões?</DialogTitle>
       <DialogContent dividers={true}>
-        <DialogContentText ref={descriptionElementRef} tabIndex={-1}>
-          <TextField
-            inputRef={messageRef}
-            required
-            label="Mensagem"
-            defaultValue="Ao confirmar a liberação de novas conexões, os usuários podem
-            conectar-se novamente a esse servidor."
-            variant="outlined"
-            multiline
-            rows={3}
-            rowsMax={10}
-            fullWidth
-            disabled={true}
-          />
+        <DialogContentText tabIndex={-1}>
+          <Alert severity="info">
+            Ao confirmar a liberação de novas conexões, os usuários podem
+            conectar-se novamente a esse servidor.
+          </Alert>
         </DialogContentText>
         <DialogActions>
           <Button
-            onClick={event => {
+            onClick={(event) => {
               handleClose(event, "OK");
             }}
           >

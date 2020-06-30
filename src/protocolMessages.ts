@@ -266,11 +266,24 @@ export function sendLockServer(
     .sendRequest("$totvsmonitor/setConnectionStatus", {
       setConnectionStatusInfo: {
         connectionToken: server.token,
-        status: lock,
+        status: !lock, //false: conexões bloqueadas
       },
     })
     .then((response: any) => {
       return response.message === "OK";
+    });
+}
+
+export function sendIsLockServer(
+  server: ServerItem
+): Thenable<boolean> {
+  return languageClient
+    .sendRequest("$totvsmonitor/getConnectionStatus", {
+      getConnectionStatusInfo: {
+        connectionToken: server.token      },
+    })
+    .then((response: any) => {
+      return !response.status; //false: conexões bloqueadas
     });
 }
 
@@ -298,19 +311,19 @@ export function sendKillConnection(
     );
 }
 
-export function sendStopServer(server: ServerItem): Thenable<boolean> {
+export function sendStopServer(server: ServerItem): Thenable<string> {
   return languageClient
-    .sendRequest("$totvsmonitor/stopServer", {
+    .sendRequest("$totvsserver/stopServer", {
       stopServerInfo: {
         connectionToken: server.token,
       },
     })
     .then(
       (response: any) => {
-        return response.message === "OK";
+        return response.message;
       },
       (error: Error) => {
-        return null;
+        return error;
       }
     );
 }

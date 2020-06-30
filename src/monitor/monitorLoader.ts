@@ -8,6 +8,7 @@ import {
   sendKillConnection,
   sendAppKillConnection,
   sendUserMessage,
+  sendIsLockServer,
 } from "../protocolMessages";
 import { MonitorPanelAction, IMonitorPanelAction } from "./actions";
 import { isNullOrUndefined } from "util";
@@ -19,7 +20,7 @@ import {
   sendGetUsersRequest,
 } from "../protocolMessages";
 import { languageClient } from "../extension";
-import { ServerItem } from "../serverItemProvider";
+import serverProvider, { ServerItem } from "../serverItemProvider";
 
 const DEFAULT_SPEED = 15;
 
@@ -55,6 +56,7 @@ export class MonitorLoader {
     if (this._monitorServer !== value) {
       this._monitorServer = value;
       this.updateUsers(true);
+      this.isLockServer(this._monitorServer);
     }
   }
 
@@ -223,22 +225,43 @@ export class MonitorLoader {
     sendLockServer(server, lock).then(
       (result: boolean) => {
         if (result) {
-          vscode.window.showInformationMessage("OK");
+          this.isLockServer(server);
         } else {
-          vscode.window.showInformationMessage("ERRO");
+          vscode.window.showErrorMessage("Não foi possível bloquear novas conexões.");
+          console.log(result);
         }
       },
-      (error) => {}
+      (error) => {
+        vscode.window.showErrorMessage(error.message);
+      }
+    );
+  }
+
+  private isLockServer(server: ServerItem) {
+    sendIsLockServer(server).then(
+      (response: boolean) => {
+        this.lock = response;
+        if (response) {
+          vscode.window.showInformationMessage('Servidor com novas conexões bloqueadas');
+        }
+      },
+      (error: Error) => {
+        vscode.window.showErrorMessage(error.message);
+      }
     );
   }
 
   private stopServer(server: ServerItem) {
-    return sendStopServer(server).then(
-      (response: any) => {
-        return response.message === "OK";
+    sendStopServer(server).then(
+      (response: string) => {
+        if (response !== "OK") {
+          vscode.window.showErrorMessage(`Não foi possível encerrar o servidor. Retorno: ${response}`);
+        } else {
+          serverProvider.connectedServerItem = undefined;
+        }
       },
       (error: Error) => {
-        return null;
+        vscode.window.showErrorMessage(error.message);
       }
     );
   }
@@ -408,11 +431,10 @@ export class MonitorLoader {
         break;
       }
       case MonitorPanelAction.LockServer: {
-        const result = await this.setLockServer(
+        const result = this.setLockServer(
           this.monitorServer,
           command.content.lock
         );
-        //this.lock = result;
 
         break;
       }
