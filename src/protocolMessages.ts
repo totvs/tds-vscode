@@ -347,8 +347,8 @@ export function sendAppKillConnection(
     .sendRequest("$totvsmonitor/appKillUser", {
       appKillUserInfo: {
         connectionToken: server.token,
-        userName: target.userServer,
-        computerName: target.machine,
+        userName: target.username,
+        computerName: target.computerName,
         threadId: target.threadId,
         serverName: target.server,
       },

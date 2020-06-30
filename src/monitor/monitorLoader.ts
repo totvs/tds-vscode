@@ -243,7 +243,11 @@ export class MonitorLoader {
     );
   }
 
-  private killConnection(server: ServerItem, recipients: any[]): void {
+  private killConnection(
+    server: ServerItem,
+    recipients: any[],
+    killNow: boolean
+  ): void {
     vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
@@ -260,19 +264,31 @@ export class MonitorLoader {
         });
 
         recipients.forEach((recipient) => {
+          cnt++;
           progress.report({
-            message: `Encerrando #${cnt++}/${total}`,
+            message: `Encerrando #${cnt}/${total}`,
             increment: inc,
           });
 
-          sendKillConnection(server, recipient).then(
-            (response: string) => {
-              vscode.window.showWarningMessage(response);
-            },
-            (error: Error) => {
-              vscode.window.showErrorMessage(error.message);
-            }
-          );
+          if (killNow) {
+            sendKillConnection(server, recipient).then(
+              (response: string) => {
+                //
+              },
+              (error: Error) => {
+                vscode.window.showErrorMessage(error.message);
+              }
+            );
+          } else {
+            sendAppKillConnection(server, recipient).then(
+              (response: string) => {
+                //
+              },
+              (error: Error) => {
+                vscode.window.showErrorMessage(error.message);
+              }
+            );
+          }
         });
 
         const p = new Promise((resolve) => {
@@ -303,8 +319,9 @@ export class MonitorLoader {
         });
 
         recipients.forEach((recipient) => {
+          cnt++;
           progress.report({
-            message: `Encerrando #${cnt++}/${total}`,
+            message: `Encerrando #${cnt}/${total}`,
             increment: inc,
           });
 
@@ -350,8 +367,9 @@ export class MonitorLoader {
         });
 
         recipients.forEach((recipient) => {
+          cnt++;
           progress.report({
-            message: `Enviando #${cnt++}/${total}`,
+            message: `Enviando #${cnt}/${total}`,
             increment: inc,
           });
 
@@ -407,14 +425,11 @@ export class MonitorLoader {
         break;
       }
       case MonitorPanelAction.KillConnection: {
-        if (command.content.killNow) {
-          this.appKillConnection(
-            this.monitorServer,
-            command.content.recipients
-          );
-        } else {
-          this.killConnection(this.monitorServer, command.content.recipients);
-        }
+        this.killConnection(
+          this.monitorServer,
+          command.content.recipients,
+          command.content.killNow
+        );
 
         break;
       }
@@ -464,7 +479,7 @@ export class MonitorLoader {
 
               let showServerCol: boolean = false;
               if (users.length > 0) {
-                showServerCol = (users[0].server.length !== 0);
+                showServerCol = users[0].server.length !== 0;
               }
               this._panel.webview.postMessage({
                 command: MonitorPanelAction.UpdateUsers,
@@ -473,7 +488,7 @@ export class MonitorLoader {
                     this.monitorServer.name.replace("_monitor", "") +
                     complement,
                   users: users,
-                  showServerCol: showServerCol
+                  showServerCol: showServerCol,
                 },
               });
             }

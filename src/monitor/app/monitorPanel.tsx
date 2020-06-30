@@ -49,6 +49,7 @@ import DisconnectUserDialog from "./disconnectUserDialog";
 import SpeedUpdateDialogDialog from "./speedUpdateDialog";
 import MonitorTheme from "../helper/theme";
 import ErrorBoundary from "../helper/errorBoundary";
+import Alert from "@material-ui/lab/Alert";
 
 const headCells = (showServerCol: boolean): HeadCell[] => {
   let result: HeadCell[] = [];
@@ -317,7 +318,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
         action: MonitorPanelAction.KillConnection,
         content: {
           recipients: recipients,
-          killnow: killNow,
+          killNow: killNow,
         },
       };
 
