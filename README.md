@@ -171,6 +171,15 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
 * Compile e/ou recompile o fonte e execute-o.<br/>
  ![Encoding 4](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding4.png)
 
+> Para tornar o encoding Windows-1252 padrão para a linguagem AdvPL, é necessário adicionar ao arquivo `%APPDATA%/Code/User/settings.json` a seguinte configuração: 
+```json
+{
+   "[advpl]": {
+     "files.encoding": "windows1252"
+   }
+}
+```
+
  Na abertura do workspace, perguntamos se o usuário deseja alterar o encoding para o padrão TOTVS e essa configuração é feita automaticamente.
 
  * Marque/desmarque a opção `File | Preferences | Settings | Extensions | AdvPL | Ask Encoding Change` conforme sua preferência.
