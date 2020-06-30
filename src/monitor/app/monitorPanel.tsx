@@ -50,24 +50,32 @@ import SpeedUpdateDialogDialog from "./speedUpdateDialog";
 import MonitorTheme from "../helper/theme";
 import ErrorBoundary from "../helper/errorBoundary";
 
-const headCells: HeadCell[] = [
-  { field: "server", title: "Servidor", ...cellDefaultStyle },
-  { field: "environment", title: "Ambiente", ...cellDefaultStyle },
-  { field: "username", title: "Usuário", ...cellDefaultStyle },
-  { field: "computerName", title: "Estação", ...cellDefaultStyle },
-  { field: "threadId", title: "Thread", ...cellDefaultStyle },
-  { field: "mainName", title: "Programa", ...cellDefaultStyle },
-  { field: "loginTime", title: "Conexão", ...cellDefaultStyle },
-  { field: "elapsedTime", title: "Tempo Decorrido", ...cellDefaultStyle },
-  { field: "inactiveTime", title: "Tempo Inatividade", ...cellDefaultStyle },
-  { field: "totalInstrCount", title: "Total Instruções", ...cellDefaultStyle },
-  { field: "instrCountPerSec", title: "Instruções/seg", ...cellDefaultStyle },
-  { field: "remark", title: "Comentário", ...cellDefaultStyle },
-  { field: "memUsed", title: "Memória em Uso", ...cellDefaultStyle },
-  { field: "sid", title: "SID", ...cellDefaultStyle },
-  { field: "ctreeTaskId", title: "CTree ID", ...cellDefaultStyle },
-  { field: "clientType", title: "Tipo Conexão", ...cellDefaultStyle },
-];
+const headCells = (showServerCol: boolean): HeadCell[] => {
+  let result: HeadCell[] = [];
+
+  if (showServerCol) {
+    result.push({ field: "server", title: "Servidor", ...cellDefaultStyle },
+    );
+  }
+
+  result.push( {field: "environment", title: "Ambiente", ...cellDefaultStyle });
+  result.push( {field: "username", title: "Usuário", ...cellDefaultStyle });
+  result.push( {field: "computerName", title: "Estação", ...cellDefaultStyle });
+  result.push( {field: "threadId", title: "Thread", ...cellDefaultStyle });
+  result.push( {field: "mainName", title: "Programa", ...cellDefaultStyle });
+  result.push( {field: "loginTime", title: "Conexão", ...cellDefaultStyle });
+  result.push( {field: "elapsedTime", title: "Tempo Decorrido", ...cellDefaultStyle });
+  result.push( {field: "inactiveTime", title: "Tempo Inatividade", ...cellDefaultStyle });
+  result.push( {field: "totalInstrCount", title: "Total Instruções", ...cellDefaultStyle });
+  result.push( {field: "instrCountPerSec", title: "Instruções/seg", ...cellDefaultStyle });
+  result.push( {field: "remark", title: "Comentário", ...cellDefaultStyle });
+  result.push( {field: "memUsed", title: "Memória em Uso", ...cellDefaultStyle });
+  result.push( {field: "sid", title: "SID", ...cellDefaultStyle });
+  result.push( {field: "ctreeTaskId", title: "CTree ID", ...cellDefaultStyle });
+  result.push( {field: "clientType", title: "Tipo Conexão", ...cellDefaultStyle });
+
+  return result;
+}
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -131,6 +139,8 @@ function Title(props: ITitleProps) {
   );
 }
 
+const hrefTable = React.createRef();
+
 export default function MonitorPanel(props: IMonitorPanel) {
   const [grouping, setGrouping] = React.useState(false);
   const [filtering, setFiltering] = React.useState(false);
@@ -138,7 +148,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const [speed, setSpeed] = React.useState(props.speed);
   const [rows, setRows] = React.useState([]);
   const [subtitle, setSubtitle] = React.useState("(inicializando)");
-
+  const [showServerCol, setShowServerCol] = React.useState(true);
   const [openDialog, setOpenDialog] = React.useState({
     lockServer: false,
     unlockServer: false,
@@ -163,6 +173,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
         case MonitorPanelAction.UpdateUsers: {
           const result = message.data.users as IMonitorUser[];
 
+          setShowServerCol(message.data.showServerCol);
           setRows(result);
           setSubtitle(message.data.serverName);
           break;
@@ -425,19 +436,24 @@ export default function MonitorPanel(props: IMonitorPanel) {
         <Paper variant="outlined">
           <MaterialTable
             icons={monitorIcons.table}
-            columns={headCells}
+            columns={headCells(showServerCol)}
             data={rows}
             title={
               <Title title={"Monitor"} subtitle={subtitle} />
             }
             options={{
+              emptyRowsWhenPaging: false,
+              pageSize: 10,
+              pageSizeOptions: [10, 50, 100],
+              paginationType: "normal",
+              thirdSortClick: true,
               selection: true,
               grouping: grouping,
               filtering: filtering,
               exportButton: false,
-              exportCsv: () => {},
               padding: "dense",
               actionsColumnIndex: 0,
+              columnsButton: true
             }}
             onSelectionChange={(rows) => setSelected(rows)}
             onRowClick={(evt, selectedRow) => this.setState({ selectedRow })}

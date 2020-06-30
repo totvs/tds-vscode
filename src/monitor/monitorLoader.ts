@@ -462,6 +462,10 @@ export class MonitorLoader {
                 ? ` (${users.length} thread(s))`
                 : ` (nenhuma thread)`;
 
+              let showServerCol: boolean = false;
+              if (users.length > 0) {
+                showServerCol = (users[0].server.length !== 0);
+              }
               this._panel.webview.postMessage({
                 command: MonitorPanelAction.UpdateUsers,
                 data: {
@@ -469,6 +473,7 @@ export class MonitorLoader {
                     this.monitorServer.name.replace("_monitor", "") +
                     complement,
                   users: users,
+                  showServerCol: showServerCol
                 },
               });
             }
