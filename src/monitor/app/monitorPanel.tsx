@@ -15,28 +15,13 @@ import {
 import { MonitorPanelAction, IMonitorPanelAction } from "../actions";
 import IMonitorUser from "../monitorUser";
 import SendMessageDialog from "./sendMessageDialog";
-import AddBox from "@material-ui/icons/AddBox";
-import ArrowDownward from "@material-ui/icons/ArrowDownward";
-import Check from "@material-ui/icons/Check";
-import ChevronLeft from "@material-ui/icons/ChevronLeft";
-import ChevronRight from "@material-ui/icons/ChevronRight";
-import Clear from "@material-ui/icons/Clear";
-import Delete from "@material-ui/icons/Delete";
-import Edit from "@material-ui/icons/Edit";
 import FilterList from "@material-ui/icons/FilterList";
-import FirstPage from "@material-ui/icons/FirstPage";
-import LastPage from "@material-ui/icons/LastPage";
-import Remove from "@material-ui/icons/Remove";
-import SaveAlt from "@material-ui/icons/SaveAlt";
-import Search from "@material-ui/icons/Search";
-import ViewColumn from "@material-ui/icons/ViewColumn";
 import SpeedIcon from "@material-ui/icons/Speed";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import LockIcon from "@material-ui/icons/Lock";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import MessageIcon from "@material-ui/icons/Message";
 import StopIcon from "@material-ui/icons/Stop";
-
 import {
   HeadCell,
   IConnectionData,
@@ -49,34 +34,57 @@ import DisconnectUserDialog from "./disconnectUserDialog";
 import SpeedUpdateDialogDialog from "./speedUpdateDialog";
 import MonitorTheme from "../helper/theme";
 import ErrorBoundary from "../helper/errorBoundary";
-import Alert from "@material-ui/lab/Alert";
+import { createMemento } from "../helper";
 
 const headCells = (showServerCol: boolean): HeadCell[] => {
   let result: HeadCell[] = [];
 
   if (showServerCol) {
-    result.push({ field: "server", title: "Servidor", ...cellDefaultStyle },
-    );
+    result.push({ field: "server", title: "Servidor", ...cellDefaultStyle });
   }
 
-  result.push( {field: "environment", title: "Ambiente", ...cellDefaultStyle });
-  result.push( {field: "username", title: "Usuário", ...cellDefaultStyle });
-  result.push( {field: "computerName", title: "Estação", ...cellDefaultStyle });
-  result.push( {field: "threadId", title: "Thread", ...cellDefaultStyle });
-  result.push( {field: "mainName", title: "Programa", ...cellDefaultStyle });
-  result.push( {field: "loginTime", title: "Conexão", ...cellDefaultStyle });
-  result.push( {field: "elapsedTime", title: "Tempo Decorrido", ...cellDefaultStyle });
-  result.push( {field: "inactiveTime", title: "Tempo Inatividade", ...cellDefaultStyle });
-  result.push( {field: "totalInstrCount", title: "Total Instruções", ...cellDefaultStyle });
-  result.push( {field: "instrCountPerSec", title: "Instruções/seg", ...cellDefaultStyle });
-  result.push( {field: "remark", title: "Comentário", ...cellDefaultStyle });
-  result.push( {field: "memUsed", title: "Memória em Uso", ...cellDefaultStyle });
-  result.push( {field: "sid", title: "SID", ...cellDefaultStyle });
-  result.push( {field: "ctreeTaskId", title: "CTree ID", ...cellDefaultStyle });
-  result.push( {field: "clientType", title: "Tipo Conexão", ...cellDefaultStyle });
+  result.push({ field: "environment", title: "Ambiente", ...cellDefaultStyle });
+  result.push({ field: "username", title: "Usuário", ...cellDefaultStyle });
+  result.push({ field: "computerName", title: "Estação", ...cellDefaultStyle });
+  result.push({ field: "threadId", title: "Thread", ...cellDefaultStyle });
+  result.push({ field: "mainName", title: "Programa", ...cellDefaultStyle });
+  result.push({ field: "loginTime", title: "Conexão", ...cellDefaultStyle });
+  result.push({
+    field: "elapsedTime",
+    title: "Tempo Decorrido",
+    ...cellDefaultStyle,
+  });
+  result.push({
+    field: "inactiveTime",
+    title: "Tempo Inatividade",
+    ...cellDefaultStyle,
+  });
+  result.push({
+    field: "totalInstrCount",
+    title: "Total Instruções",
+    ...cellDefaultStyle,
+  });
+  result.push({
+    field: "instrCountPerSec",
+    title: "Instruções/seg",
+    ...cellDefaultStyle,
+  });
+  result.push({ field: "remark", title: "Comentário", ...cellDefaultStyle });
+  result.push({
+    field: "memUsed",
+    title: "Memória em Uso",
+    ...cellDefaultStyle,
+  });
+  result.push({ field: "sid", title: "SID", ...cellDefaultStyle });
+  result.push({ field: "ctreeTaskId", title: "CTree ID", ...cellDefaultStyle });
+  result.push({
+    field: "clientType",
+    title: "Tipo Conexão",
+    ...cellDefaultStyle,
+  });
 
   return result;
-}
+};
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -141,6 +149,20 @@ function Title(props: ITitleProps) {
 }
 
 const hrefTable = React.createRef();
+const DEFAULT_TABLE = {
+  props: {
+    options: {
+      pageSize: 10,
+      grouping: false,
+    }
+  },
+};
+
+const memento = createMemento(
+  "monitorTable",
+  hrefTable,
+  DEFAULT_TABLE
+);
 
 export default function MonitorPanel(props: IMonitorPanel) {
   const [grouping, setGrouping] = React.useState(false);
@@ -207,7 +229,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
     let command: IMonitorPanelAction = {
       action: MonitorPanelAction.UpdateUsers,
-      content: { },
+      content: {},
     };
 
     props.vscode.postMessage(command);
@@ -413,7 +435,22 @@ export default function MonitorPanel(props: IMonitorPanel) {
     icon: () => <GroupingIcon />,
     tooltip: "Grouping on/off",
     isFreeAction: true,
-    onClick: () => setGrouping(!grouping),
+    onClick: () => {
+      const memento2 = createMemento(
+        "monitorTable",
+        hrefTable,
+        DEFAULT_TABLE
+      );
+
+      memento.save({props: {
+        options: {
+          pageSize: 50
+        }
+      }
+      })
+
+      setGrouping(!grouping);
+    },
   });
 
   actions.push({
@@ -442,12 +479,16 @@ export default function MonitorPanel(props: IMonitorPanel) {
       <MonitorTheme>
         <Paper variant="outlined">
           <MaterialTable
+            onChangeRowsPerPage= {(value) => memento.save({props: {
+              options: {
+                pageSize: value
+              }
+            }}) }
+            tableRef={hrefTable}
             icons={monitorIcons.table}
             columns={headCells(showServerCol)}
             data={rows}
-            title={
-              <Title title={"Monitor"} subtitle={subtitle} />
-            }
+            title={<Title title={"Monitor"} subtitle={subtitle} />}
             options={{
               emptyRowsWhenPaging: false,
               pageSize: 10,
@@ -460,12 +501,12 @@ export default function MonitorPanel(props: IMonitorPanel) {
               exportButton: false,
               padding: "dense",
               actionsColumnIndex: 0,
-              columnsButton: true
+              columnsButton: true,
             }}
             onSelectionChange={(rows) => setSelected(rows)}
             onRowClick={(evt, selectedRow) => this.setState({ selectedRow })}
             actions={actions}
-            />
+          />
         </Paper>
 
         <SendMessageDialog
