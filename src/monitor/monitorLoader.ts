@@ -26,11 +26,11 @@ const DEFAULT_SPEED = 15;
 
 let monitorLoader: MonitorLoader = undefined;
 
-export function openMonitorView() {
+export function openMonitorView(context: vscode.ExtensionContext) {
   const server = Utils.getCurrentServer();
 
   if (isNullOrUndefined(monitorLoader)) {
-    monitorLoader = new MonitorLoader();
+    monitorLoader = new MonitorLoader(context);
     monitorLoader.toggleServerToMonitor(server);
   } else {
     monitorLoader.toggleServerToMonitor(server);
@@ -47,6 +47,7 @@ export class MonitorLoader {
   private _speed: number = DEFAULT_SPEED;
   private _lock: boolean = false;
   private _timeoutSched: any = undefined;
+  private _memento: vscode.Memento = undefined;
 
   public get monitorServer(): any {
     return this._monitorServer;
@@ -60,9 +61,10 @@ export class MonitorLoader {
     }
   }
 
-  constructor() {
+  constructor(context: vscode.ExtensionContext) {
     const ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
     this._extensionPath = ext.extensionPath;
+    this._memento = context.workspaceState.get("abc");
 
     this._disposables.push(
       Utils.onDidSelectedServer((newServer: ServerItem) => {
@@ -503,6 +505,7 @@ export class MonitorLoader {
     const configJson = JSON.stringify({
       serverList: servers,
       speed: this._speed,
+      memento: this._memento
     });
 
     return `<!DOCTYPE html>

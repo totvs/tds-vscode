@@ -1,5 +1,5 @@
 import * as React from "react";
-import MaterialTable from "material-table";
+import MaterialTable, { Column } from "material-table";
 import {
   createStyles,
   lighten,
@@ -34,57 +34,14 @@ import DisconnectUserDialog from "./disconnectUserDialog";
 import SpeedUpdateDialogDialog from "./speedUpdateDialog";
 import MonitorTheme from "../helper/theme";
 import ErrorBoundary from "../helper/errorBoundary";
-import { createMemento } from "../helper";
 
-const headCells = (showServerCol: boolean): HeadCell[] => {
-  let result: HeadCell[] = [];
+function isHidden(propColumns: any, field: string): boolean {
+  return propColumns[field].hidden;
+}
 
-  if (showServerCol) {
-    result.push({ field: "server", title: "Servidor", ...cellDefaultStyle });
-  }
-
-  result.push({ field: "environment", title: "Ambiente", ...cellDefaultStyle });
-  result.push({ field: "username", title: "Usuário", ...cellDefaultStyle });
-  result.push({ field: "computerName", title: "Estação", ...cellDefaultStyle });
-  result.push({ field: "threadId", title: "Thread", ...cellDefaultStyle });
-  result.push({ field: "mainName", title: "Programa", ...cellDefaultStyle });
-  result.push({ field: "loginTime", title: "Conexão", ...cellDefaultStyle });
-  result.push({
-    field: "elapsedTime",
-    title: "Tempo Decorrido",
-    ...cellDefaultStyle,
-  });
-  result.push({
-    field: "inactiveTime",
-    title: "Tempo Inatividade",
-    ...cellDefaultStyle,
-  });
-  result.push({
-    field: "totalInstrCount",
-    title: "Total Instruções",
-    ...cellDefaultStyle,
-  });
-  result.push({
-    field: "instrCountPerSec",
-    title: "Instruções/seg",
-    ...cellDefaultStyle,
-  });
-  result.push({ field: "remark", title: "Comentário", ...cellDefaultStyle });
-  result.push({
-    field: "memUsed",
-    title: "Memória em Uso",
-    ...cellDefaultStyle,
-  });
-  result.push({ field: "sid", title: "SID", ...cellDefaultStyle });
-  result.push({ field: "ctreeTaskId", title: "CTree ID", ...cellDefaultStyle });
-  result.push({
-    field: "clientType",
-    title: "Tipo Conexão",
-    ...cellDefaultStyle,
-  });
-
-  return result;
-};
+function fieldDef(field: string, title: string): any {
+  return { field: field, title: title, ...cellDefaultStyle };
+}
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -126,6 +83,7 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 );
 
 interface IMonitorPanel {
+  memento: Memento,
   speed: any;
   vscode: any;
 }
@@ -148,23 +106,67 @@ function Title(props: ITitleProps) {
   );
 }
 
-const hrefTable = React.createRef();
-const DEFAULT_TABLE = {
-  props: {
-    options: {
-      pageSize: 10,
-      grouping: false,
-    }
-  },
+const propPageSize = (value: number = undefined) => {
+  return {
+    props: {
+      options: {
+        pageSize: value,
+      },
+    },
+  };
 };
 
-const memento = createMemento(
-  "monitorTable",
-  hrefTable,
-  DEFAULT_TABLE
-);
+const propGrouping = (value: boolean = undefined) => {
+  return {
+    props: {
+      options: {
+        grouping: value,
+      },
+    },
+  };
+};
+
+const propColumnHidden = (name: string, value: boolean = undefined) => {
+  return {
+    columns: {
+      [name]: {
+        hidden: value,
+      },
+    },
+  };
+};
+
+const propColumns = (): any => {
+  return {
+    columns: [
+      fieldDef("server", "Servidor"),
+      fieldDef("environment", "Ambiente"),
+      fieldDef("username", "Usuário"),
+      fieldDef("computerName", "Estação"),
+      fieldDef("threadId", "Thread"),
+      fieldDef("mainName", "Programa"),
+      fieldDef("loginTime", "Conexão"),
+      fieldDef("elapsedTime", "Tempo Decorrido"),
+      fieldDef("inactiveTime", "Tempo Inatividade"),
+      fieldDef("totalInstrCount", "Total Instruções"),
+      fieldDef("instrCountPerSec", "Instruções/seg"),
+      fieldDef("remark", "Comentário"),
+      fieldDef("memUsed", "Memória em Uso"),
+      fieldDef("sid", "SID"),
+      fieldDef("ctreeTaskId", "CTree ID"),
+      fieldDef("clientType", "Tipo Conexão"),
+    ],
+  };
+};
+
+const DEFAULT_TABLE = mergeProperties([
+  propColumns(),
+  propPageSize(10),
+  propGrouping(false)
+]);
 
 export default function MonitorPanel(props: IMonitorPanel) {
+  const memento = props.memento.get("monitorTable");
   const [grouping, setGrouping] = React.useState(false);
   const [filtering, setFiltering] = React.useState(false);
   const [selected, setSelected] = React.useState<IConnectionData[]>([]);
@@ -378,6 +380,12 @@ export default function MonitorPanel(props: IMonitorPanel) {
     }
   };
 
+  const doColumnHidden = (column: Column<any>, hidden: boolean) => {
+    console.log("doColumnHidden");
+
+    memento.save(propColumnHidden(column.field as string, hidden));
+  };
+
   const actions = [];
 
   if (!locked) {
@@ -436,19 +444,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
     tooltip: "Grouping on/off",
     isFreeAction: true,
     onClick: () => {
-      const memento2 = createMemento(
-        "monitorTable",
-        hrefTable,
-        DEFAULT_TABLE
-      );
-
-      memento.save({props: {
-        options: {
-          pageSize: 50
-        }
-      }
-      })
-
+      memento.save(propGrouping(!grouping));
       setGrouping(!grouping);
     },
   });
@@ -479,19 +475,13 @@ export default function MonitorPanel(props: IMonitorPanel) {
       <MonitorTheme>
         <Paper variant="outlined">
           <MaterialTable
-            onChangeRowsPerPage= {(value) => memento.save({props: {
-              options: {
-                pageSize: value
-              }
-            }}) }
-            tableRef={hrefTable}
             icons={monitorIcons.table}
-            columns={headCells(showServerCol)}
+            columns={memento.load(propColumns())}
             data={rows}
             title={<Title title={"Monitor"} subtitle={subtitle} />}
             options={{
               emptyRowsWhenPaging: false,
-              pageSize: 10,
+              pageSize: memento.load(propPageSize()),
               pageSizeOptions: [10, 50, 100],
               paginationType: "normal",
               thirdSortClick: true,
@@ -503,9 +493,13 @@ export default function MonitorPanel(props: IMonitorPanel) {
               actionsColumnIndex: 0,
               columnsButton: true,
             }}
+            actions={actions}
             onSelectionChange={(rows) => setSelected(rows)}
             onRowClick={(evt, selectedRow) => this.setState({ selectedRow })}
-            actions={actions}
+            onChangeRowsPerPage={(value) => memento.save(propPageSize(value))}
+            onChangeColumnHidden={(column, hidden) =>
+              doColumnHidden(column, hidden)
+            }
           />
         </Paper>
 
