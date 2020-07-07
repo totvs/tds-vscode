@@ -325,50 +325,6 @@ export class MonitorLoader {
     );
   }
 
-  private appKillConnection(server: ServerItem, recipients: any[]): void {
-    vscode.window.withProgress(
-      {
-        location: vscode.ProgressLocation.Notification,
-        title: "Encerrando conexões imediatamente.",
-        cancellable: true,
-      },
-      (progress, token) => {
-        const total: number = recipients.length;
-        let cnt: number = 0;
-        let inc: number = recipients.length / 100;
-
-        token.onCancellationRequested(() => {
-          console.log("User canceled the operation");
-        });
-
-        recipients.forEach((recipient) => {
-          cnt++;
-          progress.report({
-            message: `Encerrando #${cnt}/${total}`,
-            increment: inc,
-          });
-
-          sendAppKillConnection(server, recipient).then(
-            (response: any) => {
-              vscode.window.showWarningMessage(response);
-            },
-            (error: Error) => {
-              vscode.window.showErrorMessage(error.message);
-            }
-          );
-        });
-
-        const p = new Promise((resolve) => {
-          setTimeout(() => {
-            resolve();
-          }, 5000);
-        });
-
-        return p;
-      }
-    );
-  }
-
   private sendMessage(
     server: ServerItem,
     recipients: any[],
