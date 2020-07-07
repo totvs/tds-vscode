@@ -1,9 +1,3 @@
-export interface HeadCell {
-  field: keyof IConnectionData;
-  title: string;
-  cellStyle?: any;
-  headerStyle?: any;
-}
 
 export interface IConnectionData {
   username: string;

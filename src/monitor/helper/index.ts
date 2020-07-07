@@ -1,1 +1,1 @@
-//export { useMemento, createMemento, mergeProperties, IMemento } from "./_memento";
+export { useMemento, mergeProperties, IMemento } from "./memento";

@@ -10,7 +10,7 @@ import {
   Paper
 } from "@material-ui/core";
 import MaterialTable from "material-table";
-import { HeadCell, cellDefaultStyle } from "./monitorInterface";
+import { cellDefaultStyle } from "./monitorInterface";
 import { monitorIcons } from "../helper/monitorIcons";
 
 export interface SendMessageDialogProps {
@@ -19,7 +19,7 @@ export interface SendMessageDialogProps {
   onClose: (confirmed: boolean, message: string, recipients: any) => void;
 }
 
-const headCells: HeadCell[] = [
+const headCells: any[] = [
   { field: "server", title: "Servidor", ...cellDefaultStyle },
   { field: "environment", title: "Ambiente", ...cellDefaultStyle },
   { field: "username", title: "Usuário", ...cellDefaultStyle },

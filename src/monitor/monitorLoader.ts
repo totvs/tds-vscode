@@ -47,7 +47,7 @@ export class MonitorLoader {
   private _speed: number = DEFAULT_SPEED;
   private _lock: boolean = false;
   private _timeoutSched: any = undefined;
-  private _memento: vscode.Memento = undefined;
+  private _context: vscode.ExtensionContext;
 
   public get monitorServer(): any {
     return this._monitorServer;
@@ -64,7 +64,7 @@ export class MonitorLoader {
   constructor(context: vscode.ExtensionContext) {
     const ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
     this._extensionPath = ext.extensionPath;
-    this._memento = context.workspaceState.get("abc");
+    this._context = context;
 
     this._disposables.push(
       Utils.onDidSelectedServer((newServer: ServerItem) => {
@@ -112,7 +112,6 @@ export class MonitorLoader {
     // };
 
     this._panel.webview.html = this.getWebviewContent();
-
     this._panel.onDidChangeViewState(
       (listener: vscode.WebviewPanelOnDidChangeViewStateEvent) => {
         if (this.monitorServer !== null) {
@@ -229,7 +228,9 @@ export class MonitorLoader {
         if (result) {
           this.isLockServer(server);
         } else {
-          vscode.window.showErrorMessage("Não foi possível bloquear novas conexões.");
+          vscode.window.showErrorMessage(
+            "Não foi possível bloquear novas conexões."
+          );
           console.log(result);
         }
       },
@@ -244,7 +245,9 @@ export class MonitorLoader {
       (response: boolean) => {
         this.lock = response;
         if (response) {
-          vscode.window.showInformationMessage('Servidor com novas conexões bloqueadas');
+          vscode.window.showInformationMessage(
+            "Servidor com novas conexões bloqueadas"
+          );
         }
       },
       (error: Error) => {
@@ -257,7 +260,9 @@ export class MonitorLoader {
     sendStopServer(server).then(
       (response: string) => {
         if (response !== "OK") {
-          vscode.window.showErrorMessage(`Não foi possível encerrar o servidor. Retorno: ${response}`);
+          vscode.window.showErrorMessage(
+            `Não foi possível encerrar o servidor. Retorno: ${response}`
+          );
         } else {
           serverProvider.connectedServerItem = undefined;
         }
@@ -377,6 +382,16 @@ export class MonitorLoader {
 
   private async handleMessage(command: IMonitorPanelAction) {
     switch (command.action) {
+      case MonitorPanelAction.DoUpdateState: {
+        const key = command.content.key;
+        if (command.content.state[key] === null) {
+          this._context.workspaceState.update(key, {});
+          this.updateMemento({});
+        } else {
+          this._context.workspaceState.update(key, command.content.state);
+        }
+        break;
+      }
       case MonitorPanelAction.SetSpeedUpdate: {
         this.speed = command.content.speed;
         break;
@@ -426,6 +441,14 @@ export class MonitorLoader {
     }
   }
 
+  public updateMemento(mementoValue: any) {
+    this._panel.webview.postMessage({
+      command: MonitorPanelAction.DoUpdateState,
+      data: mementoValue,
+    });
+
+  }
+
   public updateUsers(scheduler: boolean) {
     const doScheduler = () => {
       if (scheduler && this._speed > 0) {
@@ -457,10 +480,6 @@ export class MonitorLoader {
                 ? ` (${users.length} thread(s))`
                 : ` (nenhuma thread)`;
 
-              let showServerCol: boolean = false;
-              if (users.length > 0) {
-                showServerCol = users[0].server.length !== 0;
-              }
               this._panel.webview.postMessage({
                 command: MonitorPanelAction.UpdateUsers,
                 data: {
@@ -468,7 +487,6 @@ export class MonitorLoader {
                     this.monitorServer.name.replace("_monitor", "") +
                     complement,
                   users: users,
-                  showServerCol: showServerCol,
                 },
               });
             }
@@ -501,11 +519,12 @@ export class MonitorLoader {
     const servers: ServerItem[] = this.monitorServer
       ? [this.monitorServer]
       : [];
+
     const reactAppUri = this._panel?.webview.asWebviewUri(reactAppPathOnDisk);
     const configJson = JSON.stringify({
       serverList: servers,
       speed: this._speed,
-      memento: this._memento
+      memento: this._context.workspaceState.get("monitorTable", {})
     });
 
     return `<!DOCTYPE html>

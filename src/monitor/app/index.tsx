@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import MonitorPanel from "./monitorPanel";
-import { ServerItem } from "../../serverItemProvider";
 
 declare global {
   interface Window {

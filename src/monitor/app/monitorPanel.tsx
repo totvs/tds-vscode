@@ -18,12 +18,12 @@ import SendMessageDialog from "./sendMessageDialog";
 import FilterList from "@material-ui/icons/FilterList";
 import SpeedIcon from "@material-ui/icons/Speed";
 import RefreshIcon from "@material-ui/icons/Refresh";
+import FormatClearIcon from "@material-ui/icons/FormatClear";
 import LockIcon from "@material-ui/icons/Lock";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import MessageIcon from "@material-ui/icons/Message";
 import StopIcon from "@material-ui/icons/Stop";
 import {
-  HeadCell,
   IConnectionData,
   cellDefaultStyle,
 } from "./monitorInterface";
@@ -34,13 +34,10 @@ import DisconnectUserDialog from "./disconnectUserDialog";
 import SpeedUpdateDialogDialog from "./speedUpdateDialog";
 import MonitorTheme from "../helper/theme";
 import ErrorBoundary from "../helper/errorBoundary";
+import { useMemento, mergeProperties} from "../helper";
 
-function isHidden(propColumns: any, field: string): boolean {
-  return propColumns[field].hidden;
-}
-
-function fieldDef(field: string, title: string): any {
-  return { field: field, title: title, ...cellDefaultStyle };
+function fieldDef(field: string, title: string, extraProps: any): any {
+  return { field: field, title: title, ...extraProps };
 }
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
@@ -83,9 +80,9 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 );
 
 interface IMonitorPanel {
-  memento: Memento,
   speed: any;
   vscode: any;
+  memento?: any;
 }
 
 let listener = undefined;
@@ -136,25 +133,25 @@ const propColumnHidden = (name: string, value: boolean = undefined) => {
   };
 };
 
-const propColumns = (): any => {
+const propColumns = (extraProps?: any): any => {
   return {
     columns: [
-      fieldDef("server", "Servidor"),
-      fieldDef("environment", "Ambiente"),
-      fieldDef("username", "Usuário"),
-      fieldDef("computerName", "Estação"),
-      fieldDef("threadId", "Thread"),
-      fieldDef("mainName", "Programa"),
-      fieldDef("loginTime", "Conexão"),
-      fieldDef("elapsedTime", "Tempo Decorrido"),
-      fieldDef("inactiveTime", "Tempo Inatividade"),
-      fieldDef("totalInstrCount", "Total Instruções"),
-      fieldDef("instrCountPerSec", "Instruções/seg"),
-      fieldDef("remark", "Comentário"),
-      fieldDef("memUsed", "Memória em Uso"),
-      fieldDef("sid", "SID"),
-      fieldDef("ctreeTaskId", "CTree ID"),
-      fieldDef("clientType", "Tipo Conexão"),
+      fieldDef("server", "Servidor", extraProps),
+      fieldDef("environment", "Ambiente", extraProps),
+      fieldDef("username", "Usuário", extraProps),
+      fieldDef("computerName", "Estação", extraProps),
+      fieldDef("threadId", "Thread", extraProps),
+      fieldDef("mainName", "Programa", extraProps),
+      fieldDef("loginTime", "Conexão", extraProps),
+      fieldDef("elapsedTime", "Tempo Decorrido", extraProps),
+      fieldDef("inactiveTime", "Tempo Inatividade", extraProps),
+      fieldDef("totalInstrCount", "Total Instruções", extraProps),
+      fieldDef("instrCountPerSec", "Instruções/seg", extraProps),
+      fieldDef("remark", "Comentário", extraProps),
+      fieldDef("memUsed", "Memória em Uso", extraProps),
+      fieldDef("sid", "SID", extraProps),
+      fieldDef("ctreeTaskId", "CTree ID", extraProps),
+      fieldDef("clientType", "Tipo Conexão", extraProps),
     ],
   };
 };
@@ -165,15 +162,18 @@ const DEFAULT_TABLE = mergeProperties([
   propGrouping(false)
 ]);
 
+let memento = undefined;
+
 export default function MonitorPanel(props: IMonitorPanel) {
-  const memento = props.memento.get("monitorTable");
-  const [grouping, setGrouping] = React.useState(false);
+  if (memento === undefined) {
+    memento = useMemento(props.vscode, "monitorTable", DEFAULT_TABLE, props.memento, MonitorPanelAction.DoUpdateState) ;
+  }
+  const [grouping, setGrouping] = React.useState(memento.get(propGrouping()));
   const [filtering, setFiltering] = React.useState(false);
   const [selected, setSelected] = React.useState<IConnectionData[]>([]);
   const [speed, setSpeed] = React.useState(props.speed);
   const [rows, setRows] = React.useState([]);
   const [subtitle, setSubtitle] = React.useState("(inicializando)");
-  const [showServerCol, setShowServerCol] = React.useState(true);
   const [locked, setLocked] = React.useState(true);
 
   const [openDialog, setOpenDialog] = React.useState({
@@ -192,6 +192,11 @@ export default function MonitorPanel(props: IMonitorPanel) {
       const message = event.data; // The JSON data our extension sent
 
       switch (message.command) {
+        case MonitorPanelAction.DoUpdateState:
+          {
+            memento.reset();
+            break;
+          }
         case MonitorPanelAction.SetSpeedUpdate: {
           setSpeed(message.data);
 
@@ -205,7 +210,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
         case MonitorPanelAction.UpdateUsers: {
           const result = message.data.users as IMonitorUser[];
 
-          setShowServerCol(message.data.showServerCol);
           setRows(result);
           setSubtitle(message.data.serverName);
           break;
@@ -236,6 +240,12 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
     props.vscode.postMessage(command);
   };
+
+  const handleResetButtonChange = () => {
+    event.preventDefault();
+
+    memento.reset();
+  }
 
   const handleLockButtonClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -381,9 +391,13 @@ export default function MonitorPanel(props: IMonitorPanel) {
   };
 
   const doColumnHidden = (column: Column<any>, hidden: boolean) => {
-    console.log("doColumnHidden");
+    const columns = memento.get(propColumns());
 
-    memento.save(propColumnHidden(column.field as string, hidden));
+    memento.set(propColumnHidden(column.field as string, hidden));
+  };
+
+  const doPageSize = (value: number) => {
+    memento.set(propPageSize(value));
   };
 
   const actions = [];
@@ -444,7 +458,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
     tooltip: "Grouping on/off",
     isFreeAction: true,
     onClick: () => {
-      memento.save(propGrouping(!grouping));
+      memento.set(propGrouping(!grouping));
       setGrouping(!grouping);
     },
   });
@@ -470,18 +484,25 @@ export default function MonitorPanel(props: IMonitorPanel) {
     onClick: () => handleRefreshButtonChange(),
   });
 
+  actions.push({
+    icon: () => <FormatClearIcon />,
+    tooltip: "Reset default configurations",
+    isFreeAction: true,
+    onClick: () => handleResetButtonChange(),
+  });
+
   return (
     <ErrorBoundary>
       <MonitorTheme>
         <Paper variant="outlined">
           <MaterialTable
             icons={monitorIcons.table}
-            columns={memento.load(propColumns())}
+            columns={memento.get(propColumns({...cellDefaultStyle})).columns}
             data={rows}
             title={<Title title={"Monitor"} subtitle={subtitle} />}
             options={{
               emptyRowsWhenPaging: false,
-              pageSize: memento.load(propPageSize()),
+              pageSize: memento.get(propPageSize()),
               pageSizeOptions: [10, 50, 100],
               paginationType: "normal",
               thirdSortClick: true,
@@ -496,7 +517,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
             actions={actions}
             onSelectionChange={(rows) => setSelected(rows)}
             onRowClick={(evt, selectedRow) => this.setState({ selectedRow })}
-            onChangeRowsPerPage={(value) => memento.save(propPageSize(value))}
+            onChangeRowsPerPage={(value) => doPageSize(value)}
             onChangeColumnHidden={(column, hidden) =>
               doColumnHidden(column, hidden)
             }
