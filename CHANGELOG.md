@@ -1,5 +1,9 @@
 # Versão 1.0.NEXT
 
+
+
+# Versão 1.0.5
+
 # Melhorais na visão `Servidores`
 * Adicionado os comandos abaixo, direto no nó do item:
   - Servidor: Conexão
