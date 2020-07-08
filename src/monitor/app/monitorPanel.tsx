@@ -1,5 +1,5 @@
 import * as React from "react";
-import MaterialTable, { Column } from "material-table";
+import MaterialTable, { Column, Filter, Query } from "material-table";
 import {
   createStyles,
   lighten,
@@ -23,10 +23,7 @@ import LockIcon from "@material-ui/icons/Lock";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import MessageIcon from "@material-ui/icons/Message";
 import StopIcon from "@material-ui/icons/Stop";
-import {
-  IConnectionData,
-  cellDefaultStyle,
-} from "./monitorInterface";
+import { IConnectionData, cellDefaultStyle } from "./monitorInterface";
 import StopServerDialog from "./stopServerDialog";
 import LockServerDialog from "./lockServerDialog";
 import UnlockServerDialog from "./unlockServerDialog";
@@ -34,9 +31,21 @@ import DisconnectUserDialog from "./disconnectUserDialog";
 import SpeedUpdateDialogDialog from "./speedUpdateDialog";
 import MonitorTheme from "../helper/theme";
 import ErrorBoundary from "../helper/errorBoundary";
-import { useMemento, mergeProperties} from "../helper";
+import { useMemento, mergeProperties, IMemento } from "../helper";
+import {
+  propGrouping,
+  propPageSize,
+  propFiltering,
+  DEFAULT_TABLE,
+  propColumnHidden,
+  propColumns,
+} from "./monitorPanelMemento";
 
-function fieldDef(field: string, title: string, extraProps: any): any {
+function fieldDef(
+  field: string,
+  title: string,
+  extraProps: any = { hidden: false, ...cellDefaultStyle }
+): any {
   return { field: field, title: title, ...extraProps };
 }
 
@@ -103,73 +112,49 @@ function Title(props: ITitleProps) {
   );
 }
 
-const propPageSize = (value: number = undefined) => {
-  return {
-    props: {
-      options: {
-        pageSize: value,
-      },
-    },
-  };
-};
-
-const propGrouping = (value: boolean = undefined) => {
-  return {
-    props: {
-      options: {
-        grouping: value,
-      },
-    },
-  };
-};
-
-const propColumnHidden = (name: string, value: boolean = undefined) => {
-  return {
-    columns: {
-      [name]: {
-        hidden: value,
-      },
-    },
-  };
-};
-
-const propColumns = (extraProps?: any): any => {
-  return {
-    columns: [
-      fieldDef("server", "Servidor", extraProps),
-      fieldDef("environment", "Ambiente", extraProps),
-      fieldDef("username", "Usuário", extraProps),
-      fieldDef("computerName", "Estação", extraProps),
-      fieldDef("threadId", "Thread", extraProps),
-      fieldDef("mainName", "Programa", extraProps),
-      fieldDef("loginTime", "Conexão", extraProps),
-      fieldDef("elapsedTime", "Tempo Decorrido", extraProps),
-      fieldDef("inactiveTime", "Tempo Inatividade", extraProps),
-      fieldDef("totalInstrCount", "Total Instruções", extraProps),
-      fieldDef("instrCountPerSec", "Instruções/seg", extraProps),
-      fieldDef("remark", "Comentário", extraProps),
-      fieldDef("memUsed", "Memória em Uso", extraProps),
-      fieldDef("sid", "SID", extraProps),
-      fieldDef("ctreeTaskId", "CTree ID", extraProps),
-      fieldDef("clientType", "Tipo Conexão", extraProps),
-    ],
-  };
-};
-
-const DEFAULT_TABLE = mergeProperties([
-  propColumns(),
-  propPageSize(10),
-  propGrouping(false)
-]);
-
-let memento = undefined;
+let _memento: IMemento;
 
 export default function MonitorPanel(props: IMonitorPanel) {
-  if (memento === undefined) {
-    memento = useMemento(props.vscode, "monitorTable", DEFAULT_TABLE, props.memento, MonitorPanelAction.DoUpdateState) ;
+  if (!_memento) {
+    _memento = useMemento(
+      "monitorTable",
+      DEFAULT_TABLE,
+      props.memento,
+    );
   }
-  const [grouping, setGrouping] = React.useState(memento.get(propGrouping()));
-  const [filtering, setFiltering] = React.useState(false);
+
+  React.useEffect(() => {
+    console.log("mount component");
+    // onChangeRowsPerPage={(value) => doChangeRowsPerPage(value)}
+    // onChangeColumnHidden={(column, hidden) =>
+    //   doColumnHidden(column, hidden)
+    // }
+    // onGroupRemoved={(column, index) => doGroupRemoved(column, index)}
+    // onOrderChange={(orderBy, direction) =>
+    //   doOrderChange(orderBy, direction)
+    // }
+    // onFilterChange={(filters) => doFilterChange(filters)}
+    // onQueryChange={(query) => doQueryChange(query)}
+    // onSearchChange={(searchText) => doSearchChange(searchText)}
+    // onChangePage={(page) => console.log(page)}
+    // onColumnDragged={(sourceIndex, destinationIndex) =>
+    //   doColumnDragged(sourceIndex, destinationIndex)
+    // }
+
+    return () => {
+      console.log("unmount component");
+      _memento.set(propGrouping(grouping));
+      _memento.set(propPageSize(pageSize));
+      _memento.set(propFiltering(filtering));
+      _memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
+    };
+  });
+
+  const [pageSize, setPageSize] = React.useState(_memento.get(propPageSize()));
+  const [grouping, setGrouping] = React.useState(_memento.get(propGrouping()));
+  const [filtering, setFiltering] = React.useState(
+    _memento.get(propFiltering())
+  );
   const [selected, setSelected] = React.useState<IConnectionData[]>([]);
   const [speed, setSpeed] = React.useState(props.speed);
   const [rows, setRows] = React.useState([]);
@@ -192,11 +177,10 @@ export default function MonitorPanel(props: IMonitorPanel) {
       const message = event.data; // The JSON data our extension sent
 
       switch (message.command) {
-        case MonitorPanelAction.DoUpdateState:
-          {
-            memento.reset();
-            break;
-          }
+        case MonitorPanelAction.DoUpdateState: {
+          _memento.reset();
+          break;
+        }
         case MonitorPanelAction.SetSpeedUpdate: {
           setSpeed(message.data);
 
@@ -244,8 +228,8 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const handleResetButtonChange = () => {
     event.preventDefault();
 
-    memento.reset();
-  }
+    _memento.reset();
+  };
 
   const handleLockButtonClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -265,6 +249,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
         action: MonitorPanelAction.LockServer,
         content: { lock: true },
       };
+
       props.vscode.postMessage(command);
     }
   };
@@ -277,6 +262,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
         action: MonitorPanelAction.LockServer,
         content: { lock: false },
       };
+
       props.vscode.postMessage(command);
     }
   };
@@ -291,6 +277,8 @@ export default function MonitorPanel(props: IMonitorPanel) {
       };
 
       props.vscode.postMessage(command);
+
+      //_memento.set(propSpeed(speed));
     }
   };
 
@@ -391,13 +379,47 @@ export default function MonitorPanel(props: IMonitorPanel) {
   };
 
   const doColumnHidden = (column: Column<any>, hidden: boolean) => {
-    const columns = memento.get(propColumns());
-
-    memento.set(propColumnHidden(column.field as string, hidden));
+    _memento.set(propColumnHidden(column.field as string, hidden));
   };
 
-  const doPageSize = (value: number) => {
-    memento.set(propPageSize(value));
+  const doGroupRemoved = (column: Column<any>, index: boolean) => {
+    console.log(column);
+
+    //_memento.set(propColumnHidden(column.field as string, index));
+  };
+
+  const doOrderChange = (orderBy: number, direction: string) => {
+    console.log(orderBy);
+
+    //_memento.set(propColumnHidden(column.field as string, index));
+  };
+
+  const doFilterChange = (filters: Filter<any>[]) => {
+    console.log(filters);
+
+    //_memento.set(propColumnHidden(column.field as string, index));
+  };
+
+  const doQueryChange = (query: Query<any>) => {
+    console.log(query);
+
+    //_memento.set(propColumnHidden(column.field as string, index));
+  };
+
+  const doSearchChange = (textSearch: string) => {
+    console.log(textSearch);
+
+    //_memento.set(propColumnHidden(column.field as string, index));
+  };
+
+  const doColumnDragged = (sourceIndex: number, destinationIndex: number) => {
+    console.log(sourceIndex);
+
+    //_memento.set(propColumnHidden(column.field as string, index));
+  };
+
+  const doChangeRowsPerPage = (value: number) => {
+    _memento.set(propPageSize(value));
   };
 
   const actions = [];
@@ -458,7 +480,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
     tooltip: "Grouping on/off",
     isFreeAction: true,
     onClick: () => {
-      memento.set(propGrouping(!grouping));
       setGrouping(!grouping);
     },
   });
@@ -467,7 +488,10 @@ export default function MonitorPanel(props: IMonitorPanel) {
     icon: () => <FilterList />,
     tooltip: "Filtering on/off",
     isFreeAction: true,
-    onClick: () => setFiltering(!filtering),
+    onClick: () => {
+      _memento.set(propFiltering(!filtering));
+      setFiltering(!filtering);
+    },
   });
 
   actions.push({
@@ -496,13 +520,48 @@ export default function MonitorPanel(props: IMonitorPanel) {
       <MonitorTheme>
         <Paper variant="outlined">
           <MaterialTable
+            localization={{
+              pagination: {
+                labelDisplayedRows: "{from}-{to} de {count}",
+                labelRowsSelect: "conexões",
+                labelRowsPerPage: "linhas/pág.",
+                firstAriaLabel: "Primeira",
+                firstTooltip: "Primeira página",
+                previousAriaLabel: "Anterior",
+                previousTooltip: "Página anterior",
+                nextAriaLabel: "Próxima",
+                nextTooltip: "Próxima página",
+                lastAriaLabel: "Última",
+                lastTooltip: "Última página",
+              },
+              toolbar: {
+                nRowsSelected: "{0} conexões selecionadas",
+                showColumnsTitle: "Apresenta/esconde colunas",
+                searchTooltip: "Busca em todas as colunas",
+                searchPlaceholder: "Busca",
+              },
+              header: {
+                actions: "Ações",
+              },
+              body: {
+                emptyDataSourceMessage:
+                  "Não há conexões ou estas não são visíveis ao monitor.",
+                filterRow: {
+                  filterTooltip: "Filtro",
+                },
+              },
+              grouping: {
+                placeholder: "Arrastar cabeçalhos...",
+                groupedBy: "Agrupado por:",
+              },
+            }}
             icons={monitorIcons.table}
-            columns={memento.get(propColumns({...cellDefaultStyle})).columns}
+            columns={_memento.get(propColumns({ ...cellDefaultStyle })).columns}
             data={rows}
             title={<Title title={"Monitor"} subtitle={subtitle} />}
             options={{
               emptyRowsWhenPaging: false,
-              pageSize: memento.get(propPageSize()),
+              pageSize: pageSize,
               pageSizeOptions: [10, 50, 100],
               paginationType: "normal",
               thirdSortClick: true,
@@ -517,10 +576,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
             actions={actions}
             onSelectionChange={(rows) => setSelected(rows)}
             onRowClick={(evt, selectedRow) => this.setState({ selectedRow })}
-            onChangeRowsPerPage={(value) => doPageSize(value)}
-            onChangeColumnHidden={(column, hidden) =>
-              doColumnHidden(column, hidden)
-            }
           />
         </Paper>
 

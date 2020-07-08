@@ -1,38 +1,40 @@
 export interface IMemento {
-  load: (property?: any) => any;
-  reset: () => any;
-  save: (property: any) => any;
+  get: (property: any) => any;
+  set: (property: any) => any;
+  save: (vscode: any, notifyCommand: any) => void;
+  reset: () => void;
 }
 
-function processKey(properties: any, parentKey: string = ""): string[] {
-  let result = [];
-  if (parentKey !== "") {
-    parentKey += ".";
-  }
-
-  for (const key in properties) {
-    const element = properties[key];
-
-    if (typeof element === "object") {
-      result.push(...processKey(element, parentKey + key));
-    } else {
-      result.push({ id: parentKey + key, value: element });
-    }
-  }
-
-  return result;
-}
+const mementoList: any = {};
 
 function getValue(target: any, properties: any): any {
-  let result = null;
+  let result = undefined;
 
   for (const key in target) {
     const element = target[key];
 
-    if (typeof element === "object") {
-      result = getValue(element, properties[key]);
-    } else {
-      result = properties[key];
+    if (properties.hasOwnProperty(key)) {
+      if (Array.isArray(element)) {
+        let list = [];
+
+        if (element.length > 0) {
+          for (let index = 0; index < element.length; index++) {
+            const item = element[index];
+            const value = getValue(item, properties[key][index]);
+            if (value) {
+              list.push(value);
+            }
+          }
+        } else {
+          list = properties[key];
+        }
+
+        result = list;
+      } else if (typeof element === "object") {
+        result = getValue(element, properties[key]);
+      } else {
+        result = properties[key];
+      }
     }
 
     if (result) {
@@ -71,112 +73,89 @@ function update(target: any, properties: any): any {
   return target;
 }
 
-function doResetMemento(vscode: any, id: string) {
-  const state = vscode.getState(vscode);
-  state.removeItem(id);
-}
+// function diff(obj1: any, obj2: any): any {
+//   const result = {};
+
+//   if (Object.is(obj1, obj2)) {
+//     return undefined;
+//   }
+
+//   if (!obj2 || typeof obj2 !== "object") {
+//     return obj2;
+//   }
+
+//   Object.keys(obj1 || {})
+//     .concat(Object.keys(obj2 || {}))
+//     .forEach((key) => {
+//       if (obj2[key] !== obj1[key] && !Object.is(obj1[key], obj2[key])) {
+//         result[key] = obj2[key];
+//       }
+//       if (typeof obj2[key] === "object" && typeof obj1[key] === "object") {
+//         const value = diff(obj1[key], obj2[key]);
+//         if (value !== undefined) {
+//           result[key] = value;
+//         }
+//       }
+//     });
+
+//   return result;
+// }
 
 function doLoadProperty(state: any, property: any, defaultValue: any): any {
-  const propList = processKey(property);
-  let result = {};
+  let value = getValue(property, state);
 
-  for (let index = 0; index < propList.length; index++) {
-    const prop = propList[index];
-
-    if (state.hasOwnProperty(prop["id"])) {
-      result = { ...result, ...state[prop["id"]] };
-    } else if (defaultValue) {
-      result = { ...result, ...doLoadProperty(defaultValue, property, null) };
-    }
+  if (value === undefined) {
+    value = getValue(property, defaultValue);
   }
 
-  return result;
+  return value;
 }
 
-function doSaveProperty(state: any, propertySave: any): any {
-  const propList = processKey(propertySave);
-
-  for (let index = 0; index < propList.length; index++) {
-    const prop = propList[index];
-
-    state[prop["id"]] = prop["value"];
-  }
-
-  return state;
+function doSetProperty(state: any, propertySave: any): any {
+  return mergeProperties([state, propertySave]);
 }
 
-function mountKey(properties: any): string[] {
-  let result;
-
-  for (const key in properties) {
-    const element = properties[key];
-
-    if (typeof element === "object") {
-      result = +mountKey(element) + ".";
-    } else {
-      result = +"" + element; //força transformação
-    }
+export function useMemento(
+  id: string,
+  defaultValues: any,
+  initialValues: any = {}
+): IMemento {
+  if (mementoList.hasOwnProperty(id) && mementoList[id] !== null) {
+    return mementoList[id];
   }
 
-  return [result];
-}
-
-const mementoList: any = {};
-
-export function useMemento(vscode: any, id: string, defaultValues: any, initialValues: any = {}, notifyCommand?: any): any {
-  if (!mementoList.hasOwnProperty(id)) {
-    let state = vscode.getState();
-    let map = {}
-
-    processKey(defaultValues).forEach((element) => {
-      map[element["id"]] = element["value"];
-    });
-    mementoList[id] = map;
-
-    if (state === undefined) {
-      state = { [id]: initialValues };
-    } else {
-      state = { ...state, [id]: initialValues };
-    }
-
-    vscode.setState(state);
-  }
-
-  return {
-    get: (property: any): any => {
-      let state = vscode.getState();
-
-      return doLoadProperty(state[id], property, mementoList[id]);
+  const _this = {
+    init: () => {
+      mementoList[id] = { defaultValues: defaultValues, state: initialValues };
     },
-    reset: () => {
-      let state = vscode.getState();
-      let savedState = { [id]: null };
+    get: (property: any): any => {
+      const [ state, defaultValue] = mementoList[id];
 
-      state = { ...state, [id]: {} };
-      vscode.setState(state);
-
-      if (notifyCommand) {
-        let command: any = {
-          action: notifyCommand,
-          content: { key: id, state: savedState }
-        };
-        vscode.postMessage(command);
-      }
+      return doLoadProperty(state, property, defaultValues);
     },
     set: (property: any) => {
-      let state = vscode.getState();
-      let savedState = doSaveProperty(state[id], property);
+      const [state] = mementoList[id];
 
-      state = { ...state, [id]: savedState };
-      vscode.setState(state);
+      doSetProperty(state, property);
+    },
+    save: (vscode: any, notifyCommand: any) => {
+      const [ state ] = mementoList[id];
 
       if (notifyCommand) {
         let command: any = {
           action: notifyCommand,
-          content: { key: id, state: savedState }
+          content: { key: id, state: state },
         };
+
         vscode.postMessage(command);
       }
     },
+    reset: () => {
+      mementoList[id] = null;
+    },
   };
+
+  _this.init();
+
+  return _this;
 }
