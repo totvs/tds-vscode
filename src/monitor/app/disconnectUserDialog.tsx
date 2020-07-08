@@ -12,7 +12,8 @@ import {
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import MaterialTable from "material-table";
-import { HeadCell, cellDefaultStyle } from "./monitorInterface";
+import { cellDefaultStyle } from "./monitorInterface";
+import { monitorIcons } from "../helper/monitorIcons";
 
 export interface DisconnectUserDialogProps {
   open: boolean;
@@ -20,7 +21,7 @@ export interface DisconnectUserDialogProps {
   onClose: (confirmed: boolean, killNow: boolean, recipients: any[]) => void;
 }
 
-const headCells: HeadCell[] = [
+const headCells: any[] = [
   { field: "server", title: "Servidor", ...cellDefaultStyle },
   { field: "environment", title: "Ambiente", ...cellDefaultStyle },
   { field: "username", title: "Usuário", ...cellDefaultStyle },
@@ -67,6 +68,7 @@ export default function DisconnectUserDialog(
           />
           <Paper>
             <MaterialTable
+              icons={monitorIcons.table}
               columns={headCells}
               data={recipients}
               options={{

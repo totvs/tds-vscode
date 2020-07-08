@@ -1,48 +1,29 @@
 import * as React from "react";
-import MaterialTable from "material-table";
+import MaterialTable, { Column, Filter, Query } from "material-table";
 import {
   createStyles,
   lighten,
   makeStyles,
   Theme,
 } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import {
-  WriteLogIcon,
   DisconnectIcon,
   GroupingIcon,
+  monitorIcons,
 } from "../helper/monitorIcons";
 import { MonitorPanelAction, IMonitorPanelAction } from "../actions";
 import IMonitorUser from "../monitorUser";
 import SendMessageDialog from "./sendMessageDialog";
-import AddBox from "@material-ui/icons/AddBox";
-import ArrowDownward from "@material-ui/icons/ArrowDownward";
-import Check from "@material-ui/icons/Check";
-import ChevronLeft from "@material-ui/icons/ChevronLeft";
-import ChevronRight from "@material-ui/icons/ChevronRight";
-import Clear from "@material-ui/icons/Clear";
-import Delete from "@material-ui/icons/Delete";
-import Edit from "@material-ui/icons/Edit";
 import FilterList from "@material-ui/icons/FilterList";
-import FirstPage from "@material-ui/icons/FirstPage";
-import LastPage from "@material-ui/icons/LastPage";
-import Remove from "@material-ui/icons/Remove";
-import SaveAlt from "@material-ui/icons/SaveAlt";
-import Search from "@material-ui/icons/Search";
-import ViewColumn from "@material-ui/icons/ViewColumn";
 import SpeedIcon from "@material-ui/icons/Speed";
 import RefreshIcon from "@material-ui/icons/Refresh";
+import FormatClearIcon from "@material-ui/icons/FormatClear";
 import LockIcon from "@material-ui/icons/Lock";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import MessageIcon from "@material-ui/icons/Message";
 import StopIcon from "@material-ui/icons/Stop";
-
-import {
-  HeadCell,
-  IConnectionData,
-  cellDefaultStyle,
-} from "./monitorInterface";
+import { IConnectionData, cellDefaultStyle } from "./monitorInterface";
 import StopServerDialog from "./stopServerDialog";
 import LockServerDialog from "./lockServerDialog";
 import UnlockServerDialog from "./unlockServerDialog";
@@ -50,80 +31,23 @@ import DisconnectUserDialog from "./disconnectUserDialog";
 import SpeedUpdateDialogDialog from "./speedUpdateDialog";
 import MonitorTheme from "../helper/theme";
 import ErrorBoundary from "../helper/errorBoundary";
-import { ServerItem } from "../../serverItemProvider";
+import { useMemento, mergeProperties, IMemento } from "../helper";
+import {
+  propGrouping,
+  propPageSize,
+  propFiltering,
+  DEFAULT_TABLE,
+  propColumnHidden,
+  propColumns,
+} from "./monitorPanelMemento";
 
-const tableIcons = {
-  Add: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <AddBox {...props} ref={ref} />
-  )),
-  Check: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <Check {...props} ref={ref} />
-  )),
-  Clear: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <Clear {...props} ref={ref} />
-  )),
-  Delete: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <Delete {...props} ref={ref} />
-  )),
-  DetailPanel: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <ChevronRight {...props} ref={ref} />
-  )),
-  Edit: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <Edit {...props} ref={ref} />
-  )),
-  Export: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <SaveAlt {...props} ref={ref} />
-  )),
-  Filter: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <FilterList {...props} ref={ref} />
-  )),
-  FirstPage: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <FirstPage {...props} ref={ref} />
-  )),
-  LastPage: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <LastPage {...props} ref={ref} />
-  )),
-  NextPage: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <ChevronRight {...props} ref={ref} />
-  )),
-  PreviousPage: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <ChevronLeft {...props} ref={ref} />
-  )),
-  ResetSearch: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <Clear {...props} ref={ref} />
-  )),
-  Search: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <Search {...props} ref={ref} />
-  )),
-  SortArrow: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <ArrowDownward {...props} ref={ref} />
-  )),
-  ThirdStateCheck: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <Remove {...props} ref={ref} />
-  )),
-  ViewColumn: React.forwardRef<SVGSVGElement>((props, ref) => (
-    <ViewColumn {...props} ref={ref} />
-  )),
-};
-
-const headCells: HeadCell[] = [
-  { field: "server", title: "Servidor", ...cellDefaultStyle },
-  { field: "environment", title: "Ambiente", ...cellDefaultStyle },
-  { field: "username", title: "Usuário", ...cellDefaultStyle },
-  { field: "computerName", title: "Estação", ...cellDefaultStyle },
-  { field: "threadId", title: "Thread", ...cellDefaultStyle },
-  { field: "mainName", title: "Programa", ...cellDefaultStyle },
-  { field: "loginTime", title: "Conexão", ...cellDefaultStyle },
-  { field: "elapsedTime", title: "Tempo Decorrido", ...cellDefaultStyle },
-  { field: "inactiveTime", title: "Tempo Inatividade", ...cellDefaultStyle },
-  { field: "totalInstrCount", title: "Total Instruções", ...cellDefaultStyle },
-  { field: "instrCountPerSec", title: "Instruções/seg", ...cellDefaultStyle },
-  { field: "remark", title: "Comentário", ...cellDefaultStyle },
-  { field: "memUsed", title: "Memória em Uso", ...cellDefaultStyle },
-  { field: "sid", title: "SID", ...cellDefaultStyle },
-  { field: "ctreeTaskId", title: "CTree ID", ...cellDefaultStyle },
-  { field: "clientType", title: "Tipo Conexão", ...cellDefaultStyle },
-];
+function fieldDef(
+  field: string,
+  title: string,
+  extraProps: any = { hidden: false, ...cellDefaultStyle }
+): any {
+  return { field: field, title: title, ...extraProps };
+}
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -167,7 +91,7 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 interface IMonitorPanel {
   speed: any;
   vscode: any;
-  targetServer: ServerItem[];
+  memento?: any;
 }
 
 let listener = undefined;
@@ -188,13 +112,54 @@ function Title(props: ITitleProps) {
   );
 }
 
+let _memento: IMemento;
+
 export default function MonitorPanel(props: IMonitorPanel) {
-  const [grouping, setGrouping] = React.useState(false);
-  const [filtering, setFiltering] = React.useState(false);
+  if (!_memento) {
+    _memento = useMemento(
+      "monitorTable",
+      DEFAULT_TABLE,
+      props.memento,
+    );
+  }
+
+  React.useEffect(() => {
+    console.log("mount component");
+    // onChangeRowsPerPage={(value) => doChangeRowsPerPage(value)}
+    // onChangeColumnHidden={(column, hidden) =>
+    //   doColumnHidden(column, hidden)
+    // }
+    // onGroupRemoved={(column, index) => doGroupRemoved(column, index)}
+    // onOrderChange={(orderBy, direction) =>
+    //   doOrderChange(orderBy, direction)
+    // }
+    // onFilterChange={(filters) => doFilterChange(filters)}
+    // onQueryChange={(query) => doQueryChange(query)}
+    // onSearchChange={(searchText) => doSearchChange(searchText)}
+    // onChangePage={(page) => console.log(page)}
+    // onColumnDragged={(sourceIndex, destinationIndex) =>
+    //   doColumnDragged(sourceIndex, destinationIndex)
+    // }
+
+    return () => {
+      console.log("unmount component");
+      _memento.set(propGrouping(grouping));
+      _memento.set(propPageSize(pageSize));
+      _memento.set(propFiltering(filtering));
+      _memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
+    };
+  });
+
+  const [pageSize, setPageSize] = React.useState(_memento.get(propPageSize()));
+  const [grouping, setGrouping] = React.useState(_memento.get(propGrouping()));
+  const [filtering, setFiltering] = React.useState(
+    _memento.get(propFiltering())
+  );
   const [selected, setSelected] = React.useState<IConnectionData[]>([]);
   const [speed, setSpeed] = React.useState(props.speed);
   const [rows, setRows] = React.useState([]);
-  const [subtitle] = React.useState(props.targetServer.length?props.targetServer[0].name:"");
+  const [subtitle, setSubtitle] = React.useState("(inicializando)");
+  const [locked, setLocked] = React.useState(true);
 
   const [openDialog, setOpenDialog] = React.useState({
     lockServer: false,
@@ -212,15 +177,25 @@ export default function MonitorPanel(props: IMonitorPanel) {
       const message = event.data; // The JSON data our extension sent
 
       switch (message.command) {
+        case MonitorPanelAction.DoUpdateState: {
+          _memento.reset();
+          break;
+        }
         case MonitorPanelAction.SetSpeedUpdate: {
           setSpeed(message.data);
 
           break;
         }
+        case MonitorPanelAction.LockServer: {
+          setLocked(message.data);
+
+          break;
+        }
         case MonitorPanelAction.UpdateUsers: {
-          const result = message.data as IMonitorUser[];
+          const result = message.data.users as IMonitorUser[];
 
           setRows(result);
+          setSubtitle(message.data.serverName);
           break;
         }
         default:
@@ -244,15 +219,17 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
     let command: IMonitorPanelAction = {
       action: MonitorPanelAction.UpdateUsers,
-      content: { server: props.targetServer },
+      content: {},
     };
 
     props.vscode.postMessage(command);
   };
 
-  if (!props.targetServer) {
-    return <Typography>Inicializando...</Typography>;
-  }
+  const handleResetButtonChange = () => {
+    event.preventDefault();
+
+    _memento.reset();
+  };
 
   const handleLockButtonClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -270,20 +247,22 @@ export default function MonitorPanel(props: IMonitorPanel) {
     if (confirm) {
       let command: IMonitorPanelAction = {
         action: MonitorPanelAction.LockServer,
-        content: { server: props.targetServer, lock: true },
+        content: { lock: true },
       };
+
       props.vscode.postMessage(command);
     }
   };
 
   const doUnlockServer = (confirm: boolean) => {
-    setOpenDialog({ ...openDialog, unlockServer: true });
+    setOpenDialog({ ...openDialog, unlockServer: false });
 
     if (confirm) {
       let command: IMonitorPanelAction = {
         action: MonitorPanelAction.LockServer,
-        content: { server: props.targetServer, lock: false },
+        content: { lock: false },
       };
+
       props.vscode.postMessage(command);
     }
   };
@@ -298,6 +277,8 @@ export default function MonitorPanel(props: IMonitorPanel) {
       };
 
       props.vscode.postMessage(command);
+
+      //_memento.set(propSpeed(speed));
     }
   };
 
@@ -307,7 +288,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
     event.preventDefault();
 
     setTargetRow(null);
-    setOpenDialog({ ...openDialog, unlockServer: false });
+    setOpenDialog({ ...openDialog, unlockServer: true });
   };
 
   const handleStopButtonClick = (
@@ -325,7 +306,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
     let command: IMonitorPanelAction = {
       action: MonitorPanelAction.StopServer,
-      content: { server: props.targetServer, killNow: killNow },
+      content: { killNow: killNow },
     };
 
     props.vscode.postMessage(command);
@@ -365,9 +346,8 @@ export default function MonitorPanel(props: IMonitorPanel) {
       let command: IMonitorPanelAction = {
         action: MonitorPanelAction.KillConnection,
         content: {
-          server: props.targetServer,
           recipients: recipients,
-          killnow: killNow,
+          killNow: killNow,
         },
       };
 
@@ -389,7 +369,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
       let command: IMonitorPanelAction = {
         action: MonitorPanelAction.SendMessage,
         content: {
-          server: props.targetServer,
           recipients: recipients,
           message: message,
         },
@@ -399,18 +378,52 @@ export default function MonitorPanel(props: IMonitorPanel) {
     }
   };
 
-  const handleWriteLogButtonClick = () => {
-    let command: IMonitorPanelAction = {
-      action: MonitorPanelAction.ToggleWriteLogServer,
-      content: { server: props.targetServer },
-    };
+  const doColumnHidden = (column: Column<any>, hidden: boolean) => {
+    _memento.set(propColumnHidden(column.field as string, hidden));
+  };
 
-    props.vscode.postMessage(command);
+  const doGroupRemoved = (column: Column<any>, index: boolean) => {
+    console.log(column);
+
+    //_memento.set(propColumnHidden(column.field as string, index));
+  };
+
+  const doOrderChange = (orderBy: number, direction: string) => {
+    console.log(orderBy);
+
+    //_memento.set(propColumnHidden(column.field as string, index));
+  };
+
+  const doFilterChange = (filters: Filter<any>[]) => {
+    console.log(filters);
+
+    //_memento.set(propColumnHidden(column.field as string, index));
+  };
+
+  const doQueryChange = (query: Query<any>) => {
+    console.log(query);
+
+    //_memento.set(propColumnHidden(column.field as string, index));
+  };
+
+  const doSearchChange = (textSearch: string) => {
+    console.log(textSearch);
+
+    //_memento.set(propColumnHidden(column.field as string, index));
+  };
+
+  const doColumnDragged = (sourceIndex: number, destinationIndex: number) => {
+    console.log(sourceIndex);
+
+    //_memento.set(propColumnHidden(column.field as string, index));
+  };
+
+  const doChangeRowsPerPage = (value: number) => {
+    _memento.set(propPageSize(value));
   };
 
   const actions = [];
 
-  const locked = false;
   if (!locked) {
     actions.push({
       icon: () => <LockIcon />,
@@ -463,24 +476,22 @@ export default function MonitorPanel(props: IMonitorPanel) {
   });
 
   actions.push({
-    icon: () => <WriteLogIcon />,
-    tooltip: "Write log",
-    isFreeAction: true,
-    onClick: () => handleWriteLogButtonClick(),
-  });
-
-  actions.push({
     icon: () => <GroupingIcon />,
     tooltip: "Grouping on/off",
     isFreeAction: true,
-    onClick: () => setGrouping(!grouping),
+    onClick: () => {
+      setGrouping(!grouping);
+    },
   });
 
   actions.push({
     icon: () => <FilterList />,
     tooltip: "Filtering on/off",
     isFreeAction: true,
-    onClick: () => setFiltering(!filtering),
+    onClick: () => {
+      _memento.set(propFiltering(!filtering));
+      setFiltering(!filtering);
+    },
   });
 
   actions.push({
@@ -497,29 +508,74 @@ export default function MonitorPanel(props: IMonitorPanel) {
     onClick: () => handleRefreshButtonChange(),
   });
 
+  actions.push({
+    icon: () => <FormatClearIcon />,
+    tooltip: "Reset default configurations",
+    isFreeAction: true,
+    onClick: () => handleResetButtonChange(),
+  });
+
   return (
     <ErrorBoundary>
       <MonitorTheme>
         <Paper variant="outlined">
           <MaterialTable
-            icons={tableIcons}
-            columns={headCells}
+            localization={{
+              pagination: {
+                labelDisplayedRows: "{from}-{to} de {count}",
+                labelRowsSelect: "conexões",
+                labelRowsPerPage: "linhas/pág.",
+                firstAriaLabel: "Primeira",
+                firstTooltip: "Primeira página",
+                previousAriaLabel: "Anterior",
+                previousTooltip: "Página anterior",
+                nextAriaLabel: "Próxima",
+                nextTooltip: "Próxima página",
+                lastAriaLabel: "Última",
+                lastTooltip: "Última página",
+              },
+              toolbar: {
+                nRowsSelected: "{0} conexões selecionadas",
+                showColumnsTitle: "Apresenta/esconde colunas",
+                searchTooltip: "Busca em todas as colunas",
+                searchPlaceholder: "Busca",
+              },
+              header: {
+                actions: "Ações",
+              },
+              body: {
+                emptyDataSourceMessage:
+                  "Não há conexões ou estas não são visíveis ao monitor.",
+                filterRow: {
+                  filterTooltip: "Filtro",
+                },
+              },
+              grouping: {
+                placeholder: "Arrastar cabeçalhos...",
+                groupedBy: "Agrupado por:",
+              },
+            }}
+            icons={monitorIcons.table}
+            columns={_memento.get(propColumns({ ...cellDefaultStyle })).columns}
             data={rows}
-            title={
-              <Title title={"Monitor"} subtitle={subtitle} />
-            }
+            title={<Title title={"Monitor"} subtitle={subtitle} />}
             options={{
+              emptyRowsWhenPaging: false,
+              pageSize: pageSize,
+              pageSizeOptions: [10, 50, 100],
+              paginationType: "normal",
+              thirdSortClick: true,
               selection: true,
               grouping: grouping,
               filtering: filtering,
               exportButton: false,
-              exportCsv: () => {},
               padding: "dense",
               actionsColumnIndex: 0,
+              columnsButton: true,
             }}
+            actions={actions}
             onSelectionChange={(rows) => setSelected(rows)}
             onRowClick={(evt, selectedRow) => this.setState({ selectedRow })}
-            actions={actions}
           />
         </Paper>
 

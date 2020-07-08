@@ -70,7 +70,7 @@ export function showCompileResult(response: CompileResult, context: any) {
 
 function getWebViewContent(extensionPath, localizeHTML) {
 
-	const htmlOnDiskPath = vscode.Uri.file(path.join(extensionPath, 'src', 'compile', 'compileResult.html'));
+	const htmlOnDiskPath = vscode.Uri.file(path.join(extensionPath, 'src', 'compile', 'compileResultPage.html'));
 	const cssOniskPath = vscode.Uri.file(path.join(extensionPath, 'resources', 'css', 'table_materialize.css'));
 	const tableScriptPath = vscode.Uri.file(path.join(extensionPath, 'resources', 'script', 'table_materialize.js'));
 

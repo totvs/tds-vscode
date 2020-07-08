@@ -48,7 +48,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 		server: QuickPickItem | string;
 		environment: QuickPickItem | string;
 		needAuthentication: true;
-		reconnectionInfo: object;
+		reconnectionToken: string;
 	}
 
 	async function collectConnectInputs() {
@@ -70,21 +70,10 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 
 		// reconnection token requires server and environment informations
 		const configADVPL = workspace.getConfiguration('totvsLanguageServer');
-		if (reconnect) {
+		if (reconnect) {//@acandido
 			let serverId = (typeof state.server === "string") ? state.server : (state.server as QuickPickItem).detail;
 			let environmentName = (typeof state.environment === "string") ? state.environment : (state.environment as QuickPickItem).label;
-			let key = serverId + ":" + environmentName;
-			let savedTokens: [string, object] = serversConfig.savedTokens;
-			if (savedTokens) {
-				for (let idx = 0; idx < savedTokens.length; idx++) {
-					if (savedTokens[idx][0] === key) {
-						let reconnectionInfo = savedTokens[idx][1];
-						if (reconnectionInfo) {
-							state.reconnectionInfo = reconnectionInfo;
-						}
-					}
-				}
-			}
+			state.reconnectionToken = Utils.getSavedTokens(serverId, environmentName);
 		}
 
 		return state as State;
@@ -190,12 +179,12 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 
 	async function main() {
 		const connectState = await collectConnectInputs();
-		if (connectState.reconnectionInfo) {
+		const server = Utils.getServerById((typeof connectState.server !== 'string') ? (connectState.server.detail ? connectState.server.detail : "") : connectState.server, serversConfig);
+
+		if (connectState.reconnectionToken) {
 			let environmentName = (typeof connectState.environment === "string") ? connectState.environment : (connectState.environment as QuickPickItem).label;
-			reconnectServer(connectState.reconnectionInfo, environmentName, connType);
-		}
-		else {
-			const server = Utils.getServerById((typeof connectState.server !== 'string') ? (connectState.server.detail ? connectState.server.detail : "") : connectState.server, serversConfig);
+			reconnectServer(server, environmentName, connType);
+		} else {
 			const environment = (typeof connectState.environment !== 'string') ? connectState.environment.label : connectState.environment;
 			server.name = server.name; //FIX: quebra-galho necessário para a árvore de servidores
 			connectServer(server, environment, connType);

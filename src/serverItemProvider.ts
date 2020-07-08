@@ -50,38 +50,44 @@ class ServerItemProvider
   }
 
   public set connectedServerItem(server: ServerItem) {
-    this._connectedServerItem = server ? server : undefined;
-    this.refresh(); //@acandido
+    if (this._connectedServerItem !== server) {
+      this._connectedServerItem = server;
+
+      if (server == undefined) {
+        Utils.clearConnectedServerConfig();
+      }
+
+      this.refresh();
+    }
   }
 
   getTreeItem(element: ServerItem | EnvSection): vscode.TreeItem {
-    if (element instanceof ServerItem) {
-      // let iconPath = {
-      //   light: path.join(
-      //     __filename,
-      //     "..",
-      //     "..",
-      //     "resources",
-      //     "light",
-      //     this._connectedServerItem !== undefined &&
-      //       element.id === this._connectedServerItem.id
-      //       ? "server.connected.svg"
-      //       : "server.svg"
-      //   ),
-      //   dark: path.join(
-      //     __filename,
-      //     "..",
-      //     "..",
-      //     "resources",
-      //     "dark",
-      //     this._connectedServerItem !== undefined &&
-      //       element.id === this._connectedServerItem.id
-      //       ? "server.connected.svg"
-      //       : "server.svg"
-      //   ),
-      // };
-      // element.iconPath = iconPath;
-    }
+    // if (element instanceof ServerItem) {
+    //   let iconPath = {
+    //     light: path.join(
+    //       __filename,
+    //       "..",
+    //       "..",
+    //       "resources",
+    //       "light",
+    //       this.isConnected
+    //         ? "server.connected.svg"
+    //         : "server.svg"
+    //     ),
+    //     dark: path.join(
+    //       __filename,
+    //       "..",
+    //       "..",
+    //       "resources",
+    //       "dark",
+    //       this.isConnected
+    //         ? "server.connected.svg"
+    //         : "server.svg"
+    //     ),
+    //   };
+
+    //   element.iconPath = iconPath;
+    // }
 
     return element;
   }
@@ -261,7 +267,8 @@ class ServerItemProvider
 }
 
 export class ServerItem extends vscode.TreeItem {
-  public environment: string;
+  public environment: string = "";
+  public username: string = "";
 
   public get isConnected(): boolean {
     return serverProvider.isConnected(this);
@@ -290,24 +297,28 @@ export class ServerItem extends vscode.TreeItem {
 
   description = `${this.address}:${this.port}`;
 
-  // iconPath = {
-  //   light: path.join(
-  //     __filename,
-  //     "..",
-  //     "..",
-  //     "resources",
-  //     "light",
-  //     this.isConnected ? "server.connected.svg" : "server.svg"
-  //   ),
-  //   dark: path.join(
-  //     __filename,
-  //     "..",
-  //     "..",
-  //     "resources",
-  //     "dark",
-  //     this.isConnected ? "server.connected.svg" : "server.svg"
-  //   ),
-  //};
+  iconPath = {
+    light: path.join(
+      __filename,
+      "..",
+      "..",
+      "resources",
+      "light",
+      this.isConnected
+        ? "server.connected.svg"
+        : "server.svg"
+    ),
+    dark: path.join(
+      __filename,
+      "..",
+      "..",
+      "resources",
+      "dark",
+      this.isConnected
+        ? "server.connected.svg"
+        : "server.svg"
+    ),
+};
 
   contextValue = this.isConnected ? "serverItem" : "serverItemNotConnected";
 }
@@ -339,9 +350,7 @@ export class EnvSection extends vscode.TreeItem {
       "..",
       "resources",
       "light",
-      this.serverItemParent !== undefined &&
-        this.serverItemParent.id === this.serverItemParent.id &&
-        this.serverItemParent.environment === this.label
+      this.isCurrent
         ? "environment.connected.svg"
         : "environment.svg"
     ),
@@ -351,9 +360,7 @@ export class EnvSection extends vscode.TreeItem {
       "..",
       "resources",
       "dark",
-      this.serverItemParent !== undefined &&
-        this.serverItemParent.id === this.serverItemParent.id &&
-        this.serverItemParent.environment === this.label
+      this.isCurrent
         ? "environment.connected.svg"
         : "environment.svg"
     ),

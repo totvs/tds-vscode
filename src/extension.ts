@@ -493,7 +493,7 @@ export function activate(context: ExtensionContext) {
   //monitor
 	context.subscriptions.push(vscode.commands.registerCommand('tds-monitor.open-monitor-view', () => {
 		vscode.window.setStatusBarMessage("Aguarde. Iniciando monitoramento...", 5000);
-		openMonitorView();
+		openMonitorView(context);
   }));
 
   //Mostra a pagina de Welcome.

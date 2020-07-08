@@ -1,0 +1,1 @@
+export { useMemento, mergeProperties, IMemento } from "./memento";

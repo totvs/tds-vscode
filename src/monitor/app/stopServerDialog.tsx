@@ -5,7 +5,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  Button} from "@material-ui/core";
+  Button,
+  Typography} from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 
 
@@ -33,9 +34,11 @@ export default function StopServerDialog(props: StopServerDialogProps) {
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="error">
+            <Typography>
             Ao confirmar a parada do servidor, todas as conexões (incluindo
-            esta) serão encerradas, assim como outros processos.\n A
-            reinicialização só será possível acessando o servidor fisicamente.
+            esta) serão encerradas, assim como outros processos.
+            <strong>A reinicialização só será possível acessando o servidor fisicamente.</strong>
+            </Typography>
           </Alert>
         </DialogContentText>
         <DialogActions>

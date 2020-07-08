@@ -1,3 +1,3 @@
-import { CreateTDSReplayTimeLineWebView } from './CreateTDSReplayTimeLineWebView';
+import { CreateTDSReplayTimeLineWebView } from './TDSReplayTimeLineCreator';
 
 export { CreateTDSReplayTimeLineWebView as CreateTDSReplayTimeLineWebView };

@@ -1,15 +1,15 @@
+import * as vscode from "vscode";
+import * as path from "path";
 import {
-  IAuthenticationInfo,
-  ITokenInfo,
   sendReconnectRequest,
   IReconnectInfo,
   sendLockServer,
   sendStopServer,
   sendKillConnection,
   sendAppKillConnection,
+  sendUserMessage,
+  sendIsLockServer,
 } from "../protocolMessages";
-import * as vscode from "vscode";
-import * as path from "path";
 import { MonitorPanelAction, IMonitorPanelAction } from "./actions";
 import { isNullOrUndefined } from "util";
 import IMonitorUser from "./monitorUser";
@@ -20,17 +20,17 @@ import {
   sendGetUsersRequest,
 } from "../protocolMessages";
 import { languageClient } from "../extension";
-import { ServerItem } from "../serverItemProvider";
+import serverProvider, { ServerItem } from "../serverItemProvider";
 
 const DEFAULT_SPEED = 15;
 
 let monitorLoader: MonitorLoader = undefined;
 
-export function openMonitorView() {
+export function openMonitorView(context: vscode.ExtensionContext) {
   const server = Utils.getCurrentServer();
 
   if (isNullOrUndefined(monitorLoader)) {
-    monitorLoader = new MonitorLoader();
+    monitorLoader = new MonitorLoader(context);
     monitorLoader.toggleServerToMonitor(server);
   } else {
     monitorLoader.toggleServerToMonitor(server);
@@ -47,6 +47,7 @@ export class MonitorLoader {
   private _speed: number = DEFAULT_SPEED;
   private _lock: boolean = false;
   private _timeoutSched: any = undefined;
+  private _context: vscode.ExtensionContext;
 
   public get monitorServer(): any {
     return this._monitorServer;
@@ -56,12 +57,14 @@ export class MonitorLoader {
     if (this._monitorServer !== value) {
       this._monitorServer = value;
       this.updateUsers(true);
+      this.isLockServer(this._monitorServer);
     }
   }
 
-  constructor() {
+  constructor(context: vscode.ExtensionContext) {
     const ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
     this._extensionPath = ext.extensionPath;
+    this._context = context;
 
     this._disposables.push(
       Utils.onDidSelectedServer((newServer: ServerItem) => {
@@ -81,39 +84,40 @@ export class MonitorLoader {
       }
     );
 
-    this._panel.iconPath = {
-      light: vscode.Uri.parse(
-        path.join(
-          "file:///",
-          __filename,
-          "..",
-          "..",
-          "..",
-          "resources",
-          "light",
-          "lock.svg"
-        )
-      ),
-      dark: vscode.Uri.parse(
-        path.join(
-          "file:///",
-          __filename,
-          "..",
-          "..",
-          "..",
-          "resources",
-          "dark",
-          "lock.svg"
-        )
-      ),
-    };
-    this._panel.webview.html = this.getWebviewContent();
+    // this._panel.iconPath = {
+    //   light: vscode.Uri.parse(
+    //     path.join(
+    //       "file:///",
+    //       __filename,
+    //       "..",
+    //       "..",
+    //       "..",
+    //       "resources",
+    //       "light",
+    //       "lock.svg"
+    //     )
+    //   ),
+    //   dark: vscode.Uri.parse(
+    //     path.join(
+    //       "file:///",
+    //       __filename,
+    //       "..",
+    //       "..",
+    //       "..",
+    //       "resources",
+    //       "dark",
+    //       "lock.svg"
+    //     )
+    //   ),
+    // };
 
-    this._panel.onDidChangeViewState((listener: vscode.WebviewPanelOnDidChangeViewStateEvent) => {
-      if (this.monitorServer !== null) {
-        this.updateUsers(listener.webviewPanel.visible);
-      }
-    },
+    this._panel.webview.html = this.getWebviewContent();
+    this._panel.onDidChangeViewState(
+      (listener: vscode.WebviewPanelOnDidChangeViewStateEvent) => {
+        if (this.monitorServer !== null) {
+          this.updateUsers(listener.webviewPanel.visible);
+        }
+      },
       undefined,
       this._disposables
     );
@@ -128,6 +132,13 @@ export class MonitorLoader {
 
     this._panel.onDidDispose((event) => {
       this._isDisposed = true;
+
+      if (this.monitorServer) {
+        vscode.window.setStatusBarMessage(
+          `Desconectando monitor do servidor [${this.monitorServer.name}]`,
+          sendDisconnectRequest(this.monitorServer)
+        );
+      }
 
       if (this._timeoutSched) {
         clearTimeout(this._timeoutSched);
@@ -162,10 +173,6 @@ export class MonitorLoader {
       command: MonitorPanelAction.SetSpeedUpdate,
       data: v,
     });
-  }
-
-  public set writeLogServer(v: boolean) {
-    //this._writeLogServer = v;
   }
 
   public set lock(v: boolean) {
@@ -210,65 +217,119 @@ export class MonitorLoader {
               `Não foi possivel efetuar a conexão [${this.monitorServer.name} ao monitor.`
             );
           }
-        }
-        )
+        })
       );
     }
   }
 
-  private setLockServer(
-    server: ServerItem,
-    lock: boolean
-  ) {
-    sendLockServer(server, lock).then((result: boolean) => {
-      if (result) {
-        vscode.window.showInformationMessage("OK");
-      } else {
-        vscode.window.showInformationMessage("ERRO");
+  private setLockServer(server: ServerItem, lock: boolean) {
+    sendLockServer(server, lock).then(
+      (result: boolean) => {
+        if (result) {
+          this.isLockServer(server);
+        } else {
+          vscode.window.showErrorMessage(
+            "Não foi possível bloquear novas conexões."
+          );
+          console.log(result);
+        }
+      },
+      (error) => {
+        vscode.window.showErrorMessage(error.message);
       }
-    }, (error) => {
+    );
+  }
 
-    });
+  private isLockServer(server: ServerItem) {
+    sendIsLockServer(server).then(
+      (response: boolean) => {
+        this.lock = response;
+        if (response) {
+          vscode.window.showInformationMessage(
+            "Servidor com novas conexões bloqueadas"
+          );
+        }
+      },
+      (error: Error) => {
+        vscode.window.showErrorMessage(error.message);
+      }
+    );
   }
 
   private stopServer(server: ServerItem) {
-    return sendStopServer(server)
-      .then(
-        (response: any) => {
-          return response.message === "OK";
-        },
-        (error: Error) => {
-          return null;
+    sendStopServer(server).then(
+      (response: string) => {
+        if (response !== "OK") {
+          vscode.window.showErrorMessage(
+            `Não foi possível encerrar o servidor. Retorno: ${response}`
+          );
+        } else {
+          serverProvider.connectedServerItem = undefined;
         }
-      );
+      },
+      (error: Error) => {
+        vscode.window.showErrorMessage(error.message);
+      }
+    );
   }
 
-  private killConnection(server: ServerItem, recipients: any[]): void {
-    recipients.forEach((recipient) => {
-      sendKillConnection(server, recipient)
-        .then(
-          (response: string) => {
-            vscode.window.showWarningMessage(response);
-          },
-          (error: Error) => {
-            vscode.window.showErrorMessage(error.message);
-          }
-        );
-    });
-  }
+  private killConnection(
+    server: ServerItem,
+    recipients: any[],
+    killNow: boolean
+  ): void {
+    vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: "Encerrando conexões.",
+        cancellable: true,
+      },
+      (progress, token) => {
+        const total: number = recipients.length;
+        let cnt: number = 0;
+        let inc: number = recipients.length / 100;
 
-  private appKillConnection(server: ServerItem, recipients: any[]): void {
-    recipients.forEach((recipient) => {
-      sendAppKillConnection(server, recipient)
-        .then(
-          (response: any) => {
-            vscode.window.showWarningMessage(response);
-          },
-          (error: Error) => {
-            vscode.window.showErrorMessage(error.message);
+        token.onCancellationRequested(() => {
+          console.log("User canceled the operation");
+        });
+
+        recipients.forEach((recipient) => {
+          cnt++;
+          progress.report({
+            message: `Encerrando #${cnt}/${total}`,
+            increment: inc,
+          });
+
+          if (killNow) {
+            sendKillConnection(server, recipient).then(
+              (response: string) => {
+                //
+              },
+              (error: Error) => {
+                vscode.window.showErrorMessage(error.message);
+              }
+            );
+          } else {
+            sendAppKillConnection(server, recipient).then(
+              (response: string) => {
+                //
+              },
+              (error: Error) => {
+                vscode.window.showErrorMessage(error.message);
+              }
+            );
           }
-        );
-    });
+        });
+
+        const p = new Promise((resolve) => {
+          setTimeout(() => {
+            resolve();
+          }, 5000);
+        });
+
+        return p;
+      }
+    );
   }
 
   private sendMessage(
@@ -276,31 +337,61 @@ export class MonitorLoader {
     recipients: any[],
     message: string
   ): void {
-    recipients.forEach((recipient) => {
-      languageClient
-        .sendRequest("$totvsmonitor/sendUserMessage", {
-          sendUserMessageInfo: {
-            connectionToken: server.token,
-            userName: recipient.username,
-            computerName: recipient.machine,
-            threadId: recipient.threadId,
-            serverName: recipient.server,
-            message: message,
-          },
-        })
-        .then(
-          (response: any) => {
-            vscode.window.showWarningMessage(response.message);
-          },
-          (error: Error) => {
-            vscode.window.showErrorMessage(error.message);
-          }
-        );
-    });
+    vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: "Enviando mensagem aos usuários.",
+        cancellable: true,
+      },
+      (progress, token) => {
+        const total: number = recipients.length;
+        let cnt: number = 0;
+        let inc: number = recipients.length / 100;
+
+        token.onCancellationRequested(() => {
+          console.log("User canceled the operation");
+        });
+
+        recipients.forEach((recipient) => {
+          cnt++;
+          progress.report({
+            message: `Enviando #${cnt}/${total}`,
+            increment: inc,
+          });
+
+          sendUserMessage(server, recipient, message).then(
+            (response: any) => {
+              //vscode.window.showWarningMessage(response);
+            },
+            (error: Error) => {
+              vscode.window.showErrorMessage(error.message);
+            }
+          );
+        });
+
+        const p = new Promise((resolve) => {
+          setTimeout(() => {
+            resolve();
+          }, 5000);
+        });
+
+        return p;
+      }
+    );
   }
 
   private async handleMessage(command: IMonitorPanelAction) {
     switch (command.action) {
+      case MonitorPanelAction.DoUpdateState: {
+        const key = command.content.key;
+        if (command.content.state[key] === null) {
+          this._context.workspaceState.update(key, {});
+          this.updateMemento({});
+        } else {
+          this._context.workspaceState.update(key, command.content.state);
+        }
+        break;
+      }
       case MonitorPanelAction.SetSpeedUpdate: {
         this.speed = command.content.speed;
         break;
@@ -313,45 +404,32 @@ export class MonitorLoader {
         break;
       }
       case MonitorPanelAction.LockServer: {
-        const result = await this.setLockServer(
-          command.content.server,
+        const result = this.setLockServer(
+          this.monitorServer,
           command.content.lock
         );
-        //this.lock = result;
 
         break;
       }
       case MonitorPanelAction.SendMessage: {
         this.sendMessage(
-          command.content.server,
+          this.monitorServer,
           command.content.recipients,
           command.content.message
         );
         break;
       }
       case MonitorPanelAction.KillConnection: {
-        if (command.content.killNow) {
-          this.appKillConnection(
-            command.content.server,
-            command.content.recipients
-          );
-        } else {
-          this.killConnection(
-            command.content.server,
-            command.content.recipients
-          );
-        }
+        this.killConnection(
+          this.monitorServer,
+          command.content.recipients,
+          command.content.killNow
+        );
 
         break;
       }
       case MonitorPanelAction.StopServer: {
-        const server = command.content.server;
-        this.stopServer(server);
-
-        break;
-      }
-      case MonitorPanelAction.ToggleWriteLogServer: {
-        this.writeLogServer = !this.writeLogServer;
+        this.stopServer(this.monitorServer);
 
         break;
       }
@@ -361,6 +439,14 @@ export class MonitorLoader {
         console.log("\t" + command.content);
         break;
     }
+  }
+
+  public updateMemento(mementoValue: any) {
+    this._panel.webview.postMessage({
+      command: MonitorPanelAction.DoUpdateState,
+      data: mementoValue,
+    });
+
   }
 
   public updateUsers(scheduler: boolean) {
@@ -382,41 +468,46 @@ export class MonitorLoader {
     if (this.monitorServer === null) {
       this._panel.webview.postMessage({
         command: MonitorPanelAction.UpdateUsers,
-        data: [],
+        data: { serverName: "(aguardando seleção)", users: [] },
       });
-      doScheduler();
     } else {
       vscode.window.setStatusBarMessage(
         `Requisitando dados ao servidor [${this.monitorServer.name}]`,
         sendGetUsersRequest(this.monitorServer).then(
           (users: any) => {
             if (users) {
+              const complement = users.length
+                ? ` (${users.length} thread(s))`
+                : ` (nenhuma thread)`;
+
               this._panel.webview.postMessage({
                 command: MonitorPanelAction.UpdateUsers,
-                data: users,
+                data: {
+                  serverName:
+                    this.monitorServer.name.replace("_monitor", "") +
+                    complement,
+                  users: users,
+                },
               });
-              if (this.writeLogServer) {
-                this.doWriteLogServer(users);
-              }
             }
             doScheduler();
           },
           (err: Error) => {
             languageClient.error(err.message, err);
-            vscode.window.showErrorMessage(err.message + '\nVer log para detalhes.');
+            vscode.window.showErrorMessage(
+              err.message + "\nVer log para detalhes."
+            );
 
             if (this._speed > 0) {
               languageClient.info("Atualização automática paralizada.");
-              languageClient.info("Favor acionar [Atualização], para reativar.");
+              languageClient.info(
+                "Favor acionar [Atualização], para reativar."
+              );
             }
           }
         )
       );
     }
-  }
-
-  doWriteLogServer(users: IMonitorUser[]) {
-    throw new Error("Method not implemented.");
   }
 
   private getWebviewContent(): string {
@@ -428,10 +519,12 @@ export class MonitorLoader {
     const servers: ServerItem[] = this.monitorServer
       ? [this.monitorServer]
       : [];
+
     const reactAppUri = this._panel?.webview.asWebviewUri(reactAppPathOnDisk);
     const configJson = JSON.stringify({
       serverList: servers,
       speed: this._speed,
+      memento: this._context.workspaceState.get("monitorTable", {})
     });
 
     return `<!DOCTYPE html>

@@ -56,8 +56,8 @@
 		"@material-ui/core": "^4.10.0",
 		"@material-ui/icons": "^4.9.1",
 		"@material-ui/lab": "^4.0.0-alpha.54",
-		"@totvs/tds-da": "^1.1.10",
-		"@totvs/tds-ls": "^1.1.15",
+		"@totvs/tds-da": "^1.1.12",
+		"@totvs/tds-ls": "^1.1.17",
 		"@types/jszip": "^3.1.7",
 		"@types/node": "13.7.1",
 		"@types/react": "^16.9.35",
@@ -84,6 +84,7 @@
 		"cleanup": "^0.3.0",
 		"css-loader": "^3.5.3",
 		"del": "^4.1.1",
+		"eslint-plugin-react-hooks": "^4.0.6",
 		"gulp": "^4.0.2",
 		"gulp-sourcemaps": "^2.6.5",
 		"gulp-tslint": "^8.1.4",
@@ -91,13 +92,13 @@
 		"gulp-util": "^3.0.8",
 		"lodash.template": ">=4.5.0",
 		"npm-run-all": "^4.1.5",
+		"pegjs": "^0.10.0",
 		"style-loader": "^1.2.1",
 		"ts-loader": "^6.2.2",
 		"tslint": "5.11.0",
 		"vsce": "^1.75.0",
 		"webpack": "^4.43.0",
-		"webpack-cli": "^3.3.10",
-		"pegjs": "^0.10.0"
+		"webpack-cli": "^3.3.10"
 	},
 	"main": "./out/extension",
 	"activationEvents": [
@@ -159,13 +160,6 @@
 		"workspaceContains:servers.json"
 	],
 	"contributes": {
-		"iconThemes": [
-			{
-				"id": "totvs-icons",
-				"label": "TOTVS Icons",
-				"path": "./fileicons/xtotvs-icon-theme.json"
-			}
-		],
 		"colors": [
 			{
 				"id": "terminal.ansiBlack",
@@ -1201,7 +1195,7 @@
 				},
 				{
 					"command": "totvs-developer-studio.reconnect",
-					"when": "view == totvs_server && viewItem == serverItemNotConnected",
+					"when": "view == totvs_server && viewItem == serverItem",
 					"group": "AAtotvsServer@1"
 				},
 				{
@@ -1237,7 +1231,12 @@
 				{
 					"command": "totvs-developer-studio.selectenv",
 					"when": "view == totvs_server && viewItem == envSectionNotCurrent",
-					"group": "inline"
+					"group": "inline@2"
+				},
+				{
+					"command": "totvs-developer-studio.delete.environment",
+					"when": "view == totvs_server && viewItem == envSectionNotCurrent",
+					"group": "inline@1"
 				},
 				{
 					"command": "totvs-developer-studio.delete.file.fromRPO",
@@ -1272,22 +1271,17 @@
 				{
 					"command": "totvs-developer-studio.delete",
 					"when": "view == totvs_server && viewItem == serverItemNotConnected",
-					"group": "inline"
-				},
-				{
-					"command": "totvs-developer-studio.delete.environment",
-					"when": "view == totvs_server && viewItem == envSectionNotCurrent",
-					"group": "inline"
+					"group": "inline@1"
 				},
 				{
 					"command": "totvs-developer-studio.connect",
 					"when": "view == totvs_server && viewItem == serverItemNotConnected",
-					"group": "inline"
+					"group": "inline@2"
 				},
 				{
 					"command": "totvs-developer-studio.disconnect",
 					"when": "view == totvs_server && viewItem == serverItem",
-					"group": "inline"
+					"group": "inline@2"
 				},
 				{
 					"command": "totvs-developer-studio.defragRPO",

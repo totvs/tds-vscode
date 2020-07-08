@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import MonitorPanel from "./monitorPanel";
-import { ServerItem } from "../../serverItemProvider";
 
 declare global {
   interface Window {
@@ -11,10 +10,10 @@ declare global {
 }
 
 const vscode = window.acquireVsCodeApi();
-const serverItems = window.initialData.serverList as ServerItem[];
 const speed = window.initialData.speed;
+const memento = window.initialData.memento;
 
 ReactDOM.render(
-  <MonitorPanel vscode={vscode} targetServer={serverItems} speed={speed}/>,
+  <MonitorPanel vscode={vscode} speed={speed} memento={memento}/>,
   document.getElementById("root")
-);
+  );
