@@ -10,12 +10,6 @@
   - Ambiente: Remoção
 * Menu de contexto melhorado, apresentando opções conforme o estado do servidor
 
-## Monitoramento de servidores TOTVS (BETA)
-* Monitoramento de conexões do servidor corrente
-* Envio de mensagens para um ou mais usuários
-* Bloqueio de novas conexões
-* Desconexão de um ou mais usuários ou de _jobs_
-
 ## [4GL] Liberação do editor para 4GL (BETA)
 
 ### Recursos liberados

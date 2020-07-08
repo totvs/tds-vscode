@@ -16,7 +16,6 @@
 		"4gl",
 		"tds",
 		"totvs",
-		"monitor",
 		"protheus"
 	],
 	"engines": {
@@ -697,15 +696,6 @@
 				"command": "totvs-developer-studio.tdsreplay.webview.timeLine",
 				"title": "Open TimeLine Webview",
 				"category": "TDSReplay"
-			},
-			{
-				"command": "tds-monitor.open-monitor-view",
-				"title": "Open Monitor View",
-				"category": "TOTVSMonitor",
-				"icon": {
-					"light": "resources/light/monitor.png",
-					"dark": "resources/dark/monitor.png"
-				}
 			}
 		],
 		"keybindings": [
@@ -1204,11 +1194,6 @@
 					"group": "AAtotvsServer@2"
 				},
 				{
-					"command": "tds-monitor.open-monitor-view",
-					"when": "view == totvs_server && viewItem == serverItem",
-					"group": "AAtotvsServer@3"
-				},
-				{
 					"command": "totvs-developer-studio.patchGenerate.fromRPO",
 					"when": "view == totvs_server && viewItem == serverItem",
 					"group": "CtotvsPatch@1"
@@ -1297,11 +1282,6 @@
 			"view/title": [
 				{
 					"command": "totvs-developer-studio.add",
-					"when": "view == totvs_server",
-					"group": "navigation"
-				},
-				{
-					"command": "tds-monitor.open-monitor-view",
 					"when": "view == totvs_server",
 					"group": "navigation"
 				},
