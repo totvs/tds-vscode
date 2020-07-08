@@ -96,6 +96,7 @@ export const propColumns = (extraProps?: any): any => {
 
 export const DEFAULT_TABLE = mergeProperties([
   propColumns({ ...cellDefaultStyle }),
-  propPageSize(),
-  propGrouping(),
+  propPageSize(10),
+  propGrouping(false),
+  propFiltering(false),
 ]);

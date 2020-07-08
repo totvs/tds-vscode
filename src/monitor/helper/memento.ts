@@ -120,26 +120,35 @@ export function useMemento(
   defaultValues: any,
   initialValues: any = {}
 ): IMemento {
+  console.log("useMemento " + id);
+
   if (mementoList.hasOwnProperty(id) && mementoList[id] !== null) {
     return mementoList[id];
   }
 
-  const _this = {
-    init: () => {
-      mementoList[id] = { defaultValues: defaultValues, state: initialValues };
-    },
+  console.log("useMemento.define " + id);
+  mementoList[id] = { defaultValues: defaultValues, state: initialValues };
+console.log(mementoList[id]);
+
+  console.log("useMemento.return " + id);
+
+  return {
     get: (property: any): any => {
-      const [ state, defaultValue] = mementoList[id];
+      console.log("memento.get " + id);
+      console.log(mementoList[id]);
+
+      const state = mementoList[id]["state"];
+      const defaultValues = mementoList[id]["defaultValues"];
 
       return doLoadProperty(state, property, defaultValues);
     },
     set: (property: any) => {
-      const [state] = mementoList[id];
+      const state = mementoList[id]["state"];
 
       doSetProperty(state, property);
     },
     save: (vscode: any, notifyCommand: any) => {
-      const [ state ] = mementoList[id];
+      const state = mementoList[id]["state"];
 
       if (notifyCommand) {
         let command: any = {
@@ -154,8 +163,4 @@ export function useMemento(
       mementoList[id] = null;
     },
   };
-
-  _this.init();
-
-  return _this;
 }

@@ -386,9 +386,9 @@ export class MonitorLoader {
         const key = command.content.key;
         if (command.content.state[key] === null) {
           this._context.workspaceState.update(key, {});
-          this.updateMemento({});
+          //this.updateMemento({});
         } else {
-          this._context.workspaceState.update(key, command.content.state);
+          this._context.workspaceState.update(key, command.content.state[key]);
         }
         break;
       }
@@ -441,13 +441,13 @@ export class MonitorLoader {
     }
   }
 
-  public updateMemento(mementoValue: any) {
-    this._panel.webview.postMessage({
-      command: MonitorPanelAction.DoUpdateState,
-      data: mementoValue,
-    });
+  // public updateMemento(mementoValue: any) {
+  //   this._panel.webview.postMessage({
+  //     command: MonitorPanelAction.DoUpdateState,
+  //     data: mementoValue,
+  //   });
 
-  }
+  // }
 
   public updateUsers(scheduler: boolean) {
     const doScheduler = () => {

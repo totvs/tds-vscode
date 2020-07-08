@@ -31,7 +31,7 @@ import DisconnectUserDialog from "./disconnectUserDialog";
 import SpeedUpdateDialogDialog from "./speedUpdateDialog";
 import MonitorTheme from "../helper/theme";
 import ErrorBoundary from "../helper/errorBoundary";
-import { useMemento, mergeProperties, IMemento } from "../helper";
+import { useMemento, IMemento } from "../helper";
 import {
   propGrouping,
   propPageSize,
@@ -112,11 +112,11 @@ function Title(props: ITitleProps) {
   );
 }
 
-let _memento: IMemento;
+let memento: IMemento = undefined;
 
 export default function MonitorPanel(props: IMonitorPanel) {
-  if (!_memento) {
-    _memento = useMemento(
+  if (memento === undefined) {
+    memento = useMemento(
       "monitorTable",
       DEFAULT_TABLE,
       props.memento,
@@ -143,18 +143,21 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
     return () => {
       console.log("unmount component");
-      _memento.set(propGrouping(grouping));
-      _memento.set(propPageSize(pageSize));
-      _memento.set(propFiltering(filtering));
-      _memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
+      console.log("grouping " + grouping);
+
+      memento.set(propGrouping(grouping));
+      // _memento.set(propPageSize(pageSize));
+      // _memento.set(propFiltering(filtering));
+      console.log("unmount save");
+      memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
+      console.log("unmount saved");
+
     };
   });
 
-  const [pageSize, setPageSize] = React.useState(_memento.get(propPageSize()));
-  const [grouping, setGrouping] = React.useState(_memento.get(propGrouping()));
-  const [filtering, setFiltering] = React.useState(
-    _memento.get(propFiltering())
-  );
+  const [pageSize, setPageSize] = React.useState(memento.get(propPageSize()));
+  const [grouping, setGrouping] = React.useState(memento.get(propGrouping()));
+  const [filtering, setFiltering] = React.useState(memento.get(propFiltering()));
   const [selected, setSelected] = React.useState<IConnectionData[]>([]);
   const [speed, setSpeed] = React.useState(props.speed);
   const [rows, setRows] = React.useState([]);
@@ -178,7 +181,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
       switch (message.command) {
         case MonitorPanelAction.DoUpdateState: {
-          _memento.reset();
+          //_memento.reset();
           break;
         }
         case MonitorPanelAction.SetSpeedUpdate: {
@@ -228,7 +231,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const handleResetButtonChange = () => {
     event.preventDefault();
 
-    _memento.reset();
+    //_memento.reset();
   };
 
   const handleLockButtonClick = (
@@ -379,7 +382,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   };
 
   const doColumnHidden = (column: Column<any>, hidden: boolean) => {
-    _memento.set(propColumnHidden(column.field as string, hidden));
+    //_memento.set(propColumnHidden(column.field as string, hidden));
   };
 
   const doGroupRemoved = (column: Column<any>, index: boolean) => {
@@ -419,7 +422,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   };
 
   const doChangeRowsPerPage = (value: number) => {
-    _memento.set(propPageSize(value));
+    //_memento.set(propPageSize(value));
   };
 
   const actions = [];
@@ -489,7 +492,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
     tooltip: "Filtering on/off",
     isFreeAction: true,
     onClick: () => {
-      _memento.set(propFiltering(!filtering));
+      //_memento.set(propFiltering(!filtering));
       setFiltering(!filtering);
     },
   });
@@ -514,7 +517,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
     isFreeAction: true,
     onClick: () => handleResetButtonChange(),
   });
-
+  //_memento.get(propColumns({ ...cellDefaultStyle })).columns
   return (
     <ErrorBoundary>
       <MonitorTheme>
@@ -556,7 +559,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
               },
             }}
             icons={monitorIcons.table}
-            columns={_memento.get(propColumns({ ...cellDefaultStyle })).columns}
+            columns={[]}
             data={rows}
             title={<Title title={"Monitor"} subtitle={subtitle} />}
             options={{
