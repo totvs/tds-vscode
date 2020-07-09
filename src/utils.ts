@@ -107,6 +107,9 @@ export default class Utils {
   static getServersConfig() {
     let config: any = {};
     let serversJson = Utils.getServerConfigFile();
+    if(!fs.existsSync(serversJson)) {
+      Utils.initializeServerConfigFile(serversJson);
+    }
     let json = fs.readFileSync(serversJson).toString();
 
     if (json) {
@@ -122,8 +125,14 @@ export default class Utils {
 
     //compatibilização com arquivos gravados com versão da eextensão
     //anterior a 26/06/20
-    if (typeof config.lastConnectedServer !== "string") {
-      config.lastConnectedServer = config.lastConnectedServer.id;
+    if (config.hasOwnProperty("lastConnectedServer") && typeof config.lastConnectedServer !== "string") {
+        if (config.lastConnectedServer.hasOwnProperty("id")) {
+          config.lastConnectedServer = config.lastConnectedServer.id;
+        } else {
+          config.lastConnectedServer = "";
+        }
+    } else {
+      config.lastConnectedServer = "";
     }
 
     return config;
@@ -377,7 +386,13 @@ export default class Utils {
     includes
   ): string | undefined {
     Utils.createServerConfig();
-    const serverConfig = Utils.getServersConfig();
+    let serverConfig = Utils.getServersConfig();
+
+    if(!serverConfig || !serverConfig.configurations) {
+      let serversJson = Utils.getServerConfigFile();
+      Utils.initializeServerConfigFile(serversJson);
+      serverConfig = Utils.getServersConfig();
+    }
 
     if (serverConfig.configurations) {
       const servers = serverConfig.configurations;
@@ -536,22 +551,27 @@ export default class Utils {
     }
     let serversJson = Utils.getServerConfigFile();
     if (!fs.existsSync(serversJson)) {
-      const sampleServer = {
-        version: "0.2.0",
-        includes: [""],
-        permissions: {
-          authorizationtoken: "",
-        },
-        connectedServer: {},
-        configurations: [],
-      };
-      try {
-        fs.writeFileSync(serversJson, JSON.stringify(sampleServer, null, "\t"));
-      } catch (err) {
-        console.error(err);
-      }
+      Utils.initializeServerConfigFile(serversJson);
     }
   }
+
+  static initializeServerConfigFile(serversJson) {
+    const sampleServer = {
+      version: "0.2.0",
+      includes: [""],
+      permissions: {
+        authorizationtoken: "",
+      },
+      connectedServer: {},
+      configurations: [],
+    };
+    try {
+      fs.writeFileSync(serversJson, JSON.stringify(sampleServer, null, "\t"));
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   /**
    * Cria o arquivo launch.json caso ele nao exista.
    */
