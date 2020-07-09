@@ -15,21 +15,20 @@ function getValue(target: any, properties: any): any {
 
     if (properties.hasOwnProperty(key)) {
       if (Array.isArray(element)) {
-        let list = [];
+        // let list = [];
 
-        if (element.length > 0) {
-          for (let index = 0; index < element.length; index++) {
-            const item = element[index];
-            const value = getValue(item, properties[key][index]);
-            if (value) {
-              list.push(value);
-            }
-          }
-        } else {
-          list = properties[key];
-        }
-
-        result = list;
+        // if (element.length > 0) {
+        //   for (let index = 0; index < element.length; index++) {
+        //     // const item = element[index];
+        //     // const value = getValue(item, properties[key][index]);
+        //     //            if (value) {
+        //       list.push(element);
+        //     //}
+        //   }
+        // } else {
+        //   list = properties[key];
+        // }
+        result = { [key]: element };
       } else if (typeof element === "object") {
         result = getValue(element, properties[key]);
       } else {

@@ -29,6 +29,19 @@ export const propFiltering = (value: boolean = undefined) => {
   };
 };
 
+// see speedUpdateDialog.tsx
+// short: value === 15,
+// normal: value === 30,
+// long: value === 60,
+// manual: value === 0,
+export const propSpeed = (value: number = undefined) => {
+  return {
+    customProps: {
+      speed: value,
+    },
+  };
+};
+
 export const propGrouping = (value: boolean = undefined) => {
   return {
     props: {
@@ -99,4 +112,5 @@ export const DEFAULT_TABLE = mergeProperties([
   propPageSize(10),
   propGrouping(false),
   propFiltering(false),
+  propSpeed(30) //0=manual, 15=fast, 30=normal, 60=slow
 ]);

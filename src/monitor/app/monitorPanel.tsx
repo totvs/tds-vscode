@@ -39,6 +39,8 @@ import {
   DEFAULT_TABLE,
   propColumnHidden,
   propColumns,
+  propSpeed,
+  propColumnList,
 } from "./monitorPanelMemento";
 
 function fieldDef(
@@ -116,53 +118,28 @@ let memento: IMemento = undefined;
 
 export default function MonitorPanel(props: IMonitorPanel) {
   if (memento === undefined) {
-    memento = useMemento(
-      "monitorTable",
-      DEFAULT_TABLE,
-      props.memento,
-    );
+    memento = useMemento("monitorTable", DEFAULT_TABLE, props.memento);
   }
-
-  React.useEffect(() => {
-    console.log("mount component");
-    // onChangeRowsPerPage={(value) => doChangeRowsPerPage(value)}
-    // onChangeColumnHidden={(column, hidden) =>
-    //   doColumnHidden(column, hidden)
-    // }
-    // onGroupRemoved={(column, index) => doGroupRemoved(column, index)}
-    // onOrderChange={(orderBy, direction) =>
-    //   doOrderChange(orderBy, direction)
-    // }
-    // onFilterChange={(filters) => doFilterChange(filters)}
-    // onQueryChange={(query) => doQueryChange(query)}
-    // onSearchChange={(searchText) => doSearchChange(searchText)}
-    // onChangePage={(page) => console.log(page)}
-    // onColumnDragged={(sourceIndex, destinationIndex) =>
-    //   doColumnDragged(sourceIndex, destinationIndex)
-    // }
-
-    return () => {
-      console.log("unmount component");
-      console.log("grouping " + grouping);
-
-      memento.set(propGrouping(grouping));
-      // _memento.set(propPageSize(pageSize));
-      // _memento.set(propFiltering(filtering));
-      console.log("unmount save");
-      memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
-      console.log("unmount saved");
-
-    };
-  });
 
   const [pageSize, setPageSize] = React.useState(memento.get(propPageSize()));
   const [grouping, setGrouping] = React.useState(memento.get(propGrouping()));
-  const [filtering, setFiltering] = React.useState(memento.get(propFiltering()));
+  const [filtering, setFiltering] = React.useState(
+    memento.get(propFiltering())
+  );
   const [selected, setSelected] = React.useState<IConnectionData[]>([]);
   const [speed, setSpeed] = React.useState(props.speed);
   const [rows, setRows] = React.useState([]);
   const [subtitle, setSubtitle] = React.useState("(inicializando)");
   const [locked, setLocked] = React.useState(true);
+
+  React.useEffect(() => {
+    memento.set(propGrouping(grouping));
+    memento.set(propPageSize(pageSize));
+    memento.set(propFiltering(filtering));
+    memento.set(propSpeed(speed));
+
+    memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
+  }, [grouping, pageSize, filtering, speed]);
 
   const [openDialog, setOpenDialog] = React.useState({
     lockServer: false,
@@ -196,7 +173,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
         }
         case MonitorPanelAction.UpdateUsers: {
           const result = message.data.users as IMonitorUser[];
-
           setRows(result);
           setSubtitle(message.data.serverName);
           break;
@@ -274,14 +250,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
     setOpenDialog({ ...openDialog, speedUpdate: false });
 
     if (confirm) {
-      let command: IMonitorPanelAction = {
-        action: MonitorPanelAction.SetSpeedUpdate,
-        content: { speed: speed },
-      };
-
-      props.vscode.postMessage(command);
-
-      //_memento.set(propSpeed(speed));
+      setSpeed(speed);
     }
   };
 
@@ -382,6 +351,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   };
 
   const doColumnHidden = (column: Column<any>, hidden: boolean) => {
+    console.log(column);
     //_memento.set(propColumnHidden(column.field as string, hidden));
   };
 
@@ -422,7 +392,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   };
 
   const doChangeRowsPerPage = (value: number) => {
-    //_memento.set(propPageSize(value));
+    setPageSize(value);
   };
 
   const actions = [];
@@ -492,7 +462,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
     tooltip: "Filtering on/off",
     isFreeAction: true,
     onClick: () => {
-      //_memento.set(propFiltering(!filtering));
       setFiltering(!filtering);
     },
   });
@@ -517,7 +486,9 @@ export default function MonitorPanel(props: IMonitorPanel) {
     isFreeAction: true,
     onClick: () => handleResetButtonChange(),
   });
-  //_memento.get(propColumns({ ...cellDefaultStyle })).columns
+
+  let columns = (rows.length == 0)?[]:memento.get(propColumns({ ...cellDefaultStyle })).columns;
+
   return (
     <ErrorBoundary>
       <MonitorTheme>
@@ -559,7 +530,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
               },
             }}
             icons={monitorIcons.table}
-            columns={[]}
+            columns={columns}
             data={rows}
             title={<Title title={"Monitor"} subtitle={subtitle} />}
             options={{
@@ -579,6 +550,20 @@ export default function MonitorPanel(props: IMonitorPanel) {
             actions={actions}
             onSelectionChange={(rows) => setSelected(rows)}
             onRowClick={(evt, selectedRow) => this.setState({ selectedRow })}
+            onChangeRowsPerPage={(value) => doChangeRowsPerPage(value)}
+            onChangeColumnHidden={(column, hidden) =>
+              doColumnHidden(column, hidden)
+            }
+            onGroupRemoved={(column, index) => doGroupRemoved(column, index)}
+            onOrderChange={(orderBy, direction) =>
+              doOrderChange(orderBy, direction)
+            }
+            onQueryChange={(query) => doQueryChange(query)}
+            onSearchChange={(searchText) => doSearchChange(searchText)}
+            onChangePage={(page) => console.log(page)}
+            onColumnDragged={(sourceIndex, destinationIndex) =>
+              doColumnDragged(sourceIndex, destinationIndex)
+            }
           />
         </Paper>
 
