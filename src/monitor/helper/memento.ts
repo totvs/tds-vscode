@@ -100,7 +100,7 @@ function update(target: any, properties: any): any {
 //   return result;
 // }
 
-function doLoadProperty(state: any, property: any, defaultValue: any): any {
+function doGetProperty(state: any, property: any, defaultValue: any): any {
   let value = getValue(property, state);
 
   if (value === undefined) {
@@ -139,12 +139,12 @@ console.log(mementoList[id]);
       const state = mementoList[id]["state"];
       const defaultValues = mementoList[id]["defaultValues"];
 
-      return doLoadProperty(state, property, defaultValues);
+      return doGetProperty(state, property, defaultValues);
     },
     set: (property: any) => {
       const state = mementoList[id]["state"];
 
-      doSetProperty(state, property);
+      mementoList[id]["state"] = doSetProperty(state, property);
     },
     save: (vscode: any, notifyCommand: any) => {
       const state = mementoList[id]["state"];

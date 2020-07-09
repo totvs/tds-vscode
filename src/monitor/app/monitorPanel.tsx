@@ -41,15 +41,8 @@ import {
   propColumns,
   propSpeed,
   propColumnList,
+  propSpeedText,
 } from "./monitorPanelMemento";
-
-function fieldDef(
-  field: string,
-  title: string,
-  extraProps: any = { hidden: false, ...cellDefaultStyle }
-): any {
-  return { field: field, title: title, ...extraProps };
-}
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -91,9 +84,8 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 );
 
 interface IMonitorPanel {
-  speed: any;
   vscode: any;
-  memento?: any;
+  memento: any;
 }
 
 let listener = undefined;
@@ -127,7 +119,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
     memento.get(propFiltering())
   );
   const [selected, setSelected] = React.useState<IConnectionData[]>([]);
-  const [speed, setSpeed] = React.useState(props.speed);
+  const [speed, setSpeed] = React.useState(memento.get(propSpeed()));
   const [rows, setRows] = React.useState([]);
   const [subtitle, setSubtitle] = React.useState("(inicializando)");
   const [locked, setLocked] = React.useState(true);
@@ -468,7 +460,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   actions.push({
     icon: () => <SpeedIcon />,
-    tooltip: "Update speed",
+    tooltip: `Update speed ${propSpeedText(memento.get(propSpeed()))}`,
     isFreeAction: true,
     onClick: () => handleSpeedButtonChange(),
   });

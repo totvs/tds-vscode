@@ -169,10 +169,6 @@ export class MonitorLoader {
         );
       }
     }
-    this._panel.webview.postMessage({
-      command: MonitorPanelAction.SetSpeedUpdate,
-      data: v,
-    });
   }
 
   public set lock(v: boolean) {
@@ -386,9 +382,8 @@ export class MonitorLoader {
         const key = command.content.key;
         if (command.content.state[key] === null) {
           this._context.workspaceState.update(key, {});
-          //this.updateMemento({});
         } else {
-          this._context.workspaceState.update(key, command.content.state[key]);
+          this._context.workspaceState.update(key, command.content.state);
         }
         break;
       }
@@ -440,14 +435,6 @@ export class MonitorLoader {
         break;
     }
   }
-
-  // public updateMemento(mementoValue: any) {
-  //   this._panel.webview.postMessage({
-  //     command: MonitorPanelAction.DoUpdateState,
-  //     data: mementoValue,
-  //   });
-
-  // }
 
   public updateUsers(scheduler: boolean) {
     const doScheduler = () => {
@@ -523,7 +510,6 @@ export class MonitorLoader {
     const reactAppUri = this._panel?.webview.asWebviewUri(reactAppPathOnDisk);
     const configJson = JSON.stringify({
       serverList: servers,
-      speed: this._speed,
       memento: this._context.workspaceState.get("monitorTable", {})
     });
 

@@ -42,6 +42,12 @@ export const propSpeed = (value: number = undefined) => {
   };
 };
 
+const speedText = { 0: "(manual)", 15: "(short)", 30: "(normal)", 60: "(long)" };
+export const propSpeedText = (value: number): string => {
+
+  return speedText[value];
+}
+
 export const propGrouping = (value: boolean = undefined) => {
   return {
     props: {

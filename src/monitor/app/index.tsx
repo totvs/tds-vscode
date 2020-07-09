@@ -10,10 +10,9 @@ declare global {
 }
 
 const vscode = window.acquireVsCodeApi();
-const speed = window.initialData.speed;
 const memento = window.initialData.memento;
 
 ReactDOM.render(
-  <MonitorPanel vscode={vscode} speed={speed} memento={memento}/>,
+  <MonitorPanel vscode={vscode} memento={memento}/>,
   document.getElementById("root")
   );
