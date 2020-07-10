@@ -42,11 +42,15 @@ export const propSpeed = (value: number = undefined) => {
   };
 };
 
-const speedText = { 0: "(manual)", 15: "(short)", 30: "(normal)", 60: "(long)" };
+const speedText = {
+  0: "(manual)",
+  15: "(short)",
+  30: "(normal)",
+  60: "(long)",
+};
 export const propSpeedText = (value: number): string => {
-
   return speedText[value];
-}
+};
 
 export const propGrouping = (value: boolean = undefined) => {
   return {
@@ -60,28 +64,29 @@ export const propGrouping = (value: boolean = undefined) => {
 
 export const getColumn = (name: string) => {
   let result = undefined;
-  const columns = propColumnList();
+  const columns = propColumns();
 
-  columns.forEach((element: any) => {
+  for (let index = 0; index < columns.length; index++) {
+    const element = columns[index];
     if (element.field === name) {
       result = element;
+      break;
     }
-  });
+  }
 
   return result;
 };
 
-export const propColumnHidden = (name: string, value: boolean = undefined) => {
-  const column = getColumn(name);
-  column["hidden"] = value;
-
+export const propColumn = (name: string, key: string, value: any = undefined): any => {
   return {
-    configColumns: {
-      [name]: {
-        hidden: value,
-      },
+    customColumns: {
+      [name]: { [key]: value },
     },
   };
+}
+
+export const propColumnHidden = (name: string, value: boolean = undefined): any => {
+  return propColumn(name, 'hidden', value);
 };
 
 export const propColumnList = (): any => {
@@ -118,5 +123,5 @@ export const DEFAULT_TABLE = mergeProperties([
   propPageSize(10),
   propGrouping(false),
   propFiltering(false),
-  propSpeed(30) //0=manual, 15=fast, 30=normal, 60=slow
+  propSpeed(30), //0=manual, 15=fast, 30=normal, 60=slow
 ]);

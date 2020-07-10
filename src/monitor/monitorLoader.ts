@@ -380,23 +380,27 @@ export class MonitorLoader {
     switch (command.action) {
       case MonitorPanelAction.DoUpdateState: {
         const key = command.content.key;
+        const state: any = command.content.state;
 
-        if (command.content.state[key] === null) {
-          this._context.workspaceState.update(key, {});
-        } else {
-          this._context.workspaceState.update(key, command.content.state);
-        }
+        this._context.workspaceState.update(key, state);
+
+        this._panel.webview.postMessage({
+          command: MonitorPanelAction.DoUpdateState,
+          data: {
+            key: key,
+            state: state,
+          },
+        });
+
         break;
       }
       case MonitorPanelAction.SetSpeedUpdate: {
         this.speed = command.content.speed;
+          this.updateUsers(true);
         break;
       }
       case MonitorPanelAction.UpdateUsers: {
-        this.speed = this._speed;
-        if (this.monitorServer !== null) {
           this.updateUsers(true);
-        }
         break;
       }
       case MonitorPanelAction.LockServer: {
@@ -438,6 +442,10 @@ export class MonitorLoader {
   }
 
   public updateUsers(scheduler: boolean) {
+    if (this.monitorServer == null) {
+      return;
+    }
+
     const doScheduler = () => {
       if (scheduler && this._speed > 0) {
         this._timeoutSched = setTimeout(
@@ -447,7 +455,6 @@ export class MonitorLoader {
           true
         );
       }
-      this.updateSpeedStatus();
     };
 
     if (this._timeoutSched) {
@@ -479,6 +486,7 @@ export class MonitorLoader {
                 },
               });
             }
+            this.updateSpeedStatus();
             doScheduler();
           },
           (err: Error) => {

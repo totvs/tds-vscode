@@ -119,7 +119,8 @@ export function useMemento(
   defaultValues: any,
   initialValues: any = {}
 ): IMemento {
-  if (mementoList.hasOwnProperty(id) && mementoList[id] !== null) {
+
+  if (mementoList.hasOwnProperty(id) && mementoList[id] !== undefined) {
     return mementoList[id];
   }
 
@@ -150,7 +151,7 @@ export function useMemento(
       }
     },
     reset: () => {
-      mementoList[id] = null;
+      mementoList[id] = undefined;
     },
   };
 }

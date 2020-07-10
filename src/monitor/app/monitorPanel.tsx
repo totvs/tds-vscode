@@ -31,7 +31,7 @@ import DisconnectUserDialog from "./disconnectUserDialog";
 import SpeedUpdateDialogDialog from "./speedUpdateDialog";
 import MonitorTheme from "../helper/theme";
 import ErrorBoundary from "../helper/errorBoundary";
-import { useMemento, IMemento } from "../helper";
+import { useMemento, IMemento, mergeProperties } from "../helper";
 import {
   propGrouping,
   propPageSize,
@@ -179,13 +179,13 @@ export default function MonitorPanel(props: IMonitorPanel) {
     window.addEventListener("message", listener);
   }
 
-  const handleSpeedButtonChange = () => {
+  const handleSpeedButtonClick = () => {
     event.preventDefault();
 
     setOpenDialog({ ...openDialog, speedUpdate: true });
   };
 
-  const handleRefreshButtonChange = () => {
+  const handleRefreshButtonClick = () => {
     event.preventDefault();
 
     let command: IMonitorPanelAction = {
@@ -196,7 +196,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
     props.vscode.postMessage(command);
   };
 
-  const handleResetButtonChange = () => {
+  const handleResetButtonClick = () => {
     event.preventDefault();
 
     //_memento.reset();
@@ -350,8 +350,8 @@ export default function MonitorPanel(props: IMonitorPanel) {
   };
 
   const doColumnHidden = (column: Column<any>, hidden: boolean) => {
-    console.log(column);
-    //_memento.set(propColumnHidden(column.field as string, hidden));
+    memento.set(propColumnHidden(column.field as string, hidden));
+    memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
   };
 
   const doGroupRemoved = (column: Column<any>, index: boolean) => {
@@ -469,24 +469,29 @@ export default function MonitorPanel(props: IMonitorPanel) {
     icon: () => <SpeedIcon />,
     tooltip: `Update speed ${propSpeedText(memento.get(propSpeed()))}`,
     isFreeAction: true,
-    onClick: () => handleSpeedButtonChange(),
+    onClick: () => handleSpeedButtonClick(),
   });
 
   actions.push({
     icon: () => <RefreshIcon />,
     tooltip: "Refresh data",
     isFreeAction: true,
-    onClick: () => handleRefreshButtonChange(),
+    onClick: () => handleRefreshButtonClick(),
   });
 
   actions.push({
     icon: () => <FormatClearIcon />,
     tooltip: "Reset default configurations",
     isFreeAction: true,
-    onClick: () => handleResetButtonChange(),
+    onClick: () => handleResetButtonClick(),
   });
 
   let columns = (rows.length == 0)?[]:memento.get(propColumns({ ...cellDefaultStyle })).columns;
+  for (let index = 0; index < columns.length; index++) {
+    const element = columns[index];
+    const value = memento.get(propColumnHidden(element.field));
+    columns[index] = { ...element, hidden: value };
+  }
 
   return (
     <ErrorBoundary>
