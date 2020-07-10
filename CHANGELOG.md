@@ -1,10 +1,29 @@
-# Versão 1.0.NEXT
+# Versão 1.0.6
 
+## PRTOPDEF File not found [Issue 440](https://github.com/totvs/tds-vscode/issues/440)
+### Problema:
+* Durante uma compilação a mensagem "C2090 File not found PRTOPDEF.CH" é apresentada como erro de compilação.
+### Solução:
+* Um filtro de extensão de arquivos estava considerando apenas a extensão em letras minúsculas. Se a extensão do arquivo for .PRW ela não estava sendo considerada como AdvPL e não adicionava os includes para compilar.
+----
 
+## Extensão trava ao compilar vários fontes [Issue 437](https://github.com/totvs/tds-vscode/issues/437)
+### Problema:
+* Durante a compilação de múltiplos arquivos (compilação de pasta/workspace) o vscode trava e pode exibir a mensagem "The window is no longer responding".
+### Solução:
+* O problema está na exibição de muitas notificações pelo vscode. Por enquanto desabilitamos as notificações alterando o padrão para "none".
+----
+
+## Erro ao adicionar Servidor (Cannot read property 'id' of undefined) [Issue 434](https://github.com/totvs/tds-vscode/issues/434)
+### Problema:
+* Ocorre erro na exibição da visão de Servidores e adição de novos servidores.
+### Solução:
+* Corrigido processo interno na gravação da informação do último servidor conectado.
+----
 
 # Versão 1.0.5
 
-# Melhorais na visão `Servidores`
+## Melhorias na visão "Servidores"
 * Adicionado os comandos abaixo, direto no nó do item:
   - Servidor: Conexão
   - Ambiente: Remoção
@@ -25,7 +44,7 @@
 * Suporte a ponto de parada;
 * Avaliação de expressões;
 * Árvore de variaveis por escopo;
-* Suporte a tipos específicos do 4GL (record, image e outras)
+* Suporte a tipos específicos do 4GL (record, image e outras);
 
 ### Problemas conhecidos (SOMENTE em servidores Logix)
 
@@ -36,12 +55,13 @@ Ao utilizar **TOTVS Server**, de versão igual ou anterior a 19.3.0.0 de 01/06/2
 ## [AdvPL] Árvore de estrutura (_outline_)
 * Árvore de estrutura (_outline_), a ser detalhada em liberações futuras.
 
-## Nomenclatura e ortografica
+## Nomenclatura e ortografia
 * Padronização da nomenclatura de _AppSever_ para _TOTVS Server_;
 * Padronização da identificação _AdvPL_ para _AdvPL/4GL_, quando aplicada as duas linguagens;
 * Opção do console _Advpl_, na visão _Output_, alterada para _TOTVS LS_;
 * Na árvore da visão _settings_, identificação da extensão passou a ser _TOTVS_;
-* Correções ortográficas.
+* Correções ortográficas;
+----
 
 # Versão 1.0.4
 
@@ -56,7 +76,7 @@ Ao utilizar **TOTVS Server**, de versão igual ou anterior a 19.3.0.0 de 01/06/2
 
 ## Problema ao criar launchers a partir das configurações do Smartclient na inicialização [Issue 377](https://github.com/totvs/tds-vscode/issues/377)
 ### Problema:
-* Selecione um smartclient na tela de boas vindas e salve. Os launchers não estão sendo gerados corretamente..
+* Selecione um smartclient na tela de boas vindas e salve. Os launchers não estão sendo gerados corretamente.
 ### Solução:
 * A geração inicial do arquivo launch.json estava incompleto e foi corrigida.
 ----
