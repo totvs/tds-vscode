@@ -128,11 +128,7 @@ export default class Utils {
     if (config.hasOwnProperty("lastConnectedServer") && typeof config.lastConnectedServer !== "string") {
         if (config.lastConnectedServer.hasOwnProperty("id")) {
           config.lastConnectedServer = config.lastConnectedServer.id;
-        } else {
-          config.lastConnectedServer = "";
         }
-    } else {
-      config.lastConnectedServer = "";
     }
 
     return config;
