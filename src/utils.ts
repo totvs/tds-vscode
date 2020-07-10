@@ -122,8 +122,16 @@ export default class Utils {
 
     //compatibilização com arquivos gravados com versão da eextensão
     //anterior a 26/06/20
-    if (typeof config.lastConnectedServer !== "string") {
-      config.lastConnectedServer = config.lastConnectedServer.id;
+    if (config.hasOwnProperty("lastConnectedServer")) {
+      if (typeof config.lastConnectedServer !== "string") {
+        if (config.lastConnectedServer.hasOwnProperty("id")) {
+          config.lastConnectedServer = config.lastConnectedServer.id;
+        } else {
+          config.lastConnectedServer = "";
+        }
+      }
+    } else {
+      config.lastConnectedServer = "";
     }
 
     return config;

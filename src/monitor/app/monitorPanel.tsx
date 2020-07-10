@@ -243,6 +243,13 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
     if (confirm) {
       setSpeed(speed);
+
+      let command: IMonitorPanelAction = {
+        action: MonitorPanelAction.SetSpeedUpdate,
+        content: { speed: speed },
+      };
+
+      props.vscode.postMessage(command);
     }
   };
 

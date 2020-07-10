@@ -21,6 +21,7 @@ import {
 } from "../protocolMessages";
 import { languageClient } from "../extension";
 import serverProvider, { ServerItem } from "../serverItemProvider";
+import { useMemento } from "./helper/_memento";
 
 const DEFAULT_SPEED = 15;
 
@@ -159,15 +160,14 @@ export class MonitorLoader {
   public set speed(v: number) {
     if (this._speed !== v) {
       this._speed = v;
+
       if (this._speed === 0) {
         vscode.window.showWarningMessage(
           "A atualização ocorrerá por solicitação."
         );
-      } else {
-        vscode.window.showWarningMessage(
-          `A atualização ocorrerá a cada ${this._speed} segundos.`
-        );
       }
+
+      this.updateSpeedStatus();
     }
   }
 
@@ -380,6 +380,7 @@ export class MonitorLoader {
     switch (command.action) {
       case MonitorPanelAction.DoUpdateState: {
         const key = command.content.key;
+
         if (command.content.state[key] === null) {
           this._context.workspaceState.update(key, {});
         } else {
@@ -446,6 +447,7 @@ export class MonitorLoader {
           true
         );
       }
+      this.updateSpeedStatus();
     };
 
     if (this._timeoutSched) {
@@ -497,6 +499,22 @@ export class MonitorLoader {
     }
   }
 
+  private updateSpeedStatus() {
+    var nextUpdate = new Date(Date.now());
+
+    const msg1 = `Monitor: Atualizado as ${nextUpdate.getHours()}:${nextUpdate.getMinutes()}:${nextUpdate.getSeconds()}.`;
+    let msg2 = "";
+
+    if (this._speed === 0) {
+      msg2 = `A próxima ocorrerá sob solicitação.`;
+    } else {
+      nextUpdate.setSeconds(nextUpdate.getSeconds() + this._speed);
+      msg2 = `A próxima ocorrerá as ${nextUpdate.getHours()}:${nextUpdate.getMinutes()}:${nextUpdate.getSeconds()}`;
+    }
+
+    vscode.window.setStatusBarMessage(`${msg1} ${msg2}`);
+  }
+
   private getWebviewContent(): string {
     // Local path to main script run in the webview
     const reactAppPathOnDisk = vscode.Uri.file(
@@ -508,10 +526,17 @@ export class MonitorLoader {
       : [];
 
     const reactAppUri = this._panel?.webview.asWebviewUri(reactAppPathOnDisk);
-    const configJson = JSON.stringify({
+    const configJson: any = {
       serverList: servers,
-      memento: this._context.workspaceState.get("monitorTable", {})
-    });
+      memento: this._context.workspaceState.get("monitorTable", {}),
+    };
+
+    if (configJson["memento"].hasOwnProperty("customProps")) {
+      const customProps = configJson["memento"]["customProps"];
+      if (customProps.hasOwnProperty("speed")) {
+        this.speed = customProps["speed"];
+      }
+    }
 
     return `<!DOCTYPE html>
     <html lang="en">
@@ -528,7 +553,7 @@ export class MonitorLoader {
 
         <script>
           window.acquireVsCodeApi = acquireVsCodeApi;
-          window.initialData = ${configJson};
+          window.initialData = ${JSON.stringify(configJson)};
         </script>
     </head>
     <body>

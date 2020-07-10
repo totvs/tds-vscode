@@ -119,23 +119,14 @@ export function useMemento(
   defaultValues: any,
   initialValues: any = {}
 ): IMemento {
-  console.log("useMemento " + id);
-
   if (mementoList.hasOwnProperty(id) && mementoList[id] !== null) {
     return mementoList[id];
   }
 
-  console.log("useMemento.define " + id);
   mementoList[id] = { defaultValues: defaultValues, state: initialValues };
-console.log(mementoList[id]);
-
-  console.log("useMemento.return " + id);
 
   return {
     get: (property: any): any => {
-      console.log("memento.get " + id);
-      console.log(mementoList[id]);
-
       const state = mementoList[id]["state"];
       const defaultValues = mementoList[id]["defaultValues"];
 
