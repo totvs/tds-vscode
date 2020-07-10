@@ -402,7 +402,7 @@
 						"%tds.package.editor.notification.show.errors_warnings_and_infos%",
 						"%tds.package.editor.notification.show.all%"
 					],
-					"default": "errors and warnings",
+					"default": "none",
 					"description": "%tds.package.editor.notification.show%"
 				},
 				"totvsLanguageServer.editor.toggle.autocomplete": {
