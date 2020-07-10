@@ -123,7 +123,7 @@ export default class Utils {
       config.savedTokens = [];
     }
 
-    //compatibilização com arquivos gravados com versão da eextensão
+    //compatibilização com arquivos gravados com versão da extensão
     //anterior a 26/06/20
     if (config.hasOwnProperty("lastConnectedServer") && typeof config.lastConnectedServer !== "string") {
         if (config.lastConnectedServer.hasOwnProperty("id")) {
@@ -979,7 +979,7 @@ export default class Utils {
 
   static isAdvPlSource(fileName: string): boolean {
     const ext = path.extname(fileName);
-    return this.advpl.indexOf(ext) > -1;
+    return this.advpl.indexOf(ext.toLocaleLowerCase()) > -1;
   }
 
   static is4glSource(fileName: string): boolean {
