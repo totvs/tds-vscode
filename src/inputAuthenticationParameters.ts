@@ -1,12 +1,13 @@
 import Utils from "./utils";
 import { MultiStepInput } from "./multiStepInput";
-import { ServerItem, authenticate } from "./serversView";
+import {  authenticate } from "./serversView";
+import { ServerItem } from "./serverItemProvider";
 
 //import * as nls from 'vscode-nls';
 //let localize = nls.loadMessageBundle();
 
 /**
- * Coleta os dados necessarios para logar a um servidor advpl.
+ * Coleta os dados necessarios para logar a um servidor advpl/4gl.
  *
  * A multi-step input using window.createQuickPick() and window.createInputBox().
  *

@@ -2,8 +2,6 @@ textarea:focus, input:focus {
 	border-color: transparent !important;
 }
 
-
-
 .mainContainer {
 	width: 100%;
 	min-height: 100vh;
@@ -15,29 +13,8 @@ textarea:focus, input:focus {
 	box-sizing: border-box;
 }
 
-.formWrap_old {
-	width: 100%;
-	height: 100%;
-	box-sizing: border-box;
-	background-position-x: 0%;
-	background-position-y: 0%;
-	background-repeat: repeat;
-	background-attachment: scroll;
-	background-image: linear-gradient(170deg,#424242,#424242);
-	background-size: auto;
-	background-origin: padding-box;
-	background-clip: border-box;
-	border-radius: 20px;
-	overflow: hidden;
-	padding-top: 40px;
-	padding-right: 55px;
-	padding-bottom: 65px;
-	padding-left: 55px;
-	margin: 0px;
-}
-
 .formWrap {
-	width: 700px;
+	width: 768px;
 	background-color: #F3F3F3/*#FAFAFA*/;
 	box-sizing: border-box;
 	background-position-x: 0%;

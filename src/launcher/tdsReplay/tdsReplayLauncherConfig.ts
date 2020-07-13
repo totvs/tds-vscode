@@ -1,8 +1,9 @@
-import vscode = require('vscode');
-import path = require('path');
+import * as vscode from 'vscode';
+import * as path from 'path';
 import Utils from '../../utils';
 import * as fs from 'fs';
 import * as nls from 'vscode-nls';
+import { MESSAGETYPE } from '../../utils';
 
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
@@ -54,14 +55,24 @@ export default class LauncherConfiguration {
 				if(currentPanel !== undefined && currentPanel.visible) {
 					if(launcherInfoChangedManually) {
 						launcherInfoChangedManually = false;
-						currentPanel.webview.postMessage(Utils.getLaunchConfig());
+						try {
+							currentPanel.webview.postMessage(Utils.getLaunchConfig());
+						} catch(e) {
+							//Utils.logMessage(`"Não foi possivel ler o arquivo launch.json\nError: ${e}`, MESSAGETYPE.Error, true);
+						}
 					}
 				}
 			});
 
-			let launchersInfo = Utils.getLaunchConfig();
+			let launchersInfo = undefined;
+			try {
+				launchersInfo = Utils.getLaunchConfig();
+				currentPanel.webview.postMessage(launchersInfo);
+			} catch(e) {
+				Utils.logInvalidLaunchJsonFile(e);
+				launchersInfo = {};
+			}
 
-			currentPanel.webview.postMessage(launchersInfo);
 
 			currentPanel.webview.onDidReceiveMessage(message => {
 				switch (message.command) {

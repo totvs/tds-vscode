@@ -23,6 +23,44 @@ import { ICommand, CommandAction } from "../Command";
 import { DebugSessionCustomEvent } from "vscode";
 import { FormControlLabel } from "@material-ui/core";
 
+
+enum KeyCode {
+  BACKSPACE = 8,
+  COMMA = 188,
+  DELETE = 46,
+  DOWN = 40,
+  END = 35,
+  ENTER = 13,
+  ESCAPE = 27,
+  HOME = 36,
+  LEFT = 37,
+  PAGE_DOWN = 34,
+  PAGE_UP = 33,
+  PERIOD = 190,
+  RIGHT = 39,
+  SPACE = 32,
+  TAB = 9,
+  UP = 38,
+  F1 = 112,
+  F2 = 113,
+  F3 = 114,
+  F4 = 115,
+  F5 = 116,
+  F6 = 117,
+  F7 = 118,
+  F8 = 119,
+  F9 = 120,
+  F10 = 121,
+  F11 = 122,
+  F12 = 123,
+  INSERT = 45,
+  SHIFT = 16,
+  CONTROL = 17,
+  ALT = 18,
+  PAUSE_BREAK = 19,
+  CAPSLOCK = 20
+}
+
 const useStyles1 = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -36,20 +74,28 @@ const tableStyles = makeStyles(_theme => ({
   root: {
     width: "100%"
   },
-  container: {
-    maxHeight: 610
+  tableContainer: {
+    //Esse parametro faz com que o container ocupe todo espaço disponivel do webview
+    flex: 1
+    //maxHeight: 610
+    //flexDirection: "row",
+    //flexGrow: "inherit"
   },
-
+  table: {
+  },
   headCell: {
     //backgroundColor: this.props.muiTheme.palette.primary1Color,
     //color: "white"
-    //backgroundColor: "grey"
+    backgroundColor: "rgb(230,230,230)"
     //color: "white"
   },
   tableRow: {
     "&:hover": {
       backgroundColor: "gainsboro !important"
     }
+  },
+  pagination: {
+    //backgroundColor: "blue"
   },
   selectedTableRow: {
     backgroundColor: "grey !important"
@@ -71,26 +117,26 @@ interface Column {
 }
 
 const columns: Column[] = [
-	{
-		id: 'TimeStamp',
-		label: 'Time',
-		minWidth: 10,
-		align: 'left'
-	},
-	{
-		id: 'SourceName',
-		label: 'Source Name',
-		minWidth: 10,
-		align: 'left'
-		//format: (value: number) => value.toLocaleString(),
-	},
-	{
-		id: 'Line',
-		label: 'Line',
-		minWidth: 10,
-		align: 'left'
-		//format: (value: number) => value.toLocaleString(),
-	}
+  {
+    id: 'TimeStamp',
+    label: 'Time',
+    minWidth: 10,
+    align: 'left'
+  },
+  {
+    id: 'SourceName',
+    label: 'Source Name',
+    minWidth: 10,
+    align: 'left'
+    //format: (value: number) => value.toLocaleString(),
+  },
+  {
+    id: 'Line',
+    label: 'Line',
+    minWidth: 10,
+    align: 'left'
+    //format: (value: number) => value.toLocaleString(),
+  }
 ];
 
 interface TablePaginationActionsProps {
@@ -149,8 +195,8 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
         {theme.direction === "rtl" ? (
           <KeyboardArrowRight />
         ) : (
-          <KeyboardArrowLeft />
-        )}
+            <KeyboardArrowLeft />
+          )}
       </IconButton>
       <IconButton
         onClick={handleNextButtonClick}
@@ -160,8 +206,8 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
         {theme.direction === "rtl" ? (
           <KeyboardArrowLeft />
         ) : (
-          <KeyboardArrowRight />
-        )}
+            <KeyboardArrowRight />
+          )}
       </IconButton>
       <IconButton
         onClick={handleLastPageButtonClick}
@@ -179,21 +225,27 @@ interface ITimeLineTableInterface {
   vscode: any;
 }
 
+let tableElement: RefObject<HTMLTableElement> = null;
 export default function TimeLineTable(props: ITimeLineTableInterface) {
   const vscode = props.vscode;
   const debugEvent = vscode.getState().config;
 
-  const tableElement: RefObject<HTMLTableElement> = React.createRef();
+  //if(tableElement === null) {
+    tableElement = React.createRef();
+  //}
+  //console.log("***** IN");
+  //console.table(tableElement);
+  //console.log("***** OUT");
 
-  const classes = tableStyles();
+  const tableClasses = tableStyles();
   const [jsonBody, setJsonBody] = React.useState(debugEvent.body);
   const [dense, setDense] = React.useState(false);
   const [ignoreSourcesNotfound, setIgnoreSourcesNotfound] = React.useState(
     debugEvent.body.ignoreSourcesNotFound
   );
 
-  console.log("DEbugEvent:" + debugEvent.body.ignoreSourcesNotFound);
-  console.log("Do state:" + ignoreSourcesNotfound);
+  //console.log("DEbugEvent:" + debugEvent.body.ignoreSourcesNotFound);
+  //console.log("Do state:" + ignoreSourcesNotfound);
   //console.log("current TimeLine ID:" + jsonBody.currentSelectedTimeLineId);
   //console.log("itemsPerPage:" + jsonBody.itemsPerPage);
   //console.log("currentPage: " + jsonBody.currentPage);
@@ -201,7 +253,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   ///console.log("TimeLineCount: " + jsonBody.timeLines.length);
   //console.log("totaItems: " + jsonBody.totalItems);
 
-  const [selectedRow, setSelectedRow] = React.useState(
+  const [selectedRowId, setSelectedRowId] = React.useState(
     jsonBody.currentSelectedTimeLineId
   ); //Id da timeline inicial a ser selecionada. 500 para selcionar a primeira pois o replay sempre ira parar na primeira linha
 
@@ -251,10 +303,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     vscode.postMessage(command);
   };
 
-  const sendSelectTimeLineRequest = (
-    event: React.MouseEvent<HTMLTableRowElement, MouseEvent>,
-    id: string
-  ) => {
+  const sendSelectTimeLineRequest = (id: string) => {
     //console.log("------> postMessage Set TimeLine");
     let command: ICommand = {
       action: CommandAction.SetTimeLine,
@@ -264,17 +313,19 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     selectTimeLineInTable(id);
   };
 
-  const selectTimeLineInTable = (timeLineId: string) => {
+  const selectTimeLineInTable = (timeLineIdAsString: string) => {
     //Metodo que controla a selecao de timeline
     //console.log("------> rowSelected");
+    let timeLineId: number = Number.parseInt(timeLineIdAsString);
     setJsonBody(jsonBody => {
       if (event !== undefined) {
         event.preventDefault();
       }
-      jsonBody.currentSelectedTimeLineId = timeLineId;
+      jsonBody.currentSelectedTimeLineId = timeLineIdAsString;
       return jsonBody;
     });
-    setSelectedRow(timeLineId);
+    setSelectedRowId(timeLineIdAsString);
+    scrollToLineIfNeeded(timeLineId);
     //console.log("------> rowSelected (setPageInfo finished)");
   };
 
@@ -282,13 +333,13 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     listener = event => {
       const message = event.data; // The JSON data our extension sent
       switch (message.command) {
-        case "selectTimeLine":
+        case CommandAction.SelectTimeLine:
           //console.log("------> selectTimeLine");
           let timeLineId = message.data;
           //console.log("------> TimeLineID: " + timeLineId);
           selectTimeLineInTable(timeLineId);
           break;
-        case "addTimeLines":
+        case CommandAction.AddTimeLines:
           //console.log("------> addTimeLines");
           setJsonBody(body => {
             if (event !== undefined) {
@@ -312,6 +363,112 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     //console.log("------> ADICIONANDO LISTENER")
     window.addEventListener("message", listener);
   }
+
+  const scrollIntoViewIfNeeded = (target: HTMLElement) => {
+    function getScrollParent(node: HTMLElement): HTMLElement {
+      if (node === null) {
+        return null;
+      }
+
+      if (node.scrollHeight > node.clientHeight) {
+        return node;
+      }
+      else {
+        return getScrollParent(node.parentNode as HTMLElement);
+      }
+    }
+
+    let parent = getScrollParent(target.parentNode as HTMLElement);
+
+    if (!parent)
+      return;
+
+    let parentComputedStyle = window.getComputedStyle(parent, null),
+      parentBorderTopWidth = parseInt(parentComputedStyle.getPropertyValue('border-top-width')),
+      overTop = target.offsetTop - parent.offsetTop < parent.scrollTop,
+      overBottom = (target.offsetTop - parent.offsetTop + target.clientHeight - parentBorderTopWidth) > (parent.scrollTop + parent.clientHeight);
+
+    if (overTop) {
+      target.scrollIntoView(true);
+    }
+    else if (overBottom) {
+      target.scrollIntoView(false);
+    }
+
+  };
+
+  const scrollToLineIfNeeded = (id: number) => {
+    //console.log("*************** ENTROU no scrollIfNeeded: "+id);
+   // console.table(tableElement); //<<< - Retorna um objeto com F10, porem o current é null...
+    //console.log(tableElement.current);
+    if(tableElement.current !== null) {
+      //console.table(tableElement.current);
+      const rows = Array.from(tableElement.current.querySelectorAll('tbody tr')),
+      newRow = rows.find((row) => row.id === `${id}`) as HTMLElement;
+      //console.log(newRow);
+      //tableElement.current.scrollTo()
+      scrollIntoViewIfNeeded(newRow);
+    }
+   // console.log("*************** SAIU no scrollIfNeeded");
+  }
+
+  const onKeyDown = function(event: React.KeyboardEvent<HTMLTableSectionElement>, timeline: any[]) {
+    const navigateToRow = (position: number | null, offset?: number) => {
+      offset = (offset || 0);
+
+      if (position === null) {
+        const rowId: number = Number.parseInt(selectedRowId);
+        const currentItem = timeline.find(item => {
+          return item.id === rowId;
+        });
+        position = timeline.indexOf(currentItem);
+      }
+
+      let newPosition = position + offset;
+      newPosition = Math.max(newPosition, 0);
+      newPosition = Math.min(newPosition, (timeline.length - 1));
+
+      const newItem = timeline[newPosition];
+
+      //TODO: se for para navega alem dos itens na paginacao atual, recuperar
+      // os novos dados, carregar e depois setar a primeira/ultima linha
+      if (newItem) {
+        sendSelectTimeLineRequest(""+newItem.id);
+        //scrollToLineIfNeeded(newItem.id);
+      }
+    }
+
+    //TODO: calcular corretamente a quantidade de linhas em PageUp, PageDown
+    switch (event.keyCode) {
+      case KeyCode.UP:
+        navigateToRow(null, -1);
+
+        break;
+      case KeyCode.DOWN:
+        navigateToRow(null, +1);
+
+        break;
+      case KeyCode.PAGE_UP:
+        navigateToRow(null, -10);
+
+        break;
+      case KeyCode.PAGE_DOWN:
+        navigateToRow(null, +10);
+
+        break;
+      case KeyCode.HOME:
+        navigateToRow(0);
+
+        break;
+      case KeyCode.END:
+        navigateToRow(timeline.length - 1);
+
+        break;
+      default:
+        return;
+    }
+
+  };
 
   const createTimeLineItem = (_debugEvent: DebugSessionCustomEvent) => {
     const classes = tableStyles();
@@ -345,19 +502,16 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           key={timeLine.id}
           className={bg}
           onClick={
-            timeLine.srcFoundInWS
-              ? event => {
-                  sendSelectTimeLineRequest(event, event.currentTarget.id);
-                }
-              : event => {
-                  /*does nothing*/
-                }
+            (event) => {
+             if (timeLine.srcFoundInWS) {
+               sendSelectTimeLineRequest(event.currentTarget.id);
+             }
+                //sendSelectTimeLineRequest(timeLine.id);
+            }
           }
           selected={isSelected}
         >
-          <TableCell component="th" scope="row">
-            {timeLine.timeStamp}
-          </TableCell>
+          <TableCell component="th" scope="row">{timeLine.timeStamp}</TableCell>
           <TableCell align="left">{timeLine.srcName}</TableCell>
           <TableCell align="left">{timeLine.line}</TableCell>
         </TableRow>
@@ -372,37 +526,40 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   };
 
   //console.log("TimeLineTable chamado");
-  //console.log("TimeLine Selecionada: "+selectedRow)
+  //console.log("TimeLine Selecionada: "+selectedRowId)
 
   //const theme = useTheme();
 
   return (
-    <Paper className={classes.root}>
-      <TableContainer className={classes.container}>
-        <Table
-          stickyHeader
-          aria-label="sticky table"
-          ref={tableElement}
-          size={dense ? "medium" : "small"}
-        >
-          <TableHead>
-            <TableRow>
-              {columns.map(column => (
-                <TableCell
-                  className={classes.headCell}
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>{createTimeLineItem(debugEvent)}</TableBody>
-        </Table>
-      </TableContainer>
+    //<Paper className={tableClasses.root}>
+    <TableContainer className={tableClasses.tableContainer} component={Paper}>
+      <Table
+        className={tableClasses.table}
+        stickyHeader
+        aria-label="sticky table"
+        ref={tableElement}
+        size={dense ? "medium" : "small"}
+      >
+        <TableHead>
+          <TableRow>
+            {columns.map(column => (
+              <TableCell
+                className={tableClasses.headCell}
+                key={column.id}
+                align={column.align}
+                style={{ minWidth: column.minWidth }}
+              >
+                {column.label}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody onKeyDown={(event) => onKeyDown(event, jsonBody.timeLines)}>
+          {createTimeLineItem(debugEvent)}
+        </TableBody>
+      </Table>
       <TablePagination
+        className={tableClasses.pagination}
         rowsPerPageOptions={[100, 500, 1000, 1500, 2000, 3000, 5000]}
         component="div"
         count={parseInt(jsonBody.totalItems)}
@@ -429,6 +586,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         }
         label="Ignore Source Not Found"
       />
-    </Paper>
+    </TableContainer>
+    //</Paper>
   );
 }

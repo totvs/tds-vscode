@@ -1,0 +1,36 @@
+{
+	"fonts": [
+		{
+			"id": "totvs-icon",
+			"src": [
+				{
+					"path": "./totvs-icons.woff",
+					"format": "woff"
+				}
+			],
+			"weight": "normal",
+			"style": "normal",
+			"size": "100%"
+		}
+	],
+	"iconDefinitions": {
+		"_prw": {
+			"fontCharacter": "\\E00B",
+			"fontColor": "#FF0000"
+		},
+		"_4gl": {
+			"fontCharacter": "\\E007",
+			"fontColor": "#FF0000"
+		}
+	},
+	"light": {
+		"fileExtensions": {
+			"prw": "_prw",
+			"4gl": "_4gl"
+		}
+	},
+	"fileExtensions": {
+		"prw": "_prw",
+		"4gl": "_4gl"
+	}
+}

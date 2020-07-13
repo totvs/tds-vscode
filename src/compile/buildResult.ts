@@ -3,6 +3,8 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as compile from 'template-literal';
 import * as nls from 'vscode-nls';
+import { CompileResult } from './compileResult';
+
 let localize = nls.loadMessageBundle();
 
 
@@ -13,7 +15,7 @@ const localizeHTML = {
 	"tds.webview.compile.col03": localize("tds.webview.compile.col03", "Message"),
 	"tds.webview.compile.col04": localize("tds.webview.compile.col04", "Detail"),
 	"tds.webview.compile.col05": localize("tds.webview.compile.col05", "Path")
-}
+};
 
 export function showCompileResult(response: CompileResult, context: any) {
 	let extensionPath = "";
@@ -55,7 +57,7 @@ export function showCompileResult(response: CompileResult, context: any) {
 					code: response.returnCode,
 					data: response.compileInfos
 				});
-				break
+				break;
 			case 'close':
 				currentPanel.dispose();
 				break;
@@ -68,7 +70,7 @@ export function showCompileResult(response: CompileResult, context: any) {
 
 function getWebViewContent(extensionPath, localizeHTML) {
 
-	const htmlOnDiskPath = vscode.Uri.file(path.join(extensionPath, 'src', 'compile', 'compileResult.html'));
+	const htmlOnDiskPath = vscode.Uri.file(path.join(extensionPath, 'src', 'compile', 'compileResultPage.html'));
 	const cssOniskPath = vscode.Uri.file(path.join(extensionPath, 'resources', 'css', 'table_materialize.css'));
 	const tableScriptPath = vscode.Uri.file(path.join(extensionPath, 'resources', 'script', 'table_materialize.js'));
 

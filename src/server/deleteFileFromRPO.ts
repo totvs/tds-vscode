@@ -1,7 +1,7 @@
-import vscode = require('vscode');
+import * as vscode from 'vscode';
 import { languageClient } from '../extension';
-import path = require('path');
-import fs = require('fs');
+import * as path from 'path';
+import * as fs from 'fs';
 import { extensions, window, Uri, ViewColumn } from 'vscode';
 import * as nls from 'vscode-nls';
 import Utils from '../utils';

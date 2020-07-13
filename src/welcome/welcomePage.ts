@@ -1,5 +1,5 @@
-import vscode = require('vscode');
-import path = require('path');
+import * as vscode from 'vscode';
+import * as path from 'path';
 import * as fs from 'fs';
 import Utils from '../utils';
 
@@ -85,17 +85,20 @@ export default class welcomePage {
 }
 
 function saveSmartClientBin(smartClient: string) {
-	const launchConfig = Utils.getLaunchConfig();
-
-	if (launchConfig) {
-		if (launchConfig.configurations) {
-			const configs = launchConfig.configurations;
-			configs.forEach(element => {
-				element.smartclientBin = smartClient;
-			});
-
-			Utils.persistLaunchsInfo(launchConfig);
+	let launchConfig = undefined;
+	try {
+		launchConfig = Utils.getLaunchConfig();
+		if (launchConfig) {
+			if (launchConfig.configurations) {
+				const configs = launchConfig.configurations;
+				configs.forEach(element => {
+					element.smartclientBin = smartClient;
+				});
+				Utils.persistLaunchsInfo(launchConfig);
+			}
 		}
+	} catch(e) {
+		Utils
 	}
 }
 

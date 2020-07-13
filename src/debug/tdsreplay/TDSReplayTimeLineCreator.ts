@@ -21,6 +21,17 @@ export class CreateTDSReplayTimeLineWebView {
 
     this.initializePanel();
 
+    window.onDidChangeActiveTextEditor(editor => {
+      if(editor !== undefined) {
+        //console.log(editor);
+        //if(editor.viewColumn !== 1) {
+          //editor.viewColumn = 1;
+        //}
+      }
+    });
+
+    //window.onDidChangeTextEditorViewColumn
+
     debug.onDidTerminateDebugSession(event => {
       this._panel.dispose();
     });
@@ -110,10 +121,12 @@ private initializePanel(): void {
     }
   }
 
+  //-------------------- Envio de mensagens PARA a pagina
+
   public selectTimeLine(timeLineId: string) {
     //Envio de mensagem para a página
     this._panel.webview.postMessage({
-      command: "selectTimeLine",
+      command: CommandAction.SelectTimeLine,
       data: timeLineId
     });
   }
@@ -124,7 +137,7 @@ private initializePanel(): void {
     this._debugEvent = debugEvent;
     debugEvent.body["ignoreSourcesNotFound"] = this._isIgnoreSourcesNotFound;
     this._panel.webview.postMessage({
-      command: "addTimeLines",
+      command: CommandAction.AddTimeLines,
       data: debugEvent
     });
   }
@@ -195,22 +208,28 @@ function handleSetIgnoreSourcesNotFound(command: ICommand) {
   if(debug.activeDebugSession) {
 
     let debugSession = debug.activeDebugSession;
-    let launchConfig = Utils.getLaunchConfig();
+    let launchConfig = undefined;
 
-    for (let key = 0; key < launchConfig.configurations.length; key++) {
-      let launchElement = launchConfig.configurations[key];
-      if(debugSession !== undefined && launchElement.name === debugSession.name) {
-        launchElement.ignoreSourcesNotFound = command.content.isIgnoreSourceNotFound;
-        break;
+    try {
+			launchConfig = Utils.getLaunchConfig();
+      for (let key = 0; key < launchConfig.configurations.length; key++) {
+        let launchElement = launchConfig.configurations[key];
+        if(debugSession !== undefined && launchElement.name === debugSession.name) {
+          launchElement.ignoreSourcesNotFound = command.content.isIgnoreSourceNotFound;
+          break;
+        }
       }
-    }
 
-    Utils.saveLaunchConfig(launchConfig);
+      Utils.saveLaunchConfig(launchConfig);
 
 
-    let requestJson = {
-      "isIgnoreSourceNotFound": command.content.isIgnoreSourceNotFound
-    };
-    debug.activeDebugSession.customRequest("TDA/setIgnoreSourcesNotFound", requestJson);
+      let requestJson = {
+        "isIgnoreSourceNotFound": command.content.isIgnoreSourceNotFound
+      };
+      debug.activeDebugSession.customRequest("TDA/setIgnoreSourcesNotFound", requestJson);
+
+		} catch(e) {
+      Utils.logInvalidLaunchJsonFile(e);
+		}
   }
 }
