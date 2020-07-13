@@ -40,8 +40,9 @@ import {
   propColumnHidden,
   propColumns,
   propSpeed,
-  propColumnList,
   propSpeedText,
+  propOrderBy,
+  propOrderDirection
 } from "./monitorPanelMemento";
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
@@ -108,6 +109,41 @@ function Title(props: ITitleProps) {
 
 let memento: IMemento = undefined;
 
+function buildColumns(empty: boolean) {
+  let columns =
+    empty
+      ? []
+      : memento.get(propColumns({ ...cellDefaultStyle })).columns;
+
+  if (columns.length) {
+    const orderBy = memento.get(propOrderBy()) || -1;
+
+    for (let index = 0; index < columns.length; index++) {
+      let element = columns[index];
+      const value = memento.get(propColumnHidden(element.field));
+
+      if (value !== undefined) {
+        element = {
+          ...element,
+          hidden: value
+        };
+      }
+
+      if (orderBy === index) {
+        element = {
+          ...element,
+          sorting: true,
+          defaultSort: memento.get(propOrderDirection()),
+        };
+      }
+
+      columns[index] = element;
+    }
+  }
+
+  return columns;
+}
+
 export default function MonitorPanel(props: IMonitorPanel) {
   if (memento === undefined) {
     memento = useMemento("monitorTable", DEFAULT_TABLE, props.memento);
@@ -123,6 +159,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const [rows, setRows] = React.useState([]);
   const [subtitle, setSubtitle] = React.useState("(inicializando)");
   const [locked, setLocked] = React.useState(true);
+  const [columns, setColumns] = React.useState([]);
 
   React.useEffect(() => {
     memento.set(propGrouping(grouping));
@@ -165,8 +202,10 @@ export default function MonitorPanel(props: IMonitorPanel) {
         }
         case MonitorPanelAction.UpdateUsers: {
           const result = message.data.users as IMonitorUser[];
+
           setRows(result);
           setSubtitle(message.data.serverName);
+          setColumns(buildColumns(result.length === 0));
           break;
         }
         default:
@@ -361,27 +400,10 @@ export default function MonitorPanel(props: IMonitorPanel) {
   };
 
   const doOrderChange = (orderBy: number, direction: string) => {
-    console.log(orderBy);
+    memento.set(propOrderBy(orderBy));
+    memento.set(propOrderDirection(direction));
 
-    //_memento.set(propColumnHidden(column.field as string, index));
-  };
-
-  const doFilterChange = (filters: Filter<any>[]) => {
-    console.log(filters);
-
-    //_memento.set(propColumnHidden(column.field as string, index));
-  };
-
-  const doQueryChange = (query: Query<any>) => {
-    console.log(query);
-
-    //_memento.set(propColumnHidden(column.field as string, index));
-  };
-
-  const doSearchChange = (textSearch: string) => {
-    console.log(textSearch);
-
-    //_memento.set(propColumnHidden(column.field as string, index));
+    memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
   };
 
   const doColumnDragged = (sourceIndex: number, destinationIndex: number) => {
@@ -486,13 +508,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
     onClick: () => handleResetButtonClick(),
   });
 
-  let columns = (rows.length == 0)?[]:memento.get(propColumns({ ...cellDefaultStyle })).columns;
-  for (let index = 0; index < columns.length; index++) {
-    const element = columns[index];
-    const value = memento.get(propColumnHidden(element.field));
-    columns[index] = { ...element, hidden: value };
-  }
-
   return (
     <ErrorBoundary>
       <MonitorTheme>
@@ -550,6 +565,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
               padding: "dense",
               actionsColumnIndex: 0,
               columnsButton: true,
+              sorting: true,
             }}
             actions={actions}
             onSelectionChange={(rows) => setSelected(rows)}
@@ -562,9 +578,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
             onOrderChange={(orderBy, direction) =>
               doOrderChange(orderBy, direction)
             }
-            onQueryChange={(query) => doQueryChange(query)}
-            onSearchChange={(searchText) => doSearchChange(searchText)}
-            onChangePage={(page) => console.log(page)}
             onColumnDragged={(sourceIndex, destinationIndex) =>
               doColumnDragged(sourceIndex, destinationIndex)
             }

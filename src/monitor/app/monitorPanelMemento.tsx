@@ -89,6 +89,22 @@ export const propColumnHidden = (name: string, value: boolean = undefined): any 
   return propColumn(name, 'hidden', value);
 };
 
+export const propOrderDirection = (value: string = undefined): any => {
+  return {
+    customProps: {
+      direction: value ,
+    },
+  }
+};
+
+export const propOrderBy = (value: number = undefined): any => {
+  return {
+    customProps: {
+      orderBy: value,
+    },
+  }
+};
+
 export const propColumnList = (): any => {
   return {
     columns: [],
@@ -102,17 +118,17 @@ export const propColumns = (extraProps?: any): any => {
       fieldDef("environment", "Ambiente", extraProps),
       fieldDef("username", "Usuário", extraProps),
       fieldDef("computerName", "Estação", extraProps),
-      fieldDef("threadId", "Thread", extraProps),
+      fieldDef("threadId", "Thread", { type: "numeric", ...extraProps }),
       fieldDef("mainName", "Programa", extraProps),
       fieldDef("loginTime", "Conexão", extraProps),
       fieldDef("elapsedTime", "Tempo Decorrido", extraProps),
       fieldDef("inactiveTime", "Tempo Inatividade", extraProps),
-      fieldDef("totalInstrCount", "Total Instruções", extraProps),
-      fieldDef("instrCountPerSec", "Instruções/seg", extraProps),
+      fieldDef("totalInstrCount", "Total Instruções", { type: "numeric", ...extraProps }),
+      fieldDef("instrCountPerSec", "Instruções/seg", { type: "numeric", ...extraProps }),
       fieldDef("remark", "Comentário", extraProps),
-      fieldDef("memUsed", "Memória em Uso", extraProps),
-      fieldDef("sid", "SID", extraProps),
-      fieldDef("ctreeTaskId", "CTree ID", extraProps),
+      fieldDef("memUsed", "Memória em Uso", { type: "numeric", ...extraProps }),
+      fieldDef("sid", "SID", { type: "numeric", ...extraProps }),
+      fieldDef("ctreeTaskId", "CTree ID", { type: "numeric", ...extraProps }),
       fieldDef("clientType", "Tipo Conexão", extraProps),
     ],
   };
