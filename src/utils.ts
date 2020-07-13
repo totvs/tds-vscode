@@ -980,7 +980,7 @@ export default class Utils {
 
   static is4glSource(fileName: string): boolean {
     const ext = path.extname(fileName);
-    return this.logix.indexOf(ext) > -1;
+    return this.logix.indexOf(ext.toLocaleLowerCase()) > -1;
   }
 
   static isResource(fileName: string): boolean {
