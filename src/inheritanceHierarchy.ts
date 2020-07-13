@@ -3,16 +3,16 @@ import { parseUri } from './extension';
 import { LanguageClient } from 'vscode-languageclient/lib/main';
 
 export class InheritanceHierarchyNode {
-  id: any
-  kind: number
-  name: string
-  location: Location
-  numChildren: number
-  children: InheritanceHierarchyNode[]
+  id: any;
+  kind: number;
+  name: string;
+  location: Location;
+  numChildren: number;
+  children: InheritanceHierarchyNode[];
 
   // If true and children need to be expanded derived will be used, otherwise
   // base will be used.
-  _wantsDerived: boolean
+  _wantsDerived: boolean;
   static setWantsDerived(node: InheritanceHierarchyNode, value: boolean) {
     node._wantsDerived = value;
     node.children.map(c => InheritanceHierarchyNode.setWantsDerived(c, value));
@@ -29,14 +29,16 @@ export class InheritanceHierarchyProvider implements
   constructor(readonly languageClient: LanguageClient) { }
 
   getTreeItem(element: InheritanceHierarchyNode): TreeItem {
-    const kBaseName = '[[Base]]'
+    const kBaseName = '[[Base]]';
 
-    let collapseState = TreeItemCollapsibleState.None
+    let collapseState = TreeItemCollapsibleState.None;
     if (element.numChildren > 0) {
-      if (element.children.length > 0 && element.name != kBaseName)
+      if (element.children.length > 0 && element.name != kBaseName) {
         collapseState = TreeItemCollapsibleState.Expanded;
-      else
+      }
+      else {
         collapseState = TreeItemCollapsibleState.Collapsed;
+      }
     }
 
     let label = element.name;
@@ -60,12 +62,15 @@ export class InheritanceHierarchyProvider implements
 
   getChildren(element?: InheritanceHierarchyNode):
     InheritanceHierarchyNode[] | Thenable<InheritanceHierarchyNode[]> {
-    if (!this.root)
+    if (!this.root) {
       return [];
-    if (!element)
+    }
+    if (!element) {
       return [this.root];
-    if (element.numChildren == element.children.length)
+    }
+    if (element.numChildren == element.children.length) {
       return element.children;
+    }
 
     return this.languageClient
       .sendRequest('$cquery/inheritanceHierarchy', {

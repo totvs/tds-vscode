@@ -1,11 +1,12 @@
-import vscode = require('vscode');
-import path = require('path');
-import fs = require('fs');
-import os = require('os');
-import JSZip = require('jszip');
+import * as vscode from 'vscode';
+import * as path from 'path';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as JSZip from 'jszip';
 import Utils from '../utils';
 import { languageClient } from '../extension';
 import * as nls from 'vscode-nls';
+import { ResponseError } from 'vscode-languageclient';
 
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
@@ -96,8 +97,8 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 									if (message.applyOld) {
 										vscode.window.showInformationMessage('Old files applied.');
 									}
-								}, (err) => {
-									vscode.window.showErrorMessage(err);
+								}, (err: ResponseError<object>) => {
+									vscode.window.showErrorMessage(err.message);
 								});
 							}
 							if (currentPanel) {
@@ -134,6 +135,14 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 
 						case 'showDuplicateWarning':
 							vscode.window.showWarningMessage("Already selected. File: " + message.filename);
+							return;
+
+						case 'patchValidate':
+							vscode.window.showInformationMessage("PatchValidate");
+							const validateArgs = {
+								fsPath: message.file
+							};
+							vscode.commands.executeCommand('totvs-developer-studio.patchValidate.fromFile', validateArgs);
 							return;
 
 						case 'patchInfo':
@@ -181,8 +190,8 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 								// }else {
 								// 	vscode.window.showErrorMessage(message);
 								// }
-							}, (err) => {
-								vscode.window.showErrorMessage(err);
+							}, (err: ResponseError<object>) => {
+								vscode.window.showErrorMessage(err.message);
 							});
 
 						}

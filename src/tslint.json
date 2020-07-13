@@ -8,6 +8,6 @@
 		"triple-equals": true,
 		"no-var-keyword": true,
 		"no-bitwise": true,
-		"indent": [true, "tabs"]
+		"indent": [false, "tabs"]
 	}
 }

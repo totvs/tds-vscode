@@ -27,12 +27,12 @@
 							<p>${d.localize["tds.webview.ws.path"]}</p><!--File directory:-->
 							<div class="wrap-input">
 								<textarea class="inputText" id="filePath" required placeholder="Ex: C:/Totvs/Fontes..."></textarea>
-								<input class="inputText" type="file" id="btn-FilePath" name="btn-FilePath" onchange='chfillData(event);' webkitdirectory directory/>
+								<input class="inputText" type="file" id="btn-FilePath" name="btn-FilePath" onchange='checkDir(event);' webkitdirectory directory/>
 							</div>
 
-							<p>${d.localize["tds.webview.ws.name"]}</p><!--File Name-->
+							<p>${d.localize["tds.webview.ws.name"]}</p><!--Output File Name-->
 							<div class="wrap-input">
-								<input class="inputText" type="text" id="btn-FileName" name="btn-FileName" required placeholder="Ex: webService.prw">
+								<input class="inputText" type="text" id="btn-OutputFileName" name="btn-OutputFileName" required placeholder="Ex: webService.prw">
 							</div>
 
 							<div class="wrap-submit">
@@ -49,6 +49,17 @@
 <script>
 	const vscode = acquireVsCodeApi();
 
+	function checkDir(event) {
+		var input = event.target;
+		if (input.files.length > 0) {
+			var selectedDir = input.files[0].path;
+			vscode.postMessage({
+				command: 'checkDir',
+				selectedDir: selectedDir
+			});
+		}
+	}
+
 	function chfillData(event){
 	  var input = event.target;
 	  var path = document.getElementById('filePath');
@@ -59,18 +70,29 @@
 	function save(close) {
 		const url = document.getElementById('btn-FileURL').value.trim();
 		const path = document.getElementById('filePath').value.trim();
-		const fileName = document.getElementById('btn-FileName').value.trim();
+		const outputFileName = document.getElementById('btn-OutputFileName').value.trim();
 
-		if(url && path && fileName){
+		if(url && path && outputFileName){
 			vscode.postMessage({
 				command: 'wsClose',
 				'url': url,
 				'path': path,
-				'fileName': fileName,
+				'outputFileName': outputFileName,
 				'close': close
 			});
 		}
 	}
+
+	window.addEventListener('message', event => {
+		const message = event.data; // The JSON data our extension sent
+
+		switch (message.command) {
+			case 'checkedDir':
+				var checkedDir = message.checkedDir;
+				filePath.value = checkedDir;
+				break;
+		}
+	});
 </script>
 
 </html>

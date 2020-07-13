@@ -14,7 +14,7 @@ export function jumpToUriAtPosition(
         e.revealRange(
             new Range(position, position), TextEditorRevealType.InCenter);
         e.selection = new Selection(position, position);
-      })
+      });
     }
-  })
+  });
 }

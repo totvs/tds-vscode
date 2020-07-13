@@ -105,6 +105,23 @@
 					}
 				},
 				{
+					text: 'Patch Validate',
+					className: "btn-submit",
+					exportOptions: {
+						modifier: {
+							selected: null
+						}
+					},
+					action: function (e, dt, node, config) {
+						var data = tableAPI.row('.selected').data();
+
+						vscode.postMessage({
+							command: 'patchValidate',
+							file: data[1]
+						});
+					}
+				},
+				{
 					text: 'Patch Info',
 					className: "btn-submit",
 					exportOptions: {

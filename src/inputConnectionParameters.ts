@@ -1,29 +1,30 @@
+//import * as vscode from 'vscode';
 import { ExtensionContext, QuickInputButton, Uri, QuickPickItem, workspace } from "vscode";
 import Utils from "./utils";
 import * as path from 'path';
 import { MultiStepInput } from "./multiStepInput";
-import { authenticate, reconnectServer } from "./serversView";
+import { connectServer, reconnectServer } from "./serversView";
+import { ConnTypeIds } from "./protocolMessages"
 
 import * as nls from 'vscode-nls';
+import { ServerItem, EnvSection } from "./serverItemProvider";
 let localize = nls.loadMessageBundle();
 
 /**
- * Coleta os dados necessarios para conectar a um servidor advpl.
+ * Coleta os dados necessarios para conectar a um servidor advpl/4gl.
  *
  * A multi-step input using window.createQuickPick() and window.createInputBox().
  *
  *
  * This first part uses the helper class `MultiStepInput` that wraps the API for the multi-step case.
  */
-export async function inputConnectionParameters(context: ExtensionContext, serverParam: any) {
+export async function inputConnectionParameters(context: ExtensionContext, serverParam: any, connType: ConnTypeIds, reconnect: boolean) {
 
 	//const VALIDADE_TIME_OUT = 1000;
 	const title = 'Conexão';
 
 	class NewEnvironmentButton implements QuickInputButton {
-		constructor(public iconPath: { light: Uri; dark: Uri; }, public tooltip: string) {
-
-		}
+		constructor(public iconPath: { light: Uri; dark: Uri; }, public tooltip: string) { }
 	}
 
 	const addEnvironmentButton = new NewEnvironmentButton({
@@ -31,11 +32,9 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 		light: Uri.file(path.join(__filename, '..', '..', 'resources', 'light', 'add.png')),
 	}, 'Novo ambiente');
 
-	let TOTAL_STEPS = 4;
-	let SERVER_STEP = 1;
-	let ENVIRONMENT_STEP = 2;
-	let USERNAME_STEP = 3;
-	let PASSWORD_STEP = 4;
+	let CONNECT_TOTAL_STEPS = 2;
+	let CONNECT_SERVER_STEP = 1;
+	let CONNECT_ENVIRONMENT_STEP = 2;
 
 	const serversConfig = Utils.getServersConfig();
 
@@ -48,34 +47,43 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 		totalSteps: number;
 		server: QuickPickItem | string;
 		environment: QuickPickItem | string;
-		username: string;
-		password: string;
-		reconnectionInfo: object;
+		needAuthentication: true;
+		reconnectionToken: string;
 	}
 
-	async function collectInputs() {
+	async function collectConnectInputs() {
 		const state = {} as Partial<State>;
 
-		if (serverParam) {
+		if (serverParam instanceof ServerItem) {
 			state.server = serverParam.id;
-			TOTAL_STEPS -= 1;
-			SERVER_STEP -= 1;
-			ENVIRONMENT_STEP -= 1;
-			USERNAME_STEP -= 1;
-			PASSWORD_STEP -= 1;
+			CONNECT_TOTAL_STEPS -= 1;
+			CONNECT_SERVER_STEP -= 1;
+			CONNECT_ENVIRONMENT_STEP -= 1;
 
 			await MultiStepInput.run(input => pickEnvironment(input, state, serversConfig));
+		} else if (serverParam instanceof EnvSection) {
+			state.server = serverParam.serverItemParent.id;
+			state.environment = serverParam.label;
 		} else {
 			await MultiStepInput.run(input => pickServer(input, state, serversConfig));
 		}
+
+		// reconnection token requires server and environment informations
+		const configADVPL = workspace.getConfiguration('totvsLanguageServer');
+		if (reconnect) {//@acandido
+			let serverId = (typeof state.server === "string") ? state.server : (state.server as QuickPickItem).detail;
+			let environmentName = (typeof state.environment === "string") ? state.environment : (state.environment as QuickPickItem).label;
+			state.reconnectionToken = Utils.getSavedTokens(serverId, environmentName);
+		}
+
 		return state as State;
 	}
 
 	async function pickServer(input: MultiStepInput, state: Partial<State>, serversConfig: any) {
 		const pick = await input.showQuickPick({
 			title: title,
-			step: SERVER_STEP,
-			totalSteps: TOTAL_STEPS,
+			step: CONNECT_SERVER_STEP,
+			totalSteps: CONNECT_TOTAL_STEPS,
 			placeholder: 'Selecione servidor',
 			items: servers,
 			activeItem: typeof state.server !== 'string' ? state.server : undefined,
@@ -94,9 +102,9 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 		if (environments.length > 0) {
 			const pick = await input.showQuickPick({
 				title: title,
-				step: ENVIRONMENT_STEP,
-				totalSteps: TOTAL_STEPS,
-				placeholder: localize('tds.vscode.select_environment','Select environment'),
+				step: CONNECT_ENVIRONMENT_STEP,
+				totalSteps: CONNECT_TOTAL_STEPS,
+				placeholder: localize('tds.vscode.select_environment', 'Select environment'),
 				items: environments,
 				activeItem: typeof state.environment !== 'string' ? state.environment : undefined,
 				buttons: [addEnvironmentButton],
@@ -107,83 +115,24 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 				return (input: MultiStepInput) => inputEnvironment(input, state, serversConfig);
 			}
 			state.environment = pick;
-
-			return (input: MultiStepInput) => inputUsername(input, state, serversConfig);
+			return null;
 		} else {
 			return (input: MultiStepInput) => inputEnvironment(input, state, serversConfig);
 		}
 	}
 
 	async function inputEnvironment(input: MultiStepInput, state: Partial<State>, serversConfig: any) {
-		state.environment = await input.showInputBox({
-			title: title,
-			step: ENVIRONMENT_STEP,
-			totalSteps: TOTAL_STEPS,
-			value: typeof state.environment === 'string' ? state.environment : '',
-			prompt: 'Informe o nome do ambiente',
-			shouldResume: shouldResume,
-			validate: validateRequiredValue,
-			password: false
-		});
-
-		return (input: MultiStepInput) => inputUsername(input, state, serversConfig);
-	}
-
-	async function inputUsername(input: MultiStepInput, state: Partial<State>, serversConfig: any) {
-		const configADVPL = workspace.getConfiguration('totvsLanguageServer');
-		let useReconnectionToken = configADVPL.get('useReconnectionToken');
-		if (useReconnectionToken) {
-			let serverId = (typeof state.server === "string") ? state.server : (state.server as QuickPickItem).detail;
-			let environmentName = (typeof state.environment === "string") ? state.environment : (state.environment as QuickPickItem).label;
-			let key = serverId + ":" + environmentName;
-			let savedTokens: [string, object] = serversConfig.savedTokens;
-			if (savedTokens) {
-				for (let idx = 0; idx < savedTokens.length; idx++) {
-					if (savedTokens[idx][0] === key) {
-						let reconnectionInfo = savedTokens[idx][1];
-						if (reconnectionInfo) {
-							state.reconnectionInfo = reconnectionInfo;
-							return;
-						}
-					}
-				}
-			}
+			state.environment = await input.showInputBox({
+				title: title,
+				step: CONNECT_ENVIRONMENT_STEP,
+				totalSteps: CONNECT_TOTAL_STEPS,
+				value: typeof state.environment === 'string' ? state.environment : '',
+				prompt: 'Informe o nome do ambiente',
+				shouldResume: shouldResume,
+				validate: validateRequiredValue,
+				password: false
+			});
 		}
-
-		// if Logix skip username and password input
-		if (state.server) {
-			const server = Utils.getServerById((typeof state.server !== 'string') ? (state.server.detail ? state.server.detail : "") : state.server, serversConfig);
-			if (server !== undefined && server.type === "totvs_server_logix") {
-				return;
-			}
-		}
-
-		state.username = await input.showInputBox({
-			title: title,
-			step: USERNAME_STEP,
-			totalSteps: TOTAL_STEPS,
-			value: state.username || '',
-			prompt: 'Identificação do usuário',
-			validate: validateRequiredValue,
-			shouldResume: shouldResume,
-			password: false
-		});
-
-		return (input: MultiStepInput) => inputPassword(input, state, serversConfig);
-	}
-
-	async function inputPassword(input: MultiStepInput, state: Partial<State>, serversConfig: any) {
-		state.password = await input.showInputBox({
-			title: title,
-			step: PASSWORD_STEP,
-			totalSteps: TOTAL_STEPS,
-			value: state.password || '',
-			prompt: 'Senha de acesso',
-			validate: allTrueValue,
-			shouldResume: shouldResume,
-			password: true
-		});
-	}
 
 	function shouldResume() {
 		// Could show a notification with the option to resume.
@@ -205,13 +154,6 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 		return result;
 	}
 
-	async function allTrueValue(value: string) {
-		// ...validate...
-		//await new Promise(resolve => setTimeout(resolve, VALIDADE_TIME_OUT));
-
-		return undefined;
-	}
-
 	async function validateRequiredValue(value: string) {
 		// ...validate...
 		//Nao esta claro o motivo desse timeout, pois o resolve nunca é passado e sempre é esperado o total do timeout antes de continuar
@@ -225,11 +167,9 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 
 		let target;
 		if (state.server) {
-			//target = Utils.getServerForNameWithConfig((typeof state.server !== 'string') ? state.server.label : state.server, serversConfig);
 			target = Utils.getServerById((typeof state.server !== 'string') ? (state.server.detail ? state.server.detail : "") : state.server, serversConfig);
 			if (target) {
 				state.environment = target.environment;
-				state.username = target.username;
 			}
 		}
 
@@ -238,29 +178,26 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 	}
 
 	async function main() {
-		const state = await collectInputs();
-		if (state.reconnectionInfo) {
-			if (!reconnectServer(state.reconnectionInfo)) {
-				// falha ao reconectar
-			}
-		}
-		else {
-			//const server = Utils.getServerForNameWithConfig((typeof state.server !== 'string') ? state.server.label : state.server, serversConfig);
-			const server = Utils.getServerById((typeof state.server !== 'string') ? (state.server.detail ? state.server.detail : "") : state.server, serversConfig);
-			const environment = (typeof state.environment !== 'string') ? state.environment.label : state.environment;
+		const connectState = await collectConnectInputs();
+		const server = Utils.getServerById((typeof connectState.server !== 'string') ? (connectState.server.detail ? connectState.server.detail : "") : connectState.server, serversConfig);
 
-			server.label = server.name; //FIX: quebra-galho necessário para a árvore de servidores
-			authenticate(server, environment, state.username, state.password);
+		if (connectState.reconnectionToken) {
+			let environmentName = (typeof connectState.environment === "string") ? connectState.environment : (connectState.environment as QuickPickItem).label;
+			reconnectServer(server, environmentName, connType);
+		} else {
+			const environment = (typeof connectState.environment !== 'string') ? connectState.environment.label : connectState.environment;
+			server.name = server.name; //FIX: quebra-galho necessário para a árvore de servidores
+			connectServer(server, environment, connType);
 		}
 	}
 
 	main();
 }
 
-export function serverAuthentication(args, context){
+export function serverSelection(args, context) {
 	if (args && args.length > 0) {
-		inputConnectionParameters(context, args[0]);
+		inputConnectionParameters(context, args[0], ConnTypeIds.CONNT_DEBUGGER, false);
 	} else {
-		inputConnectionParameters(context, undefined);
+		inputConnectionParameters(context, undefined, ConnTypeIds.CONNT_DEBUGGER, false);
 	}
 }

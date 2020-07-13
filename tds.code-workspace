@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "..\\prettier-plugin-4gl"
+		}
+	],
+	"settings": {
+		"debug.javascript.suggestPrettyPrinting": false
+	}
+}

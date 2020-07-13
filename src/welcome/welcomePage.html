@@ -29,7 +29,7 @@
 							<p>${d.localize["tds.webview.dir.include"]}<b>*${d.localize["tds.webview.dir.include2"]}</b></p><!--Includes directory:--><!--Allows multiple-->
 							<div class="wrap-input">
 								<textarea class="inputText" id="includePath" placeholder="Ex: C:/totvs/includes..."></textarea>
-								<input class="inputText" type="file" id="btn-FileInclude" name="btn-FileInclude" onchange='chfillData(event);' webkitdirectory directory multiple/>
+								<input class="inputText" type="file" id="btn-FileInclude" name="btn-FileInclude" onchange='checkDir(event);' webkitdirectory directory/>
 							</div>
 
 							<div class="wrap-submit">
@@ -48,28 +48,23 @@
 <script>
 	const vscode = acquireVsCodeApi();
 
+	function checkDir(event) {
+		var input = event.target;
+		if (input.files.length > 0) {
+			var selectedDir = input.files[0].path;
+			vscode.postMessage({
+				command: 'checkDir',
+				selectedDir: selectedDir
+			});
+		}
+	}
+
 	// Carrega executavel no SmartClient
 	function binfillData(event){
 	  var input = event.target;
-      var reader = new FileReader();
-
+      //var reader = new FileReader();
       smartClientBin.value = input.files[0].path;
-
-      reader.readAsBinaryString(input.files[0]);
-	};
-
-	// Carrega path das pastas include
-	function chfillData(event){
-	  var input = event.target;
-      var reader = new FileReader();
-
-	  if (includePath.value=="" || includePath.value=="C:/totvs/includes")
-		includePath.value = input.files[0].path;
-	  else
-	  	includePath.value = includePath.value + ";" + input.files[0].path;
-
-
-      reader.readAsBinaryString(input.files[0]);
+      //reader.readAsBinaryString(input.files[0]);
 	};
 
 	function save(close) {
@@ -79,7 +74,7 @@
 		vscode.postMessage({
 			command: 'welcomeClose',
 			smartClientBin: smartClient,
-			include: includePath,
+			includes: includePath,
 			'close': close
 		});
 	}
@@ -89,6 +84,13 @@
 		const message = event.data; // The JSON data our extension sent
 
 		switch (message.command) {
+			case 'checkedDir':
+				var checkedDir = message.checkedDir;
+				if (document.getElementById('includePath').value == "")
+					document.getElementById('includePath').value = checkedDir;
+				else
+					document.getElementById('includePath').value = document.getElementById('includePath').value + ";" + checkedDir;
+				break;
 			case 'setCurrentInclude':
 				const includePath = message.include;
 				document.getElementById('includePath').value = includePath;

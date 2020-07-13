@@ -1,5 +1,5 @@
-import vscode = require('vscode');
-import path = require('path');
+import * as vscode from 'vscode';
+import * as path from 'path';
 import * as fs from 'fs';
 import Utils from '../utils';
 
@@ -55,9 +55,16 @@ export default class welcomePage {
 
 			currentPanel.webview.onDidReceiveMessage(message => {
 				switch (message.command) {
+					case 'checkDir':
+						var checkedDir = Utils.checkDir(message.selectedDir);
+						currentPanel.webview.postMessage({
+							command: "checkedDir",
+							checkedDir: checkedDir
+						});
+						break;
 					case 'welcomeClose':
 						const smartClientBin = message.smartClientBin;
-						const includePath = message.include;
+						const includePath = message.includes;
 
 						Utils.saveIncludePath(includePath);
 						saveSmartClientBin(smartClientBin);
@@ -78,17 +85,20 @@ export default class welcomePage {
 }
 
 function saveSmartClientBin(smartClient: string) {
-	const launchConfig = Utils.getLaunchConfig();
-
-	if (launchConfig) {
-		if (launchConfig.configurations) {
-			const configs = launchConfig.configurations;
-			configs.forEach(element => {
-				element.smartclientBin = smartClient;
-			});
-
-			Utils.persistLaunchsInfo(launchConfig);
+	let launchConfig = undefined;
+	try {
+		launchConfig = Utils.getLaunchConfig();
+		if (launchConfig) {
+			if (launchConfig.configurations) {
+				const configs = launchConfig.configurations;
+				configs.forEach(element => {
+					element.smartclientBin = smartClient;
+				});
+				Utils.persistLaunchsInfo(launchConfig);
+			}
 		}
+	} catch(e) {
+		Utils
 	}
 }
 

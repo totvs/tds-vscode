@@ -11,7 +11,8 @@
 
 <body>
 	<div class="mainContainer">
-		<div class="formWrap" style="background-image: none">
+		<div class="formWrap"
+		     style="background-image: none">
 
 			<form name="form_init" id="form_init">
 
@@ -22,7 +23,6 @@
 
 				<div class="wrap-input">
 					<label for="MachineID" title="This machine ID">${d.localize["tds.webview.compile.machine.id"]}</label>
-					<!--Machine ID-->
 					<input class="inputText" type="text" id="MachineID" name="MachineID" disabled >
 				</div>
 
@@ -37,19 +37,19 @@
 				<div class="wrap-input">
 					<label for="KeyID" title="Your compile key ID">${d.localize["tds.webview.compile.key.id"]}</label>
 					<!--Machine ID-->
-					<input class="inputText" type="text" id="KeyID" name="KeyID" >
+					<input class="inputText" type="text" id="KeyID" name="KeyID" onchange="validateKeyID()">
 				</div>
 
 				<div class="wrap-input">
 					<label for="GeneratedIn">${d.localize["tds.webview.compile.key.generated"]}</label>
 					<!--Generated In-->
-					<input class="inputText" type="text" id="GeneratedInID" name="GeneratedIn" >
+					<input class="inputText" type="date" id="GeneratedInID" name="GeneratedIn">
 				</div>
 
 				<div class="wrap-input">
 					<label for="ExpireIn">${d.localize["tds.webview.compile.key.expire"]}</label>
 					<!--Expire In-->
-					<input class="inputText" type="text" id="ExpireInID" name="ExpireIn" >
+					<input class="inputText" type="date" id="ExpireInID" name="ExpireIn" >
 				</div>
 
 				<div class="wrap-input">
@@ -69,7 +69,7 @@
 				</div>
 
 				<div class="wrap-submit">
-					<input class="btn-submit" id="validateID" type="submit" value=" Validate Key " onclick="validate()" />
+					<input class="btn-submit" id="validateID" type="submit" value=" Validate Key " onclick="validateKey()" />
 					&nbsp <!--espaco-->
 					<input class="btn-submit" id="cleanID" type="submit" value=" Clean Key " onclick="clean()" />
 				</div>
@@ -84,7 +84,7 @@
 					<input class="btn-submit" id="submitID" type="submit" value=" Save/Close " onclick="save(true)" />
 				</div>
 
-				<p>* A partir de 17/05/2019 todas as chaves terão de ser regeradas utlizando o ID exibido acima. Isso permite compatibilidade com Linux e MAC.</p>
+				<p>* A partir de 17/05/2019 todas as chaves terão de ser regeradas utlizando o Machine ID exibido acima. Isso permitirá a compatibilidade com Linux e macOS.</p>
 				<!--These settings can be changed in-->
 			</form>
 		</div>
@@ -97,7 +97,34 @@
 	const vscode = acquireVsCodeApi();
 	var defaultID;
 
-	function validate(){
+	function strZero(nr, n){
+		return Array(n-String(nr).length+1).join('0')+nr;
+	}
+
+	// Garante que a data sera enviada no formato dd/mm/aaaa
+	function formatDateToKey(date) {
+		var data = new Date( date.split('-').join("/") ),
+			day  = strZero( data.getDate().toString() ,2),
+			month  = strZero( (data.getMonth()+1).toString() ,2), //+1 pois no getMonth Janeiro começa com zero.
+			year = data.getFullYear();
+		return [day, month, year].join('/');
+	}
+
+	function convertDateFromDmyToYmd(dateToConvert) {
+	var splited = dateToConvert.split("/");
+	if (splited.length == 3) {
+		return splited[2]+"-"+splited[1]+"-"+splited[0];
+	}
+}
+	function validateKeyID() {
+		var keyId = document.getElementById('KeyID').value;
+		if (document.getElementById('MachineID').value != keyId) {
+			document.getElementById('OutputMessage').style = "color: red";
+			document.getElementById('OutputMessage').innerHTML = "Compile Key ID is different from this machine ID";
+		}
+	}
+
+	function validateKey(){
 		var id = document.getElementById('KeyID').value;
 		var generated = document.getElementById('GeneratedInID').value;
 		var expire = document.getElementById('ExpireInID').value;
@@ -107,8 +134,8 @@
 		vscode.postMessage({
 			command: 'validateKey',
 			'id': id,
-			'generated': generated,
-			'expire': expire,
+			'generated': formatDateToKey( generated ),
+			'expire': formatDateToKey( expire ),
 			'token': token,
 			'overwrite': overwrite
 		});
@@ -117,17 +144,19 @@
 	function clean(){
 		var id = document.getElementById('KeyID');
 		var path = document.getElementById('compileKeyFile');
+		var btnFile = document.getElementById('btn-File');
 		var generated = document.getElementById('GeneratedInID');
 		var expire = document.getElementById('ExpireInID');
 		var token = document.getElementById('TokenID');
 		var overwrite = document.getElementById('OverwriteID');
 
+		btnFile.value = "";
 		id.value = "";
 		path.value = "";
 		generated.value = "";
 		expire.value = "";
 		token.value = "";
-		overwrite.checked = false;
+		overwrite.checked = true;
 
 		path.disabled = false;
 		generated.disabled = false;
@@ -174,8 +203,8 @@
 			'close': close,
 			'path': filePath,
 			'id': id,
-			'generated': generated,
-			'expire': expire,
+			'generated': formatDateToKey( generated ),
+			'expire': formatDateToKey( expire ),
 			'token': token,
 			'overwrite': overwrite
 		});
@@ -198,16 +227,11 @@
 				}
 
 				id.value = message.id.toUpperCase();
-				generated.value = message.issued;
-				expire.value = message.expiry;
+				generated.value = convertDateFromDmyToYmd(message.issued);
+				expire.value = convertDateFromDmyToYmd(message.expiry);
 				token.value = message.authorizationToken.toUpperCase();
-
 				overwrite.checked = message.canOverride;
-				path.disabled = true;
-				generated.disabled = true;
-				expire.disabled = true;
-				token.disabled = true;
-				overwrite.disabled = true;
+
 				break;
 			case 'setID':
 				document.getElementById('MachineID').value = message.id;

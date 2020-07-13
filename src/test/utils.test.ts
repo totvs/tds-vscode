@@ -2,7 +2,7 @@ import Utils from '../utils';
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 import * as path from 'path';
-
+/* TODO for build gulp (.\node_modules\.bin\gulp _build)
 suite("Utils Tests", function() {
 
 	// Defines a Mocha unit test
@@ -14,3 +14,4 @@ suite("Utils Tests", function() {
 	});
 
 });
+*/

@@ -17,7 +17,7 @@ const es = require('event-stream');
 const minimist = require('minimist');
 
 const translationProjectName = 'vscode-extensions';
-const translationExtensionName = 'totvs-developer-studio';
+const translationExtensionName = 'tds-vscode';
 
 const defaultLanguages = [
     { id: 'es', folderName: 'esn' },
@@ -38,7 +38,7 @@ const lintSources = [
     'src'
 ].map(tsFolder => tsFolder + '/**/*.ts');
 
-const tsProject = ts.createProject('tsconfig.json', { typescript });
+const tsProject = ts.createProject('tsconfig.json', { jsx: "react", target: "ES5",esModuleInterop: true });
 function doBuild(buildNls, failOnError) {
     return () => {
         let gotError = false;
@@ -144,16 +144,16 @@ gulp.task('publish', gulp.series('build', 'add-i18n', 'vsce-publish'));
 gulp.task('package', gulp.series('build', 'add-i18n', 'vsce-package'));
 
 gulp.task('translations-export', gulp.series('_build', () => {
-	return gulp.src(['package.nls.json', 'out/nls.metadata.header.json', 'out/nls.metadata.json'])
+	return gulp.src('**/*.nls.json')
 		.pipe(nls.createXlfFiles(translationProjectName, translationExtensionName))
-		.pipe(gulp.dest(path.join('..', 'totvs-developer-studio-translations-export')));
+		.pipe(gulp.dest(path.join('..', 'tds-vscode-translations-export')));
 }));
 
 gulp.task('translations-import', (done) => {
 	const options = minimist(process.argv.slice(2), {
 			string: 'location',
 			default: {
-					location: '../totvs-developer-studio-import'
+					location: '../tds-vscode-import'
 			}
 	});
 	return es.merge(defaultLanguages.map(language => {

@@ -1,5 +1,5 @@
-import vscode = require('vscode');
-import path = require('path');
+import * as vscode from 'vscode';
+import * as path from 'path';
 import Utils from '../utils';
 import * as fs from 'fs';
 import * as nls from 'vscode-nls';
@@ -68,45 +68,52 @@ export default class LauncherConfiguration {
 				}
 			});
 
-			let launchersInfo = Utils.getLaunchConfig();
+			let launchersInfo = undefined;
+			try {
+				launchersInfo = Utils.getLaunchConfig();
+				currentPanel.webview.postMessage(launchersInfo);
+			} catch(e) {
+				Utils.logInvalidLaunchJsonFile(e);
+			}
 
-			currentPanel.webview.postMessage(launchersInfo);
 
 			currentPanel.webview.onDidReceiveMessage(message => {
 				switch (message.command) {
 					case 'saveLaunchConfig':
 						const launcherName = message.launcherName;
-						if(launchersInfo.configurations !== undefined) {
-							if(launchersInfo.configurations.length > 0 !== undefined)  {
-								let updated: boolean = false;
-								for(let i=0 ; i < launchersInfo.configurations.length; i++) {
-									let element = launchersInfo.configurations[i];
-									if(element.name === launcherName) {
-										updateElement(element, message);
-										updated = true;
-										break;
+						if(launchersInfo !== undefined) {
+							if(launchersInfo.configurations !== undefined) {
+								if(launchersInfo.configurations.length > 0 !== undefined)  {
+									let updated: boolean = false;
+									for(let i=0 ; i < launchersInfo.configurations.length; i++) {
+										let element = launchersInfo.configurations[i];
+										if(element.name === launcherName) {
+											updateElement(element, message);
+											updated = true;
+											break;
+										}
 									}
-								}
-								if(!updated) {
+									if(!updated) {
+										saveNewLauncher(message, launchersInfo);
+									}
+								} else {
 									saveNewLauncher(message, launchersInfo);
 								}
-							} else {
-								saveNewLauncher(message, launchersInfo);
 							}
-						}
 
-						Utils.persistLaunchsInfo(launchersInfo);
-						currentLaunchersInfoContent = fs.readFileSync(Utils.getLaunchConfigFile(),'utf8');
+							Utils.persistLaunchsInfo(launchersInfo);
+							currentLaunchersInfoContent = fs.readFileSync(Utils.getLaunchConfigFile(),'utf8');
 
-						if(currentPanel !== undefined) {
-							currentPanel.webview.postMessage(launchersInfo);
-						}
+							if(currentPanel !== undefined) {
+								currentPanel.webview.postMessage(launchersInfo);
+							}
 
-						vscode.window.showInformationMessage(localize("tds.vscode.launcher.executor","Executor") + " " +message.launcherName+ " " + localize("tds.vscode.launcher.saved","saved."));
+							vscode.window.showInformationMessage(localize("tds.vscode.launcher.executor","Executor") + " " +message.launcherName+ " " + localize("tds.vscode.launcher.saved","saved."));
 
-						if (currentPanel) {
-							if(message.close){
-								currentPanel.dispose();
+							if (currentPanel) {
+								if(message.close){
+									currentPanel.dispose();
+								}
 							}
 						}
 						return;

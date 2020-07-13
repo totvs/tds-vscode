@@ -1,10 +1,11 @@
-import vscode = require('vscode');
-import path = require('path');
-import fs = require('fs');
+import * as vscode from 'vscode';
+import * as path from 'path';
+import * as fs from 'fs';
 import Utils from '../utils';
 import { languageClient } from '../extension';
 import { commandBuildFile } from '../compile/tdsBuild';
 import * as nls from 'vscode-nls';
+import { ResponseError } from 'vscode-languageclient';
 
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
@@ -74,6 +75,13 @@ export function patchGenerate(context: vscode.ExtensionContext) {
 
 			currentPanel.webview.onDidReceiveMessage(message => {
 				switch (message.command) {
+					case 'checkDir':
+						var checkedDir = Utils.checkDir(message.selectedDir);
+						currentPanel.webview.postMessage({
+							command: "checkedDir",
+							checkedDir: checkedDir
+						});
+						break;
 					case 'inspectorObjects':
 						//vscode.window.showInformationMessage(localize("tds.webview.sources.loading","Loading Sources from the Repository."));
 						languageClient.sendRequest('$totvsserver/inspectorObjects', {
@@ -90,8 +98,8 @@ export function patchGenerate(context: vscode.ExtensionContext) {
 							// } else {
 							// 	vscode.window.showErrorMessage(message);
 							// }
-						}, (err) => {
-							vscode.window.showErrorMessage(err);
+						}, (err: ResponseError<object>) => {
+							vscode.window.showErrorMessage(err.message);
 						});
 						break;
 					case 'patchGenerate':
@@ -214,34 +222,24 @@ function sendPatchGenerateMessage(server, patchMaster, patchDest, patchType, pat
 		// } else {
 		// 	vscode.window.showErrorMessage(message);
 		// }
-	}, (err) => {
-		vscode.window.showErrorMessage(err);
+	}, (err: ResponseError<object>) => {
+		vscode.window.showErrorMessage(err.message);
 	});
 }
 
 function readFiles(dirname: string, allFilesNames: Array<String>, allFilesFullPath: Array<string>, onError: any) {
 	let filenames = fs.readdirSync(dirname);
-
-	// Filtro por extensão de arquivo conhecidos
-
-	let configADVPL = vscode.workspace.getConfiguration('totvsLanguageServer');//busca o arquivo de configuração
-	let aTpFilesToCompile:string[] = configADVPL.get("extensions.folder.patch", []); // Le a chave especifica
-
 	filenames.forEach(function (filename) {
-		let fullPath = path.join(dirname, filename);
-		if (fs.statSync(fullPath).isDirectory() && fs.statSync(fullPath)) {
-			readFiles(fullPath, allFilesNames, allFilesFullPath, onError);
-		} else {
-
-			if (aTpFilesToCompile.length > 0) {
-				if (aTpFilesToCompile.indexOf(path.extname(filename).toUpperCase()) !== -1) {
-					allFilesNames.push(filename);
-					allFilesFullPath.push(fullPath);
-				}
+		if (!Utils.ignoreResource(filename)) {
+			let fullPath = path.join(dirname, filename);
+			if (fs.statSync(fullPath).isDirectory() && fs.statSync(fullPath)) {
+				readFiles(fullPath, allFilesNames, allFilesFullPath, onError);
 			} else {
 				allFilesNames.push(filename);
 				allFilesFullPath.push(fullPath);
 			}
+		} else {
+			vscode.window.showWarningMessage("File/folder '" + filename + "' was ignored.");
 		}
 	});
 }

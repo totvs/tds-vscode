@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>${d.localize["tds.webview.title"]}</title><!--Progress...-->
+</head>
+<style>${d.css}
+
+/* Basic resets */
+
+* {
+    margin:0; padding:0;
+    box-sizing: border-box;
+}
+
+/* Styling the determinate progress element */
+
+progress[value] {
+    /* Get rid of the default appearance */
+    appearance: none;
+
+    /* This unfortunately leaves a trail of border behind in Firefox and Opera. We can remove that by setting the border to none. */
+    border: none;
+
+    /* Add dimensions */
+    width: 100%; height: 25px;
+
+    /* Although firefox doesn't provide any additional pseudo class to style the progress element container, any style applied here works on the container. */
+      background-color: whiteSmoke;
+      border-radius: 3px;
+      box-shadow: 0 2px 3px rgba(0,0,0,.5) inset;
+
+    /* Of all IE, only IE10 supports progress element that too partially. It only allows to change the background-color of the progress value using the 'color' attribute. */
+    color: royalblue;
+
+    position: relative;
+    margin: 0 0 1.5em;
+}
+
+progress[value]::-webkit-progress-bar {
+    background-color: whiteSmoke;
+    border-radius: 3px;
+    box-shadow: 0 2px 3px rgba(0,0,0,.5) inset;
+}
+
+progress[value]::-webkit-progress-value {
+    position: relative;
+
+    background-size: 35px 20px, 100% 100%, 100% 100%;
+    border-radius:3px;
+
+    /* Let's animate this */
+    animation: animate-stripes 5s linear infinite;
+}
+
+@keyframes animate-stripes { 100% { background-position: -100px 0; } }
+
+
+p[data-value] {
+	/*background-color: blueviolet;*/
+	width: 100%;
+	position: relative;
+}
+
+/* The percentage will automatically fall in place as soon as we make the width fluid. Now making widths fluid. */
+
+p[data-value]:after {
+    content: attr(data-value) '%';
+    position: absolute;
+	/*background-color: blue;*/
+	right:0;
+}
+
+</style>
+
+<!--<body onload="move()">-->
+<body>
+
+	<div class="mainContainer">
+		<div class="formWrap"
+			style="background-image: none">
+				<form name="form_init" id="form_init">
+					<div class="logo">
+						<span id="formTitle" class="formTitle">${d.localize["tds.webview.title"]}</span>
+					</div>
+					<div class="divMainMessage">
+						<p id="progressPercent" data-value="50">message</p>
+					</div>
+					<div class="divProgressBar">
+						<progress id="progressBar" max="100" value="50"></progress>
+					</div>
+					<div class="divDetailMessage">
+						<p id="detailMessage">detailed message</p>
+					</div>
+			</form>
+		</div>
+	</div>
+	<hr>
+
+</body>
+
+<script>
+
+	let cTitle = document.getElementById("formTitle");
+	let cProgressPercent = document.getElementById("progressPercent");
+	let cProgressBar = document.getElementById("progressBar");
+	let cDetailMessage = document.getElementById("detailMessage");
+	//Para testes de atualizacao de componente
+
+	var i = 0;
+	function move() {
+		if (i == 0) {
+			i = 1;
+			var width = 1;
+			var id = setInterval(frame, 10);
+			function frame() {
+				if (width >= 100) {
+					clearInterval(id);
+					i = 0;
+				} else {
+					width++;
+					setTitle(width);
+					setMainMessage("Message2 - " + width);
+					setPercentageCompleted(width);
+					setDetailMessage("sub"+width);
+				}
+			}
+		}
+	}
+
+	window.addEventListener('message', event => {
+		const message = event.data; // The JSON data our extension sent
+		switch (message.command) {
+			case 'setTitle':
+				setTitle(message.title);
+				break;
+			case 'setMainMessage':
+				setMainMessage(message.mainMessage);
+				break;
+			case 'detailMessage':
+				setDetailMessage(message.detailMessage);
+				break;
+			case 'setPercentageCompleted':
+				setPercentageCompleted(message.percentageCompleted);
+				break;
+		}
+	});
+
+	function setTitle(title) {
+		cTitle.textContent = title;
+	}
+
+	function setMainMessage(mainMesage) {
+		progressPercent.textContent = mainMesage; //Seta a mensagem
+	}
+
+	function setDetailMessage(detailMessage) {
+		cDetailMessage.textContent = detailMessage //Seta a mensagem
+	}
+
+	function setPercentageCompleted(completed) {
+		progressPercent.setAttribute("data-value", completed);
+		progressBar.setAttribute("value", completed);
+	}
+
+</script>
+
+
+</html>

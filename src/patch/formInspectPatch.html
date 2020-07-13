@@ -29,7 +29,8 @@
 
 <body>
 	<div class="mainContainer">
-		<div class="formWrap" style="width: 720px;">
+		<div class="formWrap"
+		     style="width: 768px;">
 
 			<div class="logo">
 				<span class="formTitle">${d.localize["tds.webview.inspect.patch"]}</span>
@@ -40,7 +41,7 @@
 				<label for="patchFile">Patch File: </label><!--Patch File-->
 				<input class="inputText" type="text" id="FilePatch" name="FilePatch" placeholder="Ex: C:/totvs/patchs/tttp120.ptm...">
 				<input class="inputText" type="file" accept='PatchFile/*.ptm' id="btn-File" name="btn-File"
-					onchange="setTextArea(event)" multiple />
+					onchange="setTextArea(event)" />
 			</div>
 			<div class="wrap-input">
 				<div class="material-table z-depth-3 hoverable">
@@ -58,6 +59,8 @@
 			</div>
 
 			<div class="wrap-submit">
+				<input class="btn-submit" id="submitID" type="button" value='${d.localize["tds.webview.inspect.export.files"]}'
+					onclick="exportPatchInfo()" />
 				<input class="btn-submit" id="submitID" type="button" value='${d.localize["tds.webview.inspect.export.close"]}'
 					onclick="fechar()" />
 				<!--Close-->
@@ -95,9 +98,18 @@
 
 		document.getElementById('FilePatch').value = fullPath;
 
+		tableAPI.clear();
+		tableAPI.draw();
+
 		vscode.postMessage({
 			command: "patchInfo",
 			patchFile: fullPath
+		});
+	}
+
+	function exportPatchInfo() {
+		vscode.postMessage({
+			command: "exportPatchInfo"
 		});
 	}
 
@@ -115,10 +127,8 @@
 			case 'setData' :
 				for (var i=0; i < message.data.length; i++) {
 					var row = new Array(message.data[i].name, message.data[i].date);
-
 					tableAPI.row.add(row);
 				}
-
 				tableAPI.draw();
 		}
 		});

@@ -1,18 +1,204 @@
+# Versão 1.0.6
+
+## PRTOPDEF File not found [Issue 440](https://github.com/totvs/tds-vscode/issues/440)
+### Problema:
+* Durante uma compilação a mensagem "C2090 File not found PRTOPDEF.CH" é apresentada como erro de compilação.
+### Solução:
+* Um filtro de extensão de arquivos estava considerando apenas a extensão em letras minúsculas. Se a extensão do arquivo for .PRW ela não estava sendo considerada como AdvPL e não adicionava os includes para compilar.
+----
+
+## Extensão trava ao compilar vários fontes [Issue 437](https://github.com/totvs/tds-vscode/issues/437)
+### Problema:
+* Durante a compilação de múltiplos arquivos (compilação de pasta/workspace) o vscode trava e pode exibir a mensagem "The window is no longer responding".
+### Solução:
+* O problema está na exibição de muitas notificações pelo vscode. Por enquanto desabilitamos as notificações alterando o padrão para "none".
+----
+
+## Erro ao adicionar Servidor (Cannot read property 'id' of undefined) [Issue 434](https://github.com/totvs/tds-vscode/issues/434)
+### Problema:
+* Ocorre erro na exibição da visão de Servidores e adição de novos servidores.
+### Solução:
+* Corrigido processo interno na gravação da informação do último servidor conectado.
+----
+
+# Versão 1.0.5
+
+## Melhorias na visão "Servidores"
+* Adicionado os comandos abaixo, direto no nó do item:
+  - Servidor: Conexão
+  - Ambiente: Remoção
+* Menu de contexto melhorado, apresentando opções conforme o estado do servidor
+
+## [4GL] Liberação do editor para 4GL (BETA)
+
+### Recursos liberados
+* Sintaxe destacada conforme tipo (definição, palavra reservada, ...);
+* Árvore de estrutura (_outline_), a ser detalhada em liberações futuras.
+
+### Ajustes
+* Processo de compilação e outros de apoio
+
+## [4GL] Liberação do depurador para 4GL (BETA)
+
+### Recursos liberados
+* Suporte a ponto de parada;
+* Avaliação de expressões;
+* Árvore de variaveis por escopo;
+* Suporte a tipos específicos do 4GL (record, image e outras);
+
+### Problemas conhecidos (SOMENTE em servidores Logix)
+
+Ao utilizar **TOTVS Server**, de versão igual ou anterior a 19.3.0.0 de 01/06/20, detectamos algumas inconsistências durante o processo de depuração:
+* Variáveis do tipo _text_, ao terem seus valores modificados por uma atribuição, pode ocasionar queda no processo;
+* Variáveis com valor _NIL_ (nulo ou indefinido), podem apresentar resultados em formato diferente quando avaliados no _watch_, do apresentado no bloco do escopo;
+
+## [AdvPL] Árvore de estrutura (_outline_)
+* Árvore de estrutura (_outline_), a ser detalhada em liberações futuras.
+
+## Nomenclatura e ortografia
+* Padronização da nomenclatura de _AppSever_ para _TOTVS Server_;
+* Padronização da identificação _AdvPL_ para _AdvPL/4GL_, quando aplicada as duas linguagens;
+* Opção do console _Advpl_, na visão _Output_, alterada para _TOTVS LS_;
+* Na árvore da visão _settings_, identificação da extensão passou a ser _TOTVS_;
+* Correções ortográficas;
+----
+
+# Versão 1.0.4
+
+## Conexão com *TOTVS Server* com erro - Smartclient 19.3.0.5 (com SSL desligado) [Issue 390](https://github.com/totvs/tds-vscode/issues/390)
+### Problema:
+* Após da actualizacao do binário do smartclient 19.3.0.5 quando tento lancar um debug com o TDS-VSCode, tenho a janela com siguiente erro: "ERR0027: TOTVS | SmartClient conectou com TOTVS | Application Server mas houve erro no início de validação de conexão."
+### Solução:
+* Ajustado a geração da configuração para depuração.
+----
+
+# Versão 1.0.3
+
+## Problema ao criar launchers a partir das configurações do Smartclient na inicialização [Issue 377](https://github.com/totvs/tds-vscode/issues/377)
+### Problema:
+* Selecione um smartclient na tela de boas vindas e salve. Os launchers não estão sendo gerados corretamente.
+### Solução:
+* A geração inicial do arquivo launch.json estava incompleto e foi corrigida.
+----
+## Senha não fica salva [Issue 371](https://github.com/totvs/tds-vscode/issues/371)
+### Problema:
+* Ao trocar de ambiente pela seleção de servidor/ambiente na barra inferior, mesmo com o token salvo previamente, a extensão está solicitando o usuário e senha do ambiente novamente.
+### Solução/Melhoria:
+* A seleção de servidor/ambiente estava com a ação de "Conexão" e foi alterada para "Reconexão" para agilizar a conexão pela barra inferior.
+----
+## Problema ao tentar gerar cliente WSDL [Issue 369](https://github.com/totvs/tds-vscode/issues/369)
+### Problema:
+* Problema ao tentar gerar cliente WSDL sem ter uma chave de compilação aplicada. Ocorre o erro "Authorization token was not informed.".
+### Solução:
+* Foi realizada correção para remover esta validação pois a chave não é obrigatória nestes casos.
+----
+## Erro ao adicionar servidor [Issue 367](https://github.com/totvs/tds-vscode/issues/367)
+### Problema:
+* Ao adicionar servidor está sendo apresentada a mensagem: "Cannot read property 'length' of undefined".
+### Solução:
+* O processo de inicialização permitia a criação do servers.json com apenas a seção "includes". Adicionadas validações para que o arquivo mínimo seja criado ao instalar a extensão.
+----
+## Possibilidade de exportar arquivo com as informações do conteúdo do patch [Issue 301](https://github.com/totvs/tds-vscode/issues/301)
+### Melhoria:
+* Adicionada a funcionalidade para exportar um arquivo com as informações do conteúdo do patch em 'Patch Infos'.
+----
+
+# Versão 1.0.2
+
+## Exibir apenas os arquivos com Erros na tabela de resultados da compilação quando ocorrer problemas nas compilações [Issue 347](https://github.com/totvs/tds-vscode/issues/347)
+### Problema:
+* Quando ocorrem erros (Error/Fatal) durante a compilação o processo é abortado e ocorre o "rollback". Porém a tabela com o resultado da compilação exibe os fontes sem erros como se estivessem compilados no RPO causando confusão uma vez que eles não estarão no RPO.
+### Solução/Melhoria:
+* Filtrar a tabela de resultados da compilação para exibir apenas os arquivos com erros quando o processo for abortado.
+----
+## Configuração "totvsLanguageServer.extensions.folder.patch" não está sendo respeitada [Issue 297](https://github.com/totvs/tds-vscode/issues/297)
+### Problema:
+* A compilação não respeita o filtro de extensões definidas em "totvsLanguageServer.extensions.folder.patch".
+### Solução/Melhoria:
+* O problema era que esta configuração foi criada apenas para a compilação durante a geração de patches. A configuração foi alterada para "totvsLanguageServer.folder.extensionsAllowed" e será utilizada na compilação, seja apenas compilação, seja na geração de patches. Além disso foi adicionada a opção de desabilitar o filtro nos Setting em "Folder: Enable Extensions Filter".
+----
+## Protheus ao compilar Files/Folder [Issue 329](https://github.com/totvs/tds-vscode/issues/329)
+### Problema:
+* Erro ao compilar pasta.
+### Solução:
+* O problema era com apenas um arquivo cujo retorno de erro do **TOTVS Server** estava fora do padrão. Melhorado o tratamento para capturar este erro fora do padrão e exibir ao usuário.
+----
+## Problema na compilação com binário 7.00.191205P [Issue 292](https://github.com/totvs/tds-vscode/issues/292)
+### Problema:
+* Ao compilar pastas/workspaces com muitos arquivos o TDS VS Code travava e/ou caia.
+### Solução:
+* Limitada a exibição de notificações caso o número de arquivos ultrapasse um certo valor. Exibindo apenas as informações consolidadas após o término da compilação.
+----
+## Separar a ação de conectar e reconectar em um servidor [Issue 344](https://github.com/totvs/tds-vscode/issues/344)
+### Melhoria:
+* Separadas as ações de conectar e reconectar. O connect se comporta como se fosse uma nova conexão independentemente de existir um token de reconexão. E o reconnect utiliza o token de reconexão se existir ou se comporta como o connect se ainda não existir um token de reconexão.
+----
+## Erro ao compilar fontes em aberto (.app junto) [Issue 334](https://github.com/totvs/tds-vscode/issues/334)
+### Problema:
+* Ao compilar arquivos em editores abertos o processo para ao encontrar um arquivo que não pode ser aberto sem a intervenção do usuário, como por exemplo um pdf.
+### Solução:
+* Ao encontrar um arquivo que não pode ser aberto ele passa para o próximo editor aberto.
+----
+
+# Versão 1.0.1
+
+## Seleção de diretório seleciona o primeiro arquivo do diretório [Issue 317](https://github.com/totvs/tds-vscode/issues/317)
+### Melhoria:
+* Ao selecionar um diretório está selecionando um arquivo deste diretório. Este problema começou após uma atualização do VS Code que mudou o comportamento do componente de seleção de diretório.
+----
+## Implementar a verificação de integridade do RPO [Issue 288](https://github.com/totvs/tds-vscode/issues/288)
+### Melhoria:
+* Implementada a verificação de integridade do RPO no menu de contexto do servidor conectado, similar a opção de desfragmentação do RPO.
+----
+## Exibir o console (Output) durante a compilação [Pull Request 271](https://github.com/totvs/tds-vscode/pull/271)
+### Melhoria:
+* Adicionada opção nas preferência para exibir o console (Output) ao acionar uma compilação.
+----
+## Compile/Recompile open Editors [Issue 276](https://github.com/totvs/tds-vscode/issues/276)
+### Problema:
+* A opção de compilar/recompilar os editores abertos parou de funcionar após atualização Windows/VS Code.
+### Solução:
+* Ajustada a forma de comparação entre editores que foi alterada com a atualização.
+----
+## Erro de compilação [Issue 270](https://github.com/totvs/tds-vscode/issues/270)
+### Problema:
+* Se a variável utilizada na instrução `For` não estiver declarada como `Local` o *TOTVS Server* informa um 'warning', mas como a mensagem estava fora do padrão estabelecido, a mensagem se tornava um 'error'.
+### Solução:
+* Melhorado o tratamento das mensagens de 'error/warning' para exibir corretamente esta mensagem.
+----
+## Opção "Select" no menu contextual do conexão ambiente não esta funcionando [Issue 253](https://github.com/totvs/tds-vscode/issues/253)
+### Problema:
+* Ao clicar em `Select` no menu de contexto de um 'environment' não acontece nada.
+### Solução:
+* Corrigida a implementação do `Select` no menu de contexto dos 'environments'.
+----
+## Não consigo compilar fontes Vs Code [Issue 239](https://github.com/totvs/tds-vscode/issues/239)
+### Problema:
+* Alguns erro do pré compilador não eram exibidos corretamente na visão `Problems`.
+### Solução:
+* Corrigido o tratamento de mensagens de erro do pré compilador que indicavam a linha 0 (que não existe).
+----
+
 # Versão 0.3.23
+
 ## Connection terminated by administrator [Issue 189](https://github.com/totvs/tds-vscode/issues/189)
 ### Problema:
 * Depuração derruba o servidor exibindo a mensagem "Connection terminated by administrator".
 ### Solução:
 * Corrigida ação interna da mensagem idle da depuração.
 ----
+
 # Versão 0.3.22
+
 ## Ao formatar o documento a identação fica errada quando existe #ifdef [Issue 230](https://github.com/totvs/tds-vscode/issues/230)
 ### Problema:
 * Ao formatar o documento a identação fica errada quando existe #ifdef.
 ### Solução:
 * Corrigida a regra para identação do #endif.
 ----
+
 # Versão 0.3.21
+
 ## Extensão permite adicionar o mesmo server várias vezes [Issue 58](https://github.com/totvs/tds-vscode/issues/58)
 ### Problema:
 * Extensão permite adicionar o mesmo server várias vezes.
@@ -37,7 +223,9 @@
 ### Solução:
 * Adicionada verificação se houve problema na compilação e muda o foco para aba de "Problemas".
 ----
+
 # Versão 0.3.20
+
 ## Corrigido parada de breakpoint mesmo após ter sido removido [Issue 121](https://github.com/totvs/tds-vscode/issues/121)
 ### Problema:
 * Mesmo após remover um breakpoint, o servidor ainda mandava uma informação de parada de depuração.
@@ -80,21 +268,27 @@
 ### Solução:
 * Corrigido o cadastro do servidor referente ao valor do novo parâmetro 'secure'.
 ----
+
 # Versão 0.3.18
+
 ## Corrigido travamento do Debug (stacktrace e evalute) [Issue 193](https://github.com/totvs/tds-vscode/issues/193)
 ### Problema:
 * Ao depurar fontes onde trafegavam informações, no stacktrace ou evaluate, com acentuação ocorria um problema no encoding e desconectava o Debug.
 ### Solução:
 * Corrigido o tratamento de encoding.
 ----
+
 # Versão 0.3.17
+
 ## Corrigido travamento na carga do Smartclient durante o Debug [Issue 186](https://github.com/totvs/tds-vscode/issues/186)
 ### Problema:
 * Ao iniciar a depuração o smartclient inicia a carga mas fica travado.
 ### Solução:
 * Corrigida a inicialização do smartclient.
 ----
+
 # Versão 0.3.16
+
 ## Corrigido travamento no Debug (Avaliação de Objetos) [Issue 170](https://github.com/totvs/tds-vscode/issues/170)
 ### Problema:
 * Ao depurar objetos ocorria um erro que travava o debug.
@@ -107,14 +301,18 @@
 ### Solução:
 * Corrigida a salva do nome do último programa executado.
 ----
+
 # Versão 0.3.15
+
 ## Adicionada proteção durante debug de tabelas [Issue 165](https://github.com/totvs/tds-vscode/issues/165)
 ### Problema:
 * Ao depurar tabelas ocorria um erro que derrubava o DebugAdapter.
 ### Solução:
-* Adicionada uma proteção para tratar esse erro no AppServer que derrubava o DebugAdapter.
+* Adicionada uma proteção para tratar esse erro no **TOTVS Server** que derrubava o DebugAdapter.
 ----
+
 # Versao 0.3.14
+
 ## Inclusão de PullRequest [PullRequest 155](https://github.com/totvs/tds-vscode/pull/155)
 ### PullRequest:
 * Inclusão de palavras reservadas.
@@ -131,7 +329,9 @@
 ### Solução:
 * Realizado correção no processo de sincronismo de breakpoints pelo debug adapter.
 ----
+
 # Versão 0.3.13
+
 ## Implementado notificação de "Exceptions" informadas pelo servidor na visão "Debug Console" [Issue 99](https://github.com/totvs/tds-vscode/issues/99#)
 ### Problema:
 * Quando é lançado uma exceção pelo servidor o plugin não mostra no console.
@@ -156,15 +356,19 @@
 ### Solução:
 * Correão na expressão regular de identificação de variáveis e métodos na declaração de classes.
 ----
+
 # Versão 0.3.12
-## Correção emeregencial de problema no pré compilador [Issue 111](https://github.com/totvs/tds-vscode/issues/111)
+
+## Correção emergencial de problema no pré compilador [Issue 111](https://github.com/totvs/tds-vscode/issues/111)
 ### Problema:
 * Ao compilar fontes que possuam a instrução %NotDel% ocorre problema no pre compilador.
 ### Solulção:
 * Correção interna no pré compilador.
 ----
+
 # Versão 0.3.11
-## Gerar saída para console [Issue 60] (https://github.com/totvs/tds-vscode/issues/60)
+
+## Gerar saída para console [Issue 60](https://github.com/totvs/tds-vscode/issues/60)
 ### Melhoria:
 * Adicionar uma forma de gerar uma saída no console durante a depuração sem precisar compilar.
 ### Solução:
@@ -182,7 +386,9 @@
 ### Solução:
 *  Correções internas no Language Server.
 ----
+
 # Versão 0.3.10
+
 ## Identação de código [Issue 91](https://github.com/totvs/tds-vscode/issues/91)
 ### Melhoria:
 * Não alterar a posição do return.
@@ -201,7 +407,9 @@
 ### Solução:
 * Corrigir o LS.
 -----
+
 # Versão 0.3.5
+
 ## Exibir tabela com o resultado da compilação [Issue 68](https://github.com/totvs/tds-vscode/issues/68)
 ### Melhoria:
 * Implementar uma opção de exibir os resultados da compilação quando compilado multiplos arquivos.
@@ -286,7 +494,7 @@
 ### Melhoria:
 * O inspetor de funções mostra apenas a lista de funções, mas não mostra em que arquivo fonte está escrita a função.
 ### Solução:
-* Adicionada as informações de fonte e linha retornados pelo appserver.
+* Adicionada as informações de fonte e linha retornados pelo *TOTVS Server*.
 ----
 
 # Versão 0.2.1
@@ -363,7 +571,7 @@ Quer mudar o encoding para o padrão Windows1252?
 * Implementar processo de identificação de variáveis do fonte corrente para ser informado no auto-complete.
 ### Solução:
 * Implementado de opção para troca de comportamento do auto-complete:
-	* Acesse 'setttings', opção "Totvs Language Server › Editor › Toggle: Autocomplete"
+	* Acesse 'setttings', opção "TOTVS Language Server › Editor › Toggle: Autocomplete"
 	* No editor, acione o atalho ctrl+alt+space
 * Na barra de status será apresentado o comportamento atual, sendo:
 	* Basic: executa o autocompletar padrão do VSCode.
@@ -380,7 +588,9 @@ Quer mudar o encoding para o padrão Windows1252?
 ![issue25](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/configs/notification.png)
 
 ----
+
 # Versão 0.1.0
+
 * Alteração de ícone TOTVS.
 * Definição de Licença Apache 2.0.
 * Opção de aplicar patch com fontes mais antigo que o RPO.
@@ -390,7 +600,9 @@ Quer mudar o encoding para o padrão Windows1252?
 * Liberação de chave de compilação válida pra LINUX e MAC.
 
 ----
+
 # Versão 0.0.28
+
  * Adicionado EndDo a lista de palavras reservadas.
  * Remoção de Login com Identity.
  * Disponibilidade no Marketplace do VSCode.

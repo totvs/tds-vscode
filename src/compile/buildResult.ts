@@ -3,6 +3,8 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as compile from 'template-literal';
 import * as nls from 'vscode-nls';
+import { CompileResult } from './compileResult';
+
 let localize = nls.loadMessageBundle();
 
 
@@ -11,10 +13,11 @@ const localizeHTML = {
 	"tds.webview.compile.col01": localize("tds.webview.compile.col01", "File Name"),
 	"tds.webview.compile.col02": localize("tds.webview.compile.col02", "Result"),
 	"tds.webview.compile.col03": localize("tds.webview.compile.col03", "Message"),
-	"tds.webview.compile.col04": localize("tds.webview.compile.col04", "Full Path")
-}
+	"tds.webview.compile.col04": localize("tds.webview.compile.col04", "Detail"),
+	"tds.webview.compile.col05": localize("tds.webview.compile.col05", "Path")
+};
 
-export function showCompileResult(infos: CompileInfo[], context: any) {
+export function showCompileResult(response: CompileResult, context: any) {
 	let extensionPath = "";
 	if (!context.extensionPath || context.extensionPath === undefined) {
 		let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
@@ -51,9 +54,10 @@ export function showCompileResult(infos: CompileInfo[], context: any) {
 			case 'getData':
 				currentPanel.webview.postMessage({
 					command: "setData",
-					'data': infos
+					code: response.returnCode,
+					data: response.compileInfos
 				});
-				break
+				break;
 			case 'close':
 				currentPanel.dispose();
 				break;
@@ -66,7 +70,7 @@ export function showCompileResult(infos: CompileInfo[], context: any) {
 
 function getWebViewContent(extensionPath, localizeHTML) {
 
-	const htmlOnDiskPath = vscode.Uri.file(path.join(extensionPath, 'src', 'compile', 'compileResult.html'));
+	const htmlOnDiskPath = vscode.Uri.file(path.join(extensionPath, 'src', 'compile', 'compileResultPage.html'));
 	const cssOniskPath = vscode.Uri.file(path.join(extensionPath, 'resources', 'css', 'table_materialize.css'));
 	const tableScriptPath = vscode.Uri.file(path.join(extensionPath, 'resources', 'script', 'table_materialize.js'));
 

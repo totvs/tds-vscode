@@ -1,10 +1,11 @@
 import * as vscode from 'vscode';
-import path = require('path');
-import fs = require('fs');
+import * as path from 'path';
+import * as fs from 'fs';
 import Utils from '../utils';
 import { languageClient } from '../extension';
 const compile = require('template-literal');
 import * as nls from 'vscode-nls';
+import { ResponseError } from 'vscode-languageclient';
 let localize = nls.loadMessageBundle();
 
 const localizeHTML = {
@@ -70,8 +71,8 @@ export function inspectObject(context: vscode.ExtensionContext) {
 						}
 					}).then((response: any) => {
 						currentPanel.webview.postMessage(response.objects);
-					}, (err) => {
-						vscode.window.showErrorMessage(err);
+					}, (err: ResponseError<object>) => {
+						vscode.window.showErrorMessage(err.message);
 					});
 					return;
 				case 'close':
@@ -95,8 +96,8 @@ export function inspectObject(context: vscode.ExtensionContext) {
 								edit.insert(new vscode.Position(0, 0), textString);
 							});
 						});
-					}, (error: any) => {
-						console.error(error);
+					}, (err: ResponseError<object>) => {
+						console.error(err.message);
 						debugger;
 					});
 					break;
