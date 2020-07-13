@@ -248,7 +248,7 @@ export function activate(context: ExtensionContext) {
 	//View
 	let viewServer = new ServersExplorer(context);
 	if (!viewServer) {
-		console.error(localize('tds.vgit logscode.server_vision_not_load', 'Visão "Servidores" não inicializada.'));
+		console.error(localize('tds.vscode.server_vision_not_load', 'Visão "Servidores" não inicializada.'));
 	}
 
 	// Registra uma configuração de debug
