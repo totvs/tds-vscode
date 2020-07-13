@@ -419,6 +419,11 @@
 					"default": "LS",
 					"description": "%tds.package.editor.toggle.autocomplete%"
 				},
+				"totvsLanguageServer.workspaceServerConfig": {
+					"type": "boolean",
+					"default": false,
+					"description": "%tds.package.workspaceServerConfig%"
+				},
 				"totvsMonitor.update.speed": {
 					"scope": "window",
 					"type": "string",

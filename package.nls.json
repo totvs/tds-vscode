@@ -111,6 +111,6 @@
 	"totvsMonitor.update.speed.short": "Updates every 15 seconds",
 	"totvsMonitor.update.speed.normal": "Updates every 30 seconds",
 	"totvsMonitor.update.speed.long": "Updates every 60 seconds",
-	"totvsMonitor.update.speed.manual": "Update on request"
-
+	"totvsMonitor.update.speed.manual": "Update on request",
+    "tds.package.workspaceServerConfig": "Usar o workspace para manter a configuração de servidores."
 }
