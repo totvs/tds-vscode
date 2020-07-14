@@ -9,6 +9,11 @@ function fieldDef(
   return { field: field, title: title, ...extraProps };
 }
 
+function doFormatNumber(value: number, props: {} = { minimumFractionDigits: 0 }) {
+  const result = (value).toLocaleString([], props);
+  return result;
+}
+
 export const propPageSize = (value: number = undefined) => {
   return {
     props: {
@@ -118,17 +123,17 @@ export const propColumns = (extraProps?: any): any => {
       fieldDef("environment", "Ambiente", extraProps),
       fieldDef("username", "Usuário", extraProps),
       fieldDef("computerName", "Estação", extraProps),
-      fieldDef("threadId", "Thread", { type: "numeric", ...extraProps }),
+      fieldDef("threadId", "Thread", { type: "numeric", ...extraProps, render: (row: any) => doFormatNumber(row["threadId"]) }),
       fieldDef("mainName", "Programa", extraProps),
       fieldDef("loginTime", "Conexão", extraProps),
       fieldDef("elapsedTime", "Tempo Decorrido", extraProps),
       fieldDef("inactiveTime", "Tempo Inatividade", extraProps),
-      fieldDef("totalInstrCount", "Total Instruções", { type: "numeric", ...extraProps }),
-      fieldDef("instrCountPerSec", "Instruções/seg", { type: "numeric", ...extraProps }),
+      fieldDef("totalInstrCount", "Total Instruções", { type: "numeric", ...extraProps , render: (row: any) => doFormatNumber(row["totalInstrCount"]) }),
+      fieldDef("instrCountPerSec", "Instruções/seg", { type: "numeric", ...extraProps , render: (row: any) => doFormatNumber(row["instrCountPerSec"], {maximumFractionDigits: 2, minimumFractionDigits: 2}) }),
       fieldDef("remark", "Comentário", extraProps),
-      fieldDef("memUsed", "Memória em Uso", { type: "numeric", ...extraProps }),
-      fieldDef("sid", "SID", { type: "numeric", ...extraProps }),
-      fieldDef("ctreeTaskId", "CTree ID", { type: "numeric", ...extraProps }),
+      fieldDef("memUsed", "Memória em Uso", { type: "numeric", ...extraProps , render: (row: any) => doFormatNumber(row["memUsed"]) }),
+      fieldDef("sid", "SID", { type: "numeric", ...extraProps , render: (row: any) => doFormatNumber(row["sid"]) }),
+      fieldDef("ctreeTaskId", "CTree ID", { type: "numeric", ...extraProps , render: (row: any) => doFormatNumber(row["ctreeTaskId"]) }),
       fieldDef("clientType", "Tipo Conexão", extraProps),
     ],
   };
