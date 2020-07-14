@@ -69,19 +69,31 @@ export default class Utils {
     );
   }
 
-  /**
-   * Retorna o path completo do servers.json
-   */
-  static getServerConfigFile() {
-    return homedir + "/.totvsls/servers.json";
-  }
+	/**
+	 * Pegar o arquivo servers.json da .vscode (workspace)?
+	 */
+	static workspaceServerConfig() {
+		let config = vscode.workspace.getConfiguration('totvsLanguageServer');
+		return config.get('workspaceServerConfig');
+	}
 
-  /**
-   * Retorna o path de onde deve ficar o servers.json
-   */
-  static getServerConfigPath() {
-    return homedir + "/.totvsls";
-  }
+	/**
+	 * Retorna o path completo do servers.json
+	 */
+	static getServerConfigFile() {
+		return (
+			this.workspaceServerConfig() ? path.join(this.getVSCodePath(), "servers.json") : homedir + "/.totvsls/servers.json"
+		);
+	}
+
+	/**
+	 * Retorna o path de onde deve ficar o servers.json
+	 */
+	static getServerConfigPath() {
+		return (
+			this.workspaceServerConfig() ? this.getVSCodePath() : homedir + "/.totvsls"
+		);
+	}
 
   /**
    * Retorna o path completo do launch.json
@@ -123,16 +135,12 @@ export default class Utils {
       config.savedTokens = [];
     }
 
-    //compatibilização com arquivos gravados com versão da eextensão
+    //compatibilização com arquivos gravados com versão da extensão
     //anterior a 26/06/20
     if (config.hasOwnProperty("lastConnectedServer") && typeof config.lastConnectedServer !== "string") {
         if (config.lastConnectedServer.hasOwnProperty("id")) {
           config.lastConnectedServer = config.lastConnectedServer.id;
-        } else {
-          config.lastConnectedServer = "";
         }
-    } else {
-      config.lastConnectedServer = "";
     }
 
     return config;
@@ -979,12 +987,12 @@ export default class Utils {
 
   static isAdvPlSource(fileName: string): boolean {
     const ext = path.extname(fileName);
-    return this.advpl.indexOf(ext) > -1;
+    return this.advpl.indexOf(ext.toLocaleLowerCase()) > -1;
   }
 
   static is4glSource(fileName: string): boolean {
     const ext = path.extname(fileName);
-    return this.logix.indexOf(ext) > -1;
+    return this.logix.indexOf(ext.toLocaleLowerCase()) > -1;
   }
 
   static isResource(fileName: string): boolean {

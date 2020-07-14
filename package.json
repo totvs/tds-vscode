@@ -2,7 +2,7 @@
 	"name": "tds-vscode",
 	"displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
 	"description": "%tds.package.description%",
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"publisher": "TOTVS",
 	"author": {
 		"name": "TOTVS",
@@ -403,7 +403,7 @@
 						"%tds.package.editor.notification.show.errors_warnings_and_infos%",
 						"%tds.package.editor.notification.show.all%"
 					],
-					"default": "errors warnings and infos",
+					"default": "none",
 					"description": "%tds.package.editor.notification.show%"
 				},
 				"totvsLanguageServer.editor.toggle.autocomplete": {
@@ -420,23 +420,10 @@
 					"default": "LS",
 					"description": "%tds.package.editor.toggle.autocomplete%"
 				},
-				"totvsMonitor.update.speed": {
-					"scope": "window",
-					"type": "string",
-					"enum": [
-						"Short",
-						"Normal",
-						"Long",
-						"Manual"
-					],
-					"enumDescriptions": [
-						"%totvsMonitor.update.speed.short%",
-						"%totvsMonitor.update.speed.normal%",
-						"%totvsMonitor.update.speed.long%",
-						"%totvsMonitor.update.speed.manual%"
-					],
-					"default": "Normal",
-					"description": "%totvsMonitor.update.speed%"
+				"totvsLanguageServer.workspaceServerConfig": {
+					"type": "boolean",
+					"default": false,
+					"description": "%tds.package.workspaceServerConfig%"
 				}
 			}
 		},
@@ -1195,7 +1182,7 @@
 				},
 				{
 					"command": "totvs-developer-studio.reconnect",
-					"when": "view == totvs_server && viewItem == serverItem",
+					"when": "view == totvs_server && viewItem == serverItemNotConnected",
 					"group": "AAtotvsServer@1"
 				},
 				{
