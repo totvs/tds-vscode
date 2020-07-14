@@ -9,8 +9,11 @@ function fieldDef(
   return { field: field, title: title, ...extraProps };
 }
 
-function doFormatNumber(value: number, props: {} = { minimumFractionDigits: 0 }) {
-  const result = (value).toLocaleString([], props);
+function doFormatNumber(
+  value: number,
+  props: {} = { minimumFractionDigits: 0 }
+) {
+  const result = value.toLocaleString([], props);
   return result;
 }
 
@@ -82,24 +85,31 @@ export const getColumn = (name: string) => {
   return result;
 };
 
-export const propColumn = (name: string, key: string, value: any = undefined): any => {
+export const propColumn = (
+  name: string,
+  key: string,
+  value: any = undefined
+): any => {
   return {
     customColumns: {
       [name]: { [key]: value },
     },
   };
-}
+};
 
-export const propColumnHidden = (name: string, value: boolean = undefined): any => {
-  return propColumn(name, 'hidden', value);
+export const propColumnHidden = (
+  name: string,
+  value: boolean = undefined
+): any => {
+  return propColumn(name, "hidden", value);
 };
 
 export const propOrderDirection = (value: string = undefined): any => {
   return {
     customProps: {
-      direction: value ,
+      direction: value,
     },
-  }
+  };
 };
 
 export const propOrderBy = (value: number = undefined): any => {
@@ -107,7 +117,38 @@ export const propOrderBy = (value: number = undefined): any => {
     customProps: {
       orderBy: value,
     },
+  };
+};
+
+export const propColumnsOrder = (value: string[] = undefined): any => {
+  return {
+    customProps: {
+      columnsOrder: value,
+    },
+  };
+};
+
+export const propColumnMove = (
+  sourceIndex: number,
+  destinationIndex: number
+): any => {
+  const columns = propColumns().columns;
+  const columnsOrder: string[] = columns.map((element: any) => element.field);
+  let result: string[];
+
+  if (sourceIndex > destinationIndex) {
+    const aux = destinationIndex;
+    destinationIndex = sourceIndex;
+    sourceIndex = aux;
   }
+
+  result = columnsOrder.slice(0, sourceIndex - 1);
+  result.push(...columnsOrder.slice(sourceIndex, destinationIndex - 1));
+  result.push(columnsOrder[destinationIndex]);
+  result.push(...columnsOrder.slice(destinationIndex+1, columnsOrder.length));
+
+  console.log(JSON.stringify(result));
+  return propColumnsOrder(result);
 };
 
 export const propColumnList = (): any => {
@@ -123,17 +164,45 @@ export const propColumns = (extraProps?: any): any => {
       fieldDef("environment", "Ambiente", extraProps),
       fieldDef("username", "Usuário", extraProps),
       fieldDef("computerName", "Estação", extraProps),
-      fieldDef("threadId", "Thread", { type: "numeric", ...extraProps, render: (row: any) => doFormatNumber(row["threadId"]) }),
+      fieldDef("threadId", "Thread", {
+        type: "numeric",
+        ...extraProps,
+        render: (row: any) => doFormatNumber(row["threadId"]),
+      }),
       fieldDef("mainName", "Programa", extraProps),
       fieldDef("loginTime", "Conexão", extraProps),
       fieldDef("elapsedTime", "Tempo Decorrido", extraProps),
       fieldDef("inactiveTime", "Tempo Inatividade", extraProps),
-      fieldDef("totalInstrCount", "Total Instruções", { type: "numeric", ...extraProps , render: (row: any) => doFormatNumber(row["totalInstrCount"]) }),
-      fieldDef("instrCountPerSec", "Instruções/seg", { type: "numeric", ...extraProps , render: (row: any) => doFormatNumber(row["instrCountPerSec"], {maximumFractionDigits: 2, minimumFractionDigits: 2}) }),
+      fieldDef("totalInstrCount", "Total Instruções", {
+        type: "numeric",
+        ...extraProps,
+        render: (row: any) => doFormatNumber(row["totalInstrCount"]),
+      }),
+      fieldDef("instrCountPerSec", "Instruções/seg", {
+        type: "numeric",
+        ...extraProps,
+        render: (row: any) =>
+          doFormatNumber(row["instrCountPerSec"], {
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
+          }),
+      }),
       fieldDef("remark", "Comentário", extraProps),
-      fieldDef("memUsed", "Memória em Uso", { type: "numeric", ...extraProps , render: (row: any) => doFormatNumber(row["memUsed"]) }),
-      fieldDef("sid", "SID", { type: "numeric", ...extraProps , render: (row: any) => doFormatNumber(row["sid"]) }),
-      fieldDef("ctreeTaskId", "CTree ID", { type: "numeric", ...extraProps , render: (row: any) => doFormatNumber(row["ctreeTaskId"]) }),
+      fieldDef("memUsed", "Memória em Uso", {
+        type: "numeric",
+        ...extraProps,
+        render: (row: any) => doFormatNumber(row["memUsed"]),
+      }),
+      fieldDef("sid", "SID", {
+        type: "numeric",
+        ...extraProps,
+        render: (row: any) => doFormatNumber(row["sid"]),
+      }),
+      fieldDef("ctreeTaskId", "CTree ID", {
+        type: "numeric",
+        ...extraProps,
+        render: (row: any) => doFormatNumber(row["ctreeTaskId"]),
+      }),
       fieldDef("clientType", "Tipo Conexão", extraProps),
     ],
   };

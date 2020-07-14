@@ -42,7 +42,9 @@ import {
   propSpeed,
   propSpeedText,
   propOrderBy,
-  propOrderDirection
+  propOrderDirection,
+  propColumnMove,
+  propColumnsOrder
 } from "./monitorPanelMemento";
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
@@ -107,15 +109,8 @@ function Title(props: ITitleProps) {
   );
 }
 
-let memento: IMemento = undefined;
-
-function buildColumns(empty: boolean) {
-  let columns =
-    empty
-      ? []
-      : memento.get(propColumns({ ...cellDefaultStyle })).columns;
-
-  if (columns.length) {
+function buildColumns(memento: IMemento): [] {
+  let columns = memento.get(propColumns({ ...cellDefaultStyle })).columns;
     const orderBy = memento.get(propOrderBy()) || -1;
 
     for (let index = 0; index < columns.length; index++) {
@@ -139,16 +134,17 @@ function buildColumns(empty: boolean) {
 
       columns[index] = element;
     }
-  }
+
+    const columnsOrder: string[] = memento.get(propColumnsOrder());
+    if (columnsOrder) {
+      console.log(columnsOrder);
+    }
 
   return columns;
 }
 
 export default function MonitorPanel(props: IMonitorPanel) {
-  if (memento === undefined) {
-    memento = useMemento("monitorTable", DEFAULT_TABLE, props.memento);
-  }
-
+  const memento = useMemento(DEFAULT_TABLE, props.memento);
   const [pageSize, setPageSize] = React.useState(memento.get(propPageSize()));
   const [grouping, setGrouping] = React.useState(memento.get(propGrouping()));
   const [filtering, setFiltering] = React.useState(
@@ -161,14 +157,14 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const [locked, setLocked] = React.useState(true);
   const [columns, setColumns] = React.useState([]);
 
-  React.useEffect(() => {
-    memento.set(propGrouping(grouping));
-    memento.set(propPageSize(pageSize));
-    memento.set(propFiltering(filtering));
-    memento.set(propSpeed(speed));
+  // React.useEffect(() => {
+  //   memento.set(propGrouping(grouping));
+  //   memento.set(propPageSize(pageSize));
+  //   memento.set(propFiltering(filtering));
+  //   memento.set(propSpeed(speed));
 
-    memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
-  }, [grouping, pageSize, filtering, speed]);
+  //   memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
+  // }, [grouping, pageSize, filtering, speed]);
 
   const [openDialog, setOpenDialog] = React.useState({
     lockServer: false,
@@ -187,7 +183,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
       switch (message.command) {
         case MonitorPanelAction.DoUpdateState: {
-          //_memento.reset();
+          memento.reset();
           break;
         }
         case MonitorPanelAction.SetSpeedUpdate: {
@@ -205,7 +201,14 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
           setRows(result);
           setSubtitle(message.data.serverName);
-          setColumns(buildColumns(result.length === 0));
+        //   let columns =
+        //   empty
+        //     ? []
+        //     : memento.get(propColumns({ ...cellDefaultStyle })).columns;
+
+        // if (columns.length) {
+
+          setColumns((result.length === 0?[]:buildColumns(memento)));
           break;
         }
         default:
@@ -390,7 +393,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   const doColumnHidden = (column: Column<any>, hidden: boolean) => {
     memento.set(propColumnHidden(column.field as string, hidden));
-    memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
+    memento.save(props.vscode, "monitorTable", MonitorPanelAction.DoUpdateState);
   };
 
   const doGroupRemoved = (column: Column<any>, index: boolean) => {
@@ -403,13 +406,14 @@ export default function MonitorPanel(props: IMonitorPanel) {
     memento.set(propOrderBy(orderBy));
     memento.set(propOrderDirection(direction));
 
-    memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
+    memento.save(props.vscode, "monitorTable", MonitorPanelAction.DoUpdateState);
   };
 
   const doColumnDragged = (sourceIndex: number, destinationIndex: number) => {
-    console.log(sourceIndex);
+    const count = columns.filter((element: any) => element.hidden).length;
+    memento.set(propColumnMove(sourceIndex+count, destinationIndex+count));
 
-    //_memento.set(propColumnHidden(column.field as string, index));
+    memento.save(props.vscode, "monitorTable", MonitorPanelAction.DoUpdateState);
   };
 
   const doChangeRowsPerPage = (value: number) => {
