@@ -12,7 +12,6 @@ import {
 } from "../protocolMessages";
 import { MonitorPanelAction, IMonitorPanelAction } from "./actions";
 import { isNullOrUndefined } from "util";
-import IMonitorUser from "./monitorUser";
 import Utils from "../utils";
 import {
   sendDisconnectRequest,
@@ -21,7 +20,9 @@ import {
 } from "../protocolMessages";
 import { languageClient } from "../extension";
 import serverProvider, { ServerItem } from "../serverItemProvider";
-import { useMemento } from "./helper/_memento";
+import * as nls from "vscode-nls";
+
+const localize = nls.loadMessageBundle();
 
 const DEFAULT_SPEED = 15;
 
@@ -85,33 +86,6 @@ export class MonitorLoader {
       }
     );
 
-    // this._panel.iconPath = {
-    //   light: vscode.Uri.parse(
-    //     path.join(
-    //       "file:///",
-    //       __filename,
-    //       "..",
-    //       "..",
-    //       "..",
-    //       "resources",
-    //       "light",
-    //       "lock.svg"
-    //     )
-    //   ),
-    //   dark: vscode.Uri.parse(
-    //     path.join(
-    //       "file:///",
-    //       __filename,
-    //       "..",
-    //       "..",
-    //       "..",
-    //       "resources",
-    //       "dark",
-    //       "lock.svg"
-    //     )
-    //   ),
-    // };
-
     this._panel.webview.html = this.getWebviewContent();
     this._panel.onDidChangeViewState(
       (listener: vscode.WebviewPanelOnDidChangeViewStateEvent) => {
@@ -136,7 +110,7 @@ export class MonitorLoader {
 
       if (this.monitorServer) {
         vscode.window.setStatusBarMessage(
-          `Desconectando monitor do servidor [${this.monitorServer.name}]`,
+          localize("MSG_DISCONECT_MONITOR", "Disconnecting monitor from server [{0}]", this.monitorServer.name),
           sendDisconnectRequest(this.monitorServer)
         );
       }

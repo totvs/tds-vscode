@@ -2,11 +2,11 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as os from 'os';
-import * as JSZip from 'jszip';
 import Utils from '../utils';
 import { languageClient } from '../extension';
 import * as nls from 'vscode-nls';
 import { ResponseError } from 'vscode-languageclient';
+import JSZip = require('jszip');
 
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
@@ -212,7 +212,7 @@ function extractPatchsFiles(zipfilenames: string[]): Promise<string[]> {
 		const tmpPath = fs.mkdtempSync(path.join(os.tmpdir(), 'tds-'));
 
 		zipfilenames.forEach(zipfilename => {
-			const zip = new JSZip();
+			const zip: JSZip = new JSZip();
 			const data = fs.readFileSync(zipfilename);
 
 			zip.loadAsync(data).then(function (contents) {

@@ -5,9 +5,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  Button
+  Button,
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
+import * as nls from "vscode-nls";
+
+const localize = nls.loadMessageBundle();
 
 export interface UnlockServerDialogProps {
   open: boolean;
@@ -33,8 +36,10 @@ export default function UnlockServerDialog(props: UnlockServerDialogProps) {
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="info">
-            Ao confirmar a liberação de novas conexões, os usuários podem
-            conectar-se novamente a esse servidor.
+            {localize(
+              "INFO_RELEASE_CONNECTION",
+              "When confirming the release of new connections, users can connect to that server again."
+            )}
           </Alert>
         </DialogContentText>
         <DialogActions>
@@ -43,14 +48,14 @@ export default function UnlockServerDialog(props: UnlockServerDialogProps) {
               handleClose(event, "OK");
             }}
           >
-            OK
+            {localize("OK", "OK")}
           </Button>
           <Button
             onClick={() => {
               handleClose(event, "cancel");
             }}
           >
-            Cancelar
+            {localize("CANCEL", "Cancel")}
           </Button>
         </DialogActions>
       </DialogContent>

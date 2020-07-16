@@ -46,6 +46,9 @@ import {
   propColumnMove,
   propColumnsOrder,
 } from "./monitorPanelMemento";
+import * as nls from "vscode-nls";
+
+const localize = nls.loadMessageBundle();
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -110,7 +113,7 @@ function Title(props: ITitleProps) {
 }
 
 function buildColumns(memento: IMemento): [] {
-  let columns = memento.get(propColumns({ ...cellDefaultStyle }));
+  let columns = memento.get(propColumns({ ...cellDefaultStyle })).columns;
   const orderBy = memento.get(propOrderBy()) || -1;
 
   for (let index = 0; index < columns.length; index++) {
@@ -157,14 +160,12 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const [selected, setSelected] = React.useState<IConnectionData[]>([]);
   const [speed, setSpeed] = React.useState(memento.get(propSpeed()));
   const [rows, setRows] = React.useState([]);
-  const [subtitle, setSubtitle] = React.useState("(inicializando)");
+  const [subtitle, setSubtitle] = React.useState(localize("INITIALIZING", "(inicializando)"));
   const [locked, setLocked] = React.useState(true);
   const [columns, setColumns] = React.useState([]);
   const monitorTable = React.useRef();
 
   React.useEffect(() => {
-    console.log(">>>> useEffect");
-    console.log(monitorTable);
 
     //   memento.set(propGrouping(grouping));
     //   memento.set(propPageSize(pageSize));
@@ -214,8 +215,8 @@ export default function MonitorPanel(props: IMonitorPanel) {
           break;
         }
         default:
-          console.log("***** ATENÇÃO: monitorPanel.tsx");
-          console.log("\tComando não reconhecido: " + message.command);
+          console.log("***** ATTENTION: monitorPanel.tsx");
+          console.log("\tCommand not recognized: " + message.command);
           break;
       }
     };
@@ -429,14 +430,14 @@ export default function MonitorPanel(props: IMonitorPanel) {
   if (!locked) {
     actions.push({
       icon: () => <LockIcon />,
-      tooltip: "Lock server",
+      tooltip: localize("LOCK_SERVER", "Lock server"),
       isFreeAction: true,
       onClick: (event: any) => handleLockButtonClick(event),
     });
   } else {
     actions.push({
       icon: () => <LockOpenIcon />,
-      tooltip: "Unlock server",
+      tooltip: localize("UNLOCK_SERVER","Unlock server"),
       isFreeAction: true,
       onClick: (event: any) => handleUnlockButtonClick(event),
     });
@@ -444,42 +445,42 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   actions.push({
     icon: () => <MessageIcon />,
-    tooltip: "Send message to all users",
+    tooltip: localize("SEND_MESSAGE_ALL_USERS", "Send message to all users"),
     isFreeAction: true,
     onClick: (event: any) => handleSendMessageButtonClick(event, null),
   });
 
   actions.push({
     icon: () => <MessageIcon />,
-    tooltip: "Send message to selected users",
+    tooltip: localize("SEND_MESSAGE_SELECTED_USERS","Send message to selected users"),
     isFreeAction: false,
     onClick: (event: any, row: any) => handleSendMessageButtonClick(event, row),
   });
 
   actions.push({
     icon: () => <DisconnectIcon />,
-    tooltip: "Disconnect all users",
+    tooltip: localize("DISCONNECT_ALL_USERS","Disconnect all users"),
     isFreeAction: true,
     onClick: (event: any) => handleDisconnectUserButtonClick(event, null),
   });
 
   actions.push({
     icon: () => <DisconnectIcon />,
-    tooltip: "Disconnect selectd users",
+    tooltip: localize("DISCONNECT_SELECTD_USERS","Disconnect selectd users"),
     isFreeAction: false,
     onClick: (event: any) => handleDisconnectUserButtonClick(event, rows),
   });
 
   actions.push({
     icon: () => <StopIcon />,
-    tooltip: "Stop server",
+    tooltip: localize("STOP_SERVER","Stop server"),
     isFreeAction: true,
     onClick: (event: any) => handleStopButtonClick(event),
   });
 
   actions.push({
     icon: () => <GroupingIcon />,
-    tooltip: "Grouping on/off",
+    tooltip: localize("GROUPING_ON_OFF","Grouping on/off"),
     isFreeAction: true,
     onClick: () => {
       setGrouping(!grouping);
@@ -488,7 +489,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   actions.push({
     icon: () => <FilterList />,
-    tooltip: "Filtering on/off",
+    tooltip: localize("FILTERING_ON_OFF","Filtering on/off"),
     isFreeAction: true,
     onClick: () => {
       setFiltering(!filtering);
@@ -497,21 +498,21 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   actions.push({
     icon: () => <SpeedIcon />,
-    tooltip: `Update speed ${propSpeedText(memento.get(propSpeed()))}`,
+    tooltip: localize("UPDATE_SPEED","Update speed {0}", propSpeedText(memento.get(propSpeed()))),
     isFreeAction: true,
     onClick: () => handleSpeedButtonClick(),
   });
 
   actions.push({
     icon: () => <RefreshIcon />,
-    tooltip: "Refresh data",
+    tooltip: localize("REFRESH_DATA", "Refresh data"),
     isFreeAction: true,
     onClick: () => handleRefreshButtonClick(),
   });
 
   actions.push({
     icon: () => <FormatClearIcon />,
-    tooltip: "Reset default configurations",
+    tooltip: localize("RESET_CONFIGURATIONS", "Reset configurations"),
     isFreeAction: true,
     onClick: () => handleResetButtonClick(),
   });
@@ -524,43 +525,43 @@ export default function MonitorPanel(props: IMonitorPanel) {
             ref={monitorTable}
             localization={{
               pagination: {
-                labelDisplayedRows: "{from}-{to} de {count}",
-                labelRowsSelect: "conexões",
-                labelRowsPerPage: "linhas/pág.",
-                firstAriaLabel: "Primeira",
-                firstTooltip: "Primeira página",
-                previousAriaLabel: "Anterior",
-                previousTooltip: "Página anterior",
-                nextAriaLabel: "Próxima",
-                nextTooltip: "Próxima página",
-                lastAriaLabel: "Última",
-                lastTooltip: "Última página",
+                labelDisplayedRows: localize("FROM_TO_OF_COUNT", "{from}-{to} de {count}"),
+                labelRowsSelect: localize("CONNECTIONS","connections"),
+                labelRowsPerPage: localize("LINES_PAGE.","lines/p."),
+                firstAriaLabel: localize("FIRST", "First"),
+                firstTooltip: localize("FIRST_PAGE", "First page"),
+                previousAriaLabel: localize("PREVIOUS","Previous"),
+                previousTooltip: localize("PREVIOUS_PAGE","Previous page"),
+                nextAriaLabel: localize("NEXT","Next"),
+                nextTooltip: localize("NEXT_PAGE","Next page"),
+                lastAriaLabel: localize("LAST","Last"),
+                lastTooltip: localize("LAST_PAGE","Last page"),
               },
               toolbar: {
-                nRowsSelected: "{0} conexões selecionadas",
-                showColumnsTitle: "Apresenta/esconde colunas",
-                searchTooltip: "Busca em todas as colunas",
-                searchPlaceholder: "Busca",
+                nRowsSelected: localize("CONNECTIONS_SELECTED","{0} connections selected"),
+                showColumnsTitle: localize("SHOW_HIDE_COLUMNS","Show/hide columns"),
+                searchTooltip: localize("SEARCH_ALL_COLUMNS","Search in all columns"),
+                searchPlaceholder: localize("SEARCH","Search"),
               },
               header: {
-                actions: "Ações",
+                actions: localize("ACTIONS","Actions")
               },
               body: {
                 emptyDataSourceMessage:
-                  "Não há conexões ou estas não são visíveis ao monitor.",
+                  localize("NO_CONNECTIONS", "There are no connections or they are not visible to the monitor."),
                 filterRow: {
-                  filterTooltip: "Filtro",
+                  filterTooltip: localize("FILTER","Filter")
                 },
               },
               grouping: {
-                placeholder: "Arrastar cabeçalhos...",
-                groupedBy: "Agrupado por:",
+                placeholder: localize("DRAG_HEADERS","Drag headers ..."),
+                groupedBy: localize("GROUPED_BY","Grouped by:"),
               },
             }}
             icons={monitorIcons.table}
             columns={columns}
             data={rows}
-            title={<Title title={"Monitor"} subtitle={subtitle} />}
+            title={<Title title={localize("MONITOR","Monitor")} subtitle={subtitle} />}
             options={{
               emptyRowsWhenPaging: false,
               pageSize: pageSize,

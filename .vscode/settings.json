@@ -11,7 +11,6 @@
 		".git*": true,
 		"/.hg": true,
 		"/.svn": true,
-		"/CVS": true,
-		"out": true
+		"/CVS": true
 	}
 }

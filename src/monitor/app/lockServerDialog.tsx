@@ -7,6 +7,9 @@ import {
   DialogActions,
   Button} from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
+import * as nls from "vscode-nls";
+
+const localize = nls.loadMessageBundle();
 
 export interface LockServerDialogProps {
   open: boolean;
@@ -32,8 +35,7 @@ export default function LockServerDialog(props: LockServerDialogProps) {
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="warning">
-            Ao confirmar o bloqueio de novas conexões, nenhum usuário poderá
-            conectar-se a esse servidor.
+            {localize("WARNING_BLOCKING_CONNECTIONS", "When confirming the blocking of new connections, no user can connect to that server.")}
           </Alert>
         </DialogContentText>
         <DialogActions>
@@ -42,14 +44,14 @@ export default function LockServerDialog(props: LockServerDialogProps) {
               handleClose(event, "OK");
             }}
           >
-            OK
+            {localize("OK", "OK")}
           </Button>
           <Button
             onClick={() => {
               handleClose(event, "cancel");
             }}
           >
-            Cancelar
+            {localize("CANCEL", "Cancel")}
           </Button>
         </DialogActions>
       </DialogContent>

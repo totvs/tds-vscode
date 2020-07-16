@@ -1,5 +1,8 @@
 import { cellDefaultStyle } from "./monitorInterface";
 import { mergeProperties } from "../helper";
+import * as nls from "vscode-nls";
+
+const localize = nls.loadMessageBundle();
 
 function fieldDef(
   field: string,
@@ -51,10 +54,10 @@ export const propSpeed = (value: number = undefined) => {
 };
 
 const speedText = {
-  0: "(manual)",
-  15: "(short)",
-  30: "(normal)",
-  60: "(long)",
+  0: localize("MANUAL", "(manual)"),
+  15: localize("SHORT", "(short)"),
+  30: localize("NORMAL", "(normal)"),
+  60: localize("LONG", "(long)"),
 };
 export const propSpeedText = (value: number): string => {
   return speedText[value];
@@ -145,7 +148,7 @@ export const propColumnMove = (
   result = columnsOrder.slice(0, sourceIndex - 1);
   result.push(...columnsOrder.slice(sourceIndex, destinationIndex - 1));
   result.push(columnsOrder[destinationIndex]);
-  result.push(...columnsOrder.slice(destinationIndex+1, columnsOrder.length));
+  result.push(...columnsOrder.slice(destinationIndex + 1, columnsOrder.length));
 
   console.log(JSON.stringify(result));
   return propColumnsOrder(result);
@@ -160,50 +163,74 @@ export const propColumnList = (): any => {
 export const propColumns = (extraProps?: any): any => {
   return {
     columns: [
-      fieldDef("server", "Servidor", extraProps),
-      fieldDef("environment", "Ambiente", extraProps),
-      fieldDef("username", "Usuário", extraProps),
-      fieldDef("computerName", "Estação", extraProps),
-      fieldDef("threadId", "Thread", {
+      fieldDef("server", localize("SERVER", "Server"), extraProps),
+      fieldDef("environment", localize("AMBIENT", "Ambient"), extraProps),
+      fieldDef("username", localize("USER", "User"), extraProps),
+      fieldDef(
+        "computerName",
+        localize("COMPUTER_NAME", "Computer Name"),
+        extraProps
+      ),
+      fieldDef("threadId", localize("THREAD", "Thread"), {
         type: "numeric",
         ...extraProps,
         render: (row: any) => doFormatNumber(row["threadId"]),
       }),
-      fieldDef("mainName", "Programa", extraProps),
-      fieldDef("loginTime", "Conexão", extraProps),
-      fieldDef("elapsedTime", "Tempo Decorrido", extraProps),
-      fieldDef("inactiveTime", "Tempo Inatividade", extraProps),
-      fieldDef("totalInstrCount", "Total Instruções", {
-        type: "numeric",
-        ...extraProps,
-        render: (row: any) => doFormatNumber(row["totalInstrCount"]),
-      }),
-      fieldDef("instrCountPerSec", "Instruções/seg", {
-        type: "numeric",
-        ...extraProps,
-        render: (row: any) =>
-          doFormatNumber(row["instrCountPerSec"], {
-            maximumFractionDigits: 2,
-            minimumFractionDigits: 2,
-          }),
-      }),
-      fieldDef("remark", "Comentário", extraProps),
-      fieldDef("memUsed", "Memória em Uso", {
+      fieldDef("mainName", localize("PROGRAM", "Program"), extraProps),
+      fieldDef("loginTime", localize("CONNECTION", "Connection"), extraProps),
+      fieldDef(
+        "elapsedTime",
+        localize("ELAPSED_TIME", "Elapsed time"),
+        extraProps
+      ),
+      fieldDef(
+        "inactiveTime",
+        localize("INACTIVITY_TIME ", "Downtime"),
+        extraProps
+      ),
+      fieldDef(
+        "totalInstrCount",
+        localize("TOTAL_INSTRUCTIONS ", "Total Instructions"),
+        {
+          type: "numeric",
+          ...extraProps,
+          render: (row: any) => doFormatNumber(row["totalInstrCount"]),
+        }
+      ),
+      fieldDef(
+        "instrCountPerSec",
+        localize("INSTRUCTIONS_SEG ", "Instructions/sec"),
+        {
+          type: "numeric",
+          ...extraProps,
+          render: (row: any) =>
+            doFormatNumber(row["instrCountPerSec"], {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+            }),
+        }
+      ),
+      fieldDef("remark", localize("COMMENT", "Comment"), extraProps),
+      fieldDef("memUsed", localize("MEMORY_USE ", "Memory in Use"), {
         type: "numeric",
         ...extraProps,
         render: (row: any) => doFormatNumber(row["memUsed"]),
       }),
-      fieldDef("sid", "SID", {
+      fieldDef("sid", localize("SID", "SID"), {
         type: "numeric",
         ...extraProps,
         render: (row: any) => doFormatNumber(row["sid"]),
       }),
-      fieldDef("ctreeTaskId", "CTree ID", {
+      fieldDef("ctreeTaskId", localize("CTREE_ID", "CTree ID"), {
         type: "numeric",
         ...extraProps,
         render: (row: any) => doFormatNumber(row["ctreeTaskId"]),
       }),
-      fieldDef("clientType", "Tipo Conexão", extraProps),
+      fieldDef(
+        "clientType",
+        localize("CONNECTION_TYPE ", "Connection Type"),
+        extraProps
+      ),
     ],
   };
 };

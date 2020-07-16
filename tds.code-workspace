@@ -8,6 +8,7 @@
 		}
 	],
 	"settings": {
-		"debug.javascript.suggestPrettyPrinting": false
+		"debug.javascript.suggestPrettyPrinting": false,
+		"translationManager.localeFolder": "tds-vscode/i18n"
 	}
 }

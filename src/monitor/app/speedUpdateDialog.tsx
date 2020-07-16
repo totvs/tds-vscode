@@ -10,6 +10,9 @@ import {
   FormControlLabel,
   Switch,
 } from "@material-ui/core";
+import * as nls from "vscode-nls";
+
+const localize = nls.loadMessageBundle();
 
 export interface SpeedUpdateDialogProps {
   open: boolean;
@@ -65,7 +68,7 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
                   name="short"
                 />
               }
-              label="15 segundos"
+              label={localize("SECONDS", "{0} seconds", 15)}
             />
           </FormGroup>
           <FormGroup row>
@@ -77,7 +80,7 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
                   name="normal"
                 />
               }
-              label="30 segundos"
+              label={localize("SECONDS", "{0} seconds", 30)}
             />
           </FormGroup>
           <FormGroup row>
@@ -89,7 +92,7 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
                   name="long"
                 />
               }
-              label="60 segundos"
+              label={localize("SECONDS", "{0} seconds", 60)}
             />
           </FormGroup>
           <FormGroup row>
@@ -101,7 +104,7 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
                   name="manual"
                 />
               }
-              label="Manual"
+              label={localize("MANUAL", "Manual")}
             />
           </FormGroup>
         </DialogContentText>
@@ -111,14 +114,14 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
               handleClose(event, "ok");
             }}
           >
-            OK
+            {localize("OK", "OK")}
           </Button>
           <Button
             onClick={() => {
               handleClose(event, "cancel");
             }}
           >
-            Cancelar
+            {localize("CANCEL", "Cancel")}
           </Button>
         </DialogActions>
       </DialogContent>

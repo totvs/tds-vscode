@@ -8,7 +8,9 @@ import {
   Button,
   Typography} from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
+import * as nls from "vscode-nls";
 
+const localize = nls.loadMessageBundle();
 
 export interface StopServerDialogProps {
   open: boolean;
@@ -34,10 +36,8 @@ export default function StopServerDialog(props: StopServerDialogProps) {
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="error">
-            <Typography>
-            Ao confirmar a parada do servidor, todas as conexões (incluindo
-            esta) serão encerradas, assim como outros processos.
-            <strong>A reinicialização só será possível acessando o servidor fisicamente.</strong>
+            <Typography>{localize("ERROR_ALL_CONNECTIONS_CLOSE",
+            "When confirming the server stop, all connections (including this) will be closed, as well as other processes. < strong > Restarting will only be possible by physically accessing the server. </strong>")}
             </Typography>
           </Alert>
         </DialogContentText>
@@ -47,14 +47,14 @@ export default function StopServerDialog(props: StopServerDialogProps) {
               handleClose(event, "ok");
             }}
           >
-            OK
+            {localize("OK", "OK")}
           </Button>
           <Button
             onClick={() => {
               handleClose(event, "cancel");
             }}
           >
-            Cancelar
+            {localize("CANCEL", "Cancel")}
           </Button>
         </DialogActions>
       </DialogContent>

@@ -16,8 +16,8 @@ const vsce = require('vsce');
 const es = require('event-stream');
 const minimist = require('minimist');
 
-const translationProjectName = 'vscode-extensions';
-const translationExtensionName = 'tds-vscode';
+const translationProjectName = 'tds-vscode-brodao';
+const translationExtensionName = 'totvs-developer-studio';
 
 const defaultLanguages = [
     { id: 'es', folderName: 'esn' },
@@ -31,14 +31,15 @@ const watchedSources = [
 ];
 
 const scripts = [
-    'src/terminateProcess.sh'
+    //'src/terminateProcess.sh'
 ];
 
 const lintSources = [
     'src'
 ].map(tsFolder => tsFolder + '/**/*.ts');
 
-const tsProject = ts.createProject('tsconfig.json', { jsx: "react", target: "ES5",esModuleInterop: true });
+const tsProject = ts.createProject('./src/tsconfig.json', { jsx: "react", target: "ES5", esModuleInterop: true });
+
 function doBuild(buildNls, failOnError) {
     return () => {
         let gotError = false;
@@ -71,15 +72,15 @@ gulp.task('clean', () => {
     return del(['out/**', 'package.nls.*.json', 'vscode-totvs-developer-studio-*.vsix']);
 });
 
-gulp.task('copy-scripts', () => {
-    return gulp
-        .src(scripts, { base: '.' })
-        .pipe(gulp.dest('out'));
-});
+// gulp.task('copy-scripts', () => {
+//     return gulp
+//         .src(scripts, { base: '.' })
+//         .pipe(gulp.dest('out'));
+// });
 
-gulp.task('_dev-build', gulp.series('copy-scripts', doBuild(false, false)));
+gulp.task('_dev-build', doBuild(false, false));
 
-gulp.task('_build', gulp.series('copy-scripts', doBuild(true, true)));
+gulp.task('_build', doBuild(true, true));
 
 gulp.task('build', gulp.series('clean', '_build'));
 
@@ -124,6 +125,7 @@ gulp.task('verify-no-linked-modules', cb => verifyNoLinkedModules().then(() => c
 gulp.task('vsce-publish', () => {
     return vsce.publish();
 });
+
 gulp.task('vsce-package', () => {
     const cliOptions = minimist(process.argv.slice(2));
     const packageOptions = {
@@ -143,10 +145,10 @@ gulp.task('publish', gulp.series('build', 'add-i18n', 'vsce-publish'));
 
 gulp.task('package', gulp.series('build', 'add-i18n', 'vsce-package'));
 
-gulp.task('translations-export', gulp.series('_build', () => {
-	return gulp.src('**/*.nls.json')
-		.pipe(nls.createXlfFiles(translationProjectName, translationExtensionName))
-		.pipe(gulp.dest(path.join('..', 'tds-vscode-translations-export')));
+gulp.task('translations-export', gulp.series('build', () => {
+    return gulp.src(['out/**/nls.bundle.*.json', 'out/**/nls.bundle.json'])
+		.pipe(nls.createKeyValuePairFile())
+		.pipe(gulp.dest('./tds-vscode-translations-export'));
 }));
 
 gulp.task('translations-import', (done) => {
@@ -172,4 +174,31 @@ gulp.task('i18n-import', () => {
 			.pipe(nls.prepareJsonFiles())
 			.pipe(gulp.dest(path.join('./i18n', language.folderName)));
 	}));
+});
+
+
+const vscodeLanguages = defaultLanguages;
+const transifexApiHostname = 'www.transifex.com';
+const transifexApiName = 'api/2';
+const transifexApiToken = "1/607c3da66e72b2dce45f5dc878989127537a73c7"; //process.env.TRANSIFEX_API_TOKEN; // token to talk to Transifex (to obtain it see https://docs.transifex.com/api/introduction#authentication)
+const transifexProjectName = translationProjectName; // your project name in Transifex
+const transifexExtensionName = translationExtensionName; // your resource name in Transifex
+
+
+//Arquivo Xlf, somente para planos empresarias
+gulp.task('transifex-push', function() {
+    return gulp.src(['**/*.nls.json',"**/*.nls.bundle.json"])
+		.pipe(nls.createXlfFiles(transifexProjectName, transifexExtensionName))
+		.pipe(nls.pushXlfFiles(transifexApiHostname, transifexApiName, transifexApiToken));
+});
+
+gulp.task('transifex-pull', function() {
+	return nls.pullXlfFiles(transifexApiHostname, transifexApiName, transifexApiToken, vscodeLanguages, [{ name: transifexExtensionName, project: transifexProjectName }])
+		.pipe(gulp.dest(`../${transifexExtensionName}-localization`));
+});
+
+gulp.task('i18n-import', function() {
+	return gulp.src(`../${transifexExtensionName}-localization/**/*.xlf`)
+		.pipe(nls.prepareJsonFiles())
+		.pipe(gulp.dest('./i18n'));
 });

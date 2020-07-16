@@ -12,6 +12,9 @@ import {
 import MaterialTable from "material-table";
 import { cellDefaultStyle } from "./monitorInterface";
 import { monitorIcons } from "../helper/monitorIcons";
+import * as nls from "vscode-nls";
+
+const localize = nls.loadMessageBundle();
 
 export interface SendMessageDialogProps {
   open: boolean;
@@ -19,11 +22,12 @@ export interface SendMessageDialogProps {
   onClose: (confirmed: boolean, message: string, recipients: any) => void;
 }
 
+
 const headCells: any[] = [
-  { field: "server", title: "Servidor", ...cellDefaultStyle },
-  { field: "environment", title: "Ambiente", ...cellDefaultStyle },
-  { field: "username", title: "Usuário", ...cellDefaultStyle },
-  { field: "remark", title: "Comentário", ...cellDefaultStyle }
+  { field: "server", title: localize("SERVER", "Server"), ...cellDefaultStyle },
+  { field: "environment", title: localize("ENVIRONEMNT", "Environment"), ...cellDefaultStyle },
+  { field: "username", title: localize("USER", "User"), ...cellDefaultStyle },
+  { field: "remark", title: localize("REMARKS", "Remarks"), ...cellDefaultStyle }
 ];
 
 export default function SendMessageDialog(props: SendMessageDialogProps) {
@@ -59,7 +63,7 @@ export default function SendMessageDialog(props: SendMessageDialogProps) {
           <TextField
             inputRef={messageRef}
             required
-            label="Mensagem"
+            label={localize("MESSAGE_TEXT", "Message Text")}
             defaultValue=""
             variant="outlined"
             multiline
@@ -85,14 +89,14 @@ export default function SendMessageDialog(props: SendMessageDialogProps) {
               handleClose(event, "send");
             }}
           >
-            Enviar
+            {localize("SEND", "Submit")}
           </Button>
           <Button
             onClick={() => {
               handleClose(event, "cancel");
             }}
           >
-            Cancelar
+            {localize("CANCEL", "Cancel")}
           </Button>
         </DialogActions>
       </DialogContent>
