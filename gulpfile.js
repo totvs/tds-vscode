@@ -184,18 +184,69 @@ const transifexApiToken = "1/607c3da66e72b2dce45f5dc878989127537a73c7"; //proces
 const transifexProjectName = translationProjectName; // your project name in Transifex
 const transifexExtensionName = translationExtensionName; // your resource name in Transifex
 
-
+//
 //Arquivo Xlf, somente para planos empresarias
-gulp.task('transifex-push', function() {
-    return gulp.src(['**/*.nls.json',"**/*.nls.bundle.json"])
-		.pipe(nls.createXlfFiles(transifexProjectName, transifexExtensionName))
-		.pipe(nls.pushXlfFiles(transifexApiHostname, transifexApiName, transifexApiToken));
-});
+//
+// gulp.task('transifex-push', function() {
+//     return gulp.src(['**/*.nls.json',"**/*.nls.bundle.json"])
+// 		.pipe(nls.createXlfFiles(transifexProjectName, transifexExtensionName))
+// 		.pipe(nls.pushXlfFiles(transifexApiHostname, transifexApiName, transifexApiToken));
+// });
+//
+// gulp.task('transifex-pull', function() {
+// 	return nls.pullXlfFiles(transifexApiHostname, transifexApiName, transifexApiToken, vscodeLanguages, [{ name: transifexExtensionName, project: transifexProjectName }])
+// 		.pipe(gulp.dest(`../${transifexExtensionName}-localization`));
+// });
+////////////////////////////////////////////////////////
 
-gulp.task('transifex-pull', function() {
-	return nls.pullXlfFiles(transifexApiHostname, transifexApiName, transifexApiToken, vscodeLanguages, [{ name: transifexExtensionName, project: transifexProjectName }])
-		.pipe(gulp.dest(`../${transifexExtensionName}-localization`));
-});
+gulp.task('transifex-push', function () {
+    const { execFile } = require('child_process');
+    const ls = execFile('C:\\Python27\\Scripts\\tx.exe', ['-d','push','--source','-t']);
+
+    ls.stdout.on('data', (data) => {
+      console.log(data);
+    });
+
+    ls.stderr.on('data', (data) => {
+      console.log(data);
+    });
+
+    ls.on('close', (code) => {
+      console.log(`tx process close all stdio with code ${code}`);
+    });
+
+    ls.on('exit', (code) => {
+      console.log(`tx process exited with code ${code}`);
+    });
+
+    return gulp.done;
+}
+);
+
+gulp.task('transifex-pull', function () {
+    const { execFile } = require('child_process');
+    const ls = execFile('C:\\Python27\\Scripts\\tx.exe', ['-d','pull','-a','--skip']);
+
+    ls.stdout.on('data', (data) => {
+      console.log(data);
+    });
+
+    ls.stderr.on('data', (data) => {
+      console.log(data);
+    });
+
+    ls.on('close', (code) => {
+      console.log(`tx process close all stdio with code ${code}`);
+    });
+
+    ls.on('exit', (code) => {
+      console.log(`tx process exited with code ${code}`);
+    });
+
+    return gulp.done;
+}
+);
+
 
 gulp.task('i18n-import', function() {
 	return gulp.src(`../${transifexExtensionName}-localization/**/*.xlf`)

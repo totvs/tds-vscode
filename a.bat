@@ -1,0 +1,1 @@
+tx config mapping-bulk -p "tds-vscode-brodao" --source-language en --type KEYVALUEJSON --source-file-dir "./out" -f ".bundle.json" -i pt_PT --expression "tds-vscode-translations/{filepath}/{filename}.<lang>.{extension}" --execute

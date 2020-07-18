@@ -21,7 +21,7 @@
 	],
 	"engines": {
 		"vscode": "^1.29.0",
-		"node": "^8.9.3"
+		"node": "^12.13.0"
 	},
 	"icon": "imagens/totvs-developer-studio.png",
 	"categories": [
@@ -39,12 +39,13 @@
 		"url": "https://github.com/totvs/tds-vscode.git"
 	},
 	"scripts": {
+		"clean": "del /s out",
 		"prepare": "tsc -p ./src",
 		"compile": "npm-run-all compile:*",
-		"watch": "npm-run-all -p watch:*",
 		"compile:parse_4gl": "echo src/parser/4gl-parser.pegjs && pegjs -o ./src/parser/4gl-parser.js ./syntaxes/4gl.pegjs",
 		"compile:extension": "tsc -p ./src",
 		"compile:views": "webpack --mode development",
+		"watch": "npm-run-all -p watch:*",
 		"watch:extension": "tsc -w -p ./src",
 		"watch:views": "webpack --watch --mode development",
 		"tslint": "tslint ./src/**/*.ts",
@@ -59,7 +60,7 @@
 		"@totvs/tds-da": "^1.1.12",
 		"@totvs/tds-ls": "^1.1.18",
 		"@types/jszip": "^3.4.1",
-		"@types/node": "13.7.1",
+		"@types/node": "^14.0.0",
 		"@types/react": "^16.9.43",
 		"@types/vscode": "^1.47.0",
 		"cheerio": "^1.0.0-rc.3",
@@ -83,7 +84,6 @@
 		"cleanup": "^0.3.0",
 		"css-loader": "^3.6.0",
 		"del": "^4.1.1",
-		"eslint-plugin-react-hooks": "^4.0.8",
 		"gulp": "^4.0.2",
 		"gulp-sourcemaps": "^2.6.5",
 		"gulp-tslint": "^8.1.4",

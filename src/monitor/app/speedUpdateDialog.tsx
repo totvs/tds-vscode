@@ -10,9 +10,9 @@ import {
   FormControlLabel,
   Switch,
 } from "@material-ui/core";
-import * as nls from "vscode-nls";
+import { i18n } from "../helper";
 
-const localize = nls.loadMessageBundle();
+const localize = (key: string, message: string, args?: any): string => { return i18n.localize(key, message, args); };//nls.loadMessageBundle();
 
 export interface SpeedUpdateDialogProps {
   open: boolean;

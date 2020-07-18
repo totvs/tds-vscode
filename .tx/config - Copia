@@ -14,3 +14,5 @@ source_file = tds-vscode-translations/nls.bundle.json
 source_lang = en
 trans.None = .tx/config
 type = KEYVALUEJSON
+
+tx config mapping-bulk -p tds-vscode-brodao --source-language en --type KEYVALUEJSON --source-file-dir './out' -f '.bundle.json' -d locale -i pt_PT --expression 'tds-vscode-translations/{filepath}/{filename}.<lang>.{extension}'

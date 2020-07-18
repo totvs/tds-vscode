@@ -137,7 +137,7 @@ export class MonitorLoader {
 
       if (this._speed === 0) {
         vscode.window.showWarningMessage(
-          "A atualização ocorrerá por solicitação."
+          localize("UPDATE_ON_REQUEST", "The update will take place on request.")
         );
       }
 
@@ -157,7 +157,7 @@ export class MonitorLoader {
   public toggleServerToMonitor(serverItem: ServerItem) {
     if (this.monitorServer) {
       vscode.window.setStatusBarMessage(
-        `Desconectando monitor do servidor [${this.monitorServer.name}]`,
+        localize("DISCONNECTING_SERVER", "Disconnecting [{0}] from the server ", this.monitorServer.name),
         sendDisconnectRequest(this.monitorServer)
       );
     }
@@ -184,7 +184,7 @@ export class MonitorLoader {
             this.monitorServer = monitorItem;
           } else {
             vscode.window.showErrorMessage(
-              `Não foi possivel efetuar a conexão [${this.monitorServer.name} ao monitor.`
+              localize("NOT_POSSIBLE_CONNECTION", "It was not possible to make the monitoring connection at [{0}].", this.monitorServer.name)
             );
           }
         })
@@ -199,7 +199,7 @@ export class MonitorLoader {
           this.isLockServer(server);
         } else {
           vscode.window.showErrorMessage(
-            "Não foi possível bloquear novas conexões."
+            localize("NOT_BLOCK_NEW_CONNECTIONS", "Could not block new connections.")
           );
           console.log(result);
         }
@@ -216,7 +216,7 @@ export class MonitorLoader {
         this.lock = response;
         if (response) {
           vscode.window.showInformationMessage(
-            "Servidor com novas conexões bloqueadas"
+            localize("NEW_CONNECTIONS_BLOCKED","Server with new connections blocked.")
           );
         }
       },
@@ -231,7 +231,7 @@ export class MonitorLoader {
       (response: string) => {
         if (response !== "OK") {
           vscode.window.showErrorMessage(
-            `Não foi possível encerrar o servidor. Retorno: ${response}`
+            localize("SERVER_NOT_BE_SHUTDOWN", "The server could not be shut down. Return: {0}", response)
           );
         } else {
           serverProvider.connectedServerItem = undefined;
@@ -251,7 +251,7 @@ export class MonitorLoader {
     vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
-        title: "Encerrando conexões.",
+        title: localize("CLOSING_CONNECTIONS", "Closing connections."),
         cancellable: true,
       },
       (progress, token) => {
@@ -266,7 +266,7 @@ export class MonitorLoader {
         recipients.forEach((recipient) => {
           cnt++;
           progress.report({
-            message: `Encerrando #${cnt}/${total}`,
+            message: localize("SHUTTING_DOWN", "Shutting down #{0}/{1}", cnt, total),
             increment: inc,
           });
 
@@ -310,7 +310,7 @@ export class MonitorLoader {
     vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
-        title: "Enviando mensagem aos usuários.",
+        title: localize("SENDING_MESSAGE", "Sending message to users."),
         cancellable: true,
       },
       (progress, token) => {
@@ -325,7 +325,7 @@ export class MonitorLoader {
         recipients.forEach((recipient) => {
           cnt++;
           progress.report({
-            message: `Enviando #${cnt}/${total}`,
+            message: localize("SENDING", "Sending #{0}/{1}", cnt, total),
             increment: inc,
           });
 
@@ -408,8 +408,8 @@ export class MonitorLoader {
         break;
       }
       default:
-        console.log("***** ATENÇÃO: monitorLoader.tsx");
-        console.log("\tComando não reconhecido: " + command.action);
+        console.log("***** ATTENTION: monitorLoader.tsx");
+        console.log("\tUnrecognized command: " + command.action);
         console.log("\t" + command.content);
         break;
     }
@@ -438,17 +438,17 @@ export class MonitorLoader {
     if (this.monitorServer === null) {
       this._panel.webview.postMessage({
         command: MonitorPanelAction.UpdateUsers,
-        data: { serverName: "(aguardando seleção)", users: [] },
+        data: { serverName: localize("AWAITING_SELECTION", "(awaiting selection)"), users: [] },
       });
     } else {
       vscode.window.setStatusBarMessage(
-        `Requisitando dados ao servidor [${this.monitorServer.name}]`,
+        localize("REQUESTING_DATA_FROM_SERVER", "Requesting data from the server [{0}]", this.monitorServer.name),
         sendGetUsersRequest(this.monitorServer).then(
           (users: any) => {
             if (users) {
               const complement = users.length
-                ? ` (${users.length} thread(s))`
-                : ` (nenhuma thread)`;
+                ? localize("THREADS", " ({0} thread(s))", users.length)
+                : localize("THREADS_NONE", " (none thread)");
 
               this._panel.webview.postMessage({
                 command: MonitorPanelAction.UpdateUsers,
@@ -466,13 +466,13 @@ export class MonitorLoader {
           (err: Error) => {
             languageClient.error(err.message, err);
             vscode.window.showErrorMessage(
-              err.message + "\nVer log para detalhes."
+              err.message + localize("SEE_LOG", ". See log for details.")
             );
 
             if (this._speed > 0) {
-              languageClient.info("Atualização automática paralizada.");
+              languageClient.info(localize("AUTOMATIC_UPDATE_STOPPED", "Automatic update stopped."));
               languageClient.info(
-                "Favor acionar [Atualização], para reativar."
+                localize("PLEASE_CLICK_REACTIVATE", "Please click on [Update] to reactivate.")
               );
             }
           }
@@ -484,14 +484,14 @@ export class MonitorLoader {
   private updateSpeedStatus() {
     var nextUpdate = new Date(Date.now());
 
-    const msg1 = `Monitor: Atualizado as ${nextUpdate.getHours()}:${nextUpdate.getMinutes()}:${nextUpdate.getSeconds()}.`;
+    const msg1 = localize("MSG_1", "Monitor: Updated as {0}.", `${nextUpdate.getHours()}:${nextUpdate.getMinutes()}:${nextUpdate.getSeconds()}`);
     let msg2 = "";
 
     if (this._speed === 0) {
-      msg2 = `A próxima ocorrerá sob solicitação.`;
+      msg2 = localize("MSG_2_REQUEST","The next one will take place on request.");
     } else {
       nextUpdate.setSeconds(nextUpdate.getSeconds() + this._speed);
-      msg2 = `A próxima ocorrerá as ${nextUpdate.getHours()}:${nextUpdate.getMinutes()}:${nextUpdate.getSeconds()}`;
+      msg2 = localize("MSG_2_NEXT", "The next one will occur {0}", `${nextUpdate.getHours()}:${nextUpdate.getMinutes()}:${nextUpdate.getSeconds()}`);
     }
 
     vscode.window.setStatusBarMessage(`${msg1} ${msg2}`);

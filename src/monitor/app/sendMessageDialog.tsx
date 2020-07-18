@@ -12,9 +12,9 @@ import {
 import MaterialTable from "material-table";
 import { cellDefaultStyle } from "./monitorInterface";
 import { monitorIcons } from "../helper/monitorIcons";
-import * as nls from "vscode-nls";
+import { i18n } from "../helper";
 
-const localize = nls.loadMessageBundle();
+const localize = (key: string, message: string, args?: any): string => { return i18n.localize(key, message, args); };//nls.loadMessageBundle();
 
 export interface SendMessageDialogProps {
   open: boolean;

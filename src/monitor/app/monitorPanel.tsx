@@ -46,9 +46,9 @@ import {
   propColumnMove,
   propColumnsOrder,
 } from "./monitorPanelMemento";
-import * as nls from "vscode-nls";
+import { i18n } from "../helper";
 
-const localize = nls.loadMessageBundle();
+const localize = (key: string, message: string, args?: any): string => { return i18n.localize(key, message, args); };//nls.loadMessageBundle();
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -113,7 +113,7 @@ function Title(props: ITitleProps) {
 }
 
 function buildColumns(memento: IMemento): [] {
-  let columns = memento.get(propColumns({ ...cellDefaultStyle })).columns;
+  let columns = propColumns({ ...cellDefaultStyle }).columns; //memento.get(propColumns({ ...cellDefaultStyle })).columns;
   const orderBy = memento.get(propOrderBy()) || -1;
 
   for (let index = 0; index < columns.length; index++) {
@@ -148,30 +148,31 @@ function buildColumns(memento: IMemento): [] {
 let memento: IMemento = undefined;
 
 export default function MonitorPanel(props: IMonitorPanel) {
-  if (memento === undefined) {
-    memento = useMemento(DEFAULT_TABLE, props.memento);
-  }
+  //if (memento === undefined) {
+  memento = useMemento(props.vscode, DEFAULT_TABLE, props.memento);
+  //}
 
-  const [pageSize, setPageSize] = React.useState(memento.get(propPageSize()));
-  const [grouping, setGrouping] = React.useState(memento.get(propGrouping()));
-  const [filtering, setFiltering] = React.useState(
-    memento.get(propFiltering())
-  );
+  // const [pageSize, setPageSize] = React.useState(memento.get(propPageSize()));
+  // const [grouping, setGrouping] = React.useState(memento.get(propGrouping()));
+  // const [filtering, setFiltering] = React.useState(
+  //   memento.get(propFiltering())
+  // );
   const [selected, setSelected] = React.useState<IConnectionData[]>([]);
   const [speed, setSpeed] = React.useState(memento.get(propSpeed()));
   const [rows, setRows] = React.useState([]);
-  const [subtitle, setSubtitle] = React.useState(localize("INITIALIZING", "(inicializando)"));
+  const [subtitle, setSubtitle] = React.useState();
   const [locked, setLocked] = React.useState(true);
-  const [columns, setColumns] = React.useState([]);
-  const monitorTable = React.useRef();
+  //const [columns, setColumns] = React.useState([]);
+  //const monitorTable = React.useRef();
+  const [pageSize, setPageSize] = React.useState(50);
+  const [grouping, setGrouping] = React.useState(false);
+  const [filtering, setFiltering] = React.useState(false);
 
   React.useEffect(() => {
-
     //   memento.set(propGrouping(grouping));
     //   memento.set(propPageSize(pageSize));
     //   memento.set(propFiltering(filtering));
     //   memento.set(propSpeed(speed));
-
     //   memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
     // }, [grouping, pageSize, filtering, speed]);
   });
@@ -211,7 +212,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
           setRows(result);
           setSubtitle(message.data.serverName);
-          setColumns(result.length === 0 ? [] : buildColumns(memento));
+          //setColumns(result.length === 0 ? [] : buildColumns(memento));
           break;
         }
         default:
@@ -396,29 +397,28 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   const doColumnHidden = (column: Column<any>, hidden: boolean) => {
     memento.set(propColumnHidden(column.field as string, hidden));
-    memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
+    //memento.save(MonitorPanelAction.DoUpdateState);
   };
 
   const doGroupRemoved = (column: Column<any>, index: boolean) => {
-    console.log(column);
-
+    //console.log(column);
     //_memento.set(propColumnHidden(column.field as string, index));
   };
 
   const doOrderChange = (orderBy: number, direction: string) => {
-    const count = columns.filter((element: any) => element.hidden).length;
+    const count = 0; //columns.filter((element: any) => element.hidden).length;
 
     memento.set(propOrderBy(orderBy + count));
     memento.set(propOrderDirection(direction));
 
-    memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
+    //memento.save(MonitorPanelAction.DoUpdateState);
   };
 
   const doColumnDragged = (sourceIndex: number, destinationIndex: number) => {
-    const count = columns.filter((element: any) => element.hidden).length;
+    const count = 0; //columns.filter((element: any) => element.hidden).length;
     memento.set(propColumnMove(sourceIndex + count, destinationIndex + count));
 
-    memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
+    //memento.save(MonitorPanelAction.DoUpdateState);
   };
 
   const doChangeRowsPerPage = (value: number) => {
@@ -437,7 +437,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   } else {
     actions.push({
       icon: () => <LockOpenIcon />,
-      tooltip: localize("UNLOCK_SERVER","Unlock server"),
+      tooltip: localize("UNLOCK_SERVER", "Unlock server"),
       isFreeAction: true,
       onClick: (event: any) => handleUnlockButtonClick(event),
     });
@@ -452,35 +452,35 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   actions.push({
     icon: () => <MessageIcon />,
-    tooltip: localize("SEND_MESSAGE_SELECTED_USERS","Send message to selected users"),
+    tooltip: localize("SEND_MESSAGE_SELECTED_USERS", "Send message to selected users"),
     isFreeAction: false,
     onClick: (event: any, row: any) => handleSendMessageButtonClick(event, row),
   });
 
   actions.push({
     icon: () => <DisconnectIcon />,
-    tooltip: localize("DISCONNECT_ALL_USERS","Disconnect all users"),
+    tooltip: localize("DISCONNECT_ALL_USERS", "Disconnect all users"),
     isFreeAction: true,
     onClick: (event: any) => handleDisconnectUserButtonClick(event, null),
   });
 
   actions.push({
     icon: () => <DisconnectIcon />,
-    tooltip: localize("DISCONNECT_SELECTD_USERS","Disconnect selectd users"),
+    tooltip: localize("DISCONNECT_SELECTD_USERS", "Disconnect selectd users"),
     isFreeAction: false,
     onClick: (event: any) => handleDisconnectUserButtonClick(event, rows),
   });
 
   actions.push({
     icon: () => <StopIcon />,
-    tooltip: localize("STOP_SERVER","Stop server"),
+    tooltip: localize("STOP_SERVER", "Stop server"),
     isFreeAction: true,
     onClick: (event: any) => handleStopButtonClick(event),
   });
 
   actions.push({
     icon: () => <GroupingIcon />,
-    tooltip: localize("GROUPING_ON_OFF","Grouping on/off"),
+    tooltip: localize("GROUPING_ON_OFF", "Grouping on/off"),
     isFreeAction: true,
     onClick: () => {
       setGrouping(!grouping);
@@ -489,7 +489,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   actions.push({
     icon: () => <FilterList />,
-    tooltip: localize("FILTERING_ON_OFF","Filtering on/off"),
+    tooltip: localize("FILTERING_ON_OFF", "Filtering on/off"),
     isFreeAction: true,
     onClick: () => {
       setFiltering(!filtering);
@@ -498,7 +498,11 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   actions.push({
     icon: () => <SpeedIcon />,
-    tooltip: localize("UPDATE_SPEED","Update speed {0}", propSpeedText(memento.get(propSpeed()))),
+    tooltip: localize(
+      "UPDATE_SPEED",
+      "Update speed {0}",
+      propSpeedText(memento.get(propSpeed()))
+    ),
     isFreeAction: true,
     onClick: () => handleSpeedButtonClick(),
   });
@@ -518,111 +522,123 @@ export default function MonitorPanel(props: IMonitorPanel) {
   });
 
   return (
-    <ErrorBoundary>
-      <MonitorTheme>
-        <Paper variant="outlined">
-          <MaterialTable
-            ref={monitorTable}
-            localization={{
-              pagination: {
-                labelDisplayedRows: localize("FROM_TO_OF_COUNT", "{from}-{to} de {count}"),
-                labelRowsSelect: localize("CONNECTIONS","connections"),
-                labelRowsPerPage: localize("LINES_PAGE.","lines/p."),
-                firstAriaLabel: localize("FIRST", "First"),
-                firstTooltip: localize("FIRST_PAGE", "First page"),
-                previousAriaLabel: localize("PREVIOUS","Previous"),
-                previousTooltip: localize("PREVIOUS_PAGE","Previous page"),
-                nextAriaLabel: localize("NEXT","Next"),
-                nextTooltip: localize("NEXT_PAGE","Next page"),
-                lastAriaLabel: localize("LAST","Last"),
-                lastTooltip: localize("LAST_PAGE","Last page"),
+    <MonitorTheme>
+      <Paper variant="outlined">
+        <MaterialTable
+          localization={{
+            pagination: {
+              labelDisplayedRows: localize(
+                "FROM_TO_OF_COUNT",
+                "{from}-{to} de {count}"
+              ),
+              labelRowsSelect: localize("CONNECTIONS", "connections"),
+              labelRowsPerPage: localize("LINES_PAGE.", "lines/p."),
+              firstAriaLabel: localize("FIRST", "First"),
+              firstTooltip: localize("FIRST_PAGE", "First page"),
+              previousAriaLabel: localize("PREVIOUS", "Previous"),
+              previousTooltip: localize("PREVIOUS_PAGE", "Previous page"),
+              nextAriaLabel: localize("NEXT", "Next"),
+              nextTooltip: localize("NEXT_PAGE", "Next page"),
+              lastAriaLabel: localize("LAST", "Last"),
+              lastTooltip: localize("LAST_PAGE", "Last page"),
+            },
+            toolbar: {
+              nRowsSelected: localize(
+                "CONNECTIONS_SELECTED",
+                "{0} connections selected"
+              ),
+              showColumnsTitle: localize("SHOW_HIDE_COLUMNS", "Show/hide columns"),
+              searchTooltip: localize("SEARCH_ALL_COLUMNS", "Search in all columns"),
+              searchPlaceholder: localize("SEARCH", "Search"),
+            },
+            header: {
+              actions: localize("ACTIONS", "Actions"),
+            },
+            body: {
+              emptyDataSourceMessage: localize(
+                "NO_CONNECTIONS",
+                "There are no connections or they are not visible to the monitor."
+              ),
+              filterRow: {
+                filterTooltip: localize("FILTER", "Filter"),
               },
-              toolbar: {
-                nRowsSelected: localize("CONNECTIONS_SELECTED","{0} connections selected"),
-                showColumnsTitle: localize("SHOW_HIDE_COLUMNS","Show/hide columns"),
-                searchTooltip: localize("SEARCH_ALL_COLUMNS","Search in all columns"),
-                searchPlaceholder: localize("SEARCH","Search"),
-              },
-              header: {
-                actions: localize("ACTIONS","Actions")
-              },
-              body: {
-                emptyDataSourceMessage:
-                  localize("NO_CONNECTIONS", "There are no connections or they are not visible to the monitor."),
-                filterRow: {
-                  filterTooltip: localize("FILTER","Filter")
-                },
-              },
-              grouping: {
-                placeholder: localize("DRAG_HEADERS","Drag headers ..."),
-                groupedBy: localize("GROUPED_BY","Grouped by:"),
-              },
-            }}
-            icons={monitorIcons.table}
-            columns={columns}
-            data={rows}
-            title={<Title title={localize("MONITOR","Monitor")} subtitle={subtitle} />}
-            options={{
-              emptyRowsWhenPaging: false,
-              pageSize: pageSize,
-              pageSizeOptions: [10, 50, 100],
-              paginationType: "normal",
-              thirdSortClick: true,
-              selection: true,
-              grouping: grouping,
-              filtering: filtering,
-              exportButton: false,
-              padding: "dense",
-              actionsColumnIndex: 0,
-              columnsButton: true,
-              sorting: true,
-            }}
-            actions={actions}
-            onSelectionChange={(rows) => setSelected(rows)}
-            onRowClick={(evt, selectedRow) => this.setState({ selectedRow })}
-            onChangeRowsPerPage={(value) => doChangeRowsPerPage(value)}
-            onChangeColumnHidden={(column, hidden) =>
-              doColumnHidden(column, hidden)
-            }
-            onGroupRemoved={(column, index) => doGroupRemoved(column, index)}
-            onOrderChange={(orderBy, direction) =>
-              doOrderChange(orderBy, direction)
-            }
-            onColumnDragged={(sourceIndex, destinationIndex) =>
-              doColumnDragged(sourceIndex, destinationIndex)
-            }
-          />
-        </Paper>
-
-        <SendMessageDialog
-          open={openDialog.sendMessage}
-          recipients={
-            selected.length > 0 ? selected : targetRow ? targetRow : rows
+            },
+            grouping: {
+              placeholder: localize("DRAG_HEADERS", "Drag headers ..."),
+              groupedBy: localize("GROUPED_BY", "Grouped by:"),
+            },
+          }}
+          icons={monitorIcons.table}
+          columns={buildColumns(memento)}
+          data={rows}
+          title={
+            <Title
+              title={localize("MONITOR", "Monitor")}
+              subtitle={
+                subtitle ? subtitle : localize("INITIALIZING", "(inicializando)")
+              }
+            />
           }
-          onClose={doSendMessage}
+          options={{
+            emptyRowsWhenPaging: false,
+            pageSize: pageSize,
+            pageSizeOptions: [10, 50, 100],
+            paginationType: "normal",
+            thirdSortClick: true,
+            selection: true,
+            grouping: grouping,
+            filtering: filtering,
+            exportButton: false,
+            padding: "dense",
+            actionsColumnIndex: 0,
+            columnsButton: true,
+            sorting: true,
+          }}
+          actions={actions}
+          onSelectionChange={(rows) => setSelected(rows)}
+          onRowClick={(evt, selectedRow) => this.setState({ selectedRow })}
+          onChangeRowsPerPage={(value) => doChangeRowsPerPage(value)}
+          onChangeColumnHidden={(column, hidden) =>
+            doColumnHidden(column, hidden)
+          }
+          onGroupRemoved={(column, index) => doGroupRemoved(column, index)}
+          onOrderChange={(orderBy, direction) =>
+            doOrderChange(orderBy, direction)
+          }
+          onColumnDragged={(sourceIndex, destinationIndex) =>
+            doColumnDragged(sourceIndex, destinationIndex)
+          }
         />
+      </Paper>
 
-        <DisconnectUserDialog
-          open={openDialog.disconnectUser}
-          recipients={selected.length === 0 ? rows : selected}
-          onClose={doDisconnectUser}
-        />
+      <SendMessageDialog
+        open={openDialog.sendMessage}
+        recipients={
+          selected.length > 0 ? selected : targetRow ? targetRow : rows
+        }
+        onClose={doSendMessage}
+      />
 
-        <StopServerDialog open={openDialog.stopServer} onClose={doStopServer} />
+      <DisconnectUserDialog
+        open={openDialog.disconnectUser}
+        recipients={selected.length === 0 ? rows : selected}
+        onClose={doDisconnectUser}
+      />
 
-        <LockServerDialog open={openDialog.lockServer} onClose={doLockServer} />
+      <StopServerDialog open={openDialog.stopServer} onClose={doStopServer} />
 
-        <UnlockServerDialog
-          open={openDialog.unlockServer}
-          onClose={doUnlockServer}
-        />
+      <LockServerDialog open={openDialog.lockServer} onClose={doLockServer} />
 
-        <SpeedUpdateDialogDialog
-          speed={speed}
-          open={openDialog.speedUpdate}
-          onClose={doSpeedUpdate}
-        />
-      </MonitorTheme>
-    </ErrorBoundary>
+      <UnlockServerDialog
+        open={openDialog.unlockServer}
+        onClose={doUnlockServer}
+      />
+
+      <SpeedUpdateDialogDialog
+        speed={speed}
+        open={openDialog.speedUpdate}
+        onClose={doSpeedUpdate}
+      />
+    </MonitorTheme>
   );
 }

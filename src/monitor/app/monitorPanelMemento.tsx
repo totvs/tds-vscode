@@ -1,8 +1,7 @@
 import { cellDefaultStyle } from "./monitorInterface";
-import { mergeProperties } from "../helper";
-import * as nls from "vscode-nls";
+import { mergeProperties, i18n } from "../helper";
 
-const localize = nls.loadMessageBundle();
+const localize = (key: string, message: string, args?: any): string => { return i18n.localize(key, message, args); };//nls.loadMessageBundle();
 
 function fieldDef(
   field: string,

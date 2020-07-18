@@ -14,6 +14,9 @@ import Alert from "@material-ui/lab/Alert";
 import MaterialTable from "material-table";
 import { cellDefaultStyle } from "./monitorInterface";
 import { monitorIcons } from "../helper/monitorIcons";
+import { i18n } from "../helper";
+
+const localize = (key: string, message: string, args?: any): string => { return i18n.localize(key, message, args); };//nls.loadMessageBundle();
 
 export interface DisconnectUserDialogProps {
   open: boolean;
@@ -22,10 +25,10 @@ export interface DisconnectUserDialogProps {
 }
 
 const headCells: any[] = [
-  { field: "server", title: "Servidor", ...cellDefaultStyle },
-  { field: "environment", title: "Ambiente", ...cellDefaultStyle },
-  { field: "username", title: "Usuário", ...cellDefaultStyle },
-  { field: "remark", title: "Comentário", ...cellDefaultStyle }
+  { field: "server", title:      localize("SERVER"   , "Server"),...cellDefaultStyle },
+  { field: "environment", title: localize("AMBIENT"  , "Ambient"),...cellDefaultStyle },
+  { field: "username", title:    localize("USER"     , "User"),...cellDefaultStyle },
+  { field: "remark", title:      localize("COMMENT"  , "Comment"),...cellDefaultStyle }
 ];
 
 export default function DisconnectUserDialog(
@@ -54,7 +57,7 @@ export default function DisconnectUserDialog(
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="warning">
-            Os usuários abaixo listados terão suas conexões encerradas.
+            {localize("WARN_CONNECTION_TERMINATED", "The users listed below will have their connections terminated.")}
           </Alert>
           <FormControlLabel
             control={
@@ -64,7 +67,7 @@ export default function DisconnectUserDialog(
                 value="checked"
               />
             }
-            label="Encerrar conexões imediatamente."
+            label={localize("TERMINATE_CONNECTIONS_IMMEDIATELY", "Terminate connections immediately.")}
           />
           <Paper>
             <MaterialTable
@@ -84,14 +87,14 @@ export default function DisconnectUserDialog(
               handleClose(event, "OK");
             }}
           >
-            OK
+            {localize("OK", "OK")}
           </Button>
           <Button
             onClick={() => {
               handleClose(event, "cancel");
             }}
           >
-            Cancelar
+            {localize("CANCEL", "Cancel")}
           </Button>
         </DialogActions>
       </DialogContent>

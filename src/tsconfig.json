@@ -19,7 +19,8 @@
         "declaration": true,
         "declarationMap": true,
         "strict": false, /* enable all strict type-checking options */
-        "noUnusedParameters": false
+        "noUnusedParameters": false,
+        "resolveJsonModule": true
     },
     "exclude": [
         "node_modules/",

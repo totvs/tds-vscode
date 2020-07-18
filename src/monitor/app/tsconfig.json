@@ -1,9 +1,9 @@
 
 {
     "compilerOptions": {
-        "module": "es6",
+        "module": "commonjs",
+        "target": "ES6",
         "moduleResolution": "node",
-        "target": "es6",
         "outDir": "../../../out",
         "lib": [
             "es6",
