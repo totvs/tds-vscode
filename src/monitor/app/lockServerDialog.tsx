@@ -31,7 +31,7 @@ export default function LockServerDialog(props: LockServerDialogProps) {
       fullWidth
       maxWidth="md"
     >
-      <DialogTitle>Bloquear novas conexões?</DialogTitle>
+      <DialogTitle>Block new connections?</DialogTitle>
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="warning">

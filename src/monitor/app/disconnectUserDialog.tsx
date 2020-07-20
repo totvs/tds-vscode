@@ -53,7 +53,7 @@ export default function DisconnectUserDialog(
       fullWidth
       maxWidth="lg"
     >
-      <DialogTitle>Encerra conexões de usuários</DialogTitle>
+      <DialogTitle>Closes user connections</DialogTitle>
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="warning">

@@ -169,7 +169,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   //   memento.get(propFiltering())
   // );
   const [selected, setSelected] = React.useState<IConnectionData[]>([]);
-  const [speed, setSpeed] = React.useState(memento.get(propSpeed()));
+  const [speed, setSpeed] = React.useState(30); //memento.get(propSpeed()));
   const [rows, setRows] = React.useState([]);
   const [subtitle, setSubtitle] = React.useState();
   const [locked, setLocked] = React.useState(true);
@@ -445,7 +445,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const doClickRow = (event: React.MouseEvent, rowData: any) => {
     event.preventDefault();
 
-    if (event.target["cellIndex"] === 10) {
+    if (event.target["innerText"].startsWith("Emp")) {
       setOpenDialog({ ...openDialog, remark: true, remarkToShow: rowData["remark"] });
     }
   };
@@ -529,7 +529,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
     tooltip: localize(
       "UPDATE_SPEED",
       "Update speed {0}",
-      propSpeedText(memento.get(propSpeed()))
+      propSpeedText(speed)
     ),
     isFreeAction: true,
     onClick: () => handleSpeedButtonClick(),

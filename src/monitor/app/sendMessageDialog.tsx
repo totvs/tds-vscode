@@ -57,7 +57,7 @@ export default function SendMessageDialog(props: SendMessageDialogProps) {
       fullWidth
       maxWidth="lg"
     >
-      <DialogTitle>Envio de mensagem</DialogTitle>
+      <DialogTitle>Message sending</DialogTitle>
       <DialogContent dividers={true}>
         <DialogContentText ref={descriptionElementRef} tabIndex={-1}>
           <TextField

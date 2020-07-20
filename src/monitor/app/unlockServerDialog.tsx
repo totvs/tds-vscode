@@ -32,7 +32,7 @@ export default function UnlockServerDialog(props: UnlockServerDialogProps) {
       fullWidth
       maxWidth="md"
     >
-      <DialogTitle>Desbloquear novas conexões?</DialogTitle>
+      <DialogTitle>Unlock new connections?</DialogTitle>
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="info">

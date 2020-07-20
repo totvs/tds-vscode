@@ -32,7 +32,7 @@ export default function StopServerDialog(props: StopServerDialogProps) {
       fullWidth
       maxWidth="md"
     >
-      <DialogTitle>Confirma a parada do servidor?</DialogTitle>
+      <DialogTitle>Confirm the server stop?</DialogTitle>
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="error">

@@ -24,7 +24,7 @@ import * as nls from "vscode-nls";
 
 const localize = nls.loadMessageBundle();
 
-const DEFAULT_SPEED = 15;
+const DEFAULT_SPEED = 30;
 
 let monitorLoader: MonitorLoader = undefined;
 
@@ -46,7 +46,7 @@ export class MonitorLoader {
   private _disposables: vscode.Disposable[] = [];
   private _isDisposed: boolean = false;
   private _monitorServer: any = null;
-  private _speed: number = DEFAULT_SPEED;
+  private xspeed: number = DEFAULT_SPEED;
   private _lock: boolean = false;
   private _timeoutSched: any = undefined;
   private _context: vscode.ExtensionContext;
@@ -110,7 +110,11 @@ export class MonitorLoader {
 
       if (this.monitorServer) {
         vscode.window.setStatusBarMessage(
-          localize("MSG_DISCONECT_MONITOR", "Disconnecting monitor from server [{0}]", this.monitorServer.name),
+          localize(
+            "MSG_DISCONECT_MONITOR",
+            "Disconnecting monitor from server [{0}]",
+            this.monitorServer.name
+          ),
           sendDisconnectRequest(this.monitorServer)
         );
       }
@@ -132,11 +136,15 @@ export class MonitorLoader {
   }
 
   public set speed(v: number) {
-    if (this._speed !== v) {
-      this._speed = v;
+    if (this.xspeed !== v) {
+      this.xspeed = v;
 
       this.updateSpeedStatus();
     }
+  }
+
+  public get speed(): number {
+    return this.xspeed;
   }
 
   public set lock(v: boolean) {
@@ -151,7 +159,11 @@ export class MonitorLoader {
   public toggleServerToMonitor(serverItem: ServerItem) {
     if (this.monitorServer) {
       vscode.window.setStatusBarMessage(
-        localize("DISCONNECTING_SERVER", "Disconnecting [{0}] from the server ", this.monitorServer.name),
+        localize(
+          "DISCONNECTING_SERVER",
+          "Disconnecting [{0}] from the server ",
+          this.monitorServer.name
+        ),
         sendDisconnectRequest(this.monitorServer)
       );
     }
@@ -178,7 +190,11 @@ export class MonitorLoader {
             this.monitorServer = monitorItem;
           } else {
             vscode.window.showErrorMessage(
-              localize("NOT_POSSIBLE_CONNECTION", "It was not possible to make the monitoring connection at [{0}].", this.monitorServer.name)
+              localize(
+                "NOT_POSSIBLE_CONNECTION",
+                "It was not possible to make the monitoring connection at [{0}].",
+                this.monitorServer.name
+              )
             );
           }
         })
@@ -193,7 +209,10 @@ export class MonitorLoader {
           this.isLockServer(server);
         } else {
           vscode.window.showErrorMessage(
-            localize("NOT_BLOCK_NEW_CONNECTIONS", "Could not block new connections.")
+            localize(
+              "NOT_BLOCK_NEW_CONNECTIONS",
+              "Could not block new connections."
+            )
           );
           console.log(result);
         }
@@ -210,7 +229,10 @@ export class MonitorLoader {
         this.lock = response;
         if (response) {
           vscode.window.showInformationMessage(
-            localize("NEW_CONNECTIONS_BLOCKED","Server with new connections blocked.")
+            localize(
+              "NEW_CONNECTIONS_BLOCKED",
+              "Server with new connections blocked."
+            )
           );
         }
       },
@@ -225,7 +247,11 @@ export class MonitorLoader {
       (response: string) => {
         if (response !== "OK") {
           vscode.window.showErrorMessage(
-            localize("SERVER_NOT_BE_SHUTDOWN", "The server could not be shut down. Return: {0}", response)
+            localize(
+              "SERVER_NOT_BE_SHUTDOWN",
+              "The server could not be shut down. Return: {0}",
+              response
+            )
           );
         } else {
           serverProvider.connectedServerItem = undefined;
@@ -260,7 +286,12 @@ export class MonitorLoader {
         recipients.forEach((recipient) => {
           cnt++;
           progress.report({
-            message: localize("SHUTTING_DOWN", "Shutting down #{0}/{1}", cnt, total),
+            message: localize(
+              "SHUTTING_DOWN",
+              "Shutting down #{0}/{1}",
+              cnt,
+              total
+            ),
             increment: inc,
           });
 
@@ -364,11 +395,11 @@ export class MonitorLoader {
       }
       case MonitorPanelAction.SetSpeedUpdate: {
         this.speed = command.content.speed;
-          this.updateUsers(true);
+        this.updateUsers(true);
         break;
       }
       case MonitorPanelAction.UpdateUsers: {
-          this.updateUsers(true);
+        this.updateUsers(true);
         break;
       }
       case MonitorPanelAction.LockServer: {
@@ -415,10 +446,10 @@ export class MonitorLoader {
     }
 
     const doScheduler = () => {
-      if (scheduler && this._speed > 0) {
+      if (scheduler && this.speed > 0) {
         this._timeoutSched = setTimeout(
           updateScheduledUsers,
-          this._speed * 1000,
+          this.speed * 1000,
           this,
           true
         );
@@ -432,11 +463,18 @@ export class MonitorLoader {
     if (this.monitorServer === null) {
       this._panel.webview.postMessage({
         command: MonitorPanelAction.UpdateUsers,
-        data: { serverName: localize("AWAITING_SELECTION", "(awaiting selection)"), users: [] },
+        data: {
+          serverName: localize("AWAITING_SELECTION", "(awaiting selection)"),
+          users: [],
+        },
       });
     } else {
       vscode.window.setStatusBarMessage(
-        localize("REQUESTING_DATA_FROM_SERVER", "Requesting data from the server [{0}]", this.monitorServer.name),
+        localize(
+          "REQUESTING_DATA_FROM_SERVER",
+          "Requesting data from the server [{0}]",
+          this.monitorServer.name
+        ),
         sendGetUsersRequest(this.monitorServer).then(
           (users: any) => {
             if (users) {
@@ -463,10 +501,18 @@ export class MonitorLoader {
               err.message + localize("SEE_LOG", ". See log for details.")
             );
 
-            if (this._speed > 0) {
-              languageClient.info(localize("AUTOMATIC_UPDATE_STOPPED", "Automatic update stopped."));
+            if (this.speed > 0) {
               languageClient.info(
-                localize("PLEASE_CLICK_REACTIVATE", "Please click on [Update] to reactivate.")
+                localize(
+                  "AUTOMATIC_UPDATE_STOPPED",
+                  "Automatic update stopped."
+                )
+              );
+              languageClient.info(
+                localize(
+                  "PLEASE_CLICK_REACTIVATE",
+                  "Please click on [Update] to reactivate."
+                )
               );
             }
           }
@@ -478,14 +524,25 @@ export class MonitorLoader {
   private updateSpeedStatus() {
     var nextUpdate = new Date(Date.now());
 
-    const msg1 = localize("MSG_1", "Monitor: Updated as {0}.", `${nextUpdate.getHours()}:${nextUpdate.getMinutes()}:${nextUpdate.getSeconds()}`);
+    const msg1 = localize(
+      "MSG_1",
+      "Monitor: Updated as {0}.",
+      `${nextUpdate.getHours()}:${nextUpdate.getMinutes()}:${nextUpdate.getSeconds()}`
+    );
     let msg2 = "";
 
-    if (this._speed === 0) {
-      msg2 = localize("MSG_2_REQUEST","The next one will take place on request.");
+    if (this.speed === 0) {
+      msg2 = localize(
+        "MSG_2_REQUEST",
+        "The next one will take place on request."
+      );
     } else {
-      nextUpdate.setSeconds(nextUpdate.getSeconds() + this._speed);
-      msg2 = localize("MSG_2_NEXT", "The next one will occur {0}", `${nextUpdate.getHours()}:${nextUpdate.getMinutes()}:${nextUpdate.getSeconds()}`);
+      nextUpdate.setSeconds(nextUpdate.getSeconds() + this.speed);
+      msg2 = localize(
+        "MSG_2_NEXT",
+        "The next one will occur {0}",
+        `${nextUpdate.getHours()}:${nextUpdate.getMinutes()}:${nextUpdate.getSeconds()}`
+      );
     }
 
     vscode.window.setStatusBarMessage(`${msg1} ${msg2}`);
@@ -504,15 +561,19 @@ export class MonitorLoader {
     const reactAppUri = this._panel?.webview.asWebviewUri(reactAppPathOnDisk);
     const configJson: any = {
       serverList: servers,
-      memento: this._context.workspaceState.get("monitorTable", {}),
-      translation: nls.loadMessageBundle()
+      memento: {}, //this._context.workspaceState.get("monitorTable", {}),
+      translation: nls.loadMessageBundle(),
     };
 
     if (configJson["memento"].hasOwnProperty("customProps")) {
       const customProps = configJson["memento"]["customProps"];
       if (customProps.hasOwnProperty("speed")) {
         this.speed = customProps["speed"];
+      } else {
+        customProps["speed"] = this.speed
       }
+    } else {
+      configJson["memento"] = { customProps: { speed: this.speed } };
     }
 
     return `<!DOCTYPE html>

@@ -12,7 +12,9 @@ import {
 } from "@material-ui/core";
 import { i18n } from "../helper";
 
-const localize = (key: string, message: string, args?: any): string => { return i18n.localize(key, message, args); };//nls.loadMessageBundle();
+const localize = (key: string, message: string, args?: any): string => {
+  return i18n.localize(key, message, args);
+}; //nls.loadMessageBundle();
 
 export interface SpeedUpdateDialogProps {
   open: boolean;
@@ -42,21 +44,14 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
   };
 
   const handleClose = (event: {}, reason: string) => {
-    const speed = state.short? 15
-    : state.normal? 30
-    : state.long? 60
-    : 0;
+    const speed = state.short ? 15 : state.normal ? 30 : state.long ? 60 : 0;
 
     onClose(reason === "ok", speed);
   };
 
   return (
-    <Dialog
-      onClose={handleClose}
-      open={open}
-      scroll="paper"
-    >
-      <DialogTitle>Intervalo entre atualizações</DialogTitle>
+    <Dialog onClose={handleClose} open={open} scroll="paper">
+      <DialogTitle>Interval between updates</DialogTitle>
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <FormGroup row>
