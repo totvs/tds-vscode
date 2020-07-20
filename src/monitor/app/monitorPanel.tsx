@@ -173,6 +173,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const [rows, setRows] = React.useState([]);
   const [subtitle, setSubtitle] = React.useState();
   const [locked, setLocked] = React.useState(true);
+  const [isLoading, setLoading] = React.useState(true);
   //const [columns, setColumns] = React.useState([]);
   //const monitorTable = React.useRef();
   const [pageSize, setPageSize] = React.useState(50);
@@ -222,7 +223,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
         }
         case MonitorPanelAction.UpdateUsers: {
           const result = message.data.users as IMonitorUser[];
-
+          setLoading(false);
           setRows(result);
           setSubtitle(message.data.serverName);
           break;
@@ -623,7 +624,9 @@ export default function MonitorPanel(props: IMonitorPanel) {
               }
             />
           }
+          isLoading={ isLoading }
           options={{
+            showTextRowsSelected: false,
             emptyRowsWhenPaging: false,
             pageSize: pageSize,
             pageSizeOptions: [10, 50, 100],

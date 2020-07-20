@@ -179,7 +179,7 @@ export const propColumns = (extraProps?: any): any => {
   return {
     columns: [
       //fieldDef("server", localize("SERVER", "Server"), extraProps),
-      fieldDef("username", localize("USER", "User in Server"), extraProps),
+      fieldDef("username", localize("USER", "User Name"), extraProps),
       fieldDef(
         "environment",
         localize("ENVIRONMENT", "Environment"),
@@ -190,7 +190,7 @@ export const propColumns = (extraProps?: any): any => {
         localize("COMPUTER_NAME", "Computer Name"),
         extraProps
       ),
-      fieldDef("threadId", localize("THREAD", "Thread"), {
+      fieldDef("threadId", localize("THREAD", "Thread ID"), {
         type: "numeric",
         ...extraProps,
         render: (row: any) => doFormatNumber(row["threadId"]),
@@ -204,12 +204,12 @@ export const propColumns = (extraProps?: any): any => {
       ),
       fieldDef(
         "inactiveTime",
-        localize("INACTIVITY_TIME ", "Downtime"),
+        localize("INACTIVITY_TIME ", "Idle time"),
         extraProps
       ),
       fieldDef(
         "totalInstrCount",
-        localize("TOTAL_INSTRUCTIONS ", "Total Instructions"),
+        localize("TOTAL_INSTRUCTIONS ", "Instructions"),
         {
           type: "numeric",
           ...extraProps,
