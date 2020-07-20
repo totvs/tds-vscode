@@ -46,7 +46,8 @@ export class MonitorLoader {
   private _disposables: vscode.Disposable[] = [];
   private _isDisposed: boolean = false;
   private _monitorServer: any = null;
-  private xspeed: number = DEFAULT_SPEED;
+  private _speed: number = DEFAULT_SPEED;
+  private _enableUpdateUsers: boolean = true;
   private _lock: boolean = false;
   private _timeoutSched: any = undefined;
   private _context: vscode.ExtensionContext;
@@ -136,15 +137,15 @@ export class MonitorLoader {
   }
 
   public set speed(v: number) {
-    if (this.xspeed !== v) {
-      this.xspeed = v;
+    if (this._speed !== v) {
+      this._speed = v;
 
       this.updateSpeedStatus();
     }
   }
 
   public get speed(): number {
-    return this.xspeed;
+    return this._speed;
   }
 
   public set lock(v: boolean) {
@@ -377,10 +378,15 @@ export class MonitorLoader {
 
   private async handleMessage(command: IMonitorPanelAction) {
     switch (command.action) {
+      case MonitorPanelAction.EnableUpdateUsers: {
+        this._enableUpdateUsers = command.content.state;
+        this.updateUsers(this._enableUpdateUsers);
+
+        break;
+      }
       case MonitorPanelAction.DoUpdateState: {
         const key = command.content.key;
         const state: any = command.content.state;
-
         this._context.workspaceState.update(key, state);
 
         this._panel.webview.postMessage({
@@ -460,64 +466,66 @@ export class MonitorLoader {
       clearTimeout(this._timeoutSched);
     }
 
-    if (this.monitorServer === null) {
-      this._panel.webview.postMessage({
-        command: MonitorPanelAction.UpdateUsers,
-        data: {
-          serverName: localize("AWAITING_SELECTION", "(awaiting selection)"),
-          users: [],
-        },
-      });
-    } else {
-      vscode.window.setStatusBarMessage(
-        localize(
-          "REQUESTING_DATA_FROM_SERVER",
-          "Requesting data from the server [{0}]",
-          this.monitorServer.name
-        ),
-        sendGetUsersRequest(this.monitorServer).then(
-          (users: any) => {
-            if (users) {
-              const complement = users.length
-                ? localize("THREADS", " ({0} thread(s))", users.length)
-                : localize("THREADS_NONE", " (none thread)");
-
-              this._panel.webview.postMessage({
-                command: MonitorPanelAction.UpdateUsers,
-                data: {
-                  serverName:
-                    this.monitorServer.name.replace("_monitor", "") +
-                    complement,
-                  users: users,
-                },
-              });
-            }
-            this.updateSpeedStatus();
-            doScheduler();
+    if (this._enableUpdateUsers) {
+      if (this.monitorServer === null) {
+        this._panel.webview.postMessage({
+          command: MonitorPanelAction.UpdateUsers,
+          data: {
+            serverName: localize("AWAITING_SELECTION", "(awaiting selection)"),
+            users: [],
           },
-          (err: Error) => {
-            languageClient.error(err.message, err);
-            vscode.window.showErrorMessage(
-              err.message + localize("SEE_LOG", ". See log for details.")
-            );
+        });
+      } else {
+        vscode.window.setStatusBarMessage(
+          localize(
+            "REQUESTING_DATA_FROM_SERVER",
+            "Requesting data from the server [{0}]",
+            this.monitorServer.name
+          ),
+          sendGetUsersRequest(this.monitorServer).then(
+            (users: any) => {
+              if (users) {
+                const complement = users.length
+                  ? localize("THREADS", " ({0} thread(s))", users.length)
+                  : localize("THREADS_NONE", " (none thread)");
 
-            if (this.speed > 0) {
-              languageClient.info(
-                localize(
-                  "AUTOMATIC_UPDATE_STOPPED",
-                  "Automatic update stopped."
-                )
+                this._panel.webview.postMessage({
+                  command: MonitorPanelAction.UpdateUsers,
+                  data: {
+                    serverName:
+                      this.monitorServer.name.replace("_monitor", "") +
+                      complement,
+                    users: users,
+                  },
+                });
+              }
+              this.updateSpeedStatus();
+              doScheduler();
+            },
+            (err: Error) => {
+              languageClient.error(err.message, err);
+              vscode.window.showErrorMessage(
+                err.message + localize("SEE_LOG", ". See log for details.")
               );
-              languageClient.info(
-                localize(
-                  "PLEASE_CLICK_REACTIVATE",
-                  "Please click on [Update] to reactivate."
-                )
-              );
+
+              if (this.speed > 0) {
+                languageClient.info(
+                  localize(
+                    "AUTOMATIC_UPDATE_STOPPED",
+                    "Automatic update stopped."
+                  )
+                );
+                languageClient.info(
+                  localize(
+                    "PLEASE_CLICK_REACTIVATE",
+                    "Please click on [Update] to reactivate."
+                  )
+                );
+              }
             }
-          }
-        )
-      );
+          )
+        );
+      }
     }
   }
 
@@ -570,7 +578,7 @@ export class MonitorLoader {
       if (customProps.hasOwnProperty("speed")) {
         this.speed = customProps["speed"];
       } else {
-        customProps["speed"] = this.speed
+        customProps["speed"] = this.speed;
       }
     } else {
       configJson["memento"] = { customProps: { speed: this.speed } };

@@ -158,6 +158,18 @@ function buildColumns(memento: IMemento): [] {
 }
 let memento: IMemento = undefined;
 
+const isAnyDialogOpen = (openDialog: any): boolean => {
+  return (
+    openDialog.lockServer ||
+    openDialog.unlockServer ||
+    openDialog.stopServer ||
+    openDialog.sendMessage ||
+    openDialog.disconnectUser ||
+    openDialog.speedUpdate ||
+    openDialog.remark
+  );
+};
+
 export default function MonitorPanel(props: IMonitorPanel) {
   //if (memento === undefined) {
   memento = useMemento(props.vscode, DEFAULT_TABLE, props.memento);
@@ -179,16 +191,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const [pageSize, setPageSize] = React.useState(50);
   const [grouping, setGrouping] = React.useState(false);
   const [filtering, setFiltering] = React.useState(false);
-
-  React.useEffect(() => {
-    //   memento.set(propGrouping(grouping));
-    //   memento.set(propPageSize(pageSize));
-    //   memento.set(propFiltering(filtering));
-    //   memento.set(propSpeed(speed));
-    //   memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
-    // }, [grouping, pageSize, filtering, speed]);
-  });
-
   const [openDialog, setOpenDialog] = React.useState({
     lockServer: false,
     unlockServer: false,
@@ -199,6 +201,22 @@ export default function MonitorPanel(props: IMonitorPanel) {
     remark: false,
     remarkToShow: "",
   });
+
+  React.useEffect(() => {
+    let command: IMonitorPanelAction = {
+      action: MonitorPanelAction.EnableUpdateUsers,
+      content: { state: !isAnyDialogOpen(openDialog) },
+    };
+
+    props.vscode.postMessage(command);
+
+    //   memento.set(propGrouping(grouping));
+    //   memento.set(propPageSize(pageSize));
+    //   memento.set(propFiltering(filtering));
+    //   memento.set(propSpeed(speed));
+    //   memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
+  }, [openDialog]);
+
 
   const [targetRow, setTargetRow] = React.useState(null);
 
@@ -446,7 +464,11 @@ export default function MonitorPanel(props: IMonitorPanel) {
     event.preventDefault();
 
     if (event.target["innerText"].startsWith("Emp")) {
-      setOpenDialog({ ...openDialog, remark: true, remarkToShow: rowData["remark"] });
+      setOpenDialog({
+        ...openDialog,
+        remark: true,
+        remarkToShow: rowData["remark"],
+      });
     }
   };
 
@@ -526,11 +548,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   actions.push({
     icon: () => <SpeedIcon />,
-    tooltip: localize(
-      "UPDATE_SPEED",
-      "Update speed {0}",
-      propSpeedText(speed)
-    ),
+    tooltip: localize("UPDATE_SPEED", "Update speed {0}", propSpeedText(speed)),
     isFreeAction: true,
     onClick: () => handleSpeedButtonClick(),
   });
@@ -624,7 +642,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
               }
             />
           }
-          isLoading={ isLoading }
+          isLoading={isLoading}
           options={{
             showTextRowsSelected: false,
             emptyRowsWhenPaging: false,
