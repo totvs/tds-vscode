@@ -12,6 +12,12 @@ export const i18n = {
       result = _translations[key];
     }
 
+    if (args && args.length > 0) {
+      args.forEach((arg: any, index: number) => {
+        result = result.replace("{" + index + "}", "" + (args[index] || "null"));
+      })
+    }
+
     return result;
   }
 }
