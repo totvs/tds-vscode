@@ -1,7 +1,14 @@
+import * as React from "react";
 import { cellDefaultStyle } from "./monitorInterface";
 import { mergeProperties, i18n } from "../helper";
+import { monitorIcons } from "../helper/monitorIcons";
+import Alert from "@material-ui/lab/Alert";
+import RemarkDialog from "./remarkDialog";
+import { Popper } from "@material-ui/core";
 
-const localize = (key: string, message: string, args?: any): string => { return i18n.localize(key, message, args); };//nls.loadMessageBundle();
+const localize = (key: string, message: string, args?: any): string => {
+  return i18n.localize(key, message, args);
+}; //nls.loadMessageBundle();
 
 function fieldDef(
   field: string,
@@ -149,7 +156,6 @@ export const propColumnMove = (
   result.push(columnsOrder[destinationIndex]);
   result.push(...columnsOrder.slice(destinationIndex + 1, columnsOrder.length));
 
-  console.log(JSON.stringify(result));
   return propColumnsOrder(result);
 };
 
@@ -160,11 +166,25 @@ export const propColumnList = (): any => {
 };
 
 export const propColumns = (extraProps?: any): any => {
+  const remarkProps = {
+    ...(extraProps || {}),
+    cellStyle: {
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      maxWidth: 300
+    }
+  };
+
   return {
     columns: [
-      fieldDef("server", localize("SERVER", "Server"), extraProps),
-      fieldDef("environment", localize("AMBIENT", "Ambient"), extraProps),
-      fieldDef("username", localize("USER", "User"), extraProps),
+      //fieldDef("server", localize("SERVER", "Server"), extraProps),
+      fieldDef("username", localize("USER", "User in Server"), extraProps),
+      fieldDef(
+        "environment",
+        localize("ENVIRONMENT", "Environment"),
+        extraProps
+      ),
       fieldDef(
         "computerName",
         localize("COMPUTER_NAME", "Computer Name"),
@@ -209,7 +229,9 @@ export const propColumns = (extraProps?: any): any => {
             }),
         }
       ),
-      fieldDef("remark", localize("COMMENT", "Comment"), extraProps),
+      fieldDef("remark", localize("COMMENT", "Comment"), {
+        ...remarkProps
+      }),
       fieldDef("memUsed", localize("MEMORY_USE ", "Memory in Use"), {
         type: "numeric",
         ...extraProps,

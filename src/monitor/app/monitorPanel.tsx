@@ -1,5 +1,11 @@
 import * as React from "react";
-import MaterialTable, { Column, Filter, Query } from "material-table";
+import MaterialTable, {
+  Column,
+  Filter,
+  Query,
+  MTableToolbar,
+  MTableCell,
+} from "material-table";
 import {
   createStyles,
   lighten,
@@ -47,8 +53,12 @@ import {
   propColumnsOrder,
 } from "./monitorPanelMemento";
 import { i18n } from "../helper";
+import RemarkDialog from "./remarkDialog";
+import { stringify } from "querystring";
 
-const localize = (key: string, message: string, args?: any): string => { return i18n.localize(key, message, args); };//nls.loadMessageBundle();
+const localize = (key: string, message: string, args?: any): string => {
+  return i18n.localize(key, message, args);
+}; //nls.loadMessageBundle();
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -118,6 +128,7 @@ function buildColumns(memento: IMemento): [] {
 
   for (let index = 0; index < columns.length; index++) {
     let element = columns[index];
+
     const value = memento.get(propColumnHidden(element.field));
 
     if (value !== undefined) {
@@ -184,6 +195,8 @@ export default function MonitorPanel(props: IMonitorPanel) {
     sendMessage: false,
     disconnectUser: false,
     speedUpdate: false,
+    remark: false,
+    remarkToShow: "",
   });
 
   const [targetRow, setTargetRow] = React.useState(null);
@@ -212,7 +225,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
           setRows(result);
           setSubtitle(message.data.serverName);
-          //setColumns(result.length === 0 ? [] : buildColumns(memento));
           break;
         }
         default:
@@ -282,6 +294,10 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
       props.vscode.postMessage(command);
     }
+  };
+
+  const doRemarkClose = () => {
+    setOpenDialog({ ...openDialog, remark: false, remarkToShow: "" });
   };
 
   const doSpeedUpdate = (confirm: boolean, speed: number) => {
@@ -425,6 +441,14 @@ export default function MonitorPanel(props: IMonitorPanel) {
     setPageSize(value);
   };
 
+  const doClickRow = (event: React.MouseEvent, rowData: any) => {
+    event.preventDefault();
+
+    if (event.target["cellIndex"] === 10) {
+      setOpenDialog({ ...openDialog, remark: true, remarkToShow: rowData["remark"] });
+    }
+  };
+
   const actions = [];
 
   if (!locked) {
@@ -452,7 +476,10 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   actions.push({
     icon: () => <MessageIcon />,
-    tooltip: localize("SEND_MESSAGE_SELECTED_USERS", "Send message to selected users"),
+    tooltip: localize(
+      "SEND_MESSAGE_SELECTED_USERS",
+      "Send message to selected users"
+    ),
     isFreeAction: false,
     onClick: (event: any, row: any) => handleSendMessageButtonClick(event, row),
   });
@@ -521,6 +548,15 @@ export default function MonitorPanel(props: IMonitorPanel) {
     onClick: () => handleResetButtonClick(),
   });
 
+  // // other props
+  // components={{
+  //   Toolbar: (props) => (
+  //     <div style={{ backgroundColor: "#e8eaf5" }}>
+  //       <MTableToolbar {...props} />
+  //     </div>
+  //   ),
+  // }}
+
   return (
     <MonitorTheme>
       <Paper variant="outlined">
@@ -547,8 +583,14 @@ export default function MonitorPanel(props: IMonitorPanel) {
                 "CONNECTIONS_SELECTED",
                 "{0} connections selected"
               ),
-              showColumnsTitle: localize("SHOW_HIDE_COLUMNS", "Show/hide columns"),
-              searchTooltip: localize("SEARCH_ALL_COLUMNS", "Search in all columns"),
+              showColumnsTitle: localize(
+                "SHOW_HIDE_COLUMNS",
+                "Show/hide columns"
+              ),
+              searchTooltip: localize(
+                "SEARCH_ALL_COLUMNS",
+                "Search in all columns"
+              ),
               searchPlaceholder: localize("SEARCH", "Search"),
             },
             header: {
@@ -569,13 +611,15 @@ export default function MonitorPanel(props: IMonitorPanel) {
             },
           }}
           icons={monitorIcons.table}
-          columns={buildColumns(memento)}
+          columns={rows.length ? buildColumns(memento) : []}
           data={rows}
           title={
             <Title
               title={localize("MONITOR", "Monitor")}
               subtitle={
-                subtitle ? subtitle : localize("INITIALIZING", "(inicializando)")
+                subtitle
+                  ? subtitle
+                  : localize("INITIALIZING", "(inicializando)")
               }
             />
           }
@@ -596,11 +640,11 @@ export default function MonitorPanel(props: IMonitorPanel) {
           }}
           actions={actions}
           onSelectionChange={(rows) => setSelected(rows)}
-          onRowClick={(evt, selectedRow) => this.setState({ selectedRow })}
           onChangeRowsPerPage={(value) => doChangeRowsPerPage(value)}
           onChangeColumnHidden={(column, hidden) =>
             doColumnHidden(column, hidden)
           }
+          onRowClick={(event, rowData) => doClickRow(event, rowData)}
           onGroupRemoved={(column, index) => doGroupRemoved(column, index)}
           onOrderChange={(orderBy, direction) =>
             doOrderChange(orderBy, direction)
@@ -632,6 +676,12 @@ export default function MonitorPanel(props: IMonitorPanel) {
       <UnlockServerDialog
         open={openDialog.unlockServer}
         onClose={doUnlockServer}
+      />
+
+      <RemarkDialog
+        open={openDialog.remark}
+        onClose={doRemarkClose}
+        remark={openDialog.remarkToShow}
       />
 
       <SpeedUpdateDialogDialog

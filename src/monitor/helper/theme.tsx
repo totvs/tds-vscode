@@ -46,7 +46,8 @@ export default function MonitorTheme(props: IMonitorThemeProps) {
               color: "silver",
               fontSize: "medium"
             }
-          }
+          },
+          
         },
       }),
     [darkMode]

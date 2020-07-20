@@ -21,6 +21,7 @@ import LockIcon from "@material-ui/icons/Lock";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import MessageIcon from "@material-ui/icons/Message";
 import StopIcon from "@material-ui/icons/Stop";
+import EditIcon from "@material-ui/icons/Edit";
 
 export function GroupingIcon(props: any) {
   return (
@@ -109,4 +110,5 @@ export const monitorIcons = {
   disconnectIcon: DisconnectIcon,
   groupingIcon: GroupingIcon,
   filterList: FilterList,
+  viewRemarks: EditIcon,
 };

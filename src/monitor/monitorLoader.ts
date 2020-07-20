@@ -135,12 +135,6 @@ export class MonitorLoader {
     if (this._speed !== v) {
       this._speed = v;
 
-      if (this._speed === 0) {
-        vscode.window.showWarningMessage(
-          localize("UPDATE_ON_REQUEST", "The update will take place on request.")
-        );
-      }
-
       this.updateSpeedStatus();
     }
   }
@@ -511,6 +505,7 @@ export class MonitorLoader {
     const configJson: any = {
       serverList: servers,
       memento: this._context.workspaceState.get("monitorTable", {}),
+      translation: nls.loadMessageBundle()
     };
 
     if (configJson["memento"].hasOwnProperty("customProps")) {
