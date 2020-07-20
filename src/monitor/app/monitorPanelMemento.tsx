@@ -179,7 +179,7 @@ export const propColumns = (extraProps?: any): any => {
   return {
     columns: [
       //fieldDef("server", localize("SERVER", "Server"), extraProps),
-      fieldDef("username", localize("USER", "User Name"), extraProps),
+      fieldDef("appUser", localize("USER", "User Name"), extraProps),
       fieldDef(
         "environment",
         localize("ENVIRONMENT", "Environment"),
