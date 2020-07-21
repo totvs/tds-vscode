@@ -181,7 +181,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const [subtitle, setSubtitle] = React.useState();
   const [locked, setLocked] = React.useState(true);
   const [isLoading, setLoading] = React.useState(true);
-  //const [columns, setColumns] = React.useState([]);
+  const [columns, setColumns] = React.useState(buildColumns(memento));
   //const monitorTable = React.useRef();
   const [pageSize, setPageSize] = React.useState(50);
   const [grouping, setGrouping] = React.useState(false);
@@ -555,12 +555,12 @@ export default function MonitorPanel(props: IMonitorPanel) {
     onClick: () => handleRefreshButtonClick(),
   });
 
-  actions.push({
-    icon: () => <FormatClearIcon />,
-    tooltip: i18n._localize("RESET_CONFIGURATIONS", "Reset configurations"),
-    isFreeAction: true,
-    onClick: () => handleResetButtonClick(),
-  });
+  // actions.push({
+  //   icon: () => <FormatClearIcon />,
+  //   tooltip: i18n._localize("RESET_CONFIGURATIONS", "Reset configurations"),
+  //   isFreeAction: true,
+  //   onClick: () => handleResetButtonClick(),
+  // });
 
   // // other props
   // components={{
@@ -625,7 +625,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
             },
           }}
           icons={monitorIcons.table}
-          columns={rows.length ? buildColumns(memento) : []}
+          columns={rows.length ?  columns: []}
           data={rows}
           title={
             <Title
