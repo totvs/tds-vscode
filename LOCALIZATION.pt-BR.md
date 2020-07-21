@@ -1,3 +1,5 @@
+# PROCESSO EM REVISÃO: Aguarde.
+
 *Leia isto em outros idiomas: [Inglês](LOCALIZATION.md), [Português](LOCALIZATION.pt-BR.md)*
 
 # Localizando TDS-VSCode

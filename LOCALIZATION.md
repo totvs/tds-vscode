@@ -1,3 +1,5 @@
+# REVIEW PROCESS: Wait.
+
 *Read this in other languages: [English](LOCALIZATION.md), [Portuguese](LOCALIZATION.pt-BR.md)*
 
 # Localizing TDS-VSCode

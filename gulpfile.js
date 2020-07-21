@@ -2,74 +2,86 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-const gulp = require('gulp');
-const path = require('path');
-const ts = require('gulp-typescript');
-const log = require('gulp-util').log;
-const typescript = require('typescript');
-const sourcemaps = require('gulp-sourcemaps');
-const tslint = require('gulp-tslint');
-const nls = require('vscode-nls-dev');
-const del = require('del');
-const fs = require('fs');
-const vsce = require('vsce');
-const es = require('event-stream');
-const minimist = require('minimist');
+const gulp = require("gulp");
+const path = require("path");
+const ts = require("gulp-typescript");
+const log = require("gulp-util").log;
+const typescript = require("typescript");
+const sourcemaps = require("gulp-sourcemaps");
+const tslint = require("gulp-tslint");
+const nls = require("vscode-nls-dev");
+const del = require("del");
+const fs = require("fs");
+const vsce = require("vsce");
+const es = require("event-stream");
+const minimist = require("minimist");
 
-const translationProjectName = 'tds-vscode-brodao';
-const translationExtensionName = 'totvs-developer-studio';
+const translationProjectName = "tds-vscode-brodao";
+const translationExtensionName = "totvs-developer-studio";
 
 const defaultLanguages = [
-    { id: 'es', folderName: 'esn' },
-    { id: 'ru', folderName: 'rus' },
-    { id: 'pt-br', folderName: 'ptb', transifexId: 'pt-BR' }
+  { id: "es", folderName: "esn" },
+  { id: "ru", folderName: "rus" },
+  { id: "pt-br", folderName: "ptb", transifexId: "pt-BR" },
 ];
 
-const watchedSources = [
-    'src/**/*',
-    'test/**/*'
-];
+const watchedSources = ["src/**/*", "test/**/*"];
 
 const scripts = [
-    //'src/terminateProcess.sh'
+  //'src/terminateProcess.sh'
 ];
 
-const lintSources = [
-    'src'
-].map(tsFolder => tsFolder + '/**/*.ts');
+const lintSources = ["src"].map((tsFolder) => tsFolder + "/**/*.ts");
 
-const tsProject = ts.createProject('./src/tsconfig.json', { jsx: "react", target: "ES5", esModuleInterop: true });
+const tsProject = ts.createProject("./src/tsconfig.json", {
+  jsx: "react",
+  target: "ES5",
+  esModuleInterop: true,
+});
 
 function doBuild(buildNls, failOnError) {
-    return () => {
-        let gotError = false;
-        const tsResult = tsProject.src()
-            .pipe(sourcemaps.init())
-            .pipe(tsProject())
-            .once('error', () => {
-                gotError = true;
-            });
+  return () => {
+    let gotError = false;
+    const tsResult = tsProject
+      .src()
+      .pipe(sourcemaps.init())
+      .pipe(tsProject())
+      .once("error", () => {
+        gotError = true;
+      });
 
-        return tsResult.js
-            .pipe(buildNls ? nls.rewriteLocalizeCalls() : es.through())
-            .pipe(buildNls ? nls.createAdditionalLanguageFiles(defaultLanguages, 'i18n', 'src') : es.through())
-            .pipe(buildNls ? nls.bundleMetaDataFiles('ms-vscode.totvs-developer-studio', 'src') : es.through())
-            .pipe(buildNls ? nls.bundleLanguageFiles() : es.through())
-            .pipe(sourcemaps.write('.', { includeContent: false, sourceRoot: '..' })) // .. to compensate for TS returning paths from 'out'
-            .pipe(gulp.dest('out'))
-            .once('error', () => {
-                gotError = true;
-            })
-            .once('finish', () => {
-                if (failOnError && gotError) {
-                    process.exit(1);
-                }
-            });
-        };
+    return tsResult.js
+      .pipe(buildNls ? nls.rewriteLocalizeCalls() : es.through())
+      .pipe(
+        buildNls
+          ? nls.createAdditionalLanguageFiles(defaultLanguages, "i18n", "src")
+          : es.through()
+      )
+      .pipe(
+        buildNls
+          ? nls.bundleMetaDataFiles("ms-vscode.totvs-developer-studio", "src")
+          : es.through()
+      )
+      .pipe(buildNls ? nls.bundleLanguageFiles() : es.through())
+      .pipe(sourcemaps.write(".", { includeContent: false, sourceRoot: ".." })) // .. to compensate for TS returning paths from 'out'
+      .pipe(gulp.dest("out"))
+      .once("error", () => {
+        gotError = true;
+      })
+      .once("finish", () => {
+        if (failOnError && gotError) {
+          process.exit(1);
+        }
+      });
+  };
 }
 
-gulp.task('clean', () => {
-    return del(['out/**', 'package.nls.*.json', 'vscode-totvs-developer-studio-*.vsix']);
+gulp.task("clean", () => {
+  return del([
+    "out/**",
+    "package.nls.*.json",
+    "vscode-totvs-developer-studio-*.vsix",
+  ]);
 });
 
 // gulp.task('copy-scripts', () => {
@@ -78,110 +90,142 @@ gulp.task('clean', () => {
 //         .pipe(gulp.dest('out'));
 // });
 
-gulp.task('_dev-build', doBuild(false, false));
+gulp.task("_dev-build", doBuild(false, false));
 
-gulp.task('_build', doBuild(true, true));
+gulp.task("_build", doBuild(true, true));
 
-gulp.task('build', gulp.series('clean', '_build'));
+gulp.task("build", gulp.series("clean", "_build"));
 
-gulp.task('watch', gulp.series('clean', '_dev-build', () => {
-    log('Watching build sources...');
-    return gulp.watch(watchedSources, gulp.series('_dev-build'));
-}));
+gulp.task(
+  "watch",
+  gulp.series("clean", "_dev-build", () => {
+    log("Watching build sources...");
+    return gulp.watch(watchedSources, gulp.series("_dev-build"));
+  })
+);
 
-gulp.task('tslint', () => {
-    return gulp.src(lintSources, { base: '.' })
-        .pipe(tslint({
-            formatter: 'verbose'
-        }))
-        .pipe(tslint.report());
+gulp.task("tslint", () => {
+  return gulp
+    .src(lintSources, { base: "." })
+    .pipe(
+      tslint({
+        formatter: "verbose",
+      })
+    )
+    .pipe(tslint.report());
 });
 
 function verifyNotALinkedModule(modulePath) {
-    return new Promise((resolve, reject) => {
-        fs.lstat(modulePath, (err, stat) => {
-            if (stat.isSymbolicLink()) {
-                reject(new Error('Symbolic link found: ' + modulePath));
-            } else {
-                resolve();
-            }
-        });
+  return new Promise((resolve, reject) => {
+    fs.lstat(modulePath, (err, stat) => {
+      if (stat.isSymbolicLink()) {
+        reject(new Error("Symbolic link found: " + modulePath));
+      } else {
+        resolve();
+      }
     });
+  });
 }
 
 function verifyNoLinkedModules() {
-    return new Promise((resolve, reject) => {
-        fs.readdir('./node_modules', (err, files) => {
-            Promise.all(files.map(file => {
-                const modulePath = path.join('.', 'node_modules', file);
-                return verifyNotALinkedModule(modulePath);
-            })).then(resolve, reject);
-        });
+  return new Promise((resolve, reject) => {
+    fs.readdir("./node_modules", (err, files) => {
+      Promise.all(
+        files.map((file) => {
+          const modulePath = path.join(".", "node_modules", file);
+          return verifyNotALinkedModule(modulePath);
+        })
+      ).then(resolve, reject);
     });
+  });
 }
 
-gulp.task('verify-no-linked-modules', cb => verifyNoLinkedModules().then(() => cb, cb));
+gulp.task("verify-no-linked-modules", (cb) =>
+  verifyNoLinkedModules().then(() => cb, cb)
+);
 
-gulp.task('vsce-publish', () => {
-    return vsce.publish();
+gulp.task("vsce-publish", () => {
+  return vsce.publish();
 });
 
-gulp.task('vsce-package', () => {
-    const cliOptions = minimist(process.argv.slice(2));
-    const packageOptions = {
-        packagePath: cliOptions.packagePath
-    };
+gulp.task("vsce-package", () => {
+  const cliOptions = minimist(process.argv.slice(2));
+  const packageOptions = {
+    packagePath: cliOptions.packagePath,
+  };
 
-    return vsce.createVSIX(packageOptions);
+  return vsce.createVSIX(packageOptions);
 });
 
-gulp.task('add-i18n', () => {
-    return gulp.src(['package.nls.json'])
-        .pipe(nls.createAdditionalLanguageFiles(defaultLanguages, 'i18n'))
-        .pipe(gulp.dest('.'));
+gulp.task("add-i18n", () => {
+  return gulp
+    .src(["package.nls.json"])
+    .pipe(nls.createAdditionalLanguageFiles(defaultLanguages, "i18n"))
+    .pipe(gulp.dest("."));
 });
 
-gulp.task('publish', gulp.series('build', 'add-i18n', 'vsce-publish'));
+gulp.task("publish", gulp.series("build", "add-i18n", "vsce-publish"));
 
-gulp.task('package', gulp.series('build', 'add-i18n', 'vsce-package'));
+gulp.task("package", gulp.series("build", "add-i18n", "vsce-package"));
 
-gulp.task('translations-export', gulp.series('build', () => {
-    return gulp.src(['out/**/nls.bundle.*.json', 'out/**/nls.bundle.json'])
-		.pipe(nls.createKeyValuePairFile())
-		.pipe(gulp.dest('./tds-vscode-translations-export'));
-}));
+gulp.task(
+  "translations-export",
+  gulp.series("build", () => {
+    return gulp
+      .src(["out/**/nls.bundle.*.json", "out/**/nls.bundle.json"])
+      .pipe(nls.createKeyValuePairFile())
+      .pipe(gulp.dest("./tds-vscode-translations-export"));
+  })
+);
 
-gulp.task('translations-import', (done) => {
-	const options = minimist(process.argv.slice(2), {
-			string: 'location',
-			default: {
-					location: '../tds-vscode-import'
-			}
-	});
-	return es.merge(defaultLanguages.map(language => {
+gulp.task("translations-import", (done) => {
+  const options = minimist(process.argv.slice(2), {
+    string: "location",
+    default: {
+      location: "../tds-vscode-import",
+    },
+  });
+  return es
+    .merge(
+      defaultLanguages.map((language) => {
         let id = language.transifexId || language.id;
-        console.log(path.join(options.location, id, 'vscode-extensions', `${translationExtensionName}.xlf`));
-        return gulp.src(path.join(options.location, id, 'vscode-extensions', `${translationExtensionName}.xlf`))
+        console.log(
+          path.join(
+            options.location,
+            id,
+            "vscode-extensions",
+            `${translationExtensionName}.xlf`
+          )
+        );
+        return gulp
+          .src(
+            path.join(
+              options.location,
+              id,
+              "vscode-extensions",
+              `${translationExtensionName}.xlf`
+            )
+          )
+          .pipe(nls.prepareJsonFiles())
+          .pipe(gulp.dest(path.join("./i18n", language.folderName)));
+      })
+    )
+    .on("end", () => done());
+});
+
+gulp.task("i18n-import", () => {
+  return es.merge(
+    defaultLanguages.map((language) => {
+      return gulp
+        .src(
+          `../${translationExtensionName}-localization/${language.folderName}/**/*.xlf`
+        )
         .pipe(nls.prepareJsonFiles())
-                .pipe(gulp.dest(path.join('./i18n', language.folderName)));
-
-	})).on('end', () => done());
+        .pipe(gulp.dest(path.join("./i18n", language.folderName)));
+    })
+  );
 });
 
-gulp.task('i18n-import', () => {
-	return es.merge(defaultLanguages.map(language => {
-		return gulp.src(`../${translationExtensionName}-localization/${language.folderName}/**/*.xlf`)
-			.pipe(nls.prepareJsonFiles())
-			.pipe(gulp.dest(path.join('./i18n', language.folderName)));
-	}));
-});
-
-
-const vscodeLanguages = defaultLanguages;
-const transifexApiHostname = 'www.transifex.com';
-const transifexApiName = 'api/2';
-const transifexApiToken = "1/607c3da66e72b2dce45f5dc878989127537a73c7"; //process.env.TRANSIFEX_API_TOKEN; // token to talk to Transifex (to obtain it see https://docs.transifex.com/api/introduction#authentication)
-const transifexProjectName = translationProjectName; // your project name in Transifex
 const transifexExtensionName = translationExtensionName; // your resource name in Transifex
 
 //
@@ -199,57 +243,94 @@ const transifexExtensionName = translationExtensionName; // your resource name i
 // });
 ////////////////////////////////////////////////////////
 
-gulp.task('transifex-push', function () {
-    const { execFile } = require('child_process');
-    const ls = execFile('C:\\Python27\\Scripts\\tx.exe', ['-d','push','--source','-t']);
+gulp.task("transifex-push", function () {
+  const { execFile } = require("child_process");
+  const ls = execFile("C:\\Python27\\Scripts\\tx.exe", [
+    "-d",
+    "push",
+    "--source",
+    "-t",
+  ]);
 
-    ls.stdout.on('data', (data) => {
-      console.log(data);
-    });
+  ls.stdout.on("data", (data) => {
+    console.log(data);
+  });
 
-    ls.stderr.on('data', (data) => {
-      console.log(data);
-    });
+  ls.stderr.on("data", (data) => {
+    console.log(data);
+  });
 
-    ls.on('close', (code) => {
-      console.log(`tx process close all stdio with code ${code}`);
-    });
+  ls.on("close", (code) => {
+    console.log(`tx process close all stdio with code ${code}`);
+  });
 
-    ls.on('exit', (code) => {
-      console.log(`tx process exited with code ${code}`);
-    });
+  ls.on("exit", (code) => {
+    console.log(`tx process exited with code ${code}`);
+  });
 
-    return gulp.done;
-}
-);
+  return gulp.done;
+});
 
-gulp.task('transifex-pull', function () {
-    const { execFile } = require('child_process');
-    const ls = execFile('C:\\Python27\\Scripts\\tx.exe', ['-d','pull','-a','--skip']);
+gulp.task("transifex-pull", function () {
+  const { execFile } = require("child_process");
+  const ls = execFile("C:\\Python27\\Scripts\\tx.exe", [
+    "-d",
+    "pull",
+    "-a",
+    "--skip",
+  ]);
 
-    ls.stdout.on('data', (data) => {
-      console.log(data);
-    });
+  ls.stdout.on("data", (data) => {
+    console.log(data);
+  });
 
-    ls.stderr.on('data', (data) => {
-      console.log(data);
-    });
+  ls.stderr.on("data", (data) => {
+    console.log(data);
+  });
 
-    ls.on('close', (code) => {
-      console.log(`tx process close all stdio with code ${code}`);
-    });
+  ls.on("close", (code) => {
+    console.log(`tx process close all stdio with code ${code}`);
+  });
 
-    ls.on('exit', (code) => {
-      console.log(`tx process exited with code ${code}`);
-    });
+  ls.on("exit", (code) => {
+    console.log(`tx process exited with code ${code}`);
+  });
 
-    return gulp.done;
-}
-);
+  return gulp.done;
+});
 
+gulp.task("transifex-delete", function () {
+  const { execFile } = require("child_process");
+  const ls = execFile("C:\\Python27\\Scripts\\tx.exe", [
+    "-d",
+    "delete",
+    "-f",
+    "-r",
+    "tds-vscode-brodao.*",
+  ]);
 
-gulp.task('i18n-import', function() {
-	return gulp.src(`../${transifexExtensionName}-localization/**/*.xlf`)
-		.pipe(nls.prepareJsonFiles())
-		.pipe(gulp.dest('./i18n'));
+  ls.stdout.on("data", (data) => {
+    console.log(data);
+  });
+
+  ls.stderr.on("data", (data) => {
+    console.log(data);
+  });
+
+  ls.on("close", (code) => {
+    console.log(`tx process close all stdio with code ${code}`);
+  });
+
+  ls.on("exit", (code) => {
+    console.log(`tx process exited with code ${code}`);
+  });
+
+  return gulp.done;
+});
+
+gulp.task("i18n-import", function () {
+  return gulp
+    .src(`../${transifexExtensionName}-localization/**/*.xlf`)
+    .pipe(nls.prepareJsonFiles())
+    .pipe(gulp.dest("./i18n"));
 });
