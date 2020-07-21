@@ -9,8 +9,6 @@ import {
 import Alert from "@material-ui/lab/Alert";
 import { i18n } from "../helper";
 
-const localize = (key: string, message: string, args?: any): string => { return i18n.localize(key, message, args); };//nls.loadMessageBundle();
-
 export interface LockServerDialogProps {
   open: boolean;
   onClose: (confirmed: boolean) => void;
@@ -35,7 +33,7 @@ export default function LockServerDialog(props: LockServerDialogProps) {
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="warning">
-            {localize("WARNING_BLOCKING_CONNECTIONS", "When confirming the blocking of new connections, no user can connect to that server.")}
+            {i18n._localize("WARNING_BLOCKING_CONNECTIONS", "When confirming the blocking of new connections, no user can connect to that server.")}
           </Alert>
         </DialogContentText>
         <DialogActions>
@@ -44,14 +42,14 @@ export default function LockServerDialog(props: LockServerDialogProps) {
               handleClose(event, "OK");
             }}
           >
-            {localize("OK", "OK")}
+            {i18n._localize("OK", "OK")}
           </Button>
           <Button
             onClick={() => {
               handleClose(event, "cancel");
             }}
           >
-            {localize("CANCEL", "Cancel")}
+            {i18n._localize("CANCEL", "Cancel")}
           </Button>
         </DialogActions>
       </DialogContent>

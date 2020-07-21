@@ -10,8 +10,6 @@ import {
 import Alert from "@material-ui/lab/Alert";
 import { i18n } from "../helper";
 
-const localize = (key: string, message: string, args?: any): string => { return i18n.localize(key, message, args); };//nls.loadMessageBundle();
-
 export interface StopServerDialogProps {
   open: boolean;
   onClose: (confirmed: boolean, killNow: boolean) => void;
@@ -36,8 +34,11 @@ export default function StopServerDialog(props: StopServerDialogProps) {
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="error">
-            <Typography>{localize("ERROR_ALL_CONNECTIONS_CLOSE",
-            "When confirming the server stop, all connections (including this) will be closed, as well as other processes. < strong > Restarting will only be possible by physically accessing the server. </strong>")}
+            <Typography>{i18n._localize("WARN_ALL_CONNECTIONS_CLOSE_1",
+            "When confirming the server stop, all connections (including this) will be closed, as well as other processes.")}
+            </Typography>
+            <Typography><strong>{i18n._localize("WARN_ALL_CONNECTIONS_CLOSE_2",
+            "Restarting will only be possible by physically accessing the server.")}</strong>
             </Typography>
           </Alert>
         </DialogContentText>
@@ -47,14 +48,14 @@ export default function StopServerDialog(props: StopServerDialogProps) {
               handleClose(event, "ok");
             }}
           >
-            {localize("OK", "OK")}
+            {i18n._localize("OK", "OK")}
           </Button>
           <Button
             onClick={() => {
               handleClose(event, "cancel");
             }}
           >
-            {localize("CANCEL", "Cancel")}
+            {i18n._localize("CANCEL", "Cancel")}
           </Button>
         </DialogActions>
       </DialogContent>

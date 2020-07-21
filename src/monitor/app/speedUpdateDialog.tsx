@@ -12,10 +12,6 @@ import {
 } from "@material-ui/core";
 import { i18n } from "../helper";
 
-const localize = (key: string, message: string, args?: any): string => {
-  return i18n.localize(key, message, args);
-}; //nls.loadMessageBundle();
-
 export interface SpeedUpdateDialogProps {
   open: boolean;
   speed: number;
@@ -63,7 +59,7 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
                   name="short"
                 />
               }
-              label={localize("SECONDS", "{0} seconds", 15)}
+              label={i18n._localize("SECONDS", "{0} seconds", 15)}
             />
           </FormGroup>
           <FormGroup row>
@@ -75,7 +71,7 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
                   name="normal"
                 />
               }
-              label={localize("SECONDS", "{0} seconds", 30)}
+              label={i18n._localize("SECONDS", "{0} seconds", 30)}
             />
           </FormGroup>
           <FormGroup row>
@@ -87,7 +83,7 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
                   name="long"
                 />
               }
-              label={localize("SECONDS", "{0} seconds", 60)}
+              label={i18n._localize("SECONDS", "{0} seconds", 60)}
             />
           </FormGroup>
           <FormGroup row>
@@ -99,7 +95,7 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
                   name="manual"
                 />
               }
-              label={localize("MANUAL", "Manual")}
+              label={i18n._localize("MANUAL", "Manual")}
             />
           </FormGroup>
         </DialogContentText>
@@ -109,14 +105,14 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
               handleClose(event, "ok");
             }}
           >
-            {localize("OK", "OK")}
+            {i18n._localize("OK", "OK")}
           </Button>
           <Button
             onClick={() => {
               handleClose(event, "cancel");
             }}
           >
-            {localize("CANCEL", "Cancel")}
+            {i18n._localize("CANCEL", "Cancel")}
           </Button>
         </DialogActions>
       </DialogContent>

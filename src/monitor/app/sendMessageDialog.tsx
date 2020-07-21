@@ -14,8 +14,6 @@ import { cellDefaultStyle } from "./monitorInterface";
 import { monitorIcons } from "../helper/monitorIcons";
 import { i18n } from "../helper";
 
-const localize = (key: string, message: string, args?: any): string => { return i18n.localize(key, message, args); };//nls.loadMessageBundle();
-
 export interface SendMessageDialogProps {
   open: boolean;
   recipients: any[];
@@ -24,10 +22,10 @@ export interface SendMessageDialogProps {
 
 
 const headCells: any[] = [
-  { field: "server", title: localize("SERVER", "Server"), ...cellDefaultStyle },
-  { field: "environment", title: localize("ENVIRONEMNT", "Environment"), ...cellDefaultStyle },
-  { field: "username", title: localize("USER", "User"), ...cellDefaultStyle },
-  { field: "remark", title: localize("REMARKS", "Remarks"), ...cellDefaultStyle }
+  { field: "server", title: i18n._localize("SERVER", "Server"), ...cellDefaultStyle },
+  { field: "environment", title: i18n._localize("ENVIRONEMNT", "Environment"), ...cellDefaultStyle },
+  { field: "username", title: i18n._localize("USER", "User"), ...cellDefaultStyle },
+  { field: "remark", title: i18n._localize("REMARKS", "Remarks"), ...cellDefaultStyle }
 ];
 
 export default function SendMessageDialog(props: SendMessageDialogProps) {
@@ -63,7 +61,7 @@ export default function SendMessageDialog(props: SendMessageDialogProps) {
           <TextField
             inputRef={messageRef}
             required
-            label={localize("MESSAGE_TEXT", "Message Text")}
+            label={i18n._localize("MESSAGE_TEXT", "Message Text")}
             defaultValue=""
             variant="outlined"
             multiline
@@ -89,14 +87,14 @@ export default function SendMessageDialog(props: SendMessageDialogProps) {
               handleClose(event, "send");
             }}
           >
-            {localize("SEND", "Submit")}
+            {i18n._localize("SEND", "Submit")}
           </Button>
           <Button
             onClick={() => {
               handleClose(event, "cancel");
             }}
           >
-            {localize("CANCEL", "Cancel")}
+            {i18n._localize("CANCEL", "Cancel")}
           </Button>
         </DialogActions>
       </DialogContent>

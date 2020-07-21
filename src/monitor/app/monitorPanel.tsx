@@ -54,11 +54,6 @@ import {
 } from "./monitorPanelMemento";
 import { i18n } from "../helper";
 import RemarkDialog from "./remarkDialog";
-import { stringify } from "querystring";
-
-const localize = (key: string, message: string, args?: any): string => {
-  return i18n.localize(key, message, args);
-}; //nls.loadMessageBundle();
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -477,14 +472,14 @@ export default function MonitorPanel(props: IMonitorPanel) {
   if (!locked) {
     actions.push({
       icon: () => <LockIcon />,
-      tooltip: localize("LOCK_SERVER", "Lock server"),
+      tooltip: i18n._localize("LOCK_SERVER", "Lock server"),
       isFreeAction: true,
       onClick: (event: any) => handleLockButtonClick(event),
     });
   } else {
     actions.push({
       icon: () => <LockOpenIcon />,
-      tooltip: localize("UNLOCK_SERVER", "Unlock server"),
+      tooltip: i18n._localize("UNLOCK_SERVER", "Unlock server"),
       isFreeAction: true,
       onClick: (event: any) => handleUnlockButtonClick(event),
     });
@@ -492,14 +487,14 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   actions.push({
     icon: () => <MessageIcon />,
-    tooltip: localize("SEND_MESSAGE_ALL_USERS", "Send message to all users"),
+    tooltip: i18n._localize("SEND_MESSAGE_ALL_USERS", "Send message to all users"),
     isFreeAction: true,
     onClick: (event: any) => handleSendMessageButtonClick(event, null),
   });
 
   actions.push({
     icon: () => <MessageIcon />,
-    tooltip: localize(
+    tooltip: i18n._localize(
       "SEND_MESSAGE_SELECTED_USERS",
       "Send message to selected users"
     ),
@@ -509,28 +504,28 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   actions.push({
     icon: () => <DisconnectIcon />,
-    tooltip: localize("DISCONNECT_ALL_USERS", "Disconnect all users"),
+    tooltip: i18n._localize("DISCONNECT_ALL_USERS", "Disconnect all users"),
     isFreeAction: true,
     onClick: (event: any) => handleDisconnectUserButtonClick(event, null),
   });
 
   actions.push({
     icon: () => <DisconnectIcon />,
-    tooltip: localize("DISCONNECT_SELECTD_USERS", "Disconnect selectd users"),
+    tooltip: i18n._localize("DISCONNECT_SELECTD_USERS", "Disconnect selectd users"),
     isFreeAction: false,
     onClick: (event: any) => handleDisconnectUserButtonClick(event, rows),
   });
 
   actions.push({
     icon: () => <StopIcon />,
-    tooltip: localize("STOP_SERVER", "Stop server"),
+    tooltip: i18n._localize("STOP_SERVER", "Stop server"),
     isFreeAction: true,
     onClick: (event: any) => handleStopButtonClick(event),
   });
 
   actions.push({
     icon: () => <GroupingIcon />,
-    tooltip: localize("GROUPING_ON_OFF", "Grouping on/off"),
+    tooltip: i18n._localize("GROUPING_ON_OFF", "Grouping on/off"),
     isFreeAction: true,
     onClick: () => {
       setGrouping(!grouping);
@@ -539,7 +534,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   actions.push({
     icon: () => <FilterList />,
-    tooltip: localize("FILTERING_ON_OFF", "Filtering on/off"),
+    tooltip: i18n._localize("FILTERING_ON_OFF", "Filtering on/off"),
     isFreeAction: true,
     onClick: () => {
       setFiltering(!filtering);
@@ -548,21 +543,21 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   actions.push({
     icon: () => <SpeedIcon />,
-    tooltip: localize("UPDATE_SPEED", "Update speed {0}", propSpeedText(speed)),
+    tooltip: i18n._localize("UPDATE_SPEED", "Update speed {0}", propSpeedText(speed)),
     isFreeAction: true,
     onClick: () => handleSpeedButtonClick(),
   });
 
   actions.push({
     icon: () => <RefreshIcon />,
-    tooltip: localize("REFRESH_DATA", "Refresh data"),
+    tooltip: i18n._localize("REFRESH_DATA", "Refresh data"),
     isFreeAction: true,
     onClick: () => handleRefreshButtonClick(),
   });
 
   actions.push({
     icon: () => <FormatClearIcon />,
-    tooltip: localize("RESET_CONFIGURATIONS", "Reset configurations"),
+    tooltip: i18n._localize("RESET_CONFIGURATIONS", "Reset configurations"),
     isFreeAction: true,
     onClick: () => handleResetButtonClick(),
   });
@@ -582,51 +577,51 @@ export default function MonitorPanel(props: IMonitorPanel) {
         <MaterialTable
           localization={{
             pagination: {
-              labelDisplayedRows: localize(
+              labelDisplayedRows: i18n._localize(
                 "FROM_TO_OF_COUNT",
                 "{from}-{to} de {count}"
               ),
-              labelRowsSelect: localize("CONNECTIONS", "connections"),
-              labelRowsPerPage: localize("LINES_PAGE.", "lines/p."),
-              firstAriaLabel: localize("FIRST", "First"),
-              firstTooltip: localize("FIRST_PAGE", "First page"),
-              previousAriaLabel: localize("PREVIOUS", "Previous"),
-              previousTooltip: localize("PREVIOUS_PAGE", "Previous page"),
-              nextAriaLabel: localize("NEXT", "Next"),
-              nextTooltip: localize("NEXT_PAGE", "Next page"),
-              lastAriaLabel: localize("LAST", "Last"),
-              lastTooltip: localize("LAST_PAGE", "Last page"),
+              labelRowsSelect: i18n._localize("CONNECTIONS", "connections"),
+              labelRowsPerPage: i18n._localize("LINES_PAGE.", "lines/p."),
+              firstAriaLabel: i18n._localize("FIRST", "First"),
+              firstTooltip: i18n._localize("FIRST_PAGE", "First page"),
+              previousAriaLabel: i18n._localize("PREVIOUS", "Previous"),
+              previousTooltip: i18n._localize("PREVIOUS_PAGE", "Previous page"),
+              nextAriaLabel: i18n._localize("NEXT", "Next"),
+              nextTooltip: i18n._localize("NEXT_PAGE", "Next page"),
+              lastAriaLabel: i18n._localize("LAST", "Last"),
+              lastTooltip: i18n._localize("LAST_PAGE", "Last page"),
             },
             toolbar: {
-              nRowsSelected: localize(
+              nRowsSelected: i18n._localize(
                 "CONNECTIONS_SELECTED",
                 "{0} connections selected"
               ),
-              showColumnsTitle: localize(
+              showColumnsTitle: i18n._localize(
                 "SHOW_HIDE_COLUMNS",
                 "Show/hide columns"
               ),
-              searchTooltip: localize(
+              searchTooltip: i18n._localize(
                 "SEARCH_ALL_COLUMNS",
                 "Search in all columns"
               ),
-              searchPlaceholder: localize("SEARCH", "Search"),
+              searchPlaceholder: i18n._localize("SEARCH", "Search"),
             },
             header: {
-              actions: localize("ACTIONS", "Actions"),
+              actions: i18n._localize("ACTIONS", "Actions"),
             },
             body: {
-              emptyDataSourceMessage: localize(
+              emptyDataSourceMessage: i18n._localize(
                 "NO_CONNECTIONS",
                 "There are no connections or they are not visible to the monitor."
               ),
               filterRow: {
-                filterTooltip: localize("FILTER", "Filter"),
+                filterTooltip: i18n._localize("FILTER", "Filter"),
               },
             },
             grouping: {
-              placeholder: localize("DRAG_HEADERS", "Drag headers ..."),
-              groupedBy: localize("GROUPED_BY", "Grouped by:"),
+              placeholder: i18n._localize("DRAG_HEADERS", "Drag headers ..."),
+              groupedBy: i18n._localize("GROUPED_BY", "Grouped by:"),
             },
           }}
           icons={monitorIcons.table}
@@ -634,15 +629,14 @@ export default function MonitorPanel(props: IMonitorPanel) {
           data={rows}
           title={
             <Title
-              title={localize("MONITOR", "Monitor")}
+              title={i18n._localize("MONITOR", "Monitor")}
               subtitle={
                 subtitle
                   ? subtitle
-                  : localize("INITIALIZING", "(inicializando)")
+                  : i18n._localize("INITIALIZING", "(inicializando)")
               }
             />
           }
-          isLoading={isLoading}
           options={{
             showTextRowsSelected: false,
             emptyRowsWhenPaging: false,

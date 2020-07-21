@@ -10,8 +10,6 @@ import {
 import Alert from "@material-ui/lab/Alert";
 import { i18n } from "../helper";
 
-const localize = (key: string, message: string, args?: any): string => { return i18n.localize(key, message, args); };//nls.loadMessageBundle();
-
 export interface RemarkDialogProps {
   open: boolean;
   remark: string;
@@ -48,7 +46,7 @@ export default function RemarkDialog(props: RemarkDialogProps) {
               handleClose(event, "OK");
             }}
           >
-            {localize("OK", "OK")}
+            {i18n._localize("OK", "OK")}
           </Button>
         </DialogActions>
       </DialogContent>

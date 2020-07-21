@@ -16,8 +16,6 @@ import { cellDefaultStyle } from "./monitorInterface";
 import { monitorIcons } from "../helper/monitorIcons";
 import { i18n } from "../helper";
 
-const localize = (key: string, message: string, args?: any): string => { return i18n.localize(key, message, args); };//nls.loadMessageBundle();
-
 export interface DisconnectUserDialogProps {
   open: boolean;
   recipients: any[];
@@ -25,10 +23,10 @@ export interface DisconnectUserDialogProps {
 }
 
 const headCells: any[] = [
-  { field: "server", title:      localize("SERVER"   , "Server"),...cellDefaultStyle },
-  { field: "environment", title: localize("AMBIENT"  , "Ambient"),...cellDefaultStyle },
-  { field: "username", title:    localize("USER"     , "User"),...cellDefaultStyle },
-  { field: "remark", title:      localize("COMMENT"  , "Comment"),...cellDefaultStyle }
+  { field: "server", title:      i18n._localize("SERVER"   , "Server"),...cellDefaultStyle },
+  { field: "environment", title: i18n._localize("AMBIENT"  , "Ambient"),...cellDefaultStyle },
+  { field: "username", title:    i18n._localize("USER"     , "User"),...cellDefaultStyle },
+  { field: "remark", title:      i18n._localize("COMMENT"  , "Comment"),...cellDefaultStyle }
 ];
 
 export default function DisconnectUserDialog(
@@ -57,7 +55,7 @@ export default function DisconnectUserDialog(
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="warning">
-            {localize("WARN_CONNECTION_TERMINATED", "The users listed below will have their connections terminated.")}
+            {i18n._localize("WARN_CONNECTION_TERMINATED", "The users listed below will have their connections terminated.")}
           </Alert>
           <FormControlLabel
             control={
@@ -67,7 +65,7 @@ export default function DisconnectUserDialog(
                 value="checked"
               />
             }
-            label={localize("TERMINATE_CONNECTIONS_IMMEDIATELY", "Terminate connections immediately.")}
+            label={i18n._localize("TERMINATE_CONNECTIONS_IMMEDIATELY", "Terminate connections immediately.")}
           />
           <Paper>
             <MaterialTable
@@ -87,14 +85,14 @@ export default function DisconnectUserDialog(
               handleClose(event, "OK");
             }}
           >
-            {localize("OK", "OK")}
+            {i18n._localize("OK", "OK")}
           </Button>
           <Button
             onClick={() => {
               handleClose(event, "cancel");
             }}
           >
-            {localize("CANCEL", "Cancel")}
+            {i18n._localize("CANCEL", "Cancel")}
           </Button>
         </DialogActions>
       </DialogContent>

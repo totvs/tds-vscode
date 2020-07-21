@@ -16,7 +16,6 @@ const vsce = require("vsce");
 const es = require("event-stream");
 const minimist = require("minimist");
 
-const translationProjectName = "tds-vscode-brodao";
 const translationExtensionName = "totvs-developer-studio";
 
 const defaultLanguages = [
@@ -79,41 +78,15 @@ function doBuild(buildNls, failOnError) {
 gulp.task("clean", () => {
   return del([
     "out/**",
-    "package.nls.*.json",
-    "vscode-totvs-developer-studio-*.vsix",
+    "tds-vscode-*.vsix",
   ]);
 });
-
-// gulp.task('copy-scripts', () => {
-//     return gulp
-//         .src(scripts, { base: '.' })
-//         .pipe(gulp.dest('out'));
-// });
 
 gulp.task("_dev-build", doBuild(false, false));
 
 gulp.task("_build", doBuild(true, true));
 
 gulp.task("build", gulp.series("clean", "_build"));
-
-gulp.task(
-  "watch",
-  gulp.series("clean", "_dev-build", () => {
-    log("Watching build sources...");
-    return gulp.watch(watchedSources, gulp.series("_dev-build"));
-  })
-);
-
-gulp.task("tslint", () => {
-  return gulp
-    .src(lintSources, { base: "." })
-    .pipe(
-      tslint({
-        formatter: "verbose",
-      })
-    )
-    .pipe(tslint.report());
-});
 
 function verifyNotALinkedModule(modulePath) {
   return new Promise((resolve, reject) => {
@@ -243,7 +216,7 @@ const transifexExtensionName = translationExtensionName; // your resource name i
 // });
 ////////////////////////////////////////////////////////
 
-gulp.task("transifex-push", function () {
+gulp.task("transifex-put", function () {
   const { execFile } = require("child_process");
   const ls = execFile("C:\\Python27\\Scripts\\tx.exe", [
     "-d",
@@ -271,12 +244,13 @@ gulp.task("transifex-push", function () {
   return gulp.done;
 });
 
-gulp.task("transifex-pull", function () {
+gulp.task("transifex-get", function () {
   const { execFile } = require("child_process");
   const ls = execFile("C:\\Python27\\Scripts\\tx.exe", [
     "-d",
     "pull",
     "-a",
+    "-t",
     "--skip",
   ]);
 
@@ -299,6 +273,7 @@ gulp.task("transifex-pull", function () {
   return gulp.done;
 });
 
+//CUIDADO: O arquivo .tx\config é modificado, removendo as configurações existentes
 gulp.task("transifex-delete", function () {
   const { execFile } = require("child_process");
   const ls = execFile("C:\\Python27\\Scripts\\tx.exe", [

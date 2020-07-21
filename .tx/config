@@ -9,8 +9,6 @@ type = KEYVALUEJSON
 
 [tds-vscode-brodao.nls_bundle_json]
 file_filter = tds-vscode-translations/nls.bundle.<lang>.json
-minimum_perc = 80
 source_file = tds-vscode-translations/nls.bundle.json
 source_lang = en
-trans.None = .tx/config
 type = KEYVALUEJSON

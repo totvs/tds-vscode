@@ -10,8 +10,6 @@ import {
 import Alert from "@material-ui/lab/Alert";
 import { i18n } from "../helper";
 
-const localize = (key: string, message: string, args?: any): string => { return i18n.localize(key, message, args); };//nls.loadMessageBundle();
-
 export interface UnlockServerDialogProps {
   open: boolean;
   onClose: (confirmed: boolean) => void;
@@ -36,7 +34,7 @@ export default function UnlockServerDialog(props: UnlockServerDialogProps) {
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="info">
-            {localize(
+            {i18n._localize(
               "INFO_RELEASE_CONNECTION",
               "When confirming the release of new connections, users can connect to that server again."
             )}
@@ -48,14 +46,14 @@ export default function UnlockServerDialog(props: UnlockServerDialogProps) {
               handleClose(event, "OK");
             }}
           >
-            {localize("OK", "OK")}
+            {i18n._localize("OK", "OK")}
           </Button>
           <Button
             onClick={() => {
               handleClose(event, "cancel");
             }}
           >
-            {localize("CANCEL", "Cancel")}
+            {i18n._localize("CANCEL", "Cancel")}
           </Button>
         </DialogActions>
       </DialogContent>

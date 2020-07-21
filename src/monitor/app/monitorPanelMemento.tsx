@@ -6,10 +6,6 @@ import Alert from "@material-ui/lab/Alert";
 import RemarkDialog from "./remarkDialog";
 import { Popper } from "@material-ui/core";
 
-const localize = (key: string, message: string, args?: any): string => {
-  return i18n.localize(key, message, args);
-}; //nls.loadMessageBundle();
-
 function fieldDef(
   field: string,
   title: string,
@@ -60,11 +56,12 @@ export const propSpeed = (value: number = undefined) => {
 };
 
 const speedText = {
-  0: localize("MANUAL", "(manual)"),
-  15: localize("SHORT", "(short)"),
-  30: localize("NORMAL", "(normal)"),
-  60: localize("LONG", "(long)"),
+  0: i18n._localize("MANUAL", "(manual)"),
+  15: i18n._localize("SHORT", "(short)"),
+  30: i18n._localize("NORMAL", "(normal)"),
+  60: i18n._localize("LONG", "(long)"),
 };
+
 export const propSpeedText = (value: number): string => {
   return speedText[value];
 };
@@ -178,38 +175,38 @@ export const propColumns = (extraProps?: any): any => {
 
   return {
     columns: [
-      //fieldDef("server", localize("SERVER", "Server"), extraProps),
-      fieldDef("appUser", localize("USER", "User Name"), extraProps),
+      fieldDef("server", i18n._localize("SERVER", "Server"), extraProps),
+      fieldDef("appUser", i18n._localize("USER_NAME", "User Name"), extraProps),
       fieldDef(
         "environment",
-        localize("ENVIRONMENT", "Environment"),
+        i18n._localize("ENVIRONMENT", "Environment"),
         extraProps
       ),
       fieldDef(
         "computerName",
-        localize("COMPUTER_NAME", "Computer Name"),
+        i18n._localize("COMPUTER_NAME", "Computer Name"),
         extraProps
       ),
-      fieldDef("threadId", localize("THREAD", "Thread ID"), {
+      fieldDef("threadId", i18n._localize("THREAD", "Thread ID"), {
         type: "numeric",
         ...extraProps,
         render: (row: any) => doFormatNumber(row["threadId"]),
       }),
-      fieldDef("mainName", localize("PROGRAM", "Program"), extraProps),
-      fieldDef("loginTime", localize("CONNECTION", "Connection"), extraProps),
+      fieldDef("mainName", i18n._localize("PROGRAM", "Program"), extraProps),
+      fieldDef("loginTime", i18n._localize("CONNECTION", "Connection"), extraProps),
       fieldDef(
         "elapsedTime",
-        localize("ELAPSED_TIME", "Elapsed time"),
+        i18n._localize("ELAPSED_TIME", "Elapsed time"),
         extraProps
       ),
       fieldDef(
         "inactiveTime",
-        localize("INACTIVITY_TIME ", "Idle time"),
+        i18n._localize("INACTIVITY_TIME ", "Idle time"),
         extraProps
       ),
       fieldDef(
         "totalInstrCount",
-        localize("TOTAL_INSTRUCTIONS ", "Instructions"),
+        i18n._localize("TOTAL_INSTRUCTIONS ", "Instructions"),
         {
           type: "numeric",
           ...extraProps,
@@ -218,7 +215,7 @@ export const propColumns = (extraProps?: any): any => {
       ),
       fieldDef(
         "instrCountPerSec",
-        localize("INSTRUCTIONS_SEG ", "Instructions/sec"),
+        i18n._localize("INSTRUCTIONS_SEG ", "Instructions/sec"),
         {
           type: "numeric",
           ...extraProps,
@@ -229,27 +226,27 @@ export const propColumns = (extraProps?: any): any => {
             }),
         }
       ),
-      fieldDef("remark", localize("COMMENT", "Comment"), {
+      fieldDef("remark", i18n._localize("COMMENT", "Comment"), {
         ...remarkProps
       }),
-      fieldDef("memUsed", localize("MEMORY_USE ", "Memory in Use"), {
+      fieldDef("memUsed", i18n._localize("MEMORY_USE ", "Memory in Use"), {
         type: "numeric",
         ...extraProps,
         render: (row: any) => doFormatNumber(row["memUsed"]),
       }),
-      fieldDef("sid", localize("SID", "SID"), {
+      fieldDef("sid", i18n._localize("SID", "SID"), {
         type: "numeric",
         ...extraProps,
         render: (row: any) => doFormatNumber(row["sid"]),
       }),
-      fieldDef("ctreeTaskId", localize("CTREE_ID", "CTree ID"), {
+      fieldDef("ctreeTaskId", i18n._localize("CTREE_ID", "CTree ID"), {
         type: "numeric",
         ...extraProps,
         render: (row: any) => doFormatNumber(row["ctreeTaskId"]),
       }),
       fieldDef(
         "clientType",
-        localize("CONNECTION_TYPE ", "Connection Type"),
+        i18n._localize("CONNECTION_TYPE ", "Connection Type"),
         extraProps
       ),
     ],

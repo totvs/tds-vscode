@@ -16,11 +16,12 @@ const vscode = window.acquireVsCodeApi();
 const memento = window.initialData.memento;
 const translations = window.initialData.translations;
 
-i18n.translations(translations);
+console.log(translations);
+i18n.translations = translations;
 
 ReactDOM.render(
   <ErrorBoundary>
-    <MonitorPanel vscode={vscode} memento={memento}/>
+    <MonitorPanel vscode={vscode} memento={memento} />
   </ErrorBoundary>,
   document.getElementById("root")
 );
