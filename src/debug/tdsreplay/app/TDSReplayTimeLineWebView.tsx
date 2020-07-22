@@ -24,7 +24,9 @@ export default class TDSReplayTimeLineWebView extends React.Component<IConfigPro
     } else {
      // console.log("Setting new state");
       let initialData = this.props.initialData;
-      this.state = { config: initialData };
+      this.state = {
+        config: initialData,
+      };
       this.props.vscode.setState(this.state);
     }
   }

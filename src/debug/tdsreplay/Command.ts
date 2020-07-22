@@ -1,14 +1,19 @@
 export interface ICommand {
-  action: CommandAction;
+  action: CommandToDA | CommandToPage;
   content: any;
 }
 
-export enum CommandAction {
-    AddTimeLines,
+export enum CommandToDA {
     SetTimeLine,
     ChangeRowsPerPage,
     ChangePage,
     ChangeItemsPerPage,
     SetIgnoreSourcesNotFound,
-    SelectTimeLine
+    ShowSources
+}
+
+export enum CommandToPage {
+  AddTimeLines,
+  SelectTimeLine,
+  OpenSourcesDialog
 }
