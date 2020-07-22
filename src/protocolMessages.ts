@@ -235,6 +235,7 @@ export function sendConnectRequest(
       },
       (err: ResponseError<object>) => {
         vscode.window.showErrorMessage(err.message);
+        return { sucess: false, token: "", needAuthentication: false };
       }
     );
 }
@@ -265,6 +266,7 @@ export function sendAuthenticateRequest(
       },
       (err: ResponseError<object>) => {
         vscode.window.showErrorMessage(err.message);
+        return { sucess: false, token: "" };
       }
     );
 }
@@ -298,6 +300,7 @@ export function sendReconnectRequest(
       },
       (error: any) => {
         vscode.window.showErrorMessage(error.message);
+        return { sucess: false, environment: "", user: "", token: "" };
       }
     );
 }
@@ -326,6 +329,10 @@ export function sendValidationRequest(
       },
       (err: ResponseError<object>) => {
         vscode.window.showErrorMessage(err.message);
+        return {
+          build: "",
+          secure: false,
+        };
       }
     );
 }
@@ -430,7 +437,7 @@ export function sendUserMessage(
         computerName: target.computerName,
         threadId: target.threadId,
         server: target.server,
-        message: toAscii(message), //todo: melhorar 
+        message: toAscii(message), //todo: melhorar
       }
     }).then(
       (response: any) => {
