@@ -36,7 +36,6 @@ import UnlockServerDialog from "./unlockServerDialog";
 import DisconnectUserDialog from "./disconnectUserDialog";
 import SpeedUpdateDialogDialog from "./speedUpdateDialog";
 import MonitorTheme from "../helper/theme";
-import ErrorBoundary from "../helper/errorBoundary";
 import { useMemento, IMemento, mergeProperties } from "../helper";
 import {
   propGrouping,

@@ -21,7 +21,7 @@ const translationExtensionName = "totvs-developer-studio";
 const defaultLanguages = [
   { id: "es", folderName: "esn" },
   { id: "ru", folderName: "rus" },
-  { id: "pt-br", folderName: "ptb", transifexId: "pt-BR" },
+  { id: "pt-br", folderName: "ptb", transifexId: "pt_BR" },
 ];
 
 const watchedSources = ["src/**/*", "test/**/*"];
@@ -147,7 +147,7 @@ gulp.task(
     return gulp
       .src(["out/**/nls.bundle.*.json", "out/**/nls.bundle.json"])
       .pipe(nls.createKeyValuePairFile())
-      .pipe(gulp.dest("./tds-vscode-translations-export"));
+      .pipe(gulp.dest("./tds-vscode-translations"));
   })
 );
 
@@ -155,7 +155,7 @@ gulp.task("translations-import", (done) => {
   const options = minimist(process.argv.slice(2), {
     string: "location",
     default: {
-      location: "../tds-vscode-import",
+      location: "./tds-vscode-translations",
     },
   });
   return es
@@ -165,22 +165,17 @@ gulp.task("translations-import", (done) => {
         console.log(
           path.join(
             options.location,
-            id,
-            "vscode-extensions",
-            `${translationExtensionName}.xlf`
+            `nls.bundle.${id}.json`
           )
         );
         return gulp
           .src(
             path.join(
-              options.location,
-              id,
-              "vscode-extensions",
-              `${translationExtensionName}.xlf`
-            )
+              `nls.bundle.${id}.json`
+              ), {cwd: options.location}
           )
-          .pipe(nls.prepareJsonFiles())
-          .pipe(gulp.dest(path.join("./i18n", language.folderName)));
+          .pipe(gulp.dest(path.join("./i18n", language.folderName))
+          .pipe(nls.createMetaDataFiles()));
       })
     )
     .on("end", () => done());
@@ -191,7 +186,7 @@ gulp.task("i18n-import", () => {
     defaultLanguages.map((language) => {
       return gulp
         .src(
-          `../${translationExtensionName}-localization/${language.folderName}/**/*.xlf`
+          "./tds-vscode-translations/*.json"
         )
         .pipe(nls.prepareJsonFiles())
         .pipe(gulp.dest(path.join("./i18n", language.folderName)));
@@ -216,7 +211,7 @@ const transifexExtensionName = translationExtensionName; // your resource name i
 // });
 ////////////////////////////////////////////////////////
 
-gulp.task("transifex-put", function () {
+gulp.task("transifex-put", function (done) {
   const { execFile } = require("child_process");
   const ls = execFile("C:\\Python27\\Scripts\\tx.exe", [
     "-d",
@@ -241,16 +236,15 @@ gulp.task("transifex-put", function () {
     console.log(`tx process exited with code ${code}`);
   });
 
-  return gulp.done;
+  return done();
 });
 
-gulp.task("transifex-get", function () {
+gulp.task("transifex-get", function (done) {
   const { execFile } = require("child_process");
   const ls = execFile("C:\\Python27\\Scripts\\tx.exe", [
     "-d",
     "pull",
     "-a",
-    "-t",
     "--skip",
   ]);
 
@@ -270,11 +264,11 @@ gulp.task("transifex-get", function () {
     console.log(`tx process exited with code ${code}`);
   });
 
-  return gulp.done;
+  return done();
 });
 
 //CUIDADO: O arquivo .tx\config é modificado, removendo as configurações existentes
-gulp.task("transifex-delete", function () {
+gulp.task("transifex-delete", function (done) {
   const { execFile } = require("child_process");
   const ls = execFile("C:\\Python27\\Scripts\\tx.exe", [
     "-d",
@@ -301,11 +295,4 @@ gulp.task("transifex-delete", function () {
   });
 
   return gulp.done;
-});
-
-gulp.task("i18n-import", function () {
-  return gulp
-    .src(`../${transifexExtensionName}-localization/**/*.xlf`)
-    .pipe(nls.prepareJsonFiles())
-    .pipe(gulp.dest("./i18n"));
 });

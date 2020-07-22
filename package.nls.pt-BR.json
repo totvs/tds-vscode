@@ -52,7 +52,7 @@
 	"tds.package.reconnect": "Reconectar",
 	"tds.package.serverSelection": "Selecione Servidor",
 	"tds.package.rename": "Renomear",
-	"tds.package.disconnect": "desconectar",
+	"tds.package.disconnect": "Desconectar",
 	"tds.package.selectenv": "Selecione",
 	"tds.package.freshenIndex": "Índice Freshen",
 	"tds.package.add": "Adicionar servidor",

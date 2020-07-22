@@ -1,3 +1,7 @@
 .vscode/**
 .vscode-test/**
 out/test/**
+out/**/*.d.ts
+out/**/*.d.ts.map
+out/**/*.js.map
+

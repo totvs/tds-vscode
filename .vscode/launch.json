@@ -2,6 +2,18 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"args": [
+				"translations-import"
+			],
+			"name": "Gulp translations-import",
+			"program": "${workspaceFolder}/node_modules/gulp/bin/gulp.js",
+			"request": "launch",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"type": "pwa-node"
+		},
+		{
 			"type": "extensionHost",
 			"request": "launch",
 			"name": "Extension",
