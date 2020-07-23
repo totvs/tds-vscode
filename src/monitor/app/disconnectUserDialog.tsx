@@ -23,10 +23,10 @@ export interface DisconnectUserDialogProps {
 }
 
 const headCells: any[] = [
-  { field: "server", title:      i18n._localize("SERVER"   , "Server"),...cellDefaultStyle },
-  { field: "environment", title: i18n._localize("AMBIENT"  , "Ambient"),...cellDefaultStyle },
-  { field: "username", title:    i18n._localize("USER"     , "User"),...cellDefaultStyle },
-  { field: "remark", title:      i18n._localize("COMMENT"  , "Comment"),...cellDefaultStyle }
+  { field: "server", title:      i18n._localize("SERVER"     , "Server"),...cellDefaultStyle },
+  { field: "environment", title: i18n._localize("ENVIRONMENT", "Environment"),...cellDefaultStyle },
+  { field: "username", title:    i18n._localize("USER"       , "User"),...cellDefaultStyle },
+  { field: "remark", title:      i18n._localize("COMMENT"    , "Comment"),...cellDefaultStyle }
 ];
 
 export default function DisconnectUserDialog(

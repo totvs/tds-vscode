@@ -620,7 +620,7 @@ function getTranslations() {
 
   return {
     "ACTIONS": localize("ACTIONS", "Actions"),
-    "AMBIENT": localize("AMBIENT", "Ambient"),
+    "ENVIRONMENT": localize("ENVIRONMENT", "Environment"),
     "CANCEL": localize("CANCEL", "Cancel"),
     "COMMENT": localize("COMMENT", "Comment"),
     "COMPUTER_NAME": localize("COMPUTER_NAME", "Computer Name"),
@@ -633,8 +633,6 @@ function getTranslations() {
     "DISCONNECT_SELECTD_USERS": localize("DISCONNECT_SELECTD_USERS", "Disconnect selectd users"),
     "DRAG_HEADERS": localize("DRAG_HEADERS", "Drag headers ..."),
     "ELAPSED_TIME": localize("ELAPSED_TIME", "Elapsed time"),
-    "ENVIRONEMNT": localize("ENVIRONEMNT", "Environment"),
-    "ENVIRONMENT": localize("ENVIRONMENT", "Environment"),
     "FILTER": localize("FILTER", "Filter"),
     "FILTERING_ON_OFF": localize("FILTERING_ON_OFF", "Filtering on/off"),
     "FIRST": localize("FIRST", "First"),

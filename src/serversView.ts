@@ -556,7 +556,7 @@ export function updateStatusBarItem(
   } else {
     totvsStatusBarItem.text = localize(
       "tds.vscode.select_server_environment",
-      "[ Selecionar servidor/ambiente ]"
+      "[ Select server/environment ]"
     );
   }
 

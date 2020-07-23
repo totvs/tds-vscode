@@ -15,6 +15,7 @@ const fs = require("fs");
 const vsce = require("vsce");
 const es = require("event-stream");
 const minimist = require("minimist");
+const { getRulesDirectories } = require("tslint/lib/configuration");
 
 const translationExtensionName = "totvs-developer-studio";
 
@@ -53,12 +54,12 @@ function doBuild(buildNls, failOnError) {
       .pipe(buildNls ? nls.rewriteLocalizeCalls() : es.through())
       .pipe(
         buildNls
-          ? nls.createAdditionalLanguageFiles(defaultLanguages, "i18n", "src")
+          ? nls.createAdditionalLanguageFiles(defaultLanguages, "i18n", "out")
           : es.through()
       )
       .pipe(
         buildNls
-          ? nls.bundleMetaDataFiles("ms-vscode.totvs-developer-studio", "src")
+          ? nls.bundleMetaDataFiles("ms-vscode.totvs-developer-studio", "out")
           : es.through()
       )
       .pipe(buildNls ? nls.bundleLanguageFiles() : es.through())
@@ -76,10 +77,7 @@ function doBuild(buildNls, failOnError) {
 }
 
 gulp.task("clean", () => {
-  return del([
-    "out/**",
-    "tds-vscode-*.vsix",
-  ]);
+  return del(["out/**", "tds-vscode-*.vsix"]);
 });
 
 gulp.task("_dev-build", doBuild(false, false));
@@ -88,189 +86,81 @@ gulp.task("_build", doBuild(true, true));
 
 gulp.task("build", gulp.series("clean", "_build"));
 
-function verifyNotALinkedModule(modulePath) {
-  return new Promise((resolve, reject) => {
-    fs.lstat(modulePath, (err, stat) => {
-      if (stat.isSymbolicLink()) {
-        reject(new Error("Symbolic link found: " + modulePath));
-      } else {
-        resolve();
-      }
-    });
-  });
-}
-
-function verifyNoLinkedModules() {
-  return new Promise((resolve, reject) => {
-    fs.readdir("./node_modules", (err, files) => {
-      Promise.all(
-        files.map((file) => {
-          const modulePath = path.join(".", "node_modules", file);
-          return verifyNotALinkedModule(modulePath);
-        })
-      ).then(resolve, reject);
-    });
-  });
-}
-
-gulp.task("verify-no-linked-modules", (cb) =>
-  verifyNoLinkedModules().then(() => cb, cb)
-);
-
-gulp.task("vsce-publish", () => {
-  return vsce.publish();
-});
-
-gulp.task("vsce-package", () => {
-  const cliOptions = minimist(process.argv.slice(2));
-  const packageOptions = {
-    packagePath: cliOptions.packagePath,
-  };
-
-  return vsce.createVSIX(packageOptions);
-});
-
-gulp.task("add-i18n", () => {
-  return gulp
-    .src(["package.nls.json"])
-    .pipe(nls.createAdditionalLanguageFiles(defaultLanguages, "i18n"))
-    .pipe(gulp.dest("."));
-});
-
-gulp.task("publish", gulp.series("build", "add-i18n", "vsce-publish"));
-
-gulp.task("package", gulp.series("build", "add-i18n", "vsce-package"));
-
 gulp.task(
-  "translations-export",
-  gulp.series("build", () => {
+  "i18n-export",
+  gulp.series(function () {
     return gulp
-      .src(["out/**/nls.bundle.*.json", "out/**/nls.bundle.json"])
-      .pipe(nls.createKeyValuePairFile())
-      .pipe(gulp.dest("./tds-vscode-translations"));
-  })
+      .src([
+        "package.nls.json",
+        "out/nls.metadata.header.json",
+        "out/nls.metadata.json",
+      ])
+      .pipe(nls.createXlfFiles("tds-vscode", "tds-vscode"))
+      .pipe(gulp.dest(path.join(".", "tds-vscode-translations")));
+  }),
+  "build"
 );
 
-gulp.task("translations-import", (done) => {
-  const options = minimist(process.argv.slice(2), {
-    string: "location",
-    default: {
-      location: "./tds-vscode-translations",
-    },
-  });
-  return es
-    .merge(
-      defaultLanguages.map((language) => {
-        let id = language.transifexId || language.id;
-        console.log(
-          path.join(
-            options.location,
-            `nls.bundle.${id}.json`
-          )
-        );
-        return gulp
-          .src(
-            path.join(
-              `nls.bundle.${id}.json`
-              ), {cwd: options.location}
-          )
-          .pipe(gulp.dest(path.join("./i18n", language.folderName))
-          .pipe(nls.createMetaDataFiles()));
-      })
-    )
-    .on("end", () => done());
-});
-
-gulp.task("i18n-import", () => {
+gulp.task("i18n-import", (done) => {
   return es.merge(
     defaultLanguages.map((language) => {
+      const id = language.transifexId || language.id;
+      log(language.folderName);
       return gulp
-        .src(
-          "./tds-vscode-translations/*.json"
-        )
+        .src([
+          path.join(
+            ".",
+            "tds-vscode-translations",
+            "tds-vscode",
+            `tds-vscode.${id}.xlf`
+          ),
+        ])
         .pipe(nls.prepareJsonFiles())
-        .pipe(gulp.dest(path.join("./i18n", language.folderName)));
+        .pipe(gulp.dest(path.join("./i18n", language.folderName)))
+        .on("end", () => done());
     })
   );
 });
 
-const transifexExtensionName = translationExtensionName; // your resource name in Transifex
-
-//
-//Arquivo Xlf, somente para planos empresarias
-//
-// gulp.task('transifex-push', function() {
-//     return gulp.src(['**/*.nls.json',"**/*.nls.bundle.json"])
-// 		.pipe(nls.createXlfFiles(transifexProjectName, transifexExtensionName))
-// 		.pipe(nls.pushXlfFiles(transifexApiHostname, transifexApiName, transifexApiToken));
-// });
-//
-// gulp.task('transifex-pull', function() {
-// 	return nls.pullXlfFiles(transifexApiHostname, transifexApiName, transifexApiToken, vscodeLanguages, [{ name: transifexExtensionName, project: transifexProjectName }])
-// 		.pipe(gulp.dest(`../${transifexExtensionName}-localization`));
-// });
-////////////////////////////////////////////////////////
-
-gulp.task("transifex-put", function (done) {
+function runTX(prefix, args) {
   const { execFile } = require("child_process");
-  const ls = execFile("C:\\Python27\\Scripts\\tx.exe", [
-    "-d",
-    "push",
-    "--source",
-    "-t",
-  ]);
+  const ls = execFile("C:\\Python27\\Scripts\\tx.exe", args);
 
   ls.stdout.on("data", (data) => {
-    console.log(data);
+    log(`${prefix}:${data}`);
   });
 
   ls.stderr.on("data", (data) => {
-    console.log(data);
+    log(`${prefix}:${data}`);
   });
 
   ls.on("close", (code) => {
-    console.log(`tx process close all stdio with code ${code}`);
+    log(`${prefix}: tx process close all stdio with code ${code}`);
   });
 
   ls.on("exit", (code) => {
-    console.log(`tx process exited with code ${code}`);
+    log(`${prefix}: tx process exited with code ${code}`);
   });
+
+  return ls;
+}
+
+gulp.task("transifex-upload", function (done) {
+  const ls = runTX("upload", ["-d", "push", "--source", "-t"]);
 
   return done();
 });
 
-gulp.task("transifex-get", function (done) {
-  const { execFile } = require("child_process");
-  const ls = execFile("C:\\Python27\\Scripts\\tx.exe", [
-    "-d",
-    "pull",
-    "-a",
-    "--skip",
-  ]);
-
-  ls.stdout.on("data", (data) => {
-    console.log(data);
-  });
-
-  ls.stderr.on("data", (data) => {
-    console.log(data);
-  });
-
-  ls.on("close", (code) => {
-    console.log(`tx process close all stdio with code ${code}`);
-  });
-
-  ls.on("exit", (code) => {
-    console.log(`tx process exited with code ${code}`);
-  });
+gulp.task("transifex-download", function (done) {
+  const ls = runTX("download", ["-d", "pull", "-a", "--skip"]);
 
   return done();
 });
 
-//CUIDADO: O arquivo .tx\config é modificado, removendo as configurações existentes
+//CUIDADO: as configurações existentes em .tx\config são removidas
+//para apagar o recurso sem afetar a configuração, faça via o sitio
 gulp.task("transifex-delete", function (done) {
-  const { execFile } = require("child_process");
-  const ls = execFile("C:\\Python27\\Scripts\\tx.exe", [
+  const ls = runTX("delete", [
     "-d",
     "delete",
     "-f",
@@ -278,21 +168,5 @@ gulp.task("transifex-delete", function (done) {
     "tds-vscode-brodao.*",
   ]);
 
-  ls.stdout.on("data", (data) => {
-    console.log(data);
-  });
-
-  ls.stderr.on("data", (data) => {
-    console.log(data);
-  });
-
-  ls.on("close", (code) => {
-    console.log(`tx process close all stdio with code ${code}`);
-  });
-
-  ls.on("exit", (code) => {
-    console.log(`tx process exited with code ${code}`);
-  });
-
-  return gulp.done;
+  return done();
 });

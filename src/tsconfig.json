@@ -20,7 +20,7 @@
         "declarationMap": true,
         "strict": false, /* enable all strict type-checking options */
         "noUnusedParameters": false,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
     },
     "exclude": [
         "node_modules/",

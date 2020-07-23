@@ -12,5 +12,17 @@
 		"/.hg": true,
 		"/.svn": true,
 		"/CVS": true
+	},
+	"macros": {
+		"translate": [
+			"extension.translateTextPreferred"
+			
+		],
+		"commentDown": [
+			"editor.action.copyLinesDownAction",
+			"cursorUp",
+			"editor.action.addCommentLine",
+			"cursorDown"
+		]
 	}
 }

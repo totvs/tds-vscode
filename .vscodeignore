@@ -4,4 +4,15 @@ out/test/**
 out/**/*.d.ts
 out/**/*.d.ts.map
 out/**/*.js.map
-
+**/*.ts
+**/*.tsx
+**/tsconfig.json
+.tx/**
+.gitignore
+.transifexrc
+*.language-configuration.json
+tds-vscode-translations/**
+syntaxes/**
+#!file.ts
+#24852
+#24829

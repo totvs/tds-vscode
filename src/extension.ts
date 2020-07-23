@@ -71,6 +71,7 @@ import { registerAdvplOutline, register4glOutline } from "./outline";
 import { registerDebug, _debugEvent } from "./debug";
 import { openMonitorView } from "./monitor/monitorLoader";
 
+
 export let languageClient: LanguageClient;
 // metodo de tradução
 export let localize = nls.loadMessageBundle();

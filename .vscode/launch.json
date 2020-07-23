@@ -3,9 +3,9 @@
 	"configurations": [
 		{
 			"args": [
-				"translations-import"
+				"transifex-push"
 			],
-			"name": "Gulp translations-import",
+			"name": "Gulp taks",
 			"program": "${workspaceFolder}/node_modules/gulp/bin/gulp.js",
 			"request": "launch",
 			"skipFiles": [
