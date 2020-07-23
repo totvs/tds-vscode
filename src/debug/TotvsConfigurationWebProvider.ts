@@ -2,9 +2,11 @@ import { ProviderResult, window, CancellationToken, DebugConfiguration, Workspac
 import * as vscode from 'vscode';
 import * as Net from 'net';
 import { sessionKey } from '../TotvsLanguageClient';
-import {localize} from '../extension';
 import { setDapArgs } from './debugConfigs';
 import serverProvider from '../serverItemProvider';
+import * as nls from 'vscode-nls';
+
+const localize = nls.loadMessageBundle();
 /*
  * Set the following compile time flag to true if the
  * debug adapter should run inside the extension host.

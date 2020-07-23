@@ -71,10 +71,7 @@ import { registerAdvplOutline, register4glOutline } from "./outline";
 import { registerDebug, _debugEvent } from "./debug";
 import { openMonitorView } from "./monitor/monitorLoader";
 
-
 export let languageClient: LanguageClient;
-// metodo de tradução
-export let localize = nls.loadMessageBundle();
 // barra de status
 export let totvsStatusBarItem: vscode.StatusBarItem;
 // barra de permissoes
@@ -84,9 +81,10 @@ export let permissionStatusBarItem: vscode.StatusBarItem;
 export let settingsStatusBarItem: vscode.StatusBarItem;
 
 export function parseUri(u): Uri {
-	return Uri.parse(u);
+  return Uri.parse(u);
 }
 
+const localize = nls.loadMessageBundle();
 const LANG_ADVPL_ID = "advpl";
 
 export function activate(context: ExtensionContext) {

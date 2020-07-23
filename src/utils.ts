@@ -4,10 +4,12 @@ import * as fs from "fs";
 import * as stripJsonComments from "strip-json-comments";
 import * as cheerio from "cheerio";
 import * as ini from "ini";
-import { languageClient, localize } from "./extension";
+import * as nls from "vscode-nls";
+import { languageClient } from "./extension";
 import { EnvSection, ServerItem } from "./serverItemProvider";
 
 const homedir = require("os").homedir();
+const localize = nls.loadMessageBundle();
 
 export enum MESSAGETYPE {
   /**

@@ -86,6 +86,30 @@ gulp.task("_build", doBuild(true, true));
 
 gulp.task("build", gulp.series("clean", "_build"));
 
+gulp.task("vsce-publish", () => {
+  return vsce.publish();
+});
+
+gulp.task("vsce-package", () => {
+  const cliOptions = minimist(process.argv.slice(2));
+  const packageOptions = {
+    packagePath: cliOptions.packagePath,
+  };
+
+  return vsce.createVSIX(packageOptions);
+});
+
+gulp.task("add-i18n", () => {
+  return gulp
+    .src(["package.nls.json"])
+    .pipe(nls.createAdditionalLanguageFiles(defaultLanguages, "i18n"))
+    .pipe(gulp.dest("."));
+});
+
+gulp.task("publish", gulp.series("build", "add-i18n", "vsce-publish"));
+
+gulp.task("package", gulp.series("build", "add-i18n", "vsce-package"));
+
 gulp.task(
   "i18n-export",
   gulp.series(function () {

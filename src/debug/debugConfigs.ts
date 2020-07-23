@@ -1,8 +1,10 @@
 import {debug, DebugSession, Disposable, extensions, QuickPick, QuickPickItem, window} from 'vscode';
 import { statSync, chmodSync } from 'fs';
 import Utils, { MESSAGETYPE } from '../utils';
-import { localize } from '../extension';
 import * as path from 'path';
+import * as nls from 'vscode-nls';
+
+const localize = nls.loadMessageBundle();
 
 let isTableSyncEnabled = false;
 let debugSession: DebugSession | undefined;

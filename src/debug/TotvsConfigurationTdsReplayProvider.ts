@@ -1,8 +1,10 @@
 import { WorkspaceFolder, DebugConfigurationProvider, DebugConfiguration, CancellationToken, window } from 'vscode';
 import * as vscode from 'vscode';
-import {localize} from '../extension';
 import { setDapArgs } from './debugConfigs';
 const fs = require('fs');
+import * as nls from 'vscode-nls';
+
+const localize = nls.loadMessageBundle();
 
 /*
  * Set the following compile time flag to true if the
