@@ -22,10 +22,7 @@ import { languageClient } from "../extension";
 import serverProvider, { ServerItem } from "../serverItemProvider";
 import * as nls from "vscode-nls";
 
-console.log("");
-
-const localize = nls.loadMessageBundle("i18n/ptb/nls.bundle.pt_BR.json");
-
+const localize = nls.loadMessageBundle();
 const DEFAULT_SPEED = 30;
 
 let monitorLoader: MonitorLoader = undefined;

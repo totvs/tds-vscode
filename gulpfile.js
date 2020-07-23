@@ -15,9 +15,6 @@ const fs = require("fs");
 const vsce = require("vsce");
 const es = require("event-stream");
 const minimist = require("minimist");
-const { getRulesDirectories } = require("tslint/lib/configuration");
-
-const translationExtensionName = "totvs-developer-studio";
 
 const defaultLanguages = [
   { id: "es", folderName: "esn" },
@@ -77,7 +74,7 @@ function doBuild(buildNls, failOnError) {
 }
 
 gulp.task("clean", () => {
-  return del(["out/**", "tds-vscode-*.vsix"]);
+  return del(['out/**', 'package.nls.*.json', 'tds-vscode-*.vsix']);
 });
 
 gulp.task("_dev-build", doBuild(false, false));
@@ -99,31 +96,28 @@ gulp.task("vsce-package", () => {
   return vsce.createVSIX(packageOptions);
 });
 
-gulp.task("add-i18n", () => {
+ gulp.task("add-i18n", (done) => {
+   return gulp
+     .src(["package.nls.json"])
+     .pipe(nls.createAdditionalLanguageFiles(defaultLanguages, "i18n"))
+     .pipe(gulp.dest("."))
+     .on("end", () => done());
+ });
+
+ gulp.task("publish", gulp.series("vsce-package", "vsce-publish"));
+
+ gulp.task("package", gulp.series("build", "add-i18n", "vsce-package"));
+
+gulp.task("i18n-export", function () {
   return gulp
-    .src(["package.nls.json"])
-    .pipe(nls.createAdditionalLanguageFiles(defaultLanguages, "i18n"))
-    .pipe(gulp.dest("."));
+    .src([
+      "package.nls.json",
+      "out/nls.metadata.header.json",
+      "out/nls.metadata.json",
+    ])
+    .pipe(nls.createXlfFiles("tds-vscode", "tds-vscode"))
+    .pipe(gulp.dest(path.join(".", "tds-vscode-translations")));
 });
-
-gulp.task("publish", gulp.series("build", "add-i18n", "vsce-publish"));
-
-gulp.task("package", gulp.series("build", "add-i18n", "vsce-package"));
-
-gulp.task(
-  "i18n-export",
-  gulp.series(function () {
-    return gulp
-      .src([
-        "package.nls.json",
-        "out/nls.metadata.header.json",
-        "out/nls.metadata.json",
-      ])
-      .pipe(nls.createXlfFiles("tds-vscode", "tds-vscode"))
-      .pipe(gulp.dest(path.join(".", "tds-vscode-translations")));
-  }),
-  "build"
-);
 
 gulp.task("i18n-import", (done) => {
   return es.merge(
