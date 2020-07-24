@@ -1,8 +1,10 @@
 import { debug, commands, Disposable, window, WebviewPanel, ExtensionContext, DebugSessionCustomEvent, ViewColumn, Uri } from 'vscode';
 import * as path from "path";
-import { ICommand, CommandAction } from "./Command";
+import { ICommand, CommandToDA, CommandToPage } from "./Command";
 import Utils, { MESSAGETYPE } from "../../utils";
 import { DebugEvent } from '../debugEvents';
+
+let timeLineWebView: CreateTDSReplayTimeLineWebView;
 
 export class CreateTDSReplayTimeLineWebView {
   protected _panel: WebviewPanel | undefined;
@@ -43,6 +45,8 @@ export class CreateTDSReplayTimeLineWebView {
       }
     });
 
+    timeLineWebView = this;
+
   }
 
 private initializePanel(): void {
@@ -66,7 +70,7 @@ private initializePanel(): void {
       this._isDisposed = true;
     });
 
-    this._panel.webview.onDidReceiveMessage((command: ICommand) => { handleMessageReceived(command); }, undefined, this._disposables);
+    this._panel.webview.onDidReceiveMessage((command: ICommand) => { handleRequestFromPage(command); }, undefined, this._disposables);
     this._isDisposed = false;
   }
 
@@ -86,6 +90,7 @@ private initializePanel(): void {
 
     this._debugEvent.body["ignoreSourcesNotFound"] = this._isIgnoreSourcesNotFound;
     const configJson = JSON.stringify(this._debugEvent);
+    const sources = "";
 
     return `<!DOCTYPE html>
     <html lang="en">
@@ -103,6 +108,7 @@ private initializePanel(): void {
         <script>
           window.acquireVsCodeApi = acquireVsCodeApi;
           window.initialData = ${configJson};
+
         </script>
     </head>
     <body>
@@ -126,7 +132,7 @@ private initializePanel(): void {
   public selectTimeLine(timeLineId: string) {
     //Envio de mensagem para a página
     this._panel.webview.postMessage({
-      command: CommandAction.SelectTimeLine,
+      command: CommandToPage.SelectTimeLine,
       data: timeLineId
     });
   }
@@ -137,8 +143,16 @@ private initializePanel(): void {
     this._debugEvent = debugEvent;
     debugEvent.body["ignoreSourcesNotFound"] = this._isIgnoreSourcesNotFound;
     this._panel.webview.postMessage({
-      command: CommandAction.AddTimeLines,
+      command: CommandToPage.AddTimeLines,
       data: debugEvent
+    });
+  }
+
+  public openSourcesDialog(jsonResponse: any) {
+    //this._debugEvent.body["sources"] = jsonResponse.sources;
+    this._panel.webview.postMessage({
+      command: CommandToPage.OpenSourcesDialog,
+      data: jsonResponse.sources
     });
   }
 
@@ -148,20 +162,23 @@ private initializePanel(): void {
 
 }
 
-function handleMessageReceived(command: ICommand) {
+function handleRequestFromPage(command: ICommand) {
   //Mensagens recebidas da pagina
   switch (command.action) {
-    case CommandAction.SetTimeLine:
+    case CommandToDA.SetTimeLine:
       handleSetTimeLineCommand(command);
       break;
-    case CommandAction.ChangePage:
+    case CommandToDA.ChangePage:
       handleChangePageCommand(command);
       break;
-    case CommandAction.ChangeItemsPerPage:
+    case CommandToDA.ChangeItemsPerPage:
       handleChangeItemsPerPageCommand(command);
       break;
-    case CommandAction.SetIgnoreSourcesNotFound:
+    case CommandToDA.SetIgnoreSourcesNotFound:
       handleSetIgnoreSourcesNotFound(command);
+      break;
+    case CommandToDA.ShowSources:
+        handleShowSourcesCommand(command);
       break;
   }
 }
@@ -222,7 +239,6 @@ function handleSetIgnoreSourcesNotFound(command: ICommand) {
 
       Utils.saveLaunchConfig(launchConfig);
 
-
       let requestJson = {
         "isIgnoreSourceNotFound": command.content.isIgnoreSourceNotFound
       };
@@ -231,5 +247,21 @@ function handleSetIgnoreSourcesNotFound(command: ICommand) {
 		} catch(e) {
       Utils.logInvalidLaunchJsonFile(e);
 		}
+  }
+}
+
+function handleShowSourcesCommand(command: ICommand) {
+  if (debug.activeDebugSession) {
+    let requestJson = {
+      "sourceName": command.content.data
+    };
+    //console.log("Enviando requisição para trocar a quantidade de items por pagina");
+    debug.activeDebugSession.customRequest("TDA/getSourceInfo", requestJson)
+    .then((jsonResponse) => {
+      //console.log(jsonResponse);
+      if(timeLineWebView) {
+        timeLineWebView.openSourcesDialog(jsonResponse);
+      }
+    });
   }
 }
