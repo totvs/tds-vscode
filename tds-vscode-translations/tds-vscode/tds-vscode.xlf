@@ -331,6 +331,12 @@
     <trans-unit id="tds.package.workspaceServerConfig">
       <source xml:lang="en">Use the workspace to maintain server settings.</source>
     </trans-unit>
+    <trans-unit id="tds.package.OpenTimeLineWebview">
+      <source xml:lang="en">Open TimeLine Webview</source>
+    </trans-unit>
+    <trans-unit id="tds.package.apply.formatting">
+      <source xml:lang="en">Applies formatting to TOTVS source files and their variations.</source>
+    </trans-unit>
   </body></file>
   <file original="out/TotvsLanguageClient" source-language="en" datatype="plaintext"><body>
     <trans-unit id="tds.webview.totvsLanguegeClient.reload">

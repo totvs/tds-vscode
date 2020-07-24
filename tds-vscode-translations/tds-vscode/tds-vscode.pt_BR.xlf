@@ -440,6 +440,14 @@
       <source xml:lang="en">Use the workspace to maintain server settings.</source>
       <target>Use a área de trabalho para manter as configurações do servidor.</target>
     </trans-unit>
+    <trans-unit id="tds.package.OpenTimeLineWebview">
+      <source xml:lang="en">Open TimeLine Webview</source>
+      <target>Abrir visão da linha de tempo</target>
+    </trans-unit>
+    <trans-unit id="tds.package.apply.formatting">
+      <source xml:lang="en">Applies formatting to TOTVS source files and their variations.</source>
+      <target>Aplica a formatação aos arquivos fontes TOTVS e suas variações.</target>
+    </trans-unit>
   </body></file>
   <file datatype="plaintext" original="out/TotvsLanguageClient" source-language="en" target-language="pt-BR"><body>
     <trans-unit id="tds.webview.totvsLanguegeClient.reload">
@@ -453,6 +461,36 @@
     <trans-unit id="tds.webview.totvsLanguegeClient.codeLensNotResolved">
       <source xml:lang="en">Code lens is not resolved</source>
       <target>Lente de código não resolvida</target>
+    </trans-unit>
+  </body></file>
+  <file datatype="plaintext" original="out/extension" source-language="en" target-language="pt-BR"><body>
+    <trans-unit id="tds.console.congratulations">
+      <source xml:lang="en">Congratulations, your extension &quot;totvs-developer-studio&quot; is now active!</source>
+      <target> Parabéns, sua extensão &quot;totvs-developer-studio&quot; está ativa agora!</target>
+    </trans-unit>
+    <trans-unit id="tds.vscode.statusIcon.text1">
+      <source xml:lang="en">advpl: loading</source>
+      <target>advpl: carregando</target>
+    </trans-unit>
+    <trans-unit id="tds.vscode.statusIcon.tooltip1">
+      <source xml:lang="en">advpl is loading project metadata (ie, compile_commands.json)</source>
+      <target>advpl está carregando meta dados (p.e., compile_commands.json)</target>
+    </trans-unit>
+    <trans-unit id="tds.vscode.statusIcon.text2">
+      <source xml:lang="en">advpl: idle</source>
+      <target>advpl: ocioso</target>
+    </trans-unit>
+    <trans-unit id="tds.vscode.statusIcon.text3">
+      <source xml:lang="en">jobs</source>
+      <target>jobs</target>
+    </trans-unit>
+    <trans-unit id="tds.vscode.statusIcon.tooltip2">
+      <source xml:lang="en">advpl jobs: </source>
+      <target>advpl jobs: </target>
+    </trans-unit>
+    <trans-unit id="tds.vscode.server_vision_not_load">
+      <source xml:lang="en">Visão &quot;Servidores&quot; não inicializada.</source>
+      <target>Visão &quot;Servidores&quot; não inicializada.</target>
     </trans-unit>
   </body></file>
   <file datatype="plaintext" original="out/inputConnectionParameters" source-language="en" target-language="pt-BR"><body>
@@ -523,8 +561,30 @@
       <target>Servidor salvo</target>
     </trans-unit>
     <trans-unit id="tds.vscode.select_server_environment">
-      <source xml:lang="en">[ Selecionar servidor/ambiente ]</source>
+      <source xml:lang="en">[ Select server/environment ]</source>
       <target>[ Selecionar servidor/ambiente ]</target>
+    </trans-unit>
+  </body></file>
+  <file datatype="plaintext" original="out/utils" source-language="en" target-language="pt-BR"><body>
+    <trans-unit id="tds.webview.serversView.serverNameDuplicated">
+      <source xml:lang="en">Server name already exists</source>
+      <target>O nome do servidor já existe</target>
+    </trans-unit>
+    <trans-unit id="tds.webview.utils.removeExpiredAuthorization">
+      <source xml:lang="en">Expired authorization token deleted</source>
+      <target> Token de autorização expirado excluído</target>
+    </trans-unit>
+    <trans-unit id="tds.webview.utils.reviewList">
+      <source xml:lang="en">Review the folder list in order to search for settings (.ch). Not recognized as folder: {0}</source>
+      <target>Revise a lista de pastas para procurar configurações (.ch). Não reconhecido como pasta: {0}</target>
+    </trans-unit>
+    <trans-unit id="tds.webview.utils.reviewList2">
+      <source xml:lang="en">Review the folder list in order to search for settings (.ch). Invalid folder: {0}</source>
+      <target>Revise a lista de pastas para procurar configurações (.ch). Pasta inválida: {0}</target>
+    </trans-unit>
+    <trans-unit id="tds.webview.utils.listFolders">
+      <source xml:lang="en">List of folders to search for definitions not configured.</source>
+      <target>Lista de pastas para procurar definições não configurada.</target>
     </trans-unit>
   </body></file>
   <file datatype="plaintext" original="out/verifyEditorState" source-language="en" target-language="pt-BR"><body>
@@ -683,6 +743,86 @@
     <trans-unit id="tds.webview.compile.key.invalid">
       <source xml:lang="en">Key successfully validated</source>
       <target>Chave validada com sucesso</target>
+    </trans-unit>
+  </body></file>
+  <file datatype="plaintext" original="out/debug/TotvsConfigurationProvider" source-language="en" target-language="pt-BR"><body>
+    <trans-unit id="tds.vscode.cwb_warning">
+      <source xml:lang="en">Parameter cwb not informed. Setting to {0}</source>
+      <target>Parâmetro cwb não informado. Definindo para {0}</target>
+    </trans-unit>
+    <trans-unit id="tds.vscode.program_not_found">
+      <source xml:lang="en">Cannot find a program to debug</source>
+      <target>Não é possível encontrar um programa para depurar</target>
+    </trans-unit>
+    <trans-unit id="tds.vscode.server_not_connected">
+      <source xml:lang="en">Nenhum servidor conectado</source>
+      <target>Nenhum servidor conectado</target>
+    </trans-unit>
+  </body></file>
+  <file datatype="plaintext" original="out/debug/TotvsConfigurationTdsReplayProvider" source-language="en" target-language="pt-BR"><body>
+    <trans-unit id="tds.vscode.cwb_warning">
+      <source xml:lang="en">Parameter cwb not informed. Setting to {0}</source>
+      <target>Parâmetro cwb não informado. Definindo para {0}</target>
+    </trans-unit>
+    <trans-unit id="tds.vscode.tdsReplay.fileNotInformed">
+      <source xml:lang="en">Arquivo do TDS Replay não informado</source>
+      <target>Arquivo do TDS Replay não informado</target>
+    </trans-unit>
+    <trans-unit id="tds.vscode.tdsReplay.deletingDbFile">
+      <source xml:lang="en">Cleaning current database...</source>
+      <target>Limpando o banco de dados atual...</target>
+    </trans-unit>
+    <trans-unit id="tds.vscode.tdsReplay.dbDeleted">
+      <source xml:lang="en">Current database cleaned.</source>
+      <target>Banco de dados atual limpo.</target>
+    </trans-unit>
+    <trans-unit id="tds.vscode.no">
+      <source xml:lang="en">No</source>
+      <target>Não</target>
+    </trans-unit>
+    <trans-unit id="tds.vscode.yes">
+      <source xml:lang="en">Yes</source>
+      <target>Sim</target>
+    </trans-unit>
+    <trans-unit id="tds.vscode.question.tdsReplay.mustReimport">
+      <source xml:lang="en">The filter informed is different from the last one. Do you wish to re-import using the current?</source>
+      <target>O filtro informado é diferente do último. Deseja reimportar usando o atual?</target>
+    </trans-unit>
+  </body></file>
+  <file datatype="plaintext" original="out/debug/TotvsConfigurationWebProvider" source-language="en" target-language="pt-BR"><body>
+    <trans-unit id="tds.vscode.cwb_warning">
+      <source xml:lang="en">Parameter cwb not informed. Setting to {0}</source>
+      <target>Parâmetro cwb não informado. Definindo para {0}</target>
+    </trans-unit>
+    <trans-unit id="tds.vscode.web_navigator">
+      <source xml:lang="en">Parameter webNavigator not informed.</source>
+      <target>Parâmetro webNavigator não informado.</target>
+    </trans-unit>
+    <trans-unit id="tds.vscode.program_not_found">
+      <source xml:lang="en">Cannot find a program to debug</source>
+      <target>Não é possível encontrar um programa para depurar</target>
+    </trans-unit>
+    <trans-unit id="tds.vscode.server_not_connected">
+      <source xml:lang="en">Nenhum servidor conectado</source>
+      <target>Nenhum servidor conectado</target>
+    </trans-unit>
+  </body></file>
+  <file datatype="plaintext" original="out/debug/debugConfigs" source-language="en" target-language="pt-BR"><body>
+    <trans-unit id="tds.vscode.getProgramName">
+      <source xml:lang="en">Please enter the name of an AdvPL/4GL function</source>
+      <target>Informe o nome de uma função AdvPL/4GL</target>
+    </trans-unit>
+    <trans-unit id="tds.debug.tableSync.enabled">
+      <source xml:lang="en">Tables synchronism enabled</source>
+      <target>Sincronismo de tabelas ativado</target>
+    </trans-unit>
+    <trans-unit id="tds.debug.tableSync.disabled">
+      <source xml:lang="en">Tables synchronism disabled</source>
+      <target>Sincronismo de tabelas desativado</target>
+    </trans-unit>
+    <trans-unit id="tds.vscode.getProgramArguments">
+      <source xml:lang="en">Informe lista de argumentos separados por vírgula</source>
+      <target>Informe lista de argumentos separados por vírgula</target>
     </trans-unit>
   </body></file>
   <file datatype="plaintext" original="out/include/include" source-language="en" target-language="pt-BR"><body>
@@ -1130,9 +1270,9 @@
       <source xml:lang="en">Actions</source>
       <target>Ações</target>
     </trans-unit>
-    <trans-unit id="AMBIENT">
-      <source xml:lang="en">Ambient</source>
-      <target>Ambient</target>
+    <trans-unit id="ENVIRONMENT">
+      <source xml:lang="en">Environment</source>
+      <target>Environment</target>
     </trans-unit>
     <trans-unit id="CANCEL">
       <source xml:lang="en">Cancel</source>
@@ -1181,14 +1321,6 @@
     <trans-unit id="ELAPSED_TIME">
       <source xml:lang="en">Elapsed time</source>
       <target>Tempo decorrido</target>
-    </trans-unit>
-    <trans-unit id="ENVIRONEMNT">
-      <source xml:lang="en">Environment</source>
-      <target>Ambiente</target>
-    </trans-unit>
-    <trans-unit id="ENVIRONMENT">
-      <source xml:lang="en">Environment</source>
-      <target>Environment</target>
     </trans-unit>
     <trans-unit id="FILTER">
       <source xml:lang="en">Filter</source>
@@ -1591,6 +1723,12 @@
       <target>Patch de data</target>
     </trans-unit>
   </body></file>
+  <file datatype="plaintext" original="out/server/defragRPO" source-language="en" target-language="pt-BR"><body>
+    <trans-unit id="tds.vscode.servernotconnected">
+      <source xml:lang="en">There is no server connected</source>
+      <target>Não há servidor conectado.</target>
+    </trans-unit>
+  </body></file>
   <file datatype="plaintext" original="out/server/deleteFileFromRPO" source-language="en" target-language="pt-BR"><body>
     <trans-unit id="tds.webview.deleteFile.title">
       <source xml:lang="en">Deleting source/resource from RPO</source>
@@ -1641,6 +1779,12 @@
     <trans-unit id="tds.vscode.lssettings.auto.complete">
       <source xml:lang="en">Auto complete type</source>
       <target>Tipo de preenchimento automático</target>
+    </trans-unit>
+  </body></file>
+  <file datatype="plaintext" original="out/server/rpoCheckIntegrity" source-language="en" target-language="pt-BR"><body>
+    <trans-unit id="tds.vscode.servernotconnected">
+      <source xml:lang="en">There is no server connected</source>
+      <target>Não há servidor conectado.</target>
     </trans-unit>
   </body></file>
   <file datatype="plaintext" original="out/ui.dialogs/showProgressController" source-language="en" target-language="pt-BR"><body>
