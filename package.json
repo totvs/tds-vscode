@@ -668,7 +668,7 @@
 			{
 				"command": "totvs-developer-studio.run.formatter",
 				"title": "Format",
-				"description": "Aplica formatação em arquivo fontes TOTVS e suas variações.",
+				"description": "%tds.package.apply.formatting%",
 				"category": "TOTVS",
 				"icon": {
 					"light": "resources/light/formatter.png",
@@ -682,12 +682,12 @@
 			},
 			{
 				"command": "totvs-developer-studio.tdsreplay.webview.timeLine",
-				"title": "Open TimeLine Webview",
+				"title": "%tds.package.OpenTimeLineWebview%",
 				"category": "TDSReplay"
 			},
 			{
 				"command": "tds-monitor.open-monitor-view",
-				"title": "Open Monitor View",
+				"title": "%tds-monitor.open-monitor-view%",
 				"category": "TOTVSMonitor",
 				"icon": {
 					"light": "resources/light/monitor.png",

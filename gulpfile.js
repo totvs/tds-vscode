@@ -22,6 +22,9 @@ const defaultLanguages = [
   { id: "pt-br", folderName: "ptb", transifexId: "pt_BR" },
 ];
 
+const transifexProject = "tds-vscode";
+const translationsFolder = path.join(".", `${transifexProject}-translations`);
+
 const watchedSources = ["src/**/*", "test/**/*"];
 
 const scripts = [
@@ -123,8 +126,8 @@ gulp.task("i18n-export", function () {
       "out/nls.metadata.header.json",
       "out/nls.metadata.json",
     ])
-    .pipe(nls.createXlfFiles("tds-vscode", "tds-vscode"))
-    .pipe(gulp.dest(path.join(".", "tds-vscode-translations")));
+    .pipe(nls.createXlfFiles(transifexProject, "tds-vscode"))
+    .pipe(gulp.dest(translationsFolder));
 });
 
 gulp.task("i18n-import", (done) => {
@@ -134,12 +137,7 @@ gulp.task("i18n-import", (done) => {
       log(language.folderName);
       return gulp
         .src([
-          path.join(
-            ".",
-            "tds-vscode-translations",
-            "tds-vscode",
-            `tds-vscode.${id}.xlf`
-          ),
+          path.join(translationsFolder, "tds-vscode", `tds-vscode.${id}.xlf`),
         ])
         .pipe(nls.prepareJsonFiles())
         .pipe(gulp.dest(path.join("./i18n", language.folderName)))
@@ -151,7 +149,7 @@ gulp.task("i18n-import", (done) => {
 function runTX(prefix, args) {
   const { execFile } = require("child_process");
 
-  const ls = execFile("C:\\Python27\\Scripts\\tx.exe", [ /*"-d",*/ ...args]);
+  const ls = execFile("C:\\Python27\\Scripts\\tx.exe", [/*"-d",*/ ...args]);
 
   ls.stdout.on("data", (data) => {
     log(`${prefix}:${data}`);
@@ -173,26 +171,17 @@ function runTX(prefix, args) {
 }
 
 gulp.task("transifex-upload", function (done) {
-  return runTX("upload", ["push", "--source", "-t"]).on("end", () =>
-    done()
-  );
+  return runTX("upload", ["push", "--source", "-t"]).on("end", () => done());
 });
 
 gulp.task("transifex-download", function (done) {
-  return runTX("download", ["pull", "-a", "--skip"]).on("end", () =>
-    done()
-  );
+  return runTX("download", ["pull", "-a", "--skip"]).on("end", () => done());
 });
 
 //CUIDADO: as configurações existentes em .tx\config são removidas
 //para apagar o recurso sem afetar a configuração, faça via o sitio
 gulp.task("transifex-delete", function (done) {
-  const ls = runTX("delete", [
-    "delete",
-    "-f",
-    "-r",
-    "tds-vscode-brodao.*",
-  ]);
+  const ls = runTX("delete", ["delete", "-f", "-r", "tds-vscode-brodao.*"]);
 
   return done();
 });

@@ -407,7 +407,7 @@ export function activate(context: ExtensionContext) {
     console.error(
       localize(
         "tds.vscode.server_vision_not_load",
-        'Visão "Servidores" não inicializada.'
+        '"Servers" view not initialized.'
       )
     );
 	}
