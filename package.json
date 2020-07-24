@@ -60,7 +60,7 @@
 		"@totvs/tds-da": "^1.1.12",
 		"@totvs/tds-ls": "^1.1.19",
 		"@types/jszip": "^3.4.1",
-		"@types/node": "^14.0.24",
+		"@types/node": "^14.0.25",
 		"@types/react": "^16.9.43",
 		"@types/vscode": "^1.47.0",
 		"cheerio": "^1.0.0-rc.3",

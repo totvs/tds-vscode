@@ -6,12 +6,12 @@ const gulp = require("gulp");
 const path = require("path");
 const ts = require("gulp-typescript");
 const log = require("gulp-util").log;
-const typescript = require("typescript");
+//const typescript = require("typescript");
 const sourcemaps = require("gulp-sourcemaps");
-const tslint = require("gulp-tslint");
+//const tslint = require("gulp-tslint");
 const nls = require("vscode-nls-dev");
 const del = require("del");
-const fs = require("fs");
+//const fs = require("fs");
 const vsce = require("vsce");
 const es = require("event-stream");
 const minimist = require("minimist");
@@ -74,7 +74,7 @@ function doBuild(buildNls, failOnError) {
 }
 
 gulp.task("clean", () => {
-  return del(['out/**', 'package.nls.*.json', 'tds-vscode-*.vsix']);
+  return del(["out/**", "package.nls.*.json", "tds-vscode-*.vsix"]);
 });
 
 gulp.task("_dev-build", doBuild(false, false));
@@ -96,17 +96,25 @@ gulp.task("vsce-package", () => {
   return vsce.createVSIX(packageOptions);
 });
 
- gulp.task("add-i18n", (done) => {
-   return gulp
-     .src(["package.nls.json"])
-     .pipe(nls.createAdditionalLanguageFiles(defaultLanguages, "i18n"))
-     .pipe(gulp.dest("."))
-     .on("end", () => done());
- });
+gulp.task("add-i18n-metadata", (done) => {
+  return gulp
+    .src("i18n/out/**/*.i18n.json")
+    .pipe(nls.bundleMetaDataFiles("ms-vscode.totvs-developer-studio", "out"))
+    .pipe(gulp.dest("."))
+    .on("end", () => done());
+});
 
- gulp.task("publish", gulp.series("vsce-package", "vsce-publish"));
+gulp.task("add-i18n", (done) => {
+  return gulp
+    .src("package.nls.json")
+    .pipe(nls.createAdditionalLanguageFiles(defaultLanguages, "i18n"))
+    .pipe(gulp.dest("."))
+    .on("end", () => done());
+});
 
- gulp.task("package", gulp.series("build", "add-i18n", "vsce-package"));
+//  gulp.task("publish", gulp.series("vsce-package", "vsce-publish"));
+
+//  gulp.task("package", gulp.series("build", "add-i18n", "vsce-package"));
 
 gulp.task("i18n-export", function () {
   return gulp
@@ -142,7 +150,8 @@ gulp.task("i18n-import", (done) => {
 
 function runTX(prefix, args) {
   const { execFile } = require("child_process");
-  const ls = execFile("C:\\Python27\\Scripts\\tx.exe", args);
+
+  const ls = execFile("C:\\Python27\\Scripts\\tx.exe", [ /*"-d",*/ ...args]);
 
   ls.stdout.on("data", (data) => {
     log(`${prefix}:${data}`);
@@ -164,22 +173,21 @@ function runTX(prefix, args) {
 }
 
 gulp.task("transifex-upload", function (done) {
-  const ls = runTX("upload", ["-d", "push", "--source", "-t"]);
-
-  return done();
+  return runTX("upload", ["push", "--source", "-t"]).on("end", () =>
+    done()
+  );
 });
 
 gulp.task("transifex-download", function (done) {
-  const ls = runTX("download", ["-d", "pull", "-a", "--skip"]);
-
-  return done();
+  return runTX("download", ["pull", "-a", "--skip"]).on("end", () =>
+    done()
+  );
 });
 
 //CUIDADO: as configurações existentes em .tx\config são removidas
 //para apagar o recurso sem afetar a configuração, faça via o sitio
 gulp.task("transifex-delete", function (done) {
   const ls = runTX("delete", [
-    "-d",
     "delete",
     "-f",
     "-r",

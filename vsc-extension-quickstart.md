@@ -1,158 +1,158 @@
-# TOTVS Developer Studio Code
+# TOTVS Developer Studio for Code
 
 [![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode)
 
-O plugin do TOTVS Developer Studio Code disponibiliza uma suíte de desenvolvimento para o ecossistema Protheus.
-Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP (Debug Adapter Protocol), ambos amplamente utilizados e extensíveis à outras IDEs de mercado, como Atom, Visual Studio, Eclipse, Eclipse Theia, Vim e Emacs.
+The TOTVS Developer Studio Code extension provides a development suite for the Protheus ecosystem.
+It uses the communication protocols LSP (Language Server Protocol) and DAP (Debug Adapter Protocol), both widely used and extensible to other market IDEs, such as Atom, Visual Studio, Eclipse, Eclipse Theia, Vim and Emacs.
 
-> [Lista de IDEs com suporte ao LSP](https://microsoft.github.io/language-server-protocol/implementors/tools).
-[Lista de IDEs com suporte ao DAP](https://microsoft.github.io/debug-adapter-protocol/implementors/tools).
+> [List of IDEs with LSP support](https://microsoft.github.io/language-server-protocol/implementors/tools).
+[List of IDEs with DAP support](https://microsoft.github.io/debug-adapter-protocol/implementors/tools).
 
-## Funcionalidades
+## Functionalities
 
 * Syntax Highlight
-* Comunicação baseada nos protocolos LSP/DAP.
-* Compilação de fontes, pastas e da área de trabalho.
-* Depuração de fontes (Local e WebApp).
-* Geração de Patch.
-* Aplicação de Patch.
-* Deleção de fontes do RPO.
-* Desfragmentação do RPO.
-* Inspetor de objetos do RPO.
-* Inspetor de funções do RPO.
-* Geração de WS Protheus.
+* Communication based on LSP / DAP protocols.
+* Compilation of fonts, folders and the desktop.
+* Debugging fonts (Local and WebApp).
+* Patch Generation.
+* Patch application.
+* Deletion of RPO sources.
+* Defragmentation of the RPO.
+* RPO Object Inspector.
+* RPO functions inspector.
+* WS Protheus generation.
 
-## Configurações Gerais
+## General Settings
 
-### Tela de boas vindas
+### Welcome screen
 
-* A tela da boa vindas permite configurar a localização do SmartClient e dos diretórios de Includes que serão utilizados durante a compilação dos códigos fontes.
-* Esta tela será apresentada na primeira execução do plugin, assim que o primeiro fonte AdvPL/4GL for aberto.
-* Localize o `SmartClient.exe` (Windows) ou `smartclient` (Linux).
-* Localize os diretórios de Includes que necessitar para seus projetos.
-* Pressione o botão `Salvar` para concluir.
+* The welcome screen allows you to configure the location of SmartClient and Includes directories that will be used during the compilation of source codes.
+* This screen will be presented at the first execution of the plugin, as soon as the first AdvPL / 4GL source is opened.
+* Locate the `SmartClient.exe` (Windows) or` smartclient` (Linux).
+* Locate the Includes directories you need for your projects.
+* Press the `Save` button to finish.
 
 ![Welcome Page](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Welcome.gif)
 
-### Cadastro de servidores utilizando o assistente
+### Registering servers using the wizard
 
-* Clique no icone `"+"` no canto superior direito da visão, ao lado da aba `Servidores`.
-* Preencha as informações de `nome`, `ip` e `porta` do servidor.
-* Clique no botão `Salvar`.
-* Existe o atalho que para abertura do assistente: `CTRL + SHIFT + P` digite `TOTVS: Add Server`.
+* Click on the `" + "` icon in the upper right corner of the view, next to the `Servers' tab.
+* Fill in the server's `name`,` ip` and `port` information.
+* Click the `Save` button.
+* There is a shortcut to open the wizard: `CTRL + SHIFT + P` type` TOTVS: Add Server`.
 
 ![New server](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/AddServer.gif)
 
-### Conexão com servidores
+### Connection to servers
 
-* Após executar o cadastro de ao menos um servidor.
-* Vá para visão de servidores (Acesso pelo ícone da TOTVS na lateral esquerda do VSCode).
-* Clique com o botão direito e selecione a opção `Connect`.
-* Informe `ambiente`, `usuário` e `senha` (pode ser "em branco") para prosseguir.
-* Aguarde o termino da conexão.
-* A conexão com servidores pode ser efetuada pela seleção do texto `[Selecionar servidor/ambiente]` na barra de ferramentas. Ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Select Server`.
+* After executing the registration of at least one server.
+* Go to the servers view (Access by the TOTVS icon on the left side of the VSCode).
+* Right click and select the `Connect` option.
+* Enter `environment`,` user` and `password` (can be" blank ") to proceed.
+* Wait for the connection to finish.
+* Connection to servers can be made by selecting the text `[Select server / environment]` in the toolbar. Or by the shortcut `CTRL + SHIFT + P` type` TOTVS: Select Server`.
 
 ![Connect Server](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/ConnectServer.gif)
 
-## Compilação
+## Compilation
 
-### Compilando fonte do editor corrente
+### Compiling the source of the current editor
 
-* Para compilar o fonte do editor corrente acione o atalho `CTRL + F9`. Ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Compile Selection`.
-A compilação efetuada a partir do editor, sempre irá recompilar o fonte, mantendo assim o mesmo comportamento do TDS-Eclipse.
+* To compile the source of the current editor, use the shortcut `CTRL + F9`. Or by the shortcut `CTRL + SHIFT + P` type` TOTVS: Compile Selection`.
+Compilation made from the editor will always recompile the source, thus maintaining the same behavior as TDS-Eclipse.
 
-* Para recompilar o fonte do editor corrente acione o atalho `CTRL + SHIFT + F9`.
+* To recompile the source of the current editor, use the shortcut `CTRL + SHIFT + F9`.
 
-### Compilando todos os fontes abertos
+### Compiling all open sources
 
-* Para compilar todos os fontes dos editores abertos acione o atalho `CTRL + F10`. Ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Compile Open Editors`.
+* To compile all the sources of the open editors, use the shortcut `CTRL + F10`. Or by the shortcut `CTRL + SHIFT + P` type` TOTVS: Compile Open Editors`.
 
-* Para recompilar todos os fontes dos editores abertos acione o atalho `CTRL + SHIFT + F10`.
+* To recompile all the sources of the open editors, use the shortcut `CTRL + SHIFT + F10`.
 
-### Resultado da compilação
+### Compilation result
 
-* Caso queira limpar o console antes da compilação, habilite a opção: `File | Preferences | Settings | Extensions | TOTVS |Clear Console Before Compile`.
+* If you want to clean the console before compiling, enable the option: `File | Preferences | Settings | Extensions | TOTVS | Clear Console Before Compile`.
 
-* Para analisar o resultado da compilação de múltiplos arquivos, exite a opção de abrir uma tabela com informações de todos os arquivos que foram compilados.
+* To analyze the result of the compilation of multiple files, there is the option of opening a table with information of all the files that have been compiled.
 
-* Para exibir essa tabela, selecione mais de um arquivo, compile e após a compilação será apresentada a pergunta a seguir: Clique em `Yes`.
+* To display this table, select more than one file, compile and after compilation the following question will be presented: Click on `Yes`.
 
 ![ShowCompileResult](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/compile/askCompileResult.PNG)
 
-* A tabela abaixo será exibida, ordenada pela coluna de resultado.
+* The table below will be displayed, ordered by the result column.
 
 ![TableCompileResult](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/compile/CompileResults.PNG)
 
-* Exite nas preferencias uma maneira de habilitar e desabilitar a pergunta sobre a abertura da tabela.
+* In the preferences there is a way to enable and disable the question about opening the table.
 
-* Clique em `File | Preferences | Settings` e digite `totvsLanguageServer.askCompileResult` no campo de pesquisa.
+* Click on `File | Preferences | Settings` and type `totvsLanguageServer.askCompileResult` in the search field.
 
-## Configurações de Compilação
+## Build Settings
 
 ### Encoding
 
-Tivemos reportes de problemas de encode abrindo fontes antes salvos no TDS, isso ocorre porque o encode original do VSCode é UTF8 e o do TDS é outro.
-Para garantir a compilação é necessário compatibilizar o encode da seguinte maneira:
- * No estado original o Fonte será mostrado desta maneira:<br/>
- ![Encoding 1](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding1.png)
- * **Antes de editar/salvar qualquer fonte no VS** entre nas configurações do VS `Ctrl + ,`.
- * No campo de busca digite `encode` e selecione `Windows1252`.<br/>
- * Abra o fonte com o novo encode (reforçando que NÃO DEVE tê-lo salvo antes em UTF8)<br/>
- ![Encoding 3](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding3.png)
- * Compile e/ou recompile o fonte e execute-o.<br/>
- ![Encoding 4](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding4.png)
+We have had reports of encode problems opening sources previously saved in TDS, this is because the original VSCode encode is UTF8 and the TDS is another.
+To guarantee compilation, it is necessary to make the encode compatible as follows:
+ * In the original state, the Source will be shown as follows: <br/>
+ ! [Encoding 1] (https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding1.png)
+ * ** Before editing / saving any font in VS ** enter the VS `Ctrl +,` settings.
+ * In the search field type `encode` and select` Windows1252`. <br/>
+ * Open the source with the new encode (reinforcing that you MUST NOT have saved it in UTF8 before) <br/>
+ ! [Encoding 3] (https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding3.png)
+ * Compile and / or recompile the source and run it. <br/>
+ ! [Encoding 4] (https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding4.png)
 
- Na abertura do workspace, perguntamos se o usuário deseja alterar o encoding para o padrão TOTVS e essa configuração é feita automaticamente.
+ When opening the workspace, we ask if the user wants to change the encoding to the TOTVS standard and this configuration is done automatically.
 
-### Compilando Function e Main Function com Chave de compilação
+### Compiling Function and Main Function with Compilation Key
 
-* Este processo está sendo revisto e pode sofrer alterações.
+* This process is being reviewed and may change.
 
-* Para aplicar uma chave de compilação, clique com o botão direito na visão de servidores e selecione a opção `Compile key`.
-* Abrirá um assistente para selecionar a chave que deseja. Todos os arquivos .aut podem ser selecionados.
-* Também é possível abrir o assistente pelo atalho `CTRL + SHIFT + P` digirantando `TOTVS: Compile Key`.
-* Após selecionar a chave, ela será lida e os campos preenchidos com suas informações.
-* Clique sobre o botão de `Validate` para verificar se a chave é válida.
+* To apply a compilation key, right click on the server view and select the `Compile key` option.
+* Will open a wizard to select the key you want. All .aut files can be selected.
+* It is also possible to open the wizard using the `CTRL + SHIFT + P` shortcut by typing` TOTVS: Compile Key`.
+* After selecting the key, it will be read and the fields filled with your information.
+* Click on the `Validate` button to check if the key is valid.
 
-* OBS: A chave só será salva ao clicar no botão `Save` ou `Save/Close` caso a chave seja válida.
+* NOTE: The key will only be saved by clicking on the `Save` or` Save / Close` button if the key is valid.
 
-## Chave de compilação
+## Compile key
 
-* A partir de 17/05/2019 todas as chaves devem ser regeradas utilizando o ID exibido no nosso plugin do VSCode. Isse se faz necessário para suporte de Linux e MAC.
+* From 05/17/2019 all keys must be regenerated using the ID displayed in our VSCode extension. This is necessary for Linux and MAC support.
 
-* Suporte de chave de compilação em Linux e MAC a partir de 17/05/2019.
+* Linux and MAC build key support from 05/17/2019.
 
 ![Compile Key](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/CompileKey.gif)
 
-### Configuração de Include
+### Include configuration
 
-* Na visão de servidores, clique com o menu de contexto e selecione a opção `Include`.
-* Também é possível configurar pelo assistente: `CTRL + SHIFT + P` digite `TOTVS: Include`.
+* In the servers view, click with the context menu and select the `Include` option.
+* It is also possible to configure through the wizard: `CTRL + SHIFT + P` type` TOTVS: Include`.
 
-* As configurações de include ficam no arquivo `%USERHOME%/.totvsls/servers.json`. Abra esse arquivo.
-* Já existe por padrão o diretório `"C:/totvs/includes"`.
-* Para adicionar uma nova configuração de include separe por vírgula ou substitua o path existente.
-  Ex:`"includes": ["C:/totvs/includes1","C:/totvs/includes2", "C:/totvs/includes3"]`.
+* Include settings are in the file `% USERHOME% /. Totvsls / servers.json`. Open this file.
+* The `` C: / totvs / includes "` directory already exists by default.
+* To add a new include configuration, separate with a comma or replace the existing path.
+  Ex: `" includes ": [" C: / totvs / includes1 "," C: / totvs / includes2 "," C: / totvs / includes3 "]`.
 
 ![Configure Include](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Include.gif)
 
-### Arquivos do pré compilador
+### Pre-compiler files
 
-* Para manter os arquivos gerados pelo pré-compilador, habilite a opção nas preferencias em: `File | Preferences | Settings | Extensions | TOTVS |Leave PPO File`.
-* Caso queira um log completo das operações efetuadas pelo pré-compilador, habilite a opção: `File | Preferences | Settings | Extensions | TOTVS |Show Pre Compiler`.
+* To keep the files generated by the precompiler, enable the option in the preferences in: `File | Preferences | Settings | Extensions | TOTVS | Leave PPO File`.
+* If you want a complete log of the operations performed by the precompiler, enable the option: `File | Preferences | Settings | Extensions | TOTVS | Show Pre Compiler`.
 
-## Configurações de Debug
+## Debug Settings
 
-### Criando manualmente uma configuração de debug
+### Manually creating a debug configuration
 
-* O arquivo `launch.json` será criado automaticamente através da Tela de Boas Vindas.
-* Caso haja problemas com este arquivo você pode criá-lo manualmente através dos seguintes passos:
+* The `launch.json` file will be created automatically through the Welcome Screen.
+* If there are problems with this file you can create it manually using the following steps:
 
-  * Selecione a seção `Debug` no painel esquerdo do VSCode.
-  * Selecione na parte superior desta tela a opção `Add Configuration...`.
-  * Comece a digitar `TOTVS` e selecione o tipo desejado
-    * Tipo: _totvs_language_debug_, usa o SmartClient Desktop.
-      Preencha o arquivo `launch.json` de acordo com seu ambiente e necessidas, como no exemplo abaixo.
+  * Select the `Debug` section in the left panel of VSCode.
+  * Select `Add Configuration ...` at the top of this screen.
+  * Start typing `TOTVS` and select the desired type
+    * Type: _totvs_language_debug_, uses SmartClient Desktop.
+      Fill in the `launch.json` file according to your environment and needs, as in the example below.
 
 >``{``
 "type": "totvs_language_debug",
@@ -165,8 +165,8 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
 "enableTableSync": true
 ``}``
 
-    * Tipo: _totvs_language_web_debug_, usa o SmartClient Html.
-      Preencha o arquivo `launch.json` de acordo com seu ambiente e necessidas, como no exemplo abaixo..
+    * Type: _totvs_language_web_debug_, use SmartClient Html.
+      Fill in the `launch.json` file according to your environment and needs, as in the example below.
 
 >``{``
 "type": "totvs_language_web_debug",
@@ -179,198 +179,198 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
 "enableTableSync": true
 ``}``
 
-*Nota:* Abra o arquivo `settings.json` e informe a chave "", com o caminho completo do seu navegador web.
+* Note: * Open the file `settings.json` and enter the key" ", with the full path of your web browser.
 >``{``
 "totvsLanguageServer.welcomePage": false,
 "totvsLanguageServer.web.navigator": "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
 ``}``
 
-Veja detalhes sobre como usar as diretivas [${command:}](https://link) e [passagem de parâmetros](https:link).
+See details on how to use the directives [$ {command:}] (https: // link) and [passing parameters] (https: link).
 
-### Criando uma configuração de debug com assistente
+### Creating a debug configuration with a wizard
 
-* Para abrir o assistente de nova configuração de debug, pressione o atalho `CTRL + SHIFT + P` e digite `TOTVS: Configure Launchers`.
-* Será aberto um assistente de configuração de launcher que permite criar uma nova configuração ou editar uma configuração já existente.
-* Preencha as informações e clique em `Save`.
+* To open the new debug setup wizard, press the `CTRL + SHIFT + P` shortcut and type` TOTVS: Configure Launchers`.
+* A launcher configuration wizard will open that allows you to create a new configuration or edit an existing configuration.
+* Fill in the information and click on 'Save`.
 
 ![New Launcher](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/CreateLauncher.gif)
 
-### Iniciando um debug
+### Starting a debug
 
-* Caso necessário, verifique se os dados do arquivo `launch.json` estão corretos.
-* Conecte-se a um servidor previamente cadastrado.
-* Pressione o atalho `F5` para iniciar o debug.
-* Caso necessário abrir o `launch.json` novamente, Selecione a seção `Debug` no painel esquerdo do VSCode
-* E por fim no ícone de configuração na parte superior `Open launch.json`, representado pelo icone de uma `engrenagem`.
-* Será exibido um campo para digitação do fonte que deseja depurar, ex: `u_teste`.
-* Pressione `Enter` para iniciar a depuração.
+* If necessary, check that the data in the `launch.json` file are correct.
+* Connect to a previously registered server.
+* Press the shortcut `F5` to start debugging.
+* If necessary to open `launch.json` again, select the` Debug` section in the left panel of VSCode
+* And finally the configuration icon at the top `Open launch.json`, represented by the icon of a` gear`.
+* A field will be displayed for typing the source you want to debug, ex: `u_teste`.
+* Press `Enter` to start debugging.
 
 ![Start Debug](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/StartDebug.gif)
 
-### Usando Debug Console
+### Using Debug Console
 
-* É possível verificar os valores de variáveis, conteúdo de tabelas e executar métodos durante o debug com o Debug Console.
-* Coloque um breakpoint em um ponto necessário de seu fonte.
-* Quando a depuração "parar" ao breakpoint, abra a visão `Debug Console` na parte inferior da tela.
-* Digite uma operação ou variável AdvPL/4GL disponivel em seu ambiente de depuração.
-* Para verificar o conteúdo de uma tabela aberta, digite o seguinte comando: table:nome_da_tabela (ex.: table:SM0)
-* Analise os dados retornados de acordo com sua necessidade.
+* It is possible to check the values ​​of variables, table contents and execute methods during debugging with the Debug Console.
+* Place a breakpoint at a necessary point in your source.
+* When debugging "stops" at the breakpoint, open the `Debug Console` view at the bottom of the screen.
+* Enter an operation or AdvPL / 4GL variable available in your debugging environment.
+* To check the contents of an open table, type the following command: table: table_name (eg table: SM0)
+* Analyze the data returned according to your need.
 
-Em [Debug Console: configuração visual](https://github.com/totvs/tds-vscode/wiki/Debug-Console:-configura%C3%A7%C3%A3o-visual), você tem detalhes de como customizar o visual desta visão.
+In [Debug Console: visual configuration] (https://github.com/totvs/tds-vscode/wiki/Debug-Console:-configura%C3%A7%C3%A3o-visual), you have details on how to customize the visual of this vision.
 
 ![Debug Console](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/DebugConsole.gif)
 
-### Sincronismo de tabelas durante o debug
+### Synchronization of tables during debugging
 
 ![Debug Table Sync](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/TableSync-ShowingTables.gif)
 
-* O sincronismo de tabelas pode ser alterado por configuração de "launcher" pelo parâmetro: enableTableSync
-* Ele vem habilitado por padrão em uma nova configuração de execução.
+* The timing of tables can be changed by setting the "launcher" using the parameter: enableTableSync
+* It is enabled by default in a new run configuration.
 
 ![Debug Table Sync](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/TableSync-EnableTableSyncProperty.gif)
 
-* É possível alterar essa opção durante uma depuração pelo comando: "TOTVS: Toggle table sync". Note que ao usuar esse comando, o parâmetro do launcher é alterado, portanto a próxima depuração irá utilizar essa definição. Ou seja, caso tenha sido desabilitado, a próxima depuração iniciará com o sincronismo de tabelas desabilitado também.
+* You can change this option during debugging using the command: "TOTVS: Toggle table sync". Note that when using this command, the launcher parameter is changed, so the next debug will use this definition. That is, if it has been disabled, the next debugging will start with table synchronization disabled as well.
 
 ![Debug Table Sync](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/TableSync-CommandToggleTableSync.gif)
 
 ![Debug Table Sync](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/TableSync-CommandToggleChangingProperty.gif)
 
-* É possível visualizar o conteúdo de uma tabela aberta usando a visão "Debug Console". Para isso digite o seguinte comando na visão: table:nome_da_tabela (ex.: table:SM0)
+* It is possible to view the contents of an open table using the "Debug Console" view. To do this, type the following command in the view: table: table_name (eg table: SM0)
 
 ![Debug Table Sync](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/TableSync-DebugCommands.gif)
 
 ## Patch
 
-### Gerando um Patch (From RPO) utilizando o assistente.
+### Generating a Patch (From RPO) using the wizard
 
-* Para gerar um patch conecte-se ao servidor.
+* To generate a patch, connect to the server.
 
-* Selecione com o botão direito do mouse o servidor conectado.
-* Selecione a opção `Patch Generation (From RPO)`.
-* Existe um atalho para a abertura da página: `CTRL + SHIFT + P ` digite `TOTVS` e selecione a opção `TOTVS: Patch Generation (From RPO)`.
+* Select the connected server with the right mouse button.
+* Select the `Patch Generation (From RPO)` option.
+* There is a shortcut for opening the page: `CTRL + SHIFT + P` type `TOTVS` and select the option` TOTVS: Patch Generation (From RPO) `.
 
-* Aguarde a carga dos arquivos do inspetor de objetos.
-* Selecione os arquivos que desejar para o patch utilizando o campo de `Filtro`.
-* Para digitar o filtro simplesmente saia do campo ou pressione `Enter`.
-* Selecione agora os arquivos na lista da esquerda e mova os desejados para lista da direita utilizando o botão `">>"`.
-* Repita o processo até que tenha selecionado todos os arquivos necessários.
-* Selecione agora o `diretório` onde deseja salvar o Patch.
-* Escolha o `nome do arquivo` de Patch desejado. (Quando não informado, o patch será gerado com o nome do RPO).
-* Efetue e geração do Patch pressionando o botão `Gerar`.
+* Wait for the object inspector files to load.
+* Select the files you want for the patch using the `Filter` field.
+* To enter the filter simply leave the field or press `Enter`.
+* Now select the files in the list on the left and move the desired ones to the list on the right using the button "" >> "`.
+* Repeat the process until you have selected all the necessary files.
+* Now select the `directory` where you want to save the Patch.
+* Choose the desired `file name` of Patch. (When not informed, the patch will be generated with the name of the RPO).
+* Perform and generate the Patch by pressing the `Generate` button.
 
 ![Patch Generate](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/GeneratePatchWizard.gif)
 
-### Gerando um Patch (From Folder) utilizando o menu de contexto
+### Generating a Patch (From Folder) using the context menu
 
-* Para gerar um patch conecte-se ao servidor.
-* Clique com o botão direito em cima da pasta de contém os fontes que farão parte do patch.
-* Selecione a opção `Patch Generation (From Folder)`.
-* Abrirá uma janela para selecionar onde deseja que o fonte seja salvo. Selecione um pasta.
-* Uma janela será aberta para coletar o nome do patch que será gerado. (Quando não informado, o patch será gerado com o nome do RPO).
-* Após as confirmações o patch será gerado no caminho desejado.
+* To generate a patch, connect to the server.
+* Right click on the folder containing the fonts that will be part of the patch.
+* Select the `Patch Generation (From Folder)` option.
+* A window will open to select where you want the font to be saved. Select a folder.
+* A window will open to collect the name of the patch that will be generated. (When not informed, the patch will be generated with the name of the RPO).
+* After confirmation, the patch will be generated in the desired path.
 
 ![Patch Generate Folder](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/GeneratePatchWizardFromFolder.gif)
 
-### Aplicando Patch utilizando o assistente
+### Applying Patch using the wizard
 
-* Para aplicar um patch conecte-se ao servidor.
+* To apply a patch, connect to the server.
 
-* Selecione com o botão direito do mouse o servidor.
-* Selecione a opção `Patch Apply`.
-* Existe um atalho para a abertura da página: `CTRL + SHIFT + P ` digite `TOTVS` e selecione a opção `TOTVS: Patch Apply`.
+* Select the server with the right mouse button.
+* Select the `Patch Apply` option.
+* There is a shortcut for opening the page: `CTRL + SHIFT + P` type `TOTVS` and select the` TOTVS: Patch Apply` option.
 
-* Os campos de servidores são preenchidas automaticamente com as informações do servidor conectado.
-* No campo `Patch File` selecione o patch que deseja aplicar.
-* Confirme a aplicação.
+* The server fields are automatically filled with the information of the connected server.
+* In the `Patch File` field, select the patch you want to apply.
+* Confirm the application.
 
 ![Patch Apply](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/ApplyPatch.gif)
 
-### Aplicando Patch utilizando o menu de contexto
+### Applying Patch using the context menu
 
-* Para aplicar um patch conecte-se ao servidor.
+* To apply a patch, connect to the server.
 
-* Selecione o patch com o botão direito do mouse.
-* Selecione a opção `Patch Apply from file`.
-* Confirme a aplicação e o patch será aplicado.
+* Select the patch with the right mouse button.
+* Select the `Patch Apply from file` option.
+* Confirm the application and the patch will be applied.
 
 ![Patch Apply from File](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/ApplyPatchMenu.gif)
 
 ## RPO
 
-### Desfragmentação de RPO
+### Defragmentation of RPO
 
-* Para desfragmentar um RPO conecte-se ao servidor.
-* Selecione o servidor com o menu de contexto e seleciona a opção `Defrag RPO`.
-* Também é possível selecionar a opção pelo atalho `CTRL + SHIFT + P` digitando `TOTVS: Defrag RPO`.
+* To defragment an RPO, connect to the server.
+* Select the server with the context menu and select the `Defrag RPO` option.
+* It is also possible to select the option via the `CTRL + SHIFT + P` shortcut by typing` TOTVS: Defrag RPO`.
 
-* As mensagens de inicio e fim da desfragmentação serão exibidos no canto inferior direito.
+* The defragmentation start and end messages will be displayed in the lower right corner.
 
 ![Defrag RPO](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/DefragRPO.gif)
 
-### Deletar recursos do RPO
+### Delete RPO resources
 
-* Para deletar algum recurso do RPO, conecte-se ao servidor.
-* Com o menu de contexto em cima do arquivo que deseja excluir, selecione a opção `Delete File/Resource from RPO`.
-* Confirme a exclusão.
-* A confirmação da exclusão será exibida no console e em mensagens no canto inferior esquerdo.
+* To delete any RPO resource, connect to the server.
+* With the context menu on top of the file you want to delete, select the `Delete File / Resource from RPO` option.
+* Confirm the deletion.
+* The confirmation of the deletion will be displayed on the console and in messages in the lower left corner.
 
 ![Delete File RPO](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/DeleteFromRPO.gif)
 
-### Inspetor de Objetos do RPO
+### RPO Object Inspector
 
-* Para visualizar os arquivos que fazem parte do RPO, conecte-se ao servidor.
-* Com o menu de contexto em cima do servidor, selecione a opção `Objects inspector`.
-* Abrirá um assistente com todos os arquivos que fazem parte do RPO, utilize o filtro para encontrar algum arquivo específico.
-* Também é possível abrir o assistente pelo atalho `CTRL + SHIFT + P` digitando `TOTVS: Objects inspector`.
+* To view the files that are part of the RPO, connect to the server.
+* With the context menu on top of the server, select the `Objects inspector` option.
+* A wizard will open with all the files that are part of the RPO, use the filter to find a specific file.
+* It is also possible to open the wizard via the `CTRL + SHIFT + P` shortcut by typing` TOTVS: Objects inspector`.
 
 ![Objects inspector](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/InspectObject.gif)
 
-### Inspetor de Funções do RPO
+### RPO Role Inspector
 
-* Para visualizar as funções que fazem parte do RPO, conecte-se ao servidor.
-* Com o menu de contexto em cima do servidor, selecione a opção `Functions inspector`.
-* Abrirá um assistente com todos as funções que fazem parte do RPO, utilize o filtro para encontrar alguma função específica.
-* Também é possível abrir o assistente pelo atalho `CTRL + SHIFT + P` digitando `TOTVS: Functions inspector`.
+* To view the functions that are part of the RPO, connect to the server.
+* With the context menu on top of the server, select the option `Functions inspector`.
+* A wizard will open with all the functions that are part of the RPO, use the filter to find a specific function.
+* It is also possible to open the wizard via the `CTRL + SHIFT + P` shortcut by typing` TOTVS: Functions inspector`.
 
 ![Functions inspector](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/InspectFunction.gif)
 
-## Geração de Client WS Protheus
-* É possível gerar arquivos ADVPL a partir de clients WSDL.
-* Abra o assistente com o atalho `CTRL + SHIFT + P` e digite `TOTVS: Generate WS Protheus`.
-* Preencha o campo `URL`, selecione um diretório e escreva o nome e extensão do arquivo protheus que será gerado no diretório especificado.
-* Após preencher, uma mensagem de sucesso avisará que tudo foi criado corretamente.
+## Generation of Client WS Protheus
+
+* It is possible to generate ADVPL files from WSDL clients.
+* Open the wizard with the shortcut `CTRL + SHIFT + P` and type` TOTVS: Generate WS Protheus`.
+* Fill in the `URL` field, select a directory and write the name and extension of the protheus file that will be generated in the specified directory.
+* After filling in, a success message will tell you that everything was created correctly.
 
 ![Generate WS](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/GenerateWS.gif)
 
-## Suporte
+## Support
 
-### Capturador de Logs
+### Log Capture
 
-* Caso tenha problemas com a ferramenta e deseja suporte da equipe de desenvolvimento do plugin, inicie uma ferramenta de coleta de logs para auxiliar no suporte. Essa ferramenta colhe informações como versões de ferramentas e plugins, sistema operacional, versão do VSCode, configuração de servidores e etc.
+* If you have problems with the tool and want support from the plugin development team, start a log collection tool to assist in support. This tool collects information such as versions of tools and plugins, operating system, VSCode version, server configuration and etc.
 
-* Para ativa-la, selecione pelo atalho `CTRL + SHIFT + P` digite `TOTVS: On Logger Capture`. Nesse momento o capturador de log será iniciado.
+* To activate it, select by the shortcut `CTRL + SHIFT + P` type` TOTVS: On Logger Capture`. At that point the log capture will start.
 
-* Reproduza o problema e selecione a opção `CTRL + SHIFT + P` digite `TOTVS: Off Logger Capture` ou na Barra inferior clique sobre o texto `Capturando logs...`. Os capturador será encerrado e um arquivo chamado `tdsSupport.zip` será gerado. Anexe esse arquivo ao chamado.
+* Reproduce the problem and select the option `CTRL + SHIFT + P` type` TOTVS: Off Logger Capture` or in the bottom bar click on the text `Capturing logs ...`. The captors will be closed and a file called `tdsSupport.zip` will be generated. Attach this file to the ticket.
 
 ![Logger](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Logger.gif)
 
-### Desenvolvimento Colaborativo
+### Collaborative Development
 
-* Se deseja contribuir com o desenvolvimento do plugin, acesse [Git Hub TDS-VSCODE](https://github.com/totvs/tds-vscode), faça seu commit que iremos analisar!
+* If you want to contribute to the development of the plugin, visit [Git Hub TDS-VSCODE] (https://github.com/totvs/tds-vscode), make your commit and we will analyze it!
 
-## Plugins recomendados
+## Recommended extensions
 
 * TDS Monitor for VSCODE.
 
-  Permite monitor servidores protheus.
+  Allows to monitor protheus servers.
 
   <https://marketplace.visualstudio.com/items?itemName=totvs.tds-monitor>
 
 * Numbered Bookmarks.
 
-  Permite uso de bookmarks no estilo Delphi numerados de 1 a 9.
+  Allows use of Delphi style bookmarks numbered from 1 to 9.
 
   <https://marketplace.visualstudio.com/items?itemName=alefragnani.numbered-bookmarks>
 
   ![Toggle](https://github.com/alefragnani/vscode-numbered-bookmarks/raw/master/images/numbered-bookmarks-toggle.png)
-
