@@ -20,13 +20,13 @@ export function getDAP() {
 		}
 		else if (process.platform === "linux") {
 			pathDAP = path.join(ext.extensionPath, "/node_modules/@totvs/tds-da/bin/linux/debugAdapter");
-			if (statSync(pathDAP).mode != 33261) {
+			if (statSync(pathDAP).mode !== 33261) {
 				chmodSync(pathDAP, '755');
 			}
 		}
 		else if (process.platform === "darwin") {
 			pathDAP = path.join(ext.extensionPath, "/node_modules/@totvs/tds-da/bin/mac/debugAdapter");
-			if (statSync(pathDAP).mode != 33261) {
+			if (statSync(pathDAP).mode !== 33261) {
 				chmodSync(pathDAP, '755');
 			}
 		}
@@ -188,7 +188,7 @@ export function toggleTableSync() {
 
 debug.onDidChangeActiveDebugSession((newDebugSession) => {
  	debugSession = newDebugSession;
-})
+});
 
 function sendChangeTableSyncSetting(): void {
 	if(debugSession === undefined) {
@@ -245,9 +245,9 @@ async function pickProgramArguments() {
 	try {
 		return await new Promise<string[] | undefined>((resolve, reject) => {
 			const qp: QuickPick<QuickPickProgram> = window.createQuickPick<QuickPickProgram>();
-			qp.title = localize('tds.vscode.getProgramArguments', "Informe lista de argumentos separados por vírgula");
+			qp.title = localize('tds.vscode.getProgramArguments', "Enter comma-separated list of arguments");
 			qp.items = lastPrograms;
-			qp.placeholder = localize('tds.vscode.getProgramArguments', "Informe lista de argumentos separados por vírgula");
+			qp.placeholder = localize('tds.vscode.getProgramArguments', "Enter comma-separated list of arguments");
 
 			disposables.push(qp.onDidChangeSelection(selection => {
 				if (selection[0]) {

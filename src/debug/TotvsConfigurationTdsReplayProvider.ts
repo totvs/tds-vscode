@@ -20,7 +20,7 @@ export class TotvsConfigurationTdsReplayProvider implements DebugConfigurationPr
 	 */
 	//resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): ProviderResult<DebugConfiguration> {
 	async resolveDebugConfiguration(folder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): Promise<DebugConfiguration> {
-		if (config.tdsReplayFile !== undefined && config.tdsReplayFile.trim().length != 0) {
+		if (config.tdsReplayFile !== undefined && config.tdsReplayFile.trim().length !== 0) {
 
 			let workspaceFolders = vscode.workspace.workspaceFolders;
 			if (workspaceFolders) {
@@ -54,7 +54,7 @@ export class TotvsConfigurationTdsReplayProvider implements DebugConfigurationPr
 
 			return Promise.resolve(config);
 		} else {
-			window.showErrorMessage(localize('tds.vscode.tdsReplay.fileNotInformed', "Arquivo do TDS Replay não informado"));
+			window.showErrorMessage(localize('tds.vscode.tdsReplay.fileNotInformed', "TDS Replay file not informed"));
 			return null;
 		}
 	}
@@ -66,7 +66,7 @@ export class TotvsConfigurationTdsReplayProvider implements DebugConfigurationPr
 		config.tdsReplayFile = config.tdsReplayFile.replace(/\\/g,'/');
 		const replayFileLocation = this.getReplayFileLocation(config.tdsReplayFile);
 		//CAso nao encontre a pasta temporaria informada no mapa, é necessario atualizar o arquivo .dbmap com a nova pasta.
-		let mustImport = replayFileLocation.trim().length == 0 || !fs.existsSync(replayFileLocation);
+		let mustImport = replayFileLocation.trim().length === 0 || !fs.existsSync(replayFileLocation);
 		if(!mustImport) {
 			const dbFile = replayFileLocation.concat("/tmp.rpl");
 			const filterFile = replayFileLocation.concat("/.lastFilter");
@@ -121,7 +121,7 @@ export class TotvsConfigurationTdsReplayProvider implements DebugConfigurationPr
 		let isTheSameFilter = true;
 		let lastIncludeFilterUsed;
 		let lastExcludeFilterUsed;
-		var allLines = fs.readFileSync(filterFile).toString().split("\n");
+		let allLines = fs.readFileSync(filterFile).toString().split("\n");
 		if(allLines !== undefined && allLines.length > 0) {
 			if(allLines.length > 2) {
 				lastIncludeFilterUsed = allLines[1];
@@ -130,7 +130,7 @@ export class TotvsConfigurationTdsReplayProvider implements DebugConfigurationPr
 				lastExcludeFilterUsed = allLines[3];
 			}
 		}
-		isTheSameFilter = lastIncludeFilterUsed == config.includeSources && lastExcludeFilterUsed == config.excludeSources;
+		isTheSameFilter = lastIncludeFilterUsed === config.includeSources && lastExcludeFilterUsed === config.excludeSources;
 		return isTheSameFilter;
 	}
 

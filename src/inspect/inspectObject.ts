@@ -22,7 +22,7 @@ const localizeHTML = {
 	"tds.webview.inspect.items.generate.close": localize("tds.webview.inspect.items.generate.close", "Generate/Close"),
 	"tds.webview.inspect.message1": localize("tds.webview.inspect.message1", "The generated patch is based on the files from RPO. Be sure that the included fonts are compiled."),
 	"tds.webview.inspect.items.showing": localize("tds.webview.inspect.items.showing", "Items showing")
-}
+};
 
 export function inspectObject(context: vscode.ExtensionContext) {
 	const server = Utils.getCurrentServer();

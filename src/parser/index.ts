@@ -64,7 +64,7 @@ export interface IParserOptions {
 const parserOptionsDefault: IParserOptions = {
   "ignoreWhitespace": true,
   "ignoreNewLine": false
-}
+};
 
 export function parser(
   vscodeLanguageId: string,
@@ -77,8 +77,8 @@ export function parser(
 
   if (lang) {
     options = options ? options : parserOptionsDefault;
-    options.ignoreNewLine = options.ignoreNewLine || parserOptionsDefault.ignoreNewLine
-    options.ignoreWhitespace = options.ignoreWhitespace || parserOptionsDefault.ignoreWhitespace
+    options.ignoreNewLine = options.ignoreNewLine || parserOptionsDefault.ignoreNewLine;
+    options.ignoreWhitespace = options.ignoreWhitespace || parserOptionsDefault.ignoreWhitespace;
 
     const parser = parsers[lang[0].parsers[0]];
     return parser.parse(code, options);

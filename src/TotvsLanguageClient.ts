@@ -99,12 +99,12 @@ export function getLanguageClient(
     advpls = dir + "/node_modules/@totvs/tds-ls/bin/windows/advpls.exe";
   } else if (process.platform === "linux") {
     advpls = dir + "/node_modules/@totvs/tds-ls/bin/linux/advpls";
-    if (statSync(advpls).mode != 33261) {
+    if (statSync(advpls).mode !== 33261) {
       chmodSync(advpls, "755");
     }
   } else if (process.platform === "darwin") {
     advpls = dir + "/node_modules/@totvs/tds-ls/bin/mac/advpls";
-    if (statSync(advpls).mode != 33261) {
+    if (statSync(advpls).mode !== 33261) {
       chmodSync(advpls, "755");
     }
   }

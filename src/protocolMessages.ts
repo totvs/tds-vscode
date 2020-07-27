@@ -69,7 +69,7 @@ class DisconnectReturnInfo {
 // Tira acento proveniente do UTF-8, não compativel com o ANSI
 function toAscii(text: String): string {
   return text.split("").map(function(c) {
-    var n = c.charCodeAt(0);
+    let n = c.charCodeAt(0);
 
     // console.log(n)
     switch (n) {
@@ -142,19 +142,19 @@ function toAscii(text: String): string {
       case 7869: return 'e';
 
       // Caracteres Fn
-      case 170: return 'a' // ª
-      case 185: return '1' // ¹
-      case 178: return '2' // ²
-      case 179: return '3' // ³
-      case 163: return 'L' // £
-      case 162: return 'c' // ¢
-      case 172: return '' // ¬
-      case 167: return '' // §
+      case 170: return 'a'; // ª
+      case 185: return '1'; // ¹
+      case 178: return '2'; // ²
+      case 179: return '3'; // ³
+      case 163: return 'L'; // £
+      case 162: return 'c'; // ¢
+      case 172: return ''; // ¬
+      case 167: return ''; // §
 
       default: return c;
     }
   }).join("");
-};
+}
 
 export function sendDisconnectRequest(
   connectedServerItem: ServerItem
@@ -428,7 +428,7 @@ export function sendUserMessage(
   server: ServerItem,
   target: any,
   message: string
-): Thenable<string> {5
+): Thenable<string> {
   return languageClient
     .sendRequest("$totvsmonitor/sendUserMessage", {
       sendUserMessageInfo: {

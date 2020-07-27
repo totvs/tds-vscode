@@ -4,7 +4,7 @@ import Utils from "./utils";
 import * as path from 'path';
 import { MultiStepInput } from "./multiStepInput";
 import { connectServer, reconnectServer } from "./serversView";
-import { ConnTypeIds } from "./protocolMessages"
+import { ConnTypeIds } from "./protocolMessages";
 
 import * as nls from 'vscode-nls';
 import { ServerItem, EnvSection } from "./serverItemProvider";

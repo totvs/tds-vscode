@@ -72,7 +72,7 @@ export class ServersExplorer {
       } else {
         currentPanel = vscode.window.createWebviewPanel(
           "totvs-developer-studio.add",
-          "Novo Servidor",
+          "New Server",
           vscode.ViewColumn.One,
           {
             enableScripts: true,

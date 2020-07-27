@@ -109,6 +109,6 @@
 	"tds.package.tdsreplay.debug": "TDS Replay Debug",
 	"tds-monitor.open-monitor-view": "Vista de monitor abierta",
 	"tds.package.workspaceServerConfig": "Use el espacio de trabajo para mantener la configuración del servidor.",
-	"tds.package.OpenTimeLineWebview": "Open TimeLine Webview",
-	"tds.package.apply.formatting": "Applies formatting to TOTVS source files and their variations."
+	"tds.package.OpenTimeLineWebview": "Abrir vista de línea de tiempo",
+	"tds.package.apply.formatting": "Aplica el formato a los archivos de origen TOTVS y sus variaciones."
 }

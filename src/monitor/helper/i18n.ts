@@ -1,7 +1,7 @@
 
 let _translations = {};
 
-class _I18n {
+class I18n {
   private _translations: any = {};
 
   public get translations(): any {
@@ -10,9 +10,7 @@ class _I18n {
   }
 
   public set translations(value: any) {
-    console.log(">>>>>");
     this._translations = value || {};
-    console.log(this._translations);
   }
 
   public _localize (key: string, message: string, ...args: (string | number | boolean | undefined | null)[]): string {
@@ -25,11 +23,11 @@ class _I18n {
     if (args && args.length > 0) {
       args.forEach((arg: any, index: number) => {
         result = result.replace("{" + index + "}", "" + (args[index] || "null"));
-      })
+      });
     }
 
     return result;
   }
 }
 
-export const i18n = new _I18n();
+export const i18n = new I18n();

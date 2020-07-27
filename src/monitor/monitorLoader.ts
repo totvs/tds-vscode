@@ -446,7 +446,7 @@ export class MonitorLoader {
   }
 
   public updateUsers(scheduler: boolean) {
-    if (this.monitorServer == null) {
+    if (this.monitorServer === null) {
       return;
     }
 
@@ -529,7 +529,7 @@ export class MonitorLoader {
   }
 
   private updateSpeedStatus() {
-    var nextUpdate = new Date(Date.now());
+    let nextUpdate = new Date(Date.now());
 
     const msg1 = localize(
       "MSG_1",
@@ -679,5 +679,5 @@ function getTranslations() {
     "WARN_ALL_CONNECTIONS_CLOSE_1": localize("WARN_ALL_CONNECTIONS_CLOSE_1", "When confirming the server stop, all connections (including this) will be closed, as well as other processes."),
     "WARN_ALL_CONNECTIONS_CLOSE_2": localize("ERROR_ALL_CONNECTIONS_CLOSE_2", "Restarting will only be possible by physically accessing the server."),
     "SECONDS": localize("SECONDS", "{0} seconds"),
-  }
+  };
 }

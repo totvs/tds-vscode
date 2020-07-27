@@ -108,7 +108,7 @@ export class TotvsConfigurationWebProvider implements DebugConfigurationProvider
 
 			return config;
 		} else {
-			window.showErrorMessage(localize('tds.vscode.server_not_connected', "Nenhum servidor conectado"));
+			window.showErrorMessage(localize('tds.vscode.server_not_connected', "No servers connected"));
 			return null;
 		}
 	}

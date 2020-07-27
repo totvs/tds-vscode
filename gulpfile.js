@@ -1,144 +1,127 @@
-/*---------------------------------------------------------
- * Copyright (C) Microsoft Corporation. All rights reserved.
- *--------------------------------------------------------*/
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 
 const gulp = require("gulp");
 const path = require("path");
-const ts = require("gulp-typescript");
-const log = require("gulp-util").log;
-//const typescript = require("typescript");
-const sourcemaps = require("gulp-sourcemaps");
-//const tslint = require("gulp-tslint");
-const nls = require("vscode-nls-dev");
-const del = require("del");
-//const fs = require("fs");
-const vsce = require("vsce");
-const es = require("event-stream");
-const minimist = require("minimist");
 
-const defaultLanguages = [
+const ts = require("gulp-typescript");
+const typescript = require("typescript");
+const sourcemaps = require("gulp-sourcemaps");
+const del = require("del");
+//const runSequence = require("run-sequence");
+const es = require("event-stream");
+const vsce = require("vsce");
+const nls = require("vscode-nls-dev");
+const log = require("gulp-util").log;
+
+const tsProject = ts.createProject("./src/tsconfig.json", { typescript });
+
+const inlineMap = true;
+const inlineSource = false;
+const outDest = "out";
+
+// If all VS Code langaues are support you can use nls.coreLanguages
+const languages = [
   { id: "es", folderName: "esn" },
   { id: "ru", folderName: "rus" },
   { id: "pt-br", folderName: "ptb", transifexId: "pt_BR" },
 ];
 
-const transifexProject = "tds-vscode";
-const translationsFolder = path.join(".", `${transifexProject}-translations`);
-
-const watchedSources = ["src/**/*", "test/**/*"];
-
-const scripts = [
-  //'src/terminateProcess.sh'
-];
-
-const lintSources = ["src"].map((tsFolder) => tsFolder + "/**/*.ts");
-
-const tsProject = ts.createProject("./src/tsconfig.json", {
-  jsx: "react",
-  target: "ES5",
-  esModuleInterop: true,
-});
-
-function doBuild(buildNls, failOnError) {
-  return () => {
-    let gotError = false;
-    const tsResult = tsProject
-      .src()
-      .pipe(sourcemaps.init())
-      .pipe(tsProject())
-      .once("error", () => {
-        gotError = true;
-      });
-
-    return tsResult.js
-      .pipe(buildNls ? nls.rewriteLocalizeCalls() : es.through())
-      .pipe(
-        buildNls
-          ? nls.createAdditionalLanguageFiles(defaultLanguages, "i18n", "out")
-          : es.through()
-      )
-      .pipe(
-        buildNls
-          ? nls.bundleMetaDataFiles("ms-vscode.totvs-developer-studio", "out")
-          : es.through()
-      )
-      .pipe(buildNls ? nls.bundleLanguageFiles() : es.through())
-      .pipe(sourcemaps.write(".", { includeContent: false, sourceRoot: ".." })) // .. to compensate for TS returning paths from 'out'
-      .pipe(gulp.dest("out"))
-      .once("error", () => {
-        gotError = true;
-      })
-      .once("finish", () => {
-        if (failOnError && gotError) {
-          process.exit(1);
-        }
-      });
-  };
-}
-
-gulp.task("clean", () => {
+const cleanTask = function () {
   return del(["out/**", "package.nls.*.json", "tds-vscode-*.vsix"]);
-});
+};
 
-gulp.task("_dev-build", doBuild(false, false));
+const internalCompileTask = function () {
+  return doCompile(false);
+};
 
-gulp.task("_build", doBuild(true, true));
+const internalNlsCompileTask = function () {
+  return doCompile(true);
+};
 
-gulp.task("build", gulp.series("clean", "_build"));
+const addI18nTask = function () {
+  return gulp
+    .src(["package.nls.json"])
+    .pipe(nls.createAdditionalLanguageFiles(languages, "i18n"))
+    .pipe(gulp.dest("."));
+};
 
-gulp.task("vsce-publish", () => {
+const buildTask = gulp.series(cleanTask, internalNlsCompileTask, addI18nTask);
+
+const doCompile = function (buildNls) {
+  var r = tsProject
+    .src()
+    .pipe(sourcemaps.init())
+    .pipe(tsProject())
+    .js.pipe(buildNls ? nls.rewriteLocalizeCalls() : es.through())
+    .pipe(
+      buildNls
+        ? nls.createAdditionalLanguageFiles(languages, "i18n", "out")
+        : es.through()
+    )
+    .pipe(
+      buildNls
+        ? nls.bundleMetaDataFiles("ms-vscode.tds-vscode", "out")
+        : es.through()
+    )
+    .pipe(buildNls ? nls.bundleLanguageFiles() : es.through());
+
+  if (inlineMap && inlineSource) {
+    r = r.pipe(sourcemaps.write());
+  } else {
+    r = r.pipe(
+      sourcemaps.write("../out", {
+        // no inlined source
+        includeContent: inlineSource,
+        // Return relative source map root directories per file.
+        sourceRoot: "../src",
+      })
+    );
+  }
+
+  return r.pipe(gulp.dest(outDest));
+};
+
+const vscePublishTask = function () {
   return vsce.publish();
-});
+};
 
-gulp.task("vsce-package", () => {
-  const cliOptions = minimist(process.argv.slice(2));
-  const packageOptions = {
-    packagePath: cliOptions.packagePath,
-  };
+const vscePackageTask = function () {
+  return vsce.createVSIX();
+};
 
-  return vsce.createVSIX(packageOptions);
-});
+gulp.task("default", buildTask);
 
-gulp.task("add-i18n-metadata", (done) => {
-  return gulp
-    .src("i18n/out/**/*.i18n.json")
-    .pipe(nls.bundleMetaDataFiles("ms-vscode.totvs-developer-studio", "out"))
-    .pipe(gulp.dest("."))
-    .on("end", () => done());
-});
+gulp.task("clean", cleanTask);
 
-gulp.task("add-i18n", (done) => {
-  return gulp
-    .src("package.nls.json")
-    .pipe(nls.createAdditionalLanguageFiles(defaultLanguages, "i18n"))
-    .pipe(gulp.dest("."))
-    .on("end", () => done());
-});
+gulp.task("compile", gulp.series(cleanTask, internalCompileTask));
 
-//  gulp.task("publish", gulp.series("vsce-package", "vsce-publish"));
+gulp.task("build", buildTask);
 
-//  gulp.task("package", gulp.series("build", "add-i18n", "vsce-package"));
+gulp.task("publish", gulp.series(buildTask, vscePublishTask));
 
-gulp.task("i18n-export", function () {
+gulp.task("package", gulp.series(buildTask, vscePackageTask));
+
+gulp.task("export-i18n", function (done) {
   return gulp
     .src([
       "package.nls.json",
       "out/nls.metadata.header.json",
       "out/nls.metadata.json",
     ])
-    .pipe(nls.createXlfFiles(transifexProject, "tds-vscode"))
-    .pipe(gulp.dest(translationsFolder));
+    .pipe(nls.createXlfFiles("tds-vscode", "tds-vscode"))
+    .pipe(gulp.dest(path.join("tds-vscode-export")))
+    .on("end", () => done());
 });
 
 gulp.task("i18n-import", (done) => {
   return es.merge(
-    defaultLanguages.map((language) => {
+    languages.map((language) => {
       const id = language.transifexId || language.id;
-      log(language.folderName);
       return gulp
-        .src([
-          path.join(translationsFolder, "tds-vscode", `tds-vscode.${id}.xlf`),
-        ])
+        .src([`tds-vscode-translations/tds-vscode/tds-vscode.${id}.xlf`])
         .pipe(nls.prepareJsonFiles())
         .pipe(gulp.dest(path.join("./i18n", language.folderName)))
         .on("end", () => done());
@@ -176,12 +159,4 @@ gulp.task("transifex-upload", function (done) {
 
 gulp.task("transifex-download", function (done) {
   return runTX("download", ["pull", "-a", "--skip"]).on("end", () => done());
-});
-
-//CUIDADO: as configurações existentes em .tx\config são removidas
-//para apagar o recurso sem afetar a configuração, faça via o sitio
-gulp.task("transifex-delete", function (done) {
-  const ls = runTX("delete", ["delete", "-f", "-r", "tds-vscode-brodao.*"]);
-
-  return done();
 });

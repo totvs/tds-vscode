@@ -84,7 +84,7 @@ export function parseUri(u): Uri {
   return Uri.parse(u);
 }
 
-const localize = nls.loadMessageBundle();
+const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
 const LANG_ADVPL_ID = "advpl";
 
 export function activate(context: ExtensionContext) {

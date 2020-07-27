@@ -17,11 +17,11 @@ const localizeHTML = {
 	"tds.webview.dir.include2": localize("tds.webview.dir.include2", "Allow multiple directories"),
 	"tds.webview.dir.include.info": localize("tds.webview.dir.include.info", "These settings can also be changed in"),
 	"tds.webview.dir.include.info.or": localize("tds.webview.dir.include.info.or", "or")
-}
+};
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
-export default class welcomePage {
+export default class WelcomePage {
 	static show(context: vscode.ExtensionContext, forcedShow: boolean) {
 		if (currentPanel) {
 			currentPanel.reveal();
@@ -56,7 +56,7 @@ export default class welcomePage {
 			currentPanel.webview.onDidReceiveMessage(message => {
 				switch (message.command) {
 					case 'checkDir':
-						var checkedDir = Utils.checkDir(message.selectedDir);
+						let checkedDir = Utils.checkDir(message.selectedDir);
 						currentPanel.webview.postMessage({
 							command: "checkedDir",
 							checkedDir: checkedDir
@@ -98,7 +98,7 @@ function saveSmartClientBin(smartClient: string) {
 			}
 		}
 	} catch(e) {
-		Utils
+		console.error(e);
 	}
 }
 
@@ -120,7 +120,7 @@ export function showWelcomePage(context: ExtensionContext, forcedShow: boolean) 
 	let isShowWelcomePage = configADVPL.get('welcomePage');
 
 	if (isShowWelcomePage || forcedShow) {
-		welcomePage.show(context, forcedShow);
+		WelcomePage.show(context, forcedShow);
 		isShowWelcomePage = configADVPL.update("welcomePage", false);
 	}
 }

@@ -39,9 +39,9 @@ export abstract class OutlineAbstractDocumentSymbolProvider
       nodes.push(additionalNode);
     }
 
-    for (var i = 0; i < document.lineCount; i++) {
-      var line: vscode.TextLine = document.lineAt(i);
-      if (line.text.length == 0) {
+    for (let i = 0; i < document.lineCount; i++) {
+      let line: vscode.TextLine = document.lineAt(i);
+      if (line.text.length === 0) {
         continue;
       }
 
@@ -69,7 +69,7 @@ export abstract class OutlineAbstractDocumentSymbolProvider
   ): vscode.DocumentSymbol[] {
     const nodes = [];
 
-    for (var j = 0; j < symbolRules.length; j++) {
+    for (let j = 0; j < symbolRules.length; j++) {
       const element = symbolRules[j];
       const result: RegExpMatchArray = line.text.match(element.searchExp);
 
