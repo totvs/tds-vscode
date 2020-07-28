@@ -7,7 +7,7 @@ import * as nls from 'vscode-nls';
 import Utils from '../utils';
 import { ResponseError } from 'vscode-languageclient';
 
-let localize = nls.config({ locale: 'en' })();
+let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
 
 const localizeHTML = {

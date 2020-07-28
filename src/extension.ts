@@ -4,6 +4,20 @@
 
 // tslint:disable-next-line: no-unused-expression
 "use strict";
+import * as nls from 'vscode-nls';
+
+let nlsConfig: any = {};
+if (typeof process.env.VSCODE_NLS_CONFIG === "string") {
+  try {
+    nlsConfig = JSON.parse(process.env.VSCODE_NLS_CONFIG);
+  } finally {
+
+  }
+}
+
+// The example uses the file message format.
+const localize = nls.config({ ...nlsConfig, messageFormat: nls.MessageFormat.file })();
+
 import * as vscode from "vscode";
 import * as ls from "vscode-languageserver-types";
 // The module 'vscode' contains the VS Code extensibility API
@@ -38,7 +52,6 @@ import { deleteFileFromRPO } from "./server/deleteFileFromRPO";
 import { defragRpo } from "./server/defragRPO";
 import { rpoCheckIntegrity } from "./server/rpoCheckIntegrity";
 import { serverSelection } from "./inputConnectionParameters";
-import * as nls from "vscode-nls";
 import { inspectObject } from "./inspect/inspectObject";
 import { inspectFunctions } from "./inspect/inspectFunction";
 import { patchInfos } from "./patch/inspectPatch";
@@ -84,7 +97,6 @@ export function parseUri(u): Uri {
   return Uri.parse(u);
 }
 
-const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
 const LANG_ADVPL_ID = "advpl";
 
 export function activate(context: ExtensionContext) {
@@ -404,12 +416,7 @@ export function activate(context: ExtensionContext) {
 	//View
 	let viewServer = new ServersExplorer(context);
 	if (!viewServer) {
-    console.error(
-      localize(
-        "tds.vscode.server_vision_not_load",
-        '"Servers" view not initialized.'
-      )
-    );
+    console.error('Servers view not initialized.');
 	}
 
   context.subscriptions.push(

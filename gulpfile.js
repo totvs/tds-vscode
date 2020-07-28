@@ -24,8 +24,8 @@ const outDest = "out";
 
 // If all VS Code langaues are support you can use nls.coreLanguages
 const languages = [
-  { id: "es", folderName: "esn" },
-  { id: "ru", folderName: "rus" },
+  // { id: "es", folderName: "esn" },
+  // { id: "ru", folderName: "rus" },
   { id: "pt-br", folderName: "ptb", transifexId: "pt_BR" },
 ];
 
@@ -55,7 +55,7 @@ const doCompile = function (buildNls) {
     .src()
     .pipe(sourcemaps.init())
     .pipe(tsProject())
-    .js.pipe(buildNls ? nls.rewriteLocalizeCalls() : es.through())
+    .pipe(buildNls ? nls.rewriteLocalizeCalls() : es.through())
     .pipe(
       buildNls
         ? nls.createAdditionalLanguageFiles(languages, "i18n", "out")
@@ -112,7 +112,7 @@ gulp.task("export-i18n", function (done) {
       "out/nls.metadata.json",
     ])
     .pipe(nls.createXlfFiles("tds-vscode", "tds-vscode"))
-    .pipe(gulp.dest(path.join("tds-vscode-export")))
+    .pipe(gulp.dest(path.join("../tds-vscode-export")))
     .on("end", () => done());
 });
 
@@ -121,7 +121,7 @@ gulp.task("i18n-import", (done) => {
     languages.map((language) => {
       const id = language.transifexId || language.id;
       return gulp
-        .src([`tds-vscode-translations/tds-vscode/tds-vscode.${id}.xlf`])
+        .src([`../tds-vscode-import/tds-vscode/tds-vscode.${id}.xlf`])
         .pipe(nls.prepareJsonFiles())
         .pipe(gulp.dest(path.join("./i18n", language.folderName)))
         .on("end", () => done());

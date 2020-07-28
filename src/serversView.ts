@@ -72,7 +72,7 @@ export class ServersExplorer {
       } else {
         currentPanel = vscode.window.createWebviewPanel(
           "totvs-developer-studio.add",
-          "New Server",
+          localize("tds.webview.newServer.title", "New Server"),
           vscode.ViewColumn.One,
           {
             enableScripts: true,
@@ -554,10 +554,7 @@ export function updateStatusBarItem(
   if (selectServer) {
     totvsStatusBarItem.text = `${selectServer.name} / ${selectServer.environment}`;
   } else {
-    totvsStatusBarItem.text = localize(
-      "tds.vscode.select_server_environment",
-      "[ Select server/environment ]"
-    );
+    totvsStatusBarItem.text = localize("tds.vscode.select_server_environment", "Select server/environment");
   }
 
   totvsStatusBarItem.show();
