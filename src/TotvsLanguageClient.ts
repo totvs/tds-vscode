@@ -200,14 +200,8 @@ function getClientConfig(context: ExtensionContext) {
 
   let configMapping = [["launchArgs", "launch.args"]];
   let clientConfig = {};
-
-  //let dir = "";
-  //let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
-  //if(ext !== undefined) {
-  //	dir = ext.extensionPath;
-  //}
-
   let config = workspace.getConfiguration("totvsLanguageServer");
+
   for (let prop of configMapping) {
     let value = config.get(prop[1]);
 

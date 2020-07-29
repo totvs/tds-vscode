@@ -2,7 +2,7 @@
 	"name": "tds-vscode",
 	"displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
 	"description": "%tds.package.description%",
-	"version": "1.0.11",
+	"version": "1.0.6",
 	"publisher": "TOTVS",
 	"author": {
 		"name": "TOTVS",
@@ -39,7 +39,6 @@
 	},
 	"scripts": {
 		"clean2": "gulp clean",
-		"prepare": "tsc -p ./src",
 		"compile": "npm-run-all compile:*",
 		"compile:parse_4gl": "echo src/parser/4gl-parser.pegjs && pegjs -o ./src/parser/4gl-parser.js ./syntaxes/4gl.pegjs",
 		"compile:extension": "tsc -p ./src",
@@ -48,8 +47,8 @@
 		"tslint:fix": "tslint ./src/**/*.ts --fix",
 		"test": "node node_modules/vscode/bin/test",
 		"vscode:prepublish": "webpack --mode production",
-		"package": "npm run compile && vsce package",
-		"publish": "npm run compile && vsce publish"
+		"package": "gulp package",
+		"publish": "gulp publish"
 	},
 	"dependencies": {
 		"@material-ui/core": "^4.11.0",

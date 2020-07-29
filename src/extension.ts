@@ -5,28 +5,10 @@
 import * as vscode from "vscode";
 import * as nls from "vscode-nls";
 
-let locale: string = "pt-BR";
-// console.log(">>>>>> extension.0");
-
-// if (typeof process.env.VSCODE_NLS_CONFIG === "string") {
-//   console.log(">>>>>> extension.1");
-//   try {
-//     console.log(">>>>>> extension.2");
-//     console.log(process.env.VSCODE_NLS_CONFIG);
-
-//     const nlsConfig = JSON.parse(process.env.VSCODE_NLS_CONFIG);
-//     locale = nlsConfig.locate || locale;
-//   } catch {
-//     console.log(">>>>>> extension.2 erro");
-//   }
-// }
-
-// console.log(">>>>>> extension.8");
 const localize = nls.config({
-  locale: locale,
+  locale: vscode.env.language,
   bundleFormat: nls.BundleFormat.standalone
 })();
-console.log(">>>>>> extension.9 " + locale);
 
 import * as ls from "vscode-languageserver-types";
 import {
