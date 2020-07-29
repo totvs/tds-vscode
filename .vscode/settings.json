@@ -1,7 +1,5 @@
 // Place your settings in this file to overwrite default and user settings.FALSE
 {
-	"javascript.validate.enable": false,
-	"typescript.tsdk": "node_modules/typescript/lib",
 	"files.trimTrailingWhitespace": true,
 	"editor.insertSpaces": false,
 	"files.exclude": {
@@ -13,16 +11,4 @@
 		"/.svn": true,
 		"/CVS": true
 	},
-	"macros": {
-		"translate": [
-			"extension.translateTextPreferred"
-			
-		],
-		"commentDown": [
-			"editor.action.copyLinesDownAction",
-			"cursorUp",
-			"editor.action.addCommentLine",
-			"cursorDown"
-		]
-	}
 }

@@ -15,6 +15,7 @@ const es = require("event-stream");
 const vsce = require("vsce");
 const nls = require("vscode-nls-dev");
 const log = require("gulp-util").log;
+const webpack = require('webpack-stream');
 
 const tsProject = ts.createProject("./src/tsconfig.json", { typescript });
 
@@ -24,8 +25,8 @@ const outDest = "out";
 
 // If all VS Code langaues are support you can use nls.coreLanguages
 const languages = [
-  // { id: "es", folderName: "esn" },
-  // { id: "ru", folderName: "rus" },
+  { id: "es", folderName: "esn" },
+  { id: "ru", folderName: "rus" },
   { id: "pt-br", folderName: "ptb", transifexId: "pt_BR" },
 ];
 
@@ -48,7 +49,18 @@ const addI18nTask = function () {
     .pipe(gulp.dest("."));
 };
 
-const buildTask = gulp.series(cleanTask, internalNlsCompileTask, addI18nTask);
+const webPack = function () {
+  return gulp
+    .src("src/entry.js")
+    .pipe(webpack(require("./webpack.config.js")))
+    .pipe(gulp.dest("dist/"));
+};
+
+const buildTask = gulp.series(
+  cleanTask,
+  internalNlsCompileTask,
+  addI18nTask
+);
 
 const doCompile = function (buildNls) {
   var r = tsProject

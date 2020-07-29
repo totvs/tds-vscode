@@ -34,13 +34,6 @@ module.exports = {
       {
         test: /\.(bundle\.json|bundle\.*\.json)$/,
         loader: "i18n-loader",
-        options: {
-          i18n: {
-            locales: ["ru", "pt-br", "es"],
-            bundleTogether: true,
-            // this can disable the bundling of locales
-          },
-        },
       },
 
       {
@@ -57,6 +50,6 @@ module.exports = {
     ],
   },
   performance: {
-    hints: false,
+    hints: "warning",
   },
 };
