@@ -5,6 +5,9 @@ test/**
 src/**/*.ts
 src/**/*.tsx
 **/*.map
+**/*.d.*
 .gitignore
 tsconfig.json
-vsc-extension-quickstart.md
+vsc-extension-quickstart*.md
+*.code-workspace
+.transifexrc

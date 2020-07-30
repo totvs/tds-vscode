@@ -23,7 +23,7 @@ const inlineMap = true;
 const inlineSource = false;
 const outDest = "out";
 
-// If all VS Code langaues are support you can use nls.coreLanguages
+// If all VS Code languages are support you can use nls.coreLanguages
 const languages = [
   { id: "es", folderName: "esn" },
   { id: "ru", folderName: "rus" },
@@ -132,6 +132,7 @@ gulp.task("i18n-import", (done) => {
   return es.merge(
     languages.map((language) => {
       const id = language.transifexId || language.id;
+      log(`Processing ${id}`);
       return gulp
         .src([`../tds-vscode-import/tds-vscode/tds-vscode.${id}.xlf`])
         .pipe(nls.prepareJsonFiles())
@@ -144,7 +145,7 @@ gulp.task("i18n-import", (done) => {
 function runTX(prefix, args) {
   const { execFile } = require("child_process");
 
-  const ls = execFile("C:\\Python27\\Scripts\\tx.exe", [/*"-d",*/ ...args]);
+  const ls = execFile("C:\\Python27\\Scripts\\tx.exe", [/*"-d"*/, ...args]);
 
   ls.stdout.on("data", (data) => {
     log(`${prefix}:${data}`);

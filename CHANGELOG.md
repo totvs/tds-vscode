@@ -1,4 +1,4 @@
-# Versão 1.0.NEXT
+# Versão 1.0.6
 
 ## Monitoramento de servidores TOTVS (BETA)
 * Monitoramento de conexões do servidor corrente
@@ -6,7 +6,8 @@
 * Bloqueio de novas conexões
 * Desconexão de um ou mais usuários ou de _jobs_
 
-# Versão 1.0.6
+## Revisão do processo de tradução
+* Processo de tradução foi revisto. Consulte [localização](LOCALIZATION.pt-br.MD) para detalhes.
 
 ## PRTOPDEF File not found [Issue 440](https://github.com/totvs/tds-vscode/issues/440)
 ### Problema:

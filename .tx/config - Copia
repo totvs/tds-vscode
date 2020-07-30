@@ -1,16 +1,9 @@
 [main]
 host = https://www.transifex.com
 
-[tds-vscode-brodao.package_nls_json]
-file_filter = package.nls.<lang>.json
-source_file = package.nls.json
+[tds-vscode-brodao.tds-vscode]
+file_filter = ../tds-vscode-import/tds-vscode/tds-vscode.<lang>.xlf
+source_file = ../tds-vscode-export/tds-vscode/tds-vscode.xlf
 source_lang = en
-type = KEYVALUEJSON
+type = XLIFF
 
-[tds-vscode-brodao.nls_bundle_json]
-file_filter = tds-vscode-translations/nls.bundle.<lang>.json
-source_file = tds-vscode-translations/nls.bundle.json
-source_lang = en
-type = KEYVALUEJSON
-
-tx config mapping-bulk -p tds-vscode-brodao --source-language en --type KEYVALUEJSON --source-file-dir './out' -f '.bundle.json' -d locale -i pt_PT --expression 'tds-vscode-translations/{filepath}/{filename}.<lang>.{extension}'

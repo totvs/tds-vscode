@@ -576,10 +576,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
         <MaterialTable
           localization={{
             pagination: {
-              labelDisplayedRows: i18n._localize(
-                "FROM_TO_OF_COUNT",
-                "{from}-{to} de {count}"
-              ),
+              labelDisplayedRows: "{from}-{to}/{count}",
               labelRowsSelect: i18n._localize("CONNECTIONS", "connections"),
               labelRowsPerPage: i18n._localize("LINES_PAGE.", "lines/p."),
               firstAriaLabel: i18n._localize("FIRST", "First"),
