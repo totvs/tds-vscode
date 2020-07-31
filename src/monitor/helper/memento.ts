@@ -1,27 +1,8 @@
 export interface IMemento {
   get: (property: any) => any;
   set: (property: any) => any;
-  reset: () => void;
-  save: (notifyCommand: any) => void;
-}
-
-function processKey(properties: any, parentKey: string = ""): string[] {
-  let result = [];
-  if (parentKey !== "") {
-    parentKey += ".";
-  }
-
-  for (const key in properties) {
-    const element = properties[key];
-
-    if (typeof element === "object") {
-      result.push(...processKey(element, parentKey + key));
-    } else {
-      result.push({ id: parentKey + key, value: element });
-    }
-  }
-
-  return result;
+  save: (reset?: boolean) => void;
+  reload: () => void;
 }
 
 function getValue(target: any, properties: any): any {
@@ -90,39 +71,6 @@ function update(target: any, properties: any): any {
   return target;
 }
 
-function doResetMemento(vscode: any, id: string) {
-  const state = vscode.getState(vscode);
-  state.removeItem(id);
-}
-
-function diff(obj1: any, obj2: any): any {
-  const result = {};
-
-  if (Object.is(obj1, obj2)) {
-    return undefined;
-  }
-
-  if (!obj2 || typeof obj2 !== "object") {
-    return obj2;
-  }
-
-  Object.keys(obj1 || {})
-    .concat(Object.keys(obj2 || {}))
-    .forEach((key) => {
-      if (obj2[key] !== obj1[key] && !Object.is(obj1[key], obj2[key])) {
-        result[key] = obj2[key];
-      }
-      if (typeof obj2[key] === "object" && typeof obj1[key] === "object") {
-        const value = diff(obj1[key], obj2[key]);
-        if (value !== undefined) {
-          result[key] = value;
-        }
-      }
-    });
-
-  return result;
-}
-
 function doLoadProperty(state: any, property: any, defaultValue: any): any {
   let value = getValue(property, state);
 
@@ -137,27 +85,12 @@ function doSaveProperty(state: any, propertySave: any): any {
   return mergeProperties([state, propertySave]);
 }
 
-function mountKey(properties: any): string[] {
-  let result;
-
-  for (const key in properties) {
-    const element = properties[key];
-
-    if (typeof element === "object") {
-      result = +mountKey(element) + ".";
-    } else {
-      result = +"" + element; //força transformação
-    }
-  }
-
-  return [result];
-}
-
 const mementoList: any = {};
 
 export function useMemento(
   vscode: any,
   id: string,
+  notifyCommand: any,
   defaultValues: any,
   initialValues: any = {}
 ): any {
@@ -174,9 +107,6 @@ export function useMemento(
 
       return doLoadProperty(state, property, defaultValues);
     },
-    reset: () => {
-      mementoList[id] = undefined;
-    },
     set: (property: any) => {
       let state = mementoList[id]["state"];
       let savedState = doSaveProperty(state, property);
@@ -185,16 +115,30 @@ export function useMemento(
 
       mementoList[id]["state"] = state;
     },
-    save: (notifyCommand: any) => {
+    save: (reset: boolean = false) => {
       let state = mementoList[id]["state"];
 
-      if (notifyCommand) {
-        let command: any = {
-          action: notifyCommand,
-          content: { key: id, state: state },
-        };
-        vscode.postMessage(command);
+      if (reset) {
+        state = {};
+        mementoList[id] = undefined;
       }
+
+      let command: any = {
+        action: notifyCommand,
+        content: { key: id, state: state, reload: reset },
+      };
+
+      vscode.postMessage(command);
+    },
+    reload: () => {
+      let state = mementoList[id]["state"];
+
+      let command: any = {
+        action: notifyCommand,
+        content: { key: id, state: state, reload: true },
+      };
+
+      vscode.postMessage(command);
     },
   };
 

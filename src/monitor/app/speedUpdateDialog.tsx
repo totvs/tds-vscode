@@ -59,7 +59,7 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
                   name="short"
                 />
               }
-              label={i18n._localize("SECONDS", "{0} seconds", 15)}
+              label={i18n.localize("SECONDS", "{0} seconds", 15)}
             />
           </FormGroup>
           <FormGroup row>
@@ -71,7 +71,7 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
                   name="normal"
                 />
               }
-              label={i18n._localize("SECONDS", "{0} seconds", 30)}
+              label={i18n.localize("SECONDS", "{0} seconds", 30)}
             />
           </FormGroup>
           <FormGroup row>
@@ -83,7 +83,7 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
                   name="long"
                 />
               }
-              label={i18n._localize("SECONDS", "{0} seconds", 60)}
+              label={i18n.localize("SECONDS", "{0} seconds", 60)}
             />
           </FormGroup>
           <FormGroup row>
@@ -95,7 +95,7 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
                   name="manual"
                 />
               }
-              label={i18n._localize("MANUAL", "Manual")}
+              label={i18n.localize("MANUAL", "Manual")}
             />
           </FormGroup>
         </DialogContentText>
@@ -105,14 +105,14 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
               handleClose(event, "ok");
             }}
           >
-            {i18n._localize("OK", "OK")}
+            {i18n.localize("OK", "OK")}
           </Button>
           <Button
             onClick={() => {
               handleClose(event, "cancel");
             }}
           >
-            {i18n._localize("CANCEL", "Cancel")}
+            {i18n.localize("CANCEL", "Cancel")}
           </Button>
         </DialogActions>
       </DialogContent>

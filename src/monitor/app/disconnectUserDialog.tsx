@@ -23,10 +23,10 @@ export interface DisconnectUserDialogProps {
 }
 
 const headCells: any[] = [
-  { field: "server", title:      i18n._localize("SERVER"     , "Server"),...cellDefaultStyle },
-  { field: "environment", title: i18n._localize("ENVIRONMENT", "Environment"),...cellDefaultStyle },
-  { field: "username", title:    i18n._localize("USER"       , "User"),...cellDefaultStyle },
-  { field: "remark", title:      i18n._localize("COMMENT"    , "Comment"),...cellDefaultStyle }
+  { field: "server", title:      i18n.localize("SERVER"     , "Server"),...cellDefaultStyle },
+  { field: "environment", title: i18n.localize("ENVIRONMENT", "Environment"),...cellDefaultStyle },
+  { field: "username", title:    i18n.localize("USER"       , "User"),...cellDefaultStyle },
+  { field: "remark", title:      i18n.localize("COMMENT"    , "Comment"),...cellDefaultStyle }
 ];
 
 export default function DisconnectUserDialog(
@@ -55,7 +55,7 @@ export default function DisconnectUserDialog(
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="warning">
-            {i18n._localize("WARN_CONNECTION_TERMINATED", "The users listed below will have their connections terminated.")}
+            {i18n.localize("WARN_CONNECTION_TERMINATED", "The users listed below will have their connections terminated.")}
           </Alert>
           <FormControlLabel
             control={
@@ -65,7 +65,7 @@ export default function DisconnectUserDialog(
                 value="checked"
               />
             }
-            label={i18n._localize("TERMINATE_CONNECTIONS_IMMEDIATELY", "Terminate connections immediately.")}
+            label={i18n.localize("TERMINATE_CONNECTIONS_IMMEDIATELY", "Terminate connections immediately.")}
           />
           <Paper>
             <MaterialTable
@@ -85,14 +85,14 @@ export default function DisconnectUserDialog(
               handleClose(event, "OK");
             }}
           >
-            {i18n._localize("OK", "OK")}
+            {i18n.localize("OK", "OK")}
           </Button>
           <Button
             onClick={() => {
               handleClose(event, "cancel");
             }}
           >
-            {i18n._localize("CANCEL", "Cancel")}
+            {i18n.localize("CANCEL", "Cancel")}
           </Button>
         </DialogActions>
       </DialogContent>

@@ -56,10 +56,10 @@ export const propSpeed = (value: number = undefined) => {
 };
 
 const speedText = {
-  0: i18n._localize("MANUAL", "(manual)"),
-  15: i18n._localize("SHORT", "(short)"),
-  30: i18n._localize("NORMAL", "(normal)"),
-  60: i18n._localize("LONG", "(long)"),
+  0: i18n.localize("MANUAL", "(manual)"),
+  15: i18n.localize("SHORT", "(short)"),
+  30: i18n.localize("NORMAL", "(normal)"),
+  60: i18n.localize("LONG", "(long)"),
 };
 
 export const propSpeedText = (value: number): string => {
@@ -169,44 +169,48 @@ export const propColumns = (extraProps?: any): any => {
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
       overflow: "hidden",
-      maxWidth: 300
-    }
+      maxWidth: 300,
+    },
   };
 
   return {
     columns: [
-      fieldDef("server", i18n._localize("SERVER", "Server"), extraProps),
-      fieldDef("appUser", i18n._localize("USER_NAME", "User Name"), extraProps),
+      fieldDef("server", i18n.localize("SERVER", "Server"), extraProps),
+      fieldDef("appUser", i18n.localize("USER_NAME", "User Name"), extraProps),
       fieldDef(
         "environment",
-        i18n._localize("ENVIRONMENT", "Environment"),
+        i18n.localize("ENVIRONMENT", "Environment"),
         extraProps
       ),
       fieldDef(
         "computerName",
-        i18n._localize("COMPUTER_NAME", "Computer Name"),
+        i18n.localize("COMPUTER_NAME", "Computer Name"),
         extraProps
       ),
-      fieldDef("threadId", i18n._localize("THREAD", "Thread ID"), {
+      fieldDef("threadId", i18n.localize("THREAD", "Thread ID"), {
         type: "numeric",
         ...extraProps,
         render: (row: any) => doFormatNumber(row["threadId"]),
       }),
-      fieldDef("mainName", i18n._localize("PROGRAM", "Program"), extraProps),
-      fieldDef("loginTime", i18n._localize("CONNECTION", "Connection"), extraProps),
+      fieldDef("mainName", i18n.localize("PROGRAM", "Program"), extraProps),
+      fieldDef(
+        "loginTime",
+        i18n.localize("CONNECTION", "Connection"),
+        extraProps
+      ),
       fieldDef(
         "elapsedTime",
-        i18n._localize("ELAPSED_TIME", "Elapsed time"),
+        i18n.localize("ELAPSED_TIME", "Elapsed time"),
         extraProps
       ),
       fieldDef(
         "inactiveTime",
-        i18n._localize("INACTIVITY_TIME ", "Idle time"),
+        i18n.localize("INACTIVITY_TIME ", "Idle time"),
         extraProps
       ),
       fieldDef(
         "totalInstrCount",
-        i18n._localize("TOTAL_INSTRUCTIONS ", "Instructions"),
+        i18n.localize("TOTAL_INSTRUCTIONS ", "Instructions"),
         {
           type: "numeric",
           ...extraProps,
@@ -215,7 +219,7 @@ export const propColumns = (extraProps?: any): any => {
       ),
       fieldDef(
         "instrCountPerSec",
-        i18n._localize("INSTRUCTIONS_SEG ", "Instructions/sec"),
+        i18n.localize("INSTRUCTIONS_SEG ", "Instructions/sec"),
         {
           type: "numeric",
           ...extraProps,
@@ -226,37 +230,37 @@ export const propColumns = (extraProps?: any): any => {
             }),
         }
       ),
-      fieldDef("remark", i18n._localize("COMMENT", "Comment"), {
-        ...remarkProps
+      fieldDef("remark", i18n.localize("COMMENT", "Comment"), {
+        ...remarkProps,
       }),
-      fieldDef("memUsed", i18n._localize("MEMORY_USE ", "Memory in Use"), {
+      fieldDef("memUsed", i18n.localize("MEMORY_USE ", "Memory in Use"), {
         type: "numeric",
         ...extraProps,
         render: (row: any) => doFormatNumber(row["memUsed"]),
       }),
-      fieldDef("sid", i18n._localize("SID", "SID"), {
+      fieldDef("sid", i18n.localize("SID", "SID"), {
         type: "numeric",
         ...extraProps,
         render: (row: any) => doFormatNumber(row["sid"]),
       }),
-      fieldDef("ctreeTaskId", i18n._localize("CTREE_ID", "CTree ID"), {
+      fieldDef("ctreeTaskId", i18n.localize("CTREE_ID", "CTree ID"), {
         type: "numeric",
         ...extraProps,
         render: (row: any) => doFormatNumber(row["ctreeTaskId"]),
       }),
       fieldDef(
         "clientType",
-        i18n._localize("CONNECTION_TYPE ", "Connection Type"),
+        i18n.localize("CONNECTION_TYPE ", "Connection Type"),
         extraProps
       ),
     ],
   };
 };
 
-export const DEFAULT_TABLE = mergeProperties([
+export const DEFAULT_TABLE = () => mergeProperties([
   propColumns({ ...cellDefaultStyle }),
   propPageSize(10),
   propGrouping(false),
   propFiltering(false),
-  propSpeed(30), //0=manual, 15=fast, 30=normal, 60=slow
+  propSpeed(30) //0=manual, 15=fast, 30=normal, 60=slow
 ]);

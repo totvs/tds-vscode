@@ -13,7 +13,7 @@ class I18n {
     this._translations = value || {};
   }
 
-  public _localize (key: string, message: string, ...args: (string | number | boolean | undefined | null)[]): string {
+  public localize (key: string, message: string, ...args: (string | number | boolean | undefined | null)[]): string {
     let result = message;
 
     if (this._translations.hasOwnProperty(key)) {

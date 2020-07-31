@@ -16,7 +16,6 @@ const vscode = window.acquireVsCodeApi();
 const memento = window.initialData.memento;
 const translations = window.initialData.translations;
 
-console.log(translations);
 i18n.translations = translations;
 
 ReactDOM.render(

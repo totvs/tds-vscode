@@ -33,7 +33,7 @@ export default function LockServerDialog(props: LockServerDialogProps) {
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="warning">
-            {i18n._localize("WARNING_BLOCKING_CONNECTIONS", "When confirming the blocking of new connections, no user can connect to that server.")}
+            {i18n.localize("WARNING_BLOCKING_CONNECTIONS", "When confirming the blocking of new connections, no user can connect to that server.")}
           </Alert>
         </DialogContentText>
         <DialogActions>
@@ -42,14 +42,14 @@ export default function LockServerDialog(props: LockServerDialogProps) {
               handleClose(event, "OK");
             }}
           >
-            {i18n._localize("OK", "OK")}
+            {i18n.localize("OK", "OK")}
           </Button>
           <Button
             onClick={() => {
               handleClose(event, "cancel");
             }}
           >
-            {i18n._localize("CANCEL", "Cancel")}
+            {i18n.localize("CANCEL", "Cancel")}
           </Button>
         </DialogActions>
       </DialogContent>

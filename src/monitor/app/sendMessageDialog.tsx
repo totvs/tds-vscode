@@ -22,10 +22,10 @@ export interface SendMessageDialogProps {
 
 
 const headCells: any[] = [
-  { field: "server", title: i18n._localize("SERVER", "Server"), ...cellDefaultStyle },
-  { field: "environment", title: i18n._localize("ENVIRONEMNT", "Environment"), ...cellDefaultStyle },
-  { field: "username", title: i18n._localize("USER", "User"), ...cellDefaultStyle },
-  { field: "remark", title: i18n._localize("REMARKS", "Remarks"), ...cellDefaultStyle }
+  { field: "server", title: i18n.localize("SERVER", "Server"), ...cellDefaultStyle },
+  { field: "environment", title: i18n.localize("ENVIRONEMNT", "Environment"), ...cellDefaultStyle },
+  { field: "username", title: i18n.localize("USER", "User"), ...cellDefaultStyle },
+  { field: "remark", title: i18n.localize("REMARKS", "Remarks"), ...cellDefaultStyle }
 ];
 
 export default function SendMessageDialog(props: SendMessageDialogProps) {
@@ -61,7 +61,7 @@ export default function SendMessageDialog(props: SendMessageDialogProps) {
           <TextField
             inputRef={messageRef}
             required
-            label={i18n._localize("MESSAGE_TEXT", "Message Text")}
+            label={i18n.localize("MESSAGE_TEXT", "Message Text")}
             defaultValue=""
             variant="outlined"
             multiline
@@ -87,14 +87,14 @@ export default function SendMessageDialog(props: SendMessageDialogProps) {
               handleClose(event, "send");
             }}
           >
-            {i18n._localize("SEND", "Submit")}
+            {i18n.localize("SEND", "Submit")}
           </Button>
           <Button
             onClick={() => {
               handleClose(event, "cancel");
             }}
           >
-            {i18n._localize("CANCEL", "Cancel")}
+            {i18n.localize("CANCEL", "Cancel")}
           </Button>
         </DialogActions>
       </DialogContent>

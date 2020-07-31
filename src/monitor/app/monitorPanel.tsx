@@ -1,16 +1,11 @@
 import * as React from "react";
-import MaterialTable, {
-  Column,
-  Filter,
-  Query,
-  MTableToolbar,
-  MTableCell,
-} from "material-table";
+import MaterialTable, { Column } from "material-table";
 import {
   createStyles,
   lighten,
   makeStyles,
   Theme,
+  ServerStyleSheets,
 } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import {
@@ -36,20 +31,18 @@ import UnlockServerDialog from "./unlockServerDialog";
 import DisconnectUserDialog from "./disconnectUserDialog";
 import SpeedUpdateDialogDialog from "./speedUpdateDialog";
 import MonitorTheme from "../helper/theme";
-import { useMemento, IMemento, mergeProperties } from "../helper";
+import { useMemento, IMemento } from "../helper";
 import {
-  propGrouping,
   propPageSize,
-  propFiltering,
   DEFAULT_TABLE,
   propColumnHidden,
   propColumns,
-  propSpeed,
   propSpeedText,
   propOrderBy,
   propOrderDirection,
   propColumnMove,
   propColumnsOrder,
+  propSpeed,
 } from "./monitorPanelMemento";
 import { i18n } from "../helper";
 import RemarkDialog from "./remarkDialog";
@@ -117,30 +110,21 @@ function Title(props: ITitleProps) {
 }
 
 function buildColumns(memento: IMemento): [] {
-  let columns = propColumns({ ...cellDefaultStyle }).columns; //memento.get(propColumns({ ...cellDefaultStyle })).columns;
+  const columns = propColumns({ ...cellDefaultStyle }).columns;
   const orderBy = memento.get(propOrderBy()) || -1;
 
   for (let index = 0; index < columns.length; index++) {
-    let element = columns[index];
-
-    const value = memento.get(propColumnHidden(element.field));
+    const value = memento.get(propColumnHidden(columns[index].field));
 
     if (value !== undefined) {
-      element = {
-        ...element,
-        hidden: value,
-      };
+      columns[index]["hiddenByColumnsButton"] = value;
+      columns[index]["hidden"] = value;
     }
 
     if (orderBy === index) {
-      element = {
-        ...element,
-        sorting: true,
-        defaultSort: memento.get(propOrderDirection()),
-      };
+      columns[index]["sorting"] = true;
+      columns[index]["defaultSort"] = memento.get(propOrderDirection());
     }
-
-    columns[index] = element;
   }
 
   const columnsOrder: string[] = memento.get(propColumnsOrder());
@@ -150,6 +134,7 @@ function buildColumns(memento: IMemento): [] {
 
   return columns;
 }
+
 let memento: IMemento = undefined;
 
 const isAnyDialogOpen = (openDialog: any): boolean => {
@@ -165,24 +150,24 @@ const isAnyDialogOpen = (openDialog: any): boolean => {
 };
 
 export default function MonitorPanel(props: IMonitorPanel) {
-  //if (memento === undefined) {
-  memento = useMemento(props.vscode, DEFAULT_TABLE, props.memento);
-  //}
+  memento = useMemento(
+    props.vscode,
+    "MONITOR_PANEL",
+    MonitorPanelAction.DoUpdateState,
+    DEFAULT_TABLE(),
+    props.memento
+  );
 
-  // const [pageSize, setPageSize] = React.useState(memento.get(propPageSize()));
   // const [grouping, setGrouping] = React.useState(memento.get(propGrouping()));
   // const [filtering, setFiltering] = React.useState(
   //   memento.get(propFiltering())
   // );
   const [selected, setSelected] = React.useState<IConnectionData[]>([]);
-  const [speed, setSpeed] = React.useState(30); //memento.get(propSpeed()));
+  const [speed, setSpeed] = React.useState(memento.get(propSpeed()));
   const [rows, setRows] = React.useState([]);
   const [subtitle, setSubtitle] = React.useState();
   const [locked, setLocked] = React.useState(true);
-  const [isLoading, setLoading] = React.useState(true);
-  const [columns, setColumns] = React.useState(buildColumns(memento));
-  //const monitorTable = React.useRef();
-  const [pageSize, setPageSize] = React.useState(50);
+  const [pageSize, setPageSize] = React.useState(memento.get(propPageSize()));
   const [grouping, setGrouping] = React.useState(false);
   const [filtering, setFiltering] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState({
@@ -195,6 +180,8 @@ export default function MonitorPanel(props: IMonitorPanel) {
     remark: false,
     remarkToShow: "",
   });
+  const [columns] = React.useState(buildColumns(memento));
+  const [reset, setReset] = React.useState(false);
 
   React.useEffect(() => {
     let command: IMonitorPanelAction = {
@@ -203,14 +190,13 @@ export default function MonitorPanel(props: IMonitorPanel) {
     };
 
     props.vscode.postMessage(command);
-
-    //   memento.set(propGrouping(grouping));
-    //   memento.set(propPageSize(pageSize));
-    //   memento.set(propFiltering(filtering));
-    //   memento.set(propSpeed(speed));
-    //   memento.save(props.vscode, MonitorPanelAction.DoUpdateState);
   }, [openDialog]);
 
+  React.useEffect(() => {
+    if (reset) {
+      memento.save(true);
+    }
+  }, [reset]);
 
   const [targetRow, setTargetRow] = React.useState(null);
 
@@ -219,12 +205,12 @@ export default function MonitorPanel(props: IMonitorPanel) {
       const message = event.data; // The JSON data our extension sent
 
       switch (message.command) {
-        case MonitorPanelAction.DoUpdateState: {
-          memento.reset();
-          break;
-        }
         case MonitorPanelAction.SetSpeedUpdate: {
-          setSpeed(message.data);
+          const speed = message.data;
+
+          memento.set(propSpeed(speed));
+          memento.save();
+          setSpeed(speed);
 
           break;
         }
@@ -235,7 +221,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
         }
         case MonitorPanelAction.UpdateUsers: {
           const result = message.data.users as IMonitorUser[];
-          setLoading(false);
           setRows(result);
           setSubtitle(message.data.serverName);
           break;
@@ -269,8 +254,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   const handleResetButtonClick = () => {
     event.preventDefault();
-
-    //_memento.reset();
+    setReset(true);
   };
 
   const handleLockButtonClick = (
@@ -426,7 +410,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   const doColumnHidden = (column: Column<any>, hidden: boolean) => {
     memento.set(propColumnHidden(column.field as string, hidden));
-    //memento.save(MonitorPanelAction.DoUpdateState);
+    memento.save();
   };
 
   const doGroupRemoved = (column: Column<any>, index: boolean) => {
@@ -452,6 +436,8 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   const doChangeRowsPerPage = (value: number) => {
     setPageSize(value);
+    memento.set(propPageSize(value));
+    memento.save();
   };
 
   const doClickRow = (event: React.MouseEvent, rowData: any) => {
@@ -471,14 +457,14 @@ export default function MonitorPanel(props: IMonitorPanel) {
   if (!locked) {
     actions.push({
       icon: () => <LockIcon />,
-      tooltip: i18n._localize("LOCK_SERVER", "Lock server"),
+      tooltip: i18n.localize("LOCK_SERVER", "Lock server"),
       isFreeAction: true,
       onClick: (event: any) => handleLockButtonClick(event),
     });
   } else {
     actions.push({
       icon: () => <LockOpenIcon />,
-      tooltip: i18n._localize("UNLOCK_SERVER", "Unlock server"),
+      tooltip: i18n.localize("UNLOCK_SERVER", "Unlock server"),
       isFreeAction: true,
       onClick: (event: any) => handleUnlockButtonClick(event),
     });
@@ -486,14 +472,17 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   actions.push({
     icon: () => <MessageIcon />,
-    tooltip: i18n._localize("SEND_MESSAGE_ALL_USERS", "Send message to all users"),
+    tooltip: i18n.localize(
+      "SEND_MESSAGE_ALL_USERS",
+      "Send message to all users"
+    ),
     isFreeAction: true,
     onClick: (event: any) => handleSendMessageButtonClick(event, null),
   });
 
   actions.push({
     icon: () => <MessageIcon />,
-    tooltip: i18n._localize(
+    tooltip: i18n.localize(
       "SEND_MESSAGE_SELECTED_USERS",
       "Send message to selected users"
     ),
@@ -503,28 +492,31 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   actions.push({
     icon: () => <DisconnectIcon />,
-    tooltip: i18n._localize("DISCONNECT_ALL_USERS", "Disconnect all users"),
+    tooltip: i18n.localize("DISCONNECT_ALL_USERS", "Disconnect all users"),
     isFreeAction: true,
     onClick: (event: any) => handleDisconnectUserButtonClick(event, null),
   });
 
   actions.push({
     icon: () => <DisconnectIcon />,
-    tooltip: i18n._localize("DISCONNECT_SELECTD_USERS", "Disconnect selectd users"),
+    tooltip: i18n.localize(
+      "DISCONNECT_SELECTD_USERS",
+      "Disconnect selectd users"
+    ),
     isFreeAction: false,
     onClick: (event: any) => handleDisconnectUserButtonClick(event, rows),
   });
 
   actions.push({
     icon: () => <StopIcon />,
-    tooltip: i18n._localize("STOP_SERVER", "Stop server"),
+    tooltip: i18n.localize("STOP_SERVER", "Stop server"),
     isFreeAction: true,
     onClick: (event: any) => handleStopButtonClick(event),
   });
 
   actions.push({
     icon: () => <GroupingIcon />,
-    tooltip: i18n._localize("GROUPING_ON_OFF", "Grouping on/off"),
+    tooltip: i18n.localize("GROUPING_ON_OFF", "Grouping on/off"),
     isFreeAction: true,
     onClick: () => {
       setGrouping(!grouping);
@@ -533,7 +525,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   actions.push({
     icon: () => <FilterList />,
-    tooltip: i18n._localize("FILTERING_ON_OFF", "Filtering on/off"),
+    tooltip: i18n.localize("FILTERING_ON_OFF", "Filtering on/off"),
     isFreeAction: true,
     onClick: () => {
       setFiltering(!filtering);
@@ -542,24 +534,28 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   actions.push({
     icon: () => <SpeedIcon />,
-    tooltip: i18n._localize("UPDATE_SPEED", "Update speed {0}", propSpeedText(speed)),
+    tooltip: i18n.localize(
+      "UPDATE_SPEED",
+      "Update speed {0}",
+      propSpeedText(speed)
+    ),
     isFreeAction: true,
     onClick: () => handleSpeedButtonClick(),
   });
 
   actions.push({
     icon: () => <RefreshIcon />,
-    tooltip: i18n._localize("REFRESH_DATA", "Refresh data"),
+    tooltip: i18n.localize("REFRESH_DATA", "Refresh data"),
     isFreeAction: true,
     onClick: () => handleRefreshButtonClick(),
   });
 
-  // actions.push({
-  //   icon: () => <FormatClearIcon />,
-  //   tooltip: i18n._localize("RESET_CONFIGURATIONS", "Reset configurations"),
-  //   isFreeAction: true,
-  //   onClick: () => handleResetButtonClick(),
-  // });
+  actions.push({
+    icon: () => <FormatClearIcon />,
+    tooltip: i18n.localize("RESET_CONFIGURATIONS", "Reset configurations"),
+    isFreeAction: true,
+    onClick: () => handleResetButtonClick(),
+  });
 
   // // other props
   // components={{
@@ -577,59 +573,59 @@ export default function MonitorPanel(props: IMonitorPanel) {
           localization={{
             pagination: {
               labelDisplayedRows: "{from}-{to}/{count}",
-              labelRowsSelect: i18n._localize("CONNECTIONS", "connections"),
-              labelRowsPerPage: i18n._localize("LINES_PAGE.", "lines/p."),
-              firstAriaLabel: i18n._localize("FIRST", "First"),
-              firstTooltip: i18n._localize("FIRST_PAGE", "First page"),
-              previousAriaLabel: i18n._localize("PREVIOUS", "Previous"),
-              previousTooltip: i18n._localize("PREVIOUS_PAGE", "Previous page"),
-              nextAriaLabel: i18n._localize("NEXT", "Next"),
-              nextTooltip: i18n._localize("NEXT_PAGE", "Next page"),
-              lastAriaLabel: i18n._localize("LAST", "Last"),
-              lastTooltip: i18n._localize("LAST_PAGE", "Last page"),
+              labelRowsSelect: i18n.localize("CONNECTIONS", "connections"),
+              labelRowsPerPage: i18n.localize("LINES_PAGE.", "lines/p."),
+              firstAriaLabel: i18n.localize("FIRST", "First"),
+              firstTooltip: i18n.localize("FIRST_PAGE", "First page"),
+              previousAriaLabel: i18n.localize("PREVIOUS", "Previous"),
+              previousTooltip: i18n.localize("PREVIOUS_PAGE", "Previous page"),
+              nextAriaLabel: i18n.localize("NEXT", "Next"),
+              nextTooltip: i18n.localize("NEXT_PAGE", "Next page"),
+              lastAriaLabel: i18n.localize("LAST", "Last"),
+              lastTooltip: i18n.localize("LAST_PAGE", "Last page"),
             },
             toolbar: {
-              nRowsSelected: i18n._localize(
+              nRowsSelected: i18n.localize(
                 "CONNECTIONS_SELECTED",
                 "{0} connections selected"
               ),
-              showColumnsTitle: i18n._localize(
+              showColumnsTitle: i18n.localize(
                 "SHOW_HIDE_COLUMNS",
                 "Show/hide columns"
               ),
-              searchTooltip: i18n._localize(
+              searchTooltip: i18n.localize(
                 "SEARCH_ALL_COLUMNS",
                 "Search in all columns"
               ),
-              searchPlaceholder: i18n._localize("SEARCH", "Search"),
+              searchPlaceholder: i18n.localize("SEARCH", "Search"),
             },
             header: {
-              actions: i18n._localize("ACTIONS", "Actions"),
+              actions: i18n.localize("ACTIONS", "Actions"),
             },
             body: {
-              emptyDataSourceMessage: i18n._localize(
+              emptyDataSourceMessage: i18n.localize(
                 "NO_CONNECTIONS",
                 "There are no connections or they are not visible to the monitor."
               ),
               filterRow: {
-                filterTooltip: i18n._localize("FILTER", "Filter"),
+                filterTooltip: i18n.localize("FILTER", "Filter"),
               },
             },
             grouping: {
-              placeholder: i18n._localize("DRAG_HEADERS", "Drag headers ..."),
-              groupedBy: i18n._localize("GROUPED_BY", "Grouped by:"),
+              placeholder: i18n.localize("DRAG_HEADERS", "Drag headers ..."),
+              groupedBy: i18n.localize("GROUPED_BY", "Grouped by:"),
             },
           }}
           icons={monitorIcons.table}
-          columns={rows.length ?  columns: []}
+          columns={rows.length ? columns : []}
           data={rows}
           title={
             <Title
-              title={i18n._localize("MONITOR", "Monitor")}
+              title={i18n.localize("MONITOR", "Monitor")}
               subtitle={
                 subtitle
                   ? subtitle
-                  : i18n._localize("INITIALIZING", "(inicializando)")
+                  : i18n.localize("INITIALIZING", "(inicializando)")
               }
             />
           }

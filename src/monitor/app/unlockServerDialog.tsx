@@ -34,7 +34,7 @@ export default function UnlockServerDialog(props: UnlockServerDialogProps) {
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="info">
-            {i18n._localize(
+            {i18n.localize(
               "INFO_RELEASE_CONNECTION",
               "When confirming the release of new connections, users can connect to that server again."
             )}
@@ -46,14 +46,14 @@ export default function UnlockServerDialog(props: UnlockServerDialogProps) {
               handleClose(event, "OK");
             }}
           >
-            {i18n._localize("OK", "OK")}
+            {i18n.localize("OK", "OK")}
           </Button>
           <Button
             onClick={() => {
               handleClose(event, "cancel");
             }}
           >
-            {i18n._localize("CANCEL", "Cancel")}
+            {i18n.localize("CANCEL", "Cancel")}
           </Button>
         </DialogActions>
       </DialogContent>

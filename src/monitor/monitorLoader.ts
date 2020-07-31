@@ -24,6 +24,7 @@ import * as nls from "vscode-nls";
 
 const localize = nls.loadMessageBundle();
 const DEFAULT_SPEED = 30;
+const WS_STATE_KEY = "MONITOR_TABLE";
 
 let monitorLoader: MonitorLoader = undefined;
 
@@ -32,11 +33,9 @@ export function openMonitorView(context: vscode.ExtensionContext) {
 
   if (isNullOrUndefined(monitorLoader)) {
     monitorLoader = new MonitorLoader(context);
-    monitorLoader.toggleServerToMonitor(server);
-  } else {
-    monitorLoader.toggleServerToMonitor(server);
-    monitorLoader.reveal();
   }
+
+  monitorLoader.toggleServerToMonitor(server);
 }
 
 export class MonitorLoader {
@@ -127,12 +126,6 @@ export class MonitorLoader {
     });
 
     this.speed = DEFAULT_SPEED;
-  }
-
-  public reveal() {
-    if (!this._isDisposed) {
-      this._panel.reveal();
-    }
   }
 
   public set speed(v: number) {
@@ -384,17 +377,25 @@ export class MonitorLoader {
         break;
       }
       case MonitorPanelAction.DoUpdateState: {
-        const key = command.content.key;
         const state: any = command.content.state;
-        this._context.workspaceState.update(key, state);
+        const reload: boolean = command.content.reload;
+        const context = this._context;
 
-        this._panel.webview.postMessage({
-          command: MonitorPanelAction.DoUpdateState,
-          data: {
-            key: key,
-            state: state,
-          },
-        });
+        context.workspaceState.update(WS_STATE_KEY, state);
+
+        if (reload) {
+          this._panel.dispose();
+
+          context.workspaceState.update(WS_STATE_KEY, {});
+          openMonitorView(context);
+        }
+        // this._panel.webview.postMessage({
+        //   command: MonitorPanelAction.DoUpdateState,
+        //   data: {
+        //     key: key,
+        //     state: state,
+        //   },
+        // });
 
         break;
       }
@@ -568,7 +569,7 @@ export class MonitorLoader {
     const reactAppUri = this._panel?.webview.asWebviewUri(reactAppPathOnDisk);
     const configJson: any = {
       serverList: servers,
-      memento: {}, //this._context.workspaceState.get("monitorTable", {}),
+      memento: this._context.workspaceState.get(WS_STATE_KEY, {}),
       translations: getTranslations(),
     };
 
@@ -614,70 +615,102 @@ function updateScheduledUsers(monitor: MonitorLoader, scheduler: boolean) {
 }
 
 function getTranslations() {
-
   return {
-    "ACTIONS": localize("ACTIONS", "Actions"),
-    "ENVIRONMENT": localize("ENVIRONMENT", "Environment"),
-    "CANCEL": localize("CANCEL", "Cancel"),
-    "COMMENT": localize("COMMENT", "Comment"),
-    "COMPUTER_NAME": localize("COMPUTER_NAME", "Computer Name"),
-    "CONNECTION": localize("CONNECTION", "Connection" ),
-    "CONNECTIONS": localize("CONNECTIONS", "connections"),
-    "CONNECTIONS_SELECTED": localize("CONNECTIONS_SELECTED", "{0} connections selected"),
+    ACTIONS: localize("ACTIONS", "Actions"),
+    ENVIRONMENT: localize("ENVIRONMENT", "Environment"),
+    CANCEL: localize("CANCEL", "Cancel"),
+    COMMENT: localize("COMMENT", "Comment"),
+    COMPUTER_NAME: localize("COMPUTER_NAME", "Computer Name"),
+    CONNECTION: localize("CONNECTION", "Connection"),
+    CONNECTIONS: localize("CONNECTIONS", "connections"),
+    CONNECTIONS_SELECTED: localize(
+      "CONNECTIONS_SELECTED",
+      "{0} connections selected"
+    ),
     "CONNECTION_TYPE ": localize("CONNECTION_TYPE ", "Connection Type"),
-    "CTREE_ID": localize("CTREE_ID", "CTree ID"),
-    "DISCONNECT_ALL_USERS": localize("DISCONNECT_ALL_USERS", "Disconnect all users"),
-    "DISCONNECT_SELECTD_USERS": localize("DISCONNECT_SELECTD_USERS", "Disconnect selectd users"),
-    "DRAG_HEADERS": localize("DRAG_HEADERS", "Drag headers ..."),
-    "ELAPSED_TIME": localize("ELAPSED_TIME", "Elapsed time"),
-    "FILTER": localize("FILTER", "Filter"),
-    "FILTERING_ON_OFF": localize("FILTERING_ON_OFF", "Filtering on/off"),
-    "FIRST": localize("FIRST", "First"),
-    "FIRST_PAGE": localize("FIRST_PAGE", "First page"),
-    "FROM_TO_OF_COUNT": localize("FROM_TO_OF_COUNT", "from-to de count"),
-    "GROUPED_BY": localize("GROUPED_BY", "Grouped by:"),
-    "GROUPING_ON_OFF": localize("GROUPING_ON_OFF", "Grouping on/off"),
+    CTREE_ID: localize("CTREE_ID", "CTree ID"),
+    DISCONNECT_ALL_USERS: localize(
+      "DISCONNECT_ALL_USERS",
+      "Disconnect all users"
+    ),
+    DISCONNECT_SELECTD_USERS: localize(
+      "DISCONNECT_SELECTD_USERS",
+      "Disconnect selectd users"
+    ),
+    DRAG_HEADERS: localize("DRAG_HEADERS", "Drag headers ..."),
+    ELAPSED_TIME: localize("ELAPSED_TIME", "Elapsed time"),
+    FILTER: localize("FILTER", "Filter"),
+    FILTERING_ON_OFF: localize("FILTERING_ON_OFF", "Filtering on/off"),
+    FIRST: localize("FIRST", "First"),
+    FIRST_PAGE: localize("FIRST_PAGE", "First page"),
+    FROM_TO_OF_COUNT: localize("FROM_TO_OF_COUNT", "from-to de count"),
+    GROUPED_BY: localize("GROUPED_BY", "Grouped by:"),
+    GROUPING_ON_OFF: localize("GROUPING_ON_OFF", "Grouping on/off"),
     "INACTIVITY_TIME ": localize("INACTIVITY_TIME ", "Idle time"),
-    "INFO_RELEASE_CONNECTION": localize("INFO_RELEASE_CONNECTION", "When confirming the release of new connections, users can connect to that server again."),
+    INFO_RELEASE_CONNECTION: localize(
+      "INFO_RELEASE_CONNECTION",
+      "When confirming the release of new connections, users can connect to that server again."
+    ),
     "INSTRUCTIONS_SEG ": localize("INSTRUCTIONS_SEG ", "Instructions/sec"),
-    "LAST": localize("LAST", "Last"),
-    "LAST_PAGE": localize("LAST_PAGE", "Last page"),
+    LAST: localize("LAST", "Last"),
+    LAST_PAGE: localize("LAST_PAGE", "Last page"),
     "LINES_PAGE.": localize("LINES_PAGE.", "lines/p."),
-    "LOCK_SERVER": localize("LOCK_SERVER", "Lock server"),
-    "LONG": localize("LONG", "(long)"),
-    "MANUAL": localize("MANUAL", "(manual)"),
-    "MEMORY_USE": localize("MEMORY_USE", "Memory in Use"),
-    "MESSAGE_TEXT": localize("MESSAGE_TEXT", "Message Text"),
-    "NEXT": localize("NEXT", "Next"),
-    "NEXT_PAGE": localize("NEXT_PAGE", "Next page"),
-    "NORMAL": localize("NORMAL", "(normal)"),
-    "NO_CONNECTIONS": localize("NO_CONNECTIONS", "There are no connections or they are not visible to the monitor."),
-    "OK": localize("OK", "OK"),
-    "PREVIOUS": localize("PREVIOUS", "Previous"),
-    "PREVIOUS_PAGE": localize("PREVIOUS_PAGE", "Previous page"),
-    "PROGRAM": localize("PROGRAM", "Program"),
-    "REFRESH_DATA": localize("REFRESH_DATA", "Refresh data"),
-    "REMARKS": localize("REMARKS", "Remarks"),
-    "RESET_CONFIGURATIONS": localize("RESET_CONFIGURATIONS", "Reset configurations"),
-    "SEARCH": localize("SEARCH", "Search"),
-    "SEARCH_ALL_COLUMNS": localize("SEARCH_ALL_COLUMNS", "Search in all columns"),
-    "SEND": localize("SEND", "Submit"),
-    "SEND_MESSAGE_ALL_USERS": localize("SEND_MESSAGE_ALL_USERS", "Send message to all users"),
-    "SEND_MESSAGE_SELECTED_USERS": localize("SEND_MESSAGE_SELECTED_USERS", "Send message to selected users"),
-    "SERVER": localize("SERVER", "Server"),
-    "SHORT": localize("SHORT", "(short)"),
-    "SHOW_HIDE_COLUMNS": localize("SHOW_HIDE_COLUMNS", "Show/hide columns"),
-    "SID": localize("SID", "SID"),
-    "STOP_SERVER": localize("STOP_SERVER", "Stop server"),
-    "THREAD": localize("THREAD", "Thread ID"),
+    LOCK_SERVER: localize("LOCK_SERVER", "Lock server"),
+    LONG: localize("LONG", "(long)"),
+    MANUAL: localize("MANUAL", "(manual)"),
+    MEMORY_USE: localize("MEMORY_USE", "Memory in Use"),
+    MESSAGE_TEXT: localize("MESSAGE_TEXT", "Message Text"),
+    NEXT: localize("NEXT", "Next"),
+    NEXT_PAGE: localize("NEXT_PAGE", "Next page"),
+    NORMAL: localize("NORMAL", "(normal)"),
+    NO_CONNECTIONS: localize(
+      "NO_CONNECTIONS",
+      "There are no connections or they are not visible to the monitor."
+    ),
+    OK: localize("OK", "OK"),
+    PREVIOUS: localize("PREVIOUS", "Previous"),
+    PREVIOUS_PAGE: localize("PREVIOUS_PAGE", "Previous page"),
+    PROGRAM: localize("PROGRAM", "Program"),
+    REFRESH_DATA: localize("REFRESH_DATA", "Refresh data"),
+    REMARKS: localize("REMARKS", "Remarks"),
+    RESET_CONFIGURATIONS: localize(
+      "RESET_CONFIGURATIONS",
+      "Reset configurations"
+    ),
+    SEARCH: localize("SEARCH", "Search"),
+    SEARCH_ALL_COLUMNS: localize("SEARCH_ALL_COLUMNS", "Search in all columns"),
+    SEND: localize("SEND", "Submit"),
+    SEND_MESSAGE_ALL_USERS: localize(
+      "SEND_MESSAGE_ALL_USERS",
+      "Send message to all users"
+    ),
+    SEND_MESSAGE_SELECTED_USERS: localize(
+      "SEND_MESSAGE_SELECTED_USERS",
+      "Send message to selected users"
+    ),
+    SERVER: localize("SERVER", "Server"),
+    SHORT: localize("SHORT", "(short)"),
+    SHOW_HIDE_COLUMNS: localize("SHOW_HIDE_COLUMNS", "Show/hide columns"),
+    SID: localize("SID", "SID"),
+    STOP_SERVER: localize("STOP_SERVER", "Stop server"),
+    THREAD: localize("THREAD", "Thread ID"),
     "TOTAL_INSTRUCTIONS ": localize("TOTAL_INSTRUCTIONS ", "Instructions"),
-    "UNLOCK_SERVER": localize("UNLOCK_SERVER", "Unlock server"),
-    "UPDATE_SPEED": localize("UPDATE_SPEED", "Update speed {0}"),
-    "USER": localize("USER", "User"),
-    "USER_NAME": localize("USER_NAME", "User Name"),
-    "WARNING_BLOCKING_CONNECTIONS": localize("WARNING_BLOCKING_CONNECTIONS", "When confirming the blocking of new connections, no user can connect to that server."),
-    "WARN_ALL_CONNECTIONS_CLOSE_1": localize("WARN_ALL_CONNECTIONS_CLOSE_1", "When confirming the server stop, all connections (including this) will be closed, as well as other processes."),
-    "WARN_ALL_CONNECTIONS_CLOSE_2": localize("ERROR_ALL_CONNECTIONS_CLOSE_2", "Restarting will only be possible by physically accessing the server."),
-    "SECONDS": localize("SECONDS", "{0} seconds"),
+    UNLOCK_SERVER: localize("UNLOCK_SERVER", "Unlock server"),
+    UPDATE_SPEED: localize("UPDATE_SPEED", "Update speed {0}"),
+    USER: localize("USER", "User"),
+    USER_NAME: localize("USER_NAME", "User Name"),
+    WARNING_BLOCKING_CONNECTIONS: localize(
+      "WARNING_BLOCKING_CONNECTIONS",
+      "When confirming the blocking of new connections, no user can connect to that server."
+    ),
+    WARN_ALL_CONNECTIONS_CLOSE_1: localize(
+      "WARN_ALL_CONNECTIONS_CLOSE_1",
+      "When confirming the server stop, all connections (including this) will be closed, as well as other processes."
+    ),
+    WARN_ALL_CONNECTIONS_CLOSE_2: localize(
+      "ERROR_ALL_CONNECTIONS_CLOSE_2",
+      "Restarting will only be possible by physically accessing the server."
+    ),
+    SECONDS: localize("SECONDS", "{0} seconds"),
   };
 }

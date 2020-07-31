@@ -24,6 +24,7 @@ export default function RemarkDialog(props: RemarkDialogProps) {
   };
 
   const lines = remark.split(/   |\n/);
+  let cnt: number = 0;
 
   return (
     <Dialog
@@ -37,7 +38,7 @@ export default function RemarkDialog(props: RemarkDialogProps) {
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="info">
-            {lines.map((line: string) => <Typography>{line}</Typography>)}
+            {lines.map((line: string) => <Typography key={"LINE"+(cnt++)}>{line}</Typography>)}
           </Alert>
         </DialogContentText>
         <DialogActions>
@@ -46,7 +47,7 @@ export default function RemarkDialog(props: RemarkDialogProps) {
               handleClose(event, "OK");
             }}
           >
-            {i18n._localize("OK", "OK")}
+            {i18n.localize("OK", "OK")}
           </Button>
         </DialogActions>
       </DialogContent>

@@ -34,10 +34,10 @@ export default function StopServerDialog(props: StopServerDialogProps) {
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="error">
-            <Typography>{i18n._localize("WARN_ALL_CONNECTIONS_CLOSE_1",
+            <Typography>{i18n.localize("WARN_ALL_CONNECTIONS_CLOSE_1",
             "When confirming the server stop, all connections (including this) will be closed, as well as other processes.")}
             </Typography>
-            <Typography><strong>{i18n._localize("WARN_ALL_CONNECTIONS_CLOSE_2",
+            <Typography><strong>{i18n.localize("WARN_ALL_CONNECTIONS_CLOSE_2",
             "Restarting will only be possible by physically accessing the server.")}</strong>
             </Typography>
           </Alert>
@@ -48,14 +48,14 @@ export default function StopServerDialog(props: StopServerDialogProps) {
               handleClose(event, "ok");
             }}
           >
-            {i18n._localize("OK", "OK")}
+            {i18n.localize("OK", "OK")}
           </Button>
           <Button
             onClick={() => {
               handleClose(event, "cancel");
             }}
           >
-            {i18n._localize("CANCEL", "Cancel")}
+            {i18n.localize("CANCEL", "Cancel")}
           </Button>
         </DialogActions>
       </DialogContent>
