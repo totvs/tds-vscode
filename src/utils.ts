@@ -4,10 +4,12 @@ import * as fs from "fs";
 import * as stripJsonComments from "strip-json-comments";
 import * as cheerio from "cheerio";
 import * as ini from "ini";
-import { languageClient, localize } from "./extension";
+import * as nls from "vscode-nls";
+import { languageClient } from "./extension";
 import { EnvSection, ServerItem } from "./serverItemProvider";
 
 const homedir = require("os").homedir();
+const localize = nls.loadMessageBundle();
 
 export enum MESSAGETYPE {
   /**
@@ -69,31 +71,31 @@ export default class Utils {
     );
   }
 
-	/**
-	 * Pegar o arquivo servers.json da .vscode (workspace)?
-	 */
-	static workspaceServerConfig() {
-		let config = vscode.workspace.getConfiguration('totvsLanguageServer');
-		return config.get('workspaceServerConfig');
-	}
+  /**
+   * Pegar o arquivo servers.json da .vscode (workspace)?
+   */
+  static workspaceServerConfig() {
+    let config = vscode.workspace.getConfiguration("totvsLanguageServer");
+    return config.get("workspaceServerConfig");
+  }
 
-	/**
-	 * Retorna o path completo do servers.json
-	 */
-	static getServerConfigFile() {
-		return (
-			this.workspaceServerConfig() ? path.join(this.getVSCodePath(), "servers.json") : homedir + "/.totvsls/servers.json"
-		);
-	}
+  /**
+   * Retorna o path completo do servers.json
+   */
+  static getServerConfigFile() {
+    return this.workspaceServerConfig()
+      ? path.join(this.getVSCodePath(), "servers.json")
+      : homedir + "/.totvsls/servers.json";
+  }
 
-	/**
-	 * Retorna o path de onde deve ficar o servers.json
-	 */
-	static getServerConfigPath() {
-		return (
-			this.workspaceServerConfig() ? this.getVSCodePath() : homedir + "/.totvsls"
-		);
-	}
+  /**
+   * Retorna o path de onde deve ficar o servers.json
+   */
+  static getServerConfigPath() {
+    return this.workspaceServerConfig()
+      ? this.getVSCodePath()
+      : homedir + "/.totvsls";
+  }
 
   /**
    * Retorna o path completo do launch.json
@@ -119,7 +121,7 @@ export default class Utils {
   static getServersConfig() {
     let config: any = {};
     let serversJson = Utils.getServerConfigFile();
-    if(!fs.existsSync(serversJson)) {
+    if (!fs.existsSync(serversJson)) {
       Utils.initializeServerConfigFile(serversJson);
     }
     let json = fs.readFileSync(serversJson).toString();
@@ -127,7 +129,9 @@ export default class Utils {
     if (json) {
       try {
         config = JSON.parse(stripJsonComments(json));
-      } catch (e) {}
+      } catch (e) {
+        config = sampleServer();
+      }
     }
 
     //garante a existencia da sessão
@@ -137,10 +141,13 @@ export default class Utils {
 
     //compatibilização com arquivos gravados com versão da extensão
     //anterior a 26/06/20
-    if (config.hasOwnProperty("lastConnectedServer") && typeof config.lastConnectedServer !== "string") {
-        if (config.lastConnectedServer.hasOwnProperty("id")) {
-          config.lastConnectedServer = config.lastConnectedServer.id;
-        }
+    if (
+      config.hasOwnProperty("lastConnectedServer") &&
+      typeof config.lastConnectedServer !== "string"
+    ) {
+      if (config.lastConnectedServer.hasOwnProperty("id")) {
+        config.lastConnectedServer = config.lastConnectedServer.id;
+      }
     }
 
     return config;
@@ -195,11 +202,13 @@ export default class Utils {
     let token = undefined;
 
     if (servers.savedTokens) {
-      token = servers.savedTokens.filter((element) => {
-        return (element[0] === id + ":" + environment);
-      }).map((element) => {
-        return element[1]["token"];
-      });
+      token = servers.savedTokens
+        .filter((element) => {
+          return element[0] === id + ":" + environment;
+        })
+        .map((element) => {
+          return element[1]["token"];
+        });
       if (token) {
         token = token[0];
       }
@@ -298,7 +307,6 @@ export default class Utils {
     }
   }
 
-
   /**
    * Deleta o servidor logado por ultimo do servers.json
    */
@@ -396,7 +404,7 @@ export default class Utils {
     Utils.createServerConfig();
     let serverConfig = Utils.getServersConfig();
 
-    if(!serverConfig || !serverConfig.configurations) {
+    if (!serverConfig || !serverConfig.configurations) {
       let serversJson = Utils.getServerConfigFile();
       Utils.initializeServerConfigFile(serversJson);
       serverConfig = Utils.getServersConfig();
@@ -564,17 +572,8 @@ export default class Utils {
   }
 
   static initializeServerConfigFile(serversJson) {
-    const sampleServer = {
-      version: "0.2.0",
-      includes: [""],
-      permissions: {
-        authorizationtoken: "",
-      },
-      connectedServer: {},
-      configurations: [],
-    };
     try {
-      fs.writeFileSync(serversJson, JSON.stringify(sampleServer, null, "\t"));
+      fs.writeFileSync(serversJson, JSON.stringify(sampleServer(), null, "\t"));
     } catch (err) {
       console.error(err);
     }
@@ -1023,6 +1022,20 @@ export default class Utils {
       });
     }
   }
+}
+
+function sampleServer(): any {
+  return {
+    version: "0.2.0",
+    includes: [""],
+    permissions: {
+      authorizationtoken: "",
+    },
+    connectedServer: {},
+    configurations: [],
+    savedTokens: [],
+    lastConnectedServer: "",
+  };
 }
 
 //TODO: pegar a lista de arquivos a ignorar da configuração

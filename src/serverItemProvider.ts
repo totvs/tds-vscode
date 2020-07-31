@@ -53,7 +53,7 @@ class ServerItemProvider
     if (this._connectedServerItem !== server) {
       this._connectedServerItem = server;
 
-      if (server == undefined) {
+      if (server === undefined) {
         Utils.clearConnectedServerConfig();
       }
 

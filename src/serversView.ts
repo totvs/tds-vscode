@@ -19,6 +19,7 @@ import {
   IAuthenticationInfo,
   sendReconnectRequest,
   IReconnectInfo,
+  ENABLE_CODE_PAGE,
 } from "./protocolMessages";
 
 let localize = nls.loadMessageBundle();
@@ -72,7 +73,7 @@ export class ServersExplorer {
       } else {
         currentPanel = vscode.window.createWebviewPanel(
           "totvs-developer-studio.add",
-          "Novo Servidor",
+          localize("tds.webview.newServer.title", "New Server"),
           vscode.ViewColumn.One,
           {
             enableScripts: true,
@@ -269,7 +270,7 @@ export class ServersExplorer {
                 }
               },
               (err: ResponseError<object>) => {
-				  serverProvider.connectedServerItem = undefined;
+                serverProvider.connectedServerItem = undefined;
                 handleError(err);
               }
             )
@@ -280,8 +281,8 @@ export class ServersExplorer {
               "tds.webview.serversView.alreadyConn",
               "Server is already disconnected"
             )
-			);
-			serverProvider.connectedServerItem = undefined;
+          );
+          serverProvider.connectedServerItem = undefined;
         }
       }
     );
@@ -454,9 +455,20 @@ export function authenticate(
   username: string,
   password: string
 ) {
+  const enconding: ENABLE_CODE_PAGE =
+    vscode.env.language === "ru"
+      ? ENABLE_CODE_PAGE.CP1251
+      : ENABLE_CODE_PAGE.CP1252;
+
   vscode.window.setStatusBarMessage(
     `Autenticando usuário [${username}] no servidor [${serverItem.name}]`,
-    sendAuthenticateRequest(serverItem, environment, username, password)
+    sendAuthenticateRequest(
+      serverItem,
+      environment,
+      username,
+      password,
+      enconding
+    )
       .then(
         (result: IAuthenticationInfo) => {
           let token: string = result.token;
@@ -556,7 +568,7 @@ export function updateStatusBarItem(
   } else {
     totvsStatusBarItem.text = localize(
       "tds.vscode.select_server_environment",
-      "[ Selecionar servidor/ambiente ]"
+      "Select server/environment"
     );
   }
 

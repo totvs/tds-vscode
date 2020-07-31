@@ -46,7 +46,7 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 			currentPanel.webview.onDidReceiveMessage(message => {
 				switch (message.command) {
 					case 'checkDir':
-						var checkedDir = Utils.checkDir(message.selectedDir);
+						let checkedDir = Utils.checkDir(message.selectedDir);
 						currentPanel.webview.postMessage({
 							command: "checkedDir",
 							checkedDir: checkedDir

@@ -33,7 +33,7 @@ export class InheritanceHierarchyProvider implements
 
     let collapseState = TreeItemCollapsibleState.None;
     if (element.numChildren > 0) {
-      if (element.children.length > 0 && element.name != kBaseName) {
+      if (element.children.length > 0 && element.name !== kBaseName) {
         collapseState = TreeItemCollapsibleState.Expanded;
       }
       else {
@@ -42,7 +42,7 @@ export class InheritanceHierarchyProvider implements
     }
 
     let label = element.name;
-    if (element.name != kBaseName && element.location) {
+    if (element.name !== kBaseName && element.location) {
       let path = parseUri(element.location.uri).path;
       let name = path.substr(path.lastIndexOf('/') + 1);
       label += ` (${name}:${element.location.range.start.line + 1})`;
@@ -68,7 +68,7 @@ export class InheritanceHierarchyProvider implements
     if (!element) {
       return [this.root];
     }
-    if (element.numChildren == element.children.length) {
+    if (element.numChildren === element.children.length) {
       return element.children;
     }
 

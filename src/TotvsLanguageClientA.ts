@@ -1,8 +1,7 @@
 import {
   LanguageClient,
   ServerOptions,
-  LanguageClientOptions,
-  TextDocumentFeature,
+  LanguageClientOptions
 } from "vscode-languageclient";
 
 export class TotvsLanguageClientA extends LanguageClient {

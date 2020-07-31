@@ -10,7 +10,7 @@ const showProgressController = require('template-literal');
 
 const localizeHTML = {
 	"tds.webview.title": localize("tds.webview.title", "Progress..."),
-}
+};
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 

@@ -19,12 +19,10 @@ import {
 import {
   CancellationToken,
   LanguageClientOptions,
-  ProvideCodeLensesSignature,
   RevealOutputChannelOn,
   ServerOptions,
   ProvideOnTypeFormattingEditsSignature,
 } from "vscode-languageclient/lib/main";
-import * as ls from "vscode-languageserver-types";
 import * as vscode from 'vscode';
 import { statSync, chmodSync } from "fs";
 import { reconnectLastServer } from "./serversView";
@@ -101,12 +99,12 @@ export function getLanguageClient(
     advpls = dir + "/node_modules/@totvs/tds-ls/bin/windows/advpls.exe";
   } else if (process.platform === "linux") {
     advpls = dir + "/node_modules/@totvs/tds-ls/bin/linux/advpls";
-    if (statSync(advpls).mode != 33261) {
+    if (statSync(advpls).mode !== 33261) {
       chmodSync(advpls, "755");
     }
   } else if (process.platform === "darwin") {
     advpls = dir + "/node_modules/@totvs/tds-ls/bin/mac/advpls";
-    if (statSync(advpls).mode != 33261) {
+    if (statSync(advpls).mode !== 33261) {
       chmodSync(advpls, "755");
     }
   }
@@ -202,14 +200,8 @@ function getClientConfig(context: ExtensionContext) {
 
   let configMapping = [["launchArgs", "launch.args"]];
   let clientConfig = {};
-
-  //let dir = "";
-  //let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
-  //if(ext !== undefined) {
-  //	dir = ext.extensionPath;
-  //}
-
   let config = workspace.getConfiguration("totvsLanguageServer");
+
   for (let prop of configMapping) {
     let value = config.get(prop[1]);
 

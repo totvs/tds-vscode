@@ -167,8 +167,8 @@ function getIgnoreSourceNotFoundValue(): boolean {
 	try {
 		launchConfig = Utils.getLaunchConfig();
 
-		for (var key = 0; key < launchConfig.configurations.length; key++) {
-			var launchElement = launchConfig.configurations[key];
+		for (let key = 0; key < launchConfig.configurations.length; key++) {
+			let launchElement = launchConfig.configurations[key];
 			if(debugSession !== undefined && launchElement.name === debugSession.name) {
 				if(launchElement.ignoreSourcesNotFound !== undefined) {
 					isIgnoreSourceNotFound = launchElement.ignoreSourcesNotFound;
@@ -210,7 +210,7 @@ function processShowProgressEvent(event: DebugSessionCustomEvent, debugConsole: 
 		debug.onDidTerminateDebugSession(event => {
 			isFinished = true;
 			progressStarted = false;
-		})
+		});
 
 		let withProgress = async function() {
 			window.withProgress(
@@ -253,7 +253,7 @@ function processShowProgressEvent(event: DebugSessionCustomEvent, debugConsole: 
 					});
 				}
 			);
-		}
+		};
 		withProgress();
 	}
 }

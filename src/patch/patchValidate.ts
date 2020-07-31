@@ -24,7 +24,7 @@ const localizeHTML = {
 	"tds.webview.validate.col01": localize("tds.webview.validate.col01", "File"),
 	"tds.webview.validate.col02": localize("tds.webview.validate.col02", "Date Patch"),
 	"tds.webview.validate.col03": localize("tds.webview.validate.col02", "Date Rpo"),
-}
+};
 
 export function patchValidates(context: vscode.ExtensionContext, args: any) {
 	const server = Utils.getCurrentServer();
@@ -106,10 +106,10 @@ function sendPatchPath(path, currentPanel) {
 function exportPatchValidate() {
 	if (patchValidatesData) {
 		let patchValidates = patchValidatesData;
-		var data = "FILE".padEnd(80, ' ') + "DATE PATCH".padEnd(20, ' ') + "DATE RPO".padEnd(20, ' ') + os.EOL;
+		let data = "FILE".padEnd(80, ' ') + "DATE PATCH".padEnd(20, ' ') + "DATE RPO".padEnd(20, ' ') + os.EOL;
 		for (let index = 0; index < patchValidates.length; index++) {
 			const element = patchValidates[index];
-			var output = element.name.padEnd(80, ' ') + element.date.padEnd(20, ' ') + element.size.padEnd(20, ' ');
+			let output = element.name.padEnd(80, ' ') + element.date.padEnd(20, ' ') + element.size.padEnd(20, ' ');
 			data += output + os.EOL;
 		}
 		vscode.window.showSaveDialog({ saveLabel: "Export" }).then(exportFile => {

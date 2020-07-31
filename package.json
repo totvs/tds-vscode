@@ -16,11 +16,11 @@
 		"4gl",
 		"tds",
 		"totvs",
+		"monitor",
 		"protheus"
 	],
 	"engines": {
-		"vscode": "^1.29.0",
-		"node": "^8.9.3"
+		"vscode": "^1.47.0"
 	},
 	"icon": "imagens/totvs-developer-studio.png",
 	"categories": [
@@ -38,53 +38,50 @@
 		"url": "https://github.com/totvs/tds-vscode.git"
 	},
 	"scripts": {
-		"prepare": "tsc -p ./src",
+		"clean2": "gulp clean",
 		"compile": "npm-run-all compile:*",
-		"watch": "npm-run-all -p watch:*",
 		"compile:parse_4gl": "echo src/parser/4gl-parser.pegjs && pegjs -o ./src/parser/4gl-parser.js ./syntaxes/4gl.pegjs",
 		"compile:extension": "tsc -p ./src",
 		"compile:views": "webpack --mode development",
-		"watch:extension": "tsc -w -p ./src",
-		"watch:views": "webpack --watch --mode development",
 		"tslint": "tslint ./src/**/*.ts",
+		"tslint:fix": "tslint ./src/**/*.ts --fix",
 		"test": "node node_modules/vscode/bin/test",
-		"package": "npm run compile && vsce package",
-		"publish": "npm run compile && vsce publish"
+		"vscode:prepublish": "webpack --mode production",
+		"package": "gulp package",
+		"publish": "gulp publish"
 	},
 	"dependencies": {
-		"@material-ui/core": "^4.10.0",
+		"@material-ui/core": "^4.11.0",
 		"@material-ui/icons": "^4.9.1",
-		"@material-ui/lab": "^4.0.0-alpha.54",
-		"@totvs/tds-da": "^1.1.12",
-		"@totvs/tds-ls": "^1.1.17",
-		"@types/jszip": "^3.1.7",
-		"@types/node": "13.7.1",
-		"@types/react": "^16.9.35",
-		"@types/vscode": "^1.45.1",
+		"@material-ui/lab": "^4.0.0-alpha.56",
+		"@totvs/tds-da": "^1.1.13",
+		"@totvs/tds-ls": "^1.1.22",
+		"@types/node": "^14.0.27",
+		"@types/react": "^16.9.43",
+		"@types/vscode": "^1.47.0",
 		"cheerio": "^1.0.0-rc.3",
 		"core-js": "^3.6.4",
+		"del": "^5.1.0",
 		"ini": "^1.3.5",
-		"jszip": "^3.4.0",
-		"material-table": "^1.58.2",
+		"jszip": "^3.5.0",
+		"material-table": "^1.67.1",
 		"react": "^16.13.0",
 		"react-dom": "^16.13.0",
 		"strip-json-comments": "^2.0.1",
 		"template-literal": "^1.0.3",
-		"tmp": "^0.1.0",
-		"typescript": "3.7.5",
-		"vscode-debugadapter": "1.32.1",
+		"tmp": "^0.2.1",
+		"typescript": "^3.9.7",
+		"vscode-debugadapter": "^1.41.1",
 		"vscode-languageclient": "^4.4.2",
-		"vscode-nls": "^4.1.2",
-		"vscode-nls-dev": "^3.3.1"
+		"vscode-nls": "^4.1.2"
 	},
 	"devDependencies": {
 		"@types/ini": "^1.3.30",
 		"@types/react-dom": "^16.9.8",
 		"cleanup": "^0.3.0",
-		"css-loader": "^3.5.3",
-		"del": "^4.1.1",
-		"eslint-plugin-react-hooks": "^4.0.6",
+		"css-loader": "^3.6.0",
 		"gulp": "^4.0.2",
+		"gulp-filter": "^5.1.0",
 		"gulp-sourcemaps": "^2.6.5",
 		"gulp-tslint": "^8.1.4",
 		"gulp-typescript": "^5.0.1",
@@ -93,11 +90,13 @@
 		"npm-run-all": "^4.1.5",
 		"pegjs": "^0.10.0",
 		"style-loader": "^1.2.1",
-		"ts-loader": "^6.2.2",
-		"tslint": "5.11.0",
-		"vsce": "^1.75.0",
-		"webpack": "^4.43.0",
-		"webpack-cli": "^3.3.10"
+		"ts-loader": "^8.0.1",
+		"tslint": "^6.1.2",
+		"vsce": "^1.77.0",
+		"vscode-nls-dev": "^3.3.2",
+		"webpack": "^4.44.0",
+		"webpack-cli": "^3.3.12",
+		"webpack-stream": "^5.2.1"
 	},
 	"main": "./out/extension",
 	"activationEvents": [
@@ -423,24 +422,6 @@
 					"type": "boolean",
 					"default": false,
 					"description": "%tds.package.workspaceServerConfig%"
-				},
-				"totvsMonitor.update.speed": {
-					"scope": "window",
-					"type": "string",
-					"enum": [
-						"Short",
-						"Normal",
-						"Long",
-						"Manual"
-					],
-					"enumDescriptions": [
-						"%totvsMonitor.update.speed.short%",
-						"%totvsMonitor.update.speed.normal%",
-						"%totvsMonitor.update.speed.long%",
-						"%totvsMonitor.update.speed.manual%"
-					],
-					"default": "Normal",
-					"description": "%totvsMonitor.update.speed%"
 				}
 			}
 		},
@@ -685,7 +666,7 @@
 			{
 				"command": "totvs-developer-studio.run.formatter",
 				"title": "Format",
-				"description": "Aplica formatação em arquivo fontes TOTVS e suas variações.",
+				"description": "%tds.package.apply.formatting%",
 				"category": "TOTVS",
 				"icon": {
 					"light": "resources/light/formatter.png",
@@ -699,8 +680,17 @@
 			},
 			{
 				"command": "totvs-developer-studio.tdsreplay.webview.timeLine",
-				"title": "Open TimeLine Webview",
+				"title": "%tds.package.OpenTimeLineWebview%",
 				"category": "TDSReplay"
+			},
+			{
+				"command": "tds-monitor.open-monitor-view",
+				"title": "%tds-monitor.open-monitor-view%",
+				"category": "TOTVSMonitor",
+				"icon": {
+					"light": "resources/light/monitor.png",
+					"dark": "resources/dark/monitor.png"
+				}
 			}
 		],
 		"keybindings": [
@@ -1199,6 +1189,11 @@
 					"group": "AAtotvsServer@2"
 				},
 				{
+					"command": "tds-monitor.open-monitor-view",
+					"when": "view == totvs_server && viewItem == serverItem",
+					"group": "AAtotvsServer@3"
+				},
+				{
 					"command": "totvs-developer-studio.patchGenerate.fromRPO",
 					"when": "view == totvs_server && viewItem == serverItem",
 					"group": "CtotvsPatch@1"
@@ -1287,6 +1282,11 @@
 			"view/title": [
 				{
 					"command": "totvs-developer-studio.add",
+					"when": "view == totvs_server",
+					"group": "navigation"
+				},
+				{
+					"command": "tds-monitor.open-monitor-view",
 					"when": "view == totvs_server",
 					"group": "navigation"
 				},

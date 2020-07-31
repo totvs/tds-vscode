@@ -1,7 +1,10 @@
 import Utils from '../utils';
-import { languageClient, localize } from '../extension';
+import { languageClient } from '../extension';
 import * as vscode from 'vscode';
 import { ResponseError } from 'vscode-languageclient';
+import * as nls from 'vscode-nls';
+
+const localize = nls.loadMessageBundle();
 
 export function defragRpo() {
 	const server = Utils.getCurrentServer();
