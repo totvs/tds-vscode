@@ -1,4 +1,4 @@
-# TOTVS Developer Studio Code
+# TOTVS Developer Studio para VSCode
 
 [![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode)
 

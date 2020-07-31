@@ -5,9 +5,11 @@
 * Envio de mensagens para um ou mais usuários
 * Bloqueio de novas conexões
 * Desconexão de um ou mais usuários ou de _jobs_
+----
 
 ## Revisão do processo de tradução
 * Processo de tradução foi revisto. Consulte [localização](LOCALIZATION.pt-br.MD) para detalhes.
+----
 
 ## PRTOPDEF File not found [Issue 440](https://github.com/totvs/tds-vscode/issues/440)
 ### Problema:
