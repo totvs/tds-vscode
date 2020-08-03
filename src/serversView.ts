@@ -484,6 +484,7 @@ export function authenticate(
       )
       .then((token: string) => {
         if (token) {
+          serverItem.username = username;
           doFinishConnectProcess(serverItem, token, environment);
         }
       })
