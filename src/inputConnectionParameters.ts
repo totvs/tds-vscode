@@ -198,6 +198,6 @@ export function serverSelection(args, context) {
 	if (args && args.length > 0) {
 		inputConnectionParameters(context, args[0], ConnTypeIds.CONNT_DEBUGGER, false);
 	} else {
-		inputConnectionParameters(context, undefined, ConnTypeIds.CONNT_DEBUGGER, false);
+		inputConnectionParameters(context, undefined, ConnTypeIds.CONNT_DEBUGGER, true);
 	}
 }
