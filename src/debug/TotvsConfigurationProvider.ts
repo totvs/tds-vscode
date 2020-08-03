@@ -66,6 +66,11 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 				config.programArguments = extractArgs(value as string);
 			}
 
+			// se no server conectado houver a informacao de smartclientBin utiliza a informacao
+			if (connectedServerItem.smartclientBin) {
+				config.smartclientBin = connectedServerItem.smartclientBin;
+			}
+
 			if (EMBED_DEBUG_ADAPTER) {
 				// start port listener on launch of first debug session
 				/*			if (!this._server) {
