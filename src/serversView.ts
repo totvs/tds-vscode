@@ -436,6 +436,7 @@ export function connectServer(
         (result: ITokenInfo) => {
           if (result) {
             if (result.needAuthentication) {
+              serverItem.token = result.token;
               inputAuthenticationParameters(serverItem, environment);
             }
             else {
@@ -483,12 +484,6 @@ export function authenticate(
       )
       .then((token: string) => {
         if (token) {
-          const connectedServerItem = serverProvider.connectedServerItem;
-
-          connectedServerItem.username = username;
-          connectedServerItem.environment = environment;
-          connectedServerItem.token = token;
-
           doFinishConnectProcess(serverItem, token, environment);
         }
       })
