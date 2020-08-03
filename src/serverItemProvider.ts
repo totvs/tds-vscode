@@ -258,6 +258,9 @@ class ServerItemProvider
         environmentsServer,
         element.includes
       );
+      if (element.smartclientBin) {
+        si.smartclientBin = element.smartclientBin;
+      }
       si.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
       listServer.push(si);
     });
@@ -269,6 +272,7 @@ class ServerItemProvider
 export class ServerItem extends vscode.TreeItem {
   public environment: string = "";
   public username: string = "";
+  public smartclientBin: string = "";
 
   public get isConnected(): boolean {
     return serverProvider.isConnected(this);
