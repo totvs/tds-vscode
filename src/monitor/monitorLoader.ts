@@ -712,5 +712,13 @@ function getTranslations() {
       "Restarting will only be possible by physically accessing the server."
     ),
     SECONDS: localize("SECONDS", "{0} seconds"),
+    WARN_CONNECTION_TERMINATED: localize("WARN_CONNECTION_TERMINATED", "The users listed below will have their connections terminated."),
+    TERMINATE_CONNECTIONS_IMMEDIATELY: localize("TERMINATE_CONNECTIONS_IMMEDIATELY", "Terminate connections immediately."),
+    DLG_TITLE_SEND_MESSAGE: localize("DLG_TITLE_SEND_MESSAGE","Message sending"),
+    DLG_TITLE_CLOSE_CONNECTIONS: localize("DLG_TITLE_CLOSE_CONNECTIONS", "Closes user connections"),
+    DLG_TITLE_SPEED: localize("DLG_TITLE_SPEED", "Interval between updates"),
+    DLG_TITLE_STOP_SERVER: localize("DLG_TITLE_STOP_SERVER", "Confirm the server stop?"),
+    DLG_TITLE_LOCK_SERVER: localize("DLG_TITLE_LOCK_SERVER", "Block new connections?"),
+    DLG_TITLE_REMARKS: localize("DLG_TITLE_REMARKS", "Remarks")
   };
 }

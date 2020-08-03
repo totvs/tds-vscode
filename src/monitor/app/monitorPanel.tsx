@@ -1,5 +1,9 @@
 import * as React from "react";
-import MaterialTable, { Column } from "material-table";
+import MaterialTable, {
+  Column,
+  MTableHeader,
+  MTableToolbar,
+} from "material-table";
 import {
   createStyles,
   lighten,
@@ -46,6 +50,7 @@ import {
 } from "./monitorPanelMemento";
 import { i18n } from "../helper";
 import RemarkDialog from "./remarkDialog";
+import { IconButton, Tooltip } from "@material-ui/core";
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -64,24 +69,20 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
             backgroundColor: theme.palette.secondary.dark,
           },
     title: {
+      display: "inline",
       fontSize: "180%",
       fontWeight: "bold",
+      marginLeft: "16px",
     },
     subtitle: {
       color: "silver",
+      display: "inline",
+      marginLeft: "20px",
     },
-    upperCase: {
-      textTransform: "uppercase",
-    },
-    toolbarButtons: {
-      marginLeft: "auto",
-    },
-    chips: {
-      display: "flex",
-      flexWrap: "wrap",
-    },
-    chip: {
-      margin: 2,
+    actions: {
+      display: "inline",
+      marginRight: "8px",
+      float: "right"
     },
   })
 );
@@ -550,26 +551,47 @@ export default function MonitorPanel(props: IMonitorPanel) {
     onClick: () => handleRefreshButtonClick(),
   });
 
-  actions.push({
-    icon: () => <FormatClearIcon />,
-    tooltip: i18n.localize("RESET_CONFIGURATIONS", "Reset configurations"),
-    isFreeAction: true,
-    onClick: () => handleResetButtonClick(),
-  });
-
-  // // other props
-  // components={{
-  //   Toolbar: (props) => (
-  //     <div style={{ backgroundColor: "#e8eaf5" }}>
-  //       <MTableToolbar {...props} />
-  //     </div>
-  //   ),
-  // }}
+  const style = useToolbarStyles();
 
   return (
     <MonitorTheme>
       <Paper variant="outlined">
         <MaterialTable
+          // other props
+          title={""}
+          components={{
+            Toolbar: (props) => (
+              <div>
+                <Title
+                  title={i18n.localize("MONITOR", "Monitor")}
+                  subtitle={
+                    subtitle
+                      ? subtitle
+                      : i18n.localize("INITIALIZING", "(inicializando)")
+                  }
+                />
+                <div className={style.actions}>
+                  <Tooltip
+                    title={i18n.localize(
+                      "RESET_CONFIGURATIONS",
+                      "Reset configurations"
+                    )}
+                  >
+                    <IconButton
+                      size="medium"
+                      onClick={() => {
+                        handleResetButtonClick();
+                      }}
+                    >
+                      <FormatClearIcon fontSize="inherit" />
+                    </IconButton>
+                  </Tooltip>
+                </div>
+
+                <MTableToolbar {...props} />
+              </div>
+            ),
+          }}
           localization={{
             pagination: {
               labelDisplayedRows: "{from}-{to}/{count}",
@@ -619,17 +641,9 @@ export default function MonitorPanel(props: IMonitorPanel) {
           icons={monitorIcons.table}
           columns={rows.length ? columns : []}
           data={rows}
-          title={
-            <Title
-              title={i18n.localize("MONITOR", "Monitor")}
-              subtitle={
-                subtitle
-                  ? subtitle
-                  : i18n.localize("INITIALIZING", "(inicializando)")
-              }
-            />
-          }
           options={{
+            searchFieldAlignment: "left",
+            searchFieldStyle: { marginLeft: "-16px" },
             showTextRowsSelected: false,
             emptyRowsWhenPaging: false,
             pageSize: pageSize,

@@ -36,18 +36,14 @@ export default function MonitorTheme(props: IMonitorThemeProps) {
               backgroundColor: "#FDFDFD",
             },
           },
-          MuiCard: {
-
-          },
+          MuiCard: {},
           MuiCardHeader: {
-            root: {
-            },
+            root: {},
             title: {
               color: "silver",
-              fontSize: "medium"
-            }
+              fontSize: "medium",
+            },
           },
-          
         },
       }),
     [darkMode]
@@ -60,4 +56,3 @@ export default function MonitorTheme(props: IMonitorThemeProps) {
     </ThemeProvider>
   );
 }
-

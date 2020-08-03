@@ -34,7 +34,7 @@ export default function RemarkDialog(props: RemarkDialogProps) {
       fullWidth
       maxWidth="md"
     >
-      <DialogTitle>Remarks</DialogTitle>
+      <DialogTitle>{i18n.localize("DLG_TITLE_REMARKS", "Remarks")}</DialogTitle>
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="info">

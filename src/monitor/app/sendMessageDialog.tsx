@@ -55,7 +55,7 @@ export default function SendMessageDialog(props: SendMessageDialogProps) {
       fullWidth
       maxWidth="lg"
     >
-      <DialogTitle>Message sending</DialogTitle>
+      <DialogTitle>{i18n.localize("DLG_TITLE_SEND_MESSAGE","Message sending")}</DialogTitle>
       <DialogContent dividers={true}>
         <DialogContentText ref={descriptionElementRef} tabIndex={-1}>
           <TextField

@@ -47,7 +47,7 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
 
   return (
     <Dialog onClose={handleClose} open={open} scroll="paper">
-      <DialogTitle>Interval between updates</DialogTitle>
+      <DialogTitle>{i18n.localize("DLG_TITLE_SPEED", "Interval between updates")}</DialogTitle>
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <FormGroup row>

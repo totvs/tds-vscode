@@ -30,7 +30,7 @@ export default function StopServerDialog(props: StopServerDialogProps) {
       fullWidth
       maxWidth="md"
     >
-      <DialogTitle>Confirm the server stop?</DialogTitle>
+      <DialogTitle>{i18n.localize("DLG_TITLE_STOP_SERVER", "Confirm the server stop?")}</DialogTitle>
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="error">

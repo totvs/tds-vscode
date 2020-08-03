@@ -29,7 +29,7 @@ export default function LockServerDialog(props: LockServerDialogProps) {
       fullWidth
       maxWidth="md"
     >
-      <DialogTitle>Block new connections?</DialogTitle>
+      <DialogTitle>{i18n.localize("DLG_TITLE_LOCK_SERVER", "Block new connections?")}</DialogTitle>
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="warning">
