@@ -435,9 +435,11 @@ export function connectServer(
       sendConnectRequest(serverItem, environment, connType).then(
         (result: ITokenInfo) => {
           if (result) {
-            doFinishConnectProcess(serverItem, result.token, environment);
             if (result.needAuthentication) {
               inputAuthenticationParameters(serverItem, environment);
+            }
+            else {
+              doFinishConnectProcess(serverItem, result.token, environment);
             }
           }
         },
