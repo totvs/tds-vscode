@@ -1,8 +1,16 @@
 const path = require("path");
 
+const TerserPlugin = require('terser-webpack-plugin');
+
 module.exports = {
   target: "node",
-  //O webpack, pega todos os fontes tsx e os compacta em um unico arquivo .js. Isso é feito para contornar algumas limitações e alguns browsers que não aceitam a instrução import.
+  optimization: {
+    minimize: false,
+    minimizer: [
+      new TerserPlugin(),
+    ],
+  },
+   //O webpack, pega todos os fontes tsx e os compacta em um unico arquivo .js. Isso é feito para contornar algumas limitações e alguns browsers que não aceitam a instrução import.
   //O entry pode ser definido com um objeto. A chave, ou no nome da propriedade, nesse caso sera o nome de saida do arquivo.
   entry: {
     timeLineView: "./src/debug/tdsreplay/app/index.tsx",
