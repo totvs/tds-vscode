@@ -151,9 +151,9 @@ export function sendConnectRequest(
     );
 }
 
-export enum ENABLE_CODE_PAGE {
-  'CP1252', //demais idiomas
-  'CP1251'  //cirílico
+export const ENABLE_CODE_PAGE = {
+  CP1252: 'CP1252', //demais idiomas
+  CP1251: 'CP1251'  //cirílico
 };
 
 export function sendAuthenticateRequest(
@@ -161,7 +161,7 @@ export function sendAuthenticateRequest(
   environment: string,
   user: string,
   password: string,
-  encoding: ENABLE_CODE_PAGE,
+  encoding: string,
 ): Thenable<IAuthenticationInfo> {
   return languageClient
     .sendRequest("$totvsserver/authentication", {

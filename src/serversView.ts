@@ -457,7 +457,7 @@ export function authenticate(
   username: string,
   password: string
 ) {
-  const enconding: ENABLE_CODE_PAGE =
+  const enconding: string =
     vscode.env.language === "ru"
       ? ENABLE_CODE_PAGE.CP1251
       : ENABLE_CODE_PAGE.CP1252;

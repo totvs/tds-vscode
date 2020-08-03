@@ -51,7 +51,7 @@ export default function DisconnectUserDialog(
       fullWidth
       maxWidth="lg"
     >
-      <DialogTitle>{i18n.localize("DLG_TITLE_CLOSE_CONNECTIONS", "Closes user connections"</DialogTitle>
+      <DialogTitle>{i18n.localize("DLG_TITLE_CLOSE_CONNECTIONS", "Closes user connections")}</DialogTitle>
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="warning">
