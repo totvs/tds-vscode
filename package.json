@@ -626,7 +626,7 @@
 			},
 			{
 				"command": "totvs-developer-studio.patchApply",
-				"title": "Patch Apply",
+				"title": "%tds.package.patchApply%",
 				"category": "TOTVS"
 			},
 			{
