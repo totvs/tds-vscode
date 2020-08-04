@@ -99,7 +99,7 @@
 	"tds.vscode.noAskAgain": "Не спрашивай снова",
 	"tds.toggle.autocomplete.behavior": "Переключить поведение автозаполнения",
 	"tds.package.editor.toggle.autocomplete": "Переключить поведение автозаполнения.",
-	"tds.package.editor.toggle.autocomplete.basic": "Стандартная процедура VS Cdoe.",
+	"tds.package.editor.toggle.autocomplete.basic": "Стандартная процедура VS Code.",
 	"tds.package.editor.toggle.autocomplete.ls": "Поиск на языковом сервере текущей среды.",
 	"tds.command.debug.toggleTableSync": "Переключить синхронизацию таблицы",
 	"tds.package.folder.enable.extensions.filter": "Компилировать только файлы с разрешенными расширениями.",

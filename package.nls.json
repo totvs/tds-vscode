@@ -99,7 +99,7 @@
 	"tds.vscode.noAskAgain" : "Don't ask again",
 	"tds.toggle.autocomplete.behavior": "Toggle Autocomplete Behavior",
 	"tds.package.editor.toggle.autocomplete": "Toggle Autocomplete Behavior.",
-    "tds.package.editor.toggle.autocomplete.basic": "Standard VS Cdoe procedure.",
+    "tds.package.editor.toggle.autocomplete.basic": "Standard VS Code procedure.",
 	"tds.package.editor.toggle.autocomplete.ls": "Search in the Language Server of the current environment.",
 	"tds.command.debug.toggleTableSync": "Toggle table sync",
 	"tds.package.folder.enable.extensions.filter": "Only compile files with allowed extensions.",
