@@ -99,7 +99,7 @@
 	"tds.vscode.noAskAgain": "No preguntes de nuevo",
 	"tds.toggle.autocomplete.behavior": "Alternar comportamiento de autocompletar",
 	"tds.package.editor.toggle.autocomplete": "Alternar comportamiento de autocompletar.",
-	"tds.package.editor.toggle.autocomplete.basic": "Procedimiento estándar VS Code.",
+	"tds.package.editor.toggle.autocomplete.basic": "Procedimiento estándar de VS Code.",
 	"tds.package.editor.toggle.autocomplete.ls": "Buscar en el servidor de idiomas del entorno actual.",
 	"tds.command.debug.toggleTableSync": "Alternar sincronización de tabla",
 	"tds.package.folder.enable.extensions.filter": "Solo compila archivos con extensiones permitidas.",

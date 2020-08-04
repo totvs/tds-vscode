@@ -99,7 +99,7 @@
 	"tds.vscode.noAskAgain": "Não pergunte novamente",
 	"tds.toggle.autocomplete.behavior": "Alternar comportamento de preenchimento automático",
 	"tds.package.editor.toggle.autocomplete": "Alternar comportamento de preenchimento automático.",
-	"tds.package.editor.toggle.autocomplete.basic": "Procedimento padrão do VS Cdoe.",
+	"tds.package.editor.toggle.autocomplete.basic": "Procedimento padrão do código VS.",
 	"tds.package.editor.toggle.autocomplete.ls": "Pesquise no servidor de idiomas do ambiente atual.",
 	"tds.command.debug.toggleTableSync": "Alternar sincronização de tabela",
 	"tds.package.folder.enable.extensions.filter": "Compile apenas arquivos com extensões permitidas.",
