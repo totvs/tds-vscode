@@ -29,7 +29,7 @@ function headCells(): any[] {
     },
     {
       field: "environment",
-      title: i18n.localize("m", "Environment"),
+      title: i18n.localize("ENVIRONMENT", "Environment"),
       ...cellDefaultStyle,
     },
     {
