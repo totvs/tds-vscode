@@ -1,8 +1,5 @@
 import * as React from "react";
-import MaterialTable, {
-  Column,
-  MTableToolbar,
-} from "material-table";
+import MaterialTable, { Column, MTableToolbar } from "material-table";
 import {
   createStyles,
   lighten,
@@ -21,7 +18,7 @@ import SendMessageDialog from "./sendMessageDialog";
 import FilterList from "@material-ui/icons/FilterList";
 import SpeedIcon from "@material-ui/icons/Speed";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import StorageIcon  from '@material-ui/icons/Storage';
+import StorageIcon from "@material-ui/icons/Storage";
 import FormatClearIcon from "@material-ui/icons/FormatClear";
 import LockIcon from "@material-ui/icons/Lock";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
@@ -83,13 +80,13 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
     actions: {
       display: "inline",
       marginRight: "8px",
-      float: "right"
+      float: "right",
     },
     actionOn: {
       borderRadius: "25px",
       border: "2px solid silver",
-      boxShadow: "0 0 3px #FF0000, 0 0 5px #0000FF"
-    }
+      boxShadow: "0 0 3px #FF0000, 0 0 5px #0000FF",
+    },
   })
 );
 
@@ -173,7 +170,9 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const [locked, setLocked] = React.useState(true);
   const [pageSize, setPageSize] = React.useState(memento.get(propPageSize()));
   const [grouping, setGrouping] = React.useState(memento.get(propGrouping()));
-  const [treeServer, setTreeServer] = React.useState(memento.get(propTreeServer()));
+  const [treeServer, setTreeServer] = React.useState(
+    memento.get(propTreeServer())
+  );
   const [filtering, setFiltering] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState({
     lockServer: false,
@@ -189,13 +188,18 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const [reset, setReset] = React.useState(false);
 
   React.useEffect(() => {
+    const enableUpdateUsers: boolean = !isAnyDialogOpen(openDialog) && selected.length === 0
+
     let command: IMonitorPanelAction = {
       action: MonitorPanelAction.EnableUpdateUsers,
-      content: { state: !isAnyDialogOpen(openDialog) },
+      content: {
+        state: enableUpdateUsers,
+        reason: !enableUpdateUsers ? (selected.length === 0 ?1:2) : 0 //1 dialog open, 2 selected row
+      },
     };
 
     props.vscode.postMessage(command);
-  }, [openDialog]);
+  }, [openDialog, selected]);
 
   React.useEffect(() => {
     if (reset) {
@@ -420,7 +424,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const doOrderChange = (orderBy: number, direction: string) => {
     memento.set(propOrderBy(orderBy));
     memento.set(propOrderDirection(direction));
-};
+  };
 
   const doColumnDragged = (sourceIndex: number, destinationIndex: number) => {
     memento.set(propColumnMove(sourceIndex, destinationIndex));
@@ -506,18 +510,20 @@ export default function MonitorPanel(props: IMonitorPanel) {
   });
 
   actions.push({
-    icon: () => treeServer ? <StorageIcon className={style.actionOn} />:<StorageIcon />,
+    icon: () =>
+      treeServer ? <StorageIcon className={style.actionOn} /> : <StorageIcon />,
     tooltip: i18n.localize("TREE_SERVER_ON_OFF", "Tree server on/off"),
     isFreeAction: true,
     onClick: () => {
       setTreeServer(!treeServer);
       memento.set(propTreeServer(!treeServer));
     },
-    hidden: true
+    hidden: true,
   });
 
   actions.push({
-    icon: () => grouping ? <GroupingIcon className={style.actionOn}/>:<GroupingIcon />,
+    icon: () =>
+      grouping ? <GroupingIcon className={style.actionOn} /> : <GroupingIcon />,
     tooltip: i18n.localize("GROUPING_ON_OFF", "Grouping on/off"),
     isFreeAction: true,
     onClick: () => {
@@ -527,7 +533,8 @@ export default function MonitorPanel(props: IMonitorPanel) {
   });
 
   actions.push({
-    icon: () => filtering? <FilterList className={style.actionOn}/>:<FilterList />,
+    icon: () =>
+      filtering ? <FilterList className={style.actionOn} /> : <FilterList />,
     tooltip: i18n.localize("FILTERING_ON_OFF", "Filtering on/off"),
     isFreeAction: true,
     onClick: () => {
@@ -547,7 +554,12 @@ export default function MonitorPanel(props: IMonitorPanel) {
   });
 
   actions.push({
-    icon: () => speed===0? <RefreshIcon className={style.actionOn}/>:<RefreshIcon />,
+    icon: () =>
+      speed === 0 ? (
+        <RefreshIcon className={style.actionOn} />
+      ) : (
+        <RefreshIcon />
+      ),
     tooltip: i18n.localize("REFRESH_DATA", "Refresh data"),
     isFreeAction: true,
     onClick: () => handleRefreshButtonClick(),
@@ -650,7 +662,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
             columnsButton: true,
             sorting: true,
             showTitle: false,
-            toolbarButtonAlignment: "right"
+            toolbarButtonAlignment: "right",
           }}
           actions={actions}
           onSelectionChange={(rows) => setSelected(rows)}

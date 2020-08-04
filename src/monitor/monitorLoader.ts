@@ -370,7 +370,25 @@ export class MonitorLoader {
     switch (command.action) {
       case MonitorPanelAction.EnableUpdateUsers: {
         this._enableUpdateUsers = command.content.state;
+        const reason = command.content.reason;
+
         this.updateUsers(this._enableUpdateUsers);
+
+        if (reason === 1) {
+          //1 dialog open, 2 selected row
+          this.updateSpeedStatus(
+            localize(
+              "WAIT_CONFIG_UPDATE",
+              "Waiting for preview configuration changes"
+            )
+          );
+        } else if (reason === 2) {
+          this.updateSpeedStatus(
+            localize("SELECTED_CONNECTIONS", "Selected connections")
+          );
+        } else {
+          this.updateSpeedStatus();
+        }
 
         break;
       }
@@ -529,31 +547,38 @@ export class MonitorLoader {
     }
   }
 
-  private updateSpeedStatus() {
+  private updateSpeedStatus(pauseReason?: string) {
     let nextUpdate = new Date(Date.now());
+    let icon: string = ''; //${clock}
+    let msg1: string = "";
+    let msg2: string = "";
 
-    const msg1 = localize(
-      "MSG_1",
-      "Monitor: Updated as {0}.",
-      `${nextUpdate.getHours()}:${nextUpdate.getMinutes()}:${nextUpdate.getSeconds()}`
-    );
-    let msg2 = "";
-
-    if (this.speed === 0) {
-      msg2 = localize(
-        "MSG_2_REQUEST",
-        "The next one will take place on request."
-      );
+    if (pauseReason) {
+      icon = ''; //"${debug-pause}";
+      msg1 = localize("UPDATE_PAUSED", "Update paused. {0}", pauseReason);
     } else {
-      nextUpdate.setSeconds(nextUpdate.getSeconds() + this.speed);
-      msg2 = localize(
-        "MSG_2_NEXT",
-        "The next one will occur {0}",
+      msg1 = localize(
+        "MSG_1",
+        "Monitor: Updated as {0}.",
         `${nextUpdate.getHours()}:${nextUpdate.getMinutes()}:${nextUpdate.getSeconds()}`
       );
+
+      if (this.speed === 0) {
+        msg2 = localize(
+          "MSG_2_REQUEST",
+          "The next one will take place on request."
+        );
+      } else {
+        nextUpdate.setSeconds(nextUpdate.getSeconds() + this.speed);
+        msg2 = localize(
+          "MSG_2_NEXT",
+          "The next one will occur {0}",
+          `${nextUpdate.getHours()}:${nextUpdate.getMinutes()}:${nextUpdate.getSeconds()}`
+        );
+      }
     }
 
-    vscode.window.setStatusBarMessage(`${msg1} ${msg2}`);
+    vscode.window.setStatusBarMessage(`${icon} ${msg1} ${msg2}`);
   }
 
   private getWebviewContent(): string {
