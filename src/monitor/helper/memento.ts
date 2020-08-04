@@ -85,6 +85,21 @@ function doSaveProperty(state: any, propertySave: any): any {
   return mergeProperties([state, propertySave]);
 }
 
+function doSave(
+  vscode: any,
+  id: string,
+  notifyCommand: string,
+  state: any,
+  reset: boolean
+) {
+  let command: any = {
+    action: notifyCommand,
+    content: { key: id, state: state, reload: reset },
+  };
+
+  vscode.postMessage(command);
+}
+
 const mementoList: any = {};
 
 export function useMemento(
@@ -92,7 +107,8 @@ export function useMemento(
   id: string,
   notifyCommand: any,
   defaultValues: any,
-  initialValues: any = {}
+  initialValues: any = {},
+  autoSave: boolean = true
 ): any {
   if (mementoList.hasOwnProperty(id) && mementoList[id] !== undefined) {
     return mementoList[id];
@@ -111,9 +127,15 @@ export function useMemento(
       let state = mementoList[id]["state"];
       let savedState = doSaveProperty(state, property);
 
-      state = { ...state, ...savedState };
+      if (JSON.stringify(state) !== JSON.stringify(savedState)) {
+        state = { ...state, ...savedState };
 
-      mementoList[id]["state"] = state;
+        mementoList[id]["state"] = state;
+
+        if (autoSave) {
+          doSave(vscode, id, notifyCommand, state, false);
+        }
+      }
     },
     save: (reset: boolean = false) => {
       let state = mementoList[id]["state"];
@@ -123,12 +145,7 @@ export function useMemento(
         mementoList[id] = undefined;
       }
 
-      let command: any = {
-        action: notifyCommand,
-        content: { key: id, state: state, reload: reset },
-      };
-
-      vscode.postMessage(command);
+      doSave(vscode, id, notifyCommand, state, reset);
     },
     reload: () => {
       let state = mementoList[id]["state"];

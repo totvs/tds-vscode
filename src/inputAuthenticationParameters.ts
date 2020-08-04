@@ -1,6 +1,7 @@
+import * as nls from "vscode-nls";
 import Utils from "./utils";
 import { MultiStepInput } from "./multiStepInput";
-import {  authenticate } from "./serversView";
+import { authenticate } from "./serversView";
 import { ServerItem } from "./serverItemProvider";
 
 //import * as nls from 'vscode-nls';
@@ -14,10 +15,12 @@ import { ServerItem } from "./serverItemProvider";
  *
  * This first part uses the helper class `MultiStepInput` that wraps the API for the multi-step case.
  */
+const localize = nls.loadMessageBundle();
+
 export async function inputAuthenticationParameters(serverItem: ServerItem, environment: string) {
 
 	//const VALIDADE_TIME_OUT = 1000;
-	const title = 'Autenticação';
+	const title = localize("AUTHENTICATION", 'Authentication');
 
 	let AUTH_TOTAL_STEPS = 2;
 	let AUTH_USERNAME_STEP = 1;
@@ -51,7 +54,7 @@ export async function inputAuthenticationParameters(serverItem: ServerItem, envi
 			step: AUTH_USERNAME_STEP,
 			totalSteps: AUTH_TOTAL_STEPS,
 			value: state.username || '',
-			prompt: 'Identificação do usuário',
+			prompt: localize("USER_IDENTIFICATION", 'User identification'),
 			validate: validateRequiredValue,
 			shouldResume: shouldResume,
 			password: false
@@ -66,7 +69,7 @@ export async function inputAuthenticationParameters(serverItem: ServerItem, envi
 			step: AUTH_PASSWORD_STEP,
 			totalSteps: AUTH_TOTAL_STEPS,
 			value: state.password || '',
-			prompt: 'Senha de acesso',
+			prompt: localize("ACCESS PASSWORD", 'Access password'),
 			validate: allTrueValue,
 			shouldResume: shouldResume,
 			password: true
@@ -91,7 +94,7 @@ export async function inputAuthenticationParameters(serverItem: ServerItem, envi
 		// ...validate...
 		//Nao esta claro o motivo desse timeout, pois o resolve nunca é passado e sempre é esperado o total do timeout antes de continuar
 		//await new Promise(resolve => setTimeout(resolve, VALIDADE_TIME_OUT));
-		return value === '' ? 'Informação requerida' : undefined;
+		return value === '' ? localize('REQUIRED_INFORMATION', 'Required information') : undefined;
 	}
 
 	async function main() {

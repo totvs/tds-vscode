@@ -12,7 +12,7 @@ import {
 } from "../protocolMessages";
 import { MonitorPanelAction, IMonitorPanelAction } from "./actions";
 import { isNullOrUndefined } from "util";
-import Utils from "../utils";
+import Utils, { groupBy } from "../utils";
 import {
   sendDisconnectRequest,
   ConnTypeIds,
@@ -124,8 +124,6 @@ export class MonitorLoader {
 
       monitorLoader = undefined;
     });
-
-    this.speed = DEFAULT_SPEED;
   }
 
   public set speed(v: number) {
@@ -389,13 +387,6 @@ export class MonitorLoader {
           context.workspaceState.update(WS_STATE_KEY, {});
           openMonitorView(context);
         }
-        // this._panel.webview.postMessage({
-        //   command: MonitorPanelAction.DoUpdateState,
-        //   data: {
-        //     key: key,
-        //     state: state,
-        //   },
-        // });
 
         break;
       }
@@ -485,8 +476,16 @@ export class MonitorLoader {
           sendGetUsersRequest(this.monitorServer).then(
             (users: any) => {
               if (users) {
+                const servers = groupBy(users, (item: any) => {
+                  return item.server;
+                }).map((element) => element[0].server);
                 const complement = users.length
-                  ? localize("THREADS", " ({0} thread(s))", users.length)
+                  ? localize(
+                      "THREADS",
+                      " ({0} thread(s) in {1} server(s))",
+                      users.length,
+                      servers.length
+                    )
                   : localize("THREADS_NONE", " (none thread)");
 
                 this._panel.webview.postMessage({
@@ -496,6 +495,7 @@ export class MonitorLoader {
                       this.monitorServer.name.replace("_monitor", "") +
                       complement,
                     users: users,
+                    servers: servers,
                   },
                 });
               }
@@ -575,14 +575,13 @@ export class MonitorLoader {
 
     if (configJson["memento"].hasOwnProperty("customProps")) {
       const customProps = configJson["memento"]["customProps"];
-      if (customProps.hasOwnProperty("speed")) {
-        this.speed = customProps["speed"];
-      } else {
+      if (!customProps.hasOwnProperty("speed")) {
         customProps["speed"] = this.speed;
       }
     } else {
       configJson["memento"] = { customProps: { speed: this.speed } };
     }
+    this.speed = configJson["memento"]["customProps"]["speed"];
 
     return `<!DOCTYPE html>
     <html lang="en">
@@ -646,7 +645,8 @@ function getTranslations() {
     FROM_TO_OF_COUNT: localize("FROM_TO_OF_COUNT", "from-to de count"),
     GROUPED_BY: localize("GROUPED_BY", "Grouped by:"),
     GROUPING_ON_OFF: localize("GROUPING_ON_OFF", "Grouping on/off"),
-    "INACTIVITY_TIME ": localize("INACTIVITY_TIME ", "Idle time"),
+    TREE_ON_OFF: localize("TREE_ON_OFF", "Tree server on/off"),
+    INACTIVITY_TIME: localize("INACTIVITY_TIME", "Idle time"),
     INFO_RELEASE_CONNECTION: localize(
       "INFO_RELEASE_CONNECTION",
       "When confirming the release of new connections, users can connect to that server again."
@@ -712,13 +712,32 @@ function getTranslations() {
       "Restarting will only be possible by physically accessing the server."
     ),
     SECONDS: localize("SECONDS", "{0} seconds"),
-    WARN_CONNECTION_TERMINATED: localize("WARN_CONNECTION_TERMINATED", "The users listed below will have their connections terminated."),
-    TERMINATE_CONNECTIONS_IMMEDIATELY: localize("TERMINATE_CONNECTIONS_IMMEDIATELY", "Terminate connections immediately."),
-    DLG_TITLE_SEND_MESSAGE: localize("DLG_TITLE_SEND_MESSAGE","Message sending"),
-    DLG_TITLE_CLOSE_CONNECTIONS: localize("DLG_TITLE_CLOSE_CONNECTIONS", "Closes user connections"),
+    WARN_CONNECTION_TERMINATED: localize(
+      "WARN_CONNECTION_TERMINATED",
+      "The users listed below will have their connections terminated."
+    ),
+    TERMINATE_CONNECTIONS_IMMEDIATELY: localize(
+      "TERMINATE_CONNECTIONS_IMMEDIATELY",
+      "Terminate connections immediately."
+    ),
+    DLG_TITLE_SEND_MESSAGE: localize(
+      "DLG_TITLE_SEND_MESSAGE",
+      "Message sending"
+    ),
+    DLG_TITLE_CLOSE_CONNECTIONS: localize(
+      "DLG_TITLE_CLOSE_CONNECTIONS",
+      "Closes user connections"
+    ),
     DLG_TITLE_SPEED: localize("DLG_TITLE_SPEED", "Interval between updates"),
-    DLG_TITLE_STOP_SERVER: localize("DLG_TITLE_STOP_SERVER", "Confirm the server stop?"),
-    DLG_TITLE_LOCK_SERVER: localize("DLG_TITLE_LOCK_SERVER", "Block new connections?"),
-    DLG_TITLE_REMARKS: localize("DLG_TITLE_REMARKS", "Remarks")
+    DLG_TITLE_STOP_SERVER: localize(
+      "DLG_TITLE_STOP_SERVER",
+      "Confirm the server stop?"
+    ),
+    DLG_TITLE_LOCK_SERVER: localize(
+      "DLG_TITLE_LOCK_SERVER",
+      "Block new connections?"
+    ),
+    DLG_TITLE_REMARKS: localize("DLG_TITLE_REMARKS", "Remarks"),
+    ENVIRONEMNT: localize("ENVIRONEMNT", "Environemnt"),
   };
 }

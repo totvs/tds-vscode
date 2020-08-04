@@ -76,6 +76,14 @@ export const propGrouping = (value: boolean = undefined) => {
   };
 };
 
+export const propTreeServer = (value: boolean = undefined) => {
+  return {
+    customProps: {
+      treeServer: value,
+    },
+  };
+};
+
 export const getColumn = (name: string) => {
   let result = undefined;
   const columns = propColumns();
@@ -108,6 +116,13 @@ export const propColumnHidden = (
   value: boolean = undefined
 ): any => {
   return propColumn(name, "hidden", value);
+};
+
+export const propColumnGroup = (
+  name: string,
+  value: boolean = undefined
+): any => {
+  return propColumn(name, "XXXX", value);
 };
 
 export const propOrderDirection = (value: string = undefined): any => {
@@ -205,7 +220,7 @@ export const propColumns = (extraProps?: any): any => {
       ),
       fieldDef(
         "inactiveTime",
-        i18n.localize("INACTIVITY_TIME ", "Idle time"),
+        i18n.localize("INACTIVITY_TIME", "Idle time"),
         extraProps
       ),
       fieldDef(
@@ -257,10 +272,12 @@ export const propColumns = (extraProps?: any): any => {
   };
 };
 
-export const DEFAULT_TABLE = () => mergeProperties([
-  propColumns({ ...cellDefaultStyle }),
-  propPageSize(10),
-  propGrouping(false),
-  propFiltering(false),
-  propSpeed(30) //0=manual, 15=fast, 30=normal, 60=slow
-]);
+export const DEFAULT_TABLE = () =>
+  mergeProperties([
+    propColumns({ ...cellDefaultStyle }),
+    propPageSize(10),
+    propGrouping(false),
+    propFiltering(false),
+    propTreeServer(false),
+    propSpeed(30), //0=manual, 15=fast, 30=normal, 60=slow
+  ]);

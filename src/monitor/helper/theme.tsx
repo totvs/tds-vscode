@@ -2,10 +2,6 @@ import * as React from "react";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core";
 
-//TODO: Ocorre erro de loader
-//import 'typeface-roboto';
-//https://material-ui.com/pt/customization/default-theme/
-
 interface IMonitorThemeProps {
   children: any;
 }

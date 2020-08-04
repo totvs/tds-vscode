@@ -1,7 +1,6 @@
 import * as React from "react";
 import MaterialTable, {
   Column,
-  MTableHeader,
   MTableToolbar,
 } from "material-table";
 import {
@@ -9,7 +8,6 @@ import {
   lighten,
   makeStyles,
   Theme,
-  ServerStyleSheets,
 } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import {
@@ -23,6 +21,7 @@ import SendMessageDialog from "./sendMessageDialog";
 import FilterList from "@material-ui/icons/FilterList";
 import SpeedIcon from "@material-ui/icons/Speed";
 import RefreshIcon from "@material-ui/icons/Refresh";
+import StorageIcon  from '@material-ui/icons/Storage';
 import FormatClearIcon from "@material-ui/icons/FormatClear";
 import LockIcon from "@material-ui/icons/Lock";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
@@ -47,10 +46,12 @@ import {
   propColumnMove,
   propColumnsOrder,
   propSpeed,
+  propTreeServer,
+  propGrouping,
+  propColumnGroup,
 } from "./monitorPanelMemento";
 import { i18n } from "../helper";
 import RemarkDialog from "./remarkDialog";
-import { IconButton, Tooltip } from "@material-ui/core";
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -84,6 +85,11 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
       marginRight: "8px",
       float: "right"
     },
+    actionOn: {
+      borderRadius: "25px",
+      border: "2px solid silver",
+      boxShadow: "0 0 3px #FF0000, 0 0 5px #0000FF"
+    }
   })
 );
 
@@ -159,17 +165,15 @@ export default function MonitorPanel(props: IMonitorPanel) {
     props.memento
   );
 
-  // const [grouping, setGrouping] = React.useState(memento.get(propGrouping()));
-  // const [filtering, setFiltering] = React.useState(
-  //   memento.get(propFiltering())
-  // );
   const [selected, setSelected] = React.useState<IConnectionData[]>([]);
   const [speed, setSpeed] = React.useState(memento.get(propSpeed()));
   const [rows, setRows] = React.useState([]);
   const [subtitle, setSubtitle] = React.useState();
+  //const [servers, setServers] = React.useState([]);
   const [locked, setLocked] = React.useState(true);
   const [pageSize, setPageSize] = React.useState(memento.get(propPageSize()));
-  const [grouping, setGrouping] = React.useState(false);
+  const [grouping, setGrouping] = React.useState(memento.get(propGrouping()));
+  const [treeServer, setTreeServer] = React.useState(memento.get(propTreeServer()));
   const [filtering, setFiltering] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState({
     lockServer: false,
@@ -206,24 +210,18 @@ export default function MonitorPanel(props: IMonitorPanel) {
       const message = event.data; // The JSON data our extension sent
 
       switch (message.command) {
-        case MonitorPanelAction.SetSpeedUpdate: {
-          const speed = message.data;
-
-          memento.set(propSpeed(speed));
-          memento.save();
-          setSpeed(speed);
-
-          break;
-        }
         case MonitorPanelAction.LockServer: {
           setLocked(message.data);
 
           break;
         }
         case MonitorPanelAction.UpdateUsers: {
-          const result = message.data.users as IMonitorUser[];
-          setRows(result);
+          const users = message.data.users as IMonitorUser[];
+          const servers = message.data.servers as any[];
+
+          setRows(users);
           setSubtitle(message.data.serverName);
+          //setServers(servers);
           break;
         }
         default:
@@ -310,6 +308,8 @@ export default function MonitorPanel(props: IMonitorPanel) {
       };
 
       props.vscode.postMessage(command);
+
+      memento.set(propSpeed(speed));
     }
   };
 
@@ -411,34 +411,24 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   const doColumnHidden = (column: Column<any>, hidden: boolean) => {
     memento.set(propColumnHidden(column.field as string, hidden));
-    memento.save();
   };
 
   const doGroupRemoved = (column: Column<any>, index: boolean) => {
-    //console.log(column);
-    //_memento.set(propColumnHidden(column.field as string, index));
+    memento.set(propColumnGroup(column.field as string, index));
   };
 
   const doOrderChange = (orderBy: number, direction: string) => {
-    const count = 0; //columns.filter((element: any) => element.hidden).length;
-
-    memento.set(propOrderBy(orderBy + count));
+    memento.set(propOrderBy(orderBy));
     memento.set(propOrderDirection(direction));
-
-    //memento.save(MonitorPanelAction.DoUpdateState);
-  };
+};
 
   const doColumnDragged = (sourceIndex: number, destinationIndex: number) => {
-    const count = 0; //columns.filter((element: any) => element.hidden).length;
-    memento.set(propColumnMove(sourceIndex + count, destinationIndex + count));
-
-    //memento.save(MonitorPanelAction.DoUpdateState);
+    memento.set(propColumnMove(sourceIndex, destinationIndex));
   };
 
   const doChangeRowsPerPage = (value: number) => {
     setPageSize(value);
     memento.set(propPageSize(value));
-    memento.save();
   };
 
   const doClickRow = (event: React.MouseEvent, rowData: any) => {
@@ -516,16 +506,28 @@ export default function MonitorPanel(props: IMonitorPanel) {
   });
 
   actions.push({
-    icon: () => <GroupingIcon />,
+    icon: () => treeServer ? <StorageIcon className={style.actionOn} />:<StorageIcon />,
+    tooltip: i18n.localize("TREE_SERVER_ON_OFF", "Tree server on/off"),
+    isFreeAction: true,
+    onClick: () => {
+      setTreeServer(!treeServer);
+      memento.set(propTreeServer(!treeServer));
+    },
+    hidden: true
+  });
+
+  actions.push({
+    icon: () => grouping ? <GroupingIcon className={style.actionOn}/>:<GroupingIcon />,
     tooltip: i18n.localize("GROUPING_ON_OFF", "Grouping on/off"),
     isFreeAction: true,
     onClick: () => {
       setGrouping(!grouping);
+      memento.set(propGrouping(!grouping));
     },
   });
 
   actions.push({
-    icon: () => <FilterList />,
+    icon: () => filtering? <FilterList className={style.actionOn}/>:<FilterList />,
     tooltip: i18n.localize("FILTERING_ON_OFF", "Filtering on/off"),
     isFreeAction: true,
     onClick: () => {
@@ -545,10 +547,17 @@ export default function MonitorPanel(props: IMonitorPanel) {
   });
 
   actions.push({
-    icon: () => <RefreshIcon />,
+    icon: () => speed===0? <RefreshIcon className={style.actionOn}/>:<RefreshIcon />,
     tooltip: i18n.localize("REFRESH_DATA", "Refresh data"),
     isFreeAction: true,
     onClick: () => handleRefreshButtonClick(),
+  });
+
+  actions.push({
+    icon: () => <FormatClearIcon />,
+    tooltip: i18n.localize("RESET_CONFIGURATIONS", "Reset configurations"),
+    isFreeAction: true,
+    onClick: () => handleResetButtonClick(),
   });
 
   const style = useToolbarStyles();
@@ -558,7 +567,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
       <Paper variant="outlined">
         <MaterialTable
           // other props
-          title={""}
           components={{
             Toolbar: (props) => (
               <div>
@@ -570,23 +578,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
                       : i18n.localize("INITIALIZING", "(inicializando)")
                   }
                 />
-                <div className={style.actions}>
-                  <Tooltip
-                    title={i18n.localize(
-                      "RESET_CONFIGURATIONS",
-                      "Reset configurations"
-                    )}
-                  >
-                    <IconButton
-                      size="medium"
-                      onClick={() => {
-                        handleResetButtonClick();
-                      }}
-                    >
-                      <FormatClearIcon fontSize="inherit" />
-                    </IconButton>
-                  </Tooltip>
-                </div>
 
                 <MTableToolbar {...props} />
               </div>
@@ -611,7 +602,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
                 "CONNECTIONS_SELECTED",
                 "{0} connections selected"
               ),
-              showColumnsTitle: i18n.localize(
+              addRemoveColumns: i18n.localize(
                 "SHOW_HIDE_COLUMNS",
                 "Show/hide columns"
               ),
@@ -658,6 +649,8 @@ export default function MonitorPanel(props: IMonitorPanel) {
             actionsColumnIndex: 0,
             columnsButton: true,
             sorting: true,
+            showTitle: false,
+            toolbarButtonAlignment: "right"
           }}
           actions={actions}
           onSelectionChange={(rows) => setSelected(rows)}

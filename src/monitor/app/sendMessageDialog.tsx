@@ -7,7 +7,7 @@ import {
   DialogActions,
   Button,
   TextField,
-  Paper
+  Paper,
 } from "@material-ui/core";
 import MaterialTable from "material-table";
 import { cellDefaultStyle } from "./monitorInterface";
@@ -20,13 +20,30 @@ export interface SendMessageDialogProps {
   onClose: (confirmed: boolean, message: string, recipients: any) => void;
 }
 
-
-const headCells: any[] = [
-  { field: "server", title: i18n.localize("SERVER", "Server"), ...cellDefaultStyle },
-  { field: "environment", title: i18n.localize("ENVIRONEMNT", "Environment"), ...cellDefaultStyle },
-  { field: "username", title: i18n.localize("USER", "User"), ...cellDefaultStyle },
-  { field: "remark", title: i18n.localize("REMARKS", "Remarks"), ...cellDefaultStyle }
-];
+function headCells(): any[] {
+  return [
+    {
+      field: "server",
+      title: i18n.localize("SERVER", "Server"),
+      ...cellDefaultStyle,
+    },
+    {
+      field: "environment",
+      title: i18n.localize("m", "Environment"),
+      ...cellDefaultStyle,
+    },
+    {
+      field: "username",
+      title: i18n.localize("USER", "User"),
+      ...cellDefaultStyle,
+    },
+    {
+      field: "remark",
+      title: i18n.localize("REMARKS", "Remarks"),
+      ...cellDefaultStyle,
+    },
+  ];
+}
 
 export default function SendMessageDialog(props: SendMessageDialogProps) {
   const { onClose, recipients, open } = props;
@@ -55,7 +72,9 @@ export default function SendMessageDialog(props: SendMessageDialogProps) {
       fullWidth
       maxWidth="lg"
     >
-      <DialogTitle>{i18n.localize("DLG_TITLE_SEND_MESSAGE","Message sending")}</DialogTitle>
+      <DialogTitle>
+        {i18n.localize("DLG_TITLE_SEND_MESSAGE", "Message sending")}
+      </DialogTitle>
       <DialogContent dividers={true}>
         <DialogContentText ref={descriptionElementRef} tabIndex={-1}>
           <TextField
@@ -72,18 +91,18 @@ export default function SendMessageDialog(props: SendMessageDialogProps) {
           <Paper>
             <MaterialTable
               icons={monitorIcons.table}
-              columns={headCells}
+              columns={headCells()}
               data={recipients}
               options={{
                 toolbar: false,
-                showTitle: false
+                showTitle: false,
               }}
             />
           </Paper>
         </DialogContentText>
         <DialogActions>
           <Button
-            onClick={event => {
+            onClick={(event) => {
               handleClose(event, "send");
             }}
           >

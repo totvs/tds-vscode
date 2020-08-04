@@ -8,7 +8,7 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
-  Paper
+  Paper,
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import MaterialTable from "material-table";
@@ -22,18 +22,34 @@ export interface DisconnectUserDialogProps {
   onClose: (confirmed: boolean, killNow: boolean, recipients: any[]) => void;
 }
 
-const headCells: any[] = [
-  { field: "server", title:      i18n.localize("SERVER"     , "Server"),...cellDefaultStyle },
-  { field: "environment", title: i18n.localize("ENVIRONMENT", "Environment"),...cellDefaultStyle },
-  { field: "username", title:    i18n.localize("USER"       , "User"),...cellDefaultStyle },
-  { field: "remark", title:      i18n.localize("COMMENT"    , "Comment"),...cellDefaultStyle }
-];
+function headCells(): any[] {
+  return [
+    {
+      field: "server",
+      title: i18n.localize("SERVER", "Server"),
+      ...cellDefaultStyle,
+    },
+    {
+      field: "environment",
+      title: i18n.localize("ENVIRONMENT", "Environment"),
+      ...cellDefaultStyle,
+    },
+    {
+      field: "username",
+      title: i18n.localize("USER", "User"),
+      ...cellDefaultStyle,
+    },
+    {
+      field: "remark",
+      title: i18n.localize("COMMENT", "Comment"),
+      ...cellDefaultStyle,
+    },
+  ];
+}
 
-export default function DisconnectUserDialog(
-  props: DisconnectUserDialogProps
-) {
+export default function DisconnectUserDialog(props: DisconnectUserDialogProps) {
   const { onClose, recipients, open } = props;
-  const [ isKillNow, setKillNow ] = React.useState(false);
+  const [isKillNow, setKillNow] = React.useState(false);
 
   const handleClose = (event: {}, reason: string) => {
     onClose(reason === "OK", isKillNow, recipients);
@@ -51,11 +67,19 @@ export default function DisconnectUserDialog(
       fullWidth
       maxWidth="lg"
     >
-      <DialogTitle>{i18n.localize("DLG_TITLE_CLOSE_CONNECTIONS", "Closes user connections")}</DialogTitle>
+      <DialogTitle>
+        {i18n.localize(
+          "DLG_TITLE_CLOSE_CONNECTIONS",
+          "Closes user connections"
+        )}
+      </DialogTitle>
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <Alert severity="warning">
-            {i18n.localize("WARN_CONNECTION_TERMINATED", "The users listed below will have their connections terminated.")}
+            {i18n.localize(
+              "WARN_CONNECTION_TERMINATED",
+              "The users listed below will have their connections terminated."
+            )}
           </Alert>
           <FormControlLabel
             control={
@@ -65,23 +89,26 @@ export default function DisconnectUserDialog(
                 value="checked"
               />
             }
-            label={i18n.localize("TERMINATE_CONNECTIONS_IMMEDIATELY", "Terminate connections immediately.")}
+            label={i18n.localize(
+              "TERMINATE_CONNECTIONS_IMMEDIATELY",
+              "Terminate connections immediately."
+            )}
           />
           <Paper>
             <MaterialTable
               icons={monitorIcons.table}
-              columns={headCells}
+              columns={headCells()}
               data={recipients}
               options={{
                 toolbar: false,
-                showTitle: false
+                showTitle: false,
               }}
             />
           </Paper>
         </DialogContentText>
         <DialogActions>
           <Button
-            onClick={event => {
+            onClick={(event) => {
               handleClose(event, "OK");
             }}
           >
