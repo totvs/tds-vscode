@@ -355,6 +355,7 @@ export function sendUserMessage(
         computerName: target.computerName,
         threadId: target.threadId,
         server: target.server,
+        environment: target.environment,
         message: message,
       }
     }).then(

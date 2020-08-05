@@ -125,9 +125,10 @@ export function useMemento(
     },
     set: (property: any) => {
       let state = mementoList[id]["state"];
+      const oldState = JSON.stringify(state);
       let savedState = doSaveProperty(state, property);
 
-      if (JSON.stringify(state) !== JSON.stringify(savedState)) {
+      if (oldState !== JSON.stringify(savedState)) {
         state = { ...state, ...savedState };
 
         mementoList[id]["state"] = state;

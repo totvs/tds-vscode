@@ -116,6 +116,7 @@ function Title(props: ITitleProps) {
 function buildColumns(memento: IMemento): [] {
   const columns = propColumns({ ...cellDefaultStyle }).columns;
   const orderBy = memento.get(propOrderBy()) || -1;
+  const defaultSort = orderBy === -1? "":memento.get(propOrderDirection()) || "asc";
 
   for (let index = 0; index < columns.length; index++) {
     const value = memento.get(propColumnHidden(columns[index].field));
@@ -126,8 +127,7 @@ function buildColumns(memento: IMemento): [] {
     }
 
     if (orderBy === index) {
-      columns[index]["sorting"] = true;
-      columns[index]["defaultSort"] = memento.get(propOrderDirection());
+      columns[index]["defaultSort"] = defaultSort;
     }
   }
 

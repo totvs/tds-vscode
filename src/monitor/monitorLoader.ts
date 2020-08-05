@@ -485,7 +485,7 @@ export class MonitorLoader {
           },
         });
       } else {
-        vscode.window.setStatusBarMessage(
+        vscode.window.setStatusBarMessage("$(clock)" +
           localize(
             "REQUESTING_DATA_FROM_SERVER",
             "Requesting data from the server [{0}]",
@@ -549,12 +549,12 @@ export class MonitorLoader {
 
   private updateSpeedStatus(pauseReason?: string) {
     let nextUpdate = new Date(Date.now());
-    let icon: string = ''; //${clock}
+    let icon: string = '$(clock)';
     let msg1: string = "";
     let msg2: string = "";
 
     if (pauseReason) {
-      icon = ''; //"${debug-pause}";
+      icon = "$(debug-pause)";
       msg1 = localize("UPDATE_PAUSED", "Update paused. {0}", pauseReason);
     } else {
       msg1 = localize(
