@@ -90,6 +90,24 @@ export default function SendMessageDialog(props: SendMessageDialogProps) {
           />
           <Paper>
             <MaterialTable
+              localization={{
+                pagination: {
+                  labelDisplayedRows: "{from}-{to}/{count}",
+                  labelRowsSelect: i18n.localize("CONNECTIONS", "connections"),
+                  labelRowsPerPage: i18n.localize("LINES_PAGE.", "lines/p."),
+                  firstAriaLabel: i18n.localize("FIRST", "First"),
+                  firstTooltip: i18n.localize("FIRST_PAGE", "First page"),
+                  previousAriaLabel: i18n.localize("PREVIOUS", "Previous"),
+                  previousTooltip: i18n.localize(
+                    "PREVIOUS_PAGE",
+                    "Previous page"
+                  ),
+                  nextAriaLabel: i18n.localize("NEXT", "Next"),
+                  nextTooltip: i18n.localize("NEXT_PAGE", "Next page"),
+                  lastAriaLabel: i18n.localize("LAST", "Last"),
+                  lastTooltip: i18n.localize("LAST_PAGE", "Last page"),
+                },
+              }}
               icons={monitorIcons.table}
               columns={headCells()}
               data={recipients}

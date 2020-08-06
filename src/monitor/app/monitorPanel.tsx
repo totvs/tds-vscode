@@ -40,7 +40,6 @@ import {
   propSpeedText,
   propOrderBy,
   propOrderDirection,
-  propColumnMove,
   propColumnsOrder,
   propSpeed,
   propTreeServer,
@@ -114,9 +113,11 @@ function Title(props: ITitleProps) {
 }
 
 function buildColumns(memento: IMemento): [] {
-  const columns = propColumns({ ...cellDefaultStyle }).columns;
-  const orderBy = memento.get(propOrderBy()) || -1;
-  const defaultSort = orderBy === -1? "":memento.get(propOrderDirection()) || "asc";
+  let columns = propColumns({ ...cellDefaultStyle }).columns;
+  const orderBy = memento.get(propOrderBy()) || "";
+  const defaultSort =
+    orderBy === -1 ? "" : memento.get(propOrderDirection()) || "asc";
+  let columnsOrder: any[] = memento.get(propColumnsOrder()) || [];
 
   for (let index = 0; index < columns.length; index++) {
     const value = memento.get(propColumnHidden(columns[index].field));
@@ -126,14 +127,27 @@ function buildColumns(memento: IMemento): [] {
       columns[index]["hidden"] = value;
     }
 
-    if (orderBy === index) {
+    if (orderBy === columns[index]["field"]) {
       columns[index]["defaultSort"] = defaultSort;
+    }
+
+    try { //para mascarar erro devido a erro na implemtação anterior
+      const orderColumn: any = columnsOrder.find((column: any) => {
+        return column.field === columns[index]["field"];
+      });
+
+      if (orderColumn) {
+        columns[index]["columnOrder"] = orderColumn.columnOrder;
+      }
+    } catch (error) {
+      columnsOrder = [];
     }
   }
 
-  const columnsOrder: string[] = memento.get(propColumnsOrder());
-  if (columnsOrder) {
-    console.log(columnsOrder);
+  if (columnsOrder.length > 0) {
+    columns = columns.sort(function (a: any, b: any): any {
+      return a.columnOrder - b.columnOrder;
+    });
   }
 
   return columns;
@@ -188,13 +202,14 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const [reset, setReset] = React.useState(false);
 
   React.useEffect(() => {
-    const enableUpdateUsers: boolean = !isAnyDialogOpen(openDialog) && selected.length === 0
+    const enableUpdateUsers: boolean =
+      !isAnyDialogOpen(openDialog) && selected.length === 0;
 
     let command: IMonitorPanelAction = {
       action: MonitorPanelAction.EnableUpdateUsers,
       content: {
         state: enableUpdateUsers,
-        reason: !enableUpdateUsers ? (selected.length === 0 ?1:2) : 0 //1 dialog open, 2 selected row
+        reason: !enableUpdateUsers ? (selected.length === 0 ? 1 : 2) : 0, //1 dialog open, 2 selected row
       },
     };
 
@@ -422,12 +437,25 @@ export default function MonitorPanel(props: IMonitorPanel) {
   };
 
   const doOrderChange = (orderBy: number, direction: string) => {
-    memento.set(propOrderBy(orderBy));
+    const columns = propColumns().columns;
+
+    memento.set(propOrderBy(columns[orderBy]["field"]));
     memento.set(propOrderDirection(direction));
   };
 
   const doColumnDragged = (sourceIndex: number, destinationIndex: number) => {
-    memento.set(propColumnMove(sourceIndex, destinationIndex));
+    const newOrder = columns
+      .filter((column: any) => {
+        return column.tableData.groupOrder === undefined;
+      })
+      .map((column: any) => {
+        return {
+          field: column.field,
+          columnOrder: column.tableData.columnOrder,
+        };
+      });
+
+    memento.set(propColumnsOrder(newOrder));
   };
 
   const doChangeRowsPerPage = (value: number) => {

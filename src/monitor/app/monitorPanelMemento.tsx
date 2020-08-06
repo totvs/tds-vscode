@@ -141,7 +141,7 @@ export const propOrderBy = (value: number = undefined): any => {
   };
 };
 
-export const propColumnsOrder = (value: string[] = undefined): any => {
+export const propColumnsOrder = (value: any[] = undefined): any => {
   return {
     customProps: {
       columnsOrder: value,
@@ -149,29 +149,7 @@ export const propColumnsOrder = (value: string[] = undefined): any => {
   };
 };
 
-export const propColumnMove = (
-  sourceIndex: number,
-  destinationIndex: number
-): any => {
-  const columns = propColumns().columns;
-  const columnsOrder: string[] = columns.map((element: any) => element.field);
-  let result: string[];
-
-  if (sourceIndex > destinationIndex) {
-    const aux = destinationIndex;
-    destinationIndex = sourceIndex;
-    sourceIndex = aux;
-  }
-
-  result = columnsOrder.slice(0, sourceIndex - 1);
-  result.push(...columnsOrder.slice(sourceIndex, destinationIndex - 1));
-  result.push(columnsOrder[destinationIndex]);
-  result.push(...columnsOrder.slice(destinationIndex + 1, columnsOrder.length));
-
-  return propColumnsOrder(result);
-};
-
-export const propColumnList = (): any => {
+export const _propColumnList = (): any => {
   return {
     columns: [],
   };
