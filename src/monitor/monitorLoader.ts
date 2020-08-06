@@ -763,6 +763,7 @@ function getTranslations() {
       "Block new connections?"
     ),
     DLG_TITLE_REMARKS: localize("DLG_TITLE_REMARKS", "Remarks"),
+    DLG_TITLE_UNLOCK: localize("DLG_TITLE_UNLOCK", "Unlock new connections?"),
     ENVIRONEMNT: localize("ENVIRONEMNT", "Environemnt"),
   };
 }
