@@ -1,5 +1,10 @@
 import * as React from "react";
-import MaterialTable, { Column, MTableToolbar } from "material-table";
+import MaterialTable, {
+  Column,
+  MTableToolbar,
+  MTableGroupbar,
+  MTableGroupRow,
+} from "material-table";
 import {
   createStyles,
   lighten,
@@ -131,7 +136,8 @@ function buildColumns(memento: IMemento): [] {
       columns[index]["defaultSort"] = defaultSort;
     }
 
-    try { //para mascarar erro devido a erro na implemtação anterior
+    try {
+      //para mascarar erro devido a erro na implemtação anterior
       const orderColumn: any = columnsOrder.find((column: any) => {
         return column.field === columns[index]["field"];
       });
@@ -180,7 +186,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const [speed, setSpeed] = React.useState(memento.get(propSpeed()));
   const [rows, setRows] = React.useState([]);
   const [subtitle, setSubtitle] = React.useState();
-  //const [servers, setServers] = React.useState([]);
   const [locked, setLocked] = React.useState(true);
   const [pageSize, setPageSize] = React.useState(memento.get(propPageSize()));
   const [grouping, setGrouping] = React.useState(memento.get(propGrouping()));
@@ -606,7 +611,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
     <MonitorTheme>
       <Paper variant="outlined">
         <MaterialTable
-          // other props
           components={{
             Toolbar: (props) => (
               <div>
@@ -622,53 +626,13 @@ export default function MonitorPanel(props: IMonitorPanel) {
                 <MTableToolbar {...props} />
               </div>
             ),
+            Groupbar: (props) => (
+              <MTableGroupbar
+                {...props}
+              />
+            ),
           }}
-          localization={{
-            pagination: {
-              labelDisplayedRows: "{from}-{to}/{count}",
-              labelRowsSelect: i18n.localize("CONNECTIONS", "connections"),
-              labelRowsPerPage: i18n.localize("LINES_PAGE.", "lines/p."),
-              firstAriaLabel: i18n.localize("FIRST", "First"),
-              firstTooltip: i18n.localize("FIRST_PAGE", "First page"),
-              previousAriaLabel: i18n.localize("PREVIOUS", "Previous"),
-              previousTooltip: i18n.localize("PREVIOUS_PAGE", "Previous page"),
-              nextAriaLabel: i18n.localize("NEXT", "Next"),
-              nextTooltip: i18n.localize("NEXT_PAGE", "Next page"),
-              lastAriaLabel: i18n.localize("LAST", "Last"),
-              lastTooltip: i18n.localize("LAST_PAGE", "Last page"),
-            },
-            toolbar: {
-              nRowsSelected: i18n.localize(
-                "CONNECTIONS_SELECTED",
-                "{0} connections selected"
-              ),
-              addRemoveColumns: i18n.localize(
-                "SHOW_HIDE_COLUMNS",
-                "Show/hide columns"
-              ),
-              searchTooltip: i18n.localize(
-                "SEARCH_ALL_COLUMNS",
-                "Search in all columns"
-              ),
-              searchPlaceholder: i18n.localize("SEARCH", "Search"),
-            },
-            header: {
-              actions: i18n.localize("ACTIONS", "Actions"),
-            },
-            body: {
-              emptyDataSourceMessage: i18n.localize(
-                "NO_CONNECTIONS",
-                "There are no connections or they are not visible to the monitor."
-              ),
-              filterRow: {
-                filterTooltip: i18n.localize("FILTER", "Filter"),
-              },
-            },
-            grouping: {
-              placeholder: i18n.localize("DRAG_HEADERS", "Drag headers ..."),
-              groupedBy: i18n.localize("GROUPED_BY", "Grouped by:"),
-            },
-          }}
+          localization={i18n.materialTableLocalization}
           icons={monitorIcons.table}
           columns={rows.length ? columns : []}
           data={rows}
