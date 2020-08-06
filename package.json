@@ -95,7 +95,7 @@
 		"tslint": "^6.1.2",
 		"vsce": "^1.77.0",
 		"vscode-nls-dev": "^3.3.2",
-		"webpack": "^4.44.0",
+		"webpack": "^4.44.1",
 		"webpack-cli": "^3.3.12",
 		"webpack-stream": "^5.2.1"
 	},
