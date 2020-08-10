@@ -1,6 +1,9 @@
 # TOTVS Developer Studio para VSCode
 
 [![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A extensão TOTVS Developer Studio Code disponibiliza uma suíte de desenvolvimento para o ecossistema Protheus.
 Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP (Debug Adapter Protocol), ambos amplamente utilizados e extensíveis à outras IDEs de mercado, como Atom, Visual Studio, Eclipse, Eclipse Theia, Vim e Emacs.
@@ -483,6 +486,22 @@ Ou se preferir colabore conosco e faça você mesmo. Veja como colaborar a segui
 * Veja também nosso vídeo de como contribuir.
 
 > [TOTVS - TDS-VSCode - Desenvolvimento colaborativo](https://www.youtube.com/watch?v=IGWh5ejxhHU)<br/>
+
+## Colaboradores
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/brodao"><img src="https://avatars0.githubusercontent.com/u/949914?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Alan Cândido</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=brodao" title="Code">💻</a> <a href="#content-brodao" title="Content">🖋</a> <a href="https://github.com/totvs/tds-vscode/commits?author=brodao" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/lwtnb-wrk"><img src="https://avatars1.githubusercontent.com/u/49563478?v=4?s=50" width="50px;" alt=""/><br /><sub><b>lwtnb-wrk</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=lwtnb-wrk" title="Code">💻</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## Plugins recomendados
 
