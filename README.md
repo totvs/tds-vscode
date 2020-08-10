@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A extensão TOTVS Developer Studio Code disponibiliza uma suíte de desenvolvimento para o ecossistema Protheus.
@@ -497,6 +497,9 @@ Ou se preferir colabore conosco e faça você mesmo. Veja como colaborar a segui
     <td align="center"><a href="https://github.com/brodao"><img src="https://avatars0.githubusercontent.com/u/949914?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Alan Cândido</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=brodao" title="Code">💻</a> <a href="#content-brodao" title="Content">🖋</a> <a href="https://github.com/totvs/tds-vscode/commits?author=brodao" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/lwtnb-wrk"><img src="https://avatars1.githubusercontent.com/u/49563478?v=4?s=50" width="50px;" alt=""/><br /><sub><b>lwtnb-wrk</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=lwtnb-wrk" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/DanielYampolschi"><img src="https://avatars1.githubusercontent.com/u/10711513?v=4?s=50" width="50px;" alt=""/><br /><sub><b>DanielYampolschi</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=DanielYampolschi" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/matheus-sales"><img src="https://avatars2.githubusercontent.com/u/11618741?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Matheus Sales</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=matheus-sales" title="Code">💻</a></td>
   </tr>
 </table>
 
