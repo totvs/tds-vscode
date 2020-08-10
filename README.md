@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A extensão TOTVS Developer Studio Code disponibiliza uma suíte de desenvolvimento para o ecossistema Protheus.
@@ -511,6 +511,7 @@ Ou se preferir colabore conosco e faça você mesmo. Veja como colaborar a segui
   <tr>
     <td align="center"><a href="https://github.com/alexmmartins"><img src="https://avatars0.githubusercontent.com/u/24897997?v=4?s=50" width="50px;" alt=""/><br /><sub><b>alexmmartins</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=alexmmartins" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/robsonwilliam"><img src="https://avatars3.githubusercontent.com/u/11349311?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Robson William</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=robsonwilliam" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/caiadofelipe"><img src="https://avatars3.githubusercontent.com/u/49681823?v=4?s=50" width="50px;" alt=""/><br /><sub><b>FELIPE CAIADO ALMEIDA</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=caiadofelipe" title="Code">💻</a></td>
   </tr>
 </table>
 
