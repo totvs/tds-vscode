@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import { DocumentFormatting } from "./documentFormatting";
 import { FourglFormattingRules } from "./fourglFormattingRules";
-import { parser, Token4GlType } from "../parser";
 import { isArray } from "util";
+import { parser4GL, Token4GlType } from "../parser";
 
 class FourglFormatting extends DocumentFormatting
   implements
@@ -30,8 +30,8 @@ class FourglFormatting extends DocumentFormatting
     try {
       const line: vscode.TextLine = document.lineAt(position.line - 1);
       if (line.text.trim() !== "") {
-      const ast = parser(document.languageId, line.text + "\n"); //obrigatorio \n
-      const nodes = this.findNodes(Token4GlType.keyword, ast);
+        const ast = parser4GL.getAst(document.languageId, line.text);
+        const nodes = this.findNodes(Token4GlType.keyword, ast);
 
         nodes.forEach((token: any) => {
           if (token.type === Token4GlType.keyword) {
@@ -66,7 +66,7 @@ class FourglFormatting extends DocumentFormatting
         result = result.concat(this.findNodes(target, element));
       });
     } else if (node.type === target) {
-        result.push(node);
+      result.push(node);
     } else if (isArray(node.value)) {
       result = result.concat(this.findNodes(target, node.value));
     }
