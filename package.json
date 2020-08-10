@@ -40,7 +40,6 @@
 	"scripts": {
 		"clean2": "gulp clean",
 		"compile": "npm-run-all compile:*",
-		"compile:parse_4gl": "echo src/parser/4gl-parser.pegjs && pegjs -o ./src/parser/4gl-parser.js ./syntaxes/4gl.pegjs",
 		"compile:extension": "tsc -p ./src",
 		"compile:views": "webpack --mode development",
 		"tslint": "tslint ./src/**/*.ts",
@@ -50,7 +49,10 @@
 		"i18n-import": "gulp i18n-import",
 		"package": "gulp package",
 		"publish": "gulp publish",
-		"vscode:prepublish": "webpack --mode production"
+		"vscode:prepublish": "webpack --mode production",
+		"flow": "./node_modules/.bin/babel src/ -d for_flow/ && flow",
+		"all-contributors:generate": "all-contributors generate",
+		"all-contributors:check": "all-contributors check"
 	},
 	"dependencies": {
 		"@material-ui/core": "^4.11.0",
@@ -78,10 +80,15 @@
 		"vscode-nls": "^4.1.2"
 	},
 	"devDependencies": {
+		"@babel/cli": "^7.10.5",
+		"@babel/core": "^7.11.1",
+		"@babel/preset-flow": "^7.10.4",
 		"@types/ini": "^1.3.30",
 		"@types/react-dom": "^16.9.8",
+		"all-contributors-cli": "^6.17.0",
 		"cleanup": "^0.3.0",
 		"css-loader": "^3.6.0",
+		"flow-bin": "^0.131.0",
 		"gulp": "^4.0.2",
 		"gulp-filter": "^5.1.0",
 		"gulp-pegjs": "^0.2.0",

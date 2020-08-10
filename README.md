@@ -497,8 +497,6 @@ Ou se preferir colabore conosco e faça você mesmo. Veja como colaborar a segui
     <td align="center"><a href="https://github.com/brodao"><img src="https://avatars0.githubusercontent.com/u/949914?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Alan Cândido</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=brodao" title="Code">💻</a> <a href="#content-brodao" title="Content">🖋</a> <a href="https://github.com/totvs/tds-vscode/commits?author=brodao" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/lwtnb-wrk"><img src="https://avatars1.githubusercontent.com/u/49563478?v=4?s=50" width="50px;" alt=""/><br /><sub><b>lwtnb-wrk</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=lwtnb-wrk" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/DanielYampolschi"><img src="https://avatars1.githubusercontent.com/u/10711513?v=4?s=50" width="50px;" alt=""/><br /><sub><b>DanielYampolschi</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=DanielYampolschi" title="Code">💻</a></td>
-  </tr>
-  <tr>
     <td align="center"><a href="https://github.com/matheus-sales"><img src="https://avatars2.githubusercontent.com/u/11618741?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Matheus Sales</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=matheus-sales" title="Code">💻</a></td>
     <td align="center"><a href="http://youtube.com/user/MansanoRicardo"><img src="https://avatars1.githubusercontent.com/u/33813921?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Mansano</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=ricardomansano" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/acacioegas"><img src="https://avatars0.githubusercontent.com/u/369099?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Acacio Egas</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=acacioegas" title="Code">💻</a></td>
@@ -507,8 +505,6 @@ Ou se preferir colabore conosco e faça você mesmo. Veja como colaborar a segui
     <td align="center"><a href="https://github.com/danielbolognani"><img src="https://avatars1.githubusercontent.com/u/25229827?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Daniel Otto Bolognani</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=danielbolognani" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/leowww"><img src="https://avatars0.githubusercontent.com/u/4183539?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Leo Watanabe</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=leowww" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/rogeriorc"><img src="https://avatars1.githubusercontent.com/u/2599798?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Rogério Ribeiro da Cruz</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=rogeriorc" title="Code">💻</a></td>
-  </tr>
-  <tr>
     <td align="center"><a href="https://github.com/alexmmartins"><img src="https://avatars0.githubusercontent.com/u/24897997?v=4?s=50" width="50px;" alt=""/><br /><sub><b>alexmmartins</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=alexmmartins" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/robsonwilliam"><img src="https://avatars3.githubusercontent.com/u/11349311?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Robson William</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=robsonwilliam" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/caiadofelipe"><img src="https://avatars3.githubusercontent.com/u/49681823?v=4?s=50" width="50px;" alt=""/><br /><sub><b>FELIPE CAIADO ALMEIDA</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=caiadofelipe" title="Code">💻</a></td>
@@ -526,15 +522,9 @@ Ou se preferir colabore conosco e faça você mesmo. Veja como colaborar a segui
 
 ## Plugins recomendados
 
-* TDS Monitor for VSCODE.
-
-  Permite monitor servidores protheus.
-
-  <https://marketplace.visualstudio.com/items?itemName=totvs.tds-monitor>
-
 * Numbered Bookmarks.
 
-  Permite uso de bookmarks no estilo Delphi numerados de 1 a 9.
+  Permite uso de *bookmarks* no estilo Delphi numerados de 1 a 9.
 
   <https://marketplace.visualstudio.com/items?itemName=alefragnani.numbered-bookmarks>
 
