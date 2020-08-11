@@ -1,34 +1,17 @@
-sudo: false
-
 language: node_js
 node_js:
-- "8"
-- "9"
-- "10"
-- "11"
-- "12"
+    - "node" # use latest stable nodejs version
 
-matrix:
-  include:
-    - os: linux
-      dist: trusty
-      addons:
-        apt:
-          packages:
-            - libdbus-1-dev
+cache:
+    npm: false
 
-    - os: osx
-
-before_install:
-- if [ $TRAVIS_OS_NAME == "linux" ]; then
-      export CXX="g++-4.9" CC="gcc-4.9" DISPLAY=:99.0;
-      sh -e /etc/init.d/xvfb start;
-      sleep 3;
-    fi
-
-install:
-- npm install
-- npm run compile
+before_script:
 
 script:
-- npm test --silent
+    #- npm run coverage # jest test with coverage flag does coverage too
+    - npm test
+
+after_script:
+    ##- "cat coverage/lcov.info | ./node_modules/.bin/coveralls" # sends the coverage report to coveralls
+#env:
+#       NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
