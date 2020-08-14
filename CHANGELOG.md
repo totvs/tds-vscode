@@ -1,3 +1,8 @@
+# Versão 1.0.next
+
+## Correção na compilação 4GL quando há comando "globals <arquivo>" (DTCLIENT01-2015)[https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2015]
+----
+
 # Versão 1.0.6
 
 ## Monitoramento de servidores TOTVS (BETA)

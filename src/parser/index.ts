@@ -1,6 +1,6 @@
 import * as prettier from "prettier";
 
-function _parser(
+function process(
   languageId: string,
   content: string,
   options?: prettier.Options
@@ -11,19 +11,32 @@ function _parser(
     return language.vscodeLanguageIds.includes(languageId);
   });
 
-  const result: any = prettier.format(content.concat("\n"), { //\n é obrigatório
+  const result: any = prettier.formatWithCursor(content.concat("\n"), { //\n é obrigatório
     parser: language[0].parsers[0],
+    ...options
   });
 
-  return result;
+  return result.formatted || result;
 }
 
 export enum Token4GlType {
   keyword = "keyword",
 }
 
+export interface IOffsetPosition {
+  locStart: number,
+  locEnd: number
+}
+
 export const parser4GL: any = {
-  getAst: (languageId: string, content: string) => {
-    return _parser(languageId, content);
+  getAst: (languageId: string, content: string, offsetPosition?: IOffsetPosition) => {
+    let options: any = offsetPosition || {};
+
+    return process(languageId, content, { ...options, astFormat: "4GL-ast" });
+  },
+  getFormatted: (languageId: string, content: string, offsetPosition?: IOffsetPosition) => {
+    let options: any = offsetPosition || {};
+
+    return process(languageId, content, { ...options, astFormat: "4GL-source" });
   },
 };

@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { DocumentFormatting } from "./documentFormatting";
 import { FourglFormattingRules } from "./fourglFormattingRules";
 import { isArray } from "util";
-import { parser4GL, Token4GlType } from "../parser";
+import { parser4GL, Token4GlType, IOffsetPosition } from "../parser";
 
 class FourglFormatting extends DocumentFormatting
   implements
@@ -29,49 +29,21 @@ class FourglFormatting extends DocumentFormatting
 
     try {
       const line: vscode.TextLine = document.lineAt(position.line - 1);
+
       if (line.text.trim() !== "") {
-        const ast = parser4GL.getAst(document.languageId, line.text);
-        const nodes = this.findNodes(Token4GlType.keyword, ast);
+        const offsetPos: IOffsetPosition = {
+          locStart: document.offsetAt(line.range.start),
+          locEnd: document.offsetAt(line.range.end)
+        };
+        const formatted  = parser4GL.getFormatted(document.languageId, document.getText(), offsetPos );
 
-        nodes.forEach((token: any) => {
-          if (token.type === Token4GlType.keyword) {
-            const s = line.range.start;
-            const offset = token.location.start.offset;
-
-            const r = new vscode.Range(
-              s.line,
-              offset,
-              s.line,
-              token.location.end.offset
-            );
-
-            result.push(vscode.TextEdit.replace(r, token.value.toUpperCase()));
-          }
-        });
+        result.push(vscode.TextEdit.replace(line.range, formatted));
       }
     } catch (error) {
       console.log(error);
     }
 
     return Promise.resolve(result);
-  }
-
-  private findNodes(target: Token4GlType, node: any): any[] {
-    let result: any[] = [];
-
-    if (node === undefined || node === null) {
-      //ignorar
-    } else if (isArray(node)) {
-      node.forEach((element: any) => {
-        result = result.concat(this.findNodes(target, element));
-      });
-    } else if (node.type === target) {
-      result.push(node);
-    } else if (isArray(node.value)) {
-      result = result.concat(this.findNodes(target, node.value));
-    }
-
-    return result;
   }
 
   provideDocumentFormattingEdits(
