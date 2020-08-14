@@ -63,6 +63,8 @@ class I18n {
           "Search in all columns"
         ),
         searchPlaceholder: this.localize("SEARCH", "Search"),
+        showColumnsTitle: this.localize("SHOW_COLUMNS", "Show Columns"),
+        showColumnsAriaLabel: this.localize("SHOW_COLUMNS", "Show Columns"),
       },
       header: {
         actions: this.localize("ACTIONS", "Actions"),

@@ -11,3 +11,4 @@ tsconfig.json
 vsc-extension-quickstart*.md
 *.code-workspace
 .transifexrc
+for_flow

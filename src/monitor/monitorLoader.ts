@@ -75,7 +75,7 @@ export class MonitorLoader {
 
     this._panel = vscode.window.createWebviewPanel(
       "monitorLoader",
-      "Monitor",
+      localize("MONITOR", "Monitor"),
       vscode.ViewColumn.One,
       {
         enableScripts: true,
@@ -765,5 +765,8 @@ function getTranslations() {
     DLG_TITLE_REMARKS: localize("DLG_TITLE_REMARKS", "Remarks"),
     DLG_TITLE_UNLOCK: localize("DLG_TITLE_UNLOCK", "Unlock new connections?"),
     ENVIRONEMNT: localize("ENVIRONEMNT", "Environemnt"),
+    MONITOR: localize("MONITOR", "Monitor"),
+    INITIALIZING: localize("INITIALIZING", "(initializing)"),
+    SHOW_COLUMNS: localize("SHOW_COLUMNS", "Show Columns"),
   };
 }

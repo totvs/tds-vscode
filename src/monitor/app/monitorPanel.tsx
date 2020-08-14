@@ -1,9 +1,7 @@
 import * as React from "react";
 import MaterialTable, {
   Column,
-  MTableToolbar,
-  MTableGroupbar,
-  MTableGroupRow,
+  MTableToolbar
 } from "material-table";
 import {
   createStyles,
@@ -619,18 +617,13 @@ export default function MonitorPanel(props: IMonitorPanel) {
                   subtitle={
                     subtitle
                       ? subtitle
-                      : i18n.localize("INITIALIZING", "(inicializando)")
+                      : i18n.localize("INITIALIZING", "(initializing)")
                   }
                 />
 
                 <MTableToolbar {...props} />
               </div>
-            ),
-            Groupbar: (props) => (
-              <MTableGroupbar
-                {...props}
-              />
-            ),
+            )
           }}
           localization={i18n.materialTableLocalization}
           icons={monitorIcons.table}
