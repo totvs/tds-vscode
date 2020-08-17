@@ -19,13 +19,14 @@ function process(
   return result.formatted || result;
 }
 
-export enum Token4GlType {
-  keyword = "keyword",
+export enum _Token4GlType {
+  _keyword = "keyword",
 }
 
 export interface IOffsetPosition {
   locStart: number,
-  locEnd: number
+  locEnd:  number,
+  //cursorOffset: number;
 }
 
 export const parser4GL: any = {
