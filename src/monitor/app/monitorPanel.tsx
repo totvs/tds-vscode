@@ -392,6 +392,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   ) => {
     event.preventDefault();
 
+    setSelected([]);
     setTargetRow(null);
     setOpenDialog({ ...openDialog, disconnectUser: false });
 
