@@ -594,6 +594,8 @@ export function activate(context: ExtensionContext) {
   //Verifica questões de encoding
   //Não é mais necessários. Ver "package.json", sessão "configurationDefaults".
   //verifyEncoding();
+
+  showBanner();
 }
 
 function instanceOfUri(object: any): object is Uri {
@@ -660,3 +662,25 @@ function verifyEncoding() {
 	}
 }
 */
+
+let firstTime = true;
+
+function showBanner(force: boolean = false) {
+  if (firstTime) {
+    firstTime = false;
+    const config = workspace.getConfiguration("totvsLanguageServer");
+    const showBanner = config.get("showBanner", true);
+
+    if (showBanner || force) {
+      let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
+
+      languageClient.outputChannel.appendLine("---------------------------v---------------------------------------------------");
+      languageClient.outputChannel.appendLine("   //////  ////    //////  |  TOTVS Developer Studio for VS-Code");
+      languageClient.outputChannel.appendLine("    //    //  //  //       |  Version " + ext.packageJSON["version"]);
+      languageClient.outputChannel.appendLine("   //    //  //  //////    |");
+      languageClient.outputChannel.appendLine("  //    //  //      //     |");
+      languageClient.outputChannel.appendLine(" //    ////    //////      |  https://github.com/totvs/tds-vscode");
+      languageClient.outputChannel.appendLine(" --------------------------^---------------------------------------------------");
+    }
+  }
+}

@@ -375,6 +375,11 @@
 					"default": true,
 					"description": "%tds.package.show.console.on.compile%"
 				},
+				"totvsLanguageServer.showBanner": {
+					"type": "boolean",
+					"default": true,
+					"description": "%tds.package.show.banner%"
+				},
 				"totvsLanguageServer.reconnectLastServer": {
 					"type": "boolean",
 					"default": true,
