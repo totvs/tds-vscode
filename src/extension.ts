@@ -673,14 +673,15 @@ function showBanner(force: boolean = false) {
 
     if (showBanner || force) {
       let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
-
+      /* prettier-ignore-start */
       languageClient.outputChannel.appendLine("---------------------------v---------------------------------------------------");
       languageClient.outputChannel.appendLine("   //////  ////    //////  |  TOTVS Developer Studio for VS-Code");
       languageClient.outputChannel.appendLine("    //    //  //  //       |  Version " + ext.packageJSON["version"]);
-      languageClient.outputChannel.appendLine("   //    //  //  //////    |");
+      languageClient.outputChannel.appendLine("   //    //  //  //////    |  TOTVS Technology");
       languageClient.outputChannel.appendLine("  //    //  //      //     |");
       languageClient.outputChannel.appendLine(" //    ////    //////      |  https://github.com/totvs/tds-vscode");
       languageClient.outputChannel.appendLine(" --------------------------^---------------------------------------------------");
+      /* prettier-ignore-end */
     }
   }
 }
