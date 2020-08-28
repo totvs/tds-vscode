@@ -31,8 +31,8 @@ class FourglFormatting extends DocumentFormatting
 
       if (line.text.trim() !== "") {
         const offsetPos: IOffsetPosition = {
-          locStart: document.offsetAt(line.range.start),
-          locEnd: document.offsetAt(line.range.end),
+          rangeStart: document.offsetAt(line.range.start),
+          rangeEnd: document.offsetAt(line.range.end),
           //cursorOffset: document.offsetAt(line.rangeIncludingLineBreak.end)
         };
 

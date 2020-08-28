@@ -11,29 +11,44 @@ function process(
     return language.vscodeLanguageIds.includes(languageId);
   });
 
-  const result: any = prettier.formatWithCursor(content.concat("\n"), { //\n é obrigatório
+  if (!content.endsWith("\n")) {
+    content = content.concat("\n"); //fim de linha é obrigatório
+  }
+
+  const result: any = prettier.formatWithCursor(content, {
     parser: language[0].parsers[0],
-    ...options
+    ...options,
   });
 
   return result.formatted || result;
 }
 
 export interface IOffsetPosition {
-  locStart: number,
-  locEnd:  number,
+  rangeStart: number;
+  rangeEnd: number;
   //cursorOffset: number;
 }
 
 export const parser4GL: any = {
-  getAst: (languageId: string, content: string, offsetPosition?: IOffsetPosition) => {
+  getAst: (
+    languageId: string,
+    content: string,
+    offsetPosition?: IOffsetPosition
+  ) => {
     let options: any = offsetPosition || {};
 
     return process(languageId, content, { ...options, astFormat: "4GL-ast" });
   },
-  getFormatted: (languageId: string, content: string, offsetPosition?: IOffsetPosition) => {
+  getFormatted: (
+    languageId: string,
+    content: string,
+    offsetPosition?: IOffsetPosition
+  ) => {
     let options: any = offsetPosition || {};
 
-    return process(languageId, content, { ...options, astFormat: "4GL-source" });
+    return process(languageId, content, {
+      ...options,
+      astFormat: "4GL-source",
+    });
   },
 };
