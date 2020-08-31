@@ -1,9 +1,10 @@
 import * as vscode from "vscode";
 import { DocumentFormatting } from "./documentFormatting";
 import { FourglFormattingRules } from "./fourglFormattingRules";
-import { parser4GL, IOffsetPosition } from "../parser";
+import { format4GL, IOffsetPosition } from "../parser";
 
-class FourglFormatting extends DocumentFormatting
+class FourglFormatting
+  extends DocumentFormatting
   implements
     vscode.DocumentRangeFormattingEditProvider,
     vscode.OnTypeFormattingEditProvider,
@@ -33,11 +34,22 @@ class FourglFormatting extends DocumentFormatting
         const offsetPos: IOffsetPosition = {
           rangeStart: document.offsetAt(line.range.start),
           rangeEnd: document.offsetAt(line.range.end),
-          //cursorOffset: document.offsetAt(line.rangeIncludingLineBreak.end)
         };
 
-        const formatted  = parser4GL.getFormatted(document.languageId, document.getText(), offsetPos );
-        result.push(vscode.TextEdit.replace(line.range, formatted));
+        const formatted = format4GL(
+          document.languageId,
+          document.getText(),
+          offsetPos
+        );
+
+        if (formatted.length > 0) {
+          result.push(
+            vscode.TextEdit.replace(
+              line.range,
+              formatted.substring(0, formatted.length - 1)
+            )
+          );
+        }
       }
     } catch (error) {
       console.error(error);

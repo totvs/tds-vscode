@@ -11,44 +11,45 @@ function process(
     return language.vscodeLanguageIds.includes(languageId);
   });
 
-  if (!content.endsWith("\n")) {
-    content = content.concat("\n"); //fim de linha é obrigatório
-  }
-
-  const result: any = prettier.formatWithCursor(content, {
+  let result: any = prettier.format(content.concat("\n"), {
+    //fim de linha é obrigatório
     parser: language[0].parsers[0],
     ...options,
   });
+  result = result.formatted || result;
 
-  return result.formatted || result;
+  return result ? result.substring(0, result.length - 1) : "";
 }
 
 export interface IOffsetPosition {
   rangeStart: number;
   rangeEnd: number;
-  //cursorOffset: number;
 }
 
-export const parser4GL: any = {
-  getAst: (
-    languageId: string,
-    content: string,
-    offsetPosition?: IOffsetPosition
-  ) => {
-    let options: any = offsetPosition || {};
+export function format4GL(
+  languageId: string,
+  content: string,
+  offsetPosition?: IOffsetPosition
+): string {
+  let options: any = {};
+  let result: string;
 
-    return process(languageId, content, { ...options, astFormat: "4GL-ast" });
-  },
-  getFormatted: (
-    languageId: string,
-    content: string,
-    offsetPosition?: IOffsetPosition
-  ) => {
-    let options: any = offsetPosition || {};
+  if (offsetPosition.rangeStart) {
+    result = content.substring(
+      offsetPosition.rangeStart,
+      offsetPosition.rangeEnd
+    );
+    options = {
+      parser: "4gl-token",
+      requirePragma: false,
+      insertPragma: false,
+    };
+  } else {
+    result = content;
+    options = { parser: "4gl-source" };
+  }
 
-    return process(languageId, content, {
-      ...options,
-      astFormat: "4GL-source",
-    });
-  },
-};
+  result = process(languageId, result, options);
+
+  return result as string;
+}
