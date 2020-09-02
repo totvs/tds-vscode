@@ -61,8 +61,8 @@
 		"@totvs/prettier-plugin-4gl": "file:../prettier-plugin-4gl",
 		"@totvs/tds-da": "^1.1.14",
 		"@totvs/tds-ls": "^1.1.23",
-		"@types/node": "^14.6.0",
-		"@types/react": "^16.9.43",
+		"@types/node": "^14.6.2",
+		"@types/react": "^16.9.49",
 		"@types/vscode": "^1.48.0",
 		"cheerio": "^1.0.0-rc.3",
 		"core-js": "^3.6.4",
@@ -82,8 +82,8 @@
 		"vscode-nls": "^4.1.2"
 	},
 	"devDependencies": {
-		"@babel/cli": "^7.10.5",
-		"@babel/core": "^7.11.1",
+		"@babel/cli": "^7.11.5",
+		"@babel/core": "^7.11.5",
 		"@types/ini": "^1.3.30",
 		"@types/react-dom": "^16.9.8",
 		"all-contributors-cli": "^6.17.2",
@@ -103,7 +103,7 @@
 		"terser-webpack-plugin": "^3.0.8",
 		"ts-loader": "^8.0.1",
 		"tslint": "^6.1.2",
-		"vsce": "^1.78.0",
+		"vsce": "^1.79.5",
 		"vscode-nls-dev": "^3.3.2",
 		"webpack": "^4.44.1",
 		"webpack-cli": "^3.3.12",
@@ -289,12 +289,19 @@
 				"files.encoding": "windows1252",
 				"files.insertFinalNewline": true,
 				"files.eol": "\r\n",
-				"editor.formatOnType": true
+				"editor.formatOnType": false,
+				"editor.formatOnPaste": false,
+				"editor.formatOnSave": false,
+				"editor.formatOnSaveMode": "file"
 			},
 			"[advpl]": {
 				"files.encoding": "windows1252",
 				"files.insertFinalNewline": true,
-				"files.eol": "\r\n"
+				"files.eol": "\r\n",
+				"editor.formatOnType": false,
+				"editor.formatOnPaste": false,
+				"editor.formatOnSave": false,
+				"editor.formatOnSaveMode": "file"
 			}
 		},
 		"configuration": {

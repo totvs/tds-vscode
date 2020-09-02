@@ -15,7 +15,34 @@ class FourglFormatting
     options: vscode.FormattingOptions,
     token: vscode.CancellationToken
   ): vscode.ProviderResult<vscode.TextEdit[]> {
-    throw new Error("Method not implemented.");
+    const result: vscode.TextEdit[] = [];
+
+    try {
+      const offsetPos: IOffsetPosition = {
+        rangeStart: document.offsetAt(range.start),
+        rangeEnd: document.offsetAt(range.end),
+      };
+
+      const formatted = format4GL(
+        document.languageId,
+        document.getText(),
+        offsetPos
+      );
+
+      if (formatted.length > 0) {
+        result.push(
+          vscode.TextEdit.replace(
+            range,
+            formatted.substring(0, formatted.length - 1)
+          )
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      Promise.reject(error);
+    }
+
+    return result;
   }
 
   public provideOnTypeFormattingEdits(
@@ -64,7 +91,30 @@ class FourglFormatting
     options: vscode.FormattingOptions,
     token: vscode.CancellationToken
   ): vscode.ProviderResult<vscode.TextEdit[]> {
-    return super.provideDocumentFormattingEdits(document, options, token);
+    const result = super.applyFormattingEdits(document, options, token);
+
+    try {
+      const formatted = format4GL(document.languageId, document.getText());
+
+      if (formatted.length > 0) {
+        const start = document.validatePosition(new vscode.Position(0, 0));
+        const end = document.validatePosition(
+          new vscode.Position(
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY
+          )
+        );
+
+        result.push(
+          vscode.TextEdit.replace(new vscode.Range(start, end), formatted)
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      Promise.reject(error);
+    }
+
+    return result;
   }
 }
 

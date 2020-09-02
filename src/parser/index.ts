@@ -33,6 +33,7 @@ export function format4GL(
 ): string {
   let options: any = {};
   let result: string;
+  offsetPosition = offsetPosition || {rangeStart: undefined, rangeEnd: undefined};
 
   if (offsetPosition.rangeStart) {
     result = content.substring(
