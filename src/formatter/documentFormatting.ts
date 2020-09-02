@@ -6,7 +6,6 @@ import {
   CancellationToken,
   ProviderResult,
   TextEdit,
-  DocumentRangeFormattingEditProvider,
 } from "vscode";
 import { RulesFormatting, RuleMatch } from "./formattingRules";
 import { getFormattingOptions } from "./formattingOptions";
@@ -26,6 +25,8 @@ export class DocumentFormatting implements DocumentFormattingEditProvider {
     options: FormattingOptions,
     token: CancellationToken
   ): TextEdit[] {
+    options = { ...options, ...getFormattingOptions(document.languageId) };
+
     let rules: RulesFormatting = this.rulesFormatting;
     const tab: string = options.insertSpaces
       ? " ".repeat(options.tabSize)

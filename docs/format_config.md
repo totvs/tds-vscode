@@ -36,6 +36,22 @@ Por padrão, a formatação de código fonte vem desligado. Para ligá-lo, abra 
 
   Habilita a remoção de caracteres não significativos ao final da linha.
 
+- `"keywordsCase": "upper" | "lower" | "ignore"`
+
+  Coloca as palavras chaves da linguagem na caixa indicada. Quando `ignore`, mantem o original.
+
+- `"stringStyle": "double-quotes", "single-quotes", "ignore"`
+
+  Indica como as _strings_ devem ser informadas. Quando `ignore`, mantem o original.
+
+- `"formatNumber": false | true`
+
+  Habilita a formatação de valores constantes numéricos.
+
+- `"operatorSpacing": false | true`
+
+  Habilita o espaçamento de operadores em expressões.
+
 Exemplo com os valores padrão.
 
 ```JSON
@@ -49,7 +65,11 @@ Exemplo com os valores padrão.
 		"editor.formatOnSaveMode": "file",
 		"editor.tabSize": 4,
 		"editor.insertSpaces": false,
-		"files.trimTrailingWhitespace": false
+		"files.trimTrailingWhitespace": false,
+		"keywordsCase": "upper",
+    	"stringStyle": "ignore",
+    	"formatNumber": false,
+    	"operatorSpacing": true,
 	},
 	...,
 }

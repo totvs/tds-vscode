@@ -445,6 +445,52 @@
 					"type": "boolean",
 					"default": false,
 					"description": "%tds.package.workspaceServerConfig%"
+				},
+				"4gl.formatter": {
+					"type": "object",
+					"description": "Formatação 4GL",
+					"properties": {
+						"keywordsCase": {
+							"type": "string",
+							"enum": [
+								"upper",
+								"lower",
+								"ignore"
+							],
+							"enumDescriptions": [
+								"Em maiúsculuas",
+								"Em minúsculas",
+								"Manter original"
+							],
+							"default": "upper",
+							"description": "Coloca as palavras chaves da linguagem na caixa indicada"
+						},
+						"stringStyle": {
+							"type": "string",
+							"enum": [
+								"double-quotes",
+								"single-quotes",
+								"ignore"
+							],
+							"enumDescriptions": [
+								"Aspas duplas",
+								"Aspas Simples",
+								"Manter original"
+							],
+							"default": "ignore",
+							"description": "Indica como as _strings_ devem ser informadas."
+						},
+						"formatNumber": {
+							"type": "boolean",
+							"default": false,
+							"description": "Habilita a formatação de valores constantes numéricos."
+						},
+						"operatorSpacing": {
+							"type": "boolean",
+							"default": false,
+							"description": "Habilita o espaçamento de operadores em expressões."
+						}
+					}
 				}
 			}
 		},
