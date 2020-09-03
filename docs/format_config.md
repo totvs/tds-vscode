@@ -76,23 +76,23 @@ Para sobrescrever os valores padrão, acione `Edit in settings.json` ou `Add ite
 
 ```JSON
 {
-	...,
-	"[4gl]": {
-		"files.encoding": "windows1252",
-		"editor.formatOnType": false,
-		"editor.formatOnPaste": false,
-		"editor.formatOnSave": false,
-		"editor.formatOnSaveMode": "file",
-		"editor.tabSize": 4,
-		"editor.insertSpaces": false,
-		"files.trimTrailingWhitespace": false,
-	},
-	"4gl.formatter": {
-		"keywordsCase": "upper",
-    	"stringStyle": "ignore",
-    	"formatNumber": false,
-		"operatorSpacing": true,
-	}
-	...,
+  ...,
+  "[4gl]": {
+    "files.encoding": "windows1252",
+    "editor.formatOnType": false,
+    "editor.formatOnPaste": false,
+    "editor.formatOnSave": false,
+    "editor.formatOnSaveMode": "file",
+    "editor.tabSize": 4,
+    "editor.insertSpaces": false,
+    "files.trimTrailingWhitespace": false,
+  },
+  "4gl.formatter": {
+    "keywordsCase": "upper",
+    "stringStyle": "ignore",
+    "formatNumber": false,
+    "operatorSpacing": true,
+  }
+  ...,
 }
 ```
