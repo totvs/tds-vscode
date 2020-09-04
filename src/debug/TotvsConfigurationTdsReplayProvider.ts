@@ -45,10 +45,6 @@ export class TotvsConfigurationTdsReplayProvider implements DebugConfigurationPr
 				setDapArgsArr.push("--wait-for-attach=" + config.waitForAttach);
 			}
 
-			if(config.enableTableSync === undefined) {
-				config.enableTableSync = true;
-			}
-
 			if (config.logFile) {
 				const ws: string = vscode.workspace.rootPath || '';
 				setDapArgsArr.push("--log-file=" + config.logFile.replace('${workspaceFolder}', ws));

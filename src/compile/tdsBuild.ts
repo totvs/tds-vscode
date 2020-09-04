@@ -104,11 +104,18 @@ async function buildCode(
         return;
       }
     }
-
+    
     let includesUris: Array<string> = [];
     for (let idx = 0; idx < includes.length; idx++) {
       includesUris.push(vscode.Uri.file(includes[idx]).toString());
     }
+    if (includesUris.length === 0) {
+      const wp: string[] = vscode.workspace.workspaceFolders.map((uri) => {
+        return uri.uri.toString();
+      });
+      includesUris.push(...wp);
+    }
+
     let filesUris: Array<string> = [];
     filesPaths.forEach((file) => {
       if (!Utils.ignoreResource(file)) {
