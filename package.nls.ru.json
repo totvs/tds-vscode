@@ -8,6 +8,7 @@
 	"tds.package.show.ask.compile.result": "Попросите показать таблицу с результатами компиляции",
 	"tds.package.clear.console.before.compile": "Очистить консоль перед компиляцией",
 	"tds.package.show.console.on.compile": "Показать консоль при компиляции",
+	"tds.package.show.banner": "Displays banner when starting",
 	"tds.package.reconnectLastServer": "Повторно подключите последний подключенный сервер при запуске.",
 	"tds.package.generate.ppo": "Создать файл PPO.",
 	"tds.package.show.precompile": "Показать предварительную команду компилятора.",

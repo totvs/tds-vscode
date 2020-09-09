@@ -8,6 +8,7 @@
 	"tds.package.show.ask.compile.result": "Pedir para exibir tabela com resultados da compilação",
 	"tds.package.clear.console.before.compile": "Limpar o console antes da compilação",
 	"tds.package.show.console.on.compile": "Exibir console na compilação",
+	"tds.package.show.banner": "Displays banner when starting",
 	"tds.package.reconnectLastServer": "Reconectar ao último servidor conectado na inicialização.",
 	"tds.package.generate.ppo": "Gere arquivo PPO.",
 	"tds.package.show.precompile": "Mostrar comando pré compilador.",
