@@ -1,6 +1,8 @@
 # TOTVS Developer Studio para VSCode
 
-[![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors-) <!-- ALL-CONTRIBUTORS-BADGE:END -->[![CodeFactor](https://www.codefactor.io/repository/github/brodao/tds-vscode/badge)](https://www.codefactor.io/repository/github/brodao/tds-vscode)
+[![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->[![CodeFactor](https://www.codefactor.io/repository/github/brodao/tds-vscode/badge)](https://www.codefactor.io/repository/github/brodao/tds-vscode)
 
 A extensão TOTVS Developer Studio Code disponibiliza uma suíte de desenvolvimento para o ecossistema Protheus.
 Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP (Debug Adapter Protocol), ambos amplamente utilizados e extensíveis à outras IDEs de mercado, como Atom, Visual Studio, Eclipse, Eclipse Theia, Vim e Emacs.
@@ -509,14 +511,13 @@ Ou se preferir colabore conosco e faça você mesmo. Veja como colaborar a segui
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/isaquerochak"><img src="https://avatars0.githubusercontent.com/u/19375217?v=4?s=50" width="50px;" alt=""/><br /><sub><b>isaquerochak</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=isaquerochak" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/rodrigopg"><img src="https://avatars0.githubusercontent.com/u/5282959?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Rodrigo Gonçalves</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=rodrigopg" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/rodrigopg"><img src="https://avatars0.githubusercontent.com/u/5282959?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Rodrigo Gonçalves</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=rodrigopg" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/issues?q=author%3Arodrigopg" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://www.linkedin.com/in/ramorais/"><img src="https://avatars0.githubusercontent.com/u/9218184?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Rogério A. Morais</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=ramorais" title="Code">💻</a></td>
   </tr>
 </table>
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
-
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## Plugins recomendados
