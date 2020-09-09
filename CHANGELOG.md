@@ -1,26 +1,11 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+### Versão [1.0.7](https://github.com/totvs/tds-vscode/compare/v1.0.8...v1.0.7) (2020-09-09)
 
-### [1.0.7](https://github.com/totvs/tds-vscode/compare/v1.0.8...v1.0.7) (2020-09-09)
+## Genéricas
 
-### [1.0.8](https://github.com/totvs/tds-vscode/compare/v0.3.20...v1.0.8) (2020-09-09)
-
-
-### Bug Fixes
-
-* ajuste de configuração para processo Travis ([ff0d93b](https://github.com/totvs/tds-vscode/commit/ff0d93b5040d9450a1f107c2f1e4972ad0c9ab1f))
-* atualização da lista de usuários após a desconexão e compilação de fontes 4GL com comando "GLOBALS <filename>" ([1cfc913](https://github.com/totvs/tds-vscode/commit/1cfc913d009b43892f9b1b4716104ae5a867ed77))
-* correção chamado interno (DTCLIENT01-2015)[https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2015] ([d521aab](https://github.com/totvs/tds-vscode/commit/d521aab87eaf4ec58e45772c8e5c312bba8af768))
-* correção de fix: correção de depêndencia ([10b3eaf](https://github.com/totvs/tds-vscode/commit/10b3eaff282a77b4b8155a29a240b8841105a016))
-* correção e otimização do processo de formatação e configuração ([35aea70](https://github.com/totvs/tds-vscode/commit/35aea707bd9307f6152ac2529c596933253b83fa))
-* correção na formatação durante digitação de fontes 4GL ([8c24f91](https://github.com/totvs/tds-vscode/commit/8c24f91f00b95b84ce89b5ad6641accee4236ef7))
-* correção na gramática, procedimentos de testes e formatação durante digitação. ([99dc05c](https://github.com/totvs/tds-vscode/commit/99dc05cea3ab90c10aaba5e535dc96064b84807e))
-* correção no arquivo de gramática e retorno de resultado do parser ([090b9fb](https://github.com/totvs/tds-vscode/commit/090b9fb1f720a196db3f8da5e89a881a19e04b7c))
-* correção no processo de formatação de fontes 4GL ([a8e02ca](https://github.com/totvs/tds-vscode/commit/a8e02ca690399f380f6ad76b72d55c3bce3c0d91))
-* limpeza de código ([bef82d8](https://github.com/totvs/tds-vscode/commit/bef82d8820466da5c02715f66e764db16013cf42))
-
-# Versão 1.0.7
+- Atualização de depêndencias de terceiros
+- Hihienização de código
 
 ## Correção na compilação 4GL quando há comando "globals <arquivo>"
 
@@ -29,6 +14,7 @@ All notable changes to this project will be documented in this file. See [standa
 ## Monitoramento de servidores TOTVS (BETA)
 
 - Salva automática de configurações efetuadas no painel de Monitoramento
+- Atualização da lista de usuários após a desconexão
 
 ## Revisão de processos de edição 4GL
 
