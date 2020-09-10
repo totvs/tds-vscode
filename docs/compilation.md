@@ -1,6 +1,6 @@
-# Compilação
+# TDS: Compilação
 
-> Requisitos\
+> Requisitos
 
 - servidor/ambiente conectado\
 - usuário autenticado (se necessário)\

@@ -1,4 +1,4 @@
-# Edição
+# TDS: Edição de códigos fontes
 
 > Requisitos\
 
@@ -6,10 +6,11 @@
 
 Veja o básico da edição em [Basic Edition](https://code.visualstudio.com/docs/editor/codebasics) e abaixo os atalhos específicos do editor de código fontes suportados pela extensão.
 
-|| Atalho || Ação ||
-| `CTRL + F9` | Compilar o fonte do editor corrente |
-| `CTRL + SHIFT + F9` | Recompilar o fonte do editor corrente |
-| `CTRL + F10` | Compilar todos os fontes abertos para edição |
+| Atalho               | Ação                                           |
+| -------------------- | ---------------------------------------------- |
+| `CTRL + F9`          | Compilar o fonte do editor corrente            |
+| `CTRL + SHIFT + F9`  | Recompilar o fonte do editor corrente          |
+| `CTRL + F10`         | Compilar todos os fontes abertos para edição   |
 | `CTRL + SHIFT + F10` | Recompilar todos os fontes abertos para edição |
 
 ![Editor](./gifs/Editor.gif)

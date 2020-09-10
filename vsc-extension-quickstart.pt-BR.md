@@ -18,7 +18,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 
 - Sintaxe destacada
 - Comunicação baseada nos protocolos LSP/DAP
-- [Console](doc/console) informativo e notificações
+- [Console](docs/console.md) informativo e notificações
 - [Edição](docs/edition.md) de arquivos fontes (AdvPL, TLPP, 4GL e variantes)
 - [Compilação](docs/compilation.md) de fontes, pastas e da área de trabalho
 - [Depuração](docs/debugger.md) de fontes (Local e _WebApp_)
