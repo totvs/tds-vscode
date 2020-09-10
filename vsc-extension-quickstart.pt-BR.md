@@ -21,21 +21,22 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 - [Console](docs/console.md) informativo e notificações
 - [Edição](docs/edition.md) de arquivos fontes (AdvPL, TLPP, 4GL e variantes)
 - [Compilação](docs/compilation.md) de fontes, pastas e da área de trabalho
-- [Depuração](docs/debugger.md) de fontes (Local e _WebApp_)
+- [Depuração](docs/debugger.md) e execução (Local e _WebApp_)
 - [Geração](docs/build-patch.md) e [aplicação](docs/apply-patch.md) de pacotes de correção (_patchs_)
 - [Manutenção](docs/rpo.md) do _RPO_
 - [Inspeção](docs/rpo-inspector.md) do _RPO_
 - [Geração de cliente de serviço web](docs/ws-client-generation.md) (_Web Service_)
+- [Monitoramento](docs/monitor.md) de servidores
 
 ## Guia rápido
 
-> **Nunca usei o VS-Code**: Recomendamos a leitura de:
-
-- [User Interface](https://code.visualstudio.com/docs/getstarted/userinterface)
-- [Multi-root Workspaces](https://code.visualstudio.com/docs/editor/multi-root-workspaces)
-- [Settings](https://code.visualstudio.com/docs/getstarted/settings)
-- [Basic Edition](https://code.visualstudio.com/docs/editor/codebasics)
-- [Marketpalce](https://code.visualstudio.com/docs/editor/extension-gallery)
+> **Nunca usei o VS-Code**: Recomendamos a leitura de:\
+>
+> - [User Interface](https://code.visualstudio.com/docs/getstarted/userinterface)\
+> - [Multi-root Workspaces](https://code.visualstudio.com/docs/editor/multi-root-workspaces)\
+> - [Settings](https://code.visualstudio.com/docs/getstarted/settings)\
+> - [Basic Edition](https://code.visualstudio.com/docs/editor/codebasics)\
+> - [Marketpalce](https://code.visualstudio.com/docs/editor/extension-gallery)
 
 Ao iniciar o **VS-Code** com a extensão **TDS-VSCode** instalada, abra (ou crie) a pasta principal que contém (ou conterá) seus arquivos fontes e de recursos. Essa pasta é denominada genericamente de `projeto`.
 
@@ -48,7 +49,7 @@ No primeiro uso da extensão em um projeto, lhe será apresentada as [Boas Vinda
 - Abra (ou crie) o arquivo para edição e faça o desenvolvimento necessário
 - (Compile)[docs/compilation.md] acionando o atalho `ctrl+F9` ou o menu de contexto sobre o arquivo ou recurso
 - Corrija eventuais erros de compilação apresentados na visão `Problems`
-- (Execute)[docs/running.md] o `Smartclient` configurado na página de `Boas vindas` ou direto no arquivo `.vscode\launch.json`
+- (Execute/depure)[docs/debugging.md] o `Smartclient` configurado na página de `Boas vindas` ou direto no arquivo `.vscode\launch.json`
 
 > Para detalhes dos processos, acesse as ligações (_links_).\
 > A visualização ou não das `Boas Vindas` pode ser efetuada em `File | Preferences | Settings | Extensions | TOTVS | Welcome Page`.

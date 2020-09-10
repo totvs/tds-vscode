@@ -1,29 +1,28 @@
-### Gerando um Patch (From RPO) utilizando o assistente.
+# TDS: Geração de pacote de atualização (_patch_)
 
-- Para gerar um patch conecte-se ao servidor.
+> Requisitos
 
-- Selecione com o botão direito do mouse o servidor conectado.
-- Selecione a opção `Patch Generation (From RPO)`.
-- Existe um atalho para a abertura da página: `CTRL + SHIFT + P ` digite `TOTVS` e selecione a opção `TOTVS: Patch Generation (From RPO)`.
+- servidor/ambiente conectado
 
-- Aguarde a carga dos arquivos do inspetor de objetos.
-- Selecione os arquivos que desejar para o patch utilizando o campo de `Filtro`.
-- Para digitar o filtro simplesmente saia do campo ou pressione `Enter`.
-- Selecione agora os arquivos na lista da esquerda e mova os desejados para lista da direita utilizando o botão `">>"`.
-- Repita o processo até que tenha selecionado todos os arquivos necessários.
-- Selecione agora o `diretório` onde deseja salvar o Patch.
+## Geração de pacote de atualização (_patch_) a partir do RPO (_From RPO_)
+
+Na visão `Servers`, acione o menu de contexto no servidor conectado e acione `Patch Generation (From RPO)` ou acione o atalho `CTRL + SHIFT + P ` e execute `TOTVS: Patch Generation (From RPO)`.
+
+- Aguarde a carga dos arquivos do inspetor de objetos
+- Selecione os arquivos que deseja colocar no pacote utilizando o campo de `Filtro`, digitando um padrão de seleção e pressione `Enter`
+- Selecione os arquivos da lista da esquerda e mova-os para lista da direita utilizando o botão `>>`
+- Repita o processo, até que tenha selecionado todos os arquivos necessários
+- Selecione o `diretório` onde o pacote será salvo
 - Escolha o `nome do arquivo` de Patch desejado. (Quando não informado, o patch será gerado com o nome do RPO).
 - Efetue e geração do Patch pressionando o botão `Gerar`.
 
 ![Patch Generate](./gifs/GeneratePatchWizard.gif)
 
-### Gerando um Patch (From Folder) utilizando o menu de contexto
+## Geração de pacote de atualização (_patch_) a partir de pastas (_From Folder_)
 
-- Para gerar um patch conecte-se ao servidor.
-- Clique com o botão direito em cima da pasta de contém os fontes que farão parte do patch.
-- Selecione a opção `Patch Generation (From Folder)`.
-- Abrirá uma janela para selecionar onde deseja que o fonte seja salvo. Selecione um pasta.
-- Uma janela será aberta para coletar o nome do patch que será gerado. (Quando não informado, o patch será gerado com o nome do RPO).
-- Após as confirmações o patch será gerado no caminho desejado.
+- Acione o menu de contexto sobre a pasta que contem os fontes a serem empacotados e acione `Generate Patch From m Folder)`
+- Selecione uma pasta para salvar o pacote gerado
+- Informe o nome do pacote que será gerado. Quando não informado, o pacote terá o mesmo do RPO, exceto pela extensão
+- Após as confirmações, o pacote será gerado na pasta indicada
 
 ![Patch Generate Folder](./gifs/GeneratePatchWizardFromFolder.gif)
