@@ -1,71 +1,110 @@
-## Compilação
+# Compilação
 
-### Compilando fonte do editor corrente
+> Requisitos\
 
-* Para compilar o fonte do editor corrente acione o atalho `CTRL + F9`. Ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Compile Selection`.
-A compilação efetuada a partir do editor, sempre irá recompilar o fonte, mantendo assim o mesmo comportamento do TDS-Eclipse.
+- servidor/ambiente conectado\
+- usuário autenticado (se necessário)\
+- pastas para buscas de arquivos de definição (_includes_)\
+- acesso exclusivo ao _RPO_
+- chave de compilação (apenas para _functions_ e _main functions_)
 
-* Para recompilar o fonte do editor corrente acione o atalho `CTRL + SHIFT + F9`.
+> Arquivos fontes 4GL, ignoram a pasta para buscas.
 
-### Compilando todos os fontes abertos
+## Compilando fonte do editor corrente
 
-* Para compilar todos os fontes dos editores abertos acione o atalho `CTRL + F10`. Ou pelo atalho `CTRL + SHIFT + P` digite `TOTVS: Compile Open Editors`.
+Para compilar o fonte do editor corrente, acione o atalho `CTRL + F9` (ou `CTRL + SHIFT + F9`) ou `CTRL + SHIFT + P` e execute o comando `TOTVS: Compile Selection`.
 
-* Para recompilar todos os fontes dos editores abertos acione o atalho `CTRL + SHIFT + F10`.
+> A compilação acionada no editor, sempre irá recompilar o fonte.
 
-### Resultado da compilação
+## Compilando todos os fontes abertos
 
-* Caso queira limpar o console antes da compilação, habilite a opção: `File | Preferences | Settings | Extensions | TOTVS |Clear Console Before Compile`.
+Para compilar todos os fontes abertos para edição, acione `CTRL + F10` ou `CTRL + SHIFT + P` e execute o comando `TOTVS: Compile Open Editors`. Para recompilar, acione `CTRL + SHIFT + F10`.
 
-* Para analisar o resultado da compilação de múltiplos arquivos, exite a opção de abrir uma tabela com informações de todos os arquivos que foram compilados.
+## Compilando arquivos não abertos para edição ou pastas
 
-* Para exibir essa tabela, selecione mais de um arquivo, compile e após a compilação será apresentada a pergunta a seguir: Clique em `Yes`.
+- Na visão `Explorer`, selecione um ou mais arquivos (ou pastas)
+- Acione o menu de contexto sobre a seleção e acione a opção `Compilar` ou `CTRL + F9`
+
+> Para recompilar, acionar o menu de contexto pressionando a tecla `ALT` ou `CTRL + ALT + F9`.
+
+## Resultado da compilação
+
+Após a compilação de múltiplos arquivos, exite a opção de abrir uma tabela com informações de todos os arquivos que foram compilados. Para exibir essa tabela, selecione mais de um arquivo, compile e após a compilação lhe será questionado a apresentação ou não.
 
 ![ShowCompileResult](./compile/askCompileResult.PNG)
 
-* A tabela abaixo será exibida, ordenada pela coluna de resultado.
+Se confirma, uma tabela de resultados semelhante a abaixo será exibida, ordenada pela coluna de resultado.
 
 ![TableCompileResult](./compile/CompileResults.PNG)
 
-* Exite nas preferencias uma maneira de habilitar e desabilitar a pergunta sobre a abertura da tabela.
-
-* Clique em `File | Preferences | Settings` e digite `totvsLanguageServer.askCompileResult` no campo de pesquisa.
-
 ## Configurações de Compilação
 
-### Compilando Function e Main Function com Chave de compilação
+O processo de compilação pode ter o seu compoprtamento modificado, acessando
+`File | Preferences | Settings | Extensions | TOTVS`. Ao lado esquerdo, selecione a opção e configure conforme desejado.
 
-- Este processo está sendo revisto e pode sofrer alterações.
+### Opções
 
-- Para aplicar uma chave de compilação, clique com o botão direito na visão de servidores e selecione a opção `Compile key`.
-- Abrirá um assistente para selecionar a chave que deseja. Todos os arquivos .aut podem ser selecionados.
-- Também é possível abrir o assistente pelo atalho `CTRL + SHIFT + P` digirantando `TOTVS: Compile Key`.
-- Após selecionar a chave, ela será lida e os campos preenchidos com suas informações.
-- Clique sobre o botão de `Validate` para verificar se a chave é válida.
+- `..| Clear Console Before Compile`: limpar o console antes de iniciar o processo
+- `..| Ask Compile Result`: solicita se deseja ver a tabela de resultados da compilação
+- `..| Generate PPO file`: gera o arquivo de pré-processamento (`PPO`)
+- `..| Show pre compiler`: apresenta o um log mais detalhado do processo
+- `..| Enable extension filter`: ativa o filtro para compilar apenas as extensões reconhecidas pelo editor e/ou plataforma **Protheus**
+- `..| Extension Allowed`: lista de extensões permitidas
+- `..| Show console on compile`: força a apresentação do console ao iniciar a compilação
 
-- OBS: A chave só será salva ao clicar no botão `Save` ou `Save/Close` caso a chave seja válida.
+### Compilação de _Function_ e _Main Function_
 
-## Chave de compilação
+> Este processo está em revisão e pode sofrer alterações.
 
-- A partir de 17/05/2019 todas as chaves devem ser regeradas utilizando o ID exibido no nosso plugin do VSCode. Isse se faz necessário para suporte de Linux e MAC.
+Para compilar arquivos fontes que contenham _functions_ e/ou _main function_
+vovê precisa ter uma chave chave de compilação (ou autorização).
 
-- Suporte de chave de compilação em Linux e MAC a partir de 17/05/2019.
+> A partir de **17/05/2019** todas as chaves devem ser regeradas utilizando o ID exibido neste assistente. Isse se faz necessário devido a inclusão do suporte de chave em em Linux e MAC, implementado nesta data.
 
-![Compile Key](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/CompileKey.gif)
+![Compile Key](./gifs/CompileKey.gif)
 
-### Configuração de Include
+#### Solicitação
 
-- Na visão de servidores, clique com o menu de contexto e selecione a opção `Include`.
-- Também é possível configurar pelo assistente: `CTRL + SHIFT + P` digite `TOTVS: Include`.
+- Na visão de `Servers`, acione o menu de contexto e a opção `Compile Key` ou `CTRL + SHIFT + P` e execute `TOTVS: Compile Key` ou na barra de status o texto `Permissions:`
+- Lhe será apresentado o assistente para aplicação de chave. Você enviará o ID da instalação que lhe foi dado para o responsável por geração de chaves (informe-se com o seu superior)
+- Aguarde o recebimento do arquivo de autorização (`*.aut`)
 
-- As configurações de include ficam no arquivo `%USERHOME%/.totvsls/servers.json`. Abra esse arquivo.
-- Já existe por padrão o diretório `"C:/totvs/includes"`.
-- Para adicionar uma nova configuração de include separe por vírgula ou substitua o path existente.
-  Ex:`"includes": ["C:/totvs/includes1","C:/totvs/includes2", "C:/totvs/includes3"]`.
+#### Aplicação
 
-![Configure Include](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Include.gif)
+- Na visão de `Servers`, acione o menu de contexto e a opção `Compile Key` ou `CTRL + SHIFT + P` e execute `TOTVS: Compile Key` ou no texto `Permissions:` na barra de status
+- Lhe será apresentado o assistente para aplicação de chave
+- Informe o arquivo de autorização (`*.aut`)
+- Acione o botão de `Validate` para verificar se a chave é válida
+- Se ela foi aceita, acione `Save` ou `Save/Close`
 
-### Arquivos do pré compilador
+> Pode remover a chave atual, acionando `Clean Key`.
 
-- Para manter os arquivos gerados pelo pré-compilador, habilite a opção nas preferencias em: `File | Preferences | Settings | Extensions | TOTVS |Leave PPO File`.
-- Caso queira um log completo das operações efetuadas pelo pré-compilador, habilite a opção: `File | Preferences | Settings | Extensions | TOTVS |Show Pre Compiler`.
+### Configuração de Include (busca de arquivos de definição)
+
+- Na visão de `Servers`, acione o menu de contexto e a opção `Include` ou acione `CTRL + SHIFT + P` e execute `TOTVS: Include`.
+- Informe a pasta (ou pastas) para a busca dos arquivos de definição, separadas por `;`
+
+A configuração efetuada via assistente será aplicado em todos os servidores e ambientes por padrão. Para configurar por servidor, abra para edição o arquivo `%USERHOME%/.totvsls/servers.json` ou acione o menu de contexto e a opção `Configure Server View`.
+
+Localize a definição do servidor na sessão `configurations` e adicione/modifique a chave `"includes"`, com a lista de pastas a ser utilizada.
+
+```JSON
+{
+  ...
+  "configurations": [
+  {
+    "id": "aq9s9aca8qkasjpnxl7rghymvx3bq",
+		"type": "totvs_server_protheus",
+    ...
+    "includes": [
+      "C:/totvs/includes1",
+      "C:/totvs/includes2",
+      "C:/totvs/includes3"
+    ],
+    ...
+  },
+  ...
+}
+```
+
+![Configure Include](gifs/Include.gif)

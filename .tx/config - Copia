@@ -1,9 +1,0 @@
-[main]
-host = https://www.transifex.com
-
-[tds-vscode-brodao.tds-vscode]
-file_filter = ../tds-vscode-import/tds-vscode/tds-vscode.<lang>.xlf
-source_file = ../tds-vscode-export/tds-vscode/tds-vscode.xlf
-source_lang = en
-type = XLIFF
-

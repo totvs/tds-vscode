@@ -2,6 +2,12 @@
 
 [![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode)
 
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
+[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors-)
+
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
 A extensão do **TOTVS Developer Studio for VS Code** disponibiliza uma suíte de desenvolvimento para o ecossistema **Protheus**.
 
 Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP (_Debug Adapter Protocol_), ambos amplamente utilizados e extensíveis à outras _IDEs_ de mercado, como Atom, Visual Studio, Eclipse, Eclipse Theia, Vim e Emacs.
@@ -12,13 +18,14 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 
 - Sintaxe destacada
 - Comunicação baseada nos protocolos LSP/DAP
-- [Edição](docs/editition.md) de arquivos fontes e outros arquivos não binários
+- [Console](doc/console) informativo e notificações
+- [Edição](docs/edition.md) de arquivos fontes (AdvPL, TLPP, 4GL e variantes)
 - [Compilação](docs/compilation.md) de fontes, pastas e da área de trabalho
-- [Depuração](docs/debugger.md) de fontes (Local e WebApp).
-- [Geração](docs/build-patch.md) e [aplicação](docs/apply-patch.md) de pacotes de correção (_patchs_).
+- [Depuração](docs/debugger.md) de fontes (Local e _WebApp_)
+- [Geração](docs/build-patch.md) e [aplicação](docs/apply-patch.md) de pacotes de correção (_patchs_)
 - [Manutenção](docs/rpo.md) do _RPO_
 - [Inspeção](docs/rpo-inspector.md) do _RPO_
-- [Geração de cliente de serviço web](docs/ws-client-generation.md) (_Web Service_).
+- [Geração de cliente de serviço web](docs/ws-client-generation.md) (_Web Service_)
 
 ## Guia rápido
 
@@ -32,7 +39,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 
 Ao iniciar o **VS-Code** com a extensão **TDS-VSCode** instalada, abra (ou crie) a pasta principal que contém (ou conterá) seus arquivos fontes e de recursos. Essa pasta é denominada genericamente de `projeto`.
 
-Caso o projeto esteja vazio ou nunca foi aberto no **VSCode**, lhe será apresentada as [Boas Vindas](docs/welcome.md) com configurações mínimas necessárias. Faça-as.
+No primeiro uso da extensão em um projeto, lhe será apresentada as [Boas Vindas](docs/welcome.md) com configurações mínimas necessárias. Faça-as.
 
 - Acione o icone da `TOTVS` na barra de atividades
 - Resgistre o servidor de trabalho na visão (Servidores)[docs/servers.md], acionando a ação `+`
@@ -43,7 +50,14 @@ Caso o projeto esteja vazio ou nunca foi aberto no **VSCode**, lhe será apresen
 - Corrija eventuais erros de compilação apresentados na visão `Problems`
 - (Execute)[docs/running.md] o `Smartclient` configurado na página de `Boas vindas` ou direto no arquivo `.vscode\launch.json`
 
-> Para detalhes dos processos, acesse as ligações indicadas.
+> Para detalhes dos processos, acesse as ligações (_links_).\
+> A visualização ou não das `Boas Vindas` pode ser efetuada em `File | Preferences | Settings | Extensions | TOTVS | Welcome Page`.
+
+## Saiba mais em
+
+> [TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 1](https://www.youtube.com/watch?v=MwIu01Ztfvg)\
+> [TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 2](https://www.youtube.com/watch?v=Cz4N0XWCXHY)\
+> [TOTVS - TDS-VSCode - Desenvolvimento colaborativo](https://www.youtube.com/watch?v=IGWh5ejxhHU)
 
 ### Acentuação e caracteres especiais
 

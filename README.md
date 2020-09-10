@@ -7,10 +7,13 @@
 A extensão TOTVS Developer Studio Code disponibiliza uma suíte de desenvolvimento para o ecossistema Protheus.
 Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP (Debug Adapter Protocol), ambos amplamente utilizados e extensíveis à outras IDEs de mercado, como Atom, Visual Studio, Eclipse, Eclipse Theia, Vim e Emacs.
 
-> [Lista de IDEs com suporte ao LSP](https://microsoft.github.io/language-server-protocol/implementors/tools)\
-> [Lista de IDEs com suporte ao DAP](https://microsoft.github.io/debug-adapter-protocol/implementors/tools)
+A extensão do **TOTVS Developer Studio for VS Code** disponibiliza uma suíte de desenvolvimento para o ecossistema **Protheus**.
 
-## Principais funcionalidades
+Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP (_Debug Adapter Protocol_), ambos amplamente utilizados e extensíveis à outras _IDEs_ de mercado, como Atom, Visual Studio, Eclipse, Eclipse Theia, Vim e Emacs.
+
+> Lista de IDEs com suporte ao [LSP](https://microsoft.github.io/language-server-protocol/implementors/tools) e ao [DAP](https://microsoft.github.io/debug-adapter-protocol/implementors/tools)
+
+## Funcionalidades
 
 - Comunicação baseada nos protocolos LSP/DAP
 - [Formatação](docs/format_config.md) de código fonte
@@ -27,7 +30,7 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 - Inspetor de funções do RPO
 - Geração de WS Protheus
 
-## Conheça mais em
+## Saiba mais em
 
 > [TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 1](https://www.youtube.com/watch?v=MwIu01Ztfvg)\
 > [TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 2](https://www.youtube.com/watch?v=Cz4N0XWCXHY)\
@@ -40,9 +43,8 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 - A tela da boa vindas permite configurar a localização do SmartClient e dos diretórios de Includes que serão utilizados durante a compilação dos códigos fontes.
 - Esta tela será apresentada na primeira execução do plugin, assim que o primeiro fonte AdvPL/4GL for aberto ou quando uma nova pasta de trabalho for aberta.
 
-> Caso não queira ver esta tela de boas vindas novamente desmarque a opção `File | Preferences | Settings | Extensions | TOTVS | Welcome Page`.
 
-- Localize o `SmartClient.exe` (Windows) ou `smartclient` (Linux e Mac). O binário no MacOS encontra-se em `smartclient.app/Contents/MacOS/smartclient`
+- Localize o `SmartClient.exe` (Windows) ou `smartclient` (Linux e Mac).
 - Localize os diretórios de Includes que necessitar para seus projetos.
 - Pressione o botão `Salvar` para concluir.
 
@@ -50,26 +52,8 @@ Ele utiliza os protocolos de comunicação LSP (Language Server Protocol) e DAP 
 
 ### Tela de boas vindas no Linux e MacOS
 
-- Na janela para escolha da pasta/arquivo é necessário mudar o filtro de `Custom Files` para `All Files`.
 
-![Welcome Page on Linux](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/welcome/Welcome_Linux1.png)
 
-![Welcome Page on MacOS 1](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/welcome/Welcome_MacOS1.png)
-![Welcome Page on MacOS 2](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/welcome/Welcome_MacOS2.png)
-![Welcome Page on MacOS 3](https://raw.githubusercontent.com/totvs/tds-vscode/dev/imagens/welcome/Welcome_MacOS3.png)
-
-### Console de saída (Output) TOTVS
-
-- Todas as mensagens emitidas serão exibidas na visão `Output` (Console de saída) e seleção `TOTVS`.
-- Se a visão `Output` não estiver visível ela pode ser ativada através do menu `View | Output` ou do atalho `CTRL + SHIFT + U`.
-- Certifique-se que a opção `TOTVS` esteja selecionada no combo (dropdown) da visão `Output`.
-
-![Output TOTVS](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Output.gif)
-
-### Notificações
-
-- Além do Console de saída, algumas mensagens são exibidas em notificações tipo toast (popup no canto inferior direito).
-- Você pode configurar quais as mensagens serão exibidas caso ache a quantidade de notificações excessiva em `File | Preferences | Settings | Extensions | TOTVS | Editor > Show: Notification`.
 
 ## TOTVS: SERVERS
 
