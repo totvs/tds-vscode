@@ -1,12 +1,12 @@
 # TDS: Compilação
 
 > Requisitos
-
-- servidor/ambiente conectado
-- usuário autenticado (se necessário)
-- pastas para buscas de arquivos de definição (_includes_)
-- acesso exclusivo ao _RPO_
-- chave de compilação (apenas para _functions_ e _main functions_)
+>
+> - servidor/ambiente conectado
+> - usuário autenticado (se necessário)
+> - pastas para buscas de arquivos de definição (_includes_)
+> - acesso exclusivo ao _RPO_
+> - chave de compilação (apenas para _functions_ e _main functions_)
 
 > Arquivos fontes 4GL ignoram a pasta para buscas.
 

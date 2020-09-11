@@ -1,8 +1,8 @@
 # TDS: Geração de pacote de atualização (_patch_)
 
 > Requisitos
-
-- servidor/ambiente conectado
+>
+> - servidor/ambiente conectado
 
 ## Geração de pacote de atualização (_patch_) a partir do RPO (_From RPO_)
 

@@ -1,10 +1,10 @@
 # TDS: Depuração e execução
 
 > Requisitos
-
-- servidor/ambiente conectado
-- usuário autenticado (se necessário)
-- executor configurado
+>
+> - servidor/ambiente conectado
+> - usuário autenticado (se necessário)
+> - executor configurado
 
 > Recomendações
 

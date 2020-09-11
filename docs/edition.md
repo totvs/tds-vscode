@@ -1,8 +1,8 @@
 # TDS: Edição de códigos fontes
 
-> Requisitos\
-
-- projeto aberto
+> Requisitos
+>
+> - projeto aberto
 
 Veja o básico da edição em [Basic Edition](https://code.visualstudio.com/docs/editor/codebasics) e abaixo os atalhos específicos do editor de código fontes suportados pela extensão.
 

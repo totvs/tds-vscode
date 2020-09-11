@@ -1,4 +1,9 @@
-### Cadastro de servidores utilizando o assistente
+# Visão `Servers`
+
+> Requisitos:
+> - servidor a ser utilizado em execução
+
+## Registro de servidores
 
 - Clique no icone `"+"` no canto superior direito da visão, ao lado da aba `Servidores`.
 - Preencha as informações de `nome`, `ip` e `porta` do servidor.
@@ -7,7 +12,7 @@
 
 ![New server](./gifs/AddServer.gif)
 
-### Conexão com servidores
+## Conexão com servidores
 
 - Após executar o cadastro de ao menos um servidor.
 - Vá para visão de servidores (Acesso pelo ícone da TOTVS na lateral esquerda do VSCode).
