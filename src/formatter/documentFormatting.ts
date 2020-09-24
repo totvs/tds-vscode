@@ -137,14 +137,14 @@ export async function resourceFormatting(
     let lc = await vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
-        title: "Formatação",
+        title: "Formatting",
         cancellable: true,
       },
       (progress, token) => {
         let lineCount = 0;
 
         token.onCancellationRequested(() => {
-          vscode.window.showWarningMessage("Formatação de recursos cancelada.");
+          vscode.window.showWarningMessage("Resource formatting canceled.");
         });
         const total = targetResources.length;
         const increment: number = 100 / total;
@@ -180,7 +180,7 @@ export async function resourceFormatting(
                     (value: boolean) => {},
                     (reason) => {
                       vscode.window.showErrorMessage(
-                        `Formatação(erro): ${reason}`
+                        `Formatting error: ${reason}`
                       );
                       console.log(reason);
                     }
@@ -200,7 +200,7 @@ export async function resourceFormatting(
       }
     );
     vscode.window.showInformationMessage(
-      `Formatação finalizada. Foram processadas ${lc} linhas em ${targetResources.length} arquivos.`
+      `Formatting finished. ${lc} lines have been processed in ${targetResources.length} files.`
     );
   }
 }

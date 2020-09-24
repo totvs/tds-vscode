@@ -12,7 +12,7 @@ export function getFormattingOptions(langId: string): FormattingOptions {
     }
 
     return value ? value : valueDefault;
-  }
+  };
 
   return {
     insertSpaces: getValue(langId, "insertSpaces", false),
@@ -21,5 +21,6 @@ export function getFormattingOptions(langId: string): FormattingOptions {
     stringStyle: getValue(langId, "stringStyle", "ignore"),
     formatNumber: getValue(langId, "formatNumber", false),
     operatorSpacing: getValue(langId, "operatorSpacing", false),
+    alignFields: getValue(langId, "alignFields", true),
   };
 }

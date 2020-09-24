@@ -14,7 +14,7 @@ Lhe será apresentado algo semelhante a:
 
 > Saiba mais sobre precedência de configurações em [User and Workspace Settings](https://vscode.readthedocs.io/en/latest/getstarted/settings/).
 
-O bloco `[4gl]` (ou `[advpl]`), são configurações ligadas a ativação dos processos pelo _VS-Code_ associadas ao editor da linguagem e `4gl: Formatter` (ou `advpl: Formatter`), são as opções de formatação propriamente.
+O bloco `[4gl]` (ou `[advpl]`), são configurações ligadas a ativação dos processos pelo _VS-Code_ associadas ao editor da linguagem e `4gl.formatter` (ou `advpl.formatter`), são as opções de formatação propriamente.
 
 Para sobrescrever os valores padrão, acione `Edit in settings.json` ou `Add item`, informando os valores solicitados.
 
@@ -60,23 +60,11 @@ Para sobrescrever os valores padrão, acione `Edit in settings.json` ou `Add ite
 
 ### Configurações `4gl.formatter` ou `advpl.formatter`
 
-- `"keywordsCase": "upper" | "lower" | "ignore"`
-
-  Coloca as palavras chaves da linguagem na caixa indicada. Quando `ignore`, mantem o original.
-
-- `"stringStyle": "double-quotes", "single-quotes", "ignore"`
-
-  Indica como as _strings_ devem ser informadas. Quando `ignore`, mantem o original.
-
-- `"formatNumber": false | true`
-
-  Habilita a formatação de valores constantes numéricos.
-
-- `"operatorSpacing": false | true`
-
-  Habilita o espaçamento de operadores em expressões.
+Veja [Prettier 4GL Plugin](https://github.com/totvs/prettier-plugin-4gl#uso-e-op%C3%A7%C3%B5es) para detalhes sobre as opções.
 
 ### Exemplo com os valores padrão
+
+> Arquivo `settings.json`
 
 ```JSON
 {
@@ -95,7 +83,8 @@ Para sobrescrever os valores padrão, acione `Edit in settings.json` ou `Add ite
     "keywordsCase": "upper",
     "stringStyle": "ignore",
     "formatNumber": false,
-    "operatorSpacing": true,
+    "operatorSpacing": false,
+    "alignFields": true,
   }
   ...,
 }

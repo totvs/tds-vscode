@@ -8,7 +8,6 @@ let localize = nls.loadMessageBundle();
 
 class ServerItemProvider
   implements vscode.TreeDataProvider<ServerItem | EnvSection> {
-
   isConnected(server: ServerItem) {
     return (
       this._connectedServerItem !== undefined &&
@@ -17,8 +16,10 @@ class ServerItemProvider
   }
 
   isCurrentEnvironment(environment: EnvSection) {
-    return (this.isConnected(environment.serverItemParent) &&
-      (environment.serverItemParent.environment === environment.label));
+    return (
+      this.isConnected(environment.serverItemParent) &&
+      environment.serverItemParent.environment === environment.label
+    );
   }
 
   private _onDidChangeTreeData: vscode.EventEmitter<
@@ -37,6 +38,14 @@ class ServerItemProvider
       vscode.window.showErrorMessage("No folder opened.");
       return;
     }
+
+    vscode.workspace.workspaceFolders.forEach((folder) => {
+      if (!fs.existsSync(folder.uri.fsPath)) {
+        vscode.window.showWarningMessage(
+          `Folder not exist or access unavailable. Check it to avoid unwanted behavior. Path: ${folder.uri.fsPath}`
+        );
+      }
+    });
 
     this.addServersConfigListener();
   }
@@ -308,9 +317,7 @@ export class ServerItem extends vscode.TreeItem {
       "..",
       "resources",
       "light",
-      this.isConnected
-        ? "server.connected.svg"
-        : "server.svg"
+      this.isConnected ? "server.connected.svg" : "server.svg"
     ),
     dark: path.join(
       __filename,
@@ -318,11 +325,9 @@ export class ServerItem extends vscode.TreeItem {
       "..",
       "resources",
       "dark",
-      this.isConnected
-        ? "server.connected.svg"
-        : "server.svg"
+      this.isConnected ? "server.connected.svg" : "server.svg"
     ),
-};
+  };
 
   contextValue = this.isConnected ? "serverItem" : "serverItemNotConnected";
 }
@@ -342,7 +347,6 @@ export class EnvSection extends vscode.TreeItem {
     return serverProvider.isCurrentEnvironment(this);
   }
 
-
   public getTooltip(): string {
     return `${this.label} @ ${this.serverItemParent.name}`;
   }
@@ -354,9 +358,7 @@ export class EnvSection extends vscode.TreeItem {
       "..",
       "resources",
       "light",
-      this.isCurrent
-        ? "environment.connected.svg"
-        : "environment.svg"
+      this.isCurrent ? "environment.connected.svg" : "environment.svg"
     ),
     dark: path.join(
       __filename,
@@ -364,14 +366,11 @@ export class EnvSection extends vscode.TreeItem {
       "..",
       "resources",
       "dark",
-      this.isCurrent
-        ? "environment.connected.svg"
-        : "environment.svg"
+      this.isCurrent ? "environment.connected.svg" : "environment.svg"
     ),
   };
 
   contextValue = this.isCurrent ? "envSection" : "envSectionNotCurrent";
-
 }
 
 const serverProvider = new ServerItemProvider();
