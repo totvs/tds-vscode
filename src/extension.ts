@@ -7,7 +7,7 @@ import * as nls from "vscode-nls";
 
 const localize = nls.config({
   locale: vscode.env.language,
-  bundleFormat: nls.BundleFormat.standalone
+  bundleFormat: nls.BundleFormat.standalone,
 })();
 
 import * as ls from "vscode-languageserver-types";
@@ -494,6 +494,17 @@ export function activate(context: ExtensionContext) {
     })
   );
 
+  //rpo log
+  context.subscriptions.push(
+    vscode.commands.registerCommand("tds-monitor.open-rpoLoad-view", () => {
+      vscode.window.setStatusBarMessage(
+        "Aguarde. Iniciando visualização...",
+        5000
+      );
+      openMonitorView(context);
+    })
+  );
+
   //Mostra a pagina de Welcome.
   showWelcomePage(context, false);
   //Abre uma caixa de informações para login no servidor protheus selecionado.
@@ -674,13 +685,25 @@ function showBanner(force: boolean = false) {
     if (showBanner || force) {
       let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
       /* prettier-ignore-start */
-      languageClient.outputChannel.appendLine("---------------------------v---------------------------------------------------");
-      languageClient.outputChannel.appendLine("   //////  ////    //////  |  TOTVS Developer Studio for VS-Code");
-      languageClient.outputChannel.appendLine("    //    //  //  //       |  Version " + ext.packageJSON["version"]);
-      languageClient.outputChannel.appendLine("   //    //  //  //////    |  TOTVS Technology");
+      languageClient.outputChannel.appendLine(
+        "---------------------------v---------------------------------------------------"
+      );
+      languageClient.outputChannel.appendLine(
+        "   //////  ////    //////  |  TOTVS Developer Studio for VS-Code"
+      );
+      languageClient.outputChannel.appendLine(
+        "    //    //  //  //       |  Version " + ext.packageJSON["version"]
+      );
+      languageClient.outputChannel.appendLine(
+        "   //    //  //  //////    |  TOTVS Technology"
+      );
       languageClient.outputChannel.appendLine("  //    //  //      //     |");
-      languageClient.outputChannel.appendLine(" //    ////    //////      |  https://github.com/totvs/tds-vscode");
-      languageClient.outputChannel.appendLine(" --------------------------^---------------------------------------------------");
+      languageClient.outputChannel.appendLine(
+        " //    ////    //////      |  https://github.com/totvs/tds-vscode"
+      );
+      languageClient.outputChannel.appendLine(
+        " --------------------------^---------------------------------------------------"
+      );
       /* prettier-ignore-end */
     }
   }

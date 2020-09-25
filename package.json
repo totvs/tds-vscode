@@ -768,6 +768,15 @@
 					"light": "resources/light/monitor.png",
 					"dark": "resources/dark/monitor.png"
 				}
+			},
+			{
+				"command": "tds-monitor.open-rpolog-view",
+				"title": "Log do Repositório",
+				"category": "TOTVSMonitor",
+				"icon": {
+					"light": "resources/light/rpolog.png",
+					"dark": "resources/dark/rpolog.png"
+				}
 			}
 		],
 		"keybindings": [
@@ -1289,6 +1298,11 @@
 					"command": "totvs-developer-studio.inspectorFunctions",
 					"when": "view == totvs_server && viewItem == serverItem",
 					"group": "DtotvsInspect@2"
+				},
+				{
+					"command": "tds-monitor.open-loadrpo-view",
+					"when": "view == totvs_server && viewItem == serverItem",
+					"group": "DtotvsInspect@3"
 				},
 				{
 					"command": "totvs-developer-studio.selectenv",
