@@ -45,13 +45,24 @@ module.exports = {
     rules: [
       {
         test: /\.(ts|tsx)$/,
-        //exclude: /node_modules/,
         include: REPLAY_PATH,
         use: [
           {
             loader: "ts-loader",
             options: {
               configFile: path.join(REPLAY_PATH, "./app/tsconfig.json"),
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(ts|tsx)$/,
+        include: RPO_INFO_PATH,
+        use: [
+          {
+            loader: "ts-loader",
+            options: {
+              configFile: path.join(RPO_INFO_PATH, "./app/tsconfig.json"),
             },
           },
         ],

@@ -70,6 +70,7 @@ import {
 import { registerAdvplOutline, register4glOutline } from "./outline";
 import { registerDebug, _debugEvent } from "./debug";
 import { openMonitorView } from "./monitor/monitorLoader";
+import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
 
 export let languageClient: LanguageClient;
 // barra de status
@@ -496,12 +497,12 @@ export function activate(context: ExtensionContext) {
 
   //rpo log
   context.subscriptions.push(
-    vscode.commands.registerCommand("tds-monitor.open-rpoLoad-view", () => {
+    vscode.commands.registerCommand("tds-monitor.open-loadrpoinfo-view", () => {
       vscode.window.setStatusBarMessage(
         "Aguarde. Iniciando visualização...",
         5000
       );
-      openMonitorView(context);
+      openRpoInfoView(context);
     })
   );
 

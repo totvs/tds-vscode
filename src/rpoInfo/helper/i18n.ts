@@ -71,8 +71,8 @@ class I18n {
       },
       body: {
         emptyDataSourceMessage: this.localize(
-          "NO_CONNECTIONS",
-          "There are no connections or they are not visible to the monitor."
+          "NO_INFO_FROM_RPO",
+          "There is no information about the RPO."
         ),
         filterRow: {
           filterTooltip: this.localize("FILTER", "Filter"),

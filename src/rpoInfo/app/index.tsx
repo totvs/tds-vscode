@@ -20,7 +20,7 @@ i18n.translations = translations;
 
 ReactDOM.render(
   <ErrorBoundary>
-    <RpoInfoPanel vscode={vscode} memento={memento}/>
+    <RpoInfoPanel vscode={vscode} memento={memento} />
   </ErrorBoundary>,
   document.getElementById("root")
 );

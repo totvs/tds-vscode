@@ -417,8 +417,8 @@ export function sendCompilation(
 
 export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
   return languageClient
-    .sendRequest("$totvsmonitor/rpoInfo", {
-      RpoInfoInfo: {
+    .sendRequest("$totvsserver/rpoInfo", {
+      rpoInfo: {
         connectionToken: server.token,
         environment: server.environment,
       },

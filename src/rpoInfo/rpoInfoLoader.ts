@@ -12,7 +12,7 @@ const localize = nls.loadMessageBundle();
 
 let rpoInfoLoader: RpoInfoLoader = undefined;
 
-export function openRpoLogView(context: vscode.ExtensionContext) {
+export function openRpoInfoView(context: vscode.ExtensionContext) {
   const server = Utils.getCurrentServer();
 
   if (isNullOrUndefined(rpoInfoLoader)) {
@@ -137,6 +137,11 @@ export class RpoInfoLoader {
       sendRpoInfo(this.monitorServer).then(
         (rpoInfo: any) => {
           if (rpoInfo) {
+            if (typeof rpoInfo == "string") {
+              vscode.window.showErrorMessage(rpoInfo);
+              rpoInfo = {};
+            }
+
             this._panel.webview.postMessage({
               command: RpoInfoPanelAction.UpdateRpoInfo,
               data: {
@@ -165,7 +170,7 @@ export class RpoInfoLoader {
   private getWebviewContent(): string {
     // Local path to main script run in the webview
     const reactAppPathOnDisk = vscode.Uri.file(
-      path.join(this._extensionPath, "out", "webpack", "rpoLogPanel.js")
+      path.join(this._extensionPath, "out", "webpack", "rpoInfoPanel.js")
     );
 
     const servers: ServerItem[] = this.monitorServer
@@ -206,6 +211,10 @@ export class RpoInfoLoader {
 
 function getTranslations() {
   return {
+    NO_INFO_FROM_RPO: localize(
+      "NO_INFO_FROM_RPO",
+      "There is no information about the RPO."
+    ),
     ACTIONS: localize("ACTIONS", "Actions"),
     DRAG_HEADERS: localize("DRAG_HEADERS", "Drag headers ..."),
     FILTER: localize("FILTER", "Filter"),

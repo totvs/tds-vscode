@@ -166,7 +166,6 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
       switch (message.command) {
         case RpoInfoPanelAction.UpdateRpoInfo: {
           const rpoPath = message.data.users as IRpoInfoData;
-          const servers = message.data.servers as any[];
 
           setRows(rpoPath.rpoPatchs);
           setSubtitle(message.data.serverName);
@@ -272,7 +271,7 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
             selection: true,
             grouping: false,
             filtering: filtering,
-            exportButton: false,
+            exportButton: true,
             padding: "dense",
             actionsColumnIndex: 0,
             columnsButton: true,
