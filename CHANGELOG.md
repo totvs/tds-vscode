@@ -5,7 +5,11 @@
 ## Genéricas
 
 - Atualização de depêndencias de terceiros
-- Hihienização de código
+- Higienização de código
+
+## Correção chamados #520 e #526
+
+- Corrigido a seleção de programa/função a ser executada (executor).
 
 ## Correção na compilação 4GL quando há comando "globals <arquivo>"
 
