@@ -11,6 +11,10 @@
 
 - Corrigido a seleção de programa/função a ser executada (executor).
 
+## Correção chamados #531
+
+- Corrigido apresentação da estrutura de fontes 4GL na visão ``Outline``.
+
 ## Correção na compilação 4GL quando há comando "globals <arquivo>"
 
 - Resolução do chamado interno (DTCLIENT01-2015)[https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2015]
