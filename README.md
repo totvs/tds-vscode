@@ -76,18 +76,6 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
 
 Por padrão, o _TDS-VSCode_ já vem configurado para usar o encodin `WindowsCP1252`.
 
-## Suporte
-
-### Capturador de Logs
-
-- Caso tenha problemas com a ferramenta e deseja suporte da equipe de desenvolvimento da extensão, inicie uma ferramenta de coleta de logs para auxiliar no suporte. Essa ferramenta colhe informações como versões de ferramentas e extensões, sistema operacional, versão do **VS-Code**, configuração de servidores e outras informações relevantes.
-
-- Para ativar, acione o atalho `CTRL + SHIFT + P`, digite `TOTVS: On Logger Capture` e acione o comando. Nesse momento o capturador de log é iniciado.
-
-- Reproduza a ocorrência e acione o atalho `CTRL + SHIFT + P`, digite `TOTVS: Off Logger Capture` ou na barra de status acione o _mouse_ sobre o texto `Capturando logs...`. O capturador será encerrado e um arquivo chamado `tdsSupport.zip` será gerado. Anexe este arquivo ao chamado.
-
-![Logger](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Logger.gif)
-
 ### Desenvolvimento Colaborativo
 
 - Se deseja contribuir com o desenvolvimento do plugin, acesse [Git Hub TDS-VSCODE](https://github.com/totvs/tds-vscode), faça seu commit que iremos analisar!
@@ -171,7 +159,7 @@ Ou se preferir colabore conosco e faça você mesmo. Veja como colaborar a segui
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-## Plugins recomendados
+## Extensões recomendadas
 
 - Numbered Bookmarks.
 
@@ -180,3 +168,13 @@ Ou se preferir colabore conosco e faça você mesmo. Veja como colaborar a segui
   <https://marketplace.visualstudio.com/items?itemName=alefragnani.numbered-bookmarks>
 
   ![Toggle](https://github.com/alefragnani/vscode-numbered-bookmarks/raw/master/images/numbered-bookmarks-toggle.png)
+
+## Extensões com incompatibilida
+
+As extensões abaixo não devem ser utilizadas junto com o _TDS for VS-Code_ porque podem causar mal funcionamento.
+
+- (4gl-outine-dxc)[https://www.vsixhub.com/vsix/14295/]
+
+- (advpl-vscode)[https://github.com/totvs/advpl-vscode]
+
+> Caso você perceba que alguma extensão de terceiros esta interferindo no _TDS for VS-Code_ favor abrir um (chamado)[(https://github.com/totvs/tds-vscode/issues].
