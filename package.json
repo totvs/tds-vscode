@@ -57,7 +57,7 @@
 		"---MISC---": "",
 		"all-contributors:generate": "all-contributors generate",
 		"all-contributors:check": "all-contributors check",
-		"link:prettier-plugin-4gl": "npm link ../prettier-plugin-4gl"
+		"link:prettier-plugin-4gl": "npm link ../prettier-plugin-4gl --force"
 	},
 	"dependencies": {
 		"@material-ui/core": "^4.11.0",

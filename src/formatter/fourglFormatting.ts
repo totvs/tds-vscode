@@ -86,7 +86,7 @@ class FourglFormatting
 
       const formatted = this.doFormat(document, options);
 
-      if ((formatted.length > 0) && (formatted !== line.text)) {
+      if (formatted.length > 0 && formatted !== line.text) {
         result.push(
           vscode.TextEdit.replace(
             line.range,

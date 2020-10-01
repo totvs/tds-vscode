@@ -12,9 +12,7 @@ function process(
   });
 
   let result: any = prettier.format(
-    content.concat("\n"),
-    //fim de linha é obrigatório
-    //parser: language[0].parsers[0],
+    content.concat("\n"),//fim de linha é obrigatório
     { ...options, rangeStart: undefined, rangeEnd: undefined }
   );
   result = result.formatted || result;
