@@ -1,11 +1,10 @@
 # Changelog
 
-### Versão [1.0.7](https://github.com/totvs/tds-vscode/compare/v1.0.8...v1.0.7) (2020-09-09)
+### Versão [1.0.8]
 
-## Genéricas
+## Correção chamado #371
 
-- Atualização de depêndencias de terceiros
-- Higienização de código
+- Corrigido a solicitação de autenticação ao trocar de servidor/ambiente, mesmo com senha salva.
 
 ## Correção chamados #520 e #526
 
@@ -13,7 +12,14 @@
 
 ## Correção chamados #531
 
-- Corrigido apresentação da estrutura de fontes 4GL na visão ``Outline``.
+- Corrigido apresentação da estrutura de fontes 4GL na visão `Outline`.
+
+### Versão [1.0.7](https://github.com/totvs/tds-vscode/compare/v1.0.8...v1.0.7) (2020-09-09)
+
+## Genéricas
+
+- Atualização de depêndencias de terceiros
+- Higienização de código
 
 ## Correção na compilação 4GL quando há comando "globals <arquivo>"
 
