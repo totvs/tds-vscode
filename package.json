@@ -64,7 +64,7 @@
 		"@material-ui/icons": "^4.9.1",
 		"@material-ui/lab": "^4.0.0-alpha.56",
 		"@totvs/tds-da": "^1.1.16",
-		"@totvs/tds-ls": "^1.1.27",
+		"@totvs/tds-ls": "^1.1.31",
 		"@types/node": "^14.11.2",
 		"@types/react": "^16.9.50",
 		"@types/vscode": "^1.49.0",
