@@ -1,7 +1,5 @@
 // Place your settings in this file to overwrite default and user settings.FALSE
 {
-	"javascript.validate.enable": false,
-	"typescript.tsdk": "node_modules/typescript/lib",
 	"files.trimTrailingWhitespace": true,
 	"editor.insertSpaces": false,
 	"files.exclude": {
@@ -11,7 +9,6 @@
 		".git*": true,
 		"/.hg": true,
 		"/.svn": true,
-		"/CVS": true,
-		"out": true
-	}
+		"/CVS": true
+	},
 }

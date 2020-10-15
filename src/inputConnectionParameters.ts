@@ -4,11 +4,11 @@ import Utils from "./utils";
 import * as path from 'path';
 import { MultiStepInput } from "./multiStepInput";
 import { connectServer, reconnectServer } from "./serversView";
-import { ConnTypeIds } from "./protocolMessages"
+import { ConnTypeIds } from "./protocolMessages";
 
 import * as nls from 'vscode-nls';
 import { ServerItem, EnvSection } from "./serverItemProvider";
-let localize = nls.loadMessageBundle();
+const localize = nls.loadMessageBundle();
 
 /**
  * Coleta os dados necessarios para conectar a um servidor advpl/4gl.
@@ -21,7 +21,7 @@ let localize = nls.loadMessageBundle();
 export async function inputConnectionParameters(context: ExtensionContext, serverParam: any, connType: ConnTypeIds, reconnect: boolean) {
 
 	//const VALIDADE_TIME_OUT = 1000;
-	const title = 'Conexão';
+	const title = localize('CONNECTION','Connection');
 
 	class NewEnvironmentButton implements QuickInputButton {
 		constructor(public iconPath: { light: Uri; dark: Uri; }, public tooltip: string) { }
@@ -30,7 +30,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 	const addEnvironmentButton = new NewEnvironmentButton({
 		dark: Uri.file(path.join(__filename, '..', '..', 'resources', 'dark', 'add.png')),
 		light: Uri.file(path.join(__filename, '..', '..', 'resources', 'light', 'add.png')),
-	}, 'Novo ambiente');
+	}, localize('NEW_ENVIRONMENT', 'New environment'));
 
 	let CONNECT_TOTAL_STEPS = 2;
 	let CONNECT_SERVER_STEP = 1;
@@ -84,7 +84,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 			title: title,
 			step: CONNECT_SERVER_STEP,
 			totalSteps: CONNECT_TOTAL_STEPS,
-			placeholder: 'Selecione servidor',
+			placeholder: localize('SELECT_SERVER', 'Select server'),
 			items: servers,
 			activeItem: typeof state.server !== 'string' ? state.server : undefined,
 			shouldResume: shouldResume,
@@ -127,7 +127,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 				step: CONNECT_ENVIRONMENT_STEP,
 				totalSteps: CONNECT_TOTAL_STEPS,
 				value: typeof state.environment === 'string' ? state.environment : '',
-				prompt: 'Informe o nome do ambiente',
+				prompt: localize('ENTER_ENVIRONMENT', 'Enter the name of the environment'),
 				shouldResume: shouldResume,
 				validate: validateRequiredValue,
 				password: false
@@ -158,7 +158,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 		// ...validate...
 		//Nao esta claro o motivo desse timeout, pois o resolve nunca é passado e sempre é esperado o total do timeout antes de continuar
 		//await new Promise(resolve => setTimeout(resolve, VALIDADE_TIME_OUT));
-		return value === '' ? 'Informação requerida' : undefined;
+		return value === '' ? localize('REQUIRED_INFORMATION', 'Required information') : undefined;
 	}
 
 	async function getEnvironments(state: Partial<State>, serversConfig: any): Promise<QuickPickItem[]> {
@@ -196,8 +196,8 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 
 export function serverSelection(args, context) {
 	if (args && args.length > 0) {
-		inputConnectionParameters(context, args[0], ConnTypeIds.CONNT_DEBUGGER, false);
+		inputConnectionParameters(context, args[0], ConnTypeIds.CONNT_DEBUGGER, true);
 	} else {
-		inputConnectionParameters(context, undefined, ConnTypeIds.CONNT_DEBUGGER, false);
+		inputConnectionParameters(context, undefined, ConnTypeIds.CONNT_DEBUGGER, true);
 	}
 }

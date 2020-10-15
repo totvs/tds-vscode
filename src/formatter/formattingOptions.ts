@@ -1,24 +1,26 @@
 import * as vscode from "vscode";
-import { FormattingOptions } from 'vscode';
+import { FormattingOptions } from "vscode";
 
 export function getFormattingOptions(langId: string): FormattingOptions {
-	let cfg = vscode.workspace.getConfiguration(langId);
-	let _insertSpaces: boolean | undefined = cfg.get("editor.insertSpaces");
-	let _tabSize: number | undefined = cfg.get("editor.tabSize");
+  const getValue = (langId: string, key: string, valueDefault: any): any => {
+    let cfg = vscode.workspace.getConfiguration(`${langId}.formatter`);
+    let value = cfg.get(key);
 
-	if (_insertSpaces === undefined) {
-		cfg = vscode.workspace.getConfiguration();
-		_insertSpaces = cfg.get("editor.insertSpaces");
-	}
+    if (!value) {
+      cfg = vscode.workspace.getConfiguration();
+      value = cfg.get(key);
+    }
 
-	if (_tabSize === undefined) {
-		cfg = vscode.workspace.getConfiguration();
-		_tabSize = cfg.get("editor.tabSize");
-	}
+    return value ? value : valueDefault;
+  };
 
-	return {
-		insertSpaces: _insertSpaces ? _insertSpaces : false,
-		tabSize: _tabSize ? _tabSize : 4
-	};
-
+  return {
+    insertSpaces: getValue(langId, "insertSpaces", false),
+    tabSize: getValue(langId, "editor.tabSize", 4),
+    keywordsCase: getValue(langId, "keywordsCase", "upper"),
+    stringStyle: getValue(langId, "stringStyle", "ignore"),
+    formatNumber: getValue(langId, "formatNumber", false),
+    operatorSpacing: getValue(langId, "operatorSpacing", false),
+    alignFields: getValue(langId, "alignFields", true),
+  };
 }

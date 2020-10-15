@@ -11,7 +11,7 @@ export const documentFormatting = (resources: string[]) => {
 
 	// resourceFormatting(advplResources);
 	// resourceFormatting(fourglResources);
-}
+};
 
 function getResourceList(resources: string[]): string[] {
 	const resultList: string[] = [];

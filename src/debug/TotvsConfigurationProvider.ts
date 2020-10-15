@@ -1,9 +1,11 @@
 import { WorkspaceFolder, DebugConfigurationProvider, DebugConfiguration, CancellationToken, window } from 'vscode';
 import * as vscode from 'vscode';
 import * as Net from 'net';
-import { localize } from '../extension';
 import { extractProgram, extractArgs, setDapArgs, getDAP } from './debugConfigs';
 import serverProvider from '../serverItemProvider';
+import * as nls from 'vscode-nls';
+
+const localize = nls.loadMessageBundle();
 
 /*
  * Set the following compile time flag to true if the
@@ -64,6 +66,11 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 				config.programArguments = extractArgs(value as string);
 			}
 
+			// se no server conectado houver a informacao de smartclientBin utiliza a informacao
+			if (connectedServerItem.smartclientBin) {
+				config.smartclientBin = connectedServerItem.smartclientBin;
+			}
+
 			if (EMBED_DEBUG_ADAPTER) {
 				// start port listener on launch of first debug session
 				/*			if (!this._server) {
@@ -92,7 +99,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 
 			return Promise.resolve(config);
 		} else {
-			window.showErrorMessage(localize('tds.vscode.server_not_connected', "Nenhum servidor conectado"));
+			window.showErrorMessage(localize('tds.vscode.server_not_connected', "No servers connected"));
 			return null;
 		}
 	}

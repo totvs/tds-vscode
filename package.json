@@ -2,7 +2,7 @@
 	"name": "tds-vscode",
 	"displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
 	"description": "%tds.package.description%",
-	"version": "1.0.6",
+	"version": "1.1.0",
 	"publisher": "TOTVS",
 	"author": {
 		"name": "TOTVS",
@@ -16,11 +16,11 @@
 		"4gl",
 		"tds",
 		"totvs",
+		"monitor",
 		"protheus"
 	],
 	"engines": {
-		"vscode": "^1.29.0",
-		"node": "^8.9.3"
+		"vscode": "^1.47.0"
 	},
 	"icon": "imagens/totvs-developer-studio.png",
 	"categories": [
@@ -38,66 +38,79 @@
 		"url": "https://github.com/totvs/tds-vscode.git"
 	},
 	"scripts": {
-		"prepare": "tsc -p ./src",
+		"clean2": "gulp clean",
 		"compile": "npm-run-all compile:*",
-		"watch": "npm-run-all -p watch:*",
-		"compile:parse_4gl": "echo src/parser/4gl-parser.pegjs && pegjs -o ./src/parser/4gl-parser.js ./syntaxes/4gl.pegjs",
 		"compile:extension": "tsc -p ./src",
 		"compile:views": "webpack --mode development",
-		"watch:extension": "tsc -w -p ./src",
-		"watch:views": "webpack --watch --mode development",
 		"tslint": "tslint ./src/**/*.ts",
+		"tslint:fix": "tslint ./src/**/*.ts --fix",
 		"test": "node node_modules/vscode/bin/test",
-		"package": "npm run compile && vsce package",
-		"publish": "npm run compile && vsce publish"
+		"export-i18n": "gulp export-i18n",
+		"i18n-import": "gulp i18n-import",
+		"---RELEASE---": "",
+		"release": "npx standard-version -r 1.1.0",
+		"tag": "git push --follow-tags",
+		"pack": "npm pack",
+		"package": "gulp package",
+		"publish": "gulp publish",
+		"vscode:prepublish": "webpack --mode production",
+		"---MISC---": "",
+		"all-contributors:generate": "all-contributors generate",
+		"all-contributors:check": "all-contributors check",
+		"link:prettier-plugin-4gl": "npm link ../prettier-plugin-4gl --force"
 	},
 	"dependencies": {
-		"@material-ui/core": "^4.10.0",
+		"@material-ui/core": "^4.11.0",
 		"@material-ui/icons": "^4.9.1",
-		"@material-ui/lab": "^4.0.0-alpha.54",
-		"@totvs/tds-da": "^1.1.12",
-		"@totvs/tds-ls": "^1.1.17",
-		"@types/jszip": "^3.1.7",
-		"@types/node": "13.7.1",
-		"@types/react": "^16.9.35",
-		"@types/vscode": "^1.45.1",
+		"@material-ui/lab": "^4.0.0-alpha.56",
+		"@totvs/tds-da": "^1.1.16",
+		"@totvs/tds-ls": "^1.1.31",
+		"@types/node": "^14.11.2",
+		"@types/react": "^16.9.50",
+		"@types/vscode": "^1.49.0",
 		"cheerio": "^1.0.0-rc.3",
 		"core-js": "^3.6.4",
+		"del": "^5.1.0",
 		"ini": "^1.3.5",
-		"jszip": "^3.4.0",
-		"material-table": "^1.58.2",
+		"jszip": "^3.5.0",
+		"material-table": "^1.69.1",
+		"prettier": "^2.1.2",
+		"prettier-plugin-4gl": "^0.0.4",
 		"react": "^16.13.0",
 		"react-dom": "^16.13.0",
-		"strip-json-comments": "^2.0.1",
+		"strip-json-comments": "^3.1.1",
 		"template-literal": "^1.0.3",
-		"tmp": "^0.1.0",
-		"typescript": "3.7.5",
-		"vscode-debugadapter": "1.32.1",
-		"vscode-languageclient": "^4.4.2",
-		"vscode-nls": "^4.1.2",
-		"vscode-nls-dev": "^3.3.1"
+		"tmp": "^0.2.1",
+		"typescript": "^4.0.3",
+		"vscode-debugadapter": "^1.42.1",
+		"vscode-languageclient": "^6.1.0",
+		"vscode-nls": "^5.0.0"
 	},
 	"devDependencies": {
+		"@babel/cli": "^7.11.6",
+		"@babel/core": "^7.11.6",
 		"@types/ini": "^1.3.30",
 		"@types/react-dom": "^16.9.8",
+		"all-contributors-cli": "^6.17.4",
 		"cleanup": "^0.3.0",
-		"css-loader": "^3.5.3",
-		"del": "^4.1.1",
-		"eslint-plugin-react-hooks": "^4.0.6",
+		"css-loader": "^4.3.0",
 		"gulp": "^4.0.2",
+		"gulp-filter": "^6.0.0",
 		"gulp-sourcemaps": "^2.6.5",
 		"gulp-tslint": "^8.1.4",
-		"gulp-typescript": "^5.0.1",
+		"gulp-typescript": "^6.0.0-alpha.1",
 		"gulp-util": "^3.0.8",
 		"lodash.template": ">=4.5.0",
 		"npm-run-all": "^4.1.5",
-		"pegjs": "^0.10.0",
 		"style-loader": "^1.2.1",
-		"ts-loader": "^6.2.2",
-		"tslint": "5.11.0",
-		"vsce": "^1.75.0",
-		"webpack": "^4.43.0",
-		"webpack-cli": "^3.3.10"
+		"terser-webpack-plugin": "^4.2.2",
+		"ts-loader": "^8.0.4",
+		"tslint": "^6.1.2",
+		"vsce": "^1.81.0",
+		"vscode-nls-dev": "^3.3.2",
+		"webpack": "^4.44.2",
+		"webpack-cli": "^3.3.12",
+		"webpack-stream": "^6.1.0"
 	},
 	"main": "./out/extension",
 	"activationEvents": [
@@ -279,12 +292,19 @@
 				"files.encoding": "windows1252",
 				"files.insertFinalNewline": true,
 				"files.eol": "\r\n",
-				"editor.formatOnType": true
+				"editor.formatOnType": false,
+				"editor.formatOnPaste": false,
+				"editor.formatOnSave": false,
+				"editor.formatOnSaveMode": "file"
 			},
 			"[advpl]": {
 				"files.encoding": "windows1252",
 				"files.insertFinalNewline": true,
-				"files.eol": "\r\n"
+				"files.eol": "\r\n",
+				"editor.formatOnType": false,
+				"editor.formatOnPaste": false,
+				"editor.formatOnSave": false,
+				"editor.formatOnSaveMode": "file"
 			}
 		},
 		"configuration": {
@@ -365,6 +385,11 @@
 					"default": true,
 					"description": "%tds.package.show.console.on.compile%"
 				},
+				"totvsLanguageServer.showBanner": {
+					"type": "boolean",
+					"default": true,
+					"description": "%tds.package.show.banner%"
+				},
 				"totvsLanguageServer.reconnectLastServer": {
 					"type": "boolean",
 					"default": true,
@@ -419,23 +444,61 @@
 					"default": "LS",
 					"description": "%tds.package.editor.toggle.autocomplete%"
 				},
-				"totvsMonitor.update.speed": {
-					"scope": "window",
-					"type": "string",
-					"enum": [
-						"Short",
-						"Normal",
-						"Long",
-						"Manual"
-					],
-					"enumDescriptions": [
-						"%totvsMonitor.update.speed.short%",
-						"%totvsMonitor.update.speed.normal%",
-						"%totvsMonitor.update.speed.long%",
-						"%totvsMonitor.update.speed.manual%"
-					],
-					"default": "Normal",
-					"description": "%totvsMonitor.update.speed%"
+				"totvsLanguageServer.workspaceServerConfig": {
+					"type": "boolean",
+					"default": false,
+					"description": "%tds.package.workspaceServerConfig%"
+				},
+				"4gl.formatter": {
+					"type": "object",
+					"description": "Formatação 4GL",
+					"properties": {
+						"keywordsCase": {
+							"type": "string",
+							"enum": [
+								"upper",
+								"lower",
+								"ignore"
+							],
+							"enumDescriptions": [
+								"Em maiúsculuas",
+								"Em minúsculas",
+								"Manter original"
+							],
+							"default": "upper",
+							"description": "Coloca as palavras chaves da linguagem na caixa indicada"
+						},
+						"stringStyle": {
+							"type": "string",
+							"enum": [
+								"double-quotes",
+								"single-quotes",
+								"ignore"
+							],
+							"enumDescriptions": [
+								"Aspas duplas",
+								"Aspas Simples",
+								"Manter original"
+							],
+							"default": "ignore",
+							"description": "Indica como as _strings_ devem ser informadas."
+						},
+						"formatNumber": {
+							"type": "boolean",
+							"default": false,
+							"description": "Habilita a formatação de valores constantes numéricos."
+						},
+						"operatorSpacing": {
+							"type": "boolean",
+							"default": false,
+							"description": "Habilita o espaçamento de operadores em expressões."
+						},
+						"alignFields": {
+							"type": "boolean",
+							"default": true,
+							"description": "Habilita o alinhamento de campos."
+						}
+					}
 				}
 			}
 		},
@@ -639,7 +702,7 @@
 			},
 			{
 				"command": "totvs-developer-studio.patchApply",
-				"title": "Patch Apply",
+				"title": "%tds.package.patchApply%",
 				"category": "TOTVS"
 			},
 			{
@@ -680,7 +743,7 @@
 			{
 				"command": "totvs-developer-studio.run.formatter",
 				"title": "Format",
-				"description": "Aplica formatação em arquivo fontes TOTVS e suas variações.",
+				"description": "%tds.package.apply.formatting%",
 				"category": "TOTVS",
 				"icon": {
 					"light": "resources/light/formatter.png",
@@ -694,8 +757,17 @@
 			},
 			{
 				"command": "totvs-developer-studio.tdsreplay.webview.timeLine",
-				"title": "Open TimeLine Webview",
+				"title": "%tds.package.OpenTimeLineWebview%",
 				"category": "TDSReplay"
+			},
+			{
+				"command": "tds-monitor.open-monitor-view",
+				"title": "%tds-monitor.open-monitor-view%",
+				"category": "TOTVSMonitor",
+				"icon": {
+					"light": "resources/light/monitor.png",
+					"dark": "resources/dark/monitor.png"
+				}
 			}
 		],
 		"keybindings": [
@@ -1194,6 +1266,11 @@
 					"group": "AAtotvsServer@2"
 				},
 				{
+					"command": "tds-monitor.open-monitor-view",
+					"when": "view == totvs_server && viewItem == serverItem",
+					"group": "AAtotvsServer@3"
+				},
+				{
 					"command": "totvs-developer-studio.patchGenerate.fromRPO",
 					"when": "view == totvs_server && viewItem == serverItem",
 					"group": "CtotvsPatch@1"
@@ -1282,6 +1359,11 @@
 			"view/title": [
 				{
 					"command": "totvs-developer-studio.add",
+					"when": "view == totvs_server",
+					"group": "navigation"
+				},
+				{
+					"command": "tds-monitor.open-monitor-view",
 					"when": "view == totvs_server",
 					"group": "navigation"
 				},

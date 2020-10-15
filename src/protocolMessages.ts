@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import * as fs from "fs";
 
 interface ConnectionNode {
   // These properties come directly from the language server.
@@ -66,6 +65,7 @@ class DisconnectReturnInfo {
   code: any;
   message: string;
 }
+
 
 export function sendDisconnectRequest(
   connectedServerItem: ServerItem
@@ -146,15 +146,22 @@ export function sendConnectRequest(
       },
       (err: ResponseError<object>) => {
         vscode.window.showErrorMessage(err.message);
+        return { sucess: false, token: "", needAuthentication: false };
       }
     );
 }
+
+export const ENABLE_CODE_PAGE = {
+  CP1252: 'CP1252', //demais idiomas
+  CP1251: 'CP1251'  //cirílico
+};
 
 export function sendAuthenticateRequest(
   serverItem: ServerItem,
   environment: string,
   user: string,
-  password: string
+  password: string,
+  encoding: string,
 ): Thenable<IAuthenticationInfo> {
   return languageClient
     .sendRequest("$totvsserver/authentication", {
@@ -163,6 +170,7 @@ export function sendAuthenticateRequest(
         environment: environment,
         user: user,
         password: password,
+        encoding: encoding
       },
     })
     .then(
@@ -176,6 +184,7 @@ export function sendAuthenticateRequest(
       },
       (err: ResponseError<object>) => {
         vscode.window.showErrorMessage(err.message);
+        return { sucess: false, token: "" };
       }
     );
 }
@@ -209,6 +218,7 @@ export function sendReconnectRequest(
       },
       (error: any) => {
         vscode.window.showErrorMessage(error.message);
+        return { sucess: false, environment: "", user: "", token: "" };
       }
     );
 }
@@ -237,6 +247,10 @@ export function sendValidationRequest(
       },
       (err: ResponseError<object>) => {
         vscode.window.showErrorMessage(err.message);
+        return {
+          build: "",
+          secure: false,
+        };
       }
     );
 }
@@ -341,6 +355,7 @@ export function sendUserMessage(
         computerName: target.computerName,
         threadId: target.threadId,
         server: target.server,
+        environment: target.environment,
         message: message,
       }
     }).then(

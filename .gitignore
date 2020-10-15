@@ -11,3 +11,5 @@ totvsls_in.log
 totvsls_out.log
 .editorconfig
 package-lock.json
+tds-vscode-translations-export
+*.log

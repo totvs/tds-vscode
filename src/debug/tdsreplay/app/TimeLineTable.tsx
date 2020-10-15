@@ -16,12 +16,14 @@ import Paper from "@material-ui/core/Paper";
 import Switch from "@material-ui/core/Switch";
 import IconButton from "@material-ui/core/IconButton";
 import FirstPageIcon from "@material-ui/icons/FirstPage";
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
-import { ICommand, CommandAction } from "../Command";
+import { ICommand, CommandToDA, CommandToPage } from "../Command";
 import { DebugSessionCustomEvent } from "vscode";
-import { FormControlLabel } from "@material-ui/core";
+import { FormControlLabel, Button } from "@material-ui/core";
+import SourcesDialog from "./SourcesDialog"
 
 
 enum KeyCode {
@@ -105,7 +107,13 @@ const tableStyles = makeStyles(_theme => ({
     //backgroundColor: "LIGHTCORAL !important",
     //textDecoration: "line-through black",
     WebkitTextDecorationStyle: "solid"
+  },
+  sources: {
+    alignItems: "right",
+    justifyContent: "right",
+    margin: _theme.spacing(1)
   }
+
 }));
 
 interface Column {
@@ -226,25 +234,23 @@ interface ITimeLineTableInterface {
 }
 
 let tableElement: RefObject<HTMLTableElement> = null;
+
 export default function TimeLineTable(props: ITimeLineTableInterface) {
   const vscode = props.vscode;
   const debugEvent = vscode.getState().config;
 
-  //if(tableElement === null) {
-    tableElement = React.createRef();
-  //}
-  //console.log("***** IN");
-  //console.table(tableElement);
-  //console.log("***** OUT");
+  tableElement = React.createRef();
 
   const tableClasses = tableStyles();
+
   const [jsonBody, setJsonBody] = React.useState(debugEvent.body);
   const [dense, setDense] = React.useState(false);
-  const [ignoreSourcesNotfound, setIgnoreSourcesNotfound] = React.useState(
-    debugEvent.body.ignoreSourcesNotFound
-  );
+  const [ignoreSourcesNotfound, setIgnoreSourcesNotfound] = React.useState(debugEvent.body.ignoreSourcesNotFound);
+  const [openSourcesDialog, setOpenSourcesDialog] = React.useState(false);
+  //Id da timeline inicial a ser selecionada. 500 para selcionar a primeira pois o replay sempre ira parar na primeira linha
+  const [selectedRowId, setSelectedRowId] = React.useState(jsonBody.currentSelectedTimeLineId);
+  const [sources, setSources] = React.useState([]);
 
-  //console.log("DEbugEvent:" + debugEvent.body.ignoreSourcesNotFound);
   //console.log("Do state:" + ignoreSourcesNotfound);
   //console.log("current TimeLine ID:" + jsonBody.currentSelectedTimeLineId);
   //console.log("itemsPerPage:" + jsonBody.itemsPerPage);
@@ -253,19 +259,14 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   ///console.log("TimeLineCount: " + jsonBody.timeLines.length);
   //console.log("totaItems: " + jsonBody.totalItems);
 
-  const [selectedRowId, setSelectedRowId] = React.useState(
-    jsonBody.currentSelectedTimeLineId
-  ); //Id da timeline inicial a ser selecionada. 500 para selcionar a primeira pois o replay sempre ira parar na primeira linha
 
   const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDense(event.target.checked);
   };
 
-  const handleIgnoreSourceNotFount = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleIgnoreSourceNotFount = (event: React.ChangeEvent<HTMLInputElement>) => {
     let command: ICommand = {
-      action: CommandAction.SetIgnoreSourcesNotFound,
+      action: CommandToDA.SetIgnoreSourcesNotFound,
       content: { isIgnoreSourceNotFound: event.target.checked }
     };
     vscode.postMessage(command);
@@ -277,24 +278,17 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     });
   };
 
-  const handleChangePage = (
-    _event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
-    //console.log("handleChangePage (newPage: " + newPage + ")");
+  const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     let command: ICommand = {
-      action: CommandAction.ChangePage,
+      action: CommandToDA.ChangePage,
       content: { newPage: newPage }
     };
     vscode.postMessage(command);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    //console.log("handleChangeRowsPerPage: " + event.target.value);
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     let command: ICommand = {
-      action: CommandAction.ChangeItemsPerPage,
+      action: CommandToDA.ChangeItemsPerPage,
       content: {
         itemsPerPage: event.target.value,
         currentTimeLineSelected: jsonBody.currentSelectedTimeLineId
@@ -303,10 +297,22 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     vscode.postMessage(command);
   };
 
-  const sendSelectTimeLineRequest = (id: string) => {
-    //console.log("------> postMessage Set TimeLine");
+
+  const handleCloseSourcesDialog = (value) => {
+    setOpenSourcesDialog(false);
+  };
+
+  const sendShowAllSourcesRequest = () => {
     let command: ICommand = {
-      action: CommandAction.SetTimeLine,
+      action: CommandToDA.ShowSources,
+      content: {data: "all"}
+    };
+    vscode.postMessage(command);
+  }
+
+  const sendSelectTimeLineRequest = (id: string) => {
+    let command: ICommand = {
+      action: CommandToDA.SetTimeLine,
       content: { timeLineSelected: id }
     };
     vscode.postMessage(command);
@@ -314,8 +320,6 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   };
 
   const selectTimeLineInTable = (timeLineIdAsString: string) => {
-    //Metodo que controla a selecao de timeline
-    //console.log("------> rowSelected");
     let timeLineId: number = Number.parseInt(timeLineIdAsString);
     setJsonBody(jsonBody => {
       if (event !== undefined) {
@@ -326,21 +330,17 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     });
     setSelectedRowId(timeLineIdAsString);
     scrollToLineIfNeeded(timeLineId);
-    //console.log("------> rowSelected (setPageInfo finished)");
   };
 
   if (listener === undefined) {
     listener = event => {
       const message = event.data; // The JSON data our extension sent
       switch (message.command) {
-        case CommandAction.SelectTimeLine:
-          //console.log("------> selectTimeLine");
+        case CommandToPage.SelectTimeLine:
           let timeLineId = message.data;
-          //console.log("------> TimeLineID: " + timeLineId);
           selectTimeLineInTable(timeLineId);
           break;
-        case CommandAction.AddTimeLines:
-          //console.log("------> addTimeLines");
+        case CommandToPage.AddTimeLines:
           setJsonBody(body => {
             if (event !== undefined) {
               event.preventDefault();
@@ -354,13 +354,21 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
             }
             return message.data.body.ignoreSourcesNotFound;
           });
-          //console.log("FirstTimeLineID: "+message.data.body.currentSelectedTimeLineId);
           selectTimeLineInTable(message.data.body.currentSelectedTimeLineId);
+          break;
+        case CommandToPage.OpenSourcesDialog:
+          setSources((sources) => {
+            if(event !== undefined) {
+              event.preventDefault();
+            }
+            sources = message.data;
+            return sources;
+          });
+          setOpenSourcesDialog(true);
           break;
       }
       message.command = "";
     };
-    //console.log("------> ADICIONANDO LISTENER")
     window.addEventListener("message", listener);
   }
 
@@ -398,18 +406,12 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   };
 
   const scrollToLineIfNeeded = (id: number) => {
-    //console.log("*************** ENTROU no scrollIfNeeded: "+id);
-   // console.table(tableElement); //<<< - Retorna um objeto com F10, porem o current é null...
-    //console.log(tableElement.current);
     if(tableElement.current !== null) {
-      //console.table(tableElement.current);
       const rows = Array.from(tableElement.current.querySelectorAll('tbody tr')),
       newRow = rows.find((row) => row.id === `${id}`) as HTMLElement;
-      //console.log(newRow);
       //tableElement.current.scrollTo()
       scrollIntoViewIfNeeded(newRow);
     }
-   // console.log("*************** SAIU no scrollIfNeeded");
   }
 
   const onKeyDown = function(event: React.KeyboardEvent<HTMLTableSectionElement>, timeline: any[]) {
@@ -518,15 +520,10 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
       );
     }
     //if(!timeLineFoundInPage) {
-    //console.log("TimeLine nao encontrado nessa pagina, mudando de pagina");
     //	handleChangePage(null,jsonBody.currentPage+1);
     //}
-    //console.log("Retornando do createTimeLineItem LOOP");
     return items;
   };
-
-  //console.log("TimeLineTable chamado");
-  //console.log("TimeLine Selecionada: "+selectedRowId)
 
   //const theme = useTheme();
 
@@ -586,6 +583,16 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         }
         label="Ignore Source Not Found"
       />
+      <Button
+         className={tableClasses.sources}
+         variant="contained"
+         startIcon={<LibraryBooksIcon />}
+         onClick={sendShowAllSourcesRequest}
+      >
+          Sources
+      </Button>
+      {/*<SourcesDialog selectedValue={selectedValue} open={open} onClose={handleCloseSourcesDialog} />*/}
+      <SourcesDialog sources={sources} open={openSourcesDialog} onClose={handleCloseSourcesDialog} />
     </TableContainer>
     //</Paper>
   );

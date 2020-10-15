@@ -1,0 +1,153 @@
+{
+  "projectName": "tds-vscode",
+  "projectOwner": "totvs",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 50,
+  "commit": true,
+  "commitConvention": "gitmoji",
+  "contributors": [
+    {
+      "login": "brodao",
+      "name": "Alan Cândido",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/949914?v=4",
+      "profile": "https://github.com/brodao",
+      "contributions": [
+        "code",
+        "content",
+        "doc"
+      ]
+    },
+    {
+      "login": "lwtnb-wrk",
+      "name": "lwtnb-wrk",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/49563478?v=4",
+      "profile": "https://github.com/lwtnb-wrk",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "DanielYampolschi",
+      "name": "DanielYampolschi",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/10711513?v=4",
+      "profile": "https://github.com/DanielYampolschi",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "matheus-sales",
+      "name": "Matheus Sales",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/11618741?v=4",
+      "profile": "https://github.com/matheus-sales",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ricardomansano",
+      "name": "Mansano",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/33813921?v=4",
+      "profile": "http://youtube.com/user/MansanoRicardo",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "acacioegas",
+      "name": "Acacio Egas",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/369099?v=4",
+      "profile": "https://github.com/acacioegas",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "danielbolognani",
+      "name": "Daniel Otto Bolognani",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/25229827?v=4",
+      "profile": "https://github.com/danielbolognani",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "leowww",
+      "name": "Leo Watanabe",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/4183539?v=4",
+      "profile": "https://github.com/leowww",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "rogeriorc",
+      "name": "Rogério Ribeiro da Cruz",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/2599798?v=4",
+      "profile": "https://github.com/rogeriorc",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "alexmmartins",
+      "name": "alexmmartins",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/24897997?v=4",
+      "profile": "https://github.com/alexmmartins",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "robsonwilliam",
+      "name": "Robson William",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/11349311?v=4",
+      "profile": "https://github.com/robsonwilliam",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "caiadofelipe",
+      "name": "FELIPE CAIADO ALMEIDA",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/49681823?v=4",
+      "profile": "https://github.com/caiadofelipe",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "isaquerochak",
+      "name": "isaquerochak",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/19375217?v=4",
+      "profile": "https://github.com/isaquerochak",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "rodrigopg",
+      "name": "Rodrigo Gonçalves",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/5282959?v=4",
+      "profile": "https://github.com/rodrigopg",
+      "contributions": [
+        "code",
+        "bug"
+      ]
+    },
+    {
+      "login": "ramorais",
+      "name": "Rogério A. Morais",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/9218184?v=4",
+      "profile": "https://www.linkedin.com/in/ramorais/",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 6
+}

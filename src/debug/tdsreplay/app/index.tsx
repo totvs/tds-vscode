@@ -19,7 +19,7 @@ declare global {
 const vscode = window.acquireVsCodeApi();
 
 ReactDOM.render(
-  <TDSReplayTimeLineWebView vscode={vscode} initialData={window.initialData} />,
+  <TDSReplayTimeLineWebView vscode={vscode} initialData={window.initialData}/>,
   document.getElementById("root")
 );
 

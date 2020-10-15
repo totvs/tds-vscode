@@ -46,10 +46,10 @@ export class CallHierarchyProvider implements TreeDataProvider<CallHierarchyNode
 
     let light = '';
     let dark = '';
-    if (element.callType == CallType.Base) {
+    if (element.callType === CallType.Base) {
       light = this.baseLight;
       dark = this.baseDark;
-    } else if (element.callType == CallType.Derived) {
+    } else if (element.callType === CallType.Derived) {
       light = this.derivedLight;
       dark = this.derivedDark;
     }
@@ -81,7 +81,7 @@ export class CallHierarchyProvider implements TreeDataProvider<CallHierarchyNode
     if (!element) {
       return [this.root];
     }
-    if (element.numChildren == element.children.length) {
+    if (element.numChildren === element.children.length) {
       return element.children;
     }
 
