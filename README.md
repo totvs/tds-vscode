@@ -167,7 +167,7 @@ Ou se preferir colabore conosco e faça você mesmo. Veja como colaborar a segui
 
   ![Numbered Bookmarks](https://github.com/alefragnani/vscode-numbered-bookmarks/raw/master/images/numbered-bookmarks-toggle.png)
 
-## Extensões com incompatibilida
+## Extensões com incompatibilidade
 
 As extensões abaixo não devem ser utilizadas junto com o _TDS for VS-Code_ porque podem causar mal funcionamento.
 
