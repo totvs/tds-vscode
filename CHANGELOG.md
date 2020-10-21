@@ -1,5 +1,11 @@
 # Changelog
 
+# Versão [1.1.1]
+
+## Correção chamado #549
+
+- Não exibe conteúdo de array e objetos no Watch
+
 # Versão [1.1.0]
 
 ## Genéricas
@@ -153,11 +159,16 @@ Ao utilizar **TOTVS Server**, de versão igual ou anterior a 19.3.0.0 de 01/06/2
 ---
 
 ## Ajustado geração de patch com characteres maiusculos no MAC [Issue 386](https://github.com/totvs/tds-vscode/issues/386)
+
 ### Problema:
-* Após atualização do language server, o MAC, erroneamente, passou a recusar aplicação de patch caso existisse character maiusculo no caminho do arquivo. Esse processo deve ser apenas para Linux 
+
+- Após atualização do language server, o MAC, erroneamente, passou a recusar aplicação de patch caso existisse character maiusculo no caminho do arquivo. Esse processo deve ser apenas para Linux
+
 ### Solução:
-* Corrigido configuração no Language Server para que o processo de validação ocorra apenas no Linux
-----
+
+- Corrigido configuração no Language Server para que o processo de validação ocorra apenas no Linux
+
+---
 
 # Versão 1.0.3
 
