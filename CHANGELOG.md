@@ -6,6 +6,10 @@
 
 - Não exibe conteúdo de array e objetos no Watch
 
+## Correção chamado #444
+
+- DEBUG 4GL não aceita expressões na view DEBUG CONSOLE e derruba AppServer (linux) em uma atribuição inválida
+
 # Versão [1.1.0]
 
 ## Genéricas
