@@ -235,5 +235,6 @@ export function updatePermissionBarItem(infos: any | undefined): void {
 		permissionStatusBarItem.text = 'Permissions: NOT logged in';
 		permissionStatusBarItem.tooltip = "";
 	}
+	permissionStatusBarItem.text = `$(key) ${permissionStatusBarItem.text}`;
 	permissionStatusBarItem.show();
 }

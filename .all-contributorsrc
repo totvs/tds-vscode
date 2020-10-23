@@ -17,7 +17,6 @@
       "profile": "https://github.com/brodao",
       "contributions": [
         "code",
-        "content",
         "doc"
       ]
     },
@@ -27,7 +26,8 @@
       "avatar_url": "https://avatars1.githubusercontent.com/u/49563478?v=4",
       "profile": "https://github.com/lwtnb-wrk",
       "contributions": [
-        "code"
+        "code",
+        "doc"
       ]
     },
     {
@@ -36,7 +36,8 @@
       "avatar_url": "https://avatars1.githubusercontent.com/u/10711513?v=4",
       "profile": "https://github.com/DanielYampolschi",
       "contributions": [
-        "code"
+        "code",
+        "doc"
       ]
     },
     {
@@ -45,7 +46,8 @@
       "avatar_url": "https://avatars2.githubusercontent.com/u/11618741?v=4",
       "profile": "https://github.com/matheus-sales",
       "contributions": [
-        "code"
+        "code",
+        "doc"
       ]
     },
     {
@@ -81,7 +83,8 @@
       "avatar_url": "https://avatars0.githubusercontent.com/u/4183539?v=4",
       "profile": "https://github.com/leowww",
       "contributions": [
-        "code"
+        "code",
+        "doc"
       ]
     },
     {
@@ -94,21 +97,12 @@
       ]
     },
     {
-      "login": "alexmmartins",
-      "name": "alexmmartins",
-      "avatar_url": "https://avatars0.githubusercontent.com/u/24897997?v=4",
-      "profile": "https://github.com/alexmmartins",
-      "contributions": [
-        "code"
-      ]
-    },
-    {
       "login": "robsonwilliam",
       "name": "Robson William",
       "avatar_url": "https://avatars3.githubusercontent.com/u/11349311?v=4",
       "profile": "https://github.com/robsonwilliam",
       "contributions": [
-        "code"
+        "test"
       ]
     },
     {
@@ -117,7 +111,7 @@
       "avatar_url": "https://avatars3.githubusercontent.com/u/49681823?v=4",
       "profile": "https://github.com/caiadofelipe",
       "contributions": [
-        "code"
+        "bug"
       ]
     },
     {
@@ -126,7 +120,7 @@
       "avatar_url": "https://avatars0.githubusercontent.com/u/19375217?v=4",
       "profile": "https://github.com/isaquerochak",
       "contributions": [
-        "code"
+        "bug"
       ]
     },
     {
@@ -135,7 +129,6 @@
       "avatar_url": "https://avatars0.githubusercontent.com/u/5282959?v=4",
       "profile": "https://github.com/rodrigopg",
       "contributions": [
-        "code",
         "bug"
       ]
     },
@@ -146,6 +139,15 @@
       "profile": "https://www.linkedin.com/in/ramorais/",
       "contributions": [
         "code"
+      ]
+    },
+    {
+      "login": "alexmmartins",
+      "name": "alexmmartins",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/24897997?v=4",
+      "profile": "https://github.com/alexmmartins",
+      "contributions": [
+        "doc"
       ]
     }
   ],

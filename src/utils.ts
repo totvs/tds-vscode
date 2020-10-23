@@ -72,27 +72,19 @@ export default class Utils {
   }
 
   /**
-   * Pegar o arquivo servers.json da .vscode (workspace)?
-   */
-  static workspaceServerConfig() {
-    let config = vscode.workspace.getConfiguration("totvsLanguageServer");
-    return config.get("workspaceServerConfig");
-  }
-
-  /**
    * Retorna o path completo do servers.json
    */
   static getServerConfigFile() {
-    return this.workspaceServerConfig()
-      ? path.join(this.getVSCodePath(), "servers.json")
-      : homedir + "/.totvsls/servers.json";
+    return path.join(this.getServerConfigPath(), "servers.json");
   }
 
   /**
    * Retorna o path de onde deve ficar o servers.json
    */
   static getServerConfigPath() {
-    return this.workspaceServerConfig()
+    let config = vscode.workspace.getConfiguration("totvsLanguageServer");
+
+    return config.workspaceServerConfig
       ? this.getVSCodePath()
       : homedir + "/.totvsls";
   }

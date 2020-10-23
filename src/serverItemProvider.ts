@@ -8,6 +8,10 @@ let localize = nls.loadMessageBundle();
 
 class ServerItemProvider
   implements vscode.TreeDataProvider<ServerItem | EnvSection> {
+
+  private watcherServerConfigFile: fs.FSWatcher;
+  private currentServersJson: string = "";
+
   isConnected(server: ServerItem) {
     return (
       this._connectedServerItem !== undefined &&
@@ -47,6 +51,7 @@ class ServerItemProvider
       }
     });
 
+    this.addChangeConfigurationListener();
     this.addServersConfigListener();
   }
 
@@ -71,32 +76,6 @@ class ServerItemProvider
   }
 
   getTreeItem(element: ServerItem | EnvSection): vscode.TreeItem {
-    // if (element instanceof ServerItem) {
-    //   let iconPath = {
-    //     light: path.join(
-    //       __filename,
-    //       "..",
-    //       "..",
-    //       "resources",
-    //       "light",
-    //       this.isConnected
-    //         ? "server.connected.svg"
-    //         : "server.svg"
-    //     ),
-    //     dark: path.join(
-    //       __filename,
-    //       "..",
-    //       "..",
-    //       "resources",
-    //       "dark",
-    //       this.isConnected
-    //         ? "server.connected.svg"
-    //         : "server.svg"
-    //     ),
-    //   };
-
-    //   element.iconPath = iconPath;
-    // }
 
     return element;
   }
@@ -172,13 +151,31 @@ class ServerItemProvider
     );
   }
 
+  private addChangeConfigurationListener(): void {
+    vscode.workspace.onDidChangeConfiguration(() => {
+      let serversJson = Utils.getServerConfigFile();
+
+      if (serversJson !== this.currentServersJson) {
+        if (this.watcherServerConfigFile !== undefined) {
+          this.watcherServerConfigFile.removeAllListeners();
+        }
+
+        this.currentServersJson = serversJson;
+        this.addServersConfigListener();
+        this.localServerItems = this.setConfigWithServerConfig();
+        this.refresh();
+      }
+
+    })
+  }
+
   private addServersConfigListener(): void {
     let serversJson = Utils.getServerConfigFile();
     if (!fs.existsSync(serversJson)) {
       Utils.createServerConfig();
     }
     //Caso o arquivo servers.json seja encontrado, registra o listener já na inicialização.
-    fs.watch(serversJson, { encoding: "buffer" }, (eventType, filename) => {
+    this.watcherServerConfigFile = fs.watch(serversJson, { encoding: "buffer" }, (eventType, filename) => {
       if (filename && eventType === "change") {
         this.localServerItems = this.setConfigWithServerConfig();
         this.refresh();

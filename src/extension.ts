@@ -22,7 +22,7 @@ import {
   StatusBarAlignment,
 } from "vscode";
 import { jumpToUriAtPosition } from "./vscodeUtils";
-import { ServersExplorer, updateStatusBarItem } from "./serversView";
+import { ServersExplorer, initServerStatusbar, toggleWorkspaceServer } from "./serversView";
 import {
   compileKeyPage,
   updatePermissionBarItem,
@@ -77,6 +77,8 @@ export let languageClient: LanguageClient;
 export let totvsStatusBarItem: vscode.StatusBarItem;
 // barra de permissoes
 export let permissionStatusBarItem: vscode.StatusBarItem;
+// barra de localização do arquivo de servidores
+export let workspaceServerStatusBarItem: vscode.StatusBarItem;
 
 // barra de configurações
 export let settingsStatusBarItem: vscode.StatusBarItem;
@@ -508,11 +510,19 @@ export function activate(context: ExtensionContext) {
 
   //Mostra a pagina de Welcome.
   showWelcomePage(context, false);
+
   //Abre uma caixa de informações para login no servidor protheus selecionado.
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.serverSelection",
       (...args) => serverSelection(args, context)
+    )
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand(
+      "totvs-developer-studio.toggleWorkspaceServer",
+      (...args) => toggleWorkspaceServer()
     )
   );
 
@@ -532,14 +542,8 @@ export function activate(context: ExtensionContext) {
     () => tdsReplayLauncherConfig.show(context)
   );
 
-  //inicialliza item de barra de status de servidor conectado ou não.
-  totvsStatusBarItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Left,
-    100
-  );
-  totvsStatusBarItem.command = "totvs-developer-studio.serverSelection";
-  context.subscriptions.push(totvsStatusBarItem);
-  context.subscriptions.push(Utils.onDidSelectedServer(updateStatusBarItem));
+  // barra status associada a servers
+  initServerStatusbar(context);
 
   //inicializa item de barra para permissões para exibir infomações da chave de compilação.
   permissionStatusBarItem = vscode.window.createStatusBarItem(
@@ -585,7 +589,6 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-  updateStatusBarItem(undefined);
   updatePermissionBarItem(Utils.getPermissionsInfos());
   updateSettingsBarItem();
 
