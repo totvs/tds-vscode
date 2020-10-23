@@ -7,6 +7,8 @@ import { languageClient } from '../extension';
 import * as nls from 'vscode-nls';
 import { ResponseError } from 'vscode-languageclient';
 import JSZip = require('jszip');
+import { request } from 'http';
+import { sendApplyPatchRequest } from '../protocolMessages';
 
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
@@ -24,6 +26,17 @@ const localizeHTML = {
 	"tds.webview.col02": localize("tds.webview.col02", "Patch Full Path")
 };
 
+function doValidadePatch(server, patchUris: Array<string>): Thenable<any> {
+	const request = sendApplyPatchRequest(server, patchUris, Utils.getPermissionsInfos(), true);
+
+	return request;
+}
+
+function doApplyPatch(server, patchUris: Array<string>): Thenable<any> {
+	const request = sendApplyPatchRequest(server, patchUris, Utils.getPermissionsInfos(), false);
+
+	return request;
+}
 
 export function patchApply(context: any, isWorkspace: boolean): void {
 	if (currentPanel) {
@@ -78,40 +91,33 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 							if (message.patchFile === "") {
 								vscode.window.showErrorMessage(localize("tds.webview.patch.apply.fail", "Apply Patch Fail. Please input patch file."));
 							} else {
-								//vscode.window.showInformationMessage(localize("tds.webview.patch.apply.start","Started Patch Apply"));
-								const permissionsInfos = Utils.getPermissionsInfos();
-								languageClient.sendRequest('$totvsserver/patchApply', {
-									"patchApplyInfo": {
-										"connectionToken": server.token,
-										"authenticateToken": permissionsInfos.authorizationToken,
-										"environment": server.environment,
-										"patchUris": patchUris,
-										"isLocal": true,
-										"validatePatch": false,
-										"applyOldProgram": message.applyOld
+								vscode.window.setStatusBarMessage(localize(
+									"REQUESTING_DATA_FROM_SERVER",
+									"Validando pacote antes de aplicar. Pode levar vários minutos."
+								), doValidadePatch(server, patchUris).then(
+									() => {
+										doApplyPatch(server, patchUris)
+									},
+									(err: any) => {
+										vscode.window.showErrorMessage(err.message);
 									}
-								}).then((response: PatchResult) => {
-									if (response.returnCode === 40840) { // AuthorizationTokenExpiredError
-										Utils.removeExpiredAuthorization();
-									}
-									if (message.applyOld) {
-										vscode.window.showInformationMessage('Old files applied.');
-									}
-								}, (err: ResponseError<object>) => {
-									vscode.window.showErrorMessage(err.message);
-								});
+								));
 							}
+
 							if (currentPanel) {
 								if (message.close) {
 									currentPanel.dispose();
 								}
 							}
+
 							return;
 
 						case 'extractPatchsFiles':
-							vscode.window.showWarningMessage("Checking zip files");
-
-							extractPatchsFiles(message.files)
+							vscode.window.showWarningMessage("");
+							vscode.window.setStatusBarMessage(localize(
+								"CHECKING_ZIP_FILES",
+								"Checking zip files ..."
+							), extractPatchsFiles(message.files)
 								.then((files) => {
 									if (files.length === 0) {
 										vscode.window.showWarningMessage("No patch file found in zip files.");
@@ -130,7 +136,7 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 								.catch((reason: any) => {
 									vscode.window.showErrorMessage(reason);
 									console.debug(reason);
-								});
+								}));
 							return;
 
 						case 'showDuplicateWarning':
@@ -147,10 +153,9 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 
 						case 'patchInfo':
 							vscode.window.showInformationMessage("PatchInfo");
-							const args = {
+							vscode.commands.executeCommand('totvs-developer-studio.patchInfos.fromFile', {
 								fsPath: message.file
-							};
-							vscode.commands.executeCommand('totvs-developer-studio.patchInfos.fromFile', args);
+							});
 							return;
 					}
 				},
@@ -224,7 +229,7 @@ function extractPatchsFiles(zipfilenames: string[]): Promise<string[]> {
 							.then(function (content: any) {
 								fs.writeFileSync(dest, content);
 							})
-							.catch((reason: any)=>{
+							.catch((reason: any) => {
 								reject(reason);
 							});
 					}

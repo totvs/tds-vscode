@@ -19,3 +19,10 @@ export interface IRpoInfoData {
   environment: string;
   rpoPatchs: IRpoPatch[];
 }
+
+export interface IPatchInfoData {
+  process: string;
+  error: boolean;
+  message: string;
+  data: any;
+}

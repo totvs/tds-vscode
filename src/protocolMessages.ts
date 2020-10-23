@@ -19,7 +19,9 @@ import { languageClient } from "./extension";
 import { ResponseError } from "vscode-languageclient";
 import { ServerItem } from "./serverItemProvider";
 import { CompileResult } from "./compile/compileResult";
-import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
+import { IPatchInfoData, IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
+import { PatchResult } from "./patch/patchGenerate";
+import Utils from "./utils";
 
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
@@ -431,4 +433,44 @@ export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
         return error.message;
       }
     );
+}
+
+export function sendApplyPatchRequest(server: ServerItem, patchUris: Array<string>, permissions, validate: boolean, applyOld: boolean = false): Thenable<IPatchInfoData> {
+
+  return languageClient.sendRequest('$totvsserver/patchApply', {
+    "patchApplyInfo": {
+      "connectionToken": server.token,
+      "authenticateToken": permissions.authorizationToken,
+      "environment": server.environment,
+      "patchUris": patchUris,
+      "isLocal": true,
+      "validatePatch": validate,
+      "applyOldProgram": applyOld
+    }
+  }).then((response: PatchResult) => {
+    if (applyOld) {
+      vscode.window.showInformationMessage('Old files applied.');
+    }
+    return Promise.resolve({
+      process: validate ? "Validação" : "Aplicação",
+      error: false,
+      message: "Processo [{0}} realizado com sucesso",
+      data: null
+    });
+  }, (err: ResponseError<object>) => {
+    const error: IPatchInfoData = {
+      process: validate ? "Validação" : "Aplicação",
+      error: true,
+      message: "",
+      data: err.data
+    };
+
+    if (err.code == 4094) { //arquivos do pacote mais antigos que RPO
+      error.message = "Recursos do pacote mais antigos que os do RPO";
+    } else {
+      error.message = err.message;
+    }
+
+    return Promise.reject(error);
+  });
 }
