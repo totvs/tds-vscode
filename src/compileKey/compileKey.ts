@@ -162,7 +162,7 @@ function validateKey(currentPanel, message, close: boolean) {
 			if (message.path) {
 				response.path = message.path;
 			}
-			if (response.buildType === 0 || response.buildType === 1 || response.buildType === 2) {
+			if (response.authorizationToken !== "") {
 				response.tokenKey = message.token;
 				response.machineId = message.id;
 				response.issued = message.generated;
