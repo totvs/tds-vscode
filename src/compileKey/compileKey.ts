@@ -69,6 +69,7 @@ export function compileKeyPage(context: vscode.ExtensionContext) {
 	}
 
 	currentPanel.webview.onDidReceiveMessage(message => {
+		console.log("onDidReceiveMessage: " + message.command);
 		switch (message.command) {
 			case 'saveKey':
 				if (message.token) {
@@ -143,6 +144,7 @@ function getId(currentPanel) {
 }
 
 function validateKey(currentPanel, message, close: boolean) {
+	console.log("validateKey: " + message.token);
 	if (message.token) {
 		let canOverride = "0";
 		if (message.overwrite === true) {
@@ -157,12 +159,14 @@ function validateKey(currentPanel, message, close: boolean) {
 				'token': message.token
 			}
 		}).then((response: any) => {
+			console.log("validateKey response: " + response.authorizationToken);
 			let outputMessageText;
 			let outputMessageType;
 			if (message.path) {
 				response.path = message.path;
 			}
 			if (response.authorizationToken !== "") {
+				console.log("validateKey success");
 				response.tokenKey = message.token;
 				response.machineId = message.id;
 				response.issued = message.generated;
@@ -174,6 +178,7 @@ function validateKey(currentPanel, message, close: boolean) {
 				outputMessageText = localizeHTML["tds.webview.compile.key.validated"];
 				outputMessageType = "success";
 			} else {
+				console.log("validateKey error");
 				outputMessageText = localizeHTML["tds.webview.compile.key.invalid"];
 				outputMessageType = "error";
 			}
