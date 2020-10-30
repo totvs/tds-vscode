@@ -49,4 +49,41 @@ Ou use a troca rápida disponível na barra de _status_.
 
 > A troca rápida aplica-se somente a área de trabalho corrente e se sobrepoem a configuração padrão ou por usuário. Detalhes em [User and Workspace Settings](https://code.visualstudio.com/docs/getstarted/settings).
 
+## Sistema de Privilégios
 
+O **TDS-VSCode**, suporta um sistema simples de privilégios, baseada em configuração efetuada no arquivo _appServer.ini_, podendo-se configurar  privilégios para determinadas operações e estações, através da adição de chaves na sessão `[TDS]`.
+
+> Para manter o mesmo comportamento de ambientes com versões mais antigas, todas as operações vem liberadas por padrão, na ausência da sessão `[TDS]` ou da chave da operação.
+
+### Especificação da sessão
+
+```
+[TDS]
+ALLOWAPPLYPATCH=<ip list>
+ALLOWEDIT=<ip list>
+ENABLEDISCONNECTUSER=<ip list>
+ENABLESENDMESSAGE=<ip list>
+ENABLEBLOCKNEWCONNECTION=<ip list>
+ENABLESTOPSERVER=<ip list>
+ALLOWBUILDPATCH=<ip list>
+ALLOWMONITOR=<ip list>
+ALLOWCOMPILE=<ip list>
+```
+
+Chave | Permissão |
+----- | --------- |
+ALLOWAPPLYPATCH | Aplicar pacotes de atualização (_patchs_)
+ALLOWEDIT | Editar configurações do _appServer_
+ENABLEDISCONNECTUSER | Desconectar usuários
+ENABLESENDMESSAGE | Enviar mensagens
+ENABLEBLOCKNEWCONNECTION | Bloquear novas conexões
+ENABLESTOPSERVER | Encerrar o _appServer_
+ALLOWBUILDPATCH | Gerar pacotes de atualização (_patchs_)
+ALLOWMONITOR | Monitorar conexões/sessões do _appServer_
+ALLOWCOMPILE | Compilar fontes e recursos
+|
+
+- `Chave` deve ser sempre em maiúsculas
+- `<ip list>` é a lista de estações com o privilégio liberado, identificadas pelo seu endereço IP e separadas por `,`.
+
+> Para liberar o privilégio a qualquer estação, omita a chave ou coloque `*`.

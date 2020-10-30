@@ -1222,7 +1222,6 @@
 				{
 					"when": "resourceLangId == totvs_patch",
 					"command": "totvs-developer-studio.patchApply.fromFile",
-					"alt": "totvs-developer-studio.patchApply.fromFile",
 					"group": "totvsBuild@5"
 				},
 				{

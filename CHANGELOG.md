@@ -1,5 +1,17 @@
 # Changelog
 
+# Versão [1.1.next]
+
+## Genéricas
+
+- Documentação e ajustes no [Sistema de Privilégios](docs/servers.md)
+- Melhoria no processo de aplicação de pacotes de atualização (_patchs_)
+- Implementação de validação de pacotes pacotes de atualização (_patchs_), durante a sua aplicação
+
+## Implementação chamado #269
+
+- Opção de manter as configurações de servidores na área de trabalho
+
 # Versão [1.1.0]
 
 ## Genéricas
@@ -154,7 +166,7 @@ Ao utilizar **TOTVS Server**, de versão igual ou anterior a 19.3.0.0 de 01/06/2
 
 ## Ajustado geração de patch com characteres maiusculos no MAC [Issue 386](https://github.com/totvs/tds-vscode/issues/386)
 ### Problema:
-* Após atualização do language server, o MAC, erroneamente, passou a recusar aplicação de patch caso existisse character maiusculo no caminho do arquivo. Esse processo deve ser apenas para Linux 
+* Após atualização do language server, o MAC, erroneamente, passou a recusar aplicação de patch caso existisse character maiusculo no caminho do arquivo. Esse processo deve ser apenas para Linux
 ### Solução:
 * Corrigido configuração no Language Server para que o processo de validação ocorra apenas no Linux
 ----

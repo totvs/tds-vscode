@@ -16,10 +16,10 @@ interface AuthenticationNode {
 }
 
 import { languageClient } from "./extension";
-import { ResponseError } from "vscode-languageclient";
+import { ErrorCodes, ResponseError } from "vscode-languageclient";
 import { ServerItem } from "./serverItemProvider";
 import { CompileResult } from "./compile/compileResult";
-import { IPatchInfoData, IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
+import { IPatchInfoRequestData, IPermissionsResult, IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
 import { PatchResult } from "./patch/patchGenerate";
 import Utils from "./utils";
 
@@ -435,7 +435,24 @@ export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
     );
 }
 
-export function sendApplyPatchRequest(server: ServerItem, patchUris: Array<string>, permissions, validate: boolean, applyOld: boolean = false): Thenable<IPatchInfoData> {
+export function sendServerPermissions(token: string): Thenable<string[]> {
+  return languageClient
+    .sendRequest("$totvsserver/server_permissions", {
+      serverPermissionsInfo: {
+        connectionToken: token
+      },
+    })
+    .then(
+      (response: IPermissionsResult) => {
+        return response.serverPermissions.operation;
+      },
+      (error: Error) => {
+        return [error.message];
+      }
+    );
+}
+
+export function sendApplyPatchRequest(server: ServerItem, patchUris: Array<string>, permissions, validate: boolean, applyOld: boolean = false): Thenable<IPatchInfoRequestData> {
 
   return languageClient.sendRequest('$totvsserver/patchApply', {
     "patchApplyInfo": {
@@ -451,25 +468,30 @@ export function sendApplyPatchRequest(server: ServerItem, patchUris: Array<strin
     if (applyOld) {
       vscode.window.showInformationMessage('Old files applied.');
     }
-    return Promise.resolve({
-      process: validate ? "Validação" : "Aplicação",
-      error: false,
-      message: "Processo [{0}} realizado com sucesso",
-      data: null
-    });
-  }, (err: ResponseError<object>) => {
-    const error: IPatchInfoData = {
+    if (response.returnCode == 99999) {
+      return Promise.reject({
+        process: validate ? "Validação" : "Aplicação",
+        error: true,
+        message: "Insufficient privileges",
+        errorCode: response.returnCode
+      });
+    }
+    const result = {
       process: validate ? "Validação" : "Aplicação",
       error: true,
-      message: "",
-      data: err.data
-    };
-
-    if (err.code == 4094) { //arquivos do pacote mais antigos que RPO
-      error.message = "Recursos do pacote mais antigos que os do RPO";
-    } else {
-      error.message = err.message;
+      message: "Processo [{0}} realizado com sucesso",
+      data: null
     }
+
+    return Promise.resolve(result);
+  }, (err: ResponseError<object>) => {
+    const error: IPatchInfoRequestData = {
+      process: validate ? "Validação" : "Aplicação",
+      error: true,
+      message: err.message,
+      data: err.data,
+      errorCode: err.code
+    };
 
     return Promise.reject(error);
   });

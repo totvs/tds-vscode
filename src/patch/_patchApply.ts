@@ -38,7 +38,7 @@ function doApplyPatch(server, patchUris: Array<string>): Thenable<any> {
 	return request;
 }
 
-export function patchApply(context: any, isWorkspace: boolean): void {
+export function _patchApply(context: any, isWorkspace: boolean): void {
 	if (currentPanel) {
 		currentPanel.reveal();
 	} else {

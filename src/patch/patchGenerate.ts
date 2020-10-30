@@ -173,6 +173,7 @@ export function patchGenerateFromFolder(context: any) {
 
 export class PatchResult {
 	returnCode: number;
+	files: string;
 }
 
 export class InspectorObject {

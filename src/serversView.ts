@@ -19,6 +19,7 @@ import {
   sendReconnectRequest,
   IReconnectInfo,
   ENABLE_CODE_PAGE,
+  sendServerPermissions,
 } from "./protocolMessages";
 
 let localize = nls.loadMessageBundle();
@@ -398,13 +399,14 @@ function doFinishConnectProcess(
   token: string,
   environment: string
 ) {
+  //TODO: desligar ouvintes (listeners) de alteração em arquivo/configuração
   Utils.saveConnectionToken(serverItem.id, token, environment);
   Utils.saveSelectServer(
     serverItem.id,
     token,
     serverItem.name,
     environment,
-    serverItem.username
+    serverItem.username,
   );
 
   if (serverProvider !== undefined) {
@@ -413,6 +415,15 @@ function doFinishConnectProcess(
 
     serverProvider.connectedServerItem = serverItem;
   }
+
+  //TODO: religar ouvintes (listeners) de alteração em arquivo/configuração
+  sendServerPermissions(token).then((value) => {
+    Utils.saveServerPermissions(value);
+  }, (reason) => {
+    Utils.saveServerPermissions({});
+    vscode.window.showErrorMessage(reason);
+  })
+
 }
 
 export function connectServer(
@@ -568,11 +579,14 @@ function updateStatusBarItem(
 ): void {
   if (selectServer) {
     totvsStatusBarItem.text = `${selectServer.name} / ${selectServer.environment}`;
+    const permissions: string[] = Utils.getServerPermissions();
+    totvsStatusBarItem.tooltip = permissions.join("\n");
   } else {
     totvsStatusBarItem.text = localize(
       "tds.vscode.select_server_environment",
       "Select server/environment"
     );
+    totvsStatusBarItem.tooltip = ""
   }
 
   totvsStatusBarItem.show();
@@ -580,7 +594,7 @@ function updateStatusBarItem(
 
 function updateWorkspaceServerConfig(): void {
   const config = vscode.workspace.getConfiguration("totvsLanguageServer");
-  const icon: string = config.workspaceServerConfig?'$(folder-active)':'$(globe)';
+  const icon: string = config.workspaceServerConfig ? '$(folder-active)' : '$(globe)';
 
   workspaceServerStatusBarItem.text = icon
   workspaceServerStatusBarItem.tooltip = localize("tds.vscode.toggles.file.servers", "Toggles file servers ({0})", Utils.getServerConfigFile());

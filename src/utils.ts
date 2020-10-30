@@ -247,6 +247,30 @@ export default class Utils {
   }
 
   /**
+   * Salva as permissões do servidor logado por ultimo.
+   * @param permissions Permissões
+   */
+  static saveServerPermissions(value: any) {
+    const servers = Utils.getServersConfig();
+
+    servers.serverPermissions = value;
+
+    Utils.persistServersInfo(servers);
+
+  };
+
+  /**
+   * Recupera as permissões do servidor logado por ultimo.
+   * @param id Id do servidor logado
+   */
+  static getServerPermissions(): any {
+    const servers = Utils.getServersConfig();
+
+    return servers.serverPermissions || {};
+
+  };
+
+  /**
    * Salva o servidor logado por ultimo.
    * @param id Id do servidor logado
    * @param token Token que o LS gerou em cima das informacoes de login

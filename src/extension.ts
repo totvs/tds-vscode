@@ -29,7 +29,6 @@ import {
 } from "./compileKey/compileKey";
 import { getLanguageClient } from "./TotvsLanguageClient";
 import { patchGenerate, patchGenerateFromFolder } from "./patch/patchGenerate";
-import { patchApply } from "./patch/patchApply";
 import Utils from "./utils";
 import { LanguageClient } from "vscode-languageclient";
 import {
@@ -71,6 +70,7 @@ import { registerAdvplOutline, register4glOutline } from "./outline";
 import { registerDebug, _debugEvent } from "./debug";
 import { openMonitorView } from "./monitor/monitorLoader";
 import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
+import { openApplyPatchView } from "./patch/apply/applyPathLoader";
 
 export let languageClient: LanguageClient;
 // barra de status
@@ -431,19 +431,28 @@ export function activate(context: ExtensionContext) {
       () => patchGenerate(context)
     )
   );
-  //Abre a tela de aplicação de patch
+
+  //Aplica um pacote de atualização (patch).
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.patchApply", () =>
-      patchApply(context, false)
-    )
+    vscode.commands.registerCommand("totvs-developer-studio.patchApply", () => {
+      vscode.window.setStatusBarMessage(
+        "Aguarde. Iniciando aplicação de pacotes...",
+        5000
+      );
+      openApplyPatchView(context);
+    })
   );
-  //Aplica um patch de acordo com o arquivo selecionado.
-  context.subscriptions.push(
-    commands.registerCommand(
-      "totvs-developer-studio.patchApply.fromFile",
-      (context) => patchApply(context, true)
-    )
-  );
+
+    context.subscriptions.push(
+      vscode.commands.registerCommand("totvs-developer-studio.patchApply.fromFile", () => {
+        vscode.window.setStatusBarMessage(
+          "Aguarde. Iniciando aplicação de pacotes...",
+          5000
+        );
+        openApplyPatchView(context);
+      })
+    );
+
   //Gera um patch de acordo com os arquivos contidos em uma pasta
   context.subscriptions.push(
     commands.registerCommand(
