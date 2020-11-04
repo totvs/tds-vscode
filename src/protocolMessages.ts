@@ -403,7 +403,7 @@ export function sendCompilation(
   return languageClient.sendRequest("$totvsserver/compilation", {
     compilationInfo: {
       connectionToken: server.token,
-      authorizationToken: permissionsInfos.authorizationToken,
+      authorizationToken: permissionsInfos ? permissionsInfos.authorizationToken : "",
       environment: server.environment,
       includeUris: includesUris,
       fileUris: filesUris,
