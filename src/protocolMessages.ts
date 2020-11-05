@@ -424,11 +424,8 @@ export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
       },
     })
     .then(
-      (response: any) => {
-        return response.message;
-      },
-      (error: Error) => {
-        return error.message;
+      (response: RpoInfoResult) => {
+        return response;
       }
     );
 }

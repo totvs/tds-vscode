@@ -2,11 +2,11 @@ import * as vscode from "vscode";
 import * as path from "path";
 import { sendRpoInfo } from "../protocolMessages";
 import { RpoInfoPanelAction, IRpoInfoPanelAction } from "./actions";
-import serverProvider, { ServerItem } from "../serverItemProvider";
+import { ServerItem } from "../serverItemProvider";
 import * as nls from "vscode-nls";
 import Utils from "../utils";
-import { isNullOrUndefined } from "util";
 import { languageClient } from "../extension";
+import {IRpoInfoData} from "./rpoPath";
 
 const localize = nls.loadMessageBundle();
 
@@ -15,7 +15,7 @@ let rpoInfoLoader: RpoInfoLoader = undefined;
 export function openRpoInfoView(context: vscode.ExtensionContext) {
   const server = Utils.getCurrentServer();
 
-  if (isNullOrUndefined(rpoInfoLoader)) {
+  if ((rpoInfoLoader === null) || (rpoInfoLoader == undefined)) {
     rpoInfoLoader = new RpoInfoLoader(context);
   }
 
@@ -67,7 +67,6 @@ export class RpoInfoLoader {
     this._panel.webview.html = this.getWebviewContent();
     this._panel.onDidChangeViewState(
       (listener: vscode.WebviewPanelOnDidChangeViewStateEvent) => {
-        this.updateRpoInfo();
       },
       undefined,
       this._disposables
@@ -135,13 +134,7 @@ export class RpoInfoLoader {
           this.monitorServer.name
         ),
       sendRpoInfo(this.monitorServer).then(
-        (rpoInfo: any) => {
-          if (rpoInfo) {
-            if (typeof rpoInfo == "string") {
-              vscode.window.showErrorMessage(rpoInfo);
-              rpoInfo = {};
-            }
-
+        (rpoInfo: IRpoInfoData) => {
             this._panel.webview.postMessage({
               command: RpoInfoPanelAction.UpdateRpoInfo,
               data: {
@@ -149,8 +142,7 @@ export class RpoInfoLoader {
                 rpoInfo: rpoInfo,
               },
             });
-          }
-        },
+          },
         (err: Error) => {
           languageClient.error(err.message, err);
           vscode.window.showErrorMessage(
@@ -242,5 +234,6 @@ function getTranslations() {
     SHOW_HIDE_COLUMNS: localize("SHOW_HIDE_COLUMNS", "Show/hide columns"),
     INITIALIZING: localize("INITIALIZING", "(initializing)"),
     SHOW_COLUMNS: localize("SHOW_COLUMNS", "Show Columns"),
+    RESOURCES: localize("RESOURCES", "Resources"),
   };
 }
