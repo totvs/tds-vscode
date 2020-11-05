@@ -1,15 +1,38 @@
 # Changelog
 
-### Versão [1.0.7](https://github.com/totvs/tds-vscode/compare/v1.0.8...v1.0.7) (2020-09-09)
+# Versão [1.1.1]
+
+## Correção chamado #549
+
+- Não exibe conteúdo de array e objetos no Watch
+
+## Correção chamado #444
+
+- DEBUG 4GL não aceita expressões na view DEBUG CONSOLE e derruba AppServer (linux) em uma atribuição inválida
+
+# Versão [1.1.0]
 
 ## Genéricas
 
-- Atualização de depêndencias de terceiros
-- Hihienização de código
+- Atualização de dependências de terceiros
+- Higienização de código
+- Atualização de documentação (reorganização)
+
+## Correção chamado #371
+
+- Corrigido a solicitação de autenticação ao trocar de servidor/ambiente, mesmo com senha salva.
+
+## Correção chamados #520 e #526
+
+- Corrigido a seleção de programa/função a ser executada (executor).
+
+## Correção chamados #531
+
+- Corrigido apresentação da estrutura de fontes 4GL na visão `Outline`.
 
 ## Correção na compilação 4GL quando há comando "globals <arquivo>"
 
-- Resolução do chamado interno (DTCLIENT01-2015)[https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2015]
+- Resolução do chamado interno [DTCLIENT01-2015](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2015). Requer atualização do _appServer_.
 
 ## Monitoramento de servidores TOTVS (BETA)
 
@@ -136,6 +159,18 @@ Ao utilizar **TOTVS Server**, de versão igual ou anterior a 19.3.0.0 de 01/06/2
 ### Solução:
 
 - Ajustado a geração da configuração para depuração.
+
+---
+
+## Ajustado geração de patch com characteres maiusculos no MAC [Issue 386](https://github.com/totvs/tds-vscode/issues/386)
+
+### Problema:
+
+- Após atualização do language server, o MAC, erroneamente, passou a recusar aplicação de patch caso existisse character maiusculo no caminho do arquivo. Esse processo deve ser apenas para Linux
+
+### Solução:
+
+- Corrigido configuração no Language Server para que o processo de validação ocorra apenas no Linux
 
 ---
 

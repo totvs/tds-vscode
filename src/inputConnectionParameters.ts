@@ -196,7 +196,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 
 export function serverSelection(args, context) {
 	if (args && args.length > 0) {
-		inputConnectionParameters(context, args[0], ConnTypeIds.CONNT_DEBUGGER, false);
+		inputConnectionParameters(context, args[0], ConnTypeIds.CONNT_DEBUGGER, true);
 	} else {
 		inputConnectionParameters(context, undefined, ConnTypeIds.CONNT_DEBUGGER, true);
 	}
