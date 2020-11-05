@@ -2,7 +2,7 @@ import * as React from "react";
 import { mergeProperties, i18n } from "../helper";
 import { applyPatchIcons } from "../helper/applyPatchIcons";
 import Alert from "@material-ui/lab/Alert";
-import { Button, ButtonGroup, Chip, Link, Popper, Tooltip, Typography } from "@material-ui/core";
+import { Button, ButtonGroup, Chip, Link, Popper, PropTypes, Tooltip, Typography } from "@material-ui/core";
 import { cellDefaultStyle } from "./applyPathInterface";
 
 function fieldDef(
@@ -125,12 +125,28 @@ export function soluctionOptions(rowData: any) {
 }
 
 export function renderStatus(rowData: any) {
-  const color = (rowData.status === 'error')?"secondary":"default";
-  const variant = (rowData.status === 'error')?"default":"outlined";
+  const color = (): Exclude<PropTypes.Color, 'inherit'> => {
+    if (rowData.data.error_number !== -1)
+    {
+      return "secondary"
+    }
+    return "default"
+  };
+
+  const variant = (): 'default' | 'outlined' => {
+    if (rowData.status !== 'error')
+    {
+      return "outlined"
+    }
+
+    return "default"
+  };
+
+  const status  = rowData.status;
 
   return (
     <Tooltip title={rowData.message}>
-      <Chip label={rowData.status} size="medium" variant={variant} color={color} />
+      <Chip label={status} size="medium" variant={variant()} color={color()} />
     </Tooltip>
   )
 }

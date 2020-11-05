@@ -20,17 +20,15 @@ export interface IRpoInfoData {
   rpoPatchs: IRpoPatch[];
 }
 
-export interface IPermissionsResult {
-  message: string;
-  serverPermissions: {
-    operation: string[];
-  }
-}
-
 export interface IPatchInfoRequestData {
-  process: string;
   error: boolean;
   message: string;
   data: any;
   errorCode?: number;
+}
+
+export interface IPatchValidateInfoResult {
+  returnCode: number;
+  message: string;
+  patchValidates: any[];
 }

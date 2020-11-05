@@ -1,7 +1,7 @@
 import { type } from "os";
 
 export type OptionStatus =
-  "loaded" | "validating" | "valid" | "applying" | "applyed" | "error" | "applyOldResource" | "cancelApply";
+  "loaded" | "validating" | "valid" | "applying" | "applyed" | "error" | "applyOldResource" | "cancelApply" | "warning";
 
 export interface IPatchFileInfo {
   status: OptionStatus;
@@ -10,7 +10,8 @@ export interface IPatchFileInfo {
   size: number;
   zipFile: string;
   message: string;
-  data?: { error_number: number; data: string};
+  applyOld: boolean
+  data: { error_number: number; data: string};
 }
 
 export interface IApplyPatchData {

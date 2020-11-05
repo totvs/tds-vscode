@@ -16,12 +16,18 @@ interface AuthenticationNode {
 }
 
 import { languageClient } from "./extension";
-import { ErrorCodes, ResponseError } from "vscode-languageclient";
+import { ResponseError } from "vscode-languageclient";
 import { ServerItem } from "./serverItemProvider";
 import { CompileResult } from "./compile/compileResult";
-import { IPatchInfoRequestData, IPermissionsResult, IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
+import { IPatchInfoRequestData, IPatchValidateInfoResult, IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
 import { PatchResult } from "./patch/patchGenerate";
-import Utils from "./utils";
+
+export interface IPermissionsResult {
+  message: string;
+  serverPermissions: {
+    operation: string[];
+  }
+}
 
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
@@ -465,28 +471,62 @@ export function sendApplyPatchRequest(server: ServerItem, patchUris: Array<strin
       "applyOldProgram": applyOld
     }
   }).then((response: PatchResult) => {
-    if (applyOld) {
-      vscode.window.showInformationMessage('Old files applied.');
-    }
     if (response.returnCode == 99999) {
       return Promise.reject({
-        process: validate ? "Validação" : "Aplicação",
         error: true,
         message: "Insufficient privileges",
         errorCode: response.returnCode
       });
     }
     const result = {
-      process: validate ? "Validação" : "Aplicação",
-      error: true,
-      message: "Processo [{0}} realizado com sucesso",
+      error: false,
+      message: "",
       data: null
     }
 
     return Promise.resolve(result);
   }, (err: ResponseError<object>) => {
     const error: IPatchInfoRequestData = {
-      process: validate ? "Validação" : "Aplicação",
+      error: true,
+      message: err.message,
+      data: err.data,
+      errorCode: err.code
+    };
+
+    return Promise.reject(error);
+  });
+}
+
+export function sendValidPatchRequest(server: ServerItem, patchUri: string, permissions, applyOld: boolean = false): Thenable<IPatchInfoRequestData> {
+
+  return languageClient.sendRequest('$totvsserver/patchValidate', {
+    "patchValidateInfo": {
+      "connectionToken": server.token,
+      "authenticateToken": permissions.authorizationToken,
+      "environment": server.environment,
+      "patchUri": patchUri,
+      "isLocal": true,
+      "applyOldProgram": applyOld
+    }
+  }).then((response: IPatchValidateInfoResult) => {
+    if (response.returnCode == 99999) {
+      return Promise.reject({
+        error: true,
+        message: "Insufficient privileges",
+        errorCode: response.returnCode,
+        data: { error_number: 0, data: response.patchValidates }
+      });
+    }
+
+    const result = {
+      error: response.returnCode !== 0,
+      message: response.message,
+      data: { error_number: 1, data: response.patchValidates }
+    }
+
+    return result.error ? Promise.reject(result):Promise.resolve(result);
+  }, (err: ResponseError<object>) => {
+    const error: IPatchInfoRequestData = {
       error: true,
       message: err.message,
       data: err.data,

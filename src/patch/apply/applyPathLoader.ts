@@ -7,7 +7,7 @@ import { ServerItem } from "../../serverItemProvider";
 import { IApplyPatchData, IPatchFileInfo } from "./applyPathData";
 import JSZip = require("jszip");
 import { languageClient } from "../../extension";
-import { sendApplyPatchRequest } from "../../protocolMessages";
+import { sendApplyPatchRequest, sendValidPatchRequest } from "../../protocolMessages";
 import { IPatchInfoRequestData } from "../../rpoInfo/rpoPath";
 
 const fs = require("fs");
@@ -169,73 +169,87 @@ export class ApplyPatchLoader {
 
   private async handleMessage(command: IApplyPatchPanelAction) {
     switch (command.action) {
-      case ApplyPatchPanelAction.SelectFile: {
-        const files: any = command.content.files;
+      case ApplyPatchPanelAction.ApplyOldSource:
+        {
+          const processAll: any = command.content.processAll;
+          const file: any = command.content.file;
+          const value: boolean = command.content.value;
 
-        files.forEach(element => {
-          const find = this._applyPatchData.patchFiles.find((target: IPatchFileInfo) => {
-            return target.fullpath === element.fullpath;
-          })
-
-          if (!find) {
-            this.addFile(element.fullpath);
+          if (processAll) {
+            this.doApplyOldSource(this._applyPatchData.patchFiles, value)
+          } else {
+            this.doApplyOldSource(this.findFile(file), value);
           }
-        });
+          break;
+        }
+      case ApplyPatchPanelAction.Apply:
+        {
+          const processAll: any = command.content.processAll;
+          const file: any = command.content.file;
 
-        break;
+          if (processAll) {
+            this.doApply(this._applyPatchData.patchFiles)
+          } else {
+            this.doApply(this.findFile(file));
+          }
+          break;
+        }
+      case ApplyPatchPanelAction.SelectFile: {
+        {
+          const files: any = command.content.files;
+          this.doSelectFiles(files);
+
+          break;
+        }
       }
 
       case ApplyPatchPanelAction.RemoveFile: {
-        const file: any = command.content.file;
-        const processAll: any = command.content.processAll;
+        {
+          const file: any = command.content.file;
+          const processAll: any = command.content.processAll;
 
-        if (processAll) {
-          this._applyPatchData.patchFiles = []
-        } else {
-          const find = this._applyPatchData.patchFiles.find((target: IPatchFileInfo) => {
-            return target.fullpath === file;
-          })
-
-          if (find) {
-            this.removeFile(find);
+          if (processAll) {
+            this._applyPatchData.patchFiles = []
+          } else {
+            this.doRemoveFile(this.findFile(file));
           }
+
+          break;
         }
-        break;
       }
 
       case ApplyPatchPanelAction.ValidateFile: {
-        const file: any = command.content.file;
-        const processAll: any = command.content.processAll;
+        {
+          const file: any = command.content.file;
+          const processAll: any = command.content.processAll;
 
-        if (processAll) {
-          this.validateFiles(this._applyPatchData.patchFiles)
-        } else {
-          const find = this._applyPatchData.patchFiles.find((target: IPatchFileInfo) => {
-            return target.fullpath === file;
-          })
-
-          if (find) {
-            this.validateFiles([find]);
+          if (processAll) {
+            this.doValidateFiles(this._applyPatchData.patchFiles)
+          } else {
+            this.doValidateFiles(this.findFile(file));
           }
+
+          break;
         }
-        break;
       }
 
       case ApplyPatchPanelAction.DoUpdateState: {
-        const state: any = command.content.state;
-        const reload: boolean = command.content.reload;
-        const context = this._context;
+        {
+          const state: any = command.content.state;
+          const reload: boolean = command.content.reload;
+          const context = this._context;
 
-        context.workspaceState.update(WS_STATE_KEY, state);
+          context.workspaceState.update(WS_STATE_KEY, state);
 
-        if (reload) {
-          this._panel.dispose();
+          if (reload) {
+            this._panel.dispose();
 
-          context.workspaceState.update(WS_STATE_KEY, {});
-          openApplyPatchView(context);
+            context.workspaceState.update(WS_STATE_KEY, {});
+            openApplyPatchView(context);
+          }
+
+          break;
         }
-
-        break;
       }
       default:
         console.log("***** ATTENTION: applyPathLoader.tsx");
@@ -245,30 +259,102 @@ export class ApplyPatchLoader {
     }
   }
 
-  private validateFiles(patchFiles: IPatchFileInfo[]) {
-    const self = this;
+  private findFile(file: string) {
+    const result = this._applyPatchData.patchFiles.find((target: IPatchFileInfo) => {
+      return target.fullpath === file;
+    })
 
-    patchFiles.forEach((element: IPatchFileInfo) => {
-      element.status = "validating";
-      self.updatePage();
+    return result ? [result] : [];
+  }
 
-      sendApplyPatchRequest(this.currentServer, [element.fullpath], Utils.getPermissionsInfos(), true)
-        .then((result: IPatchInfoRequestData) => {
-            element.status = "valid";
-        }, (reason: any) => {
-          element.status = "error";
-          element.message = reason.message || "";
-          element.data = reason.data;
-        }).then( () => {
-          self.updatePage();
-        });
+  private doSelectFiles(files: any[]) {
+    files.forEach(element => {
+      const find = this._applyPatchData.patchFiles.find((target: IPatchFileInfo) => {
+        return target.fullpath === element.fullpath;
+      })
+
+      if (!find) {
+        this.addFile(element.fullpath);
+      }
+    });
+  }
+
+  private doApplyOldSource(patchFiles: IPatchFileInfo[], value: boolean) {
+    patchFiles.forEach((patchFile) => {
+      if (patchFile) {
+        if (patchFile.data.error_number == 1) {
+          patchFile.applyOld = value;
+          patchFile.status = value ? "warning" : "loaded";
+        }
+      }
     })
   }
 
-  private removeFile(patchFile: IPatchFileInfo) {
-    this._applyPatchData.patchFiles = this._applyPatchData.patchFiles.
-      filter((element) => (element.fullpath !== patchFile.fullpath) && element.zipFile !== patchFile.fullpath);
+  private async doApply(patchFiles: IPatchFileInfo[]) {
+    const self = this;
+    const process = [];
 
+    patchFiles.forEach((element: IPatchFileInfo) => {
+      process.push(() => {
+        if (element.status == "loaded" ||  element.status == "valid" || element.status == "warning") {
+          element.status = "applying";
+          element.data = { error_number: -1, data: "" }
+          self.updatePage();
+
+          sendApplyPatchRequest(this.currentServer, [element.fullpath], Utils.getPermissionsInfos(), element.applyOld)
+            .then((result: IPatchInfoRequestData) => {
+              element.status = "applyed";
+            }, (reason: any) => {
+              element.message = reason.message || "";
+              element.data = reason.data;
+              element.status = "error";
+            }).then(() => {
+              self.updatePage();
+            });
+        }
+      })
+    });
+
+    for (let i = 0; i < process.length; i++) {
+      await process[i]();
+    }
+
+  }
+
+  private async doValidateFiles(patchFiles: IPatchFileInfo[]) {
+    const self = this;
+    const process = [];
+
+    patchFiles.forEach((element: IPatchFileInfo) => {
+      process.push(() => {
+        element.status = "validating";
+        element.data = { error_number: -1, data: "" }
+        self.updatePage();
+
+        sendValidPatchRequest(this.currentServer, element.fullpath, Utils.getPermissionsInfos(), element.applyOld)
+          .then((result: IPatchInfoRequestData) => {
+            element.status = "valid";
+          }, (reason: any) => {
+            element.message = reason.message || "";
+            element.data = reason.data;
+            element.status = element.applyOld ? "warning" : "error";
+          }).then(() => {
+            self.updatePage();
+          });
+      })
+    });
+
+    for (let i = 0; i < process.length; i++) {
+      await process[i]();
+    }
+
+  }
+
+  private doRemoveFile(patchFiles: IPatchFileInfo[]) {
+    patchFiles.forEach((patchFile) => {
+      this._applyPatchData.patchFiles = this._applyPatchData.patchFiles.
+        filter((element) => (element.fullpath !== patchFile.fullpath) && element.zipFile !== patchFile.fullpath);
+    });
   }
 
   private addFile(file: string, zipname: string = "") {
@@ -277,7 +363,16 @@ export class ApplyPatchLoader {
     const stats = fs.statSync(file);
     const fileSize = stats.size;
 
-    this._applyPatchData.patchFiles.push({ name: filename, fullpath: file, status: "loaded", size: fileSize, zipFile: zipname, message: "" });
+    this._applyPatchData.patchFiles.push({
+      name: filename,
+      fullpath: file,
+      status: "loaded",
+      size: fileSize,
+      zipFile: zipname,
+      message: "",
+      applyOld: false,
+      data: { error_number: -1, data: undefined }
+    });
 
     if (ext === ".zip") {
       this.extractPatchsFiles(file);

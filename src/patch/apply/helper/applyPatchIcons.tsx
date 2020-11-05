@@ -1,6 +1,7 @@
 import * as React from "react";
 import { SvgIcon } from "@material-ui/core";
 
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import AddBox from "@material-ui/icons/AddBox";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
 import Check from "@material-ui/icons/Check";
@@ -16,35 +17,9 @@ import Remove from "@material-ui/icons/Remove";
 import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
-import SpeedIcon from "@material-ui/icons/Speed";
-import RefreshIcon from "@material-ui/icons/Refresh";
-import LockIcon from "@material-ui/icons/Lock";
-import LockOpenIcon from "@material-ui/icons/LockOpen";
-import MessageIcon from "@material-ui/icons/Message";
-import StopIcon from "@material-ui/icons/Stop";
-import EditIcon from "@material-ui/icons/Edit";
-
-export function GroupingIcon(props: any) {
-  return (
-    <SvgIcon {...props}>
-      <path d="M0 0h24v24H0z" fill="none" />
-      <path d="M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z" />
-    </SvgIcon>
-  );
-}
-
-export function DisconnectIcon(props: any) {
-  return (
-    <SvgIcon {...props}>
-      <path d="M0 0h24v24H0V0z" fill="none" />
-      <path
-        d="M12 4c-4.41 0-8 3.59-8 8s3.59 8 8 8 8-3.59 8-8-3.59-8-8-8zm4 10.59L14.59 16 12 13.41 9.41 16 8 14.59 10.59 12 8 9.41 9.41 8 12 10.59 14.59 8 16 9.41 13.41 12 16 14.59z"
-        opacity=".3"
-      />
-      <path d="M14.59 8L12 10.59 9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41zM12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-    </SvgIcon>
-  );
-}
+import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
+import InfoIcon from '@material-ui/icons/Info';
+import DoneAllIcon from '@material-ui/icons/DoneAll';
 
 const tableIcons = {
   Add: React.forwardRef<SVGSVGElement>((props, ref) => (
@@ -102,14 +77,9 @@ const tableIcons = {
 
 export const applyPatchIcons = {
   table: tableIcons,
-  speedIcon: SpeedIcon,
-  refreshIcon: RefreshIcon,
-  lockIcon: LockIcon,
-  lockOpenIcon: LockOpenIcon,
-  messageIcon: MessageIcon,
-  stopIcon: StopIcon,
-  disconnectIcon: DisconnectIcon,
-  groupingIcon: GroupingIcon,
+  applyOldSource: AddToPhotosIcon,
+  info: InfoIcon,
+  apply: DoneAllIcon,
   filterList: FilterList,
-  viewRemarks: EditIcon,
+  uploadFile: CloudUploadIcon
 };

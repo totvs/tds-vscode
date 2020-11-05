@@ -10,7 +10,6 @@ import Paper from "@material-ui/core/Paper";
 import { ApplyPatchPanelAction, IApplyPatchPanelAction } from "../actions";
 import FilterList from "@material-ui/icons/FilterList";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import DetailsIcon from '@material-ui/icons/Details';
 import { cellDefaultStyle } from "./applyPathInterface";
 import ApplyPatchTheme from "../helper/theme";
 import { useMemento, IMemento } from "../helper";
@@ -45,13 +44,13 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
     highlight:
       theme.palette.type === "light"
         ? {
-            color: theme.palette.secondary.main,
-            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-          }
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+        }
         : {
-            color: theme.palette.text.primary,
-            backgroundColor: theme.palette.secondary.dark,
-          },
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark,
+        },
     title: {
       display: "inline",
       fontSize: "180%",
@@ -229,7 +228,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     }
 
     props.vscode.postMessage({
-			action: ApplyPatchPanelAction.SelectFile,
+      action: ApplyPatchPanelAction.SelectFile,
       content: { files: files }
     });
   };
@@ -238,6 +237,12 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     setPageSize(value);
     memento.set(propPageSize(value));
   };
+
+  // const doSelectFile = () => {
+  //   if (btnFile) {
+  //     btnFile.current.click();
+  //   }
+  // }
 
   const actions = [];
 
@@ -251,13 +256,22 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     },
   });
 
+  // actions.push({
+  //   icon: () => applyPatchIcons.uploadFile,
+  //   tooltip: i18n.localize("SELECT_FILE", "Select file"),
+  //   isFreeAction: true,
+  //   onClick: () => {
+  //     //doSelectFile();
+  //   },
+  // });
+
   actions.push({
     icon: applyPatchIcons.table.Delete,
     tooltip: i18n.localize("REMOVE_PATCH", "Remove patch"),
     onClick: (event, rowData) => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.RemoveFile,
-        content: { processAll: false, file: rowData.fullpath  }
+        content: { processAll: false, file: rowData.fullpath }
       });
     },
   });
@@ -269,18 +283,67 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     onClick: (event, rowData) => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.ValidateFile,
-        content: { processAll: true, file: ""  }
+        content: { processAll: true, file: "" }
       });
     },
   });
 
-  actions.push({
+  actions.push((rowData) => ({
     icon: applyPatchIcons.table.Check,
     tooltip: i18n.localize("VALIDATE_PATCH", "Validate patch"),
+    visible: rowData.status !== "error",
     onClick: (event, rowData) => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.ValidateFile,
-        content: { processAll: false, file: rowData.fullpath  }
+        content: { processAll: false, file: rowData.fullpath }
+      });
+    },
+  }));
+
+  actions.push({
+    icon: applyPatchIcons.applyOldSource,
+    tooltip: i18n.localize("APPLY_OLD_SOURCE", "Apply old sources"),
+    isFreeAction: true,
+    onClick: () => {
+      props.vscode.postMessage({
+        action: ApplyPatchPanelAction.ApplyOldSource,
+        content: { processAll: true, file: "", value: true }
+      });
+    },
+  });
+
+  actions.push((rowData) => ({
+    icon: applyPatchIcons.applyOldSource,
+    tooltip: i18n.localize("APPLY_OLD_SOURCE", "Apply old sources"),
+    disabled: rowData.status !== "error" && rowData.status !== "warning",
+    onClick: (event, rowData) => {
+      props.vscode.postMessage({
+        action: ApplyPatchPanelAction.ApplyOldSource,
+        content: { processAll: false, file: rowData.fullpath, value: !rowData.applyOld }
+      });
+    },
+  }));
+
+  actions.push((rowData) => ({
+    icon: applyPatchIcons.apply,
+    tooltip: i18n.localize("APPLY_ALL", "Apply patch"),
+    disabled: rowData.status === "error",
+    onClick: (event, rowData) => {
+      props.vscode.postMessage({
+        action: ApplyPatchPanelAction.Apply,
+        content: { processAll: false, file: rowData.fullpath }
+      });
+    },
+  }));
+
+  actions.push({
+    icon: applyPatchIcons.apply,
+    tooltip: i18n.localize("APPLY_ALL", "Apply all patchs"),
+    isFreeAction: true,
+    onClick: () => {
+      props.vscode.postMessage({
+        action: ApplyPatchPanelAction.Apply,
+        content: { processAll: true, file: "" }
       });
     },
   });
@@ -292,7 +355,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     onClick: () => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.RemoveFile,
-        content: { processAll: true, file: ""  }
+        content: { processAll: true, file: "" }
       });
     },
   });
@@ -326,10 +389,10 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
                     ref={targetUploadFile}
                     value={""}
                     placeholder={"Select patch files to apply"}
-                    onChange={() => {}}
+                    onChange={() => { }}
                     endAdornment={
                       <InputAdornment position="end">
-                        <IconButton onClick={() => {btnFile.current.click()}}>
+                        <IconButton onClick={() => { btnFile.current.click() }}>
                           <CloudUploadIcon />
                         </IconButton>
                       </InputAdornment>
@@ -354,7 +417,8 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
           columns={rows.length ? columns : []}
           data={rows}
           parentChildData={(row, rows) => rows.find((a) => {
-            return row.zipFile === a.fullpath})}
+            return row.zipFile === a.fullpath
+          })}
           options={{
             searchFieldAlignment: "left",
             searchFieldStyle: { marginLeft: "-16px" },
@@ -393,7 +457,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
           }
           detailPanel={[
             {
-              icon: () => <DetailsIcon />,
+              icon: applyPatchIcons.info,
               tooltip: 'Show pack details',
               render: (rowData) => <ApplyDetailPanel vscode={props.vscode} patchFileInfo={rowData} />
             },
