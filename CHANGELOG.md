@@ -13,6 +13,9 @@
 
 - Opção de manter as configurações de servidores na área de trabalho e [troca rápida](docs/servers.md)
 
+## Correção chamado #553
+
+- Erro de compilacao [FATAL] não é exibido na aba PROBLEMS e nem no LOG do AppServer
 # Versão [1.1.1]
 
 ## Correção chamado #549
