@@ -36,6 +36,7 @@ import {
   commandBuildFile,
   commandBuildWorkspace,
   commandBuildOpenEditors,
+  generatePpo,
 } from "./compile/tdsBuild";
 import { deleteFileFromRPO } from "./server/deleteFileFromRPO";
 import { defragRpo } from "./server/defragRPO";
@@ -608,6 +609,14 @@ export function activate(context: ExtensionContext) {
   //verifyEncoding();
 
   showBanner();
+
+  let exportedApi = {
+    generatePPO(filePath: string, options?: any): Promise<string> {
+      return generatePpo(filePath, options);
+    }
+  }
+  // 'export' public api-surface
+  return exportedApi;
 }
 
 function instanceOfUri(object: any): object is Uri {

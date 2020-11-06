@@ -7,6 +7,7 @@ import * as ini from "ini";
 import * as nls from "vscode-nls";
 import { languageClient } from "./extension";
 import { EnvSection, ServerItem } from "./serverItemProvider";
+import { Authorization, CompileKey } from "./compileKey/compileKey";
 
 const homedir = require("os").homedir();
 const localize = nls.loadMessageBundle();
@@ -46,7 +47,7 @@ export default class Utils {
   /**
    * Subscrição para evento de chave de compilação.
    */
-  static get onDidSelectedKey(): vscode.Event<string> {
+  static get onDidSelectedKey(): vscode.Event<CompileKey> {
     return Utils._onDidSelectedKey.event;
   }
 
@@ -58,7 +59,7 @@ export default class Utils {
   /**
    * Emite a notificação de seleção de chave de compilação
    */
-  private static _onDidSelectedKey = new vscode.EventEmitter<string>();
+  private static _onDidSelectedKey = new vscode.EventEmitter<CompileKey>();
 
   /**
    * Gera um id de servidor
@@ -464,24 +465,28 @@ export default class Utils {
     }
   }
 
-  static getPermissionsInfos() {
+  static getPermissionsInfos(): CompileKey {
     const servers = Utils.getServersConfig();
 
-    const permissions = servers.permissions;
-    if (permissions) {
-      return permissions;
-    }
-
-    return "";
+    return servers ? servers.permissions : undefined;
   }
 
-  static savePermissionsInfos(infos: any) {
+  static savePermissionsInfos(infos: CompileKey) {
     const config = Utils.getServersConfig();
 
     config.permissions = infos;
 
     Utils.persistServersInfo(config);
     Utils._onDidSelectedKey.fire(infos);
+  }
+
+  static deletePermissionsInfos() {
+    const config = Utils.getServersConfig();
+
+    config.permissions = undefined;
+
+    Utils.persistServersInfo(config);
+    Utils._onDidSelectedKey.fire(undefined);
   }
 
   static removeExpiredAuthorization() {
@@ -491,7 +496,7 @@ export default class Utils {
         "Expired authorization token deleted"
       )
     );
-    Utils.savePermissionsInfos({}); // remove expired authorization key
+    Utils.deletePermissionsInfos(); // remove expired authorization key
   }
 
   /**
@@ -783,10 +788,9 @@ export default class Utils {
     return result;
   }
 
-  static readCompileKeyFile(path) {
+  static readCompileKeyFile(path): Authorization {
     if (fs.existsSync(path)) {
-      const parseIni = ini.parse(fs.readFileSync(path, "utf-8").toLowerCase());
-
+      const parseIni = ini.parse(fs.readFileSync(path, "utf-8").toLowerCase()); // XXX toLowerCase??
       return parseIni.authorization;
     }
     return undefined;
