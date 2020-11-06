@@ -102,7 +102,7 @@ export const inputTextStyles = makeStyles((theme: Theme) =>
     textField: {
       marginLeft: theme.spacing(0.5),
       marginRight: theme.spacing(0.5),
-      width: '25ch',
+      width: '20ch',
     },
   }),
 );

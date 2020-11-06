@@ -25,10 +25,11 @@ import {
 import { i18n } from "../helper";
 import RpoInfoTheme, { inputTextStyles, useToolbarStyles } from "../helper/theme";
 import { IRpoInfoData, IRpoPatch } from "../rpoPath";
-import { FilledInput, FormControl, Grid, Input, InputLabel, Typography } from "@material-ui/core";
+import { FilledInput, FormControl, Grid, Input, InputLabel, SvgIconProps, Typography } from "@material-ui/core";
 import TreeView from '@material-ui/lab/TreeView';
 import TreeItem, { TreeItemProps } from '@material-ui/lab/TreeItem';
 import TextField from '@material-ui/core/TextField';
+import Label from '@material-ui/icons/Label';
 
 interface RenderTree {
   name: string;
@@ -60,20 +61,102 @@ function Title(props: ITitleProps) {
   );
 }
 
-const StyledTreeItem = withStyles((theme: Theme) =>
+const useTreeItemStyles = makeStyles((theme: Theme) =>
   createStyles({
-    iconContainer: {
-      '& .close': {
-        opacity: 0.3,
+    root: {
+      color: theme.palette.text.secondary,
+      '&:hover > $content': {
+        backgroundColor: theme.palette.action.hover,
+      },
+      '&:focus > $content, &$selected > $content': {
+        backgroundColor: `var(--tree-view-bg-color, ${theme.palette.grey[400]})`,
+        color: 'var(--tree-view-color)',
+      },
+      '&:focus > $content $label, &:hover > $content $label, &$selected > $content $label': {
+        backgroundColor: 'transparent',
+      },
+    },
+    content: {
+      color: theme.palette.text.secondary,
+      borderTopRightRadius: theme.spacing(2),
+      borderBottomRightRadius: theme.spacing(2),
+      paddingRight: theme.spacing(1),
+      fontWeight: theme.typography.fontWeightMedium,
+      '$expanded > &': {
+        fontWeight: theme.typography.fontWeightRegular,
       },
     },
     group: {
-      marginLeft: 7,
-      paddingLeft: 18,
-      borderLeft: `1px dashed`,
+      marginLeft: 0,
+      '& $content': {
+        paddingLeft: theme.spacing(2),
+      },
+    },
+    expanded: {},
+    selected: {},
+    label: {
+      fontWeight: 'inherit',
+      color: 'inherit',
+    },
+    labelRoot: {
+      display: 'flex',
+      alignItems: 'center',
+      padding: theme.spacing(0.5, 0),
+    },
+    labelIcon: {
+      marginRight: theme.spacing(1),
+    },
+    labelText: {
+      fontWeight: 'inherit',
+      flexGrow: 1,
     },
   }),
-)((props: TreeItemProps) => <TreeItem {...props} />);
+);
+
+type StyledTreeItemProps = TreeItemProps & {
+  bgColor?: string;
+  color?: string;
+  labelIcon: React.ElementType<SvgIconProps>;
+  labelInfo?: string;
+  labelText: string;
+};
+
+declare module 'csstype' {
+  interface Properties {
+    '--tree-view-color'?: string;
+    '--tree-view-bg-color'?: string;
+  }
+}
+
+function StyledTreeItem(props: StyledTreeItemProps) {
+  const classes = useTreeItemStyles();
+  const { labelText, labelIcon: LabelIcon, labelInfo, color, bgColor, ...other } = props;
+
+  return (
+    <TreeItem
+      label={
+        <div className={classes.labelRoot}>
+          <LabelIcon color="inherit" className={classes.labelIcon} />
+          <Typography variant="body2" className={classes.labelText}>
+            {labelText}
+          </Typography>
+          <Typography variant="caption" color="inherit">
+            {labelInfo}
+          </Typography>
+        </div>
+      }
+      classes={{
+        root: classes.root,
+        content: classes.content,
+        expanded: classes.expanded,
+        selected: classes.selected,
+        group: classes.group,
+        label: classes.label,
+      }}
+      {...other}
+    />
+  );
+}
 
 function buildColumns(memento: IMemento): [] {
   let columns = propColumns({ ...cellDefaultStyle }).columns;
@@ -212,15 +295,14 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
 
   const renderTree = (nodes: RenderTree) => (
     <StyledTreeItem
-      key={"key_" + hashCode(nodes.name)}
       nodeId={"node_" + hashCode(nodes.name)}
-      label={nodes.name}
+      labelText={nodes.name}
+      labelIcon={Label}
       onClick={(event) => doClickNode(event, nodes.name)}
     >
       {Array.isArray(nodes.children) ? nodes.children.map((node) => renderTree(node)) : null}
     </StyledTreeItem>
   );
-
 
   const toolBarStyle = useToolbarStyles();
   const inputTextClasses = inputTextStyles();
@@ -240,10 +322,10 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
 
               <Grid item >
                 <TreeView
-                  defaultExpanded={["key_" + hashCode(rpo.environment)]}
-                  defaultCollapseIcon={rpoInfoIcons.minusSquare}
-                  defaultExpandIcon={rpoInfoIcons.plusSquare}
-                  defaultEndIcon={rpoInfoIcons.closeSquare}
+                  defaultExpanded={["node_" + hashCode(rpo.environment)]}
+                  defaultCollapseIcon={rpoInfoIcons.arrowDropDown}
+                  defaultExpandIcon={rpoInfoIcons.arrowRight}
+                  defaultEndIcon={<div style={{ width: 24 }} />}
                 >
                   {data && renderTree(data)}
                 </TreeView>
@@ -264,18 +346,18 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
                       }
                     />
 
-                      <Grid container className={inputTextClasses.root}>
-                        <Grid item>
-                          <Typography variant="overline" display="block" gutterBottom>Generation</Typography>
-                          <TextField  margin="dense" label="Date" variant="outlined" disabled size="small" value={currentNode && currentNode.dateFileGeneration} />
-                          <TextField margin="dense" label="Build" variant="outlined" disabled size="small" value={currentNode && currentNode.buildFileGeneration} />
-                        </Grid>
-                        <Grid item>
-                          <Typography variant="overline" display="block" gutterBottom>Application</Typography>
-                          <TextField margin="dense" label="Date" variant="outlined" disabled size="small" value={currentNode && currentNode.dateFileApplication} />
-                          <TextField margin="dense" label="Build" variant="outlined" disabled size="small" value={currentNode && currentNode.buildFileApplication} />
-                        </Grid>
+                    <Grid container className={inputTextClasses.root}>
+                      <Grid item>
+                        <Typography variant="overline" display="block" gutterBottom>Generation</Typography>
+                        <TextField margin="dense" label="Date" variant="outlined" disabled size="small" value={currentNode && currentNode.dateFileGeneration} />
+                        <TextField margin="dense" label="Build" variant="outlined" disabled size="small" value={currentNode && currentNode.buildFileGeneration} />
                       </Grid>
+                      <Grid item>
+                        <Typography variant="overline" display="block" gutterBottom>Application</Typography>
+                        <TextField margin="dense" label="Date" variant="outlined" disabled size="small" value={currentNode && currentNode.dateFileApplication} />
+                        <TextField margin="dense" label="Build" variant="outlined" disabled size="small" value={currentNode && currentNode.buildFileApplication} />
+                      </Grid>
+                    </Grid>
 
                     <MTableToolbar {...props} />
                   </div>
