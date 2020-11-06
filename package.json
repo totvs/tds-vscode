@@ -770,8 +770,6 @@
 					"light": "resources/light/monitor.png",
 					"dark": "resources/dark/monitor.png"
 				}
-<<<<<<< .merge_file_a02616
-=======
 			},
 			{
 				"command": "tds-monitor.open-loadrpoinfo-view",
@@ -781,7 +779,6 @@
 					"light": "resources/light/rpolog.png",
 					"dark": "resources/dark/rpolog.png"
 				}
->>>>>>> .merge_file_a36772
 			}
 		],
 		"keybindings": [
@@ -1293,6 +1290,11 @@
 					"command": "totvs-developer-studio.patchApply",
 					"when": "view == totvs_server && viewItem == serverItem",
 					"group": "CtotvsPatch@2"
+				},
+				{
+					"command": "tds-monitor.open-loadrpoinfo-view",
+					"when": "view == totvs_server && viewItem == serverItem",
+					"group": "CtotvsPatch@3"
 				},
 				{
 					"command": "totvs-developer-studio.inspectorObjects",
