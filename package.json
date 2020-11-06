@@ -771,7 +771,7 @@
 			},
 			{
 				"command": "tds-monitor.open-loadrpoinfo-view",
-				"title": "Log do Repositório",
+				"title": "%tds-monitor.open-rpoinfo%",
 				"category": "TOTVSMonitor",
 				"icon": {
 					"light": "resources/light/rpolog.png",

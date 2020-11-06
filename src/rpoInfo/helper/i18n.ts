@@ -65,6 +65,7 @@ class I18n {
         searchPlaceholder: this.localize("SEARCH", "Search"),
         showColumnsTitle: this.localize("SHOW_COLUMNS", "Show Columns"),
         showColumnsAriaLabel: this.localize("SHOW_COLUMNS", "Show Columns"),
+        exportName: this.localize("EXPORT_TXT", "Export as Text")
       },
       header: {
         actions: this.localize("ACTIONS", "Actions"),

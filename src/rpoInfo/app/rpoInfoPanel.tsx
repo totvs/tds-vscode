@@ -1,15 +1,13 @@
 import * as React from "react";
-import MaterialTable, { Column, MTableToolbar } from "material-table";
+import MaterialTable, { MTableToolbar } from "material-table";
 import {
   createStyles,
-  lighten,
   makeStyles,
-  Theme,
-  withStyles,
+  Theme
 } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import { rpoInfoIcons } from "../helper/rpoInfoIcons";
-import { RpoInfoPanelAction } from "../actions";
+import { IRpoInfoPanelAction, RpoInfoPanelAction } from "../actions";
 import FilterList from "@material-ui/icons/FilterList";
 import { cellDefaultStyle } from "./rpoInfoInterface";
 import { IMemento, useMemento } from "../helper/memento";
@@ -30,6 +28,7 @@ import TreeView from '@material-ui/lab/TreeView';
 import TreeItem, { TreeItemProps } from '@material-ui/lab/TreeItem';
 import TextField from '@material-ui/core/TextField';
 import Label from '@material-ui/icons/Label';
+import SaveAlt from "@material-ui/icons/SaveAlt";
 
 interface RenderTree {
   name: string;
@@ -250,10 +249,6 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
     window.addEventListener("message", listener);
   }
 
-  const doColumnHidden = (column: Column<any>, hidden: boolean) => {
-    memento.set(propColumnHidden(column.field as string, hidden));
-  };
-
   const doOrderChange = (orderBy: number, direction: string) => {
     const columns = propColumns().columns;
 
@@ -275,6 +270,23 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
     isFreeAction: true,
     onClick: () => {
       setFiltering(!filtering);
+    },
+  });
+
+  actions.push({
+    icon: () => <SaveAlt />,
+    tooltip: i18n.localize("EXPORT", "Export as text file"),
+    isFreeAction: true,
+    onClick: () => {
+      let command: IRpoInfoPanelAction = {
+        action: RpoInfoPanelAction.ExportToTxt,
+        content: {
+          rpoInfo: rpoInfo,
+          rpoPath: currentNode
+        },
+      };
+
+      props.vscode.postMessage(command);
     },
   });
 
@@ -316,7 +328,7 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
             <Grid container >
               <Grid item container className={inputTextClasses.root}>
                 <Typography variant="overline" display="block" gutterBottom>RPO</Typography>
-                <TextField margin="dense" label="Date" variant="outlined" disabled size="small" value={rpo.date} />
+                <TextField margin="dense" label="Date" variant="outlined" disabled size="small" value={rpo.date} multiline={true} rows={2} />
                 <TextField margin="dense" label="Version" variant="outlined" disabled size="small" value={rpo.version} />
               </Grid>
 
@@ -332,13 +344,14 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
               </Grid>
             </Grid>
           </Grid>
+
           <Grid item xs={10}>
             <MaterialTable
               components={{
                 Toolbar: (props) => (
                   <div>
                     <Title
-                      title={i18n.localize("RPO_LOG", "Log de Repositórios")}
+                      title={i18n.localize("RPO_LOG", "Repository Log")}
                       subtitle={
                         subtitle
                           ? subtitle
@@ -346,16 +359,33 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
                       }
                     />
 
-                    <Grid container className={inputTextClasses.root}>
-                      <Grid item>
-                        <Typography variant="overline" display="block" gutterBottom>Generation</Typography>
-                        <TextField margin="dense" label="Date" variant="outlined" disabled size="small" value={currentNode && currentNode.dateFileGeneration} />
-                        <TextField margin="dense" label="Build" variant="outlined" disabled size="small" value={currentNode && currentNode.buildFileGeneration} />
+                    <Grid container xs={12} >
+                      <Grid item container xs>
+                        <Grid item xs={12}>
+                          <Typography variant="overline" gutterBottom>Generation</Typography>
+                        </Grid>
+                        <Grid item xs>
+                          <TextField margin="dense" label="Date" variant="outlined" disabled size="small" value={currentNode && currentNode.dateFileGeneration} />
+                        </Grid>
+                        <Grid item xs>
+                          <TextField margin="dense" label="Build" variant="outlined" disabled size="small" value={currentNode && currentNode.buildFileGeneration} />
+                        </Grid>
                       </Grid>
-                      <Grid item>
-                        <Typography variant="overline" display="block" gutterBottom>Application</Typography>
-                        <TextField margin="dense" label="Date" variant="outlined" disabled size="small" value={currentNode && currentNode.dateFileApplication} />
-                        <TextField margin="dense" label="Build" variant="outlined" disabled size="small" value={currentNode && currentNode.buildFileApplication} />
+
+                      <Grid item container xs>
+                        <Grid item xs={12}>
+                          <Typography variant="overline" gutterBottom>Application</Typography>
+                        </Grid>
+                        <Grid item xs>
+                          <TextField margin="dense" label="Date" variant="outlined" disabled size="small" value={currentNode && currentNode.dateFileApplication} />
+                        </Grid>
+                        <Grid item xs>
+                          <TextField margin="dense" label="Build" variant="outlined" disabled size="small" value={currentNode && currentNode.buildFileApplication} />
+                        </Grid>
+                      </Grid>
+
+                      <Grid container item xs={12}>
+                        <Typography hidden={!currentNode || !currentNode.skipOld} variant="h6" color="secondary">This file overwrote more recent resources.</Typography>
                       </Grid>
                     </Grid>
 
@@ -379,19 +409,16 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
                 selection: false,
                 grouping: false,
                 filtering: filtering,
-                exportButton: true,
+                exportButton: false,
                 padding: "dense",
                 actionsColumnIndex: 0,
-                columnsButton: true,
+                columnsButton: false,
                 sorting: true,
                 showTitle: false,
                 toolbarButtonAlignment: "right",
               }}
               actions={actions}
               onChangeRowsPerPage={(value) => doChangeRowsPerPage(value)}
-              onChangeColumnHidden={(column, hidden) =>
-                doColumnHidden(column, hidden)
-              }
               onOrderChange={(orderBy, direction) =>
                 doOrderChange(orderBy, direction)
               }
