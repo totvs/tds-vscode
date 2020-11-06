@@ -1,5 +1,18 @@
 # Changelog
 
+# Versão [1.1.next]
+
+ Versão [1.1.next]
+
+## Genéricas
+
+- Documentação e ajustes no [Sistema de Privilégios](docs/servers.md)
+- Implementação de opção para visualização do log do repositório
+
+## Implementação chamado #269
+
+- Opção de manter as configurações de servidores na área de trabalho e [troca rápida](docs/servers.md)
+
 # Versão [1.1.1]
 
 ## Correção chamado #549

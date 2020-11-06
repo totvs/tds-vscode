@@ -111,5 +111,6 @@
 	"tds-monitor.open-monitor-view": "Abrir exibição do monitor",
 	"tds.package.workspaceServerConfig": "Use a área de trabalho para manter as configurações do servidor.",
 	"tds.package.OpenTimeLineWebview": "Abrir visão da linha de tempo",
-	"tds.package.apply.formatting": "Aplica a formatação aos arquivos fontes TOTVS e suas variações."
+	"tds.package.apply.formatting": "Aplica a formatação aos arquivos fontes TOTVS e suas variações.",
+	"tds-monitor.open-rpoinfo": "Log do Repositório"
 }
