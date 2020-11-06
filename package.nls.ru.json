@@ -111,5 +111,6 @@
 	"tds-monitor.open-monitor-view": "Открыть монитор",
 	"tds.package.workspaceServerConfig": "Используйте рабочее пространство для поддержания настроек сервера.",
 	"tds.package.OpenTimeLineWebview": "Открыть TimeLine View",
-	"tds.package.apply.formatting": "Применяет форматирование к исходным файлам TOTVS и их вариантам."
+	"tds.package.apply.formatting": "Применяет форматирование к исходным файлам TOTVS и их вариантам.",
+	"tds-monitor.open-rpoinfo": "Журнал репозитория"
 }

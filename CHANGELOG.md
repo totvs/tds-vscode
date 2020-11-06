@@ -2,15 +2,20 @@
 
 # Versão [1.1.next]
 
+ Versão [1.1.next]
+
 ## Genéricas
 
 - Documentação e ajustes no [Sistema de Privilégios](docs/servers.md)
-- Implementação de validação de pacotes de atualização (_patchs_) e melhoria no fluxo da aplicação
+- Implementação de opção para visualização do log do repositório
 
 ## Implementação chamado #269
 
-- Opção de manter as configurações de servidores na área de trabalho
+- Opção de manter as configurações de servidores na área de trabalho e [troca rápida](docs/servers.md)
 
+## Correção chamado #553
+
+- Erro de compilacao [FATAL] não é exibido na aba PROBLEMS e nem no LOG do AppServer
 # Versão [1.1.1]
 
 ## Correção chamado #549
@@ -176,13 +181,9 @@ Ao utilizar **TOTVS Server**, de versão igual ou anterior a 19.3.0.0 de 01/06/2
 ## Ajustado geração de patch com characteres maiusculos no MAC [Issue 386](https://github.com/totvs/tds-vscode/issues/386)
 
 ### Problema:
-<<<<<<< HEAD
-* Após atualização do language server, o MAC, erroneamente, passou a recusar aplicação de patch caso existisse character maiusculo no caminho do arquivo. Esse processo deve ser apenas para Linux
-=======
 
 - Após atualização do language server, o MAC, erroneamente, passou a recusar aplicação de patch caso existisse character maiusculo no caminho do arquivo. Esse processo deve ser apenas para Linux
 
->>>>>>> developer
 ### Solução:
 
 - Corrigido configuração no Language Server para que o processo de validação ocorra apenas no Linux

@@ -38,7 +38,7 @@ class I18n {
     return {
       pagination: {
         labelDisplayedRows: "{from}-{to}/{count}",
-        labelRowsSelect: this.localize("CONNECTIONS", "connections"),
+        labelRowsSelect: this.localize("RESOURCES", "resources"),
         labelRowsPerPage: this.localize("LINES_PAGE.", "lines/p."),
         firstAriaLabel: this.localize("FIRST", "First"),
         firstTooltip: this.localize("FIRST_PAGE", "First page"),
@@ -65,6 +65,7 @@ class I18n {
         searchPlaceholder: this.localize("SEARCH", "Search"),
         showColumnsTitle: this.localize("SHOW_COLUMNS", "Show Columns"),
         showColumnsAriaLabel: this.localize("SHOW_COLUMNS", "Show Columns"),
+        exportName: this.localize("EXPORT_TXT", "Export as Text")
       },
       header: {
         actions: this.localize("ACTIONS", "Actions"),

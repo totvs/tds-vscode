@@ -1,18 +1,16 @@
 import * as React from "react";
-import MaterialTable, { Column, MTableToolbar } from "material-table";
+import MaterialTable, { MTableToolbar } from "material-table";
 import {
   createStyles,
-  lighten,
   makeStyles,
-  Theme,
+  Theme
 } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import { rpoInfoIcons } from "../helper/rpoInfoIcons";
-import { RpoInfoPanelAction, IRpoInfoPanelAction } from "../actions";
+import { IRpoInfoPanelAction, RpoInfoPanelAction } from "../actions";
 import FilterList from "@material-ui/icons/FilterList";
 import { cellDefaultStyle } from "./rpoInfoInterface";
 import { IMemento, useMemento } from "../helper/memento";
-
 import {
   propPageSize,
   DEFAULT_TABLE,
@@ -20,52 +18,24 @@ import {
   propColumns,
   propOrderBy,
   propOrderDirection,
-  propColumnsOrder,
-  propColumnGroup,
+  propColumnsOrder
 } from "./rpoInfoPanelMemento";
 import { i18n } from "../helper";
-import RpoInfoTheme from "../helper/theme";
-import { IRpoInfoData } from "../rpoPath";
+import RpoInfoTheme, { inputTextStyles, useToolbarStyles } from "../helper/theme";
+import { IRpoInfoData, IRpoPatch } from "../rpoPath";
+import { FilledInput, FormControl, Grid, Input, InputLabel, SvgIconProps, Typography } from "@material-ui/core";
+import TreeView from '@material-ui/lab/TreeView';
+import TreeItem, { TreeItemProps } from '@material-ui/lab/TreeItem';
+import TextField from '@material-ui/core/TextField';
+import Label from '@material-ui/icons/Label';
+import SaveAlt from "@material-ui/icons/SaveAlt";
 
-const useToolbarStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(1),
-    },
-    highlight:
-      theme.palette.type === "light"
-        ? {
-            color: theme.palette.secondary.main,
-            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-          }
-        : {
-            color: theme.palette.text.primary,
-            backgroundColor: theme.palette.secondary.dark,
-          },
-    title: {
-      display: "inline",
-      fontSize: "180%",
-      fontWeight: "bold",
-      marginLeft: "16px",
-    },
-    subtitle: {
-      color: "silver",
-      display: "inline",
-      marginLeft: "20px",
-    },
-    actions: {
-      display: "inline",
-      marginRight: "8px",
-      float: "right",
-    },
-    actionOn: {
-      borderRadius: "25px",
-      border: "2px solid silver",
-      boxShadow: "0 0 3px #FF0000, 0 0 5px #0000FF",
-    },
-  })
-);
+interface RenderTree {
+  name: string;
+  children?: RenderTree[];
+  rpoPatch?: IRpoPatch;
+}
+
 
 interface IRpoInfoPanel {
   vscode: any;
@@ -90,6 +60,103 @@ function Title(props: ITitleProps) {
   );
 }
 
+const useTreeItemStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      color: theme.palette.text.secondary,
+      '&:hover > $content': {
+        backgroundColor: theme.palette.action.hover,
+      },
+      '&:focus > $content, &$selected > $content': {
+        backgroundColor: `var(--tree-view-bg-color, ${theme.palette.grey[400]})`,
+        color: 'var(--tree-view-color)',
+      },
+      '&:focus > $content $label, &:hover > $content $label, &$selected > $content $label': {
+        backgroundColor: 'transparent',
+      },
+    },
+    content: {
+      color: theme.palette.text.secondary,
+      borderTopRightRadius: theme.spacing(2),
+      borderBottomRightRadius: theme.spacing(2),
+      paddingRight: theme.spacing(1),
+      fontWeight: theme.typography.fontWeightMedium,
+      '$expanded > &': {
+        fontWeight: theme.typography.fontWeightRegular,
+      },
+    },
+    group: {
+      marginLeft: 0,
+      '& $content': {
+        paddingLeft: theme.spacing(2),
+      },
+    },
+    expanded: {},
+    selected: {},
+    label: {
+      fontWeight: 'inherit',
+      color: 'inherit',
+    },
+    labelRoot: {
+      display: 'flex',
+      alignItems: 'center',
+      padding: theme.spacing(0.5, 0),
+    },
+    labelIcon: {
+      marginRight: theme.spacing(1),
+    },
+    labelText: {
+      fontWeight: 'inherit',
+      flexGrow: 1,
+    },
+  }),
+);
+
+type StyledTreeItemProps = TreeItemProps & {
+  bgColor?: string;
+  color?: string;
+  labelIcon: React.ElementType<SvgIconProps>;
+  labelInfo?: string;
+  labelText: string;
+};
+
+declare module 'csstype' {
+  interface Properties {
+    '--tree-view-color'?: string;
+    '--tree-view-bg-color'?: string;
+  }
+}
+
+function StyledTreeItem(props: StyledTreeItemProps) {
+  const classes = useTreeItemStyles();
+  const { labelText, labelIcon: LabelIcon, labelInfo, color, bgColor, ...other } = props;
+
+  return (
+    <TreeItem
+      label={
+        <div className={classes.labelRoot}>
+          <LabelIcon color="inherit" className={classes.labelIcon} />
+          <Typography variant="body2" className={classes.labelText}>
+            {labelText}
+          </Typography>
+          <Typography variant="caption" color="inherit">
+            {labelInfo}
+          </Typography>
+        </div>
+      }
+      classes={{
+        root: classes.root,
+        content: classes.content,
+        expanded: classes.expanded,
+        selected: classes.selected,
+        group: classes.group,
+        label: classes.label,
+      }}
+      {...other}
+    />
+  );
+}
+
 function buildColumns(memento: IMemento): [] {
   let columns = propColumns({ ...cellDefaultStyle }).columns;
   const orderBy = memento.get(propOrderBy()) || "";
@@ -110,7 +177,6 @@ function buildColumns(memento: IMemento): [] {
     }
 
     try {
-      //para mascarar erro devido a erro na implemtação anterior
       const orderColumn: any = columnsOrder.find((column: any) => {
         return column.field === columns[index]["field"];
       });
@@ -143,21 +209,14 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
     props.memento
   );
 
-  const [selected, setSelected] = React.useState<IRpoInfoData[]>([]);
   const [rows, setRows] = React.useState([]);
+  const [currentNode, setCurrentNode] = React.useState<IRpoPatch>();
+  const [data, setData] = React.useState<RenderTree>();
   const [subtitle, setSubtitle] = React.useState();
+  const [rpoInfo, setRpoInfo] = React.useState<any>(null);
   const [pageSize, setPageSize] = React.useState(memento.get(propPageSize()));
   const [filtering, setFiltering] = React.useState(false);
   const [columns] = React.useState(buildColumns(memento));
-  const [reset, setReset] = React.useState(false);
-
-  React.useEffect(() => {
-    if (reset) {
-      memento.save(true);
-    }
-  }, [reset]);
-
-  const [targetRow, setTargetRow] = React.useState(null);
 
   if (listener === undefined) {
     listener = (event: MessageEvent) => {
@@ -165,10 +224,19 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
 
       switch (message.command) {
         case RpoInfoPanelAction.UpdateRpoInfo: {
-          const rpoPath = message.data.users as IRpoInfoData;
+          const rpoInfo: IRpoInfoData = message.data.rpoInfo as IRpoInfoData;
+          const nodes: RenderTree = { name: rpoInfo.environment, children: [] };
 
-          setRows(rpoPath.rpoPatchs);
+          rpoInfo.rpoPatchs.forEach((rpoPatch: IRpoPatch) => {
+            const name = rpoPatch.dateFileApplication.split(" ")[0];
+            if (!nodes.children.find((element: any) => element.name == name)) {
+              nodes.children.push({ name: name, rpoPatch: rpoPatch })
+            }
+          });
+
+          setData(nodes);
           setSubtitle(message.data.serverName);
+          setRpoInfo({ version: rpoInfo.rpoVersion, date: rpoInfo.dateGeneration, environment: rpoInfo.environment });
           break;
         }
         default:
@@ -181,39 +249,11 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
     window.addEventListener("message", listener);
   }
 
-  const handleResetButtonClick = () => {
-    event.preventDefault();
-    setReset(true);
-  };
-
-  const doColumnHidden = (column: Column<any>, hidden: boolean) => {
-    memento.set(propColumnHidden(column.field as string, hidden));
-  };
-
-  const doGroupRemoved = (column: Column<any>, index: boolean) => {
-    memento.set(propColumnGroup(column.field as string, index));
-  };
-
   const doOrderChange = (orderBy: number, direction: string) => {
     const columns = propColumns().columns;
 
     memento.set(propOrderBy(columns[orderBy]["field"]));
     memento.set(propOrderDirection(direction));
-  };
-
-  const doColumnDragged = (sourceIndex: number, destinationIndex: number) => {
-    const newOrder = columns
-      .filter((column: any) => {
-        return column.tableData.groupOrder === undefined;
-      })
-      .map((column: any) => {
-        return {
-          field: column.field,
-          columnOrder: column.tableData.columnOrder,
-        };
-      });
-
-    memento.set(propColumnsOrder(newOrder));
   };
 
   const doChangeRowsPerPage = (value: number) => {
@@ -225,7 +265,7 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
 
   actions.push({
     icon: () =>
-      filtering ? <FilterList className={style.actionOn} /> : <FilterList />,
+      filtering ? <FilterList className={toolBarStyle.actionOn} /> : <FilterList />,
     tooltip: i18n.localize("FILTERING_ON_OFF", "Filtering on/off"),
     isFreeAction: true,
     onClick: () => {
@@ -233,66 +273,158 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
     },
   });
 
-  const style = useToolbarStyles();
+  actions.push({
+    icon: () => <SaveAlt />,
+    tooltip: i18n.localize("EXPORT", "Export as text file"),
+    isFreeAction: true,
+    onClick: () => {
+      let command: IRpoInfoPanelAction = {
+        action: RpoInfoPanelAction.ExportToTxt,
+        content: {
+          rpoInfo: rpoInfo,
+          rpoPath: currentNode
+        },
+      };
+
+      props.vscode.postMessage(command);
+    },
+  });
+
+  const hashCode = (s: string) => s.split('').reduce((a, b) => { a = ((a << 5) - a) + b.charCodeAt(0); return a & a }, 0)
+
+  const doClickNode = (event: React.MouseEvent<HTMLElement, MouseEvent>, name: string) => {
+    event.preventDefault();
+
+    const currentNode: RenderTree[] = data.children.filter((element: RenderTree) => element.name == name);
+    if (currentNode.length == 1) {
+      setRows(currentNode[0].rpoPatch.programsApp);
+      setCurrentNode(currentNode[0].rpoPatch);
+    } else {
+      setRows([]);
+      setCurrentNode(null);
+    }
+  }
+
+  const renderTree = (nodes: RenderTree) => (
+    <StyledTreeItem
+      nodeId={"node_" + hashCode(nodes.name)}
+      labelText={nodes.name}
+      labelIcon={Label}
+      onClick={(event) => doClickNode(event, nodes.name)}
+    >
+      {Array.isArray(nodes.children) ? nodes.children.map((node) => renderTree(node)) : null}
+    </StyledTreeItem>
+  );
+
+  const toolBarStyle = useToolbarStyles();
+  const inputTextClasses = inputTextStyles();
+  const rpo = rpoInfo || ({ version: "", date: "", environment: "" });
 
   return (
     <RpoInfoTheme>
       <Paper variant="outlined">
-        <MaterialTable
-          components={{
-            Toolbar: (props) => (
-              <div>
-                <Title
-                  title={i18n.localize("RPO_LOG", "Log de Repositórios")}
-                  subtitle={
-                    subtitle
-                      ? subtitle
-                      : i18n.localize("INITIALIZING", "(initializing)")
-                  }
-                />
+        <Grid container spacing={5}>
+          <Grid item xs={2}>
+            <Grid container >
+              <Grid item container className={inputTextClasses.root}>
+                <Typography variant="overline" display="block" gutterBottom>RPO</Typography>
+                <TextField margin="dense" label="Date" variant="outlined" disabled size="small" value={rpo.date} multiline={true} rows={2} />
+                <TextField margin="dense" label="Version" variant="outlined" disabled size="small" value={rpo.version} />
+              </Grid>
 
-                <MTableToolbar {...props} />
-              </div>
-            ),
-          }}
-          localization={i18n.materialTableLocalization}
-          icons={rpoInfoIcons.table}
-          columns={rows.length ? columns : []}
-          data={rows}
-          options={{
-            searchFieldAlignment: "left",
-            searchFieldStyle: { marginLeft: "-16px" },
-            showTextRowsSelected: false,
-            emptyRowsWhenPaging: false,
-            pageSize: pageSize,
-            pageSizeOptions: [10, 50, 100],
-            paginationType: "normal",
-            thirdSortClick: true,
-            selection: true,
-            grouping: false,
-            filtering: filtering,
-            exportButton: true,
-            padding: "dense",
-            actionsColumnIndex: 0,
-            columnsButton: true,
-            sorting: true,
-            showTitle: false,
-            toolbarButtonAlignment: "right",
-          }}
-          actions={actions}
-          onSelectionChange={(rows) => setSelected(rows)}
-          onChangeRowsPerPage={(value) => doChangeRowsPerPage(value)}
-          onChangeColumnHidden={(column, hidden) =>
-            doColumnHidden(column, hidden)
-          }
-          onGroupRemoved={(column, index) => doGroupRemoved(column, index)}
-          onOrderChange={(orderBy, direction) =>
-            doOrderChange(orderBy, direction)
-          }
-          onColumnDragged={(sourceIndex, destinationIndex) =>
-            doColumnDragged(sourceIndex, destinationIndex)
-          }
-        />
+              <Grid item >
+                <TreeView
+                  defaultExpanded={["node_" + hashCode(rpo.environment)]}
+                  defaultCollapseIcon={rpoInfoIcons.arrowDropDown}
+                  defaultExpandIcon={rpoInfoIcons.arrowRight}
+                  defaultEndIcon={<div style={{ width: 24 }} />}
+                >
+                  {data && renderTree(data)}
+                </TreeView>
+              </Grid>
+            </Grid>
+          </Grid>
+
+          <Grid item xs={10}>
+            <MaterialTable
+              components={{
+                Toolbar: (props) => (
+                  <div>
+                    <Title
+                      title={i18n.localize("RPO_LOG", "Repository Log")}
+                      subtitle={
+                        subtitle
+                          ? subtitle
+                          : i18n.localize("INITIALIZING", "(initializing)")
+                      }
+                    />
+
+                    <Grid container xs={12} >
+                      <Grid item container xs>
+                        <Grid item xs={12}>
+                          <Typography variant="overline" gutterBottom>Generation</Typography>
+                        </Grid>
+                        <Grid item xs>
+                          <TextField margin="dense" label="Date" variant="outlined" disabled size="small" value={currentNode && currentNode.dateFileGeneration} />
+                        </Grid>
+                        <Grid item xs>
+                          <TextField margin="dense" label="Build" variant="outlined" disabled size="small" value={currentNode && currentNode.buildFileGeneration} />
+                        </Grid>
+                      </Grid>
+
+                      <Grid item container xs>
+                        <Grid item xs={12}>
+                          <Typography variant="overline" gutterBottom>Application</Typography>
+                        </Grid>
+                        <Grid item xs>
+                          <TextField margin="dense" label="Date" variant="outlined" disabled size="small" value={currentNode && currentNode.dateFileApplication} />
+                        </Grid>
+                        <Grid item xs>
+                          <TextField margin="dense" label="Build" variant="outlined" disabled size="small" value={currentNode && currentNode.buildFileApplication} />
+                        </Grid>
+                      </Grid>
+
+                      <Grid container item xs={12}>
+                        <Typography hidden={!currentNode || !currentNode.skipOld} variant="h6" color="secondary">This file overwrote more recent resources.</Typography>
+                      </Grid>
+                    </Grid>
+
+                    <MTableToolbar {...props} />
+                  </div>
+                ),
+              }}
+              localization={i18n.materialTableLocalization}
+              icons={rpoInfoIcons.table}
+              columns={rows.length ? columns : []}
+              data={rows}
+              options={{
+                searchFieldAlignment: "left",
+                searchFieldStyle: { marginLeft: "-16px" },
+                showTextRowsSelected: false,
+                emptyRowsWhenPaging: false,
+                pageSize: pageSize,
+                pageSizeOptions: [10, 50, 100],
+                paginationType: "normal",
+                thirdSortClick: true,
+                selection: false,
+                grouping: false,
+                filtering: filtering,
+                exportButton: false,
+                padding: "dense",
+                actionsColumnIndex: 0,
+                columnsButton: false,
+                sorting: true,
+                showTitle: false,
+                toolbarButtonAlignment: "right",
+              }}
+              actions={actions}
+              onChangeRowsPerPage={(value) => doChangeRowsPerPage(value)}
+              onOrderChange={(orderBy, direction) =>
+                doOrderChange(orderBy, direction)
+              }
+            />
+          </Grid>
+        </Grid>
       </Paper>
     </RpoInfoTheme>
   );

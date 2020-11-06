@@ -3,9 +3,6 @@ export interface IRpoInfoPanelAction {
   content: any;
 }
 
-
-
-
 export enum RpoInfoPanelAction {
   ExportToTxt,
   ExportToJson,

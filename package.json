@@ -84,7 +84,9 @@
 		"typescript": "^4.0.3",
 		"vscode-debugadapter": "^1.42.1",
 		"vscode-languageclient": "^6.1.0",
-		"vscode-nls": "^5.0.0"
+		"vscode-nls": "^5.0.0",
+		"windows-1251": "^1.0.0",
+		"windows-1252": "^1.0.0"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.11.6",
@@ -768,6 +770,18 @@
 					"light": "resources/light/monitor.png",
 					"dark": "resources/dark/monitor.png"
 				}
+<<<<<<< .merge_file_a02616
+=======
+			},
+			{
+				"command": "tds-monitor.open-loadrpoinfo-view",
+				"title": "%tds-monitor.open-rpoinfo%",
+				"category": "TOTVSMonitor",
+				"icon": {
+					"light": "resources/light/rpolog.png",
+					"dark": "resources/dark/rpolog.png"
+				}
+>>>>>>> .merge_file_a36772
 			}
 		],
 		"keybindings": [

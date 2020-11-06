@@ -412,7 +412,7 @@ export function sendCompilation(
   return languageClient.sendRequest("$totvsserver/compilation", {
     compilationInfo: {
       connectionToken: server.token,
-      authorizationToken: permissionsInfos.authorizationToken,
+      authorizationToken: permissionsInfos ? permissionsInfos.authorizationToken : "",
       environment: server.environment,
       includeUris: includesUris,
       fileUris: filesUris,
@@ -432,11 +432,8 @@ export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
       },
     })
     .then(
-      (response: any) => {
-        return response.message;
-      },
-      (error: Error) => {
-        return error.message;
+      (response: RpoInfoResult) => {
+        return response;
       }
     );
 }

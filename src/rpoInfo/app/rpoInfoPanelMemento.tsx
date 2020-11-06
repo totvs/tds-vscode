@@ -113,34 +113,8 @@ export const propColumns = (extraProps?: any): any => {
 
   return {
     columns: [
-      fieldDef("server", i18n.localize("SERVER", "Server"), extraProps),
-      fieldDef("appUser", i18n.localize("USER_NAME", "User Name"), extraProps),
-      fieldDef(
-        "environment",
-        i18n.localize("ENVIRONMENT", "Environment"),
-        extraProps
-      ),
-      fieldDef(
-        "computerName",
-        i18n.localize("COMPUTER_NAME", "Computer Name"),
-        extraProps
-      ),
-      fieldDef("mainName", i18n.localize("PROGRAM", "Program"), extraProps),
-      fieldDef(
-        "loginTime",
-        i18n.localize("CONNECTION", "Connection"),
-        extraProps
-      ),
-      fieldDef(
-        "elapsedTime",
-        i18n.localize("ELAPSED_TIME", "Elapsed time"),
-        extraProps
-      ),
-      fieldDef(
-        "inactiveTime",
-        i18n.localize("INACTIVITY_TIME", "Idle time"),
-        extraProps
-      ),
+      fieldDef("name", i18n.localize("PROGRAM", "Program"), extraProps),
+      fieldDef("date", i18n.localize("DATE", "Date"), extraProps),
     ],
   };
 };

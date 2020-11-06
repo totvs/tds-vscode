@@ -135,7 +135,6 @@ function buildColumns(memento: IMemento): [] {
     }
 
     try {
-      //para mascarar erro devido a erro na implemtação anterior
       const orderColumn: any = columnsOrder.find((column: any) => {
         return column.field === columns[index]["field"];
       });
