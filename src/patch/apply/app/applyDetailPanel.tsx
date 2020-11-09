@@ -1,12 +1,34 @@
-import { FormControl, Grid, Input, InputLabel, Paper, TextField } from "@material-ui/core";
+import { FormControl, Grid, Input, InputLabel, Paper, TextField, Typography } from "@material-ui/core";
 import * as React from "react";
 import { IPatchFileInfo } from "../applyPathData";
-import { renderStatus, soluctionOptions } from "./applyPathPanelMemento";
+import { renderStatus } from "./applyPathPanelMemento";
 
 interface IApplyDetailPanel {
 	vscode: any;
 	patchFileInfo: IPatchFileInfo;
 }
+
+function solutionProposal(rowData: any) {
+	if ((rowData.data) && (rowData.data.error_number == 1)) //
+	{
+	//   const doClick = (event: React.SyntheticEvent, status: string) => {
+	// 	event.preventDefault();
+	// 	rowData.status = status;
+	//   }
+	  return (
+		// <ButtonGroup size="small" color="secondary">
+		//   <Button onClick={(event) => doClick(event, "applyOldResources")}>Apply old resource</Button>
+		//   <Button onClick={(event) => doClick(event, "cancelApply")}>Cancel apply</Button>
+		// </ButtonGroup>
+		<Typography color="secondary">
+		  Enable Apply old resource or remove file.
+		</Typography>
+	  )
+	}
+
+
+	return <></>
+  }
 
 export function ApplyDetailPanel(props: IApplyDetailPanel) {
 	const rowData: IPatchFileInfo = props.patchFileInfo;
@@ -25,9 +47,10 @@ export function ApplyDetailPanel(props: IApplyDetailPanel) {
 					<>
 						<Grid item xs={1}>{renderStatus(rowData)}</Grid>
 						<Grid item xs={11}>
-							<TextField disabled margin="dense" size="small" fullWidth label="Message" value={rowData.message} error={rowData.status === 'error'} />
+							<TextField disabled margin="dense" size="small" fullWidth
+							label="Message" value={rowData.message} error={rowData.status === 'error'}
+							helperText={solutionProposal(rowData)}/>
 						</Grid>
-						<Grid item xs={12} container alignContent="flex-end">{soluctionOptions(rowData)}</Grid>
 					</>
 				}
 			</Grid>

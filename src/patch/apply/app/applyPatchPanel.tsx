@@ -192,30 +192,11 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     window.addEventListener("message", listener);
   }
 
-  const doColumnHidden = (column: Column<any>, hidden: boolean) => {
-    memento.set(propColumnHidden(column.field as string, hidden));
-  };
-
   const doOrderChange = (orderBy: number, direction: string) => {
     const columns = propColumns().columns;
 
     memento.set(propOrderBy(columns[orderBy]["field"]));
     memento.set(propOrderDirection(direction));
-  };
-
-  const doColumnDragged = (sourceIndex: number, destinationIndex: number) => {
-    const newOrder = columns
-      .filter((column: any) => {
-        return column.tableData.groupOrder === undefined;
-      })
-      .map((column: any) => {
-        return {
-          field: column.field,
-          columnOrder: column.tableData.columnOrder,
-        };
-      });
-
-    memento.set(propColumnsOrder(newOrder));
   };
 
   const handleSelectFileButtonClick = (e: any) => {
@@ -446,14 +427,8 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
           actions={actions}
           onSelectionChange={(rows) => setSelected(rows)}
           onChangeRowsPerPage={(value) => doChangeRowsPerPage(value)}
-          onChangeColumnHidden={(column, hidden) =>
-            doColumnHidden(column, hidden)
-          }
           onOrderChange={(orderBy, direction) =>
             doOrderChange(orderBy, direction)
-          }
-          onColumnDragged={(sourceIndex, destinationIndex) =>
-            doColumnDragged(sourceIndex, destinationIndex)
           }
           detailPanel={[
             {

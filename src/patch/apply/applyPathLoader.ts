@@ -49,6 +49,10 @@ export class ApplyPatchLoader {
   public set currentServer(value: any) {
     if (this._currentServer !== value) {
       this._currentServer = value;
+      this._applyPatchData.patchFiles.forEach((element: IPatchFileInfo) => {
+        element.applyOld = false;
+        element.status = "loaded";
+      });
       this.updatePage();
     }
   }

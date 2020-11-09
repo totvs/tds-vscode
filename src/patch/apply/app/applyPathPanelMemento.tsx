@@ -105,44 +105,24 @@ export const _propColumnList = (): any => {
   };
 };
 
-export function soluctionOptions(rowData: any) {
-  if ((rowData.data) && (rowData.data.error_number == 1)) //
-  {
-    const doClick = (event: React.SyntheticEvent, status: string) => {
-      event.preventDefault();
-      rowData.status = status;
-    }
-    return (
-      <ButtonGroup size="small" color="secondary">
-        <Button onClick={(event) => doClick(event, "applyOldResources")}>Apply old resource</Button>
-        <Button onClick={(event) => doClick(event, "cancelApply")}>Cancel apply</Button>
-      </ButtonGroup>
-    )
-  }
-
-
-  return <></>
-}
-
 export function renderStatus(rowData: any) {
   const color = (): Exclude<PropTypes.Color, 'inherit'> => {
-    if (rowData.data.error_number !== -1)
-    {
+    if (rowData.data && rowData.data.error_number && rowData.data.error_number !== -1) {
       return "secondary"
     }
+
     return "default"
   };
 
   const variant = (): 'default' | 'outlined' => {
-    if (rowData.status !== 'error')
-    {
+    if (rowData.status !== 'error') {
       return "outlined"
     }
 
     return "default"
   };
 
-  const status  = rowData.status;
+  const status = rowData.status;
 
   return (
     <Tooltip title={rowData.message}>

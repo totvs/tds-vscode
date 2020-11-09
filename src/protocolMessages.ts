@@ -518,7 +518,7 @@ export function sendValidPatchRequest(server: ServerItem, patchUri: string, perm
     const result = {
       error: response.returnCode !== 0,
       message: response.message,
-      data: { error_number: 1, data: response.patchValidates }
+      data: { error_number: response.returnCode, data: response.patchValidates }
     }
 
     return result.error ? Promise.reject(result):Promise.resolve(result);
