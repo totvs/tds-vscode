@@ -16,6 +16,7 @@
 	"tds.package.reconnectLastServer": "Повторно подключиться при запуске к последнему подключенному серверу.",
 	"tds.package.generate.ppo": "Сгенерировать файл PPO.",
 	"tds.package.show.precompile": "Показать команду предварительной компиляции.",
+	"tds.package.compilation.commit": "Commit compilation with errors/warnings",
 	"tds.package.compilation.includes": "Компиляция включает.",
 	"tds.package.web.navigator.debug": "Веб-навигатор (отладка с помощью SmartClientHtml).",
 	"tds.package.editor.notification.show": "Уровень уведомления будет отображаться во всплывающем окне",

@@ -407,6 +407,11 @@
 					"default": false,
 					"description": "%tds.package.show.precompile%"
 				},
+				"totvsLanguageServer.compilation.commitWithErrorOrWarning": {
+					"type": "boolean",
+					"default": false,
+					"description": "%tds.package.compilation.commit%"
+				},
 				"totvsLanguageServer.web.navigator": {
 					"type": "string",
 					"default": "",

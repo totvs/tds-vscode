@@ -22,6 +22,7 @@ interface CompileOptions {
   showPreCompiler: boolean;
   priorVelocity: boolean;
   returnPpo: boolean;
+  commitWithErrorOrWarning: boolean;
 }
 
 //TODO: pegar as opções de compilação da configuração (talvez por server? ou workspace?)
@@ -29,6 +30,7 @@ function _getCompileOptionsDefault(): CompileOptions {
   let config = vscode.workspace.getConfiguration("totvsLanguageServer");
   let generatePpoFile = config.get("compilation.generatePpoFile");
   let showPreCompiler = config.get("compilation.showPreCompiler");
+  let commitWithErrorOrWarning = config.get("compilation.commitWithErrorOrWarning");
 
   return {
     recompile: false,
@@ -37,7 +39,8 @@ function _getCompileOptionsDefault(): CompileOptions {
     generatePpoFile: generatePpoFile as boolean,
     showPreCompiler: showPreCompiler as boolean,
     priorVelocity: true,
-    returnPpo: false
+    returnPpo: false,
+    commitWithErrorOrWarning: commitWithErrorOrWarning as boolean
   };
 }
 

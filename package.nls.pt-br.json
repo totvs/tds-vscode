@@ -12,6 +12,7 @@
 	"tds.package.reconnectLastServer": "Reconectar ao último servidor conectado na inicialização.",
 	"tds.package.generate.ppo": "Gere arquivo PPO.",
 	"tds.package.show.precompile": "Mostrar comando pré compilador.",
+	"tds.package.compilation.commit": "Comitar a compilação com erros/alertas",
 	"tds.package.compilation.includes": "Compilação inclui.",
 	"tds.package.web.navigator.debug": "Navegador da Web (depuração com SmartClientHtml).",
 	"tds.package.editor.notification.show": "Nível de notificação a ser exibido no 'pop-up'",

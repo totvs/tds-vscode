@@ -1,5 +1,17 @@
 # Changelog
 
+# Versão [1.2.1]
+
+## Aborting end build (rollback changes) [Issue 564](https://github.com/totvs/tds-vscode/issues/564)
+
+### Problema:
+
+- Ao compilar workspace ou pasta com vários arquivos e ocorrer erro em um dos arquivos compilados, todos os arquivos não são compilados (rollback).
+
+### Solução:
+
+- Adicionada a opção "Comitar a compilação com erros/alertas" que permite habilitar o 'commit' mesmo com erros/alertas em arquivos que estão sendo compilados.
+
 # Versão [1.2.0]
 
 ## Genéricas
