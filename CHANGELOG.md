@@ -2,6 +2,16 @@
 
 # Versão [1.2.1]
 
+## Conexão com Monitor dando erro de Privilégio [Issue 571](https://github.com/totvs/tds-vscode/issues/571)
+
+### Problema:
+
+- Ocorre erro na verificação de privilégios para obter os usuários no Monitor.
+
+### Solução:
+
+- A validação foi temporariamente desativada para questões do Monitor.
+
 ## Aborting end build (rollback changes) [Issue 564](https://github.com/totvs/tds-vscode/issues/564)
 
 ### Problema:
