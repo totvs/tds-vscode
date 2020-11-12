@@ -86,4 +86,4 @@ ALLOWCOMPILE | Compilar fontes e recursos
 - `Chave` deve ser sempre em maiúsculas
 - `<ip list>` é a lista de estações com o privilégio liberado, identificadas pelo seu endereço IP e separadas por `,`.
 
-> Para liberar o privilégio a qualquer estação, omita a chave ou coloque `*`.
+> Para liberar o privilégio a qualquer estação, coloque `*`.
