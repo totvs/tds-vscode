@@ -66,7 +66,6 @@ ENABLESENDMESSAGE=<ip list>
 ENABLEBLOCKNEWCONNECTION=<ip list>
 ENABLESTOPSERVER=<ip list>
 ALLOWBUILDPATCH=<ip list>
-ALLOWMONITOR=<ip list>
 ALLOWCOMPILE=<ip list>
 ```
 
@@ -79,7 +78,6 @@ ENABLESENDMESSAGE | Enviar mensagens
 ENABLEBLOCKNEWCONNECTION | Bloquear novas conexões
 ENABLESTOPSERVER | Encerrar o _appServer_
 ALLOWBUILDPATCH | Gerar pacotes de atualização (_patchs_)
-ALLOWMONITOR | Monitorar conexões/sessões do _appServer_
 ALLOWCOMPILE | Compilar fontes e recursos
 |
 
