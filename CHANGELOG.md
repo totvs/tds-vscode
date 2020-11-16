@@ -2,6 +2,26 @@
 
 # Versão [1.2.1]
 
+## Aplicação de Patch (Apply Patch) não funciona [Issue 573](https://github.com/totvs/tds-vscode/issues/573)
+
+### Problema:
+
+- O botão 'Apply Patch' não está funcionando quando não há uma chave de compilação válida aplicada.
+
+### Solução:
+
+- Adicionada validação de existência da chave antes da operação de 'Apply Patch'.
+
+## Erro intermitente na conexão com o appserver advpl [Issue 518](https://github.com/totvs/tds-vscode/issues/518)
+
+### Problema:
+
+- Ao tentar compilar um fonte enquanto existe uma depuração ativa, ocorre um erro fatal no LS.
+
+### Solução:
+
+- Adicionamos proteções nas ações que necessitam de acesso exclusivo ao RPO que impedem sua execução se a depuração estiver ativa.
+
 ## Conexão com Monitor dando erro de Privilégio [Issue 571](https://github.com/totvs/tds-vscode/issues/571)
 
 ### Problema:
