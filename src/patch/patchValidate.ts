@@ -8,6 +8,7 @@ const compile = require('template-literal');
 import * as nls from 'vscode-nls';
 import { ResponseError } from 'vscode-languageclient';
 import { CompileKey } from '../compileKey/compileKey';
+import { _debugEvent } from '../debug';
 
 let localize = nls.loadMessageBundle();
 
@@ -122,6 +123,10 @@ function exportPatchValidate() {
 }
 
 function sendPatchValidate(patchFile, server, authorizationToken, currentPanel) {
+	if (_debugEvent) {
+		vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
+		return;
+	}
 	const patchURI = vscode.Uri.file(patchFile).toString();
 	languageClient.sendRequest('$totvsserver/patchValidate', {
 		"patchValidateInfo": {

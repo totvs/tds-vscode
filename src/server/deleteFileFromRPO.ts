@@ -6,6 +6,7 @@ import { extensions, window, Uri, ViewColumn } from 'vscode';
 import * as nls from 'vscode-nls';
 import Utils from '../utils';
 import { ResponseError } from 'vscode-languageclient';
+import { _debugEvent } from '../debug';
 
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
@@ -91,6 +92,10 @@ export function deletePrograms(programs: string[]) {
 	const server = Utils.getCurrentServer();
 	try {
 		if (server) {
+			if (_debugEvent) {
+				vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
+				return;
+			}
 			//vscode.window.showInformationMessage("Compilação iniciada");
 			const permissionsInfos = Utils.getPermissionsInfos();
 

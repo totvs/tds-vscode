@@ -20,6 +20,7 @@ import { ResponseError } from "vscode-languageclient";
 import { ServerItem } from "./serverItemProvider";
 import { CompileResult } from "./compile/compileResult";
 import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
+import { _debugEvent } from "./debug";
 
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
@@ -401,6 +402,10 @@ export function sendCompilation(
   extensionsAllowed,
   hasAdvplsource
 ): Thenable<CompileResult> {
+  if (_debugEvent) {
+    vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
+    return;
+  }
   return languageClient.sendRequest("$totvsserver/compilation", {
     compilationInfo: {
       connectionToken: server.token,
@@ -416,6 +421,10 @@ export function sendCompilation(
 }
 
 export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
+  if (_debugEvent) {
+    vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
+    return;
+  }
   return languageClient
     .sendRequest("$totvsserver/rpoInfo", {
       rpoInfo: {

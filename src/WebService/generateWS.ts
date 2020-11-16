@@ -5,9 +5,10 @@ import * as nls from 'vscode-nls';
 import { languageClient } from '../extension';
 import Utils from '../utils';
 import { ResponseError } from 'vscode-languageclient';
+import { _debugEvent } from '../debug';
+
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
-
 
 const localizeHTML = {
 	"tds.webview.title": localize("tds.webview.title", "Generate WS"),
@@ -56,6 +57,10 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 						const extension:string = message.outputFileName.split('.').pop().toLowerCase();
 						if( extension !== "prw" && extension !== "prx" && extension !== "tlpp") {
 							vscode.window.showErrorMessage("The output file must have one of the following extensions: .prw, .prx or .tlpp");
+							return;
+						}
+						if (_debugEvent) {
+							vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
 							return;
 						}
 						server = Utils.getCurrentServer();

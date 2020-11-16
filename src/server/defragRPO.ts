@@ -3,6 +3,7 @@ import { languageClient } from "../extension";
 import * as vscode from "vscode";
 import { ResponseError } from "vscode-languageclient";
 import * as nls from "vscode-nls";
+import { _debugEvent } from "../debug";
 
 const localize = nls.loadMessageBundle();
 
@@ -10,6 +11,10 @@ export function defragRpo() {
   const server = Utils.getCurrentServer();
 
   if (server) {
+    if (_debugEvent) {
+      vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
+      return;
+    }
     const exec: Thenable<any> = languageClient
       .sendRequest("$totvsserver/defragRpo", {
         defragRpoInfo: {
