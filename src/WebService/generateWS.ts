@@ -62,10 +62,10 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 						const permissionsInfos = Utils.getPermissionsInfos();
 						languageClient.sendRequest('$totvsserver/wsdlGenerate', {
 							"wsdlGenerateInfo": {
-								"connectionToken": server.token,
-								"authorizationToken" : permissionsInfos.authorizationToken,
-								"environment": server.environment,
-								"wsdlUrl": message.url
+								connectionToken: server.token,
+								authorizationToken : permissionsInfos ? permissionsInfos.authorizationToken : "",
+								environment: server.environment,
+								wsdlUrl: message.url
 							}
 						}).then((response: any) => {
 							const pathFile = message.path + "//" + message.outputFileName;

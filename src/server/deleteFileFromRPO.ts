@@ -96,10 +96,10 @@ export function deletePrograms(programs: string[]) {
 
 			languageClient.sendRequest('$totvsserver/deletePrograms', {
 				"deleteProgramsInfo": {
-					"connectionToken": server.token,
-					"authorizationToken": permissionsInfos.authorizationToken,
-					"environment": server.environment,
-					"programs": programs
+					connectionToken: server.token,
+					authorizationToken: permissionsInfos ? permissionsInfos.authorizationToken : "",
+					environment: server.environment,
+					programs: programs
 				}
 			}).then((response: DeleteProgramResult) => {
 				if (response.returnCode === 40840) { // AuthorizationTokenExpiredError

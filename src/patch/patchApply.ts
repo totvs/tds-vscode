@@ -82,13 +82,13 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 								const permissionsInfos = Utils.getPermissionsInfos();
 								languageClient.sendRequest('$totvsserver/patchApply', {
 									"patchApplyInfo": {
-										"connectionToken": server.token,
-										"authenticateToken": permissionsInfos.authorizationToken,
-										"environment": server.environment,
-										"patchUris": patchUris,
-										"isLocal": true,
-										"validatePatch": false,
-										"applyOldProgram": message.applyOld
+										connectionToken: server.token,
+										authorizationToken: permissionsInfos ? permissionsInfos.authorizationToken : "",
+										environment: server.environment,
+										patchUris: patchUris,
+										isLocal: true,
+										validatePatch: false,
+										applyOldProgram: message.applyOld
 									}
 								}).then((response: PatchResult) => {
 									if (response.returnCode === 40840) { // AuthorizationTokenExpiredError
@@ -172,13 +172,13 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 							const permissionsInfos = Utils.getPermissionsInfos();
 							languageClient.sendRequest('$totvsserver/patchApply', {
 								"patchApplyInfo": {
-									"connectionToken": server.token,
-									"authenticateToken": permissionsInfos.authorizationToken,
-									"environment": server.environment,
-									"patchUris": patchUris,
-									"isLocal": true,
-									"validatePatch": false,
-									"applyOldProgram": false
+									connectionToken: server.token,
+									authorizationToken: permissionsInfos ? permissionsInfos.authorizationToken : "",
+									environment: server.environment,
+									patchUris: patchUris,
+									isLocal: true,
+									validatePatch: false,
+									applyOldProgram: false
 								}
 							}).then((response: PatchResult) => {
 								if (response.returnCode === 40840) { // AuthorizationTokenExpiredError

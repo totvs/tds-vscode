@@ -7,6 +7,8 @@ import { languageClient } from '../extension';
 const compile = require('template-literal');
 import * as nls from 'vscode-nls';
 import { ResponseError } from 'vscode-languageclient';
+import { CompileKey } from '../compileKey/compileKey';
+
 let localize = nls.loadMessageBundle();
 
 let patchInfosData;
@@ -27,7 +29,8 @@ const localizeHTML = {
 
 export function patchInfos(context: vscode.ExtensionContext, args: any) {
 	const server = Utils.getCurrentServer();
-	const authorizationToken = Utils.getPermissionsInfos().authorizationToken;
+	let key: CompileKey = Utils.getPermissionsInfos();
+	const authorizationToken = key ? key.authorizationToken : "";
 
 	if (server) {
 		let extensionPath = "";
@@ -123,11 +126,11 @@ function sendPatchInfo(patchFile, server, authorizationToken, currentPanel) {
 	const patchURI = vscode.Uri.file(patchFile).toString();
 	languageClient.sendRequest('$totvsserver/patchInfo', {
 		"patchInfoInfo": {
-			"connectionToken": server.token,
-			"authorizationToken": authorizationToken,
-			"environment": server.environment,
-			"patchUri": patchURI,
-			"isLocal": true
+			connectionToken: server.token,
+			authorizationToken: authorizationToken,
+			environment: server.environment,
+			patchUri: patchURI,
+			isLocal: true
 		}
 	}).then((response: any) => {
 		patchInfosData = response.patchInfos;

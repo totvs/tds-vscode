@@ -202,15 +202,15 @@ function sendPatchGenerateMessage(server, patchMaster, patchDest, patchType, pat
 	const permissionsInfos = Utils.getPermissionsInfos();
 	languageClient.sendRequest('$totvsserver/patchGenerate', {
 		"patchGenerateInfo": {
-			"connectionToken": server.token,
-			"authorizationToken": permissionsInfos.authorizationToken,
-			"environment": server.environment,
-			"patchMaster": patchMaster,
-			"patchDest": patchDest,
-			"isLocal": true,
-			"patchType": patchType,
-			"name": patchName,
-			"patchFiles": filesPath
+			connectionToken: server.token,
+			authorizationToken: permissionsInfos ? permissionsInfos.authorizationToken : "",
+			environment: server.environment,
+			patchMaster: patchMaster,
+			patchDest: patchDest,
+			isLocal: true,
+			patchType: patchType,
+			name: patchName,
+			patchFiles: filesPath
 		}
 	}).then((response: PatchResult) => {
 		if (response.returnCode === 40840) { // AuthorizationTokenExpiredError
