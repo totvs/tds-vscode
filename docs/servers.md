@@ -79,9 +79,7 @@ ENABLEBLOCKNEWCONNECTION | Bloquear novas conexões
 ENABLESTOPSERVER | Encerrar o _appServer_
 ALLOWBUILDPATCH | Gerar pacotes de atualização (_patchs_)
 ALLOWCOMPILE | Compilar fontes e recursos
-|
 
-- `Chave` deve ser sempre em maiúsculas
 - `<ip list>` é a lista de estações com o privilégio liberado, identificadas pelo seu endereço IP e separadas por `,`.
 
 > Para liberar o privilégio a qualquer estação, coloque `*`.
