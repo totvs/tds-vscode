@@ -267,6 +267,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   };
 
   const handleIgnoreSourceNotFount = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //setOpenWaitPage(true); //Essa flag aqui esta com problema
     let command: ICommand = {
       action: CommandToDA.SetIgnoreSourcesNotFound,
       content: { isIgnoreSourceNotFound: event.target.checked }
@@ -290,6 +291,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   };
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setOpenWaitPage(true);
     let command: ICommand = {
       action: CommandToDA.ChangeItemsPerPage,
       content: {
@@ -303,10 +305,6 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
 
   const handleCloseSourcesDialog = (value) => {
     setOpenSourcesDialog(false);
-  };
-
-  const handleCloseWaitPage = (value) => {
-    setOpenWaitPage(false);
   };
 
   const sendShowAllSourcesRequest = () => {
