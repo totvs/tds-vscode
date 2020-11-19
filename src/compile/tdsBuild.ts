@@ -5,6 +5,9 @@ import * as fs from 'fs';
 import Utils from "../utils";
 import { showCompileResult } from "./buildResult";
 
+var windows1252 = require('windows-1252');
+var windows1251 = require('windows-1251');
+
 import * as nls from "vscode-nls";
 import { ResponseError } from "vscode-languageclient";
 import { CompileResult } from "./compileResult";
@@ -18,6 +21,8 @@ interface CompileOptions {
   generatePpoFile: boolean;
   showPreCompiler: boolean;
   priorVelocity: boolean;
+  returnPpo: boolean;
+  commitWithErrorOrWarning: boolean;
 }
 
 //TODO: pegar as opções de compilação da configuração (talvez por server? ou workspace?)
@@ -25,6 +30,7 @@ function _getCompileOptionsDefault(): CompileOptions {
   let config = vscode.workspace.getConfiguration("totvsLanguageServer");
   let generatePpoFile = config.get("compilation.generatePpoFile");
   let showPreCompiler = config.get("compilation.showPreCompiler");
+  let commitWithErrorOrWarning = config.get("compilation.commitWithErrorOrWarning");
 
   return {
     recompile: false,
@@ -33,7 +39,105 @@ function _getCompileOptionsDefault(): CompileOptions {
     generatePpoFile: generatePpoFile as boolean,
     showPreCompiler: showPreCompiler as boolean,
     priorVelocity: true,
+    returnPpo: false,
+    commitWithErrorOrWarning: commitWithErrorOrWarning as boolean
   };
+}
+
+export function generatePpo(filePath: string, options?: any): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+    if (!filePath || filePath.length == 0) {
+      reject(new Error("Undefined filePath."));
+      return;
+    }
+    if (!fs.existsSync(filePath)) {
+      reject(new Error("File '" + filePath + "' not found."));
+      return;
+    }
+
+    const server = utils.getCurrentServer();
+    if (!server) {
+      reject(new Error("No server connected. Check if there is a server connected in 'totvs.tds-vscode' extension."));
+      return;
+    }
+
+    const serverItem = utils.getServerForID(server.id);
+    let isAdvplsource: boolean = Utils.isAdvPlSource(filePath);
+    if (!isAdvplsource) {
+      reject(new Error("This file has an invalid AdvPL source file extension."));
+      return;
+    }
+
+    const includes = utils.getIncludes(true, serverItem) || [];
+    let includesUris: Array<string> = includes.map((include) => {
+      return vscode.Uri.file(include).toString();
+    });
+    if (includesUris.length == 0) {
+      reject(new Error("Includes undefined."));
+      return;
+    }
+
+    let filesUris: Array<string> = [];
+    filesUris.push(vscode.Uri.file(filePath).toString());
+
+    //const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
+    let extensionsAllowed: string[];
+    // if (configADVPL.get("folder.enableExtensionsFilter", true)) {
+    //   extensionsAllowed = configADVPL.get("folder.extensionsAllowed", []); // Le a chave especifica
+    // }
+
+    const permissionsInfos = Utils.getPermissionsInfos();
+
+    const compileOptions = _getCompileOptionsDefault();
+    compileOptions.recompile = true;
+    compileOptions.generatePpoFile = false;
+    compileOptions.showPreCompiler = false;
+    compileOptions.returnPpo = true;
+
+    sendCompilation(server, permissionsInfos, includesUris, filesUris, compileOptions, extensionsAllowed, isAdvplsource)
+    .then(
+    (response: CompileResult) => {
+      if (response.compileInfos.length > 0) {
+        for (let index = 0; index < response.compileInfos.length; index++) {
+          const compileInfo = response.compileInfos[index];
+          if (compileInfo.status === "APPRE") {
+            // o compileInfo.detail chega do LS com encoding utf8
+            // a extensão tds-vscode realiza a conversão para o enconding conforme informado em options.encoding
+            // caso nenhum encoding seja informado, converte para o padrão AdvPL cp1252
+            if (options && options.encoding) {
+              let encoding: string = (<string>options.encoding).toLowerCase();
+              //console.log("encoding: "+encoding);
+              if (options.encoding === 'utf8') {
+                resolve(compileInfo.detail);
+              }
+              else if (encoding === 'windows-1252' || encoding === 'cp1252') {
+                //let apple = "Maçã";
+                //console.log(apple);
+                resolve(windows1252.encode(compileInfo.detail));
+              }
+              else if (encoding === 'windows-1251' || encoding === 'cp1251') {
+                //let helloWorld = "Привет мир";
+                //console.log(helloWorld);
+                //resolve(windows1251.encode(helloWorld));
+                resolve(windows1251.encode(compileInfo.detail));
+              }
+              else {
+                // unknown encoding - fallback to utf8
+                resolve(compileInfo.detail);
+              }
+            }
+            else {
+              // if there is no encoding option - use windows-1252
+              resolve(windows1252.encode(compileInfo.detail));
+            }
+          }
+        }
+      }
+    },
+    (err: ResponseError<object>) => {
+      reject(new Error(err.message));
+    });
+  });
 }
 
 /**
@@ -104,7 +208,7 @@ async function buildCode(
         return;
       }
     }
-    
+
     let includesUris: Array<string> = [];
     for (let idx = 0; idx < includes.length; idx++) {
       includesUris.push(vscode.Uri.file(includes[idx]).toString());

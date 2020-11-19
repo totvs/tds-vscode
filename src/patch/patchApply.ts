@@ -7,6 +7,7 @@ import { languageClient } from '../extension';
 import * as nls from 'vscode-nls';
 import { ResponseError } from 'vscode-languageclient';
 import JSZip = require('jszip');
+import { _debugEvent } from '../debug';
 
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
@@ -78,17 +79,21 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 							if (message.patchFile === "") {
 								vscode.window.showErrorMessage(localize("tds.webview.patch.apply.fail", "Apply Patch Fail. Please input patch file."));
 							} else {
+								if (_debugEvent) {
+									vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
+									return;
+								}
 								//vscode.window.showInformationMessage(localize("tds.webview.patch.apply.start","Started Patch Apply"));
 								const permissionsInfos = Utils.getPermissionsInfos();
 								languageClient.sendRequest('$totvsserver/patchApply', {
 									"patchApplyInfo": {
-										"connectionToken": server.token,
-										"authenticateToken": permissionsInfos.authorizationToken,
-										"environment": server.environment,
-										"patchUris": patchUris,
-										"isLocal": true,
-										"validatePatch": false,
-										"applyOldProgram": message.applyOld
+										connectionToken: server.token,
+										authorizationToken: permissionsInfos ? permissionsInfos.authorizationToken : "",
+										environment: server.environment,
+										patchUris: patchUris,
+										isLocal: true,
+										validatePatch: false,
+										applyOldProgram: message.applyOld
 									}
 								}).then((response: PatchResult) => {
 									if (response.returnCode === 40840) { // AuthorizationTokenExpiredError
@@ -164,6 +169,10 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 					filename = context.fsPath;
 				}
 				if (filename !== "") {
+					if (_debugEvent) {
+						vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
+						return;
+					}
 					const patchFile = filename;
 					vscode.window.showWarningMessage(localize("tds.webview.patch.apply.file", "Are you sure you want apply patch {0} from RPO?", path.basename(filename)), localize('tds.vscode.yes', 'Yes'), localize('tds.vscode.no', 'No')).then(clicked => {
 						if (clicked === localize('tds.vscode.yes', 'Yes')) {
@@ -172,13 +181,13 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 							const permissionsInfos = Utils.getPermissionsInfos();
 							languageClient.sendRequest('$totvsserver/patchApply', {
 								"patchApplyInfo": {
-									"connectionToken": server.token,
-									"authenticateToken": permissionsInfos.authorizationToken,
-									"environment": server.environment,
-									"patchUris": patchUris,
-									"isLocal": true,
-									"validatePatch": false,
-									"applyOldProgram": false
+									connectionToken: server.token,
+									authorizationToken: permissionsInfos ? permissionsInfos.authorizationToken : "",
+									environment: server.environment,
+									patchUris: patchUris,
+									isLocal: true,
+									validatePatch: false,
+									applyOldProgram: false
 								}
 							}).then((response: PatchResult) => {
 								if (response.returnCode === 40840) { // AuthorizationTokenExpiredError

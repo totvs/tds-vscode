@@ -12,6 +12,7 @@
 	"tds.package.reconnectLastServer": "Reconnect last connected server on startup.",
 	"tds.package.generate.ppo": "Generate PPO file.",
 	"tds.package.show.precompile": "Show pre compiler command.",
+	"tds.package.compilation.commit": "Commit compilation with errors/warnings",
 	"tds.package.compilation.includes": "Compilation includes.",
 	"tds.package.web.navigator.debug": "Web navigator (debug with SmartClientHtml).",
 	"tds.package.editor.notification.show": "Notification Level to be show in 'popup'",
@@ -111,5 +112,6 @@
 	"tds-monitor.open-monitor-view": "Open monitor view",
 	"tds.package.workspaceServerConfig": "Use the workspace to maintain server settings.",
 	"tds.package.OpenTimeLineWebview": "Open TimeLine Webview",
-	"tds.package.apply.formatting": "Applies formatting to TOTVS source files and their variations."
+	"tds.package.apply.formatting": "Applies formatting to TOTVS source files and their variations.",
+	"tds-monitor.open-rpoinfo": "Repository Log"
 }

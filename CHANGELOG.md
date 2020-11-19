@@ -1,5 +1,76 @@
 # Changelog
 
+# Versão [1.2.1]
+
+## Aplicação de Patch (Apply Patch) não funciona [Issue 573](https://github.com/totvs/tds-vscode/issues/573)
+
+### Problema:
+
+- O botão 'Apply Patch' não está funcionando quando não há uma chave de compilação válida aplicada.
+
+### Solução:
+
+- Adicionada validação de existência da chave antes da operação de 'Apply Patch'.
+
+## Erro intermitente na conexão com o appserver advpl [Issue 518](https://github.com/totvs/tds-vscode/issues/518)
+
+### Problema:
+
+- Ao tentar compilar um fonte enquanto existe uma depuração ativa, ocorre um erro fatal no LS.
+
+### Solução:
+
+- Adicionamos proteções nas ações que necessitam de acesso exclusivo ao RPO que impedem sua execução se a depuração estiver ativa.
+
+## Conexão com Monitor dando erro de Privilégio [Issue 571](https://github.com/totvs/tds-vscode/issues/571)
+
+### Problema:
+
+- Ocorre erro na verificação de privilégios para obter os usuários no Monitor.
+
+### Solução:
+
+- A validação foi temporariamente desativada para questões do Monitor.
+
+## Aborting end build (rollback changes) [Issue 564](https://github.com/totvs/tds-vscode/issues/564)
+
+### Problema:
+
+- Ao compilar workspace ou pasta com vários arquivos e ocorrer erro em um dos arquivos compilados, todos os arquivos não são compilados (rollback).
+
+### Solução:
+
+- Adicionada a opção "Comitar a compilação com erros/alertas" que permite habilitar o 'commit' mesmo com erros/alertas em arquivos que estão sendo compilados.
+
+# Versão [1.2.0]
+
+## Genéricas
+
+- Documentação e ajustes no [Sistema de Privilégios](docs/servers.md)
+- Implementação de opção para visualização do log do repositório
+
+## Implementação da API generatePPO
+
+- Foi implementada a API generatePPO que gera o conteúdo do PPO do arquivo em edição. Maiores detalhes em [API exportadas](https://github.com/totvs/tds-vscode/blob/dev/docs/exported-api.md)
+
+## Chave de compilação Inválida [Issue 563](https://github.com/totvs/tds-vscode/issues/563)
+
+### Problema:
+
+- Ao aplicar uma chave de compilação ocorre erro indicando que a chave é inválida.
+
+### Solução:
+
+- Foi aplicada uma correção interna nas validações da chave de compilação.
+
+## Implementação chamado #269
+
+- Opção de manter as configurações de servidores na área de trabalho e [troca rápida](docs/servers.md)
+
+## Correção chamado #553
+
+- Erro de compilação [FATAL] não é exibido na aba PROBLEMS e nem no LOG do AppServer.
+
 # Versão [1.1.1]
 
 ## Correção chamado #549

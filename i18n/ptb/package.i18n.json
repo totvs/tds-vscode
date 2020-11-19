@@ -13,9 +13,11 @@
 	"tds.package.show.ask.compile.result": "Pedir para exibir tabela com resultados da compilação",
 	"tds.package.clear.console.before.compile": "Limpar o console antes da compilação",
 	"tds.package.show.console.on.compile": "Exibir console na compilação",
+	"tds.package.show.banner": "Apresenta banner na inicialização",
 	"tds.package.reconnectLastServer": "Reconectar ao último servidor conectado na inicialização.",
 	"tds.package.generate.ppo": "Gere arquivo PPO.",
 	"tds.package.show.precompile": "Mostrar comando pré compilador.",
+	"tds.package.compilation.commit": "Comitar a compilação com erros/alertas",
 	"tds.package.compilation.includes": "Compilação inclui.",
 	"tds.package.web.navigator.debug": "Navegador da Web (depuração com SmartClientHtml).",
 	"tds.package.editor.notification.show": "Nível de notificação a ser exibido no 'pop-up'",
@@ -115,5 +117,6 @@
 	"tds-monitor.open-monitor-view": "Abrir exibição do monitor",
 	"tds.package.workspaceServerConfig": "Use a área de trabalho para manter as configurações do servidor.",
 	"tds.package.OpenTimeLineWebview": "Abrir visão da linha de tempo",
-	"tds.package.apply.formatting": "Aplica a formatação aos arquivos fontes TOTVS e suas variações."
+	"tds.package.apply.formatting": "Aplica a formatação aos arquivos fontes TOTVS e suas variações.",
+	"tds-monitor.open-rpoinfo": "Log de Repositório"
 }

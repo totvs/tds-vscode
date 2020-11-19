@@ -19,12 +19,30 @@ const localizeHTML = {
 	"tds.webview.compile.key.token": localize("tds.webview.compile.key.token", "Token"),
 	"tds.webview.compile.key.overwrite": localize("tds.webview.compile.key.overwrite", "Allow overwrite default"),
 	"tds.webview.compile.key.setting": localize("tds.webview.compile.key.setting", "These settings can also be changed in"),
-	"tds.webview.compile.key.validated": localize("tds.webview.compile.key.invalid", "Key successfully validated"),
+	"tds.webview.compile.key.validated": localize("tds.webview.compile.key.validated", "Key successfully validated"),
 	"tds.webview.compile.key.invalid": localize("tds.webview.compile.key.invalid", "Invalid key"),
 };
 
-export function compileKeyPage(context: vscode.ExtensionContext) {
+export interface CompileKey {
+	path: string;
+	machineId: string;
+	issued: string;
+	expire: string;
+	buildType: string;
+	tokenKey: string;
+	authorizationToken: string;
+	userId: string;
+}
 
+export interface Authorization {
+	id: string;
+	generation: string;
+	validation: string;
+	permission: string;
+	key: string;
+}
+
+export function compileKeyPage(context: vscode.ExtensionContext) {
 	if(!isLSInitialized) {
 		languageClient.onReady().then(async () => {
 			initializePage(context);
@@ -61,7 +79,7 @@ export function compileKeyPage(context: vscode.ExtensionContext) {
 	getId(currentPanel);
 
 	const compileKey = Utils.getPermissionsInfos();
-	if (compileKey !== "" && compileKey.authorizationToken && !compileKey.userId) {
+	if (compileKey && compileKey.authorizationToken) { // && !compileKey.userId) {
 		const generated = compileKey.issued;
 		const expiry = compileKey.expire;
 		const canOverride: boolean = compileKey.buildType === "0";
@@ -80,17 +98,18 @@ export function compileKeyPage(context: vscode.ExtensionContext) {
 				}
 				break;
 			case 'readFile':
-				const compileKey = Utils.readCompileKeyFile(message.path);
-				compileKey.path = message.path;
-				let canOverride: boolean = compileKey.permission === "1";
-				setCurrentKey(currentPanel, compileKey.path, compileKey.id, compileKey.generation, compileKey.validation, compileKey.key, canOverride);
-				validateKey(currentPanel, {
-					'id': compileKey.id.toUpperCase(),
-					'generated': compileKey.generation,
-					'expire': compileKey.validation,
-					'overwrite': canOverride,
-					'token': compileKey.key.toUpperCase()
-				}, false);
+				const authorization: Authorization = Utils.readCompileKeyFile(message.path);
+				if (authorization) {
+					let canOverride: boolean = authorization.permission === "1";
+					setCurrentKey(currentPanel, message.path, authorization.id, authorization.generation, authorization.validation, authorization.key, canOverride);
+					validateKey(currentPanel, {
+						'id': authorization.id.toUpperCase(),
+						'generated': authorization.generation,
+						'expire': authorization.validation,
+						'overwrite': canOverride,
+						'token': authorization.key.toUpperCase()
+					}, false);
+				}
 				break;
 			case 'validateKey':
 				if (message.token) {
@@ -100,13 +119,7 @@ export function compileKeyPage(context: vscode.ExtensionContext) {
 				}
 				break;
 			case 'cleanKey':
-				const config = Utils.getServersConfig();
-				if (config.permissions.authorizationToken) {
-					const infos = {
-						"authorizationToken": ""
-					};
-					Utils.savePermissionsInfos(infos);
-				}
+				Utils.deletePermissionsInfos();
 				break;
 		}
 	},
@@ -118,12 +131,12 @@ export function compileKeyPage(context: vscode.ExtensionContext) {
 function setCurrentKey(currentPanel, path, id, issued, expiry, authorizationToken, canOverride: boolean) {
 	currentPanel.webview.postMessage({
 		command: "setCurrentKey",
-		'path': path,
-		'id': id,
-		'issued': issued,
-		'expiry': expiry,
-		'authorizationToken': authorizationToken,
-		'canOverride': canOverride
+		path: path,
+		id: id,
+		issued: issued,
+		expiry: expiry,
+		authorizationToken: authorizationToken,
+		canOverride: canOverride
 	});
 }
 
@@ -143,11 +156,16 @@ function getId(currentPanel) {
 		});
 }
 
+class ValidKeyResult {
+	authorizationToken: string;
+	buildType: number;
+}
+
 function validateKey(currentPanel, message, close: boolean) {
 	console.log("validateKey: " + message.token);
 	if (message.token) {
 		let canOverride = "0";
-		if (message.overwrite === true) {
+		if (message.overwrite) {
 			canOverride = "1";
 		}
 		languageClient.sendRequest('$totvsserver/validKey', {
@@ -158,22 +176,24 @@ function validateKey(currentPanel, message, close: boolean) {
 				'canOverride': canOverride,
 				'token': message.token
 			}
-		}).then((response: any) => {
-			console.log("validateKey response: " + response.authorizationToken);
-			let outputMessageText;
-			let outputMessageType;
-			if (message.path) {
-				response.path = message.path;
-			}
+		}).then((response: ValidKeyResult) => {
+			console.log("validateKey response authorizationToken: " + response.authorizationToken);
+			let outputMessageText: string;
+			let outputMessageType: string;
 			if (response.authorizationToken !== "") {
 				console.log("validateKey success");
-				response.tokenKey = message.token;
-				response.machineId = message.id;
-				response.issued = message.generated;
-				response.expire = message.expire;
-				response.userId = "";
 				if (close) {
-					Utils.savePermissionsInfos(response);
+					let permission: CompileKey = {
+						path: message.path,
+						machineId: message.id,
+						issued: message.generated,
+						expire: message.expire,
+						buildType: String(response.buildType),
+						tokenKey: message.token,
+						authorizationToken: response.authorizationToken,
+						userId: ""
+					}
+					Utils.savePermissionsInfos(permission);
 				}
 				outputMessageText = localizeHTML["tds.webview.compile.key.validated"];
 				outputMessageType = "success";
@@ -210,26 +230,26 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 	return runTemplate({ css: cssContent, localize: localizeHTML });
 }
 
-export function updatePermissionBarItem(infos: any | undefined): void {
-	if (infos.authorizationToken) {
+export function updatePermissionBarItem(infos: CompileKey): void {
+	if (infos && infos.authorizationToken && infos.buildType && infos.expire) {
 		const [dd, mm, yyyy] = infos.expire.split("/");
 		const expiryDate: Date = new Date(`${yyyy}-${mm}-${dd} 23:59:59`);
 		if (expiryDate.getTime() >= new Date().getTime()) {
 			const newLine = "\n";
 			permissionStatusBarItem.text = 'Permissions: Logged in';
 			if (infos.machineId) {
-				permissionStatusBarItem.tooltip = infos.machineId + newLine;
+				permissionStatusBarItem.tooltip = "Machine ID: " + infos.machineId + newLine;
 			}else if(infos.userId){
-				permissionStatusBarItem.tooltip = infos.userId + newLine;
+				permissionStatusBarItem.tooltip = "User ID: " + infos.userId + newLine;
 
 			}
 			permissionStatusBarItem.tooltip += "Expires in " + expiryDate.toLocaleString() + newLine;
 
-			if (infos.buildType === 0) {
+			if (infos.buildType === "0") {
 				permissionStatusBarItem.tooltip += "Allow compile functions and overwrite default TOTVS";
-			} else if (infos.buildType === 1) {
+			} else if (infos.buildType === "1") {
 				permissionStatusBarItem.tooltip += "Allow only compile users functions";
-			} else if (infos.buildType === 2) {
+			} else if (infos.buildType === "2") {
 				permissionStatusBarItem.tooltip += "Allow compile functions";
 			}
 		} else {

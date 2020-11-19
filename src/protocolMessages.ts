@@ -19,6 +19,8 @@ import { languageClient } from "./extension";
 import { ResponseError } from "vscode-languageclient";
 import { ServerItem } from "./serverItemProvider";
 import { CompileResult } from "./compile/compileResult";
+import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
+import { _debugEvent } from "./debug";
 
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
@@ -65,7 +67,6 @@ class DisconnectReturnInfo {
   code: any;
   message: string;
 }
-
 
 export function sendDisconnectRequest(
   connectedServerItem: ServerItem
@@ -152,8 +153,8 @@ export function sendConnectRequest(
 }
 
 export const ENABLE_CODE_PAGE = {
-  CP1252: 'CP1252', //demais idiomas
-  CP1251: 'CP1251'  //cirílico
+  CP1252: "CP1252", //demais idiomas
+  CP1251: "CP1251", //cirílico
 };
 
 export function sendAuthenticateRequest(
@@ -161,7 +162,7 @@ export function sendAuthenticateRequest(
   environment: string,
   user: string,
   password: string,
-  encoding: string,
+  encoding: string
 ): Thenable<IAuthenticationInfo> {
   return languageClient
     .sendRequest("$totvsserver/authentication", {
@@ -170,7 +171,7 @@ export function sendAuthenticateRequest(
         environment: environment,
         user: user,
         password: password,
-        encoding: encoding
+        encoding: encoding,
       },
     })
     .then(
@@ -288,13 +289,12 @@ export function sendLockServer(
     });
 }
 
-export function sendIsLockServer(
-  server: ServerItem
-): Thenable<boolean> {
+export function sendIsLockServer(server: ServerItem): Thenable<boolean> {
   return languageClient
     .sendRequest("$totvsmonitor/getConnectionStatus", {
       getConnectionStatusInfo: {
-        connectionToken: server.token      },
+        connectionToken: server.token,
+      },
     })
     .then((response: any) => {
       return !response.status; //false: conexões bloqueadas
@@ -357,8 +357,9 @@ export function sendUserMessage(
         server: target.server,
         environment: target.environment,
         message: message,
-      }
-    }).then(
+      },
+    })
+    .then(
       (response: any) => {
         return response.message;
       },
@@ -367,6 +368,7 @@ export function sendUserMessage(
       }
     );
 }
+
 export function sendAppKillConnection(
   server: ServerItem,
   target: any
@@ -400,10 +402,14 @@ export function sendCompilation(
   extensionsAllowed,
   hasAdvplsource
 ): Thenable<CompileResult> {
+  if (_debugEvent) {
+    vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
+    return;
+  }
   return languageClient.sendRequest("$totvsserver/compilation", {
     compilationInfo: {
       connectionToken: server.token,
-      authorizationToken: permissionsInfos.authorizationToken,
+      authorizationToken: permissionsInfos ? permissionsInfos.authorizationToken : "",
       environment: server.environment,
       includeUris: includesUris,
       fileUris: filesUris,
@@ -412,4 +418,23 @@ export function sendCompilation(
       includeUrisRequired: hasAdvplsource,
     },
   });
+}
+
+export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
+  if (_debugEvent) {
+    vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
+    return;
+  }
+  return languageClient
+    .sendRequest("$totvsserver/rpoInfo", {
+      rpoInfo: {
+        connectionToken: server.token,
+        environment: server.environment,
+      },
+    })
+    .then(
+      (response: RpoInfoResult) => {
+        return response;
+      }
+    );
 }
