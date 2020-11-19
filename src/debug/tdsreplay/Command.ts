@@ -15,5 +15,6 @@ export enum CommandToDA {
 export enum CommandToPage {
   AddTimeLines,
   SelectTimeLine,
-  OpenSourcesDialog
+  OpenSourcesDialog,
+  OpenWaitPage
 }
