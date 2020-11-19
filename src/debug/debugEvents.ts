@@ -233,11 +233,11 @@ function processShowProgressEvent(event: DebugSessionCustomEvent, debugConsole: 
 					 	while( !isFinished && messageQueue.length > 0) {
 							item = messageQueue.pop();
 							languageClient.outputChannel.appendLine(item.message);
-							if(item.percent > 0) {
+							//if(item.percent > 0) {
 								setTimeout(() => {
 									progress.report({message: item.message, increment: item.increment});
 								}, 100);
-							}
+							//}
 						}
 					}
 
