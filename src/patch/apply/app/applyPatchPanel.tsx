@@ -10,7 +10,7 @@ import Paper from "@material-ui/core/Paper";
 import { ApplyPatchPanelAction, IApplyPatchPanelAction } from "../actions";
 import FilterList from "@material-ui/icons/FilterList";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import { cellDefaultStyle } from "./applyPathInterface";
+import { cellDefaultStyle } from "./applyPatchInterface";
 import ApplyPatchTheme from "../helper/theme";
 import { useMemento, IMemento } from "../helper";
 import {
@@ -21,7 +21,7 @@ import {
   propOrderBy,
   propOrderDirection,
   propPageSize,
-} from "./applyPathPanelMemento";
+} from "./applyPatchPanelMemento";
 import { i18n } from "../helper";
 import { applyPatchIcons } from "../helper/applyPatchIcons";
 import {
@@ -142,6 +142,11 @@ function buildColumns(memento: IMemento): [] {
 
 let memento: IMemento = undefined;
 
+interface IEnableActions  {
+  validate: boolean;
+  apply: boolean;
+}
+
 export default function ApplyPatchPanel(props: IApplyPatchPanel) {
   memento = useMemento(
     props.vscode,
@@ -154,16 +159,10 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
   const [selected, setSelected] = React.useState<any>([]);
   const [rows, setRows] = React.useState([]);
   const [subtitle, setSubtitle] = React.useState();
+  const [enableActions, setEnableActions] = React.useState<IEnableActions>();
   const [pageSize, setPageSize] = React.useState(memento.get(propPageSize()));
   const [filtering, setFiltering] = React.useState(false);
   const [columns] = React.useState(buildColumns(memento));
-
-  // React.useEffect(() => {
-  //   if (reset) {
-  //     memento.save(true);
-  //   }
-  // }, [reset]);
-
   const [targetRow, setTargetRow] = React.useState(null);
 
   if (listener === undefined) {
@@ -179,7 +178,10 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
         case ApplyPatchPanelAction.UpdatePage: {
           setRows(message.data.applyPatchData.patchFiles);
           setSubtitle(message.data.serverName);
-
+          setEnableActions({
+            validate: message.data.hasServer,
+            apply:  message.data.hasServer
+           });
           break;
         }
         default:
@@ -219,12 +221,6 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     memento.set(propPageSize(value));
   };
 
-  // const doSelectFile = () => {
-  //   if (btnFile) {
-  //     btnFile.current.click();
-  //   }
-  // }
-
   const actions = [];
 
   actions.push({
@@ -261,6 +257,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     icon: applyPatchIcons.table.Check,
     tooltip: i18n.localize("VALIDATE_PATCH", "Validate patch"),
     isFreeAction: true,
+    //disabled: enableActions.validate,
     onClick: (event, rowData) => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.ValidateFile,
@@ -273,6 +270,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     icon: applyPatchIcons.table.Check,
     tooltip: i18n.localize("VALIDATE_PATCH", "Validate patch"),
     visible: rowData.status !== "error",
+    //disabled: enableActions.validate,
     onClick: (event, rowData) => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.ValidateFile,
@@ -285,6 +283,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     icon: applyPatchIcons.applyOldSource,
     tooltip: i18n.localize("APPLY_OLD_SOURCE", "Apply old sources"),
     isFreeAction: true,
+    //disabled: !enableActions.validate,
     onClick: () => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.ApplyOldSource,
@@ -294,9 +293,9 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
   });
 
   actions.push((rowData) => ({
-    icon: applyPatchIcons.applyOldSource,
+    icon: (rowData.applyOld?applyPatchIcons.applyOldSource:applyPatchIcons.notApplyOldSource),
     tooltip: i18n.localize("APPLY_OLD_SOURCE", "Apply old sources"),
-    disabled: rowData.status !== "error" && rowData.status !== "warning",
+    //disabled: !enableActions.validate && rowData.status !== "error" && rowData.status !== "warning",
     onClick: (event, rowData) => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.ApplyOldSource,
@@ -308,7 +307,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
   actions.push((rowData) => ({
     icon: applyPatchIcons.apply,
     tooltip: i18n.localize("APPLY_ALL", "Apply patch"),
-    disabled: rowData.status === "error",
+    //disabled: !enableActions.apply || rowData.status === "error",
     onClick: (event, rowData) => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.Apply,
@@ -321,6 +320,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     icon: applyPatchIcons.apply,
     tooltip: i18n.localize("APPLY_ALL", "Apply all patchs"),
     isFreeAction: true,
+    //disabled: !enableActions.apply,
     onClick: () => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.Apply,

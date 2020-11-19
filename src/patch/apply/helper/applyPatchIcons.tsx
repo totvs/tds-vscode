@@ -20,6 +20,8 @@ import ViewColumn from "@material-ui/icons/ViewColumn";
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import InfoIcon from '@material-ui/icons/Info';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
+import ControlPointDuplicateIcon from '@material-ui/icons/ControlPointDuplicate';
+import ControlPointIcon from '@material-ui/icons/ControlPoint';
 
 const tableIcons = {
   Add: React.forwardRef<SVGSVGElement>((props, ref) => (
@@ -77,7 +79,8 @@ const tableIcons = {
 
 export const applyPatchIcons = {
   table: tableIcons,
-  applyOldSource: AddToPhotosIcon,
+  applyOldSource: ControlPointDuplicateIcon,
+  notApplyOldSource: ControlPointIcon,
   info: InfoIcon,
   apply: DoneAllIcon,
   filterList: FilterList,

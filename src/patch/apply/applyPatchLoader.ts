@@ -4,9 +4,8 @@ import { ApplyPatchPanelAction, IApplyPatchPanelAction } from "./actions";
 import * as nls from "vscode-nls";
 import Utils from "../../utils";
 import { ServerItem } from "../../serverItemProvider";
-import { IApplyPatchData, IPatchFileInfo } from "./applyPathData";
+import { IApplyPatchData, IPatchFileInfo, PATCH_ERROR_CODE } from "./applyPatchData";
 import JSZip = require("jszip");
-import { languageClient } from "../../extension";
 import { sendApplyPatchRequest, sendValidPatchRequest } from "../../protocolMessages";
 import { IPatchInfoRequestData } from "../../rpoInfo/rpoPath";
 
@@ -115,6 +114,7 @@ export class ApplyPatchLoader {
     this._panel.webview.postMessage({
       command: ApplyPatchPanelAction.UpdatePage,
       data: {
+        hasServer: this.currentServer ? true:false,
         serverName: this.currentServer ?
           this.currentServer.name :
           localize("AWAITING_SELECTION", "(awaiting selection)"),
@@ -286,7 +286,7 @@ export class ApplyPatchLoader {
   private doApplyOldSource(patchFiles: IPatchFileInfo[], value: boolean) {
     patchFiles.forEach((patchFile) => {
       if (patchFile) {
-        if (patchFile.data.error_number == 1) {
+        if (patchFile.data.error_number == PATCH_ERROR_CODE.OLD_RESOURCES) {
           patchFile.applyOld = value;
           patchFile.status = value ? "warning" : "loaded";
         }
@@ -341,7 +341,11 @@ export class ApplyPatchLoader {
           }, (reason: any) => {
             element.message = reason.message || "";
             element.data = reason.data;
-            element.status = element.applyOld ? "warning" : "error";
+            if (reason.data.error_number == PATCH_ERROR_CODE.OLD_RESOURCES ) {
+              element.status = element.applyOld ? "warning" : "error";
+            } else {
+              element.status = "error";
+            }
           }).then(() => {
             self.updatePage();
           });

@@ -71,7 +71,7 @@ import { registerAdvplOutline, register4glOutline } from "./outline";
 import { registerDebug, _debugEvent } from "./debug";
 import { openMonitorView } from "./monitor/monitorLoader";
 import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
-import { openApplyPatchView } from "./patch/apply/applyPathLoader";
+import { openApplyPatchView } from "./patch/apply/applyPatchLoader";
 
 export let languageClient: LanguageClient;
 // barra de status

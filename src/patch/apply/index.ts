@@ -1,1 +1,1 @@
-import { ApplyPatchLoader as openApplyPatchView } from './applyPathLoader';
+import { ApplyPatchLoader as openApplyPatchView } from './applyPatchLoader';

@@ -1,7 +1,7 @@
 import { FormControl, Grid, Input, InputLabel, Paper, TextField, Typography } from "@material-ui/core";
 import * as React from "react";
-import { IPatchFileInfo } from "../applyPathData";
-import { renderStatus } from "./applyPathPanelMemento";
+import { IPatchFileInfo, PATCH_ERROR_CODE } from "../applyPatchData";
+import { renderStatus } from "./applyPatchPanelMemento";
 
 interface IApplyDetailPanel {
 	vscode: any;
@@ -9,26 +9,28 @@ interface IApplyDetailPanel {
 }
 
 function solutionProposal(rowData: any) {
-	if ((rowData.data) && (rowData.data.error_number == 1)) //
-	{
-	//   const doClick = (event: React.SyntheticEvent, status: string) => {
-	// 	event.preventDefault();
-	// 	rowData.status = status;
-	//   }
-	  return (
-		// <ButtonGroup size="small" color="secondary">
-		//   <Button onClick={(event) => doClick(event, "applyOldResources")}>Apply old resource</Button>
-		//   <Button onClick={(event) => doClick(event, "cancelApply")}>Cancel apply</Button>
-		// </ButtonGroup>
-		<Typography color="secondary">
-		  Enable Apply old resource or remove file.
-		</Typography>
-	  )
+	let message: string = "";
+
+	if (rowData.data) {
+		switch (rowData.data.error_number) {
+			case PATCH_ERROR_CODE.OK:
+				break;
+			case PATCH_ERROR_CODE.OLD_RESOURCES:
+				message = "Enable Apply old resource or remove file.";
+				break;
+			default:
+				message = "See log appServer for details."
+				break;
+		}
+		return (
+			<Typography color="secondary">
+				{message}
+			</Typography>
+		)
 	}
 
-
 	return <></>
-  }
+}
 
 export function ApplyDetailPanel(props: IApplyDetailPanel) {
 	const rowData: IPatchFileInfo = props.patchFileInfo;
@@ -48,8 +50,8 @@ export function ApplyDetailPanel(props: IApplyDetailPanel) {
 						<Grid item xs={1}>{renderStatus(rowData)}</Grid>
 						<Grid item xs={11}>
 							<TextField disabled margin="dense" size="small" fullWidth
-							label="Message" value={rowData.message} error={rowData.status === 'error'}
-							helperText={solutionProposal(rowData)}/>
+								label="Message" value={rowData.message} error={rowData.status === 'error'}
+								helperText={solutionProposal(rowData)} />
 						</Grid>
 					</>
 				}

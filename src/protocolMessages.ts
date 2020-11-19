@@ -21,6 +21,7 @@ import { ServerItem } from "./serverItemProvider";
 import { CompileResult } from "./compile/compileResult";
 import { IPatchInfoRequestData, IPatchValidateInfoResult, IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
 import { PatchResult } from "./patch/patchGenerate";
+import { PATCH_ERROR_CODE } from "./patch/apply/applyPatchData";
 
 export interface IPermissionsResult {
   message: string;
@@ -467,21 +468,12 @@ export function sendApplyPatchRequest(server: ServerItem, patchUris: Array<strin
       "validatePatch": validate,
       "applyOldProgram": applyOld
     }
-  }).then((response: PatchResult) => {
-    if (response.returnCode == 99999) {
-      return Promise.reject({
-        error: true,
-        message: "Insufficient privileges",
-        errorCode: response.returnCode
-      });
-    }
-    const result = {
-      error: false,
-      message: "",
-      data: null
+  }).then((response: IPatchInfoRequestData) => {
+    if (response.error) {
+      return Promise.reject(response);
     }
 
-    return Promise.resolve(result);
+    return Promise.resolve(response);
   }, (err: ResponseError<object>) => {
     const error: IPatchInfoRequestData = {
       error: true,
@@ -506,29 +498,24 @@ export function sendValidPatchRequest(server: ServerItem, patchUri: string, perm
       "applyOldProgram": applyOld
     }
   }).then((response: IPatchValidateInfoResult) => {
-    if (response.returnCode == 99999) {
-      return Promise.reject({
-        error: true,
-        message: "Insufficient privileges",
-        errorCode: response.returnCode,
-        data: { error_number: 0, data: response.patchValidates }
-      });
-    }
-
-    const result = {
-      error: response.returnCode !== 0,
+    const result: IPatchInfoRequestData = {
+      error: response.error,
       message: response.message,
-      data: { error_number: response.returnCode, data: response.patchValidates }
+      data: { error_number: response.errorCode, data: response.patchValidates }
     }
 
+    if (result.error) {
+      console.error(result);
+    }
     return result.error ? Promise.reject(result):Promise.resolve(result);
   }, (err: ResponseError<object>) => {
     const error: IPatchInfoRequestData = {
       error: true,
       message: err.message,
-      data: err.data,
+      data: err.data?err.data: { error_number: PATCH_ERROR_CODE.GENERIC_ERROR, data: null },
       errorCode: err.code
     };
+    console.error(error);
 
     return Promise.reject(error);
   });

@@ -3,7 +3,7 @@ import { mergeProperties, i18n } from "../helper";
 import { applyPatchIcons } from "../helper/applyPatchIcons";
 import Alert from "@material-ui/lab/Alert";
 import { Button, ButtonGroup, Chip, Link, Popper, PropTypes, Tooltip, Typography } from "@material-ui/core";
-import { cellDefaultStyle } from "./applyPathInterface";
+import { cellDefaultStyle } from "./applyPatchInterface";
 
 function fieldDef(
   field: string,
@@ -107,7 +107,7 @@ export const _propColumnList = (): any => {
 
 export function renderStatus(rowData: any) {
   const color = (): Exclude<PropTypes.Color, 'inherit'> => {
-    if (rowData.data && rowData.data.error_number && rowData.data.error_number !== -1) {
+    if (rowData.data && rowData.data.error_number && rowData.data.error_number > 0) {
       return "secondary"
     }
 

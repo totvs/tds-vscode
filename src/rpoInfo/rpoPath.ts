@@ -28,7 +28,8 @@ export interface IPatchInfoRequestData {
 }
 
 export interface IPatchValidateInfoResult {
-  returnCode: number;
+  error: boolean;
   message: string;
-  patchValidates: any[];
+  patchValidates: any;
+  errorCode: number;
 }
