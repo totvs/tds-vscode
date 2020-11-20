@@ -99,7 +99,7 @@ export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
 			processSelectTimeLineEvent(event, debugConsole);
 		} else if (event.event === 'TDA/showProgress') {
 			processShowProgressEvent(event, debugConsole);
-		} else if(event.event === 'TDA/showLoadingDialog') {
+		} else if(event.event === 'TDA/showLoadingPageDialog') {
 			processShowLoadingDialogEvent(event, debugConsole);
 		}
 	}
