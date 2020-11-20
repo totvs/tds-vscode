@@ -16,5 +16,6 @@ export enum CommandToPage {
   AddTimeLines,
   SelectTimeLine,
   OpenSourcesDialog,
-  OpenWaitPage
+  OpenWaitPage,
+  ShowLoadingPageDialog
 }

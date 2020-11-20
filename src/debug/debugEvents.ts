@@ -99,6 +99,8 @@ export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
 			processSelectTimeLineEvent(event, debugConsole);
 		} else if (event.event === 'TDA/showProgress') {
 			processShowProgressEvent(event, debugConsole);
+		} else if(event.event === 'TDA/showLoadingDialog') {
+			processShowLoadingDialogEvent(event, debugConsole);
 		}
 	}
 }
@@ -256,6 +258,12 @@ function processShowProgressEvent(event: DebugSessionCustomEvent, debugConsole: 
 		};
 		withProgress();
 	}
+}
+
+function processShowLoadingDialogEvent(event: DebugSessionCustomEvent, debugConsole: DebugConsole) {
+	if(createTimeLineWebView !== null) {
+		createTimeLineWebView.showLoadingPageDialog(event.body.show);
+	 }
 }
 
 function delay(ms: number)

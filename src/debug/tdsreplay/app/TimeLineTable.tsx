@@ -372,6 +372,9 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           });
           setOpenSourcesDialog(true);
           break;
+        case CommandToPage.ShowLoadingPageDialog:
+          setOpenWaitPage(message.data);
+          break
       }
       message.command = "";
     };

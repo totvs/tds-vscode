@@ -137,6 +137,13 @@ private initializePanel(): void {
     });
   }
 
+  public showLoadingPageDialog(showLoadingPageDialog: boolean) {
+    this._panel.webview.postMessage({
+      command: CommandToPage.ShowLoadingPageDialog,
+      data: showLoadingPageDialog
+    });
+  }
+
   public postAddTimeLineEvent(debugEvent: DebugSessionCustomEvent, isIgnoreSourceNotFound: boolean) {
     //Envio de mensagem para página
     this._isIgnoreSourcesNotFound = isIgnoreSourceNotFound;
