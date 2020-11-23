@@ -1,13 +1,25 @@
 # Changelog
 
-# Versão [1.1.next]
-
- Versão [1.1.next]
+# Versão [1.2.0]
 
 ## Genéricas
 
 - Documentação e ajustes no [Sistema de Privilégios](docs/servers.md)
 - Implementação de opção para visualização do log do repositório
+
+## Implementação da API generatePPO
+
+- Foi implementada a API generatePPO que gera o conteúdo do PPO do arquivo em edição. Maiores detalhes em [API exportadas](https://github.com/totvs/tds-vscode/blob/dev/docs/exported-api.md)
+
+## Chave de compilação Inválida [Issue 563](https://github.com/totvs/tds-vscode/issues/563)
+
+### Problema:
+
+- Ao aplicar uma chave de compilação ocorre erro indicando que a chave é inválida.
+
+### Solução:
+
+- Foi aplicada uma correção interna nas validações da chave de compilação.
 
 ## Implementação chamado #269
 
@@ -15,7 +27,8 @@
 
 ## Correção chamado #553
 
-- Erro de compilacao [FATAL] não é exibido na aba PROBLEMS e nem no LOG do AppServer
+- Erro de compilação [FATAL] não é exibido na aba PROBLEMS e nem no LOG do AppServer.
+
 # Versão [1.1.1]
 
 ## Correção chamado #549
