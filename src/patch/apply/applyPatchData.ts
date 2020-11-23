@@ -11,6 +11,7 @@ export const PATCH_ERROR_CODE = {
   GENERIC_ERROR:  4,
   OLD_RESOURCES:  5,
   EMPTY_EMPFIL_LIST:  6,
+  APPLY_DENIED:  7,
 }
 
 export interface IPatchFileInfo {

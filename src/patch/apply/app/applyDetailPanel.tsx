@@ -18,8 +18,11 @@ function solutionProposal(rowData: any) {
 			case PATCH_ERROR_CODE.OLD_RESOURCES:
 				message = "Enable Apply old resource or remove file.";
 				break;
+			case PATCH_ERROR_CODE.APPLY_DENIED:
+				message = "Remove file and select compatible file.";
+				break;
 			default:
-				message = "See log appServer for details."
+			message = "See log appServer for details."
 				break;
 		}
 		return (
@@ -50,6 +53,7 @@ export function ApplyDetailPanel(props: IApplyDetailPanel) {
 						<Grid item xs={1}>{renderStatus(rowData)}</Grid>
 						<Grid item xs={11}>
 							<TextField disabled margin="dense" size="small" fullWidth
+								multiline={true}
 								label="Message" value={rowData.message} error={rowData.status === 'error'}
 								helperText={solutionProposal(rowData)} />
 						</Grid>

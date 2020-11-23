@@ -111,11 +111,17 @@ export class ApplyPatchLoader {
   }
 
   private updatePage() {
+    const hasServer: boolean = this.currentServer ? true : false;
+    const hasData: boolean = hasServer && this._applyPatchData.patchFiles.length > 0;
+
     this._panel.webview.postMessage({
       command: ApplyPatchPanelAction.UpdatePage,
       data: {
-        hasServer: this.currentServer ? true:false,
-        serverName: this.currentServer ?
+        validate: hasData,
+        applyOld: hasData,
+        apply: hasData,
+        deleteAll: hasData,
+        serverName: hasServer ?
           this.currentServer.name :
           localize("AWAITING_SELECTION", "(awaiting selection)"),
         applyPatchData: this._applyPatchData,
@@ -149,15 +155,6 @@ export class ApplyPatchLoader {
             message: localize("APPLYING", "Applying #{0}/{1}", cnt, total),
             increment: inc,
           });
-
-          // sendUserMessage(server, recipient, message).then(
-          //   (response: any) => {
-          //     //vscode.window.showWarningMessage(response);
-          //   },
-          //   (error: Error) => {
-          //     vscode.window.showErrorMessage(error.message);
-          //   }
-          //);
         });
 
         const p = new Promise((resolve) => {
@@ -300,7 +297,7 @@ export class ApplyPatchLoader {
 
     patchFiles.forEach((element: IPatchFileInfo) => {
       process.push(() => {
-        if (element.status == "loaded" ||  element.status == "valid" || element.status == "warning") {
+        if (element.status == "loaded" || element.status == "valid" || element.status == "warning") {
           element.status = "applying";
           element.data = { error_number: -1, data: "" }
           self.updatePage();
@@ -327,35 +324,53 @@ export class ApplyPatchLoader {
 
   private async doValidateFiles(patchFiles: IPatchFileInfo[]) {
     const self = this;
-    const process = [];
 
-    patchFiles.forEach((element: IPatchFileInfo) => {
-      process.push(() => {
-        element.status = "validating";
-        element.data = { error_number: -1, data: "" }
-        self.updatePage();
+    const total: number = patchFiles.length;
+    let cnt: number = 0;
+    let inc: number = 100 / total;
 
-        sendValidPatchRequest(this.currentServer, element.fullpath, Utils.getPermissionsInfos(), element.applyOld)
-          .then((result: IPatchInfoRequestData) => {
-            element.status = "valid";
-          }, (reason: any) => {
-            element.message = reason.message || "";
-            element.data = reason.data;
-            if (reason.data.error_number == PATCH_ERROR_CODE.OLD_RESOURCES ) {
-              element.status = element.applyOld ? "warning" : "error";
-            } else {
-              element.status = "error";
-            }
-          }).then(() => {
+    await vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: localize("VALIDATING_MESSAGE", "Validating Patch"),
+        cancellable: false,
+      }, async (progress, token) => {
+        token.onCancellationRequested(() => {
+          console.log("User canceled the operation");
+        });
+
+        progress.report({ increment: 0, message: "Inicializando..." });
+
+        patchFiles.forEach( async (element: IPatchFileInfo) =>  {
+            cnt++;
+            progress.report({
+              message: localize("APPLYING", "File {3} #{0}/{1}", cnt, total, element.name),
+              increment: inc
+            });
+            element.status = "validating";
+            element.data = { error_number: -1, data: "" }
             self.updatePage();
+
+            await sendValidPatchRequest(this.currentServer, element.fullpath, Utils.getPermissionsInfos(), element.applyOld)
+              .then((result: IPatchInfoRequestData) => {
+                element.status = "valid";
+              }, (reason: any) => {
+                element.message = reason.message || "";
+                element.data = reason.data;
+                if (reason.data.error_number == PATCH_ERROR_CODE.OLD_RESOURCES) {
+                  element.status = element.applyOld ? "warning" : "error";
+                } else {
+                  element.status = "error";
+                }
+              }).then(() => {
+                self.updatePage();
+              });
           });
-      })
-    });
 
-    for (let i = 0; i < process.length; i++) {
-      await process[i]();
-    }
+          progress.report({ increment: 100, message: "Finalizado" });
 
+      }
+    );
   }
 
   private doRemoveFile(patchFiles: IPatchFileInfo[]) {

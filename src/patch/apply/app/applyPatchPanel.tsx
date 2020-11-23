@@ -144,7 +144,16 @@ let memento: IMemento = undefined;
 
 interface IEnableActions  {
   validate: boolean;
+  applyOld: boolean;
   apply: boolean;
+  deleteAll: boolean;
+}
+
+const initEnableActions: IEnableActions = {
+  validate: false,
+  applyOld:  false,
+  apply: false,
+  deleteAll: false,
 }
 
 export default function ApplyPatchPanel(props: IApplyPatchPanel) {
@@ -158,12 +167,11 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
 
   const [selected, setSelected] = React.useState<any>([]);
   const [rows, setRows] = React.useState([]);
-  const [subtitle, setSubtitle] = React.useState();
-  const [enableActions, setEnableActions] = React.useState<IEnableActions>();
+  const [subtitle, setSubtitle] = React.useState("");
+  const [enableActions, setEnableActions] = React.useState<IEnableActions>(initEnableActions);
   const [pageSize, setPageSize] = React.useState(memento.get(propPageSize()));
   const [filtering, setFiltering] = React.useState(false);
   const [columns] = React.useState(buildColumns(memento));
-  const [targetRow, setTargetRow] = React.useState(null);
 
   if (listener === undefined) {
     listener = (event: MessageEvent) => {
@@ -179,8 +187,10 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
           setRows(message.data.applyPatchData.patchFiles);
           setSubtitle(message.data.serverName);
           setEnableActions({
-            validate: message.data.hasServer,
-            apply:  message.data.hasServer
+            validate: message.data.validate,
+            apply: message.data.apply,
+            applyOld: message.data.applyOld,
+            deleteAll: message.data.deleteAll
            });
           break;
         }
@@ -245,6 +255,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
   actions.push({
     icon: applyPatchIcons.table.Delete,
     tooltip: i18n.localize("REMOVE_PATCH", "Remove patch"),
+    disabled: !enableActions.deleteAll,
     onClick: (event, rowData) => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.RemoveFile,
@@ -257,7 +268,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     icon: applyPatchIcons.table.Check,
     tooltip: i18n.localize("VALIDATE_PATCH", "Validate patch"),
     isFreeAction: true,
-    //disabled: enableActions.validate,
+    disabled: !enableActions.validate,
     onClick: (event, rowData) => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.ValidateFile,
@@ -269,8 +280,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
   actions.push((rowData) => ({
     icon: applyPatchIcons.table.Check,
     tooltip: i18n.localize("VALIDATE_PATCH", "Validate patch"),
-    visible: rowData.status !== "error",
-    //disabled: enableActions.validate,
+    disabled: !enableActions.validate,
     onClick: (event, rowData) => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.ValidateFile,
@@ -283,7 +293,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     icon: applyPatchIcons.applyOldSource,
     tooltip: i18n.localize("APPLY_OLD_SOURCE", "Apply old sources"),
     isFreeAction: true,
-    //disabled: !enableActions.validate,
+    disabled: !enableActions.applyOld,
     onClick: () => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.ApplyOldSource,
@@ -295,7 +305,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
   actions.push((rowData) => ({
     icon: (rowData.applyOld?applyPatchIcons.applyOldSource:applyPatchIcons.notApplyOldSource),
     tooltip: i18n.localize("APPLY_OLD_SOURCE", "Apply old sources"),
-    //disabled: !enableActions.validate && rowData.status !== "error" && rowData.status !== "warning",
+    disabled: !enableActions.applyOld && rowData.status !== "error" && rowData.status !== "warning",
     onClick: (event, rowData) => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.ApplyOldSource,
@@ -307,7 +317,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
   actions.push((rowData) => ({
     icon: applyPatchIcons.apply,
     tooltip: i18n.localize("APPLY_ALL", "Apply patch"),
-    //disabled: !enableActions.apply || rowData.status === "error",
+    disabled: !enableActions.apply && rowData.status !== "valid",
     onClick: (event, rowData) => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.Apply,
@@ -320,7 +330,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     icon: applyPatchIcons.apply,
     tooltip: i18n.localize("APPLY_ALL", "Apply all patchs"),
     isFreeAction: true,
-    //disabled: !enableActions.apply,
+    disabled: !enableActions.apply,
     onClick: () => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.Apply,
@@ -333,6 +343,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     icon: applyPatchIcons.table.Delete,
     tooltip: i18n.localize("REMOVE_PATCH_ALL", "Remove all patch"),
     isFreeAction: true,
+    disabled: !enableActions.deleteAll,
     onClick: () => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.RemoveFile,
@@ -358,11 +369,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
                       ? i18n.localize("VALIDATE_PATCH", "Validate Patch")
                       : i18n.localize("APPLY_PATCH", "Apply Patch")
                   }
-                  subtitle={
-                    subtitle
-                      ? subtitle
-                      : i18n.localize("AWAITING_SELECTION", "(awaiting selection)")
-                  }
+                  subtitle={subtitle}
                 />
 
                 <FormControl fullWidth>
