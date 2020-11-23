@@ -2,6 +2,12 @@
 
 # Versão [1.2.1]
 
+## Confirmar exclusão de servidor [Issue 578](https://github.com/totvs/tds-vscode/issues/578)
+
+### Melhoria:
+
+- Adicionada uma confirmção para ação de exclusão de servidores.
+
 ## Aplicação de Patch (Apply Patch) não funciona [Issue 573](https://github.com/totvs/tds-vscode/issues/573)
 
 ### Problema:
