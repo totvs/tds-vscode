@@ -82,6 +82,8 @@
 	"tds.package.properties.smartclientBin.description": "O caminho completo executável do SmartClient.",
 	"tds.package.properties.cwb.description": "Caminho Raiz da Área de Trabalho",
 	"tds.package.properties.enableMultiThread.description": "Se a depuração precisar ativar a execução de vários threads",
+	"tds.package.properties.startJobList.description": "Lista de serviços a serem inicializados antes da depuração",
+	"tds.package.properties.waitForAttach.description": "Para depuração DAP. NÃO USE.",
 	"tds.package.properties.enableProfile.description": "Se o perfil precisar ser ativado",
 	"tds.package.properties.isMultiSession.description": "Se for uma execução multisessão (-M)",
 	"tds.package.properties.isAccessibilityMode.description": "Se o modo de acessibilidade precisar estar ativado (-AC)",

@@ -859,6 +859,16 @@
 								"description": "%tds.package.properties.enableMultiThread.description%",
 								"default": false
 							},
+							"startJobList": {
+								"type": "array",
+								"description": "%tds.package.properties.startJobList.description%",
+								"default": []
+							},
+							"waitForAttach": {
+								"type": "number",
+								"description": "%tds.package.properties.waitForAttach.description%",
+								"default": 0
+							},
 							"enableProfile": {
 								"type": "boolean",
 								"description": "%tds.package.properties.enableProfile.description%",
@@ -1090,6 +1100,11 @@
 								"type": "boolean",
 								"description": "%tds.package.properties.enableMultiThread.description%",
 								"default": false
+							},
+							"startJobList": {
+								"type": "array",
+								"description": "%tds.package.properties.startJobList.description%",
+								"default": []
 							},
 							"enableProfile": {
 								"type": "boolean",

@@ -101,6 +101,8 @@ export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
 			processShowProgressEvent(event, debugConsole);
 		} else if(event.event === 'TDA/showLoadingPageDialog') {
 			processShowLoadingDialogEvent(event, debugConsole);
+		} else {
+			window.showWarningMessage("Evento desconhecido: " + event.event);
 		}
 	}
 }
@@ -217,7 +219,7 @@ function processShowProgressEvent(event: DebugSessionCustomEvent, debugConsole: 
 		let withProgress = async function() {
 			window.withProgress(
 				{
-					cancellable: false,
+					cancellable: true,
 					location: ProgressLocation.Notification,
 					title: event.body.title,
 				},

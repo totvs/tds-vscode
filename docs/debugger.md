@@ -1,16 +1,14 @@
 # TDS: Depuração e execução
 
 > Requisitos
->
 > - servidor/ambiente conectado
 > - usuário autenticado (se necessário)
 > - executor configurado
 
 > Recomendações
-
-- **NUNCA** faça depuração em ambiente de produção
-- Não use _appServers_ compartilhado com terceiros, mesmo que ambientes diistintos
-- Prefira sempre um ambiente local
+> - **NUNCA** faça depuração em ambiente de produção
+> - Não use _appServer_ compartilhado com terceiros, mesmo que ambientes diistintos
+> - Prefira sempre um ambiente local
 
 ## Configuração de executores
 
@@ -121,15 +119,7 @@ Acione o atalho `F5` para iniciar a depuração e informe o nome da função/pro
 
 | A principal característica de um serviço, é que a sua execução não esta diretamente relacionada a interface com o usuário (_SmartClient_) e normalmente é executado em segundo plano pelo _appServer_.
 
-> Certique-se que:
->
-> - o serviço está em execução ou pronto para execução quando solicitado;
-> - a chave `enableMultiThread` esteja ligada na definição do executor que será utilizado.
-
-- Coloque um ponto de parada que será executado quando o serviço for requisitado
-- Inicie a depuração executando qualquer função do _RPO_ para que mantenha um conexão do depurador com o _appServer_
-- Acione o serviço por fora do **VS-CODE**, por exemplo executando o `SmartClient`, requisição (http, rest, etc)
-- Quando a depuração parar no ponto indicado, prossiga com a depuração normalmente
+Veja detalhes em [Depuração de serviços](doc/debugger_jobs.md).
 
 ### Usando Console de Depuração
 

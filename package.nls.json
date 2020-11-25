@@ -78,6 +78,8 @@
 	"tds.package.properties.cwb.description": "Workspace Root Path",
 	"tds.package.properties.enableMultiThread.description": "If the debug must enable multi thread execution",
 	"tds.package.properties.enableProfile.description": "If the profile must be enabled",
+	"tds.package.properties.startJobList.description": "List of jobs to be started before debugging",
+	"tds.package.properties.waitForAttach.description": "For DAP debugging. DO NOT USE.",
 	"tds.package.properties.isMultiSession.description": "If this is a multisession execution (-M)",
 	"tds.package.properties.isAccessibilityMode.description": "If the accessibility mode must be enabled (-AC)",
 	"tds.package.properties.doNotShowSplash.description": "If the splash screen must not show (-Q)",
