@@ -2,6 +2,22 @@
 
 # Versão [1.2.1]
 
+## VSCode Debug error: User not authenticated. Please connect/reconnect to a server. [Issue 423](https://github.com/totvs/tds-vscode/issues/423)
+
+### Problema:
+
+- Ocorria erro indicando que o usuário não estava conectado ao iniciar a depuração. Isso ocorria apenas com usuários cujo nome continham acentuações.
+
+### Solução:
+
+- Foi revista e corrigida a carga das chaves necessárias para ler o token de conexão do LS pelo DA.
+
+## Confirmar exclusão de servidor [Issue 578](https://github.com/totvs/tds-vscode/issues/578)
+
+### Melhoria:
+
+- Adicionada uma confirmção para ação de exclusão de servidores.
+
 ## Aplicação de Patch (Apply Patch) não funciona [Issue 573](https://github.com/totvs/tds-vscode/issues/573)
 
 ### Problema:
