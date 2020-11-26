@@ -53,6 +53,7 @@
 	"tds.package.connect": "Подключить",
 	"tds.package.reconnect": "Переподключить",
 	"tds.package.serverSelection": "Выбрать сервер",
+	"tds.package.toggleSaveLocation": "Переключить место сохранения server.json",
 	"tds.package.rename": "Переименовать",
 	"tds.package.disconnect": "Отключить соединение",
 	"tds.package.selectenv": "Выбор",
