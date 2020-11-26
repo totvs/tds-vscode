@@ -53,6 +53,7 @@
 	"tds.package.connect": "Conectar",
 	"tds.package.reconnect": "Volver a conectar",
 	"tds.package.serverSelection": "Seleccionar servidor",
+	"tds.package.toggleSaveLocation": "Alternar server.json guardar ubicación",
 	"tds.package.rename": "Rebautizar",
 	"tds.package.disconnect": "Desconectar",
 	"tds.package.selectenv": "Seleccione",

@@ -72,10 +72,18 @@ export default class Utils {
     );
   }
 
+ /**
+   * Troca o local da salva de servers.json
+   */
+  static toggleWorkspaceServerConfig() {
+    const config = vscode.workspace.getConfiguration("totvsLanguageServer");
+    config.update("workspaceServerConfig", !this.isWorkspaceServerConfig());
+  }
+
   /**
    * Pegar o arquivo servers.json da .vscode (workspace)?
    */
-  static workspaceServerConfig() {
+  static isWorkspaceServerConfig(): boolean {
     let config = vscode.workspace.getConfiguration("totvsLanguageServer");
     return config.get("workspaceServerConfig");
   }
@@ -84,7 +92,7 @@ export default class Utils {
    * Retorna o path completo do servers.json
    */
   static getServerConfigFile() {
-    return this.workspaceServerConfig()
+    return this.isWorkspaceServerConfig()
       ? path.join(this.getVSCodePath(), "servers.json")
       : homedir + "/.totvsls/servers.json";
   }
@@ -93,7 +101,7 @@ export default class Utils {
    * Retorna o path de onde deve ficar o servers.json
    */
   static getServerConfigPath() {
-    return this.workspaceServerConfig()
+    return this.isWorkspaceServerConfig()
       ? this.getVSCodePath()
       : homedir + "/.totvsls";
   }

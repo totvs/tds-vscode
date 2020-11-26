@@ -137,6 +137,7 @@
 		"onCommand:totvs-developer-studio.connect",
 		"onCommand:totvs-developer-studio.reconnect",
 		"onCommand:totvs-developer-studio.serverSelection",
+		"onCommand:totvs-developer-studio.toggleSaveLocation",
 		"onCommand:totvs-developer-studio.disconnect",
 		"onCommand:totvs-developer-studio.add",
 		"onCommand:totvs-developer-studio.config",
@@ -617,6 +618,11 @@
 			{
 				"command": "totvs-developer-studio.serverSelection",
 				"title": "%tds.package.serverSelection%",
+				"category": "TOTVS"
+			},
+			{
+				"command": "totvs-developer-studio.toggleSaveLocation",
+				"title": "%tds.package.toggleSaveLocation%",
 				"category": "TOTVS"
 			},
 			{
