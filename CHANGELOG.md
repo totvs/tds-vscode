@@ -2,6 +2,16 @@
 
 # Versão [1.2.1]
 
+## Não exibe conteúdo de array no Watch. [Issue 549](https://github.com/totvs/tds-vscode/issues/549)
+
+### Problema:
+
+- O conteúdo de arrays não estavam sendo exibidos/atualizados nas variáveis e watch, durante a depuração.
+
+### Solução:
+
+- Foi realizado uma correção no DA para considerar os arrays e 'parent' de objetos.
+
 ## VSCode Debug error: User not authenticated. Please connect/reconnect to a server. [Issue 423](https://github.com/totvs/tds-vscode/issues/423)
 
 ### Problema:
