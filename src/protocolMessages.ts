@@ -438,3 +438,21 @@ export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
       }
     );
 }
+
+export function sendGetJobs(server: ServerItem): Promise<Thenable<any>> {
+  return languageClient
+    .sendRequest("$totvsserver/jobs", {
+      jobsInfo: {
+        connectionToken: server.token,
+      },
+    })
+    .then(
+      (response: any) => {
+        return response.jobs;
+      },
+      (err: Error) => {
+        languageClient.error(err.message, err);
+        return [];
+      }
+    );
+}

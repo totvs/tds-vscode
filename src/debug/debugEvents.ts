@@ -1,7 +1,7 @@
 //import * as vscode from "vscode";
 import { debug, DebugConsole, DebugSessionCustomEvent, ExtensionContext, ProgressLocation, window } from "vscode";
-import {TotvsConfigurationProvider} from "./TotvsConfigurationProvider";
-import {TotvsConfigurationTdsReplayProvider} from "./TotvsConfigurationTdsReplayProvider";
+import { TotvsConfigurationProvider } from "./TotvsConfigurationProvider";
+import { TotvsConfigurationTdsReplayProvider } from "./TotvsConfigurationTdsReplayProvider";
 import Utils, { MESSAGETYPE } from "../utils";
 import { CreateTDSReplayTimeLineWebView } from './tdsreplay/TDSReplayTimeLineCreator';
 
@@ -78,28 +78,33 @@ const SPACES: string = ' '.repeat(11);
 	'TIME': CYAN
 };*/
 
+export function procesStartDebugSessionEvent(event: any) {
+	console.log(event);
+
+}
+
 export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
 	if (event.session.type.startsWith(DEBUG_TYPE) || event.session.type.startsWith(WEB_DEBUG_TYPE) || event.session.type.startsWith(REPLAY_DEBUG_TYPE)) {
 		const debugConsole = debug.activeDebugConsole;
 
-		if(languageClient === undefined) {
+		if (languageClient === undefined) {
 			languageClient = getLanguageClient(context);
 			if (event.session.type.startsWith(REPLAY_DEBUG_TYPE)) {
 				languageClient.clientOptions.outputChannelName = "TDS Replay";
-			} else if(event.session.type.startsWith(DEBUG_TYPE)) {
+			} else if (event.session.type.startsWith(DEBUG_TYPE)) {
 				languageClient.clientOptions.outputChannelName = "TOTVS Debug Messages";
 			}
 		}
 
 		if (event.event === 'TDA/log') {
 			processLogEvent(event, debugConsole);
-		} else if(event.event === 'TDA/addTimeLine')  {
+		} else if (event.event === 'TDA/addTimeLine') {
 			processAddTimeLineEvent(event, debugConsole);
-		} else if(event.event === 'TDA/selectTimeLine')  {
+		} else if (event.event === 'TDA/selectTimeLine') {
 			processSelectTimeLineEvent(event, debugConsole);
 		} else if (event.event === 'TDA/showProgress') {
 			processShowProgressEvent(event, debugConsole);
-		} else if(event.event === 'TDA/showLoadingPageDialog') {
+		} else if (event.event === 'TDA/showLoadingPageDialog') {
 			processShowLoadingDialogEvent(event, debugConsole);
 		} else {
 			window.showWarningMessage("Evento desconhecido: " + event.event);
@@ -123,7 +128,7 @@ function processLogEvent(event: DebugSessionCustomEvent, debugConsole: DebugCons
 				else if (level === eLogLevelEvent.ellInformation) {
 					window.showInformationMessage(message);
 				}
-				else if(level === eLogLevelEvent.ellWarning) {
+				else if (level === eLogLevelEvent.ellWarning) {
 					window.showWarningMessage(message);
 				}
 			}
@@ -144,11 +149,11 @@ function processLogEvent(event: DebugSessionCustomEvent, debugConsole: DebugCons
 }
 
 function processAddTimeLineEvent(debugEvent: DebugSessionCustomEvent, console: DebugConsole) {
-	if(createTimeLineWebView === null) {
+	if (createTimeLineWebView === null) {
 		let isIgnoreSourceNotFound: boolean = getIgnoreSourceNotFoundValue();
 		createTimeLineWebView = new CreateTDSReplayTimeLineWebView(context, debugEvent, isIgnoreSourceNotFound);
 	} else {
-		if(createTimeLineWebView.isDisposed()) {
+		if (createTimeLineWebView.isDisposed()) {
 			createTimeLineWebView.reveal();
 		}
 		let isIgnoreSourceNotFound: boolean = getIgnoreSourceNotFoundValue();
@@ -157,11 +162,11 @@ function processAddTimeLineEvent(debugEvent: DebugSessionCustomEvent, console: D
 }
 
 function processSelectTimeLineEvent(event: DebugSessionCustomEvent, debugConsole: DebugConsole) {
-	if(createTimeLineWebView !== null) {
+	if (createTimeLineWebView !== null) {
 		//console.log("RECEIVED SELECT TIME LINE FROM SERVER: ");
 		//console.log(event.body.id)
 		createTimeLineWebView.selectTimeLine(event.body.id);
-	 }
+	}
 }
 
 function getIgnoreSourceNotFoundValue(): boolean {
@@ -173,14 +178,14 @@ function getIgnoreSourceNotFoundValue(): boolean {
 
 		for (let key = 0; key < launchConfig.configurations.length; key++) {
 			let launchElement = launchConfig.configurations[key];
-			if(debugSession !== undefined && launchElement.name === debugSession.name) {
-				if(launchElement.ignoreSourcesNotFound !== undefined) {
+			if (debugSession !== undefined && launchElement.name === debugSession.name) {
+				if (launchElement.ignoreSourcesNotFound !== undefined) {
 					isIgnoreSourceNotFound = launchElement.ignoreSourcesNotFound;
 					break;
 				}
 			}
 		}
-	} catch(e) {
+	} catch (e) {
 		Utils.logInvalidLaunchJsonFile(e);
 	}
 
@@ -199,16 +204,16 @@ function getIgnoreSourceNotFoundValue(): boolean {
 //let showProgressInfoEachPercent: number = 2;
 let progressStarted: boolean = false;
 let isFinished: boolean = false;
-let messageQueue: Array<{message, percent, increment}> = new Array<{message, percent, increment}>();
+let messageQueue: Array<{ message, percent, increment }> = new Array<{ message, percent, increment }>();
 
 function processShowProgressEvent(event: DebugSessionCustomEvent, debugConsole: DebugConsole) {
 
 	const message: string = `${event.body.detailMessage} ( ${event.body.currentWork}% )`;
-	messageQueue.push({message: message, percent: event.body.currentWork, increment: event.body.increment});
+	messageQueue.push({ message: message, percent: event.body.currentWork, increment: event.body.increment });
 
 	isFinished = !(event.body.currentWork < 100 && !event.body.detailMessage.includes("[ERROR]"));
 
-	if(!progressStarted) {
+	if (!progressStarted) {
 		progressStarted = true;
 
 		debug.onDidTerminateDebugSession(event => {
@@ -216,32 +221,30 @@ function processShowProgressEvent(event: DebugSessionCustomEvent, debugConsole: 
 			progressStarted = false;
 		});
 
-		let withProgress = async function() {
+		let withProgress = async function () {
 			window.withProgress(
 				{
 					cancellable: true,
 					location: ProgressLocation.Notification,
 					title: event.body.title,
 				},
-				async (progress, token) =>
-				{
+				async (progress, token) => {
 					token.onCancellationRequested(() => {
 						languageClient.outputChannel.appendLine("User canceled the operation");
 						isFinished = true;
 					});
 
 					let item;
+					progress.report({ message: "", increment: 0 }); //limpa execução anterior
 
-					while(!isFinished) {
+					while (!isFinished) {
 						await delay(200);
-					 	while( !isFinished && messageQueue.length > 0) {
+						while (!isFinished && messageQueue.length > 0) {
 							item = messageQueue.pop();
 							languageClient.outputChannel.appendLine(item.message);
-							//if(item.percent > 0) {
-								setTimeout(() => {
-									progress.report({message: item.message, increment: item.increment});
-								}, 100);
-							//}
+							setTimeout(() => {
+								progress.report({ message: item.message, increment: item.increment });
+							}, 100);
 						}
 					}
 
@@ -263,13 +266,12 @@ function processShowProgressEvent(event: DebugSessionCustomEvent, debugConsole: 
 }
 
 function processShowLoadingDialogEvent(event: DebugSessionCustomEvent, debugConsole: DebugConsole) {
-	if(createTimeLineWebView !== null) {
+	if (createTimeLineWebView !== null) {
 		createTimeLineWebView.showLoadingPageDialog(event.body.show);
-	 }
+	}
 }
 
-function delay(ms: number)
-{
-  return new Promise(resolve => setTimeout(resolve, ms));
+function delay(ms: number) {
+	return new Promise(resolve => setTimeout(resolve, ms));
 }
 

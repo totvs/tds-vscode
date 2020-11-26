@@ -4,6 +4,7 @@ import * as Net from 'net';
 import { extractProgram, extractArgs, setDapArgs, getDAP } from './debugConfigs';
 import serverProvider from '../serverItemProvider';
 import * as nls from 'vscode-nls';
+import { sendGetJobs } from '../protocolMessages';
 
 const localize = nls.loadMessageBundle();
 
@@ -64,6 +65,36 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 				}
 				config.program = extractProgram(value as string);
 				config.programArguments = extractArgs(value as string);
+			}
+
+			if (config.startJobList) {
+				const jobs: any[] = await sendGetJobs(connectedServerItem);
+
+				//força caixa e verifica se achou configuração
+				config.startJobList.forEach((element, index, array) => {
+					array[index] = array[index].toLowerCase();
+
+					const find = jobs.find((job) => {
+						return array[index] == job.sectionName
+					});
+
+					if (!find) {
+						console.log(array[index]);
+					}
+				});
+
+				//seleciona os jobs a serem inicializados
+				const startJobs: any[] = jobs.filter((job: any) => {
+					return config.startJobList.includes(job.sectionName);
+				});
+
+				config.startJobNowList = []; //startJobs.slice()
+
+				while (config.startJobNowList.length < 5) {
+					config.startJobNowList.push(...startJobs.slice());
+				}
+			} else {
+				config.startJobNowList = [];
 			}
 
 			// se no server conectado houver a informacao de smartclientBin utiliza a informacao

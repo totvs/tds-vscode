@@ -864,6 +864,11 @@
 								"description": "%tds.package.properties.startJobList.description%",
 								"default": []
 							},
+							"startJobNowList": {
+								"type": "array",
+								"description": "%tds.package.properties.startJobList.description%",
+								"default": []
+							},
 							"waitForAttach": {
 								"type": "number",
 								"description": "%tds.package.properties.waitForAttach.description%",
@@ -1102,6 +1107,11 @@
 								"default": false
 							},
 							"startJobList": {
+								"type": "array",
+								"description": "%tds.package.properties.startJobList.description%",
+								"default": []
+							},
+							"startJobNowList": {
 								"type": "array",
 								"description": "%tds.package.properties.startJobList.description%",
 								"default": []
