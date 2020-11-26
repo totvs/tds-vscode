@@ -11,6 +11,9 @@
 - **NUNCA** faça depuração em ambiente de produção
 - Não use _appServers_ compartilhado com terceiros, mesmo que ambientes diistintos
 - Prefira sempre um ambiente local
+- **Clientes TCloud** : Os ambientes que estão no _TCloud_ em produção são *bloqueados* para depuração.
+Promova o _RPO_ para ``DEV`` e use esse ambiente, e se necessário, promova-o de volta para produção.
+Para detalhes, entre em contato com o suporte do _TCloud_.
 
 ## Configuração de executores
 
