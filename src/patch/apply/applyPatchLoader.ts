@@ -6,8 +6,8 @@ import Utils from "../../utils";
 import { ServerItem } from "../../serverItemProvider";
 import { IApplyPatchData, IPatchFileInfo, PATCH_ERROR_CODE } from "./applyPatchData";
 import JSZip = require("jszip");
-import { sendApplyPatchRequest, sendValidPatchRequest } from "../../protocolMessages";
 import { IPatchInfoRequestData } from "../../rpoInfo/rpoPath";
+import { sendApplyPatchRequest, sendValidPatchRequest } from "../../protocolMessages";
 
 const fs = require("fs");
 const os = require("os");

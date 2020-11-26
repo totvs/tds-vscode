@@ -19,8 +19,9 @@ import { languageClient } from "./extension";
 import { ResponseError } from "vscode-languageclient";
 import { ServerItem } from "./serverItemProvider";
 import { CompileResult } from "./compile/compileResult";
-import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
 import { _debugEvent } from "./debug";
+import { IPatchInfoRequestData, IPatchValidateInfoResult, IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
+import { PATCH_ERROR_CODE } from "./patch/apply/applyPatchData";
 
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
@@ -437,4 +438,69 @@ export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
         return response;
       }
     );
+}
+
+export function sendApplyPatchRequest(server: ServerItem, patchUris: Array<string>, permissions, validate: boolean, applyOld: boolean = false): Thenable<IPatchInfoRequestData> {
+
+  return languageClient.sendRequest('$totvsserver/patchApply', {
+    "patchApplyInfo": {
+      "connectionToken": server.token,
+      "authenticateToken": permissions.authorizationToken,
+      "environment": server.environment,
+      "patchUris": patchUris,
+      "isLocal": true,
+      "validatePatch": validate,
+      "applyOldProgram": applyOld
+    }
+  }).then((response: IPatchInfoRequestData) => {
+    if (response.error) {
+      return Promise.reject(response);
+    }
+
+    return Promise.resolve(response);
+  }, (err: ResponseError<object>) => {
+    const error: IPatchInfoRequestData = {
+      error: true,
+      message: err.message,
+      data: err.data,
+      errorCode: err.code
+    };
+
+    return Promise.reject(error);
+  });
+}
+
+export function sendValidPatchRequest(server: ServerItem, patchUri: string, permissions, applyOld: boolean = false): Thenable<IPatchInfoRequestData> {
+
+  return languageClient.sendRequest('$totvsserver/patchValidate', {
+    "patchValidateInfo": {
+      "connectionToken": server.token,
+      "authenticateToken": permissions.authorizationToken,
+      "environment": server.environment,
+      "patchUri": patchUri,
+      "isLocal": true,
+      "applyOldProgram": applyOld
+    }
+  }).then((response: IPatchValidateInfoResult) => {
+    const result: IPatchInfoRequestData = {
+      error: response.error,
+      message: response.message,
+      data: { error_number: response.errorCode, data: response.patchValidates }
+    }
+
+    if (result.error) {
+      console.error(result);
+    }
+    return result.error ? Promise.reject(result):Promise.resolve(result);
+  }, (err: ResponseError<object>) => {
+    const result: IPatchInfoRequestData = {
+      error: true,
+      message: err.message,
+      data: err.data?err.data: { error_number: PATCH_ERROR_CODE.GENERIC_ERROR, data: null },
+      errorCode: err.code
+    };
+    console.error(result);
+
+    return Promise.reject(result);
+  });
 }
