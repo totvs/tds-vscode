@@ -22,7 +22,7 @@ import {
   StatusBarAlignment,
 } from "vscode";
 import { jumpToUriAtPosition } from "./vscodeUtils";
-import { ServersExplorer, initServerStatusbar, toggleWorkspaceServer } from "./serversView";
+import { ServersExplorer } from "./serversView";
 import {
   compileKeyPage,
   updatePermissionBarItem,
@@ -72,10 +72,9 @@ import { registerDebug, _debugEvent } from "./debug";
 import { openMonitorView } from "./monitor/monitorLoader";
 import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
 import { openApplyPatchView } from "./patch/apply/applyPatchLoader";
+import { initStatusBarItems, updateSaveLocationBarItem } from "./statusBar";
 
 export let languageClient: LanguageClient;
-// barra de status
-export let totvsStatusBarItem: vscode.StatusBarItem;
 // barra de permissoes
 export let permissionStatusBarItem: vscode.StatusBarItem;
 // barra de localização do arquivo de servidores
@@ -529,10 +528,13 @@ export function activate(context: ExtensionContext) {
     )
   );
 
+  //Troca rápida do local de salva do servers.json.
   context.subscriptions.push(
     commands.registerCommand(
-      "totvs-developer-studio.toggleWorkspaceServer",
-      (...args) => toggleWorkspaceServer()
+      "totvs-developer-studio.toggleSaveLocation",
+      () => {
+        Utils.toggleWorkspaceServerConfig();
+      }
     )
   );
 
@@ -552,8 +554,8 @@ export function activate(context: ExtensionContext) {
     () => tdsReplayLauncherConfig.show(context)
   );
 
-  // barra status associada a servers
-  initServerStatusbar(context);
+  //inicialliza items da barra de status.
+  initStatusBarItems(context);
 
   //inicializa item de barra para permissões para exibir infomações da chave de compilação.
   permissionStatusBarItem = vscode.window.createStatusBarItem(
@@ -573,6 +575,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     workspace.onDidChangeConfiguration(() => {
       updateSettingsBarItem();
+      updateSaveLocationBarItem();
     })
   );
 
@@ -599,8 +602,10 @@ export function activate(context: ExtensionContext) {
     )
   );
 
+  //updateStatusBarItem(undefined);
   updatePermissionBarItem(Utils.getPermissionsInfos());
   updateSettingsBarItem();
+  //updateSaveLocationBarItem(Utils.isWorkspaceServerConfig());
 
   //Capturador de logs.
   registerLog(context);

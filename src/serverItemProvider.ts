@@ -8,10 +8,6 @@ let localize = nls.loadMessageBundle();
 
 class ServerItemProvider
   implements vscode.TreeDataProvider<ServerItem | EnvSection> {
-
-  private watcherServerConfigFile: fs.FSWatcher;
-  private currentServersJson: string = "";
-
   isConnected(server: ServerItem) {
     return (
       this._connectedServerItem !== undefined &&
@@ -36,6 +32,8 @@ class ServerItemProvider
 
   private _connectedServerItem: ServerItem | undefined = undefined;
 
+  private configFilePath: string = "";
+
   constructor() {
     // check if there is an open folder
     if (vscode.workspace.workspaceFolders === undefined) {
@@ -51,8 +49,9 @@ class ServerItemProvider
       }
     });
 
-    this.addChangeConfigurationListener();
-    this.addServersConfigListener();
+    vscode.workspace.onDidChangeConfiguration(() => {
+      this.addServersConfigListener();
+    });
   }
 
   refresh(): void {
@@ -76,6 +75,32 @@ class ServerItemProvider
   }
 
   getTreeItem(element: ServerItem | EnvSection): vscode.TreeItem {
+    // if (element instanceof ServerItem) {
+    //   let iconPath = {
+    //     light: path.join(
+    //       __filename,
+    //       "..",
+    //       "..",
+    //       "resources",
+    //       "light",
+    //       this.isConnected
+    //         ? "server.connected.svg"
+    //         : "server.svg"
+    //     ),
+    //     dark: path.join(
+    //       __filename,
+    //       "..",
+    //       "..",
+    //       "resources",
+    //       "dark",
+    //       this.isConnected
+    //         ? "server.connected.svg"
+    //         : "server.svg"
+    //     ),
+    //   };
+
+    //   element.iconPath = iconPath;
+    // }
 
     return element;
   }
@@ -151,36 +176,29 @@ class ServerItemProvider
     );
   }
 
-  private addChangeConfigurationListener(): void {
-    vscode.workspace.onDidChangeConfiguration(() => {
-      let serversJson = Utils.getServerConfigFile();
-
-      if (serversJson !== this.currentServersJson) {
-        if (this.watcherServerConfigFile !== undefined) {
-          this.watcherServerConfigFile.removeAllListeners();
-        }
-
-        this.currentServersJson = serversJson;
-        this.addServersConfigListener();
-        this.localServerItems = this.setConfigWithServerConfig();
-        this.refresh();
-      }
-
-    })
-  }
-
   private addServersConfigListener(): void {
-    let serversJson = Utils.getServerConfigFile();
-    if (!fs.existsSync(serversJson)) {
-      Utils.createServerConfig();
-    }
-    //Caso o arquivo servers.json seja encontrado, registra o listener já na inicialização.
-    this.watcherServerConfigFile = fs.watch(serversJson, { encoding: "buffer" }, (eventType, filename) => {
-      if (filename && eventType === "change") {
-        this.localServerItems = this.setConfigWithServerConfig();
-        this.refresh();
+    let serversJson: string = Utils.getServerConfigFile();
+
+    if (this.configFilePath !== serversJson) {
+      if (!this.configFilePath) {
+        fs.unwatchFile(this.configFilePath);
       }
-    });
+
+      if (!fs.existsSync(serversJson)) {
+        Utils.createServerConfig();
+      }
+
+      fs.watch(serversJson, { encoding: "buffer" }, (eventType, filename) => {
+        if (filename && eventType === "change") {
+          this.localServerItems = this.setConfigWithServerConfig();
+          this.refresh();
+        }
+      });
+
+      this.configFilePath = serversJson;
+      this.localServerItems = this.setConfigWithServerConfig();
+      this.refresh();
+}
   }
 
   /**

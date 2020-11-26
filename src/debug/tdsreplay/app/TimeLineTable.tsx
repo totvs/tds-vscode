@@ -24,6 +24,7 @@ import { ICommand, CommandToDA, CommandToPage } from "../Command";
 import { DebugSessionCustomEvent } from "vscode";
 import { FormControlLabel, Button } from "@material-ui/core";
 import SourcesDialog from "./SourcesDialog"
+import ChangePageWaitDialog from "./ChangePageWaitDialog"
 
 
 enum KeyCode {
@@ -247,6 +248,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   const [dense, setDense] = React.useState(false);
   const [ignoreSourcesNotfound, setIgnoreSourcesNotfound] = React.useState(debugEvent.body.ignoreSourcesNotFound);
   const [openSourcesDialog, setOpenSourcesDialog] = React.useState(false);
+  const [openWaitPage, setOpenWaitPage] = React.useState(false);
   //Id da timeline inicial a ser selecionada. 500 para selcionar a primeira pois o replay sempre ira parar na primeira linha
   const [selectedRowId, setSelectedRowId] = React.useState(jsonBody.currentSelectedTimeLineId);
   const [sources, setSources] = React.useState([]);
@@ -265,6 +267,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   };
 
   const handleIgnoreSourceNotFount = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //setOpenWaitPage(true); //Essa flag aqui esta com problema
     let command: ICommand = {
       action: CommandToDA.SetIgnoreSourcesNotFound,
       content: { isIgnoreSourceNotFound: event.target.checked }
@@ -279,6 +282,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   };
 
   const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+    setOpenWaitPage(true);
     let command: ICommand = {
       action: CommandToDA.ChangePage,
       content: { newPage: newPage }
@@ -287,6 +291,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   };
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setOpenWaitPage(true);
     let command: ICommand = {
       action: CommandToDA.ChangeItemsPerPage,
       content: {
@@ -341,6 +346,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           selectTimeLineInTable(timeLineId);
           break;
         case CommandToPage.AddTimeLines:
+          setOpenWaitPage(false);
           setJsonBody(body => {
             if (event !== undefined) {
               event.preventDefault();
@@ -366,6 +372,9 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           });
           setOpenSourcesDialog(true);
           break;
+        case CommandToPage.ShowLoadingPageDialog:
+          setOpenWaitPage(message.data);
+          break
       }
       message.command = "";
     };
@@ -593,6 +602,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
       </Button>
       {/*<SourcesDialog selectedValue={selectedValue} open={open} onClose={handleCloseSourcesDialog} />*/}
       <SourcesDialog sources={sources} open={openSourcesDialog} onClose={handleCloseSourcesDialog} />
+      <ChangePageWaitDialog open={openWaitPage} />
     </TableContainer>
     //</Paper>
   );

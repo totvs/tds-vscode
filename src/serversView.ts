@@ -19,7 +19,6 @@ import {
   sendReconnectRequest,
   IReconnectInfo,
   ENABLE_CODE_PAGE,
-  sendServerPermissions,
 } from "./protocolMessages";
 
 let localize = nls.loadMessageBundle();
@@ -57,12 +56,6 @@ const localizeHTML = {
     "Allow multiple directories"
   ),
 };
-
-// barra de status
-let totvsStatusBarItem: vscode.StatusBarItem;
-
-// barra de localização do arquivo de servidores
-let workspaceServerStatusBarItem: vscode.StatusBarItem;
 
 export class ServersExplorer {
   constructor(context: vscode.ExtensionContext) {
@@ -399,14 +392,13 @@ function doFinishConnectProcess(
   token: string,
   environment: string
 ) {
-  //TODO: desligar ouvintes (listeners) de alteração em arquivo/configuração
   Utils.saveConnectionToken(serverItem.id, token, environment);
   Utils.saveSelectServer(
     serverItem.id,
     token,
     serverItem.name,
     environment,
-    serverItem.username,
+    serverItem.username
   );
 
   if (serverProvider !== undefined) {
@@ -415,15 +407,6 @@ function doFinishConnectProcess(
 
     serverProvider.connectedServerItem = serverItem;
   }
-
-  //TODO: religar ouvintes (listeners) de alteração em arquivo/configuração
-  sendServerPermissions(token).then((value) => {
-    Utils.saveServerPermissions(value);
-  }, (reason) => {
-    Utils.saveServerPermissions({});
-    vscode.window.showErrorMessage(reason);
-  })
-
 }
 
 export function connectServer(
@@ -447,7 +430,7 @@ export function connectServer(
     }
 
     vscode.window.setStatusBarMessage(
-      localize("tds.vscode.serversView.connecting.server", "Connecting to the server [{0}]", serverItem.name),
+      `Conectando-se ao servidor [${serverItem.name}]`,
       sendConnectRequest(serverItem, environment, connType).then(
         (result: ITokenInfo) => {
           if (result) {
@@ -480,7 +463,7 @@ export function authenticate(
       : ENABLE_CODE_PAGE.CP1252;
 
   vscode.window.setStatusBarMessage(
-    localize('tds.vscode.serversView.authenticating.user', "Authenticating user [{0}] on server [{1}]", username, serverItem.name),
+    `Autenticando usuário [${username}] no servidor [${serverItem.name}]`,
     sendAuthenticateRequest(
       serverItem,
       environment,
@@ -544,7 +527,7 @@ export function reconnectServer(
   }
 
   vscode.window.setStatusBarMessage(
-    localize('tds.webview.serversView.reconnecting', "Reconnecting to the server [{0}]", serverItem.name),
+    `Reconectando-se ao servidor [${serverItem.name}]`,
     doReconnect(serverItem, environment, connType)
   );
 }
@@ -572,64 +555,4 @@ class NodeError {
 
 function handleError(nodeError: NodeError) {
   vscode.window.showErrorMessage(nodeError.code + ": " + nodeError.message);
-}
-
-function updateStatusBarItem(
-  selectServer: ServerItem | undefined
-): void {
-  if (selectServer) {
-    totvsStatusBarItem.text = `${selectServer.name} / ${selectServer.environment}`;
-    const permissions: string[] = Utils.getServerPermissions();
-    totvsStatusBarItem.tooltip = permissions.join("\n");
-  } else {
-    totvsStatusBarItem.text = localize(
-      "tds.vscode.select_server_environment",
-      "Select server/environment"
-    );
-    totvsStatusBarItem.tooltip = ""
-  }
-
-  totvsStatusBarItem.show();
-}
-
-function updateWorkspaceServerConfig(): void {
-  const config = vscode.workspace.getConfiguration("totvsLanguageServer");
-  const icon: string = config.workspaceServerConfig ? '$(folder-active)' : '$(globe)';
-
-  workspaceServerStatusBarItem.text = icon
-  workspaceServerStatusBarItem.tooltip = localize("tds.vscode.toggles.file.servers", "Toggles file servers ({0})", Utils.getServerConfigFile());
-  workspaceServerStatusBarItem.show();
-}
-
-export function initServerStatusbar(context: vscode.ExtensionContext) {
-  //inicialliza item de barra de status de servidor para indicar local de origem de servers.json.
-  workspaceServerStatusBarItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Left,
-    101
-  );
-  workspaceServerStatusBarItem.command = "totvs-developer-studio.toggleWorkspaceServer";
-  context.subscriptions.push(workspaceServerStatusBarItem);
-  context.subscriptions.push(
-    vscode.workspace.onDidChangeConfiguration(() => {
-      updateWorkspaceServerConfig();
-    })
-  );
-
-  //inicialliza item de barra de status de servidor selecionado.
-  totvsStatusBarItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Left,
-    100
-  );
-  totvsStatusBarItem.command = "totvs-developer-studio.serverSelection";
-  context.subscriptions.push(totvsStatusBarItem);
-  context.subscriptions.push(Utils.onDidSelectedServer(updateStatusBarItem));
-
-  updateStatusBarItem(undefined);
-  updateWorkspaceServerConfig();
-}
-
-export function toggleWorkspaceServer() {
-  let config = vscode.workspace.getConfiguration("totvsLanguageServer");
-
-  config.update("workspaceServerConfig", !config.workspaceServerConfig);
 }

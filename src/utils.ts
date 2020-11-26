@@ -72,20 +72,36 @@ export default class Utils {
     );
   }
 
+ /**
+   * Troca o local da salva de servers.json
+   */
+  static toggleWorkspaceServerConfig() {
+    const config = vscode.workspace.getConfiguration("totvsLanguageServer");
+    config.update("workspaceServerConfig", !this.isWorkspaceServerConfig());
+  }
+
+  /**
+   * Pegar o arquivo servers.json da .vscode (workspace)?
+   */
+  static isWorkspaceServerConfig(): boolean {
+    let config = vscode.workspace.getConfiguration("totvsLanguageServer");
+    return config.get("workspaceServerConfig");
+  }
+
   /**
    * Retorna o path completo do servers.json
    */
   static getServerConfigFile() {
-    return path.join(this.getServerConfigPath(), "servers.json");
+    return this.isWorkspaceServerConfig()
+      ? path.join(this.getVSCodePath(), "servers.json")
+      : homedir + "/.totvsls/servers.json";
   }
 
   /**
    * Retorna o path de onde deve ficar o servers.json
    */
   static getServerConfigPath() {
-    let config = vscode.workspace.getConfiguration("totvsLanguageServer");
-
-    return config.workspaceServerConfig
+    return this.isWorkspaceServerConfig()
       ? this.getVSCodePath()
       : homedir + "/.totvsls";
   }
@@ -248,30 +264,6 @@ export default class Utils {
   }
 
   /**
-   * Salva as permissões do servidor logado por ultimo.
-   * @param permissions Permissões
-   */
-  static saveServerPermissions(value: any) {
-    const servers = Utils.getServersConfig();
-
-    servers.serverPermissions = value;
-
-    Utils.persistServersInfo(servers);
-
-  };
-
-  /**
-   * Recupera as permissões do servidor logado por ultimo.
-   * @param id Id do servidor logado
-   */
-  static getServerPermissions(): any {
-    const servers = Utils.getServersConfig();
-
-    return servers.serverPermissions || {};
-
-  };
-
-  /**
    * Salva o servidor logado por ultimo.
    * @param id Id do servidor logado
    * @param token Token que o LS gerou em cima das informacoes de login
@@ -356,20 +348,27 @@ export default class Utils {
    * Deleta o servidor logado por ultimo do servers.json
    */
   static deleteServer(id: string) {
-    const allConfigs = Utils.getServersConfig();
+    const confirmationMessage = "Tem certeza que deseja excluir este servidor?";
+    const optionYes = "Sim";
+    const optionNo = "Não";
+    vscode.window.showWarningMessage(confirmationMessage, optionYes, optionNo).then(clicked => {
+			if (clicked === optionYes) {
+        const allConfigs = Utils.getServersConfig();
 
-    if (allConfigs.configurations) {
-      const configs = allConfigs.configurations;
+        if (allConfigs.configurations) {
+          const configs = allConfigs.configurations;
 
-      configs.forEach((element) => {
-        if (element.id === id) {
-          const index = configs.indexOf(element, 0);
-          configs.splice(index, 1);
-          Utils.persistServersInfo(allConfigs);
-          return;
+          configs.forEach((element) => {
+            if (element.id === id) {
+              const index = configs.indexOf(element, 0);
+              configs.splice(index, 1);
+              Utils.persistServersInfo(allConfigs);
+              return;
+            }
+          });
         }
-      });
-    }
+      }
+		});
   }
 
   /**

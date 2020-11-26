@@ -19,16 +19,8 @@ import { languageClient } from "./extension";
 import { ResponseError } from "vscode-languageclient";
 import { ServerItem } from "./serverItemProvider";
 import { CompileResult } from "./compile/compileResult";
-import { IPatchInfoRequestData, IPatchValidateInfoResult, IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
-import { PatchResult } from "./patch/patchGenerate";
-import { PATCH_ERROR_CODE } from "./patch/apply/applyPatchData";
-
-export interface IPermissionsResult {
-  message: string;
-  serverPermissions: {
-    operation: string[];
-  }
-}
+import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
+import { _debugEvent } from "./debug";
 
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
@@ -410,6 +402,10 @@ export function sendCompilation(
   extensionsAllowed,
   hasAdvplsource
 ): Thenable<CompileResult> {
+  if (_debugEvent) {
+    vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
+    return;
+  }
   return languageClient.sendRequest("$totvsserver/compilation", {
     compilationInfo: {
       connectionToken: server.token,
@@ -425,6 +421,10 @@ export function sendCompilation(
 }
 
 export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
+  if (_debugEvent) {
+    vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
+    return;
+  }
   return languageClient
     .sendRequest("$totvsserver/rpoInfo", {
       rpoInfo: {
@@ -437,86 +437,4 @@ export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
         return response;
       }
     );
-}
-
-export function sendServerPermissions(token: string): Thenable<string[]> {
-  return languageClient
-    .sendRequest("$totvsserver/server_permissions", {
-      serverPermissionsInfo: {
-        connectionToken: token
-      },
-    })
-    .then(
-      (response: IPermissionsResult) => {
-        return response.serverPermissions.operation;
-      },
-      (error: Error) => {
-        return [error.message];
-      }
-    );
-}
-
-export function sendApplyPatchRequest(server: ServerItem, patchUris: Array<string>, permissions, validate: boolean, applyOld: boolean = false): Thenable<IPatchInfoRequestData> {
-
-  return languageClient.sendRequest('$totvsserver/patchApply', {
-    "patchApplyInfo": {
-      "connectionToken": server.token,
-      "authenticateToken": permissions.authorizationToken,
-      "environment": server.environment,
-      "patchUris": patchUris,
-      "isLocal": true,
-      "validatePatch": validate,
-      "applyOldProgram": applyOld
-    }
-  }).then((response: IPatchInfoRequestData) => {
-    if (response.error) {
-      return Promise.reject(response);
-    }
-
-    return Promise.resolve(response);
-  }, (err: ResponseError<object>) => {
-    const error: IPatchInfoRequestData = {
-      error: true,
-      message: err.message,
-      data: err.data,
-      errorCode: err.code
-    };
-
-    return Promise.reject(error);
-  });
-}
-
-export function sendValidPatchRequest(server: ServerItem, patchUri: string, permissions, applyOld: boolean = false): Thenable<IPatchInfoRequestData> {
-
-  return languageClient.sendRequest('$totvsserver/patchValidate', {
-    "patchValidateInfo": {
-      "connectionToken": server.token,
-      "authenticateToken": permissions.authorizationToken,
-      "environment": server.environment,
-      "patchUri": patchUri,
-      "isLocal": true,
-      "applyOldProgram": applyOld
-    }
-  }).then((response: IPatchValidateInfoResult) => {
-    const result: IPatchInfoRequestData = {
-      error: response.error,
-      message: response.message,
-      data: { error_number: response.errorCode, data: response.patchValidates }
-    }
-
-    if (result.error) {
-      console.error(result);
-    }
-    return result.error ? Promise.reject(result):Promise.resolve(result);
-  }, (err: ResponseError<object>) => {
-    const error: IPatchInfoRequestData = {
-      error: true,
-      message: err.message,
-      data: err.data?err.data: { error_number: PATCH_ERROR_CODE.GENERIC_ERROR, data: null },
-      errorCode: err.code
-    };
-    console.error(error);
-
-    return Promise.reject(error);
-  });
 }
