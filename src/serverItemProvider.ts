@@ -32,6 +32,8 @@ class ServerItemProvider
 
   private _connectedServerItem: ServerItem | undefined = undefined;
 
+  private configFilePath: string = "";
+
   constructor() {
     // check if there is an open folder
     if (vscode.workspace.workspaceFolders === undefined) {
@@ -47,7 +49,9 @@ class ServerItemProvider
       }
     });
 
-    this.addServersConfigListener();
+    vscode.workspace.onDidChangeConfiguration(() => {
+      this.addServersConfigListener();
+    });
   }
 
   refresh(): void {
@@ -173,17 +177,28 @@ class ServerItemProvider
   }
 
   private addServersConfigListener(): void {
-    let serversJson = Utils.getServerConfigFile();
-    if (!fs.existsSync(serversJson)) {
-      Utils.createServerConfig();
-    }
-    //Caso o arquivo servers.json seja encontrado, registra o listener já na inicialização.
-    fs.watch(serversJson, { encoding: "buffer" }, (eventType, filename) => {
-      if (filename && eventType === "change") {
-        this.localServerItems = this.setConfigWithServerConfig();
-        this.refresh();
+    let serversJson: string = Utils.getServerConfigFile();
+
+    if (this.configFilePath !== serversJson) {
+      if (!this.configFilePath) {
+        fs.unwatchFile(this.configFilePath);
       }
-    });
+
+      if (!fs.existsSync(serversJson)) {
+        Utils.createServerConfig();
+      }
+
+      fs.watch(serversJson, { encoding: "buffer" }, (eventType, filename) => {
+        if (filename && eventType === "change") {
+          this.localServerItems = this.setConfigWithServerConfig();
+          this.refresh();
+        }
+      });
+
+      this.configFilePath = serversJson;
+      this.localServerItems = this.setConfigWithServerConfig();
+      this.refresh();
+}
   }
 
   /**

@@ -31,7 +31,7 @@ Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
 
 ![Edit file server](./gifs/serversEditFile.gif)
 
-## Local de gravação
+## Local de gravação de servers.json
 
 Por padrão, o arquivo com os registros de servidores é armazenado no arquivo `servers.json`, na área do usuário conforme o sistema operacional.
 
@@ -45,7 +45,7 @@ Caso deseje ter o registro de servidores por área de trabalho, ative a opção 
 
 Ou use a troca rápida disponível na barra de _status_.
 
-![Workspace Server Config](./gifs/toggleWorkspaceConfig.gif)
+![Workspace Server Config](./gifs/toggleSaveLocation.gif)
 
 > A troca rápida aplica-se somente a área de trabalho corrente e se sobrepoem a configuração padrão ou por usuário. Detalhes em [User and Workspace Settings](https://code.visualstudio.com/docs/getstarted/settings).
 

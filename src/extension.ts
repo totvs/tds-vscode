@@ -22,7 +22,7 @@ import {
   StatusBarAlignment,
 } from "vscode";
 import { jumpToUriAtPosition } from "./vscodeUtils";
-import { ServersExplorer, updateStatusBarItem } from "./serversView";
+import { ServersExplorer } from "./serversView";
 import {
   compileKeyPage,
   updatePermissionBarItem,
@@ -72,10 +72,9 @@ import { registerAdvplOutline, register4glOutline } from "./outline";
 import { registerDebug, _debugEvent } from "./debug";
 import { openMonitorView } from "./monitor/monitorLoader";
 import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
+import { initStatusBarItems, updateSaveLocationBarItem } from "./statusBar";
 
 export let languageClient: LanguageClient;
-// barra de status
-export let totvsStatusBarItem: vscode.StatusBarItem;
 // barra de permissoes
 export let permissionStatusBarItem: vscode.StatusBarItem;
 
@@ -509,11 +508,22 @@ export function activate(context: ExtensionContext) {
 
   //Mostra a pagina de Welcome.
   showWelcomePage(context, false);
+
   //Abre uma caixa de informações para login no servidor protheus selecionado.
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.serverSelection",
       (...args) => serverSelection(args, context)
+    )
+  );
+
+  //Troca rápida do local de salva do servers.json.
+  context.subscriptions.push(
+    commands.registerCommand(
+      "totvs-developer-studio.toggleSaveLocation",
+      () => {
+        Utils.toggleWorkspaceServerConfig();
+      }
     )
   );
 
@@ -533,14 +543,8 @@ export function activate(context: ExtensionContext) {
     () => tdsReplayLauncherConfig.show(context)
   );
 
-  //inicialliza item de barra de status de servidor conectado ou não.
-  totvsStatusBarItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Left,
-    100
-  );
-  totvsStatusBarItem.command = "totvs-developer-studio.serverSelection";
-  context.subscriptions.push(totvsStatusBarItem);
-  context.subscriptions.push(Utils.onDidSelectedServer(updateStatusBarItem));
+  //inicialliza items da barra de status.
+  initStatusBarItems(context);
 
   //inicializa item de barra para permissões para exibir infomações da chave de compilação.
   permissionStatusBarItem = vscode.window.createStatusBarItem(
@@ -560,6 +564,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     workspace.onDidChangeConfiguration(() => {
       updateSettingsBarItem();
+      updateSaveLocationBarItem();
     })
   );
 
@@ -586,9 +591,10 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-  updateStatusBarItem(undefined);
+  //updateStatusBarItem(undefined);
   updatePermissionBarItem(Utils.getPermissionsInfos());
   updateSettingsBarItem();
+  //updateSaveLocationBarItem(Utils.isWorkspaceServerConfig());
 
   //Capturador de logs.
   registerLog(context);
