@@ -92,9 +92,7 @@ export default class Utils {
    * Retorna o path completo do servers.json
    */
   static getServerConfigFile() {
-    return this.isWorkspaceServerConfig()
-      ? path.join(this.getVSCodePath(), "servers.json")
-      : homedir + "/.totvsls/servers.json";
+    return path.join(this.getServerConfigPath(), "servers.json")
   }
 
   /**
@@ -103,7 +101,7 @@ export default class Utils {
   static getServerConfigPath() {
     return this.isWorkspaceServerConfig()
       ? this.getVSCodePath()
-      : homedir + "/.totvsls";
+      : path.join(homedir, "/.totvsls");
   }
 
   /**
