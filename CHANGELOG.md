@@ -1,5 +1,73 @@
 # Changelog
 
+# Versão [1.2.1]
+
+## Não exibe conteúdo de array no Watch. [Issue 549](https://github.com/totvs/tds-vscode/issues/549)
+
+### Problema:
+
+- O conteúdo de arrays não estavam sendo exibidos/atualizados nas variáveis e watch, durante a depuração.
+
+### Solução:
+
+- Foi realizado uma correção no DA para considerar os arrays e 'parent' de objetos.
+
+## VSCode Debug error: User not authenticated. Please connect/reconnect to a server. [Issue 423](https://github.com/totvs/tds-vscode/issues/423)
+
+### Problema:
+
+- Ocorria erro indicando que o usuário não estava conectado ao iniciar a depuração. Isso ocorria apenas com usuários cujo nome continham acentuações.
+
+### Solução:
+
+- Foi revista e corrigida a carga das chaves necessárias para ler o token de conexão do LS pelo DA.
+
+## Confirmar exclusão de servidor [Issue 578](https://github.com/totvs/tds-vscode/issues/578)
+
+### Melhoria:
+
+- Adicionada uma confirmção para ação de exclusão de servidores.
+
+## Aplicação de Patch (Apply Patch) não funciona [Issue 573](https://github.com/totvs/tds-vscode/issues/573)
+
+### Problema:
+
+- O botão 'Apply Patch' não está funcionando quando não há uma chave de compilação válida aplicada.
+
+### Solução:
+
+- Adicionada validação de existência da chave antes da operação de 'Apply Patch'.
+
+## Erro intermitente na conexão com o appserver advpl [Issue 518](https://github.com/totvs/tds-vscode/issues/518)
+
+### Problema:
+
+- Ao tentar compilar um fonte enquanto existe uma depuração ativa, ocorre um erro fatal no LS.
+
+### Solução:
+
+- Adicionamos proteções nas ações que necessitam de acesso exclusivo ao RPO que impedem sua execução se a depuração estiver ativa.
+
+## Conexão com Monitor dando erro de Privilégio [Issue 571](https://github.com/totvs/tds-vscode/issues/571)
+
+### Problema:
+
+- Ocorre erro na verificação de privilégios para obter os usuários no Monitor.
+
+### Solução:
+
+- A validação foi temporariamente desativada para questões do Monitor.
+
+## Aborting end build (rollback changes) [Issue 564](https://github.com/totvs/tds-vscode/issues/564)
+
+### Problema:
+
+- Ao compilar workspace ou pasta com vários arquivos e ocorrer erro em um dos arquivos compilados, todos os arquivos não são compilados (rollback).
+
+### Solução:
+
+- Adicionada a opção "Comitar a compilação com erros/alertas" que permite habilitar o 'commit' mesmo com erros/alertas em arquivos que estão sendo compilados.
+
 # Versão [1.2.0]
 
 ## Genéricas

@@ -11,6 +11,21 @@
 - **NUNCA** faça depuração em ambiente de produção
 - Não use _appServers_ compartilhado com terceiros, mesmo que ambientes diistintos
 - Prefira sempre um ambiente local
+- **Clientes TCloud** : Os ambientes que estão no _TCloud_ em produção são *bloqueados* para depuração.
+Promova o _RPO_ para ``DEV`` e use esse ambiente, e se necessário, promova-o de volta para produção.
+Para detalhes, entre em contato com o suporte do _TCloud_.
+
+> *Por quê não depurar em "produção"?*
+
+> O processo de depuração, é composto de várias partes que se comunicam entre si e muitas vezes, aguardando ações dos usuários (continua, próxima passo, ...).
+
+> Quando estamos em uma depuração, pode ocorrer do VS-Code solicitar uma informação ao _appServer_ e este "congela" todas as _threads_ (conexões/usuário) para atender essa solicitação. Essa "congelada" pode levar até um ou mesmo dois segundos e isso acontece toda vez que o usuário que esta depurando, precisa tomar uma ação (continua, próximo passo...) e isso pode ser sentido por todos os usuários. Além disso o próprio usuário que esta depurando, vai receber informações de cada um dos usuários conectados, gerando uma troca constante de programas fontes ou informações irrelevantes naquele momento.
+
+> O _appServer_ também envia para o VS-Code algumas informações, tais como, "olha estou nesse fonte e nessa linha" e pergunta "O quê quer que eu faça?". Nesse ponto, pode ser necessário o usuário que está depurando, responda com acionamento de uma ação, como por exemplo, "vá para a próxima instrução" ou "execute esta função até terminar". Enquanto o _appServer_ aguarda a resposta do VS-Code, TODAS as _threads_  ficam congeladas. E você foi no banheiro naquele momento. Dentro de alguns minutos terá um enxurrada de reclamações  que o servidor travou.
+
+> Isso pode acontecer se tiver um, dez, cem, mil, usuários. Imagina o problema. Cresce exponencialmente ao número de usuários.>  
+
+> Espero ter esclarecido porquê não deve usar ambiente "produção" em processos de depuração.
 
 ## Configuração de executores
 

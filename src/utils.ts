@@ -340,20 +340,27 @@ export default class Utils {
    * Deleta o servidor logado por ultimo do servers.json
    */
   static deleteServer(id: string) {
-    const allConfigs = Utils.getServersConfig();
+    const confirmationMessage = "Tem certeza que deseja excluir este servidor?";
+    const optionYes = "Sim";
+    const optionNo = "Não";
+    vscode.window.showWarningMessage(confirmationMessage, optionYes, optionNo).then(clicked => {
+			if (clicked === optionYes) {
+        const allConfigs = Utils.getServersConfig();
 
-    if (allConfigs.configurations) {
-      const configs = allConfigs.configurations;
+        if (allConfigs.configurations) {
+          const configs = allConfigs.configurations;
 
-      configs.forEach((element) => {
-        if (element.id === id) {
-          const index = configs.indexOf(element, 0);
-          configs.splice(index, 1);
-          Utils.persistServersInfo(allConfigs);
-          return;
+          configs.forEach((element) => {
+            if (element.id === id) {
+              const index = configs.indexOf(element, 0);
+              configs.splice(index, 1);
+              Utils.persistServersInfo(allConfigs);
+              return;
+            }
+          });
         }
-      });
-    }
+      }
+		});
   }
 
   /**

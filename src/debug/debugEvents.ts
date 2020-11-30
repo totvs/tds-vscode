@@ -99,6 +99,8 @@ export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
 			processSelectTimeLineEvent(event, debugConsole);
 		} else if (event.event === 'TDA/showProgress') {
 			processShowProgressEvent(event, debugConsole);
+		} else if(event.event === 'TDA/showLoadingPageDialog') {
+			processShowLoadingDialogEvent(event, debugConsole);
 		}
 	}
 }
@@ -233,11 +235,11 @@ function processShowProgressEvent(event: DebugSessionCustomEvent, debugConsole: 
 					 	while( !isFinished && messageQueue.length > 0) {
 							item = messageQueue.pop();
 							languageClient.outputChannel.appendLine(item.message);
-							if(item.percent > 0) {
+							//if(item.percent > 0) {
 								setTimeout(() => {
 									progress.report({message: item.message, increment: item.increment});
 								}, 100);
-							}
+							//}
 						}
 					}
 
@@ -256,6 +258,12 @@ function processShowProgressEvent(event: DebugSessionCustomEvent, debugConsole: 
 		};
 		withProgress();
 	}
+}
+
+function processShowLoadingDialogEvent(event: DebugSessionCustomEvent, debugConsole: DebugConsole) {
+	if(createTimeLineWebView !== null) {
+		createTimeLineWebView.showLoadingPageDialog(event.body.show);
+	 }
 }
 
 function delay(ms: number)

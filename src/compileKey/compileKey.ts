@@ -131,12 +131,12 @@ export function compileKeyPage(context: vscode.ExtensionContext) {
 function setCurrentKey(currentPanel, path, id, issued, expiry, authorizationToken, canOverride: boolean) {
 	currentPanel.webview.postMessage({
 		command: "setCurrentKey",
-		'path': path,
-		'id': id,
-		'issued': issued,
-		'expiry': expiry,
-		'authorizationToken': authorizationToken,
-		'canOverride': canOverride
+		path: path,
+		id: id,
+		issued: issued,
+		expiry: expiry,
+		authorizationToken: authorizationToken,
+		canOverride: canOverride
 	});
 }
 
