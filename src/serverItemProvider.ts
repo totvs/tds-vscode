@@ -50,8 +50,10 @@ class ServerItemProvider
     });
 
     vscode.workspace.onDidChangeConfiguration(() => {
-      this.addServersConfigListener();
+      this.checkServersConfigListener(true);
     });
+
+    this.checkServersConfigListener(false);
   }
 
   refresh(): void {
@@ -176,11 +178,11 @@ class ServerItemProvider
     );
   }
 
-  private addServersConfigListener(): void {
+  private checkServersConfigListener(refresh: boolean): void {
     let serversJson: string = Utils.getServerConfigFile();
 
     if (this.configFilePath !== serversJson) {
-      if (!this.configFilePath) {
+      if (this.configFilePath) {
         fs.unwatchFile(this.configFilePath);
       }
 
@@ -196,9 +198,12 @@ class ServerItemProvider
       });
 
       this.configFilePath = serversJson;
-      this.localServerItems = this.setConfigWithServerConfig();
-      this.refresh();
-}
+
+      if (refresh) {
+        this.localServerItems = this.setConfigWithServerConfig();
+        this.refresh();
+      }
+    }
   }
 
   /**
