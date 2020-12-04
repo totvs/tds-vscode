@@ -128,16 +128,11 @@ Acione o atalho `CTRL + F5` para iniciar a execução e informe o nome da funç�
 
 ## Depuração
 
-| A depuração de serviços (_jobs_, _webservice_, _rest_, _rpc_ e assemelhados), possue procedimentos próprios. Leia [TDS: Depuração de serviços](docs/debugger-jobs.md)
-
 Acione o atalho `F5` para iniciar a depuração e informe o nome da função/programa a ser executada, se solicitado.
 
 | Veja [Debuggimg Actions](https://code.visualstudio.com/docs/editor/debugging#_debug-actions) e [Variáveis de substituição](#variable).
 
 ![Start Debug](./gifs/StartDebug.gif)
-
-
-### Usando Console de Depuração
 
 É possível verificar valores de variáveis, conteúdo de tabelas e executar métodos/funções durante o processo de depuração.
 
@@ -145,6 +140,8 @@ Acione o atalho `F5` para iniciar a depuração e informe o nome da função/pro
 - Quando a depuração parar no ponto indicado, abra a visão `Debug Console`
 - Digite uma operação ou variável AdvPL/4GL disponível em seu ambiente de depuração
 - Para ver conteúdo de uma tabela, digite `table:nome_da_tabela`, por exemplo `table:SM0`
+
+### Usando Console de Depuração
 
 | Veja (Debug Console REPL)[https://code.visualstudio.com/docs/editor/debugging#_debug-console-repl]
 
@@ -165,3 +162,46 @@ Também é possível alterar essa opção durante o processo de depuração acio
 ![Debug Table Sync](./gifs/TableSync-CommandToggleChangingProperty.gif)
 
 ![Debug Table Sync](./gifs/TableSync-DebugCommands.gif)
+
+## Depuração de serviços (_jobs_)
+
+| A principal característica de um serviço, é que a sua execução não esta diretamente relacionada a interface com o usuário (_SmartClient_) e normalmente, é executado em segundo plano pelo _appServer_.
+
+### Preparação para serviços REST
+
+1. No arquivo de configuração do _appServer_ (``ini``), comente a sessão ``[OnStart]``.
+1. Ainda no arquivo de configuração do _appServer_, na sessão ``[General]`` e ajuste a chave ``BUILDKILLUSERS=1``.
+1. Reinicie a execução do _appServer_.
+1. Abra o arquivo ``.vscode\launch.json``.
+1. Localize a definição de executor que será utilizada e adicione a chave ``"enableMultiThread": true``.
+1. Crie um arquivo-fonte e adicione o código abaixo, adequando-o se necessário.
+
+```
+user function startRest()
+  //O nome do job REST e ambiente de execução dele, podem ser obtidos no arquivo
+  //de configuração do _appServer_.
+  //Detalhes da função em https://tdn.totvs.com/display/tec/StartJob
+  startjob("HTTP_START", "p12", .f.) //lwait, sempre dever ser false
+  sleep(15000) //aguarda o serviço ser inicializado. Ajuste o tempo se necessário.
+  alert(">> Serviço REST inicializado. <<")
+return
+```
+
+### Preparação para outros serviços
+
+1. No arquivo de configuração do _appServer_ (``ini``), na sessão ``[OnStart]`` deixe ativo somente os serviços necessários na depuração e na chave `RefreshRate`, informe o intervalo de `30` segundos.
+1. Ainda no arquivo de configuração do _appServer_, na sessão ``[General]``, ajuste a chave ``BUILDKILLUSERS=1``.
+1. Reinicie a execução do _appServer_.
+1. Abra o arquivo ``.vscode\launch.json``.
+1. Localize a definição de executor que será utilizada e adicione a chave ``"enableMultiThread": true``;
+
+### Execução da Depuração
+
+1. Encerre todos os serviços e conexões.
+   _**Dica**: Compilar qualquer fonte, encerra todos os serviços e conexões existentes._
+1. Coloque um ponto de parada que será executado quando o serviço for requisitado.
+1. Iniciar a depuração executando qualquer função do _RPO_ para que mantenha uma conxão do depurador com o _appServer_.
+   Se serviço _REST_, execute a função ``u_startRest`` e aguarde a mensagem de serviço inicializado.
+1. Acione o serviço por fora do **VS-CODE**, por exemplo executando o `SmartClient`, uma requisição (http, rest, etc)
+1. Quando a depuração parar no ponto de parade, prossiga com a depuração normalmente.
+
