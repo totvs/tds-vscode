@@ -27,6 +27,9 @@
 			"preLaunchTask": {
 				"type": "npm",
 				"script": "compile"
+			},
+			"env": {
+				"TOTVS_LS_LOG_FILE" : "e://TOTVS_LS_LOG_FILE.log"
 			}
 		},
 		{
