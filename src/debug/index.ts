@@ -3,7 +3,7 @@ import { TotvsConfigurationProvider } from "./TotvsConfigurationProvider";
 import { TotvsConfigurationWebProvider } from "./TotvsConfigurationWebProvider";
 import { TotvsDebugAdapterDescriptorFactory } from "./TotvsDebugAdapterDescriptorFactory";
 import { TotvsConfigurationTdsReplayProvider } from "./TotvsConfigurationTdsReplayProvider";
-import { processDebugCustomEvent } from "./debugEvents";
+import { processDebugCustomEvent, procesStartDebugSessionEvent } from "./debugEvents";
 
 export let _debugEvent = undefined;
 
@@ -48,6 +48,10 @@ export const registerDebug = (context: vscode.ExtensionContext) => {
 
 
   /** Configurações gerais de debug  */
+
+  vscode.debug.onDidStartDebugSession((event: any) => {
+    procesStartDebugSessionEvent(event);
+  });
 
   context.subscriptions.push(
     vscode.debug.onDidReceiveDebugSessionCustomEvent(
