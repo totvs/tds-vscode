@@ -92,9 +92,7 @@ export default class Utils {
    * Retorna o path completo do servers.json
    */
   static getServerConfigFile() {
-    return this.isWorkspaceServerConfig()
-      ? path.join(this.getVSCodePath(), "servers.json")
-      : homedir + "/.totvsls/servers.json";
+    return path.join(this.getServerConfigPath(), "servers.json")
   }
 
   /**
@@ -103,20 +101,18 @@ export default class Utils {
   static getServerConfigPath() {
     return this.isWorkspaceServerConfig()
       ? this.getVSCodePath()
-      : homedir + "/.totvsls";
+      : path.join(homedir, "/.totvsls");
   }
 
   /**
    * Retorna o path completo do launch.json
    */
   static getLaunchConfigFile() {
-    let rootPath: string = vscode.workspace.rootPath || process.cwd();
-
-    return path.join(rootPath, ".vscode", "launch.json");
+    return path.join(this.getVSCodePath(), "launch.json");
   }
 
   /**
-   * Retorna o path da pastar .vscode dentro do workspace
+   * Retorna o path da pasta .vscode dentro do workspace
    */
   static getVSCodePath() {
     let rootPath: string = vscode.workspace.rootPath || process.cwd();
