@@ -19,3 +19,4 @@ export interface IRpoInfoData {
   environment: string;
   rpoPatchs: IRpoPatch[];
 }
+
