@@ -4,7 +4,7 @@ import { ApplyPatchPanelAction, IApplyPatchPanelAction } from "./actions";
 import * as nls from "vscode-nls";
 import Utils from "../../utils";
 import { ServerItem } from "../../serverItemProvider";
-import { IApplyPatchData, IPatchFileInfo, PATCH_ERROR_CODE } from "./applyPatchData";
+import { IApplyPatchData, IApplyScope, IPatchFileInfo, PATCH_ERROR_CODE } from "./applyPatchData";
 import JSZip = require("jszip");
 import { IPatchInfoRequestData } from "../../rpoInfo/rpoPath";
 import { sendApplyPatchRequest, sendValidPatchRequest } from "../../protocolMessages";
@@ -49,7 +49,7 @@ export class ApplyPatchLoader {
     if (this._currentServer !== value) {
       this._currentServer = value;
       this._applyPatchData.patchFiles.forEach((element: IPatchFileInfo) => {
-        element.applyOld = false;
+        element.applyScope = "all";
         element.status = "loaded";
       });
       this.updatePage();
@@ -170,15 +170,13 @@ export class ApplyPatchLoader {
 
   private async handleMessage(command: IApplyPatchPanelAction) {
     switch (command.action) {
-      case ApplyPatchPanelAction.ApplyOldSource:
+      case ApplyPatchPanelAction.UpdateData:
         {
-          const processAll: any = command.content.processAll;
           const file: any = command.content.file;
-          const value: boolean = command.content.value;
+          const id: string = command.content.id;
+          const value: IApplyScope = command.content.value;
 
-          if (processAll) {
-            this.doApplyOldSource(this._applyPatchData.patchFiles, value)
-          } else {
+          if (id == "apply_resource") {
             this.doApplyOldSource(this.findFile(file), value);
           }
           break;
@@ -280,12 +278,12 @@ export class ApplyPatchLoader {
     });
   }
 
-  private doApplyOldSource(patchFiles: IPatchFileInfo[], value: boolean) {
+  private doApplyOldSource(patchFiles: IPatchFileInfo[], value: IApplyScope) {
     patchFiles.forEach((patchFile) => {
       if (patchFile) {
         if (patchFile.data.error_number == PATCH_ERROR_CODE.OLD_RESOURCES) {
-          patchFile.applyOld = value;
-          patchFile.status = value ? "warning" : "loaded";
+          patchFile.applyScope = value;
+          patchFile.status = (value !== "none") ? "warning" : "loaded";
         }
       }
     })
@@ -302,7 +300,7 @@ export class ApplyPatchLoader {
           element.data = { error_number: -1, data: "" }
           self.updatePage();
 
-          sendApplyPatchRequest(this.currentServer, [element.fullpath], Utils.getPermissionsInfos(), element.applyOld)
+          sendApplyPatchRequest(this.currentServer, [element.fullpath], Utils.getPermissionsInfos(), true, element.applyScope)
             .then((result: IPatchInfoRequestData) => {
               element.status = "applyed";
             }, (reason: any) => {
@@ -351,14 +349,14 @@ export class ApplyPatchLoader {
             element.data = { error_number: -1, data: "" }
             self.updatePage();
 
-            await sendValidPatchRequest(this.currentServer, element.fullpath, Utils.getPermissionsInfos(), element.applyOld)
+            await sendValidPatchRequest(this.currentServer, element.fullpath, Utils.getPermissionsInfos(), element.applyScope)
               .then((result: IPatchInfoRequestData) => {
                 element.status = "valid";
               }, (reason: any) => {
                 element.message = reason.message || "";
                 element.data = reason.data;
                 if (reason.data.error_number == PATCH_ERROR_CODE.OLD_RESOURCES) {
-                  element.status = element.applyOld ? "warning" : "error";
+                  element.status = element.applyScope == "none" ? "error" : "warning";
                 } else {
                   element.status = "error";
                 }
@@ -393,7 +391,7 @@ export class ApplyPatchLoader {
       size: fileSize,
       zipFile: zipname,
       message: "",
-      applyOld: false,
+      applyScope: "none",
       data: { error_number: -1, data: undefined }
     });
 
@@ -522,105 +520,10 @@ function getTranslations() {
     VALIDATE_PATCH: localize("VALIDATE_PATCH", "Validate patch"),
     //
     ENVIRONMENT: localize("ENVIRONMENT", "Environment"),
-    CANCEL: localize("CANCEL", "Cancel"),
-    COMMENT: localize("COMMENT", "Comment"),
-    COMPUTER_NAME: localize("COMPUTER_NAME", "Computer Name"),
-    CONNECTION: localize("CONNECTION", "Connection"),
-    "CONNECTION_TYPE ": localize("CONNECTION_TYPE ", "Connection Type"),
-    CTREE_ID: localize("CTREE_ID", "CTree ID"),
-    DISCONNECT_ALL_USERS: localize(
-      "DISCONNECT_ALL_USERS",
-      "Disconnect all users"
-    ),
-    DISCONNECT_SELECTD_USERS: localize(
-      "DISCONNECT_SELECTD_USERS",
-      "Disconnect selectd users"
-    ),
-    DRAG_HEADERS: localize("DRAG_HEADERS", "Drag headers ..."),
-    ELAPSED_TIME: localize("ELAPSED_TIME", "Elapsed time"),
-    GROUPED_BY: localize("GROUPED_BY", "Grouped by:"),
-    GROUPING_ON_OFF: localize("GROUPING_ON_OFF", "Grouping on/off"),
-    TREE_ON_OFF: localize("TREE_ON_OFF", "Tree server on/off"),
-    INACTIVITY_TIME: localize("INACTIVITY_TIME", "Idle time"),
-    INFO_RELEASE_CONNECTION: localize(
-      "INFO_RELEASE_CONNECTION",
-      "When confirming the release of new connections, users can connect to that server again."
-    ),
-    "INSTRUCTIONS_SEG ": localize("INSTRUCTIONS_SEG ", "Instructions/sec"),
-    LOCK_SERVER: localize("LOCK_SERVER", "Lock server"),
-    LONG: localize("LONG", "(long)"),
-    MANUAL: localize("MANUAL", "(manual)"),
-    MEMORY_USE: localize("MEMORY_USE", "Memory in Use"),
-    MESSAGE_TEXT: localize("MESSAGE_TEXT", "Message Text"),
-    NORMAL: localize("NORMAL", "(normal)"),
-    OK: localize("OK", "OK"),
-    PROGRAM: localize("PROGRAM", "Program"),
-    REFRESH_DATA: localize("REFRESH_DATA", "Refresh data"),
-    REMARKS: localize("REMARKS", "Remarks"),
-    RESET_CONFIGURATIONS: localize(
-      "RESET_CONFIGURATIONS",
-      "Reset configurations"
-    ),
-    SEND: localize("SEND", "Submit"),
-    SEND_MESSAGE_ALL_USERS: localize(
-      "SEND_MESSAGE_ALL_USERS",
-      "Send message to all users"
-    ),
-    SEND_MESSAGE_SELECTED_USERS: localize(
-      "SEND_MESSAGE_SELECTED_USERS",
-      "Send message to selected users"
-    ),
-    SERVER: localize("SERVER", "Server"),
-    SHORT: localize("SHORT", "(short)"),
-    SHOW_HIDE_COLUMNS: localize("SHOW_HIDE_COLUMNS", "Show/hide columns"),
-    SID: localize("SID", "SID"),
-    STOP_SERVER: localize("STOP_SERVER", "Stop server"),
-    THREAD: localize("THREAD", "Thread ID"),
-    "TOTAL_INSTRUCTIONS ": localize("TOTAL_INSTRUCTIONS ", "Instructions"),
-    UNLOCK_SERVER: localize("UNLOCK_SERVER", "Unlock server"),
-    UPDATE_SPEED: localize("UPDATE_SPEED", "Update speed {0}"),
-    USER: localize("USER", "User"),
-    USER_NAME: localize("USER_NAME", "User Name"),
-    WARNING_BLOCKING_CONNECTIONS: localize(
-      "WARNING_BLOCKING_CONNECTIONS",
-      "When confirming the blocking of new connections, no user can connect to that server."
-    ),
-    WARN_ALL_CONNECTIONS_CLOSE_1: localize(
-      "WARN_ALL_CONNECTIONS_CLOSE_1",
-      "When confirming the server stop, all connections (including this) will be closed, as well as other processes."
-    ),
-    WARN_ALL_CONNECTIONS_CLOSE_2: localize(
-      "ERROR_ALL_CONNECTIONS_CLOSE_2",
-      "Restarting will only be possible by physically accessing the server."
-    ),
-    SECONDS: localize("SECONDS", "{0} seconds"),
-    WARN_CONNECTION_TERMINATED: localize(
-      "WARN_CONNECTION_TERMINATED",
-      "The users listed below will have their connections terminated."
-    ),
-    TERMINATE_CONNECTIONS_IMMEDIATELY: localize(
-      "TERMINATE_CONNECTIONS_IMMEDIATELY",
-      "Terminate connections immediately."
-    ),
-    DLG_TITLE_SEND_MESSAGE: localize(
-      "DLG_TITLE_SEND_MESSAGE",
-      "Message sending"
-    ),
-    DLG_TITLE_CLOSE_CONNECTIONS: localize(
-      "DLG_TITLE_CLOSE_CONNECTIONS",
-      "Closes user connections"
-    ),
-    DLG_TITLE_SPEED: localize("DLG_TITLE_SPEED", "Interval between updates"),
-    DLG_TITLE_STOP_SERVER: localize(
-      "DLG_TITLE_STOP_SERVER",
-      "Confirm the server stop?"
-    ),
-    DLG_TITLE_LOCK_SERVER: localize(
-      "DLG_TITLE_LOCK_SERVER",
-      "Block new connections?"
-    ),
-    DLG_TITLE_REMARKS: localize("DLG_TITLE_REMARKS", "Remarks"),
-    DLG_TITLE_UNLOCK: localize("DLG_TITLE_UNLOCK", "Unlock new connections?"),
+    RESOURCE: localize("RESOURCE", "Resource"),
+    RPO: localize("RPO", "RPO"),
+    PACK: localize("PACK", "Patch"),
+    DLG_TITLE_RESOURCES: localize("DLG_TITLE_RESOURCES", "Resources"),
     ENVIRONEMNT: localize("ENVIRONEMNT", "Environemnt"),
     SHOW_COLUMNS: localize("SHOW_COLUMNS", "Show Columns"),
   };

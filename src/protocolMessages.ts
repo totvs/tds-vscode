@@ -21,7 +21,7 @@ import { ServerItem } from "./serverItemProvider";
 import { CompileResult } from "./compile/compileResult";
 import { _debugEvent } from "./debug";
 import { IPatchInfoRequestData, IPatchValidateInfoResult, IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
-import { PATCH_ERROR_CODE } from "./patch/apply/applyPatchData";
+import { IApplyScope, PATCH_ERROR_CODE } from "./patch/apply/applyPatchData";
 
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
@@ -440,7 +440,7 @@ export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
     );
 }
 
-export function sendApplyPatchRequest(server: ServerItem, patchUris: Array<string>, permissions, validate: boolean, applyOld: boolean = false): Thenable<IPatchInfoRequestData> {
+export function sendApplyPatchRequest(server: ServerItem, patchUris: Array<string>, permissions, validate: boolean, applyScope: IApplyScope): Thenable<IPatchInfoRequestData> {
 
   return languageClient.sendRequest('$totvsserver/patchApply', {
     "patchApplyInfo": {
@@ -450,7 +450,7 @@ export function sendApplyPatchRequest(server: ServerItem, patchUris: Array<strin
       "patchUris": patchUris,
       "isLocal": true,
       "validatePatch": validate,
-      "applyOldProgram": applyOld
+      "applyOldProgram": applyScope == "all"
     }
   }).then((response: IPatchInfoRequestData) => {
     if (response.error) {
@@ -470,7 +470,7 @@ export function sendApplyPatchRequest(server: ServerItem, patchUris: Array<strin
   });
 }
 
-export function sendValidPatchRequest(server: ServerItem, patchUri: string, permissions, applyOld: boolean = false): Thenable<IPatchInfoRequestData> {
+export function sendValidPatchRequest(server: ServerItem, patchUri: string, permissions, applyScope: string): Thenable<IPatchInfoRequestData> {
 
   return languageClient.sendRequest('$totvsserver/patchValidate', {
     "patchValidateInfo": {
@@ -479,7 +479,7 @@ export function sendValidPatchRequest(server: ServerItem, patchUri: string, perm
       "environment": server.environment,
       "patchUri": patchUri,
       "isLocal": true,
-      "applyOldProgram": applyOld
+      "applyOldProgram": applyScope == "all"
     }
   }).then((response: IPatchValidateInfoResult) => {
     const result: IPatchInfoRequestData = {

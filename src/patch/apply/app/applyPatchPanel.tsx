@@ -26,14 +26,20 @@ import { i18n } from "../helper";
 import { applyPatchIcons } from "../helper/applyPatchIcons";
 import {
   Button,
+  Checkbox,
   FormControl,
   IconButton,
   Input,
   InputAdornment,
   InputLabel,
+  Link,
+  Radio,
   TextField,
+  Typography,
 } from "@material-ui/core";
 import { ApplyDetailPanel } from "./applyDetailPanel";
+import { PATCH_ERROR_CODE } from "../applyPatchData";
+import ShowResourcesDialog from "./showResourcesDialog";
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -98,6 +104,53 @@ function Title(props: ITitleProps) {
   );
 }
 
+function solutionProposal(rowData: any, clickAction: any): any {
+  let body: any = "";
+
+  if (rowData.data) {
+
+    switch (rowData.data.error_number) {
+      case PATCH_ERROR_CODE.OK:
+        break;
+      case PATCH_ERROR_CODE.OLD_RESOURCES:
+        body =
+          <>
+            <Typography>
+              Aplicar<Radio
+                checked={rowData.applyScope == "only_new"}
+                onChange={() => clickAction(rowData, "apply_resource", "only_new")}
+              />somente mais novos ou<Radio
+                checked={rowData.applyScope == "all"}
+                onChange={() => clickAction(rowData, "apply_resource", "all")}
+              />todos.
+            </Typography>
+            <Typography>
+              Ver
+          <Link onClick={() => clickAction(rowData, "apply_resource", "show")}> recursos </Link>
+          do pacote.
+        </Typography>
+          </>
+        break;
+      case PATCH_ERROR_CODE.APPLY_DENIED:
+        body = <Typography>
+          <Link onClick={() => clickAction(rowData, "apply_resource", "remove")}>Remover </Link>
+          e selecionar outro arquivo.
+        </Typography>;
+        break;
+      default:
+        body = ""
+        break;
+    }
+    return (
+      <div color="secondary">
+        {body}
+      </div>
+    )
+  }
+
+  return <></>
+}
+
 function buildColumns(memento: IMemento): [] {
   let columns = propColumns({ ...cellDefaultStyle }).columns;
   const orderBy = memento.get(propOrderBy()) || "";
@@ -142,7 +195,7 @@ function buildColumns(memento: IMemento): [] {
 
 let memento: IMemento = undefined;
 
-interface IEnableActions  {
+interface IEnableActions {
   validate: boolean;
   applyOld: boolean;
   apply: boolean;
@@ -151,7 +204,7 @@ interface IEnableActions  {
 
 const initEnableActions: IEnableActions = {
   validate: false,
-  applyOld:  false,
+  applyOld: false,
   apply: false,
   deleteAll: false,
 }
@@ -165,13 +218,29 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     props.memento
   );
 
-  const [selected, setSelected] = React.useState<any>([]);
   const [rows, setRows] = React.useState([]);
   const [subtitle, setSubtitle] = React.useState("");
   const [enableActions, setEnableActions] = React.useState<IEnableActions>(initEnableActions);
   const [pageSize, setPageSize] = React.useState(memento.get(propPageSize()));
   const [filtering, setFiltering] = React.useState(false);
-  const [columns] = React.useState(buildColumns(memento));
+  const [openDialog, setOpenDialog] = React.useState({
+    showResources: false,
+    resources: [],
+  });
+
+  const clickEvent = (rowData: any, id: string, action: string) => {
+    if (action == "show") {
+      setOpenDialog({ ...openDialog, showResources: true, resources: rowData.data.data });
+    } else if (action == "remove") {
+      doRemovePatch(rowData);
+      btnFile.current.click();
+    } else {
+      props.vscode.postMessage({
+        action: ApplyPatchPanelAction.UpdateData,
+        content: { file: rowData.fullpath, id: id, value: action }
+      });
+    }
+  };
 
   if (listener === undefined) {
     listener = (event: MessageEvent) => {
@@ -184,14 +253,20 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
           break;
         }
         case ApplyPatchPanelAction.UpdatePage: {
-          setRows(message.data.applyPatchData.patchFiles);
+          const rows: any[] = [];
+
+          message.data.applyPatchData.patchFiles.forEach((row) => {
+            rows.push({ ...row, soluction: solutionProposal(row, clickEvent) })
+          });
+
+          setRows(rows);
           setSubtitle(message.data.serverName);
           setEnableActions({
             validate: message.data.validate,
             apply: message.data.apply,
             applyOld: message.data.applyOld,
             deleteAll: message.data.deleteAll
-           });
+          });
           break;
         }
         default:
@@ -231,6 +306,12 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     memento.set(propPageSize(value));
   };
 
+  const doRemovePatch = (rowData: any) => {
+    props.vscode.postMessage({
+      action: ApplyPatchPanelAction.RemoveFile,
+      content: { processAll: false, file: rowData.fullpath }
+    });
+  }
   const actions = [];
 
   actions.push({
@@ -257,10 +338,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     tooltip: i18n.localize("REMOVE_PATCH", "Remove patch"),
     disabled: !enableActions.deleteAll,
     onClick: (event, rowData) => {
-      props.vscode.postMessage({
-        action: ApplyPatchPanelAction.RemoveFile,
-        content: { processAll: false, file: rowData.fullpath }
-      });
+      doRemovePatch(rowData);
     },
   });
 
@@ -288,56 +366,6 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
       });
     },
   }));
-
-  actions.push({
-    icon: applyPatchIcons.applyOldSource,
-    tooltip: i18n.localize("APPLY_OLD_SOURCE", "Apply old sources"),
-    isFreeAction: true,
-    disabled: !enableActions.applyOld,
-    onClick: () => {
-      props.vscode.postMessage({
-        action: ApplyPatchPanelAction.ApplyOldSource,
-        content: { processAll: true, file: "", value: true }
-      });
-    },
-  });
-
-  actions.push((rowData) => ({
-    icon: (rowData.applyOld?applyPatchIcons.applyOldSource:applyPatchIcons.notApplyOldSource),
-    tooltip: i18n.localize("APPLY_OLD_SOURCE", "Apply old sources"),
-    disabled: !enableActions.applyOld && rowData.status !== "error" && rowData.status !== "warning",
-    onClick: (event, rowData) => {
-      props.vscode.postMessage({
-        action: ApplyPatchPanelAction.ApplyOldSource,
-        content: { processAll: false, file: rowData.fullpath, value: !rowData.applyOld }
-      });
-    },
-  }));
-
-  actions.push((rowData) => ({
-    icon: applyPatchIcons.apply,
-    tooltip: i18n.localize("APPLY_ALL", "Apply patch"),
-    disabled: !enableActions.apply && rowData.status !== "valid",
-    onClick: (event, rowData) => {
-      props.vscode.postMessage({
-        action: ApplyPatchPanelAction.Apply,
-        content: { processAll: false, file: rowData.fullpath }
-      });
-    },
-  }));
-
-  actions.push({
-    icon: applyPatchIcons.apply,
-    tooltip: i18n.localize("APPLY_ALL", "Apply all patchs"),
-    isFreeAction: true,
-    disabled: !enableActions.apply,
-    onClick: () => {
-      props.vscode.postMessage({
-        action: ApplyPatchPanelAction.Apply,
-        content: { processAll: true, file: "" }
-      });
-    },
-  });
 
   actions.push({
     icon: applyPatchIcons.table.Delete,
@@ -402,7 +430,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
           }}
           localization={i18n.materialTableLocalization}
           icons={applyPatchIcons.table}
-          columns={rows.length ? columns : []}
+          columns={rows.length ? buildColumns(memento) : []}
           data={rows}
           parentChildData={(row, rows) => rows.find((a) => {
             return row.zipFile === a.fullpath
@@ -432,7 +460,6 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
 
           }}
           actions={actions}
-          onSelectionChange={(rows) => setSelected(rows)}
           onChangeRowsPerPage={(value) => doChangeRowsPerPage(value)}
           onOrderChange={(orderBy, direction) =>
             doOrderChange(orderBy, direction)
@@ -446,6 +473,13 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
           ]}
         />
       </Paper>
+
+      <ShowResourcesDialog
+        open={openDialog.showResources}
+        resources={openDialog.resources}
+        onClose={() => { setOpenDialog({ ...openDialog, showResources: false, resources: [] }) }}
+      />
+
     </ApplyPatchTheme>
   );
 }

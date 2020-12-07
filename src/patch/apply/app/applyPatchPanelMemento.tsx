@@ -140,22 +140,11 @@ export const propColumns = (extraProps?: any): any => {
     render: (rowData) => renderStatus(rowData)
   };
 
-  // colocado na tabela o visual/usabilidade fica desagradável - acandido
-  // const soluctionProps = {
-  //   ...(extraProps || {}),
-  //   cellStyle: {
-  //     maxWidth: 60,
-  //   },
-  //   render: (rowData) => soluctionOptions(rowData)
-  // };
-
-  // fieldDef("soluction", i18n.localize("ACTIONS", "Actions"), soluctionProps),
-  // ///////////////////////////////////
-
   return {
     columns: [
       fieldDef("status", "", statusProps), //i18n.localize("STATUS", "status")
       fieldDef("name", i18n.localize("NAME", "Name"), extraProps),
+      fieldDef("soluction", "", extraProps),
     ],
   };
 };

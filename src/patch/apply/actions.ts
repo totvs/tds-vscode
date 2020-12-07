@@ -13,6 +13,6 @@ export enum ApplyPatchPanelAction {
   InformationFile,
   DoUpdateState,
   RemoveFile,
-  ApplyOldSource,
+  UpdateData,
   Apply
 }

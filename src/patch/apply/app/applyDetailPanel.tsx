@@ -19,7 +19,7 @@ function solutionProposal(rowData: any) {
 				message = "Enable Apply old resource or remove file.";
 				break;
 			case PATCH_ERROR_CODE.APPLY_DENIED:
-				message = "Remove file and select compatible file.";
+				message = "Remove file and select another.";
 				break;
 			default:
 			message = "See log appServer for details."

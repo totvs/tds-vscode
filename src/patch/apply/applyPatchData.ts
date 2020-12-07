@@ -1,6 +1,6 @@
 import { type } from "os";
 
-export type OptionStatus =
+export type OptionsStatus =
   "loaded" | "validating" | "valid" | "applying" | "applyed" | "error" | "applyOldResource" | "cancelApply" | "warning";
 
 export const PATCH_ERROR_CODE = {
@@ -14,14 +14,16 @@ export const PATCH_ERROR_CODE = {
   APPLY_DENIED:  7,
 }
 
+export type IApplyScope = "none" | "only_new" | "all";
+
 export interface IPatchFileInfo {
-  status: OptionStatus;
+  status: OptionsStatus;
   name: string;
   fullpath: string;
   size: number;
   zipFile: string;
   message: string;
-  applyOld: boolean
+  applyScope: IApplyScope;
   data: { error_number: number; data: string};
 }
 
