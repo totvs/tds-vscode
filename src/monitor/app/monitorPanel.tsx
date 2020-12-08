@@ -237,12 +237,18 @@ export default function MonitorPanel(props: IMonitorPanel) {
           break;
         }
         case MonitorPanelAction.UpdateUsers: {
-          const users = message.data.users as IMonitorUser[];
-          const servers = message.data.servers as any[];
+          //const users = message.data.users as IMonitorUser[];
+          //const servers = message.data.servers as any[];
 
-          setRows(users);
+          setRows((rows) => {
+            if(event !== undefined) {
+              event.preventDefault();
+            }
+            return message.data.users;
+          });
           setSubtitle(message.data.serverName);
-          //setServers(servers);
+
+          ////setServers(servers);
           break;
         }
         default:
@@ -526,8 +532,8 @@ export default function MonitorPanel(props: IMonitorPanel) {
   actions.push({
     icon: () => <DisconnectIcon />,
     tooltip: i18n.localize(
-      "DISCONNECT_SELECTD_USERS",
-      "Disconnect selectd users"
+      "DISCONNECT_SELECTED_USERS",
+      "Disconnect selected users"
     ),
     isFreeAction: false,
     onClick: (event: any) => handleDisconnectUserButtonClick(event, rows),
