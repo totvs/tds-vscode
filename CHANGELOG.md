@@ -1,5 +1,18 @@
 # Changelog
 
+# Versão [1.2.next]
+
+## Implementação do processo de validação de pacotes de atualização (_patch_)
+
+### Problema:
+
+- Os pacotes de atualização eram validados parcialmente.
+
+### Solução:
+
+- Reformulação do processo de validação/aplicação de pacotes.
+- Interface com usuário refeita, para atender o novo processo.
+
 # Versão [1.2.1]
 
 ## Não exibe conteúdo de array no Watch. [Issue 549](https://github.com/totvs/tds-vscode/issues/549)

@@ -20,7 +20,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 - [Edição](docs/edition.md) de arquivos fontes (AdvPL, TLPP, 4GL e variantes)
 - [Compilação](docs/compilation.md) de fontes, pastas e da área de trabalho
 - [Depuração](docs/debugger.md) e execução (Local e _WebApp_)
-- [Geração](docs/build-patch.md) e [aplicação](docs/apply-patch.md) de pacotes de correção (_patchs_)
+- [Geração](docs/build-patch.md) e [aplicação](docs/apply-patch.md) de pacotes de atualizações (_patchs_)
 - [Manutenção](docs/rpo.md) do _RPO_
 - [Inspeção](docs/rpo-inspector.md) do _RPO_
 - [Geração de cliente de serviço web](docs/ws-client-generation.md) (_Web Service_)

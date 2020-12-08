@@ -3,7 +3,7 @@
 > Requisitos
 >
 > - servidor/ambiente conectado
-> - usuário autenticado (se necessário)
+> - usuário autenticado (se requerido)
 > - executor configurado
 
 > Recomendações

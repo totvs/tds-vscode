@@ -3,7 +3,7 @@
 > Requisitos
 >
 > - servidor/ambiente conectado
-> - usuário autenticado (se necessário)
+> - usuário autenticado (se requerido)
 
 Permite monitorar a atividade do servidor e interagir com as sessões (_threads_), enviando mensaens a usuários, encerrando sessões e outras atividades.
 
