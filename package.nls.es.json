@@ -82,6 +82,8 @@
 	"tds.package.properties.isMultiSession.description": "Si se trata de una ejecución multisesión (-M)",
 	"tds.package.properties.isAccessibilityMode.description": "Si el modo de accesibilidad debe estar habilitado (-AC)",
 	"tds.package.properties.doNotShowSplash.description": "Si la pantalla de presentación no debe mostrar (-Q)",
+	"tds.package.properties.openglMode.description": "Si el modo OpenGL debe estar habilitado (-opengl)",
+	"tds.package.properties.dpiMode.description": "Si el modo DPI debe estar habilitado (-dpi)",
 	"tds.package.properties.language.description": "Informa el idioma para iniciar la ejecución. (-L)",
 	"tds.package.properties.logFile.description": "Archivo de registro DAP solo para resolución de problemas",
 	"tds.package.properties.ignoreFiles.description": "Hacer que el depurador ignore los eventos de interrupción en archivos que no se encuentran en WorkSpace",

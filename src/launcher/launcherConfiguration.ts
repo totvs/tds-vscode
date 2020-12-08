@@ -23,7 +23,9 @@ const localizeHTML = {
 	"tds.webview.launcher.multiSession": localize("tds.webview.launcher.multiSession","(-M) Multiple sessions"),
 	"tds.webview.launcher.acc": localize("tds.webview.launcher.acc","(-AC) Accessibility module"),
 	"tds.webview.launcher.splash": localize("tds.webview.launcher.splash","(-Q) Don't display 'splash'"),
-	"tds.webview.launcher.language": localize("tds.webview.launcher.language","(-L) Language"),
+	"tds.webview.launcher.opengl": localize("tds.webview.launcher.opengl","(-OPENGL) Enable OpenGL mode"),
+	"tds.webview.launcher.dpi": localize("tds.webview.launcher.dpi","(-DPI) Enable DPI mode"),
+	"tds.webview.launcher.language": localize("tds.webview.launcher.language","Language (-L):"),
 	"tds.webview.launcher.langPT": localize("tds.webview.launcher.langPT","Portuguese"),
 	"tds.webview.launcher.langEN": localize("tds.webview.launcher.langEN","English"),
 	"tds.webview.launcher.langES": localize("tds.webview.launcher.langES","Spanish"),
@@ -126,10 +128,10 @@ export default class LauncherConfiguration {
 function getWebViewContent(context: vscode.ExtensionContext, localizeHTML){
 
 	const htmlOnDiskPath = vscode.Uri.file(path.join(context.extensionPath, 'src', 'launcher', 'launcherConfiguration.html'));
-	const cssOniskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
+	const cssOnDiskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
 
 	const htmlContent = fs.readFileSync(htmlOnDiskPath.with({ scheme: 'vscode-resource' }).fsPath);
-	const cssContent = fs.readFileSync(cssOniskPath.with({ scheme: 'vscode-resource' }).fsPath);
+	const cssContent = fs.readFileSync(cssOnDiskPath.with({ scheme: 'vscode-resource' }).fsPath);
 
 	let runTemplate = compile(htmlContent);
 
@@ -145,7 +147,9 @@ function updateElement(element: any, message: any) {
 	element.isMultiSession = message.isMultiSession;
 	element.isAccessibilityMode = message.isAccessibilityMode;
 	element.doNotShowSplash = message.doNotShowSplash;
-	element.language = message.hasLanguage ? message.language : "";
+	element.openglMode = message.openglMode;
+	element.dpiMode = message.dpiMode;
+	element.language = message.language;
 	element.ignoreFiles = message.ignoreFiles;
 	element.enableTableSync = true;
 }
