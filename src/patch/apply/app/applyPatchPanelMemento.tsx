@@ -110,16 +110,19 @@ export function renderStatus(rowData: any) {
     if (rowData.data && rowData.data.error_number && rowData.data.error_number > 0) {
       return "secondary"
     }
+    if (rowData.status === 'applyed') {
+      return "primary";
+    }
 
     return "default"
   };
 
   const variant = (): 'default' | 'outlined' => {
-    if (rowData.status !== 'error') {
-      return "outlined"
+    if (rowData.status == 'error' || rowData.status == 'applyed') {
+      return "default";
     }
 
-    return "default"
+    return "outlined";
   };
 
   const status = rowData.status;
@@ -135,14 +138,16 @@ export const propColumns = (extraProps?: any): any => {
   const statusProps = {
     ...(extraProps || {}),
     cellStyle: {
-      maxWidth: 60,
+      width: 100,
+      maxWidth: 100,
+      minWidth: 100,
     },
     render: (rowData) => renderStatus(rowData)
   };
 
   return {
     columns: [
-      fieldDef("status", "", statusProps), //i18n.localize("STATUS", "status")
+      fieldDef("status", i18n.localize("STATUS", "status"), statusProps),
       fieldDef("name", i18n.localize("NAME", "Name"), extraProps),
       fieldDef("soluction", "", extraProps),
     ],

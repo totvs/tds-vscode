@@ -1,5 +1,6 @@
-import { FormControl, Grid, Input, InputLabel, Paper, TextField, Typography } from "@material-ui/core";
+import { FormControl, Grid, Input, InputLabel, Link, Paper, TextField, Typography } from "@material-ui/core";
 import * as React from "react";
+import { ApplyPatchPanelAction } from "../actions";
 import { IPatchFileInfo, PATCH_ERROR_CODE } from "../applyPatchData";
 import { renderStatus } from "./applyPatchPanelMemento";
 
@@ -22,7 +23,7 @@ function solutionProposal(rowData: any) {
 				message = "Remove file and select another.";
 				break;
 			default:
-			message = "See log appServer for details."
+				message = "See log appServer for details."
 				break;
 		}
 		return (
@@ -38,6 +39,13 @@ function solutionProposal(rowData: any) {
 export function ApplyDetailPanel(props: IApplyDetailPanel) {
 	const rowData: IPatchFileInfo = props.patchFileInfo;
 
+	const showContentEvent = (rowData: any) => {
+		  props.vscode.postMessage({
+			action: ApplyPatchPanelAction.ShowContent,
+			content: { file: rowData.fullpath }
+		  });
+	  };
+
 	return (
 		<Paper variant="outlined">
 			<Grid xs={11}
@@ -46,16 +54,22 @@ export function ApplyDetailPanel(props: IApplyDetailPanel) {
 				spacing={3}
 				alignItems="flex-start"
 			>
-				<Grid item xs={10}><TextField disabled margin="dense" size="small" fullWidth label="Full Path" value={rowData.fullpath} /></Grid>
+				<Grid item xs={9}><TextField disabled margin="dense" size="small" fullWidth label="Full Path" value={rowData.fullpath} /></Grid>
 				<Grid item xs={2}><TextField disabled margin="dense" size="small" fullWidth label="Size" value={rowData.size} /></Grid>
+				<Grid item xs={1}>{renderStatus(rowData)}</Grid>
 				{rowData.message &&
 					<>
-						<Grid item xs={1}>{renderStatus(rowData)}</Grid>
 						<Grid item xs={11}>
 							<TextField disabled margin="dense" size="small" fullWidth
 								multiline={true}
 								label="Message" value={rowData.message} error={rowData.status === 'error'}
 								helperText={solutionProposal(rowData)} />
+						</Grid>
+						<Grid item xs={1}>
+							<Typography>
+          <Link onClick={() => showContentEvent(rowData)}>Conteúdo</Link>
+        </Typography>
+
 						</Grid>
 					</>
 				}

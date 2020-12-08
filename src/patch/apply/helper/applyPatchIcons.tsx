@@ -79,8 +79,6 @@ const tableIcons = {
 
 export const applyPatchIcons = {
   table: tableIcons,
-  applyOldSource: ControlPointDuplicateIcon,
-  notApplyOldSource: ControlPointIcon,
   info: InfoIcon,
   apply: DoneAllIcon,
   filterList: FilterList,

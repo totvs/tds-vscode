@@ -6,8 +6,8 @@ import Utils from "../../utils";
 import { ServerItem } from "../../serverItemProvider";
 import { IApplyPatchData, IApplyScope, IPatchFileInfo, PATCH_ERROR_CODE } from "./applyPatchData";
 import JSZip = require("jszip");
-import { IPatchInfoRequestData } from "../../rpoInfo/rpoPath";
 import { sendApplyPatchRequest, sendValidPatchRequest } from "../../protocolMessages";
+import { IPatchValidateResult } from "../../rpoInfo/rpoPath";
 
 const fs = require("fs");
 const os = require("os");
@@ -17,11 +17,11 @@ const WS_STATE_KEY = "APPLY_PATCH_TABLE";
 
 let applyPathLoader: ApplyPatchLoader = undefined;
 
-export function openApplyPatchView(context: vscode.ExtensionContext) {
+export function openApplyPatchView(context: vscode.ExtensionContext, args: any) {
   const server = Utils.getCurrentServer();
 
   if (applyPathLoader === undefined || applyPathLoader === null) {
-    applyPathLoader = new ApplyPatchLoader(context);
+    applyPathLoader = new ApplyPatchLoader(context, args);
   }
 
   applyPathLoader.toggleServer(server);
@@ -49,14 +49,14 @@ export class ApplyPatchLoader {
     if (this._currentServer !== value) {
       this._currentServer = value;
       this._applyPatchData.patchFiles.forEach((element: IPatchFileInfo) => {
-        element.applyScope = "all";
+        element.applyScope = "none";
         element.status = "loaded";
       });
       this.updatePage();
     }
   }
 
-  constructor(context: vscode.ExtensionContext) {
+  constructor(context: vscode.ExtensionContext, args: any) {
     const ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
     this._extensionPath = ext.extensionPath;
     this._context = context;
@@ -104,6 +104,10 @@ export class ApplyPatchLoader {
 
       applyPathLoader = undefined;
     });
+
+    if (args && args.fsPath) {
+      this.addFile(args.fsPath);
+    }
   }
 
   public toggleServer(serverItem: ServerItem) {
@@ -118,7 +122,6 @@ export class ApplyPatchLoader {
       command: ApplyPatchPanelAction.UpdatePage,
       data: {
         validate: hasData,
-        applyOld: hasData,
         apply: hasData,
         deleteAll: hasData,
         serverName: hasServer ?
@@ -129,47 +132,14 @@ export class ApplyPatchLoader {
     });
   }
 
-  private applyPatchs(
-    server: ServerItem,
-    files: any[],
-    message: string
-  ): void {
-    vscode.window.withProgress(
-      {
-        location: vscode.ProgressLocation.Notification,
-        title: localize("APPLY_PATCHS_MESSAGE", "Applying Patch"),
-        cancellable: true,
-      },
-      (progress, token) => {
-        const total: number = files.length;
-        let cnt: number = 0;
-        let inc: number = files.length / 100;
-
-        token.onCancellationRequested(() => {
-          console.log("User canceled the operation");
-        });
-
-        files.forEach((recipient) => {
-          cnt++;
-          progress.report({
-            message: localize("APPLYING", "Applying #{0}/{1}", cnt, total),
-            increment: inc,
-          });
-        });
-
-        const p = new Promise((resolve) => {
-          setTimeout(() => {
-            resolve();
-          }, 5000);
-        });
-
-        return p;
-      }
-    );
-  }
-
   private async handleMessage(command: IApplyPatchPanelAction) {
     switch (command.action) {
+      case ApplyPatchPanelAction.ShowContent:
+        {
+          const file: any = command.content.file;
+          this.doShowContent(file);
+          break;
+        }
       case ApplyPatchPanelAction.UpdateData:
         {
           const file: any = command.content.file;
@@ -201,7 +171,6 @@ export class ApplyPatchLoader {
           break;
         }
       }
-
       case ApplyPatchPanelAction.RemoveFile: {
         {
           const file: any = command.content.file;
@@ -244,7 +213,7 @@ export class ApplyPatchLoader {
             this._panel.dispose();
 
             context.workspaceState.update(WS_STATE_KEY, {});
-            openApplyPatchView(context);
+            openApplyPatchView(context, undefined);
           }
 
           break;
@@ -278,6 +247,13 @@ export class ApplyPatchLoader {
     });
   }
 
+  private doShowContent(patchFile: IPatchFileInfo) {
+    const args = {
+      fsPath: patchFile.fullpath
+    };
+    vscode.commands.executeCommand('totvs-developer-studio.patchInfos.fromFile', args);
+  }
+
   private doApplyOldSource(patchFiles: IPatchFileInfo[], value: IApplyScope) {
     patchFiles.forEach((patchFile) => {
       if (patchFile) {
@@ -289,35 +265,59 @@ export class ApplyPatchLoader {
     })
   }
 
-  private async doApply(patchFiles: IPatchFileInfo[]) {
+  private async doApply(_patchFiles: IPatchFileInfo[]) {
     const self = this;
-    const process = [];
+    const patchFiles: IPatchFileInfo[] = _patchFiles.filter((patchFile: IPatchFileInfo) => {
+      return patchFile.status == "loaded" ||
+        patchFile.status == "warning" ||
+        patchFile.status == "valid"
+    });
 
-    patchFiles.forEach((element: IPatchFileInfo) => {
-      process.push(() => {
-        if (element.status == "loaded" || element.status == "valid" || element.status == "warning") {
-          element.status = "applying";
+    const total: number = patchFiles.length;
+    let cnt: number = 0;
+    let inc: number = 100 / total;
+
+    await vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: localize("VALIDATING_MESSAGE", "Validating Patch"),
+        cancellable: true,
+      }, async (progress, token) => {
+        token.onCancellationRequested(() => {
+          console.log("User canceled the operation");
+        });
+
+        progress.report({ increment: 0, message: "Inicializando..." });
+
+        patchFiles.forEach(async (element: IPatchFileInfo) => {
+          cnt++;
+          progress.report({
+            message: localize("APPLYING", "File {3} #{0}/{1}", cnt, total, element.name),
+            increment: inc
+          });
+          element.status = "validating";
           element.data = { error_number: -1, data: "" }
           self.updatePage();
 
-          sendApplyPatchRequest(this.currentServer, [element.fullpath], Utils.getPermissionsInfos(), true, element.applyScope)
-            .then((result: IPatchInfoRequestData) => {
+          await sendApplyPatchRequest(this.currentServer, element.fullpath, Utils.getPermissionsInfos(), element.applyScope)
+            .then((result: IPatchValidateResult) => {
               element.status = "applyed";
-            }, (reason: any) => {
+            }, (reason: IPatchValidateResult) => {
               element.message = reason.message || "";
-              element.data = reason.data;
-              element.status = "error";
+              element.data = { error_number: reason.errorCode, data: reason.patchValidates};
+              if (reason.errorCode == PATCH_ERROR_CODE.OLD_RESOURCES) {
+                element.status = element.applyScope == "none" ? "error" : "warning";
+              } else {
+                element.status = "error";
+              }
             }).then(() => {
               self.updatePage();
             });
-        }
-      })
-    });
+        });
 
-    for (let i = 0; i < process.length; i++) {
-      await process[i]();
-    }
-
+        progress.report({ increment: 100, message: "Finalizado" });
+      }
+    );
   }
 
   private async doValidateFiles(patchFiles: IPatchFileInfo[]) {
@@ -339,33 +339,34 @@ export class ApplyPatchLoader {
 
         progress.report({ increment: 0, message: "Inicializando..." });
 
-        patchFiles.forEach( async (element: IPatchFileInfo) =>  {
-            cnt++;
-            progress.report({
-              message: localize("APPLYING", "File {3} #{0}/{1}", cnt, total, element.name),
-              increment: inc
-            });
-            element.status = "validating";
-            element.data = { error_number: -1, data: "" }
-            self.updatePage();
-
-            await sendValidPatchRequest(this.currentServer, element.fullpath, Utils.getPermissionsInfos(), element.applyScope)
-              .then((result: IPatchInfoRequestData) => {
-                element.status = "valid";
-              }, (reason: any) => {
-                element.message = reason.message || "";
-                element.data = reason.data;
-                if (reason.data.error_number == PATCH_ERROR_CODE.OLD_RESOURCES) {
-                  element.status = element.applyScope == "none" ? "error" : "warning";
-                } else {
-                  element.status = "error";
-                }
-              }).then(() => {
-                self.updatePage();
-              });
+        patchFiles.forEach(async (element: IPatchFileInfo) => {
+          cnt++;
+          progress.report({
+            message: localize("APPLYING", "File {3} #{0}/{1}", cnt, total, element.name),
+            increment: inc
           });
+          element.status = "validating";
+          element.data = { error_number: -1, data: "" }
+          self.updatePage();
 
-          progress.report({ increment: 100, message: "Finalizado" });
+          await sendValidPatchRequest(this.currentServer, element.fullpath, Utils.getPermissionsInfos(), element.applyScope)
+            .then((result: IPatchValidateResult) => {
+              element.data = { error_number: result.errorCode, data: result.patchValidates};
+              element.status = "valid";
+            }, (reason: IPatchValidateResult) => {
+              element.message = reason.message || "";
+              element.data = { error_number: reason.errorCode, data: reason.patchValidates};
+              if (reason.errorCode == PATCH_ERROR_CODE.OLD_RESOURCES) {
+                element.status = element.applyScope == "none" ? "error" : "warning";
+              } else {
+                element.status = "error";
+              }
+            }).then(() => {
+              self.updatePage();
+            });
+        });
+
+        progress.report({ increment: 100, message: "Finalizado" });
 
       }
     );

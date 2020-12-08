@@ -20,7 +20,7 @@ import { ResponseError } from "vscode-languageclient";
 import { ServerItem } from "./serverItemProvider";
 import { CompileResult } from "./compile/compileResult";
 import { _debugEvent } from "./debug";
-import { IPatchInfoRequestData, IPatchValidateInfoResult, IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
+import { IPatchValidateResult, IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
 import { IApplyScope, PATCH_ERROR_CODE } from "./patch/apply/applyPatchData";
 
 export enum ConnTypeIds {
@@ -440,29 +440,29 @@ export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
     );
 }
 
-export function sendApplyPatchRequest(server: ServerItem, patchUris: Array<string>, permissions, validate: boolean, applyScope: IApplyScope): Thenable<IPatchInfoRequestData> {
+export function sendApplyPatchRequest(server: ServerItem, patchUri: string, permissions, applyScope: IApplyScope): Thenable<IPatchValidateResult> {
 
   return languageClient.sendRequest('$totvsserver/patchApply', {
     "patchApplyInfo": {
       "connectionToken": server.token,
       "authenticateToken": permissions.authorizationToken,
       "environment": server.environment,
-      "patchUris": patchUris,
+      "patchUri": patchUri,
       "isLocal": true,
-      "validatePatch": validate,
-      "applyOldProgram": applyScope == "all"
+      "applyScope": applyScope,
+      "isValidOnly": false
     }
-  }).then((response: IPatchInfoRequestData) => {
+  }).then((response: IPatchValidateResult) => {
     if (response.error) {
       return Promise.reject(response);
     }
 
     return Promise.resolve(response);
   }, (err: ResponseError<object>) => {
-    const error: IPatchInfoRequestData = {
+    const error: IPatchValidateResult = {
       error: true,
       message: err.message,
-      data: err.data,
+ //     patchValidates: err.data,
       errorCode: err.code
     };
 
@@ -470,36 +470,28 @@ export function sendApplyPatchRequest(server: ServerItem, patchUris: Array<strin
   });
 }
 
-export function sendValidPatchRequest(server: ServerItem, patchUri: string, permissions, applyScope: string): Thenable<IPatchInfoRequestData> {
+export function sendValidPatchRequest(server: ServerItem, patchUri: string, permissions, applyScope: string): Thenable<IPatchValidateResult> {
 
-  return languageClient.sendRequest('$totvsserver/patchValidate', {
-    "patchValidateInfo": {
+  return languageClient.sendRequest('$totvsserver/patchApply', {
+    "patchApplyInfo": {
       "connectionToken": server.token,
       "authenticateToken": permissions.authorizationToken,
       "environment": server.environment,
       "patchUri": patchUri,
       "isLocal": true,
-      "applyOldProgram": applyScope == "all"
+      "applyScope": applyScope,
+      "isValidOnly": true
     }
-  }).then((response: IPatchValidateInfoResult) => {
-    const result: IPatchInfoRequestData = {
-      error: response.error,
-      message: response.message,
-      data: { error_number: response.errorCode, data: response.patchValidates }
-    }
+  }).then((response: IPatchValidateResult) => {
 
-    if (result.error) {
-      console.error(result);
-    }
-    return result.error ? Promise.reject(result):Promise.resolve(result);
+    return response.error ? Promise.reject(response):Promise.resolve(response);
   }, (err: ResponseError<object>) => {
-    const result: IPatchInfoRequestData = {
+    const result: IPatchValidateResult = {
       error: true,
       message: err.message,
-      data: err.data?err.data: { error_number: PATCH_ERROR_CODE.GENERIC_ERROR, data: null },
-      errorCode: err.code
+      patchValidates: [],
+      errorCode: PATCH_ERROR_CODE.GENERIC_ERROR
     };
-    console.error(result);
 
     return Promise.reject(result);
   });

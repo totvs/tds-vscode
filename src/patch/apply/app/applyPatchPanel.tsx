@@ -34,12 +34,14 @@ import {
   InputLabel,
   Link,
   Radio,
+  Snackbar,
   TextField,
   Typography,
 } from "@material-ui/core";
 import { ApplyDetailPanel } from "./applyDetailPanel";
 import { PATCH_ERROR_CODE } from "../applyPatchData";
 import ShowResourcesDialog from "./showResourcesDialog";
+import Alert from "@material-ui/lab/Alert";
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -133,8 +135,7 @@ function solutionProposal(rowData: any, clickAction: any): any {
         break;
       case PATCH_ERROR_CODE.APPLY_DENIED:
         body = <Typography>
-          <Link onClick={() => clickAction(rowData, "apply_resource", "remove")}>Remover </Link>
-          e selecionar outro arquivo.
+          <Link onClick={() => clickAction(rowData, "apply_resource", "remove")}>Remover</Link>.
         </Typography>;
         break;
       default:
@@ -197,14 +198,12 @@ let memento: IMemento = undefined;
 
 interface IEnableActions {
   validate: boolean;
-  applyOld: boolean;
   apply: boolean;
   deleteAll: boolean;
 }
 
 const initEnableActions: IEnableActions = {
   validate: false,
-  applyOld: false,
   apply: false,
   deleteAll: false,
 }
@@ -233,7 +232,6 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
       setOpenDialog({ ...openDialog, showResources: true, resources: rowData.data.data });
     } else if (action == "remove") {
       doRemovePatch(rowData);
-      btnFile.current.click();
     } else {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.UpdateData,
@@ -264,7 +262,6 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
           setEnableActions({
             validate: message.data.validate,
             apply: message.data.apply,
-            applyOld: message.data.applyOld,
             deleteAll: message.data.deleteAll
           });
           break;
@@ -324,15 +321,6 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     },
   });
 
-  // actions.push({
-  //   icon: () => applyPatchIcons.uploadFile,
-  //   tooltip: i18n.localize("SELECT_FILE", "Select file"),
-  //   isFreeAction: true,
-  //   onClick: () => {
-  //     //doSelectFile();
-  //   },
-  // });
-
   actions.push({
     icon: applyPatchIcons.table.Delete,
     tooltip: i18n.localize("REMOVE_PATCH", "Remove patch"),
@@ -355,6 +343,19 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     },
   });
 
+  actions.push({
+    icon: applyPatchIcons.apply,
+    tooltip: i18n.localize("APPLY_PATCH", "Apply patch"),
+    isFreeAction: true,
+    disabled: !enableActions.apply,
+    onClick: (event, rowData) => {
+      props.vscode.postMessage({
+        action: ApplyPatchPanelAction.Apply,
+        content: { processAll: true, file: "" }
+      });
+    },
+  });
+
   actions.push((rowData) => ({
     icon: applyPatchIcons.table.Check,
     tooltip: i18n.localize("VALIDATE_PATCH", "Validate patch"),
@@ -362,6 +363,18 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     onClick: (event, rowData) => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.ValidateFile,
+        content: { processAll: false, file: rowData.fullpath }
+      });
+    },
+  }));
+
+  actions.push((rowData) => ({
+    icon: applyPatchIcons.apply,
+    tooltip: i18n.localize("APPLY_PATCH", "Apply patch"),
+    disabled: !(enableActions.apply && rowData.status == "valid"),
+    onClick: (event, rowData) => {
+      props.vscode.postMessage({
+        action: ApplyPatchPanelAction.Apply,
         content: { processAll: false, file: rowData.fullpath }
       });
     },
@@ -455,7 +468,6 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
             sorting: false,
             showTitle: false,
             toolbarButtonAlignment: "right",
-            columnResizable: true,
             defaultExpanded: false,
 
           }}
@@ -473,6 +485,10 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
           ]}
         />
       </Paper>
+
+      <Alert severity="warning">
+          It is recommended to back up the RPO before applying updates.
+      </Alert>
 
       <ShowResourcesDialog
         open={openDialog.showResources}

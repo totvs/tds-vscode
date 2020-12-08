@@ -439,17 +439,17 @@ export function activate(context: ExtensionContext) {
         "Aguarde. Iniciando aplicação de pacotes...",
         5000
       );
-      openApplyPatchView(context);
+      openApplyPatchView(context, undefined);
     })
   );
 
     context.subscriptions.push(
-      vscode.commands.registerCommand("totvs-developer-studio.patchApply.fromFile", () => {
+      vscode.commands.registerCommand("totvs-developer-studio.patchApply.fromFile", (args: any) => {
         vscode.window.setStatusBarMessage(
           "Aguarde. Iniciando aplicação de pacotes...",
           5000
         );
-        openApplyPatchView(context);
+        openApplyPatchView(context, args);
       })
     );
 

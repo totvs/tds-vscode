@@ -6,13 +6,18 @@ export interface IApplyPatchPanelAction {
 
 
 
+
+
+
+
 export enum ApplyPatchPanelAction {
-  UpdatePage,
-  SelectFile,
-  ValidateFile,
-  InformationFile,
-  DoUpdateState,
-  RemoveFile,
-  UpdateData,
-  Apply
+	UpdatePage,
+	SelectFile,
+	ValidateFile,
+	InformationFile,
+	DoUpdateState,
+	RemoveFile,
+	UpdateData,
+	Apply,
+	ShowContent
 }
