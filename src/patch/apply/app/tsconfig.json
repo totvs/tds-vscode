@@ -2,11 +2,11 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "target": "ES6",
+        "target": "ES2016",
         "moduleResolution": "node",
         "outDir": "../../../../out",
         "lib": [
-            "es6",
+            "es2016",
             "dom"
         ],
         "jsx": "react",

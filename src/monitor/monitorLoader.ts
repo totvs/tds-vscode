@@ -308,7 +308,7 @@ export class MonitorLoader {
 
         const p = new Promise((resolve) => {
           setTimeout(() => {
-            resolve();
+            resolve(true);
           }, 5000);
         });
 
@@ -356,7 +356,7 @@ export class MonitorLoader {
 
         const p = new Promise((resolve) => {
           setTimeout(() => {
-            resolve();
+            resolve(true);
           }, 5000);
         });
 

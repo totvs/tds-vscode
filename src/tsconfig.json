@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "target": "ES6",
+        "target": "ES2016",
         "outDir": "../out",
         "sourceMap": true,
         "noImplicitAny": false,
@@ -12,7 +12,7 @@
         "noImplicitReturns": false,
         "allowJs": true,
         "lib": [
-            "es2015",
+            "es2016",
             "dom"
         ],
         "jsx": "react",
