@@ -7,6 +7,7 @@ import * as nls from "vscode-nls";
 import Utils from "../utils";
 import { languageClient } from "../extension";
 import { IProgramApp, IRpoInfoData, IRpoPatch } from "./rpoPath";
+import { listeners } from "process";
 
 const localize = nls.loadMessageBundle();
 
@@ -67,6 +68,9 @@ export class RpoInfoLoader {
     this._panel.webview.html = this.getWebviewContent();
     this._panel.onDidChangeViewState(
       (listener: vscode.WebviewPanelOnDidChangeViewStateEvent) => {
+        if (listener.webviewPanel.active) {
+          this.updateRpoInfo();
+        }
       },
       undefined,
       this._disposables
@@ -191,6 +195,23 @@ export class RpoInfoLoader {
     })
   }
 
+  private prepareNodes(parent: any, rpoInfo: IRpoInfoData) {
+    const map: any = {};
+
+    rpoInfo.rpoPatchs.forEach((rpoPatch: IRpoPatch) => {
+      const name = rpoPatch.dateFileApplication.split("T")[0];
+
+      let key = name.substr(0, 7);
+      if (!map[key]) {
+        map[key] = { id: "node_" + key, name: key, children: [] };
+        parent.children.push(map[key]);
+      }
+
+      map[key].children.push({ id: "node_" + key + map[key].children.length, name: name, children: [], rpoPatch: rpoPatch });
+    });
+
+  }
+
   public updateRpoInfo() {
     if (this.monitorServer === null) {
       return;
@@ -205,11 +226,14 @@ export class RpoInfoLoader {
       ),
       sendRpoInfo(this.monitorServer).then(
         (rpoInfo: IRpoInfoData) => {
+          const parent: any = { id: "node_" + rpoInfo.environment, name: rpoInfo.environment, children: [] }
+          this.prepareNodes(parent, rpoInfo);
           this._panel.webview.postMessage({
             command: RpoInfoPanelAction.UpdateRpoInfo,
             data: {
               serverName: this.monitorServer.name,
               rpoInfo: rpoInfo,
+              treeNodes: parent,
             },
           });
         },

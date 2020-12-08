@@ -5,6 +5,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 const REPLAY_PATH = path.join(__dirname, "./src/debug/tdsreplay/");
 const MONITOR_PATH = path.join(__dirname, "./src/monitor/");
 const RPO_INFO_PATH = path.join(__dirname, "./src/rpoInfo/");
+const APPLY_PATCH_PATH = path.join(__dirname, "./src/patch/apply");
 
 module.exports = {
   target: "node",
@@ -18,6 +19,7 @@ module.exports = {
     timeLineView: path.join(REPLAY_PATH, "app/index.tsx"),
     monitorPanel: path.join(MONITOR_PATH, "app/index.tsx"),
     rpoInfoPanel: path.join(RPO_INFO_PATH, "app/index.tsx"),
+    applyPatchPanel: path.join(APPLY_PATCH_PATH, "app/index.tsx"),
   },
   output: {
     //Todos os arquivos tsx serão compilados e gerados seus equivalentes js na mesma pasta
@@ -75,6 +77,18 @@ module.exports = {
             loader: "ts-loader",
             options: {
               configFile: path.join(MONITOR_PATH, "./app/tsconfig.json"),
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(ts|tsx)$/,
+        include: APPLY_PATCH_PATH,
+        use: [
+          {
+            loader: "ts-loader",
+            options: {
+              configFile: path.join(APPLY_PATCH_PATH, "./app/tsconfig.json"),
             },
           },
         ],
