@@ -527,7 +527,7 @@ export function reconnectServer(
   }
 
   vscode.window.setStatusBarMessage(
-    `Reconectando-se ao servidor [${serverItem.name}]`,
+    `$(loading) Reconectando-se ao servidor [${serverItem.name}]`,
     doReconnect(serverItem, environment, connType)
   );
 }

@@ -19,8 +19,9 @@ import { languageClient } from "./extension";
 import { ResponseError } from "vscode-languageclient";
 import { ServerItem } from "./serverItemProvider";
 import { CompileResult } from "./compile/compileResult";
-import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
 import { _debugEvent } from "./debug";
+import { IPatchValidateResult, IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
+import { IApplyScope, PATCH_ERROR_CODE } from "./patch/apply/applyPatchData";
 
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
@@ -437,4 +438,61 @@ export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
         return response;
       }
     );
+}
+
+export function sendApplyPatchRequest(server: ServerItem, patchUri: string, permissions, applyScope: IApplyScope): Thenable<IPatchValidateResult> {
+
+  return languageClient.sendRequest('$totvsserver/patchApply', {
+    "patchApplyInfo": {
+      "connectionToken": server.token,
+      "authenticateToken": permissions.authorizationToken,
+      "environment": server.environment,
+      "patchUri": patchUri,
+      "isLocal": true,
+      "applyScope": applyScope,
+      "isValidOnly": false
+    }
+  }).then((response: IPatchValidateResult) => {
+    if (response.error) {
+      return Promise.reject(response);
+    }
+
+    return Promise.resolve(response);
+  }, (err: ResponseError<object>) => {
+    const error: IPatchValidateResult = {
+      error: true,
+      message: err.message,
+ //     patchValidates: err.data,
+      errorCode: err.code
+    };
+
+    return Promise.reject(error);
+  });
+}
+
+export function sendValidPatchRequest(server: ServerItem, patchUri: string, permissions, applyScope: string): Thenable<IPatchValidateResult> {
+
+  return languageClient.sendRequest('$totvsserver/patchApply', {
+    "patchApplyInfo": {
+      "connectionToken": server.token,
+      "authenticateToken": permissions.authorizationToken,
+      "environment": server.environment,
+      "patchUri": patchUri,
+      "isLocal": true,
+      "applyScope": applyScope,
+      "isValidOnly": true
+    }
+  }).then((response: IPatchValidateResult) => {
+
+    return response.error ? Promise.reject(response):Promise.resolve(response);
+  }, (err: ResponseError<object>) => {
+    const result: IPatchValidateResult = {
+      error: true,
+      message: err.message,
+      patchValidates: [],
+      errorCode: PATCH_ERROR_CODE.GENERIC_ERROR
+    };
+
+    return Promise.reject(result);
+  });
 }

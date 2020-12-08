@@ -11,7 +11,6 @@ import {
   sendIsLockServer,
 } from "../protocolMessages";
 import { MonitorPanelAction, IMonitorPanelAction } from "./actions";
-import { isNullOrUndefined } from "util";
 import Utils, { groupBy } from "../utils";
 import {
   sendDisconnectRequest,
@@ -31,7 +30,7 @@ let monitorLoader: MonitorLoader = undefined;
 export function openMonitorView(context: vscode.ExtensionContext) {
   const server = Utils.getCurrentServer();
 
-  if (isNullOrUndefined(monitorLoader)) {
+  if ((monitorLoader === undefined) || (monitorLoader === null)) {
     monitorLoader = new MonitorLoader(context);
   }
 
@@ -309,7 +308,7 @@ export class MonitorLoader {
 
         const p = new Promise((resolve) => {
           setTimeout(() => {
-            resolve();
+            resolve(true);
           }, 5000);
         });
 
@@ -357,7 +356,7 @@ export class MonitorLoader {
 
         const p = new Promise((resolve) => {
           setTimeout(() => {
-            resolve();
+            resolve(true);
           }, 5000);
         });
 

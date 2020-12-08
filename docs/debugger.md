@@ -3,7 +3,7 @@
 > Requisitos
 >
 > - servidor/ambiente conectado
-> - usuário autenticado (se necessário)
+> - usuário autenticado (se requerido)
 > - executor configurado
 
 > Recomendações
@@ -95,7 +95,7 @@ No caso de efetuar depuração via `SmartClient Html`, indique qual o navegador 
 
 | Veja [Variable substitution](https://code.visualstudio.com/docs/editor/debugging#_variable-substitution).
 
-Os executores do **TDS-VSCode**, além da variáveis de substituiçã do **VS-Code**, permite o uso de:
+Os executores do **TDS-VSCode**, além da variáveis de substituição do **VS-Code**, permite o uso de:
 
 | Variável                       | Uso/Função                               |
 | ------------------------------ | ---------------------------------------- |
@@ -134,28 +134,14 @@ Acione o atalho `F5` para iniciar a depuração e informe o nome da função/pro
 
 ![Start Debug](./gifs/StartDebug.gif)
 
-## Depuração de serviços (_jobs_, _webservice_, _rest_, _rpc_ e assemelhados)
-
-| A principal característica de um serviço, é que a sua execução não esta diretamente relacionada a interface com o usuário (_SmartClient_) e normalmente é executado em segundo plano pelo _appServer_.
-
-> Certique-se que:
->
-> - o serviço está em execução ou pronto para execução quando solicitado;
-> - a chave `enableMultiThread` esteja ligada na definição do executor que será utilizado.
-
-- Coloque um ponto de parada que será executado quando o serviço for requisitado
-- Inicie a depuração executando qualquer função do _RPO_ para que mantenha um conexão do depurador com o _appServer_
-- Acione o serviço por fora do **VS-CODE**, por exemplo executando o `SmartClient`, requisição (http, rest, etc)
-- Quando a depuração parar no ponto indicado, prossiga com a depuração normalmente
-
-### Usando Console de Depuração
-
 É possível verificar valores de variáveis, conteúdo de tabelas e executar métodos/funções durante o processo de depuração.
 
 - Coloque um ponto de parada onde achar necessário
 - Quando a depuração parar no ponto indicado, abra a visão `Debug Console`
 - Digite uma operação ou variável AdvPL/4GL disponível em seu ambiente de depuração
 - Para ver conteúdo de uma tabela, digite `table:nome_da_tabela`, por exemplo `table:SM0`
+
+### Usando Console de Depuração
 
 | Veja (Debug Console REPL)[https://code.visualstudio.com/docs/editor/debugging#_debug-console-repl]
 
@@ -176,3 +162,46 @@ Também é possível alterar essa opção durante o processo de depuração acio
 ![Debug Table Sync](./gifs/TableSync-CommandToggleChangingProperty.gif)
 
 ![Debug Table Sync](./gifs/TableSync-DebugCommands.gif)
+
+## Depuração de serviços (_jobs_)
+
+| A principal característica de um serviço, é que a sua execução não esta diretamente relacionada a interface com o usuário (_SmartClient_) e normalmente, é executado em segundo plano pelo _appServer_.
+
+### Preparação para serviços REST
+
+1. No arquivo de configuração do _appServer_ (``ini``), comente a sessão ``[OnStart]``.
+1. Ainda no arquivo de configuração do _appServer_, na sessão ``[General]`` e ajuste a chave ``BUILDKILLUSERS=1``.
+1. Reinicie a execução do _appServer_.
+1. Abra o arquivo ``.vscode\launch.json``.
+1. Localize a definição de executor que será utilizada e adicione a chave ``"enableMultiThread": true``.
+1. Crie um arquivo-fonte e adicione o código abaixo, adequando-o se necessário.
+
+```
+user function startRest()
+  //O nome do job REST e ambiente de execução dele, podem ser obtidos no arquivo
+  //de configuração do _appServer_.
+  //Detalhes da função em https://tdn.totvs.com/display/tec/StartJob
+  startjob("HTTP_START", "p12", .f.) //lwait, sempre dever ser false
+  sleep(15000) //aguarda o serviço ser inicializado. Ajuste o tempo se necessário.
+  alert(">> Serviço REST inicializado. <<")
+return
+```
+
+### Preparação para outros serviços
+
+1. No arquivo de configuração do _appServer_ (``ini``), na sessão ``[OnStart]`` deixe ativo somente os serviços necessários na depuração e na chave `RefreshRate`, informe o intervalo de `30` segundos.
+1. Ainda no arquivo de configuração do _appServer_, na sessão ``[General]``, ajuste a chave ``BUILDKILLUSERS=1``.
+1. Reinicie a execução do _appServer_.
+1. Abra o arquivo ``.vscode\launch.json``.
+1. Localize a definição de executor que será utilizada e adicione a chave ``"enableMultiThread": true``;
+
+### Execução da Depuração
+
+1. Encerre todos os serviços e conexões.
+   _**Dica**: Compilar qualquer fonte, encerra todos os serviços e conexões existentes._
+1. Coloque um ponto de parada que será executado quando o serviço for requisitado.
+1. Iniciar a depuração executando qualquer função do _RPO_ para que mantenha uma conxão do depurador com o _appServer_.
+   Se serviço _REST_, execute a função ``u_startRest`` e aguarde a mensagem de serviço inicializado.
+1. Acione o serviço por fora do **VS-CODE**, por exemplo executando o `SmartClient`, uma requisição (http, rest, etc)
+1. Quando a depuração parar no ponto de parade, prossiga com a depuração normalmente.
+

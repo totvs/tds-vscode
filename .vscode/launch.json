@@ -21,26 +21,29 @@
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}"
 			],
-			"outFiles": [ "${workspaceFolder}/out/**/*.js" ],
+			"outFiles": [
+				"${workspaceFolder}/out/**/*.js"
+			],
 			"preLaunchTask": {
 				"type": "npm",
 				"script": "compile"
+			},
+			"env": {
+				"TOTVS_LS_LOG_FILE" : "e://TOTVS_LS_LOG_FILE.log"
 			}
 		},
 		{
-			"type": "node",
+			"name": "Extension Tests",
+			"type": "extensionHost",
 			"request": "launch",
-			"name": "Tests",
-			"cwd": "${workspaceFolder}",
-			"program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+			"runtimeExecutable": "${execPath}",
 			"args": [
-				"-u", "tdd",
-				"--timeout", "999999",
-				"--colors",
-				"./out/tests/"
+				"--extensionDevelopmentPath=${workspaceFolder}",
+				"--extensionTestsPath=${workspaceFolder}/out/test/suite/index"
 			],
-			"outFiles": [ "${workspaceFolder}/out/**/*.js" ],
-			"internalConsoleOptions": "openOnSessionStart"
+			"outFiles": [
+				"${workspaceFolder}/out/test/**/*.js"
+			]
 		}
 	]
 }

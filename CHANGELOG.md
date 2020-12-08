@@ -1,5 +1,29 @@
 # Changelog
 
+# Versão [1.2.next]
+
+## Atualização de versão do TypeScript para 4.1
+
+### Problema:
+
+- Devido a quebra de compatibilidade com versões anteriores, ocorrem erros de compilação.
+  Detalhes em [Breaking changes](https://devblogs.microsoft.com/typescript/announcing-typescript-4-1/#breaking-changes)
+
+### Solução:
+
+- Código compatibilizado com o TS 4.1.
+
+## Implementação do processo de validação de pacotes de atualização (_patch_)
+
+### Problema:
+
+- Os pacotes de atualização eram validados parcialmente.
+
+### Solução:
+
+- Reformulação do processo de validação/aplicação de pacotes.
+- Interface com usuário refeita, para atender o novo processo.
+
 # Versão [1.2.1]
 
 ## Não exibe conteúdo de array no Watch. [Issue 549](https://github.com/totvs/tds-vscode/issues/549)

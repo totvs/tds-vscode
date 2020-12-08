@@ -107,6 +107,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 			if (config.waitForAttach) {
 				setDapArgsArr.push("--wait-for-attach=" + config.waitForAttach);
 			}
+
 			setDapArgs(setDapArgsArr);
 
 			return Promise.resolve(config);
