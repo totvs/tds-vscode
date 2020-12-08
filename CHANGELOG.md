@@ -2,6 +2,17 @@
 
 # Versão [1.2.next]
 
+## Atualização de versão do TypeScript para 4.1
+
+### Problema:
+
+- Devido a quebra de compatibilidade com versões anteriores, ocorrem erros de compilação.
+  Detalhes em [Breaking changes](https://devblogs.microsoft.com/typescript/announcing-typescript-4-1/#breaking-changes)
+
+### Solução:
+
+- Código compatibilizado com o TS 4.1.
+
 ## Implementação do processo de validação de pacotes de atualização (_patch_)
 
 ### Problema:
