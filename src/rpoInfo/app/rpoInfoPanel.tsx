@@ -230,7 +230,7 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
 
           setData(treeNodes);
           setSubtitle(message.data.serverName);
-          setRpoInfo({ version: rpoInfo.rpoVersion, date: rpoInfo.dateGeneration.replace("T", " "), environment: rpoInfo.environment });
+          setRpoInfo({ version: rpoInfo.rpoVersion, date: rpoInfo.dateGeneration, environment: rpoInfo.environment });
           break;
         }
         default:
@@ -369,7 +369,7 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
                     />
 
                     <Grid container >
-                      <Grid item container xs>
+                      <Grid item container xs={6}>
                         <Grid item xs={12}>
                           <Typography variant="overline" gutterBottom>Generation</Typography>
                         </Grid>
@@ -381,7 +381,7 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
                         </Grid>
                       </Grid>
 
-                      <Grid item container>
+                      <Grid item container xs={6}>
                         <Grid item xs={12}>
                           <Typography variant="overline" gutterBottom>Application</Typography>
                         </Grid>
