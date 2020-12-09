@@ -893,6 +893,16 @@
 								"description": "%tds.package.properties.doNotShowSplash.description%",
 								"default": false
 							},
+							"openglMode": {
+								"type": "boolean",
+								"description": "%tds.package.properties.openglMode.description%",
+								"default": false
+							},
+							"dpiMode": {
+								"type": "boolean",
+								"description": "%tds.package.properties.dpiMode.description%",
+								"default": false
+							},
 							"language": {
 								"type": "string",
 								"description": "%tds.package.properties.language.description%"
@@ -914,7 +924,7 @@
 							},
 							"programArguments": {
 								"type": "array",
-								"description": "Arguments that will be passed to the called program / function (key -A)",
+								"description": "Arguments that will be passed to the called program/function (through key -A)",
 								"default": [
 									"${command:AskForProgramArguments}"
 								]
@@ -1016,6 +1026,10 @@
 							"verboseLogFile": {
 								"type": "string",
 								"default": "${workspaceFolder}\\tdsreplayVerboseLog.log"
+							},
+							"keepExtractedFiles": {
+								"type": "boolean",
+								"default": false
 							},
 							"enableVerbose": {
 								"type": "boolean",

@@ -88,6 +88,8 @@
 	"tds.package.properties.isMultiSession.description": "Используется при выполнении мультисессии (-M)",
 	"tds.package.properties.isAccessibilityMode.description": "Используется для включения режима доступности (-AC)",
 	"tds.package.properties.doNotShowSplash.description": "Используется для запрета отображения заставки (-Q)",
+	"tds.package.properties.openglMode.description": "If the OpenGL mode must be enabled (-opengl)",
+	"tds.package.properties.dpiMode.description": "If the DPI mode must be enabled (-dpi)",
 	"tds.package.properties.language.description": "Сообщает языку о необходимости начала выполнения (-L)",
 	"tds.package.properties.logFile.description": "Файл журнала DAP только для устранения неполадок",
 	"tds.package.properties.ignoreFiles.description": "Команда отладчику игнорировать события прерываний в файлах, которые отсутствуют в WorkSpace",
