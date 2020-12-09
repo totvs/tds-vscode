@@ -24,6 +24,16 @@
 - Reformulação do processo de validação/aplicação de pacotes.
 - Interface com usuário refeita, para atender o novo processo.
 
+## Informar parâmetros para debugar ponto de Entrada. [Issue 589](https://github.com/totvs/tds-vscode/issues/589)
+
+### Problema:
+
+- Não estava sendo possível informar parâmetros de entrada para o SmartClient.
+
+### Solução:
+
+- Foi revisto o processo de obtenção dos parâmetros de entrada, na execução e depuração, assim como foi revisto o configurador de Launchers para cadastrar parâmetros nos launchers.
+
 # Versão [1.2.1]
 
 ## Não exibe conteúdo de array no Watch. [Issue 549](https://github.com/totvs/tds-vscode/issues/549)
