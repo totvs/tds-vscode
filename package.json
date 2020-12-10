@@ -178,6 +178,17 @@
 		"workspaceContains:servers.json"
 	],
 	"contributes": {
+		"customEditors": [
+			{
+				"viewType": "tds.patchView",
+				"displayName": "Patch file",
+				"selector": [
+					{
+						"filenamePattern": "*.ptm"
+					}
+				]
+			}
+		],
 		"colors": [
 			{
 				"id": "terminal.ansiBlack",

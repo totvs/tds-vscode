@@ -73,6 +73,7 @@ import { openMonitorView } from "./monitor/monitorLoader";
 import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
 import { openApplyPatchView } from "./patch/apply/applyPatchLoader";
 import { initStatusBarItems, updateSaveLocationBarItem } from "./statusBar";
+import { PatchEditorProvider } from "./patch/inspect/patchEditor";
 
 export let languageClient: LanguageClient;
 // barra de permissoes
@@ -443,15 +444,18 @@ export function activate(context: ExtensionContext) {
     })
   );
 
-    context.subscriptions.push(
-      vscode.commands.registerCommand("totvs-developer-studio.patchApply.fromFile", (args: any) => {
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "totvs-developer-studio.patchApply.fromFile",
+      (args: any) => {
         vscode.window.setStatusBarMessage(
           "Aguarde. Iniciando aplicação de pacotes...",
           5000
         );
         openApplyPatchView(context, args);
-      })
-    );
+      }
+    )
+  );
 
   //Gera um patch de acordo com os arquivos contidos em uma pasta
   context.subscriptions.push(
@@ -625,13 +629,16 @@ export function activate(context: ExtensionContext) {
   //Não é mais necessários. Ver "package.json", sessão "configurationDefaults".
   //verifyEncoding();
 
+  // Register custom editor for patch files
+  context.subscriptions.push(PatchEditorProvider.register(context));
+
   showBanner();
 
   let exportedApi = {
     generatePPO(filePath: string, options?: any): Promise<string> {
       return generatePpo(filePath, options);
-    }
-  }
+    },
+  };
   // 'export' public api-surface
   return exportedApi;
 }
