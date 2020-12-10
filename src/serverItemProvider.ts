@@ -214,7 +214,7 @@ class ServerItemProvider
 
     const serverItem = (
       serverItem: string,
-      type: string,
+      type: ServerType,
       address: string,
       port: number,
       secure: number,
@@ -298,6 +298,8 @@ class ServerItemProvider
   }
 }
 
+export type ServerType = "totvs_server_protheus" | "totvs_server_logix";
+
 export class ServerItem extends vscode.TreeItem {
   public environment: string = "";
   public username: string = "";
@@ -309,7 +311,7 @@ export class ServerItem extends vscode.TreeItem {
 
   constructor(
     public name: string,
-    public readonly type: string,
+    public readonly type: ServerType,
     public readonly address: string,
     public readonly port: number,
     public secure: number,
