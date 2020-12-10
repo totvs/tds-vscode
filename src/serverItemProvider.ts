@@ -77,32 +77,6 @@ class ServerItemProvider
   }
 
   getTreeItem(element: ServerItem | EnvSection): vscode.TreeItem {
-    // if (element instanceof ServerItem) {
-    //   let iconPath = {
-    //     light: path.join(
-    //       __filename,
-    //       "..",
-    //       "..",
-    //       "resources",
-    //       "light",
-    //       this.isConnected
-    //         ? "server.connected.svg"
-    //         : "server.svg"
-    //     ),
-    //     dark: path.join(
-    //       __filename,
-    //       "..",
-    //       "..",
-    //       "resources",
-    //       "dark",
-    //       this.isConnected
-    //         ? "server.connected.svg"
-    //         : "server.svg"
-    //     ),
-    //   };
-
-    //   element.iconPath = iconPath;
-    // }
 
     return element;
   }
@@ -339,7 +313,7 @@ export class ServerItem extends vscode.TreeItem {
       "..",
       "resources",
       "light",
-      this.isConnected ? "server.connected.svg" : "server.svg"
+      (this.isConnected ? "server.connected.svg" : (this.type == "totvs_server_protheus"?"protheus_server.svg":"logix_server.svg"))
     ),
     dark: path.join(
       __filename,
@@ -347,7 +321,7 @@ export class ServerItem extends vscode.TreeItem {
       "..",
       "resources",
       "dark",
-      this.isConnected ? "server.connected.svg" : "server.svg"
+      (this.isConnected ? "server.connected.svg" : (this.type == "totvs_server_protheus"?"protheus_server.svg":"logix_server.svg"))
     ),
   };
 
