@@ -1,6 +1,6 @@
 # Changelog
 
-# Versão [1.2.next]
+# Versão [1.2.2]
 
 ## Atualização de versão do TypeScript para 4.1
 
