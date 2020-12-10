@@ -162,7 +162,7 @@ export class MonitorLoader {
 
     if (serverItem) {
       const monitorItem: ServerItem = Utils.deepCopy(
-        Utils.getServerForID(serverItem.id)
+        Utils.getServerById(serverItem.id)
       ) as ServerItem;
 
       monitorItem.id += "_monitor";

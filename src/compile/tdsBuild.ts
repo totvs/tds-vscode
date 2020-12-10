@@ -61,7 +61,7 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
       return;
     }
 
-    const serverItem = utils.getServerForID(server.id);
+    const serverItem = utils.getServerById(server.id);
     let isAdvplsource: boolean = Utils.isAdvPlSource(filePath);
     if (!isAdvplsource) {
       reject(new Error("This file has an invalid AdvPL source file extension."));
@@ -195,7 +195,7 @@ async function buildCode(
 
   if (server) {
     //Só faz sentido processar os includes se existir um servidor selecionado onde sera compilado.
-    let serverItem = utils.getServerForID(server.id);
+    let serverItem = utils.getServerById(server.id);
     let hasAdvplsource: boolean =
       filesPaths.filter((file) => {
         return Utils.isAdvPlSource(file);
