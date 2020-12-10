@@ -2,6 +2,12 @@
 
 # Versão [1.2.2]
 
+## Configurar uma pasta inicial padrão para geração de patches. [Issue 398](https://github.com/totvs/tds-vscode/issues/398)
+
+### Melhoria:
+
+- Adicionada a salva da última pasta utilizada na geração de patches que será sugerida na próxima geração.
+
 ## Atualização de versão do TypeScript para 4.1
 
 ### Problema:
