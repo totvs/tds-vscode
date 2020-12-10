@@ -2,6 +2,25 @@
 
 # Versão [1.2.2]
 
+## [4GL][TDSVsCode 1.2.1] Variáveis Array de Record não tem valores visualizados no DEBUG [Issue 590](https://github.com/totvs/tds-vscode/issues/590)
+
+### Problema:
+
+- Ao depurar código 4GL que tenha variáveis modulares do tipo ARRAY OF RECORD, os valores dos itens da lista não são apresentadas.
+
+### Solução:
+
+- Na análise da ocorrrência, verificamos que o tipo de servidor, em ``servers.json``, não estava correto.
+- Foi adicionado atributo tipo de servidor (``type``) no registro de novos servidores.
+
+Para servidores registrados antes desta versão, favor:
+- abrir o arquivo ``servers.json`` em modo texto;
+- ajustar o atributo ``savedTokens`` para uma lista vazia;
+- localize a definição do servidor LOGIX e ajuste o atributo ``type`` para ``totvs_server_logix``.
+
+Detalhes em
+https://github.com/totvs/tds-vscode/issues/590#issuecomment-742527102.
+
 ## Configurar uma pasta inicial padrão para geração de patches. [Issue 398](https://github.com/totvs/tds-vscode/issues/398)
 
 ### Melhoria:
