@@ -803,6 +803,22 @@ export default class Utils {
     return result;
   }
 
+  static updatePatchGenerateDir(id: string, patchGenerateDir: string) {
+    let result = false;
+    if (!id || id.length == 0 || !patchGenerateDir || patchGenerateDir.length == 0) {
+      return result;
+    }
+    const serverConfig = Utils.getServersConfig();
+    serverConfig.configurations.forEach((element) => {
+      if (element.id === id) {
+        element.patchGenerateDir = patchGenerateDir;
+        Utils.persistServersInfo(serverConfig);
+        result = true;
+      }
+    });
+    return result;
+  }
+
   static readCompileKeyFile(path): Authorization {
     if (fs.existsSync(path)) {
       const parseIni = ini.parse(fs.readFileSync(path, "utf-8").toLowerCase()); // XXX toLowerCase??
