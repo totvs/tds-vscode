@@ -2,23 +2,13 @@ import * as path from "path";
 import * as vscode from "vscode";
 import { sendPatchInfo } from "../../protocolMessages";
 import Utils from "../../utils";
+import { ApplyViewAction } from "./actions";
 import { Disposable, disposeAll } from "./dispose";
-
-/**
- * Define the type of edits used in paw draw files.
- */
-interface PatchEdit {
-  readonly color: string;
-  readonly stroke: ReadonlyArray<[number, number]>;
-}
+import * as fs from "fs"
+import { IPatchData } from "./patchData";
 
 interface PatchDocumentDelegate {
-  getFileData(): Promise<Uint8Array>;
-}
-
-interface IPatchData {
-  lengthFile: number;
-  patchInfo: any;
+  getFileData(): Promise<IPatchData>;
 }
 
 /**
@@ -30,13 +20,14 @@ class PatchDocument extends Disposable implements vscode.CustomDocument {
     delegate: PatchDocumentDelegate
   ): Promise<PatchDocument | PromiseLike<PatchDocument>> {
     // If we have a backup, read that. Otherwise read the resource from the workspace
-    const fileData = await PatchDocument.readFile(uri);
+    const fileData: IPatchData = await PatchDocument.readFile(uri);
     return new PatchDocument(uri, fileData, delegate);
   }
 
   private static async readFile(uri: vscode.Uri): Promise<IPatchData> {
     const server = Utils.getCurrentServer();
     const data: IPatchData = {
+      filename: path.basename(uri.fsPath),
       lengthFile: (await vscode.workspace.fs.stat(uri)).size,
       patchInfo: await sendPatchInfo(
         server,
@@ -51,9 +42,6 @@ class PatchDocument extends Disposable implements vscode.CustomDocument {
   private readonly _uri: vscode.Uri;
 
   private _documentData: IPatchData;
-  private _edits: Array<PatchEdit> = [];
-  private _savedEdits: Array<PatchEdit> = [];
-
   private readonly _delegate: PatchDocumentDelegate;
 
   private constructor(
@@ -85,8 +73,7 @@ class PatchDocument extends Disposable implements vscode.CustomDocument {
 
   private readonly _onDidChangeDocument = this._register(
     new vscode.EventEmitter<{
-      readonly content?: Uint8Array;
-      readonly edits: readonly PatchEdit[];
+      readonly content?: IPatchData;
     }>()
   );
   /**
@@ -119,36 +106,10 @@ class PatchDocument extends Disposable implements vscode.CustomDocument {
   }
 
   /**
-   * Called when the user edits the document in a webview.
-   *
-   * This fires an event to notify VS Code that the document has been edited.
-   */
-  makeEdit(edit: PatchEdit) {
-    this._edits.push(edit);
-
-    this._onDidChange.fire({
-      label: "Stroke",
-      undo: async () => {
-        this._edits.pop();
-        this._onDidChangeDocument.fire({
-          edits: this._edits,
-        });
-      },
-      redo: async () => {
-        this._edits.push(edit);
-        this._onDidChangeDocument.fire({
-          edits: this._edits,
-        });
-      },
-    });
-  }
-
-  /**
    * Called by VS Code when the user saves the document.
    */
   async save(cancellation: vscode.CancellationToken): Promise<void> {
     await this.saveAs(this.uri, cancellation);
-    this._savedEdits = Array.from(this._edits);
   }
 
   /**
@@ -162,7 +123,7 @@ class PatchDocument extends Disposable implements vscode.CustomDocument {
     if (cancellation.isCancellationRequested) {
       return;
     }
-    await vscode.workspace.fs.writeFile(targetResource, fileData);
+    //await vscode.workspace.fs.writeFile(targetResource, fileData);
   }
 
   /**
@@ -171,7 +132,7 @@ class PatchDocument extends Disposable implements vscode.CustomDocument {
   async revert(_cancellation: vscode.CancellationToken): Promise<void> {
     const diskContent = await PatchDocument.readFile(this.uri);
     this._documentData = diskContent;
-    this._edits = this._savedEdits;
+    //this._edits = this._savedEdits;
     // this._onDidChangeDocument.fire({
     //   content: diskContent,
     //   edits: this._edits,
@@ -202,54 +163,16 @@ class PatchDocument extends Disposable implements vscode.CustomDocument {
   }
 }
 
-/**
- * Provider for paw draw editors.
- *
- * Paw draw editors are used for `.pawDraw` files, which are just `.png` files with a different file extension.
- *
- * This provider demonstrates:
- *
- * - How to implement a custom editor for binary files.
- * - Setting up the initial webview for a custom editor.
- * - Loading scripts and styles in a custom editor.
- * - Communication between VS Code and the custom editor.
- * - Using CustomDocuments to store information that is shared between multiple custom editors.
- * - Implementing save, undo, redo, and revert.
- * - Backing up a custom editor.
- */
 export class PatchEditorProvider
   implements vscode.CustomEditorProvider<PatchDocument> {
   private static newPatchFileId = 1;
 
   public static register(context: vscode.ExtensionContext): vscode.Disposable {
-    vscode.commands.registerCommand("catCustoms.pawDraw.new", () => {
-      const workspaceFolders = vscode.workspace.workspaceFolders;
-      if (!workspaceFolders) {
-        vscode.window.showErrorMessage(
-          "Creating new Paw Draw files currently requires opening a workspace"
-        );
-        return;
-      }
-
-      const uri = vscode.Uri.joinPath(
-        workspaceFolders[0].uri,
-        `new-${PatchEditorProvider.newPatchFileId++}.pawdraw`
-      ).with({ scheme: "untitled" });
-
-      vscode.commands.executeCommand(
-        "vscode.openWith",
-        uri,
-        PatchEditorProvider.viewType
-      );
-    });
 
     return vscode.window.registerCustomEditorProvider(
       PatchEditorProvider.viewType,
       new PatchEditorProvider(context),
       {
-        // For this demo extension, we enable `retainContextWhenHidden` which keeps the
-        // webview alive even when it is not visible. You should avoid using this setting
-        // unless is absolutely required as it does have memory overhead.
         webviewOptions: {
           retainContextWhenHidden: true,
         },
@@ -258,14 +181,14 @@ export class PatchEditorProvider
     );
   }
 
-  private static readonly viewType = "tds.patchView";
+  static readonly viewType = "tds.patchView";
 
   /**
    * Tracks all known webviews
    */
   private readonly webviews = new WebviewCollection();
 
-  constructor(private readonly _context: vscode.ExtensionContext) {}
+  constructor(private readonly _context: vscode.ExtensionContext) { }
 
   async openCustomDocument(
     uri: vscode.Uri,
@@ -286,35 +209,9 @@ export class PatchEditorProvider
           {}
         );
 
-        return new Uint8Array(response);
+        return { filename: "", lengthFile: 0, patchInfo: {} }
       },
     });
-
-    const listeners: vscode.Disposable[] = [];
-
-    listeners.push(
-      document.onDidChange((e) => {
-        // Tell VS Code that the document has been edited by the use.
-        this._onDidChangeCustomDocument.fire({
-          document,
-          ...e,
-        });
-      })
-    );
-
-    listeners.push(
-      document.onDidChangeContent((e) => {
-        // Update all webviews when the document changes
-        for (const webviewPanel of this.webviews.get(document.uri)) {
-          this.postMessage(webviewPanel, "update", {
-            edits: e.edits,
-            content: e.content,
-          });
-        }
-      })
-    );
-
-    document.onDidDispose(() => disposeAll(listeners));
 
     return document;
   }
@@ -333,18 +230,11 @@ export class PatchEditorProvider
     };
     webviewPanel.webview.html = this.getHtmlForWebview(webviewPanel.webview);
 
-    webviewPanel.webview.onDidReceiveMessage((e) =>
-      this.onMessage(document, e)
-    );
-
     // Wait for the webview to be properly ready before we init
     webviewPanel.webview.onDidReceiveMessage((e) => {
-      if (e.type === "ready") {
-        this.postMessage(webviewPanel, "init", {
-          file: document.uri.fsPath,
-          size: document.documentData.lengthFile,
-          value: document.documentData,
-        });
+      if (e.action === ApplyViewAction.Ready) {
+        const data: IPatchData = document.documentData;
+        this.postMessage(webviewPanel, ApplyViewAction.Init, data);
       }
     });
   }
@@ -435,30 +325,16 @@ export class PatchEditorProvider
     const p = new Promise<R>((resolve) =>
       this._callbacks.set(requestId, resolve)
     );
-    panel.webview.postMessage({ type, requestId, body });
+    //panel.webview.postMessage({ type, requestId, body });
     return p;
   }
 
   private postMessage(
     panel: vscode.WebviewPanel,
-    type: string,
-    body: any
+    action: ApplyViewAction,
+    content: any
   ): void {
-    panel.webview.postMessage({ type, body });
-  }
-
-  private onMessage(document: PatchDocument, message: any) {
-    switch (message.type) {
-      case "stroke":
-        document.makeEdit(message as PatchEdit);
-        return;
-
-      case "response": {
-        const callback = this._callbacks.get(message.requestId);
-        callback?.(message.body);
-        return;
-      }
-    }
+    panel.webview.postMessage({ action: action, content: content });
   }
 }
 

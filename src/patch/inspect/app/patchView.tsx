@@ -1,14 +1,9 @@
-import {
-  FormControl,
-  Grid,
-  Input,
-  InputLabel,
-  Link,
-  Paper,
-  TextField,
-  Typography,
-} from "@material-ui/core";
 import * as React from "react";
+import MaterialTable from "material-table";
+import { i18n, PatchTheme, patchViewIcons } from "../helper";
+import Paper from "@material-ui/core/Paper";
+import { ApplyViewAction } from "../actions";
+import { EmptyPatchData, IPatchData } from "../patchData";
 
 interface IPatchViewPanel {
   vscode: any;
@@ -16,65 +11,96 @@ interface IPatchViewPanel {
 
 let listener = undefined;
 
+const cellDefaultStyle = {
+  cellStyle: {
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    //maxWidth: "30em",
+    minWidth: "8em",
+    padding: "0px",
+    paddingLeft: "5px",
+    paddingRight: "5px"
+  },
+  headerStyle: {
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "30em",
+    minWidth: "8em",
+    padding: "0px",
+    paddingLeft: "5px",
+    paddingRight: "5px"
+  }
+};
+
+function headCells(): any[] {
+  return [
+    {
+      field: "name",
+      title: i18n.localize("NAME", "Name"),
+      ...cellDefaultStyle,
+    }, {
+      field: "date",
+      title: i18n.localize("DATE", "Date"),
+      ...cellDefaultStyle,
+    }, {
+      field: "size",
+      title: i18n.localize("SIZE", "Size"),
+      type: "numeric",
+      ...cellDefaultStyle,
+    } ,
+    //  {
+    //   field: "buildType",
+    //   title: i18n.localize("BUILD_TYPE", "Build Type"),
+    //   ...cellDefaultStyle,
+    // },
+    {
+      field: "type",
+      title: i18n.localize("TYPE", "Type"),
+      ...cellDefaultStyle,
+    }
+  ];
+}
+
 export function PatchView(props: IPatchViewPanel) {
-  const [patchFileInfo, setPatchFileInfo] = React.useState({
-    file: "",
-    size: 0,
-  });
+  const [patchData, setPatchData] = React.useState<IPatchData>(EmptyPatchData);
 
   if (listener === undefined) {
     listener = (event: MessageEvent) => {
-      const { type, body, requestId } = event.data;
-      switch (type) {
-        case "init": {
-          setPatchFileInfo({ file: body.file, size: body.size });
+      const { action, content } = event.data;
+      switch (action) {
+        case ApplyViewAction.Init: {
+          setPatchData(content);
           break;
-        }
-        case "getFileData": {
-          // // Get the image data for the canvas and post it back to the extension.
-          // editor.getImageData().then(data => {
-          // 	vscode.postMessage({ type: 'response', requestId, body: Array.from(data) });
-          // });
-          return;
         }
       }
     };
 
     window.addEventListener("message", listener);
-    props.vscode.postMessage({ type: "ready" });
+    props.vscode.postMessage({ action: ApplyViewAction.Ready });
   }
 
   return (
-    <Paper variant="outlined">
-      <Grid
-        xs={11}
-        container
-        item
-        direction="row"
-        spacing={3}
-        alignItems="flex-start"
-      >
-        <Grid item xs={9}>
-          <TextField
-            disabled
-            margin="dense"
-            size="small"
-            fullWidth
-            label="Full Path"
-            value={patchFileInfo.file}
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-            disabled
-            margin="dense"
-            size="small"
-            fullWidth
-            label="Size"
-            value={patchFileInfo.size}
-          />
-        </Grid>
-      </Grid>
-    </Paper>
+    <PatchTheme>
+      <Paper variant="outlined">
+        <MaterialTable
+          title={patchData.filename}
+          localization={i18n.materialTableLocalization}
+          icons={patchViewIcons.table}
+          columns={headCells()}
+          data={patchData.patchInfo}
+          options={{
+            filtering: false,
+            showTitle: true,
+            pageSize: 10,
+            pageSizeOptions: [10, 50, 100],
+            paginationType: "normal",
+            thirdSortClick: true,
+            grouping: true
+          }}
+        />
+      </Paper>
+    </PatchTheme>
   );
 }

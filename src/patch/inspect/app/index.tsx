@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { ErrorBoundary } from "../helper";
 import { PatchView } from "./patchView";
 
 declare global {
@@ -10,8 +11,8 @@ declare global {
 }
 
 const vscode = window.acquireVsCodeApi();
-//const translations = window.initialData.translations;
 
-//i18n.translations = translations;
-
-ReactDOM.render(<PatchView vscode={vscode} />, document.getElementById("root"));
+ReactDOM.render(
+  <ErrorBoundary>
+    <PatchView vscode={vscode} />
+  </ErrorBoundary>, document.getElementById("root"));

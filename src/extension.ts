@@ -43,7 +43,6 @@ import { rpoCheckIntegrity } from "./server/rpoCheckIntegrity";
 import { serverSelection } from "./inputConnectionParameters";
 import { inspectObject } from "./inspect/inspectObject";
 import { inspectFunctions } from "./inspect/inspectFunction";
-import { patchInfos } from "./patch/inspectPatch";
 import { showWelcomePage } from "./welcome/welcomePage";
 import showInclude from "./include/include";
 import showWSPage from "./WebService/generateWS";
@@ -462,19 +461,6 @@ export function activate(context: ExtensionContext) {
     commands.registerCommand(
       "totvs-developer-studio.patchGenerate.fromFolder",
       (context) => patchGenerateFromFolder(context)
-    )
-  );
-  //Verifica o conteudo de um patch
-  context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.patchInfos", () =>
-      patchInfos(context, null)
-    )
-  );
-  //Verifica o conteudo de um patch pelo menu de contexto em arquivos de patch
-  context.subscriptions.push(
-    commands.registerCommand(
-      "totvs-developer-studio.patchInfos.fromFile",
-      (args) => patchInfos(context, args)
     )
   );
   //Valida o conteudo de um patch pelo menu de contexto em arquivos de patch
