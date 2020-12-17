@@ -3,7 +3,6 @@ import * as fs from "fs";
 import * as path from "path";
 import Utils from "./utils";
 import * as nls from "vscode-nls";
-import { languageClient, totvsStatusBarItem } from "./extension";
 import { inputConnectionParameters } from "./inputConnectionParameters";
 import { inputAuthenticationParameters } from "./inputAuthenticationParameters";
 import { ResponseError } from "vscode-languageclient";
@@ -106,10 +105,9 @@ export class ServersExplorer {
                 });
                 break;
               case "saveServer":
-                const typeServer = "totvs_server_protheus";
                 if (message.serverName && message.port && message.address) {
                   const serverId = createServer(
-                    typeServer,
+                    message.serverType,
                     message.serverName,
                     message.port,
                     message.address,
@@ -359,7 +357,7 @@ export class ServersExplorer {
       if (serverId !== undefined && showSucess) {
         vscode.window.showInformationMessage(
           localize("tds.webview.serversView.serverSaved", "Saved server ") +
-            serverName
+          serverName
         );
       }
 
@@ -528,7 +526,7 @@ export function reconnectServer(
   }
 
   vscode.window.setStatusBarMessage(
-    `Reconectando-se ao servidor [${serverItem.name}]`,
+    `$(loading) Reconectando-se ao servidor [${serverItem.name}]`,
     doReconnect(serverItem, environment, connType)
   );
 }
@@ -556,19 +554,4 @@ class NodeError {
 
 function handleError(nodeError: NodeError) {
   vscode.window.showErrorMessage(nodeError.code + ": " + nodeError.message);
-}
-
-export function updateStatusBarItem(
-  selectServer: ServerItem | undefined
-): void {
-  if (selectServer) {
-    totvsStatusBarItem.text = `${selectServer.name} / ${selectServer.environment}`;
-  } else {
-    totvsStatusBarItem.text = localize(
-      "tds.vscode.select_server_environment",
-      "Select server/environment"
-    );
-  }
-
-  totvsStatusBarItem.show();
 }

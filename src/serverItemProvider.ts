@@ -32,6 +32,8 @@ class ServerItemProvider
 
   private _connectedServerItem: ServerItem | undefined = undefined;
 
+  private configFilePath: string = "";
+
   constructor() {
     // check if there is an open folder
     if (vscode.workspace.workspaceFolders === undefined) {
@@ -47,7 +49,11 @@ class ServerItemProvider
       }
     });
 
-    this.addServersConfigListener();
+    vscode.workspace.onDidChangeConfiguration(() => {
+      this.checkServersConfigListener(true);
+    });
+
+    this.checkServersConfigListener(false);
   }
 
   refresh(): void {
@@ -71,32 +77,6 @@ class ServerItemProvider
   }
 
   getTreeItem(element: ServerItem | EnvSection): vscode.TreeItem {
-    // if (element instanceof ServerItem) {
-    //   let iconPath = {
-    //     light: path.join(
-    //       __filename,
-    //       "..",
-    //       "..",
-    //       "resources",
-    //       "light",
-    //       this.isConnected
-    //         ? "server.connected.svg"
-    //         : "server.svg"
-    //     ),
-    //     dark: path.join(
-    //       __filename,
-    //       "..",
-    //       "..",
-    //       "resources",
-    //       "dark",
-    //       this.isConnected
-    //         ? "server.connected.svg"
-    //         : "server.svg"
-    //     ),
-    //   };
-
-    //   element.iconPath = iconPath;
-    // }
 
     return element;
   }
@@ -172,18 +152,32 @@ class ServerItemProvider
     );
   }
 
-  private addServersConfigListener(): void {
-    let serversJson = Utils.getServerConfigFile();
-    if (!fs.existsSync(serversJson)) {
-      Utils.createServerConfig();
-    }
-    //Caso o arquivo servers.json seja encontrado, registra o listener já na inicialização.
-    fs.watch(serversJson, { encoding: "buffer" }, (eventType, filename) => {
-      if (filename && eventType === "change") {
+  private checkServersConfigListener(refresh: boolean): void {
+    let serversJson: string = Utils.getServerConfigFile();
+
+    if (this.configFilePath !== serversJson) {
+      if (this.configFilePath) {
+        fs.unwatchFile(this.configFilePath);
+      }
+
+      if (!fs.existsSync(serversJson)) {
+        Utils.createServerConfig();
+      }
+
+      fs.watch(serversJson, { encoding: "buffer" }, (eventType, filename) => {
+        if (filename && eventType === "change") {
+          this.localServerItems = this.setConfigWithServerConfig();
+          this.refresh();
+        }
+      });
+
+      this.configFilePath = serversJson;
+
+      if (refresh) {
         this.localServerItems = this.setConfigWithServerConfig();
         this.refresh();
       }
-    });
+    }
   }
 
   /**
@@ -194,7 +188,7 @@ class ServerItemProvider
 
     const serverItem = (
       serverItem: string,
-      type: string,
+      type: ServerType,
       address: string,
       port: number,
       secure: number,
@@ -278,6 +272,8 @@ class ServerItemProvider
   }
 }
 
+export type ServerType = "totvs_server_protheus" | "totvs_server_logix";
+
 export class ServerItem extends vscode.TreeItem {
   public environment: string = "";
   public username: string = "";
@@ -289,7 +285,7 @@ export class ServerItem extends vscode.TreeItem {
 
   constructor(
     public name: string,
-    public readonly type: string,
+    public readonly type: ServerType,
     public readonly address: string,
     public readonly port: number,
     public secure: number,
@@ -317,7 +313,7 @@ export class ServerItem extends vscode.TreeItem {
       "..",
       "resources",
       "light",
-      this.isConnected ? "server.connected.svg" : "server.svg"
+      (this.isConnected ? "server.connected.svg" : (this.type == "totvs_server_protheus"?"protheus_server.svg":"logix_server.svg"))
     ),
     dark: path.join(
       __filename,
@@ -325,7 +321,7 @@ export class ServerItem extends vscode.TreeItem {
       "..",
       "resources",
       "dark",
-      this.isConnected ? "server.connected.svg" : "server.svg"
+      (this.isConnected ? "server.connected.svg" : (this.type == "totvs_server_protheus"?"protheus_server.svg":"logix_server.svg"))
     ),
   };
 

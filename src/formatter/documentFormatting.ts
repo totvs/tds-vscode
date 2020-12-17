@@ -49,6 +49,8 @@ export class DocumentFormatting implements DocumentFormattingEditProvider {
 
           if (rule.id === this.ignore_at) {
             this.ignore_at = null;
+          } else if (this.ignore_at) {
+            continue;
           }
 
           if (rule.ignore_at) {

@@ -21,7 +21,11 @@
 				</div>
 
 				<div class="wrap-input">
-					<input class="inputText input-serverName" type="text" id="nameID" name="serverName" placeholder="${d.localize['tds.webview.newServer.name']}" required> <!--Server Name-->
+					<select name="serverType" id="serverTypeID" class="">
+						<option value="totvs_server_protheus">Protheus (Adv/PL)</option>
+						<option value="totvs_server_logix">Logix (4GL)</option>
+					  </select>
+					 <input class="inputText input-serverName" type="text" id="nameID" name="serverName" placeholder="${d.localize['tds.webview.newServer.name']}" required> <!--Server Name-->
 					<span class="focus-input fi-serverName">
 					</span>
 				</div>
@@ -74,6 +78,7 @@
 		const serverNameID = document.getElementById('nameID').value;
 		const portID = document.getElementById('portID').value;
 		const includePath = document.getElementById('includePath').value.split(";");
+		const serverType = document.getElementById('serverTypeID').value;
 
 		vscode.postMessage({
 			command: 'saveServer',
@@ -81,7 +86,8 @@
 			serverName: serverNameID,
 			port: portID,
 			'close': close,
-			includes: includePath
+			includes: includePath,
+			serverType: serverType
 		});
 	}
 

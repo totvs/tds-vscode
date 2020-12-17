@@ -3,7 +3,7 @@
 > Requisitos
 >
 > - servidor/ambiente conectado
-> - usuário autenticado (se necessário)
+> - usuário autenticado (se requerido)
 > - pastas para buscas de arquivos de definição (_includes_)
 > - acesso exclusivo ao _RPO_
 > - chave de compilação (apenas para _functions_ e _main functions_)

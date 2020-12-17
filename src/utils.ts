@@ -72,10 +72,18 @@ export default class Utils {
     );
   }
 
+ /**
+   * Troca o local da salva de servers.json
+   */
+  static toggleWorkspaceServerConfig() {
+    const config = vscode.workspace.getConfiguration("totvsLanguageServer");
+    config.update("workspaceServerConfig", !this.isWorkspaceServerConfig());
+  }
+
   /**
    * Pegar o arquivo servers.json da .vscode (workspace)?
    */
-  static workspaceServerConfig() {
+  static isWorkspaceServerConfig(): boolean {
     let config = vscode.workspace.getConfiguration("totvsLanguageServer");
     return config.get("workspaceServerConfig");
   }
@@ -84,31 +92,27 @@ export default class Utils {
    * Retorna o path completo do servers.json
    */
   static getServerConfigFile() {
-    return this.workspaceServerConfig()
-      ? path.join(this.getVSCodePath(), "servers.json")
-      : homedir + "/.totvsls/servers.json";
+    return path.join(this.getServerConfigPath(), "servers.json")
   }
 
   /**
    * Retorna o path de onde deve ficar o servers.json
    */
   static getServerConfigPath() {
-    return this.workspaceServerConfig()
+    return this.isWorkspaceServerConfig()
       ? this.getVSCodePath()
-      : homedir + "/.totvsls";
+      : path.join(homedir, "/.totvsls");
   }
 
   /**
    * Retorna o path completo do launch.json
    */
   static getLaunchConfigFile() {
-    let rootPath: string = vscode.workspace.rootPath || process.cwd();
-
-    return path.join(rootPath, ".vscode", "launch.json");
+    return path.join(this.getVSCodePath(), "launch.json");
   }
 
   /**
-   * Retorna o path da pastar .vscode dentro do workspace
+   * Retorna o path da pasta .vscode dentro do workspace
    */
   static getVSCodePath() {
     let rootPath: string = vscode.workspace.rootPath || process.cwd();
@@ -466,7 +470,8 @@ export default class Utils {
     const servers = Utils.getServersConfig();
 
     if (servers.connectedServer.id) {
-      return servers.connectedServer;
+      // busca sempre pelo ID pois pode ter ocorrido alguma alteração nas configurações do servidor conectado
+      return Utils.getServerById(servers.connectedServer.id);
     } else {
       return "";
     }
@@ -651,32 +656,35 @@ export default class Utils {
       Utils.logInvalidLaunchJsonFile(e);
     }
   }
-  /**
-   *Recupera um servidor pelo ID informado.
-   * @param ID ID do servidor que sera selecionado.
-   */
-  static getServerForID(ID: string) {
-    let server;
-    const allConfigs = Utils.getServersConfig();
 
-    if (allConfigs.configurations) {
-      const configs = allConfigs.configurations;
+  // Duplicado: Usar o getServerById
+  // /**
+  //  *Recupera um servidor pelo ID informado.
+  //  * @param ID ID do servidor que sera selecionado.
+  //  */
+  // static getServerForID(ID: string) {
+  //   let server;
+  //   const allConfigs = Utils.getServersConfig();
 
-      configs.forEach((element) => {
-        if (element.id === ID) {
-          server = element;
-          if (server.environments === undefined) {
-            server.environments = [];
-          }
-        }
-      });
-    }
-    return server;
-  }
+  //   if (allConfigs.configurations) {
+  //     const configs = allConfigs.configurations;
+
+  //     configs.forEach((element) => {
+  //       if (element.id === ID) {
+  //         server = element;
+  //         if (server.environments === undefined) {
+  //           server.environments = [];
+  //         }
+  //       }
+  //     });
+  //   }
+  //   return server;
+  // }
 
   /**
    *Recupera um servidor pelo id informado.
    * @param id id do servidor alvo.
+   * @param serversConfig opcional, se omitido utiliza o padrao
    */
   static getServerById(
     id: string,
@@ -792,6 +800,22 @@ export default class Utils {
       }
     });
 
+    return result;
+  }
+
+  static updatePatchGenerateDir(id: string, patchGenerateDir: string) {
+    let result = false;
+    if (!id || id.length == 0 || !patchGenerateDir || patchGenerateDir.length == 0) {
+      return result;
+    }
+    const serverConfig = Utils.getServersConfig();
+    serverConfig.configurations.forEach((element) => {
+      if (element.id === id) {
+        element.patchGenerateDir = patchGenerateDir;
+        Utils.persistServersInfo(serverConfig);
+        result = true;
+      }
+    });
     return result;
   }
 
