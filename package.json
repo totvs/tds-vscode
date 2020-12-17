@@ -2,7 +2,7 @@
 	"name": "tds-vscode",
 	"displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
 	"description": "%tds.package.description%",
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"publisher": "TOTVS",
 	"author": {
 		"name": "TOTVS",
@@ -39,7 +39,7 @@
 	},
 	"scripts": {
 		"clean2": "gulp clean",
-		"compile": "npm-run-all compile:*",
+		"compile": "tsc --version && npm-run-all compile:*",
 		"compile:extension": "tsc -p ./src",
 		"compile:views": "webpack --mode development",
 		"tslint": "tslint ./src/**/*.ts",
