@@ -1,11 +1,5 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
-
-### [1.2.3](https://github.com/totvs/tds-vscode/compare/v1.2.0...v1.2.3) (2020-12-17)
-
-# Changelog
-
 # Versão [1.2.2]
 
 ## [4GL][TDSVsCode 1.2.1] Variáveis Array de Record não tem valores visualizados no DEBUG [Issue 590](https://github.com/totvs/tds-vscode/issues/590)
