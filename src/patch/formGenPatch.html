@@ -8,7 +8,7 @@
 </head>
 
 <style>
-		${d.css}
+	${d.css}
 
     #parent {
       display: table;
@@ -18,13 +18,13 @@
     #child {
         display: table-cell;
         vertical-align: middle;
-		}
-		#loading {
-			z-index: 20;
-			position: relative;
-			left: 100px;
-			top: -515px;
-		}
+	}
+	#loading {
+		z-index: 20;
+		position: relative;
+		left: 100px;
+		top: -515px;
+	}
 </style>
 
 <body>
@@ -67,8 +67,8 @@
 
 							<div class="wrap-input">
 								<label for="NamePatch">${d.localize["tds.webview.patch.directory"]}</label><!--Patch Generation Directory-->
-								<input class="inputText" type="text" id="FilePatch" name="FilePatch" placeholder="Ex: C:/totvs/patchs...">
-								<input class="inputText" type="file" id="btn-PatchDir" onchange="checkDir(event)" style="top: 5px; left: -8px; position: relative;" name="btn-PatchDir" webkitdirectory directory/>
+								<input class="inputWithButton" type="text" id="FilePatch" name="FilePatch" onchange="checkDir(event)" placeholder="Ex: C:/totvs/patchs...">
+								<input class="inputButton" type="button" id="btn-PatchDir" onclick="selectPatchGenerateDir()" name="btn-PatchDir" value="Select folder" />
 								<label for="NamePatch">${d.localize["tds.webview.patch.file.name.patch"]}</label><!--Patch file name-->
 								<input class="inputText" type="text" id="NamePatch" placeholder="${d.localize['tds.webview.patch.file.name']}"><!--File name-->
 							</div>
@@ -115,25 +115,7 @@
 		srcAll = [] // Todos os fontes
 		srcR = [] // Filtrados Listbox direita
 		vscode.postMessage({
-			command: 'inspectorObjects'
-		});
-		window.addEventListener('message', event => {
-			srcAll = event.data;
-			//for (var i=0; i<event.data.length; i++) {
-			//		var tempItem = event.data[i].name + " - ";
-					// if (event.data[i].type == "T"){
-					// 	tempItem += "PROGRAM - ";
-					// }
-					// else{
-					// 	tempItem += "RESOURCE - "
-					// }
-			//		tempItem += event.data[i].date;
-			//		srcAll.push(tempItem);
-			//}
-
-			FilterInput.value = "";
-			SelectLCount.innerHTML =  "${d.localize['tds.webview.patch.items.showing']}" + ": " + srcAll.length;//Items showing
-			filterLeft();
+			command: 'onload'
 		});
 
 		SelectL = document.getElementById("SelectL");
@@ -281,13 +263,17 @@
 
 	function checkDir(event) {
 		var input = event.target;
-		if (input.files.length > 0) {
-			var selectedDir = input.files[0].path;
-			vscode.postMessage({
-				command: 'checkDir',
-				selectedDir: selectedDir
-			});
-		}
+		var selectedDir = input.value;
+		vscode.postMessage({
+			command: 'checkDir',
+			selectedDir: selectedDir
+		});
+	}
+
+	function selectPatchGenerateDir() {
+		vscode.postMessage({
+			command: 'selectPatchGenerateDir'
+		});
 	}
 
 	function patchGenerate(close) {
@@ -314,6 +300,12 @@
 	window.addEventListener('message', event => {
 		const message = event.data; // The JSON data our extension sent
 		switch (message.command) {
+			case 'rpoObjects':
+				srcAll = message.rpoObjects;
+				FilterInput.value = "";
+				SelectLCount.innerHTML =  "${d.localize['tds.webview.patch.items.showing']}" + ": " + srcAll.length;//Items showing
+				filterLeft();
+				break;
 			case 'checkedDir':
 				var checkedDir = message.checkedDir;
 				FilePatch.value = checkedDir;

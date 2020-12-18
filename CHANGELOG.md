@@ -1,5 +1,64 @@
 # Changelog
 
+# Versão [1.2.2]
+
+## [4GL][TDSVsCode 1.2.1] Variáveis Array de Record não tem valores visualizados no DEBUG [Issue 590](https://github.com/totvs/tds-vscode/issues/590)
+
+### Problema:
+
+- Ao depurar código 4GL que tenha variáveis modulares do tipo ARRAY OF RECORD, os valores dos itens da lista não são apresentadas.
+
+### Solução:
+
+- Na análise da ocorrrência, verificamos que o tipo de servidor, em ``servers.json``, não estava correto.
+- Foi adicionado atributo tipo de servidor (``type``) no registro de novos servidores.
+
+Para servidores registrados antes desta versão, favor:
+- abrir o arquivo ``servers.json`` em modo texto;
+- ajustar o atributo ``savedTokens`` para uma lista vazia;
+- localize a definição do servidor LOGIX e ajuste o atributo ``type`` para ``totvs_server_logix``.
+
+Detalhes em
+https://github.com/totvs/tds-vscode/issues/590#issuecomment-742527102.
+
+## Configurar uma pasta inicial padrão para geração de patches. [Issue 398](https://github.com/totvs/tds-vscode/issues/398)
+
+### Melhoria:
+
+- Adicionada a salva da última pasta utilizada na geração de patches que será sugerida na próxima geração.
+
+## Atualização de versão do TypeScript para 4.1
+
+### Problema:
+
+- Devido a quebra de compatibilidade com versões anteriores, ocorrem erros de compilação.
+  Detalhes em [Breaking changes](https://devblogs.microsoft.com/typescript/announcing-typescript-4-1/#breaking-changes)
+
+### Solução:
+
+- Código compatibilizado com o TS 4.1.
+
+## Implementação do processo de validação de pacotes de atualização (_patch_)
+
+### Problema:
+
+- Os pacotes de atualização eram validados parcialmente.
+
+### Solução:
+
+- Reformulação do processo de validação/aplicação de pacotes.
+- Interface com usuário refeita, para atender o novo processo.
+
+## Informar parâmetros para debugar ponto de Entrada. [Issue 589](https://github.com/totvs/tds-vscode/issues/589)
+
+### Problema:
+
+- Não estava sendo possível informar parâmetros de entrada para o SmartClient.
+
+### Solução:
+
+- Foi revisto o processo de obtenção dos parâmetros de entrada, na execução e depuração, assim como foi revisto o configurador de Launchers para cadastrar parâmetros nos launchers.
+
 # Versão [1.2.1]
 
 ## Não exibe conteúdo de array no Watch. [Issue 549](https://github.com/totvs/tds-vscode/issues/549)

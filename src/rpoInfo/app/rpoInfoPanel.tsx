@@ -31,6 +31,7 @@ import Label from '@material-ui/icons/Label';
 import SaveAlt from "@material-ui/icons/SaveAlt";
 
 interface RenderTree {
+  id: string;
   name: string;
   children?: RenderTree[];
   rpoPatch?: IRpoPatch;
@@ -224,17 +225,10 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
 
       switch (message.command) {
         case RpoInfoPanelAction.UpdateRpoInfo: {
-          const rpoInfo: IRpoInfoData = message.data.rpoInfo as IRpoInfoData;
-          const nodes: RenderTree = { name: rpoInfo.environment, children: [] };
+          const rpoInfo: IRpoInfoData = message.data.rpoInfo;
+          const treeNodes: any = message.data.treeNodes;
 
-          rpoInfo.rpoPatchs.forEach((rpoPatch: IRpoPatch) => {
-            const name = rpoPatch.dateFileApplication.split(" ")[0];
-            if (!nodes.children.find((element: any) => element.name == name)) {
-              nodes.children.push({ name: name, rpoPatch: rpoPatch })
-            }
-          });
-
-          setData(nodes);
+          setData(treeNodes);
           setSubtitle(message.data.serverName);
           setRpoInfo({ version: rpoInfo.rpoVersion, date: rpoInfo.dateGeneration, environment: rpoInfo.environment });
           break;
@@ -290,15 +284,30 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
     },
   });
 
-  const hashCode = (s: string) => s.split('').reduce((a, b) => { a = ((a << 5) - a) + b.charCodeAt(0); return a & a }, 0)
+  const findNode = (id: string, children: RenderTree[]): RenderTree => {
+    let result: RenderTree = null;
 
-  const doClickNode = (event: React.MouseEvent<HTMLElement, MouseEvent>, name: string) => {
+    children.forEach((element: RenderTree) => {
+      if (element.id == id){
+        result = element;
+      } else if (element.children && element.children.length != 0) {
+        const result2 = findNode(id, element.children);
+        if (result2) {
+          result = result2;
+        }
+      }
+    })
+
+    return result;
+  };
+
+  const doClickNode = (event: React.MouseEvent<HTMLElement, MouseEvent>, id: string) => {
     event.preventDefault();
 
-    const currentNode: RenderTree[] = data.children.filter((element: RenderTree) => element.name == name);
-    if (currentNode.length == 1) {
-      setRows(currentNode[0].rpoPatch.programsApp);
-      setCurrentNode(currentNode[0].rpoPatch);
+    const currentNode: RenderTree = findNode(id, data.children);
+    if (currentNode && currentNode.rpoPatch) {
+      setRows(currentNode.rpoPatch.programsApp);
+      setCurrentNode(currentNode.rpoPatch);
     } else {
       setRows([]);
       setCurrentNode(null);
@@ -307,10 +316,10 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
 
   const renderTree = (nodes: RenderTree) => (
     <StyledTreeItem
-      nodeId={"node_" + hashCode(nodes.name)}
+      nodeId={"node_" + nodes.id}
       labelText={nodes.name}
       labelIcon={Label}
-      onClick={(event) => doClickNode(event, nodes.name)}
+      onClick={(event) => doClickNode(event, nodes.id)}
     >
       {Array.isArray(nodes.children) ? nodes.children.map((node) => renderTree(node)) : null}
     </StyledTreeItem>
@@ -323,7 +332,7 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
   return (
     <RpoInfoTheme>
       <Paper variant="outlined">
-        <Grid container spacing={5}>
+        <Grid container spacing={2}>
           <Grid item xs={2}>
             <Grid container >
               <Grid item container className={inputTextClasses.root}>
@@ -334,7 +343,7 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
 
               <Grid item >
                 <TreeView
-                  defaultExpanded={["node_" + hashCode(rpo.environment)]}
+                  defaultExpanded={["node_" + rpo.environment]}
                   defaultCollapseIcon={rpoInfoIcons.arrowDropDown}
                   defaultExpandIcon={rpoInfoIcons.arrowRight}
                   defaultEndIcon={<div style={{ width: 24 }} />}
@@ -359,8 +368,8 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
                       }
                     />
 
-                    <Grid container xs={12} >
-                      <Grid item container xs>
+                    <Grid container >
+                      <Grid item container xs={6}>
                         <Grid item xs={12}>
                           <Typography variant="overline" gutterBottom>Generation</Typography>
                         </Grid>
@@ -372,7 +381,7 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
                         </Grid>
                       </Grid>
 
-                      <Grid item container xs>
+                      <Grid item container xs={6}>
                         <Grid item xs={12}>
                           <Typography variant="overline" gutterBottom>Application</Typography>
                         </Grid>

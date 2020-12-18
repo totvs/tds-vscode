@@ -1,24 +1,56 @@
 
-### Aplicando Patch utilizando o assistente
+# Aplicando de pacotes de atualização (_patch)
 
-- Para aplicar um patch conecte-se ao servidor.
+> Requisitos
+>
+> - servidor/ambiente conectado
+> - usuário autenticado (se requerido)
+> - acesso ao RPO exclusivo
 
-- Selecione com o botão direito do mouse o servidor.
-- Selecione a opção `Patch Apply`.
-- Existe um atalho para a abertura da página: `CTRL + SHIFT + P ` digite `TOTVS` e selecione a opção `TOTVS: Patch Apply`.
+Auxilia no processo de aplicação de pacotes de atualização (_patchs_).
 
-- Os campos de servidores são preenchidas automaticamente com as informações do servidor conectado.
-- No campo `Patch File` selecione o patch que deseja aplicar.
-- Confirme a aplicação.
+## Via assistente do servidor
 
-![Patch Apply](./gifs/ApplyPatch.gif)
+Acesse a visão de ``Servidores``, acione "Aplicar Pacote" no menu de contexto do servidor-alvo e no assistente apresentado, selecione o(s) arquivo(s) de pacotes de atualização que serão aplicados.
 
-### Aplicando Patch utilizando o menu de contexto
+> Atalho para a abertura do assistente: `CTRL + SHIFT + P `, digite `TOTVS` e selecione a opção `TOTVS: Patch Apply`.
 
-- Para aplicar um patch conecte-se ao servidor.
+![Abertura do assistente](./patch/open-wizard.gif)
 
-- Selecione o patch com o botão direito do mouse.
-- Selecione a opção `Patch Apply from file`.
-- Confirme a aplicação e o patch será aplicado.
+#### Ações individuais
 
-![Patch Apply from File](./gifs/ApplyPatchMenu.gif)
+Na mesma linha de identificação do pacote, você pode acionar ações para cada pacote, individualmente.
+
+![Individual](./patch/single-apply.gif)
+
+Na ordem de apresentação:
+
+Informação | Apresenta painel co informações sobre o pacote.
+Remover | Remove o pacote da lista de arquivos a processar.
+Validar | Valida o pacote contra o RPO do ambiente corrente.
+Aplicar | Aplica o pacote no RPO do ambiente corrente.
+
+#### Ações em lote
+
+Na botoeira de ações, ao acionar uma ação esta será aplicada em todos os pacotes informados..
+
+![Em lote](./patch/batch-apply.gif)
+
+Na ordem de apresentação:
+
+Filtro | Ativa opção de filtro.
+Validar | Valida todos os pacotes contra o RPO do ambiente corrente.
+Aplicar | Aplica todos os pacote válidos no RPO do ambiente corrente.
+Remover | Remove todos os pacote da lista de arquivos a processar.
+
+#### Arquivo compactado com pacotes
+
+Ao selecionar um arquivo compactado com pacotes, lhe será apresentado o nome do arquivo compactado e uma pequena seta a esquerda. Acione-a para ver os pacotes. As ações descritas, funcionam da mesma forma.
+
+![Arquivo compactado](./patch/apply-zip-file.gif)
+
+## Via seleção de arquivo
+
+Na visão ``Explorer``, selecione um (ou mais) pacotes de atualizações, acione "Aplicar Pacote do Arquivo" no menu de contexto da seleção. O assistente de aplicação será aberto, já com os arquivos. Siga com os procedimentos acima.
+
+![A parte de arquivo](./patch/apply-from-file.gif)

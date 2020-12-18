@@ -9,7 +9,7 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
    sodipodi:docname="server.connected.svg"
-   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
    sodipodi:version="0.32"
    id="svg1315"
    height="48px"
@@ -17,20 +17,20 @@
   <defs
      id="defs1317" />
   <sodipodi:namedview
-     inkscape:window-maximized="0"
+     inkscape:window-maximized="1"
      inkscape:document-rotation="0"
      inkscape:grid-points="true"
-     inkscape:window-y="0"
-     inkscape:window-x="-7"
-     inkscape:window-height="696"
-     inkscape:window-width="842"
+     inkscape:window-y="-8"
+     inkscape:window-x="-8"
+     inkscape:window-height="715"
+     inkscape:window-width="1366"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      showgrid="true"
      inkscape:current-layer="layer1"
-     inkscape:cy="23.999999"
-     inkscape:cx="23.999999"
-     inkscape:zoom="15.958333"
+     inkscape:cy="18.572502"
+     inkscape:cx="12.870698"
+     inkscape:zoom="7.9791665"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
@@ -77,8 +77,21 @@
   </metadata>
   <g
      inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Layer 2">
+    <ellipse
+       style="fill:#99ff55;fill-rule:evenodd;stroke-width:1.25662;paint-order:stroke fill markers"
+       id="path841"
+       cx="23.937338"
+       cy="24.250652"
+       rx="23.81201"
+       ry="23.749348" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
      inkscape:label="Layer 1"
-     id="layer1">
+     id="layer1"
+     style="opacity:0.36928105">
     <rect
        ry="0"
        rx="0"
@@ -121,7 +134,7 @@
        height="31"
        width="16"
        id="rect3054"
-       style="fill:#60e500;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+       style="fill:#99ff55;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     <path
        id="path3929"
        d="M 18,13 L 30,13"

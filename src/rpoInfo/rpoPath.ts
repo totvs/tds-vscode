@@ -20,3 +20,15 @@ export interface IRpoInfoData {
   rpoPatchs: IRpoPatch[];
 }
 
+export interface IPatchValidateData {
+  file: string;
+  datePatch: string;
+  dateRpo: string;
+};
+
+export interface IPatchValidateResult {
+  error: boolean;
+  message: string;
+  patchValidates?: IPatchValidateData[];
+  errorCode: number;
+}

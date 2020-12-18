@@ -3,9 +3,7 @@
 [![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-
-[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors-)
-
+[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A extensão do **TOTVS Developer Studio for VS Code** disponibiliza uma suíte de desenvolvimento para o ecossistema **Protheus**.
@@ -22,7 +20,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 - [Edição](docs/edition.md) de arquivos fontes (AdvPL, TLPP, 4GL e variantes)
 - [Compilação](docs/compilation.md) de fontes, pastas e da área de trabalho
 - [Depuração](docs/debugger.md) e execução (Local e _WebApp_)
-- [Geração](docs/build-patch.md) e [aplicação](docs/apply-patch.md) de pacotes de correção (_patchs_)
+- [Geração](docs/build-patch.md) e [aplicação](docs/apply-patch.md) de pacotes de atualizações (_patchs_)
 - [Manutenção](docs/rpo.md) do _RPO_
 - [Inspeção](docs/rpo-inspector.md) do _RPO_
 - [Geração de cliente de serviço web](docs/ws-client-generation.md) (_Web Service_)
@@ -30,12 +28,12 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 
 ## Guia rápido
 
-> **Nunca usei o VS-Code**: Recomendamos a leitura de:\
+> **Nunca usei o VS-Code**: Recomendamos a leitura de:
 >
-> - [User Interface](https://code.visualstudio.com/docs/getstarted/userinterface)\
-> - [Multi-root Workspaces](https://code.visualstudio.com/docs/editor/multi-root-workspaces)\
-> - [Settings](https://code.visualstudio.com/docs/getstarted/settings)\
-> - [Basic Edition](https://code.visualstudio.com/docs/editor/codebasics)\
+> - [User Interface](https://code.visualstudio.com/docs/getstarted/userinterface)
+> - [Multi-root Workspaces](https://code.visualstudio.com/docs/editor/multi-root-workspaces)
+> - [Settings](https://code.visualstudio.com/docs/getstarted/settings)
+> - [Basic Edition](https://code.visualstudio.com/docs/editor/codebasics)
 > - [Marketpalce](https://code.visualstudio.com/docs/editor/extension-gallery)
 
 Ao iniciar o **VS-Code** com a extensão **TDS-VSCode** instalada, abra (ou crie) a pasta principal que contém (ou conterá) seus arquivos fontes e de recursos. Essa pasta é denominada genericamente de `projeto`.
@@ -76,18 +74,6 @@ Para garantir a compilação é necessário compatibilizar o encode da seguinte 
 
 Por padrão, o _TDS-VSCode_ já vem configurado para usar o encodin `WindowsCP1252`.
 
-## Suporte
-
-### Capturador de Logs
-
-- Caso tenha problemas com a ferramenta e deseja suporte da equipe de desenvolvimento da extensão, inicie uma ferramenta de coleta de logs para auxiliar no suporte. Essa ferramenta colhe informações como versões de ferramentas e extensões, sistema operacional, versão do **VS-Code**, configuração de servidores e outras informações relevantes.
-
-- Para ativar, acione o atalho `CTRL + SHIFT + P`, digite `TOTVS: On Logger Capture` e acione o comando. Nesse momento o capturador de log é iniciado.
-
-- Reproduza a ocorrência e acione o atalho `CTRL + SHIFT + P`, digite `TOTVS: Off Logger Capture` ou na barra de status acione o _mouse_ sobre o texto `Capturando logs...`. O capturador será encerrado e um arquivo chamado `tdsSupport.zip` será gerado. Anexe este arquivo ao chamado.
-
-![Logger](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Logger.gif)
-
 ### Desenvolvimento Colaborativo
 
 - Se deseja contribuir com o desenvolvimento do plugin, acesse [Git Hub TDS-VSCODE](https://github.com/totvs/tds-vscode), faça seu commit que iremos analisar!
@@ -99,3 +85,92 @@ Por padrão, o _TDS-VSCode_ já vem configurado para usar o encodin `WindowsCP12
   Permite uso de _bookmarks_ no estilo Delphi numerados de 1 a 9.
 
   ![Toggle](https://github.com/alefragnani/vscode-numbered-bookmarks/raw/master/images/numbered-bookmarks-toggle.png)
+
+## Suporte
+
+### Capturador de Logs
+
+Caso tenha problemas com a ferramenta e deseja suporte da equipe de desenvolvimento da extensão, inicie uma ferramenta de coleta de _logs_ para auxiliar no suporte. Essa ferramenta colhe informações como versões de ferramentas e extensões, sistema operacional, configuração de servidores e etc.
+
+- Para ativa-la, selecione pelo atalho `CTRL + SHIFT + P`, digite `TOTVS: On Logger Capture`. Nesse momento o capturador de _log_ será iniciado.
+
+- Reproduza o problema e selecione a opção `CTRL + SHIFT + P` digite `TOTVS: Off Logger Capture` ou na Barra inferior clique sobre o texto `Capturando logs...`. O capturador será encerrado e um arquivo chamado `tdsSupport.zip` será gerado. Anexe esse arquivo ao chamado.
+
+![Logger](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Logger.gif)
+
+## Resolução de problemas
+
+Alguns problemas conhecidos e como resolvê-los.
+
+> [TROUBLESHOOTING](https://github.com/totvs/tds-vscode/blob/master/TROUBLESHOOTING.md)
+
+Se não conseguir resolvê-los com isso, abra um Issue com o maior número de informações possíveis e envie os logs gerados pelas instruções na página de "Troubleshooting".
+
+> Acesse [Nova Issue](https://github.com/totvs/tds-vscode/issues/new/choose) e selecione "Bug report".
+
+## Melhorias
+
+Se você sentiu a falta de alguma funcionalidade  deixe sua idéia registrada.
+
+> Acesse [Nova Issue](https://github.com/totvs/tds-vscode/issues/new/choose) e selecione "Feature request".
+
+Ou se preferir colabore conosco e faça você mesmo. Veja como colaborar a seguir.
+
+## Desenvolvimento Colaborativo
+
+Para contribuir com o desenvolvimento da extensão, acesse [Git Hub TDS-VSCODE](https://github.com/totvs/tds-vscode), faça um _fork_ do projeto, crie uma "Pull Request" que iremos analisar!
+
+> [TOTVS - TDS-VSCode - Desenvolvimento colaborativo](https://www.youtube.com/watch?v=IGWh5ejxhHU)<br/>
+
+## Colaboradores
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/brodao"><img src="https://avatars0.githubusercontent.com/u/949914?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Alan Cândido</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=brodao" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=brodao" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/lwtnb-wrk"><img src="https://avatars1.githubusercontent.com/u/49563478?v=4?s=50" width="50px;" alt=""/><br /><sub><b>lwtnb-wrk</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=lwtnb-wrk" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=lwtnb-wrk" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/DanielYampolschi"><img src="https://avatars1.githubusercontent.com/u/10711513?v=4?s=50" width="50px;" alt=""/><br /><sub><b>DanielYampolschi</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=DanielYampolschi" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=DanielYampolschi" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/matheus-sales"><img src="https://avatars2.githubusercontent.com/u/11618741?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Matheus Sales</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=matheus-sales" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=matheus-sales" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://youtube.com/user/MansanoRicardo"><img src="https://avatars1.githubusercontent.com/u/33813921?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Mansano</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=ricardomansano" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=ricardomansano" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/acacioegas"><img src="https://avatars0.githubusercontent.com/u/369099?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Acacio Egas</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=acacioegas" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/danielbolognani"><img src="https://avatars1.githubusercontent.com/u/25229827?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Daniel Otto Bolognani</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=danielbolognani" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/leowww"><img src="https://avatars0.githubusercontent.com/u/4183539?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Leo Watanabe</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=leowww" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=leowww" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/rogeriorc"><img src="https://avatars1.githubusercontent.com/u/2599798?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Rogério Ribeiro da Cruz</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=rogeriorc" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/robsonwilliam"><img src="https://avatars3.githubusercontent.com/u/11349311?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Robson William</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=robsonwilliam" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/caiadofelipe"><img src="https://avatars3.githubusercontent.com/u/49681823?v=4?s=50" width="50px;" alt=""/><br /><sub><b>FELIPE CAIADO ALMEIDA</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/issues?q=author%3Acaiadofelipe" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/isaquerochak"><img src="https://avatars0.githubusercontent.com/u/19375217?v=4?s=50" width="50px;" alt=""/><br /><sub><b>isaquerochak</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/issues?q=author%3Aisaquerochak" title="Bug reports">🐛</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/rodrigopg"><img src="https://avatars0.githubusercontent.com/u/5282959?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Rodrigo Gonçalves</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/issues?q=author%3Arodrigopg" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://www.linkedin.com/in/ramorais/"><img src="https://avatars0.githubusercontent.com/u/9218184?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Rogério A. Morais</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=ramorais" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/alexmmartins"><img src="https://avatars0.githubusercontent.com/u/24897997?v=4?s=50" width="50px;" alt=""/><br /><sub><b>alexmmartins</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=alexmmartins" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/guilhermebigois"><img src="https://avatars2.githubusercontent.com/u/22408258?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Guilherme Bigois</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=guilhermebigois" title="Documentation">📖</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+## Extensões recomendadas
+
+- [Numbered Bookmarks](https://marketplace.visualstudio.com/items?itemName=alefragnani.numbered-bookmarks)
+
+  Permite uso de _bookmarks_ no estilo Delphi numerados de 1 a 9.
+
+  ![Numbered Bookmarks](https://github.com/alefragnani/vscode-numbered-bookmarks/raw/master/images/numbered-bookmarks-toggle.png)
+
+## Extensões com incompatibilida
+
+As extensões abaixo não devem ser utilizadas junto com o _TDS for VS-Code_ porque podem causar mal funcionamento.
+
+- (4gl-outine-dxc)[https://www.vsixhub.com/vsix/14295/]
+
+- (advpl-vscode)[https://github.com/totvs/advpl-vscode]
+
+> Caso você perceba que alguma extensão de terceiros esta interferindo no _TDS for VS-Code_ favor abrir um (chamado)[(https://github.com/totvs/tds-vscode/issues].

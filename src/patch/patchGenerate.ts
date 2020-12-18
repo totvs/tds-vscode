@@ -62,7 +62,7 @@ export function patchGenerate(context: vscode.ExtensionContext) {
 				context.subscriptions
 			);
 
-			const allInfoServer: any = Utils.getServerForID(server.id);
+			const allInfoServer: any = Utils.getServerById(server.id);
 
 			if (allInfoServer) {
 				server.address = allInfoServer.address;
@@ -76,6 +76,23 @@ export function patchGenerate(context: vscode.ExtensionContext) {
 
 			currentPanel.webview.onDidReceiveMessage(message => {
 				switch (message.command) {
+					case 'selectPatchGenerateDir':
+						const options: vscode.OpenDialogOptions = {
+							canSelectMany: false,
+							canSelectFiles: false,
+							canSelectFolders: true,
+							openLabel: localize("tds.webview.server.select.folder.to.save", "Select folder to save the Patch"),
+						};
+						vscode.window.showOpenDialog(options).then(fileUri => {
+							if (fileUri) {
+								let checkedDir = Utils.checkDir(fileUri[0].fsPath);
+								currentPanel.webview.postMessage({
+									command: "checkedDir",
+									checkedDir: checkedDir
+								});
+							}
+						});
+						break;
 					case 'checkDir':
 						let checkedDir = Utils.checkDir(message.selectedDir);
 						currentPanel.webview.postMessage({
@@ -83,7 +100,17 @@ export function patchGenerate(context: vscode.ExtensionContext) {
 							checkedDir: checkedDir
 						});
 						break;
-					case 'inspectorObjects':
+					case 'onload':
+						let lastGenDir = server.patchGenerateDir;
+						if (lastGenDir && lastGenDir.length != 0) {
+							let lastGenCheckedDir = Utils.checkDir(lastGenDir);
+							if (lastGenCheckedDir && lastGenCheckedDir.length != 0) {
+								currentPanel.webview.postMessage({
+									command: "checkedDir",
+									checkedDir: lastGenCheckedDir
+								});
+							}
+						}
 						//vscode.window.showInformationMessage(localize("tds.webview.sources.loading","Loading Sources from the Repository."));
 						languageClient.sendRequest('$totvsserver/inspectorObjects', {
 							"inspectorObjectsInfo": {
@@ -92,13 +119,16 @@ export function patchGenerate(context: vscode.ExtensionContext) {
 								"includeTres": true
 							}
 						}).then((response: ObjectsResult) => {
-							// const message: string = response.message;
-							// if (message == "Success") {
+							const message: string = response.message;
+							if (message == "Success") {
 							// 	vscode.window.showInformationMessage(localize("tds.webview.sources.loaded","Sources loaded from the Repository: ") + response.objects.length);
-								currentPanel.webview.postMessage(response.objects);
-							// } else {
-							// 	vscode.window.showErrorMessage(message);
-							// }
+								currentPanel.webview.postMessage({
+									command: "rpoObjects",
+									rpoObjects: response.objects
+								});
+							} else {
+								vscode.window.showErrorMessage(message);
+							}
 						}, (err: ResponseError<object>) => {
 							vscode.window.showErrorMessage(err.message);
 						});
@@ -106,13 +136,15 @@ export function patchGenerate(context: vscode.ExtensionContext) {
 					case 'patchGenerate':
 						const filesPath = message.pathFiles;
 						const patchName = message.patchName;
-						const patchDest = vscode.Uri.file(message.patchDest).toString();
+						const patchDestUri = vscode.Uri.file(message.patchDest).toString();
 
-						if (patchDest === "" || filesPath.length === 0) {
+						if (patchDestUri === "" || filesPath.length === 0) {
 							vscode.window.showErrorMessage(localize("tds.webview.patch.generate.fail","Generate Patch Fail. Please destination directory and sources/resources list."));
 						} else {
+							// save last patchGenerateDir
+							Utils.updatePatchGenerateDir(server.id, message.patchDest);
 							//vscode.window.showInformationMessage(localize("tds.webview.patch.generate.start","Start Generate Patch"));
-							sendPatchGenerateMessage(server, "", patchDest, 3, patchName, filesPath);
+							sendPatchGenerateMessage(server, "", patchDestUri, 3, patchName, filesPath);
 						}
 
 						if (currentPanel) {
@@ -174,6 +206,7 @@ export function patchGenerateFromFolder(context: any) {
 
 export class PatchResult {
 	returnCode: number;
+	files: string;
 }
 
 export class InspectorObject {

@@ -1,7 +1,7 @@
 import { WorkspaceFolder, DebugConfigurationProvider, DebugConfiguration, CancellationToken, window } from 'vscode';
 import * as vscode from 'vscode';
 import * as Net from 'net';
-import { extractProgram, extractArgs, setDapArgs, getDAP } from './debugConfigs';
+import { extractProgramArgs, ProgramArgs, setDapArgs } from './debugConfigs';
 import serverProvider from '../serverItemProvider';
 import * as nls from 'vscode-nls';
 
@@ -57,13 +57,25 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 			}
 
 			if (config.program === "${command:AskForProgramName}") {
-				const value = await vscode.commands.executeCommand("totvs-developer-studio.getProgramName");
+				const value: ProgramArgs = await vscode.commands.executeCommand("totvs-developer-studio.getProgramName");
 				if (!value) {
 					window.showInformationMessage(localize('tds.vscode.program_not_found', "Cannot find a program to debug"));
 					return undefined;	// abort launch
 				}
-				config.program = extractProgram(value as string);
-				config.programArguments = extractArgs(value as string);
+				config.program = value.program;
+				if (value.args) {
+					config.programArguments = value.args;
+				}
+				else {
+					if (config.programArguments
+						&& Array.isArray(config.programArguments)
+						&& (<Array<string>> config.programArguments).includes("${command:AskForProgramArguments}")) {
+						config.programArguments = await vscode.commands.executeCommand("totvs-developer-studio.getProgramArguments");
+						if (!config.programArguments) {
+							config.programArguments = [];
+						}
+					}
+				}
 			}
 
 			// se no server conectado houver a informacao de smartclientBin utiliza a informacao
@@ -101,7 +113,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 			return Promise.resolve(config);
 		} else {
 			window.showErrorMessage(localize('tds.vscode.server_not_connected', "No servers connected"));
-			return null;
+			return undefined;
 		}
 	}
 

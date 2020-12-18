@@ -257,6 +257,15 @@ input::-webkit-calendar-picker-indicator {
 	cursor: pointer;
 }
 
+.btn-submit:disabled {
+	background-color: #dddddd;
+}
+
+.btn-submit:hover:disabled {
+	border-style: none;
+	cursor: auto;
+}
+
 /*
 .btn-default:hover {
 	color: white;
@@ -292,4 +301,10 @@ label {
 	font-size: 13px;
 	text-align: center;
 	color: #3C3734;
+}
+
+.errorMessage {
+	color: #a72b15;
+	font-size: 18px;
+	font-family: Arial;
 }

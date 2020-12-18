@@ -3,7 +3,7 @@
 > Requisitos
 >
 > - servidor/ambiente conectado
-> - usuário autenticado (se necessário)
+> - usuário autenticado (se requerido)
 > - executor configurado
 
 > Recomendações
@@ -115,7 +115,7 @@ return
 | `u_myFunc`            | `p1`=nil, `p2`=nil, `p3`=nil   |
 | `u_myFunc()`          | `p1`=nil, `p2`=nil, `p3`=nil   |
 | `u_myFunc("A")`       | `p1`="A", `p2`=nil, `p3`=nil   |
-| `u_myFunc("A",,3)`    | `p1`="A", `p2`=nil, `p3`="3"   |
+| `u_myFunc("A",,3)`    | `p1`="A", `p2`="",  `p3`="3"   |
 | `u_myFunc("A",.t.,3)` | `p1`="A", `p2`=".t.", `p3`="3" |
 
 | A passagem de parâmetros equivale a usar o argumento `-a` do `SmartClient`.

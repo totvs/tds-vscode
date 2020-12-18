@@ -77,32 +77,6 @@ class ServerItemProvider
   }
 
   getTreeItem(element: ServerItem | EnvSection): vscode.TreeItem {
-    // if (element instanceof ServerItem) {
-    //   let iconPath = {
-    //     light: path.join(
-    //       __filename,
-    //       "..",
-    //       "..",
-    //       "resources",
-    //       "light",
-    //       this.isConnected
-    //         ? "server.connected.svg"
-    //         : "server.svg"
-    //     ),
-    //     dark: path.join(
-    //       __filename,
-    //       "..",
-    //       "..",
-    //       "resources",
-    //       "dark",
-    //       this.isConnected
-    //         ? "server.connected.svg"
-    //         : "server.svg"
-    //     ),
-    //   };
-
-    //   element.iconPath = iconPath;
-    // }
 
     return element;
   }
@@ -214,7 +188,7 @@ class ServerItemProvider
 
     const serverItem = (
       serverItem: string,
-      type: string,
+      type: ServerType,
       address: string,
       port: number,
       secure: number,
@@ -298,6 +272,8 @@ class ServerItemProvider
   }
 }
 
+export type ServerType = "totvs_server_protheus" | "totvs_server_logix";
+
 export class ServerItem extends vscode.TreeItem {
   public environment: string = "";
   public username: string = "";
@@ -309,7 +285,7 @@ export class ServerItem extends vscode.TreeItem {
 
   constructor(
     public name: string,
-    public readonly type: string,
+    public readonly type: ServerType,
     public readonly address: string,
     public readonly port: number,
     public secure: number,
@@ -337,7 +313,7 @@ export class ServerItem extends vscode.TreeItem {
       "..",
       "resources",
       "light",
-      this.isConnected ? "server.connected.svg" : "server.svg"
+      (this.isConnected ? "server.connected.svg" : (this.type == "totvs_server_protheus"?"protheus_server.svg":"logix_server.svg"))
     ),
     dark: path.join(
       __filename,
@@ -345,7 +321,7 @@ export class ServerItem extends vscode.TreeItem {
       "..",
       "resources",
       "dark",
-      this.isConnected ? "server.connected.svg" : "server.svg"
+      (this.isConnected ? "server.connected.svg" : (this.type == "totvs_server_protheus"?"protheus_server.svg":"logix_server.svg"))
     ),
   };
 

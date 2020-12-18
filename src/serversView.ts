@@ -105,10 +105,9 @@ export class ServersExplorer {
                 });
                 break;
               case "saveServer":
-                const typeServer = "totvs_server_protheus";
                 if (message.serverName && message.port && message.address) {
                   const serverId = createServer(
-                    typeServer,
+                    message.serverType,
                     message.serverName,
                     message.port,
                     message.address,

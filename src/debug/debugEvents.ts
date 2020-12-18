@@ -255,7 +255,7 @@ function processShowProgressEvent(event: DebugSessionCustomEvent, debugConsole: 
 
 					return new Promise((resolve) => {
 						setTimeout(() => {
-							resolve();
+							resolve(true);
 						}, 1000);
 					});
 				}
