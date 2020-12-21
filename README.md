@@ -102,18 +102,17 @@ Caso tenha problemas com a ferramenta e deseja suporte da equipe de desenvolvime
 
 Alguns problemas conhecidos e como resolvê-los.
 
-> [TROUBLESHOOTING](https://github.com/totvs/tds-vscode/blob/master/TROUBLESHOOTING.md)
+| Ocorrência | Solução |
+| --- | --- |
+| Aplicação de pacotes de atualização (_patchs_) | |
+| Servidores ``Lobo Guara``, versão iqual ou anterior a ``19.3.0.4``, pode apresentar mensagem de erro no processo de validação e mesmo assim aplicá-lo. | Atualizar o servidor para versão mais recente.  |
 
-Se não conseguir resolvê-los com isso, abra um Issue com o maior número de informações possíveis e envie os logs gerados pelas instruções na página de "Troubleshooting".
-
-> Acesse [Nova Issue](https://github.com/totvs/tds-vscode/issues/new/choose) e selecione "Bug report".
+Se não conseguir resolvê-los, abra um [chamado](https://github.com/totvs/tds-vscode/issues/new/choose) com o maior número de informações possíveis e incluindo os _logs_ gerados conforme instruído em [TROUBLESHOOTING](https://github.com/totvs/tds-vscode/blob/master/TROUBLESHOOTING.md).
 
 ## Melhorias
 
-Se você sentiu a falta de alguma funcionalidade  deixe sua idéia registrada.
-
-> Acesse [Nova Issue](https://github.com/totvs/tds-vscode/issues/new/choose) e selecione "Feature request".
-
+Se você sentiu a falta de alguma funcionalidade deixe sua idéia (registrada)[https://github.com/totvs/tds-vscode/issues/new?assignees=&labels=&template=feature_request.md&title=].
+S
 Ou se preferir colabore conosco e faça você mesmo. Veja como colaborar a seguir.
 
 ## Desenvolvimento Colaborativo
@@ -169,8 +168,7 @@ Para contribuir com o desenvolvimento da extensão, acesse [Git Hub TDS-VSCODE](
 
 As extensões abaixo não devem ser utilizadas junto com o _TDS for VS-Code_ porque podem causar mal funcionamento.
 
-- (4gl-outine-dxc)[https://www.vsixhub.com/vsix/14295/]
+- [4gl Outline Dxc](https://www.vsixhub.com/vsix/14295/)
+- [advpl-vscode](https://github.com/totvs/advpl-vscode)
 
-- (advpl-vscode)[https://github.com/totvs/advpl-vscode]
-
-> Caso você perceba que alguma extensão de terceiros esta interferindo no _TDS for VS-Code_ favor abrir um (chamado)[(https://github.com/totvs/tds-vscode/issues].
+> Caso você perceba que alguma extensão de terceiros esta interferindo no _TDS for VS-Code_ favor abrir um [chamado](https://github.com/totvs/tds-vscode/issues).
