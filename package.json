@@ -75,7 +75,7 @@
 		"jszip": "^3.5.0",
 		"material-table": "1.68.1",
 		"prettier": "^2.1.2",
-		"prettier-plugin-4gl": "^0.0.4",
+		"prettier-plugin-4gl": "^0.0.6",
 		"react": "^16.13.0",
 		"react-dom": "^16.13.0",
 		"strip-json-comments": "^3.1.1",
@@ -503,11 +503,6 @@
 							"type": "boolean",
 							"default": false,
 							"description": "Habilita o espaçamento de operadores em expressões."
-						},
-						"alignFields": {
-							"type": "boolean",
-							"default": true,
-							"description": "Habilita o alinhamento de campos."
 						}
 					}
 				}

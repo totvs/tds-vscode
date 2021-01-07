@@ -17,7 +17,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 - Sintaxe destacada
 - Comunicação baseada nos protocolos LSP/DAP
 - [Console](docs/console.md) informativo e notificações
-- [Edição](docs/edition.md) de arquivos fontes (AdvPL, TLPP, 4GL e variantes)
+- [Edição](docs/edition.md) e [Formatação](docs/format_config.md) de arquivos fontes (AdvPL, TLPP, 4GL e variantes)
 - [Compilação](docs/compilation.md) de fontes, pastas e da área de trabalho
 - [Depuração](docs/debugger.md) e execução (Local e _WebApp_)
 - [Geração](docs/build-patch.md) e [aplicação](docs/apply-patch.md) de pacotes de atualizações (_patchs_)
@@ -121,8 +121,15 @@ Para contribuir com o desenvolvimento da extensão, acesse [Git Hub TDS-VSCODE](
 
 > [TOTVS - TDS-VSCode - Desenvolvimento colaborativo](https://www.youtube.com/watch?v=IGWh5ejxhHU)<br/>
 
-## Colaboradores
+## Mantenedor
 
+<table>
+  <tr>
+    <td align="center"><a href="https://twitter.com/TOTVSDevelopers"><img src="https://avatars2.githubusercontent.com/u/20243897?v=4?s=100" width="100px;" alt=""/><br /><sub><b>TOTVS S.A.</b></sub></a><br /><a href="#maintenance-totvs" title="Maintenance">🚧</a> <a href="#plugin-totvs" title="Plugin/utility libraries">🔌</a> <a href="#projectManagement-totvs" title="Project Management">📆</a></td>
+    </tr>
+</table>
+
+## Colaboradores
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
