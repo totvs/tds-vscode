@@ -88,6 +88,12 @@ Por padrão, o _TDS-VSCode_ já vem configurado para usar o _encode_ `WindowsCP1
 
 ## Suporte
 
+### Problemas conhecidos
+
+- Aplicação de pacotes
+Em _appServer_ da versão _19.3.0.4_, há relatos de problemas na aplicação de pacotes.
+Atualize para a versão **19.3.0.6** ou mais recente.
+
 ### Capturador de Logs
 
 Caso tenha problemas com a ferramenta e deseja suporte da equipe de desenvolvimento da extensão, inicie uma ferramenta de coleta de _logs_ para auxiliar no suporte. Essa ferramenta colhe informações como versões de ferramentas e extensões, sistema operacional, configuração de servidores e etc.
@@ -163,7 +169,7 @@ Para contribuir com o desenvolvimento da extensão, acesse [Git Hub TDS-VSCODE](
 
   Permite uso de _bookmarks_ no estilo Delphi numerados de 1 a 9.
 
-  ![Numbered Bookmarks](https://github.com/alefragnani/vscode-numbered-bookmarks/raw/master/images/numbered-bookmarks-toggle.png)
+  ![Numbered Bookmarks Toggle](https://github.com/alefragnani/vscode-numbered-bookmarks/raw/master/images/numbered-bookmarks-toggle.png)
 
 ## Extensões com incompatibilidade
 
