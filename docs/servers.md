@@ -53,6 +53,8 @@ Ou use a troca rápida disponível na barra de _status_.
 
 O **TDS-VSCode**, suporta um sistema simples de privilégios, baseada em configuração efetuada no arquivo _appServer.ini_, podendo-se configurar  privilégios para determinadas operações e estações, através da adição de chaves na sessão `[TDS]`.
 
+> Modificações na sessão `[TDS]` requer **reinicialização** do servidor.
+
 > Para manter o mesmo comportamento de ambientes com versões mais antigas, todas as operações vem liberadas por padrão, na ausência da sessão `[TDS]` ou da chave da operação.
 
 ### Especificação da sessão
