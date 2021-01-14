@@ -34,12 +34,13 @@ export function format4GL(
       parser: "4gl-token",
       requirePragma: false,
       insertPragma: false,
+      rangeEnd: options.rangeEnd + 1
     };
   } else {
     result = content;
     options = {
       ...options,
-      parser: "4gl-source",
+      parser: "4gl-token",
     };
   }
 

@@ -21,6 +21,6 @@ export function getFormattingOptions(langId: string): FormattingOptions {
     stringStyle: getValue(langId, "stringStyle", "ignore"),
     formatNumber: getValue(langId, "formatNumber", false),
     operatorSpacing: getValue(langId, "operatorSpacing", false),
-    alignFields: getValue(langId, "alignFields", true),
+    //alignFields: false, //EXPERIMENTAL. não habilitar.
   };
 }

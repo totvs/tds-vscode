@@ -325,7 +325,7 @@ export class ServersExplorer {
                 "tds.webview.serversView.renameServer",
                 "Rename the server"
               ),
-              value: serverItem.label,
+              value: (typeof serverItem.label === "string")?serverItem.label:(serverItem.label as vscode.TreeItemLabel).label,
             })
             .then((newName: string) => {
               Utils.updateServerName(serverItem.id, newName);

@@ -2,7 +2,7 @@
 	"name": "tds-vscode",
 	"displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
 	"description": "%tds.package.description%",
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"publisher": "TOTVS",
 	"author": {
 		"name": "TOTVS",
@@ -39,7 +39,7 @@
 	},
 	"scripts": {
 		"clean2": "gulp clean",
-		"compile": "npm-run-all compile:*",
+		"compile": "tsc --version && npm-run-all compile:*",
 		"compile:extension": "tsc -p ./src",
 		"compile:views": "webpack --mode development",
 		"tslint": "tslint ./src/**/*.ts",
@@ -75,7 +75,7 @@
 		"jszip": "^3.5.0",
 		"material-table": "1.68.1",
 		"prettier": "^2.1.2",
-		"prettier-plugin-4gl": "^0.0.4",
+		"prettier-plugin-4gl": "^0.0.6",
 		"react": "^16.13.0",
 		"react-dom": "^16.13.0",
 		"strip-json-comments": "^3.1.1",
@@ -83,7 +83,7 @@
 		"tmp": "^0.2.1",
 		"typescript": "^4.1.0",
 		"vscode-debugadapter": "^1.42.1",
-		"vscode-languageclient": "^6.1.0",
+		"vscode-languageclient": "^6.1.1",
 		"vscode-nls": "^5.0.0",
 		"windows-1251": "^1.0.0",
 		"windows-1252": "^1.0.0"
@@ -515,11 +515,6 @@
 							"type": "boolean",
 							"default": false,
 							"description": "Habilita o espaçamento de operadores em expressões."
-						},
-						"alignFields": {
-							"type": "boolean",
-							"default": true,
-							"description": "Habilita o alinhamento de campos."
 						}
 					}
 				}
