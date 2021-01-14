@@ -122,5 +122,7 @@
 	"tds.package.workspaceServerConfig": "Использовать рабочее пространство для сохранения настроек сервера.",
 	"tds.package.OpenTimeLineWebview": "Открыть веб-просмотр графика",
 	"tds.package.apply.formatting": "Применяет форматирование к исходным файлам TOTVS и их вариантам.",
-	"tds-monitor.open-rpoinfo": "Журнал репозитория"
+	"tds-monitor.open-rpoinfo": "Журнал репозитория",
+	"tds.package.templateApply": "Template Application",
+	"tds.package.templateApply.fromFile": "Apply Template from file"
 }
