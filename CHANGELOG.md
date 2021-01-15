@@ -2,6 +2,13 @@
 
 # Versão [1.2.next]
 
+## Implementar a funcionalidade de aplicação de Templates. [Issue 622](https://github.com/totvs/tds-vscode/issues/622)
+
+### Melhoria:
+
+- Adicionada a funcionalidade para aplicação de Templates (.tpl).
+- [BETA] Esta funcionalidade encontra-se em testes Beta. Caso encontre algum problema na aplicação de um Template abra uma Issue com o Template em questão informando como aplicar e como validar o Template para que possamos rever o processo.
+
 ## Revisão de processos de edição 4GL
 
 ### Problema:
