@@ -496,3 +496,34 @@ export function sendValidPatchRequest(server: ServerItem, patchUri: string, perm
     return Promise.reject(result);
   });
 }
+
+export interface IApplyTemplateResult {
+  error: boolean;
+  message: string;
+  errorCode: number;
+}
+
+export function sendApplyTemplateRequest(server: ServerItem, includesUris: Array<string>, templateUri: vscode.Uri): Thenable<IApplyTemplateResult> {
+  return languageClient.sendRequest('$totvsserver/templateApply', {
+    "templateApplyInfo": {
+      "connectionToken": server.token,
+      "authorizationToken": "",
+      "environment": server.environment,
+      "includeUris": includesUris,
+      "templateUri": templateUri.toString(),
+      "isLocal": true
+    }
+  }).then((response: IApplyTemplateResult) => {
+    if (response.error) {
+      return Promise.reject(response);
+    }
+    return Promise.resolve(response);
+  }, (err: ResponseError<object>) => {
+    const error: IApplyTemplateResult = {
+      error: true,
+      message: err.message,
+      errorCode: err.code
+    };
+    return Promise.reject(error);
+  });
+}

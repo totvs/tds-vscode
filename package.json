@@ -160,6 +160,8 @@
 		"onCommand:totvs-developer-studio.logger.on",
 		"onCommand:totvs-developer-studio.logger.off",
 		"onCommand:totvs-developer-studio.compile.key",
+		"onCommand:totvs-developer-studio.templateApply",
+		"onCommand:totvs-developer-studio.templateApply.fromFile",
 		"onView:totvs_server",
 		"workspaceContains:.tds",
 		"workspaceContains:*.prw",
@@ -268,6 +270,16 @@
 					".ptm",
 					".upd",
 					".pak"
+				]
+			},
+			{
+				"id": "totvs_template",
+				"aliases": [
+					"Template",
+					"totvs_template"
+				],
+				"extensions": [
+					".tpl"
 				]
 			}
 		],
@@ -744,6 +756,16 @@
 			{
 				"command": "totvs-developer-studio.ws.show",
 				"title": "%tds.package.ws.show%",
+				"category": "TOTVS"
+			},
+			{
+				"command": "totvs-developer-studio.templateApply",
+				"title": "%tds.package.templateApply%",
+				"category": "TOTVS"
+			},
+			{
+				"command": "totvs-developer-studio.templateApply.fromFile",
+				"title": "%tds.package.templateApply.fromFile%",
 				"category": "TOTVS"
 			},
 			{
@@ -1276,6 +1298,12 @@
 					"command": "totvs-developer-studio.delete.file.fromRPO",
 					"alt": "totvs-developer-studio.delete.file.fromRPO",
 					"group": "totvsBuild@6"
+				},
+				{
+					"when": "resourceLangId == totvs_template",
+					"command": "totvs-developer-studio.templateApply.fromFile",
+					"alt": "totvs-developer-studio.templateApply.fromFile",
+					"group": "totvsBuild@5"
 				},
 				{
 					"when": "explorerResourceIsFolder",

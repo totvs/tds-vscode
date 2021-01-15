@@ -67,7 +67,7 @@
 	"tds.package.permissions.selectAction": "Seleccione la acción",
 	"tds.package.logger.on": "En la captura del registrador",
 	"tds.package.logger.off": "Captura Off Logger",
-	"tds.package.patchApply": "Parche Aplicar",
+	"tds.package.patchApply": "Aplicación de Parche",
 	"tds.package.patchApply.fromFile": "Aplicar parche desde archivo",
 	"tds.package.welcomePage": "Pagina de bienvenida",
 	"tds.package.include": "Incluir",
@@ -118,5 +118,7 @@
 	"tds.package.workspaceServerConfig": "Use el espacio de trabajo para mantener la configuración del servidor.",
 	"tds.package.OpenTimeLineWebview": "Abrir vista de línea de tiempo",
 	"tds.package.apply.formatting": "Aplica el formato a los archivos de origen TOTVS y sus variaciones.",
-	"tds-monitor.open-rpoinfo": "Registro del repositorio"
+	"tds-monitor.open-rpoinfo": "Registro del repositorio",
+	"tds.package.templateApply": "Aplicación de Template",
+	"tds.package.templateApply.fromFile": "Aplicar Template desde archivo"
 }
