@@ -67,7 +67,7 @@
 		"@totvs/tds-ls": "^1.1.40",
 		"@types/node": "^14.11.2",
 		"@types/react": "^16.9.50",
-		"@types/vscode": "^1.49.0",
+		"@types/vscode": "^1.52.0",
 		"cheerio": "^1.0.0-rc.3",
 		"core-js": "^3.6.4",
 		"del": "^5.1.0",
