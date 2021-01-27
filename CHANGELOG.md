@@ -2,6 +2,50 @@
 
 # Versão [1.2.next]
 
+## Implementar a funcionalidade de aplicação de Templates. [Issue 622](https://github.com/totvs/tds-vscode/issues/622)
+
+### Melhoria:
+
+- Adicionada a funcionalidade para aplicação de Templates (.tpl).
+- [BETA] Esta funcionalidade encontra-se em testes Beta. Caso encontre algum problema na aplicação de um Template abra uma Issue com o Template em questão informando como aplicar e como validar o Template para que possamos rever o processo.
+
+## Revisão de processos de edição 4GL
+
+### Problema:
+
+- A formatação de palavras-chaves ocorre ao acionar ``ENTER``.
+
+## Solução:
+
+- Processo de formatação revisado, passando a tratar palavras-chaves durante a digitação. Detalhes em (Formatação de código fonte)[docs/format_config.md]
+
+# Versão [1.2.2]
+
+## [4GL][TDSVsCode 1.2.1] Variáveis Array de Record não tem valores visualizados no DEBUG [Issue 590](https://github.com/totvs/tds-vscode/issues/590)
+
+### Problema:
+
+- Ao depurar código 4GL que tenha variáveis modulares do tipo ARRAY OF RECORD, os valores dos itens da lista não são apresentadas.
+
+### Solução:
+
+- Na análise da ocorrrência, verificamos que o tipo de servidor, em ``servers.json``, não estava correto.
+- Foi adicionado atributo tipo de servidor (``type``) no registro de novos servidores.
+
+Para servidores registrados antes desta versão, favor:
+- abrir o arquivo ``servers.json`` em modo texto;
+- ajustar o atributo ``savedTokens`` para uma lista vazia;
+- localize a definição do servidor LOGIX e ajuste o atributo ``type`` para ``totvs_server_logix``.
+
+Detalhes em
+https://github.com/totvs/tds-vscode/issues/590#issuecomment-742527102.
+
+## Configurar uma pasta inicial padrão para geração de patches. [Issue 398](https://github.com/totvs/tds-vscode/issues/398)
+
+### Melhoria:
+
+- Adicionada a salva da última pasta utilizada na geração de patches que será sugerida na próxima geração.
+
 ## Atualização de versão do TypeScript para 4.1
 
 ### Problema:
@@ -172,7 +216,7 @@
 
 ## Revisão de processos de edição 4GL
 
-- Processo de formatação revisado. Detalhes em (Formatação de código fonte)[docs/formatting]
+- Processo de formatação revisado. Detalhes em (Formatação de código fonte)[docs/format_config.md]
 
 ---
 

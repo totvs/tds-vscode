@@ -2,7 +2,7 @@
 	"name": "tds-vscode",
 	"displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
 	"description": "%tds.package.description%",
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"publisher": "TOTVS",
 	"author": {
 		"name": "TOTVS",
@@ -39,7 +39,7 @@
 	},
 	"scripts": {
 		"clean2": "gulp clean",
-		"compile": "npm-run-all compile:*",
+		"compile": "tsc --version && npm-run-all compile:*",
 		"compile:extension": "tsc -p ./src",
 		"compile:views": "webpack --mode development",
 		"tslint": "tslint ./src/**/*.ts",
@@ -67,7 +67,7 @@
 		"@totvs/tds-ls": "^1.1.40",
 		"@types/node": "^14.14.12",
 		"@types/react": "^16.9.50",
-		"@types/vscode": "^1.49.0",
+		"@types/vscode": "^1.52.0",
 		"cheerio": "^1.0.0-rc.3",
 		"core-js": "^3.6.4",
 		"del": "^5.1.0",
@@ -75,7 +75,7 @@
 		"jszip": "^3.5.0",
 		"material-table": "1.68.1",
 		"prettier": "^2.1.2",
-		"prettier-plugin-4gl": "^0.0.4",
+		"prettier-plugin-4gl": "^0.0.6",
 		"react": "^16.13.0",
 		"react-dom": "^16.13.0",
 		"strip-json-comments": "^3.1.1",
@@ -83,7 +83,7 @@
 		"tmp": "^0.2.1",
 		"typescript": "^4.1.0",
 		"vscode-debugadapter": "^1.42.1",
-		"vscode-languageclient": "^6.1.0",
+		"vscode-languageclient": "^6.1.1",
 		"vscode-nls": "^5.0.0",
 		"windows-1251": "^1.0.0",
 		"windows-1252": "^1.0.0"
@@ -158,6 +158,8 @@
 		"onCommand:totvs-developer-studio.logger.on",
 		"onCommand:totvs-developer-studio.logger.off",
 		"onCommand:totvs-developer-studio.compile.key",
+		"onCommand:totvs-developer-studio.templateApply",
+		"onCommand:totvs-developer-studio.templateApply.fromFile",
 		"onView:totvs_server",
 		"workspaceContains:.tds",
 		"workspaceContains:*.prw",
@@ -277,6 +279,16 @@
 					".ptm",
 					".upd",
 					".pak"
+				]
+			},
+			{
+				"id": "totvs_template",
+				"aliases": [
+					"Template",
+					"totvs_template"
+				],
+				"extensions": [
+					".tpl"
 				]
 			}
 		],
@@ -512,11 +524,6 @@
 							"type": "boolean",
 							"default": false,
 							"description": "Habilita o espaçamento de operadores em expressões."
-						},
-						"alignFields": {
-							"type": "boolean",
-							"default": true,
-							"description": "Habilita o alinhamento de campos."
 						}
 					}
 				}
@@ -747,6 +754,16 @@
 			{
 				"command": "totvs-developer-studio.ws.show",
 				"title": "%tds.package.ws.show%",
+				"category": "TOTVS"
+			},
+			{
+				"command": "totvs-developer-studio.templateApply",
+				"title": "%tds.package.templateApply%",
+				"category": "TOTVS"
+			},
+			{
+				"command": "totvs-developer-studio.templateApply.fromFile",
+				"title": "%tds.package.templateApply.fromFile%",
 				"category": "TOTVS"
 			},
 			{
@@ -1273,6 +1290,12 @@
 					"command": "totvs-developer-studio.delete.file.fromRPO",
 					"alt": "totvs-developer-studio.delete.file.fromRPO",
 					"group": "totvsBuild@6"
+				},
+				{
+					"when": "resourceLangId == totvs_template",
+					"command": "totvs-developer-studio.templateApply.fromFile",
+					"alt": "totvs-developer-studio.templateApply.fromFile",
+					"group": "totvsBuild@5"
 				},
 				{
 					"when": "explorerResourceIsFolder",

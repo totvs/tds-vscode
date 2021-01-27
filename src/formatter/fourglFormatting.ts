@@ -74,7 +74,7 @@ class FourglFormatting
     token: vscode.CancellationToken
   ): Promise<vscode.TextEdit[]> {
     const result: vscode.TextEdit[] = [];
-    const line: vscode.TextLine = document.lineAt(position.line - 1);
+    const line: vscode.TextLine = document.lineAt(position.line);
 
     if (line.text.trim() !== "") {
       options = {
@@ -82,6 +82,7 @@ class FourglFormatting
         ...options,
         rangeStart: document.offsetAt(line.range.start),
         rangeEnd: document.offsetAt(line.range.end),
+        scope: ch === "\n" ? "line" : "word",
       };
 
       const formatted = this.doFormat(document, options);
@@ -131,7 +132,7 @@ export function register(selector: vscode.DocumentSelector): vscode.Disposable {
     vscode.languages.registerOnTypeFormattingEditProvider(
       selector,
       provider,
-      "\n"
+      " "
     ),
     vscode.languages.registerDocumentRangeFormattingEditProvider(
       selector,

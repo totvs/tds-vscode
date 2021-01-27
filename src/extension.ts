@@ -73,6 +73,7 @@ import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
 import { openApplyPatchView } from "./patch/apply/applyPatchLoader";
 import { initStatusBarItems, updateSaveLocationBarItem } from "./statusBar";
 import { PatchEditorProvider } from "./patch/inspect/patchEditor";
+import { openTemplateApplyView } from "./template/apply/formApplyTemplate";
 
 export let languageClient: LanguageClient;
 // barra de permissoes
@@ -482,6 +483,27 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.ws.show", () =>
       showWSPage(context)
+    )
+  );
+
+  //Aplica um template.
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "totvs-developer-studio.templateApply", () => {
+        openTemplateApplyView(context, undefined);
+      }
+    )
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "totvs-developer-studio.templateApply.fromFile", (args: any) => {
+        vscode.window.setStatusBarMessage(
+          "Aguarde. Iniciando aplicação de template...",
+          5000
+        );
+        openTemplateApplyView(context, args);
+      }
     )
   );
 

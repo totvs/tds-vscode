@@ -105,10 +105,9 @@ export class ServersExplorer {
                 });
                 break;
               case "saveServer":
-                const typeServer = "totvs_server_protheus";
                 if (message.serverName && message.port && message.address) {
                   const serverId = createServer(
-                    typeServer,
+                    message.serverType,
                     message.serverName,
                     message.port,
                     message.address,
@@ -326,7 +325,7 @@ export class ServersExplorer {
                 "tds.webview.serversView.renameServer",
                 "Rename the server"
               ),
-              value: serverItem.label,
+              value: (typeof serverItem.label === "string")?serverItem.label:(serverItem.label as vscode.TreeItemLabel).label,
             })
             .then((newName: string) => {
               Utils.updateServerName(serverItem.id, newName);

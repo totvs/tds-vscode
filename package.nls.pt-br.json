@@ -68,7 +68,7 @@
 	"tds.package.logger.on": "Na captura do registrador",
 	"tds.package.logger.off": "Off Logger Capture",
 	"tds.package.patchApply": "Aplicação de Patch",
-	"tds.package.patchApply.fromFile": "Patch Aplicar do arquivo",
+	"tds.package.patchApply.fromFile": "Aplicar Patch do arquivo",
 	"tds.package.welcomePage": "Página de boas-vindas",
 	"tds.package.include": "Incluir",
 	"tds.package.ws.show": "Generate WS Protheus",
@@ -80,6 +80,7 @@
 	"tds.package.properties.enableMultiThread.description": "Se a depuração precisar ativar a execução de vários threads",
 	"tds.package.properties.enableProfile.description": "Se o perfil precisar ser ativado",
 	"tds.package.properties.startJobList.description": "Lista de serviços a serem inicializados antes da depuração",
+	"tds.package.properties.waitForAttach.description": "Para depuração DAP. NÃO USE.",
 	"tds.package.properties.isMultiSession.description": "Se for uma execução multisessão (-M)",
 	"tds.package.properties.isAccessibilityMode.description": "Se o modo de acessibilidade precisar estar ativado (-AC)",
 	"tds.package.properties.doNotShowSplash.description": "Se a tela inicial não aparecer (-Q)",
@@ -102,7 +103,6 @@
 	"tds.vscode.question.change.encoding": "Deseja alterar a codificação para o TOTVS padrão (Windows-1252)?",
 	"tds.vscode.yes": "Sim",
 	"tds.vscode.no": "Não",
-	"tds.vscode.noAskAgain": "Não pergunte novamente",
 	"tds.toggle.autocomplete.behavior": "Alternar comportamento de preenchimento automático",
 	"tds.package.editor.toggle.autocomplete": "Alternar comportamento de preenchimento automático.",
 	"tds.package.editor.toggle.autocomplete.basic": "Procedimento padrão do código VS.",
@@ -117,5 +117,7 @@
 	"tds.package.workspaceServerConfig": "Use a área de trabalho para manter as configurações do servidor.",
 	"tds.package.OpenTimeLineWebview": "Abrir visão da linha de tempo",
 	"tds.package.apply.formatting": "Aplica a formatação aos arquivos fontes TOTVS e suas variações.",
-	"tds-monitor.open-rpoinfo": "Log de Repositório"
+	"tds-monitor.open-rpoinfo": "Log de Repositório",
+	"tds.package.templateApply": "Aplicação de Template",
+	"tds.package.templateApply.fromFile": "Aplicar Template do arquivo"
 }

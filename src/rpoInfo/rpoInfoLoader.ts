@@ -198,8 +198,11 @@ export class RpoInfoLoader {
   private prepareNodes(parent: any, rpoInfo: IRpoInfoData) {
     const map: any = {};
 
+    const dateRpo: Date = new Date(Date.parse(rpoInfo.dateGeneration));
+    rpoInfo.dateGeneration = dateRpo.toLocaleDateString() + " " + dateRpo.toLocaleTimeString();
+
     rpoInfo.rpoPatchs.forEach((rpoPatch: IRpoPatch) => {
-      const name = rpoPatch.dateFileApplication.split("T")[0];
+      const name: string = rpoPatch.dateFileApplication.split("T")[0];
 
       let key = name.substr(0, 7);
       if (!map[key]) {
@@ -208,6 +211,16 @@ export class RpoInfoLoader {
       }
 
       map[key].children.push({ id: "node_" + key + map[key].children.length, name: name, children: [], rpoPatch: rpoPatch });
+
+      const dateApp: Date = new Date(Date.parse(rpoPatch.dateFileApplication));
+      const dateGen: Date = new Date(Date.parse(rpoPatch.dateFileGeneration));
+      rpoPatch.dateFileApplication = dateApp.toLocaleDateString();
+      rpoPatch.dateFileGeneration = dateGen.toLocaleDateString();
+
+      rpoPatch.programsApp.forEach((program: IProgramApp) => {
+        const date: Date = new Date(Date.parse(program.date));
+        program.date = date.toLocaleDateString() + " " + date.toLocaleTimeString();
+      })
     });
 
   }

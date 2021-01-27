@@ -470,7 +470,8 @@ export default class Utils {
     const servers = Utils.getServersConfig();
 
     if (servers.connectedServer.id) {
-      return servers.connectedServer;
+      // busca sempre pelo ID pois pode ter ocorrido alguma alteração nas configurações do servidor conectado
+      return Utils.getServerById(servers.connectedServer.id);
     } else {
       return "";
     }
@@ -655,32 +656,35 @@ export default class Utils {
       Utils.logInvalidLaunchJsonFile(e);
     }
   }
-  /**
-   *Recupera um servidor pelo ID informado.
-   * @param ID ID do servidor que sera selecionado.
-   */
-  static getServerForID(ID: string) {
-    let server;
-    const allConfigs = Utils.getServersConfig();
 
-    if (allConfigs.configurations) {
-      const configs = allConfigs.configurations;
+  // Duplicado: Usar o getServerById
+  // /**
+  //  *Recupera um servidor pelo ID informado.
+  //  * @param ID ID do servidor que sera selecionado.
+  //  */
+  // static getServerForID(ID: string) {
+  //   let server;
+  //   const allConfigs = Utils.getServersConfig();
 
-      configs.forEach((element) => {
-        if (element.id === ID) {
-          server = element;
-          if (server.environments === undefined) {
-            server.environments = [];
-          }
-        }
-      });
-    }
-    return server;
-  }
+  //   if (allConfigs.configurations) {
+  //     const configs = allConfigs.configurations;
+
+  //     configs.forEach((element) => {
+  //       if (element.id === ID) {
+  //         server = element;
+  //         if (server.environments === undefined) {
+  //           server.environments = [];
+  //         }
+  //       }
+  //     });
+  //   }
+  //   return server;
+  // }
 
   /**
    *Recupera um servidor pelo id informado.
    * @param id id do servidor alvo.
+   * @param serversConfig opcional, se omitido utiliza o padrao
    */
   static getServerById(
     id: string,
@@ -796,6 +800,22 @@ export default class Utils {
       }
     });
 
+    return result;
+  }
+
+  static updatePatchGenerateDir(id: string, patchGenerateDir: string) {
+    let result = false;
+    if (!id || id.length == 0 || !patchGenerateDir || patchGenerateDir.length == 0) {
+      return result;
+    }
+    const serverConfig = Utils.getServersConfig();
+    serverConfig.configurations.forEach((element) => {
+      if (element.id === id) {
+        element.patchGenerateDir = patchGenerateDir;
+        Utils.persistServersInfo(serverConfig);
+        result = true;
+      }
+    });
     return result;
   }
 
