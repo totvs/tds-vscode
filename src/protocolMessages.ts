@@ -20,8 +20,12 @@ import { ResponseError } from "vscode-languageclient";
 import { ServerItem } from "./serverItemProvider";
 import { CompileResult } from "./compile/compileResult";
 import { _debugEvent } from "./debug";
-import { IPatchValidateResult, IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
+import {
+  IPatchValidateResult,
+  IRpoInfoData as RpoInfoResult,
+} from "./rpoInfo/rpoPath";
 import { IApplyScope, PATCH_ERROR_CODE } from "./patch/apply/applyPatchData";
+import { CompileKey } from "./compileKey/compileKey";
 
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
@@ -396,21 +400,26 @@ export function sendAppKillConnection(
 
 export function sendCompilation(
   server: ServerItem,
-  permissionsInfos,
-  includesUris,
-  filesUris,
+  permissionsInfos: CompileKey,
+  includesUris: string[],
+  filesUris: string[],
   compileOptions,
-  extensionsAllowed,
-  hasAdvplsource
+  extensionsAllowed: string[],
+  hasAdvplsource: boolean
 ): Thenable<CompileResult> {
   if (_debugEvent) {
-    vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
+    vscode.window.showWarningMessage(
+      "Esta operação não é permitida durante uma depuração."
+    );
     return;
   }
+
   return languageClient.sendRequest("$totvsserver/compilation", {
     compilationInfo: {
       connectionToken: server.token,
-      authorizationToken: permissionsInfos ? permissionsInfos.authorizationToken : "",
+      authorizationToken: permissionsInfos
+        ? permissionsInfos.authorizationToken
+        : "",
       environment: server.environment,
       includeUris: includesUris,
       fileUris: filesUris,
@@ -423,7 +432,9 @@ export function sendCompilation(
 
 export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
   if (_debugEvent) {
-    vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
+    vscode.window.showWarningMessage(
+      "Esta operação não é permitida durante uma depuração."
+    );
     return;
   }
   return languageClient
@@ -433,42 +444,117 @@ export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
         environment: server.environment,
       },
     })
+    .then((response: RpoInfoResult) => {
+      return response;
+    });
+}
+
+export function sendApplyPatchRequest(
+  server: ServerItem,
+  patchUri: string,
+  permissions,
+  applyScope: IApplyScope
+): Thenable<IPatchValidateResult> {
+  return languageClient
+    .sendRequest("$totvsserver/patchApply", {
+      patchApplyInfo: {
+        connectionToken: server.token,
+        authenticateToken: permissions.authorizationToken,
+        environment: server.environment,
+        patchUri: patchUri,
+        isLocal: true,
+        applyScope: applyScope,
+        isValidOnly: false,
+      },
+    })
     .then(
-      (response: RpoInfoResult) => {
-        return response;
+      (response: IPatchValidateResult) => {
+        if (response.error) {
+          return Promise.reject(response);
+        }
+
+        return Promise.resolve(response);
+      },
+      (err: ResponseError<object>) => {
+        const error: IPatchValidateResult = {
+          error: true,
+          message: err.message,
+          //     patchValidates: err.data,
+          errorCode: err.code,
+        };
+
+        return Promise.reject(error);
       }
     );
 }
 
-export function sendApplyPatchRequest(server: ServerItem, patchUri: string, permissions, applyScope: IApplyScope): Thenable<IPatchValidateResult> {
+export function sendValidPatchRequest(
+  server: ServerItem,
+  patchUri: string,
+  permissions,
+  applyScope: string
+): Thenable<IPatchValidateResult> {
+  return languageClient
+    .sendRequest("$totvsserver/patchApply", {
+      patchApplyInfo: {
+        connectionToken: server.token,
+        authenticateToken: permissions.authorizationToken,
+        environment: server.environment,
+        patchUri: patchUri,
+        isLocal: true,
+        applyScope: applyScope,
+        isValidOnly: true,
+      },
+    })
+    .then(
+      (response: IPatchValidateResult) => {
+        return response.error
+          ? Promise.reject(response)
+          : Promise.resolve(response);
+      },
+      (err: ResponseError<object>) => {
+        const result: IPatchValidateResult = {
+          error: true,
+          message: err.message,
+          patchValidates: [],
+          errorCode: PATCH_ERROR_CODE.GENERIC_ERROR,
+        };
 
-  return languageClient.sendRequest('$totvsserver/patchApply', {
-    "patchApplyInfo": {
-      "connectionToken": server.token,
-      "authenticateToken": permissions.authorizationToken,
-      "environment": server.environment,
-      "patchUri": patchUri,
-      "isLocal": true,
-      "applyScope": applyScope,
-      "isValidOnly": false
-    }
-  }).then((response: IPatchValidateResult) => {
-    if (response.error) {
-      return Promise.reject(response);
-    }
-
-    return Promise.resolve(response);
-  }, (err: ResponseError<object>) => {
-    const error: IPatchValidateResult = {
-      error: true,
-      message: err.message,
- //     patchValidates: err.data,
-      errorCode: err.code
-    };
-
-    return Promise.reject(error);
-  });
+        return Promise.reject(result);
+      }
+    );
 }
+
+export function sendPatchInfo(
+  server: ServerItem,
+  permissions,
+  patchUri: string
+): Thenable<any> {
+  if (_debugEvent) {
+    vscode.window.showWarningMessage(
+      "Esta operação não é permitida durante uma depuração."
+    );
+    return Promise.resolve();
+  }
+
+  return languageClient
+    .sendRequest("$totvsserver/patchInfo", {
+      patchInfoInfo: {
+        connectionToken: server.token,
+        authorizationToken: permissions.authorizationToken,
+        environment: server.environment,
+        patchUri: patchUri,
+        isLocal: true,
+      },
+    })
+    .then(
+      (response: any) => {
+        return response.patchInfos;
+      },
+      (err: ResponseError<object>) => {
+        vscode.window.showErrorMessage(err.message);
+      }
+    );
 
 export function sendValidPatchRequest(server: ServerItem, patchUri: string, permissions, applyScope: string): Thenable<IPatchValidateResult> {
 

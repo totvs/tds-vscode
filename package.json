@@ -65,7 +65,7 @@
 		"@material-ui/lab": "^4.0.0-alpha.56",
 		"@totvs/tds-da": "^1.1.21",
 		"@totvs/tds-ls": "^1.1.40",
-		"@types/node": "^14.11.2",
+		"@types/node": "^14.14.12",
 		"@types/react": "^16.9.50",
 		"@types/vscode": "^1.52.0",
 		"cheerio": "^1.0.0-rc.3",
@@ -151,8 +151,6 @@
 		"onCommand:totvs-developer-studio.patchGenerate.fromFolder",
 		"onCommand:totvs-developer-studio.patchApply",
 		"onCommand:totvs-developer-studio.patchApply.fromFile",
-		"onCommand:totvs-developer-studio.patchInfos",
-		"onCommand:totvs-developer-studio.patchInfos.fromFile",
 		"onCommand:totvs-developer-studio.patchValidate.fromFile",
 		"onCommand:totvs-developer-studio.welcomePage",
 		"onCommand:totvs-developer-studio.include",
@@ -180,6 +178,17 @@
 		"workspaceContains:servers.json"
 	],
 	"contributes": {
+		"customEditors": [
+			{
+				"viewType": "tds.patchView",
+				"displayName": "Patch file",
+				"selector": [
+					{
+						"filenamePattern": "*.ptm"
+					}
+				]
+			}
+		],
 		"colors": [
 			{
 				"id": "terminal.ansiBlack",
@@ -532,12 +541,6 @@
 				"category": "TOTVS"
 			},
 			{
-				"command": "totvs-developer-studio.patchInfos",
-				"title": "%tds.package.inspector.patch.title%",
-				"description": "tds.package.inspector.patch.description",
-				"category": "TOTVS"
-			},
-			{
 				"command": "totvs-developer-studio.inspectorObjects",
 				"title": "%tds.package.inspector.object.title%",
 				"description": "%tds.package.inspector.object.description%",
@@ -736,11 +739,6 @@
 			{
 				"command": "totvs-developer-studio.patchValidate.fromFile",
 				"title": "%tds.package.patchValidate.fromFile%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.patchInfos.fromFile",
-				"title": "%tds.package.patchInfos.fromFile%",
 				"category": "TOTVS"
 			},
 			{
@@ -1289,12 +1287,6 @@
 					"group": "totvsBuild@8"
 				},
 				{
-					"when": "resourceLangId == totvs_patch",
-					"command": "totvs-developer-studio.patchInfos.fromFile",
-					"alt": "totvs-developer-studio.patchInfos.fromFile",
-					"group": "totvsBuild@9"
-				},
-				{
 					"command": "totvs-developer-studio.delete.file.fromRPO",
 					"alt": "totvs-developer-studio.delete.file.fromRPO",
 					"group": "totvsBuild@6"
@@ -1462,10 +1454,6 @@
 				},
 				{
 					"command": "totvs-developer-studio.patchValidate.fromFile",
-					"when": "1 == 0"
-				},
-				{
-					"command": "totvs-developer-studio.patchInfos.fromFile",
 					"when": "1 == 0"
 				},
 				{

@@ -2,14 +2,6 @@ export interface IApplyPatchPanelAction {
   action: ApplyPatchPanelAction;
   content: any;
 }
-
-
-
-
-
-
-
-
 export enum ApplyPatchPanelAction {
 	UpdatePage,
 	SelectFile,
