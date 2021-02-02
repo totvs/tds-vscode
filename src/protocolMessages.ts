@@ -555,33 +555,7 @@ export function sendPatchInfo(
         vscode.window.showErrorMessage(err.message);
       }
     );
-
-export function sendValidPatchRequest(server: ServerItem, patchUri: string, permissions, applyScope: string): Thenable<IPatchValidateResult> {
-
-  return languageClient.sendRequest('$totvsserver/patchApply', {
-    "patchApplyInfo": {
-      "connectionToken": server.token,
-      "authenticateToken": permissions.authorizationToken,
-      "environment": server.environment,
-      "patchUri": patchUri,
-      "isLocal": true,
-      "applyScope": applyScope,
-      "isValidOnly": true
-    }
-  }).then((response: IPatchValidateResult) => {
-
-    return response.error ? Promise.reject(response):Promise.resolve(response);
-  }, (err: ResponseError<object>) => {
-    const result: IPatchValidateResult = {
-      error: true,
-      message: err.message,
-      patchValidates: [],
-      errorCode: PATCH_ERROR_CODE.GENERIC_ERROR
-    };
-
-    return Promise.reject(result);
-  });
-}
+  }
 
 export interface IApplyTemplateResult {
   error: boolean;
