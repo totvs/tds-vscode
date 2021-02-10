@@ -1049,6 +1049,10 @@
 							"enableVerbose": {
 								"type": "boolean",
 								"default": false
+							},
+							"forceImport" : {
+								"type": "boolean",
+								"default": false
 							}
 						}
 					}

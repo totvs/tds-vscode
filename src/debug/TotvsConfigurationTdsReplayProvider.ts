@@ -39,6 +39,10 @@ export class TotvsConfigurationTdsReplayProvider implements DebugConfigurationPr
 				window.showInformationMessage(localize('tds.vscode.cwb_warning', 'Parameter cwb not informed. Setting to {0}', config.cwb));
 			}
 
+			if(config.forceImport === true) {
+				window.showWarningMessage(localize('tds.vscode.replay.forceImport', 'The parameter \"forceImport\" is defined to \"true\". Note that this will consume more disk space.'));
+			}
+
 			let setDapArgsArr: string[] =  [];
 
 			if (config.waitForAttach) {
