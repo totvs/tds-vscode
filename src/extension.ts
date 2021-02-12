@@ -520,7 +520,7 @@ export function activate(context: ExtensionContext) {
 
   //rpo log
   context.subscriptions.push(
-    vscode.commands.registerCommand("tds-monitor.open-loadrpoinfo-view", () => {
+    vscode.commands.registerCommand("totvs-developer-studio.open-loadrpoinfo-view", () => {
       vscode.window.setStatusBarMessage(
         "Aguarde. Iniciando visualização...",
         5000

@@ -801,9 +801,9 @@
 				}
 			},
 			{
-				"command": "tds-monitor.open-loadrpoinfo-view",
-				"title": "%tds-monitor.open-rpoinfo%",
-				"category": "TOTVSMonitor",
+				"command": "totvs-developer-studio.open-loadrpoinfo-view",
+				"title": "%totvs-developer-studio.open-rpoinfo%",
+				"category": "TOTVS",
 				"icon": {
 					"light": "resources/light/rpolog.png",
 					"dark": "resources/dark/rpolog.png"
@@ -1350,7 +1350,7 @@
 					"group": "CtotvsPatch@2"
 				},
 				{
-					"command": "tds-monitor.open-loadrpoinfo-view",
+					"command": "totvs-developer-studio.open-loadrpoinfo-view",
 					"when": "view == totvs_server && viewItem == serverItem",
 					"group": "CtotvsPatch@3"
 				},
