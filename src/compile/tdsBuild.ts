@@ -10,7 +10,7 @@ var windows1251 = require('windows-1251');
 
 import * as nls from "vscode-nls";
 import { ResponseError } from "vscode-languageclient";
-import { CompileResult } from "./compileResult";
+import { CompileResult } from "./CompileResult";
 import { sendCompilation } from "../protocolMessages";
 let localize = nls.loadMessageBundle();
 
