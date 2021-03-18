@@ -47,6 +47,12 @@ Os problemas mais frequentes que causam falha na compilação estão associadas 
 
 > de qualquer formam, os erros ocorridos durante a compilação de um fonte devem aparecer na visão "Problems" do **TDS VS Code** ou exibidos na visão "Output - TOTVS". Se nenhuma informação sobre o erro for apresentada, crie uma nova "Issue".
 
+### Duplicated function
+
+Se durante a compilação de um fonte, por exemplo 'XPTO.PRW', ocorrer o erro "Duplicated function U_XPTO (found in XPTO(1).PRW)", significa que a função já existe no RPO em outro fonte.
+
+**Solução:** Neste caso remova do RPO a função já existente, criando um arquivo, neste exemplo o 'XPTO(1).PRW', com a função duplicada e utilize a opção "Delete file/resource from RPO" para remover este arquivo do RPO. Em seguida realize a compilação de 'XPTO.PRW' novamente.
+
 ### File extension not in the allowed extensions list
 
 Se encontrar uma mensagem como a seguir é porque, por padrão, somente serão compilados os fontes/recursos cujas extensões estiverem na lista de extensões permitidas configurada.
