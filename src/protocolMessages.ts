@@ -18,7 +18,7 @@ interface AuthenticationNode {
 import { languageClient } from "./extension";
 import { ResponseError } from "vscode-languageclient";
 import { ServerItem } from "./serverItemProvider";
-import { CompileResult } from "./compile/compileResult";
+import { CompileResult } from "./compile/CompileResult";
 import { _debugEvent } from "./debug";
 import {
   IPatchValidateResult,

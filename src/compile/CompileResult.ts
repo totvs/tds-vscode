@@ -1,4 +1,4 @@
-import { CompileInfo } from './compileInfo';
+import { CompileInfo } from './CompileInfo';
 
 export class CompileResult {
 	returnCode: number;

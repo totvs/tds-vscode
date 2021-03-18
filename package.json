@@ -1,1513 +1,1513 @@
 {
-	"name": "tds-vscode",
-	"displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
-	"description": "%tds.package.description%",
-	"version": "1.2.2",
-	"publisher": "TOTVS",
-	"author": {
-		"name": "TOTVS",
-		"email": "tecnologia@totvs.com.br"
-	},
-	"license": "MIT",
-	"keywords": [
-		"multi-root ready",
-		"advpl",
-		"tlpp",
-		"4gl",
-		"tds",
-		"totvs",
-		"monitor",
-		"protheus"
-	],
-	"engines": {
-		"vscode": "^1.47.0"
-	},
-	"icon": "imagens/totvs-developer-studio.png",
-	"categories": [
-		"Programming Languages",
-		"Snippets",
-		"Linters",
-		"Debuggers",
-		"Formatters"
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/totvs/tds-vscode.git"
-	},
-	"bugs": {
-		"url": "https://github.com/totvs/tds-vscode.git"
-	},
-	"scripts": {
-		"clean2": "gulp clean",
-		"compile": "tsc --version && npm-run-all compile:*",
-		"compile:extension": "tsc -p ./src",
-		"compile:views": "webpack --mode development",
-		"tslint": "tslint ./src/**/*.ts",
-		"tslint:fix": "tslint ./src/**/*.ts --fix",
-		"test": "node node_modules/vscode/bin/test",
-		"export-i18n": "gulp export-i18n",
-		"i18n-import": "gulp i18n-import",
-		"---RELEASE---": "",
-		"release": "npx standard-version -r 1.1.0",
-		"tag": "git push --follow-tags",
-		"pack": "npm pack",
-		"package": "gulp package",
-		"publish": "gulp publish",
-		"vscode:prepublish": "webpack --mode production",
-		"---MISC---": "",
-		"all-contributors:generate": "all-contributors generate",
-		"all-contributors:check": "all-contributors check",
-		"link:prettier-plugin-4gl": "npm link ../prettier-plugin-4gl --force"
-	},
-	"dependencies": {
-		"@material-ui/core": "^4.11.0",
-		"@material-ui/icons": "^4.9.1",
-		"@material-ui/lab": "^4.0.0-alpha.56",
-		"@totvs/tds-da": "^1.1.21",
-		"@totvs/tds-ls": "^1.1.40",
-		"@types/node": "^14.14.12",
-		"@types/react": "^16.9.50",
-		"@types/vscode": "^1.52.0",
-		"cheerio": "^1.0.0-rc.3",
-		"core-js": "^3.6.4",
-		"del": "^5.1.0",
-		"ini": "^1.3.5",
-		"jszip": "^3.5.0",
-		"material-table": "1.68.1",
-		"prettier": "^2.1.2",
-		"prettier-plugin-4gl": "^0.0.6",
-		"react": "^16.13.0",
-		"react-dom": "^16.13.0",
-		"strip-json-comments": "^3.1.1",
-		"template-literal": "^1.0.3",
-		"tmp": "^0.2.1",
-		"typescript": "^4.1.0",
-		"vscode-debugadapter": "^1.42.1",
-		"vscode-languageclient": "^6.1.1",
-		"vscode-nls": "^5.0.0",
-		"windows-1251": "^1.0.0",
-		"windows-1252": "^1.0.0"
-	},
-	"devDependencies": {
-		"@babel/cli": "^7.11.6",
-		"@babel/core": "^7.11.6",
-		"@types/ini": "^1.3.30",
-		"@types/mocha": "^8.0.4",
-		"@types/react-dom": "^16.9.8",
-		"all-contributors-cli": "^6.17.4",
-		"cleanup": "^0.3.0",
-		"css-loader": "^4.3.0",
-		"gulp": "^4.0.2",
-		"gulp-filter": "^6.0.0",
-		"gulp-sourcemaps": "^2.6.5",
-		"gulp-tslint": "^8.1.4",
-		"gulp-typescript": "^6.0.0-alpha.1",
-		"gulp-util": "^3.0.8",
-		"lodash.template": ">=4.5.0",
-		"mocha": "^8.2.1",
-		"npm-run-all": "^4.1.5",
-		"style-loader": "^1.2.1",
-		"terser-webpack-plugin": "^4.2.2",
-		"ts-loader": "^8.0.4",
-		"tslint": "^6.1.2",
-		"vsce": "^1.81.0",
-		"vscode-nls-dev": "^3.3.2",
-		"vscode-test": "^1.4.1",
-		"webpack": "^4.44.2",
-		"webpack-cli": "^3.3.12",
-		"webpack-stream": "^6.1.0"
-	},
-	"main": "./out/extension",
-	"activationEvents": [
-		"onLanguage:advpl",
-		"onLanguage:4gl",
-		"onCommand:totvs-developer-studio.getProgramArguments",
-		"onCommand:totvs-developer-studio.getProgramName",
-		"onCommand:totvs-developer-studio.build.file",
-		"onCommand:totvs-developer-studio.rebuild.file",
-		"onCommand:totvs-developer-studio.build.workspace",
-		"onCommand:totvs-developer-studio.rebuild.workspace",
-		"onCommand:totvs-developer-studio.build.openEditors",
-		"onCommand:totvs-developer-studio.rebuild.openEditors",
-		"onCommand:totvs-developer-studio.delete.file.fromRPO",
-		"onCommand:totvs-developer-studio.configure.launcher",
-		"onCommand:totvs-developer-studio.inspectorFunctions",
-		"onCommand:totvs-developer-studio.inspectorObjects",
-		"onCommand:totvs-developer-studio.defragRPO",
-		"onCommand:totvs-developer-studio.rpoCheckIntegrity",
-		"onCommand:totvs-developer-studio.delete.file.fromRPO",
-		"onCommand:totvs-developer-studio.getDAP",
-		"onCommand:totvs-developer-studio.connect",
-		"onCommand:totvs-developer-studio.reconnect",
-		"onCommand:totvs-developer-studio.serverSelection",
-		"onCommand:totvs-developer-studio.toggleSaveLocation",
-		"onCommand:totvs-developer-studio.disconnect",
-		"onCommand:totvs-developer-studio.add",
-		"onCommand:totvs-developer-studio.config",
-		"onCommand:totvs-developer-studio.selectenv",
-		"onCommand:totvs-developer-studio.delete",
-		"onCommand:totvs-developer-studio.delete.environment",
-		"onCommand:totvs-developer-studio.patchGenerate.fromRPO",
-		"onCommand:totvs-developer-studio.patchGenerate.fromFolder",
-		"onCommand:totvs-developer-studio.patchApply",
-		"onCommand:totvs-developer-studio.patchApply.fromFile",
-		"onCommand:totvs-developer-studio.patchValidate.fromFile",
-		"onCommand:totvs-developer-studio.welcomePage",
-		"onCommand:totvs-developer-studio.include",
-		"onCommand:totvs-developer-studio.ws.show",
-		"onCommand:totvs-developer-studio.logger.on",
-		"onCommand:totvs-developer-studio.logger.off",
-		"onCommand:totvs-developer-studio.compile.key",
-		"onCommand:totvs-developer-studio.templateApply",
-		"onCommand:totvs-developer-studio.templateApply.fromFile",
-		"onView:totvs_server",
-		"workspaceContains:.tds",
-		"workspaceContains:*.prw",
-		"workspaceContains:*.ppo",
-		"workspaceContains:*.prx",
-		"workspaceContains:*.aph",
-		"workspaceContains:*.ppx",
-		"workspaceContains:*.ppp",
-		"workspaceContains:*.tlpp",
-		"workspaceContains:*.ch",
-		"workspaceContains:*.4gl",
-		"workspaceContains:*.per",
-		"workspaceContains:*.ptm",
-		"workspaceContains:*.upd",
-		"workspaceContains:*.pak",
-		"workspaceContains:servers.json"
-	],
-	"contributes": {
-		"customEditors": [
-			{
-				"viewType": "tds.patchView",
-				"displayName": "Patch file",
-				"selector": [
-					{
-						"filenamePattern": "*.ptm"
-					}
-				]
-			}
-		],
-		"colors": [
-			{
-				"id": "terminal.ansiBlack",
-				"description": "Cor de texto apresentado no console de depuração.",
-				"defaults": {
-					"dark": "#CCCCCC",
-					"light": "#555555",
-					"highContrast": "#ffffff"
-				}
-			},
-			{
-				"id": "terminal.ansiGreen",
-				"description": "Cor da identifcação do nível de mensagem 'Informação'.",
-				"defaults": {
-					"dark": "#5aa85a",
-					"light": "#5aa85a",
-					"highContrast": "#5aa85a"
-				}
-			},
-			{
-				"id": "terminal.ansiYellow",
-				"description": "Cor da identifcação do nível de mensagem 'Aviso'.",
-				"defaults": {
-					"dark": "#d8d53c",
-					"light": "#d8d53c",
-					"highContrast": "#d8d53c"
-				}
-			},
-			{
-				"id": "terminal.ansiRed",
-				"description": "Cor da identifcação do nível de mensagem 'Erro'.",
-				"defaults": {
-					"dark": "#eb1313",
-					"light": "#eb1313",
-					"highContrast": "#eb1313"
-				}
-			},
-			{
-				"id": "terminal.ansiCyan",
-				"description": "Cor da identifcação da hora do evento.",
-				"defaults": {
-					"dark": "#11c9cf",
-					"light": "#11c9cf",
-					"highContrast": "#11c9cf"
-				}
-			}
-		],
-		"languages": [
-			{
-				"id": "advpl",
-				"aliases": [
-					"AdvPL",
-					"advpl"
-				],
-				"extensions": [
-					".ch",
-					".prw",
-					".prg",
-					".prx",
-					".ppx",
-					".ppp",
-					".tlpp",
-					".aph",
-					".ahu",
-					".apl",
-					".apw"
-				],
-				"configuration": "./advpl-language-configuration.json"
-			},
-			{
-				"id": "4gl",
-				"aliases": [
-					"4GL"
-				],
-				"extensions": [
-					".4gl",
-					".per"
-				],
-				"configuration": "./4gl-language-configuration.json"
-			},
-			{
-				"id": "totvs_patch",
-				"aliases": [
-					"Patch",
-					"totvs_patch"
-				],
-				"extensions": [
-					".ptm",
-					".upd",
-					".pak"
-				]
-			},
-			{
-				"id": "totvs_template",
-				"aliases": [
-					"Template",
-					"totvs_template"
-				],
-				"extensions": [
-					".tpl"
-				]
-			}
-		],
-		"grammars": [
-			{
-				"language": "advpl",
-				"scopeName": "source.advpl",
-				"path": "./syntaxes/advpl_language.tmLanguage.json"
-			},
-			{
-				"language": "4gl",
-				"scopeName": "source.4gl",
-				"path": "./syntaxes/4gl_language.tmLanguage.json"
-			}
-		],
-		"snippets": [
-			{
-				"language": "advpl",
-				"path": "./snippets/advpl_snippets.json"
-			},
-			{
-				"language": "4gl",
-				"path": "./snippets/4gl_snippets.json"
-			}
-		],
-		"configurationDefaults": {
-			"[4gl]": {
-				"files.encoding": "windows1252",
-				"files.insertFinalNewline": true,
-				"files.eol": "\r\n",
-				"editor.formatOnType": false,
-				"editor.formatOnPaste": false,
-				"editor.formatOnSave": false,
-				"editor.formatOnSaveMode": "file"
-			},
-			"[advpl]": {
-				"files.encoding": "windows1252",
-				"files.insertFinalNewline": true,
-				"files.eol": "\r\n",
-				"editor.formatOnType": false,
-				"editor.formatOnPaste": false,
-				"editor.formatOnSave": false,
-				"editor.formatOnSaveMode": "file"
-			}
-		},
-		"configuration": {
-			"type": "object",
-			"title": "TOTVS",
-			"properties": {
-				"totvsLanguageServer.launch.args": {
-					"type": "array",
-					"default": [],
-					"description": "%tds.package.args.for.lsp%"
-				},
-				"totvsLanguageServer.folder.enableExtensionsFilter": {
-					"scope": "window",
-					"type": "boolean",
-					"default": true,
-					"description": "%tds.package.folder.enable.extensions.filter%"
-				},
-				"totvsLanguageServer.folder.extensionsAllowed": {
-					"scope": "resource",
-					"type": "array",
-					"default": [
-						".PRW",
-						".PRX",
-						".PRG",
-						".PPX",
-						".PPP",
-						".TLPP",
-						".APW",
-						".APH",
-						".APL",
-						".AHU",
-						".TRES",
-						".PNG",
-						".BMP",
-						".RES",
-						".4GL",
-						".PER",
-						".JS"
-					],
-					"description": "%tds.package.folder.extensions.allowed%"
-				},
-				"totvsLanguageServer.trace.server": {
-					"scope": "window",
-					"type": "string",
-					"enum": [
-						"off",
-						"messages",
-						"verbose"
-					],
-					"default": "off",
-					"description": "%tds.package.trace.vscode.server%"
-				},
-				"totvsLanguageServer.welcomePage": {
-					"scope": "window",
-					"type": "boolean",
-					"default": true,
-					"description": "%tds.package.show.welcome.first.initialize%"
-				},
-				"totvsLanguageServer.askEncodingChange": {
-					"scope": "window",
-					"type": "boolean",
-					"default": true,
-					"description": "%tds.package.show.ask.encoding%"
-				},
-				"totvsLanguageServer.askCompileResult": {
-					"scope": "window",
-					"type": "boolean",
-					"default": true,
-					"description": "%tds.package.show.ask.compile.result%"
-				},
-				"totvsLanguageServer.clearConsoleBeforeCompile": {
-					"type": "boolean",
-					"default": false,
-					"description": "%tds.package.clear.console.before.compile%"
-				},
-				"totvsLanguageServer.showConsoleOnCompile": {
-					"type": "boolean",
-					"default": true,
-					"description": "%tds.package.show.console.on.compile%"
-				},
-				"totvsLanguageServer.showBanner": {
-					"type": "boolean",
-					"default": true,
-					"description": "%tds.package.show.banner%"
-				},
-				"totvsLanguageServer.reconnectLastServer": {
-					"type": "boolean",
-					"default": true,
-					"description": "%tds.package.reconnectLastServer%"
-				},
-				"totvsLanguageServer.compilation.generatePpoFile": {
-					"type": "boolean",
-					"default": false,
-					"description": "%tds.package.generate.ppo%"
-				},
-				"totvsLanguageServer.compilation.showPreCompiler": {
-					"type": "boolean",
-					"default": false,
-					"description": "%tds.package.show.precompile%"
-				},
-				"totvsLanguageServer.compilation.commitWithErrorOrWarning": {
-					"type": "boolean",
-					"default": false,
-					"description": "%tds.package.compilation.commit%"
-				},
-				"totvsLanguageServer.web.navigator": {
-					"type": "string",
-					"default": "",
-					"description": "%tds.package.web.navigator.debug%"
-				},
-				"totvsLanguageServer.editor.show.notification": {
-					"scope": "window",
-					"type": "string",
-					"enum": [
-						"none",
-						"only errors",
-						"errors and warnings",
-						"errors warnings and infos",
-						"all"
-					],
-					"enumDescriptions": [
-						"%tds.package.editor.notification.show.none%",
-						"%tds.package.editor.notification.show.only_errors%",
-						"%tds.package.editor.notification.show.errors_and_warnings%",
-						"%tds.package.editor.notification.show.errors_warnings_and_infos%",
-						"%tds.package.editor.notification.show.all%"
-					],
-					"default": "none",
-					"description": "%tds.package.editor.notification.show%"
-				},
-				"totvsLanguageServer.editor.toggle.autocomplete": {
-					"scope": "window",
-					"type": "string",
-					"enum": [
-						"Basic",
-						"LS"
-					],
-					"enumDescriptions": [
-						"%tds.package.editor.toggle.autocomplete.basic%",
-						"%tds.package.editor.toggle.autocomplete.ls%"
-					],
-					"default": "LS",
-					"description": "%tds.package.editor.toggle.autocomplete%"
-				},
-				"totvsLanguageServer.workspaceServerConfig": {
-					"type": "boolean",
-					"default": false,
-					"description": "%tds.package.workspaceServerConfig%"
-				},
-				"4gl.formatter": {
-					"type": "object",
-					"description": "Formatação 4GL",
-					"properties": {
-						"keywordsCase": {
-							"type": "string",
-							"enum": [
-								"upper",
-								"lower",
-								"ignore"
-							],
-							"enumDescriptions": [
-								"Em maiúsculuas",
-								"Em minúsculas",
-								"Manter original"
-							],
-							"default": "upper",
-							"description": "Coloca as palavras chaves da linguagem na caixa indicada"
-						},
-						"stringStyle": {
-							"type": "string",
-							"enum": [
-								"double-quotes",
-								"single-quotes",
-								"ignore"
-							],
-							"enumDescriptions": [
-								"Aspas duplas",
-								"Aspas Simples",
-								"Manter original"
-							],
-							"default": "ignore",
-							"description": "Indica como as _strings_ devem ser informadas."
-						},
-						"formatNumber": {
-							"type": "boolean",
-							"default": false,
-							"description": "Habilita a formatação de valores constantes numéricos."
-						},
-						"operatorSpacing": {
-							"type": "boolean",
-							"default": false,
-							"description": "Habilita o espaçamento de operadores em expressões."
-						}
-					}
-				}
-			}
-		},
-		"commands": [
-			{
-				"command": "totvs-developer-studio.getDAP",
-				"title": "Get DAP"
-			},
-			{
-				"command": "totvs-developer-studio.inspectorFunctions",
-				"title": "%tds.package.inspector.function.title%",
-				"description": "tds.package.inspector.function.description",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.inspectorObjects",
-				"title": "%tds.package.inspector.object.title%",
-				"description": "%tds.package.inspector.object.description%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.defragRPO",
-				"title": "%tds.package.defrag.rpo.title%",
-				"description": "%tds.package.defrag.rpo.description%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.rpoCheckIntegrity",
-				"title": "%tds.package.rpo.check.integrity.title%",
-				"description": "%tds.package.rpo.check.integrity.description%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.build.file",
-				"title": "%tds.package.build.file.title%",
-				"description": "%tds.package.build.file.description%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.rebuild.file",
-				"title": "%tds.package.rebuild.file.title%",
-				"description": "%tds.package.rebuild.file.description%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.build.workspace",
-				"title": "%tds.package.build.workspace.title%",
-				"description": "%tds.package.build.workspace.description%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.rebuild.workspace",
-				"title": "%tds.package.rebuild.workspace.title%",
-				"description": "%tds.package.rebuild.workspace.description%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.build.openEditors",
-				"title": "%tds.package.build.openEditors.title%",
-				"description": "%tds.package.build.openEditors.description%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.rebuild.openEditors",
-				"title": "%tds.package.rebuild.openEditors.title%",
-				"description": "%tds.package.rebuild.openEditors.description%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.delete.file.fromRPO",
-				"title": "%tds.package.delete.file.fromRPO.title%",
-				"description": "%tds.package.delete.file.fromRPO.description%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.configure.launcher",
-				"title": "%tds.package.configure.launcher.title%",
-				"description": "%tds.package.configure.launcher.description%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.getProgramName",
-				"title": "%tds.package.getProgramName.title%",
-				"description": "%tds.package.getProgramName.description%"
-			},
-			{
-				"command": "totvs-developer-studio.getProgramArguments",
-				"title": "Argumentos",
-				"description": "Argumentos a serem repassados ao programa que será executado"
-			},
-			{
-				"command": "totvs-developer-studio.connect",
-				"title": "%tds.package.connect%",
-				"icon": {
-					"light": "resources/light/connect.png",
-					"dark": "resources/dark/connect.png"
-				}
-			},
-			{
-				"command": "totvs-developer-studio.reconnect",
-				"title": "%tds.package.reconnect%"
-			},
-			{
-				"command": "totvs-developer-studio.serverSelection",
-				"title": "%tds.package.serverSelection%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.toggleSaveLocation",
-				"title": "%tds.package.toggleSaveLocation%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.rename",
-				"title": "%tds.package.rename%"
-			},
-			{
-				"command": "totvs-developer-studio.disconnect",
-				"title": "%tds.package.disconnect%",
-				"icon": {
-					"light": "resources/light/disconnect.png",
-					"dark": "resources/dark/disconnect.png"
-				}
-			},
-			{
-				"command": "totvs-developer-studio.selectenv",
-				"title": "%tds.package.selectenv%",
-				"icon": {
-					"light": "resources/light/environment.select.svg",
-					"dark": "resources/dark/environment.select.svg"
-				}
-			},
-			{
-				"title": "%tds.package.freshenIndex%",
-				"command": "advpl.freshenIndex"
-			},
-			{
-				"command": "totvs-developer-studio.add",
-				"title": "%tds.package.add%",
-				"icon": {
-					"light": "resources/light/add.png",
-					"dark": "resources/dark/add.png"
-				},
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.toggleTableSync",
-				"title": "%tds.command.debug.toggleTableSync%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.config",
-				"title": "%tds.package.config%",
-				"icon": {
-					"light": "resources/light/config.png",
-					"dark": "resources/dark/config.png"
-				},
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.delete",
-				"title": "%tds.package.delete%",
-				"icon": {
-					"light": "resources/light/delete.png",
-					"dark": "resources/dark/delete.png"
-				}
-			},
-			{
-				"command": "totvs-developer-studio.delete.environment",
-				"title": "%tds.package.delete%",
-				"icon": {
-					"light": "resources/light/delete.png",
-					"dark": "resources/dark/delete.png"
-				}
-			},
-			{
-				"command": "totvs-developer-studio.patchGenerate.fromRPO",
-				"title": "%tds.package.patchGenerate.fromRPO%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.patchGenerate.fromFolder",
-				"title": "%tds.package.patchGenerate.fromFolder%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.compile.key",
-				"title": "%tds.package.compile.key%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.logger.on",
-				"title": "%tds.package.logger.on%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.logger.off",
-				"title": "%tds.package.logger.off%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.patchApply",
-				"title": "%tds.package.patchApply%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.patchApply.fromFile",
-				"title": "%tds.package.patchApply.fromFile%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.patchValidate.fromFile",
-				"title": "%tds.package.patchValidate.fromFile%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.welcomePage",
-				"title": "%tds.package.welcomePage%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.include",
-				"title": "%tds.package.include%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.ws.show",
-				"title": "%tds.package.ws.show%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.templateApply",
-				"title": "%tds.package.templateApply%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.templateApply.fromFile",
-				"title": "%tds.package.templateApply.fromFile%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.toggle.autocomplete.behavior",
-				"title": "%tds.toggle.autocomplete.behavior%",
-				"category": "TOTVS"
-			},
-			{
-				"command": "totvs-developer-studio.run.formatter",
-				"title": "Format",
-				"description": "%tds.package.apply.formatting%",
-				"category": "TOTVS",
-				"icon": {
-					"light": "resources/light/formatter.png",
-					"dark": "resources/dark/formatter.png"
-				}
-			},
-			{
-				"command": "totvs-developer-studio.tdsreplay.configure.launcher",
-				"title": "%tds.package.configure.launcher.title%",
-				"category": "TDSReplay"
-			},
-			{
-				"command": "totvs-developer-studio.tdsreplay.webview.timeLine",
-				"title": "%tds.package.OpenTimeLineWebview%",
-				"category": "TDSReplay"
-			},
-			{
-				"command": "tds-monitor.open-monitor-view",
-				"title": "%tds-monitor.open-monitor-view%",
-				"category": "TOTVSMonitor",
-				"icon": {
-					"light": "resources/light/monitor.png",
-					"dark": "resources/dark/monitor.png"
-				}
-			},
-			{
-				"command": "totvs-developer-studio.open-loadrpoinfo-view",
-				"title": "%totvs-developer-studio.open-rpoinfo%",
-				"category": "TOTVS",
-				"icon": {
-					"light": "resources/light/rpolog.png",
-					"dark": "resources/dark/rpolog.png"
-				}
-			}
-		],
-		"keybindings": [
-			{
-				"command": "totvs-developer-studio.build.file",
-				"key": "ctrl+f9",
-				"mac": "cmd+f9",
-				"when": "editorTextFocus"
-			},
-			{
-				"command": "totvs-developer-studio.rebuild.file",
-				"key": "ctrl+shift+f9",
-				"mac": "cmd+shift+f9",
-				"when": "editorTextFocus"
-			},
-			{
-				"command": "totvs-developer-studio.build.openEditors",
-				"key": "ctrl+f10",
-				"mac": "cmd+f10"
-			},
-			{
-				"command": "totvs-developer-studio.rebuild.openEditors",
-				"key": "ctrl+shift+f10",
-				"mac": "cmd+shift+f10"
-			},
-			{
-				"command": "totvs-developer-studio.toggle.autocomplete.behavior",
-				"key": "ctrl+alt+space",
-				"when": "editorTextFocus"
-			}
-		],
-		"breakpoints": [
-			{
-				"language": "advpl"
-			},
-			{
-				"language": "4gl"
-			}
-		],
-		"debuggers": [
-			{
-				"type": "totvs_language_debug",
-				"label": "%tds.package.totvs_language_debug%",
-				"configurationAttributes": {
-					"launch": {
-						"required": [
-							"program",
-							"smartclientBin"
-						],
-						"properties": {
-							"program": {
-								"type": "string",
-								"description": "%tds.package.properties.program.description%",
-								"default": "${command:AskForProgramName}"
-							},
-							"trace": {
-								"type": "boolean",
-								"description": "%tds.package.properties.trace.description%",
-								"default": true
-							},
-							"smartclientBin": {
-								"type": "string",
-								"description": "%tds.package.properties.smartclientBin.description%",
-								"default": "C:/totvs/bin/smartclient/smartclient.exe"
-							},
-							"cwb": {
-								"type": "string",
-								"description": "%tds.package.properties.cwb.description%",
-								"default": "${workspaceFolder}"
-							},
-							"enableMultiThread": {
-								"type": "boolean",
-								"description": "%tds.package.properties.enableMultiThread.description%",
-								"default": false
-							},
-							"waitForAttach": {
-								"type": "number",
-								"description": "%tds.package.properties.waitForAttach.description%",
-								"default": 0
-							},
-							"enableProfile": {
-								"type": "boolean",
-								"description": "%tds.package.properties.enableProfile.description%",
-								"default": false
-							},
-							"isMultiSession": {
-								"type": "boolean",
-								"description": "%tds.package.properties.isMultiSession.description%",
-								"default": true
-							},
-							"isAccessibilityMode": {
-								"type": "boolean",
-								"description": "%tds.package.properties.isAccessibilityMode.description%",
-								"default": false
-							},
-							"doNotShowSplash": {
-								"type": "boolean",
-								"description": "%tds.package.properties.doNotShowSplash.description%",
-								"default": false
-							},
-							"openglMode": {
-								"type": "boolean",
-								"description": "%tds.package.properties.openglMode.description%",
-								"default": false
-							},
-							"dpiMode": {
-								"type": "boolean",
-								"description": "%tds.package.properties.dpiMode.description%",
-								"default": false
-							},
-							"language": {
-								"type": "string",
-								"description": "%tds.package.properties.language.description%"
-							},
-							"logFile": {
-								"type": "string",
-								"description": "%tds.package.properties.logFile.description%",
-								"default": "${workspaceFolder}\\daplog.log"
-							},
-							"ignoreFiles": {
-								"type": "boolean",
-								"description": "%tds.package.properties.ignoreFiles.description%",
-								"default": false
-							},
-							"enableTableSync": {
-								"type": "boolean",
-								"description": "%tds.package.properties.toggleTableSync.description%",
-								"default": false
-							},
-							"programArguments": {
-								"type": "array",
-								"description": "Arguments that will be passed to the called program/function (through key -A)",
-								"default": [
-									"${command:AskForProgramArguments}"
-								]
-							}
-						}
-					}
-				},
-				"initialConfigurations": [
-					{
-						"type": "totvs_language_debug",
-						"request": "launch",
-						"name": "%tds.package.totvs_language_debug%",
-						"program": "${command:AskForProgramName}",
-						"cwb": "${workspaceFolder}",
-						"smartclientBin": "C:/totvs/bin/smartclient/smartclient.exe",
-						"isMultiSession": true,
-						"enableTableSync": true
-					}
-				],
-				"configurationSnippets": [
-					{
-						"label": "%tds.package.totvs_language_debug%",
-						"description": "A new configuration for 'debugging' a user selected AdvPL/4GL file.",
-						"body": {
-							"type": "totvs_language_debug",
-							"request": "launch",
-							"name": "${1:%tds.package.totvs_language_debug%}",
-							"program": "^\"\\${command:AskForProgramName}\"",
-							"smartclientBin": "${2:C:/totvs/bin/smartclient/smartclient.exe}",
-							"isMultiSession": true,
-							"enableTableSync": true
-						}
-					},
-					{
-						"label": "%tds.package.totvs_language_debug% with arguments",
-						"description": "A new configuration for 'debugging' a user selected AdvPL/4GL file with arguments.",
-						"body": {
-							"type": "totvs_language_debug",
-							"request": "launch",
-							"name": "${1:%tds.package.totvs_language_debug%}",
-							"program": "^\"\\${command:AskForProgramName}\"",
-							"programArguments": [
-								"^\"\\${command:AskForProgramArguments}\""
-							],
-							"smartclientBin": "${2:C:/totvs/bin/smartclient/smartclient.exe}",
-							"isMultiSession": true,
-							"enableTableSync": true
-						}
-					}
-				],
-				"variables": {
-					"AskForProgramName": "totvs-developer-studio.getProgramName",
-					"AskForProgramArguments": "totvs-developer-studio.getProgramArguments"
-				}
-			},
-			{
-				"type": "totvs_tdsreplay_debug",
-				"label": "%tds.package.tdsreplay.debug%",
-				"configurationAttributes": {
-					"launch": {
-						"required": [
-							"tdsReplayFile"
-						],
-						"properties": {
-							"cwb": {
-								"type": "string",
-								"description": "%tds.package.properties.cwb.description%",
-								"default": "${workspaceFolder}"
-							},
-							"tdsReplayFile": {
-								"type": "string",
-								"description": "The TDS Replay File recorder by the server.",
-								"default": ""
-							},
-							"ignoreSourcesNotFound": {
-								"type": "boolean",
-								"description": "%tds.package.properties.ignoreFiles.description%",
-								"default": true
-							},
-							"password": {
-								"type": "string",
-								"description": "The password of the TDS Replay File",
-								"default": ""
-							},
-							"includeSources": {
-								"type": "string",
-								"description": "The sources that must be included when importing the information. WildCards (*) can be used.",
-								"default": "*"
-							},
-							"excludeSources": {
-								"type": "string",
-								"description": "The sources that must be excluded when importing the information. WildCards (*) can be used.",
-								"default": ""
-							},
-							"logFile": {
-								"type": "string",
-								"default": "${workspaceFolder}\\tdsreplayDAP.log"
-							},
-							"verboseLogFile": {
-								"type": "string",
-								"default": "${workspaceFolder}\\tdsreplayVerboseLog.log"
-							},
-							"keepExtractedFiles": {
-								"type": "boolean",
-								"default": false
-							},
-							"enableVerbose": {
-								"type": "boolean",
-								"default": false
-							},
-							"forceImport" : {
-								"type": "boolean",
-								"default": false
-							}
-						}
-					}
-				},
-				"initialConfigurations": [
-					{
-						"type": "totvs_tdsreplay_debug",
-						"request": "launch",
-						"name": "${1:%tds.package.tdsreplay.debug%}",
-						"cwb": "${workspaceFolder}",
-						"tdsReplayFile": "",
-						"ignoreFiles": false,
-						"password": "",
-						"includeSources": "*",
-						"excludeSources": ""
-					}
-				],
-				"configurationSnippets": [
-					{
-						"label": "%tds.package.tdsreplay.debug%",
-						"description": "A new configuration for 'debugging' a TDS Replay file.",
-						"body": {
-							"type": "totvs_tdsreplay_debug",
-							"request": "launch",
-							"name": "${1:%tds.package.tdsreplay.debug%}",
-							"cwb": "${workspaceFolder}",
-							"ignoreFiles": false,
-							"tdsReplayFile": "",
-							"password": "",
-							"includeSources": "*",
-							"excludeSources": ""
-						}
-					}
-				]
-			},
-			{
-				"type": "totvs_language_web_debug",
-				"label": "%tds.package.totvs_language_debug.web%",
-				"configurationAttributes": {
-					"launch": {
-						"required": [
-							"program",
-							"smartclientUrl"
-						],
-						"properties": {
-							"program": {
-								"type": "string",
-								"description": "%tds.package.properties.program.description.web%",
-								"default": "${command:AskForProgramName}"
-							},
-							"trace": {
-								"type": "boolean",
-								"description": "%tds.package.properties.trace.description.web%",
-								"default": true
-							},
-							"smartclientUrl": {
-								"type": "string",
-								"description": "%tds.package.properties.smartclientUrl.description%",
-								"default": "http://localhost:8080"
-							},
-							"cwb": {
-								"type": "string",
-								"description": "%tds.package.properties.cwb.description%",
-								"default": "${workspaceFolder}"
-							},
-							"workspaceFolders": {
-								"type": "array",
-								"description": "%tds.package.properties.workspaceFolders.description.web%",
-								"default": "[${workspaceFolder}]"
-							},
-							"wsCacheFiles": {
-								"type": "boolean",
-								"description": "%tds.package.properties.wsCacheFiles.description.web%",
-								"default": false
-							},
-							"webNavigator": {
-								"type": "string",
-								"description": "%tds.package.properties.webNavigator.description.web%",
-								"default": ""
-							},
-							"enableMultiThread": {
-								"type": "boolean",
-								"description": "%tds.package.properties.enableMultiThread.description%",
-								"default": false
-							},
-							"startJobList": {
-								"type": "array",
-								"description": "%tds.package.properties.startJobList.description%",
-								"default": []
-							},
-							"startJobNowList": {
-								"type": "array",
-								"description": "%tds.package.properties.startJobList.description%",
-								"default": []
-							},
-							"enableProfile": {
-								"type": "boolean",
-								"description": "%tds.package.properties.enableProfile.description%",
-								"default": false
-							},
-							"isMultiSession": {
-								"type": "boolean",
-								"description": "%tds.package.properties.isMultiSession.description%",
-								"default": true
-							},
-							"isAccessibilityMode": {
-								"type": "boolean",
-								"description": "%tds.package.properties.isAccessibilityMode.description%",
-								"default": false
-							},
-							"doNotShowSplash": {
-								"type": "boolean",
-								"description": "%tds.package.properties.doNotShowSplash.description%",
-								"default": false
-							},
-							"language": {
-								"type": "string",
-								"description": "%tds.package.properties.language.description%"
-							},
-							"logFile": {
-								"type": "string",
-								"description": "%tds.package.properties.logFile.description%",
-								"default": "${workspaceFolder}\\daplog.log"
-							},
-							"enableTableSync": {
-								"type": "boolean",
-								"description": "%tds.package.properties.toggleTableSync.description%",
-								"default": true
-							},
-							"ignoreFiles": {
-								"type": "boolean",
-								"description": "Make the debugger ignore break events in files not found in WorkSpace",
-								"default": false
-							},
-							"programArguments": {
-								"type": "array",
-								"description": "Arguments that will be passed to the called program / function (key -A)",
-								"default": [
-									"${command:AskForProgramArguments}"
-								]
-							}
-						}
-					}
-				},
-				"initialConfigurations": [
-					{
-						"type": "totvs_language_web_debug",
-						"request": "launch",
-						"name": "%tds.package.totvs_language_debug%",
-						"program": "${command:AskForProgramName}",
-						"cwb": "${workspaceFolder}",
-						"environment": "environment",
-						"smartclientUrl": "http://localhost:8080",
-						"isMultiSession": true,
-						"enableTableSync": true
-					}
-				],
-				"configurationSnippets": [
-					{
-						"label": "%tds.package.totvs_language_debug%",
-						"description": "%tds.package.configurationSnippets.description%",
-						"body": {
-							"type": "totvs_language_debug",
-							"request": "launch",
-							"name": "%tds.package.totvs_language_debug%",
-							"program": "${command:AskForProgramName}",
-							"isMultiSession": true,
-							"enableTableSync": true
-						}
-					},
-					{
-						"label": "%tds.package.totvs_language_debug.web%",
-						"description": "%tds.package.configurationSnippets.description.web%",
-						"body": {
-							"type": "totvs_language_web_debug",
-							"request": "launch",
-							"name": "%tds.package.totvs_language_debug.web%",
-							"program": "^\"\\${command:AskForProgramName}\"",
-							"isMultiSession": true,
-							"enableTableSync": true,
-							"smartclientUrl": "http://localhost:8080"
-						}
-					}
-				],
-				"variables": {
-					"AskForProgramName": "totvs-developer-studio.getProgramName",
-					"AskForProgramArguments": "totvs-developer-studio.getProgramArguments"
-				}
-			}
-		],
-		"viewsContainers": {
-			"activitybar": [
-				{
-					"id": "totvs-plataform",
-					"title": "TOTVS",
-					"icon": "imagens/totvs24x24.png"
-				}
-			]
-		},
-		"views": {
-			"totvs-plataform": [
-				{
-					"id": "totvs_server",
-					"name": "%tds.package.server.view%"
-				}
-			]
-		},
-		"menus": {
-			"explorer/context": [
-				{
-					"when": "explorerResourceIsFolder",
-					"command": "totvs-developer-studio.build.workspace",
-					"alt": "totvs-developer-studio.rebuild.workspace",
-					"group": "totvsBuild@1"
-				},
-				{
-					"command": "totvs-developer-studio.build.file",
-					"alt": "totvs-developer-studio.rebuild.file",
-					"group": "totvsBuild@3"
-				},
-				{
-					"command": "totvs-developer-studio.build.openEditors",
-					"alt": "totvs-developer-studio.rebuild.openEditors",
-					"group": "totvsBuild@4"
-				},
-				{
-					"when": "resourceLangId == totvs_patch",
-					"command": "totvs-developer-studio.patchApply.fromFile",
-					"alt": "totvs-developer-studio.patchApply.fromFile",
-					"group": "totvsBuild@5"
-				},
-				{
-					"when": "resourceLangId == totvs_patch",
-					"command": "totvs-developer-studio.patchValidate.fromFile",
-					"alt": "totvs-developer-studio.patchValidate.fromFile",
-					"group": "totvsBuild@8"
-				},
-				{
-					"command": "totvs-developer-studio.delete.file.fromRPO",
-					"alt": "totvs-developer-studio.delete.file.fromRPO",
-					"group": "totvsBuild@6"
-				},
-				{
-					"when": "resourceLangId == totvs_template",
-					"command": "totvs-developer-studio.templateApply.fromFile",
-					"alt": "totvs-developer-studio.templateApply.fromFile",
-					"group": "totvsBuild@5"
-				},
-				{
-					"when": "explorerResourceIsFolder",
-					"command": "totvs-developer-studio.patchGenerate.fromFolder",
-					"group": "totvsBuild@7"
-				},
-				{
-					"when": "explorerResourceIsFolder",
-					"command": "totvs-developer-studio.run.formatter",
-					"group": "totvsSource@1"
-				},
-				{
-					"when": "resourceLangId == advpl",
-					"command": "totvs-developer-studio.run.formatter",
-					"group": "totvsSource@2"
-				},
-				{
-					"when": "resourceLangId == 4gl",
-					"command": "totvs-developer-studio.run.formatter",
-					"group": "totvsSource@2"
-				}
-			],
-			"view/item/context": [
-				{
-					"command": "totvs-developer-studio.connect",
-					"when": "view == totvs_server && viewItem == serverItemNotConnected",
-					"group": "AAtotvsServer@1"
-				},
-				{
-					"command": "totvs-developer-studio.reconnect",
-					"when": "view == totvs_server && viewItem == serverItemNotConnected",
-					"group": "AAtotvsServer@1"
-				},
-				{
-					"command": "totvs-developer-studio.disconnect",
-					"when": "view == totvs_server && viewItem == serverItem",
-					"group": "AAtotvsServer@2"
-				},
-				{
-					"command": "tds-monitor.open-monitor-view",
-					"when": "view == totvs_server && viewItem == serverItem",
-					"group": "AAtotvsServer@3"
-				},
-				{
-					"command": "totvs-developer-studio.patchGenerate.fromRPO",
-					"when": "view == totvs_server && viewItem == serverItem",
-					"group": "CtotvsPatch@1"
-				},
-				{
-					"command": "totvs-developer-studio.patchApply",
-					"when": "view == totvs_server && viewItem == serverItem",
-					"group": "CtotvsPatch@2"
-				},
-				{
-					"command": "totvs-developer-studio.open-loadrpoinfo-view",
-					"when": "view == totvs_server && viewItem == serverItem",
-					"group": "CtotvsPatch@3"
-				},
-				{
-					"command": "totvs-developer-studio.inspectorObjects",
-					"when": "view == totvs_server && viewItem == serverItem",
-					"group": "DtotvsInspect@1"
-				},
-				{
-					"command": "totvs-developer-studio.inspectorFunctions",
-					"when": "view == totvs_server && viewItem == serverItem",
-					"group": "DtotvsInspect@2"
-				},
-				{
-					"command": "totvs-developer-studio.selectenv",
-					"when": "view == totvs_server && viewItem == envSectionNotCurrent",
-					"group": "inline@2"
-				},
-				{
-					"command": "totvs-developer-studio.delete.environment",
-					"when": "view == totvs_server && viewItem == envSectionNotCurrent",
-					"group": "inline@1"
-				},
-				{
-					"command": "totvs-developer-studio.delete.file.fromRPO",
-					"when": "view == totvs_server && viewItem == serverItem",
-					"group": "EtotvsRPO@2"
-				},
-				{
-					"command": "totvs-developer-studio.add",
-					"when": "view == totvs_server",
-					"group": "ABtotvsServer@3"
-				},
-				{
-					"command": "totvs-developer-studio.config",
-					"when": "view == totvs_server",
-					"group": "XtotvsServer@1"
-				},
-				{
-					"command": "totvs-developer-studio.rename",
-					"when": "view == totvs_server && viewItem == serverItem",
-					"group": "ABtotvsServer@4"
-				},
-				{
-					"command": "totvs-developer-studio.compile.key",
-					"when": "view == totvs_server",
-					"group": "BBtotvsCompileKey@1"
-				},
-				{
-					"command": "totvs-developer-studio.include",
-					"when": "view == totvs_server",
-					"group": "BAtotvsInclude@1"
-				},
-				{
-					"command": "totvs-developer-studio.delete",
-					"when": "view == totvs_server && viewItem == serverItemNotConnected",
-					"group": "inline@1"
-				},
-				{
-					"command": "totvs-developer-studio.connect",
-					"when": "view == totvs_server && viewItem == serverItemNotConnected",
-					"group": "inline@2"
-				},
-				{
-					"command": "totvs-developer-studio.disconnect",
-					"when": "view == totvs_server && viewItem == serverItem",
-					"group": "inline@2"
-				},
-				{
-					"command": "totvs-developer-studio.defragRPO",
-					"when": "view == totvs_server && viewItem == serverItem",
-					"group": "EtotvsRPO@1"
-				},
-				{
-					"command": "totvs-developer-studio.rpoCheckIntegrity",
-					"when": "view == totvs_server && viewItem == serverItem",
-					"group": "EtotvsRPO@1"
-				}
-			],
-			"view/title": [
-				{
-					"command": "totvs-developer-studio.add",
-					"when": "view == totvs_server",
-					"group": "navigation"
-				},
-				{
-					"command": "tds-monitor.open-monitor-view",
-					"when": "view == totvs_server",
-					"group": "navigation"
-				},
-				{
-					"command": "totvs-developer-studio.config",
-					"when": "view == totvs_server",
-					"group": "navigation"
-				}
-			],
-			"commandPalette": [
-				{
-					"command": "totvs-developer-studio.patchGenerate.fromFolder",
-					"when": "1 == 0"
-				},
-				{
-					"command": "totvs-developer-studio.patchValidate.fromFile",
-					"when": "1 == 0"
-				},
-				{
-					"command": "totvs-developer-studio.selectenv",
-					"when": "1 == 0"
-				},
-				{
-					"command": "totvs-developer-studio.disconnect",
-					"when": "1 == 0"
-				},
-				{
-					"command": "totvs-developer-studio.connect",
-					"when": "1 == 0"
-				},
-				{
-					"command": "totvs-developer-studio.reconnect",
-					"when": "1 == 0"
-				},
-				{
-					"command": "totvs-developer-studio.rename",
-					"when": "1 == 0"
-				},
-				{
-					"command": "totvs-developer-studio.getProgramName",
-					"when": "1 == 0"
-				},
-				{
-					"command": "totvs-developer-studio.getProgramArguments",
-					"when": "1 == 0"
-				},
-				{
-					"command": "totvs-developer-studio.delete.file.fromRPO",
-					"when": "1 == 0"
-				},
-				{
-					"command": "totvs-developer-studio.getDAP",
-					"when": "1 == 0"
-				},
-				{
-					"command": "totvs-developer-studio.welcomePage",
-					"when": "1 == 0"
-				},
-				{
-					"command": "totvs-developer-studio.tdsreplay.webview.timeLine",
-					"when": "debugType == totvs_tdsreplay_debug"
-				}
-			]
-		}
-	},
-	"servers": {
-		"path": ".vscode/servers.json"
-	}
+  "name": "tds-vscode",
+  "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
+  "description": "%tds.package.description%",
+  "version": "1.2.2",
+  "publisher": "TOTVS",
+  "author": {
+    "name": "TOTVS",
+    "email": "tecnologia@totvs.com.br"
+  },
+  "license": "Apache 2.0",
+  "keywords": [
+    "multi-root ready",
+    "advpl",
+    "tlpp",
+    "4gl",
+    "tds",
+    "totvs",
+    "monitor",
+    "protheus"
+  ],
+  "engines": {
+    "vscode": "^1.47.0"
+  },
+  "icon": "imagens/totvs-developer-studio.png",
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Linters",
+    "Debuggers",
+    "Formatters"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/totvs/tds-vscode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/totvs/tds-vscode.git"
+  },
+  "scripts": {
+    "clean2": "gulp clean",
+    "compile": "tsc --version && npm-run-all compile:*",
+    "compile:extension": "tsc -p ./src",
+    "compile:views": "webpack --mode development",
+    "tslint": "tslint ./src/**/*.ts",
+    "tslint:fix": "tslint ./src/**/*.ts --fix",
+    "test": "node node_modules/vscode/bin/test",
+    "export-i18n": "gulp export-i18n",
+    "i18n-import": "gulp i18n-import",
+    "---RELEASE---": "",
+    "release": "npx standard-version -r 1.1.0",
+    "tag": "git push --follow-tags",
+    "pack": "npm pack",
+    "package": "gulp package",
+    "publish": "gulp publish",
+    "vscode:prepublish": "webpack --mode production",
+    "---MISC---": "",
+    "all-contributors:generate": "all-contributors generate",
+    "all-contributors:check": "all-contributors check",
+    "link:prettier-plugin-4gl": "npm link ../prettier-plugin-4gl --force"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
+    "@totvs/tds-da": "^1.1.21",
+    "@totvs/tds-ls": "^1.1.40",
+    "@types/node": "^14.14.12",
+    "@types/react": "^16.9.50",
+    "@types/vscode": "^1.52.0",
+    "cheerio": "^1.0.0-rc.3",
+    "core-js": "^3.6.4",
+    "del": "^5.1.0",
+    "ini": "^1.3.5",
+    "jszip": "^3.5.0",
+    "material-table": "1.68.1",
+    "prettier": "^2.1.2",
+    "prettier-plugin-4gl": "^0.0.6",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0",
+    "strip-json-comments": "^3.1.1",
+    "template-literal": "^1.0.3",
+    "tmp": "^0.2.1",
+    "typescript": "^4.1.0",
+    "vscode-debugadapter": "^1.42.1",
+    "vscode-languageclient": "^6.1.1",
+    "vscode-nls": "^5.0.0",
+    "windows-1251": "^1.0.0",
+    "windows-1252": "^1.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@types/ini": "^1.3.30",
+    "@types/mocha": "^8.0.4",
+    "@types/react-dom": "^16.9.8",
+    "all-contributors-cli": "^6.17.4",
+    "cleanup": "^0.3.0",
+    "css-loader": "^4.3.0",
+    "gulp": "^4.0.2",
+    "gulp-filter": "^6.0.0",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-tslint": "^8.1.4",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "gulp-util": "^3.0.8",
+    "lodash.template": ">=4.5.0",
+    "mocha": "^8.2.1",
+    "npm-run-all": "^4.1.5",
+    "style-loader": "^1.2.1",
+    "terser-webpack-plugin": "^4.2.2",
+    "ts-loader": "^8.0.4",
+    "tslint": "^6.1.2",
+    "vsce": "^1.81.0",
+    "vscode-nls-dev": "^3.3.2",
+    "vscode-test": "^1.4.1",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12",
+    "webpack-stream": "^6.1.0"
+  },
+  "main": "./out/extension",
+  "activationEvents": [
+    "onLanguage:advpl",
+    "onLanguage:4gl",
+    "onCommand:totvs-developer-studio.getProgramArguments",
+    "onCommand:totvs-developer-studio.getProgramName",
+    "onCommand:totvs-developer-studio.build.file",
+    "onCommand:totvs-developer-studio.rebuild.file",
+    "onCommand:totvs-developer-studio.build.workspace",
+    "onCommand:totvs-developer-studio.rebuild.workspace",
+    "onCommand:totvs-developer-studio.build.openEditors",
+    "onCommand:totvs-developer-studio.rebuild.openEditors",
+    "onCommand:totvs-developer-studio.delete.file.fromRPO",
+    "onCommand:totvs-developer-studio.configure.launcher",
+    "onCommand:totvs-developer-studio.inspectorFunctions",
+    "onCommand:totvs-developer-studio.inspectorObjects",
+    "onCommand:totvs-developer-studio.defragRPO",
+    "onCommand:totvs-developer-studio.rpoCheckIntegrity",
+    "onCommand:totvs-developer-studio.delete.file.fromRPO",
+    "onCommand:totvs-developer-studio.getDAP",
+    "onCommand:totvs-developer-studio.connect",
+    "onCommand:totvs-developer-studio.reconnect",
+    "onCommand:totvs-developer-studio.serverSelection",
+    "onCommand:totvs-developer-studio.toggleSaveLocation",
+    "onCommand:totvs-developer-studio.disconnect",
+    "onCommand:totvs-developer-studio.add",
+    "onCommand:totvs-developer-studio.config",
+    "onCommand:totvs-developer-studio.selectenv",
+    "onCommand:totvs-developer-studio.delete",
+    "onCommand:totvs-developer-studio.delete.environment",
+    "onCommand:totvs-developer-studio.patchGenerate.fromRPO",
+    "onCommand:totvs-developer-studio.patchGenerate.fromFolder",
+    "onCommand:totvs-developer-studio.patchApply",
+    "onCommand:totvs-developer-studio.patchApply.fromFile",
+    "onCommand:totvs-developer-studio.patchValidate.fromFile",
+    "onCommand:totvs-developer-studio.welcomePage",
+    "onCommand:totvs-developer-studio.include",
+    "onCommand:totvs-developer-studio.ws.show",
+    "onCommand:totvs-developer-studio.logger.on",
+    "onCommand:totvs-developer-studio.logger.off",
+    "onCommand:totvs-developer-studio.compile.key",
+    "onCommand:totvs-developer-studio.templateApply",
+    "onCommand:totvs-developer-studio.templateApply.fromFile",
+    "onView:totvs_server",
+    "workspaceContains:.tds",
+    "workspaceContains:*.prw",
+    "workspaceContains:*.ppo",
+    "workspaceContains:*.prx",
+    "workspaceContains:*.aph",
+    "workspaceContains:*.ppx",
+    "workspaceContains:*.ppp",
+    "workspaceContains:*.tlpp",
+    "workspaceContains:*.ch",
+    "workspaceContains:*.4gl",
+    "workspaceContains:*.per",
+    "workspaceContains:*.ptm",
+    "workspaceContains:*.upd",
+    "workspaceContains:*.pak",
+    "workspaceContains:servers.json"
+  ],
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "tds.patchView",
+        "displayName": "Patch file",
+        "selector": [
+          {
+            "filenamePattern": "*.ptm"
+          }
+        ]
+      }
+    ],
+    "colors": [
+      {
+        "id": "terminal.ansiBlack",
+        "description": "Cor de texto apresentado no console de depuração.",
+        "defaults": {
+          "dark": "#CCCCCC",
+          "light": "#555555",
+          "highContrast": "#ffffff"
+        }
+      },
+      {
+        "id": "terminal.ansiGreen",
+        "description": "Cor da identifcação do nível de mensagem 'Informação'.",
+        "defaults": {
+          "dark": "#5aa85a",
+          "light": "#5aa85a",
+          "highContrast": "#5aa85a"
+        }
+      },
+      {
+        "id": "terminal.ansiYellow",
+        "description": "Cor da identifcação do nível de mensagem 'Aviso'.",
+        "defaults": {
+          "dark": "#d8d53c",
+          "light": "#d8d53c",
+          "highContrast": "#d8d53c"
+        }
+      },
+      {
+        "id": "terminal.ansiRed",
+        "description": "Cor da identifcação do nível de mensagem 'Erro'.",
+        "defaults": {
+          "dark": "#eb1313",
+          "light": "#eb1313",
+          "highContrast": "#eb1313"
+        }
+      },
+      {
+        "id": "terminal.ansiCyan",
+        "description": "Cor da identifcação da hora do evento.",
+        "defaults": {
+          "dark": "#11c9cf",
+          "light": "#11c9cf",
+          "highContrast": "#11c9cf"
+        }
+      }
+    ],
+    "languages": [
+      {
+        "id": "advpl",
+        "aliases": [
+          "AdvPL",
+          "advpl"
+        ],
+        "extensions": [
+          ".ch",
+          ".prw",
+          ".prg",
+          ".prx",
+          ".ppx",
+          ".ppp",
+          ".tlpp",
+          ".aph",
+          ".ahu",
+          ".apl",
+          ".apw"
+        ],
+        "configuration": "./advpl-language-configuration.json"
+      },
+      {
+        "id": "4gl",
+        "aliases": [
+          "4GL"
+        ],
+        "extensions": [
+          ".4gl",
+          ".per"
+        ],
+        "configuration": "./4gl-language-configuration.json"
+      },
+      {
+        "id": "totvs_patch",
+        "aliases": [
+          "Patch",
+          "totvs_patch"
+        ],
+        "extensions": [
+          ".ptm",
+          ".upd",
+          ".pak"
+        ]
+      },
+      {
+        "id": "totvs_template",
+        "aliases": [
+          "Template",
+          "totvs_template"
+        ],
+        "extensions": [
+          ".tpl"
+        ]
+      }
+    ],
+    "grammars": [
+      {
+        "language": "advpl",
+        "scopeName": "source.advpl",
+        "path": "./syntaxes/advpl_language.tmLanguage.json"
+      },
+      {
+        "language": "4gl",
+        "scopeName": "source.4gl",
+        "path": "./syntaxes/4gl_language.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "advpl",
+        "path": "./snippets/advpl_snippets.json"
+      },
+      {
+        "language": "4gl",
+        "path": "./snippets/4gl_snippets.json"
+      }
+    ],
+    "configurationDefaults": {
+      "[4gl]": {
+        "files.encoding": "windows1252",
+        "files.insertFinalNewline": true,
+        "files.eol": "\r\n",
+        "editor.formatOnType": false,
+        "editor.formatOnPaste": false,
+        "editor.formatOnSave": false,
+        "editor.formatOnSaveMode": "file"
+      },
+      "[advpl]": {
+        "files.encoding": "windows1252",
+        "files.insertFinalNewline": true,
+        "files.eol": "\r\n",
+        "editor.formatOnType": false,
+        "editor.formatOnPaste": false,
+        "editor.formatOnSave": false,
+        "editor.formatOnSaveMode": "file"
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "title": "TOTVS",
+      "properties": {
+        "totvsLanguageServer.launch.args": {
+          "type": "array",
+          "default": [],
+          "description": "%tds.package.args.for.lsp%"
+        },
+        "totvsLanguageServer.folder.enableExtensionsFilter": {
+          "scope": "window",
+          "type": "boolean",
+          "default": true,
+          "description": "%tds.package.folder.enable.extensions.filter%"
+        },
+        "totvsLanguageServer.folder.extensionsAllowed": {
+          "scope": "resource",
+          "type": "array",
+          "default": [
+            ".PRW",
+            ".PRX",
+            ".PRG",
+            ".PPX",
+            ".PPP",
+            ".TLPP",
+            ".APW",
+            ".APH",
+            ".APL",
+            ".AHU",
+            ".TRES",
+            ".PNG",
+            ".BMP",
+            ".RES",
+            ".4GL",
+            ".PER",
+            ".JS"
+          ],
+          "description": "%tds.package.folder.extensions.allowed%"
+        },
+        "totvsLanguageServer.trace.server": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "%tds.package.trace.vscode.server%"
+        },
+        "totvsLanguageServer.welcomePage": {
+          "scope": "window",
+          "type": "boolean",
+          "default": true,
+          "description": "%tds.package.show.welcome.first.initialize%"
+        },
+        "totvsLanguageServer.askEncodingChange": {
+          "scope": "window",
+          "type": "boolean",
+          "default": true,
+          "description": "%tds.package.show.ask.encoding%"
+        },
+        "totvsLanguageServer.askCompileResult": {
+          "scope": "window",
+          "type": "boolean",
+          "default": true,
+          "description": "%tds.package.show.ask.compile.result%"
+        },
+        "totvsLanguageServer.clearConsoleBeforeCompile": {
+          "type": "boolean",
+          "default": false,
+          "description": "%tds.package.clear.console.before.compile%"
+        },
+        "totvsLanguageServer.showConsoleOnCompile": {
+          "type": "boolean",
+          "default": true,
+          "description": "%tds.package.show.console.on.compile%"
+        },
+        "totvsLanguageServer.showBanner": {
+          "type": "boolean",
+          "default": true,
+          "description": "%tds.package.show.banner%"
+        },
+        "totvsLanguageServer.reconnectLastServer": {
+          "type": "boolean",
+          "default": true,
+          "description": "%tds.package.reconnectLastServer%"
+        },
+        "totvsLanguageServer.compilation.generatePpoFile": {
+          "type": "boolean",
+          "default": false,
+          "description": "%tds.package.generate.ppo%"
+        },
+        "totvsLanguageServer.compilation.showPreCompiler": {
+          "type": "boolean",
+          "default": false,
+          "description": "%tds.package.show.precompile%"
+        },
+        "totvsLanguageServer.compilation.commitWithErrorOrWarning": {
+          "type": "boolean",
+          "default": false,
+          "description": "%tds.package.compilation.commit%"
+        },
+        "totvsLanguageServer.web.navigator": {
+          "type": "string",
+          "default": "",
+          "description": "%tds.package.web.navigator.debug%"
+        },
+        "totvsLanguageServer.editor.show.notification": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "none",
+            "only errors",
+            "errors and warnings",
+            "errors warnings and infos",
+            "all"
+          ],
+          "enumDescriptions": [
+            "%tds.package.editor.notification.show.none%",
+            "%tds.package.editor.notification.show.only_errors%",
+            "%tds.package.editor.notification.show.errors_and_warnings%",
+            "%tds.package.editor.notification.show.errors_warnings_and_infos%",
+            "%tds.package.editor.notification.show.all%"
+          ],
+          "default": "none",
+          "description": "%tds.package.editor.notification.show%"
+        },
+        "totvsLanguageServer.editor.toggle.autocomplete": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "Basic",
+            "LS"
+          ],
+          "enumDescriptions": [
+            "%tds.package.editor.toggle.autocomplete.basic%",
+            "%tds.package.editor.toggle.autocomplete.ls%"
+          ],
+          "default": "LS",
+          "description": "%tds.package.editor.toggle.autocomplete%"
+        },
+        "totvsLanguageServer.workspaceServerConfig": {
+          "type": "boolean",
+          "default": false,
+          "description": "%tds.package.workspaceServerConfig%"
+        },
+        "4gl.formatter": {
+          "type": "object",
+          "description": "Formatação 4GL",
+          "properties": {
+            "keywordsCase": {
+              "type": "string",
+              "enum": [
+                "upper",
+                "lower",
+                "ignore"
+              ],
+              "enumDescriptions": [
+                "Em maiúsculuas",
+                "Em minúsculas",
+                "Manter original"
+              ],
+              "default": "upper",
+              "description": "Coloca as palavras chaves da linguagem na caixa indicada"
+            },
+            "stringStyle": {
+              "type": "string",
+              "enum": [
+                "double-quotes",
+                "single-quotes",
+                "ignore"
+              ],
+              "enumDescriptions": [
+                "Aspas duplas",
+                "Aspas Simples",
+                "Manter original"
+              ],
+              "default": "ignore",
+              "description": "Indica como as _strings_ devem ser informadas."
+            },
+            "formatNumber": {
+              "type": "boolean",
+              "default": false,
+              "description": "Habilita a formatação de valores constantes numéricos."
+            },
+            "operatorSpacing": {
+              "type": "boolean",
+              "default": false,
+              "description": "Habilita o espaçamento de operadores em expressões."
+            }
+          }
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "totvs-developer-studio.getDAP",
+        "title": "Get DAP"
+      },
+      {
+        "command": "totvs-developer-studio.inspectorFunctions",
+        "title": "%tds.package.inspector.function.title%",
+        "description": "tds.package.inspector.function.description",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.inspectorObjects",
+        "title": "%tds.package.inspector.object.title%",
+        "description": "%tds.package.inspector.object.description%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.defragRPO",
+        "title": "%tds.package.defrag.rpo.title%",
+        "description": "%tds.package.defrag.rpo.description%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.rpoCheckIntegrity",
+        "title": "%tds.package.rpo.check.integrity.title%",
+        "description": "%tds.package.rpo.check.integrity.description%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.build.file",
+        "title": "%tds.package.build.file.title%",
+        "description": "%tds.package.build.file.description%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.rebuild.file",
+        "title": "%tds.package.rebuild.file.title%",
+        "description": "%tds.package.rebuild.file.description%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.build.workspace",
+        "title": "%tds.package.build.workspace.title%",
+        "description": "%tds.package.build.workspace.description%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.rebuild.workspace",
+        "title": "%tds.package.rebuild.workspace.title%",
+        "description": "%tds.package.rebuild.workspace.description%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.build.openEditors",
+        "title": "%tds.package.build.openEditors.title%",
+        "description": "%tds.package.build.openEditors.description%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.rebuild.openEditors",
+        "title": "%tds.package.rebuild.openEditors.title%",
+        "description": "%tds.package.rebuild.openEditors.description%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.delete.file.fromRPO",
+        "title": "%tds.package.delete.file.fromRPO.title%",
+        "description": "%tds.package.delete.file.fromRPO.description%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.configure.launcher",
+        "title": "%tds.package.configure.launcher.title%",
+        "description": "%tds.package.configure.launcher.description%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.getProgramName",
+        "title": "%tds.package.getProgramName.title%",
+        "description": "%tds.package.getProgramName.description%"
+      },
+      {
+        "command": "totvs-developer-studio.getProgramArguments",
+        "title": "Argumentos",
+        "description": "Argumentos a serem repassados ao programa que será executado"
+      },
+      {
+        "command": "totvs-developer-studio.connect",
+        "title": "%tds.package.connect%",
+        "icon": {
+          "light": "resources/light/connect.png",
+          "dark": "resources/dark/connect.png"
+        }
+      },
+      {
+        "command": "totvs-developer-studio.reconnect",
+        "title": "%tds.package.reconnect%"
+      },
+      {
+        "command": "totvs-developer-studio.serverSelection",
+        "title": "%tds.package.serverSelection%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.toggleSaveLocation",
+        "title": "%tds.package.toggleSaveLocation%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.rename",
+        "title": "%tds.package.rename%"
+      },
+      {
+        "command": "totvs-developer-studio.disconnect",
+        "title": "%tds.package.disconnect%",
+        "icon": {
+          "light": "resources/light/disconnect.png",
+          "dark": "resources/dark/disconnect.png"
+        }
+      },
+      {
+        "command": "totvs-developer-studio.selectenv",
+        "title": "%tds.package.selectenv%",
+        "icon": {
+          "light": "resources/light/environment.select.svg",
+          "dark": "resources/dark/environment.select.svg"
+        }
+      },
+      {
+        "title": "%tds.package.freshenIndex%",
+        "command": "advpl.freshenIndex"
+      },
+      {
+        "command": "totvs-developer-studio.add",
+        "title": "%tds.package.add%",
+        "icon": {
+          "light": "resources/light/add.png",
+          "dark": "resources/dark/add.png"
+        },
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.toggleTableSync",
+        "title": "%tds.command.debug.toggleTableSync%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.config",
+        "title": "%tds.package.config%",
+        "icon": {
+          "light": "resources/light/config.png",
+          "dark": "resources/dark/config.png"
+        },
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.delete",
+        "title": "%tds.package.delete%",
+        "icon": {
+          "light": "resources/light/delete.png",
+          "dark": "resources/dark/delete.png"
+        }
+      },
+      {
+        "command": "totvs-developer-studio.delete.environment",
+        "title": "%tds.package.delete%",
+        "icon": {
+          "light": "resources/light/delete.png",
+          "dark": "resources/dark/delete.png"
+        }
+      },
+      {
+        "command": "totvs-developer-studio.patchGenerate.fromRPO",
+        "title": "%tds.package.patchGenerate.fromRPO%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.patchGenerate.fromFolder",
+        "title": "%tds.package.patchGenerate.fromFolder%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.compile.key",
+        "title": "%tds.package.compile.key%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.logger.on",
+        "title": "%tds.package.logger.on%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.logger.off",
+        "title": "%tds.package.logger.off%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.patchApply",
+        "title": "%tds.package.patchApply%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.patchApply.fromFile",
+        "title": "%tds.package.patchApply.fromFile%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.patchValidate.fromFile",
+        "title": "%tds.package.patchValidate.fromFile%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.welcomePage",
+        "title": "%tds.package.welcomePage%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.include",
+        "title": "%tds.package.include%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.ws.show",
+        "title": "%tds.package.ws.show%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.templateApply",
+        "title": "%tds.package.templateApply%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.templateApply.fromFile",
+        "title": "%tds.package.templateApply.fromFile%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.toggle.autocomplete.behavior",
+        "title": "%tds.toggle.autocomplete.behavior%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.run.formatter",
+        "title": "Format",
+        "description": "%tds.package.apply.formatting%",
+        "category": "TOTVS",
+        "icon": {
+          "light": "resources/light/formatter.png",
+          "dark": "resources/dark/formatter.png"
+        }
+      },
+      {
+        "command": "totvs-developer-studio.tdsreplay.configure.launcher",
+        "title": "%tds.package.configure.launcher.title%",
+        "category": "TDSReplay"
+      },
+      {
+        "command": "totvs-developer-studio.tdsreplay.webview.timeLine",
+        "title": "%tds.package.OpenTimeLineWebview%",
+        "category": "TDSReplay"
+      },
+      {
+        "command": "tds-monitor.open-monitor-view",
+        "title": "%tds-monitor.open-monitor-view%",
+        "category": "TOTVSMonitor",
+        "icon": {
+          "light": "resources/light/monitor.png",
+          "dark": "resources/dark/monitor.png"
+        }
+      },
+      {
+        "command": "totvs-developer-studio.open-loadrpoinfo-view",
+        "title": "%totvs-developer-studio.open-rpoinfo%",
+        "category": "TOTVS",
+        "icon": {
+          "light": "resources/light/rpolog.png",
+          "dark": "resources/dark/rpolog.png"
+        }
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "totvs-developer-studio.build.file",
+        "key": "ctrl+f9",
+        "mac": "cmd+f9",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "totvs-developer-studio.rebuild.file",
+        "key": "ctrl+shift+f9",
+        "mac": "cmd+shift+f9",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "totvs-developer-studio.build.openEditors",
+        "key": "ctrl+f10",
+        "mac": "cmd+f10"
+      },
+      {
+        "command": "totvs-developer-studio.rebuild.openEditors",
+        "key": "ctrl+shift+f10",
+        "mac": "cmd+shift+f10"
+      },
+      {
+        "command": "totvs-developer-studio.toggle.autocomplete.behavior",
+        "key": "ctrl+alt+space",
+        "when": "editorTextFocus"
+      }
+    ],
+    "breakpoints": [
+      {
+        "language": "advpl"
+      },
+      {
+        "language": "4gl"
+      }
+    ],
+    "debuggers": [
+      {
+        "type": "totvs_language_debug",
+        "label": "%tds.package.totvs_language_debug%",
+        "configurationAttributes": {
+          "launch": {
+            "required": [
+              "program",
+              "smartclientBin"
+            ],
+            "properties": {
+              "program": {
+                "type": "string",
+                "description": "%tds.package.properties.program.description%",
+                "default": "${command:AskForProgramName}"
+              },
+              "trace": {
+                "type": "boolean",
+                "description": "%tds.package.properties.trace.description%",
+                "default": true
+              },
+              "smartclientBin": {
+                "type": "string",
+                "description": "%tds.package.properties.smartclientBin.description%",
+                "default": "C:/totvs/bin/smartclient/smartclient.exe"
+              },
+              "cwb": {
+                "type": "string",
+                "description": "%tds.package.properties.cwb.description%",
+                "default": "${workspaceFolder}"
+              },
+              "enableMultiThread": {
+                "type": "boolean",
+                "description": "%tds.package.properties.enableMultiThread.description%",
+                "default": false
+              },
+              "waitForAttach": {
+                "type": "number",
+                "description": "%tds.package.properties.waitForAttach.description%",
+                "default": 0
+              },
+              "enableProfile": {
+                "type": "boolean",
+                "description": "%tds.package.properties.enableProfile.description%",
+                "default": false
+              },
+              "isMultiSession": {
+                "type": "boolean",
+                "description": "%tds.package.properties.isMultiSession.description%",
+                "default": true
+              },
+              "isAccessibilityMode": {
+                "type": "boolean",
+                "description": "%tds.package.properties.isAccessibilityMode.description%",
+                "default": false
+              },
+              "doNotShowSplash": {
+                "type": "boolean",
+                "description": "%tds.package.properties.doNotShowSplash.description%",
+                "default": false
+              },
+              "openglMode": {
+                "type": "boolean",
+                "description": "%tds.package.properties.openglMode.description%",
+                "default": false
+              },
+              "dpiMode": {
+                "type": "boolean",
+                "description": "%tds.package.properties.dpiMode.description%",
+                "default": false
+              },
+              "language": {
+                "type": "string",
+                "description": "%tds.package.properties.language.description%"
+              },
+              "logFile": {
+                "type": "string",
+                "description": "%tds.package.properties.logFile.description%",
+                "default": "${workspaceFolder}\\daplog.log"
+              },
+              "ignoreFiles": {
+                "type": "boolean",
+                "description": "%tds.package.properties.ignoreFiles.description%",
+                "default": false
+              },
+              "enableTableSync": {
+                "type": "boolean",
+                "description": "%tds.package.properties.toggleTableSync.description%",
+                "default": false
+              },
+              "programArguments": {
+                "type": "array",
+                "description": "Arguments that will be passed to the called program/function (through key -A)",
+                "default": [
+                  "${command:AskForProgramArguments}"
+                ]
+              }
+            }
+          }
+        },
+        "initialConfigurations": [
+          {
+            "type": "totvs_language_debug",
+            "request": "launch",
+            "name": "%tds.package.totvs_language_debug%",
+            "program": "${command:AskForProgramName}",
+            "cwb": "${workspaceFolder}",
+            "smartclientBin": "C:/totvs/bin/smartclient/smartclient.exe",
+            "isMultiSession": true,
+            "enableTableSync": true
+          }
+        ],
+        "configurationSnippets": [
+          {
+            "label": "%tds.package.totvs_language_debug%",
+            "description": "A new configuration for 'debugging' a user selected AdvPL/4GL file.",
+            "body": {
+              "type": "totvs_language_debug",
+              "request": "launch",
+              "name": "${1:%tds.package.totvs_language_debug%}",
+              "program": "^\"\\${command:AskForProgramName}\"",
+              "smartclientBin": "${2:C:/totvs/bin/smartclient/smartclient.exe}",
+              "isMultiSession": true,
+              "enableTableSync": true
+            }
+          },
+          {
+            "label": "%tds.package.totvs_language_debug% with arguments",
+            "description": "A new configuration for 'debugging' a user selected AdvPL/4GL file with arguments.",
+            "body": {
+              "type": "totvs_language_debug",
+              "request": "launch",
+              "name": "${1:%tds.package.totvs_language_debug%}",
+              "program": "^\"\\${command:AskForProgramName}\"",
+              "programArguments": [
+                "^\"\\${command:AskForProgramArguments}\""
+              ],
+              "smartclientBin": "${2:C:/totvs/bin/smartclient/smartclient.exe}",
+              "isMultiSession": true,
+              "enableTableSync": true
+            }
+          }
+        ],
+        "variables": {
+          "AskForProgramName": "totvs-developer-studio.getProgramName",
+          "AskForProgramArguments": "totvs-developer-studio.getProgramArguments"
+        }
+      },
+      {
+        "type": "totvs_tdsreplay_debug",
+        "label": "%tds.package.tdsreplay.debug%",
+        "configurationAttributes": {
+          "launch": {
+            "required": [
+              "tdsReplayFile"
+            ],
+            "properties": {
+              "cwb": {
+                "type": "string",
+                "description": "%tds.package.properties.cwb.description%",
+                "default": "${workspaceFolder}"
+              },
+              "tdsReplayFile": {
+                "type": "string",
+                "description": "The TDS Replay File recorder by the server.",
+                "default": ""
+              },
+              "ignoreSourcesNotFound": {
+                "type": "boolean",
+                "description": "%tds.package.properties.ignoreFiles.description%",
+                "default": true
+              },
+              "password": {
+                "type": "string",
+                "description": "The password of the TDS Replay File",
+                "default": ""
+              },
+              "includeSources": {
+                "type": "string",
+                "description": "The sources that must be included when importing the information. WildCards (*) can be used.",
+                "default": "*"
+              },
+              "excludeSources": {
+                "type": "string",
+                "description": "The sources that must be excluded when importing the information. WildCards (*) can be used.",
+                "default": ""
+              },
+              "logFile": {
+                "type": "string",
+                "default": "${workspaceFolder}\\tdsreplayDAP.log"
+              },
+              "verboseLogFile": {
+                "type": "string",
+                "default": "${workspaceFolder}\\tdsreplayVerboseLog.log"
+              },
+              "keepExtractedFiles": {
+                "type": "boolean",
+                "default": false
+              },
+              "enableVerbose": {
+                "type": "boolean",
+                "default": false
+              },
+              "forceImport": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          }
+        },
+        "initialConfigurations": [
+          {
+            "type": "totvs_tdsreplay_debug",
+            "request": "launch",
+            "name": "${1:%tds.package.tdsreplay.debug%}",
+            "cwb": "${workspaceFolder}",
+            "tdsReplayFile": "",
+            "ignoreFiles": false,
+            "password": "",
+            "includeSources": "*",
+            "excludeSources": ""
+          }
+        ],
+        "configurationSnippets": [
+          {
+            "label": "%tds.package.tdsreplay.debug%",
+            "description": "A new configuration for 'debugging' a TDS Replay file.",
+            "body": {
+              "type": "totvs_tdsreplay_debug",
+              "request": "launch",
+              "name": "${1:%tds.package.tdsreplay.debug%}",
+              "cwb": "${workspaceFolder}",
+              "ignoreFiles": false,
+              "tdsReplayFile": "",
+              "password": "",
+              "includeSources": "*",
+              "excludeSources": ""
+            }
+          }
+        ]
+      },
+      {
+        "type": "totvs_language_web_debug",
+        "label": "%tds.package.totvs_language_debug.web%",
+        "configurationAttributes": {
+          "launch": {
+            "required": [
+              "program",
+              "smartclientUrl"
+            ],
+            "properties": {
+              "program": {
+                "type": "string",
+                "description": "%tds.package.properties.program.description.web%",
+                "default": "${command:AskForProgramName}"
+              },
+              "trace": {
+                "type": "boolean",
+                "description": "%tds.package.properties.trace.description.web%",
+                "default": true
+              },
+              "smartclientUrl": {
+                "type": "string",
+                "description": "%tds.package.properties.smartclientUrl.description%",
+                "default": "http://localhost:8080"
+              },
+              "cwb": {
+                "type": "string",
+                "description": "%tds.package.properties.cwb.description%",
+                "default": "${workspaceFolder}"
+              },
+              "workspaceFolders": {
+                "type": "array",
+                "description": "%tds.package.properties.workspaceFolders.description.web%",
+                "default": "[${workspaceFolder}]"
+              },
+              "wsCacheFiles": {
+                "type": "boolean",
+                "description": "%tds.package.properties.wsCacheFiles.description.web%",
+                "default": false
+              },
+              "webNavigator": {
+                "type": "string",
+                "description": "%tds.package.properties.webNavigator.description.web%",
+                "default": ""
+              },
+              "enableMultiThread": {
+                "type": "boolean",
+                "description": "%tds.package.properties.enableMultiThread.description%",
+                "default": false
+              },
+              "startJobList": {
+                "type": "array",
+                "description": "%tds.package.properties.startJobList.description%",
+                "default": []
+              },
+              "startJobNowList": {
+                "type": "array",
+                "description": "%tds.package.properties.startJobList.description%",
+                "default": []
+              },
+              "enableProfile": {
+                "type": "boolean",
+                "description": "%tds.package.properties.enableProfile.description%",
+                "default": false
+              },
+              "isMultiSession": {
+                "type": "boolean",
+                "description": "%tds.package.properties.isMultiSession.description%",
+                "default": true
+              },
+              "isAccessibilityMode": {
+                "type": "boolean",
+                "description": "%tds.package.properties.isAccessibilityMode.description%",
+                "default": false
+              },
+              "doNotShowSplash": {
+                "type": "boolean",
+                "description": "%tds.package.properties.doNotShowSplash.description%",
+                "default": false
+              },
+              "language": {
+                "type": "string",
+                "description": "%tds.package.properties.language.description%"
+              },
+              "logFile": {
+                "type": "string",
+                "description": "%tds.package.properties.logFile.description%",
+                "default": "${workspaceFolder}\\daplog.log"
+              },
+              "enableTableSync": {
+                "type": "boolean",
+                "description": "%tds.package.properties.toggleTableSync.description%",
+                "default": true
+              },
+              "ignoreFiles": {
+                "type": "boolean",
+                "description": "Make the debugger ignore break events in files not found in WorkSpace",
+                "default": false
+              },
+              "programArguments": {
+                "type": "array",
+                "description": "Arguments that will be passed to the called program / function (key -A)",
+                "default": [
+                  "${command:AskForProgramArguments}"
+                ]
+              }
+            }
+          }
+        },
+        "initialConfigurations": [
+          {
+            "type": "totvs_language_web_debug",
+            "request": "launch",
+            "name": "%tds.package.totvs_language_debug%",
+            "program": "${command:AskForProgramName}",
+            "cwb": "${workspaceFolder}",
+            "environment": "environment",
+            "smartclientUrl": "http://localhost:8080",
+            "isMultiSession": true,
+            "enableTableSync": true
+          }
+        ],
+        "configurationSnippets": [
+          {
+            "label": "%tds.package.totvs_language_debug%",
+            "description": "%tds.package.configurationSnippets.description%",
+            "body": {
+              "type": "totvs_language_debug",
+              "request": "launch",
+              "name": "%tds.package.totvs_language_debug%",
+              "program": "${command:AskForProgramName}",
+              "isMultiSession": true,
+              "enableTableSync": true
+            }
+          },
+          {
+            "label": "%tds.package.totvs_language_debug.web%",
+            "description": "%tds.package.configurationSnippets.description.web%",
+            "body": {
+              "type": "totvs_language_web_debug",
+              "request": "launch",
+              "name": "%tds.package.totvs_language_debug.web%",
+              "program": "^\"\\${command:AskForProgramName}\"",
+              "isMultiSession": true,
+              "enableTableSync": true,
+              "smartclientUrl": "http://localhost:8080"
+            }
+          }
+        ],
+        "variables": {
+          "AskForProgramName": "totvs-developer-studio.getProgramName",
+          "AskForProgramArguments": "totvs-developer-studio.getProgramArguments"
+        }
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "totvs-plataform",
+          "title": "TOTVS",
+          "icon": "imagens/totvs24x24.png"
+        }
+      ]
+    },
+    "views": {
+      "totvs-plataform": [
+        {
+          "id": "totvs_server",
+          "name": "%tds.package.server.view%"
+        }
+      ]
+    },
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "totvs-developer-studio.build.workspace",
+          "alt": "totvs-developer-studio.rebuild.workspace",
+          "group": "totvsBuild@1"
+        },
+        {
+          "command": "totvs-developer-studio.build.file",
+          "alt": "totvs-developer-studio.rebuild.file",
+          "group": "totvsBuild@3"
+        },
+        {
+          "command": "totvs-developer-studio.build.openEditors",
+          "alt": "totvs-developer-studio.rebuild.openEditors",
+          "group": "totvsBuild@4"
+        },
+        {
+          "when": "resourceLangId == totvs_patch",
+          "command": "totvs-developer-studio.patchApply.fromFile",
+          "alt": "totvs-developer-studio.patchApply.fromFile",
+          "group": "totvsBuild@5"
+        },
+        {
+          "when": "resourceLangId == totvs_patch",
+          "command": "totvs-developer-studio.patchValidate.fromFile",
+          "alt": "totvs-developer-studio.patchValidate.fromFile",
+          "group": "totvsBuild@8"
+        },
+        {
+          "command": "totvs-developer-studio.delete.file.fromRPO",
+          "alt": "totvs-developer-studio.delete.file.fromRPO",
+          "group": "totvsBuild@6"
+        },
+        {
+          "when": "resourceLangId == totvs_template",
+          "command": "totvs-developer-studio.templateApply.fromFile",
+          "alt": "totvs-developer-studio.templateApply.fromFile",
+          "group": "totvsBuild@5"
+        },
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "totvs-developer-studio.patchGenerate.fromFolder",
+          "group": "totvsBuild@7"
+        },
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "totvs-developer-studio.run.formatter",
+          "group": "totvsSource@1"
+        },
+        {
+          "when": "resourceLangId == advpl",
+          "command": "totvs-developer-studio.run.formatter",
+          "group": "totvsSource@2"
+        },
+        {
+          "when": "resourceLangId == 4gl",
+          "command": "totvs-developer-studio.run.formatter",
+          "group": "totvsSource@2"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "totvs-developer-studio.connect",
+          "when": "view == totvs_server && viewItem == serverItemNotConnected",
+          "group": "AAtotvsServer@1"
+        },
+        {
+          "command": "totvs-developer-studio.reconnect",
+          "when": "view == totvs_server && viewItem == serverItemNotConnected",
+          "group": "AAtotvsServer@1"
+        },
+        {
+          "command": "totvs-developer-studio.disconnect",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "AAtotvsServer@2"
+        },
+        {
+          "command": "tds-monitor.open-monitor-view",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "AAtotvsServer@3"
+        },
+        {
+          "command": "totvs-developer-studio.patchGenerate.fromRPO",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "CtotvsPatch@1"
+        },
+        {
+          "command": "totvs-developer-studio.patchApply",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "CtotvsPatch@2"
+        },
+        {
+          "command": "totvs-developer-studio.open-loadrpoinfo-view",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "CtotvsPatch@3"
+        },
+        {
+          "command": "totvs-developer-studio.inspectorObjects",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "DtotvsInspect@1"
+        },
+        {
+          "command": "totvs-developer-studio.inspectorFunctions",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "DtotvsInspect@2"
+        },
+        {
+          "command": "totvs-developer-studio.selectenv",
+          "when": "view == totvs_server && viewItem == envSectionNotCurrent",
+          "group": "inline@2"
+        },
+        {
+          "command": "totvs-developer-studio.delete.environment",
+          "when": "view == totvs_server && viewItem == envSectionNotCurrent",
+          "group": "inline@1"
+        },
+        {
+          "command": "totvs-developer-studio.delete.file.fromRPO",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "EtotvsRPO@2"
+        },
+        {
+          "command": "totvs-developer-studio.add",
+          "when": "view == totvs_server",
+          "group": "ABtotvsServer@3"
+        },
+        {
+          "command": "totvs-developer-studio.config",
+          "when": "view == totvs_server",
+          "group": "XtotvsServer@1"
+        },
+        {
+          "command": "totvs-developer-studio.rename",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "ABtotvsServer@4"
+        },
+        {
+          "command": "totvs-developer-studio.compile.key",
+          "when": "view == totvs_server",
+          "group": "BBtotvsCompileKey@1"
+        },
+        {
+          "command": "totvs-developer-studio.include",
+          "when": "view == totvs_server",
+          "group": "BAtotvsInclude@1"
+        },
+        {
+          "command": "totvs-developer-studio.delete",
+          "when": "view == totvs_server && viewItem == serverItemNotConnected",
+          "group": "inline@1"
+        },
+        {
+          "command": "totvs-developer-studio.connect",
+          "when": "view == totvs_server && viewItem == serverItemNotConnected",
+          "group": "inline@2"
+        },
+        {
+          "command": "totvs-developer-studio.disconnect",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "inline@2"
+        },
+        {
+          "command": "totvs-developer-studio.defragRPO",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "EtotvsRPO@1"
+        },
+        {
+          "command": "totvs-developer-studio.rpoCheckIntegrity",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "EtotvsRPO@1"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "totvs-developer-studio.add",
+          "when": "view == totvs_server",
+          "group": "navigation"
+        },
+        {
+          "command": "tds-monitor.open-monitor-view",
+          "when": "view == totvs_server",
+          "group": "navigation"
+        },
+        {
+          "command": "totvs-developer-studio.config",
+          "when": "view == totvs_server",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "totvs-developer-studio.patchGenerate.fromFolder",
+          "when": "1 == 0"
+        },
+        {
+          "command": "totvs-developer-studio.patchValidate.fromFile",
+          "when": "1 == 0"
+        },
+        {
+          "command": "totvs-developer-studio.selectenv",
+          "when": "1 == 0"
+        },
+        {
+          "command": "totvs-developer-studio.disconnect",
+          "when": "1 == 0"
+        },
+        {
+          "command": "totvs-developer-studio.connect",
+          "when": "1 == 0"
+        },
+        {
+          "command": "totvs-developer-studio.reconnect",
+          "when": "1 == 0"
+        },
+        {
+          "command": "totvs-developer-studio.rename",
+          "when": "1 == 0"
+        },
+        {
+          "command": "totvs-developer-studio.getProgramName",
+          "when": "1 == 0"
+        },
+        {
+          "command": "totvs-developer-studio.getProgramArguments",
+          "when": "1 == 0"
+        },
+        {
+          "command": "totvs-developer-studio.delete.file.fromRPO",
+          "when": "1 == 0"
+        },
+        {
+          "command": "totvs-developer-studio.getDAP",
+          "when": "1 == 0"
+        },
+        {
+          "command": "totvs-developer-studio.welcomePage",
+          "when": "1 == 0"
+        },
+        {
+          "command": "totvs-developer-studio.tdsreplay.webview.timeLine",
+          "when": "debugType == totvs_tdsreplay_debug"
+        }
+      ]
+    }
+  },
+  "servers": {
+    "path": ".vscode/servers.json"
+  }
 }
