@@ -6,6 +6,7 @@
 
 ### Melhoria:
 
+- Troca das imagens na documentação do monitor por outras com melhor resolução.
 - Adicionada a funcionalidade para aplicação de Templates (.tpl).
 - [BETA] Esta funcionalidade encontra-se em testes Beta. Caso encontre algum problema na aplicação de um Template abra uma Issue com o Template em questão informando como aplicar e como validar o Template para que possamos rever o processo.
 

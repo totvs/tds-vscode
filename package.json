@@ -8,7 +8,7 @@
     "name": "TOTVS",
     "email": "tecnologia@totvs.com.br"
   },
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "keywords": [
     "multi-root ready",
     "advpl",
@@ -57,7 +57,9 @@
     "---MISC---": "",
     "all-contributors:generate": "all-contributors generate",
     "all-contributors:check": "all-contributors check",
-    "link:prettier-plugin-4gl": "npm link ../prettier-plugin-4gl --force"
+    "---LINKS---": "",
+    "link:prettier-plugin-4gl": "npm link ../prettier-plugin-4gl --force",
+    "link:prettier-plugin-advpl": "npm link ../prettier-plugin-advpl --force"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.0",
@@ -74,8 +76,9 @@
     "ini": "^1.3.5",
     "jszip": "^3.5.0",
     "material-table": "1.68.1",
-    "prettier": "^2.1.2",
-    "prettier-plugin-4gl": "^0.0.6",
+    "prettier": "^2.2.1",
+    "@totvs/prettier-plugin-4gl": "^0.1.2",
+    "@totvs/prettier-plugin-advpl": "^0.1.2",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "strip-json-comments": "^3.1.1",
