@@ -103,6 +103,7 @@
 	"tds.vscode.question.change.encoding": "Deseja alterar a codificação para o TOTVS padrão (Windows-1252)?",
 	"tds.vscode.yes": "Sim",
 	"tds.vscode.no": "Não",
+	"tds.vscode.noAskAgain": "Não pergunte novamente",
 	"tds.toggle.autocomplete.behavior": "Alternar comportamento de preenchimento automático",
 	"tds.package.editor.toggle.autocomplete": "Alternar comportamento de preenchimento automático.",
 	"tds.package.editor.toggle.autocomplete.basic": "Procedimento padrão do código VS.",
