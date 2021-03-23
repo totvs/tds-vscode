@@ -1,10 +1,14 @@
 # TOTVS Developer Studio para VSCode
 
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 [![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode)
-
+![GitHub](https://img.shields.io/github/license/totvs/tds-vscode)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
+<!-- markdownlint-enabled -->
+<!-- prettier-ignore-end -->
 
 A extensão do **TOTVS Developer Studio for VS Code** disponibiliza uma suíte de desenvolvimento para o ecossistema **Protheus**.
 
@@ -102,10 +106,14 @@ Caso tenha problemas com a ferramenta e deseja suporte da equipe de desenvolvime
 
 Alguns problemas conhecidos e como resolvê-los.
 
-| Ocorrência | Solução |
-| --- | --- |
-| Aplicação de pacotes de atualização (_patchs_) | |
-| Servidores ``Lobo Guara``, versão iqual ou anterior a ``19.3.0.4``, pode apresentar mensagem de erro no processo de validação e mesmo assim aplicá-lo. | Atualizar o servidor para versão mais recente.  |
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+| Ocorrência                                        | Solução                   |
+| ----------------------- | ----------------------- |
+| *Aplicação de pacotes de atualização(_patchs_)* | |
+Servidores `Lobo Guara`, versão iqual ou anterior a `19.3.0.4`, podem apresentar mensagem de erro no processo de validação e mesmo assim aplicá-lo. | Atualizar o servidor para versão mais recente. |
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
 
 Se não conseguir resolvê-los, abra um [chamado](https://github.com/totvs/tds-vscode/issues/new/choose) com o maior número de informações possíveis e incluindo os _logs_ gerados conforme instruído em [TROUBLESHOOTING](https://github.com/totvs/tds-vscode/blob/master/TROUBLESHOOTING.md).
 
@@ -130,6 +138,7 @@ Para contribuir com o desenvolvimento da extensão, acesse [Git Hub TDS-VSCODE](
 </table>
 
 ## Colaboradores
+
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
