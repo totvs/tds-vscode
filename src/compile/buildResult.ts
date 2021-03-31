@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as compile from 'template-literal';
 import * as nls from 'vscode-nls';
-import { CompileResult } from './compileResult';
+import { CompileResult } from './CompileResult';
 
 let localize = nls.loadMessageBundle();
 

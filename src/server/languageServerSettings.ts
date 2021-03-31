@@ -1,6 +1,7 @@
 import { languageClient, settingsStatusBarItem } from '../extension';
 import * as vscode from 'vscode';
 import * as nls from 'vscode-nls';
+import Utils from '../utils';
 
 let localize = nls.loadMessageBundle();
 
@@ -29,6 +30,14 @@ export function toggleAutocompleteBehavior() {
 export function syncSettings() {
 	let config = vscode.workspace.getConfiguration('totvsLanguageServer');
 
+	const servers = Utils.getServersConfig();
+	let includesList = servers.includes as Array<string>;
+	let includes = "";
+	includesList.forEach(includeItem => {
+		includes += includeItem + ";";
+	});
+	changeSettings({ changeSettingInfo: { scope: "advpls", key: "includes", value: includes } });
+
 	let behavior = config.get('editor.toggle.autocomplete');
 	changeSettings({ changeSettingInfo: { scope: "advpls", key: "autocomplete", value: behavior } });
 
@@ -36,6 +45,6 @@ export function syncSettings() {
 	changeSettings({ changeSettingInfo: { scope: "advpls", key: "notificationlevel", value: notificationlevel } });
 }
 
-function changeSettings(jsonData: any) {
+export function changeSettings(jsonData: any) {
 	languageClient.sendRequest('$totvsserver/changeSetting', jsonData);
 }

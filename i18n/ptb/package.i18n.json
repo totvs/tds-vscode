@@ -123,7 +123,7 @@
 	"tds.package.workspaceServerConfig": "Use a área de trabalho para manter as configurações do servidor.",
 	"tds.package.OpenTimeLineWebview": "Abrir visão da linha de tempo",
 	"tds.package.apply.formatting": "Aplica a formatação aos arquivos fontes TOTVS e suas variações.",
-	"tds-monitor.open-rpoinfo": "Log de Repositório",
+	"totvs-developer-studio.open-rpoinfo": "Log de Repositório",
 	"tds.package.templateApply": "Aplicação de Template",
 	"tds.package.templateApply.fromFile": "Aplicar Template do arquivo"
 }

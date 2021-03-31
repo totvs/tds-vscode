@@ -8,6 +8,7 @@ import * as nls from "vscode-nls";
 import { languageClient } from "./extension";
 import { EnvSection, ServerItem } from "./serverItemProvider";
 import { Authorization, CompileKey } from "./compileKey/compileKey";
+import { changeSettings } from "./server/languageServerSettings";
 
 const homedir = require("os").homedir();
 const localize = nls.loadMessageBundle();
@@ -756,6 +757,12 @@ export default class Utils {
     servers.includes = path;
 
     Utils.persistServersInfo(servers);
+
+    let includes = "";
+    path.forEach(includeItem => {
+      includes += includeItem + ";";
+    });
+    changeSettings({ changeSettingInfo: { scope: "advpls", key: "includes", value: includes } });
   }
 
   /**
