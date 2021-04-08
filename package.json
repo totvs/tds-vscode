@@ -1049,11 +1049,7 @@
                 "type": "string",
                 "default": "${workspaceFolder}\\tdsreplayVerboseLog.log"
               },
-              "keepExtractedFiles": {
-                "type": "boolean",
-                "default": false
-              },
-              "enableVerbose": {
+             "enableVerbose": {
                 "type": "boolean",
                 "default": false
               },

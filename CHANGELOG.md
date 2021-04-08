@@ -20,6 +20,16 @@
 
 - Processo de formatação revisado, passando a tratar palavras-chaves durante a digitação. Detalhes em (Formatação de código fonte)[docs/format_config.md]
 
+## Debug do mesmo objetos de instancias diferentes avaliando erroneamente valor de atributos (https://github.com/totvs/tds-vscode/issues/655)
+
+### Problema:
+
+- Ao criar duas instancias de um mesmo objeto e pedir para avaliar o conteudo deles, uma das instancias trazia o valor da outra
+
+## Solução:
+
+- Corrigido processo de cache de objetos para considerar o nome completo do mesmo.
+
 # Versão [1.2.2]
 
 ## [4GL][TDSVsCode 1.2.1] Variáveis Array de Record não tem valores visualizados no DEBUG [Issue 590](https://github.com/totvs/tds-vscode/issues/590)
