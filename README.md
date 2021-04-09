@@ -29,6 +29,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 - [Inspeção](docs/rpo-inspector.md) do _RPO_
 - [Geração de cliente de serviço web](docs/ws-client-generation.md) (_Web Service_)
 - [Monitoramento](docs/monitor.md) de servidores
+- [RPO Seguro](docs/rpo.md#Token_de_RPO)
 
 ## Guia rápido
 

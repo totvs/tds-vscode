@@ -69,6 +69,8 @@
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
+    "@totvs/prettier-plugin-4gl": "^0.1.2",
+    "@totvs/prettier-plugin-advpl": "^0.1.2",
     "@totvs/tds-da": "^1.1.21",
     "@totvs/tds-ls": "^1.1.40",
     "@types/node": "^14.14.12",
@@ -81,8 +83,6 @@
     "jszip": "^3.5.0",
     "material-table": "1.68.1",
     "prettier": "^2.2.1",
-    "@totvs/prettier-plugin-4gl": "^0.1.2",
-    "@totvs/prettier-plugin-advpl": "^0.1.2",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "strip-json-comments": "^3.1.1",
@@ -147,6 +147,7 @@
     "onCommand:totvs-developer-studio.connect",
     "onCommand:totvs-developer-studio.reconnect",
     "onCommand:totvs-developer-studio.serverSelection",
+    "onCommand:totvs-developer-studio.rpoToken",
     "onCommand:totvs-developer-studio.toggleSaveLocation",
     "onCommand:totvs-developer-studio.disconnect",
     "onCommand:totvs-developer-studio.add",
@@ -641,6 +642,11 @@
         "category": "TOTVS"
       },
       {
+        "command": "totvs-developer-studio.rpoToken",
+        "title": "%tds.package.rpoToken%",
+        "category": "TOTVS"
+      },
+      {
         "command": "totvs-developer-studio.toggleSaveLocation",
         "title": "%tds.package.toggleSaveLocation%",
         "category": "TOTVS"
@@ -1049,7 +1055,7 @@
                 "type": "string",
                 "default": "${workspaceFolder}\\tdsreplayVerboseLog.log"
               },
-             "enableVerbose": {
+              "enableVerbose": {
                 "type": "boolean",
                 "default": false
               },
