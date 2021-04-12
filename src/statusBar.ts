@@ -191,18 +191,36 @@ function updateRpoTokenStatusBarItem(): void {
     const rpoAux: any = Utils.getRpoTokenFileInfo(server.id);
     if (rpoAux) {
       const rpoToken: IRpoToken = getRpoTokenFromFile(rpoAux.file);
-      const error: string = rpoToken.error || rpoAux.error;
-      const warning: string = rpoToken.warning || rpoAux.warning;
+      rpoToken.file = rpoToken.file || rpoAux.file;
 
-      const rpoTokenApply: any = sendRpoToken(server, rpoToken);
+      sendRpoToken(server, rpoToken)
+        .then(
+          (result: any) => {
+            if (!result.sucess) {
+              rpoToken.error = result.message;
+            }
 
-      text += error ? '$(error)' : warning ? '$(alert)' : '$(check)';
-      tooltip += error ? `${error}\n` : warning ? `${warning}\n` : '';
-      tooltip += `Name: ${rpoToken.body.name}\n`;
-      tooltip += `Subject: ${rpoToken.body.sub}\n`;
-      tooltip += `Auth: ${rpoToken.body.auth}\n`;
-      tooltip += `Validate: ${rpoToken.body.exp.toLocaleDateString()} at ${rpoToken.body.iat.toLocaleDateString()}\n`;
-      tooltip += `Emitter: ${rpoToken.body.iss}`;
+            const error: string = rpoToken.error || rpoAux.error;
+            const warning: string = rpoToken.warning || rpoAux.warning;
+
+            text = buildTextRpoToken(error ? 2 : warning ? 1 : 0, text);
+            tooltip = buildTooltipRpoToken(error || warning, tooltip, rpoToken);
+          },
+          (reason: any) => {
+            rpoToken.error = reason.message;
+
+            const error: string = rpoToken.error || rpoAux.error;
+            const warning: string = rpoToken.warning || rpoAux.warning;
+
+            text = buildTextRpoToken(error ? 2 : warning ? 1 : 0, text);
+            tooltip = buildTooltipRpoToken(error || warning, tooltip, rpoToken);
+          }
+        )
+        .then(() => {
+          rpoTokenStatusBarItem.text = text;
+          rpoTokenStatusBarItem.tooltip = tooltip;
+          rpoTokenStatusBarItem.show();
+        });
     } else {
       tooltip += localize(
         'tds.vscode.rpoToken.initial.tooltip',
@@ -210,11 +228,6 @@ function updateRpoTokenStatusBarItem(): void {
       );
     }
   }
-
-  rpoTokenStatusBarItem.text = text;
-  rpoTokenStatusBarItem.tooltip = tooltip;
-
-  rpoTokenStatusBarItem.show();
 }
 
 function initSettingsBarItem(context: vscode.ExtensionContext): void {
@@ -237,4 +250,29 @@ function updateSettingsBarItem(): void {
     '  ';
 
   settingsStatusBarItem.show();
+}
+
+function buildTextRpoToken(level: number, text: string): string {
+  return (
+    text + (level == 2 ? '$(error)' : level == 1 ? '$(alert)' : '$(check)')
+  );
+}
+
+function buildTooltipRpoToken(
+  message: string,
+  tooltip: string,
+  rpoToken: IRpoToken
+): string {
+  let result: string = tooltip;
+
+  result += message ? `${message}\n` : '';
+  if (rpoToken.body) {
+    result += `Name: ${rpoToken.body.name}\n`;
+    result += `Subject: ${rpoToken.body.sub}\n`;
+    result += `Auth: ${rpoToken.body.auth}\n`;
+    result += `Validate: ${rpoToken.body.exp.toLocaleDateString()} at ${rpoToken.body.iat.toLocaleDateString()}\n`;
+    result += `Emitter: ${rpoToken.body.iss}`;
+  }
+
+  return result;
 }
