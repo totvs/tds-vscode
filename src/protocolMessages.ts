@@ -621,7 +621,7 @@ export function sendRpoToken(
         connectionToken: server.token,
         environment: server.environment,
         file: rpoToken.file,
-        content: rpoToken.content,
+        content: rpoToken.token,
       },
     })
     .then(

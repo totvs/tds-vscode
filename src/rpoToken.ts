@@ -11,7 +11,6 @@ const localize = nls.config({
 
 export interface IRpoToken {
   file: string;
-  content: string;
   token: string;
   header: {
     alg: string;
@@ -31,7 +30,6 @@ export interface IRpoToken {
 
 const noRpoToken: IRpoToken = {
   file: '',
-  content: '',
   token: '',
   header: {
     alg: '',
@@ -55,19 +53,22 @@ export function getRpoTokenFromFile(path: string): IRpoToken {
   if (path) {
     if (fs.existsSync(path)) {
       try {
-        const content: string = fs.readFileSync(path).toString();
-
-        const token: string = content.substring(0, content.indexOf('{'));
+        const buffer: any = fs.readFileSync(path);
+        const token: string = buffer.toString();
+        const content: string = Buffer.from(token, 'base64').toString('ascii');
         const header: string = content.substring(
           content.indexOf('{'),
           content.indexOf('}') + 1
         );
-        const body: string = content.substring(content.indexOf('}') + 1);
+        let body: string = content.substring(header.length);
+        body = content.substring(
+          header.length,
+          header.length + body.indexOf('}') + 1
+        );
 
         const headerJson: any = JSON.parse(header);
         const bodyJson: any = JSON.parse(body);
 
-        result.content = content;
         result.token = token;
         result.header = headerJson;
         result.body = {
