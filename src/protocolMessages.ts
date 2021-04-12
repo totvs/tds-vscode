@@ -619,6 +619,7 @@ export function sendRpoToken(
     .sendRequest('$totvsserver/rpoToken', {
       rpoToken: {
         connectionToken: server.token,
+        environment: server.environment,
         file: rpoToken.file,
         content: rpoToken.content,
       },
