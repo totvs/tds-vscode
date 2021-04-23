@@ -68,7 +68,7 @@ import { openApplyPatchView } from './patch/apply/applyPatchLoader';
 import { initStatusBarItems, updateStatusBarItems } from './statusBar';
 import { PatchEditorProvider } from './patch/inspect/patchEditor';
 import { openTemplateApplyView } from './template/apply/formApplyTemplate';
-import { rpoTokenSelection } from './rpoToken';
+import { rpoTokenInputBox } from './rpoToken';
 
 export let languageClient: LanguageClient;
 export function parseUri(u): Uri {
@@ -535,7 +535,7 @@ export function activate(context: ExtensionContext) {
   //Seleção do arquivo com RPO Token.
   context.subscriptions.push(
     commands.registerCommand('totvs-developer-studio.rpoToken', () => {
-      rpoTokenSelection();
+      rpoTokenInputBox();
     })
   );
 

@@ -1106,9 +1106,10 @@ export default class Utils {
         found = true;
         servers.savedRpoTokens[index] = {
           id: id,
-          file: rpoToken.file,
+          file: '', //rpoToken.file
           warning: rpoToken.warning,
           error: rpoToken.error,
+          token: rpoToken.token,
         };
       }
     });
@@ -1116,7 +1117,8 @@ export default class Utils {
     if (!found) {
       servers.savedRpoTokens.push({
         id: id,
-        file: rpoToken.file,
+        file: '', //rpoToken.file
+        token: rpoToken.token,
         warning: rpoToken.warning,
         error: rpoToken.error,
       });
@@ -1126,7 +1128,7 @@ export default class Utils {
     Utils._onDidRpoTokenSelected.fire();
   }
 
-  static getRpoTokenFileInfo(id: string | undefined): any {
+  static getRpoToken(id: string | undefined): any {
     const servers = Utils.getServersConfig();
     let result: any = undefined;
 

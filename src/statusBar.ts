@@ -2,7 +2,11 @@ import * as vscode from 'vscode';
 import * as nls from 'vscode-nls';
 import { CompileKey } from './compileKey/compileKey';
 import { sendRpoToken } from './protocolMessages';
-import { getRpoTokenFromFile, IRpoToken } from './rpoToken';
+import {
+  getRpoTokenFromFile,
+  getRpoTokenFromString,
+  IRpoToken,
+} from './rpoToken';
 import { ServerItem } from './serverItemProvider';
 import Utils from './utils';
 
@@ -188,10 +192,11 @@ function updateRpoTokenStatusBarItem(): void {
   let tooltip: string = '';
 
   if (server) {
-    const rpoAux: any = Utils.getRpoTokenFileInfo(server.id);
+    const rpoAux: any = Utils.getRpoToken(server.id);
     if (rpoAux) {
-      const rpoToken: IRpoToken = getRpoTokenFromFile(rpoAux.file);
-      rpoToken.file = rpoToken.file || rpoAux.file;
+      const rpoToken: IRpoToken = getRpoTokenFromString(rpoAux.token);
+      //const rpoToken: IRpoToken = getRpoTokenFromFile(rpoAux.file);
+      //rpoToken.file = rpoToken.file || rpoAux.file;
 
       sendRpoToken(server, rpoToken)
         .then(

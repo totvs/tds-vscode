@@ -10,7 +10,6 @@ const localize = nls.config({
 })();
 
 export interface IRpoToken {
-  file: string;
   token: string;
   header: {
     alg: string;
@@ -29,7 +28,6 @@ export interface IRpoToken {
 }
 
 const noRpoToken: IRpoToken = {
-  file: '',
   token: '',
   header: {
     alg: '',
@@ -56,26 +54,7 @@ export function getRpoTokenFromFile(path: string): IRpoToken {
         const buffer: any = fs.readFileSync(path);
         const token: string = buffer.toString();
         const content: string = Buffer.from(token, 'base64').toString('ascii');
-        const header: string = content.substring(
-          content.indexOf('{'),
-          content.indexOf('}') + 1
-        );
-        let body: string = content.substring(header.length);
-        body = content.substring(
-          header.length,
-          header.length + body.indexOf('}') + 1
-        );
-
-        const headerJson: any = JSON.parse(header);
-        const bodyJson: any = JSON.parse(body);
-
-        result.token = token;
-        result.header = headerJson;
-        result.body = {
-          ...bodyJson,
-          exp: new Date(bodyJson.exp),
-          iat: new Date(bodyJson.iat),
-        };
+        result = getRpoTokenFromString(content);
       } catch (error) {
         result.error = error.message;
       }
@@ -91,7 +70,36 @@ export function getRpoTokenFromFile(path: string): IRpoToken {
   return result;
 }
 
-export function rpoTokenSelection() {
+export function getRpoTokenFromString(value: string): IRpoToken {
+  let result: IRpoToken = noRpoToken;
+
+  const token: string = value;
+  const content: string = Buffer.from(token, 'base64').toString('ascii');
+  const header: string = content.substring(
+    content.indexOf('{'),
+    content.indexOf('}') + 1
+  );
+  let body: string = content.substring(header.length);
+  body = content.substring(
+    header.length,
+    header.length + body.indexOf('}') + 1
+  );
+
+  const headerJson: any = JSON.parse(header);
+  const bodyJson: any = JSON.parse(body);
+
+  result.token = token;
+  result.header = headerJson;
+  result.body = {
+    ...bodyJson,
+    exp: new Date(bodyJson.exp),
+    iat: new Date(bodyJson.iat),
+  };
+
+  return result;
+}
+
+export function rpoTokenSelectionFile() {
   const server: ServerItem | undefined = Utils.getCurrentServer();
 
   if (!server) {
@@ -128,13 +136,33 @@ export function rpoTokenSelection() {
         if (rpoToken.error) {
           vscode.window.showErrorMessage(rpoToken.error);
         } else {
-          rpoToken.file = file[0].fsPath;
           Utils.saveRpoToken(server.id, rpoToken);
         }
       }
     });
 }
 
-export function getContentRpoTokenFilename(id: string): string {
-  return Utils.getRpoTokenFileInfo(id).file;
+export function rpoTokenInputBox() {
+  const server: ServerItem | undefined = Utils.getCurrentServer();
+
+  if (!server) {
+    vscode.window.showErrorMessage(
+      localize('tds.vscode.rpoToken.no.server', 'No selected server.')
+    );
+
+    return;
+  }
+
+  vscode.window
+    .showInputBox({
+      prompt: 'Token RPO',
+    })
+    .then((value: string) => {
+      const rpoToken: IRpoToken = getRpoTokenFromString(value.trim());
+      if (rpoToken.error) {
+        vscode.window.showErrorMessage(rpoToken.error);
+      } else {
+        Utils.saveRpoToken(server.id, rpoToken);
+      }
+    });
 }

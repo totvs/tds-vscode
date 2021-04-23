@@ -26,11 +26,7 @@ import {
 } from './rpoInfo/rpoPath';
 import { IApplyScope, PATCH_ERROR_CODE } from './patch/apply/applyPatchData';
 import { CompileKey } from './compileKey/compileKey';
-import {
-  getContentRpoTokenFilename as getRpoTokenFilename,
-  getRpoTokenFromFile,
-  IRpoToken,
-} from './rpoToken';
+import { getRpoTokenFromFile, IRpoToken } from './rpoToken';
 
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
@@ -611,7 +607,8 @@ export function sendRpoToken(
   server: ServerItem,
   rpoToken: IRpoToken
 ): Thenable<IRpoTokenResult> {
-  if (rpoToken.file === '') {
+  //if (rpoToken.file === '') {
+  if (rpoToken.token === '') {
     return Promise.resolve({ sucess: false, message: '' });
   }
 
@@ -620,7 +617,7 @@ export function sendRpoToken(
       rpoToken: {
         connectionToken: server.token,
         environment: server.environment,
-        file: rpoToken.file,
+        file: '<internal string>', //rpoToken.file,
         content: rpoToken.token,
       },
     })
