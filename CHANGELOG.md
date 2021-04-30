@@ -1,6 +1,8 @@
 # Changelog
 
-# Versão [1.2.next]
+# Versão [1.2.3]
+
+## [BETA] Adição do suporte a nova chave (Token compilação) para o RPO Seguro.
 
 ## Implementar a funcionalidade de aplicação de Templates. [Issue 622](https://github.com/totvs/tds-vscode/issues/622)
 
