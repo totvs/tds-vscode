@@ -2,6 +2,16 @@
 
 # Versão [1.2.3]
 
+## Problema na importação de arquivo do TDS Replay (https://github.com/totvs/tds-vscode/issues/672)
+
+### Problema:
+
+- Arquivo do TDS Replay enviado pelo usuario parava a importação por volta de 100MB
+
+## Solução:
+
+- Corrigido um processo interno que poderia causar uma falha de importação, interrompendo o processo.
+
 ## [BETA] Adição do suporte a nova chave (Token compilação) para o RPO Seguro.
 
 ## Implementar a funcionalidade de aplicação de Templates. [Issue 622](https://github.com/totvs/tds-vscode/issues/622)
