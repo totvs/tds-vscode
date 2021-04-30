@@ -159,10 +159,6 @@ export default class Utils {
       config.savedTokens = [];
     }
 
-    if (!config.savedRpoTokens) {
-      config.savedRpoTokens = [];
-    }
-
     //compatibilização com arquivos gravados com versão da extensão
     //anterior a 26/06/20
     if (
@@ -496,6 +492,36 @@ export default class Utils {
     } else {
       return '';
     }
+  }
+
+  static getAuthorizationToken(server: ServerItem): string {
+    let authorizationToken: string = '';
+    let isSafeRPOServer: boolean = Utils.isSafeRPO(server);
+    const permissionsInfos: IRpoToken | CompileKey = isSafeRPOServer ? Utils.getRpoTokenInfos() : Utils.getPermissionsInfos();
+    if (permissionsInfos) {
+      if (isSafeRPOServer) {
+        authorizationToken = (<IRpoToken>permissionsInfos).token;
+      }
+      else {
+        authorizationToken = (<CompileKey>permissionsInfos).authorizationToken;
+      }
+    }
+    return authorizationToken;
+  }
+
+  static getRpoTokenInfos(): IRpoToken {
+    const servers = Utils.getServersConfig();
+
+    return servers ? servers.rpoToken : undefined;
+  }
+
+  static saveRpoTokenInfos(infos: IRpoToken) {
+    const config = Utils.getServersConfig();
+
+    config.rpoToken = infos;
+
+    Utils.persistServersInfo(config);
+    //Utils._onDidSelectedKey.fire(infos);
   }
 
   static getPermissionsInfos(): CompileKey {
@@ -1092,54 +1118,13 @@ export default class Utils {
     }
   }
 
-  /**
-   * Salva tokens de rpo.
-   * @param server Servidor associado
-   * @param rpoTokenFile Arquivo comtoken RPO
-   */
-  static saveRpoToken(id: string, rpoToken: IRpoToken) {
-    const servers: any = Utils.getServersConfig();
-    let found: boolean = false;
-
-    servers.savedRpoTokens.forEach((element: any, index: number) => {
-      if (element.id === id) {
-        found = true;
-        servers.savedRpoTokens[index] = {
-          id: id,
-          file: '', //rpoToken.file
-          warning: rpoToken.warning,
-          error: rpoToken.error,
-          token: rpoToken.token,
-        };
-      }
-    });
-
-    if (!found) {
-      servers.savedRpoTokens.push({
-        id: id,
-        file: '', //rpoToken.file
-        token: rpoToken.token,
-        warning: rpoToken.warning,
-        error: rpoToken.error,
-      });
+  static isSafeRPO(server: ServerItem): boolean {
+    if (server && server.buildVersion) {
+      return server.buildVersion.localeCompare("7.00.191205P") > 0;
     }
-
-    Utils.persistServersInfo(servers);
-    Utils._onDidRpoTokenSelected.fire();
+    return false;
   }
 
-  static getRpoToken(id: string | undefined): any {
-    const servers = Utils.getServersConfig();
-    let result: any = undefined;
-
-    servers.savedRpoTokens.forEach((element: any, index: number) => {
-      if (element.id === id) {
-        result = element;
-      }
-    });
-
-    return result;
-  }
 }
 
 function sampleServer(): any {
@@ -1152,8 +1137,7 @@ function sampleServer(): any {
     connectedServer: {},
     configurations: [],
     savedTokens: [],
-    lastConnectedServer: '',
-    savedRpoTokens: [],
+    lastConnectedServer: ''
   };
 }
 

@@ -68,7 +68,7 @@ import { openApplyPatchView } from './patch/apply/applyPatchLoader';
 import { initStatusBarItems, updateStatusBarItems } from './statusBar';
 import { PatchEditorProvider } from './patch/inspect/patchEditor';
 import { openTemplateApplyView } from './template/apply/formApplyTemplate';
-import { rpoTokenInputBox } from './rpoToken';
+import { rpoTokenInputBox, saveRpoTokenString } from './rpoToken';
 
 export let languageClient: LanguageClient;
 export function parseUri(u): Uri {
@@ -623,6 +623,9 @@ export function activate(context: ExtensionContext) {
   let exportedApi = {
     generatePPO(filePath: string, options?: any): Promise<string> {
       return generatePpo(filePath, options);
+    },
+    saveRPOToken(rpoTokenString: string): Promise<boolean> {
+      return saveRpoTokenString(rpoTokenString);
     },
   };
   // 'export' public api-surface

@@ -7,6 +7,8 @@ import * as nls from 'vscode-nls';
 import Utils from '../utils';
 import { ResponseError } from 'vscode-languageclient';
 import { _debugEvent } from '../debug';
+import { IRpoToken } from '../rpoToken';
+import { CompileKey } from '../compileKey/compileKey';
 
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
@@ -97,12 +99,10 @@ export function deletePrograms(programs: string[]) {
 				return;
 			}
 			//vscode.window.showInformationMessage("Compilação iniciada");
-			const permissionsInfos = Utils.getPermissionsInfos();
-
 			languageClient.sendRequest('$totvsserver/deletePrograms', {
 				"deleteProgramsInfo": {
 					connectionToken: server.token,
-					authorizationToken: permissionsInfos ? permissionsInfos.authorizationToken : "",
+					authorizationToken: Utils.getAuthorizationToken(server),
 					environment: server.environment,
 					programs: programs
 				}

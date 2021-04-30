@@ -26,7 +26,8 @@ import {
 } from './rpoInfo/rpoPath';
 import { IApplyScope, PATCH_ERROR_CODE } from './patch/apply/applyPatchData';
 import { CompileKey } from './compileKey/compileKey';
-import { getRpoTokenFromFile, IRpoToken } from './rpoToken';
+import { IRpoToken } from './rpoToken';
+import Utils from './utils';
 
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
@@ -401,7 +402,6 @@ export function sendAppKillConnection(
 
 export function sendCompilation(
   server: ServerItem,
-  permissionsInfos: CompileKey,
   includesUris: string[],
   filesUris: string[],
   compileOptions,
@@ -414,13 +414,10 @@ export function sendCompilation(
     );
     return;
   }
-
   return languageClient.sendRequest('$totvsserver/compilation', {
     compilationInfo: {
       connectionToken: server.token,
-      authorizationToken: permissionsInfos
-        ? permissionsInfos.authorizationToken
-        : '',
+      authorizationToken: Utils.getAuthorizationToken(server),
       environment: server.environment,
       includeUris: includesUris,
       fileUris: filesUris,
@@ -453,14 +450,13 @@ export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
 export function sendApplyPatchRequest(
   server: ServerItem,
   patchUri: string,
-  permissions,
   applyScope: IApplyScope
 ): Thenable<IPatchValidateResult> {
   return languageClient
     .sendRequest('$totvsserver/patchApply', {
       patchApplyInfo: {
         connectionToken: server.token,
-        authenticateToken: permissions.authorizationToken,
+        authenticateToken: Utils.getAuthorizationToken(server),
         environment: server.environment,
         patchUri: patchUri,
         isLocal: true,
@@ -492,14 +488,13 @@ export function sendApplyPatchRequest(
 export function sendValidPatchRequest(
   server: ServerItem,
   patchUri: string,
-  permissions,
   applyScope: string
 ): Thenable<IPatchValidateResult> {
   return languageClient
     .sendRequest('$totvsserver/patchApply', {
       patchApplyInfo: {
         connectionToken: server.token,
-        authenticateToken: permissions.authorizationToken,
+        authenticateToken: Utils.getAuthorizationToken(server),
         environment: server.environment,
         patchUri: patchUri,
         isLocal: true,
@@ -528,7 +523,6 @@ export function sendValidPatchRequest(
 
 export function sendPatchInfo(
   server: ServerItem,
-  permissions,
   patchUri: string
 ): Thenable<any> {
   if (_debugEvent) {
@@ -537,12 +531,11 @@ export function sendPatchInfo(
     );
     return Promise.resolve();
   }
-
   return languageClient
     .sendRequest('$totvsserver/patchInfo', {
       patchInfoInfo: {
         connectionToken: server.token,
-        authorizationToken: permissions.authorizationToken,
+        authorizationToken: Utils.getAuthorizationToken(server),
         environment: server.environment,
         patchUri: patchUri,
         isLocal: true,

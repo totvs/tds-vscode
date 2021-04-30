@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import { languageClient } from "../extension";
-import utils from "../utils";
 import * as fs from 'fs';
 import Utils from "../utils";
 import { showCompileResult } from "./buildResult";
@@ -55,20 +54,20 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
       return;
     }
 
-    const server = utils.getCurrentServer();
+    const server = Utils.getCurrentServer();
     if (!server) {
       reject(new Error("No server connected. Check if there is a server connected in 'totvs.tds-vscode' extension."));
       return;
     }
 
-    const serverItem = utils.getServerById(server.id);
+    const serverItem = Utils.getServerById(server.id);
     let isAdvplsource: boolean = Utils.isAdvPlSource(filePath);
     if (!isAdvplsource) {
       reject(new Error("This file has an invalid AdvPL source file extension."));
       return;
     }
 
-    const includes = utils.getIncludes(true, serverItem) || [];
+    const includes = Utils.getIncludes(true, serverItem) || [];
     let includesUris: Array<string> = includes.map((include) => {
       return vscode.Uri.file(include).toString();
     });
@@ -86,15 +85,13 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
     //   extensionsAllowed = configADVPL.get("folder.extensionsAllowed", []); // Le a chave especifica
     // }
 
-    const permissionsInfos = Utils.getPermissionsInfos();
-
     const compileOptions = _getCompileOptionsDefault();
     compileOptions.recompile = true;
     compileOptions.generatePpoFile = false;
     compileOptions.showPreCompiler = false;
     compileOptions.returnPpo = true;
 
-    sendCompilation(server, permissionsInfos, includesUris, filesUris, compileOptions, extensionsAllowed, isAdvplsource)
+    sendCompilation(server, includesUris, filesUris, compileOptions, extensionsAllowed, isAdvplsource)
     .then(
     (response: CompileResult) => {
       if (response.compileInfos.length > 0) {
@@ -161,7 +158,7 @@ async function buildCode(
   compileOptions: CompileOptions,
   context: vscode.ExtensionContext
 ) {
-  const server = utils.getCurrentServer();
+  const server = Utils.getCurrentServer();
 
   const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
   const shouldClearConsole = configADVPL.get("clearConsoleBeforeCompile");
@@ -195,7 +192,7 @@ async function buildCode(
 
   if (server) {
     //Só faz sentido processar os includes se existir um servidor selecionado onde sera compilado.
-    let serverItem = utils.getServerById(server.id);
+    let serverItem = Utils.getServerById(server.id);
     let hasAdvplsource: boolean =
       filesPaths.filter((file) => {
         return Utils.isAdvPlSource(file);
@@ -203,7 +200,7 @@ async function buildCode(
     let includes: Array<string> = [];
 
     if (hasAdvplsource) {
-      includes = utils.getIncludes(true, serverItem) || [];
+      includes = Utils.getIncludes(true, serverItem) || [];
       if (!includes.toString()) {
         return;
       }
@@ -240,8 +237,7 @@ async function buildCode(
           extensionsAllowed = configADVPL.get("folder.extensionsAllowed", []); // Le a chave especifica
         }
 
-        const permissionsInfos = Utils.getPermissionsInfos();
-        sendCompilation(server, permissionsInfos, includesUris, filesUris, compileOptions, extensionsAllowed, hasAdvplsource)
+        sendCompilation(server, includesUris, filesUris, compileOptions, extensionsAllowed, hasAdvplsource)
         .then(
         (response: CompileResult) => {
           if (response.returnCode === 40840) {

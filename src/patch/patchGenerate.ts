@@ -7,6 +7,8 @@ import { commandBuildFile } from '../compile/tdsBuild';
 import * as nls from 'vscode-nls';
 import { ResponseError } from 'vscode-languageclient';
 import { _debugEvent } from '../debug';
+import { IRpoToken } from '../rpoToken';
+import { CompileKey } from '../compileKey/compileKey';
 
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
@@ -237,11 +239,10 @@ function sendPatchGenerateMessage(server, patchMaster, patchDest, patchType, pat
 		vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
 		return;
 	}
-	const permissionsInfos = Utils.getPermissionsInfos();
 	languageClient.sendRequest('$totvsserver/patchGenerate', {
 		"patchGenerateInfo": {
 			connectionToken: server.token,
-			authorizationToken: permissionsInfos ? permissionsInfos.authorizationToken : "",
+			authorizationToken: Utils.getAuthorizationToken(server),
 			environment: server.environment,
 			patchMaster: patchMaster,
 			patchDest: patchDest,

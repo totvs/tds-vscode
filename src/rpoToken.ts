@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import * as vscode from 'vscode';
-import { ServerItem } from './serverItemProvider';
 import Utils from './utils';
 import * as nls from 'vscode-nls';
 
@@ -85,84 +84,43 @@ export function getRpoTokenFromString(value: string): IRpoToken {
     header.length + body.indexOf('}') + 1
   );
 
-  const headerJson: any = JSON.parse(header);
-  const bodyJson: any = JSON.parse(body);
+  if (header && body) {
+    const headerJson: any = JSON.parse(header);
+    const bodyJson: any = JSON.parse(body);
 
-  result.token = token;
-  result.header = headerJson;
-  result.body = {
-    ...bodyJson,
-    exp: new Date(bodyJson.exp),
-    iat: new Date(bodyJson.iat),
-  };
+    result.token = token;
+    result.header = headerJson;
+    result.body = {
+      ...bodyJson,
+      exp: new Date(bodyJson.exp * 1000),
+      iat: new Date(bodyJson.iat * 1000),
+    };
+  }
 
   return result;
 }
 
-export function rpoTokenSelectionFile() {
-  const server: ServerItem | undefined = Utils.getCurrentServer();
-
-  if (!server) {
-    vscode.window.showErrorMessage(
-      localize('tds.vscode.rpoToken.no.server', 'No selected server.')
-    );
-
-    return;
-  }
-
-  const tokenFile: string = localize(
-    'tds.vscode.rpoToken.token.file',
-    'Token file'
-  );
-  const allFile: string = localize('tds.vscode.rpoToken.all.file', 'All files');
-
+export function rpoTokenInputBox() {
   vscode.window
-    .showOpenDialog({
-      canSelectFolders: false,
-      canSelectMany: false,
-      openLabel: localize('tds.vscode.rpoToken.file.open.label', 'Select'),
-      title: localize(
-        'tds.vscode.rpoToken.file.title',
-        'Select RPO Token File'
-      ),
-      filters: {
-        [tokenFile]: ['token'],
-        [allFile]: ['*'],
-      },
+    .showInputBox({
+      prompt: 'Input RPO Token string',
     })
-    .then((file: vscode.Uri[]) => {
-      if (file && file[0]) {
-        const rpoToken: IRpoToken = getRpoTokenFromFile(file[0].fsPath);
-        if (rpoToken.error) {
-          vscode.window.showErrorMessage(rpoToken.error);
-        } else {
-          Utils.saveRpoToken(server.id, rpoToken);
-        }
-      }
+    .then((rpoTokenString: string) => {
+      saveRpoTokenString(rpoTokenString.trim())
+        .catch((error: string) => {
+          vscode.window.showErrorMessage(error);
+        });
     });
 }
 
-export function rpoTokenInputBox() {
-  const server: ServerItem | undefined = Utils.getCurrentServer();
-
-  if (!server) {
-    vscode.window.showErrorMessage(
-      localize('tds.vscode.rpoToken.no.server', 'No selected server.')
-    );
-
-    return;
-  }
-
-  vscode.window
-    .showInputBox({
-      prompt: 'Token RPO',
-    })
-    .then((value: string) => {
-      const rpoToken: IRpoToken = getRpoTokenFromString(value.trim());
-      if (rpoToken.error) {
-        vscode.window.showErrorMessage(rpoToken.error);
-      } else {
-        Utils.saveRpoToken(server.id, rpoToken);
-      }
-    });
+export function saveRpoTokenString(rpoTokenString: string): Promise<boolean> {
+  return new Promise<boolean>((resolve, reject) => {
+    const rpoToken: IRpoToken = getRpoTokenFromString(rpoTokenString);
+    if (rpoToken.error) {
+      reject(rpoToken.error);
+    } else {
+      Utils.saveRpoTokenInfos(rpoToken);
+      resolve(true);
+    }
+  });
 }

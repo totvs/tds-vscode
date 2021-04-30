@@ -301,7 +301,7 @@ export class ApplyPatchLoader {
           element.data = { error_number: -1, data: "" }
           self.updatePage();
 
-          await sendApplyPatchRequest(this.currentServer, element.fullpath, Utils.getPermissionsInfos(), element.applyScope)
+          await sendApplyPatchRequest(this.currentServer, element.fullpath, element.applyScope)
             .then((result: IPatchValidateResult) => {
               element.status = "applyed";
             }, (reason: IPatchValidateResult) => {
@@ -351,7 +351,7 @@ export class ApplyPatchLoader {
           element.data = { error_number: -1, data: "" }
           self.updatePage();
 
-          await sendValidPatchRequest(this.currentServer, element.fullpath, Utils.getPermissionsInfos(), element.applyScope)
+          await sendValidPatchRequest(this.currentServer, element.fullpath, element.applyScope)
             .then((result: IPatchValidateResult) => {
               element.data = { error_number: result.errorCode, data: result.patchValidates };
               element.status = "valid";

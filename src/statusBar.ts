@@ -187,52 +187,21 @@ function initRpoTokenStatusBarItem(context: vscode.ExtensionContext) {
 }
 
 function updateRpoTokenStatusBarItem(): void {
-  const server: ServerItem = Utils.getCurrentServer();
   let text: string = 'RPO ';
   let tooltip: string = '';
 
-  if (server) {
-    const rpoAux: any = Utils.getRpoToken(server.id);
-    if (rpoAux) {
-      const rpoToken: IRpoToken = getRpoTokenFromString(rpoAux.token);
-      //const rpoToken: IRpoToken = getRpoTokenFromFile(rpoAux.file);
-      //rpoToken.file = rpoToken.file || rpoAux.file;
+  const rpoToken: IRpoToken = Utils.getRpoTokenInfos();
+  if (rpoToken) {
+    const error: string = rpoToken.error; // || rpoAux.error;
+    const warning: string = rpoToken.warning; // || rpoAux.warning;
 
-      sendRpoToken(server, rpoToken)
-        .then(
-          (result: any) => {
-            if (!result.sucess) {
-              rpoToken.error = result.message;
-            }
-
-            const error: string = rpoToken.error || rpoAux.error;
-            const warning: string = rpoToken.warning || rpoAux.warning;
-
-            text = buildTextRpoToken(error ? 2 : warning ? 1 : 0, text);
-            tooltip = buildTooltipRpoToken(error || warning, tooltip, rpoToken);
-          },
-          (reason: any) => {
-            rpoToken.error = reason.message;
-
-            const error: string = rpoToken.error || rpoAux.error;
-            const warning: string = rpoToken.warning || rpoAux.warning;
-
-            text = buildTextRpoToken(error ? 2 : warning ? 1 : 0, text);
-            tooltip = buildTooltipRpoToken(error || warning, tooltip, rpoToken);
-          }
-        )
-        .then(() => {
-          rpoTokenStatusBarItem.text = text;
-          rpoTokenStatusBarItem.tooltip = tooltip;
-          rpoTokenStatusBarItem.show();
-        });
-    } else {
-      tooltip += localize(
-        'tds.vscode.rpoToken.initial.tooltip',
-        'Select file with RPO token'
-      );
-    }
+    text = buildTextRpoToken(error ? 2 : warning ? 1 : 0, text);
+    tooltip = buildTooltipRpoToken(error || warning, tooltip, rpoToken);
   }
+
+  rpoTokenStatusBarItem.text = text;
+  rpoTokenStatusBarItem.tooltip = tooltip;
+  rpoTokenStatusBarItem.show();
 }
 
 function initSettingsBarItem(context: vscode.ExtensionContext): void {
