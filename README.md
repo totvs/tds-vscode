@@ -30,6 +30,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 - [Geração de cliente de serviço web](docs/ws-client-generation.md) (_Web Service_)
 - [Monitoramento](docs/monitor.md) de servidores
 - [RPO Seguro](docs/rpo.md#Token_de_RPO)
+- [TDS-Cli](https://github.com/totvs/tds-ls/blob/master/TDS-CLi.md) compilação por linha de comando. Da mesma forma que o Eclipse, essa extensão do VSCode possui uma ferramenta de compilação em linha de comando.
 
 ## Guia rápido
 
@@ -71,7 +72,7 @@ Para garantir a compilação é necessário compatibilizar o _encode_ da seguint
 - No estado original o fonte será mostrado desta maneira:<br/>
   ![Encoding 1](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding1.png)
 - **Antes de editar/salvar qualquer fonte no VS** entre nas configurações do VS `Ctrl + ,`.
-- No campo de busca digite `_encode_` e selecione `Windows1252` ou `Windows1253` se utilizar alfabero cirílico.<br/>
+- No campo de busca digite `_encode_` e selecione `Windows1252` ou `Windows1251` se utilizar alfabero cirílico.<br/>
 - Abra o fonte com o novo _encode_ (reforçando que NÃO DEVE tê-lo salvo antes em UTF8)<br/>
   ![Encoding 3](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding3.png)
 - Compile e/ou recompile o fonte e execute-o.<br/>
