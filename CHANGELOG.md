@@ -2,13 +2,23 @@
 
 # Versão [1.2.3]
 
+## Depuração/execução: não salva o atributo 'lastProgramExecuted'
+
+### Problema:
+
+- Ao depurar/executar, o último programa executado não é apresentado.
+
+### Solução
+
+- Ajustado salva do atributo 'lastProgramExecuted' na configuração do executor (.vscode\launch.json).
+
 ## Problema na importação de arquivo do TDS Replay (https://github.com/totvs/tds-vscode/issues/672)
 
 ### Problema:
 
 - Arquivo do TDS Replay enviado pelo usuario parava a importação por volta de 100MB
 
-## Solução:
+### Solução:
 
 - Corrigido um processo interno que poderia causar uma falha de importação, interrompendo o processo.
 
@@ -26,9 +36,9 @@
 
 ### Problema:
 
-- A formatação de palavras-chaves ocorre ao acionar ``ENTER``.
+- A formatação de palavras-chaves ocorre ao acionar `ENTER`.
 
-## Solução:
+### Solução:
 
 - Processo de formatação revisado, passando a tratar palavras-chaves durante a digitação. Detalhes em (Formatação de código fonte)[docs/format_config.md]
 
@@ -38,13 +48,13 @@
 
 - Ao criar duas instancias de um mesmo objeto e pedir para avaliar o conteudo deles, uma das instancias trazia o valor da outra
 
-## Solução:
+### Solução:
 
 - Corrigido processo de cache de objetos para considerar o nome completo do mesmo.
 
 # Versão [1.2.2]
 
-## [4GL][TDSVsCode 1.2.1] Variáveis Array de Record não tem valores visualizados no DEBUG [Issue 590](https://github.com/totvs/tds-vscode/issues/590)
+## [4GL][tdsvscode 1.2.1] Variáveis Array de Record não tem valores visualizados no DEBUG [Issue 590](https://github.com/totvs/tds-vscode/issues/590)
 
 ### Problema:
 
@@ -52,13 +62,14 @@
 
 ### Solução:
 
-- Na análise da ocorrrência, verificamos que o tipo de servidor, em ``servers.json``, não estava correto.
-- Foi adicionado atributo tipo de servidor (``type``) no registro de novos servidores.
+- Na análise da ocorrrência, verificamos que o tipo de servidor, em `servers.json`, não estava correto.
+- Foi adicionado atributo tipo de servidor (`type`) no registro de novos servidores.
 
 Para servidores registrados antes desta versão, favor:
-- abrir o arquivo ``servers.json`` em modo texto;
-- ajustar o atributo ``savedTokens`` para uma lista vazia;
-- localize a definição do servidor LOGIX e ajuste o atributo ``type`` para ``totvs_server_logix``.
+
+- abrir o arquivo `servers.json` em modo texto;
+- ajustar o atributo `savedTokens` para uma lista vazia;
+- localize a definição do servidor LOGIX e ajuste o atributo `type` para `totvs_server_logix`.
 
 Detalhes em
 https://github.com/totvs/tds-vscode/issues/590#issuecomment-742527102.

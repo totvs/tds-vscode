@@ -6,11 +6,11 @@ import {
   QuickPick,
   QuickPickItem,
   window,
-} from "vscode";
-import { statSync, chmodSync } from "fs";
-import Utils, { MESSAGETYPE } from "../utils";
-import * as path from "path";
-import * as nls from "vscode-nls";
+} from 'vscode';
+import { statSync, chmodSync } from 'fs';
+import Utils, { MESSAGETYPE } from '../utils';
+import * as path from 'path';
+import * as nls from 'vscode-nls';
 
 const localize = nls.loadMessageBundle();
 
@@ -19,29 +19,29 @@ let debugSession: DebugSession | undefined;
 let dapArgs: string[] = [];
 
 export function getDAP() {
-  let pathDAP = "";
-  let ext = extensions.getExtension("TOTVS.tds-vscode");
+  let pathDAP = '';
+  let ext = extensions.getExtension('TOTVS.tds-vscode');
   if (ext) {
-    if (process.platform === "win32") {
+    if (process.platform === 'win32') {
       pathDAP = path.join(
         ext.extensionPath,
-        "/node_modules/@totvs/tds-da/bin/windows/debugAdapter.exe"
+        '/node_modules/@totvs/tds-da/bin/windows/debugAdapter.exe'
       );
-    } else if (process.platform === "linux") {
+    } else if (process.platform === 'linux') {
       pathDAP = path.join(
         ext.extensionPath,
-        "/node_modules/@totvs/tds-da/bin/linux/debugAdapter"
+        '/node_modules/@totvs/tds-da/bin/linux/debugAdapter'
       );
       if (statSync(pathDAP).mode !== 33261) {
-        chmodSync(pathDAP, "755");
+        chmodSync(pathDAP, '755');
       }
-    } else if (process.platform === "darwin") {
+    } else if (process.platform === 'darwin') {
       pathDAP = path.join(
         ext.extensionPath,
-        "/node_modules/@totvs/tds-da/bin/mac/debugAdapter"
+        '/node_modules/@totvs/tds-da/bin/mac/debugAdapter'
       );
       if (statSync(pathDAP).mode !== 33261) {
-        chmodSync(pathDAP, "755");
+        chmodSync(pathDAP, '755');
       }
     }
   }
@@ -73,7 +73,7 @@ class QuickPickProgram implements QuickPickItem {
 
   public setArgs(args: string[]) {
     this.args = args;
-    this.description = this.args ? this.args.join(",") : "<nil>";
+    this.description = this.args ? this.args.join(',') : '<nil>';
   }
 }
 
@@ -91,12 +91,8 @@ export async function getProgramName() {
     return undefined;
   }
 
-  let lastProgramExecuted = "";
+  let lastProgramExecuted = config.lastProgramExecuted || '';
   let lastPrograms: QuickPickProgram[] = [];
-
-  if (config.lastProgramExecuted) {
-    lastProgramExecuted = config.lastProgramExecuted;
-  }
 
   if (config.lastPrograms) {
     lastPrograms = config.lastPrograms;
@@ -106,25 +102,23 @@ export async function getProgramName() {
 
   try {
     return await new Promise<ProgramArgs | undefined>((resolve, reject) => {
-      const qp: QuickPick<QuickPickProgram> = window.createQuickPick<
-        QuickPickProgram
-      >();
+      const qp: QuickPick<QuickPickProgram> = window.createQuickPick<QuickPickProgram>();
       qp.title = localize(
-        "tds.vscode.getProgramName",
-        "Please enter the name of an AdvPL/4GL function"
+        'tds.vscode.getProgramName',
+        'Please enter the name of an AdvPL/4GL function'
       );
       qp.items = lastPrograms;
       qp.value = lastProgramExecuted;
       qp.matchOnDescription = true;
       qp.placeholder = localize(
-        "tds.vscode.getProgramName",
-        "Please enter the name of an AdvPL/4GL function"
+        'tds.vscode.getProgramName',
+        'Please enter the name of an AdvPL/4GL function'
       );
 
       disposables.push(
         qp.onDidChangeSelection((selection) => {
           resolve(new ProgramArgs(selection[0].label, selection[0].args));
-          qp.dispose();
+          //qp.dispose();
         })
       );
 
@@ -135,27 +129,28 @@ export async function getProgramName() {
             const find: boolean = config.lastPrograms.some(
               (element: QuickPickProgram) => {
                 return (
-                  element.label.toLowerCase() === programArgs.program.toLowerCase() &&
-                  JSON.stringify(element.args) === JSON.stringify(programArgs.args)
+                  element.label.toLowerCase() ===
+                    programArgs.program.toLowerCase() &&
+                  JSON.stringify(element.args) ===
+                    JSON.stringify(programArgs.args)
                 );
               }
             );
             if (!find) {
-              config.lastPrograms.push(new QuickPickProgram(programArgs.program, programArgs.args));
+              config.lastPrograms.push(
+                new QuickPickProgram(programArgs.program, programArgs.args)
+              );
             }
+
+            config.lastProgramExecuted = programArgs.program;
+
             Utils.saveLaunchConfig(config);
           }
           resolve(programArgs);
-          qp.dispose();
         })
       );
 
-      disposables.push(
-        qp.onDidHide((e) => {
-          resolve(undefined);
-          qp.dispose();
-        })
-      );
+      disposables.push(qp);
 
       qp.show();
     });
@@ -192,31 +187,32 @@ function extractArgs(value: string): string[] {
         let splited: string[];
         if (value.toLowerCase().indexOf('-a=') >= 0) {
           splited = value.split(/\s/);
-          splited.forEach(element => {
+          splited.forEach((element) => {
             if (element.length > 0) {
               element = element.replace('-a=', '').replace('-A=', '').trim();
               if (element.length == 0) {
                 element = undefined;
-              }
-              else if (element.length > 1
-                  && ((element.startsWith('"') && element.endsWith('"'))
-                    ||(element.startsWith("'") && element.endsWith("'")))) {
+              } else if (
+                element.length > 1 &&
+                ((element.startsWith('"') && element.endsWith('"')) ||
+                  (element.startsWith("'") && element.endsWith("'")))
+              ) {
                 element = element.substring(1, element.length - 1);
               }
               args.push(element);
             }
           });
-        }
-        else {
+        } else {
           splited = value.split(/,/);
-          splited.forEach(element => {
+          splited.forEach((element) => {
             element = element.trim();
             if (element.length == 0) {
               element = undefined;
-            }
-            else if (element.length > 1
-                && ((element.startsWith('"') && element.endsWith('"'))
-                  ||(element.startsWith("'") && element.endsWith("'")))) {
+            } else if (
+              element.length > 1 &&
+              ((element.startsWith('"') && element.endsWith('"')) ||
+                (element.startsWith("'") && element.endsWith("'")))
+            ) {
               element = element.substring(1, element.length - 1);
             }
             args.push(element);
@@ -249,8 +245,8 @@ export function toggleTableSync() {
           if (isTableSyncEnabled) {
             Utils.logMessage(
               localize(
-                "tds.debug.tableSync.enabled",
-                "Tables synchronism enabled"
+                'tds.debug.tableSync.enabled',
+                'Tables synchronism enabled'
               ),
               MESSAGETYPE.Info,
               true
@@ -258,8 +254,8 @@ export function toggleTableSync() {
           } else {
             Utils.logMessage(
               localize(
-                "tds.debug.tableSync.disabled",
-                "Tables synchronism disabled"
+                'tds.debug.tableSync.disabled',
+                'Tables synchronism disabled'
               ),
               MESSAGETYPE.Info,
               true
@@ -274,8 +270,8 @@ export function toggleTableSync() {
   } else {
     Utils.logMessage(
       localize(
-        "tds.debug.tableSync.disabled",
-        "The command to (Dis)Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually"
+        'tds.debug.tableSync.disabled',
+        'The command to (Dis)Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually'
       ),
       MESSAGETYPE.Error,
       true
@@ -293,12 +289,12 @@ function sendChangeTableSyncSetting(): void {
   }
   if (debugSession !== undefined) {
     const settingsArray = [
-      { key: "enableTableSync", value: isTableSyncEnabled },
+      { key: 'enableTableSync', value: isTableSyncEnabled },
     ];
     const arg = { settings: settingsArray };
 
     debugSession
-      .customRequest("$changeSettings", arg)
+      .customRequest('$changeSettings', arg)
       .then((value: any) => {
         //let status = isTableSyncEnabled ? localize('tds.debug.tableSync.satus.enabled',"enabled") : localize('tds.debug.tableSync.satus.disabled',"disabled");
         //Utils.logMessage(localize('tds.debug.tableSync.satus',`Tables synchronism ${status}`) , MESSAGETYPE.Info, true);
@@ -325,16 +321,14 @@ async function pickProgramArguments() {
     return undefined;
   }
 
-  let lastProgramExecuted = "";
+  let lastProgramExecuted = config.lastProgramExecuted || '';
   let lastPrograms: QuickPickProgram[] = [];
 
-  if (config.lastProgramExecuted) {
-    lastProgramExecuted = config.lastProgramExecuted;
-  }
-
   lastPrograms = config.lastPrograms.filter((element: QuickPickProgram) => {
-    return element.label.toLowerCase() === lastProgramExecuted.toLowerCase()
-      && element.args;
+    return (
+      element.label.toLowerCase() === lastProgramExecuted.toLowerCase() &&
+      element.args
+    );
   });
 
   // lastPrograms.forEach((element) => {
@@ -345,17 +339,15 @@ async function pickProgramArguments() {
 
   try {
     return await new Promise<string[] | undefined>((resolve, reject) => {
-      const qp: QuickPick<QuickPickProgram> = window.createQuickPick<
-        QuickPickProgram
-      >();
+      const qp: QuickPick<QuickPickProgram> = window.createQuickPick<QuickPickProgram>();
       qp.title = localize(
-        "tds.vscode.getProgramArguments",
-        "Enter comma-separated list of arguments"
+        'tds.vscode.getProgramArguments',
+        'Enter comma-separated list of arguments'
       );
       qp.items = lastPrograms;
       qp.placeholder = localize(
-        "tds.vscode.getProgramArguments",
-        "Enter comma-separated list of arguments"
+        'tds.vscode.getProgramArguments',
+        'Enter comma-separated list of arguments'
       );
 
       disposables.push(
@@ -363,7 +355,6 @@ async function pickProgramArguments() {
           if (selection[0]) {
             resolve(selection[0].args);
           }
-          qp.dispose();
         })
       );
 
@@ -378,8 +369,11 @@ async function pickProgramArguments() {
 
             const find: boolean = config.lastPrograms.some(
               (element: QuickPickProgram) => {
-                return element.label.toLowerCase() === lastProgramExecuted.toLowerCase()
-                  && JSON.stringify(element.args) === JSON.stringify(args)
+                return (
+                  element.label.toLowerCase() ===
+                    lastProgramExecuted.toLowerCase() &&
+                  JSON.stringify(element.args) === JSON.stringify(args)
+                );
               }
             );
 
@@ -390,16 +384,10 @@ async function pickProgramArguments() {
           }
 
           resolve(args);
-          qp.dispose();
         })
       );
 
-      disposables.push(
-        qp.onDidHide(() => {
-          resolve(undefined);
-          qp.dispose();
-    })
-      );
+      disposables.push(qp);
 
       qp.show();
     });
