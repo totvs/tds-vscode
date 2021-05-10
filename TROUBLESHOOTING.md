@@ -145,7 +145,7 @@ OS: Windows_NT x64 10.0.18362
 
 Para obter os dados da extensão **tds-vscode** instalada selecione a visão *"Extensions"* ( `CTRL + Shift + X` ) e confirme a versão instalada.
 
-![tds-vscode extension version](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/tds-vscode_version.PNG)
+![tds-vscode extension version](https://raw.githubusercontent.com/totvs/tds-vscode/master/docs/gifs/tds-vscode_version.PNG)
 
 #### Versão do **RPO (LIB)** e do **TOTVS Server**
 
