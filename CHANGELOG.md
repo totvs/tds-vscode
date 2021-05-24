@@ -1,5 +1,13 @@
 # Changelog
 
+# Versão [1.2.next]
+
+## [TOKEN RPO]
+
+### Melhoria
+
+- TokenRPO: implementado comando para remoção de token aplicado, via opção na barra de status ou via _api_ `clearRPOToken`.
+
 # Versão [1.2.3]
 
 ## Depuração/execução: não salva o atributo 'lastProgramExecuted'
@@ -22,7 +30,7 @@
 
 - Corrigido um processo interno que poderia causar uma falha de importação, interrompendo o processo.
 
-## [BETA] Adição do suporte a nova chave (Token compilação) para o RPO Seguro.
+## [BETA] Adição do suporte a nova chave (Token compilação) para o [RPO Seguro](docs/rpo.md).
 
 ## Implementar a funcionalidade de aplicação de Templates. [Issue 622](https://github.com/totvs/tds-vscode/issues/622)
 

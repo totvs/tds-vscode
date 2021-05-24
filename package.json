@@ -148,6 +148,7 @@
     "onCommand:totvs-developer-studio.reconnect",
     "onCommand:totvs-developer-studio.serverSelection",
     "onCommand:totvs-developer-studio.rpoToken",
+    "onCommand:totvs-developer-studio.clearRpoToken",
     "onCommand:totvs-developer-studio.toggleSaveLocation",
     "onCommand:totvs-developer-studio.disconnect",
     "onCommand:totvs-developer-studio.add",
@@ -644,6 +645,11 @@
       {
         "command": "totvs-developer-studio.rpoToken",
         "title": "%tds.package.rpoToken%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.clearRpoToken",
+        "title": "%tds.package.clearRpoToken%",
         "category": "TOTVS"
       },
       {

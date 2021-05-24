@@ -121,5 +121,6 @@
   "totvs-developer-studio.open-rpoinfo": "Repository Log",
   "tds.package.templateApply": "Template Application",
   "tds.package.templateApply.fromFile": "Apply Template from file",
-  "tds.package.rpoToken": "Input RPO Token string"
+  "tds.package.rpoToken": "Input RPO Token",
+  "tds.package.clearRpoToken": "Clear RPO Token"
 }

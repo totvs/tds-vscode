@@ -497,12 +497,13 @@ export default class Utils {
   static getAuthorizationToken(server: ServerItem): string {
     let authorizationToken: string = '';
     let isSafeRPOServer: boolean = Utils.isSafeRPO(server);
-    const permissionsInfos: IRpoToken | CompileKey = isSafeRPOServer ? Utils.getRpoTokenInfos() : Utils.getPermissionsInfos();
+    const permissionsInfos: IRpoToken | CompileKey = isSafeRPOServer
+      ? Utils.getRpoTokenInfos()
+      : Utils.getPermissionsInfos();
     if (permissionsInfos) {
       if (isSafeRPOServer) {
         authorizationToken = (<IRpoToken>permissionsInfos).token;
-      }
-      else {
+      } else {
         authorizationToken = (<CompileKey>permissionsInfos).authorizationToken;
       }
     }
@@ -1120,11 +1121,10 @@ export default class Utils {
 
   static isSafeRPO(server: ServerItem): boolean {
     if (server && server.buildVersion) {
-      return server.buildVersion.localeCompare("7.00.191205P") > 0;
+      return server.buildVersion.localeCompare('7.00.191205P') > 0;
     }
     return false;
   }
-
 }
 
 function sampleServer(): any {
@@ -1137,7 +1137,7 @@ function sampleServer(): any {
     connectedServer: {},
     configurations: [],
     savedTokens: [],
-    lastConnectedServer: ''
+    lastConnectedServer: '',
   };
 }
 
