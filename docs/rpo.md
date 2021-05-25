@@ -32,3 +32,7 @@ Após selecionar o servidor, acione a ação `RPO` na barra de status e informe 
 Caso deseje remover um TOKEN de `RPO` já aplicado, acione `X` do lado direito a `RPO`.
 
 ![TOKEN Rpo](../imagens/status-rpo.png)
+
+Os comandos para informar ou remover o _RPO Token_, também podem ser executados via paleta de comandos (`ctrl+shift+p).
+
+![TOKEN Rpo](../imagens/pallete-rpo.png)

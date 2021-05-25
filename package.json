@@ -1468,6 +1468,12 @@
       ],
       "commandPalette": [
         {
+          "command": "totvs-developer-studio.rpoToken"
+        },
+        {
+          "command": "totvs-developer-studio.clearRpoToken"
+        },
+        {
           "command": "totvs-developer-studio.patchGenerate.fromFolder",
           "when": "1 == 0"
         },
