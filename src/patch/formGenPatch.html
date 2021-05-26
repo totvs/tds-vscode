@@ -283,7 +283,8 @@
 
 		var i = 0;
 		srcR.forEach ( index => {
-			srcR[i] = index.replace(/( \\(.*\\))/,"");
+			let idx = index.indexOf(" (");
+			srcR[i] = index.substring(0, idx);
 			i++;
 		});
 
