@@ -28,4 +28,11 @@ Selecione o servidor, acione o menu de contexto e a opção `RPO Check Integrity
 
 > Esse recurso está disponivel em servidores da versão _7.00.210324P_ e superiores.
 
-Após selecionar o servidor, acione a ação `RPO` na barra de status e selecione o arquivo que contem o _token_ de RPO. Esse procedimento faz-se necessário para cada servidor que utiliza esse recurso.
+Após selecionar o servidor, acione a ação `RPO` na barra de status e informe o token obtido.
+Caso deseje remover um TOKEN de `RPO` já aplicado, acione `X` do lado direito a `RPO`.
+
+![TOKEN Rpo](../imagens/status-rpo.png)
+
+Os comandos para informar ou remover o _RPO Token_, também podem ser executados via paleta de comandos (`ctrl+shift+p).
+
+![TOKEN Rpo](../imagens/pallete-rpo.png)

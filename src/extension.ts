@@ -532,10 +532,23 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-  //Seleção do arquivo com RPO Token.
+  //Seleção/remoção do arquivo com RPO Token.
   context.subscriptions.push(
     commands.registerCommand('totvs-developer-studio.rpoToken', () => {
       rpoTokenInputBox();
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand('totvs-developer-studio.clearRpoToken', () => {
+      saveRpoTokenString(undefined).then(
+        () => {
+          vscode.window.showInformationMessage('RPO token clean');
+        },
+        (error) => {
+          vscode.window.showErrorMessage(error.message);
+        }
+      );
     })
   );
 
@@ -626,6 +639,9 @@ export function activate(context: ExtensionContext) {
     },
     saveRPOToken(rpoTokenString: string): Promise<boolean> {
       return saveRpoTokenString(rpoTokenString);
+    },
+    clearRPOToken(): Promise<boolean> {
+      return saveRpoTokenString(undefined);
     },
   };
   // 'export' public api-surface

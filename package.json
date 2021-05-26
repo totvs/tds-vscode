@@ -71,8 +71,8 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@totvs/prettier-plugin-4gl": "^0.1.2",
     "@totvs/prettier-plugin-advpl": "^0.1.2",
-    "@totvs/tds-da": "^1.1.22",
-    "@totvs/tds-ls": "^1.1.41",
+    "@totvs/tds-da": "^1.1.23",
+    "@totvs/tds-ls": "^1.1.42",
     "@types/node": "^14.14.12",
     "@types/react": "^16.9.50",
     "@types/vscode": "^1.52.0",
@@ -117,7 +117,7 @@
     "terser-webpack-plugin": "^4.2.2",
     "ts-loader": "^8.0.4",
     "tslint": "^6.1.2",
-    "vsce": "^1.81.0",
+    "vsce": "^1.88.0",
     "vscode-nls-dev": "^3.3.2",
     "vscode-test": "^1.4.1",
     "webpack": "^4.44.2",
@@ -148,6 +148,7 @@
     "onCommand:totvs-developer-studio.reconnect",
     "onCommand:totvs-developer-studio.serverSelection",
     "onCommand:totvs-developer-studio.rpoToken",
+    "onCommand:totvs-developer-studio.clearRpoToken",
     "onCommand:totvs-developer-studio.toggleSaveLocation",
     "onCommand:totvs-developer-studio.disconnect",
     "onCommand:totvs-developer-studio.add",
@@ -644,6 +645,11 @@
       {
         "command": "totvs-developer-studio.rpoToken",
         "title": "%tds.package.rpoToken%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.clearRpoToken",
+        "title": "%tds.package.clearRpoToken%",
         "category": "TOTVS"
       },
       {
@@ -1461,6 +1467,12 @@
         }
       ],
       "commandPalette": [
+        {
+          "command": "totvs-developer-studio.rpoToken"
+        },
+        {
+          "command": "totvs-developer-studio.clearRpoToken"
+        },
         {
           "command": "totvs-developer-studio.patchGenerate.fromFolder",
           "when": "1 == 0"

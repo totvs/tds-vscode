@@ -20,6 +20,7 @@ let saveLocationBarItem: vscode.StatusBarItem;
 let permissionStatusBarItem: vscode.StatusBarItem;
 let settingsStatusBarItem: vscode.StatusBarItem;
 let rpoTokenStatusBarItem: vscode.StatusBarItem;
+let clearRpoTokenStatusBarItem: vscode.StatusBarItem;
 
 const priorityTotvsStatusBarItem: number = 103;
 const priorityRpoTokenStatusBarItem: number = 102;
@@ -172,18 +173,28 @@ function initRpoTokenStatusBarItem(context: vscode.ExtensionContext) {
   rpoTokenStatusBarItem.text = 'RPO';
   rpoTokenStatusBarItem.tooltip = localize(
     'tds.vscode.rpoToken.initial.tooltip',
-    'Select file with RPO token'
+    'Input RPO token'
   );
 
-  context.subscriptions.push(rpoTokenStatusBarItem);
   context.subscriptions.push(
-    Utils.onDidSelectedServer(updateRpoTokenStatusBarItem)
-  );
-  context.subscriptions.push(
+    rpoTokenStatusBarItem,
+    Utils.onDidSelectedServer(updateRpoTokenStatusBarItem),
     Utils.onDidRpoTokenSelected(updateRpoTokenStatusBarItem)
   );
 
+  clearRpoTokenStatusBarItem = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Left,
+    priorityRpoTokenStatusBarItem
+  );
+  clearRpoTokenStatusBarItem.command = 'totvs-developer-studio.clearRpoToken';
+  clearRpoTokenStatusBarItem.text = '$(notifications-clear)';
+  clearRpoTokenStatusBarItem.tooltip = localize(
+    'tds.vscode.rpoToken.clear.tooltip',
+    'Clear RPO token'
+  );
+
   rpoTokenStatusBarItem.show();
+  clearRpoTokenStatusBarItem.show();
 }
 
 function updateRpoTokenStatusBarItem(): void {
@@ -201,7 +212,9 @@ function updateRpoTokenStatusBarItem(): void {
 
   rpoTokenStatusBarItem.text = text;
   rpoTokenStatusBarItem.tooltip = tooltip;
+
   rpoTokenStatusBarItem.show();
+  clearRpoTokenStatusBarItem.show();
 }
 
 function initSettingsBarItem(context: vscode.ExtensionContext): void {

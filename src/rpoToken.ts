@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as vscode from 'vscode';
 import Utils from './utils';
 import * as nls from 'vscode-nls';
+import utils from './utils';
 
 const localize = nls.config({
   locale: vscode.env.language,
@@ -26,26 +27,28 @@ export interface IRpoToken {
   warning?: string;
 }
 
-const noRpoToken: IRpoToken = {
-  token: '',
-  header: {
-    alg: '',
-    typ: '',
-  },
-  body: {
-    auth: '',
-    exp: new Date(0),
-    iat: new Date(0),
-    iss: '',
-    name: '',
-    sub: '',
-  },
-  error: '',
-  warning: '',
-};
+function noRpoToken(): IRpoToken {
+  return {
+    token: '',
+    header: {
+      alg: '',
+      typ: '',
+    },
+    body: {
+      auth: '',
+      exp: new Date(0),
+      iat: new Date(0),
+      iss: '',
+      name: '',
+      sub: '',
+    },
+    error: '',
+    warning: '',
+  };
+}
 
 export function getRpoTokenFromFile(path: string): IRpoToken {
-  let result: IRpoToken = noRpoToken;
+  let result: IRpoToken = noRpoToken();
 
   if (path) {
     if (fs.existsSync(path)) {
@@ -70,7 +73,7 @@ export function getRpoTokenFromFile(path: string): IRpoToken {
 }
 
 export function getRpoTokenFromString(value: string): IRpoToken {
-  let result: IRpoToken = noRpoToken;
+  let result: IRpoToken = noRpoToken();
 
   const token: string = value;
   const content: string = Buffer.from(token, 'base64').toString('ascii');
@@ -101,21 +104,29 @@ export function getRpoTokenFromString(value: string): IRpoToken {
 }
 
 export function rpoTokenInputBox() {
+  const rpoToken: IRpoToken = utils.getRpoTokenInfos();
   vscode.window
     .showInputBox({
       prompt: 'Input RPO Token string',
+      placeHolder: rpoToken.token,
     })
     .then((rpoTokenString: string) => {
-      saveRpoTokenString(rpoTokenString.trim())
-        .catch((error: string) => {
-          vscode.window.showErrorMessage(error);
-        });
+      if (rpoTokenString) {
+        saveRpoTokenString(rpoTokenString.trim()).then(
+          () => {
+            vscode.window.showInformationMessage('RPO token saved');
+          },
+          (error: string) => {
+            vscode.window.showErrorMessage(error);
+          }
+        );
+      }
     });
 }
 
 export function saveRpoTokenString(rpoTokenString: string): Promise<boolean> {
   return new Promise<boolean>((resolve, reject) => {
-    const rpoToken: IRpoToken = getRpoTokenFromString(rpoTokenString);
+    const rpoToken: IRpoToken = getRpoTokenFromString(rpoTokenString || '');
     if (rpoToken.error) {
       reject(rpoToken.error);
     } else {
