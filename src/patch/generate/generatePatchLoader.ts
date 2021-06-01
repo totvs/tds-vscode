@@ -281,11 +281,9 @@ class GeneratePatchLoader {
 
         sendPatchGenerateMessage(this.currentServer, rpoMaster,
           targetFolder, 3, targetFile, []).then((result) => {
-console.log(result);
-
             progress.report({ increment: 100, message: 'Finalizado' });
+            this._panel.dispose();
           });
-
       }
     );
   }

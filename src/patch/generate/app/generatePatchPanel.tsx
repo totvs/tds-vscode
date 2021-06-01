@@ -35,7 +35,7 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import { IGeneratePatchData, IServerFS } from '../generatePatchData';
-import { TreeItem, TreeItemProps, TreeView } from '@material-ui/lab';
+import { Alert, TreeItem, TreeItemProps, TreeView } from '@material-ui/lab';
 import { generatePathIcons } from '../helper/generatePathIcons';
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
@@ -230,6 +230,7 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
   const [targetFile, setTargetFile] = React.useState<string>('');
   const [rpoMaster, setRpoMaster] = React.useState<string>('');
   const [data, setData] = React.useState<RenderTree>();
+  const [waitMessage, setWaitMessage] = React.useState<boolean>(false);
 
   const targetFolderRef = React.useRef<HTMLTextAreaElement>();
   const targetFileRef = React.useRef<HTMLTextAreaElement>();
@@ -333,6 +334,7 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
   };
 
   const handleGenerate = () => {
+    setWaitMessage(true);
     sendUpdateData(GeneratePatchPanelAction.Generate);
   };
 
@@ -375,7 +377,13 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
 
         <Grid container spacing={2}>
           <Grid item xs={5} container>
-            <Grid xs={12} container item justify="flex-end" alignContent="flex-start">
+            <Grid
+              xs={12}
+              container
+              item
+              justify="flex-end"
+              alignContent="flex-start"
+            >
               <FormControl fullWidth>
                 <TextField
                   required={true}
@@ -411,6 +419,14 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
                   onChange={handleTargetFileChange}
                   helperText="Leave blank for default name"
                 />
+                {waitMessage && (
+                  <Alert severity="info">
+                    {i18n.localize(
+                      'WARN_PROCESS',
+                      'Running process. It may take some time. When the form is closed, the process is finished.'
+                    )}
+                  </Alert>
+                )}
               </FormControl>
               <Grid xs={12} container item justify="flex-end">
                 <Grid item xs={4}>
