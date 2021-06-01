@@ -1,10 +1,7 @@
 import * as vscode from 'vscode';
 import * as nls from 'vscode-nls';
 import { CompileKey } from './compileKey/compileKey';
-import { sendRpoToken } from './protocolMessages';
 import {
-  getRpoTokenFromFile,
-  getRpoTokenFromString,
   IRpoToken,
 } from './rpoToken';
 import { ServerItem } from './serverItemProvider';
@@ -257,7 +254,7 @@ function buildTooltipRpoToken(
     result += `Name: ${rpoToken.body.name}\n`;
     result += `Subject: ${rpoToken.body.sub}\n`;
     result += `Auth: ${rpoToken.body.auth}\n`;
-    result += `Validate: ${rpoToken.body.exp.toLocaleDateString()} at ${rpoToken.body.iat.toLocaleDateString()}\n`;
+    result += `Validate: ${rpoToken.body.exp} at ${rpoToken.body.iat}\n`;
     result += `Emitter: ${rpoToken.body.iss}`;
   }
 

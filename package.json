@@ -157,6 +157,7 @@
     "onCommand:totvs-developer-studio.delete",
     "onCommand:totvs-developer-studio.delete.environment",
     "onCommand:totvs-developer-studio.patchGenerate.fromRPO",
+    "onCommand:totvs-developer-studio.patchGenerate.byDifference",
     "onCommand:totvs-developer-studio.patchGenerate.fromFolder",
     "onCommand:totvs-developer-studio.patchApply",
     "onCommand:totvs-developer-studio.patchApply.fromFile",
@@ -728,6 +729,11 @@
       {
         "command": "totvs-developer-studio.patchGenerate.fromFolder",
         "title": "%tds.package.patchGenerate.fromFolder%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.patchGenerate.byDifference",
+        "title": "%tds.package.patchGenerate.byDifference%",
         "category": "TOTVS"
       },
       {
@@ -1364,14 +1370,19 @@
           "group": "CtotvsPatch@1"
         },
         {
-          "command": "totvs-developer-studio.patchApply",
+          "command": "totvs-developer-studio.patchGenerate.byDifference",
           "when": "view == totvs_server && viewItem == serverItem",
           "group": "CtotvsPatch@2"
         },
         {
-          "command": "totvs-developer-studio.open-loadrpoinfo-view",
+          "command": "totvs-developer-studio.patchApply",
           "when": "view == totvs_server && viewItem == serverItem",
           "group": "CtotvsPatch@3"
+        },
+        {
+          "command": "totvs-developer-studio.open-loadrpoinfo-view",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "CtotvsPatch@4"
         },
         {
           "command": "totvs-developer-studio.inspectorObjects",

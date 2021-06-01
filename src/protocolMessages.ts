@@ -409,10 +409,10 @@ export function sendCompilation(
   hasAdvplsource: boolean
 ): Thenable<CompileResult> {
   if (_debugEvent) {
-    vscode.window.showWarningMessage(
-      'Esta operação não é permitida durante uma depuração.'
-    );
-    return;
+    // vscode.window.showWarningMessage(
+    //   'Esta operação não é permitida durante uma depuração.'
+    // );
+    throw new Error('Esta operação não é permitida durante uma depuração.');
   }
   return languageClient.sendRequest('$totvsserver/compilation', {
     compilationInfo: {
@@ -430,11 +430,12 @@ export function sendCompilation(
 
 export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
   if (_debugEvent) {
-    vscode.window.showWarningMessage(
-      'Esta operação não é permitida durante uma depuração.'
-    );
-    return;
+    // vscode.window.showWarningMessage(
+    //   'Esta operação não é permitida durante uma depuração.'
+    // );
+    throw new Error('Esta operação não é permitida durante uma depuração.');
   }
+
   return languageClient
     .sendRequest('$totvsserver/rpoInfo', {
       rpoInfo: {
@@ -620,6 +621,31 @@ export function sendRpoToken(
       },
       (err: ResponseError<object>) => {
         return { sucess: false, message: err.message };
+      }
+    );
+}
+
+export interface IGetPatchDirResult {
+  directory: string[];
+}
+
+export function sendGetPatchDir(
+  server: ServerItem,
+  folder: string,
+  includeDir: boolean
+): Promise<IGetPatchDirResult> {
+  return languageClient
+    .sendRequest('$totvsserver/getPatchDir', {
+      pathDirListInfo: {
+        connectionToken: server.token,
+        environment: server.environment,
+        folder: folder,
+        includeDir: includeDir,
+      },
+    })
+    .then(
+      (response: IGetPatchDirResult) => {
+        return response;
       }
     );
 }

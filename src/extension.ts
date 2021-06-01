@@ -69,6 +69,7 @@ import { initStatusBarItems, updateStatusBarItems } from './statusBar';
 import { PatchEditorProvider } from './patch/inspect/patchEditor';
 import { openTemplateApplyView } from './template/apply/formApplyTemplate';
 import { rpoTokenInputBox, saveRpoTokenString } from './rpoToken';
+import { openGeneratePatchView } from './patch/generate/generatePatchLoader';
 
 export let languageClient: LanguageClient;
 export function parseUri(u): Uri {
@@ -420,6 +421,19 @@ export function activate(context: ExtensionContext) {
     )
   );
 
+  context.subscriptions.push(
+    commands.registerCommand(
+      'totvs-developer-studio.patchGenerate.byDifference',
+      () => {
+        vscode.window.setStatusBarMessage(
+          'Aguarde. Iniciando geração de pacotes...',
+          5000
+        );
+        openGeneratePatchView(context);
+      }
+    )
+  );
+
   //Aplica um pacote de atualização (patch).
   context.subscriptions.push(
     vscode.commands.registerCommand('totvs-developer-studio.patchApply', () => {
@@ -427,7 +441,7 @@ export function activate(context: ExtensionContext) {
         'Aguarde. Iniciando aplicação de pacotes...',
         5000
       );
-      openApplyPatchView(context, undefined);
+      openApplyPatchView(context);
     })
   );
 
