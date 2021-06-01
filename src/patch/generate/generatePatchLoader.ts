@@ -29,6 +29,7 @@ import { folder } from 'jszip';
 import { serverSelection } from '../../inputConnectionParameters';
 import { utils } from 'mocha';
 import { IfStatement } from 'typescript';
+import { sendPatchGenerateMessage } from '../patchUtil';
 
 const fs = require('fs');
 const os = require('os');
@@ -67,11 +68,9 @@ class GeneratePatchLoader {
     this._currentServer = value;
 
     if (value) {
-      (this._generatePatchData.generate = false),
-        (this._generatePatchData.serverName = value.name);
+      this._generatePatchData.serverName = value.name;
     } else {
-      (this._generatePatchData.generate = false),
-        (this._generatePatchData.serverName = '');
+      this._generatePatchData.serverName = '';
       this._generatePatchData.rootFolder = undefined;
     }
 
@@ -146,7 +145,6 @@ class GeneratePatchLoader {
         };
 
         this.loadServerFS(root).then((result: IServerFS) => {
-          this._generatePatchData.loading = true;
           this._generatePatchData.rootFolder = result;
 
           this._nodeMap[result.id] = result;
@@ -168,62 +166,23 @@ class GeneratePatchLoader {
     }
   }
 
-  private async handleMessage(command: IGeneratePatchPanelAction) {
-    switch (command.action) {
-      case GeneratePatchPanelAction.LoadingData: {
-        const loadingFolder: IServerFS = command.content.loadingFolder;
-        const promises: any[] = [];
-        loadingFolder.children.forEach((folder: IServerFS) => {
-          this._nodeMap[folder.parentId].children = folder;
-          this._nodeMap[folder.id] = folder;
-          promises.push(this.loadServerFS(folder));
-        });
-        Promise.all(promises).then((result: IServerFS[]) => {
-          const root: IServerFS = this._generatePatchData.rootFolder;
-          this._generatePatchData.loading = false;
-          result.forEach((folder: IServerFS) => {
-            folder.children.forEach((subfolder: IServerFS) => {
-              this._nodeMap[subfolder.id].children.push(subfolder);
-            }, this);
-          });
+  private handleMessage(command: IGeneratePatchPanelAction) {
+    const data: IGeneratePatchData = command.content;
 
-          this._generatePatchData.rootFolder = root;
-          this._panel.webview.postMessage({
-            command: GeneratePatchPanelAction.UpdatePage,
-            data: this._generatePatchData,
-          });
-        });
+    switch (command.action) {
+      case GeneratePatchPanelAction.Cancel: {
+        this._panel.dispose();
         break;
       }
       case GeneratePatchPanelAction.Generate: {
-        //this.doGenerate
+        this.doGenerate(data.rpoMaster, data.targetFolder, data.targetFile);
         break;
       }
       case GeneratePatchPanelAction.SelectFoler: {
-        const folder: string = command.content.targetFolder;
-        this.doSelectFolder(folder);
+        this.doSelectFolder(data.targetFolder);
 
         break;
       }
-
-      // case GeneratePatchPanelAction.DoUpdateState: {
-      //   {
-      //     const state: any = command.content.state;
-      //     const reload: boolean = command.content.reload;
-      //     const context = this._context;
-
-      //     context.workspaceState.update(WS_STATE_KEY, state);
-
-      //     if (reload) {
-      //       this._panel.dispose();
-
-      //       context.workspaceState.update(WS_STATE_KEY, {});
-      //       openGeneratePatchView(context, undefined);
-      //     }
-
-      //     break;
-      //   }
-      // }
       default:
         console.log('***** ATTENTION: generatePathLoader.tsx');
         console.log('\tUnrecognized command: ' + command.action);
@@ -234,23 +193,17 @@ class GeneratePatchLoader {
 
   private initData(memento: any): IGeneratePatchData {
     this._generatePatchData = {
-      process: memento['process'],
-      ignoreTres: memento['ignoreTres'],
+      serverName: '',
       targetFolder: memento['targetFolder'],
-      resources: [],
-      selectedResources: [],
       targetFile: '',
       rpoMaster: '',
       rootFolder: undefined,
-      loading: false,
-      generate: false,
-      serverName: '',
     };
 
     return this._generatePatchData;
   }
 
-  private async loadServerFS(target: IServerFS) {
+  private /*async*/ loadServerFS(target: IServerFS) {
     const server = this.currentServer;
     const that = this;
 
@@ -264,21 +217,20 @@ class GeneratePatchLoader {
         name: resource,
         children: [],
         directory: directory,
-        path: (parent.name.length === 0 ? '' : parent.name + '\\') + resource,
+        path: (parent.path.length === 0 ? '' : parent.path + '\\') + resource,
         parentId: parent.id,
       };
     };
 
     const getPatchDir = async function (folder: IServerFS) {
-      const folders: IGetPatchDirResult = await sendGetPatchDir(
-        server,
-        folder.path,
-        true
+      let folders: IGetPatchDirResult = undefined;
+      await sendGetPatchDir(server, folder.path, true).then(
+        (result: IGetPatchDirResult) => (folders = result)
       );
-      const files: IGetPatchDirResult = await sendGetPatchDir(
-        server,
-        folder.path,
-        false
+
+      let files: IGetPatchDirResult = undefined;
+      await sendGetPatchDir(server, folder.path, false).then(
+        (result: IGetPatchDirResult) => (files = result)
       );
 
       folders.directory.forEach((resource: string) => {
@@ -295,51 +247,47 @@ class GeneratePatchLoader {
       return folder;
     };
 
-    return getPatchDir(target);
+    return new Promise(async (resolve, _) => {
+      const result = await getPatchDir(target);
+
+      if (result.children.length > Number.MAX_SAFE_INTEGER) {
+        result.children.forEach((resource: IServerFS) => {
+          if (resource.directory) {
+            this.loadServerFS(resource);
+            resolve(result);
+          }
+        });
+      }
+
+      resolve(result);
+    });
   }
 
-  private doGenerate(generateData: IGeneratePatchData) {
-    // const self = this;
-    // const total: number = 4;
-    // let cnt: number = 0;
-    // let inc: number = 100 / total;
-    // vscode.window.withProgress(
-    //   {
-    //     location: vscode.ProgressLocation.Notification,
-    //     title: localize("VALIDATING_MESSAGE", "Validating Patch"),
-    //     cancellable: true,
-    //   }, async (progress, token) => {
-    //     token.onCancellationRequested(() => {
-    //       console.log("User canceled the operation");
-    //     });
-    //     progress.report({ increment: 0, message: "Inicializando..." });
-    //     patchFiles.forEach(async (element: IPatchFileInfo) => {
-    //       cnt++;
-    //       progress.report({
-    //         message: localize("APPLYING", "File {3} #{0}/{1}", cnt, total, element.name),
-    //         increment: inc
-    //       });
-    //       element.status = "validating";
-    //       element.data = { error_number: -1, data: "" }
-    //       self.updatePage();
-    //       await sendGeneratePatchRequest(this.currentServer, element.fullpath, element.applyScope)
-    //         .then((result: IPatchValidateResult) => {
-    //           element.status = "applyed";
-    //         }, (reason: IPatchValidateResult) => {
-    //           element.message = reason.message || "";
-    //           element.data = { error_number: reason.errorCode, data: reason.patchValidates };
-    //           if (reason.errorCode == PATCH_ERROR_CODE.OLD_RESOURCES) {
-    //             element.status = element.applyScope == "none" ? "error" : "warning";
-    //           } else {
-    //             element.status = "error";
-    //           }
-    //         }).then(() => {
-    //           self.updatePage();
-    //         });
-    //     });
-    //     progress.report({ increment: 100, message: "Finalizado" });
-    //   }
-    //    );
+  private doGenerate(rpoMaster: string, targetFolder: string, targetFile: string) {
+    const total: number = 4;
+    let cnt: number = 0;
+    let inc: number = 100 / total;
+    vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: localize('generating_MESSAGE', 'Generating Patch'),
+        cancellable: true,
+      },
+      async (progress, token) => {
+        token.onCancellationRequested(() => {
+          vscode.window.showInformationMessage('User canceled the operation');
+        });
+        progress.report({ increment: 0, message: 'Inicializando...' });
+
+        sendPatchGenerateMessage(this.currentServer, rpoMaster,
+          targetFolder, 3, targetFile, []).then((result) => {
+console.log(result);
+
+            progress.report({ increment: 100, message: 'Finalizado' });
+          });
+
+      }
+    );
   }
 
   private doSelectFolder(folder: string) {
@@ -455,3 +403,4 @@ function getTranslations() {
     //
   };
 }
+

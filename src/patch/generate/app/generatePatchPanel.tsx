@@ -185,13 +185,7 @@ declare module 'csstype' {
 
 function StyledTreeItem(props: StyledTreeItemProps) {
   const classes = useTreeItemStyles();
-  const {
-    labelText,
-    labelInfo,
-    color,
-    bgColor,
-    ...other
-  } = props;
+  const { labelText, labelInfo, color, bgColor, ...other } = props;
 
   return (
     <TreeItem
@@ -240,7 +234,6 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
   const targetFolderRef = React.useRef<HTMLTextAreaElement>();
   const targetFileRef = React.useRef<HTMLTextAreaElement>();
   const rpoMasterRef = React.useRef<HTMLTextAreaElement>();
-  const btnFile = React.createRef<any>();
 
   if (listener === undefined) {
     listener = (event: MessageEvent) => {
@@ -252,17 +245,14 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
 
           setSubtitle(generatePatchData.serverName);
           setEnableActions({
-            generate: generatePatchData.generate,
+            generate: true,
           });
           if (generatePatchData.targetFolder) {
             setTargetFolder(generatePatchData.targetFolder);
             setTargetFile(generatePatchData.targetFile);
             setRpoMaster(generatePatchData.rpoMaster);
           }
-          if (generatePatchData.loading) {
-            console.log("generatePatchData.loading ", generatePatchData.rootFolder);
-            sendLoadingData(generatePatchData.rootFolder);
-          } else if (generatePatchData.rootFolder) {
+          if (generatePatchData.rootFolder) {
             setData(generatePatchData.rootFolder);
           }
 
@@ -277,26 +267,6 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
 
     window.addEventListener('message', listener);
   }
-
-  const sendLoadingData = (folder: IServerFS) => {
-    props.vscode.postMessage({
-      action: GeneratePatchPanelAction.LoadingData,
-      content: {
-        loadingFolder: folder
-      },
-    });
-  };
-
-  const sendUpdateData = () => {
-    props.vscode.postMessage({
-      action: GeneratePatchPanelAction.UpdateData,
-      content: {
-        targetFolder: targetFolderRef.current,
-        targetFile: targetFileRef.current,
-        rpoMaster: rpoMasterRef.current,
-      },
-    });
-  };
 
   const findNode = (id: string, children: RenderTree[]): RenderTree => {
     let result: RenderTree = null;
@@ -327,7 +297,6 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
     } else {
       setRpoMaster('');
     }
-    sendUpdateData();
   };
 
   const renderTree = (nodes: RenderTree) => {
@@ -348,44 +317,43 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
     );
   };
 
-  const handleCancel = () => {
+  const sendUpdateData = (action: GeneratePatchPanelAction) => {
     props.vscode.postMessage({
-      action: GeneratePatchPanelAction.Cancel,
+      action: action,
       content: {
-        targetFolder: targetFolderRef.current,
-        targetFile: targetFileRef.current,
-        rpoMaster: rpoMasterRef.current,
+        targetFolder: targetFolderRef.current.value,
+        targetFile: targetFileRef.current.value,
+        rpoMaster: rpoMasterRef.current.value,
       },
     });
+  };
+
+  const handleCancel = () => {
+    sendUpdateData(GeneratePatchPanelAction.Cancel);
   };
 
   const handleGenerate = () => {
-    props.vscode.postMessage({
-      action: GeneratePatchPanelAction.Generate,
-      content: {
-        targetFolder: targetFolderRef.current,
-        targetFile: targetFileRef.current,
-        rpoMaster: rpoMasterRef.current,
-      },
-    });
+    sendUpdateData(GeneratePatchPanelAction.Generate);
   };
 
   const handleSelectFolderButtonClick = (event: any) => {
-    props.vscode.postMessage({
-      action: GeneratePatchPanelAction.SelectFoler,
-      content: { taregtFolder: targetFolderRef.current.value },
-    });
+    event.preventDefault();
+    sendUpdateData(GeneratePatchPanelAction.SelectFoler);
   };
 
   const handleTargetFolderChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    event.preventDefault();
+
     setTargetFolder(event.target.value);
   };
 
   const handleTargetFileChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    event.preventDefault();
+
     setTargetFile(event.target.value);
   };
 
@@ -407,9 +375,10 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
 
         <Grid container spacing={2}>
           <Grid item xs={5} container>
-            <Grid xs={12} container item justify="flex-end">
+            <Grid xs={12} container item justify="flex-end" alignContent="flex-start">
               <FormControl fullWidth>
                 <TextField
+                  required={true}
                   disabled
                   margin="dense"
                   size="small"
@@ -417,14 +386,11 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
                   label="RPO Master Location"
                   value={rpoMaster}
                   inputRef={rpoMasterRef}
-                  onChange={(event) => {
-                    console.log('****');
-                    console.log(event);
-                  }}
                   helperText="Use the navigation tree on the side"
                 />
 
                 <TextField
+                  required={true}
                   inputRef={targetFolderRef}
                   margin="dense"
                   size="small"
@@ -464,7 +430,7 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={7} container>
+          <Grid item xs={7} container alignContent="flex-start">
             <Grid item xs={12}>
               <Typography>Select RPO Master folder</Typography>
             </Grid>

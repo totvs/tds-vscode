@@ -36,15 +36,9 @@ export declare interface IServerFS {
 }
 
 export interface IGeneratePatchData {
-  process: PatchProcess;
-  ignoreTres: boolean;
-  resources: InspectorObject[];
-  selectedResources: InspectorObject[];
+  serverName: string;
   targetFolder: string;
   targetFile: string;
   rpoMaster: string;
   rootFolder: IServerFS;
-  loading: boolean;
-  serverName: string;
-  generate: boolean;
 }

@@ -23,5 +23,4 @@ export enum GeneratePatchPanelAction {
   UpdateData,
   SelectFoler,
   Cancel,
-  LoadingData
 }
