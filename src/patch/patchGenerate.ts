@@ -9,6 +9,7 @@ import { ResponseError } from 'vscode-languageclient';
 import { _debugEvent } from '../debug';
 import { IRpoToken } from '../rpoToken';
 import { CompileKey } from '../compileKey/compileKey';
+import { sendPatchGenerateMessage } from './patchUtil';
 
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
@@ -146,7 +147,10 @@ export function patchGenerate(context: vscode.ExtensionContext) {
 							// save last patchGenerateDir
 							Utils.updatePatchGenerateDir(server.id, message.patchDest);
 							//vscode.window.showInformationMessage(localize("tds.webview.patch.generate.start","Start Generate Patch"));
-							sendPatchGenerateMessage(server, "", patchDestUri, 3, patchName, filesPath);
+							sendPatchGenerateMessage(server, "", patchDestUri, 3, patchName, filesPath).then(() =>
+							{
+								vscode.window.showInformationMessage("Patch file generated")
+							});
 						}
 
 						if (currentPanel) {
@@ -197,7 +201,10 @@ export function patchGenerateFromFolder(context: any) {
 					});
 					commandBuildFile(context, false, allFilesFullPath);
 					let destFolder = fileUri[0].toString();
-					sendPatchGenerateMessage(server, "", destFolder, 3, patchName, allFilesNames);
+					sendPatchGenerateMessage(server, "", destFolder, 3, patchName, allFilesNames).then(() =>
+					{
+						vscode.window.showInformationMessage("Patch file generated")
+					});
 					//});
 				});
 			}
@@ -234,37 +241,6 @@ export class ObjectsResult {
 // 	return Utils.addCssToHtml(htmlOnDiskPath, cssOniskPath);
 // }
 
-function sendPatchGenerateMessage(server, patchMaster, patchDest, patchType, patchName, filesPath) {
-	if (_debugEvent) {
-		vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
-		return;
-	}
-	languageClient.sendRequest('$totvsserver/patchGenerate', {
-		"patchGenerateInfo": {
-			connectionToken: server.token,
-			authorizationToken: Utils.getAuthorizationToken(server),
-			environment: server.environment,
-			patchMaster: patchMaster,
-			patchDest: patchDest,
-			isLocal: true,
-			patchType: patchType,
-			name: patchName,
-			patchFiles: filesPath
-		}
-	}).then((response: PatchResult) => {
-		if (response.returnCode === 40840) { // AuthorizationTokenExpiredError
-			Utils.removeExpiredAuthorization();
-		}
-		// const message: string = response.message;
-		// if (message == "Success") {
-		// 	vscode.window.showInformationMessage(localize("tds.webview.patch.generate.success","Patch Generated Success "));
-		// } else {
-		// 	vscode.window.showErrorMessage(message);
-		// }
-	}, (err: ResponseError<object>) => {
-		vscode.window.showErrorMessage(err.message);
-	});
-}
 
 function readFiles(dirname: string, allFilesNames: Array<String>, allFilesFullPath: Array<string>, onError: any) {
 	let filenames = fs.readdirSync(dirname);

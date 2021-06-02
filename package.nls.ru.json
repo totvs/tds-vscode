@@ -63,6 +63,7 @@
 	"tds.package.delete": "Удалить сервер",
 	"tds.package.patchGenerate.fromRPO": "Генерация пакета исправлений (из RPO)",
 	"tds.package.patchGenerate.fromFolder": "Генерация пакета исправлений (из папки)",
+	"tds.package.patchGenerate.byDifference": "Генерация пакета исправлений (по разнице)",
 	"tds.package.compile.key": "Компилировать ключ",
 	"tds.package.permissions.selectAction": "Выбрать действие",
 	"tds.package.logger.on": "Включить средство захвата журналов",

@@ -63,6 +63,7 @@
 	"tds.package.delete": "Excluir servidor",
 	"tds.package.patchGenerate.fromRPO": "Geração de patches (do RPO)",
 	"tds.package.patchGenerate.fromFolder": "Geração de patches (da pasta)",
+	"tds.package.patchGenerate.byDifference": "Geração de patches (por diferença)",
 	"tds.package.compile.key": "Chave de compilação",
 	"tds.package.permissions.selectAction": "Selecione a ação",
 	"tds.package.logger.on": "Na captura do registrador",
