@@ -2,6 +2,12 @@
 
 # Versão [1.2.next]
 
+## Geração de pacote de atualização (_patch_) por diferença
+
+### Novo Recurso
+
+- Liberado recurso para geração de pacotes (_patch_) por diferença. Este pode ser acessado via menu de contexto de um servidor na visão `Servidores` ou via paleta de comando `TOTVS: Generation patch (from difference).
+
 ## [TOKEN RPO]
 
 ### Melhoria
