@@ -168,6 +168,7 @@ class GeneratePatchLoader {
 
   private handleMessage(command: IGeneratePatchPanelAction) {
     const data: IGeneratePatchData = command.content;
+    this._generatePatchData = command.content;
 
     switch (command.action) {
       case GeneratePatchPanelAction.Cancel: {
@@ -213,7 +214,7 @@ class GeneratePatchLoader {
       directory: boolean
     ): IServerFS {
       return {
-        id: (directory ? 'folder_' : 'file_') + Date.now().toString(36),
+        id: (directory ? 'folder_' : 'file_') + Date.now().toString(36)+'_'+parent.children.length,
         name: resource,
         children: [],
         directory: directory,

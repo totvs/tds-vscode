@@ -124,7 +124,7 @@ const useTreeItemStyles = makeStyles((theme: Theme) =>
         backgroundColor: theme.palette.action.hover,
       },
       '&:focus > $content, &$selected > $content': {
-        backgroundColor: `var(--tree-view-bg-color, ${theme.palette.grey[400]})`,
+     //   backgroundColor: `var(--tree-view-bg-color, ${theme.palette.grey[400]})`,
         color: 'var(--tree-view-color)',
       },
       '&:focus > $content $label, &:hover > $content $label, &$selected > $content $label': {
@@ -430,7 +430,7 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
               </FormControl>
               <Grid xs={12} container item justify="flex-end">
                 <Grid item xs={4}>
-                  <Button onClick={handleCancel} color="secondary">
+                  <Button onClick={handleCancel} color="secondary" disabled={waitMessage}>
                     Cancel
                   </Button>
                 </Grid>
@@ -438,7 +438,7 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
                   <Button
                     onClick={handleGenerate}
                     color="primary"
-                    disabled={!enableActions.generate}
+                    disabled={waitMessage}
                   >
                     Generate
                   </Button>
