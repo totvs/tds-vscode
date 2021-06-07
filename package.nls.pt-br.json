@@ -121,5 +121,7 @@
 	"tds.package.apply.formatting": "Aplica a formatação aos arquivos fontes TOTVS e suas variações.",
 	"totvs-developer-studio.open-rpoinfo": "Log de Repositório",
 	"tds.package.templateApply": "Aplicação de Template",
-	"tds.package.templateApply.fromFile": "Aplicar Template do arquivo"
+	"tds.package.templateApply.fromFile": "Aplicar Template do arquivo",
+	"tds.package.rpoToken": "Informar o Token de Compilação",
+	"tds.package.clearRpoToken": "Remover o Token de Compilação"
 }
