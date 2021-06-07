@@ -66,6 +66,7 @@
 	"tds.package.delete": "Eliminar servidor",
 	"tds.package.patchGenerate.fromRPO": "Generación de parches (de RPO)",
 	"tds.package.patchGenerate.fromFolder": "Generación de parches (de carpeta)",
+	"tds.package.patchGenerate.byDifference": "Generación de parches (por diferencia)",
 	"tds.package.compile.key": "Clave de compilación",
 	"tds.package.permissions.selectAction": "Seleccione la acción",
 	"tds.package.logger.on": "En la captura del registrador",

@@ -18,7 +18,7 @@ const WS_STATE_KEY = "APPLY_PATCH_TABLE";
 
 let applyPathLoader: ApplyPatchLoader = undefined;
 
-export function openApplyPatchView(context: vscode.ExtensionContext, args: any) {
+export function openApplyPatchView(context: vscode.ExtensionContext, args: any = []) {
   const server = Utils.getCurrentServer();
 
   if (applyPathLoader === undefined || applyPathLoader === null) {
