@@ -9,6 +9,11 @@
 
 Auxilia no processo de aplicação de pacotes de atualização (_patchs_).
 
+## Visualização do conteúdo do pacote
+
+Acione duplo-click no pacote que esta na árvore de projetos ou o menu ``File | Open File ...`` e selecione o pacote a ser aberto (não precisa estar na árvore de navegação).
+
+
 ## Via assistente do servidor
 
 Acesse a visão de ``Servidores``, acione "Aplicar Pacote" no menu de contexto do servidor-alvo e no assistente apresentado, selecione o(s) arquivo(s) de pacotes de atualização que serão aplicados.

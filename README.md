@@ -1,10 +1,14 @@
 # TOTVS Developer Studio para VSCode
 
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 [![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode)
-
+![GitHub](https://img.shields.io/github/license/totvs/tds-vscode)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
+<!-- markdownlint-enabled -->
+<!-- prettier-ignore-end -->
 
 A extensão do **TOTVS Developer Studio for VS Code** disponibiliza uma suíte de desenvolvimento para o ecossistema **Protheus**.
 
@@ -17,7 +21,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 - Sintaxe destacada
 - Comunicação baseada nos protocolos LSP/DAP
 - [Console](docs/console.md) informativo e notificações
-- [Edição](docs/edition.md) de arquivos fontes (AdvPL, TLPP, 4GL e variantes)
+- [Edição](docs/edition.md) e [Formatação](docs/format_config.md) de arquivos fontes (AdvPL, TLPP, 4GL e variantes)
 - [Compilação](docs/compilation.md) de fontes, pastas e da área de trabalho
 - [Depuração](docs/debugger.md) e execução (Local e _WebApp_)
 - [Geração](docs/build-patch.md) e [aplicação](docs/apply-patch.md) de pacotes de atualizações (_patchs_)
@@ -25,6 +29,8 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 - [Inspeção](docs/rpo-inspector.md) do _RPO_
 - [Geração de cliente de serviço web](docs/ws-client-generation.md) (_Web Service_)
 - [Monitoramento](docs/monitor.md) de servidores
+- [RPO Seguro](docs/rpo.md#Token_de_RPO)
+- [TDS-Cli](https://github.com/totvs/tds-ls/blob/master/TDS-CLi.md) compilação por linha de comando. Da mesma forma que o Eclipse, essa extensão do VSCode possui uma ferramenta de compilação em linha de comando.
 
 ## Guia rápido
 
@@ -66,7 +72,7 @@ Para garantir a compilação é necessário compatibilizar o _encode_ da seguint
 - No estado original o fonte será mostrado desta maneira:<br/>
   ![Encoding 1](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding1.png)
 - **Antes de editar/salvar qualquer fonte no VS** entre nas configurações do VS `Ctrl + ,`.
-- No campo de busca digite `_encode_` e selecione `Windows1252` ou `Windows1253` se utilizar alfabero cirílico.<br/>
+- No campo de busca digite `_encode_` e selecione `Windows1252` ou `Windows1251` se utilizar alfabero cirílico.<br/>
 - Abra o fonte com o novo _encode_ (reforçando que NÃO DEVE tê-lo salvo antes em UTF8)<br/>
   ![Encoding 3](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding3.png)
 - Compile e/ou recompile o fonte e execute-o.<br/>
@@ -102,18 +108,21 @@ Caso tenha problemas com a ferramenta e deseja suporte da equipe de desenvolvime
 
 Alguns problemas conhecidos e como resolvê-los.
 
-> [TROUBLESHOOTING](https://github.com/totvs/tds-vscode/blob/master/TROUBLESHOOTING.md)
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+| Ocorrência                                        | Solução                   |
+| ----------------------- | ----------------------- |
+| *Aplicação de pacotes de atualização(_patchs_)* | |
+Servidores `Lobo Guara`, versão iqual ou anterior a `19.3.0.4`, podem apresentar mensagem de erro no processo de validação e mesmo assim aplicá-lo. | Atualizar o servidor para versão mais recente. |
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
 
-Se não conseguir resolvê-los com isso, abra um Issue com o maior número de informações possíveis e envie os logs gerados pelas instruções na página de "Troubleshooting".
-
-> Acesse [Nova Issue](https://github.com/totvs/tds-vscode/issues/new/choose) e selecione "Bug report".
+Se não conseguir resolvê-los, abra um [chamado](https://github.com/totvs/tds-vscode/issues/new/choose) com o maior número de informações possíveis e incluindo os _logs_ gerados conforme instruído em [TROUBLESHOOTING](https://github.com/totvs/tds-vscode/blob/master/TROUBLESHOOTING.md).
 
 ## Melhorias
 
-Se você sentiu a falta de alguma funcionalidade  deixe sua idéia registrada.
-
-> Acesse [Nova Issue](https://github.com/totvs/tds-vscode/issues/new/choose) e selecione "Feature request".
-
+Se você sentiu a falta de alguma funcionalidade deixe sua idéia (registrada)[https://github.com/totvs/tds-vscode/issues/new?assignees=&labels=&template=feature_request.md&title=].
+S
 Ou se preferir colabore conosco e faça você mesmo. Veja como colaborar a seguir.
 
 ## Desenvolvimento Colaborativo
@@ -121,6 +130,14 @@ Ou se preferir colabore conosco e faça você mesmo. Veja como colaborar a segui
 Para contribuir com o desenvolvimento da extensão, acesse [Git Hub TDS-VSCODE](https://github.com/totvs/tds-vscode), faça um _fork_ do projeto, crie um chamado "_Pull Request_" que iremos analisar!
 
 > [TOTVS - TDS-VSCode - Desenvolvimento colaborativo](https://www.youtube.com/watch?v=IGWh5ejxhHU)<br/>
+
+## Mantenedor
+
+<table>
+  <tr>
+    <td align="center"><a href="https://twitter.com/TOTVSDevelopers"><img src="https://avatars2.githubusercontent.com/u/20243897?v=4?s=100" width="100px;" alt=""/><br /><sub><b>TOTVS S.A.</b></sub></a><br /><a href="#maintenance-totvs" title="Maintenance">🚧</a> <a href="#plugin-totvs" title="Plugin/utility libraries">🔌</a> <a href="#projectManagement-totvs" title="Project Management">📆</a></td>
+    </tr>
+</table>
 
 ## Colaboradores
 
@@ -169,8 +186,7 @@ Para contribuir com o desenvolvimento da extensão, acesse [Git Hub TDS-VSCODE](
 
 As extensões abaixo não devem ser utilizadas junto com o _TDS for VS-Code_ porque podem causar mal funcionamento.
 
-- (4gl-outine-dxc)[https://www.vsixhub.com/vsix/14295/]
+- [4gl Outline Dxc](https://www.vsixhub.com/vsix/14295/)
+- [advpl-vscode](https://github.com/totvs/advpl-vscode)
 
-- (advpl-vscode)[https://github.com/totvs/advpl-vscode]
-
-> Caso você perceba que alguma extensão de terceiros esta interferindo no _TDS for VS-Code_ favor abrir um (chamado)[(https://github.com/totvs/tds-vscode/issues].
+> Caso você perceba que alguma extensão de terceiros esta interferindo no _TDS for VS-Code_ favor abrir um [chamado](https://github.com/totvs/tds-vscode/issues).

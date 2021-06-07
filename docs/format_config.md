@@ -83,8 +83,7 @@ Veja [Prettier 4GL Plugin](https://github.com/totvs/prettier-plugin-4gl#uso-e-op
     "keywordsCase": "upper",
     "stringStyle": "ignore",
     "formatNumber": false,
-    "operatorSpacing": false,
-    "alignFields": true,
+    "operatorSpacing": false
   }
   ...,
 }

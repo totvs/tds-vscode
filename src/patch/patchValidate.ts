@@ -9,6 +9,7 @@ import * as nls from 'vscode-nls';
 import { ResponseError } from 'vscode-languageclient';
 import { CompileKey } from '../compileKey/compileKey';
 import { _debugEvent } from '../debug';
+import { IRpoToken } from '../rpoToken';
 
 let localize = nls.loadMessageBundle();
 
@@ -31,8 +32,6 @@ const localizeHTML = {
 
 export function patchValidates(context: vscode.ExtensionContext, args: any) {
 	const server = Utils.getCurrentServer();
-	let key: CompileKey = Utils.getPermissionsInfos();
-	const authorizationToken = key ? key.authorizationToken : "";
 
 	if (server) {
 		let extensionPath = "";
@@ -70,7 +69,7 @@ export function patchValidates(context: vscode.ExtensionContext, args: any) {
 			currentPanel.webview.onDidReceiveMessage(message => {
 				switch (message.command) {
 					case 'patchValidate':
-						sendPatchValidate(message.patchFile, server, authorizationToken, currentPanel);
+						sendPatchValidate(message.patchFile, server, currentPanel);
 						break;
 					case 'exportPatchValidate':
 						exportPatchValidate();
@@ -92,7 +91,7 @@ export function patchValidates(context: vscode.ExtensionContext, args: any) {
 		if (args) {
 			if (args.fsPath) {
 				sendPatchPath(args.fsPath, currentPanel);
-				sendPatchValidate(args.fsPath, server, authorizationToken, currentPanel);
+				sendPatchValidate(args.fsPath, server, currentPanel);
 			}
 		}
 	} else {
@@ -122,7 +121,7 @@ function exportPatchValidate() {
 	}
 }
 
-function sendPatchValidate(patchFile, server, authorizationToken, currentPanel) {
+function sendPatchValidate(patchFile, server, currentPanel) {
 	if (_debugEvent) {
 		vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
 		return;
@@ -131,7 +130,7 @@ function sendPatchValidate(patchFile, server, authorizationToken, currentPanel) 
 	languageClient.sendRequest('$totvsserver/patchValidate', {
 		"patchValidateInfo": {
 			connectionToken: server.token,
-			authorizationToken: authorizationToken,
+			authorizationToken: Utils.getAuthorizationToken(server),
 			environment: server.environment,
 			patchUri: patchURI,
 			isLocal: true

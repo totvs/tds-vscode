@@ -8,6 +8,7 @@ import { IApplyPatchData, IApplyScope, IPatchFileInfo, PATCH_ERROR_CODE } from "
 import JSZip = require("jszip");
 import { sendApplyPatchRequest, sendValidPatchRequest } from "../../protocolMessages";
 import { IPatchValidateResult } from "../../rpoInfo/rpoPath";
+import { PatchEditorProvider } from "../inspect/patchEditor";
 
 const fs = require("fs");
 const os = require("os");
@@ -17,7 +18,7 @@ const WS_STATE_KEY = "APPLY_PATCH_TABLE";
 
 let applyPathLoader: ApplyPatchLoader = undefined;
 
-export function openApplyPatchView(context: vscode.ExtensionContext, args: any) {
+export function openApplyPatchView(context: vscode.ExtensionContext, args: any = []) {
   const server = Utils.getCurrentServer();
 
   if (applyPathLoader === undefined || applyPathLoader === null) {
@@ -248,10 +249,11 @@ export class ApplyPatchLoader {
   }
 
   private doShowContent(patchFile: IPatchFileInfo) {
-    const args = {
-      fsPath: patchFile.fullpath
-    };
-    vscode.commands.executeCommand('totvs-developer-studio.patchInfos.fromFile', args);
+    vscode.commands.executeCommand(
+      "vscode.openWith",
+      patchFile.fullpath,
+      PatchEditorProvider.viewType
+    );
   }
 
   private doApplyOldSource(patchFiles: IPatchFileInfo[], value: IApplyScope) {
@@ -299,12 +301,12 @@ export class ApplyPatchLoader {
           element.data = { error_number: -1, data: "" }
           self.updatePage();
 
-          await sendApplyPatchRequest(this.currentServer, element.fullpath, Utils.getPermissionsInfos(), element.applyScope)
+          await sendApplyPatchRequest(this.currentServer, element.fullpath, element.applyScope)
             .then((result: IPatchValidateResult) => {
               element.status = "applyed";
             }, (reason: IPatchValidateResult) => {
               element.message = reason.message || "";
-              element.data = { error_number: reason.errorCode, data: reason.patchValidates};
+              element.data = { error_number: reason.errorCode, data: reason.patchValidates };
               if (reason.errorCode == PATCH_ERROR_CODE.OLD_RESOURCES) {
                 element.status = element.applyScope == "none" ? "error" : "warning";
               } else {
@@ -349,13 +351,13 @@ export class ApplyPatchLoader {
           element.data = { error_number: -1, data: "" }
           self.updatePage();
 
-          await sendValidPatchRequest(this.currentServer, element.fullpath, Utils.getPermissionsInfos(), element.applyScope)
+          await sendValidPatchRequest(this.currentServer, element.fullpath, element.applyScope)
             .then((result: IPatchValidateResult) => {
-              element.data = { error_number: result.errorCode, data: result.patchValidates};
+              element.data = { error_number: result.errorCode, data: result.patchValidates };
               element.status = "valid";
             }, (reason: IPatchValidateResult) => {
               element.message = reason.message || "";
-              element.data = { error_number: reason.errorCode, data: reason.patchValidates};
+              element.data = { error_number: reason.errorCode, data: reason.patchValidates };
               if (reason.errorCode == PATCH_ERROR_CODE.OLD_RESOURCES) {
                 element.status = element.applyScope == "none" ? "error" : "warning";
               } else {

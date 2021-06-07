@@ -1,8 +1,72 @@
 # Changelog
 
+# Versão [1.2.3]
+
+## Geração de pacote de atualização (_patch_) por diferença
+
+### Novo Recurso
+
+- Liberado recurso para geração de pacotes (_patch_) por diferença. Este pode ser acessado via menu de contexto de um servidor na visão `Servidores` ou via paleta de comando `TOTVS: Generation patch (from difference).
+
+## [TOKEN RPO]
+
+### Melhoria
+
+- TokenRPO: implementado comando para remoção de token aplicado, via opção na barra de status ou via _api_ `clearRPOToken`.
+
+## Depuração/execução: não salva o atributo 'lastProgramExecuted'
+
+### Problema:
+
+- Ao depurar/executar, o último programa executado não é apresentado.
+
+### Solução
+
+- Ajustado salva do atributo 'lastProgramExecuted' na configuração do executor (.vscode\launch.json).
+
+## Problema na importação de arquivo do TDS Replay (https://github.com/totvs/tds-vscode/issues/672)
+
+### Problema:
+
+- Arquivo do TDS Replay enviado pelo usuario parava a importação por volta de 100MB
+
+### Solução:
+
+- Corrigido um processo interno que poderia causar uma falha de importação, interrompendo o processo.
+
+## [BETA] Adição do suporte a nova chave (Token compilação) para o [RPO Seguro](docs/rpo.md).
+
+## Implementar a funcionalidade de aplicação de Templates. [Issue 622](https://github.com/totvs/tds-vscode/issues/622)
+
+### Melhoria:
+
+- Troca das imagens na documentação do monitor por outras com melhor resolução.
+- Adicionada a funcionalidade para aplicação de Templates (.tpl).
+- [BETA] Esta funcionalidade encontra-se em testes Beta. Caso encontre algum problema na aplicação de um Template abra uma Issue com o Template em questão informando como aplicar e como validar o Template para que possamos rever o processo.
+
+## Revisão de processos de edição 4GL
+
+### Problema:
+
+- A formatação de palavras-chaves ocorre ao acionar `ENTER`.
+
+### Solução:
+
+- Processo de formatação revisado, passando a tratar palavras-chaves durante a digitação. Detalhes em (Formatação de código fonte)[docs/format_config.md]
+
+## Debug do mesmo objetos de instancias diferentes avaliando erroneamente valor de atributos (https://github.com/totvs/tds-vscode/issues/655)
+
+### Problema:
+
+- Ao criar duas instancias de um mesmo objeto e pedir para avaliar o conteudo deles, uma das instancias trazia o valor da outra
+
+### Solução:
+
+- Corrigido processo de cache de objetos para considerar o nome completo do mesmo.
+
 # Versão [1.2.2]
 
-## [4GL][TDSVsCode 1.2.1] Variáveis Array de Record não tem valores visualizados no DEBUG [Issue 590](https://github.com/totvs/tds-vscode/issues/590)
+## [4GL][tdsvscode 1.2.1] Variáveis Array de Record não tem valores visualizados no DEBUG [Issue 590](https://github.com/totvs/tds-vscode/issues/590)
 
 ### Problema:
 
@@ -10,13 +74,14 @@
 
 ### Solução:
 
-- Na análise da ocorrrência, verificamos que o tipo de servidor, em ``servers.json``, não estava correto.
-- Foi adicionado atributo tipo de servidor (``type``) no registro de novos servidores.
+- Na análise da ocorrrência, verificamos que o tipo de servidor, em `servers.json`, não estava correto.
+- Foi adicionado atributo tipo de servidor (`type`) no registro de novos servidores.
 
 Para servidores registrados antes desta versão, favor:
-- abrir o arquivo ``servers.json`` em modo texto;
-- ajustar o atributo ``savedTokens`` para uma lista vazia;
-- localize a definição do servidor LOGIX e ajuste o atributo ``type`` para ``totvs_server_logix``.
+
+- abrir o arquivo `servers.json` em modo texto;
+- ajustar o atributo `savedTokens` para uma lista vazia;
+- localize a definição do servidor LOGIX e ajuste o atributo `type` para `totvs_server_logix`.
 
 Detalhes em
 https://github.com/totvs/tds-vscode/issues/590#issuecomment-742527102.
@@ -197,7 +262,7 @@ https://github.com/totvs/tds-vscode/issues/590#issuecomment-742527102.
 
 ## Revisão de processos de edição 4GL
 
-- Processo de formatação revisado. Detalhes em (Formatação de código fonte)[docs/formatting]
+- Processo de formatação revisado. Detalhes em (Formatação de código fonte)[docs/format_config.md]
 
 ---
 

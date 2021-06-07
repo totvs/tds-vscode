@@ -1,8 +1,8 @@
-import * as vscode from "vscode";
-import * as fs from "fs";
-import * as path from "path";
-import * as nls from "vscode-nls";
-import Utils from "./utils";
+import * as vscode from 'vscode';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as nls from 'vscode-nls';
+import Utils from './utils';
 
 let localize = nls.loadMessageBundle();
 
@@ -32,12 +32,12 @@ class ServerItemProvider
 
   private _connectedServerItem: ServerItem | undefined = undefined;
 
-  private configFilePath: string = "";
+  private configFilePath: string = '';
 
   constructor() {
     // check if there is an open folder
     if (vscode.workspace.workspaceFolders === undefined) {
-      vscode.window.showErrorMessage("No folder opened.");
+      vscode.window.showErrorMessage('No folder opened.');
       return;
     }
 
@@ -77,7 +77,6 @@ class ServerItemProvider
   }
 
   getTreeItem(element: ServerItem | EnvSection): vscode.TreeItem {
-
     return element;
   }
 
@@ -99,8 +98,8 @@ class ServerItemProvider
                 element,
                 vscode.TreeItemCollapsibleState.None,
                 {
-                  command: "totvs-developer-studio.environmentSelection",
-                  title: "",
+                  command: 'totvs-developer-studio.environmentSelection',
+                  title: '',
                   arguments: [env],
                 }
               )
@@ -110,9 +109,9 @@ class ServerItemProvider
           //Workaround: Bug que nao muda visualmente o collapsibleState se o label permanecer intalterado
           this.localServerItems[element.id].label = this.localServerItems[
             element.id
-          ].label.endsWith(" ")
+          ].label.endsWith(' ')
             ? this.localServerItems[element.id].label.trim()
-            : this.localServerItems[element.id].label + " ";
+            : this.localServerItems[element.id].label + ' ';
           element.environments = listOfEnvironments;
 
           //					this.refresh();
@@ -164,8 +163,8 @@ class ServerItemProvider
         Utils.createServerConfig();
       }
 
-      fs.watch(serversJson, { encoding: "buffer" }, (eventType, filename) => {
-        if (filename && eventType === "change") {
+      fs.watch(serversJson, { encoding: 'buffer' }, (eventType, filename) => {
+        if (filename && eventType === 'change') {
           this.localServerItems = this.setConfigWithServerConfig();
           this.refresh();
         }
@@ -211,8 +210,8 @@ class ServerItemProvider
         environments,
         includes,
         {
-          command: "",
-          title: "",
+          command: '',
+          title: '',
           arguments: [serverItem],
         }
       );
@@ -221,7 +220,7 @@ class ServerItemProvider
 
     serverConfig.configurations.forEach((element) => {
       let environmentsServer = new Array<EnvSection>();
-      let token: string = element.token ? element.token : "";
+      let token: string = element.token ? element.token : '';
 
       if (element.environments) {
         element.environments.forEach((environment) => {
@@ -230,8 +229,8 @@ class ServerItemProvider
             element,
             vscode.TreeItemCollapsibleState.None,
             {
-              command: "totvs-developer-studio.environmentSelection",
-              title: "",
+              command: 'totvs-developer-studio.environmentSelection',
+              title: '',
               arguments: [environment],
             },
             environment
@@ -239,7 +238,7 @@ class ServerItemProvider
 
           if (serverConfig.savedTokens) {
             serverConfig.savedTokens.forEach((savedToken) => {
-              if (savedToken[0] === element.id + ":" + element.environment) {
+              if (savedToken[0] === element.id + ':' + element.environment) {
                 token = savedToken[1].token;
               }
             });
@@ -272,12 +271,12 @@ class ServerItemProvider
   }
 }
 
-export type ServerType = "totvs_server_protheus" | "totvs_server_logix";
+export type ServerType = 'totvs_server_protheus' | 'totvs_server_logix';
 
 export class ServerItem extends vscode.TreeItem {
-  public environment: string = "";
-  public username: string = "";
-  public smartclientBin: string = "";
+  public environment: string = '';
+  public username: string = '';
+  public smartclientBin: string = '';
 
   public get isConnected(): boolean {
     return serverProvider.isConnected(this);
@@ -309,23 +308,31 @@ export class ServerItem extends vscode.TreeItem {
   iconPath = {
     light: path.join(
       __filename,
-      "..",
-      "..",
-      "resources",
-      "light",
-      (this.isConnected ? "server.connected.svg" : (this.type == "totvs_server_protheus"?"protheus_server.svg":"logix_server.svg"))
+      '..',
+      '..',
+      'resources',
+      'light',
+      this.isConnected
+        ? 'server.connected.svg'
+        : this.type == 'totvs_server_protheus'
+        ? 'protheus_server.svg'
+        : 'logix_server.svg'
     ),
     dark: path.join(
       __filename,
-      "..",
-      "..",
-      "resources",
-      "dark",
-      (this.isConnected ? "server.connected.svg" : (this.type == "totvs_server_protheus"?"protheus_server.svg":"logix_server.svg"))
+      '..',
+      '..',
+      'resources',
+      'dark',
+      this.isConnected
+        ? 'server.connected.svg'
+        : this.type == 'totvs_server_protheus'
+        ? 'protheus_server.svg'
+        : 'logix_server.svg'
     ),
   };
 
-  contextValue = this.isConnected ? "serverItem" : "serverItemNotConnected";
+  contextValue = this.isConnected ? 'serverItem' : 'serverItemNotConnected';
 }
 
 export class EnvSection extends vscode.TreeItem {
@@ -350,23 +357,23 @@ export class EnvSection extends vscode.TreeItem {
   iconPath = {
     light: path.join(
       __filename,
-      "..",
-      "..",
-      "resources",
-      "light",
-      this.isCurrent ? "environment.connected.svg" : "environment.svg"
+      '..',
+      '..',
+      'resources',
+      'light',
+      this.isCurrent ? 'environment.connected.svg' : 'environment.svg'
     ),
     dark: path.join(
       __filename,
-      "..",
-      "..",
-      "resources",
-      "dark",
-      this.isCurrent ? "environment.connected.svg" : "environment.svg"
+      '..',
+      '..',
+      'resources',
+      'dark',
+      this.isCurrent ? 'environment.connected.svg' : 'environment.svg'
     ),
   };
 
-  contextValue = this.isCurrent ? "envSection" : "envSectionNotCurrent";
+  contextValue = this.isCurrent ? 'envSection' : 'envSectionNotCurrent';
 }
 
 const serverProvider = new ServerItemProvider();

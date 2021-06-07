@@ -1,0 +1,43 @@
+
+
+
+  //   <Grid item xs={6}>
+  //     <Button
+  //       disabled={!enableActions.generate}
+  //       onClick={handleGenerate}
+  //       color="primary"
+  //     >
+  //       Generate
+  //     </Button>
+  //   </Grid>
+  // </Grid>
+          <Grid item xs={4}>
+            <Grid
+              item
+              xs={12}
+              container
+              direction="row"
+              alignItems="flex-start"
+            >
+
+                <TreeView
+                  defaultExpanded={['node_root']}
+                  defaultCollapseIcon={applyPathIcons.arrowDropDown}
+                  defaultExpandIcon={applyPathIcons.arrowRight}
+                  defaultEndIcon={<div style={{ width: 24 }} />}
+                >
+                  {data && renderTree(data)}
+                </TreeView>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid xs={8} item>
+            <Grid container direction="row" alignItems="flex-start">
+
+            </Grid>
+          </Grid>
+        </Grid>
+      </Paper>
+    </GeneratePatchTheme>
+  );
+}

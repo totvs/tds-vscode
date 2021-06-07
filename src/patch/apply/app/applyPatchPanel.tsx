@@ -1,5 +1,5 @@
 import * as React from "react";
-import MaterialTable, { Column, MTableToolbar } from "material-table";
+import MaterialTable, { MTableToolbar } from "material-table";
 import {
   createStyles,
   lighten,
@@ -7,7 +7,7 @@ import {
   Theme,
 } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
-import { ApplyPatchPanelAction, IApplyPatchPanelAction } from "../actions";
+import { ApplyPatchPanelAction } from "../actions";
 import FilterList from "@material-ui/icons/FilterList";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import { cellDefaultStyle } from "./applyPatchInterface";
@@ -25,17 +25,12 @@ import {
 import { i18n } from "../helper";
 import { applyPatchIcons } from "../helper/applyPatchIcons";
 import {
-  Button,
-  Checkbox,
   FormControl,
   IconButton,
   Input,
   InputAdornment,
-  InputLabel,
   Link,
   Radio,
-  Snackbar,
-  TextField,
   Typography,
 } from "@material-ui/core";
 import { ApplyDetailPanel } from "./applyDetailPanel";
@@ -283,7 +278,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     memento.set(propOrderDirection(direction));
   };
 
-  const handleSelectFileButtonClick = (e: any) => {
+  const handleSelectFileButtonClick = (event: any) => {
     const target: any = event.target;
     const files: any[] = [];
 
@@ -335,7 +330,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     tooltip: i18n.localize("VALIDATE_PATCH", "Validate patch"),
     isFreeAction: true,
     disabled: !enableActions.validate,
-    onClick: (event, rowData) => {
+    onClick: () => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.ValidateFile,
         content: { processAll: true, file: "" }
@@ -348,7 +343,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     tooltip: i18n.localize("APPLY_PATCH", "Apply patch"),
     isFreeAction: true,
     disabled: !enableActions.apply,
-    onClick: (event, rowData) => {
+    onClick: () => {
       props.vscode.postMessage({
         action: ApplyPatchPanelAction.Apply,
         content: { processAll: true, file: "" }
@@ -356,7 +351,7 @@ export default function ApplyPatchPanel(props: IApplyPatchPanel) {
     },
   });
 
-  actions.push((rowData) => ({
+  actions.push(() => ({
     icon: applyPatchIcons.table.Check,
     tooltip: i18n.localize("VALIDATE_PATCH", "Validate patch"),
     disabled: !enableActions.validate,
