@@ -6,6 +6,7 @@ src/**/*.ts
 src/**/*.tsx
 **/*.map
 **/*.d.*
+docs/**
 .gitignore
 tsconfig.json
 vsc-extension-quickstart*.md
