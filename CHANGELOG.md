@@ -1,5 +1,17 @@
 # Changelog
 
+# Versão [1.2.4]
+
+## Problema na aplicação de patch em Windows Server (https://github.com/totvs/tds-vscode/issues/695)
+
+### Problema:
+
+- Ocorria erro de arquivo não encontrado na aplicação/validação de patches.
+
+### Solução:
+
+- Corrigido o formato de envio do caminho do patch para URI.
+
 # Versão [1.2.3]
 
 ## Geração de pacote de atualização (_patch_) por diferença
