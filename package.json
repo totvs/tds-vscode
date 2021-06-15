@@ -22,7 +22,7 @@
   "engines": {
     "vscode": "^1.47.0"
   },
-  "icon": "imagens/totvs-developer-studio.png",
+  "icon": "totvs-developer-studio.png",
   "categories": [
     "Programming Languages",
     "Snippets",
