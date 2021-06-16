@@ -22,7 +22,7 @@
   "engines": {
     "vscode": "^1.47.0"
   },
-  "icon": "totvs-developer-studio.png",
+  "icon": "icons/totvs-developer-studio.png",
   "categories": [
     "Programming Languages",
     "Snippets",
@@ -1269,7 +1269,7 @@
         {
           "id": "totvs-plataform",
           "title": "TOTVS",
-          "icon": "imagens/totvs24x24.png"
+          "icon": "icons/totvs24x24.png"
         }
       ]
     },
