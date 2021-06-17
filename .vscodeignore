@@ -3,7 +3,8 @@
 out/test/**
 test/**
 src/**/*.ts
-src/**/*.tsx**/*.map
+src/**/*.tsx
+**/*.map
 **/*.d.*
 docs/**
 imagens/**
