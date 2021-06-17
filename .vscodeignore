@@ -2,8 +2,8 @@
 .vscode-test/**
 out/test/**
 test/**
-src/**
-**/*.map
+src/**/*.ts
+src/**/*.tsx**/*.map
 **/*.d.*
 docs/**
 imagens/**
