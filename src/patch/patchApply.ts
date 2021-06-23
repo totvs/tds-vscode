@@ -24,7 +24,11 @@ const localizeHTML = {
   'tds.webview.col02': localize('tds.webview.col02', 'Patch Full Path'),
 };
 
-export function patchApply(context: any, isWorkspace: boolean): void {
+export function patchApply(
+  context: any,
+  isWorkspace: boolean,
+  args?: any[]
+): void {
   if (currentPanel) {
     currentPanel.reveal();
   } else {
@@ -83,12 +87,6 @@ export function patchApply(context: any, isWorkspace: boolean): void {
 
                   message.patchFile.forEach(async (element, index) => {
                     const patchUri = vscode.Uri.file(element).toString();
-                    vscode.window.showErrorMessage(
-                      localize(
-                        'tds.webview.patch.apply.fail',
-                        'Apply Patch Fail. Please input patch file.'
-                      )
-                    );
                     languageClient.info(
                       `Applying ${patchUri} (${index}/${message.patchFile.length})`
                     );
@@ -106,11 +104,20 @@ export function patchApply(context: any, isWorkspace: boolean): void {
                         },
                       })
                       .then(
-                        (response: PatchResult) => {
+                        (response: any) => {
                           if (response.returnCode === 40840) {
                             // AuthorizationTokenExpiredError
                             Utils.removeExpiredAuthorization();
                           }
+                          if (response.error == 1) {
+                            vscode.window.showErrorMessage(
+                              localize(
+                                'tds.webview.patch.oldFiles',
+                                'Patch contains files older than RPO. Patch not applied.'
+                              )
+                            );
+                          }
+
                           if (message.applyOld) {
                             vscode.window.showInformationMessage(
                               'Old files applied.'
@@ -122,13 +129,10 @@ export function patchApply(context: any, isWorkspace: boolean): void {
                         }
                       );
                   });
-                }
-
-                if (currentPanel) {
-                  if (message.close) {
-                    currentPanel.dispose();
-                  } else {
-                    currentPanel.reveal();
+                  if (currentPanel) {
+                    if (message.close) {
+                      currentPanel.dispose();
+                    }
                   }
                 }
                 return;
@@ -156,7 +160,6 @@ export function patchApply(context: any, isWorkspace: boolean): void {
                   })
                   .catch((reason: any) => {
                     vscode.window.showErrorMessage(reason);
-                    console.debug(reason);
                   });
                 return;
 
@@ -178,7 +181,6 @@ export function patchApply(context: any, isWorkspace: boolean): void {
                 return;
 
               case 'patchInfo':
-                vscode.window.showInformationMessage('PatchInfo');
                 const args = {
                   fsPath: message.file,
                 };
@@ -194,9 +196,9 @@ export function patchApply(context: any, isWorkspace: boolean): void {
         );
       } else {
         let filename: string = '';
-        if (context.fsPath && context.fsPath !== undefined) {
+        if (args && args['path'] !== undefined) {
           //A ação veio pelo menu de contexto por exemplo, e/ou com o fsPath preenchido corretamente
-          filename = context.fsPath;
+          filename = args['path'];
         }
         if (filename !== '') {
           const patchFile = filename;
@@ -213,7 +215,6 @@ export function patchApply(context: any, isWorkspace: boolean): void {
             .then((clicked) => {
               if (clicked === localize('tds.vscode.yes', 'Yes')) {
                 const patchUri = vscode.Uri.file(patchFile).toString();
-                const patchUris = [patchUri];
                 const permissionsInfos = Utils.getPermissionsInfos();
                 languageClient
                   .sendRequest('$totvsserver/patchApply', {
@@ -221,17 +222,25 @@ export function patchApply(context: any, isWorkspace: boolean): void {
                       connectionToken: server.token,
                       authenticateToken: permissionsInfos.authorizationToken,
                       environment: server.environment,
-                      patchUris: patchUris,
+                      patchUri: patchUri,
                       isLocal: true,
                       validatePatch: false,
                       applyOldProgram: false,
                     },
                   })
                   .then(
-                    (response: PatchResult) => {
-                      if (response.returnCode === 40840) {
+                    (response: any) => {
+                      if ((response as PatchResult).returnCode === 40840) {
                         // AuthorizationTokenExpiredError
                         Utils.removeExpiredAuthorization();
+                      }
+                      if (response.error == 1) {
+                        vscode.window.showErrorMessage(
+                          localize(
+                            'tds.webview.patch.oldFiles',
+                            'Patch contains files older than RPO. Patch not applied.'
+                          )
+                        );
                       }
                       // const message: string  = response.message;
                       // if(message == "Success"){

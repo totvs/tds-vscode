@@ -453,7 +453,7 @@ export function activate(context: ExtensionContext) {
           'Aguarde. Iniciando aplicação de pacotes...',
           5000
         );
-        patchApply(context, true);
+        patchApply(context, true, args);
       }
     )
   );
@@ -473,6 +473,16 @@ export function activate(context: ExtensionContext) {
     )
   );
 
+  //Verifica o conteudo de um patch pelo menu de contexto em arquivos de patch
+  context.subscriptions.push(
+    commands.registerCommand(
+      'totvs-developer-studio.patchInfos.fromFile',
+      (args) => {
+        const uri: vscode.Uri = vscode.Uri.file(args['fsPath']);
+        vscode.commands.executeCommand('vscode.openWith', uri, 'tds.patchView');
+      }
+    )
+  );
   //Adiciona página de Includes
   context.subscriptions.push(
     commands.registerCommand('totvs-developer-studio.include', () =>
