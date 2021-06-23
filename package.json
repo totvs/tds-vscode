@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "publisher": "TOTVS",
   "author": {
     "name": "TOTVS",
@@ -22,7 +22,7 @@
   "engines": {
     "vscode": "^1.47.0"
   },
-  "icon": "imagens/totvs-developer-studio.png",
+  "icon": "icons/totvs-developer-studio.png",
   "categories": [
     "Programming Languages",
     "Snippets",
@@ -72,7 +72,7 @@
     "@totvs/prettier-plugin-4gl": "^0.1.2",
     "@totvs/prettier-plugin-advpl": "^0.1.2",
     "@totvs/tds-da": "^1.1.24",
-    "@totvs/tds-ls": "^1.1.43",
+    "@totvs/tds-ls": "^1.1.46",
     "@types/node": "^14.14.12",
     "@types/react": "^16.9.50",
     "@types/vscode": "^1.52.0",
@@ -1269,7 +1269,7 @@
         {
           "id": "totvs-plataform",
           "title": "TOTVS",
-          "icon": "imagens/totvs24x24.png"
+          "icon": "icons/totvs24x24.png"
         }
       ]
     },

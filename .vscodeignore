@@ -7,9 +7,16 @@ src/**/*.tsx
 **/*.map
 **/*.d.*
 docs/**
+imagens/**
+.github
 .gitignore
+gulpfile.js
 tsconfig.json
+.all-contributorsrc
+.flowconfig
 vsc-extension-quickstart*.md
 *.code-workspace
 .transifexrc
+.tx
 for_flow
+*.log
