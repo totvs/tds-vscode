@@ -1,10 +1,16 @@
 # Instalando o tds-vscode - TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)
 
+# Requisitos de sistema
+
+O tds-vscode depende do bom funcionamento do próprio VS Code. A lista de requisitos de sistema mais atualizada para o VS Code encontra-se em [Requirements for Visual Studio Code](https://code.visualstudio.com/docs/supporting/requirements).
+
+> Temos diversos relatos indicando problemas no uso de Windows Server e portanto não recomendamos o uso do tds-vscode nestes Sistemas Operacionais.
+
 ## Procurando pela extensão
 
 Você pode procurar e instalar extensões de dentro do VS Code. Abra a visão de Extensões clicando no ícone de Extensões na barra de atividades na lateral do VS Code ou acione o comando "Visão: Extensões" (Ctrl+Shift+X).
 
-![Ícone da Visão Extensões](docs/images/extensions-view-icon.png)
+![Ícone da Visão Extensões](images/extensions-view-icon.png)
 
 Em seguida digite **"tds"** no campo de pesquisa e selecione a extensão **"TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)"**.
 
