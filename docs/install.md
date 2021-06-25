@@ -1,6 +1,6 @@
 # Instalando o tds-vscode - TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)
 
-# Requisitos de sistema
+## Requisitos de sistema
 
 O tds-vscode depende do bom funcionamento do próprio VS Code. A lista de requisitos de sistema mais atualizada para o VS Code encontra-se em [Requirements for Visual Studio Code](https://code.visualstudio.com/docs/supporting/requirements).
 
