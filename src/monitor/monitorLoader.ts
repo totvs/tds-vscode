@@ -245,6 +245,7 @@ export class MonitorLoader {
           );
         } else {
           serverProvider.connectedServerItem = undefined;
+          this.clearPanel();
         }
       },
       (error: Error) => {
@@ -578,6 +579,17 @@ export class MonitorLoader {
     }
 
     vscode.window.setStatusBarMessage(`${icon} ${msg1} ${msg2}`);
+  }
+
+  private clearPanel() {
+    this._panel.webview.postMessage({
+      command: MonitorPanelAction.UpdateUsers,
+      data: {
+        serverName: "Disconnected",
+        users: [],
+        servers: [],
+      },
+    });
   }
 
   private getWebviewContent(): string {
