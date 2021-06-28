@@ -142,6 +142,7 @@
     "onCommand:totvs-developer-studio.inspectorObjects",
     "onCommand:totvs-developer-studio.defragRPO",
     "onCommand:totvs-developer-studio.rpoCheckIntegrity",
+    "onCommand:totvs-developer-studio.revalidateRPO",
     "onCommand:totvs-developer-studio.delete.file.fromRPO",
     "onCommand:totvs-developer-studio.getDAP",
     "onCommand:totvs-developer-studio.connect",
@@ -566,6 +567,12 @@
         "command": "totvs-developer-studio.rpoCheckIntegrity",
         "title": "%tds.package.rpo.check.integrity.title%",
         "description": "%tds.package.rpo.check.integrity.description%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.revalidateRPO",
+        "title": "tds.package.revalidate.rpo.title",
+        "description": "tds.package.revalidate.rpo.description",
         "category": "TOTVS"
       },
       {
@@ -1457,6 +1464,11 @@
         {
           "command": "totvs-developer-studio.rpoCheckIntegrity",
           "when": "view == totvs_server && viewItem == serverItem",
+          "group": "EtotvsRPO@1"
+        },
+        {
+          "command": "totvs-developer-studio.revalidateRPO",
+          "when": "view == totvs_server && viewItem == serverItemSafeRpo",
           "group": "EtotvsRPO@1"
         }
       ],

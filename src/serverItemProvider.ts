@@ -282,6 +282,10 @@ export class ServerItem extends vscode.TreeItem {
     return serverProvider.isConnected(this);
   }
 
+  public get isSafeRPO(): boolean {
+    return this.buildVersion.localeCompare('7.00.191205P') > 0;
+  }
+
   constructor(
     public name: string,
     public readonly type: ServerType,
@@ -332,7 +336,7 @@ export class ServerItem extends vscode.TreeItem {
     ),
   };
 
-  contextValue = this.isConnected ? 'serverItem' : 'serverItemNotConnected';
+  contextValue = this.isConnected ? (!this.isSafeRPO ? 'serverItem' : 'serverItem') : 'serverItemNotConnected';
 }
 
 export class EnvSection extends vscode.TreeItem {
