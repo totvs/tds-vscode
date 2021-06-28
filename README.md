@@ -34,6 +34,9 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 
 ## Guia rápido
 
+> O **VS-Code** pode apresentar problemas em suas funcionalidades em sistemas operacionias da linha **Windows Server**.
+> Veja os requisitos para uso em [Requirements](https://code.visualstudio.com/docs/supporting/requirements).
+
 > **Nunca usei o VS-Code**: Recomendamos a leitura de:
 >
 > - [User Interface](https://code.visualstudio.com/docs/getstarted/userinterface)
@@ -41,7 +44,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 > - [Settings](https://code.visualstudio.com/docs/getstarted/settings)
 > - [Basic Edition](https://code.visualstudio.com/docs/editor/codebasics)
 > - [Marketpalce](https://code.visualstudio.com/docs/editor/extension-gallery)
-
+ 
 Ao iniciar o **VS-Code** com a extensão **TDS-VSCode** instalada, abra (ou crie) a pasta principal que contém (ou conterá) seus arquivos fontes e de recursos. Essa pasta é denominada genericamente de `projeto`.
 
 No primeiro uso da extensão em um projeto, lhe será apresentada as [Boas Vindas](docs/welcome.md) com configurações mínimas necessárias. Faça-as.
