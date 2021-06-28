@@ -29,7 +29,7 @@
 				"script": "compile"
 			},
 			"env": {
-				"TOTVS_LS_LOG_FILE" : "e://TOTVS_LS_LOG_FILE.log"
+				"TOTVS_LS_LOG_FILE" : "./TOTVS_LS_LOG_FILE.log"
 			}
 		},
 		{

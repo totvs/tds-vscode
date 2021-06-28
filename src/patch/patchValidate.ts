@@ -127,15 +127,19 @@ function sendPatchValidate(patchFile, server, currentPanel) {
 		return;
 	}
 	const patchURI = vscode.Uri.file(patchFile).toString();
-	languageClient.sendRequest('$totvsserver/patchValidate', {
-		"patchValidateInfo": {
-			connectionToken: server.token,
-			authorizationToken: Utils.getAuthorizationToken(server),
-			environment: server.environment,
-			patchUri: patchURI,
-			isLocal: true
-		}
-	}).then((response: any) => {
+	const permissionsInfos = Utils.getPermissionsInfos();
+	languageClient
+	  .sendRequest('$totvsserver/patchApply', {
+		patchApplyInfo: {
+		  connectionToken: server.token,
+		  authorizationToken: Utils.getAuthorizationToken(server),
+		  environment: server.environment,
+		  patchUri: patchURI,
+		  isLocal: true,
+		  isValidOnly: true,
+		  applyScope: "none",
+		},
+	  }).then((response: any) => {
 		patchValidatesData = response.patchValidates;
 		currentPanel.webview.postMessage({
 			command: 'setData',

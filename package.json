@@ -762,6 +762,11 @@
         "category": "TOTVS"
       },
       {
+        "command": "totvs-developer-studio.patchInfos.fromFile",
+        "title": "%tds.package.patchInfos.fromFile%",
+        "category": "TOTVS"
+      },
+      {
         "command": "totvs-developer-studio.patchValidate.fromFile",
         "title": "%tds.package.patchValidate.fromFile%",
         "category": "TOTVS"
@@ -1307,6 +1312,12 @@
         },
         {
           "when": "resourceLangId == totvs_patch",
+          "command": "totvs-developer-studio.patchInfos.fromFile",
+          "alt": "totvs-developer-studio.patchInfos.fromFile",
+          "group": "totvsBuild@9"
+        },
+        {
+          "when": "resourceLangId == totvs_patch",
           "command": "totvs-developer-studio.patchValidate.fromFile",
           "alt": "totvs-developer-studio.patchValidate.fromFile",
           "group": "totvsBuild@8"
@@ -1490,6 +1501,10 @@
         },
         {
           "command": "totvs-developer-studio.patchValidate.fromFile",
+          "when": "1 == 0"
+        },
+        {
+          "command": "totvs-developer-studio.patchInfos.fromFile",
           "when": "1 == 0"
         },
         {
