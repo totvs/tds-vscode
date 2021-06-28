@@ -94,13 +94,13 @@ export function patchApply(
                       .sendRequest('$totvsserver/patchApply', {
                         patchApplyInfo: {
                           connectionToken: server.token,
-                          authenticateToken:
-                            permissionsInfos.authorizationToken,
+                          authorizationToken:
+                          Utils.getAuthorizationToken(server),
                           environment: server.environment,
                           patchUri: patchUri,
                           isLocal: true,
-                          validatePatch: false,
-                          applyOldProgram: message.applyOld,
+                          isValidOnly: false,
+                          applyScope: message.applyOld ? "all" : "only_new",
                         },
                       })
                       .then(
@@ -206,7 +206,7 @@ export function patchApply(
             .showWarningMessage(
               localize(
                 'tds.webview.patch.apply.file',
-                'Are you sure you want apply patch {0} from RPO?',
+                'Are you sure you want patch {0} the RPO?',
                 path.basename(filename)
               ),
               localize('tds.vscode.yes', 'Yes'),
@@ -220,12 +220,12 @@ export function patchApply(
                   .sendRequest('$totvsserver/patchApply', {
                     patchApplyInfo: {
                       connectionToken: server.token,
-                      authenticateToken: permissionsInfos.authorizationToken,
+                      authorizationToken: Utils.getAuthorizationToken(server),
                       environment: server.environment,
                       patchUri: patchUri,
                       isLocal: true,
-                      validatePatch: false,
-                      applyOldProgram: false,
+                      isValidOnly: false,
+                      applyScope: "only_new",
                     },
                   })
                   .then(

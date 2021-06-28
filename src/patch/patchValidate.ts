@@ -132,12 +132,12 @@ function sendPatchValidate(patchFile, server, currentPanel) {
 	  .sendRequest('$totvsserver/patchApply', {
 		patchApplyInfo: {
 		  connectionToken: server.token,
-		  authenticateToken: permissionsInfos.authorizationToken,
+		  authorizationToken: Utils.getAuthorizationToken(server),
 		  environment: server.environment,
 		  patchUri: patchURI,
 		  isLocal: true,
-		  validatePatch: true,
-		  applyOldProgram: false,
+		  isValidOnly: true,
+		  applyScope: "none",
 		},
 	  }).then((response: any) => {
 		patchValidatesData = response.patchValidates;
