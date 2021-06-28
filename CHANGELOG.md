@@ -1,5 +1,11 @@
 # Changelog
 
+# Versão [1.3.0]
+
+### Melhoria
+
+- Implementação do Linter. Veja mais detalhes em [TDS: Linter](docs/linter.md).
+
 # Versão [1.2.5]
 
 ## Erro ao executar SIGAADV via DebugErro ao executar SIGAADV via Debug (https://github.com/totvs/tds-vscode/issues/714)
