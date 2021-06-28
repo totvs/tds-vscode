@@ -11,6 +11,10 @@ Os problemas estão divididos em **"Gerais"** e **"Depuração"** então procure
 
 São problemas que ocorrem desde a inicialização do **TDS VS Code** até a operação normal do dia-a-dia como compilar, gerar e aplicar patches, etc. Excluindo-se apenas a Depuração que é tratada em outra seção.
 
+### Aplicação de pacotes (_patchs_)
+
+O _AppServer_ versão 19.3.0.5, apresenta problemas conhecidos na aplicação de patches, recomenda-se atualizá-lo para a versão 19.3.0.6 ou mais recente.
+
 ### Pastas com acentuação
 
 Já tivemos diversos relatos onde o problema era relacionado com acentuações nas pastas do projeto/workspace em uso.
