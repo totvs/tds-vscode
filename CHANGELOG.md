@@ -1,5 +1,17 @@
 # Changelog
 
+# Versão [1.2.5]
+
+## Erro ao executar SIGAADV via DebugErro ao executar SIGAADV via Debug (https://github.com/totvs/tds-vscode/issues/714)
+
+### Problema:
+
+- Ocorria erro "Failed to load APPMAP" ao iniciar uma depuração.
+
+### Solução:
+
+- Corrigido um processo interno de carga de informações do RPO.
+
 # Versão [1.2.4]
 
 ## Problema na aplicação de patch em Windows Server (https://github.com/totvs/tds-vscode/issues/695)
