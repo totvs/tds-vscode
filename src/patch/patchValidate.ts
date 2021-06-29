@@ -140,11 +140,17 @@ function sendPatchValidate(patchFile, server, currentPanel) {
 		  applyScope: "none",
 		},
 	  }).then((response: any) => {
-		patchValidatesData = response.patchValidates;
-		currentPanel.webview.postMessage({
-			command: 'setData',
-			data: response.patchValidates
-		});
+		const errorMessage = response.message;
+		if (errorMessage) {
+			vscode.window.showWarningMessage(errorMessage);
+			patchValidatesData = response.patchValidates;
+			currentPanel.webview.postMessage({
+				command: 'setData',
+				data: response.patchValidates
+			});
+		} else {
+			vscode.window.showInformationMessage("No validation issues detected.");
+		}
 	}, (err: ResponseError<object>) => {
 		vscode.window.showErrorMessage(err.message);
 	});
