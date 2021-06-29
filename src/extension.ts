@@ -64,12 +64,12 @@ import { registerAdvplOutline, register4glOutline } from './outline';
 import { registerDebug, _debugEvent } from './debug';
 import { openMonitorView } from './monitor/monitorLoader';
 import { openRpoInfoView } from './rpoInfo/rpoInfoLoader';
-import { openApplyPatchView } from './patch/apply/applyPatchLoader';
 import { initStatusBarItems, updateStatusBarItems } from './statusBar';
 import { PatchEditorProvider } from './patch/inspect/patchEditor';
 import { openTemplateApplyView } from './template/apply/formApplyTemplate';
 import { rpoTokenInputBox, saveRpoTokenString } from './rpoToken';
 import { openGeneratePatchView } from './patch/generate/generatePatchLoader';
+import { patchApply } from './patch/patchApply';
 
 export let languageClient: LanguageClient;
 export function parseUri(u): Uri {
@@ -441,7 +441,7 @@ export function activate(context: ExtensionContext) {
         'Aguarde. Iniciando aplicação de pacotes...',
         5000
       );
-      openApplyPatchView(context);
+      patchApply(context, false);
     })
   );
 
@@ -453,7 +453,7 @@ export function activate(context: ExtensionContext) {
           'Aguarde. Iniciando aplicação de pacotes...',
           5000
         );
-        openApplyPatchView(context, args);
+        patchApply(context, true, args);
       }
     )
   );
@@ -473,6 +473,16 @@ export function activate(context: ExtensionContext) {
     )
   );
 
+  //Verifica o conteudo de um patch pelo menu de contexto em arquivos de patch
+  context.subscriptions.push(
+    commands.registerCommand(
+      'totvs-developer-studio.patchInfos.fromFile',
+      (args) => {
+        const uri: vscode.Uri = vscode.Uri.file(args['fsPath']);
+        vscode.commands.executeCommand('vscode.openWith', uri, 'tds.patchView');
+      }
+    )
+  );
   //Adiciona página de Includes
   context.subscriptions.push(
     commands.registerCommand('totvs-developer-studio.include', () =>

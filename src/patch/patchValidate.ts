@@ -127,20 +127,30 @@ function sendPatchValidate(patchFile, server, currentPanel) {
 		return;
 	}
 	const patchURI = vscode.Uri.file(patchFile).toString();
-	languageClient.sendRequest('$totvsserver/patchValidate', {
-		"patchValidateInfo": {
-			connectionToken: server.token,
-			authorizationToken: Utils.getAuthorizationToken(server),
-			environment: server.environment,
-			patchUri: patchURI,
-			isLocal: true
+	const permissionsInfos = Utils.getPermissionsInfos();
+	languageClient
+	  .sendRequest('$totvsserver/patchApply', {
+		patchApplyInfo: {
+		  connectionToken: server.token,
+		  authorizationToken: Utils.getAuthorizationToken(server),
+		  environment: server.environment,
+		  patchUri: patchURI,
+		  isLocal: true,
+		  isValidOnly: true,
+		  applyScope: "none",
+		},
+	  }).then((response: any) => {
+		const errorMessage = response.message;
+		if (errorMessage) {
+			vscode.window.showWarningMessage(errorMessage);
+			patchValidatesData = response.patchValidates;
+			currentPanel.webview.postMessage({
+				command: 'setData',
+				data: response.patchValidates
+			});
+		} else {
+			vscode.window.showInformationMessage("No validation issues detected.");
 		}
-	}).then((response: any) => {
-		patchValidatesData = response.patchValidates;
-		currentPanel.webview.postMessage({
-			command: 'setData',
-			data: response.patchValidates
-		});
 	}, (err: ResponseError<object>) => {
 		vscode.window.showErrorMessage(err.message);
 	});
