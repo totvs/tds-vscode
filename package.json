@@ -72,7 +72,7 @@
     "@totvs/prettier-plugin-4gl": "^0.1.2",
     "@totvs/prettier-plugin-advpl": "^0.1.2",
     "@totvs/tds-da": "^1.2.0",
-    "@totvs/tds-ls": "^1.2.0",
+    "@totvs/tds-ls": "^1.2.1",
     "@types/node": "^14.14.12",
     "@types/react": "^16.9.50",
     "@types/vscode": "^1.52.0",

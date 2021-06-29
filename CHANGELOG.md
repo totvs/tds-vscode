@@ -6,6 +6,10 @@
 
 - Implementação do Linter. Veja mais detalhes em [TDS: Linter](docs/linter.md).
 
+## Reversão da atualização da Aplicação de Patches
+
+## Inclusão de validação complementar de marcas de FW do Patch a ser aplicado
+
 # Versão [1.2.5]
 
 ## Erro ao executar SIGAADV via DebugErro ao executar SIGAADV via Debug (https://github.com/totvs/tds-vscode/issues/714)
