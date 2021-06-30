@@ -25,3 +25,9 @@ As marcações de problemas serão apresentadas no próprio Editor e também na 
 Se for encontrado um erro crítico no código ele será destacado com a cor vermelha no Editor e não indicará mais nenhum outro erro até que este seja sanado.
 
 Caso contrário, se não houve erro crítico, ele apresentará avisos (warnings) se existirem.
+
+## Compilação
+
+Com o Linter teremos as mesmas questões que seriam detectadas somente após a compilação do fonte, então se houver uma indicação de erro e/ou warning eles serão os mesmos quando o fonte for compilado.
+
+Se perceberem algum comportamento estranho no Linter realize a compilação do fonte. Caso o comportamento persista na compilação, favor abrir um [chamado diretamente na TOTVS](https://totvscst.zendesk.com/hc/pt-br/#home) informando o problema encontrado na compilação para que o time de AppServer possa avaliar a questão. Quando o problema for solucionado pelo time de AppServer o Linter receberá a correção nas próximas atualizações da extensão.
