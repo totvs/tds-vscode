@@ -1,5 +1,4 @@
 {
-  // Funções
   "AAdd": {
     "prefix": "Aadd",
     "body": ["Aadd(${1:aArray}, ${2:xElement})"],
@@ -150,8 +149,6 @@
     "body": ["SubStr(${1:cText}, ${2:nPosIni}, ${3:nCount})"],
     "description": "Extrai uma parte de uma cadeia de caracteres."
   },
-
-  // Declaração de variáveis
   "local": {
     "prefix": "Local",
     "body": ["Local ${1:xVariable}"],
@@ -162,8 +159,6 @@
     "body": ["Private ${1:xVariable}"],
     "description": "Create a private variable that can be called anywhere inside the scope of the file"
   },
-
-  // Operadores lógicos
   "and": {
     "prefix": ".and.",
     "body": [".and."],
