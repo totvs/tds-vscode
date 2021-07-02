@@ -72,6 +72,23 @@ export class MonitorLoader {
       })
     );
 
+    this._disposables.push(
+      vscode.commands.registerCommand("_totvs-developer-studio.clearMonitorPanel", () => {
+        this.clearPanel();
+      })
+    );
+
+    this._disposables.push(
+      vscode.commands.registerCommand("_totvs-developer-studio.updateMonitorPanel", () => {
+        if(!this._isDisposed) {
+          if(this.monitorServer === null) {
+            this.monitorServer = serverProvider.connectedServerItem;
+          }
+          this.updateUsers(true);
+        }
+      })
+    );
+
     this._panel = vscode.window.createWebviewPanel(
       "monitorLoader",
       localize("MONITOR", "Monitor"),
@@ -582,14 +599,16 @@ export class MonitorLoader {
   }
 
   private clearPanel() {
-    this._panel.webview.postMessage({
-      command: MonitorPanelAction.UpdateUsers,
-      data: {
-        serverName: "Disconnected",
-        users: [],
-        servers: [],
-      },
-    });
+    if(!this._isDisposed && this._panel !== undefined && this._panel.webview !== undefined) {
+      this._panel.webview.postMessage({
+        command: MonitorPanelAction.UpdateUsers,
+        data: {
+          serverName: "Disconnected",
+          users: [],
+          servers: [],
+        },
+      });
+    }
   }
 
   private getWebviewContent(): string {
