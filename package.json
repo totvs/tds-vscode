@@ -491,6 +491,16 @@
           "default": false,
           "description": "%tds.package.workspaceServerConfig%"
         },
+        "totvsLanguageServer.filesystem.encoding": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "cp1252",
+            "cp1251"
+          ],
+          "default": "cp1252",
+          "description": "%tds.package.filesystem.encoding%"
+        },
         "4gl.formatter": {
           "type": "object",
           "description": "Formatação 4GL",
