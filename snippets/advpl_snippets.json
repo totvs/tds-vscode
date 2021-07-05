@@ -1,326 +1,326 @@
 {
-    "AAdd": {
-        "prefix": "Aadd",
-        "body": ["Aadd(${1:aArray}, ${2:xElement})"],
-        "description": "Adiciona um elemento ao final do array."
-    },
-    "Reclock": {
-        "prefix": "RecLock",
-        "body": ["RecLock(${1:cAlias}, ${2:bInsert})", "\t$0", "MsUnlock()"],
-        "description": ""
-    },
-    "MsUnlock": {
-        "prefix": "MsUnlock",
-        "body": ["MsUnlock()"],
-        "description": ""
-    },
-    "DbSelectArea": {
-        "prefix": "DbSelectArea",
-        "body": ["DbSelectArea(${1:cAlias})"],
-        "description": ""
-    },
-    "DbSetOrder": {
-        "prefix": "DbSetOrder",
-        "body": ["DbSetOrder(${1:nOrder})"],
-        "description": ""
-    },
-    "MsSeek": {
-        "prefix": "MsSeek",
-        "body": ["MsSeek(${1:cFilter}, ${2:lLast})"],
-        "description": ""
-    },
-    "MsgYesNo": {
-        "prefix": "MsgYesNo",
-        "body": ["MsgYesNo(${1:cText}, ${2:cTitle})"],
-        "description": "Cria uma mensagem com as opçoes Sim/Não, retornando .T. para Sim e .F. para Não."
-    },
-    "MsgAlert": {
-        "prefix": "MsgAlert",
-        "body": ["MsgAlert(${1:cText}, ${2:cTitle})"],
-        "description": "Cria uma mensagem de alerta na tela."
-    },
-    "MsgInfo": {
-        "prefix": "MsgInfo",
-        "body": ["MsgInfo(${1:cText}, ${2:cTitle})"],
-        "description": "Cria uma mensagem de informação na tela."
-    },
-    "MsgStop": {
-        "prefix": "MsgStop",
-        "body": ["MsgStop(${1:cText}, ${2:cTitle})"],
-        "description": "Cria uma mensagem de erro na tela."
-    },
-    "AllTrim": {
-        "prefix": "AllTrim",
-        "body": ["AllTrim(${1:cText})"],
-        "description": "Retira os espaços do início/fim de uma string."
-    },
-    "CValToChar": {
-        "prefix": "CValToChar",
-        "body": ["CValToChar(${1:nNumber})"],
-        "description": "Converte uma valor numérico em uma string."
-    },
-    "Val": {
-        "prefix": "Val",
-        "body": ["Val(${1:cText})"],
-        "description": "Converte uma string em valor numérico."
-    },
-    "SToD": {
-        "prefix": "SToD",
-        "body": ["SToD(${1:cText})"],
-        "description": "Retorna a data, a partir de uma string de oito caracteres, no formato ano, mês e dia (aaaammdd)."
-    },
-    "DToS": {
-        "prefix": "DToS",
-        "body": ["DToS(${1:dDate})"],
-        "description": "Retorna uma string, a partir de uma data, no formatada como aaaammdd."
-    },
-    "DToC": {
-        "prefix": "DToC",
-        "body": ["DToC(${1:dDate})"],
-        "description": "Retorna uma string no formato dd/mm/aa, a partir de uma data."
-    },
-    "GdFielPos": {
-        "prefix": "GdFielPos",
-        "body": ["GdFielPos(${1:cField}, ${2:aHeader})"],
-        "description": "Percorre um array de cabecalho para retornar a posição do campo."
-    },
-    "AScan": {
-        "prefix": "AScan",
-        "body": ["AScan(${1:aArray}, ${2:lExpressao})"],
-        "description": "Pesquisa um determinado valor ou avalia um bloco de código pelos elementos de um array."
-    },
-    "RetCodUsr": {
-        "prefix": "RetCodUsr",
-        "body": ["RetCodUsr()"],
-        "description": "Retorna o código do usuário corrente."
-    },
-    "UsrRetName": {
-        "prefix": "UsrRetName",
-        "body": ["UsrRetName(${1:cCodUsr})"],
-        "description": "Retorna o nome do usuário de acordo com o código."
-    },
-    "UsrFullName": {
-        "prefix": "UsrFullName",
-        "body": ["UsrFullName(${1:cCodUsr})"],
-        "description": "Retorna o nome completo do usuário de acordo com o código."
-    },
-    "GetMV": {
-        "prefix": "GetMV",
-        "body": ["GetMV(${1:cMVPar})"],
-        "description": "Retorna o valor do parametro informado."
-    },
-    "SuperGetMV": {
-        "prefix": "SuperGetMV",
-        "body": ["SuperGetMV(${1:cMVPar})"],
-        "description": "Retorna o valor do parametro informado."
-    },
-    "IsInCallStack": {
-        "prefix": "IsInCallStack",
-        "body": ["IsInCallStack(${1:cRotina})"],
-        "description": "Valida se a rotina informa se encontra no STACK de funções."
-    },
-    "Empty": {
-        "prefix": "Empty",
-        "body": ["Empty(${1:xExpressao})"],
-        "description": "Valida se a variável está vazia."
-    },
-    "Len": {
-        "prefix": "Len",
-        "body": ["Len(${1:aArray})"],
-        "description": "Retorna a quantidade de posições existentes no array."
-    },
-    "Upper": {
-        "prefix": "Upper",
-        "body": ["Upper(${1:cString})"],
-        "description": "Retorna uma string de caractéres em maiusculo."
-    },
-    "Lower": {
-        "prefix": "Lower",
-        "body": ["Lower(${1:cString})"],
-        "description": "Retorna uma string de caractéres em minusculo."
-    },
-    "Space": {
-        "prefix": "Space",
-        "body": ["Space(${1:nQuantidade})"],
-        "description": "Retorna uma string de caracteres vazios com a quantidade informada."
-    },
-    "SubStr": {
-        "prefix": "SubStr",
-        "body": ["SubStr(${1:cText}, ${2:nPosIni}, ${3:nCount})"],
-        "description": "Extrai uma parte de uma cadeia de caracteres."
-    },
-    "local": {
-        "prefix": "Local",
-        "body": ["Local ${1:xVariable}"],
-        "description": "Create a local variable that can be called anywhere inside the scope of the function"
-    },
-    "private": {
-        "prefix": "Private",
-        "body": ["Private ${1:xVariable}"],
-        "description": "Create a private variable that can be called anywhere inside the scope of the file"
-    },
-    "and": {
-        "prefix": ".and.",
-        "body": [".and."],
-        "description": "Declaração de um operador lógico OR"
-    },
-    "or": {
-        "prefix": ".or.",
-        "body": [".or."],
-        "description": "Declaração de um operador lógico AND"
-    },
+	"AAdd": {
+		"prefix": "Aadd",
+		"body": ["Aadd(${1:aArray}, ${2:xElement})"],
+		"description": "Adiciona um elemento ao final do array."
+	},
+	"Reclock": {
+		"prefix": "RecLock",
+		"body": ["RecLock(${1:cAlias}, ${2:bInsert})", "\t$0", "MsUnlock()"],
+		"description": ""
+	},
+	"MsUnlock": {
+		"prefix": "MsUnlock",
+		"body": ["MsUnlock()"],
+		"description": ""
+	},
+	"DbSelectArea": {
+		"prefix": "DbSelectArea",
+		"body": ["DbSelectArea(${1:cAlias})"],
+		"description": ""
+	},
+	"DbSetOrder": {
+		"prefix": "DbSetOrder",
+		"body": ["DbSetOrder(${1:nOrder})"],
+		"description": ""
+	},
+	"MsSeek": {
+		"prefix": "MsSeek",
+		"body": ["MsSeek(${1:cFilter}, ${2:lLast})"],
+		"description": ""
+	},
+	"MsgYesNo": {
+		"prefix": "MsgYesNo",
+		"body": ["MsgYesNo(${1:cText}, ${2:cTitle})"],
+		"description": "Cria uma mensagem com as opçoes Sim/Não, retornando .T. para Sim e .F. para Não."
+	},
+	"MsgAlert": {
+		"prefix": "MsgAlert",
+		"body": ["MsgAlert(${1:cText}, ${2:cTitle})"],
+		"description": "Cria uma mensagem de alerta na tela."
+	},
+	"MsgInfo": {
+		"prefix": "MsgInfo",
+		"body": ["MsgInfo(${1:cText}, ${2:cTitle})"],
+		"description": "Cria uma mensagem de informação na tela."
+	},
+	"MsgStop": {
+		"prefix": "MsgStop",
+		"body": ["MsgStop(${1:cText}, ${2:cTitle})"],
+		"description": "Cria uma mensagem de erro na tela."
+	},
+	"AllTrim": {
+		"prefix": "AllTrim",
+		"body": ["AllTrim(${1:cText})"],
+		"description": "Retira os espaços do início/fim de uma string."
+	},
+	"CValToChar": {
+		"prefix": "CValToChar",
+		"body": ["CValToChar(${1:nNumber})"],
+		"description": "Converte uma valor numérico em uma string."
+	},
+	"Val": {
+		"prefix": "Val",
+		"body": ["Val(${1:cText})"],
+		"description": "Converte uma string em valor numérico."
+	},
+	"SToD": {
+		"prefix": "SToD",
+		"body": ["SToD(${1:cText})"],
+		"description": "Retorna a data, a partir de uma string de oito caracteres, no formato ano, mês e dia (aaaammdd)."
+	},
+	"DToS": {
+		"prefix": "DToS",
+		"body": ["DToS(${1:dDate})"],
+		"description": "Retorna uma string, a partir de uma data, no formatada como aaaammdd."
+	},
+	"DToC": {
+		"prefix": "DToC",
+		"body": ["DToC(${1:dDate})"],
+		"description": "Retorna uma string no formato dd/mm/aa, a partir de uma data."
+	},
+	"GdFielPos": {
+		"prefix": "GdFielPos",
+		"body": ["GdFielPos(${1:cField}, ${2:aHeader})"],
+		"description": "Percorre um array de cabecalho para retornar a posição do campo."
+	},
+	"AScan": {
+		"prefix": "AScan",
+		"body": ["AScan(${1:aArray}, ${2:lExpressao})"],
+		"description": "Pesquisa um determinado valor ou avalia um bloco de código pelos elementos de um array."
+	},
+	"RetCodUsr": {
+		"prefix": "RetCodUsr",
+		"body": ["RetCodUsr()"],
+		"description": "Retorna o código do usuário corrente."
+	},
+	"UsrRetName": {
+		"prefix": "UsrRetName",
+		"body": ["UsrRetName(${1:cCodUsr})"],
+		"description": "Retorna o nome do usuário de acordo com o código."
+	},
+	"UsrFullName": {
+		"prefix": "UsrFullName",
+		"body": ["UsrFullName(${1:cCodUsr})"],
+		"description": "Retorna o nome completo do usuário de acordo com o código."
+	},
+	"GetMV": {
+		"prefix": "GetMV",
+		"body": ["GetMV(${1:cMVPar})"],
+		"description": "Retorna o valor do parametro informado."
+	},
+	"SuperGetMV": {
+		"prefix": "SuperGetMV",
+		"body": ["SuperGetMV(${1:cMVPar})"],
+		"description": "Retorna o valor do parametro informado."
+	},
+	"IsInCallStack": {
+		"prefix": "IsInCallStack",
+		"body": ["IsInCallStack(${1:cRotina})"],
+		"description": "Valida se a rotina informa se encontra no STACK de funções."
+	},
+	"Empty": {
+		"prefix": "Empty",
+		"body": ["Empty(${1:xExpressao})"],
+		"description": "Valida se a variável está vazia."
+	},
+	"Len": {
+		"prefix": "Len",
+		"body": ["Len(${1:aArray})"],
+		"description": "Retorna a quantidade de posições existentes no array."
+	},
+	"Upper": {
+		"prefix": "Upper",
+		"body": ["Upper(${1:cString})"],
+		"description": "Retorna uma string de caractéres em maiusculo."
+	},
+	"Lower": {
+		"prefix": "Lower",
+		"body": ["Lower(${1:cString})"],
+		"description": "Retorna uma string de caractéres em minusculo."
+	},
+	"Space": {
+		"prefix": "Space",
+		"body": ["Space(${1:nQuantidade})"],
+		"description": "Retorna uma string de caracteres vazios com a quantidade informada."
+	},
+	"SubStr": {
+		"prefix": "SubStr",
+		"body": ["SubStr(${1:cText}, ${2:nPosIni}, ${3:nCount})"],
+		"description": "Extrai uma parte de uma cadeia de caracteres."
+	},
+	"local": {
+		"prefix": "Local",
+		"body": ["Local ${1:xVariable}"],
+		"description": "Create a local variable that can be called anywhere inside the scope of the function"
+	},
+	"private": {
+		"prefix": "Private",
+		"body": ["Private ${1:xVariable}"],
+		"description": "Create a private variable that can be called anywhere inside the scope of the file"
+	},
+	"and": {
+		"prefix": ".and.",
+		"body": [".and."],
+		"description": "Declaração de um operador lógico OR"
+	},
+	"or": {
+		"prefix": ".or.",
+		"body": [".or."],
+		"description": "Declaração de um operador lógico AND"
+	},
 
-    "for_loop": {
-        "prefix": "for",
-        "body": ["for ${1:var} := ${2:value} to ${3:value}", "\t$0", "next"],
-        "description": "For loop"
-    },
-    "if": {
-        "prefix": "if",
-        "body": ["if ${1:conditions}", "\t$0", "endif"],
-        "description": "Simple If statement"
-    },
-    "else_if": {
-        "prefix": "elseif",
-        "body": ["elseif ${1:conditions}", "\t$0"],
-        "description": "ElseIf statement"
-    },
-    "else": {
-        "prefix": "else",
-        "body": ["else", "\t$0"],
-        "description": "Else statement"
-    },
-    "while": {
-        "prefix": "while",
-        "body": ["while ${1:condition}", "\t$0", "end"],
-        "description": "While statement"
-    },
-    "do_case": {
-        "prefix": "do",
-        "body": [
-            "Do Case",
-            "Case ${1}",
-            "\t$2",
-            "Otherwise",
-            "\t$3",
-            "EndCase"
-        ],
-        "description": "Case statement"
-    },
-    "Static Function": {
-        "prefix": "Static",
-        "body": [
-            "/*/{Protheus.doc} ${1:nomeStaticFunction}",
-            "\t(long_description)",
-            "\t@type  Static Function",
-            "\t@author ${2:user}",
-            "\t@since ${3:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}",
-            "\t@version ${4:version}",
-            "\t@param ${5:param_name}, ${6:param_type}, ${7:param_descr}",
-            "\t@return ${8:return_var}, ${9:return_type}, ${10:return_description}",
-            "\t@example",
-            "\t(examples)",
-            "\t@see (links_or_references)",
-            "/*/",
-            "Static Function ${1:nomeStaticFunction}(${5:param_name})",
-            "\t$0",
-            "Return ${8:return_var}"
-        ],
-        "description": "Declaração de uma Static Function ja com o Protheus.doc"
-    },
-    "Function": {
-        "prefix": "Function",
-        "body": [
-            "/*/{Protheus.doc} ${1:nomeFunction}",
-            "\t(long_description)",
-            "\t@type  Function",
-            "\t@author ${2:user}",
-            "\t@since ${3:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}",
-            "\t@version ${4:version}",
-            "\t@param ${5:param_name}, ${6:param_type}, ${7:param_descr}",
-            "\t@return ${8:return_var}, ${9:return_type}, ${10:return_description}",
-            "\t@example",
-            "\t(examples)",
-            "\t@see (links_or_references)",
-            "\t/*/",
-            "Function ${1:nomeFunction}(${5:param_name})",
-            "\t$0",
-            "Return ${8:return_var}"
-        ],
-        "description": "Declaração de uma Function ja com o Protheus.doc"
-    },
-    "Main Function": {
-        "prefix": "Main",
-        "body": [
-            "/*/{Protheus.doc} ${1:nomeFunction}",
-            "\t(long_description)",
-            "\t@type  Function",
-            "\t@author ${2:user}",
-            "\t@since ${3:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}",
-            "\t@version ${4:version}",
-            "\t@param ${5:param_name}, ${6:param_type}, ${7:param_descr}",
-            "\t@return ${8:return_var}, ${9:return_type}, ${10:return_description}",
-            "\t@example",
-            "\t(examples)",
-            "\t@see (links_or_references)",
-            "\t/*/",
-            "Main Function ${1:nomeFunction}(${5:param_name})",
-            "\t$0",
-            "Return ${8:return_var}"
-        ],
-        "description": "Declaração de uma Main Function ja com o Protheus.doc"
-    },
-    "User Function": {
-        "prefix": "User",
-        "body": [
-            "/*/{Protheus.doc} User Function ${1:nomeFunction}",
-            "\t(long_description)",
-            "\t@type  Function",
-            "\t@author ${2:user}",
-            "\t@since ${3:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}",
-            "\t@version ${4:version}",
-            "\t@param ${5:param_name}, ${6:param_type}, ${7:param_descr}",
-            "\t@return ${8:return_var}, ${9:return_type}, ${10:return_description}",
-            "\t@example",
-            "\t(examples)",
-            "\t@see (links_or_references)",
-            "\t/*/",
-            "User Function ${1:nomeUserFunction}(${5:param_name})",
-            "\t$0",
-            "Return ${8:return_var}"
-        ],
-        "description": "Declaração de User Function"
-    },
-    "Class": {
-        "prefix": "Class",
-        "body": [
-            "/*/{Protheus.doc} ${1:className}",
-            "\t(long_description)",
-            "\t@author ${2:user}",
-            "\t@since ${3:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}",
-            "\t@version ${4:version}",
-            "\t/*/",
-            "Class ${1:className}",
-            "\t$0",
-            "EndClass"
-        ],
-        "description": "Declaração de uma classe ja com o Protheus.doc"
-    },
-    "Method": {
-        "prefix": "Method",
-        "body": [
-            "/*/{Protheus.doc} ${1:methodName}",
-            "\t(long_description)",
-            "\t@author ${2:user}",
-            "\t@since ${3:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}",
-            "\t@version ${4:version}",
-            "\t@param ${5:param_name}, ${6:param_type}, ${7:param_descr}",
-            "\t@return ${8:return_var}, ${9:return_type}, ${10:return_description}",
-            "\t/*/",
-            "Method ${1:methodName}(${5:param_name})",
-            "\t$0",
-            "Return ${8:return_var}"
-        ],
-        "description": "Declaração de um Método de uma classe ja com o Protheus.doc"
-    }
+	"for_loop": {
+		"prefix": "for",
+		"body": ["for ${1:var} := ${2:value} to ${3:value}", "\t$0", "next"],
+		"description": "For loop"
+	},
+	"if": {
+		"prefix": "if",
+		"body": ["if ${1:conditions}", "\t$0", "endif"],
+		"description": "Simple If statement"
+	},
+	"else_if": {
+		"prefix": "elseif",
+		"body": ["elseif ${1:conditions}", "\t$0"],
+		"description": "ElseIf statement"
+	},
+	"else": {
+		"prefix": "else",
+		"body": ["else", "\t$0"],
+		"description": "Else statement"
+	},
+	"while": {
+		"prefix": "while",
+		"body": ["while ${1:condition}", "\t$0", "end"],
+		"description": "While statement"
+	},
+	"do_case": {
+		"prefix": "do",
+		"body": [
+			"Do Case",
+			"Case ${1}",
+			"\t$2",
+			"Otherwise",
+			"\t$3",
+			"EndCase"
+		],
+		"description": "Case statement"
+	},
+	"Static Function": {
+		"prefix": "Static",
+		"body": [
+			"/*/{Protheus.doc} ${1:nomeStaticFunction}",
+			"\t(long_description)",
+			"\t@type  Static Function",
+			"\t@author ${2:user}",
+			"\t@since ${3:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}",
+			"\t@version ${4:version}",
+			"\t@param ${5:param_name}, ${6:param_type}, ${7:param_descr}",
+			"\t@return ${8:return_var}, ${9:return_type}, ${10:return_description}",
+			"\t@example",
+			"\t(examples)",
+			"\t@see (links_or_references)",
+			"/*/",
+			"Static Function ${1:nomeStaticFunction}(${5:param_name})",
+			"\t$0",
+			"Return ${8:return_var}"
+		],
+		"description": "Declaração de uma Static Function ja com o Protheus.doc"
+	},
+	"Function": {
+		"prefix": "Function",
+		"body": [
+			"/*/{Protheus.doc} ${1:nomeFunction}",
+			"\t(long_description)",
+			"\t@type  Function",
+			"\t@author ${2:user}",
+			"\t@since ${3:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}",
+			"\t@version ${4:version}",
+			"\t@param ${5:param_name}, ${6:param_type}, ${7:param_descr}",
+			"\t@return ${8:return_var}, ${9:return_type}, ${10:return_description}",
+			"\t@example",
+			"\t(examples)",
+			"\t@see (links_or_references)",
+			"\t/*/",
+			"Function ${1:nomeFunction}(${5:param_name})",
+			"\t$0",
+			"Return ${8:return_var}"
+		],
+		"description": "Declaração de uma Function ja com o Protheus.doc"
+	},
+	"Main Function": {
+		"prefix": "Main",
+		"body": [
+			"/*/{Protheus.doc} ${1:nomeFunction}",
+			"\t(long_description)",
+			"\t@type  Function",
+			"\t@author ${2:user}",
+			"\t@since ${3:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}",
+			"\t@version ${4:version}",
+			"\t@param ${5:param_name}, ${6:param_type}, ${7:param_descr}",
+			"\t@return ${8:return_var}, ${9:return_type}, ${10:return_description}",
+			"\t@example",
+			"\t(examples)",
+			"\t@see (links_or_references)",
+			"\t/*/",
+			"Main Function ${1:nomeFunction}(${5:param_name})",
+			"\t$0",
+			"Return ${8:return_var}"
+		],
+		"description": "Declaração de uma Main Function ja com o Protheus.doc"
+	},
+	"User Function": {
+		"prefix": "User",
+		"body": [
+			"/*/{Protheus.doc} User Function ${1:nomeFunction}",
+			"\t(long_description)",
+			"\t@type  Function",
+			"\t@author ${2:user}",
+			"\t@since ${3:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}",
+			"\t@version ${4:version}",
+			"\t@param ${5:param_name}, ${6:param_type}, ${7:param_descr}",
+			"\t@return ${8:return_var}, ${9:return_type}, ${10:return_description}",
+			"\t@example",
+			"\t(examples)",
+			"\t@see (links_or_references)",
+			"\t/*/",
+			"User Function ${1:nomeUserFunction}(${5:param_name})",
+			"\t$0",
+			"Return ${8:return_var}"
+		],
+		"description": "Declaração de User Function"
+	},
+	"Class": {
+		"prefix": "Class",
+		"body": [
+			"/*/{Protheus.doc} ${1:className}",
+			"\t(long_description)",
+			"\t@author ${2:user}",
+			"\t@since ${3:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}",
+			"\t@version ${4:version}",
+			"\t/*/",
+			"Class ${1:className}",
+			"\t$0",
+			"EndClass"
+		],
+		"description": "Declaração de uma classe ja com o Protheus.doc"
+	},
+	"Method": {
+		"prefix": "Method",
+		"body": [
+			"/*/{Protheus.doc} ${1:methodName}",
+			"\t(long_description)",
+			"\t@author ${2:user}",
+			"\t@since ${3:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}",
+			"\t@version ${4:version}",
+			"\t@param ${5:param_name}, ${6:param_type}, ${7:param_descr}",
+			"\t@return ${8:return_var}, ${9:return_type}, ${10:return_description}",
+			"\t/*/",
+			"Method ${1:methodName}(${5:param_name})",
+			"\t$0",
+			"Return ${8:return_var}"
+		],
+		"description": "Declaração de um Método de uma classe ja com o Protheus.doc"
+	}
 }
