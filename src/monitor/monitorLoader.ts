@@ -72,22 +72,7 @@ export class MonitorLoader {
       })
     );
 
-    this._disposables.push(
-      vscode.commands.registerCommand("_totvs-developer-studio.clearMonitorPanel", () => {
-        this.clearPanel();
-      })
-    );
-
-    this._disposables.push(
-      vscode.commands.registerCommand("_totvs-developer-studio.updateMonitorPanel", () => {
-        if(!this._isDisposed) {
-          if(this.monitorServer === null) {
-            this.monitorServer = serverProvider.connectedServerItem;
-          }
-          this.updateUsers(true);
-        }
-      })
-    );
+    this.registerCommands();
 
     this._panel = vscode.window.createWebviewPanel(
       "monitorLoader",
@@ -207,6 +192,35 @@ export class MonitorLoader {
         })
       );
     }
+  }
+
+  private registerCommands() {
+    vscode.commands.getCommands(false).then((commands: string[]) => {
+
+      let index = commands.indexOf("_totvs-developer-studio.clearMonitorPanel");
+      if(index === -1) {
+        this._disposables.push(
+          vscode.commands.registerCommand("_totvs-developer-studio.clearMonitorPanel", () => {
+            this.clearPanel();
+          })
+        );
+      }
+
+      index = commands.indexOf("_totvs-developer-studio.updateMonitorPanel");
+      if(index === -1) {
+        this._disposables.push(
+          vscode.commands.registerCommand("_totvs-developer-studio.updateMonitorPanel", () => {
+            if(!this._isDisposed) {
+              if(this.monitorServer === null) {
+                this.monitorServer = serverProvider.connectedServerItem;
+              }
+              this.updateUsers(true);
+            }
+          })
+        );
+      }
+    });
+
   }
 
   private setLockServer(server: ServerItem, lock: boolean) {
