@@ -1,5 +1,27 @@
 # Changelog
 
+# Versão [1.3.1]
+
+## DEBUG VSCode Linux e AppServer Windows (https://github.com/totvs/tds-vscode/issues/726)
+
+### Problema:
+
+- Falha na conexão com o AppServer durante a depuração em ambientes Linux e Mac.
+
+### Solução:
+
+- Ajustado um processo interno corrigir a falha da conexão.
+
+## Erro Linter (is empty or corrupted..) (https://github.com/totvs/tds-vscode/issues/729)
+
+### Problema:
+
+- O Linter acusava erro na primeira linha indicando a mensagem "is empty or corrupted..".
+
+### Solução:
+
+- Isso estava ocorrendo quando existia um espaço em qualquer lugar do caminho do fonte analisado. Foi corrigido um processo interno para tratar o espaço no caminho.
+
 # Versão [1.3.0]
 
 ### Melhoria
