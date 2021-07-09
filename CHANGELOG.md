@@ -1,5 +1,22 @@
 # Changelog
 
+# Versão [1.3.2]
+
+## Erro ao tentar aplicar patch (https://github.com/totvs/tds-vscode/issues/737)
+
+### Problema:
+
+- Erro ao tentar aplicar patch no MacOS. A validação da Aplicação de Patch informa que existem caracteres em letras maíusculas e impede a aplicação.
+
+### Solução:
+
+- Alterada a validação para não impedir a aplicação. Gera apenas um Warning, pois caso ocorra um erro pode-se tentar corrigir renomeando os caminhos.
+
+### Melhoria
+
+- Alterações internas no processo de carga de parametrização inicial do LS.
+- Implementações de tratamento de encoding dos caminhos do sistema de arquivos para cp1252 (padrão) ou cp1252 (russo).
+
 # Versão [1.3.1]
 
 ## DEBUG VSCode Linux e AppServer Windows (https://github.com/totvs/tds-vscode/issues/726)
