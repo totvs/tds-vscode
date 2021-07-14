@@ -38,8 +38,6 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 > O **VS-Code** pode apresentar problemas em suas funcionalidades em sistemas operacionais da linha **Windows Server**.
 > Veja os requisitos para uso em [Requirements](https://code.visualstudio.com/docs/supporting/requirements).
 
-> Os **Sistemas Operacionais** homologados para utilização dessa extensão do VSCode segue o mesmo que os S.O.s homologados para o [Smartclient](https://tdn.totvs.com/display/tec/SmartClient+-+Sistemas+operacionais) 
-
 > **Nunca usei o VS-Code**: Recomendamos a leitura de:
 >
 > - [User Interface](https://code.visualstudio.com/docs/getstarted/userinterface)
