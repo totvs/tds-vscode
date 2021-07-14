@@ -1,5 +1,8 @@
 # Resolução de Problemas
 
+> O **VS-Code** pode apresentar problemas em suas funcionalidades em sistemas operacionias da linha **Windows Server**.
+> Veja os requisitos para uso em [Requirements](https://code.visualstudio.com/docs/supporting/requirements).
+
 > Antes de abrir uma nova **"Issue"** do **TDS VS Code**, verifique se o seu problema está na lista de problemas conhecidos e se existe uma solução de contorno para ele. Caso contrário abra uma nova **"Issue"** e adicione o maior número de informações possíveis (veja abaixo na seção **"Informações importantes"**) para ajudar a identificar a causa do problema.
 
 Os problemas estão divididos em **"Gerais"** e **"Depuração"** então procure na seção em que seu problema se enquadra.
@@ -10,6 +13,10 @@ Os problemas estão divididos em **"Gerais"** e **"Depuração"** então procure
 ## Problemas Gerais
 
 São problemas que ocorrem desde a inicialização do **TDS VS Code** até a operação normal do dia-a-dia como compilar, gerar e aplicar patches, etc. Excluindo-se apenas a Depuração que é tratada em outra seção.
+
+### Aplicação de pacotes (_patchs_)
+
+O _AppServer_ versão 19.3.0.5, apresenta problemas conhecidos na aplicação de patches, recomenda-se atualizá-lo para a versão 19.3.0.6 ou mais recente.
 
 ### Pastas com acentuação
 

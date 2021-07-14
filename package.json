@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "1.2.4",
+  "version": "1.3.3",
   "publisher": "TOTVS",
   "author": {
     "name": "TOTVS",
@@ -71,8 +71,8 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@totvs/prettier-plugin-4gl": "^0.1.2",
     "@totvs/prettier-plugin-advpl": "^0.1.2",
-    "@totvs/tds-da": "^1.1.24",
-    "@totvs/tds-ls": "^1.1.46",
+    "@totvs/tds-da": "^1.2.1",
+    "@totvs/tds-ls": "^1.2.3",
     "@types/node": "^14.14.12",
     "@types/react": "^16.9.50",
     "@types/vscode": "^1.52.0",
@@ -492,6 +492,16 @@
           "default": false,
           "description": "%tds.package.workspaceServerConfig%"
         },
+        "totvsLanguageServer.filesystem.encoding": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "cp1252",
+            "cp1251"
+          ],
+          "default": "cp1252",
+          "description": "%tds.package.filesystem.encoding%"
+        },
         "4gl.formatter": {
           "type": "object",
           "description": "Formatação 4GL",
@@ -766,6 +776,11 @@
       {
         "command": "totvs-developer-studio.patchApply.fromFile",
         "title": "%tds.package.patchApply.fromFile%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.patchInfos.fromFile",
+        "title": "%tds.package.patchInfos.fromFile%",
         "category": "TOTVS"
       },
       {
@@ -1314,6 +1329,12 @@
         },
         {
           "when": "resourceLangId == totvs_patch",
+          "command": "totvs-developer-studio.patchInfos.fromFile",
+          "alt": "totvs-developer-studio.patchInfos.fromFile",
+          "group": "totvsBuild@9"
+        },
+        {
+          "when": "resourceLangId == totvs_patch",
           "command": "totvs-developer-studio.patchValidate.fromFile",
           "alt": "totvs-developer-studio.patchValidate.fromFile",
           "group": "totvsBuild@8"
@@ -1502,6 +1523,10 @@
         },
         {
           "command": "totvs-developer-studio.patchValidate.fromFile",
+          "when": "1 == 0"
+        },
+        {
+          "command": "totvs-developer-studio.patchInfos.fromFile",
           "when": "1 == 0"
         },
         {

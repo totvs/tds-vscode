@@ -20,14 +20,13 @@ export function toggleAutocompleteBehavior() {
 export function syncSettings() {
   let config = vscode.workspace.getConfiguration('totvsLanguageServer');
 
-  const servers = Utils.getServersConfig();
-  let includesList = servers.includes as Array<string>;
-  let includes = '';
-  includesList.forEach((includeItem) => {
-    includes += includeItem + ';';
-  });
+  let fsencoding = config.get('filesystem.encoding');
   changeSettings({
-    changeSettingInfo: { scope: 'advpls', key: 'includes', value: includes },
+    changeSettingInfo: {
+      scope: 'advpls',
+      key: 'fsencoding',
+      value: fsencoding,
+    },
   });
 
   let behavior = config.get('editor.toggle.autocomplete');

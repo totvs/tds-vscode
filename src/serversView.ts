@@ -266,6 +266,9 @@ export class ServersExplorer {
                 if (!ti.sucess) {
                   serverProvider.connectedServerItem = undefined;
                 }
+
+                executeCommand("_totvs-developer-studio.clearMonitorPanel");
+
               },
               (err: ResponseError<object>) => {
                 serverProvider.connectedServerItem = undefined;
@@ -406,6 +409,25 @@ function doFinishConnectProcess(
 
     serverProvider.connectedServerItem = serverItem;
   }
+  runCommandUpdateMonitor();
+}
+
+/*
+* O comando é registrado na tela do monitor, portanto, caso ela nao sido aberta, o comando nao existira, entao faz a busca antes de mais nada.
+* Segundo a documentacao, comandos que começam com "_" sao tratados com internos.
+* doc: https://vshaxe.github.io/vscode-extern/VscodeCommands.html
+*/
+function executeCommand(commandId: string) {
+  return vscode.commands.getCommands(false).then((commands: string[]) => {
+    let index = commands.indexOf(commandId);
+    if(index > -1) {
+      vscode.commands.executeCommand(commandId);
+    }
+  });
+}
+
+function runCommandUpdateMonitor() {
+  executeCommand("_totvs-developer-studio.updateMonitorPanel");
 }
 
 export function connectServer(
@@ -441,11 +463,14 @@ export function connectServer(
               doFinishConnectProcess(serverItem, result.token, environment);
             }
           }
+          return result;
         },
         (error) => {
           vscode.window.showErrorMessage(error);
         }
-      )
+      )//.then((result: ITokenInfo) => {
+        //executeCommand("_totvs-developer-studio.updateMonitorPanel");
+      //})
     );
   }
 }
@@ -470,22 +495,22 @@ export function authenticate(
       password,
       enconding
     )
-      .then(
-        (result: IAuthenticationInfo) => {
-          let token: string = result.token;
-          return result.sucess ? token : "";
-        },
-        (error: any) => {
-          vscode.window.showErrorMessage(error);
-          return false;
-        }
-      )
-      .then((token: string) => {
-        if (token) {
-          serverItem.username = username;
-          doFinishConnectProcess(serverItem, token, environment);
-        }
-      })
+    .then(
+      (result: IAuthenticationInfo) => {
+        let token: string = result.token;
+        return result.sucess ? token : "";
+      },
+      (error: any) => {
+        vscode.window.showErrorMessage(error);
+        return false;
+      }
+    )
+    .then((token: string) => {
+      if (token) {
+        serverItem.username = username;
+        doFinishConnectProcess(serverItem, token, environment);
+      }
+    })
   );
 }
 

@@ -1,5 +1,70 @@
 # Changelog
 
+# Versão [1.3.3]
+
+TODO
+
+# Versão [1.3.2]
+
+## Erro ao tentar aplicar patch (https://github.com/totvs/tds-vscode/issues/737)
+
+### Problema:
+
+- Erro ao tentar aplicar patch no MacOS. A validação da Aplicação de Patch informa que existem caracteres em letras maíusculas e impede a aplicação.
+
+### Solução:
+
+- Alterada a validação para não impedir a aplicação. Gera apenas um Warning, pois caso ocorra um erro pode-se tentar corrigir renomeando os caminhos.
+
+### Melhoria
+
+- Alterações internas no processo de carga de parametrização inicial do LS.
+- Implementações de tratamento de encoding dos caminhos do sistema de arquivos para cp1252 (padrão) ou cp1252 (russo).
+
+# Versão [1.3.1]
+
+## DEBUG VSCode Linux e AppServer Windows (https://github.com/totvs/tds-vscode/issues/726)
+
+### Problema:
+
+- Falha na conexão com o AppServer durante a depuração em ambientes Linux e Mac.
+
+### Solução:
+
+- Ajustado um processo interno corrigir a falha da conexão.
+
+## Erro Linter (is empty or corrupted..) (https://github.com/totvs/tds-vscode/issues/729)
+
+### Problema:
+
+- O Linter acusava erro na primeira linha indicando a mensagem "is empty or corrupted..".
+
+### Solução:
+
+- Isso estava ocorrendo quando existia um espaço em qualquer lugar do caminho do fonte analisado. Foi corrigido um processo interno para tratar o espaço no caminho.
+
+# Versão [1.3.0]
+
+### Melhoria
+
+- Implementação do Linter. Veja mais detalhes em [TDS: Linter](docs/linter.md).
+
+## Reversão da atualização da Aplicação de Patches
+
+## Inclusão de validação complementar de marcas de FW do Patch a ser aplicado
+
+# Versão [1.2.5]
+
+## Erro ao executar SIGAADV via DebugErro ao executar SIGAADV via Debug (https://github.com/totvs/tds-vscode/issues/714)
+
+### Problema:
+
+- Ocorria erro "Failed to load APPMAP" ao iniciar uma depuração.
+
+### Solução:
+
+- Corrigido um processo interno de carga de informações do RPO.
+
 # Versão [1.2.4]
 
 ## Problema na aplicação de patch em Windows Server (https://github.com/totvs/tds-vscode/issues/695)

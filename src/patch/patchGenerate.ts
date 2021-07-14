@@ -142,7 +142,7 @@ export function patchGenerate(context: vscode.ExtensionContext) {
 						const patchDestUri = vscode.Uri.file(message.patchDest).toString();
 
 						if (patchDestUri === "" || filesPath.length === 0) {
-							vscode.window.showErrorMessage(localize("tds.webview.patch.generate.fail","Generate Patch Fail. Please destination directory and sources/resources list."));
+							vscode.window.showErrorMessage(localize("tds.webview.patch.generate.fail","Patch Generation failed. Please check destination directory and sources/resources list."));
 						} else {
 							// save last patchGenerateDir
 							Utils.updatePatchGenerateDir(server.id, message.patchDest);

@@ -5,7 +5,6 @@ const TerserPlugin = require("terser-webpack-plugin");
 const REPLAY_PATH = path.join(__dirname, "./src/debug/tdsreplay/");
 const MONITOR_PATH = path.join(__dirname, "./src/monitor/");
 const RPO_INFO_PATH = path.join(__dirname, "./src/rpoInfo/");
-const APPLY_PATCH_PATH = path.join(__dirname, "./src/patch/apply");
 const INSPECT_PATCH_PATH = path.join(__dirname, "./src/patch/inspect");
 const GENERATE_PATCH_PATH = path.join(__dirname, "./src/patch/generate");
 
@@ -21,7 +20,6 @@ module.exports = {
     timeLineView: path.join(REPLAY_PATH, "app/index.tsx"),
     monitorPanel: path.join(MONITOR_PATH, "app/index.tsx"),
     rpoInfoPanel: path.join(RPO_INFO_PATH, "app/index.tsx"),
-    applyPatchPanel: path.join(APPLY_PATCH_PATH, "app/index.tsx"),
     inspectPatchPanel: path.join(INSPECT_PATCH_PATH, "app/index.tsx"),
     generatePatchPanel: path.join(GENERATE_PATCH_PATH, "app/index.tsx"),
   },
@@ -81,18 +79,6 @@ module.exports = {
             loader: "ts-loader",
             options: {
               configFile: path.join(MONITOR_PATH, "./app/tsconfig.json"),
-            },
-          },
-        ],
-      },
-      {
-        test: /\.(ts|tsx)$/,
-        include: APPLY_PATCH_PATH,
-        use: [
-          {
-            loader: "ts-loader",
-            options: {
-              configFile: path.join(APPLY_PATCH_PATH, "./app/tsconfig.json"),
             },
           },
         ],

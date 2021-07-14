@@ -20,6 +20,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 
 - Sintaxe destacada
 - Comunicação baseada nos protocolos LSP/DAP
+- [Linter](docs/linter.md) - analisador de código estático
 - [Console](docs/console.md) informativo e notificações
 - [Edição](docs/edition.md) e [Formatação](docs/format_config.md) de arquivos fontes (AdvPL, TLPP, 4GL e variantes)
 - [Compilação](docs/compilation.md) de fontes, pastas e da área de trabalho
@@ -34,14 +35,17 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 
 ## Guia rápido
 
+> O **VS-Code** pode apresentar problemas em suas funcionalidades em sistemas operacionais da linha **Windows Server**.
+> Veja os requisitos para uso em [Requirements](https://code.visualstudio.com/docs/supporting/requirements).
+
 > **Nunca usei o VS-Code**: Recomendamos a leitura de:
 >
 > - [User Interface](https://code.visualstudio.com/docs/getstarted/userinterface)
 > - [Multi-root Workspaces](https://code.visualstudio.com/docs/editor/multi-root-workspaces)
 > - [Settings](https://code.visualstudio.com/docs/getstarted/settings)
 > - [Basic Edition](https://code.visualstudio.com/docs/editor/codebasics)
-> - [Marketpalce](https://code.visualstudio.com/docs/editor/extension-gallery)
-
+> - [Marketplace](https://code.visualstudio.com/docs/editor/extension-gallery)
+ 
 Ao iniciar o **VS-Code** com a extensão **TDS-VSCode** instalada, abra (ou crie) a pasta principal que contém (ou conterá) seus arquivos fontes e de recursos. Essa pasta é denominada genericamente de `projeto`.
 
 No primeiro uso da extensão em um projeto, lhe será apresentada as [Boas Vindas](docs/welcome.md) com configurações mínimas necessárias. Faça-as.
@@ -102,7 +106,7 @@ Caso tenha problemas com a ferramenta e deseja suporte da equipe de desenvolvime
 
 - Reproduza o problema e selecione a opção `CTRL + SHIFT + P` digite `TOTVS: Off Logger Capture` ou na Barra inferior clique sobre o texto `Capturando logs...`. O capturador será encerrado e um arquivo chamado `tdsSupport.zip` será gerado. Anexe esse arquivo ao chamado.
 
-![Logger](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/gifs/Logger.gif)
+![Logger](https://raw.githubusercontent.com/totvs/tds-vscode/master/docs/gifs/Logger.gif)
 
 ## Resolução de problemas
 
@@ -113,7 +117,7 @@ Alguns problemas conhecidos e como resolvê-los.
 | Ocorrência                                        | Solução                   |
 | ----------------------- | ----------------------- |
 | *Aplicação de pacotes de atualização(_patchs_)* | |
-Servidores `Lobo Guara`, versão iqual ou anterior a `19.3.0.4`, podem apresentar mensagem de erro no processo de validação e mesmo assim aplicá-lo. | Atualizar o servidor para versão mais recente. |
+Servidores `Lobo Guara`, versão iqual ou anterior a `19.3.0.5`, podem apresentar mensagem de erro no processo de validação e mesmo assim aplicá-lo. | Atualizar o servidor para versão mais recente. |
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
 
@@ -121,8 +125,7 @@ Se não conseguir resolvê-los, abra um [chamado](https://github.com/totvs/tds-v
 
 ## Melhorias
 
-Se você sentiu a falta de alguma funcionalidade deixe sua idéia (registrada)[https://github.com/totvs/tds-vscode/issues/new?assignees=&labels=&template=feature_request.md&title=].
-S
+Se você sentiu a falta de alguma funcionalidade deixe sua idéia [registrada](https://github.com/totvs/tds-vscode/issues/new?assignees=&labels=&template=feature_request.md&title=).
 Ou se preferir colabore conosco e faça você mesmo. Veja como colaborar a seguir.
 
 ## Desenvolvimento Colaborativo
@@ -189,4 +192,4 @@ As extensões abaixo não devem ser utilizadas junto com o _TDS for VS-Code_ por
 - [4gl Outline Dxc](https://www.vsixhub.com/vsix/14295/)
 - [advpl-vscode](https://github.com/totvs/advpl-vscode)
 
-> Caso você perceba que alguma extensão de terceiros esta interferindo no _TDS for VS-Code_ favor abrir um [chamado](https://github.com/totvs/tds-vscode/issues).
+> Caso você perceba que alguma outra extensão de terceiros está interferindo no _TDS for VS-Code_, favor abrir um [chamado](https://github.com/totvs/tds-vscode/issues) informando detalhes da extensão e o problema causado.

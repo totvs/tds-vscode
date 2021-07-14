@@ -30,6 +30,7 @@ import { reconnectLastServer } from "./serversView";
 import * as nls from "vscode-nls";
 import { syncSettings } from "./server/languageServerSettings";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
+import Utils from './utils';
 
 let localize = nls.loadMessageBundle();
 
@@ -81,7 +82,42 @@ export function getLanguageClient(
     })
   );
 
-  let args = ["--language-server"].concat(clientConfig["launchArgs"]);
+  let args = ["--language-server"];
+
+  let config = vscode.workspace.getConfiguration('totvsLanguageServer');
+
+  let behavior = '--enableAutoComplete=';
+  let behaviorConfig = config.get('editor.toggle.autocomplete');
+  if (behaviorConfig) {
+    behavior += behaviorConfig;
+    args = args.concat(behavior);
+  }
+
+  let notificationlevel = '--notificationLevel=';
+  let notificationlevelConfig = config.get('editor.show.notification');
+  if (notificationlevelConfig) {
+    notificationlevel += notificationlevelConfig;
+    args = args.concat(notificationlevel);
+  }
+
+  let fsencoding = '--fsencoding=';
+  let fsencodingConfig = config.get('filesystem.encoding');
+  if (fsencodingConfig) {
+    fsencoding += fsencodingConfig;
+    args = args.concat(fsencoding);
+  }
+
+  const servers = Utils.getServersConfig();
+  if (servers.includes) {
+    let includesList = servers.includes as Array<string>;
+    let includes = '--includes=';
+    includesList.forEach((includeItem) => {
+      includes += includeItem + ';';
+    });
+    args = args.concat(includes.substring(0, includes.length - 1));
+  }
+
+  args = args.concat(clientConfig["launchArgs"]);
 
   let env: any = {};
   let kToForward = ["ProgramData", "PATH", "LD_LIBRARY_PATH", "HOME", "USER"];
@@ -160,8 +196,6 @@ export function getLanguageClient(
       const configADVPL = vscode.workspace.getConfiguration(
         "totvsLanguageServer"
       ); //transformar em configuracao de workspace
-
-      syncSettings();
 
       let isReconnectLastServer = configADVPL.get("reconnectLastServer");
       if (isReconnectLastServer) {
