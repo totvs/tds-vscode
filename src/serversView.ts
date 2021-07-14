@@ -410,6 +410,10 @@ function doFinishConnectProcess(
     serverProvider.connectedServerItem = serverItem;
   }
   runCommandUpdateMonitor();
+  //let isSafeRPO = serverItem.isSafeRPO; // this is not working returning => undefined
+  let isSafeRPO = serverItem.buildVersion.localeCompare('7.00.191205P') > 0;
+  // custom context tds-vscode.isSafeRPO
+  vscode.commands.executeCommand('setContext', 'tds-vscode.isSafeRPO', isSafeRPO);
 }
 
 /*

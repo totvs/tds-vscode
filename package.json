@@ -1433,11 +1433,6 @@
           "group": "inline@1"
         },
         {
-          "command": "totvs-developer-studio.delete.file.fromRPO",
-          "when": "view == totvs_server && viewItem == serverItem",
-          "group": "EtotvsRPO@2"
-        },
-        {
           "command": "totvs-developer-studio.add",
           "when": "view == totvs_server",
           "group": "ABtotvsServer@3"
@@ -1485,12 +1480,17 @@
         {
           "command": "totvs-developer-studio.rpoCheckIntegrity",
           "when": "view == totvs_server && viewItem == serverItem",
-          "group": "EtotvsRPO@1"
+          "group": "EtotvsRPO@2"
         },
         {
           "command": "totvs-developer-studio.revalidateRPO",
-          "when": "view == totvs_server && viewItem == serverItemSafeRpo",
-          "group": "EtotvsRPO@1"
+          "when": "view == totvs_server && viewItem == serverItem && tds-vscode.isSafeRPO",
+          "group": "EtotvsRPO@3"
+        },
+        {
+          "command": "totvs-developer-studio.delete.file.fromRPO",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "EtotvsRPO@4"
         }
       ],
       "view/title": [
