@@ -1,5 +1,9 @@
 # Changelog
 
+# Versão [1.3.3]
+
+TODO
+
 # Versão [1.3.2]
 
 ## Erro ao tentar aplicar patch (https://github.com/totvs/tds-vscode/issues/737)
