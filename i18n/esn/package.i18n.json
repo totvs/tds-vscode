@@ -127,5 +127,6 @@
 	"tds.package.templateApply": "Aplicación de Template",
 	"tds.package.templateApply.fromFile": "Aplicar Template desde archivo",
 	"tds.package.rpoToken": "Poner el Token de Compilación",
-	"tds.package.clearRpoToken": "Eliminar el Token de Compilación"
+	"tds.package.clearRpoToken": "Eliminar el Token de Compilación",
+	"tds.package.filesystem.encoding": "Establecer la codificación del sistema de archivos"
   }

@@ -798,15 +798,15 @@ export default class Utils {
   /**
    *Salva uma nova configuracao de include.
    */
-  static saveIncludePath(path) {
+  static saveIncludePath(includePath) {
     const servers = Utils.getServersConfig();
 
-    servers.includes = path;
+    servers.includes = includePath;
 
     Utils.persistServersInfo(servers);
 
     let includes = '';
-    path.forEach((includeItem) => {
+    includePath.forEach((includeItem) => {
       includes += includeItem + ';';
     });
     changeSettings({

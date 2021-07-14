@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as nls from 'vscode-nls';
 import Utils from './utils';
+import { changeSettings } from './server/languageServerSettings';
 
 let localize = nls.loadMessageBundle();
 
@@ -68,8 +69,28 @@ class ServerItemProvider
     if (this._connectedServerItem !== server) {
       this._connectedServerItem = server;
 
+      let includes = '';
       if (server === undefined) {
         Utils.clearConnectedServerConfig();
+        const serversConfig = Utils.getServersConfig();
+        if (serversConfig.includes) {
+          let includesList = serversConfig.includes as Array<string>;
+          includesList.forEach((includeItem) => {
+            includes += includeItem + ';';
+          });
+        }
+      }
+      else {
+        if (server.includes) {
+          server.includes.forEach((includeItem) => {
+            includes += includeItem + ';';
+          });
+        }
+      }
+      if (includes) {
+        changeSettings({
+          changeSettingInfo: { scope: 'advpls', key: 'includes', value: includes },
+        });
       }
 
       this.refresh();
