@@ -188,7 +188,6 @@ export function sendAuthenticateRequest(
         }
       },
       (err: ResponseError<object>) => {
-        vscode.window.showErrorMessage(err.message);
         return { sucess: false, token: '' };
       }
     );
@@ -250,7 +249,6 @@ export function sendValidationRequest(
         };
       },
       (err: ResponseError<object>) => {
-        vscode.window.showErrorMessage(err.message);
         return {
           build: '',
           secure: false,
@@ -523,7 +521,6 @@ export function sendRpoToken(
   server: ServerItem,
   rpoToken: IRpoToken
 ): Thenable<IRpoTokenResult> {
-  //if (rpoToken.file === '') {
   if (rpoToken.token === '') {
     return Promise.resolve({ sucess: false, message: '' });
   }
