@@ -12,6 +12,10 @@
 
 - Revisto o tratamento do retorno de falha da conexão com o servidor.
 
+### Melhoria
+
+- Revalidate RPO: implementado comando para revalidar o RPO em servidores versão 20.3.0.0 ou superior.
+
 # Versão [1.3.2]
 
 ## Erro ao tentar aplicar patch (https://github.com/totvs/tds-vscode/issues/737)

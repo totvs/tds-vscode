@@ -37,6 +37,7 @@ import {
 import { deleteFileFromRPO } from './server/deleteFileFromRPO';
 import { defragRpo } from './server/defragRPO';
 import { rpoCheckIntegrity } from './server/rpoCheckIntegrity';
+import { revalidateRpo } from './server/revalidateRPO';
 import { serverSelection } from './inputConnectionParameters';
 import { inspectObject } from './inspect/inspectObject';
 import { inspectFunctions } from './inspect/inspectFunction';
@@ -329,6 +330,12 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand('totvs-developer-studio.rpoCheckIntegrity', () =>
       rpoCheckIntegrity()
+    )
+  );
+  //Ação para revalidar o RPO do servidor corrente.
+  context.subscriptions.push(
+    commands.registerCommand('totvs-developer-studio.revalidateRPO', () =>
+      revalidateRpo()
     )
   );
   //Ação para deletar um fonte selecionado do RPO.
