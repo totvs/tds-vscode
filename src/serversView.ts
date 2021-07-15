@@ -210,13 +210,6 @@ export class ServersExplorer {
                       ConnTypeIds.CONNT_DEBUGGER,
                       false
                     );
-                  } else {
-                    vscode.window.showErrorMessage(
-                      localize(
-                        "tds.webview.serversView.couldNotConn",
-                        "Could not connect to server"
-                      )
-                    );
                   }
                   return;
                 },
@@ -458,7 +451,7 @@ export function connectServer(
       `Conectando-se ao servidor [${serverItem.name}]`,
       sendConnectRequest(serverItem, environment, connType).then(
         (result: ITokenInfo) => {
-          if (result) {
+          if (result.sucess) {
             if (result.needAuthentication) {
               serverItem.token = result.token;
               inputAuthenticationParameters(serverItem, environment);
@@ -467,14 +460,12 @@ export function connectServer(
               doFinishConnectProcess(serverItem, result.token, environment);
             }
           }
-          return result;
+          return result.sucess;
         },
         (error) => {
           vscode.window.showErrorMessage(error);
         }
-      )//.then((result: ITokenInfo) => {
-        //executeCommand("_totvs-developer-studio.updateMonitorPanel");
-      //})
+      )
     );
   }
 }
@@ -506,7 +497,6 @@ export function authenticate(
       },
       (error: any) => {
         vscode.window.showErrorMessage(error);
-        return false;
       }
     )
     .then((token: string) => {
