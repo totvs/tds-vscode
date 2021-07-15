@@ -1,8 +1,10 @@
 # Changelog
 
-# Versão [1.3.3]
+# Versão [1.3.x]
 
-TODO
+### Melhoria
+
+- Revalidate RPO: implementado comando para revalidar o RPO em Application Server Harpia ou superiores.
 
 # Versão [1.3.2]
 
