@@ -151,7 +151,6 @@ export function sendConnectRequest(
         }
       },
       (err: ResponseError<object>) => {
-        vscode.window.showErrorMessage(err.message);
         return { sucess: false, token: '', needAuthentication: false };
       }
     );
@@ -223,7 +222,6 @@ export function sendReconnectRequest(
         }
       },
       (error: any) => {
-        vscode.window.showErrorMessage(error.message);
         return { sucess: false, environment: '', user: '', token: '' };
       }
     );
