@@ -1,8 +1,16 @@
 # Changelog
 
-# Versão [1.3.3]
+# Versão [1.3.x]
 
-TODO
+## Bug na falha de conexão com um servidor (https://github.com/totvs/tds-vscode/issues/678)
+
+### Problema:
+
+- Ao tentar se conectar a um servidor inacessível, ocorria erro mas o servidor passava para o estado de conectado (ícone verde).
+
+### Solução:
+
+- Revisto o tratamento do retorno de falha da conexão com o servidor.
 
 # Versão [1.3.2]
 
