@@ -37,6 +37,16 @@ Se confirma, uma tabela de resultados semelhante a abaixo será exibida, ordenad
 
 ![TableCompileResult](./compile/CompileResults.PNG)
 
+## Acesso exclusivo ao _RPO_
+
+Para compilar necessitamos de acesso exclusivo ao RPO. Caso contrário, o Application Server retornará um erro de:
+
+> It wasn't possible to obtain exclusive access to the objects repository
+
+Nesse caso você precisará desconectar todos os usuário (inclusive JOBS) que estejam acessando o _RPO_.
+
+Uma forma mais simples é configurar a chave [buildKillUser](https://centraldeatendimento.totvs.com/hc/pt-br/articles/360018481631-MP-ADVPL-ENCERRAR-TODAS-AS-CONEX%C3%95ES-QUANDO-SOLICITADO-UMA-COMPILA%C3%87%C3%83O-) no Application Server e ele fará a desconexão de todos os usuários (e JOBS) antes de efetuar a compilação.
+
 ## Configurações de Compilação
 
 O processo de compilação pode ter o seu compoprtamento modificado, acessando
