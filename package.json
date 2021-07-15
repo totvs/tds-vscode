@@ -581,8 +581,8 @@
       },
       {
         "command": "totvs-developer-studio.revalidateRPO",
-        "title": "tds.package.revalidate.rpo.title",
-        "description": "tds.package.revalidate.rpo.description",
+        "title": "%tds.package.revalidate.rpo.title%",
+        "description": "%tds.package.revalidate.rpo.description%",
         "category": "TOTVS"
       },
       {

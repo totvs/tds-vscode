@@ -37,6 +37,8 @@
 	"tds.package.defrag.rpo.description": "Дефрагментировать текущий RPO",
 	"tds.package.rpo.check.integrity.title": "Проверить целостность RPO",
 	"tds.package.rpo.check.integrity.description": "Проверить целостность текущего RPO",
+	"tds.package.revalidate.rpo.title": "Revalidate RPO",
+	"tds.package.revalidate.rpo.description": "Revalidate current RPO",
 	"tds.package.build.file.title": "Компилировать файл / папку",
 	"tds.package.build.file.description": "Компилировать файл / папку на серверах",
 	"tds.package.rebuild.file.title": "Перекомпилировать файл / папку",
