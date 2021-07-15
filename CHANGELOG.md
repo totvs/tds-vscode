@@ -4,7 +4,7 @@
 
 ### Melhoria
 
-- Revalidate RPO: implementado comando para revalidar o RPO em Application Server Harpia ou superiores.
+- Revalidate RPO: implementado comando para revalidar o RPO em servidores versão 20.3.0.0 ou superior.
 
 # Versão [1.3.2]
 
