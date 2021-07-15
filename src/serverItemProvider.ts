@@ -357,7 +357,7 @@ export class ServerItem extends vscode.TreeItem {
     ),
   };
 
-  contextValue = this.isConnected ? (!this.isSafeRPO ? 'serverItem' : 'serverItem') : 'serverItemNotConnected';
+  contextValue = this.isConnected ? 'serverItem' : 'serverItemNotConnected';
 }
 
 export class EnvSection extends vscode.TreeItem {
