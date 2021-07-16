@@ -7,10 +7,12 @@
 ### Problema:
 
 - Ao tentar se conectar a um servidor inacessível, ocorria erro mas o servidor passava para o estado de conectado (ícone verde).
+- Erro no TDS-Linter com arquivos .CH
 
 ### Solução:
 
 - Revisto o tratamento do retorno de falha da conexão com o servidor.
+- Arquivos .CH não devem ser tratados pelo TDS-Linter
 
 ### Melhoria
 
