@@ -272,6 +272,12 @@ input::-webkit-calendar-picker-indicator {
   cursor: pointer;
 }
 
+.totvs-colDetail {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
 /*
 .btn-default:hover {
 	color: white;
