@@ -1,4 +1,7 @@
 import * as vscode from 'vscode';
+import * as nls from 'vscode-nls';
+
+const localize = nls.loadMessageBundle();
 
 interface ConnectionNode {
   // These properties come directly from the language server.
@@ -26,6 +29,7 @@ import {
 } from './rpoInfo/rpoPath';
 import { IRpoToken } from './rpoToken';
 import Utils from './utils';
+import { rejects } from 'assert';
 
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
@@ -403,11 +407,9 @@ export function sendCompilation(
   hasAdvplsource: boolean
 ): Thenable<CompileResult> {
   if (_debugEvent) {
-    // vscode.window.showWarningMessage(
-    //   'Esta operação não é permitida durante uma depuração.'
-    // );
-    throw new Error('Esta operação não é permitida durante uma depuração.');
+    throw new Error('This operation is not allowed during a debug..');
   }
+
   return languageClient.sendRequest('$totvsserver/compilation', {
     compilationInfo: {
       connectionToken: server.token,
@@ -425,9 +427,9 @@ export function sendCompilation(
 export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
   if (_debugEvent) {
     // vscode.window.showWarningMessage(
-    //   'Esta operação não é permitida durante uma depuração.'
+    //   'This operation is not allowed during a debug..'
     // );
-    throw new Error('Esta operação não é permitida durante uma depuração.');
+    throw new Error('This operation is not allowed during a debug..');
   }
 
   return languageClient
@@ -448,7 +450,7 @@ export function sendPatchInfo(
 ): Thenable<any> {
   if (_debugEvent) {
     vscode.window.showWarningMessage(
-      'Esta operação não é permitida durante uma depuração.'
+      'This operation is not allowed during a debug..'
     );
     return Promise.resolve();
   }
@@ -562,9 +564,10 @@ export function sendGetPatchDir(
         includeDir: includeDir,
       },
     })
-    .then(
-      (response: IGetPatchDirResult) => {
-        return response;
-      }
-    );
+    .then((response: IGetPatchDirResult) => {
+      return response;
+    });
+}
+function showWarningMessage(arg0: any) {
+  throw new Error('Function not implemented.');
 }

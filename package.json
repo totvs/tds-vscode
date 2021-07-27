@@ -862,23 +862,25 @@
         "command": "totvs-developer-studio.build.file",
         "key": "ctrl+f9",
         "mac": "cmd+f9",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && tds-vscode.canBuild"
       },
       {
         "command": "totvs-developer-studio.rebuild.file",
         "key": "ctrl+shift+f9",
         "mac": "cmd+shift+f9",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && tds-vscode.canBuild"
       },
       {
         "command": "totvs-developer-studio.build.openEditors",
         "key": "ctrl+f10",
-        "mac": "cmd+f10"
+        "mac": "cmd+f10",
+        "when": "tds-vscode.canBuild"
       },
       {
         "command": "totvs-developer-studio.rebuild.openEditors",
         "key": "ctrl+shift+f10",
-        "mac": "cmd+shift+f10"
+        "mac": "cmd+shift+f10",
+        "when": "tds-vscode.canBuild"
       },
       {
         "command": "totvs-developer-studio.toggle.autocomplete.behavior",
@@ -1306,17 +1308,19 @@
     "menus": {
       "explorer/context": [
         {
-          "when": "explorerResourceIsFolder",
+          "when": "explorerResourceIsFolder && tds-vscode.canBuild",
           "command": "totvs-developer-studio.build.workspace",
           "alt": "totvs-developer-studio.rebuild.workspace",
           "group": "totvsBuild@1"
         },
         {
+          "when": "tds-vscode.canBuild",
           "command": "totvs-developer-studio.build.file",
           "alt": "totvs-developer-studio.rebuild.file",
           "group": "totvsBuild@3"
         },
         {
+          "when": "tds-vscode.canBuild",
           "command": "totvs-developer-studio.build.openEditors",
           "alt": "totvs-developer-studio.rebuild.openEditors",
           "group": "totvsBuild@4"

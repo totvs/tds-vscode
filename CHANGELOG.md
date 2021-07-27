@@ -17,6 +17,7 @@
 ### Melhoria
 
 - Revalidate RPO: implementado comando para revalidar o RPO em servidores versão 20.3.0.0 ou superior.
+- Implementando controle de compilação em andamento, evitando o inicio de depuração/execução durante o processo.
 
 # Versão [1.3.2]
 

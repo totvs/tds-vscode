@@ -102,7 +102,8 @@ export async function getProgramName() {
 
   try {
     return await new Promise<ProgramArgs | undefined>((resolve, reject) => {
-      const qp: QuickPick<QuickPickProgram> = window.createQuickPick<QuickPickProgram>();
+      const qp: QuickPick<QuickPickProgram> =
+        window.createQuickPick<QuickPickProgram>();
       qp.title = localize(
         'tds.vscode.getProgramName',
         'Please enter the name of an AdvPL/4GL function'
@@ -339,7 +340,8 @@ async function pickProgramArguments() {
 
   try {
     return await new Promise<string[] | undefined>((resolve, reject) => {
-      const qp: QuickPick<QuickPickProgram> = window.createQuickPick<QuickPickProgram>();
+      const qp: QuickPick<QuickPickProgram> =
+        window.createQuickPick<QuickPickProgram>();
       qp.title = localize(
         'tds.vscode.getProgramArguments',
         'Enter comma-separated list of arguments'

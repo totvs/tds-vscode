@@ -1,8 +1,8 @@
 import {
   LanguageClient,
   ServerOptions,
-  LanguageClientOptions
-} from "vscode-languageclient";
+  LanguageClientOptions,
+} from 'vscode-languageclient';
 
 export class TotvsLanguageClientA extends LanguageClient {
   constructor(
@@ -10,8 +10,8 @@ export class TotvsLanguageClientA extends LanguageClient {
     clientOptions: LanguageClientOptions
   ) {
     super(
-      "totvsLanguageServer",
-      "TOTVS Language Server",
+      'totvsLanguageServer',
+      'TOTVS Language Server',
       serverOptions,
       clientOptions
     );
@@ -20,5 +20,4 @@ export class TotvsLanguageClientA extends LanguageClient {
   registerBuiltinFeatures() {
     super.registerBuiltinFeatures();
   }
-
 }
