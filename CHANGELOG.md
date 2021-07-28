@@ -14,6 +14,16 @@
 - Revisto o tratamento do retorno de falha da conexão com o servidor.
 - Arquivos .CH não devem ser tratados pelo TDS-Linter
 
+## Erro na indentação automática (https://github.com/totvs/tds-vscode/issues/701)
+
+### Problema:
+
+Ao indentar o fonte onde há dentro de uma estrutura For, uma variável que comece com as letras `n e x t`, ocorre erro de indentação.
+
+### Solução:
+
+- Revisto processo e regras de expressão.
+
 ### Melhoria
 
 - Revalidate RPO: implementado comando para revalidar o RPO em servidores versão 20.3.0.0 ou superior.
