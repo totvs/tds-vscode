@@ -22,6 +22,8 @@ import {
   RevealOutputChannelOn,
   ServerOptions,
   ProvideOnTypeFormattingEditsSignature,
+  ProvideDocumentFormattingEditsSignature,
+  ProvideDocumentRangeFormattingEditsSignature,
 } from 'vscode-languageclient/lib/main';
 import * as vscode from 'vscode';
 import { statSync, chmodSync } from 'fs';
@@ -177,7 +179,9 @@ export function getLanguageClient(
     initializationOptions: clientConfig,
     middleware: {
       // provideCodeLenses: provideCodeLens,
-      //provideOnTypeFormattingEdits: provideOnTypeFormatting,
+      provideOnTypeFormattingEdits: provideOnTypeFormatting,
+      provideDocumentFormattingEdits: provideDocumentFormattingEdits,
+      provideDocumentRangeFormattingEdits: provideDocumentRangeFormattingEdits,
     },
     // initializationFailedHandler: (e) => {
     // 	console.log(e);
@@ -320,6 +324,27 @@ function displayCodeLens(
   }
 }
 
+function provideDocumentRangeFormattingEdits(
+  this: void,
+  document: TextDocument,
+  range: Range,
+  options: FormattingOptions,
+  token: CancellationToken,
+  next: ProvideDocumentRangeFormattingEditsSignature
+): ProviderResult<TextEdit[]> {
+  return next(document, range, options, token);
+}
+
+function provideDocumentFormattingEdits(
+  this: void,
+  document: TextDocument,
+  options: FormattingOptions,
+  token: CancellationToken,
+  next: ProvideDocumentFormattingEditsSignature
+): ProviderResult<TextEdit[]> {
+  return next(document, options, token);
+}
+
 function provideOnTypeFormatting(
   document: TextDocument,
   position: Position,
@@ -328,12 +353,7 @@ function provideOnTypeFormatting(
   token: CancellationToken,
   next: ProvideOnTypeFormattingEditsSignature
 ): ProviderResult<TextEdit[]> {
-  const line: vscode.TextLine = document.lineAt(position.line - 1);
-  const text: string = line.text.toLowerCase();
-  const range = line.range;
-  const result: vscode.TextEdit[] = [];
+  //const result: vscode.TextEdit[] = [];
 
-  result.push(vscode.TextEdit.replace(range, text));
-  result.push(vscode.TextEdit.insert(range.start, 'AAAAAAA'));
-  return result;
+  return next(document, position, ch, options, token);
 }
