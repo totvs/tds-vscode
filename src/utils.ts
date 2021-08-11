@@ -578,7 +578,18 @@ export default class Utils {
     if (includes.length > 0) {
       if (absolutePath) {
         // resolve caminhos relativos ao workspace
-        const ws: string = (vscode.window.activeTextEditor) ? vscode.workspace.getWorkspaceFolder(vscode.window.activeTextEditor.document.uri).uri.fsPath : '';
+        let ws: string = '';
+
+        if (vscode.window.activeTextEditor) {
+          const workspaceFolder: vscode.WorkspaceFolder =
+            vscode.workspace.getWorkspaceFolder(
+              vscode.window.activeTextEditor.document.uri
+            );
+          if (workspaceFolder) {
+            ws = workspaceFolder.uri.fsPath;
+          }
+        }
+
         includes.forEach((value, index, elements) => {
           if (value.startsWith('.')) {
             value = path.resolve(ws, value);

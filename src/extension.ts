@@ -662,6 +662,7 @@ export function activate(context: ExtensionContext) {
   // Register custom editor for patch files
   context.subscriptions.push(PatchEditorProvider.register(context));
 
+  blockBuildCommands(false);
   showBanner();
 
   let exportedApi = {
@@ -777,4 +778,22 @@ function showBanner(force: boolean = false) {
       /* prettier-ignore-end */
     }
   }
+}
+
+let canBuild: boolean;
+export function blockBuildCommands(block: boolean) {
+  canBuild = !block;
+  vscode.commands.executeCommand('setContext', 'tds-vscode.canBuild', canBuild);
+}
+
+export function canDebug(): boolean {
+  const result: boolean = canBuild;
+
+  if (!result) {
+    vscode.window.showWarningMessage(
+      'Request cancelled. Build process in progress.'
+    );
+  }
+
+  return result;
 }

@@ -7,14 +7,38 @@
 ### Problema:
 
 - Ao tentar se conectar a um servidor inacessível, ocorria erro mas o servidor passava para o estado de conectado (ícone verde).
+- Erro no TDS-Linter com arquivos .CH
 
 ### Solução:
 
 - Revisto o tratamento do retorno de falha da conexão com o servidor.
+- Arquivos .CH não devem ser tratados pelo TDS-Linter
+
+## Erro na indentação automática (https://github.com/totvs/tds-vscode/issues/701)
+
+### Problema:
+
+Ao indentar o fonte onde há dentro de uma estrutura For, uma variável que comece com as letras `n e x t`, ocorre erro de indentação.
+
+### Solução:
+
+- Revisto processo e regras de expressão.
 
 ### Melhoria
 
 - Revalidate RPO: implementado comando para revalidar o RPO em servidores versão 20.3.0.0 ou superior.
+- Implementando controle de compilação em andamento, evitando o inicio de depuração/execução durante o processo.
+
+## Funcionalidades para o Logix perdidas (https://github.com/totvs/tds-vscode/issues/766)
+
+### Problema:
+
+Após atualização as tags Logix deixaram de ficar em caixa alta.
+
+### Solução:
+
+- Revisto o processo de formatação de fontes 4GL.
+- Necessário o usuário [ativar a formatação](docs/formatter/format_config.md).
 
 # Versão [1.3.2]
 
@@ -141,7 +165,7 @@
 
 ### Solução:
 
-- Processo de formatação revisado, passando a tratar palavras-chaves durante a digitação. Detalhes em (Formatação de código fonte)[docs/format_config.md]
+- Processo de formatação revisado, passando a tratar palavras-chaves durante a digitação. Detalhes em (Formatação de código fonte)[docs/formatter/format_config.md]
 
 ## Debug do mesmo objetos de instancias diferentes avaliando erroneamente valor de atributos (https://github.com/totvs/tds-vscode/issues/655)
 
@@ -351,7 +375,7 @@ https://github.com/totvs/tds-vscode/issues/590#issuecomment-742527102.
 
 ## Revisão de processos de edição 4GL
 
-- Processo de formatação revisado. Detalhes em (Formatação de código fonte)[docs/format_config.md]
+- Processo de formatação revisado. Detalhes em (Formatação de código fonte)[docs/formatter/format_config.md]
 
 ---
 
