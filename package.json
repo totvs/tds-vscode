@@ -492,6 +492,12 @@
           "default": false,
           "description": "%tds.package.workspaceServerConfig%"
         },
+        "totvsLanguageServer.editor.linter": {
+          "scope": "window",
+          "type": "boolean",
+          "default": true,
+          "description": "%tds.package.editor.linter%"
+        },
         "totvsLanguageServer.filesystem.encoding": {
           "scope": "window",
           "type": "string",

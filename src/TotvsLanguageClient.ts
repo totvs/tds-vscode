@@ -117,6 +117,13 @@ export function getLanguageClient(
     args = args.concat(includes.substring(0, includes.length - 1));
   }
 
+  let linter = '--linter=';
+  let linterConfig = config.get('editor.linter');
+  if (linter) {
+    linter += linterConfig ? "enabled" : "disabled";
+    args = args.concat(linter);
+  }
+
   args = args.concat(clientConfig["launchArgs"]);
 
   let env: any = {};

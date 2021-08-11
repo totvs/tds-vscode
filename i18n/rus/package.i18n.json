@@ -131,5 +131,6 @@
 	"tds.package.templateApply.fromFile": "Apply Template from file",
 	"tds.package.rpoToken": "Input Compilation Token",
 	"tds.package.clearRpoToken": "Clear Compilation Token",
-	"tds.package.filesystem.encoding": "Set file system encoding"
-  }
+	"tds.package.filesystem.encoding": "Set file system encoding",
+	"tds.package.editor.linter": "Enable Linter"
+}
