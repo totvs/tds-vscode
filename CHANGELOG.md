@@ -2,17 +2,45 @@
 
 # Versão [1.3.x]
 
+## Consumo de memória durante o Debug pelo DebugAdapter (https://github.com/totvs/tds-vscode/issues/738)
+
+### Problema:
+
+- Durante o Debug, o programa debugAdapter aumenta muito o consumo de memória
+
+### Solução:
+
+- Alguns problemas de vazamento de memória foram corrigidos
+
+## Consumo de memória alto pelo ADVPLS (https://github.com/totvs/tds-vscode/issues/765)
+
+### Problema:
+
+- Durante o uso do Linter, o consumo de memória do ADVPLS aumenta e só diminuia fechando o VSCode
+
+### Solução:
+
+- Foram detectados vazamentos de memória durante a análise dos fontes pelo Linter e corrigidos
+
+## Bug no Linter com arquivos CH
+
+### Problema:
+
+- Erro no TDS-Linter com arquivos .CH
+
+### Solução:
+
+- Arquivos .CH não devem ser tratados pelo TDS-Linter
+
 ## Bug na falha de conexão com um servidor (https://github.com/totvs/tds-vscode/issues/678)
 
 ### Problema:
 
 - Ao tentar se conectar a um servidor inacessível, ocorria erro mas o servidor passava para o estado de conectado (ícone verde).
-- Erro no TDS-Linter com arquivos .CH
 
 ### Solução:
 
 - Revisto o tratamento do retorno de falha da conexão com o servidor.
-- Arquivos .CH não devem ser tratados pelo TDS-Linter
 
 ## Erro na indentação automática (https://github.com/totvs/tds-vscode/issues/701)
 
@@ -24,7 +52,7 @@ Ao indentar o fonte onde há dentro de uma estrutura For, uma variável que come
 
 - Revisto processo e regras de expressão.
 
-### Melhoria
+## Melhorias
 
 - Revalidate RPO: implementado comando para revalidar o RPO em servidores versão 20.3.0.0 ou superior.
 - Implementando controle de compilação em andamento, evitando o inicio de depuração/execução durante o processo.
@@ -52,7 +80,7 @@ Após atualização as tags Logix deixaram de ficar em caixa alta.
 
 - Alterada a validação para não impedir a aplicação. Gera apenas um Warning, pois caso ocorra um erro pode-se tentar corrigir renomeando os caminhos.
 
-### Melhoria
+### Melhorias:
 
 - Alterações internas no processo de carga de parametrização inicial do LS.
 - Implementações de tratamento de encoding dos caminhos do sistema de arquivos para cp1252 (padrão) ou cp1252 (russo).
