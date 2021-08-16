@@ -52,6 +52,16 @@ Ao indentar o fonte onde há dentro de uma estrutura For, uma variável que come
 
 - Revisto processo e regras de expressão.
 
+## Ao debugar no Linux o smartclient não fecha automaticamente (https://github.com/totvs/tds-vscode/issues/685)
+
+### Problema:
+
+Ao solitar a finalização da depuração, no Linux,  o smartclient não fecha automaticamente. 
+ 
+### Solução:
+
+- Implementado procedimento de encerramento do SmartClient.
+
 ## Melhorias
 
 - Revalidate RPO: implementado comando para revalidar o RPO em servidores versão 20.3.0.0 ou superior.
