@@ -30,7 +30,7 @@ class FourglFormatting
     const result: vscode.TextEdit[] = [];
 
     try {
-      const line: vscode.TextLine = document.lineAt(position.line - 1);
+      const line: vscode.TextLine = document.lineAt(position.line);
       if (line.text.trim() !== '') {
         const ast = parser(document.languageId, line.text + '\n'); //obrigatorio \n
         const nodes = this.findNodes(Token4GlType.keyword, ast);
