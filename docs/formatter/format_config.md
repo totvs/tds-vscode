@@ -16,9 +16,7 @@ Lhe será apresentado algo semelhante a:
 
 O bloco `[4gl]` (ou `[advpl]`), são configurações ligadas a ativação dos processos pelo _VS-Code_ associadas ao editor da linguagem e `[4gl.formatter]` (ou `[advpl.formatter]`), são as opções de formatação específicas.
 
-Para sobrescrever os valores padrão, acione `Edit in settings.json` ou `Add item`, informando os valores solicitados.
-
-![4GL formatter](format_settings_formatter.png)
+Para sobrescrever os valores padrão, acione `Edit in settings.json`.
 
 > Saiba mais em [Formatting](https://code.visualstudio.com/docs/editor/codebasics#_formatting) e [Indentation](https://code.visualstudio.com/docs/editor/codebasics#_indentation).
 
