@@ -1,31 +1,30 @@
-import React, { useReducer, RefObject } from "react";
+import React, { useReducer, RefObject } from 'react';
 import {
   makeStyles,
   useTheme,
   Theme,
-  createStyles
-} from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TablePagination from "@material-ui/core/TablePagination";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import Switch from "@material-ui/core/Switch";
-import IconButton from "@material-ui/core/IconButton";
-import FirstPageIcon from "@material-ui/icons/FirstPage";
+  createStyles,
+} from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TablePagination from '@material-ui/core/TablePagination';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import Switch from '@material-ui/core/Switch';
+import IconButton from '@material-ui/core/IconButton';
+import FirstPageIcon from '@material-ui/icons/FirstPage';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
-import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
-import LastPageIcon from "@material-ui/icons/LastPage";
-import { ICommand, CommandToDA, CommandToPage } from "../Command";
-import { DebugSessionCustomEvent } from "vscode";
-import { FormControlLabel, Button } from "@material-ui/core";
-import SourcesDialog from "./SourcesDialog"
-import ChangePageWaitDialog from "./ChangePageWaitDialog"
-
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import LastPageIcon from '@material-ui/icons/LastPage';
+import { ICommand, CommandToDA, CommandToPage } from '../Command';
+import { DebugSessionCustomEvent } from 'vscode';
+import { FormControlLabel, Button } from '@material-ui/core';
+import SourcesDialog from './SourcesDialog';
+import ChangePageWaitDialog from './ChangePageWaitDialog';
 
 enum KeyCode {
   BACKSPACE = 8,
@@ -61,67 +60,65 @@ enum KeyCode {
   CONTROL = 17,
   ALT = 18,
   PAUSE_BREAK = 19,
-  CAPSLOCK = 20
+  CAPSLOCK = 20,
 }
 
 const useStyles1 = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexShrink: 0,
-      marginLeft: theme.spacing(2.5)
-    }
+      marginLeft: theme.spacing(2.5),
+    },
   })
 );
 
-const tableStyles = makeStyles(_theme => ({
+const tableStyles = makeStyles((_theme) => ({
   root: {
-    width: "100%"
+    width: '100%',
   },
   tableContainer: {
     //Esse parametro faz com que o container ocupe todo espaço disponivel do webview
-    flex: 1
+    flex: 1,
     //maxHeight: 610
     //flexDirection: "row",
     //flexGrow: "inherit"
   },
-  table: {
-  },
+  table: {},
   headCell: {
     //backgroundColor: this.props.muiTheme.palette.primary1Color,
     //color: "white"
-    backgroundColor: "rgb(230,230,230)"
+    backgroundColor: 'rgb(230,230,230)',
     //color: "white"
   },
   tableRow: {
-    "&:hover": {
-      backgroundColor: "gainsboro !important"
-    }
+    '&:hover': {
+      backgroundColor: 'gainsboro !important',
+    },
   },
   pagination: {
     //backgroundColor: "blue"
   },
   selectedTableRow: {
-    backgroundColor: "grey !important"
+    backgroundColor: 'grey !important',
   },
   srcNotFound: {
-    backgroundColor: "rgb(255,204,204) !important",
+    backgroundColor: 'rgb(255,204,204) !important',
     //backgroundColor: "LIGHTCORAL !important",
     //textDecoration: "line-through black",
-    WebkitTextDecorationStyle: "solid"
+    WebkitTextDecorationStyle: 'solid',
   },
   sources: {
-    alignItems: "right",
-    justifyContent: "right",
-    margin: _theme.spacing(1)
-  }
-
+    alignItems: 'right',
+    justifyContent: 'right',
+    margin: _theme.spacing(1),
+  },
 }));
 
 interface Column {
-  id: "TimeStamp" | "SourceName" | "Line";
+  id: 'TimeStamp' | 'SourceName' | 'Line';
   label: string;
   minWidth?: number;
-  align?: "left" | "right" | "center";
+  align?: 'left' | 'right' | 'center';
   format?: (value: number) => string;
 }
 
@@ -130,22 +127,22 @@ const columns: Column[] = [
     id: 'TimeStamp',
     label: 'Time',
     minWidth: 10,
-    align: 'left'
+    align: 'left',
   },
   {
     id: 'SourceName',
     label: 'Source Name',
     minWidth: 10,
-    align: 'left'
+    align: 'left',
     //format: (value: number) => value.toLocaleString(),
   },
   {
     id: 'Line',
     label: 'Line',
     minWidth: 10,
-    align: 'left'
+    align: 'left',
     //format: (value: number) => value.toLocaleString(),
-  }
+  },
 ];
 
 interface TablePaginationActionsProps {
@@ -194,36 +191,36 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
         disabled={page === 0}
         aria-label="first page"
       >
-        {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
+        {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
       </IconButton>
       <IconButton
         onClick={handleBackButtonClick}
         disabled={page === 0}
         aria-label="previous page"
       >
-        {theme.direction === "rtl" ? (
+        {theme.direction === 'rtl' ? (
           <KeyboardArrowRight />
         ) : (
-            <KeyboardArrowLeft />
-          )}
+          <KeyboardArrowLeft />
+        )}
       </IconButton>
       <IconButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="next page"
       >
-        {theme.direction === "rtl" ? (
+        {theme.direction === 'rtl' ? (
           <KeyboardArrowLeft />
         ) : (
-            <KeyboardArrowRight />
-          )}
+          <KeyboardArrowRight />
+        )}
       </IconButton>
       <IconButton
         onClick={handleLastPageButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="last page"
       >
-        {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
+        {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
       </IconButton>
     </div>
   );
@@ -246,11 +243,15 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
 
   const [jsonBody, setJsonBody] = React.useState(debugEvent.body);
   const [dense, setDense] = React.useState(false);
-  const [ignoreSourcesNotfound, setIgnoreSourcesNotfound] = React.useState(debugEvent.body.ignoreSourcesNotFound);
+  const [ignoreSourcesNotfound, setIgnoreSourcesNotfound] = React.useState(
+    debugEvent.body.ignoreSourcesNotFound
+  );
   const [openSourcesDialog, setOpenSourcesDialog] = React.useState(false);
   const [openWaitPage, setOpenWaitPage] = React.useState(false);
   //Id da timeline inicial a ser selecionada. 500 para selcionar a primeira pois o replay sempre ira parar na primeira linha
-  const [selectedRowId, setSelectedRowId] = React.useState(jsonBody.currentSelectedTimeLineId);
+  const [selectedRowId, setSelectedRowId] = React.useState(
+    jsonBody.currentSelectedTimeLineId
+  );
   const [sources, setSources] = React.useState([]);
 
   //console.log("Do state:" + ignoreSourcesNotfound);
@@ -261,19 +262,20 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   ///console.log("TimeLineCount: " + jsonBody.timeLines.length);
   //console.log("totaItems: " + jsonBody.totalItems);
 
-
   const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDense(event.target.checked);
   };
 
-  const handleIgnoreSourceNotFount = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleIgnoreSourceNotFount = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     //setOpenWaitPage(true); //Essa flag aqui esta com problema
     let command: ICommand = {
       action: CommandToDA.SetIgnoreSourcesNotFound,
-      content: { isIgnoreSourceNotFound: event.target.checked }
+      content: { isIgnoreSourceNotFound: event.target.checked },
     };
     vscode.postMessage(command);
-    setIgnoreSourcesNotfound(oldValue => {
+    setIgnoreSourcesNotfound((oldValue) => {
       if (event !== undefined) {
         event.preventDefault();
       }
@@ -281,27 +283,31 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     });
   };
 
-  const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+  const handleChangePage = (
+    _event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
     setOpenWaitPage(true);
     let command: ICommand = {
       action: CommandToDA.ChangePage,
-      content: { newPage: newPage }
+      content: { newPage: newPage },
     };
     vscode.postMessage(command);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setOpenWaitPage(true);
     let command: ICommand = {
       action: CommandToDA.ChangeItemsPerPage,
       content: {
         itemsPerPage: event.target.value,
-        currentTimeLineSelected: jsonBody.currentSelectedTimeLineId
-      }
+        currentTimeLineSelected: jsonBody.currentSelectedTimeLineId,
+      },
     };
     vscode.postMessage(command);
   };
-
 
   const handleCloseSourcesDialog = (value) => {
     setOpenSourcesDialog(false);
@@ -310,15 +316,15 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   const sendShowAllSourcesRequest = () => {
     let command: ICommand = {
       action: CommandToDA.ShowSources,
-      content: {data: "all"}
+      content: { data: 'all' },
     };
     vscode.postMessage(command);
-  }
+  };
 
   const sendSelectTimeLineRequest = (id: string) => {
     let command: ICommand = {
       action: CommandToDA.SetTimeLine,
-      content: { timeLineSelected: id }
+      content: { timeLineSelected: id },
     };
     vscode.postMessage(command);
     selectTimeLineInTable(id);
@@ -326,7 +332,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
 
   const selectTimeLineInTable = (timeLineIdAsString: string) => {
     let timeLineId: number = Number.parseInt(timeLineIdAsString);
-    setJsonBody(jsonBody => {
+    setJsonBody((jsonBody) => {
       if (event !== undefined) {
         event.preventDefault();
       }
@@ -338,7 +344,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   };
 
   if (listener === undefined) {
-    listener = event => {
+    listener = (event) => {
       const message = event.data; // The JSON data our extension sent
       switch (message.command) {
         case CommandToPage.SelectTimeLine:
@@ -347,14 +353,14 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           break;
         case CommandToPage.AddTimeLines:
           setOpenWaitPage(false);
-          setJsonBody(body => {
+          setJsonBody((body) => {
             if (event !== undefined) {
               event.preventDefault();
             }
             body = message.data.body;
             return body;
           });
-          setIgnoreSourcesNotfound(value => {
+          setIgnoreSourcesNotfound((value) => {
             if (event !== undefined) {
               event.preventDefault(); //Impede que a pagina seja atualizada nessa alteração para que seja atualizada apenas uma vez ao selecionar a timeline
             }
@@ -364,7 +370,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           break;
         case CommandToPage.OpenSourcesDialog:
           setSources((sources) => {
-            if(event !== undefined) {
+            if (event !== undefined) {
               event.preventDefault();
             }
             sources = message.data;
@@ -374,11 +380,11 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           break;
         case CommandToPage.ShowLoadingPageDialog:
           setOpenWaitPage(message.data);
-          break
+          break;
       }
-      message.command = "";
+      message.command = '';
     };
-    window.addEventListener("message", listener);
+    window.addEventListener('message', listener);
   }
 
   const scrollIntoViewIfNeeded = (target: HTMLElement) => {
@@ -389,47 +395,55 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
 
       if (node.scrollHeight > node.clientHeight) {
         return node;
-      }
-      else {
+      } else {
         return getScrollParent(node.parentNode as HTMLElement);
       }
     }
 
     let parent = getScrollParent(target.parentNode as HTMLElement);
 
-    if (!parent)
-      return;
+    if (!parent) return;
 
     let parentComputedStyle = window.getComputedStyle(parent, null),
-      parentBorderTopWidth = parseInt(parentComputedStyle.getPropertyValue('border-top-width')),
+      parentBorderTopWidth = parseInt(
+        parentComputedStyle.getPropertyValue('border-top-width')
+      ),
       overTop = target.offsetTop - parent.offsetTop < parent.scrollTop,
-      overBottom = (target.offsetTop - parent.offsetTop + target.clientHeight - parentBorderTopWidth) > (parent.scrollTop + parent.clientHeight);
+      overBottom =
+        target.offsetTop -
+          parent.offsetTop +
+          target.clientHeight -
+          parentBorderTopWidth >
+        parent.scrollTop + parent.clientHeight;
 
     if (overTop) {
       target.scrollIntoView(true);
-    }
-    else if (overBottom) {
+    } else if (overBottom) {
       target.scrollIntoView(false);
     }
-
   };
 
   const scrollToLineIfNeeded = (id: number) => {
-    if(tableElement.current !== null) {
-      const rows = Array.from(tableElement.current.querySelectorAll('tbody tr')),
-      newRow = rows.find((row) => row.id === `${id}`) as HTMLElement;
+    if (tableElement.current !== null) {
+      const rows = Array.from(
+          tableElement.current.querySelectorAll('tbody tr')
+        ),
+        newRow = rows.find((row) => row.id === `${id}`) as HTMLElement;
       //tableElement.current.scrollTo()
       scrollIntoViewIfNeeded(newRow);
     }
-  }
+  };
 
-  const onKeyDown = function(event: React.KeyboardEvent<HTMLTableSectionElement>, timeline: any[]) {
+  const onKeyDown = function (
+    event: React.KeyboardEvent<HTMLTableSectionElement>,
+    timeline: any[]
+  ) {
     const navigateToRow = (position: number | null, offset?: number) => {
-      offset = (offset || 0);
+      offset = offset || 0;
 
       if (position === null) {
         const rowId: number = Number.parseInt(selectedRowId);
-        const currentItem = timeline.find(item => {
+        const currentItem = timeline.find((item) => {
           return item.id === rowId;
         });
         position = timeline.indexOf(currentItem);
@@ -437,17 +451,17 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
 
       let newPosition = position + offset;
       newPosition = Math.max(newPosition, 0);
-      newPosition = Math.min(newPosition, (timeline.length - 1));
+      newPosition = Math.min(newPosition, timeline.length - 1);
 
       const newItem = timeline[newPosition];
 
       //TODO: se for para navega alem dos itens na paginacao atual, recuperar
       // os novos dados, carregar e depois setar a primeira/ultima linha
       if (newItem) {
-        sendSelectTimeLineRequest(""+newItem.id);
+        sendSelectTimeLineRequest('' + newItem.id);
         //scrollToLineIfNeeded(newItem.id);
       }
-    }
+    };
 
     //TODO: calcular corretamente a quantidade de linhas em PageUp, PageDown
     switch (event.keyCode) {
@@ -478,7 +492,6 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
       default:
         return;
     }
-
   };
 
   const createTimeLineItem = (_debugEvent: DebugSessionCustomEvent) => {
@@ -491,12 +504,12 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
       let timeLine = timeLines[index];
       let isSelected: boolean =
         timeLine.id === parseInt(jsonBody.currentSelectedTimeLineId);
-      let notFoundText = "";
+      let notFoundText = '';
       let bg;
-      if (!timeLine.srcFoundInWS || timeLine.srcFoundInWS == "false") {
+      if (!timeLine.srcFoundInWS || timeLine.srcFoundInWS == 'false') {
         bg = classes.srcNotFound;
         notFoundText =
-          "Source not found in Workspace. This timeline is not available to select";
+          'Source not found in Workspace. This timeline is not available to select';
       } else {
         bg =
           jsonBody.currentSelectedTimeLineId !== undefined && isSelected
@@ -512,17 +525,17 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           id={timeLine.id}
           key={timeLine.id}
           className={bg}
-          onClick={
-            (event) => {
-             if (timeLine.srcFoundInWS) {
-               sendSelectTimeLineRequest(event.currentTarget.id);
-             }
-                //sendSelectTimeLineRequest(timeLine.id);
+          onClick={(event) => {
+            if (timeLine.srcFoundInWS) {
+              sendSelectTimeLineRequest(event.currentTarget.id);
             }
-          }
+            //sendSelectTimeLineRequest(timeLine.id);
+          }}
           selected={isSelected}
         >
-          <TableCell component="th" scope="row">{timeLine.timeStamp}</TableCell>
+          <TableCell component="th" scope="row">
+            {timeLine.timeStamp}
+          </TableCell>
           <TableCell align="left">{timeLine.srcName}</TableCell>
           <TableCell align="left">{timeLine.line}</TableCell>
         </TableRow>
@@ -544,11 +557,11 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         stickyHeader
         aria-label="sticky table"
         ref={tableElement}
-        size={dense ? "medium" : "small"}
+        size={dense ? 'medium' : 'small'}
       >
         <TableHead>
           <TableRow>
-            {columns.map(column => (
+            {columns.map((column) => (
               <TableCell
                 className={tableClasses.headCell}
                 key={column.id}
@@ -572,10 +585,12 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         rowsPerPage={jsonBody.itemsPerPage}
         page={jsonBody.currentPage}
         SelectProps={{
-          inputProps: { "aria-label": "rows per page" },
-          native: true
+          inputProps: { 'aria-label': 'rows per page' },
+          native: true,
         }}
+        onPageChange={handleChangePage}
         onChangePage={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
         ActionsComponent={TablePaginationActions}
       />
@@ -593,15 +608,19 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         label="Ignore Source Not Found"
       />
       <Button
-         className={tableClasses.sources}
-         variant="contained"
-         startIcon={<LibraryBooksIcon />}
-         onClick={sendShowAllSourcesRequest}
+        className={tableClasses.sources}
+        variant="contained"
+        startIcon={<LibraryBooksIcon />}
+        onClick={sendShowAllSourcesRequest}
       >
-          Sources
+        Sources
       </Button>
       {/*<SourcesDialog selectedValue={selectedValue} open={open} onClose={handleCloseSourcesDialog} />*/}
-      <SourcesDialog sources={sources} open={openSourcesDialog} onClose={handleCloseSourcesDialog} />
+      <SourcesDialog
+        sources={sources}
+        open={openSourcesDialog}
+        onClose={handleCloseSourcesDialog}
+      />
       <ChangePageWaitDialog open={openWaitPage} />
     </TableContainer>
     //</Paper>
