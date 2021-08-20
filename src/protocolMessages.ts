@@ -23,13 +23,9 @@ import { ResponseError } from 'vscode-languageclient';
 import { ServerItem } from './serverItemProvider';
 import { CompileResult } from './compile/CompileResult';
 import { _debugEvent } from './debug';
-import {
-  IPatchValidateResult,
-  IRpoInfoData as RpoInfoResult,
-} from './rpoInfo/rpoPath';
+import { IRpoInfoData as RpoInfoResult } from './rpoInfo/rpoPath';
 import { IRpoToken } from './rpoToken';
 import Utils from './utils';
-import { rejects } from 'assert';
 
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
@@ -407,7 +403,9 @@ export function sendCompilation(
   hasAdvplsource: boolean
 ): Thenable<CompileResult> {
   if (_debugEvent) {
-    throw new Error('This operation is not allowed during a debug..');
+    return Promise.reject(
+      new Error('This operation is not allowed during a debug.')
+    );
   }
 
   return languageClient.sendRequest('$totvsserver/compilation', {
@@ -426,10 +424,9 @@ export function sendCompilation(
 
 export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
   if (_debugEvent) {
-    // vscode.window.showWarningMessage(
-    //   'This operation is not allowed during a debug..'
-    // );
-    throw new Error('This operation is not allowed during a debug..');
+    return Promise.reject(
+      new Error('This operation is not allowed during a debug.')
+    );
   }
 
   return languageClient
@@ -449,11 +446,11 @@ export function sendPatchInfo(
   patchUri: string
 ): Thenable<any> {
   if (_debugEvent) {
-    vscode.window.showWarningMessage(
-      'This operation is not allowed during a debug..'
+    return Promise.reject(
+      new Error('This operation is not allowed during a debug.')
     );
-    return Promise.resolve();
   }
+
   return languageClient
     .sendRequest('$totvsserver/patchInfo', {
       patchInfoInfo: {
