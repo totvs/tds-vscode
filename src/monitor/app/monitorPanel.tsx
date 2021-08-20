@@ -322,6 +322,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   const doSpeedUpdate = (confirm: boolean, speed: number) => {
     setOpenDialog({ ...openDialog, speedUpdate: false });
+    console.log(speedDialog);
 
     if (confirm) {
       setSpeed(speed);
@@ -609,6 +610,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   });
 
   const style = useToolbarStyles();
+  const speedDialog = React.useRef();
 
   return (
     <MonitorTheme>
