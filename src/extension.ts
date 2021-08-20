@@ -780,10 +780,21 @@ function showBanner(force: boolean = false) {
   }
 }
 
-let canBuild: boolean;
-export function blockBuildCommands(block: boolean) {
+let canBuild: boolean = true;
+
+export function blockBuildCommands(block: boolean): boolean {
+  if (!canBuild && block) {
+    window.showInformationMessage(
+      `Request cancelled. Build process already in progress.`
+    );
+    return false;
+  }
+
   canBuild = !block;
+
   vscode.commands.executeCommand('setContext', 'tds-vscode.canBuild', canBuild);
+
+  return true;
 }
 
 export function canDebug(): boolean {

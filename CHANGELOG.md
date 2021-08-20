@@ -2,6 +2,36 @@
 
 # Versão [1.3.3]
 
+## Travamento na compilação (https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2828)
+
+### Problema:
+
+- Ao acionar a compilação com uma depuração em andamento, não é mais possível efetuar compilações, sendo necessário reiniciar o VS-CODE.
+
+### Solução:
+
+- Revisto procedimentos de bloqueio de compilação e depuração simultâneos.
+
+## Monitor "stop server" (https://github.com/totvs/tds-vscode/issues/776)
+
+### Problema:
+
+- Ao cancelar o diálogo o servidor é encerrado.
+
+### Solução:
+
+- Revisto o tratamento do retorno do diálogo.
+
+## Monitor "update speed" (https://github.com/totvs/tds-vscode/issues/775)
+
+### Problema:
+
+- Ao cancelar o diálogo após mudar a velocidade e abri-lo novamente, a velocidade apresentada não é original.
+
+### Solução:
+
+- Revisto o tratamento do retorno do diálogo.
+
 ## Consumo de memória durante o Debug pelo DebugAdapter (https://github.com/totvs/tds-vscode/issues/738)
 
 ### Problema:
@@ -56,8 +86,8 @@ Ao indentar o fonte onde há dentro de uma estrutura For, uma variável que come
 
 ### Problema:
 
-Ao solitar a finalização da depuração, no Linux,  o smartclient não fecha automaticamente. 
- 
+Ao solitar a finalização da depuração, no Linux, o smartclient não fecha automaticamente.
+
 ### Solução:
 
 - Implementado procedimento de encerramento do SmartClient.
