@@ -1,6 +1,6 @@
 # Changelog
 
-# Versão [1.3.x]
+# Versão [1.3.3]
 
 ## Consumo de memória durante o Debug pelo DebugAdapter (https://github.com/totvs/tds-vscode/issues/738)
 
@@ -56,16 +56,11 @@ Ao indentar o fonte onde há dentro de uma estrutura For, uma variável que come
 
 ### Problema:
 
-Ao solitar a finalização da depuração, no Linux,  o smartclient não fecha automaticamente. 
- 
+Ao solicitar a finalização da depuração, no Linux,  o smartclient não fecha automaticamente.
+
 ### Solução:
 
 - Implementado procedimento de encerramento do SmartClient.
-
-## Melhorias
-
-- Revalidate RPO: implementado comando para revalidar o RPO em servidores versão 20.3.0.0 ou superior.
-- Implementando controle de compilação em andamento, evitando o inicio de depuração/execução durante o processo.
 
 ## Funcionalidades para o Logix perdidas (https://github.com/totvs/tds-vscode/issues/766)
 
@@ -77,6 +72,11 @@ Após atualização as tags Logix deixaram de ficar em caixa alta.
 
 - Revisto o processo de formatação de fontes 4GL.
 - Necessário o usuário [ativar a formatação](docs/formatter/format_config.md).
+
+## Melhorias
+
+- Revalidate RPO: implementado comando para revalidar o RPO em servidores versão 20.3.0.0 ou superior.
+- Implementando controle de compilação em andamento, evitando o inicio de depuração/execução durante o processo.
 
 # Versão [1.3.2]
 
