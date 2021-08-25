@@ -99,62 +99,66 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
     compileOptions.showPreCompiler = false;
     compileOptions.returnPpo = true;
 
-    blockBuildCommands(true);
-    sendCompilation(
-      server,
-      includesUris,
-      filesUris,
-      compileOptions,
-      extensionsAllowed,
-      isAdvplsource
-    ).then(
-      (response: CompileResult) => {
-        blockBuildCommands(false);
+    if (blockBuildCommands(true)) {
+      sendCompilation(
+        server,
+        includesUris,
+        filesUris,
+        compileOptions,
+        extensionsAllowed,
+        isAdvplsource
+      ).then(
+        (response: CompileResult) => {
+          blockBuildCommands(false);
 
-        if (response.compileInfos.length > 0) {
-          for (let index = 0; index < response.compileInfos.length; index++) {
-            const compileInfo = response.compileInfos[index];
-            if (compileInfo.status === 'APPRE') {
-              // o compileInfo.detail chega do LS com encoding utf8
-              // a extensão tds-vscode realiza a conversão para o enconding conforme informado em options.encoding
-              // caso nenhum encoding seja informado, converte para o padrão AdvPL cp1252
-              if (options && options.encoding) {
-                let encoding: string = (<string>options.encoding).toLowerCase();
-                //console.log("encoding: "+encoding);
-                if (options.encoding === 'utf8') {
-                  resolve(compileInfo.detail);
-                } else if (
-                  encoding === 'windows-1252' ||
-                  encoding === 'cp1252'
-                ) {
-                  //let apple = "Maçã";
-                  //console.log(apple);
-                  resolve(windows1252.encode(compileInfo.detail));
-                } else if (
-                  encoding === 'windows-1251' ||
-                  encoding === 'cp1251'
-                ) {
-                  //let helloWorld = "Привет мир";
-                  //console.log(helloWorld);
-                  //resolve(windows1251.encode(helloWorld));
-                  resolve(windows1251.encode(compileInfo.detail));
+          if (response.compileInfos.length > 0) {
+            for (let index = 0; index < response.compileInfos.length; index++) {
+              const compileInfo = response.compileInfos[index];
+              if (compileInfo.status === 'APPRE') {
+                // o compileInfo.detail chega do LS com encoding utf8
+                // a extensão tds-vscode realiza a conversão para o enconding conforme informado em options.encoding
+                // caso nenhum encoding seja informado, converte para o padrão AdvPL cp1252
+                if (options && options.encoding) {
+                  let encoding: string = (<string>(
+                    options.encoding
+                  )).toLowerCase();
+                  //console.log("encoding: "+encoding);
+                  if (options.encoding === 'utf8') {
+                    resolve(compileInfo.detail);
+                  } else if (
+                    encoding === 'windows-1252' ||
+                    encoding === 'cp1252'
+                  ) {
+                    //let apple = "Maçã";
+                    //console.log(apple);
+                    resolve(windows1252.encode(compileInfo.detail));
+                  } else if (
+                    encoding === 'windows-1251' ||
+                    encoding === 'cp1251'
+                  ) {
+                    //let helloWorld = "Привет мир";
+                    //console.log(helloWorld);
+                    //resolve(windows1251.encode(helloWorld));
+                    resolve(windows1251.encode(compileInfo.detail));
+                  } else {
+                    // unknown encoding - fallback to utf8
+                    resolve(compileInfo.detail);
+                  }
                 } else {
-                  // unknown encoding - fallback to utf8
-                  resolve(compileInfo.detail);
+                  // if there is no encoding option - use windows-1252
+                  resolve(windows1252.encode(compileInfo.detail));
                 }
-              } else {
-                // if there is no encoding option - use windows-1252
-                resolve(windows1252.encode(compileInfo.detail));
               }
             }
           }
+        },
+        (err: ResponseError<object>) => {
+          blockBuildCommands(false);
+          languageClient.error(err.message, err);
+          reject(new Error(err.message));
         }
-      },
-      (err: ResponseError<object>) => {
-        blockBuildCommands(false);
-        reject(new Error(err.message));
-      }
-    );
+      );
+    }
   });
 }
 
@@ -257,49 +261,51 @@ async function buildCode(
       extensionsAllowed = configADVPL.get('folder.extensionsAllowed', []); // Le a chave especifica
     }
 
-    blockBuildCommands(true);
-    sendCompilation(
-      server,
-      includesUris,
-      filesUris,
-      compileOptions,
-      extensionsAllowed,
-      hasAdvplsource
-    ).then(
-      (response: CompileResult) => {
-        blockBuildCommands(false);
+    if (blockBuildCommands(true)) {
+      sendCompilation(
+        server,
+        includesUris,
+        filesUris,
+        compileOptions,
+        extensionsAllowed,
+        hasAdvplsource
+      ).then(
+        (response: CompileResult) => {
+          blockBuildCommands(false);
 
-        if (response.returnCode === 40840) {
-          Utils.removeExpiredAuthorization();
-        }
-        if (response.compileInfos.length > 0) {
-          // Exibe aba problems casa haja pelo menos um erro ou warning
-          let showProblems = false;
-          for (let index = 0; index < response.compileInfos.length; index++) {
-            const compileInfo = response.compileInfos[index];
-            if (
-              compileInfo.status === 'FATAL' ||
-              compileInfo.status === 'ERROR' ||
-              compileInfo.status === 'WARN'
-            ) {
-              showProblems = true;
-              break;
+          if (response.returnCode === 40840) {
+            Utils.removeExpiredAuthorization();
+          }
+          if (response.compileInfos.length > 0) {
+            // Exibe aba problems casa haja pelo menos um erro ou warning
+            let showProblems = false;
+            for (let index = 0; index < response.compileInfos.length; index++) {
+              const compileInfo = response.compileInfos[index];
+              if (
+                compileInfo.status === 'FATAL' ||
+                compileInfo.status === 'ERROR' ||
+                compileInfo.status === 'WARN'
+              ) {
+                showProblems = true;
+                break;
+              }
+            }
+            if (showProblems) {
+              // focus
+              vscode.commands.executeCommand('workbench.action.problems.focus');
+            }
+            if (context !== undefined) {
+              verifyCompileResult(response, context);
             }
           }
-          if (showProblems) {
-            // focus
-            vscode.commands.executeCommand('workbench.action.problems.focus');
-          }
-          if (context !== undefined) {
-            verifyCompileResult(response, context);
-          }
+        },
+        (err: ResponseError<object>) => {
+          blockBuildCommands(false);
+          languageClient.error(err.message, err);
+          vscode.window.showErrorMessage(err.message);
         }
-      },
-      (err: ResponseError<object>) => {
-        blockBuildCommands(false);
-        vscode.window.showErrorMessage(err.message);
-      }
-    );
+      );
+    }
   } else {
     vscode.window.showErrorMessage(
       localize('tds.webview.tdsBuild.noServer', 'No server connected')

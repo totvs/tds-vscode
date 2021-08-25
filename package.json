@@ -854,25 +854,23 @@
         "command": "totvs-developer-studio.build.file",
         "key": "ctrl+f9",
         "mac": "cmd+f9",
-        "when": "editorTextFocus && tds-vscode.canBuild"
+        "when": "editorTextFocus"
       },
       {
         "command": "totvs-developer-studio.rebuild.file",
         "key": "ctrl+shift+f9",
         "mac": "cmd+shift+f9",
-        "when": "editorTextFocus && tds-vscode.canBuild"
+        "when": "editorTextFocus"
       },
       {
         "command": "totvs-developer-studio.build.openEditors",
         "key": "ctrl+f10",
-        "mac": "cmd+f10",
-        "when": "tds-vscode.canBuild"
+        "mac": "cmd+f10"
       },
       {
         "command": "totvs-developer-studio.rebuild.openEditors",
         "key": "ctrl+shift+f10",
-        "mac": "cmd+shift+f10",
-        "when": "tds-vscode.canBuild"
+        "mac": "cmd+shift+f10"
       },
       {
         "command": "totvs-developer-studio.toggle.autocomplete.behavior",
@@ -1300,19 +1298,17 @@
     "menus": {
       "explorer/context": [
         {
-          "when": "explorerResourceIsFolder && tds-vscode.canBuild",
+          "when": "explorerResourceIsFolder ",
           "command": "totvs-developer-studio.build.workspace",
           "alt": "totvs-developer-studio.rebuild.workspace",
           "group": "totvsBuild@1"
         },
         {
-          "when": "tds-vscode.canBuild",
           "command": "totvs-developer-studio.build.file",
           "alt": "totvs-developer-studio.rebuild.file",
           "group": "totvsBuild@3"
         },
         {
-          "when": "tds-vscode.canBuild",
           "command": "totvs-developer-studio.build.openEditors",
           "alt": "totvs-developer-studio.rebuild.openEditors",
           "group": "totvsBuild@4"
@@ -1320,30 +1316,25 @@
         {
           "when": "resourceLangId == totvs_patch",
           "command": "totvs-developer-studio.patchApply.fromFile",
-          "alt": "totvs-developer-studio.patchApply.fromFile",
           "group": "totvsBuild@5"
         },
         {
           "when": "resourceLangId == totvs_patch",
           "command": "totvs-developer-studio.patchInfos.fromFile",
-          "alt": "totvs-developer-studio.patchInfos.fromFile",
           "group": "totvsBuild@9"
         },
         {
           "when": "resourceLangId == totvs_patch",
           "command": "totvs-developer-studio.patchValidate.fromFile",
-          "alt": "totvs-developer-studio.patchValidate.fromFile",
           "group": "totvsBuild@8"
         },
         {
           "command": "totvs-developer-studio.delete.file.fromRPO",
-          "alt": "totvs-developer-studio.delete.file.fromRPO",
           "group": "totvsBuild@6"
         },
         {
           "when": "resourceLangId == totvs_template",
           "command": "totvs-developer-studio.templateApply.fromFile",
-          "alt": "totvs-developer-studio.templateApply.fromFile",
           "group": "totvsBuild@5"
         },
         {
