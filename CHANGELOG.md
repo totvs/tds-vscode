@@ -1,5 +1,17 @@
 # Changelog
 
+# Versão [1.3.x]
+
+## ADVPLS não esta gerando informações do pacote através da action \[patchInfo\] [DTCLIENT01-2846](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2846)
+
+### Problema:
+
+- Ao utilizar o comando advpls com as instruções, o script executa as funções de compilar, aplicar patch, gerar patch e desfragmentar, mas não esta gerando o relatório patchInfo.
+
+### Solução:
+
+- Correção no tratamento na gravação das informações de "patch" (pathinfo).
+
 # Versão [1.3.3]
 
 ## Consumo de memória durante o Debug pelo DebugAdapter (https://github.com/totvs/tds-vscode/issues/738)
@@ -56,7 +68,7 @@ Ao indentar o fonte onde há dentro de uma estrutura For, uma variável que come
 
 ### Problema:
 
-Ao solicitar a finalização da depuração, no Linux,  o smartclient não fecha automaticamente.
+Ao solicitar a finalização da depuração, no Linux, o smartclient não fecha automaticamente.
 
 ### Solução:
 
