@@ -12,6 +12,16 @@
 
 - Correção no tratamento na gravação das informações de "patch" (pathinfo).
 
+## Verificar mensagem de erro em aplicação de patch [DTCLIENT01-2853](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2853)
+
+### Problema:
+
+- Mensagem de erro apresentada não codiz com o erro original que é aplicar pacote de atualização com serviço REST (HTTPV11) ou outro _job_ em execução.
+
+### Solução:
+
+Ajustado tratamento de erro no processo de aplicação de pacotes de atualização de acordo com a ocorrência.
+
 # Versão [1.3.3]
 
 ## Travamento na compilação (https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2828)

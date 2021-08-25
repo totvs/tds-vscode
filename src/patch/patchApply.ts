@@ -95,12 +95,12 @@ export function patchApply(
                         patchApplyInfo: {
                           connectionToken: server.token,
                           authorizationToken:
-                          Utils.getAuthorizationToken(server),
+                            Utils.getAuthorizationToken(server),
                           environment: server.environment,
                           patchUri: patchUri,
                           isLocal: true,
                           isValidOnly: false,
-                          applyScope: message.applyOld ? "all" : "only_new",
+                          applyScope: message.applyOld ? 'all' : 'only_new',
                         },
                       })
                       .then(
@@ -110,17 +110,24 @@ export function patchApply(
                             Utils.removeExpiredAuthorization();
                           }
                           if (response.error == 1) {
-                            vscode.window.showErrorMessage(
-                              localize(
-                                'tds.webview.patch.oldFiles',
-                                'Patch contains files older than RPO. Patch not applied.'
-                              )
-                            );
-                          }
-
-                          if (message.applyOld) {
+                            if (response.errorCode > 1) {
+                              languageClient.error(response.message);
+                              vscode.window.showErrorMessage(response.message);
+                            } else {
+                              vscode.window.showErrorMessage(
+                                localize(
+                                  'tds.webview.patch.oldFiles',
+                                  'Patch contains files older than RPO. Patch not applied.'
+                                )
+                              );
+                            }
+                          } else if (message.applyOld) {
                             vscode.window.showInformationMessage(
                               'Old files applied.'
+                            );
+                          } else {
+                            vscode.window.showInformationMessage(
+                              'Patch applied.'
                             );
                           }
                         },
@@ -225,7 +232,7 @@ export function patchApply(
                       patchUri: patchUri,
                       isLocal: true,
                       isValidOnly: false,
-                      applyScope: "only_new",
+                      applyScope: 'only_new',
                     },
                   })
                   .then(
