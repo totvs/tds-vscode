@@ -2,6 +2,16 @@
 
 # Versão [1.3.x]
 
+## Monitor -Grouping on/off - Query não apresenta resultado. [DTCLIENT01-2860](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2860)
+
+### Problema:
+
+- Monitor não apresenta resultado e reseta ao efetuar agrupamento por alguns atributos numéricos.
+
+### Solução:
+
+- Ajustado configurações dos tipos de campos numéricos para strings e eliminado formatação.
+
 ## Monitor Update Speed Interval between updates (long).Opção Manual não funciona. [DTCLIENT01-2862](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2862)
 
 ### Problema:
