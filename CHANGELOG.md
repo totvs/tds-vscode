@@ -2,6 +2,16 @@
 
 # Versão [1.3.x]
 
+## Monitor -Filtering on/off - Query não apresenta resultado. [DTCLIENT01-2861](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2861)
+
+### Problema:
+
+- Monitor não apresenta resultado e reseta ao efetuar agrupamento por alguns atributos numéricos.
+
+### Solução:
+
+- Resolvido no chamado [DTCLIENT01-2860](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2860).
+
 ## Monitor -Grouping on/off - Query não apresenta resultado. [DTCLIENT01-2860](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2860)
 
 ### Problema:
