@@ -118,7 +118,7 @@ export default function SpeedUpdateDialog(props: SpeedUpdateDialogProps) {
             <FormControlLabel
               control={
                 <Switch
-                  checked={speed === 0}
+                  checked={state.manual}
                   onChange={handleChange}
                   name="manual"
                 />
