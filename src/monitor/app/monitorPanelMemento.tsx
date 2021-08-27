@@ -1,10 +1,10 @@
-import * as React from "react";
-import { cellDefaultStyle } from "./monitorInterface";
-import { mergeProperties, i18n } from "../helper";
-import { monitorIcons } from "../helper/monitorIcons";
-import Alert from "@material-ui/lab/Alert";
-import RemarkDialog from "./remarkDialog";
-import { Popper } from "@material-ui/core";
+import * as React from 'react';
+import { cellDefaultStyle } from './monitorInterface';
+import { mergeProperties, i18n } from '../helper';
+import { monitorIcons } from '../helper/monitorIcons';
+import Alert from '@material-ui/lab/Alert';
+import RemarkDialog from './remarkDialog';
+import { Popper } from '@material-ui/core';
 
 function fieldDef(
   field: string,
@@ -56,10 +56,10 @@ export const propSpeed = (value: number = undefined) => {
 };
 
 const speedText = {
-  0: i18n.localize("MANUAL", "(manual)"),
-  15: i18n.localize("SHORT", "(short)"),
-  30: i18n.localize("NORMAL", "(normal)"),
-  60: i18n.localize("LONG", "(long)"),
+  0: i18n.localize('MANUAL', '(manual)'),
+  15: i18n.localize('SHORT', '(short)'),
+  30: i18n.localize('NORMAL', '(normal)'),
+  60: i18n.localize('LONG', '(long)'),
 };
 
 export const propSpeedText = (value: number): string => {
@@ -115,14 +115,14 @@ export const propColumnHidden = (
   name: string,
   value: boolean = undefined
 ): any => {
-  return propColumn(name, "hidden", value);
+  return propColumn(name, 'hidden', value);
 };
 
 export const propColumnGroup = (
   name: string,
   value: boolean = undefined
 ): any => {
-  return propColumn(name, "XXXX", value);
+  return propColumn(name, 'XXXX', value);
 };
 
 export const propOrderDirection = (value: string = undefined): any => {
@@ -159,91 +159,81 @@ export const propColumns = (extraProps?: any): any => {
   const remarkProps = {
     ...(extraProps || {}),
     cellStyle: {
-      textOverflow: "ellipsis",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
       maxWidth: 300,
     },
   };
 
   return {
     columns: [
-      fieldDef("server", i18n.localize("SERVER", "Server"), extraProps),
-      fieldDef("appUser", i18n.localize("USER_NAME", "User Name"), extraProps),
+      fieldDef('server', i18n.localize('SERVER', 'Server'), extraProps),
+      fieldDef('appUser', i18n.localize('USER_NAME', 'User Name'), extraProps),
       fieldDef(
-        "environment",
-        i18n.localize("ENVIRONMENT", "Environment"),
+        'environment',
+        i18n.localize('ENVIRONMENT', 'Environment'),
         extraProps
       ),
       fieldDef(
-        "computerName",
-        i18n.localize("COMPUTER_NAME", "Computer Name"),
+        'computerName',
+        i18n.localize('COMPUTER_NAME', 'Computer Name'),
         extraProps
       ),
-      fieldDef("threadId", i18n.localize("THREAD", "Thread ID"), {
-        type: "numeric",
-        ...extraProps,
-        render: (row: any) => doFormatNumber(row["threadId"]),
+      fieldDef('threadId', i18n.localize('THREAD', 'ThreadID'), {
+        type: 'string',
+        extraProps,
       }),
-      fieldDef("mainName", i18n.localize("PROGRAM", "Program"), extraProps),
+      fieldDef('mainName', i18n.localize('PROGRAM', 'Program'), extraProps),
       fieldDef(
-        "loginTime",
-        i18n.localize("CONNECTION", "Connection"),
+        'loginTime',
+        i18n.localize('CONNECTION', 'Connection'),
         extraProps
       ),
       fieldDef(
-        "elapsedTime",
-        i18n.localize("ELAPSED_TIME", "Elapsed time"),
+        'elapsedTime',
+        i18n.localize('ELAPSED_TIME', 'Elapsed time'),
         extraProps
       ),
       fieldDef(
-        "inactiveTime",
-        i18n.localize("INACTIVITY_TIME", "Idle time"),
+        'inactiveTime',
+        i18n.localize('INACTIVITY_TIME', 'Idle time'),
         extraProps
       ),
       fieldDef(
-        "totalInstrCount",
-        i18n.localize("TOTAL_INSTRUCTIONS ", "Instructions"),
+        'totalInstrCount',
+        i18n.localize('TOTAL_INSTRUCTIONS ', 'Instructions'),
         {
-          type: "numeric",
-          ...extraProps,
-          render: (row: any) => doFormatNumber(row["totalInstrCount"]),
+          type: 'string',
+          extraProps,
         }
       ),
       fieldDef(
-        "instrCountPerSec",
-        i18n.localize("INSTRUCTIONS_SEG ", "Instructions/sec"),
+        'instrCountPerSec',
+        i18n.localize('INSTRUCTIONS_SEG ', 'Instructions/sec'),
         {
-          type: "numeric",
+          type: 'string',
           ...extraProps,
-          render: (row: any) =>
-            doFormatNumber(row["instrCountPerSec"], {
-              maximumFractionDigits: 2,
-              minimumFractionDigits: 2,
-            }),
         }
       ),
-      fieldDef("remark", i18n.localize("COMMENT", "Comment"), {
+      fieldDef('remark', i18n.localize('COMMENT', 'Comment'), {
         ...remarkProps,
       }),
-      fieldDef("memUsed", i18n.localize("MEMORY_USE ", "Memory in Use"), {
-        type: "numeric",
+      fieldDef('memUsed', i18n.localize('MEMORY_USE ', 'Memory in Use'), {
+        type: 'string',
         ...extraProps,
-        render: (row: any) => doFormatNumber(row["memUsed"]),
       }),
-      fieldDef("sid", i18n.localize("SID", "SID"), {
-        type: "numeric",
+      fieldDef('sid', i18n.localize('SID', 'SID'), {
+        type: 'string',
         ...extraProps,
-        render: (row: any) => doFormatNumber(row["sid"]),
       }),
-      fieldDef("ctreeTaskId", i18n.localize("CTREE_ID", "CTree ID"), {
-        type: "numeric",
+      fieldDef('ctreeTaskId', i18n.localize('CTREE_ID', 'CTree ID'), {
+        type: 'string',
         ...extraProps,
-        render: (row: any) => doFormatNumber(row["ctreeTaskId"]),
       }),
       fieldDef(
-        "clientType",
-        i18n.localize("CONNECTION_TYPE ", "Connection Type"),
+        'clientType',
+        i18n.localize('CONNECTION_TYPE ', 'Connection Type'),
         extraProps
       ),
     ],
