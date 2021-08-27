@@ -2,6 +2,16 @@
 
 # Versão [1.3.x]
 
+## Monitor Update Speed Interval between updates (long).Opção Manual não funciona. [DTCLIENT01-2862](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2862)
+
+### Problema:
+
+- Diálogo de seleção de velocidade de atualização, não atualiza corretamente a chave `manual`.
+
+### Solução:
+
+- Ajustado a atualização do diálogo.
+
 ## ADVPLS não esta gerando informações do pacote através da action \[patchInfo\] [DTCLIENT01-2846](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2846)
 
 ### Problema:
