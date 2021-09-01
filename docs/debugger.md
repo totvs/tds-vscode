@@ -33,6 +33,8 @@ Para detalhes, entre em contato com o suporte do _TCloud_.
 
 > Recomendamos a leitura [Debugging](https://code.visualstudio.com/docs/editor/debugging).
 
+> Por utilizar o Smartclient para iniciar o processo de depuração no Application Server é necessário que o Sistema Operacional onde o tds-vscode está sendo executado, esteja na lista de plataformas homologadas paro o Smartclient conforme [Sistemas operacionais homologados - Smartclient](https://tdn.totvs.com/display/tec/SmartClient+-+Sistemas+operacionais).
+
 ### Criando um executor com assistente
 
 Acione o atalho `CTRL + SHIFT + P` e execute `TOTVS: Configure Launchers` que lhe apresentará um assistente de configuração de executores que permite criar uma nova configuração ou editar uma já existente. Preencha as informações solicitadas e acione `Save`.

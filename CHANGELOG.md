@@ -1,5 +1,113 @@
 # Changelog
 
+# Versão [1.3.3]
+
+## Travamento na compilação (https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2828)
+
+### Problema:
+
+- Ao acionar a compilação com uma depuração em andamento, não é mais possível efetuar compilações, sendo necessário reiniciar o VS-CODE.
+
+### Solução:
+
+- Revisto procedimentos de bloqueio de compilação e depuração simultâneos.
+
+## Monitor "stop server" (https://github.com/totvs/tds-vscode/issues/776)
+
+### Problema:
+
+- Ao cancelar o diálogo o servidor é encerrado.
+
+### Solução:
+
+- Revisto o tratamento do retorno do diálogo.
+
+## Monitor "update speed" (https://github.com/totvs/tds-vscode/issues/775)
+
+### Problema:
+
+- Ao cancelar o diálogo após mudar a velocidade e abri-lo novamente, a velocidade apresentada não é original.
+
+### Solução:
+
+- Revisto o tratamento do retorno do diálogo.
+
+## Consumo de memória durante o Debug pelo DebugAdapter (https://github.com/totvs/tds-vscode/issues/738)
+
+### Problema:
+
+- Durante o Debug, o programa debugAdapter aumenta muito o consumo de memória
+
+### Solução:
+
+- Alguns problemas de vazamento de memória foram corrigidos
+
+## Consumo de memória alto pelo ADVPLS (https://github.com/totvs/tds-vscode/issues/765)
+
+### Problema:
+
+- Durante o uso do Linter, o consumo de memória do ADVPLS aumenta e só diminuia fechando o VSCode
+
+### Solução:
+
+- Foram detectados vazamentos de memória durante a análise dos fontes pelo Linter e corrigidos
+
+## Bug no Linter com arquivos CH
+
+### Problema:
+
+- Erro no TDS-Linter com arquivos .CH
+
+### Solução:
+
+- Arquivos .CH não devem ser tratados pelo TDS-Linter
+
+## Bug na falha de conexão com um servidor (https://github.com/totvs/tds-vscode/issues/678)
+
+### Problema:
+
+- Ao tentar se conectar a um servidor inacessível, ocorria erro mas o servidor passava para o estado de conectado (ícone verde).
+
+### Solução:
+
+- Revisto o tratamento do retorno de falha da conexão com o servidor.
+
+## Erro na indentação automática (https://github.com/totvs/tds-vscode/issues/701)
+
+### Problema:
+
+Ao indentar o fonte onde há dentro de uma estrutura For, uma variável que comece com as letras `n e x t`, ocorre erro de indentação.
+
+### Solução:
+
+- Revisto processo e regras de expressão.
+
+## Ao debugar no Linux o smartclient não fecha automaticamente (https://github.com/totvs/tds-vscode/issues/685)
+
+### Problema:
+
+Ao solitar a finalização da depuração, no Linux, o smartclient não fecha automaticamente.
+
+### Solução:
+
+- Implementado procedimento de encerramento do SmartClient.
+
+## Funcionalidades para o Logix perdidas (https://github.com/totvs/tds-vscode/issues/766)
+
+### Problema:
+
+Após atualização as tags Logix deixaram de ficar em caixa alta.
+
+### Solução:
+
+- Revisto o processo de formatação de fontes 4GL.
+- Necessário o usuário [ativar a formatação](docs/formatter/format_config.md).
+
+## Melhorias
+
+- Revalidate RPO: implementado comando para revalidar o RPO em servidores versão 20.3.0.0 ou superior.
+- Implementando controle de compilação em andamento, evitando o inicio de depuração/execução durante o processo.
+
 # Versão [1.3.2]
 
 ## Erro ao tentar aplicar patch (https://github.com/totvs/tds-vscode/issues/737)
@@ -12,7 +120,7 @@
 
 - Alterada a validação para não impedir a aplicação. Gera apenas um Warning, pois caso ocorra um erro pode-se tentar corrigir renomeando os caminhos.
 
-### Melhoria
+### Melhorias:
 
 - Alterações internas no processo de carga de parametrização inicial do LS.
 - Implementações de tratamento de encoding dos caminhos do sistema de arquivos para cp1252 (padrão) ou cp1252 (russo).
@@ -125,7 +233,7 @@
 
 ### Solução:
 
-- Processo de formatação revisado, passando a tratar palavras-chaves durante a digitação. Detalhes em (Formatação de código fonte)[docs/format_config.md]
+- Processo de formatação revisado, passando a tratar palavras-chaves durante a digitação. Detalhes em (Formatação de código fonte)[docs/formatter/format_config.md]
 
 ## Debug do mesmo objetos de instancias diferentes avaliando erroneamente valor de atributos (https://github.com/totvs/tds-vscode/issues/655)
 
@@ -335,7 +443,7 @@ https://github.com/totvs/tds-vscode/issues/590#issuecomment-742527102.
 
 ## Revisão de processos de edição 4GL
 
-- Processo de formatação revisado. Detalhes em (Formatação de código fonte)[docs/format_config.md]
+- Processo de formatação revisado. Detalhes em (Formatação de código fonte)[docs/formatter/format_config.md]
 
 ---
 

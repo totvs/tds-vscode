@@ -46,6 +46,15 @@ export function syncSettings() {
       value: notificationlevel,
     },
   });
+
+  let linter = config.get('editor.linter');
+  changeSettings({
+    changeSettingInfo: {
+      scope: 'advpls',
+      key: 'linter',
+      value: linter ? "enabled" : "disabled",
+    },
+  });
 }
 
 export function changeSettings(jsonData: any) {

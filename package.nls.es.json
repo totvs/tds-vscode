@@ -32,6 +32,8 @@
 	"tds.package.defrag.rpo.description": "Desfragmentar RPO actual",
 	"tds.package.rpo.check.integrity.title": "Verificación de integridad de RPO",
 	"tds.package.rpo.check.integrity.description": "Verifique la integridad actual de RPO",
+	"tds.package.revalidate.rpo.title": "Revalidar RPO",
+	"tds.package.revalidate.rpo.description": "Revalidar RPO actual",
 	"tds.package.build.file.title": "Compilar archivo / carpeta",
 	"tds.package.build.file.description": "Compilar un archivo / carpeta en servidores TOTVS",
 	"tds.package.rebuild.file.title": "Recompilar archivo / carpeta",
@@ -123,5 +125,7 @@
 	"tds.package.templateApply": "Aplicación de Template",
 	"tds.package.templateApply.fromFile": "Aplicar Template desde archivo",
 	"tds.package.rpoToken": "Poner el Token de Compilación",
-	"tds.package.clearRpoToken": "Eliminar el Token de Compilación"
+	"tds.package.clearRpoToken": "Eliminar el Token de Compilación",
+	"tds.package.filesystem.encoding": "Establecer la codificación del sistema de archivos",
+	"tds.package.editor.linter": "Habilitar el Linter"
 }

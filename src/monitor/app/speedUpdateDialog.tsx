@@ -1,6 +1,6 @@
-import * as React from "react";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Dialog from "@material-ui/core/Dialog";
+import * as React from 'react';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
 import {
   DialogContent,
   DialogContentText,
@@ -9,8 +9,8 @@ import {
   FormGroup,
   FormControlLabel,
   Switch,
-} from "@material-ui/core";
-import { i18n } from "../helper";
+} from '@material-ui/core';
+import { i18n } from '../helper';
 
 export interface SpeedUpdateDialogProps {
   open: boolean;
@@ -18,8 +18,9 @@ export interface SpeedUpdateDialogProps {
   onClose: (confirmed: boolean, speed: number) => void;
 }
 
-export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
-  const { onClose, open, speed } = props;
+export default function SpeedUpdateDialog(props: SpeedUpdateDialogProps) {
+  let { onClose, open, speed } = props;
+  let newSpeed = speed;
 
   const [state, setState] = React.useState({
     short: speed === 15,
@@ -29,25 +30,52 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
   });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const current = state;
+    event.preventDefault();
 
-    current.short = false;
-    current.normal = false;
-    current.long = false;
-    current.manual = false;
+    if (event.target.name == 'short') {
+      speed = 15;
+    } else if (event.target.name == 'normal') {
+      speed = 30;
+    } else if (event.target.name == 'long') {
+      speed = 60;
+    } else {
+      speed = 0;
+    }
 
-    setState({ ...state, [event.target.name]: event.target.checked });
+    setState({
+      short: speed === 15,
+      normal: speed === 30,
+      long: speed === 60,
+      manual: speed === 0,
+    });
   };
 
   const handleClose = (event: {}, reason: string) => {
-    const speed = state.short ? 15 : state.normal ? 30 : state.long ? 60 : 0;
-
-    onClose(reason === "ok", speed);
+    if (reason === 'ok') {
+      const newSpeed = state.short
+        ? 15
+        : state.normal
+        ? 30
+        : state.long
+        ? 60
+        : 0;
+      onClose(true, newSpeed);
+    } else {
+      setState({
+        short: speed === 15,
+        normal: speed === 30,
+        long: speed === 60,
+        manual: speed === 0,
+      });
+      onClose(false, speed);
+    }
   };
 
   return (
     <Dialog onClose={handleClose} open={open} scroll="paper">
-      <DialogTitle>{i18n.localize("DLG_TITLE_SPEED", "Interval between updates")}</DialogTitle>
+      <DialogTitle>
+        {i18n.localize('DLG_TITLE_SPEED', 'Interval between updates')}
+      </DialogTitle>
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <FormGroup row>
@@ -59,7 +87,7 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
                   name="short"
                 />
               }
-              label={i18n.localize("SECONDS", "{0} seconds", 15)}
+              label={i18n.localize('SECONDS', '{0} seconds', 15)}
             />
           </FormGroup>
           <FormGroup row>
@@ -71,7 +99,7 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
                   name="normal"
                 />
               }
-              label={i18n.localize("SECONDS", "{0} seconds", 30)}
+              label={i18n.localize('SECONDS', '{0} seconds', 30)}
             />
           </FormGroup>
           <FormGroup row>
@@ -83,36 +111,36 @@ export default function SpeedUpdateDialogDialog(props: SpeedUpdateDialogProps) {
                   name="long"
                 />
               }
-              label={i18n.localize("SECONDS", "{0} seconds", 60)}
+              label={i18n.localize('SECONDS', '{0} seconds', 60)}
             />
           </FormGroup>
           <FormGroup row>
             <FormControlLabel
               control={
                 <Switch
-                  checked={state.manual}
+                  checked={speed === 0}
                   onChange={handleChange}
                   name="manual"
                 />
               }
-              label={i18n.localize("MANUAL", "Manual")}
+              label={i18n.localize('MANUAL', 'Manual')}
             />
           </FormGroup>
         </DialogContentText>
         <DialogActions>
           <Button
             onClick={(event) => {
-              handleClose(event, "ok");
+              handleClose(event, 'ok');
             }}
           >
-            {i18n.localize("OK", "OK")}
+            {i18n.localize('OK', 'OK')}
           </Button>
           <Button
             onClick={() => {
-              handleClose(event, "cancel");
+              handleClose(event, 'cancel');
             }}
           >
-            {i18n.localize("CANCEL", "Cancel")}
+            {i18n.localize('CANCEL', 'Cancel')}
           </Button>
         </DialogActions>
       </DialogContent>

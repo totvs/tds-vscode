@@ -567,38 +567,49 @@ export default class Utils {
     server: any = undefined
   ): Array<string> {
     let includes: Array<string>;
-    if (
-      server !== undefined &&
-      server.includes !== undefined &&
-      server.includes.length > 0
-    ) {
+    // se houver includes de servidor utiliza, caso contrario utiliza o global
+    if (server && server.includes && server.includes.length > 0) {
       includes = server.includes as Array<string>;
     } else {
       const servers = Utils.getServersConfig();
       includes = servers.includes as Array<string>;
     }
 
-    if (includes.toString()) {
+    if (includes.length > 0) {
       if (absolutePath) {
-        const ws: string = vscode.workspace.rootPath || '';
+        // resolve caminhos relativos ao workspace
+        let ws: string = '';
+
+        if (vscode.window.activeTextEditor) {
+          const workspaceFolder: vscode.WorkspaceFolder =
+            vscode.workspace.getWorkspaceFolder(
+              vscode.window.activeTextEditor.document.uri
+            );
+          if (workspaceFolder) {
+            ws = workspaceFolder.uri.fsPath;
+          }
+        }
+
         includes.forEach((value, index, elements) => {
           if (value.startsWith('.')) {
             value = path.resolve(ws, value);
           } else {
             value = path.resolve(value.replace('${workspaceFolder}', ws));
           }
-
+          elements[index] = value;
+        });
+        // filtra diretorios invalidos e nao encontrados
+        includes = includes.filter(function (value) {
           try {
             const fi: fs.Stats = fs.lstatSync(value);
-            if (!fi.isDirectory) {
+            if (!fi.isDirectory()) {
               const msg: string = localize(
                 'tds.webview.utils.reviewList',
                 'Review the folder list in order to search for settings (.ch). Not recognized as folder: {0}',
                 value
               );
               vscode.window.showWarningMessage(msg);
-            } else {
-              elements[index] = value;
+              return false;
             }
           } catch (error) {
             const msg: string = localize(
@@ -606,10 +617,10 @@ export default class Utils {
               'Review the folder list in order to search for settings (.ch). Invalid folder: {0}',
               value
             );
-            console.log(error);
             vscode.window.showWarningMessage(msg);
-            elements[index] = '';
+            return false;
           }
+          return true;
         });
       }
     } else {

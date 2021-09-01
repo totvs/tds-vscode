@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "publisher": "TOTVS",
   "author": {
     "name": "TOTVS",
@@ -40,6 +40,7 @@
   "scripts": {
     "clean2": "gulp clean",
     "compile": "tsc --version && npm-run-all compile:*",
+    "compile:parse_4gl": "echo src/parser/4gl-parser.pegjs && pegjs -o ./src/parser/4gl-parser.js ./syntaxes/4gl.pegjs",
     "compile:extension": "tsc -p ./src",
     "compile:views": "webpack --mode development",
     "tslint": "tslint ./src/**/*.ts",
@@ -60,35 +61,29 @@
     "vscode:prepublish": "webpack --mode production",
     "---MISC---": "",
     "all-contributors:generate": "all-contributors generate",
-    "all-contributors:check": "all-contributors check",
-    "---LINKS---": "",
-    "link:prettier-plugin-4gl": "npm link ../prettier-plugin-4gl --force",
-    "link:prettier-plugin-advpl": "npm link ../prettier-plugin-advpl --force"
+    "all-contributors:check": "all-contributors check"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
-    "@totvs/prettier-plugin-4gl": "^0.1.2",
-    "@totvs/prettier-plugin-advpl": "^0.1.2",
-    "@totvs/tds-da": "^1.2.1",
-    "@totvs/tds-ls": "^1.2.3",
-    "@types/node": "^14.14.12",
+    "@totvs/tds-da": "^1.2.4",
+    "@totvs/tds-ls": "^1.2.6",
+    "@types/node": "^16.4.5",
     "@types/react": "^16.9.50",
-    "@types/vscode": "^1.52.0",
+    "@types/vscode": "^1.58.1",
     "cheerio": "^1.0.0-rc.3",
-    "core-js": "^3.6.4",
-    "del": "^5.1.0",
-    "ini": "^1.3.5",
-    "jszip": "^3.5.0",
+    "core-js": "^3.15.2",
+    "del": "^6.0.0",
+    "ini": "^2.0.0",
+    "jszip": "^3.7.0",
     "material-table": "1.68.1",
-    "prettier": "^2.2.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "strip-json-comments": "^3.1.1",
-    "template-literal": "^1.0.3",
+    "template-literal": "^1.0.4",
     "tmp": "^0.2.1",
-    "typescript": "^4.1.0",
+    "typescript": "^4.3.5",
     "vscode-debugadapter": "^1.42.1",
     "vscode-languageclient": "^6.1.1",
     "vscode-nls": "^5.0.0",
@@ -96,33 +91,34 @@
     "windows-1252": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.11.6",
-    "@babel/core": "^7.11.6",
+    "@babel/cli": "^7.14.8",
+    "@babel/core": "^7.14.8",
     "@types/ini": "^1.3.30",
-    "@types/mocha": "^8.0.4",
+    "@types/mocha": "^9.0.0",
     "@types/react-dom": "^16.9.8",
-    "all-contributors-cli": "^6.17.4",
+    "all-contributors-cli": "^6.20.0",
     "cleanup": "^0.3.0",
-    "css-loader": "^4.3.0",
+    "css-loader": "^6.2.0",
     "gulp": "^4.0.2",
-    "gulp-filter": "^6.0.0",
-    "gulp-sourcemaps": "^2.6.5",
+    "gulp-filter": "^7.0.0",
+    "gulp-sourcemaps": "^3.0.0",
     "gulp-tslint": "^8.1.4",
     "gulp-typescript": "^6.0.0-alpha.1",
     "gulp-util": "^3.0.8",
     "lodash.template": ">=4.5.0",
-    "mocha": "^8.2.1",
+    "mocha": "^9.0.3",
     "npm-run-all": "^4.1.5",
-    "style-loader": "^1.2.1",
-    "terser-webpack-plugin": "^4.2.2",
-    "ts-loader": "^8.0.4",
-    "tslint": "^6.1.2",
-    "vsce": "^1.88.0",
+    "style-loader": "^3.2.1",
+    "terser-webpack-plugin": "^5.1.4",
+    "ts-loader": "^9.2.4",
+    "tslint": "^6.1.3",
+    "vsce": "^1.96.1",
     "vscode-nls-dev": "^3.3.2",
-    "vscode-test": "^1.4.1",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12",
-    "webpack-stream": "^6.1.0"
+    "vscode-test": "^1.6.1",
+    "webpack": "^5.47.0",
+    "webpack-cli": "^4.7.2",
+    "webpack-stream": "^6.1.2",
+    "pegjs": "^0.10.0"
   },
   "main": "./out/extension",
   "activationEvents": [
@@ -142,6 +138,7 @@
     "onCommand:totvs-developer-studio.inspectorObjects",
     "onCommand:totvs-developer-studio.defragRPO",
     "onCommand:totvs-developer-studio.rpoCheckIntegrity",
+    "onCommand:totvs-developer-studio.revalidateRPO",
     "onCommand:totvs-developer-studio.delete.file.fromRPO",
     "onCommand:totvs-developer-studio.getDAP",
     "onCommand:totvs-developer-studio.connect",
@@ -491,6 +488,12 @@
           "default": false,
           "description": "%tds.package.workspaceServerConfig%"
         },
+        "totvsLanguageServer.editor.linter": {
+          "scope": "window",
+          "type": "boolean",
+          "default": true,
+          "description": "%tds.package.editor.linter%"
+        },
         "totvsLanguageServer.filesystem.encoding": {
           "scope": "window",
           "type": "string",
@@ -534,16 +537,6 @@
               ],
               "default": "ignore",
               "description": "Indica como as _strings_ devem ser informadas."
-            },
-            "formatNumber": {
-              "type": "boolean",
-              "default": false,
-              "description": "Habilita a formatação de valores constantes numéricos."
-            },
-            "operatorSpacing": {
-              "type": "boolean",
-              "default": false,
-              "description": "Habilita o espaçamento de operadores em expressões."
             }
           }
         }
@@ -576,6 +569,12 @@
         "command": "totvs-developer-studio.rpoCheckIntegrity",
         "title": "%tds.package.rpo.check.integrity.title%",
         "description": "%tds.package.rpo.check.integrity.description%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.revalidateRPO",
+        "title": "%tds.package.revalidate.rpo.title%",
+        "description": "%tds.package.revalidate.rpo.description%",
         "category": "TOTVS"
       },
       {
@@ -1299,7 +1298,7 @@
     "menus": {
       "explorer/context": [
         {
-          "when": "explorerResourceIsFolder",
+          "when": "explorerResourceIsFolder ",
           "command": "totvs-developer-studio.build.workspace",
           "alt": "totvs-developer-studio.rebuild.workspace",
           "group": "totvsBuild@1"
@@ -1317,30 +1316,25 @@
         {
           "when": "resourceLangId == totvs_patch",
           "command": "totvs-developer-studio.patchApply.fromFile",
-          "alt": "totvs-developer-studio.patchApply.fromFile",
           "group": "totvsBuild@5"
         },
         {
           "when": "resourceLangId == totvs_patch",
           "command": "totvs-developer-studio.patchInfos.fromFile",
-          "alt": "totvs-developer-studio.patchInfos.fromFile",
           "group": "totvsBuild@9"
         },
         {
           "when": "resourceLangId == totvs_patch",
           "command": "totvs-developer-studio.patchValidate.fromFile",
-          "alt": "totvs-developer-studio.patchValidate.fromFile",
           "group": "totvsBuild@8"
         },
         {
           "command": "totvs-developer-studio.delete.file.fromRPO",
-          "alt": "totvs-developer-studio.delete.file.fromRPO",
           "group": "totvsBuild@6"
         },
         {
           "when": "resourceLangId == totvs_template",
           "command": "totvs-developer-studio.templateApply.fromFile",
-          "alt": "totvs-developer-studio.templateApply.fromFile",
           "group": "totvsBuild@5"
         },
         {
@@ -1426,11 +1420,6 @@
           "group": "inline@1"
         },
         {
-          "command": "totvs-developer-studio.delete.file.fromRPO",
-          "when": "view == totvs_server && viewItem == serverItem",
-          "group": "EtotvsRPO@2"
-        },
-        {
           "command": "totvs-developer-studio.add",
           "when": "view == totvs_server",
           "group": "ABtotvsServer@3"
@@ -1478,7 +1467,17 @@
         {
           "command": "totvs-developer-studio.rpoCheckIntegrity",
           "when": "view == totvs_server && viewItem == serverItem",
-          "group": "EtotvsRPO@1"
+          "group": "EtotvsRPO@2"
+        },
+        {
+          "command": "totvs-developer-studio.revalidateRPO",
+          "when": "view == totvs_server && viewItem == serverItem && tds-vscode.isSafeRPO",
+          "group": "EtotvsRPO@3"
+        },
+        {
+          "command": "totvs-developer-studio.delete.file.fromRPO",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "EtotvsRPO@4"
         }
       ],
       "view/title": [

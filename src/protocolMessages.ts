@@ -1,4 +1,7 @@
 import * as vscode from 'vscode';
+import * as nls from 'vscode-nls';
+
+const localize = nls.loadMessageBundle();
 
 interface ConnectionNode {
   // These properties come directly from the language server.
@@ -20,10 +23,7 @@ import { ResponseError } from 'vscode-languageclient';
 import { ServerItem } from './serverItemProvider';
 import { CompileResult } from './compile/CompileResult';
 import { _debugEvent } from './debug';
-import {
-  IPatchValidateResult,
-  IRpoInfoData as RpoInfoResult,
-} from './rpoInfo/rpoPath';
+import { IRpoInfoData as RpoInfoResult } from './rpoInfo/rpoPath';
 import { IRpoToken } from './rpoToken';
 import Utils from './utils';
 
@@ -151,7 +151,6 @@ export function sendConnectRequest(
         }
       },
       (err: ResponseError<object>) => {
-        vscode.window.showErrorMessage(err.message);
         return { sucess: false, token: '', needAuthentication: false };
       }
     );
@@ -189,7 +188,6 @@ export function sendAuthenticateRequest(
         }
       },
       (err: ResponseError<object>) => {
-        vscode.window.showErrorMessage(err.message);
         return { sucess: false, token: '' };
       }
     );
@@ -223,7 +221,6 @@ export function sendReconnectRequest(
         }
       },
       (error: any) => {
-        vscode.window.showErrorMessage(error.message);
         return { sucess: false, environment: '', user: '', token: '' };
       }
     );
@@ -252,7 +249,6 @@ export function sendValidationRequest(
         };
       },
       (err: ResponseError<object>) => {
-        vscode.window.showErrorMessage(err.message);
         return {
           build: '',
           secure: false,
@@ -407,11 +403,11 @@ export function sendCompilation(
   hasAdvplsource: boolean
 ): Thenable<CompileResult> {
   if (_debugEvent) {
-    // vscode.window.showWarningMessage(
-    //   'Esta operação não é permitida durante uma depuração.'
-    // );
-    throw new Error('Esta operação não é permitida durante uma depuração.');
+    return Promise.reject(
+      new Error('This operation is not allowed during a debug.')
+    );
   }
+
   return languageClient.sendRequest('$totvsserver/compilation', {
     compilationInfo: {
       connectionToken: server.token,
@@ -428,10 +424,9 @@ export function sendCompilation(
 
 export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
   if (_debugEvent) {
-    // vscode.window.showWarningMessage(
-    //   'Esta operação não é permitida durante uma depuração.'
-    // );
-    throw new Error('Esta operação não é permitida durante uma depuração.');
+    return Promise.reject(
+      new Error('This operation is not allowed during a debug.')
+    );
   }
 
   return languageClient
@@ -451,11 +446,11 @@ export function sendPatchInfo(
   patchUri: string
 ): Thenable<any> {
   if (_debugEvent) {
-    vscode.window.showWarningMessage(
-      'Esta operação não é permitida durante uma depuração.'
+    return Promise.reject(
+      new Error('This operation is not allowed during a debug.')
     );
-    return Promise.resolve();
   }
+
   return languageClient
     .sendRequest('$totvsserver/patchInfo', {
       patchInfoInfo: {
@@ -525,7 +520,6 @@ export function sendRpoToken(
   server: ServerItem,
   rpoToken: IRpoToken
 ): Thenable<IRpoTokenResult> {
-  //if (rpoToken.file === '') {
   if (rpoToken.token === '') {
     return Promise.resolve({ sucess: false, message: '' });
   }
@@ -567,9 +561,10 @@ export function sendGetPatchDir(
         includeDir: includeDir,
       },
     })
-    .then(
-      (response: IGetPatchDirResult) => {
-        return response;
-      }
-    );
+    .then((response: IGetPatchDirResult) => {
+      return response;
+    });
+}
+function showWarningMessage(arg0: any) {
+  throw new Error('Function not implemented.');
 }

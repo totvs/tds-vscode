@@ -37,6 +37,7 @@ import {
 import { deleteFileFromRPO } from './server/deleteFileFromRPO';
 import { defragRpo } from './server/defragRPO';
 import { rpoCheckIntegrity } from './server/rpoCheckIntegrity';
+import { revalidateRpo } from './server/revalidateRPO';
 import { serverSelection } from './inputConnectionParameters';
 import { inspectObject } from './inspect/inspectObject';
 import { inspectFunctions } from './inspect/inspectFunction';
@@ -329,6 +330,12 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand('totvs-developer-studio.rpoCheckIntegrity', () =>
       rpoCheckIntegrity()
+    )
+  );
+  //Ação para revalidar o RPO do servidor corrente.
+  context.subscriptions.push(
+    commands.registerCommand('totvs-developer-studio.revalidateRPO', () =>
+      revalidateRpo()
     )
   );
   //Ação para deletar um fonte selecionado do RPO.
@@ -655,6 +662,7 @@ export function activate(context: ExtensionContext) {
   // Register custom editor for patch files
   context.subscriptions.push(PatchEditorProvider.register(context));
 
+  blockBuildCommands(false);
   showBanner();
 
   let exportedApi = {
@@ -770,4 +778,33 @@ function showBanner(force: boolean = false) {
       /* prettier-ignore-end */
     }
   }
+}
+
+let canBuild: boolean = true;
+
+export function blockBuildCommands(block: boolean): boolean {
+  if (!canBuild && block) {
+    window.showInformationMessage(
+      `Request cancelled. Build process already in progress.`
+    );
+    return false;
+  }
+
+  canBuild = !block;
+
+  vscode.commands.executeCommand('setContext', 'tds-vscode.canBuild', canBuild);
+
+  return true;
+}
+
+export function canDebug(): boolean {
+  const result: boolean = canBuild;
+
+  if (!result) {
+    vscode.window.showWarningMessage(
+      'Request cancelled. Build process in progress.'
+    );
+  }
+
+  return result;
 }
