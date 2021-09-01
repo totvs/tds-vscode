@@ -1,6 +1,6 @@
 .vscode/**
 .vscode-test/**
-out/test/**
+out-test/**
 test/**
 src/**/*.ts
 src/**/*.tsx
@@ -13,10 +13,7 @@ imagens/**
 gulpfile.js
 tsconfig.json
 .all-contributorsrc
-.flowconfig
 vsc-extension-quickstart*.md
 *.code-workspace
-.transifexrc
-.tx
-for_flow
 *.log
+test-resources/**

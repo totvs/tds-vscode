@@ -13,3 +13,5 @@ totvsls_out.log
 package-lock.json
 tds-vscode-translations-export
 *.log
+test-resources/**
+vscode-extension-tester.api-handler-0.0.1/

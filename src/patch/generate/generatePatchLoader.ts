@@ -25,10 +25,6 @@ import {
   PatchProcess,
 } from './generatePatchData';
 import { IGetPatchDirResult, sendGetPatchDir } from '../../protocolMessages';
-import { folder } from 'jszip';
-import { serverSelection } from '../../inputConnectionParameters';
-import { utils } from 'mocha';
-import { IfStatement } from 'typescript';
 import { sendPatchGenerateMessage } from '../patchUtil';
 
 const fs = require('fs');
