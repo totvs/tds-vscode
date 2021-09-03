@@ -2,6 +2,17 @@
 
 # Versão [1.3.x]
 
+## Insufficient privileges for APPLY_PATCH #651
+
+### Problema:
+
+- A definição de privilégios via as chaves da sessão \[TDS\], tratam somente endereços _IP´s_.
+
+### Solução:
+
+- Foi adicionado tratamento para usar nome da estação.
+  Detalhes em [Sistema de Privilégios](docs/servers.md).
+
 ## Monitor -Filtering on/off - Query não apresenta resultado. [DTCLIENT01-2861](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2861)
 
 ### Problema:

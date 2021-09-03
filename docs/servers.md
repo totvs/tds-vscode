@@ -1,6 +1,7 @@
 # Visão `Servers`
 
 > Requisitos:
+>
 > - servidor a ser utilizado ou registrado em execução
 
 ## Registro de servidores
@@ -35,9 +36,9 @@ Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
 
 Por padrão, o arquivo com os registros de servidores é armazenado no arquivo `servers.json`, na área do usuário conforme o sistema operacional.
 
-* **Windows** `%USERPROFILE%\\.totvsls\\settings.json`
-* **MacOS** `$HOME/.totvsls/settings.json`
-* **Linux** `$HOME/.totvsls/settings.json`
+- **Windows** `%USERPROFILE%\\.totvsls\\settings.json`
+- **MacOS** `$HOME/.totvsls/settings.json`
+- **Linux** `$HOME/.totvsls/settings.json`
 
 Caso deseje ter o registro de servidores por área de trabalho, ative a opção em `File | Preferences | Settings | Extensions | TOTVS | Workspace server config`.
 
@@ -51,37 +52,67 @@ Ou use a troca rápida disponível na barra de _status_.
 
 ## Sistema de Privilégios
 
-O **TDS-VSCode**, suporta um sistema simples de privilégios, baseada em configuração efetuada no arquivo _appServer.ini_, podendo-se configurar  privilégios para determinadas operações e estações, através da adição de chaves na sessão `[TDS]`.
+O **TDS-VSCode**, suporta um sistema simples de privilégios, baseada em configuração efetuada no arquivo _appServer.ini_, podendo-se configurar privilégios para determinadas operações e estações, através da adição de chaves na sessão `[TDS]`.
 
-> Modificações na sessão `[TDS]` requer **reinicialização** do servidor.
+> Quando a conexão é local (_localhost_), não há restrições (sessão `[TDS]` é ignorada).
 
-> Para manter o mesmo comportamento de ambientes com versões mais antigas, todas as operações vem liberadas por padrão, na ausência da sessão `[TDS]` ou da chave da operação.
+> Modificações na sessão `[TDS]` requer **reconexão** do _VS-Code_.
+
+> Para manter o mesmo comportamento de ambientes com versões mais antigas, todas as operações vem liberadas por padrão na ausência da sessão `[TDS]` ou da chave da operação.
 
 ### Especificação da sessão
 
+```ini
+[TDS]
+AllowApplyPatch=<IP/name list>
+AllowBuildPatch=<IP/name list>
+AllowMonitor=<IP/name list>
+AllowCompile=<IP/name list>
+EnableDisconnectUser=<IP/name list>
+EnableSendMessage=<IP/name list>
+EnableBlockNewConnection=<IP/name list>
+EnableStopServer=<IP/name list>
+```
+
+| Chave                    | Permissão                                 |
+| ------------------------ | ----------------------------------------- |
+| AllowApplyPatch          | Aplicar pacotes de atualização (_patchs_) |
+| AllowBuildPatch          | Gerar pacotes de atualização (_patchs_)   |
+| AllowCompile             | Compilar fontes e recursos                |
+| AllowMonitor             | Acesso ao monitor de conexões             |
+| EnableDisconnectUser     | Desconectar usuários                      |
+| EnableSendMessage        | Enviar mensagens                          |
+| EnableBlockNewConnection | Bloquear novas conexões                   |
+| EnableStopServer         | Encerrar o _appServer_                    |
+
+- `<IP/name>` é a lista de estações com o privilégio liberado, identificadas pelo seu endereço IP ou nome (_host name_) e separadas por `,` (vírgula).
+
+> Para liberar o privilégio a qualquer estação, coloque `*` (valor padrão).
+
+> Para bloquear o privilégio a qualquer estação, coloque `0` (zero).
+
+### Exemplo
+
 ```
 [TDS]
-ALLOWAPPLYPATCH=<ip list>
-ALLOWEDIT=<ip list>
-ENABLEDISCONNECTUSER=<ip list>
-ENABLESENDMESSAGE=<ip list>
-ENABLEBLOCKNEWCONNECTION=<ip list>
-ENABLESTOPSERVER=<ip list>
-ALLOWBUILDPATCH=<ip list>
-ALLOWCOMPILE=<ip list>
+AllowApplyPatch=PRODUCAO, 10.173.7.129
+AllowBuildPatch=0
+AllowCompile=0
+AllowMonitor=ADMIN_1, ADMIN_2, SUPER_ADMIN
+EnableDisconnectUser=*
+EnableSendMessage=*
+EnableBlockNewConnection=SUPER_ADMIN
+EnableStopServer=SUPER_ADMIN
 ```
 
-Chave | Permissão |
------ | --------- |
-ALLOWAPPLYPATCH | Aplicar pacotes de atualização (_patchs_)
-ALLOWEDIT | Editar configurações do _appServer_
-ENABLEDISCONNECTUSER | Desconectar usuários
-ENABLESENDMESSAGE | Enviar mensagens
-ENABLEBLOCKNEWCONNECTION | Bloquear novas conexões
-ENABLESTOPSERVER | Encerrar o _appServer_
-ALLOWBUILDPATCH | Gerar pacotes de atualização (_patchs_)
-ALLOWCOMPILE | Compilar fontes e recursos
+Neste exemplo, temos:
 
-- `<ip list>` é a lista de estações com o privilégio liberado, identificadas pelo seu endereço IP e separadas por `,`.
+- Somente a estação `PRODUCAO` ou com o IP `10.173.7.129` podem aplicar atualizações;
+- Ninguém pode gerar pacotes de atualização ou compilar;
+- Somente as estações `ADMIN_1`, `ADMIN_2` e `SUPER_ADMIN` podem monitorar conexões;
+- Todos que tenham privilégio de acesso ao monitor, podem desconectar usuários;
+- Somente a estação `SUPER_ADMIN` pode bloquear novas conexões e parar o servidor,
 
-> Para liberar o privilégio a qualquer estação, coloque `*`.
+![My privileges](./images/my-privileges.png)
+
+Passando o ponteiro do _mouse_ sobre a indicação de servidor/ambiente selecionado (barra de status), lhe será apresentado os privilégios que lhe foram concedidos.
