@@ -26,15 +26,99 @@
 
 ## Configurações das definições
 
-As configurações com os registros dos servidores podem ser editados manualmente, desde que com cuidado, via editor de texto.
-
-Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
+As configurações com os registros dos servidores podem ser editados manualmente, desde que com cuidado, via editor de texto. Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
 
 ![Edit file server](./gifs/serversEditFile.gif)
 
-## Local de gravação de servers.json
+## Estrutura do arquivo _servers.json_
 
-Por padrão, o arquivo com os registros de servidores é armazenado no arquivo `servers.json`, na área do usuário conforme o sistema operacional.
+> Recomenda-se que a edição seja efetuada com nenhum servidor conectado/selecionado.
+> Faça um cópia de segurança antes. Modificações erradas podem inviabilizar seu uso.
+
+```json
+{
+  "version": "0.2.1",
+  "includes": ["m:\\protheus\\includes"],
+  "permissions": {
+    "authorizationtoken": ""
+  },
+  "connectedServer": {},
+  "configurations": [
+    {
+      "id": "pgfb077eunhkt1u2mu4794eqxtfvj",
+      "type": "totvs_server_protheus",
+      "name": "p20",
+      "port": 2030,
+      "address": "localhost",
+      "buildVersion": "7.00.210324P",
+      "secure": true,
+      "includes": [],
+      "environments": ["p12"],
+      "username": "admin",
+      "environment": "p12",
+      "token": "djM6cGdmYjA3N2..."
+    }
+  ],
+  "savedTokens": [
+    [
+      "pgfb077eunhkt1u2mu4794eqxtfvj:p12",
+      {
+        "id": "pgfb077eunhkt1u2mu4794eqxtfvj",
+        "token": "djM6cGdmYjA3..."
+      }
+    ],
+    [
+      "hgzteu0iau7kt1v9dqlbank94bu3qk:admin",
+      {
+        "id": "hgzteu0iau7kt1v9dqlbank94bu3qk",
+        "token": "djM6aGd6..."
+      }
+    ],
+    [
+      "hgzteu0iau7kt1v9dqlbank94bu3qk:p12",
+      {
+        "id": "hgzteu0iau7kt1v9dqlbank94bu3qk",
+        "token": "djM6aGd6d..."
+      }
+    ]
+  ],
+  "lastConnectedServer": "pgfb077eunhkt1u2mu4794eqxtfvj"
+}
+```
+
+| Chave                 | Descrição/uso                                                                           |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `version`             | Versão do arquivo. Não editar.                                                          |
+| `includes `           | Lista de pastas padrão para busca de arquivos de definição.                             |
+| `permissions `        | Lista de permissões.                                                                    |
+| `authorizationtoken`  | Chave de compilação com as permissões.                                                  |
+| `connectedServer `    | Lista de servidores conectados.                                                         |
+| `configurations `     | Configurações de servidores registrados para uso.                                       |
+| `id `                 | Identificação única, gerada no momento de seu registro.                                 |
+| `type `               | Tipo do servidor, podem ser:                                                            |
+|                       | - _totvs_server_protheus_, para servidores com suporte a Adv/PL.                        |
+|                       | - _totvs_server_logix_, para servidores com suporte a Adv/PL e 4GL.                     |
+| `name `               | Identificação do servidor para humanos.                                                 |
+| `port `               | Porta de conexão.                                                                       |
+| `address `            | Endereço IP ou nome da estação do servidor.                                             |
+| `buildVersion `       | Versão do servidor. Valor obtido automaticamente.                                       |
+| `secure `             | Conexão segura (SSL) ou não. Valor obtido automaticamente.                              |
+| `includes `           | Lista de pastas para busca de arquivos de definição.                                    |
+| ` `                   | Se não informada utilizará a lista padrão.                                              |
+| `environments `       | Ambientes acessados.                                                                    |
+| `username `           | Último usuário utilizado na conexão.                                                    |
+| `environment `        | Último ambiente utilizado na conexão.                                                   |
+| `token `              | Código de acesso para reconexão. Valor obtido automaticamente.                          |
+| `savedTokens `        | Listas de código de acesso, associados a um servidor e ambientes.                       |
+|                       | Valores obtidos automaticamente.                                                        |
+|                       | \<id>:\<ambiente>                                                                       |
+|                       | id: identificaão do servidor                                                            |
+|                       | token: código de acesso                                                                 |
+| `lastConnectedServer` | Último servidor utilizado e que será reconectado na próxima sessão de forma automática. |
+
+## Local de gravação de _servers.json_
+
+Por padrão, o arquivo com os registros de servidores é armazenado no arquivo `_servers.json_`, na área do usuário conforme o sistema operacional.
 
 - **Windows** `%USERPROFILE%\\.totvsls\\settings.json`
 - **MacOS** `$HOME/.totvsls/settings.json`

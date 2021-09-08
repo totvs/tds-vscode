@@ -2,6 +2,10 @@
 
 # Versão [1.3.x]
 
+## Melhorias
+
+- Documentação sobre a estrutura do arquivo _servers.json_.
+
 ## Insufficient privileges for APPLY_PATCH #651
 
 ### Problema:
