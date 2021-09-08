@@ -579,7 +579,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
       </Table>
       <TablePagination
         className={tableClasses.pagination}
-        rowsPerPageOptions={[100, 500, 1000, 1500, 2000, 3000, 5000]}
+        rowsPerPageOptions={[100, 500, 1000, 2000, 3000, 5000]}
         component="div"
         count={parseInt(jsonBody.totalItems)}
         rowsPerPage={jsonBody.itemsPerPage}
@@ -588,9 +588,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           inputProps: { 'aria-label': 'rows per page' },
           native: true,
         }}
-        onPageChange={handleChangePage}
         onChangePage={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
         ActionsComponent={TablePaginationActions}
       />
