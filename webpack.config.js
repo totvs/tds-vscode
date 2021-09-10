@@ -90,10 +90,7 @@ module.exports = {
           {
             loader: "ts-loader",
             options: {
-              configFile: path.join(
-                INSPECT_PATCH_PATH,
-                "./app/tsconfig.json"
-              ),
+              configFile: path.join(INSPECT_PATCH_PATH, "./app/tsconfig.json"),
             },
           },
         ],
@@ -105,10 +102,7 @@ module.exports = {
           {
             loader: "ts-loader",
             options: {
-              configFile: path.join(
-                GENERATE_PATCH_PATH,
-                "./app/tsconfig.json"
-              ),
+              configFile: path.join(GENERATE_PATCH_PATH, "./app/tsconfig.json"),
             },
           },
         ],
@@ -116,6 +110,13 @@ module.exports = {
       {
         test: /\.(bundle\.json|bundle\.*\.json)$/,
         loader: "i18n-loader",
+      },
+
+      {
+        test: /\.m?js/,
+        resolve: {
+          fullySpecified: false
+        }
       },
 
       {

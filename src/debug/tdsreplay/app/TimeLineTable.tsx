@@ -589,7 +589,9 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           native: true,
         }}
         onChangePage={handleChangePage}
+        onPageChange={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
         ActionsComponent={TablePaginationActions}
       />
       <FormControlLabel
