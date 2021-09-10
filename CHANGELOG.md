@@ -1,6 +1,6 @@
 # Changelog
 
-# Versão [1.3.x]
+# Versão [1.3.4]
 
 ## Melhorias
 
