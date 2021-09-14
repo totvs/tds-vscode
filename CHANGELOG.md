@@ -6,15 +6,17 @@
 
 - Documentação sobre a estrutura do arquivo _servers.json_.
 
-## Insufficient privileges for APPLY_PATCH #651
+## Botões APPLY e APPLY/CLOSE da aplicação de patchs estão editáveis #787
 
 ### Problema:
 
-- Os botões Apply/Apply Close na tela de aplicação de patch estão aceitando editar o texto (Issue #787)
+- Os botões Apply/Apply Close na tela de aplicação de patch estão aceitando editar o texto
 
 ### Solução
 
 - Correção feita para não permitir a edição do texto da tela
+
+## Insufficient privileges for APPLY_PATCH #651
 
 ### Problema:
 
