@@ -10,6 +10,14 @@
 
 ### Problema:
 
+- Os botões Apply/Apply Close na tela de aplicação de patch estão aceitando editar o texto (Issue #787)
+
+### Solução
+
+- Correção feita para não permitir a edição do texto da tela
+
+### Problema:
+
 - A definição de privilégios via as chaves da sessão \[TDS\], tratam somente endereços _IP´s_.
 
 ### Solução:
