@@ -1,7 +1,4 @@
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
-
-const localize = nls.loadMessageBundle();
+import * as vscode from "vscode";
 
 interface ConnectionNode {
   // These properties come directly from the language server.
@@ -18,14 +15,14 @@ interface AuthenticationNode {
   connectionToken: string;
 }
 
-import { languageClient } from './extension';
-import { ResponseError } from 'vscode-languageclient';
-import { ServerItem } from './serverItemProvider';
-import { CompileResult } from './compile/CompileResult';
-import { _debugEvent } from './debug';
-import { IRpoInfoData as RpoInfoResult } from './rpoInfo/rpoPath';
-import { IRpoToken } from './rpoToken';
-import Utils from './utils';
+import { languageClient } from "./extension";
+import { ResponseError } from "vscode-languageclient";
+import { ServerItem } from "./serverItemProvider";
+import { CompileResult } from "./compile/CompileResult";
+import { _debugEvent } from "./debug";
+import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
+import { IRpoToken } from "./rpoToken";
+import Utils from "./utils";
 
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
@@ -77,7 +74,7 @@ export function sendDisconnectRequest(
   connectedServerItem: ServerItem
 ): Thenable<ITokenInfo> {
   return languageClient
-    .sendRequest('$totvsserver/disconnect', {
+    .sendRequest("$totvsserver/disconnect", {
       disconnectInfo: {
         connectionToken: connectedServerItem.token,
         serverName: connectedServerItem.label,
@@ -88,7 +85,7 @@ export function sendDisconnectRequest(
         if (disconnectInfo !== undefined && disconnectInfo.code === undefined) {
           return {
             sucess: false,
-            token: '',
+            token: "",
             needAuthentication: connectedServerItem.secure === 1,
           };
         } else {
@@ -102,7 +99,7 @@ export function sendDisconnectRequest(
       (err: ResponseError<object>) => {
         return {
           sucess: false,
-          token: '',
+          token: "",
           needAuthentication: connectedServerItem.secure === 1,
         };
       }
@@ -116,14 +113,14 @@ export function sendConnectRequest(
 ): Thenable<ITokenInfo> {
   let thisServerType = 0;
 
-  if (serverItem.type === 'totvs_server_protheus') {
+  if (serverItem.type === "totvs_server_protheus") {
     thisServerType = 1;
-  } else if (serverItem.type === 'totvs_server_logix') {
+  } else if (serverItem.type === "totvs_server_logix") {
     thisServerType = 2;
   }
 
   return languageClient
-    .sendRequest('$totvsserver/connect', {
+    .sendRequest("$totvsserver/connect", {
       connectionInfo: {
         connType: connType,
         serverName: serverItem.name,
@@ -147,18 +144,18 @@ export function sendConnectRequest(
             needAuthentication: connectionNode.needAuthentication,
           };
         } else {
-          return { sucess: false, token: '', needAuthentication: false };
+          return { sucess: false, token: "", needAuthentication: false };
         }
       },
       (err: ResponseError<object>) => {
-        return { sucess: false, token: '', needAuthentication: false };
+        return { sucess: false, token: "", needAuthentication: false };
       }
     );
 }
 
 export const ENABLE_CODE_PAGE = {
-  CP1252: 'CP1252', //demais idiomas
-  CP1251: 'CP1251', //cirílico
+  CP1252: "CP1252", //demais idiomas
+  CP1251: "CP1251", //cirílico
 };
 
 export function sendAuthenticateRequest(
@@ -169,7 +166,7 @@ export function sendAuthenticateRequest(
   encoding: string
 ): Thenable<IAuthenticationInfo> {
   return languageClient
-    .sendRequest('$totvsserver/authentication', {
+    .sendRequest("$totvsserver/authentication", {
       authenticationInfo: {
         connectionToken: serverItem.token,
         environment: environment,
@@ -188,7 +185,7 @@ export function sendAuthenticateRequest(
         }
       },
       (err: ResponseError<object>) => {
-        return { sucess: false, token: '' };
+        return { sucess: false, token: "" };
       }
     );
 }
@@ -199,7 +196,7 @@ export function sendReconnectRequest(
   _connType: ConnTypeIds
 ): Thenable<IReconnectInfo> {
   return languageClient
-    .sendRequest('$totvsserver/reconnect', {
+    .sendRequest("$totvsserver/reconnect", {
       reconnectInfo: {
         connectionToken: connectionToken,
         serverName: serverItem.name,
@@ -217,11 +214,11 @@ export function sendReconnectRequest(
             token: token,
           };
         } else {
-          return { sucess: false, environment: '', user: '', token: '' };
+          return { sucess: false, environment: "", user: "", token: "" };
         }
       },
       (error: any) => {
-        return { sucess: false, environment: '', user: '', token: '' };
+        return { sucess: false, environment: "", user: "", token: "" };
       }
     );
 }
@@ -230,12 +227,12 @@ export function sendValidationRequest(
   addres: string,
   port: number
 ): Thenable<IValidationInfo> {
-  if (typeof port !== 'number') {
+  if (typeof port !== "number") {
     port = parseInt(port);
   }
 
   return languageClient
-    .sendRequest('$totvsserver/validation', {
+    .sendRequest("$totvsserver/validation", {
       validationInfo: {
         server: addres,
         port: port,
@@ -250,7 +247,7 @@ export function sendValidationRequest(
       },
       (err: ResponseError<object>) => {
         return {
-          build: '',
+          build: "",
           secure: false,
         };
       }
@@ -259,7 +256,7 @@ export function sendValidationRequest(
 
 export function sendGetUsersRequest(server: ServerItem): Thenable<any> {
   return languageClient
-    .sendRequest('$totvsmonitor/getUsers', {
+    .sendRequest("$totvsmonitor/getUsers", {
       getUsersInfo: {
         connectionToken: server.token,
       },
@@ -279,20 +276,20 @@ export function sendLockServer(
   lock: boolean
 ): Thenable<boolean> {
   return languageClient
-    .sendRequest('$totvsmonitor/setConnectionStatus', {
+    .sendRequest("$totvsmonitor/setConnectionStatus", {
       setConnectionStatusInfo: {
         connectionToken: server.token,
         status: !lock, //false: conexões bloqueadas
       },
     })
     .then((response: any) => {
-      return response.message === 'OK';
+      return response.message === "OK";
     });
 }
 
 export function sendIsLockServer(server: ServerItem): Thenable<boolean> {
   return languageClient
-    .sendRequest('$totvsmonitor/getConnectionStatus', {
+    .sendRequest("$totvsmonitor/getConnectionStatus", {
       getConnectionStatusInfo: {
         connectionToken: server.token,
       },
@@ -307,7 +304,7 @@ export function sendKillConnection(
   target: any
 ): Thenable<string> {
   return languageClient
-    .sendRequest('$totvsmonitor/killUser', {
+    .sendRequest("$totvsmonitor/killUser", {
       killUserInfo: {
         connectionToken: server.token,
         userName: target.username,
@@ -328,7 +325,7 @@ export function sendKillConnection(
 
 export function sendStopServer(server: ServerItem): Thenable<string> {
   return languageClient
-    .sendRequest('$totvsserver/stopServer', {
+    .sendRequest("$totvsserver/stopServer", {
       stopServerInfo: {
         connectionToken: server.token,
       },
@@ -349,7 +346,7 @@ export function sendUserMessage(
   message: string
 ): Thenable<string> {
   return languageClient
-    .sendRequest('$totvsmonitor/sendUserMessage', {
+    .sendRequest("$totvsmonitor/sendUserMessage", {
       sendUserMessageInfo: {
         connectionToken: server.token,
         userName: target.username,
@@ -375,7 +372,7 @@ export function sendAppKillConnection(
   target: any
 ): Thenable<string> {
   return languageClient
-    .sendRequest('$totvsmonitor/appKillUser', {
+    .sendRequest("$totvsmonitor/appKillUser", {
       appKillUserInfo: {
         connectionToken: server.token,
         userName: target.username,
@@ -404,11 +401,11 @@ export function sendCompilation(
 ): Thenable<CompileResult> {
   if (_debugEvent) {
     return Promise.reject(
-      new Error('This operation is not allowed during a debug.')
+      new Error("This operation is not allowed during a debug.")
     );
   }
 
-  return languageClient.sendRequest('$totvsserver/compilation', {
+  return languageClient.sendRequest("$totvsserver/compilation", {
     compilationInfo: {
       connectionToken: server.token,
       authorizationToken: Utils.getAuthorizationToken(server),
@@ -425,12 +422,12 @@ export function sendCompilation(
 export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
   if (_debugEvent) {
     return Promise.reject(
-      new Error('This operation is not allowed during a debug.')
+      new Error("This operation is not allowed during a debug.")
     );
   }
 
   return languageClient
-    .sendRequest('$totvsserver/rpoInfo', {
+    .sendRequest("$totvsserver/rpoInfo", {
       rpoInfo: {
         connectionToken: server.token,
         environment: server.environment,
@@ -447,12 +444,12 @@ export function sendPatchInfo(
 ): Thenable<any> {
   if (_debugEvent) {
     return Promise.reject(
-      new Error('This operation is not allowed during a debug.')
+      new Error("This operation is not allowed during a debug.")
     );
   }
 
   return languageClient
-    .sendRequest('$totvsserver/patchInfo', {
+    .sendRequest("$totvsserver/patchInfo", {
       patchInfoInfo: {
         connectionToken: server.token,
         authorizationToken: Utils.getAuthorizationToken(server),
@@ -483,10 +480,10 @@ export function sendApplyTemplateRequest(
   templateUri: vscode.Uri
 ): Thenable<IApplyTemplateResult> {
   return languageClient
-    .sendRequest('$totvsserver/templateApply', {
+    .sendRequest("$totvsserver/templateApply", {
       templateApplyInfo: {
         connectionToken: server.token,
-        authorizationToken: '',
+        authorizationToken: "",
         environment: server.environment,
         includeUris: includesUris,
         templateUri: templateUri.toString(),
@@ -520,16 +517,16 @@ export function sendRpoToken(
   server: ServerItem,
   rpoToken: IRpoToken
 ): Thenable<IRpoTokenResult> {
-  if (rpoToken.token === '') {
-    return Promise.resolve({ sucess: false, message: '' });
+  if (rpoToken.token === "") {
+    return Promise.resolve({ sucess: false, message: "" });
   }
 
   return languageClient
-    .sendRequest('$totvsserver/rpoToken', {
+    .sendRequest("$totvsserver/rpoToken", {
       rpoToken: {
         connectionToken: server.token,
         environment: server.environment,
-        file: '<internal string>', //rpoToken.file,
+        file: "<internal string>", //rpoToken.file,
         content: rpoToken.token,
       },
     })
@@ -553,7 +550,7 @@ export function sendGetPatchDir(
   includeDir: boolean
 ): Promise<IGetPatchDirResult> {
   return languageClient
-    .sendRequest('$totvsserver/getPatchDir', {
+    .sendRequest("$totvsserver/getPatchDir", {
       pathDirListInfo: {
         connectionToken: server.token,
         environment: server.environment,
@@ -565,6 +562,25 @@ export function sendGetPatchDir(
       return response;
     });
 }
-function showWarningMessage(arg0: any) {
-  throw new Error('Function not implemented.');
+
+export interface IGetServerPermissionsResult {
+  message: string;
+  serverPermissions: {
+    operation: string[];
+    text: string[];
+  };
+}
+
+export function sendGetServerPermissionsInfo(
+  server: ServerItem
+): Promise<IGetServerPermissionsResult> {
+  return languageClient
+    .sendRequest("$totvsserver/serverPermissions", {
+      serverPermissionsInfo: {
+        connectionToken: server.token,
+      },
+    })
+    .then((response: IGetServerPermissionsResult) => {
+      return response;
+    });
 }

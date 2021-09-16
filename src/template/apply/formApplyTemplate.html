@@ -33,13 +33,11 @@
 				</div>
 
 				<div class="wrap-submit">
-					<input class="btn-submit" id="submitID" type="submit" value="Apply"
+					<input class="btn-submit" readonly id="submitID" type="button" value="Apply"
 						onclick="templateApply(false);" />
-				</div>
-
-				<div class="wrap-submit">
-					<input class="btn-submit" id="submitID" type="submit" value="Apply/Close"
+					<input class="btn-submit" readonly id="submitID" type="button" value="Close"
 						onclick="templateApply(true);" />
+
 				</div>
 
 			</form>
@@ -53,11 +51,17 @@
 
 	function templateApply(close) {
 		let templatePath = document.getElementById('FileTemplate').value;
-		vscode.postMessage({
-			command: 'templateApply',
-			templateFile: templatePath,
-			close: close
-		});
+		if (close) {
+			vscode.postMessage({
+				command: 'close',
+				templateFile: templatePath,
+			});
+		} else {
+			vscode.postMessage({
+				command: 'templateApply',
+				templateFile: templatePath,
+			});
+		}
 	}
 
 	window.addEventListener('message', event => {
