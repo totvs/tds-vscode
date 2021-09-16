@@ -156,6 +156,7 @@ EnableDisconnectUser=<IP/name list>
 EnableSendMessage=<IP/name list>
 EnableBlockNewConnection=<IP/name list>
 EnableStopServer=<IP/name list>
+AllowApplyTemplate=<IP/name list>
 ```
 
 | Chave                    | Permissão                                 |
@@ -168,6 +169,7 @@ EnableStopServer=<IP/name list>
 | EnableSendMessage        | Enviar mensagens                          |
 | EnableBlockNewConnection | Bloquear novas conexões                   |
 | EnableStopServer         | Encerrar o _appServer_                    |
+| AllowApplyTemplate       | Aplicar pacotes de amostras (*.tpl)       |
 
 - `<IP/name>` é a lista de estações com o privilégio liberado, identificadas pelo seu endereço IP ou nome (_host name_) e separadas por `,` (vírgula).
 
