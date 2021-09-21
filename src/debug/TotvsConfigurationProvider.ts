@@ -98,6 +98,11 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
         }
 
         config.program = value.program;
+
+        if(config.program === undefined) {
+          return undefined;
+        }
+
         if (value.args) {
           config.programArguments = value.args;
         } else {

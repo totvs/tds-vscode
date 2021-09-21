@@ -11,6 +11,7 @@ import { statSync, chmodSync } from 'fs';
 import Utils, { MESSAGETYPE } from '../utils';
 import * as path from 'path';
 import * as nls from 'vscode-nls';
+import { getVSCodeDownloadUrl } from 'vscode-test/out/util';
 
 const localize = nls.loadMessageBundle();
 
@@ -78,6 +79,7 @@ class QuickPickProgram implements QuickPickItem {
 }
 
 export async function getProgramName() {
+
   const disposables: Disposable[] = [];
 
   let config = undefined;
@@ -102,8 +104,8 @@ export async function getProgramName() {
 
   try {
     return await new Promise<ProgramArgs | undefined>((resolve, reject) => {
-      const qp: QuickPick<QuickPickProgram> =
-        window.createQuickPick<QuickPickProgram>();
+      const qp: QuickPick<QuickPickProgram> = window.createQuickPick<QuickPickProgram>();
+
       qp.title = localize(
         'tds.vscode.getProgramName',
         'Please enter the name of an AdvPL/4GL function'
@@ -130,10 +132,8 @@ export async function getProgramName() {
             const find: boolean = config.lastPrograms.some(
               (element: QuickPickProgram) => {
                 return (
-                  element.label.toLowerCase() ===
-                    programArgs.program.toLowerCase() &&
-                  JSON.stringify(element.args) ===
-                    JSON.stringify(programArgs.args)
+                  element.label.toLowerCase() === programArgs.program.toLowerCase() &&
+                  JSON.stringify(element.args) === JSON.stringify(programArgs.args)
                 );
               }
             );
@@ -150,6 +150,9 @@ export async function getProgramName() {
           resolve(programArgs);
         })
       );
+
+      //Essa propriedade faz com que o QuickPickProgram nao seja escondido caso o usuario clique em algum outro ponto da tela.
+      qp.ignoreFocusOut = true;
 
       disposables.push(qp);
 
