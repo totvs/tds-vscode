@@ -12,20 +12,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const chai_1 = require("chai");
 const mocha_1 = require("mocha");
 const vscode_extension_tester_1 = require("vscode-extension-tester");
-mocha_1.describe.skip("ActivityBar TOTVS", () => {
+(0, mocha_1.describe)("TOTVS Activity Bar", () => {
     let activityBar;
     let control;
-    (0, mocha_1.before)((done) => __awaiter(void 0, void 0, void 0, function* () {
+    (0, mocha_1.before)(() => __awaiter(void 0, void 0, void 0, function* () {
         activityBar = new vscode_extension_tester_1.ActivityBar();
         control = yield activityBar.getViewControl("TOTVS");
-        done();
     }));
-    (0, mocha_1.it)("TOTVS Activity Bar", () => __awaiter(void 0, void 0, void 0, function* () {
+    (0, mocha_1.it)("Activation", () => __awaiter(void 0, void 0, void 0, function* () {
         (0, chai_1.expect)(control, "Control TOTVS not found in ActivityBar").not.null;
         const sidebar = yield control.openView();
         (0, chai_1.expect)(sidebar, "Sidebar view not found in ActivityBar").not.null;
     }));
-    (0, mocha_1.it)("Verfify view TOTVS: Servers visible", () => __awaiter(void 0, void 0, void 0, function* () {
+    (0, mocha_1.it)("TOTVS: Servers View Visible", () => __awaiter(void 0, void 0, void 0, function* () {
         const view = yield control.openView();
         const klass = yield control.getAttribute("class");
         (0, chai_1.expect)(klass.indexOf("checked")).greaterThan(-1);

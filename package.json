@@ -51,7 +51,7 @@
     "ui-test": "npm run compile && extest setup-and-run -l debug -i --code_version 1.60.1 --code_settings ./test/settings.json './out-test/e2e/**/*test.js'",
     "--CI-TEST--": "",
     "ci-test": "npm run clean-test && npm run compile && extest setup-and-run -l debug -u --code_version 1.60.1 --code_settings ./test/settings.json './out-test/e2e/**/*test.js'",
-    "clean-test": "rimraf ./out-test && rimraf ./test-resources",
+    "clean-test": "rimraf ./out-test && rimraf ./test-resources && rimraf ./test/resources/advpl/.vscode/servers.json",
     "---i18n---": "",
     "export-i18n": "gulp export-i18n",
     "i18n-import": "gulp i18n-import",

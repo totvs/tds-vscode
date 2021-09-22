@@ -3,54 +3,101 @@ import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import {
   ActivityBar,
+  By,
+  EditorView,
+  ISize,
   SideBarView,
+  TitleBar,
   ViewContent,
   ViewControl,
   ViewSection,
   ViewTitlePart,
   VSBrowser,
   WebDriver,
+  WebView,
+  Workbench,
 } from "vscode-extension-tester";
 import {
+  addNewServer,
   delay,
+  fillAddServerPage,
+  IAddServerPage,
   openAdvplProject,
   showSideBarTotvs as openSideBarTotvs,
 } from "../helper";
 //import { showSideBarTotvs } from "../helper";
 
 // Create a Mocha suite
-describe.skip("TOTVS: Server View", () => {
+describe("TOTVS: Server View", () => {
   // initialize the browser and webdriver
-  let activityBar: ActivityBar;
-  let control: ViewControl;
   let view: SideBarView;
-  let content: ViewContent;
+  let titlebar: TitleBar;
 
-  before(async (done) => {
+  const LOCALHOST_DATA: IAddServerPage = {
+    serverName: "localhost",
+    address: "localhost",
+    port: 2030,
+    includePath: ["m:\\protheus\\includes"],
+  };
+
+  const DELETE_DATA: IAddServerPage = {
+    serverName: "forDelete",
+    address: "127.0.0.1",
+    port: 2030,
+    includePath: ["m:\\protheus\\includes"],
+  };
+
+  before(async () => {
     await openAdvplProject();
     await delay();
 
-    const view = await (
-      await new ActivityBar().getViewControl("TOTVS: SERVERS")
-    ).openView();
+    const activityBar = new ActivityBar();
+    const control = await activityBar.getViewControl("TOTVS");
+
+    view = await control.openView();
     await delay();
 
-    content = view.getContent();
-    done();
+    titlebar = new TitleBar();
   });
 
-  afterEach(async () => {
-    //    await menu.close();
+  it("No Servers", async () => {
+    const content: ViewContent = view.getContent();
+    const text: string = await content.getText();
+
+    expect(text).is.empty;
   });
 
-  it("No servers", async () => {
-    const sections: ViewSection[] = await content.getSections();
+  it("Add Local Server", async () => {
+    await new Workbench().executeCommand("Add server");
+    await delay();
 
-    console.log("Size " + sections.length);
+    const webView: WebView = new WebView();
+    await webView.switchToFrame();
 
-    sections.forEach(async (section: ViewSection) => {
-      const text: string = await section.getText();
-      console.log("**************** " + text);
-    });
+    await fillAddServerPage(webView, LOCALHOST_DATA, true);
+
+    await delay();
+
+    await webView.switchBack();
+  });
+
+  it("Remove Server", async () => {
+    //await addNewServer(DELETE_DATA);
+
+    await new Workbench().executeCommand("Add server");
+    await delay();
+
+    const webView: WebView = new WebView();
+    await webView.switchToFrame();
+
+    await fillAddServerPage(webView, DELETE_DATA, true);
+
+    await delay();
+
+    await webView.switchBack();
+
+    const text: string = await webView.getText();
+
+    expect(text).equal("*******");
   });
 });

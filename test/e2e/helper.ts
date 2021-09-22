@@ -1,9 +1,12 @@
 import path = require("path");
 import {
   ActivityBar,
+  By,
   SideBarView,
   ViewControl,
   VSBrowser,
+  WebView,
+  Workbench,
 } from "vscode-extension-tester";
 
 export async function openAdvplProject(): Promise<void> {
@@ -28,7 +31,51 @@ export async function showSideBarTotvs(): Promise<SideBarView> {
   return sidebar;
 }
 
-export const delay = (duration: number = 2000) =>
+export const delay = (duration: number = 1000) =>
   new Promise((res) => {
     setTimeout(res, duration);
   });
+
+export interface IAddServerPage {
+  serverName: string;
+  address: string;
+  port: number;
+  includePath: string[];
+}
+
+export async function fillAddServerPage(
+  webView: WebView,
+  data: IAddServerPage,
+  confirm: boolean = false
+) {
+  let element = await webView.findWebElement(By.name("serverName"));
+  element.sendKeys(data.serverName);
+
+  element = await webView.findWebElement(By.name("address"));
+  element.sendKeys(data.address);
+
+  element = await webView.findWebElement(By.name("port"));
+  element.sendKeys(data.port);
+
+  element = await webView.findWebElement(By.id("includePath"));
+  element.sendKeys(data.includePath.join(";"));
+
+  if (confirm) {
+    element = await webView.findWebElement(By.id("submitID"));
+    element.click();
+  }
+}
+
+export async function addNewServer(server: IAddServerPage) {
+  await new Workbench().executeCommand("Add server");
+  await delay();
+
+  const webView: WebView = new WebView();
+  await webView.switchToFrame();
+
+  await fillAddServerPage(webView, server, true);
+
+  await delay();
+
+  await webView.switchBack();
+}
