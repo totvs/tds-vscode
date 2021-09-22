@@ -1,0 +1,10 @@
+{
+    "security.workspace.trust.enabled": false,
+    "totvsLanguageServer.welcomePage": false,
+    "totvsLanguageServer.launch.args": [
+        "--log-file=totvsls.log",
+        "--record=totvsls"
+    ],
+    "totvsLanguageServer.workspaceServerConfig": true,
+    "totvsLanguageServer.askCompileResult": false
+}

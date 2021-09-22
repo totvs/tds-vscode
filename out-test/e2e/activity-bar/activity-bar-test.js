@@ -9,22 +9,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require("assert");
+const chai_1 = require("chai");
 const mocha_1 = require("mocha");
 const vscode_extension_tester_1 = require("vscode-extension-tester");
-(0, mocha_1.describe)('ActivityBar TOTVS', () => {
-    let browser;
-    let driver;
-    (0, mocha_1.before)(() => __awaiter(void 0, void 0, void 0, function* () {
-        browser = vscode_extension_tester_1.VSBrowser.instance;
-        driver = browser.driver;
+mocha_1.describe.skip("ActivityBar TOTVS", () => {
+    let activityBar;
+    let control;
+    (0, mocha_1.before)((done) => __awaiter(void 0, void 0, void 0, function* () {
+        activityBar = new vscode_extension_tester_1.ActivityBar();
+        control = yield activityBar.getViewControl("TOTVS");
+        done();
     }));
-    (0, mocha_1.it)('Add new server', () => __awaiter(void 0, void 0, void 0, function* () {
-        const activityBar = new vscode_extension_tester_1.ActivityBar();
-        const control = yield activityBar.getViewControl('TOTVS');
-        assert(control, "Control TOTVS not found in ActivityBar");
+    (0, mocha_1.it)("TOTVS Activity Bar", () => __awaiter(void 0, void 0, void 0, function* () {
+        (0, chai_1.expect)(control, "Control TOTVS not found in ActivityBar").not.null;
         const sidebar = yield control.openView();
-        assert(sidebar, "Sidebar view not found in ActivityBar");
+        (0, chai_1.expect)(sidebar, "Sidebar view not found in ActivityBar").not.null;
+    }));
+    (0, mocha_1.it)("Verfify view TOTVS: Servers visible", () => __awaiter(void 0, void 0, void 0, function* () {
+        const view = yield control.openView();
+        const klass = yield control.getAttribute("class");
+        (0, chai_1.expect)(klass.indexOf("checked")).greaterThan(-1);
+        (0, chai_1.expect)(yield view.isDisplayed()).is.true;
+        const title = yield view.getTitlePart().getTitle();
+        (0, chai_1.expect)(title.toLowerCase()).equals("totvs: servers");
     }));
 });
 //# sourceMappingURL=activity-bar-test.js.map

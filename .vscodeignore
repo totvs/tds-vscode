@@ -17,3 +17,4 @@ vsc-extension-quickstart*.md
 *.code-workspace
 *.log
 test-resources/**
+test/**

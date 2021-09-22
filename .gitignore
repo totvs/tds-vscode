@@ -5,13 +5,8 @@ node_modules
 *.map
 nls.*
 .vscode/mapa timestamp.txt
-totvsls.log
-totvsls-full.log
-totvsls_in.log
-totvsls_out.log
+*.log
 .editorconfig
 package-lock.json
-tds-vscode-translations-export
-*.log
 test-resources/**
-vscode-extension-tester.api-handler-0.0.1/
+out-test/

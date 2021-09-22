@@ -1,0 +1,13 @@
+{
+	"version": "0.2.1",
+	"includes": [
+		""
+	],
+	"permissions": {
+		"authorizationtoken": ""
+	},
+	"connectedServer": {},
+	"configurations": [],
+	"savedTokens": [],
+	"lastConnectedServer": ""
+}

@@ -1,9 +1,0 @@
-{
-	"window.titleBarStyle": "custom",
-	"workbench.editor.enablePreview": false,
-	"window.restoreFullscreen": false,
-	"window.newWindowDimensions": "inherited",
-	"security.workspace.trust.enabled": false,
-	"window.restoreWindows": "none",
-	"totvsLanguageServer.workspaceServerConfig": true
-}

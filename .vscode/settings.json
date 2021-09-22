@@ -12,4 +12,5 @@
 		"/CVS": true
 	},
 	"typescript.tsdk": "node_modules\\typescript\\lib",
+	"debug.javascript.unmapMissingSources": true,
 }
