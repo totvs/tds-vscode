@@ -20,7 +20,7 @@ import {
 } from "../helper";
 
 // Create a Mocha suite
-describe("TOTVS: Server View", () => {
+describe.skip("TOTVS: Server View", () => {
   let view: SideBarView;
   let workbench: Workbench;
 
@@ -57,31 +57,31 @@ describe("TOTVS: Server View", () => {
     expect(text).is.empty;
   });
 
-  it.only("Add Local Server", async () => {
+  it("Add Local Server", async () => {
     await addNewServer(LOCALHOST_DATA);
 
     const notification: Notification = await waitNotification("Saved server");
     expect(notification).not.is.undefined;
   });
 
-  it("Remove Server", async () => {
-    await addNewServer(DELETE_DATA);
+  // it("Remove Server", async () => {
+  //   await addNewServer(DELETE_DATA);
 
-    const c = view.getContent();
-    const s = await c.getSections();
-    const i2 = await s[0].getVisibleItems();
+  //   const c = view.getContent();
+  //   const s = await c.getSections();
+  //   const i2 = await s[0].getVisibleItems();
 
-    const i: TreeItem = (await s[0].findItem(
-      DELETE_DATA.serverName
-    )) as TreeItem;
-    await i.select();
+  //   const i: TreeItem = (await s[0].findItem(
+  //     DELETE_DATA.serverName
+  //   )) as TreeItem;
+  //   await i.select();
 
-    const action: ViewItemAction = await i.getActionButton("Delete Server");
-    action.click();
+  //   const action: ViewItemAction = await i.getActionButton("Delete Server");
+  //   action.click();
 
-    await delay(3000);
+  //   await delay(3000);
 
-    const notification: Notification = await waitNotification("Saved server");
-    expect(notification).not.is.undefined;
-  });
+  //   const notification: Notification = await waitNotification("Saved server");
+  //   expect(notification).not.is.undefined;
+  // });
 });
