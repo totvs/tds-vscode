@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     strategy:
       matrix:
@@ -27,6 +27,8 @@ jobs:
       - name: Install Dependencies
         run: npm install
       - name: Run test
-        env:
-          CODE_VERSION: ${{ matrix.version }}
-        run: npm run ci-test --if-present
+        run: |
+          sudo apt-get install xvfb
+          export DISPLAY=:99.0
+          Xvfb -ac :99 -screen 0 1920x1080x16 &
+          npm run ci-test

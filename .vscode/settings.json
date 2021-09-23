@@ -2,15 +2,6 @@
 {
 	"files.trimTrailingWhitespace": true,
 	"editor.insertSpaces": false,
-	"files.exclude": {
-		"*.log": true,
-		"*/.vscode": false,
-		"/.DS_Store": true,
-		".git*": true,
-		"/.hg": true,
-		"/.svn": true,
-		"/CVS": true
-	},
 	"typescript.tsdk": "node_modules\\typescript\\lib",
 	"debug.javascript.unmapMissingSources": true,
 }
