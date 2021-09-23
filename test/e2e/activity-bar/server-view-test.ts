@@ -3,29 +3,21 @@ import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import {
   ActivityBar,
-  By,
-  EditorView,
-  ISize,
   SideBarView,
-  TitleBar,
   ViewContent,
-  ViewControl,
-  ViewSection,
-  ViewTitlePart,
-  VSBrowser,
-  WebDriver,
-  WebView,
   Workbench,
+  Notification,
+  ViewItem,
+  TreeItem,
+  ViewItemAction,
 } from "vscode-extension-tester";
 import {
   addNewServer,
   delay,
-  fillAddServerPage,
   IAddServerPage,
   openAdvplProject,
-  showSideBarTotvs as openSideBarTotvs,
+  waitNotification,
 } from "../helper";
-//import { showSideBarTotvs } from "../helper";
 
 // Create a Mocha suite
 describe("TOTVS: Server View", () => {
@@ -47,10 +39,9 @@ describe("TOTVS: Server View", () => {
   };
 
   before(async () => {
-    workbench = new Workbench();
-
     await openAdvplProject();
     await delay();
+    workbench = new Workbench();
 
     const activityBar = new ActivityBar();
     const control = await activityBar.getViewControl("TOTVS");
@@ -59,51 +50,38 @@ describe("TOTVS: Server View", () => {
     await delay();
   });
 
-  afterEach(async () => {
-    await delay();
+  it("No Servers", async () => {
+    const content: ViewContent = view.getContent();
+    const text: string = await content.getText();
+
+    expect(text).is.empty;
   });
 
-  describe("Phase 1", async () => {
-    it("No Servers", async () => {
-      const content: ViewContent = view.getContent();
-      const text: string = await content.getText();
+  it.only("Add Local Server", async () => {
+    await addNewServer(LOCALHOST_DATA);
 
-      expect(text).is.empty;
-    });
-
-    it("Add Local Server", async () => {
-      await workbench.executeCommand("Add server");
-      await delay();
-
-      const webView: WebView = new WebView();
-      await webView.switchToFrame();
-
-      await fillAddServerPage(webView, LOCALHOST_DATA, true);
-
-      await delay();
-
-      await webView.switchBack();
-    });
+    const notification: Notification = await waitNotification("Saved server");
+    expect(notification).not.is.undefined;
   });
 
-  describe("Phase 2", async () => {
-    it("Remove Server", async () => {
-      const c = view.getContent();
-      const s = await c.getSections();
-      const i2 = await s[0].getVisibleItems();
+  it("Remove Server", async () => {
+    await addNewServer(DELETE_DATA);
 
-      await addNewServer(DELETE_DATA);
+    const c = view.getContent();
+    const s = await c.getSections();
+    const i2 = await s[0].getVisibleItems();
 
-      const i = await s[0].findItem(DELETE_DATA.serverName);
+    const i: TreeItem = (await s[0].findItem(
+      DELETE_DATA.serverName
+    )) as TreeItem;
+    await i.select();
 
-      await i.select();
-      await delay();
+    const action: ViewItemAction = await i.getActionButton("Delete Server");
+    action.click();
 
-      await workbench.executeCommand("totvs-developer-studio.delete");
-      await delay();
+    await delay(3000);
 
-      const i3 = await s[0].getVisibleItems();
-      expect(i3.length).is.lessThan(i2.length);
-    });
+    const notification: Notification = await waitNotification("Saved server");
+    expect(notification).not.is.undefined;
   });
 });

@@ -7,7 +7,11 @@ import {
   VSBrowser,
   WebView,
   Workbench,
+  Notification,
 } from "vscode-extension-tester";
+
+const WAIT_NOTIFICATION_TIMEOUT = 5000;
+const DEFAULT_DELAY = 2000;
 
 export async function openAdvplProject(): Promise<void> {
   const folder: string = path.resolve(
@@ -30,7 +34,7 @@ export async function showSideBarTotvs(): Promise<SideBarView> {
   return sidebar;
 }
 
-export const delay = (duration: number = 1000) =>
+export const delay = (duration: number = DEFAULT_DELAY) =>
   new Promise((res) => {
     setTimeout(res, duration);
   });
@@ -50,7 +54,7 @@ export async function fillAddServerPage(
   //let element = await webView.findWebElement(By.id("serverTypeID"));
   //element.sendKeys(data.serverType);
 
-  let element = await webView.findWebElement(By.id("serverNameID"));
+  let element = await webView.findWebElement(By.id("nameID"));
   element.sendKeys(data.serverName);
 
   element = await webView.findWebElement(By.id("addressID"));
@@ -80,4 +84,26 @@ export async function addNewServer(server: IAddServerPage) {
   await delay();
 
   await webView.switchBack();
+}
+
+export async function waitNotification(
+  containText: string
+): Promise<Notification | undefined> {
+  return await VSBrowser.instance.driver.wait(() => {
+    return notificationExists(containText.toLowerCase());
+  }, WAIT_NOTIFICATION_TIMEOUT);
+}
+
+async function notificationExists(
+  text: string
+): Promise<Notification | undefined> {
+  const notifications = await new Workbench().getNotifications();
+  for (const notification of notifications) {
+    const message = (await notification.getMessage()).toLowerCase();
+    if (message.indexOf(text) >= 0) {
+      return notification;
+    }
+  }
+
+  return undefined;
 }
