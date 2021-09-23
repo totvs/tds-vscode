@@ -63,43 +63,47 @@ describe("TOTVS: Server View", () => {
     await delay();
   });
 
-  it("No Servers", async () => {
-    const content: ViewContent = view.getContent();
-    const text: string = await content.getText();
+  describe("Phase 1", async () => {
+    it("No Servers", async () => {
+      const content: ViewContent = view.getContent();
+      const text: string = await content.getText();
 
-    expect(text).is.empty;
+      expect(text).is.empty;
+    });
+
+    it("Add Local Server", async () => {
+      await workbench.executeCommand("Add server");
+      await delay();
+
+      const webView: WebView = new WebView();
+      await webView.switchToFrame();
+
+      await fillAddServerPage(webView, LOCALHOST_DATA, true);
+
+      await delay();
+
+      await webView.switchBack();
+    });
   });
 
-  it("Add Local Server", async () => {
-    await workbench.executeCommand("Add server");
-    await delay();
+  describe("Phase 2", async () => {
+    it("Remove Server", async () => {
+      const c = view.getContent();
+      const s = await c.getSections();
+      const i2 = await s[0].getVisibleItems();
 
-    const webView: WebView = new WebView();
-    await webView.switchToFrame();
+      await addNewServer(DELETE_DATA);
 
-    await fillAddServerPage(webView, LOCALHOST_DATA, true);
+      const i = await s[0].findItem(DELETE_DATA.serverName);
 
-    await delay();
+      await i.select();
+      await delay();
 
-    await webView.switchBack();
-  });
+      await workbench.executeCommand("totvs-developer-studio.delete");
+      await delay();
 
-  it("Remove Server", async () => {
-    const c = view.getContent();
-    const s = await c.getSections();
-    const i2 = await s[0].getVisibleItems();
-
-    await addNewServer(DELETE_DATA);
-
-    const i = await s[0].findItem(DELETE_DATA.serverName);
-
-    await i.select();
-    await delay();
-
-    await workbench.executeCommand("totvs-developer-studio.delete");
-    await delay();
-
-    const i3 = await s[0].getVisibleItems();
-    expect(i3.length).is.lessThan(i2.length);
+      const i3 = await s[0].getVisibleItems();
+      expect(i3.length).is.lessThan(i2.length);
+    });
   });
 });

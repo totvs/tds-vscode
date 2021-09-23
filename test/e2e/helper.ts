@@ -47,10 +47,10 @@ export async function fillAddServerPage(
   data: IAddServerPage,
   confirm: boolean = false
 ) {
-  let element = await webView.findWebElement(By.id("serverTypeID"));
+  //let element = await webView.findWebElement(By.id("serverTypeID"));
   //element.sendKeys(data.serverType);
 
-  element = await webView.findWebElement(By.id("serverNameID"));
+  let element = await webView.findWebElement(By.id("serverNameID"));
   element.sendKeys(data.serverName);
 
   element = await webView.findWebElement(By.id("addressID"));
