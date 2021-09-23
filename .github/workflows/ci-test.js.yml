@@ -2,16 +2,14 @@
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
 name: Test CI
-
 on:
   push:
-    branches: [ feature/test ]
+    branches: [feature/test]
   pull_request:
-    branches: [ feature/test ]
+    branches: [feature/test]
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
 
     strategy:
@@ -19,18 +17,16 @@ jobs:
         node: [16.2.0]
         version: [latest]
       fail-fast: false
-      
+
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v2
+      - name: Setup Node
+        uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-          
-     - name: Install Dependencies
+      - name: Install Dependencies
         run: npm install
-        
-     - name: Run test
-       env: 
-         CODE_VERSION: ${{ matrix.version }}
-       run: npm run ci-test --if-present
+      - name: Run test
+        env:
+          CODE_VERSION: ${{ matrix.version }}
+        run: npm run ci-test --if-present

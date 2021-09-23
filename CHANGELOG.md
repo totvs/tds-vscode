@@ -1,10 +1,30 @@
 # Changelog
 
-# Versão [1.3.x]
+# Versão [1.3.4]
 
 ## Melhorias
 
 - Documentação sobre a estrutura do arquivo _servers.json_.
+
+## Debugger - Objeto avaliando erroneamente os parametros ([ISSUE 655](https://github.com/totvs/tds-vscode/issues/655)) ([DTCLIENT01-2500](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2500))
+
+### Problema:
+
+- Ao criar dois arrays da mesma classe e com nomes parecidos, o debugger nao avalia corretamente os valores, trazendo as informações de um array em outro.
+
+### Solução:
+
+- Correção realizada no debugAdapter o qual identificava erroneamente o nome do segundo objeto e não atualizava seu valor.
+
+## Botões APPLY e APPLY/CLOSE da aplicação de patchs estão editáveis #787
+
+### Problema:
+
+- Os botões Apply/Apply Close na tela de aplicação de patch estão aceitando editar o texto
+
+### Solução:
+
+- Correção feita para não permitir a edição do texto da tela
 
 ## Insufficient privileges for APPLY_PATCH #651
 
@@ -65,7 +85,38 @@
 
 ### Solução:
 
-Ajustado tratamento de erro no processo de aplicação de pacotes de atualização de acordo com a ocorrência.
+- Ajustado tratamento de erro no processo de aplicação de pacotes de atualização de acordo com a ocorrência.
+
+# TDS Replay
+
+## Melhorias
+
+- Removido opcao de filtro de 1500 timelines para facilitar calculo de paginação
+
+## Processamento de fluxo em um array complexo ([ISSUE 686](https://github.com/totvs/tds-vscode/issues/686)) ([DTCLIENT01-2784](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2784))
+### Problema:
+- O array ANFITEM informado pelo usuario possui um fluxo de processamento bastante complexo, com uma série de referências. Em determinado momento o TDS Replay processava o valor erroneamente fazendo com que o valor mostrado estivesse incorreto.
+
+### Solução:
+- Alterado toda a lógica de processamento de variáveis para identificar corretamente esse tipo de situação e mostrar o valor correto para o usuário.
+
+
+## Identificação e processamento da lista de exclusão de fontes ([ISSUE 754](https://github.com/totvs/tds-vscode/issues/754)) ([DTCLIENT01-2819](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2819))
+### Problema:
+- A lista de exclusão de fontes não levava em consideração fontes que não existissem na área de trabalho. Dessa forma, a timeline é mostrada, sendo que deveria ser filtrada.
+
+### Solução:
+- Alterado o processamento das lista de exclusão para que nem avalie o fonte caso ele não exista na pasta corrente.
+
+
+## Inicialização caso nenhum fonte seja encontrado [DTCLIENT01-2856](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2856)
+### Problema:
+- Ao iniciar a execução de um arquivo TDSReplay, caso não exista nenhum fonte na pasta corrente e que tenha passado pelos filtros de inclusão e exclusão, o processo fica parado com uma mensagem que ainda está iniciando, dando a impressão que está travado.
+
+### Solução:
+- Alterado o processo de inicialização para caso a condição acima ocorra, seja enviado notificação para o usuário na tela de **DEBUG CONSOLE** e também como uma notificação que pode ser vista pelo **sino** do lado inferior direito do VSCode.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Versão [1.3.3]
 
