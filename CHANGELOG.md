@@ -1,5 +1,123 @@
 # Changelog
 
+# Versão [1.3.4]
+
+## Melhorias
+
+- Documentação sobre a estrutura do arquivo _servers.json_.
+
+## Debugger - Objeto avaliando erroneamente os parametros ([ISSUE 655](https://github.com/totvs/tds-vscode/issues/655)) ([DTCLIENT01-2500](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2500))
+
+### Problema:
+
+- Ao criar dois arrays da mesma classe e com nomes parecidos, o debugger nao avalia corretamente os valores, trazendo as informações de um array em outro.
+
+### Solução:
+
+- Correção realizada no debugAdapter o qual identificava erroneamente o nome do segundo objeto e não atualizava seu valor.
+
+## Botões APPLY e APPLY/CLOSE da aplicação de patchs estão editáveis #787
+
+### Problema:
+
+- Os botões Apply/Apply Close na tela de aplicação de patch estão aceitando editar o texto
+
+### Solução:
+
+- Correção feita para não permitir a edição do texto da tela
+
+## Insufficient privileges for APPLY_PATCH #651
+
+### Problema:
+
+- A definição de privilégios via as chaves da sessão \[TDS\], tratam somente endereços _IP´s_.
+
+### Solução:
+
+- Foi adicionado tratamento para usar nome da estação.
+  Detalhes em [Sistema de Privilégios](docs/servers.md).
+
+## Monitor -Filtering on/off - Query não apresenta resultado. [DTCLIENT01-2861](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2861)
+
+### Problema:
+
+- Monitor não apresenta resultado e reseta ao efetuar agrupamento por alguns atributos numéricos.
+
+### Solução:
+
+- Resolvido no chamado [DTCLIENT01-2860](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2860).
+
+## Monitor -Grouping on/off - Query não apresenta resultado. [DTCLIENT01-2860](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2860)
+
+### Problema:
+
+- Monitor não apresenta resultado e reseta ao efetuar agrupamento por alguns atributos numéricos.
+
+### Solução:
+
+- Ajustado configurações dos tipos de campos numéricos para strings e eliminado formatação.
+
+## Monitor Update Speed Interval between updates (long).Opção Manual não funciona. [DTCLIENT01-2862](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2862)
+
+### Problema:
+
+- Diálogo de seleção de velocidade de atualização, não atualiza corretamente a chave `manual`.
+
+### Solução:
+
+- Ajustado a atualização do diálogo.
+
+## ADVPLS não esta gerando informações do pacote através da action \[patchInfo\] [DTCLIENT01-2846](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2846)
+
+### Problema:
+
+- Ao utilizar o comando advpls com as instruções, o script executa as funções de compilar, aplicar patch, gerar patch e desfragmentar, mas não esta gerando o relatório patchInfo.
+
+### Solução:
+
+- Correção no tratamento na gravação das informações de "patch" (pathinfo).
+
+## Verificar mensagem de erro em aplicação de patch [DTCLIENT01-2853](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2853)
+
+### Problema:
+
+- Mensagem de erro apresentada não codiz com o erro original que é aplicar pacote de atualização com serviço REST (HTTPV11) ou outro _job_ em execução.
+
+### Solução:
+
+- Ajustado tratamento de erro no processo de aplicação de pacotes de atualização de acordo com a ocorrência.
+
+# TDS Replay
+
+## Melhorias
+
+- Removido opcao de filtro de 1500 timelines para facilitar calculo de paginação
+
+## Processamento de fluxo em um array complexo ([ISSUE 686](https://github.com/totvs/tds-vscode/issues/686)) ([DTCLIENT01-2784](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2784))
+### Problema:
+- O array ANFITEM informado pelo usuario possui um fluxo de processamento bastante complexo, com uma série de referências. Em determinado momento o TDS Replay processava o valor erroneamente fazendo com que o valor mostrado estivesse incorreto.
+
+### Solução:
+- Alterado toda a lógica de processamento de variáveis para identificar corretamente esse tipo de situação e mostrar o valor correto para o usuário.
+
+
+## Identificação e processamento da lista de exclusão de fontes ([ISSUE 754](https://github.com/totvs/tds-vscode/issues/754)) ([DTCLIENT01-2819](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2819))
+### Problema:
+- A lista de exclusão de fontes não levava em consideração fontes que não existissem na área de trabalho. Dessa forma, a timeline é mostrada, sendo que deveria ser filtrada.
+
+### Solução:
+- Alterado o processamento das lista de exclusão para que nem avalie o fonte caso ele não exista na pasta corrente.
+
+
+## Inicialização caso nenhum fonte seja encontrado [DTCLIENT01-2856](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2856)
+### Problema:
+- Ao iniciar a execução de um arquivo TDSReplay, caso não exista nenhum fonte na pasta corrente e que tenha passado pelos filtros de inclusão e exclusão, o processo fica parado com uma mensagem que ainda está iniciando, dando a impressão que está travado.
+
+### Solução:
+- Alterado o processo de inicialização para caso a condição acima ocorra, seja enviado notificação para o usuário na tela de **DEBUG CONSOLE** e também como uma notificação que pode ser vista pelo **sino** do lado inferior direito do VSCode.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
 # Versão [1.3.3]
 
 ## Travamento na compilação (https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2828)
@@ -86,7 +204,7 @@ Ao indentar o fonte onde há dentro de uma estrutura For, uma variável que come
 
 ### Problema:
 
-Ao solitar a finalização da depuração, no Linux, o smartclient não fecha automaticamente.
+Ao solicitar a finalização da depuração, no Linux, o smartclient não fecha automaticamente.
 
 ### Solução:
 
