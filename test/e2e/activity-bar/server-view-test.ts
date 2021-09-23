@@ -29,9 +29,8 @@ import {
 
 // Create a Mocha suite
 describe("TOTVS: Server View", () => {
-  // initialize the browser and webdriver
   let view: SideBarView;
-  let titlebar: TitleBar;
+  let workbench: Workbench;
 
   const LOCALHOST_DATA: IAddServerPage = {
     serverName: "localhost",
@@ -48,6 +47,8 @@ describe("TOTVS: Server View", () => {
   };
 
   before(async () => {
+    workbench = new Workbench();
+
     await openAdvplProject();
     await delay();
 
@@ -56,8 +57,10 @@ describe("TOTVS: Server View", () => {
 
     view = await control.openView();
     await delay();
+  });
 
-    titlebar = new TitleBar();
+  afterEach(async () => {
+    await delay();
   });
 
   it("No Servers", async () => {
@@ -68,7 +71,7 @@ describe("TOTVS: Server View", () => {
   });
 
   it("Add Local Server", async () => {
-    await new Workbench().executeCommand("Add server");
+    await workbench.executeCommand("Add server");
     await delay();
 
     const webView: WebView = new WebView();
@@ -82,22 +85,21 @@ describe("TOTVS: Server View", () => {
   });
 
   it("Remove Server", async () => {
-    //await addNewServer(DELETE_DATA);
+    const c = view.getContent();
+    const s = await c.getSections();
+    const i2 = await s[0].getVisibleItems();
 
-    await new Workbench().executeCommand("Add server");
+    await addNewServer(DELETE_DATA);
+
+    const i = await s[0].findItem(DELETE_DATA.serverName);
+
+    await i.select();
     await delay();
 
-    const webView: WebView = new WebView();
-    await webView.switchToFrame();
-
-    await fillAddServerPage(webView, DELETE_DATA, true);
-
+    await workbench.executeCommand("totvs-developer-studio.delete");
     await delay();
 
-    await webView.switchBack();
-
-    const text: string = await webView.getText();
-
-    expect(text).equal("*******");
+    const i3 = await s[0].getVisibleItems();
+    expect(i3.length).is.lessThan(i2.length);
   });
 });

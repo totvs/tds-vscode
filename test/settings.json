@@ -2,5 +2,6 @@
     "window.newWindowDimensions": "inherit",
     "security.workspace.trust.enabled": false,
     "totvsLanguageServer.welcomePage": false,
-    "workbench.welcomePage.preferReducedMotion": false
+    "workbench.welcomePage.preferReducedMotion": false,
+    "update.mode": "none"
 }

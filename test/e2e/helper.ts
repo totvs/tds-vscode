@@ -18,7 +18,6 @@ export async function openAdvplProject(): Promise<void> {
     "resources",
     "advpl"
   );
-  console.log(`openAdvplProject ${folder}`);
 
   return await VSBrowser.instance.openResources(folder);
 }
@@ -48,26 +47,29 @@ export async function fillAddServerPage(
   data: IAddServerPage,
   confirm: boolean = false
 ) {
-  let element = await webView.findWebElement(By.name("serverName"));
+  let element = await webView.findWebElement(By.id("serverTypeID"));
+  //element.sendKeys(data.serverType);
+
+  element = await webView.findWebElement(By.id("serverNameID"));
   element.sendKeys(data.serverName);
 
-  element = await webView.findWebElement(By.name("address"));
+  element = await webView.findWebElement(By.id("addressID"));
   element.sendKeys(data.address);
 
-  element = await webView.findWebElement(By.name("port"));
+  element = await webView.findWebElement(By.id("portID"));
   element.sendKeys(data.port);
 
   element = await webView.findWebElement(By.id("includePath"));
   element.sendKeys(data.includePath.join(";"));
 
   if (confirm) {
-    element = await webView.findWebElement(By.id("submitID"));
+    element = await webView.findWebElement(By.id("submitIDClose"));
     element.click();
   }
 }
 
 export async function addNewServer(server: IAddServerPage) {
-  await new Workbench().executeCommand("Add server");
+  await new Workbench().executeCommand("totvs-developer-studio.add");
   await delay();
 
   const webView: WebView = new WebView();
