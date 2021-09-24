@@ -4,5 +4,13 @@
     "telemetry.telemetryLevel": "off",
     "totvsLanguageServer.welcomePage": false,
     "workbench.welcomePage.preferReducedMotion": false,
-    "update.mode": "none"
+    "update.mode": "none",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "workbench.editor.enablePreview": true,
+    "totvsLanguageServer.launch.args": [
+        "--log-file=totvsls.log",
+        "--record=totvsls"
+    ],
+    "totvsLanguageServer.workspaceServerConfig": true,
+    "totvsLanguageServer.askCompileResult": false
 }

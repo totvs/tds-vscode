@@ -8,6 +8,7 @@ module.exports = {
   ui: "bdd",
   "async-only": true,
   color: false,
+  //ignore: ["/path/to/some/ignored/file"],
   //"allow-uncaught": false,
   //bail: false,
   //"check-leaks": false,
@@ -24,7 +25,6 @@ module.exports = {
   //global: ["jQuery", "$"],
   //grep: /something/i, // also 'something', fgrep and grep are mutually exclusive
   //growl: false,
-  //ignore: ["/path/to/some/ignored/file"],
   //"inline-diffs": false,
   // invert: false, // needs to be used with grep or fgrep
   //jobs: 1,
