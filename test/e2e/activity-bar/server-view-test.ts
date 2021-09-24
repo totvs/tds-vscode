@@ -63,7 +63,7 @@ describe("TOTVS: Server View", () => {
     expect(notification).not.is.undefined;
   });
 
-  it.only("Remove Server", async () => {
+  it("Remove Server", async () => {
     await addNewServer(DELETE_DATA);
 
     const c = view.getContent();
@@ -79,18 +79,17 @@ describe("TOTVS: Server View", () => {
     await action.click();
     await delay();
 
-    const notification: Notification = undefined; //await waitNotification(
-    //   "Tem certeza que deseja excluir este servidor"
-    // );
+    const notification: Notification = await waitNotification(
+      "Tem certeza que deseja excluir este servidor"
+    );
     expect(notification).not.is.undefined;
 
-    // const actions = await notification.getActions();
-    // for (const action in actions) {
-    //   if (action.toLowerCase() === "sim") {
-    //     actions[action].click();
-    //   }
-    // }
-
-    await delay(3000);
+    const actions = await notification.getActions();
+    for (const action in actions) {
+      if (action.toLowerCase() === "sim") {
+        actions[action].click();
+        await delay();
+      }
+    }
   });
 });
