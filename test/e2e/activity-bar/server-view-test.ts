@@ -79,10 +79,10 @@ describe("TOTVS: Server View", () => {
     await action.click();
     await delay();
 
-    // const notification: Notification = await waitNotification(
+    const notification: Notification = undefined; //await waitNotification(
     //   "Tem certeza que deseja excluir este servidor"
     // );
-    // expect(notification).not.is.undefined;
+    expect(notification).not.is.undefined;
 
     // const actions = await notification.getActions();
     // for (const action in actions) {

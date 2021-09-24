@@ -10,7 +10,7 @@ import {
   Notification,
 } from "vscode-extension-tester";
 
-const WAIT_NOTIFICATION_TIMEOUT = 5000;
+const WAIT_NOTIFICATION_TIMEOUT = 2000;
 const DEFAULT_DELAY = 2000;
 
 export async function openAdvplProject(): Promise<void> {

@@ -6,11 +6,11 @@ module.exports = {
   slow: 75,
   timeout: 60000,
   ui: "bdd",
+  "async-only": true,
+  color: false,
   //"allow-uncaught": false,
-  //"async-only": true,
   //bail: false,
   //"check-leaks": false,
-  //color: false,
   //delay: true,
   //diff: true,
   //exit: false, // could be expressed as "'no-exit': true"
