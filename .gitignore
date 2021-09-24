@@ -10,3 +10,4 @@ nls.*
 .editorconfig
 package-lock.json
 test-resources/**
+test-extension/

@@ -7,7 +7,6 @@ import {
   ViewContent,
   Workbench,
   Notification,
-  ViewItem,
   TreeItem,
   ViewItemAction,
 } from "vscode-extension-tester";
@@ -64,7 +63,7 @@ describe("TOTVS: Server View", () => {
     expect(notification).not.is.undefined;
   });
 
-  it("Remove Server", async () => {
+  it.only("Remove Server", async () => {
     await addNewServer(DELETE_DATA);
 
     const c = view.getContent();
@@ -77,11 +76,21 @@ describe("TOTVS: Server View", () => {
     await i.select();
 
     const action: ViewItemAction = await i.getActionButton("Delete Server");
-    action.click();
+    await action.click();
+    await delay();
+
+    // const notification: Notification = await waitNotification(
+    //   "Tem certeza que deseja excluir este servidor"
+    // );
+    // expect(notification).not.is.undefined;
+
+    // const actions = await notification.getActions();
+    // for (const action in actions) {
+    //   if (action.toLowerCase() === "sim") {
+    //     actions[action].click();
+    //   }
+    // }
 
     await delay(3000);
-
-    const notification: Notification = await waitNotification("Saved server");
-    expect(notification).not.is.undefined;
   });
 });
