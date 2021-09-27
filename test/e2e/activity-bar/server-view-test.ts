@@ -87,14 +87,10 @@ describe("TOTVS: Server View", () => {
     const notification: Notification = await waitNotification(
       "Tem certeza que deseja excluir este servidor"
     );
+
     expect(notification).not.is.undefined;
 
-    const actions = await notification.getActions();
-    for (const action in actions) {
-      if (action.toLowerCase() === "sim") {
-        actions[action].click();
-        await delay();
-      }
-    }
+    await notification.takeAction("Sim");
+    await delay();
   });
 });
