@@ -1,13 +1,14 @@
+*.log
+*.map
+*.vsix
+.editorconfig
+.vscode-test
+.vscode/mapa timestamp.txt
+~/
+nls.*
+node_modules
 out
 out-test
-node_modules
-.vscode-test
-*.vsix
-*.map
-nls.*
-.vscode/mapa timestamp.txt
-*.log
-.editorconfig
 package-lock.json
-test-resources/**
 test-extension/
+test-resources/

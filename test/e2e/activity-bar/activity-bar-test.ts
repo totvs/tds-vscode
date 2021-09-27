@@ -8,7 +8,6 @@ describe("TOTVS Activity Bar", () => {
   let activityBar: ActivityBar;
   let control: ViewControl;
 
-  // initialize the browser and webdriver
   before(async () => {
     activityBar = new ActivityBar();
     control = await activityBar.getViewControl("TOTVS");

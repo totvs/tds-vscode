@@ -19,7 +19,7 @@ import {
 } from "../helper";
 
 // Create a Mocha suite
-describe("TOTVS: Server View", () => {
+describe.skip("TOTVS: Server View", () => {
   let view: SideBarView;
   let workbench: Workbench;
 

@@ -15,6 +15,7 @@ import {
   delay,
   IAddServerPage,
   openAdvplProject,
+  showSideBarTotvs as getSideBarTotvs,
   waitNotification,
 } from "../helper";
 
@@ -34,8 +35,11 @@ describe("TOTVS: Server View Basic Operations", () => {
   before(async () => {
     await openAdvplProject();
     await delay();
-    workbench = new Workbench();
+
+    view = await getSideBarTotvs();
+
     await addNewServer(LOCALHOST_DATA);
+    await delay();
 
     const c = view.getContent();
     const s = await c.getSections();
@@ -44,6 +48,9 @@ describe("TOTVS: Server View Basic Operations", () => {
       LOCALHOST_DATA.serverName
     )) as TreeItem;
     serverTreeItem.select();
+
+    workbench = new Workbench();
+
   });
 
   it("Connect", async () => {
