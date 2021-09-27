@@ -1,0 +1,12 @@
+{
+    "update.mode": "none",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "workbench.editor.enablePreview": true,
+    "totvsLanguageServer.launch.args": [
+        "--log-file=totvsls.log",
+        "--record=totvsls"
+    ],
+    "totvsLanguageServer.askCompileResult": false
+,
+"telemetry.telemetryLevel": "off"
+}

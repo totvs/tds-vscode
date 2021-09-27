@@ -12,6 +12,7 @@ import {
 } from "vscode-extension-tester";
 import {
   addNewServer,
+  clearServers,
   delay,
   IAddServerPage,
   openAdvplProject,
@@ -20,7 +21,7 @@ import {
 } from "../helper";
 
 // Create a Mocha suite
-describe("TOTVS: Server View Basic Operations", () => {
+describe.skip("TOTVS: Server View Basic Operations", () => {
   let view: SideBarView;
   let workbench: Workbench;
   let serverTreeItem: TreeItem;
@@ -52,6 +53,10 @@ describe("TOTVS: Server View Basic Operations", () => {
     workbench = new Workbench();
 
   });
+
+  after(async () => {
+    clearServers();
+  })
 
   it("Connect", async () => {
     const action: ViewItemAction = await serverTreeItem.getActionButton(

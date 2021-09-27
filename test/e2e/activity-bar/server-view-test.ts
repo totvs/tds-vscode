@@ -1,6 +1,6 @@
 // import the webdriver and the high level browser wrapper
 import { expect } from "chai";
-import { describe, before, it } from "mocha";
+import { describe, before, it, after } from "mocha";
 import {
   ActivityBar,
   SideBarView,
@@ -12,6 +12,7 @@ import {
 } from "vscode-extension-tester";
 import {
   addNewServer,
+  clearServers,
   delay,
   IAddServerPage,
   openAdvplProject,
@@ -19,7 +20,7 @@ import {
 } from "../helper";
 
 // Create a Mocha suite
-describe.skip("TOTVS: Server View", () => {
+describe("TOTVS: Server View", () => {
   let view: SideBarView;
   let workbench: Workbench;
 
@@ -48,6 +49,10 @@ describe.skip("TOTVS: Server View", () => {
     view = await control.openView();
     await delay();
   });
+
+  // after(async () => {
+  //   await clearServers();
+  // })
 
   it("No Servers", async () => {
     const content: ViewContent = view.getContent();

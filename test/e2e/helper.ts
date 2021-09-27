@@ -1,4 +1,5 @@
 import path = require("path");
+import fs = require("fs-extra");
 import {
   ActivityBar,
   By,
@@ -12,16 +13,17 @@ import {
 
 const WAIT_NOTIFICATION_TIMEOUT = 2000;
 const DEFAULT_DELAY = 2000;
+const advplProjectfolder: string = path.resolve(
+  __dirname,
+  "..",
+  "..",
+  "test",
+  "resources",
+  "advpl"
+);
 
 export async function openAdvplProject(): Promise<void> {
-  const folder: string = path.resolve(
-    __dirname,
-    "..",
-    "..",
-    "test",
-    "resources",
-    "advpl"
-  );
+  const folder: string = path.resolve(advplProjectfolder);
 
   return await VSBrowser.instance.openResources(folder);
 }
@@ -106,4 +108,11 @@ async function notificationExists(
   }
 
   return undefined;
+}
+
+export async function clearServers() {
+  const folder: string = path.resolve(advplProjectfolder);
+  const serversJsonFile: string = path.join(folder, "servers.json");
+
+  await fs.remove(serversJsonFile);
 }
