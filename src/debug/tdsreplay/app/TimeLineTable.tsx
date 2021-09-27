@@ -589,9 +589,11 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           native: true,
         }}
         onChangePage={handleChangePage}
-        onPageChange={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
+        //As versoes mais novas do @material/core usam as propriedades abaixo, porem por problemas de compatibilidade
+        //entre a versai mais nova do "@material-ui/core" e do material-table: 1.69.3, é necesaario manter o "@material-ui/core" na versao 4.11.4,
+        //onPageChange={handleChangePage}
+        //onRowsPerPageChange={handleChangeRowsPerPage}
         ActionsComponent={TablePaginationActions}
       />
       <FormControlLabel

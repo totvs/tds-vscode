@@ -448,8 +448,12 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const doOrderChange = (orderBy: number, direction: string) => {
     const columns = propColumns().columns;
 
-    memento.set(propOrderBy(columns[orderBy]['field']));
-    memento.set(propOrderDirection(direction));
+    if(columns[orderBy] === null || columns[orderBy] === undefined) {
+      memento.set(propOrderBy(0));
+    } else {
+      memento.set(propOrderBy(columns[orderBy]['field']));
+      memento.set(propOrderDirection(direction));
+    }
   };
 
   const doColumnDragged = (sourceIndex: number, destinationIndex: number) => {
@@ -659,6 +663,9 @@ export default function MonitorPanel(props: IMonitorPanel) {
           actions={actions}
           onSelectionChange={(rows) => setSelected(rows)}
           onChangeRowsPerPage={(value) => doChangeRowsPerPage(value)}
+          //As versoes mais novas do @material/core usam as propriedades abaixo, porem por problemas de compatibilidade
+          //entre a versai mais nova do "@material-ui/core" e do material-table: 1.69.3, é necesaario manter o "@material-ui/core" na versao 4.11.4,
+          //onRowsPerPageChange={(value) => doChangeRowsPerPage(value)}
           onChangeColumnHidden={(column, hidden) =>
             doColumnHidden(column, hidden)
           }
