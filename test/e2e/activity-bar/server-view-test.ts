@@ -12,7 +12,6 @@ import {
 } from "vscode-extension-tester";
 import {
   addNewServer,
-  clearServers,
   delay,
   IAddServerPage,
   openAdvplProject,

@@ -1,5 +1,4 @@
 {
-    "update.mode": "none",
     "typescript.updateImportsOnFileMove.enabled": "always",
     "workbench.editor.enablePreview": true,
     "totvsLanguageServer.launch.args": [

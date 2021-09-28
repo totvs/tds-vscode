@@ -9,6 +9,7 @@ import {
   WebView,
   Workbench,
   Notification,
+  TreeItem,
 } from "vscode-extension-tester";
 
 const WAIT_NOTIFICATION_TIMEOUT = 2000;
@@ -28,12 +29,35 @@ export async function openAdvplProject(): Promise<void> {
   return await VSBrowser.instance.openResources(folder);
 }
 
-export async function showSideBarTotvs(): Promise<SideBarView> {
+export async function getSideBarTotvs(): Promise<SideBarView> {
   const activityBar: ActivityBar = new ActivityBar();
   const control: ViewControl = await activityBar.getViewControl("TOTVS");
   const sidebar: SideBarView = await control.openView();
 
   return sidebar;
+}
+
+async function getServerTreeItem(serverName: string) {
+  const view: SideBarView = await getSideBarTotvs();
+  const c = view.getContent();
+  const s = await c.getSections();
+
+  const serverTreeItem = (await s[0].findItem(
+    serverName
+  )) as TreeItem;
+
+  return serverTreeItem
+}
+
+export async function getNewServer(server: IAddServerPage) {
+  let serverTreeItem = await getServerTreeItem(server.serverName);
+
+  if (!serverTreeItem) {
+    addNewServer(server);
+    serverTreeItem = await getServerTreeItem(server.serverName);
+  }
+
+  return serverTreeItem;
 }
 
 export const delay = (duration: number = DEFAULT_DELAY) =>

@@ -14,15 +14,14 @@ import {
   addNewServer,
   clearServers,
   delay,
+  getNewServer,
   IAddServerPage,
   openAdvplProject,
-  showSideBarTotvs as getSideBarTotvs,
   waitNotification,
 } from "../helper";
 
 // Create a Mocha suite
-describe.skip("TOTVS: Server View Basic Operations", () => {
-  let view: SideBarView;
+describe("TOTVS: Server View Basic Operations", () => {
   let workbench: Workbench;
   let serverTreeItem: TreeItem;
 
@@ -34,29 +33,13 @@ describe.skip("TOTVS: Server View Basic Operations", () => {
   };
 
   before(async () => {
-    await openAdvplProject();
+    // await openAdvplProject();
+    // await delay();
+
+    //serverTreeItem = await getNewServer(LOCALHOST_DATA);
     await delay();
-
-    view = await getSideBarTotvs();
-
-    await addNewServer(LOCALHOST_DATA);
-    await delay();
-
-    const c = view.getContent();
-    const s = await c.getSections();
-
-    serverTreeItem = (await s[0].findItem(
-      LOCALHOST_DATA.serverName
-    )) as TreeItem;
-    serverTreeItem.select();
-
-    workbench = new Workbench();
-
   });
 
-  after(async () => {
-    clearServers();
-  })
 
   it("Connect", async () => {
     const action: ViewItemAction = await serverTreeItem.getActionButton(
