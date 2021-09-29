@@ -4,9 +4,9 @@
 name: Test CI
 on:
   push:
-    branches: [feature/test]
+    branches: [xfeature/test]
   pull_request:
-    branches: [feature/test]
+    branches: [xfeature/test]
 
 jobs:
   test:

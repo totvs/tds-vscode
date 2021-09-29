@@ -15,21 +15,19 @@ import {
 } from "vscode-extension-tester";
 import {
   delay,
-  getNewServer,
-  getServerTreeItem,
-  IAddServerPage,
-  openAdvplProject,
-  statusBarWithText,
-  takeQuickPickAction,
-  waitNotification,
+  openAdvplProject
 } from "../helper";
+import { ServerTreePageObject } from "../page-objects/server-tree-po";
+import { StatusPageObject } from "../page-objects/status-po";
 
 // Create a Mocha suite
-describe.only("TOTVS: Server View Basic Operations", () => {
+describe("TOTVS: Server View Basic Operations", () => {
   let workbench: Workbench;
+  let serverTreePO: ServerTreePageObject;
   let serverTreeItem: TreeItem;
   let pickBox: InputBox;
   let title: string = "";
+  let statusBarPO: StatusPageObject;
 
   const LOCALHOST_NAME: string = "localhost";
   const LOCALHOST_ENVIRONMENT: string = "p12";
@@ -40,12 +38,19 @@ describe.only("TOTVS: Server View Basic Operations", () => {
     await openAdvplProject("project2");
     await delay();
 
-    serverTreeItem = await getServerTreeItem(LOCALHOST_NAME);
+    serverTreePO = new ServerTreePageObject();
+    serverTreeItem = await serverTreePO.getServerTreeItem(LOCALHOST_NAME);
+    statusBarPO = new StatusPageObject();
+
     await delay();
   });
 
+  after(async () => {
+
+  })
+
   it("No Server Connected", async () => {
-    expect(await statusBarWithText("Select server/environment")).not.null;
+    expect(await statusBarPO.isNoServerSelected()).is.true;
   });
 
   it("isSelected Node", async () => {
@@ -104,7 +109,8 @@ describe.only("TOTVS: Server View Basic Operations", () => {
   });
 
   it("Localhost Server Connected", async () => {
-    expect(await statusBarWithText(`${LOCALHOST_NAME} / ${LOCALHOST_ENVIRONMENT}`, 10000)).not.null;
+    await statusBarPO.waitConnection();
+    expect(await statusBarPO.isConnected(LOCALHOST_NAME, LOCALHOST_ENVIRONMENT)).is.true;
   });
 
   it("Fire Disconnect Action", async () => {
@@ -118,7 +124,11 @@ describe.only("TOTVS: Server View Basic Operations", () => {
   });
 
   it("Localhost Server Disconnected", async () => {
-    expect(await statusBarWithText("Select server/environment")).not.null;
+    expect(await statusBarPO.isNoServerSelected()).is.true;
+  });
+
+  it("Try Connect Using Invalid Environment", async () => {
+
   });
 
 });

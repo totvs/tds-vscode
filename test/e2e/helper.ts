@@ -34,75 +34,10 @@ export async function openAdvplProject(projectName: string): Promise<void> {
   return await VSBrowser.instance.openResources(folder);
 }
 
-export async function getSideBarTotvs(): Promise<SideBarView> {
-  const activityBar: ActivityBar = new ActivityBar();
-  const control: ViewControl = await activityBar.getViewControl("TOTVS");
-  const sidebar: SideBarView = await control.openView();
-
-  return sidebar;
-}
-
-export async function getServerTreeItem(serverName: string) {
-  const view: SideBarView = await getSideBarTotvs();
-  const c = view.getContent();
-  const s = await c.getSections();
-
-  const serverTreeItem = (await s[0].findItem(
-    serverName
-  )) as TreeItem;
-
-  return serverTreeItem
-}
-
-export async function getNewServer(server: IAddServerPage) {
-  let serverTreeItem = await getServerTreeItem(server.serverName);
-
-  if (!serverTreeItem) {
-    await addNewServer(server);
-    serverTreeItem = await getServerTreeItem(server.serverName);
-  }
-
-  return serverTreeItem;
-}
-
 export const delay = (duration: number = DEFAULT_DELAY) =>
   new Promise((res) => {
     setTimeout(res, duration);
   });
-
-export interface IAddServerPage {
-  serverName: string;
-  address: string;
-  port: number;
-  includePath: string[];
-  environment?: string;
-}
-
-export async function fillAddServerPage(
-  webView: WebView,
-  data: IAddServerPage,
-  confirm: boolean = false
-) {
-  //let element = await webView.findWebElement(By.id("serverTypeID"));
-  //element.sendKeys(data.serverType);
-
-  let element = await webView.findWebElement(By.id("nameID"));
-  element.sendKeys(data.serverName);
-
-  element = await webView.findWebElement(By.id("addressID"));
-  element.sendKeys(data.address);
-
-  element = await webView.findWebElement(By.id("portID"));
-  element.sendKeys(data.port);
-
-  element = await webView.findWebElement(By.id("includePath"));
-  element.sendKeys(data.includePath.join(";"));
-
-  if (confirm) {
-    element = await webView.findWebElement(By.id("submitIDClose"));
-    element.click();
-  }
-}
 
 export async function quickPickActions(quickPick: InputBox): Promise<WebElement[]> {
   const titleBar = await quickPick.findElements(By.className("quick-input-titlebar"));
@@ -134,20 +69,6 @@ export async function takeQuickPickAction(quickPick: InputBox, target: string): 
   return false;
 }
 
-export async function addNewServer(server: IAddServerPage) {
-  await new Workbench().executeCommand("totvs-developer-studio.add");
-  await delay();
-
-  const webView: WebView = new WebView();
-  await webView.switchToFrame();
-
-  await fillAddServerPage(webView, server, true);
-
-  await delay();
-
-  await webView.switchBack();
-}
-
 export async function waitNotification(
   containText: string
 ): Promise<Notification | undefined> {
@@ -177,25 +98,4 @@ async function notificationExists(
 //   await fs.remove(serversJsonFile);
 // }
 
-export async function statusBarWithText(targetText: string | RegExp, _wait: number = 1000): Promise<WebElement> {
-  const workbench: Workbench = new Workbench();
-
-  const statusBar: StatusBar = workbench.getStatusBar();
-  const target: RegExp = new RegExp(targetText, "i");
-  let steps: number = _wait / 500;
-  let result: WebElement = null;
-
-  while (result == null && steps > 0) {
-    const statusItems: WebElement[] = await statusBar.getItems();
-    statusItems.forEach(async element => {
-      if (target.exec(await element.getText())) {
-        result = element;
-      }
-    });
-    await delay(500);
-    steps--;
-  }
-
-  return result;
-}
 

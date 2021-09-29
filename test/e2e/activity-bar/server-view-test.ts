@@ -2,56 +2,36 @@
 import { expect } from "chai";
 import { describe, before, it, after } from "mocha";
 import {
-  ActivityBar,
   SideBarView,
   ViewContent,
   Workbench,
   Notification,
-  TreeItem,
-  ViewItemAction,
 } from "vscode-extension-tester";
 import {
-  addNewServer,
   delay,
-  IAddServerPage,
   openAdvplProject,
   waitNotification,
 } from "../helper";
+import { ServerTreePageObject } from "../page-objects/server-tree-po";
+import { DELETE_DATA, LOCALHOST_DATA } from "../servers-data";
 
 // Create a Mocha suite
 describe("TOTVS: Server View", () => {
   let view: SideBarView;
   let workbench: Workbench;
-
-  const LOCALHOST_DATA: IAddServerPage = {
-    serverName: "localhost",
-    address: "localhost",
-    port: 2030,
-    includePath: ["m:\\protheus\\includes"],
-  };
-
-  const DELETE_DATA: IAddServerPage = {
-    serverName: "forDelete",
-    address: "127.0.0.1",
-    port: 2030,
-    includePath: ["m:\\protheus\\includes"],
-  };
+  let serverTreePO: ServerTreePageObject;
 
   before(async () => {
     await openAdvplProject("project1");
     await delay();
     workbench = new Workbench();
-
-    const activityBar = new ActivityBar();
-    const control = await activityBar.getViewControl("TOTVS");
-
-    view = await control.openView();
-    await delay();
+    serverTreePO = new ServerTreePageObject();
+    view = await serverTreePO.openView();
   });
 
-  // after(async () => {
-  //   await clearServers();
-  // })
+  after(async () => {
+    await serverTreePO.clearServers();
+  })
 
   it("No Servers", async () => {
     const content: ViewContent = view.getContent();
@@ -61,27 +41,18 @@ describe("TOTVS: Server View", () => {
   });
 
   it("Add Local Server", async () => {
-    await addNewServer(LOCALHOST_DATA);
+    await serverTreePO.addNewServer(LOCALHOST_DATA);
 
     const notification: Notification = await waitNotification("Saved server");
     expect(notification).not.is.undefined;
   });
 
   it("Remove Server", async () => {
-    await addNewServer(DELETE_DATA);
+    await serverTreePO.addNewServer(DELETE_DATA);
 
-    const c = view.getContent();
-    const s = await c.getSections();
-    const i2 = await s[0].getVisibleItems();
+    await delay(3000);
 
-    const i: TreeItem = (await s[0].findItem(
-      DELETE_DATA.serverName
-    )) as TreeItem;
-    await i.select();
-
-    const action: ViewItemAction = await i.getActionButton("Delete Server");
-    await action.click();
-    await delay();
+    await serverTreePO.removeServer(DELETE_DATA.serverName);
 
     const notification: Notification = await waitNotification(
       "Tem certeza que deseja excluir este servidor"
