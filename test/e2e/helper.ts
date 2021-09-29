@@ -1,24 +1,16 @@
 import path = require("path");
 import fs = require("fs-extra");
 import {
-  ActivityBar,
   By,
-  SideBarView,
-  ViewControl,
   VSBrowser,
-  WebView,
   Workbench,
   Notification,
-  TreeItem,
   InputBox,
-  Input,
   WebElement,
-  StatusBar,
 } from "vscode-extension-tester";
-import { resourceLimits } from "worker_threads";
 
 const WAIT_NOTIFICATION_TIMEOUT = 2000;
-const DEFAULT_DELAY = 2000;
+const DEFAULT_DELAY = 2;
 const advplProjectfolder: string = path.resolve(
   __dirname,
   "..",
@@ -34,9 +26,9 @@ export async function openAdvplProject(projectName: string): Promise<void> {
   return await VSBrowser.instance.openResources(folder);
 }
 
-export const delay = (duration: number = DEFAULT_DELAY) =>
+export const delay = (seconds: number = DEFAULT_DELAY) =>
   new Promise((res) => {
-    setTimeout(res, duration);
+    setTimeout(res, seconds * 1000);
   });
 
 export async function quickPickActions(quickPick: InputBox): Promise<WebElement[]> {

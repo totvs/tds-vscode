@@ -1,8 +1,9 @@
 import { expect } from "chai";
-import { ActivityBar, By, SideBarView, TreeItem, ViewItemAction, Notification, Workbench, WebView } from "vscode-extension-tester";
+import { ActivityBar, By, SideBarView, TreeItem, ViewItemAction, Notification, Workbench, WebView, InputBox } from "vscode-extension-tester";
 import { delay, waitNotification } from "../helper";
 import { IServerData } from "./interface-po";
 import { ServerPageObject } from "./server-po";
+import { StatusPageObject } from "./status-po";
 
 export class ServerTreePageObject {
 	private view: SideBarView;
@@ -84,5 +85,56 @@ export class ServerTreePageObject {
 
 		return serverTreeItem;
 	}
+
+	async connect(serverName: string, environment: string, username: string, password: string, verify: boolean = false) {
+		const serverTreeItem = await this.getServerTreeItem(serverName);
+
+		const action: ViewItemAction = await serverTreeItem.getActionButton(
+			"Connect"
+		);
+		await action.click();
+		await delay(2);
+
+		const pickBox: InputBox = new InputBox();
+		await delay();
+
+		if (verify) {
+			let title = await pickBox.getTitle();
+			expect(title).is.equal("Connection (1/1)");
+		}
+
+		await pickBox.setText(environment);
+		await delay();
+		await pickBox.confirm();
+		await delay();
+
+		await pickBox.wait(3000);
+
+		if (verify) {
+			const title = await pickBox.getTitle();
+			expect(title).is.equal("Authentication (1/2)");
+		}
+
+		await pickBox.setText(username);
+		await delay();
+		await pickBox.confirm();
+		await delay();
+
+		await pickBox.wait();
+		if (verify) {
+			const title = await pickBox.getTitle();
+			expect(title).is.equal("Authentication (2/2)");
+		}
+		await pickBox.setText(password);
+		await delay();
+		await pickBox.confirm();
+		await delay();
+
+		const statusBarPO: StatusPageObject = new StatusPageObject();
+		await statusBarPO.waitConnection();
+		if (verify) {
+			expect(await statusBarPO.isConnected(serverName, environment)).is.true;
+		}
+	};
 
 }

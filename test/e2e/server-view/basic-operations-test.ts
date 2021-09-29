@@ -3,15 +3,10 @@ import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import {
   Workbench,
-  Notification,
   TreeItem,
   ViewItemAction,
   InputBox,
-  VSBrowser,
-  StatusBar,
-  By,
   QuickPickItem,
-  WebElement,
 } from "vscode-extension-tester";
 import {
   delay,
@@ -55,7 +50,7 @@ describe("TOTVS: Server View Basic Operations", () => {
 
   it("isSelected Node", async () => {
     await serverTreeItem.select();
-    await delay(3000);
+    await delay(3);
 
     const klass = await serverTreeItem.getAttribute("class");
     expect(klass.indexOf("selected")).greaterThan(-1);
@@ -127,8 +122,15 @@ describe("TOTVS: Server View Basic Operations", () => {
     expect(await statusBarPO.isNoServerSelected()).is.true;
   });
 
-  it("Try Connect Using Invalid Environment", async () => {
+  it.only("Try Connect Using Invalid Environment", async () => {
+    try {
+      await serverTreePO.connect(LOCALHOST_NAME, "p12_invalid", "admin", "1234");
+    } catch (error) {
 
+    }
+    await delay();
+
+    expect(await statusBarPO.isNoServerSelected()).is.true;
   });
 
 });

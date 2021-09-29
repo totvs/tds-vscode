@@ -50,7 +50,7 @@ describe("TOTVS: Server View", () => {
   it("Remove Server", async () => {
     await serverTreePO.addNewServer(DELETE_DATA);
 
-    await delay(3000);
+    await delay(3);
 
     await serverTreePO.removeServer(DELETE_DATA.serverName);
 

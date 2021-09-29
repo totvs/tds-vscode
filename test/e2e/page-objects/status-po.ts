@@ -18,7 +18,7 @@ export class StatusPageObject {
 					result = element;
 				}
 			});
-			await delay(500);
+			await delay(0.5);
 			steps--;
 		}
 
