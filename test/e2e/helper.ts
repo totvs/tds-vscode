@@ -10,7 +10,11 @@ import {
   Workbench,
   Notification,
   TreeItem,
+  InputBox,
+  Input,
+  WebElement,
 } from "vscode-extension-tester";
+import { resourceLimits } from "worker_threads";
 
 const WAIT_NOTIFICATION_TIMEOUT = 2000;
 const DEFAULT_DELAY = 2000;
@@ -23,8 +27,8 @@ const advplProjectfolder: string = path.resolve(
   "advpl"
 );
 
-export async function openAdvplProject(): Promise<void> {
-  const folder: string = path.resolve(advplProjectfolder);
+export async function openAdvplProject(projectName: string): Promise<void> {
+  const folder: string = path.join(path.resolve(advplProjectfolder), projectName);
 
   return await VSBrowser.instance.openResources(folder);
 }
@@ -37,7 +41,7 @@ export async function getSideBarTotvs(): Promise<SideBarView> {
   return sidebar;
 }
 
-async function getServerTreeItem(serverName: string) {
+export async function getServerTreeItem(serverName: string) {
   const view: SideBarView = await getSideBarTotvs();
   const c = view.getContent();
   const s = await c.getSections();
@@ -53,7 +57,7 @@ export async function getNewServer(server: IAddServerPage) {
   let serverTreeItem = await getServerTreeItem(server.serverName);
 
   if (!serverTreeItem) {
-    addNewServer(server);
+    await addNewServer(server);
     serverTreeItem = await getServerTreeItem(server.serverName);
   }
 
@@ -70,6 +74,7 @@ export interface IAddServerPage {
   address: string;
   port: number;
   includePath: string[];
+  environment?: string;
 }
 
 export async function fillAddServerPage(
@@ -96,6 +101,36 @@ export async function fillAddServerPage(
     element = await webView.findWebElement(By.id("submitIDClose"));
     element.click();
   }
+}
+
+export async function quickPickActions(quickPick: InputBox): Promise<WebElement[]> {
+  const titleBar = await quickPick.findElements(By.className("quick-input-titlebar"));
+  let result: WebElement[] = [];
+
+  if (titleBar.length > 0 && await titleBar[0].isDisplayed()) {
+    const buttons = await titleBar[0].findElements(By.className("action-item"));
+    result = buttons.filter(async (button: WebElement) => {
+      return await button.isEnabled();
+    })
+  }
+
+  return result;
+}
+
+export async function takeQuickPickAction(quickPick: InputBox, target: string): Promise<boolean> {
+  const actionList: WebElement[] = await quickPickActions(quickPick);
+
+  await actionList.forEach(async (action: WebElement) => {
+    const label: WebElement = await action.findElement(By.className("action-label"));
+    const text: string = await label.getText();
+    if (text === target) {
+      action.click();
+      await delay();
+      return true;
+    }
+  });
+
+  return false;
 }
 
 export async function addNewServer(server: IAddServerPage) {

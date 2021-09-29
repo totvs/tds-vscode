@@ -38,7 +38,7 @@ describe("TOTVS: Server View", () => {
   };
 
   before(async () => {
-    await openAdvplProject();
+    await openAdvplProject("project1");
     await delay();
     workbench = new Workbench();
 
