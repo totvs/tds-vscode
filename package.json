@@ -49,8 +49,8 @@
     "tslint:fix": "tslint ./src/**/*.ts --fix && tslint ./test/**/*.ts --fix",
     "--TEST--": "",
     "test": "npm run ci-test",
-    "ci-test": "extest setup-and-run -l fine './out-test/**/*test.js' -i -s c:/temp/test -o test/settings.json -e c:/temp/extension",
-    "preci-test": "rimraf test/resources/advpl/.vscode/project1/servers.json && npm run compile",
+    "ci-test": "extest setup-and-run -l error './out-test/**/*test.js' -i -s c:/temp/test -o test/settings.json -e c:/temp/extension",
+    "preci-test": "rimraf test/resources/advpl/project1/.vscode/servers.json && npm run compile",
     "---i18n---": "",
     "export-i18n": "gulp export-i18n",
     "i18n-import": "gulp i18n-import",
@@ -66,7 +66,7 @@
     "all-contributors:check": "all-contributors check"
   },
   "dependencies": {
-    "@material-ui/core": "4.11.4",
+    "@material-ui/core": "4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@totvs/tds-da": "^1.2.4",

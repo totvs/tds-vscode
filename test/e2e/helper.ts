@@ -13,6 +13,7 @@ import {
   InputBox,
   Input,
   WebElement,
+  StatusBar,
 } from "vscode-extension-tester";
 import { resourceLimits } from "worker_threads";
 
@@ -169,9 +170,32 @@ async function notificationExists(
   return undefined;
 }
 
-export async function clearServers() {
-  const folder: string = path.resolve(advplProjectfolder);
-  const serversJsonFile: string = path.join(folder, "servers.json");
+// export async function clearServers() {
+//   const folder: string = path.resolve(advplProjectfolder);
+//   const serversJsonFile: string = path.join(folder, "servers.json");
 
-  await fs.remove(serversJsonFile);
+//   await fs.remove(serversJsonFile);
+// }
+
+export async function statusBarWithText(targetText: string | RegExp, _wait: number = 1000): Promise<WebElement> {
+  const workbench: Workbench = new Workbench();
+
+  const statusBar: StatusBar = workbench.getStatusBar();
+  const target: RegExp = new RegExp(targetText, "i");
+  let steps: number = _wait / 500;
+  let result: WebElement = null;
+
+  while (result == null && steps > 0) {
+    const statusItems: WebElement[] = await statusBar.getItems();
+    statusItems.forEach(async element => {
+      if (target.exec(await element.getText())) {
+        result = element;
+      }
+    });
+    await delay(500);
+    steps--;
+  }
+
+  return result;
 }
+

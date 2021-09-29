@@ -18,9 +18,24 @@
 			"secure": true,
 			"includes": [
 				"m:\\protheus\\includes"
-			]
+			],
+			"environments": [
+				"p12",
+				"p12_invalid"
+			],
+			"username": "admin",
+			"environment": "p12",
+			"token": "djM6ZDB4dnBhMzlxeGRrdTRtcXppNnpkc2o5ZzhmcnRjOjE6bG9jYWxob3N0OjIwMzA6MTo3LjAwLjIxMDMyNFA6Mw==:djE6cDEyOmFkbWluOkxMK0ozMFJ6ZkVtQ3lSRGlTdkQ3NmZ6Mng5SFFzREMwb0pKWmtSQWR4VWs9|djI6MTYzMjkyODYzNDowOjE6MQ==.Yc8lsLqc+oVJtyI+a+SpBoCAdAhyJbbIN+BxyFVv+ItTtkoC79xcnHbFsqpTyBdVmMsOzSNMXgM2G1kBku9JTluMPG+nqWaolVmfVYkex4XlcWQ0UbsaE5jt4jGGU+jncBKZTtLEHALiLKACBmM5q0UISK7EyC9BKtW8r40yC7mjw+Azm2IviFk0SJ9h0y97YyVsQ8WIUTLWThO+GIwpC7RHE3JKwmXhB8G/eKL5RoHrkpzLDaQyBLuPreDauBtAxuOtqEz1k5EBkkMPRpu1TIDV65NP5YRmXCAGUZaU6SYSGYrRH3Nu/i84XM+4BdeIXz+1z3MIkf9zYR4rGoJWqA=="
 		}
 	],
-	"savedTokens": [],
+	"savedTokens": [
+		[
+			"d0xvpa39qxdku4mqzi6zdsj9g8frtc:p12",
+			{
+				"id": "d0xvpa39qxdku4mqzi6zdsj9g8frtc",
+				"token": "djM6ZDB4dnBhMzlxeGRrdTRtcXppNnpkc2o5ZzhmcnRjOjE6bG9jYWxob3N0OjIwMzA6MTo3LjAwLjIxMDMyNFA6Mw==:djE6cDEyOmFkbWluOkxMK0ozMFJ6ZkVtQ3lSRGlTdkQ3NmZ6Mng5SFFzREMwb0pKWmtSQWR4VWs9|djI6MTYzMjkyODYzNDowOjE6MQ==.Yc8lsLqc+oVJtyI+a+SpBoCAdAhyJbbIN+BxyFVv+ItTtkoC79xcnHbFsqpTyBdVmMsOzSNMXgM2G1kBku9JTluMPG+nqWaolVmfVYkex4XlcWQ0UbsaE5jt4jGGU+jncBKZTtLEHALiLKACBmM5q0UISK7EyC9BKtW8r40yC7mjw+Azm2IviFk0SJ9h0y97YyVsQ8WIUTLWThO+GIwpC7RHE3JKwmXhB8G/eKL5RoHrkpzLDaQyBLuPreDauBtAxuOtqEz1k5EBkkMPRpu1TIDV65NP5YRmXCAGUZaU6SYSGYrRH3Nu/i84XM+4BdeIXz+1z3MIkf9zYR4rGoJWqA=="
+			}
+		]
+	],
 	"lastConnectedServer": ""
 }
