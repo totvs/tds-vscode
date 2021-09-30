@@ -3,22 +3,36 @@ import { delay } from "../helper";
 
 
 export class StatusPageObject {
-	async statusBarWithText(targetText: string | RegExp, _wait: number = 1000): Promise<WebElement> {
-		const workbench: Workbench = new Workbench();
+	private workbench: Workbench;
 
-		const statusBar: StatusBar = workbench.getStatusBar();
+	constructor() {
+		this.workbench = new Workbench();
+	}
+
+	async wait() {
+		await delay(2000);
+		await this.workbench.getStatusBar().wait();
+	}
+
+	async statusBarWithText(targetText: string | RegExp, _wait: number = 1000): Promise<WebElement> {
+		const statusBar: StatusBar = this.workbench.getStatusBar();
 		const target: RegExp = new RegExp(targetText, "i");
 		let steps: number = _wait / 500;
 		let result: WebElement = null;
 
-		while (result == null && steps > -1) {
+		while (result == null && steps > 0) {
 			const statusItems: WebElement[] = await statusBar.getItems();
+			await delay(500);
+
 			statusItems.forEach(async element => {
-				if (target.exec(await element.getText())) {
-					result = element;
+				if (!result) {
+					const text: string = await element.getText();
+					if (target.exec(text)) {
+						result = element;
+					}
 				}
 			});
-			await delay(0.5);
+
 			steps--;
 		}
 
@@ -29,8 +43,8 @@ export class StatusPageObject {
 		return (await this.statusBarWithText(`${LOCALHOST_NAME} / ${LOCALHOST_ENVIRONMENT}`, 10000)) != null
 	}
 
-	async isNoServerSelected(): Promise<boolean> {
-		return (await this.statusBarWithText("Select server/environment")) != null
+	async isNeedSelectServer(): Promise<boolean> {
+		return (await this.statusBarWithText(/Select server\/environment/)) != null
 	}
 
 	async waitConnection(wait: number = 30000): Promise<void> {

@@ -4,7 +4,6 @@ import { describe, before, it, after } from "mocha";
 import {
   SideBarView,
   ViewContent,
-  Workbench,
   Notification,
 } from "vscode-extension-tester";
 import {
@@ -18,19 +17,18 @@ import { DELETE_DATA, LOCALHOST_DATA } from "../servers-data";
 // Create a Mocha suite
 describe("TOTVS: Server View", () => {
   let view: SideBarView;
-  let workbench: Workbench;
   let serverTreePO: ServerTreePageObject;
 
   before(async () => {
     await openAdvplProject("project1");
     await delay();
-    workbench = new Workbench();
+
     serverTreePO = new ServerTreePageObject();
     view = await serverTreePO.openView();
   });
 
   after(async () => {
-    await serverTreePO.clearServers();
+    //await serverTreePO.clearServers();
   })
 
   it("No Servers", async () => {
@@ -50,7 +48,7 @@ describe("TOTVS: Server View", () => {
   it("Remove Server", async () => {
     await serverTreePO.addNewServer(DELETE_DATA);
 
-    await delay(3);
+    await delay(3000);
 
     await serverTreePO.removeServer(DELETE_DATA.serverName);
 

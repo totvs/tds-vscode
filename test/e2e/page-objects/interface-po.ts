@@ -3,7 +3,7 @@ export interface IServerData {
 	address: string;
 	port: number;
 	includePath: string[];
-	environment?: string;
+	environment: string;
 }
 
 export interface IUserData {

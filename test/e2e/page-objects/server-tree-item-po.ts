@@ -1,4 +1,4 @@
-import { By, TreeItem, ViewItemAction } from "vscode-extension-tester";
+import { By, ContextMenu, ContextMenuItem, TreeItem, ViewItemAction } from "vscode-extension-tester";
 import { delay } from "../helper";
 
 export class ServerTreeItemPageObject {
@@ -10,7 +10,7 @@ export class ServerTreeItemPageObject {
 
 	async select() {
 		await this.serverTreeItem.select();
-		await delay(2);
+		await delay(2000);
 	}
 
 	async isSelected(): Promise<boolean> {
@@ -48,6 +48,18 @@ export class ServerTreeItemPageObject {
 		const klass = await icon.getAttribute("style");
 
 		return klass.indexOf("_server.svg") > -1;
+	}
+
+	async fireReconnectAction() {
+		await this.select();
+		const menu: ContextMenu = await this.serverTreeItem.openContextMenu();
+		await menu.wait();
+		const actions: ContextMenuItem[] = await menu.getItems();
+		const action: ContextMenuItem = await menu.getItem("Reconnect");
+		console.log(actions);
+
+		await action.click();
+		await delay();
 	}
 
 }

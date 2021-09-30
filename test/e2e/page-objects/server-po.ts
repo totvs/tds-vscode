@@ -1,4 +1,5 @@
 import { By, WebView } from "vscode-extension-tester";
+import { delay } from "../helper";
 import { IServerData } from "./interface-po";
 
 
@@ -33,6 +34,8 @@ export class ServerPageObject {
 			element = await webView.findWebElement(By.id("submitIDClose"));
 			element.click();
 		}
+
+		await delay();
 	}
 
 }

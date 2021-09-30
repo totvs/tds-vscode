@@ -4,6 +4,7 @@ export const LOCALHOST_DATA: IServerData = {
 	serverName: "localhost",
 	address: "localhost",
 	port: 2030,
+	environment: "p12",
 	includePath: ["m:\\protheus\\includes"],
 };
 

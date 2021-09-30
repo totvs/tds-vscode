@@ -1,8 +1,9 @@
 import { expect } from "chai";
-import { ActivityBar, By, SideBarView, TreeItem, ViewItemAction, Notification, Workbench, WebView, InputBox } from "vscode-extension-tester";
-import { delay, waitNotification } from "../helper";
+import { ActivityBar, By, SideBarView, TreeItem, ViewItemAction, Notification, Workbench, WebView, InputBox, QuickPickItem, WebElement, ViewSection, ViewItem } from "vscode-extension-tester";
+import { delay, takeQuickPickAction, waitNotification } from "../helper";
 import { IServerData } from "./interface-po";
 import { ServerPageObject } from "./server-po";
+import { ServerTreeItemPageObject } from "./server-tree-item-po";
 import { StatusPageObject } from "./status-po";
 
 export class ServerTreePageObject {
@@ -32,9 +33,6 @@ export class ServerTreePageObject {
 		)) as TreeItem;
 
 		return serverTreeItem
-	}
-
-	async clearServers() {
 	}
 
 	async removeServer(serverName: string, confirm: boolean = false) {
@@ -70,7 +68,6 @@ export class ServerTreePageObject {
 
 		const serverPO = new ServerPageObject(data);
 		await serverPO.fillAddServerPage(webView, data, true);
-		await delay();
 
 		await webView.switchBack();
 	}
@@ -87,7 +84,7 @@ export class ServerTreePageObject {
 	}
 
 	async connect(serverName: string, environment: string, username: string, password: string) {
-		const serverTreeItem = await this.getServerTreeItem(serverName);
+		const serverTreeItem: TreeItem = await this.getServerTreeItem(serverName);
 
 		const action: ViewItemAction = await serverTreeItem.getActionButton(
 			"Connect"
@@ -95,18 +92,24 @@ export class ServerTreePageObject {
 		await action.click();
 		await delay();
 
-		const pickBox: InputBox = new InputBox();
+		const pickBox = new InputBox();
 		await delay();
 
 		let title = await pickBox.getTitle();
 		expect(title).is.equal("Connection (1/1)");
 
+		let quickPicks: QuickPickItem[] = await pickBox.getQuickPicks();
+		if (quickPicks.length == 0) {
+			expect(await takeQuickPickAction(pickBox, "action")).is.true;
+			title = await pickBox.getMessage();
+			expect(title.startsWith("Enter the name of the environment")).is.true;
+			await delay(3000);
+		}
+
 		await pickBox.setText(environment);
 		await delay();
 		await pickBox.confirm();
 		await delay();
-
-		await pickBox.wait(3000);
 
 		title = await pickBox.getTitle();
 		expect(title).is.equal("Authentication (1/2)");
@@ -126,8 +129,24 @@ export class ServerTreePageObject {
 		await delay();
 
 		const statusBarPO: StatusPageObject = new StatusPageObject();
+		await statusBarPO.wait();
+
 		await statusBarPO.waitConnection();
 		expect(await statusBarPO.isConnected(serverName, environment)).is.true;
 	};
+
+	async disconnectAllServers(): Promise<void> {
+		const c = (await this.openView()).getContent();
+		const s = await c.getSections();
+		const elements: ViewItem[] = await s[0].getVisibleItems();
+
+		elements.forEach(async (element: WebElement) => {
+			const item: ServerTreeItemPageObject = new ServerTreeItemPageObject(element as TreeItem);
+			if (item.isConnected()) {
+				await item.fireDisconnectAction();
+				await delay();
+			}
+		})
+	}
 
 }

@@ -19,7 +19,7 @@ import { StatusPageObject } from "../page-objects/status-po";
 import { ADMIN_USER_DATA, LOCALHOST_DATA } from "../servers-data";
 
 // Create a Mocha suite
-describe("TOTVS: Server View Basic Operations", () => {
+describe.skip("RPO Operations", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let pickBox: InputBox;
@@ -48,22 +48,11 @@ describe("TOTVS: Server View Basic Operations", () => {
   });
 
   beforeEach(async () => {
-    // await serverTreePO.disconnectServers();
   })
 
   after(async () => {
-
+    await serverTreePO.disconnectAllServers();
   })
-
-  it("No Server Connected", async () => {
-    expect(await statusBarPO.isNeedSelectServer()).is.true;
-  });
-
-  it("isSelected Node", async () => {
-    await serverItemPO.select();
-
-    expect(await serverItemPO.isSelected()).to.be.true;
-  });
 
   it("Fire Connect Action", async () => {
     serverItemPO.fireConnectAction();

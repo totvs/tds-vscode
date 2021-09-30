@@ -12,3 +12,4 @@ out-test
 package-lock.json
 test-extension/
 test-resources/
+test/resources/advpl/**/.vscode/servers.json

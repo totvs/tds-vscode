@@ -7,10 +7,13 @@ import {
   Notification,
   InputBox,
   WebElement,
+  ActivityBar,
+  SideBarView,
 } from "vscode-extension-tester";
+import { ServerTreePageObject } from "./page-objects/server-tree-po";
 
 const WAIT_NOTIFICATION_TIMEOUT = 2000;
-const DEFAULT_DELAY = 2;
+const DEFAULT_DELAY = 1000;
 const advplProjectfolder: string = path.resolve(
   __dirname,
   "..",
@@ -23,12 +26,23 @@ const advplProjectfolder: string = path.resolve(
 export async function openAdvplProject(projectName: string): Promise<void> {
   const folder: string = path.join(path.resolve(advplProjectfolder), projectName);
 
-  return await VSBrowser.instance.openResources(folder);
+  await VSBrowser.instance.openResources(folder);
+  await delay();
 }
 
-export const delay = (seconds: number = DEFAULT_DELAY) =>
+export async function openServerTreeView(): Promise<ServerTreePageObject> {
+  const activityBar = new ActivityBar();
+  const control = await activityBar.getViewControl("TOTVS");
+
+  const view: SideBarView = await control.openView();
+  await delay();
+
+  return undefined; //new ServerTreePageObject(view);
+}
+
+export const delay = (duration: number = DEFAULT_DELAY) =>
   new Promise((res) => {
-    setTimeout(res, seconds * 1000);
+    setTimeout(res, duration);
   });
 
 export async function quickPickActions(quickPick: InputBox): Promise<WebElement[]> {
@@ -45,18 +59,27 @@ export async function quickPickActions(quickPick: InputBox): Promise<WebElement[
   return result;
 }
 
-export async function takeQuickPickAction(quickPick: InputBox, target: string): Promise<boolean> {
-  const actionList: WebElement[] = await quickPickActions(quickPick);
-
-  await actionList.forEach(async (action: WebElement) => {
-    const label: WebElement = await action.findElement(By.className("action-label"));
-    const text: string = await label.getText();
-    if (text === target) {
-      action.click();
-      await delay();
-      return true;
-    }
+export async function takeQuickPickAction(pickBox: InputBox, titleAction: string): Promise<boolean> {
+  // <ul class="" role = "toolbar" >
+  //   <li class="action-item" role = "presentation" >
+  //     <a class="action-label codicon quick-input-button-icon-1" role = "button"
+  //        title = "New environment" tabindex = "0" >
+  //     </a>
+  //   </li >
+  //  </ul >
+  const actionContainer: WebElement = pickBox.findElement(By.className("actions-container"));
+  const actionList: WebElement[] = await actionContainer.findElements(By.className("action-item"));
+  const actions: WebElement[] = actionList.filter(async (action: WebElement) => {
+    const link: WebElement = await action.findElement(By.css("a.action-label"));
+    const title: string = (await link.getAttribute("title")).toLowerCase();
+    return title === titleAction.toLowerCase();
   });
+
+  if (actions.length == 1) {
+    await actions[0].click();
+    await delay();
+    return true;
+  }
 
   return false;
 }
