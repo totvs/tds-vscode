@@ -5,3 +5,10 @@ export interface IServerData {
 	includePath: string[];
 	environment?: string;
 }
+
+export interface IUserData {
+	username: string;
+	password: string;
+	compilekey: string;
+	rpotoken: string;
+}

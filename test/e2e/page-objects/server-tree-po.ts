@@ -86,22 +86,20 @@ export class ServerTreePageObject {
 		return serverTreeItem;
 	}
 
-	async connect(serverName: string, environment: string, username: string, password: string, verify: boolean = false) {
+	async connect(serverName: string, environment: string, username: string, password: string) {
 		const serverTreeItem = await this.getServerTreeItem(serverName);
 
 		const action: ViewItemAction = await serverTreeItem.getActionButton(
 			"Connect"
 		);
 		await action.click();
-		await delay(2);
+		await delay();
 
 		const pickBox: InputBox = new InputBox();
 		await delay();
 
-		if (verify) {
-			let title = await pickBox.getTitle();
-			expect(title).is.equal("Connection (1/1)");
-		}
+		let title = await pickBox.getTitle();
+		expect(title).is.equal("Connection (1/1)");
 
 		await pickBox.setText(environment);
 		await delay();
@@ -110,10 +108,8 @@ export class ServerTreePageObject {
 
 		await pickBox.wait(3000);
 
-		if (verify) {
-			const title = await pickBox.getTitle();
-			expect(title).is.equal("Authentication (1/2)");
-		}
+		title = await pickBox.getTitle();
+		expect(title).is.equal("Authentication (1/2)");
 
 		await pickBox.setText(username);
 		await delay();
@@ -121,10 +117,9 @@ export class ServerTreePageObject {
 		await delay();
 
 		await pickBox.wait();
-		if (verify) {
-			const title = await pickBox.getTitle();
-			expect(title).is.equal("Authentication (2/2)");
-		}
+		title = await pickBox.getTitle();
+		expect(title).is.equal("Authentication (2/2)");
+
 		await pickBox.setText(password);
 		await delay();
 		await pickBox.confirm();
@@ -132,9 +127,7 @@ export class ServerTreePageObject {
 
 		const statusBarPO: StatusPageObject = new StatusPageObject();
 		await statusBarPO.waitConnection();
-		if (verify) {
-			expect(await statusBarPO.isConnected(serverName, environment)).is.true;
-		}
+		expect(await statusBarPO.isConnected(serverName, environment)).is.true;
 	};
 
 }

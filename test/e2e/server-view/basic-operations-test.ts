@@ -14,6 +14,7 @@ import {
 } from "../helper";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { StatusPageObject } from "../page-objects/status-po";
+import { ADMIN_USER_DATA } from "../servers-data";
 
 // Create a Mocha suite
 describe("TOTVS: Server View Basic Operations", () => {
@@ -88,7 +89,7 @@ describe("TOTVS: Server View Basic Operations", () => {
     title = await pickBox.getTitle();
     expect(title).is.equal("Authentication (1/2)");
 
-    await pickBox.setText("admin");
+    await pickBox.setText(ADMIN_USER_DATA.username);
     await delay();
     await pickBox.confirm();
     await delay();
@@ -97,7 +98,7 @@ describe("TOTVS: Server View Basic Operations", () => {
     title = await pickBox.getTitle();
     expect(title).is.equal("Authentication (2/2)");
 
-    await pickBox.setText("1234");
+    await pickBox.setText(ADMIN_USER_DATA.password);
     await delay();
     await pickBox.confirm();
     await delay();
@@ -122,9 +123,9 @@ describe("TOTVS: Server View Basic Operations", () => {
     expect(await statusBarPO.isNoServerSelected()).is.true;
   });
 
-  it.only("Try Connect Using Invalid Environment", async () => {
+  it("Try Connect Using Invalid Environment", async () => {
     try {
-      await serverTreePO.connect(LOCALHOST_NAME, "p12_invalid", "admin", "1234");
+      await serverTreePO.connect(LOCALHOST_NAME, "p12_invalid", ADMIN_USER_DATA.username, ADMIN_USER_DATA.password);
     } catch (error) {
 
     }
