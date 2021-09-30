@@ -19,6 +19,13 @@ export const ADMIN_USER_DATA: IUserData = {
 	rpotoken: ""
 };
 
+export const NO_ADMIN_USER_DATA: IUserData = {
+	username: "user",
+	password: "1234",
+	compilekey: "",
+	rpotoken: ""
+};
+
 export const INVALID_USER_DATA: IUserData = {
 	username: "mane",
 	password: "0000",

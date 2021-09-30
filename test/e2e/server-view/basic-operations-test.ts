@@ -12,30 +12,30 @@ import {
   delay,
   openAdvplProject
 } from "../helper";
+import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { StatusPageObject } from "../page-objects/status-po";
-import { ADMIN_USER_DATA } from "../servers-data";
+import { ADMIN_USER_DATA, LOCALHOST_DATA } from "../servers-data";
 
 // Create a Mocha suite
 describe("TOTVS: Server View Basic Operations", () => {
-  let workbench: Workbench;
   let serverTreePO: ServerTreePageObject;
-  let serverTreeItem: TreeItem;
+  let serverItemPO: ServerTreeItemPageObject;
   let pickBox: InputBox;
   let title: string = "";
   let statusBarPO: StatusPageObject;
 
-  const LOCALHOST_NAME: string = "localhost";
-  const LOCALHOST_ENVIRONMENT: string = "p12";
+  const LOCALHOST_NAME: string = LOCALHOST_DATA.serverName;
+  const LOCALHOST_ENVIRONMENT: string = LOCALHOST_DATA.environment;
 
   before(async () => {
-    workbench = new Workbench();
+    //workbench = new Workbench();
 
     await openAdvplProject("project2");
     await delay();
 
     serverTreePO = new ServerTreePageObject();
-    serverTreeItem = await serverTreePO.getServerTreeItem(LOCALHOST_NAME);
+    serverItemPO = new ServerTreeItemPageObject(await serverTreePO.getServerTreeItem(LOCALHOST_NAME));
     statusBarPO = new StatusPageObject();
 
     await delay();
@@ -50,22 +50,13 @@ describe("TOTVS: Server View Basic Operations", () => {
   });
 
   it("isSelected Node", async () => {
-    await serverTreeItem.select();
-    await delay(3);
+    await serverItemPO.select();
 
-    const klass = await serverTreeItem.getAttribute("class");
-    expect(klass.indexOf("selected")).greaterThan(-1);
-    //expect(await view.isDisplayed()).to.be.true;
-    //expect(await serverTreeItem.isSelected()).to.be.true;
+    expect(await serverItemPO.isSelected()).to.be.true;
   });
 
   it("Fire Connect Action", async () => {
-    const action: ViewItemAction = await serverTreeItem.getActionButton(
-      "Connect"
-    );
-
-    await action.click();
-    await delay();
+    serverItemPO.fireConnectAction();
   });
 
   it("Input Environment", async () => {
@@ -107,20 +98,16 @@ describe("TOTVS: Server View Basic Operations", () => {
   it("Localhost Server Connected", async () => {
     await statusBarPO.waitConnection();
     expect(await statusBarPO.isConnected(LOCALHOST_NAME, LOCALHOST_ENVIRONMENT)).is.true;
+    expect(await serverItemPO.isConnected()).is.true;
   });
 
   it("Fire Disconnect Action", async () => {
-    const action: ViewItemAction = await serverTreeItem.getActionButton(
-      "Disconnect"
-    );
-    await delay();
-
-    await action.click();
-    await delay();
+    serverItemPO.fireDisconnectAction();
   });
 
   it("Localhost Server Disconnected", async () => {
     expect(await statusBarPO.isNoServerSelected()).is.true;
+    expect(await serverItemPO.isNotConnected()).is.true;
   });
 
   it("Try Connect Using Invalid Environment", async () => {
