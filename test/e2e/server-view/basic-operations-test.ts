@@ -19,7 +19,7 @@ import { StatusPageObject } from "../page-objects/status-po";
 import { ADMIN_USER_DATA, DELETE_DATA, LOCALHOST_DATA } from "../servers-data";
 
 // Create a Mocha suite
-describe.only("TOTVS: Server View Basic Operations", () => {
+describe("TOTVS: Server View Basic Operations", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let statusBarPO: StatusPageObject;
@@ -46,7 +46,7 @@ describe.only("TOTVS: Server View Basic Operations", () => {
   it("isSelected Node", async () => {
     await serverItemPO.select();
 
-    expect(await serverItemPO.isSelected()).to.be.true;
+    expect(await serverItemPO.isSelected()).is.true;
   });
 
   it("Fire Connect Action", async () => {

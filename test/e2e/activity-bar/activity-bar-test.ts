@@ -25,7 +25,7 @@ describe("TOTVS Activity Bar", () => {
     const klass = await control.getAttribute("class");
 
     expect(klass.indexOf("checked")).greaterThan(-1);
-    expect(await view.isDisplayed()).to.be.true;
+    expect(await view.isDisplayed()).is.true;
 
     const title = await view.getTitlePart().getTitle();
     expect(title.toLowerCase()).equals("totvs: servers");

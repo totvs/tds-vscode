@@ -37,5 +37,4 @@ export class ServerPageObject {
 
 		await delay();
 	}
-
 }

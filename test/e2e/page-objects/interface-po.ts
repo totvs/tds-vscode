@@ -12,3 +12,7 @@ export interface IUserData {
 	compilekey: string;
 	rpotoken: string;
 }
+
+export interface IIncludeData {
+	includePath: string[];
+}

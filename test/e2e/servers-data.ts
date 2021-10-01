@@ -1,4 +1,4 @@
-import { IServerData, IUserData } from "./page-objects/interface-po";
+import { IIncludeData, IServerData, IUserData } from "./page-objects/interface-po";
 
 export const LOCALHOST_DATA: IServerData = {
 	serverName: "localhost",
@@ -32,4 +32,22 @@ export const INVALID_USER_DATA: IUserData = {
 	password: "0000",
 	compilekey: "",
 	rpotoken: ""
+};
+
+export const INCLUDE_PATH_DATA: IIncludeData = {
+	includePath: [
+		"m:/protheus/includes"
+	]
+};
+
+export const CHANGE_INCLUDE_PATH_DATA: IIncludeData = {
+	includePath: [
+		"m:/change/includes"
+	]
+};
+
+export const ADD_INCLUDE_PATH_DATA: IIncludeData = {
+	includePath: [
+		"m:/more_1/includes",
+	]
 };

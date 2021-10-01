@@ -83,4 +83,9 @@ export class ServerTreeItemPageObject {
 		await fireContextMenuAction(this.serverTreeItem, "Defrag RPO");
 	}
 
+	async fireInclude() {
+		await this.select();
+		await fireContextMenuAction(this.serverTreeItem, "Include");
+	}
+
 }

@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { ActivityBar, By, SideBarView, TreeItem, ViewItemAction, Notification, Workbench, WebView, InputBox, QuickPickItem, WebElement, ViewSection, ViewItem, ViewControl } from "vscode-extension-tester";
+import { ActivityBar, By, SideBarView, TreeItem, ViewItemAction, Notification, Workbench, WebView, InputBox, QuickPickItem, WebElement, ViewSection, ViewItem, ViewControl, ViewTitlePart, TitleActionButton } from "vscode-extension-tester";
 import { delay, fireContextMenuAction, takeQuickPickAction, waitNotification } from "../helper";
 import { IServerData, IUserData } from "./interface-po";
 import { ServerPageObject } from "./server-po";
@@ -104,4 +104,13 @@ export class ServerTreePageObject {
 			}
 		})
 	}
+
+	async fireConfigureServerView() {
+		const titlePart: ViewTitlePart = (await this.openView()).getTitlePart();
+		const action: TitleActionButton = await titlePart.getAction("Configure Server View");
+
+		action.click();
+		await delay();
+	}
+
 }

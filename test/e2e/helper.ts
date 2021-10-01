@@ -47,6 +47,19 @@ export async function openAdvplProject(): Promise<void> {
   await delay(2000);
 }
 
+export async function readServersJsonFile(): Promise<string> {
+  const projectFolder: string = path.join(advplProjectfolder, PROJECT_NAME);
+  const serversJsonFile: string = path.join(projectFolder, ".vscode", "servers.json");
+  let result: string = "< file not found >";
+
+  if (fs.existsSync(serversJsonFile)) {
+    const buffer: Buffer = fs.readFileSync(serversJsonFile);
+    result = buffer.toString();
+  }
+
+  return result;
+}
+
 export async function openServerTreeView(): Promise<ServerTreePageObject> {
   const activityBar = new ActivityBar();
   const control = await activityBar.getViewControl("TOTVS");
