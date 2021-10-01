@@ -7,23 +7,23 @@ import {
   ViewItemAction,
   InputBox,
   QuickPickItem,
+  Notification
 } from "vscode-extension-tester";
 import {
   delay,
   openAdvplProject,
-  takeQuickPickAction
+  takeQuickPickAction,
+  waitNotification
 } from "../helper";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { StatusPageObject } from "../page-objects/status-po";
-import { ADMIN_USER_DATA, LOCALHOST_DATA } from "../servers-data";
+import { ADMIN_USER_DATA, DELETE_DATA, LOCALHOST_DATA } from "../servers-data";
 
 // Create a Mocha suite
-describe("RPO Operations", () => {
+describe("TOTVS: Server View Configurations", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
-  let pickBox: InputBox;
-  let title: string = "";
   let statusBarPO: StatusPageObject;
 
   const LOCALHOST_NAME: string = LOCALHOST_DATA.serverName;
@@ -54,19 +54,13 @@ describe("RPO Operations", () => {
     serverItemPO = null;
   })
 
-  it.skip("Check Integraty", async () => {
+  it.skip("Include", async () => {
   });
 
-  it.skip("Revalidate", async () => {
+  it.skip("Compile key (input)", async () => {
   });
 
-  it.skip("Repository Log", async () => {
-  });
-
-  it.skip("Objects Inspector", async () => {
-  });
-
-  it.skip("Functions Inspector", async () => {
+  it.skip("Configure Server View", async () => {
   });
 
 });

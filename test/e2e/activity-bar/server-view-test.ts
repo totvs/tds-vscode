@@ -20,7 +20,7 @@ describe("TOTVS: Server View", () => {
   let serverTreePO: ServerTreePageObject;
 
   before(async () => {
-    await openAdvplProject("project1");
+    await openAdvplProject();
     await delay();
 
     serverTreePO = new ServerTreePageObject();

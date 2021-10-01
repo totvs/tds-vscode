@@ -2,38 +2,30 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import {
-  Workbench,
-  TreeItem,
-  ViewItemAction,
-  InputBox,
-  QuickPickItem,
+  Notification,
+  WebView
 } from "vscode-extension-tester";
 import {
   delay,
+  fillEnvironment,
+  fillUserdata,
   openAdvplProject,
-  takeQuickPickAction
+  waitNotification
 } from "../helper";
+import { ServerPageObject } from "../page-objects/server-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { StatusPageObject } from "../page-objects/status-po";
-import { ADMIN_USER_DATA, LOCALHOST_DATA } from "../servers-data";
+import { ADMIN_USER_DATA, DELETE_DATA, LOCALHOST_DATA } from "../servers-data";
 
 // Create a Mocha suite
-describe("TOTVS: Server View Basic Operations", () => {
+describe.only("TOTVS: Server View Basic Operations", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
-  let pickBox: InputBox;
-  let title: string = "";
   let statusBarPO: StatusPageObject;
 
-  const LOCALHOST_NAME: string = LOCALHOST_DATA.serverName;
-  const LOCALHOST_ENVIRONMENT: string = LOCALHOST_DATA.environment;
-
   before(async () => {
-    //workbench = new Workbench();
-
-    await openAdvplProject("project2");
-    await delay(2000);
+    await openAdvplProject();
 
     serverTreePO = new ServerTreePageObject();
     serverTreePO.openView();
@@ -41,19 +33,11 @@ describe("TOTVS: Server View Basic Operations", () => {
 
     await serverTreePO.addNewServer(LOCALHOST_DATA);
 
-    serverItemPO = new ServerTreeItemPageObject(await serverTreePO.getServerTreeItem(LOCALHOST_NAME));
+    serverItemPO = new ServerTreeItemPageObject(await serverTreePO.getServerTreeItem(LOCALHOST_DATA.serverName));
     statusBarPO = new StatusPageObject();
 
-    await delay();
+    await delay(2000);
   });
-
-  beforeEach(async () => {
-    // await serverTreePO.disconnectServers();
-  })
-
-  after(async () => {
-
-  })
 
   it("No Server Connected", async () => {
     expect(await statusBarPO.isNeedSelectServer()).is.true;
@@ -66,71 +50,68 @@ describe("TOTVS: Server View Basic Operations", () => {
   });
 
   it("Fire Connect Action", async () => {
-    serverItemPO.fireConnectAction();
+    await serverItemPO.fireConnectAction();
   });
 
   it("Input Environment", async () => {
-    pickBox = new InputBox();
-    await delay();
-
-    title = await pickBox.getTitle();
-    expect(title).is.equal("Connection (1/1)");
-
-    let quickPicks: QuickPickItem[] = await pickBox.getQuickPicks();
-    if (quickPicks.length == 0) {
-      expect(await takeQuickPickAction(pickBox, "action")).is.true;
-      title = await pickBox.getMessage();
-      expect(title.startsWith("Enter the name of the environment")).is.true;
-      await delay();
-    }
-
-    await pickBox.setText(LOCALHOST_ENVIRONMENT);
-    await delay();
-    await pickBox.confirm();
-    await delay();
+    await fillEnvironment(LOCALHOST_DATA.environment);
   });
 
   it("Input User", async () => {
-    await pickBox.wait(2000);
-    title = await pickBox.getTitle();
-    expect(title).is.equal("Authentication (1/2)");
-
-    await pickBox.setText(ADMIN_USER_DATA.username);
-    await delay();
-    await pickBox.confirm();
-    await delay();
-
-    await pickBox.wait();
-    title = await pickBox.getTitle();
-    expect(title).is.equal("Authentication (2/2)");
-
-    await pickBox.setText(ADMIN_USER_DATA.password);
-    await delay();
-    await pickBox.confirm();
-    await delay();
+    await fillUserdata(ADMIN_USER_DATA);
   });
 
   it("Localhost Server Connected", async () => {
     await statusBarPO.waitConnection();
-    expect(await statusBarPO.isConnected(LOCALHOST_NAME, LOCALHOST_ENVIRONMENT)).is.true;
+
+    expect(await statusBarPO.isConnected(LOCALHOST_DATA.serverName, LOCALHOST_DATA.environment)).is.true;
     expect(await serverItemPO.isConnected()).is.true;
   });
 
   it("Localhost Server Disconnected", async () => {
-    serverItemPO.fireDisconnectAction();
+    await serverItemPO.select();
+    await serverItemPO.fireDisconnectAction();
 
     expect(await statusBarPO.isNeedSelectServer()).is.true;
     expect(await serverItemPO.isNotConnected()).is.true;
   });
 
-  it("Try Connect Using Invalid Environment", async () => {
+  it.skip("Try Connect Using Invalid Environment", async () => {
     await serverTreePO.disconnectAllServers();
 
-    expect(await serverTreePO.connect(LOCALHOST_NAME, "p12_invalid", ADMIN_USER_DATA.username, ADMIN_USER_DATA.password))
+    expect(await serverTreePO.connect(LOCALHOST_DATA.serverName, "p12_invalid", ADMIN_USER_DATA))
       .to.not.throw();
 
     await delay();
     expect(await statusBarPO.isNeedSelectServer()).is.true;
+  });
+
+  it("Reconnect", async () => {
+    await serverTreePO.disconnectAllServers();
+
+    await serverItemPO.fireReconnectAction();
+    await statusBarPO.isConnected(LOCALHOST_DATA.serverName, LOCALHOST_DATA.environment);
+
+    expect(serverItemPO.isConnected()).is.true;
+  });
+
+  it("Add server (context menu)", async () => {
+    await serverItemPO.fireAddServerAction();
+
+    const webView: WebView = new WebView();
+    await webView.switchToFrame();
+
+    const serverPO = new ServerPageObject();
+    await serverPO.fillAddServerPage(webView, DELETE_DATA, true);
+
+    await webView.switchBack();
+    await delay();
+
+    const notification: Notification = await waitNotification("Saved server");
+    expect(notification).not.is.undefined;
+
+    await serverTreePO.removeServer(DELETE_DATA.serverName);
+
   });
 
 });

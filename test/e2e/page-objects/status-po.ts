@@ -10,12 +10,14 @@ export class StatusPageObject {
 	}
 
 	async wait() {
-		await delay(2000);
-		await this.workbench.getStatusBar().wait();
+		await delay(500);
+		await this.workbench.getStatusBar().wait(2000);
 	}
 
 	async statusBarWithText(targetText: string | RegExp, _wait: number = 1000): Promise<WebElement> {
 		const statusBar: StatusBar = this.workbench.getStatusBar();
+		this.wait();
+
 		const target: RegExp = new RegExp(targetText, "i");
 		let steps: number = _wait / 500;
 		let result: WebElement = null;

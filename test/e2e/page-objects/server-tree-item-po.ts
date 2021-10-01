@@ -1,5 +1,8 @@
-import { By, ContextMenu, ContextMenuItem, TreeItem, ViewItemAction } from "vscode-extension-tester";
-import { delay } from "../helper";
+import { expect } from "chai";
+import { By, ContextMenu, ContextMenuItem, InputBox, QuickPickItem, TreeItem, ViewItem, ViewItemAction } from "vscode-extension-tester";
+import { delay, fillEnvironment, fillUserdata, fireContextMenuAction, takeQuickPickAction } from "../helper";
+import { IUserData } from "./interface-po";
+import { StatusPageObject } from "./status-po";
 
 export class ServerTreeItemPageObject {
 	private serverTreeItem: TreeItem;
@@ -8,9 +11,23 @@ export class ServerTreeItemPageObject {
 		this.serverTreeItem = serverTreeItem;
 	}
 
+	async connect(environment: string, userData: IUserData) {
+		this.select();
+		await fireContextMenuAction(this.serverTreeItem, "Connect");
+
+		await fillEnvironment(environment);
+		await fillUserdata(userData);
+
+		const statusBarPO: StatusPageObject = new StatusPageObject();
+		await statusBarPO.wait();
+
+		await statusBarPO.waitConnection();
+		expect(await statusBarPO.isConnected(await this.serverTreeItem.getLabel(), environment)).is.true;
+	}
+
 	async select() {
 		await this.serverTreeItem.select();
-		await delay(2000);
+		await delay();
 	}
 
 	async isSelected(): Promise<boolean> {
@@ -52,14 +69,17 @@ export class ServerTreeItemPageObject {
 
 	async fireReconnectAction() {
 		await this.select();
-		const menu: ContextMenu = await this.serverTreeItem.openContextMenu();
-		await menu.wait();
-		const actions: ContextMenuItem[] = await menu.getItems();
-		const action: ContextMenuItem = await menu.getItem("Reconnect");
-		console.log(actions);
+		await fireContextMenuAction(this.serverTreeItem, "Reconnect");
+	}
 
-		await action.click();
-		await delay();
+	async fireAddServerAction() {
+		await this.select();
+		await fireContextMenuAction(this.serverTreeItem, "Add Server");
+	}
+
+	async fireDefragAction() {
+		await this.select();
+		await fireContextMenuAction(this.serverTreeItem, "Defrag RPO");
 	}
 
 }

@@ -19,7 +19,7 @@ import { StatusPageObject } from "../page-objects/status-po";
 import { ADMIN_USER_DATA, LOCALHOST_DATA } from "../servers-data";
 
 // Create a Mocha suite
-describe("RPO Operations", () => {
+describe("Patch Operations", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let pickBox: InputBox;
@@ -54,19 +54,13 @@ describe("RPO Operations", () => {
     serverItemPO = null;
   })
 
-  it.skip("Check Integraty", async () => {
+  it.skip("Patch Generation (from RPO)", async () => {
   });
 
-  it.skip("Revalidate", async () => {
+  it.skip("Patch Generation (by difference)", async () => {
   });
 
-  it.skip("Repository Log", async () => {
-  });
-
-  it.skip("Objects Inspector", async () => {
-  });
-
-  it.skip("Functions Inspector", async () => {
+  it.skip("Patch Apply", async () => {
   });
 
 });

@@ -9,35 +9,52 @@ import {
   WebElement,
   ActivityBar,
   SideBarView,
+  QuickPickItem,
+  ContextMenu,
+  ViewItem,
+  ContextMenuItem,
+  ViewControl,
 } from "vscode-extension-tester";
 import { ServerTreePageObject } from "./page-objects/server-tree-po";
+import { expect } from "chai";
+import { IUserData } from "./page-objects/interface-po";
 
 const WAIT_NOTIFICATION_TIMEOUT = 2000;
 const DEFAULT_DELAY = 1000;
+const PROJECT_NAME = "project-advpl"
 const advplProjectfolder: string = path.resolve(
   __dirname,
   "..",
   "..",
   "test",
-  "resources",
-  "advpl"
+  "resources"
 );
 
-export async function openAdvplProject(projectName: string): Promise<void> {
-  const folder: string = path.join(path.resolve(advplProjectfolder), projectName);
+export async function openAdvplProject(): Promise<void> {
+  const projectFolder: string = path.join(advplProjectfolder, PROJECT_NAME);
+  const serversJsonFile: string = path.join(projectFolder, ".vscode", "servers.json");
 
-  await VSBrowser.instance.openResources(folder);
-  await delay();
+  if (fs.existsSync(serversJsonFile)) {
+    fs.removeSync(serversJsonFile);
+  }
+
+  // const notifications = await new Workbench().openNotificationsCenter();
+  // await delay();
+  // await notifications.clearAllNotifications();
+  // await delay();
+
+  await VSBrowser.instance.openResources(projectFolder);
+  await delay(2000);
 }
 
 export async function openServerTreeView(): Promise<ServerTreePageObject> {
   const activityBar = new ActivityBar();
   const control = await activityBar.getViewControl("TOTVS");
-
   const view: SideBarView = await control.openView();
+
   await delay();
 
-  return undefined; //new ServerTreePageObject(view);
+  return new ServerTreePageObject();
 }
 
 export const delay = (duration: number = DEFAULT_DELAY) =>
@@ -45,28 +62,7 @@ export const delay = (duration: number = DEFAULT_DELAY) =>
     setTimeout(res, duration);
   });
 
-export async function quickPickActions(quickPick: InputBox): Promise<WebElement[]> {
-  const titleBar = await quickPick.findElements(By.className("quick-input-titlebar"));
-  let result: WebElement[] = [];
-
-  if (titleBar.length > 0 && await titleBar[0].isDisplayed()) {
-    const buttons = await titleBar[0].findElements(By.className("action-item"));
-    result = buttons.filter(async (button: WebElement) => {
-      return await button.isEnabled();
-    })
-  }
-
-  return result;
-}
-
 export async function takeQuickPickAction(pickBox: InputBox, titleAction: string): Promise<boolean> {
-  // <ul class="" role = "toolbar" >
-  //   <li class="action-item" role = "presentation" >
-  //     <a class="action-label codicon quick-input-button-icon-1" role = "button"
-  //        title = "New environment" tabindex = "0" >
-  //     </a>
-  //   </li >
-  //  </ul >
   const actionContainer: WebElement = pickBox.findElement(By.className("actions-container"));
   const actionList: WebElement[] = await actionContainer.findElements(By.className("action-item"));
   const actions: WebElement[] = actionList.filter(async (action: WebElement) => {
@@ -87,6 +83,8 @@ export async function takeQuickPickAction(pickBox: InputBox, titleAction: string
 export async function waitNotification(
   containText: string
 ): Promise<Notification | undefined> {
+  //const notifications = await new Workbench().openNotificationsCenter(); //@acandido verificar uso
+
   return await VSBrowser.instance.driver.wait(() => {
     return notificationExists(containText.toLowerCase());
   }, WAIT_NOTIFICATION_TIMEOUT);
@@ -113,4 +111,62 @@ async function notificationExists(
 //   await fs.remove(serversJsonFile);
 // }
 
+export async function fillEnvironment(environment: string) {
+  const pickBox = new InputBox();
+  await delay();
+
+  let title = await pickBox.getTitle();
+  expect(title).is.equal("Connection (1/1)");
+
+  let quickPicks: QuickPickItem[] = await pickBox.getQuickPicks();
+  const find: boolean = quickPicks.filter(async (element: QuickPickItem) => {
+    return await element.getText() == environment;
+  }).length > 0;
+
+  if (!find) {
+    expect(await takeQuickPickAction(pickBox, "action")).is.true;
+    title = await pickBox.getMessage();
+    expect(title.startsWith("Enter the name of the environment")).is.true;
+    await delay();
+  }
+
+  await pickBox.setText(environment);
+  await delay();
+
+  await pickBox.confirm();
+  await delay();
+}
+
+export async function fillUserdata(userData: IUserData) {
+  const pickBox = new InputBox();
+  await delay();
+  pickBox.wait();
+
+  let title = await pickBox.getTitle();
+  title = await pickBox.getTitle();
+  expect(title).is.equal("Authentication (1/2)");
+
+  await pickBox.setText(userData.username);
+  await delay();
+  await pickBox.confirm();
+  await delay();
+
+  await pickBox.wait();
+  title = await pickBox.getTitle();
+  expect(title).is.equal("Authentication (2/2)");
+
+  await pickBox.setText(userData.password);
+  await delay();
+  await pickBox.confirm();
+  await delay();
+}
+
+export async function fireContextMenuAction(element: ViewItem | ViewControl, name: string) {
+  const menu: ContextMenu = await element.openContextMenu();
+  await menu.wait();
+
+  const action: ContextMenuItem = await menu.getItem(name);
+  await action.click();
+  await delay();
+}
 
