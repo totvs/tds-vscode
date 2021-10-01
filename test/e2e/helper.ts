@@ -163,7 +163,7 @@ export async function fillUserdata(userData: IUserData) {
 
 export async function fireContextMenuAction(element: ViewItem | ViewControl, name: string) {
   const menu: ContextMenu = await element.openContextMenu();
-  await menu.wait();
+  await menu.wait(2000);
 
   const action: ContextMenuItem = await menu.getItem(name);
   await action.click();

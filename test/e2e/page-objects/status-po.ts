@@ -55,4 +55,10 @@ export class StatusPageObject {
 		}
 	}
 
+	async waitReconnection(wait: number = 30000): Promise<void> {
+		if ((await this.statusBarWithText(/Reconectando-se.*/), wait) == null) {
+			throw new Error(`Connection process timeout (${wait})ms`);
+		}
+	}
+
 }

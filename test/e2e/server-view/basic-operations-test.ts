@@ -86,15 +86,6 @@ describe.only("TOTVS: Server View Basic Operations", () => {
     expect(await statusBarPO.isNeedSelectServer()).is.true;
   });
 
-  it("Reconnect", async () => {
-    await serverTreePO.disconnectAllServers();
-
-    await serverItemPO.fireReconnectAction();
-    await statusBarPO.isConnected(LOCALHOST_DATA.serverName, LOCALHOST_DATA.environment);
-
-    expect(serverItemPO.isConnected()).is.true;
-  });
-
   it("Add server (context menu)", async () => {
     await serverItemPO.fireAddServerAction();
 
@@ -112,6 +103,17 @@ describe.only("TOTVS: Server View Basic Operations", () => {
 
     await serverTreePO.removeServer(DELETE_DATA.serverName);
 
+  });
+
+  it.skip("Reconnect", async () => {
+    await serverTreePO.disconnectAllServers();
+
+    await serverItemPO.fireReconnectAction(); //esta solicitando usuário e senha
+    await fillEnvironment(LOCALHOST_DATA.environment);
+    await statusBarPO.waitReconnection();
+
+    expect(await statusBarPO.isConnected(LOCALHOST_DATA.serverName, LOCALHOST_DATA.environment)).is.true;
+    expect(await serverItemPO.isConnected()).is.true;
   });
 
 });

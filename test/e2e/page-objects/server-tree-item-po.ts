@@ -70,6 +70,7 @@ export class ServerTreeItemPageObject {
 	async fireReconnectAction() {
 		await this.select();
 		await fireContextMenuAction(this.serverTreeItem, "Reconnect");
+		await delay(1000);
 	}
 
 	async fireAddServerAction() {

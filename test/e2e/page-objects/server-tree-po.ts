@@ -61,15 +61,17 @@ export class ServerTreePageObject {
 
 	async addNewServer(data: IServerData): Promise<void> {
 		await new Workbench().executeCommand("totvs-developer-studio.add");
-		await delay();
+		await delay(2000);
 
 		const webView: WebView = new WebView();
 		await webView.switchToFrame();
 
 		const serverPO = new ServerPageObject(data);
 		await serverPO.fillAddServerPage(webView, data, true);
+		await delay();
 
 		await webView.switchBack();
+		await delay();
 	}
 
 	async getNewServer(data: IServerData) {
