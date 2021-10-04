@@ -764,12 +764,9 @@ function showBanner(force: boolean = false) {
       languageClient.outputChannel.appendLine(' //    ////    //////      |  https://github.com/totvs/tds-vscode');
       languageClient.outputChannel.appendLine('---------------------------^---------------------------------------------------');
       languageClient.outputChannel.appendLine('');
-      languageClient.outputChannel.appendLine('');
-      languageClient.outputChannel.appendLine('');
       // prettier-ignore-end
     }
     // prettier-ignore-start
-    languageClient.outputChannel.appendLine('');
     languageClient.outputChannel.appendLine('-------------------------------------------------------------------------------');
     languageClient.outputChannel.appendLine('SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO                                   ');
     languageClient.outputChannel.appendLine('');
