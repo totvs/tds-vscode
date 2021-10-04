@@ -63,16 +63,28 @@ describe.only("TOTVS: Server View Configurations", () => {
     expect(pageData.includePath).to.equal(newValue.includePath);
   });
 
-  it.only("Configure Server View", async () => {
+  it("Configure Server View", async () => {
     await serverTreePO.fireConfigureServerView();
 
     const view: EditorView = new EditorView();
     const editor: TextEditor = new TextEditor(view);
     const title: string = await editor.getTitle();
     const textServer: string = await readServersJsonFile();
+    const transform = (text: string): string => {
+      const replaces: any[][] = [
+        [/\r/g, ""],
+        // [/\\n/g, "\n"],
+        // [/\\t/g, "\t"]
+      ];
 
+      replaces.forEach((element: any[]) => {
+        text = text.replace(element[0], element[1]);
+      })
+
+      return text;
+    }
     const text = await editor.getText();
-    expect(text).to.equals(textServer);
+    expect(transform(text)).to.equals(transform(textServer));
 
     await view.closeEditor(title);
   });
