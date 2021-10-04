@@ -585,6 +585,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           native: true,
         }}
         onPageChange={(event, value) => handleChangePage(value)}
+        onChangePage={(event, value) => handleChangePage(value)}
         onRowsPerPageChange={(event) => handleChangeRowsPerPage(event)}
         ActionsComponent={TablePaginationActions}
       />
