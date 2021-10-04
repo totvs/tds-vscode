@@ -10,6 +10,12 @@
 
 > Arquivos fontes 4GL ignoram a pasta para buscas.
 
+## SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO
+
+As chaves de compilação ou _tokens_ de compilação empregados na construção do _Protheus_ e suas funcionalidades, são de uso restrito dos _desenvolvedores_ de cada módulo.
+
+Em caso de mau uso destas chaves ou tokens, por qualquer _outra parte_, que não a referida acima, a mesma irá se responsabilizar, direta ou regressivamente, única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações, multas, condenações judiciais, arbitrais e administrativas e quaisquer outras despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros, eximindo a TOTVS de toda e qualquer responsabilidade.
+
 ## Compilando fonte do editor corrente
 
 Para compilar o fonte do editor corrente, acione o atalho `CTRL + F9` (ou `CTRL + SHIFT + F9`) ou `CTRL + SHIFT + P` e execute o comando `TOTVS: Compile Selection`.
