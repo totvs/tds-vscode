@@ -5,14 +5,16 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="Content-Security-Policy">
-	<title>${d.localize["tds.webview.title"]}</title><!--Include-->
+	<title>${d.localize["tds.webview.title"]}</title>
+	<!--Include-->
 </head>
-<style>${d.css}</style>
+<style>
+	${d.css}
+</style>
 
 <body>
 	<div class="mainContainer">
-		<div class="formWrap"
-		     style="background-image: none">
+		<div class="formWrap" style="background-image: none">
 
 			<form name="form_init" id="form_init">
 
@@ -22,16 +24,18 @@
 				</div>
 
 				<div class="wrap-input">
-					<label for="MachineID" title="This machine ID">${d.localize["tds.webview.compile.machine.id"]}</label>
-					<input class="inputText" type="text" id="MachineID" name="MachineID" disabled >
+					<label for="MachineID"
+						title="This machine ID">${d.localize["tds.webview.compile.machine.id"]}</label>
+					<input class="inputText" type="text" id="MachineID" name="MachineID" disabled>
 				</div>
 
 				<div class="wrap-input">
 					<label for="compileKeyFile">${d.localize["tds.webview.compile.key.file"]}</label>
 					<!--Compile Key File-->
-					<input class="inputText" type="text" id="compileKeyFile" name="compileKeyFile" placeholder="Ex: C:/compileKey.aut...">
+					<input class="inputText" type="text" id="compileKeyFile" name="compileKeyFile"
+						placeholder="Ex: C:/compileKey.aut...">
 					<input class="inputText" type="file" accept='.aut' id="btn-File" name="btn-File"
-						for="compileKeyFile" onchange="readFile()"/>
+						for="compileKeyFile" onchange="readFile()" />
 				</div>
 
 				<div class="wrap-input">
@@ -49,13 +53,13 @@
 				<div class="wrap-input">
 					<label for="ExpireIn">${d.localize["tds.webview.compile.key.expire"]}</label>
 					<!--Expire In-->
-					<input class="inputText" type="date" id="ExpireInID" name="ExpireIn" >
+					<input class="inputText" type="date" id="ExpireInID" name="ExpireIn">
 				</div>
 
 				<div class="wrap-input">
 					<label for="Token">${d.localize["tds.webview.compile.key.token"]}</label>
 					<!--Token-->
-					<input class="inputText" type="text" id="TokenID" name="Token" >
+					<input class="inputText" type="text" id="TokenID" name="Token">
 				</div>
 
 				<div class="wrap-input">
@@ -69,9 +73,12 @@
 				</div>
 
 				<div class="wrap-submit">
-					<input class="btn-submit" readonly id="validateID" type="submit" value=" Validate Key " onclick="validateKey()" />
-					&nbsp <!--espaco-->
-					<input class="btn-submit" readonly id="cleanID" type="submit" value=" Clean Key " onclick="clean()" />
+					<input class="btn-submit" readonly id="validateID" type="submit" value=" Validate Key "
+						onclick="validateKey()" />
+					&nbsp
+					<!--espaco-->
+					<input class="btn-submit" readonly id="cleanID" type="submit" value=" Clean Key "
+						onclick="clean()" />
 				</div>
 
 				<div>
@@ -79,12 +86,16 @@
 				</div>
 
 				<div class="wrap-submit">
-					<input class="btn-submit" readonly id="submitID" type="submit" value=" Save " onclick="save(false)" />
-					&nbsp <!--espaco-->
-					<input class="btn-submit" readonly id="submitID" type="submit" value=" Save/Close " onclick="save(true)" />
+					<input class="btn-submit" readonly id="submitID" type="submit" value=" Save "
+						onclick="save(false)" />
+					&nbsp
+					<!--espaco-->
+					<input class="btn-submit" readonly id="submitCloseID" type="submit" value=" Save/Close "
+						onclick="save(true)" />
 				</div>
 
-				<p>* A partir de 17/05/2019 todas as chaves terão de ser regeradas utlizando o Machine ID exibido acima. Isso permitirá a compatibilidade com Linux e macOS.</p>
+				<p>* A partir de 17/05/2019 todas as chaves terão de ser regeradas utlizando o Machine ID exibido acima.
+					Isso permitirá a compatibilidade com Linux e macOS.</p>
 				<!--These settings can be changed in-->
 			</form>
 		</div>
@@ -97,25 +108,25 @@
 	const vscode = acquireVsCodeApi();
 	var defaultID;
 
-	function strZero(nr, n){
-		return Array(n-String(nr).length+1).join('0')+nr;
+	function strZero(nr, n) {
+		return Array(n - String(nr).length + 1).join('0') + nr;
 	}
 
 	// Garante que a data sera enviada no formato dd/mm/aaaa
 	function formatDateToKey(date) {
-		var data = new Date( date.split('-').join("/") ),
-			day  = strZero( data.getDate().toString() ,2),
-			month  = strZero( (data.getMonth()+1).toString() ,2), //+1 pois no getMonth Janeiro começa com zero.
+		var data = new Date(date.split('-').join("/")),
+			day = strZero(data.getDate().toString(), 2),
+			month = strZero((data.getMonth() + 1).toString(), 2), //+1 pois no getMonth Janeiro começa com zero.
 			year = data.getFullYear();
 		return [day, month, year].join('/');
 	}
 
 	function convertDateFromDmyToYmd(dateToConvert) {
-	var splited = dateToConvert.split("/");
-	if (splited.length == 3) {
-		return splited[2]+"-"+splited[1]+"-"+splited[0];
+		var splited = dateToConvert.split("/");
+		if (splited.length == 3) {
+			return splited[2] + "-" + splited[1] + "-" + splited[0];
+		}
 	}
-}
 	function validateKeyID() {
 		var keyId = document.getElementById('KeyID').value;
 		if (document.getElementById('MachineID').value != keyId) {
@@ -124,7 +135,7 @@
 		}
 	}
 
-	function validateKey(){
+	function validateKey() {
 		var id = document.getElementById('KeyID').value;
 		var generated = document.getElementById('GeneratedInID').value;
 		var expire = document.getElementById('ExpireInID').value;
@@ -134,14 +145,14 @@
 		vscode.postMessage({
 			command: 'validateKey',
 			'id': id,
-			'generated': formatDateToKey( generated ),
-			'expire': formatDateToKey( expire ),
+			'generated': formatDateToKey(generated),
+			'expire': formatDateToKey(expire),
 			'token': token,
 			'overwrite': overwrite
 		});
 	}
 
-	function clean(){
+	function clean() {
 		var id = document.getElementById('KeyID');
 		var path = document.getElementById('compileKeyFile');
 		var btnFile = document.getElementById('btn-File');
@@ -172,7 +183,7 @@
 		document.getElementById('OutputMessage').style = "";
 	}
 
-	function readFile(){
+	function readFile() {
 		var input = document.getElementById('btn-File');
 		var filePath = input.files[0].path;
 		var textArea = document.getElementById('compileKeyFile').value = filePath;
@@ -188,7 +199,7 @@
 		var input = document.getElementById('btn-File');
 		var filePath = "";
 
-		if(input.files[0]){
+		if (input.files[0]) {
 			filePath = input.files[0].path;
 		}
 
@@ -203,8 +214,8 @@
 			'close': close,
 			'path': filePath,
 			'id': id,
-			'generated': formatDateToKey( generated ),
-			'expire': formatDateToKey( expire ),
+			'generated': formatDateToKey(generated),
+			'expire': formatDateToKey(expire),
 			'token': token,
 			'overwrite': overwrite
 		});
@@ -222,7 +233,7 @@
 				var token = document.getElementById('TokenID');
 				var overwrite = document.getElementById('OverwriteID');
 
-				if( message.path){
+				if (message.path) {
 					path.value = message.path;
 				}
 
@@ -241,7 +252,7 @@
 				style = "color: black";
 				if (message.type === "success") {
 					style = "color: green";
-				} else  if (message.type === "error") {
+				} else if (message.type === "error") {
 					style = "color: red";
 				}
 				document.getElementById('OutputMessage').style = style;
