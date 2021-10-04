@@ -708,40 +708,40 @@ function registerLog(context: vscode.ExtensionContext) {
 
 /*
 function verifyEncoding() {
-	// check if there is an open folder
-	if (vscode.workspace.workspaceFolders === undefined) {
-		vscode.window.showErrorMessage("No folder opened.");
-		return;
-	}
+  // check if there is an open folder
+  if (vscode.workspace.workspaceFolders === undefined) {
+    vscode.window.showErrorMessage("No folder opened.");
+    return;
+  }
 
-	const textNoAsk = localize('tds.vscode.noAskAgain', "Don't ask again");
-	const textNo = localize('tds.vscode.no', 'No');
-	const textYes = localize('tds.vscode.yes', 'Yes');
-	const textQuestion = localize('tds.vscode.question.change.encoding', 'Do you want to change the encoding to default TOTVS (Windows-1252)?'); // Deseja alterar o encoding para o padrão TOTVS (CP1252)?
+  const textNoAsk = localize('tds.vscode.noAskAgain', "Don't ask again");
+  const textNo = localize('tds.vscode.no', 'No');
+  const textYes = localize('tds.vscode.yes', 'Yes');
+  const textQuestion = localize('tds.vscode.question.change.encoding', 'Do you want to change the encoding to default TOTVS (Windows-1252)?'); // Deseja alterar o encoding para o padrão TOTVS (CP1252)?
 
-	let questionAgain = true;
+  let questionAgain = true;
 
-	const configADVPL = vscode.workspace.getConfiguration('totvsLanguageServer');
-	const questionEncodingConfig = configADVPL.get("askEncodingChange");
-	const defaultConfig = vscode.workspace.getConfiguration();
-	const defaultEncoding = defaultConfig.get("files.encoding");
-	if (defaultEncoding !== "windows1252" && questionEncodingConfig !== false) {
-		window.showWarningMessage(textQuestion, textYes, textNo, textNoAsk).then(clicked => {
-			if (clicked === textYes) {
-				const jsonEncoding = {
-					"files.encoding": "windows1252"
-				};
-				defaultConfig.update("[advpl]", jsonEncoding);
-				defaultConfig.update("[4gl]", jsonEncoding);
-				questionAgain = false;
-			} else if (clicked === textNo) {
-				questionAgain = true;
-			} else if (clicked === textNoAsk) {
-				questionAgain = false;
-			}
-			configADVPL.update("askEncodingChange", questionAgain);
-		});
-	}
+  const configADVPL = vscode.workspace.getConfiguration('totvsLanguageServer');
+  const questionEncodingConfig = configADVPL.get("askEncodingChange");
+  const defaultConfig = vscode.workspace.getConfiguration();
+  const defaultEncoding = defaultConfig.get("files.encoding");
+  if (defaultEncoding !== "windows1252" && questionEncodingConfig !== false) {
+    window.showWarningMessage(textQuestion, textYes, textNo, textNoAsk).then(clicked => {
+      if (clicked === textYes) {
+        const jsonEncoding = {
+          "files.encoding": "windows1252"
+        };
+        defaultConfig.update("[advpl]", jsonEncoding);
+        defaultConfig.update("[4gl]", jsonEncoding);
+        questionAgain = false;
+      } else if (clicked === textNo) {
+        questionAgain = true;
+      } else if (clicked === textNoAsk) {
+        questionAgain = false;
+      }
+      configADVPL.update("askEncodingChange", questionAgain);
+    });
+  }
 }
 */
 
@@ -755,28 +755,36 @@ function showBanner(force: boolean = false) {
 
     if (showBanner || force) {
       let ext = vscode.extensions.getExtension('TOTVS.tds-vscode');
-      /* prettier-ignore-start */
-      languageClient.outputChannel.appendLine(
-        '---------------------------v---------------------------------------------------'
-      );
-      languageClient.outputChannel.appendLine(
-        '   //////  ////    //////  |  TOTVS Developer Studio for VS-Code'
-      );
-      languageClient.outputChannel.appendLine(
-        '    //    //  //  //       |  Version ' + ext.packageJSON['version']
-      );
-      languageClient.outputChannel.appendLine(
-        '   //    //  //  //////    |  TOTVS Technology'
-      );
+      // prettier-ignore-start
+      languageClient.outputChannel.appendLine('---------------------------v---------------------------------------------------');
+      languageClient.outputChannel.appendLine('   //////  ////    //////  |  TOTVS Developer Studio for VS-Code');
+      languageClient.outputChannel.appendLine('    //    //  //  //       |  Version ' + ext.packageJSON['version']);
+      languageClient.outputChannel.appendLine('   //    //  //  //////    |  TOTVS Technology');
       languageClient.outputChannel.appendLine('  //    //  //      //     |');
-      languageClient.outputChannel.appendLine(
-        ' //    ////    //////      |  https://github.com/totvs/tds-vscode'
-      );
-      languageClient.outputChannel.appendLine(
-        ' --------------------------^---------------------------------------------------'
-      );
-      /* prettier-ignore-end */
+      languageClient.outputChannel.appendLine(' //    ////    //////      |  https://github.com/totvs/tds-vscode');
+      languageClient.outputChannel.appendLine('---------------------------^---------------------------------------------------');
+      languageClient.outputChannel.appendLine('');
+      languageClient.outputChannel.appendLine('');
+      languageClient.outputChannel.appendLine('');
+      // prettier-ignore-end
     }
+    // prettier-ignore-start
+    languageClient.outputChannel.appendLine('');
+    languageClient.outputChannel.appendLine('-------------------------------------------------------------------------------');
+    languageClient.outputChannel.appendLine('SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO                                   ');
+    languageClient.outputChannel.appendLine('');
+    languageClient.outputChannel.appendLine('As chaves de compilação ou tokens de compilação empregados na construção do    ');
+    languageClient.outputChannel.appendLine('Protheus e suas funcionalidades, são de uso restrito dos desenvolvedores de    ');
+    languageClient.outputChannel.appendLine('cada módulo.                                                                   ');
+    languageClient.outputChannel.appendLine('');
+    languageClient.outputChannel.appendLine('Em caso de mau uso destas chaves ou tokens, por qualquer outra parte, que não  ');
+    languageClient.outputChannel.appendLine('a referida acima, a mesma irá se responsabilizar, direta ou regressivamente,   ');
+    languageClient.outputChannel.appendLine('única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações,   ');
+    languageClient.outputChannel.appendLine('multas, condenações judiciais, arbitrais e administrativas e quaisquer outras  ');
+    languageClient.outputChannel.appendLine('despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros,   ');
+    languageClient.outputChannel.appendLine('eximindo a TOTVS de toda e qualquer responsabilidade.                          ');
+    languageClient.outputChannel.appendLine('-------------------------------------------------------------------------------');
+    // prettier-ignore-end
   }
 }
 
