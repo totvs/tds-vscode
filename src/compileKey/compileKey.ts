@@ -229,7 +229,7 @@ class ValidKeyResult {
 }
 
 function validateKey(currentPanel, message, close: boolean) {
-  console.log('validateKey: ' + message.token);
+
   if (message.token) {
     let canOverride = '0';
     if (message.overwrite) {

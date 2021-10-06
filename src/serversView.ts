@@ -124,6 +124,8 @@ export class ServersExplorer {
                           validInfoNode.build,
                           validInfoNode.secure
                         );
+
+                        currentPanel.dispose();
                         return;
                       },
                       (err: ResponseError<object>) => {

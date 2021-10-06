@@ -33,7 +33,7 @@
 					<label for="compileKeyFile">${d.localize["tds.webview.compile.key.file"]}</label>
 					<!--Compile Key File-->
 					<input class="inputText" type="text" id="compileKeyFile" name="compileKeyFile"
-						placeholder="Ex: C:/compileKey.aut...">
+						placeholder="Ex: C:/compileKey.aut..." onblur="readFile()">
 					<input class="inputText" type="file" accept='.aut' id="btn-File" name="btn-File"
 						for="compileKeyFile" onchange="readFile()" />
 				</div>
@@ -73,11 +73,11 @@
 				</div>
 
 				<div class="wrap-submit">
-					<input class="btn-submit" readonly id="validateID" type="submit" value=" Validate Key "
+					<input class="btn-submit" readonly id="validateID" type="button" value="Validate Key"
 						onclick="validateKey()" />
 					&nbsp
 					<!--espaco-->
-					<input class="btn-submit" readonly id="cleanID" type="submit" value=" Clean Key "
+					<input class="btn-submit" readonly id="cleanID" type="button" value="Clean Key"
 						onclick="clean()" />
 				</div>
 
@@ -86,11 +86,11 @@
 				</div>
 
 				<div class="wrap-submit">
-					<input class="btn-submit" readonly id="submitID" type="submit" value=" Save "
+					<input class="btn-submit" readonly id="submitID" type="button" value=" Save "
 						onclick="save(false)" />
 					&nbsp
 					<!--espaco-->
-					<input class="btn-submit" readonly id="submitCloseID" type="submit" value=" Save/Close "
+					<input class="btn-submit" readonly id="submitCloseID" type="button" value=" Save/Close "
 						onclick="save(true)" />
 				</div>
 
@@ -184,9 +184,13 @@
 	}
 
 	function readFile() {
-		var input = document.getElementById('btn-File');
-		var filePath = input.files[0].path;
-		var textArea = document.getElementById('compileKeyFile').value = filePath;
+		var filePath = document.getElementById('compileKeyFile').value;
+
+		if (!filePath || filePath.length == 0) {
+			var input = document.getElementById('btn-File');
+			filePath = input.files[0].path;
+			document.getElementById('compileKeyFile').value = filePath;
+		}
 		vscode.postMessage({
 			command: 'readFile',
 			path: filePath

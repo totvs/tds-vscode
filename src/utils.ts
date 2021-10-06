@@ -10,7 +10,6 @@ import { EnvSection, ServerItem } from './serverItemProvider';
 import { Authorization, CompileKey } from './compileKey/compileKey';
 import { changeSettings } from './server/languageServerSettings';
 import { IRpoToken } from './rpoToken';
-//import { sendRpoToken } from './protocolMessages';
 
 const homedir = require('os').homedir();
 const localize = nls.loadMessageBundle();
@@ -950,8 +949,8 @@ export default class Utils {
         let time = Utils.timeAsHHMMSS(new Date());
         languageClient !== undefined
           ? languageClient.outputChannel.appendLine(
-              '[Log   + ' + time + '] ' + message
-            )
+            '[Log   + ' + time + '] ' + message
+          )
           : console.log(message);
         if (showDialog && notificationLevel === 'all') {
           vscode.window.showInformationMessage(message);
