@@ -7,12 +7,13 @@ import {
   openAdvplProject,
   readServersJsonFile
 } from "../helper";
+import { CompileKeyPageObject } from "../page-objects/compile-key-po";
 import { IncludePageObject } from "../page-objects/include-po";
-import { IIncludeData } from "../page-objects/interface-po";
+import { ICompileKeyData, IIncludeData } from "../page-objects/interface-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { StatusPageObject } from "../page-objects/status-po";
-import { CHANGE_INCLUDE_PATH_DATA, DELETE_DATA } from "../servers-data";
+import { CHANGE_INCLUDE_PATH_DATA, COMPILE_KEY_FILE, DELETE_DATA } from "../servers-data";
 
 // Create a Mocha suite
 describe.only("TOTVS: Server View Configurations", () => {
@@ -89,10 +90,40 @@ describe.only("TOTVS: Server View Configurations", () => {
     await view.closeEditor(title);
   });
 
-  it.skip("Compile key (input)", async () => {
+  it("Compile key (valid input)", async () => {
+    const compileKeyPO: CompileKeyPageObject = new CompileKeyPageObject();
+    await serverItemPO.fireCompileKey();
+
+    const oldValue: ICompileKeyData = await compileKeyPO.getCompileKeyPage();
+
+    expect(oldValue.machineId).not.empty;
+
+    const newValue: ICompileKeyData = { ...oldValue, compileKeyFile: COMPILE_KEY_FILE[oldValue.machineId] };
+
+    await compileKeyPO.fillCompileKeyPage(newValue);
+
+    expect(await compileKeyPO.isValidKey()).is.true;
+    await compileKeyPO.fireSave(true);
+
+    expect(await statusBarPO.isLoggedIn()).is.true;
   });
 
-  it.skip("Compile key (clear)", async () => {
+  it("Compile key (clear)", async () => {
+    const compileKeyPO: CompileKeyPageObject = new CompileKeyPageObject();
+    await serverItemPO.fireCompileKey();
+    let oldValue: ICompileKeyData = await compileKeyPO.getCompileKeyPage();
+    let newValue: ICompileKeyData = { ...oldValue, compileKeyFile: COMPILE_KEY_FILE[oldValue.machineId] };
+    await compileKeyPO.fillCompileKeyPage(newValue);
+    await compileKeyPO.fireSave(true);
+
+    await serverItemPO.fireCompileKey();
+    await compileKeyPO.fireClear();
+    await delay(10000);
+    newValue = await compileKeyPO.getCompileKeyPage();
+    await compileKeyPO.fireSave(true);
+
+    expect(newValue.token).is.empty;
+    expect(await statusBarPO.isNotLoggedIn()).is.true;
   });
 
 });

@@ -9,10 +9,18 @@ export interface IServerData {
 export interface IUserData {
 	username: string;
 	password: string;
-	compilekey: string;
-	rpotoken: string;
 }
 
 export interface IIncludeData {
 	includePath: string[];
+}
+
+export interface ICompileKeyData {
+	machineId: string;
+	compileKeyFile: string;
+	key: string;
+	generatedIn: string;
+	expireIn: string;
+	token: string;
+	overwrite: string;
 }

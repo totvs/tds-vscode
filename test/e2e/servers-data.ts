@@ -1,4 +1,7 @@
+import path = require("path");
 import { IIncludeData, IServerData, IUserData } from "./page-objects/interface-po";
+
+const TEST_RESOURCE = path.join(__dirname, "..", "..", "test", "resources");
 
 export const LOCALHOST_DATA: IServerData = {
 	serverName: "localhost",
@@ -16,22 +19,16 @@ export const DELETE_DATA: IServerData = {
 export const ADMIN_USER_DATA: IUserData = {
 	username: "admin",
 	password: "1234",
-	compilekey: "",
-	rpotoken: ""
 };
 
 export const NO_ADMIN_USER_DATA: IUserData = {
 	username: "user",
 	password: "1234",
-	compilekey: "",
-	rpotoken: ""
 };
 
 export const INVALID_USER_DATA: IUserData = {
 	username: "mane",
 	password: "0000",
-	compilekey: "",
-	rpotoken: ""
 };
 
 export const INCLUDE_PATH_DATA: IIncludeData = {
@@ -51,3 +48,7 @@ export const ADD_INCLUDE_PATH_DATA: IIncludeData = {
 		"m:/more_1/includes",
 	]
 };
+
+export const COMPILE_KEY_FILE = {
+	"9DA4-26D1": path.join(TEST_RESOURCE, "compile-key", "acandido.aut")
+}

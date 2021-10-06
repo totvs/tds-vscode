@@ -70,22 +70,31 @@ export class ServerTreeItemPageObject {
 	async fireReconnectAction() {
 		await this.select();
 		await fireContextMenuAction(this.serverTreeItem, "Reconnect");
-		await delay(1000);
+		await delay(2000);
 	}
 
 	async fireAddServerAction() {
 		await this.select();
 		await fireContextMenuAction(this.serverTreeItem, "Add Server");
+		await delay();
 	}
 
 	async fireDefragAction() {
 		await this.select();
 		await fireContextMenuAction(this.serverTreeItem, "Defrag RPO");
+		await delay();
 	}
 
 	async fireInclude() {
 		await this.select();
 		await fireContextMenuAction(this.serverTreeItem, "Include");
+		await delay();
+	}
+
+	async fireCompileKey() {
+		await this.select();
+		await fireContextMenuAction(this.serverTreeItem, "Compile Key");
+		await delay();
 	}
 
 }

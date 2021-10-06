@@ -49,6 +49,14 @@ export class StatusPageObject {
 		return (await this.statusBarWithText(/Select server\/environment/)) != null
 	}
 
+	async isLoggedIn(): Promise<boolean> {
+		return (await this.statusBarWithText(/Permissions: Logged in/)) != null
+	}
+
+	async isNotLoggedIn(): Promise<boolean> {
+		return (await this.statusBarWithText(/Permissions: NOT logged in/)) != null
+	}
+
 	async waitConnection(wait: number = 30000): Promise<void> {
 		if ((await this.statusBarWithText(/Autenticando usuário.*/), wait) == null) {
 			throw new Error(`Connection process timeout (${wait})ms`);
