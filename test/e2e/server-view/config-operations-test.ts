@@ -16,7 +16,7 @@ import { StatusPageObject } from "../page-objects/status-po";
 import { CHANGE_INCLUDE_PATH_DATA, COMPILE_KEY_FILE, DELETE_DATA } from "../servers-data";
 
 // Create a Mocha suite
-describe.only("TOTVS: Server View Configurations", () => {
+describe("TOTVS: Server View Configurations", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let statusBarPO: StatusPageObject;
@@ -118,7 +118,7 @@ describe.only("TOTVS: Server View Configurations", () => {
 
     await serverItemPO.fireCompileKey();
     await compileKeyPO.fireClear();
-    await delay(10000);
+
     newValue = await compileKeyPO.getCompileKeyPage();
     await compileKeyPO.fireSave(true);
 
