@@ -125,7 +125,7 @@ export class ServersExplorer {
                           validInfoNode.secure
                         );
 
-                        currentPanel.dispose();
+                        currentPanel?.dispose();
                         return;
                       },
                       (err: ResponseError<object>) => {
@@ -323,7 +323,7 @@ export class ServersExplorer {
                 "tds.webview.serversView.renameServer",
                 "Rename the server"
               ),
-              value: (typeof serverItem.label === "string")?serverItem.label:(serverItem.label as vscode.TreeItemLabel).label,
+              value: (typeof serverItem.label === "string") ? serverItem.label : (serverItem.label as vscode.TreeItemLabel).label,
             })
             .then((newName: string) => {
               Utils.updateServerName(serverItem.id, newName);
@@ -419,7 +419,7 @@ function doFinishConnectProcess(
 function executeCommand(commandId: string) {
   return vscode.commands.getCommands(false).then((commands: string[]) => {
     let index = commands.indexOf(commandId);
-    if(index > -1) {
+    if (index > -1) {
       vscode.commands.executeCommand(commandId);
     }
   });
@@ -484,7 +484,7 @@ export function authenticate(
       : ENABLE_CODE_PAGE.CP1252;
 
   vscode.window.setStatusBarMessage(
-    `Autenticando usuário [${username}] no servidor [${serverItem.name}]`,
+    `Authenticating user [${username}] no servidor [${serverItem.name}]`,
     sendAuthenticateRequest(
       serverItem,
       environment,
@@ -492,21 +492,21 @@ export function authenticate(
       password,
       enconding
     )
-    .then(
-      (result: IAuthenticationInfo) => {
-        let token: string = result.token;
-        return result.sucess ? token : "";
-      },
-      (error: any) => {
-        vscode.window.showErrorMessage(error);
-      }
-    )
-    .then((token: string) => {
-      if (token) {
-        serverItem.username = username;
-        doFinishConnectProcess(serverItem, token, environment);
-      }
-    })
+      .then(
+        (result: IAuthenticationInfo) => {
+          let token: string = result.token;
+          return result.sucess ? token : "";
+        },
+        (error: any) => {
+          vscode.window.showErrorMessage(error);
+        }
+      )
+      .then((token: string) => {
+        if (token) {
+          serverItem.username = username;
+          doFinishConnectProcess(serverItem, token, environment);
+        }
+      })
   );
 }
 
@@ -547,7 +547,7 @@ export function reconnectServer(
   }
 
   vscode.window.setStatusBarMessage(
-    `$(loading) Reconectando-se ao servidor [${serverItem.name}]`,
+    `$(loading) Reconnecting to the server [${serverItem.name}]`,
     doReconnect(serverItem, environment, connType)
   );
 }
