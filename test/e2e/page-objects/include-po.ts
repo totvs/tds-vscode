@@ -12,16 +12,21 @@ export class IncludePageObject {
 		data: IIncludeData,
 		confirm: boolean = false
 	) {
+		console.log("this.fillIncludePage.1")
 		let webView: WebView = new WebView();
-		await webView.wait()
+		console.log("this.fillIncludePage.2")
+		await webView.wait(3000)
+		await delay(2000);
+		console.log("this.fillIncludePage.3")
 		await webView.switchToFrame();
+		console.log("this.fillIncludePage.4")
 
 		let element: WebElement = await webView.findWebElement(By.id("includePath"));
-		element.sendKeys(data.includePath.join(";"));
+		await element.sendKeys(data.includePath.join(";"));
 
 		if (confirm) {
 			const element = await webView.findWebElement(By.id("submitIDClose"));
-			element.click();
+			await element.click();
 		}
 
 		await webView.switchBack();
@@ -33,7 +38,7 @@ export class IncludePageObject {
 		const result: IIncludeData = { includePath: [] };
 
 		let webView: WebView = new WebView();
-		await webView.wait()
+		await webView.wait(3000)
 		await webView.switchToFrame();
 
 		let element: WebElement = await webView.findWebElement(By.id("includePath"));
@@ -41,7 +46,7 @@ export class IncludePageObject {
 		result.includePath = text.split(";");
 
 		element = await webView.findWebElement(By.id("submitIDClose"));
-		element.click();
+		await element.click();
 
 		await webView.switchBack();
 		await delay(2000);

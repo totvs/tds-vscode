@@ -31,11 +31,9 @@ describe("Patch Operations", () => {
 
   before(async () => {
     await openAdvplProject();
-    await delay(2000);
 
     serverTreePO = new ServerTreePageObject();
     serverTreePO.openView();
-    await delay();
 
     await serverTreePO.addNewServer(LOCALHOST_DATA);
 

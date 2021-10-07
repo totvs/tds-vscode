@@ -3,6 +3,7 @@ import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import { EditorView, TextEditor } from "vscode-extension-tester";
 import {
+  avoidsBacksliding,
   delay,
   openAdvplProject,
   readServersJsonFile
@@ -16,18 +17,16 @@ import { StatusPageObject } from "../page-objects/status-po";
 import { CHANGE_INCLUDE_PATH_DATA, COMPILE_KEY_FILE, DELETE_DATA } from "../servers-data";
 
 // Create a Mocha suite
-describe("TOTVS: Server View Configurations", () => {
+describe.only("TOTVS: Server View Configurations", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let statusBarPO: StatusPageObject;
 
   before(async () => {
     await openAdvplProject();
-    await delay(2000);
 
     serverTreePO = new ServerTreePageObject();
     serverTreePO.openView();
-    await delay();
 
     serverItemPO = new ServerTreeItemPageObject(await serverTreePO.getNewServer(DELETE_DATA));
 
@@ -43,25 +42,33 @@ describe("TOTVS: Server View Configurations", () => {
 
     await serverItemPO.fireInclude();
     const pageData: IIncludeData = await includePO.getIncludePage();
+
     expect(pageData.includePath.join(";")).to.equal(CHANGE_INCLUDE_PATH_DATA.includePath.join(";"));
   });
 
-  it.skip("Include (add more patchs)", async () => {
-    //esta falhando no segundo fillIncludePage
-    //não encontra a WebView
+  it.only("Include (add more patchs)", async () => {
+    await avoidsBacksliding();
+    console.error("include.1");
+
     const includePO: IncludePageObject = new IncludePageObject();
     await serverItemPO.fireInclude();
-    await delay();
+    console.error("include.2");
 
     const oldValue: IIncludeData = await includePO.getIncludePage();
     const newValue: IIncludeData = { includePath: [...oldValue.includePath, ...CHANGE_INCLUDE_PATH_DATA.includePath] };
+    console.error("include.3");
 
     await includePO.fillIncludePage(newValue, true);
-    await delay();
+    await avoidsBacksliding();
+    console.error("include.4");
 
     await serverItemPO.fireInclude();
     const pageData: IIncludeData = (await includePO.getIncludePage());
+    console.error("include.5");
+
     expect(pageData.includePath).to.equal(newValue.includePath);
+    console.error("include.6");
+
   });
 
   it("Configure Server View", async () => {
@@ -99,7 +106,6 @@ describe("TOTVS: Server View Configurations", () => {
     expect(oldValue.machineId).not.empty;
 
     const newValue: ICompileKeyData = { ...oldValue, compileKeyFile: COMPILE_KEY_FILE[oldValue.machineId] };
-
     await compileKeyPO.fillCompileKeyPage(newValue);
 
     expect(await compileKeyPO.isValidKey()).is.true;
@@ -118,6 +124,7 @@ describe("TOTVS: Server View Configurations", () => {
 
     await serverItemPO.fireCompileKey();
     await compileKeyPO.fireClear();
+    await compileKeyPO.fireSave(false);
 
     newValue = await compileKeyPO.getCompileKeyPage();
     await compileKeyPO.fireSave(true);

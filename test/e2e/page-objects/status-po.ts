@@ -58,15 +58,20 @@ export class StatusPageObject {
 	}
 
 	async waitConnection(wait: number = 30000): Promise<void> {
-		if ((await this.statusBarWithText(/Autenticando usuário.*/), wait) == null) {
+		if ((await this.statusBarWithText(/Authenticating user.*/), wait) == null) {
 			throw new Error(`Connection process timeout (${wait})ms`);
 		}
 	}
 
 	async waitReconnection(wait: number = 30000): Promise<void> {
-		if ((await this.statusBarWithText(/Reconectando-se.*/), wait) == null) {
+		if ((await this.statusBarWithText(/.*Reconnecting to the server*./), wait) == null) {
 			throw new Error(`Connection process timeout (${wait})ms`);
 		}
 	}
 
+	async waitCheckIntegrity(wait: number = 30000): Promise<void> {
+		if ((await this.statusBarWithText(/Checking RPO integrity/), wait) == null) {
+			throw new Error(`Check Integrity process timeout (${wait})ms`);
+		}
+	}
 }

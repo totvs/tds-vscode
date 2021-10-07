@@ -67,34 +67,37 @@ export class ServerTreeItemPageObject {
 		return klass.indexOf("_server.svg") > -1;
 	}
 
-	async fireReconnectAction() {
+	async fireReconnectAction(): Promise<void> {
 		await this.select();
 		await fireContextMenuAction(this.serverTreeItem, "Reconnect");
-		await delay(2000);
+		//await delay(2000);
 	}
 
-	async fireAddServerAction() {
+	async fireAddServerAction(): Promise<void> {
 		await this.select();
 		await fireContextMenuAction(this.serverTreeItem, "Add Server");
-		await delay();
 	}
 
-	async fireDefragAction() {
+	async fireDefragAction(): Promise<void> {
 		await this.select();
 		await fireContextMenuAction(this.serverTreeItem, "Defrag RPO");
-		await delay();
 	}
 
-	async fireInclude() {
+	async fireInclude(): Promise<void> {
 		await this.select();
 		await fireContextMenuAction(this.serverTreeItem, "Include");
-		await delay();
+		await delay(2000); //adicional devido a processamento
 	}
 
-	async fireCompileKey() {
+	async fireCompileKey(): Promise<void> {
 		await this.select();
 		await fireContextMenuAction(this.serverTreeItem, "Compile Key");
-		await delay();
+		await delay(2000); //adicional devido a processamento
+	}
+
+	async fireCheckIntegrity(): Promise<void> {
+		await this.select();
+		await fireContextMenuAction(this.serverTreeItem, "RPO check integrity");
 	}
 
 }

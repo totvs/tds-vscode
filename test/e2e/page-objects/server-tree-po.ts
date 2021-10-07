@@ -19,7 +19,7 @@ export class ServerTreePageObject {
 			this.control = await activityBar.getViewControl("TOTVS");
 			this.view = await this.control.openView();
 
-			await delay();
+			await delay(2000);
 		}
 
 		return this.view;
@@ -36,7 +36,7 @@ export class ServerTreePageObject {
 		return serverTreeItem
 	}
 
-	async removeServer(serverName: string, confirm: boolean = false) {
+	async removeServer(serverName: string) {
 		const c = (await this.openView()).getContent();
 		const s = await c.getSections();
 
@@ -47,19 +47,19 @@ export class ServerTreePageObject {
 		await action.click();
 		await delay();
 
-		if (confirm) {
-			const notification: Notification = await waitNotification(
-				"Tem certeza que deseja excluir este servidor"
-			);
+		const notification: Notification = await waitNotification(
+			"Are you sure you want to delete this server?"
+		);
 
-			expect(notification).not.is.undefined;
+		expect(notification).not.is.undefined;
 
-			await notification.takeAction("Sim");
-			await delay();
-		}
+		await notification.takeAction("Yes");
+		await delay();
 	}
 
 	async addNewServer(data: IServerData): Promise<void> {
+		await delay();
+
 		await new Workbench().executeCommand("totvs-developer-studio.add");
 		await delay(2000);
 
@@ -68,7 +68,6 @@ export class ServerTreePageObject {
 
 		const serverPO = new ServerPageObject(data);
 		await serverPO.fillAddServerPage(webView, data, true);
-		await delay();
 
 		await webView.switchBack();
 		await delay();
