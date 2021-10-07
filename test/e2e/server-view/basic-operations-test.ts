@@ -10,23 +10,23 @@ import {
   fillEnvironment,
   fillUserdata,
   openAdvplProject,
-  waitNotification
 } from "../helper";
 import { ServerPageObject } from "../page-objects/server-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
-import { StatusPageObject } from "../page-objects/status-po";
+import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, DELETE_DATA, LOCALHOST_DATA } from "../servers-data";
 
 // Create a Mocha suite
 describe("TOTVS: Server View Basic Operations", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
-  let statusBarPO: StatusPageObject;
+  let workbenchPO: WorkbenchPageObject;
 
   before(async () => {
     await openAdvplProject();
 
+    workbenchPO = new WorkbenchPageObject();
     serverTreePO = new ServerTreePageObject();
     serverTreePO.openView();
     await delay();
@@ -34,13 +34,12 @@ describe("TOTVS: Server View Basic Operations", () => {
     await serverTreePO.addNewServer(LOCALHOST_DATA);
 
     serverItemPO = new ServerTreeItemPageObject(await serverTreePO.getServerTreeItem(LOCALHOST_DATA.serverName));
-    statusBarPO = new StatusPageObject();
 
     await delay(2000);
   });
 
   it("No Server Connected", async () => {
-    expect(await statusBarPO.isNeedSelectServer()).is.true;
+    expect(await workbenchPO.isNeedSelectServer()).is.true;
   });
 
   it("isSelected Node", async () => {
@@ -62,9 +61,9 @@ describe("TOTVS: Server View Basic Operations", () => {
   });
 
   it("Localhost Server Connected", async () => {
-    await statusBarPO.waitConnection();
+    await workbenchPO.waitConnection();
 
-    expect(await statusBarPO.isConnected(LOCALHOST_DATA.serverName, LOCALHOST_DATA.environment)).is.true;
+    expect(await workbenchPO.isConnected(LOCALHOST_DATA.serverName, LOCALHOST_DATA.environment)).is.true;
     expect(await serverItemPO.isConnected()).is.true;
   });
 
@@ -72,7 +71,7 @@ describe("TOTVS: Server View Basic Operations", () => {
     await serverItemPO.select();
     await serverItemPO.fireDisconnectAction();
 
-    expect(await statusBarPO.isNeedSelectServer()).is.true;
+    expect(await workbenchPO.isNeedSelectServer()).is.true;
     expect(await serverItemPO.isNotConnected()).is.true;
   });
 
@@ -83,7 +82,7 @@ describe("TOTVS: Server View Basic Operations", () => {
       .to.not.throw();
 
     await delay();
-    expect(await statusBarPO.isNeedSelectServer()).is.true;
+    expect(await workbenchPO.isNeedSelectServer()).is.true;
   });
 
   it("Add server (context menu)", async () => {
@@ -98,7 +97,7 @@ describe("TOTVS: Server View Basic Operations", () => {
     await webView.switchBack();
     await delay();
 
-    const notification: Notification = await waitNotification("Saved server");
+    const notification: Notification = await workbenchPO.waitNotification("Saved server");
     expect(notification).not.is.undefined;
 
     await serverTreePO.removeServer(DELETE_DATA.serverName);
@@ -110,9 +109,9 @@ describe("TOTVS: Server View Basic Operations", () => {
 
     await serverItemPO.fireReconnectAction(); //esta solicitando usuário e senha
     await fillEnvironment(LOCALHOST_DATA.environment);
-    await statusBarPO.waitReconnection();
+    await workbenchPO.waitReconnection();
 
-    expect(await statusBarPO.isConnected(LOCALHOST_DATA.serverName, LOCALHOST_DATA.environment)).is.true;
+    expect(await workbenchPO.isConnected(LOCALHOST_DATA.serverName, LOCALHOST_DATA.environment)).is.true;
     expect(await serverItemPO.isConnected()).is.true;
   });
 

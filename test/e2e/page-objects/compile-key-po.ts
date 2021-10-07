@@ -62,7 +62,7 @@ export class CompileKeyPageObject extends AbstractPageObject {
 	async fireSave(close: boolean): Promise<void> {
 		await this.beginWebView();
 
-		close ? await this.click("submitCloseID") : await this.click("submitID");
+		await this.click(close ? "submitCloseID" : "submitID");
 
 		await this.endWebView();
 	}

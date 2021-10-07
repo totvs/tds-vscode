@@ -1,57 +1,44 @@
 import { By, Input, WebElement, WebView } from "vscode-extension-tester";
 import { delay } from "../helper";
+import { AbstractPageObject } from "./abstract-po";
 import { IIncludeData } from "./interface-po";
 
 
-export class IncludePageObject {
-
-	constructor() {
-	}
+export class IncludePageObject extends AbstractPageObject {
 
 	async fillIncludePage(
-		data: IIncludeData,
-		confirm: boolean = false
-	) {
-		console.log("this.fillIncludePage.1")
-		let webView: WebView = new WebView();
-		console.log("this.fillIncludePage.2")
-		await webView.wait(3000)
-		await delay(2000);
-		console.log("this.fillIncludePage.3")
-		await webView.switchToFrame();
-		console.log("this.fillIncludePage.4")
+		data: IIncludeData
+	): Promise<void> {
 
-		let element: WebElement = await webView.findWebElement(By.id("includePath"));
-		await element.sendKeys(data.includePath.join(";"));
+		await this.beginWebView();
 
-		if (confirm) {
-			const element = await webView.findWebElement(By.id("submitIDClose"));
-			await element.click();
-		}
+		await this.setValue("includePath", data.includePath.join(";"));
 
-		await webView.switchBack();
-		await delay(2000);
+		await this.endWebView();
 	}
 
-	async getIncludePage(
+	async fireSave(close: boolean): Promise<void> {
+		await this.beginWebView();
+
+		close ? await this.click("submitIDClose") : await this.click("submitID");
+
+		await this.endWebView();
+
+	}
+
+	async getIncludePage(close: boolean = false
 	): Promise<IIncludeData> {
 		const result: IIncludeData = { includePath: [] };
+		await this.beginWebView();
 
-		let webView: WebView = new WebView();
-		await webView.wait(3000)
-		await webView.switchToFrame();
-
-		let element: WebElement = await webView.findWebElement(By.id("includePath"));
-		const text: string = await element.getAttribute("value");
+		const text: string = await this.getValue("includePath");
 		result.includePath = text.split(";");
 
-		element = await webView.findWebElement(By.id("submitIDClose"));
-		await element.click();
+		if (close) {
+			await this.click("submitCloseID");
+		}
 
-		await webView.switchBack();
-		await delay(2000);
-
+		await this.endWebView();
 		return result;
 	}
-
 }

@@ -3,12 +3,15 @@ import { By, ContextMenu, ContextMenuItem, InputBox, QuickPickItem, TreeItem, Vi
 import { delay, fillEnvironment, fillUserdata, fireContextMenuAction, takeQuickPickAction } from "../helper";
 import { IUserData } from "./interface-po";
 import { StatusPageObject } from "./status-po";
+import { WorkbenchPageObject } from "./workbench-po";
 
 export class ServerTreeItemPageObject {
 	private serverTreeItem: TreeItem;
+	private workbenchPO: WorkbenchPageObject;
 
 	constructor(serverTreeItem: TreeItem) {
 		this.serverTreeItem = serverTreeItem;
+		this.workbenchPO = new WorkbenchPageObject();
 	}
 
 	async connect(environment: string, userData: IUserData) {
@@ -18,11 +21,8 @@ export class ServerTreeItemPageObject {
 		await fillEnvironment(environment);
 		await fillUserdata(userData);
 
-		const statusBarPO: StatusPageObject = new StatusPageObject();
-		await statusBarPO.wait();
-
-		await statusBarPO.waitConnection();
-		expect(await statusBarPO.isConnected(await this.serverTreeItem.getLabel(), environment)).is.true;
+		await this.workbenchPO.waitConnection();
+		expect(await this.workbenchPO.isConnected(await this.serverTreeItem.getLabel(), environment)).is.true;
 	}
 
 	async select() {

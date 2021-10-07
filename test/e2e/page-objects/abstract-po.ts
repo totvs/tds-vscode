@@ -31,7 +31,7 @@ export class AbstractPageObject {
 
 	async setValue(elementId: string, value: string): Promise<void> {
 		let element: WebElement = await this.findElement(elementId);
-
+		await element.clear();
 		await element.sendKeys(value);
 	}
 

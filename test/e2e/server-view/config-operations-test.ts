@@ -1,74 +1,73 @@
 // import the webdriver and the high level browser wrapper
 import { expect } from "chai";
-import { describe, before, it } from "mocha";
+import { describe, before, it, afterEach } from "mocha";
 import { EditorView, TextEditor } from "vscode-extension-tester";
 import {
   avoidsBacksliding,
   delay,
-  openAdvplProject,
-  readServersJsonFile
+  readServersJsonFile,
+  openAdvplProject
 } from "../helper";
 import { CompileKeyPageObject } from "../page-objects/compile-key-po";
 import { IncludePageObject } from "../page-objects/include-po";
 import { ICompileKeyData, IIncludeData } from "../page-objects/interface-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
-import { StatusPageObject } from "../page-objects/status-po";
-import { CHANGE_INCLUDE_PATH_DATA, COMPILE_KEY_FILE, DELETE_DATA } from "../servers-data";
+import { WorkbenchPageObject } from "../page-objects/workbench-po";
+import { ADD_INCLUDE_PATH_DATA, CHANGE_INCLUDE_PATH_DATA, COMPILE_KEY_FILE, DELETE_DATA } from "../servers-data";
 
 // Create a Mocha suite
-describe.only("TOTVS: Server View Configurations", () => {
+describe("TOTVS: Server View Configurations", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
-  let statusBarPO: StatusPageObject;
+  let workbenchPO: WorkbenchPageObject;
 
   before(async () => {
     await openAdvplProject();
 
+    workbenchPO = new WorkbenchPageObject();
     serverTreePO = new ServerTreePageObject();
     serverTreePO.openView();
 
     serverItemPO = new ServerTreeItemPageObject(await serverTreePO.getNewServer(DELETE_DATA));
 
-    statusBarPO = new StatusPageObject();
     await delay();
   });
+
+  afterEach(async () => { await delay(5000) });
 
   it("Include (change)", async () => {
     const includePO: IncludePageObject = new IncludePageObject();
     await serverItemPO.fireInclude();
 
-    await includePO.fillIncludePage(CHANGE_INCLUDE_PATH_DATA, true);
+    await includePO.fillIncludePage(CHANGE_INCLUDE_PATH_DATA);
+    await includePO.fireSave(true);
 
     await serverItemPO.fireInclude();
     const pageData: IIncludeData = await includePO.getIncludePage();
 
     expect(pageData.includePath.join(";")).to.equal(CHANGE_INCLUDE_PATH_DATA.includePath.join(";"));
+    await includePO.fireSave(true);
   });
 
-  it.only("Include (add more patchs)", async () => {
+  it("Include (add more patchs)", async () => {
     await avoidsBacksliding();
-    console.error("include.1");
 
     const includePO: IncludePageObject = new IncludePageObject();
     await serverItemPO.fireInclude();
-    console.error("include.2");
 
     const oldValue: IIncludeData = await includePO.getIncludePage();
-    const newValue: IIncludeData = { includePath: [...oldValue.includePath, ...CHANGE_INCLUDE_PATH_DATA.includePath] };
-    console.error("include.3");
+    const newValue: IIncludeData = { includePath: [...oldValue.includePath, ...ADD_INCLUDE_PATH_DATA.includePath] };
 
-    await includePO.fillIncludePage(newValue, true);
+    await includePO.fillIncludePage(newValue);
+    await includePO.fireSave(true);
     await avoidsBacksliding();
-    console.error("include.4");
 
     await serverItemPO.fireInclude();
     const pageData: IIncludeData = (await includePO.getIncludePage());
-    console.error("include.5");
 
-    expect(pageData.includePath).to.equal(newValue.includePath);
-    console.error("include.6");
-
+    expect(pageData.includePath.join(";")).to.equal(newValue.includePath.join(";"));
+    await includePO.fireSave(true);
   });
 
   it("Configure Server View", async () => {
@@ -111,7 +110,7 @@ describe.only("TOTVS: Server View Configurations", () => {
     expect(await compileKeyPO.isValidKey()).is.true;
     await compileKeyPO.fireSave(true);
 
-    expect(await statusBarPO.isLoggedIn()).is.true;
+    expect(await workbenchPO.isLoggedIn()).is.true;
   });
 
   it("Compile key (clear)", async () => {
@@ -130,7 +129,7 @@ describe.only("TOTVS: Server View Configurations", () => {
     await compileKeyPO.fireSave(true);
 
     expect(newValue.token).is.empty;
-    expect(await statusBarPO.isNotLoggedIn()).is.true;
+    expect(await workbenchPO.isNotLoggedIn()).is.true;
   });
 
 });

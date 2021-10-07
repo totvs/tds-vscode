@@ -1,16 +1,18 @@
 import { expect } from "chai";
-import { ActivityBar, By, SideBarView, TreeItem, ViewItemAction, Notification, Workbench, WebView, InputBox, QuickPickItem, WebElement, ViewSection, ViewItem, ViewControl, ViewTitlePart, TitleActionButton } from "vscode-extension-tester";
-import { delay, fireContextMenuAction, takeQuickPickAction, waitNotification } from "../helper";
+import { ActivityBar, SideBarView, TreeItem, ViewItemAction, Notification, Workbench, WebView, WebElement, ViewItem, ViewControl, ViewTitlePart, TitleActionButton } from "vscode-extension-tester";
+import { delay } from "../helper";
 import { IServerData, IUserData } from "./interface-po";
 import { ServerPageObject } from "./server-po";
 import { ServerTreeItemPageObject } from "./server-tree-item-po";
-import { StatusPageObject } from "./status-po";
+import { WorkbenchPageObject } from "./workbench-po";
 
 export class ServerTreePageObject {
 	private view: SideBarView;
-	control: ViewControl;
+	private control: ViewControl;
+	private workbenchPO: WorkbenchPageObject;
 
 	constructor() {
+		this.workbenchPO = new WorkbenchPageObject();
 	}
 
 	async openView(): Promise<SideBarView> {
@@ -47,8 +49,8 @@ export class ServerTreePageObject {
 		await action.click();
 		await delay();
 
-		const notification: Notification = await waitNotification(
-			"Are you sure you want to delete this server?"
+		const notification: Notification = await this.workbenchPO.waitNotification(
+			"Are you sure want to delete this server?", false
 		);
 
 		expect(notification).not.is.undefined;
@@ -60,7 +62,7 @@ export class ServerTreePageObject {
 	async addNewServer(data: IServerData): Promise<void> {
 		await delay();
 
-		await new Workbench().executeCommand("totvs-developer-studio.add");
+		await this.workbenchPO.executeCommand("totvs-developer-studio.add");
 		await delay(2000);
 
 		const webView: WebView = new WebView();
@@ -71,6 +73,9 @@ export class ServerTreePageObject {
 
 		await webView.switchBack();
 		await delay();
+
+		const notification: Notification = await this.workbenchPO.waitNotification("Saved server");
+		expect(notification).not.is.undefined;
 	}
 
 	async getNewServer(data: IServerData) {

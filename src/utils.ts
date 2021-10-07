@@ -358,7 +358,7 @@ export default class Utils {
    * Deleta o servidor logado por ultimo do servers.json
    */
   static deleteServer(id: string) {
-    const confirmationMessage = 'Are you sure you want to delete this server?';
+    const confirmationMessage = 'Are you sure want to delete this server?';
     const optionYes = 'Yes';
     const optionNo = 'No';
     vscode.window

@@ -19,7 +19,6 @@ import { ServerTreePageObject } from "./page-objects/server-tree-po";
 import { expect } from "chai";
 import { IUserData } from "./page-objects/interface-po";
 
-const WAIT_NOTIFICATION_TIMEOUT = 2000;
 const DEFAULT_DELAY = 1000;
 const PROJECT_NAME = "project-advpl"
 const advplProjectfolder: string = path.resolve(
@@ -37,11 +36,6 @@ export async function openAdvplProject(): Promise<void> {
   if (fs.existsSync(serversJsonFile)) {
     fs.removeSync(serversJsonFile);
   }
-
-  // const notifications = await new Workbench().openNotificationsCenter();
-  // await delay();
-  // await notifications.clearAllNotifications();
-  // await delay();
 
   await VSBrowser.instance.openResources(projectFolder);
   await delay(5000);
@@ -95,30 +89,6 @@ export async function takeQuickPickAction(pickBox: InputBox, titleAction: string
   return false;
 }
 
-export async function waitNotification(
-  containText: string
-): Promise<Notification | undefined> {
-  //const notifications = await new Workbench().openNotificationsCenter(); //@acandido verificar uso
-
-  return await VSBrowser.instance.driver.wait(() => {
-    return notificationExists(containText.toLowerCase());
-  }, WAIT_NOTIFICATION_TIMEOUT);
-}
-
-async function notificationExists(
-  text: string
-): Promise<Notification | undefined> {
-  const notifications = await new Workbench().getNotifications();
-  for (const notification of notifications) {
-    const message = (await notification.getMessage()).toLowerCase();
-    if (message.indexOf(text) >= 0) {
-      return notification;
-    }
-  }
-
-  return undefined;
-}
-
 // export async function clearServers() {
 //   const folder: string = path.resolve(advplProjectfolder);
 //   const serversJsonFile: string = path.join(folder, "servers.json");
@@ -127,16 +97,12 @@ async function notificationExists(
 // }
 
 export async function fillEnvironment(environment: string) {
-  console.error("fillEnvironment.1");
   const pickBox = new InputBox();
   await pickBox.wait(3000);
-  console.error("fillEnvironment.2");
   await delay();
 
   let title = await pickBox.getTitle();
-  console.error("fillEnvironment.2a");
   expect(title).is.equal("Connection (1/1)");
-  console.error("fillEnvironment.3");
 
   let quickPicks: QuickPickItem[] = await pickBox.getQuickPicks();
   const find: boolean = quickPicks.filter(async (element: QuickPickItem) => {

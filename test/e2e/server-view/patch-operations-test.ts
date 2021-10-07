@@ -15,16 +15,13 @@ import {
 } from "../helper";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
-import { StatusPageObject } from "../page-objects/status-po";
+import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, LOCALHOST_DATA } from "../servers-data";
 
 // Create a Mocha suite
 describe("Patch Operations", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
-  let pickBox: InputBox;
-  let title: string = "";
-  let statusBarPO: StatusPageObject;
 
   const LOCALHOST_NAME: string = LOCALHOST_DATA.serverName;
   const LOCALHOST_ENVIRONMENT: string = LOCALHOST_DATA.environment;
@@ -36,8 +33,6 @@ describe("Patch Operations", () => {
     serverTreePO.openView();
 
     await serverTreePO.addNewServer(LOCALHOST_DATA);
-
-    statusBarPO = new StatusPageObject();
 
     await delay();
   });

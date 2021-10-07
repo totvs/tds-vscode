@@ -8,19 +8,21 @@ import {
 } from "vscode-extension-tester";
 import {
   avoidsBacksliding,
-  openAdvplProject,
-  waitNotification,
+  openAdvplProject
 } from "../helper";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
+import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { DELETE_DATA, LOCALHOST_DATA } from "../servers-data";
 
 describe("TOTVS: Server View", () => {
   let view: SideBarView;
   let serverTreePO: ServerTreePageObject;
+  let workbenchPO: WorkbenchPageObject;
 
   before(async () => {
     await openAdvplProject();
 
+    workbenchPO = new WorkbenchPageObject();
     serverTreePO = new ServerTreePageObject();
     view = await serverTreePO.openView();
   });
@@ -38,7 +40,7 @@ describe("TOTVS: Server View", () => {
   it("Add Local Server", async () => {
     await serverTreePO.addNewServer(LOCALHOST_DATA);
 
-    const notification: Notification = await waitNotification("Saved server");
+    const notification: Notification = await workbenchPO.waitNotification("Saved server");
     expect(notification).not.is.undefined;
   });
 
