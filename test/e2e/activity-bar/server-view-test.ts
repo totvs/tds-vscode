@@ -7,28 +7,25 @@ import {
   Notification,
 } from "vscode-extension-tester";
 import {
-  delay,
+  avoidsBacksliding,
   openAdvplProject,
   waitNotification,
 } from "../helper";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { DELETE_DATA, LOCALHOST_DATA } from "../servers-data";
 
-// Create a Mocha suite
 describe("TOTVS: Server View", () => {
   let view: SideBarView;
   let serverTreePO: ServerTreePageObject;
 
   before(async () => {
     await openAdvplProject();
-    await delay();
 
     serverTreePO = new ServerTreePageObject();
     view = await serverTreePO.openView();
   });
 
   after(async () => {
-    //await serverTreePO.clearServers();
   })
 
   it("No Servers", async () => {
@@ -46,19 +43,12 @@ describe("TOTVS: Server View", () => {
   });
 
   it("Remove Server", async () => {
+    await avoidsBacksliding();
     await serverTreePO.addNewServer(DELETE_DATA);
-
-    await delay(3000);
 
     await serverTreePO.removeServer(DELETE_DATA.serverName);
 
-    const notification: Notification = await waitNotification(
-      "Tem certeza que deseja excluir este servidor"
-    );
+    expect(await serverTreePO.getServerTreeItem(DELETE_DATA.serverName)).is.undefined;
 
-    expect(notification).not.is.undefined;
-
-    await notification.takeAction("Sim");
-    await delay();
   });
 });

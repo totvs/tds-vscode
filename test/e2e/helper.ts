@@ -44,7 +44,7 @@ export async function openAdvplProject(): Promise<void> {
   // await delay();
 
   await VSBrowser.instance.openResources(projectFolder);
-  await delay(2000);
+  await delay(5000);
 }
 
 export async function readServersJsonFile(): Promise<string> {
@@ -74,6 +74,8 @@ export const delay = (duration: number = DEFAULT_DELAY) =>
   new Promise((res) => {
     setTimeout(res, duration);
   });
+
+export const avoidsBacksliding = async () => { await delay(3000); };
 
 export async function takeQuickPickAction(pickBox: InputBox, titleAction: string): Promise<boolean> {
   const actionContainer: WebElement = pickBox.findElement(By.className("actions-container"));
@@ -125,11 +127,16 @@ async function notificationExists(
 // }
 
 export async function fillEnvironment(environment: string) {
+  console.error("fillEnvironment.1");
   const pickBox = new InputBox();
+  await pickBox.wait(3000);
+  console.error("fillEnvironment.2");
   await delay();
 
   let title = await pickBox.getTitle();
+  console.error("fillEnvironment.2a");
   expect(title).is.equal("Connection (1/1)");
+  console.error("fillEnvironment.3");
 
   let quickPicks: QuickPickItem[] = await pickBox.getQuickPicks();
   const find: boolean = quickPicks.filter(async (element: QuickPickItem) => {
