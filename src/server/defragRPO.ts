@@ -15,10 +15,12 @@ export function defragRpo() {
       vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
       return;
     }
+    let authorizationToken: string = Utils.isSafeRPO(server) ? Utils.getAuthorizationToken(server) : "";
     const exec: Thenable<any> = languageClient
       .sendRequest("$totvsserver/defragRpo", {
         defragRpoInfo: {
           connectionToken: server.token,
+					authorizationToken: authorizationToken,
           environment: server.environment,
           packPatchInfo: true,
         },
