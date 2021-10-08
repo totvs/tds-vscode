@@ -1,30 +1,30 @@
-import React, { useReducer, RefObject } from 'react';
+import React, { RefObject } from "react";
 import {
   makeStyles,
   useTheme,
   Theme,
   createStyles,
-} from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Switch from '@material-ui/core/Switch';
-import IconButton from '@material-ui/core/IconButton';
-import FirstPageIcon from '@material-ui/icons/FirstPage';
-import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import LastPageIcon from '@material-ui/icons/LastPage';
-import { ICommand, CommandToDA, CommandToPage } from '../Command';
-import { DebugSessionCustomEvent } from 'vscode';
-import { FormControlLabel, Button } from '@material-ui/core';
-import SourcesDialog from './SourcesDialog';
-import ChangePageWaitDialog from './ChangePageWaitDialog';
+} from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TablePagination from "@material-ui/core/TablePagination";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import Switch from "@material-ui/core/Switch";
+import IconButton from "@material-ui/core/IconButton";
+import FirstPageIcon from "@material-ui/icons/FirstPage";
+import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
+import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import LastPageIcon from "@material-ui/icons/LastPage";
+import { ICommand, CommandToDA, CommandToPage } from "../Command";
+import { DebugSessionCustomEvent } from "vscode";
+import { FormControlLabel, Button } from "@material-ui/core";
+import SourcesDialog from "./SourcesDialog";
+import ChangePageWaitDialog from "./ChangePageWaitDialog";
 
 enum KeyCode {
   BACKSPACE = 8,
@@ -74,7 +74,7 @@ const useStyles1 = makeStyles((theme: Theme) =>
 
 const tableStyles = makeStyles((_theme) => ({
   root: {
-    width: '100%',
+    width: "100%",
   },
   tableContainer: {
     //Esse parametro faz com que o container ocupe todo espaço disponivel do webview
@@ -87,60 +87,60 @@ const tableStyles = makeStyles((_theme) => ({
   headCell: {
     //backgroundColor: this.props.muiTheme.palette.primary1Color,
     //color: "white"
-    backgroundColor: 'rgb(230,230,230)',
+    backgroundColor: "rgb(230,230,230)",
     //color: "white"
   },
   tableRow: {
-    '&:hover': {
-      backgroundColor: 'gainsboro !important',
+    "&:hover": {
+      backgroundColor: "gainsboro !important",
     },
   },
   pagination: {
     //backgroundColor: "blue"
   },
   selectedTableRow: {
-    backgroundColor: 'grey !important',
+    backgroundColor: "grey !important",
   },
   srcNotFound: {
-    backgroundColor: 'rgb(255,204,204) !important',
+    backgroundColor: "rgb(255,204,204) !important",
     //backgroundColor: "LIGHTCORAL !important",
     //textDecoration: "line-through black",
-    WebkitTextDecorationStyle: 'solid',
+    WebkitTextDecorationStyle: "solid",
   },
   sources: {
-    alignItems: 'right',
-    justifyContent: 'right',
+    alignItems: "right",
+    justifyContent: "right",
     margin: _theme.spacing(1),
   },
 }));
 
 interface Column {
-  id: 'TimeStamp' | 'SourceName' | 'Line';
+  id: "TimeStamp" | "SourceName" | "Line";
   label: string;
   minWidth?: number;
-  align?: 'left' | 'right' | 'center';
+  align?: "left" | "right" | "center";
   format?: (value: number) => string;
 }
 
 const columns: Column[] = [
   {
-    id: 'TimeStamp',
-    label: 'Time',
+    id: "TimeStamp",
+    label: "Time",
     minWidth: 10,
-    align: 'left',
+    align: "left",
   },
   {
-    id: 'SourceName',
-    label: 'Source Name',
+    id: "SourceName",
+    label: "Source Name",
     minWidth: 10,
-    align: 'left',
+    align: "left",
     //format: (value: number) => value.toLocaleString(),
   },
   {
-    id: 'Line',
-    label: 'Line',
+    id: "Line",
+    label: "Line",
     minWidth: 10,
-    align: 'left',
+    align: "left",
     //format: (value: number) => value.toLocaleString(),
   },
 ];
@@ -191,14 +191,14 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
         disabled={page === 0}
         aria-label="first page"
       >
-        {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+        {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
       </IconButton>
       <IconButton
         onClick={handleBackButtonClick}
         disabled={page === 0}
         aria-label="previous page"
       >
-        {theme.direction === 'rtl' ? (
+        {theme.direction === "rtl" ? (
           <KeyboardArrowRight />
         ) : (
           <KeyboardArrowLeft />
@@ -209,7 +209,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="next page"
       >
-        {theme.direction === 'rtl' ? (
+        {theme.direction === "rtl" ? (
           <KeyboardArrowLeft />
         ) : (
           <KeyboardArrowRight />
@@ -220,7 +220,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="last page"
       >
-        {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+        {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
       </IconButton>
     </div>
   );
@@ -283,10 +283,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     });
   };
 
-  const handleChangePage = (
-    _event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
+  const handleChangePage = (newPage: number) => {
     setOpenWaitPage(true);
     let command: ICommand = {
       action: CommandToDA.ChangePage,
@@ -316,7 +313,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   const sendShowAllSourcesRequest = () => {
     let command: ICommand = {
       action: CommandToDA.ShowSources,
-      content: { data: 'all' },
+      content: { data: "all" },
     };
     vscode.postMessage(command);
   };
@@ -382,9 +379,9 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           setOpenWaitPage(message.data);
           break;
       }
-      message.command = '';
+      message.command = "";
     };
-    window.addEventListener('message', listener);
+    window.addEventListener("message", listener);
   }
 
   const scrollIntoViewIfNeeded = (target: HTMLElement) => {
@@ -406,7 +403,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
 
     let parentComputedStyle = window.getComputedStyle(parent, null),
       parentBorderTopWidth = parseInt(
-        parentComputedStyle.getPropertyValue('border-top-width')
+        parentComputedStyle.getPropertyValue("border-top-width")
       ),
       overTop = target.offsetTop - parent.offsetTop < parent.scrollTop,
       overBottom =
@@ -426,7 +423,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   const scrollToLineIfNeeded = (id: number) => {
     if (tableElement.current !== null) {
       const rows = Array.from(
-          tableElement.current.querySelectorAll('tbody tr')
+          tableElement.current.querySelectorAll("tbody tr")
         ),
         newRow = rows.find((row) => row.id === `${id}`) as HTMLElement;
       //tableElement.current.scrollTo()
@@ -458,7 +455,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
       //TODO: se for para navega alem dos itens na paginacao atual, recuperar
       // os novos dados, carregar e depois setar a primeira/ultima linha
       if (newItem) {
-        sendSelectTimeLineRequest('' + newItem.id);
+        sendSelectTimeLineRequest("" + newItem.id);
         //scrollToLineIfNeeded(newItem.id);
       }
     };
@@ -504,12 +501,12 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
       let timeLine = timeLines[index];
       let isSelected: boolean =
         timeLine.id === parseInt(jsonBody.currentSelectedTimeLineId);
-      let notFoundText = '';
+      let notFoundText = "";
       let bg;
-      if (!timeLine.srcFoundInWS || timeLine.srcFoundInWS == 'false') {
+      if (!timeLine.srcFoundInWS || timeLine.srcFoundInWS == "false") {
         bg = classes.srcNotFound;
         notFoundText =
-          'Source not found in Workspace. This timeline is not available to select';
+          "Source not found in Workspace. This timeline is not available to select";
       } else {
         bg =
           jsonBody.currentSelectedTimeLineId !== undefined && isSelected
@@ -557,7 +554,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         stickyHeader
         aria-label="sticky table"
         ref={tableElement}
-        size={dense ? 'medium' : 'small'}
+        size={dense ? "medium" : "small"}
       >
         <TableHead>
           <TableRow>
@@ -580,18 +577,16 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
       <TablePagination
         className={tableClasses.pagination}
         rowsPerPageOptions={[100, 500, 1000, 2000, 3000, 5000]}
-        component="div"
         count={parseInt(jsonBody.totalItems)}
         rowsPerPage={jsonBody.itemsPerPage}
         page={jsonBody.currentPage}
         SelectProps={{
-          inputProps: { 'aria-label': 'rows per page' },
+          inputProps: { "aria-label": "rows per page" },
           native: true,
         }}
-        onChangePage={handleChangePage}
-        onPageChange={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
+        onPageChange={(event, value) => handleChangePage(value)}
+        onChangePage={(event, value) => handleChangePage(value)}
+        onRowsPerPageChange={(event) => handleChangeRowsPerPage(event)}
         ActionsComponent={TablePaginationActions}
       />
       <FormControlLabel

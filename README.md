@@ -33,6 +33,12 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 - [RPO Seguro](docs/rpo.md#Token_de_RPO)
 - [TDS-Cli](https://github.com/totvs/tds-ls/blob/master/TDS-CLi.md) compilação por linha de comando. Da mesma forma que o Eclipse, essa extensão do VSCode possui uma ferramenta de compilação em linha de comando.
 
+## SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO
+
+As chaves de compilação ou _tokens_ de compilação empregados na construção do _Protheus_ e suas funcionalidades, são de uso restrito dos _desenvolvedores_ de cada módulo.
+
+Em caso de mau uso destas chaves ou tokens, por qualquer _outra parte_, que não a referida acima, a mesma irá se responsabilizar, direta ou regressivamente, única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações, multas, condenações judiciais, arbitrais e administrativas e quaisquer outras despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros, eximindo a TOTVS de toda e qualquer responsabilidade.
+
 ## Guia rápido
 
 > O **VS-Code** pode apresentar problemas em suas funcionalidades em sistemas operacionais da linha **Windows Server**.

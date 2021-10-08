@@ -25,7 +25,6 @@ Selecione o servidor, acione o menu de contexto e a opção `RPO Check Integrity
 ## Token de RPO
 
 > Explicar ou direcionar para página que explique o _RPO Token_.
-
 > Esse recurso está disponivel em servidores da versão _7.00.210324P_ e superiores.
 
 Após selecionar o servidor, acione a ação `RPO` na barra de status e informe o token obtido.
