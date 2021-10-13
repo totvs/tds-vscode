@@ -3,7 +3,8 @@ import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import { Notification } from "vscode-extension-tester";
 import { delay, openAdvplProject } from "../helper";
-import { ObjectInspectorPageObject } from "../page-objects/object-inspector-po";
+import { FunctionsInspectorPageObject } from "../page-objects/functions-inspector-po";
+import { ObjectsInspectorPageObject } from "../page-objects/objects-inspector-po";
 import { RepositoryLogPageObject } from "../page-objects/repository-log-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
@@ -88,17 +89,27 @@ describe.only("RPO Operations", () => {
     await repositoryLogPO.close();
   });
 
-  it.only("Objects Inspector", async () => {
+  it("Objects Inspector", async () => {
     // testa apenas a abertura do diálogo
     await serverItemPO.fireObjectsInspector();
 
-    const pbjectInspectorPO: ObjectInspectorPageObject =
-      new ObjectInspectorPageObject();
+    const objectInspectorPO: ObjectsInspectorPageObject =
+      new ObjectsInspectorPageObject();
 
-    expect(await pbjectInspectorPO.isOpen()).is.true;
+    expect(await objectInspectorPO.isOpen()).is.true;
 
-    await pbjectInspectorPO.close();
+    await objectInspectorPO.close();
   });
 
-  it.skip("Functions Inspector", async () => {});
+  it.only("Functions Inspector", async () => {
+    // testa apenas a abertura do diálogo
+    await serverItemPO.fireFunctionsInspector();
+
+    const functionsInspectorPO: FunctionsInspectorPageObject =
+      new FunctionsInspectorPageObject();
+
+    expect(await functionsInspectorPO.isOpen()).is.true;
+
+    await functionsInspectorPO.close();
+  });
 });

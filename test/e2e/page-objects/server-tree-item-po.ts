@@ -119,4 +119,9 @@ export class ServerTreeItemPageObject {
     await this.select();
     await fireContextMenuAction(this.serverTreeItem, "Objects Inspector");
   }
+
+  async fireFunctionsInspector(): Promise<void> {
+    await this.select();
+await fireContextMenuAction(this.serverTreeItem, "Functions Inspector");
+}
 }

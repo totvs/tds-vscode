@@ -1,7 +1,6 @@
-import { EditorView, TextEditor } from "vscode-extension-tester";
-import { AbstractEditorPageObject, AbstractPageObject } from "./abstract-po";
+import { AbstractEditorPageObject} from "./abstract-po";
 
-export class ObjectInspectorPageObject extends AbstractEditorPageObject {
+export class ObjectsInspectorPageObject extends AbstractEditorPageObject {
   constructor() {
     super("Objects Inspector");
   }
