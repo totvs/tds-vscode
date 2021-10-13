@@ -7,11 +7,11 @@
 
 ## Inspetor de Objetos do RPO
 
-Permite visualizar os arquivos que fazem parte do _RPO_. Acione o menu de contexto sobre o servidor e acione `Objects inspector` ou acione`CTRL + SHIFT + P` e execute `TOTVS: Objects inspector`.
+Permite visualizar os arquivos que fazem parte do _RPO_. Acione o menu de contexto sobre o servidor e acione `Objects Inspector` ou acione`CTRL + SHIFT + P` e execute `TOTVS: Objects Inspector`.
 
 Lhe será apresentado uma lista com os arquivos do _RPO_ e pode filtrar a lista, preenchendo um padrão de busca em `Filter`.
 
-![Objects inspector](./gifs/InspectObject.gif)
+![Objects Inspector](./gifs/InspectObject.gif)
 
 ### Inspetor de Funções do RPO
 

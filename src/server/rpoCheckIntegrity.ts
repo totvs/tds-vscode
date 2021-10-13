@@ -12,7 +12,7 @@ export function rpoCheckIntegrity() {
 
 	if (server) {
 		if (_debugEvent) {
-			vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
+			vscode.window.showWarningMessage("This operation is not allowed during a debug.")
 			return;
 		}
 

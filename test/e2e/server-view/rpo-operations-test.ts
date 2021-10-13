@@ -1,20 +1,17 @@
 // import the webdriver and the high level browser wrapper
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import {
-  Notification
-} from "vscode-extension-tester";
-import {
-  delay,
-  openAdvplProject,
-} from "../helper";
+import { Notification } from "vscode-extension-tester";
+import { delay, openAdvplProject } from "../helper";
+import { ObjectInspectorPageObject } from "../page-objects/object-inspector-po";
+import { RepositoryLogPageObject } from "../page-objects/repository-log-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, LOCALHOST_DATA } from "../servers-data";
 
 // Create a Mocha suite
-describe.skip("RPO Operations", () => {
+describe.only("RPO Operations", () => {
   let workbenchPO: WorkbenchPageObject;
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
@@ -35,33 +32,73 @@ describe.skip("RPO Operations", () => {
   });
 
   beforeEach(async () => {
-    await serverTreePO.connect(LOCALHOST_NAME, LOCALHOST_ENVIRONMENT, ADMIN_USER_DATA);
-    serverItemPO = new ServerTreeItemPageObject(await serverTreePO.getServerTreeItem(LOCALHOST_NAME));
-  })
+    await delay();
+
+    serverItemPO = await serverTreePO.connect(
+      LOCALHOST_NAME,
+      LOCALHOST_ENVIRONMENT,
+      ADMIN_USER_DATA
+    );
+
+  });
 
   afterEach(async () => {
+    await delay();
     await serverItemPO.fireDisconnectAction();
-  })
+  });
 
   it("Check Integrity", async () => {
     await serverItemPO.fireCheckIntegrity();
 
-    expect(await workbenchPO.waitCheckIntegrity()).is.true;
+    await workbenchPO.waitCheckIntegrity();
+    await delay();
 
-    const notification: Notification = await workbenchPO.waitNotification("RPO intact.");
+    const notification: Notification = await workbenchPO.waitNotification(
+      "RPO intact."
+    );
+
     expect(notification).not.is.undefined;
   });
 
-  it.skip("Revalidate", async () => {
+  it("Revalidate", async () => {
+    await serverItemPO.fireRevalidate();
+
+    await workbenchPO.waitRevalidate();
+    await delay();
+
+    // const notification: Notification = await workbenchPO.waitNotification(
+    //   "RPO could not be revalidated."
+    // );
+
+        const notification: Notification = await workbenchPO.waitNotification(
+          "End build aborted"
+        );
+
+    expect(notification).not.is.undefined;
   });
 
-  it.skip("Repository Log", async () => {
+  it("Repository Log", async () => {
+    // testa apenas a abertura do diálogo
+    await serverItemPO.fireRepositoryLog();
+
+    const repositoryLogPO: RepositoryLogPageObject = new RepositoryLogPageObject();
+
+    expect(await repositoryLogPO.isOpen()).is.true;
+
+    await repositoryLogPO.close();
   });
 
-  it.skip("Objects Inspector", async () => {
+  it.only("Objects Inspector", async () => {
+    // testa apenas a abertura do diálogo
+    await serverItemPO.fireObjectsInspector();
+
+    const pbjectInspectorPO: ObjectInspectorPageObject =
+      new ObjectInspectorPageObject();
+
+    expect(await pbjectInspectorPO.isOpen()).is.true;
+
+    await pbjectInspectorPO.close();
   });
 
-  it.skip("Functions Inspector", async () => {
-  });
-
+  it.skip("Functions Inspector", async () => {});
 });

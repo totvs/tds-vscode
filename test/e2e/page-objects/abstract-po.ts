@@ -1,11 +1,16 @@
-import { By, WebElement, WebView } from "vscode-extension-tester";
+import { By, EditorView, TextEditor, WebElement, WebView } from "vscode-extension-tester";
 import { delay } from "../helper";
+import { expect } from 'chai';
 
 export class AbstractPageObject {
-	private webView: WebView;
+	private _webView: WebView;
+
+	public get webView(): WebView {
+		return this._webView;
+	}
 
 	async beginWebView(): Promise<void> {
-		this.webView = new WebView();
+		this._webView = new WebView();
 
 		await this.webView.wait()
 		await this.webView.switchToFrame();
@@ -16,7 +21,7 @@ export class AbstractPageObject {
 		this.webView.switchBack();
 		await delay(2000);
 
-		this.webView = null;
+		this._webView = null;
 	}
 
 	async findElement(id: string) {
@@ -41,4 +46,45 @@ export class AbstractPageObject {
 		await element.click();
 		await delay();
 	}
+}
+
+export class AbstractEditorPageObject {
+  private _view: EditorView;
+  private _editor: TextEditor;
+	private _expectTitle: string;
+
+	constructor(expectTitle: string) {
+		this._expectTitle = expectTitle;
+	}
+
+	public get expectTitle(): string {
+		return this._expectTitle;
+	}
+  public get view(): EditorView {
+    if (!this._view) {
+      this._view = new EditorView();
+    }
+
+    return this._view;
+  }
+
+  public get editor(): TextEditor {
+    if (!this._editor) {
+      this._editor = new TextEditor(this.view);
+    }
+
+    return this._editor;
+  }
+
+  async close() {
+	  await delay();
+	  await this.view.closeEditor(await this.editor.getTitle());
+  }
+
+  async isOpen(): Promise<boolean> {
+	  await delay();
+    const title: string = await this.editor.getTitle();
+
+    return title == this.expectTitle;
+  }
 }

@@ -55,7 +55,7 @@ export class RpoInfoLoader {
 
     this._panel = vscode.window.createWebviewPanel(
       "rpoInfoLoader",
-      localize("RPO_LOG", "Log do repositório"),
+      localize("RPO_LOG", "Repository Log"),
       vscode.ViewColumn.One,
       {
         enableScripts: true,

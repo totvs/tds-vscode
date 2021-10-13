@@ -89,10 +89,12 @@ export class ServerTreePageObject {
 		return serverTreeItem;
 	}
 
-	async connect(serverName: string, environment: string, userdata: IUserData) {
+	async connect(serverName: string, environment: string, userdata: IUserData): Promise<ServerTreeItemPageObject> {
 		const serverPO: ServerTreeItemPageObject = new ServerTreeItemPageObject(await this.getServerTreeItem(serverName));
 
 		await serverPO.connect(environment, userdata);
+
+		return serverPO;
 	};
 
 	async disconnectAllServers(): Promise<void> {

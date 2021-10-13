@@ -7,8 +7,6 @@ import { commandBuildFile } from '../compile/tdsBuild';
 import * as nls from 'vscode-nls';
 import { ResponseError } from 'vscode-languageclient';
 import { _debugEvent } from '../debug';
-import { IRpoToken } from '../rpoToken';
-import { CompileKey } from '../compileKey/compileKey';
 import { sendPatchGenerateMessage } from './patchUtil';
 
 let localize = nls.loadMessageBundle();
