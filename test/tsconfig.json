@@ -2,7 +2,7 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "ES2016",
-        "outDir": "../../out-test/e2e",
+        "outDir": "../out-test",
         "sourceMap": true,
         "noImplicitAny": false,
         "removeComments": true,

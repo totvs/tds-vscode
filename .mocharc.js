@@ -1,15 +1,25 @@
-//"use strict";
+"use strict";
 
 module.exports = {
   recursive: true,
   reporter: "spec",
   slow: 75,
   timeout: 60000,
-  //ui: "tdd",
-  //"async-only": true,
+  ui: "bdd",
+  "async-only": true,
   color: false,
-  "full-trace": true,
+  "full-trace": false,
   jobs: 1,
+  sort: false,
+  "dry-run": false,
+  "fail-zero": false,
+  growl: true,
+  //require: "./out-test/async-dump.js",
+  // "fgrep": "" //   Only run tests containing this string                   [string]
+  // "grep": "" //    Only run tests matching this string or regexp           [string]
+  // "invert": false //  Inverts --grep and --fgrep matches                     [boolean]
+
+  //
   //ignore: ["test/e2e/activity-bar/**"],
   //"allow-uncaught": false,
   //bail: false,
@@ -42,7 +52,6 @@ module.exports = {
   //timeout: "30000", // same as "timeout: '2s'"
   // timeout: false, // same as "timeout: 0"
   //"trace-warnings": true, // node flags ok
-  //ui: "bdd",
   //"v8-stack-trace-limit": 100, // V8 flags are prepended with "v8-"
   //watch: false,
   //"watch-files": ["lib/**/*.js", "test/**/*.js"],
