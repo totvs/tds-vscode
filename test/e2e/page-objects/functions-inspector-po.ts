@@ -1,13 +1,13 @@
-import { EditorView, TextEditor } from "vscode-extension-tester";
-import { AbstractEditorPageObject, AbstractPageObject } from "./abstract-po";
+import { EditorView, TextEditor } from "vscode-extension-tester"
+import { AbstractEditorPageObject, AbstractPageObject } from "./abstract-po"
 
 export class FunctionsInspectorPageObject extends AbstractEditorPageObject {
-  constructor() {
-    super("Functions Inspector");
+  constructor () {
+    super("Functions Inspector")
   }
 
-  async fillRepositoryLogPage(
-    data: any //ICompileKeyData
+  async fillRepositoryLogPage (
+    data: any // ICompileKeyData
   ) {
     // await this.beginWebView();
     // await this.setValue("compileKeyFile", `${data.compileKeyFile}\t`); //força saida do campo

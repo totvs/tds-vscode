@@ -1,21 +1,20 @@
-import { AbstractPageObject } from "./abstract-po";
-import { ICompileKeyData, IIncludeData } from "./interface-po";
+import { AbstractPageObject } from "./abstract-po"
+import { ICompileKeyData, IIncludeData } from "./interface-po"
 
 export class RpoPageObject extends AbstractPageObject {
+  async fireClear (): Promise<void> {
+    await this.beginWebView()
 
-	async fireClear(): Promise<void> {
-		await this.beginWebView();
+    await this.click("cleanID")
 
-		await this.click("cleanID");
+    await this.endWebView()
+  }
 
-		await this.endWebView();
-	}
+  async fireSave (close: boolean): Promise<void> {
+    await this.beginWebView()
 
-	async fireSave(close: boolean): Promise<void> {
-		await this.beginWebView();
+    close ? await this.click("submitCloseID") : await this.click("submitID")
 
-		close ? await this.click("submitCloseID") : await this.click("submitID");
-
-		await this.endWebView();
-	}
+    await this.endWebView()
+  }
 }
