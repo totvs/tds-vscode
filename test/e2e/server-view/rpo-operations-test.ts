@@ -16,30 +16,31 @@ describe("RPO Operations", () => {
   let serverTreePO: ServerTreePageObject
   let serverItemPO: ServerTreeItemPageObject
 
-  const LOCALHOST_NAME: string = LOCALHOST_DATA.serverName
-  const LOCALHOST_ENVIRONMENT: string = LOCALHOST_DATA.environment
-
   before(async () => {
-    await openAdvplProject()
+    await openAdvplProject();
 
-    workbenchPO = new WorkbenchPageObject()
-    serverTreePO = new ServerTreePageObject()
-    serverTreePO.openView()
+    workbenchPO = new WorkbenchPageObject();
+    serverTreePO = new ServerTreePageObject();
+    serverTreePO.openView();
 
-    await serverTreePO.addNewServer(LOCALHOST_DATA)
+    await serverTreePO.addNewServer(LOCALHOST_DATA);
 
-    await delay()
-  })
+    await delay();
+  });
+
+  after(function () {
+    global.asyncDump();
+  });
 
   beforeEach(async () => {
-    await delay()
+    await delay();
 
     serverItemPO = await serverTreePO.connect(
-      LOCALHOST_NAME,
-      LOCALHOST_ENVIRONMENT,
+      LOCALHOST_DATA.serverName,
+      LOCALHOST_DATA.environment,
       ADMIN_USER_DATA
-    )
-  })
+    );
+  });
 
   afterEach(async () => {
     await delay()
