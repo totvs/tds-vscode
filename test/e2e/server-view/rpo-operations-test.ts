@@ -29,7 +29,7 @@ describe("RPO Operations", () => {
   });
 
   after(function () {
-    global.asyncDump();
+
   });
 
   beforeEach(async () => {

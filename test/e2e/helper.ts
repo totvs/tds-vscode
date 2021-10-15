@@ -13,32 +13,50 @@ import {
   ContextMenu,
   ViewItem,
   ContextMenuItem,
-  ViewControl
-} from "vscode-extension-tester"
-import { ServerTreePageObject } from "./page-objects/server-tree-po"
-import { expect } from "chai"
-import { IUserData } from "./page-objects/interface-po"
+  ViewControl,
+  EditorView,
+} from "vscode-extension-tester";
+import { ServerTreePageObject } from "./page-objects/server-tree-po";
+import { expect } from "chai";
+import { IUserData } from "./page-objects/interface-po";
 
-const DEFAULT_DELAY = 1000
-const PROJECT_NAME = "project-advpl"
+const DEFAULT_DELAY = 1000;
+const PROJECT_NAME = "project-advpl";
 const advplProjectfolder: string = path.resolve(
   __dirname,
   "..",
   "..",
   "test",
   "resources"
-)
+);
 
-export async function openAdvplProject (): Promise<void> {
-  const projectFolder: string = path.join(advplProjectfolder, PROJECT_NAME)
-  const serversJsonFile: string = path.join(projectFolder, ".vscode", "servers.json")
+function clearServersJson(projectFolder: string): void {
+  const serversJsonFile: string = path.join(
+    projectFolder,
+    ".vscode",
+    "servers.json"
+  );
 
   if (fs.existsSync(serversJsonFile)) {
-    fs.removeSync(serversJsonFile)
+    fs.removeSync(serversJsonFile);
   }
+}
 
-  await VSBrowser.instance.openResources(projectFolder)
-  await delay(5000)
+async function closeAllEditors(): Promise<void> {
+  const editorView: EditorView = new EditorView();
+  await editorView.closeAllEditors();
+
+  await delay();
+}
+
+export async function openAdvplProject(): Promise<void> {
+  const projectFolder: string = path.join(advplProjectfolder, PROJECT_NAME);
+  clearServersJson(projectFolder);
+
+  await VSBrowser.instance.openResources(projectFolder);
+
+  await delay(2000);
+  closeAllEditors();
 }
 
 export async function readServersJsonFile (): Promise<string> {
