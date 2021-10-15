@@ -53,7 +53,7 @@
     "--TEST--": "",
     "test": "npm run ci-test",
     "ci-test": "extest setup-and-run -l error './out-test/**/*test.js' -i -s c:/temp/test -o test/settings.json -e c:/temp/extension",
-    "preci-test": "npm run compile",
+    "pre-test": "npm run compile",
     "---i18n---": "",
     "export-i18n": "gulp export-i18n",
     "i18n-import": "gulp i18n-import",

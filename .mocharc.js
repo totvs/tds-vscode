@@ -14,7 +14,7 @@ module.exports = {
   "dry-run": false,
   "fail-zero": false,
   //growl: true, //não consegui fazer funcionar
-  require: "common-hooks",
+  require: "common-hooks.js",
   ////////////////////
   // "fgrep": "" //   Only run tests containing this string                   [string]
   // "grep": "" //    Only run tests matching this string or regexp           [string]
