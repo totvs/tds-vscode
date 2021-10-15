@@ -13,8 +13,9 @@ module.exports = {
   sort: false,
   "dry-run": false,
   "fail-zero": false,
-  growl: true,
-  //require: "./out-test/async-dump.js",
+  //growl: true, //não consegui fazer funcionar
+  require: "common-hooks",
+  ////////////////////
   // "fgrep": "" //   Only run tests containing this string                   [string]
   // "grep": "" //    Only run tests matching this string or regexp           [string]
   // "invert": false //  Inverts --grep and --fgrep matches                     [boolean]
