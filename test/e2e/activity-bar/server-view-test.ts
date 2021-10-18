@@ -8,7 +8,7 @@ import {
 import { avoidsBacksliding, delay, openAdvplProject } from "../helper";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
-import { DELETE_DATA, LOCALHOST_DATA } from "../scenario";
+import { DELETE_DATA, APPSERVER_DATA } from "../scenario";
 
 describe("TOTVS: Server View", () => {
   let view: SideBarView;
@@ -23,8 +23,6 @@ describe("TOTVS: Server View", () => {
     view = await serverTreePO.openView();
   });
 
-  after(async () => {});
-
   it("No Servers", async () => {
     const content: ViewContent = view.getContent();
     const text: string = await content.getText();
@@ -33,7 +31,7 @@ describe("TOTVS: Server View", () => {
   });
 
   it("Add Local Server", async () => {
-    await serverTreePO.addNewServer(LOCALHOST_DATA);
+    await serverTreePO.addNewServer(APPSERVER_DATA);
 
     const notification: Notification = await workbenchPO.getNotification(
       /Saved server/

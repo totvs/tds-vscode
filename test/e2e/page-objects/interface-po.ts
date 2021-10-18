@@ -12,7 +12,9 @@ export interface IUserData {
 }
 
 export interface IIncludeData {
-	includePath: string[];
+  valid: string[];
+  toChange: string[];
+  toAdd: string[];
 }
 
 export interface ICompileKeyData {

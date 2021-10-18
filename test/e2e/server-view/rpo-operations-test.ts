@@ -9,7 +9,7 @@ import { RepositoryLogPageObject } from "../page-objects/repository-log-po"
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po"
 import { ServerTreePageObject } from "../page-objects/server-tree-po"
 import { WorkbenchPageObject } from "../page-objects/workbench-po"
-import { ADMIN_USER_DATA, LOCALHOST_DATA } from "../scenario";
+import { ADMIN_USER_DATA, APPSERVER_DATA } from "../scenario";
 
 describe("RPO Operations", () => {
   let workbenchPO: WorkbenchPageObject;
@@ -23,7 +23,7 @@ describe("RPO Operations", () => {
     serverTreePO = new ServerTreePageObject();
     serverTreePO.openView();
 
-    await serverTreePO.addNewServer(LOCALHOST_DATA);
+    await serverTreePO.addNewServer(APPSERVER_DATA);
 
     await delay();
   });
@@ -34,8 +34,8 @@ describe("RPO Operations", () => {
     await delay();
 
     serverItemPO = await serverTreePO.connect(
-      LOCALHOST_DATA.serverName,
-      LOCALHOST_DATA.environment,
+      APPSERVER_DATA.serverName,
+      APPSERVER_DATA.environment,
       ADMIN_USER_DATA
     );
   });

@@ -1,0 +1,51 @@
+{
+	"name": "Default",
+	"description": [
+		"Valores padrão para teste. Crie um novo arquivo de cenário e:",
+		"- ajustes as propriedades que sobrescreveram estas;",
+		"- ajuste varivável de ambiente SCENARIO com o nome do arquivo no script",
+		"  ou crie uma entrada no script.",
+		"Se desejar, escreva uma breve descrição do cenário de testes"
+	],
+	"server": {
+		"serverName": "localhost",
+		"address": "localhost",
+		"port": 2030,
+		"environment": "p12",
+		"includePath": [
+			"m:\\protheus\\includes"
+		]
+	},
+	"users": {
+		"admin": {
+			"username": "admin",
+			"password": "1234"
+		},
+		"user": {
+			"username": "user",
+			"password": "1234"
+		},
+		"invalid": {
+			"username": "invalid_user",
+			"password": "0000"
+		}
+	},
+	"includePath": {
+		"valid": [
+			"m:/protheus/includes"
+		],
+		"toChange": [
+			"m:/change/includes"
+		],
+		"toAdd": [
+			"m:/more_1/includes",
+			"m:/more_2/includes"
+		]
+	},
+	"compileKey": {
+		"9DA4-26D1": "acandido.aut"
+	},
+	"rpoToken": {
+		"acandido": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+	}
+}

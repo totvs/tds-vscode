@@ -10,9 +10,10 @@ module.exports = {
   color: false,
   "full-trace": false,
   jobs: 1,
-  sort: false,
+  sort: true,
   "dry-run": false,
   "fail-zero": false,
+
   //growl: true, //não consegui fazer funcionar
   ////////////////////
   // require: "common-hooks.js", usado em execução paralela

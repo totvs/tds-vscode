@@ -11,7 +11,7 @@ import { ServerPageObject } from "../page-objects/server-po"
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po"
 import { ServerTreePageObject } from "../page-objects/server-tree-po"
 import { WorkbenchPageObject } from "../page-objects/workbench-po"
-import { ADMIN_USER_DATA, DELETE_DATA, LOCALHOST_DATA } from "../scenario";
+import { ADMIN_USER_DATA, DELETE_DATA, APPSERVER_DATA } from "../scenario";
 
 describe("TOTVS: Server View Basic Operations", () => {
   let serverTreePO: ServerTreePageObject;
@@ -26,10 +26,10 @@ describe("TOTVS: Server View Basic Operations", () => {
     serverTreePO.openView();
     await delay();
 
-    await serverTreePO.addNewServer(LOCALHOST_DATA);
+    await serverTreePO.addNewServer(APPSERVER_DATA);
 
     serverItemPO = new ServerTreeItemPageObject(
-      await serverTreePO.getServerTreeItem(LOCALHOST_DATA.serverName)
+      await serverTreePO.getServerTreeItem(APPSERVER_DATA.serverName)
     );
 
     await delay(2000);
@@ -50,7 +50,7 @@ describe("TOTVS: Server View Basic Operations", () => {
   });
 
   it("Input Environment", async () => {
-    await fillEnvironment(LOCALHOST_DATA.environment);
+    await fillEnvironment(APPSERVER_DATA.environment);
   });
 
   it("Input User", async () => {
@@ -62,8 +62,8 @@ describe("TOTVS: Server View Basic Operations", () => {
 
     expect(
       await workbenchPO.isConnected(
-        LOCALHOST_DATA.serverName,
-        LOCALHOST_DATA.environment
+        APPSERVER_DATA.serverName,
+        APPSERVER_DATA.environment
       )
     ).is.true;
     expect(await serverItemPO.isConnected()).is.true;
@@ -82,7 +82,7 @@ describe("TOTVS: Server View Basic Operations", () => {
 
     expect(
       await serverTreePO.connect(
-        LOCALHOST_DATA.serverName,
+        APPSERVER_DATA.serverName,
         "p12_invalid",
         ADMIN_USER_DATA
       )
@@ -114,13 +114,13 @@ describe("TOTVS: Server View Basic Operations", () => {
     await serverTreePO.disconnectAllServers();
 
     await serverItemPO.fireReconnectAction(); // esta solicitando usuário e senha
-    await fillEnvironment(LOCALHOST_DATA.environment);
+    await fillEnvironment(APPSERVER_DATA.environment);
     await workbenchPO.waitReconnection();
 
     expect(
       await workbenchPO.isConnected(
-        LOCALHOST_DATA.serverName,
-        LOCALHOST_DATA.environment
+        APPSERVER_DATA.serverName,
+        APPSERVER_DATA.environment
       )
     ).is.true;
     expect(await serverItemPO.isConnected()).is.true;

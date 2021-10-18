@@ -6,7 +6,7 @@ import { delay, openAdvplProject } from "../helper";
 import { PatchGeneratePageObject } from "../page-objects/patch-generate-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
-import { ADMIN_USER_DATA, LOCALHOST_DATA } from "../scenario";
+import { ADMIN_USER_DATA, APPSERVER_DATA } from "../scenario";
 
 describe("Patch Operations", () => {
   let serverTreePO: ServerTreePageObject;
@@ -18,19 +18,19 @@ describe("Patch Operations", () => {
     serverTreePO = new ServerTreePageObject();
     serverTreePO.openView();
 
-    await serverTreePO.addNewServer(LOCALHOST_DATA);
+    await serverTreePO.addNewServer(APPSERVER_DATA);
 
     await delay();
   });
 
   beforeEach(async () => {
     await serverTreePO.connect(
-      LOCALHOST_DATA.serverName,
-      LOCALHOST_DATA.environment,
+      APPSERVER_DATA.serverName,
+      APPSERVER_DATA.environment,
       ADMIN_USER_DATA
     );
     serverItemPO = new ServerTreeItemPageObject(
-      await serverTreePO.getServerTreeItem(LOCALHOST_DATA.serverName)
+      await serverTreePO.getServerTreeItem(APPSERVER_DATA.serverName)
     );
   });
 

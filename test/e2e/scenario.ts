@@ -1,56 +1,58 @@
+import { readJsonSync } from "fs-extra";
 import path = require("path");
+import jsonMerger = require("json-merger");
 import {
   IIncludeData,
   IServerData,
   IUserData,
 } from "./page-objects/interface-po";
 
-console.log(process.argv);
-
-const scenario: string = process.env.SCENARIO || "default.json";
-
 const TEST_RESOURCE = path.join(__dirname, "..", "..", "test", "resources");
+const scenarioDefault: string = path.join(
+  TEST_RESOURCE,
+  "scenario",
+  "default.json"
+);
+let values: any = readJsonSync(scenarioDefault);
+let scenarioFile: string = scenarioDefault;
 
-export const LOCALHOST_DATA: IServerData = {
-  serverName: "localhost",
-  address: "localhost",
-  port: 2030,
-  environment: "p12",
-  includePath: ["m:\\protheus\\includes"],
-};
+if (process.env.SCENARIO) {
+  scenarioFile = path.join(
+    TEST_RESOURCE,
+    "scenario",
+    process.env.SCENARIO.trim()
+  );
+
+  const custom: any = readJsonSync(scenarioFile);
+  values = jsonMerger.mergeObjects([values, custom]);
+}
+
+console.log("--------------------------------------");
+console.log(`Using: ${values.name} (${path.basename(scenarioFile)})`);
+console.log(`\t${values.description.join("\n\t")}`);
+console.log("--------------------------------------");
+
+export const APPSERVER_DATA: IServerData = values.server;
 
 export const DELETE_DATA: IServerData = {
-  ...LOCALHOST_DATA,
+  ...APPSERVER_DATA,
   serverName: "forDelete",
 };
 
-export const ADMIN_USER_DATA: IUserData = {
-  username: "admin",
-  password: "1234",
-};
+export const ADMIN_USER_DATA: IUserData = values.users.admin;
 
-export const NO_ADMIN_USER_DATA: IUserData = {
-  username: "user",
-  password: "1234",
-};
+export const NO_ADMIN_USER_DATA: IUserData = values.users.user;
 
-export const INVALID_USER_DATA: IUserData = {
-  username: "mane",
-  password: "0000",
-};
+export const INVALID_USER_DATA: IUserData = values.users.invalid;
 
-export const INCLUDE_PATH_DATA: IIncludeData = {
-  includePath: ["m:/protheus/includes"],
-};
+export const INCLUDE_PATH_DATA: IIncludeData = values.includePath;
 
-export const CHANGE_INCLUDE_PATH_DATA: IIncludeData = {
-  includePath: ["m:/change/includes"],
-};
+export const COMPILE_KEY_FILE = {};
 
-export const ADD_INCLUDE_PATH_DATA: IIncludeData = {
-  includePath: ["m:/more_1/includes"],
-};
-
-export const COMPILE_KEY_FILE = {
-  "9DA4-26D1": path.join(TEST_RESOURCE, "compile-key", "acandido.aut"),
-};
+Object.keys(values.compileKey).forEach((key: string) => {
+  COMPILE_KEY_FILE[key] = path.join(
+    TEST_RESOURCE,
+    "compile-key",
+    values.compileKey[key]
+  );
+});
