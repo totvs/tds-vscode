@@ -11,7 +11,7 @@ import { ServerPageObject } from "../page-objects/server-po"
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po"
 import { ServerTreePageObject } from "../page-objects/server-tree-po"
 import { WorkbenchPageObject } from "../page-objects/workbench-po"
-import { ADMIN_USER_DATA, DELETE_DATA, LOCALHOST_DATA } from "../servers-data"
+import { ADMIN_USER_DATA, DELETE_DATA, LOCALHOST_DATA } from "../scenario";
 
 describe("TOTVS: Server View Basic Operations", () => {
   let serverTreePO: ServerTreePageObject;
@@ -104,12 +104,10 @@ describe("TOTVS: Server View Basic Operations", () => {
     await webView.switchBack();
     await delay();
 
-    const notification: Notification = await workbenchPO.waitNotification(
-      "Saved server"
+    const notification: Notification = await workbenchPO.getNotification(
+      /Saved server/
     );
     expect(notification).not.is.undefined;
-
-    await serverTreePO.removeServer(DELETE_DATA.serverName);
   });
 
   it.skip("Reconnect", async () => {

@@ -17,8 +17,8 @@ import {
   ADD_INCLUDE_PATH_DATA,
   CHANGE_INCLUDE_PATH_DATA,
   COMPILE_KEY_FILE,
-  DELETE_DATA
-} from "../servers-data"
+  DELETE_DATA,
+} from "../scenario";
 
 describe("TOTVS: Server View Configurations", () => {
   let serverTreePO: ServerTreePageObject

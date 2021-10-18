@@ -6,7 +6,7 @@ import { delay, openAdvplProject } from "../helper";
 import { PatchGeneratePageObject } from "../page-objects/patch-generate-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
-import { ADMIN_USER_DATA, LOCALHOST_DATA } from "../servers-data";
+import { ADMIN_USER_DATA, LOCALHOST_DATA } from "../scenario";
 
 describe("Patch Operations", () => {
   let serverTreePO: ServerTreePageObject;

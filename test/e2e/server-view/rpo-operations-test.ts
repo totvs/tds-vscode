@@ -9,12 +9,12 @@ import { RepositoryLogPageObject } from "../page-objects/repository-log-po"
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po"
 import { ServerTreePageObject } from "../page-objects/server-tree-po"
 import { WorkbenchPageObject } from "../page-objects/workbench-po"
-import { ADMIN_USER_DATA, LOCALHOST_DATA } from "../servers-data"
+import { ADMIN_USER_DATA, LOCALHOST_DATA } from "../scenario";
 
 describe("RPO Operations", () => {
-  let workbenchPO: WorkbenchPageObject
-  let serverTreePO: ServerTreePageObject
-  let serverItemPO: ServerTreeItemPageObject
+  let workbenchPO: WorkbenchPageObject;
+  let serverTreePO: ServerTreePageObject;
+  let serverItemPO: ServerTreeItemPageObject;
 
   before(async () => {
     await openAdvplProject();
@@ -28,9 +28,7 @@ describe("RPO Operations", () => {
     await delay();
   });
 
-  after(function () {
-
-  });
+  after(function () {});
 
   beforeEach(async () => {
     await delay();
@@ -43,73 +41,73 @@ describe("RPO Operations", () => {
   });
 
   afterEach(async () => {
-    await delay()
-    await serverItemPO.fireDisconnectAction()
-  })
+    await delay();
+    await serverItemPO.fireDisconnectAction();
+  });
 
   it("Check Integrity", async () => {
-    await serverItemPO.fireCheckIntegrity()
+    await serverItemPO.fireCheckIntegrity();
 
-    await workbenchPO.waitCheckIntegrity()
-    await delay()
+    await workbenchPO.waitCheckIntegrity();
+    await delay();
 
-    const notification: Notification = await workbenchPO.waitNotification(
-      "RPO intact."
-    )
+    const notification: Notification = await workbenchPO.getNotification(
+      /RPO intact/
+    );
 
-    expect(notification).not.is.undefined
-  })
+    expect(notification).not.is.undefined;
+  });
 
   it("Revalidate", async () => {
-    await serverItemPO.fireRevalidate()
+    await serverItemPO.fireRevalidate();
 
-    await workbenchPO.waitRevalidate()
-    await delay()
+    await workbenchPO.waitRevalidate();
+    await delay();
 
-    // const notification: Notification = await workbenchPO.waitNotification(
-    //   "RPO could not be revalidated."
+    // const notification: Notification = await workbenchPO.getNotification(
+    //   /RPO could not be revalidated/
     // );
 
-    const notification: Notification = await workbenchPO.waitNotification(
-      "End build aborted"
-    )
+    const notification: Notification = await workbenchPO.getNotification(
+      /End build aborted/
+    );
 
-    expect(notification).not.is.undefined
-  })
+    expect(notification).not.is.undefined;
+  });
 
   it("Repository Log", async () => {
     // testa apenas a abertura do diálogo
-    await serverItemPO.fireRepositoryLog()
+    await serverItemPO.fireRepositoryLog();
 
     const repositoryLogPO: RepositoryLogPageObject =
-      new RepositoryLogPageObject()
+      new RepositoryLogPageObject();
 
-    expect(await repositoryLogPO.isOpen()).is.true
+    expect(await repositoryLogPO.isOpen()).is.true;
 
-    await repositoryLogPO.close()
-  })
+    await repositoryLogPO.close();
+  });
 
   it("Objects Inspector", async () => {
     // testa apenas a abertura do diálogo
-    await serverItemPO.fireObjectsInspector()
+    await serverItemPO.fireObjectsInspector();
 
     const objectInspectorPO: ObjectsInspectorPageObject =
-      new ObjectsInspectorPageObject()
+      new ObjectsInspectorPageObject();
 
-    expect(await objectInspectorPO.isOpen()).is.true
+    expect(await objectInspectorPO.isOpen()).is.true;
 
-    await objectInspectorPO.close()
-  })
+    await objectInspectorPO.close();
+  });
 
   it("Functions Inspector", async () => {
     // testa apenas a abertura do diálogo
-    await serverItemPO.fireFunctionsInspector()
+    await serverItemPO.fireFunctionsInspector();
 
     const functionsInspectorPO: FunctionsInspectorPageObject =
-      new FunctionsInspectorPageObject()
+      new FunctionsInspectorPageObject();
 
-    expect(await functionsInspectorPO.isOpen()).is.true
+    expect(await functionsInspectorPO.isOpen()).is.true;
 
-    await functionsInspectorPO.close()
-  })
-})
+    await functionsInspectorPO.close();
+  });
+});

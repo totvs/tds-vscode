@@ -5,49 +5,50 @@ import {
   ViewContent,
   Notification
 } from "vscode-extension-tester"
-import { avoidsBacksliding, openAdvplProject } from "../helper"
-import { ServerTreePageObject } from "../page-objects/server-tree-po"
-import { WorkbenchPageObject } from "../page-objects/workbench-po"
-import { DELETE_DATA, LOCALHOST_DATA } from "../servers-data"
+import { avoidsBacksliding, delay, openAdvplProject } from "../helper";
+import { ServerTreePageObject } from "../page-objects/server-tree-po";
+import { WorkbenchPageObject } from "../page-objects/workbench-po";
+import { DELETE_DATA, LOCALHOST_DATA } from "../scenario";
 
 describe("TOTVS: Server View", () => {
-  let view: SideBarView
-  let serverTreePO: ServerTreePageObject
-  let workbenchPO: WorkbenchPageObject
+  let view: SideBarView;
+  let serverTreePO: ServerTreePageObject;
+  let workbenchPO: WorkbenchPageObject;
 
   before(async () => {
-    await openAdvplProject()
+    await openAdvplProject();
 
-    workbenchPO = new WorkbenchPageObject()
-    serverTreePO = new ServerTreePageObject()
-    view = await serverTreePO.openView()
-  })
+    workbenchPO = new WorkbenchPageObject();
+    serverTreePO = new ServerTreePageObject();
+    view = await serverTreePO.openView();
+  });
 
-  after(async () => {})
+  after(async () => {});
 
   it("No Servers", async () => {
-    const content: ViewContent = view.getContent()
-    const text: string = await content.getText()
+    const content: ViewContent = view.getContent();
+    const text: string = await content.getText();
 
-    expect(text).is.empty
-  })
+    expect(text).is.empty;
+  });
 
   it("Add Local Server", async () => {
-    await serverTreePO.addNewServer(LOCALHOST_DATA)
+    await serverTreePO.addNewServer(LOCALHOST_DATA);
 
-    const notification: Notification = await workbenchPO.waitNotification(
-      "Saved server"
-    )
-    expect(notification).not.is.undefined
-  })
+    const notification: Notification = await workbenchPO.getNotification(
+      /Saved server/
+    );
+
+    expect(notification).not.is.undefined;
+  });
 
   it("Remove Server", async () => {
-    await avoidsBacksliding()
-    await serverTreePO.addNewServer(DELETE_DATA)
-
-    await serverTreePO.removeServer(DELETE_DATA.serverName)
+    await avoidsBacksliding();
+    await serverTreePO.addNewServer(DELETE_DATA);
+    await delay(2000);
+    await serverTreePO.removeServer(DELETE_DATA.serverName);
 
     expect(await serverTreePO.getServerTreeItem(DELETE_DATA.serverName)).is
-      .undefined
-  })
-})
+      .undefined;
+  });
+});
