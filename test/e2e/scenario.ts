@@ -13,7 +13,7 @@ const scenarioDefault: string = path.join(
   "scenario",
   "default.json"
 );
-let values: any = readJsonSync(scenarioDefault);
+let values: any;
 let scenarioFile: string = scenarioDefault;
 
 if (process.env.SCENARIO) {
@@ -23,8 +23,9 @@ if (process.env.SCENARIO) {
     process.env.SCENARIO.trim()
   );
 
-  const custom: any = readJsonSync(scenarioFile);
-  values = jsonMerger.mergeObjects([values, custom]);
+  values = jsonMerger.mergeFiles([scenarioDefault, scenarioFile]);
+} else {
+  values = readJsonSync(scenarioDefault);
 }
 
 console.log("--------------------------------------");
