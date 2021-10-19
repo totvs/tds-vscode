@@ -34,10 +34,6 @@ describe("TOTVS: Server View Configurations", () => {
     await delay();
   });
 
-  afterEach(async () => {
-    await delay(5000);
-  });
-
   it("Include (change)", async () => {
     const includePO: IncludePageObject = new IncludePageObject();
     await serverItemPO.fireInclude();

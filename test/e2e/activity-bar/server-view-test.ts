@@ -1,16 +1,16 @@
 import { expect } from "chai"
-import { describe, before, it, after } from "mocha"
+import { describe, before, it } from "mocha";
 import {
   SideBarView,
   ViewContent,
-  Notification
-} from "vscode-extension-tester"
+  Notification,
+} from "vscode-extension-tester";
 import { avoidsBacksliding, delay, openAdvplProject } from "../helper";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { DELETE_DATA, APPSERVER_DATA } from "../scenario";
 
-describe("TOTVS: Server View", () => {
+describe.only("TOTVS: Server View", () => {
   let view: SideBarView;
   let serverTreePO: ServerTreePageObject;
   let workbenchPO: WorkbenchPageObject;
