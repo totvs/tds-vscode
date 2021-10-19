@@ -110,11 +110,6 @@ export class ServerTreeItemPageObject {
     await fireContextMenuAction(this.serverTreeItem, "RPO check integrity");
   }
 
-  async fireRevalidate(): Promise<void> {
-    await this.select();
-    await fireContextMenuAction(this.serverTreeItem, "Revalidate RPO");
-  }
-
   async fireRepositoryLog(): Promise<void> {
     await this.select();
     await fireContextMenuAction(this.serverTreeItem, "Repository Log");

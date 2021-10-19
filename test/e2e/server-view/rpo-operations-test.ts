@@ -52,24 +52,7 @@ describe("RPO Operations", () => {
     await delay();
 
     const notification: Notification = await workbenchPO.getNotification(
-      /RPO intact/
-    );
-
-    expect(notification).not.is.undefined;
-  });
-
-  it("Revalidate", async () => {
-    await serverItemPO.fireRevalidate();
-
-    await workbenchPO.waitRevalidate();
-    await delay();
-
-    // const notification: Notification = await workbenchPO.getNotification(
-    //   /RPO could not be revalidated/
-    // );
-
-    const notification: Notification = await workbenchPO.getNotification(
-      /End build aborted/
+      /RPO [intact|incomplete]/
     );
 
     expect(notification).not.is.undefined;

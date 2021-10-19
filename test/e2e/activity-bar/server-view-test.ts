@@ -4,13 +4,14 @@ import {
   SideBarView,
   ViewContent,
   Notification,
+  ViewSection,
 } from "vscode-extension-tester";
 import { avoidsBacksliding, delay, openAdvplProject } from "../helper";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { DELETE_DATA, APPSERVER_DATA } from "../scenario";
 
-describe.only("TOTVS: Server View", () => {
+describe("TOTVS: Server View", () => {
   let view: SideBarView;
   let serverTreePO: ServerTreePageObject;
   let workbenchPO: WorkbenchPageObject;
@@ -25,9 +26,9 @@ describe.only("TOTVS: Server View", () => {
 
   it("No Servers", async () => {
     const content: ViewContent = view.getContent();
-    const text: string = await content.getText();
+    const sections: ViewSection[] = await content.getSections();
 
-    expect(text).is.empty;
+    expect(await sections[0].getVisibleItems()).is.empty;
   });
 
   it("Add Local Server", async () => {

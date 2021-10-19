@@ -11,7 +11,6 @@ import {
   ViewControl,
   ViewTitlePart,
   TitleActionButton,
-  NotificationType,
 } from "vscode-extension-tester";
 import { delay } from "../helper";
 import { IServerData, IUserData } from "./interface-po";
