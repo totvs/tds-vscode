@@ -1,4 +1,4 @@
-import React, { useReducer, RefObject } from "react";
+import React, { RefObject } from "react";
 import {
   makeStyles,
   useTheme,
@@ -283,10 +283,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     });
   };
 
-  const handleChangePage = (
-    _event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
+  const handleChangePage = (newPage: number) => {
     setOpenWaitPage(true);
     let command: ICommand = {
       action: CommandToDA.ChangePage,
@@ -580,7 +577,6 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
       <TablePagination
         className={tableClasses.pagination}
         rowsPerPageOptions={[100, 500, 1000, 2000, 3000, 5000]}
-        component="div"
         count={parseInt(jsonBody.totalItems)}
         rowsPerPage={jsonBody.itemsPerPage}
         page={jsonBody.currentPage}
@@ -588,12 +584,9 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           inputProps: { "aria-label": "rows per page" },
           native: true,
         }}
-        //onChangePage={handleChangePage}
-        //onChangeRowsPerPage={handleChangeRowsPerPage}
-        //As versoes mais novas do @material/core usam as propriedades abaixo, porem por problemas de compatibilidade
-        //entre a versai mais nova do "@material-ui/core" e do material-table: 1.69.3, é necesaario manter o "@material-ui/core" na versao 4.11.4,
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
+        onPageChange={(event, value) => handleChangePage(value)}
+        onChangePage={(event, value) => handleChangePage(value)}
+        onRowsPerPageChange={(event) => handleChangeRowsPerPage(event)}
         ActionsComponent={TablePaginationActions}
       />
       <FormControlLabel
