@@ -1,12 +1,11 @@
-import { EditorView, TextEditor } from "vscode-extension-tester"
-import { AbstractEditorPageObject, AbstractPageObject } from "./abstract-po"
+import { AbstractEditorPageObject } from "./abstract-editor-po";
 
 export class RepositoryLogPageObject extends AbstractEditorPageObject {
-  constructor () {
-    super("Repository Log")
+  constructor() {
+    super("Repository Log");
   }
 
-  async fillRepositoryLogPage (
+  async fillRepositoryLogPage(
     data: any // ICompileKeyData
   ) {
     // await this.beginWebView();

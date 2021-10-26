@@ -1,11 +1,11 @@
-import { AbstractEditorPageObject } from "./abstract-po"
+import { AbstractEditorPageObject } from "./abstract-editor-po";
 
 export class ObjectsInspectorPageObject extends AbstractEditorPageObject {
-  constructor () {
-    super("Objects Inspector")
+  constructor() {
+    super("Objects Inspector");
   }
 
-  async fillRepositoryLogPage (
+  async fillRepositoryLogPage(
     data: any // ICompileKeyData
   ) {
     // await this.beginWebView();

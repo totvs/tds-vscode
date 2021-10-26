@@ -1,4 +1,9 @@
-import { EditorView, TextEditor, WebElement } from "vscode-extension-tester";
+import {
+  By,
+  EditorView,
+  TextEditor,
+  WebElement,
+} from "vscode-extension-tester";
 import { delay } from "../helper";
 
 export class AbstractEditorPageObject {
