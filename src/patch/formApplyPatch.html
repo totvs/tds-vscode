@@ -1,230 +1,239 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>${d.localize["tds.webview.patch.apply"]}</title><!--Patch Apply-->
+	<title>${d.localize["tds.webview.patch.apply"]}</title>
+	<!--Patch Apply-->
 </head>
-	<style>
-		${d.css}
-	</style>
-	<!--<link rel="stylesheet" type="text/css" href="../../resources/css/table_materialize.css">-->
+<style>
+	${d.css}
+</style>
+<!--<link rel="stylesheet" type="text/css" href="../../resources/css/table_materialize.css">-->
+
 <body>
 	<div class="mainContainer">
-			<div class="formWrap"
-				style="background-image: none;">
+		<div class="formWrap" style="background-image: none;">
 
-				<form name="form_init" id="form_init" onsubmit="save()">
+			<form name="form_init" id="form_init" onsubmit="save()">
 
-						<div class="logo">
-								<span class="formTitle">${d.localize["tds.webview.patch.apply"]}</span><!--Patch Apply-->
-						</div>
+				<div class="logo">
+					<span class="formTitle">${d.localize["tds.webview.patch.apply"]}</span>
+					<!--Patch Apply-->
+				</div>
 
-						<div class="wrap-input">
-							<label for="serverName">${d.localize["tds.webview.server.name"]}</label><!--Server Name-->
-							<input class="inputText" type="text" id="serverNameID" name="serverName" disabled>
-						</div>
+				<div class="wrap-input">
+					<label for="serverName">${d.localize["tds.webview.server.name"]}</label>
+					<!--Server Name-->
+					<input class="inputText" type="text" id="serverNameID" name="serverName" disabled>
+				</div>
 
-						<div class="wrap-input">
-							<label for="serverAddress">${d.localize["tds.webview.address"]}</label><!--Address-->
-							<input class="inputText" type="text" id="serverAddressID" name="serverAddress" disabled>
-						</div>
+				<div class="wrap-input">
+					<label for="serverAddress">${d.localize["tds.webview.address"]}</label>
+					<!--Address-->
+					<input class="inputText" type="text" id="serverAddressID" name="serverAddress" disabled>
+				</div>
 
-						<div class="wrap-input">
-							<label for="serverEnvironment">${d.localize["tds.webview.environment"]}</label><!--Environment-->
-							<input class="inputText" type="text" id="serverEnvironmentID" name="serverEnvironment" disabled>
-						</div>
+				<div class="wrap-input">
+					<label for="serverEnvironment">${d.localize["tds.webview.environment"]}</label>
+					<!--Environment-->
+					<input class="inputText" type="text" id="serverEnvironmentID" name="serverEnvironment" disabled>
+				</div>
 
-						<div class="wrap-input">
-							<label for="patchFile">Patch File</label>
-						<br></br>
-							<div class="material-table z-depth-3 hoverable">
-								<table id="tableInfos" class="mdl-data-table" width="100%">
-									<thead>
-										<tr class='mdl-data-table__cell--non-numeric'>
-											<th>&nbsp</th>
-											<th>${d.localize["tds.webview.col01"]}</th>
-											<th>${d.localize["tds.webview.col02"]}</th>
-										</tr>
-									</thead>
-									<tbody>
-									</tbody>
-								</table>
-							</div>
-						</div>
-						<input class="inputText" type="file" accept='.ptm,.zip,.upd' id="btn-File" name="btn-File" onchange="setTextArea(event)" multiple/>
-
-						<div class="wrap-input">
-							<label for="ApplyOld">${d.localize["tds.webview.applyOld"]}</label>
-							<!--Apply fontes mais antigos -->
-							<input class="" type="checkbox" id="ApplyOldID" name="ApplyOld">
-						</div>
-
-						<div class="wrap-submit">
-								<input class="btn-submit" readonly style="cursor: pointer;" id="submitID" value="Apply" onclick="patchApply(false);"/>
-						</div>
-
-						<div class="wrap-submit">
-							<input class="btn-submit" readonly style="cursor: pointer;" id="submitID" value="Apply/Close" onclick="patchApply(true);"/>
+				<div class="wrap-input">
+					<label for="patchFile">Patch File</label>
+					<br></br>
+					<div class="material-table z-depth-3 hoverable">
+						<table id="tableInfos" class="mdl-data-table" width="100%">
+							<thead>
+								<tr class='mdl-data-table__cell--non-numeric'>
+									<th>&nbsp</th>
+									<th>${d.localize["tds.webview.col01"]}</th>
+									<th>${d.localize["tds.webview.col02"]}</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
 					</div>
+				</div>
+				<input class="inputText" type="file" accept='.ptm,.zip,.upd' id="btn-File" name="btn-File"
+					onchange="setTextArea(event)" multiple />
 
-					</form>
-			</div>
+				<div class="wrap-input">
+					<label for="ApplyOld">${d.localize["tds.webview.applyOld"]}</label>
+					<!--Apply fontes mais antigos -->
+					<input class="" type="checkbox" id="ApplyOldID" name="ApplyOld">
+				</div>
+
+				<div class="wrap-submit">
+					<input class="btn-submit" readonly style="cursor: pointer;" id="submitID" value="Apply"
+						onclick="patchApply(false);" />
+				</div>
+
+				<div class="wrap-submit">
+					<input class="btn-submit" readonly style="cursor: pointer;" id="submitCloseID" value="Apply/Close"
+						onclick="patchApply(true);" />
+				</div>
+
+			</form>
 		</div>
+	</div>
 </body>
 <script>
-		${d.script}
-		const vscode = acquireVsCodeApi();
-		var tableAPI = $('#tableInfos').dataTable({
-			ordering: false,
-			scrollX: true,
-			select: true,
-			rowReorder: true,
-			columnDefs: [
-				{
-					targets: [1, 2],
-					className: 'mdl-data-table__cell--non-numeric tableColor'
+		${ d.script }
+	const vscode = acquireVsCodeApi();
+	var tableAPI = $('#tableInfos').dataTable({
+		ordering: false,
+		scrollX: true,
+		select: true,
+		rowReorder: true,
+		columnDefs: [
+			{
+				targets: [1, 2],
+				className: 'mdl-data-table__cell--non-numeric tableColor'
+			},
+			{
+				targets: [0],
+				className: 'tableColor totvs-col-reorder'
+			},
+			{
+				orderable: true,
+				className: 'reorder',
+				targets: [1, 2]
+			}
+		],
+		dom: 'Bfrtip',
+		buttons: [
+			{
+				text: 'Delete Selected',
+				className: "btn-submit",
+				exportOptions: {
+					modifier: {
+						selected: null
+					}
 				},
-				{
-					targets: [0],
-					className: 'tableColor totvs-col-reorder'
-				},
-				{
-					orderable: true,
-					className: 'reorder',
-					targets: [1,2]
+				action: function (e, dt, node, config) {
+					tableAPI.rows('.selected').remove().draw();
 				}
-			],
-			dom: 'Bfrtip',
-			buttons: [
-				{
-					text: 'Delete Selected',
-					className: "btn-submit",
-					exportOptions: {
-						modifier: {
-							selected: null
-						}
-					},
-					action: function (e, dt, node, config) {
-						tableAPI.rows('.selected').remove().draw();
+			},
+			{
+				text: 'Patch Validate',
+				className: "btn-submit",
+				exportOptions: {
+					modifier: {
+						selected: null
 					}
 				},
-				{
-					text: 'Patch Validate',
-					className: "btn-submit",
-					exportOptions: {
-						modifier: {
-							selected: null
-						}
-					},
-					action: function (e, dt, node, config) {
-						var data = tableAPI.row('.selected').data();
+				action: function (e, dt, node, config) {
+					var data = tableAPI.row('.selected').data();
 
-						vscode.postMessage({
-							command: 'patchValidate',
-							file: data[2]
-						});
-					}
-				},
-				{
-					text: 'Patch Info',
-					className: "btn-submit",
-					exportOptions: {
-						modifier: {
-							selected: null
-						}
-					},
-					action: function (e, dt, node, config) {
-						var data = tableAPI.row('.selected').data();
-
-						vscode.postMessage({
-							command: 'patchInfo',
-							file: data[2]
-						});
-					}
+					vscode.postMessage({
+						command: 'patchValidate',
+						file: data[2]
+					});
 				}
-			]
-		}).api();
+			},
+			{
+				text: 'Patch Info',
+				className: "btn-submit",
+				exportOptions: {
+					modifier: {
+						selected: null
+					}
+				},
+				action: function (e, dt, node, config) {
+					var data = tableAPI.row('.selected').data();
 
-		function patchApply(close) {
-				var patchs = tableAPI.data();
-				var completePaths = new Array();
-				for (var i = 0; i < patchs.length; i++) {
-					completePaths.push(patchs[i][2]);
-				};
+					vscode.postMessage({
+						command: 'patchInfo',
+						file: data[2]
+					});
+				}
+			}
+		]
+	}).api();
 
-				let applyOld = document.getElementById('ApplyOldID').checked;
+	function patchApply(close) {
+		var patchs = tableAPI.data();
+		var completePaths = new Array();
+		for (var i = 0; i < patchs.length; i++) {
+			completePaths.push(patchs[i][2]);
+		};
 
+		let applyOld = document.getElementById('ApplyOldID').checked;
+
+		vscode.postMessage({
+			command: 'patchApply',
+			patchFile: completePaths,
+			applyOld: applyOld,
+			close: close
+		});
+	}
+
+	window.addEventListener('message', event => {
+		const message = event.data; // The JSON data our extension sent
+		switch (message.command) {
+			case 'setCurrentServer':
+				const server = message.serverCurrent;
+				document.getElementById('serverNameID').value = server.name;
+				document.getElementById('serverAddressID').value = server.address + ":" + server.port;
+				document.getElementById('serverEnvironmentID').value = server.environment
+				break;
+			case 'addFilepath':
+				addFile(message.file);
+				break;
+		}
+	});
+
+	function setTextArea(event) {
+		const input = event.target;
+		const files = input.files;
+
+		for (var i = 0; i < files.length; i++) {
+			addFile(files[i].path);
+		}
+	}
+
+	function addFile(filePath) {
+		const fnProc = function (filename, fullPath) {
+			if (!searchPatch(fullPath)) {
+				row = new Array('&#8942;', filename, fullPath);
+				tableAPI.row.add(row).draw();
+			} else {
 				vscode.postMessage({
-					command: 'patchApply',
-					patchFile: completePaths,
-					applyOld: applyOld,
-					close: close
+					command: 'showDuplicateWarning',
+					filename: filename
 				});
 			}
+		}
 
-			window.addEventListener('message', event => {
-				const message = event.data; // The JSON data our extension sent
-				switch (message.command) {
-					case 'setCurrentServer':
-						const server = message.serverCurrent;
-						document.getElementById('serverNameID').value = server.name;
-						document.getElementById('serverAddressID').value = server.address + ":" + server.port;
-						document.getElementById('serverEnvironmentID').value = server.environment
-						break;
-					case 'addFilepath':
-						addFile(message.file);
-						break;
-				}
-			});
+		var fullPath = filePath;
+		var filename = fullPath.substring(fullPath.lastIndexOf('\\\\') + 1);
+		var ext = filename.substring(filename.length - 3).toLowerCase();
 
-			function setTextArea(event) {
-				const input = event.target;
-				const files = input.files;
+		if (ext === 'zip') {
+			vscode.postMessage({
+				command: 'extractPatchsFiles',
+				files: [fullPath]
+			})
+		} else {
+			fnProc(filename, fullPath);
+		}
+	}
 
-				for (var i = 0; i < files.length; i++) {
-					addFile(files[i].path);
-				}
+	function searchPatch(fullPath) {
+		var patchs = tableAPI.data();
+
+		for (var i = 0; i < patchs.length; i++) {
+			if (patchs[i][1] == fullPath) {
+				return true;
 			}
+		};
 
-			function addFile(filePath) {
-				const fnProc = function(filename, fullPath) {
-					if (!searchPatch(fullPath)) {
-						row = new Array('&#8942;', filename, fullPath);
-						tableAPI.row.add(row).draw();
-					} else {
-						vscode.postMessage({
-							command: 'showDuplicateWarning',
-							filename: filename
-						});
-					}
-				}
-
-				var fullPath = filePath;
-				var filename = fullPath.substring(fullPath.lastIndexOf('\\\\') + 1);
-				var ext = filename.substring(filename.length - 3).toLowerCase();
-
-				if (ext === 'zip') {
-					vscode.postMessage({
-						command: 'extractPatchsFiles',
-						files: [fullPath]
-					})
-				} else {
-					fnProc(filename, fullPath);
-				}
-			}
-
-			function searchPatch(fullPath) {
-				var patchs = tableAPI.data();
-
-				for (var i = 0; i < patchs.length; i++) {
-					if (patchs[i][1] == fullPath) {
-						return true;
-					}
-				};
-
-				return false;
-			}
+		return false;
+	}
 </script>
 
 </html>
