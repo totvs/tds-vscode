@@ -1,4 +1,4 @@
-import { expect } from "chai"
+import { expect } from "chai";
 import { By, TreeItem, ViewItemAction } from "vscode-extension-tester";
 import {
   delay,
@@ -131,5 +131,10 @@ export class ServerTreeItemPageObject {
       this.serverTreeItem,
       "Patch Generation (from RPO)"
     );
+  }
+
+  async fireApplyPatchAction(): Promise<void> {
+    await this.select();
+    await fireContextMenuAction(this.serverTreeItem, "Patch Apply");
   }
 }

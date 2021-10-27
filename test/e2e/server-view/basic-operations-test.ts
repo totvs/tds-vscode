@@ -1,16 +1,16 @@
-import { expect } from "chai"
-import { describe, before, it } from "mocha"
-import { Notification, WebView } from "vscode-extension-tester"
+import { expect } from "chai";
+import { describe, before, it } from "mocha";
+import { Notification, WebView } from "vscode-extension-tester";
 import {
   delay,
   fillEnvironment,
   fillUserdata,
-  openAdvplProject
-} from "../helper"
-import { ServerPageObject } from "../page-objects/server-po"
-import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po"
-import { ServerTreePageObject } from "../page-objects/server-tree-po"
-import { WorkbenchPageObject } from "../page-objects/workbench-po"
+  openAdvplProject,
+} from "../helper";
+import { ServerPageObject } from "../page-objects/server-po";
+import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
+import { ServerTreePageObject } from "../page-objects/server-tree-po";
+import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, DELETE_DATA, APPSERVER_DATA } from "../scenario";
 
 describe("TOTVS: Server View Basic Operations", () => {

@@ -1,14 +1,14 @@
 /* eslint-disable no-undef */
-import { expect } from "chai"
-import { describe, before, it } from "mocha"
-import { Notification } from "vscode-extension-tester"
-import { delay, openAdvplProject } from "../helper"
-import { FunctionsInspectorPageObject } from "../page-objects/functions-inspector-po"
-import { ObjectsInspectorPageObject } from "../page-objects/objects-inspector-po"
-import { RepositoryLogPageObject } from "../page-objects/repository-log-po"
-import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po"
-import { ServerTreePageObject } from "../page-objects/server-tree-po"
-import { WorkbenchPageObject } from "../page-objects/workbench-po"
+import { expect } from "chai";
+import { describe, before, it } from "mocha";
+import { Notification } from "vscode-extension-tester";
+import { delay, openAdvplProject } from "../helper";
+import { FunctionsInspectorPageObject } from "../page-objects/functions-inspector-po";
+import { ObjectsInspectorPageObject } from "../page-objects/objects-inspector-po";
+import { RepositoryLogPageObject } from "../page-objects/repository-log-po";
+import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
+import { ServerTreePageObject } from "../page-objects/server-tree-po";
+import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA } from "../scenario";
 
 describe("RPO Operations", () => {

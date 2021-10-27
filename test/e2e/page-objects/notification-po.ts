@@ -1,9 +1,7 @@
 import {
-  StatusBar,
   VSBrowser,
   Notification,
   Workbench,
-  NotificationsCenter,
   NotificationType,
 } from "vscode-extension-tester";
 import { delay } from "../helper";

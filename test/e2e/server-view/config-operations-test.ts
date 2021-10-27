@@ -1,14 +1,14 @@
-import { expect } from "chai"
-import { describe, before, it, afterEach } from "mocha"
-import { EditorView, TextEditor } from "vscode-extension-tester"
+import { expect } from "chai";
+import { describe, before, it, afterEach } from "mocha";
+import { EditorView, TextEditor } from "vscode-extension-tester";
 import {
   avoidsBacksliding,
   delay,
   readServersJsonFile,
-  openAdvplProject
-} from "../helper"
-import { CompileKeyPageObject } from "../page-objects/compile-key-po"
-import { IncludePageObject } from "../page-objects/include-po"
+  openAdvplProject,
+} from "../helper";
+import { CompileKeyPageObject } from "../page-objects/compile-key-po";
+import { IncludePageObject } from "../page-objects/include-po";
 import { ICompileKeyData } from "../page-objects/interface-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
@@ -111,7 +111,7 @@ describe("TOTVS: Server View Configurations", () => {
     expect(await compileKeyPO.isValidKey()).is.true;
     await compileKeyPO.fireSave(true);
 
-    expect(await workbenchPO.isLoggedIn()).is.true;
+    expect(await workbenchPO.isHaveKey()).is.true;
   });
 
   it("Compile key (clear)", async () => {
@@ -133,6 +133,6 @@ describe("TOTVS: Server View Configurations", () => {
     await compileKeyPO.fireSave(true);
 
     expect(newValue.token).is.empty;
-    expect(await workbenchPO.isNotLoggedIn()).is.true;
+    expect(await workbenchPO.isNotHaveKey()).is.true;
   });
 });

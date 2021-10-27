@@ -44,18 +44,12 @@ export class WorkbenchPageObject {
     );
   }
 
-  async isLoggedIn(): Promise<boolean> {
-    return (
-      (await this.statusBar.statusBarWithText(/Permissions: Logged in/)) !==
-      null
-    );
+  async isHaveKey(): Promise<boolean> {
+    return (await this.statusBar.statusBarWithText(/HAVE key/)) !== null;
   }
 
-  async isNotLoggedIn(): Promise<boolean> {
-    return (
-      (await this.statusBar.statusBarWithText(/Permissions: NOT logged in/)) !==
-      null
-    );
+  async isNotHaveKey(): Promise<boolean> {
+    return (await this.statusBar.statusBarWithText(/NOT key/)) !== null;
   }
 
   private async waitProcessFinish(
@@ -94,32 +88,22 @@ export class WorkbenchPageObject {
 
   async waitReconnection(wait: number = 30000): Promise<void> {
     await this.waitProcessFinish(/Reconnecting to the server/);
-    // if (
-    //   (await this.statusBar.statusBarWithText(/.*Reconnecting to the server*./),
-    //   wait) === null
-    // ) {
-    //   throw new Error(`Connection process timeout (${wait})ms`);
-    // }
   }
 
   async waitCheckIntegrity(wait: number = 30000): Promise<void> {
     await this.waitProcessFinish(/Reconnecting to the server/);
-    // if (
-    //   (await this.statusBar.statusBarWithText(/Checking RPO integrity/),
-    //   wait) === null
-    // ) {
-    //   throw new Error(`Check Integrity process timeout (${wait})ms`);
-    // }
   }
 
   async waitRevalidate(wait: number = 30000): Promise<void> {
     await this.waitProcessFinish(/Revalidating RPO/);
-    // if (
-    //   (await this.statusBar.statusBarWithText(/Revalidating RPO/), wait) ===
-    //   null
-    // ) {
-    //   throw new Error(`Revalidate process timeout (${wait})ms`);
-    // }
+  }
+
+  async waitRpoLoaded(wait: number = 30000): Promise<void> {
+    await this.waitProcessFinish(/Loading RPO content/);
+  }
+
+  async waitApplyPatch() {
+    throw new Error("Method not implemented.");
   }
 
   async getNotification(

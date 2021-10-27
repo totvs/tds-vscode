@@ -6,15 +6,18 @@ import { delay, openAdvplProject } from "../helper";
 import { PatchGeneratePageObject } from "../page-objects/patch-generate-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
+import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA } from "../scenario";
 
-describe("Patch Operations", () => {
+describe("Patch Operations (forms)", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
+  let workbenchPO: WorkbenchPageObject;
 
   before(async () => {
     await openAdvplProject();
 
+    workbenchPO = new WorkbenchPageObject();
     serverTreePO = new ServerTreePageObject();
     serverTreePO.openView();
 
@@ -39,14 +42,14 @@ describe("Patch Operations", () => {
     serverItemPO = null;
   });
 
-  describe("Form Filling Test (no patch file generate)", () => {
-    it("Patch Generation (from RPO)", async () => {
+  describe("Form Filling Test", () => {
+    it("From RPO", async () => {
       await serverItemPO.firePatchGenerationFromRPOAction();
 
       const patchGeneratePO: PatchGeneratePageObject =
         new PatchGeneratePageObject();
 
-      //expect(await patchGeneratePO.isOpen()).is.true;
+      await workbenchPO.waitRpoLoaded();
 
       const result: string = await patchGeneratePO.applyFilterInput("*");
       expect(result).not.equal("");
@@ -55,6 +58,7 @@ describe("Patch Operations", () => {
 
       await patchGeneratePO.selectLeftOption(options[0]);
       await patchGeneratePO.beginWebView();
+
       const selectRight: WebElement = await patchGeneratePO.findElement(
         "SelectR"
       );
