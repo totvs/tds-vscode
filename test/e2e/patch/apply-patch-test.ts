@@ -8,7 +8,7 @@ import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA, PATCHS_FILES } from "../scenario";
 import { Notification } from "vscode-extension-tester";
 
-describe.only("Patch Operations", () => {
+describe("Patch Operations", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
