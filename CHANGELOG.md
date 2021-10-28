@@ -8,7 +8,7 @@
 
 ## Aplicação de pacotes (#820)
 
-- Correção no processo de aplicação de pacotes e ajustes visuais
+- Correção no processo de aplicação de pacotes e ajustes visuais.
 
 # Versão [1.3.4]
 
