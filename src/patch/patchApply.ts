@@ -176,6 +176,7 @@ export function patchApply(
                 break;
 
               case "patchValidate":
+                if (message.file){
                 vscode.window.showInformationMessage("PatchValidate");
                 const validateArgs = {
                   fsPath: message.file,
@@ -183,10 +184,13 @@ export function patchApply(
                 vscode.commands.executeCommand(
                   "totvs-developer-studio.patchValidate.fromFile",
                   validateArgs
-                );
+                );} else {
+                vscode.window.showInformationMessage(localize("tds.webview.patch.apply.select.file", "Select a file for operation."));
+                }
                 break;
 
               case "patchInfo":
+                if (message.file){
                 const args = {
                   fsPath: message.file,
                 };
@@ -194,6 +198,9 @@ export function patchApply(
                   "totvs-developer-studio.patchInfos.fromFile",
                   args
                 );
+                } else {
+                vscode.window.showInformationMessage(localize("tds.webview.patch.apply.select.file", "Select a file for operation."));
+                }
                 break;
             }
           },

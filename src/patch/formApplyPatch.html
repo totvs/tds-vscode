@@ -82,7 +82,7 @@
 	</div>
 </body>
 <script>
-		${ d.script }
+	${ d.script }
 	const vscode = acquireVsCodeApi();
 	var tableAPI = $('#tableInfos').dataTable({
 		ordering: false,
@@ -128,11 +128,17 @@
 				},
 				action: function (e, dt, node, config) {
 					var data = tableAPI.row('.selected').data();
-
-					vscode.postMessage({
-						command: 'patchValidate',
-						file: data[2]
-					});
+					if (data) {
+						vscode.postMessage({
+							command: 'patchValidate',
+							file: data[2]
+						});
+					} else {
+						vscode.postMessage({
+							command: 'patchValidate',
+							file: null
+						});
+					}
 				}
 			},
 			{
@@ -145,11 +151,17 @@
 				},
 				action: function (e, dt, node, config) {
 					var data = tableAPI.row('.selected').data();
-
-					vscode.postMessage({
-						command: 'patchInfo',
-						file: data[2]
-					});
+					if (data) {
+						vscode.postMessage({
+							command: 'patchInfo',
+							file: data[2]
+						});
+					} else {
+						vscode.postMessage({
+							command: 'patchInfo',
+							file: null
+						});
+					}
 				}
 			}
 		]

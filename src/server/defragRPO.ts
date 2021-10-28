@@ -22,7 +22,7 @@ export function defragRpo() {
       .showWarningMessage(
         localize(
           "tds.vscode.defrag.rpo",
-          "${~spin} Are you sure defrag the RPO? (Process may take some time)"
+          "Are you sure defrag the RPO? (Process may take some time)"
         ),
         localize("tds.vscode.yes", "Yes"),
         localize("tds.vscode.no", "No")
@@ -49,11 +49,11 @@ export function defragRpo() {
                 vscode.window.showErrorMessage(err.message);
               }
             );
-          vscode.window.setStatusBarMessage(
+          vscode.window.setStatusBarMessage(`$(~spin)${
             localize(
               "tds.vscode.servernotconnected",
               "Defragmenting RPO (process may take some time)"
-            ),
+            )}`,
             exec
           );
         }
