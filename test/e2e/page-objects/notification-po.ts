@@ -27,7 +27,6 @@ export class NotificationPageObject {
 
   async getNotification(
     targetText: RegExp | string,
-    dimiss: boolean,
     type: NotificationType,
     _wait: number = 1000
   ): Promise<Notification | undefined> {
@@ -51,10 +50,6 @@ export class NotificationPageObject {
       });
 
       steps--;
-    }
-
-    if (result && dimiss) {
-      result.dismiss();
     }
 
     return result;

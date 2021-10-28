@@ -1,4 +1,4 @@
-import { expect } from "chai"
+import { expect } from "chai";
 import {
   ActivityBar,
   SideBarView,
@@ -62,7 +62,6 @@ export class ServerTreePageObject {
 
     const notification: Notification = await this.workbenchPO.getNotification(
       /Are you sure want to delete/,
-      false,
       2000
     );
     expect(notification).not.is.null;

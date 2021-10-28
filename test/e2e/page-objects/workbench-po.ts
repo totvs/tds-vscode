@@ -2,7 +2,6 @@ import {
   Workbench,
   Notification,
   NotificationType,
-  WebElement,
 } from "vscode-extension-tester";
 import { delay } from "../helper";
 import { NotificationPageObject } from "./notification-po";
@@ -51,26 +50,35 @@ export class WorkbenchPageObject {
   async isNotHaveKey(): Promise<boolean> {
     return (await this.statusBar.statusBarWithText(/NOT key/)) !== null;
   }
+  private async processInProgress(
+    targetText: RegExp | string
+  ): Promise<boolean> {
+    let notification: Notification = await this.getNotification(targetText);
+
+    return await notification.hasProgress();
+  }
 
   private async waitProcessFinish(
     targetText: RegExp | string,
     _wait: number = 30000
   ): Promise<Notification> {
     let steps: number = _wait / 500;
-    this.statusBar.statusBarWithText;
     let notification: Notification = await this.getNotification(targetText);
 
     if (notification) {
-      while ((await notification.hasProgress()) && steps > 0) {
-        await delay(500);
-
-        steps--;
+      try {
+        while ((await notification.hasProgress()) && steps > 0) {
+          await delay(500);
+          steps--;
+        }
+        expect(
+          notification.hasProgress(),
+          `Timeout process (${_wait}ms): ${targetText}`
+        ).is.false;
+      } catch (error) {
+        //em caso de erro, considera que é barra de progresso que é destruída
+        //quando o processo termina
       }
-
-      expect(
-        notification.hasProgress(),
-        `Timeout process (${_wait}ms): ${targetText}`
-      ).is.false;
     }
 
     return notification;
@@ -78,12 +86,6 @@ export class WorkbenchPageObject {
 
   async waitConnection(wait: number = 30000): Promise<void> {
     await this.waitProcessFinish(/Authenticating user/);
-    // if (
-    //   (await this.statusBar.statusBarWithText(/Authenticating user.*/),
-    //   wait) === null
-    // ) {
-    //   throw new Error(`Connection process timeout (${wait})ms`);
-    // }
   }
 
   async waitReconnection(wait: number = 30000): Promise<void> {
@@ -102,18 +104,20 @@ export class WorkbenchPageObject {
     await this.waitProcessFinish(/Loading RPO content/);
   }
 
+  async applyPatchInProgress() {
+    return await this.processInProgress(/Applying patch/);
+  }
+
   async waitApplyPatch() {
-    throw new Error("Method not implemented.");
+    await this.waitProcessFinish(/Applying patch/, 180000); // 3 min para terminar
   }
 
   async getNotification(
     targetText: RegExp | string,
-    dimiss: boolean = true,
     _wait: number = 1000
   ): Promise<Notification> {
     const notification: Notification = await this.notification.getNotification(
       targetText,
-      dimiss,
       NotificationType.Any,
       _wait
     );

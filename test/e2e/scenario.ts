@@ -57,13 +57,16 @@ const patchFolder: string = path.join(
   values.patchFolder
 );
 
-const singlePatchFile: string[] = [];
-const manyPatchFile: string[] = [];
-const zipPatchFile: string[] = [];
+let singlePatchFile: string[] = [];
+let manyPatchFile: string[] = [];
+let zipPatchFile: string[] = [];
+let invalidPatchFile: string[] = [];
 
-glob.sync("**/**.*", { cwd: patchFolder,  }).forEach((file: string) => {
+glob.sync("**/**.*", { cwd: patchFolder }).forEach((file: string) => {
   if (file.includes("zip")) {
     zipPatchFile.push(path.join(patchFolder, file));
+  } else if (file.includes("invalid")) {
+    invalidPatchFile.push(path.join(patchFolder, file));
   } else if (file.includes("single")) {
     singlePatchFile.push(path.join(patchFolder, file));
   } else {
@@ -71,8 +74,9 @@ glob.sync("**/**.*", { cwd: patchFolder,  }).forEach((file: string) => {
   }
 });
 
-if ((singlePatchFile.length == 0)) {
+if (singlePatchFile.length == 0) {
   console.warn("'Single' folder contains no file. Test will be skipped.");
+  singlePatchFile = [null];
 } else if (singlePatchFile.length > 1) {
   console.warn(
     "'Single' folder contains more than one file. Only the first will be used."
@@ -83,16 +87,24 @@ if (!(manyPatchFile.length > 1)) {
   console.warn(
     "The 'Many' folder contains one or no files. Test will be skipped."
   );
+  manyPatchFile = null;
 }
 
-if ((zipPatchFile.length == 0)) {
+if (zipPatchFile.length == 0) {
   console.warn("'Zip' folder contains no file. Test will be skipped.");
+  zipPatchFile = null;
+}
+
+if (invalidPatchFile.length == 0) {
+  console.warn("'Invalid' folder contains no file. Test will be skipped.");
+  invalidPatchFile = null;
 }
 
 export const PATCHS_FILES = {
   single: singlePatchFile[0],
   many: manyPatchFile,
-  zip: manyPatchFile,
+  zip: zipPatchFile,
+  invalid: invalidPatchFile,
 };
 
 Object.keys(values.compileKey).forEach((key: string) => {

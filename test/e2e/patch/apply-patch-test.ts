@@ -1,14 +1,12 @@
 import { expect } from "chai";
-import { assert } from "console";
-import { describe, before, it } from "mocha";
-import { By, WebElement } from "vscode-extension-tester";
+import { describe, before, it, Context } from "mocha";
 import { delay, openAdvplProject } from "../helper";
 import { ApplyPatchPageObject } from "../page-objects/apply-patch-po";
-import { PatchGeneratePageObject } from "../page-objects/patch-generate-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA, PATCHS_FILES } from "../scenario";
+import { Notification } from "vscode-extension-tester";
 
 describe.only("Patch Operations", () => {
   let serverTreePO: ServerTreePageObject;
@@ -43,48 +41,76 @@ describe.only("Patch Operations", () => {
     serverItemPO = null;
   });
 
-  it.only("Apply single file", async () => {
+  (PATCHS_FILES.single ? it : it.skip)("Apply single file", async () => {
     await serverItemPO.fireApplyPatchAction();
 
     const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
-
     await applyPatchPO.setUploadFile([PATCHS_FILES.single]);
-
     await applyPatchPO.fireSubmitCloseID();
 
+    expect(await workbenchPO.applyPatchInProgress()).is.true;
+
     await workbenchPO.waitApplyPatch();
-    //await applyPatchPO.endWebView();
 
-    //      expect(optionsRight.length).is.equal(2);
+    const notification: Notification = await workbenchPO.getNotification(
+      /Patch applied/
+    );
 
-    //await patchGeneratePO.close();
+    expect(notification).not.is.undefined;
+    await notification?.dismiss();
   });
 
-  // (PATCHS_FILES.many.length > 1 ? it.skip : it)("Apply many file", async () => {
-  //   await serverItemPO.fireApplyPatchAction();
+  (PATCHS_FILES.many ? it : it.skip)("Apply many file", async () => {
+    await serverItemPO.fireApplyPatchAction();
 
-  //   const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
+    const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
+    await applyPatchPO.setUploadFile(PATCHS_FILES.many);
+    await applyPatchPO.fireSubmitCloseID();
 
-  //   await applyPatchPO.beginWebView();
+    expect(await workbenchPO.applyPatchInProgress()).is.true;
 
-  //   await applyPatchPO.endWebView();
+    await workbenchPO.waitApplyPatch();
 
-  //   //      expect(optionsRight.length).is.equal(2);
+    const notification: Notification = await workbenchPO.getNotification(
+      /Patch applied/
+    );
 
-  //   //await patchGeneratePO.close();
-  // });
+    expect(notification).not.is.undefined;
+    await notification?.dismiss();
+  });
 
-  // (PATCHS_FILES.zip.length == 0 ? it.skip : it)("Apply many file", async () => {
-  //   await serverItemPO.fireApplyPatchAction();
+  (PATCHS_FILES.invalid ? it : it.skip)("Apply invalid file", async () => {
+    await serverItemPO.fireApplyPatchAction();
 
-  //   const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
+    const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
+    await applyPatchPO.setUploadFile(PATCHS_FILES.invalid);
+    await applyPatchPO.fireSubmitCloseID();
+    await delay(2000);
 
-  //   await applyPatchPO.beginWebView();
+    const notification: Notification = await workbenchPO.getNotification(
+      /Patch validate could not be executed/
+    );
 
-  //   await applyPatchPO.endWebView();
+    expect(notification).not.is.undefined;
+    await notification?.dismiss();
+  });
 
-  //   //      expect(optionsRight.length).is.equal(2);
+  (PATCHS_FILES.zip ? it : it.skip)("Apply many file", async () => {
+    await serverItemPO.fireApplyPatchAction();
 
-  //   //await patchGeneratePO.close();
-  // });
+    const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
+    await applyPatchPO.setUploadFile(PATCHS_FILES.zip);
+    await applyPatchPO.fireSubmitCloseID();
+
+    expect(await workbenchPO.applyPatchInProgress()).is.true;
+
+    await workbenchPO.waitApplyPatch();
+
+    const notification: Notification = await workbenchPO.getNotification(
+      /Patch applied/
+    );
+
+    expect(notification).not.is.undefined;
+    await notification?.dismiss();
+  });
 });

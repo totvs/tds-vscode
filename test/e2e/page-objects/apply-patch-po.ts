@@ -6,8 +6,10 @@ export class ApplyPatchPageObject extends AbstractPageObject {
   async setUploadFile(patchList: string[]) {
     await this.beginWebView();
 
-    await this.setValue("btn-File", patchList[0]);
-    await delay(2000);
+    for await (const patchFile of patchList) {
+      await this.setValue("btn-File", patchFile);
+      await delay(2000);
+    }
 
     await this.endWebView();
   }
@@ -19,5 +21,4 @@ export class ApplyPatchPageObject extends AbstractPageObject {
 
     await this.endWebView();
   }
-
 }
