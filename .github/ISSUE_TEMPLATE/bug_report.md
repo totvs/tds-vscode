@@ -31,5 +31,7 @@ If applicable, add screenshots to help explain your problem.
  - OS/Architecture: [e.g. Linux 64 bits Ubuntu]
  - Build Version [e.g. 17.3.0.13]
 
+**Extension TDS-VSCode version
+
 **Additional context**
 Add any other context about the problem here.
