@@ -16,49 +16,25 @@ import { delay } from "../helper";
 import { IServerData, IUserData } from "./interface-po";
 import { ServerPageObject } from "./server-po";
 import { ServerTreeItemPageObject } from "./server-tree-item-po";
+import { ViewPageObject } from "./view-po";
 import { WorkbenchPageObject } from "./workbench-po";
 
-export class ServerTreePageObject {
-  private view: SideBarView;
-  private control: ViewControl;
-  private workbenchPO: WorkbenchPageObject;
-
-  constructor() {
-    this.workbenchPO = new WorkbenchPageObject();
-  }
-
-  async openView(): Promise<SideBarView> {
-    if (!this.view) {
-      const activityBar = new ActivityBar();
-      this.control = await activityBar.getViewControl("TOTVS");
-      this.view = await this.control.openView();
-
-      await delay(2000);
-    }
-
-    return this.view;
-  }
-
+export class ServerTreePageObject extends ViewPageObject {
   async getServerTreeItem(serverName: string): Promise<TreeItem> {
-    const c = (await this.openView()).getContent();
-    const s = await c.getSections();
-
-    const serverTreeItem = (await s[0].findItem(serverName)) as TreeItem;
-
-    return serverTreeItem;
+    return this.getTreeItem(serverName);
   }
 
   async removeServer(serverName: string) {
     const serverTreeItem: TreeItem = await this.getServerTreeItem(serverName);
-    await delay(3000);
+    await delay(2000);
 
     await serverTreeItem.select();
     const action: ViewItemAction = await serverTreeItem.getActionButton(
       "Delete Server"
     );
-    await delay(3000);
+    await delay();
     await action.click();
-    await delay(3000);
+    await delay(2000);
 
     const notification: Notification = await this.workbenchPO.getNotification(
       /Are you sure want to delete/,
@@ -74,7 +50,7 @@ export class ServerTreePageObject {
     await delay();
 
     await this.workbenchPO.executeCommand("totvs-developer-studio.add");
-    await delay(2000);
+    await delay();
 
     const webView: WebView = new WebView();
     await webView.switchToFrame();
@@ -83,7 +59,7 @@ export class ServerTreePageObject {
     await serverPO.fillAddServerPage(webView, data, true);
 
     await webView.switchBack();
-    await delay(2000);
+    await delay();
 
     const notification: Notification = await this.workbenchPO.getNotification(
       /Saved server/
@@ -117,9 +93,7 @@ export class ServerTreePageObject {
   }
 
   async disconnectAllServers(): Promise<void> {
-    const c = (await this.openView()).getContent();
-    const s = await c.getSections();
-    const elements: ViewItem[] = await s[0].getVisibleItems();
+    const elements: ViewItem[] = await this.getVisibleItems();
 
     elements.forEach(async (element: WebElement) => {
       const item: ServerTreeItemPageObject = new ServerTreeItemPageObject(
@@ -133,12 +107,7 @@ export class ServerTreePageObject {
   }
 
   async fireConfigureServerView() {
-    const titlePart: ViewTitlePart = (await this.openView()).getTitlePart();
-    const action: TitleActionButton = await titlePart.getAction(
-      "Configure Server View"
-    );
-
-    action.click();
+    (await this.getAction("Configure Server View")).click();
     await delay();
   }
 }

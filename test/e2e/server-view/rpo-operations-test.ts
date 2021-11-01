@@ -20,10 +20,11 @@ describe("RPO Operations", () => {
     await openAdvplProject();
 
     workbenchPO = new WorkbenchPageObject();
-    serverTreePO = new ServerTreePageObject();
-    serverTreePO.openView();
+    serverTreePO = new ServerTreePageObject(await workbenchPO.openTotvsView());
 
     await serverTreePO.addNewServer(APPSERVER_DATA);
+
+    serverTreePO = new ServerTreePageObject(await workbenchPO.openTotvsView());
 
     await delay();
   });

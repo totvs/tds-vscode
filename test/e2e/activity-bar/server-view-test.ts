@@ -1,4 +1,4 @@
-import { expect } from "chai"
+import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import {
   SideBarView,
@@ -20,8 +20,8 @@ describe("TOTVS: Server View", () => {
     await openAdvplProject();
 
     workbenchPO = new WorkbenchPageObject();
-    serverTreePO = new ServerTreePageObject();
-    view = await serverTreePO.openView();
+    view = await workbenchPO.openTotvsView();
+    serverTreePO = new ServerTreePageObject(view);
   });
 
   it("No Servers", async () => {

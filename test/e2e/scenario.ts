@@ -1,3 +1,5 @@
+import * as glob from "glob";
+import * as fse from "fs-extra";
 import { readJsonSync } from "fs-extra";
 import path = require("path");
 import jsonMerger = require("json-merger");
@@ -6,7 +8,6 @@ import {
   IServerData,
   IUserData,
 } from "./page-objects/interface-po";
-import * as glob from "glob";
 
 const TEST_RESOURCE = path.join(__dirname, "..", "..", "test", "resources");
 const scenarioDefault: string = path.join(
@@ -56,55 +57,26 @@ const patchFolder: string = path.join(
   "patchs",
   values.patchFolder
 );
-
-let singlePatchFile: string[] = [];
-let manyPatchFile: string[] = [];
-let zipPatchFile: string[] = [];
-let invalidPatchFile: string[] = [];
-
-glob.sync("**/**.*", { cwd: patchFolder }).forEach((file: string) => {
-  if (file.includes("zip")) {
-    zipPatchFile.push(path.join(patchFolder, file));
-  } else if (file.includes("invalid")) {
-    invalidPatchFile.push(path.join(patchFolder, file));
-  } else if (file.includes("single")) {
-    singlePatchFile.push(path.join(patchFolder, file));
-  } else {
-    manyPatchFile.push(path.join(patchFolder, file));
-  }
-});
-
-if (singlePatchFile.length == 0) {
-  console.warn("'Single' folder contains no file. Test will be skipped.");
-  singlePatchFile = [null];
-} else if (singlePatchFile.length > 1) {
-  console.warn(
-    "'Single' folder contains more than one file. Only the first will be used."
-  );
-}
-
-if (!(manyPatchFile.length > 1)) {
-  console.warn(
-    "The 'Many' folder contains one or no files. Test will be skipped."
-  );
-  manyPatchFile = null;
-}
-
-if (zipPatchFile.length == 0) {
-  console.warn("'Zip' folder contains no file. Test will be skipped.");
-  zipPatchFile = null;
-}
-
-if (invalidPatchFile.length == 0) {
-  console.warn("'Invalid' folder contains no file. Test will be skipped.");
-  invalidPatchFile = null;
-}
-
+const patchFiles: string[] = getFileParams(patchFolder, true);
 export const PATCHS_FILES = {
-  single: singlePatchFile[0],
-  many: manyPatchFile,
-  zip: zipPatchFile,
-  invalid: invalidPatchFile,
+  single: patchFiles["single"] ? patchFiles["single"][0] : undefined,
+  many: patchFiles["many"],
+  zip: patchFiles["zip"],
+  invalid: patchFiles["invalid"],
+};
+
+export const PROJECT_FOLDER = path.join(
+  TEST_RESOURCE,
+  "projects",
+  values.projectFolder
+);
+
+const sourceFiles: string[] = getFileParams(PROJECT_FOLDER, false);
+export const COMPILE_FILES = {
+  userFunctions: sourceFiles["userFunction"],
+  functions: sourceFiles["function"],
+  resources: sourceFiles["resource"],
+  sourcesWithError: sourceFiles["withError"],
 };
 
 Object.keys(values.compileKey).forEach((key: string) => {
@@ -114,3 +86,30 @@ Object.keys(values.compileKey).forEach((key: string) => {
     values.compileKey[key]
   );
 });
+
+function getFileParams(patchFolder: string, absolute: boolean): any[] {
+  const result: any[] = [];
+
+  const files: string[] = glob.sync("**/**.*", {
+    cwd: patchFolder,
+    absolute: absolute,
+  });
+
+  for (const file of files) {
+    const parentFolder: string = path.dirname(file);
+    const folder: string = path.basename(parentFolder);
+
+    result[folder] ? result[folder].push(file) : (result[folder] = [file]);
+  }
+
+  Object.keys(result).forEach((key: string) => {
+    if (result[key].length == 0) {
+      console.warn(
+        `'${key}' folder does not contain files. Test will be skipped.`
+      );
+      result[key] = null;
+    }
+  });
+
+  return result;
+}

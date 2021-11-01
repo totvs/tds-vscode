@@ -2,6 +2,9 @@ import {
   Workbench,
   Notification,
   NotificationType,
+  ActivityBar,
+  SideBarView,
+  ViewControl,
 } from "vscode-extension-tester";
 import { delay } from "../helper";
 import { NotificationPageObject } from "./notification-po";
@@ -127,5 +130,34 @@ export class WorkbenchPageObject {
 
   async executeCommand(command: string) {
     await this.workbench.executeCommand(command);
+  }
+
+  private async getView(beginViewName: string): Promise<SideBarView> {
+    const activityBar: ActivityBar = new ActivityBar();
+    const controls: ViewControl[] = await activityBar.getViewControls();
+    const viewList: Promise<SideBarView>[] = controls
+      .filter(async (element: ViewControl) => {
+        return (await element.getTitle()).startsWith(beginViewName);
+      })
+      .map(async (element: ViewControl) => {
+        return await element.openView();
+      });
+    await Promise.all(viewList);
+
+    await delay();
+
+    return await viewList[0];
+  }
+
+  async openExplorerView(): Promise<SideBarView> {
+    await this.executeCommand("workbench.explorer.fileView.focus");
+
+    return await this.getView("Explorer");
+  }
+
+  async openTotvsView(): Promise<SideBarView> {
+    await this.executeCommand("totvs_server.focus");
+
+    return this.getView("TOTVS");
   }
 }

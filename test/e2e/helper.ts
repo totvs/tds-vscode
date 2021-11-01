@@ -1,6 +1,12 @@
 import path = require("path");
 import fs = require("fs-extra");
 import {
+  COMPILE_KEY_FILE,
+  DELETE_DATA,
+  INCLUDE_PATH_DATA,
+  PROJECT_FOLDER,
+} from "./scenario";
+import {
   By,
   VSBrowser,
   Workbench,
@@ -16,20 +22,11 @@ import {
   ViewControl,
   EditorView,
 } from "vscode-extension-tester";
-import { ServerTreePageObject } from "./page-objects/server-tree-po";
 import { expect } from "chai";
 import { IUserData } from "./page-objects/interface-po";
 import { setTimeout } from "timers/promises";
 
 const DEFAULT_DELAY = 1000;
-const PROJECT_NAME = "project-advpl";
-const advplProjectfolder: string = path.resolve(
-  __dirname,
-  "..",
-  "..",
-  "test",
-  "resources"
-);
 
 function clearServersJson(projectFolder: string): void {
   const serversJsonFile: string = path.join(
@@ -51,19 +48,17 @@ async function closeAllEditors(): Promise<void> {
 }
 
 export async function openAdvplProject(): Promise<void> {
-  const projectFolder: string = path.join(advplProjectfolder, PROJECT_NAME);
-  clearServersJson(projectFolder);
+  clearServersJson(PROJECT_FOLDER);
 
-  await VSBrowser.instance.openResources(projectFolder);
+  await VSBrowser.instance.openResources(PROJECT_FOLDER);
 
   await delay(2000);
   closeAllEditors();
 }
 
 export async function readServersJsonFile(): Promise<string> {
-  const projectFolder: string = path.join(advplProjectfolder, PROJECT_NAME);
   const serversJsonFile: string = path.join(
-    projectFolder,
+    PROJECT_FOLDER,
     ".vscode",
     "servers.json"
   );
@@ -77,21 +72,9 @@ export async function readServersJsonFile(): Promise<string> {
   return result;
 }
 
-export async function openServerTreeView(): Promise<ServerTreePageObject> {
-  const activityBar = new ActivityBar();
-  const control = await activityBar.getViewControl("TOTVS");
-  const view: SideBarView = await control.openView();
-
-  await delay();
-
-  return new ServerTreePageObject();
-}
-
-export const delay = async (duration: number = DEFAULT_DELAY) =>
+export const delay = async (duration: number = DEFAULT_DELAY) => {
   await setTimeout(duration);
-// new Promise((res) => {
-//   setTimeout(res, duration);
-// });
+};
 
 export const avoidsBacksliding = async () => {
   await delay(3000);

@@ -57,6 +57,7 @@
     "ci-run": "extest run-tests -l off -f -s c:/temp/test -e c:/temp/extension -o test/settings.json './out-test/**/*test.js'",
     "--SCENARIO--": "",
     "scenario:default": "npm run test",
+    "scenario:acandido": "set SCENARIO=acandido.json && npm run test",
     "scenario:p19": "set SCENARIO=p19.json && npm run test",
     "---i18n---": "",
     "export-i18n": "gulp export-i18n",

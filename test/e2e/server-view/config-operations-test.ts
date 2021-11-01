@@ -24,8 +24,7 @@ describe("TOTVS: Server View Configurations", () => {
     await openAdvplProject();
 
     workbenchPO = new WorkbenchPageObject();
-    serverTreePO = new ServerTreePageObject();
-    serverTreePO.openView();
+    serverTreePO = new ServerTreePageObject(await workbenchPO.openTotvsView());
 
     serverItemPO = new ServerTreeItemPageObject(
       await serverTreePO.getNewServer(DELETE_DATA)
