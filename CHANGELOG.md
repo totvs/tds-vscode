@@ -5,10 +5,27 @@
 ## Melhorias
 
 - Adição de nota sobre o uso de _token de RPO_ e chaves de compilação (_banner_ e documentação).
+- Suporte a edição de arquivos de definições TLPP (.th).
 
-## Aplicação de pacotes (#820)
+## Aplicação de pacotes [#820](https://github.com/totvs/tds-vscode/issues/820)
 
 - Correção no processo de aplicação de pacotes e ajustes visuais
+
+## Tratamento de palavras chave em fontes .4gl [DTCLIENT01-2831](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2831)
+
+Em determinadas estruturas de código 4GL, as palavras reserveadas ficavam parcialmente em maísculas.
+
+## Travamento Monitor VSCode [#817](https://github.com/totvs/tds-vscode/issues/817) [DTCLIENT01-2649](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2649)
+
+Após acionar a funcionalidade `Stop server` ocorria travamento do mesmo.
+
+## Correção no uso de filtros na importação de arquivo TDSReplay [#803](https://github.com/totvs/tds-vscode/issues/803) [DTCLIENT01-2978](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2978)
+
+Efetuada correção no tratamento de filtro `includeSource`.
+
+## Processamento de listas no TDS-Replay [DTCLIENT01-3056](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3056)
+
+Ajustado tratamento de listas encadeadas (_arrays_ dentro de _arrays_).
 
 # Versão [1.3.4]
 
