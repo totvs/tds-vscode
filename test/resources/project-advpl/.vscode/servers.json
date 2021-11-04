@@ -1,0 +1,40 @@
+{
+	"version": "0.2.1",
+	"includes": [
+		""
+	],
+	"permissions": {
+		"authorizationtoken": ""
+	},
+	"connectedServer": {},
+	"configurations": [
+		{
+			"id": "yezkyt0wxkv9uzouniur4hv73c5",
+			"type": "totvs_server_protheus",
+			"name": "localhost",
+			"port": 2030,
+			"address": "localhost",
+			"buildVersion": "7.00.210324P",
+			"secure": true,
+			"includes": [
+				"m:\\protheus\\includes"
+			],
+			"environments": [
+				"p12"
+			],
+			"username": "admin",
+			"environment": "p12",
+			"token": "djM6eWV6a3l0MHd4a3Y5dXpvdW5pdXI0aHY3M2M1OjE6bG9jYWxob3N0OjIwMzA6MTo3LjAwLjIxMDMyNFA6Mw==:djE6cDEyOmFkbWluOm1PT3lRRlhIdi9kZzY4OG1hUDN6MjV0dDQzYXFmR0JPVmxqKzlWTk0rNmM9|djI6MTYzNTM1OTgxMDowOjE6MQ==.oDb2xzniqiWp/CryaFEBTR1uEoYOO2yA7ILljLDsDTi0zzY87mvwEZPWIF4RdcTcGh0mQtDLH16unePDfbRVeacAKC1kl+bMLfPl18i2GI1iRP0rAqlDhgAc8521PceAA71EhPf5c2HRkBmoHfjZXPOUkNuuNXmqiBmYc/uGeZLbv/xRZxCyhqKJ+cWzejcdbXNV03T94LKTd94nXelel7wZ/efwQWb7mAcOH/2FSfhxNsCG7crh9UA6YYfg4XsO8ElDZz6aOimGszz37b66Pu+cGl2z7+qgNiJjUuBypmBSDRBS3AU2YezxbqlMK9hN97WB/cSQOD4i+CzVUnQyng=="
+		}
+	],
+	"savedTokens": [
+		[
+			"yezkyt0wxkv9uzouniur4hv73c5:p12",
+			{
+				"id": "yezkyt0wxkv9uzouniur4hv73c5",
+				"token": "djM6eWV6a3l0MHd4a3Y5dXpvdW5pdXI0aHY3M2M1OjE6bG9jYWxob3N0OjIwMzA6MTo3LjAwLjIxMDMyNFA6Mw==:djE6cDEyOmFkbWluOm1PT3lRRlhIdi9kZzY4OG1hUDN6MjV0dDQzYXFmR0JPVmxqKzlWTk0rNmM9|djI6MTYzNTM1OTgxMDowOjE6MQ==.oDb2xzniqiWp/CryaFEBTR1uEoYOO2yA7ILljLDsDTi0zzY87mvwEZPWIF4RdcTcGh0mQtDLH16unePDfbRVeacAKC1kl+bMLfPl18i2GI1iRP0rAqlDhgAc8521PceAA71EhPf5c2HRkBmoHfjZXPOUkNuuNXmqiBmYc/uGeZLbv/xRZxCyhqKJ+cWzejcdbXNV03T94LKTd94nXelel7wZ/efwQWb7mAcOH/2FSfhxNsCG7crh9UA6YYfg4XsO8ElDZz6aOimGszz37b66Pu+cGl2z7+qgNiJjUuBypmBSDRBS3AU2YezxbqlMK9hN97WB/cSQOD4i+CzVUnQyng=="
+			}
+		]
+	],
+	"lastConnectedServer": ""
+}

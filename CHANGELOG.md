@@ -6,6 +6,10 @@
 
 - Adição de nota sobre o uso de _token de RPO_ e chaves de compilação (_banner_ e documentação).
 
+## Aplicação de pacotes (#820)
+
+- Correção no processo de aplicação de pacotes e ajustes visuais
+
 # Versão [1.3.4]
 
 ## Melhorias
