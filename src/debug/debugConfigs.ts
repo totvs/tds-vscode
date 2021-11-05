@@ -11,7 +11,6 @@ import { statSync, chmodSync } from 'fs';
 import Utils, { MESSAGETYPE } from '../utils';
 import * as path from 'path';
 import * as nls from 'vscode-nls';
-import { getVSCodeDownloadUrl } from 'vscode-test/out/util';
 
 const localize = nls.loadMessageBundle();
 

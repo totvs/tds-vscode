@@ -53,7 +53,6 @@
     "export-i18n": "gulp export-i18n",
     "i18n-import": "gulp i18n-import",
     "---RELEASE---": "",
-    "release": "npx standard-version -r 1.1.0",
     "tag": "git push --follow-tags",
     "pack": "npm pack",
     "package": "gulp package",
@@ -187,6 +186,7 @@
     "workspaceContains:*.ppp",
     "workspaceContains:*.tlpp",
     "workspaceContains:*.ch",
+    "workspaceContains:*.th",
     "workspaceContains:*.4gl",
     "workspaceContains:*.per",
     "workspaceContains:*.ptm",
@@ -262,6 +262,7 @@
         ],
         "extensions": [
           ".ch",
+          ".th",
           ".prw",
           ".prg",
           ".prx",
