@@ -1,0 +1,102 @@
+{
+	"iconDefinitions": {
+		"_root_folder_dark": {
+			"iconPath": "./dark/root-folder-dark.svg"
+		},
+		"_root_folder_open_dark": {
+			"iconPath": "./dark/root-folder-open-dark.svg"
+		},
+		"_folder_dark": {
+			"iconPath": "./dark/folder-dark.svg"
+		},
+		"_folder_open_dark": {
+			"iconPath": "./dark/folder-open-dark.svg"
+		},
+		"_file_dark": {
+			"iconPath": "./dark/document-dark.svg"
+		},
+		"_root_folder": {
+			"iconPath": "./light/root-folder-light.svg"
+		},
+		"_root_folder_open": {
+			"iconPath": "./light/root-folder-open-light.svg"
+		},
+		"_folder_light": {
+			"iconPath": "./light/folder-light.svg"
+		},
+		"_folder_open_light": {
+			"iconPath": "./light/folder-open-light.svg"
+		},
+		"_file_light": {
+			"iconPath": "./light/document-light.svg"
+		},
+		"_ch_file_dark": {
+			"iconPath": "./dark/ch_file.svg"
+		},
+		"_th_file_dark": {
+			"iconPath": "./dark/th_file.svg"
+		},
+		"_per_file_dark": {
+			"iconPath": "./dark/per_file.svg"
+		},
+		"_tlpp_file_dark": {
+			"iconPath": "./dark/tlpp_file.svg"
+		},
+		"_advpl_file_dark": {
+			"iconPath": "./dark/advpl_file.svg"
+		},
+		"_4gl_file_dark": {
+			"iconPath": "./dark/4gl_file.svg"
+		},
+		"_ch_file_light": {
+			"iconPath": "./light/ch_file.svg"
+		},
+		"_th_file_light": {
+			"iconPath": "./light/th_file.svg"
+		},
+		"_per_file_light": {
+			"iconPath": "./light/per_file.svg"
+		},
+		"_tlpp_file_light": {
+			"iconPath": "./light/tlpp_file.svg"
+		},
+		"_advpl_file_light": {
+			"iconPath": "./light/advpl_file.svg"
+		},
+		"_4gl_file_light": {
+			"iconPath": "./light/4gl_file.svg"
+		}
+	},
+	"folderExpanded": "_folder_open_dark",
+	"folder": "_folder_dark",
+	"file": "_file_dark",
+	"rootFolderExpanded": "_root_folder_open_dark",
+	"rootFolder": "_root_folder_dark",
+	"languageIds": {
+		"advpl": "_advpl_file_dark",
+		"4gl": "_4gl_file_dark"
+	},
+	"fileExtensions": {
+		"ch": "_ch_file_dark",
+		"th": "_th_file_dark",
+		"per": "_per_file_dark",
+		"tlpp": "_tlpp_file_dark"
+	},
+	"light": {
+		"folderExpanded": "_folder_open_light",
+		"folder": "_folder_light",
+		"rootFolderExpanded": "_root_folder_open",
+		"rootFolder": "_root_folder",
+		"file": "_file_light",
+		"languageIds": {
+			"advpl": "_advpl_file_light",
+			"4gl": "_4gl_file_light"
+		},
+		"fileExtensions": {
+			"ch": "_ch_file_light",
+			"th": "_th_file_light",
+			"per": "_per_file_light",
+			"tlpp": "_tlpp_file_light"
+		}
+	}
+}
