@@ -1,11 +1,12 @@
 # Changelog
 
-# Versão [1.3.next]
+# Versão [1.3.5]
 
 ## Melhorias
 
 - Adição de nota sobre o uso de _token de RPO_ e chaves de compilação (_banner_ e documentação).
 - Suporte a edição de arquivos de definições TLPP (.th).
+- Adição de tema de ícones
 
 ## Aplicação de pacotes [#820](https://github.com/totvs/tds-vscode/issues/820)
 
