@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "publisher": "TOTVS",
   "author": {
     "name": "TOTVS",
@@ -55,8 +55,8 @@
     "---RELEASE---": "",
     "tag": "git push --follow-tags",
     "pack": "npm pack",
-    "package": "gulp package",
-    "publish": "gulp publish",
+    "package": "vsce package",
+    "publish": "vsce publish",
     "vscode:prepublish": "webpack --mode production",
     "---MISC---": "",
     "all-contributors:generate": "all-contributors generate",
@@ -66,8 +66,8 @@
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@totvs/tds-da": "^1.2.5",
-    "@totvs/tds-ls": "^1.2.9",
+    "@totvs/tds-da": "^1.2.6",
+    "@totvs/tds-ls": "^1.2.10",
     "@types/node": "^16.10.2",
     "@types/react": "^16.14.16",
     "@types/vscode": "^1.60.0",
@@ -112,7 +112,6 @@
     "terser-webpack-plugin": "^5.2.4",
     "ts-loader": "^9.2.6",
     "tslint": "^6.1.3",
-    "vsce": "^1.100.1",
     "vscode-nls-dev": "^3.3.2",
     "vscode-test": "^1.6.1",
     "webpack": "^5.56.1",
@@ -195,6 +194,13 @@
     "workspaceContains:servers.json"
   ],
   "contributes": {
+    "iconThemes": [
+      {
+        "id": "tds",
+        "label": "TDS Icons Theme",
+        "path": "./fileicons/tds-icons-theme.json"
+      }
+    ],
     "customEditors": [
       {
         "viewType": "tds.patchView",

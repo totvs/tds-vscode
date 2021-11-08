@@ -14,3 +14,4 @@ package-lock.json
 tds-vscode-translations-export
 *.log
 test-resources/
+out-test/
