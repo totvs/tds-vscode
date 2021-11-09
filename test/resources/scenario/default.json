@@ -1,0 +1,41 @@
+{
+	"name": "Default",
+	"description": [
+		"Este cenário será utilizado em testes CI, p.e. Bamboo.",
+		"Valores padrão para teste. Crie um novo arquivo de cenário e:",
+		"- ajustes as propriedades que sobrescreveram estas;",
+		"- ajuste varivável de ambiente SCENARIO com o nome do arquivo no script",
+		"  ou crie uma entrada no script.",
+		"Se desejar, escreva uma breve descrição do cenário de testes."
+	],
+	"server": {
+		"serverName": "localhost",
+		"address": "localhost",
+		"port": 2030,
+		"environment": "p12",
+		"includePath": []
+	},
+	"users": {
+		"admin": {
+			"username": "admin",
+			"password": "1234"
+		},
+		"user": {
+			"username": "user",
+			"password": "1234"
+		},
+		"invalid": {
+			"username": "invalid_user",
+			"password": "0000"
+		}
+	},
+	"includePath": {
+		"valid": [],
+		"toChange": [],
+		"toAdd": []
+	},
+	"compileKey": {},
+	"rpoToken": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+	"patchFolder": "p20",
+	"projectFolder": "advpl"
+}

@@ -6,11 +6,11 @@ import {
   QuickPick,
   QuickPickItem,
   window,
-} from 'vscode';
-import { statSync, chmodSync } from 'fs';
-import Utils, { MESSAGETYPE } from '../utils';
-import * as path from 'path';
-import * as nls from 'vscode-nls';
+} from "vscode";
+import { statSync, chmodSync } from "fs";
+import Utils, { MESSAGETYPE } from "../utils";
+import * as path from "path";
+import * as nls from "vscode-nls";
 
 const localize = nls.loadMessageBundle();
 
@@ -19,29 +19,29 @@ let debugSession: DebugSession | undefined;
 let dapArgs: string[] = [];
 
 export function getDAP() {
-  let pathDAP = '';
-  let ext = extensions.getExtension('TOTVS.tds-vscode');
+  let pathDAP = "";
+  let ext = extensions.getExtension("TOTVS.tds-vscode");
   if (ext) {
-    if (process.platform === 'win32') {
+    if (process.platform === "win32") {
       pathDAP = path.join(
         ext.extensionPath,
-        '/node_modules/@totvs/tds-da/bin/windows/debugAdapter.exe'
+        "/node_modules/@totvs/tds-da/bin/windows/debugAdapter.exe"
       );
-    } else if (process.platform === 'linux') {
+    } else if (process.platform === "linux") {
       pathDAP = path.join(
         ext.extensionPath,
-        '/node_modules/@totvs/tds-da/bin/linux/debugAdapter'
+        "/node_modules/@totvs/tds-da/bin/linux/debugAdapter"
       );
       if (statSync(pathDAP).mode !== 33261) {
-        chmodSync(pathDAP, '755');
+        chmodSync(pathDAP, "755");
       }
-    } else if (process.platform === 'darwin') {
+    } else if (process.platform === "darwin") {
       pathDAP = path.join(
         ext.extensionPath,
-        '/node_modules/@totvs/tds-da/bin/mac/debugAdapter'
+        "/node_modules/@totvs/tds-da/bin/mac/debugAdapter"
       );
       if (statSync(pathDAP).mode !== 33261) {
-        chmodSync(pathDAP, '755');
+        chmodSync(pathDAP, "755");
       }
     }
   }
@@ -73,12 +73,11 @@ class QuickPickProgram implements QuickPickItem {
 
   public setArgs(args: string[]) {
     this.args = args;
-    this.description = this.args ? this.args.join(',') : '<nil>';
+    this.description = this.args ? this.args.join(",") : "<nil>";
   }
 }
 
 export async function getProgramName() {
-
   const disposables: Disposable[] = [];
 
   let config = undefined;
@@ -92,7 +91,7 @@ export async function getProgramName() {
     return undefined;
   }
 
-  let lastProgramExecuted = config.lastProgramExecuted || '';
+  let lastProgramExecuted = config.lastProgramExecuted || "";
   let lastPrograms: QuickPickProgram[] = [];
 
   if (config.lastPrograms) {
@@ -103,18 +102,19 @@ export async function getProgramName() {
 
   try {
     return await new Promise<ProgramArgs | undefined>((resolve, reject) => {
-      const qp: QuickPick<QuickPickProgram> = window.createQuickPick<QuickPickProgram>();
+      const qp: QuickPick<QuickPickProgram> =
+        window.createQuickPick<QuickPickProgram>();
 
       qp.title = localize(
-        'tds.vscode.getProgramName',
-        'Please enter the name of an AdvPL/4GL function'
+        "tds.vscode.getProgramName",
+        "Please enter the name of an AdvPL/4GL function"
       );
       qp.items = lastPrograms;
       qp.value = lastProgramExecuted;
       qp.matchOnDescription = true;
       qp.placeholder = localize(
-        'tds.vscode.getProgramName',
-        'Please enter the name of an AdvPL/4GL function'
+        "tds.vscode.getProgramName",
+        "Please enter the name of an AdvPL/4GL function"
       );
 
       disposables.push(
@@ -131,8 +131,10 @@ export async function getProgramName() {
             const find: boolean = config.lastPrograms.some(
               (element: QuickPickProgram) => {
                 return (
-                  element.label.toLowerCase() === programArgs.program.toLowerCase() &&
-                  JSON.stringify(element.args) === JSON.stringify(programArgs.args)
+                  element.label.toLowerCase() ===
+                    programArgs.program.toLowerCase() &&
+                  JSON.stringify(element.args) ===
+                    JSON.stringify(programArgs.args)
                 );
               }
             );
@@ -185,14 +187,14 @@ function extractArgs(value: string): string[] {
     value = value.trim();
     if (value.length > 0) {
       args = [];
-      value = value.replace('(', '').replace(')', '').trim();
+      value = value.replace("(", "").replace(")", "").trim();
       if (value.length > 0) {
         let splited: string[];
-        if (value.toLowerCase().indexOf('-a=') >= 0) {
+        if (value.toLowerCase().indexOf("-a=") >= 0) {
           splited = value.split(/\s/);
           splited.forEach((element) => {
             if (element.length > 0) {
-              element = element.replace('-a=', '').replace('-A=', '').trim();
+              element = element.replace("-a=", "").replace("-A=", "").trim();
               if (element.length == 0) {
                 element = undefined;
               } else if (
@@ -248,8 +250,8 @@ export function toggleTableSync() {
           if (isTableSyncEnabled) {
             Utils.logMessage(
               localize(
-                'tds.debug.tableSync.enabled',
-                'Tables synchronism enabled'
+                "tds.debug.tableSync.enabled",
+                "Tables synchronism enabled"
               ),
               MESSAGETYPE.Info,
               true
@@ -257,8 +259,8 @@ export function toggleTableSync() {
           } else {
             Utils.logMessage(
               localize(
-                'tds.debug.tableSync.disabled',
-                'Tables synchronism disabled'
+                "tds.debug.tableSync.disabled",
+                "Tables synchronism disabled"
               ),
               MESSAGETYPE.Info,
               true
@@ -273,8 +275,8 @@ export function toggleTableSync() {
   } else {
     Utils.logMessage(
       localize(
-        'tds.debug.tableSync.disabled',
-        'The command to (Dis)Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually'
+        "tds.debug.tableSync.disabled",
+        "The command to (Dis)Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually"
       ),
       MESSAGETYPE.Error,
       true
@@ -292,12 +294,12 @@ function sendChangeTableSyncSetting(): void {
   }
   if (debugSession !== undefined) {
     const settingsArray = [
-      { key: 'enableTableSync', value: isTableSyncEnabled },
+      { key: "enableTableSync", value: isTableSyncEnabled },
     ];
     const arg = { settings: settingsArray };
 
     debugSession
-      .customRequest('$changeSettings', arg)
+      .customRequest("$changeSettings", arg)
       .then((value: any) => {
         //let status = isTableSyncEnabled ? localize('tds.debug.tableSync.satus.enabled',"enabled") : localize('tds.debug.tableSync.satus.disabled',"disabled");
         //Utils.logMessage(localize('tds.debug.tableSync.satus',`Tables synchronism ${status}`) , MESSAGETYPE.Info, true);
@@ -324,7 +326,7 @@ async function pickProgramArguments() {
     return undefined;
   }
 
-  let lastProgramExecuted = config.lastProgramExecuted || '';
+  let lastProgramExecuted = config.lastProgramExecuted || "";
   let lastPrograms: QuickPickProgram[] = [];
 
   lastPrograms = config.lastPrograms.filter((element: QuickPickProgram) => {
@@ -345,13 +347,13 @@ async function pickProgramArguments() {
       const qp: QuickPick<QuickPickProgram> =
         window.createQuickPick<QuickPickProgram>();
       qp.title = localize(
-        'tds.vscode.getProgramArguments',
-        'Enter comma-separated list of arguments'
+        "tds.vscode.getProgramArguments",
+        "Enter comma-separated list of arguments"
       );
       qp.items = lastPrograms;
       qp.placeholder = localize(
-        'tds.vscode.getProgramArguments',
-        'Enter comma-separated list of arguments'
+        "tds.vscode.getProgramArguments",
+        "Enter comma-separated list of arguments"
       );
 
       disposables.push(

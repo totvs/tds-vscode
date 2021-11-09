@@ -1,0 +1,31 @@
+{
+	"name": "acandido",
+	"description": [
+		"Cenário para o ambiente de Alan Cândido."
+	],
+	"server": {
+		"serverName": "localhost",
+		"address": "localhost",
+		"port": 2030,
+		"environment": "p12",
+		"includePath": [
+			"m:\\protheus\\includes"
+		]
+	},
+	"includePath": {
+		"valid": [
+			"m:/protheus/includes"
+		],
+		"toChange": [
+			"m:/change/includes"
+		],
+		"toAdd": [
+			"m:/more_1/includes",
+			"m:/more_2/includes"
+		]
+	},
+	"compileKey": {
+		"9DA4-26D1": "acandido.aut"
+	},
+	"rpoToken": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+}

@@ -12,7 +12,7 @@ export function revalidateRpo() {
 
   if (server) {
     if (_debugEvent) {
-      vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
+      vscode.window.showWarningMessage("This operation is not allowed during a debug.")
       return;
     }
     const exec: Thenable<any> = languageClient
@@ -30,7 +30,7 @@ export function revalidateRpo() {
           vscode.window.showErrorMessage(err.message);
         }
       );
-    vscode.window.setStatusBarMessage("Revalidando RPO", exec);
+    vscode.window.setStatusBarMessage(localize("tds.vscode.revalidating","Revalidating RPO"), exec);
   } else {
     vscode.window.showErrorMessage(
       localize("tds.vscode.servernotconnected", "There is no server connected")

@@ -21,7 +21,7 @@ const localize = nls.loadMessageBundle();
 export async function inputConnectionParameters(context: ExtensionContext, serverParam: any, connType: ConnTypeIds, reconnect: boolean) {
 
 	//const VALIDADE_TIME_OUT = 1000;
-	const title = localize('CONNECTION','Connection');
+	const title = localize('CONNECTION', 'Connection');
 
 	class NewEnvironmentButton implements QuickInputButton {
 		constructor(public iconPath: { light: Uri; dark: Uri; }, public tooltip: string) { }
@@ -122,17 +122,17 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 	}
 
 	async function inputEnvironment(input: MultiStepInput, state: Partial<State>, serversConfig: any) {
-			state.environment = await input.showInputBox({
-				title: title,
-				step: CONNECT_ENVIRONMENT_STEP,
-				totalSteps: CONNECT_TOTAL_STEPS,
-				value: typeof state.environment === 'string' ? state.environment : '',
-				prompt: localize('ENTER_ENVIRONMENT', 'Enter the name of the environment'),
-				shouldResume: shouldResume,
-				validate: validateRequiredValue,
-				password: false
-			});
-		}
+		state.environment = await input.showInputBox({
+			title: title,
+			step: CONNECT_ENVIRONMENT_STEP,
+			totalSteps: CONNECT_TOTAL_STEPS,
+			value: typeof state.environment === 'string' ? state.environment : '',
+			prompt: localize('ENTER_ENVIRONMENT', 'Enter the name of the environment'),
+			shouldResume: shouldResume,
+			validate: validateRequiredValue,
+			password: false
+		});
+	}
 
 	function shouldResume() {
 		// Could show a notification with the option to resume.

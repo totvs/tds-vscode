@@ -94,6 +94,7 @@ Por padrão, o _TDS-VSCode_ já vem configurado para usar o _encode_ `WindowsCP1
 
 - Se deseja contribuir com o desenvolvimento do plugin, acesse [Git Hub TDS-VSCODE](https://github.com/totvs/tds-vscode), faça seu commit que iremos analisar!
 
+??????https://developers.redhat.com/blog/2019/11/18/new-tools-for-automating-end-to-end-tests-for-vs-code-extensions#making_it_simple
 ## Extensões recomendadas
 
 - [Numbered Bookmarks](https://marketplace.visualstudio.com/items?itemName=alefragnani.numbered-bookmarks)

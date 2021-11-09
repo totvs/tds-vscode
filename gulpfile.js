@@ -30,7 +30,7 @@ const languages = [
 ];
 
 const cleanTask = function () {
-  return del(["out/**", "package.nls.*.json", "tds-vscode-*.vsix"]);
+  return del(["out/**", "out-test/**", "package.nls.*.json", "tds-vscode-*.vsix", "totvs.tds-vscode*"]);
 };
 
 const internalCompileTask = function () {

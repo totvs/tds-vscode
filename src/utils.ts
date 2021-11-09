@@ -10,7 +10,6 @@ import { EnvSection, ServerItem } from './serverItemProvider';
 import { Authorization, CompileKey } from './compileKey/compileKey';
 import { changeSettings } from './server/languageServerSettings';
 import { IRpoToken } from './rpoToken';
-//import { sendRpoToken } from './protocolMessages';
 
 const homedir = require('os').homedir();
 const localize = nls.loadMessageBundle();
@@ -359,9 +358,9 @@ export default class Utils {
    * Deleta o servidor logado por ultimo do servers.json
    */
   static deleteServer(id: string) {
-    const confirmationMessage = 'Tem certeza que deseja excluir este servidor?';
-    const optionYes = 'Sim';
-    const optionNo = 'Não';
+    const confirmationMessage = 'Are you sure want to delete this server?';
+    const optionYes = 'Yes';
+    const optionNo = 'No';
     vscode.window
       .showWarningMessage(confirmationMessage, optionYes, optionNo)
       .then((clicked) => {
@@ -950,8 +949,8 @@ export default class Utils {
         let time = Utils.timeAsHHMMSS(new Date());
         languageClient !== undefined
           ? languageClient.outputChannel.appendLine(
-              '[Log   + ' + time + '] ' + message
-            )
+            '[Log   + ' + time + '] ' + message
+          )
           : console.log(message);
         if (showDialog && notificationLevel === 'all') {
           vscode.window.showInformationMessage(message);

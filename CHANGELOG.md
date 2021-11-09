@@ -10,7 +10,7 @@
 
 ## Aplicação de pacotes [#820](https://github.com/totvs/tds-vscode/issues/820)
 
-- Correção no processo de aplicação de pacotes e ajustes visuais
+- Correção no processo de aplicação de pacotes e ajustes visuais.
 
 ## Tratamento de palavras chave em fontes .4gl [DTCLIENT01-2831](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2831)
 

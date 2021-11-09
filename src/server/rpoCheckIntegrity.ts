@@ -12,23 +12,27 @@ export function rpoCheckIntegrity() {
 
 	if (server) {
 		if (_debugEvent) {
-			vscode.window.showWarningMessage("Esta operação não é permitida durante uma depuração.")
+			vscode.window.showWarningMessage("This operation is not allowed during a debug.")
 			return;
 		}
-		languageClient.sendRequest('$totvsserver/rpoCheckIntegrity', {
-			"rpoCheckIntegrityInfo": {
-				"connectionToken": server.token,
-				"environment": server.environment
-			}
-		}).then((response: RpoChechIntegrityResult) => {
-			if (!response.integrity) {
-				vscode.window.showErrorMessage(response.message);
-			} else {
-				vscode.window.showInformationMessage(response.message);
-			}
-		}, (err: ResponseError<object>) => {
-			vscode.window.showErrorMessage(err.message);
-		});
+
+		const exec: Thenable<any> =
+			languageClient.sendRequest('$totvsserver/rpoCheckIntegrity', {
+				"rpoCheckIntegrityInfo": {
+					"connectionToken": server.token,
+					"environment": server.environment
+				}
+			}).then((response: RpoChechIntegrityResult) => {
+				if (!response.integrity) {
+					vscode.window.showErrorMessage(response.message);
+				} else {
+					vscode.window.showInformationMessage(response.message);
+				}
+			}, (err: ResponseError<object>) => {
+				vscode.window.showErrorMessage(err.message);
+			});
+
+		vscode.window.setStatusBarMessage("Checking RPO integrity", exec);
 	} else {
 		vscode.window.showErrorMessage(localize('tds.vscode.servernotconnected', 'There is no server connected'));
 	}
