@@ -26,7 +26,8 @@ export class ViewPageObject {
     if (sectionName) {
       tree = (await content.getSection(sectionName)) as DefaultTreeSection;
     } else {
-      tree = (await content.getSections()[0]) as DefaultTreeSection;
+      const sections = await content.getSections();
+      tree = sections[0] as DefaultTreeSection;
     }
 
     return (await tree.findItem(name)) as TreeItem;

@@ -96,7 +96,7 @@ export class WorkbenchPageObject {
   }
 
   async waitCheckIntegrity(wait: number = 30000): Promise<void> {
-    await this.waitProcessFinish(/Reconnecting to the server/);
+    await this.waitProcessFinish(/Checking RPO integrity/);
   }
 
   async waitRevalidate(wait: number = 30000): Promise<void> {

@@ -9,7 +9,7 @@ import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../scenario";
 
-describe.only("Compile files", () => {
+describe("Compile files", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
