@@ -102,7 +102,7 @@ const tableStyles = makeStyles((_theme) => ({
     backgroundColor: "grey !important",
   },
   srcNotFound: {
-    backgroundColor: "rgb(255,204,204) !important",
+    backgroundColor: 'rgb(255,204,204) !important',
     //backgroundColor: "LIGHTCORAL !important",
     //textDecoration: "line-through black",
     WebkitTextDecorationStyle: "solid",
@@ -115,10 +115,10 @@ const tableStyles = makeStyles((_theme) => ({
 }));
 
 interface Column {
-  id: "TimeStamp" | "SourceName" | "Line";
+  id: 'TimeStamp' | 'SourceName' | 'Line';
   label: string;
   minWidth?: number;
-  align?: "left" | "right" | "center";
+  align?: 'left' | 'right' | 'center';
   format?: (value: number) => string;
 }
 
@@ -133,7 +133,7 @@ const columns: Column[] = [
     id: "SourceName",
     label: "Source Name",
     minWidth: 10,
-    align: "left",
+    align: 'left',
     //format: (value: number) => value.toLocaleString(),
   },
   {
@@ -191,14 +191,14 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
         disabled={page === 0}
         aria-label="first page"
       >
-        {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
+        {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
       </IconButton>
       <IconButton
         onClick={handleBackButtonClick}
         disabled={page === 0}
         aria-label="previous page"
       >
-        {theme.direction === "rtl" ? (
+        {theme.direction === 'rtl' ? (
           <KeyboardArrowRight />
         ) : (
           <KeyboardArrowLeft />
@@ -209,7 +209,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="next page"
       >
-        {theme.direction === "rtl" ? (
+        {theme.direction === 'rtl' ? (
           <KeyboardArrowLeft />
         ) : (
           <KeyboardArrowRight />
@@ -220,7 +220,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="last page"
       >
-        {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
+        {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
       </IconButton>
     </div>
   );
@@ -379,9 +379,9 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           setOpenWaitPage(message.data);
           break;
       }
-      message.command = "";
+      message.command = '';
     };
-    window.addEventListener("message", listener);
+    window.addEventListener('message', listener);
   }
 
   const scrollIntoViewIfNeeded = (target: HTMLElement) => {
@@ -501,12 +501,12 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
       let timeLine = timeLines[index];
       let isSelected: boolean =
         timeLine.id === parseInt(jsonBody.currentSelectedTimeLineId);
-      let notFoundText = "";
+      let notFoundText = '';
       let bg;
-      if (!timeLine.srcFoundInWS || timeLine.srcFoundInWS == "false") {
+      if (!timeLine.srcFoundInWS || timeLine.srcFoundInWS == 'false') {
         bg = classes.srcNotFound;
         notFoundText =
-          "Source not found in Workspace. This timeline is not available to select";
+          'Source not found in Workspace. This timeline is not available to select';
       } else {
         bg =
           jsonBody.currentSelectedTimeLineId !== undefined && isSelected
@@ -554,7 +554,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         stickyHeader
         aria-label="sticky table"
         ref={tableElement}
-        size={dense ? "medium" : "small"}
+        size={dense ? 'medium' : 'small'}
       >
         <TableHead>
           <TableRow>

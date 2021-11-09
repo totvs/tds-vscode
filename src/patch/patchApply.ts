@@ -238,7 +238,7 @@ export function patchApply(
                       patchUri: patchUri,
                       isLocal: true,
                       isValidOnly: false,
-                      applyScope: "only_new",
+                      applyScope: 'only_new',
                     },
                   })
                   .then(

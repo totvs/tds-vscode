@@ -157,8 +157,8 @@ EnableSendMessage=<IP/name list>
 EnableBlockNewConnection=<IP/name list>
 EnableStopServer=<IP/name list>
 AllowApplyTemplate=<IP/name list>
-```
 
+```
 | Chave                    | Permissão                                 |
 | ------------------------ | ----------------------------------------- |
 | AllowApplyPatch          | Aplicar pacotes de atualização (_patchs_) |

@@ -151,7 +151,27 @@ Ajustado tratamento de listas encadeadas (_arrays_ dentro de _arrays_).
 
 - Alterado o processo de inicialização para caso a condição acima ocorra, seja enviado notificação para o usuário na tela de **DEBUG CONSOLE** e também como uma notificação que pode ser vista pelo **sino** do lado inferior direito do VSCode.
 
----
+### Problema:
+- O array ANFITEM informado pelo usuario possui um fluxo de processamento bastante complexo, com uma série de referências. Em determinado momento o TDS Replay processava o valor erroneamente fazendo com que o valor mostrado estivesse incorreto.
+
+### Solução:
+- Alterado toda a lógica de processamento de variáveis para identificar corretamente esse tipo de situação e mostrar o valor correto para o usuário.
+
+
+## Identificação e processamento da lista de exclusão de fontes ([ISSUE 754](https://github.com/totvs/tds-vscode/issues/754)) ([DTCLIENT01-2819](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2819))
+### Problema:
+- A lista de exclusão de fontes não levava em consideração fontes que não existissem na área de trabalho. Dessa forma, a timeline é mostrada, sendo que deveria ser filtrada.
+
+### Solução:
+- Alterado o processamento das lista de exclusão para que nem avalie o fonte caso ele não exista na pasta corrente.
+
+
+## Inicialização caso nenhum fonte seja encontrado [DTCLIENT01-2856](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2856)
+### Problema:
+- Ao iniciar a execução de um arquivo TDSReplay, caso não exista nenhum fonte na pasta corrente e que tenha passado pelos filtros de inclusão e exclusão, o processo fica parado com uma mensagem que ainda está iniciando, dando a impressão que está travado.
+
+### Solução:
+- Alterado o processo de inicialização para caso a condição acima ocorra, seja enviado notificação para o usuário na tela de **DEBUG CONSOLE** e também como uma notificação que pode ser vista pelo **sino** do lado inferior direito do VSCode.
 
 # Versão [1.3.3]
 
