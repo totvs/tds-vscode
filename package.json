@@ -77,8 +77,8 @@
     "@material-ui/core": "4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@totvs/tds-da": "^1.2.5",
-    "@totvs/tds-ls": "^1.2.9",
+    "@totvs/tds-da": "^1.2.6",
+    "@totvs/tds-ls": "^1.2.10",
     "@types/node": "^16.10.2",
     "@types/react": "^16.14.16",
     "@types/vscode": "^1.60.0",
@@ -188,6 +188,16 @@
     "onCommand:totvs-developer-studio.compile.key",
     "onCommand:totvs-developer-studio.templateApply",
     "onCommand:totvs-developer-studio.templateApply.fromFile",
+    "onCommand:totvs-developer-studio.rename",
+    "onCommand:totvs-developer-studio.toggleTableSync",
+    "onCommand:totvs-developer-studio.patchInfos.fromFile",
+    "onCommand:totvs-developer-studio.toggle.autocomplete.behavior",
+    "onCommand:totvs-developer-studio.run.formatter",
+    "onCommand:totvs-developer-studio.open-loadrpoinfo-view",
+    "onCommand:advpl.freshenIndex",
+    "onCommand:totvs-developer-studio.tdsreplay.configure.launcher",
+    "onCommand:totvs-developer-studio.tdsreplay.webview.timeLine",
+    "onCommand:tds-monitor.open-monitor-view",
     "onView:totvs_server",
     "workspaceContains:.tds",
     "workspaceContains:*.prw",
@@ -198,6 +208,7 @@
     "workspaceContains:*.ppp",
     "workspaceContains:*.tlpp",
     "workspaceContains:*.ch",
+    "workspaceContains:*.th",
     "workspaceContains:*.4gl",
     "workspaceContains:*.per",
     "workspaceContains:*.ptm",
@@ -206,6 +217,13 @@
     "workspaceContains:servers.json"
   ],
   "contributes": {
+    "iconThemes": [
+      {
+        "id": "tds",
+        "label": "TDS Icons Theme",
+        "path": "./fileicons/tds-icons-theme.json"
+      }
+    ],
     "customEditors": [
       {
         "viewType": "tds.patchView",
@@ -273,6 +291,7 @@
         ],
         "extensions": [
           ".ch",
+          ".th",
           ".prw",
           ".prg",
           ".prx",

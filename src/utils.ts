@@ -1075,6 +1075,7 @@ export default class Utils {
   // const logix = config.get("4gl")["extensions"];
 
   private static advpl: string[] = [
+    '.th',
     '.ch',
     '.prw',
     '.prg',

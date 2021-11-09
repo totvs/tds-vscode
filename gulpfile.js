@@ -10,9 +10,8 @@ const ts = require("gulp-typescript");
 const typescript = require("typescript");
 const sourcemaps = require("gulp-sourcemaps");
 const del = require("del");
-//const runSequence = require("run-sequence");
+
 const es = require("event-stream");
-const vsce = require("vsce");
 const nls = require("vscode-nls-dev");
 const log = require("gulp-util").log;
 const webpack = require("webpack-stream");
@@ -92,14 +91,6 @@ const doCompile = function (buildNls) {
   return r.pipe(gulp.dest(outDest));
 };
 
-const vscePublishTask = function () {
-  return vsce.publish();
-};
-
-const vscePackageTask = function () {
-  return vsce.createVSIX();
-};
-
 gulp.task("default", buildTask);
 
 gulp.task("clean", cleanTask);
@@ -107,10 +98,6 @@ gulp.task("clean", cleanTask);
 gulp.task("compile", gulp.series(cleanTask, internalCompileTask));
 
 gulp.task("build", buildTask);
-
-gulp.task("publish", gulp.series(buildTask, vscePublishTask));
-
-gulp.task("package", gulp.series(buildTask, vscePackageTask));
 
 gulp.task(
   "export-i18n",
