@@ -46,6 +46,46 @@ export class WorkbenchPageObject {
     );
   }
 
+  async isRpoIntegrity(): Promise<boolean> {
+    const notification: Notification = await this.getNotification(
+      /RPO [intact|incomplete]/
+    );
+    const result: boolean = notification ? true : false;
+    await notification?.dismiss();
+
+    return result;
+  }
+
+  async isSaveServer(): Promise<boolean> {
+    const notification: Notification = await this.getNotification(
+      /Saved server/
+    );
+    const result: boolean = notification ? true : false;
+    await notification?.dismiss();
+
+    return result;
+  }
+
+  async isPatchValidateNotBeExecuted(): Promise<boolean> {
+    const notification: Notification = await this.getNotification(
+      /Patch validate could not be executed/
+    );
+    const result: boolean = notification ? true : false;
+    await notification?.dismiss();
+
+    return result;
+  }
+
+  async isApplyPatch(): Promise<boolean> {
+    const notification: Notification = await this.getNotification(
+      /Patch applied/
+    );
+    const result: boolean = notification ? true : false;
+    await notification?.dismiss();
+
+    return result;
+  }
+
   async isHaveKey(): Promise<boolean> {
     return (await this.statusBar.statusBarWithText(/HAVE key/)) !== null;
   }
@@ -53,6 +93,7 @@ export class WorkbenchPageObject {
   async isNotHaveKey(): Promise<boolean> {
     return (await this.statusBar.statusBarWithText(/NOT key/)) !== null;
   }
+
   private async processInProgress(
     targetText: RegExp | string
   ): Promise<boolean> {
@@ -117,7 +158,7 @@ export class WorkbenchPageObject {
 
   async getNotification(
     targetText: RegExp | string,
-    _wait: number = 1000
+    _wait: number = 5000
   ): Promise<Notification> {
     const notification: Notification = await this.notification.getNotification(
       targetText,

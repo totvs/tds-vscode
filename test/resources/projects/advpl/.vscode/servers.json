@@ -1,0 +1,38 @@
+{
+	"version": "0.2.1",
+	"includes": [
+		""
+	],
+	"permissions": {
+		"authorizationtoken": ""
+	},
+	"connectedServer": {},
+	"configurations": [
+		{
+			"id": "py38tzto8irkvsmmalxdzycrmdwcxj",
+			"type": "totvs_server_protheus",
+			"name": "localhost",
+			"port": 2030,
+			"address": "localhost",
+			"buildVersion": "7.00.210324P",
+			"secure": true,
+			"includes": [],
+			"environments": [
+				"p12"
+			],
+			"username": "admin",
+			"environment": "p12",
+			"token": "djM6cHkzOHR6dG84aXJrdnNtbWFseGR6eWNybWR3Y3hqOjE6bG9jYWxob3N0OjIwMzA6MTo3LjAwLjIxMDMyNFA6Mw==:djE6cDEyOmFkbWluOnJUVGNZZ2pOSGNkL0lmc0h3VDczNHZMN0JQQkV5MmhqV1orZ3hrYlB3a0E9|djI6MTYzNjQ5NDcwMzowOjE6MQ==.HCAsNrezLzksySq//U6Zq1rA1YDguUR4YfCkFQ4wstcC6KfdYnA8IgSYOBrdfIhiml8++2YqYMCGrDMn1rRPtkR9IcbI2RE0fuAOl1x9GjdmmhHRR+8w6C0ycwnI4EYj6GXBux45FkMbghXPZfsKrn5o/QTuC2Op6BkNiaFhahKznTThQtDs5NJCMJspzzu3syfzUx6muFa/wJaY5uuwiraS2Ly947ncxUNj9cUoiz9EdvPEDDclBXvgRkB7WJSCIj9CEWJW2fuGsB5xslN/6ZQ37Qwe/WcTwbkjM3dx0qYI8BfaCO21MHyuhlHsQILHbpoJ40gk+bW/YKpZqY72xQ=="
+		}
+	],
+	"savedTokens": [
+		[
+			"py38tzto8irkvsmmalxdzycrmdwcxj:p12",
+			{
+				"id": "py38tzto8irkvsmmalxdzycrmdwcxj",
+				"token": "djM6cHkzOHR6dG84aXJrdnNtbWFseGR6eWNybWR3Y3hqOjE6bG9jYWxob3N0OjIwMzA6MTo3LjAwLjIxMDMyNFA6Mw==:djE6cDEyOmFkbWluOnJUVGNZZ2pOSGNkL0lmc0h3VDczNHZMN0JQQkV5MmhqV1orZ3hrYlB3a0E9|djI6MTYzNjQ5NDcwMzowOjE6MQ==.HCAsNrezLzksySq//U6Zq1rA1YDguUR4YfCkFQ4wstcC6KfdYnA8IgSYOBrdfIhiml8++2YqYMCGrDMn1rRPtkR9IcbI2RE0fuAOl1x9GjdmmhHRR+8w6C0ycwnI4EYj6GXBux45FkMbghXPZfsKrn5o/QTuC2Op6BkNiaFhahKznTThQtDs5NJCMJspzzu3syfzUx6muFa/wJaY5uuwiraS2Ly947ncxUNj9cUoiz9EdvPEDDclBXvgRkB7WJSCIj9CEWJW2fuGsB5xslN/6ZQ37Qwe/WcTwbkjM3dx0qYI8BfaCO21MHyuhlHsQILHbpoJ40gk+bW/YKpZqY72xQ=="
+			}
+		]
+	],
+	"lastConnectedServer": ""
+}

@@ -1,3 +1,4 @@
 {
-    "window.newWindowDimensions": "inherit"
+    "window.newWindowDimensions": "inherit",
+    "workbench.startupEditor": "none"
 }

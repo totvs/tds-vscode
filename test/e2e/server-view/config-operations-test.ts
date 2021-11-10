@@ -15,7 +15,7 @@ import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { COMPILE_KEY_FILE, DELETE_DATA, INCLUDE_PATH_DATA } from "../scenario";
 
-describe("TOTVS: Server View Configurations", () => {
+describe.skip("TOTVS: Server View Configurations", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;

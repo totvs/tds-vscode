@@ -23,7 +23,7 @@
         "resolveJsonModule": true,
     },
     "exclude": [
-        "resources/**",
-        "_*/**"
+        "node_modules",
+        "resources/**"
     ]
 }

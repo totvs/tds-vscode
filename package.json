@@ -53,7 +53,7 @@
     "--TEST--": "",
     "test": "npm run ci-run",
     "pretest": "rimraf ./out-test/* && npm run compile-test",
-    "ci-setup": "extest setup-tests -i -s c:/temp/test -e c:/temp/extension",
+    "ci-setup": "extest setup-tests -c 1.60.2 -i -s c:/temp/test -e c:/temp/extension",
     "ci-run": "extest run-tests -f -s c:/temp/test -e c:/temp/extension -o test/settings.json './out-test/**/*test.js'",
     "--SCENARIO--": "",
     "scenario:default": "npm run test",

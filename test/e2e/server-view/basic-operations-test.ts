@@ -103,10 +103,7 @@ describe("TOTVS: Server View Basic Operations", () => {
     await webView.switchBack();
     await delay();
 
-    const notification: Notification = await workbenchPO.getNotification(
-      /Saved server/
-    );
-    expect(notification).not.is.undefined;
+    expect(await workbenchPO.isSaveServer()).is.true;
   });
 
   it.skip("Reconnect", async () => {

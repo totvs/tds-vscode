@@ -9,7 +9,7 @@ import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA } from "../scenario";
 
-describe("Patch Operations (forms)", () => {
+describe.skip("Patch Operations (forms)", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;

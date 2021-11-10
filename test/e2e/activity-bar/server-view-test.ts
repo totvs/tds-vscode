@@ -33,12 +33,6 @@ describe("TOTVS: Server View", () => {
 
   it("Add Local Server", async () => {
     await serverTreePO.addNewServer(APPSERVER_DATA);
-
-    const notification: Notification = await workbenchPO.getNotification(
-      /Saved server/
-    );
-
-    expect(notification).not.is.undefined;
   });
 
   it("Remove Server", async () => {

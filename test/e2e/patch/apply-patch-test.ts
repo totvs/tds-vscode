@@ -51,12 +51,7 @@ describe("Patch Operations", () => {
 
     await workbenchPO.waitApplyPatch();
 
-    const notification: Notification = await workbenchPO.getNotification(
-      /Patch applied/
-    );
-
-    expect(notification).not.is.undefined;
-    await notification?.dismiss();
+    expect(await workbenchPO.isApplyPatch()).is.true;
   });
 
   (PATCHS_FILES.many ? it : it.skip)("Apply many file", async () => {
@@ -70,12 +65,7 @@ describe("Patch Operations", () => {
 
     await workbenchPO.waitApplyPatch();
 
-    const notification: Notification = await workbenchPO.getNotification(
-      /Patch applied/
-    );
-
-    expect(notification).not.is.undefined;
-    await notification?.dismiss();
+    expect(await workbenchPO.isApplyPatch()).is.true;
   });
 
   (PATCHS_FILES.invalid ? it : it.skip)("Apply invalid file", async () => {
@@ -86,12 +76,7 @@ describe("Patch Operations", () => {
     await applyPatchPO.fireSubmitCloseID();
     await delay(2000);
 
-    const notification: Notification = await workbenchPO.getNotification(
-      /Patch validate could not be executed/
-    );
-
-    expect(notification).not.is.undefined;
-    await notification?.dismiss();
+    expect(await workbenchPO.isPatchValidateNotBeExecuted()).is.true;
   });
 
   (PATCHS_FILES.zip ? it : it.skip)("Apply many file", async () => {
@@ -105,11 +90,6 @@ describe("Patch Operations", () => {
 
     await workbenchPO.waitApplyPatch();
 
-    const notification: Notification = await workbenchPO.getNotification(
-      /Patch applied/
-    );
-
-    expect(notification).not.is.undefined;
-    await notification?.dismiss();
+    expect(await workbenchPO.isApplyPatch()).is.true;
   });
 });

@@ -11,7 +11,7 @@ import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA } from "../scenario";
 
-describe("RPO Operations", () => {
+describe.only("RPO Operations", () => {
   let workbenchPO: WorkbenchPageObject;
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
@@ -52,11 +52,7 @@ describe("RPO Operations", () => {
     await workbenchPO.waitCheckIntegrity();
     await delay();
 
-    const notification: Notification = await workbenchPO.getNotification(
-      /RPO [intact|incomplete]/
-    );
-
-    expect(notification).not.is.undefined;
+    expect(await workbenchPO.isRpoIntegrity()).is.true;
   });
 
   it("Repository Log", async () => {
