@@ -5,14 +5,14 @@ import {
   DebugConfiguration,
   WorkspaceFolder,
   DebugConfigurationProvider,
-} from 'vscode';
-import * as vscode from 'vscode';
-import * as Net from 'net';
-import { sessionKey } from '../TotvsLanguageClient';
-import { setDapArgs } from './debugConfigs';
-import serverProvider from '../serverItemProvider';
-import * as nls from 'vscode-nls';
-import { canDebug } from '../extension';
+} from "vscode";
+import * as vscode from "vscode";
+import * as Net from "net";
+import { sessionKey } from "../TotvsLanguageClient";
+import { ProgramArgs, setDapArgs } from "./debugConfigs";
+import serverProvider from "../serverItemProvider";
+import * as nls from "vscode-nls";
+import { canDebug } from "../extension";
 
 const localize = nls.loadMessageBundle();
 /*
@@ -25,7 +25,7 @@ const EMBED_DEBUG_ADAPTER = false;
 export class TotvsConfigurationWebProvider
   implements DebugConfigurationProvider
 {
-  static type = 'totvs_language_web_debug';
+  static type = "totvs_language_web_debug";
 
   private _server?: Net.Server;
 
@@ -33,11 +33,11 @@ export class TotvsConfigurationWebProvider
    * Massage a debug configuration just before a debug session is being launched,
    * e.g. add all missing attributes to the debug configuration.
    */
-  resolveDebugConfiguration(
+  async resolveDebugConfiguration(
     folder: WorkspaceFolder | undefined,
     config: DebugConfiguration,
     token?: CancellationToken
-  ): ProviderResult<DebugConfiguration> {
+  ): Promise<DebugConfiguration> {
     if (!canDebug()) {
       return undefined;
     }
@@ -48,12 +48,12 @@ export class TotvsConfigurationWebProvider
       // if launch.json is missing or empty
       if (!config.type && !config.request && !config.name) {
         const editor = window.activeTextEditor;
-        if (editor && editor.document.languageId === 'totvs-developer-studio') {
+        if (editor && editor.document.languageId === "totvs-developer-studio") {
           config.type = TotvsConfigurationWebProvider.type;
-          config.name = 'TOTVS Language Web Debug (SmartClient HTML)';
-          config.request = 'launch';
-          config.program = '${workspaceFolder}/${command:AskForProgramName}';
-          config.smartclientUrl = 'http://localhost:8080';
+          config.name = "TOTVS Language Web Debug (SmartClient HTML)";
+          config.request = "launch";
+          config.program = "${workspaceFolder}/${command:AskForProgramName}";
+          config.smartclientUrl = "http://localhost:8080";
         }
       }
 
@@ -67,49 +67,94 @@ export class TotvsConfigurationWebProvider
       config.publicKey = sessionKey;
       config.token = connectedServerItem.token;
 
-      let workspaceFolders = vscode.workspace.workspaceFolders;
-      if (workspaceFolders) {
-        let wsPaths = new Array(workspaceFolders.length);
-        let i = 0;
-        for (const workspaceFolder of workspaceFolders) {
-          const workspaceFolderPath = workspaceFolder.uri.fsPath;
-          wsPaths[i] = workspaceFolderPath;
-          i++;
+      if (folder) {
+        config.workspaceFolders = folder;
+      } else {
+        let workspaceFolders = vscode.workspace.workspaceFolders;
+        if (workspaceFolders) {
+          let wsPaths = new Array(workspaceFolders.length);
+          let i = 0;
+          for (const workspaceFolder of workspaceFolders) {
+            const workspaceFolderPath = workspaceFolder.uri.fsPath;
+            wsPaths[i] = workspaceFolderPath;
+            i++;
+          }
+          config.workspaceFolders = wsPaths;
         }
-        config.workspaceFolders = wsPaths;
       }
 
-      if (!config.cwb || config.cwb === '') {
-        config.cwb = vscode.workspace.rootPath;
+      if (!config.cwb || config.cwb === "") {
+        config.cwb = folder;
         window.showInformationMessage(
           localize(
-            'tds.vscode.cwb_warning',
-            'Parameter cwb not informed. Setting to {0}',
+            "tds.vscode.cwb_warning",
+            "Parameter cwb not informed. Setting to {0}",
             config.cwb
           )
         );
       }
 
-      const cfg = vscode.workspace.getConfiguration('totvsLanguageServer');
-      const webNavigator: string | undefined = cfg.get('web.navigator');
+      const cfg = vscode.workspace.getConfiguration("totvsLanguageServer");
+      const webNavigator: string | undefined = cfg.get("web.navigator");
 
-      if (!webNavigator || webNavigator === '') {
+      if (!webNavigator || webNavigator === "") {
         window.showErrorMessage(
           localize(
-            'tds.vscode.web_navigator',
-            'Parameter webNavigator not informed.'
+            "tds.vscode.web_navigator",
+            "Parameter webNavigator not informed."
           )
         );
         return undefined; // abort launch
       }
       config.webNavigator = webNavigator;
 
+      if (config.program === "${command:AskForProgramName}") {
+        const value: ProgramArgs = await vscode.commands.executeCommand(
+          "totvs-developer-studio.getProgramName"
+        );
+
+        if (!value) {
+          window.showInformationMessage(
+            localize(
+              "tds.vscode.program_not_found",
+              "Cannot find a program to debug"
+            )
+          );
+          return undefined; // abort launch
+        }
+
+        config.program = value.program;
+
+        if (config.program === undefined) {
+          return undefined;
+        }
+
+        if (value.args) {
+          config.programArguments = value.args;
+        } else {
+          if (
+            config.programArguments &&
+            Array.isArray(config.programArguments) &&
+            (<Array<string>>config.programArguments).includes(
+              "${command:AskForProgramArguments}"
+            )
+          ) {
+            config.programArguments = await vscode.commands.executeCommand(
+              "totvs-developer-studio.getProgramArguments"
+            );
+            if (!config.programArguments) {
+              config.programArguments = [];
+            }
+          }
+        }
+      }
+
       if (!config.program) {
         return window
           .showInformationMessage(
             localize(
-              'tds.vscode.program_not_found',
-              'Cannot find a program to debug'
+              "tds.vscode.program_not_found",
+              "Cannot find a program to debug"
             )
           )
           .then((_) => {
@@ -134,20 +179,20 @@ export class TotvsConfigurationWebProvider
       }
       let setDapArgsArr: string[] = [];
       if (config.logFile) {
-        const ws: string = vscode.workspace.rootPath || '';
+        const ws: string = vscode.workspace.rootPath || "";
         setDapArgsArr.push(
-          '--log-file=' + config.logFile.replace('${workspaceFolder}', ws)
+          "--log-file=" + config.logFile.replace("${workspaceFolder}", ws)
         );
       }
       if (config.waitForAttach) {
-        setDapArgsArr.push('--wait-for-attach=' + config.waitForAttach);
+        setDapArgsArr.push("--wait-for-attach=" + config.waitForAttach);
       }
       setDapArgs(setDapArgsArr);
 
       return config;
     } else {
       window.showErrorMessage(
-        localize('tds.vscode.server_not_connected', 'No servers connected')
+        localize("tds.vscode.server_not_connected", "No servers connected")
       );
       return null;
     }
