@@ -29,7 +29,13 @@ Efetuada correção no tratamento de filtro `includeSource`.
 
 Ajustado tratamento de listas encadeadas (_arrays_ dentro de _arrays_).
 
-## AskForProgramName não funciona com debug WebApp [DTCLIENT01-3066]https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3066
+## AskForProgramName não funciona com debug WebApp [DTCLIENT01-3066](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3066)
+
+Ajustado tratamento do argumento _AskForProgramName_.
+
+## Validar Chave de compilação resulta em tela preta [DTCLIENT01-3072](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3072)
+
+Ajustado propriedades dos botões.
 
 # Versão [1.3.4]
 
