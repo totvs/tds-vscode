@@ -1,14 +1,13 @@
 import { expect } from "chai";
-import { describe, before, it, Context } from "mocha";
+import { describe, before, it } from "mocha";
 import { delay, openAdvplProject } from "../helper";
 import { ApplyPatchPageObject } from "../page-objects/apply-patch-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA, PATCHS_FILES } from "../scenario";
-import { Notification } from "vscode-extension-tester";
 
-describe("Patch Operations", () => {
+describe.only("Patch Operations", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;

@@ -13,7 +13,7 @@ import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, DELETE_DATA, APPSERVER_DATA } from "../scenario";
 
-describe("TOTVS: Server View Basic Operations", () => {
+describe.only("TOTVS: Server View Basic Operations", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;

@@ -9,12 +9,12 @@
 	"connectedServer": {},
 	"configurations": [
 		{
-			"id": "py38tzto8irkvsmmalxdzycrmdwcxj",
+			"id": "hsxpimelu4hkw271akvscoxf1jjh5p",
 			"type": "totvs_server_protheus",
-			"name": "localhost",
-			"port": 2030,
-			"address": "localhost",
-			"buildVersion": "7.00.210324P",
+			"name": "p19-3-1-7 (remoto)",
+			"port": 5001,
+			"address": "10.171.10.77",
+			"buildVersion": "7.00.191205P",
 			"secure": true,
 			"includes": [],
 			"environments": [
@@ -22,15 +22,25 @@
 			],
 			"username": "admin",
 			"environment": "p12",
-			"token": "djM6cHkzOHR6dG84aXJrdnNtbWFseGR6eWNybWR3Y3hqOjE6bG9jYWxob3N0OjIwMzA6MTo3LjAwLjIxMDMyNFA6Mw==:djE6cDEyOmFkbWluOnJUVGNZZ2pOSGNkL0lmc0h3VDczNHZMN0JQQkV5MmhqV1orZ3hrYlB3a0E9|djI6MTYzNjQ5NDcwMzowOjE6MQ==.HCAsNrezLzksySq//U6Zq1rA1YDguUR4YfCkFQ4wstcC6KfdYnA8IgSYOBrdfIhiml8++2YqYMCGrDMn1rRPtkR9IcbI2RE0fuAOl1x9GjdmmhHRR+8w6C0ycwnI4EYj6GXBux45FkMbghXPZfsKrn5o/QTuC2Op6BkNiaFhahKznTThQtDs5NJCMJspzzu3syfzUx6muFa/wJaY5uuwiraS2Ly947ncxUNj9cUoiz9EdvPEDDclBXvgRkB7WJSCIj9CEWJW2fuGsB5xslN/6ZQ37Qwe/WcTwbkjM3dx0qYI8BfaCO21MHyuhlHsQILHbpoJ40gk+bW/YKpZqY72xQ=="
+			"token": "djM6aHN4cGltZWx1NGhrdzI3MWFrdnNjb3hmMWpqaDVwOjE6MTAuMTcxLjEwLjc3OjUwMDE6MTo3LjAwLjE5MTIwNVA6Mw==:djE6cDEyOmFkbWluOk14RG5KT2JTS3dmU05CWkg5SU1PeXVjV3E0SFBETUZjKy9ESzByQ3F0WFk9|djI6MTYzNzA3MzA4ODowOjE6MQ==.oBPmtS2Jwo3J74ZjqKW2A+E31A0o2nWm0m/iy38R8+D8E0KqTV+wS2zvECijqt5jgeign2sfLmY4+AdKMywRA2gRMesHuP/OYPI9D9k8gdwxYLowrnknj8RpUKoGefBbwQ7DAKjP3MMoZ+edCZHpo88gpqfa04AWm2pN3oekdjD0diFlkVrIR8AJRWuQVCBdrQqi76ZH9Yq8ryyipyMaulqaN8siZTzO9yoP3b31kRH+lP8knJykwaNx4B4YRmuPU+mOv7m97pii6NKQQb+88TAuPPkIfA8flWQMekpUJ9ry366rAoy+QIZVVCx1SFq710KT9oqMd9JV/oZZCJLejQ=="
+		},
+		{
+			"id": "umyec7866qlkw272bg9v2gyvoyj26r",
+			"type": "totvs_server_protheus",
+			"name": "forDelete",
+			"port": 5001,
+			"address": "10.171.10.77",
+			"buildVersion": "7.00.191205P",
+			"secure": true,
+			"includes": []
 		}
 	],
 	"savedTokens": [
 		[
-			"py38tzto8irkvsmmalxdzycrmdwcxj:p12",
+			"hsxpimelu4hkw271akvscoxf1jjh5p:p12",
 			{
-				"id": "py38tzto8irkvsmmalxdzycrmdwcxj",
-				"token": "djM6cHkzOHR6dG84aXJrdnNtbWFseGR6eWNybWR3Y3hqOjE6bG9jYWxob3N0OjIwMzA6MTo3LjAwLjIxMDMyNFA6Mw==:djE6cDEyOmFkbWluOnJUVGNZZ2pOSGNkL0lmc0h3VDczNHZMN0JQQkV5MmhqV1orZ3hrYlB3a0E9|djI6MTYzNjQ5NDcwMzowOjE6MQ==.HCAsNrezLzksySq//U6Zq1rA1YDguUR4YfCkFQ4wstcC6KfdYnA8IgSYOBrdfIhiml8++2YqYMCGrDMn1rRPtkR9IcbI2RE0fuAOl1x9GjdmmhHRR+8w6C0ycwnI4EYj6GXBux45FkMbghXPZfsKrn5o/QTuC2Op6BkNiaFhahKznTThQtDs5NJCMJspzzu3syfzUx6muFa/wJaY5uuwiraS2Ly947ncxUNj9cUoiz9EdvPEDDclBXvgRkB7WJSCIj9CEWJW2fuGsB5xslN/6ZQ37Qwe/WcTwbkjM3dx0qYI8BfaCO21MHyuhlHsQILHbpoJ40gk+bW/YKpZqY72xQ=="
+				"id": "hsxpimelu4hkw271akvscoxf1jjh5p",
+				"token": "djM6aHN4cGltZWx1NGhrdzI3MWFrdnNjb3hmMWpqaDVwOjE6MTAuMTcxLjEwLjc3OjUwMDE6MTo3LjAwLjE5MTIwNVA6Mw==:djE6cDEyOmFkbWluOk14RG5KT2JTS3dmU05CWkg5SU1PeXVjV3E0SFBETUZjKy9ESzByQ3F0WFk9|djI6MTYzNzA3MzA4ODowOjE6MQ==.oBPmtS2Jwo3J74ZjqKW2A+E31A0o2nWm0m/iy38R8+D8E0KqTV+wS2zvECijqt5jgeign2sfLmY4+AdKMywRA2gRMesHuP/OYPI9D9k8gdwxYLowrnknj8RpUKoGefBbwQ7DAKjP3MMoZ+edCZHpo88gpqfa04AWm2pN3oekdjD0diFlkVrIR8AJRWuQVCBdrQqi76ZH9Yq8ryyipyMaulqaN8siZTzO9yoP3b31kRH+lP8knJykwaNx4B4YRmuPU+mOv7m97pii6NKQQb+88TAuPPkIfA8flWQMekpUJ9ry366rAoy+QIZVVCx1SFq710KT9oqMd9JV/oZZCJLejQ=="
 			}
 		]
 	],

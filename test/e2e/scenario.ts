@@ -1,6 +1,4 @@
-import * as glob from "glob";
-import * as fse from "fs-extra";
-import { readJsonSync } from "fs-extra";
+import glob = require("glob");
 import path = require("path");
 import jsonMerger = require("json-merger");
 import {
@@ -27,7 +25,7 @@ if (process.env.SCENARIO) {
 
   values = jsonMerger.mergeFiles([scenarioDefault, scenarioFile]);
 } else {
-  values = readJsonSync(scenarioDefault);
+  values = jsonMerger.mergeFiles([scenarioFile]);
 }
 
 console.log("--------------------------------------");

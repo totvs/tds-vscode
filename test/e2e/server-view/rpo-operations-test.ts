@@ -11,7 +11,7 @@ import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA } from "../scenario";
 
-describe.only("RPO Operations", () => {
+describe("RPO Operations", () => {
   let workbenchPO: WorkbenchPageObject;
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
