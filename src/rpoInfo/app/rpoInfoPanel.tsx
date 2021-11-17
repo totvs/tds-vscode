@@ -1,10 +1,6 @@
 import * as React from "react";
 import MaterialTable, { MTableToolbar } from "material-table";
-import {
-  createStyles,
-  makeStyles,
-  Theme
-} from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import { rpoInfoIcons } from "../helper/rpoInfoIcons";
 import { IRpoInfoPanelAction, RpoInfoPanelAction } from "../actions";
@@ -18,16 +14,27 @@ import {
   propColumns,
   propOrderBy,
   propOrderDirection,
-  propColumnsOrder
+  propColumnsOrder,
 } from "./rpoInfoPanelMemento";
 import { i18n } from "../helper";
-import RpoInfoTheme, { inputTextStyles, useToolbarStyles } from "../helper/theme";
+import RpoInfoTheme, {
+  inputTextStyles,
+  useToolbarStyles,
+} from "../helper/theme";
 import { IRpoInfoData, IRpoPatch } from "../rpoPath";
-import { FilledInput, FormControl, Grid, Input, InputLabel, SvgIconProps, Typography } from "@material-ui/core";
-import TreeView from '@material-ui/lab/TreeView';
-import TreeItem, { TreeItemProps } from '@material-ui/lab/TreeItem';
-import TextField from '@material-ui/core/TextField';
-import Label from '@material-ui/icons/Label';
+import {
+  FilledInput,
+  FormControl,
+  Grid,
+  Input,
+  InputLabel,
+  SvgIconProps,
+  Typography,
+} from "@material-ui/core";
+import TreeView from "@material-ui/lab/TreeView";
+import TreeItem, { TreeItemProps } from "@material-ui/lab/TreeItem";
+import TextField from "@material-ui/core/TextField";
+import Label from "@material-ui/icons/Label";
 import SaveAlt from "@material-ui/icons/SaveAlt";
 
 interface RenderTree {
@@ -36,7 +43,6 @@ interface RenderTree {
   children?: RenderTree[];
   rpoPatch?: IRpoPatch;
 }
-
 
 interface IRpoInfoPanel {
   vscode: any;
@@ -65,52 +71,53 @@ const useTreeItemStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       color: theme.palette.text.secondary,
-      '&:hover > $content': {
+      "&:hover > $content": {
         backgroundColor: theme.palette.action.hover,
       },
-      '&:focus > $content, &$selected > $content': {
+      "&:focus > $content, &$selected > $content": {
         backgroundColor: `var(--tree-view-bg-color, ${theme.palette.grey[400]})`,
-        color: 'var(--tree-view-color)',
+        color: "var(--tree-view-color)",
       },
-      '&:focus > $content $label, &:hover > $content $label, &$selected > $content $label': {
-        backgroundColor: 'transparent',
-      },
+      "&:focus > $content $label, &:hover > $content $label, &$selected > $content $label":
+        {
+          backgroundColor: "transparent",
+        },
     },
     content: {
       color: theme.palette.text.secondary,
       borderTopRightRadius: theme.spacing(2),
       borderBottomRightRadius: theme.spacing(2),
       paddingRight: theme.spacing(1),
-      fontWeight: theme.typography.fontWeightMedium,
-      '$expanded > &': {
+      //fontWeight: theme.typography.fontWeightMedium,
+      "$expanded > &": {
         fontWeight: theme.typography.fontWeightRegular,
       },
     },
     group: {
       marginLeft: 0,
-      '& $content': {
+      "& $content": {
         paddingLeft: theme.spacing(2),
       },
     },
     expanded: {},
     selected: {},
     label: {
-      fontWeight: 'inherit',
-      color: 'inherit',
+      fontWeight: "inherit",
+      color: "inherit",
     },
     labelRoot: {
-      display: 'flex',
-      alignItems: 'center',
+      display: "flex",
+      alignItems: "center",
       padding: theme.spacing(0.5, 0),
     },
     labelIcon: {
       marginRight: theme.spacing(1),
     },
     labelText: {
-      fontWeight: 'inherit',
+      fontWeight: "inherit",
       flexGrow: 1,
     },
-  }),
+  })
 );
 
 type StyledTreeItemProps = TreeItemProps & {
@@ -121,16 +128,23 @@ type StyledTreeItemProps = TreeItemProps & {
   labelText: string;
 };
 
-declare module 'csstype' {
+declare module "csstype" {
   interface Properties {
-    '--tree-view-color'?: string;
-    '--tree-view-bg-color'?: string;
+    "--tree-view-color"?: string;
+    "--tree-view-bg-color"?: string;
   }
 }
 
 function StyledTreeItem(props: StyledTreeItemProps) {
   const classes = useTreeItemStyles();
-  const { labelText, labelIcon: LabelIcon, labelInfo, color, bgColor, ...other } = props;
+  const {
+    labelText,
+    labelIcon: LabelIcon,
+    labelInfo,
+    color,
+    bgColor,
+    ...other
+  } = props;
 
   return (
     <TreeItem
@@ -230,7 +244,11 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
 
           setData(treeNodes);
           setSubtitle(message.data.serverName);
-          setRpoInfo({ version: rpoInfo.rpoVersion, date: rpoInfo.dateGeneration, environment: rpoInfo.environment });
+          setRpoInfo({
+            version: rpoInfo.rpoVersion,
+            date: rpoInfo.dateGeneration,
+            environment: rpoInfo.environment,
+          });
           break;
         }
         default:
@@ -259,7 +277,11 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
 
   actions.push({
     icon: () =>
-      filtering ? <FilterList className={toolBarStyle.actionOn} /> : <FilterList />,
+      filtering ? (
+        <FilterList className={toolBarStyle.actionOn} />
+      ) : (
+        <FilterList />
+      ),
     tooltip: i18n.localize("FILTERING_ON_OFF", "Filtering on/off"),
     isFreeAction: true,
     onClick: () => {
@@ -276,7 +298,7 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
         action: RpoInfoPanelAction.ExportToTxt,
         content: {
           rpoInfo: rpoInfo,
-          rpoPath: currentNode
+          rpoPath: currentNode,
         },
       };
 
@@ -288,7 +310,7 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
     let result: RenderTree = null;
 
     children.forEach((element: RenderTree) => {
-      if (element.id == id){
+      if (element.id == id) {
         result = element;
       } else if (element.children && element.children.length != 0) {
         const result2 = findNode(id, element.children);
@@ -296,12 +318,15 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
           result = result2;
         }
       }
-    })
+    });
 
     return result;
   };
 
-  const doClickNode = (event: React.MouseEvent<HTMLElement, MouseEvent>, id: string) => {
+  const doClickNode = (
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    id: string
+  ) => {
     event.preventDefault();
 
     const currentNode: RenderTree = findNode(id, data.children);
@@ -312,7 +337,7 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
       setRows([]);
       setCurrentNode(null);
     }
-  }
+  };
 
   const renderTree = (nodes: RenderTree) => (
     <StyledTreeItem
@@ -321,27 +346,47 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
       labelIcon={Label}
       onClick={(event) => doClickNode(event, nodes.id)}
     >
-      {Array.isArray(nodes.children) ? nodes.children.map((node) => renderTree(node)) : null}
+      {Array.isArray(nodes.children)
+        ? nodes.children.map((node) => renderTree(node))
+        : null}
     </StyledTreeItem>
   );
 
   const toolBarStyle = useToolbarStyles();
   const inputTextClasses = inputTextStyles();
-  const rpo = rpoInfo || ({ version: "", date: "", environment: "" });
+  const rpo = rpoInfo || { version: "", date: "", environment: "" };
 
   return (
     <RpoInfoTheme>
       <Paper variant="outlined">
         <Grid container spacing={2}>
           <Grid item xs={2}>
-            <Grid container >
+            <Grid container>
               <Grid item container className={inputTextClasses.root}>
-                <Typography variant="overline" display="block" gutterBottom>RPO</Typography>
-                <TextField margin="dense" label="Date" variant="outlined" disabled size="small" value={rpo.date} multiline={true} rows={2} />
-                <TextField margin="dense" label="Version" variant="outlined" disabled size="small" value={rpo.version} />
+                <Typography variant="overline" display="block" gutterBottom>
+                  RPO
+                </Typography>
+                <TextField
+                  margin="dense"
+                  label="Date"
+                  variant="outlined"
+                  disabled
+                  size="small"
+                  value={rpo.date}
+                  multiline={true}
+                  rows={2}
+                />
+                <TextField
+                  margin="dense"
+                  label="Version"
+                  variant="outlined"
+                  disabled
+                  size="small"
+                  value={rpo.version}
+                />
               </Grid>
 
-              <Grid item >
+              <Grid item>
                 <TreeView
                   defaultExpanded={["node_" + rpo.environment]}
                   defaultCollapseIcon={rpoInfoIcons.arrowDropDown}
@@ -368,33 +413,79 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
                       }
                     />
 
-                    <Grid container >
+                    <Grid container>
                       <Grid item container xs={6}>
                         <Grid item xs={12}>
-                          <Typography variant="overline" gutterBottom>Generation</Typography>
+                          <Typography variant="overline" gutterBottom>
+                            Generation
+                          </Typography>
                         </Grid>
                         <Grid item xs>
-                          <TextField margin="dense" label="Date" variant="outlined" disabled size="small" value={currentNode && currentNode.dateFileGeneration} />
+                          <TextField
+                            margin="dense"
+                            label="Date"
+                            variant="outlined"
+                            disabled
+                            size="small"
+                            value={
+                              currentNode && currentNode.dateFileGeneration
+                            }
+                          />
                         </Grid>
                         <Grid item xs>
-                          <TextField margin="dense" label="Build" variant="outlined" disabled size="small" value={currentNode && currentNode.buildFileGeneration} />
+                          <TextField
+                            margin="dense"
+                            label="Build"
+                            variant="outlined"
+                            disabled
+                            size="small"
+                            value={
+                              currentNode && currentNode.buildFileGeneration
+                            }
+                          />
                         </Grid>
                       </Grid>
 
                       <Grid item container xs={6}>
                         <Grid item xs={12}>
-                          <Typography variant="overline" gutterBottom>Application</Typography>
+                          <Typography variant="overline" gutterBottom>
+                            Application
+                          </Typography>
                         </Grid>
                         <Grid item xs>
-                          <TextField margin="dense" label="Date" variant="outlined" disabled size="small" value={currentNode && currentNode.dateFileApplication} />
+                          <TextField
+                            margin="dense"
+                            label="Date"
+                            variant="outlined"
+                            disabled
+                            size="small"
+                            value={
+                              currentNode && currentNode.dateFileApplication
+                            }
+                          />
                         </Grid>
                         <Grid item xs>
-                          <TextField margin="dense" label="Build" variant="outlined" disabled size="small" value={currentNode && currentNode.buildFileApplication} />
+                          <TextField
+                            margin="dense"
+                            label="Build"
+                            variant="outlined"
+                            disabled
+                            size="small"
+                            value={
+                              currentNode && currentNode.buildFileApplication
+                            }
+                          />
                         </Grid>
                       </Grid>
 
                       <Grid container item xs={12}>
-                        <Typography hidden={!currentNode || !currentNode.skipOld} variant="h6" color="secondary">This file overwrote more recent resources.</Typography>
+                        <Typography
+                          hidden={!currentNode || !currentNode.skipOld}
+                          variant="h6"
+                          color="secondary"
+                        >
+                          This file overwrote more recent resources.
+                        </Typography>
                       </Grid>
                     </Grid>
 
