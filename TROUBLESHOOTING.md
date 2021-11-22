@@ -3,7 +3,9 @@
 > O **VS-Code** pode apresentar problemas em suas funcionalidades em sistemas operacionias da linha **Windows Server**.
 > Veja os requisitos para uso em [Requirements](https://code.visualstudio.com/docs/supporting/requirements).
 
-> Antes de abrir uma nova **"Issue"** do **TDS VS Code**, verifique se o seu problema está na lista de problemas conhecidos e se existe uma solução de contorno para ele. Caso contrário abra uma nova **"Issue"** e adicione o maior número de informações possíveis (veja abaixo na seção **"Informações importantes"**) para ajudar a identificar a causa do problema.
+> Antes de abrir uma nova **"Issue"**:
+> Verifique se a extensão esta atualizada (`Manage | Check for Update..`) e se necessário, faça as atualizações e refaça a operação que esta gerando uma ocorrência.  
+> Verifique se o seu problema está na lista de problemas conhecidos e se existe uma solução de contorno para ele. Caso contrário abra uma nova **"Issue"** e adicione o maior número de informações possíveis (veja abaixo na seção **"Informações importantes"**) para ajudar a identificar a causa do problema.
 
 Os problemas estão divididos em **"Gerais"** e **"Depuração"** então procure na seção em que seu problema se enquadra.
 
