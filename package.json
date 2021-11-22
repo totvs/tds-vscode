@@ -69,7 +69,6 @@
     "pack": "npm pack",
     "package": "gulp package",
     "publish": "gulp publish",
-    "xvscode:prepublish": "webpack --mode production",
     "---MISC---": "",
     "all-contributors:generate": "all-contributors generate",
     "all-contributors:check": "all-contributors check"

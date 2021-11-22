@@ -1,12 +1,5 @@
-import {
-  By,
-  EditorView,
-  TextEditor,
-  WebElement,
-  WebView,
-} from "vscode-extension-tester";
+import { By, WebElement, WebView } from "vscode-extension-tester";
 import { delay } from "../helper";
-import { expect } from "chai";
 
 export class AbstractPageObject {
   private _webView: WebView;

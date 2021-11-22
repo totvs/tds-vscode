@@ -1,6 +1,5 @@
 import { delay } from "../helper";
 import { AbstractPageObject } from "./abstract-po";
-import { By, ModalDialog, WebElement } from "vscode-extension-tester";
 
 export class ApplyPatchPageObject extends AbstractPageObject {
   async setUploadFile(patchList: string[]) {
@@ -14,7 +13,7 @@ export class ApplyPatchPageObject extends AbstractPageObject {
     await this.endWebView();
   }
 
-  async fireSubmitCloseID() {
+  async fireSubmitClose() {
     await this.beginWebView();
 
     await this.click("submitCloseID");

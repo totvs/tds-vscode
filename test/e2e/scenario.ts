@@ -55,6 +55,7 @@ const patchFolder: string = path.join(
   "patchs",
   values.patchFolder
 );
+
 const patchFiles: string[] = getFileParams(patchFolder, true);
 export const PATCHS_FILES = {
   single: patchFiles["single"] ? patchFiles["single"][0] : undefined,
@@ -76,6 +77,10 @@ export const COMPILE_FILES = {
   resources: sourceFiles["resource"],
   sourcesWithError: sourceFiles["withError"],
 };
+
+const replayFolder: string = path.join(TEST_RESOURCE, values.replayFolder);
+const replayFiles: string[] = getFileParams(replayFolder, false);
+export const REPLAY_FILES = replayFiles.length > 0 ? { ...replayFiles } : null;
 
 Object.keys(values.compileKey).forEach((key: string) => {
   COMPILE_KEY_FILE[key] = path.join(

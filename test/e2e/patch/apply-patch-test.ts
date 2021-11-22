@@ -7,7 +7,7 @@ import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA, PATCHS_FILES } from "../scenario";
 
-describe.only("Patch Operations", () => {
+describe("Patch Operations", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
@@ -44,7 +44,7 @@ describe.only("Patch Operations", () => {
 
     const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
     await applyPatchPO.setUploadFile([PATCHS_FILES.single]);
-    await applyPatchPO.fireSubmitCloseID();
+    await applyPatchPO.fireSubmitClose();
 
     expect(await workbenchPO.applyPatchInProgress()).is.true;
 
@@ -58,7 +58,7 @@ describe.only("Patch Operations", () => {
 
     const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
     await applyPatchPO.setUploadFile(PATCHS_FILES.many);
-    await applyPatchPO.fireSubmitCloseID();
+    await applyPatchPO.fireSubmitClose();
 
     expect(await workbenchPO.applyPatchInProgress()).is.true;
 
@@ -72,7 +72,7 @@ describe.only("Patch Operations", () => {
 
     const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
     await applyPatchPO.setUploadFile(PATCHS_FILES.invalid);
-    await applyPatchPO.fireSubmitCloseID();
+    await applyPatchPO.fireSubmitClose();
     await delay(2000);
 
     expect(await workbenchPO.isPatchValidateNotBeExecuted()).is.true;
@@ -83,7 +83,7 @@ describe.only("Patch Operations", () => {
 
     const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
     await applyPatchPO.setUploadFile(PATCHS_FILES.zip);
-    await applyPatchPO.fireSubmitCloseID();
+    await applyPatchPO.fireSubmitClose();
 
     expect(await workbenchPO.applyPatchInProgress()).is.true;
 

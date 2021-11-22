@@ -26,3 +26,14 @@ export interface ICompileKeyData {
 	token: string;
 	overwrite: string;
 }
+
+
+export interface IReplayData {
+  passwordID: string;
+  includeSrcID: string;
+  excluseSrcID: string;
+  ignoraSourceNotFoundID: boolean;
+  TDSReplayFile: string;
+  launcherName: string;
+
+}
