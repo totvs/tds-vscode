@@ -26,19 +26,20 @@
 
 ## Configurações das definições
 
-As configurações com os registros dos servidores podem ser editados manualmente, desde que com cuidado, via editor de texto. Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
+As configurações com os registros dos servidores podem ser editados manualmente, desde que com cuidado e *nenhum* servidor conectado/selecionado, via editor de texto.
+Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
 
 ![Edit file server](./gifs/serversEditFile.gif)
 
 ## Estrutura do arquivo _servers.json_
 
-> Recomenda-se que a edição seja efetuada com nenhum servidor conectado/selecionado.
-> Faça um cópia de segurança antes. Modificações erradas podem inviabilizar seu uso.
+> Recomenda-se que a edição seja efetuada com *nenhum* servidor conectado/selecionado.
+> Faça um cópia de segurança antes. Modificações erradas podem inviabilizar seu uso ou mesmo da extensão.
 
 ```json
 {
   "version": "0.2.1",
-  "includes": ["m:\\protheus\\includes"],
+  "includes": ["m:\\protheus\\includes"], //definição global
   "permissions": {
     "authorizationtoken": ""
   },
@@ -89,7 +90,8 @@ As configurações com os registros dos servidores podem ser editados manualment
 | Chave                 | Descrição/uso                                                                           |
 | --------------------- | --------------------------------------------------------------------------------------- |
 | `version`             | Versão do arquivo. Não editar.                                                          |
-| `includes `           | Lista de pastas padrão para busca de arquivos de definição.                             |
+| `includes `           | Lista de pastas global para busca de arquivos de definição. |
+|                       | Utilizada quando não informada na definição do servidor e para o [linter](docs/linter). |
 | `permissions `        | Lista de permissões.                                                                    |
 | `authorizationtoken`  | Chave de compilação com as permissões.                                                  |
 | `connectedServer `    | Lista de servidores conectados.                                                         |
