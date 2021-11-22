@@ -100,6 +100,17 @@ Tivemos relatos de problemas na instalação do **TDS VS Code** em *S.O.* do tip
 
 **Solução:** Utilize um *S.O.* diferente de *Windows Server*.
 
+### Apresenta erro `C2090 File not found \<file>.ch`, porém a compilação ocorre sem problemas
+
+O [linter](docs/linter.md), utiliza a pasta de definições global para resolução dos arquivos de definição (_#include_).
+
+**Solução:** Configurar (ou revisar) a pasta de definições [global](docs/servers.md#estrutura-do-arquivo-serversjson) ou desativar o [linter](docs/linter.md).
+
+### _Linter_ encontra-se ativado, porém aparenta não funcionar (versão 1.3.4 ou superior)
+
+O [linter](docs/linter.md), utiliza a pasta de definições global para resolução dos arquivos de definição (_#include_).
+
+**Solução:** Configurar (ou revisar) a pasta de definições [global](docs/servers.md#estrutura-do-arquivo-serversjson) ou desativar o [linter](docs/linter.md).
 
 ## Problemas em Depuração
 
@@ -116,7 +127,6 @@ Apesar de já descrita na seção de **"Problemas Gerais"** existem problemas qu
 Se a depuração não inicia, verifique se o Smartclient utilizado é o correto para a versão do TOTVS Server utilizado.
 
 **Solução:** Ao invés de iniciar a depuração com o `F5` utilize o `CTRL + F5` e veja se o Smartclient executa corretamente. Se o Smartclient não executar assim, reveja as configurações de depuração (launch.json).
-
 
 # Gerando Informações sobre o Problema
 
