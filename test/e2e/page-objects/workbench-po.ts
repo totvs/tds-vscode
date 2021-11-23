@@ -66,6 +66,16 @@ export class WorkbenchPageObject {
     return result;
   }
 
+  async isAuthenticationFailed(): Promise<boolean> {
+    const notification: Notification = await this.getNotification(
+      /Authentication failed. Could not/
+    );
+    const result: boolean = notification ? true : false;
+    await notification?.dismiss();
+
+    return result;
+  }
+
   async isPatchValidateNotBeExecuted(): Promise<boolean> {
     const notification: Notification = await this.getNotification(
       /Patch validate could not be executed/

@@ -14,6 +14,7 @@ const scenarioDefault: string = path.join(
   "default.json"
 );
 let values: any;
+let valuesFile: any;
 let scenarioFile: string = scenarioDefault;
 
 if (process.env.SCENARIO) {
@@ -23,14 +24,20 @@ if (process.env.SCENARIO) {
     process.env.SCENARIO.trim()
   );
 
-  values = jsonMerger.mergeFiles([scenarioDefault, scenarioFile]);
+  const valuesDefault = jsonMerger.mergeFiles([scenarioDefault]);
+  valuesFile = jsonMerger.mergeFiles([scenarioFile]);
+  values = jsonMerger.mergeObjects([valuesDefault, valuesFile]);
+  values.description = valuesFile.description;
 } else {
   values = jsonMerger.mergeFiles([scenarioFile]);
 }
 
 console.log("--------------------------------------");
-console.log(`Using: ${values.name} (${path.basename(scenarioFile)})`);
+console.log(`Scenario: ${values.name} (${path.basename(scenarioFile)})`);
 console.log(`\t${values.description.join("\n\t")}`);
+if (valuesFile) {
+  console.log(JSON.stringify(valuesFile, null, "  "));
+}
 console.log("--------------------------------------");
 
 export const APPSERVER_DATA: IServerData = values.server;

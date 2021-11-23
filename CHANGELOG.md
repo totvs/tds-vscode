@@ -1,5 +1,13 @@
 # Changelog
 
+# Versão [1.3.6]
+
+## Compilação de arquivo de template(*.tpl) pelo VsCode [Compilação de arquivo de template(*.tpl)]pelo VsCode)](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3094)
+
+A aplicação de _templates_ estáva sendo bloquada em ambientes co servidos Harpia (versão 20.0.0 ou superior).
+
+- Retirado trava de aplicação em servidor Harpia.
+
 # Versão [1.3.5]
 
 ## Melhorias

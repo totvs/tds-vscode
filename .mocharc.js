@@ -8,7 +8,7 @@ module.exports = {
   ui: "bdd",
   "async-only": true,
   color: false,
-  "full-trace": false,
+  "full-trace": true,
   jobs: 1,
   sort: true,
   "dry-run": false,

@@ -11,7 +11,7 @@ import {
 } from "../scenario";
 import path = require("path");
 
-describe.only("Replay Operations", () => {
+describe.skip("Replay Operations", () => {
   let workbenchPO: WorkbenchPageObject;
 
   before(async () => {

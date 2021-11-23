@@ -1,4 +1,12 @@
 {
-    "window.newWindowDimensions": "inherit",
-    "workbench.startupEditor": "none"
+    "window.newWindowDimensions": "maximized",
+    "workbench.startupEditor": "none",
+    "totvsLanguageServer.editor.show.notification": "only errors",
+    "totvsLanguageServer.workspaceServerConfig": true,
+    "telemetry.telemetryLevel": "off",
+    "workbench.editor.enablePreview": true,
+    "totvsLanguageServer.launch.args": [
+        "--log-file=totvsls.log",
+        "--record=totvsls"
+    ]
 }
