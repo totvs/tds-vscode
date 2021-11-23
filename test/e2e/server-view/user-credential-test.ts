@@ -10,8 +10,9 @@ import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
 import { ServerTreePageObject } from "../page-objects/server-tree-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { APPSERVER_DATA, NO_ADMIN_USER_DATA } from "../scenario";
+import { INVALID_USER_DATA, ADMIN_USER_DATA } from "../scenario";
 
-describe.only("TOTVS: Server View Authentication Users", () => {
+describe.only("TOTVS: Credentials Users Connect", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
@@ -29,39 +30,18 @@ describe.only("TOTVS: Server View Authentication Users", () => {
       await serverTreePO.getServerTreeItem(APPSERVER_DATA.serverName)
     );
 
-    await delay(2000);
-  });
-
-  it("No Server Connected", async () => {
-    expect(await workbenchPO.isNeedSelectServer()).is.true;
-  });
-
-  it("isSelected Node", async () => {
-    await serverItemPO.select();
-
-    expect(await serverItemPO.isSelected()).is.true;
-  });
-
-  it("Fire Connect Action", async () => {
-    await serverItemPO.fireConnectAction();
-  });
-
-  it("Input Environment", async () => {
-    await fillEnvironment(APPSERVER_DATA.environment);
+    await delay();
   });
 
   it("Input No Admin User", async () => {
+    await serverItemPO.select();
+    await serverItemPO.fireConnectAction();
+    await fillEnvironment(APPSERVER_DATA.environment);
     await fillUserdata(NO_ADMIN_USER_DATA);
     await workbenchPO.waitConnection();
 
-    await delay();
+    expect(await workbenchPO.isAuthenticationFailed()).is.true;
 
-    expect(
-      await workbenchPO.isAuthenticationFailed()
-    ).is.true;
-  });
-
-  it("Localhost Server Not Connected", async () => {
     expect(
       await workbenchPO.isConnected(
         APPSERVER_DATA.serverName,
@@ -72,4 +52,41 @@ describe.only("TOTVS: Server View Authentication Users", () => {
     expect(await serverItemPO.isConnected()).is.false;
   });
 
+  it("Input Invalid User", async () => {
+    await serverItemPO.select();
+    await serverItemPO.fireConnectAction();
+    await fillEnvironment(APPSERVER_DATA.environment);
+    await fillUserdata(INVALID_USER_DATA);
+    await workbenchPO.waitConnection();
+
+    expect(await workbenchPO.isAuthenticationFailed()).is.true;
+
+    expect(
+      await workbenchPO.isConnected(
+        APPSERVER_DATA.serverName,
+        APPSERVER_DATA.environment
+      )
+    ).is.false;
+
+    expect(await serverItemPO.isConnected()).is.false;
+  });
+
+  it("Input Admin User", async () => {
+    await serverItemPO.select();
+    await serverItemPO.fireConnectAction();
+    await fillEnvironment(APPSERVER_DATA.environment);
+    await fillUserdata(ADMIN_USER_DATA);
+    await workbenchPO.waitConnection();
+
+    expect(await workbenchPO.isAuthenticationFailed()).is.false;
+
+    expect(
+      await workbenchPO.isConnected(
+        APPSERVER_DATA.serverName,
+        APPSERVER_DATA.environment
+      )
+    ).is.true;
+
+    expect(await serverItemPO.isConnected()).is.true;
+  });
 });

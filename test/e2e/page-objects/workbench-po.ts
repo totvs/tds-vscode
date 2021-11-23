@@ -11,6 +11,8 @@ import { NotificationPageObject } from "./notification-po";
 import { StatusPageObject } from "./status-po";
 import { expect } from "chai";
 
+const PROCESS_TIMEOUT = 10 * 1000; //10 segundos
+
 export class WorkbenchPageObject {
   private workbench: Workbench;
   private statusBar: StatusPageObject;
@@ -67,11 +69,20 @@ export class WorkbenchPageObject {
   }
 
   async isAuthenticationFailed(): Promise<boolean> {
-    const notification: Notification = await this.getNotification(
-      /Authentication failed. Could not/
+    let result: boolean = false;
+
+    await this.getNotification(
+      /Authentication error: Could not authenticate/
+    ).then(async (notification: Notification) => {
+      await notification?.dismiss();
+    });
+
+    await this.getNotification(/Authentication failed. Could not/).then(
+      async (notification: Notification) => {
+        await notification?.dismiss();
+        result = notification ? true : false;
+      }
     );
-    const result: boolean = notification ? true : false;
-    await notification?.dismiss();
 
     return result;
   }
@@ -114,7 +125,7 @@ export class WorkbenchPageObject {
 
   private async waitProcessFinish(
     targetText: RegExp | string,
-    _wait: number = 30000
+    _wait: number = PROCESS_TIMEOUT
   ): Promise<Notification> {
     let steps: number = _wait / 500;
     let notification: Notification = await this.getNotification(targetText);
@@ -138,23 +149,23 @@ export class WorkbenchPageObject {
     return notification;
   }
 
-  async waitConnection(wait: number = 30000): Promise<void> {
+  async waitConnection(wait: number = PROCESS_TIMEOUT): Promise<void> {
     await this.waitProcessFinish(/Authenticating user/);
   }
 
-  async waitReconnection(wait: number = 30000): Promise<void> {
+  async waitReconnection(wait: number = PROCESS_TIMEOUT): Promise<void> {
     await this.waitProcessFinish(/Reconnecting to the server/);
   }
 
-  async waitCheckIntegrity(wait: number = 30000): Promise<void> {
+  async waitCheckIntegrity(wait: number = PROCESS_TIMEOUT): Promise<void> {
     await this.waitProcessFinish(/Checking RPO integrity/);
   }
 
-  async waitRevalidate(wait: number = 30000): Promise<void> {
+  async waitRevalidate(wait: number = PROCESS_TIMEOUT): Promise<void> {
     await this.waitProcessFinish(/Revalidating RPO/);
   }
 
-  async waitRpoLoaded(wait: number = 30000): Promise<void> {
+  async waitRpoLoaded(wait: number = PROCESS_TIMEOUT): Promise<void> {
     await this.waitProcessFinish(/Loading RPO content/);
   }
 

@@ -9,9 +9,9 @@
 		"Se desejar, escreva uma breve descrição do cenário de testes."
 	],
 	"server": {
-		"serverName": "localhost",
-		"address": "localhost",
-		"port": 2030,
+		"serverName": "10.171.10.77",
+		"address": "10.171.10.77",
+		"port": 5001,
 		"environment": "p12",
 		"includePath": []
 	},
