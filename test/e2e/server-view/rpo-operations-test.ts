@@ -52,7 +52,7 @@ describe("RPO Operations", () => {
     await workbenchPO.waitCheckIntegrity();
     await delay();
 
-    expect(await workbenchPO.isRpoIntegrity()).is.true;
+    expect(await workbenchPO.isRpoIntegrity()).to.be.true;
   });
 
   it("Repository Log", async () => {
@@ -62,7 +62,7 @@ describe("RPO Operations", () => {
     const repositoryLogPO: RepositoryLogPageObject =
       new RepositoryLogPageObject();
 
-    expect(await repositoryLogPO.isOpen()).is.true;
+    expect(await repositoryLogPO.isOpen()).to.be.true;
 
     await repositoryLogPO.close();
   });
@@ -74,7 +74,7 @@ describe("RPO Operations", () => {
     const objectInspectorPO: ObjectsInspectorPageObject =
       new ObjectsInspectorPageObject();
 
-    expect(await objectInspectorPO.isOpen()).is.true;
+    expect(await objectInspectorPO.isOpen()).to.be.true;
 
     await objectInspectorPO.close();
   });
@@ -86,7 +86,7 @@ describe("RPO Operations", () => {
     const functionsInspectorPO: FunctionsInspectorPageObject =
       new FunctionsInspectorPageObject();
 
-    expect(await functionsInspectorPO.isOpen()).is.true;
+    expect(await functionsInspectorPO.isOpen()).to.be.true;
 
     await functionsInspectorPO.close();
   });

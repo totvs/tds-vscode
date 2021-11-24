@@ -32,7 +32,7 @@ export class ServerTreeItemPageObject {
         await this.serverTreeItem.getLabel(),
         environment
       )
-    ).is.true;
+    ).to.be.true;
   }
 
   async select() {

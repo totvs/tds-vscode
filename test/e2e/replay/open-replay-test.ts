@@ -5,57 +5,65 @@ import { ApplyPatchPageObject } from "../page-objects/apply-patch-po";
 import { ReplayPageObject } from "../page-objects/replay-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
-import {
-  PATCHS_FILES,
-  REPLAY_FILES,
-} from "../scenario";
+import { PATCHS_FILES, REPLAY_FILES } from "../scenario";
 import path = require("path");
+import { ActivityBar, DebugToolbar, DebugView } from "vscode-extension-tester";
 
-describe.skip("Replay Operations", () => {
+(REPLAY_FILES ? describe.only : describe.skip)("Replay Operations", () => {
   let workbenchPO: WorkbenchPageObject;
+  let debugView: DebugView;
+  let debugBar: DebugToolbar;
 
   before(async () => {
     await openAdvplProject();
 
     workbenchPO = new WorkbenchPageObject();
+    workbenchPO.openTotvsView();
+
+    debugView = await workbenchPO.openDebugView();
 
     await delay();
   });
 
-  beforeEach(async () => {});
+  REPLAY_FILES.forEach(async (file: string) => {
+    it(`Create Launcher ${path.basename(file)}`, async () => {
+      const replayPO = new ReplayPageObject(workbenchPO);
 
-  afterEach(async () => {});
+      await replayPO.openLauncher();
 
-  (REPLAY_FILES ? it : it.skip)("Create Launcher", async () => {
-    const replayPO = new ReplayPageObject(workbenchPO);
+      await replayPO.setDataPage({
+        launcherName: path.basename(`test_replay_${path.basename(file)}`),
+        TDSReplayFile: file,
+        passwordID: "",
+        includeSrcID: "*",
+        excludeSrcID: "",
+        ignoreSourcesNotFoundID: true,
+      });
 
-    await replayPO.openLauncher();
+      await replayPO.fireSaveClose();
 
-    await replayPO.setDataPage( {
-      launcherName: path.basename("test_replay"),
-      TDSReplayFile: REPLAY_FILES[0],
-      passwordID: "passwordID",
-      includeSrcID: "includeSrcID",
-      excluseSrcID: "excluseSrcID",
-      ignoraSourceNotFoundID: false
-    })
+      expect(await workbenchPO.isSaveReplayLauncher()).to.be.true;
 
-    await replayPO.fireSaveClose();
-
-    await delay(10000);
+      await delay();
+    });
   });
 
-  (REPLAY_FILES ? it.skip : it.skip)("Open file", async () => {
-    REPLAY_FILES.forEach((file: string) => {});
+  REPLAY_FILES.forEach(async (file: string) => {
+    it(`Open/import file ${path.basename(file)}`, async () => {
+      await debugView.selectLaunchConfiguration(
+        `test_replay_${path.basename(file)}`
+      );
 
-    const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
-    await applyPatchPO.setUploadFile([PATCHS_FILES.single]);
-    await applyPatchPO.fireSubmitClose();
+      await debugView.start();
+      debugBar = await DebugToolbar.create();
 
-    expect(await workbenchPO.applyPatchInProgress()).is.true;
+      await workbenchPO.waitImportReplay();
 
-    await workbenchPO.waitApplyPatch();
+      expect(await workbenchPO.isImportReplayFinish()).to.be.true;
 
-    expect(await workbenchPO.isApplyPatch()).is.true;
+      debugBar.stop();
+
+      await delay(2000);
+    });
   });
 });

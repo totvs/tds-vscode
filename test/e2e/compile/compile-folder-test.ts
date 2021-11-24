@@ -50,7 +50,7 @@ describe("Compile folders", () => {
   //   await applyPatchPO.setUploadFile([PATCHS_FILES.single]);
   //   await applyPatchPO.fireSubmitCloseID();
 
-  //   expect(await workbenchPO.applyPatchInProgress()).is.true;
+  //   expect(await workbenchPO.applyPatchInProgress()).to.be.true;
 
   //   await workbenchPO.waitApplyPatch();
 

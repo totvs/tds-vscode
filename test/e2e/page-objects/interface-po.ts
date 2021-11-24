@@ -1,14 +1,14 @@
 export interface IServerData {
-	serverName: string;
-	address: string;
-	port: number;
-	includePath: string[];
-	environment: string;
+  serverName: string;
+  address: string;
+  port: number;
+  includePath: string[];
+  environment: string;
 }
 
 export interface IUserData {
-	username: string;
-	password: string;
+  username: string;
+  password: string;
 }
 
 export interface IIncludeData {
@@ -18,22 +18,21 @@ export interface IIncludeData {
 }
 
 export interface ICompileKeyData {
-	machineId: string;
-	compileKeyFile: string;
-	key: string;
-	generatedIn: string;
-	expireIn: string;
-	token: string;
-	overwrite: string;
+  machineId: string;
+  compileKeyFile: string;
+  key: string;
+  generatedIn: string;
+  expireIn: string;
+  token: string;
+  overwrite: string;
 }
-
 
 export interface IReplayData {
   passwordID: string;
   includeSrcID: string;
-  excluseSrcID: string;
-  ignoraSourceNotFoundID: boolean;
+  excludeSrcID: string;
+  ignoreSourcesNotFoundID: boolean;
   TDSReplayFile: string;
   launcherName: string;
-
+  forceImport?: boolean;
 }

@@ -1,5 +1,4 @@
 #include "protheus.ch"
-#include "tbiconn.ch"
 
 user function escolheNum(p1)
 	local n, cResp, cMsg := ""
@@ -8,9 +7,11 @@ user function escolheNum(p1)
 	private ondeEstou := "escolheNum"
 	public aPublic := {}
 
-	// essa seq. UTF 8 inválida para json do DA
-	//corrigido versão DA 1.1.24 / srv
-	//private paraFuncionar := "se fizer hover aqui, para de funcionar ÃƒÂº"
+	TDSReplay(.T. , {"*"}, {}, {"*"} , "l:\escolheNhum.trtrplay", 0 , .t. , "")
+
+	// essa seq. UTF 8 invÃ¡lida para json do DA
+	//corrigido versÃ£o DA 1.1.24 / srv
+	//private paraDeFuncionar := "se fizer hover aqui, para de funcionar ÃƒÂº"
 
 	testVars()
 	private aPrivate := {}
@@ -32,24 +33,24 @@ user function escolheNum(p1)
 		cResp := cOpcao
 
 		if cResp == "1"
-			cMsg := "Você escolheu o numero 1"
+			cMsg := "Vocï¿½ escolheu o numero 1"
 		elseif cResp == "2"
-			cMsg := "Você escolheu o numero 2"
+			cMsg := "Vocï¿½ escolheu o numero 2"
 		elseif cResp == "3"
-			cMsg := "Você escolheu o numero 3"
+			cMsg := "Vocï¿½ escolheu o numero 3"
 		elseif cResp == "4"
-			cMsg := "Você escolheu o numero 4"
+			cMsg := "Vocï¿½ escolheu o numero 4"
 		elseif cResp == "5"
-			cMsg := "Você escolheu o numero 5"
+			cMsg := "Vocï¿½ escolheu o numero 5"
 		else
 			cMsg := "Nenhum nÃºmero escolhido"
 		endif
 
 		if !empty(cResp)
 			if cResp == "2" .or. cResp == "4"
-				cMsg += " e é PAR"
+				cMsg += " e ï¿½ PAR"
 			else
-				cMsg += " e é IMPAR"
+				cMsg += " e ï¿½ IMPAR"
 			endif
 		endif
 
@@ -58,6 +59,8 @@ user function escolheNum(p1)
 		endif
 
 	enddo
+
+	TDSReplay(.F.)
 
 return
 

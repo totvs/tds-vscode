@@ -38,6 +38,16 @@ function clearServersJson(projectFolder: string): void {
   if (fs.existsSync(serversJsonFile)) {
     fs.removeSync(serversJsonFile);
   }
+
+  const launchJsonFile: string = path.join(
+    projectFolder,
+    ".vscode",
+    "launch.json"
+  );
+
+  if (fs.existsSync(launchJsonFile)) {
+    fs.removeSync(launchJsonFile);
+  }
 }
 
 async function closeAllEditors(): Promise<void> {
@@ -131,9 +141,9 @@ export async function fillEnvironment(environment: string) {
     }).length > 0;
 
   if (!find) {
-    expect(await takeQuickPickAction(pickBox, "action")).is.true;
+    expect(await takeQuickPickAction(pickBox, "action")).to.be.true;
     title = await pickBox.getMessage();
-    expect(title.startsWith("Enter the name of the environment")).is.true;
+    expect(title.startsWith("Enter the name of the environment")).to.be.true;
     await delay();
   }
 

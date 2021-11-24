@@ -5,6 +5,7 @@ import {
   ActivityBar,
   SideBarView,
   ViewControl,
+  DebugView,
 } from "vscode-extension-tester";
 import { delay } from "../helper";
 import { NotificationPageObject } from "./notification-po";
@@ -12,6 +13,7 @@ import { StatusPageObject } from "./status-po";
 import { expect } from "chai";
 
 const PROCESS_TIMEOUT = 10 * 1000; //10 segundos
+const WAIT_PROCESS_TIMEOUT = 3 * 60 * 1000; // 3min
 
 export class WorkbenchPageObject {
   private workbench: Workbench;
@@ -61,6 +63,16 @@ export class WorkbenchPageObject {
   async isSaveServer(): Promise<boolean> {
     const notification: Notification = await this.getNotification(
       /Saved server/
+    );
+    const result: boolean = notification ? true : false;
+    await notification?.dismiss();
+
+    return result;
+  }
+
+  async isSaveReplayLauncher(): Promise<boolean> {
+    const notification: Notification = await this.getNotification(
+      /Executor.*saved/
     );
     const result: boolean = notification ? true : false;
     await notification?.dismiss();
@@ -174,7 +186,21 @@ export class WorkbenchPageObject {
   }
 
   async waitApplyPatch() {
-    await this.waitProcessFinish(/Applying patch/, 180000); // 3 min para terminar
+    await this.waitProcessFinish(/Applying patch/, WAIT_PROCESS_TIMEOUT);
+  }
+
+  async waitImportReplay() {
+    await this.waitProcessFinish(/Importing TDS Replay/, WAIT_PROCESS_TIMEOUT);
+  }
+
+  async isImportReplayFinish(): Promise<boolean> {
+    const notification: Notification = await this.getNotification(
+      /TDS Replay Finished/
+    );
+    const result: boolean = notification ? true : false;
+    await notification?.dismiss();
+
+    return result;
   }
 
   async getNotification(
@@ -211,6 +237,12 @@ export class WorkbenchPageObject {
     return await viewList[0];
   }
 
+  async openDebugView(): Promise<DebugView> {
+    return (await (
+      await new ActivityBar().getViewControl("Run")
+    ).openView()) as DebugView;
+  }
+
   async openExplorerView(): Promise<SideBarView> {
     await this.executeCommand("workbench.explorer.fileView.focus");
 
@@ -219,6 +251,7 @@ export class WorkbenchPageObject {
 
   async openTotvsView(): Promise<SideBarView> {
     await this.executeCommand("totvs_server.focus");
+    await delay();
 
     return this.getView("TOTVS");
   }

@@ -35,13 +35,13 @@ describe("TOTVS: Server View Basic Operations", () => {
   });
 
   it("No Server Connected", async () => {
-    expect(await workbenchPO.isNeedSelectServer()).is.true;
+    expect(await workbenchPO.isNeedSelectServer()).to.be.true;
   });
 
   it("isSelected Node", async () => {
     await serverItemPO.select();
 
-    expect(await serverItemPO.isSelected()).is.true;
+    expect(await serverItemPO.isSelected()).to.be.true;
   });
 
   it("Fire Connect Action", async () => {
@@ -64,16 +64,16 @@ describe("TOTVS: Server View Basic Operations", () => {
         APPSERVER_DATA.serverName,
         APPSERVER_DATA.environment
       )
-    ).is.true;
-    expect(await serverItemPO.isConnected()).is.true;
+    ).to.be.true;
+    expect(await serverItemPO.isConnected()).to.be.true;
   });
 
   it("Localhost Server Disconnected", async () => {
     await serverItemPO.select();
     await serverItemPO.fireDisconnectAction();
 
-    expect(await workbenchPO.isNeedSelectServer()).is.true;
-    expect(await serverItemPO.isNotConnected()).is.true;
+    expect(await workbenchPO.isNeedSelectServer()).to.be.true;
+    expect(await serverItemPO.isNotConnected()).to.be.true;
   });
 
   it.skip("Try Connect Using Invalid Environment", async () => {
@@ -88,7 +88,7 @@ describe("TOTVS: Server View Basic Operations", () => {
     ).to.not.throw();
 
     await delay();
-    expect(await workbenchPO.isNeedSelectServer()).is.true;
+    expect(await workbenchPO.isNeedSelectServer()).to.be.true;
   });
 
   it("Add server (context menu)", async () => {
@@ -103,7 +103,7 @@ describe("TOTVS: Server View Basic Operations", () => {
     await webView.switchBack();
     await delay();
 
-    expect(await workbenchPO.isSaveServer()).is.true;
+    expect(await workbenchPO.isSaveServer()).to.be.true;
   });
 
   it.skip("Reconnect", async () => {
@@ -118,7 +118,7 @@ describe("TOTVS: Server View Basic Operations", () => {
         APPSERVER_DATA.serverName,
         APPSERVER_DATA.environment
       )
-    ).is.true;
-    expect(await serverItemPO.isConnected()).is.true;
+    ).to.be.true;
+    expect(await serverItemPO.isConnected()).to.be.true;
   });
 });

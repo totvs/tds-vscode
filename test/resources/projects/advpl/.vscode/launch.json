@@ -10,6 +10,28 @@
 			"smartclientBin": "C:/totvs/bin/smartclient/smartclient.exe",
 			"isMultiSession": true,
 			"enableTableSync": true
+		},
+		{
+			"type": "totvs_tdsreplay_debug",
+			"request": "launch",
+			"cwb": "${workspaceRoot}",
+			"ignoreSourcesNotFound": true,
+			"name": "test_replay_big-file.trplay",
+			"tdsReplayFile": "W:/ws_tds_vscode/tds-vscode/test/resources/replay/big-file.trplay",
+			"password": "",
+			"includeSources": "*",
+			"excludeSources": ""
+		},
+		{
+			"type": "totvs_tdsreplay_debug",
+			"request": "launch",
+			"cwb": "${workspaceRoot}",
+			"ignoreSourcesNotFound": true,
+			"name": "test_replay_escolhenhum.trplay",
+			"tdsReplayFile": "W:/ws_tds_vscode/tds-vscode/test/resources/replay/escolhenhum.trplay",
+			"password": "",
+			"includeSources": "*",
+			"excludeSources": ""
 		}
 	]
 }

@@ -46,11 +46,11 @@ describe("Patch Operations", () => {
     await applyPatchPO.setUploadFile([PATCHS_FILES.single]);
     await applyPatchPO.fireSubmitClose();
 
-    expect(await workbenchPO.applyPatchInProgress()).is.true;
+    expect(await workbenchPO.applyPatchInProgress()).to.be.true;
 
     await workbenchPO.waitApplyPatch();
 
-    expect(await workbenchPO.isApplyPatch()).is.true;
+    expect(await workbenchPO.isApplyPatch()).to.be.true;
   });
 
   (PATCHS_FILES.many ? it : it.skip)("Apply many file", async () => {
@@ -60,11 +60,11 @@ describe("Patch Operations", () => {
     await applyPatchPO.setUploadFile(PATCHS_FILES.many);
     await applyPatchPO.fireSubmitClose();
 
-    expect(await workbenchPO.applyPatchInProgress()).is.true;
+    expect(await workbenchPO.applyPatchInProgress()).to.be.true;
 
     await workbenchPO.waitApplyPatch();
 
-    expect(await workbenchPO.isApplyPatch()).is.true;
+    expect(await workbenchPO.isApplyPatch()).to.be.true;
   });
 
   (PATCHS_FILES.invalid ? it : it.skip)("Apply invalid file", async () => {
@@ -75,7 +75,7 @@ describe("Patch Operations", () => {
     await applyPatchPO.fireSubmitClose();
     await delay(2000);
 
-    expect(await workbenchPO.isPatchValidateNotBeExecuted()).is.true;
+    expect(await workbenchPO.isPatchValidateNotBeExecuted()).to.be.true;
   });
 
   (PATCHS_FILES.zip ? it : it.skip)("Apply many file", async () => {
@@ -85,10 +85,10 @@ describe("Patch Operations", () => {
     await applyPatchPO.setUploadFile(PATCHS_FILES.zip);
     await applyPatchPO.fireSubmitClose();
 
-    expect(await workbenchPO.applyPatchInProgress()).is.true;
+    expect(await workbenchPO.applyPatchInProgress()).to.be.true;
 
     await workbenchPO.waitApplyPatch();
 
-    expect(await workbenchPO.isApplyPatch()).is.true;
+    expect(await workbenchPO.isApplyPatch()).to.be.true;
   });
 });

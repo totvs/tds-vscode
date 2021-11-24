@@ -12,7 +12,7 @@ import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { APPSERVER_DATA, NO_ADMIN_USER_DATA } from "../scenario";
 import { INVALID_USER_DATA, ADMIN_USER_DATA } from "../scenario";
 
-describe.only("TOTVS: Credentials Users Connect", () => {
+describe("TOTVS: Credentials Users Connect", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
@@ -40,7 +40,7 @@ describe.only("TOTVS: Credentials Users Connect", () => {
     await fillUserdata(NO_ADMIN_USER_DATA);
     await workbenchPO.waitConnection();
 
-    expect(await workbenchPO.isAuthenticationFailed()).is.true;
+    expect(await workbenchPO.isAuthenticationFailed()).to.be.true;
 
     expect(
       await workbenchPO.isConnected(
@@ -59,7 +59,7 @@ describe.only("TOTVS: Credentials Users Connect", () => {
     await fillUserdata(INVALID_USER_DATA);
     await workbenchPO.waitConnection();
 
-    expect(await workbenchPO.isAuthenticationFailed()).is.true;
+    expect(await workbenchPO.isAuthenticationFailed()).to.be.true;
 
     expect(
       await workbenchPO.isConnected(
@@ -85,8 +85,8 @@ describe.only("TOTVS: Credentials Users Connect", () => {
         APPSERVER_DATA.serverName,
         APPSERVER_DATA.environment
       )
-    ).is.true;
+    ).to.be.true;
 
-    expect(await serverItemPO.isConnected()).is.true;
+    expect(await serverItemPO.isConnected()).to.be.true;
   });
 });

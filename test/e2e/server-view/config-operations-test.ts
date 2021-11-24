@@ -107,10 +107,10 @@ describe.skip("TOTVS: Server View Configurations", () => {
     };
     await compileKeyPO.fillCompileKeyPage(newValue);
 
-    expect(await compileKeyPO.isValidKey()).is.true;
+    expect(await compileKeyPO.isValidKey()).to.be.true;
     await compileKeyPO.fireSave(true);
 
-    expect(await workbenchPO.isHaveKey()).is.true;
+    expect(await workbenchPO.isHaveKey()).to.be.true;
   });
 
   it("Compile key (clear)", async () => {
@@ -132,6 +132,6 @@ describe.skip("TOTVS: Server View Configurations", () => {
     await compileKeyPO.fireSave(true);
 
     expect(newValue.token).is.empty;
-    expect(await workbenchPO.isNotHaveKey()).is.true;
+    expect(await workbenchPO.isNotHaveKey()).to.be.true;
   });
 });

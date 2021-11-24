@@ -61,7 +61,7 @@ export class ServerTreePageObject extends ViewPageObject {
     await webView.switchBack();
     await delay();
 
-    expect(await this.workbenchPO.isSaveServer()).is.true;
+    expect(await this.workbenchPO.isSaveServer()).to.be.true;
   }
 
   async getNewServer(data: IServerData) {

@@ -1,3 +1,4 @@
+import { delay } from "../helper";
 import { AbstractPageObject } from "./abstract-po";
 import { IReplayData } from "./interface-po";
 import { WorkbenchPageObject } from "./workbench-po";
@@ -12,7 +13,10 @@ export class ReplayPageObject extends AbstractPageObject {
   }
 
   async openLauncher(): Promise<void> {
-    await this.workbenchPO.executeCommand("totvs-developer-studio.tdsreplay.configure.launcher");
+    await this.workbenchPO.executeCommand(
+      "totvs-developer-studio.tdsreplay.configure.launcher"
+    );
+    await delay(2000);
   }
 
   async fireSaveClose() {
@@ -27,10 +31,11 @@ export class ReplayPageObject extends AbstractPageObject {
     const result: IReplayData = {
       passwordID: "",
       includeSrcID: "",
-      excluseSrcID: "",
+      excludeSrcID: "",
       TDSReplayFile: "",
       launcherName: "",
-      ignoraSourceNotFoundID: false,
+      ignoreSourcesNotFoundID: false,
+      forceImport: true,
     };
     await this.beginWebView();
 
@@ -38,9 +43,10 @@ export class ReplayPageObject extends AbstractPageObject {
     result.TDSReplayFile = await this.getValue("TDSReplayFile");
     result.passwordID = await this.getValue("passwordID");
     result.includeSrcID = await this.getValue("includeSrcID");
-    result.excluseSrcID = await this.getValue("excluseSrcID");
-    result.ignoraSourceNotFoundID =
-      (await this.getValue("ignoraSourceNotFoundID")) == "true";
+    result.excludeSrcID = await this.getValue("excludeSrcID");
+    result.ignoreSourcesNotFoundID = await this.isValue(
+      "ignoreSourcesNotFoundID"
+    );
 
     await this.endWebView();
     return result;
@@ -49,12 +55,15 @@ export class ReplayPageObject extends AbstractPageObject {
   async setDataPage(data: IReplayData): Promise<void> {
     await this.beginWebView();
 
-    await this.setValue("launcherNameID", data.launcherName );
+    await this.setValue("launcherNameID", data.launcherName);
     await this.setValue("TDSReplayFile", data.TDSReplayFile);
-    await this.setValue("passwordID", data.passwordID   );
-    await this.setValue("includeSrcID", data.includeSrcID );
-    await this.setValue("excluseSrcID", data.excluseSrcID );
-    await this.setValue("ignoraSourceNotFoundID", data.ignoraSourceNotFoundID? "true":"false");
+    await this.setValue("passwordID", data.passwordID);
+    await this.setValue("includeSrcID", data.includeSrcID);
+    await this.setValue("excludeSrcID", data.excludeSrcID);
+    await this.setValue(
+      "ignoreSourcesNotFoundID",
+      data.ignoreSourcesNotFoundID
+    );
 
     await this.endWebView();
   }

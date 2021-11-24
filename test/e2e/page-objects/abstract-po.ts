@@ -33,10 +33,24 @@ export class AbstractPageObject {
     return (await element.getAttribute("value")) || (await element.getText());
   }
 
-  async setValue(elementId: string, value: string): Promise<void> {
+  async isValue(elementId: string): Promise<boolean> {
     const element: WebElement = await this.findElement(elementId);
-    await element.clear();
-    await element.sendKeys(value);
+
+    return await element.isSelected();
+  }
+
+  async setValue(elementId: string, value: string | boolean): Promise<void> {
+    const element: WebElement = await this.findElement(elementId);
+    if (typeof value == "string") {
+      await element.clear();
+      await element.sendKeys(value);
+    } else {
+      await element.click();
+      const check: boolean = await element.isSelected();
+      if (check != value) {
+        await element.click();
+      }
+    }
   }
 
   async click(elementId: string): Promise<void> {
