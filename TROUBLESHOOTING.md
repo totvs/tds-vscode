@@ -114,6 +114,13 @@ O [linter](docs/linter.md), utiliza a pasta de definições global para resoluç
 
 **Solução:** Configurar (ou revisar) a pasta de definições [global](docs/servers.md#estrutura-do-arquivo-serversjson) ou desativar o [linter](docs/linter.md).
 
+### Erro na aplicação de pacotes de atualização (_patchs_) em servidores com versão 19.3.1.7 ou anterior
+
+Temos notícias de problemas em aplicação de pacotes em _appServer_ com versão 19.3.1.7 ou anterior com SSL ligado (conexão segura).
+
+**Solução:** assim que possível, atualize o _appServer_
+**Paliativo:** Dsative a comunicação segura (SSL).
+
 ## Problemas em Depuração
 
 São problemas que ocorrem especificamente durante a depuração de um programa.
