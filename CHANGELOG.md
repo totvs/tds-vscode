@@ -2,11 +2,17 @@
 
 # Versão [1.3.6]
 
-## Compilação de arquivo de template(*.tpl) pelo VsCode [Compilação de arquivo de template(*.tpl)]pelo VsCode)](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3094)
+## Compilação de arquivo de template(\_.tpl) pelo VsCode [#840](https://github.com/totvs/tds-vscode/issues/840) [DTCLIENT01-3094](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3094)
 
 A aplicação de _templates_ estáva sendo bloquada em ambientes co servidos Harpia (versão 20.0.0 ou superior).
 
 - Retirado trava de aplicação em servidor Harpia.
+
+## Erro no Linter ao comparar programas fontes [#852](https://github.com/totvs/tds-vscode/issues/852) [DTCLIENT01-3100](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3100)
+
+Ao utilizar a opção de comparação do Controle de Versionamento em um arquivo fonte, o _Linter_ indica um erro o arquivo original. A notificação de erro na visão _Problems_ persiste mesmo após fechar a comparação.
+
+- Adicionado tratamento no _linter_ para ignorar arquivos de comparação.
 
 # Versão [1.3.5]
 
