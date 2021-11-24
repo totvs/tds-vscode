@@ -6,6 +6,10 @@ labels: ''
 assignees: ''
 
 ---
+# Before opening an issue
+
+- Make sure the extension is up to date.
+- See [Resolução de Problemas](TROUBLESHOOTING.md#problemas-gerais), with common and/or known occurrences.
 
 **Describe the bug**
 A clear and concise description of what the bug is.
