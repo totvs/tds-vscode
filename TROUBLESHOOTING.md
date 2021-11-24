@@ -16,9 +16,12 @@ Os problemas estão divididos em **"Gerais"** e **"Depuração"** então procure
 
 São problemas que ocorrem desde a inicialização do **TDS VS Code** até a operação normal do dia-a-dia como compilar, gerar e aplicar patches, etc. Excluindo-se apenas a Depuração que é tratada em outra seção.
 
-### Aplicação de pacotes (_patchs_)
+### Erro na aplicação de pacotes de atualização (_patchs_) em servidores com versão 19.3.1.7 ou anterior
 
-O _AppServer_ versão 19.3.0.5, apresenta problemas conhecidos na aplicação de patches, recomenda-se atualizá-lo para a versão 19.3.0.6 ou mais recente.
+Temos notícias de problemas em aplicação de pacotes em _appServer_ com versão 19.3.1.7 ou anterior com SSL ligado (conexão segura).
+
+**Solução:** Assim que possível, atualize o _appServer_
+**Paliativo:** Dsative a comunicação segura (SSL).
 
 ### Pastas com acentuação
 
@@ -113,13 +116,6 @@ O [linter](docs/linter.md), utiliza a pasta de definições global para resoluç
 O [linter](docs/linter.md), utiliza a pasta de definições global para resolução dos arquivos de definição (_#include_).
 
 **Solução:** Configurar (ou revisar) a pasta de definições [global](docs/servers.md#estrutura-do-arquivo-serversjson) ou desativar o [linter](docs/linter.md).
-
-### Erro na aplicação de pacotes de atualização (_patchs_) em servidores com versão 19.3.1.7 ou anterior
-
-Temos notícias de problemas em aplicação de pacotes em _appServer_ com versão 19.3.1.7 ou anterior com SSL ligado (conexão segura).
-
-**Solução:** assim que possível, atualize o _appServer_
-**Paliativo:** Dsative a comunicação segura (SSL).
 
 ## Problemas em Depuração
 
