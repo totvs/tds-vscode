@@ -1,0 +1,12 @@
+{
+	"name": "P17",
+	"description": [
+		"Testes com o appServer p17."
+	],
+	"server": {
+		"serverName": "p17",
+		"address": "localhost",
+		"port": 17000
+	},
+	"patchFolder": "p17"
+}

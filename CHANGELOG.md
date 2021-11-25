@@ -1,6 +1,6 @@
 # Changelog
 
-# Versão [1.3.6]
+# Versão [1.3.8]
 
 ## Compilação de arquivo de template(\_.tpl) pelo VsCode [#840](https://github.com/totvs/tds-vscode/issues/840) [DTCLIENT01-3094](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3094)
 
