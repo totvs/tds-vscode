@@ -46,6 +46,7 @@ describe("TOTVS: Server View Basic Operations", () => {
 
   it("Fire Connect Action", async () => {
     await serverItemPO.fireConnectAction();
+    await workbenchPO.waitValidatingServer();
   });
 
   it("Input Environment", async () => {

@@ -7,7 +7,20 @@
 		"authorizationtoken": ""
 	},
 	"connectedServer": {},
-	"configurations": [],
+	"configurations": [
+		{
+			"id": "rbvugpahkwmivmd92miy5byvt89",
+			"type": "totvs_server_protheus",
+			"name": "localhost",
+			"port": 20302,
+			"address": "localhost",
+			"buildVersion": "7.00.210324P",
+			"secure": true,
+			"includes": [
+				"m:\\protheus\\includes"
+			]
+		}
+	],
 	"savedTokens": [],
 	"lastConnectedServer": ""
 }

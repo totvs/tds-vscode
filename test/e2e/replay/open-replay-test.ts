@@ -1,15 +1,13 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import { delay, openAdvplProject } from "../helper";
-import { ApplyPatchPageObject } from "../page-objects/apply-patch-po";
 import { ReplayPageObject } from "../page-objects/replay-po";
-import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
-import { PATCHS_FILES, REPLAY_FILES } from "../scenario";
+import { REPLAY_FILES } from "../scenario";
 import path = require("path");
-import { ActivityBar, DebugToolbar, DebugView } from "vscode-extension-tester";
+import { DebugToolbar, DebugView } from "vscode-extension-tester";
 
-(REPLAY_FILES ? describe.only : describe.skip)("Replay Operations", () => {
+(REPLAY_FILES ? describe : describe.skip)("Replay Operations", () => {
   let workbenchPO: WorkbenchPageObject;
   let debugView: DebugView;
   let debugBar: DebugToolbar;

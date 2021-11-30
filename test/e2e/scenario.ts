@@ -35,6 +35,7 @@ if (process.env.SCENARIO) {
 console.log("--------------------------------------");
 console.log(`Scenario: ${values.name} (${path.basename(scenarioFile)})`);
 console.log(`\t${values.description.join("\n\t")}`);
+
 if (valuesFile) {
   console.log(JSON.stringify(valuesFile, null, "  "));
 }
@@ -87,7 +88,9 @@ export const COMPILE_FILES = {
 
 const replayFolder: string = path.join(TEST_RESOURCE, values.replayFolder);
 const replayFiles: string[] = getFileParams(replayFolder, true);
-export const REPLAY_FILES = replayFiles["replay"] ? replayFiles["replay"] : null;
+export const REPLAY_FILES = replayFiles["replay"]
+  ? replayFiles["replay"]
+  : null;
 
 Object.keys(values.compileKey).forEach((key: string) => {
   COMPILE_KEY_FILE[key] = path.join(

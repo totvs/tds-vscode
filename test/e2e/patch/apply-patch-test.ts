@@ -45,12 +45,13 @@ describe("Patch Operations", () => {
     const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
     await applyPatchPO.setUploadFile([PATCHS_FILES.single]);
     await applyPatchPO.fireSubmitClose();
+    await delay(2000);
 
     expect(await workbenchPO.applyPatchInProgress()).to.be.true;
 
     await workbenchPO.waitApplyPatch();
 
-    expect(await workbenchPO.isApplyPatch()).to.be.true;
+    expect(await workbenchPO.isPatchApplied()).to.be.true;
   });
 
   (PATCHS_FILES.many ? it : it.skip)("Apply many file", async () => {
@@ -59,12 +60,13 @@ describe("Patch Operations", () => {
     const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
     await applyPatchPO.setUploadFile(PATCHS_FILES.many);
     await applyPatchPO.fireSubmitClose();
+    await delay(2000);
 
     expect(await workbenchPO.applyPatchInProgress()).to.be.true;
 
     await workbenchPO.waitApplyPatch();
 
-    expect(await workbenchPO.isApplyPatch()).to.be.true;
+    expect(await workbenchPO.isPatchApplied()).to.be.true;
   });
 
   (PATCHS_FILES.invalid ? it : it.skip)("Apply invalid file", async () => {
@@ -89,6 +91,6 @@ describe("Patch Operations", () => {
 
     await workbenchPO.waitApplyPatch();
 
-    expect(await workbenchPO.isApplyPatch()).to.be.true;
+    expect(await workbenchPO.isPatchApplied()).to.be.true;
   });
 });

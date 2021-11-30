@@ -12,7 +12,7 @@ import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { APPSERVER_DATA, NO_ADMIN_USER_DATA } from "../scenario";
 import { INVALID_USER_DATA, ADMIN_USER_DATA } from "../scenario";
 
-describe("TOTVS: Credentials Users Connect", () => {
+describe.only("TOTVS: Credentials Users Connect", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
@@ -36,6 +36,7 @@ describe("TOTVS: Credentials Users Connect", () => {
   it("Input No Admin User", async () => {
     await serverItemPO.select();
     await serverItemPO.fireConnectAction();
+    await workbenchPO.waitValidatingServer();
     await fillEnvironment(APPSERVER_DATA.environment);
     await fillUserdata(NO_ADMIN_USER_DATA);
     await workbenchPO.waitConnection();
@@ -55,6 +56,7 @@ describe("TOTVS: Credentials Users Connect", () => {
   it("Input Invalid User", async () => {
     await serverItemPO.select();
     await serverItemPO.fireConnectAction();
+    await workbenchPO.waitValidatingServer();
     await fillEnvironment(APPSERVER_DATA.environment);
     await fillUserdata(INVALID_USER_DATA);
     await workbenchPO.waitConnection();
@@ -74,6 +76,7 @@ describe("TOTVS: Credentials Users Connect", () => {
   it("Input Admin User", async () => {
     await serverItemPO.select();
     await serverItemPO.fireConnectAction();
+    await workbenchPO.waitValidatingServer();
     await fillEnvironment(APPSERVER_DATA.environment);
     await fillUserdata(ADMIN_USER_DATA);
     await workbenchPO.waitConnection();

@@ -109,7 +109,7 @@ export class WorkbenchPageObject {
     return result;
   }
 
-  async isApplyPatch(): Promise<boolean> {
+  async isPatchApplied(): Promise<boolean> {
     const notification: Notification = await this.getNotification(
       /Patch applied/
     );
@@ -132,7 +132,7 @@ export class WorkbenchPageObject {
   ): Promise<boolean> {
     let notification: Notification = await this.getNotification(targetText);
 
-    return await notification.hasProgress();
+    return await notification?.hasProgress();
   }
 
   private async waitProcessFinish(
@@ -179,6 +179,10 @@ export class WorkbenchPageObject {
 
   async waitRpoLoaded(wait: number = PROCESS_TIMEOUT): Promise<void> {
     await this.waitProcessFinish(/Loading RPO content/);
+  }
+
+  async waitValidatingServer(): Promise<void> {
+    await this.processInProgress(/Validating server/);
   }
 
   async applyPatchInProgress() {

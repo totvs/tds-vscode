@@ -119,16 +119,8 @@ export async function takeQuickPickAction(
   return false;
 }
 
-// export async function clearServers() {
-//   const folder: string = path.resolve(advplProjectfolder);
-//   const serversJsonFile: string = path.join(folder, "servers.json");
-
-//   await fs.remove(serversJsonFile);
-// }
-
 export async function fillEnvironment(environment: string) {
   const pickBox = new InputBox();
-  await pickBox.wait(3000);
   await delay();
 
   let title = await pickBox.getTitle();

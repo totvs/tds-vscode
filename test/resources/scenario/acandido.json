@@ -6,8 +6,8 @@
 	"server": {
 		"serverName": "localhost",
 		"address": "localhost",
-		"port": 2030,
-		"environment": "p12",
+		"port": 20302,
+		"environment": "P20-12-1-33",
 		"includePath": [
 			"m:\\protheus\\includes"
 		]
