@@ -2,6 +2,10 @@
 
 # Versão [1.3.8]
 
+## Melhorias
+
+- Tradução de _strings_ em geral.
+
 ## Compilação de arquivo de template(\_.tpl) pelo VsCode [#840](https://github.com/totvs/tds-vscode/issues/840) [DTCLIENT01-3094](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3094)
 
 A aplicação de _templates_ estáva sendo bloquada em ambientes co servidos Harpia (versão 20.0.0 ou superior).
@@ -13,6 +17,10 @@ A aplicação de _templates_ estáva sendo bloquada em ambientes co servidos Har
 Ao utilizar a opção de comparação do Controle de Versionamento em um arquivo fonte, o _Linter_ indica um erro o arquivo original. A notificação de erro na visão _Problems_ persiste mesmo após fechar a comparação.
 
 - Adicionado tratamento no _linter_ para ignorar arquivos de comparação.
+
+## Erro na aplicação de patchs erp 12.1.33 [#850](https://github.com/totvs/tds-vscode/issues/850)
+
+- Correção no processo de aplicação de pacotes devido a mudanças de comportamento no _appServer_.
 
 # Versão [1.3.5]
 

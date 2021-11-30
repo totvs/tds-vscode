@@ -448,7 +448,10 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("totvs-developer-studio.patchApply", () => {
       vscode.window.setStatusBarMessage(
-        "Aguarde. Iniciando aplicação de pacotes...",
+        `$(~spin) ${localize(
+          "tds.vscode.starting.apply.patch",
+          "Starting patch application..."
+        )}`,
         5000
       );
       patchApply(context, false);
@@ -460,7 +463,10 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.patchApply.fromFile",
       (args: any) => {
         vscode.window.setStatusBarMessage(
-          "Aguarde. Iniciando aplicação de pacotes...",
+          `$(~spin) ${localize(
+            "tds.vscode.starting.apply.patch",
+            "Starting patch application..."
+          )}`,
           5000
         );
         patchApply(context, true, args);
@@ -522,7 +528,10 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.templateApply.fromFile",
       (args: any) => {
         vscode.window.setStatusBarMessage(
-          "Aguarde. Iniciando aplicação de template...",
+          `$(~spin) ${localize(
+            "tds.vscode.starting.apply.teplate",
+            "Starting template application..."
+          )}`,
           5000
         );
         openTemplateApplyView(context, args);
@@ -534,7 +543,10 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("tds-monitor.open-monitor-view", () => {
       vscode.window.setStatusBarMessage(
-        "Aguarde. Iniciando monitoramento...",
+        `$(~spin) ${localize(
+          "tds.vscode.starting.monitor",
+          "Starting monitor..."
+        )}`,
         5000
       );
       openMonitorView(context);
@@ -547,7 +559,10 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.open-loadrpoinfo-view",
       () => {
         vscode.window.setStatusBarMessage(
-          "Aguarde. Iniciando visualização...",
+          `$(~spin) ${localize(
+            "tds.vscode.starting.rpo.loadinfo",
+            "Starting RPO load information..."
+          )}`,
           5000
         );
         openRpoInfoView(context);

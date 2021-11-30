@@ -136,9 +136,13 @@ export function patchValidates(context: vscode.ExtensionContext, args: any) {
       if (args.fsPath) {
         sendPatchPath(args.fsPath, currentPanel);
         vscode.window.setStatusBarMessage(
-          "${~spin}Aguarde. Iniciando geração de pacotes...",
-          sendPatchValidate(args.fsPath, server, currentPanel)
+          `$(~spin) ${localize(
+            "tds.vscode.starting.apply.teplate",
+            "Starting package generation..."
+          )}`,
+          5000
         );
+        sendPatchValidate(args.fsPath, server, currentPanel);
       }
     }
   } else {
