@@ -83,13 +83,7 @@ export class WorkbenchPageObject {
   async isAuthenticationFailed(): Promise<boolean> {
     let result: boolean = false;
 
-    await this.getNotification(
-      /Authentication error: Could not authenticate/
-    ).then(async (notification: Notification) => {
-      await notification?.dismiss();
-    });
-
-    await this.getNotification(/Authentication failed. Could not/).then(
+    await this.getNotification(/Authentication failed:/).then(
       async (notification: Notification) => {
         await notification?.dismiss();
         result = notification ? true : false;

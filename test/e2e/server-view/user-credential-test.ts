@@ -12,7 +12,7 @@ import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { APPSERVER_DATA, NO_ADMIN_USER_DATA } from "../scenario";
 import { INVALID_USER_DATA, ADMIN_USER_DATA } from "../scenario";
 
-describe.only("TOTVS: Credentials Users Connect", () => {
+describe("TOTVS: Credentials Users Connect", () => {
   let serverTreePO: ServerTreePageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;

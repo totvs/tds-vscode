@@ -9,7 +9,7 @@
 	"connectedServer": {},
 	"configurations": [
 		{
-			"id": "rbvugpahkwmivmd92miy5byvt89",
+			"id": "ltksv7ril2mkwne933s8024vf02ozg",
 			"type": "totvs_server_protheus",
 			"name": "localhost",
 			"port": 20302,
@@ -18,9 +18,23 @@
 			"secure": true,
 			"includes": [
 				"m:\\protheus\\includes"
-			]
+			],
+			"environments": [
+				"P20-12-1-33"
+			],
+			"username": "admin",
+			"environment": "P20-12-1-33",
+			"token": "djM6bHRrc3Y3cmlsMm1rd25lOTMzczgwMjR2ZjAyb3pnOjE6bG9jYWxob3N0OjIwMzAyOjE6Ny4wMC4yMTAzMjRQOjM=:djE6UDIwLTEyLTEtMzM6YWRtaW46V1ZFUFU5cDQreE14NCtuYkdaYVhCckpXdnB5bHoyM1luUlZ6QmgrQ1hVaz0=|djI6MTYzODM1NTA4MTowOjE6MQ==.F6UlO4vxuVa+28YzdcS5rhIEXH/ej9UOJN+QLXT41//8eIikAwc9Z6q/SemxsvXMdpjD5QG8F8YscTks/GdVQLWFD3vAVBWbeZoPepRafERjYkJ7yA4PUuDBwEo98tnQIq0OP9bFdaj7QXY2Kjnz+3A84n4Fccy4YzeDSvC7mjtk/+MYXDExYW2LPnLuXim7B/Y3oTafG9MeTFLvFuXgFWRQZie1cxzGP88g5h9fXjkmz+KQ6BpiX4W9Zkb4XSXxg6eDCoNvnushz5+R3ZpxP/ZCHlT0KeIrEkhV2y2YnIafzY6n7u8zyOdlLovA5Ns+mhXG+YoIkCY6nUw9aiEZMQ=="
 		}
 	],
-	"savedTokens": [],
-	"lastConnectedServer": ""
+	"savedTokens": [
+		[
+			"ltksv7ril2mkwne933s8024vf02ozg:P20-12-1-33",
+			{
+				"id": "ltksv7ril2mkwne933s8024vf02ozg",
+				"token": "djM6bHRrc3Y3cmlsMm1rd25lOTMzczgwMjR2ZjAyb3pnOjE6bG9jYWxob3N0OjIwMzAyOjE6Ny4wMC4yMTAzMjRQOjM=:djE6UDIwLTEyLTEtMzM6YWRtaW46V1ZFUFU5cDQreE14NCtuYkdaYVhCckpXdnB5bHoyM1luUlZ6QmgrQ1hVaz0=|djI6MTYzODM1NTA4MTowOjE6MQ==.F6UlO4vxuVa+28YzdcS5rhIEXH/ej9UOJN+QLXT41//8eIikAwc9Z6q/SemxsvXMdpjD5QG8F8YscTks/GdVQLWFD3vAVBWbeZoPepRafERjYkJ7yA4PUuDBwEo98tnQIq0OP9bFdaj7QXY2Kjnz+3A84n4Fccy4YzeDSvC7mjtk/+MYXDExYW2LPnLuXim7B/Y3oTafG9MeTFLvFuXgFWRQZie1cxzGP88g5h9fXjkmz+KQ6BpiX4W9Zkb4XSXxg6eDCoNvnushz5+R3ZpxP/ZCHlT0KeIrEkhV2y2YnIafzY6n7u8zyOdlLovA5Ns+mhXG+YoIkCY6nUw9aiEZMQ=="
+			}
+		]
+	],
+	"lastConnectedServer": "ltksv7ril2mkwne933s8024vf02ozg"
 }
