@@ -3,6 +3,16 @@ import { AbstractPageObject } from "./abstract-po";
 import { IReplayData } from "./interface-po";
 import { WorkbenchPageObject } from "./workbench-po";
 
+const DEFAULT_REPLAY_LAUNCHER: IReplayData = {
+  TDSReplayFile: "",
+  launcherName: "",
+  passwordID: "",
+  includeSrcID: "*",
+  excludeSrcID: "",
+  ignoreSourcesNotFoundID: true,
+  forceImport: true,
+};
+
 export class ReplayPageObject extends AbstractPageObject {
   private workbenchPO: WorkbenchPageObject;
 
@@ -28,15 +38,7 @@ export class ReplayPageObject extends AbstractPageObject {
   }
 
   async getDataPage(): Promise<IReplayData> {
-    const result: IReplayData = {
-      passwordID: "",
-      includeSrcID: "",
-      excludeSrcID: "",
-      TDSReplayFile: "",
-      launcherName: "",
-      ignoreSourcesNotFoundID: false,
-      forceImport: true,
-    };
+    const result: IReplayData = { ...DEFAULT_REPLAY_LAUNCHER };
     await this.beginWebView();
 
     result.launcherName = await this.getValue("launcherNameID");
@@ -50,6 +52,13 @@ export class ReplayPageObject extends AbstractPageObject {
 
     await this.endWebView();
     return result;
+  }
+
+  async addReplayLauncher(data: Partial<IReplayData>): Promise<void> {
+    await this.openLauncher();
+    await this.setDataPage({ ...DEFAULT_REPLAY_LAUNCHER, ...data });
+    await this.fireSaveClose();
+    await delay();
   }
 
   async setDataPage(data: IReplayData): Promise<void> {

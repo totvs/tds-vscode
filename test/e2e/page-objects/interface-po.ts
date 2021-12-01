@@ -34,5 +34,5 @@ export interface IReplayData {
   ignoreSourcesNotFoundID: boolean;
   TDSReplayFile: string;
   launcherName: string;
-  forceImport?: boolean;
+  forceImport: boolean;
 }

@@ -88,8 +88,8 @@ export const COMPILE_FILES = {
 
 const replayFolder: string = path.join(TEST_RESOURCE, values.replayFolder);
 const replayFiles: string[] = getFileParams(replayFolder, true);
-export const REPLAY_FILES = replayFiles["replay"]
-  ? replayFiles["replay"]
+export const REPLAY_FILES = Object.keys(replayFiles).length
+  ? replayFiles
   : null;
 
 Object.keys(values.compileKey).forEach((key: string) => {

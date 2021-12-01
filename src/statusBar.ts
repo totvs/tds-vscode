@@ -49,8 +49,10 @@ function initStatusBarItem(context: vscode.ExtensionContext) {
     priorityTotvsStatusBarItem
   );
   serverStatusBarItem.command = "totvs-developer-studio.serverSelection";
-  serverStatusBarItem.text =
-    `$(~spin)${localize("tds.vscode.initializing", "(initializing)")}`;
+  serverStatusBarItem.text = `$(~spin) ${localize(
+    "tds.vscode.initializing",
+    "(initializing)"
+  )}`;
 
   context.subscriptions.push(
     serverStatusBarItem,

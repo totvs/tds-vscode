@@ -6,6 +6,7 @@ import {
   SideBarView,
   ViewControl,
   DebugView,
+  EditorView,
 } from "vscode-extension-tester";
 import { delay } from "../helper";
 import { NotificationPageObject } from "./notification-po";
@@ -50,34 +51,24 @@ export class WorkbenchPageObject {
     );
   }
 
-  async isRpoIntegrity(): Promise<boolean> {
-    const notification: Notification = await this.getNotification(
-      /RPO [intact|incomplete]/
-    );
+  private async testNotification(targetText: RegExp | string) {
+    const notification: Notification = await this.getNotification(targetText);
     const result: boolean = notification ? true : false;
     await notification?.dismiss();
 
     return result;
+  }
+
+  async isRpoIntegrity(): Promise<boolean> {
+    return await this.testNotification(/RPO [intact|incomplete]/);
   }
 
   async isSaveServer(): Promise<boolean> {
-    const notification: Notification = await this.getNotification(
-      /Saved server/
-    );
-    const result: boolean = notification ? true : false;
-    await notification?.dismiss();
-
-    return result;
+    return await this.testNotification(/Serve saved/);
   }
 
-  async isSaveReplayLauncher(): Promise<boolean> {
-    const notification: Notification = await this.getNotification(
-      /Executor.*saved/
-    );
-    const result: boolean = notification ? true : false;
-    await notification?.dismiss();
-
-    return result;
+  async isLauncherSaved(): Promise<boolean> {
+    return await this.testNotification(/Launcher Configuration saved/);
   }
 
   async isAuthenticationFailed(): Promise<boolean> {
@@ -93,24 +84,52 @@ export class WorkbenchPageObject {
     return result;
   }
 
-  async isPatchValidateNotBeExecuted(): Promise<boolean> {
-    const notification: Notification = await this.getNotification(
-      /Patch validate could not be executed/
-    );
-    const result: boolean = notification ? true : false;
-    await notification?.dismiss();
+  async isDAInitialing(): Promise<boolean> {
+    return await this.testNotification(/TDS\-DA being initialized/);
+  }
 
-    return result;
+  async isDAReady(): Promise<boolean> {
+    return await this.testNotification(/TDS\-DA ready/);
+  }
+
+  async isDACheckingSources(): Promise<boolean> {
+    return await this.testNotification(/Checking the.*source/);
+  }
+
+  async isDASourceListRecording(): Promise<boolean> {
+    return await this.testNotification(/Source List in this/);
+  }
+
+  async isDAReadingAllTimelines(): Promise<boolean> {
+    return await this.testNotification(/Reading all TimeLines/);
+  }
+
+  async isDAReadingAllTimelinesDone(): Promise<boolean> {
+    return await this.testNotification(/Reading all TimeLines.*DONE/);
+  }
+
+  async isDAStoppingFistLine(): Promise<boolean> {
+    return await this.testNotification(/Stopping in the first timeline/);
+  }
+
+  async isDAStoppingFistLineDone(): Promise<boolean> {
+    return await this.testNotification(/Stopping in the first timeline.*DONE/);
+  }
+
+  async isDABeingFinalized(): Promise<any> {
+    return await this.testNotification(/TDS\-DA being finalized/);
+  }
+
+  async isDAFinished(): Promise<any> {
+    return await this.testNotification(/TDS\-DA finished/);
+  }
+
+  async isPatchValidateNotBeExecuted(): Promise<boolean> {
+    return await this.testNotification(/Patch validate could not be executed/);
   }
 
   async isPatchApplied(): Promise<boolean> {
-    const notification: Notification = await this.getNotification(
-      /Patch applied/
-    );
-    const result: boolean = notification ? true : false;
-    await notification?.dismiss();
-
-    return result;
+    return await this.testNotification(/Patch applied/);
   }
 
   async isHaveKey(): Promise<boolean> {
@@ -187,18 +206,8 @@ export class WorkbenchPageObject {
     await this.waitProcessFinish(/Applying patch/, WAIT_PROCESS_TIMEOUT);
   }
 
-  async waitImportReplay() {
-    await this.waitProcessFinish(/Importing TDS Replay/, WAIT_PROCESS_TIMEOUT);
-  }
-
-  async isImportReplayFinish(): Promise<boolean> {
-    const notification: Notification = await this.getNotification(
-      /TDS Replay Finished/
-    );
-    const result: boolean = notification ? true : false;
-    await notification?.dismiss();
-
-    return result;
+  async waitImportReplay(delay: number = WAIT_PROCESS_TIMEOUT) {
+    await this.waitProcessFinish(/Importing TDS Replay/, delay);
   }
 
   async getNotification(
@@ -252,5 +261,11 @@ export class WorkbenchPageObject {
     await delay();
 
     return this.getView("TOTVS");
+  }
+
+  async closeAllEditors() {
+    const view = new EditorView();
+    view.closeAllEditors();
+    await delay();
   }
 }

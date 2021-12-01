@@ -10,19 +10,30 @@ const WAIT_NOTIFICATION_TIMEOUT = 2000;
 
 export class NotificationPageObject {
   private workbench: Workbench;
+  center: any;
 
   constructor(workbench: Workbench) {
     this.workbench = workbench;
+    (async () => {
+      this.center = await this.workbench.openNotificationsCenter();
+    })();
   }
 
-  async getNotifications(
+  private async getNotifications(
     type: NotificationType = NotificationType.Any
   ): Promise<Notification[]> {
-    const notifications: Notification[] = await this.waitNotification();
+    const notifications: Notification[] = [];
 
-    return notifications.filter(async (notification: Notification) => {
-      type == NotificationType.Any || (await notification.getType()) == type;
-    });
+    for await (const notification of await this.waitNotifications()) {
+      if (
+        type == NotificationType.Any ||
+        (await notification.getType()) == type
+      ) {
+        notifications.push(notification);
+      }
+    }
+
+    return notifications;
   }
 
   async getNotification(
@@ -33,9 +44,9 @@ export class NotificationPageObject {
     const target: RegExp = new RegExp(targetText, "i");
 
     let steps: number = _wait / 500;
-    let result: Notification = null;
+    let result: Notification = undefined;
 
-    while (result === null && steps > 0) {
+    while (result === undefined && steps > 0) {
       const notifications: Notification[] = await this.getNotifications(type);
       await delay(500);
 
@@ -55,9 +66,22 @@ export class NotificationPageObject {
     return result;
   }
 
-  private async waitNotification(): Promise<Notification[]> {
-    return await VSBrowser.instance.driver.wait(async () => {
-      return await this.workbench.getNotifications();
-    }, WAIT_NOTIFICATION_TIMEOUT);
+  // center = await new Workbench().openNotificationsCenter();
+
+  // // get notifications from the notifications center
+  // // this time they can be filtered by type
+  // // lets get info notifications only
+  // notifications = await center.getNotifications(NotificationType.Info);
+
+  private async waitNotifications(
+    delay: number = WAIT_NOTIFICATION_TIMEOUT
+  ): Promise<Notification[]> {
+    //return await VSBrowser.instance.driver.wait(async () => {
+    //return await this.workbench.getNotifications();
+    // const notifications = await new Workbench().getNotifications();
+    // return notifications;
+    //}, delay);
+
+    return await this.center.getNotifications(NotificationType.Any);
   }
 }

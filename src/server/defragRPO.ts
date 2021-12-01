@@ -49,8 +49,8 @@ export function defragRpo() {
                 vscode.window.showErrorMessage(err.message);
               }
             );
-          vscode.window.setStatusBarMessage(`$(~spin)${
-            localize(
+          vscode.window.setStatusBarMessage(
+            `$(~spin) ${localize(
               "tds.vscode.servernotconnected",
               "Defragmenting RPO (process may take some time)"
             )}`,

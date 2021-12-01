@@ -27,7 +27,6 @@ import { compileKeyPage } from "./compileKey/compileKey";
 import { getLanguageClient } from "./TotvsLanguageClient";
 import { patchGenerate, patchGenerateFromFolder } from "./patch/patchGenerate";
 import Utils from "./utils";
-import { LanguageClient } from "vscode-languageclient";
 import {
   commandBuildFile,
   commandBuildWorkspace,
@@ -53,7 +52,10 @@ import {
   getProgramArguments,
   toggleTableSync,
 } from "./debug/debugConfigs";
-import { toggleAutocompleteBehavior } from "./server/languageServerSettings";
+import {
+  syncSettings,
+  toggleAutocompleteBehavior,
+} from "./server/languageServerSettings";
 import { createTimeLineWebView } from "./debug/debugEvents";
 import { patchValidates } from "./patch/patchValidate";
 import {
@@ -71,8 +73,10 @@ import { openTemplateApplyView } from "./template/apply/formApplyTemplate";
 import { rpoTokenInputBox, saveRpoTokenString } from "./rpoToken";
 import { openGeneratePatchView } from "./patch/generate/generatePatchLoader";
 import { patchApply } from "./patch/patchApply";
+import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 
-export let languageClient: LanguageClient;
+export let languageClient: TotvsLanguageClientA;
+
 export function parseUri(u): Uri {
   return Uri.parse(u);
 }
@@ -209,6 +213,7 @@ export function activate(context: ExtensionContext) {
         );
         statusIcon.show();
         languageClient.onReady().then(() => {
+          languageClient.ready = true;
           languageClient.onNotification("$totvsserver/progress", (args) => {
             let indexRequestCount = args.indexRequestCount || 0;
             let doIdMapCount = args.doIdMapCount || 0;
@@ -250,6 +255,8 @@ export function activate(context: ExtensionContext) {
               localize("tds.vscode.statusIcon.tooltip2", "advpl jobs: ") +
               detailedJobString;
           });
+
+          syncSettings();
         });
       }
     })();
@@ -695,6 +702,9 @@ export function activate(context: ExtensionContext) {
     },
   };
   // 'export' public api-surface
+
+  window.showInformationMessage('"TDS-VSCode" is ready.');
+
   return exportedApi;
 }
 

@@ -341,8 +341,10 @@ export class ServersExplorer {
 
       if (serverId !== undefined && showSucess) {
         vscode.window.showInformationMessage(
-          localize("tds.webview.serversView.serverSaved", "Saved server ") +
-            serverName
+          localize(
+            "tds.webview.serversView.serverSaved",
+            "Serve saved. Name: "
+          ) + serverName
         );
       }
 
