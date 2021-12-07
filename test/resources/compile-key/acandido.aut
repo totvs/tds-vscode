@@ -1,0 +1,28 @@
+[AUTHORIZATION]
+ID=9DA4-26D1
+GENERATION=04/10/2021
+VALIDATION=02/01/2022
+PERMISSION=1
+KEY=016USM031SOWS008000FF1312
+
+[IDENTIFICATION]
+version=<versão do arquivo de privilégios 9.9.9.timestamp>
+serialNumber=<numero serial único gerado no momento da aprovação>
+owner=<e-mail do usuário desenvolvedor>
+approver=<e-mail do usuário aprovador>
+approverSerialNumber=<numero serial único do aprovador>
+hardid=<identificador gerado no momento da solicitação a partir de informações de hardware>
+algorithm=<algoritimo de assinatura utilizado*>
+signature=<assinatura deste de acordo com o algoritimo*>
+
+[RIGHTS]
+R0<0x????>=<breve descrição>
+* Cada direito terá id único (0x????=hexa), de forma que o conjunto destes possa ser representado em um inteiro de 32 bits.
+C0=<inteiro de 32 bits, onde cada bit indica um direito ativo(1) ou inativo(0) conforme R0>
+Quando não for mais possível usar um inteiro de 32 bits, começa o grupo R1/C1 e assim por diante
+
+[VALIDITYPERIOD]
+begin=<data e hora de inicio da validade deste arquivo, no formato UTF>
+end=<data e hora de término da validade deste arquivo, no formato UTF>
+
+Lista de direitos

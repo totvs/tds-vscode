@@ -1,14 +1,14 @@
-import * as vscode from 'vscode';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as nls from 'vscode-nls';
-import Utils from './utils';
-import { changeSettings } from './server/languageServerSettings';
+import * as vscode from "vscode";
+import * as fs from "fs";
+import * as path from "path";
+import Utils from "./utils";
+import { changeSettings } from "./server/languageServerSettings";
 
-let localize = nls.loadMessageBundle();
+const RESOURCE_FOLDER = path.join(__filename, "..", "..", "resources");
 
 class ServerItemProvider
-  implements vscode.TreeDataProvider<ServerItem | EnvSection> {
+  implements vscode.TreeDataProvider<ServerItem | EnvSection>
+{
   isConnected(server: ServerItem) {
     return (
       this._connectedServerItem !== undefined &&
@@ -33,12 +33,12 @@ class ServerItemProvider
 
   private _connectedServerItem: ServerItem | undefined = undefined;
 
-  private configFilePath: string = '';
+  private configFilePath: string = "";
 
   constructor() {
     // check if there is an open folder
     if (vscode.workspace.workspaceFolders === undefined) {
-      vscode.window.showErrorMessage('No folder opened.');
+      vscode.window.showErrorMessage("No folder opened.");
       return;
     }
 
@@ -69,27 +69,30 @@ class ServerItemProvider
     if (this._connectedServerItem !== server) {
       this._connectedServerItem = server;
 
-      let includes = '';
+      let includes = "";
       if (server === undefined) {
         Utils.clearConnectedServerConfig();
         const serversConfig = Utils.getServersConfig();
         if (serversConfig.includes) {
           let includesList = serversConfig.includes as Array<string>;
           includesList.forEach((includeItem) => {
-            includes += includeItem + ';';
+            includes += includeItem + ";";
           });
         }
-      }
-      else {
+      } else {
         if (server.includes) {
           server.includes.forEach((includeItem) => {
-            includes += includeItem + ';';
+            includes += includeItem + ";";
           });
         }
       }
       if (includes) {
         changeSettings({
-          changeSettingInfo: { scope: 'advpls', key: 'includes', value: includes },
+          changeSettingInfo: {
+            scope: "advpls",
+            key: "includes",
+            value: includes,
+          },
         });
       }
 
@@ -110,32 +113,29 @@ class ServerItemProvider
         const listOfEnvironments =
           servers.configurations[element.id].environments;
         if (listOfEnvironments.size > 0) {
-          this.localServerItems[
-            element.id
-          ].environments = listOfEnvironments.map(
-            (env) =>
-              new EnvSection(
-                env,
-                element,
-                vscode.TreeItemCollapsibleState.None,
-                {
-                  command: 'totvs-developer-studio.environmentSelection',
-                  title: '',
-                  arguments: [env],
-                }
-              )
-          );
+          this.localServerItems[element.id].environments =
+            listOfEnvironments.map(
+              (env) =>
+                new EnvSection(
+                  env,
+                  element,
+                  vscode.TreeItemCollapsibleState.None,
+                  {
+                    command: "totvs-developer-studio.environmentSelection",
+                    title: "",
+                    arguments: [env],
+                  }
+                )
+            );
           this.localServerItems[element.id].collapsibleState =
             vscode.TreeItemCollapsibleState.Expanded;
           //Workaround: Bug que nao muda visualmente o collapsibleState se o label permanecer intalterado
           this.localServerItems[element.id].label = this.localServerItems[
             element.id
-          ].label.endsWith(' ')
+          ].label.endsWith(" ")
             ? this.localServerItems[element.id].label.trim()
-            : this.localServerItems[element.id].label + ' ';
+            : this.localServerItems[element.id].label + " ";
           element.environments = listOfEnvironments;
-
-          //					this.refresh();
 
           Promise.resolve(
             new EnvSection(
@@ -184,8 +184,8 @@ class ServerItemProvider
         Utils.createServerConfig();
       }
 
-      fs.watch(serversJson, { encoding: 'buffer' }, (eventType, filename) => {
-        if (filename && eventType === 'change') {
+      fs.watch(serversJson, { encoding: "buffer" }, (eventType, filename) => {
+        if (filename && eventType === "change") {
           this.localServerItems = this.setConfigWithServerConfig();
           this.refresh();
         }
@@ -231,8 +231,8 @@ class ServerItemProvider
         environments,
         includes,
         {
-          command: '',
-          title: '',
+          command: "",
+          title: "",
           arguments: [serverItem],
         }
       );
@@ -241,7 +241,7 @@ class ServerItemProvider
 
     serverConfig.configurations.forEach((element) => {
       let environmentsServer = new Array<EnvSection>();
-      let token: string = element.token ? element.token : '';
+      let token: string = element.token ? element.token : "";
 
       if (element.environments) {
         element.environments.forEach((environment) => {
@@ -250,8 +250,8 @@ class ServerItemProvider
             element,
             vscode.TreeItemCollapsibleState.None,
             {
-              command: 'totvs-developer-studio.environmentSelection',
-              title: '',
+              command: "totvs-developer-studio.environmentSelection",
+              title: "",
               arguments: [environment],
             },
             environment
@@ -259,7 +259,7 @@ class ServerItemProvider
 
           if (serverConfig.savedTokens) {
             serverConfig.savedTokens.forEach((savedToken) => {
-              if (savedToken[0] === element.id + ':' + element.environment) {
+              if (savedToken[0] === element.id + ":" + element.environment) {
                 token = savedToken[1].token;
               }
             });
@@ -292,20 +292,12 @@ class ServerItemProvider
   }
 }
 
-export type ServerType = 'totvs_server_protheus' | 'totvs_server_logix';
+export type ServerType = "totvs_server_protheus" | "totvs_server_logix";
 
 export class ServerItem extends vscode.TreeItem {
-  public environment: string = '';
-  public username: string = '';
-  public smartclientBin: string = '';
-
-  public get isConnected(): boolean {
-    return serverProvider.isConnected(this);
-  }
-
-  public get isSafeRPO(): boolean {
-    return this.buildVersion.localeCompare('7.00.191205P') > 0;
-  }
+  public environment: string = "";
+  public username: string = "";
+  public smartclientBin: string = "";
 
   constructor(
     public name: string,
@@ -324,40 +316,38 @@ export class ServerItem extends vscode.TreeItem {
     super(name, collapsibleState);
   }
 
-  public getTooltip(): string {
-    return `Server=${this.address} | Port=${this.port}`;
+  public get isConnected(): boolean {
+    return serverProvider.isConnected(this);
+  }
+
+  public get isSafeRPO(): boolean {
+    return this.buildVersion.localeCompare("7.00.191205P") > 0;
   }
 
   description = `${this.address}:${this.port}`;
-
+  tooltip = `${this.buildVersion}`;
   iconPath = {
     light: path.join(
-      __filename,
-      '..',
-      '..',
-      'resources',
-      'light',
+      RESOURCE_FOLDER,
+      "light",
       this.isConnected
-        ? 'server.connected.svg'
-        : this.type == 'totvs_server_protheus'
-        ? 'protheus_server.svg'
-        : 'logix_server.svg'
+        ? "server.connected.svg"
+        : this.type == "totvs_server_protheus"
+        ? "protheus_server.svg"
+        : "logix_server.svg"
     ),
     dark: path.join(
-      __filename,
-      '..',
-      '..',
-      'resources',
-      'dark',
+      RESOURCE_FOLDER,
+      "dark",
       this.isConnected
-        ? 'server.connected.svg'
-        : this.type == 'totvs_server_protheus'
-        ? 'protheus_server.svg'
-        : 'logix_server.svg'
+        ? "server.connected.svg"
+        : this.type == "totvs_server_protheus"
+        ? "protheus_server.svg"
+        : "logix_server.svg"
     ),
   };
 
-  contextValue = this.isConnected ? 'serverItem' : 'serverItemNotConnected';
+  contextValue = this.isConnected ? "serverItem" : "serverItemNotConnected";
 }
 
 export class EnvSection extends vscode.TreeItem {
@@ -382,23 +372,23 @@ export class EnvSection extends vscode.TreeItem {
   iconPath = {
     light: path.join(
       __filename,
-      '..',
-      '..',
-      'resources',
-      'light',
-      this.isCurrent ? 'environment.connected.svg' : 'environment.svg'
+      "..",
+      "..",
+      "resources",
+      "light",
+      this.isCurrent ? "environment.connected.svg" : "environment.svg"
     ),
     dark: path.join(
       __filename,
-      '..',
-      '..',
-      'resources',
-      'dark',
-      this.isCurrent ? 'environment.connected.svg' : 'environment.svg'
+      "..",
+      "..",
+      "resources",
+      "dark",
+      this.isCurrent ? "environment.connected.svg" : "environment.svg"
     ),
   };
 
-  contextValue = this.isCurrent ? 'envSection' : 'envSectionNotCurrent';
+  contextValue = this.isCurrent ? "envSection" : "envSectionNotCurrent";
 }
 
 const serverProvider = new ServerItemProvider();

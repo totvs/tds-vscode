@@ -4,55 +4,71 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>${d.localize["tds.webview.newServer.title"]}</title><!--New Server-->
+	<title>${d.localize["tds.webview.newServer.title"]}</title>
+	<!--New Server-->
 </head>
-<style>${d.css}</style>
+<style>
+	${d.css}
+</style>
 
 <body>
 
 	<div class="mainContainer">
-		<div class="formWrap"
-			style="background-image: none;">
+		<div class="formWrap" style="background-image: none;">
 
 			<form class="formServer" name="form_server" id="form_server">
 
 				<div class="logo">
-					<span class="formTitle">${d.localize["tds.webview.newServer.title"]}</span><!--New Server-->
+					<span class="formTitle">${d.localize["tds.webview.newServer.title"]}</span>
+					<!--New Server-->
 				</div>
 
 				<div class="wrap-input">
 					<select name="serverType" id="serverTypeID" class="">
 						<option value="totvs_server_protheus">Protheus (Adv/PL)</option>
 						<option value="totvs_server_logix">Logix (4GL)</option>
-					  </select>
-					 <input class="inputText input-serverName" type="text" id="nameID" name="serverName" placeholder="${d.localize['tds.webview.newServer.name']}" required> <!--Server Name-->
+					</select>
+					<input class="inputText input-serverName" type="text" id="nameID" name="serverName"
+						placeholder="${d.localize['tds.webview.newServer.name']}" required>
+					<!--Server Name-->
 					<span class="focus-input fi-serverName">
 					</span>
 				</div>
 
 				<div class="wrap-input">
-					<input class="inputText input-address" type="text" id="addressID" name="address" placeholder="${d.localize['tds.webview.newServer.address']}" required><!--Address-->
+					<input class="inputText input-address" type="text" id="addressID" name="address"
+						placeholder="${d.localize['tds.webview.newServer.address']}" required>
+					<!--Address-->
 					<span class="focus-input fi-address">
 					</span>
 				</div>
 
 				<div class="wrap-input">
-					<input class="inputText input-port" type="number" id="portID" name="port" pattern="[0-9]{5}" placeholder="${d.localize['tds.webview.newServer.port']}" required><!--Port-->
+					<input class="inputText input-port" type="number" id="portID" name="port" pattern="[0-9]{5}"
+						placeholder="${d.localize['tds.webview.newServer.port']}" required>
+					<!--Port-->
 					<span class="focus-input fi-port">
 					</span>
 				</div>
 
-				<p>${d.localize["tds.webview.dir.include"]}<b>*${d.localize["tds.webview.dir.include2"]}</b></p><!--Includes directory:--><!--Allows multiple-->
+				<p>${d.localize["tds.webview.dir.include"]}<b>*${d.localize["tds.webview.dir.include2"]}</b></p>
+				<!--Includes directory:-->
+				<!--Allows multiple-->
 				<div class="wrap-input">
 					<textarea class="inputText" id="includePath" placeholder="Ex: C:/totvs/includes..."></textarea>
-					<input class="inputText" type="file" id="btn-FileInclude" name="btn-FileInclude" onchange='checkDir(event);' webkitdirectory directory/>
+					<input class="inputText" type="file" id="btn-FileInclude" name="btn-FileInclude"
+						onchange='checkDir(event);' webkitdirectory directory />
 				</div>
 
 				<br>
 
 				<div class="wrap-submit">
-					<input class="btn-submit" readonly id="submitID" type="submit" value="${d.localize['tds.webview.newServer.save']}" onclick="saveServer(false)" /> <!--Save-->
-					<input class="btn-submit" readonly id="submitID" type="submit" value="${d.localize['tds.webview.newServer.saveClose']}" onclick="saveServer(true)" /> <!--Save/Close-->
+					<input class="btn-submit" readonly id="submitID" type="button"
+						value="${d.localize['tds.webview.newServer.save']}" onclick="saveServer(false)" />
+					<!--Save-->
+					<input class="btn-submit" readonly id="submitIDClose" type="button"
+						value="${d.localize['tds.webview.newServer.saveClose']}" onclick="saveServer(true)" />
+					<!--Save/Close-->
 				</div>
 			</form>
 		</div>

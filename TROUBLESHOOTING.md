@@ -3,7 +3,9 @@
 > O **VS-Code** pode apresentar problemas em suas funcionalidades em sistemas operacionias da linha **Windows Server**.
 > Veja os requisitos para uso em [Requirements](https://code.visualstudio.com/docs/supporting/requirements).
 
-> Antes de abrir uma nova **"Issue"** do **TDS VS Code**, verifique se o seu problema está na lista de problemas conhecidos e se existe uma solução de contorno para ele. Caso contrário abra uma nova **"Issue"** e adicione o maior número de informações possíveis (veja abaixo na seção **"Informações importantes"**) para ajudar a identificar a causa do problema.
+> Antes de abrir uma nova **"Issue"**:
+> Verifique se a extensão esta atualizada (`Manage | Check for Update..`) e se necessário, faça as atualizações e refaça a operação que esta gerando uma ocorrência.  
+> Verifique se o seu problema está na lista de problemas conhecidos e se existe uma solução de contorno para ele. Caso contrário abra uma nova **"Issue"** e adicione o maior número de informações possíveis (veja abaixo na seção **"Informações importantes"**) para ajudar a identificar a causa do problema.
 
 Os problemas estão divididos em **"Gerais"** e **"Depuração"** então procure na seção em que seu problema se enquadra.
 
@@ -14,9 +16,12 @@ Os problemas estão divididos em **"Gerais"** e **"Depuração"** então procure
 
 São problemas que ocorrem desde a inicialização do **TDS VS Code** até a operação normal do dia-a-dia como compilar, gerar e aplicar patches, etc. Excluindo-se apenas a Depuração que é tratada em outra seção.
 
-### Aplicação de pacotes (_patchs_)
+### Erro na aplicação de pacotes de atualização (_patchs_) em servidores com versão 19.3.1.7 ou anterior
 
-O _AppServer_ versão 19.3.0.5, apresenta problemas conhecidos na aplicação de patches, recomenda-se atualizá-lo para a versão 19.3.0.6 ou mais recente.
+Temos notícias de problemas em aplicação de pacotes em _appServer_ com versão 19.3.1.7 ou anterior com SSL ligado (conexão segura).
+
+**Solução:** Assim que possível, atualize o _appServer_
+**Paliativo:** Dsative a comunicação segura (SSL).
 
 ### Pastas com acentuação
 
@@ -100,6 +105,17 @@ Tivemos relatos de problemas na instalação do **TDS VS Code** em *S.O.* do tip
 
 **Solução:** Utilize um *S.O.* diferente de *Windows Server*.
 
+### Apresenta erro `C2090 File not found \<file>.ch`, porém a compilação ocorre sem problemas
+
+O [linter](docs/linter.md), utiliza a pasta de definições global para resolução dos arquivos de definição (_#include_).
+
+**Solução:** Configurar (ou revisar) a pasta de definições [global](docs/servers.md#estrutura-do-arquivo-serversjson) ou desativar o [linter](docs/linter.md).
+
+### _Linter_ encontra-se ativado, porém aparenta não funcionar (versão 1.3.4 ou superior)
+
+O [linter](docs/linter.md), utiliza a pasta de definições global para resolução dos arquivos de definição (_#include_).
+
+**Solução:** Configurar (ou revisar) a pasta de definições [global](docs/servers.md#estrutura-do-arquivo-serversjson) ou desativar o [linter](docs/linter.md).
 
 ## Problemas em Depuração
 
@@ -116,7 +132,6 @@ Apesar de já descrita na seção de **"Problemas Gerais"** existem problemas qu
 Se a depuração não inicia, verifique se o Smartclient utilizado é o correto para a versão do TOTVS Server utilizado.
 
 **Solução:** Ao invés de iniciar a depuração com o `F5` utilize o `CTRL + F5` e veja se o Smartclient executa corretamente. Se o Smartclient não executar assim, reveja as configurações de depuração (launch.json).
-
 
 # Gerando Informações sobre o Problema
 

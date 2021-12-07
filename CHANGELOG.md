@@ -1,5 +1,58 @@
 # Changelog
 
+# Versão [1.3.8]
+
+## Melhorias
+
+- Tradução de _strings_ em geral.
+
+## Erro no Linter ao comparar programas fontes [#852](https://github.com/totvs/tds-vscode/issues/852) [DTCLIENT01-3100](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3100)
+
+Ao utilizar a opção de comparação do Controle de Versionamento em um arquivo fonte, o _Linter_ indica um erro o arquivo original. A notificação de erro na visão _Problems_ persiste mesmo após fechar a comparação.
+
+- Adicionado tratamento no _linter_ para ignorar arquivos de comparação.
+
+## Erro na aplicação de patchs erp 12.1.33 [#850](https://github.com/totvs/tds-vscode/issues/850)
+
+- Correção no processo de aplicação de pacotes devido a mudanças de comportamento no _appServer_.
+
+# Versão [1.3.5]
+
+## Melhorias
+
+- Adição de nota sobre o uso de _token de RPO_ e chaves de compilação (_banner_ e documentação);
+- Suporte a edição de arquivos de definições TLPP (.th);
+- Adição de tema de ícones;
+- Tratamento no monitor de dados em cirílico (CP1251).
+
+## Aplicação de pacotes [#820](https://github.com/totvs/tds-vscode/issues/820)
+
+- Correção no processo de aplicação de pacotes e ajustes visuais.
+
+## Tratamento de palavras chave em fontes .4gl [DTCLIENT01-2831](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2831)
+
+Em determinadas estruturas de código 4GL, as palavras reserveadas ficavam parcialmente em maísculas.
+
+## Travamento Monitor VSCode [#817](https://github.com/totvs/tds-vscode/issues/817) [DTCLIENT01-2649](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2649)
+
+Após acionar a funcionalidade `Stop server` ocorria travamento do mesmo.
+
+## Correção no uso de filtros na importação de arquivo TDSReplay [#803](https://github.com/totvs/tds-vscode/issues/803) [DTCLIENT01-2978](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2978)
+
+Efetuada correção no tratamento de filtro `includeSource`.
+
+## Processamento de listas no TDS-Replay [DTCLIENT01-3056](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3056)
+
+Ajustado tratamento de listas encadeadas (_arrays_ dentro de _arrays_).
+
+## AskForProgramName não funciona com debug WebApp [DTCLIENT01-3066](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3066)
+
+Ajustado tratamento do argumento _AskForProgramName_.
+
+## Validar Chave de compilação resulta em tela preta [DTCLIENT01-3072](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3072)
+
+Ajustado propriedades dos botões.
+
 # Versão [1.3.4]
 
 ## Melhorias
@@ -94,29 +147,62 @@
 - Removido opcao de filtro de 1500 timelines para facilitar calculo de paginação
 
 ## Processamento de fluxo em um array complexo ([ISSUE 686](https://github.com/totvs/tds-vscode/issues/686)) ([DTCLIENT01-2784](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2784))
+
 ### Problema:
+
 - O array ANFITEM informado pelo usuario possui um fluxo de processamento bastante complexo, com uma série de referências. Em determinado momento o TDS Replay processava o valor erroneamente fazendo com que o valor mostrado estivesse incorreto.
 
 ### Solução:
+
 - Alterado toda a lógica de processamento de variáveis para identificar corretamente esse tipo de situação e mostrar o valor correto para o usuário.
 
-
 ## Identificação e processamento da lista de exclusão de fontes ([ISSUE 754](https://github.com/totvs/tds-vscode/issues/754)) ([DTCLIENT01-2819](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2819))
+
 ### Problema:
+
 - A lista de exclusão de fontes não levava em consideração fontes que não existissem na área de trabalho. Dessa forma, a timeline é mostrada, sendo que deveria ser filtrada.
 
 ### Solução:
+
 - Alterado o processamento das lista de exclusão para que nem avalie o fonte caso ele não exista na pasta corrente.
 
-
 ## Inicialização caso nenhum fonte seja encontrado [DTCLIENT01-2856](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2856)
+
 ### Problema:
+
 - Ao iniciar a execução de um arquivo TDSReplay, caso não exista nenhum fonte na pasta corrente e que tenha passado pelos filtros de inclusão e exclusão, o processo fica parado com uma mensagem que ainda está iniciando, dando a impressão que está travado.
 
 ### Solução:
+
 - Alterado o processo de inicialização para caso a condição acima ocorra, seja enviado notificação para o usuário na tela de **DEBUG CONSOLE** e também como uma notificação que pode ser vista pelo **sino** do lado inferior direito do VSCode.
 
----------------------------------------------------------------------------------------------------------------------------------------------------------
+### Problema:
+
+- O array ANFITEM informado pelo usuario possui um fluxo de processamento bastante complexo, com uma série de referências. Em determinado momento o TDS Replay processava o valor erroneamente fazendo com que o valor mostrado estivesse incorreto.
+
+### Solução:
+
+- Alterado toda a lógica de processamento de variáveis para identificar corretamente esse tipo de situação e mostrar o valor correto para o usuário.
+
+## Identificação e processamento da lista de exclusão de fontes ([ISSUE 754](https://github.com/totvs/tds-vscode/issues/754)) ([DTCLIENT01-2819](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2819))
+
+### Problema:
+
+- A lista de exclusão de fontes não levava em consideração fontes que não existissem na área de trabalho. Dessa forma, a timeline é mostrada, sendo que deveria ser filtrada.
+
+### Solução:
+
+- Alterado o processamento das lista de exclusão para que nem avalie o fonte caso ele não exista na pasta corrente.
+
+## Inicialização caso nenhum fonte seja encontrado [DTCLIENT01-2856](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2856)
+
+### Problema:
+
+- Ao iniciar a execução de um arquivo TDSReplay, caso não exista nenhum fonte na pasta corrente e que tenha passado pelos filtros de inclusão e exclusão, o processo fica parado com uma mensagem que ainda está iniciando, dando a impressão que está travado.
+
+### Solução:
+
+- Alterado o processo de inicialização para caso a condição acima ocorra, seja enviado notificação para o usuário na tela de **DEBUG CONSOLE** e também como uma notificação que pode ser vista pelo **sino** do lado inferior direito do VSCode.
 
 # Versão [1.3.3]
 

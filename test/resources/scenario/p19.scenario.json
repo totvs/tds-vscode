@@ -1,0 +1,11 @@
+{
+	"name": "P19",
+	"description": [
+		"Testes com o appServer p19."
+	],
+	"server": {
+		"serverName": "p19",
+		"address": "localhost",
+		"port": 19317
+	}
+}

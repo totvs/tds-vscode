@@ -1,0 +1,45 @@
+{
+	"name": "Default",
+	"description": [
+		"Este cenário contém valores padrão para teste, que será utilizado em testes CI, p.e. pelo Bamboo.",
+		"Para customizar os valores para teste:",
+		"- crie um novo arquivo de cenário;",
+		"- ajustes as propriedades que deseja sobrescrer aos valores padrão;",
+		"- ajuste a varivável de ambiente SCENARIO com o nome do arquivo de cenário e",
+		"  execute \"npm run test\"",
+		"Também pode adicioná-la aos script (arquivo package.json), p.e.:",
+		"  \"scenario:p19\": \"set SCENARIO=p19.json && npm run test\""
+	],
+	"server": {
+		"serverName": "10.171.10.77",
+		"address": "10.171.10.77",
+		"port": 5001,
+		"environment": "p12",
+		"includePath": []
+	},
+	"users": {
+		"admin": {
+			"username": "admin",
+			"password": "1234"
+		},
+		"user": {
+			"username": "userorigem",
+			"password": "1234"
+		},
+		"invalid": {
+			"username": "invalid_user",
+			"password": "0000"
+		}
+	},
+	"includePath": {
+		"valid": [],
+		"toChange": [],
+		"toAdd": []
+	},
+	"compileKey": {},
+	"rpoToken": {},
+	"patchFolder": "p20",
+	"templatesFolder": "p20",
+	"projectFolder": "advpl",
+	"replayFolder": "replay"
+}

@@ -1,0 +1,182 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"title": "Test Scenario Schema",
+	"description": "Schema of test scenario configuration files.",
+	"type": "object",
+	"properties": {
+		"name": {
+			"type": "string",
+			"description": "Short name to identify the test objective or target."
+		},
+		"description": {
+			"type": "array",
+			"description": "Long description the test objective or target.",
+			"items": {
+				"type": "string"
+			},
+			"minItems": 1
+		},
+		"server": {
+			"type": "object",
+			"description": "Server definition to connect.",
+			"properties": {
+				"serverName": {
+					"type": "string",
+					"description": "Short name to identify the server."
+				},
+				"address": {
+					"type": "string",
+					"description": "IP address ou server address with appServer."
+				},
+				"port": {
+					"type": "integer",
+					"description": "SmartCLient port to connect."
+				},
+				"environment": {
+					"type": "string",
+					"description": "AppServer runtime environment."
+				},
+				"includePath": {
+					"type": "array",
+					"description": "Folders for lookup define files (.ch). One per line.",
+					"items": {
+						"type": "string"
+					}
+				}
+			},
+			"required": [
+				"serverName",
+				"address",
+				"port",
+				"environment",
+				"includePath"
+			]
+		},
+		"users": {
+			"type": "object",
+			"description": "Users credentials for connect.",
+			"properties": {
+				"admin": {
+					"type": "object",
+					"description": "User like Administrator credential.",
+					"properties": {
+						"username": {
+							"description": "User name identifier.",
+							"type": "string"
+						},
+						"password": {
+							"description": "Password.",
+							"type": "string"
+						}
+					},
+					"required": [
+						"username",
+						"password"
+					]
+				},
+				"user": {
+					"type": "object",
+					"description": "User credential.",
+					"properties": {
+						"username": {
+							"description": "User name identifier.",
+							"type": "string"
+						},
+						"password": {
+							"description": "Password.",
+							"type": "string"
+						}
+					},
+					"required": [
+						"username",
+						"password"
+					]
+				},
+				"invalid": {
+					"type": "object",
+					"description": "Invalid User credential.",
+					"properties": {
+						"username": {
+							"description": "User name identifier.",
+							"type": "string"
+						},
+						"password": {
+							"description": "Password.",
+							"type": "string"
+						}
+					},
+					"required": [
+						"username",
+						"password"
+					]
+				}
+			},
+			"required": [
+				"admin",
+				"user",
+				"invalid"
+			]
+		},
+		"includePath": {
+			"type": "object",
+			"description": "Folders for lookup define files (.ch). Used edit purpose tests. One per line.",
+			"properties": {
+				"valid": {
+					"description": "Valid folders. One per line.",
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"toChange": {
+					"type": "array",
+					"description": "Valid folders for update 'includePath' propertie. One per line.",
+					"items": {
+						"type": "string"
+					}
+				},
+				"toAdd": {
+					"type": "array",
+					"description": "Valid folders for add in 'includePath' propertie. One per line.",
+					"items": {
+						"type": "string"
+					}
+				}
+			},
+			"required": [
+				"valid",
+				"toChange",
+				"toAdd"
+			]
+		},
+		"compileKey": {
+			"type": "object",
+			"description": "Compile key for appServer. Format {\"<id>\": \"<key>\"}."
+		},
+		"rpoToken": {
+			"type": "object",
+			"description": "RPO Token for appServer Harpia"
+		},
+		"patchFolder": {
+			"type": "string",
+			"description": "Folder with patch files."
+		},
+		"templatesFolder": {
+			"type": "string",
+			"description": "Folder with templates files."
+		},
+		"projectFolder": {
+			"type": "string",
+			"description": "Folder with source and resource files."
+		},
+		"replayFolder": {
+			"type": "string",
+			"description": "Folder with TDS Replay files."
+		},
+		"required": [
+			"name",
+			"description",
+			"server"
+		]
+	}
+}

@@ -49,9 +49,10 @@ function initStatusBarItem(context: vscode.ExtensionContext) {
     priorityTotvsStatusBarItem
   );
   serverStatusBarItem.command = "totvs-developer-studio.serverSelection";
-  serverStatusBarItem.text =
-    "$(server-environment-spin)" +
-    localize("tds.vscode.initializing", "(initializing)");
+  serverStatusBarItem.text = `$(~spin) ${localize(
+    "tds.vscode.initializing",
+    "(initializing)"
+  )}`;
 
   context.subscriptions.push(
     serverStatusBarItem,
@@ -67,7 +68,7 @@ function updateStatusBarItem(selectServer: ServerItem | undefined): void {
   serverStatusBarItem.text = `$(server-environment) `;
 
   if (selectServer) {
-    serverStatusBarItem.text += `${selectServer.name} / ${selectServer.environment}`;
+    serverStatusBarItem.text += `${selectServer.name} / ${selectServer.environment}\n`;
     buildServerTooltip(selectServer);
   } else {
     serverStatusBarItem.text += localize(
@@ -100,9 +101,9 @@ function updateSaveLocationBarItem() {
   const location: string = Utils.getServerConfigFile();
 
   if (workspace) {
-    saveLocationBarItem.text = "$(globe)";
-  } else {
     saveLocationBarItem.text = "$(home)";
+  } else {
+    saveLocationBarItem.text = "$(globe)";
   }
   saveLocationBarItem.tooltip = location;
 
@@ -125,41 +126,64 @@ function initPermissionStatusBarItem(context: vscode.ExtensionContext) {
 
 function updatePermissionStatusBarItem(): void {
   const infos: CompileKey = Utils.getPermissionsInfos();
+  const toolTips: string[] = [];
 
   if (infos && infos.authorizationToken && infos.buildType && infos.expire) {
     const [dd, mm, yyyy] = infos.expire.split("/");
     const expiryDate: Date = new Date(`${yyyy}-${mm}-${dd} 23:59:59`);
     if (expiryDate.getTime() >= new Date().getTime()) {
-      const newLine = "\n";
-      permissionStatusBarItem.text = "Permissions: Logged in";
+      permissionStatusBarItem.text = localize(
+        "tds.vscode.have_key",
+        "HAVE key"
+      );
       if (infos.machineId) {
-        permissionStatusBarItem.tooltip =
-          "Machine ID: " + infos.machineId + newLine;
+        toolTips.push(
+          localize("tds.vscode.machine_id", `Machine ID: ${infos.machineId}`)
+        );
       } else if (infos.userId) {
-        permissionStatusBarItem.tooltip = "User ID: " + infos.userId + newLine;
+        toolTips.push(
+          localize("tds.vscode.user_id", `User ID: ${infos.userId}`)
+        );
       }
-      permissionStatusBarItem.tooltip +=
-        "Expires in " + expiryDate.toLocaleString() + newLine;
+      toolTips.push(
+        localize(
+          "tds.vscode.expires_in",
+          `Expires in ${expiryDate.toLocaleString()}`
+        )
+      );
 
       if (infos.buildType === "0") {
-        permissionStatusBarItem.tooltip +=
-          "Allow compile functions and overwrite default TOTVS";
+        toolTips.push(
+          localize(
+            "tds.vscode.compile_override",
+            "Allow compile functions and overwrite default TOTVS"
+          )
+        );
       } else if (infos.buildType === "1") {
-        permissionStatusBarItem.tooltip += "Allow only compile users functions";
+        toolTips.push(
+          localize(
+            "tds.vscode.compile_users",
+            "Allow only compile users functions"
+          )
+        );
       } else if (infos.buildType === "2") {
-        permissionStatusBarItem.tooltip += "Allow compile functions";
+        toolTips.push(
+          localize("tds.vscode.copile_functions", "Allow compile functions")
+        );
       }
     } else {
-      permissionStatusBarItem.text =
-        "Permissions: Expired in " + expiryDate.toLocaleString();
-      permissionStatusBarItem.tooltip = "";
+      permissionStatusBarItem.text = localize(
+        "tds.vscode.expired_in",
+        `Expired in ${expiryDate.toLocaleString()}`
+      );
     }
   } else {
-    permissionStatusBarItem.text = "Permissions: NOT logged in";
-    permissionStatusBarItem.tooltip = "";
+    permissionStatusBarItem.text = localize("tds.vscode.not_key", "NOT key");
   }
 
   permissionStatusBarItem.text = `$(key) ${permissionStatusBarItem.text}`;
+  permissionStatusBarItem.tooltip = toolTips.join("\n");
+
   permissionStatusBarItem.show();
 }
 
@@ -254,10 +278,15 @@ function buildServerTooltip(server: ServerItem) {
             .filter((value: string) => value.startsWith(target))
             .map((value: string) => "- ".concat(value.substr(2)));
 
-          return list.length == 0 ? "" : `\n**${title}**\n${list.join("\n")}`;
+          return list.length == 0
+            ? ""
+            : `\n**${title}**\n${list
+                .sort((a: string, b: string) => a.localeCompare(b))
+                .join("\n")}`;
         };
         serverStatusBarItem.tooltip = new vscode.MarkdownString(
-          `**Address: _${server.address}:${server.port}_**\n` +
+          `**Address: _${server.address}:${server.port}_** ` +
+            `${server.buildVersion}\n` +
             group("Actions", "S") +
             group("Monitor", "M")
         );

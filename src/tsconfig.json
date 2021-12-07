@@ -25,6 +25,8 @@
     "exclude": [
         "node_modules/",
         "../out/",
-        "**/app"
+        "**/app",
+        ".vscode-test",
+        "test-resources"
     ]
 }

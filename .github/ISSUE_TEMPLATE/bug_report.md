@@ -6,6 +6,14 @@ labels: ''
 assignees: ''
 
 ---
+# Help us to help you.
+
+## Before opening an issue
+
+- Make sure the extension is up to date.
+- See [Resolução de Problemas](TROUBLESHOOTING.md#problemas-gerais), with common and/or known occurrences.
+
+## Enter the data below
 
 **Describe the bug**
 A clear and concise description of what the bug is.
@@ -27,9 +35,9 @@ If applicable, add screenshots to help explain your problem.
  - OS/Architecture: [e.g. Windows 64 bits]
 
 **Appserver (please complete the following information):**
- - Build (with date): [e.g. Build 7.00.170117A - Jun 28 2019 - 11:16:56]
+ - Build (with date): [e.g. Build ?.??.??????? - XXX XX XXXX - TT:TT:TT]
  - OS/Architecture: [e.g. Linux 64 bits Ubuntu]
- - Build Version [e.g. 17.3.0.13]
+ - Build Version [e.g. XX.X.X.XX]
 
 **Additional context**
 Add any other context about the problem here.

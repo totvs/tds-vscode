@@ -98,7 +98,7 @@ export function getLanguageClient(
   let notificationlevel = '--notificationLevel=';
   let notificationlevelConfig = config.get('editor.show.notification');
   if (notificationlevelConfig) {
-    notificationlevel += notificationlevelConfig;
+    notificationlevel += '"' + notificationlevelConfig + '"';
     args = args.concat(notificationlevel);
   }
 

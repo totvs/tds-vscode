@@ -13,17 +13,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import * as React from 'react';
+import * as React from "react";
 import {
   createStyles,
   lighten,
   makeStyles,
   Theme,
-} from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import { GeneratePatchPanelAction } from '../actions';
-import GeneratePatchTheme, { inputTextStyles } from '../helper/theme';
-import { useMemento, IMemento, i18n } from '../helper';
+} from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
+import { GeneratePatchPanelAction } from "../actions";
+import GeneratePatchTheme, { inputTextStyles } from "../helper/theme";
+import { useMemento, IMemento, i18n } from "../helper";
 import {
   Button,
   FormControl,
@@ -32,11 +32,11 @@ import {
   SvgIconProps,
   TextField,
   Typography,
-} from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
-import { IGeneratePatchData, IServerFS } from '../generatePatchData';
-import { Alert, TreeItem, TreeItemProps, TreeView } from '@material-ui/lab';
-import { generatePathIcons } from '../helper/generatePathIcons';
+} from "@material-ui/core";
+import SearchIcon from "@material-ui/icons/Search";
+import { IGeneratePatchData, IServerFS } from "../generatePatchData";
+import { Alert, TreeItem, TreeItemProps, TreeView } from "@material-ui/lab";
+import { generatePathIcons } from "../helper/generatePathIcons";
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,7 +45,7 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
       paddingRight: theme.spacing(1),
     },
     highlight:
-      theme.palette.type === 'light'
+      theme.palette.type === "light"
         ? {
             color: theme.palette.secondary.main,
             backgroundColor: lighten(theme.palette.secondary.light, 0.85),
@@ -55,25 +55,25 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
             backgroundColor: theme.palette.secondary.dark,
           },
     title: {
-      display: 'inline',
-      fontSize: '180%',
-      fontWeight: 'bold',
-      marginLeft: '16px',
+      display: "inline",
+      fontSize: "180%",
+      fontWeight: "bold",
+      marginLeft: "16px",
     },
     subtitle: {
-      color: 'silver',
-      display: 'inline',
-      marginLeft: '20px',
+      color: "silver",
+      display: "inline",
+      marginLeft: "20px",
     },
     actions: {
-      display: 'inline',
-      marginRight: '8px',
-      float: 'right',
+      display: "inline",
+      marginRight: "8px",
+      float: "right",
     },
     actionOn: {
-      borderRadius: '25px',
-      border: '2px solid silver',
-      boxShadow: '0 0 3px #FF0000, 0 0 5px #0000FF',
+      borderRadius: "25px",
+      border: "2px solid silver",
+      boxShadow: "0 0 3px #FF0000, 0 0 5px #0000FF",
     },
   })
 );
@@ -120,49 +120,50 @@ const useTreeItemStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       color: theme.palette.text.secondary,
-      '&:hover > $content': {
+      "&:hover > $content": {
         backgroundColor: theme.palette.action.hover,
       },
-      '&:focus > $content, &$selected > $content': {
-     //   backgroundColor: `var(--tree-view-bg-color, ${theme.palette.grey[400]})`,
-        color: 'var(--tree-view-color)',
+      "&:focus > $content, &$selected > $content": {
+        //   backgroundColor: `var(--tree-view-bg-color, ${theme.palette.grey[400]})`,
+        color: "var(--tree-view-color)",
       },
-      '&:focus > $content $label, &:hover > $content $label, &$selected > $content $label': {
-        backgroundColor: 'transparent',
-      },
+      "&:focus > $content $label, &:hover > $content $label, &$selected > $content $label":
+        {
+          backgroundColor: "transparent",
+        },
     },
     content: {
       color: theme.palette.text.secondary,
       borderTopRightRadius: theme.spacing(2),
       borderBottomRightRadius: theme.spacing(2),
       paddingRight: theme.spacing(1),
-      fontWeight: theme.typography.fontWeightMedium,
-      '$expanded > &': {
+      //fontWeight: theme.typography.fontWeightMedium,
+      "$expanded > &": {
         fontWeight: theme.typography.fontWeightRegular,
       },
     },
     group: {
       marginLeft: 0,
-      '& $content': {
+      "& $content": {
         paddingLeft: theme.spacing(2),
       },
     },
     expanded: {},
     selected: {},
     label: {
-      fontWeight: 'inherit',
-      color: 'inherit',
+      fontWeight: "inherit",
+      color: "inherit",
     },
     labelRoot: {
-      display: 'flex',
-      alignItems: 'center',
+      display: "flex",
+      alignItems: "center",
       padding: theme.spacing(0.5, 0),
     },
     labelIcon: {
       marginRight: theme.spacing(1),
     },
     labelText: {
-      fontWeight: 'inherit',
+      fontWeight: "inherit",
       flexGrow: 1,
     },
   })
@@ -176,10 +177,10 @@ type StyledTreeItemProps = TreeItemProps & {
   labelText: string;
 };
 
-declare module 'csstype' {
+declare module "csstype" {
   interface Properties {
-    '--tree-view-color'?: string;
-    '--tree-view-bg-color'?: string;
+    "--tree-view-color"?: string;
+    "--tree-view-bg-color"?: string;
   }
 }
 
@@ -215,20 +216,20 @@ function StyledTreeItem(props: StyledTreeItemProps) {
 export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
   memento = useMemento(
     props.vscode,
-    'GENERATE_PATCH_PANEL',
+    "GENERATE_PATCH_PANEL",
     GeneratePatchPanelAction.UpdateData,
     undefined,
     props.memento
   );
 
-  const [subtitle, setSubtitle] = React.useState('');
+  const [subtitle, setSubtitle] = React.useState("");
   const [enableActions, setEnableActions] = React.useState<IEnableActions>({
     generate: false,
   });
 
-  const [targetFolder, setTargetFolder] = React.useState<string>('');
-  const [targetFile, setTargetFile] = React.useState<string>('');
-  const [rpoMaster, setRpoMaster] = React.useState<string>('');
+  const [targetFolder, setTargetFolder] = React.useState<string>("");
+  const [targetFile, setTargetFile] = React.useState<string>("");
+  const [rpoMaster, setRpoMaster] = React.useState<string>("");
   const [data, setData] = React.useState<RenderTree>();
   const [waitMessage, setWaitMessage] = React.useState<boolean>(false);
 
@@ -260,13 +261,13 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
           break;
         }
         default:
-          console.log('***** ATTENTION: applyPatchPanel.tsx');
-          console.log('\tCommand not recognized: ' + message.command);
+          console.log("***** ATTENTION: applyPatchPanel.tsx");
+          console.log("\tCommand not recognized: " + message.command);
           break;
       }
     };
 
-    window.addEventListener('message', listener);
+    window.addEventListener("message", listener);
   }
 
   const findNode = (id: string, children: RenderTree[]): RenderTree => {
@@ -293,21 +294,21 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
     event.preventDefault();
 
     const currentNode: RenderTree = findNode(id, data.children);
-    if (currentNode && !currentNode.name.startsWith('root')) {
+    if (currentNode && !currentNode.name.startsWith("root")) {
       setRpoMaster(currentNode.path);
     } else {
-      setRpoMaster('');
+      setRpoMaster("");
     }
   };
 
   const renderTree = (nodes: RenderTree) => {
-    const icone = nodes.id.startsWith('root')
+    const icone = nodes.id.startsWith("root")
       ? generatePathIcons.openFolder
       : undefined;
 
     return (
       <StyledTreeItem
-        nodeId={'node_' + nodes.id}
+        nodeId={"node_" + nodes.id}
         labelText={nodes.name}
         onClick={(event) => doClickNode(event, nodes.id)}
       >
@@ -370,7 +371,7 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
       <Paper variant="outlined">
         <div>
           <Title
-            title={i18n.localize('GENERATE_PATCH', 'Generate Patch')}
+            title={i18n.localize("GENERATE_PATCH", "Generate Patch")}
             subtitle={subtitle}
           />
         </div>
@@ -422,15 +423,19 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
                 {waitMessage && (
                   <Alert severity="info">
                     {i18n.localize(
-                      'WARN_PROCESS',
-                      'Running process. It may take some time. When the form is closed, the process is finished.'
+                      "WARN_PROCESS",
+                      "Running process. It may take some time. When the form is closed, the process is finished."
                     )}
                   </Alert>
                 )}
               </FormControl>
               <Grid xs={12} container item justify="flex-end">
                 <Grid item xs={4}>
-                  <Button onClick={handleCancel} color="secondary" disabled={waitMessage}>
+                  <Button
+                    onClick={handleCancel}
+                    color="secondary"
+                    disabled={waitMessage}
+                  >
                     Cancel
                   </Button>
                 </Grid>
@@ -452,7 +457,7 @@ export default function GeneratePatchPanel(props: IGeneratePatchPanel) {
             </Grid>
             <Grid item xs={12}>
               <TreeView
-                defaultExpanded={['node_root']}
+                defaultExpanded={["node_root"]}
                 defaultCollapseIcon={generatePathIcons.closedFolder}
                 defaultExpandIcon={generatePathIcons.openFolder}
                 defaultEndIcon={<div style={{ width: 24 }} />}

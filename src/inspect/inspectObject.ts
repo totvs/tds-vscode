@@ -39,15 +39,17 @@ export function inspectObject(context: vscode.ExtensionContext) {
 		}
 
 		const currentPanel = vscode.window.createWebviewPanel(
-			'totvs-developer-studio.inspect.object',
-			'Inspetor de Objetos',
-			vscode.ViewColumn.One,
-			{
-				enableScripts: true,
-				localResourceRoots: [vscode.Uri.file(path.join(extensionPath, 'src', 'patch'))],
-				retainContextWhenHidden: true
-			}
-		);
+      "totvs-developer-studio.inspect.object",
+      "Objects Inspector",
+      vscode.ViewColumn.One,
+      {
+        enableScripts: true,
+        localResourceRoots: [
+          vscode.Uri.file(path.join(extensionPath, "src", "patch")),
+        ],
+        retainContextWhenHidden: true,
+      }
+    );
 
 		//currentPanel.webview.html = getWizardGeneratePatch(extensionPath);
 		currentPanel.webview.html = getWebViewContent(context, localizeHTML);

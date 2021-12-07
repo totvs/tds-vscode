@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "ES2016",
+        "outDir": "../out-test",
+        "sourceMap": true,
+        "noImplicitAny": false,
+        "removeComments": true,
+        "noUnusedLocals": false,
+        "noImplicitThis": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": false,
+        "allowJs": true,
+        "lib": [
+            "es2016",
+            "dom"
+        ],
+        "jsx": "react",
+        "declaration": true,
+        "declarationMap": true,
+        "strict": false, /* enable all strict type-checking options */
+        "noUnusedParameters": false,
+        "resolveJsonModule": true,
+    },
+    "exclude": [
+        "node_modules",
+        "resources/**"
+    ]
+}
