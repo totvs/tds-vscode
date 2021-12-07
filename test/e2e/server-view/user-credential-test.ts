@@ -7,13 +7,13 @@ import {
   openAdvplProject,
 } from "../helper";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
-import { ServerTreePageObject } from "../page-objects/server-tree-po";
+import { ServerViewPageObject } from "../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { APPSERVER_DATA, NO_ADMIN_USER_DATA } from "../scenario";
 import { INVALID_USER_DATA, ADMIN_USER_DATA } from "../scenario";
 
 describe("TOTVS: Credentials Users Connect", () => {
-  let serverTreePO: ServerTreePageObject;
+  let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
 
@@ -21,7 +21,7 @@ describe("TOTVS: Credentials Users Connect", () => {
     await openAdvplProject();
 
     workbenchPO = new WorkbenchPageObject();
-    serverTreePO = new ServerTreePageObject(await workbenchPO.openTotvsView());
+    serverTreePO = new ServerViewPageObject();
     await delay();
 
     await serverTreePO.addNewServer(APPSERVER_DATA);
@@ -41,7 +41,7 @@ describe("TOTVS: Credentials Users Connect", () => {
     await fillUserdata(NO_ADMIN_USER_DATA);
     await workbenchPO.waitConnection();
 
-    expect(await workbenchPO.isAuthenticationFailed()).to.be.true;
+    expect(await workbenchPO.isAuthenticationFailed()).is.true;
 
     expect(
       await workbenchPO.isConnected(
@@ -61,7 +61,7 @@ describe("TOTVS: Credentials Users Connect", () => {
     await fillUserdata(INVALID_USER_DATA);
     await workbenchPO.waitConnection();
 
-    expect(await workbenchPO.isAuthenticationFailed()).to.be.true;
+    expect(await workbenchPO.isAuthenticationFailed()).is.true;
 
     expect(
       await workbenchPO.isConnected(
@@ -88,8 +88,8 @@ describe("TOTVS: Credentials Users Connect", () => {
         APPSERVER_DATA.serverName,
         APPSERVER_DATA.environment
       )
-    ).to.be.true;
+    ).is.true;
 
-    expect(await serverItemPO.isConnected()).to.be.true;
+    expect(await serverItemPO.isConnected()).is.true;
   });
 });

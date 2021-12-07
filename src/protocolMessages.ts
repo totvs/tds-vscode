@@ -483,7 +483,7 @@ export function sendApplyTemplateRequest(
     .sendRequest("$totvsserver/templateApply", {
       templateApplyInfo: {
         connectionToken: server.token,
-        authorizationToken: "",
+        authorizationToken: Utils.getAuthorizationToken(server),
         environment: server.environment,
         includeUris: includesUris,
         templateUri: templateUri.toString(),

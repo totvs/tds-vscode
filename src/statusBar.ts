@@ -68,7 +68,7 @@ function updateStatusBarItem(selectServer: ServerItem | undefined): void {
   serverStatusBarItem.text = `$(server-environment) `;
 
   if (selectServer) {
-    serverStatusBarItem.text += `${selectServer.name} / ${selectServer.environment}`;
+    serverStatusBarItem.text += `${selectServer.name} / ${selectServer.environment}\n`;
     buildServerTooltip(selectServer);
   } else {
     serverStatusBarItem.text += localize(
@@ -278,10 +278,15 @@ function buildServerTooltip(server: ServerItem) {
             .filter((value: string) => value.startsWith(target))
             .map((value: string) => "- ".concat(value.substr(2)));
 
-          return list.length == 0 ? "" : `\n**${title}**\n${list.join("\n")}`;
+          return list.length == 0
+            ? ""
+            : `\n**${title}**\n${list
+                .sort((a: string, b: string) => a.localeCompare(b))
+                .join("\n")}`;
         };
         serverStatusBarItem.tooltip = new vscode.MarkdownString(
-          `**Address: _${server.address}:${server.port}_**\n` +
+          `**Address: _${server.address}:${server.port}_** ` +
+            `${server.buildVersion}\n` +
             group("Actions", "S") +
             group("Monitor", "M")
         );

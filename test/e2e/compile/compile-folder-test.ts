@@ -1,14 +1,12 @@
-import { expect } from "chai";
-import { describe, before, it, Context } from "mocha";
+import { describe, before, it } from "mocha";
 import { delay, openAdvplProject } from "../helper";
-import { ApplyPatchPageObject } from "../page-objects/apply-patch-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
-import { ServerTreePageObject } from "../page-objects/server-tree-po";
+import { ServerViewPageObject } from "../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA } from "../scenario";
 
-describe("Compile folders", () => {
-  let serverTreePO: ServerTreePageObject;
+describe.skip("Compile folders", () => {
+  let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
 
@@ -16,25 +14,19 @@ describe("Compile folders", () => {
     await openAdvplProject();
 
     workbenchPO = new WorkbenchPageObject();
-    serverTreePO = new ServerTreePageObject(await workbenchPO.openTotvsView());
+    serverTreePO = await workbenchPO.openTotvsView();
 
     await serverTreePO.addNewServer(APPSERVER_DATA);
-
     await delay();
-  });
 
-  beforeEach(async () => {
-    await serverTreePO.connect(
+    serverItemPO = await serverTreePO.connect(
       APPSERVER_DATA.serverName,
       APPSERVER_DATA.environment,
       ADMIN_USER_DATA
     );
-    serverItemPO = new ServerTreeItemPageObject(
-      await serverTreePO.getServerTreeItem(APPSERVER_DATA.serverName)
-    );
   });
 
-  afterEach(async () => {
+  after(async () => {
     await serverItemPO.fireDisconnectAction();
     serverItemPO = null;
   });
@@ -50,7 +42,7 @@ describe("Compile folders", () => {
   //   await applyPatchPO.setUploadFile([PATCHS_FILES.single]);
   //   await applyPatchPO.fireSubmitCloseID();
 
-  //   expect(await workbenchPO.applyPatchInProgress()).to.be.true;
+  //   expect(await workbenchPO.applyPatchInProgress()).is.true;
 
   //   await workbenchPO.waitApplyPatch();
 
@@ -58,7 +50,7 @@ describe("Compile folders", () => {
   //     /Patch applied/
   //   );
 
-  //   expect(notification).not.is.undefined;
+  //   expect(notification).not.is.null;
   //   await notification?.dismiss();
   // });
 });

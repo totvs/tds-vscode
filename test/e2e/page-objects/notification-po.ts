@@ -50,7 +50,7 @@ export class NotificationPageObject {
       const notifications: Notification[] = await this.getNotifications(type);
       await delay(500);
 
-      notifications.forEach(async (element: Notification) => {
+      notifications.reverse().forEach(async (element: Notification) => {
         if (!result) {
           const message: string = await element.getMessage();
 

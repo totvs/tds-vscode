@@ -11,12 +11,12 @@ import { CompileKeyPageObject } from "../page-objects/compile-key-po";
 import { IncludePageObject } from "../page-objects/include-po";
 import { ICompileKeyData } from "../page-objects/interface-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
-import { ServerTreePageObject } from "../page-objects/server-tree-po";
+import { ServerViewPageObject } from "../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { COMPILE_KEY_FILE, DELETE_DATA, INCLUDE_PATH_DATA } from "../scenario";
 
 describe.skip("TOTVS: Server View Configurations", () => {
-  let serverTreePO: ServerTreePageObject;
+  let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
 
@@ -24,7 +24,7 @@ describe.skip("TOTVS: Server View Configurations", () => {
     await openAdvplProject();
 
     workbenchPO = new WorkbenchPageObject();
-    serverTreePO = new ServerTreePageObject(await workbenchPO.openTotvsView());
+    serverTreePO = new ServerViewPageObject();
 
     serverItemPO = new ServerTreeItemPageObject(
       await serverTreePO.getNewServer(DELETE_DATA)
@@ -107,10 +107,10 @@ describe.skip("TOTVS: Server View Configurations", () => {
     };
     await compileKeyPO.fillCompileKeyPage(newValue);
 
-    expect(await compileKeyPO.isValidKey()).to.be.true;
+    expect(await compileKeyPO.isValidKey()).is.true;
     await compileKeyPO.fireSave(true);
 
-    expect(await workbenchPO.isHaveKey()).to.be.true;
+    expect(await workbenchPO.isHaveKey()).is.true;
   });
 
   it("Compile key (clear)", async () => {
@@ -132,6 +132,6 @@ describe.skip("TOTVS: Server View Configurations", () => {
     await compileKeyPO.fireSave(true);
 
     expect(newValue.token).is.empty;
-    expect(await workbenchPO.isNotHaveKey()).to.be.true;
+    expect(await workbenchPO.isNotHaveKey()).is.true;
   });
 });

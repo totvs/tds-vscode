@@ -33,9 +33,9 @@
 				</div>
 
 				<div class="wrap-submit">
-					<input class="btn-submit" readonly id="submitID" type="button" value="Apply"
+					<input class="btn-submit" readonly id="submitApplyID" type="button" value="Apply"
 						onclick="templateApply(false);" />
-					<input class="btn-submit" readonly id="submitID" type="button" value="Close"
+					<input class="btn-submit" readonly id="submitCloseID" type="button" value="Close"
 						onclick="templateApply(true);" />
 
 				</div>
@@ -46,7 +46,7 @@
 </body>
 
 <script>
-	${d.script}
+	${ d.script }
 	const vscode = acquireVsCodeApi();
 
 	function templateApply(close) {

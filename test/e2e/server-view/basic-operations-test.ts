@@ -9,12 +9,12 @@ import {
 } from "../helper";
 import { ServerPageObject } from "../page-objects/server-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
-import { ServerTreePageObject } from "../page-objects/server-tree-po";
+import { ServerViewPageObject } from "../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, DELETE_DATA, APPSERVER_DATA } from "../scenario";
 
 describe("TOTVS: Server View Basic Operations", () => {
-  let serverTreePO: ServerTreePageObject;
+  let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
 
@@ -22,7 +22,7 @@ describe("TOTVS: Server View Basic Operations", () => {
     await openAdvplProject();
 
     workbenchPO = new WorkbenchPageObject();
-    serverTreePO = new ServerTreePageObject(await workbenchPO.openTotvsView());
+    serverTreePO = await workbenchPO.openTotvsView();
     await delay();
 
     await serverTreePO.addNewServer(APPSERVER_DATA);
@@ -35,13 +35,13 @@ describe("TOTVS: Server View Basic Operations", () => {
   });
 
   it("No Server Connected", async () => {
-    expect(await workbenchPO.isNeedSelectServer()).to.be.true;
+    expect(await workbenchPO.isNeedSelectServer()).is.true;
   });
 
   it("isSelected Node", async () => {
     await serverItemPO.select();
 
-    expect(await serverItemPO.isSelected()).to.be.true;
+    expect(await serverItemPO.isSelected()).is.true;
   });
 
   it("Fire Connect Action", async () => {
@@ -65,16 +65,16 @@ describe("TOTVS: Server View Basic Operations", () => {
         APPSERVER_DATA.serverName,
         APPSERVER_DATA.environment
       )
-    ).to.be.true;
-    expect(await serverItemPO.isConnected()).to.be.true;
+    ).is.true;
+    expect(await serverItemPO.isConnected()).is.true;
   });
 
   it("Localhost Server Disconnected", async () => {
     await serverItemPO.select();
     await serverItemPO.fireDisconnectAction();
 
-    expect(await workbenchPO.isNeedSelectServer()).to.be.true;
-    expect(await serverItemPO.isNotConnected()).to.be.true;
+    expect(await workbenchPO.isNeedSelectServer()).is.true;
+    expect(await serverItemPO.isNotConnected()).is.true;
   });
 
   it.skip("Try Connect Using Invalid Environment", async () => {
@@ -89,7 +89,7 @@ describe("TOTVS: Server View Basic Operations", () => {
     ).to.not.throw();
 
     await delay();
-    expect(await workbenchPO.isNeedSelectServer()).to.be.true;
+    expect(await workbenchPO.isNeedSelectServer()).is.true;
   });
 
   it("Add server (context menu)", async () => {
@@ -104,7 +104,7 @@ describe("TOTVS: Server View Basic Operations", () => {
     await webView.switchBack();
     await delay();
 
-    expect(await workbenchPO.isSaveServer()).to.be.true;
+    expect(await workbenchPO.isSaveServer()).is.true;
   });
 
   it.skip("Reconnect", async () => {
@@ -119,7 +119,7 @@ describe("TOTVS: Server View Basic Operations", () => {
         APPSERVER_DATA.serverName,
         APPSERVER_DATA.environment
       )
-    ).to.be.true;
-    expect(await serverItemPO.isConnected()).to.be.true;
+    ).is.true;
+    expect(await serverItemPO.isConnected()).is.true;
   });
 });

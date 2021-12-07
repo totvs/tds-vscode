@@ -5,12 +5,12 @@ import { By, WebElement } from "vscode-extension-tester";
 import { delay, openAdvplProject } from "../helper";
 import { PatchGeneratePageObject } from "../page-objects/patch-generate-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
-import { ServerTreePageObject } from "../page-objects/server-tree-po";
+import { ServerViewPageObject } from "../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA } from "../scenario";
 
 describe.skip("Patch Operations (forms)", () => {
-  let serverTreePO: ServerTreePageObject;
+  let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
 
@@ -18,7 +18,7 @@ describe.skip("Patch Operations (forms)", () => {
     await openAdvplProject();
 
     workbenchPO = new WorkbenchPageObject();
-    serverTreePO = new ServerTreePageObject(await workbenchPO.openTotvsView());
+    serverTreePO = new ServerViewPageObject();
 
     await serverTreePO.addNewServer(APPSERVER_DATA);
 

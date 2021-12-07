@@ -12,6 +12,9 @@ import { delay } from "../helper";
 import { NotificationPageObject } from "./notification-po";
 import { StatusPageObject } from "./status-po";
 import { expect } from "chai";
+import { ExplorerPageObject } from "./explorer-view-po";
+import { ServerViewPageObject } from "./server-view-po";
+import { DebugPageObject } from "./debug-view-po";
 
 const PROCESS_TIMEOUT = 10 * 1000; //10 segundos
 const WAIT_PROCESS_TIMEOUT = 3 * 60 * 1000; // 3min
@@ -84,6 +87,10 @@ export class WorkbenchPageObject {
     return result;
   }
 
+  async isApplyTemplateNotSuported(): Promise<boolean> {
+    return Promise.resolve(true);
+  }
+
   async isDAInitialing(): Promise<boolean> {
     return await this.testNotification(/TDS\-DA being initialized/);
   }
@@ -101,19 +108,21 @@ export class WorkbenchPageObject {
   }
 
   async isDAReadingAllTimelines(): Promise<boolean> {
-    return await this.testNotification(/Reading all TimeLines/);
+    return await this.testNotification(
+      /Reading all TimeLines from the database\. Please wait.*time/
+    );
   }
 
   async isDAReadingAllTimelinesDone(): Promise<boolean> {
-    return await this.testNotification(/Reading all TimeLines.*DONE/);
+    return await this.testNotification(/Read all TimeLines from the database/);
   }
 
-  async isDAStoppingFistLine(): Promise<boolean> {
-    return await this.testNotification(/Stopping in the first timeline/);
-  }
+  //async isDAStoppingFistLine(): Promise<boolean> {
+  //  return await this.testNotification(/Stopping in the first timeline\./);
+  //}
 
   async isDAStoppingFistLineDone(): Promise<boolean> {
-    return await this.testNotification(/Stopping in the first timeline.*DONE/);
+    return await this.testNotification(/Stopped in the first timeline./);
   }
 
   async isDABeingFinalized(): Promise<any> {
@@ -130,6 +139,10 @@ export class WorkbenchPageObject {
 
   async isPatchApplied(): Promise<boolean> {
     return await this.testNotification(/Patch applied/);
+  }
+
+  async isTemplateApplied(): Promise<boolean> {
+    return await this.testNotification(/Template applied/);
   }
 
   async isHaveKey(): Promise<boolean> {
@@ -198,7 +211,15 @@ export class WorkbenchPageObject {
     await this.processInProgress(/Validating server/);
   }
 
-  async applyPatchInProgress() {
+  async applyTemplateInProgress(): Promise<boolean> {
+    return await this.processInProgress(/Applying template/);
+  }
+
+  async waitApplyTemplate() {
+    await this.waitProcessFinish(/Applying template/, WAIT_PROCESS_TIMEOUT);
+  }
+
+  async applyPatchInProgress(): Promise<boolean> {
     return await this.processInProgress(/Applying patch/);
   }
 
@@ -227,40 +248,25 @@ export class WorkbenchPageObject {
     await this.workbench.executeCommand(command);
   }
 
-  private async getView(beginViewName: string): Promise<SideBarView> {
-    const activityBar: ActivityBar = new ActivityBar();
-    const controls: ViewControl[] = await activityBar.getViewControls();
-    const viewList: Promise<SideBarView>[] = controls
-      .filter(async (element: ViewControl) => {
-        return (await element.getTitle()).startsWith(beginViewName);
-      })
-      .map(async (element: ViewControl) => {
-        return await element.openView();
-      });
-    await Promise.all(viewList);
+  async openDebugView(): Promise<DebugPageObject> {
+    const po: DebugPageObject = new DebugPageObject();
+    await po.openView();
 
-    await delay();
-
-    return await viewList[0];
+    return po;
   }
 
-  async openDebugView(): Promise<DebugView> {
-    return (await (
-      await new ActivityBar().getViewControl("Run")
-    ).openView()) as DebugView;
+  async openExplorerView(): Promise<ExplorerPageObject> {
+    const po: ExplorerPageObject = new ExplorerPageObject();
+    await po.openView();
+
+    return po;
   }
 
-  async openExplorerView(): Promise<SideBarView> {
-    await this.executeCommand("workbench.explorer.fileView.focus");
+  async openTotvsView(): Promise<ServerViewPageObject> {
+    const po: ServerViewPageObject = new ServerViewPageObject();
+    await po.openView();
 
-    return await this.getView("Explorer");
-  }
-
-  async openTotvsView(): Promise<SideBarView> {
-    await this.executeCommand("totvs_server.focus");
-    await delay();
-
-    return this.getView("TOTVS");
+    return po;
   }
 
   async closeAllEditors() {

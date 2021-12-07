@@ -3,12 +3,12 @@ import { describe, before, it } from "mocha";
 import { delay, openAdvplProject } from "../helper";
 import { ApplyPatchPageObject } from "../page-objects/apply-patch-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
-import { ServerTreePageObject } from "../page-objects/server-tree-po";
+import { ServerViewPageObject } from "../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA, PATCHS_FILES } from "../scenario";
 
 describe("Patch Operations", () => {
-  let serverTreePO: ServerTreePageObject;
+  let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
 
@@ -16,7 +16,7 @@ describe("Patch Operations", () => {
     await openAdvplProject();
 
     workbenchPO = new WorkbenchPageObject();
-    serverTreePO = new ServerTreePageObject(await workbenchPO.openTotvsView());
+    serverTreePO = await workbenchPO.openTotvsView();
 
     await serverTreePO.addNewServer(APPSERVER_DATA);
 
@@ -24,13 +24,10 @@ describe("Patch Operations", () => {
   });
 
   beforeEach(async () => {
-    await serverTreePO.connect(
+    serverItemPO = await serverTreePO.connect(
       APPSERVER_DATA.serverName,
       APPSERVER_DATA.environment,
       ADMIN_USER_DATA
-    );
-    serverItemPO = new ServerTreeItemPageObject(
-      await serverTreePO.getServerTreeItem(APPSERVER_DATA.serverName)
     );
   });
 
@@ -47,11 +44,11 @@ describe("Patch Operations", () => {
     await applyPatchPO.fireSubmitClose();
     await delay(2000);
 
-    expect(await workbenchPO.applyPatchInProgress()).to.be.true;
+    expect(await workbenchPO.applyPatchInProgress()).is.true;
 
     await workbenchPO.waitApplyPatch();
 
-    expect(await workbenchPO.isPatchApplied()).to.be.true;
+    expect(await workbenchPO.isPatchApplied()).is.true;
   });
 
   (PATCHS_FILES.many ? it : it.skip)("Apply many file", async () => {
@@ -62,11 +59,11 @@ describe("Patch Operations", () => {
     await applyPatchPO.fireSubmitClose();
     await delay(2000);
 
-    expect(await workbenchPO.applyPatchInProgress()).to.be.true;
+    expect(await workbenchPO.applyPatchInProgress()).is.true;
 
     await workbenchPO.waitApplyPatch();
 
-    expect(await workbenchPO.isPatchApplied()).to.be.true;
+    expect(await workbenchPO.isPatchApplied()).is.true;
   });
 
   (PATCHS_FILES.invalid ? it : it.skip)("Apply invalid file", async () => {
@@ -77,7 +74,7 @@ describe("Patch Operations", () => {
     await applyPatchPO.fireSubmitClose();
     await delay(2000);
 
-    expect(await workbenchPO.isPatchValidateNotBeExecuted()).to.be.true;
+    expect(await workbenchPO.isPatchValidateNotBeExecuted()).is.true;
   });
 
   (PATCHS_FILES.zip ? it : it.skip)("Apply many file", async () => {
@@ -87,10 +84,10 @@ describe("Patch Operations", () => {
     await applyPatchPO.setUploadFile(PATCHS_FILES.zip);
     await applyPatchPO.fireSubmitClose();
 
-    expect(await workbenchPO.applyPatchInProgress()).to.be.true;
+    expect(await workbenchPO.applyPatchInProgress()).is.true;
 
     await workbenchPO.waitApplyPatch();
 
-    expect(await workbenchPO.isPatchApplied()).to.be.true;
+    expect(await workbenchPO.isPatchApplied()).is.true;
   });
 });

@@ -37,8 +37,9 @@
 		"toAdd": []
 	},
 	"compileKey": {},
-	"rpoToken": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+	"rpoToken": {},
 	"patchFolder": "p20",
+	"templatesFolder": "p20",
 	"projectFolder": "advpl",
 	"replayFolder": "replay"
 }

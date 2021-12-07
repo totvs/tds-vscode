@@ -6,12 +6,13 @@ import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { REPLAY_FILES } from "../scenario";
 import path = require("path");
 import { DebugToolbar, DebugView } from "vscode-extension-tester";
+import { DebugPageObject } from "../page-objects/debug-view-po";
 
 const BIG_IMPORT_TIMEOUT = 2 * 60 * 1000; // 2min
 
 (REPLAY_FILES ? describe : describe.skip)("Replay Operations", () => {
   let workbenchPO: WorkbenchPageObject;
-  let debugView: DebugView;
+  let debugView: DebugPageObject;
   let debugBar: DebugToolbar;
 
   before(async () => {
@@ -30,9 +31,8 @@ const BIG_IMPORT_TIMEOUT = 2 * 60 * 1000; // 2min
     workbenchPO.closeAllEditors();
   });
 
-  //[...REPLAY_FILES["small"]].forEach(async (file: string) => {
-  [...REPLAY_FILES["big"], ...REPLAY_FILES["small"]].forEach(
-    async (file: string) => {
+  Object.keys(REPLAY_FILES).forEach((key: string) => {
+    REPLAY_FILES[key].forEach(async (file: string) => {
       describe(`Create launcher and import file: ${path.basename(
         file
       )}`, async () => {
@@ -44,7 +44,7 @@ const BIG_IMPORT_TIMEOUT = 2 * 60 * 1000; // 2min
             TDSReplayFile: file,
           });
 
-          expect(await workbenchPO.isLauncherSaved()).to.be.true;
+          expect(await workbenchPO.isLauncherSaved()).is.true;
 
           await delay();
         });
@@ -58,21 +58,20 @@ const BIG_IMPORT_TIMEOUT = 2 * 60 * 1000; // 2min
           debugBar = await DebugToolbar.create();
           await delay(2000);
 
-          expect(await workbenchPO.isDAInitialing()).to.be.true;
-          expect(await workbenchPO.isDAReady()).to.be.true;
+          expect(await workbenchPO.isDAInitialing()).is.true;
+          expect(await workbenchPO.isDAReady()).is.true;
         });
 
         it("Import file", async () => {
-          if (path.dirname(file).endsWith("big")) {
-            await workbenchPO.waitImportReplay(BIG_IMPORT_TIMEOUT);
-          }
+          await workbenchPO.waitImportReplay(BIG_IMPORT_TIMEOUT);
 
-          expect(await workbenchPO.isDAReadingAllTimelines()).to.be.true;
-          expect(await workbenchPO.isDACheckingSources()).to.be.true;
-          expect(await workbenchPO.isDASourceListRecording()).to.be.true;
-          expect(await workbenchPO.isDAReadingAllTimelinesDone()).to.be.true;
-          expect(await workbenchPO.isDAStoppingFistLine()).to.be.true;
-          expect(await workbenchPO.isDAStoppingFistLineDone()).to.be.true;
+          expect(await workbenchPO.isDAReadingAllTimelines()).is.true;
+          expect(await workbenchPO.isDACheckingSources()).is.true;
+          expect(await workbenchPO.isDASourceListRecording()).is.true;
+          expect(await workbenchPO.isDAReadingAllTimelinesDone()).is.true;
+
+          //expect(await workbenchPO.isDAStoppingFistLine()).is.true;
+          expect(await workbenchPO.isDAStoppingFistLineDone()).is.true;
 
           await delay();
         });
@@ -80,9 +79,10 @@ const BIG_IMPORT_TIMEOUT = 2 * 60 * 1000; // 2min
         it("Stop debugger", async () => {
           debugBar.stop();
 
-          expect(await workbenchPO.isDAFinished()).to.be.true;
+          expect(await workbenchPO.isDABeingFinalized()).is.true;
+          expect(await workbenchPO.isDAFinished()).is.true;
         });
       });
-    }
-  );
+    });
+  });
 });

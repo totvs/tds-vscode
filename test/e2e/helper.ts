@@ -133,9 +133,9 @@ export async function fillEnvironment(environment: string) {
     }).length > 0;
 
   if (!find) {
-    expect(await takeQuickPickAction(pickBox, "action")).to.be.true;
+    expect(await takeQuickPickAction(pickBox, "action")).is.true;
     title = await pickBox.getMessage();
-    expect(title.startsWith("Enter the name of the environment")).to.be.true;
+    expect(title.startsWith("Enter the name of the environment")).is.true;
     await delay();
   }
 

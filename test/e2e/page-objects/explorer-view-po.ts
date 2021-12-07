@@ -6,7 +6,11 @@ import {
 } from "vscode-extension-tester";
 import { ViewPageObject } from "./view-po";
 
-export class ExplorerPageObject extends ViewPageObject {
+export class ExplorerPageObject extends ViewPageObject<SideBarView> {
+  constructor() {
+    super("Explorer");
+  }
+
   // const tree: DefaultTreeSection = (await content.getSection(
   //   "test"
   // )) as DefaultTreeSection;

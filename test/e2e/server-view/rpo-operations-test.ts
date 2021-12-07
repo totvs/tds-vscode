@@ -7,24 +7,24 @@ import { FunctionsInspectorPageObject } from "../page-objects/functions-inspecto
 import { ObjectsInspectorPageObject } from "../page-objects/objects-inspector-po";
 import { RepositoryLogPageObject } from "../page-objects/repository-log-po";
 import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
-import { ServerTreePageObject } from "../page-objects/server-tree-po";
+import { ServerViewPageObject } from "../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA } from "../scenario";
 
 describe("RPO Operations", () => {
   let workbenchPO: WorkbenchPageObject;
-  let serverTreePO: ServerTreePageObject;
+  let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
 
   before(async () => {
     await openAdvplProject();
 
     workbenchPO = new WorkbenchPageObject();
-    serverTreePO = new ServerTreePageObject(await workbenchPO.openTotvsView());
+    serverTreePO = new ServerViewPageObject();
 
     await serverTreePO.addNewServer(APPSERVER_DATA);
 
-    serverTreePO = new ServerTreePageObject(await workbenchPO.openTotvsView());
+    serverTreePO = new ServerViewPageObject();
 
     await delay();
   });
@@ -52,7 +52,7 @@ describe("RPO Operations", () => {
     await workbenchPO.waitCheckIntegrity();
     await delay();
 
-    expect(await workbenchPO.isRpoIntegrity()).to.be.true;
+    expect(await workbenchPO.isRpoIntegrity()).is.true;
   });
 
   it("Repository Log", async () => {
@@ -62,7 +62,7 @@ describe("RPO Operations", () => {
     const repositoryLogPO: RepositoryLogPageObject =
       new RepositoryLogPageObject();
 
-    expect(await repositoryLogPO.isOpen()).to.be.true;
+    expect(await repositoryLogPO.isOpen()).is.true;
 
     await repositoryLogPO.close();
   });
@@ -74,7 +74,7 @@ describe("RPO Operations", () => {
     const objectInspectorPO: ObjectsInspectorPageObject =
       new ObjectsInspectorPageObject();
 
-    expect(await objectInspectorPO.isOpen()).to.be.true;
+    expect(await objectInspectorPO.isOpen()).is.true;
 
     await objectInspectorPO.close();
   });
@@ -86,7 +86,7 @@ describe("RPO Operations", () => {
     const functionsInspectorPO: FunctionsInspectorPageObject =
       new FunctionsInspectorPageObject();
 
-    expect(await functionsInspectorPO.isOpen()).to.be.true;
+    expect(await functionsInspectorPO.isOpen()).is.true;
 
     await functionsInspectorPO.close();
   });

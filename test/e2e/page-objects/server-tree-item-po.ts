@@ -33,7 +33,13 @@ export class ServerTreeItemPageObject {
         await this.serverTreeItem.getLabel(),
         environment
       )
-    ).to.be.true;
+    ).is.true;
+  }
+
+  async isServerP20OrGreater(): Promise<boolean> {
+    const tooltip: string = await this.serverTreeItem.getTooltip();
+
+    return tooltip.localeCompare("7.00.191205P") > 0;
   }
 
   async select() {

@@ -17,9 +17,12 @@ import { IServerData, IUserData } from "./interface-po";
 import { ServerPageObject } from "./server-po";
 import { ServerTreeItemPageObject } from "./server-tree-item-po";
 import { ViewPageObject } from "./view-po";
-import { WorkbenchPageObject } from "./workbench-po";
 
-export class ServerTreePageObject extends ViewPageObject {
+export class ServerViewPageObject extends ViewPageObject<SideBarView> {
+  constructor() {
+    super("Totvs");
+  }
+
   async getServerTreeItem(serverName: string): Promise<TreeItem> {
     return this.getTreeItem(serverName);
   }
@@ -61,7 +64,7 @@ export class ServerTreePageObject extends ViewPageObject {
     await webView.switchBack();
     await delay();
 
-    expect(await this.workbenchPO.isSaveServer()).to.be.true;
+    expect(await this.workbenchPO.isSaveServer()).is.true;
   }
 
   async getNewServer(data: IServerData) {

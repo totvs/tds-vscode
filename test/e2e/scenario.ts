@@ -11,7 +11,7 @@ const TEST_RESOURCE = path.join(__dirname, "..", "..", "test", "resources");
 const scenarioDefault: string = path.join(
   TEST_RESOURCE,
   "scenario",
-  "default.json"
+  "default.scenario.json"
 );
 let values: any;
 let valuesFile: any;
@@ -21,7 +21,7 @@ if (process.env.SCENARIO) {
   scenarioFile = path.join(
     TEST_RESOURCE,
     "scenario",
-    process.env.SCENARIO.trim()
+    process.env.SCENARIO.trim() + ".scenario.json"
   );
 
   const valuesDefault = jsonMerger.mergeFiles([scenarioDefault]);
@@ -64,6 +64,12 @@ const patchFolder: string = path.join(
   values.patchFolder
 );
 
+const templateFolder: string = path.join(
+  TEST_RESOURCE,
+  "templates",
+  values.templatesFolder
+);
+
 const patchFiles: string[] = getFileParams(patchFolder, true);
 export const PATCHS_FILES = {
   single: patchFiles["single"] ? patchFiles["single"][0] : undefined,
@@ -71,6 +77,9 @@ export const PATCHS_FILES = {
   zip: patchFiles["zip"],
   invalid: patchFiles["invalid"],
 };
+
+const templateFiles: string[] = getFileParams(templateFolder, true);
+export const TEMPLATE_FILES = templateFiles ? { ...templateFiles } : undefined;
 
 export const PROJECT_FOLDER = path.join(
   TEST_RESOURCE,
@@ -80,6 +89,9 @@ export const PROJECT_FOLDER = path.join(
 
 const sourceFiles: string[] = getFileParams(PROJECT_FOLDER, false);
 export const COMPILE_FILES = {
+  singleFile: sourceFiles["singleFile"].length
+    ? sourceFiles["singleFile"][0]
+    : null,
   userFunctions: sourceFiles["userFunction"],
   functions: sourceFiles["function"],
   resources: sourceFiles["resource"],
