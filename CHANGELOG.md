@@ -1,5 +1,17 @@
 # Changelog
 
+# Versão [1.3.9]
+
+## Melhorias
+
+- Adicionado confirmação na operação de reset de configuração no `Monitor`. [DTCLIENT01-2908](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2908)
+
+- A extensão `.RPTDESIGN`, passa a ser reconhecida como um recurso padrão na compilação.
+
+## Falha na autenticação de usuário
+
+- Em determinadas situações, o usuário não era identificado corretamente.
+
 # Versão [1.3.8]
 
 ## Melhorias

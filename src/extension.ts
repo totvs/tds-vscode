@@ -213,7 +213,6 @@ export function activate(context: ExtensionContext) {
         );
         statusIcon.show();
         languageClient.onReady().then(() => {
-          languageClient.ready = true;
           languageClient.onNotification("$totvsserver/progress", (args) => {
             let indexRequestCount = args.indexRequestCount || 0;
             let doIdMapCount = args.doIdMapCount || 0;
@@ -690,6 +689,7 @@ export function activate(context: ExtensionContext) {
   blockBuildCommands(false);
   showBanner();
 
+  // 'export' public api-surface
   let exportedApi = {
     generatePPO(filePath: string, options?: any): Promise<string> {
       return generatePpo(filePath, options);
@@ -701,7 +701,10 @@ export function activate(context: ExtensionContext) {
       return saveRpoTokenString(undefined);
     },
   };
-  // 'export' public api-surface
+
+  vscode.workspace.onDidChangeConfiguration(() => {
+    syncSettings();
+  });
 
   window.showInformationMessage('"TDS-VSCode" is ready.');
 
