@@ -87,6 +87,19 @@ export class WorkbenchPageObject {
     return result;
   }
 
+  async isAcessDenied(): Promise<boolean> {
+    let result: boolean = false;
+
+    await this.getNotification(/Authentication failed:.*Access denied/).then(
+      async (notification: Notification) => {
+        await notification?.dismiss();
+        result = notification ? true : false;
+      }
+    );
+
+    return result;
+  }
+
   async isApplyTemplateNotSuported(): Promise<boolean> {
     return Promise.resolve(true);
   }
@@ -135,6 +148,14 @@ export class WorkbenchPageObject {
 
   async isPatchValidateNotBeExecuted(): Promise<boolean> {
     return await this.testNotification(/Patch validate could not be executed/);
+  }
+
+  async isRequestFailed(): Promise<boolean> {
+    return await this.testNotification(/A request has failed/);
+  }
+
+  async isPatchVersionIncorrect(): Promise<boolean> {
+    return await this.testNotification(/Path version incorrect/);
   }
 
   async isPatchApplied(): Promise<boolean> {
@@ -211,12 +232,36 @@ export class WorkbenchPageObject {
     await this.processInProgress(/Validating server/);
   }
 
+  async startConnection(): Promise<boolean> {
+    return await this.testNotification(/Starting connection to/);
+  }
+
+  async connectionServer(): Promise<boolean> {
+    return await this.testNotification(/Connection to the server/);
+  }
+
+  async startingUser(): Promise<boolean> {
+    return await this.testNotification(/Starting user/);
+  }
+
+  async authenticationFinished(): Promise<boolean> {
+    return await this.testNotification(/User '.*' authentication finished/);
+  }
+
+  async isAuthenticatedSuccessfully(): Promise<boolean> {
+    return await this.testNotification(/User authenticated successfully/);
+  }
+
   async applyTemplateInProgress(): Promise<boolean> {
     return await this.processInProgress(/Applying template/);
   }
 
   async waitApplyTemplate() {
     await this.waitProcessFinish(/Applying template/, WAIT_PROCESS_TIMEOUT);
+  }
+
+  async applyCheckingZipInProgress(): Promise<boolean> {
+    return await this.processInProgress(/Checking zip files/);
   }
 
   async applyPatchInProgress(): Promise<boolean> {

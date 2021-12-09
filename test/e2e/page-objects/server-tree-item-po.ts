@@ -22,12 +22,13 @@ export class ServerTreeItemPageObject {
     this.select();
     await fireContextMenuAction(this.serverTreeItem, "Connect");
     this.workbenchPO.waitValidatingServer();
-    await delay(2000);
+    await delay();
 
     await fillEnvironment(environment);
     await fillUserdata(userData);
 
     await this.workbenchPO.waitConnection();
+
     expect(
       await this.workbenchPO.isConnected(
         await this.serverTreeItem.getLabel(),

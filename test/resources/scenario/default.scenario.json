@@ -14,7 +14,7 @@
 		"serverName": "10.171.10.77",
 		"address": "10.171.10.77",
 		"port": 5001,
-		"environment": "p12",
+		"environment": "P20-12-1-33",
 		"includePath": []
 	},
 	"users": {
@@ -23,7 +23,7 @@
 			"password": "1234"
 		},
 		"user": {
-			"username": "userorigem",
+			"username": "USERORIGEM",
 			"password": "1234"
 		},
 		"invalid": {

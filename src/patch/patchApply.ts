@@ -144,29 +144,51 @@ export function patchApply(
                 break;
 
               case "extractPatchsFiles":
-                vscode.window.showWarningMessage("Checking zip files");
+                // msg emitida com tempo, pois o processo de verificação do zip
+                // é muito rápido (zip de expedição contiuna com +40M e 4 ptm, leva < 2 seg)
 
-                extractPatchsFiles(message.files)
-                  .then((files) => {
-                    if (files.length === 0) {
-                      vscode.window.showWarningMessage(
-                        "No patch file found in zip files."
-                      );
-                    } else {
-                      for (let index = 0; index < files.length; index++) {
-                        const element = files[index];
-                        if (currentPanel) {
-                          currentPanel.webview.postMessage({
-                            command: "addFilepath",
-                            file: element,
-                          });
+                vscode.window.withProgress(
+                  {
+                    location: vscode.ProgressLocation.Window,
+                    cancellable: false,
+                    title: `${localize(
+                      "tds.vscode.starting.build.patch",
+                      "Checking zip files"
+                    )}`,
+                  },
+                  async (progress) => {
+                    progress.report({ increment: 0 });
+
+                    await extractPatchsFiles(message.files).then(
+                      async (files) => {
+                        if (files.length === 0) {
+                          vscode.window.showWarningMessage(
+                            "No patch file found in zip files."
+                          );
+                        } else {
+                          const step = 100 / (files.length + 2);
+
+                          for await (const element of files) {
+                            progress.report({
+                              increment: step,
+                            });
+
+                            if (currentPanel) {
+                              currentPanel.webview.postMessage({
+                                command: "addFilepath",
+                                file: element,
+                              });
+                            }
+                          }
                         }
+                      },
+                      (reason: any) => {
+                        vscode.window.showErrorMessage(reason);
                       }
-                    }
-                  })
-                  .catch((reason: any) => {
-                    vscode.window.showErrorMessage(reason);
-                  });
+                    );
+                    progress.report({ increment: 100 });
+                  }
+                );
                 break;
 
               case "showDuplicateWarning":
@@ -176,30 +198,41 @@ export function patchApply(
                 break;
 
               case "patchValidate":
-                if (message.file){
-                vscode.window.showInformationMessage("PatchValidate");
-                const validateArgs = {
-                  fsPath: message.file,
-                };
-                vscode.commands.executeCommand(
-                  "totvs-developer-studio.patchValidate.fromFile",
-                  validateArgs
-                );} else {
-                vscode.window.showInformationMessage(localize("tds.webview.patch.apply.select.file", "Select a file for operation."));
+                if (message.file) {
+                  vscode.window.showInformationMessage("PatchValidate");
+                  const validateArgs = {
+                    fsPath: message.file,
+                  };
+                  vscode.commands.executeCommand(
+                    "totvs-developer-studio.patchValidate.fromFile",
+                    validateArgs
+                  );
+                } else {
+                  vscode.window.showInformationMessage(
+                    localize(
+                      "tds.webview.patch.apply.select.file",
+                      "Select a file for operation."
+                    )
+                  );
                 }
                 break;
 
               case "patchInfo":
-                if (message.file){
-                const args = {
-                  fsPath: message.file,
-                };
-                vscode.commands.executeCommand(
-                  "totvs-developer-studio.patchInfos.fromFile",
-                  args
-                );
+                if (message.file) {
+                  const args = {
+                    fsPath: message.file,
+                  };
+                  vscode.commands.executeCommand(
+                    "totvs-developer-studio.patchInfos.fromFile",
+                    args
+                  );
                 } else {
-                vscode.window.showInformationMessage(localize("tds.webview.patch.apply.select.file", "Select a file for operation."));
+                  vscode.window.showInformationMessage(
+                    localize(
+                      "tds.webview.patch.apply.select.file",
+                      "Select a file for operation."
+                    )
+                  );
                 }
                 break;
             }
@@ -238,7 +271,7 @@ export function patchApply(
                       patchUri: patchUri,
                       isLocal: true,
                       isValidOnly: false,
-                      applyScope: 'only_new',
+                      applyScope: "only_new",
                     },
                   })
                   .then(

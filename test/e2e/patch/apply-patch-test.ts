@@ -74,18 +74,21 @@ describe("Patch Operations", () => {
     await applyPatchPO.fireSubmitClose();
     await delay(2000);
 
+    expect(await workbenchPO.isRequestFailed()).is.true;
+    expect(await workbenchPO.isPatchVersionIncorrect()).is.true;
     expect(await workbenchPO.isPatchValidateNotBeExecuted()).is.true;
   });
 
-  (PATCHS_FILES.zip ? it : it.skip)("Apply many file", async () => {
+  (PATCHS_FILES.zip ? it : it.skip)("Apply From Zip file", async () => {
     await serverItemPO.fireApplyPatchAction();
 
     const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
     await applyPatchPO.setUploadFile(PATCHS_FILES.zip);
+
+    await workbenchPO.applyCheckingZipInProgress();
     await applyPatchPO.fireSubmitClose();
 
     expect(await workbenchPO.applyPatchInProgress()).is.true;
-
     await workbenchPO.waitApplyPatch();
 
     expect(await workbenchPO.isPatchApplied()).is.true;
