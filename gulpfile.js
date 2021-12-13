@@ -5,7 +5,7 @@
 
 const gulp = require("gulp");
 const path = require("path");
-
+const vsce = require("vsce");
 const ts = require("gulp-typescript");
 const typescript = require("typescript");
 const sourcemaps = require("gulp-sourcemaps");
@@ -90,6 +90,18 @@ const doCompile = function (buildNls) {
 
   return r.pipe(gulp.dest(outDest));
 };
+
+const vscePublishTask = function () {
+  return vsce.publish();
+};
+
+const vscePackageTask = function () {
+  return vsce.createVSIX();
+};
+
+gulp.task("publish", gulp.series(buildTask, vscePublishTask));
+
+gulp.task("package", gulp.series(buildTask, vscePackageTask));
 
 gulp.task("default", buildTask);
 

@@ -198,7 +198,7 @@ export class ServersExplorer {
                 location: vscode.ProgressLocation.Window,
                 title: localize(
                   "tds.webview.validating_server",
-                  `Validating server [${serverItem.name}]`
+                  "Validating server" //,serverItem.name
                 ),
               },
               async (progress, token) => {
@@ -246,7 +246,8 @@ export class ServersExplorer {
               location: vscode.ProgressLocation.Window,
               title: localize(
                 "tds.webview.disconnecting",
-                `Disconnecting from the server [${serverItem.name}]`
+                "Disconnecting from the server [%0]",
+                serverItem.name
               ),
             },
             async (progress, token) => {
@@ -447,7 +448,7 @@ export function connectServer(
         location: vscode.ProgressLocation.Window,
         title: localize(
           "tds.webview.connecting",
-          `Connecting to the server [${serverItem.name}]`
+          "Connecting to the server" //,serverItem.name
         ),
       },
       async (progress, token) => {
@@ -475,7 +476,7 @@ export function authenticate(
       location: vscode.ProgressLocation.Window,
       title: localize(
         "tds.webview.authenticating_user",
-        `Authenticating user [${username}] in server [${serverItem.name}]`
+        "Authenticating user [] in server []" //,username,serverItem.name
       ),
     },
     async (progress, token) => {
@@ -549,7 +550,7 @@ export function reconnectServer(
       location: vscode.ProgressLocation.Window,
       title: localize(
         "tds.webview.reconnecting",
-        `Reconnecting to the server [${serverItem.name}]`
+        "Reconnecting to the server" //,serverItem.name
       ),
     },
     async (progress, token) => {

@@ -138,18 +138,16 @@ function updatePermissionStatusBarItem(): void {
       );
       if (infos.machineId) {
         toolTips.push(
-          localize("tds.vscode.machine_id", `Machine ID: ${infos.machineId}`)
+          localize("tds.vscode.machine_id", "Machine ID:") + infos.machineId
         );
       } else if (infos.userId) {
         toolTips.push(
-          localize("tds.vscode.user_id", `User ID: ${infos.userId}`)
+          localize("tds.vscode.user_id", "User ID:") + infos.userId
         );
       }
       toolTips.push(
-        localize(
-          "tds.vscode.expires_in",
-          `Expires in ${expiryDate.toLocaleString()}`
-        )
+        localize("tds.vscode.expires_in", "Expires in ") +
+          expiryDate.toLocaleString()
       );
 
       if (infos.buildType === "0") {
@@ -172,10 +170,9 @@ function updatePermissionStatusBarItem(): void {
         );
       }
     } else {
-      permissionStatusBarItem.text = localize(
-        "tds.vscode.expired_in",
-        `Expired in ${expiryDate.toLocaleString()}`
-      );
+      permissionStatusBarItem.text =
+        localize("tds.vscode.expired_in", "Expired in ") +
+        expiryDate.toLocaleString();
     }
   } else {
     permissionStatusBarItem.text = localize("tds.vscode.not_key", "NOT key");

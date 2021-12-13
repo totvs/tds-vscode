@@ -121,7 +121,7 @@ export function patchApply(
                           increment: 100,
                           message: localize(
                             "tds.webview.patchs_applied",
-                            `Patchs applied (${index} files)`
+                            "Patchs applied ( files)" //${index}
                           ),
                         });
                       }

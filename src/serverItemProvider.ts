@@ -325,7 +325,9 @@ export class ServerItem extends vscode.TreeItem {
   }
 
   description = `${this.address}:${this.port}`;
-  tooltip = `${this.buildVersion}`;
+  tooltip = `${this.type == "totvs_server_protheus" ? "Protheus" : "Logix"} ${
+    this.buildVersion
+  }`;
   iconPath = {
     light: path.join(
       RESOURCE_FOLDER,
