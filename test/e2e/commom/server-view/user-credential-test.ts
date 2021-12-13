@@ -25,23 +25,24 @@ describe.only("TOTVS: Credentials Users Connect", () => {
     await delay();
 
     await serverTreePO.addNewServer(APPSERVER_DATA);
+  });
 
-    serverItemPO = new ServerTreeItemPageObject(
-      await serverTreePO.getServerTreeItem(APPSERVER_DATA.serverName)
-    );
-
-    await delay();
+  afterEach(async () => {
+    if (await serverItemPO.isConnected()) {
+      await serverItemPO.fireDisconnectAction();
+    }
   });
 
   it("Input No Admin User", async () => {
-    await serverItemPO.select();
-    await serverItemPO.fireConnectAction();
-    await workbenchPO.waitValidatingServer();
-    await fillEnvironment(APPSERVER_DATA.environment);
-    await fillUserdata(NO_ADMIN_USER_DATA);
-    await workbenchPO.waitConnection();
+    serverItemPO = await serverTreePO.connect(
+      APPSERVER_DATA.serverName,
+      APPSERVER_DATA.environment,
+      NO_ADMIN_USER_DATA,
+      false
+    );
 
     expect(await workbenchPO.isAuthenticationFailed()).is.true;
+    expect(await workbenchPO.isAcessDenied()).is.true;
 
     expect(
       await workbenchPO.isConnected(
@@ -54,14 +55,15 @@ describe.only("TOTVS: Credentials Users Connect", () => {
   });
 
   it("Input Invalid User", async () => {
-    await serverItemPO.select();
-    await serverItemPO.fireConnectAction();
-    await workbenchPO.waitValidatingServer();
-    await fillEnvironment(APPSERVER_DATA.environment);
-    await fillUserdata(INVALID_USER_DATA);
-    await workbenchPO.waitConnection();
+    serverItemPO = await serverTreePO.connect(
+      APPSERVER_DATA.serverName,
+      APPSERVER_DATA.environment,
+      INVALID_USER_DATA,
+      false
+    );
 
     expect(await workbenchPO.isAuthenticationFailed()).is.true;
+    expect(await workbenchPO.isInvalidUser()).is.true;
 
     expect(
       await workbenchPO.isConnected(
@@ -74,12 +76,12 @@ describe.only("TOTVS: Credentials Users Connect", () => {
   });
 
   it("Input Admin User", async () => {
-    await serverItemPO.select();
-    await serverItemPO.fireConnectAction();
-    await workbenchPO.waitValidatingServer();
-    await fillEnvironment(APPSERVER_DATA.environment);
-    await fillUserdata(ADMIN_USER_DATA);
-    await workbenchPO.waitConnection();
+    serverItemPO = await serverTreePO.connect(
+      APPSERVER_DATA.serverName,
+      APPSERVER_DATA.environment,
+      ADMIN_USER_DATA,
+      false
+    );
 
     expect(await workbenchPO.isAuthenticationFailed()).is.false;
 

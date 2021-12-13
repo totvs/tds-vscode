@@ -92,20 +92,12 @@ export class WorkbenchPageObject {
   }
 
   async isAcessDenied(): Promise<boolean> {
-    let result: boolean = false;
-
-    await this.getNotification(/Authentication failed:.*Access denied/).then(
-      async (notification: Notification) => {
-        await notification?.dismiss();
-        result = notification ? true : false;
-      }
-    );
-
-    return result;
+    return await this.testNotification(/Authentication.*Access denied/);
   }
 
   async isApplyTemplateNotSuported(): Promise<boolean> {
-    return Promise.resolve(true);
+    //return Promise.resolve(true);
+    return await this.testNotification(/Authentication.*Access denied/);
   }
 
   async isDAInitialing(): Promise<boolean> {

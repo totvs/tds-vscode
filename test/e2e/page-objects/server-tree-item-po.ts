@@ -28,13 +28,6 @@ export class ServerTreeItemPageObject {
     await fillUserdata(userData);
 
     await this.workbenchPO.waitConnection();
-
-    expect(
-      await this.workbenchPO.isConnected(
-        await this.serverTreeItem.getLabel(),
-        environment
-      )
-    ).is.true;
   }
 
   async isServerP20OrGreater(): Promise<boolean> {

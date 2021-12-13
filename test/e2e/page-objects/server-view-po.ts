@@ -70,13 +70,19 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
   async connect(
     serverName: string,
     environment: string,
-    userdata: IUserData
+    userdata: IUserData,
+    validate: boolean = true
   ): Promise<ServerTreeItemPageObject> {
     const serverPO: ServerTreeItemPageObject = new ServerTreeItemPageObject(
       await this.getServerTreeItem(serverName)
     );
 
     await serverPO.connect(environment, userdata);
+
+    if (validate) {
+      expect(await this.workbenchPO.isConnected(serverName, environment)).is
+        .true;
+    }
 
     return serverPO;
   }
