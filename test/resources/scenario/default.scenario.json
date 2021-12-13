@@ -11,6 +11,7 @@
 		"  \"scenario:p19\": \"set SCENARIO=p19.json && npm run test\""
 	],
 	"server": {
+		"serverType": "totvs_server_protheus",
 		"serverName": "10.171.10.77",
 		"address": "10.171.10.77",
 		"port": 5001,

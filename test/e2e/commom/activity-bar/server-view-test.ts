@@ -1,16 +1,16 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { avoidsBacksliding, delay, openAdvplProject } from "../helper";
-import { ServerViewPageObject } from "../page-objects/server-view-po";
-import { WorkbenchPageObject } from "../page-objects/workbench-po";
-import { DELETE_DATA, APPSERVER_DATA } from "../scenario";
+import { avoidsBacksliding, delay, openProject } from "../../helper";
+import { ServerViewPageObject } from "../../page-objects/server-view-po";
+import { WorkbenchPageObject } from "../../page-objects/workbench-po";
+import { DELETE_DATA, APPSERVER_DATA } from "../../scenario";
 
 describe("TOTVS: Server View", () => {
   let serverTreePO: ServerViewPageObject;
   let workbenchPO: WorkbenchPageObject;
 
   before(async () => {
-    await openAdvplProject();
+    await openProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();

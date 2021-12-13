@@ -1,17 +1,16 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { Notification, WebView } from "vscode-extension-tester";
 import {
   delay,
   fillEnvironment,
   fillUserdata,
-  openAdvplProject,
-} from "../helper";
-import { ServerPageObject } from "../page-objects/server-po";
-import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
-import { ServerViewPageObject } from "../page-objects/server-view-po";
-import { WorkbenchPageObject } from "../page-objects/workbench-po";
-import { ADMIN_USER_DATA, DELETE_DATA, APPSERVER_DATA } from "../scenario";
+  openProject,
+} from "../../helper";
+import { ServerPageObject } from "../../page-objects/server-po";
+import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
+import { ServerViewPageObject } from "../../page-objects/server-view-po";
+import { WorkbenchPageObject } from "../../page-objects/workbench-po";
+import { ADMIN_USER_DATA, DELETE_DATA, APPSERVER_DATA } from "../../scenario";
 
 describe("TOTVS: Server View Basic Operations", () => {
   let serverTreePO: ServerViewPageObject;
@@ -19,7 +18,7 @@ describe("TOTVS: Server View Basic Operations", () => {
   let workbenchPO: WorkbenchPageObject;
 
   before(async () => {
-    await openAdvplProject();
+    await openProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();
@@ -95,16 +94,13 @@ describe("TOTVS: Server View Basic Operations", () => {
   it("Add server (context menu)", async () => {
     await serverItemPO.fireAddServerAction();
 
-    const webView: WebView = new WebView();
-    await webView.switchToFrame();
-
     const serverPO = new ServerPageObject();
-    await serverPO.fillAddServerPage(webView, DELETE_DATA, true);
+    await serverPO.fillServerPage(DELETE_DATA);
+    await serverPO.fireSaveClose();
 
-    await webView.switchBack();
     await delay();
 
-    expect(await workbenchPO.isSaveServer()).is.true;
+    expect(await workbenchPO.isSavedServer()).is.true;
   });
 
   it.skip("Reconnect", async () => {

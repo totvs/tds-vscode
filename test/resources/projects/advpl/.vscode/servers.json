@@ -7,46 +7,7 @@
 		"authorizationtoken": ""
 	},
 	"connectedServer": {},
-	"configurations": [
-		{
-			"id": "ostv6xid8gskwzeqnn3yhgb3hywqi9",
-			"type": "totvs_server_protheus",
-			"name": "localhost",
-			"port": 20302,
-			"address": "localhost",
-			"buildVersion": "7.00.210324P",
-			"secure": true,
-			"includes": [
-				"m:\\protheus\\includes"
-			],
-			"environments": [
-				"P20-12-1-33"
-			],
-			"username": "admin",
-			"environment": "P20-12-1-33",
-			"token": "djM6b3N0djZ4aWQ4Z3Nrd3plcW5uM3loZ2IzaHl3cWk5OjE6bG9jYWxob3N0OjIwMzAyOjE6Ny4wMC4yMTAzMjRQOjM=:djE6UDIwLTEyLTEtMzM6YWRtaW46VHlZSHJEdHZuSGV0M2dRb0ZDYVk3RFNlc0pYc1J3VGcyOUtyZWd0MWR1MD0=|djI6MTYzOTA4MTQyNDowOjE6MQ==.zDb0wbbZn/UwwdZP2HgXGJa2FHQZHUlWqV5Lh977vpBnQ4GdVrRgsKLg+w6icSDn2uEq+R8lzpapfXV+xpju43A7vIKym55zAD5AdzRNO1/esDDWJgv/8Nsk09yrPLMRRIxPSUt+CVmLckqSxe3K7wb+EXsrd2di/SfCRZzrLPtkc/wU0we/9l215RJeDDtlmtpOnhsklE5iOlu7mQF9drgSHVaG2hsuFbHNBzKCV9YSNW8MVLvLMSO9slEm9711IpSiqkuwDh7+TQXXCjeZ1A9rMVl9XC/FhEj+pWcPJjLbjf91VrG7PRSrpGyHkzPt17KFnmYX1gfsAc5oFCeNwA=="
-		},
-		{
-			"id": "ohrwx50i7ebkwzersl5c7a9jmzqgcr",
-			"type": "totvs_server_protheus",
-			"name": "forDelete",
-			"port": 20302,
-			"address": "localhost",
-			"buildVersion": "7.00.210324P",
-			"secure": true,
-			"includes": [
-				"m:\\protheus\\includes"
-			]
-		}
-	],
-	"savedTokens": [
-		[
-			"ostv6xid8gskwzeqnn3yhgb3hywqi9:P20-12-1-33",
-			{
-				"id": "ostv6xid8gskwzeqnn3yhgb3hywqi9",
-				"token": "djM6b3N0djZ4aWQ4Z3Nrd3plcW5uM3loZ2IzaHl3cWk5OjE6bG9jYWxob3N0OjIwMzAyOjE6Ny4wMC4yMTAzMjRQOjM=:djE6UDIwLTEyLTEtMzM6YWRtaW46VHlZSHJEdHZuSGV0M2dRb0ZDYVk3RFNlc0pYc1J3VGcyOUtyZWd0MWR1MD0=|djI6MTYzOTA4MTQyNDowOjE6MQ==.zDb0wbbZn/UwwdZP2HgXGJa2FHQZHUlWqV5Lh977vpBnQ4GdVrRgsKLg+w6icSDn2uEq+R8lzpapfXV+xpju43A7vIKym55zAD5AdzRNO1/esDDWJgv/8Nsk09yrPLMRRIxPSUt+CVmLckqSxe3K7wb+EXsrd2di/SfCRZzrLPtkc/wU0we/9l215RJeDDtlmtpOnhsklE5iOlu7mQF9drgSHVaG2hsuFbHNBzKCV9YSNW8MVLvLMSO9slEm9711IpSiqkuwDh7+TQXXCjeZ1A9rMVl9XC/FhEj+pWcPJjLbjf91VrG7PRSrpGyHkzPt17KFnmYX1gfsAc5oFCeNwA=="
-			}
-		]
-	],
+	"configurations": [],
+	"savedTokens": [],
 	"lastConnectedServer": ""
 }

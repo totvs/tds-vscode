@@ -1,0 +1,40 @@
+{
+	"version": "0.2.1",
+	"includes": [
+		""
+	],
+	"permissions": {
+		"authorizationtoken": ""
+	},
+	"connectedServer": {},
+	"configurations": [
+		{
+			"id": "w037ykqnibjkx4qktokvv4upipjzch",
+			"type": "totvs_server_logix",
+			"name": "lgx-localhost",
+			"port": 7085,
+			"address": "localhost",
+			"buildVersion": "7.00.131227A",
+			"secure": false,
+			"includes": [
+				"m:\\protheus\\includes"
+			],
+			"environments": [
+				"Logix12"
+			],
+			"username": "USERORIGEM",
+			"environment": "Logix12",
+			"token": "djM6dzAzN3lrcW5pYmpreDRxa3Rva3Z2NHVwaXBqemNoOjI6bG9jYWxob3N0OjcwODU6MDo3LjAwLjEzMTIyN0E6Mw==:djE6TG9naXgxMjpVU0VST1JJR0VNOnBHdGc0S004ZW5UYU5GNE5mNzB2a3BFTy80K0FWUTFiNWxoM3k2Rm1wY2M9|djI6MTYzOTQwMzYzMTowOjE6MQ==.I2TH+mabJXhN4hgOQclOmMqak+KSYeq4NLdW3X2y8RzqGuOJNitqaF61lCejvHiBfoXCP7C/AYX9d9Z2psBx57LBmK8MU5WkzQe4AcVf6kbGBxWH80pNQtqsnKfZPEt322oaaqE5FWZj7G84w588FXTj8nnjAgpSCgyP87JIOHNMkIt8YND1dC4vNQowCRDxBeJAWHQ0YM/RWNbmveSxKkDxUdkvN3XGQCHYNPGkctC6/AQMzWFDltnl7uf/zPL665w0pHCfvB9w5innogJ5FxJZyu+T+kTnia8r6sftUSQH3t9oOMgufE7qmrYNF5i/UZaDZI8drA9Pt+mQcLD+cA=="
+		}
+	],
+	"savedTokens": [
+		[
+			"w037ykqnibjkx4qktokvv4upipjzch:Logix12",
+			{
+				"id": "w037ykqnibjkx4qktokvv4upipjzch",
+				"token": "djM6dzAzN3lrcW5pYmpreDRxa3Rva3Z2NHVwaXBqemNoOjI6bG9jYWxob3N0OjcwODU6MDo3LjAwLjEzMTIyN0E6Mw==:djE6TG9naXgxMjpVU0VST1JJR0VNOnBHdGc0S004ZW5UYU5GNE5mNzB2a3BFTy80K0FWUTFiNWxoM3k2Rm1wY2M9|djI6MTYzOTQwMzYzMTowOjE6MQ==.I2TH+mabJXhN4hgOQclOmMqak+KSYeq4NLdW3X2y8RzqGuOJNitqaF61lCejvHiBfoXCP7C/AYX9d9Z2psBx57LBmK8MU5WkzQe4AcVf6kbGBxWH80pNQtqsnKfZPEt322oaaqE5FWZj7G84w588FXTj8nnjAgpSCgyP87JIOHNMkIt8YND1dC4vNQowCRDxBeJAWHQ0YM/RWNbmveSxKkDxUdkvN3XGQCHYNPGkctC6/AQMzWFDltnl7uf/zPL665w0pHCfvB9w5innogJ5FxJZyu+T+kTnia8r6sftUSQH3t9oOMgufE7qmrYNF5i/UZaDZI8drA9Pt+mQcLD+cA=="
+			}
+		]
+	],
+	"lastConnectedServer": "w037ykqnibjkx4qktokvv4upipjzch"
+}

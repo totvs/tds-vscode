@@ -1,13 +1,17 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import path = require("path");
-import { delay, openAdvplProject } from "../helper";
-import { ApplyPatchPageObject } from "../page-objects/apply-patch-po";
-import { ApplyTemplatePageObject } from "../page-objects/apply-template-po";
-import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
-import { ServerViewPageObject } from "../page-objects/server-view-po";
-import { WorkbenchPageObject } from "../page-objects/workbench-po";
-import { ADMIN_USER_DATA, APPSERVER_DATA, TEMPLATE_FILES } from "../scenario";
+import { delay, openProject } from "../../helper";
+import { ApplyPatchPageObject } from "../../page-objects/apply-patch-po";
+import { ApplyTemplatePageObject } from "../../page-objects/apply-template-po";
+import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
+import { ServerViewPageObject } from "../../page-objects/server-view-po";
+import { WorkbenchPageObject } from "../../page-objects/workbench-po";
+import {
+  ADMIN_USER_DATA,
+  APPSERVER_DATA,
+  TEMPLATE_FILES,
+} from "../../scenario";
 
 //os testes com template não considera erros no template na validação
 //normalmente erros de compilação
@@ -17,7 +21,7 @@ import { ADMIN_USER_DATA, APPSERVER_DATA, TEMPLATE_FILES } from "../scenario";
   let workbenchPO: WorkbenchPageObject;
 
   before(async () => {
-    await openAdvplProject();
+    await openProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();

@@ -2,14 +2,14 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import { Notification } from "vscode-extension-tester";
-import { delay, openAdvplProject } from "../helper";
-import { FunctionsInspectorPageObject } from "../page-objects/functions-inspector-po";
-import { ObjectsInspectorPageObject } from "../page-objects/objects-inspector-po";
-import { RepositoryLogPageObject } from "../page-objects/repository-log-po";
-import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
-import { ServerViewPageObject } from "../page-objects/server-view-po";
-import { WorkbenchPageObject } from "../page-objects/workbench-po";
-import { ADMIN_USER_DATA, APPSERVER_DATA } from "../scenario";
+import { delay, openProject } from "../../helper";
+import { FunctionsInspectorPageObject } from "../../page-objects/functions-inspector-po";
+import { ObjectsInspectorPageObject } from "../../page-objects/objects-inspector-po";
+import { RepositoryLogPageObject } from "../../page-objects/repository-log-po";
+import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
+import { ServerViewPageObject } from "../../page-objects/server-view-po";
+import { WorkbenchPageObject } from "../../page-objects/workbench-po";
+import { ADMIN_USER_DATA, APPSERVER_DATA } from "../../scenario";
 
 describe("RPO Operations", () => {
   let workbenchPO: WorkbenchPageObject;
@@ -17,7 +17,7 @@ describe("RPO Operations", () => {
   let serverItemPO: ServerTreeItemPageObject;
 
   before(async () => {
-    await openAdvplProject();
+    await openProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = new ServerViewPageObject();
@@ -52,7 +52,7 @@ describe("RPO Operations", () => {
     await workbenchPO.waitCheckIntegrity();
     await delay();
 
-    expect(await workbenchPO.isRpoIntegrity()).is.true;
+    expect(await workbenchPO.isRpoIntactOrIncomplete()).is.true;
   });
 
   it("Repository Log", async () => {

@@ -5,15 +5,19 @@ import {
   avoidsBacksliding,
   delay,
   readServersJsonFile,
-  openAdvplProject,
-} from "../helper";
-import { CompileKeyPageObject } from "../page-objects/compile-key-po";
-import { IncludePageObject } from "../page-objects/include-po";
-import { ICompileKeyData } from "../page-objects/interface-po";
-import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
-import { ServerViewPageObject } from "../page-objects/server-view-po";
-import { WorkbenchPageObject } from "../page-objects/workbench-po";
-import { COMPILE_KEY_FILE, DELETE_DATA, INCLUDE_PATH_DATA } from "../scenario";
+  openProject,
+} from "../../helper";
+import { CompileKeyPageObject } from "../../page-objects/compile-key-po";
+import { IncludePageObject } from "../../page-objects/include-po";
+import { ICompileKeyData } from "../../page-objects/interface-po";
+import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
+import { ServerViewPageObject } from "../../page-objects/server-view-po";
+import { WorkbenchPageObject } from "../../page-objects/workbench-po";
+import {
+  COMPILE_KEY_FILE,
+  DELETE_DATA,
+  INCLUDE_PATH_DATA,
+} from "../../scenario";
 
 describe.skip("TOTVS: Server View Configurations", () => {
   let serverTreePO: ServerViewPageObject;
@@ -21,7 +25,7 @@ describe.skip("TOTVS: Server View Configurations", () => {
   let workbenchPO: WorkbenchPageObject;
 
   before(async () => {
-    await openAdvplProject();
+    await openProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = new ServerViewPageObject();

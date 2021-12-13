@@ -1,0 +1,33 @@
+{
+	"name": "logix",
+	"description": [
+		"Cenário para o ambiente Logix."
+	],
+	"projectFolder": "logix",
+	"server": {
+		"serverType": "totvs_server_logix",
+		"serverName": "lgx-localhost",
+		"address": "localhost",
+		"port": 7085,
+		"environment": "Logix12",
+		"includePath": [
+			"m:\\protheus\\includes"
+		]
+	},
+	"includePath": {
+		"valid": [
+			"m:/protheus/includes"
+		],
+		"toChange": [
+			"m:/change/includes"
+		],
+		"toAdd": [
+			"m:/more_1/includes",
+			"m:/more_2/includes"
+		]
+	},
+	"compileKey": {
+		"9DA4-26D1": "acandido.aut"
+	},
+	"rpoToken": {}
+}

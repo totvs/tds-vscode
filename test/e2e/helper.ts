@@ -57,7 +57,7 @@ async function closeAllEditors(): Promise<void> {
   await delay();
 }
 
-export async function openAdvplProject(): Promise<void> {
+export async function openProject(): Promise<void> {
   clearServersJson(PROJECT_FOLDER);
 
   await VSBrowser.instance.openResources(PROJECT_FOLDER);

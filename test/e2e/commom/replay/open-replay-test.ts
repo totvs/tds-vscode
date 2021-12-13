@@ -1,12 +1,12 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { delay, openAdvplProject } from "../helper";
-import { ReplayPageObject } from "../page-objects/replay-po";
-import { WorkbenchPageObject } from "../page-objects/workbench-po";
-import { REPLAY_FILES } from "../scenario";
+import { delay, openProject } from "../../helper";
+import { ReplayPageObject } from "../../page-objects/replay-po";
+import { WorkbenchPageObject } from "../../page-objects/workbench-po";
+import { REPLAY_FILES } from "../../scenario";
 import path = require("path");
 import { DebugToolbar, DebugView } from "vscode-extension-tester";
-import { DebugPageObject } from "../page-objects/debug-view-po";
+import { DebugPageObject } from "../../page-objects/debug-view-po";
 
 const BIG_IMPORT_TIMEOUT = 2 * 60 * 1000; // 2min
 
@@ -16,7 +16,7 @@ const BIG_IMPORT_TIMEOUT = 2 * 60 * 1000; // 2min
   let debugBar: DebugToolbar;
 
   before(async () => {
-    await openAdvplProject();
+    await openProject();
     await delay(5000); //necessário para inicializar LS se necessário
 
     workbenchPO = new WorkbenchPageObject();

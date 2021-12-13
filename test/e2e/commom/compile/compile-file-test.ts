@@ -2,13 +2,13 @@ import { expect } from "chai";
 import * as fs from "fs-extra";
 import { describe, before, it } from "mocha";
 import { SideBarView, TreeItem } from "vscode-extension-tester";
-import { delay, openAdvplProject } from "../helper";
-import { BuildPageObject } from "../page-objects/build-po";
-import { ExplorerPageObject } from "../page-objects/explorer-view-po";
-import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
-import { ServerViewPageObject } from "../page-objects/server-view-po";
-import { WorkbenchPageObject } from "../page-objects/workbench-po";
-import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../scenario";
+import { delay, openProject } from "../../helper";
+import { BuildPageObject } from "../../page-objects/build-po";
+import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
+import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
+import { ServerViewPageObject } from "../../page-objects/server-view-po";
+import { WorkbenchPageObject } from "../../page-objects/workbench-po";
+import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../../scenario";
 
 describe.skip("Compile files", () => {
   let serverTreePO: ServerViewPageObject;
@@ -18,7 +18,7 @@ describe.skip("Compile files", () => {
   let compilePO: BuildPageObject;
 
   before(async () => {
-    await openAdvplProject();
+    await openProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();

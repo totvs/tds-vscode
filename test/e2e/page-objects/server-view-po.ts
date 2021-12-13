@@ -1,6 +1,5 @@
 import { expect } from "chai";
 import {
-  ActivityBar,
   SideBarView,
   TreeItem,
   ViewItemAction,
@@ -8,9 +7,6 @@ import {
   WebView,
   WebElement,
   ViewItem,
-  ViewControl,
-  ViewTitlePart,
-  TitleActionButton,
 } from "vscode-extension-tester";
 import { delay } from "../helper";
 import { IServerData, IUserData } from "./interface-po";
@@ -50,21 +46,14 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
   }
 
   async addNewServer(data: IServerData): Promise<void> {
-    await delay();
-
     await this.workbenchPO.executeCommand("totvs-developer-studio.add");
     await delay();
 
-    const webView: WebView = new WebView();
-    await webView.switchToFrame();
-
     const serverPO = new ServerPageObject(data);
-    await serverPO.fillAddServerPage(webView, data, true);
+    await serverPO.fillServerPage(data);
+    await serverPO.fireSaveClose();
 
-    await webView.switchBack();
-    await delay();
-
-    expect(await this.workbenchPO.isSaveServer()).is.true;
+    expect(await this.workbenchPO.isSavedServer()).is.true;
   }
 
   async getNewServer(data: IServerData) {

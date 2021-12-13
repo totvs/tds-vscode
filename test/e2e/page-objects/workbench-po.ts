@@ -2,10 +2,6 @@ import {
   Workbench,
   Notification,
   NotificationType,
-  ActivityBar,
-  SideBarView,
-  ViewControl,
-  DebugView,
   EditorView,
 } from "vscode-extension-tester";
 import { delay } from "../helper";
@@ -62,11 +58,11 @@ export class WorkbenchPageObject {
     return result;
   }
 
-  async isRpoIntegrity(): Promise<boolean> {
+  async isRpoIntactOrIncomplete(): Promise<boolean> {
     return await this.testNotification(/RPO [intact|incomplete]/);
   }
 
-  async isSaveServer(): Promise<boolean> {
+  async isSavedServer(): Promise<boolean> {
     return await this.testNotification(/Serve saved/);
   }
 
@@ -77,7 +73,7 @@ export class WorkbenchPageObject {
   async isAuthenticationFailed(): Promise<boolean> {
     let result: boolean = false;
 
-    await this.getNotification(/Authentication failed:/).then(
+    await this.getNotification(/Authentication failed/).then(
       async (notification: Notification) => {
         await notification?.dismiss();
         result = notification ? true : false;
@@ -85,6 +81,14 @@ export class WorkbenchPageObject {
     );
 
     return result;
+  }
+
+  async isUserNotAdmin(): Promise<boolean> {
+    return await this.testNotification(/User is not admin/);
+  }
+
+  async isInvalidUser(): Promise<boolean> {
+    return await this.testNotification(/Invalid user and\/or password/);
   }
 
   async isAcessDenied(): Promise<boolean> {

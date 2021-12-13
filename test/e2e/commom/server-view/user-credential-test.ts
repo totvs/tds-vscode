@@ -4,21 +4,21 @@ import {
   delay,
   fillEnvironment,
   fillUserdata,
-  openAdvplProject,
-} from "../helper";
-import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
-import { ServerViewPageObject } from "../page-objects/server-view-po";
-import { WorkbenchPageObject } from "../page-objects/workbench-po";
-import { APPSERVER_DATA, NO_ADMIN_USER_DATA } from "../scenario";
-import { INVALID_USER_DATA, ADMIN_USER_DATA } from "../scenario";
+  openProject,
+} from "../../helper";
+import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
+import { ServerViewPageObject } from "../../page-objects/server-view-po";
+import { WorkbenchPageObject } from "../../page-objects/workbench-po";
+import { APPSERVER_DATA, NO_ADMIN_USER_DATA } from "../../scenario";
+import { INVALID_USER_DATA, ADMIN_USER_DATA } from "../../scenario";
 
-describe("TOTVS: Credentials Users Connect", () => {
+describe.only("TOTVS: Credentials Users Connect", () => {
   let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
 
   before(async () => {
-    await openAdvplProject();
+    await openProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = new ServerViewPageObject();

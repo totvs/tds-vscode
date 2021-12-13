@@ -20,6 +20,14 @@
 			"type": "object",
 			"description": "Server definition to connect.",
 			"properties": {
+				"serverType": {
+					"type": "string",
+					"description": "The server type.",
+					"enum": [
+						"totvs_server_protheus",
+						"totvs_server_logix"
+					]
+				},
 				"serverName": {
 					"type": "string",
 					"description": "Short name to identify the server."
@@ -45,6 +53,7 @@
 				}
 			},
 			"required": [
+				"serverType",
 				"serverName",
 				"address",
 				"port",

@@ -1,11 +1,11 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { delay, openAdvplProject } from "../helper";
-import { ApplyPatchPageObject } from "../page-objects/apply-patch-po";
-import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
-import { ServerViewPageObject } from "../page-objects/server-view-po";
-import { WorkbenchPageObject } from "../page-objects/workbench-po";
-import { ADMIN_USER_DATA, APPSERVER_DATA, PATCHS_FILES } from "../scenario";
+import { delay, openProject } from "../../helper";
+import { ApplyPatchPageObject } from "../../page-objects/apply-patch-po";
+import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
+import { ServerViewPageObject } from "../../page-objects/server-view-po";
+import { WorkbenchPageObject } from "../../page-objects/workbench-po";
+import { ADMIN_USER_DATA, APPSERVER_DATA, PATCHS_FILES } from "../../scenario";
 
 describe("Patch Operations", () => {
   let serverTreePO: ServerViewPageObject;
@@ -13,7 +13,7 @@ describe("Patch Operations", () => {
   let workbenchPO: WorkbenchPageObject;
 
   before(async () => {
-    await openAdvplProject();
+    await openProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();

@@ -1,4 +1,5 @@
 export interface IServerData {
+  serverType: string;
   serverName: string;
   address: string;
   port: number;

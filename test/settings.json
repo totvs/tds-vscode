@@ -1,7 +1,7 @@
 {
     "window.newWindowDimensions": "maximized",
     "workbench.startupEditor": "none",
-    "totvsLanguageServer.editor.show.notification": "all",
+    "totvsLanguageServer.editor.show.notification": "errors and warnings",
     "totvsLanguageServer.workspaceServerConfig": true,
     "telemetry.telemetryLevel": "off",
     "workbench.editor.enablePreview": true,

@@ -56,6 +56,7 @@
     "test-setup": "npm run compile && extest setup-tests -i -s c:/temp/test -e c:/temp/extension",
     "--SCENARIO--": "",
     "scenario:default": "npm run test",
+    "scenario:logix": "set SCENARIO=logix && npm run test",
     "scenario:acandido": "set SCENARIO=acandido && npm run test",
     "scenario:p19": "set SCENARIO=p19 && npm run test",
     "scenario:p17": "set SCENARIO=p17 && npm run test",

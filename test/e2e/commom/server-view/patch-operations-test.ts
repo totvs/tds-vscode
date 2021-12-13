@@ -2,12 +2,12 @@ import { expect } from "chai";
 import { assert } from "console";
 import { describe, before, it } from "mocha";
 import { By, WebElement } from "vscode-extension-tester";
-import { delay, openAdvplProject } from "../helper";
-import { PatchGeneratePageObject } from "../page-objects/patch-generate-po";
-import { ServerTreeItemPageObject } from "../page-objects/server-tree-item-po";
-import { ServerViewPageObject } from "../page-objects/server-view-po";
-import { WorkbenchPageObject } from "../page-objects/workbench-po";
-import { ADMIN_USER_DATA, APPSERVER_DATA } from "../scenario";
+import { delay, openProject } from "../../helper";
+import { PatchGeneratePageObject } from "../../page-objects/patch-generate-po";
+import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
+import { ServerViewPageObject } from "../../page-objects/server-view-po";
+import { WorkbenchPageObject } from "../../page-objects/workbench-po";
+import { ADMIN_USER_DATA, APPSERVER_DATA } from "../../scenario";
 
 describe.skip("Patch Operations (forms)", () => {
   let serverTreePO: ServerViewPageObject;
@@ -15,7 +15,7 @@ describe.skip("Patch Operations (forms)", () => {
   let workbenchPO: WorkbenchPageObject;
 
   before(async () => {
-    await openAdvplProject();
+    await openProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = new ServerViewPageObject();
