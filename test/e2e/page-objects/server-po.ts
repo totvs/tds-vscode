@@ -26,8 +26,10 @@ export class ServerPageObject extends AbstractPageObject {
   async fireSaveClose(): Promise<void> {
     await this.beginWebView();
 
-    this.click("submitIDClose");
+    await this.click("submitIDClose");
 
     await this.endWebView();
+
+    await delay(2000);
   }
 }

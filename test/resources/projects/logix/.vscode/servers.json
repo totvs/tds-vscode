@@ -9,7 +9,7 @@
 	"connectedServer": {},
 	"configurations": [
 		{
-			"id": "w037ykqnibjkx4qktokvv4upipjzch",
+			"id": "nnixve3m8pkx4zuhycz15vz3lshx",
 			"type": "totvs_server_logix",
 			"name": "lgx-localhost",
 			"port": 7085,
@@ -22,19 +22,19 @@
 			"environments": [
 				"Logix12"
 			],
-			"username": "USERORIGEM",
+			"username": "admin",
 			"environment": "Logix12",
-			"token": "djM6dzAzN3lrcW5pYmpreDRxa3Rva3Z2NHVwaXBqemNoOjI6bG9jYWxob3N0OjcwODU6MDo3LjAwLjEzMTIyN0E6Mw==:djE6TG9naXgxMjpVU0VST1JJR0VNOnBHdGc0S004ZW5UYU5GNE5mNzB2a3BFTy80K0FWUTFiNWxoM3k2Rm1wY2M9|djI6MTYzOTQwMzYzMTowOjE6MQ==.I2TH+mabJXhN4hgOQclOmMqak+KSYeq4NLdW3X2y8RzqGuOJNitqaF61lCejvHiBfoXCP7C/AYX9d9Z2psBx57LBmK8MU5WkzQe4AcVf6kbGBxWH80pNQtqsnKfZPEt322oaaqE5FWZj7G84w588FXTj8nnjAgpSCgyP87JIOHNMkIt8YND1dC4vNQowCRDxBeJAWHQ0YM/RWNbmveSxKkDxUdkvN3XGQCHYNPGkctC6/AQMzWFDltnl7uf/zPL665w0pHCfvB9w5innogJ5FxJZyu+T+kTnia8r6sftUSQH3t9oOMgufE7qmrYNF5i/UZaDZI8drA9Pt+mQcLD+cA=="
+			"token": "djM6bm5peHZlM204cGt4NHp1aHljejE1dnozbHNoeDoyOmxvY2FsaG9zdDo3MDg1OjA6Ny4wMC4xMzEyMjdBOjM=:djE6TG9naXgxMjphZG1pbjpTZTVBb1hTWUdWL1E2Ri9CZXFOMFRBcjBUV0JEcG8wKzRGQXpXZWc3RjdBPQ==|djI6MTYzOTQxOTI0NjowOjE6MQ==.XVJap5V4XtT4xBHxeU3q4x274GLtsCugilMgkwKtFoCVjVftg//S+wwfsrpz3ld3INPH5BFLadW8KV+RRARkxg/3MJX5Fx/X7K/ehJUfg9DayjT40NenzIAdc4uUpvgNTW33q3K6tkanns8Sy5M0HkHH5TW0/aTygAwNtt6v0S7mPQ//PYnzd3g4otMMmHaXorROo1k/skqIbPfB7Ekzh6qbzNvzyX3e1m3sIBjX6Ax8mmcs3e/jDoO7ShPjMnyOKod99J8zGICk/tLz3/8ct4lR7ToqVw6BkdDYenLWWh7SJUL2Vdsrndpu95+C8/giLRYL81M7nL6vez0rbmr1jQ=="
 		}
 	],
 	"savedTokens": [
 		[
-			"w037ykqnibjkx4qktokvv4upipjzch:Logix12",
+			"nnixve3m8pkx4zuhycz15vz3lshx:Logix12",
 			{
-				"id": "w037ykqnibjkx4qktokvv4upipjzch",
-				"token": "djM6dzAzN3lrcW5pYmpreDRxa3Rva3Z2NHVwaXBqemNoOjI6bG9jYWxob3N0OjcwODU6MDo3LjAwLjEzMTIyN0E6Mw==:djE6TG9naXgxMjpVU0VST1JJR0VNOnBHdGc0S004ZW5UYU5GNE5mNzB2a3BFTy80K0FWUTFiNWxoM3k2Rm1wY2M9|djI6MTYzOTQwMzYzMTowOjE6MQ==.I2TH+mabJXhN4hgOQclOmMqak+KSYeq4NLdW3X2y8RzqGuOJNitqaF61lCejvHiBfoXCP7C/AYX9d9Z2psBx57LBmK8MU5WkzQe4AcVf6kbGBxWH80pNQtqsnKfZPEt322oaaqE5FWZj7G84w588FXTj8nnjAgpSCgyP87JIOHNMkIt8YND1dC4vNQowCRDxBeJAWHQ0YM/RWNbmveSxKkDxUdkvN3XGQCHYNPGkctC6/AQMzWFDltnl7uf/zPL665w0pHCfvB9w5innogJ5FxJZyu+T+kTnia8r6sftUSQH3t9oOMgufE7qmrYNF5i/UZaDZI8drA9Pt+mQcLD+cA=="
+				"id": "nnixve3m8pkx4zuhycz15vz3lshx",
+				"token": "djM6bm5peHZlM204cGt4NHp1aHljejE1dnozbHNoeDoyOmxvY2FsaG9zdDo3MDg1OjA6Ny4wMC4xMzEyMjdBOjM=:djE6TG9naXgxMjphZG1pbjpTZTVBb1hTWUdWL1E2Ri9CZXFOMFRBcjBUV0JEcG8wKzRGQXpXZWc3RjdBPQ==|djI6MTYzOTQxOTI0NjowOjE6MQ==.XVJap5V4XtT4xBHxeU3q4x274GLtsCugilMgkwKtFoCVjVftg//S+wwfsrpz3ld3INPH5BFLadW8KV+RRARkxg/3MJX5Fx/X7K/ehJUfg9DayjT40NenzIAdc4uUpvgNTW33q3K6tkanns8Sy5M0HkHH5TW0/aTygAwNtt6v0S7mPQ//PYnzd3g4otMMmHaXorROo1k/skqIbPfB7Ekzh6qbzNvzyX3e1m3sIBjX6Ax8mmcs3e/jDoO7ShPjMnyOKod99J8zGICk/tLz3/8ct4lR7ToqVw6BkdDYenLWWh7SJUL2Vdsrndpu95+C8/giLRYL81M7nL6vez0rbmr1jQ=="
 			}
 		]
 	],
-	"lastConnectedServer": "w037ykqnibjkx4qktokvv4upipjzch"
+	"lastConnectedServer": ""
 }

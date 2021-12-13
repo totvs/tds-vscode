@@ -51,6 +51,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
 
     const serverPO = new ServerPageObject(data);
     await serverPO.fillServerPage(data);
+
     await serverPO.fireSaveClose();
 
     expect(await this.workbenchPO.isSavedServer()).is.true;

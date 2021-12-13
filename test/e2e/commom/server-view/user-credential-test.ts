@@ -1,18 +1,13 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import {
-  delay,
-  fillEnvironment,
-  fillUserdata,
-  openProject,
-} from "../../helper";
+import { delay, openProject } from "../../helper";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { APPSERVER_DATA, NO_ADMIN_USER_DATA } from "../../scenario";
 import { INVALID_USER_DATA, ADMIN_USER_DATA } from "../../scenario";
 
-describe.only("TOTVS: Credentials Users Connect", () => {
+describe("TOTVS: Credentials Users Connect", () => {
   let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
@@ -41,17 +36,25 @@ describe.only("TOTVS: Credentials Users Connect", () => {
       false
     );
 
-    expect(await workbenchPO.isAuthenticationFailed()).is.true;
-    expect(await workbenchPO.isAcessDenied()).is.true;
-
-    expect(
-      await workbenchPO.isConnected(
-        APPSERVER_DATA.serverName,
-        APPSERVER_DATA.environment
-      )
-    ).is.false;
-
-    expect(await serverItemPO.isConnected()).is.false;
+    if (await serverItemPO.isLogix()) {
+      expect(
+        await workbenchPO.isConnected(
+          APPSERVER_DATA.serverName,
+          APPSERVER_DATA.environment
+        )
+      ).is.true;
+      expect(await serverItemPO.isConnected()).is.true;
+    } else {
+      expect(await workbenchPO.isAuthenticationFailed()).is.true;
+      expect(await workbenchPO.isAcessDenied()).is.true;
+      expect(
+        await workbenchPO.isConnected(
+          APPSERVER_DATA.serverName,
+          APPSERVER_DATA.environment
+        )
+      ).is.false;
+      expect(await serverItemPO.isConnected()).is.false;
+    }
   });
 
   it("Input Invalid User", async () => {
@@ -62,17 +65,25 @@ describe.only("TOTVS: Credentials Users Connect", () => {
       false
     );
 
-    expect(await workbenchPO.isAuthenticationFailed()).is.true;
-    expect(await workbenchPO.isInvalidUser()).is.true;
-
-    expect(
-      await workbenchPO.isConnected(
-        APPSERVER_DATA.serverName,
-        APPSERVER_DATA.environment
-      )
-    ).is.false;
-
-    expect(await serverItemPO.isConnected()).is.false;
+    if (await serverItemPO.isLogix()) {
+      expect(
+        await workbenchPO.isConnected(
+          APPSERVER_DATA.serverName,
+          APPSERVER_DATA.environment
+        )
+      ).is.true;
+      expect(await serverItemPO.isConnected()).is.true;
+    } else {
+      expect(await workbenchPO.isAuthenticationFailed()).is.true;
+      expect(await workbenchPO.isInvalidUser()).is.true;
+      expect(
+        await workbenchPO.isConnected(
+          APPSERVER_DATA.serverName,
+          APPSERVER_DATA.environment
+        )
+      ).is.false;
+      expect(await serverItemPO.isConnected()).is.false;
+    }
   });
 
   it("Input Admin User", async () => {

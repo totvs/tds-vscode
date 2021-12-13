@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { By, TreeItem, ViewItemAction } from "vscode-extension-tester";
 import {
   delay,
@@ -30,10 +29,17 @@ export class ServerTreeItemPageObject {
     await this.workbenchPO.waitConnection();
   }
 
-  async isServerP20OrGreater(): Promise<boolean> {
+  async isLogix(): Promise<boolean> {
     const tooltip: string = await this.serverTreeItem.getTooltip();
 
-    return tooltip.localeCompare("7.00.191205P") > 0;
+    return tooltip.startsWith("Logix");
+  }
+
+  async isServerP20OrGreater(): Promise<boolean> {
+    const tooltip: string = await this.serverTreeItem.getTooltip();
+    const pos: number = tooltip.lastIndexOf(" ");
+
+    return tooltip.substring(pos + 1).localeCompare("7.00.191205P") > 0;
   }
 
   async select() {
