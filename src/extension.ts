@@ -443,9 +443,8 @@ export function activate(context: ExtensionContext) {
             "tds.vscode.starting.build.patch",
             "Starting package generation..."
           )}`,
-          5000
+          Promise.resolve(openGeneratePatchView(context))
         );
-        openGeneratePatchView(context);
       }
     )
   );
@@ -458,9 +457,8 @@ export function activate(context: ExtensionContext) {
           "tds.vscode.starting.apply.patch",
           "Starting patch application..."
         )}`,
-        5000
+        Promise.resolve(patchApply(context, false))
       );
-      patchApply(context, false);
     })
   );
 
@@ -473,9 +471,8 @@ export function activate(context: ExtensionContext) {
             "tds.vscode.starting.apply.patch",
             "Starting patch application..."
           )}`,
-          5000
+          Promise.resolve(patchApply(context, true, args))
         );
-        patchApply(context, true, args);
       }
     )
   );
@@ -538,9 +535,8 @@ export function activate(context: ExtensionContext) {
             "tds.vscode.starting.apply.teplate",
             "Starting template application..."
           )}`,
-          5000
+          Promise.resolve(openTemplateApplyView(context, args))
         );
-        openTemplateApplyView(context, args);
       }
     )
   );
@@ -553,9 +549,8 @@ export function activate(context: ExtensionContext) {
           "tds.vscode.starting.monitor",
           "Starting monitor..."
         )}`,
-        5000
+        Promise.resolve(openMonitorView(context))
       );
-      openMonitorView(context);
     })
   );
 
@@ -569,9 +564,8 @@ export function activate(context: ExtensionContext) {
             "tds.vscode.starting.rpo.loadinfo",
             "Starting RPO load information..."
           )}`,
-          5000
+          Promise.resolve(openRpoInfoView(context))
         );
-        openRpoInfoView(context);
       }
     )
   );

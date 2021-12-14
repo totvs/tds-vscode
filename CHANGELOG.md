@@ -4,13 +4,19 @@
 
 ## Melhorias
 
-- Adicionado confirmação na operação de reset de configuração no `Monitor`. [DTCLIENT01-2908](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2908)
+- Adicionado confirmação na operação de _reset_ de configuração no `Monitor`. [DTCLIENT01-2908](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2908)
+
+- Adicionado limite de tamanho em mensagens enviadas ao usuário via `Monitor`. [DTCLIENT01-2849](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2849)
 
 - A extensão `.RPTDESIGN`, passa a ser reconhecida como um recurso padrão na compilação.
 
 ## Falha na autenticação de usuário
 
 - Em determinadas situações, o usuário não era identificado corretamente.
+
+## 4GL: correção na identificação de _snippets_ de código de diretivas [DTCLIENT01-2904](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2904)
+
+- Ajustado identificação de diretivas.
 
 # Versão [1.3.8]
 

@@ -13,7 +13,6 @@ import {
   monitorIcons,
 } from "../helper/monitorIcons";
 import { MonitorPanelAction, IMonitorPanelAction } from "../actions";
-import IMonitorUser from "../monitorUser";
 import SendMessageDialog from "./sendMessageDialog";
 import FilterList from "@material-ui/icons/FilterList";
 import SpeedIcon from "@material-ui/icons/Speed";
