@@ -9,7 +9,7 @@
 	"connectedServer": {},
 	"configurations": [
 		{
-			"id": "nnixve3m8pkx4zuhycz15vz3lshx",
+			"id": "slmn94hj698kx63h217j2t1o1hzfli",
 			"type": "totvs_server_logix",
 			"name": "lgx-localhost",
 			"port": 7085,
@@ -24,17 +24,17 @@
 			],
 			"username": "admin",
 			"environment": "Logix12",
-			"token": "djM6bm5peHZlM204cGt4NHp1aHljejE1dnozbHNoeDoyOmxvY2FsaG9zdDo3MDg1OjA6Ny4wMC4xMzEyMjdBOjM=:djE6TG9naXgxMjphZG1pbjpTZTVBb1hTWUdWL1E2Ri9CZXFOMFRBcjBUV0JEcG8wKzRGQXpXZWc3RjdBPQ==|djI6MTYzOTQxOTI0NjowOjE6MQ==.XVJap5V4XtT4xBHxeU3q4x274GLtsCugilMgkwKtFoCVjVftg//S+wwfsrpz3ld3INPH5BFLadW8KV+RRARkxg/3MJX5Fx/X7K/ehJUfg9DayjT40NenzIAdc4uUpvgNTW33q3K6tkanns8Sy5M0HkHH5TW0/aTygAwNtt6v0S7mPQ//PYnzd3g4otMMmHaXorROo1k/skqIbPfB7Ekzh6qbzNvzyX3e1m3sIBjX6Ax8mmcs3e/jDoO7ShPjMnyOKod99J8zGICk/tLz3/8ct4lR7ToqVw6BkdDYenLWWh7SJUL2Vdsrndpu95+C8/giLRYL81M7nL6vez0rbmr1jQ=="
+			"token": "djM6c2xtbjk0aGo2OThreDYzaDIxN2oydDFvMWh6ZmxpOjI6bG9jYWxob3N0OjcwODU6MDo3LjAwLjEzMTIyN0E6Mw==:djE6TG9naXgxMjphZG1pbjpkMnU0TEZ1UVQxV2UxYUxCdzZmR3lXRXU5UWVQY0pVTGRnZGhDYWFnc1g4PQ==|djI6MTYzOTQ4NTg1ODowOjE6MQ==.UL2/tNOhL3/fR8lzfyMjgcrH4bA7q1wk+DnSuhj7WX9W5BjX6L6rXd3/q156jNDR3SQbVapGstmnx1aAVIFekqR/SGZkzgledO/os1SDlUrp95Fv2NTOaBY1LWlcbILUH0wYeSxrdEXS1dHz2JfhumZxyGWo50BYhYJuWWKfGK5RtUldpusWmZH8UlkCjXXpQoPkfHAzmJUbL7v3NWCvtvCx1mk2EEk35x9AlaxBtEWY0zO57aIGSjP7mkmUQ0GXOd7TBgA+rkxQU1nWLPi3xnLWsUzUn83kM7iHM8y/gtBRoIxTPDTDKjQYPDT7/SNYhLnQrTSHnHsKnuvgEWDtEA=="
 		}
 	],
 	"savedTokens": [
 		[
-			"nnixve3m8pkx4zuhycz15vz3lshx:Logix12",
+			"slmn94hj698kx63h217j2t1o1hzfli:Logix12",
 			{
-				"id": "nnixve3m8pkx4zuhycz15vz3lshx",
-				"token": "djM6bm5peHZlM204cGt4NHp1aHljejE1dnozbHNoeDoyOmxvY2FsaG9zdDo3MDg1OjA6Ny4wMC4xMzEyMjdBOjM=:djE6TG9naXgxMjphZG1pbjpTZTVBb1hTWUdWL1E2Ri9CZXFOMFRBcjBUV0JEcG8wKzRGQXpXZWc3RjdBPQ==|djI6MTYzOTQxOTI0NjowOjE6MQ==.XVJap5V4XtT4xBHxeU3q4x274GLtsCugilMgkwKtFoCVjVftg//S+wwfsrpz3ld3INPH5BFLadW8KV+RRARkxg/3MJX5Fx/X7K/ehJUfg9DayjT40NenzIAdc4uUpvgNTW33q3K6tkanns8Sy5M0HkHH5TW0/aTygAwNtt6v0S7mPQ//PYnzd3g4otMMmHaXorROo1k/skqIbPfB7Ekzh6qbzNvzyX3e1m3sIBjX6Ax8mmcs3e/jDoO7ShPjMnyOKod99J8zGICk/tLz3/8ct4lR7ToqVw6BkdDYenLWWh7SJUL2Vdsrndpu95+C8/giLRYL81M7nL6vez0rbmr1jQ=="
+				"id": "slmn94hj698kx63h217j2t1o1hzfli",
+				"token": "djM6c2xtbjk0aGo2OThreDYzaDIxN2oydDFvMWh6ZmxpOjI6bG9jYWxob3N0OjcwODU6MDo3LjAwLjEzMTIyN0E6Mw==:djE6TG9naXgxMjphZG1pbjpkMnU0TEZ1UVQxV2UxYUxCdzZmR3lXRXU5UWVQY0pVTGRnZGhDYWFnc1g4PQ==|djI6MTYzOTQ4NTg1ODowOjE6MQ==.UL2/tNOhL3/fR8lzfyMjgcrH4bA7q1wk+DnSuhj7WX9W5BjX6L6rXd3/q156jNDR3SQbVapGstmnx1aAVIFekqR/SGZkzgledO/os1SDlUrp95Fv2NTOaBY1LWlcbILUH0wYeSxrdEXS1dHz2JfhumZxyGWo50BYhYJuWWKfGK5RtUldpusWmZH8UlkCjXXpQoPkfHAzmJUbL7v3NWCvtvCx1mk2EEk35x9AlaxBtEWY0zO57aIGSjP7mkmUQ0GXOd7TBgA+rkxQU1nWLPi3xnLWsUzUn83kM7iHM8y/gtBRoIxTPDTDKjQYPDT7/SNYhLnQrTSHnHsKnuvgEWDtEA=="
 			}
 		]
 	],
-	"lastConnectedServer": ""
+	"lastConnectedServer": "slmn94hj698kx63h217j2t1o1hzfli"
 }

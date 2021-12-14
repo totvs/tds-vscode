@@ -154,6 +154,10 @@ export class WorkbenchPageObject {
     return await this.testNotification(/Path version incorrect/);
   }
 
+  async isPatchFileNotFoundOrInvalid(): Promise<boolean> {
+    return await this.testNotification(/Patch file not found or invalid/);
+  }
+
   async isPatchApplied(): Promise<boolean> {
     return await this.testNotification(/Patch applied/);
   }

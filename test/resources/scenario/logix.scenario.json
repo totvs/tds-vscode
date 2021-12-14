@@ -26,8 +26,7 @@
 			"m:/more_2/includes"
 		]
 	},
-	"compileKey": {
-		"9DA4-26D1": "acandido.aut"
-	},
-	"rpoToken": {}
+	"compileKey": {},
+	"rpoToken": {},
+	"patchFolder": "l12"
 }

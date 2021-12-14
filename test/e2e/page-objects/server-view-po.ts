@@ -91,7 +91,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
   async disconnectAllServers(): Promise<void> {
     const elements: ViewItem[] = await this.getVisibleItems();
 
-    elements.forEach(async (element: WebElement) => {
+    for await (const element of elements) {
       const item: ServerTreeItemPageObject = new ServerTreeItemPageObject(
         element as TreeItem
       );
@@ -99,7 +99,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
         await item.fireDisconnectAction();
         await delay();
       }
-    });
+    }
   }
 
   async fireConfigureServerView() {

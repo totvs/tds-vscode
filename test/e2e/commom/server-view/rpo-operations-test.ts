@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { Notification } from "vscode-extension-tester";
 import { delay, openProject } from "../../helper";
 import { FunctionsInspectorPageObject } from "../../page-objects/functions-inspector-po";
 import { ObjectsInspectorPageObject } from "../../page-objects/objects-inspector-po";
@@ -21,19 +20,12 @@ describe("RPO Operations", () => {
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = new ServerViewPageObject();
+    await delay();
 
     await serverTreePO.addNewServer(APPSERVER_DATA);
-
-    serverTreePO = new ServerViewPageObject();
-
-    await delay();
   });
 
-  after(function () {});
-
   beforeEach(async () => {
-    await delay();
-
     serverItemPO = await serverTreePO.connect(
       APPSERVER_DATA.serverName,
       APPSERVER_DATA.environment,
@@ -42,8 +34,8 @@ describe("RPO Operations", () => {
   });
 
   afterEach(async () => {
-    await delay();
     await serverItemPO.fireDisconnectAction();
+    await delay();
   });
 
   it("Check Integrity", async () => {

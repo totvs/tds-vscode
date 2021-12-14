@@ -74,8 +74,12 @@ describe("Patch Operations", () => {
     await applyPatchPO.fireSubmitClose();
     await delay(2000);
 
+    if (serverItemPO.isLogix()) {
+      expect(await workbenchPO.isPatchFileNotFoundOrInvalid()).is.true;
+    } else {
+      expect(await workbenchPO.isPatchVersionIncorrect()).is.true;
+    }
     expect(await workbenchPO.isRequestFailed()).is.true;
-    expect(await workbenchPO.isPatchVersionIncorrect()).is.true;
     expect(await workbenchPO.isPatchValidateNotBeExecuted()).is.true;
   });
 

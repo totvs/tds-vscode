@@ -24,7 +24,10 @@ export class ServerTreeItemPageObject {
     await delay();
 
     await fillEnvironment(environment);
-    await fillUserdata(userData);
+
+    if (userData) {
+      await fillUserdata(userData);
+    }
 
     await this.workbenchPO.waitConnection();
   }

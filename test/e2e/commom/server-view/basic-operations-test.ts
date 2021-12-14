@@ -69,44 +69,14 @@ describe("TOTVS: Server View Basic Operations", () => {
   });
 
   it("Localhost Server Disconnected", async () => {
-    await serverItemPO.select();
     await serverItemPO.fireDisconnectAction();
 
     expect(await workbenchPO.isNeedSelectServer()).is.true;
     expect(await serverItemPO.isNotConnected()).is.true;
   });
 
-  it.skip("Try Connect Using Invalid Environment", async () => {
-    await serverTreePO.disconnectAllServers();
-
-    expect(
-      await serverTreePO.connect(
-        APPSERVER_DATA.serverName,
-        "p12_invalid",
-        ADMIN_USER_DATA
-      )
-    ).to.not.throw();
-
-    await delay();
-    expect(await workbenchPO.isNeedSelectServer()).is.true;
-  });
-
-  it("Add server (context menu)", async () => {
-    await serverItemPO.fireAddServerAction();
-
-    const serverPO = new ServerPageObject();
-    await serverPO.fillServerPage(DELETE_DATA);
-    await serverPO.fireSaveClose();
-
-    await delay();
-
-    expect(await workbenchPO.isSavedServer()).is.true;
-  });
-
-  it.skip("Reconnect", async () => {
-    await serverTreePO.disconnectAllServers();
-
-    await serverItemPO.fireReconnectAction(); // esta solicitando usuário e senha
+  it("Reconnect", async () => {
+    await serverItemPO.fireReconnectAction();
     await fillEnvironment(APPSERVER_DATA.environment);
     await workbenchPO.waitReconnection();
 
@@ -117,5 +87,31 @@ describe("TOTVS: Server View Basic Operations", () => {
       )
     ).is.true;
     expect(await serverItemPO.isConnected()).is.true;
+  });
+
+  it.skip("Try Connect Using Invalid Environment", async () => {
+    await serverItemPO.fireDisconnectAction();
+
+    serverItemPO = await serverTreePO.connect(
+      APPSERVER_DATA.serverName,
+      "p12_invalid",
+      undefined,
+      false
+    );
+
+    await delay();
+    expect(await workbenchPO.isNeedSelectServer()).is.false;
+  });
+
+  it.skip("Add server (context menu)", async () => {
+    await serverItemPO.fireAddServerAction();
+
+    const serverPO = new ServerPageObject();
+    await serverPO.fillServerPage(DELETE_DATA);
+    await serverPO.fireSaveClose();
+
+    await delay();
+
+    expect(await workbenchPO.isSavedServer()).is.true;
   });
 });
