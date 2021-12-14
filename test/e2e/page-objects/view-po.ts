@@ -50,7 +50,7 @@ export class ViewPageObject<T> {
   async getTreeItem(
     name: string,
     sectionName?: string
-  ): Promise<TreeItem | null> {
+  ): Promise<TreeItem | undefined> {
     const view: SideBarView = this.view as unknown as SideBarView;
     const content: ViewContent = view.getContent();
     let tree: DefaultTreeSection;
@@ -65,26 +65,13 @@ export class ViewPageObject<T> {
     const nodes: string[] = name.split("/");
     let result: TreeItem[] | TreeItem;
 
-    result = await (nodes.length > 1
-      ? this.openChild(nodes, tree)
-      : tree.findItem(nodes[0]));
-    //result = await tree.openItem(...nodes);
-    // for (const node of nodes) {
-    //   aux = await (aux ? aux.findChildItem(node) : tree.findItem(node));
+    result =
+      nodes.length > 1
+        ? await this.openChild(nodes, tree)
+        : await tree.findItem(nodes[0]);
 
-    //   if (aux) {
-    //     result = aux;
-    //     nodes.length > 1 ? await result.expand() : null;
-    //   } else {
-    //     result = null;
-    //     break;
-    //   }
-    // }
-
-    return Array.isArray(result)
+    return Array.isArray(result) && result.length == 1
       ? (result[0] as TreeItem)
-      : result == undefined
-      ? null
       : result;
   }
 
@@ -92,18 +79,16 @@ export class ViewPageObject<T> {
     nodes: string[],
     tree: DefaultTreeSection
   ): Promise<TreeItem> {
-    let treeItem: TreeItem[] = await tree.openItem(...nodes);
-    // await parentItem.expand();
-    //  await parentItem.findChildItem(nodes[0]);
+    const treeItems: TreeItem[] = await tree.openItem(...nodes.slice(0, -1));
+    const target: string = nodes[nodes.length - 1].toLocaleLowerCase();
+    const treeItem: TreeItem = treeItems
+      .filter(async (item: TreeItem) => {
+        const label: string = await item.getLabel();
+        return label.toLowerCase() === target;
+      })
+      .pop();
 
-    // while (treeItem) {
-    //   parentItem = treeItem;
-    //   nodes = nodes.splice(0, 1);
-    //   treeItem = await parentItem.findChildItem(nodes[0]);
-    //   await treeItem?.expand();
-    // }
-
-    return treeItem[0];
+    return treeItem;
   }
 
   async getAction(action: string): Promise<TitleActionButton> {

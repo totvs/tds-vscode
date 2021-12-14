@@ -26,7 +26,6 @@ export class ReplayPageObject extends AbstractPageObject {
     await this.workbenchPO.executeCommand(
       "totvs-developer-studio.tdsreplay.configure.launcher"
     );
-    await delay(2000);
   }
 
   async fireSaveClose() {

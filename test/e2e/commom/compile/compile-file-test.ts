@@ -10,7 +10,7 @@ import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../../scenario";
 
-describe.skip("Compile files", () => {
+describe.only("Compile files", () => {
   let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
@@ -23,8 +23,7 @@ describe.skip("Compile files", () => {
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();
 
-    await serverTreePO.addNewServer(APPSERVER_DATA);
-    await delay();
+    await serverTreePO.getServer(APPSERVER_DATA);
 
     serverItemPO = await serverTreePO.connect(
       APPSERVER_DATA.serverName,

@@ -12,7 +12,7 @@ import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { ADMIN_USER_DATA, DELETE_DATA, APPSERVER_DATA } from "../../scenario";
 
-describe("TOTVS: Server View Basic Operations", () => {
+describe("Server View Basic Operations", () => {
   let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
@@ -22,12 +22,11 @@ describe("TOTVS: Server View Basic Operations", () => {
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();
-    await delay();
 
-    await serverTreePO.addNewServer(APPSERVER_DATA);
+    await serverTreePO.getServer(APPSERVER_DATA);
 
     serverItemPO = new ServerTreeItemPageObject(
-      await serverTreePO.getServerTreeItem(APPSERVER_DATA.serverName)
+      await serverTreePO.getTreeItem(APPSERVER_DATA.serverName)
     );
 
     await delay(2000);

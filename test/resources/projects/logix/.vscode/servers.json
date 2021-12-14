@@ -7,34 +7,7 @@
 		"authorizationtoken": ""
 	},
 	"connectedServer": {},
-	"configurations": [
-		{
-			"id": "slmn94hj698kx63h217j2t1o1hzfli",
-			"type": "totvs_server_logix",
-			"name": "lgx-localhost",
-			"port": 7085,
-			"address": "localhost",
-			"buildVersion": "7.00.131227A",
-			"secure": false,
-			"includes": [
-				"m:\\protheus\\includes"
-			],
-			"environments": [
-				"Logix12"
-			],
-			"username": "admin",
-			"environment": "Logix12",
-			"token": "djM6c2xtbjk0aGo2OThreDYzaDIxN2oydDFvMWh6ZmxpOjI6bG9jYWxob3N0OjcwODU6MDo3LjAwLjEzMTIyN0E6Mw==:djE6TG9naXgxMjphZG1pbjpkMnU0TEZ1UVQxV2UxYUxCdzZmR3lXRXU5UWVQY0pVTGRnZGhDYWFnc1g4PQ==|djI6MTYzOTQ4NTg1ODowOjE6MQ==.UL2/tNOhL3/fR8lzfyMjgcrH4bA7q1wk+DnSuhj7WX9W5BjX6L6rXd3/q156jNDR3SQbVapGstmnx1aAVIFekqR/SGZkzgledO/os1SDlUrp95Fv2NTOaBY1LWlcbILUH0wYeSxrdEXS1dHz2JfhumZxyGWo50BYhYJuWWKfGK5RtUldpusWmZH8UlkCjXXpQoPkfHAzmJUbL7v3NWCvtvCx1mk2EEk35x9AlaxBtEWY0zO57aIGSjP7mkmUQ0GXOd7TBgA+rkxQU1nWLPi3xnLWsUzUn83kM7iHM8y/gtBRoIxTPDTDKjQYPDT7/SNYhLnQrTSHnHsKnuvgEWDtEA=="
-		}
-	],
-	"savedTokens": [
-		[
-			"slmn94hj698kx63h217j2t1o1hzfli:Logix12",
-			{
-				"id": "slmn94hj698kx63h217j2t1o1hzfli",
-				"token": "djM6c2xtbjk0aGo2OThreDYzaDIxN2oydDFvMWh6ZmxpOjI6bG9jYWxob3N0OjcwODU6MDo3LjAwLjEzMTIyN0E6Mw==:djE6TG9naXgxMjphZG1pbjpkMnU0TEZ1UVQxV2UxYUxCdzZmR3lXRXU5UWVQY0pVTGRnZGhDYWFnc1g4PQ==|djI6MTYzOTQ4NTg1ODowOjE6MQ==.UL2/tNOhL3/fR8lzfyMjgcrH4bA7q1wk+DnSuhj7WX9W5BjX6L6rXd3/q156jNDR3SQbVapGstmnx1aAVIFekqR/SGZkzgledO/os1SDlUrp95Fv2NTOaBY1LWlcbILUH0wYeSxrdEXS1dHz2JfhumZxyGWo50BYhYJuWWKfGK5RtUldpusWmZH8UlkCjXXpQoPkfHAzmJUbL7v3NWCvtvCx1mk2EEk35x9AlaxBtEWY0zO57aIGSjP7mkmUQ0GXOd7TBgA+rkxQU1nWLPi3xnLWsUzUn83kM7iHM8y/gtBRoIxTPDTDKjQYPDT7/SNYhLnQrTSHnHsKnuvgEWDtEA=="
-			}
-		]
-	],
-	"lastConnectedServer": "slmn94hj698kx63h217j2t1o1hzfli"
+	"configurations": [],
+	"savedTokens": [],
+	"lastConnectedServer": ""
 }

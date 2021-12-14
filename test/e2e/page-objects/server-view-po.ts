@@ -19,12 +19,12 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
     super("Totvs");
   }
 
-  async getServerTreeItem(serverName: string): Promise<TreeItem> {
-    return this.getTreeItem(serverName);
-  }
+  //async getTreeItem(serverName: string): Promise<TreeItem> {
+  //  return this.getTreeItem(serverName);
+  // }
 
   async removeServer(serverName: string) {
-    const serverTreeItem: TreeItem = await this.getServerTreeItem(serverName);
+    const serverTreeItem: TreeItem = await this.getTreeItem(serverName);
     await delay(2000);
 
     await serverTreeItem.select();
@@ -45,24 +45,22 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
     await delay();
   }
 
-  async addNewServer(data: IServerData): Promise<void> {
+  private async addServer(data: IServerData): Promise<void> {
     await this.workbenchPO.executeCommand("totvs-developer-studio.add");
-    await delay();
 
-    const serverPO = new ServerPageObject(data);
+    const serverPO: ServerPageObject = new ServerPageObject(data);
     await serverPO.fillServerPage(data);
-
     await serverPO.fireSaveClose();
 
     expect(await this.workbenchPO.isSavedServer()).is.true;
   }
 
-  async getNewServer(data: IServerData) {
-    let serverTreeItem = await this.getServerTreeItem(data.serverName);
+  async getServer(data: IServerData) {
+    let serverTreeItem = await this.getTreeItem(data.serverName);
 
     if (!serverTreeItem) {
-      await this.addNewServer(data);
-      serverTreeItem = await this.getServerTreeItem(data.serverName);
+      await this.addServer(data);
+      serverTreeItem = await this.getTreeItem(data.serverName);
     }
 
     return serverTreeItem;
@@ -75,7 +73,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
     validate: boolean = true
   ): Promise<ServerTreeItemPageObject> {
     const serverPO: ServerTreeItemPageObject = new ServerTreeItemPageObject(
-      await this.getServerTreeItem(serverName)
+      await this.getTreeItem(serverName)
     );
 
     await serverPO.connect(environment, userdata);

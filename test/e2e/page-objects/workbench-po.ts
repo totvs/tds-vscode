@@ -291,6 +291,7 @@ export class WorkbenchPageObject {
 
   async executeCommand(command: string) {
     await this.workbench.executeCommand(command);
+    await delay();
   }
 
   async openDebugView(): Promise<DebugPageObject> {

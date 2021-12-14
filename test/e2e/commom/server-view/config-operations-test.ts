@@ -19,7 +19,7 @@ import {
   INCLUDE_PATH_DATA,
 } from "../../scenario";
 
-describe.skip("TOTVS: Server View Configurations", () => {
+describe.skip("Server View Configurations", () => {
   let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
@@ -28,10 +28,10 @@ describe.skip("TOTVS: Server View Configurations", () => {
     await openProject();
 
     workbenchPO = new WorkbenchPageObject();
-    serverTreePO = new ServerViewPageObject();
+    serverTreePO = await workbenchPO.openTotvsView();
 
     serverItemPO = new ServerTreeItemPageObject(
-      await serverTreePO.getNewServer(DELETE_DATA)
+      await serverTreePO.getServer(DELETE_DATA)
     );
 
     await delay();

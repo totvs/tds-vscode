@@ -5,7 +5,7 @@ import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { DELETE_DATA, APPSERVER_DATA } from "../../scenario";
 
-describe("TOTVS: Server View", () => {
+describe("Server View", () => {
   let serverTreePO: ServerViewPageObject;
   let workbenchPO: WorkbenchPageObject;
 
@@ -21,17 +21,16 @@ describe("TOTVS: Server View", () => {
   });
 
   it("Add Local Server", async () => {
-    await serverTreePO.addNewServer(APPSERVER_DATA);
+    await serverTreePO.getServer(APPSERVER_DATA);
   });
 
   it("Remove Server", async () => {
     await avoidsBacksliding();
 
-    await serverTreePO.addNewServer(DELETE_DATA);
+    await serverTreePO.getServer(DELETE_DATA);
     await delay();
     await serverTreePO.removeServer(DELETE_DATA.serverName);
 
-    expect(await serverTreePO.getServerTreeItem(DELETE_DATA.serverName)).is
-      .null;
+    expect(await serverTreePO.getTreeItem(DELETE_DATA.serverName)).is.null;
   });
 });

@@ -16,7 +16,7 @@ describe.skip("Compile folders", () => {
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();
 
-    await serverTreePO.addNewServer(APPSERVER_DATA);
+    await serverTreePO.getServer(APPSERVER_DATA);
     await delay();
 
     serverItemPO = await serverTreePO.connect(

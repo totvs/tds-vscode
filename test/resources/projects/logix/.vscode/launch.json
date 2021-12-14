@@ -1,0 +1,26 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "totvs_language_debug",
+			"request": "launch",
+			"name": "TOTVS Language Debug",
+			"program": "${command:AskForProgramName}",
+			"cwb": "${workspaceFolder}",
+			"smartclientBin": "C:/totvs/bin/smartclient/smartclient.exe",
+			"isMultiSession": true,
+			"enableTableSync": true
+		},
+		{
+			"type": "totvs_tdsreplay_debug",
+			"request": "launch",
+			"cwb": "${workspaceRoot}",
+			"ignoreSourcesNotFound": true,
+			"name": "test_replay_escolhenum.trplay",
+			"tdsReplayFile": "W:/ws_tds_vscode/tds-vscode/test/resources/replay/small/escolhenum.trplay",
+			"password": "",
+			"includeSources": "*",
+			"excludeSources": ""
+		}
+	]
+}

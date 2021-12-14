@@ -16,10 +16,9 @@ describe("Credentials Users Connect", () => {
     await openProject();
 
     workbenchPO = new WorkbenchPageObject();
-    serverTreePO = new ServerViewPageObject();
-    await delay();
+    serverTreePO = await workbenchPO.openTotvsView();
 
-    await serverTreePO.addNewServer(APPSERVER_DATA);
+    await serverTreePO.getServer(APPSERVER_DATA);
   });
 
   afterEach(async () => {

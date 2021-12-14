@@ -18,21 +18,18 @@ describe.skip("Patch Operations (forms)", () => {
     await openProject();
 
     workbenchPO = new WorkbenchPageObject();
-    serverTreePO = new ServerViewPageObject();
+    serverTreePO = await workbenchPO.openTotvsView();
 
-    await serverTreePO.addNewServer(APPSERVER_DATA);
+    await serverTreePO.getServer(APPSERVER_DATA);
 
     await delay();
   });
 
   beforeEach(async () => {
-    await serverTreePO.connect(
+    serverItemPO = await serverTreePO.connect(
       APPSERVER_DATA.serverName,
       APPSERVER_DATA.environment,
       ADMIN_USER_DATA
-    );
-    serverItemPO = new ServerTreeItemPageObject(
-      await serverTreePO.getServerTreeItem(APPSERVER_DATA.serverName)
     );
   });
 

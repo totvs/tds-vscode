@@ -18,7 +18,7 @@ describe("Patch Operations", () => {
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();
 
-    await serverTreePO.addNewServer(APPSERVER_DATA);
+    await serverTreePO.getServer(APPSERVER_DATA);
 
     await delay();
   });
@@ -74,7 +74,7 @@ describe("Patch Operations", () => {
     await applyPatchPO.fireSubmitClose();
     await delay(2000);
 
-    if (serverItemPO.isLogix()) {
+    if (await serverItemPO.isLogix()) {
       expect(await workbenchPO.isPatchFileNotFoundOrInvalid()).is.true;
     } else {
       expect(await workbenchPO.isPatchVersionIncorrect()).is.true;

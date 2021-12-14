@@ -5,10 +5,10 @@ import { ReplayPageObject } from "../../page-objects/replay-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { REPLAY_FILES } from "../../scenario";
 import path = require("path");
-import { DebugToolbar, DebugView } from "vscode-extension-tester";
+import { DebugToolbar } from "vscode-extension-tester";
 import { DebugPageObject } from "../../page-objects/debug-view-po";
 
-const BIG_IMPORT_TIMEOUT = 2 * 60 * 1000; // 2min
+const LONG_IMPORT_TIMEOUT = 3 * 60 * 1000; // 3min
 
 (REPLAY_FILES ? describe : describe.skip)("Replay Operations", () => {
   let workbenchPO: WorkbenchPageObject;
@@ -17,7 +17,6 @@ const BIG_IMPORT_TIMEOUT = 2 * 60 * 1000; // 2min
 
   before(async () => {
     await openProject();
-    await delay(5000); //necessário para inicializar LS se necessário
 
     workbenchPO = new WorkbenchPageObject();
     workbenchPO.openTotvsView();
@@ -63,7 +62,7 @@ const BIG_IMPORT_TIMEOUT = 2 * 60 * 1000; // 2min
         });
 
         it("Import file", async () => {
-          await workbenchPO.waitImportReplay(BIG_IMPORT_TIMEOUT);
+          await workbenchPO.waitImportReplay(LONG_IMPORT_TIMEOUT);
 
           expect(await workbenchPO.isDAReadingAllTimelines()).is.true;
           expect(await workbenchPO.isDACheckingSources()).is.true;

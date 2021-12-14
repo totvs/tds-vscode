@@ -18,7 +18,7 @@ describe("TOTVS Activity Bar", () => {
     expect(sidebar, "Sidebar view not found in ActivityBar").not.null;
   });
 
-  it("TOTVS: Servers View Visible", async () => {
+  it("Servers View Visible", async () => {
     const view = await control.openView();
     const klass = await control.getAttribute("class");
 
@@ -26,6 +26,6 @@ describe("TOTVS Activity Bar", () => {
     expect(await view.isDisplayed()).is.true;
 
     const title = await view.getTitlePart().getTitle();
-    expect(title.toLowerCase()).equals("totvs: servers");
+    expect(title.toLowerCase()).equals("servers");
   });
 });
