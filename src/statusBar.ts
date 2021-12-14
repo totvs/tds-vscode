@@ -138,16 +138,19 @@ function updatePermissionStatusBarItem(): void {
       );
       if (infos.machineId) {
         toolTips.push(
-          localize("tds.vscode.machine_id", "Machine ID:") + infos.machineId
+          localize("tds.vscode.machine_id", "Machine ID: {0}", infos.machineId)
         );
       } else if (infos.userId) {
         toolTips.push(
-          localize("tds.vscode.user_id", "User ID:") + infos.userId
+          localize("tds.vscode.user_id", "User ID: {0}", infos.userId)
         );
       }
       toolTips.push(
-        localize("tds.vscode.expires_in", "Expires in ") +
+        localize(
+          "tds.vscode.expires_in",
+          "Expires in {0}",
           expiryDate.toLocaleString()
+        )
       );
 
       if (infos.buildType === "0") {
@@ -170,9 +173,11 @@ function updatePermissionStatusBarItem(): void {
         );
       }
     } else {
-      permissionStatusBarItem.text =
-        localize("tds.vscode.expired_in", "Expired in ") +
-        expiryDate.toLocaleString();
+      permissionStatusBarItem.text = localize(
+        "tds.vscode.expired_in",
+        "Expired in {0}",
+        expiryDate.toLocaleString()
+      );
     }
   } else {
     permissionStatusBarItem.text = localize("tds.vscode.not_key", "NOT key");
@@ -252,9 +257,10 @@ function updateSettingsBarItem(): void {
   let behavior = config.get("editor.toggle.autocomplete");
 
   settingsStatusBarItem.text = `${behavior}`;
-  settingsStatusBarItem.tooltip =
-    localize("tds.vscode.lssettings.auto.complete", "Auto complete type") +
-    "  ";
+  settingsStatusBarItem.tooltip = localize(
+    "tds.vscode.lssettings.auto.complete",
+    "Auto complete type"
+  );
 
   settingsStatusBarItem.show();
 }

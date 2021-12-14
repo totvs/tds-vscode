@@ -198,7 +198,8 @@ export class ServersExplorer {
                 location: vscode.ProgressLocation.Window,
                 title: localize(
                   "tds.webview.validating_server",
-                  "Validating server" //,serverItem.name
+                  "Validating server {0}",
+                  serverItem.name
                 ),
               },
               async (progress, token) => {
@@ -229,7 +230,8 @@ export class ServersExplorer {
             vscode.window.showErrorMessage(
               localize(
                 "tds.webview.serversView.couldNotReconn",
-                "Could not reconnect to server"
+                "Could not reconnect to server {0}",
+                serverItem.name
               )
             );
           }
@@ -246,7 +248,7 @@ export class ServersExplorer {
               location: vscode.ProgressLocation.Window,
               title: localize(
                 "tds.webview.disconnecting",
-                "Disconnecting from the server [%0]",
+                "Disconnecting from the server [{0}]",
                 serverItem.name
               ),
             },
@@ -344,8 +346,9 @@ export class ServersExplorer {
         vscode.window.showInformationMessage(
           localize(
             "tds.webview.serversView.serverSaved",
-            "Serve saved. Name: "
-          ) + serverName
+            "Serve saved. Name: {0}",
+            serverName
+          )
         );
       }
 
@@ -448,7 +451,8 @@ export function connectServer(
         location: vscode.ProgressLocation.Window,
         title: localize(
           "tds.webview.connecting",
-          "Connecting to the server" //,serverItem.name
+          "Connecting to the server {0}",
+          serverItem.name
         ),
       },
       async (progress, token) => {
@@ -476,7 +480,9 @@ export function authenticate(
       location: vscode.ProgressLocation.Window,
       title: localize(
         "tds.webview.authenticating_user",
-        "Authenticating user [] in server []" //,username,serverItem.name
+        "Authenticating user [{0}] in server [{1}]",
+        username,
+        serverItem.name
       ),
     },
     async (progress, token) => {
@@ -550,7 +556,8 @@ export function reconnectServer(
       location: vscode.ProgressLocation.Window,
       title: localize(
         "tds.webview.reconnecting",
-        "Reconnecting to the server" //,serverItem.name
+        "Reconnecting to the server {0}",
+        serverItem.name
       ),
     },
     async (progress, token) => {
