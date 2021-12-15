@@ -504,14 +504,14 @@ export default function MonitorPanel(props: IMonitorPanel) {
 
   if (!locked) {
     actions.push({
-      icon: () => <LockIcon />,
+      icon: () => <LockOpenIcon />,
       tooltip: i18n.localize("LOCK_SERVER", "Lock server"),
       isFreeAction: true,
       onClick: (event: any) => handleLockButtonClick(event),
     });
   } else {
     actions.push({
-      icon: () => <LockOpenIcon />,
+      icon: () => <LockIcon />,
       tooltip: i18n.localize("UNLOCK_SERVER", "Unlock server"),
       isFreeAction: true,
       onClick: (event: any) => handleUnlockButtonClick(event),
