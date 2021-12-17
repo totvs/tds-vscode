@@ -18,6 +18,10 @@
 
 - Ajustado identificação de diretivas.
 
+## Correção na exibição de Array no TDS Replay [#853](https://github.com/totvs/tds-vscode/issues/853) [DTCLIENT-3141](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3141)
+
+- Corrigido um problema no TDS Replay que poderia fazer com que alguns arrays não expandissem na visão de variáveis e não mostrassem o valor ao usar a visão de "Watch" e "Debug Commands"
+
 # Versão [1.3.8]
 
 ## Melhorias
