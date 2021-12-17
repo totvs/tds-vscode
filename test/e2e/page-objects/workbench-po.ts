@@ -11,6 +11,8 @@ import { expect } from "chai";
 import { ExplorerPageObject } from "./explorer-view-po";
 import { ServerViewPageObject } from "./server-view-po";
 import { DebugPageObject } from "./debug-view-po";
+import { MonitorPageObject } from "./monitor-po";
+import { OutputLsPageObject } from "./output-ls-po";
 
 const PROCESS_TIMEOUT = 10 * 1000; //10 segundos
 const WAIT_PROCESS_TIMEOUT = 3 * 60 * 1000; // 3min
@@ -291,7 +293,12 @@ export class WorkbenchPageObject {
 
   async executeCommand(command: string) {
     await this.workbench.executeCommand(command);
-    await delay();
+  }
+
+  async openMonitor(): Promise<MonitorPageObject> {
+    await this.executeCommand("TOTVSMonitor: Open monitor view");
+
+    return new MonitorPageObject(this);
   }
 
   async openDebugView(): Promise<DebugPageObject> {
@@ -311,6 +318,13 @@ export class WorkbenchPageObject {
   async openTotvsView(): Promise<ServerViewPageObject> {
     const po: ServerViewPageObject = new ServerViewPageObject();
     await po.openView();
+
+    return po;
+  }
+
+  async openOutputLs(): Promise<OutputLsPageObject> {
+    const po: OutputLsPageObject = new OutputLsPageObject(this);
+    await po.openPanel();
 
     return po;
   }

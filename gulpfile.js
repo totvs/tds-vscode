@@ -99,6 +99,20 @@ const vscePackageTask = function () {
   return vsce.createVSIX();
 };
 
+const startSmartClient = function (done) {
+  const { spawn } = require("child_process");
+  const smartclient = "M:\\protheus\\smartClient\\20-3-0-2\\smartclient.exe";
+  const args = ["-m", "-c=ssl", "-e=P20-12-1-33", "-p=sigafat"];
+
+  for (let index = 0; index < 75; index++) {
+    spawn(smartclient, [...args], { cwd: "M:\\protheus\\smartClient\\20-3-0-2" });
+  }
+
+  done();
+}
+
+gulp.task("startSmartClient", gulp.series(startSmartClient));
+
 gulp.task("publish", gulp.series(buildTask, vscePublishTask));
 
 gulp.task("package", gulp.series(buildTask, vscePackageTask));
@@ -141,7 +155,7 @@ gulp.task("i18n-import", (done) => {
 });
 
 function runTX(prefix, args) {
-  const { execFile } = require("child_process");
+  const { execFile, spawn } = require("child_process");
 
   const ls = execFile("C:\\Python27\\Scripts\\tx.exe", [, /*"-d"*/ ...args]);
 

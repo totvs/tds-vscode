@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import { delay, openProject } from "../../helper";
+import { OutputLsPageObject } from "../../page-objects/output-ls-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
@@ -11,11 +12,13 @@ describe("Credentials Users Connect", () => {
   let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
+  let outputPO: OutputLsPageObject;
 
   before(async () => {
     await openProject();
 
     workbenchPO = new WorkbenchPageObject();
+    outputPO = await workbenchPO.openOutputLs();
     serverTreePO = await workbenchPO.openTotvsView();
 
     await serverTreePO.getServer(APPSERVER_DATA);
@@ -86,6 +89,8 @@ describe("Credentials Users Connect", () => {
   });
 
   it("Input Admin User", async () => {
+    await outputPO.clearConsole();
+
     serverItemPO = await serverTreePO.connect(
       APPSERVER_DATA.serverName,
       APPSERVER_DATA.environment,
@@ -103,5 +108,7 @@ describe("Credentials Users Connect", () => {
     ).is.true;
 
     expect(await serverItemPO.isConnected()).is.true;
+
+    await outputPO.loginSequenceTest();
   });
 });

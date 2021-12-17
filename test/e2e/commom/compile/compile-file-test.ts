@@ -1,76 +1,70 @@
 import { expect } from "chai";
-import * as fs from "fs-extra";
 import { describe, before, it } from "mocha";
-import { SideBarView, TreeItem } from "vscode-extension-tester";
-import { delay, openProject } from "../../helper";
+import { TreeItem } from "vscode-extension-tester";
+import { openProject } from "../../helper";
 import { BuildPageObject } from "../../page-objects/build-po";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
-import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
+import { OutputLsPageObject } from "../../page-objects/output-ls-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../../scenario";
 
-describe.only("Compile files", () => {
-  let serverTreePO: ServerViewPageObject;
-  let serverItemPO: ServerTreeItemPageObject;
-  let workbenchPO: WorkbenchPageObject;
-  let explorerPO: ExplorerPageObject;
-  let compilePO: BuildPageObject;
+(COMPILE_FILES.singleFile ? describe : describe.skip)(
+  "Compile Simple File (basic test)",
+  () => {
+    let serverTreePO: ServerViewPageObject;
+    let workbenchPO: WorkbenchPageObject;
+    let explorerPO: ExplorerPageObject;
+    let compilePO: BuildPageObject;
+    let resourceItem: TreeItem;
+    let outputPO: OutputLsPageObject;
 
-  before(async () => {
-    await openProject();
+    before(async () => {
+      await openProject();
 
-    workbenchPO = new WorkbenchPageObject();
-    serverTreePO = await workbenchPO.openTotvsView();
+      workbenchPO = new WorkbenchPageObject();
+      serverTreePO = await workbenchPO.openTotvsView();
 
-    await serverTreePO.getServer(APPSERVER_DATA);
+      await serverTreePO.getServer(APPSERVER_DATA);
 
-    serverItemPO = await serverTreePO.connect(
-      APPSERVER_DATA.serverName,
-      APPSERVER_DATA.environment,
-      ADMIN_USER_DATA
-    );
-
-    compilePO = new BuildPageObject();
-    explorerPO = await workbenchPO.openExplorerView();
-  });
-
-  beforeEach(async () => {});
-
-  afterEach(async () => {});
-
-  (COMPILE_FILES.singleFile ? it : it.skip)("Compile Single File", async () => {
-    await explorerPO.openView();
-
-    const treeItem: TreeItem = await explorerPO.getTreeItem(
-      COMPILE_FILES.singleFile
-    );
-
-    expect(treeItem).is.not.undefined;
-
-    await compilePO.fireBuildFile(treeItem);
-
-    await delay(5000);
-  });
-
-  (COMPILE_FILES.singleFile ? it : it.skip)(
-    "Recompile Single File",
-    async () => {
-      const treeItem: TreeItem = await explorerPO.getTreeItem(
-        COMPILE_FILES.singleFile
+      await serverTreePO.connect(
+        APPSERVER_DATA.serverName,
+        APPSERVER_DATA.environment,
+        ADMIN_USER_DATA
       );
 
-      expect(treeItem).is.not.null;
+      outputPO = await workbenchPO.openOutputLs();
+      compilePO = new BuildPageObject(workbenchPO);
+      explorerPO = await workbenchPO.openExplorerView();
+    });
 
-      await compilePO.fireRebuildFile(treeItem);
+    it("Find resource", async () => {
+      resourceItem = await explorerPO.getResource(COMPILE_FILES.singleFile);
 
-      await delay(5000);
-    }
-  );
+      expect(resourceItem).is.not.undefined;
+      expect(
+        COMPILE_FILES.singleFile[COMPILE_FILES.singleFile.length - 1]
+      ).is.equals(await resourceItem.getLabel());
 
-  it("Compile Users Function");
+      //      expect(true).is.equals(await resourceItem.isSelected());
+    });
 
-  it("Compile Resource");
+    it("Compile", async () => {
+      await outputPO.clearConsole();
+      await compilePO.fireBuildFile(resourceItem);
 
-  it("Compile Source With Errors");
-});
+      await compilePO.askShowCompileResult(false);
+
+      await outputPO.compileSequenceTest();
+    });
+
+    it("Recompile", async () => {
+      await outputPO.clearConsole();
+      await compilePO.fireRebuildFile(resourceItem);
+
+      await compilePO.askShowCompileResult(false);
+
+      await outputPO.recompileSequenceTest();
+    });
+  }
+);

@@ -26,6 +26,6 @@ describe("TOTVS Activity Bar", () => {
     expect(await view.isDisplayed()).is.true;
 
     const title = await view.getTitlePart().getTitle();
-    expect(title.toLowerCase()).equals("servers");
+    expect(title.toLowerCase()).equals("totvs: servers");
   });
 });

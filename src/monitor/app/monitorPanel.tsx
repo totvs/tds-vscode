@@ -634,7 +634,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
         <MaterialTable
           components={{
             Toolbar: (props) => (
-              <div>
+              <div id="toolbarID">
                 <Title
                   title={i18n.localize("MONITOR", "Monitor")}
                   subtitle={
@@ -676,7 +676,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
           onSelectionChange={(rows) => setSelected(rows)}
           onChangeRowsPerPage={(value) => doChangeRowsPerPage(value)}
           //As versoes mais novas do @material/core usam as propriedades abaixo, porem por problemas de compatibilidade
-          //entre a versai mais nova do "@material-ui/core" e do material-table: 1.69.3, é necesaario manter o "@material-ui/core" na versao 4.11.4,
+          //entre a versao mais nova do "@material-ui/core" e do material-table: 1.69.3, é necesaario manter o "@material-ui/core" na versao 4.11.4,
           //onRowsPerPageChange={(value) => doChangeRowsPerPage(value)}
           onChangeColumnHidden={(column, hidden) =>
             doColumnHidden(column, hidden)

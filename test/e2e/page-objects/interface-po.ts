@@ -37,3 +37,18 @@ export interface IReplayData {
   launcherName: string;
   forceImport: boolean;
 }
+
+export interface IMonitorConnectionsData {
+  server: string;
+  appUser: string;
+  environment: string;
+  computerName: string;
+  threadId: string;
+  mainName: string;
+  remark: string;
+}
+
+export interface IMonitorData {
+  subtitle: string;
+  connections: IMonitorConnectionsData[];
+}

@@ -4,8 +4,6 @@ import {
   TreeItem,
   ViewItemAction,
   Notification,
-  WebView,
-  WebElement,
   ViewItem,
 } from "vscode-extension-tester";
 import { delay } from "../helper";
