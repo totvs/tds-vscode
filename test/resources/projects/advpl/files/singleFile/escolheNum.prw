@@ -7,7 +7,7 @@ user function escolheNum(p1)
 	private ondeEstou := "escolheNum"
 	public aPublic := {}
 
-	TDSReplay(.T. , {"*"}, {}, {"*"} , "l:\escolheNhum.trtrplay", 0 , .t. , "")
+	//TDSReplay(.T. , {"*"}, {}, {"*"} , "l:\escolheNhum.trtrplay", 0 , .t. , "")
 
 	// essa seq. UTF 8 inválida para json do DA
 	//corrigido versão DA 1.1.24 / srv

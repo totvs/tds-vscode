@@ -49,6 +49,34 @@ export class OutputLsPageObject extends OutputPageObject {
     return await this.sequenceDefaultTest(sequence);
   }
 
+  async compileSequenceWithWarningTest(): Promise<void> {
+    const sequence: RegExp[] = [
+      /(Start file recompile)/,
+      /(Using Includes:)/,
+      /(Start secure compiling.*1\/1)/,
+      /(\[WARNING]\ Source)/,
+      /(Committing end build)/,
+      /(One or more files have warnings)/,
+      /(Recompile finished)/,
+    ];
+
+    return await this.sequenceDefaultTest(sequence);
+  }
+
+  async compileSequenceWithErrorTest(): Promise<void> {
+    const sequence: RegExp[] = [
+      /(Start file recompile)/,
+      /(Using Includes:)/,
+      /(Start secure compiling.*1\/1)/,
+      /(\[FATAL\] Aborting/,
+      /(Aborting end build)/,
+      /(One or more files have errors)/,
+      /(Recompile finished)/,
+    ];
+
+    return await this.sequenceDefaultTest(sequence);
+  }
+
   async loginSequenceTest(): Promise<void> {
     const sequence: RegExp[] = [
       /Starting connection to the server/,

@@ -43,4 +43,8 @@ export class BuildPageObject extends AbstractPageObject {
 
     return open;
   }
+
+  async waitBuildingResource(): Promise<void> {
+    await this.workbenchPO.waitProcessFinish(/Wait please.Building resources/);
+  }
 }

@@ -21,10 +21,13 @@ import {
   ContextMenuItem,
   ViewControl,
   EditorView,
+  SettingsEditor,
+  CheckboxSetting,
 } from "vscode-extension-tester";
 import { expect } from "chai";
 import { IUserData } from "./page-objects/interface-po";
 import { setTimeout } from "timers/promises";
+import { SettingsPageObject } from "./page-objects/settings-po";
 
 const DEFAULT_DELAY = 1000;
 
@@ -57,13 +60,33 @@ async function closeAllEditors(): Promise<void> {
   await delay();
 }
 
-export async function openProject(): Promise<void> {
+export interface IOpenProject {
+  linter: boolean;
+}
+
+const DEFAULT_OPEN_PROJECT: IOpenProject = {
+  linter: false,
+};
+
+export async function openProject(
+  optionsOpenProject: Partial<IOpenProject> = {}
+): Promise<void> {
+  const options: IOpenProject = {
+    ...DEFAULT_OPEN_PROJECT,
+    ...optionsOpenProject,
+  };
+
   clearServersJson(PROJECT_FOLDER);
 
   await VSBrowser.instance.openResources(PROJECT_FOLDER);
 
   await delay(2000);
-  closeAllEditors();
+
+  //const settingsPO: SettingsPageObject = new SettingsPageObject();
+  //await settingsPO.openView();
+  //await settingsPO.setLinter(options.linter);
+
+  await closeAllEditors();
 }
 
 export async function readServersJsonFile(): Promise<string> {

@@ -79,9 +79,7 @@ export class ViewPageObject<T> {
     nodes: string[],
     tree: DefaultTreeSection
   ): Promise<TreeItem> {
-    console.error(await tree.getTitle());
-    //tree.expand();
-    const treeItems: TreeItem[] = await tree.openItem(...nodes);
+    await tree.openItem(...nodes);
     const item = await tree.findItem(nodes[nodes.length - 1]);
 
     return item;

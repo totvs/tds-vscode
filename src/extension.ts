@@ -317,13 +317,20 @@ export function activate(context: ExtensionContext) {
 
   // Ação para pegar o nome da função e argumentos para  iniciar o debug
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.getProgramName", () =>
-      getProgramName()
+    commands.registerCommand(
+      "totvs-developer-studio.getProgramName",
+      (config: vscode.DebugConfiguration) => {
+        return getProgramName(config);
+      }
     )
   );
+
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.getProgramArguments", () =>
-      getProgramArguments()
+    commands.registerCommand(
+      "totvs-developer-studio.getProgramArguments",
+      (config: vscode.DebugConfiguration) => {
+        return getProgramArguments(config);
+      }
     )
   );
   //Ação para desfragmentar o RPO do servidor corrente.

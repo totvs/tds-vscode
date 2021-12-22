@@ -50,6 +50,7 @@ A definição de executores encontra-se nO arquivo `.vscode/launch.json` que, no
 - Comece a digitar `TOTVS` e selecione o tipo desejado
   - _totvs_language_debug_, para usar _SmartClient Desktop_
   - _totvs_language_web_debug_, para usar _SmartClient Html_
+  - _totvs_language_sigapaf_debug_, para usar _SigaPAF Desktop_
 - Preencha os atributos solicitados conforme seu ambiente
 - Salve o arquivo
 

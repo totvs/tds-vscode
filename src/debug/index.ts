@@ -1,13 +1,14 @@
-import * as vscode from 'vscode';
-import { TotvsConfigurationProvider } from './TotvsConfigurationProvider';
-import { TotvsConfigurationWebProvider } from './TotvsConfigurationWebProvider';
-import { TotvsDebugAdapterDescriptorFactory } from './TotvsDebugAdapterDescriptorFactory';
-import { TotvsConfigurationTdsReplayProvider } from './TotvsConfigurationTdsReplayProvider';
+import * as vscode from "vscode";
+import { TotvsConfigurationProvider } from "./TotvsConfigurationProvider";
+import { TotvsConfigurationWebProvider } from "./TotvsConfigurationWebProvider";
+import { TotvsDebugAdapterDescriptorFactory } from "./TotvsDebugAdapterDescriptorFactory";
+import { TotvsConfigurationTdsReplayProvider } from "./TotvsConfigurationTdsReplayProvider";
 import {
   processDebugCustomEvent,
   procesStartDebugSessionEvent,
-} from './debugEvents';
-import { canDebug } from '../extension';
+} from "./debugEvents";
+import { canDebug } from "../extension";
+import { TotvsConfigurationSigaPafProvider } from "./TotvsConfigurationSigaPafProvider";
 
 export let _debugEvent = undefined;
 
@@ -19,18 +20,27 @@ export const registerDebug = (context: vscode.ExtensionContext) => {
   const debugProvider = new TotvsConfigurationProvider();
   registerDebugAdapter(
     context,
-    TotvsConfigurationProvider.type,
+    TotvsConfigurationProvider._TYPE,
     debugProvider,
     factory
   );
   context.subscriptions.push(debugProvider);
+
+  const sigapafDebugProvider = new TotvsConfigurationSigaPafProvider();
+  registerDebugAdapter(
+    context,
+    TotvsConfigurationSigaPafProvider._TYPE,
+    sigapafDebugProvider,
+    factory
+  );
+  context.subscriptions.push(sigapafDebugProvider);
 
   /**** Configurações de execução do debug com TDS Replay *******/
 
   const tdsReplayProvider = new TotvsConfigurationTdsReplayProvider();
   registerDebugAdapter(
     context,
-    TotvsConfigurationTdsReplayProvider.type,
+    TotvsConfigurationTdsReplayProvider._TYPE,
     tdsReplayProvider,
     factory
   );
@@ -41,7 +51,7 @@ export const registerDebug = (context: vscode.ExtensionContext) => {
   const webProvider = new TotvsConfigurationWebProvider();
   registerDebugAdapter(
     context,
-    TotvsConfigurationWebProvider.type,
+    TotvsConfigurationWebProvider._TYPE,
     webProvider,
     factory
   );

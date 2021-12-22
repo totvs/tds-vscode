@@ -79,6 +79,7 @@
   "tds.package.properties.program.description": "Program/Function name",
   "tds.package.properties.trace.description": "Enable logging of the Debug Adapter Protocol.",
   "tds.package.properties.smartclientBin.description": "The SmartClient executable full path.",
+  "tds.package.properties.sigapafBin.description": "The SIGAPAF executable full path.",
   "tds.package.properties.cwb.description": "Workspace Root Path",
   "tds.package.properties.enableMultiThread.description": "If the debug must enable multi thread execution",
   "tds.package.properties.enableProfile.description": "If the profile must be enabled",
@@ -94,6 +95,7 @@
   "tds.package.properties.ignoreFiles.description": "Make the debugger ignore break events in files not found in WorkSpace",
   "tds.package.properties.toggleTableSync.description": "Enables or disables the tables sync with the server",
   "tds.package.totvs_language_debug.web": "TOTVS Language Web Debug (SmartClient HTML)",
+  "tds.package.totvs_language_debug.sigapaf": "TOTVS Language SigaPAF Debug (SigaPAF)",
   "tds.package.server.view": "Servers",
   "tds.package.properties.program.description.web": "Program/Function name",
   "tds.package.properties.trace.description.web": "Enable logging of the Debug Adapter Protocol.",
@@ -103,6 +105,7 @@
   "tds.package.properties.webNavigator.description.web": "The Web Navigator.",
   "tds.package.configurationSnippets.description": "A new configuration for 'debugging' a user selected AdvPL/4GL file.",
   "tds.package.configurationSnippets.description.web": "A new configuration for 'debugging' a user selected AdvPL/4GL file using SmartClient HTML.",
+  "tds.package.configurationSnippets.description.sigapaf": "A new configuration for 'debugging' a user selected AdvPL/4GL file using SigaPAF.",
   "tds.vscode.question.change.encoding": "Do you want to change the encoding to default TOTVS (Windows-1252)?",
   "tds.vscode.yes": "Yes",
   "tds.vscode.no": "No",
@@ -126,6 +129,6 @@
   "tds.package.templateApply.fromFile": "Apply Template from file",
   "tds.package.rpoToken": "Input Compilation Token",
   "tds.package.clearRpoToken": "Clear Compilation Token",
-	"tds.package.filesystem.encoding": "Set file system encoding",
+  "tds.package.filesystem.encoding": "Set file system encoding",
   "tds.package.editor.linter": "Enable Linter"
 }

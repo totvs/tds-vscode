@@ -17,10 +17,6 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
     super("Totvs");
   }
 
-  //async getTreeItem(serverName: string): Promise<TreeItem> {
-  //  return this.getTreeItem(serverName);
-  // }
-
   async removeServer(serverName: string) {
     const serverTreeItem: TreeItem = await this.getTreeItem(serverName);
     await delay(2000);
