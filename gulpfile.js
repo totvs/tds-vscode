@@ -95,6 +95,11 @@ const vscePublishTask = function () {
   return vsce.publish();
 };
 
+const vscePrereleaseTask = function (done) {
+  process.stderr.write("\n*****\nExecute no terminal:\n\tvsce publish --pre-release\n*****\n")
+  return done();
+};
+
 const vscePackageTask = function () {
   return vsce.createVSIX();
 };
@@ -114,6 +119,8 @@ const startSmartClient = function (done) {
 gulp.task("startSmartClient", gulp.series(startSmartClient));
 
 gulp.task("publish", gulp.series(buildTask, vscePublishTask));
+
+gulp.task("prerelease", gulp.series(buildTask, vscePrereleaseTask));
 
 gulp.task("package", gulp.series(buildTask, vscePackageTask));
 
