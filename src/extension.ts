@@ -74,6 +74,7 @@ import { rpoTokenInputBox, saveRpoTokenString } from "./rpoToken";
 import { openGeneratePatchView } from "./patch/generate/generatePatchLoader";
 import { patchApply } from "./patch/patchApply";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
+import { openInspectView } from "./inspect2";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -366,8 +367,21 @@ export function activate(context: ExtensionContext) {
   );
   //Ação par abrir a tela de inspetor de funções.
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.inspectorFunctions", () =>
-      inspectFunctions(context)
+    commands.registerCommand(
+      "totvs-developer-studio.inspectorFunctions",
+      () => {
+        if (useOldImplementation("totvs-developer-studio.inspectorFunctions")) {
+          inspectFunctions(context);
+        } else {
+          vscode.window.setStatusBarMessage(
+            `$(~spin) ${localize(
+              "tds.vscode.starting.inspector",
+              "Starting inspector..."
+            )}`,
+            Promise.resolve(openInspectView(context))
+          );
+        }
+      }
     )
   );
 
@@ -880,4 +894,8 @@ export function canDebug(): boolean {
   }
 
   return result;
+}
+
+function useOldImplementation(command: string) {
+  return true; //command !== "totvs-developer-studio.inspectorFunctions";
 }

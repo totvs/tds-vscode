@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
-import * as stripJsonComments from "strip-json-comments";
 import * as cheerio from "cheerio";
 import * as ini from "ini";
 import * as nls from "vscode-nls";
@@ -10,6 +9,7 @@ import { EnvSection, ServerItem } from "./serverItemProvider";
 import { Authorization, CompileKey } from "./compileKey/compileKey";
 import { changeSettings } from "./server/languageServerSettings";
 import { IRpoToken } from "./rpoToken";
+import stripJsonComments from "strip-json-comments";
 
 const homedir = require("os").homedir();
 const localize = nls.loadMessageBundle();

@@ -16,7 +16,7 @@ const localize = nls.loadMessageBundle();
 
 export class TotvsConfigurationProvider implements DebugConfigurationProvider {
   static _TYPE: string = "totvs_language_debug";
-  static _NAME: string = "TOTVS Language Debug (SmartCllient)";
+  static _NAME: string = "TOTVS Language Debug (SmartClient)";
   static _SC_BIN: string = "";
 
   protected _server?: Net.Server;

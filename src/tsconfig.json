@@ -11,6 +11,8 @@
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": false,
         "allowJs": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
         "lib": [
             "es2016",
             "dom"

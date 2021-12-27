@@ -1,5 +1,9 @@
 # Changelog
 
+# Versão [1.3.10]
+
+## Reversão de modificações indevidas no "Inspetor de Objetos".
+
 # Versão [1.3.9]
 
 ## Melhorias

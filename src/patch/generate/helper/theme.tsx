@@ -14,7 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 import * as React from "react";
-import { createMuiTheme, createStyles, makeStyles, Theme, ThemeProvider } from "@material-ui/core/styles";
+import {
+  createTheme,
+  createStyles,
+  makeStyles,
+  Theme,
+  ThemeProvider,
+} from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core";
 
 interface IApplyPatchThemeProps {
@@ -26,7 +32,7 @@ export default function ApplyPatchTheme(props: IApplyPatchThemeProps) {
 
   const theme = React.useMemo(
     () =>
-      createMuiTheme({
+      createTheme({
         palette: {
           type: darkMode ? "dark" : "light",
         },
@@ -71,13 +77,13 @@ export default function ApplyPatchTheme(props: IApplyPatchThemeProps) {
 export const inputTextStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: 'flex',
-      flexWrap: 'wrap',
+      display: "flex",
+      flexWrap: "wrap",
     },
     textField: {
       marginLeft: theme.spacing(0.5),
       marginRight: theme.spacing(0.5),
-      width: '20ch',
+      width: "20ch",
     },
-  }),
+  })
 );

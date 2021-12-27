@@ -4,7 +4,6 @@
 	"editor.insertSpaces": false,
 	"typescript.tsdk": "node_modules\\typescript\\lib",
 	"debug.javascript.unmapMissingSources": true,
-	"esp.token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFjYW5kaWRvIiwiaWF0IjoxNjM0MjQyODM3LCJ0eXBlIjoiY3JlZGVudGlhbCIsImV4cCI6MTY0MjAxODgzN30.x8GaS3tv2gLCbmO_1Nc8BpV_nZtN5vunzXxS-_Zzjyg",
 	"json.schemas": [
 		{
 			"fileMatch": [
@@ -12,5 +11,6 @@
 			],
 			"url": "./schema/scenario.schema.json"
 		}
-	]
+	],
+	"totvsLanguageServer.welcomePage": false
 }

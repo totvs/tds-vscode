@@ -584,3 +584,67 @@ export function sendGetServerPermissionsInfo(
       return response;
     });
 }
+
+export interface IInspectorFunctionsResult {
+  message: string;
+  functions: string[];
+}
+
+export interface IInspectorFunctionsData {
+  message: string;
+  functions: string[];
+}
+
+export interface IFunctionData {
+  function: string;
+  source: string;
+  line: number;
+  rpo_status: string;
+  source_status: string;
+}
+
+export function sendInspectorFunctionsRequest(
+  server: ServerItem
+): Thenable<IFunctionData[]> {
+  return languageClient
+    .sendRequest("$totvsserver/inspectorFunctions", {
+      inspectorFunctionsInfo: {
+        connectionToken: server.token,
+        environment: server.environment,
+      },
+    })
+    .then((response: IInspectorFunctionsResult) => {
+      const result: IFunctionData[] = [];
+      const regexp: RegExp = /(.*)\s\((.*):(\d+)\)\s?(.*)?/i;
+
+      response.functions.forEach((line: string) => {
+        let data: IFunctionData;
+        const groups = regexp.exec(line);
+
+        if (groups) {
+          const aux = groups
+            .slice(1)
+            .filter((value: string) => value !== undefined);
+          data = {
+            function: aux[0],
+            source: aux[1],
+            line: Number.parseInt(aux[2]),
+            rpo_status: aux[3],
+            source_status: aux[4],
+          };
+        } else {
+          data = {
+            function: line,
+            source: "",
+            line: 0,
+            rpo_status: "",
+            source_status: "",
+          };
+        }
+
+        result.push(data);
+      });
+
+      return result;
+    });
+}
