@@ -599,12 +599,63 @@ export interface IFunctionData {
   function: string;
   source: string;
   line: number;
-  rpo_status: string;
-  source_status: string;
+  rpo_status: string | number;
+  source_status: string | number;
+}
+
+export interface IObjectData {
+  source: string;
+  date: string;
+  rpo_status: string | number;
+  source_status: string | number;
+}
+
+export function sendInspectorObjectsRequest(
+  server: ServerItem,
+  includeTres: boolean
+): Thenable<IObjectData[]> {
+  return languageClient
+    .sendRequest("$totvsserver/inspectorObjects", {
+      inspectorObjectsInfo: {
+        connectionToken: server.token,
+        environment: server.environment,
+        includeTres: includeTres,
+      },
+    })
+    .then((response: any) => {
+      const result: IObjectData[] = [];
+      const regexp: RegExp = /(.*)\s\((.*)\)\s(.)(.)/i;
+
+      response.objects.forEach((line: string) => {
+        const groups = regexp.exec(line);
+
+        let data: IObjectData;
+        if (groups) {
+          data = {
+            source: `${groups[1]}/${groups[3]}${groups[4]}`,
+            date: groups[2],
+            rpo_status: groups[4],
+            source_status: groups[3],
+          };
+        } else {
+          data = {
+            source: line,
+            date: "",
+            rpo_status: "",
+            source_status: "",
+          };
+        }
+
+        result.push(data);
+      });
+
+      return result;
+    });
 }
 
 export function sendInspectorFunctionsRequest(
-  server: ServerItem
+  server: ServerItem,
+  includeOnlyPublic: boolean
 ): Thenable<IFunctionData[]> {
   return languageClient
     .sendRequest("$totvsserver/inspectorFunctions", {
@@ -615,35 +666,38 @@ export function sendInspectorFunctionsRequest(
     })
     .then((response: IInspectorFunctionsResult) => {
       const result: IFunctionData[] = [];
-      const regexp: RegExp = /(.*)\s\((.*):(\d+)\)\s?(.*)?/i;
+      const regexp: RegExp = /(#NONE#)?(.*)(#NONE#)?\s\((.*):(\d+)\)\s?(.)(.)/i;
 
-      response.functions.forEach((line: string) => {
-        let data: IFunctionData;
-        const groups = regexp.exec(line);
+      response.functions
+        .filter((line: string) =>
+          includeOnlyPublic && line.startsWith("#NONE") ? false : true
+        )
+        .forEach((line: string) => {
+          const groups = regexp.exec(line);
 
-        if (groups) {
-          const aux = groups
-            .slice(1)
-            .filter((value: string) => value !== undefined);
-          data = {
-            function: aux[0],
-            source: aux[1],
-            line: Number.parseInt(aux[2]),
-            rpo_status: aux[3],
-            source_status: aux[4],
-          };
-        } else {
-          data = {
-            function: line,
-            source: "",
-            line: 0,
-            rpo_status: "",
-            source_status: "",
-          };
-        }
+          let data: IFunctionData;
+          if (groups) {
+            data = {
+              function: groups[1]
+                ? "#" + groups[2].substring(0, groups[2].indexOf("#"))
+                : groups[2],
+              source: `${groups[4]}/${groups[6]}${groups[7]}`,
+              line: Number.parseInt(groups[5]),
+              rpo_status: groups[7],
+              source_status: groups[6],
+            };
+          } else {
+            data = {
+              function: line,
+              source: "",
+              line: 0,
+              rpo_status: "",
+              source_status: "",
+            };
+          }
 
-        result.push(data);
-      });
+          result.push(data);
+        });
 
       return result;
     });

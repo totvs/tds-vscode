@@ -9,7 +9,7 @@ import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../../scenario";
 
-(COMPILE_FILES.singleFile ? describe.only : describe.skip)(
+(COMPILE_FILES.singleFile ? describe.skip : describe.skip)(
   "Compile Simple File (basic test)",
   () => {
     let serverTreePO: ServerViewPageObject;

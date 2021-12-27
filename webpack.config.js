@@ -7,6 +7,7 @@ const MONITOR_PATH = path.join(__dirname, "./src/monitor/");
 const RPO_INFO_PATH = path.join(__dirname, "./src/rpoInfo/");
 const INSPECT_PATCH_PATH = path.join(__dirname, "./src/patch/inspect");
 const GENERATE_PATCH_PATH = path.join(__dirname, "./src/patch/generate");
+const INSPECTOR_PATH = path.join(__dirname, "./src/inspect2");
 
 module.exports = (env, argv) => {
   return {
@@ -24,6 +25,7 @@ module.exports = (env, argv) => {
       rpoInfoPanel: path.join(RPO_INFO_PATH, "app/index.tsx"),
       inspectPatchPanel: path.join(INSPECT_PATCH_PATH, "app/index.tsx"),
       generatePatchPanel: path.join(GENERATE_PATCH_PATH, "app/index.tsx"),
+      inspectPanel: path.join(INSPECTOR_PATH, "app/index.tsx"),
     },
     output: {
       //Todos os arquivos tsx serão compilados e gerados seus equivalentes js na mesma pasta
@@ -105,6 +107,18 @@ module.exports = (env, argv) => {
               loader: "ts-loader",
               options: {
                 configFile: path.join(GENERATE_PATCH_PATH, "./app/tsconfig.json"),
+              },
+            },
+          ],
+        },
+        {
+          test: /\.(ts|tsx)$/,
+          include: INSPECTOR_PATH,
+          use: [
+            {
+              loader: "ts-loader",
+              options: {
+                configFile: path.join(INSPECTOR_PATH, "./app/tsconfig.json"),
               },
             },
           ],

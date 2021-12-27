@@ -75,6 +75,7 @@ import { openGeneratePatchView } from "./patch/generate/generatePatchLoader";
 import { patchApply } from "./patch/patchApply";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import { openInspectView } from "./inspect2";
+import { ServerItem } from "./serverItemProvider";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -352,6 +353,7 @@ export function activate(context: ExtensionContext) {
       revalidateRpo()
     )
   );
+
   //Ação para deletar um fonte selecionado do RPO.
   context.subscriptions.push(
     commands.registerCommand(
@@ -359,27 +361,36 @@ export function activate(context: ExtensionContext) {
       (context, files) => deleteFileFromRPO(context, files)
     )
   );
+
   //Ação par abrir a tela de inspetor de objetos.
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.inspectorObjects", () =>
-      inspectObject(context)
+    commands.registerCommand(
+      "totvs-developer-studio.inspectorObjects",
+      (server: ServerItem) => {
+        if (server.isServerP20OrGreater) {
+          openInspectView(context, {
+            objectsInspector: true,
+            includeOutScope: false, //TRES
+          });
+        } else {
+          inspectObject(context);
+        }
+      }
     )
   );
+
   //Ação par abrir a tela de inspetor de funções.
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.inspectorFunctions",
-      () => {
-        if (useOldImplementation("totvs-developer-studio.inspectorFunctions")) {
-          inspectFunctions(context);
+      (server: ServerItem) => {
+        if (server.isServerP20OrGreater) {
+          openInspectView(context, {
+            objectsInspector: false,
+            includeOutScope: false, //inicia com #NONE
+          });
         } else {
-          vscode.window.setStatusBarMessage(
-            `$(~spin) ${localize(
-              "tds.vscode.starting.inspector",
-              "Starting inspector..."
-            )}`,
-            Promise.resolve(openInspectView(context))
-          );
+          inspectFunctions(context);
         }
       }
     )
@@ -894,8 +905,4 @@ export function canDebug(): boolean {
   }
 
   return result;
-}
-
-function useOldImplementation(command: string) {
-  return true; //command !== "totvs-developer-studio.inspectorFunctions";
 }

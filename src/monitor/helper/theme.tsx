@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core";
 
 interface IMonitorThemeProps {
@@ -11,7 +11,7 @@ export default function MonitorTheme(props: IMonitorThemeProps) {
 
   const theme = React.useMemo(
     () =>
-      createMuiTheme({
+      createTheme({
         palette: {
           type: darkMode ? "dark" : "light",
         },

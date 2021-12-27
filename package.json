@@ -1350,7 +1350,7 @@
             "name": "%tds.package.totvs.language.debug.sigapaf%",
             "program": "${command:AskForProgramName}",
             "cwb": "${workspaceFolder}",
-            "sigapafbin": "C:/totvs/bin/smartclient/sigapaf.exe",
+            "sigapafBin": "C:/totvs/bin/smartclient/sigapaf.exe",
             "isMultiSession": true,
             "enableTableSync": true
           }
