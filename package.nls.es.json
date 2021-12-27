@@ -94,7 +94,7 @@
 	"tds.package.properties.logFile.description": "Archivo de registro DAP solo para resolución de problemas",
 	"tds.package.properties.ignoreFiles.description": "Hacer que el depurador ignore los eventos de interrupción en archivos que no se encuentran en WorkSpace",
 	"tds.package.properties.toggleTableSync.description": "Habilita o deshabilita la sincronización de tablas con el servidor",
-	"tds.package.totvs_language_debug_web": "TOTVS Language Web Debug (HTML de SmartClient)",
+	"tds.package.totvs.language.debug.web": "TOTVS Language Web Debug (HTML de SmartClient)",
 	"tds.package.totvs.language.debug.sigapaf": "TOTVS Language SigaPAF Debug (SigaPAF)",
 	"tds.package.server.view": "Servidores",
 	"tds.package.properties.program.description.web": "Nombre del programa / función",
