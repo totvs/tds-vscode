@@ -6,6 +6,7 @@ import { InspectorPanelAction, IInspectorPanelAction } from "../actions";
 import FilterList from "@material-ui/icons/FilterList";
 import { cellDefaultStyle } from "./inpectorInterface";
 import { IMemento, useMemento } from "../helper/memento";
+import FormatClearIcon from "@material-ui/icons/FormatClear";
 import {
   propPageSize,
   DEFAULT_TABLE,
@@ -22,7 +23,13 @@ import { i18n } from "../helper";
 import { useToolbarStyles } from "../helper/theme";
 import SaveAlt from "@material-ui/icons/SaveAlt";
 import InspectorTheme from "../helper/theme";
-import { Checkbox, FormControlLabel, FormGroup } from "@material-ui/core";
+import {
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Grid,
+  Switch,
+} from "@material-ui/core";
 
 interface IInspectorPanel {
   vscode: any;
@@ -35,29 +42,30 @@ interface IInspectorPanel {
 
 let listener = undefined;
 
-function Title(props: { title: string; subtitle: string }) {
-  const style = useToolbarStyles();
-
-  return (
-    <>
-      <div className={style.title}>{props.title}</div>
-      <div className={style.subtitle}>{props.subtitle}</div>
-    </>
-  );
-}
-
-function IncludeOutScope(props: {
+function Title(props: {
   title: string;
+  subtitle: string;
+  action: string;
   value: boolean;
   change: any;
 }) {
+  const style = useToolbarStyles();
+
   return (
-    <FormGroup>
-      <FormControlLabel
-        control={<Checkbox checked={props.value} onChange={props.change} />}
-        label={props.title}
-      />
-    </FormGroup>
+    <Grid container spacing={2} direction="row">
+      <Grid item xs={7}>
+        <div className={style.title}>{props.title}</div>
+        <div className={style.subtitle}>{props.subtitle}</div>
+      </Grid>
+      <Grid item xs={5}>
+        <FormGroup>
+          <FormControlLabel
+            control={<Switch checked={props.value} onChange={props.change} />}
+            label={props.action}
+          />
+        </FormGroup>
+      </Grid>
+    </Grid>
   );
 }
 
@@ -116,6 +124,13 @@ export default function InspectorPanel(props: IInspectorPanel) {
     memento
   );
 
+  const [reset, setReset] = React.useState(false);
+  React.useEffect(() => {
+    if (reset) {
+      memento.save(true);
+    }
+  }, [reset]);
+
   const [rows, setRows] = React.useState([]);
   const [subtitle, setSubtitle] = React.useState<string>("");
   const [isIncludeOutScope, setIncludeOutScope] = React.useState<boolean>(
@@ -127,6 +142,7 @@ export default function InspectorPanel(props: IInspectorPanel) {
     buildColumns(props.options.objectsInspector, memento)
   );
   const [grouping, setGrouping] = React.useState(memento.get(propGrouping()));
+  const [isLoading, setLoading] = React.useState(true);
 
   if (listener === undefined) {
     listener = (event: MessageEvent) => {
@@ -139,6 +155,7 @@ export default function InspectorPanel(props: IInspectorPanel) {
           );
           setRows(message.data.dataRows);
           setIncludeOutScope(message.data.includeOutScope);
+          setLoading(false);
           break;
         }
         default:
@@ -246,6 +263,13 @@ export default function InspectorPanel(props: IInspectorPanel) {
     },
   });
 
+  actions.push({
+    icon: () => <FormatClearIcon />,
+    tooltip: i18n.localize("RESET_CONFIGURATIONS", "Reset configurations"),
+    isFreeAction: true,
+    onClick: (event: any) => setReset(true),
+  });
+
   const toolBarStyle = useToolbarStyles();
   const title: string = props.options.objectsInspector
     ? i18n.localize("INSPECTOR_OBJECTS", "Objects Inspector")
@@ -256,11 +280,13 @@ export default function InspectorPanel(props: IInspectorPanel) {
         "INCLUDE_NOT_PUBLIC",
         "Include sources without public elements"
       );
+  const refTable = React.useRef(null);
 
   return (
     <InspectorTheme>
       <Paper variant="outlined">
         <MaterialTable
+          tableRef={refTable}
           components={{
             Toolbar: (props) => (
               <div id="toolbarID">
@@ -271,12 +297,11 @@ export default function InspectorPanel(props: IInspectorPanel) {
                       ? subtitle
                       : i18n.localize("INITIALIZING", "(initializing)")
                   }
-                />
-                <IncludeOutScope
-                  title={labelIncludeOutScope}
+                  action={labelIncludeOutScope}
                   value={isIncludeOutScope}
                   change={doChangeIncludeOutScope}
                 />
+
                 <MTableToolbar {...props} />
               </div>
             ),
@@ -285,6 +310,7 @@ export default function InspectorPanel(props: IInspectorPanel) {
           icons={inspectorIcons.table}
           columns={rows.length ? columns : []}
           data={rows}
+          isLoading={isLoading}
           options={{
             searchFieldAlignment: "left",
             searchFieldStyle: { marginLeft: "-16px" },

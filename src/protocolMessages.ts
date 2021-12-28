@@ -632,7 +632,7 @@ export function sendInspectorObjectsRequest(
         let data: IObjectData;
         if (groups) {
           data = {
-            source: `${groups[1]}/${groups[3]}${groups[4]}`,
+            source: groups[1],
             date: groups[2],
             rpo_status: groups[4],
             source_status: groups[3],
@@ -681,7 +681,7 @@ export function sendInspectorFunctionsRequest(
               function: groups[1]
                 ? "#" + groups[2].substring(0, groups[2].indexOf("#"))
                 : groups[2],
-              source: `${groups[4]}/${groups[6]}${groups[7]}`,
+              source: groups[4],
               line: Number.parseInt(groups[5]),
               rpo_status: groups[7],
               source_status: groups[6],

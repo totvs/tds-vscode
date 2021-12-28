@@ -259,12 +259,6 @@ export class ServersExplorer {
             }
           );
         } else {
-          vscode.window.showInformationMessage(
-            localize(
-              "tds.webview.serversView.alreadyConn",
-              "Server is already disconnected"
-            )
-          );
           serverProvider.connectedServerItem = undefined;
         }
       }

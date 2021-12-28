@@ -74,7 +74,7 @@ import { rpoTokenInputBox, saveRpoTokenString } from "./rpoToken";
 import { openGeneratePatchView } from "./patch/generate/generatePatchLoader";
 import { patchApply } from "./patch/patchApply";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
-import { openInspectView } from "./inspect2";
+import { openInspectView } from "./inspect-harpia";
 import { ServerItem } from "./serverItemProvider";
 
 export let languageClient: TotvsLanguageClientA;

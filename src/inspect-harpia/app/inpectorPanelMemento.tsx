@@ -117,6 +117,7 @@ export const propFunctionsColumns = (extraProps?: any): any => {
     columns: [
       fieldDef("function", i18n.localize("OBJECT", "Object"), {
         ...extraProps,
+        grouping: false,
         width: "45%",
       }),
       fieldDef("source", i18n.localize("PROGRAM", "Program"), {
@@ -125,6 +126,7 @@ export const propFunctionsColumns = (extraProps?: any): any => {
       }),
       fieldDef("line", i18n.localize("LINE", "Line"), {
         ...extraProps,
+        grouping: false,
         type: "numeric",
         width: "5%",
       }),
@@ -154,10 +156,12 @@ export const propObjectsColumns = (extraProps?: any): any => {
     columns: [
       fieldDef("source", i18n.localize("PROGRAM", "Program"), {
         ...extraProps,
+        grouping: false,
         width: "45%",
       }),
       fieldDef("date", i18n.localize("DATE", "Date"), {
         ...extraProps,
+        grouping: false,
         width: "45%",
       }),
       fieldDef("source_status", i18n.localize("SOURCE_STATUS", "Status"), {

@@ -7,7 +7,7 @@ const MONITOR_PATH = path.join(__dirname, "./src/monitor/");
 const RPO_INFO_PATH = path.join(__dirname, "./src/rpoInfo/");
 const INSPECT_PATCH_PATH = path.join(__dirname, "./src/patch/inspect");
 const GENERATE_PATCH_PATH = path.join(__dirname, "./src/patch/generate");
-const INSPECTOR_PATH = path.join(__dirname, "./src/inspect2");
+const INSPECTOR_PATH = path.join(__dirname, "./src/inspect-harpia");
 
 module.exports = (env, argv) => {
   return {

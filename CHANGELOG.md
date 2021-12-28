@@ -1,5 +1,11 @@
 # Changelog
 
+# Versão [1.3.12]
+
+## Melhorias
+
+- Implementação de [inspetor de objetos e funções para o Harpia ou superior](./docs/rpo-inspector.md#harpia). [DTCLIENT01-3147](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3147)
+
 # Versão [1.3.10]
 
 ## Reversão de modificações indevidas no "Inspetor de Objetos".
