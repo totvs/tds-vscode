@@ -1,5 +1,5 @@
 {
-	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$schema": "https://json-schema.org/draft-07/schema",
 	"title": "Test Scenario Schema",
 	"description": "Schema of test scenario configuration files.",
 	"type": "object",
@@ -181,11 +181,11 @@
 		"replayFolder": {
 			"type": "string",
 			"description": "Folder with TDS Replay files."
-		},
-		"required": [
-			"name",
-			"description",
-			"server"
-		]
-	}
+		}
+	},
+	"required": [
+		"name",
+		"description",
+		"server"
+	]
 }

@@ -7,8 +7,6 @@ import {
   processDebugCustomEvent,
   procesStartDebugSessionEvent,
 } from "./debugEvents";
-import { canDebug } from "../extension";
-import { TotvsConfigurationSigaPafProvider } from "./TotvsConfigurationSigaPafProvider";
 
 export let _debugEvent = undefined;
 
@@ -25,15 +23,6 @@ export const registerDebug = (context: vscode.ExtensionContext) => {
     factory
   );
   context.subscriptions.push(debugProvider);
-
-  const sigapafDebugProvider = new TotvsConfigurationSigaPafProvider();
-  registerDebugAdapter(
-    context,
-    TotvsConfigurationSigaPafProvider._TYPE,
-    sigapafDebugProvider,
-    factory
-  );
-  context.subscriptions.push(sigapafDebugProvider);
 
   /**** Configurações de execução do debug com TDS Replay *******/
 

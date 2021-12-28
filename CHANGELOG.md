@@ -6,6 +6,14 @@
 
 - Implementação de [inspetor de objetos e funções para o Harpia ou superior](./docs/rpo-inspector.md#harpia). [DTCLIENT01-3147](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3147)
 
+- Validação do arquivo de servidores (_servers.json_).
+
+  Em caso de erros lhe será apresentado aviso na visão `Problemas`.
+
+## Removido
+
+- Depuração via SIGAPAF devido a incompatibilidade entre aplicações.
+
 # Versão [1.3.10]
 
 ## Reversão de modificações indevidas no "Inspetor de Objetos".

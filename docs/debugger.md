@@ -50,7 +50,6 @@ A definição de executores encontra-se no arquivo `.vscode/launch.json` que, no
 - Comece a digitar `TOTVS` e selecione o tipo desejado
   - _totvs_language_debug_, para usar _SmartClient Desktop_ (padrão)
   - _totvs_language_web_debug_, para usar _SmartClient Html_
-  - _totvs_language_sigapaf_debug_, para usar _SigaPAF Desktop_
     ![Type Debugger](images/select-type-debugger.png)
 - Preencha os atributos solicitados conforme seu ambiente
 - Salve o arquivo
@@ -76,25 +75,6 @@ A definição de executores encontra-se no arquivo `.vscode/launch.json` que, no
   ]
 }
 ```
-
-### TOTVS Language SigaPAF Debug
-
-```JSON
-{
-	"version": "0.2.0",
-	"configurations": [
-    {
-    "type": "totvs_language_sigapaf_debug",
-    "request": "launch",
-    "name": "TOTVS Language SigaPAF Debug",
-    "program": "${command:AskForProgramName}",
-    "cwb": "${workspaceFolder}",
-    "sigapafBin": "c:/totvs12/bin/smartclient/sigapaf.exe",
-    "isMultiSession": true,
-    "enableTableSync": true
-    }
-  ]
-}
 
 ### TOTVS Language Web Debug
 

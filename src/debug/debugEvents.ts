@@ -14,11 +14,9 @@ import { CreateTDSReplayTimeLineWebView } from "./tdsreplay/TDSReplayTimeLineCre
 
 import { getLanguageClient } from "../TotvsLanguageClient";
 import { LanguageClient } from "vscode-languageclient";
-import { TotvsConfigurationSigaPafProvider } from "./TotvsConfigurationSigaPafProvider";
 import { TotvsConfigurationWebProvider } from "./TotvsConfigurationWebProvider";
 
 const DEBUG_TYPE = TotvsConfigurationProvider._TYPE;
-const SIGAPAF_DEBUG_TYPE = TotvsConfigurationSigaPafProvider._TYPE;
 const WEB_DEBUG_TYPE: string = TotvsConfigurationWebProvider._TYPE;
 const REPLAY_DEBUG_TYPE = TotvsConfigurationTdsReplayProvider._TYPE;
 
@@ -101,8 +99,7 @@ export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
   if (
     event.session.type.startsWith(DEBUG_TYPE) ||
     event.session.type.startsWith(WEB_DEBUG_TYPE) ||
-    event.session.type.startsWith(REPLAY_DEBUG_TYPE) ||
-    event.session.type.startsWith(SIGAPAF_DEBUG_TYPE)
+    event.session.type.startsWith(REPLAY_DEBUG_TYPE)
   ) {
     const debugConsole = debug.activeDebugConsole;
 
@@ -112,9 +109,6 @@ export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
         languageClient.clientOptions.outputChannelName = "TDS Replay";
       } else if (event.session.type.startsWith(DEBUG_TYPE)) {
         languageClient.clientOptions.outputChannelName = "TOTVS Debug Messages";
-      } else if (event.session.type.startsWith(SIGAPAF_DEBUG_TYPE)) {
-        languageClient.clientOptions.outputChannelName =
-          "TOTVS Debug Messages (SIGAPAF)";
       }
     }
 

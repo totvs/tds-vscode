@@ -66,7 +66,6 @@
     "---RELEASE---": "",
     "release": "npx standard-version",
     "tag": "git push --follow-tags",
-    "pack": "npm pack",
     "package": "gulp package",
     "publish": "gulp publish",
     "pre-release": "gulp prerelease",
@@ -223,6 +222,12 @@
         "id": "tds",
         "label": "TDS Icons Theme",
         "path": "./fileicons/tds-icons-theme.json"
+      }
+    ],
+    "jsonValidation": [
+      {
+        "fileMatch": "servers.json",
+        "url": "./schema/servers.schema.json"
       }
     ],
     "customEditors": [
@@ -1043,7 +1048,40 @@
         "variables": {
           "AskForProgramName": "totvs-developer-studio.getProgramName",
           "AskForProgramArguments": "totvs-developer-studio.getProgramArguments"
-        }
+        },
+        "configurationSnippets": [
+          {
+            "label": "%tds.package.totvs_language_debug%",
+            "description": "Configuration for debugging a user selected AdvPL/4GL file using _SmartClient_.",
+            "body": {
+              "type": "totvs_language_debug",
+              "request": "launch",
+              "name": "${1:Smart Client Debug}",
+              "program": "^\"\\${command:AskForProgramName}\"",
+              "smartclientBin": "${2:C:/totvs/bin/smartclient/smartclient.exe}",
+              "cwb": "${workspaceFolder}",
+              "isMultiSession": true,
+              "enableTableSync": true
+            }
+          },
+          {
+            "label": "%tds.package.totvs_language_debug_with_arguments%",
+            "description": "Configuration for debugging a fixed AdvPL/4GL file and user arguments using _SmartClient_.",
+            "body": {
+              "type": "totvs_language_debug",
+              "request": "launch",
+              "name": "${1:Smart Client Debug}",
+              "program": "${2:program}",
+              "programArguments": [
+                "^\"\\${command:AskForProgramArguments}\""
+              ],
+              "smartclientBin": "${3:C:/totvs/bin/smartclient/smartclient.exe}",
+              "cwb": "${workspaceFolder}",
+              "isMultiSession": true,
+              "enableTableSync": true
+            }
+          }
+        ]
       },
       {
         "type": "totvs_tdsreplay_debug",
@@ -1114,6 +1152,23 @@
             "password": "",
             "includeSources": "*",
             "excludeSources": ""
+          }
+        ],
+        "configurationSnippets": [
+          {
+            "label": "%tds.package.tdsreplay.debug%",
+            "description": "A new configuration for debugging a TDS Replay file.",
+            "body": {
+              "type": "totvs_tdsreplay_debug",
+              "request": "launch",
+              "name": "${1:TDS Replay}",
+              "cwb": "${workspaceFolder}",
+              "ignoreFiles": false,
+              "tdsReplayFile": "",
+              "password": "",
+              "includeSources": "*",
+              "excludeSources": ""
+            }
           }
         ]
       },
@@ -1242,123 +1297,22 @@
         "variables": {
           "AskForProgramName": "totvs-developer-studio.getProgramName",
           "AskForProgramArguments": "totvs-developer-studio.getProgramArguments"
-        }
-      },
-      {
-        "type": "totvs_language_sigapaf_debug",
-        "label": "%tds.package.totvs.language.debug.sigapaf%",
-        "configurationAttributes": {
-          "launch": {
-            "required": [
-              "program",
-              "sigapafBin"
-            ],
-            "properties": {
-              "program": {
-                "type": "string",
-                "description": "%tds.package.properties.program.description%",
-                "default": "${command:AskForProgramName}"
-              },
-              "trace": {
-                "type": "boolean",
-                "description": "%tds.package.properties.trace.description%",
-                "default": true
-              },
-              "sigapafBin": {
-                "type": "string",
-                "description": "%tds.package.properties.sigapafBin.description%",
-                "default": "C:/totvs/bin/smartclient/sigapaf.exe"
-              },
-              "cwb": {
-                "type": "string",
-                "description": "%tds.package.properties.cwb.description%",
-                "default": "${workspaceFolder}"
-              },
-              "enableMultiThread": {
-                "type": "boolean",
-                "description": "%tds.package.properties.enableMultiThread.description%",
-                "default": false
-              },
-              "waitForAttach": {
-                "type": "number",
-                "description": "%tds.package.properties.waitForAttach.description%",
-                "default": 0
-              },
-              "enableProfile": {
-                "type": "boolean",
-                "description": "%tds.package.properties.enableProfile.description%",
-                "default": false
-              },
-              "isMultiSession": {
-                "type": "boolean",
-                "description": "%tds.package.properties.isMultiSession.description%",
-                "default": true
-              },
-              "isAccessibilityMode": {
-                "type": "boolean",
-                "description": "%tds.package.properties.isAccessibilityMode.description%",
-                "default": false
-              },
-              "doNotShowSplash": {
-                "type": "boolean",
-                "description": "%tds.package.properties.doNotShowSplash.description%",
-                "default": false
-              },
-              "openglMode": {
-                "type": "boolean",
-                "description": "%tds.package.properties.openglMode.description%",
-                "default": false
-              },
-              "dpiMode": {
-                "type": "boolean",
-                "description": "%tds.package.properties.dpiMode.description%",
-                "default": false
-              },
-              "language": {
-                "type": "string",
-                "description": "%tds.package.properties.language.description%"
-              },
-              "logFile": {
-                "type": "string",
-                "description": "%tds.package.properties.logFile.description%",
-                "default": "${workspaceFolder}/daplog.log"
-              },
-              "ignoreFiles": {
-                "type": "boolean",
-                "description": "%tds.package.properties.ignoreFiles.description%",
-                "default": false
-              },
-              "enableTableSync": {
-                "type": "boolean",
-                "description": "%tds.package.properties.toggleTableSync.description%",
-                "default": false
-              },
-              "programArguments": {
-                "type": "array",
-                "description": "Arguments that will be passed to the called program/function (through key -A)",
-                "default": [
-                  "${command:AskForProgramArguments}"
-                ]
-              }
+        },
+        "configurationSnippets": [
+          {
+            "label": "%tds.package.totvs_language_debug.web%",
+            "description": "%tds.package.configurationSnippets.description.web%",
+            "body": {
+              "type": "totvs_language_web_debug",
+              "request": "launch",
+              "name": "${1:Smart Client Web Debug%}",
+              "program": "^\"\\${command:AskForProgramName}\"",
+              "isMultiSession": true,
+              "enableTableSync": true,
+              "smartclientUrl": "${2:http://localhost:8080}"
             }
           }
-        },
-        "initialConfigurations": [
-          {
-            "type": "totvs_language_sigapaf_debug",
-            "request": "launch",
-            "name": "%tds.package.totvs.language.debug.sigapaf%",
-            "program": "${command:AskForProgramName}",
-            "cwb": "${workspaceFolder}",
-            "sigapafBin": "C:/totvs/bin/smartclient/sigapaf.exe",
-            "isMultiSession": true,
-            "enableTableSync": true
-          }
-        ],
-        "variables": {
-          "AskForProgramName": "totvs-developer-studio.getProgramName",
-          "AskForProgramArguments": "totvs-developer-studio.getProgramArguments"
-        }
+        ]
       }
     ],
     "viewsContainers": {
@@ -1645,8 +1599,5 @@
         }
       ]
     }
-  },
-  "servers": {
-    "path": ".vscode/servers.json"
   }
 }
