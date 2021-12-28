@@ -47,10 +47,12 @@ Ambos os inspetores permitem as mesmas operações.
 | B   | Filtro padrão para limitar número de elementos                                                                 |
 | C   | Filtro rápido, aplicado em todas as colunas                                                                    |
 | D   | Acionamento de agrupamento, filtro por coluna, exportação dos dados em arquivo texto e _reset_ de configuração |
-| E   | [Dados](#dados) obtidos nos _RPO´s_                                                                            |
+| E   | Informações obtidos nos _RPO´s_                                                                                |
 | F   | Elementos por página e navegação                                                                               |
 
-[](#dados)Dados apresentados no `Inspetor de Funções`:
+### `Inspetor de Funções`
+
+---
 
 | Coluna             | Descrição              |
 | ------------------ | ---------------------- |
@@ -60,7 +62,9 @@ Ambos os inspetores permitem as mesmas operações.
 | Status<sup>1</sup> | Status do fonte        |
 | RPO<sup>2</sup>    | RPO de origem          |
 
-Dados apresentados no `Inspetor de Objetos`:
+### `Inspetor de Objetos`
+
+---
 
 | Coluna             | Descrição          |
 | ------------------ | ------------------ |
@@ -71,9 +75,13 @@ Dados apresentados no `Inspetor de Objetos`:
 
 ### Notas
 
-1. _Status_: Indica se este recurso foi compilado por um desenvolvedor (`Dev`), pela TOTVS ou autorizado (`Prod`) ou sem autenticação (`NoAuth`).
+1. _Status_: Indica se este recurso foi compilado:
 
-2. _RPO_: Indica o repositório de objetos onde encontra-se compilado o recurso, podendo ser:
+- `Dev`
+- `Prod`
+- `NoAuth`
+
+2. _RPO_: Indica o repositório de objetos onde encontra-se o recurso, podendo ser:
 
 - `Default`, _RPO_ indicado na chave `sourcePath`
 - `TLPP`, _RPO_ de suporte a TLPP
