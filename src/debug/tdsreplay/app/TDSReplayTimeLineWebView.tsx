@@ -24,7 +24,6 @@ export default function TDSReplayTimeLineWebView(props: IConfigProps, state: ICo
     let command: ICommand = {
       action: CommandToDA.GetCurrentState,
       content: {},
-      returnContent: {}
     };
     vscode.postMessage(command);
 
