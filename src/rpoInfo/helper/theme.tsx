@@ -1,5 +1,12 @@
 import * as React from "react";
-import { createMuiTheme, createStyles, lighten, makeStyles, Theme, ThemeProvider } from "@material-ui/core/styles";
+import {
+  createTheme,
+  createStyles,
+  lighten,
+  makeStyles,
+  Theme,
+  ThemeProvider,
+} from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core";
 
 interface IRpoInfoThemeProps {
@@ -11,7 +18,7 @@ export default function RpoInfoTheme(props: IRpoInfoThemeProps) {
 
   const theme = React.useMemo(
     () =>
-      createMuiTheme({
+      createTheme({
         palette: {
           type: darkMode ? "dark" : "light",
         },
@@ -62,13 +69,13 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
     highlight:
       theme.palette.type === "light"
         ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
+            color: theme.palette.secondary.main,
+            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+          }
         : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
+            color: theme.palette.text.primary,
+            backgroundColor: theme.palette.secondary.dark,
+          },
     title: {
       display: "inline",
       fontSize: "180%",
@@ -96,14 +103,13 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
 export const inputTextStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: 'flex',
-      flexWrap: 'wrap',
+      display: "flex",
+      flexWrap: "wrap",
     },
     textField: {
       marginLeft: theme.spacing(0.5),
       marginRight: theme.spacing(0.5),
-      width: '20ch',
+      width: "20ch",
     },
-  }),
+  })
 );
-

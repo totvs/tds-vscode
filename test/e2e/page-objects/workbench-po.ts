@@ -11,24 +11,30 @@ import { expect } from "chai";
 import { ExplorerPageObject } from "./explorer-view-po";
 import { ServerViewPageObject } from "./server-view-po";
 import { DebugPageObject } from "./debug-view-po";
+import { MonitorPageObject } from "./monitor-po";
+import { OutputLsPageObject } from "./output-ls-po";
+import { ProblemPageObject } from "./problem-view-po";
+import { BottomBarPageObject } from "./bottom-bar-po";
 
 const PROCESS_TIMEOUT = 10 * 1000; //10 segundos
 const WAIT_PROCESS_TIMEOUT = 3 * 60 * 1000; // 3min
 
 export class WorkbenchPageObject {
-  private workbench: Workbench;
+  private _workbench: Workbench;
   private statusBar: StatusPageObject;
   private notification: NotificationPageObject;
+  private bottombar: BottomBarPageObject;
 
   constructor() {
-    this.workbench = new Workbench();
-    this.statusBar = new StatusPageObject(this.workbench);
-    this.notification = new NotificationPageObject(this.workbench);
+    this._workbench = new Workbench();
+    this.statusBar = new StatusPageObject(this._workbench);
+    this.notification = new NotificationPageObject(this._workbench);
+    this.bottombar = new BottomBarPageObject();
   }
 
   async wait() {
     await delay(500);
-    await this.workbench.getStatusBar().wait(2000);
+    await this._workbench.getStatusBar().wait(2000);
   }
 
   async isConnected(
@@ -182,7 +188,7 @@ export class WorkbenchPageObject {
     return await notification?.hasProgress();
   }
 
-  private async waitProcessFinish(
+  public async waitProcessFinish(
     targetText: RegExp | string,
     _wait: number = PROCESS_TIMEOUT
   ): Promise<Notification> {
@@ -290,8 +296,13 @@ export class WorkbenchPageObject {
   }
 
   async executeCommand(command: string) {
-    await this.workbench.executeCommand(command);
-    await delay();
+    await this._workbench.executeCommand(command);
+  }
+
+  async openMonitor(): Promise<MonitorPageObject> {
+    await this.executeCommand("TOTVSMonitor: Open monitor view");
+
+    return new MonitorPageObject(this);
   }
 
   async openDebugView(): Promise<DebugPageObject> {
@@ -311,6 +322,20 @@ export class WorkbenchPageObject {
   async openTotvsView(): Promise<ServerViewPageObject> {
     const po: ServerViewPageObject = new ServerViewPageObject();
     await po.openView();
+
+    return po;
+  }
+
+  async openOutputLs(): Promise<OutputLsPageObject> {
+    const po: OutputLsPageObject = new OutputLsPageObject(this);
+    await po.openPanel();
+
+    return po;
+  }
+
+  async openProblemsView(): Promise<ProblemPageObject> {
+    const po: ProblemPageObject = await this.bottombar.openProblemsView();
+    //await po.openPanel();
 
     return po;
   }

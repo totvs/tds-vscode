@@ -14,10 +14,11 @@ import { CreateTDSReplayTimeLineWebView } from "./tdsreplay/TDSReplayTimeLineCre
 
 import { getLanguageClient } from "../TotvsLanguageClient";
 import { LanguageClient } from "vscode-languageclient";
+import { TotvsConfigurationWebProvider } from "./TotvsConfigurationWebProvider";
 
-const DEBUG_TYPE = TotvsConfigurationProvider.type;
-const WEB_DEBUG_TYPE: string = "totvs_language_web_debug";
-const REPLAY_DEBUG_TYPE = TotvsConfigurationTdsReplayProvider.type;
+const DEBUG_TYPE = TotvsConfigurationProvider._TYPE;
+const WEB_DEBUG_TYPE: string = TotvsConfigurationWebProvider._TYPE;
+const REPLAY_DEBUG_TYPE = TotvsConfigurationTdsReplayProvider._TYPE;
 
 interface LogBody {
   time: string;

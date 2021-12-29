@@ -1,14 +1,38 @@
 # Changelog
 
+# Versão [1.3.11]
+
+## Melhorias
+
+- Implementação de [inspetor de objetos e funções para o Harpia ou superior](./docs/rpo-inspector.md#harpia). [DTCLIENT01-3147](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3147)
+
+- Validação do arquivo de servidores (_servers.json_).
+
+  Em caso de erros lhe será apresentado aviso na visão `Problemas`.
+
+## Removido
+
+- Depuração via SIGAPAF devido a incompatibilidade entre aplicações.
+
+# Versão [1.3.10]
+
+## Reversão de modificações indevidas no "Inspetor de Objetos".
+
 # Versão [1.3.9]
 
 ## Melhorias
+
+- Implementação de depuração via SIGAPAF. [docs/debugger.md]
 
 - Adicionado confirmação na operação de _reset_ de configuração no `Monitor`. [DTCLIENT01-2908](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2908)
 
 - Adicionado limite de tamanho em mensagens enviadas ao usuário via `Monitor`. [DTCLIENT01-2849](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2849)
 
 - A extensão `.RPTDESIGN`, passa a ser reconhecida como um recurso padrão na compilação.
+
+## TLPP: ajustes visuais nos tipos nativos [#871](https://github.com/totvs/tds-vscode/issues/871)
+
+- Ajustado definições nos tipos nativos.
 
 ## Falha na autenticação de usuário
 
@@ -21,6 +45,10 @@
 ## Correção na exibição de Array no TDS Replay [#853](https://github.com/totvs/tds-vscode/issues/853) [DTCLIENT-3141](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3141)
 
 - Corrigido um problema no TDS Replay que poderia fazer com que alguns arrays não expandissem na visão de variáveis e não mostrassem o valor ao usar a visão de "Watch" e "Debug Commands"
+
+## Mensagens de compilação não são mais mostradas [#866](https://github.com/totvs/tds-vscode/issues/866)
+
+- Corrigido apresentação de mensagens de compilação na visão "Problemas".
 
 # Versão [1.3.8]
 

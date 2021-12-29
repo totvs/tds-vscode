@@ -1,0 +1,10 @@
+#include "protheus.ch"
+
+user function prog1()
+	local lRet := .f. as logical
+	local vInt :=0 as integer
+	local vDou :=0 as double
+	local vDec     as decimal
+	local aArea := getArea() as array
+
+return

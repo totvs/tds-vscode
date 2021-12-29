@@ -74,6 +74,8 @@ import { rpoTokenInputBox, saveRpoTokenString } from "./rpoToken";
 import { openGeneratePatchView } from "./patch/generate/generatePatchLoader";
 import { patchApply } from "./patch/patchApply";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
+import { openInspectView } from "./inspect-harpia";
+import { ServerItem } from "./serverItemProvider";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -317,13 +319,20 @@ export function activate(context: ExtensionContext) {
 
   // Ação para pegar o nome da função e argumentos para  iniciar o debug
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.getProgramName", () =>
-      getProgramName()
+    commands.registerCommand(
+      "totvs-developer-studio.getProgramName",
+      (config: vscode.DebugConfiguration) => {
+        return getProgramName(config);
+      }
     )
   );
+
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.getProgramArguments", () =>
-      getProgramArguments()
+    commands.registerCommand(
+      "totvs-developer-studio.getProgramArguments",
+      (config: vscode.DebugConfiguration) => {
+        return getProgramArguments(config);
+      }
     )
   );
   //Ação para desfragmentar o RPO do servidor corrente.
@@ -344,6 +353,7 @@ export function activate(context: ExtensionContext) {
       revalidateRpo()
     )
   );
+
   //Ação para deletar um fonte selecionado do RPO.
   context.subscriptions.push(
     commands.registerCommand(
@@ -351,16 +361,38 @@ export function activate(context: ExtensionContext) {
       (context, files) => deleteFileFromRPO(context, files)
     )
   );
+
   //Ação par abrir a tela de inspetor de objetos.
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.inspectorObjects", () =>
-      inspectObject(context)
+    commands.registerCommand(
+      "totvs-developer-studio.inspectorObjects",
+      (server: ServerItem) => {
+        if (server.isServerP20OrGreater) {
+          openInspectView(context, {
+            objectsInspector: true,
+            includeOutScope: false, //TRES
+          });
+        } else {
+          inspectObject(context);
+        }
+      }
     )
   );
+
   //Ação par abrir a tela de inspetor de funções.
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.inspectorFunctions", () =>
-      inspectFunctions(context)
+    commands.registerCommand(
+      "totvs-developer-studio.inspectorFunctions",
+      (server: ServerItem) => {
+        if (server.isServerP20OrGreater) {
+          openInspectView(context, {
+            objectsInspector: false,
+            includeOutScope: false, //inicia com #NONE
+          });
+        } else {
+          inspectFunctions(context);
+        }
+      }
     )
   );
 

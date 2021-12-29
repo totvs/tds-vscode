@@ -1,5 +1,6 @@
 import {
   debug,
+  DebugConfiguration,
   DebugSession,
   Disposable,
   extensions,
@@ -11,6 +12,7 @@ import { statSync, chmodSync } from "fs";
 import Utils, { MESSAGETYPE } from "../utils";
 import * as path from "path";
 import * as nls from "vscode-nls";
+import { TotvsConfigurationProvider } from "./TotvsConfigurationProvider";
 
 const localize = nls.loadMessageBundle();
 
@@ -59,11 +61,20 @@ export class ProgramArgs {
     this.program = program;
     this.args = args;
   }
+
+  toJsonString(): string {
+    return JSON.stringify(this);
+  }
+
+  static fromJsonString(text: string): ProgramArgs {
+    const data = JSON.parse(text);
+
+    return new ProgramArgs(data.program, data.args);
+  }
 }
 
 class QuickPickProgram implements QuickPickItem {
   label: string;
-  description: string;
   args: string[] = [];
 
   constructor(program: string, args: string[]) {
@@ -73,11 +84,16 @@ class QuickPickProgram implements QuickPickItem {
 
   public setArgs(args: string[]) {
     this.args = args;
-    this.description = this.args ? this.args.join(",") : "<nil>";
+  }
+
+  get description(): string {
+    return this.args ? this.args.join(",") : "<nil>";
   }
 }
 
-export async function getProgramName() {
+export async function getProgramName(
+  _config: DebugConfiguration
+): Promise<string> {
   const disposables: Disposable[] = [];
 
   let config = undefined;
@@ -87,6 +103,7 @@ export async function getProgramName() {
   } catch (e) {
     Utils.logInvalidLaunchJsonFile(e);
   }
+
   if (!config) {
     return undefined;
   }
@@ -100,8 +117,10 @@ export async function getProgramName() {
     config.lastPrograms = lastPrograms;
   }
 
+  let programArgs: ProgramArgs;
+
   try {
-    return await new Promise<ProgramArgs | undefined>((resolve, reject) => {
+    programArgs = await new Promise<ProgramArgs>((resolve, reject) => {
       const qp: QuickPick<QuickPickProgram> =
         window.createQuickPick<QuickPickProgram>();
 
@@ -111,22 +130,19 @@ export async function getProgramName() {
       );
       qp.items = lastPrograms;
       qp.value = lastProgramExecuted;
+      qp.placeholder = qp.title;
       qp.matchOnDescription = true;
-      qp.placeholder = localize(
-        "tds.vscode.getProgramName",
-        "Please enter the name of an AdvPL/4GL function"
-      );
+      //Essa propriedade faz com que o QuickPickProgram nao seja escondido
+      //caso o usuario clique em algum outro ponto da tela.
+      qp.ignoreFocusOut = true;
 
       disposables.push(
         qp.onDidChangeSelection((selection) => {
           resolve(new ProgramArgs(selection[0].label, selection[0].args));
-          //qp.dispose();
-        })
-      );
-
-      disposables.push(
+        }),
         qp.onDidAccept((e) => {
           let programArgs: ProgramArgs = extractProgramArgs(qp.value);
+
           if (programArgs) {
             const find: boolean = config.lastPrograms.some(
               (element: QuickPickProgram) => {
@@ -138,6 +154,7 @@ export async function getProgramName() {
                 );
               }
             );
+
             if (!find) {
               config.lastPrograms.push(
                 new QuickPickProgram(programArgs.program, programArgs.args)
@@ -148,12 +165,10 @@ export async function getProgramName() {
 
             Utils.saveLaunchConfig(config);
           }
+
           resolve(programArgs);
         })
       );
-
-      //Essa propriedade faz com que o QuickPickProgram nao seja escondido caso o usuario clique em algum outro ponto da tela.
-      qp.ignoreFocusOut = true;
 
       disposables.push(qp);
 
@@ -162,12 +177,15 @@ export async function getProgramName() {
   } finally {
     disposables.forEach((d) => d.dispose());
   }
+
+  return programArgs?.toJsonString();
 }
 
 const programArgsRegex = /^([\w\.\-\_]+)(\(?[^)\n]*\)?)?/i;
 
-export function extractProgramArgs(value: string): ProgramArgs {
+function extractProgramArgs(value: string): ProgramArgs {
   let programArgs: ProgramArgs;
+
   if (value) {
     let testRegex = value.trim().match(programArgsRegex);
     if (testRegex[0]) {
@@ -229,8 +247,8 @@ function extractArgs(value: string): string[] {
   return args;
 }
 
-export async function getProgramArguments() {
-  return await pickProgramArguments();
+export async function getProgramArguments(config: DebugConfiguration) {
+  return await pickProgramArguments(config);
 }
 
 export function toggleTableSync() {
@@ -311,7 +329,7 @@ function sendChangeTableSyncSetting(): void {
   }
 }
 
-async function pickProgramArguments() {
+async function pickProgramArguments(_config: DebugConfiguration) {
   const disposables: Disposable[] = [];
 
   let config = undefined;

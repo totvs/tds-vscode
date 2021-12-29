@@ -90,7 +90,7 @@ export const PROJECT_FOLDER = path.join(
 const sourceFiles: string[] = getFileParams(PROJECT_FOLDER, false);
 export const COMPILE_FILES = {
   singleFile: sourceFiles["singleFile"].length
-    ? sourceFiles["singleFile"][0]
+    ? sourceFiles["singleFile"][0].split("/")
     : null,
   userFunctions: sourceFiles["userFunction"],
   functions: sourceFiles["function"],

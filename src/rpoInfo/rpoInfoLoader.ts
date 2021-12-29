@@ -7,7 +7,6 @@ import * as nls from "vscode-nls";
 import Utils from "../utils";
 import { languageClient } from "../extension";
 import { IProgramApp, IRpoInfoData, IRpoPatch } from "./rpoPath";
-import { listeners } from "process";
 
 const localize = nls.loadMessageBundle();
 
@@ -23,7 +22,7 @@ export function openRpoInfoView(context: vscode.ExtensionContext) {
   rpoInfoLoader?.toggleServerToMonitor(server);
 }
 
-export class RpoInfoLoader {
+export class RpoInfoLoader implements vscode.Disposable {
   protected readonly _panel: vscode.WebviewPanel | undefined;
   private readonly _extensionPath: string;
   private _disposables: vscode.Disposable[] = [];
@@ -86,11 +85,18 @@ export class RpoInfoLoader {
       this._disposables
     );
 
-    this._panel.onDidDispose((event) => {
+    this._panel.onDidDispose(() => {
       this._isDisposed = true;
 
       rpoInfoLoader = undefined;
     });
+  }
+
+  dispose() {
+    this._isDisposed = true;
+    this._disposables.forEach((element: vscode.Disposable) =>
+      element.dispose()
+    );
   }
 
   public toggleServerToMonitor(serverItem: ServerItem) {
@@ -112,7 +118,7 @@ export class RpoInfoLoader {
       }
       case RpoInfoPanelAction.ExportToTxt: {
         vscode.window.setStatusBarMessage(
-          "$(clock)" + "Export repository log. Wait...",
+          "$(~spin)" + "Export repository log. Wait...",
           this.doExportToTxt(
             this.monitorServer,
             command.content.rpoInfo,
@@ -150,7 +156,7 @@ export class RpoInfoLoader {
     rpoInfo: any,
     rpoPath: IRpoPatch
   ): Thenable<string> {
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<string>((resolve) => {
       const fs = require("fs");
       const tmp = require("tmp");
       const file = tmp.fileSync({ prefix: "vscode-tds-rpo", postfix: ".log" });
@@ -259,7 +265,7 @@ export class RpoInfoLoader {
     }
 
     vscode.window.setStatusBarMessage(
-      "$(clock)" +
+      "$(~spin)" +
         localize(
           "REQUESTING_DATA_FROM_SERVER",
           "Requesting data from the server [{0}]",
@@ -293,7 +299,7 @@ export class RpoInfoLoader {
   }
 
   private updateStatus(msg: string) {
-    let icon: string = "$(clock)";
+    let icon: string = "$(~spin)";
 
     vscode.window.setStatusBarMessage(`${icon} ${msg}`);
   }

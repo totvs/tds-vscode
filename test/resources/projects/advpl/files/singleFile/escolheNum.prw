@@ -7,7 +7,7 @@ user function escolheNum(p1)
 	private ondeEstou := "escolheNum"
 	public aPublic := {}
 
-	TDSReplay(.T. , {"*"}, {}, {"*"} , "l:\escolheNhum.trtrplay", 0 , .t. , "")
+	//TDSReplay(.T. , {"*"}, {}, {"*"} , "l:\escolheNhum.trtrplay", 0 , .t. , "")
 
 	// essa seq. UTF 8 invÃ¡lida para json do DA
 	//corrigido versÃ£o DA 1.1.24 / srv
@@ -33,24 +33,24 @@ user function escolheNum(p1)
 		cResp := cOpcao
 
 		if cResp == "1"
-			cMsg := "Vocï¿½ escolheu o numero 1"
+			cMsg := "Você escolheu o número 1"
 		elseif cResp == "2"
-			cMsg := "Vocï¿½ escolheu o numero 2"
+			cMsg := "Você escolheu o número 2"
 		elseif cResp == "3"
-			cMsg := "Vocï¿½ escolheu o numero 3"
+			cMsg := "Você escolheu o número 3"
 		elseif cResp == "4"
-			cMsg := "Vocï¿½ escolheu o numero 4"
+			cMsg := "Você escolheu o número 4"
 		elseif cResp == "5"
-			cMsg := "Vocï¿½ escolheu o numero 5"
+			cMsg := "Você escolheu o número 5"
 		else
-			cMsg := "Nenhum nÃºmero escolhido"
+			cMsg := "Nenhum número escolhido"
 		endif
 
 		if !empty(cResp)
 			if cResp == "2" .or. cResp == "4"
-				cMsg += " e ï¿½ PAR"
+				cMsg += " e é PAR"
 			else
-				cMsg += " e ï¿½ IMPAR"
+				cMsg += " e é IMPAR"
 			endif
 		endif
 
@@ -142,13 +142,13 @@ static function tela(aaOpcoes)
 	Local oDlg,oSay1,oBtn
 
 	if !(valType(aaOpcoes) == "A")
-		msgAlerta("Parametro aaOpcoes nÃ£o Ã© uma lista (array)")
+		msgAlerta("Parametro aaOpcoes não é uma lista (array)")
 		return cOpcao
 	endif
 
 	oDlg := MSDIALOG():Create()
 	oDlg:cName := "oDlg"
-	oDlg:cCaption := "Escolha um numero"
+	oDlg:cCaption := "Escolha um número"
 	oDlg:nLeft := 0
 	oDlg:nTop := 0
 	oDlg:nWidth := 400
@@ -157,7 +157,7 @@ static function tela(aaOpcoes)
 
 	oSay1 := TSAY():Create(oDlg)
 	oSay1:cName := "oSay1"
-	oSay1:cCaption := "Escolha um nÃºmero acionando um dos botÃµes abaixo."
+	oSay1:cCaption := "Escolha um número acionando um dos botões abaixo."
 	oSay1:nLeft := 10
 	oSay1:nTop := 28
 	oSay1:nWidth := 250

@@ -1,13 +1,12 @@
-import * as vscode from 'vscode';
-import { TotvsConfigurationProvider } from './TotvsConfigurationProvider';
-import { TotvsConfigurationWebProvider } from './TotvsConfigurationWebProvider';
-import { TotvsDebugAdapterDescriptorFactory } from './TotvsDebugAdapterDescriptorFactory';
-import { TotvsConfigurationTdsReplayProvider } from './TotvsConfigurationTdsReplayProvider';
+import * as vscode from "vscode";
+import { TotvsConfigurationProvider } from "./TotvsConfigurationProvider";
+import { TotvsConfigurationWebProvider } from "./TotvsConfigurationWebProvider";
+import { TotvsDebugAdapterDescriptorFactory } from "./TotvsDebugAdapterDescriptorFactory";
+import { TotvsConfigurationTdsReplayProvider } from "./TotvsConfigurationTdsReplayProvider";
 import {
   processDebugCustomEvent,
   procesStartDebugSessionEvent,
-} from './debugEvents';
-import { canDebug } from '../extension';
+} from "./debugEvents";
 
 export let _debugEvent = undefined;
 
@@ -19,7 +18,7 @@ export const registerDebug = (context: vscode.ExtensionContext) => {
   const debugProvider = new TotvsConfigurationProvider();
   registerDebugAdapter(
     context,
-    TotvsConfigurationProvider.type,
+    TotvsConfigurationProvider._TYPE,
     debugProvider,
     factory
   );
@@ -30,7 +29,7 @@ export const registerDebug = (context: vscode.ExtensionContext) => {
   const tdsReplayProvider = new TotvsConfigurationTdsReplayProvider();
   registerDebugAdapter(
     context,
-    TotvsConfigurationTdsReplayProvider.type,
+    TotvsConfigurationTdsReplayProvider._TYPE,
     tdsReplayProvider,
     factory
   );
@@ -41,7 +40,7 @@ export const registerDebug = (context: vscode.ExtensionContext) => {
   const webProvider = new TotvsConfigurationWebProvider();
   registerDebugAdapter(
     context,
-    TotvsConfigurationWebProvider.type,
+    TotvsConfigurationWebProvider._TYPE,
     webProvider,
     factory
   );

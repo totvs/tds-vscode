@@ -4,8 +4,6 @@ import {
   TreeItem,
   ViewItemAction,
   Notification,
-  WebView,
-  WebElement,
   ViewItem,
 } from "vscode-extension-tester";
 import { delay } from "../helper";
@@ -18,10 +16,6 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
   constructor() {
     super("Totvs");
   }
-
-  //async getTreeItem(serverName: string): Promise<TreeItem> {
-  //  return this.getTreeItem(serverName);
-  // }
 
   async removeServer(serverName: string) {
     const serverTreeItem: TreeItem = await this.getTreeItem(serverName);
