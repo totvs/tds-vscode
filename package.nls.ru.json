@@ -76,7 +76,7 @@
 	"tds.package.include": "Включ.",
 	"tds.package.ws.show": "Генерировать WS Protheus",
 	"tds.package.totvs_language_debug": "Отладка TOTVS Language",
-	"tds.package.totvs_language_debug.web": "Отладка TOTVS Language via Web",
+	"tds.package.totvs_language_debug.web": "Отладка TOTVS Language via Web App",
 	"tds.package.totvs_language_debug_with_arguments": "Отладка языка TOTVS с аргументами",
 	"tds.package.properties.program.description": "Имя программы / функции",
 	"tds.package.properties.trace.description": "Включить ведение журнала для протокола адаптера отладки.",

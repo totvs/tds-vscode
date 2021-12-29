@@ -75,7 +75,7 @@
 	"tds.package.welcomePage": "Pagina de bienvenida",
 	"tds.package.include": "Incluir",
 	"tds.package.ws.show": "Generar WS Protheus",
-	"tds.package.totvs_language_debug": "Depuración de lenguaje TOTVS ",
+	"tds.package.totvs_language_debug": "Depuración de lenguaje TOTVS",
 	"tds.package.totvs_language_debug.web": "Depuración de lenguaje TOTVS via Web App",
 	"tds.package.totvs_language_debug_with_arguments": "Depuración de lenguaje TOTVS con argumentos",
 	"tds.package.properties.program.description": "Nombre del programa / función",

@@ -124,24 +124,13 @@ export async function getProgramName(
       const qp: QuickPick<QuickPickProgram> =
         window.createQuickPick<QuickPickProgram>();
 
-      let title: string = "";
-
-      if (config.type == TotvsConfigurationProvider._TYPE) {
-        title = localize(
-          "tds.vscode.getProgramName",
-          "Please enter the name of an AdvPL/4GL function"
-        );
-      } else {
-        title = localize(
-          "tds.vscode.getProgramNameSigaPaf",
-          "Please enter SIGALOJA or SIGAFRT function"
-        );
-      }
-
-      qp.title = title;
+      qp.title = localize(
+        "tds.vscode.getProgramName",
+        "Please enter the name of an AdvPL/4GL function"
+      );
       qp.items = lastPrograms;
       qp.value = lastProgramExecuted;
-      qp.placeholder = title;
+      qp.placeholder = qp.title;
       qp.matchOnDescription = true;
       //Essa propriedade faz com que o QuickPickProgram nao seja escondido
       //caso o usuario clique em algum outro ponto da tela.

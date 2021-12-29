@@ -18,11 +18,39 @@
 		},
 		"permissions": {
 			"type": "object",
-			"description": "Whitelist.",
+			"description": "Compile Key. Values obtained when import authorization file (_.aut_)",
 			"properties": {
 				"authorizationtoken": {
 					"type": "string",
-					"description": "Build key with permissions."
+					"description": "Authorization token."
+				},
+				"path": {
+					"type": "string",
+					"description": "Compile key file."
+				},
+				"machineId": {
+					"type": "string",
+					"description": "Machine ID."
+				},
+				"issued": {
+					"type": "string",
+					"description": "Issue date."
+				},
+				"expire": {
+					"type": "string",
+					"description": "Expire date."
+				},
+				"buildType": {
+					"type": "string",
+					"description": "Build type."
+				},
+				"tokenKey": {
+					"type": "string",
+					"description": "Token key."
+				},
+				"userId": {
+					"type": "string",
+					"description": "User ID."
 				}
 			}
 		},
@@ -104,20 +132,18 @@
 			"items": [
 				{
 					"type": "array",
-					"items": [
-						{
-							"properties": {
-								"id": {
-									"type": "string",
-									"description": "Unique ID."
-								},
-								"token": {
-									"type": "string",
-									"description": "Access code for reconnection. Value obtained automatically."
-								}
+					"items": {
+						"properties": {
+							"id": {
+								"type": "string",
+								"description": "Unique ID."
+							},
+							"token": {
+								"type": "string",
+								"description": "Access code for reconnection. Value obtained automatically."
 							}
 						}
-					]
+					}
 				}
 			]
 		},
