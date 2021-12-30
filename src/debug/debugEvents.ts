@@ -229,16 +229,10 @@ function getIgnoreSourceNotFoundValue(): boolean {
     Utils.logInvalidLaunchJsonFile(e);
   }
 
-  // launchConfig.configurations.forEach(launchElement => {
-  // 	if(debugSession !== undefined && launchElement.name === debugSession.name) {
-  // 		if(launchElement.ignoreSourcesNotFound !== undefined) {
-  // 			isIgnoreSourceNotFound = launchElement.ignoreSourcesNotFound;
-  // 		}
-  // 	}
-  // });
-
   return isIgnoreSourceNotFound;
 }
+
+
 
 //let showProgressInfoEachPercent: number = 2;
 let progressStarted: boolean = false;

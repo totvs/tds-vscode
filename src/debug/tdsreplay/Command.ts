@@ -9,7 +9,8 @@ export enum CommandToDA {
     ChangePage,
     ChangeItemsPerPage,
     SetIgnoreSourcesNotFound,
-    ShowSources
+    ShowSources,
+    GetCurrentState
 }
 
 export enum CommandToPage {
@@ -17,5 +18,6 @@ export enum CommandToPage {
   SelectTimeLine,
   OpenSourcesDialog,
   OpenWaitPage,
-  ShowLoadingPageDialog
+  ShowLoadingPageDialog,
+  SetUpdatedState
 }

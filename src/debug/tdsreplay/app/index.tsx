@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-
 import "./index.css";
 import TDSReplayTimeLineWebView from "./TDSReplayTimeLineWebView";
 
@@ -17,9 +16,10 @@ declare global {
 }
 
 const vscode = window.acquireVsCodeApi();
+const initialData = window.initialData;
 
 ReactDOM.render(
-  <TDSReplayTimeLineWebView vscode={vscode} initialData={window.initialData}/>,
+  <TDSReplayTimeLineWebView vscode={vscode} initialData={initialData}/>,
   document.getElementById("root")
 );
 

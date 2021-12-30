@@ -88,6 +88,7 @@ private initializePanel(): void {
 
     const reactAppUri = reactAppPathOnDisk.with({ scheme: "vscode-resource" });
 
+
     this._debugEvent.body["ignoreSourcesNotFound"] = this._isIgnoreSourcesNotFound;
     const configJson = JSON.stringify(this._debugEvent);
     const sources = "";
@@ -163,12 +164,30 @@ private initializePanel(): void {
     });
   }
 
+  public postSetUpdatedState() {
+    this._panel.webview.postMessage({
+      command: CommandToPage.SetUpdatedState,
+      data: this._debugEvent
+    });
+  }
+
+
   public isDisposed(): boolean {
     return this._isDisposed;
   }
 
+  public getDebugEvent(): DebugSessionCustomEvent {
+    return this._debugEvent;
+  }
+
 }
 
+export function getTimeLineWebView() {
+  return timeLineWebView;
+}
+
+
+// Mensagens recebidas da página timeLineTable.tsx
 function handleRequestFromPage(command: ICommand) {
   //Mensagens recebidas da pagina
   switch (command.action) {
@@ -186,6 +205,9 @@ function handleRequestFromPage(command: ICommand) {
       break;
     case CommandToDA.ShowSources:
         handleShowSourcesCommand(command);
+      break;
+    case CommandToDA.GetCurrentState:
+      getTimeLineWebView().postSetUpdatedState();
       break;
   }
 }
@@ -223,7 +245,7 @@ function handleChangeItemsPerPageCommand(command: ICommand) {
       "itemsPerPage": parseInt(command.content.itemsPerPage),
       "currentSelectedTimeLineId" : parseInt(command.content.currentSelectedTimeLineId)
     };
-    //console.log("Enviando requisição para trocar a quantidade de items por pagina");
+
     debug.activeDebugSession.customRequest("TDA/changeItemsPerPage", requestJson);
   }
 }
