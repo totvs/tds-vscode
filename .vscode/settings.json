@@ -12,5 +12,4 @@
 			"url": "./schema/scenario.schema.json"
 		}
 	],
-	"totvsLanguageServer.welcomePage": false
 }
