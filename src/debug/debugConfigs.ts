@@ -67,9 +67,17 @@ export class ProgramArgs {
   }
 
   static fromJsonString(text: string): ProgramArgs {
-    const data = JSON.parse(text);
-
-    return new ProgramArgs(data.program, data.args);
+    if (text.startsWith("{")) {
+      try {
+        const data = JSON.parse(text);
+        return new ProgramArgs(data.program, data.args);
+      } catch (error: any) {
+        console.error(error);
+        return new ProgramArgs(text, []);
+      }
+    } else {
+      return new ProgramArgs(text, []);
+    }
   }
 }
 
