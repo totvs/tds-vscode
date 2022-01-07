@@ -12,7 +12,7 @@ const INSPECTOR_PATH = path.join(__dirname, "./src/inspect-harpia");
 module.exports = (env, argv) => {
   return {
     target: "node",
-    devtool: (argv.mode === 'production') ? null : 'source-map',
+    devtool: (argv.mode === 'production') ? false : 'source-map',
     optimization: {
       minimize: (argv.mode === 'production'),
       minimizer: [new TerserPlugin()]
@@ -33,7 +33,6 @@ module.exports = (env, argv) => {
       //O [name] abaixo é o que foi definido no "entry" acima, ou seja, o arquivo gerado tera  o nome timeLineView.js
       filename: "[name].js",
     },
-    devtool: "eval-source-map",
     externals: {
       // the vscode-module is created on-the-fly and must be excluded.
       //Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/

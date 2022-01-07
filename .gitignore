@@ -17,3 +17,4 @@ test/resources/**/.vscode/settings.json
 test/resources/**/.vscode/laucher.json
 out-test/
 *.dmp
+test/resources/projects/advpl/.vscode/launch.json
