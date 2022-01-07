@@ -809,72 +809,39 @@ function showBanner(force: boolean = false) {
     firstTime = false;
     const config = workspace.getConfiguration("totvsLanguageServer");
     const showBanner = config.get("showBanner", true);
+    const appLine = languageClient.outputChannel.appendLine;
 
     if (showBanner || force) {
       let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
-      // prettier-ignore-start
-      languageClient.outputChannel.appendLine(
-        "---------------------------v---------------------------------------------------"
-      );
-      languageClient.outputChannel.appendLine(
-        "   //////  ////    //////  |  TOTVS Developer Studio for VS-Code"
-      );
-      languageClient.outputChannel.appendLine(
-        "    //    //  //  //       |  Version " + ext.packageJSON["version"]
-      );
-      languageClient.outputChannel.appendLine(
-        "   //    //  //  //////    |  TOTVS Technology"
-      );
-      languageClient.outputChannel.appendLine("  //    //  //      //     |");
-      languageClient.outputChannel.appendLine(
-        " //    ////    //////      |  https://github.com/totvs/tds-vscode"
-      );
-      languageClient.outputChannel.appendLine(
-        "---------------------------^---------------------------------------------------"
-      );
-      languageClient.outputChannel.appendLine("");
-      // prettier-ignore-end
+      // prettier-ignore
+      {
+      appLine("---------------------------v---------------------------------------------------");
+      appLine("   //////  ////    //////  |  TOTVS Developer Studio for VS-Code");
+      appLine("    //    //  //  //       |  Version " + ext.packageJSON["version"]);
+      appLine("   //    //  //  //////    |  TOTVS Technology");
+      appLine("  //    //  //      //     |");
+      appLine(" //    ////    //////      |  https://github.com/totvs/tds-vscode");
+      appLine("---------------------------^---------------------------------------------------");
+      appLine("");
+      }
     }
-    // prettier-ignore-start
-    languageClient.outputChannel.appendLine(
-      "-------------------------------------------------------------------------------"
-    );
-    languageClient.outputChannel.appendLine(
-      "SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO                                   "
-    );
-    languageClient.outputChannel.appendLine("");
-    languageClient.outputChannel.appendLine(
-      "As chaves de compilação ou tokens de compilação empregados na construção do    "
-    );
-    languageClient.outputChannel.appendLine(
-      "Protheus e suas funcionalidades, são de uso restrito dos desenvolvedores de    "
-    );
-    languageClient.outputChannel.appendLine(
-      "cada módulo.                                                                   "
-    );
-    languageClient.outputChannel.appendLine("");
-    languageClient.outputChannel.appendLine(
-      "Em caso de mau uso destas chaves ou tokens, por qualquer outra parte, que não  "
-    );
-    languageClient.outputChannel.appendLine(
-      "a referida acima, a mesma irá se responsabilizar, direta ou regressivamente,   "
-    );
-    languageClient.outputChannel.appendLine(
-      "única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações,   "
-    );
-    languageClient.outputChannel.appendLine(
-      "multas, condenações judiciais, arbitrais e administrativas e quaisquer outras  "
-    );
-    languageClient.outputChannel.appendLine(
-      "despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros,   "
-    );
-    languageClient.outputChannel.appendLine(
-      "eximindo a TOTVS de toda e qualquer responsabilidade.                          "
-    );
-    languageClient.outputChannel.appendLine(
-      "-------------------------------------------------------------------------------"
-    );
-    // prettier-ignore-end
+    // prettier-ignore
+    {
+    appLine("-------------------------------------------------------------------------------");
+    appLine("SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO                                   ");
+    appLine("");
+    appLine("As chaves de compilação ou tokens de compilação empregados na construção do    ");
+    appLine("Protheus e suas funcionalidades, são de uso restrito dos desenvolvedores de    ");
+    appLine("cada módulo.                                                                   ");
+    appLine("");
+    appLine("Em caso de mau uso destas chaves ou tokens, por qualquer outra parte, que não  ");
+    appLine("a referida acima, a mesma irá se responsabilizar, direta ou regressivamente,   ");
+    appLine("única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações,   ");
+    appLine("multas, condenações judiciais, arbitrais e administrativas e quaisquer outras  ");
+    appLine("despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros,   ");
+    appLine("eximindo a TOTVS de toda e qualquer responsabilidade.                          ");
+    appLine("-------------------------------------------------------------------------------");
+    }
   }
 }
 
