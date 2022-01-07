@@ -7,7 +7,7 @@ import {
 } from "vscode";
 import * as vscode from "vscode";
 import * as Net from "net";
-import { setDapArgs, ProgramArgs } from "./debugConfigs";
+import { setDapArgs, ProgramArgs, extractProgramArgs } from "./debugConfigs";
 import serverProvider, { ServerItem } from "../serverItemProvider";
 import * as nls from "vscode-nls";
 import { canDebug } from "../extension";
@@ -69,7 +69,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
       }
 
       if (!config.cwb || config.cwb === "") {
-        config.cwb = folder;
+        config.cwb = folder.uri.fsPath;
         window.showInformationMessage(
           localize(
             "tds.vscode.cwb_warning",
@@ -117,15 +117,32 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
   }
 
   resolveDebugConfigurationWithSubstitutedVariables(
-    folder: WorkspaceFolder,
+    folder: WorkspaceFolder | undefined,
     debugConfiguration: DebugConfiguration,
     token?: CancellationToken
   ): vscode.ProviderResult<DebugConfiguration> {
-    const programArgs: ProgramArgs = ProgramArgs.fromJsonString(
+    if (token.isCancellationRequested) {
+      return undefined;
+    }
+
+    const programArgs: ProgramArgs = extractProgramArgs(
       debugConfiguration.program
     );
+    if (debugConfiguration.programArguments) {
+      programArgs.args = debugConfiguration.programArguments;
+    }
 
-    if (!programArgs.program) {
+    if (
+      programArgs.program == "<cancel>" ||
+      programArgs.args.includes("<cancel>")
+    ) {
+      window.showInformationMessage(
+        localize("tds.vscode.cancel_by_user", "Canceled by user.")
+      );
+      return undefined; // abort launch
+    }
+
+    if (!debugConfiguration.program) {
       window.showInformationMessage(
         localize(
           "tds.vscode.program_not_found",
