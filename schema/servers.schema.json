@@ -18,41 +18,7 @@
 		},
 		"permissions": {
 			"type": "object",
-			"description": "Compile Key. Values obtained when import authorization file (_.aut_)",
-			"properties": {
-				"authorizationtoken": {
-					"type": "string",
-					"description": "Authorization token."
-				},
-				"path": {
-					"type": "string",
-					"description": "Compile key file."
-				},
-				"machineId": {
-					"type": "string",
-					"description": "Machine ID."
-				},
-				"issued": {
-					"type": "string",
-					"description": "Issue date."
-				},
-				"expire": {
-					"type": "string",
-					"description": "Expire date."
-				},
-				"buildType": {
-					"type": "string",
-					"description": "Build type."
-				},
-				"tokenKey": {
-					"type": "string",
-					"description": "Token key."
-				},
-				"userId": {
-					"type": "string",
-					"description": "User ID."
-				}
-			}
+			"$ref": "./permissions.schema.json"
 		},
 		"configurations": {
 			"type": "array",
@@ -60,69 +26,7 @@
 			"items": {
 				"type": "object",
 				"description": "Server settings.",
-				"properties": {
-					"id": {
-						"type": "string",
-						"description": "Unique identification, generated at the time of registration."
-					},
-					"type": {
-						"type": "string",
-						"description": "Server type",
-						"enum": [
-							"totvs_server_protheus",
-							"totvs_server_logix"
-						]
-					},
-					"name": {
-						"type": "string",
-						"description": "Server identification for humans."
-					},
-					"port": {
-						"type": "integer",
-						"description": "Connection port."
-					},
-					"address": {
-						"type": "string",
-						"description": "Server IP address or station name."
-					},
-					"includes": {
-						"type": "array",
-						"description": "List of folders to search for definition files.",
-						"items": {
-							"type": "string"
-						}
-					},
-					"buildVersion": {
-						"type": "string",
-						"description": "Server version. Value obtained automatically."
-					},
-					"secure": {
-						"type": "boolean",
-						"description": "Secure connection (SSL) or not. Value obtained automatically."
-					},
-					"environments": {
-						"type": "array",
-						"description": "Environments accessed.",
-						"items": {
-							"type": "string"
-						}
-					},
-					"environment": {
-						"type": "string",
-						"description": "Last environment used in connection."
-					},
-					"token": {
-						"type": "string",
-						"description": "Access code for reconnection. Value obtained automatically."
-					}
-				},
-				"required": [
-					"id",
-					"type",
-					"name",
-					"port",
-					"address"
-				]
+				"$ref": "./server.schema.json"
 			}
 		},
 		"savedTokens": {
@@ -152,9 +56,10 @@
 			"description": "Last server used and which will be automatically reconnected in the next session."
 		},
 		"connectedServer": {
+			"description": "Current connection. Automatically updated.",
 			"type": "object",
-			"description": "Current connection. Automatically updated."
-		}
+			"$ref": "./server.schema.json"
+	}
 	},
 	"required": [
 		"version",

@@ -1,0 +1,69 @@
+{
+	"$schema": "https://json-schema.org/draft-07/schema",
+	"title": "Server Configuration Schema",
+	"description": "Schema of server definition.",
+	"type": "object",
+	"properties": {
+					"id": {
+						"type": "string",
+						"description": "Unique identification, generated at the time of registration."
+					},
+					"type": {
+						"type": "string",
+						"description": "Server type",
+						"enum": [
+							"totvs_server_protheus",
+							"totvs_server_logix"
+						]
+					},
+					"name": {
+						"type": "string",
+						"description": "Server identification for humans."
+					},
+					"port": {
+						"type": "integer",
+						"description": "Connection port."
+					},
+					"address": {
+						"type": "string",
+						"description": "Server IP address or station name."
+					},
+					"includes": {
+						"type": "array",
+						"description": "List of folders to search for definition files.",
+						"items": {
+							"type": "string"
+						}
+					},
+					"buildVersion": {
+						"type": "string",
+						"description": "Server version. Value obtained automatically."
+					},
+					"secure": {
+						"type": "boolean",
+						"description": "Secure connection (SSL) or not. Value obtained automatically."
+					},
+					"environments": {
+						"type": "array",
+						"description": "Environments accessed.",
+						"items": {
+							"type": "string"
+						}
+					},
+					"environment": {
+						"type": "string",
+						"description": "Last environment used in connection."
+					},
+					"token": {
+						"type": "string",
+						"description": "Access code for reconnection. Value obtained automatically."
+					}
+				},
+				"required": [
+					"id",
+					"type",
+					"name",
+					"port",
+					"address"
+				]
+			}

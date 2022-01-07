@@ -1,0 +1,40 @@
+{
+	"$schema": "https://json-schema.org/draft-07/schema",
+	"title": "Compile key",
+	"description": "Values obtained when import authorization file (_.aut_)",
+			"type": "object",
+			"properties": {
+				"authorizationtoken": {
+					"type": "string",
+					"description": "Authorization token."
+				},
+				"path": {
+					"type": "string",
+					"description": "Compile key file."
+				},
+				"machineId": {
+					"type": "string",
+					"description": "Machine ID."
+				},
+				"issued": {
+					"type": "string",
+					"description": "Issue date."
+				},
+				"expire": {
+					"type": "string",
+					"description": "Expire date."
+				},
+				"buildType": {
+					"type": "string",
+					"description": "Build type."
+				},
+				"tokenKey": {
+					"type": "string",
+					"description": "Token key."
+				},
+				"userId": {
+					"type": "string",
+					"description": "User ID."
+				}
+			}
+		}
