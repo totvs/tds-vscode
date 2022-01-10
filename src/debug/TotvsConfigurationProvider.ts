@@ -37,7 +37,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
       return undefined;
     }
 
-    this._connectedServerItem = serverProvider.connectedServerItem;
+     this._connectedServerItem = serverProvider.connectedServerItem;
 
     if (this._connectedServerItem !== undefined) {
       if (!config.type && !config.request && !config.name) {
@@ -134,7 +134,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 
     if (
       programArgs.program == "<cancel>" ||
-      programArgs.args.includes("<cancel>")
+      programArgs.args?.includes("<cancel>")
     ) {
       window.showInformationMessage(
         localize("tds.vscode.cancel_by_user", "Canceled by user.")

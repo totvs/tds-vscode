@@ -50,6 +50,13 @@
 					"items": {
 						"type": "string"
 					}
+				},
+				"smartClientBin": {
+					"type": "string",
+					"description": "Dekstop Smart Client Executable for debugger.",
+					"items": {
+						"type": "string"
+					}
 				}
 			},
 			"required": [
@@ -58,7 +65,8 @@
 				"address",
 				"port",
 				"environment",
-				"includePath"
+				"includePath",
+				"smartClientBin"
 			]
 		},
 		"users": {

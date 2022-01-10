@@ -10,6 +10,10 @@
 
   Em caso de erros lhe será apresentado aviso na visão `Problemas`.
 
+- Depuração: Tratamento do tipo _JSON_ em fontes _tlpp_ [#886](https://github.com/totvs/tds-vscode/issues/886)
+
+  Durante a depuração de fontes _tlpp_ com variáveis do tipo _JSON_, estas são apresentadas de forma hierárquica nas visões `Variáveis`, `Inspeção` e outras.
+
 ## Removido
 
 - Depuração via SIGAPAF devido a incompatibilidade entre aplicações.
