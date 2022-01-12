@@ -120,6 +120,7 @@
     "glob": "^7.2.0",
     "gulp": "^4.0.2",
     "gulp-filter": "^7.0.0",
+    "gulp-run": "^1.7.1",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
     "gulp-util": "^3.0.8",
