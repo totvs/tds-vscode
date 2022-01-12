@@ -19,3 +19,4 @@ out-test/
 *.dmp
 test/resources/projects/advpl/.vscode/launch.json
 teste.prw
+src/parser/4gl-parser.js
