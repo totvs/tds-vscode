@@ -102,8 +102,7 @@ export class WorkbenchPageObject {
   }
 
   async isApplyTemplateNotSuported(): Promise<boolean> {
-    //return Promise.resolve(true);
-    return await this.testNotification(/Authentication.*Access denied/);
+    return await this.testNotification(/Operation not supported.*version/);
   }
 
   async isDAInitialing(): Promise<boolean> {

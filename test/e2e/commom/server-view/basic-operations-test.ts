@@ -89,6 +89,7 @@ describe("Server View Basic Operations", () => {
     expect(await serverItemPO.isConnected()).is.true;
   });
 
+  // o server não valida o ambiente na conexão . gera RPO vazio.
   it("Try Connect Using Invalid Environment", async () => {
     await serverItemPO.fireDisconnectAction();
 
@@ -100,7 +101,7 @@ describe("Server View Basic Operations", () => {
     );
 
     await delay();
-    expect(await workbenchPO.isNeedSelectServer()).is.false;
+    expect(await workbenchPO.isNeedSelectServer()).is.true;
   });
 
   it("Add server (context menu)", async () => {

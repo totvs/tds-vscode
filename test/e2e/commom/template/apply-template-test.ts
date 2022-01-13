@@ -15,8 +15,9 @@ import {
 
 //os testes com template não considera erros no template na validação
 //normalmente erros de compilação
-(TEMPLATE_FILES ? describe : describe)("Apply Template", () => {
-  let serverTreePO: ServerViewPageObject;
+//(TEMPLATE_FILES ? describe : describe.skip)("Apply Template", () => {
+describe("Apply Template", () => {
+    let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
 
@@ -50,6 +51,8 @@ import {
 
       const applyTemplatehPO: ApplyTemplatePageObject =
         new ApplyTemplatePageObject();
+      await delay();
+
       await applyTemplatehPO.setTemplateFile(filename);
       await applyTemplatehPO.fireSubmitClose();
       await delay(2000);

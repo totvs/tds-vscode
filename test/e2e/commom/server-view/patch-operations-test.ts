@@ -44,6 +44,7 @@ describe("Patch Operations (forms)", () => {
 
       const patchGeneratePO: PatchGeneratePageObject =
         new PatchGeneratePageObject();
+      await delay();
 
       await workbenchPO.waitRpoLoaded();
 

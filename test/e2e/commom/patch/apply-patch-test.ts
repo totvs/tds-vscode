@@ -36,10 +36,12 @@ describe("Patch Operations", () => {
     serverItemPO = null;
   });
 
-  (PATCHS_FILES.single ? it : it.skip)("Apply single file", async () => {
+  it("Apply single file", async () => {
     await serverItemPO.fireApplyPatchAction();
 
     const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
+    await delay();
+
     await applyPatchPO.setUploadFile([PATCHS_FILES.single]);
     await applyPatchPO.fireSubmitClose();
     await delay(2000);
@@ -51,7 +53,7 @@ describe("Patch Operations", () => {
     expect(await workbenchPO.isPatchApplied()).is.true;
   });
 
-  (PATCHS_FILES.many ? it : it.skip)("Apply many file", async () => {
+  it("Apply many file", async () => {
     await serverItemPO.fireApplyPatchAction();
 
     const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
@@ -66,7 +68,7 @@ describe("Patch Operations", () => {
     expect(await workbenchPO.isPatchApplied()).is.true;
   });
 
-  (PATCHS_FILES.invalid ? it : it.skip)("Apply invalid file", async () => {
+  it("Apply invalid file", async () => {
     await serverItemPO.fireApplyPatchAction();
 
     const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
@@ -83,7 +85,7 @@ describe("Patch Operations", () => {
     expect(await workbenchPO.isPatchValidateNotBeExecuted()).is.true;
   });
 
-  (PATCHS_FILES.zip ? it : it.skip)("Apply From Zip file", async () => {
+  it("Apply From Zip file", async () => {
     await serverItemPO.fireApplyPatchAction();
 
     const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();

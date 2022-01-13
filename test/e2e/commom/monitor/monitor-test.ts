@@ -50,13 +50,10 @@ describe("Monitor Operations", () => {
   });
 
   describe("Send message", async () => {
-    let skip: boolean = false;
+    before(() => {});
 
-    before(() => {
-      //skip = true;
-    });
+    it("Send Message (one user)");
 
-    (!skip ? it : it.skip)("Send Message (one user)");
-    (!skip ? it : it.skip)("Send Message (all user)");
+    it("Send Message (all user)");
   });
 });
