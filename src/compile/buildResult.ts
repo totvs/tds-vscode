@@ -1,10 +1,11 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import * as compile from 'template-literal';
 import * as nls from 'vscode-nls';
 import { CompileResult } from './CompileResult';
 import { CompileInfo } from './CompileInfo';
+
+const compile = require('template-literal');
 
 let localize = nls.loadMessageBundle();
 

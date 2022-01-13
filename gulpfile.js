@@ -4,6 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 const gulp = require("gulp");
+var run = require('gulp-run');
 const path = require("path");
 const vsce = require("vsce");
 const ts = require("gulp-typescript");
@@ -37,6 +38,10 @@ const internalCompileTask = function () {
   return doCompile(false);
 };
 
+const internalCompileWebpack = function () {
+  return run('npm run compile:views').exec();
+};
+
 const internalNlsCompileTask = function () {
   return doCompile(true);
 };
@@ -48,14 +53,15 @@ const addI18nTask = function () {
     .pipe(gulp.dest("."));
 };
 
-const webPack = function () {
-  return gulp
-    .src("src/entry.js")
-    .pipe(webpack(require("./webpack.config.js")))
-    .pipe(gulp.dest("dist/"));
-};
+// const webPack = function () {
+//   return gulp
+//     .src("src/entry.js")
+//     .pipe(webpack(require("./webpack.config.js")))
+//     .pipe(gulp.dest("dist/"));
+// };
 
-const buildTask = gulp.series(cleanTask, internalNlsCompileTask, addI18nTask);
+
+const buildTask = gulp.series(cleanTask, internalNlsCompileTask, addI18nTask, internalCompileWebpack);
 
 const doCompile = function (buildNls) {
   var r = tsProject
