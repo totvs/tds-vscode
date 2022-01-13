@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import { TreeItem } from "vscode-extension-tester";
-import { openProject } from "../../helper";
+import { delay, openProject } from "../../helper";
 import { BuildPageObject } from "../../page-objects/build-po";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
 import { OutputLsPageObject } from "../../page-objects/output-ls-po";
@@ -9,7 +9,7 @@ import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../../scenario";
 
-(COMPILE_FILES.singleFile ? describe.skip : describe.skip)(
+(COMPILE_FILES.singleFile ? describe : describe)(
   "Compile Simple File (basic test)",
   () => {
     let serverTreePO: ServerViewPageObject;
@@ -48,8 +48,6 @@ import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../../scenario";
       expect(
         COMPILE_FILES.singleFile[COMPILE_FILES.singleFile.length - 1]
       ).is.equals(await resourceItem.getLabel());
-
-      //      expect(true).is.equals(await resourceItem.isSelected());
     });
 
     it("Compile", async () => {
@@ -58,16 +56,16 @@ import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../../scenario";
 
       await compilePO.askShowCompileResult(false);
 
-      await outputPO.compileSequenceTest();
+      await outputPO.compileSequenceSingleFileTest();
     });
 
     it("Recompile", async () => {
       await outputPO.clearConsole();
       await compilePO.fireRebuildFile(resourceItem);
 
-      //await compilePO.askShowCompileResult(false);
+      await delay(3000);
 
-      await outputPO.recompileSequenceTest();
+      await outputPO.recompileSequenceFileTest();
     });
   }
 );

@@ -1,6 +1,6 @@
 #include "protheus.ch"
 
-user function escolheNum(p1)
+user function escolheNum(p1,p2)
 	local n, cResp, cMsg := ""
 	local aOpcoes := {}
 	private cOpcao

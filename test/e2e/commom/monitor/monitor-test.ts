@@ -8,7 +8,7 @@ import { ADMIN_USER_DATA, APPSERVER_DATA, PATCHS_FILES } from "../../scenario";
 import { MonitorPageObject } from "./../../page-objects/monitor-po";
 import { IMonitorData } from "./../../page-objects/interface-po";
 
-describe.skip("Monitor Operations", () => {
+describe("Monitor Operations", () => {
   let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
@@ -22,7 +22,6 @@ describe.skip("Monitor Operations", () => {
     serverTreePO = await workbenchPO.openTotvsView();
 
     await serverTreePO.getServer(APPSERVER_DATA);
-
     await delay();
 
     serverItemPO = await serverTreePO.connect(

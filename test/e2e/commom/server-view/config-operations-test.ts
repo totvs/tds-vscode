@@ -19,7 +19,7 @@ import {
   INCLUDE_PATH_DATA,
 } from "../../scenario";
 
-describe.skip("Server View Configurations", () => {
+describe("Server View Configurations", () => {
   let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;

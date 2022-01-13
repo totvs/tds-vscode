@@ -15,7 +15,7 @@ export class OutputLsPageObject extends OutputPageObject {
     return await this.sequenceDefaultTest(sequence);
   }
 
-  async compileSequenceTest(): Promise<void> {
+  async compileSequenceSingleFileTest(): Promise<void> {
     const sequence: RegExp[] = [
       /(Starting compile)/,
       /(Starting build for environment)/,
@@ -32,7 +32,45 @@ export class OutputLsPageObject extends OutputPageObject {
     return await this.sequenceDefaultTest(sequence);
   }
 
-  async recompileSequenceTest(): Promise<void> {
+  async compileSequenceFolderTest(): Promise<void> {
+    const sequence: RegExp[] = [
+      /(Starting compile)/,
+      /(Starting build for environment)/,
+      /(Starting build using RPO token)/,
+      /(Start compile of)/,
+      /(Using Includes:)/,
+      /(Start secure compiling.*1\/2)/,
+      /(.*)/,
+      /(Start secure compiling.*2\/2)/,
+      /(.*)/,
+      /((Aborting|Committing) end build)/,
+      /(All files compiled)/,
+      /(Compile finished)/,
+    ];
+
+    return await this.sequenceDefaultTest(sequence);
+  }
+
+  async recompileSequenceFileTest(): Promise<void> {
+    const sequence: RegExp[] = [
+      /(Starting recompile)/,
+      /(Starting build for environment)/,
+      /(Starting build using RPO token)/,
+      /(Start file recompile)/,
+      /(Using Includes:)/,
+      /(Start secure compiling.*1\/2)/,
+      /(.*)/,
+      /(Start secure compiling.*2\/2)/,
+      /(.*)/,
+      /((Aborting|Committing) end build)/,
+      /(All files compiled.*)/,
+      /(Recompile finished)/,
+    ];
+
+    return await this.sequenceDefaultTest(sequence);
+  }
+
+  async recompileSequenceFolderTest(): Promise<void> {
     const sequence: RegExp[] = [
       /(Starting recompile)/,
       /(Starting build for environment)/,

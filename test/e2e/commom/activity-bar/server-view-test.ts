@@ -25,7 +25,7 @@ describe("Server View", () => {
 
   it("Add Local Server", async () => {
     await outputPO.clearConsole();
-    await serverTreePO.getServer(APPSERVER_DATA);
+    await serverTreePO.addServer(APPSERVER_DATA);
   });
 
   it("Console log (Local Server)", async () => {
@@ -35,7 +35,7 @@ describe("Server View", () => {
   it("Remove Server", async () => {
     await avoidsBacksliding();
 
-    await serverTreePO.getServer(DELETE_DATA);
+    await serverTreePO.addServer(DELETE_DATA);
     await delay();
     await serverTreePO.removeServer(DELETE_DATA.serverName);
 

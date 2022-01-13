@@ -1,6 +1,6 @@
 import { delay } from "../helper";
 import { AbstractPageObject } from "./abstract-po";
-import { By, WebElement } from "vscode-extension-tester";
+import { By, Key, WebElement } from "vscode-extension-tester";
 
 export class PatchGeneratePageObject extends AbstractPageObject {
   // constructor() {
@@ -17,7 +17,7 @@ export class PatchGeneratePageObject extends AbstractPageObject {
 
   async applyFilterInput(filter: string): Promise<string> {
     await this.beginWebView();
-    await this.setValue("FilterInput", `${filter}\t`); //força saida do campo
+    await this.setValue("FilterInput", `${filter}${Key.TAB}`); //força saida do campo
     await delay();
 
     const result: string = await this.getValue("SelectL");

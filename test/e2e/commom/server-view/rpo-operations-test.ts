@@ -10,7 +10,7 @@ import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA } from "../../scenario";
 
-describe.skip("RPO Operations", () => {
+describe("RPO Operations", () => {
   let workbenchPO: WorkbenchPageObject;
   let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
