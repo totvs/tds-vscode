@@ -7,4 +7,5 @@ user function prog1()
 	local vDec     as decimal
 	local aArea := getArea() as array
 
+
 return

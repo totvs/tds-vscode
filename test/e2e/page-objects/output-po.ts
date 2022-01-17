@@ -82,6 +82,7 @@ export class OutputPageObject {
     let result: boolean = false;
     const text: string[] = (await this.getText()).replace("\r", "").split(/\n/);
     this._text = text;
+console.log(">>>>>>>>>>>>>>>", this._text);
 
     while (this._text.length > 0 && !result) {
       const line: string = this._text.shift();

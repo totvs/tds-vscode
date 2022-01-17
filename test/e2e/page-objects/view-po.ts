@@ -14,12 +14,12 @@ import { delay } from "../helper";
 import { WorkbenchPageObject } from "./workbench-po";
 
 export class ViewPageObject<T> {
-  private _view: T | SideBarView;
+  private _view: T;
   protected workbenchPO: WorkbenchPageObject;
   private viewName: string;
 
   protected constructor(name: string) {
-    this.viewName = name.toLowerCase();
+    this.viewName = name;
     this.workbenchPO = new WorkbenchPageObject();
     this.openView().then((value: T) => {
       this._view = value;
@@ -31,24 +31,36 @@ export class ViewPageObject<T> {
   }
 
   async openView(): Promise<T> {
-    const activityBar: ActivityBar = new ActivityBar();
-    const controls: ViewControl[] = await activityBar.getViewControls();
-    let result: T = null;
-
-    for await (const control of controls) {
-      const vc: ViewControl = control;
-      const title: string = (await vc.getTitle()).toLowerCase();
-
-      if (title.startsWith(this.viewName)) {
-        result = (await vc.openView()) as unknown as T;
-      }
-    }
+    let result: T = (await (
+      await new ActivityBar().getViewControl(this.viewName)
+    )?.openView()) as unknown as T;
 
     this._view = result;
 
-    await delay();
+    // const title: string = await (this._view as unknown as SideBarView)
+    //   .getTitlePart()
+    //   .getTitle();
+    // console.log("%%%%%%%%%%%%%%%%%%", title);
 
     return result;
+    // const activityBar: ActivityBar = new ActivityBar();
+    // const controls: ViewControl[] = await activityBar.getViewControls();
+    // let result: T = null;
+
+    // for await (const control of controls) {
+    //   const vc: ViewControl = control;
+    //   const title: string = await vc.getTitle();
+
+    //   if (title.startsWith(this.viewName)) {
+    //     result = (await vc.openView()) as unknown as T;
+    //   }
+    // }
+
+    // this._view = result;
+
+    // await delay(2000);
+
+    // return result;
   }
 
   async getTreeItem(
@@ -70,9 +82,28 @@ export class ViewPageObject<T> {
     const result: TreeItem =
       nodes.length > 1
         ? await this.findChildNode(nodes, tree)
-        : await tree.findItem(nodes[0]);
+        : await this.findNode(nodes[0], tree);
 
     return result;
+  }
+
+  async findNode(label: string, tree: DefaultTreeSection): Promise<TreeItem> {
+    const nodes: TreeItem[] = await tree.getVisibleItems();
+
+    for (const node of nodes) {
+      const target: string = await node.getLabel();
+
+      if (target == label) {
+        if (await node.isExpandable() && !node.isExpanded()) {
+          await node.expand();
+          return await this.findNode(label, tree);
+        };
+
+        return node;
+      }
+    }
+
+    return undefined;
   }
 
   async findChildNode(
@@ -83,68 +114,6 @@ export class ViewPageObject<T> {
     const item = await tree.findItem(nodes[nodes.length - 1]);
 
     return item;
-    //const labels = await Promise.all(treeItems.map((item) => item.getLabel()));
-    //console.error(labels);
-    //console.error(treeItems.length);
-
-    //return treeItems.pop();
-    //const target: string = nodes[nodes.length - 1].toLocaleLowerCase();
-    // const treeItem: TreeItem = treeItems
-    //   .filter(async (item: TreeItem) => {
-    //     const label: string = await item.getLabel();
-    //     return label.toLowerCase() === target;
-    //   })
-    //   .pop();
-    //for await (const value of treeItems) {
-    //  console.error(await value.getLabel());
-    //}
-
-    //return treeItems[0];
-    // let result: TreeItem = undefined;
-    // let aux: TreeItem = sourceItem;
-
-    // let auxTreeItem: TreeItem = undefined;
-    // while (nodes.length) {
-    //   const target: string = nodes.shift().toLowerCase();
-
-    //   for await (const treeItem of treeItems) {
-    //     const label: string = (await treeItem.getLabel()).toLowerCase();
-
-    //     if (label === target) {
-    //       auxTreeItem = treeItem;
-    //     }
-    //   }
-
-    //   if (auxTreeItem && await auxTreeItem.hasChildren()) {
-    //     await auxTreeItem.select();
-    //     await auxTreeItem.expand();
-    //     treeItems = await auxTreeItem.getChildren();
-    //     await auxTreeItem.select();
-    //     auxTreeItem = undefined;
-    //   } else {
-    //     nodes = [];
-    //   }
-    // }
-
-    // return auxTreeItem;
-    //   const label: string = await aux.getLabel();
-
-    //   if (label.toLowerCase() === nodes[0].toLowerCase()) {
-    //     aux.expand();
-    //     for await (const child of await aux.getChildren()) {
-    //       result = await this.findChildNode(nodes.slice(1), child);
-    //     }
-    //   }
-    // }
-    //   if (label.toLowerCase() === nodes[0]) {
-    //     nodes.splice(0, 1);
-    //     if (result) {
-    //       break;
-    //     }
-    //   }
-    //}
-
-    //return result;
   }
 
   async getAction(action: string): Promise<TitleActionButton> {

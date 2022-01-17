@@ -1,4 +1,6 @@
 import { expect } from "chai";
+import path = require("path");
+import fse = require("fs-extra");
 import {
   SideBarView,
   TreeItem,
@@ -7,6 +9,7 @@ import {
   ViewItem,
 } from "vscode-extension-tester";
 import { delay } from "../helper";
+import { PROJECT_FOLDER } from "../scenario";
 import { IServerData, IUserData } from "./interface-po";
 import { ServerPageObject } from "./server-po";
 import { ServerTreeItemPageObject } from "./server-tree-item-po";
@@ -14,7 +17,7 @@ import { ViewPageObject } from "./view-po";
 
 export class ServerViewPageObject extends ViewPageObject<SideBarView> {
   constructor() {
-    super("Totvs");
+    super("TOTVS");
   }
 
   async removeServer(serverName: string) {
@@ -39,7 +42,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
     await delay();
   }
 
-  private async addServer(data: IServerData): Promise<void> {
+  async addServer(data: IServerData): Promise<void> {
     await this.workbenchPO.executeCommand("totvs-developer-studio.add");
 
     const serverPO: ServerPageObject = new ServerPageObject(data);
@@ -49,11 +52,38 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
     expect(await this.workbenchPO.isSavedServer()).is.true;
   }
 
+  private async registerServer(data: IServerData): Promise<void> {
+    const serverJsonFile: string = path.join(
+      PROJECT_FOLDER,
+      ".vscode",
+      "servers.json"
+    );
+    const servers: any = fse.readJSONSync(serverJsonFile);
+
+    servers.configurations = [
+      {
+        id: "qg0x8r7my7kya6rmkzldj9lq5o2y",
+        type: data.serverType,
+        name: data.serverName,
+        port: data.port,
+        address: data.address,
+        //buildVersion: data."7.00.210324P",
+        //secure: true,
+        includes: ["m:/protheus/includes"],
+        environments: ["P20-12-1-33"],
+        //username: "admin",
+        //environment: "P20-12-1-33",
+      },
+    ];
+
+    fse.writeJSONSync(serverJsonFile, servers);
+  }
+
   async getServer(data: IServerData) {
     let serverTreeItem = await this.getTreeItem(data.serverName);
 
     if (!serverTreeItem) {
-      await this.addServer(data);
+      await this.registerServer(data);
       serverTreeItem = await this.getTreeItem(data.serverName);
     }
 

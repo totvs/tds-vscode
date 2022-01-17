@@ -10,7 +10,7 @@ import { DebugPageObject } from "../../page-objects/debug-view-po";
 
 const LONG_IMPORT_TIMEOUT = 3 * 60 * 1000; // 3min
 
-(REPLAY_FILES ? describe : describe.skip)("Replay Operations", () => {
+(REPLAY_FILES ? describe : describe)("Replay Operations", () => {
   let workbenchPO: WorkbenchPageObject;
   let debugView: DebugPageObject;
   let debugBar: DebugToolbar;

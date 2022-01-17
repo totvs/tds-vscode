@@ -1,15 +1,13 @@
-import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { TreeItem } from "vscode-extension-tester";
-import { delay, openProject } from "../../helper";
+import { openProject } from "../../helper";
 import { BuildPageObject } from "../../page-objects/build-po";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
-import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../../scenario";
+import { ADMIN_USER_DATA, APPSERVER_DATA } from "../../scenario";
 
-describe.skip("Compile Source With Error", () => {
+describe("Compile Source With Error", () => {
   let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;

@@ -1,37 +1,25 @@
 import path = require("path");
 import fs = require("fs-extra");
-import {
-  COMPILE_KEY_FILE,
-  DELETE_DATA,
-  INCLUDE_PATH_DATA,
-  PROJECT_FOLDER,
-} from "./scenario";
+import { PROJECT_FOLDER } from "./scenario";
 import {
   By,
   VSBrowser,
-  Workbench,
-  Notification,
   InputBox,
   WebElement,
-  ActivityBar,
-  SideBarView,
   QuickPickItem,
   ContextMenu,
   ViewItem,
   ContextMenuItem,
   ViewControl,
   EditorView,
-  SettingsEditor,
-  CheckboxSetting,
 } from "vscode-extension-tester";
 import { expect } from "chai";
 import { IUserData } from "./page-objects/interface-po";
 import { setTimeout } from "timers/promises";
-import { SettingsPageObject } from "./page-objects/settings-po";
 
 const DEFAULT_DELAY = 1000;
 
-function clearServersJson(projectFolder: string): void {
+function clearVscodeFiles(projectFolder: string): void {
   const serversJsonFile: string = path.join(
     projectFolder,
     ".vscode",
@@ -76,7 +64,7 @@ export async function openProject(
     ...optionsOpenProject,
   };
 
-  clearServersJson(PROJECT_FOLDER);
+  clearVscodeFiles(PROJECT_FOLDER);
 
   await VSBrowser.instance.openResources(PROJECT_FOLDER);
 
@@ -202,5 +190,19 @@ export async function fireContextMenuAction(
 
   const action: ContextMenuItem = await menu.getItem(name);
   await action.click();
+  await delay();
+}
+
+export async function fillProgramName(program: string, ...args: string[]) {
+  const pickBox = new InputBox();
+  await delay();
+
+  let title = await pickBox.getTitle();
+  expect(title).is.equal("Please enter the name of an AdvPL/4GL function");
+
+  await pickBox.setText(`${program} ${args ? args.join(",") : ""}`);
+  await delay();
+
+  await pickBox.confirm();
   await delay();
 }
