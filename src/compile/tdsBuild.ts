@@ -294,8 +294,8 @@ async function buildCode(
               // focus
               vscode.commands.executeCommand("workbench.action.problems.focus");
             }
-            if (context !== undefined) {
-              verifyCompileResult(response, context);
+            if (filesUris.length > 1) {
+              verifyCompileResult(response);
             }
           }
         },
@@ -313,7 +313,7 @@ async function buildCode(
   }
 }
 
-function verifyCompileResult(response, context) {
+function verifyCompileResult(response) {
   const textNoAsk = localize("tds.vscode.noAskAgain", "Don't ask again");
   const textNo = localize("tds.vscode.no", "No");
   const textYes = localize("tds.vscode.yes", "Yes");
@@ -334,8 +334,8 @@ function verifyCompileResult(response, context) {
           showCompileResult(response, context);
         } else if (clicked === textNoAsk) {
           questionAgain = false;
+          configADVPL.update("askCompileResult", questionAgain);
         }
-        configADVPL.update("askCompileResult", questionAgain);
       });
   }
 }
@@ -360,22 +360,19 @@ export function commandBuildFile(context, recompile: boolean, files) {
     recompile = true;
   }
 
-  let process: Function;
-
-  if (files) {
-    const arrayFiles: string[] = changeToArrayString(files);
-    let allFiles = Utils.getAllFilesRecursive(arrayFiles);
-    process = () => buildFile(allFiles, recompile, context);
-  } else if (filename !== undefined) {
-    process = () => buildFile([filename], recompile, context);
-  }
-
-  if (process) {
-    vscode.window.setStatusBarMessage(
-      `$(~spin) ${localize("tds.vscode.building", "Building...")}`,
-      Promise.resolve(process(context))
-    );
-  }
+  vscode.window.setStatusBarMessage(
+    `$(~spin) ${localize("tds.vscode.building", "Building...")}`,
+    new Promise((resolve, reject) => {
+      if (files) {
+        const arrayFiles: string[] = changeToArrayString(files);
+        let allFiles = Utils.getAllFilesRecursive(arrayFiles);
+        buildFile(allFiles, recompile, context);
+      } else if (filename !== undefined) {
+        buildFile([filename], recompile, context);
+      }
+      resolve(true);
+    })
+  );
 }
 
 function changeToArrayString(allFiles) {
