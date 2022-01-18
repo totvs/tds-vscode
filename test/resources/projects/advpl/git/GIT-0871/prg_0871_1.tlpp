@@ -1,6 +1,6 @@
 #include "protheus.ch"
 
-user function prog1()
+user function prg_0871_1()
 	local lRet := .f. as logical
 	local vInt :=0 as integer
 	local vDou :=0 as double

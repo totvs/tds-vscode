@@ -186,10 +186,10 @@ export async function fireContextMenuAction(
   name: string
 ) {
   const menu: ContextMenu = await element.openContextMenu();
-  await menu.wait(2000);
+  await menu.select(name);
 
-  const action: ContextMenuItem = await menu.getItem(name);
-  await action.click();
+  // const action: ContextMenuItem = await menu.getItem(name);
+  // await action.click();
   await delay();
 }
 

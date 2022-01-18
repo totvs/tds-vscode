@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import { TreeItem } from "vscode-extension-tester";
-import { delay, openProject } from "../../helper";
+import { openProject } from "../../helper";
 import { BuildPageObject } from "../../page-objects/build-po";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
 import { OutputLsPageObject } from "../../page-objects/output-ls-po";

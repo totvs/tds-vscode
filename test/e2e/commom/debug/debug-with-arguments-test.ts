@@ -57,7 +57,7 @@ describe("Debug with arguments", () => {
       COMPILE_FILES.singleFile
     );
     await compilePO.fireRebuildFile(resourceItem);
-    await compilePO.waitBuildingResource();
+    await workbenchPO.waitBuilding();
   });
 
   it("Set breakpoint", async () => {

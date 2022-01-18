@@ -3,7 +3,7 @@ import {
   ProblemsView,
   Workbench,
 } from "vscode-extension-tester";
-import { ProblemPageObject } from "./problem-view-po";
+import { ProblemsPageObject } from "./problem-view-po";
 
 export class BottomBarPageObject {
   private _bottomBar: BottomBarPanel;
@@ -12,10 +12,10 @@ export class BottomBarPageObject {
     this._bottomBar = new BottomBarPanel();
   }
 
-  async openProblemsView(): Promise<ProblemPageObject> {
+  async openProblemsView(): Promise<ProblemsPageObject> {
     await this._bottomBar.toggle(true);
     const view: ProblemsView = await this._bottomBar.openProblemsView();
-    const problemView: ProblemPageObject = new ProblemPageObject(view);
+    const problemView: ProblemsPageObject = new ProblemsPageObject(view);
 
     return problemView;
   }

@@ -8,7 +8,6 @@ import {
   TitleActionButton,
   ViewTitlePart,
   ActivityBar,
-  ViewControl,
 } from "vscode-extension-tester";
 import { delay } from "../helper";
 import { WorkbenchPageObject } from "./workbench-po";
@@ -63,6 +62,24 @@ export class ViewPageObject<T> {
     // return result;
   }
 
+  async openTreeItem(name: string, sectionName?: string): Promise<TreeItem[]> {
+    const view: SideBarView = this.view as unknown as SideBarView;
+    const content: ViewContent = view.getContent();
+    let tree: DefaultTreeSection;
+
+    if (sectionName) {
+      tree = (await content.getSection(sectionName)) as DefaultTreeSection;
+    } else {
+      const sections = await content.getSections();
+      tree = sections[0] as DefaultTreeSection;
+    }
+
+    const nodes: string[] = name.split("/");
+    const result: TreeItem[] = await tree.openItem(...nodes);
+
+    return result;
+  }
+
   async getTreeItem(
     name: string,
     sectionName?: string
@@ -94,10 +111,10 @@ export class ViewPageObject<T> {
       const target: string = await node.getLabel();
 
       if (target == label) {
-        if (await node.isExpandable() && !node.isExpanded()) {
+        if ((await node.isExpandable()) && !node.isExpanded()) {
           await node.expand();
           return await this.findNode(label, tree);
-        };
+        }
 
         return node;
       }
@@ -110,8 +127,14 @@ export class ViewPageObject<T> {
     nodes: string[],
     tree: DefaultTreeSection
   ): Promise<TreeItem> {
-    await tree.openItem(...nodes);
-    const item = await tree.findItem(nodes[nodes.length - 1]);
+    //await tree.collapse();
+    let item: TreeItem = undefined;
+
+    for await (const node of await tree.openItem(...nodes.slice(0, -1))) {
+      if ((await node.getLabel()) == nodes[nodes.length - 1]) {
+        item = node;
+      }
+    }
 
     return item;
   }

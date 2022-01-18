@@ -1,18 +1,24 @@
+import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { openProject } from "../../helper";
-import { BuildPageObject } from "../../page-objects/build-po";
+import { Marker, TreeItem } from "vscode-extension-tester";
+import { delay, openProject } from "../../helper";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA } from "../../scenario";
+import { ProblemsPageObject } from "./../../page-objects/problem-view-po";
+import { BuildPageObject } from "./../../page-objects/build-po";
 
-describe("Compile Source With Error", () => {
+const COMPILE_FOLDER: string[] = ["files", "withError"];
+
+describe("Compile Source With Error and/or Warnings", async () => {
   let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
-  let explorerPO: ExplorerPageObject;
   let compilePO: BuildPageObject;
+  let resourceItem: TreeItem;
+  let problemPO: ProblemsPageObject;
 
   before(async () => {
     await openProject();
@@ -28,11 +34,35 @@ describe("Compile Source With Error", () => {
       ADMIN_USER_DATA
     );
 
+    problemPO = await workbenchPO.openProblemsView();
     compilePO = new BuildPageObject(workbenchPO);
-    explorerPO = await workbenchPO.openExplorerView();
   });
 
-  it("Compile");
-  it("Detect warning");
-  it("Detect errors");
+  it("Compile", async () => {
+    const explorerPO: ExplorerPageObject = await workbenchPO.openExplorerView();
+
+    resourceItem = await explorerPO.getResource(COMPILE_FOLDER);
+    expect(resourceItem).not.undefined;
+
+    await compilePO.fireBuildFile(resourceItem);
+    await workbenchPO.waitBuilding();
+
+    await compilePO.askShowCompileResult(false);
+  });
+
+  it("Detect warning and errors", async () => {
+    let marks: Marker[] = [];
+
+    marks = await problemPO.getAllMarkers();
+    expect(marks.length, `Expected all marks`).is.equal(7);
+
+    marks = await problemPO.getAllFile();
+    expect(marks.length, `Expected file marks`).is.equal(2);
+
+    marks = await problemPO.getAllErrors();
+    expect(marks.length, `Expected marks errors`).is.equal(1);
+
+    marks = await problemPO.getAllWarnings();
+    expect(marks.length, `Expected marks warnings`).is.equal(4);
+  });
 });

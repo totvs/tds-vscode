@@ -18,16 +18,15 @@ export class BuildPageObject extends AbstractPageObject {
   }
 
   async fireRebuildFile(item: TreeItem) {
+    await item.select();
     await this.workbenchPO.executeCommand(
       "totvs-developer-studio.rebuild.file"
     );
   }
 
   async askShowCompileResult(open: boolean): Promise<boolean> {
-    const notification: Notification = await this.workbenchPO.getNotification(
-      /Show table with compile results/,
-      2000
-    );
+    const notification: Notification = await this.workbenchPO.waitAskShowCompileResult();
+
     expect(notification, "askShowCompileResult").not.is.undefined;
 
     if (open) {
@@ -40,7 +39,13 @@ export class BuildPageObject extends AbstractPageObject {
     return open;
   }
 
-  async waitBuildingResource(): Promise<void> {
-    await this.workbenchPO.waitProcessFinish(/Wait please.Building resources/);
+  async compileProcess(resourceItem: TreeItem) {
+    const outputPO = await this.workbenchPO.openOutputLs();
+
+    await outputPO.clearConsole();
+    await this.fireBuildFile(resourceItem);
+
+    await this.workbenchPO.waitBuilding();
+    await this.askShowCompileResult(false);
   }
 }

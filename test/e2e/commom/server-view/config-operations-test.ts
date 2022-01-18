@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { describe, before, it, afterEach } from "mocha";
+import { describe, before, it } from "mocha";
 import { EditorView, TextEditor } from "vscode-extension-tester";
 import {
   avoidsBacksliding,

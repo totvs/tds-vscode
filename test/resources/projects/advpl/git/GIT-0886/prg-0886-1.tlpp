@@ -1,14 +1,14 @@
-user function prog1()
- 
+user function prg_0886_1()
+
     local varJson := { "teste" : { "var1" : "oioi", "var2": "oioi2", "var3": "oioi3" }}
     local varJson2 := { "teste" : 123}
     local varJson3 := { "teste" : { "var1" : varJson['teste']['var1'], "var2": "oioi2" }}
-     
+
     conout(varJson['teste']['var1']) //"oioi"
     conout(varJson['teste']['var2']) //"oioi2"
     conout(varJson['teste']['var3']) //"oioi3"
     conout(varJson2['teste']) //123
     conout(varJson3['teste']['var1'])//"oioi"
     conout(varJson3['teste']['var2'])//"oioi2"
-     
+
 return

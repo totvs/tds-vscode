@@ -13,7 +13,7 @@ import { ServerViewPageObject } from "./server-view-po";
 import { DebugPageObject } from "./debug-view-po";
 import { MonitorPageObject } from "./monitor-po";
 import { OutputLsPageObject } from "./output-ls-po";
-import { ProblemPageObject } from "./problem-view-po";
+import { ProblemsPageObject } from "./problem-view-po";
 import { BottomBarPageObject } from "./bottom-bar-po";
 
 const PROCESS_TIMEOUT = 10 * 1000; //10 segundos
@@ -131,10 +131,6 @@ export class WorkbenchPageObject {
     return await this.testNotification(/Read all TimeLines from the database/);
   }
 
-  //async isDAStoppingFistLine(): Promise<boolean> {
-  //  return await this.testNotification(/Stopping in the first timeline\./);
-  //}
-
   async isDAStoppingFistLineDone(): Promise<boolean> {
     return await this.testNotification(/Stopped in the first timeline./);
   }
@@ -171,6 +167,11 @@ export class WorkbenchPageObject {
     return await this.testNotification(/Template applied/);
   }
 
+  async isOneOrMoreFileHaveError(): Promise<boolean> {
+    await this.testNotification(/\[FATAL\] Aborting/);
+    return await this.testNotification(/One or more files have.*/);
+  }
+
   async isHaveKey(): Promise<boolean> {
     return (await this.statusBar.statusBarWithText(/HAVE key/)) !== null;
   }
@@ -185,6 +186,26 @@ export class WorkbenchPageObject {
     let notification: Notification = await this.getNotification(targetText);
 
     return await notification?.hasProgress();
+  }
+
+  private async waitNotification(
+    targetText: RegExp | string,
+    _wait: number = PROCESS_TIMEOUT
+  ) {
+    let steps: number = _wait / 500;
+    let notification: Notification = await this.getNotification(targetText);
+
+    if (notification) {
+      let notificationAux;
+      while (!notificationAux && steps > 0) {
+        await delay(500);
+        steps--;
+
+        notificationAux = await this.getNotification(targetText);
+      }
+    }
+
+    return notification;
   }
 
   public async waitProcessFinish(
@@ -214,7 +235,13 @@ export class WorkbenchPageObject {
   }
 
   async waitConnection(wait: number = PROCESS_TIMEOUT): Promise<void> {
-    await this.waitProcessFinish(/Authenticating user/);
+    await this.waitProcessFinish(/Authenticating user/, wait);
+  }
+
+  async waitAskShowCompileResult(
+    wait: number = PROCESS_TIMEOUT
+  ): Promise<Notification> {
+    return await this.waitNotification(/Show table with compile results/, wait);
   }
 
   async waitReconnection(wait: number = PROCESS_TIMEOUT): Promise<void> {
@@ -336,8 +363,8 @@ export class WorkbenchPageObject {
     return po;
   }
 
-  async openProblemsView(): Promise<ProblemPageObject> {
-    const po: ProblemPageObject = await this.bottombar.openProblemsView();
+  async openProblemsView(): Promise<ProblemsPageObject> {
+    const po: ProblemsPageObject = await this.bottombar.openProblemsView();
     //await po.openPanel();
 
     return po;
