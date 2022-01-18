@@ -96,7 +96,7 @@ export function activate(context: ExtensionContext) {
   );
 
   Utils.createServerConfig();
-  Utils.createLaunchConfig();
+  Utils.createLaunchConfig(undefined);
 
   context.subscriptions.push(
     commands.registerCommand("tds.getDAP", () => getDAP())

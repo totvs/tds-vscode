@@ -99,6 +99,13 @@ const localizeHTML = {
   ),
 };
 
+const debugLaunchInfo: any = {
+  type: "totvs_language_debug",
+  request: "launch",
+  cwb: "${workspaceRoot}",
+  name: "",
+};
+
 export default class LauncherConfiguration {
   static show(context: vscode.ExtensionContext) {
     if (currentPanel) {
@@ -167,7 +174,7 @@ export default class LauncherConfiguration {
                 }
               }
 
-              Utils.persistLaunchsInfo(launchersInfo);
+              Utils.persistLaunchInfo(launchersInfo);
               currentLaunchersInfoContent = fs.readFileSync(
                 Utils.getLaunchConfigFile(),
                 "utf8"
@@ -239,21 +246,16 @@ function updateElement(element: any, message: any) {
 }
 
 function saveNewLauncher(message: any, launchersInfo: any): void {
-  let element: any = {
-    type: "totvs_language_debug",
-    request: "launch",
-    cwb: "${workspaceRoot}",
-    name: message.launcherName,
-  };
-  updateElement(element, message);
-  launchersInfo.configurations.push(element);
+  debugLaunchInfo.name = message.launcherName;
+  updateElement(debugLaunchInfo, message);
+  launchersInfo.configurations.push(debugLaunchInfo);
 }
 
 function addLaunchJsonListener(): void {
   let launchJson = Utils.getLaunchConfigFile();
 
   if (!fs.existsSync(launchJson)) {
-    Utils.createLaunchConfig();
+    Utils.createLaunchConfig(debugLaunchInfo);
   }
 
   if (fs.existsSync(launchJson)) {

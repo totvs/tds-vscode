@@ -45,7 +45,7 @@
 
 							<div class="wrap-input">
 								<label for="smartClient">${d.localize["tds.webview.launcher.smartclient"]}</label><!--SmartClient:-->
-								<input class="inputText" type="text" id="ClientPatch" name="ClientPatch" placeholder="Ex: C:/totvs/smartclient/smartclient.exe...">
+								<input class="inputText" type="text" id="SmartClientPath" name="SmartClientPath" placeholder="Ex: C:/totvs/smartclient/smartclient.exe...">
 								<input class="inputText" type="file" accept='.exe,application/exe,*.*'  id="smartClientID" name="smartClient" onchange="setTextArea()"/>
 							</div>
 
@@ -157,7 +157,6 @@
 	const vscode = acquireVsCodeApi();
 
 	function validateFields() {
-		console.log("validateFields");
 		let errorMessage;
 		let validated = true;
 		console.log(getElementLauncherName().value);
@@ -208,29 +207,49 @@
 	}
 
 	function updateAllFields(element) {
-		getElementProgram().value 					= element !== undefined ? element.program : "";
-		updateElementProgramArguments(element !== undefined ? element.programArguments : []);
-		getElementSmartclientBin().value 			= element !== undefined ? element.smartclientBin : "";
-		// Opções
-		getElementEnableMultiThread().checked 		= element !== undefined ? element.enableMultiThread: false;
-		getElementEnableProfile().checked 			= element !== undefined ? element.enableProfile : false;
-		// Argumentos
-		getElementMultiSession().checked 			= element !== undefined ? element.isMultiSession : true;
-		getElementAccessibilityMode().checked 		= element !== undefined ? element.isAccessibilityMode : false;
-		getElementDoNotShowSplash().checked 		= element !== undefined ? element.doNotShowSplash : false;
-		getElementOpenglMode().checked              = element !== undefined ? element.openglMode : false;
-		getElementDpiMode().checked                 = element !== undefined ? element.dpiMode : false;
-		getElementLanguage().value 					= element !== undefined ? element.language : "";
-		getElementIgnoreFiles().checked				= element !== undefined ? element.ignoreFiles: false;
+		if(element !== undefined) {
+
+			getElementProgram().value 					= element.program;
+			updateElementProgramArguments(element.programArguments);
+			getElementSmartclientBin().value 			= element.smartclientBin;
+			// Opções
+			getElementEnableMultiThread().checked 		= element.enableMultiThread;
+			getElementEnableProfile().checked 			= element.enableProfile;
+			// Argumentos
+			getElementMultiSession().checked 			= element.isMultiSession;
+			getElementAccessibilityMode().checked 		= element.isAccessibilityMode;
+			getElementDoNotShowSplash().checked 		= element.doNotShowSplash;
+			getElementOpenglMode().checked              = element.openglMode;
+			getElementDpiMode().checked                 = element.dpiMode;
+			getElementLanguage().value 					= element.language;
+			getElementIgnoreFiles().checked				= element.ignoreFiles;
+		}
 		//
 		validateFields();
 	}
+
+	// function resetAllFields() { Rotina comentada, mas deixada aqui caso exista a necessidade dessa funcionalidade.
+	// 		getElementProgram().value 					= "";
+	// 		updateElementProgramArguments([]);
+	// 		getElementSmartclientBin().value 			= "";
+	// 		// Opções
+	// 		getElementEnableMultiThread().checked 		= false;
+	// 		getElementEnableProfile().checked 			= false;
+	// 		// Argumentos
+	// 		getElementMultiSession().checked 			= true;
+	// 		getElementAccessibilityMode().checked 		= false;
+	// 		getElementDoNotShowSplash().checked 		= false;
+	// 		getElementOpenglMode().checked              = false;
+	// 		getElementDpiMode().checked                 = false;
+	// 		getElementLanguage().value 					= "";
+	// 		getElementIgnoreFiles().checked				= false;
+	// }
 
 	function getElementLauncherList() { return document.getElementById('launcherListID'); }
 	function getElementLauncherName() { return document.getElementById("launcherNameID"); }
 	function getElementProgram() { return document.getElementById("programID"); }
 	function getElementProgramArguments() { return document.getElementById("programArgumentsID"); }
-	function getElementSmartclientBin() { return document.getElementById("ClientPatch"); }
+	function getElementSmartclientBin() { return document.getElementById("SmartClientPath"); }
 	function getElementEnableMultiThread() { return document.getElementById("enableMultiThreadID"); }
 	function getElementEnableProfile() { return document.getElementById("enableProfileID"); }
 	function getElementMultiSession() { return document.getElementById("multiSessionID"); }
@@ -329,7 +348,7 @@
 	function setTextArea(){
 		var input = document.getElementById('smartClientID');
 		var filePath = input.files[0].path;
-		var textArea = document.getElementById('ClientPatch').value = filePath;
+		var textArea = getElementSmartclientBin().value = filePath;
 		validateFields();
 	}
 </script>

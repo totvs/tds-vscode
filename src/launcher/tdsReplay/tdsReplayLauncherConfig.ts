@@ -50,6 +50,15 @@ const localizeHTML = {
   ),
 };
 
+
+const replayLaunchInfo: any = {
+  type: "totvs_tdsreplay_debug",
+  request: "launch",
+  cwb: "${workspaceRoot}",
+  ignoreSourcesNotFound: true,
+  name: "",
+};
+
 export default class LauncherConfiguration {
   static show(context: vscode.ExtensionContext) {
     if (currentPanel) {
@@ -89,24 +98,24 @@ export default class LauncherConfiguration {
         }
       });
 
-      let launchersInfo = undefined;
+      let launcherConfig = undefined;
       try {
-        launchersInfo = Utils.getLaunchConfig();
-        currentPanel.webview.postMessage(launchersInfo);
+        launcherConfig = Utils.getLaunchConfig();
+        currentPanel.webview.postMessage(launcherConfig);
       } catch (e) {
         Utils.logInvalidLaunchJsonFile(e);
-        launchersInfo = {};
+        launcherConfig = {};
       }
 
       currentPanel.webview.onDidReceiveMessage((message) => {
         switch (message.command) {
           case "saveLaunchConfig":
             const launcherName = message.launcherName;
-            if (launchersInfo.configurations !== undefined) {
-              if (launchersInfo.configurations.length > 0 !== undefined) {
+            if (launcherConfig.configurations !== undefined) {
+              if (launcherConfig.configurations.length > 0 !== undefined) {
                 let updated: boolean = false;
-                for (let i = 0; i < launchersInfo.configurations.length; i++) {
-                  let element = launchersInfo.configurations[i];
+                for (let i = 0; i < launcherConfig.configurations.length; i++) {
+                  let element = launcherConfig.configurations[i];
                   if (element.name === launcherName) {
                     updateElement(element, message);
                     updated = true;
@@ -114,21 +123,21 @@ export default class LauncherConfiguration {
                   }
                 }
                 if (!updated) {
-                  saveNewLauncher(message, launchersInfo);
+                  saveNewLauncher(message, launcherConfig);
                 }
               } else {
-                saveNewLauncher(message, launchersInfo);
+                saveNewLauncher(message, launcherConfig);
               }
             }
 
-            Utils.persistLaunchsInfo(launchersInfo);
+            Utils.persistLaunchInfo(launcherConfig);
             currentLaunchersInfoContent = fs.readFileSync(
               Utils.getLaunchConfigFile(),
               "utf8"
             );
 
             if (currentPanel !== undefined) {
-              currentPanel.webview.postMessage(launchersInfo);
+              currentPanel.webview.postMessage(launcherConfig);
             }
 
             vscode.window.showInformationMessage(
@@ -185,22 +194,16 @@ function updateElement(element: any, message: any) {
 }
 
 function saveNewLauncher(message: any, launchersInfo: any): void {
-  let element: any = {
-    type: "totvs_tdsreplay_debug",
-    request: "launch",
-    cwb: "${workspaceRoot}",
-    ignoreSourcesNotFound: true,
-    name: message.launcherName,
-  };
-  updateElement(element, message);
-  launchersInfo.configurations.push(element);
+  replayLaunchInfo.name = message.launcherName;
+  updateElement(replayLaunchInfo, message);
+  launchersInfo.configurations.push(replayLaunchInfo);
 }
 
 function addLaunchJsonListener(): void {
   let launchJson = Utils.getLaunchConfigFile();
 
   if (!fs.existsSync(launchJson)) {
-    Utils.createLaunchConfig();
+    Utils.createLaunchConfig(replayLaunchInfo);
   }
 
   if (fs.existsSync(launchJson)) {

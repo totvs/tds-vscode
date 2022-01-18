@@ -404,7 +404,7 @@ export default class Utils {
    * Grava no arquivo launch.json uma nova configuracao de launchs
    * @param JSONServerInfo
    */
-  static persistLaunchsInfo(JSONLaunchInfo) {
+  static persistLaunchInfo(JSONLaunchInfo) {
     let fs = require("fs");
     fs.writeFileSync(
       Utils.getLaunchConfigFile(),
@@ -657,7 +657,17 @@ export default class Utils {
   /**
    * Cria o arquivo launch.json caso ele nao exista.
    */
-  static createLaunchConfig() {
+  static createLaunchConfig(launchInfo: any) {
+
+    if(launchInfo === undefined) {
+      launchInfo = {
+        type: "totvs_language_debug",
+        request: "launch",
+        cwb: "${workspaceRoot}",
+        name: "TOTVS Language Debug",
+      };
+    }
+
     let launchConfig = undefined;
     try {
       launchConfig = Utils.getLaunchConfig();
@@ -672,11 +682,12 @@ export default class Utils {
 
           let pkg = ext.packageJSON;
           let contributes = pkg["contributes"];
-          const regexp: RegExp = /totvs_language_.*debug/i;
+          //const regexp: RegExp = /totvs_language_.*debug/i;
           let debug = (contributes["debuggers"] as any[]).filter(
             (element: any) => {
-              return regexp.exec(element.type) ? false : true;
+              //return regexp.exec(element.type) ? false : true;
               //return element.type === "totvs_language_debug";
+              return element.type === launchInfo.type;
             }
           );
 
