@@ -94,7 +94,7 @@ function saveSmartClientBin(smartClient: string) {
 				configs.forEach(element => {
 					element.smartclientBin = smartClient;
 				});
-				Utils.persistLaunchsInfo(launchConfig);
+				Utils.persistLaunchInfo(launchConfig);
 			}
 		}
 	} catch(e) {
