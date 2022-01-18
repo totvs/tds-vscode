@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import { Marker, TreeItem } from "vscode-extension-tester";
-import { delay, openProject } from "../../helper";
+import { openProject } from "../../helper";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
@@ -41,7 +41,7 @@ describe("Compile Source With Error and/or Warnings", async () => {
   it("Compile", async () => {
     const explorerPO: ExplorerPageObject = await workbenchPO.openExplorerView();
 
-    resourceItem = await explorerPO.getResource(COMPILE_FOLDER);
+    resourceItem = await explorerPO.getFolder(COMPILE_FOLDER);
     expect(resourceItem).not.undefined;
 
     await compilePO.fireBuildFile(resourceItem);

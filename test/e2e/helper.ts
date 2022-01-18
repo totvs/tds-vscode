@@ -1,6 +1,11 @@
 import path = require("path");
-import fs = require("fs-extra");
-import { PROJECT_FOLDER } from "./scenario";
+import fse = require("fs-extra");
+import {
+  PROJECT_FOLDER,
+  RPO_FOLDER,
+  RPO_RESET_TARGET,
+  RPO_RESET_SOURCE,
+} from "./scenario";
 import {
   By,
   VSBrowser,
@@ -9,7 +14,6 @@ import {
   QuickPickItem,
   ContextMenu,
   ViewItem,
-  ContextMenuItem,
   ViewControl,
   EditorView,
 } from "vscode-extension-tester";
@@ -26,8 +30,8 @@ function clearVscodeFiles(projectFolder: string): void {
     "servers.json"
   );
 
-  if (fs.existsSync(serversJsonFile)) {
-    fs.removeSync(serversJsonFile);
+  if (fse.existsSync(serversJsonFile)) {
+    fse.removeSync(serversJsonFile);
   }
 
   const launchJsonFile: string = path.join(
@@ -36,8 +40,8 @@ function clearVscodeFiles(projectFolder: string): void {
     "launch.json"
   );
 
-  if (fs.existsSync(launchJsonFile)) {
-    fs.removeSync(launchJsonFile);
+  if (fse.existsSync(launchJsonFile)) {
+    fse.removeSync(launchJsonFile);
   }
 }
 
@@ -50,10 +54,12 @@ async function closeAllEditors(): Promise<void> {
 
 export interface IOpenProject {
   linter: boolean;
+  resetRpo: boolean;
 }
 
 const DEFAULT_OPEN_PROJECT: IOpenProject = {
   linter: false,
+  resetRpo: true,
 };
 
 export async function openProject(
@@ -66,6 +72,10 @@ export async function openProject(
 
   clearVscodeFiles(PROJECT_FOLDER);
 
+  if (options.resetRpo) {
+    resetRpo();
+  }
+
   await VSBrowser.instance.openResources(PROJECT_FOLDER);
 
   await delay(2000);
@@ -77,6 +87,13 @@ export async function openProject(
   await closeAllEditors();
 }
 
+function resetRpo() {
+  fse.copyFileSync(
+    path.join(RPO_FOLDER, RPO_RESET_SOURCE),
+    path.join(RPO_FOLDER, RPO_RESET_TARGET)
+  );
+}
+
 export async function readServersJsonFile(): Promise<string> {
   const serversJsonFile: string = path.join(
     PROJECT_FOLDER,
@@ -85,8 +102,8 @@ export async function readServersJsonFile(): Promise<string> {
   );
   let result: string = "< file not found >";
 
-  if (fs.existsSync(serversJsonFile)) {
-    const buffer: Buffer = fs.readFileSync(serversJsonFile);
+  if (fse.existsSync(serversJsonFile)) {
+    const buffer: Buffer = fse.readFileSync(serversJsonFile);
     result = buffer.toString();
   }
 

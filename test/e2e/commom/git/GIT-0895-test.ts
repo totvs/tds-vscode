@@ -40,7 +40,7 @@ describe("GIT-0895: Does not show table as build results", () => {
   });
 
   it("Compile Source", async () => {
-    resourceItem = await explorerPO.getResource(COMPILE_FOLDER);
+    resourceItem = await explorerPO.getFolder(COMPILE_FOLDER);
     expect(resourceItem).not.undefined;
 
     await compilePO.fireBuildFile(resourceItem);

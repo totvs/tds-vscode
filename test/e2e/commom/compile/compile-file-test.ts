@@ -9,7 +9,7 @@ import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../../scenario";
 
-(COMPILE_FILES.singleFile ? describe : describe)(
+(COMPILE_FILES.singleFile ? describe : describe.skip)(
   "Compile Simple File (basic test)",
   () => {
     let serverTreePO: ServerViewPageObject;
@@ -55,7 +55,6 @@ import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../../scenario";
       await compilePO.fireBuildFile(resourceItem);
 
       await workbenchPO.waitBuilding();
-      await compilePO.askShowCompileResult(false);
 
       await outputPO.compileSequenceSingleFileTest();
     });

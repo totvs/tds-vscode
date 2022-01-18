@@ -39,6 +39,6 @@ describe("Server View", () => {
     await delay();
     await serverTreePO.removeServer(DELETE_DATA.serverName);
 
-    expect(await serverTreePO.getTreeItem(DELETE_DATA.serverName)).is.undefined;
+    expect(await serverTreePO.getTreeItem([DELETE_DATA.serverName])).is.undefined;
   });
 });

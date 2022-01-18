@@ -62,7 +62,10 @@ export class ViewPageObject<T> {
     // return result;
   }
 
-  async openTreeItem(name: string, sectionName?: string): Promise<TreeItem[]> {
+  async openTreeItem(
+    sectionName?: string,
+    ...path: string[]
+  ): Promise<TreeItem[]> {
     const view: SideBarView = this.view as unknown as SideBarView;
     const content: ViewContent = view.getContent();
     let tree: DefaultTreeSection;
@@ -74,37 +77,35 @@ export class ViewPageObject<T> {
       tree = sections[0] as DefaultTreeSection;
     }
 
-    const nodes: string[] = name.split("/");
-    const result: TreeItem[] = await tree.openItem(...nodes);
+    const result: TreeItem[] = await tree.openItem(...path);
 
     return result;
   }
 
-  async getTreeItem(
-    name: string,
-    sectionName?: string
-  ): Promise<TreeItem | undefined> {
+  async getTreeItem(path: string[]): Promise<TreeItem | undefined> {
     const view: SideBarView = this.view as unknown as SideBarView;
     const content: ViewContent = view.getContent();
     let tree: DefaultTreeSection;
 
-    if (sectionName) {
-      tree = (await content.getSection(sectionName)) as DefaultTreeSection;
-    } else {
-      const sections = await content.getSections();
-      tree = sections[0] as DefaultTreeSection;
-    }
+    // if (sectionName) {
+    //   tree = (await content.getSection(sectionName)) as DefaultTreeSection;
+    // } else {
+    const sections = await content.getSections();
+    tree = sections[0] as DefaultTreeSection;
+    //    }
 
-    const nodes: string[] = name.split("/");
     const result: TreeItem =
-      nodes.length > 1
-        ? await this.findChildNode(nodes, tree)
-        : await this.findNode(nodes[0], tree);
+      path.length > 1
+        ? await this.findChildNode(tree, path)
+        : await this.findNode(tree, path[0]);
 
     return result;
   }
 
-  async findNode(label: string, tree: DefaultTreeSection): Promise<TreeItem> {
+  private async findNode(
+    tree: DefaultTreeSection,
+    label: string
+  ): Promise<TreeItem> {
     const nodes: TreeItem[] = await tree.getVisibleItems();
 
     for (const node of nodes) {
@@ -113,7 +114,7 @@ export class ViewPageObject<T> {
       if (target == label) {
         if ((await node.isExpandable()) && !node.isExpanded()) {
           await node.expand();
-          return await this.findNode(label, tree);
+          return await this.findNode(tree, label);
         }
 
         return node;
@@ -124,19 +125,44 @@ export class ViewPageObject<T> {
   }
 
   async findChildNode(
-    nodes: string[],
-    tree: DefaultTreeSection
+    tree: DefaultTreeSection,
+    nodes: string[]
   ): Promise<TreeItem> {
-    //await tree.collapse();
-    let item: TreeItem = undefined;
+    let items: TreeItem[] = await tree.openItem(...nodes.slice(0, -1));
 
-    for await (const node of await tree.openItem(...nodes.slice(0, -1))) {
-      if ((await node.getLabel()) == nodes[nodes.length - 1]) {
-        item = node;
+    if (items.length == 0) {
+      let node: TreeItem = await tree.findItem(nodes[0]);
+      if (node) {
+        let level: number = 1;
+        let aux = undefined;
+        while (level < nodes.length) {
+          aux = await node.findChildItem(nodes[level]);
+          if (aux) {
+            node = aux;
+          }
+          level++;
+        }
+        if (aux) {
+          return aux;
+        }
       }
     }
 
-    return item;
+    // for (const item of items) {
+    //   console.log(
+    //     "findChildNode.2",
+    //     nodes[nodes.length - 1],
+    //     await item.getLabel()
+    //   );
+
+    //   if ((await item.getLabel()) == nodes[nodes.length - 1]) {
+    //     console.log("findChildNode.3");
+
+    //     return item;
+    //   }
+    // }
+
+    return undefined;
   }
 
   async getAction(action: string): Promise<TitleActionButton> {

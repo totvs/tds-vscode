@@ -21,7 +21,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
   }
 
   async removeServer(serverName: string) {
-    const serverTreeItem: TreeItem = await this.getTreeItem(serverName);
+    const serverTreeItem: TreeItem = await this.getTreeItem([serverName]);
     await delay(2000);
 
     await serverTreeItem.select();
@@ -80,11 +80,11 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
   }
 
   async getServer(data: IServerData) {
-    let serverTreeItem = await this.getTreeItem(data.serverName);
+    let serverTreeItem = await this.getTreeItem([data.serverName]);
 
     if (!serverTreeItem) {
       await this.registerServer(data);
-      serverTreeItem = await this.getTreeItem(data.serverName);
+      serverTreeItem = await this.getTreeItem([data.serverName]);
     }
 
     return serverTreeItem;
@@ -97,7 +97,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
     validate: boolean = true
   ): Promise<ServerTreeItemPageObject> {
     const serverPO: ServerTreeItemPageObject = new ServerTreeItemPageObject(
-      await this.getTreeItem(serverName)
+      await this.getTreeItem([serverName])
     );
 
     await serverPO.connect(environment, userdata);

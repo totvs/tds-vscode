@@ -1,13 +1,15 @@
 #include "protheus.ch"
 
-user function escolheNum(p1)
+user function file-03(replay, replayPath)
 	local n, cResp, cMsg := ""
 	local aOpcoes := {}
 	private cOpcao
 	private ondeEstou := "escolheNum"
 	public aPublic := {}
 
-	TDSReplay(.T. , {"*"}, {}, {"*"} , "l:\escolheNhum.trtrplay", 0 , .t. , "")
+	if replay
+		TDSReplay(.T. , {"*"}, {}, {"*"} , replayPath, 0 , .t. , "")
+	endif
 
 	// essa seq. UTF 8 inválida para json do DA
 	//corrigido versão DA 1.1.24 / srv
@@ -33,17 +35,17 @@ user function escolheNum(p1)
 		cResp := cOpcao
 
 		if cResp == "1"
-			cMsg := "Voc� escolheu o numero 1"
+			cMsg := "Voc� escolheu o n�mero 1"
 		elseif cResp == "2"
-			cMsg := "Voc� escolheu o numero 2"
+			cMsg := "Voc� escolheu o n�mero 2"
 		elseif cResp == "3"
-			cMsg := "Voc� escolheu o numero 3"
+			cMsg := "Voc� escolheu o n�mero 3"
 		elseif cResp == "4"
-			cMsg := "Voc� escolheu o numero 4"
+			cMsg := "Voc� escolheu o n�mero 4"
 		elseif cResp == "5"
-			cMsg := "Voc� escolheu o numero 5"
+			cMsg := "Voc� escolheu o n�mero 5"
 		else
-			cMsg := "Nenhum número escolhido"
+			cMsg := "Nenhum n�mero escolhido"
 		endif
 
 		if !empty(cResp)
@@ -60,7 +62,9 @@ user function escolheNum(p1)
 
 	enddo
 
-	TDSReplay(.F.)
+	if replay
+		TDSReplay(.F.)
+	endif
 
 return
 
@@ -142,13 +146,13 @@ static function tela(aaOpcoes)
 	Local oDlg,oSay1,oBtn
 
 	if !(valType(aaOpcoes) == "A")
-		msgAlerta("Parametro aaOpcoes não é uma lista (array)")
+		msgAlerta("Parametro aaOpcoes n�o � uma lista (array)")
 		return cOpcao
 	endif
 
 	oDlg := MSDIALOG():Create()
 	oDlg:cName := "oDlg"
-	oDlg:cCaption := "Escolha um numero"
+	oDlg:cCaption := "Escolha um n�mero"
 	oDlg:nLeft := 0
 	oDlg:nTop := 0
 	oDlg:nWidth := 400
@@ -157,7 +161,7 @@ static function tela(aaOpcoes)
 
 	oSay1 := TSAY():Create(oDlg)
 	oSay1:cName := "oSay1"
-	oSay1:cCaption := "Escolha um número acionando um dos botões abaixo."
+	oSay1:cCaption := "Escolha um n�mero acionando um dos bot�es abaixo."
 	oSay1:nLeft := 10
 	oSay1:nTop := 28
 	oSay1:nWidth := 250

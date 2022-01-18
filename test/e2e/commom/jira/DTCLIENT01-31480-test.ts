@@ -40,7 +40,7 @@ describe("DTCLIENT01-3148: Build messages are no longer shown", () => {
   it("Compile Source", async () => {
     const explorerPO: ExplorerPageObject = await workbenchPO.openExplorerView();
 
-    resourceItem = await explorerPO.getResource(COMPILE_FOLDER);
+    resourceItem = await explorerPO.getFolder(COMPILE_FOLDER);
     expect(resourceItem).not.undefined;
 
     await compilePO.fireBuildFile(resourceItem);

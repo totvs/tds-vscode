@@ -8,11 +8,6 @@ import {
 import { delay } from "../helper";
 import { ViewPageObject } from "./view-po";
 
-export interface IFolderTree {
-  parent: TreeItem;
-  child: TreeItem[];
-}
-
 export class ExplorerPageObject extends ViewPageObject<SideBarView> {
   constructor() {
     super("Explorer");
@@ -24,26 +19,17 @@ export class ExplorerPageObject extends ViewPageObject<SideBarView> {
   //   ).openView();
   // }
 
-  async getResource(labels: string[]): Promise<TreeItem> {
-    const treeItem: TreeItem = await super.getTreeItem(labels.join("/"));
+  async getResource(path: string[]): Promise<TreeItem> {
+    const treeItem: TreeItem = await super.getTreeItem(path);
     //await treeItem?.select();
     await delay();
 
     return treeItem;
   }
 
-  async getFolder(labels: string[]): Promise<TreeItem> {
-    return this.getResource(labels);
-  }
+  async getFolder(path: string[]): Promise<TreeItem> {
+    const treeItem: TreeItem = await this.getResource(path);
 
-  async getFolderTree(labels: string[]): Promise<IFolderTree> {
-    const result: IFolderTree = {
-      parent: await super.getTreeItem(labels.join("/")),
-      child: await super.openTreeItem(labels.join("/")),
-    };
-
-    await delay();
-
-    return result;
+    return treeItem;
   }
 }
