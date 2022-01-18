@@ -74,7 +74,7 @@ describe("Server View Basic Operations", () => {
     expect(await serverItemPO.isNotConnected()).is.true;
   });
 
-  it.skip("Reconnect", async () => {
+  it("Reconnect", async () => {
     //esta com erro de driver
     await serverItemPO.fireReconnectAction();
     await fillEnvironment(APPSERVER_DATA.environment);
@@ -89,7 +89,7 @@ describe("Server View Basic Operations", () => {
     expect(await serverItemPO.isConnected()).is.true;
   });
 
-  it.skip("Try Connect Using Invalid Environment", async () => {
+  it("Try Connect Using Invalid Environment", async () => {
     await serverItemPO.fireDisconnectAction();
 
     serverItemPO = await serverTreePO.connect(
@@ -103,7 +103,7 @@ describe("Server View Basic Operations", () => {
     expect(await workbenchPO.isNeedSelectServer()).is.false;
   });
 
-  it.skip("Add server (context menu)", async () => {
+  it("Add server (context menu)", async () => {
     await serverItemPO.fireAddServerAction();
 
     const serverPO = new ServerPageObject();

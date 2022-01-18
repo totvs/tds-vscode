@@ -274,12 +274,16 @@ export class WorkbenchPageObject {
     return await this.processInProgress(/Applying patch/);
   }
 
-  async waitApplyPatch() {
-    await this.waitProcessFinish(/Applying patch/, WAIT_PROCESS_TIMEOUT);
+  async waitApplyPatch(delay: number = WAIT_PROCESS_TIMEOUT) {
+    await this.waitProcessFinish(/Applying patch/, delay);
   }
 
   async waitImportReplay(delay: number = WAIT_PROCESS_TIMEOUT) {
     await this.waitProcessFinish(/Importing TDS Replay/, delay);
+  }
+
+  async waitBuilding(delay: number = WAIT_PROCESS_TIMEOUT) {
+    await this.waitProcessFinish(/Building\.\.\./, delay);
   }
 
   async getNotification(

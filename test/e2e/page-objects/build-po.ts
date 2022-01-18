@@ -14,14 +14,10 @@ export class BuildPageObject extends AbstractPageObject {
   }
 
   async fireBuildFile(item: TreeItem) {
-    await item.select();
-    await delay();
     await fireContextMenuAction(item, "Compile File/Folder");
   }
 
   async fireRebuildFile(item: TreeItem) {
-    await item.select();
-    await delay();
     await this.workbenchPO.executeCommand(
       "totvs-developer-studio.rebuild.file"
     );

@@ -12,7 +12,7 @@ import { ADMIN_USER_DATA, APPSERVER_DATA } from "../../scenario";
 const WANR_SOURCE = ["DTCLIENT01-3148", "warning.prw"];
 const ERROR_SOURCE = ["DTCLIENT01-3148", "error.prw"];
 
-describe.skip("Compilation messages are no longer shown in 'Problems' view", () => {
+describe("Compilation messages are no longer shown in 'Problems' view", () => {
   let serverTreePO: ServerViewPageObject;
   let workbenchPO: WorkbenchPageObject;
   let explorerPO: ExplorerPageObject;

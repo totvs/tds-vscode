@@ -22,7 +22,6 @@ module.exports = {
   // "invert": false //  Inverts --grep and --fgrep matches                     [boolean]
 
   //
-  //ignore: ["test/e2e/activity-bar/**"],
   //"allow-uncaught": false,
   //bail: false,
   //"check-leaks": false,

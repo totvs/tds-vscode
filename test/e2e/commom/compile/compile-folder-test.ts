@@ -1,14 +1,23 @@
+import { expect } from "chai";
 import { describe, before, it } from "mocha";
+import { TreeItem } from "vscode-extension-tester";
 import { delay, openProject } from "../../helper";
-import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
+import { BuildPageObject } from "../../page-objects/build-po";
+import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
+import { OutputLsPageObject } from "../../page-objects/output-ls-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
-import { ADMIN_USER_DATA, APPSERVER_DATA } from "../../scenario";
+import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../../scenario";
 
-describe.skip("Compile folders", () => {
+const FOLDER_TO_COMPILE: string[] = ["files"];
+
+describe("Compile folders", () => {
   let serverTreePO: ServerViewPageObject;
-  let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
+  let compilePO: BuildPageObject;
+  let outputPO: OutputLsPageObject;
+  let explorerPO: ExplorerPageObject;
+  let folderItem: TreeItem;
 
   before(async () => {
     await openProject();
@@ -19,38 +28,46 @@ describe.skip("Compile folders", () => {
     await serverTreePO.getServer(APPSERVER_DATA);
     await delay();
 
-    serverItemPO = await serverTreePO.connect(
+    await serverTreePO.connect(
       APPSERVER_DATA.serverName,
       APPSERVER_DATA.environment,
       ADMIN_USER_DATA
     );
+
+    outputPO = await workbenchPO.openOutputLs();
+    compilePO = new BuildPageObject(workbenchPO);
   });
 
-  after(async () => {
-    await serverItemPO.fireDisconnectAction();
-    serverItemPO = null;
+  beforeEach(async () => {
+    explorerPO = await workbenchPO.openExplorerView();
   });
 
-  it("Compile folders");
+  it("Find folder", async () => {
+    folderItem = await explorerPO.getFolder(FOLDER_TO_COMPILE);
 
-  it("Recompile folders");
+    expect(folderItem).is.not.undefined;
+    expect(FOLDER_TO_COMPILE[FOLDER_TO_COMPILE.length - 1]).is.equals(
+      await folderItem.getLabel()
+    );
+  });
 
-  it("Compile folders with errors");
-  // , async () => {
-  //   const compilePO: CompilePageObject = new CompilePageObject();
+  it("Compile folder", async () => {
+    await outputPO.clearConsole();
+    await compilePO.fireBuildFile(folderItem);
 
-  //   await applyPatchPO.setUploadFile([PATCHS_FILES.single]);
-  //   await applyPatchPO.fireSubmitCloseID();
+    await workbenchPO.waitBuilding();
 
-  //   expect(await workbenchPO.applyPatchInProgress()).is.true;
+    await compilePO.askShowCompileResult(false);
 
-  //   await workbenchPO.waitApplyPatch();
+    await outputPO.compileSequenceFolderTest();
+  });
 
-  //   const notification: Notification = await workbenchPO.getNotification(
-  //     /Patch applied/
-  //   );
+  it.skip("Recompile", async () => {
+    await outputPO.clearConsole();
+    await compilePO.fireRebuildFile(folderItem); //comando rebuild não pega item correte da árvore e sim do editor
 
-  //   expect(notification).not.is.null;
-  //   await notification?.dismiss();
-  // });
+    await workbenchPO.waitBuilding();
+
+    await outputPO.recompileSequenceFileTest();
+  });
 });
