@@ -16,6 +16,7 @@ import {
   ViewItem,
   ViewControl,
   EditorView,
+  TreeItem,
 } from "vscode-extension-tester";
 import { expect } from "chai";
 import { IUserData } from "./page-objects/interface-po";
@@ -223,3 +224,4 @@ export async function fillProgramName(program: string, ...args: string[]) {
   await pickBox.confirm();
   await delay();
 }
+

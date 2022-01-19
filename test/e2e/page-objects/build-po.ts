@@ -18,14 +18,14 @@ export class BuildPageObject extends AbstractPageObject {
   }
 
   async fireRebuildFile(item: TreeItem) {
-    await item.select();
     await this.workbenchPO.executeCommand(
       "totvs-developer-studio.rebuild.file"
     );
   }
 
   async askShowCompileResult(open: boolean): Promise<boolean> {
-    const notification: Notification = await this.workbenchPO.waitAskShowCompileResult();
+    const notification: Notification =
+      await this.workbenchPO.waitAskShowCompileResult();
 
     expect(notification, "askShowCompileResult").not.is.undefined;
 

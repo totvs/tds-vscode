@@ -32,19 +32,29 @@ export class OutputLsPageObject extends OutputPageObject {
     return await this.sequenceDefaultTest(sequence);
   }
 
-  async compileSequenceFolderTest(): Promise<void> {
+  async compileSequenceFolderTest(total: number): Promise<void> {
+    const startSecure = (): RegExp[] => {
+      const block: RegExp[] = [];
+      let seq: number = 1;
+
+      do {
+        block.push(new RegExp(`(Start secure compiling.*${seq}/${total})`));
+        block.push(/(.*)/);
+        seq++;
+      } while (seq <= total);
+
+      return block;
+    };
+
     const sequence: RegExp[] = [
       /(Starting compile)/,
       /(Starting build for environment)/,
       /(Starting build using RPO token)/,
       /(Start compile of)/,
       /(Using Includes:)/,
-      /(Start secure compiling.*1\/2)/,
-      /(.*)/,
-      /(Start secure compiling.*2\/2)/,
-      /(.*)/,
+      ...startSecure(),
       /((Aborting|Committing) end build)/,
-      /(All files compiled)/,
+      /(All files compiled|One or more files have errors)/,
       /(Compile finished)/,
     ];
 

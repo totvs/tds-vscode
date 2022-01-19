@@ -83,6 +83,8 @@ export class OutputPageObject {
     const text: string[] = (await this.getText()).replace("\r", "").split(/\n/);
     this._text = text;
 
+    //console.log("--------- text", text);
+
     while (this._text.length > 0 && !result) {
       const line: string = this._text.shift();
       result = await this.lineTest(line, target);
@@ -123,10 +125,14 @@ export class OutputPageObject {
   protected async sequenceDefaultTest(
     target: (string | RegExp)[]
   ): Promise<void> {
+    //console.log("--------- target", target);
+
     const beginSequence: string | RegExp = target[0];
     const endSequence: string | RegExp = target[target.length - 1];
     const sequence: (string | RegExp)[] = target.slice(1, -1);
 
+    await this.openPanel();
+    await delay();
     await this.startSequenceTest(beginSequence);
 
     while (sequence.length && !(await this.nextSequenceTest(endSequence))) {

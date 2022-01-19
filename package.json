@@ -51,7 +51,7 @@
     "eslint-fix:src": "eslint ./src/**/*.ts --fix",
     "eslint-fix:test": "eslint ./test/**/*.ts --fix",
     "--TEST--": "",
-    "test": "extest run-tests -l error -f -s c:/temp/test -e c:/temp/extension -o test/settings.json './out-test/**/*test.js'",
+    "test": "extest run-tests -l error -f -s c:/temp/test -e c:/temp/extension -o test/settings.json './out-test/**/03**/*test.js'",
     "pretest": "rimraf ./out-test/* && npm run compile-test",
     "test-setup": "npm run compile && extest setup-tests -i -s c:/temp/test -e c:/temp/extension",
     "--SCENARIO--": "",

@@ -3,12 +3,10 @@ import { describe, before, it } from "mocha";
 import { ActivityBar, SideBarView, ViewControl } from "vscode-extension-tester";
 
 describe("TOTVS Activity Bar", () => {
-  let activityBar: ActivityBar;
   let control: ViewControl;
 
   before(async () => {
-    activityBar = new ActivityBar();
-    control = await activityBar.getViewControl("TOTVS");
+    control = await new ActivityBar().getViewControl("TOTVS");
   });
 
   it("Activation", async () => {

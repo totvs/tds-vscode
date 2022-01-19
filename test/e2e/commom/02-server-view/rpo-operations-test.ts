@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import { delay, openProject } from "../../helper";

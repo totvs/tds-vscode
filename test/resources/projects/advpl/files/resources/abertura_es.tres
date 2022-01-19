@@ -1,0 +1,11 @@
+0001#STR0001#ALL#FALLA EN LA APERTURA
+0002#STR0002#ALL#No fue posible abrir el archivo
+0003#STR0003#ALL#en modo exclusivo,
+0004#STR0004#ALL#es probable que este en uso.
+0005#STR0005#ALL#Los datos mostrados pueden estar desactualizados.
+0006#STR0006#ALL#ATENCION:
+0007#STR0007#ALL#Este es el contenido del archivo
+0008#STR0008#ALL#Si existen botones de conformidad
+0009#STR0009#ALL#o semejantes, no los active
+0010#STR0010#ALL#Eventualmente podran ocurrir errores de JavaScript, ignorelos.
+0011#STR0011#ALL#Inicio del archivo

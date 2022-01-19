@@ -5,19 +5,20 @@ import { openProject } from "../../helper";
 import { BuildPageObject } from "../../page-objects/build-po";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
 import { OutputLsPageObject } from "../../page-objects/output-ls-po";
+import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../../scenario";
 
-(COMPILE_FILES.singleFile ? describe : describe.skip)(
+(COMPILE_FILES.singleFile ? describe.only : describe.skip)(
   "Compile Simple File (basic test)",
   () => {
     let serverTreePO: ServerViewPageObject;
     let workbenchPO: WorkbenchPageObject;
-    let explorerPO: ExplorerPageObject;
     let compilePO: BuildPageObject;
     let resourceItem: TreeItem;
     let outputPO: OutputLsPageObject;
+    let serverPO: ServerTreeItemPageObject;
 
     before(async () => {
       await openProject();
@@ -27,7 +28,7 @@ import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../../scenario";
 
       await serverTreePO.getServer(APPSERVER_DATA);
 
-      await serverTreePO.connect(
+      serverPO = await serverTreePO.connect(
         APPSERVER_DATA.serverName,
         APPSERVER_DATA.environment,
         ADMIN_USER_DATA
@@ -37,11 +38,14 @@ import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../../scenario";
       compilePO = new BuildPageObject(workbenchPO);
     });
 
-    beforeEach(async () => {
-      explorerPO = await workbenchPO.openExplorerView();
+    after(async () => {
+      await serverTreePO.openView();
+      await serverPO.fireDisconnectAction();
     });
 
     it("Find resource", async () => {
+      const explorerPO: ExplorerPageObject =
+        await workbenchPO.openExplorerView();
       resourceItem = await explorerPO.getResource(COMPILE_FILES.singleFile);
 
       expect(resourceItem).is.not.undefined;

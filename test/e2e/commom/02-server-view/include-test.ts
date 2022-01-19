@@ -7,19 +7,13 @@ import {
   readServersJsonFile,
   openProject,
 } from "../../helper";
-import { CompileKeyPageObject } from "../../page-objects/compile-key-po";
 import { IncludePageObject } from "../../page-objects/include-po";
-import { ICompileKeyData } from "../../page-objects/interface-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
-import {
-  COMPILE_KEY_FILE,
-  DELETE_DATA,
-  INCLUDE_PATH_DATA,
-} from "../../scenario";
+import { DELETE_DATA, INCLUDE_PATH_DATA } from "../../scenario";
 
-describe("Server View Configurations", () => {
+describe("Include operations and server file structure", () => {
   let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
@@ -95,47 +89,5 @@ describe("Server View Configurations", () => {
     expect(transform(text)).to.equals(transform(textServer));
 
     await view.closeEditor(title);
-  });
-
-  it("Compile key (valid input)", async () => {
-    const compileKeyPO: CompileKeyPageObject = new CompileKeyPageObject();
-    await serverItemPO.fireCompileKey();
-
-    const oldValue: ICompileKeyData = await compileKeyPO.getCompileKeyPage();
-
-    expect(oldValue.machineId).not.empty;
-
-    const newValue: ICompileKeyData = {
-      ...oldValue,
-      compileKeyFile: COMPILE_KEY_FILE[oldValue.machineId],
-    };
-    await compileKeyPO.fillCompileKeyPage(newValue);
-
-    expect(await compileKeyPO.isValidKey()).is.true;
-    await compileKeyPO.fireSave(true);
-
-    expect(await workbenchPO.isHaveKey()).is.true;
-  });
-
-  it("Compile key (clear)", async () => {
-    const compileKeyPO: CompileKeyPageObject = new CompileKeyPageObject();
-    await serverItemPO.fireCompileKey();
-    const oldValue: ICompileKeyData = await compileKeyPO.getCompileKeyPage();
-    let newValue: ICompileKeyData = {
-      ...oldValue,
-      compileKeyFile: COMPILE_KEY_FILE[oldValue.machineId],
-    };
-    await compileKeyPO.fillCompileKeyPage(newValue);
-    await compileKeyPO.fireSave(true);
-
-    await serverItemPO.fireCompileKey();
-    await compileKeyPO.fireClear();
-    await compileKeyPO.fireSave(false);
-
-    newValue = await compileKeyPO.getCompileKeyPage();
-    await compileKeyPO.fireSave(true);
-
-    expect(newValue.token).is.empty;
-    expect(await workbenchPO.isNotHaveKey()).is.true;
   });
 });

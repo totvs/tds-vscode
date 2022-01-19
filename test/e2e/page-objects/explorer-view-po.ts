@@ -13,12 +13,6 @@ export class ExplorerPageObject extends ViewPageObject<SideBarView> {
     super("Explorer");
   }
 
-  // async openView(): Promise<SideBarView> {
-  //   return await (
-  //     await new ActivityBar().getViewControl("Explorer")
-  //   ).openView();
-  // }
-
   async getResource(path: string[]): Promise<TreeItem> {
     const treeItem: TreeItem = await super.getTreeItem(path);
     //await treeItem?.select();

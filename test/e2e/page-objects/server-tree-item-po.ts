@@ -83,7 +83,6 @@ export class ServerTreeItemPageObject {
   }
 
   async fireDisconnectAction() {
-    await this.select();
     await fireContextMenuAction(this.serverTreeItem, "Disconnect");
   }
 

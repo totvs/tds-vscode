@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { delay, openProject } from "../../helper";
+import { openProject } from "../../helper";
 import { OutputLsPageObject } from "../../page-objects/output-ls-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";

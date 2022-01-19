@@ -58,25 +58,31 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
       ".vscode",
       "servers.json"
     );
-    const servers: any = fse.readJSONSync(serverJsonFile);
 
-    servers.configurations = [
-      {
-        id: "qg0x8r7my7kya6rmkzldj9lq5o2y",
-        type: data.serverType,
-        name: data.serverName,
-        port: data.port,
-        address: data.address,
-        //buildVersion: data."7.00.210324P",
-        //secure: true,
-        includes: ["m:/protheus/includes"],
-        environments: ["P20-12-1-33"],
-        //username: "admin",
-        //environment: "P20-12-1-33",
-      },
-    ];
+    if (!fse.existsSync(serverJsonFile)) {
+      this.addServer(data);
+      await delay(2000);
+    } else {
+      const servers: any = fse.readJSONSync(serverJsonFile);
 
-    fse.writeJSONSync(serverJsonFile, servers);
+      servers.configurations = [
+        {
+          id: "qg0x8r7my7kya6rmkzldj9lq5o2y",
+          type: data.serverType,
+          name: data.serverName,
+          port: data.port,
+          address: data.address,
+          //buildVersion: data."7.00.210324P",
+          //secure: true,
+          includes: ["m:/protheus/includes"],
+          environments: ["P20-12-1-33"],
+          //username: "admin",
+          //environment: "P20-12-1-33",
+        },
+      ];
+
+      fse.writeJSONSync(serverJsonFile, servers);
+    }
   }
 
   async getServer(data: IServerData) {

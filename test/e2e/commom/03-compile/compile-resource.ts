@@ -5,19 +5,21 @@ import { delay, openProject } from "../../helper";
 import { BuildPageObject } from "../../page-objects/build-po";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
 import { OutputLsPageObject } from "../../page-objects/output-ls-po";
+import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
-import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../../scenario";
+import { ADMIN_USER_DATA, APPSERVER_DATA } from "../../scenario";
 
-const FOLDER_TO_COMPILE: string[] = ["files"];
+const FOLDER_TO_COMPILE: string[] = ["files", "resources"];
 
-describe("Compile folders", () => {
+describe("Compile Resources", () => {
   let serverTreePO: ServerViewPageObject;
   let workbenchPO: WorkbenchPageObject;
   let compilePO: BuildPageObject;
   let outputPO: OutputLsPageObject;
   let explorerPO: ExplorerPageObject;
   let folderItem: TreeItem;
+  let serverPO: ServerTreeItemPageObject;
 
   before(async () => {
     await openProject();
@@ -28,7 +30,7 @@ describe("Compile folders", () => {
     await serverTreePO.getServer(APPSERVER_DATA);
     await delay();
 
-    await serverTreePO.connect(
+    serverPO = await serverTreePO.connect(
       APPSERVER_DATA.serverName,
       APPSERVER_DATA.environment,
       ADMIN_USER_DATA
@@ -36,6 +38,11 @@ describe("Compile folders", () => {
 
     outputPO = await workbenchPO.openOutputLs();
     compilePO = new BuildPageObject(workbenchPO);
+  });
+
+  after(async () => {
+    await serverTreePO.openView();
+    await serverPO.fireDisconnectAction();
   });
 
   beforeEach(async () => {
@@ -53,21 +60,14 @@ describe("Compile folders", () => {
 
   it("Compile folder", async () => {
     await outputPO.clearConsole();
+
+    const count: number = await explorerPO.countChild(FOLDER_TO_COMPILE);
     await compilePO.fireBuildFile(folderItem);
 
     await workbenchPO.waitBuilding();
 
     await compilePO.askShowCompileResult(false);
 
-    await outputPO.compileSequenceFolderTest();
-  });
-
-  it.skip("Recompile", async () => {
-    await outputPO.clearConsole();
-    await compilePO.fireRebuildFile(folderItem); //comando rebuild não pega item correte da árvore e sim do editor
-
-    await workbenchPO.waitBuilding();
-
-    await outputPO.recompileSequenceFileTest();
+    await outputPO.compileSequenceFolderTest(count);
   });
 });

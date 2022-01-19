@@ -1,24 +1,24 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import { Marker, TreeItem } from "vscode-extension-tester";
-import { openProject } from "../../helper";
+import { delay, openProject } from "../../helper";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA } from "../../scenario";
-import { ProblemsPageObject } from "./../../page-objects/problem-view-po";
 import { BuildPageObject } from "./../../page-objects/build-po";
+import { ProblemsPageObject } from "./../../page-objects/problem-view-po";
 
-const COMPILE_FOLDER: string[] = ["files", "withError"];
+const FOLDER_TO_COMPILE: string[] = ["files", "withError"];
 
 describe("Compile Source With Error and/or Warnings", async () => {
   let serverTreePO: ServerViewPageObject;
-  let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
   let compilePO: BuildPageObject;
-  let resourceItem: TreeItem;
-  let problemPO: ProblemsPageObject;
+  let explorerPO: ExplorerPageObject;
+  let folderItem: TreeItem;
+  let serverPO: ServerTreeItemPageObject;
 
   before(async () => {
     await openProject();
@@ -27,30 +27,45 @@ describe("Compile Source With Error and/or Warnings", async () => {
     serverTreePO = await workbenchPO.openTotvsView();
 
     await serverTreePO.getServer(APPSERVER_DATA);
+    await delay();
 
-    serverItemPO = await serverTreePO.connect(
+    serverPO = await serverTreePO.connect(
       APPSERVER_DATA.serverName,
       APPSERVER_DATA.environment,
       ADMIN_USER_DATA
     );
 
-    problemPO = await workbenchPO.openProblemsView();
     compilePO = new BuildPageObject(workbenchPO);
   });
 
-  it("Compile", async () => {
-    const explorerPO: ExplorerPageObject = await workbenchPO.openExplorerView();
+  after(async () => {
+    await serverTreePO.openView();
+    await serverPO.fireDisconnectAction();
+  });
 
-    resourceItem = await explorerPO.getFolder(COMPILE_FOLDER);
-    expect(resourceItem).not.undefined;
+  beforeEach(async () => {
+    explorerPO = await workbenchPO.openExplorerView();
+  });
 
-    await compilePO.fireBuildFile(resourceItem);
+  it("Find folder", async () => {
+    folderItem = await explorerPO.getFolder(FOLDER_TO_COMPILE);
+
+    expect(folderItem).is.not.undefined;
+    expect(FOLDER_TO_COMPILE[FOLDER_TO_COMPILE.length - 1]).is.equals(
+      await folderItem.getLabel()
+    );
+  });
+
+  it("Compile folder", async () => {
+    await compilePO.fireBuildFile(folderItem);
+
     await workbenchPO.waitBuilding();
 
     await compilePO.askShowCompileResult(false);
   });
 
   it("Detect warning and errors", async () => {
+    const problemPO: ProblemsPageObject = await workbenchPO.openProblemsView();
     let marks: Marker[] = [];
 
     marks = await problemPO.getAllMarkers();

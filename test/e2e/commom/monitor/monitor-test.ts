@@ -50,8 +50,6 @@ describe("Monitor Operations", () => {
   });
 
   describe("Send message", async () => {
-    before(() => {});
-
     it("Send Message (one user)");
 
     it("Send Message (all user)");
