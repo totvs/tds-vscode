@@ -181,7 +181,6 @@ export async function fillUserdata(userData: IUserData) {
   pickBox.wait();
 
   let title = await pickBox.getTitle();
-  title = await pickBox.getTitle();
   expect(title).is.equal("Authentication (1/2)");
 
   await pickBox.setText(userData.username);

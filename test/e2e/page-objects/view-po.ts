@@ -8,6 +8,7 @@ import {
   TitleActionButton,
   ViewTitlePart,
   ActivityBar,
+  DefaultTreeItem,
 } from "vscode-extension-tester";
 import { WorkbenchPageObject } from "./workbench-po";
 
@@ -87,7 +88,8 @@ export class ViewPageObject<T> {
     const sections = await content.getSections();
     const tree: DefaultTreeSection = sections[0] as DefaultTreeSection;
 
-    const result: TreeItem = await this.findNode(tree, path);
+    //const result: TreeItem = await this.findNode(tree, path);
+    const result: TreeItem = await this.findChildNode(tree, path);
 
     return result;
   }
@@ -118,11 +120,11 @@ export class ViewPageObject<T> {
       return await tree.findItem(path[0]);
     }
 
-    const target: string[] = path.slice(0, -1);
-    const nodes: TreeItem[]  = await tree.openItem(...target);
-    const nodes2 :TreeItem[] =  await tree.openItem(...path);
+    const target: string[] = path; //.slice(0, -1);
+    const nodes: TreeItem[] = await tree.openItem(...target);
+    const nodes2: TreeItem[] = []; //await tree.openItem(...path);
     const labels2 = await Promise.all(nodes.map((item) => item.getLabel()));
-    const labels3 = await Promise.all(nodes2.map((item) => item.getLabel()));
+    const labels3 = []; //await Promise.all(nodes2.map((item) => item.getLabel()));
     console.log(">>>>>> ", target, path, labels2, labels3);
 
     for (const node of nodes) {
@@ -138,25 +140,34 @@ export class ViewPageObject<T> {
 
   async findChildNode(
     tree: DefaultTreeSection,
-    nodes: string[]
+    path: string[]
   ): Promise<TreeItem> {
-    let node: TreeItem = await tree.findItem(nodes[0]);
-    let aux = undefined;
-
-    if (node) {
-      let level: number = 1;
-      do {
-        //await node.expand();
-        const children = await node.getChildren();
-        for await (const child of children) {
-          if ((await child.getLabel()) == node[level]) {
-            aux = child;
-            node = aux;
-          }
-        }
-        level++;
-      } while (level < nodes.length);
+    if (path.length == 1) {
+      let node: TreeItem = await tree.findItem(path[0]);
+      return node;
     }
+
+    let aux: DefaultTreeItem = undefined;
+    let children = await tree.openItem(path[0]);
+
+    let level: number = 1;
+    do {
+      for (let index = 0; index < children.length; index++) {
+        const child = children[index];
+        const label: string = await child.getLabel();
+        if (label == path[level]) {
+          //aux = await child.findChildItem(path[level + 1]);
+          aux = child;
+          break;
+        }
+      }
+      //children = await aux.getChildren(); falha
+      const l: string = await aux.getLabel();
+      console.log(l);
+
+      children = await aux.getChildren();
+      level++;
+    } while (level < path.length);
 
     return aux;
   }
