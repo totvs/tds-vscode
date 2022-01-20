@@ -71,10 +71,10 @@ describe("Compile folders", () => {
     await outputPO.compileSequenceFolderTest(count);
   });
 
+  //comando rebuild não pega item correte da árvore e sim do editor
   it.skip("Recompile", async () => {
     await outputPO.clearConsole();
-    await compilePO.fireRebuildFile(folderItem); //comando rebuild não pega item correte da árvore e sim do editor
-
+    await compilePO.fireRebuildFile(folderItem);
     await workbenchPO.waitBuilding();
 
     await outputPO.recompileSequenceFileTest();

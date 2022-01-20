@@ -63,9 +63,10 @@ import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../../scenario";
       await outputPO.compileSequenceSingleFileTest();
     });
 
+    //comando rebuild não pega item correte da árvore e sim do editor
     it.skip("Recompile", async () => {
       await outputPO.clearConsole();
-      await compilePO.fireRebuildFile(resourceItem); //comando rebuild não pega item correte da árvore e sim do editor
+      await compilePO.fireRebuildFile(resourceItem);
 
       await workbenchPO.waitBuilding();
       await compilePO.askShowCompileResult(false);

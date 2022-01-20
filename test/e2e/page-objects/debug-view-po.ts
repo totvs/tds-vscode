@@ -66,6 +66,12 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
       ".vscode",
       "launch.json"
     );
+
+    if (!fse.existsSync(launchJsonFile)) {
+      await this.addLauncher(type, name, smartClientBin);
+      await delay(2000);
+    }
+
     const laucher: any = fse.readJSONSync(launchJsonFile);
 
     laucher.configurations = [
@@ -100,4 +106,5 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
 
     return editor;
   }
+
 }

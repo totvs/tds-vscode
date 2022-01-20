@@ -5,6 +5,7 @@ import {
   RPO_FOLDER,
   RPO_RESET_TARGET,
   RPO_RESET_SOURCE,
+  RPO_CUSTOM,
 } from "./scenario";
 import {
   By,
@@ -56,11 +57,13 @@ async function closeAllEditors(): Promise<void> {
 export interface IOpenProject {
   linter: boolean;
   resetRpo: boolean;
+  resetRpoCustom: boolean;
 }
 
 const DEFAULT_OPEN_PROJECT: IOpenProject = {
   linter: false,
-  resetRpo: true,
+  resetRpo: false,
+  resetRpoCustom: true,
 };
 
 export async function openProject(
@@ -75,6 +78,9 @@ export async function openProject(
 
   if (options.resetRpo) {
     resetRpo();
+  }
+  if (options.resetRpoCustom) {
+    resetRpoCustom();
   }
 
   await VSBrowser.instance.openResources(PROJECT_FOLDER);
@@ -93,6 +99,12 @@ function resetRpo() {
     path.join(RPO_FOLDER, RPO_RESET_SOURCE),
     path.join(RPO_FOLDER, RPO_RESET_TARGET)
   );
+}
+
+function resetRpoCustom() {
+  if (fse.existsSync(RPO_CUSTOM)) {
+    fse.removeSync(RPO_CUSTOM);
+  }
 }
 
 export async function readServersJsonFile(): Promise<string> {
@@ -205,8 +217,6 @@ export async function fireContextMenuAction(
   const menu: ContextMenu = await element.openContextMenu();
   await menu.select(name);
 
-  // const action: ContextMenuItem = await menu.getItem(name);
-  // await action.click();
   await delay();
 }
 

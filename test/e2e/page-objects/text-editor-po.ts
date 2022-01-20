@@ -47,7 +47,4 @@ export class TextEditorPageObject {
     return await this.editor.toggleBreakpoint(line);
   }
 
-  async waitStopDebugger(debugBar: DebugToolbar) {
-    await this.editor.getDriver().wait(until.elementIsNotVisible(debugBar));
-  }
 }

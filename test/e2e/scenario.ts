@@ -64,6 +64,8 @@ const patchFolder: string = path.join(
   values.patchFolder
 );
 
+export const RPO_CUSTOM: string =
+  "M:/protheus/apo.p20.12.1.33/custom/custom.rpo";
 export const RPO_FOLDER: string = "M:/protheus/apo.p20.12.1.33/";
 export const RPO_RESET_SOURCE: string = "tttm120 - original.rpo";
 export const RPO_RESET_TARGET: string = "tttm120.rpo";
