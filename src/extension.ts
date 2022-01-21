@@ -74,8 +74,6 @@ import { rpoTokenInputBox, saveRpoTokenString } from "./rpoToken";
 import { openGeneratePatchView } from "./patch/generate/generatePatchLoader";
 import { patchApply } from "./patch/patchApply";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
-import { openInspectView } from "./inspect-harpia";
-import { ServerItem } from "./serverItemProvider";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -366,16 +364,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.inspectorObjects",
-      (server: ServerItem) => {
-        if (server.isServerP20OrGreater) {
-          openInspectView(context, {
-            objectsInspector: true,
-            includeOutScope: false, //TRES
-          });
-        } else {
-          inspectObject(context);
-        }
-      }
+      () => inspectObject(context)
     )
   );
 
@@ -383,16 +372,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.inspectorFunctions",
-      (server: ServerItem) => {
-        if (server.isServerP20OrGreater) {
-          openInspectView(context, {
-            objectsInspector: false,
-            includeOutScope: false, //inicia com #NONE
-          });
-        } else {
-          inspectFunctions(context);
-        }
-      }
+      () => inspectFunctions(context)
     )
   );
 

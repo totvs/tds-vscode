@@ -7,6 +7,7 @@ const compile = require('template-literal');
 import * as nls from 'vscode-nls';
 import { ResponseError } from 'vscode-languageclient';
 let localize = nls.loadMessageBundle();
+import { openInspectView } from "../inspect-harpia";
 
 const localizeHTML = {
 	"tds.webview.inspect.generate": localize("tds.webview.inspect.generate", "Patch Generation"),
@@ -25,6 +26,20 @@ const localizeHTML = {
 };
 
 export function inspectFunctions(context: vscode.ExtensionContext) {
+	const server = Utils.getCurrentServer();
+	if (server) {
+		if (Utils.isSafeRPO(server)) {
+			openInspectView(context, {
+				objectsInspector: false,
+				includeOutScope: false, //inicia com #NONE
+			});
+		} else {
+			inspectFunctionsLegado(context);
+		}
+	}
+}
+
+function inspectFunctionsLegado(context: vscode.ExtensionContext) {
 	const server = Utils.getCurrentServer();
 
 	if (server) {
