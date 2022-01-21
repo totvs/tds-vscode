@@ -61,6 +61,10 @@ describe("Debug stop", () => {
     editor = await debugPO.getEditorSource(
       COMPILE_FILE[COMPILE_FILE.length - 1]
     );
+
+    await debugPO.openView();
+    await debugPO.clearAllBreakpoints();
+
     const result = await editor.toggleBreakpoint(10);
     expect(result, "Breakpoint not set (line 10)").is.true;
   });

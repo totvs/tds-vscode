@@ -1,14 +1,19 @@
 import fse = require("fs-extra");
-import { DebugView, Key } from "vscode-extension-tester";
+import {
+  By,
+  DebugView,
+  Key,
+  WelcomeContentButton,
+} from "vscode-extension-tester";
 import { ViewPageObject } from "./view-po";
 import { TextEditorPageObject } from "./text-editor-po";
 import path = require("path");
 import { PROJECT_FOLDER } from "../scenario";
-import { delay } from "../helper";
+import { delay, fillDebugConfig } from "../helper";
 
 const TYPE_TITLE = {
   totvs_language_debug: "TOTVS Language Debug",
-  totvs_tdsreplay_debug: "TOTVS Language Debug via Web App",
+  totvs_tdsreplay_debug: "TDS Replay",
   totvs_language_web_debug: "TOTVS Language Debug with arguments",
 };
 
@@ -37,7 +42,7 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
     name: string,
     smartClientBin: string
   ): Promise<boolean> {
-    if (await this.isLauncherSaved(name)) {
+    if (await this.isAlreadyExistsLauncher(name)) {
       return false;
     }
 
@@ -46,6 +51,7 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
 
     await editor.contentAssist.open();
     await editor.contentAssist.fireItemAssist(TYPE_TITLE[type]);
+
     await editor.contentAssist.close();
     await editor.sendKeys(name, Key.TAB);
     await editor.sendKeys(smartClientBin, Key.TAB);
@@ -95,7 +101,27 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
     return true;
   }
 
-  async isLauncherSaved(name: string): Promise<boolean> {
+  async clearAllBreakpoints(): Promise<void> {
+    const content = this.view.getContent();
+    const section = await content.getSection("Breakpoints");
+  }
+
+  async isAlreadyExistsLauncher(name: string): Promise<boolean> {
+    // const content = this.view.getContent();
+    // const section = await content.getSection("Run");
+    // const welcome = await section.findWelcomeContent();
+
+    // if (welcome) {
+    //   const elements = await welcome.findElements(
+    //     By.partialLinkText("create a launch")
+    //   );
+    //   await elements[0].click();
+
+    //   await fillDebugConfig(TYPE_TITLE[0]);
+
+    //   await delay(2000);
+    // }
+
     const configs: string[] = await this.view.getLaunchConfigurations();
 
     return configs.indexOf(name) > -1;
@@ -106,5 +132,4 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
 
     return editor;
   }
-
 }

@@ -39,6 +39,9 @@ export class ContentAssistPageObject {
   }
 
   async fireItemAssist(title: string): Promise<void> {
+    const itens = await this.assist.getItems();
+    itens.map(async (value) => console.log(await value.getLabel()));
+
     const assistItem = await this.assist.getItem(title);
     await assistItem.click();
     await delay();

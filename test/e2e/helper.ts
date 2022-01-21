@@ -45,6 +45,12 @@ function clearVscodeFiles(projectFolder: string): void {
   if (fse.existsSync(launchJsonFile)) {
     fse.removeSync(launchJsonFile);
   }
+
+  const launch: any = {
+    version: "0.2.0",
+    configurations: [{}],
+  };
+  fse.writeJSONSync(launchJsonFile, launch);
 }
 
 async function closeAllEditors(): Promise<void> {
@@ -205,6 +211,17 @@ export async function fillUserdata(userData: IUserData) {
   expect(title).is.equal("Authentication (2/2)");
 
   await pickBox.setText(userData.password);
+  await delay();
+  await pickBox.confirm();
+  await delay();
+}
+
+export async function fillDebugConfig(title: string) {
+  const pickBox = new InputBox();
+  await delay();
+  pickBox.wait();
+
+  await pickBox.setText(title);
   await delay();
   await pickBox.confirm();
   await delay();
