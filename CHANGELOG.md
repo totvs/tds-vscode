@@ -12,7 +12,7 @@
 
 - Depuração: Tratamento do tipo _JSON_ em fontes _tlpp_ [#886](https://github.com/totvs/tds-vscode/issues/886)
 
-- Durante a depuração de fontes _tlpp_ com variáveis do tipo _JSON_, estas são apresentadas de forma hierárquica nas visões `Variáveis`, `Inspeção` e outras.
+  Durante a depuração de fontes _tlpp_ com variáveis do tipo _JSON_, estas são apresentadas de forma hierárquica nas visões `Variáveis`, `Inspeção` e outras.
 
 ## Removido
 
@@ -20,11 +20,15 @@
 
 ## Tela do Monitor não é exibida
 
-- Corrgido problema na geração do pluguin que fazia com que os fontes da tela do monitor não fossem adicionados ao pacote. [DTCLIENT01-3163](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3163)
+- Corrigido problema na geração da extensão que fazia com que os fontes da tela do monitor não fossem adicionados ao pacote. [DTCLIENT01-3163](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3163)
 
 ## TDS Replay: Caso o arquivo do TDS Replay gerado possua um fluxo especifico, a importação apresenta um erro e é cancelada. [DTCLIENT01-3157](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3157)
 
-- Corrigido problema, onde dependendendo do arquivo, a importação era interrompida no meio do processo.
+- Corrigido problema, onde dependendo do arquivo, a importação era interrompida no meio do processo.
+
+## Depuração em MACos esta caindo [DTCLIENT01-3160](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3160) [#875](https://github.com/totvs/tds-vscode/issues/875)
+
+- Corrigido dependências de bibliotecas de terceiros que causavam a queda.
 
 # Versão [1.3.10]
 
