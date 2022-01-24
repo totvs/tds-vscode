@@ -153,8 +153,6 @@ export class WorkbenchPageObject {
       await this.testNotification(/SmartClient closed/),
       await this.isDAFinished(),
     ]).then((value: boolean[]) => {
-      console.log(">>>>>>> ", value);
-
       return !value.includes(false);
     });
   }

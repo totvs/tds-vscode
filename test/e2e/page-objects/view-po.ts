@@ -122,10 +122,6 @@ export class ViewPageObject<T> {
 
     const target: string[] = path; //.slice(0, -1);
     const nodes: TreeItem[] = await tree.openItem(...target);
-    const nodes2: TreeItem[] = []; //await tree.openItem(...path);
-    const labels2 = await Promise.all(nodes.map((item) => item.getLabel()));
-    const labels3 = []; //await Promise.all(nodes2.map((item) => item.getLabel()));
-    console.log(">>>>>> ", target, path, labels2, labels3);
 
     for (const node of nodes) {
       const target: string = await node.getLabel();
@@ -156,14 +152,10 @@ export class ViewPageObject<T> {
         const child = children[index];
         const label: string = await child.getLabel();
         if (label == path[level]) {
-          //aux = await child.findChildItem(path[level + 1]);
           aux = child;
           break;
         }
       }
-      //children = await aux.getChildren(); falha
-      const l: string = await aux.getLabel();
-      console.log(l);
 
       children = await aux.getChildren();
       level++;

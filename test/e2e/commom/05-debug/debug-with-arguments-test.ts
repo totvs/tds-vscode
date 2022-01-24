@@ -67,6 +67,10 @@ describe("Debug with arguments", async () => {
     editor = await debugPO.getEditorSource(
       COMPILE_FILE_ARG_TEST[COMPILE_FILE_ARG_TEST.length - 1]
     );
+
+    await debugPO.openView();
+    await debugPO.clearAllBreakpoints();
+
     const result = await editor.toggleBreakpoint(5);
     expect(result, "Breakpoint not set (line 5)").is.true;
   });
