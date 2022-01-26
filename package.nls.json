@@ -35,6 +35,8 @@
   "tds.package.revalidate.rpo.title": "Revalidate RPO",
   "tds.package.revalidate.rpo.description": "Revalidate current RPO",
   "tds.package.build.file.title": "Compile File/Folder",
+  "tds.package.show.result.build.title": "Show table with compile results",
+  "tds.package.show.result.build.description": "Show table with compile results",
   "tds.package.build.file.description": "Compile a file/folder in TOTVS Servers",
   "tds.package.rebuild.file.title": "Recompile File/Folder",
   "tds.package.rebuild.file.description": "Recompile a file/folder in TOTVS Servers",

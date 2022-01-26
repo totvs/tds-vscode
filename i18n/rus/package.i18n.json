@@ -40,6 +40,8 @@
 	"tds.package.revalidate.rpo.title": "Revalidate RPO",
 	"tds.package.revalidate.rpo.description": "Revalidate current RPO",
 	"tds.package.build.file.title": "Компилировать файл / папку",
+	"tds.package.show.result.build.title": "Show table with compile results",
+	"tds.package.show.result.build.description": "Show table with compile results",
 	"tds.package.build.file.description": "Компилировать файл / папку на серверах",
 	"tds.package.rebuild.file.title": "Перекомпилировать файл / папку",
 	"tds.package.rebuild.file.description": "Перекомпилировать файл / папку на серверах",

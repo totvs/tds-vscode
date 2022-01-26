@@ -2,7 +2,6 @@ import * as vscode from "vscode";
 import { blockBuildCommands, languageClient } from "../extension";
 import * as fs from "fs";
 import Utils from "../utils";
-import { showCompileResult } from "./buildResult";
 
 var windows1252 = require("windows-1252");
 var windows1251 = require("windows-1251");
@@ -165,24 +164,16 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
 /**
  * Builds a file.
  */
-export function buildFile(
-  filename: string[],
-  recompile: boolean,
-  context: vscode.ExtensionContext
-) {
+export function buildFile(filename: string[], recompile: boolean) {
   const compileOptions = _getCompileOptionsDefault();
   compileOptions.recompile = recompile;
-  buildCode(filename, compileOptions, context);
+  buildCode(filename, compileOptions);
 }
 
 /**
  * Build a file list.
  */
-async function buildCode(
-  filesPaths: string[],
-  compileOptions: CompileOptions,
-  context: vscode.ExtensionContext
-) {
+async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
   const server = Utils.getCurrentServer();
 
   const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
@@ -331,7 +322,10 @@ function verifyCompileResult(response) {
       .showInformationMessage(textQuestion, textYes, textNo, textNoAsk)
       .then((clicked) => {
         if (clicked === textYes) {
-          showCompileResult(response, context);
+          vscode.commands.executeCommand(
+            "totvs-developer-studio.show.result.build",
+            response
+          );
         } else if (clicked === textNoAsk) {
           questionAgain = false;
           configADVPL.update("askCompileResult", questionAgain);
@@ -340,25 +334,25 @@ function verifyCompileResult(response) {
   }
 }
 
-export function commandBuildFile(context, recompile: boolean, files) {
+export function commandBuildFile(recompile: boolean, files) {
   let editor: vscode.TextEditor | undefined;
   let filename: string | undefined = undefined;
 
-  if (context === undefined) {
-    //A ação veio pelo ctrl+f9
-    editor = vscode.window.activeTextEditor;
-    if (!editor) {
-      vscode.window.showInformationMessage(
-        localize(
-          "tds.vscode.editornotactive",
-          "No editor is active, cannot find current file to build."
-        )
-      );
-      return;
-    }
-    filename = editor.document.uri.fsPath;
-    recompile = true;
-  }
+  // if (context === undefined) {
+  //   //A ação veio pelo ctrl+f9
+  //   editor = vscode.window.activeTextEditor;
+  //   if (!editor) {
+  //     vscode.window.showInformationMessage(
+  //       localize(
+  //         "tds.vscode.editornotactive",
+  //         "No editor is active, cannot find current file to build."
+  //       )
+  //     );
+  //     return;
+  //   }
+  //   filename = editor.document.uri.fsPath;
+  //   recompile = true;
+  // }
 
   vscode.window.setStatusBarMessage(
     `$(~spin) ${localize("tds.vscode.building", "Building...")}`,
@@ -366,9 +360,9 @@ export function commandBuildFile(context, recompile: boolean, files) {
       if (files) {
         const arrayFiles: string[] = changeToArrayString(files);
         let allFiles = Utils.getAllFilesRecursive(arrayFiles);
-        buildFile(allFiles, recompile, context);
+        buildFile(allFiles, recompile);
       } else if (filename !== undefined) {
-        buildFile([filename], recompile, context);
+        buildFile([filename], recompile);
       }
       resolve(true);
     })
@@ -391,10 +385,7 @@ function changeToArrayString(allFiles) {
   return arrayFiles;
 }
 
-export function commandBuildWorkspace(
-  recompile: boolean,
-  context: vscode.ExtensionContext
-) {
+export function commandBuildWorkspace(recompile: boolean) {
   if (vscode.workspace.workspaceFolders) {
     let folders: string[] = [];
 
@@ -404,14 +395,11 @@ export function commandBuildWorkspace(
 
     let allFiles = Utils.getAllFilesRecursive(folders);
 
-    buildFile(allFiles, recompile, context);
+    buildFile(allFiles, recompile);
   }
 }
 
-export async function commandBuildOpenEditors(
-  recompile: boolean,
-  context: vscode.ExtensionContext
-) {
+export async function commandBuildOpenEditors(recompile: boolean) {
   let delayNext = 250;
   let files: string[] = [];
   let filename: string | undefined = undefined;
@@ -479,7 +467,7 @@ export async function commandBuildOpenEditors(
   if (files.length > 0) {
     const compileOptions = _getCompileOptionsDefault();
     compileOptions.recompile = recompile;
-    buildCode(files, compileOptions, context);
+    buildCode(files, compileOptions);
   } else {
     vscode.window.showWarningMessage("There is nothing to compile");
   }

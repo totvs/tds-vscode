@@ -51,7 +51,7 @@
     "eslint-fix:src": "eslint ./src/**/*.ts --fix",
     "eslint-fix:test": "eslint ./test/**/*.ts --fix",
     "--TEST--": "",
-    "test": "extest run-tests -l error -f -s c:/temp/test -e c:/temp/extension -o test/settings.json './out-test/**/05**/*test.js'",
+    "test": "extest run-tests -l error -f -s c:/temp/test -e c:/temp/extension -o test/settings.json './out-test/**/**/*test.js'",
     "pretest": "rimraf ./out-test/* && npm run compile-test",
     "test-setup": "npm run compile && extest setup-tests -i -s c:/temp/test -e c:/temp/extension",
     "--SCENARIO--": "",
@@ -136,7 +136,7 @@
     "ts-loader": "^9.2.6",
     "typescript": "^4.5.4",
     "typescript-eslint": "^0.0.1-alpha.0",
-    "vsce": "^2.5.3",
+    "vsce": "^2.6.3",
     "vscode-extension-tester": "^4.2.3",
     "vscode-nls-dev": "^4.0.0",
     "webpack": "^5.65.0",
@@ -648,6 +648,12 @@
         "command": "totvs-developer-studio.rebuild.workspace",
         "title": "%tds.package.rebuild.workspace.title%",
         "description": "%tds.package.rebuild.workspace.description%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.show.result.build",
+        "title": "%tds.package.show.result.build.title%",
+        "description": "%tds.package.show.result.build.description%",
         "category": "TOTVS"
       },
       {
@@ -1542,6 +1548,10 @@
         },
         {
           "command": "totvs-developer-studio.clearRpoToken"
+        },
+        {
+          "command": "totvs-developer-studio.show.result.build",
+          "when": "1 == 0"
         },
         {
           "command": "totvs-developer-studio.patchGenerate.fromFolder",

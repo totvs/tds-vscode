@@ -297,7 +297,7 @@ export function patchGenerateFromFolder(context: any) {
                 vscode.window.showErrorMessage(err);
               }
             );
-            commandBuildFile(context, false, allFilesFullPath);
+            commandBuildFile(false, allFilesFullPath);
             let destFolder = fileUri[0].toString();
             sendPatchGenerateMessage(
               server,
