@@ -52,6 +52,11 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
       config.environment = this._connectedServerItem.environment;
       config.token = this._connectedServerItem.token;
 
+      // se no server conectado houver a informacao de smartclientBin utiliza a informacao
+      if (this._connectedServerItem.smartclientBin) {
+        config.smartclientBin = this._connectedServerItem.smartclientBin;
+      }
+
       if (folder) {
         config.workspaceFolders = folder;
       } else {
@@ -105,11 +110,6 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
     config.type = TotvsConfigurationProvider._TYPE;
     config.name = TotvsConfigurationProvider._NAME;
     config.smartclientBin = TotvsConfigurationProvider._SC_BIN;
-
-    // se no server conectado houver a informacao de smartclientBin utiliza a informacao
-    if (this._connectedServerItem.smartclientBin) {
-      config.smartclientBin = this._connectedServerItem.smartclientBin;
-    }
   }
 
   protected finalize(config: DebugConfiguration) {
