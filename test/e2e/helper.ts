@@ -32,6 +32,8 @@ function clearVscodeFiles(projectFolder: string): void {
     "servers.json"
   );
 
+  fse.ensureDir(path.dirname(serversJsonFile));
+
   if (fse.existsSync(serversJsonFile)) {
     fse.removeSync(serversJsonFile);
   }
@@ -41,6 +43,7 @@ function clearVscodeFiles(projectFolder: string): void {
     ".vscode",
     "launch.json"
   );
+  fse.ensureDir(path.dirname(serversJsonFile));
 
   if (fse.existsSync(launchJsonFile)) {
     fse.removeSync(launchJsonFile);
@@ -120,6 +123,8 @@ export async function readServersJsonFile(): Promise<string> {
     "servers.json"
   );
   let result: string = "< file not found >";
+
+  fse.ensureDir(path.dirname(serversJsonFile));
 
   if (fse.existsSync(serversJsonFile)) {
     const buffer: Buffer = fse.readFileSync(serversJsonFile);
