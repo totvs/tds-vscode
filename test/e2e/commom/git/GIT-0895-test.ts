@@ -1,7 +1,12 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { TreeItem, Notification } from "vscode-extension-tester";
-import { openProject } from "../../helper";
+import {
+  TreeItem,
+  Notification,
+  EditorView,
+  TextEditor,
+} from "vscode-extension-tester";
+import { delay, openProject } from "../../helper";
 import { BuildPageObject } from "../../page-objects/build-po";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
@@ -45,12 +50,19 @@ describe("GIT-0895: Does not show table as build results", () => {
 
     await compilePO.fireBuildFile(resourceItem);
     await workbenchPO.waitBuilding();
+  });
 
-    const notification: Notification =
-      await workbenchPO.waitAskShowCompileResult();
-    expect(notification, "askShowCompileResult").not.is.undefined;
+  it("Open result compile table", async () => {
+    await compilePO.askShowCompileResult(true);
+    await delay();
 
-    const message: string = await notification.getMessage();
-    expect(message).equal("Show table with compile results?");
+    const view: EditorView = new EditorView();
+    const editor: TextEditor = new TextEditor(view);
+    const title: string = await editor.getTitle();
+
+    expect(title).to.equals("Compilation Result");
+    await delay(5000);
+
+    await view.closeEditor(title);
   });
 });
