@@ -12,7 +12,7 @@ import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { ADMIN_USER_DATA, DELETE_DATA, APPSERVER_DATA } from "../../scenario";
 
-describe("Server View Basic Operations", () => {
+describe("Server View Basic Operations", async () => {
   let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;

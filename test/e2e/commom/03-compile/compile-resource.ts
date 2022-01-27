@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import { TreeItem } from "vscode-extension-tester";
-import { delay, openProject } from "../../helper";
+import { delay, openProject, openProjectWithReset } from "../../helper";
 import { BuildPageObject } from "../../page-objects/build-po";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
 import { OutputLsPageObject } from "../../page-objects/output-ls-po";
@@ -12,7 +12,7 @@ import { ADMIN_USER_DATA, APPSERVER_DATA } from "../../scenario";
 
 const FOLDER_TO_COMPILE: string[] = ["files", "resources"];
 
-describe("Compile Resources", () => {
+describe("Compile Resources", async () => {
   let serverTreePO: ServerViewPageObject;
   let workbenchPO: WorkbenchPageObject;
   let compilePO: BuildPageObject;
@@ -22,7 +22,7 @@ describe("Compile Resources", () => {
   let serverPO: ServerTreeItemPageObject;
 
   before(async () => {
-    await openProject();
+    await openProjectWithReset();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();

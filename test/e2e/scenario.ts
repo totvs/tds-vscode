@@ -44,6 +44,9 @@ if (valuesFile) {
 }
 console.log("--------------------------------------");
 
+// Processa variáveis de substitução
+procSubstitutionVariable(values);
+
 export const APPSERVER_DATA: IServerData = values.server;
 
 export const DELETE_DATA: IServerData = {
@@ -125,9 +128,6 @@ Object.keys(values.compileKey).forEach((key: string) => {
     values.compileKey[key]
   );
 });
-
-// Processa variáveis de substitução
-procSubstitutionVariable(values);
 
 export const SCENARIO = values;
 

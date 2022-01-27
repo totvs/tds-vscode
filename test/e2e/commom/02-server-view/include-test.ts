@@ -13,7 +13,7 @@ import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { DELETE_DATA, INCLUDE_PATH_DATA } from "../../scenario";
 
-describe("Include operations and server file structure", () => {
+describe("Include operations and server file structure", async () => {
   let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;

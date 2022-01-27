@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import { Marker, TreeItem } from "vscode-extension-tester";
-import { delay, openProject } from "../../helper";
+import { delay, openProject, openProjectWithReset } from "../../helper";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
@@ -21,7 +21,7 @@ describe("Compile Source With Error and/or Warnings", async () => {
   let serverPO: ServerTreeItemPageObject;
 
   before(async () => {
-    await openProject();
+    await openProjectWithReset();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();

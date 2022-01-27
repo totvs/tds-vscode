@@ -6,7 +6,7 @@ import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { DELETE_DATA, APPSERVER_DATA } from "../../scenario";
 
-describe("Server View", () => {
+describe("Server View", async () => {
   let serverTreePO: ServerViewPageObject;
   let workbenchPO: WorkbenchPageObject;
   let outputPO: OutputLsPageObject;
@@ -39,6 +39,7 @@ describe("Server View", () => {
     await delay();
     await serverTreePO.removeServer(DELETE_DATA.serverName);
 
-    expect(await serverTreePO.getTreeItem([DELETE_DATA.serverName])).is.undefined;
+    expect(await serverTreePO.getTreeItem([DELETE_DATA.serverName])).is
+      .undefined;
   });
 });

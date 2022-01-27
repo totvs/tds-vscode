@@ -15,8 +15,8 @@ import {
 
 //os testes com template não considera erros no template na validação
 //normalmente erros de compilação
-//(TEMPLATE_FILES ? describe : describe.skip)("Apply Template", () => {
-describe("Apply Template", () => {
+//(TEMPLATE_FILES ? describe : describe.skip)("Apply Template", async () => {
+describe("Apply Template", async () => {
     let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;

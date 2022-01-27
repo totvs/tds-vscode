@@ -8,7 +8,7 @@ import { ADMIN_USER_DATA, APPSERVER_DATA, PATCHS_FILES } from "../../scenario";
 import { MonitorPageObject } from "./../../page-objects/monitor-po";
 import { IMonitorData } from "./../../page-objects/interface-po";
 
-describe("Monitor Operations", () => {
+describe("Monitor Operations", async () => {
   let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;

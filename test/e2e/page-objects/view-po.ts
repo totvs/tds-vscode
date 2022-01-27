@@ -37,30 +37,7 @@ export class ViewPageObject<T> {
 
     this._view = result;
 
-    // const title: string = await (this._view as unknown as SideBarView)
-    //   .getTitlePart()
-    //   .getTitle();
-    // console.log("%%%%%%%%%%%%%%%%%%", title);
-
     return result;
-    // const activityBar: ActivityBar = new ActivityBar();
-    // const controls: ViewControl[] = await activityBar.getViewControls();
-    // let result: T = null;
-
-    // for await (const control of controls) {
-    //   const vc: ViewControl = control;
-    //   const title: string = await vc.getTitle();
-
-    //   if (title.startsWith(this.viewName)) {
-    //     result = (await vc.openView()) as unknown as T;
-    //   }
-    // }
-
-    // this._view = result;
-
-    // await delay(2000);
-
-    // return result;
   }
 
   async openTreeItem(

@@ -32,7 +32,7 @@ function clearVscodeFiles(projectFolder: string): void {
     "servers.json"
   );
 
-  fse.ensureDir(path.dirname(serversJsonFile));
+  fse.ensureDirSync(path.dirname(serversJsonFile));
 
   if (fse.existsSync(serversJsonFile)) {
     fse.removeSync(serversJsonFile);
@@ -43,7 +43,7 @@ function clearVscodeFiles(projectFolder: string): void {
     ".vscode",
     "launch.json"
   );
-  fse.ensureDir(path.dirname(serversJsonFile));
+  fse.ensureDirSync(path.dirname(serversJsonFile));
 
   if (fse.existsSync(launchJsonFile)) {
     fse.removeSync(launchJsonFile);
@@ -72,8 +72,12 @@ export interface IOpenProject {
 const DEFAULT_OPEN_PROJECT: IOpenProject = {
   linter: false,
   resetRpo: false,
-  resetRpoCustom: true,
+  resetRpoCustom: false,
 };
+
+export async function openProjectWithReset() {
+  openProject({ resetRpo: true, resetRpoCustom: true });
+}
 
 export async function openProject(
   optionsOpenProject: Partial<IOpenProject> = {}
@@ -101,6 +105,8 @@ export async function openProject(
   //await settingsPO.setLinter(options.linter);
 
   await closeAllEditors();
+
+  await delay(3000);
 }
 
 function resetRpo() {
@@ -124,7 +130,7 @@ export async function readServersJsonFile(): Promise<string> {
   );
   let result: string = "< file not found >";
 
-  fse.ensureDir(path.dirname(serversJsonFile));
+  fse.ensureDirSync(path.dirname(serversJsonFile));
 
   if (fse.existsSync(serversJsonFile)) {
     const buffer: Buffer = fse.readFileSync(serversJsonFile);

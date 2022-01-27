@@ -12,7 +12,7 @@ import { ADMIN_USER_DATA, APPSERVER_DATA } from "../../scenario";
 const COMPILE_FOLDER = ["jira", "DTCLIENT01-3148"];
 
 // Mensagens de compilação não são mais mostradas
-describe("DTCLIENT01-3148: Build messages are no longer shown", () => {
+describe("DTCLIENT01-3148: Build messages are no longer shown", async () => {
   let serverTreePO: ServerViewPageObject;
   let workbenchPO: WorkbenchPageObject;
   let compilePO: BuildPageObject;

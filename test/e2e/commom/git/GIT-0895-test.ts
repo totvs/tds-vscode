@@ -16,7 +16,7 @@ import { ADMIN_USER_DATA, APPSERVER_DATA } from "../../scenario";
 const COMPILE_FOLDER = ["git", "GIT-0895"];
 
 // Não mostra tabela como resultados da compilação #895
-describe("GIT-0895: Does not show table as build results", () => {
+describe("GIT-0895: Does not show table as build results", async () => {
   let serverTreePO: ServerViewPageObject;
   let workbenchPO: WorkbenchPageObject;
   let explorerPO: ExplorerPageObject;

@@ -20,12 +20,17 @@
 			"linux": "",
 			"mac": ".app",
 			"windows": ".exe"
+		},
+		"server_address": {
+			"linux": "10.173.10.79",
+			"mac": "10.173.10.79",
+			"windows": "localhost"
 		}
 	},
 	"server": {
 		"serverType": "totvs_server_protheus",
-		"serverName": "10.171.10.77",
-		"address": "10.171.10.77",
+		"serverName": "${server_address}",
+		"address": "${server_address}",
 		"port": 5001,
 		"environment": "P20-12-1-33",
 		"includePath": [

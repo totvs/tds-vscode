@@ -13,7 +13,7 @@ import { TextEditorPageObject } from "../../page-objects/text-editor-po";
 const COMPILE_FILE: string[] = ["files", "singleFile", "escolheNum.prw"];
 const LAUNCHER_NAME: string = "Smart Client Debug";
 
-describe.skip("Debug stop", () => {
+describe.skip("Debug stop", async () => {
   let workbenchPO: WorkbenchPageObject;
   let debugPO: DebugPageObject;
   let debugBar: DebugToolbar;
