@@ -115,7 +115,7 @@ export class ViewPageObject<T> {
 
       await delay(DELAY);
       level++;
-      if (level < path.length) {
+      if (level < path.length && aux) {
         children = await aux.getChildren();
       }
     } while (level < path.length);

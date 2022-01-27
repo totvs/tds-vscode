@@ -8,6 +8,11 @@
 			"linux": "~/protheus",
 			"mac": "~/protheus",
 			"windows": "m:/protheus"
+		},
+		"server_address": {
+			"linux": "",
+			"mac": "",
+			"windows": "localhost"
 		}
 	},
 	"server": {
