@@ -18,7 +18,7 @@
 		},
 		"execExt": {
 			"linux": "",
-			"mac": "",
+			"mac": ".app",
 			"windows": ".exe"
 		}
 	},
