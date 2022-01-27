@@ -37,7 +37,7 @@ export class BuildPageObject extends AbstractPageObject {
       await notification.dismiss();
     }
 
-    return open;
+    return Promise.resolve(open);
   }
 
   async compileProcess(resourceItem: TreeItem) {

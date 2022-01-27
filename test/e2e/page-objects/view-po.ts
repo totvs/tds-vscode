@@ -10,6 +10,7 @@ import {
   ActivityBar,
   DefaultTreeItem,
 } from "vscode-extension-tester";
+import { delay } from "../helper";
 import { WorkbenchPageObject } from "./workbench-po";
 
 export class ViewPageObject<T> {
@@ -87,11 +88,9 @@ export class ViewPageObject<T> {
     const content: ViewContent = view.getContent();
     const sections = await content.getSections();
     const tree: DefaultTreeSection = sections[0] as DefaultTreeSection;
-
-    //const result: TreeItem = await this.findNode(tree, path);
     const result: TreeItem = await this.findChildNode(tree, path);
 
-    return result;
+    return await Promise.resolve(result);
   }
 
   async countChild(path: string[]): Promise<number> {
@@ -103,41 +102,19 @@ export class ViewPageObject<T> {
 
     if (path.length == 0) {
       result = (await tree.getVisibleItems()).length;
-    } //if (path.length == 1) {
-    else result = (await tree.openItem(...path)).length;
-    // } else {
-    //   result = (await tree.openItem(...path.slice(0, -1))).length;
-    // }
+    } else {
+      result = (await tree.openItem(...path)).length;
+    }
 
     return result;
-  }
-
-  private async findNode(
-    tree: DefaultTreeSection,
-    path: string[]
-  ): Promise<TreeItem> {
-    if (path.length == 1) {
-      return await tree.findItem(path[0]);
-    }
-
-    const target: string[] = path; //.slice(0, -1);
-    const nodes: TreeItem[] = await tree.openItem(...target);
-
-    for (const node of nodes) {
-      const target: string = await node.getLabel();
-
-      if (target == path[path.length - 1]) {
-        return node;
-      }
-    }
-
-    return undefined;
   }
 
   async findChildNode(
     tree: DefaultTreeSection,
     path: string[]
   ): Promise<TreeItem> {
+    const DELAY: number = 500;
+
     if (path.length == 1) {
       let node: TreeItem = await tree.findItem(path[0]);
       return node;
@@ -145,21 +122,28 @@ export class ViewPageObject<T> {
 
     let aux: DefaultTreeItem = undefined;
     let children = await tree.openItem(path[0]);
+    await delay(DELAY);
 
     let level: number = 1;
     do {
       for (let index = 0; index < children.length; index++) {
         const child = children[index];
         const label: string = await child.getLabel();
+
         if (label == path[level]) {
           aux = child;
           break;
         }
       }
 
-      children = await aux.getChildren();
+      await delay(DELAY);
       level++;
+      if (level < path.length) {
+        children = await aux.getChildren();
+      }
     } while (level < path.length);
+
+    await delay(DELAY);
 
     return aux;
   }

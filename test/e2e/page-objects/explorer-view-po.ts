@@ -22,8 +22,6 @@ export class ExplorerPageObject extends ViewPageObject<SideBarView> {
   }
 
   async getFolder(path: string[]): Promise<TreeItem> {
-    const treeItem: TreeItem = await this.getResource(path);
-
-    return treeItem;
+    return await this.getResource(path);
   }
 }

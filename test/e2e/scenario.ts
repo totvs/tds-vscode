@@ -129,6 +129,8 @@ Object.keys(values.compileKey).forEach((key: string) => {
 // Processa variáveis de substitução
 procSubstitutionVariable(values);
 
+export const SCENARIO = values;
+
 // Processa variáveis de substitução
 function procSubstitutionVariable(object: any) {
   Object.keys(values.variables).forEach((variable: string) => {
