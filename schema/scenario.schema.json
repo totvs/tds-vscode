@@ -16,6 +16,26 @@
 			},
 			"minItems": 1
 		},
+		"variables": {
+			"description": "List of substitution variables.",
+			"type": "object",
+			"rootPath": {
+				"description": "Root path to be used as a substitution variable, used according to the operating system.",
+				"type": "object",
+				"$ref": "#/definitions/operationSystens"
+			},
+			"execExt": {
+				"description": "Executable file extension.",
+				"type": "object",
+				"$ref": "#/definitions/operationSystens"
+			},
+			"additionalProperties": {
+				"$ref": "#/definitions/operationSystens"
+			},
+			"required": [
+				"rootPath"
+			]
+		},
 		"server": {
 			"type": "object",
 			"description": "Server definition to connect.",
@@ -136,7 +156,7 @@
 		},
 		"includePath": {
 			"type": "object",
-			"description": "Folders for lookup define files (.ch). Used edit purpose tests. One per line.",
+			"description": "Folders for lookup define files (.ch). Used only for editing tests and do not need exist. One per line.",
 			"properties": {
 				"valid": {
 					"description": "Valid folders. One per line.",
@@ -194,6 +214,29 @@
 	"required": [
 		"name",
 		"description",
+		"variables",
 		"server"
-	]
+	],
+	"definitions": {
+		"operationSystens": {
+			"type": "object",
+			"description": "Associate value to be used according to the operating system.",
+			"properties": {
+				"windows": {
+					"type": "string"
+				},
+				"linux": {
+					"type": "string"
+				},
+				"mac": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"windows",
+				"linux",
+				"mac"
+			]
+		}
+	}
 }

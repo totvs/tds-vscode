@@ -37,6 +37,9 @@ console.log(`Scenario: ${values.name} (${path.basename(scenarioFile)})`);
 console.log(`\t${values.description.join("\n\t")}`);
 
 if (valuesFile) {
+  // Processa variáveis de substitução
+  procSubstitutionVariable(valuesFile);
+
   console.log(JSON.stringify(valuesFile, null, "  "));
 }
 console.log("--------------------------------------");
@@ -69,10 +72,10 @@ export const RPO_CUSTOM: string =
 export const RPO_FOLDER: string = "M:/protheus/apo.p20.12.1.33/";
 export const RPO_RESET_SOURCE: string = "tttm120 - original.rpo";
 export const RPO_RESET_TARGET: string = "tttm120.rpo";
-  // path.join(
-  // TEST_RESOURCE,
-  // "patchs",
-  // values.patchFolder
+// path.join(
+// TEST_RESOURCE,
+// "patchs",
+// values.patchFolder
 //);
 
 const templateFolder: string = path.join(
@@ -114,6 +117,48 @@ const replayFiles: string[] = getFileParams(replayFolder, true);
 export const REPLAY_FILES = Object.keys(replayFiles).length
   ? replayFiles
   : null;
+
+Object.keys(values.compileKey).forEach((key: string) => {
+  COMPILE_KEY_FILE[key] = path.join(
+    TEST_RESOURCE,
+    "compile-key",
+    values.compileKey[key]
+  );
+});
+
+// Processa variáveis de substitução
+procSubstitutionVariable(values);
+
+// Processa variáveis de substitução
+function procSubstitutionVariable(object: any) {
+  Object.keys(values.variables).forEach((variable: string) => {
+    const value: string = valueByOS(variable);
+
+    Object.keys(object).forEach((key: string) => {
+      const element = object[key];
+
+      if (typeof element !== "string") {
+        procSubstitutionVariable(object[key]);
+      } else {
+        object[key] = object[key].replaceAll(`\${${variable}}`, value);
+      }
+    });
+  });
+}
+
+function valueByOS(name: string): string {
+  let result: string = name;
+
+  if (process.platform === "win32") {
+    result = values.variables[name].windows;
+  } else if (process.platform === "linux") {
+    result = values.variables[name].linux;
+  } else if (process.platform === "darwin") {
+    result = values.variables[name].mac;
+  }
+
+  return result;
+}
 
 Object.keys(values.compileKey).forEach((key: string) => {
   COMPILE_KEY_FILE[key] = path.join(
