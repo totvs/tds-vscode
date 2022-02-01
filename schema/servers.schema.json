@@ -1,0 +1,69 @@
+{
+	"$schema": "https://json-schema.org/draft-07/schema",
+	"title": "Server Configuration Schema",
+	"description": "Schema of server configuration file.",
+	"type": "object",
+	"properties": {
+		"version": {
+			"type": "string",
+			"description": "Version of file structure.",
+			"const": "0.2.1"
+		},
+		"includes": {
+			"type": "array",
+			"description": "Global folder list for searching definition files. Used when not informed in the definition of the server and for the linter.",
+			"items": {
+				"type": "string"
+			}
+		},
+		"permissions": {
+			"type": "object",
+			"$ref": "./permissions.schema.json"
+		},
+		"configurations": {
+			"type": "array",
+			"description": "Registered server settings for use.",
+			"items": {
+				"type": "object",
+				"description": "Server settings.",
+				"$ref": "./server.schema.json"
+			}
+		},
+		"savedTokens": {
+			"type": "array",
+			"description": "Access code lists, associated with a server and environments. Values updates automatically.",
+			"default": [],
+			"items": [
+				{
+					"type": "array",
+					"items": {
+						"properties": {
+							"id": {
+								"type": "string",
+								"description": "Unique ID."
+							},
+							"token": {
+								"type": "string",
+								"description": "Access code for reconnection. Value obtained automatically."
+							}
+						}
+					}
+				}
+			]
+		},
+		"lastConnectedServer": {
+			"type": "string",
+			"description": "Last server used and which will be automatically reconnected in the next session."
+		},
+		"connectedServer": {
+			"description": "Current connection. Automatically updated.",
+			"type": "object",
+			"$ref": "./server.schema.json"
+	}
+	},
+	"required": [
+		"version",
+		"configurations",
+		"savedTokens"
+	]
+}

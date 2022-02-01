@@ -43,19 +43,22 @@ Acione o atalho `CTRL + SHIFT + P` e execute `TOTVS: Configure Launchers` que lh
 
 ### Criando um executor manualmente
 
-A definição de executores encontra-se nO arquivo `.vscode/launch.json` que, normalmente, é criado através na abertura da página de `Boas Vindas`. Caso isso não ocorra (devido a configurações do seu ambiente), você pode criá-lo manualmente executando:
+A definição de executores encontra-se no arquivo `.vscode/launch.json` que, normalmente, é criado através na abertura da página de `Boas Vindas`. Caso isso não ocorra (devido a configurações do seu ambiente), você pode criá-lo manualmente executando:
 
 - Na barra de atividades, acione o `Debug`
 - Na barra de ferramentas (parte superior) da visão de `Debug`, abra a lista de seleção e acione `Add Configuration...`.
 - Comece a digitar `TOTVS` e selecione o tipo desejado
-  - _totvs_language_debug_, para usar _SmartClient Desktop_
+  - _totvs_language_debug_, para usar _SmartClient Desktop_ (padrão)
   - _totvs_language_web_debug_, para usar _SmartClient Html_
+    ![Type Debugger](images/select-type-debugger.png)
 - Preencha os atributos solicitados conforme seu ambiente
 - Salve o arquivo
 
-### Exemplos de configuração
+## Exemplos de configuração
 
-```JSON
+### TOTVS Language Debug (padrão)
+
+````JSON
 {
 	"version": "0.2.0",
 	"configurations": [
@@ -65,10 +68,20 @@ A definição de executores encontra-se nO arquivo `.vscode/launch.json` que, no
     "name": "TOTVS Language Debug",
     "program": "${command:AskForProgramName}",
     "cwb": "${workspaceFolder}",
-    "smartclientBin": "/home/totvs12/bin/smartclient/smartclient",
+    "smartclientBin": "c:/totvs12/bin/smartclient/smartclient.exe",
     "isMultiSession": true,
     "enableTableSync": true
-    },
+    }
+  ]
+}
+```
+
+### TOTVS Language Web Debug
+
+```JSON
+{
+	"version": "0.2.0",
+	"configurations": [
     {
       "type": "totvs_language_web_debug",
       "request": "launch",
@@ -81,7 +94,7 @@ A definição de executores encontra-se nO arquivo `.vscode/launch.json` que, no
     }
   ]
 }
-```
+````
 
 No caso de efetuar depuração via `SmartClient Html`, indique qual o navegador web será utilizado, no arquivo `.\vscode\settings.json`.
 
@@ -93,7 +106,7 @@ No caso de efetuar depuração via `SmartClient Html`, indique qual o navegador 
 }
 ```
 
-### <a name="variable"></a>Variáveis de substituição
+## <a name="variable"></a>Variáveis de substituição
 
 | Veja [Variable substitution](https://code.visualstudio.com/docs/editor/debugging#_variable-substitution).
 

@@ -1,25 +1,20 @@
 #include "protheus.ch"
 
-user function escolheNum(p1)
+user function escolheNum(replay, replayPath, numbers)
 	local n, cResp, cMsg := ""
 	local aOpcoes := {}
 	private cOpcao
 	private ondeEstou := "escolheNum"
 	public aPublic := {}
 
-	TDSReplay(.T. , {"*"}, {}, {"*"} , "l:\escolheNhum.trtrplay", 0 , .t. , "")
+	if replay == "true"
+		replay = .t.
+		TDSReplay(.T. , {"*"}, {}, {"*"} , replayPath, 0 , .t. , "")
+	endif
 
 	// essa seq. UTF 8 invÃ¡lida para json do DA
 	//corrigido versÃ£o DA 1.1.24 / srv
 	//private paraDeFuncionar := "se fizer hover aqui, para de funcionar ÃƒÂº"
-
-	testVars()
-	private aPrivate := {}
-
-	fillPrivate()
-
-	fillPublic()
-
 //
 	for n := 1 to 5
 		aAdd(aOpcoes, strZero(n,1,0))
@@ -27,114 +22,53 @@ user function escolheNum(p1)
 //
 	n := 0
 	while !(cResp == "*")
-		tela(aOpcoes)
+		if (replay) 
+			cOpcao = substr(numbers, 1, 1)
+			numbers =  substr(numbers, 2)
+			conout("BOT: select number " + cOpcao)
+		else
+			tela(aOpcoes)
+		endif
+
 		n++
 		//cResp := trim(cOpcao)
 		cResp := cOpcao
 
 		if cResp == "1"
-			cMsg := "Vocï¿½ escolheu o numero 1"
+			cMsg := "Você escolheu o número 1"
 		elseif cResp == "2"
-			cMsg := "Vocï¿½ escolheu o numero 2"
+			cMsg := "Você escolheu o número 2"
 		elseif cResp == "3"
-			cMsg := "Vocï¿½ escolheu o numero 3"
+			cMsg := "Você escolheu o número 3"
 		elseif cResp == "4"
-			cMsg := "Vocï¿½ escolheu o numero 4"
+			cMsg := "Você escolheu o número 4"
 		elseif cResp == "5"
-			cMsg := "Vocï¿½ escolheu o numero 5"
+			cMsg := "Você escolheu o número 5"
 		else
-			cMsg := "Nenhum nÃºmero escolhido"
+			cMsg := "Nenhum número escolhido"
 		endif
 
 		if !empty(cResp)
 			if cResp == "2" .or. cResp == "4"
-				cMsg += " e ï¿½ PAR"
+				cMsg += " e é PAR"
 			else
-				cMsg += " e ï¿½ IMPAR"
+				cMsg += " e é IMPAR"
 			endif
 		endif
 
 		if !(cResp == "*")
-			msgAlert(cMsg)
+			if replay
+				conout("BOT: " + cMsg) 
+			else 
+				msgAlert(cMsg)
+			endif
 		endif
 
 	enddo
 
-	TDSReplay(.F.)
-
-return
-
-	class AB
-		data bT
-		data bF
-		data dt
-		data c
-		data n0
-		data n2
-		data n8
-		data cb
-
-		method ab()
-	endclass
-
-method ab() class AB
-	::bT := .t.
-	::bF := .F.
-	::dt := date()
-	::c  := "string"
-	::n0 := 123
-	::n2 := 123.45
-	::n8 := 123.45678
-	::cb := { |p1,p1| 10+20}
-
-	private ondeEstou := "class ab"
-
-
-return
-
-static function testVars()
-	local bT := .t.
-	local bF := .F.
-	local dt := date()
-	local c := "string"
-	local n0 := 123
-	local n2 := 123.45
-	local n8 := 123.45678
-	local cb := { |p1,p1| 10+20}
-	local o := AB():AB()
-
-	private ondeEstou := "testVars"
-	private aPrivate := {}
-
-	fillPrivate()
-
-	fillPublic()
-
-return { bT, BF, dt, c, n0,n2,n8,cb, o}
-
-static function fillPrivate()
-	local n
-
-	private ondeEstou := "fillPrivate"
-
-	for n := 1 to 5
-		aAdd(aPrivate, strZero(n,1,0) + procName(1))
-	next
-
-	aAdd(aPrivate,  {1, 2, "S3"} )
-
-return
-
-static function fillPublic()
-	local n
-
-	private ondeEstou := "fillPublic"
-
-	for n := 1 to 5
-		aAdd(aPublic, strZero(n,1,0) + procName(1))
-	next
-
-	aAdd(aPublic,  {1, 2, "S3"} )
+	if replay
+		TDSReplay(.F.)
+	endif
 
 return
 
@@ -142,13 +76,13 @@ static function tela(aaOpcoes)
 	Local oDlg,oSay1,oBtn
 
 	if !(valType(aaOpcoes) == "A")
-		msgAlerta("Parametro aaOpcoes nÃ£o Ã© uma lista (array)")
+		msgAlerta("Parametro aaOpcoes nï¿½o ï¿½ uma lista (array)")
 		return cOpcao
 	endif
 
 	oDlg := MSDIALOG():Create()
 	oDlg:cName := "oDlg"
-	oDlg:cCaption := "Escolha um numero"
+	oDlg:cCaption := "Escolha um número"
 	oDlg:nLeft := 0
 	oDlg:nTop := 0
 	oDlg:nWidth := 400
@@ -157,7 +91,7 @@ static function tela(aaOpcoes)
 
 	oSay1 := TSAY():Create(oDlg)
 	oSay1:cName := "oSay1"
-	oSay1:cCaption := "Escolha um nÃºmero acionando um dos botÃµes abaixo."
+	oSay1:cCaption := "Escolha um número acionando um dos botï¿½es abaixo."
 	oSay1:nLeft := 10
 	oSay1:nTop := 28
 	oSay1:nWidth := 250

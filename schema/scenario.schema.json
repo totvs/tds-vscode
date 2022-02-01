@@ -1,5 +1,5 @@
 {
-	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$schema": "https://json-schema.org/draft-07/schema",
 	"title": "Test Scenario Schema",
 	"description": "Schema of test scenario configuration files.",
 	"type": "object",
@@ -16,10 +16,38 @@
 			},
 			"minItems": 1
 		},
+		"variables": {
+			"description": "List of substitution variables.",
+			"type": "object",
+			"rootPath": {
+				"description": "Root path to be used as a substitution variable, used according to the operating system.",
+				"type": "object",
+				"$ref": "#/definitions/operationSystens"
+			},
+			"execExt": {
+				"description": "Executable file extension.",
+				"type": "object",
+				"$ref": "#/definitions/operationSystens"
+			},
+			"additionalProperties": {
+				"$ref": "#/definitions/operationSystens"
+			},
+			"required": [
+				"rootPath"
+			]
+		},
 		"server": {
 			"type": "object",
 			"description": "Server definition to connect.",
 			"properties": {
+				"serverType": {
+					"type": "string",
+					"description": "The server type.",
+					"enum": [
+						"totvs_server_protheus",
+						"totvs_server_logix"
+					]
+				},
 				"serverName": {
 					"type": "string",
 					"description": "Short name to identify the server."
@@ -42,14 +70,23 @@
 					"items": {
 						"type": "string"
 					}
+				},
+				"smartClientBin": {
+					"type": "string",
+					"description": "Dekstop Smart Client Executable for debugger.",
+					"items": {
+						"type": "string"
+					}
 				}
 			},
 			"required": [
+				"serverType",
 				"serverName",
 				"address",
 				"port",
 				"environment",
-				"includePath"
+				"includePath",
+				"smartClientBin"
 			]
 		},
 		"users": {
@@ -119,7 +156,7 @@
 		},
 		"includePath": {
 			"type": "object",
-			"description": "Folders for lookup define files (.ch). Used edit purpose tests. One per line.",
+			"description": "Folders for lookup define files (.ch). Used only for editing tests and do not need exist. One per line.",
 			"properties": {
 				"valid": {
 					"description": "Valid folders. One per line.",
@@ -172,11 +209,34 @@
 		"replayFolder": {
 			"type": "string",
 			"description": "Folder with TDS Replay files."
-		},
-		"required": [
-			"name",
-			"description",
-			"server"
-		]
+		}
+	},
+	"required": [
+		"name",
+		"description",
+		"variables",
+		"server"
+	],
+	"definitions": {
+		"operationSystens": {
+			"type": "object",
+			"description": "Associate value to be used according to the operating system.",
+			"properties": {
+				"windows": {
+					"type": "string"
+				},
+				"linux": {
+					"type": "string"
+				},
+				"mac": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"windows",
+				"linux",
+				"mac"
+			]
+		}
 	}
 }

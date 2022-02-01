@@ -8,17 +8,18 @@ import {
   TitleActionButton,
   ViewTitlePart,
   ActivityBar,
-  ViewControl,
+  DefaultTreeItem,
 } from "vscode-extension-tester";
+import { delay } from "../helper";
 import { WorkbenchPageObject } from "./workbench-po";
 
 export class ViewPageObject<T> {
-  private _view: T | SideBarView;
+  private _view: T;
   protected workbenchPO: WorkbenchPageObject;
   private viewName: string;
 
   protected constructor(name: string) {
-    this.viewName = name.toLowerCase();
+    this.viewName = name;
     this.workbenchPO = new WorkbenchPageObject();
     this.openView().then((value: T) => {
       this._view = value;
@@ -30,27 +31,19 @@ export class ViewPageObject<T> {
   }
 
   async openView(): Promise<T> {
-    const activityBar: ActivityBar = new ActivityBar();
-    const controls: ViewControl[] = await activityBar.getViewControls();
-    let result: T = null;
-
-    for await (const control of controls) {
-      const vc: ViewControl = control;
-      const title: string = (await vc.getTitle()).toLowerCase();
-
-      if (title.startsWith(this.viewName)) {
-        result = (await vc.openView()) as unknown as T;
-      }
-    }
+    let result: T = (await (
+      await new ActivityBar().getViewControl(this.viewName)
+    )?.openView()) as unknown as T;
 
     this._view = result;
+
     return result;
   }
 
-  async getTreeItem(
-    name: string,
-    sectionName?: string
-  ): Promise<TreeItem | null> {
+  async openTreeItem(
+    sectionName?: string,
+    ...path: string[]
+  ): Promise<TreeItem[]> {
     const view: SideBarView = this.view as unknown as SideBarView;
     const content: ViewContent = view.getContent();
     let tree: DefaultTreeSection;
@@ -62,48 +55,74 @@ export class ViewPageObject<T> {
       tree = sections[0] as DefaultTreeSection;
     }
 
-    const nodes: string[] = name.split("/");
-    let result: TreeItem[] | TreeItem;
+    const result: TreeItem[] = await tree.openItem(...path);
 
-    result = await (nodes.length > 1
-      ? this.openChild(nodes, tree)
-      : tree.findItem(nodes[0]));
-    //result = await tree.openItem(...nodes);
-    // for (const node of nodes) {
-    //   aux = await (aux ? aux.findChildItem(node) : tree.findItem(node));
-
-    //   if (aux) {
-    //     result = aux;
-    //     nodes.length > 1 ? await result.expand() : null;
-    //   } else {
-    //     result = null;
-    //     break;
-    //   }
-    // }
-
-    return Array.isArray(result)
-      ? (result[0] as TreeItem)
-      : result == undefined
-      ? null
-      : result;
+    return result;
   }
 
-  async openChild(
-    nodes: string[],
-    tree: DefaultTreeSection
+  async getTreeItem(path: string[]): Promise<TreeItem | undefined> {
+    const view: SideBarView = this.view as unknown as SideBarView;
+    const content: ViewContent = view.getContent();
+    const sections = await content.getSections();
+    const tree: DefaultTreeSection = sections[0] as DefaultTreeSection;
+    const result: TreeItem = await this.findChildNode(tree, path);
+
+    return await Promise.resolve(result);
+  }
+
+  async countChild(path: string[]): Promise<number> {
+    const view: SideBarView = this.view as unknown as SideBarView;
+    const content: ViewContent = view.getContent();
+    const sections = await content.getSections();
+    const tree: DefaultTreeSection = sections[0] as DefaultTreeSection;
+    let result: number = 0;
+
+    if (path.length == 0) {
+      result = (await tree.getVisibleItems()).length;
+    } else {
+      result = (await tree.openItem(...path)).length;
+    }
+
+    return result;
+  }
+
+  async findChildNode(
+    tree: DefaultTreeSection,
+    path: string[]
   ): Promise<TreeItem> {
-    let treeItem: TreeItem[] = await tree.openItem(...nodes);
-    // await parentItem.expand();
-    //  await parentItem.findChildItem(nodes[0]);
+    const DELAY: number = 500;
 
-    // while (treeItem) {
-    //   parentItem = treeItem;
-    //   nodes = nodes.splice(0, 1);
-    //   treeItem = await parentItem.findChildItem(nodes[0]);
-    //   await treeItem?.expand();
-    // }
+    if (path.length == 1) {
+      let node: TreeItem = await tree.findItem(path[0]);
+      return node;
+    }
 
-    return treeItem[0];
+    let aux: DefaultTreeItem = undefined;
+    let children = await tree.openItem(path[0]);
+    await delay(DELAY);
+
+    let level: number = 1;
+    do {
+      for (let index = 0; index < children.length; index++) {
+        const child = children[index];
+        const label: string = await child.getLabel();
+
+        if (label == path[level]) {
+          aux = child;
+          break;
+        }
+      }
+
+      await delay(DELAY);
+      level++;
+      if (level < path.length && aux) {
+        children = await aux.getChildren();
+      }
+    } while (level < path.length);
+
+    await delay(DELAY);
+
+    return aux;
   }
 
   async getAction(action: string): Promise<TitleActionButton> {

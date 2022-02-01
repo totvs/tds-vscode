@@ -185,7 +185,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   };
 
   return (
-    <div className={classes.root}>
+    <label className={classes.root}>
       <IconButton
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
@@ -222,7 +222,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
       >
         {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
       </IconButton>
-    </div>
+      </label>
   );
 }
 
@@ -234,7 +234,9 @@ interface ITimeLineTableInterface {
 let tableElement: RefObject<HTMLTableElement> = null;
 
 export default function TimeLineTable(props: ITimeLineTableInterface) {
+
   const vscode = props.vscode;
+
   const debugEvent = vscode.getState().config;
 
   tableElement = React.createRef();
@@ -248,6 +250,8 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   );
   const [openSourcesDialog, setOpenSourcesDialog] = React.useState(false);
   const [openWaitPage, setOpenWaitPage] = React.useState(false);
+  const [itemsPerPageState, setItemsPerPageState] = React.useState(debugEvent.body.itemsPerPage);
+
   //Id da timeline inicial a ser selecionada. 500 para selcionar a primeira pois o replay sempre ira parar na primeira linha
   const [selectedRowId, setSelectedRowId] = React.useState(
     jsonBody.currentSelectedTimeLineId
@@ -256,7 +260,8 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
 
   //console.log("Do state:" + ignoreSourcesNotfound);
   //console.log("current TimeLine ID:" + jsonBody.currentSelectedTimeLineId);
-  //console.log("itemsPerPage:" + jsonBody.itemsPerPage);
+  //console.log("itemsPerPageJson:" + jsonBody.itemsPerPage);
+  //console.log("itemsPerPage:" + itemsPerPageState);
   //console.log("currentPage: " + jsonBody.currentPage);
   //console.log("totalPages: " + jsonBody.totalPages);
   ///console.log("TimeLineCount: " + jsonBody.timeLines.length);
@@ -296,13 +301,17 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setOpenWaitPage(true);
+    let itemsPerPage: number = Number.parseInt(event.target.value);
+    setItemsPerPageState(itemsPerPage);
+
     let command: ICommand = {
       action: CommandToDA.ChangeItemsPerPage,
       content: {
-        itemsPerPage: event.target.value,
+        itemsPerPage: itemsPerPage,
         currentTimeLineSelected: jsonBody.currentSelectedTimeLineId,
       },
     };
+
     vscode.postMessage(command);
   };
 
@@ -350,20 +359,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           break;
         case CommandToPage.AddTimeLines:
           setOpenWaitPage(false);
-          setJsonBody((body) => {
-            if (event !== undefined) {
-              event.preventDefault();
-            }
-            body = message.data.body;
-            return body;
-          });
-          setIgnoreSourcesNotfound((value) => {
-            if (event !== undefined) {
-              event.preventDefault(); //Impede que a pagina seja atualizada nessa alteração para que seja atualizada apenas uma vez ao selecionar a timeline
-            }
-            return message.data.body.ignoreSourcesNotFound;
-          });
-          selectTimeLineInTable(message.data.body.currentSelectedTimeLineId);
+          setPageData(event, message);
           break;
         case CommandToPage.OpenSourcesDialog:
           setSources((sources) => {
@@ -378,10 +374,40 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         case CommandToPage.ShowLoadingPageDialog:
           setOpenWaitPage(message.data);
           break;
+        case CommandToPage.SetUpdatedState:
+          setPageData(event, message);
+          break;
       }
       message.command = '';
     };
     window.addEventListener('message', listener);
+  }
+
+
+  const setPageData = (event, message) => {
+    setJsonBody((body) => {
+      if (event !== undefined) {
+        event.preventDefault();
+      }
+      body = message.data.body;
+      return body;
+    });
+    setIgnoreSourcesNotfound((value) => {
+      if (event !== undefined) {
+        event.preventDefault(); //Impede que a pagina seja atualizada nessa alteração para que seja atualizada apenas uma vez ao selecionar a timeline
+      }
+      return message.data.body.ignoreSourcesNotFound;
+    });
+    let itemsPerPage = message.data.body.itemsPerPage;
+    if(itemsPerPage !== itemsPerPageState) {
+      setItemsPerPageState((value) => {
+        if (event !== undefined) {
+          event.preventDefault();
+        }
+        return itemsPerPage;
+      });
+    }
+    selectTimeLineInTable(message.data.body.currentSelectedTimeLineId);
   }
 
   const scrollIntoViewIfNeeded = (target: HTMLElement) => {
@@ -578,7 +604,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         className={tableClasses.pagination}
         rowsPerPageOptions={[100, 500, 1000, 2000, 3000, 5000]}
         count={parseInt(jsonBody.totalItems)}
-        rowsPerPage={jsonBody.itemsPerPage}
+        rowsPerPage={itemsPerPageState}
         page={jsonBody.currentPage}
         SelectProps={{
           inputProps: { "aria-label": "rows per page" },
@@ -621,3 +647,4 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     //</Paper>
   );
 }
+

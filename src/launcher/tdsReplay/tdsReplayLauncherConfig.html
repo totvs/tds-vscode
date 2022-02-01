@@ -19,6 +19,10 @@
 				<span class="formTitle">${d.localize["tds.webview.launcher.launcherTitle"]}</span>
 				<!--Launcher Config-->
 
+				<div id="errorMessageDIV" style="display:none">
+					<p id="errorMessageID" class="errorMessage"></p>
+				</div>
+
 				<div class="wrap-input dropdown">
 					<label for="launcher">${d.localize["tds.webview.launcher.name"]}</label>
 					<!--Choose launcher:-->
@@ -128,16 +132,26 @@
 	const vscode = acquireVsCodeApi();
 
 	function saveLaunchConfig(close) {
-		vscode.postMessage({
-			command: 'saveLaunchConfig',
-			launcherName: getElementLauncherName().value,
-			tdsReplayFile: getTdsReplayFile().value,
-			password: getPassword().value,
-			includeSources: getIncludeSrc().value,
-			excludeSources: getExcludeSrc().value,
-			ignoreSourcesNotFound: getElementIgnoreFiles().checked,
-			'close': close
-		});
+
+		if(validateFields()) {
+
+			let tdsReplayFile = getElementLauncherName().value;
+			if(tdsReplayFile.trim().length === 0) {
+				tdsReplayFile = getTdsReplayFileInput().value;
+			}
+
+			vscode.postMessage({
+				command: 'saveLaunchConfig',
+				launcherName: getElementLauncherName().value,
+				tdsReplayFile: tdsReplayFile,
+				password: getPassword().value,
+				includeSources: getIncludeSrc().value,
+				excludeSources: getExcludeSrc().value,
+				ignoreSourcesNotFound: getElementIgnoreFiles().checked,
+				'close': close
+			});
+		}
+
 	}
 
 	function updateAllFields(element) {
@@ -151,6 +165,7 @@
 	function getElementLauncherList() { return document.getElementById('launcherListID'); }
 	function getElementLauncherName() { return document.getElementById("launcherNameID"); }
 	function getTdsReplayFile() { return document.getElementById("TDSReplayFile"); }
+	function getTdsReplayFileInput() { document.getElementById('tdsReplayFileID'); }
 	function getPassword() { return document.getElementById("passwordID"); }
 	function getIncludeSrc() { return document.getElementById("includeSrcID"); }
 	function getExcludeSrc() { return document.getElementById("excludeSrcID"); }
@@ -158,9 +173,54 @@
 
 	function setTextArea() {
 		var input = document.getElementById('tdsReplayFileID');
-		var filePath = input.files[0].path;
-		var textArea = document.getElementById('TDSReplayFile').value = filePath;
+		if(input.files.length > 0) {
+			var filePath = input.files[0].path;
+			var textArea = document.getElementById('TDSReplayFile').value = filePath;
+		}
+		validateFields();
+
 	}
+
+	function validateFields() {
+
+		let isValid = true;
+		let errorMessage = undefined;
+
+		if(getIncludeSrc().value.trim().length == 0) {
+			getIncludeSrc().value = "*";
+		}
+
+		if(getElementLauncherName().value.trim().length === 0) {
+			isValid = false;
+			errorMessage = "Please select a launcher or inform a name for a new one.";
+		} else if(getTdsReplayFile().value.trim().length === 0 && getTdsReplayFileInput().value.trim().length === 0) {
+			isValid = false;
+			errorMessage = "TDS Replay file not informed.";
+		} else if(getExcludeSrc().value === "*") {
+			isValid = false;
+			errorMessage = "It's not allowed to use * alone in the Exclude Sources field. Leave it blank or use some kind of source filter.";
+		} else {
+			const fileName = getTdsReplayFile().value;
+			const extension = fileName.substring(fileName.lastIndexOf('.'));
+			if(extension !== ".trplay") {
+				isValid = false;
+				errorMessage = "The file informed does not appear to be a TDS Replay recording.";
+			}
+		}
+
+		if (errorMessage) {
+			console.log(errorMessage);
+			document.getElementById("errorMessageID").innerHTML = errorMessage;
+			document.getElementById("errorMessageDIV").style.display = "inline";
+		}
+		else {
+			document.getElementById("errorMessageDIV").style.display = "none";
+		}
+
+		return isValid
+	}
+
+
 </script>
 
 </html>

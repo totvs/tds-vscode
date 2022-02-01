@@ -1,26 +1,23 @@
 import path = require("path");
-import fs = require("fs-extra");
+import fse = require("fs-extra");
 import {
-  COMPILE_KEY_FILE,
-  DELETE_DATA,
-  INCLUDE_PATH_DATA,
   PROJECT_FOLDER,
+  RPO_FOLDER,
+  RPO_RESET_TARGET,
+  RPO_RESET_SOURCE,
+  RPO_CUSTOM,
 } from "./scenario";
 import {
   By,
   VSBrowser,
-  Workbench,
-  Notification,
   InputBox,
   WebElement,
-  ActivityBar,
-  SideBarView,
   QuickPickItem,
   ContextMenu,
   ViewItem,
-  ContextMenuItem,
   ViewControl,
   EditorView,
+  TreeItem,
 } from "vscode-extension-tester";
 import { expect } from "chai";
 import { IUserData } from "./page-objects/interface-po";
@@ -28,15 +25,17 @@ import { setTimeout } from "timers/promises";
 
 const DEFAULT_DELAY = 1000;
 
-function clearServersJson(projectFolder: string): void {
+function clearVscodeFiles(projectFolder: string): void {
   const serversJsonFile: string = path.join(
     projectFolder,
     ".vscode",
     "servers.json"
   );
 
-  if (fs.existsSync(serversJsonFile)) {
-    fs.removeSync(serversJsonFile);
+  fse.ensureDirSync(path.dirname(serversJsonFile));
+
+  if (fse.existsSync(serversJsonFile)) {
+    fse.removeSync(serversJsonFile);
   }
 
   const launchJsonFile: string = path.join(
@@ -44,10 +43,17 @@ function clearServersJson(projectFolder: string): void {
     ".vscode",
     "launch.json"
   );
+  fse.ensureDirSync(path.dirname(serversJsonFile));
 
-  if (fs.existsSync(launchJsonFile)) {
-    fs.removeSync(launchJsonFile);
+  if (fse.existsSync(launchJsonFile)) {
+    fse.removeSync(launchJsonFile);
   }
+
+  const launch: any = {
+    version: "0.2.0",
+    configurations: [{}],
+  };
+  fse.writeJSONSync(launchJsonFile, launch);
 }
 
 async function closeAllEditors(): Promise<void> {
@@ -57,13 +63,63 @@ async function closeAllEditors(): Promise<void> {
   await delay();
 }
 
-export async function openAdvplProject(): Promise<void> {
-  clearServersJson(PROJECT_FOLDER);
+export interface IOpenProject {
+  linter: boolean;
+  resetRpo: boolean;
+  resetRpoCustom: boolean;
+}
+
+const DEFAULT_OPEN_PROJECT: IOpenProject = {
+  linter: false,
+  resetRpo: false,
+  resetRpoCustom: false,
+};
+
+export async function openProjectWithReset() {
+  openProject({ resetRpo: true, resetRpoCustom: true });
+}
+
+export async function openProject(
+  optionsOpenProject: Partial<IOpenProject> = {}
+): Promise<void> {
+  const options: IOpenProject = {
+    ...DEFAULT_OPEN_PROJECT,
+    ...optionsOpenProject,
+  };
+
+  clearVscodeFiles(PROJECT_FOLDER);
+
+  if (options.resetRpo) {
+    resetRpo();
+  }
+  if (options.resetRpoCustom) {
+    resetRpoCustom();
+  }
 
   await VSBrowser.instance.openResources(PROJECT_FOLDER);
 
   await delay(2000);
-  closeAllEditors();
+
+  //const settingsPO: SettingsPageObject = new SettingsPageObject();
+  //await settingsPO.openView();
+  //await settingsPO.setLinter(options.linter);
+
+  await closeAllEditors();
+
+  await delay(3000);
+}
+
+function resetRpo() {
+  fse.copyFileSync(
+    path.join(RPO_FOLDER, RPO_RESET_SOURCE),
+    path.join(RPO_FOLDER, RPO_RESET_TARGET)
+  );
+}
+
+function resetRpoCustom() {
+  if (fse.existsSync(RPO_CUSTOM)) {
+    fse.removeSync(RPO_CUSTOM);
+  }
 }
 
 export async function readServersJsonFile(): Promise<string> {
@@ -74,8 +130,10 @@ export async function readServersJsonFile(): Promise<string> {
   );
   let result: string = "< file not found >";
 
-  if (fs.existsSync(serversJsonFile)) {
-    const buffer: Buffer = fs.readFileSync(serversJsonFile);
+  fse.ensureDirSync(path.dirname(serversJsonFile));
+
+  if (fse.existsSync(serversJsonFile)) {
+    const buffer: Buffer = fse.readFileSync(serversJsonFile);
     result = buffer.toString();
   }
 
@@ -152,7 +210,6 @@ export async function fillUserdata(userData: IUserData) {
   pickBox.wait();
 
   let title = await pickBox.getTitle();
-  title = await pickBox.getTitle();
   expect(title).is.equal("Authentication (1/2)");
 
   await pickBox.setText(userData.username);
@@ -170,14 +227,38 @@ export async function fillUserdata(userData: IUserData) {
   await delay();
 }
 
+export async function fillDebugConfig(title: string) {
+  const pickBox = new InputBox();
+  await delay();
+  pickBox.wait();
+
+  await pickBox.setText(title);
+  await delay();
+  await pickBox.confirm();
+  await delay();
+}
+
 export async function fireContextMenuAction(
   element: ViewItem | ViewControl,
   name: string
 ) {
   const menu: ContextMenu = await element.openContextMenu();
-  await menu.wait(2000);
+  await menu.select(name);
 
-  const action: ContextMenuItem = await menu.getItem(name);
-  await action.click();
   await delay();
 }
+
+export async function fillProgramName(program: string, ...args: string[]) {
+  const pickBox = new InputBox();
+  await delay();
+
+  let title = await pickBox.getTitle();
+  expect(title).is.equal("Please enter the name of an AdvPL/4GL function");
+
+  await pickBox.setText(`${program} ${args ? args.join(",") : ""}`);
+  await delay();
+
+  await pickBox.confirm();
+  await delay();
+}
+

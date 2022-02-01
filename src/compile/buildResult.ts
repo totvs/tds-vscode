@@ -1,10 +1,11 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import * as compile from 'template-literal';
 import * as nls from 'vscode-nls';
 import { CompileResult } from './CompileResult';
 import { CompileInfo } from './CompileInfo';
+
+const compile = require('template-literal');
 
 let localize = nls.loadMessageBundle();
 
@@ -23,25 +24,19 @@ const localizeHTML = {
   'tds.webview.compile.col05': localize('tds.webview.compile.col05', 'Path'),
 };
 
-export function showCompileResult(response: CompileResult, context: any) {
-  let extensionPath = '';
-  if (!context.extensionPath || context.extensionPath === undefined) {
-    let ext = vscode.extensions.getExtension('TOTVS.tds-vscode');
-    if (ext) {
-      extensionPath = ext.extensionPath;
-    }
-  } else {
-    extensionPath = context.extensionPath;
-  }
-
+export function commandShowBuildTableResult(
+  context: any,
+  response: CompileResult
+) {
+  const extensionPath = context.extensionPath;
   const currentPanel = vscode.window.createWebviewPanel(
-    'totvs-developer-studio.compile.result',
-    'Compilation Result',
+    "totvs-developer-studio.compile.result",
+    "Compilation Result",
     vscode.ViewColumn.One,
     {
       enableScripts: true,
       localResourceRoots: [
-        vscode.Uri.file(path.join(extensionPath, 'src', 'compile')),
+        vscode.Uri.file(path.join(extensionPath, "src", "compile")),
       ],
       retainContextWhenHidden: true,
     }
@@ -60,7 +55,7 @@ export function showCompileResult(response: CompileResult, context: any) {
   currentPanel.webview.onDidReceiveMessage(
     (message) => {
       switch (message.command) {
-        case 'getData':
+        case "getData":
           const compileInfos = response.compileInfos.map(
             (item: CompileInfo) => {
               return {
@@ -72,12 +67,12 @@ export function showCompileResult(response: CompileResult, context: any) {
             }
           );
           currentPanel.webview.postMessage({
-            command: 'setData',
+            command: "setData",
             code: response.returnCode,
             data: compileInfos,
           });
           break;
-        case 'close':
+        case "close":
           currentPanel.dispose();
           break;
       }
@@ -89,23 +84,23 @@ export function showCompileResult(response: CompileResult, context: any) {
 
 function getWebViewContent(extensionPath, localizeHTML) {
   const htmlOnDiskPath = vscode.Uri.file(
-    path.join(extensionPath, 'src', 'compile', 'compileResultPage.html')
+    path.join(extensionPath, "src", "compile", "compileResultPage.html")
   );
   const cssOniskPath = vscode.Uri.file(
-    path.join(extensionPath, 'resources', 'css', 'table_materialize.css')
+    path.join(extensionPath, "resources", "css", "table_materialize.css")
   );
   const tableScriptPath = vscode.Uri.file(
-    path.join(extensionPath, 'resources', 'script', 'table_materialize.js')
+    path.join(extensionPath, "resources", "script", "table_materialize.js")
   );
 
   const htmlContent = fs.readFileSync(
-    htmlOnDiskPath.with({ scheme: 'vscode-resource' }).fsPath
+    htmlOnDiskPath.with({ scheme: "vscode-resource" }).fsPath
   );
   const cssContent = fs.readFileSync(
-    cssOniskPath.with({ scheme: 'vscode-resource' }).fsPath
+    cssOniskPath.with({ scheme: "vscode-resource" }).fsPath
   );
   const scriptContent = fs.readFileSync(
-    tableScriptPath.with({ scheme: 'vscode-resource' }).fsPath
+    tableScriptPath.with({ scheme: "vscode-resource" }).fsPath
   );
 
   let runTemplate = compile(htmlContent);

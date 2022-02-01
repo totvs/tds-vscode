@@ -1,33 +1,22 @@
 import { delay } from "../helper";
 import { AbstractPageObject } from "./abstract-po";
-import { By, WebElement } from "vscode-extension-tester";
+import { By, Key, WebElement } from "vscode-extension-tester";
 
 export class PatchGeneratePageObject extends AbstractPageObject {
-  // constructor() {
-  //   super("Patch Generate");
-  // }
-
-  async fillRepositoryLogPage(
-    data: any // ICompileKeyData
-  ) {
-    // await this.beginWebView();
-    // await this.setValue("compileKeyFile", `${data.compileKeyFile}\t`); //força saida do campo
-    // await this.endWebView();
-  }
-
-  async applyFilterInput(filter: string): Promise<string> {
+  async applyFilterInput(filter: string): Promise<boolean> {
     await this.beginWebView();
-    await this.setValue("FilterInput", `${filter}\t`); //força saida do campo
+    await this.setValue("FilterInput", `${filter}${Key.TAB}`); //força saida do campo
     await delay();
 
     const result: string = await this.getValue("SelectL");
-
     await this.endWebView();
-    return result;
+
+    return result.length > 0;
   }
 
-  async selectLeftOption(...elements: string[]) {
+  async selectLeftOption(...elements: string[]): Promise<void> {
     await this.beginWebView();
+
     const selectLeft: WebElement = await this.findElement("SelectL");
     const options: WebElement[] = await selectLeft.findElements(
       By.css("option")
@@ -45,5 +34,23 @@ export class PatchGeneratePageObject extends AbstractPageObject {
     button.click();
 
     await this.endWebView();
+  }
+
+  async getLeftOption(): Promise<string[]> {
+    await this.beginWebView();
+
+    const result: string = await this.getValue("SelectL");
+    await this.endWebView();
+
+    return result.split("\n");
+  }
+
+  async getRightOption(): Promise<string[]> {
+    await this.beginWebView();
+
+    const result: string = await this.getValue("SelectR");
+    await this.endWebView();
+
+    return result.split("\n");
   }
 }

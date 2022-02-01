@@ -7,11 +7,12 @@ const MONITOR_PATH = path.join(__dirname, "./src/monitor/");
 const RPO_INFO_PATH = path.join(__dirname, "./src/rpoInfo/");
 const INSPECT_PATCH_PATH = path.join(__dirname, "./src/patch/inspect");
 const GENERATE_PATCH_PATH = path.join(__dirname, "./src/patch/generate");
+const INSPECTOR_PATH = path.join(__dirname, "./src/inspect-harpia");
 
 module.exports = (env, argv) => {
   return {
     target: "node",
-    devtool: (argv.mode === 'production') ? null : 'source-map',
+    devtool: (argv.mode === 'production') ? false : 'source-map',
     optimization: {
       minimize: (argv.mode === 'production'),
       minimizer: [new TerserPlugin()]
@@ -24,6 +25,7 @@ module.exports = (env, argv) => {
       rpoInfoPanel: path.join(RPO_INFO_PATH, "app/index.tsx"),
       inspectPatchPanel: path.join(INSPECT_PATCH_PATH, "app/index.tsx"),
       generatePatchPanel: path.join(GENERATE_PATCH_PATH, "app/index.tsx"),
+      inspectPanel: path.join(INSPECTOR_PATH, "app/index.tsx"),
     },
     output: {
       //Todos os arquivos tsx serão compilados e gerados seus equivalentes js na mesma pasta
@@ -31,7 +33,6 @@ module.exports = (env, argv) => {
       //O [name] abaixo é o que foi definido no "entry" acima, ou seja, o arquivo gerado tera  o nome timeLineView.js
       filename: "[name].js",
     },
-    devtool: "eval-source-map",
     externals: {
       // the vscode-module is created on-the-fly and must be excluded.
       //Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
@@ -105,6 +106,18 @@ module.exports = (env, argv) => {
               loader: "ts-loader",
               options: {
                 configFile: path.join(GENERATE_PATCH_PATH, "./app/tsconfig.json"),
+              },
+            },
+          ],
+        },
+        {
+          test: /\.(ts|tsx)$/,
+          include: INSPECTOR_PATH,
+          use: [
+            {
+              loader: "ts-loader",
+              options: {
+                configFile: path.join(INSPECTOR_PATH, "./app/tsconfig.json"),
               },
             },
           ],

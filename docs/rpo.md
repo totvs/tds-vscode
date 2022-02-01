@@ -35,3 +35,7 @@ Caso deseje remover um TOKEN de `RPO` já aplicado, acione `X` do lado direito a
 Os comandos para informar ou remover o _RPO Token_, também podem ser executados via paleta de comandos (`ctrl+shift+p).
 
 ![TOKEN Rpo](../imagens/pallete-rpo.png)
+
+## Outras funcionalidades
+
+### [Inspetor de Objetos](./rpo-inspector.md)

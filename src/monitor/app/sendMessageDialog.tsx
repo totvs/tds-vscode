@@ -8,6 +8,7 @@ import {
   Button,
   TextField,
   Paper,
+  Typography,
 } from "@material-ui/core";
 import MaterialTable from "material-table";
 import { cellDefaultStyle } from "./monitorInterface";
@@ -46,6 +47,7 @@ function headCells(): any[] {
 }
 
 export default function SendMessageDialog(props: SendMessageDialogProps) {
+  const [sizeMessage, setSizeMessage] = React.useState(0);
   const { onClose, recipients, open } = props;
 
   const handleClose = (event: {}, reason: string) => {
@@ -54,6 +56,9 @@ export default function SendMessageDialog(props: SendMessageDialogProps) {
 
   const messageRef = React.useRef<HTMLTextAreaElement>();
   const descriptionElementRef = React.useRef<HTMLElement>(null);
+  const doUpdateSize = (size: number) => {
+    setSizeMessage(size);
+  };
 
   React.useEffect(() => {
     if (open) {
@@ -85,13 +90,19 @@ export default function SendMessageDialog(props: SendMessageDialogProps) {
             variant="outlined"
             multiline
             rows={3}
-            rowsMax={10}
             fullWidth
+            inputProps={{ maxLength: 2048 }}
+            onChange={(event) => {
+              doUpdateSize(event.target.value.length);
+            }}
           />
+          <Typography align="right" variant="caption" display="block">
+            Size: {sizeMessage}/2048
+          </Typography>
           <Paper>
             <MaterialTable
-          localization={i18n.materialTableLocalization}
-          icons={monitorIcons.table}
+              localization={i18n.materialTableLocalization}
+              icons={monitorIcons.table}
               columns={headCells()}
               data={recipients}
               options={{

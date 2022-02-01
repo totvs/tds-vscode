@@ -12,6 +12,9 @@ out-test
 package-lock.json
 test-extension/
 test-resources/
-test/resources/advpl/**/.vscode/servers.json
-test/resources/project-advpl/.vscode/servers.json
+test/resources/**/.vscode/servers.json
+test/resources/**/.vscode/settings.json
+test/resources/**/.vscode/laucher.json
 out-test/
+*.dmp
+src/parser/4gl-parser.js

@@ -1,0 +1,11 @@
+0001#STR0001#ALL#FAILURE OPENING 
+0002#STR0002#ALL#Unable to open file 
+0003#STR0003#ALL#in exclusive mode,
+0004#STR0004#ALL#likely to be in use. 
+0005#STR0005#ALL#The data shown may be out-of-date.
+0006#STR0006#ALL#WARNING:
+0007#STR0007#ALL#This is the content of file
+0008#STR0008#ALL#If there are submission buttons
+0009#STR0009#ALL#or similar ones, do not activate them
+0010#STR0010#ALL#Maybe some JavaScript occur, please, disregard them.
+0011#STR0011#ALL#Start file 

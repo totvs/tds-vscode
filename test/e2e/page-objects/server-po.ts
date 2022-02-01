@@ -1,39 +1,35 @@
-import { By, WebView } from "vscode-extension-tester"
-import { delay } from "../helper"
-import { IServerData } from "./interface-po"
+import { By, WebView } from "vscode-extension-tester";
+import { delay } from "../helper";
+import { AbstractPageObject } from "./abstract-po";
+import { IServerData } from "./interface-po";
 
-export class ServerPageObject {
-	private server: IServerData;
+export class ServerPageObject extends AbstractPageObject {
+  private server: IServerData;
 
-	constructor (data?: IServerData) {
-	  this.server = data
-	}
+  constructor(data?: IServerData) {
+    super();
+    this.server = data;
+  }
 
-	async fillAddServerPage (
-	  webView: WebView,
-	  data: IServerData = this.server,
-	  confirm: boolean = false
-	) {
-	  // let element = await webView.findWebElement(By.id("serverTypeID"));
-	  // element.sendKeys(data.serverType);
+  async fillServerPage(data: IServerData = this.server) {
+    await this.beginWebView();
 
-	  let element = await webView.findWebElement(By.id("nameID"))
-	  element.sendKeys(data.serverName)
+    await this.setValue("serverTypeID", data.serverType);
+    await this.setValue("nameID", data.serverName);
+    await this.setValue("addressID", data.address);
+    await this.setValue("portID", data.port);
+    await this.setValue("includePath", data.includePath.join(";"));
 
-	  element = await webView.findWebElement(By.id("addressID"))
-	  element.sendKeys(data.address)
+    await this.endWebView();
+  }
 
-	  element = await webView.findWebElement(By.id("portID"))
-	  element.sendKeys(data.port)
+  async fireSaveClose(): Promise<void> {
+    await this.beginWebView();
 
-	  element = await webView.findWebElement(By.id("includePath"))
-	  element.sendKeys(data.includePath.join(";"))
+    await this.click("submitIDClose");
 
-	  if (confirm) {
-	    element = await webView.findWebElement(By.id("submitIDClose"))
-	    element.click()
-	  }
+    await this.endWebView();
 
-	  await delay()
-	}
+    await delay(2000);
+  }
 }

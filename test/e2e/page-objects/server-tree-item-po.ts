@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { By, TreeItem, ViewItemAction } from "vscode-extension-tester";
 import {
   delay,
@@ -22,24 +21,28 @@ export class ServerTreeItemPageObject {
     this.select();
     await fireContextMenuAction(this.serverTreeItem, "Connect");
     this.workbenchPO.waitValidatingServer();
-    await delay(2000);
+    await delay();
 
     await fillEnvironment(environment);
-    await fillUserdata(userData);
+
+    if (userData) {
+      await fillUserdata(userData);
+    }
 
     await this.workbenchPO.waitConnection();
-    expect(
-      await this.workbenchPO.isConnected(
-        await this.serverTreeItem.getLabel(),
-        environment
-      )
-    ).is.true;
+  }
+
+  async isLogix(): Promise<boolean> {
+    const tooltip: string = await this.serverTreeItem.getTooltip();
+
+    return tooltip.startsWith("Logix");
   }
 
   async isServerP20OrGreater(): Promise<boolean> {
     const tooltip: string = await this.serverTreeItem.getTooltip();
+    const pos: number = tooltip.lastIndexOf(" ");
 
-    return tooltip.localeCompare("7.00.191205P") > 0;
+    return tooltip.substring(pos + 1).localeCompare("7.00.191205P") > 0;
   }
 
   async select() {
@@ -80,7 +83,6 @@ export class ServerTreeItemPageObject {
   }
 
   async fireDisconnectAction() {
-    await this.select();
     await fireContextMenuAction(this.serverTreeItem, "Disconnect");
   }
 

@@ -1,6 +1,7 @@
 import * as React from "react";
 import ErrorBoundary from "./ErrorBoundary";
 import TimeLineTable from "./TimeLineTable";
+import { ICommand, CommandToDA, CommandToPage } from "../Command";
 
 interface IConfigProps {
   vscode: any;
@@ -8,36 +9,39 @@ interface IConfigProps {
 }
 
 export interface IConfigState {
-  //config: IServerItem;
+  config: any;
 }
 
-export default class TDSReplayTimeLineWebView extends React.Component<IConfigProps,IConfigState> {
-  private vscode: any;
-  constructor(props: any) {
-    super(props);
-    this.vscode = props.vscode;
 
-    let oldState = this.props.vscode.getState();
-    if (oldState) {
-     // console.log("Maintaning old state");
-      this.state = oldState;
-    } else {
-     // console.log("Setting new state");
-      let initialData = this.props.initialData;
-      this.state = {
-        config: initialData,
-      };
-      this.props.vscode.setState(this.state);
-    }
+export default function TDSReplayTimeLineWebView(props: IConfigProps, state: IConfigState) {
+
+  let vscode = props.vscode;
+
+  let oldState = vscode.getState();
+
+  if (oldState) {
+
+    let command: ICommand = {
+      action: CommandToDA.GetCurrentState,
+      content: {},
+    };
+    vscode.postMessage(command);
+
+  } else {
+    //console.log("Setting new state");
+    let initialData = props.initialData;
+    let _state = {
+      config: initialData,
+      needReload: false,
+    };
+    vscode.setState(_state);
   }
 
-  render() {
-        return (
-      <React.Fragment>
-        <ErrorBoundary>
-        <TimeLineTable vscode={this.vscode}/>
-        </ErrorBoundary>
-      </React.Fragment>
-    );
-  }
+  return (
+    <React.Fragment>
+      <ErrorBoundary>
+      <TimeLineTable vscode={vscode}/>
+      </ErrorBoundary>
+    </React.Fragment>
+  );
 }

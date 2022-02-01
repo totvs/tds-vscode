@@ -74,6 +74,7 @@ import { rpoTokenInputBox, saveRpoTokenString } from "./rpoToken";
 import { openGeneratePatchView } from "./patch/generate/generatePatchLoader";
 import { patchApply } from "./patch/patchApply";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
+import { commandShowBuildTableResult } from "./compile/buildResult";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -94,7 +95,7 @@ export function activate(context: ExtensionContext) {
   );
 
   Utils.createServerConfig();
-  Utils.createLaunchConfig();
+  Utils.createLaunchConfig(undefined);
 
   context.subscriptions.push(
     commands.registerCommand("tds.getDAP", () => getDAP())
@@ -213,7 +214,6 @@ export function activate(context: ExtensionContext) {
         );
         statusIcon.show();
         languageClient.onReady().then(() => {
-          languageClient.ready = true;
           languageClient.onNotification("$totvsserver/progress", (args) => {
             let indexRequestCount = args.indexRequestCount || 0;
             let doIdMapCount = args.doIdMapCount || 0;
@@ -318,13 +318,20 @@ export function activate(context: ExtensionContext) {
 
   // Ação para pegar o nome da função e argumentos para  iniciar o debug
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.getProgramName", () =>
-      getProgramName()
+    commands.registerCommand(
+      "totvs-developer-studio.getProgramName",
+      (config: vscode.DebugConfiguration) => {
+        return getProgramName(config);
+      }
     )
   );
+
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.getProgramArguments", () =>
-      getProgramArguments()
+    commands.registerCommand(
+      "totvs-developer-studio.getProgramArguments",
+      (config: vscode.DebugConfiguration) => {
+        return getProgramArguments(config);
+      }
     )
   );
   //Ação para desfragmentar o RPO do servidor corrente.
@@ -345,6 +352,7 @@ export function activate(context: ExtensionContext) {
       revalidateRpo()
     )
   );
+
   //Ação para deletar um fonte selecionado do RPO.
   context.subscriptions.push(
     commands.registerCommand(
@@ -352,12 +360,14 @@ export function activate(context: ExtensionContext) {
       (context, files) => deleteFileFromRPO(context, files)
     )
   );
+
   //Ação par abrir a tela de inspetor de objetos.
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.inspectorObjects", () =>
       inspectObject(context)
     )
   );
+
   //Ação par abrir a tela de inspetor de funções.
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.inspectorFunctions", () =>
@@ -383,26 +393,34 @@ export function activate(context: ExtensionContext) {
   //Compila todos os arquivos dentro de um workspace.
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.build.workspace", () =>
-      commandBuildWorkspace(false, context)
+      commandBuildWorkspace(false)
     )
   );
   //Recompila todos os arquivos dentro de um workspace.
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.rebuild.workspace", () =>
-      commandBuildWorkspace(true, context)
+      commandBuildWorkspace(true)
     )
   );
 
   //Compila todos os fontes abertos
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.build.openEditors", () =>
-      commandBuildOpenEditors(false, context)
+      commandBuildOpenEditors(false)
     )
   );
   //Recompila todos os fontes abertos
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.rebuild.openEditors", () =>
-      commandBuildOpenEditors(true, context)
+      commandBuildOpenEditors(true)
+    )
+  );
+  //Apresenta tabela de resultados da compilação
+  context.subscriptions.push(
+    commands.registerCommand(
+      "totvs-developer-studio.show.result.build",
+      (compileResult: any) =>
+        commandShowBuildTableResult(context, compileResult)
     )
   );
 
@@ -444,9 +462,8 @@ export function activate(context: ExtensionContext) {
             "tds.vscode.starting.build.patch",
             "Starting package generation..."
           )}`,
-          5000
+          Promise.resolve(openGeneratePatchView(context))
         );
-        openGeneratePatchView(context);
       }
     )
   );
@@ -459,9 +476,8 @@ export function activate(context: ExtensionContext) {
           "tds.vscode.starting.apply.patch",
           "Starting patch application..."
         )}`,
-        5000
+        Promise.resolve(patchApply(context, false))
       );
-      patchApply(context, false);
     })
   );
 
@@ -474,9 +490,8 @@ export function activate(context: ExtensionContext) {
             "tds.vscode.starting.apply.patch",
             "Starting patch application..."
           )}`,
-          5000
+          Promise.resolve(patchApply(context, true, args))
         );
-        patchApply(context, true, args);
       }
     )
   );
@@ -539,9 +554,8 @@ export function activate(context: ExtensionContext) {
             "tds.vscode.starting.apply.teplate",
             "Starting template application..."
           )}`,
-          5000
+          Promise.resolve(openTemplateApplyView(context, args))
         );
-        openTemplateApplyView(context, args);
       }
     )
   );
@@ -554,9 +568,8 @@ export function activate(context: ExtensionContext) {
           "tds.vscode.starting.monitor",
           "Starting monitor..."
         )}`,
-        5000
+        Promise.resolve(openMonitorView(context))
       );
-      openMonitorView(context);
     })
   );
 
@@ -570,9 +583,8 @@ export function activate(context: ExtensionContext) {
             "tds.vscode.starting.rpo.loadinfo",
             "Starting RPO load information..."
           )}`,
-          5000
+          Promise.resolve(openRpoInfoView(context))
         );
-        openRpoInfoView(context);
       }
     )
   );
@@ -690,6 +702,7 @@ export function activate(context: ExtensionContext) {
   blockBuildCommands(false);
   showBanner();
 
+  // 'export' public api-surface
   let exportedApi = {
     generatePPO(filePath: string, options?: any): Promise<string> {
       return generatePpo(filePath, options);
@@ -701,7 +714,10 @@ export function activate(context: ExtensionContext) {
       return saveRpoTokenString(undefined);
     },
   };
-  // 'export' public api-surface
+
+  vscode.workspace.onDidChangeConfiguration(() => {
+    syncSettings();
+  });
 
   window.showInformationMessage('"TDS-VSCode" is ready.');
 
@@ -780,72 +796,39 @@ function showBanner(force: boolean = false) {
     firstTime = false;
     const config = workspace.getConfiguration("totvsLanguageServer");
     const showBanner = config.get("showBanner", true);
+    const appLine = languageClient.outputChannel.appendLine;
 
     if (showBanner || force) {
       let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
-      // prettier-ignore-start
-      languageClient.outputChannel.appendLine(
-        "---------------------------v---------------------------------------------------"
-      );
-      languageClient.outputChannel.appendLine(
-        "   //////  ////    //////  |  TOTVS Developer Studio for VS-Code"
-      );
-      languageClient.outputChannel.appendLine(
-        "    //    //  //  //       |  Version " + ext.packageJSON["version"]
-      );
-      languageClient.outputChannel.appendLine(
-        "   //    //  //  //////    |  TOTVS Technology"
-      );
-      languageClient.outputChannel.appendLine("  //    //  //      //     |");
-      languageClient.outputChannel.appendLine(
-        " //    ////    //////      |  https://github.com/totvs/tds-vscode"
-      );
-      languageClient.outputChannel.appendLine(
-        "---------------------------^---------------------------------------------------"
-      );
-      languageClient.outputChannel.appendLine("");
-      // prettier-ignore-end
+      // prettier-ignore
+      {
+      appLine("---------------------------v---------------------------------------------------");
+      appLine("   //////  ////    //////  |  TOTVS Developer Studio for VS-Code");
+      appLine("    //    //  //  //       |  Version " + ext.packageJSON["version"]);
+      appLine("   //    //  //  //////    |  TOTVS Technology");
+      appLine("  //    //  //      //     |");
+      appLine(" //    ////    //////      |  https://github.com/totvs/tds-vscode");
+      appLine("---------------------------^---------------------------------------------------");
+      appLine("");
+      }
     }
-    // prettier-ignore-start
-    languageClient.outputChannel.appendLine(
-      "-------------------------------------------------------------------------------"
-    );
-    languageClient.outputChannel.appendLine(
-      "SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO                                   "
-    );
-    languageClient.outputChannel.appendLine("");
-    languageClient.outputChannel.appendLine(
-      "As chaves de compilação ou tokens de compilação empregados na construção do    "
-    );
-    languageClient.outputChannel.appendLine(
-      "Protheus e suas funcionalidades, são de uso restrito dos desenvolvedores de    "
-    );
-    languageClient.outputChannel.appendLine(
-      "cada módulo.                                                                   "
-    );
-    languageClient.outputChannel.appendLine("");
-    languageClient.outputChannel.appendLine(
-      "Em caso de mau uso destas chaves ou tokens, por qualquer outra parte, que não  "
-    );
-    languageClient.outputChannel.appendLine(
-      "a referida acima, a mesma irá se responsabilizar, direta ou regressivamente,   "
-    );
-    languageClient.outputChannel.appendLine(
-      "única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações,   "
-    );
-    languageClient.outputChannel.appendLine(
-      "multas, condenações judiciais, arbitrais e administrativas e quaisquer outras  "
-    );
-    languageClient.outputChannel.appendLine(
-      "despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros,   "
-    );
-    languageClient.outputChannel.appendLine(
-      "eximindo a TOTVS de toda e qualquer responsabilidade.                          "
-    );
-    languageClient.outputChannel.appendLine(
-      "-------------------------------------------------------------------------------"
-    );
-    // prettier-ignore-end
+    // prettier-ignore
+    {
+    appLine("-------------------------------------------------------------------------------");
+    appLine("SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO                                   ");
+    appLine("");
+    appLine("As chaves de compilação ou tokens de compilação empregados na construção do    ");
+    appLine("Protheus e suas funcionalidades, são de uso restrito dos desenvolvedores de    ");
+    appLine("cada módulo.                                                                   ");
+    appLine("");
+    appLine("Em caso de mau uso destas chaves ou tokens, por qualquer outra parte, que não  ");
+    appLine("a referida acima, a mesma irá se responsabilizar, direta ou regressivamente,   ");
+    appLine("única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações,   ");
+    appLine("multas, condenações judiciais, arbitrais e administrativas e quaisquer outras  ");
+    appLine("despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros,   ");
+    appLine("eximindo a TOTVS de toda e qualquer responsabilidade.                          ");
+    appLine("-------------------------------------------------------------------------------");
+    }
   }
 }
 

@@ -321,11 +321,17 @@ export class ServerItem extends vscode.TreeItem {
   }
 
   public get isSafeRPO(): boolean {
+    return this.isServerP20OrGreater;
+  }
+
+  public get isServerP20OrGreater(): boolean {
     return this.buildVersion.localeCompare("7.00.191205P") > 0;
   }
 
   description = `${this.address}:${this.port}`;
-  tooltip = `${this.buildVersion}`;
+  tooltip = `${this.type == "totvs_server_protheus" ? "Protheus" : "Logix"} ${
+    this.buildVersion
+  }`;
   iconPath = {
     light: path.join(
       RESOURCE_FOLDER,

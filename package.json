@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "1.3.8",
+  "version": "1.3.11",
   "publisher": "TOTVS",
   "author": {
     "name": "TOTVS",
@@ -20,7 +20,7 @@
     "protheus"
   ],
   "engines": {
-    "vscode": "^1.62.0"
+    "vscode": "^1.63.1"
   },
   "icon": "icons/totvs-developer-studio.png",
   "categories": [
@@ -51,11 +51,12 @@
     "eslint-fix:src": "eslint ./src/**/*.ts --fix",
     "eslint-fix:test": "eslint ./test/**/*.ts --fix",
     "--TEST--": "",
-    "test": "extest run-tests -l error -f -s c:/temp/test -e c:/temp/extension -o test/settings.json './out-test/**/*test.js'",
+    "test": "extest run-tests -l error -f -s ../temp/test -e ../temp/extension -o ./test/settings.json './out-test/**/05**/*test.js'",
     "pretest": "rimraf ./out-test/* && npm run compile-test",
-    "test-setup": "npm run compile && extest setup-tests -i -s c:/temp/test -e c:/temp/extension",
+    "test-setup": "npm run compile && extest setup-tests -i -s ../temp/test -e ../temp/extension",
     "--SCENARIO--": "",
     "scenario:default": "npm run test",
+    "scenario:logix": "set SCENARIO=logix && npm run test",
     "scenario:acandido": "set SCENARIO=acandido && npm run test",
     "scenario:p19": "set SCENARIO=p19 && npm run test",
     "scenario:p17": "set SCENARIO=p17 && npm run test",
@@ -65,9 +66,9 @@
     "---RELEASE---": "",
     "release": "npx standard-version",
     "tag": "git push --follow-tags",
-    "pack": "npm pack",
     "package": "gulp package",
     "publish": "gulp publish",
+    "pre-release": "gulp prerelease",
     "---MISC---": "",
     "all-contributors:generate": "all-contributors generate",
     "all-contributors:check": "all-contributors check"
@@ -76,47 +77,50 @@
     "@material-ui/core": "4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@totvs/tds-da": "^1.2.13",
-    "@totvs/tds-ls": "^1.2.19",
+    "@totvs/tds-da": "^1.2.26",
+    "@totvs/tds-ls": "^1.2.29",
     "@types/react": "^16.14.20",
-    "@types/vscode": "^1.62.0",
+    "@types/vscode": "^1.63.1",
     "cheerio": "1.0.0-rc.10",
     "core-js": "^3.19.3",
     "del": "^6.0.0",
     "ini": "^2.0.0",
     "jszip": "^3.7.1",
     "material-table": "1.69.3",
+    "nvm": "^0.0.4",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "strip-json-comments": "^3.1.1",
     "template-literal": "^1.0.4",
     "tmp": "^0.2.1",
     "typescript": "^4.5.2",
-    "vscode-debugadapter": "^1.51.0",
+    "@vscode/debugadapter": "^1.51.1",
     "vscode-languageclient": "^6.1.4",
     "vscode-nls": "^5.0.0",
     "windows-1251": "^1.1.0",
-    "windows-1252": "^1.1.0"
+    "windows-1252": "^1.1.0",
+    "fs-extra": "^10.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.0",
-    "@babel/core": "^7.16.0",
-    "@types/chai": "^4.2.22",
+    "@babel/core": "^7.16.5",
+    "@types/chai": "^4.3.0",
     "@types/fs-extra": "^9.0.13",
     "@types/glob": "^7.2.0",
     "@types/ini": "^1.3.31",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^16.11.12",
+    "@types/node": "^17.0.4",
     "@types/react-dom": "^16.9.14",
-    "@types/vscode": "^1.62.0",
+    "@types/vscode": "^1.63.1",
     "all-contributors-cli": "^6.20.0",
     "chai": "^4.3.4",
     "cleanup": "^0.3.0",
     "css-loader": "^6.5.1",
-    "eslint": "^8.4.1",
+    "eslint": "^8.5.0",
     "glob": "^7.2.0",
     "gulp": "^4.0.2",
     "gulp-filter": "^7.0.0",
+    "gulp-run": "^1.7.1",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
     "gulp-util": "^3.0.8",
@@ -128,13 +132,13 @@
     "rimraf": "^3.0.2",
     "source-map-support": "^0.5.21",
     "style-loader": "^3.3.1",
-    "terser-webpack-plugin": "^5.2.5",
+    "terser-webpack-plugin": "^5.3.0",
     "ts-loader": "^9.2.6",
-    "typescript": "^4.5.2",
+    "typescript": "^4.5.4",
     "typescript-eslint": "^0.0.1-alpha.0",
-    "vsce": "^2.5.1",
+    "vsce": "^2.6.3",
     "vscode-extension-tester": "^4.2.3",
-    "vscode-nls-dev": "^3.3.2",
+    "vscode-nls-dev": "^4.0.0",
     "webpack": "^5.65.0",
     "webpack-cli": "^4.9.1",
     "webpack-stream": "^7.0.0"
@@ -143,6 +147,7 @@
   "activationEvents": [
     "onLanguage:advpl",
     "onLanguage:4gl",
+    "onDebugInitialConfigurations",
     "onCommand:totvs-developer-studio.getProgramArguments",
     "onCommand:totvs-developer-studio.getProgramName",
     "onCommand:totvs-developer-studio.build.file",
@@ -219,6 +224,12 @@
         "id": "tds",
         "label": "TDS Icons Theme",
         "path": "./fileicons/tds-icons-theme.json"
+      }
+    ],
+    "jsonValidation": [
+      {
+        "fileMatch": "servers.json",
+        "url": "./schema/servers.schema.json"
       }
     ],
     "customEditors": [
@@ -413,7 +424,8 @@
             ".RES",
             ".4GL",
             ".PER",
-            ".JS"
+            ".JS",
+            ".RPTDESIGN"
           ],
           "description": "%tds.package.folder.extensions.allowed%"
         },
@@ -636,6 +648,12 @@
         "command": "totvs-developer-studio.rebuild.workspace",
         "title": "%tds.package.rebuild.workspace.title%",
         "description": "%tds.package.rebuild.workspace.description%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.show.result.build",
+        "title": "%tds.package.show.result.build.title%",
+        "description": "%tds.package.show.result.build.description%",
         "category": "TOTVS"
       },
       {
@@ -947,7 +965,7 @@
               "smartclientBin": {
                 "type": "string",
                 "description": "%tds.package.properties.smartclientBin.description%",
-                "default": "C:/totvs/bin/smartclient/smartclient.exe"
+                "default": "../totvs/bin/smartclient/smartclient.exe"
               },
               "cwb": {
                 "type": "string",
@@ -1001,7 +1019,7 @@
               "logFile": {
                 "type": "string",
                 "description": "%tds.package.properties.logFile.description%",
-                "default": "${workspaceFolder}\\daplog.log"
+                "default": "${workspaceFolder}/daplog.log"
               },
               "ignoreFiles": {
                 "type": "boolean",
@@ -1030,46 +1048,48 @@
             "name": "%tds.package.totvs_language_debug%",
             "program": "${command:AskForProgramName}",
             "cwb": "${workspaceFolder}",
-            "smartclientBin": "C:/totvs/bin/smartclient/smartclient.exe",
+            "smartclientBin": "../totvs/bin/smartclient/smartclient.exe",
             "isMultiSession": true,
             "enableTableSync": true
-          }
-        ],
-        "configurationSnippets": [
-          {
-            "label": "%tds.package.totvs_language_debug%",
-            "description": "A new configuration for 'debugging' a user selected AdvPL/4GL file.",
-            "body": {
-              "type": "totvs_language_debug",
-              "request": "launch",
-              "name": "${1:%tds.package.totvs_language_debug%}",
-              "program": "^\"\\${command:AskForProgramName}\"",
-              "smartclientBin": "${2:C:/totvs/bin/smartclient/smartclient.exe}",
-              "isMultiSession": true,
-              "enableTableSync": true
-            }
-          },
-          {
-            "label": "%tds.package.totvs_language_debug% with arguments",
-            "description": "A new configuration for 'debugging' a user selected AdvPL/4GL file with arguments.",
-            "body": {
-              "type": "totvs_language_debug",
-              "request": "launch",
-              "name": "${1:%tds.package.totvs_language_debug%}",
-              "program": "^\"\\${command:AskForProgramName}\"",
-              "programArguments": [
-                "^\"\\${command:AskForProgramArguments}\""
-              ],
-              "smartclientBin": "${2:C:/totvs/bin/smartclient/smartclient.exe}",
-              "isMultiSession": true,
-              "enableTableSync": true
-            }
           }
         ],
         "variables": {
           "AskForProgramName": "totvs-developer-studio.getProgramName",
           "AskForProgramArguments": "totvs-developer-studio.getProgramArguments"
-        }
+        },
+        "configurationSnippets": [
+          {
+            "label": "%tds.package.totvs_language_debug%",
+            "description": "Configuration for debugging a user selected AdvPL/4GL file using _SmartClient_.",
+            "body": {
+              "type": "totvs_language_debug",
+              "request": "launch",
+              "name": "${1:Smart Client Debug}",
+              "program": "^\"\\${command:AskForProgramName}\"",
+              "smartclientBin": "${2:../totvs/bin/smartclient/smartclient.exe}",
+              "cwb": "^\"\\${workspaceFolder}\"",
+              "isMultiSession": true,
+              "enableTableSync": true
+            }
+          },
+          {
+            "label": "%tds.package.totvs_language_debug_with_arguments%",
+            "description": "Configuration for debugging a fixed AdvPL/4GL file and user arguments using _SmartClient_.",
+            "body": {
+              "type": "totvs_language_debug",
+              "request": "launch",
+              "name": "${1:Smart Client Debug}",
+              "program": "${2:program}",
+              "programArguments": [
+                "^\"\\${command:AskForProgramArguments}\""
+              ],
+              "smartclientBin": "${3:../totvs/bin/smartclient/smartclient.exe}",
+              "cwb": "^\"\\${workspaceFolder}\"",
+              "isMultiSession": true,
+              "enableTableSync": true
+            }
+          }
+        ]
       },
       {
         "type": "totvs_tdsreplay_debug",
@@ -1145,11 +1165,11 @@
         "configurationSnippets": [
           {
             "label": "%tds.package.tdsreplay.debug%",
-            "description": "A new configuration for 'debugging' a TDS Replay file.",
+            "description": "A new configuration for debugging a TDS Replay file.",
             "body": {
               "type": "totvs_tdsreplay_debug",
               "request": "launch",
-              "name": "${1:%tds.package.tdsreplay.debug%}",
+              "name": "${1:TDS Replay}",
               "cwb": "${workspaceFolder}",
               "ignoreFiles": false,
               "tdsReplayFile": "",
@@ -1162,7 +1182,7 @@
       },
       {
         "type": "totvs_language_web_debug",
-        "label": "%tds.package.totvs_language_debug.web%",
+        "label": "%tds.package.totvs.language.debug.web%",
         "configurationAttributes": {
           "launch": {
             "required": [
@@ -1247,7 +1267,7 @@
               "logFile": {
                 "type": "string",
                 "description": "%tds.package.properties.logFile.description%",
-                "default": "${workspaceFolder}\\daplog.log"
+                "default": "${workspaceFolder}/daplog.log"
               },
               "enableTableSync": {
                 "type": "boolean",
@@ -1282,37 +1302,25 @@
             "enableTableSync": true
           }
         ],
+        "variables": {
+          "AskForProgramName": "totvs-developer-studio.getProgramName",
+          "AskForProgramArguments": "totvs-developer-studio.getProgramArguments"
+        },
         "configurationSnippets": [
-          {
-            "label": "%tds.package.totvs_language_debug%",
-            "description": "%tds.package.configurationSnippets.description%",
-            "body": {
-              "type": "totvs_language_debug",
-              "request": "launch",
-              "name": "%tds.package.totvs_language_debug%",
-              "program": "${command:AskForProgramName}",
-              "isMultiSession": true,
-              "enableTableSync": true
-            }
-          },
           {
             "label": "%tds.package.totvs_language_debug.web%",
             "description": "%tds.package.configurationSnippets.description.web%",
             "body": {
               "type": "totvs_language_web_debug",
               "request": "launch",
-              "name": "%tds.package.totvs_language_debug.web%",
+              "name": "${1:Smart Client Web Debug%}",
               "program": "^\"\\${command:AskForProgramName}\"",
               "isMultiSession": true,
               "enableTableSync": true,
-              "smartclientUrl": "http://localhost:8080"
+              "smartclientUrl": "${2:http://localhost:8080}"
             }
           }
-        ],
-        "variables": {
-          "AskForProgramName": "totvs-developer-studio.getProgramName",
-          "AskForProgramArguments": "totvs-developer-studio.getProgramArguments"
-        }
+        ]
       }
     ],
     "viewsContainers": {
@@ -1542,6 +1550,10 @@
           "command": "totvs-developer-studio.clearRpoToken"
         },
         {
+          "command": "totvs-developer-studio.show.result.build",
+          "when": "1 == 0"
+        },
+        {
           "command": "totvs-developer-studio.patchGenerate.fromFolder",
           "when": "1 == 0"
         },
@@ -1599,8 +1611,5 @@
         }
       ]
     }
-  },
-  "servers": {
-    "path": ".vscode/servers.json"
   }
 }

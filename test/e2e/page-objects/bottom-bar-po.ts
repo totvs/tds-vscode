@@ -1,22 +1,22 @@
-import { BottomBarPanel, ProblemsView } from "vscode-extension-tester";
+import {
+  BottomBarPanel,
+  ProblemsView,
+  Workbench,
+} from "vscode-extension-tester";
+import { ProblemsPageObject } from "./problem-view-po";
 
 export class BottomBarPageObject {
   private _bottomBar: BottomBarPanel;
 
-  public get bottomBar(): any {
-    if (!this._bottomBar) {
-      this._bottomBar = new BottomBarPanel();
-    }
-
-    return this._bottomBar;
+  constructor() {
+    this._bottomBar = new BottomBarPanel();
   }
 
-  async captureView(viewTitle: string): Promise<void> {
+  async openProblemsView(): Promise<ProblemsPageObject> {
     await this._bottomBar.toggle(true);
-    const view: ProblemsView = await this.bottomBar.openProblemsView();
+    const view: ProblemsView = await this._bottomBar.openProblemsView();
+    const problemView: ProblemsPageObject = new ProblemsPageObject(view);
 
-    //   view.
-    // // make sure the panel is open
-    // await bottomBar.toggle(true);
+    return problemView;
   }
 }

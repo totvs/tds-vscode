@@ -1,9 +1,11 @@
 export interface IServerData {
+  serverType: string;
   serverName: string;
   address: string;
   port: number;
   includePath: string[];
   environment: string;
+  smartClientBin: string;
 }
 
 export interface IUserData {
@@ -35,4 +37,19 @@ export interface IReplayData {
   TDSReplayFile: string;
   launcherName: string;
   forceImport: boolean;
+}
+
+export interface IMonitorConnectionsData {
+  server: string;
+  appUser: string;
+  environment: string;
+  computerName: string;
+  threadId: string;
+  mainName: string;
+  remark: string;
+}
+
+export interface IMonitorData {
+  subtitle: string;
+  connections: IMonitorConnectionsData[];
 }

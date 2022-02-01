@@ -1,5 +1,75 @@
 # Changelog
 
+# Versão [1.3.11]
+
+## Melhorias
+
+- Implementação de [inspetor de objetos e funções para o Harpia ou superior](./docs/rpo-inspector.md#harpia). [DTCLIENT01-3147](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3147)
+
+- Validação do arquivo de servidores (_servers.json_).
+
+  Em caso de erros lhe será apresentado aviso na visão `Problemas`.
+
+- Depuração: Tratamento do tipo _JSON_ em fontes _tlpp_ [#886](https://github.com/totvs/tds-vscode/issues/886)
+
+  Durante a depuração de fontes _tlpp_ com variáveis do tipo _JSON_, estas são apresentadas de forma hierárquica nas visões `Variáveis`, `Inspeção` e outras.
+
+## Removido
+
+- Depuração via SIGAPAF devido a incompatibilidade entre aplicações.
+
+## Não mostra tabela como resultados da compilação
+
+- Corrigido processo de abertura da tabela de resultados. [#895](https://github.com/totvs/tds-vscode/issues/895)
+
+## Tela do Monitor não é exibida
+
+- Corrigido problema na geração da extensão que fazia com que os fontes da tela do monitor não fossem adicionados ao pacote. [DTCLIENT01-3163](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3163)
+
+## TDS Replay: Caso o arquivo do TDS Replay gerado possua um fluxo especifico, a importação apresenta um erro e é cancelada.
+
+- Corrigido problema, onde dependendo do arquivo, a importação era interrompida no meio do processo. [DTCLIENT01-3157](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3157)
+
+## Depuração em MACos esta caindo
+
+- Corrigido dependências de bibliotecas de terceiros que causavam a queda. [DTCLIENT01-3160](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3160) [#875](https://github.com/totvs/tds-vscode/issues/875)
+
+# Versão [1.3.10]
+
+## Reversão de modificações indevidas no "Inspetor de Objetos".
+
+# Versão [1.3.9]
+
+## Melhorias
+
+- Implementação de depuração via SIGAPAF. [docs/debugger.md]
+
+- Adicionado confirmação na operação de _reset_ de configuração no `Monitor`. [DTCLIENT01-2908](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2908)
+
+- Adicionado limite de tamanho em mensagens enviadas ao usuário via `Monitor`. [DTCLIENT01-2849](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2849)
+
+- A extensão `.RPTDESIGN`, passa a ser reconhecida como um recurso padrão na compilação.
+
+## TLPP: ajustes visuais nos tipos nativos [#871](https://github.com/totvs/tds-vscode/issues/871)
+
+- Ajustado definições nos tipos nativos.
+
+## Falha na autenticação de usuário
+
+- Em determinadas situações, o usuário não era identificado corretamente.
+
+## 4GL: correção na identificação de _snippets_ de código de diretivas [DTCLIENT01-2904](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2904)
+
+- Ajustado identificação de diretivas.
+
+## Correção na exibição de Array no TDS Replay [#853](https://github.com/totvs/tds-vscode/issues/853) [DTCLIENT-3141](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3141)
+
+- Corrigido um problema no TDS Replay que poderia fazer com que alguns arrays não expandissem na visão de variáveis e não mostrassem o valor ao usar a visão de "Watch" e "Debug Commands"
+
+## Mensagens de compilação não são mais mostradas [#866](https://github.com/totvs/tds-vscode/issues/866)
+
+- Corrigido apresentação de mensagens de compilação na visão "Problemas".
+
 # Versão [1.3.8]
 
 ## Melhorias

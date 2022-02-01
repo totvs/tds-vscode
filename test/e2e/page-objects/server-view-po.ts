@@ -1,18 +1,15 @@
 import { expect } from "chai";
+import path = require("path");
+import fse = require("fs-extra");
 import {
-  ActivityBar,
   SideBarView,
   TreeItem,
   ViewItemAction,
   Notification,
-  WebView,
-  WebElement,
   ViewItem,
-  ViewControl,
-  ViewTitlePart,
-  TitleActionButton,
 } from "vscode-extension-tester";
 import { delay } from "../helper";
+import { PROJECT_FOLDER } from "../scenario";
 import { IServerData, IUserData } from "./interface-po";
 import { ServerPageObject } from "./server-po";
 import { ServerTreeItemPageObject } from "./server-tree-item-po";
@@ -20,15 +17,11 @@ import { ViewPageObject } from "./view-po";
 
 export class ServerViewPageObject extends ViewPageObject<SideBarView> {
   constructor() {
-    super("Totvs");
-  }
-
-  async getServerTreeItem(serverName: string): Promise<TreeItem> {
-    return this.getTreeItem(serverName);
+    super("TOTVS");
   }
 
   async removeServer(serverName: string) {
-    const serverTreeItem: TreeItem = await this.getServerTreeItem(serverName);
+    const serverTreeItem: TreeItem = await this.getTreeItem([serverName]);
     await delay(2000);
 
     await serverTreeItem.select();
@@ -49,30 +42,55 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
     await delay();
   }
 
-  async addNewServer(data: IServerData): Promise<void> {
-    await delay();
-
+  async addServer(data: IServerData): Promise<void> {
     await this.workbenchPO.executeCommand("totvs-developer-studio.add");
-    await delay();
 
-    const webView: WebView = new WebView();
-    await webView.switchToFrame();
+    const serverPO: ServerPageObject = new ServerPageObject(data);
+    await serverPO.fillServerPage(data);
+    await serverPO.fireSaveClose();
 
-    const serverPO = new ServerPageObject(data);
-    await serverPO.fillAddServerPage(webView, data, true);
-
-    await webView.switchBack();
-    await delay();
-
-    expect(await this.workbenchPO.isSaveServer()).is.true;
+    expect(await this.workbenchPO.isSavedServer()).is.true;
   }
 
-  async getNewServer(data: IServerData) {
-    let serverTreeItem = await this.getServerTreeItem(data.serverName);
+  private async registerServer(data: IServerData): Promise<void> {
+    const serverJsonFile: string = path.join(
+      PROJECT_FOLDER,
+      ".vscode",
+      "servers.json"
+    );
+
+    if (!fse.existsSync(serverJsonFile)) {
+      this.addServer(data);
+      await delay(2000);
+    } else {
+      const servers: any = fse.readJSONSync(serverJsonFile);
+
+      servers.configurations = [
+        {
+          id: "qg0x8r7my7kya6rmkzldj9lq5o2y",
+          type: data.serverType,
+          name: data.serverName,
+          port: data.port,
+          address: data.address,
+          //buildVersion: data."7.00.210324P",
+          //secure: true,
+          includes: ["m:/protheus/includes"],
+          environments: ["P20-12-1-33"],
+          //username: "admin",
+          //environment: "P20-12-1-33",
+        },
+      ];
+
+      fse.writeJSONSync(serverJsonFile, servers);
+    }
+  }
+
+  async getServer(data: IServerData) {
+    let serverTreeItem = await this.getTreeItem([data.serverName]);
 
     if (!serverTreeItem) {
-      await this.addNewServer(data);
-      serverTreeItem = await this.getServerTreeItem(data.serverName);
+      await this.registerServer(data);
+      serverTreeItem = await this.getTreeItem([data.serverName]);
     }
 
     return serverTreeItem;
@@ -81,13 +99,19 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
   async connect(
     serverName: string,
     environment: string,
-    userdata: IUserData
+    userdata: IUserData,
+    validate: boolean = true
   ): Promise<ServerTreeItemPageObject> {
     const serverPO: ServerTreeItemPageObject = new ServerTreeItemPageObject(
-      await this.getServerTreeItem(serverName)
+      await this.getTreeItem([serverName])
     );
 
     await serverPO.connect(environment, userdata);
+
+    if (validate) {
+      expect(await this.workbenchPO.isConnected(serverName, environment)).is
+        .true;
+    }
 
     return serverPO;
   }
@@ -95,7 +119,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
   async disconnectAllServers(): Promise<void> {
     const elements: ViewItem[] = await this.getVisibleItems();
 
-    elements.forEach(async (element: WebElement) => {
+    for await (const element of elements) {
       const item: ServerTreeItemPageObject = new ServerTreeItemPageObject(
         element as TreeItem
       );
@@ -103,7 +127,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
         await item.fireDisconnectAction();
         await delay();
       }
-    });
+    }
   }
 
   async fireConfigureServerView() {
