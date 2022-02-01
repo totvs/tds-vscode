@@ -6,7 +6,7 @@
 			"request": "launch",
 			"name": "Smart Client Debug",
 			"program": "${command:AskForProgramName}",
-			"smartclientBin": "M:/totvs/logix-lg/bin/smartclient/smartclient.exe",
+			"smartclientBin": "m:/protheus/smartClient/20-3-0-2/smartclient.exe",
 			"cwb": "${workspaceFolder}",
 			"isMultiSession": true,
 			"enableTableSync": true
@@ -14,8 +14,8 @@
 	],
 	"lastPrograms": [
 		{
-			"label": "arraydin2.4gl"
+			"label": "u_primitive"
 		}
 	],
-	"lastProgramExecuted": "arraydin2.4gl"
+	"lastProgramExecuted": "u_primitive"
 }

@@ -32,7 +32,7 @@ describe("Patch Operations (forms)", async () => {
   });
 
   afterEach(async () => {
-    workbenchPO.closeAllEditors();
+    await workbenchPO.closeAllEditors();
 
     await serverItemPO.fireDisconnectAction();
     serverItemPO = null;

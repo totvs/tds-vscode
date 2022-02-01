@@ -1,11 +1,4 @@
-import {
-  SideBarView,
-  TreeItem,
-  ViewContent,
-  DefaultTreeSection,
-  ActivityBar,
-} from "vscode-extension-tester";
-import { delay } from "../helper";
+import { SideBarView, TreeItem } from "vscode-extension-tester";
 import { ViewPageObject } from "./view-po";
 
 export class ExplorerPageObject extends ViewPageObject<SideBarView> {
@@ -14,11 +7,7 @@ export class ExplorerPageObject extends ViewPageObject<SideBarView> {
   }
 
   async getResource(path: string[]): Promise<TreeItem> {
-    const treeItem: TreeItem = await super.getTreeItem(path);
-    //await treeItem?.select();
-    await delay();
-
-    return treeItem;
+    return await super.getTreeItem(path);
   }
 
   async getFolder(path: string[]): Promise<TreeItem> {

@@ -10,8 +10,8 @@
 			"windows": "m:/protheus"
 		},
 		"server_address": {
-			"linux": "",
-			"mac": "",
+			"linux": "10.173.10.79",
+			"mac": "10.173.10.79",
 			"windows": "localhost"
 		}
 	},

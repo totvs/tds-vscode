@@ -3,21 +3,26 @@ import { describe, before, it } from "mocha";
 import { delay, openProject } from "../../helper";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA } from "../../scenario";
-import {
-  DebugConsoleView,
-  DebugToolbar,
-  TreeItem,
-} from "vscode-extension-tester";
-import { DebugPageObject } from "../../page-objects/debug-view-po";
+import { DebugToolbar, TreeItem } from "vscode-extension-tester";
+import { DebugPageObject, VariablePO } from "../../page-objects/debug-view-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { TextEditorPageObject } from "../../page-objects/text-editor-po";
 import { BuildPageObject } from "../../page-objects/build-po";
-import { ExplorerPageObject } from "./../../page-objects/explorer-view-po";
+import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
 
 const LAUNCHER_NAME: string = "Smart Client Debug";
-const COMPILE_FILE_ARG_TEST = ["files", "userFunction", "arg-test.prw"];
+const COMPILE_FILE = ["files", "debug", "primitive.prw"];
+const LOCAL_FUNCTION_LINE = 20;
 
-describe("Debug with arguments", async () => {
+const LOCAL_VAR_INIT_VALUES: any[] = [
+  { name: "INDEX", value: "NIL" },
+  { name: "NUMBER", value: "0" },
+  { name: "DATE", value: "01/01/22" },
+  { name: "STRING", value: "This is string" },
+  { name: "BOOLEAN", value: ".f." },
+];
+
+describe.only("Debug primitive variables", async () => {
   let workbenchPO: WorkbenchPageObject;
   let debugPO: DebugPageObject;
   let debugBar: DebugToolbar;
@@ -54,89 +59,55 @@ describe("Debug with arguments", async () => {
   it("Prepare source to debug", async () => {
     const explorerPO: ExplorerPageObject = await workbenchPO.openExplorerView();
     const compilePO: BuildPageObject = new BuildPageObject(workbenchPO);
-    const resourceItem: TreeItem = await explorerPO.getResource(
-      COMPILE_FILE_ARG_TEST
-    );
+    const resourceItem: TreeItem = await explorerPO.getResource(COMPILE_FILE);
 
     await resourceItem.click();
     await compilePO.fireBuildFile(resourceItem);
     await workbenchPO.waitBuilding();
   });
 
-  it("Set breakpoint", async () => {
+  it("Set initial breakpoint", async () => {
     editor = await debugPO.getEditorSource(
-      COMPILE_FILE_ARG_TEST[COMPILE_FILE_ARG_TEST.length - 1]
+      COMPILE_FILE[COMPILE_FILE.length - 1]
     );
 
     await debugPO.openView();
     await debugPO.clearAllBreakpoints();
 
-    const result = await editor.toggleBreakpoint(5);
-    expect(result, "Breakpoint not set (line 5)").is.true;
+    expect(await editor.toggleBreakpoint(LOCAL_FUNCTION_LINE)).is.true;
   });
 
-  describe("One argument", async () => {
+  describe("Local variables", async () => {
     it("Start Debugger", async () => {
       await debugPO.openView();
       await debugPO.selectLaunchConfiguration(LAUNCHER_NAME);
       await debugPO.start();
 
-      await debugPO.fillProgramName("u_argTest", "value1-P1");
+      await debugPO.fillProgramName("u_primitive");
 
       expect(await workbenchPO.isDABeginProcess(), "DA not running").is.true;
 
       debugBar = await DebugToolbar.create();
-      await debugBar.waitForBreakPoint();
     });
 
-    it("Evaluate parameters", async () => {
-      const debugConsole = new DebugConsoleView();
+    it("Go Local Function BP", async () => {
+      await debugBar.waitForBreakPoint();
+      await delay();
+    });
 
-      await debugConsole.evaluateExpression("p1");
-      await debugConsole.evaluateExpression("p2");
+    it("Evaluate inicial values", async () => {
+      const variables: VariablePO[] = await debugPO.getLocalVariables();
 
-      const text: string = await debugConsole.getText();
-      expect(text, "P1 expected value").to.have.string("value1-P1");
-      expect(text, "P2 not expected value").to.have.string("NIL");
+      expect(variables.length).equals(LOCAL_VAR_INIT_VALUES.length);
+      expect(variables.map((variable: VariablePO) => variable.name)).to.eql(
+        LOCAL_VAR_INIT_VALUES.map((value: any) => value.name)
+      );
+      expect(variables.map((variable: VariablePO) => variable.value)).to.eql(
+        LOCAL_VAR_INIT_VALUES.map((value: any) => value.value)
+      );
     });
 
     it("Stop debugger", async () => {
-      await debugBar.continue();
-      await workbenchPO.waitStopDebugger();
-
-      expect(
-        await workbenchPO.isDAEndProcess(),
-        "Debugger not stopped correctly"
-      ).is.true;
-    });
-  });
-
-  describe("Two argument", async () => {
-    it("Start Debugger", async () => {
-      await debugPO.openView();
-      await debugPO.selectLaunchConfiguration(LAUNCHER_NAME);
-      await debugPO.start();
-
-      await debugPO.fillProgramName("u_argTest", "value1-P1", "value1-P2");
-
-      expect(await workbenchPO.isDABeginProcess(), "DA not running").is.true;
-
-      debugBar = await DebugToolbar.create();
-      await debugBar.waitForBreakPoint();
-    });
-
-    it("Evaluate parameters", async () => {
-      const debugConsole = new DebugConsoleView();
-
-      await debugConsole.evaluateExpression("p1");
-      await debugConsole.evaluateExpression("p2");
-
-      const text: string = await debugConsole.getText();
-      expect(text, "P1 expected value").to.have.string("value1-P1");
-      expect(text, "P2 not expected value").to.have.string("value1-P2");
-    });
-
-    it("Continue debugger", async () => {
       await debugBar.continue();
       await workbenchPO.waitStopDebugger();
 

@@ -27,7 +27,7 @@ const LONG_IMPORT_TIMEOUT = 3 * 60 * 1000; // 3min
   });
 
   afterEach(async () => {
-    workbenchPO.closeAllEditors();
+    await workbenchPO.closeAllEditors();
   });
 
   Object.keys(REPLAY_FILES).forEach((key: string) => {

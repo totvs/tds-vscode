@@ -1,8 +1,4 @@
-import {
-  BottomBarPanel,
-  ProblemsView,
-  Workbench,
-} from "vscode-extension-tester";
+import { BottomBarPanel, ProblemsView } from "vscode-extension-tester";
 import { ProblemsPageObject } from "./problem-view-po";
 
 export class BottomBarPageObject {

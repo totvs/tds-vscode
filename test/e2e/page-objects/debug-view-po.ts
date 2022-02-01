@@ -2,7 +2,11 @@ import fse = require("fs-extra");
 import {
   By,
   DebugView,
+  InputBox,
   Key,
+  TreeItem,
+  ViewItem,
+  ViewSection,
   WelcomeContentButton,
 } from "vscode-extension-tester";
 import { ViewPageObject } from "./view-po";
@@ -10,6 +14,7 @@ import { TextEditorPageObject } from "./text-editor-po";
 import path = require("path");
 import { PROJECT_FOLDER } from "../scenario";
 import { delay, fillDebugConfig } from "../helper";
+import { expect } from "chai";
 
 const TYPE_TITLE = {
   totvs_language_debug: "TOTVS Language Debug",
@@ -107,21 +112,6 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
   }
 
   async isAlreadyExistsLauncher(name: string): Promise<boolean> {
-    // const content = this.view.getContent();
-    // const section = await content.getSection("Run");
-    // const welcome = await section.findWelcomeContent();
-
-    // if (welcome) {
-    //   const elements = await welcome.findElements(
-    //     By.partialLinkText("create a launch")
-    //   );
-    //   await elements[0].click();
-
-    //   await fillDebugConfig(TYPE_TITLE[0]);
-
-    //   await delay(2000);
-    // }
-
     const configs: string[] = await this.view.getLaunchConfigurations();
 
     return configs.indexOf(name) > -1;
@@ -132,4 +122,80 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
 
     return editor;
   }
+
+  async fillProgramName(program: string, ...args: string[]): Promise<void> {
+    const pickBox = new InputBox();
+    await delay();
+
+    let title = await pickBox.getTitle();
+    expect(title).is.equal("Please enter the name of an AdvPL/4GL function");
+
+    await pickBox.setText(`${program} ${args ? args.join(",") : ""}`);
+    await delay();
+
+    await pickBox.confirm();
+    await delay();
+  }
+
+  private async getSection(name: string): Promise<ViewSection> {
+    const content = this.view.getContent();
+
+    return await content.getSection(name);
+  }
+
+  async getWatch(): Promise<ViewSection> {
+    return await this.getSection("Watch");
+  }
+
+  async getCallStack(): Promise<ViewSection> {
+    return await this.getSection("Call Stack");
+  }
+
+  async getBreakpoints(): Promise<ViewSection> {
+    return await this.getSection("Breakpoints");
+  }
+
+  private async getVariables(scope: string): Promise<TreeItem> {
+    const section: ViewSection = await this.getSection("Variables");
+    let result: TreeItem;
+
+    for await (const variable of await section.getVisibleItems()) {
+      const label: string = await variable.getText();
+
+      if (label == scope) {
+        result = variable as TreeItem;
+        break;
+      }
+    }
+
+    return result;
+  }
+
+  async getLocalVariables(targetName?: string): Promise<VariablePO[]> {
+    const result: VariablePO[] = [];
+    const viewItem: TreeItem = await this.getVariables("Local");
+
+    if (viewItem) {
+      await delay();
+
+      for await (const variable of await viewItem.getChildren()) {
+        const name: string = await variable.getLabel();
+
+        if (!targetName || name == targetName) {
+          result.push(await VariablePO.createVariablePO(variable));
+        }
+      }
+    }
+
+    return result;
+  }
+}
+
+export class VariablePO {
+  static async createVariablePO(item: TreeItem): Promise<VariablePO> {
+    const text: string[] = (await item.getText()).split(":");
+
+    return new VariablePO(text[0], text[1]);
+  }
+  constructor(readonly name: string, readonly value: string) {}
 }

@@ -13,7 +13,7 @@ import {
   TEMPLATE_FILES,
 } from "../../scenario";
 
-//os testes com template não considera erros no template na validação
+//os testes com template não considera erros no template em validação/aplicação
 //normalmente erros de compilação
 //(TEMPLATE_FILES ? describe : describe.skip)("Apply Template", async () => {
 describe("Apply Template", async () => {

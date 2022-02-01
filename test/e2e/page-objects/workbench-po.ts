@@ -116,6 +116,10 @@ export class WorkbenchPageObject {
     return await this.testNotification(/TDS\-DA ready/);
   }
 
+  async isDAServerConnected(): Promise<boolean> {
+    return await this.testNotification(/Application Server connected/);
+  }
+
   async isDACheckingSources(): Promise<boolean> {
     return await this.testNotification(/Checking the.*source/);
   }
@@ -152,6 +156,16 @@ export class WorkbenchPageObject {
       await this.testNotification(/ExitCode=.*ExistStatus=.*/),
       await this.testNotification(/SmartClient closed/),
       await this.isDAFinished(),
+    ]).then((value: boolean[]) => {
+      return !value.includes(false);
+    });
+  }
+
+  async isDABeginProcess(): Promise<boolean> {
+    return await Promise.all([
+      await this.isDAInitialing(),
+      await this.isDAReady(),
+      await this.isDAServerConnected(),
     ]).then((value: boolean[]) => {
       return !value.includes(false);
     });
@@ -275,7 +289,7 @@ export class WorkbenchPageObject {
   }
 
   async waitValidatingServer(): Promise<void> {
-    await this.processInProgress(/Validating server/);
+    await this.waitProcessFinish(/Validating server/);
   }
 
   async startConnection(): Promise<boolean> {

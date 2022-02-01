@@ -248,17 +248,3 @@ export async function fireContextMenuAction(
   await delay();
 }
 
-export async function fillProgramName(program: string, ...args: string[]) {
-  const pickBox = new InputBox();
-  await delay();
-
-  let title = await pickBox.getTitle();
-  expect(title).is.equal("Please enter the name of an AdvPL/4GL function");
-
-  await pickBox.setText(`${program} ${args ? args.join(",") : ""}`);
-  await delay();
-
-  await pickBox.confirm();
-  await delay();
-}
-
