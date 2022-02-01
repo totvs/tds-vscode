@@ -334,25 +334,29 @@ function verifyCompileResult(response) {
   }
 }
 
-export function commandBuildFile(recompile: boolean, files) {
+export function commandBuildFile(
+  context: vscode.ExtensionContext,
+  recompile: boolean,
+  files
+) {
   let editor: vscode.TextEditor | undefined;
   let filename: string | undefined = undefined;
 
-  // if (context === undefined) {
-  //   //A ação veio pelo ctrl+f9
-  //   editor = vscode.window.activeTextEditor;
-  //   if (!editor) {
-  //     vscode.window.showInformationMessage(
-  //       localize(
-  //         "tds.vscode.editornotactive",
-  //         "No editor is active, cannot find current file to build."
-  //       )
-  //     );
-  //     return;
-  //   }
-  //   filename = editor.document.uri.fsPath;
-  //   recompile = true;
-  // }
+  if (context === undefined) {
+    //A ação veio pelo ctrl+f9
+    editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showInformationMessage(
+        localize(
+          "tds.vscode.editornotactive",
+          "No editor is active, cannot find current file to build."
+        )
+      );
+      return;
+    }
+    filename = editor.document.uri.fsPath;
+    recompile = true;
+  }
 
   vscode.window.setStatusBarMessage(
     `$(~spin) ${localize("tds.vscode.building", "Building...")}`,
