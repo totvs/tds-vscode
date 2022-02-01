@@ -104,7 +104,10 @@ export function getRpoTokenFromString(value: string): IRpoToken {
 }
 
 export function rpoTokenInputBox() {
-  const rpoToken: IRpoToken = utils.getRpoTokenInfos();
+  let rpoToken: IRpoToken = utils.getRpoTokenInfos();
+  if (rpoToken === undefined) {
+    rpoToken = noRpoToken();
+  }
   vscode.window
     .showInputBox({
       prompt: 'Input RPO Token string',
