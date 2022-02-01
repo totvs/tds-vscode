@@ -379,14 +379,14 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.build.file",
-      (args, files) => commandBuildFile(false, files)
+      (args, files) => commandBuildFile(args, false, files)
     )
   );
   //Recompila os fontes/recursos selecionados
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.rebuild.file",
-      (args, files) => commandBuildFile(true, files)
+      (args, files) => commandBuildFile(args, true, files)
     )
   );
 
