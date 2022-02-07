@@ -1,5 +1,11 @@
 # Changelog
 
+# Versão [1.3.12]
+
+## Log de repositório com problemas no appserver Harpia
+
+- Adequação de informações retornadas pelo _appServer_. [DTCLIENT01-3239](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3239)
+
 # Versão [1.3.11]
 
 ## Melhorias
