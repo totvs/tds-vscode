@@ -70,7 +70,7 @@ describe("DTCLIENT01-3149: [VSCode] dynamic 4GL array shows incorrect SIZE in DE
     await debugPO.openView();
     await debugPO.clearAllBreakpoints();
 
-    const result = await editor.toggleBreakpoint(5);
+    const result = await editor.setBreakpoint(5);
     expect(result, "Breakpoint not set (line 5)").is.true;
   });
 

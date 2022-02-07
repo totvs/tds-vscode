@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { delay, openProject } from "../../helper";
+import { delay, DEFAULT_DELAY, openProject } from "../../helper";
 import { ApplyPatchPageObject } from "../../page-objects/apply-patch-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
@@ -44,7 +44,7 @@ describe("Patch Operations", async () => {
 
     await applyPatchPO.setUploadFile([PATCHS_FILES.single]);
     await applyPatchPO.fireSubmitClose();
-    await delay(2000);
+    await delay(DEFAULT_DELAY);
 
     expect(await workbenchPO.applyPatchInProgress()).is.true;
 
@@ -59,7 +59,7 @@ describe("Patch Operations", async () => {
     const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
     await applyPatchPO.setUploadFile(PATCHS_FILES.many);
     await applyPatchPO.fireSubmitClose();
-    await delay(2000);
+    await delay(DEFAULT_DELAY);
 
     expect(await workbenchPO.applyPatchInProgress()).is.true;
 
@@ -74,7 +74,7 @@ describe("Patch Operations", async () => {
     const applyPatchPO: ApplyPatchPageObject = new ApplyPatchPageObject();
     await applyPatchPO.setUploadFile(PATCHS_FILES.invalid);
     await applyPatchPO.fireSubmitClose();
-    await delay(2000);
+    await delay(DEFAULT_DELAY);
 
     if (await serverItemPO.isLogix()) {
       expect(await workbenchPO.isPatchFileNotFoundOrInvalid()).is.true;

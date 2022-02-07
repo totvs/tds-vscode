@@ -68,7 +68,7 @@ describe("Debug stop", async () => {
     await debugPO.openView();
     await debugPO.clearAllBreakpoints();
 
-    const result = await editor.toggleBreakpoint(10);
+    const result = await editor.setBreakpoint(10);
     expect(result, "Breakpoint not set (line 10)").is.true;
   });
 

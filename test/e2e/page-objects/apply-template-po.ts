@@ -1,4 +1,4 @@
-import { delay } from "../helper";
+import { delay, DEFAULT_DELAY } from "../helper";
 import { AbstractPageObject } from "./abstract-po";
 
 export class ApplyTemplatePageObject extends AbstractPageObject {
@@ -6,7 +6,7 @@ export class ApplyTemplatePageObject extends AbstractPageObject {
     await this.beginWebView();
 
     await this.setValue("btn-File", templateFile);
-    await delay(2000);
+    await delay(DEFAULT_DELAY);
 
     await this.endWebView();
   }

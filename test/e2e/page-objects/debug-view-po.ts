@@ -1,19 +1,17 @@
 import fse = require("fs-extra");
 import {
-  By,
   DebugView,
   InputBox,
   Key,
   TreeItem,
   ViewItem,
   ViewSection,
-  WelcomeContentButton,
 } from "vscode-extension-tester";
 import { ViewPageObject } from "./view-po";
 import { TextEditorPageObject } from "./text-editor-po";
 import path = require("path");
 import { PROJECT_FOLDER } from "../scenario";
-import { delay, fillDebugConfig } from "../helper";
+import { delay, DELAY_LONG, DEFAULT_DELAY } from "../helper";
 import { expect } from "chai";
 
 const TYPE_TITLE = {
@@ -23,13 +21,10 @@ const TYPE_TITLE = {
 };
 
 export class DebugPageObject extends ViewPageObject<DebugView> {
+  //private _debugBar: DebugToolbar;
+
   constructor() {
     super("Run");
-  }
-
-  async start(): Promise<void> {
-    await this.view.start();
-    await delay(2000);
   }
 
   async selectLaunchConfiguration(name: string): Promise<void> {
@@ -80,7 +75,7 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
 
     if (!fse.existsSync(launchJsonFile)) {
       await this.addLauncher(type, name, smartClientBin);
-      await delay(2000);
+      await delay(DEFAULT_DELAY);
     }
 
     const laucher: any = fse.readJSONSync(launchJsonFile);
@@ -101,7 +96,7 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
     ];
 
     fse.writeJSONSync(launchJsonFile, laucher);
-    await delay(2000);
+    await delay(DEFAULT_DELAY);
 
     return true;
   }
@@ -119,6 +114,7 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
 
   async getEditorSource(source: string): Promise<TextEditorPageObject> {
     const editor: TextEditorPageObject = new TextEditorPageObject(source);
+    await delay();
 
     return editor;
   }
@@ -155,47 +151,98 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
     return await this.getSection("Breakpoints");
   }
 
-  private async getVariables(scope: string): Promise<TreeItem> {
+  private async getVariables(
+    targetScope: string,
+    targetName: string[]
+  ): Promise<VariablePO[]> {
     const section: ViewSection = await this.getSection("Variables");
-    let result: TreeItem;
+    const result: VariablePO[] = [];
+    let viewItem: TreeItem;
 
-    for await (const variable of await section.getVisibleItems()) {
-      const label: string = await variable.getText();
+    for await (const scope of await section.getVisibleItems()) {
+      const label: string = await scope.getText();
 
-      if (label == scope) {
-        result = variable as TreeItem;
+      if (targetName.length == 0 || label == targetScope) {
+        viewItem = scope as TreeItem;
         break;
       }
     }
 
-    return result;
-  }
-
-  async getLocalVariables(targetName?: string): Promise<VariablePO[]> {
-    const result: VariablePO[] = [];
-    const viewItem: TreeItem = await this.getVariables("Local");
-
     if (viewItem) {
       await delay();
+      const children = await viewItem.getChildren();
+      await delay();
 
-      for await (const variable of await viewItem.getChildren()) {
-        const name: string = await variable.getLabel();
+      for await (const variable of children) {
+        const text: string = await variable.getText();
+        const parts: string[] = text.split(":");
 
-        if (!targetName || name == targetName) {
+        if (targetName.includes(parts[0])) {
           result.push(await VariablePO.createVariablePO(variable));
         }
       }
+
+      await delay(DELAY_LONG);
     }
 
     return result;
   }
+
+  //ATENÇÃO: A visão "variables", não esta sendo processada corretamente
+  //         pela ferramenta de testes, por isso é necessário indicar quais
+  //         se deseja. Em caso de variaveis de mesmo nome em escopos diferentes
+  //         esta será apresentada mais de uma vez.
+  async getLocalVariables(targetName: string[]): Promise<VariablePO[]> {
+    const result: VariablePO[] = await this.getVariables("Local", targetName);
+
+    return result;
+  }
+
+  async getPrivateVariables(targetName: string[]): Promise<VariablePO[]> {
+    const result: VariablePO[] = await this.getVariables("Private", targetName);
+
+    return result;
+  }
+
+  async getPublicVariables(targetName: string[]): Promise<VariablePO[]> {
+    const result: VariablePO[] = await this.getVariables("Public", targetName);
+
+    return result;
+  }
+
+  async start(): Promise<void> {
+    await this.view.start();
+    //await delay(DEFAULT_DELAY);
+    //return Promise.resolve(true);
+  }
+
+  // async waitForBreakPoint(): Promise<void> {
+  //   await this._debugBar.waitForBreakPoint();
+  //   await delay();
+  // }
+
+  // async stepOver(): Promise<void> {
+  //   await this._debugBar.stepOver();
+  //   await delay();
+  // }
+
+  // async continue(): Promise<void> {
+  //   await this._debugBar.continue();
+  //   await delay();
+  // }
 }
 
 export class VariablePO {
   static async createVariablePO(item: TreeItem): Promise<VariablePO> {
     const text: string[] = (await item.getText()).split(":");
+    const type: string = await item.getTooltip();
 
-    return new VariablePO(text[0], text[1]);
+    return new VariablePO(text[0], text[1].substring(1), type); //.getText() inclui um \n inexistente no valor original
   }
-  constructor(readonly name: string, readonly value: string) {}
+
+  constructor(
+    readonly name: string,
+    readonly value: string,
+    readonly type: string
+  ) {}
 }

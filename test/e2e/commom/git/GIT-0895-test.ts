@@ -6,7 +6,7 @@ import {
   EditorView,
   TextEditor,
 } from "vscode-extension-tester";
-import { delay, openProject } from "../../helper";
+import { delay, DELAY_LONG, openProject } from "../../helper";
 import { BuildPageObject } from "../../page-objects/build-po";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
@@ -61,7 +61,7 @@ describe("GIT-0895: Does not show table as build results", async () => {
     const title: string = await editor.getTitle();
 
     expect(title).to.equals("Compilation Result");
-    await delay(5000);
+    await delay(DELAY_LONG);
 
     await view.closeEditor(title);
   });

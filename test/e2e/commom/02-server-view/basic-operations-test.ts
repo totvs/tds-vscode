@@ -2,6 +2,7 @@ import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import {
   delay,
+  DEFAULT_DELAY,
   fillEnvironment,
   fillUserdata,
   openProject,
@@ -29,7 +30,7 @@ describe("Server View Basic Operations", async () => {
       await serverTreePO.getServer(APPSERVER_DATA)
     );
 
-    await delay(2000);
+    await delay(DEFAULT_DELAY);
   });
 
   it("No Server Connected", async () => {

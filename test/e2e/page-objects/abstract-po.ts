@@ -1,5 +1,5 @@
 import { By, WebElement, WebView } from "vscode-extension-tester";
-import { delay } from "../helper";
+import { delay, DEFAULT_DELAY } from "../helper";
 
 export class AbstractPageObject {
   private _webView: WebView;
@@ -13,12 +13,12 @@ export class AbstractPageObject {
 
     await this.webView.wait();
     await this.webView.switchToFrame();
-    await delay(2000);
+    await delay(DEFAULT_DELAY);
   }
 
   async endWebView(): Promise<void> {
     this.webView.switchBack();
-    await delay(2000);
+    await delay(DEFAULT_DELAY);
 
     this._webView = null;
   }
@@ -88,7 +88,7 @@ export class AbstractPageObject {
 
     //     if (label == target || value == target) {
     //       await option.click();
-    //       await delay(3000);
+    //       await delay(DELAY_MEDIUM);
     //     }
     //   }
     // } else {
@@ -98,7 +98,7 @@ export class AbstractPageObject {
     //   await options[target].click();
     // }
 
-    // await delay(3000);
+    // await delay(DELAY_MEDIUM);
   }
 
   private async getOptions(id: string): Promise<WebElement[]> {

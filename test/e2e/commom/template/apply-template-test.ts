@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import path = require("path");
-import { delay, openProject } from "../../helper";
+import { delay, DEFAULT_DELAY, openProject } from "../../helper";
 import { ApplyPatchPageObject } from "../../page-objects/apply-patch-po";
 import { ApplyTemplatePageObject } from "../../page-objects/apply-template-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
@@ -17,7 +17,7 @@ import {
 //normalmente erros de compilação
 //(TEMPLATE_FILES ? describe : describe.skip)("Apply Template", async () => {
 describe("Apply Template", async () => {
-    let serverTreePO: ServerViewPageObject;
+  let serverTreePO: ServerViewPageObject;
   let serverItemPO: ServerTreeItemPageObject;
   let workbenchPO: WorkbenchPageObject;
 
@@ -55,7 +55,7 @@ describe("Apply Template", async () => {
 
       await applyTemplatehPO.setTemplateFile(filename);
       await applyTemplatehPO.fireSubmitClose();
-      await delay(2000);
+      await delay(DEFAULT_DELAY);
 
       if (await serverItemPO.isServerP20OrGreater()) {
         expect(await workbenchPO.isApplyTemplateNotSuported()).is.true;

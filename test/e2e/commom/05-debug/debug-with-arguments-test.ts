@@ -20,9 +20,9 @@ const COMPILE_FILE_ARG_TEST = ["files", "userFunction", "arg-test.prw"];
 describe("Debug with arguments", async () => {
   let workbenchPO: WorkbenchPageObject;
   let debugPO: DebugPageObject;
-  let debugBar: DebugToolbar;
   let serverTreePO: ServerViewPageObject;
   let editor: TextEditorPageObject;
+  let debugBar: DebugToolbar;
 
   before(async () => {
     await openProject();
@@ -71,13 +71,12 @@ describe("Debug with arguments", async () => {
     await debugPO.openView();
     await debugPO.clearAllBreakpoints();
 
-    const result = await editor.toggleBreakpoint(5);
-    expect(result, "Breakpoint not set (line 5)").is.true;
+    expect(await editor.setBreakpoint(5), "Breakpoint not set (line 5)").is
+      .true;
   });
 
   describe("One argument", async () => {
     it("Start Debugger", async () => {
-      await debugPO.openView();
       await debugPO.selectLaunchConfiguration(LAUNCHER_NAME);
       await debugPO.start();
 

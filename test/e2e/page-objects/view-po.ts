@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import {
   SideBarView,
   TreeItem,
@@ -9,8 +8,7 @@ import {
   TitleActionButton,
   ViewTitlePart,
   ActivityBar,
-  DefaultTreeItem,
-  By,
+  VSBrowser,
 } from "vscode-extension-tester";
 import { delay } from "../helper";
 import { WorkbenchPageObject } from "./workbench-po";
@@ -19,8 +17,10 @@ export class ViewPageObject<T> {
   private _view: T;
   protected workbenchPO: WorkbenchPageObject;
   private viewName: string;
+  //private _driver: any;
 
   protected constructor(name: string) {
+    //this._driver = VSBrowser.instance.driver;
     this.viewName = name;
     this.workbenchPO = new WorkbenchPageObject();
     this.openView().then((value: T) => {
@@ -68,6 +68,9 @@ export class ViewPageObject<T> {
     const sections = await content.getSections();
     const tree: DefaultTreeSection = sections[0] as DefaultTreeSection;
     const result: TreeItem = await this.findChildNode(tree, path);
+    //   await this._driver.wait(() => {
+    //   return this.findChildNode(tree, path);
+    // }, 5000);
 
     return result;
   }
@@ -98,15 +101,6 @@ export class ViewPageObject<T> {
       const node: TreeItem = await tree.findItem(path[0]);
       return node;
     }
-
-    //--->>> isso se faz necessário, pois o "expand" muda nó corrente se efetuado "por fora"
-    // let node: TreeItem = await tree
-    //   .findItem(path[0])
-    //   .then(async (value: TreeItem) => {
-    //     await value.expand();
-    //     return value;
-    //   });
-    //---<<<
 
     let result: TreeItem = undefined;
     let children = await tree.openItem(path[0], path[1]);

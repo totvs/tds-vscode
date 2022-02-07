@@ -1,6 +1,7 @@
 import { By, TreeItem, ViewItemAction } from "vscode-extension-tester";
 import {
   delay,
+  DEFAULT_DELAY,
   fillEnvironment,
   fillUserdata,
   fireContextMenuAction,
@@ -89,7 +90,7 @@ export class ServerTreeItemPageObject {
   async fireReconnectAction(): Promise<void> {
     await this.select();
     await fireContextMenuAction(this.serverTreeItem, "Reconnect");
-    // await delay(2000);
+    // await delay(DEFAULT_DELAY);
   }
 
   async fireAddServerAction(): Promise<void> {
@@ -105,13 +106,13 @@ export class ServerTreeItemPageObject {
   async fireInclude(): Promise<void> {
     await this.select();
     await fireContextMenuAction(this.serverTreeItem, "Include");
-    await delay(2000); // adicional devido a processamento
+    await delay(DEFAULT_DELAY); // adicional devido a processamento
   }
 
   async fireCompileKey(): Promise<void> {
     await this.select();
     await fireContextMenuAction(this.serverTreeItem, "Compile Key");
-    await delay(2000); // adicional devido a processamento
+    await delay(DEFAULT_DELAY); // adicional devido a processamento
   }
 
   async fireCheckIntegrity(): Promise<void> {

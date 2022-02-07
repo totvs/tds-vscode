@@ -1,13 +1,13 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import { ActivityBar, SideBarView, ViewControl } from "vscode-extension-tester";
-import { delay } from "../../helper";
+import { DEFAULT_DELAY, delay } from "../../helper";
 
 describe("TOTVS Activity Bar", async () => {
   let control: ViewControl;
 
   before(async () => {
-    await delay(2000);
+    await delay(DEFAULT_DELAY);
     control = await new ActivityBar().getViewControl("TOTVS");
   });
 

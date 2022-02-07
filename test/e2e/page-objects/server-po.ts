@@ -1,5 +1,5 @@
 import { By, WebView } from "vscode-extension-tester";
-import { delay } from "../helper";
+import { delay, DEFAULT_DELAY } from "../helper";
 import { AbstractPageObject } from "./abstract-po";
 import { IServerData } from "./interface-po";
 
@@ -30,6 +30,6 @@ export class ServerPageObject extends AbstractPageObject {
 
     await this.endWebView();
 
-    await delay(2000);
+    await delay(DEFAULT_DELAY);
   }
 }

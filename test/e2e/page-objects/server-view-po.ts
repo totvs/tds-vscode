@@ -8,7 +8,7 @@ import {
   Notification,
   ViewItem,
 } from "vscode-extension-tester";
-import { delay } from "../helper";
+import { delay, DEFAULT_DELAY } from "../helper";
 import { PROJECT_FOLDER } from "../scenario";
 import { IServerData, IUserData } from "./interface-po";
 import { ServerPageObject } from "./server-po";
@@ -22,7 +22,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
 
   async removeServer(serverName: string) {
     const serverTreeItem: TreeItem = await this.getTreeItem([serverName]);
-    await delay(2000);
+    await delay(DEFAULT_DELAY);
 
     await serverTreeItem.select();
     const action: ViewItemAction = await serverTreeItem.getActionButton(
@@ -30,7 +30,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
     );
     await delay();
     await action.click();
-    await delay(2000);
+    await delay(DEFAULT_DELAY);
 
     const notification: Notification = await this.workbenchPO.getNotification(
       /Are you sure want to delete/,
@@ -61,7 +61,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
 
     if (!fse.existsSync(serverJsonFile)) {
       this.addServer(data);
-      await delay(2000);
+      await delay(DEFAULT_DELAY);
     } else {
       const servers: any = fse.readJSONSync(serverJsonFile);
 
