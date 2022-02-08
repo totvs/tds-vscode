@@ -357,6 +357,7 @@ export class WorkbenchPageObject {
 
   async executeCommand(command: string) {
     await this._workbench.executeCommand(command);
+    await delay();
   }
 
   async promptCommand(text: string) {

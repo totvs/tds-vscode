@@ -10,7 +10,7 @@ import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA, COMPILE_FILES } from "../../scenario";
 
-describe.only("Compile Simple File (basic test)", async () => {
+describe("Compile Simple File (basic test)", async () => {
   let serverTreePO: ServerViewPageObject;
   let workbenchPO: WorkbenchPageObject;
   let compilePO: BuildPageObject;

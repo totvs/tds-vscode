@@ -47,9 +47,11 @@ export class OutputPageObject {
       await this._view.selectChannel(this._channelName);
       await delay();
       current = await this._view.getCurrentChannel();
+      await delay();
     }
 
     expect(this._channelName).equals(current);
+    await delay();
   }
 
   async clearConsole(): Promise<void> {

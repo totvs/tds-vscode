@@ -51,13 +51,20 @@
     "eslint-fix:src": "eslint ./src/**/*.ts --fix",
     "eslint-fix:test": "eslint ./test/**/*.ts --fix",
     "--TEST--": "",
-    "test": "extest run-tests -l error -f -s ../temp/test -e ../temp/extension -o ./test/settings.json './out-test/**/05**/*test.js'",
+    "test": "extest run-tests -l error -f -s ../temp/test -e ../temp/extension -o ./test/settings.json './out-test/**/**/*test.js'",
     "pretest": "rimraf ./out-test/* && npm run compile-test",
     "test-setup": "npm run compile && extest setup-tests -i -s ../temp/test -e ../temp/extension",
     "--SCENARIO--": "",
     "scenario:default": "npm run test",
     "scenario:logix": "set SCENARIO=logix && npm run test",
-    "scenario:acandido": "set SCENARIO=acandido && npm run test",
+
+
+
+
+
+
+
+    "scenario:acandido": "export SCENARIO=acandido && npm run test",
     "scenario:p19": "set SCENARIO=p19 && npm run test",
     "scenario:p17": "set SCENARIO=p17 && npm run test",
     "---i18n---": "",

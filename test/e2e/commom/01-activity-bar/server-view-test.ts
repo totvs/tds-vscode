@@ -2,6 +2,7 @@ import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import { avoidsBacksliding, delay, openProject } from "../../helper";
 import { OutputLsPageObject } from "../../page-objects/output-ls-po";
+import { ServerPageObject } from "../../page-objects/server-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { DELETE_DATA, APPSERVER_DATA } from "../../scenario";
@@ -20,12 +21,20 @@ describe("Server View", async () => {
   });
 
   it("No Servers", async () => {
-    expect(await serverTreePO.getVisibleItems()).is.empty;
+    const items = await serverTreePO.getVisibleItems();
+    expect(items).is.empty;
   });
 
   it("Add Local Server", async () => {
     await outputPO.clearConsole();
-    await serverTreePO.addServer(APPSERVER_DATA);
+    const serverPO: ServerPageObject = new ServerPageObject(APPSERVER_DATA);
+    await workbenchPO.executeCommand("totvs-developer-studio.add");
+
+    await serverPO.fillServerPage(APPSERVER_DATA);
+    await serverPO.fireSaveClose();
+
+    expect(await workbenchPO.isSavedServer()).is.true;
+
   });
 
   it("Console log (Local Server)", async () => {

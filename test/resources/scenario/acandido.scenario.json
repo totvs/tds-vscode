@@ -10,7 +10,7 @@
 			"windows": "m:/protheus"
 		},
 		"server_address": {
-			"linux": "10.173.10.79",
+			"linux": "172.19.32.1",
 			"mac": "10.173.10.79",
 			"windows": "localhost"
 		}
@@ -18,7 +18,7 @@
 	"server": {
 		"serverType": "totvs_server_protheus",
 		"serverName": "localhost",
-		"address": "localhost",
+		"address": "${server_address}",
 		"port": 20302,
 		"environment": "P20-12-1-33",
 		"includePath": [
