@@ -19,9 +19,9 @@ export class ServerTreeItemPageObject {
   }
 
   async connect(environment: string, userData: IUserData) {
-    this.select();
+    await this.select();
     await fireContextMenuAction(this.serverTreeItem, "Connect");
-    this.workbenchPO.waitValidatingServer();
+    await this.workbenchPO.waitValidatingServer();
     await delay();
 
     await fillEnvironment(environment);

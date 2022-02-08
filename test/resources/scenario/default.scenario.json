@@ -34,7 +34,7 @@
 		"port": 5001,
 		"environment": "P20-12-1-33",
 		"includePath": [
-			"${rootPath}/includes"
+			"./includes"
 		],
 		"smartClientBin": "${rootPath}/smartClient/smartClient${execExt}"
 	},
