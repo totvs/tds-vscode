@@ -158,13 +158,6 @@
 			"type": "object",
 			"description": "Folders for lookup define files (.ch). Used only for editing tests and do not need exist. One per line.",
 			"properties": {
-				"valid": {
-					"description": "Valid folders. One per line.",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
-				},
 				"toChange": {
 					"type": "array",
 					"description": "Valid folders for update 'includePath' propertie. One per line.",

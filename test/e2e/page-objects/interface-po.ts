@@ -1,5 +1,5 @@
 export interface IServerData {
-  serverType: string;
+  serverType: "totvs_server_protheus" | "totvs_server_logix";
   serverName: string;
   address: string;
   port: number;
@@ -14,7 +14,6 @@ export interface IUserData {
 }
 
 export interface IIncludeData {
-  valid: string[];
   toChange: string[];
   toAdd: string[];
 }

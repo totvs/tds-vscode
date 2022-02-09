@@ -34,7 +34,7 @@
 		"port": 5001,
 		"environment": "P20-12-1-33",
 		"includePath": [
-			"./includes"
+			"../includes"
 		],
 		"smartClientBin": "${rootPath}/smartClient/smartClient${execExt}"
 	},
@@ -53,9 +53,6 @@
 		}
 	},
 	"includePath": {
-		"valid": [
-			"${rootPath}/protheus/includes"
-		],
 		"toChange": [
 			"${rootPath}/change/includes"
 		],

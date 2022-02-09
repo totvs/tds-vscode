@@ -68,9 +68,6 @@ export class ViewPageObject<T> {
     const sections = await content.getSections();
     const tree: DefaultTreeSection = sections[0] as DefaultTreeSection;
     const result: TreeItem = await this.findChildNode(tree, path);
-    //   await this._driver.wait(() => {
-    //   return this.findChildNode(tree, path);
-    // }, 5000);
 
     return result;
   }

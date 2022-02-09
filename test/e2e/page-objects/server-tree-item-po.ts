@@ -84,13 +84,14 @@ export class ServerTreeItemPageObject {
   }
 
   async fireDisconnectAction() {
+    await this.select();
     await fireContextMenuAction(this.serverTreeItem, "Disconnect");
   }
 
   async fireReconnectAction(): Promise<void> {
     await this.select();
     await fireContextMenuAction(this.serverTreeItem, "Reconnect");
-    // await delay(DEFAULT_DELAY);
+    // await delay();
   }
 
   async fireAddServerAction(): Promise<void> {
@@ -106,13 +107,13 @@ export class ServerTreeItemPageObject {
   async fireInclude(): Promise<void> {
     await this.select();
     await fireContextMenuAction(this.serverTreeItem, "Include");
-    await delay(DEFAULT_DELAY); // adicional devido a processamento
+    await delay(); // adicional devido a processamento
   }
 
   async fireCompileKey(): Promise<void> {
     await this.select();
     await fireContextMenuAction(this.serverTreeItem, "Compile Key");
-    await delay(DEFAULT_DELAY); // adicional devido a processamento
+    await delay(); // adicional devido a processamento
   }
 
   async fireCheckIntegrity(): Promise<void> {

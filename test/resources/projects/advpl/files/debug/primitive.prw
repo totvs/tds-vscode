@@ -9,7 +9,7 @@ user function primitive()
 	_local()
 
     conout(">>> Private variables")
-	_privattopdee()
+	_private()
 
     conout(">>> All scope variables")
 	_allScope()

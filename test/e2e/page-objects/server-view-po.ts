@@ -22,7 +22,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
 
   async removeServer(serverName: string) {
     const serverTreeItem: TreeItem = await this.getTreeItem([serverName]);
-    await delay(DEFAULT_DELAY);
+    await delay();
 
     await serverTreeItem.select();
     const action: ViewItemAction = await serverTreeItem.getActionButton(
@@ -30,7 +30,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
     );
     await delay();
     await action.click();
-    await delay(DEFAULT_DELAY);
+    await delay();
 
     const notification: Notification = await this.workbenchPO.getNotification(
       /Are you sure want to delete/,
@@ -61,7 +61,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
 
     if (!fse.existsSync(serverJsonFile)) {
       this.addServer(data);
-      await delay(DEFAULT_DELAY);
+      await delay();
     } else {
       const servers: any = fse.readJSONSync(serverJsonFile);
 
@@ -72,12 +72,8 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
           name: data.serverName,
           port: data.port,
           address: data.address,
-          //buildVersion: data."7.00.210324P",
-          //secure: true,
-          includes: ["m:/protheus/includes"],
-          environments: ["P20-12-1-33"],
-          //username: "admin",
-          //environment: "P20-12-1-33",
+          includes: data.includePath,
+          environments: [ data.environment ],
         },
       ];
 

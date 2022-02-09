@@ -51,22 +51,15 @@
     "eslint-fix:src": "eslint ./src/**/*.ts --fix",
     "eslint-fix:test": "eslint ./test/**/*.ts --fix",
     "--TEST--": "",
-    "test": "extest run-tests -l error -f -s ../temp/test -e ../temp/extension -o ./test/settings.json './out-test/**/**/*test.js'",
+    "test": "extest run-tests -l error -f -s ../temp/test -e ../temp/extension -o ./test/settings.json",
+    "test:common": "set SCENARIO=protheus && npm run test -- './out-test/**/common/**/*test.js'",
+    "test:protheus": "set SCENARIO=protheus && npm run test -- './out-test/**/protheus/**/*test.js'",
+    "test:logix": "set SCENARIO=logix && npm run test -- './out-test/**/logix/**/*test.js'",
     "pretest": "rimraf ./out-test/* && npm run compile-test",
     "test-setup": "npm run compile && extest setup-tests -i -s ../temp/test -e ../temp/extension",
     "--SCENARIO--": "",
-    "scenario:default": "npm run test",
-    "scenario:logix": "set SCENARIO=logix && npm run test",
-
-
-
-
-
-
-
-    "scenario:acandido": "export SCENARIO=acandido && npm run test",
-    "scenario:p19": "set SCENARIO=p19 && npm run test",
-    "scenario:p17": "set SCENARIO=p17 && npm run test",
+    "scenario:p19": "set SCENARIO=p19 && npm run test:common",
+    "scenario:p17": "set SCENARIO=p17 && npm run test:common",
     "---i18n---": "",
     "export-i18n": "gulp export-i18n",
     "i18n-import": "gulp i18n-import",

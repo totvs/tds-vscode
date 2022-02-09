@@ -1,0 +1,29 @@
+{
+	"name": "protheus",
+	"description": [
+		"Cenário para o ambiente Protheus."
+	],
+	"variables": {
+		"rootPath": {
+			"linux": "~/protheus",
+			"mac": "~/protheus",
+			"windows": "m:/protheus"
+		},
+		"server_address": {
+			"linux": "172.19.32.1",
+			"mac": "10.173.10.79",
+			"windows": "localhost"
+		}
+	},
+	"server": {
+		"serverType": "totvs_server_protheus",
+		"serverName": "localhost",
+		"address": "${server_address}",
+		"port": 20302,
+		"environment": "P20-12-1-33",
+		"includePath": [
+			"../includes"
+		],
+		"smartClientBin": "${rootPath}/smartClient/20-3-0-2/smartclient${execExt}"
+	}
+}

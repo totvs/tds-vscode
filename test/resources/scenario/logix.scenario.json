@@ -3,43 +3,27 @@
 	"description": [
 		"Cenário para o ambiente Logix."
 	],
-	"projectFolder": "logix",
 	"variables": {
 		"rootPath": {
 			"linux": "~/protheus",
 			"mac": "~/protheus",
-			"windows": "M:/totvs/logix-lg"
+			"windows": "m:/protheus"
 		},
 		"server_address": {
-			"linux": "10.173.10.79",
+			"linux": "172.19.32.1",
 			"mac": "10.173.10.79",
 			"windows": "localhost"
 		}
 	},
 	"server": {
-		"serverType": "totvs_server_logix",
-		"serverName": "lgx-localhost",
+		"serverType": "totvs_server_protheus",
+		"serverName": "localhost",
 		"address": "${server_address}",
-		"port": 7085,
-		"environment": "Logix12",
+		"port": 20302,
+		"environment": "logix",
 		"includePath": [
-			"m:\\protheus\\includes"
+			"../includes"
 		],
-		"smartClientBin": "${rootPath}/bin/smartclient/smartclient.exe"
-	},
-	"includePath": {
-		"valid": [
-			"m:/protheus/includes"
-		],
-		"toChange": [
-			"m:/change/includes"
-		],
-		"toAdd": [
-			"m:/more_1/includes",
-			"m:/more_2/includes"
-		]
-	},
-	"compileKey": {},
-	"rpoToken": {},
-	"patchFolder": "l12"
+		"smartClientBin": "${rootPath}/smartClient/20-3-0-2/smartclient${execExt}"
+	}
 }

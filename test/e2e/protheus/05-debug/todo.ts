@@ -1,6 +1,7 @@
 import { describe, it } from "mocha";
 
-describe("Debug: TODO ", async () => {
-  it("Ler propriedades de um objeto");
-  it("Array de objetos");
+describe("Debug: PROTHEUS -> TODO ", async () => {
+  it("Array");
+  it("Object");
+  it("Json");
 });
