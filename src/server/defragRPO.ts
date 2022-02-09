@@ -22,7 +22,7 @@ export function defragRpo() {
       .showWarningMessage(
         localize(
           "tds.vscode.defrag.rpo",
-          "Are you sure defrag the RPO? (Process may take some time)"
+          "Are you sure you want to defrag the RPO? (This process may take some time)"
         ),
         localize("tds.vscode.yes", "Yes"),
         localize("tds.vscode.no", "No")
@@ -32,30 +32,27 @@ export function defragRpo() {
           let authorizationToken: string = Utils.isSafeRPO(server)
             ? Utils.getAuthorizationToken(server)
             : "";
-          const exec: Thenable<any> = languageClient
-            .sendRequest("$totvsserver/defragRpo", {
-              defragRpoInfo: {
-                connectionToken: server.token,
-                authorizationToken: authorizationToken,
-                environment: server.environment,
-                packPatchInfo: true,
-              },
-            })
-            .then(
-              (response: any) => {
-                // Nothing to do
-              },
-              (err: ResponseError<object>) => {
-                vscode.window.showErrorMessage(err.message);
+          let packPatchInfo = false;
+          if (authorizationToken.length > 0) {
+            vscode.window
+            .showWarningMessage(
+              localize(
+                "tds.vscode.defrag.packPatchInfo",
+                "Clear apply patch history?"
+              ),
+              localize("tds.vscode.yes", "Yes"),
+              localize("tds.vscode.no", "No")
+            )
+            .then((clicked) => {
+              if (clicked === localize("tds.vscode.yes", "Yes")) {
+                packPatchInfo = true;
               }
-            );
-          vscode.window.setStatusBarMessage(
-            `$(~spin) ${localize(
-              "tds.vscode.servernotconnected",
-              "Defragmenting RPO (process may take some time)"
-            )}`,
-            exec
-          );
+              execDefragRpo(server.token, authorizationToken, server.environment, packPatchInfo);
+            });
+          }
+          else {
+            execDefragRpo(server.token, authorizationToken, server.environment, packPatchInfo);
+          }
         }
       });
   } else {
@@ -63,4 +60,31 @@ export function defragRpo() {
       localize("tds.vscode.servernotconnected", "There is no server connected")
     );
   }
+}
+
+function execDefragRpo(connectionToken, authorizationToken, environment, packPatchInfo) {
+  const exec: Thenable<any> = languageClient
+    .sendRequest("$totvsserver/defragRpo", {
+      defragRpoInfo: {
+        connectionToken: connectionToken,
+        authorizationToken: authorizationToken,
+        environment: environment,
+        packPatchInfo: packPatchInfo,
+      },
+    })
+    .then(
+      (response: any) => {
+        // Nothing to do
+      },
+      (err: ResponseError<object>) => {
+        vscode.window.showErrorMessage(err.message);
+      }
+    );
+  vscode.window.setStatusBarMessage(
+    `$(~spin) ${localize(
+      "tds.vscode.servernotconnected",
+      "Defragmenting RPO (process may take some time)"
+    )}`,
+    exec
+  );
 }
