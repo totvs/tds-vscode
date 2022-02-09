@@ -1,11 +1,18 @@
-import { StatusBar, WebElement, Workbench } from "vscode-extension-tester";
+import {
+  StatusBar,
+  VSBrowser,
+  WebElement,
+  Workbench,
+} from "vscode-extension-tester";
 import { delay } from "../helper";
 
 export class StatusPageObject {
   private workbench: Workbench;
+  //private driver: any;
 
   constructor(workbench: Workbench) {
     this.workbench = workbench;
+    //this.driver = VSBrowser.instance.driver;
   }
 
   get statusBar(): StatusBar {
@@ -22,7 +29,9 @@ export class StatusPageObject {
 
     while (result === null && steps > 0) {
       const statusItems: WebElement[] = await this.statusBar.getItems();
-      await delay(500);
+      //await this.driver.wait(() => {
+      //return this.statusBar.getItems();
+      //}, 500);
 
       statusItems.forEach(async (element) => {
         if (!result) {

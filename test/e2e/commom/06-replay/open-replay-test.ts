@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { delay, openProject } from "../../helper";
+import { delay, DEFAULT_DELAY, openProject } from "../../helper";
 import { ReplayPageObject } from "../../page-objects/replay-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { REPLAY_FILES } from "../../scenario";
@@ -27,7 +27,7 @@ const LONG_IMPORT_TIMEOUT = 3 * 60 * 1000; // 3min
   });
 
   afterEach(async () => {
-    workbenchPO.closeAllEditors();
+    await workbenchPO.closeAllEditors();
   });
 
   Object.keys(REPLAY_FILES).forEach((key: string) => {
@@ -55,7 +55,7 @@ const LONG_IMPORT_TIMEOUT = 3 * 60 * 1000; // 3min
 
           await debugView.start();
           debugBar = await DebugToolbar.create();
-          await delay(2000);
+          await delay(DEFAULT_DELAY);
 
           expect(await workbenchPO.isDAInitialing()).is.true;
           expect(await workbenchPO.isDAReady()).is.true;

@@ -3,20 +3,25 @@ import {
   Notification,
   Workbench,
   NotificationType,
+  NotificationsCenter,
 } from "vscode-extension-tester";
-import { delay } from "../helper";
-
-const WAIT_NOTIFICATION_TIMEOUT = 2000;
+import { delay, DEFAULT_DELAY } from "../helper";
 
 export class NotificationPageObject {
-  private workbench: Workbench;
-  center: any;
+  private center: any;
+  //private driver: any;
 
-  constructor(workbench: Workbench) {
-    this.workbench = workbench;
-    (async () => {
-      this.center = await this.workbench.openNotificationsCenter();
-    })();
+  static create(workbench: Workbench): NotificationPageObject {
+    const po: NotificationPageObject = new NotificationPageObject();
+    workbench
+      .openNotificationsCenter()
+      .then((value: NotificationsCenter) => (po.center = value));
+
+    return po;
+  }
+
+  private constructor() {
+    //this.driver = VSBrowser.instance.driver;
   }
 
   private async getNotifications(
@@ -66,22 +71,11 @@ export class NotificationPageObject {
     return result;
   }
 
-  // center = await new Workbench().openNotificationsCenter();
-
-  // // get notifications from the notifications center
-  // // this time they can be filtered by type
-  // // lets get info notifications only
-  // notifications = await center.getNotifications(NotificationType.Info);
-
   private async waitNotifications(
-    delay: number = WAIT_NOTIFICATION_TIMEOUT
+    delay: number = DEFAULT_DELAY
   ): Promise<Notification[]> {
-    //return await VSBrowser.instance.driver.wait(async () => {
-    //return await this.workbench.getNotifications();
-    // const notifications = await new Workbench().getNotifications();
-    // return notifications;
+    //return await this.driver.wait(() => {
+    return this.center.getNotifications(NotificationType.Any);
     //}, delay);
-
-    return await this.center.getNotifications(NotificationType.Any);
   }
 }

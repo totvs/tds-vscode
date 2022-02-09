@@ -3,8 +3,9 @@ import {
   Notification,
   NotificationType,
   EditorView,
+  InputBox,
 } from "vscode-extension-tester";
-import { delay } from "../helper";
+import { delay, DELAY_MEDIUM } from "../helper";
 import { NotificationPageObject } from "./notification-po";
 import { StatusPageObject } from "./status-po";
 import { expect } from "chai";
@@ -16,7 +17,7 @@ import { OutputLsPageObject } from "./output-ls-po";
 import { ProblemsPageObject } from "./problem-view-po";
 import { BottomBarPageObject } from "./bottom-bar-po";
 
-const FAST_PROCESS_TIMEOUT = 10 * 1000; //10 segundos
+const FAST_PROCESS_TIMEOUT = 30 * 1000; //30 segundos
 const MEDIUM_PROCESS_TIMEOUT = 60 * 1000; //1 min
 const SLOW_PROCESS_TIMEOUT = 3 * 60 * 1000; // 3min
 
@@ -29,7 +30,7 @@ export class WorkbenchPageObject {
   constructor() {
     this._workbench = new Workbench();
     this.statusBar = new StatusPageObject(this._workbench);
-    this.notification = new NotificationPageObject(this._workbench);
+    this.notification = NotificationPageObject.create(this._workbench);
     this.bottombar = new BottomBarPageObject();
   }
 
@@ -116,6 +117,10 @@ export class WorkbenchPageObject {
     return await this.testNotification(/TDS\-DA ready/);
   }
 
+  async isDAServerConnected(): Promise<boolean> {
+    return await this.testNotification(/Application Server connected/);
+  }
+
   async isDACheckingSources(): Promise<boolean> {
     return await this.testNotification(/Checking the.*source/);
   }
@@ -152,6 +157,16 @@ export class WorkbenchPageObject {
       await this.testNotification(/ExitCode=.*ExistStatus=.*/),
       await this.testNotification(/SmartClient closed/),
       await this.isDAFinished(),
+    ]).then((value: boolean[]) => {
+      return !value.includes(false);
+    });
+  }
+
+  async isDABeginProcess(): Promise<boolean> {
+    return await Promise.all([
+      await this.isDAInitialing(),
+      await this.isDAReady(),
+      await this.isDAServerConnected(),
     ]).then((value: boolean[]) => {
       return !value.includes(false);
     });
@@ -248,17 +263,17 @@ export class WorkbenchPageObject {
     return notification;
   }
 
-  async waitConnection(wait: number = FAST_PROCESS_TIMEOUT): Promise<void> {
+  async waitConnection(wait: number = MEDIUM_PROCESS_TIMEOUT): Promise<void> {
     await this.waitProcessFinish(/Authenticating user/, wait);
   }
 
   async waitAskShowCompileResult(
-    wait: number = FAST_PROCESS_TIMEOUT
+    wait: number = MEDIUM_PROCESS_TIMEOUT
   ): Promise<Notification> {
     return await this.waitNotification(/Show table with compile results/, wait);
   }
 
-  async waitReconnection(wait: number = FAST_PROCESS_TIMEOUT): Promise<void> {
+  async waitReconnection(wait: number = MEDIUM_PROCESS_TIMEOUT): Promise<void> {
     await this.waitProcessFinish(/Reconnecting to the server/);
   }
 
@@ -275,7 +290,27 @@ export class WorkbenchPageObject {
   }
 
   async waitValidatingServer(): Promise<void> {
-    await this.processInProgress(/Validating server/);
+    await this.waitProcessFinish(/Validating server/);
+  }
+
+  async startConnection(): Promise<boolean> {
+    return await this.testNotification(/Starting connection to/);
+  }
+
+  async connectionServer(): Promise<boolean> {
+    return await this.testNotification(/Connection to the server/);
+  }
+
+  async startingUser(): Promise<boolean> {
+    return await this.testNotification(/Starting user/);
+  }
+
+  async authenticationFinished(): Promise<boolean> {
+    return await this.testNotification(/User '.*' authentication finished/);
+  }
+
+  async isAuthenticatedSuccessfully(): Promise<boolean> {
+    return await this.testNotification(/User authenticated successfully/);
   }
 
   async startConnection(): Promise<boolean> {
@@ -322,8 +357,9 @@ export class WorkbenchPageObject {
     await this.waitProcessFinish(/Importing TDS Replay/, delay);
   }
 
-  async waitBuilding(delay: number = SLOW_PROCESS_TIMEOUT) {
-    await this.waitProcessFinish(/Building\.\.\./, delay);
+  async waitBuilding(_delay: number = SLOW_PROCESS_TIMEOUT) {
+    await this.waitProcessFinish(/Building\.\.\./, _delay);
+    await delay(DELAY_MEDIUM);
   }
 
   async getNotification(
@@ -341,6 +377,14 @@ export class WorkbenchPageObject {
 
   async executeCommand(command: string) {
     await this._workbench.executeCommand(command);
+    await delay();
+  }
+
+  async promptCommand(text: string) {
+    await this._workbench.openCommandPrompt().then(async (value: InputBox) => {
+      await value.setText(text);
+      await value.confirm();
+    });
   }
 
   async openMonitor(): Promise<MonitorPageObject> {

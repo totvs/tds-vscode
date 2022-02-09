@@ -23,7 +23,10 @@ import { expect } from "chai";
 import { IUserData } from "./page-objects/interface-po";
 import { setTimeout } from "timers/promises";
 
-const DEFAULT_DELAY = 1000;
+export const DEFAULT_DELAY = 1000;
+export const DELAY_SHORT = DEFAULT_DELAY * 2;
+export const DELAY_MEDIUM = DEFAULT_DELAY * 3;
+export const DELAY_LONG = DEFAULT_DELAY * 5;
 
 function clearVscodeFiles(projectFolder: string): void {
   const serversJsonFile: string = path.join(
@@ -72,7 +75,7 @@ export interface IOpenProject {
 const DEFAULT_OPEN_PROJECT: IOpenProject = {
   linter: false,
   resetRpo: false,
-  resetRpoCustom: false,
+  resetRpoCustom: true,
 };
 
 export async function openProjectWithReset() {
@@ -98,7 +101,7 @@ export async function openProject(
 
   await VSBrowser.instance.openResources(PROJECT_FOLDER);
 
-  await delay(2000);
+  await delay(DEFAULT_DELAY);
 
   //const settingsPO: SettingsPageObject = new SettingsPageObject();
   //await settingsPO.openView();
@@ -106,7 +109,7 @@ export async function openProject(
 
   await closeAllEditors();
 
-  await delay(3000);
+  await delay(DELAY_MEDIUM);
 }
 
 function resetRpo() {
@@ -142,10 +145,14 @@ export async function readServersJsonFile(): Promise<string> {
 
 export const delay = async (duration: number = DEFAULT_DELAY) => {
   await setTimeout(duration);
+  //  const driver = VSBrowser.instance.driver;
+  //  await driver.wait(() => {
+  //    return Promise.resolve(() => true);
+  // }, duration);
 };
 
 export const avoidsBacksliding = async () => {
-  await delay(3000);
+  await delay(DELAY_MEDIUM);
 };
 
 export async function takeQuickPickAction(
@@ -244,21 +251,6 @@ export async function fireContextMenuAction(
 ) {
   const menu: ContextMenu = await element.openContextMenu();
   await menu.select(name);
-
-  await delay();
-}
-
-export async function fillProgramName(program: string, ...args: string[]) {
-  const pickBox = new InputBox();
-  await delay();
-
-  let title = await pickBox.getTitle();
-  expect(title).is.equal("Please enter the name of an AdvPL/4GL function");
-
-  await pickBox.setText(`${program} ${args ? args.join(",") : ""}`);
-  await delay();
-
-  await pickBox.confirm();
   await delay();
 }
 

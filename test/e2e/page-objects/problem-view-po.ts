@@ -7,7 +7,7 @@ import {
   MarkerType,
   Marker,
 } from "vscode-extension-tester";
-import { delay } from "../helper";
+import { delay, DEFAULT_DELAY } from "../helper";
 import { ViewPageObject } from "./view-po";
 import { WorkbenchPageObject } from "./workbench-po";
 
@@ -22,7 +22,7 @@ export class ProblemsPageObject {
     markType: MarkerType = MarkerType.Any
   ): Promise<Marker[]> {
     const markers: Marker[] = await this._problemsView.getAllMarkers(markType);
-    await delay(2000);
+    await delay(DEFAULT_DELAY);
 
     return markers;
   }

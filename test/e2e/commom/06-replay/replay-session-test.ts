@@ -27,7 +27,7 @@ describe("Record Replay Session", async () => {
   });
 
   afterEach(async () => {
-    workbenchPO.closeAllEditors();
+    await workbenchPO.closeAllEditors();
   });
 
   it("Prepare source");

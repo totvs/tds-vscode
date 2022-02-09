@@ -9,5 +9,6 @@
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
         "--record=totvsls"
-    ]
+    ],
+    "update.mode": "none"
 }

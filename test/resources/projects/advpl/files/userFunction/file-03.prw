@@ -1,6 +1,6 @@
 #include "protheus.ch"
 
-user function file-03(replay, replayPath)
+user function file_03(replay, replayPath)
 	local n, cResp, cMsg := ""
 	local aOpcoes := {}
 	private cOpcao

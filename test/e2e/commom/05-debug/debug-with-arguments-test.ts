@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { delay, fillProgramName, openProject } from "../../helper";
+import { delay, openProject } from "../../helper";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA } from "../../scenario";
 import {
@@ -20,9 +20,9 @@ const COMPILE_FILE_ARG_TEST = ["files", "userFunction", "arg-test.prw"];
 describe("Debug with arguments", async () => {
   let workbenchPO: WorkbenchPageObject;
   let debugPO: DebugPageObject;
-  let debugBar: DebugToolbar;
   let serverTreePO: ServerViewPageObject;
   let editor: TextEditorPageObject;
+  let debugBar: DebugToolbar;
 
   before(async () => {
     await openProject();
@@ -48,7 +48,7 @@ describe("Debug with arguments", async () => {
   });
 
   after(async () => {
-    workbenchPO.closeAllEditors();
+    await workbenchPO.closeAllEditors();
   });
 
   it("Prepare source to debug", async () => {
@@ -71,20 +71,18 @@ describe("Debug with arguments", async () => {
     await debugPO.openView();
     await debugPO.clearAllBreakpoints();
 
-    const result = await editor.toggleBreakpoint(5);
-    expect(result, "Breakpoint not set (line 5)").is.true;
+    expect(await editor.setBreakpoint(5), "Breakpoint not set (line 5)").is
+      .true;
   });
 
   describe("One argument", async () => {
     it("Start Debugger", async () => {
-      await debugPO.openView();
       await debugPO.selectLaunchConfiguration(LAUNCHER_NAME);
       await debugPO.start();
 
-      await fillProgramName("u_argTest", "value1-P1");
+      await debugPO.fillProgramName("u_argTest", "value1-P1");
 
-      expect(await workbenchPO.isDAInitialing(), "DA not initialing").is.true;
-      expect(await workbenchPO.isDAReady(), "DA not ready").is.true;
+      expect(await workbenchPO.isDABeginProcess(), "DA not running").is.true;
 
       debugBar = await DebugToolbar.create();
       await debugBar.waitForBreakPoint();
@@ -96,8 +94,7 @@ describe("Debug with arguments", async () => {
       await debugConsole.evaluateExpression("p1");
       await debugConsole.evaluateExpression("p2");
 
-      let text: string = await debugConsole.getText();
-
+      const text: string = await debugConsole.getText();
       expect(text, "P1 expected value").to.have.string("value1-P1");
       expect(text, "P2 not expected value").to.have.string("NIL");
     });
@@ -118,10 +115,10 @@ describe("Debug with arguments", async () => {
       await debugPO.openView();
       await debugPO.selectLaunchConfiguration(LAUNCHER_NAME);
       await debugPO.start();
-      await fillProgramName("u_argTest", "value1-P1", "value1-P2");
 
-      expect(await workbenchPO.isDAInitialing(), "DA not initialing").is.true;
-      expect(await workbenchPO.isDAReady(), "DA not ready").is.true;
+      await debugPO.fillProgramName("u_argTest", "value1-P1", "value1-P2");
+
+      expect(await workbenchPO.isDABeginProcess(), "DA not running").is.true;
 
       debugBar = await DebugToolbar.create();
       await debugBar.waitForBreakPoint();
@@ -133,8 +130,7 @@ describe("Debug with arguments", async () => {
       await debugConsole.evaluateExpression("p1");
       await debugConsole.evaluateExpression("p2");
 
-      let text: string = await debugConsole.getText();
-      console.error(text);
+      const text: string = await debugConsole.getText();
       expect(text, "P1 expected value").to.have.string("value1-P1");
       expect(text, "P2 not expected value").to.have.string("value1-P2");
     });
