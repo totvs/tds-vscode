@@ -17,6 +17,7 @@ import {
   ViewItem,
   ViewControl,
   EditorView,
+  TreeItem,
 } from "vscode-extension-tester";
 import { expect } from "chai";
 import { IUserData } from "./page-objects/interface-po";
@@ -250,7 +251,6 @@ export async function fireContextMenuAction(
 ) {
   const menu: ContextMenu = await element.openContextMenu();
   await menu.select(name);
-
   await delay();
 }
 

@@ -313,6 +313,26 @@ export class WorkbenchPageObject {
     return await this.testNotification(/User authenticated successfully/);
   }
 
+  async startConnection(): Promise<boolean> {
+    return await this.testNotification(/Starting connection to/);
+  }
+
+  async connectionServer(): Promise<boolean> {
+    return await this.testNotification(/Connection to the server/);
+  }
+
+  async startingUser(): Promise<boolean> {
+    return await this.testNotification(/Starting user/);
+  }
+
+  async authenticationFinished(): Promise<boolean> {
+    return await this.testNotification(/User '.*' authentication finished/);
+  }
+
+  async isAuthenticatedSuccessfully(): Promise<boolean> {
+    return await this.testNotification(/User authenticated successfully/);
+  }
+
   async applyTemplateInProgress(): Promise<boolean> {
     return await this.processInProgress(/Applying template/);
   }
