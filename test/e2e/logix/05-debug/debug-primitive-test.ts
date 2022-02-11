@@ -16,7 +16,7 @@ const COMPILE_FILE = ["files", "debug", "primitive.4gl"];
 
 const BP_FIRST_LINE = 30;
 const BP_LOCAL_START = 53;
-const BP_LOCAL_AFTER_LET = 70;
+const BP_LOCAL_AFTER_LET = 74;
 const BP_LOCAL_RETURN = 71;
 
 const LOCAL_VAR_INIT_VALUES: any[] = [
@@ -25,18 +25,18 @@ const LOCAL_VAR_INIT_VALUES: any[] = [
   { name: "L_DECIMAL_1", type: "DECIMAL(10,1)", value: 0 },
   { name: "L_DECIMAL_2", type: "DECIMAL(10,2)", value: 0 },
   { name: "L_FLOAT", type: "FLOAT", value: 0 },
-  //{ name: "L_SMALLFLOAT", type: "SMALLFLOAT", value: 0 },
-  //{ name: "L_MONEY", type: "MONEY", value: 0 },
-  //{ name: "L_SMALLINT_MIN", type: "SMALLINT", value: 0 },
-  //{ name: "L_SMALLINT", type: "SMALLINT", value: 0 },
-  //{ name: "L_SMALLINT_MAX", type: "SMALLINT", value: 0 },
-  //{ name: "L_INTEGER_MIN", type: "INTEGER", value: 0 },
+  { name: "L_SMALLFLOAT", type: "SMALLFLOAT", value: 0 },
+  { name: "L_MONEY", type: "MONEY", value: 0 },
+  { name: "L_SMALLINT_MIN", type: "SMALLINT", value: 0 },
+  { name: "L_SMALLINT", type: "SMALLINT", value: 0 },
+  { name: "L_SMALLINT_MAX", type: "SMALLINT", value: 0 },
+  { name: "L_INTEGER_MIN", type: "INTEGER", value: 0 },
   { name: "L_INTEGER", type: "INTEGER", value: 0 },
-  //{ name: "L_INTEGER_MAX", type: "INTEGER", value: 0 },
-  //{ name: "L_CHAR", type: "CHAR(10)", value: "" },
-  //{ name: "L_VARCHAR", type: "VARCHAR(10)", value: "" },
-  { name: "l_date", type: "DATE", value: "" },
-  { name: "l_dateTime", type: "DATETIME YEAR TO SECOND", value: "" },
+  { name: "L_INTEGER_MAX", type: "INTEGER", value: 0 },
+  { name: "L_CHAR", type: "CHAR(10)", value: "" },
+  { name: "L_VARCHAR", type: "VARCHAR(10)", value: "" },
+  { name: "L_DATE", type: "DATE", value: "" },
+  { name: "L_DATETIME", type: "DATETIME YEAR TO SECOND", value: "" },
 ];
 
 const LOCAL_VAR_assignment_VALUES = [
@@ -49,16 +49,16 @@ const LOCAL_VAR_assignment_VALUES = [
     type: "FLOAT",
     value: 0.12345678901234567890123456789,
   },
-  //{ name: "L_SMALLFLOAT", type: "SMALLFLOAT", value: 0.1234567890123456 },
-  //{ name: "L_MONEY", type: "MONEY", value: 1.12 },
-  //{ name: "L_SMALLINT_MIN", type: "SMALLINT", value: -32767 },
-  //{ name: "L_SMALLINT", type: "SMALLINT", value: 0 },
-  //{ name: "L_SMALLINT_MAX", type: "SMALLINT", value: 32767 },
-  //{ name: "L_INTEGER_MIN", type: "INTEGER", value: -2147483647 },
+  { name: "L_SMALLFLOAT", type: "SMALLFLOAT", value: 0.1234567890123456 },
+  { name: "L_MONEY", type: "MONEY", value: 1.12 },
+  { name: "L_SMALLINT_MIN", type: "SMALLINT", value: -32767 },
+  { name: "L_SMALLINT", type: "SMALLINT", value: 0 },
+  { name: "L_SMALLINT_MAX", type: "SMALLINT", value: 32767 },
+  { name: "L_INTEGER_MIN", type: "INTEGER", value: -2147483647 },
   { name: "L_INTEGER", type: "INTEGER", value: 0 },
-  //{ name: "L_INTEGER_MAX", type: "INTEGER", value: 2147483647 },
-  //{ name: "L_CHAR", type: "CHAR(10)", value: "char" },
-  //{ name: "L_VARCHAR", type: "VARCHAR(10)", value: "varchar" },
+  { name: "L_INTEGER_MAX", type: "INTEGER", value: 2147483647 },
+  { name: "L_CHAR", type: "CHAR(10)", value: "char" },
+  { name: "L_VARCHAR", type: "VARCHAR(10)", value: "varchar" },
   { name: "L_DATE", type: "DATE", value: "2022-01-01" },
   {
     name: "L_DATETIME",
@@ -84,13 +84,13 @@ const MODULAR_VAR_INIT_VALUES: any[] = [
   { name: "M_VARCHAR", type: "VARCHAR(10)", value: "" },
 ];
 
-const GLOBAL_VAR_VALUES: any[] = [
+const GLOBAL_VAR_INIT_VALUES: any[] = [
   { name: "STATUS", value: "0", type: "N" },
   { name: "SQLCA", value: "Object", type: "OBJECT" },
   { name: "INT_FLAG", value: "0", type: "INTEGER" },
   { name: "QUIT_FLAG", value: "0", type: "INTEGER" },
-  { name: "G_USER", value: "NIL", type: "CHAR(8)" },
-  { name: "G_COD_EPRESA", value: "NIL", type: "CHAR(2)" },
+  //{ name: "G_USER", value: "NIL", type: "CHAR(8)" },
+  //{ name: "G_COD_EPRESA", value: "NIL", type: "CHAR(2)" },
 ];
 
 describe.only("Debug primitive variables", async () => {
@@ -168,9 +168,48 @@ describe.only("Debug primitive variables", async () => {
     });
   });
 
-  //describe("Scope: GLOBAL");
+  describe("Scope: GLOBAL", async () => {
+    it("Evaluate inicial values", async () => {
+      await delay();
 
-  //describe("Scope: MODULE");
+      const variables: VariablePO[] = await debugPO.getGlobalVariables(
+        getGlobalVarsName()
+      );
+
+      // expect(variables).to.have.deep.nested.property(
+      //   "name",
+      //   getGlobalVarsName()
+      // );
+
+      expect(variables.map((variable: VariablePO) => variable.name)).to.eqls(
+        getGlobalVarsName()
+      );
+      expect(variables.map((variable: VariablePO) => variable.type)).to.eqls(
+        getGlobalVarsType()
+      );
+      expect(variables.map((variable: VariablePO) => variable.value)).to.eqls(
+        GLOBAL_VAR_INIT_VALUES.map((value: any) => to4GLType(value))
+      );
+    });
+  });
+
+  describe.skip("Scope: MODULAR", async () => {
+    it("Evaluate inicial values", async () => {
+      await delay();
+
+      const variables: VariablePO[] = await debugPO.getModularVariables(
+        getModularVarsName()
+      );
+
+      //expect(variables.length).to.equals(MODULAR_VAR_INIT_VALUES.length);
+      expect(variables.map((variable: VariablePO) => variable.name)).to.eqls(
+        getModularVarsName()
+      );
+      expect(variables.map((variable: VariablePO) => variable.value)).to.eqls(
+        MODULAR_VAR_INIT_VALUES.map((value: any) => to4GLType(value))
+      );
+    });
+  });
 
   describe("Scope: LOCAL", async () => {
     it("Evaluate inicial values", async () => {
@@ -183,7 +222,7 @@ describe.only("Debug primitive variables", async () => {
         getLocalVarsName()
       );
 
-      expect(variables.length).to.equals(LOCAL_VAR_INIT_VALUES.length);
+      //expect(variables.length).to.equals(LOCAL_VAR_INIT_VALUES.length);
       expect(variables.map((variable: VariablePO) => variable.name)).to.eqls(
         getLocalVarsName()
       );
@@ -345,6 +384,8 @@ function to4GLType(variable: any): string {
     return variable.value ? ".T." : ".F.";
   } else if (variable.type == "B") {
     return variable.value;
+  } else {
+    return variable.value;
   }
 
   return "NIL";
@@ -352,4 +393,19 @@ function to4GLType(variable: any): string {
 
 function getLocalVarsName(): string[] {
   return LOCAL_VAR_INIT_VALUES.map((value: any) => value.name);
+}
+
+function getGlobalVarsName(): string[] {
+  return GLOBAL_VAR_INIT_VALUES.map((value: any) => value.name);
+}
+
+function getGlobalVarsType(): string[] {
+  return GLOBAL_VAR_INIT_VALUES.map(
+    (value: any) =>
+      `${value.type.at(0)}${value.type.substring(1).toLowerCase()}`
+  );
+}
+
+function getModularVarsName(): string[] {
+  return MODULAR_VAR_INIT_VALUES.map((value: any) => value.name);
 }

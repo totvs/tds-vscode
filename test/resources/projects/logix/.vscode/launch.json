@@ -1,0 +1,24 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "totvs_language_debug",
+			"request": "launch",
+			"name": "Smart Client Debug",
+			"program": "${command:AskForProgramName}",
+			"smartclientBin": "m:/protheus/smartClient/20-3-0-2/smartclient.exe",
+			"cwb": "${workspaceFolder}",
+			"isMultiSession": true,
+			"enableTableSync": true
+		}
+	],
+	"lastPrograms": [
+		{
+			"label": "primitive.4gl"
+		},
+		{
+			"label": "arraydin2.4gl"
+		}
+	],
+	"lastProgramExecuted": "arraydin2.4gl"
+}

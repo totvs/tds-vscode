@@ -3,6 +3,7 @@
 	"description": [
 		"Cenário para o ambiente Logix."
 	],
+	"projectFolder": "logix",
 	"variables": {
 		"rootPath": {
 			"linux": "~/protheus",
@@ -16,7 +17,7 @@
 		}
 	},
 	"server": {
-		"serverType": "totvs_server_protheus",
+		"serverType": "totvs_server_logix",
 		"serverName": "localhost",
 		"address": "${server_address}",
 		"port": 20302,

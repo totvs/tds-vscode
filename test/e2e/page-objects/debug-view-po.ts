@@ -92,6 +92,7 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
         cwb: "${workspaceFolder}",
         isMultiSession: true,
         enableTableSync: true,
+        //waitForAttach: 8000, //os testes aguardam 10 segundos, senão dá erro
       },
     ];
 
@@ -212,6 +213,18 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
 
   async getPublicVariables(targetName: string[]): Promise<VariablePO[]> {
     const result: VariablePO[] = await this.getVariables("Public", targetName);
+
+    return result;
+  }
+
+  async getGlobalVariables(targetName: string[]): Promise<VariablePO[]> {
+    const result: VariablePO[] = await this.getVariables("Global", targetName);
+
+    return result;
+  }
+
+  async getModularVariables(targetName: string[]): Promise<VariablePO[]> {
+    const result: VariablePO[] = await this.getVariables("Modular", targetName);
 
     return result;
   }

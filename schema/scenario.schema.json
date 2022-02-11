@@ -174,7 +174,6 @@
 				}
 			},
 			"required": [
-				"valid",
 				"toChange",
 				"toAdd"
 			]
