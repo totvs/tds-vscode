@@ -36,7 +36,8 @@
 		"includePath": [
 			"../includes"
 		],
-		"smartClientBin": "${rootPath}/smartClient/smartClient${execExt}"
+		"smartClientBin": "${rootPath}/smartClient/smartClient${execExt}",
+		"environments": []
 	},
 	"users": {
 		"admin": {

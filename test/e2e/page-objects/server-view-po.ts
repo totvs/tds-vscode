@@ -65,6 +65,10 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
     } else {
       const servers: any = fse.readJSONSync(serverJsonFile);
 
+      if (!data.environments.includes(data.environment)) {
+        data.environments.push(data.environment);
+      }
+
       servers.configurations = [
         {
           id: "qg0x8r7my7kya6rmkzldj9lq5o2y",
@@ -73,7 +77,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
           port: data.port,
           address: data.address,
           includes: data.includePath,
-          environments: [ data.environment ],
+          environments: [data.environments],
         },
       ];
 

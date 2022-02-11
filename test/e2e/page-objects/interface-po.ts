@@ -6,6 +6,7 @@ export interface IServerData {
   includePath: string[];
   environment: string;
   smartClientBin: string;
+  environments: string[];
 }
 
 export interface IUserData {

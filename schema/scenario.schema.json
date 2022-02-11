@@ -64,6 +64,13 @@
 					"type": "string",
 					"description": "AppServer runtime environment."
 				},
+				"environments": {
+					"type": "array",
+					"description": "List of environments that can be used in tests.",
+					"items": {
+						"type": "string"
+					}
+				},
 				"includePath": {
 					"type": "array",
 					"description": "Folders for lookup define files (.ch). One per line.",

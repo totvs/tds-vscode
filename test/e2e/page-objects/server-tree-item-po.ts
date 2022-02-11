@@ -1,7 +1,6 @@
 import { By, TreeItem, ViewItemAction } from "vscode-extension-tester";
 import {
   delay,
-  DEFAULT_DELAY,
   fillEnvironment,
   fillUserdata,
   fireContextMenuAction,

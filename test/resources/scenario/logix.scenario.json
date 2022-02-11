@@ -25,6 +25,10 @@
 		"includePath": [
 			"../includes"
 		],
-		"smartClientBin": "${rootPath}/smartClient/20-3-0-2/smartclient${execExt}"
+		"smartClientBin": "${rootPath}/smartClient/20-3-0-2/smartclient${execExt}",
+		"environments": [
+			"logix",
+			"logix_2"
+		]
 	}
 }

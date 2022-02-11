@@ -4,7 +4,8 @@
     "totvsLanguageServer.editor.show.notification": "errors and warnings",
     "totvsLanguageServer.workspaceServerConfig": true,
     "telemetry.telemetryLevel": "off",
-    "workbench.editor.enablePreview": true,
+    "workbench.editor.enablePreview": false,
+    "totvsLanguageServer.welcomePage": false,
     "totvsLanguageServer.editor.linter": false,
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
