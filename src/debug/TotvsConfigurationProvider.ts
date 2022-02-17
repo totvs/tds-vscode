@@ -8,9 +8,10 @@ import {
 import * as vscode from "vscode";
 import * as Net from "net";
 import { setDapArgs, ProgramArgs, extractProgramArgs } from "./debugConfigs";
-import serverProvider, { ServerItem } from "../serverItemProvider";
+import serverProvider from "../serverItemProvider";
 import * as nls from "vscode-nls";
 import { canDebug } from "../extension";
+import { ServerItem } from "../serverItem";
 
 const localize = nls.loadMessageBundle();
 

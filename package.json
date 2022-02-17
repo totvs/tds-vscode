@@ -55,6 +55,7 @@
     "test:common": "set SCENARIO=protheus && npm run test -- './out-test/**/common/**/*test.js'",
     "test:protheus": "set SCENARIO=protheus && npm run test -- './out-test/**/protheus/**/*test.js'",
     "test:logix": "set SCENARIO=logix && npm run test -- './out-test/**/logix/**/*test.js'",
+    "test:tec": "set SCENARIO=tec && npm run test -- './out-test/**/tec/**/*test.js'",
     "pretest": "rimraf ./out-test/* && npm run compile-test",
     "test-setup": "npm run compile && extest setup-tests -i -s ../temp/test -e ../temp/extension",
     "--SCENARIO--": "",
@@ -1516,7 +1517,7 @@
         },
         {
           "command": "totvs-developer-studio.revalidateRPO",
-          "when": "view == totvs_server && viewItem == serverItem && tds-vscode.isSafeRPO",
+          "when": "view == totvs_server && viewItem == serverItem && tds-vscode.isServerP20OrGreater",
           "group": "EtotvsRPO@3"
         },
         {

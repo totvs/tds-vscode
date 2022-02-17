@@ -18,7 +18,6 @@ import * as path from 'path';
 import { GeneratePatchPanelAction, IGeneratePatchPanelAction } from './actions';
 import * as nls from 'vscode-nls';
 import Utils from '../../utils';
-import { ServerItem } from '../../serverItemProvider';
 import {
   IGeneratePatchData,
   IServerFS,
@@ -26,6 +25,7 @@ import {
 } from './generatePatchData';
 import { IGetPatchDirResult, sendGetPatchDir } from '../../protocolMessages';
 import { sendPatchGenerateMessage } from '../patchUtil';
+import { ServerItem } from '../../serverItem';
 
 const fs = require('fs');
 const os = require('os');
@@ -75,12 +75,6 @@ class GeneratePatchLoader {
 
   constructor(context: vscode.ExtensionContext, args: any) {
     this._context = context;
-
-    this._disposables.push(
-      Utils.onDidSelectedServer((newServer: ServerItem) => {
-        generatePathLoader.toggleServer(newServer);
-      })
-    );
 
     const ext = vscode.extensions.getExtension('TOTVS.tds-vscode');
     this._panel = vscode.window.createWebviewPanel(
