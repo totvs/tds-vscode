@@ -68,6 +68,7 @@ describe("Compile Resources", async () => {
 
     await compilePO.askShowCompileResult(false);
 
-    await outputPO.compileSequenceFolderTest(count);
+    const text: string[] = await outputPO.extractCompileSequenceTest();
+    expect(text).is.eqls("xxxxxxxxxxxxxxxxx");
   });
 });

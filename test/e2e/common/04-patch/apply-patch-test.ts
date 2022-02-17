@@ -76,7 +76,7 @@ describe("Patch Operations", async () => {
     await applyPatchPO.fireSubmitClose();
     await delay(DEFAULT_DELAY);
 
-    if (await serverItemPO.isLogix()) {
+    if (await serverItemPO.isServerLogix()) {
       expect(await workbenchPO.isPatchFileNotFoundOrInvalid()).is.true;
     } else {
       expect(await workbenchPO.isPatchVersionIncorrect()).is.true;

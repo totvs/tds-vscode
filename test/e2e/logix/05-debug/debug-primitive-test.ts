@@ -93,7 +93,7 @@ const GLOBAL_VAR_INIT_VALUES: any[] = [
   //{ name: "G_COD_EPRESA", value: "NIL", type: "CHAR(2)" },
 ];
 
-describe.only("Debug primitive variables", async () => {
+describe("Debug primitive variables", async () => {
   let workbenchPO: WorkbenchPageObject;
   let debugPO: DebugPageObject;
   let serverTreePO: ServerViewPageObject;

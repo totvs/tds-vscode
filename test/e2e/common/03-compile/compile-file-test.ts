@@ -57,10 +57,10 @@ describe("Compile Simple File (basic test)", async () => {
 
     await workbenchPO.waitBuilding();
 
-    await outputPO.compileSequenceSingleFileTest();
+    const text: string[] = await outputPO.extractCompileSequenceTest();
+    expect(text).is.eqls("xxxxxxxxxxxxxxxxx");
   });
 
-  //comando rebuild não pega item correte da árvore e sim do editor
   it.skip("Recompile", async () => {
     await outputPO.clearConsole();
     await compilePO.fireRebuildFile(resourceItem);
@@ -68,6 +68,7 @@ describe("Compile Simple File (basic test)", async () => {
     await workbenchPO.waitBuilding();
     await compilePO.askShowCompileResult(false);
 
-    await outputPO.recompileSequenceFileTest();
+    const text: string[] = await outputPO.extractCompileSequenceTest();
+    expect(text).is.eqls("xxxxxxxxxxxxxxxxx");
   });
 });

@@ -77,7 +77,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
           port: data.port,
           address: data.address,
           includes: data.includePath,
-          environments: [data.environments],
+          environments: data.environments,
         },
       ];
 
@@ -115,6 +115,22 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
 
     return serverPO;
   }
+
+  async changeEnvironment(
+      serverName: string,
+    environment: string
+    , userData: IUserData): Promise<ServerTreeItemPageObject> {
+        const serverPO: ServerTreeItemPageObject = new ServerTreeItemPageObject(
+          await this.getTreeItem([serverName])
+        );
+
+        await serverPO.changeEnvironment(environment, userData);
+
+        expect(await this.workbenchPO.isConnected(serverName, environment)).is
+            .true;
+
+        return serverPO;
+    }
 
   async disconnectAllServers(): Promise<void> {
     const elements: ViewItem[] = await this.getVisibleItems();

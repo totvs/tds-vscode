@@ -4,7 +4,10 @@ import { TreeItem } from "vscode-extension-tester";
 import { delay, openProject, openProjectWithReset } from "../../helper";
 import { BuildPageObject } from "../../page-objects/build-po";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
-import { OutputLsPageObject } from "../../page-objects/output-ls-po";
+import {
+  COMPILE_SEQUENCE,
+  OutputLsPageObject,
+} from "../../page-objects/output-ls-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
@@ -65,10 +68,10 @@ describe("Compile folders", async () => {
     await compilePO.fireBuildFile(folderItem);
 
     await workbenchPO.waitBuilding();
-
     await compilePO.askShowCompileResult(false);
 
-    await outputPO.compileSequenceFolderTest(count);
+    const text: string[] = await outputPO.extractCompileSequenceTest();
+    expect(text).is.eqls(COMPILE_SEQUENCE);
   });
 
   //comando rebuild não pega item correte da árvore e sim do editor
@@ -77,6 +80,7 @@ describe("Compile folders", async () => {
     await compilePO.fireRebuildFile(folderItem);
     await workbenchPO.waitBuilding();
 
-    await outputPO.recompileSequenceFileTest();
+    const text: string[] = await outputPO.extractCompileSequenceTest();
+    expect(text).is.eqls(COMPILE_SEQUENCE);
   });
 });

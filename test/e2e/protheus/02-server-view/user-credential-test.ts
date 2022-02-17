@@ -38,7 +38,7 @@ describe("Credentials Users Connect", async () => {
       false
     );
 
-    if (await serverItemPO.isLogix()) {
+    if (await serverItemPO.isServerLogix()) {
       expect(
         await workbenchPO.isConnected(
           APPSERVER_DATA.serverName,
@@ -67,7 +67,7 @@ describe("Credentials Users Connect", async () => {
       false
     );
 
-    if (await serverItemPO.isLogix()) {
+    if (await serverItemPO.isServerLogix()) {
       expect(
         await workbenchPO.isConnected(
           APPSERVER_DATA.serverName,

@@ -1,33 +1,17 @@
-export interface IServerData {
-  serverType: "totvs_server_protheus" | "totvs_server_logix";
-  serverName: string;
-  address: string;
-  port: number;
-  includePath: string[];
-  environment: string;
-  smartClientBin: string;
-  environments: string[];
-}
+import {
+  ICompileKeyScenarioSchema,
+  IIncludeScenarioSchema,
+  IServerScenarioSchema,
+  IUserDataScenarioSchema,
+} from "../scenario";
 
-export interface IUserData {
-  username: string;
-  password: string;
-}
+export interface IServerData extends IServerScenarioSchema {}
 
-export interface IIncludeData {
-  toChange: string[];
-  toAdd: string[];
-}
+export interface IUserData extends IUserDataScenarioSchema {}
 
-export interface ICompileKeyData {
-  machineId: string;
-  compileKeyFile: string;
-  key: string;
-  generatedIn: string;
-  expireIn: string;
-  token: string;
-  overwrite: string;
-}
+export interface IIncludeData extends IIncludeScenarioSchema {}
+
+export interface ICompileKeyData extends ICompileKeyScenarioSchema {}
 
 export interface IReplayData {
   passwordID: string;

@@ -57,7 +57,7 @@ const PUBLIC_VAR_VALUES: any[] = [
   { name: "X_TODAY", value: new Date(), type: "D" },
 ];
 
-describe.only("PROTHEUS: Debug primitive variables", async () => {
+describe("PROTHEUS: Debug primitive variables", async () => {
   let workbenchPO: WorkbenchPageObject;
   let debugPO: DebugPageObject;
   let serverTreePO: ServerViewPageObject;

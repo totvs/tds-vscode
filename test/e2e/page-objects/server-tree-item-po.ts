@@ -32,10 +32,28 @@ export class ServerTreeItemPageObject {
     await this.workbenchPO.waitConnection();
   }
 
-  async isLogix(): Promise<boolean> {
-    const tooltip: string = await this.serverTreeItem.getTooltip();
+  async changeEnvironment(environment: string, userData: IUserData) {
+    await this.select();
+    await this.expand();
 
-    return tooltip.startsWith("Logix");
+    for await (const item of await this.serverTreeItem.getChildren()) {
+      const label: string = await item.getLabel();
+
+      if (label === environment) {
+        const action: ViewItemAction = await item.getActionButton("Select");
+
+        await action.click();
+        await delay();
+
+        if (userData) {
+          await fillUserdata(userData);
+        }
+
+        break;
+      }
+    }
+
+    await this.workbenchPO.waitConnection();
   }
 
   async isServerP20OrGreater(): Promise<boolean> {
@@ -48,6 +66,13 @@ export class ServerTreeItemPageObject {
   async select() {
     await this.serverTreeItem.select();
     await delay();
+  }
+
+  async expand() {
+    if (await this.serverTreeItem.isExpandable()) {
+      await this.serverTreeItem.expand();
+      await delay();
+    }
   }
 
   async isSelected(): Promise<boolean> {
@@ -146,5 +171,32 @@ export class ServerTreeItemPageObject {
   async fireApplyPatchAction(): Promise<void> {
     await this.select();
     await fireContextMenuAction(this.serverTreeItem, "Patch Apply");
+  }
+
+  async isServerIcon(iconName: string): Promise<boolean> {
+    const icon = await this.serverTreeItem.findElement(
+      By.className("custom-view-tree-node-item-icon")
+    );
+    const klass = await icon.getAttribute("style");
+
+    return klass.indexOf(`${iconName}_server.svg"`) > -1;
+  }
+
+  async isServerLogix(): Promise<boolean> {
+    const tooltip: string = await this.serverTreeItem.getTooltip();
+
+    return tooltip.startsWith("Logix") && this.isServerIcon("logix");
+  }
+
+  async isServerProtheus(): Promise<boolean> {
+    const tooltip: string = await this.serverTreeItem.getTooltip();
+
+    return tooltip.startsWith("Protheus") && this.isServerIcon("protheus");
+  }
+
+  async isServerTotvstec(): Promise<boolean> {
+    const tooltip: string = await this.serverTreeItem.getTooltip();
+
+    return tooltip.startsWith("Totvstec") && this.isServerIcon("totvstec");
   }
 }
