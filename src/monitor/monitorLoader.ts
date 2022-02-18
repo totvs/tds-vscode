@@ -18,8 +18,9 @@ import {
   sendGetUsersRequest,
 } from "../protocolMessages";
 import { languageClient } from "../extension";
-import serverProvider, { ServerItem } from "../serverItemProvider";
+import serverProvider from "../serverItemProvider";
 import * as nls from "vscode-nls";
+import { ServerItem } from "../serverItem";
 
 const localize = nls.loadMessageBundle();
 const DEFAULT_SPEED = 30;

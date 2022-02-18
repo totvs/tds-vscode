@@ -1,5 +1,15 @@
 # Changelog
 
+# Versão [1.3.13] NEXT
+
+## Melhorias
+
+- Identificação do tipo de servidor pelo ambiente conectado, quando servidor Harpia. [DTCLIENT01-3246](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3246)
+
+## Array 4GL dinamico mostra SIZE incorreto no DEBUG via VSCODE
+
+- Correção na determinação e apresentação do tamanho de listas (_arrays_). [DTCLIENT01-3149](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3239)
+
 # Versão [1.3.12]
 
 ## Log de repositório com problemas no appserver Harpia

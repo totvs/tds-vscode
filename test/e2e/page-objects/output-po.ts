@@ -1,31 +1,16 @@
 import { expect } from "chai";
-import {
-  SideBarView,
-  TreeItem,
-  ViewContent,
-  DefaultTreeSection,
-  ViewSection,
-  ViewItem,
-  TitleActionButton,
-  ViewTitlePart,
-  ActivityBar,
-  ViewControl,
-  BottomBarPanel,
-  OutputView,
-} from "vscode-extension-tester";
+import { BottomBarPanel, OutputView } from "vscode-extension-tester";
 import { delay } from "../helper";
-import { WorkbenchPageObject } from "./workbench-po";
 
 export class OutputPageObject {
-  protected workbenchPO: WorkbenchPageObject;
   private _channelName: string;
-  private _view: OutputView;
+  private _view?: OutputView;
+  private _bottomPanel?: BottomBarPanel;
   private _text: string[];
-  private _bottomPanel: BottomBarPanel;
 
-  protected constructor(workbenchPO: WorkbenchPageObject, channelName: string) {
+  protected constructor(channelName: string) {
     this._channelName = channelName;
-    this.workbenchPO = workbenchPO;
+    this._text = [];
   }
 
   async openPanel(): Promise<OutputView> {
@@ -39,40 +24,32 @@ export class OutputPageObject {
   }
 
   private async selectChannel(): Promise<void> {
-    await this._bottomPanel.toggle(true);
+    await this._bottomPanel?.toggle(true);
 
-    let current: string = await this._view.getCurrentChannel();
+    let current: string = (await this._view?.getCurrentChannel()) || "";
 
     if (current !== this._channelName) {
-      await this._view.selectChannel(this._channelName);
+      await this._view?.selectChannel(this._channelName);
       await delay();
-      current = await this._view.getCurrentChannel();
-      await delay();
+      current = (await this._view?.getCurrentChannel()) || "";
     }
 
     expect(this._channelName).equals(current);
-    await delay();
   }
 
   async clearConsole(): Promise<void> {
     await this.selectChannel();
-    await this._view.clearText();
+    await this._view?.clearText();
     await delay();
   }
 
   async getText(): Promise<string> {
     await this.selectChannel();
 
-    return await this._view.getText();
+    return (await this._view?.getText()) || "";
   }
 
-  private async lineTest(
-    line: string,
-    targetText: string | RegExp
-  ): Promise<boolean> {
-    const target: RegExp = new RegExp(targetText, "i");
-    await delay(250);
-
+  private lineTest(line: string, target: RegExp): boolean {
     if (target.exec(line)) {
       return true;
     }
@@ -80,67 +57,120 @@ export class OutputPageObject {
     return false;
   }
 
-  protected async startSequenceTest(target: string | RegExp): Promise<void> {
-    let result: boolean = false;
-    const text: string[] = (await this.getText()).replace("\r", "").split(/\n/);
-    this._text = text;
-
-    //console.log("--------- text", text);
+  protected startSequenceTest(target: RegExp): string | undefined {
+    let result: string | undefined = undefined;
 
     while (this._text.length > 0 && !result) {
-      const line: string = this._text.shift();
-      result = await this.lineTest(line, target);
+      const line: string = this._text[0];
+      if (this.lineTest(line, target)) {
+        result = line;
+      }
+
+      this._text.shift();
     }
-
-    expect(
-      result,
-      `start: ${target} = ${text[0]} (more ${text.length - 1} lines)`
-    ).is.true;
-  }
-
-  protected async lineSequenceTest(target: string | RegExp): Promise<void> {
-    const line: string = this._text.shift();
-    const result: boolean = await this.lineTest(line, target);
-
-    expect(result, `line: ${target} = ${line}`).is.true;
-  }
-
-  protected async nextSequenceTest(target: string | RegExp): Promise<boolean> {
-    const line: string = this._text.length > 0 ? this._text[0] : "";
-    const result: boolean = await this.lineTest(line, target);
 
     return result;
   }
 
-  protected async endSequenceTest(target: string | RegExp): Promise<void> {
-    let result: boolean = false;
-    const lastLine: string = this._text[this._text.length - 1];
+  protected async lineSequenceTest(
+    target: RegExp
+  ): Promise<string | undefined> {
+    const line: string = this._text.shift() || "";
 
-    while (this._text.length > 0 && !result) {
-      const line: string = this._text.shift();
-      result = await this.lineTest(line, target);
+    if (await this.lineTest(line, target)) {
+      return line;
     }
 
-    expect(result, `end: ${target} = ${lastLine}`).is.true;
+    return undefined;
   }
 
-  protected async sequenceDefaultTest(
-    target: (string | RegExp)[]
-  ): Promise<void> {
-    //console.log("--------- target", target);
+  protected isNextSequenceTest(target: RegExp): boolean {
+    if (this._text.length) {
+      return this.lineTest(this._text[0], target);
+    }
 
-    const beginSequence: string | RegExp = target[0];
-    const endSequence: string | RegExp = target[target.length - 1];
-    const sequence: (string | RegExp)[] = target.slice(1, -1);
+    return false;
+  }
+
+  protected endSequenceTest(target: RegExp): string | undefined {
+    let result: string | undefined = undefined;
+
+    if (this._text.length) {
+      while (this._text.length > 0 && !result) {
+        const line: string | undefined = this._text.shift();
+        if (!line) {
+          break;
+        } else if (this.lineTest(line, target)) {
+          result = line;
+        }
+      }
+    }
+
+    return result;
+  }
+
+  protected async extractSequenceTest(
+    start: string | RegExp,
+    end: string | RegExp
+  ): Promise<string[]> {
+    const text: (string | undefined)[] = [];
 
     await this.openPanel();
     await delay();
-    await this.startSequenceTest(beginSequence);
 
-    while (sequence.length && !(await this.nextSequenceTest(endSequence))) {
-      await this.lineSequenceTest(sequence.shift());
+    const targetStart: RegExp =
+      typeof start === "string"
+        ? new RegExp(`(${start})`)
+        : new RegExp(start, "i");
+    const targetEnd: RegExp =
+      typeof start === "string" ? new RegExp(`(${end})`) : new RegExp(end, "i");
+
+    this._text = (await this.getText()).replace("\r", "").split(/\n/);
+
+    text.push(this.startSequenceTest(targetStart));
+
+    while (!this.isNextSequenceTest(targetEnd)) {
+      const line: string | undefined = this._text.shift();
+
+      text.push(line);
     }
 
-    await this.endSequenceTest(endSequence);
+    text.push(this.endSequenceTest(targetEnd));
+
+    console.log("saida");
+
+    return this.clearText(text);
+  }
+
+  private clearText(text: (string | undefined)[]): Promise<string[]> {
+    let result: string[] = [];
+
+    text.forEach((line: string | undefined) => {
+      line = line?.replace(/\t|\r/gi, "").replace(/(..:.. \[.*\] )/, "") || "";
+
+      result.push(line);
+    });
+
+    return Promise.resolve(result);
+  }
+
+  protected async sequenceDefaultTest(target: RegExp[]): Promise<void> {
+    const beginSequence: RegExp = target[0];
+    const endSequence: RegExp = target[target.length - 1];
+    const sequence: RegExp[] = target.slice(1, -1);
+
+    this._text = (await this.getText()).replace("\r", "").split(/\n/);
+
+    this.startSequenceTest(beginSequence);
+
+    while (sequence.length && !this.isNextSequenceTest(endSequence)) {
+      const next: RegExp | undefined = sequence.shift();
+
+      if (next) {
+        this.lineSequenceTest(next);
+      }
+    }
+
+    this.endSequenceTest(endSequence);
   }
 }

@@ -13,12 +13,12 @@ export class AbstractPageObject {
 
     await this.webView.wait();
     await this.webView.switchToFrame();
-    await delay(DEFAULT_DELAY);
+    await delay();
   }
 
   async endWebView(): Promise<void> {
     this.webView.switchBack();
-    await delay(DEFAULT_DELAY);
+    await delay();
 
     this._webView = null;
   }

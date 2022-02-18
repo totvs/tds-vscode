@@ -29,7 +29,7 @@ export function defragRpo() {
       )
       .then((clicked) => {
         if (clicked === localize("tds.vscode.yes", "Yes")) {
-          let authorizationToken: string = Utils.isSafeRPO(server)
+          let authorizationToken: string = Utils.isServerP20OrGreater(server)
             ? Utils.getAuthorizationToken(server)
             : "";
           let packPatchInfo = false;

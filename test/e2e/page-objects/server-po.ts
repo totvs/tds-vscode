@@ -30,6 +30,6 @@ export class ServerPageObject extends AbstractPageObject {
 
     await this.endWebView();
 
-    await delay(DEFAULT_DELAY);
+    await delay();
   }
 }

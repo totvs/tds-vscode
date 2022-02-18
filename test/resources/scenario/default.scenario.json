@@ -34,9 +34,10 @@
 		"port": 5001,
 		"environment": "P20-12-1-33",
 		"includePath": [
-			"./includes"
+			"../includes"
 		],
-		"smartClientBin": "${rootPath}/smartClient/smartClient${execExt}"
+		"smartClientBin": "${rootPath}/smartClient/smartClient${execExt}",
+		"environments": []
 	},
 	"users": {
 		"admin": {
@@ -53,9 +54,6 @@
 		}
 	},
 	"includePath": {
-		"valid": [
-			"${rootPath}/protheus/includes"
-		],
 		"toChange": [
 			"${rootPath}/change/includes"
 		],
@@ -68,6 +66,6 @@
 	"rpoToken": {},
 	"patchFolder": "p20",
 	"templatesFolder": "p20",
-	"projectFolder": "advpl",
+	"projectFolder": "?????",
 	"replayFolder": "replay"
 }

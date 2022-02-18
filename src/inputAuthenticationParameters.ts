@@ -2,7 +2,7 @@ import * as nls from "vscode-nls";
 import Utils from "./utils";
 import { MultiStepInput } from "./multiStepInput";
 import { authenticate } from "./serversView";
-import { ServerItem } from "./serverItemProvider";
+import { ServerItem } from "./serverItem";
 
 /**
  * Coleta os dados necessarios para logar a um servidor advpl/4gl.

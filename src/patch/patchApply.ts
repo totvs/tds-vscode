@@ -7,7 +7,7 @@ import { languageClient } from "../extension";
 import * as nls from "vscode-nls";
 import { ResponseError } from "vscode-languageclient";
 import JSZip = require("jszip");
-import { ServerItem } from "../serverItemProvider";
+import { ServerItem } from "../serverItem";
 
 let localize = nls.loadMessageBundle();
 const compile = require("template-literal");

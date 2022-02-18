@@ -22,7 +22,7 @@ export class ProblemsPageObject {
     markType: MarkerType = MarkerType.Any
   ): Promise<Marker[]> {
     const markers: Marker[] = await this._problemsView.getAllMarkers(markType);
-    await delay(DEFAULT_DELAY);
+    await delay();
 
     return markers;
   }

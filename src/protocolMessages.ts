@@ -17,12 +17,12 @@ interface AuthenticationNode {
 
 import { languageClient } from "./extension";
 import { ResponseError } from "vscode-languageclient";
-import { ServerItem } from "./serverItemProvider";
 import { CompileResult } from "./compile/CompileResult";
 import { _debugEvent } from "./debug";
 import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
 import { IRpoToken } from "./rpoToken";
 import Utils from "./utils";
+import { ServerItem } from "./serverItem";
 
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
@@ -117,6 +117,8 @@ export function sendConnectRequest(
     thisServerType = 1;
   } else if (serverItem.type === "totvs_server_logix") {
     thisServerType = 2;
+  } else if (serverItem.type === "totvs_server_totvstec") {
+    thisServerType = 3;
   }
 
   return languageClient
@@ -571,6 +573,12 @@ export interface IGetServerPermissionsResult {
   };
 }
 
+/**
+ *
+ * @param server
+ * @returns Informações de privilégios
+ * @see Para servidores P20 (Harpia) ou superiores, prefira {@link sendGetServerInformationsInfo}
+ */
 export function sendGetServerPermissionsInfo(
   server: ServerItem
 ): Promise<IGetServerPermissionsResult> {
@@ -581,6 +589,39 @@ export function sendGetServerPermissionsInfo(
       },
     })
     .then((response: IGetServerPermissionsResult) => {
+      return response;
+    });
+}
+
+export interface IGetServerInformationsResult {
+  message: string;
+  serverInformations: {
+    server: {
+      serverDetectedType: number;
+      environmentDetectedType: number;
+    };
+    permissions: {
+      operation: string[];
+      text: string[];
+    };
+  };
+}
+
+/**
+ *
+ * @param server
+ * @returns Informações de privilégios e como o server vê o ambiente (Prothes ou Logix)
+ */
+export function sendGetServerInformationsInfo(
+  server: ServerItem
+): Promise<IGetServerInformationsResult> {
+  return languageClient
+    .sendRequest("$totvsserver/serverInformations", {
+      serverInformationsInfo: {
+        connectionToken: server.token,
+      },
+    })
+    .then((response: IGetServerInformationsResult) => {
       return response;
     });
 }

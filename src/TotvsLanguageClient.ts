@@ -32,7 +32,7 @@ import { reconnectLastServer } from "./serversView";
 import * as nls from "vscode-nls";
 import { syncSettings } from "./server/languageServerSettings";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
-import Utils from "./utils";
+import Utils from "./utils";;
 
 let localize = nls.loadMessageBundle();
 

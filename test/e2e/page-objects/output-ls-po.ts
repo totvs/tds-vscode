@@ -1,100 +1,60 @@
 import { OutputPageObject } from "./output-po";
 import { WorkbenchPageObject } from "./workbench-po";
 
+export const VALID_SERVER_SEQUENCE: string[] = [
+  "Starting validate server",
+  "Appserver detected with build",
+  "Validate server",
+];
+
+const VALID_SERVER_BLOCK: RegExp[] = [
+  /Starting validate server/,
+  /Validate server/,
+];
+
+export const COMPILE_SEQUENCE: string[] = [
+  "Starting compile",
+  "Starting build for environment",
+  "Starting build using RPO token",
+  "Start file compile",
+  "Using Includes:",
+  "Start secure compiling.*1/1",
+  "",
+  "Aborting|Committing) end build",
+  "All files compiled.",
+  "Compile finished",
+];
+
+const COMPILE_BLOCK: RegExp[] = [
+  /(Starting [compile|recompile])/,
+  /(Starting build for environment)/,
+  /(Starting build using RPO token)/,
+  /(Start file compile)/,
+  /(Using Includes:)/,
+  /(Start secure compiling.*1\/1)/,
+  /(.*)/,
+  /((Aborting|Committing) end build)/,
+  /(All files compiled.*)/,
+  /(Compile finished)/,
+];
+
 export class OutputLsPageObject extends OutputPageObject {
+  extractCompileResult(): string {
+    throw new Error("Method not implemented.");
+  }
   constructor(workbenchPO: WorkbenchPageObject) {
-    super(workbenchPO, "TOTVS LS");
+    super("TOTVS LS");
   }
 
-  async validServerSequenceTest() {
-    const sequence: RegExp[] = [
-      /Starting validate server/,
-      /Appserver detected with build/,
-      /Validate server/,
-    ];
-    return await this.sequenceDefaultTest(sequence);
+  async extractServerSequenceTest(): Promise<string[]> {
+    return await this.extractSequenceTest(
+      VALID_SERVER_BLOCK[0],
+      VALID_SERVER_BLOCK[1]
+    );
   }
 
-  async compileSequenceSingleFileTest(): Promise<void> {
-    const sequence: RegExp[] = [
-      /(Starting compile)/,
-      /(Starting build for environment)/,
-      /(Starting build using RPO token)/,
-      /(Start file compile)/,
-      /(Using Includes:)/,
-      /(Start secure compiling.*1\/1)/,
-      /(.*)/,
-      /((Aborting|Committing) end build)/,
-      /(All files compiled.*)/,
-      /(Compile finished)/,
-    ];
-
-    return await this.sequenceDefaultTest(sequence);
-  }
-
-  async compileSequenceFolderTest(total: number): Promise<void> {
-    const startSecure = (): RegExp[] => {
-      const block: RegExp[] = [];
-      let seq: number = 1;
-
-      do {
-        block.push(new RegExp(`(Start secure compiling.*${seq}/${total})`));
-        block.push(/(.*)/);
-        seq++;
-      } while (seq <= total);
-
-      return block;
-    };
-
-    const sequence: RegExp[] = [
-      /(Starting compile)/,
-      /(Starting build for environment)/,
-      /(Starting build using RPO token)/,
-      /(Start compile of)/,
-      /(Using Includes:)/,
-      ...startSecure(),
-      /((Aborting|Committing) end build)/,
-      /(All files compiled|One or more files have errors)/,
-      /(Compile finished)/,
-    ];
-
-    return await this.sequenceDefaultTest(sequence);
-  }
-
-  async recompileSequenceFileTest(): Promise<void> {
-    const sequence: RegExp[] = [
-      /(Starting recompile)/,
-      /(Starting build for environment)/,
-      /(Starting build using RPO token)/,
-      /(Start file recompile)/,
-      /(Using Includes:)/,
-      /(Start secure compiling.*1\/2)/,
-      /(.*)/,
-      /(Start secure compiling.*2\/2)/,
-      /(.*)/,
-      /((Aborting|Committing) end build)/,
-      /(All files compiled.*)/,
-      /(Recompile finished)/,
-    ];
-
-    return await this.sequenceDefaultTest(sequence);
-  }
-
-  async recompileSequenceFolderTest(): Promise<void> {
-    const sequence: RegExp[] = [
-      /(Starting recompile)/,
-      /(Starting build for environment)/,
-      /(Starting build using RPO token)/,
-      /(Start file recompile)/,
-      /(Using Includes:)/,
-      /(Start secure compiling.*1\/1)/,
-      /(.*)/,
-      /((Aborting|Committing) end build)/,
-      /(All files compiled.*)/,
-      /(Recompile finished)/,
-    ];
-
-    return await this.sequenceDefaultTest(sequence);
+  async extractCompileSequenceTest(): Promise<string[]> {
+    return await this.extractSequenceTest(COMPILE_BLOCK[0], COMPILE_BLOCK[1]);
   }
 
   async compileSequenceWithWarningTest(): Promise<void> {

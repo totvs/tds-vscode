@@ -45,7 +45,8 @@
 					"description": "The server type.",
 					"enum": [
 						"totvs_server_protheus",
-						"totvs_server_logix"
+						"totvs_server_logix",
+						"totvs_server_totvstec"
 					]
 				},
 				"serverName": {
@@ -63,6 +64,13 @@
 				"environment": {
 					"type": "string",
 					"description": "AppServer runtime environment."
+				},
+				"environments": {
+					"type": "array",
+					"description": "List of environments that can be used in tests.",
+					"items": {
+						"type": "string"
+					}
 				},
 				"includePath": {
 					"type": "array",
@@ -158,13 +166,6 @@
 			"type": "object",
 			"description": "Folders for lookup define files (.ch). Used only for editing tests and do not need exist. One per line.",
 			"properties": {
-				"valid": {
-					"description": "Valid folders. One per line.",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
-				},
 				"toChange": {
 					"type": "array",
 					"description": "Valid folders for update 'includePath' propertie. One per line.",
@@ -181,7 +182,6 @@
 				}
 			},
 			"required": [
-				"valid",
 				"toChange",
 				"toAdd"
 			]
