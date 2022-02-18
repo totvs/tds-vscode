@@ -280,8 +280,7 @@ function getClientConfig(context: ExtensionContext) {
 
   //Processo de cache desabilitado até que seja corretamente implementado pelo LS
   //let cacheDir = '${workspaceFolder}/.vscode/totvs_cached_index/';
-  //clientConfig.cacheDirectory = resolveVariables(cacheDir);
-  //config.update(kCacheDirPrefName, cacheDir, false /*global*/);
+  //clientConfig["cacheDirectory"] = resolveVariables(cacheDir);
 
   return clientConfig;
 }
