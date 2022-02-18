@@ -15,9 +15,9 @@ Saiba um pouquinho mais em [A Evolução dos testes E2E no Zé Delivery](https:/
 
 Os testes foram elaborados usando [VSCode Extension Tester](https://github.com/redhat-developer/vscode-extension-tester), desenvolvida pela [RedHat Developer](https://github.com/redhat-developer), cujo foco é testar o [VS-Code](https://code.visualstudio.com/), desenvolvido pela [Microsoft](https://www.microsoft.com).
 
-Os testes da extensão são em _TypeScript_ usando alguns pacotes [npm](https://www.npmjs.com/), sendo os principais [Mocha](https://mochajs.org/api/mocha) e [chai](https://www.chaijs.com/), e usando conceitos de (_Value Object_)[https://imasters.com.br/back-end/padroes-de-projeto-value-object], (_Page Object_)[https://medium.com/automa%C3%A7%C3%A3o-com-batista/como-utilizar-page-objects-nos-testes-automatizados-com-appium-723468df5bf4] e _Scenario_.
+Os testes da extensão são em _TypeScript_ usando alguns pacotes [npm](https://www.npmjs.com/), sendo os principais [Mocha](https://mochajs.org/api/mocha) e [chai](https://www.chaijs.com/), e usando conceitos de [_Value Object_](https://imasters.com.br/back-end/padroes-de-projeto-value-object), [_Page Object_](https://medium.com/automa%C3%A7%C3%A3o-com-batista/como-utilizar-page-objects-nos-testes-automatizados-com-appium-723468df5bf4) e _Scenario_.
 
-_Scenario_, no contexto dos testes do **TDS-VSCode**, são configurações efetuadas, principalmente para identificar o servidor alvo, ou pela sua versão (P13, LG, Harpia) ou tipo (Protheus, Logix). Conforme a configuração destes, os testes serão executados segundo essas configurações.
+_Scenario_, no contexto dos testes do **TDS-VSCode**, são configurações efetuadas para identificar o servidor alvo, ou pela sua versão (P13, LG, Harpia) ou tipo (Protheus, Logix) e alguns comportamentos. Sua estrutura pode ser vista em [scenario.schema.json](../schema/scenario.schema.json).
 
 ## Organização
 
@@ -41,7 +41,7 @@ test               raiz dos testes
  | unit            testes unitários
 ```
 
-As pastas (_common_, _logix_, _protheus_ e _tec_) que contém os testes propriamente ditos identificados pelo sufixo ``-test.ts``, possuem a sequinte estrutura básica:
+As pastas (_common_, _logix_, _protheus_ e _tec_) contém os testes propriamente ditos, identificados pelo sufixo ``-test.ts`` com a sequinte estrutura básica:
 
 ```
 (folder)
@@ -52,8 +52,6 @@ As pastas (_common_, _logix_, _protheus_ e _tec_) que contém os testes propriam
   | jira           testes originados de chamados _Jira_
 ```
 
-A pasta de cenários (_scenario_), contem a configuração do ambiente no qual o teste será executado e sua estrutura pode ser vista em (scenario.schema.json)[./schema/scenario.schema.json].
-
 ## Configuração do ambiente de testes
 
 1. Atualize os arquivos da extensão.
@@ -61,7 +59,10 @@ A pasta de cenários (_scenario_), contem a configuração do ambiente no qual o
    Os pacotes _npm_ necessários já estão identificados nas sessões de dependências e serão instalados, junto com demais depedências.
 3. Execute o _script npm_ ``test-setup``.
    Serão baixados alguns pacotes, inclusive a última versão do _VSCode_, na pasta ``../temp``.
-   Também será gerado e instalado um _visx_ usando as configurações e fontes baixados.
+   Também será gerado e instalado um _visx_ usando as configurações e fontes da extensão.
+
+> Ao efetuar modificações nos fontes da extensão, faz-se necessário reexecuar a configuração do ambiente ou gerar um novo _vsix_ e instalá-lo (``extest install-vsix``).
+> Caso deseje testar um _vsix_ já publicado ou depender da instalação de outras extensões, após executar ``test-setup``, instale-o usando ``install-from-marketplace [options] <id> [ids...]``.
 
 ## Executando testes
 
@@ -70,6 +71,7 @@ A pasta de cenários (_scenario_), contem a configuração do ambiente no qual o
 3. Acione a execução através do _script npm_ (crie se necessário na sessão ``--SCENARIO--``). Os _scripts_ de execução ``--TEST--`` são voltados para execuções em ambientes de _CI_, portanto, se moodificados não devem ser enviados ao _GitHub_.
    Para sistemas operacionais _*nix*_, defina o cenário a ser executado via comando ``export`` no lugar de ``set``
 
+> As alterações na pasta ``test`` e suas sub-pastas, são compiladas antes de qualquer teste.
 > Ao executar os testes, as vezes este não é iniciado devido a demora em o _VSCode_ "organizar" _caches_ (ou algo similitar). Caso ocorra, execute mais vezes, principalmente em máquinas mais lentas.
 
 ## Limitações
