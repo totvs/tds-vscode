@@ -10,6 +10,10 @@
 
 - Correção na determinação e apresentação do tamanho de listas (_arrays_). [DTCLIENT01-3149](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3239)
 
+## Não é possível validar token no Linux
+
+- Correção efetuada para validar corretamente o token. [DTCLIENT-3264](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3264)
+
 # Versão [1.3.12]
 
 ## Log de repositório com problemas no appserver Harpia
