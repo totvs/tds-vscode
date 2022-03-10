@@ -8,15 +8,19 @@ import {
   TitleActionButton,
   ViewTitlePart,
   ActivityBar,
+  VSBrowser,
 } from "vscode-extension-tester";
+import { delay } from "../helper";
 import { WorkbenchPageObject } from "./workbench-po";
 
 export class ViewPageObject<T> {
   private _view: T;
   protected workbenchPO: WorkbenchPageObject;
   private viewName: string;
+  //private _driver: any;
 
   protected constructor(name: string) {
+    //this._driver = VSBrowser.instance.driver;
     this.viewName = name;
     this.workbenchPO = new WorkbenchPageObject();
     this.openView().then((value: T) => {
@@ -35,30 +39,7 @@ export class ViewPageObject<T> {
 
     this._view = result;
 
-    // const title: string = await (this._view as unknown as SideBarView)
-    //   .getTitlePart()
-    //   .getTitle();
-    // console.log("%%%%%%%%%%%%%%%%%%", title);
-
     return result;
-    // const activityBar: ActivityBar = new ActivityBar();
-    // const controls: ViewControl[] = await activityBar.getViewControls();
-    // let result: T = null;
-
-    // for await (const control of controls) {
-    //   const vc: ViewControl = control;
-    //   const title: string = await vc.getTitle();
-
-    //   if (title.startsWith(this.viewName)) {
-    //     result = (await vc.openView()) as unknown as T;
-    //   }
-    // }
-
-    // this._view = result;
-
-    // await delay(2000);
-
-    // return result;
   }
 
   async openTreeItem(
@@ -86,8 +67,7 @@ export class ViewPageObject<T> {
     const content: ViewContent = view.getContent();
     const sections = await content.getSections();
     const tree: DefaultTreeSection = sections[0] as DefaultTreeSection;
-
-    const result: TreeItem = await this.findNode(tree, path);
+    const result: TreeItem = await this.findChildNode(tree, path);
 
     return result;
   }
@@ -101,64 +81,49 @@ export class ViewPageObject<T> {
 
     if (path.length == 0) {
       result = (await tree.getVisibleItems()).length;
-    } //if (path.length == 1) {
-    else result = (await tree.openItem(...path)).length;
-    // } else {
-    //   result = (await tree.openItem(...path.slice(0, -1))).length;
-    // }
+    } else {
+      result = (await tree.openItem(...path)).length;
+    }
 
     return result;
   }
 
-  private async findNode(
+  async findChildNode(
     tree: DefaultTreeSection,
     path: string[]
   ): Promise<TreeItem> {
+    const DELAY: number = 500;
+
     if (path.length == 1) {
-      return await tree.findItem(path[0]);
+      const node: TreeItem = await tree.findItem(path[0]);
+      return node;
     }
 
-    const target: string[] = path.slice(0, -1);
-    const nodes: TreeItem[]  = await tree.openItem(...target);
-    const nodes2 :TreeItem[] =  await tree.openItem(...path);
-    const labels2 = await Promise.all(nodes.map((item) => item.getLabel()));
-    const labels3 = await Promise.all(nodes2.map((item) => item.getLabel()));
-    console.log(">>>>>> ", target, path, labels2, labels3);
+    let result: TreeItem = undefined;
+    let children = await tree.openItem(path[0], path[1]);
+    let level: number = 2;
 
-    for (const node of nodes) {
-      const target: string = await node.getLabel();
+    do {
+      for (let index = 0; index < children.length; index++) {
+        const child = children[index];
+        const label: string = await child.getLabel();
 
-      if (target == path[path.length - 1]) {
-        return node;
-      }
-    }
-
-    return undefined;
-  }
-
-  async findChildNode(
-    tree: DefaultTreeSection,
-    nodes: string[]
-  ): Promise<TreeItem> {
-    let node: TreeItem = await tree.findItem(nodes[0]);
-    let aux = undefined;
-
-    if (node) {
-      let level: number = 1;
-      do {
-        //await node.expand();
-        const children = await node.getChildren();
-        for await (const child of children) {
-          if ((await child.getLabel()) == node[level]) {
-            aux = child;
-            node = aux;
-          }
+        if (label == path[level]) {
+          result = child;
+          break;
         }
-        level++;
-      } while (level < nodes.length);
-    }
+      }
 
-    return aux;
+      level++;
+      if (level < path.length && result) {
+        children = await result.getChildren();
+        result = undefined;
+      }
+    } while (level < path.length);
+
+    await delay(DELAY);
+
+    return result;
   }
 
   async getAction(action: string): Promise<TitleActionButton> {

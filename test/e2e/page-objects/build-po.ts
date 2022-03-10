@@ -17,6 +17,7 @@ export class BuildPageObject extends AbstractPageObject {
     await fireContextMenuAction(item, "Compile File/Folder");
   }
 
+  //TODO: não esta sendo acionado, devido a necessidade do acionamento ALT
   async fireRebuildFile(item: TreeItem) {
     await this.workbenchPO.executeCommand(
       "totvs-developer-studio.rebuild.file"
@@ -41,11 +42,15 @@ export class BuildPageObject extends AbstractPageObject {
 
   async compileProcess(resourceItem: TreeItem) {
     const outputPO = await this.workbenchPO.openOutputLs();
-
     await outputPO.clearConsole();
+
+    const expandable: boolean = await resourceItem.isExpandable(); //é um folder
     await this.fireBuildFile(resourceItem);
 
     await this.workbenchPO.waitBuilding();
-    await this.askShowCompileResult(false);
+
+    if (expandable) {
+      await this.askShowCompileResult(false);
+    }
   }
 }

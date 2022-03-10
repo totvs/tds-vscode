@@ -6,7 +6,7 @@ import * as nls from "vscode-nls";
 import { inputConnectionParameters } from "./inputConnectionParameters";
 import { inputAuthenticationParameters } from "./inputAuthenticationParameters";
 import { ResponseError } from "vscode-languageclient";
-import serverProvider, { ServerItem, EnvSection } from "./serverItemProvider";
+import serverProvider from "./serverItemProvider";
 import {
   ConnTypeIds,
   sendValidationRequest,
@@ -20,6 +20,7 @@ import {
   IReconnectInfo,
   ENABLE_CODE_PAGE,
 } from "./protocolMessages";
+import { EnvSection, ServerItem } from "./serverItem";
 
 let localize = nls.loadMessageBundle();
 const compile = require("template-literal");
@@ -380,17 +381,10 @@ function doFinishConnectProcess(
   Utils.saveSelectServer(
     serverItem.id,
     token,
-    serverItem.name,
     environment,
     serverItem.username
   );
 
-  if (serverProvider !== undefined) {
-    serverItem.environment = environment;
-    serverItem.token = token;
-
-    serverProvider.connectedServerItem = serverItem;
-  }
   runCommandUpdateMonitor();
   //let isSafeRPO = serverItem.isSafeRPO; // this is not working returning => undefined
   let isSafeRPO = serverItem.buildVersion.localeCompare("7.00.191205P") > 0;

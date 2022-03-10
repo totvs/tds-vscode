@@ -22,11 +22,11 @@ import {
   StatusBarAlignment,
 } from "vscode";
 import { jumpToUriAtPosition } from "./vscodeUtils";
+import Utils from "./utils";
 import { ServersExplorer } from "./serversView";
 import { compileKeyPage } from "./compileKey/compileKey";
 import { getLanguageClient } from "./TotvsLanguageClient";
 import { patchGenerate, patchGenerateFromFolder } from "./patch/patchGenerate";
-import Utils from "./utils";
 import {
   commandBuildFile,
   commandBuildWorkspace,
@@ -74,8 +74,9 @@ import { rpoTokenInputBox, saveRpoTokenString } from "./rpoToken";
 import { openGeneratePatchView } from "./patch/generate/generatePatchLoader";
 import { patchApply } from "./patch/patchApply";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
-import { openInspectView } from "./inspect-harpia";
-import { ServerItem } from "./serverItemProvider";
+import { commandShowBuildTableResult } from "./compile/buildResult";
+import { ServerItem } from "./serverItem";
+import serverProvider from "./serverItemProvider";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -364,35 +365,15 @@ export function activate(context: ExtensionContext) {
 
   //Ação par abrir a tela de inspetor de objetos.
   context.subscriptions.push(
-    commands.registerCommand(
-      "totvs-developer-studio.inspectorObjects",
-      (server: ServerItem) => {
-        if (server.isServerP20OrGreater) {
-          openInspectView(context, {
-            objectsInspector: true,
-            includeOutScope: false, //TRES
-          });
-        } else {
-          inspectObject(context);
-        }
-      }
+    commands.registerCommand("totvs-developer-studio.inspectorObjects", () =>
+      inspectObject(context)
     )
   );
 
   //Ação par abrir a tela de inspetor de funções.
   context.subscriptions.push(
-    commands.registerCommand(
-      "totvs-developer-studio.inspectorFunctions",
-      (server: ServerItem) => {
-        if (server.isServerP20OrGreater) {
-          openInspectView(context, {
-            objectsInspector: false,
-            includeOutScope: false, //inicia com #NONE
-          });
-        } else {
-          inspectFunctions(context);
-        }
-      }
+    commands.registerCommand("totvs-developer-studio.inspectorFunctions", () =>
+      inspectFunctions(context)
     )
   );
 
@@ -414,26 +395,34 @@ export function activate(context: ExtensionContext) {
   //Compila todos os arquivos dentro de um workspace.
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.build.workspace", () =>
-      commandBuildWorkspace(false, context)
+      commandBuildWorkspace(false)
     )
   );
   //Recompila todos os arquivos dentro de um workspace.
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.rebuild.workspace", () =>
-      commandBuildWorkspace(true, context)
+      commandBuildWorkspace(true)
     )
   );
 
   //Compila todos os fontes abertos
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.build.openEditors", () =>
-      commandBuildOpenEditors(false, context)
+      commandBuildOpenEditors(false)
     )
   );
   //Recompila todos os fontes abertos
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.rebuild.openEditors", () =>
-      commandBuildOpenEditors(true, context)
+      commandBuildOpenEditors(true)
+    )
+  );
+  //Apresenta tabela de resultados da compilação
+  context.subscriptions.push(
+    commands.registerCommand(
+      "totvs-developer-studio.show.result.build",
+      (compileResult: any) =>
+        commandShowBuildTableResult(context, compileResult)
     )
   );
 
@@ -604,6 +593,11 @@ export function activate(context: ExtensionContext) {
 
   //Mostra a pagina de Welcome.
   showWelcomePage(context, false);
+
+  Utils.onDidSelectedServer((newServer: ServerItem) => {
+    serverProvider.connectedServerItem = newServer;
+  })
+  serverProvider.checkServersConfigListener(true);
 
   //Abre uma caixa de informações para login no servidor protheus selecionado.
   context.subscriptions.push(

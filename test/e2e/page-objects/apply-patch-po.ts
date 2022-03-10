@@ -1,4 +1,4 @@
-import { delay } from "../helper";
+import { delay, DEFAULT_DELAY } from "../helper";
 import { AbstractPageObject } from "./abstract-po";
 
 export class ApplyPatchPageObject extends AbstractPageObject {
@@ -7,7 +7,7 @@ export class ApplyPatchPageObject extends AbstractPageObject {
 
     for await (const patchFile of patchList) {
       await this.setValue("btn-File", patchFile);
-      await delay(2000);
+      await delay();
     }
 
     await this.endWebView();

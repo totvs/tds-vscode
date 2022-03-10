@@ -5,6 +5,7 @@ import {
   RPO_FOLDER,
   RPO_RESET_TARGET,
   RPO_RESET_SOURCE,
+  RPO_CUSTOM,
 } from "./scenario";
 import {
   By,
@@ -22,28 +23,31 @@ import { expect } from "chai";
 import { IUserData } from "./page-objects/interface-po";
 import { setTimeout } from "timers/promises";
 
-const DEFAULT_DELAY = 1000;
+export const DEFAULT_DELAY = 1000;
+export const DELAY_SHORT = DEFAULT_DELAY * 2;
+export const DELAY_MEDIUM = DEFAULT_DELAY * 3;
+export const DELAY_LONG = DEFAULT_DELAY * 5;
 
 function clearVscodeFiles(projectFolder: string): void {
-  const serversJsonFile: string = path.join(
-    projectFolder,
-    ".vscode",
-    "servers.json"
-  );
+  const folder: string = path.join(projectFolder, ".vscode");
+  const filesToRemove: string[] = [
+    path.join(folder, "launch.json"),
+    path.join(folder, "servers.json"),
+  ];
 
-  if (fse.existsSync(serversJsonFile)) {
-    fse.removeSync(serversJsonFile);
-  }
+  fse.ensureDirSync(path.dirname(folder));
 
-  const launchJsonFile: string = path.join(
-    projectFolder,
-    ".vscode",
-    "launch.json"
-  );
+  filesToRemove.forEach((file: string) => {
+    if (fse.existsSync(file)) {
+      fse.removeSync(file);
+    }
+  });
 
-  if (fse.existsSync(launchJsonFile)) {
-    fse.removeSync(launchJsonFile);
-  }
+  const launch: any = {
+    version: "0.2.0",
+    configurations: [{}],
+  };
+  fse.writeJSONSync(filesToRemove[0], launch);
 }
 
 async function closeAllEditors(): Promise<void> {
@@ -56,12 +60,18 @@ async function closeAllEditors(): Promise<void> {
 export interface IOpenProject {
   linter: boolean;
   resetRpo: boolean;
+  resetRpoCustom: boolean;
 }
 
 const DEFAULT_OPEN_PROJECT: IOpenProject = {
   linter: false,
-  resetRpo: true,
+  resetRpo: false,
+  resetRpoCustom: true,
 };
+
+export async function openProjectWithReset() {
+  openProject({ resetRpo: true, resetRpoCustom: true });
+}
 
 export async function openProject(
   optionsOpenProject: Partial<IOpenProject> = {}
@@ -76,16 +86,21 @@ export async function openProject(
   if (options.resetRpo) {
     resetRpo();
   }
+  if (options.resetRpoCustom) {
+    resetRpoCustom();
+  }
 
   await VSBrowser.instance.openResources(PROJECT_FOLDER);
 
-  await delay(2000);
+  await delay();
 
   //const settingsPO: SettingsPageObject = new SettingsPageObject();
   //await settingsPO.openView();
   //await settingsPO.setLinter(options.linter);
 
   await closeAllEditors();
+
+  await delay(DELAY_MEDIUM);
 }
 
 function resetRpo() {
@@ -95,6 +110,12 @@ function resetRpo() {
   );
 }
 
+function resetRpoCustom() {
+  if (fse.existsSync(RPO_CUSTOM)) {
+    fse.removeSync(RPO_CUSTOM);
+  }
+}
+
 export async function readServersJsonFile(): Promise<string> {
   const serversJsonFile: string = path.join(
     PROJECT_FOLDER,
@@ -102,6 +123,8 @@ export async function readServersJsonFile(): Promise<string> {
     "servers.json"
   );
   let result: string = "< file not found >";
+
+  fse.ensureDirSync(path.dirname(serversJsonFile));
 
   if (fse.existsSync(serversJsonFile)) {
     const buffer: Buffer = fse.readFileSync(serversJsonFile);
@@ -113,10 +136,14 @@ export async function readServersJsonFile(): Promise<string> {
 
 export const delay = async (duration: number = DEFAULT_DELAY) => {
   await setTimeout(duration);
+  //  const driver = VSBrowser.instance.driver;
+  //  await driver.wait(() => {
+  //    return Promise.resolve(() => true);
+  // }, duration);
 };
 
 export const avoidsBacksliding = async () => {
-  await delay(3000);
+  await delay(DELAY_MEDIUM);
 };
 
 export async function takeQuickPickAction(
@@ -181,7 +208,6 @@ export async function fillUserdata(userData: IUserData) {
   pickBox.wait();
 
   let title = await pickBox.getTitle();
-  title = await pickBox.getTitle();
   expect(title).is.equal("Authentication (1/2)");
 
   await pickBox.setText(userData.username);
@@ -199,29 +225,23 @@ export async function fillUserdata(userData: IUserData) {
   await delay();
 }
 
+export async function fillDebugConfig(title: string) {
+  const pickBox = new InputBox();
+  await delay();
+  pickBox.wait();
+
+  await pickBox.setText(title);
+  await delay();
+  await pickBox.confirm();
+  await delay();
+}
+
 export async function fireContextMenuAction(
   element: ViewItem | ViewControl,
   name: string
 ) {
   const menu: ContextMenu = await element.openContextMenu();
   await menu.select(name);
-
-  // const action: ContextMenuItem = await menu.getItem(name);
-  // await action.click();
-  await delay();
-}
-
-export async function fillProgramName(program: string, ...args: string[]) {
-  const pickBox = new InputBox();
-  await delay();
-
-  let title = await pickBox.getTitle();
-  expect(title).is.equal("Please enter the name of an AdvPL/4GL function");
-
-  await pickBox.setText(`${program} ${args ? args.join(",") : ""}`);
-  await delay();
-
-  await pickBox.confirm();
   await delay();
 }
 

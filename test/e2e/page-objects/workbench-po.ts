@@ -3,8 +3,9 @@ import {
   Notification,
   NotificationType,
   EditorView,
+  InputBox,
 } from "vscode-extension-tester";
-import { delay } from "../helper";
+import { delay, DELAY_MEDIUM } from "../helper";
 import { NotificationPageObject } from "./notification-po";
 import { StatusPageObject } from "./status-po";
 import { expect } from "chai";
@@ -16,8 +17,9 @@ import { OutputLsPageObject } from "./output-ls-po";
 import { ProblemsPageObject } from "./problem-view-po";
 import { BottomBarPageObject } from "./bottom-bar-po";
 
-const PROCESS_TIMEOUT = 10 * 1000; //10 segundos
-const WAIT_PROCESS_TIMEOUT = 3 * 60 * 1000; // 3min
+const FAST_PROCESS_TIMEOUT = 30 * 1000; //30 segundos
+const MEDIUM_PROCESS_TIMEOUT = 60 * 1000; //1 min
+const SLOW_PROCESS_TIMEOUT = 3 * 60 * 1000; // 3min
 
 export class WorkbenchPageObject {
   private _workbench: Workbench;
@@ -28,7 +30,7 @@ export class WorkbenchPageObject {
   constructor() {
     this._workbench = new Workbench();
     this.statusBar = new StatusPageObject(this._workbench);
-    this.notification = new NotificationPageObject(this._workbench);
+    this.notification = NotificationPageObject.create(this._workbench);
     this.bottombar = new BottomBarPageObject();
   }
 
@@ -56,7 +58,9 @@ export class WorkbenchPageObject {
     );
   }
 
-  private async testNotification(targetText: RegExp | string) {
+  private async testNotification(
+    targetText: RegExp | string
+  ): Promise<boolean> {
     const notification: Notification = await this.getNotification(targetText);
     const result: boolean = notification ? true : false;
     await notification?.dismiss();
@@ -113,6 +117,10 @@ export class WorkbenchPageObject {
     return await this.testNotification(/TDS\-DA ready/);
   }
 
+  async isDAServerConnected(): Promise<boolean> {
+    return await this.testNotification(/Application Server connected/);
+  }
+
   async isDACheckingSources(): Promise<boolean> {
     return await this.testNotification(/Checking the.*source/);
   }
@@ -140,7 +148,29 @@ export class WorkbenchPageObject {
   }
 
   async isDAFinished(): Promise<any> {
-    return await this.testNotification(/TDS\-DA finished/);
+    return this.testNotification(/TDS\-DA finished/);
+  }
+
+  async isDAEndProcess(): Promise<boolean> {
+    return await Promise.all([
+      await this.testNotification(/Closing SmartClient/),
+      await this.testNotification(/ExitCode=.*ExistStatus=.*/),
+      await this.testNotification(/SmartClient closed/),
+      await this.testNotification(/TDS-DA being finalized/),
+      await this.isDAFinished(),
+    ]).then((value: boolean[]) => {
+      return !value.includes(false);
+    });
+  }
+
+  async isDABeginProcess(): Promise<boolean> {
+    return await Promise.all([
+      await this.isDAInitialing(),
+      await this.isDAReady(),
+      await this.isDAServerConnected(),
+    ]).then((value: boolean[]) => {
+      return !value.includes(false);
+    });
   }
 
   async isPatchValidateNotBeExecuted(): Promise<boolean> {
@@ -172,6 +202,10 @@ export class WorkbenchPageObject {
     return await this.testNotification(/One or more files have.*/);
   }
 
+  async isCompileOk(): Promise<boolean> {
+    return ! (await this.isOneOrMoreFileHaveError());
+  }
+
   async isHaveKey(): Promise<boolean> {
     return (await this.statusBar.statusBarWithText(/HAVE key/)) !== null;
   }
@@ -190,7 +224,7 @@ export class WorkbenchPageObject {
 
   private async waitNotification(
     targetText: RegExp | string,
-    _wait: number = PROCESS_TIMEOUT
+    _wait: number = FAST_PROCESS_TIMEOUT
   ) {
     let steps: number = _wait / 500;
     let notification: Notification = await this.getNotification(targetText);
@@ -210,7 +244,7 @@ export class WorkbenchPageObject {
 
   public async waitProcessFinish(
     targetText: RegExp | string,
-    _wait: number = PROCESS_TIMEOUT
+    _wait: number = FAST_PROCESS_TIMEOUT
   ): Promise<Notification> {
     let steps: number = _wait / 500;
     let notification: Notification = await this.getNotification(targetText);
@@ -234,34 +268,34 @@ export class WorkbenchPageObject {
     return notification;
   }
 
-  async waitConnection(wait: number = PROCESS_TIMEOUT): Promise<void> {
+  async waitConnection(wait: number = MEDIUM_PROCESS_TIMEOUT): Promise<void> {
     await this.waitProcessFinish(/Authenticating user/, wait);
   }
 
   async waitAskShowCompileResult(
-    wait: number = PROCESS_TIMEOUT
+    wait: number = MEDIUM_PROCESS_TIMEOUT
   ): Promise<Notification> {
     return await this.waitNotification(/Show table with compile results/, wait);
   }
 
-  async waitReconnection(wait: number = PROCESS_TIMEOUT): Promise<void> {
+  async waitReconnection(wait: number = MEDIUM_PROCESS_TIMEOUT): Promise<void> {
     await this.waitProcessFinish(/Reconnecting to the server/);
   }
 
-  async waitCheckIntegrity(wait: number = PROCESS_TIMEOUT): Promise<void> {
+  async waitCheckIntegrity(wait: number = FAST_PROCESS_TIMEOUT): Promise<void> {
     await this.waitProcessFinish(/Checking RPO integrity/);
   }
 
-  async waitRevalidate(wait: number = PROCESS_TIMEOUT): Promise<void> {
+  async waitRevalidate(wait: number = FAST_PROCESS_TIMEOUT): Promise<void> {
     await this.waitProcessFinish(/Revalidating RPO/);
   }
 
-  async waitRpoLoaded(wait: number = PROCESS_TIMEOUT): Promise<void> {
+  async waitRpoLoaded(wait: number = FAST_PROCESS_TIMEOUT): Promise<void> {
     await this.waitProcessFinish(/Loading RPO content/);
   }
 
   async waitValidatingServer(): Promise<void> {
-    await this.processInProgress(/Validating server/);
+    await this.waitProcessFinish(/Validating server/);
   }
 
   async startConnection(): Promise<boolean> {
@@ -289,7 +323,7 @@ export class WorkbenchPageObject {
   }
 
   async waitApplyTemplate() {
-    await this.waitProcessFinish(/Applying template/, WAIT_PROCESS_TIMEOUT);
+    await this.waitProcessFinish(/Applying template/, SLOW_PROCESS_TIMEOUT);
   }
 
   async applyCheckingZipInProgress(): Promise<boolean> {
@@ -300,16 +334,17 @@ export class WorkbenchPageObject {
     return await this.processInProgress(/Applying patch/);
   }
 
-  async waitApplyPatch(delay: number = WAIT_PROCESS_TIMEOUT) {
+  async waitApplyPatch(delay: number = SLOW_PROCESS_TIMEOUT) {
     await this.waitProcessFinish(/Applying patch/, delay);
   }
 
-  async waitImportReplay(delay: number = WAIT_PROCESS_TIMEOUT) {
+  async waitImportReplay(delay: number = SLOW_PROCESS_TIMEOUT) {
     await this.waitProcessFinish(/Importing TDS Replay/, delay);
   }
 
-  async waitBuilding(delay: number = WAIT_PROCESS_TIMEOUT) {
-    await this.waitProcessFinish(/Building\.\.\./, delay);
+  async waitBuilding(_delay: number = SLOW_PROCESS_TIMEOUT) {
+    await this.waitProcessFinish(/Building\.\.\./, _delay);
+    await delay(DELAY_MEDIUM);
   }
 
   async getNotification(
@@ -327,6 +362,14 @@ export class WorkbenchPageObject {
 
   async executeCommand(command: string) {
     await this._workbench.executeCommand(command);
+    await delay();
+  }
+
+  async promptCommand(text: string) {
+    await this._workbench.openCommandPrompt().then(async (value: InputBox) => {
+      await value.setText(text);
+      await value.confirm();
+    });
   }
 
   async openMonitor(): Promise<MonitorPageObject> {
@@ -374,5 +417,9 @@ export class WorkbenchPageObject {
     const view = new EditorView();
     view.closeAllEditors();
     await delay();
+  }
+
+  async waitStopDebugger(wait: number = MEDIUM_PROCESS_TIMEOUT) {
+    return await this.waitNotification(/Closing SmartClient/, wait);
   }
 }

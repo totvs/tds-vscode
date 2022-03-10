@@ -1,5 +1,25 @@
 # Changelog
 
+# Versão [1.3.13] NEXT
+
+## Melhorias
+
+- Identificação do tipo de servidor pelo ambiente conectado, quando servidor Harpia. [DTCLIENT01-3246](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3246)
+
+## Array 4GL dinamico mostra SIZE incorreto no DEBUG via VSCODE
+
+- Correção na determinação e apresentação do tamanho de listas (_arrays_). [DTCLIENT01-3149](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3239)
+
+## Não é possível validar token no Linux
+
+- Correção efetuada para validar corretamente o token. [DTCLIENT-3264](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3264)
+
+# Versão [1.3.12]
+
+## Log de repositório com problemas no appserver Harpia
+
+- Adequação de informações retornadas pelo _appServer_. [DTCLIENT01-3239](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3239)
+
 # Versão [1.3.11]
 
 ## Melhorias
@@ -12,19 +32,27 @@
 
 - Depuração: Tratamento do tipo _JSON_ em fontes _tlpp_ [#886](https://github.com/totvs/tds-vscode/issues/886)
 
-- Durante a depuração de fontes _tlpp_ com variáveis do tipo _JSON_, estas são apresentadas de forma hierárquica nas visões `Variáveis`, `Inspeção` e outras.
+  Durante a depuração de fontes _tlpp_ com variáveis do tipo _JSON_, estas são apresentadas de forma hierárquica nas visões `Variáveis`, `Inspeção` e outras.
 
 ## Removido
 
 - Depuração via SIGAPAF devido a incompatibilidade entre aplicações.
 
+## Não mostra tabela como resultados da compilação
+
+- Corrigido processo de abertura da tabela de resultados. [#895](https://github.com/totvs/tds-vscode/issues/895)
+
 ## Tela do Monitor não é exibida
 
-- Corrgido problema na geração do pluguin que fazia com que os fontes da tela do monitor não fossem adicionados ao pacote. [DTCLIENT01-3163](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3163)
+- Corrigido problema na geração da extensão que fazia com que os fontes da tela do monitor não fossem adicionados ao pacote. [DTCLIENT01-3163](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3163)
 
-## TDS Replay: Caso o arquivo do TDS Replay gerado possua um fluxo especifico, a importação apresenta um erro e é cancelada. [DTCLIENT01-3157](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3157)
+## TDS Replay: Caso o arquivo do TDS Replay gerado possua um fluxo especifico, a importação apresenta um erro e é cancelada.
 
-- Corrigido problema, onde dependendendo do arquivo, a importação era interrompida no meio do processo.
+- Corrigido problema, onde dependendo do arquivo, a importação era interrompida no meio do processo. [DTCLIENT01-3157](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3157)
+
+## Depuração em MACos esta caindo
+
+- Corrigido dependências de bibliotecas de terceiros que causavam a queda. [DTCLIENT01-3160](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3160) [#875](https://github.com/totvs/tds-vscode/issues/875)
 
 # Versão [1.3.10]
 

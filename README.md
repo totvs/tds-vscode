@@ -2,7 +2,7 @@
 
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
-[![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode)
+<!--[![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode)-->
 ![GitHub](https://img.shields.io/github/license/totvs/tds-vscode)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
@@ -78,13 +78,13 @@ No primeiro uso da extensão em um projeto, lhe será apresentada as [Boas Vinda
 
 ### Acentuação e caracteres especiais
 
-Tivemos reportes de problemas de _encode_ abrindo fontes antes salvos no TDS, isso ocorre porque o _encode_ original do VSCode é UTF8 e o do TDS é outro.
+Tivemos reportes de problemas de _encode_ abrindo fontes antes salvos no TDS, isso ocorre porque o _encode_ original do VSCode é UTF8 e o do TDS-VSCode é outro.
 Para garantir a compilação é necessário compatibilizar o _encode_ da seguinte maneira:
 
 - No estado original o fonte será mostrado desta maneira:<br/>
   ![Encoding 1](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding1.png)
 - **Antes de editar/salvar qualquer fonte no VS** entre nas configurações do VS `Ctrl + ,`.
-- No campo de busca digite `_encode_` e selecione `Windows1252` ou `Windows1251` se utilizar alfabero cirílico.<br/>
+- No campo de busca digite `_encode_` e selecione `Windows1252` ou `Windows1251` se utilizar alfabeto cirílico.<br/>
 - Abra o fonte com o novo _encode_ (reforçando que NÃO DEVE tê-lo salvo antes em UTF8)<br/>
   ![Encoding 3](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding3.png)
 - Compile e/ou recompile o fonte e execute-o.<br/>
@@ -98,11 +98,21 @@ Por padrão, o _TDS-VSCode_ já vem configurado para usar o _encode_ `WindowsCP1
 
 ## Extensões recomendadas
 
-- [Numbered Bookmarks](https://marketplace.visualstudio.com/items?itemName=alefragnani.numbered-bookmarks)
+- [Numbered Bookmarks](https://marketplace.visualstudio.com/items?itemName=alefragnani.numbered-boomarks)
 
   Permite uso de _bookmarks_ no estilo Delphi numerados de 1 a 9.
 
   ![Toggle](https://github.com/alefragnani/vscode-numbered-bookmarks/raw/master/images/numbered-bookmarks-toggle.png)
+
+## Extensões com incompatibilidade
+
+As extensões abaixo não devem ser utilizadas junto com o _TDS-VS-Code_ porque podem causar mal funcionamento.
+
+- [4gl Outline Dxc](https://www.vsixhub.com/vsix/14295/)
+- [advpl-vscode](https://github.com/totvs/advpl-vscode)
+- flutter e dart
+
+> Caso você perceba que alguma outra extensão de terceiros está interferindo no _TDS for VS-Code_, favor abrir um [chamado](https://github.com/totvs/tds-vscode/issues) informando detalhes da extensão e o problema causado.
 
 ## Suporte
 
@@ -129,7 +139,7 @@ Servidores `Lobo Guara`, versão iqual ou anterior a `19.3.0.5`, podem apresenta
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
 
-Se não conseguir resolvê-los, abra um [chamado](https://github.com/totvs/tds-vscode/issues/new/choose) com o maior número de informações possíveis e incluindo os _logs_ gerados conforme instruído em [TROUBLESHOOTING](https://github.com/totvs/tds-vscode/blob/master/TROUBLESHOOTING.md).
+Se não conseguir resolvê-los, abra um [chamado](https://github.com/totvs/tds-vscode/issues/new/choose) com o maior número de informações possíveis e inclua os _logs_ gerados conforme instruído em [TROUBLESHOOTING](https://github.com/totvs/tds-vscode/blob/master/TROUBLESHOOTING.md).
 
 ## Melhorias
 
@@ -185,19 +195,3 @@ Para contribuir com o desenvolvimento da extensão, acesse [Git Hub TDS-VSCODE](
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-## Extensões recomendadas
-
-- [Numbered Bookmarks](https://marketplace.visualstudio.com/items?itemName=alefragnani.numbered-bookmarks)
-
-  Permite uso de _bookmarks_ no estilo Delphi numerados de 1 a 9.
-
-  ![Numbered Bookmarks](https://github.com/alefragnani/vscode-numbered-bookmarks/raw/master/images/numbered-bookmarks-toggle.png)
-
-## Extensões com incompatibilidade
-
-As extensões abaixo não devem ser utilizadas junto com o _TDS for VS-Code_ porque podem causar mal funcionamento.
-
-- [4gl Outline Dxc](https://www.vsixhub.com/vsix/14295/)
-- [advpl-vscode](https://github.com/totvs/advpl-vscode)
-
-> Caso você perceba que alguma outra extensão de terceiros está interferindo no _TDS for VS-Code_, favor abrir um [chamado](https://github.com/totvs/tds-vscode/issues) informando detalhes da extensão e o problema causado.

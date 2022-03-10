@@ -7,7 +7,7 @@ import {
   sendInspectorObjectsRequest,
 } from "../protocolMessages";
 import { InspectorPanelAction, IInspectorPanelAction } from "./actions";
-import { ServerItem } from "../serverItemProvider";
+import { ServerItem } from "../serverItem";
 import * as nls from "vscode-nls";
 import Utils from "../utils";
 import { languageClient } from "../extension";

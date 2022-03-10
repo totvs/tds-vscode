@@ -16,6 +16,26 @@
 			},
 			"minItems": 1
 		},
+		"variables": {
+			"description": "List of substitution variables.",
+			"type": "object",
+			"rootPath": {
+				"description": "Root path to be used as a substitution variable, used according to the operating system.",
+				"type": "object",
+				"$ref": "#/definitions/operationSystens"
+			},
+			"execExt": {
+				"description": "Executable file extension.",
+				"type": "object",
+				"$ref": "#/definitions/operationSystens"
+			},
+			"additionalProperties": {
+				"$ref": "#/definitions/operationSystens"
+			},
+			"required": [
+				"rootPath"
+			]
+		},
 		"server": {
 			"type": "object",
 			"description": "Server definition to connect.",
@@ -25,7 +45,8 @@
 					"description": "The server type.",
 					"enum": [
 						"totvs_server_protheus",
-						"totvs_server_logix"
+						"totvs_server_logix",
+						"totvs_server_totvstec"
 					]
 				},
 				"serverName": {
@@ -43,6 +64,13 @@
 				"environment": {
 					"type": "string",
 					"description": "AppServer runtime environment."
+				},
+				"environments": {
+					"type": "array",
+					"description": "List of environments that can be used in tests.",
+					"items": {
+						"type": "string"
+					}
 				},
 				"includePath": {
 					"type": "array",
@@ -136,15 +164,8 @@
 		},
 		"includePath": {
 			"type": "object",
-			"description": "Folders for lookup define files (.ch). Used edit purpose tests. One per line.",
+			"description": "Folders for lookup define files (.ch). Used only for editing tests and do not need exist. One per line.",
 			"properties": {
-				"valid": {
-					"description": "Valid folders. One per line.",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
-				},
 				"toChange": {
 					"type": "array",
 					"description": "Valid folders for update 'includePath' propertie. One per line.",
@@ -161,7 +182,6 @@
 				}
 			},
 			"required": [
-				"valid",
 				"toChange",
 				"toAdd"
 			]
@@ -194,6 +214,29 @@
 	"required": [
 		"name",
 		"description",
+		"variables",
 		"server"
-	]
+	],
+	"definitions": {
+		"operationSystens": {
+			"type": "object",
+			"description": "Associate value to be used according to the operating system.",
+			"properties": {
+				"windows": {
+					"type": "string"
+				},
+				"linux": {
+					"type": "string"
+				},
+				"mac": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"windows",
+				"linux",
+				"mac"
+			]
+		}
+	}
 }

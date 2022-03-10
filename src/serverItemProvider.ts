@@ -1,10 +1,9 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
-import * as path from "path";
-import Utils from "./utils";
+//import Utils from "./utils";
 import { changeSettings } from "./server/languageServerSettings";
-
-const RESOURCE_FOLDER = path.join(__filename, "..", "..", "resources");
+import { EnvSection, ServerItem, ServerType } from "./serverItem";
+import Utils from "./utils";
 
 class ServerItemProvider
   implements vscode.TreeDataProvider<ServerItem | EnvSection>
@@ -54,11 +53,10 @@ class ServerItemProvider
       this.checkServersConfigListener(true);
     });
 
-    this.checkServersConfigListener(false);
   }
 
-  refresh(): void {
-    this._onDidChangeTreeData.fire(undefined);
+  refresh(element?: ServerItem): void {
+    this._onDidChangeTreeData.fire(element);
   }
 
   public get connectedServerItem(): ServerItem {
@@ -172,7 +170,7 @@ class ServerItemProvider
     );
   }
 
-  private checkServersConfigListener(refresh: boolean): void {
+  checkServersConfigListener(refresh: boolean): void {
     let serversJson: string = Utils.getServerConfigFile();
 
     if (this.configFilePath !== serversJson) {
@@ -290,111 +288,6 @@ class ServerItemProvider
 
     return listServer;
   }
-}
-
-export type ServerType = "totvs_server_protheus" | "totvs_server_logix";
-
-export class ServerItem extends vscode.TreeItem {
-  public environment: string = "";
-  public username: string = "";
-  public smartclientBin: string = "";
-
-  constructor(
-    public name: string,
-    public readonly type: ServerType,
-    public readonly address: string,
-    public readonly port: number,
-    public secure: number,
-    public collapsibleState: vscode.TreeItemCollapsibleState,
-    public id: string,
-    public buildVersion: string,
-    public token: string,
-    public environments?: Array<EnvSection>,
-    public includes?: string[],
-    public readonly command?: vscode.Command
-  ) {
-    super(name, collapsibleState);
-  }
-
-  public get isConnected(): boolean {
-    return serverProvider.isConnected(this);
-  }
-
-  public get isSafeRPO(): boolean {
-    return this.isServerP20OrGreater;
-  }
-
-  public get isServerP20OrGreater(): boolean {
-    return this.buildVersion.localeCompare("7.00.191205P") > 0;
-  }
-
-  description = `${this.address}:${this.port}`;
-  tooltip = `${this.type == "totvs_server_protheus" ? "Protheus" : "Logix"} ${
-    this.buildVersion
-  }`;
-  iconPath = {
-    light: path.join(
-      RESOURCE_FOLDER,
-      "light",
-      this.isConnected
-        ? "server.connected.svg"
-        : this.type == "totvs_server_protheus"
-        ? "protheus_server.svg"
-        : "logix_server.svg"
-    ),
-    dark: path.join(
-      RESOURCE_FOLDER,
-      "dark",
-      this.isConnected
-        ? "server.connected.svg"
-        : this.type == "totvs_server_protheus"
-        ? "protheus_server.svg"
-        : "logix_server.svg"
-    ),
-  };
-
-  contextValue = this.isConnected ? "serverItem" : "serverItemNotConnected";
-}
-
-export class EnvSection extends vscode.TreeItem {
-  constructor(
-    public label: string,
-    public readonly serverItemParent: ServerItem,
-    public collapsibleState: vscode.TreeItemCollapsibleState,
-    public readonly command?: vscode.Command,
-    public environments?: string[]
-  ) {
-    super(label, collapsibleState);
-  }
-
-  public get isCurrent(): boolean {
-    return serverProvider.isCurrentEnvironment(this);
-  }
-
-  public getTooltip(): string {
-    return `${this.label} @ ${this.serverItemParent.name}`;
-  }
-
-  iconPath = {
-    light: path.join(
-      __filename,
-      "..",
-      "..",
-      "resources",
-      "light",
-      this.isCurrent ? "environment.connected.svg" : "environment.svg"
-    ),
-    dark: path.join(
-      __filename,
-      "..",
-      "..",
-      "resources",
-      "dark",
-      this.isCurrent ? "environment.connected.svg" : "environment.svg"
-    ),
-  };
-
-  contextValue = this.isCurrent ? "envSection" : "envSectionNotCurrent";
 }
 
 const serverProvider = new ServerItemProvider();

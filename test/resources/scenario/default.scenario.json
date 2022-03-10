@@ -10,14 +10,34 @@
 		"Também pode adicioná-la aos script (arquivo package.json), p.e.:",
 		"  \"scenario:p19\": \"set SCENARIO=p19.json && npm run test\""
 	],
+	"variables": {
+		"rootPath": {
+			"linux": "~/protheus",
+			"mac": "~/protheus",
+			"windows": "c:/protheus"
+		},
+		"execExt": {
+			"linux": "",
+			"mac": ".app",
+			"windows": ".exe"
+		},
+		"server_address": {
+			"linux": "10.173.10.79",
+			"mac": "10.173.10.79",
+			"windows": "localhost"
+		}
+	},
 	"server": {
 		"serverType": "totvs_server_protheus",
-		"serverName": "10.171.10.77",
-		"address": "10.171.10.77",
+		"serverName": "${server_address}",
+		"address": "${server_address}",
 		"port": 5001,
 		"environment": "P20-12-1-33",
-		"includePath": [],
-		"smartClientBin": "????"
+		"includePath": [
+			"../includes"
+		],
+		"smartClientBin": "${rootPath}/smartClient/smartClient${execExt}",
+		"environments": []
 	},
 	"users": {
 		"admin": {
@@ -34,14 +54,18 @@
 		}
 	},
 	"includePath": {
-		"valid": [],
-		"toChange": [],
-		"toAdd": []
+		"toChange": [
+			"${rootPath}/change/includes"
+		],
+		"toAdd": [
+			"${rootPath}/more_1/includes",
+			"${rootPath}/more_2/includes"
+		]
 	},
 	"compileKey": {},
 	"rpoToken": {},
 	"patchFolder": "p20",
 	"templatesFolder": "p20",
-	"projectFolder": "advpl",
+	"projectFolder": "?????",
 	"replayFolder": "replay"
 }
