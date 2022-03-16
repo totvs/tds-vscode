@@ -134,10 +134,10 @@
 
 		if(validateFields()) {
 
-			let tdsReplayFile = getElementLauncherName().value;
-			if(tdsReplayFile.trim().length === 0) {
-				tdsReplayFile = getTdsReplayFileInput().value;
-			}
+			tdsReplayFile = getTdsReplayFile().value;
+			//if(tdsReplayFile.trim().length !== 0) {
+				//let tdsReplayFile = getElementLauncherName().value;
+			//}
 
 			vscode.postMessage({
 				command: 'saveLaunchConfig',
