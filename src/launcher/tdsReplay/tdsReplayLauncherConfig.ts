@@ -3,7 +3,6 @@ import * as path from "path";
 import Utils from "../../utils";
 import * as fs from "fs";
 import * as nls from "vscode-nls";
-import { MESSAGETYPE } from "../../utils";
 
 let localize = nls.loadMessageBundle();
 const compile = require("template-literal");

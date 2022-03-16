@@ -11,15 +11,13 @@ Os testes automatizados usam a metodologia _End to End_ (_E2E_), ou seja, procur
 
 Por exemplo, para testar a compilação de fontes, iniciamos o processo com o registro do servidor e vamos avançando em todas as etapas até compilar e testar os resultados da compilação. Se foi completada com sucesso ou não. Quê problemas ocorrem e assim por diante.
 
-Saiba um pouquinho mais em [A Evolução dos testes E2E no Zé Delivery](https://rezenha.ze.delivery/a-evolu%C3%A7%C3%A3o-dos-testes-e2e-no-z%C3%A9-delivery-894ac3781bbf)(Fev/22).
+Saiba um pouquinho mais em [A Evolução dos testes E2E no Zé Delivery](https://rezenha.ze.delivery/a-evolu%C3%A7%C3%A3o-dos-testes-e2e-no-z%C3%A9-delivery-894ac3781bbf)(Fev/22) e [A Pirâmide de teste e os Testes end-to-end](https://medium.com/gtsw/a-pir%C3%A2mide-de-teste-e-os-testes-end-to-end-38f77ad3d137)(Fev/22).
 
 Os testes foram elaborados usando [VSCode Extension Tester](https://github.com/redhat-developer/vscode-extension-tester), desenvolvida pela [RedHat Developer](https://github.com/redhat-developer), cujo foco é testar o [VS-Code](https://code.visualstudio.com/), desenvolvido pela [Microsoft](https://www.microsoft.com).
 
-Os testes da extensão são em _TypeScript_ usando alguns pacotes [npm](https://www.npmjs.com/), sendo os principais [Mocha](https://mochajs.org/api/mocha) e [chai](https://www.chaijs.com/), e usando conceitos de [_Value Object_](https://imasters.com.br/back-end/padroes-de-projeto-value-object), [_Page Object_](https://medium.com/automa%C3%A7%C3%A3o-com-batista/como-utilizar-page-objects-nos-testes-automatizados-com-appium-723468df5bf4) e _Scenario_.
+Os testes da extensão são em _TypeScript_ usando alguns pacotes [npm](https://www.npmjs.com/), sendo os principais [Mocha](https://mochajs.org/api/mocha) e [chai](https://www.chaijs.com/), e usando conceitos de [_Value Object_](https://imasters.com.br/back-end/padroes-de-projeto-value-object), [_Page Object_](https://medium.com/automa%C3%A7%C3%A3o-com-batista/como-utilizar-page-objects-nos-testes-automatizados-com-appium-723468df5bf4) e [_Scenario_](#scenario).
 
-_Scenario_, no contexto dos testes do **TDS-VSCode**, são configurações efetuadas para identificar o servidor alvo, ou pela sua versão (P13, LG, Harpia) ou tipo (Protheus, Logix) e alguns comportamentos. Sua estrutura pode ser vista em [scenario.schema.json](../schema/scenario.schema.json).
-
-## Organização
+# Organização
 
 Os testes estão organizados em sub-pastas da pasta principal ``./test``, conforme a sua funcionalidade/objetivo.
 
@@ -94,4 +92,48 @@ describe.only("Debug primitive variables", async () => {
   let serverTreePO: ServerViewPageObject;
   let editor: TextEditorPageObject;
   ...
+```
+
+<a href="scenario>"# Cenário: como funciona?
+
+_Scenario_, no contexto dos testes do **TDS-VSCode**, são configurações efetuadas para identificar o servidor alvo, ou pela sua versão (P13, LG, Harpia) ou tipo (Protheus, Logix) e alguns comportamentos. Sua estrutura pode ser vista em [scenario.schema.json](../schema/scenario.schema.json).
+
+Em linhas gerais, ao iniciar os testes automatizados, a definição de cenário padrão (`default.scenario.json`) será carregada junto com o cenário indicado, onde este irá sobrescrever as propriedades do padrão.
+
+Como os testes são multi-plataformas, você pode especificar valores específicos por sistema operacional utilizando variáveis de substituição.
+
+### Variáveis de substituição
+
+#### Definição
+
+Em um cenário, defina a variáveis de substituição na propriedade ``variables``, informando um identificador e os valores para cada sistema operacional.
+
+```
+...
+"variables": {
+	"rootPath": {
+		"linux": "~/protheus",
+		"mac": "~/protheus",
+		"windows": "c:/protheus"
+	},
+	"execExt": {
+		"linux": "",
+		"mac": ".app",
+		"windows": ".exe"
+	},
+},
+...
+```
+
+#### Uso
+
+Para trocar o valor da variável conforme o sistema operacional, como valor ``${identificador}``. Por exemplo:
+```
+...
+	"server": {
+...
+		"smartClientBin": "${rootPath}/smartClient/smartClient${execExt}",
+...
+	},
+...
 ```
