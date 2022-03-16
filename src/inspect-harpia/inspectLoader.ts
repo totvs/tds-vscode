@@ -281,7 +281,6 @@ export class InspectorLoader implements vscode.Disposable {
           !this._options.includeOutScope
         ).then(
           (rows: IFunctionData[]) => {
-            fse.writeJSONSync("./inspector.json", rows);
             this._panel.webview.postMessage({
               command: InspectorPanelAction.UpdateInspectorInfo,
               data: {
