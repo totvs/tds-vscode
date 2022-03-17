@@ -2,6 +2,10 @@
 
 # Versão [1.3.13] NEXT
 
+## Function Inspector não carrega no appserver Harpia no Mac [#940](https://github.com/totvs/tds-vscode/issues/940)
+
+- Removido um processo interno que não funcionava adequadamente no Mac.
+
 ## Melhorias
 
 - Identificação do tipo de servidor pelo ambiente conectado, quando servidor Harpia. [DTCLIENT01-3246](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3246)
