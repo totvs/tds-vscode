@@ -649,3 +649,31 @@ async function doConnect(
     }
   );
 }
+
+export function createNewProtheusServer(
+  serverName: string,
+  port: number,
+  address: string,
+  secure: boolean,
+  buildVersion: string,
+  environment: string,
+  username: string,
+): Promise<boolean> {
+  return new Promise<boolean>((resolve, reject) => {
+    const serverId = Utils.createNewServer(
+      "totvs_server_protheus",
+      serverName,
+      port,
+      address,
+      buildVersion,
+      secure,
+      []
+    );
+    if (serverId !== undefined) {
+      Utils.saveServerEnvironmentUsername(serverId, environment, username);
+      resolve(true);
+    } else {
+      resolve(false);
+    }
+  });
+}

@@ -23,7 +23,7 @@ import {
 } from "vscode";
 import { jumpToUriAtPosition } from "./vscodeUtils";
 import Utils from "./utils";
-import { ServersExplorer } from "./serversView";
+import { createNewProtheusServer, ServersExplorer } from "./serversView";
 import { compileKeyPage } from "./compileKey/compileKey";
 import { getLanguageClient } from "./TotvsLanguageClient";
 import { patchGenerate, patchGenerateFromFolder } from "./patch/patchGenerate";
@@ -719,6 +719,17 @@ export function activate(context: ExtensionContext) {
     },
     clearRPOToken(): Promise<boolean> {
       return saveRpoTokenString(undefined);
+    },
+    createProtheusServer(
+      serverName: string,
+      port: number,
+      address: string,
+      secure: boolean,
+      buildVersion: string,
+      environment: string,
+      username: string,
+      ): Promise<boolean> {
+      return createNewProtheusServer(serverName, port, address, secure, buildVersion, environment, username);
     },
   };
 

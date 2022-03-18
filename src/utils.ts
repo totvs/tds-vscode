@@ -283,6 +283,40 @@ export default class Utils {
   }
 
   /**
+   * Salva informação de environment e username de um servidor.
+   * @param id Id do servidor
+   * @param environment Ambiente
+   * @param username Usuario
+   */
+   static saveServerEnvironmentUsername(
+    id: string,
+    environment: string,
+    username: string
+  ) {
+    const servers = Utils.getServersConfig();
+    let serverUpdated: boolean = false;
+
+    servers.configurations.forEach(async (element) => {
+      if (element.id === id) {
+        if (element.environments === undefined) {
+          element.environments = [environment];
+        } else if (element.environments.indexOf(environment) === -1) {
+          element.environments.push(environment);
+        }
+        element.environment = environment;
+        element.username = username;
+        serverUpdated = true;
+      }
+    });
+
+    if (serverUpdated) {
+      Utils.persistServersInfo(servers);
+    } else {
+      vscode.window.showWarningMessage("No server was found with provided id.");
+    }
+  }
+
+  /**
    * Salva o servidor logado por ultimo.
    * @param id Id do servidor logado
    * @param token Token que o LS gerou em cima das informacoes de login
