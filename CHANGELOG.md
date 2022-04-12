@@ -1,6 +1,6 @@
 # Changelog
 
-# Versão [1.3.13] NEXT
+# Versão [1.3.13]
 
 ## Function Inspector não carrega no appserver Harpia no Mac [#940](https://github.com/totvs/tds-vscode/issues/940)
 
