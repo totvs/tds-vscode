@@ -7,7 +7,7 @@ import { connectServer, reconnectServer } from "./serversView";
 import { ConnTypeIds } from "./protocolMessages";
 
 import * as nls from 'vscode-nls';
-import { ServerItem, EnvSection } from "./serverItemProvider";
+import { ServerItem, EnvSection } from "./serverItem";
 const localize = nls.loadMessageBundle();
 
 /**

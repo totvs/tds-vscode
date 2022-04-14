@@ -1,5 +1,29 @@
 # Changelog
 
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [1.3.13](https://github.com/totvs/tds-vscode/compare/v1.3.13-RC1...v1.3.13) (2022-04-14)
+
+# Changelog
+
+# Versão [1.3.13]
+
+## Function Inspector não carrega no appserver Harpia no Mac [#940](https://github.com/totvs/tds-vscode/issues/940)
+
+- Removido um processo interno que não funcionava adequadamente no Mac.
+
+## Melhorias
+
+- Identificação do tipo de servidor pelo ambiente conectado, quando servidor Harpia. [DTCLIENT01-3246](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3246)
+
+## Array 4GL dinamico mostra SIZE incorreto no DEBUG via VSCODE
+
+- Correção na determinação e apresentação do tamanho de listas (_arrays_). [DTCLIENT01-3149](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3239)
+
+## Não é possível validar token no Linux
+
+- Correção efetuada para validar corretamente o token. [DTCLIENT-3264](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3264)
+
 # Versão [1.3.12]
 
 ## Log de repositório com problemas no appserver Harpia

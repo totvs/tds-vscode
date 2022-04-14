@@ -6,7 +6,7 @@ export class ApplyTemplatePageObject extends AbstractPageObject {
     await this.beginWebView();
 
     await this.setValue("btn-File", templateFile);
-    await delay(DEFAULT_DELAY);
+    await delay();
 
     await this.endWebView();
   }

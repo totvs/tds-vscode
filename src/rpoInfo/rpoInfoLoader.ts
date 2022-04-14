@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import { sendRpoInfo } from "../protocolMessages";
 import { RpoInfoPanelAction, IRpoInfoPanelAction } from "./actions";
-import { ServerItem } from "../serverItemProvider";
+import { ServerItem } from "../serverItem";
 import * as nls from "vscode-nls";
 import Utils from "../utils";
 import { languageClient } from "../extension";

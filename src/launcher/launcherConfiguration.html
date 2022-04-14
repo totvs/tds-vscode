@@ -6,101 +6,109 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>${d.localize["tds.webview.launcher.welcome"]}</title><!--Welcome-->
 </head>
-<style>${d.css}</style>
+<style>
+	${d.css}
+</style>
 
 <body>
-		<div class="mainContainer">
-				<div class="formWrap">
+	<div class="mainContainer">
+		<div class="formWrap">
 
-					<form name="form_init" id="form_init">
-							<span class="formTitle">${d.localize["tds.webview.launcher.launcherTitle"]}</span><!--Launcher Config-->
+			<form name="form_init" id="form_init">
+				<span class="formTitle">${d.localize["tds.webview.launcher.launcherTitle"]}</span>
+				<!--Launcher Config-->
 
-							<div id="errorMessageDIV" style="display:none">
-								<p id="errorMessageID" class="errorMessage"></p>
-							</div>
-
-							<div class="wrap-input dropdown">
-								<label for="launcher">${d.localize["tds.webview.launcher.name"]}</label><!--Choose launcher:-->
-								<!--<select class="comboBox" id="launchersID" onchange="launcherChanged()"></select>-->
-								<input id="launcherNameID" class="comboBox" name="launcher" list="launcherListID" onchange="launcherChanged()"/>
-								<datalist id="launcherListID">
-								</datalist>
-							</div>
-
-							<div class="wrap-input">
-								<label for="program">${d.localize["tds.webview.launcher.program"]}</label><!--Program:-->
-								<!--input id="programID" class="inputText" name="program" type="text"-->
-								<input id="programID" class="comboBox" name="program" list="programVariablesID" onchange="programChanged()">
-								<datalist id="programVariablesID">
-									<option value="\$\{command:AskForProgramName}"></option>
-								</datalist>
-							</div>
-
-							<div class="wrap-input">
-								<label for="programArguments">${d.localize["tds.webview.launcher.program.arguments"]}</label><!--Program Arguments (-A):-->
-								<table id="programArgumentsID"></table>
-								<input id="addProgramArgumentID" type="button" value="Add Argument" onclick="addProgramArgument()"></input>
-								<input id="addForProgramArgumentsID" type="button" value="Ask Arguments" onclick="askForProgramArguments()"></input>
-							</div>
-
-							<div class="wrap-input">
-								<label for="smartClient">${d.localize["tds.webview.launcher.smartclient"]}</label><!--SmartClient:-->
-								<input class="inputText" type="text" id="SmartClientPath" name="SmartClientPath" placeholder="Ex: C:/totvs/smartclient/smartclient.exe...">
-								<input class="inputText" type="file" accept='.exe,application/exe,*.*'  id="smartClientID" name="smartClient" onchange="setTextArea()"/>
-							</div>
-
-							<div class="checkboxGroup">
-								<p>Opções:</p>
-								<input id="enableMultiThreadID" class="checkbox" name="enableMultiThread" type="checkbox" value="enableMultiThread">
-								<label class="checkboxLabel" for="enableMultiThread">${d.localize["tds.webview.launcher.multiThread"]}</label><!--Enable multiple threads-->
-								<br>
-								<input id="enableProfileID" class="checkbox" name="enableProfile" type="checkbox" value="enableProfile">
-								<label class="checkboxLabel" for="enableProfile">${d.localize["tds.webview.launcher.profile"]}</label><!--Enable Profile-->
-								<br>
-							</div>
-
-							<div class="checkboxGroup">
-								<p>Argumentos:</p>
-								<input id="multiSessionID" class="checkbox" name="multiSessions" type="checkbox" value="multiSessions" checked>
-								<label class="checkboxLabel" for="multiSessions">${d.localize["tds.webview.launcher.multiSession"]}</label><!--(-M) Multiple sessions-->
-								<br>
-								<input id="accessibilityModeID" class="checkbox" name="accessibilityMode" type="checkbox" value="accessibilityMode">
-								<label class="checkboxLabel" for="accessibilityMode">${d.localize["tds.webview.launcher.acc"]}</label><!--(-AC) Accessibility module-->
-								<br>
-								<input id="doNotShowSplashID" class="checkbox" name="doNotShowSplash" type="checkbox" value="doNotShowSplash">
-								<label class="checkboxLabel" for="doNotShowSplash">${d.localize["tds.webview.launcher.splash"]}</label><!--(-Q) Don't display 'splash'-->
-								<br>
-								<input id="openglModeID" class="checkbox" name="openglMode" type="checkbox" value="openglMode">
-								<label class="checkboxLabel" for="openglMode">${d.localize["tds.webview.launcher.opengl"]}</label><!--(-OPENGL) Enable OpenGL mode-->
-								<br>
-								<input id="dpiModeID" class="checkbox" name="dpiMode" type="checkbox" value="dpiMode">
-								<label class="checkboxLabel" for="dpiMode">${d.localize["tds.webview.launcher.dpi"]}</label><!--(-DIP) Enable DPI mode-->
-								<br>
-								<input id="ignoreFilesID" class="checkbox" name="ignoreFiles" type="checkbox" value="ignoreFiles" checked>
-								<label class="checkboxLabel" for="ignoreFiles">${d.localize["tds.webview.launcher.ignoreFiles"]}</label><!--Ignore files not in Workspace-->
-								<br>
-							</div>
-
-							<div class="wrap-input">
-								<label for="programArguments">${d.localize["tds.webview.launcher.language"]}</label><!--Language (-L):-->
-								<select class="comboBox" id="languageID">
-									<option id="" value=""></option>
-									<option id="ptID" value="1">${d.localize["tds.webview.launcher.langPT"]}</option><!--Portuguese-->
-									<option id="esID" value="2">${d.localize["tds.webview.launcher.langES"]}</option><!--Spanish-->
-									<option id="enID" value="3">${d.localize["tds.webview.launcher.langEN"]}</option><!--English-->
-									<option id="ruID" value="4">${d.localize["tds.webview.launcher.langRU"]}</option><!--Russian-->
-								</select>
-							</div>
-
-							<div class="wrap-submit">
-								<input class="btn-submit" readonly id="saveID" type="submit" value="${d.localize['tds.webview.launcher.save']}" onclick="saveLaunchConfig(false)" /><!--Save-->
-								<input class="btn-submit" readonly id="saveCloseID" type="submit" value="${d.localize['tds.webview.launcher.saveClose']}" onclick="saveLaunchConfig(true)" /><!--Save/Close-->
-							</div>
-
-							<p>* ${d.localize["tds.webview.launcher.bottomInfo"]}<i>./vscode/launch.json</i></p><!--This config could be altered editing file-->
-					</form>
+				<div id="errorMessageDIV" style="display:none">
+					<p id="errorMessageID" class="errorMessage"></p>
 				</div>
+
+				<div class="wrap-input dropdown">
+					<label for="launcher">${d.localize["tds.webview.launcher.name"]}</label>
+					<!--Choose launcher:-->
+					<input id="launcherNameID" class="comboBox" name="launcher" list="launcherListID"
+						onchange="launcherChanged()" />
+					<datalist id="launcherListID">
+					</datalist>
+				</div>
+
+				<div class="wrap-input">
+					<label for="program">${d.localize["tds.webview.launcher.program"]}</label>
+					<!--Program:-->
+					<input id="programID" class="comboBox" name="program" list="programVariablesID" onchange="programChanged()">
+					<datalist id="programVariablesID">
+						<option value="\$\{command:AskForProgramName}"></option>
+					</datalist>
+				</div>
+
+				<div class="wrap-input">
+					<label for="programArguments">${d.localize["tds.webview.launcher.program.arguments"]}</label><!--Program Arguments (-A):-->
+					<table id="programArgumentsID"></table>
+					<input id="addProgramArgumentID" type="button" value="Add Argument" onclick="addProgramArgument()"></input>
+					<input id="addForProgramArgumentsID" type="button" value="Ask Arguments" onclick="askForProgramArguments()"></input>
+				</div>
+
+				<div class="wrap-input">
+					<label for="smartClient">${d.localize["tds.webview.launcher.smartclient"]}</label><!--SmartClient:-->
+					<input class="inputText" type="text" id="SmartClientPath" name="SmartClientPath" placeholder="Ex: C:/totvs/smartclient/smartclient.exe...">
+					<input class="inputText" type="file" accept='.exe,application/exe,*.*'  id="smartClientID" name="smartClient" onchange="setTextArea()"/>
+				</div>
+
+				<div class="checkboxGroup">
+					<p>Opções:</p>
+					<input id="enableMultiThreadID" class="checkbox" name="enableMultiThread" type="checkbox" value="enableMultiThread">
+					<label class="checkboxLabel" for="enableMultiThread">${d.localize["tds.webview.launcher.multiThread"]}</label><!--Enable multiple threads-->
+					<br>
+					<input id="enableProfileID" class="checkbox" name="enableProfile" type="checkbox" value="enableProfile">
+					<label class="checkboxLabel" for="enableProfile">${d.localize["tds.webview.launcher.profile"]}</label><!--Enable Profile-->
+					<br>
+				</div>
+
+				<div class="checkboxGroup">
+					<p>Argumentos:</p>
+					<input id="multiSessionID" class="checkbox" name="multiSessions" type="checkbox" value="multiSessions" checked>
+					<label class="checkboxLabel" for="multiSessions">${d.localize["tds.webview.launcher.multiSession"]}</label><!--(-M) Multiple sessions-->
+					<br>
+					<input id="accessibilityModeID" class="checkbox" name="accessibilityMode" type="checkbox" value="accessibilityMode">
+					<label class="checkboxLabel" for="accessibilityMode">${d.localize["tds.webview.launcher.acc"]}</label><!--(-AC) Accessibility module-->
+					<br>
+					<input id="doNotShowSplashID" class="checkbox" name="doNotShowSplash" type="checkbox" value="doNotShowSplash">
+					<label class="checkboxLabel" for="doNotShowSplash">${d.localize["tds.webview.launcher.splash"]}</label><!--(-Q) Don't display 'splash'-->
+					<br>
+					<input id="openglModeID" class="checkbox" name="openglMode" type="checkbox" value="openglMode">
+					<label class="checkboxLabel" for="openglMode">${d.localize["tds.webview.launcher.opengl"]}</label><!--(-OPENGL) Enable OpenGL mode-->
+					<br>
+					<input id="dpiModeID" class="checkbox" name="dpiMode" type="checkbox" value="dpiMode">
+					<label class="checkboxLabel" for="dpiMode">${d.localize["tds.webview.launcher.dpi"]}</label><!--(-DIP) Enable DPI mode-->
+					<br>
+					<input id="ignoreFilesID" class="checkbox" name="ignoreFiles" type="checkbox" value="ignoreFiles" checked>
+					<label class="checkboxLabel" for="ignoreFiles">${d.localize["tds.webview.launcher.ignoreFiles"]}</label><!--Ignore files not in Workspace-->
+					<br>
+				</div>
+
+				<div class="wrap-input">
+					<label for="programArguments">${d.localize["tds.webview.launcher.language"]}</label><!--Language (-L):-->
+					<select class="comboBox" id="languageID">
+						<option id="" value=""></option>
+						<option id="ptID" value="1">${d.localize["tds.webview.launcher.langPT"]}</option><!--Portuguese-->
+						<option id="esID" value="2">${d.localize["tds.webview.launcher.langES"]}</option><!--Spanish-->
+						<option id="enID" value="3">${d.localize["tds.webview.launcher.langEN"]}</option><!--English-->
+						<option id="ruID" value="4">${d.localize["tds.webview.launcher.langRU"]}</option><!--Russian-->
+					</select>
+				</div>
+
+				<div class="wrap-submit">
+					<input class="btn-submit" readonly id="saveID" type="button"
+						value="${d.localize['tds.webview.launcher.save']}" onclick="saveLaunchConfig(false)" />
+					<!--Save-->
+					<input class="btn-submit" readonly id="saveCloseID" type="button"
+						value="${d.localize['tds.webview.launcher.saveClose']}" onclick="saveLaunchConfig(true)" />
+					<!--Save/Close-->
+				</div>
+
+				<p>* ${d.localize["tds.webview.launcher.bottomInfo"]}<i>./vscode/launch.json</i></p><!--This config could be altered editing file-->
+			</form>
 		</div>
+	</div>
 		<!----hr-->
 </body>
 
@@ -334,7 +342,10 @@
 	function getElementProgramArgumentsValues() {
 		var currentArgumentsList = [];
 		var children = getElementProgramArguments().childNodes;
+		console.log(children);
 		children.forEach(thisArgumentTR => {
+			console.log(thisArgumentTR);
+			console.log(thisArgumentTR.getAttribute("id"));
 			if (thisArgumentTR.getAttribute("id") !== "noneArgumentsID") {
 				var thisArgumentTD = thisArgumentTR.firstChild;
 				var thisArgumentInput = thisArgumentTD.firstChild;
@@ -342,6 +353,7 @@
 				currentArgumentsList.push(data);
 			}
 		});
+		console.log(currentArgumentsList);
 		return currentArgumentsList;
 	}
 

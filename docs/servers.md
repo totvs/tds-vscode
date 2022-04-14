@@ -38,12 +38,11 @@ Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
 
 ```json
 {
-  "version": "0.2.1",
+  "version": "0.3.0",
   "includes": ["m:\\protheus\\includes"], //definição global
   "permissions": {
     "authorizationtoken": ""
   },
-  "connectedServer": {},
   "configurations": [
     {
       "id": "pgfb077eunhkt1u2mu4794eqxtfvj",
@@ -94,12 +93,12 @@ Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
 |                       | Utilizada quando não informada na definição do servidor e para o [linter](docs/linter). |
 | `permissions `        | Lista de permissões.                                                                    |
 | `authorizationtoken`  | Chave de compilação com as permissões.                                                  |
-| `connectedServer `    | Lista de servidores conectados.                                                         |
 | `configurations `     | Configurações de servidores registrados para uso.                                       |
 | `id `                 | Identificação única, gerada no momento de seu registro.                                 |
 | `type `               | Tipo do servidor, podem ser:                                                            |
-|                       | - _totvs_server_protheus_, para servidores com suporte a Adv/PL.                        |
+|                       | - _totvs_server_protheus_, para servidores com suporte a Adv/PL. (versão )                        |
 |                       | - _totvs_server_logix_, para servidores com suporte a Adv/PL e 4GL.                     |
+|                       | - _totvs_server_totvstec_, para servidores com suporte a Adv/PL e 4GL, versão iqual ao superior 7.00.210324P (*Harpia*) .                     |
 | `name `               | Identificação do servidor para humanos.                                                 |
 | `port `               | Porta de conexão.                                                                       |
 | `address `            | Endereço IP ou nome da estação do servidor.                                             |

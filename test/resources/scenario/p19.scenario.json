@@ -3,6 +3,13 @@
 	"description": [
 		"Testes com o appServer p19."
 	],
+	"variables": {
+		"rootPath": {
+			"linux": "~/protheus/p19",
+			"mac": "~/protheus/p19",
+			"windows": "m:/protheus/p19"
+		}
+	},
 	"server": {
 		"serverName": "p19",
 		"address": "localhost",

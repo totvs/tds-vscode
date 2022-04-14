@@ -133,7 +133,11 @@ export default class LauncherConfiguration {
         if (currentPanel !== undefined && currentPanel.visible) {
           if (launcherInfoChangedManually) {
             launcherInfoChangedManually = false;
-            currentPanel.webview.postMessage(Utils.getLaunchConfig());
+            try {
+              currentPanel.webview.postMessage(Utils.getLaunchConfig());
+            } catch (e) {
+              //Utils.logMessage(`"Não foi possivel ler o arquivo launch.json\nError: ${e}`, MESSAGETYPE.Error, true);
+            }
           }
         }
       });
@@ -144,6 +148,7 @@ export default class LauncherConfiguration {
         currentPanel.webview.postMessage(launchersInfo);
       } catch (e) {
         Utils.logInvalidLaunchJsonFile(e);
+        launchersInfo = {};
       }
 
       currentPanel.webview.onDidReceiveMessage((message) => {
@@ -152,13 +157,11 @@ export default class LauncherConfiguration {
             const launcherName = message.launcherName;
             if (launchersInfo !== undefined) {
               if (launchersInfo.configurations !== undefined) {
-                if (launchersInfo.configurations.length > 0 !== undefined) {
+                if (launchersInfo.configurations.length > 0 !== undefined)
+                {
                   let updated: boolean = false;
-                  for (
-                    let i = 0;
-                    i < launchersInfo.configurations.length;
-                    i++
-                  ) {
+                  for (let i = 0; i < launchersInfo.configurations.length; i++)
+                  {
                     let element = launchersInfo.configurations[i];
                     if (element.name === launcherName) {
                       updateElement(element, message);
@@ -181,6 +184,7 @@ export default class LauncherConfiguration {
               );
 
               if (currentPanel !== undefined) {
+                console.log("Carregando launch Config onDidReceiveMessage");
                 currentPanel.webview.postMessage(launchersInfo);
               }
 

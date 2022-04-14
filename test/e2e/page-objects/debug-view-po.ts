@@ -75,7 +75,7 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
 
     if (!fse.existsSync(launchJsonFile)) {
       await this.addLauncher(type, name, smartClientBin);
-      await delay(DEFAULT_DELAY);
+      await delay();
     }
 
     const laucher: any = fse.readJSONSync(launchJsonFile);
@@ -92,11 +92,12 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
         cwb: "${workspaceFolder}",
         isMultiSession: true,
         enableTableSync: true,
+        //waitForAttach: 8000, //os testes aguardam 10 segundos, senão dá erro
       },
     ];
 
     fse.writeJSONSync(launchJsonFile, laucher);
-    await delay(DEFAULT_DELAY);
+    await delay();
 
     return true;
   }
@@ -152,7 +153,13 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
   }
 
   private async getVariables(
-    targetScope: string,
+    targetScope:
+      | "Local"
+      | "Private"
+      | "Static"
+      | "Public"
+      | "Modular"
+      | "Global",
     targetName: string[]
   ): Promise<VariablePO[]> {
     const section: ViewSection = await this.getSection("Variables");
@@ -210,9 +217,21 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
     return result;
   }
 
+  async getGlobalVariables(targetName: string[]): Promise<VariablePO[]> {
+    const result: VariablePO[] = await this.getVariables("Global", targetName);
+
+    return result;
+  }
+
+  async getModularVariables(targetName: string[]): Promise<VariablePO[]> {
+    const result: VariablePO[] = await this.getVariables("Modular", targetName);
+
+    return result;
+  }
+
   async start(): Promise<void> {
     await this.view.start();
-    //await delay(DEFAULT_DELAY);
+    //await delay();
     //return Promise.resolve(true);
   }
 
@@ -236,6 +255,10 @@ export class VariablePO {
   static async createVariablePO(item: TreeItem): Promise<VariablePO> {
     const text: string[] = (await item.getText()).split(":");
     const type: string = await item.getTooltip();
+
+    if (text.length < 2) {
+      text.push("\n<empty>");
+    }
 
     return new VariablePO(text[0], text[1].substring(1), type); //.getText() inclui um \n inexistente no valor original
   }

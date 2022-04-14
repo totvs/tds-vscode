@@ -44,8 +44,7 @@ export class BuildPageObject extends AbstractPageObject {
     const outputPO = await this.workbenchPO.openOutputLs();
     await outputPO.clearConsole();
 
-    const expandable: boolean = await resourceItem.isExpandable();
-
+    const expandable: boolean = await resourceItem.isExpandable(); //é um folder
     await this.fireBuildFile(resourceItem);
 
     await this.workbenchPO.waitBuilding();

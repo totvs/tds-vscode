@@ -7,13 +7,163 @@ import {
   IUserData,
 } from "./page-objects/interface-po";
 
+/**
+ * Schema of test scenario configuration files.
+ */
+export interface IServerScenarioSchema {
+  /**
+   * The server type.
+   */
+  serverType:
+    | "totvs_server_protheus"
+    | "totvs_server_logix"
+    | "totvs_server_totvstec";
+  /**
+   * Short name to identify the server.
+   */
+  serverName: string;
+  /**
+   * IP address ou server address with appServer.
+   */
+  address: string;
+  /**
+   * SmartCLient port to connect.
+   */
+  port: number;
+  /**
+   * AppServer runtime environment.
+   */
+  environment: string;
+  /**
+   * List of environments that can be used in tests.
+   */
+  environments?: string[];
+  /**
+   * Folders for lookup define files (.ch). One per line.
+   */
+  includePath: string[];
+  /**
+   * Dekstop Smart Client Executable for debugger.
+   */
+  smartClientBin: string;
+}
+
+export interface IUserDataScenarioSchema {
+  /**
+   * User name identifier.
+   */
+  username: string;
+  /**
+   * Password.
+   */
+  password: string;
+}
+
+export interface IIncludeScenarioSchema {
+    /**
+     * Valid folders for update 'includePath' propertie. One per line.
+     */
+    toChange: string[];
+    /**
+     * Valid folders for add in 'includePath' propertie. One per line.
+     */
+    toAdd: string[];
+  };
+
+export interface ICompileKeyScenarioSchema {
+    machineId: string;
+  compileKeyFile: string;
+  key: string;
+  generatedIn: string;
+  expireIn: string;
+  token: string;
+  overwrite: string;
+}
+
+export interface ITestScenarioSchema {
+  /**
+   * Short name to identify the test objective or target.
+   */
+  name: string;
+  /**
+   * Long description the test objective or target.
+   */
+  description: [string, ...string[]];
+  /**
+   * List of substitution variables.
+   */
+  variables: {
+    [k: string]: OperationSystens;
+  };
+  /**
+   * Server definition to connect.
+   */
+  server: IServerScenarioSchema;
+  /**
+   * Users credentials for connect.
+   */
+  users?: {
+    /**
+     * User like Administrator credential.
+     */
+    admin: IUserDataScenarioSchema;
+    /**
+     * User credential.
+     */
+    user: IUserDataScenarioSchema;
+    /**
+     * Invalid User credential.
+     */
+    invalid: IUserDataScenarioSchema;
+  };
+  /**
+   * Folders for lookup define files (.ch). Used only for editing tests and do not need exist. One per line.
+   */
+  includePath?: IIncludeScenarioSchema;
+  /**
+   * Compile key for appServer. Format {"<id>": "<key>"}.
+   */
+  compileKey?: ICompileKeyScenarioSchema;
+  /**
+   * RPO Token for appServer Harpia
+   */
+  rpoToken?: {
+    [k: string]: string;
+  };
+  /**
+   * Folder with patch files.
+   */
+  patchFolder?: string;
+  /**
+   * Folder with templates files.
+   */
+  templatesFolder?: string;
+  /**
+   * Folder with source and resource files.
+   */
+  projectFolder?: string;
+  /**
+   * Folder with TDS Replay files.
+   */
+  replayFolder?: string;
+}
+/**
+ * Associate value to be used according to the operating system.
+ */
+export interface OperationSystens {
+  windows: string;
+  linux: string;
+  mac: string;
+}
+
 const TEST_RESOURCE = path.join(__dirname, "..", "..", "test", "resources");
 const scenarioDefault: string = path.join(
   TEST_RESOURCE,
   "scenario",
   "default.scenario.json"
 );
-let values: any;
+
+let values: ITestScenarioSchema;
 let valuesFile: any;
 let scenarioFile: string = scenarioDefault;
 

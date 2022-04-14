@@ -1,12 +1,8 @@
 import * as vscode from "vscode";
 import * as nls from "vscode-nls";
 import { CompileKey } from "./compileKey/compileKey";
-import {
-  IGetServerPermissionsResult,
-  sendGetServerPermissionsInfo,
-} from "./protocolMessages";
 import { IRpoToken } from "./rpoToken";
-import { ServerItem } from "./serverItemProvider";
+import { ServerItem } from "./serverItem";
 import Utils from "./utils";
 
 const localize = nls.config({
@@ -272,35 +268,28 @@ function buildTextRpoToken(level: number, text: string): string {
 }
 
 function buildServerTooltip(server: ServerItem) {
-  sendGetServerPermissionsInfo(server).then(
-    (permissions: IGetServerPermissionsResult) => {
-      if (permissions.message == "OK") {
-        const group = (title: string, target: string): string => {
-          const text: string[] = permissions.serverPermissions.text;
-          const list: string[] = text
-            .filter((value: string) => value.startsWith(target))
-            .map((value: string) => "- ".concat(value.substr(2)));
+  const error: string = server.informations?.errorMessage || "";
+  const permissions: string[] = server.informations?.permissions || [];
 
-          return list.length == 0
-            ? ""
-            : `\n**${title}**\n${list
-                .sort((a: string, b: string) => a.localeCompare(b))
-                .join("\n")}`;
-        };
-        serverStatusBarItem.tooltip = new vscode.MarkdownString(
-          `**Address: _${server.address}:${server.port}_** ` +
-            `${server.buildVersion}\n` +
-            group("Actions", "S") +
-            group("Monitor", "M")
-        );
-      } else {
-        serverStatusBarItem.tooltip = permissions.message;
-      }
-    },
-    (error) => {
-      console.log(error);
-    }
-  );
+  if (error.length == 0) {
+    const group = (title: string, target: string): string => {
+      const list: string[] = permissions[target];
+
+      return list.length == 0
+        ? ""
+        : `**${title}**\n${list
+            .sort((a: string, b: string) => a.localeCompare(b))
+            .map((value: string) => `- ${value}`)
+            .join("\n")}`;
+    };
+
+    serverStatusBarItem.tooltip = new vscode.MarkdownString(
+      `**Address: _${server.address}:${server.port}_** ` +
+        `${server.buildVersion}\n${group("Actions", "S")}\n ${group("Monitor", "M")}`
+    );
+  } else {
+    serverStatusBarItem.tooltip = error;
+  }
 }
 
 function buildTooltipRpoToken(

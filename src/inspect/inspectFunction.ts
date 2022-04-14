@@ -28,7 +28,7 @@ const localizeHTML = {
 export function inspectFunctions(context: vscode.ExtensionContext) {
 	const server = Utils.getCurrentServer();
 	if (server) {
-		if (Utils.isSafeRPO(server)) {
+		if (Utils.isServerP20OrGreater(server)) {
 			openInspectView(context, {
 				objectsInspector: false,
 				includeOutScope: false, //inicia com #NONE

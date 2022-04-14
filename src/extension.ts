@@ -22,11 +22,11 @@ import {
   StatusBarAlignment,
 } from "vscode";
 import { jumpToUriAtPosition } from "./vscodeUtils";
-import { ServersExplorer } from "./serversView";
+import Utils from "./utils";
+import { createNewProtheusServer, ServersExplorer } from "./serversView";
 import { compileKeyPage } from "./compileKey/compileKey";
 import { getLanguageClient } from "./TotvsLanguageClient";
 import { patchGenerate, patchGenerateFromFolder } from "./patch/patchGenerate";
-import Utils from "./utils";
 import {
   commandBuildFile,
   commandBuildWorkspace,
@@ -75,6 +75,8 @@ import { openGeneratePatchView } from "./patch/generate/generatePatchLoader";
 import { patchApply } from "./patch/patchApply";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import { commandShowBuildTableResult } from "./compile/buildResult";
+import { ServerItem } from "./serverItem";
+import serverProvider from "./serverItemProvider";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -592,6 +594,11 @@ export function activate(context: ExtensionContext) {
   //Mostra a pagina de Welcome.
   showWelcomePage(context, false);
 
+  Utils.onDidSelectedServer((newServer: ServerItem) => {
+    serverProvider.connectedServerItem = newServer;
+  })
+  serverProvider.checkServersConfigListener(true);
+
   //Abre uma caixa de informações para login no servidor protheus selecionado.
   context.subscriptions.push(
     commands.registerCommand(
@@ -712,6 +719,17 @@ export function activate(context: ExtensionContext) {
     },
     clearRPOToken(): Promise<boolean> {
       return saveRpoTokenString(undefined);
+    },
+    createProtheusServer(
+      serverName: string,
+      port: number,
+      address: string,
+      secure: boolean,
+      buildVersion: string,
+      environment: string,
+      username: string,
+      ): Promise<boolean> {
+      return createNewProtheusServer(serverName, port, address, secure, buildVersion, environment, username);
     },
   };
 

@@ -29,34 +29,25 @@ export const DELAY_MEDIUM = DEFAULT_DELAY * 3;
 export const DELAY_LONG = DEFAULT_DELAY * 5;
 
 function clearVscodeFiles(projectFolder: string): void {
-  const serversJsonFile: string = path.join(
-    projectFolder,
-    ".vscode",
-    "servers.json"
-  );
+  const folder: string = path.join(projectFolder, ".vscode");
+  const filesToRemove: string[] = [
+    path.join(folder, "launch.json"),
+    path.join(folder, "servers.json"),
+  ];
 
-  fse.ensureDirSync(path.dirname(serversJsonFile));
+  fse.ensureDirSync(path.dirname(folder));
 
-  if (fse.existsSync(serversJsonFile)) {
-    fse.removeSync(serversJsonFile);
-  }
-
-  const launchJsonFile: string = path.join(
-    projectFolder,
-    ".vscode",
-    "launch.json"
-  );
-  fse.ensureDirSync(path.dirname(serversJsonFile));
-
-  if (fse.existsSync(launchJsonFile)) {
-    fse.removeSync(launchJsonFile);
-  }
+  filesToRemove.forEach((file: string) => {
+    if (fse.existsSync(file)) {
+      fse.removeSync(file);
+    }
+  });
 
   const launch: any = {
     version: "0.2.0",
     configurations: [{}],
   };
-  fse.writeJSONSync(launchJsonFile, launch);
+  fse.writeJSONSync(filesToRemove[0], launch);
 }
 
 async function closeAllEditors(): Promise<void> {
@@ -101,7 +92,7 @@ export async function openProject(
 
   await VSBrowser.instance.openResources(PROJECT_FOLDER);
 
-  await delay(DEFAULT_DELAY);
+  await delay();
 
   //const settingsPO: SettingsPageObject = new SettingsPageObject();
   //await settingsPO.openView();

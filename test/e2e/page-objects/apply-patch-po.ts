@@ -7,7 +7,7 @@ export class ApplyPatchPageObject extends AbstractPageObject {
 
     for await (const patchFile of patchList) {
       await this.setValue("btn-File", patchFile);
-      await delay(DEFAULT_DELAY);
+      await delay();
     }
 
     await this.endWebView();

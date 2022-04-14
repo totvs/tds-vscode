@@ -7,7 +7,7 @@ import {
   sendInspectorObjectsRequest,
 } from "../protocolMessages";
 import { InspectorPanelAction, IInspectorPanelAction } from "./actions";
-import { ServerItem } from "../serverItemProvider";
+import { ServerItem } from "../serverItem";
 import * as nls from "vscode-nls";
 import Utils from "../utils";
 import { languageClient } from "../extension";
@@ -281,7 +281,6 @@ export class InspectorLoader implements vscode.Disposable {
           !this._options.includeOutScope
         ).then(
           (rows: IFunctionData[]) => {
-            fse.writeJSONSync("./inspector.json", rows);
             this._panel.webview.postMessage({
               command: InspectorPanelAction.UpdateInspectorInfo,
               data: {
