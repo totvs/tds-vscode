@@ -1,5 +1,11 @@
 # Changelog
 
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [1.3.13](https://github.com/totvs/tds-vscode/compare/v1.3.13-RC1...v1.3.13) (2022-04-14)
+
+# Changelog
+
 # Versão [1.3.13]
 
 ## Function Inspector não carrega no appserver Harpia no Mac [#940](https://github.com/totvs/tds-vscode/issues/940)
