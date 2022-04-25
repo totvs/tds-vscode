@@ -41,13 +41,13 @@ Ao iniciar o **VS-Code** com a extensão **TDS-VSCode** instalada, abra (ou crie
 No primeiro uso da extensão em um projeto, lhe será apresentada as [Boas Vindas](docs/welcome.md) com configurações mínimas necessárias. Faça-as.
 
 - Acione o icone da `TOTVS` na barra de atividades
-- Resgistre o servidor de trabalho na visão (Servidores)[docs/servers.md], acionando a ação `+`
-- (Conecte-se)[docs/servers.md] ao servidor recém registrado
+- Resgistre o servidor de trabalho na visão [Servidores](docs/servers.md), acionando a ação `+`
+- [Conecte-se](docs/servers.md) ao servidor recém registrado
 - Após a conexão, acione na barra de atividades o icone do `Explorer`
 - Abra (ou crie) o arquivo para edição e faça o desenvolvimento necessário
-- (Compile)[docs/compilation.md] acionando o atalho `ctrl+F9` ou o menu de contexto sobre o arquivo ou recurso
+- [Compile](docs/compilation.md) acionando o atalho `ctrl+F9` ou o menu de contexto sobre o arquivo ou recurso
 - Corrija eventuais erros de compilação apresentados na visão `Problems`
-- (Execute/depure)[docs/debugging.md] o `Smartclient` configurado na página de `Boas vindas` ou direto no arquivo `.vscode\launch.json`
+- [Execute/depure](docs/debugging.md) o `Smartclient` configurado na página de `Boas vindas` ou direto no arquivo `.vscode\launch.json`
 
 > Para detalhes dos processos, acesse as ligações (_links_).\
 > A visualização ou não das `Boas Vindas` pode ser efetuada em `File | Preferences | Settings | Extensions | TOTVS | Welcome Page`.

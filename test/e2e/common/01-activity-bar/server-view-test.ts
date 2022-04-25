@@ -37,7 +37,7 @@ describe("Server View", async () => {
     expect(await workbenchPO.isSavedServer()).is.true;
   });
 
-  it("Validate Server)", async () => {
+  it("Validate Server", async () => {
     const text: string[] = await outputPO.extractServerSequenceTest();
 
     expect(text).to.be.an("array").and.is.eqls(VALID_SERVER_SEQUENCE);

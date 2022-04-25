@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
+import { TreeItem } from "vscode-extension-tester";
 import {
   delay,
   DEFAULT_DELAY,
@@ -24,13 +25,11 @@ describe("Server View Basic Operations", async () => {
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();
 
-    await serverTreePO.getServer(APPSERVER_DATA);
-
     serverItemPO = new ServerTreeItemPageObject(
       await serverTreePO.getServer(APPSERVER_DATA)
     );
 
-    await delay(DEFAULT_DELAY);
+    await delay();
   });
 
   it("No Server Connected", async () => {
@@ -48,24 +47,25 @@ describe("Server View Basic Operations", async () => {
     await workbenchPO.waitValidatingServer();
   });
 
-  it("Input Environment", async () => {
-    await fillEnvironment(APPSERVER_DATA.environment);
-  });
+  it("Connection Process", async () => {
+      await fillEnvironment(APPSERVER_DATA.environment);
+      await delay();
+      await fillUserdata(ADMIN_USER_DATA);
+      await delay();
 
-  it("Input User", async () => {
-    await fillUserdata(ADMIN_USER_DATA);
-  });
+      await workbenchPO.waitAuthenticating();
+  })
 
   it("Localhost Server Connected", async () => {
-    await workbenchPO.waitConnection();
 
     expect(
       await workbenchPO.isConnected(
         APPSERVER_DATA.serverName,
         APPSERVER_DATA.environment
-      )
+      ), "Status bar"
     ).is.true;
-    expect(await serverItemPO.isConnected()).is.true;
+
+    expect(await serverItemPO.isConnected(), "Treeviw node").is.true;
   });
 
   it("Localhost Server Disconnected", async () => {

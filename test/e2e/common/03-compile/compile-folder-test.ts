@@ -75,7 +75,7 @@ describe("Compile folders", async () => {
   });
 
   //comando rebuild não pega item correte da árvore e sim do editor
-  it.skip("Recompile", async () => {
+  it("Recompile", async () => {
     await outputPO.clearConsole();
     await compilePO.fireRebuildFile(folderItem);
     await workbenchPO.waitBuilding();

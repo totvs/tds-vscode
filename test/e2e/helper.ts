@@ -245,3 +245,44 @@ export async function fireContextMenuAction(
   await delay();
 }
 
+export function toAdvplType(variable: any): string {
+  if (variable.value == null) {
+    return "NIL";
+  } else if (variable.type == "N") {
+    return `${variable.value}`;
+  } else if (variable.type == "D") {
+    const d: Date = variable.value as Date;
+    var date = d.toJSON().slice(0, 10);
+    return `${date.slice(5, 7)}/${date.slice(8, 10)}/${date.slice(2, 4)}`;
+  } else if (variable.type == "C") {
+    return `"${variable.value}"`;
+  } else if (variable.type == "L") {
+    return variable.value ? ".T." : ".F.";
+  } else if (variable.type == "B") {
+    return variable.value;
+  }
+
+  return "NIL";
+}
+
+export function to4GLType(variable: any): string {
+  if (variable.value == null) {
+    return "NIL";
+  } else if (variable.type == "N" || variable.type == "INTEGER") {
+    return `${variable.value}`;
+  } else if (variable.type == "D") {
+    const d: Date = variable.value as Date;
+    var date = d.toJSON().slice(0, 10);
+    return `${date.slice(5, 7)}/${date.slice(8, 10)}/${date.slice(2, 4)}`;
+  } else if (variable.type == "C") {
+    return `"${variable.value}"`;
+  } else if (variable.type == "L") {
+    return variable.value ? ".T." : ".F.";
+  } else if (variable.type == "B") {
+    return variable.value;
+  } else if (variable.type == "U") {
+    return "NIL";
+  }
+
+  return "NIL";
+}

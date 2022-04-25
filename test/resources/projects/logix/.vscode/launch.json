@@ -15,8 +15,15 @@
 	],
 	"lastPrograms": [
 		{
+<<<<<<< Updated upstream
 			"label": "record.4gl"
 		}
 	],
 	"lastProgramExecuted": "record.4gl"
+=======
+			"label": "sqlca.4gl"
+		}
+	],
+	"lastProgramExecuted": "sqlca.4gl"
+>>>>>>> Stashed changes
 }

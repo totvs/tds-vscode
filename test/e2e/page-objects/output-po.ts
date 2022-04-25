@@ -137,8 +137,6 @@ export class OutputPageObject {
 
     text.push(this.endSequenceTest(targetEnd));
 
-    console.log("saida");
-
     return this.clearText(text);
   }
 
@@ -146,7 +144,7 @@ export class OutputPageObject {
     let result: string[] = [];
 
     text.forEach((line: string | undefined) => {
-      line = line?.replace(/\t|\r/gi, "").replace(/(..:.. \[.*\] )/, "") || "";
+      line = line?.replace(/\t|\r/gi, "").replace(/\[.*\] /, "") || "";
 
       result.push(line);
     });

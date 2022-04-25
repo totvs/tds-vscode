@@ -61,7 +61,7 @@ describe("Compile Simple File (basic test)", async () => {
     expect(text).is.eqls("xxxxxxxxxxxxxxxxx");
   });
 
-  it.skip("Recompile", async () => {
+  it("Recompile", async () => {
     await outputPO.clearConsole();
     await compilePO.fireRebuildFile(resourceItem);
 

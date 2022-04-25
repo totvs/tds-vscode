@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { delay, openProject } from "../../helper";
+import { delay, openProject, toAdvplType } from "../../helper";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA } from "../../scenario";
 import { DebugPageObject, VariablePO } from "../../page-objects/debug-view-po";
@@ -295,26 +295,6 @@ function incValues(values: any[], increment: number): any[] {
   });
 
   return values;
-}
-
-function toAdvplType(variable: any): string {
-  if (variable.value == null) {
-    return "NIL";
-  } else if (variable.type == "N") {
-    return `${variable.value}`;
-  } else if (variable.type == "D") {
-    const d: Date = variable.value as Date;
-    var date = d.toJSON().slice(0, 10);
-    return `${date.slice(5, 7)}/${date.slice(8, 10)}/${date.slice(2, 4)}`;
-  } else if (variable.type == "C") {
-    return `"${variable.value}"`;
-  } else if (variable.type == "L") {
-    return variable.value ? ".T." : ".F.";
-  } else if (variable.type == "B") {
-    return variable.value;
-  }
-
-  return "NIL";
 }
 
 function getLocalVarsName(): string[] {

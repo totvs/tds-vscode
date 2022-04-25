@@ -47,10 +47,18 @@ export class OutputLsPageObject extends OutputPageObject {
   }
 
   async extractServerSequenceTest(): Promise<string[]> {
-    return await this.extractSequenceTest(
+    const result: string[] = await this.extractSequenceTest(
       VALID_SERVER_BLOCK[0],
       VALID_SERVER_BLOCK[1]
     );
+
+    if (result.length == VALID_SERVER_SEQUENCE.length) {
+      return result.map((value: string, index: number) =>
+        value.substring(0, VALID_SERVER_SEQUENCE[index].length)
+      );
+    }
+
+    return result;
   }
 
   async extractCompileSequenceTest(): Promise<string[]> {

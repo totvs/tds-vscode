@@ -9,7 +9,7 @@ import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { COMPILE_KEY_FILE, DELETE_DATA } from "../../scenario";
 
 (Object.keys(COMPILE_KEY_FILE).length > 1 ? describe : describe.skip)(
-  "Copmile key operations",
+  "Compile key operations",
   async () => {
     let serverTreePO: ServerViewPageObject;
     let serverItemPO: ServerTreeItemPageObject;
