@@ -51,6 +51,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
       }
 
       config.environment = this._connectedServerItem.environment;
+      config.environmentType = this._connectedServerItem.informations.environmentDetectedType;
       config.token = this._connectedServerItem.token;
 
       // se no server conectado houver a informacao de smartclientBin utiliza a informacao
