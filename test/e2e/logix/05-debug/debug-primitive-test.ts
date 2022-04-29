@@ -93,11 +93,7 @@ const GLOBAL_VAR_INIT_VALUES: any[] = [
   //{ name: "G_COD_EPRESA", value: "NIL", type: "CHAR(2)" },
 ];
 
-<<<<<<< Updated upstream:test/e2e/logix/05-debug/debug-primitive-test.ts
 describe("Debug primitive variables", async () => {
-=======
-describe.skip("Debug primitive variables", async () => {
->>>>>>> Stashed changes:test/e2e/tec/05-debug/debug-primitive-test.ts
   let workbenchPO: WorkbenchPageObject;
   let debugPO: DebugPageObject;
   let serverTreePO: ServerViewPageObject;

@@ -1,10 +1,14 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+# Versão [1.3.14]
 
-### [1.3.13](https://github.com/totvs/tds-vscode/compare/v1.3.13-RC1...v1.3.13) (2022-04-14)
+## Adicionar tratamento de expressões 4GL [DTCLIENT01-3338](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3338)
 
-# Changelog
+- Adicionado tratamento na pré-avaliação de expressões 4GL.
+
+## Ao ocorrer uma exceção (error.log) o debugger no vscode cai com erro de sincronismo [DTCLIENT01-3344](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3344)
+
+- Ajustado a comunicação entre o _DA_ e o _appServer_ quando há exceção na aplicação 4GL/AdvPL.
 
 # Versão [1.3.13]
 

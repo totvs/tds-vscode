@@ -1,0 +1,216 @@
+#line 1 "w:/ws_tds_vscode/tds-vscode/test/resources/projects/includes\protheus.ch"
+#line 1 "w:/ws_tds_vscode/tds-vscode/test/resources/projects/includes\Dialog.ch"
+#line 28 "protheus.ch"
+#line 1 "w:/ws_tds_vscode/tds-vscode/test/resources/projects/includes\Font.ch"
+#line 29 "protheus.ch"
+#line 1 "w:/ws_tds_vscode/tds-vscode/test/resources/projects/includes\PTMenu.ch"
+#line 31 "protheus.ch"
+#line 1 "w:/ws_tds_vscode/tds-vscode/test/resources/projects/includes\Print.ch"
+#line 33 "protheus.ch"
+#line 1 "w:/ws_tds_vscode/tds-vscode/test/resources/projects/includes\Colors.ch"
+#line 35 "protheus.ch"
+#line 1 "w:/ws_tds_vscode/tds-vscode/test/resources/projects/includes\Folder.ch"
+#line 37 "protheus.ch"
+#line 1 "w:/ws_tds_vscode/tds-vscode/test/resources/projects/includes\msobject.ch"
+#line 38 "protheus.ch"
+#line 1 "w:/ws_tds_vscode/tds-vscode/test/resources/projects/includes\VKey.ch"
+#line 42 "protheus.ch"
+#line 1 "w:/ws_tds_vscode/tds-vscode/test/resources/projects/includes\WinApi.ch"
+#line 44 "protheus.ch"
+#line 1 "w:/ws_tds_vscode/tds-vscode/test/resources/projects/includes\FWCommand.ch"
+#line 47 "protheus.ch"
+#line 1 "w:/ws_tds_vscode/tds-vscode/test/resources/projects/includes\FWCSS.CH"
+#line 50 "protheus.ch"
+#line 3 "w:\ws_tds_vscode\tds-vscode\test\resources\projects\logix\files\userFunction\\w:/ws_tds_vscode/tds-vscode/test/resources/projects/logix/files/userFunction/escolheNum.prw"
+Function U_escolheNum(p1)
+	local n, cResp, cMsg := ""
+	local aOpcoes := {}
+	private cOpcao
+	private ondeEstou := "escolheNum"
+	public aPublic := {}
+xxxxxx()
+	TDSReplay( .T.  , {"*"}, {}, {"*"} , "l:\escolheNhum.trtrplay", 0 , .t.  , "")
+
+
+
+
+
+	testVars()
+	private aPrivate := {}
+
+	fillPrivate()
+
+	fillPublic()
+
+
+	for n := 1 to 5
+		aAdd(aOpcoes, strZero(n,1,0))
+	next
+
+	n := 0
+	while !(cResp == "*")
+		tela(aOpcoes)
+		n++
+
+		cResp := cOpcao
+
+		if cResp == "1"
+			cMsg := "Voc� escolheu o numero 1"
+		elseif cResp == "2"
+			cMsg := "Voc� escolheu o numero 2"
+		elseif cResp == "3"
+			cMsg := "Voc� escolheu o numero 3"
+		elseif cResp == "4"
+			cMsg := "Voc� escolheu o numero 4"
+		elseif cResp == "5"
+			cMsg := "Voc� escolheu o numero 5"
+		else
+			cMsg := "Nenhum número escolhido"
+		endif
+
+		if !empty(cResp)
+			if cResp == "2" .or.  cResp == "4"
+				cMsg += " e � PAR"
+			else
+				cMsg += " e � IMPAR"
+			endif
+		endif
+
+		if !(cResp == "*")
+			Iif(FindFunction("APMsgAlert"), APMsgAlert(cMsg,), MsgAlert(cMsg,))
+		endif
+
+	enddo
+
+	TDSReplay( .F. )
+
+return
+
+	_ObjNewClass( AB , )
+		_ObjClassData( bT,,, )
+		_ObjClassData( bF,,, )
+		_ObjClassData( dt,,, )
+		_ObjClassData( c,,, )
+		_ObjClassData( n0,,, )
+		_ObjClassData( n2,,, )
+		_ObjClassData( n8,,, )
+		_ObjClassData( cb,,, )
+
+		_ObjClassMethod(ab,,)
+	_ObjEndClass( )
+
+Function ___AB____ab( )
+	Self:bT := .t. 
+	Self:bF := .F. 
+	Self:dt := date()
+	Self:c  := "string"
+	Self:n0 := 123
+	Self:n2 := 123.45
+	Self:n8 := 123.45678
+	Self:cb := { |p1,p1| 10+20}
+
+	private ondeEstou := "class ab"
+
+
+return
+
+static function testVars()
+	local bT := .t. 
+	local bF := .F. 
+	local dt := date()
+	local c := "string"
+	local n0 := 123
+	local n2 := 123.45
+	local n8 := 123.45678
+	local cb := { |p1,p1| 10+20}
+	local o := AB():AB()
+
+	private ondeEstou := "testVars"
+	private aPrivate := {}
+
+	fillPrivate()
+
+	fillPublic()
+
+return { bT, BF, dt, c, n0,n2,n8,cb, o}
+
+static function fillPrivate()
+	local n
+
+	private ondeEstou := "fillPrivate"
+
+	for n := 1 to 5
+		aAdd(aPrivate, strZero(n,1,0) + procName(1))
+	next
+
+	aAdd(aPrivate,  {1, 2, "S3"} )
+
+return
+
+static function fillPublic()
+	local n
+
+	private ondeEstou := "fillPublic"
+
+	for n := 1 to 5
+		aAdd(aPublic, strZero(n,1,0) + procName(1))
+	next
+
+	aAdd(aPublic,  {1, 2, "S3"} )
+
+return
+
+static function tela(aaOpcoes)
+	Local oDlg,oSay1,oBtn
+
+	if !(valType(aaOpcoes) == "A")
+		msgAlerta("Parametro aaOpcoes não é uma lista (array)")
+		return cOpcao
+	endif
+
+	oDlg := MSDIALOG():Create()
+	oDlg:cName := "oDlg"
+	oDlg:cCaption := "Escolha um numero"
+	oDlg:nLeft := 0
+	oDlg:nTop := 0
+	oDlg:nWidth := 400
+	oDlg:nHeight := 250
+	oDlg:lCentered := .T. 
+
+	oSay1 := TSAY():Create(oDlg)
+	oSay1:cName := "oSay1"
+	oSay1:cCaption := "Escolha um número acionando um dos botões abaixo."
+	oSay1:nLeft := 10
+	oSay1:nTop := 28
+	oSay1:nWidth := 250
+	oSay1:nHeight := 17
+	oSay1:lTransparent := .T. 
+
+	oBtn := TButton():Create(oDlg)
+	oBtn:cCaption := "<nenhum>"
+	oBtn:blClicked := {|| cOpcao := "", oDlg:end() }
+	oBtn:nWidth := 90
+	oBtn:nTop := 90
+	oBtn:nLeft := 10
+
+	oBtn := TButton():Create(oDlg)
+	oBtn:cCaption := "<encerrar>"
+	oBtn:blClicked := {|| cOpcao := "*", oDlg:end() }
+	oBtn:nWidth := 90
+	oBtn:nTop := 90
+	oBtn:nLeft := 110
+
+
+
+
+
+
+
+
+	aEval(aaOpcoes, { |x,i| oBtn := TButton():Create(oDlg), oBtn:cCaption := x, oBtn:blClicked := &("{|| conout('Foi acionado "+x+"'),cOpcao := '"+x+"', oDlg:end() }"), oBtn:nWidth := 30, oBtn:nTop := 60, oBtn:nLeft := (10 * i) + (oBtn:nWidth*(i-1)) })
+
+
+	oDlg:Activate( oDlg:bLClicked, oDlg:bMoved, oDlg:bPainted, .T. ,,,, oDlg:bRClicked, )
+
+
+Return cOpcao
