@@ -45,7 +45,7 @@ function initStatusBarItem(context: vscode.ExtensionContext) {
     priorityTotvsStatusBarItem
   );
   serverStatusBarItem.command = "totvs-developer-studio.serverSelection";
-  serverStatusBarItem.text = `$(~spin) ${localize(
+  serverStatusBarItem.text = `$(gear~spin) ${localize(
     "tds.vscode.initializing",
     "(initializing)"
   )}`;
@@ -191,16 +191,10 @@ function initRpoTokenStatusBarItem(context: vscode.ExtensionContext) {
     priorityRpoTokenStatusBarItem
   );
   rpoTokenStatusBarItem.command = "totvs-developer-studio.rpoToken";
-  rpoTokenStatusBarItem.text = "RPO";
+  rpoTokenStatusBarItem.text = "RPO$(gear)";
   rpoTokenStatusBarItem.tooltip = localize(
     "tds.vscode.rpoToken.initial.tooltip",
     "Input RPO token"
-  );
-
-  context.subscriptions.push(
-    rpoTokenStatusBarItem,
-    Utils.onDidSelectedServer(updateRpoTokenStatusBarItem),
-    Utils.onDidRpoTokenSelected(updateRpoTokenStatusBarItem)
   );
 
   clearRpoTokenStatusBarItem = vscode.window.createStatusBarItem(
@@ -214,12 +208,19 @@ function initRpoTokenStatusBarItem(context: vscode.ExtensionContext) {
     "Clear RPO token"
   );
 
+  context.subscriptions.push(
+    rpoTokenStatusBarItem,
+    clearRpoTokenStatusBarItem,
+    Utils.onDidSelectedServer(updateRpoTokenStatusBarItem),
+    Utils.onDidRpoTokenSelected(updateRpoTokenStatusBarItem)
+  );
+
   rpoTokenStatusBarItem.show();
   clearRpoTokenStatusBarItem.show();
 }
 
 function updateRpoTokenStatusBarItem(): void {
-  let text: string = "RPO ";
+  let text: string = "";
   let tooltip: string = "";
 
   const rpoToken: IRpoToken = Utils.getRpoTokenInfos();
@@ -227,8 +228,16 @@ function updateRpoTokenStatusBarItem(): void {
     const error: string = rpoToken.error; // || rpoAux.error;
     const warning: string = rpoToken.warning; // || rpoAux.warning;
 
-    text = buildTextRpoToken(error ? 2 : warning ? 1 : 0, text);
-    tooltip = buildTooltipRpoToken(error || warning, tooltip, rpoToken);
+    if (rpoToken.token.length == 0) {
+      text = "$(gear) RPO";
+      tooltip = localize(
+        "tds.vscode.rpoToken.initial.tooltip",
+        "Input RPO token"
+      )
+    } else {
+      text = buildTextRpoToken(error ? 2 : warning ? 1 : 0, text) + " RPO";
+      tooltip = buildTooltipRpoToken(error || warning, tooltip, rpoToken);
+    }
   }
 
   rpoTokenStatusBarItem.text = text;
@@ -278,14 +287,14 @@ function buildServerTooltip(server: ServerItem) {
       return list.length == 0
         ? ""
         : `**${title}**\n${list
-            .sort((a: string, b: string) => a.localeCompare(b))
-            .map((value: string) => `- ${value}`)
-            .join("\n")}`;
+          .sort((a: string, b: string) => a.localeCompare(b))
+          .map((value: string) => `- ${value}`)
+          .join("\n")}`;
     };
 
     serverStatusBarItem.tooltip = new vscode.MarkdownString(
       `**Address: _${server.address}:${server.port}_** ` +
-        `${server.buildVersion}\n${group("Actions", "S")}\n ${group("Monitor", "M")}`
+      `${server.buildVersion}\n ${group("Actions", "S")}\n ${group("Monitor", "M")}`
     );
   } else {
     serverStatusBarItem.tooltip = error;

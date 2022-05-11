@@ -522,7 +522,7 @@ export class MonitorLoader {
         });
       } else {
         vscode.window.setStatusBarMessage(
-          "$(~spin)" +
+          "$(gear~spin)" +
             localize(
               "REQUESTING_DATA_FROM_SERVER",
               "Requesting data from the server [{0}]",
@@ -586,7 +586,7 @@ export class MonitorLoader {
 
   private updateSpeedStatus(pauseReason?: string) {
     let nextUpdate = new Date(Date.now());
-    let icon: string = "$(~spin)";
+    let icon: string = "$(gear~spin)";
     let msg1: string = "";
     let msg2: string = "";
 

@@ -1,5 +1,12 @@
 # Changelog
 
+# Versão [1.3.next]
+
+## Melhoria na apresentação de listas (_array_) [DTCLIENT01-3354](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3354)
+
+- Listas (_arrays_) com mais de 100 elementos, passam a ser agrupados de 100, facilitando a visualização e execução de depurador que passa a carregar esses grupos por solicitação (ao expandir).
+![Array Group](docs/images/debug-array-group.png)
+
 # Versão [1.3.14]
 
 ## Adicionar tratamento de expressões 4GL [DTCLIENT01-3338](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3338)

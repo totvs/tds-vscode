@@ -157,7 +157,7 @@ export class InspectorLoader implements vscode.Disposable {
         vscode.window.withProgress(
           {
             location: vscode.ProgressLocation.Notification,
-            title: `$(~spin) Export inspector information. Wait...`,
+            title: `$(gear~spin) Export inspector information. Wait...`,
           },
           async (progress, token) => {
             progress.report({ increment: 0 });

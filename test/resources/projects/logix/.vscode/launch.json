@@ -34,8 +34,17 @@
 			"label": "men1100"
 		},
 		{
-			"label": "MEN0210.4GL"
+			"label": "men0210"
+		},
+		{
+			"label": "men0210.4gl"
+		},
+		{
+			"label": "primitive.4gl"
+		},
+		{
+			"label": "array.4gl"
 		}
 	],
-	"lastProgramExecuted": "MEN0210.4GL"
+	"lastProgramExecuted": "array.4gl"
 }
