@@ -3,12 +3,12 @@
 #  If this source is modified, review breakpoints in the test source. #
 #---------------------------------------------------------------------#
 
-DATABASE logix
+--DATABASE logix
 
-GLOBALS
-	DEFINE g_user             LIKE usuarios.cod_usuario
-	DEFINE g_cod_empresa      LIKE empresa.cod_empresa
-END GLOBALS
+--GLOBALS
+--	DEFINE g_user             LIKE usuarios.cod_usuario
+--	DEFINE g_cod_empresa      LIKE empresa.cod_empresa
+--END GLOBALS
 
 DEFINE m_decimal              DECIMAL
 DEFINE m_decimal_1            DECIMAL(10,1)

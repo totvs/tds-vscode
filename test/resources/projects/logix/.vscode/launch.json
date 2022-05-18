@@ -4,9 +4,33 @@
 		{
 			"type": "totvs_language_debug",
 			"request": "launch",
-			"name": "Smart Client Debug",
+			"name": "SC Harpia",
 			"program": "${command:AskForProgramName}",
-			"smartclientBin": "M:\\protheus\\smartClient\\20-3-0-2\\smartclient.exe",
+			"smartclientBin": "M:\\protheus\\smartClient\\20-3-0-3\\smartclient.exe",
+			"cwb": "${workspaceFolder}",
+			"isMultiSession": true,
+			"enableTableSync": false,
+			"waitForAttach": 15000,
+			"logFile": "${workspaceFolder}/daplog.log"
+		},
+		{
+			"type": "totvs_language_debug",
+			"request": "launch",
+			"name": "SC Logix",
+			"program": "${command:AskForProgramName}",
+			"smartclientBin": "M:\\protheus\\appServer\\logix_131227\\totvs\\logix\\bin\\smartclient_131227\\totvssmartclient.exe",
+			"cwb": "${workspaceFolder}",
+			"isMultiSession": true,
+			"enableTableSync": true,
+			"waitForAttach": 15000,
+			"logFile": "${workspaceFolder}/daplog.log"
+		},
+		{
+			"type": "totvs_language_debug",
+			"request": "launch",
+			"name": "SC Logix 13.2.3.45",
+			"program": "${command:AskForProgramName}",
+			"smartclientBin": "M:\\protheus\\appServer\\logix_131227\\totvs\\logix\\bin\\smartclient_13.2.3.45\\totvssmartclient.exe",
 			"cwb": "${workspaceFolder}",
 			"isMultiSession": true,
 			"enableTableSync": true,
@@ -44,7 +68,16 @@
 		},
 		{
 			"label": "array.4gl"
+		},
+		{
+			"label": "image2.4gl"
+		},
+		{
+			"label": "imagem2.4gl"
+		},
+		{
+			"label": "image.4gl"
 		}
 	],
-	"lastProgramExecuted": "array.4gl"
+	"lastProgramExecuted": "image.4gl"
 }

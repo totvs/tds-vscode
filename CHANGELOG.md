@@ -2,9 +2,15 @@
 
 # Versão [1.3.next]
 
+## Edição de valores dureante depuração
+
+Quando o depurador estevier aguardando ação do usuário, pode-se mudar valores de variáveis efetuado-se um duplo-click sobre a mesma na visão _Variables_. Atente que não pode mudar o tipo (exceto nos tipos _undefined_ do Adv/PL) e nehum tipo de validação é efetuada.
+
+> ATENÇÃO: Ao usar expressões, tenha certeza que esta não causará operções indesejadas, como por exemplo, alterar valores em outros campos, adicionar registros e outras.
+
 ## Melhoria na apresentação de listas (_array_) [DTCLIENT01-3354](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3354)
 
-- Listas (_arrays_) com mais de 100 elementos, passam a ser agrupados de 100, facilitando a visualização e execução de depurador que passa a carregar esses grupos por solicitação (ao expandir).
+- Listas (_arrays_) com mais de 100 elementos, passam a ser agrupados em blocos de 100, facilitando a visualização e o depurador passa a carregá-los sob solicitação.
 ![Array Group](docs/images/debug-array-group.png)
 
 # Versão [1.3.14]
