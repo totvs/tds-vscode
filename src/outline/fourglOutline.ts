@@ -7,8 +7,8 @@ import {
 const symbolRules: ISymbolRule[] = [
   {
     kind: vscode.SymbolKind.Function,
-    searchExp: /^(\s*)(function)\s+(\w+)/i,
-    group: 3,
+    searchExp: /^(\s*)(private\s*)?(function)\s+(\w+)/i,
+    group: 4,
   },
   {
     kind: vscode.SymbolKind.Function,

@@ -1,0 +1,34 @@
+{
+	"name": "p20-4gl",
+	"description": [
+		"Cenário para o ambiente TotvsTec (Harpia) e projeto 4gl."
+	],
+	"projectFolder": "logix",
+	"variables": {
+		"rootPath": {
+			"linux": "~/protheus",
+			"mac": "~/protheus",
+			"windows": "m:/protheus"
+		},
+		"server_address": {
+			"linux": "172.19.32.1",
+			"mac": "10.173.10.79",
+			"windows": "localhost"
+		}
+	},
+	"server": {
+		"serverType": "totvs_server_logix",
+		"serverName": "localhost",
+		"address": "${server_address}",
+		"port": 20302,
+		"environment": "logix",
+		"includePath": [
+			"../includes"
+		],
+		"smartClientBin": "${rootPath}/smartClient/20-3-0-2/smartclient${execExt}",
+		"environments": [
+			"logix",
+			"logix_2"
+		]
+	}
+}

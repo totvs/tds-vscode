@@ -11,7 +11,7 @@ import { ADMIN_USER_DATA, APPSERVER_DATA } from "../../scenario";
 const COMPILE_FILE = ["files", "singleFile", "job003.4gl"];
 
 //[TDS - VSCode 1.3.11] apos troca de ambiente do appserver, falha compilacao alegando q server nao está conectado
-describe.only("DTCLIENT01-3126: [TDS-VSCode 1.3.11] after changing appserver environment, compilation fails claiming server is not connected", async () => {
+describe("DTCLIENT01-3126: [TDS-VSCode 1.3.11] after changing appserver environment, compilation fails claiming server is not connected", async () => {
   let workbenchPO: WorkbenchPageObject;
 
   before(async () => {

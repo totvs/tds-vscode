@@ -9,7 +9,7 @@ import { TextEditorPageObject } from "../../page-objects/text-editor-po";
 import { BuildPageObject } from "../../page-objects/build-po";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
 import { DebugToolbar, TreeItem } from "vscode-extension-tester";
-import { ServerTreeItemPageObject } from "./../../page-objects/server-tree-item-po";
+import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
 
 const LAUNCHER_NAME: string = "Smart Client Debug";
 const COMPILE_FILE = ["files", "debug", "primitive.4gl"];

@@ -5,14 +5,22 @@
 	],
 	"variables": {
 		"rootPath": {
-			"linux": "~/protheus/p19",
-			"mac": "~/protheus/p19",
-			"windows": "m:/protheus/p19"
+			"linux": "~/protheus",
+			"mac": "~/protheus",
+			"windows": "m:/protheus"
 		}
 	},
+	"projectFolder": "advpl",
 	"server": {
+		"includePath": [
+			"../includes"
+		],
+		"serverType": "totvs_server_protheus",
+		"environment": "p12",
+		"environments": ["p12"],
 		"serverName": "p19",
 		"address": "localhost",
-		"port": 19317
+		"port": 19317,
+		"smartClientBin": "${rootPath}/smartClient/smartClient${execExt}"
 	}
 }

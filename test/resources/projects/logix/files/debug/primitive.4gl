@@ -26,12 +26,54 @@ DEFINE m_char                 CHAR(10)
 DEFINE m_varchar              VARCHAR(10)
 
 main
+-- 
 
 	DISPLAY "Start MAIN"
 
 	call _local()
 
+<<<<<<< Updated upstream
 END MAIN
+=======
+	let l_date         = "12/31/1899"
+	let l_date_22      = "12/31/2022"
+	let l_date_max     = l_Date + 2,264,870
+
+end function
+
+-- DATETIME -- Points in time, specified as calendar dates and time-of-day.
+function _dateTime() --YYYY-MM-DD HH:MM:SS
+	define    l_dateTime          DATETIME YEAR TO FRACTION 
+	define    l_dateTime_YS       DATETIME YEAR TO SECOND
+	define    l_dateTime_YD       DATETIME YEAR TO DAY
+	define    l_dateTime_HS       DATETIME HOUR TO SECOND
+
+	let l_dateTime         = "1899-12-31 00:00:00.000"
+	let l_dateTime_YS      = "1899-12-31 00:00:00"
+	let l_dateTime_YD      = "2022-12-31" -- 12:30:30"
+	let l_dateTime_HS      = "12:30:30"
+
+end function
+
+-- DEC-- (This keyword is a synonym for DECIMAL.)
+-- DECIMAL-- Fixed point numbers, of a specified scale and precision.
+--function _dec()  --mm/dd/yy
+--	define l_dec          DEC     
+
+-- DOUBLE PRECISION-- (These keywords are a synonym for FLOAT.)
+-- FLOAT -- Floating-point numbers, of up to 32-digit precision.
+-- INT -- (This keyword is a synonym for INTEGER.)
+-- INTEGER-- Whole numbers, from -2,147,483,647 to +2,147,483,647.
+-- INTERVAL-- Spans of time in years and months, or else in smaller time units.
+-- MONEY-- Currency amounts, with definable scale and precision.
+-- NUMERIC-- (This keyword is a synonym for DECIMAL.)
+-- REAL-- (This keyword is a synonym for SMALLFLOAT.)
+-- RECORD-- Ordered sets of values, of any combination of 4GL data types.
+-- SMALLFLOAT -- Floating-point numbers, of up to 16-digit precision.
+-- SMALLINT-- Whole numbers, from -32,767 to +32,767.
+-- TEXT-- Character strings of any length.
+-- VARCHAR-- Character strings of varying length, no greater than 255.
+>>>>>>> Stashed changes
 
 function _local()
 	DEFINE l_index                SMALLINT

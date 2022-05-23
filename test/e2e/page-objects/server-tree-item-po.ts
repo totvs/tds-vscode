@@ -29,7 +29,7 @@ export class ServerTreeItemPageObject {
       await fillUserdata(userData);
     }
 
-    await this.workbenchPO.waitConnection();
+    await this.workbenchPO.waitAuthenticating();
   }
 
   async changeEnvironment(environment: string, userData: IUserData) {
@@ -53,7 +53,7 @@ export class ServerTreeItemPageObject {
       }
     }
 
-    await this.workbenchPO.waitConnection();
+    await this.workbenchPO.waitAuthenticating();
   }
 
   async isServerP20OrGreater(): Promise<boolean> {

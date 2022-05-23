@@ -40,12 +40,12 @@ export class WorkbenchPageObject {
   }
 
   async isConnected(
-    LOCALHOST_NAME: string,
-    LOCALHOST_ENVIRONMENT: string
+    name: string,
+    environment: string
   ): Promise<boolean> {
     return (
       (await this.statusBar.statusBarWithText(
-        `${LOCALHOST_NAME} / ${LOCALHOST_ENVIRONMENT}`,
+        `${name} / ${environment}`,
         10000
       )) !== null
     );
@@ -268,7 +268,7 @@ export class WorkbenchPageObject {
     return notification;
   }
 
-  async waitConnection(wait: number = MEDIUM_PROCESS_TIMEOUT): Promise<void> {
+  async waitAuthenticating(wait: number = MEDIUM_PROCESS_TIMEOUT): Promise<void> {
     await this.waitProcessFinish(/Authenticating user/, wait);
   }
 
@@ -276,6 +276,10 @@ export class WorkbenchPageObject {
     wait: number = MEDIUM_PROCESS_TIMEOUT
   ): Promise<Notification> {
     return await this.waitNotification(/Show table with compile results/, wait);
+  }
+
+  async waitConnection(wait: number = MEDIUM_PROCESS_TIMEOUT): Promise<void> {
+    await this.waitProcessFinish(/Authenticating user/, wait);
   }
 
   async waitReconnection(wait: number = MEDIUM_PROCESS_TIMEOUT): Promise<void> {

@@ -117,20 +117,22 @@ function environmentTypeImage(environment: EnvSection): string {
 
   //esta chegando somente os dados!!! acandido
   //if (server.isServerP20OrGreater) {
-  if ((server.buildVersion.localeCompare("7.00.191205P") > 0) && (environment.isCurrent)) {
-    const type: ServerType = server.type;
-    if (
-      type == "totvs_server_totvstec" &&
-      server.informations?.environmentDetectedType
-    ) {
-      const type: string = server.informations.environmentDetectedType;
-      sufix = "_" + type.substring(type.lastIndexOf("_") + 1);
+  if (server.buildVersion) {
+    if ((server.buildVersion.localeCompare("7.00.191205P") > 0) && (environment.isCurrent)) {
+      const type: ServerType = server.type;
+      if (
+        type == "totvs_server_totvstec" &&
+        server.informations?.environmentDetectedType
+      ) {
+        const type: string = server.informations.environmentDetectedType;
+        sufix = "_" + type.substring(type.lastIndexOf("_") + 1);
+      }
     }
-  }
 
-  const current: boolean = environment.isCurrent;
-  if (current) {
-    sufix += "_connected";
+    const current: boolean = environment.isCurrent;
+    if (current) {
+      sufix += "_connected";
+    }
   }
 
   return `environment${sufix}.svg`;

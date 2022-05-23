@@ -6,7 +6,7 @@ user function escolheNum(p1)
 	private cOpcao
 	private ondeEstou := "escolheNum"
 	public aPublic := {}
-
+xxxxxx()
 	TDSReplay(.T. , {"*"}, {}, {"*"} , "l:\escolheNhum.trtrplay", 0 , .t. , "")
 
 	// essa seq. UTF 8 inválida para json do DA
