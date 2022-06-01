@@ -1,12 +1,14 @@
 # Changelog
 
+# Versão [1.3.future]
+
+## Edição de valores durante depuração [DTCLIENT01-3390](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3390)
+
+Quando o depurador estiver aguardando ação do usuário, pode-se mudar valores de variáveis efetuado-se um duplo-click sobre a mesma na visão _Variables_. Atente que não pode mudar o tipo (exceto nos tipos _undefined_ do Adv/PL) e nenhuma validação é efetuada, exceto de tipo.
+
+> ATENÇÃO: Ao usar expressões, tenha certeza que esta não causará operações indesejadas, como por exemplo, alterar valores em outros campos, adicionar/atualizar registros e outras.
+
 # Versão [1.3.next]
-
-## Edição de valores dureante depuração
-
-Quando o depurador estevier aguardando ação do usuário, pode-se mudar valores de variáveis efetuado-se um duplo-click sobre a mesma na visão _Variables_. Atente que não pode mudar o tipo (exceto nos tipos _undefined_ do Adv/PL) e nehum tipo de validação é efetuada.
-
-> ATENÇÃO: Ao usar expressões, tenha certeza que esta não causará operções indesejadas, como por exemplo, alterar valores em outros campos, adicionar registros e outras.
 
 ## Melhoria na apresentação de listas (_array_) [DTCLIENT01-3354](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3354)
 

@@ -9,6 +9,7 @@
 			"smartclientBin": "M:\\protheus\\smartClient\\20-3-0-3\\smartclient.exe",
 			"cwb": "${workspaceFolder}",
 			"isMultiSession": true,
+			"enableMultiThread": false,
 			"enableTableSync": false,
 			"waitForAttach": 15000,
 			"logFile": "${workspaceFolder}/daplog.log"
@@ -79,5 +80,5 @@
 			"label": "image.4gl"
 		}
 	],
-	"lastProgramExecuted": "image.4gl"
+	"lastProgramExecuted": "array.4gl"
 }
