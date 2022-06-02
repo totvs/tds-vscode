@@ -48,6 +48,7 @@ import {
 import { i18n } from "../helper";
 import RemarkDialog from "./remarkDialog";
 import ConfirmDialog from "./confirmDialog";
+import ChangeCodePageDialog from "./changeCodePageDialog";
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,13 +59,13 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
     highlight:
       theme.palette.type === "light"
         ? {
-            color: theme.palette.secondary.main,
-            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-          }
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+        }
         : {
-            color: theme.palette.text.primary,
-            backgroundColor: theme.palette.secondary.dark,
-          },
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark,
+        },
     title: {
       display: "inline",
       fontSize: "180%",
@@ -114,6 +115,7 @@ function Title(props: ITitleProps) {
 
 function buildColumns(memento: IMemento): [] {
   let columns = propColumns({ ...cellDefaultStyle }).columns;
+
   const orderBy = memento.get(propOrderBy()) || "";
   const defaultSort =
     orderBy === -1 ? "" : memento.get(propOrderDirection()) || "asc";
@@ -163,7 +165,8 @@ const isAnyDialogOpen = (openDialog: any): boolean => {
     openDialog.sendMessage ||
     openDialog.disconnectUser ||
     openDialog.speedUpdate ||
-    openDialog.remark
+    openDialog.remark ||
+    openDialog.changeCodePage
   );
 };
 
@@ -179,6 +182,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const [selected, setSelected] = React.useState<IConnectionData[]>([]);
   const [speed, setSpeed] = React.useState(memento.get(propSpeed()));
   const [rows, setRows] = React.useState([]);
+  const [environments, setEnvironments] = React.useState([]);
   const [subtitle, setSubtitle] = React.useState();
   const [locked, setLocked] = React.useState(true);
   const [pageSize, setPageSize] = React.useState(memento.get(propPageSize()));
@@ -197,6 +201,8 @@ export default function MonitorPanel(props: IMonitorPanel) {
     remark: false,
     remarkToShow: "",
     confirmReset: false,
+    changeCodePage: false,
+    changeCodePageEnvironment: {},
   });
   const [columns] = React.useState(buildColumns(memento));
   const [reset, setReset] = React.useState(false);
@@ -235,18 +241,15 @@ export default function MonitorPanel(props: IMonitorPanel) {
           break;
         }
         case MonitorPanelAction.UpdateUsers: {
-          //const users = message.data.users as IMonitorUser[];
-          //const servers = message.data.servers as any[];
+          // setRows((rows) => {
+          //   return message.data.users;
+          // });
+          console.log("setRows");
 
-          setRows((rows) => {
-            if (event !== undefined) {
-              event.preventDefault();
-            }
-            return message.data.users;
-          });
+          setRows(message.data.users);
           setSubtitle(message.data.serverName);
+          setEnvironments(message.data.environments);
 
-          ////setServers(servers);
           break;
         }
         default:
@@ -259,13 +262,13 @@ export default function MonitorPanel(props: IMonitorPanel) {
     window.addEventListener("message", listener);
   }
 
-  const handleSpeedButtonClick = () => {
+  const handleSpeedButtonClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
 
     setOpenDialog({ ...openDialog, speedUpdate: true });
   };
 
-  const handleRefreshButtonClick = () => {
+  const handleRefreshButtonClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
 
     let command: IMonitorPanelAction = {
@@ -276,8 +279,18 @@ export default function MonitorPanel(props: IMonitorPanel) {
     props.vscode.postMessage(command);
   };
 
-  const handleResetButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  const handleChangeCodePageButtonClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault();
+
+    let command: IMonitorPanelAction = {
+      action: MonitorPanelAction.UpdateUsers,
+      content: {},
+    };
+
+    props.vscode.postMessage(command);
+  };
+
+  const handleResetButtonClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     event.preventDefault();
 
@@ -332,9 +345,22 @@ export default function MonitorPanel(props: IMonitorPanel) {
     setOpenDialog({ ...openDialog, remark: false, remarkToShow: "" });
   };
 
+  const doChangeCodeClose = (confirm: boolean, environment: string, codepage: string) => {
+    setOpenDialog({ ...openDialog, changeCodePage: false });
+
+    if (confirm) {
+
+      let command: IMonitorPanelAction = {
+        action: MonitorPanelAction.SetCodePageUpdate,
+        content: { codepage: codepage, environment: environment },
+      };
+
+      props.vscode.postMessage(command);
+    }
+  };
+
   const doSpeedUpdate = (confirm: boolean, speed: number) => {
     setOpenDialog({ ...openDialog, speedUpdate: false });
-    console.log(speedDialog);
 
     if (confirm) {
       setSpeed(speed);
@@ -402,13 +428,10 @@ export default function MonitorPanel(props: IMonitorPanel) {
     setOpenDialog({ ...openDialog, disconnectUser: true });
   };
 
-  const doDisconnectUser = (
-    confirmed: boolean,
+  const doDisconnectUser = (confirmed: boolean,
     killNow: boolean,
     recipients: any[]
   ) => {
-    event.preventDefault();
-
     setSelected([]);
     setTargetRow(null);
     setOpenDialog({ ...openDialog, disconnectUser: false });
@@ -431,8 +454,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
     message: string,
     recipients: any[]
   ) => {
-    event.preventDefault();
-
     setTargetRow(null);
     setOpenDialog({ ...openDialog, sendMessage: false });
 
@@ -491,7 +512,15 @@ export default function MonitorPanel(props: IMonitorPanel) {
   const doClickRow = (event: React.MouseEvent, rowData: any) => {
     event.preventDefault();
 
-    if (event.target["innerText"].startsWith("Emp")) {
+    const environmentTarget: string = event.target["innerText"].toString().toLowerCase();
+    const environmentElement = environments.find((element: any) => element.name === environmentTarget );
+    if (environmentElement) {
+      setOpenDialog({
+        ...openDialog,
+        changeCodePage: true,
+        changeCodePageEnvironment: environmentElement,
+      });
+    } else if (event.target["innerText"].startsWith("Emp")) {
       setOpenDialog({
         ...openDialog,
         remark: true,
@@ -603,7 +632,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
       propSpeedText(speed)
     ),
     isFreeAction: true,
-    onClick: () => handleSpeedButtonClick(),
+    onClick: (event: any) => handleSpeedButtonClick(event),
   });
 
   actions.push({
@@ -615,7 +644,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
       ),
     tooltip: i18n.localize("REFRESH_DATA", "Refresh data"),
     isFreeAction: true,
-    onClick: () => handleRefreshButtonClick(),
+    onClick: (event: any) => handleRefreshButtonClick(event),
   });
 
   actions.push({
@@ -689,6 +718,14 @@ export default function MonitorPanel(props: IMonitorPanel) {
           onColumnDragged={(sourceIndex, destinationIndex) =>
             doColumnDragged(sourceIndex, destinationIndex)
           }
+          cellEditable={{
+            onCellEditApproved: (newValue, oldValue, rowData, columnDef) => {
+              return new Promise((resolve, reject) => {
+                console.log('newValue: ' + newValue);
+                setTimeout(resolve, 1000);
+              });
+            }
+          }}
         />
       </Paper>
       <SendMessageDialog
@@ -713,6 +750,11 @@ export default function MonitorPanel(props: IMonitorPanel) {
         open={openDialog.remark}
         onClose={doRemarkClose}
         remark={openDialog.remarkToShow}
+      />
+      <ChangeCodePageDialog
+        open={openDialog.changeCodePage}
+        onClose={doChangeCodeClose}
+        environment={openDialog.changeCodePageEnvironment}
       />
       <SpeedUpdateDialog
         speed={speed}

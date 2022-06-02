@@ -5,6 +5,7 @@ export interface IMonitorPanelAction {
 
 export enum MonitorPanelAction {
   SetSpeedUpdate,
+  SetCodePageUpdate,
   UpdateUsers,
   ToggleAGroup,
   LockServer,

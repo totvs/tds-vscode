@@ -1204,6 +1204,7 @@ function sampleServer(): any {
 
 export function groupBy<T, K>(list: T[], getKey: (item: T) => K) {
   const map = new Map<K, T[]>();
+
   list.forEach((item) => {
     const key = getKey(item);
     const collection = map.get(key);
@@ -1213,7 +1214,8 @@ export function groupBy<T, K>(list: T[], getKey: (item: T) => K) {
       collection.push(item);
     }
   });
-  return Array.from(map.values());
+
+  return map;
 }
 
 //TODO: pegar a lista de arquivos a ignorar da configuração
