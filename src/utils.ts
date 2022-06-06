@@ -175,6 +175,11 @@ export default class Utils {
       }
     }
 
+    //compatibilização de versões anteriores a 0.2.2
+    if (config.version < "0.2.2") {
+      config.version = "0.2.2";
+    }
+
     return config;
   }
 
@@ -437,6 +442,7 @@ export default class Utils {
       JSON.stringify(JSONServerInfo, null, "\t"),
       (err) => {
         if (err) {
+          vscode.window.showErrorMessage(err);
           console.error(err);
         }
       }
@@ -1186,11 +1192,31 @@ export default class Utils {
     }
     return false;
   }
+
+  static getEnvironmentsConfig(serverName: string) {
+      const servers = this.getServersConfig();
+      const target: string = serverName.replace("_monitor", "")
+      const serverConfig = servers.configurations.find((element) => element.name == target);
+
+      return serverConfig?.environmentsConfig || [];
+  }
+
+  static setEnvironmentsConfig(serverName: string, environmentsConfig: any[]) {
+    const servers = this.getServersConfig();
+    const target: string = serverName.replace("_monitor", "")
+
+    servers.configurations.forEach((element: any, index: number) => {
+      if (element.name == target) {
+        servers.configurations[index].environmentsConfig = environmentsConfig;
+        Utils.persistServersInfo(servers);
+      }
+    });
+  }
 }
 
 function sampleServer(): any {
   return {
-    version: "0.2.1",
+    version: "0.2.2",
     includes: [""],
     permissions: {
       authorizationtoken: "",

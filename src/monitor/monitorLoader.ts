@@ -60,6 +60,7 @@ export class MonitorLoader {
   public set monitorServer(value: any) {
     if (this._monitorServer !== value) {
       this._monitorServer = value;
+      this.updateCodePage(undefined, undefined, false);
       this.updateUsers(true);
       this.isLockServer(this._monitorServer);
     }
@@ -464,7 +465,7 @@ export class MonitorLoader {
         break;
       }
       case MonitorPanelAction.SetCodePageUpdate: {
-        this.updateCodePage(command.content.environment, command.content.codepage);
+        this.updateCodePage(command.content.environment, command.content.codepage, true);
         this.updateUsers(true);
         break;
       }
@@ -510,17 +511,35 @@ export class MonitorLoader {
     }
   }
 
-  private updateCodePage(environment: string, codepage: string) {
+  private updateCodePage(environment: string, codepage: string, save: boolean) {
     const envEncodeList: IEnvEncode[] = [];
-    envEncodeList.push( {environment: environment, encoding: Number.parseInt(codepage) })
+    const environmentConfig: any[] = Utils.getEnvironmentsConfig(this.monitorServer.name);
+
+    if (save) {
+      const index: number = environmentConfig.findIndex(((element) => {
+        return element.name == environment.toLowerCase();
+      }))
+      if (index == -1) {
+        codepage
+        environmentConfig.push({ "name": environment.toLowerCase(), "encoding": codepage });
+      } else {
+        environmentConfig[index] = { "name": environment.toLowerCase(), "encoding": codepage };
+      }
+
+      Utils.setEnvironmentsConfig(this.monitorServer.name, environmentConfig);
+    }
+
+    environmentConfig.forEach((environment) => {
+      envEncodeList.push({ environment: environment.name, encoding: Number.parseInt(environment.encoding.chatAt(0)) });
+    })
 
     vscode.window.setStatusBarMessage(
       "$(sync~spin)" +
-        localize(
-          "MONITOR_SETTING",
-          "Setting server [{0}]...",
-          this.monitorServer.name
-        ),
+      localize(
+        "MONITOR_SETTING",
+        "Setting server [{0}]...",
+        this.monitorServer.name
+      ),
       sendSetEnvEncodesRequest(this.monitorServer, envEncodeList).then(
         (message: string) => {
           if (message !== "OK") {
@@ -571,11 +590,11 @@ export class MonitorLoader {
       } else {
         vscode.window.setStatusBarMessage(
           "$(sync~spin)" +
-            localize(
-              "REQUESTING_DATA_FROM_SERVER",
-              "Requesting data from the server [{0}]...",
-              this.monitorServer.name
-            ),
+          localize(
+            "REQUESTING_DATA_FROM_SERVER",
+            "Requesting data from the server [{0}]...",
+            this.monitorServer.name
+          ),
           sendGetUsersRequest(this.monitorServer).then(
             (users: any) => {
               console.log(">>>>> sendGetUsersRequest ok");
@@ -587,7 +606,7 @@ export class MonitorLoader {
                 const environments: any[] = [];
                 Array.from(map.keys()).forEach((value) => {
                   environments.push({ name: value, codePage: 0 });
-                }) ;
+                });
 
                 map = groupBy(users, (item: any) => {
                   return item.server;
@@ -596,11 +615,11 @@ export class MonitorLoader {
 
                 const complement = users.length
                   ? localize(
-                      "THREADS",
-                      " ({0} thread(s) in {1} server(s))",
-                      users.length,
-                      servers.length
-                    )
+                    "THREADS",
+                    " ({0} thread(s) in {1} server(s))",
+                    users.length,
+                    servers.length
+                  )
                   : localize("THREADS_NONE", " (none thread)");
 
                 console.log(">>>>> sendGetUsersRequest MonitorPanelAction.UpdateUsers");
@@ -617,7 +636,7 @@ export class MonitorLoader {
                   },
                 }).then((value: boolean) => {
                   console.log(`>>>>>>> postMessge ${value}`);
-                }, (reason:any) => {
+                }, (reason: any) => {
                   console.log(reason);
                 });
               }

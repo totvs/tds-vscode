@@ -1,0 +1,25 @@
+{
+	"$schema": "https://json-schema.org/draft-07/schema",
+	"title": "Environment Configuration Schema",
+	"description": "Schema of environment definition.",
+	"type": "object",
+	"properties": {
+		"name": {
+			"type": "string",
+			"description": "Environment identification for humans."
+		},
+		"encoding": {
+			"type": "string",
+			"description": "Key [``StringCodePage``](https://tdn.totvs.com/display/tec/StringCodePage) defined in environment configuration",
+			"default": "0_CP1252",
+			"enum": [
+				"0_CP1252",
+				"1_CP1251",
+				"2_UTF-8"
+			]
+		}
+	},
+	"required": [
+		"name"
+	]
+}
