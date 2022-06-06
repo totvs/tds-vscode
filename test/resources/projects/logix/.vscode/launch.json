@@ -6,7 +6,7 @@
 			"request": "launch",
 			"name": "Smart Client Debug",
 			"program": "${command:AskForProgramName}",
-			"smartclientBin": "M:\\protheus\\smartClient\\20-3-0-2\\smartclient.exe",
+			"smartclientBin": "M:\\protheus\\smartClient\\20-3-0-3\\smartclient.exe",
 			"cwb": "${workspaceFolder}",
 			"isMultiSession": true,
 			"enableTableSync": true,
@@ -35,7 +35,13 @@
 		},
 		{
 			"label": "MEN0210.4GL"
+		},
+		{
+			"label": "priitive.4gl"
+		},
+		{
+			"label": "FRM0000"
 		}
 	],
-	"lastProgramExecuted": "MEN0210.4GL"
+	"lastProgramExecuted": "SUP3760.4gl"
 }

@@ -10,13 +10,16 @@ const GENERATE_PATCH_PATH = path.join(__dirname, "./src/patch/generate");
 const INSPECTOR_PATH = path.join(__dirname, "./src/inspect-harpia");
 
 module.exports = (env, argv) => {
+  const devtool = (argv.mode === 'production') ? false : 'source-map';
+  const optimization = argv.mode !== 'production' ? {} : {
+    minimize: (argv.mode === 'production'),
+    minimizer: [new TerserPlugin()]
+  }
+
   return {
     target: "node",
-    devtool: (argv.mode === 'production') ? false : 'source-map',
-    optimization: {
-      minimize: (argv.mode === 'production'),
-      minimizer: [new TerserPlugin()]
-    },
+    devtool: devtool,
+    optimization: optimization,
     //O webpack, pega todos os fontes tsx e os compacta em um unico arquivo .js. Isso é feito para contornar algumas limitações e alguns browsers que não aceitam a instrução import.
     //O entry pode ser definido com um objeto. A chave, ou no nome da propriedade, nesse caso sera o nome de saida do arquivo.
     entry: {

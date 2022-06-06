@@ -1,25 +1,16 @@
-import * as React from 'react';
 import { cellDefaultStyle } from './monitorInterface';
 import { mergeProperties, i18n } from '../helper';
-import { monitorIcons } from '../helper/monitorIcons';
-import Alert from '@material-ui/lab/Alert';
-import RemarkDialog from './remarkDialog';
-import { Popper } from '@material-ui/core';
+import React from 'react';
 
 function fieldDef(
   field: string,
   title: string,
-  extraProps: any = { hidden: false, ...cellDefaultStyle }
+  extraProps: any = { hidden: false, ...cellDefaultStyle },
+  render?: any,
+  editComponent?: any
 ): any {
-  return { field: field, title: title, ...extraProps };
-}
 
-function doFormatNumber(
-  value: number,
-  props: {} = { minimumFractionDigits: 0 }
-) {
-  const result = value.toLocaleString([], props);
-  return result;
+  return { field: field, title: title, editable: "never", ...extraProps}//der: render, editComponent: editComponent };
 }
 
 export const propPageSize = (value: number = undefined) => {
@@ -166,6 +157,13 @@ export const propColumns = (extraProps?: any): any => {
     },
   };
 
+  const environmentProps = {
+    ...(extraProps || {}),
+    render: (rowData: any) => {
+      return rowData.environment;
+    }
+  };
+
   return {
     columns: [
       fieldDef('server', i18n.localize('SERVER', 'Server'), extraProps),
@@ -173,7 +171,7 @@ export const propColumns = (extraProps?: any): any => {
       fieldDef(
         'environment',
         i18n.localize('ENVIRONMENT', 'Environment'),
-        extraProps
+        environmentProps
       ),
       fieldDef(
         'computerName',
