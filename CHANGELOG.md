@@ -15,6 +15,19 @@ Quando o depurador estiver aguardando ação do usuário, pode-se mudar valores 
 - Listas (_arrays_) com mais de 100 elementos, passam a ser agrupados em blocos de 100, facilitando a visualização e o depurador passa a carregá-los sob solicitação.
 ![Array Group](docs/images/debug-array-group.png)
 
+# Versão [1.3.next]
+
+## Melhorias
+
+### Configuração de código de página (_codePage_) por ambiente [DTCLIENT01-3410](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3410)
+
+- No [Monitor](./docs/monitor.md#codepage), foi adicionado opção de configuração de código de página por ambiente.
+
+## Correção
+
+- Ao utilizar o ``Monitor``, em determinadas situações o mesmo apresentava uma tela vazia, sendo necessário fechar a aba e acioná-lo novamente.
+- Correções de retorno visual na barra status sobre as operações do monitor.
+
 # Versão [1.3.14]
 
 ## Adicionar tratamento de expressões 4GL [DTCLIENT01-3338](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3338)
@@ -24,6 +37,10 @@ Quando o depurador estiver aguardando ação do usuário, pode-se mudar valores 
 ## Ao ocorrer uma exceção (error.log) o debugger no vscode cai com erro de sincronismo [DTCLIENT01-3344](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3344)
 
 - Ajustado a comunicação entre o _DA_ e o _appServer_ quando há exceção na aplicação 4GL/AdvPL.
+
+## Desfragmentação do RPO não remove histórico de aplicação de patches [#974](https://github.com/totvs/tds-vscode/issues/974)
+
+- Retornamos ao comportamento anterior pois o AppServer armazena uma cópia do patch no RPO, que é removido apenas junto ao histórico de aplicação.
 
 # Versão [1.3.13]
 
