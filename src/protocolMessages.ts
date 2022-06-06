@@ -256,6 +256,7 @@ export function sendValidationRequest(
     );
 }
 
+
 export function sendGetUsersRequest(server: ServerItem): Thenable<any> {
   return languageClient
     .sendRequest("$totvsmonitor/getUsers", {
@@ -743,3 +744,26 @@ export function sendInspectorFunctionsRequest(
       return result;
     });
 }
+
+export interface IEnvEncode {
+  environment: string;
+  encoding: number;
+}
+
+export function sendSetEnvEncodesRequest(server: ServerItem, envEncodeList: IEnvEncode[]): Thenable<any> {
+    return languageClient
+      .sendRequest("$totvsmonitor/setEnvEncodes", {
+        setEnvEncodesInfo : {
+          connectionToken: server.token,
+          envEncodes: envEncodeList
+        },
+      })
+      .then(
+        (response: any) => {
+          return response.message || "";
+        },
+        (err: Error) => {
+          languageClient.error(err.message, err);
+        }
+      );
+  }

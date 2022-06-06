@@ -3,11 +3,12 @@
 	"title": "Server Configuration Schema",
 	"description": "Schema of server configuration file.",
 	"type": "object",
+	"additionalProperties": false,
 	"properties": {
 		"version": {
 			"type": "string",
 			"description": "Version of file structure.",
-			"const": "0.2.1"
+			"const": "0.2.2"
 		},
 		"includes": {
 			"type": "array",
@@ -59,7 +60,7 @@
 			"description": "Current connection. Automatically updated.",
 			"type": "object",
 			"$ref": "./server.schema.json"
-	}
+		}
 	},
 	"required": [
 		"version",

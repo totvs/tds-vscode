@@ -76,3 +76,9 @@ Ao configurar para `manual`, acione a ação `Refresh` quando desejar atualizar 
 Restaura a configuração padrão do monitor.
 
 ![Monitor View](./monitor/reset.gif)
+
+## Configuração de código de página por ambiente(#codepage)
+
+Em determinados ambientes (_environments_), o código de página para dados pode não ser o padrão CP-1252. Nesse caso, é necessário que você configure a codificação correta, que pode ser obtida na chave [``StringCodePage``](https://tdn.totvs.com/display/tec/StringCodePage) no arquivo de configuração do servidor (_.ini_).
+
+![Changing page code](./monitor/change_enconding.gif)

@@ -51,6 +51,13 @@
 				"type": "string"
 			}
 		},
+		"environmentsConfig": {
+			"type": "array",
+			"description": "Environment configguration.",
+			"items": {
+				"$ref": "./environment.schema.json"
+			}
+		},
 		"environment": {
 			"type": "string",
 			"description": "Last environment used in connection."

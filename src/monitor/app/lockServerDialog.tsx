@@ -45,7 +45,7 @@ export default function LockServerDialog(props: LockServerDialogProps) {
             {i18n.localize("OK", "OK")}
           </Button>
           <Button
-            onClick={() => {
+            onClick={(event) => {
               handleClose(event, "cancel");
             }}
           >
