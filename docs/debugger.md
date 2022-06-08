@@ -178,6 +178,16 @@ Também é possível alterar essa opção durante o processo de depuração acio
 
 ![Debug Table Sync](./gifs/TableSync-DebugCommands.gif)
 
+## Depuração HTML (webapp)
+
+Ao iniciarmos uma depuração através de uma configuração 'totvs_language_web_debug' o processo é praticamente o mesmo de uma depuração normal.
+
+A diferença será que ao invés de abrir o Smartclient desktop, será aberta a URL do webapp configurado no launcher no navegador configurado no _settings_.
+
+![Debug HTML](./gifs/DebugHTML.gif)
+
+O restante será basicamente o mesmo, respeitando os pontos de paradas e exibindo as informações fornecidas pelo _appServer_.
+
 ## Depuração de serviços (_jobs_)
 
 | A principal característica de um serviço, é que a sua execução não esta diretamente relacionada a interface com o usuário (_SmartClient_) e normalmente, é executado em segundo plano pelo _appServer_.
