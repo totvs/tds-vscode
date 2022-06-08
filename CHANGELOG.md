@@ -1,32 +1,27 @@
 # Changelog
 
-# Versão [1.3.future]
+# Versão [1.3.15]
 
-## Edição de valores durante depuração [DTCLIENT01-3390](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3390)
+## Melhorias
 
-Quando o depurador estiver aguardando ação do usuário, pode-se mudar valores de variáveis efetuado-se um duplo-click sobre a mesma na visão _Variables_. Atente que não pode mudar o tipo (exceto nos tipos _undefined_ do Adv/PL) e nenhuma validação é efetuada, exceto de tipo.
-
-> ATENÇÃO: Ao usar expressões, tenha certeza que esta não causará operações indesejadas, como por exemplo, alterar valores em outros campos, adicionar/atualizar registros e outras.
-
-# Versão [1.3.next]
-
-## Melhoria na apresentação de listas (_array_) [DTCLIENT01-3354](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3354)
+### Apresentação de listas (_array_) [DTCLIENT01-3354](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3354)
 
 - Listas (_arrays_) com mais de 100 elementos, passam a ser agrupados em blocos de 100, facilitando a visualização e o depurador passa a carregá-los sob solicitação.
 ![Array Group](docs/images/debug-array-group.png)
-
-# Versão [1.3.next]
-
-## Melhorias
 
 ### Configuração de código de página (_codePage_) por ambiente [DTCLIENT01-3410](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3410)
 
 - No [Monitor](./docs/monitor.md#codepage), foi adicionado opção de configuração de código de página por ambiente.
 
-## Correção
+## Correções
 
-- Ao utilizar o ``Monitor``, em determinadas situações o mesmo apresentava uma tela vazia, sendo necessário fechar a aba e acioná-lo novamente.
+### Monitor
+
 - Correções de retorno visual na barra status sobre as operações do monitor.
+
+### [4GL/Debug] Variéveis apresentam mensagem de erro de expressão [DTCLIENT01-3417](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3417)
+
+Em determinadas situações, o depurador do _appServer_ em ambiente **Logix**, retorna como "tipo" uma _string_ vazia, podendo cancelar/travar a depuração de código Adv/PL ou 4gl. Foi adicionado paliativo na extensão que indica o tipo como desconhecido (_unknow type_), apresenta o valor e permite continuar o processo de depuração.
 
 # Versão [1.3.14]
 
