@@ -589,12 +589,12 @@ export class MonitorLoader {
         });
       } else {
         vscode.window.setStatusBarMessage(
-          "$(sync~spin)" +
-          localize(
-            "REQUESTING_DATA_FROM_SERVER",
-            "Requesting data from the server [{0}]...",
-            this.monitorServer.name
-          ),
+          "$(gear~spin)" +
+            localize(
+              "REQUESTING_DATA_FROM_SERVER",
+              "Requesting data from the server [{0}]",
+              this.monitorServer.name
+            ),
           sendGetUsersRequest(this.monitorServer).then(
             (users: any) => {
               console.log(">>>>> sendGetUsersRequest ok");

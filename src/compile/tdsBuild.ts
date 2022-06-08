@@ -359,7 +359,7 @@ export function commandBuildFile(
   }
 
   vscode.window.setStatusBarMessage(
-    `$(~spin) ${localize("tds.vscode.building", "Building...")}`,
+    `$(gear~spin) ${localize("tds.vscode.building", "Building...")}`,
     new Promise((resolve, reject) => {
       if (files) {
         const arrayFiles: string[] = changeToArrayString(files);

@@ -11,6 +11,7 @@ import {
   window,
 } from "vscode";
 import { statSync, chmodSync } from "fs";
+import * as fse from "fs-extra";
 import Utils, { MESSAGETYPE } from "../utils";
 import * as path from "path";
 import * as nls from "vscode-nls";
@@ -268,7 +269,7 @@ export function toggleTableSync() {
     let launchConfig = undefined;
 
     try {
-      launchConfig = Utils.getLaunchConfigFile();
+      launchConfig = fse.readJSONSync(Utils.getLaunchConfigFile());
       launchConfig.configurations.forEach((launchElement) => {
         if (
           debugSession !== undefined &&

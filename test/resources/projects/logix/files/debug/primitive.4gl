@@ -5,10 +5,10 @@
 
 --DATABASE logix
 
-GLOBALS
-	--DEFINE g_user             LIKE usuarios.cod_usuario
-	--DEFINE g_cod_empresa      LIKE empresa.cod_empresa
-END GLOBALS
+--GLOBALS
+--	DEFINE g_user             LIKE usuarios.cod_usuario
+--	DEFINE g_cod_empresa      LIKE empresa.cod_empresa
+--END GLOBALS
 
 DEFINE m_decimal              DECIMAL
 DEFINE m_decimal_1            DECIMAL(10,1)
@@ -26,7 +26,6 @@ DEFINE m_char                 CHAR(10)
 DEFINE m_varchar              VARCHAR(10)
 
 main
--- 
 
 	DISPLAY "Start MAIN"
 

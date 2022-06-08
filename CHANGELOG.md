@@ -1,17 +1,27 @@
 # Changelog
 
-# Versão [1.3.next]
+# Versão [1.3.15]
 
 ## Melhorias
+
+### Apresentação de listas (_array_) [DTCLIENT01-3354](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3354)
+
+- Listas (_arrays_) com mais de 100 elementos, passam a ser agrupados em blocos de 100, facilitando a visualização e o depurador passa a carregá-los sob solicitação.
+![Array Group](docs/images/debug-array-group.png)
 
 ### Configuração de código de página (_codePage_) por ambiente [DTCLIENT01-3410](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3410)
 
 - No [Monitor](./docs/monitor.md#codepage), foi adicionado opção de configuração de código de página por ambiente.
 
-## Correção
+## Correções
 
-- Ao utilizar o ``Monitor``, em determinadas situações o mesmo apresentava uma tela vazia, sendo necessário fechar a aba e acioná-lo novamente.
+### Monitor
+
 - Correções de retorno visual na barra status sobre as operações do monitor.
+
+### [4GL/Debug] Variéveis apresentam mensagem de erro de expressão [DTCLIENT01-3417](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3417)
+
+Em determinadas situações, o depurador do _appServer_ em ambiente **Logix**, retorna como "tipo" uma _string_ vazia, podendo cancelar/travar a depuração de código Adv/PL ou 4gl. Foi adicionado paliativo na extensão que indica o tipo como desconhecido (_unknow type_), apresenta o valor e permite continuar o processo de depuração.
 
 # Versão [1.3.14]
 
@@ -27,7 +37,7 @@
 
 - Ajustado a comunicação entre o _DA_ e o _appServer_ quando há exceção na aplicação 4GL/AdvPL.
 
-### Desfragmentação do RPO não remove histórico de aplicação de patches [#974](https://github.com/totvs/tds-vscode/issues/974)
+## Desfragmentação do RPO não remove histórico de aplicação de patches [#974](https://github.com/totvs/tds-vscode/issues/974)
 
 - Retornamos ao comportamento anterior pois o AppServer armazena uma cópia do patch no RPO, que é removido apenas junto ao histórico de aplicação.
 

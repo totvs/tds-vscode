@@ -178,6 +178,14 @@ Também é possível alterar essa opção durante o processo de depuração acio
 
 ![Debug Table Sync](./gifs/TableSync-DebugCommands.gif)
 
+### Edição de valores durante depuração
+
+Quando o depurador estiver aguardando ação do usuário, pode-se mudar valores de variáveis efetuado-se um duplo-click sobre a mesma na visão _Variables_. Atente que não pode mudar o tipo (exceto nos tipos _undefined_ do Adv/PL) e nenhuma validação é efetuada, exceto de tipo.
+
+> ATENÇÃO: Ao usar expressões, tenha certeza que esta não causará operações indesejadas, como por exemplo, alterar valores em outros campos, adicionar registros e outras.
+
+![Edit Value](./gifs/Edit-Variable-Value.gif)
+
 ## Depuração de serviços (_jobs_)
 
 | A principal característica de um serviço, é que a sua execução não esta diretamente relacionada a interface com o usuário (_SmartClient_) e normalmente, é executado em segundo plano pelo _appServer_.

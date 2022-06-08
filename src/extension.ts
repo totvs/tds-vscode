@@ -460,7 +460,7 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.patchGenerate.byDifference",
       () => {
         vscode.window.setStatusBarMessage(
-          `$(~spin) ${localize(
+          `$(gear~spin) ${localize(
             "tds.vscode.starting.build.patch",
             "Starting package generation..."
           )}`,
@@ -474,7 +474,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("totvs-developer-studio.patchApply", () => {
       vscode.window.setStatusBarMessage(
-        `$(~spin) ${localize(
+        `$(gear~spin) ${localize(
           "tds.vscode.starting.apply.patch",
           "Starting patch application..."
         )}`,
@@ -488,7 +488,7 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.patchApply.fromFile",
       (args: any) => {
         vscode.window.setStatusBarMessage(
-          `$(~spin) ${localize(
+          `$(gear~spin) ${localize(
             "tds.vscode.starting.apply.patch",
             "Starting patch application..."
           )}`,
@@ -552,7 +552,7 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.templateApply.fromFile",
       (args: any) => {
         vscode.window.setStatusBarMessage(
-          `$(~spin) ${localize(
+          `$(gear~spin) ${localize(
             "tds.vscode.starting.apply.teplate",
             "Starting template application..."
           )}`,
@@ -566,7 +566,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("tds-monitor.open-monitor-view", () => {
       vscode.window.setStatusBarMessage(
-        `$(~spin) ${localize(
+        `$(gear~spin) ${localize(
           "tds.vscode.starting.monitor",
           "Starting monitor..."
         )}`,
@@ -581,7 +581,7 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.open-loadrpoinfo-view",
       () => {
         vscode.window.setStatusBarMessage(
-          `$(~spin) ${localize(
+          `$(gear~spin) ${localize(
             "tds.vscode.starting.rpo.loadinfo",
             "Starting RPO load information..."
           )}`,

@@ -86,7 +86,7 @@ function execDefragRpo(connectionToken, authorizationToken, environment, packPat
       }
     );
   vscode.window.setStatusBarMessage(
-    `$(~spin) ${localize(
+    `$(gear~spin) ${localize(
       "tds.vscode.servernotconnected",
       "Defragmenting RPO (process may take some time)"
     )}`,
