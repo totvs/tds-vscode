@@ -29,29 +29,34 @@ export function defragRpo() {
       )
       .then((clicked) => {
         if (clicked === localize("tds.vscode.yes", "Yes")) {
-          let authorizationToken: string = Utils.isServerP20OrGreater(server)
-            ? Utils.getAuthorizationToken(server)
-            : "";
-          let packPatchInfo = false;
-          if (authorizationToken.length > 0) {
-            vscode.window
-            .showWarningMessage(
-              localize(
-                "tds.vscode.defrag.packPatchInfo",
-                "Clear apply patch history?"
-              ),
-              localize("tds.vscode.yes", "Yes"),
-              localize("tds.vscode.no", "No")
-            )
-            .then((clicked) => {
-              if (clicked === localize("tds.vscode.yes", "Yes")) {
-                packPatchInfo = true;
-              }
+          if (Utils.isServerP20OrGreater(server)) {
+            let packPatchInfo = false;
+            let authorizationToken: string = Utils.getAuthorizationToken(server);
+            if (authorizationToken.length > 0) {
+              vscode.window
+              .showWarningMessage(
+                localize(
+                  "tds.vscode.defrag.packPatchInfo",
+                  "Clear apply patch history?"
+                ),
+                localize("tds.vscode.yes", "Yes"),
+                localize("tds.vscode.no", "No")
+              )
+              .then((clicked) => {
+                if (clicked === localize("tds.vscode.yes", "Yes")) {
+                  packPatchInfo = true;
+                }
+                execDefragRpo(server.token, authorizationToken, server.environment, packPatchInfo);
+              });
+            }
+            else {
               execDefragRpo(server.token, authorizationToken, server.environment, packPatchInfo);
-            });
+            }
           }
           else {
-            execDefragRpo(server.token, authorizationToken, server.environment, packPatchInfo);
+            // até a LG 19 e anteriores, efetuar sempre a remoção do log de aplicação de patch
+            // pois o RPO guardava uma "cópia" do patch aplicado fazendo com que o RPO aumentasse muito de tamanho
+            execDefragRpo(server.token, "", server.environment, true);
           }
         }
       });
