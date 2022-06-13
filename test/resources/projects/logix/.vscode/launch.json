@@ -78,7 +78,19 @@
 		},
 		{
 			"label": "image.4gl"
+		},
+		{
+			"label": "lEcmFolder"
+		},
+		{
+			"label": "u_TesteLEcmDocAssociation"
+		},
+		{
+			"label": "u_array"
+		},
+		{
+			"label": "u_array_tst"
 		}
 	],
-	"lastProgramExecuted": "array.4gl"
+	"lastProgramExecuted": "u_array_tst"
 }
