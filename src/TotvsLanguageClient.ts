@@ -84,25 +84,25 @@ export function getLanguageClient(
     })
   );
 
-  let args = ["--language-server"];
+  let args = ["language-server"];
 
   let config = vscode.workspace.getConfiguration("totvsLanguageServer");
 
-  let behavior = "--enableAutoComplete=";
+  let behavior = "--enable-auto-complete=";
   let behaviorConfig = config.get("editor.toggle.autocomplete");
   if (behaviorConfig) {
     behavior += behaviorConfig;
     args = args.concat(behavior);
   }
 
-  let notificationlevel = "--notificationLevel=";
+  let notificationlevel = "--notification-level=";
   let notificationlevelConfig = config.get("editor.show.notification");
   if (notificationlevelConfig) {
     notificationlevel += '"' + notificationlevelConfig + '"';
     args = args.concat(notificationlevel);
   }
 
-  let fsencoding = "--fsencoding=";
+  let fsencoding = "--fs-encoding=";
   let fsencodingConfig = config.get("filesystem.encoding");
   if (fsencodingConfig) {
     fsencoding += fsencodingConfig;
@@ -112,11 +112,8 @@ export function getLanguageClient(
   const servers = Utils.getServersConfig();
   if (servers.includes) {
     let includesList = servers.includes as Array<string>;
-    let includes = "--includes=";
-    includesList.forEach((includeItem) => {
-      includes += includeItem + ";";
-    });
-    args = args.concat(includes.substring(0, includes.length - 1));
+    let includes = "--includes=" + includesList.join(";");
+    args = args.concat(includes);
   }
 
   let linter = "--linter=";
@@ -125,6 +122,8 @@ export function getLanguageClient(
     linter += linterConfig ? "enabled" : "disabled";
     args = args.concat(linter);
   }
+
+  args = args.concat("--wait-for-attach=20000");
 
   args = args.concat(clientConfig["launchArgs"]);
 
