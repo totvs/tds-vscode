@@ -689,7 +689,7 @@ export function activate(context: ExtensionContext) {
   registerLog(context);
 
   //debug
-  registerDebug(context);
+  registerDebug(context, languageClient);
 
   // Inicialização Adv/PL
   context.subscriptions.push(registerAdvplFormatting());

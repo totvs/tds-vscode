@@ -1,5 +1,7 @@
-//import * as vscode from "vscode";
+import * as fse from "fs-extra";
 import {
+  Breakpoint,
+  BreakpointsChangeEvent,
   debug,
   DebugConsole,
   DebugSessionCustomEvent,
@@ -9,12 +11,15 @@ import {
 } from "vscode";
 import { TotvsConfigurationProvider } from "./TotvsConfigurationProvider";
 import { TotvsConfigurationTdsReplayProvider } from "./TotvsConfigurationTdsReplayProvider";
-import Utils, { MESSAGETYPE } from "../utils";
+import Utils, { groupBy, MESSAGETYPE } from "../utils";
 import { CreateTDSReplayTimeLineWebView } from "./tdsreplay/TDSReplayTimeLineCreator";
 
 import { getLanguageClient } from "../TotvsLanguageClient";
 import { LanguageClient } from "vscode-languageclient";
 import { TotvsConfigurationWebProvider } from "./TotvsConfigurationWebProvider";
+
+import * as nls from "vscode-nls";
+let localize = nls.loadMessageBundle();
 
 const DEBUG_TYPE = TotvsConfigurationProvider._TYPE;
 const WEB_DEBUG_TYPE: string = TotvsConfigurationWebProvider._TYPE;
@@ -84,16 +89,16 @@ const SPACES: string = " ".repeat(11);
 //const BACKGROUND_WHITE = "\u001B[47m";
 
 /*const COLOR_TABLE = {
-	'INFO': GREEN,
-	'WARN': YELLOW,
-	'ERROR': RED,
-	'CONSOLE': BLACK,
-	'TIME': CYAN
+  'INFO': GREEN,
+  'WARN': YELLOW,
+  'ERROR': RED,
+  'CONSOLE': BLACK,
+  'TIME': CYAN
 };*/
 
-export function procesStartDebugSessionEvent(event: any) {
-  //console.log(event);
-}
+// export function procesStartDebugSessionEvent(event: any) {
+//   console.log(event);
+// }
 
 export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
   if (
@@ -327,4 +332,52 @@ function processShowLoadingDialogEvent(
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function procesChangeBreakpointsEvent(languageClient: LanguageClient, event: BreakpointsChangeEvent) {
+  const removedList: Breakpoint[] = [];
+
+  const verifyBp = (bp: Breakpoint) => {
+    const location = (bp as any).location;
+    if (!fse.existsSync(location.uri.fsPath)) {
+      debug.removeBreakpoints([bp]);
+      removedList.push(bp)
+    }
+  }
+
+  event.added.forEach((bp: Breakpoint) => {
+    verifyBp(bp);
+  })
+
+  event.changed.forEach((bp: Breakpoint) => {
+    verifyBp(bp);
+  })
+
+  if (removedList.length > 0) {
+    window.showWarningMessage(
+      localize(
+        "tds.debug.removed.breakpoints",
+        "Removed [{0}] invalid breakpoints. See TOTVS LS console for details.",
+        removedList.length
+      ));
+
+    const map = groupBy(removedList, (item: any) => {
+      return item.location.uri.fsPath;
+    });
+
+    let msg: string = localize(
+      "tds.debug.removed.breakpoints",
+      "Removed [{0}] invalid breakpoints.",
+      removedList.length
+    );
+
+    map.forEach((item: any, key: any) => {
+      msg += `\n\t${key} :`
+      item.forEach((element: any, index: number) => {
+        msg += `${element.location.range._start._line} ${index == item.length - 1 ? "" : ":"}`;
+      });
+    });
+
+    languageClient.warn(msg);
+  }
 }

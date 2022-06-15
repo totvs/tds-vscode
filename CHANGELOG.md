@@ -4,6 +4,11 @@
 
 ## Melhorias
 
+### Verificar pontos de parada e eliminar inválidos [DTCLIENT01-3435](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3435)
+
+Em determinadas situações, p.e. mover um fonte "por fora" do VS-Code e houver ponto de parada (_breakpoint_) já definido para este fonte, pode ocorrer erro no momento de depuração.
+Foi adicionado tratamento que ao identificar um ponto de parada inválido, o mesmo será removido da lista de pontos de paradas (_Breakpoints_) e o usuário será avisado sobre a ocorrência.
+
 ### Apresentação de listas (_array_) [DTCLIENT01-3354](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3354)
 
 - Listas (_arrays_) com mais de 100 elementos, passam a ser agrupados em blocos de 100, facilitando a visualização e o depurador passa a carregá-los sob solicitação.
