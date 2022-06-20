@@ -28,6 +28,10 @@ Foi adicionado tratamento que ao identificar um ponto de parada inválido, o mes
 
 Em determinadas situações, o depurador do _appServer_ em ambiente **Logix**, retorna como "tipo" uma _string_ vazia, podendo cancelar/travar a depuração de código Adv/PL ou 4gl. Foi adicionado paliativo na extensão que indica o tipo como desconhecido (_unknow type_), apresenta o valor e permite continuar o processo de depuração.
 
+### [4GL/Debug] Variáveis booleanas do ADVPL apresentam msg de erro de expressao [DTCLIENT01-3438](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3438)
+
+Ajustado processo de avaliação de expressões e ambiente.
+
 # Versão [1.3.14]
 
 ## Melhorias

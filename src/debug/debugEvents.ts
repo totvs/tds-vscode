@@ -340,7 +340,6 @@ export function procesChangeBreakpointsEvent(languageClient: LanguageClient, eve
   const verifyBp = (bp: Breakpoint) => {
     const location = (bp as any).location;
     if (!fse.existsSync(location.uri.fsPath)) {
-      debug.removeBreakpoints([bp]);
       removedList.push(bp)
     }
   }
@@ -354,6 +353,9 @@ export function procesChangeBreakpointsEvent(languageClient: LanguageClient, eve
   })
 
   if (removedList.length > 0) {
+    const bpList: Readonly<Breakpoint[]> = removedList;
+    debug.removeBreakpoints(bpList);
+
     window.showWarningMessage(
       localize(
         "tds.debug.removed.breakpoints",
