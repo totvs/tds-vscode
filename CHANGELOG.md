@@ -4,6 +4,15 @@
 
 ## Melhorias
 
+### Marcar _breakpoint_ em múltiplas linhas [DTCLIENT01-346](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3435) e [#995](https://github.com/totvs/tds-vscode/issues/995)
+
+Ao iniciar a depuração, os pontos de paradas são avaliados:
+
+- linha em branco
+- linha de continuação, ajustando-a para a última linha do comando
+
+Em caso da avaliação modificar o ponto de parada, a mesma é indicada visualmente na visão de "Pontos de Parada" e ao passar o _mouse_ sobre o ponto de parara é apresentado o motivo.
+
 ### Verificar pontos de parada e eliminar inválidos [DTCLIENT01-3435](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3435)
 
 Em determinadas situações, p.e. mover um fonte "por fora" do VS-Code e houver ponto de parada (_breakpoint_) já definido para este fonte, pode ocorrer erro no momento de depuração.
@@ -12,7 +21,7 @@ Foi adicionado tratamento que ao identificar um ponto de parada inválido, o mes
 ### Apresentação de listas (_array_) [DTCLIENT01-3354](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3354)
 
 - Listas (_arrays_) com mais de 100 elementos, passam a ser agrupados em blocos de 100, facilitando a visualização e o depurador passa a carregá-los sob solicitação.
-![Array Group](docs/images/debug-array-group.png)
+  ![Array Group](docs/images/debug-array-group.png)
 
 ### Configuração de código de página (_codePage_) por ambiente [DTCLIENT01-3410](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3410)
 
@@ -32,19 +41,23 @@ Em determinadas situações, o depurador do _appServer_ em ambiente **Logix**, r
 
 Ajustado processo de avaliação de expressões e ambiente.
 
+### [4GL/Debug] Queda do depurador \[LOGIX-149\]
+
+Em situações onde a pilha de execução ultrapassava 20 níveis, poderia ocorrer a queda do depurador.
+
 # Versão [1.3.14]
 
 ## Melhorias
 
 ### Adicionar tratamento de expressões 4GL [DTCLIENT01-3338](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3338)
 
-- Adicionado tratamento na pré-avaliação de expressões 4GL.
+Adicionado tratamento na pré-avaliação de expressões 4GL.
 
 ## Correção
 
 ### Ao ocorrer uma exceção (error.log) o debugger no vscode cai com erro de sincronismo [DTCLIENT01-3344](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3344)
 
-- Ajustado a comunicação entre o _DA_ e o _appServer_ quando há exceção na aplicação 4GL/AdvPL.
+Ajustado a comunicação entre o _DA_ e o _appServer_ quando há exceção na aplicação 4GL/AdvPL.
 
 ## Desfragmentação do RPO não remove histórico de aplicação de patches [#974](https://github.com/totvs/tds-vscode/issues/974)
 

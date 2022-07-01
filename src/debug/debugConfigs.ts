@@ -50,6 +50,7 @@ export function getDAP() {
       }
     }
   }
+
   return { command: pathDAP, args: dapArgs };
 }
 
@@ -189,9 +190,8 @@ export async function getProgramName(
   config.lastProgramArgumens = programArgs.args;
   Utils.saveLaunchConfig(config);
 
-  return `${config.lastProgramExecuted} ${
-    programArgs.args ? programArgs.args.join(", ") : ""
-  }`;
+  return `${config.lastProgramExecuted} ${programArgs.args ? programArgs.args.join(", ") : ""
+    }`;
 }
 
 const programArgsRegex = /^([\w\.\-\_]+)(\(?[^)\n]*\)?)?/i;
@@ -315,7 +315,7 @@ export function toggleTableSync() {
   }
 }
 
-debug.onDidChangeActiveDebugSession((newDebugSession) => {
+debug.onDidChangeActiveDebugSession((newDebugSession: DebugSession | undefined) => {
   debugSession = newDebugSession;
 });
 
@@ -429,7 +429,7 @@ async function pickProgramArguments(
               (element: QuickPickProgram) => {
                 return (
                   element.label.toLowerCase() ===
-                    lastProgramExecuted.toLowerCase() &&
+                  lastProgramExecuted.toLowerCase() &&
                   JSON.stringify(element.args) === JSON.stringify(selectArgs)
                 );
               }

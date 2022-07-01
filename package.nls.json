@@ -3,6 +3,7 @@
   "tds.package.args.for.lsp": "Array containing extra arguments to pass to the TOTVS Language Server binary",
   "tds.package.max.problems.server": "Controls the maximum number of problems produced by the server.",
   "tds.package.trace.vscode.server": "Traces the communication between VS Code and the language server.",
+  "tds.package.trace.vscode.debug": "Traces the communication between VS Code and the Debug Adapter.",
   "tds.package.show.welcome.first.initialize": "Show Welcome Page in First Initialize",
   "tds.package.show.ask.encoding": "Ask for change encoding for Windows-1252",
   "tds.package.show.ask.compile.result": "Ask for show table with compile results",

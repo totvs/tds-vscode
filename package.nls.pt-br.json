@@ -3,6 +3,7 @@
 	"tds.package.args.for.lsp": "Matriz contendo argumentos extras para passar ao binário do TOTVS Language Server",
 	"tds.package.max.problems.server": "Controla o número máximo de problemas produzidos pelo servidor.",
 	"tds.package.trace.vscode.server": "Rastreia a comunicação entre o VS Code e o Language Server.",
+	"tds.package.trace.vscode.debug": "Rastreia a comunicação entre o VS Code e o Debug Adapter.",
 	"tds.package.show.welcome.first.initialize": "Mostrar página de boas-vindas na primeira inicialização",
 	"tds.package.show.ask.encoding": "Requisitar alteração na codificação para Windows-1252",
 	"tds.package.show.ask.compile.result": "Pedir para exibir tabela com resultados da compilação",

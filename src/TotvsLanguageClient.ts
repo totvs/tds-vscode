@@ -214,7 +214,6 @@ export function getLanguageClient(
       }
     })
     .catch((e) => {
-      // TODO: remove cquery.launch.workingDirectory after July 2018
       window.showErrorMessage(e);
     });
 

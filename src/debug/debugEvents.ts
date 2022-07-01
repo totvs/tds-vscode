@@ -32,7 +32,7 @@ interface LogBody {
   message: string;
 }
 
-let context;
+let context: ExtensionContext;
 export let createTimeLineWebView: CreateTDSReplayTimeLineWebView = null;
 let languageClient: LanguageClient;
 
@@ -338,9 +338,11 @@ export function procesChangeBreakpointsEvent(languageClient: LanguageClient, eve
   const removedList: Breakpoint[] = [];
 
   const verifyBp = (bp: Breakpoint) => {
-    const location = (bp as any).location;
-    if (!fse.existsSync(location.uri.fsPath)) {
-      removedList.push(bp)
+    if (!bp.hasOwnProperty("functionName")) {
+      const location = (bp as any).location;
+      if (!fse.existsSync(location.uri.fsPath)) {
+        removedList.push(bp)
+      }
     }
   }
 
