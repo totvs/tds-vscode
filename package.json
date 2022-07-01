@@ -65,7 +65,7 @@
     "export-i18n": "gulp export-i18n",
     "i18n-import": "gulp i18n-import",
     "---RELEASE---": "",
-    "release": "npx standard-version --skip.changelog --release-as 1.3.15-RC4",
+    "release": "npx standard-version --skip.changelog --release-as 1.3.15-RC5",
     "tag": "git push --follow-tags",
     "package": "gulp package",
     "publish": "gulp publish",
@@ -78,8 +78,8 @@
     "@material-ui/core": "4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@totvs/tds-da": "^1.2.36",
-    "@totvs/tds-ls": "^1.2.40",
+    "@totvs/tds-da": "^1.2.37",
+    "@totvs/tds-ls": "^1.2.41",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.63.1",
     "@vscode/debugadapter": "^1.51.1",
@@ -440,6 +440,17 @@
           ],
           "default": "off",
           "description": "%tds.package.trace.vscode.server%"
+        },
+        "totvsLanguageServer.trace.debug": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "%tds.package.trace.vscode.debug%"
         },
         "totvsLanguageServer.welcomePage": {
           "scope": "window",

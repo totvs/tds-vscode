@@ -8,6 +8,7 @@
 	"tds.package.args.for.lsp": "Массив с дополнительными аргументами для включения в двоичный файл TOTVS Language Server",
 	"tds.package.max.problems.server": "Контролирует максимальное количество проблем, создаваемых сервером.",
 	"tds.package.trace.vscode.server": "Отслеживает обмен данными между VS Code и языковым сервером.",
+	"tds.package.trace.vscode.debug": "Отслеживает связь между VS Code и адаптером отладки.",
 	"tds.package.show.welcome.first.initialize": "Показывать страницу приветствия при первом запуске",
 	"tds.package.show.ask.encoding": "Запросить изменение кодировки на Windows-1252",
 	"tds.package.show.ask.compile.result": "Запросить отображение таблицы с результатами компиляции",
