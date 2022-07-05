@@ -4,6 +4,16 @@
 
 ## Melhorias
 
+### Implementado opção de ratreamento de comunicação do VS-Code com servidor de depuração
+
+A configuração do rastreamento pode ser efetuado pela chave `totvsLanguageServer.trace.server` na janela de `settings`.
+
+| Valor      | Nível                                                                         |
+| ---------- | ----------------------------------------------------------------------------- |
+| `off`      | Valor padrão, apresentando as mensagens habituais.                            |
+| `messages` | Além das habituais, apresenta as mensagens de comunicação.                    |
+| `verbose`  | Além das habituais, apresenta as mensagens de comunicação de forma detalhada. |
+
 ### Marcar _breakpoint_ em múltiplas linhas [DTCLIENT01-346](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3435) e [#995](https://github.com/totvs/tds-vscode/issues/995)
 
 Ao iniciar a depuração, os pontos de paradas são avaliados:
@@ -28,6 +38,10 @@ Foi adicionado tratamento que ao identificar um ponto de parada inválido, o mes
 - No [Monitor](./docs/monitor.md#codepage), foi adicionado opção de configuração de código de página por ambiente.
 
 ## Correções
+
+### Gerando arquivos iniciado com "AP\_" na pasta do projeto [#990](https://github.com/totvs/tds-vscode/issues/990)
+
+Em ambientes linux/mac, o _linter_ estava deixando arquivos de apoio no projeto do usuário.
 
 ### Monitor
 
