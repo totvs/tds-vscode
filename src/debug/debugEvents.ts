@@ -19,6 +19,7 @@ import { LanguageClient } from "vscode-languageclient";
 import { TotvsConfigurationWebProvider } from "./TotvsConfigurationWebProvider";
 
 import * as nls from "vscode-nls";
+import { languageClient } from "../extension";
 let localize = nls.loadMessageBundle();
 
 const DEBUG_TYPE = TotvsConfigurationProvider._TYPE;
@@ -34,7 +35,6 @@ interface LogBody {
 
 let context: ExtensionContext;
 export let createTimeLineWebView: CreateTDSReplayTimeLineWebView = null;
-let languageClient: LanguageClient;
 
 export class DebugEvent {
   constructor(pContext: ExtensionContext) {
@@ -107,15 +107,6 @@ export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
     event.session.type.startsWith(REPLAY_DEBUG_TYPE)
   ) {
     const debugConsole = debug.activeDebugConsole;
-
-    if (languageClient === undefined) {
-      languageClient = getLanguageClient(context);
-      if (event.session.type.startsWith(REPLAY_DEBUG_TYPE)) {
-        languageClient.clientOptions.outputChannelName = "TDS Replay";
-      } else if (event.session.type.startsWith(DEBUG_TYPE)) {
-        languageClient.clientOptions.outputChannelName = "TOTVS Debug Messages";
-      }
-    }
 
     if (event.event === "TDA/log") {
       processLogEvent(event, debugConsole);

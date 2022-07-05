@@ -1,4 +1,3 @@
-import { text } from 'stream/consumers';
 import { DebugSession, ProviderResult, ExtensionContext, DebugAdapterTrackerFactory, DebugAdapterTracker, debug, workspace } from 'vscode';
 import Utils from '../utils';
 
@@ -13,11 +12,16 @@ export class TotvsDebugTrackerDescriptorFactory implements DebugAdapterTrackerFa
 
 	createDebugAdapterTracker(session: DebugSession): ProviderResult<DebugAdapterTracker> {
 
-		const printMessage = (label: string, message: any, force: boolean = false) => {
+		const printMessage = (label: string, message: any) => {
 			const config = workspace.getConfiguration("totvsLanguageServer");
 			const trace: string = config.trace.debug;
+
+			if (trace == "off") {
+				return;
+			}
+
 			const now: Date = new Date();
-			let text: string = `[Trace - ${Utils.timeAsHHMMSS(now)}] ${label}`;
+			let text: string = `[${Utils.timeAsHHMMSS(now)}] TRACE: ${label}`;
 
 			if (trace == "verbose") {
 				text = `${text}\n${JSON.stringify(message, undefined, "  ")}`
@@ -30,10 +34,7 @@ export class TotvsDebugTrackerDescriptorFactory implements DebugAdapterTrackerFa
 			}
 
 			console.log(text);
-
-			if ((trace !== "off") || force) {
-				debug.activeDebugConsole?.appendLine(text);
-			}
+			debug.activeDebugConsole?.appendLine(text);
 		};
 
 		const tracker: DebugAdapterTracker = {
@@ -50,7 +51,7 @@ export class TotvsDebugTrackerDescriptorFactory implements DebugAdapterTrackerFa
 				printMessage("##", { type: "event", command: "onWillStopSession" });
 			},
 			onError: (error: Error) => {
-				printMessage(" ", error, true);
+				printMessage(" ", error);
 			},
 			onExit: (code: number | undefined, signal: string | undefined) => {
 				printMessage("##", { type: "event", command: `exit code=${code || ""} signal=${signal || ""}` });
