@@ -439,7 +439,12 @@
             "verbose"
           ],
           "default": "off",
-          "description": "%tds.package.trace.vscode.server%"
+          "description": "%tds.package.trace.vscode.server%",
+          "enumDescriptions": [
+            "%tds.package.trace.vscode.off%",
+            "%tds.package.trace.vscode.messages%",
+            "%tds.package.trace.vscode.verbose%"
+          ]
         },
         "totvsLanguageServer.trace.debug": {
           "scope": "window",
@@ -450,7 +455,12 @@
             "verbose"
           ],
           "default": "off",
-          "description": "%tds.package.trace.vscode.debug%"
+          "description": "%tds.package.trace.vscode.debug%",
+          "enumDescriptions": [
+            "%tds.package.trace.vscode.off%",
+            "%tds.package.trace.vscode.messages%",
+            "%tds.package.trace.vscode.verbose%"
+          ]
         },
         "totvsLanguageServer.welcomePage": {
           "scope": "window",
