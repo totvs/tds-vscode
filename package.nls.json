@@ -5,7 +5,7 @@
   "tds.package.trace.vscode.server": "Traces the communication between VS Code and the language server.",
   "tds.package.trace.vscode.debug": "Traces the communication between VS Code and the Debug Adapter.",
   "tds.package.trace.vscode.off": "Tracking off.",
-  "tds.package.trace.vscode.message": "Display summary message.",
+  "tds.package.trace.vscode.messages": "Display summary message.",
   "tds.package.trace.vscode.verbose": "Display detailed message.",
   "tds.package.show.welcome.first.initialize": "Show Welcome Page in First Initialize",
   "tds.package.show.ask.encoding": "Ask for change encoding for Windows-1252",
