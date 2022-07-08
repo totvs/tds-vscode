@@ -19,3 +19,4 @@ out-test/
 *.dmp
 src/parser/4gl-parser.js
 notas.md
+test/**/no_git

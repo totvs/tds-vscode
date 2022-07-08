@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "1.3.15-RC4",
+  "version": "1.3.15-RC6",
   "publisher": "TOTVS",
   "author": {
     "name": "TOTVS",
@@ -65,7 +65,7 @@
     "export-i18n": "gulp export-i18n",
     "i18n-import": "gulp i18n-import",
     "---RELEASE---": "",
-    "release": "npx standard-version --skip.changelog --release-as 1.3.15-RC4",
+    "release": "npx standard-version --skip.changelog --release-as 1.3.15-RC6",
     "tag": "git push --follow-tags",
     "package": "gulp package",
     "publish": "gulp publish",
@@ -78,8 +78,8 @@
     "@material-ui/core": "4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@totvs/tds-da": "^1.2.36",
-    "@totvs/tds-ls": "^1.2.40",
+    "@totvs/tds-da": "^1.2.38",
+    "@totvs/tds-ls": "^1.2.42",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.63.1",
     "@vscode/debugadapter": "^1.51.1",
@@ -439,7 +439,28 @@
             "verbose"
           ],
           "default": "off",
-          "description": "%tds.package.trace.vscode.server%"
+          "description": "%tds.package.trace.vscode.server%",
+          "enumDescriptions": [
+            "%tds.package.trace.vscode.off%",
+            "%tds.package.trace.vscode.messages%",
+            "%tds.package.trace.vscode.verbose%"
+          ]
+        },
+        "totvsLanguageServer.trace.debug": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "%tds.package.trace.vscode.debug%",
+          "enumDescriptions": [
+            "%tds.package.trace.vscode.off%",
+            "%tds.package.trace.vscode.messages%",
+            "%tds.package.trace.vscode.verbose%"
+          ]
         },
         "totvsLanguageServer.welcomePage": {
           "scope": "window",
