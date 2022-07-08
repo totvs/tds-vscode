@@ -1,7 +1,7 @@
 import * as React from "react";
 import MaterialTable, { Column, MTableToolbar } from "material-table";
 import Paper from "@material-ui/core/Paper";
-import { GroupingIcon, inspectorIcons } from "../helper/inpectorIcons";
+import { GroupingIcon, inspectorIcons, RefreshIcon } from "../helper/inpectorIcons";
 import { InspectorPanelAction, IInspectorPanelAction } from "../actions";
 import FilterList from "@material-ui/icons/FilterList";
 import { cellDefaultStyle } from "./inpectorInterface";
@@ -216,7 +216,25 @@ export default function InspectorPanel(props: IInspectorPanel) {
     props.vscode.postMessage(command);
   };
 
+  const doRefreshInspectorInfo = () => {
+    let command: IInspectorPanelAction = {
+      action: InspectorPanelAction.RefreshInspectorInfo,
+      content: {}
+    };
+
+    props.vscode.postMessage(command);
+  };
+
   const actions = [];
+
+  actions.push({
+    icon: () => <RefreshIcon />,
+    tooltip: i18n.localize("REFRESH", "Refresh"),
+    isFreeAction: true,
+    onClick: () => {
+      doRefreshInspectorInfo();
+    }
+  });
 
   actions.push({
     icon: () =>

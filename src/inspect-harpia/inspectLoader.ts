@@ -47,6 +47,7 @@ export class InspectorLoader implements vscode.Disposable {
   private _inspectServer: any = null;
   private _options: IInspectOptiosView;
   private _context: vscode.ExtensionContext;
+  private _results: IObjectData[] | IFunctionData[];
 
   constructor(context: vscode.ExtensionContext, options: IInspectOptiosView) {
     const ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
@@ -80,7 +81,7 @@ export class InspectorLoader implements vscode.Disposable {
     this._panel.webview.html = this.getWebviewContent();
     this._panel.onDidChangeViewState(
       (listener: vscode.WebviewPanelOnDidChangeViewStateEvent) => {
-        if (listener.webviewPanel.active) {
+        if (listener.webviewPanel.visible) {
           this.updateInspectInfo();
         }
       },
@@ -132,6 +133,11 @@ export class InspectorLoader implements vscode.Disposable {
 
   private async handleMessage(command: IInspectorPanelAction) {
     switch (command.action) {
+      case InspectorPanelAction.RefreshInspectorInfo: {
+        this._results = undefined;
+        this.updateInspectInfo();
+        break;
+      }
       case InspectorPanelAction.UpdateInspectorInfo: {
         this._options.includeOutScope = command.content.includeOutScope;
         this.updateInspectInfo();
@@ -250,44 +256,69 @@ export class InspectorLoader implements vscode.Disposable {
     let proc: any;
 
     if (this._options.objectsInspector) {
-      proc = () => {
-        sendInspectorObjectsRequest(
-          this.inspectServer,
-          this._options.includeOutScope
-        ).then(
-          (result: IObjectData[]) => {
-            this._panel.webview.postMessage({
-              command: InspectorPanelAction.UpdateInspectorInfo,
-              data: {
-                serverName: this.inspectServer.name,
-                environment: this.inspectServer.environment,
-                includeOutScope: this._options.includeOutScope,
-                dataRows: result,
-              },
-            });
+      if (this._results) {
+        this._panel.webview.postMessage({
+          command: InspectorPanelAction.UpdateInspectorInfo,
+          data: {
+            serverName: this.inspectServer.name,
+            environment: this.inspectServer.environment,
+            includeOutScope: this._options.includeOutScope,
+            dataRows: this._results,
           },
-          (err: Error) => {
-            languageClient.error(err.message, err);
-            vscode.window.showErrorMessage(
-              err.message + localize("SEE_LOG", ". See log for details.")
-            );
-          }
-        );
-      };
+        });
+      } else {
+        proc = () => {
+          sendInspectorObjectsRequest(
+            this.inspectServer,
+            this._options.includeOutScope
+          ).then(
+            (result: IObjectData[]) => {
+              this._results = result;
+              this._panel.webview.postMessage({
+                command: InspectorPanelAction.UpdateInspectorInfo,
+                data: {
+                  serverName: this.inspectServer.name,
+                  environment: this.inspectServer.environment,
+                  includeOutScope: this._options.includeOutScope,
+                  dataRows: this._results,
+                },
+              });
+            },
+            (err: Error) => {
+              languageClient.error(err.message, err);
+              vscode.window.showErrorMessage(
+                err.message + localize("SEE_LOG", ". See log for details.")
+              );
+            }
+          );
+        };
+      }
     } else {
-      proc = () =>
+      if (this._results) {
+        this._panel.webview.postMessage({
+          command: InspectorPanelAction.UpdateInspectorInfo,
+          data: {
+            serverName: this.inspectServer.name,
+            environment: this.inspectServer.environment,
+            includeOutScope: this._options.includeOutScope,
+            dataRows: this._results,
+          },
+        });
+      } else {
+        proc = () =>
         sendInspectorFunctionsRequest(
           this.inspectServer,
           !this._options.includeOutScope
         ).then(
           (rows: IFunctionData[]) => {
+            this._results = rows;
             this._panel.webview.postMessage({
               command: InspectorPanelAction.UpdateInspectorInfo,
               data: {
                 serverName: this.inspectServer.name,
                 environment: this.inspectServer.environment,
                 includeOutScope: this._options.includeOutScope,
-                dataRows: rows,
+                dataRows: this._results,
               },
             });
           },
@@ -298,6 +329,7 @@ export class InspectorLoader implements vscode.Disposable {
             );
           }
         );
+      }
     }
 
     vscode.window.withProgress(
@@ -401,6 +433,7 @@ function getTranslations() {
     SHOW_COLUMNS: localize("SHOW_COLUMNS", "Show Columns"),
     RESOURCES: localize("RESOURCES", "Resources"),
     EXPORT_TXT: localize("EXPORT_TXT", "Export as Text"),
+    REFRESH: localize("REFRESH", "Refresh"),
     RPO_LOG: localize("RPO_LOG", "Repository Log"),
   };
 }
