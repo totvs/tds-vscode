@@ -37,8 +37,7 @@ export const registerDebug = (context: vscode.ExtensionContext, languageClient: 
     context,
     TotvsConfigurationTdsReplayProvider._TYPE,
     tdsReplayProvider,
-    factory,
-    tracker
+    factory
   );
 
   /***** Configuração de debug web *****/
@@ -50,8 +49,7 @@ export const registerDebug = (context: vscode.ExtensionContext, languageClient: 
     context,
     TotvsConfigurationWebProvider._TYPE,
     webProvider,
-    factory,
-    tracker)
+    factory)
 
   /** Configurações gerais de debug  */
   context.subscriptions.push(
@@ -81,7 +79,7 @@ function registerDebugAdapter(
   type: string,
   provider: vscode.DebugConfigurationProvider,
   factory: vscode.DebugAdapterDescriptorFactory,
-  tracker: vscode.DebugAdapterTrackerFactory
+  tracker?: vscode.DebugAdapterTrackerFactory
 ) {
   context.subscriptions.push(
     vscode.debug.registerDebugConfigurationProvider(type, provider)
@@ -91,7 +89,9 @@ function registerDebugAdapter(
     vscode.debug.registerDebugAdapterDescriptorFactory(type, factory)
   );
 
-  context.subscriptions.push(
-    vscode.debug.registerDebugAdapterTrackerFactory(type, tracker)
-  );
+  if (tracker) {
+    context.subscriptions.push(
+      vscode.debug.registerDebugAdapterTrackerFactory(type, tracker)
+    );
+  }
 }
