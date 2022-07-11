@@ -59,6 +59,10 @@ Ajustado processo de avaliação de expressões e ambiente.
 
 Em situações onde a pilha de execução ultrapassava 20 níveis, poderia ocorrer a queda do depurador.
 
+### Inspetores lado a lado, não apresenta resultado esperado em um deles [DTCLIENT01-3210](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3210)
+
+Ajustado processo de obtenção/apresentação dos resultados.
+
 # Versão [1.3.14]
 
 ## Melhorias
