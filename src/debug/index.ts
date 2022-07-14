@@ -4,6 +4,7 @@ import { TotvsConfigurationWebProvider } from "./TotvsConfigurationWebProvider";
 import { TotvsDebugAdapterDescriptorFactory } from "./TotvsDebugAdapterDescriptorFactory";
 import { TotvsConfigurationTdsReplayProvider } from "./TotvsConfigurationTdsReplayProvider";
 import {
+  DebugEvent,
   procesChangeBreakpointsEvent,
   processDebugCustomEvent,
 } from "./debugEvents";
@@ -13,8 +14,9 @@ import { TotvsDebugTrackerDescriptorFactory } from "./TotvsDebugTrackerDescripto
 export let _debugEvent = undefined;
 
 export const registerDebug = (context: vscode.ExtensionContext, languageClient: LanguageClient) => {
-  const factory = new TotvsDebugAdapterDescriptorFactory(context);
-  const tracker = new TotvsDebugTrackerDescriptorFactory(context)
+  new DebugEvent(context); //força inicialização e registra contexto
+  const factory = new TotvsDebugAdapterDescriptorFactory();
+  const tracker = new TotvsDebugTrackerDescriptorFactory()
 
   /****** Configurações de execução do debugger regular **/
   const debugProvider = new TotvsConfigurationProvider();

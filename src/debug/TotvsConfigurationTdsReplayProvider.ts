@@ -18,8 +18,7 @@ const localize = nls.loadMessageBundle();
  * Please note: the test suite does no longer work in this mode.
  */
 export class TotvsConfigurationTdsReplayProvider
-  implements DebugConfigurationProvider
-{
+  implements DebugConfigurationProvider {
   static _TYPE = "totvs_tdsreplay_debug";
 
   /**
@@ -95,7 +94,7 @@ export class TotvsConfigurationTdsReplayProvider
     }
   }
 
-  dispose() {}
+  dispose() { }
 
   async verifyIfMustImport(config: DebugConfiguration): Promise<boolean> {
     config.tdsReplayFile = config.tdsReplayFile.replace(/\\/g, "/");
@@ -209,11 +208,11 @@ export class TotvsConfigurationTdsReplayProvider
     mustImport: boolean
   ) {
     /*
-			-i
-			<includeList>
-			-e
-			<excludeList>
-		*/
+      -i
+      <includeList>
+      -e
+      <excludeList>
+    */
     if (mustImport) {
       let content =
         "-i\n" + config.includeSources + "\n" + "-e\n" + config.excludeSources;

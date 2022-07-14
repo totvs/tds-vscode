@@ -1,14 +1,7 @@
 import { DebugSession, ProviderResult, ExtensionContext, DebugAdapterTrackerFactory, DebugAdapterTracker, debug, workspace } from 'vscode';
 import Utils from '../utils';
 
-let context;
-
 export class TotvsDebugTrackerDescriptorFactory implements DebugAdapterTrackerFactory {
-
-	constructor(pContext: ExtensionContext,
-	) {
-		context = pContext;
-	}
 
 	createDebugAdapterTracker(session: DebugSession): ProviderResult<DebugAdapterTracker> {
 

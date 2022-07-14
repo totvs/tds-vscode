@@ -87,8 +87,6 @@ export function parseUri(u): Uri {
 const LANG_ADVPL_ID = "advpl";
 
 export function activate(context: ExtensionContext) {
-  new DebugEvent(context); //Cria a instancia para ja informar o debug context
-
   console.log(
     localize(
       "tds.console.congratulations",
