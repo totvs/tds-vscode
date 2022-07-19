@@ -4,6 +4,10 @@
 
 ## Melhorias
 
+### Revisão da documentação
+
+Revisão geral da documentação da extensão.
+
 ### Implementado opção de rastreamento de comunicação do VS-Code com servidor de depuração
 
 A configuração do rastreamento pode ser efetuado pela chave `totvsLanguageServer.trace.debug` na janela de `settings`.
