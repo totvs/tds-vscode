@@ -77,9 +77,9 @@ Ambos os inspetores permitem as mesmas operações.
 
 1. _Status_: Indica se este recurso foi compilado:
 
-- `Dev`
-- `Prod`
-- `NoAuth`
+- `Dev`, recurso compilado com token de compilação de desenvolvimento
+- `Prod`, recurso compilado com token de compilação de produção
+- `NoAuth`, recurso compilado sem token de compilação
 
 2. _RPO_: Indica o repositório de objetos onde encontra-se o recurso, podendo ser:
 
