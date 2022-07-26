@@ -1,68 +1,64 @@
 {
-    "name": "4gl",
-    "scopeName": "source.4gl",
-    "fileTypes": [
-      "4gl",
-      "per"
-    ],
-    "foldingStartMarker": "(\\{\\s*(\/\/.*)?$|^\\s*\/\/ \\{\\{\\{)",
-    "foldingStopMarker": "^\\s*(\\}|\/\/ \\}\\}\\}$)",
-    "patterns": [
-      {
-        "begin": "\\{",
-        "end": "\\}",
-        "name": "comment.block.4gl",
-        "patterns": [
-          {
-            "match": "."
-          }
-        ]
-      },
-      {
-        "comment": "Comentario de linha com #",
-        "match": "#.*$",
-        "name": "comment.line.number-sign.4gl"
-      },
-      {
-        "comment": "Comentario de linha com --",
-        "match": "--.*$",
-        "name": "comment.line.4gl"
-      },
-      {
-        "comment": "String aspas simples",
-        "match": "('(?:\\\\'|.)*?')",
-        "name": "string.single.4gl"
-      },
-      {
-        "comment": "String aspas duplas",
-        "match": "(\\\"(?:\\\\\"|.)*?\\\")",
-        "name": "string.double.4gl"
-      },
-      {
-        "comment": "Operadores",
-        "match":
-          "(?i)(=|!=|\\+|-|/|<|>|,|(\\s(or|is|mod|not)(?=(\\s|$))))",
-        "name": "keyword.operator.4gl"
-      },
-      {
-        "comment": "Constantes",
-        "match": "\\b(?i)(abort|abs|absolute|accept|access|acos|ada|add|after|all|allocate|alter|and|ansi|any|append|arg_val|array|arr_count|arr_curr|as|asc|ascending|ascii|asin|at|atan|atan2|attach|attribute|attributes|audit|authorization|auto|autonext|average|avg|before|begin|between|black|blink|blue|bold|boolean|border|both|bottom|break|buffered|by|byte|call|cascade|case|catch|char|character|character_length|char_length|check|circuit|class_origin|clear|clipped|close|cluster|cobol|color|column|columns|command|comment|comments|commit|committed|composites|compress|concurrent|connect|connection|connection_alias|constant|constrained|constraint|constraints|construct|continue|control|cos|count|create|current|cursor|cyan|data|database|dataskip|date|datetime|day|dba|dbinfo|dbservername|deallocate|debug|dec|decimal|declare|default|defaults|defer|deferred|define|delete|delimiter|delimiters|desc|descending|describe|descriptor|detach|diagnostics|dialog|dim|dirty|disabled|disconnect|display|distinct|distributions|do|dormant|double|down|downshift|drop|dynamic|each|elif|else|enabled|end|entry|error|errorlog|err_get|err_print|err_quit|esc|escape|every|exception|exclusive|exec|execute|exists|exit|exp|explain|expression|extend|extent|extern|external|f1|f10|f11|f12|f13|f14|f15|f16|f17|f18|f19|f2|f20|f21|f22|f23|f24|f25|f26|f27|f28|f29|f3|f30|f31|f32|f33|f34|f35|f36|f37|f38|f39|f4|f40|f41|f42|f43|f44|f45|f46|f47|f48|f49|f5|f50|f51|f52|f53|f54|f55|f56|f57|f58|f59|f6|f60|f61|f62|f63|f64|f7|f8|f9|false|fetch|fgl|fgl_getenv|fgl_keyval|fgl_lastkey|field|field_touched|file|fillfactor|filtering|finish|first|float|flush|for|foreach|foreign|form|format|formonly|fortran|found|fraction|fragment|free|from|function|get_fldbuf|getLength|global|globals|go|goto|grant|green|group|having|header|help|hex|hide|high|hold|hour|idata|if|ilength|immediate|import|in|include|index|indexes|indicator|infield|init|initialize|input|insert|instructions|int|integer|interrupt|interval|into|int_flag|invisible|is|isam|isolation|itype|key|label|language|last|leading|left|length|let|like|line|lineno|lines|load|locate|lock|log|log10|logn|long|low|magenta|main|margin|matches|max|mdy|medium|memory|menu|message|message_length|message_text|min|minute|mod|mode|modify|module|money|month|more|name|nchar|need|new|next|nextpage|no|nocr|noentry|none|normal|not|notfound|null|nullable|number|numeric|num_args|nvarchar|octet_length|of|off|old|on|only|open|optimization|option|options|or|order|otherwise|outer|output|page|pageno|pascal|pause|pdqpriority|percent|picture|pipe|pli|pow|precision|prepare|previous|prevpage|primary|print|printer|prior|private|privileges|procedure|program|prompt|public|put|quit|quit_flag|raise|range|read|readonly|real|record|recover|red|references|referencing|register|relative|remainder|remove|rename|reoptimization|repeatable|report|required|resolution|resource|restrict|resume|return|returns|returned_sqlstate|returning|reverse|revoke|right|robin|role|rollback|rollforward|root|round|row|rowid|rowids|rows|row_count|run|scale|schema|screen|scroll|scr_line|second|section|select|serial|serializable|server_name|session|set|set_count|share|short|show|sitename|size|sizeof|skip|sleep|smallfloat|smallint|some|space|spaces|sql|sqlawarn|sqlca|sqlcode|sqlerrd|sqlerrm|sqlerror|sqlerrp|sqlstate|sqlwarning|sqrt|stability|start|startlog|static|statistics|status|stdev|step|stop|string|struct|subclass_origin|sum|switch|synonym|system|sysblobs|syschecks|syscolauth|syscoldepend|syscolumns|sysconstraints|sysdefaults|sysdepend|sysdistrib|sysfragauth|sysfragments|sysindexes|sysobjstate|sysopclstr|sysprocauth|sysprocbody|sysprocplan|sysprocedures|sysreferences|sysroleauth|syssyntable|syssynonyms|systabauth|systables|systrigbody|systriggers|sysusers|sysviews|sysviolations|tab|table|tables|tan|temp|text|then|through|thru|time|to|today|top|total|trace|trailer|trailing|transaction|trigger|triggers|trim|true|trunc|try|type|typedef|uncommitted|unconstrained|underline|union|unique|units|unload|unlock|unsigned|up|update|upshift|user|using|validate|value|values|varchar|variables|variance|varying|verify|view|violations|wait|waiting|warning|weekday|when|whenever|where|while|white|window|with|without|wordwrap|work|wrap|write|year|yellow|zerofill)\\b",
-        "name": "constant.language.4gl"
-      },
-      {
-        "comment": "Constantes Numéricas",
-        "match": "(?<!\\w)((0(x|X)[0-9a-fA-F]+)|([0-9]+(\\.[0-9]+)?))",
-        "name": "constant.numeric.4gl"
-      },
-      {
-        "comment": "Funções 4GL",
-        "match": "\\b(FGL_DRAWBOX|FGL_DYNARR_EXTENTSIZE|FGL_GETKEY|FGL_ISDYNARR_ALLOCATED|FGL_SCR_SIZE|FGL_SETCURRLINE|LENGTH|ORD|SHOWHELP)\\b",
-        "name":"keyword.other"
-      },
-      {
-        "comment": "Funções",
-        "match": "(?i)((?<=\\s)(p_open|p_close)(?=\\s*\\(.*?\\)))",
-        "name":"support.function.4gl"
-      }
-    ]
-  }
+  "name": "4gl",
+  "scopeName": "source.4gl",
+  "fileTypes": ["4gl", "per"],
+  "foldingStartMarker": "(\\{\\s*(//.*)?$|^\\s*// \\{\\{\\{)",
+  "foldingStopMarker": "^\\s*(\\}|// \\}\\}\\}$)",
+  "patterns": [
+    {
+      "begin": "\\{",
+      "end": "\\}",
+      "name": "comment.block.4gl",
+      "patterns": [
+        {
+          "match": "."
+        }
+      ]
+    },
+    {
+      "comment": "Comentario de linha com #",
+      "match": "#.*$",
+      "name": "comment.line.number-sign.4gl"
+    },
+    {
+      "comment": "Comentario de linha com --",
+      "match": "--.*$",
+      "name": "comment.line.4gl"
+    },
+    {
+      "comment": "String aspas simples",
+      "match": "('(?:\\\\'|.)*?')",
+      "name": "string.single.4gl"
+    },
+    {
+      "comment": "String aspas duplas",
+      "match": "(\\\"(?:\\\\\"|.)*?\\\")",
+      "name": "string.double.4gl"
+    },
+    {
+      "comment": "Operadores",
+      "match": "(?i)(=|!=|\\+|-|/|<|>|,|$)",
+      "name": "keyword.operator.4gl"
+    },
+    {
+      "comment": "Constantes",
+      "match": "\\b(?i)(abort|abs|absolute|accept|access|acos|ada|add|after|all|allocate|alter|and|ansi|any|append|arg_val|array|arr_count|arr_curr|as|asc|ascending|ascii|asin|at|atan|atan2|attach|attribute|attributes|audit|authorization|auto|autonext|average|avg|before|begin|between|black|blink|blue|bold|boolean|border|both|bottom|break|buffered|by|byte|call|cascade|case|catch|char|character|character_length|char_length|check|circuit|class_origin|clear|clipped|close|cluster|cobol|color|column|columns|command|comment|comments|commit|committed|composites|compress|concurrent|connect|connection|connection_alias|constant|constrained|constraint|constraints|construct|continue|control|cos|count|create|current|cursor|cyan|data|database|dataskip|date|datetime|day|dba|dbinfo|dbservername|deallocate|debug|dec|decimal|declare|default|defaults|defer|deferred|define|delete|delimiter|delimiters|desc|descending|describe|descriptor|detach|diagnostics|dialog|dim|dirty|disabled|disconnect|display|distinct|distributions|do|dormant|double|down|downshift|drop|dynamic|each|elif|else|enabled|end|entry|error|errorlog|err_get|err_print|err_quit|esc|escape|every|exception|exclusive|exec|execute|exists|exit|exp|explain|expression|extend|extent|extern|external|f1|f10|f11|f12|f13|f14|f15|f16|f17|f18|f19|f2|f20|f21|f22|f23|f24|f25|f26|f27|f28|f29|f3|f30|f31|f32|f33|f34|f35|f36|f37|f38|f39|f4|f40|f41|f42|f43|f44|f45|f46|f47|f48|f49|f5|f50|f51|f52|f53|f54|f55|f56|f57|f58|f59|f6|f60|f61|f62|f63|f64|f7|f8|f9|false|fetch|fgl|fgl_getenv|fgl_keyval|fgl_lastkey|field|field_touched|file|fillfactor|filtering|finish|first|float|flush|for|foreach|foreign|form|format|formonly|fortran|found|fraction|fragment|free|from|function|get_fldbuf|getLength|global|globals|go|goto|grant|green|group|having|header|help|hex|hide|high|hold|hour|idata|if|ilength|immediate|import|in|include|index|indexes|indicator|infield|init|initialize|input|insert|instructions|int|integer|interrupt|interval|into|int_flag|invisible|is|isam|isolation|itype|key|label|language|last|leading|left|length|let|like|line|lineno|lines|load|locate|lock|log|log10|logn|long|low|magenta|main|margin|matches|max|mdy|medium|memory|menu|message|message_length|message_text|min|minute|mod|mode|modify|module|money|month|more|name|nchar|need|new|next|nextpage|no|nocr|noentry|none|normal|not|notfound|null|nullable|number|numeric|num_args|nvarchar|octet_length|of|off|old|on|only|open|optimization|option|options|or|order|otherwise|outer|output|page|pageno|pascal|pause|pdqpriority|percent|picture|pipe|pli|pow|precision|prepare|previous|prevpage|primary|print|printer|prior|private|privileges|procedure|program|prompt|public|put|quit|quit_flag|raise|range|read|readonly|real|record|recover|red|references|referencing|register|relative|remainder|remove|rename|reoptimization|repeatable|report|required|resolution|resource|restrict|resume|return|returns|returned_sqlstate|returning|reverse|revoke|right|robin|role|rollback|rollforward|root|round|row|rowid|rowids|rows|row_count|run|scale|schema|screen|scroll|scr_line|second|section|select|or|not|join|is|image|inner|serial|serializable|server_name|session|set|set_count|share|short|show|sitename|size|sizeof|skip|sleep|smallfloat|smallint|some|space|spaces|sql|sqlawarn|sqlca|sqlcode|sqlerrd|sqlerrm|sqlerror|sqlerrp|sqlstate|sqlwarning|sqrt|stability|start|startlog|static|statistics|status|stdev|step|stop|string|struct|subclass_origin|sum|switch|synonym|system|sysblobs|syschecks|syscolauth|syscoldepend|syscolumns|sysconstraints|sysdefaults|sysdepend|sysdistrib|sysfragauth|sysfragments|sysindexes|sysobjstate|sysopclstr|sysprocauth|sysprocbody|sysprocplan|sysprocedures|sysreferences|sysroleauth|syssyntable|syssynonyms|systabauth|systables|systrigbody|systriggers|sysusers|sysviews|sysviolations|tab|table|tables|tan|temp|text|then|through|thru|time|to|today|top|total|trace|trailer|trailing|transaction|trigger|triggers|trim|true|trunc|try|type|typedef|uncommitted|unconstrained|underline|union|unique|units|unload|unlock|unsigned|up|update|upshift|user|using|validate|value|values|varchar|variables|variance|varying|verify|view|violations|wait|waiting|warning|weekday|when|whenever|where|while|white|window|with|without|wordwrap|work|wrap|write|year|yellow|zerofill)\\b",
+      "name": "constant.language.4gl"
+    },
+    {
+      "comment": "Constantes Numéricas",
+      "match": "(?<!\\w)((0(x|X)[0-9a-fA-F]+)|([0-9]+(\\.[0-9]+)?))",
+      "name": "constant.numeric.4gl"
+    },
+    {
+      "comment": "Funções 4GL",
+      "match": "\\b(FGL_DRAWBOX|FGL_DYNARR_EXTENTSIZE|FGL_GETKEY|FGL_ISDYNARR_ALLOCATED|FGL_SCR_SIZE|FGL_SETCURRLINE|LENGTH|ORD|SHOWHELP)\\b",
+      "name": "keyword.other"
+    },
+    {
+      "comment": "Funções",
+      "match": "(?i)((?<=\\s)(p_open|p_close)(?=\\s*\\(.*?\\)))",
+      "name": "support.function.4gl"
+    }
+  ]
+}

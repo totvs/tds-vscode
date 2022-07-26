@@ -9,6 +9,8 @@ import {
   sendAppKillConnection,
   sendUserMessage,
   sendIsLockServer,
+  sendSetEnvEncodesRequest,
+  IEnvEncode,
 } from "../protocolMessages";
 import { MonitorPanelAction, IMonitorPanelAction } from "./actions";
 import Utils, { groupBy } from "../utils";
@@ -57,6 +59,7 @@ export class MonitorLoader {
   public set monitorServer(value: any) {
     if (this._monitorServer !== value) {
       this._monitorServer = value;
+      this.updateCodePage(undefined, undefined, false);
       this.updateUsers(true);
       this.isLockServer(this._monitorServer);
     }
@@ -90,8 +93,15 @@ export class MonitorLoader {
     this._panel.webview.html = this.getWebviewContent();
     this._panel.onDidChangeViewState(
       (listener: vscode.WebviewPanelOnDidChangeViewStateEvent) => {
-        if (this.monitorServer !== null) {
-          this.updateUsers(listener.webviewPanel.visible);
+        this._enableUpdateUsers = listener.webviewPanel.visible;
+
+        this.updateUsers(listener.webviewPanel.visible);
+
+        if (!listener.webviewPanel.visible) {
+          this.updateSpeedStatus(localize(
+            "MSG_MONITOR_NOT_VISIBLE",
+            "Monitor tab is not visible."
+          ))
         }
       },
       undefined,
@@ -116,7 +126,9 @@ export class MonitorLoader {
             "Disconnecting monitor from server [{0}]",
             this.monitorServer.name
           ),
-          sendDisconnectRequest(this.monitorServer)
+          sendDisconnectRequest(this.monitorServer).then(() => {
+            vscode.window.setStatusBarMessage("");
+          })
         );
       }
 
@@ -204,6 +216,7 @@ export class MonitorLoader {
             "_totvs-developer-studio.clearMonitorPanel",
             () => {
               this.clearPanel();
+              vscode.window.setStatusBarMessage("");
             }
           )
         );
@@ -282,6 +295,7 @@ export class MonitorLoader {
         } else {
           serverProvider.connectedServerItem = undefined;
           this.clearPanel();
+          vscode.window.setStatusBarMessage("");
         }
       },
       (error: Error) => {
@@ -415,12 +429,12 @@ export class MonitorLoader {
           this.updateSpeedStatus(
             localize(
               "WAIT_CONFIG_UPDATE",
-              "Waiting for preview configuration changes"
+              "Waiting for preview configuration changes."
             )
           );
         } else if (reason === 2) {
           this.updateSpeedStatus(
-            localize("SELECTED_CONNECTIONS", "Selected connections")
+            localize("SELECTED_CONNECTIONS", "Selected connections.")
           );
         } else {
           this.updateSpeedStatus();
@@ -446,6 +460,11 @@ export class MonitorLoader {
       }
       case MonitorPanelAction.SetSpeedUpdate: {
         this.speed = command.content.speed;
+        this.updateUsers(true);
+        break;
+      }
+      case MonitorPanelAction.SetCodePageUpdate: {
+        this.updateCodePage(command.content.environment, command.content.codepage, true);
         this.updateUsers(true);
         break;
       }
@@ -491,7 +510,58 @@ export class MonitorLoader {
     }
   }
 
+  private updateCodePage(environment: string, codepage: string, save: boolean) {
+    const envEncodeList: IEnvEncode[] = [];
+    const environmentConfig: any[] = Utils.getEnvironmentsConfig(this.monitorServer.name);
+
+    if (save) {
+      const index: number = environmentConfig.findIndex(((element) => {
+        return element.name == environment.toLowerCase();
+      }))
+      if (index == -1) {
+        codepage
+        environmentConfig.push({ "name": environment.toLowerCase(), "encoding": codepage });
+      } else {
+        environmentConfig[index] = { "name": environment.toLowerCase(), "encoding": codepage };
+      }
+
+      Utils.setEnvironmentsConfig(this.monitorServer.name, environmentConfig);
+    }
+
+    environmentConfig.forEach((environment) => {
+      envEncodeList.push({ environment: environment.name, encoding: Number.parseInt(environment.encoding.charAt(0)) });
+    })
+
+    vscode.window.setStatusBarMessage(
+      "$(sync~spin)" +
+      localize(
+        "MONITOR_SETTING",
+        "Setting server [{0}]...",
+        this.monitorServer.name
+      ),
+      sendSetEnvEncodesRequest(this.monitorServer, envEncodeList).then(
+        (message: string) => {
+          if (message !== "OK") {
+            languageClient.error(`SetEnvEncodes: ${message}`);
+            vscode.window.showErrorMessage(message);
+          }
+        },
+        (err: Error) => {
+          languageClient.error(err.message, err);
+          vscode.window.showErrorMessage(
+            err.message + localize("SEE_LOG", ". See log for details.")
+          );
+        }
+      )
+    );
+
+  }
+
   public updateUsers(scheduler: boolean) {
+    if (this._timeoutSched) {
+      clearTimeout(this._timeoutSched);
+    }
+
     if (this.monitorServer === null) {
       return;
     }
@@ -507,10 +577,6 @@ export class MonitorLoader {
       }
     };
 
-    if (this._timeoutSched) {
-      clearTimeout(this._timeoutSched);
-    }
-
     if (this._enableUpdateUsers) {
       if (this.monitorServer === null) {
         this._panel.webview.postMessage({
@@ -522,25 +588,35 @@ export class MonitorLoader {
         });
       } else {
         vscode.window.setStatusBarMessage(
-          "$(~spin)" +
-            localize(
-              "REQUESTING_DATA_FROM_SERVER",
-              "Requesting data from the server [{0}]",
-              this.monitorServer.name
-            ),
+          "$(gear~spin)" +
+          localize(
+            "REQUESTING_DATA_FROM_SERVER",
+            "Requesting data from the server [{0}]",
+            this.monitorServer.name
+          ),
           sendGetUsersRequest(this.monitorServer).then(
             (users: any) => {
               if (users) {
-                const servers = groupBy(users, (item: any) => {
+                let map = groupBy(users, (item: any) => {
+                  return item.environment;
+                })
+                const environments: any[] = [];
+                Array.from(map.keys()).forEach((value) => {
+                  environments.push({ name: value, codePage: 0 });
+                });
+
+                map = groupBy(users, (item: any) => {
                   return item.server;
-                }).map((element) => element[0].server);
+                })
+                const servers = Array.from(map.keys());
+
                 const complement = users.length
                   ? localize(
-                      "THREADS",
-                      " ({0} thread(s) in {1} server(s))",
-                      users.length,
-                      servers.length
-                    )
+                    "THREADS",
+                    " ({0} thread(s) in {1} server(s))",
+                    users.length,
+                    servers.length
+                  )
                   : localize("THREADS_NONE", " (none thread)");
 
                 this._panel.webview.postMessage({
@@ -551,7 +627,12 @@ export class MonitorLoader {
                       complement,
                     users: users,
                     servers: servers,
+                    environments: environments
                   },
+                }).then((value: boolean) => {
+                  //console.log(`>>>>>>> postMessge ${value}`);
+                }, (reason: any) => {
+                  console.log(reason);
                 });
               }
               this.updateSpeedStatus();
@@ -586,18 +667,18 @@ export class MonitorLoader {
 
   private updateSpeedStatus(pauseReason?: string) {
     let nextUpdate = new Date(Date.now());
-    let icon: string = "$(~spin)";
+    let icon: string = "$(gear~spin)";
     let msg1: string = "";
     let msg2: string = "";
 
     if (pauseReason) {
       icon = "$(debug-pause)";
-      msg1 = localize("UPDATE_PAUSED", "Update paused. {0}", pauseReason);
+      msg1 = localize("UPDATE_PAUSED", "Monitor paused: {0}", pauseReason);
     } else {
       msg1 = localize(
         "MSG_1",
         "Monitor: Updated as {0}.",
-        `${nextUpdate.getHours()}:${nextUpdate.getMinutes()}:${nextUpdate.getSeconds()}`
+        `${nextUpdate.toLocaleTimeString()}`
       );
 
       if (this.speed === 0) {
@@ -609,8 +690,8 @@ export class MonitorLoader {
         nextUpdate.setSeconds(nextUpdate.getSeconds() + this.speed);
         msg2 = localize(
           "MSG_2_NEXT",
-          "The next one will occur {0}",
-          `${nextUpdate.getHours()}:${nextUpdate.getMinutes()}:${nextUpdate.getSeconds()}`
+          "The next one will occur {0}.",
+          `${nextUpdate.toLocaleTimeString()}`
         );
       }
     }
@@ -817,6 +898,7 @@ function getTranslations() {
       "Block new connections?"
     ),
     DLG_TITLE_REMARKS: localize("DLG_TITLE_REMARKS", "Remarks"),
+    DLG_TITLE_CHANGE_CODE_PAGE: localize("DLG_TITLE_CHANGE_CODE_PAGE", "Change Environment Encoding"),
     DLG_TITLE_UNLOCK: localize("DLG_TITLE_UNLOCK", "Unlock new connections?"),
     ENVIRONEMNT: localize("ENVIRONEMNT", "Environemnt"),
     MONITOR: localize("MONITOR", "Monitor"),

@@ -56,7 +56,7 @@ import {
   syncSettings,
   toggleAutocompleteBehavior,
 } from "./server/languageServerSettings";
-import { createTimeLineWebView } from "./debug/debugEvents";
+import { createTimeLineWebView, DebugEvent } from "./debug/debugEvents";
 import { patchValidates } from "./patch/patchValidate";
 import {
   documentFormatting,
@@ -87,8 +87,6 @@ export function parseUri(u): Uri {
 const LANG_ADVPL_ID = "advpl";
 
 export function activate(context: ExtensionContext) {
-  //new DebugEvent(context); //Cria a instancia para ja informar o debug context
-
   console.log(
     localize(
       "tds.console.congratulations",
@@ -460,7 +458,7 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.patchGenerate.byDifference",
       () => {
         vscode.window.setStatusBarMessage(
-          `$(~spin) ${localize(
+          `$(gear~spin) ${localize(
             "tds.vscode.starting.build.patch",
             "Starting package generation..."
           )}`,
@@ -474,7 +472,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("totvs-developer-studio.patchApply", () => {
       vscode.window.setStatusBarMessage(
-        `$(~spin) ${localize(
+        `$(gear~spin) ${localize(
           "tds.vscode.starting.apply.patch",
           "Starting patch application..."
         )}`,
@@ -488,7 +486,7 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.patchApply.fromFile",
       (args: any) => {
         vscode.window.setStatusBarMessage(
-          `$(~spin) ${localize(
+          `$(gear~spin) ${localize(
             "tds.vscode.starting.apply.patch",
             "Starting patch application..."
           )}`,
@@ -552,7 +550,7 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.templateApply.fromFile",
       (args: any) => {
         vscode.window.setStatusBarMessage(
-          `$(~spin) ${localize(
+          `$(gear~spin) ${localize(
             "tds.vscode.starting.apply.teplate",
             "Starting template application..."
           )}`,
@@ -566,7 +564,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("tds-monitor.open-monitor-view", () => {
       vscode.window.setStatusBarMessage(
-        `$(~spin) ${localize(
+        `$(gear~spin) ${localize(
           "tds.vscode.starting.monitor",
           "Starting monitor..."
         )}`,
@@ -581,7 +579,7 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.open-loadrpoinfo-view",
       () => {
         vscode.window.setStatusBarMessage(
-          `$(~spin) ${localize(
+          `$(gear~spin) ${localize(
             "tds.vscode.starting.rpo.loadinfo",
             "Starting RPO load information..."
           )}`,
@@ -689,7 +687,7 @@ export function activate(context: ExtensionContext) {
   registerLog(context);
 
   //debug
-  registerDebug(context);
+  registerDebug(context, languageClient);
 
   // Inicialização Adv/PL
   context.subscriptions.push(registerAdvplFormatting());
@@ -728,7 +726,7 @@ export function activate(context: ExtensionContext) {
       buildVersion: string,
       environment: string,
       username: string,
-      ): Promise<boolean> {
+    ): Promise<boolean> {
       return createNewProtheusServer(serverName, port, address, secure, buildVersion, environment, username);
     },
   };
@@ -820,32 +818,32 @@ function showBanner(force: boolean = false) {
       let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
       // prettier-ignore
       {
-      appLine("---------------------------v---------------------------------------------------");
-      appLine("   //////  ////    //////  |  TOTVS Developer Studio for VS-Code");
-      appLine("    //    //  //  //       |  Version " + ext.packageJSON["version"]);
-      appLine("   //    //  //  //////    |  TOTVS Technology");
-      appLine("  //    //  //      //     |");
-      appLine(" //    ////    //////      |  https://github.com/totvs/tds-vscode");
-      appLine("---------------------------^---------------------------------------------------");
-      appLine("");
+        appLine("---------------------------v---------------------------------------------------");
+        appLine("   //////  ////    //////  |  TOTVS Developer Studio for VS-Code");
+        appLine("    //    //  //  //       |  Version " + ext.packageJSON["version"]);
+        appLine("   //    //  //  //////    |  TOTVS Technology");
+        appLine("  //    //  //      //     |");
+        appLine(" //    ////    //////      |  https://github.com/totvs/tds-vscode");
+        appLine("---------------------------^---------------------------------------------------");
+        appLine("");
       }
     }
     // prettier-ignore
     {
-    appLine("-------------------------------------------------------------------------------");
-    appLine("SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO                                   ");
-    appLine("");
-    appLine("As chaves de compilação ou tokens de compilação empregados na construção do    ");
-    appLine("Protheus e suas funcionalidades, são de uso restrito dos desenvolvedores de    ");
-    appLine("cada módulo.                                                                   ");
-    appLine("");
-    appLine("Em caso de mau uso destas chaves ou tokens, por qualquer outra parte, que não  ");
-    appLine("a referida acima, a mesma irá se responsabilizar, direta ou regressivamente,   ");
-    appLine("única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações,   ");
-    appLine("multas, condenações judiciais, arbitrais e administrativas e quaisquer outras  ");
-    appLine("despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros,   ");
-    appLine("eximindo a TOTVS de toda e qualquer responsabilidade.                          ");
-    appLine("-------------------------------------------------------------------------------");
+      appLine("-------------------------------------------------------------------------------");
+      appLine("SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO                                   ");
+      appLine("");
+      appLine("As chaves de compilação ou tokens de compilação empregados na construção do    ");
+      appLine("Protheus e suas funcionalidades, são de uso restrito dos desenvolvedores de    ");
+      appLine("cada módulo.                                                                   ");
+      appLine("");
+      appLine("Em caso de mau uso destas chaves ou tokens, por qualquer outra parte, que não  ");
+      appLine("a referida acima, a mesma irá se responsabilizar, direta ou regressivamente,   ");
+      appLine("única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações,   ");
+      appLine("multas, condenações judiciais, arbitrais e administrativas e quaisquer outras  ");
+      appLine("despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros,   ");
+      appLine("eximindo a TOTVS de toda e qualquer responsabilidade.                          ");
+      appLine("-------------------------------------------------------------------------------");
     }
   }
 }

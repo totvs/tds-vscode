@@ -100,7 +100,7 @@ export function patchValidates(context: vscode.ExtensionContext, args: any) {
           switch (message.command) {
             case "patchValidate":
               vscode.window.setStatusBarMessage(
-                `$(~spin) ${localize(
+                `$(gear~spin) ${localize(
                   "tds.patch.validade.executing",
                   "Executing patch validation..."
                 )}`,
@@ -110,7 +110,7 @@ export function patchValidates(context: vscode.ExtensionContext, args: any) {
               break;
             case "exportPatchValidate":
               vscode.window.setStatusBarMessage(
-                `$(~spin) ${localize(
+                `$(gear~spin) ${localize(
                   "tds.patch.validade.export",
                   "Exporting patch validation..."
                 )}`,
@@ -136,7 +136,7 @@ export function patchValidates(context: vscode.ExtensionContext, args: any) {
       if (args.fsPath) {
         sendPatchPath(args.fsPath, currentPanel);
         vscode.window.setStatusBarMessage(
-          `$(~spin) ${localize(
+          `$(gear~spin) ${localize(
             "tds.vscode.starting.apply.teplate",
             "Starting package generation..."
           )}`,

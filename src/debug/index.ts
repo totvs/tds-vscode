@@ -4,53 +4,59 @@ import { TotvsConfigurationWebProvider } from "./TotvsConfigurationWebProvider";
 import { TotvsDebugAdapterDescriptorFactory } from "./TotvsDebugAdapterDescriptorFactory";
 import { TotvsConfigurationTdsReplayProvider } from "./TotvsConfigurationTdsReplayProvider";
 import {
+  DebugEvent,
+  procesChangeBreakpointsEvent,
   processDebugCustomEvent,
-  procesStartDebugSessionEvent,
 } from "./debugEvents";
+import { LanguageClient } from "vscode-languageclient";
+import { TotvsDebugTrackerDescriptorFactory } from "./TotvsDebugTrackerDescriptorFactory";
 
 export let _debugEvent = undefined;
 
-export const registerDebug = (context: vscode.ExtensionContext) => {
-  const factory = new TotvsDebugAdapterDescriptorFactory(context);
+export const registerDebug = (context: vscode.ExtensionContext, languageClient: LanguageClient) => {
+  new DebugEvent(context); //força inicialização e registra contexto
+  const factory = new TotvsDebugAdapterDescriptorFactory();
+  const tracker = new TotvsDebugTrackerDescriptorFactory()
 
   /****** Configurações de execução do debugger regular **/
-
   const debugProvider = new TotvsConfigurationProvider();
+  context.subscriptions.push(debugProvider);
+
   registerDebugAdapter(
     context,
     TotvsConfigurationProvider._TYPE,
     debugProvider,
-    factory
+    factory,
+    tracker
   );
-  context.subscriptions.push(debugProvider);
 
   /**** Configurações de execução do debug com TDS Replay *******/
 
   const tdsReplayProvider = new TotvsConfigurationTdsReplayProvider();
+  context.subscriptions.push(tdsReplayProvider);
+
   registerDebugAdapter(
     context,
     TotvsConfigurationTdsReplayProvider._TYPE,
     tdsReplayProvider,
     factory
   );
-  context.subscriptions.push(tdsReplayProvider);
 
   /***** Configuração de debug web *****/
 
   const webProvider = new TotvsConfigurationWebProvider();
+  context.subscriptions.push(webProvider);
+
   registerDebugAdapter(
     context,
     TotvsConfigurationWebProvider._TYPE,
     webProvider,
-    factory
-  );
-  context.subscriptions.push(webProvider);
+    factory)
 
   /** Configurações gerais de debug  */
-
   context.subscriptions.push(
-    vscode.debug.onDidStartDebugSession((event: any) => {
-      procesStartDebugSessionEvent(event);
+    vscode.debug.onDidChangeBreakpoints((event: vscode.BreakpointsChangeEvent) => {
+      procesChangeBreakpointsEvent(languageClient, event);
     })
   );
 
@@ -74,7 +80,8 @@ function registerDebugAdapter(
   context: vscode.ExtensionContext,
   type: string,
   provider: vscode.DebugConfigurationProvider,
-  factory: vscode.DebugAdapterDescriptorFactory
+  factory: vscode.DebugAdapterDescriptorFactory,
+  tracker?: vscode.DebugAdapterTrackerFactory
 ) {
   context.subscriptions.push(
     vscode.debug.registerDebugConfigurationProvider(type, provider)
@@ -83,4 +90,10 @@ function registerDebugAdapter(
   context.subscriptions.push(
     vscode.debug.registerDebugAdapterDescriptorFactory(type, factory)
   );
+
+  if (tracker) {
+    context.subscriptions.push(
+      vscode.debug.registerDebugAdapterTrackerFactory(type, tracker)
+    );
+  }
 }

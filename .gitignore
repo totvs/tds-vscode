@@ -18,3 +18,5 @@ test/resources/**/.vscode/laucher.json
 out-test/
 *.dmp
 src/parser/4gl-parser.js
+notas.md
+test/**/no_git

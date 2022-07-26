@@ -4,6 +4,7 @@ export interface IInspectorPanelAction {
 }
 
 export enum InspectorPanelAction {
+  RefreshInspectorInfo,
   UpdateInspectorInfo,
   ExportToTxt,
   DoUpdateState,

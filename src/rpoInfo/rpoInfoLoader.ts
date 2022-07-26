@@ -118,7 +118,7 @@ export class RpoInfoLoader implements vscode.Disposable {
       }
       case RpoInfoPanelAction.ExportToTxt: {
         vscode.window.setStatusBarMessage(
-          "$(~spin)" + "Export repository log. Wait...",
+          "$(gear~spin)" + "Export repository log. Wait...",
           this.doExportToTxt(
             this.monitorServer,
             command.content.rpoInfo,
@@ -265,7 +265,7 @@ export class RpoInfoLoader implements vscode.Disposable {
     }
 
     vscode.window.setStatusBarMessage(
-      "$(~spin)" +
+      "$(gear~spin)" +
         localize(
           "REQUESTING_DATA_FROM_SERVER",
           "Requesting data from the server [{0}]",
@@ -299,7 +299,7 @@ export class RpoInfoLoader implements vscode.Disposable {
   }
 
   private updateStatus(msg: string) {
-    let icon: string = "$(~spin)";
+    let icon: string = "$(gear~spin)";
 
     vscode.window.setStatusBarMessage(`${icon} ${msg}`);
   }

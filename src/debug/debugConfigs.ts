@@ -11,6 +11,7 @@ import {
   window,
 } from "vscode";
 import { statSync, chmodSync } from "fs";
+import * as fse from "fs-extra";
 import Utils, { MESSAGETYPE } from "../utils";
 import * as path from "path";
 import * as nls from "vscode-nls";
@@ -49,6 +50,7 @@ export function getDAP() {
       }
     }
   }
+
   return { command: pathDAP, args: dapArgs };
 }
 
@@ -188,9 +190,8 @@ export async function getProgramName(
   config.lastProgramArgumens = programArgs.args;
   Utils.saveLaunchConfig(config);
 
-  return `${config.lastProgramExecuted} ${
-    programArgs.args ? programArgs.args.join(", ") : ""
-  }`;
+  return `${config.lastProgramExecuted} ${programArgs.args ? programArgs.args.join(", ") : ""
+    }`;
 }
 
 const programArgsRegex = /^([\w\.\-\_]+)(\(?[^)\n]*\)?)?/i;
@@ -268,7 +269,7 @@ export function toggleTableSync() {
     let launchConfig = undefined;
 
     try {
-      launchConfig = Utils.getLaunchConfigFile();
+      launchConfig = fse.readJSONSync(Utils.getLaunchConfigFile());
       launchConfig.configurations.forEach((launchElement) => {
         if (
           debugSession !== undefined &&
@@ -314,7 +315,7 @@ export function toggleTableSync() {
   }
 }
 
-debug.onDidChangeActiveDebugSession((newDebugSession) => {
+debug.onDidChangeActiveDebugSession((newDebugSession: DebugSession | undefined) => {
   debugSession = newDebugSession;
 });
 
@@ -428,7 +429,7 @@ async function pickProgramArguments(
               (element: QuickPickProgram) => {
                 return (
                   element.label.toLowerCase() ===
-                    lastProgramExecuted.toLowerCase() &&
+                  lastProgramExecuted.toLowerCase() &&
                   JSON.stringify(element.args) === JSON.stringify(selectArgs)
                 );
               }
