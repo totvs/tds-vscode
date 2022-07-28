@@ -118,22 +118,22 @@ export const propFunctionsColumns = (extraProps?: any): any => {
       fieldDef("function", i18n.localize("OBJECT", "Object"), {
         ...extraProps,
         grouping: false,
-        width: "45%",
+        width: "25%",
       }),
       fieldDef("source", i18n.localize("PROGRAM", "Program"), {
         ...extraProps,
-        width: "40%",
+        width: "35%",
       }),
       fieldDef("line", i18n.localize("LINE", "Line"), {
         ...extraProps,
         grouping: false,
         type: "numeric",
-        width: "5%",
+        width: "15%",
       }),
       fieldDef("source_status", i18n.localize("SOURCE_STATUS", "Status"), {
         ...extraProps,
         lookup: { N: "NoAuth", P: "Prod", D: "Dev" },
-        width: "5%",
+        width: "15%",
       }),
       fieldDef("rpo_status", i18n.localize("RPO_STATUS", "RPO"), {
         ...extraProps,
@@ -143,7 +143,7 @@ export const propFunctionsColumns = (extraProps?: any): any => {
           T: "Tlpp",
           C: "Custom",
         },
-        width: "5%",
+        width: "10%",
       }),
     ],
   };
@@ -157,21 +157,21 @@ export const propObjectsColumns = (extraProps?: any): any => {
       fieldDef("source", i18n.localize("PROGRAM", "Program"), {
         ...extraProps,
         grouping: false,
-        width: "45%",
+        width: "40%",
       }),
       fieldDef("date", i18n.localize("DATE", "Date"), {
         ...extraProps,
         grouping: false,
-        width: "45%",
+        width: "30%",
       }),
       fieldDef("source_status", i18n.localize("SOURCE_STATUS", "Status"), {
         ...extraProps,
-        width: "5%",
+        width: "15%",
         lookup: { N: "NoAuth", P: "Prod", D: "Dev" },
       }),
       fieldDef("rpo_status", i18n.localize("RPO_STATUS", "RPO"), {
         ...extraProps,
-        width: "5%",
+        width: "15%",
         lookup: {
           N: "None",
           D: "Default",
