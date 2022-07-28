@@ -1,6 +1,6 @@
 # Changelog
 
-# Versão [1.3.16]
+# Versão [1.3.next]
 
 ## Melhorias
 
