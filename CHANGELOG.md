@@ -8,7 +8,7 @@
 
 Introduzido verificação do tamanho da linha de código AdvPL, para evitar mensagem "_File is empty or corrupted_" no _linter_ e na compilação. [DTCLIENT01-3533](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3533)
 
-No _appServer_, o limite é de 4k durante o pré-processado (_.ppo_) do fonte e para evitar alguma ocorrência, foram definidos os limites (antes do pré-processamento):
+No _appServer_, o limite é de 4k durante o pré-processamento (geração _.ppo_) do fonte e para evitar alguma ocorrência, foram definidos os limites (antes do pré-processamento):
 
 - 1K, como aviso
 - 2K, como erro
