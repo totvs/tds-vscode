@@ -32,9 +32,9 @@ Foi implementando opções de exportação em arquivos nos formatos [CSV\*](http
 
 ## Correções
 
-### titulo (link para chamado)
+### Erro formatação Classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
 
-Descrição.
+Corrigido o tratamento de continuação de linhas (;).
 
 # Versão [1.3.15]
 
