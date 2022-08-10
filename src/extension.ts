@@ -77,6 +77,7 @@ import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import { commandShowBuildTableResult } from "./compile/buildResult";
 import { ServerItem } from "./serverItem";
 import serverProvider from "./serverItemProvider";
+import { registerWorkspace } from "./workspace";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -677,11 +678,8 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-  context.subscriptions.push(
-    workspace.onDidChangeConfiguration(() => {
-      updateStatusBarItems();
-    })
-  );
+  //Eventos e outros associados a vscode.workspace
+  registerWorkspace(context);
 
   //Capturador de logs.
   registerLog(context);
@@ -730,10 +728,6 @@ export function activate(context: ExtensionContext) {
       return createNewProtheusServer(serverName, port, address, secure, buildVersion, environment, username);
     },
   };
-
-  vscode.workspace.onDidChangeConfiguration(() => {
-    syncSettings();
-  });
 
   window.showInformationMessage('"TDS-VSCode" is ready.');
 

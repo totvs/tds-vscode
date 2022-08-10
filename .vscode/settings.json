@@ -13,4 +13,6 @@
 		}
 	],
 	"totvsLanguageServer.welcomePage": false,
+	"eslint.enable": false,
+	"prettier.enable": false
 }

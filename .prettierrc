@@ -1,5 +1,6 @@
 {
   "tabWidth": 2,
   "useTabs": false,
-  "single-quotes": true
+  "single-quotes": true,
+  "requirePragma": true
 }

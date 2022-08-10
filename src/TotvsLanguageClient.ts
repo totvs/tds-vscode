@@ -59,7 +59,7 @@ export function getLanguageClient(
         if (
           !clientConfig ||
           JSON.stringify(clientConfig[key]) !==
-            JSON.stringify(clientConfig[key])
+          JSON.stringify(clientConfig[key])
         ) {
           const kReload = localize(
             "tds.webview.totvsLanguegeClient.reload",
@@ -188,6 +188,7 @@ export function getLanguageClient(
       provideOnTypeFormattingEdits: provideOnTypeFormatting,
       provideDocumentFormattingEdits: provideDocumentFormattingEdits,
       provideDocumentRangeFormattingEdits: provideDocumentRangeFormattingEdits,
+
     },
     // initializationFailedHandler: (e) => {
     // 	console.log(e);
