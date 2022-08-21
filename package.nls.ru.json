@@ -62,6 +62,8 @@
 	"tds.package.reconnect": "Переподключить",
 	"tds.package.serverSelection": "Выбрать сервер",
 	"tds.package.toggleSaveLocation": "Переключить место сохранения server.json",
+	"tds.package.toggleUsageInfo": "Переключить индикацию использования",
+	"tds.package.detailUsageInfo": "Просмотр сведений о телеметрии",
 	"tds.package.rename": "Переименовать",
 	"tds.package.disconnect": "Отключить соединение",
 	"tds.package.selectenv": "Выбор",

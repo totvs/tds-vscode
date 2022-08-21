@@ -5,8 +5,9 @@ import { updateStatusBarItems } from "./statusBar";
 export function registerWorkspace(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.workspace.onDidChangeConfiguration(() => {
-			syncSettings();
-			updateStatusBarItems();
+			syncSettings().then(() => {
+				updateStatusBarItems();
+			});
 		}),
 		// vscode.workspace.onDidChangeWorkspaceFolders((event: vscode.WorkspaceFoldersChangeEvent) => {
 		// 	console.dir(event);
@@ -21,6 +22,19 @@ export function registerWorkspace(context: vscode.ExtensionContext) {
 		// 	console.dir(event);
 		// })
 	);
+
+	// Send $advpl/textDocumentDidView. Always send a notification - this will
+	// result in some extra work, but it shouldn't be a problem in practice.
+	// TODO: O LS não faz nada. Desativado por enquanto.
+	// (() => {
+	//   window.onDidChangeVisibleTextEditors((visible) => {
+	//     for (let editor of visible) {
+	//       languageClient.sendNotification("$advpl/textDocumentDidView", {
+	//         textDocumentUri: editor.document.uri.toString(),
+	//       });
+	//     }
+	//   });
+	// })();
 
 	// const fsw = vscode.workspace.createFileSystemWatcher("**");
 	// context.subscriptions.push(fsw);

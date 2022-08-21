@@ -1,0 +1,27 @@
+{
+	"folders": [
+		{
+			"path": ".\\advpl",
+			"name": "AdvPL"
+		},
+		{
+			"path": ".\\logix",
+			"name": "4GL"
+		},
+		{
+			"path": ".\\fw",
+			"name": "FrameWork"
+		}
+	],
+	"settings": {
+		"totvsLanguageServer.editor.linter": true,
+		"totvsLanguageServer.welcomePage": false,
+		"totvsLanguageServer.launch.args": [
+			"--log-file=totvsls.log",
+			"--record=totvsls",
+			"--wait-for-attach=20000"
+		],
+		"totvsLanguageServer.askCompileResult": false,
+		"totvsLanguageServer.usageInfoConfig": true
+	}
+}

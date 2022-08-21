@@ -14,8 +14,7 @@ import { TotvsConfigurationTdsReplayProvider } from "./TotvsConfigurationTdsRepl
 import Utils, { groupBy, MESSAGETYPE } from "../utils";
 import { CreateTDSReplayTimeLineWebView } from "./tdsreplay/TDSReplayTimeLineCreator";
 
-import { getLanguageClient } from "../TotvsLanguageClient";
-import { LanguageClient } from "vscode-languageclient";
+import { LanguageClient } from "vscode-languageclient/node";
 import { TotvsConfigurationWebProvider } from "./TotvsConfigurationWebProvider";
 
 import * as nls from "vscode-nls";

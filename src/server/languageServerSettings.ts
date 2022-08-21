@@ -1,6 +1,5 @@
 import { languageClient } from "../extension";
 import * as vscode from "vscode";
-import * as nls from "vscode-nls";
 import Utils from "../utils";
 
 export function toggleAutocompleteBehavior() {
@@ -17,50 +16,50 @@ export function toggleAutocompleteBehavior() {
   config.update("editor.toggle.autocomplete", behavior);
 }
 
-export function syncSettings() {
+export function syncSettings(): Promise<any> {
   if (!languageClient.isReady) {
-    return;
+    return Promise.resolve();
   }
 
   let config = vscode.workspace.getConfiguration("totvsLanguageServer");
 
-  let fsencoding = config.get("filesystem.encoding");
-  changeSettings({
-    changeSettingInfo: {
-      scope: "advpls",
-      key: "fsencoding",
-      value: fsencoding,
-    },
+  const settings: any[] = [];
+
+  settings.push({
+    scope: "advpls",
+    key: "fsencoding",
+    value: config.get("filesystem.encoding"),
   });
 
-  let behavior = config.get("editor.toggle.autocomplete");
-  changeSettings({
-    changeSettingInfo: {
-      scope: "advpls",
-      key: "autocomplete",
-      value: behavior,
-    },
+  settings.push({
+    scope: "advpls",
+    key: "autocomplete",
+    value: config.get("editor.toggle.autocomplete"),
   });
 
-  let notificationlevel = config.get("editor.show.notification");
-  changeSettings({
-    changeSettingInfo: {
-      scope: "advpls",
-      key: "notificationlevel",
-      value: notificationlevel,
-    },
+  settings.push({
+    scope: "advpls",
+    key: "notificationlevel",
+    value: config.get("editor.show.notification")
   });
 
-  let linter = config.get("editor.linter");
-  changeSettings({
-    changeSettingInfo: {
-      scope: "advpls",
-      key: "linter",
-      value: linter ? "enabled" : "disabled",
-    },
+  settings.push({
+    scope: "advpls",
+    key: "linter",
+    value: config.get("editor.linter") ? "enabled" : "disabled",
+  });
+
+  settings.push({
+    scope: "server",
+    key: "usageInfo",
+    value: Utils.isUsageInfoConfig() ? "enabled" : "disabled",
+  });
+
+  return languageClient.sendRequest("$totvsserver/changeSettingList", {
+    changeSettingInfo: settings
   });
 }
 
 export function changeSettings(jsonData: any) {
-  languageClient.sendRequest("$totvsserver/changeSetting", jsonData);
+  return languageClient.sendRequest("$totvsserver/changeSetting", jsonData);
 }

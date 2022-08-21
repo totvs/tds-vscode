@@ -62,6 +62,8 @@
   "tds.package.reconnect": "Reconnect",
   "tds.package.serverSelection": "Select Server",
   "tds.package.toggleSaveLocation": "Toggle servers.json save location",
+  "tds.package.toggleUsageInfo": "Toggle indication of use",
+  "tds.package.detailUsageInfo": "View telemetry details",
   "tds.package.rename": "Rename",
   "tds.package.disconnect": "Disconnect",
   "tds.package.selectenv": "Select",

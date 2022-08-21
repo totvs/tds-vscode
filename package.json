@@ -82,7 +82,7 @@
     "@totvs/tds-ls": "^1.2.46",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.63.1",
-    "@vscode/debugadapter": "^1.51.1",
+    "@vscode/debugadapter": "^1.57.0",
     "cheerio": "1.0.0-rc.10",
     "core-js": "^3.19.3",
     "del": "^6.0.0",
@@ -97,8 +97,8 @@
     "template-literal": "^1.0.4",
     "tmp": "^0.2.1",
     "typescript": "^4.5.2",
-    "vscode-languageclient": "^6.1.4",
-    "vscode-nls": "^5.0.0",
+    "vscode-languageclient": "^8.0.2",
+    "vscode-nls": "^5.1.0",
     "windows-1251": "^1.1.0",
     "windows-1252": "^1.1.0"
   },
@@ -139,15 +139,15 @@
     "typescript": "^4.5.4",
     "typescript-eslint": "^0.0.1-alpha.0",
     "vsce": "^2.9.2",
-    "vscode-extension-tester": "^4.2.5",
-    "vscode-nls-dev": "^4.0.0",
-    "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1",
+    "vscode-extension-tester": "^4.4.1",
+    "vscode-nls-dev": "^4.0.1",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
     "webpack-stream": "^7.0.0"
   },
   "main": "./out/extension",
   "activationEvents": [
-    "onStartupFinished" 
+    "onStartupFinished"
   ],
   "contributes": {
     "iconThemes": [
@@ -489,6 +489,11 @@
           "default": false,
           "description": "%tds.package.workspaceServerConfig%"
         },
+        "totvsLanguageServer.usageInfoConfig": {
+          "type": "boolean",
+          "default": true,
+          "description": "%tds.package.toggleUsageInfo%"
+        },
         "totvsLanguageServer.editor.linter": {
           "scope": "window",
           "type": "boolean",
@@ -672,6 +677,16 @@
       {
         "command": "totvs-developer-studio.toggleSaveLocation",
         "title": "%tds.package.toggleSaveLocation%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.toggleUsageInfo",
+        "title": "%tds.package.toggleUsageInfo%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.detailUsageInfo",
+        "title": "%tds.package.detailUsageInfo%",
         "category": "TOTVS"
       },
       {

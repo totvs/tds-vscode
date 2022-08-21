@@ -73,13 +73,7 @@ export interface Authorization {
 }
 
 export function compileKeyPage(context: vscode.ExtensionContext) {
-  if (!isLSInitialized) {
-    languageClient.onReady().then(async () => {
-      initializePage(context);
-    });
-  } else {
-    initializePage(context);
-  }
+  initializePage(context);
 }
 
 function initializePage(context: vscode.ExtensionContext) {

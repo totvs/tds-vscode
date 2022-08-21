@@ -1,5 +1,5 @@
 import { Event, EventEmitter, Location, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
-import { LanguageClient } from 'vscode-languageclient/lib/main';
+import { LanguageClient } from 'vscode-languageclient/node';
 import { parseUri } from './extension';
 
 

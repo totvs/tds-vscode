@@ -4,13 +4,13 @@
 "use strict";
 import * as vscode from "vscode";
 import * as nls from "vscode-nls";
+import * as fse from "fs-extra";
 
 const localize = nls.config({
   locale: vscode.env.language,
   bundleFormat: nls.BundleFormat.standalone,
 })();
 
-import * as ls from "vscode-languageserver-types";
 import {
   window,
   commands,
@@ -18,10 +18,8 @@ import {
   workspace,
   ExtensionContext,
   Uri,
-  ProgressLocation,
   StatusBarAlignment,
 } from "vscode";
-import { jumpToUriAtPosition } from "./vscodeUtils";
 import Utils from "./utils";
 import { createNewProtheusServer, ServersExplorer } from "./serversView";
 import { compileKeyPage } from "./compileKey/compileKey";
@@ -53,10 +51,9 @@ import {
   toggleTableSync,
 } from "./debug/debugConfigs";
 import {
-  syncSettings,
   toggleAutocompleteBehavior,
 } from "./server/languageServerSettings";
-import { createTimeLineWebView, DebugEvent } from "./debug/debugEvents";
+import { createTimeLineWebView } from "./debug/debugEvents";
 import { patchValidates } from "./patch/patchValidate";
 import {
   documentFormatting,
@@ -67,7 +64,7 @@ import { registerAdvplOutline, register4glOutline } from "./outline";
 import { registerDebug, _debugEvent } from "./debug";
 import { openMonitorView } from "./monitor/monitorLoader";
 import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
-import { initStatusBarItems, updateStatusBarItems } from "./statusBar";
+import { initStatusBarItems } from "./statusBar";
 import { PatchEditorProvider } from "./patch/inspect/patchEditor";
 import { openTemplateApplyView } from "./template/apply/formApplyTemplate";
 import { rpoTokenInputBox, saveRpoTokenString } from "./rpoToken";
@@ -78,6 +75,7 @@ import { commandShowBuildTableResult } from "./compile/buildResult";
 import { ServerItem } from "./serverItem";
 import serverProvider from "./serverItemProvider";
 import { registerWorkspace } from "./workspace";
+import { sendTelemetry } from "./protocolMessages";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -105,89 +103,86 @@ export function activate(context: ExtensionContext) {
   if (extensions.getExtension("TOTVS.tds-vscode")) {
     //Load Language Client and start Language Server
     languageClient = getLanguageClient(context);
-    context.subscriptions.push(languageClient.start());
-
-    let p2c = languageClient.protocol2CodeConverter;
 
     //createTimeLineDataProvider();
 
-    //General commands.
-    (() => {
-      commands.registerCommand("advpl.freshenIndex", () => {
-        languageClient.sendNotification("$advpl/freshenIndex");
-      });
-      function makeRefHandler(methodName, autoGotoIfSingle = false) {
-        return () => {
-          let position;
-          let uri;
-          if (window.activeTextEditor !== undefined) {
-            position = window.activeTextEditor.selection.active;
-            uri = window.activeTextEditor.document.uri;
-          }
-          languageClient
-            .sendRequest(methodName, {
-              textDocument: {
-                uri: uri.toString(),
-              },
-              position: position,
-            })
-            .then((locations: Array<ls.Location>) => {
-              if (autoGotoIfSingle && locations.length === 1) {
-                let location = p2c.asLocation(locations[0]);
-                commands.executeCommand(
-                  "advpl.goto",
-                  location.uri,
-                  location.range.start,
-                  []
-                );
-              } else {
-                commands.executeCommand(
-                  "editor.action.showReferences",
-                  uri,
-                  position,
-                  locations.map(p2c.asLocation)
-                );
-              }
-            });
-        };
-      }
-      commands.registerCommand("advpl.vars", makeRefHandler("$advpl/vars"));
-      commands.registerCommand(
-        "advpl.callers",
-        makeRefHandler("$advpl/callers")
-      );
-      commands.registerCommand(
-        "advpl.base",
-        makeRefHandler("$advpl/base", true)
-      );
-    })();
+    // //General commands.
+    // (() => {
+    //   commands.registerCommand("advpl.freshenIndex", () => {
+    //     languageClient.sendNotification("$advpl/freshenIndex");
+    //   });
+    //   function makeRefHandler(methodName, autoGotoIfSingle = false) {
+    //     return () => {
+    //       let position;
+    //       let uri;
+    //       if (window.activeTextEditor !== undefined) {
+    //         position = window.activeTextEditor.selection.active;
+    //         uri = window.activeTextEditor.document.uri;
+    //       }
+    //       languageClient
+    //         .sendRequest(methodName, {
+    //           textDocument: {
+    //             uri: uri.toString(),
+    //           },
+    //           position: position,
+    //         })
+    //         .then((locations: Array<ls.Location>) => {
+    //           if (autoGotoIfSingle && locations.length === 1) {
+    //             let location = p2c.asLocation(locations[0]);
+    //             commands.executeCommand(
+    //               "advpl.goto",
+    //               location.uri,
+    //               location.range.start,
+    //               []
+    //             );
+    //           } else {
+    //             commands.executeCommand(
+    //               "editor.action.showReferences",
+    //               uri,
+    //               position,
+    //               locations.map(p2c.asLocation)
+    //             );
+    //           }
+    //         });
+    //     };
+    //   }
+    //   commands.registerCommand("advpl.vars", makeRefHandler("$advpl/vars"));
+    //   commands.registerCommand(
+    //     "advpl.callers",
+    //     makeRefHandler("$advpl/callers")
+    //   );
+    //   commands.registerCommand(
+    //     "advpl.base",
+    //     makeRefHandler("$advpl/base", true)
+    //   );
+    // })();
 
     // The language client does not correctly deserialize arguments, so we have a
     // wrapper command that does it for us.
-    (() => {
-      commands.registerCommand(
-        "advpl.showReferences",
-        (uri: string, position: ls.Position, locations: ls.Location[]) => {
-          commands.executeCommand(
-            "editor.action.showReferences",
-            p2c.asUri(uri),
-            p2c.asPosition(position),
-            locations.map(p2c.asLocation)
-          );
-        }
-      );
+    // (() => {
+    //   commands.registerCommand(
+    //     "advpl.showReferences",
+    //     (uri: string, position: ls.Position, locations: ls.Location[]) => {
+    //       commands.executeCommand(
+    //         "editor.action.showReferences",
+    //         p2c.asUri(uri),
+    //         p2c.asPosition(position),
+    //         locations.map(p2c.asLocation)
+    //       );
+    //     }
+    //   );
 
-      commands.registerCommand(
-        "advpl.goto",
-        (uri: string, position: ls.Position, locations: ls.Location[]) => {
-          jumpToUriAtPosition(
-            p2c.asUri(uri),
-            p2c.asPosition(position),
-            false /*preserveFocus*/
-          );
-        }
-      );
-    })();
+    //   commands.registerCommand(
+    //     "advpl.goto",
+    //     (uri: string, position: ls.Position, locations: ls.Location[]) => {
+    //       jumpToUriAtPosition(
+    //         p2c.asUri(uri),
+    //         p2c.asPosition(position),
+    //         false /*preserveFocus*/
+    //       );
+    //     }
+    //   );
+    // })();
 
     // Commands for configuring LS behavior and other components
     (() => {
@@ -214,107 +209,49 @@ export function activate(context: ExtensionContext) {
           "advpl is loading project metadata (ie, compile_commands.json)"
         );
         statusIcon.show();
-        languageClient.onReady().then(() => {
-          languageClient.onNotification("$totvsserver/progress", (args) => {
-            let indexRequestCount = args.indexRequestCount || 0;
-            let doIdMapCount = args.doIdMapCount || 0;
-            let loadPreviousIndexCount = args.loadPreviousIndexCount || 0;
-            let onIdMappedCount = args.onIdMappedCount || 0;
-            let onIndexedCount = args.onIndexedCount || 0;
-            let activeThreads = args.activeThreads || 0;
-            let total =
-              indexRequestCount +
-              doIdMapCount +
-              loadPreviousIndexCount +
-              onIdMappedCount +
-              onIndexedCount +
-              activeThreads;
+        languageClient.onNotification("$totvsserver/progress", (args) => {
+          let indexRequestCount = args.indexRequestCount || 0;
+          let doIdMapCount = args.doIdMapCount || 0;
+          let loadPreviousIndexCount = args.loadPreviousIndexCount || 0;
+          let onIdMappedCount = args.onIdMappedCount || 0;
+          let onIndexedCount = args.onIndexedCount || 0;
+          let activeThreads = args.activeThreads || 0;
+          let total =
+            indexRequestCount +
+            doIdMapCount +
+            loadPreviousIndexCount +
+            onIdMappedCount +
+            onIndexedCount +
+            activeThreads;
 
-            let detailedJobString =
-              `indexRequest: ${indexRequestCount}, ` +
-              `doIdMap: ${doIdMapCount}, ` +
-              `loadPreviousIndex: ${loadPreviousIndexCount}, ` +
-              `onIdMapped: ${onIdMappedCount}, ` +
-              `onIndexed: ${onIndexedCount}, ` +
-              `activeThreads: ${activeThreads}`;
+          let detailedJobString =
+            `indexRequest: ${indexRequestCount}, ` +
+            `doIdMap: ${doIdMapCount}, ` +
+            `loadPreviousIndex: ${loadPreviousIndexCount}, ` +
+            `onIdMapped: ${onIdMappedCount}, ` +
+            `onIndexed: ${onIndexedCount}, ` +
+            `activeThreads: ${activeThreads}`;
 
-            if (total === 0 && statusStyle === "short") {
-              statusIcon.text = localize(
-                "tds.vscode.statusIcon.text2",
-                "advpl: idle"
-              );
-            } else {
-              statusIcon.text = `advpl: ${indexRequestCount}|${total} ${localize(
-                "tds.vscode.statusIcon.text3",
-                "jobs"
-              )}`;
-              if (statusStyle === "detailed") {
-                statusIcon.text += ` (${detailedJobString})`;
-              }
+          if (total === 0 && statusStyle === "short") {
+            statusIcon.text = localize(
+              "tds.vscode.statusIcon.text2",
+              "advpl: idle"
+            );
+          } else {
+            statusIcon.text = `advpl: ${indexRequestCount}|${total} ${localize(
+              "tds.vscode.statusIcon.text3",
+              "jobs"
+            )}`;
+            if (statusStyle === "detailed") {
+              statusIcon.text += ` (${detailedJobString})`;
             }
-            statusIcon.tooltip =
-              localize("tds.vscode.statusIcon.tooltip2", "advpl jobs: ") +
-              detailedJobString;
-          });
-
-          syncSettings();
+          }
+          statusIcon.tooltip =
+            localize("tds.vscode.statusIcon.tooltip2", "advpl jobs: ") +
+            detailedJobString;
         });
       }
     })();
-
-    // QueryDb busy
-    (() => {
-      // Notifications have a minimum time to live. If the status changes multiple
-      // times within that interface, we will show multiple notifications. Try to
-      // avoid that.
-      const kGracePeriodMs = 250;
-
-      let timeout: any;
-      let resolvePromise: any;
-      languageClient.onReady().then(() => {
-        languageClient.onNotification("$totvsserver/queryDbStatus", (args) => {
-          let isActive: boolean = args.isActive;
-          if (isActive) {
-            if (timeout) {
-              clearTimeout(timeout);
-              timeout = undefined;
-            } else {
-              window.withProgress(
-                {
-                  location: ProgressLocation.Notification,
-                  title: "querydb is busy",
-                },
-                (p) => {
-                  p.report({ increment: 100 });
-                  return new Promise((resolve, reject) => {
-                    resolvePromise = resolve;
-                  });
-                }
-              );
-            }
-          } else if (resolvePromise) {
-            timeout = setTimeout(() => {
-              resolvePromise();
-              resolvePromise = undefined;
-              timeout = undefined;
-            }, kGracePeriodMs);
-          }
-        });
-      });
-    })();
-
-    // Send $advpl/textDocumentDidView. Always send a notification - this will
-    // result in some extra work, but it shouldn't be a problem in practice.
-    // TODO: O LS não faz nada. Desativado por enquanto.
-    // (() => {
-    //   window.onDidChangeVisibleTextEditors((visible) => {
-    //     for (let editor of visible) {
-    //       languageClient.sendNotification("$advpl/textDocumentDidView", {
-    //         textDocumentUri: editor.document.uri.toString(),
-    //       });
-    //     }
-    //   });
-    // })();
   }
 
   // Ação para pegar o nome da função e argumentos para  iniciar o debug
@@ -636,6 +573,16 @@ export function activate(context: ExtensionContext) {
     )
   );
 
+  //Troca da indicação da atividade.
+  context.subscriptions.push(
+    commands.registerCommand(
+      "totvs-developer-studio.toggleUsageInfo",
+      () => {
+        Utils.toggleUsageInfoConfig();
+      }
+    )
+  );
+
   //Compile key
   commands.registerCommand("totvs-developer-studio.compile.key", () =>
     compileKeyPage(context)
@@ -743,7 +690,8 @@ function instanceOfUriArray(object: any): object is Uri[] {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {
+export async function deactivate() {
+  languageClient.stop();
   Utils.deleteSelectServer();
 }
 
@@ -758,46 +706,33 @@ function registerLog(context: vscode.ExtensionContext) {
   commands.registerCommand("totvs-developer-studio.toggleTableSync", () =>
     toggleTableSync()
   );
-}
 
-/*
-function verifyEncoding() {
-  // check if there is an open folder
-  if (vscode.workspace.workspaceFolders === undefined) {
-    vscode.window.showErrorMessage("No folder opened.");
-    return;
+  commands.registerCommand("totvs-developer-studio.detailUsageInfo", () => {
+    sendTelemetry().then((value: any) => {
+      const rootPath: string = vscode.workspace.workspaceFolders[0].uri.fsPath;
+      const file: string = `${rootPath}/telemetry.txt`;
+      const hf: number = fse.openSync(file, "w");
+
+      Object.keys(value).forEach((key: string) => {
+        fse.writeSync(hf, `${key}\n`);
+        fse.writeSync(hf, `===================================`);
+
+        Object.keys(value[key]).forEach((key2: string) => {
+          fse.writeSync(hf, `\n| ${key2}`);
+          const values: any = value[key][key2];
+          values.forEach((element: {}) => {
+            fse.writeSync(hf, `     | ${element["key"]} | ${element["value"]}\n`);
+          });
+          //fse.writeSync(hf, `\n\n`);
+        });
+      });
+
+      fse.closeSync(hf);
+      vscode.window.showTextDocument(vscode.Uri.file(file));
+    })
   }
-
-  const textNoAsk = localize('tds.vscode.noAskAgain', "Don't ask again");
-  const textNo = localize('tds.vscode.no', 'No');
-  const textYes = localize('tds.vscode.yes', 'Yes');
-  const textQuestion = localize('tds.vscode.question.change.encoding', 'Do you want to change the encoding to default TOTVS (Windows-1252)?'); // Deseja alterar o encoding para o padrão TOTVS (CP1252)?
-
-  let questionAgain = true;
-
-  const configADVPL = vscode.workspace.getConfiguration('totvsLanguageServer');
-  const questionEncodingConfig = configADVPL.get("askEncodingChange");
-  const defaultConfig = vscode.workspace.getConfiguration();
-  const defaultEncoding = defaultConfig.get("files.encoding");
-  if (defaultEncoding !== "windows1252" && questionEncodingConfig !== false) {
-    window.showWarningMessage(textQuestion, textYes, textNo, textNoAsk).then(clicked => {
-      if (clicked === textYes) {
-        const jsonEncoding = {
-          "files.encoding": "windows1252"
-        };
-        defaultConfig.update("[advpl]", jsonEncoding);
-        defaultConfig.update("[4gl]", jsonEncoding);
-        questionAgain = false;
-      } else if (clicked === textNo) {
-        questionAgain = true;
-      } else if (clicked === textNoAsk) {
-        questionAgain = false;
-      }
-      configADVPL.update("askEncodingChange", questionAgain);
-    });
-  }
+  );
 }
-*/
 
 let firstTime = true;
 
