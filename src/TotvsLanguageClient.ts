@@ -6,9 +6,12 @@ import {
   ProvideOnTypeFormattingEditsSignature,
   ProvideDocumentFormattingEditsSignature,
   ProvideDocumentRangeFormattingEditsSignature,
+  Trace,
+  WorkspaceFolder,
 } from "vscode-languageclient";
 
 import {
+  SettingMonitor,
   ServerOptions
 } from "vscode-languageclient/node";
 
@@ -19,8 +22,6 @@ import * as nls from "vscode-nls";
 import { syncSettings } from "./server/languageServerSettings";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import Utils from "./utils";
-import { updateBusyBarItem, updateStatusBarItems } from "./statusBar";
-;
 
 let localize = nls.loadMessageBundle();
 
@@ -121,31 +122,54 @@ export function getLanguageClient(
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
     documentSelector: [{ language: "advpl" }, { language: "4gl" }],
-    // synchronize: {
-    // 	configurationSection: 'cquery',
-    // 	fileEvents: workspace.createFileSystemWatcher('**/.cc')
-    // },
     diagnosticCollectionName: "AdvPL",
+    //outputChannel?: OutputChannel;
     outputChannelName: "TOTVS LS",
+    //traceOutputChannel?: OutputChannel;
     revealOutputChannelOn: RevealOutputChannelOn.Error,
+    //stdioEncoding?: string;
     initializationOptions: clientConfig,
-    middleware: {
-      // provideCodeLenses: provideCodeLens,
-      //provideOnTypeFormattingEdits: provideOnTypeFormatting,
-      //provideDocumentFormattingEdits: provideDocumentFormattingEdits,
-      //provideDocumentRangeFormattingEdits: provideDocumentRangeFormattingEdits,
-    },
     // initializationFailedHandler: (e) => {
     // 	console.log(e);
     // 	return false;
     // },
+    //progressOnInitialization?: boolean;
     //errorHandler: new CqueryErrorHandler(workspace.getConfiguration('cquery'))
+    // middleware: {
+    //   // provideCodeLenses: provideCodeLens,
+    //   //provideOnTypeFormattingEdits: provideOnTypeFormatting,
+    //   //provideDocumentFormattingEdits: provideDocumentFormattingEdits,
+    //   //provideDocumentRangeFormattingEdits: provideDocumentRangeFormattingEdits,
+    // },
+    // uriConverters?: {
+    //   code2Protocol: c2p.URIConverter;
+    //   protocol2Code: p2c.URIConverter;
+    // };
+    markdown: {
+      isTrusted: true,
+      supportHtml: false
+    },
+    //$ConfigurationOptions = {
+    //synchronize?: SynchronizeOptions;
+    //workspaceFolder?: VWorkspaceFolder;
+    diagnosticPullOptions: {
+      onChange: true,
+      onSave: true,
+      //filter
+      onTabs: false,
+      //match:
+    },
+    //notebookDocumentOptions
   };
 
   let languageClient = new TotvsLanguageClientA(serverOptions, clientOptions);
 
+  languageClient.registerProposedFeatures();
+  languageClient.setTrace(Trace.Compact);
+
   languageClient.start()
-    .then(async () => {
+    .then(async (disposable: any) => {
+      context.subscriptions.push(disposable);
       isLSInitialized = true;
       languageClient.ready = true;
 

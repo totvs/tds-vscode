@@ -1,4 +1,3 @@
-import { sendShutdown, sendExit } from './protocolMessages';
 import {
   LanguageClient,
   LanguageClientOptions,

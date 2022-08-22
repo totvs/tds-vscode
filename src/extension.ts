@@ -100,159 +100,117 @@ export function activate(context: ExtensionContext) {
     commands.registerCommand("tds.getDAP", () => getDAP())
   );
 
-  if (extensions.getExtension("TOTVS.tds-vscode")) {
-    //Load Language Client and start Language Server
-    languageClient = getLanguageClient(context);
+  //Load Language Client and start Language Server
+  languageClient = getLanguageClient(context);
 
-    //createTimeLineDataProvider();
+  //createTimeLineDataProvider();
 
-    // //General commands.
-    // (() => {
-    //   commands.registerCommand("advpl.freshenIndex", () => {
-    //     languageClient.sendNotification("$advpl/freshenIndex");
-    //   });
-    //   function makeRefHandler(methodName, autoGotoIfSingle = false) {
-    //     return () => {
-    //       let position;
-    //       let uri;
-    //       if (window.activeTextEditor !== undefined) {
-    //         position = window.activeTextEditor.selection.active;
-    //         uri = window.activeTextEditor.document.uri;
-    //       }
-    //       languageClient
-    //         .sendRequest(methodName, {
-    //           textDocument: {
-    //             uri: uri.toString(),
-    //           },
-    //           position: position,
-    //         })
-    //         .then((locations: Array<ls.Location>) => {
-    //           if (autoGotoIfSingle && locations.length === 1) {
-    //             let location = p2c.asLocation(locations[0]);
-    //             commands.executeCommand(
-    //               "advpl.goto",
-    //               location.uri,
-    //               location.range.start,
-    //               []
-    //             );
-    //           } else {
-    //             commands.executeCommand(
-    //               "editor.action.showReferences",
-    //               uri,
-    //               position,
-    //               locations.map(p2c.asLocation)
-    //             );
-    //           }
-    //         });
-    //     };
-    //   }
-    //   commands.registerCommand("advpl.vars", makeRefHandler("$advpl/vars"));
-    //   commands.registerCommand(
-    //     "advpl.callers",
-    //     makeRefHandler("$advpl/callers")
-    //   );
-    //   commands.registerCommand(
-    //     "advpl.base",
-    //     makeRefHandler("$advpl/base", true)
-    //   );
-    // })();
+  // //General commands.
+  // (() => {
+  //   commands.registerCommand("advpl.freshenIndex", () => {
+  //     languageClient.sendNotification("$advpl/freshenIndex");
+  //   });
+  //   function makeRefHandler(methodName, autoGotoIfSingle = false) {
+  //     return () => {
+  //       let position;
+  //       let uri;
+  //       if (window.activeTextEditor !== undefined) {
+  //         position = window.activeTextEditor.selection.active;
+  //         uri = window.activeTextEditor.document.uri;
+  //       }
+  //       languageClient
+  //         .sendRequest(methodName, {
+  //           textDocument: {
+  //             uri: uri.toString(),
+  //           },
+  //           position: position,
+  //         })
+  //         .then((locations: Array<ls.Location>) => {
+  //           if (autoGotoIfSingle && locations.length === 1) {
+  //             let location = p2c.asLocation(locations[0]);
+  //             commands.executeCommand(
+  //               "advpl.goto",
+  //               location.uri,
+  //               location.range.start,
+  //               []
+  //             );
+  //           } else {
+  //             commands.executeCommand(
+  //               "editor.action.showReferences",
+  //               uri,
+  //               position,
+  //               locations.map(p2c.asLocation)
+  //             );
+  //           }
+  //         });
+  //     };
+  //   }
+  //   commands.registerCommand("advpl.vars", makeRefHandler("$advpl/vars"));
+  //   commands.registerCommand(
+  //     "advpl.callers",
+  //     makeRefHandler("$advpl/callers")
+  //   );
+  //   commands.registerCommand(
+  //     "advpl.base",
+  //     makeRefHandler("$advpl/base", true)
+  //   );
+  // })();
 
-    // The language client does not correctly deserialize arguments, so we have a
-    // wrapper command that does it for us.
-    // (() => {
-    //   commands.registerCommand(
-    //     "advpl.showReferences",
-    //     (uri: string, position: ls.Position, locations: ls.Location[]) => {
-    //       commands.executeCommand(
-    //         "editor.action.showReferences",
-    //         p2c.asUri(uri),
-    //         p2c.asPosition(position),
-    //         locations.map(p2c.asLocation)
-    //       );
-    //     }
-    //   );
+  // The language client does not correctly deserialize arguments, so we have a
+  // wrapper command that does it for us.
+  // (() => {
+  //   commands.registerCommand(
+  //     "advpl.showReferences",
+  //     (uri: string, position: ls.Position, locations: ls.Location[]) => {
+  //       commands.executeCommand(
+  //         "editor.action.showReferences",
+  //         p2c.asUri(uri),
+  //         p2c.asPosition(position),
+  //         locations.map(p2c.asLocation)
+  //       );
+  //     }
+  //   );
 
-    //   commands.registerCommand(
-    //     "advpl.goto",
-    //     (uri: string, position: ls.Position, locations: ls.Location[]) => {
-    //       jumpToUriAtPosition(
-    //         p2c.asUri(uri),
-    //         p2c.asPosition(position),
-    //         false /*preserveFocus*/
-    //       );
-    //     }
-    //   );
-    // })();
+  //   commands.registerCommand(
+  //     "advpl.goto",
+  //     (uri: string, position: ls.Position, locations: ls.Location[]) => {
+  //       jumpToUriAtPosition(
+  //         p2c.asUri(uri),
+  //         p2c.asPosition(position),
+  //         false /*preserveFocus*/
+  //       );
+  //     }
+  //   );
+  // })();
 
-    // Commands for configuring LS behavior and other components
-    (() => {
-      commands.registerCommand(
-        "totvs-developer-studio.toggle.autocomplete.behavior",
-        () => {
-          toggleAutocompleteBehavior();
-        }
-      );
-    })();
-
-    // Progress
-    (() => {
-      let config = workspace.getConfiguration(LANG_ADVPL_ID);
-      let statusStyle = config.get("misc.status");
-      if (statusStyle === "short" || statusStyle === "detailed") {
-        let statusIcon = window.createStatusBarItem(StatusBarAlignment.Right);
-        statusIcon.text = localize(
-          "tds.vscode.statusIcon.text1",
-          "advpl: loading"
-        );
-        statusIcon.tooltip = localize(
-          "tds.vscode.statusIcon.tooltip1",
-          "advpl is loading project metadata (ie, compile_commands.json)"
-        );
-        statusIcon.show();
-        languageClient.onNotification("$totvsserver/progress", (args) => {
-          let indexRequestCount = args.indexRequestCount || 0;
-          let doIdMapCount = args.doIdMapCount || 0;
-          let loadPreviousIndexCount = args.loadPreviousIndexCount || 0;
-          let onIdMappedCount = args.onIdMappedCount || 0;
-          let onIndexedCount = args.onIndexedCount || 0;
-          let activeThreads = args.activeThreads || 0;
-          let total =
-            indexRequestCount +
-            doIdMapCount +
-            loadPreviousIndexCount +
-            onIdMappedCount +
-            onIndexedCount +
-            activeThreads;
-
-          let detailedJobString =
-            `indexRequest: ${indexRequestCount}, ` +
-            `doIdMap: ${doIdMapCount}, ` +
-            `loadPreviousIndex: ${loadPreviousIndexCount}, ` +
-            `onIdMapped: ${onIdMappedCount}, ` +
-            `onIndexed: ${onIndexedCount}, ` +
-            `activeThreads: ${activeThreads}`;
-
-          if (total === 0 && statusStyle === "short") {
-            statusIcon.text = localize(
-              "tds.vscode.statusIcon.text2",
-              "advpl: idle"
-            );
-          } else {
-            statusIcon.text = `advpl: ${indexRequestCount}|${total} ${localize(
-              "tds.vscode.statusIcon.text3",
-              "jobs"
-            )}`;
-            if (statusStyle === "detailed") {
-              statusIcon.text += ` (${detailedJobString})`;
-            }
-          }
-          statusIcon.tooltip =
-            localize("tds.vscode.statusIcon.tooltip2", "advpl jobs: ") +
-            detailedJobString;
-        });
+  // Commands for configuring LS behavior and other components
+  (() => {
+    commands.registerCommand(
+      "totvs-developer-studio.toggle.autocomplete.behavior",
+      () => {
+        toggleAutocompleteBehavior();
       }
-    })();
-  }
+    );
+  })();
+
+  // Progress
+  (() => {
+    let config = workspace.getConfiguration(LANG_ADVPL_ID);
+    let statusStyle = config.get("misc.status");
+    if (statusStyle === "short" || statusStyle === "detailed") {
+      let statusIcon = window.createStatusBarItem(StatusBarAlignment.Right);
+      statusIcon.text = localize(
+        "tds.vscode.statusIcon.text1",
+        "advpl: loading"
+      );
+      statusIcon.tooltip = localize(
+        "tds.vscode.statusIcon.tooltip1",
+        "advpl is loading project metadata (ie, compile_commands.json)"
+      );
+      statusIcon.show();
+    }
+  })();
+
 
   // Ação para pegar o nome da função e argumentos para  iniciar o debug
   context.subscriptions.push(
