@@ -1,6 +1,7 @@
 import { languageClient } from "../extension";
 import * as vscode from "vscode";
 import Utils from "../utils";
+import { DidChangeConfigurationNotification } from "vscode-languageclient";
 
 export function toggleAutocompleteBehavior() {
   let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration(
@@ -55,11 +56,14 @@ export function syncSettings(): Promise<any> {
     value: Utils.isUsageInfoConfig() ? "enabled" : "disabled",
   });
 
-  return languageClient.sendRequest("$totvsserver/changeSettingList", {
-    changeSettingInfo: settings
-  });
+  return languageClient.sendNotification(DidChangeConfigurationNotification.type, { settings: settings });
+
+  // return languageClient.sendRequest("$totvsserver/changeSettingList", {
+  //   changeSettingInfo: settings
+  // });
 }
 
 export function changeSettings(jsonData: any) {
+
   return languageClient.sendRequest("$totvsserver/changeSetting", jsonData);
 }

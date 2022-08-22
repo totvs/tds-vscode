@@ -8,6 +8,7 @@ import {
   ProvideDocumentRangeFormattingEditsSignature,
   Trace,
   WorkspaceFolder,
+  DidChangeConfigurationNotification,
 } from "vscode-languageclient";
 
 import {
@@ -22,6 +23,7 @@ import * as nls from "vscode-nls";
 import { syncSettings } from "./server/languageServerSettings";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import Utils from "./utils";
+import { languageClient } from './extension';
 
 let localize = nls.loadMessageBundle();
 
@@ -136,6 +138,13 @@ export function getLanguageClient(
     //progressOnInitialization?: boolean;
     //errorHandler: new CqueryErrorHandler(workspace.getConfiguration('cquery'))
     // middleware: {
+    //   workspace: {
+    //     didChangeConfiguration: () => {
+    //       return languageClient.sendNotification(DidChangeConfigurationNotification.type, { settings: [] });
+    //     }
+    //   },
+    // },
+    // middleware: {
     //   // provideCodeLenses: provideCodeLens,
     //   //provideOnTypeFormattingEdits: provideOnTypeFormatting,
     //   //provideDocumentFormattingEdits: provideDocumentFormattingEdits,
@@ -165,11 +174,11 @@ export function getLanguageClient(
   let languageClient = new TotvsLanguageClientA(serverOptions, clientOptions);
 
   languageClient.registerProposedFeatures();
-  languageClient.setTrace(Trace.Compact);
 
   languageClient.start()
     .then(async (disposable: any) => {
       context.subscriptions.push(disposable);
+      console.log(languageClient.initializeResult);
       isLSInitialized = true;
       languageClient.ready = true;
 

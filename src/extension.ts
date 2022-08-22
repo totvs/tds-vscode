@@ -648,9 +648,9 @@ function instanceOfUriArray(object: any): object is Uri[] {
 }
 
 // this method is called when your extension is deactivated
-export async function deactivate() {
-  languageClient.stop();
+export function deactivate(): Thenable<void> | undefined {
   Utils.deleteSelectServer();
+  return languageClient.stop(5000);
 }
 
 function registerLog(context: vscode.ExtensionContext) {
