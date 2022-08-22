@@ -51,7 +51,7 @@ export default function ChangeCodePageDialog(props: ChangeCodePageDialogProps) {
               onChange={handleChange}
             >
               <FormControlLabel value="0_CP1252" control={<Radio />} label="CP-1252" />
-              <FormControlLabel value="1_CP1252" control={<Radio />} label="CP-1251" />
+              <FormControlLabel value="1_CP1251" control={<Radio />} label="CP-1251" />
               <FormControlLabel value="2_UTF-8" control={<Radio />} label="UTF-8" />
             </RadioGroup>
           </FormControl>

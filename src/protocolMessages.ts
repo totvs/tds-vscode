@@ -16,7 +16,7 @@ interface AuthenticationNode {
 }
 
 import { languageClient } from "./extension";
-import { ResponseError } from "vscode-languageclient";
+import { DidChangeConfigurationNotification, ResponseError } from "vscode-languageclient";
 import { CompileResult } from "./compile/CompileResult";
 import { _debugEvent } from "./debug";
 import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
@@ -816,3 +816,6 @@ export function sendTelemetry(): Thenable<any> {
   });
 }
 
+export function sendDidChangeConfiguration(settings: any): Thenable<any> {
+  return languageClient.sendNotification(DidChangeConfigurationNotification.type, { settings: settings });
+}

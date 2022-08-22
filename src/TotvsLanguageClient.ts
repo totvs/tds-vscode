@@ -20,16 +20,13 @@ import { statSync, chmodSync } from "fs";
 import { reconnectLastServer } from "./serversView";
 
 import * as nls from "vscode-nls";
-import { syncSettings } from "./server/languageServerSettings";
+import { getLanguageServerSettings } from "./server/languageServerSettings";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import Utils from "./utils";
-import { languageClient } from './extension';
+import { updateUsageBarItem } from './statusBar';
+import { IUsageStatusData, IUsageStatusInfo } from './protocolMessages';
 
 let localize = nls.loadMessageBundle();
-
-export let sessionKey: string;
-
-export let isLSInitialized = false;
 
 export function getLanguageClient(
   context: vscode.ExtensionContext
@@ -178,15 +175,14 @@ export function getLanguageClient(
   languageClient.start()
     .then(async (disposable: any) => {
       context.subscriptions.push(disposable);
-      console.log(languageClient.initializeResult);
-      isLSInitialized = true;
+      languageClient.onNotification("$totvsserver/usageStatus", (params: IUsageStatusInfo) => {
+        updateUsageBarItem(params);
+      });
       languageClient.ready = true;
 
       const configADVPL = vscode.workspace.getConfiguration(
         "totvsLanguageServer"
       ); //transformar em configuracao de workspace
-
-      syncSettings();
 
       let isReconnectLastServer = configADVPL.get("reconnectLastServer");
       if (isReconnectLastServer) {
@@ -225,21 +221,12 @@ function getClientConfig(context: vscode.ExtensionContext) {
 
   let configMapping = [["launchArgs", "launch.args"]];
   let clientConfig = {};
-  let config = vscode.workspace.getConfiguration("totvsLanguageServer");
+  let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("totvsLanguageServer");
 
   for (let prop of configMapping) {
     let value = config.get(prop[1]);
 
     if (value !== undefined && value !== null) {
-      //if(prop[1] === 'launch.command') {
-      //	if (process.platform ==== "win32"){
-      //		value = dir + "/node_modules/@totvs/tds-ls/bin/windows/" + value + ".exe";
-      //	}
-      //	else if (process.platform ==== "linux"){
-      //		value = dir + "/node_modules/@totvs/tds-ls/bin/linux/" + value;
-      //		chmodSync(value.toString(),'755');
-      //	}
-      //}
       let subprops = prop[0].split(".");
       let subconfig = clientConfig;
       for (let subprop of subprops.slice(0, subprops.length - 1)) {
@@ -252,14 +239,7 @@ function getClientConfig(context: vscode.ExtensionContext) {
     }
   }
 
-  // Provide a default cache directory if it is not present. Insert next to
-  // the project since if the user has an SSD they most likely have their
-  // source files on the SSD as well.
-  //let cacheDir = '${workspaceFolder}/.vscode/cquery_cached_index/';
-
-  //Processo de cache desabilitado até que seja corretamente implementado pelo LS
-  //let cacheDir = '${workspaceFolder}/.vscode/totvs_cached_index/';
-  //clientConfig["cacheDirectory"] = resolveVariables(cacheDir);
+  clientConfig["setting"] = getLanguageServerSettings();
 
   return clientConfig;
 }

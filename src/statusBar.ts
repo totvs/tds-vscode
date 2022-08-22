@@ -18,9 +18,9 @@ let permissionStatusBarItem: vscode.StatusBarItem;
 let settingsStatusBarItem: vscode.StatusBarItem;
 let rpoTokenStatusBarItem: vscode.StatusBarItem;
 let clearRpoTokenStatusBarItem: vscode.StatusBarItem;
-let busyBarItem: vscode.StatusBarItem;
+let usageBarItem: vscode.StatusBarItem;
 
-const priorityBusyBarItem: number = 104;
+const priorityusageBarItem: number = 104;
 const priorityTotvsStatusBarItem: number = 103;
 const priorityRpoTokenStatusBarItem: number = 102;
 const priorityPermissionStatusBarItem: number = 101;
@@ -33,7 +33,7 @@ export function initStatusBarItems(context: vscode.ExtensionContext) {
   initPermissionStatusBarItem(context);
   initRpoTokenStatusBarItem(context);
   initSettingsBarItem(context);
-  initBusyBarItem(context);
+  initusageBarItem(context);
 }
 
 export function updateStatusBarItems() {
@@ -325,18 +325,18 @@ function buildTooltipRpoToken(
   return result;
 }
 
-function initBusyBarItem(context: vscode.ExtensionContext): void {
-  busyBarItem = vscode.window.createStatusBarItem(
+function initusageBarItem(context: vscode.ExtensionContext): void {
+  usageBarItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Left,
-    priorityBusyBarItem
+    priorityusageBarItem
   );
-  busyBarItem.command = "totvs-developer-studio.toggleUsageInfo";
+  usageBarItem.command = "totvs-developer-studio.toggleUsageInfo";
 
-  context.subscriptions.push(busyBarItem);
-  updateBusyBarItem();
+  context.subscriptions.push(usageBarItem);
+  updateUsageBarItem();
 }
 
-export function updateBusyBarItem(args?: IUsageStatusInfo): void {
+export function updateUsageBarItem(args?: IUsageStatusInfo): void {
   let text: string = `$(lightbulb)`;
   let tooltip: string | vscode.MarkdownString = "Wait initilize...";
 
@@ -346,12 +346,12 @@ export function updateBusyBarItem(args?: IUsageStatusInfo): void {
     text = args.activate ? `$(lightbulb-autofix) (${args["counter"]}x)` : `$(light-bulb)`;
     tooltip = buildTooltipBusyInfo(args);
 
-    busyBarItem.text = text;
-    busyBarItem.tooltip = tooltip;
+    usageBarItem.text = text;
+    usageBarItem.tooltip = tooltip;
 
   }
 
-  busyBarItem.show();
+  usageBarItem.show();
 }
 
 function buildTooltipBusyInfo(args: IUsageStatusInfo): vscode.MarkdownString {

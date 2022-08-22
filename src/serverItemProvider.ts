@@ -1,7 +1,5 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
-//import Utils from "./utils";
-import { changeSettings } from "./server/languageServerSettings";
 import { EnvSection, ServerItem, ServerType } from "./serverItem";
 import Utils from "./utils";
 
@@ -83,15 +81,6 @@ class ServerItemProvider
             includes += includeItem + ";";
           });
         }
-      }
-      if (includes) {
-        changeSettings({
-          changeSettingInfo: {
-            scope: "advpls",
-            key: "includes",
-            value: includes,
-          },
-        });
       }
 
       this.refresh();

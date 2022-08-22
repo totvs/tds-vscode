@@ -1,7 +1,23 @@
-import { languageClient } from "../extension";
 import * as vscode from "vscode";
 import Utils from "../utils";
-import { DidChangeConfigurationNotification } from "vscode-languageclient";
+
+const oldSettings: {} = {};
+
+function isNewSettings(scope: string, key: string, value: any): boolean {
+  let result: boolean = true;
+
+  if (oldSettings[scope]) {
+    if (oldSettings[scope][key]) {
+      result = oldSettings[scope][key] !== value;
+    }
+  } else {
+    oldSettings[scope] = {}
+  }
+
+  oldSettings[scope][key] = value;
+
+  return result;
+}
 
 export function toggleAutocompleteBehavior() {
   let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration(
@@ -17,53 +33,62 @@ export function toggleAutocompleteBehavior() {
   config.update("editor.toggle.autocomplete", behavior);
 }
 
-export function syncSettings(): Promise<any> {
-  if (!languageClient.isReady) {
-    return Promise.resolve();
-  }
-
+export function getLanguageServerSettings(): any[] {
   let config = vscode.workspace.getConfiguration("totvsLanguageServer");
 
   const settings: any[] = [];
 
-  settings.push({
-    scope: "advpls",
-    key: "fsencoding",
-    value: config.get("filesystem.encoding"),
-  });
+  if (isNewSettings("advpls", "fsencoding", config.get("filesystem.encoding"))) {
+    settings.push({
+      scope: "advpls",
+      key: "fsencoding",
+      value: config.get("filesystem.encoding"),
+    });
+  }
 
-  settings.push({
-    scope: "advpls",
-    key: "autocomplete",
-    value: config.get("editor.toggle.autocomplete"),
-  });
+  if (isNewSettings("advpls", "autocomplete", config.get("editor.toggle.autocomplete"))) {
+    settings.push({
+      scope: "advpls",
+      key: "autocomplete",
+      value: config.get("editor.toggle.autocomplete"),
+    });
+  }
 
-  settings.push({
-    scope: "advpls",
-    key: "notificationlevel",
-    value: config.get("editor.show.notification")
-  });
+  if (isNewSettings("advpls", "notificationlevel", config.get("editor.show.notification"))) {
+    settings.push({
+      scope: "advpls",
+      key: "notificationlevel",
+      value: config.get("editor.show.notification")
+    });
+  }
 
-  settings.push({
-    scope: "advpls",
-    key: "linter",
-    value: config.get("editor.linter") ? "enabled" : "disabled",
-  });
+  const linter: string = config.get("linter") ? "enabled" : "disabled";
+  if (isNewSettings("advpls", "notificationlevel", linter)) {
+    settings.push({
+      scope: "advpls",
+      key: "linter",
+      value: linter
+    });
+  }
 
-  settings.push({
-    scope: "server",
-    key: "usageInfo",
-    value: Utils.isUsageInfoConfig() ? "enabled" : "disabled",
-  });
+  const usageInfo: string = Utils.isUsageInfoConfig() ? "enabled" : "disabled";
+  if (isNewSettings("server", "usageInfo", usageInfo)) {
+    settings.push({
+      scope: "server",
+      key: "usageInfo",
+      value: usageInfo
+    });
+  }
 
-  return languageClient.sendNotification(DidChangeConfigurationNotification.type, { settings: settings });
+  const includes: string = (Utils.getIncludes(true, Utils.getCurrentServer()) || []).join(";");
+  if (isNewSettings("advpls", "includes", includes)) {
+    settings.push({
+      scope: "advpls",
+      key: "includes",
+      value: includes
+    });
+  }
 
-  // return languageClient.sendRequest("$totvsserver/changeSettingList", {
-  //   changeSettingInfo: settings
-  // });
+  return settings;
 }
 
-export function changeSettings(jsonData: any) {
-
-  return languageClient.sendRequest("$totvsserver/changeSetting", jsonData);
-}

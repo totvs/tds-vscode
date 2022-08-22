@@ -500,6 +500,12 @@
           "default": true,
           "description": "%tds.package.editor.linter%"
         },
+        "totvsLanguageServer.editor.linter.includes": {
+          "scope": "window",
+          "type": "string",
+          "default": "",
+          "description": "(Don't edit. It can be overwritten.)"
+        },
         "totvsLanguageServer.filesystem.encoding": {
           "scope": "window",
           "type": "string",

@@ -3,7 +3,6 @@ import * as path from "path";
 import * as nls from "vscode-nls";
 import * as fs from "fs";
 import { languageClient } from "../extension";
-import { isLSInitialized } from "../TotvsLanguageClient";
 import Utils from "../utils";
 import { ResponseError } from "vscode-languageclient";
 

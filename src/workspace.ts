@@ -1,12 +1,13 @@
 import * as vscode from "vscode";
-import { syncSettings } from "./server/languageServerSettings";
+import { sendDidChangeConfiguration } from "./protocolMessages";
+import { getLanguageServerSettings } from "./server/languageServerSettings";
 import { updateStatusBarItems } from "./statusBar";
 
 export function registerWorkspace(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.workspace.onDidChangeConfiguration((e: vscode.ConfigurationChangeEvent) => {
 			if (e.affectsConfiguration("totvsLanguageServer")) {
-				syncSettings().then(() => {
+				sendDidChangeConfiguration(getLanguageServerSettings()).then(() => {
 					updateStatusBarItems();
 				});
 			}

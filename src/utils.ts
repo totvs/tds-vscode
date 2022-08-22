@@ -6,7 +6,6 @@ import * as ini from "ini";
 import * as nls from "vscode-nls";
 import { languageClient } from "./extension";
 import { Authorization, CompileKey } from "./compileKey/compileKey";
-import { changeSettings } from "./server/languageServerSettings";
 import { IRpoToken } from "./rpoToken";
 import stripJsonComments from "strip-json-comments";
 import {
@@ -885,20 +884,16 @@ export default class Utils {
   /**
    *Salva uma nova configuracao de include.
    */
-  static saveIncludePath(includePath) {
+  static saveIncludePath(includePath: string[]) {
     const servers = Utils.getServersConfig();
 
     servers.includes = includePath;
 
     Utils.persistServersInfo(servers);
 
-    let includes = "";
-    includePath.forEach((includeItem) => {
-      includes += includeItem + ";";
-    });
-    changeSettings({
-      changeSettingInfo: { scope: "advpls", key: "includes", value: includes },
-    });
+    const includes: string = includePath.join(";");
+    const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("totvsLanguageServer");
+    config.update("editor.linter.includes", includes); //dispara onDidChangeConfiguration
   }
 
   /**
