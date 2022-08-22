@@ -4,10 +4,12 @@ import { updateStatusBarItems } from "./statusBar";
 
 export function registerWorkspace(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
-		vscode.workspace.onDidChangeConfiguration(() => {
-			syncSettings().then(() => {
-				updateStatusBarItems();
-			});
+		vscode.workspace.onDidChangeConfiguration((e: vscode.ConfigurationChangeEvent) => {
+			if (e.affectsConfiguration("totvsLanguageServer")) {
+				syncSettings().then(() => {
+					updateStatusBarItems();
+				});
+			}
 		}),
 		// vscode.workspace.onDidChangeWorkspaceFolders((event: vscode.WorkspaceFoldersChangeEvent) => {
 		// 	console.dir(event);
