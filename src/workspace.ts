@@ -7,9 +7,12 @@ export function registerWorkspace(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.workspace.onDidChangeConfiguration((e: vscode.ConfigurationChangeEvent) => {
 			if (e.affectsConfiguration("totvsLanguageServer")) {
-				sendDidChangeConfiguration(getLanguageServerSettings()).then(() => {
-					updateStatusBarItems();
-				});
+				const settings: any[] = getLanguageServerSettings();
+				if (settings.length > 0) {
+					sendDidChangeConfiguration(settings).then(() => {
+						updateStatusBarItems();
+					});
+				}
 			}
 		}),
 		// vscode.workspace.onDidChangeWorkspaceFolders((event: vscode.WorkspaceFoldersChangeEvent) => {
