@@ -10,6 +10,7 @@ import {
   WorkspaceFolder,
   DidChangeConfigurationNotification,
   SynchronizeOptions,
+  InitializationFailedHandler,
 } from "vscode-languageclient";
 
 import {
@@ -23,7 +24,6 @@ import { reconnectLastServer } from "./serversView";
 import * as nls from "vscode-nls";
 import { getLanguageServerSettings } from "./server/languageServerSettings";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
-import Utils from "./utils";
 import { updateUsageBarItem } from './statusBar';
 import { IUsageStatusData, IUsageStatusInfo } from './protocolMessages';
 
@@ -108,9 +108,10 @@ export function getLanguageClient(
     revealOutputChannelOn: RevealOutputChannelOn.Error,
     //stdioEncoding?: string;
     initializationOptions: clientConfig,
-    // initializationFailedHandler: (e) => {
-    // 	console.log(e);
-    // 	return false;
+    // initializationFailedHandler: (e: any) => {
+    //   vscode.window.showErrorMessage(e);
+
+    //   return false;
     // },
     //progressOnInitialization?: boolean;
     //errorHandler: new CqueryErrorHandler(workspace.getConfiguration('cquery'))

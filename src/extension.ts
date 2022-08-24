@@ -600,10 +600,6 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(register4glFormatting());
   context.subscriptions.push(register4glOutline());
 
-  //Verifica questões de encoding
-  //Não é mais necessários. Ver "package.json", sessão "configurationDefaults".
-  //verifyEncoding();
-
   // Register custom editor for patch files
   context.subscriptions.push(PatchEditorProvider.register(context));
 
