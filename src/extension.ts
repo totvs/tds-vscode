@@ -14,7 +14,6 @@ const localize = nls.config({
 import {
   window,
   commands,
-  extensions,
   workspace,
   ExtensionContext,
   Uri,

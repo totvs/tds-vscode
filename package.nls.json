@@ -137,5 +137,5 @@
   "tds.package.rpoToken": "Input Compilation Token",
   "tds.package.clearRpoToken": "Clear Compilation Token",
   "tds.package.filesystem.encoding": "Set file system encoding",
-  "tds.package.editor.linter": "Enable Linter"
+  "tds.package.editor.linter": "Linter behavior"
 }

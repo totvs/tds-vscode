@@ -494,10 +494,20 @@
           "default": true,
           "description": "%tds.package.toggleUsageInfo%"
         },
-        "totvsLanguageServer.editor.linter": {
+        "totvsLanguageServer.editor.linter.behavior": {
           "scope": "window",
-          "type": "boolean",
-          "default": true,
+          "type": "string",
+          "enum": [
+            "enable",
+            "enableOnlyOpenFiles",
+            "disable"
+          ],
+          "enumDescriptions": [
+            "Applies to all files on the workspace.",
+            "Applies only to files being edited.",
+            "Disable the process."
+          ],
+          "default": "enableOnlyOpenFiles",
           "description": "%tds.package.editor.linter%"
         },
         "totvsLanguageServer.editor.linter.includes": {
@@ -528,7 +538,7 @@
                 "ignore"
               ],
               "enumDescriptions": [
-                "Em maiúsculuas",
+                "Em maiúsculas",
                 "Em minúsculas",
                 "Manter original"
               ],

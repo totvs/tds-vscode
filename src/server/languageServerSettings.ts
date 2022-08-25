@@ -71,19 +71,19 @@ export function getLanguageServerSettings(): any[] {
     });
   }
 
-  const linter: string = config.get("editor.linter") ? "enabled" : "disabled";
-  if (isNewSettings("advpls", "linter", linter)) {
+  const linter = config.get("editor.linter.behavior");
+  if (isNewSettings("linter", "behavior", linter)) {
     settings.push({
-      scope: "advpls",
-      key: "linter",
+      scope: "linter",
+      key: "behavior",
       value: linter
     });
   }
 
   const includes: string = (Utils.getIncludes(true, Utils.getCurrentServer()) || []).join(";");
-  if (isNewSettings("advpls", "includes", includes)) {
+  if (isNewSettings("linter", "includes", includes)) {
     settings.push({
-      scope: "advpls",
+      scope: "linter",
       key: "includes",
       value: includes
     });

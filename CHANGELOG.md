@@ -4,6 +4,15 @@
 
 ## Melhorias
 
+### O comportamento do processo de _linter_ foi modificado.
+
+Este passou a ter três comportamentos:
+- Habilitado somente para arquivos em edição (padrão)
+- Aplica o processo em todos os fontes da área de trabalho
+- Desabilitado
+
+Veja detalhes de configuação em [TDS: Linter](docs/linter.md).
+
 ### Verificação do tamanho de linhas em fontes
 
 Introduzido verificação do tamanho da linha de código AdvPL, para evitar mensagem "_File is empty or corrupted_" no _linter_ e na compilação. [DTCLIENT01-3533](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3533)
