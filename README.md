@@ -34,6 +34,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 - [Monitoramento](docs/monitor.md) de servidores
 - [RPO Seguro](docs/rpo.md#Token_de_RPO)
 - [TDS-Cli](https://github.com/totvs/tds-ls/blob/master/TDS-CLi.md) compilação por linha de comando. Da mesma forma que o Eclipse, essa extensão do VSCode possui uma ferramenta de compilação em linha de comando.
+- [Navegação em código](docs/navigator.md)
 
 ## SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO
 
