@@ -98,6 +98,8 @@ export function getLanguageClient(
   //  decorationOpts
   //);
 
+  let languageClient: any;
+
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
     documentSelector: [{ language: "advpl" }, { language: "4gl" }],
@@ -115,13 +117,12 @@ export function getLanguageClient(
     // },
     //progressOnInitialization?: boolean;
     //errorHandler: new CqueryErrorHandler(workspace.getConfiguration('cquery'))
-    // middleware: {
-    //   workspace: {
-    //     didChangeConfiguration: () => {
-    //       return languageClient.sendNotification(DidChangeConfigurationNotification.type, { settings: [] });
-    //     }
-    //   },
-    // },
+    middleware: {
+      // workspace: {
+      //   didChangeConfiguration: () => {
+      //     return languageClient.sendNotification(DidChangeConfigurationNotification.type, { settings: [] });
+      //   }
+    },
     // middleware: {
     //   // provideCodeLenses: provideCodeLens,
     //   //provideOnTypeFormattingEdits: provideOnTypeFormatting,
@@ -146,17 +147,17 @@ export function getLanguageClient(
       onTabs: false,
       //match:
     },
-    //notebookDocumentOptions
+    ///notebookDocumentOptions: false
   };
 
-  let languageClient = new TotvsLanguageClientA(serverOptions, clientOptions);
-
+  languageClient = new TotvsLanguageClientA(serverOptions, clientOptions);
   languageClient.registerProposedFeatures();
 
   languageClient.start()
     .then(async (disposable: any) => {
       context.subscriptions.push(disposable);
 
+      languageClient.outputChannel.append("**** languageClient.initializeResult");
       languageClient.outputChannel.append(JSON.stringify(languageClient.initializeResult, undefined, "  "));
 
       languageClient.onNotification("$totvsserver/usageStatus", (params: IUsageStatusInfo) => {
