@@ -21,7 +21,7 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 ## [Ir para definição](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition)
 
-**Acionamento:** ``Ctrl+Click`` ou ``Ctrl+Click+Alt`` ou ``F12`` sobre uma chamada de função ou variável.
+**Acionamento:** ``Ctrl+Click`` ou ``Ctrl+Alt+Click`` ou ``F12`` sobre uma chamada de função ou variável.
 
 ## [Procurar/ir para referência](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition)
 
@@ -31,6 +31,6 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 **Acionamento:** ``Alt+F12`` sobre uma chamada de função ou variável.
 
-## [Procurar Pedido de Referências](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_references)
+## [Passagem de mouse (_hover_)](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#show-hovers)
 
-**Acionamento:** ``Shift+F12`` sobre o item a ser procurado.
+**Acionamento:** Passe o mouse sobre o item a ser visualizado e aguarde alguns instantes.
