@@ -22,7 +22,7 @@ options {
 start: NEWLINE* (protheusDoc)*;
 
 protheusDoc:
-	(CL_PROTHEUS_DOC_START | PROTHEUS_DOC_START) PDOC_ID? PDOC_NEWLINE+ (
+	(PROTHEUS_DOC_START) PDOC_ID? PDOC_NEWLINE+ (
 		proDocBaseDescription
 	)? (proDocElementsOrErrors)* PROTHEUS_DOC_END;
 

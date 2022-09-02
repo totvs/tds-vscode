@@ -42,6 +42,20 @@ COLON: ':';
 
 PIPE: '|';
 
+STATIC: S T A T I C;
+
+MAIN: M A I N;
+
+USER: U S E R;
+
+WEB: W E B;
+
+TEMPLATE: T E M P L A T E;
+
+HTML: H T M L;
+
+PROJECT: P R O J E C T;
+
 ID: ( LETTER | '_') ( LETTER | DIGIT | '_')*;
 
 NUMBER: DIGIT+ ( DOT DIGIT+)?;

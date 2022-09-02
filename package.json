@@ -72,7 +72,11 @@
     "pre-release": "gulp prerelease",
     "---MISC---": "",
     "all-contributors:generate": "all-contributors generate",
-    "all-contributors:check": "all-contributors check"
+    "all-contributors:check": "all-contributors check",
+    "---PDOC---": "",
+    "antlr": "docker run -v \"W:\\ws_tds_vscode\\tds-vscode\\syntaxes\":/work antlr/antlr4 -o build -Dlanguage=Cpp",
+    "make": "npm run antlr -- pdocLexer.g4 && npm run antlr -- pdocGrammar.g4",
+    "dist": "move \"W:\\ws_tds_vscode\\tds-vscode\\syntaxes\\build\\*.*\" \"W:\\ls_da\\LS_DA-2775\\totvsls\\totvsls\\pdocParser\""
   },
   "dependencies": {
     "@material-ui/core": "4.12.3",
