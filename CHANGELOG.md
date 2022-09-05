@@ -1,8 +1,48 @@
 # Changelog
 
+# Versão [1.3.next]
+
+## Melhorias
+
+### Verificação do tamanho de linhas em fontes
+
+Introduzido verificação do tamanho da linha de código AdvPL, para evitar mensagem "_File is empty or corrupted_" no _linter_ e na compilação. [DTCLIENT01-3533](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3533)
+
+No _appServer_, o limite é de 4k durante o pré-processamento (geração _.ppo_) do fonte e para evitar alguma ocorrência, foram definidos os limites (antes do pré-processamento):
+
+- 1K, como aviso
+- 2K, como erro
+
+### Exportação da lista de objetos (Harpia)
+
+Foi implementando opções de exportação em arquivos nos formatos [CSV\*](https://fileinfo.com/extension/csv) (_Comma Separated values File_) e [PDF](https://fileinfo.com/extension/pdf) (_Portable Document Format File_) [#967](https://github.com/totvs/tds-vscode/issues/967).
+
+| \* O arquivo CSV usa como separador o sinal ponto-e-virgúla entre valores e estes estão entre aspas.
+
+![Inspector tools bar](./doc/images/inspetor-tool-bar-harpia.png)
+
+|     | Descrição                                       |
+| --- | ----------------------------------------------- |
+| D   | Barra de ferramentas (na ordem de apresentação) |
+|     | Exportação CSV ou PDF                           |
+|     | Agrupamemnto                                    |
+|     | Filtro por coluna                               |
+|     | Exportação em texto de largura fixa             |
+|     | _Reset_ de configuração                         |
+
+## Correções
+
+### Erro formatação Classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
+
+Corrigido o tratamento de continuação de linhas (;).
+
 # Versão [1.3.15]
 
 ## Melhorias
+
+### Revisão da documentação
+
+Revisão geral da documentação da extensão.
 
 ### Implementado opção de rastreamento de comunicação do VS-Code com servidor de depuração
 

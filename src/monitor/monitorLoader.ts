@@ -23,7 +23,6 @@ import { languageClient } from "../extension";
 import serverProvider from "../serverItemProvider";
 import * as nls from "vscode-nls";
 import { ServerItem } from "../serverItem";
-import { LaptopWindows } from "@material-ui/icons";
 
 const localize = nls.loadMessageBundle();
 const DEFAULT_SPEED = 30;
@@ -530,7 +529,7 @@ export class MonitorLoader {
     }
 
     environmentConfig.forEach((environment) => {
-      envEncodeList.push({ environment: environment.name, encoding: Number.parseInt(environment.encoding.chatAt(0)) });
+      envEncodeList.push({ environment: environment.name, encoding: Number.parseInt(environment.encoding.charAt(0)) });
     })
 
     vscode.window.setStatusBarMessage(
@@ -590,15 +589,13 @@ export class MonitorLoader {
       } else {
         vscode.window.setStatusBarMessage(
           "$(gear~spin)" +
-            localize(
-              "REQUESTING_DATA_FROM_SERVER",
-              "Requesting data from the server [{0}]",
-              this.monitorServer.name
-            ),
+          localize(
+            "REQUESTING_DATA_FROM_SERVER",
+            "Requesting data from the server [{0}]",
+            this.monitorServer.name
+          ),
           sendGetUsersRequest(this.monitorServer).then(
             (users: any) => {
-              console.log(">>>>> sendGetUsersRequest ok");
-
               if (users) {
                 let map = groupBy(users, (item: any) => {
                   return item.environment;
@@ -622,8 +619,6 @@ export class MonitorLoader {
                   )
                   : localize("THREADS_NONE", " (none thread)");
 
-                console.log(">>>>> sendGetUsersRequest MonitorPanelAction.UpdateUsers");
-
                 this._panel.webview.postMessage({
                   command: MonitorPanelAction.UpdateUsers,
                   data: {
@@ -635,7 +630,7 @@ export class MonitorLoader {
                     environments: environments
                   },
                 }).then((value: boolean) => {
-                  console.log(`>>>>>>> postMessge ${value}`);
+                  //console.log(`>>>>>>> postMessge ${value}`);
                 }, (reason: any) => {
                   console.log(reason);
                 });

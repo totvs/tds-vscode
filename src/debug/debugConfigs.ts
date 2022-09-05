@@ -232,14 +232,14 @@ function extractArgs(value: string): string[] {
                 element.length > 1 &&
                 ((element.startsWith('"') && element.endsWith('"')) ||
                   (element.startsWith("'") && element.endsWith("'")))
-              ) {
+                ) {
                 element = element.substring(1, element.length - 1);
               }
               args.push(element);
             }
           });
         } else {
-          splited = value.split(/,/);
+          splited = value.split(",");
           splited.forEach((element) => {
             element = element.trim();
             if (element.length == 0) {
@@ -248,7 +248,7 @@ function extractArgs(value: string): string[] {
               element.length > 1 &&
               ((element.startsWith('"') && element.endsWith('"')) ||
                 (element.startsWith("'") && element.endsWith("'")))
-            ) {
+              ) {
               element = element.substring(1, element.length - 1);
             }
             args.push(element);

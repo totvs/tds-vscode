@@ -130,7 +130,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
     const programArgs: ProgramArgs = extractProgramArgs(
       debugConfiguration.program
     );
-    if (debugConfiguration.programArguments) {
+    if (debugConfiguration.programArguments && debugConfiguration.programArguments.length > 0) {
       programArgs.args = debugConfiguration.programArguments;
     }
 

@@ -513,7 +513,7 @@ export default function MonitorPanel(props: IMonitorPanel) {
     event.preventDefault();
 
     const environmentTarget: string = event.target["innerText"].toString().toLowerCase();
-    const environmentElement = environments.find((element: any) => element.name === environmentTarget );
+    const environmentElement = environments.find((element: any) => element.name.toLowerCase() === environmentTarget);
     if (environmentElement) {
       setOpenDialog({
         ...openDialog,

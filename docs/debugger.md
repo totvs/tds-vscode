@@ -7,33 +7,33 @@
 > - executor configurado
 
 > Recomendações
+> 
+> - **NUNCA** faça depuração em ambiente de produção
+> - Não use _appServers_ compartilhado com terceiros, mesmo que ambientes distintos
+> - Prefira sempre um ambiente local
+> - **Clientes TCloud** : Os ambientes que estão no _TCloud_ em produção são _bloqueados_ para depuração.
+>   Promova o _RPO_ para `DEV` e use esse ambiente, e se necessário, promova-o de volta para produção.
+>   Para detalhes, entre em contato com o suporte do _TCloud_.
 
-- **NUNCA** faça depuração em ambiente de produção
-- Não use _appServers_ compartilhado com terceiros, mesmo que ambientes diistintos
-- Prefira sempre um ambiente local
-- **Clientes TCloud** : Os ambientes que estão no _TCloud_ em produção são _bloqueados_ para depuração.
-  Promova o _RPO_ para `DEV` e use esse ambiente, e se necessário, promova-o de volta para produção.
-  Para detalhes, entre em contato com o suporte do _TCloud_.
+## _Por quê não depurar em "produção"?_
 
-> _Por quê não depurar em "produção"?_
+O processo de depuração, é composto de várias partes que se comunicam entre si e muitas vezes, aguardando ações dos usuários (continua, próxima passo, ...).
 
-> O processo de depuração, é composto de várias partes que se comunicam entre si e muitas vezes, aguardando ações dos usuários (continua, próxima passo, ...).
+Quando estamos em uma depuração, pode ocorrer do VS-Code solicitar uma informação ao _appServer_ e este "congela" todas as _threads_ (conexões/usuário) para atender essa solicitação. Essa "congelada" pode levar até um ou mesmo dois segundos e isso acontece toda vez que o usuário que esta depurando, precisa tomar uma ação (continua, próximo passo...) e isso pode ser sentido por todos os usuários. Além disso o próprio usuário que esta depurando, vai receber informações de cada um dos usuários conectados, gerando uma troca constante de programas fontes ou informações irrelevantes naquele momento.
 
-> Quando estamos em uma depuração, pode ocorrer do VS-Code solicitar uma informação ao _appServer_ e este "congela" todas as _threads_ (conexões/usuário) para atender essa solicitação. Essa "congelada" pode levar até um ou mesmo dois segundos e isso acontece toda vez que o usuário que esta depurando, precisa tomar uma ação (continua, próximo passo...) e isso pode ser sentido por todos os usuários. Além disso o próprio usuário que esta depurando, vai receber informações de cada um dos usuários conectados, gerando uma troca constante de programas fontes ou informações irrelevantes naquele momento.
+O _appServer_ também envia para o VS-Code algumas informações, tais como, "olha estou nesse fonte e nessa linha" e pergunta "O quê quer que eu faça?". Nesse ponto, pode ser necessário o usuário que está depurando, responda com acionamento de uma ação, como por exemplo, "vá para a próxima instrução" ou "execute esta função até terminar". Enquanto o _appServer_ aguarda a resposta do VS-Code, TODAS as _threads_ ficam congeladas. E você foi no banheiro naquele momento. Dentro de alguns minutos terá um enxurrada de reclamações que o servidor travou.
 
-> O _appServer_ também envia para o VS-Code algumas informações, tais como, "olha estou nesse fonte e nessa linha" e pergunta "O quê quer que eu faça?". Nesse ponto, pode ser necessário o usuário que está depurando, responda com acionamento de uma ação, como por exemplo, "vá para a próxima instrução" ou "execute esta função até terminar". Enquanto o _appServer_ aguarda a resposta do VS-Code, TODAS as _threads_ ficam congeladas. E você foi no banheiro naquele momento. Dentro de alguns minutos terá um enxurrada de reclamações que o servidor travou.
+Isso pode acontecer se tiver um, dez, cem, mil, usuários. Imagina o problema. Cresce exponencialmente ao número de usuários.>
 
-> Isso pode acontecer se tiver um, dez, cem, mil, usuários. Imagina o problema. Cresce exponencialmente ao número de usuários.>
+Outra razão, é que devido ao processo de depuração do _appServer_, normalmente é necessário que o processo de depuração seja o primeiro a ser inicializados, pois somente as _threads_ iniciadas após eles que serão passíveis de depuração e para garantir isso, é comum encerrar na "força" todas as _threds_ no ar, principalmente se a depuração for em _jobs_, _schedullers_, _rest_, e outros do tipo.
 
-> Outra razão, é que devido ao processo de depuração do _appServer_, normalmente é necessário que o processo de depuração seja o primeiro a ser inicializados, pois somente as _threads_ iniciadas após eles que serão passíveis de depuração e para garantir isso, é comum encerrar na "força" todas as _threds_ no ar, principalmente se a depuração for em _jobs_, _schedullers_, _rest_, e outros do tipo.
-
-> Espero ter esclarecido porquê não deve usar ambiente "produção" em processos de depuração.
+Espero ter esclarecido porquê não deve usar ambiente "produção" em processos de depuração.
 
 ## Configuração de executores
 
 > Recomendamos a leitura [Debugging](https://code.visualstudio.com/docs/editor/debugging).
 
-> Por utilizar o Smartclient para iniciar o processo de depuração no Application Server é necessário que o Sistema Operacional onde o tds-vscode está sendo executado, esteja na lista de plataformas homologadas paro o Smartclient conforme [Sistemas operacionais homologados - Smartclient](https://tdn.totvs.com/display/tec/SmartClient+-+Sistemas+operacionais).
+Por utilizar o Smartclient para iniciar o processo de depuração no Application Server é necessário que o Sistema Operacional onde o tds-vscode está sendo executado, esteja na lista de plataformas homologadas paro o Smartclient conforme [Sistemas operacionais homologados - Smartclient](https://tdn.totvs.com/display/tec/SmartClient+-+Sistemas+operacionais).
 
 ### Criando um executor com assistente
 
@@ -58,10 +58,10 @@ A definição de executores encontra-se no arquivo `.vscode/launch.json` que, no
 
 ### TOTVS Language Debug (padrão)
 
-````JSON
+```JSON
 {
-	"version": "0.2.0",
-	"configurations": [
+  "version": "0.2.0",
+  "configurations": [
     {
     "type": "totvs_language_debug",
     "request": "launch",
@@ -76,12 +76,12 @@ A definição de executores encontra-se no arquivo `.vscode/launch.json` que, no
 }
 ```
 
-### TOTVS Language Web Debug
+### TOTVS Language Web Debug (HTML)
 
 ```JSON
 {
-	"version": "0.2.0",
-	"configurations": [
+  "version": "0.2.0",
+  "configurations": [
     {
       "type": "totvs_language_web_debug",
       "request": "launch",
@@ -94,7 +94,7 @@ A definição de executores encontra-se no arquivo `.vscode/launch.json` que, no
     }
   ]
 }
-````
+```
 
 No caso de efetuar depuração via `SmartClient Html`, indique qual o navegador web será utilizado, no arquivo `.\vscode\settings.json`.
 
@@ -145,7 +145,7 @@ Acione o atalho `CTRL + F5` para iniciar a execução e informe o nome da funç�
 
 Acione o atalho `F5` para iniciar a depuração e informe o nome da função/programa a ser executada, se solicitado.
 
-| Veja [Debuggimg Actions](https://code.visualstudio.com/docs/editor/debugging#_debug-actions) e [Variáveis de substituição](#variable).
+> Veja [Debuggimg Actions](https://code.visualstudio.com/docs/editor/debugging#_debug-actions) e [Variáveis de substituição](#variable).
 
 ![Start Debug](./gifs/StartDebug.gif)
 
@@ -158,7 +158,7 @@ Acione o atalho `F5` para iniciar a depuração e informe o nome da função/pro
 
 ### Usando Console de Depuração
 
-| Veja (Debug Console REPL)[https://code.visualstudio.com/docs/editor/debugging#_debug-console-repl]
+> Veja [Debug Console REPL](https://code.visualstudio.com/docs/editor/debugging#_debug-console-repl).
 
 ![Debug Console](./gifs/DebugConsole.gif)
 
@@ -178,13 +178,15 @@ Também é possível alterar essa opção durante o processo de depuração acio
 
 ![Debug Table Sync](./gifs/TableSync-DebugCommands.gif)
 
-### Edição de valores durante depuração
+## Depuração HTML (webapp)
 
-Quando o depurador estiver aguardando ação do usuário, pode-se mudar valores de variáveis efetuado-se um duplo-click sobre a mesma na visão _Variables_. Atente que não pode mudar o tipo (exceto nos tipos _undefined_ do Adv/PL) e nenhuma validação é efetuada, exceto de tipo.
+Ao iniciarmos uma depuração através de uma configuração 'totvs_language_web_debug' o processo é praticamente o mesmo de uma depuração normal.
 
-> ATENÇÃO: Ao usar expressões, tenha certeza que esta não causará operações indesejadas, como por exemplo, alterar valores em outros campos, adicionar registros e outras.
+A diferença será que ao invés de abrir o Smartclient desktop, será aberta a URL do webapp configurado no launcher no navegador configurado no _settings_.
 
-![Edit Value](./gifs/Edit-Variable-Value.gif)
+![Debug HTML](./gifs/DebugHTML.gif)
+
+O restante será basicamente o mesmo, respeitando os pontos de paradas e exibindo as informações fornecidas pelo _appServer_.
 
 ## Depuração de serviços (_jobs_)
 
