@@ -118,6 +118,8 @@ export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
       processShowProgressEvent(event, debugConsole);
     } else if (event.event === "TDA/showLoadingPageDialog") {
       processShowLoadingDialogEvent(event, debugConsole);
+    }else if (event.event === "TDA/showMsgDialog") {
+      processShowMsgDialogEvent(event, debugConsole);
     } else {
       window.showWarningMessage("Evento desconhecido: " + event.event);
     }
@@ -312,12 +314,16 @@ function processShowProgressEvent(
   }
 }
 
-function processShowLoadingDialogEvent(
-  event: DebugSessionCustomEvent,
-  debugConsole: DebugConsole
-) {
+function processShowLoadingDialogEvent(event: DebugSessionCustomEvent,debugConsole: DebugConsole) {
   if (createTimeLineWebView !== null) {
     createTimeLineWebView.showLoadingPageDialog(event.body.show);
+  }
+}
+
+function processShowMsgDialogEvent(event: DebugSessionCustomEvent,debugConsole: DebugConsole) {
+  if (createTimeLineWebView !== null) {
+    console.log("Open Msg Dialog Received")
+    createTimeLineWebView.showMessageDialog(event.body.msgType, event.body.message);
   }
 }
 

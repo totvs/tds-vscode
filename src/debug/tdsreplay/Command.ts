@@ -19,5 +19,6 @@ export enum CommandToPage {
   OpenSourcesDialog,
   OpenWaitPage,
   ShowLoadingPageDialog,
+  ShowMessageDialog,
   SetUpdatedState
 }
