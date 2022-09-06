@@ -1,6 +1,6 @@
 # Changelog
 
-# Versão [1.3.next]
+# Versão [1.3.16]
 
 ## Melhorias
 
@@ -31,6 +31,10 @@ Foi implementando opções de exportação em arquivos nos formatos [CSV\*](http
 |     | _Reset_ de configuração                         |
 
 ## Correções
+
+### Unificação tratamento do tipo text (4GL) com o char (AdvPL)
+
+Foi unificado o tratamento do tipo text (4GL) que estava diferente do char (AdvPL).
 
 ### Erro formatação Classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
 
