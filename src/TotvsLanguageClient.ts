@@ -62,11 +62,11 @@ export function getLanguageClient(
             JSON.stringify(clientConfig[key])
         ) {
           const kReload = localize(
-            "tds.webview.totvsLanguegeClient.reload",
+            "tds.webview.totvsLanguageClient.reload",
             "Reload"
           );
           const message = localize(
-            "tds.webview.totvsLanguegeClient.pleaseReload",
+            "tds.webview.totvsLanguageClient.pleaseReload",
             "Please reload to apply the 'TOTVS.{0}' configuration change.",
             key
           );
@@ -300,7 +300,7 @@ function displayCodeLens(
       if (!codeLens.isResolved) {
         console.error(
           localize(
-            "tds.webview.totvsLanguegeClient.codeLensNotResolved",
+            "tds.webview.totvsLanguageClient.codeLensNotResolved",
             "Code lens is not resolved"
           )
         );
