@@ -6,7 +6,7 @@
 {
 	"tds.package.description": "TOTVS Developer Studio para VSCode",
 	"tds.package.args.for.lsp": "Matriz que contiene argumentos adicionales para pasar al binario del servidor de idiomas TOTVS",
-	"tds.package.max.problems.server": "Controla el número máximo de problemas producidos por el servidor..",
+	"tds.package.max.problems.server": "Controla el número máximo de problemas producidos por el servidor.",
 	"tds.package.trace.vscode.server": "Rastrea la comunicación entre VS Code y el servidor de idiomas.",
 	"tds.package.trace.vscode.debug": "Rastrea la comunicación entre VS Code y el adaptador de depuración.",
 	"tds.package.trace.vscode.off": "No seguimiento.",
