@@ -25,6 +25,7 @@ import { DebugSessionCustomEvent } from "vscode";
 import { FormControlLabel, Button } from "@material-ui/core";
 import SourcesDialog from "./SourcesDialog";
 import ChangePageWaitDialog from "./ChangePageWaitDialog";
+import MessageDialog from "./MessageDialog";
 
 enum KeyCode {
   BACKSPACE = 8,
@@ -251,6 +252,9 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   const [openSourcesDialog, setOpenSourcesDialog] = React.useState(false);
   const [openWaitPage, setOpenWaitPage] = React.useState(false);
   const [itemsPerPageState, setItemsPerPageState] = React.useState(debugEvent.body.itemsPerPage);
+  const [openMessageDialog, setOpenMessageDialog] = React.useState(false);
+  const [msgType, setMsgType] = React.useState("");
+  const [message, setMessage] = React.useState("");
 
   //Id da timeline inicial a ser selecionada. 500 para selcionar a primeira pois o replay sempre ira parar na primeira linha
   const [selectedRowId, setSelectedRowId] = React.useState(
@@ -319,6 +323,10 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     setOpenSourcesDialog(false);
   };
 
+  const handleCloseMsgDialog = (value) => {
+    setOpenMessageDialog(false);
+  }
+
   const sendShowAllSourcesRequest = () => {
     let command: ICommand = {
       action: CommandToDA.ShowSources,
@@ -376,6 +384,11 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           break;
         case CommandToPage.SetUpdatedState:
           setPageData(event, message);
+          break;
+        case CommandToPage.ShowMessageDialog:
+          setOpenMessageDialog(true);
+          setMsgType(message.data.msgType);
+          setMessage(message.data.message);
           break;
       }
       message.command = '';
@@ -643,6 +656,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         onClose={handleCloseSourcesDialog}
       />
       <ChangePageWaitDialog open={openWaitPage} />
+      <MessageDialog open={openMessageDialog} msgType={msgType} message={message} onClose={handleCloseMsgDialog}/>
     </TableContainer>
     //</Paper>
   );
