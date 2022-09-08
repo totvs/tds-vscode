@@ -1,0 +1,96 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "totvs_language_debug",
+			"request": "launch",
+			"name": "SC Harpia",
+			"program": "${command:AskForProgramName}",
+			"smartclientBin": "M:\\protheus\\smartClient\\20-3-0-3\\smartclient.exe",
+			"cwb": "${workspaceFolder}",
+			"isMultiSession": true,
+			"enableMultiThread": false,
+			"enableTableSync": false,
+			"waitForAttach": 15000,
+			"logFile": "${workspaceFolder}/daplog.log"
+		},
+		{
+			"type": "totvs_language_debug",
+			"request": "launch",
+			"name": "SC Logix",
+			"program": "${command:AskForProgramName}",
+			"smartclientBin": "M:\\protheus\\appServer\\logix_131227\\totvs\\logix\\bin\\smartclient_131227\\totvssmartclient.exe",
+			"cwb": "${workspaceFolder}",
+			"isMultiSession": true,
+			"enableTableSync": true,
+			"waitForAttach": 15000,
+			"logFile": "${workspaceFolder}/daplog.log"
+		},
+		{
+			"type": "totvs_language_debug",
+			"request": "launch",
+			"name": "SC Logix 13.2.3.45",
+			"program": "${command:AskForProgramName}",
+			"smartclientBin": "M:\\protheus\\appServer\\logix_131227\\totvs\\logix\\bin\\smartclient_13.2.3.45\\totvssmartclient.exe",
+			"cwb": "${workspaceFolder}",
+			"isMultiSession": true,
+			"enableTableSync": true,
+			"waitForAttach": 15000,
+			"logFile": "${workspaceFolder}/daplog.log"
+		}
+	],
+	"lastPrograms": [
+		{
+			"label": "sqlca.4gl"
+		},
+		{
+			"label": "global2a.4gl"
+		},
+		{
+			"label": "global2.4gl"
+		},
+		{
+			"label": "u_escolhenum"
+		},
+		{
+			"label": "SUP3760.4gl"
+		},
+		{
+			"label": "men1100"
+		},
+		{
+			"label": "men0210"
+		},
+		{
+			"label": "men0210.4gl"
+		},
+		{
+			"label": "primitive.4gl"
+		},
+		{
+			"label": "array.4gl"
+		},
+		{
+			"label": "image2.4gl"
+		},
+		{
+			"label": "imagem2.4gl"
+		},
+		{
+			"label": "image.4gl"
+		},
+		{
+			"label": "lEcmFolder"
+		},
+		{
+			"label": "u_TesteLEcmDocAssociation"
+		},
+		{
+			"label": "u_array"
+		},
+		{
+			"label": "u_array_tst"
+		}
+	],
+	"lastProgramExecuted": "u_array_tst"
+}

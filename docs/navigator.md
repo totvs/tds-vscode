@@ -33,4 +33,4 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 ## [Passagem de mouse (_hover_)](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#show-hovers)
 
-**Acionamento:** Passe o mouse sobre o item a ser visualizado e aguarde alguns instantes.
+**Acionamento:** Para o ponteiro do mouse sobre o item a ser visualizado.

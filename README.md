@@ -1,11 +1,21 @@
 # TOTVS Developer Studio para VSCode
 
 <!-- prettier-ignore-start -->
+[![GitHub license](https://img.shields.io/github/license/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/blob/master/LICENSE)
+![Version](https://img.shields.io/visual-studio-marketplace/v/TOTVS.tds-vscode)
+![Installs](https://img.shields.io/visual-studio-marketplace/i/TOTVS.tds-vscode)
+![Downloads](https://img.shields.io/visual-studio-marketplace/d/TOTVS.tds-vscode)
+![Rating](https://img.shields.io/visual-studio-marketplace/stars/TOTVS.tds-vscode)
+[![GitHub stars](https://img.shields.io/github/stars/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/issues)
+[![GitHub forks](https://img.shields.io/github/forks/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/network)
+![GitHub last commit](https://img.shields.io/github/last-commit/totvs/tds-vscode)
+![Visual Studio Marketplace Last Updated](https://img.shields.io/visual-studio-marketplace/last-updated/TOTVS.tds-vscode)
+![GitHub top language](https://img.shields.io/github/languages/top/totvs/tds-vscode)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/totvs/tds-vscode/Deploy%20Extension)
 <!-- markdownlint-disable -->
-<!--[![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode)-->
-![GitHub](https://img.shields.io/github/license/totvs/tds-vscode)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- markdownlint-enabled -->
 <!-- prettier-ignore-end -->
@@ -104,6 +114,12 @@ Por padrão, o _TDS-VSCode_ já vem configurado para usar o _encode_ `WindowsCP1
   Permite uso de _bookmarks_ no estilo Delphi numerados de 1 a 9.
 
   ![Toggle](https://github.com/alefragnani/vscode-numbered-bookmarks/raw/master/images/numbered-bookmarks-toggle.png)
+
+- [Protheus.DOC](https://github.com/totvs/tds-vscode)
+
+  Suporte aos recursos e snippets de documentação TOTVS ProtheusDoc para VsCode.
+
+  ![Protheus.DOC](https://github.com/totvs/tds-vscode/raw/master/images/Example3.gif)
 
 ## Extensões com incompatibilidade
 
