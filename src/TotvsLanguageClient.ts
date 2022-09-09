@@ -59,7 +59,7 @@ export function getLanguageClient(
         if (
           !clientConfig ||
           JSON.stringify(clientConfig[key]) !==
-            JSON.stringify(clientConfig[key])
+          JSON.stringify(clientConfig[key])
         ) {
           const kReload = localize(
             "tds.webview.totvsLanguageClient.reload",
@@ -122,8 +122,6 @@ export function getLanguageClient(
     linter += linterConfig ? "enabled" : "disabled";
     args = args.concat(linter);
   }
-
-  args = args.concat("--wait-for-attach=20000");
 
   args = args.concat(clientConfig["launchArgs"]);
 
