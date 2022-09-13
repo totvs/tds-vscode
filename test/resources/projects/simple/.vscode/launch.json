@@ -93,7 +93,16 @@
 		},
 		{
 			"label": "u_TLPPIncs"
+		},
+		{
+			"args": [
+				"abc"
+			],
+			"label": "u_get_func"
 		}
 	],
-	"lastProgramExecuted": "u_TLPPIncs"
+	"lastProgramExecuted": "u_get_func",
+	"lastProgramArgumens": [
+		"abc"
+	]
 }

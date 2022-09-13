@@ -1,5 +1,14 @@
 #include "protheus.ch"
 
+user function funarr()
+	conout("executando u_funarr") 
+		
+	private result := __funarr()
+
+	conout("executor u_funarr") 
+
+return result 
+
 user function escolheNum(replay, replayPath, numbers)
 	local n, cResp, cMsg := ""
 	local aOpcoes := {}

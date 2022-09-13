@@ -11,6 +11,14 @@ import {
   DidChangeConfigurationNotification,
   SynchronizeOptions,
   InitializationFailedHandler,
+  HandleWorkDoneProgressSignature,
+  ProgressToken,
+  WorkDoneProgressBegin,
+  WorkDoneProgressEnd,
+  WorkDoneProgressReport,
+  ProgressType,
+  NotificationHandler,
+  WorkDoneProgressCreateRequest,
 } from "vscode-languageclient";
 
 import {
@@ -26,6 +34,7 @@ import { getLanguageServerSettings } from "./server/languageServerSettings";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import { updateUsageBarItem } from './statusBar';
 import { IUsageStatusData, IUsageStatusInfo } from './protocolMessages';
+import { register } from './outline/fourglOutline';
 
 let localize = nls.loadMessageBundle();
 
@@ -106,7 +115,7 @@ export function getLanguageClient(
     diagnosticCollectionName: "AdvPL",
     //outputChannel?: OutputChannel;
     outputChannelName: "TOTVS LS",
-    //traceOutputChannel?: OutputChannel;
+    traceOutputChannel: vscode.window.createOutputChannel(`TOTVS LS (trace)`),
     revealOutputChannelOn: RevealOutputChannelOn.Error,
     //stdioEncoding?: string;
     initializationOptions: clientConfig,
@@ -115,9 +124,18 @@ export function getLanguageClient(
 
     //   return false;
     // },
-    //progressOnInitialization?: boolean;
+    progressOnInitialization: false,
     //errorHandler: new CqueryErrorHandler(workspace.getConfiguration('cquery'))
     middleware: {
+      // handleWorkDoneProgress:
+      //   (token: ProgressToken, params: WorkDoneProgressBegin | WorkDoneProgressReport | WorkDoneProgressEnd, next: HandleWorkDoneProgressSignature) => {
+      //     console.dir(token);
+      //     console.dir(params);
+      //     next(token, params);
+      //   },
+      // window: {
+
+      // }
       // workspace: {
       //   didChangeConfiguration: () => {
       //     return languageClient.sendNotification(DidChangeConfigurationNotification.type, { settings: [] });
@@ -153,16 +171,13 @@ export function getLanguageClient(
   languageClient = new TotvsLanguageClientA(serverOptions, clientOptions);
   languageClient.registerProposedFeatures();
 
+  languageClient.onNotification("$totvsserver/usageStatus", (params: IUsageStatusInfo) => {
+    updateUsageBarItem(params);
+  });
+
   languageClient.start()
     .then(async (disposable: any) => {
       context.subscriptions.push(disposable);
-
-      languageClient.outputChannel.append("**** languageClient.initializeResult");
-      languageClient.outputChannel.append(JSON.stringify(languageClient.initializeResult, undefined, "  "));
-
-      languageClient.onNotification("$totvsserver/usageStatus", (params: IUsageStatusInfo) => {
-        updateUsageBarItem(params);
-      });
       languageClient.ready = true;
 
       const configADVPL = vscode.workspace.getConfiguration(

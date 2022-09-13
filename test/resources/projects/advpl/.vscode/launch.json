@@ -10,7 +10,7 @@
 			"cwb": "${workspaceFolder}",
 			"isMultiSession": true,
 			"enableTableSync": true,
-			"waitForAttach": 15000,
+			"waitForAttach": 20000,
 			"logFile": "${workspaceFolder}/daplog.log"
 		}
 	],
@@ -56,7 +56,16 @@
 		},
 		{
 			"label": "u_files"
+		},
+		{
+			"label": "u_funarr"
+		},
+		{
+			"label": "__funarr"
+		},
+		{
+			"label": "u_get_func"
 		}
 	],
-	"lastProgramExecuted": "u_files"
+	"lastProgramExecuted": "u_get_func"
 }
