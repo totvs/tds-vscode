@@ -44,7 +44,8 @@
 		"editor.cursorSmoothCaretAnimation": false,
 		"editorconfig.generateAuto": true,
 		"totvsLanguageServer.showConsoleOnCompile": false,
-		"totvsLanguageServer.editor.linter.includes": "W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes_tlpp;",
+		"totvsLanguageServer.editor.linter.includes": "W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes;W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes_tlpp",
 		"totvsLanguageServer.editor.linter.behavior": "enable",
+		"totvsLanguageServer.workspaceServerConfig": true,
 	}
 }

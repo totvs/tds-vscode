@@ -881,6 +881,7 @@ export default class Utils {
 
     return $.html();
   }
+
   /**
    *Salva uma nova configuracao de include.
    */
@@ -890,11 +891,18 @@ export default class Utils {
     servers.includes = includePath;
 
     Utils.persistServersInfo(servers);
-
-    const includes: string = includePath.join(";");
-    const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("totvsLanguageServer");
-    config.update("editor.linter.includes", includes); //dispara onDidChangeConfiguration
   }
+
+  /**
+   * Atualiza includes do linter.
+   */
+   static updateLinterIncludes() {
+    const servers = Utils.getServersConfig();
+    const includes: string = servers.includes.join(";");
+    const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("totvsLanguageServer");
+
+    config.update("editor.linter.includes", includes); //dispara onDidChangeConfiguration
+   }
 
   /**
    *Atualiza no server.json a build de um servidor

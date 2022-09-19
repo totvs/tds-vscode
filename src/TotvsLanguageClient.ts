@@ -1,28 +1,10 @@
 import * as vscode from "vscode";
 import {
-  CancellationToken,
   LanguageClientOptions,
   RevealOutputChannelOn,
-  ProvideOnTypeFormattingEditsSignature,
-  ProvideDocumentFormattingEditsSignature,
-  ProvideDocumentRangeFormattingEditsSignature,
-  Trace,
-  WorkspaceFolder,
-  DidChangeConfigurationNotification,
-  SynchronizeOptions,
-  InitializationFailedHandler,
-  HandleWorkDoneProgressSignature,
-  ProgressToken,
-  WorkDoneProgressBegin,
-  WorkDoneProgressEnd,
-  WorkDoneProgressReport,
-  ProgressType,
-  NotificationHandler,
-  WorkDoneProgressCreateRequest,
 } from "vscode-languageclient";
 
 import {
-  SettingMonitor,
   ServerOptions
 } from "vscode-languageclient/node";
 
@@ -33,8 +15,7 @@ import * as nls from "vscode-nls";
 import { getLanguageServerSettings } from "./server/languageServerSettings";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import { updateUsageBarItem } from './statusBar';
-import { IUsageStatusData, IUsageStatusInfo } from './protocolMessages';
-import { register } from './outline/fourglOutline';
+import { IUsageStatusInfo } from './protocolMessages';
 
 let localize = nls.loadMessageBundle();
 

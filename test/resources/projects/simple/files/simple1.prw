@@ -13,32 +13,10 @@ user function abc(p1,p2)
     local x
     local a,b,c := ""
     local abc
-         local y
-     
+    local y
 
     abc()
-
     
-     abc1()
-    
+    abc1()
 return
 
-
-Function u_TLPPIncs()
-  Local lRet := .F.
-  Local cRet := ""
-  Local aMessages := {}
-  Local nI := 0
-
-  ConOut("Getting TLPP includes ...")
-  lRet := tlpp.environment.getIncludesTLPP(@cRet, @aMessages)
-
-  If(lRet != .T.)
-    ConOut("Error: " + cValToChar(cRet))
-    For nI := 1 to Len(aMessages)
-      ConOut(cValToChar(nI) + " Error: " + cValToChar(aMessages[nI]))
-    Next
-  Else
-    ConOut("OK. 'includes' extracted on path: " + cValToChar(cRet))
-  EndIf
-Return lRet
