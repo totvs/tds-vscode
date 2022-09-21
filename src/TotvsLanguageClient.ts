@@ -88,7 +88,7 @@ export function getLanguageClient(
   //  decorationOpts
   //);
 
-  let languageClient: any;
+  let languageClient: TotvsLanguageClientA;
 
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
@@ -164,6 +164,13 @@ export function getLanguageClient(
       const configADVPL = vscode.workspace.getConfiguration(
         "totvsLanguageServer"
       ); //transformar em configuracao de workspace
+
+      const serverInfo:any = languageClient.initializeResult.serverInfo;
+      if (serverInfo) {
+        languageClient.outputChannel.appendLine(`                   Language Server: ${serverInfo.name} ${serverInfo.version}`);
+      }
+      languageClient.outputChannel.appendLine("**** initializeResult");
+      languageClient.outputChannel.appendLine(JSON.stringify(languageClient.initializeResult, undefined, "  "));
 
       let isReconnectLastServer = configADVPL.get("reconnectLastServer");
       if (isReconnectLastServer) {
