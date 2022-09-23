@@ -239,7 +239,7 @@
 		},
 		"data-type": {
 			"name": "variable.parameter.type.advpl",
-			"match": "(?i)\\s*(as)\\s+(array|block|codeblock|character|char|date|logical|numeric|object|string|integer|double|decimal|json|variant)",
+			"match": "(?i)\\s*(as)\\s+(array|block|codeblock|character|char|date|logical|numeric|object|string|integer|double|decimal|json|variant|variadic)",
 			"captures": {
 				"1": {
 					"name": "keyword.control.keyword.as.advpl"
