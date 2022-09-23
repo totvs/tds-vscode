@@ -97,7 +97,7 @@
 		"varDeclaration": {
 			"patterns": [
 				{
-					"match": "(?i)^\\s*\\b(local|static|private|public|default)\\b\\s+(\\w+)(?:\\s+(as)\\s+(array|block|codeblock|character|char|date|logical|numeric|object|integer|double|decimal))?",
+					"match": "(?i)^\\s*\\b(local|static|private|public|default)\\b\\s+(\\w+)(?:\\s+(as)\\s+(array|block|codeblock|character|char|date|logical|numeric|object|integer|double|decimal|json|variant))?",
 					"captures": {
 						"1": {
 							"name": "variable.language.declaration.advpl"
@@ -239,7 +239,7 @@
 		},
 		"data-type": {
 			"name": "variable.parameter.type.advpl",
-			"match": "(?i)\\s*(as)\\s+(array|block|codeblock|character|char|date|logical|numeric|object|string|integer|double|decimal)",
+			"match": "(?i)\\s*(as)\\s+(array|block|codeblock|character|char|date|logical|numeric|object|string|integer|double|decimal|json|variant)",
 			"captures": {
 				"1": {
 					"name": "keyword.control.keyword.as.advpl"
