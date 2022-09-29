@@ -59,7 +59,7 @@ import {
   register4glFormatting,
   registerAdvplFormatting,
 } from "./formatter";
-import { registerAdvplOutline, register4glOutline } from "./outline";
+import {  register4glOutline } from "./outline";
 import { registerDebug, _debugEvent } from "./debug";
 import { openMonitorView } from "./monitor/monitorLoader";
 import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
@@ -593,7 +593,6 @@ export function activate(context: ExtensionContext) {
 
   // Inicialização Adv/PL
   context.subscriptions.push(registerAdvplFormatting());
-  context.subscriptions.push(registerAdvplOutline());
 
   // Inicialização 4GL
   context.subscriptions.push(register4glFormatting());

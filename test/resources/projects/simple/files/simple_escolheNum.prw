@@ -20,7 +20,7 @@ description
 @param p1, variant, param_description
 @return variant, return_description
 /*/
-user function escolhe2Num(p1)
+user function escolheNum(p1)
 	local n, cResp, cMsg := ""
 	local aOpcoes := {}
 	private cOpcao    
@@ -32,7 +32,7 @@ user function escolhe2Num(p1)
 	// essa seq. UTF 8 inválida para json do DA
 	//corrigido versão DA 1.1.24 / srv
 	//private paraDeFuncionar := "se fizer hover aqui, para de funcionar Ãº"
-
+escolhe  
 	testVars()
 	private aPrivate := {}
 

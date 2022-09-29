@@ -2,7 +2,7 @@
 /*/{Protheus.doc} abc1
 Função simples sem argumentos.
 @type function   
-@return variant, return_description
+@return variant, dddddddddddddddddddddddd
 /*/ 
 user function abc1()
     
@@ -10,3 +10,8 @@ user function abc1()
     
 return
 
+web function abc()
+    
+    conout("asdjaklsdjlasdla")
+    
+return

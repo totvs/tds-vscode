@@ -11,7 +11,6 @@
 			"isMultiSession": true,
 			"enableMultiThread": false,
 			"enableTableSync": false,
-			"waitForAttach": 15000,
 			"logFile": "${workspaceFolder}/daplog.log"
 		},
 		{

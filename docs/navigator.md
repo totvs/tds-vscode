@@ -13,15 +13,25 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 ## [Navegação rápida de arquivos](https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation)
 
-**Acionamento:** ``Ctrl+P`` ou ``F1`` (iniciar com vazio) e comece a digitar o filtro para nome do arquivo.
+**Acionamento:** ``Ctrl+P`` ou ``F1`` (iniciar com vazio) e inicie a digitação para o filtro por nome do arquivo.
 
-## [Abrir símbolo por nome](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name)
+## [Trilha](https://code.visualstudio.com/docs/editor/editingevolved#_breadcrumbs)
 
-**Acionamento:** ``Ctrl+T`` ou ``F1`` (iniciar com ``#``) e comece a digitar o filtro para nome da função (desconsiderar o escopo).
+**Acionamento:** Você pode ativar ou desativar a tilha com a opção ``View > Show Breadcrumbs`` ou com a configuração ``breadcrumbs.enabled``.
 
 ## [Ir para definição](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition)
 
 **Acionamento:** ``Ctrl+Click`` ou ``Ctrl+Alt+Click`` ou ``F12`` sobre uma chamada de função ou variável.
+
+
+
+
+
+
+
+## [Abrir símbolo por nome](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name)
+
+**Acionamento:** ``Ctrl+T`` ou ``F1`` (iniciar com ``#``) e inicie a digitação para o filtro por nome do símbolo.
 
 ## [Procurar/ir para referência](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition)
 
