@@ -17,17 +17,15 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 ## [Trilha](https://code.visualstudio.com/docs/editor/editingevolved#_breadcrumbs)
 
-**Acionamento:** Você pode ativar ou desativar a tilha com a opção ``View > Show Breadcrumbs`` ou com a configuração ``breadcrumbs.enabled``.
+**Acionamento:** Você pode ativar ou desativar a trilha via ``View > Show Breadcrumbs`` ou com a configuração ``breadcrumbs.enabled``.
 
 ## [Ir para definição](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition)
 
-**Acionamento:** ``Ctrl+Click`` ou ``Ctrl+Alt+Click`` ou ``F12`` sobre uma chamada de função ou variável.
+**Acionamento:** ``Ctrl+Click`` (abre) ou ``Ctrl+Alt+Click`` (abre ao lado) ou ``F12`` sobre uma chamada de função ou variável.
 
+## [Ir para um símbolo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-symbol)
 
-
-
-
-
+**Acionamento:** ``Ctrl+Shift+O`` e inicie a digitação para o filtro por nome do simbolo.
 
 ## [Abrir símbolo por nome](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name)
 
@@ -43,4 +41,6 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 ## [Passagem de mouse (_hover_)](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#show-hovers)
 
-**Acionamento:** Para o ponteiro do mouse sobre o item a ser visualizado.
+**Acionamento:** Passe o ponteiro do mouse sobre o item a ser visualizado.
+
+| Você pode ativar ou desativar a passagem de mouse em ``View > Text Editor > Hover: Enabled`` ou mudar o formato de apresentação em ``View > Extension > TOTVS > Totvs Language Server > Editor: Hover``.

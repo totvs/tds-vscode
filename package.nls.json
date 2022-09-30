@@ -137,5 +137,8 @@
   "tds.package.rpoToken": "Input Compilation Token",
   "tds.package.clearRpoToken": "Clear Compilation Token",
   "tds.package.filesystem.encoding": "Set file system encoding",
-  "tds.package.editor.linter": "Linter behavior"
+  "tds.package.editor.linter": "Linter behavior",
+	"tds.package.editor.hover.simple": "Simple text",
+	"tds.package.editor.hover.protheusDoc": "Use ProtheusDoc when possible",
+  "tds.package.editor.hover": "Controls whetther the hover is shown."
 }

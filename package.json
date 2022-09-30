@@ -487,6 +487,20 @@
           "default": "LS",
           "description": "%tds.package.editor.toggle.autocomplete%"
         },
+        "totvsLanguageServer.editor.hover": {
+          "scope": "application",
+          "type": "string",
+          "enum": [
+            "simple",
+            "protheusDoc"
+          ],
+          "enumDescriptions": [
+            "%tds.package.editor.hover.simple%",
+            "%tds.package.editor.hover.protheusDoc%"
+          ],
+          "default": "protheusDoc",
+          "description": "%tds.package.editor.hover%"
+        },
         "totvsLanguageServer.workspaceServerConfig": {
           "type": "boolean",
           "default": false,

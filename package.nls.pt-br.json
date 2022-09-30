@@ -137,5 +137,8 @@
 	"tds.package.rpoToken": "Informar o Token de Compilação",
 	"tds.package.clearRpoToken": "Remover o Token de Compilação",
 	"tds.package.filesystem.encoding": "Definir a codificação do sistema de arquivos",
-	"tds.package.editor.linter": "Comportamento do linter"
+	"tds.package.editor.linter": "Comportamento do linter",
+	"tds.package.editor.hover.simple": "Texto simples",
+	"tds.package.editor.hover.protheusDoc": "Use o ProtheusDoc quando possível.",
+    "tds.package.editor.hover": "Controlar como a apresentação é exibida ao passar o mouse."
 }

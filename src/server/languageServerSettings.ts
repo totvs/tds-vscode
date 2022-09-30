@@ -89,6 +89,15 @@ export function getLanguageServerSettings(): any[] {
     });
   }
 
+  const hover: string = config.get("editor.hover");
+  if (isNewSettings("editor", "hoverMode", hover)) {
+    settings.push({
+      scope: "editor",
+      key: "hoverMode",
+      value: hover
+    });
+  }
+
   return settings;
 }
 
