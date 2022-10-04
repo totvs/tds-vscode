@@ -1,5 +1,14 @@
 # Changelog
 
+# Versão [1.4.0-BETA]
+
+## Melhorias
+
+### Navegação em fontes, passagem de mouse e referências
+
+Efetuado a implementação de navegação em fontes, passagem de mouse e referências.
+Detalhes da implementação em [# TDS: Navegador de código](docs\navigator.md).
+
 # Versão [1.3.16]
 
 ## Melhorias

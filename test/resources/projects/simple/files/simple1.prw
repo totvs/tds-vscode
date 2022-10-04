@@ -17,7 +17,9 @@ user function abc(p1, p2)
     local y
   
     abc()
-    
+     
+    u_abc()
+
 conout(XXXX)
    
     abc := 1
