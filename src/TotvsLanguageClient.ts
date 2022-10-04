@@ -244,7 +244,6 @@ function getClientConfig(context: vscode.ExtensionContext) {
 
 //     let opts: DecorationOptions[] = [];
 
-<<<<<<< HEAD
 //     for (let codeLens of allCodeLens) {
 //       // FIXME: show a real warning or disable on-the-side code lens.
 //       if (!codeLens.isResolved) {
@@ -255,18 +254,6 @@ function getClientConfig(context: vscode.ExtensionContext) {
 //           )
 //         );
 //       }
-=======
-    for (let codeLens of allCodeLens) {
-      // FIXME: show a real warning or disable on-the-side code lens.
-      if (!codeLens.isResolved) {
-        console.error(
-          localize(
-            "tds.webview.totvsLanguageClient.codeLensNotResolved",
-            "Code lens is not resolved"
-          )
-        );
-      }
->>>>>>> dev
 
 //       // Default to after the content.
 //       let position = codeLens.range.end;
