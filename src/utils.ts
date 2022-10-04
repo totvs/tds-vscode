@@ -14,6 +14,7 @@ import {
   sendGetServerInformationsInfo,
   sendGetServerPermissionsInfo,
 } from "./protocolMessages";
+import { EnvSection } from "./serverItem";
 //import { /*EnvSection*/any, /*IServerInformations*/any, /*ServerItem*/any, ServerType } from ".//*ServerItem*/any";
 
 const homedir = require("os").homedir();
@@ -1183,16 +1184,16 @@ export default class Utils {
   /**
    * Deleta o servidor logado por ultimo do servers.json
    */
-  static deleteEnvironmentServer(envinronment: /*EnvSection*/any) {
+  static  deleteEnvironmentServer(environment: EnvSection) {
     const allConfigs = Utils.getServersConfig();
 
     if (allConfigs.configurations) {
       const configs = allConfigs.configurations;
-      const id = envinronment./*ServerItem*/anyParent.id;
+      const id = environment.serverItemParent.id;
 
       configs.forEach((element) => {
         if (element.id === id) {
-          const index = element.environments.indexOf(envinronment.label, 0);
+          const index = element.environments.indexOf(environment.label, 0);
 
           if (index > -1) {
             element.environments.splice(index, 1);
