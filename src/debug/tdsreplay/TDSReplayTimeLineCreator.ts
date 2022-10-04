@@ -145,6 +145,16 @@ private initializePanel(): void {
     });
   }
 
+  public showMessageDialog(msgType: string, message: string) {
+    this._panel.webview.postMessage({
+      command: CommandToPage.ShowMessageDialog,
+      data: {
+        msgType: msgType,
+        message: message
+      }
+    });
+  }
+
   public postAddTimeLineEvent(debugEvent: DebugSessionCustomEvent, isIgnoreSourceNotFound: boolean) {
     //Envio de mensagem para página
     this._isIgnoreSourcesNotFound = isIgnoreSourceNotFound;

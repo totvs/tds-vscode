@@ -1,6 +1,6 @@
 # Changelog
 
-# Versão [1.3.next]
+# Versão [1.3.16]
 
 ## Melhorias
 
@@ -39,7 +39,17 @@ Foi implementando opções de exportação em arquivos nos formatos [CSV\*](http
 |     | Exportação em texto de largura fixa             |
 |     | _Reset_ de configuração                         |
 
+### Mensagem de TimeLine não encontrada para os pontos de parada existentes
+
+Ao executar um Run durante a execução do TDS Replay, caso não fosse encontrado nenhuma TimeLine correspondente aos pontos de parada existentes, era feito uma parada na última TimeLine da última página.
+Esse comportamento foi removido e implementando uma mensagem informativa. E a TimeLine de origem continuará selecionada.  [DTCLIENT01-3601](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3601)
+
+
 ## Correções
+
+### Unificação tratamento do tipo text (4GL) com o char (AdvPL)
+
+Foi unificado o tratamento do tipo text (4GL) que estava diferente do char (AdvPL).
 
 ### Erro formatação Classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
 

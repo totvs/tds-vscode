@@ -46,7 +46,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
         if (editor && editor.document.languageId === "totvs-developer-studio") {
           this.initialize(config);
           config.request = "launch";
-          config.program = "${workspaceFolder}/${command:AskForProgramName}";
+          config.program = "${command:AskForProgramName}";
         }
       }
 
@@ -130,8 +130,13 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
     const programArgs: ProgramArgs = extractProgramArgs(
       debugConfiguration.program
     );
-    if (debugConfiguration.programArguments && debugConfiguration.programArguments.length > 0) {
-      programArgs.args = debugConfiguration.programArguments;
+    if (debugConfiguration.programArguments) {
+      if (typeof debugConfiguration.programArguments === 'string') {
+        debugConfiguration.programArguments = JSON.parse(debugConfiguration.programArguments);
+      }
+      if (debugConfiguration.programArguments.length > 0) {
+        programArgs.args = debugConfiguration.programArguments;
+      }
     }
 
     if (
