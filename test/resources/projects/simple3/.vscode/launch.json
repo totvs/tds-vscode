@@ -22,7 +22,6 @@
 			"cwb": "${workspaceFolder}",
 			"isMultiSession": true,
 			"enableTableSync": true,
-			"waitForAttach": 15000,
 			"logFile": "${workspaceFolder}/daplog.log"
 		},
 		{
@@ -34,7 +33,6 @@
 			"cwb": "${workspaceFolder}",
 			"isMultiSession": true,
 			"enableTableSync": true,
-			"waitForAttach": 15000,
 			"logFile": "${workspaceFolder}/daplog.log"
 		}
 	],

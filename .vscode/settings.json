@@ -12,7 +12,5 @@
 			"url": "./schema/scenario.schema.json"
 		}
 	],
-	"totvsLanguageServer.welcomePage": false,
-	"eslint.enable": false,
-	"prettier.enable": false
+	"eslint.enable": false
 }

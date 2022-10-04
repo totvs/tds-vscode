@@ -9,28 +9,26 @@ Efetua o cálculo da área ou perímetro em quadriláteros.
 /*/
 
 class TQuad
-    static method metodoEstaticoDaClasse()
-
     //{pdoc} Tamanho da base do quadrilátero.
 	//{pdoc} @propType numeric
-    private data base as numeric
+    data base
 	
     //{pdoc} Altura quadrilátero
 	//{pdoc} @propType numeric
-    private data altura as numeric
+    data altura 
 	
     //{pdoc} Tamanho da base menor, nos trapézios.
     //{pdoc} @propType numeric
-	private data baseMenor as numeric
+	data baseMenor
 
 	//ProtheusDOC de métodos devem ser efetuados na implementação.
-    public method new(base as numeric, altura as numeric) as object
-    public method base(nValor as numeric) as numeric
-    public method altura(nValor as numeric) as numeric
-    public method baseMenor(nValor as numeric) as numeric
+    method new(base, altura)
+    method base(nValor)
+    method altura(nValor)
+    method baseMenor(nValor)
 
-    public method area() as numeric
-    public method perimetro() as numeric
+    method area()
+    method perimetro()
 
 endClass
 
@@ -42,7 +40,7 @@ Cria o objeto para calcular área e perímetro de quadriláteros.
 @param altura, numeric, medida da altura do quadrilátero.
 @return object, instância do objeto ``TQuad``.
 /*/
-method new(nBase as numeric, nAltura as numeric) class TQuad
+method new(nBase, nAltura) class TQuad
     ::base := nBase
 	::altura := nAltura
 	::baseMenor := 0
@@ -58,7 +56,7 @@ o valor da propriedade ``base`` para ``nValue``.
 ...outras marcações ProtheusDOC...
 @return numeric, base do quadrilátero.
 /*/
-method base(nValor as numeric) as numeric class TQuad
+method base(nValor) class TQuad
     if (valtype(nValor) == "N") 
 		::base = nValor
 	endif
@@ -72,7 +70,7 @@ o valor da propriedade ``altura`` para ``nValue``.
 @param [nValue], numeric, nova medida da altura do quadrilátero se informado.
 @return numeric, altura do quadrilátero.
 /*/
-method altura(nValor as numeric) as numeric class TQuad
+method altura(nValor) class TQuad
     if (valtype(nValor) == "N") 
 		::altura = nValor
 	endif
@@ -86,7 +84,7 @@ o valor da propriedade ``baseMenor`` para ``nValue``.
 @param [nValue], numeric, nova medida da base menor do quadrilátero se informado.
 @return numeric, base menor do quadrilátero.
 /*/
-method baseMenor(nValor as numeric) as numeric class TQuad
+method baseMenor(nValor) class TQuad
     if (valtype(nValor) == "N") 
 		::baseMenor = nValor
 	endif
@@ -98,7 +96,7 @@ Calcula a área do quadrilátero.
 @author  acandido
 @return numeric, área do quadrilátero.
 /*/
-method area() as numeric class TQuad
+method area() class TQuad
     //{pdoc} Resultado da área calculada.
     local nArea := -1
     
@@ -115,7 +113,7 @@ Calcula o perimetro do quadrilátero (somente quadrados e retângulos).
 @author  acandido
 @return numeric, perimetro do quadrilátero.
 /*/
-method perimetro() as numeric class TQuad
+method perimetro() class TQuad
     //{pdoc} Resultado do perimetro calculado. -1, indica parâmetro inválido
     local nPerimetro := -1
     

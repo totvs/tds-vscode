@@ -4,13 +4,13 @@ Função simples sem argumentos.
 @type function   
 @return variant, dddddddddddddddddddddddd
 /*/ 
-user function abc1()
+user function zabc1()
     
     conout("asdjaklsdjlasdla")
     
 return
 
-web function abc()
+web function zabc()
     
     conout("asdjaklsdjlasdla")
     

@@ -25,6 +25,7 @@
 		"totvsLanguageServer.usageInfoConfig": true,
 		"totvsLanguageServer.clearConsoleBeforeCompile": true,
 		"totvsLanguageServer.editor.show.notification": "all",
-		"totvsLanguageServer.trace.server": "verbose"
+		"totvsLanguageServer.trace.server": "verbose",
+		"totvsLanguageServer.editor.linter.includes": "../includes"
 	}
 }

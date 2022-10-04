@@ -10,31 +10,26 @@ Função simples com dois argumentos.
 @return variant, ddddddddddddddddddddddddddddddddddddddddd
 /*/ 
 
-#define XXXX 10
-
 user function abc(p1, p2)
     local x
     local a, b, c := ""
-    local abc
+    local abc 
     local y
- 
+  
     abc()
-       
+    
 conout(XXXX)
-      
+   
     abc := 1
-
     abc1()
-
     conout(abc)
 return
 
-user function abc1(p1,p2)
-    local a,b,c := ""
-    local y
+ user function abc1(p1,p2)
+     local a,b,c := ""
+     local ys
 
-user function abc2(p1,p2)
-    local x
-    local abc
+ user function abc2(p1,p2)
+     local x
+     local abc
 
-function xya() 

@@ -36,7 +36,7 @@
 			"--wait-for-attach=20000"
 		],
 		"totvsLanguageServer.askCompileResult": true,
-		"totvsLanguageServer.usageInfoConfig": true,
+		"totvsLanguageServer.usageInfoConfig": false,
 		"problems.defaultViewMode": "table",
 		"totvsLanguageServer.editor.show.notification": "all",
 		"totvsLanguageServer.trace.server": "verbose",
@@ -44,7 +44,7 @@
 		"editor.cursorSmoothCaretAnimation": false,
 		"editorconfig.generateAuto": true,
 		"totvsLanguageServer.showConsoleOnCompile": false,
-		"totvsLanguageServer.editor.linter.includes": "W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes;W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes_tlpp",
+		"totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes",
 		"totvsLanguageServer.editor.linter.behavior": "enable",
 		"totvsLanguageServer.workspaceServerConfig": true,
 	}
