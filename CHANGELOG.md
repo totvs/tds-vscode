@@ -57,8 +57,15 @@ Foi implementando opções de exportação em arquivos nos formatos [CSV\*](http
 Ao executar um Run durante a execução do TDS Replay, caso não fosse encontrado nenhuma TimeLine correspondente aos pontos de parada existentes, era feito uma parada na última TimeLine da última página.
 Esse comportamento foi removido e implementando uma mensagem informativa. E a TimeLine de origem continuará selecionada.  [DTCLIENT01-3601](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3601)
 
+### Validação de patches no Harpia
+
+Ajustes na validação de patches aplicados em AppServer Harpia.
 
 ## Correções
+
+### Erro ao tentar excluir um ambiente [#1022](https://github.com/totvs/tds-vscode/issues/1022)
+
+Corrigido problema ao tentar excluir um ambiente
 
 ### Unificação tratamento do tipo text (4GL) com o char (AdvPL)
 
