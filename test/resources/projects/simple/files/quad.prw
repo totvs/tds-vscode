@@ -44,7 +44,7 @@ method new(nBase, nAltura) class TQuad
     ::base := nBase
 	::altura := nAltura
 	::baseMenor := 0
-	
+	 
 return self
 
 /*/{Protheus.doc} TQuad::base
