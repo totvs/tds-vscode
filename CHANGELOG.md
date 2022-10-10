@@ -9,7 +9,7 @@
 Efetuado a implementação de navegação em fontes, passagem de mouse e referências.
 Detalhes da implementação em [# TDS: Navegador de código](docs/navigator.md).
 
-### Visão _Estrura_
+### Visão _Estrutura_
 
 Apresenta alguns detalhes sobre o ítem, conforme sua definição.
 
