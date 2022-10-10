@@ -7,7 +7,11 @@
 ### Navegação em fontes, passagem de mouse e referências
 
 Efetuado a implementação de navegação em fontes, passagem de mouse e referências.
-Detalhes da implementação em [# TDS: Navegador de código](docs\navigator.md).
+Detalhes da implementação em [# TDS: Navegador de código](docs/navigator.md).
+
+### Visão _Estrura_
+
+Apresenta alguns detalhes sobre o ítem, conforme sua definição.
 
 # Versão [1.3.16]
 
