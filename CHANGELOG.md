@@ -19,7 +19,7 @@ Foi implementando opções de exportação em arquivos nos formatos [CSV\*](http
 
 | \* O arquivo CSV usa como separador o sinal ponto-e-virgúla entre valores e estes estão entre aspas.
 
-![Inspector tools bar](./doc/images/inspetor-tool-bar-harpia.png)
+![Inspector tools bar](./docs/images/inspetor-tool-bar-harpia.png)
 
 |     | Descrição                                       |
 | --- | ----------------------------------------------- |
