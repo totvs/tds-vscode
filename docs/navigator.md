@@ -39,6 +39,9 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 **Acionamento:** ``Alt+F12`` sobre uma chamada de função ou variável.
 
+**Limitações:**
+- Em classes, a operação funciona somente no fonte da própria classe com o operando `::` ou `self:`;
+
 ## [Passagem de mouse (_hover_)](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#show-hovers)
 
 **Acionamento:** Passe o ponteiro do mouse sobre o item a ser visualizado.

@@ -11,7 +11,7 @@
 			"skipFiles": [
 				"<node_internals>/**"
 			],
-			"type": "pwa-node"
+			"type": "node"
 		},
 		{
 			"type": "extensionHost",
@@ -24,9 +24,10 @@
 			"outFiles": [
 				"${workspaceFolder}/out/**/*.js"
 			],
+			"xpreLaunchTask": "npm: compile",
 			"env": {
 				"TOTVS_LS_LOG_FILE": "./TOTVS_LS_LOG_FILE.log"
 			}
 		},
 	]
-}
+}	

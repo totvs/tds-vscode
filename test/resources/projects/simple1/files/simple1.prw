@@ -10,7 +10,8 @@ Função simples com dois argumentos.
 @return variant, ddddddddddddddddddddddddddddddddddddddddd
 /*/ 
 
-user function abc(p1, p2)
+user function abc(p1, ;
+                         p2)
     local x
     local a, b, c := ""
     local abc 

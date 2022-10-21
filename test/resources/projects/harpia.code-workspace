@@ -1,15 +1,15 @@
 {
 	"folders": [
 		{
-			"path": ".\\advpl",
+			"path": ".//advpl",
 			"name": "AdvPL"
 		},
 		{
-			"path": ".\\logix",
+			"path": ".//logix",
 			"name": "4GL"
 		},
 		{
-			"path": ".\\fw",
+			"path": ".//fw",
 			"name": "FrameWork"
 		}
 	],
@@ -26,6 +26,12 @@
 		"totvsLanguageServer.clearConsoleBeforeCompile": true,
 		"totvsLanguageServer.editor.show.notification": "all",
 		"totvsLanguageServer.trace.server": "verbose",
-		"totvsLanguageServer.editor.linter.includes": "../includes"
+		"totvsLanguageServer.showConsoleOnCompile": false,
+		"totvsLanguageServer.editor.linter.behavior": "enable",
+		"totvsLanguageServer.workspaceServerConfig": true,
+		"totvsLanguageServer.showConsoleOnCompile": false,
+		"totvsLanguageServer.editor.linter.includes": "W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes;W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes_tlpp",
+		"totvsLanguageServer.editor.linter.behavior": "enable",
+		"totvsLanguageServer.workspaceServerConfig": true,
 	}
 }
