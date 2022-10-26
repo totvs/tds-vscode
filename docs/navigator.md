@@ -46,4 +46,77 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 **Acionamento:** Passe o ponteiro do mouse sobre o item a ser visualizado.
 
-| Você pode ativar ou desativar a passagem de mouse em ``View > Text Editor > Hover: Enabled`` ou mudar o formato de apresentação em ``View > Extension > TOTVS > Totvs Language Server > Editor: Hover``.
+> Você pode ativar ou desativar a passagem de mouse em ``View > Text Editor > Hover: Enabled`` ou mudar o formato de apresentação em ``File > Preference > Settings > Extension > TOTVS > Totvs Language Server > Editor: Hover``.
+
+## <a name="cache"></a>Cache de navegação
+
+Por padrão, a extensão utiliza um _cache_ em memória, que é gerado na inicialização da extensão.
+Em alguns casos, pode ser interessante manter esse _cache_ entre sessões, ou seja, ter um _cache_ persistente em disco.
+
+Para ajustar o comportamento acesse ``File > Preference > Settings``, filtre por ``totvsLanguageServer.editor`` e localize ``Totvs Language Server › Editor › Index: Cache``, configurando o comportamento:
+
+| Opção | Comportamento |
+| `None` | Desabilita _cache_ em disco (padrão) |
+| `JSON` | O _cache_ é gravado em formato (JSON)[https://www.alura.com.br/artigos/o-que-e-json?gclid=Cj0KCQjwkt6aBhDKARIsAAyeLJ24a_dm9QADJrPo6TAG1kzC9y-E13cp5hSu3XKMoQoJmtRcYTI7__IaAjHvEALw_wcB] |
+| `Compact` | O _cache_ é gravado em modo binário e de forma compacta (proprietário) |
+
+## <a name="ignore"></a>Ignorar pastas e arquivos
+
+### Definição
+
+`.tdsindexignore` é um arquivo dentro da pasta do projeto (ou sub-pastas) que ignora/impede que os arquivos sejam indexados, lembrando que essa configuração afetará a [navegação em fontes](./navigator.md).
+
+O uso do `.tdsignore` é similar aos usados em outras extensões/aplicativos, p.e. `.gitignore`, `.vscodeignore` e outros.
+
+### Sintaxe
+
+- O `.tdsindexignore` pode ser colocado em qualquer pasta ou sub-pastas, sendo que será aplicado de forma recursiva na pasta e sub-pastas, onde esta armazenado;
+
+- Cada linha do arquivo, é formado por uma _string_ que representa o padrão de nome de pastas e arquivos que serão ignorados ou a negação de ignorar.
+
+- Para formar os padrões de seleção, utiliza-se caracteres comumente usados em nome de pastas e arquivos e caracteres curinga ( `?`, `*`, `**` ou `.` ).
+
+- Inicie a linha com `@`, seguido de uma expressão regular conforme a sintaxe de expressões regulares da linguagem [`Perl`](https://perldoc.perl.org/perlre).
+
+- Para comentários, inicie a linha com `#`.
+
+> A aplicação dos padrões de seleção não são sensíveis a caixa (maiúsculas e minúsculas).
+
+| Curinga | Uso |
+| - | - |
+| `?` | Um caracter desconhecido. |
+| `*` | Um ou mais caracteres desconhecidos. |
+| `**` | Qualquer seguência de pastas. |
+| `.` | Pasta corrente. |
+| `@` | Expressão regular [`Perl`](https://perldoc.perl.org/perlre). |
+
+### Exemplos
+
+#### Área de trabalho
+
+```
+\- api
+|  |- .tdsignore
+|  |- api_product.prw
+|  |- api_customer.prw
+|  |- api_order.prw
+|  |- api_my_test.prw
+\- app
+|  |- app.prw
+|  |- utils.prw
+|  |- dbacess.prw
+|  |- app_my_test.prw
+\- test
+|  \- unit
+|  |  |- test_product.prw
+|  |  |- test_customer.prw
+|  |  |- test_order.prw
+|  \- integration
+|     |- customer.prw
+|     |- product.prw
+|     |- order.prw
+|- .tdsignore
+```
+
+
+

@@ -6,9 +6,9 @@
 
 ### Implementação de configuração para ignorar pastas e arquivos
 
-Efetuado a implementação de configuração para a extensão ignorar pastas e arquivos no processo de _linter_ e por conseguência a navegação em fontes e recursos associados, através da existência do arquivo `.tdsignore`.
+Efetuado a implementação de configuração para a extensão ignorar pastas e arquivos no processo de _Navegação em fontes_ e recursos associados, através da existência do arquivo `.tdsindexignore`.
 
-Detalhes da implementação em [## TDS: Linter -> Ignorar pastas e arquivos](docs/linter.md#tdsignore).
+Detalhes da implementação em [# TDS: Navegador de código](docs/navigator.md#ignore).
 
 ### Navegação em fontes, passagem de mouse e referências
 
@@ -16,6 +16,8 @@ Efetuado a implementação de navegação em fontes, passagem de mouse e referê
 Detalhes da implementação em [# TDS: Navegador de código](docs/navigator.md).
 
 > Os recursos aqui apresentados, podem ser influenciados devido ao _linter_ ignorar o processamento de fontes configurado em [## TDS: Linter -> Ignorar pastas e arquivos](docs/linter.md#tdsignore).
+
+> As informações sobre navegação, podem ou não ficar em [_cache__](docs/navigator.md#cache).
 
 ### Visão _Estrutura_
 

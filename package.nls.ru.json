@@ -140,5 +140,9 @@
 	"tds.package.editor.linter": "Linter behavior",
 	"tds.package.editor.hover.simple": "Простой текст",
 	"tds.package.editor.hover.protheusDoc": "Используйте Protheus Doc, когда это возможно",
-    "tds.package.editor.hover": "Управляйте тем, как отображается презентация при наведении."
+    "tds.package.editor.hover": "Управляйте тем, как отображается презентация при наведении.",
+	"tds.package.editor.index.cache": "Постоянство кэша при просмотре",
+	"tds.package.editor.index.cache.none": "Отключает сохранение кэша между сеансами.",
+	"tds.package.editor.index.cache.json": "Формат сохраняемого кеша — JSON.",
+	"tds.package.editor.index.cache.compact": "Формат сохраняемого кеша COMPACT."
 }

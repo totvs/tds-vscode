@@ -46,5 +46,3 @@ Caso contrário, se não houve erro crítico, ele apresentará avisos (_warnings
 Com o Linter teremos as mesmas questões que seriam detectadas somente após a compilação do fonte, então se houver uma indicação de erro e/ou warning eles serão os mesmos quando o fonte for compilado.
 
 Se perceberem algum comportamento estranho no _Linter_ realize a compilação do fonte. Caso o comportamento persista na compilação, favor abrir um [chamado diretamente na TOTVS](https://totvscst.zendesk.com/hc/pt-br/#home) informando o problema encontrado na compilação para que o time do _AppServer_ possa avaliar a questão. Quando o problema for solucionado pelo time de _AppServer_ o _Linter_ receberá a correção nas próximas atualizações da extensão.
-
-## <a name="tdsignore"></a>Ignorar pastas e arquivos

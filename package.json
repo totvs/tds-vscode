@@ -529,6 +529,22 @@
           "default": "",
           "description": "(Don't edit. It can be overwritten.)"
         },
+        "totvsLanguageServer.editor.index.cache": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "none",
+            "json",
+            "compact"
+          ],
+          "enumDescriptions": [
+            "%tds.package.editor.index.cache.none%",
+            "%tds.package.editor.index.cache.json%",
+            "%tds.package.editor.index.cache.compact%"
+          ],
+          "default": "none",
+          "description": "%tds.package.editor.index.cache%"
+        },
         "totvsLanguageServer.filesystem.encoding": {
           "scope": "window",
           "type": "string",

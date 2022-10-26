@@ -98,6 +98,15 @@ export function getLanguageServerSettings(): any[] {
     });
   }
 
+  const indexCache: string = config.get("editor.index.cache");
+  if (isNewSettings("editor", "index.cache", indexCache)) {
+    settings.push({
+      scope: "editor",
+      key: "indexCache",
+      value: indexCache
+    });
+  }
+
   return settings;
 }
 
