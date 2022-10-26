@@ -72,7 +72,7 @@ O uso do `.tdsignore` é similar aos usados em outras extensões/aplicativos, p.
 
 - O `.tdsindexignore` pode ser colocado em qualquer pasta ou sub-pastas, sendo que será aplicado de forma recursiva na pasta e sub-pastas, onde esta armazenado;
 
-- Cada linha do arquivo, é formado por uma _string_ que representa o padrão de nome de pastas e arquivos que serão ignorados ou negados de ignorar. Para formar o padrão, use:
+- Cada linha do arquivo, é formado por uma _string_ que representa o padrão de nome de pastas e arquivos que serão ignorados ou não. Para formar o padrão, use:
 
 | Curinga | Uso |
 | - | - |
@@ -90,7 +90,7 @@ O uso do `.tdsignore` é similar aos usados em outras extensões/aplicativos, p.
 
 > Linhas em branco não tem efeito
 
-> Evite usar acentuação.
+> Evite usar nomes acentuados.
 
 ### Exemplos
 
@@ -144,6 +144,7 @@ dbacess?.prw
 
 ##### ``root/test/.tdsignore``
 ```
-# Processa (não ignora) arquivos iniciados com ``test``
+# Cria uma excessão a regra em ``root/.tdsignore``
+# Não ignora arquivos iniciados com ``test``
 !test*.prw
 ```
