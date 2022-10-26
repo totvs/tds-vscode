@@ -72,51 +72,78 @@ O uso do `.tdsignore` é similar aos usados em outras extensões/aplicativos, p.
 
 - O `.tdsindexignore` pode ser colocado em qualquer pasta ou sub-pastas, sendo que será aplicado de forma recursiva na pasta e sub-pastas, onde esta armazenado;
 
-- Cada linha do arquivo, é formado por uma _string_ que representa o padrão de nome de pastas e arquivos que serão ignorados ou a negação de ignorar.
-
-- Para formar os padrões de seleção, utiliza-se caracteres comumente usados em nome de pastas e arquivos e caracteres curinga ( `?`, `*`, `**` ou `.` ).
-
-- Inicie a linha com `@`, seguido de uma expressão regular conforme a sintaxe de expressões regulares da linguagem [`Perl`](https://perldoc.perl.org/perlre).
-
-- Para comentários, inicie a linha com `#`.
-
-> A aplicação dos padrões de seleção não são sensíveis a caixa (maiúsculas e minúsculas).
+- Cada linha do arquivo, é formado por uma _string_ que representa o padrão de nome de pastas e arquivos que serão ignorados ou negados de ignorar. Para formar o padrão, use:
 
 | Curinga | Uso |
 | - | - |
 | `?` | Um caracter desconhecido. |
 | `*` | Um ou mais caracteres desconhecidos. |
-| `**` | Qualquer seguência de pastas. |
 | `.` | Pasta corrente. |
+| `!` | Nega a expressão, forçando o processamento do arquivo. |
 | `@` | Expressão regular [`Perl`](https://perldoc.perl.org/perlre). |
+
+> A aplicação dos padrões de seleção não são sensíveis a caixa (maiúsculas e minúsculas).
+
+> Informe primeiro as regras mais restrivas.
+
+> Ao colocar o arquivo ``.tdsignore`` em uma pasta, este será aplicado na pasta onde foi criado e em suas sub-pastas.
+
+> Linhas em branco não tem efeito
+
+> Evite usar acentuação.
 
 ### Exemplos
 
 #### Área de trabalho
-
 ```
-\- api
-|  |- .tdsignore
-|  |- api_product.prw
-|  |- api_customer.prw
-|  |- api_order.prw
-|  |- api_my_test.prw
-\- app
-|  |- app.prw
-|  |- utils.prw
-|  |- dbacess.prw
-|  |- app_my_test.prw
-\- test
-|  \- unit
-|  |  |- test_product.prw
-|  |  |- test_customer.prw
-|  |  |- test_order.prw
-|  \- integration
-|     |- customer.prw
-|     |- product.prw
-|     |- order.prw
-|- .tdsignore
+root
+  \- api
+  |  |- .tdsignore
+  |  |- api_product.prw
+  |  |- api_customer.prw
+  |  |- api_order.prw
+  |  |- api_my_test.prw
+  |  |- dbacess1.prw
+  |  |- dbacess2.prw
+  \- app
+  |  |- app.prw
+  |  |- utils.prw
+  |  |- dbacess1.prw
+  |  |- dbacess2.prw
+  |  |- app_my_test.prw
+  \- test
+  |  | .tdsignore
+  |  \- unit
+  |  |  |- test_product.prw
+  |  |  |- test_customer.prw
+  |  |  |- test_order.prw
+  |  \- integration
+  |     |- customer.prw
+  |     |- product.prw
+  |     |- order.prw
+  |- .tdsignore
 ```
 
+##### ``root/.tdsignore``
+```
+# A pasta ``test`` e suas sub-pastas serão ignoradas.
+test
 
+# Arquivos ``dbacess``, seguido de um caracter e em qualquer pasta será ignorado
+dbacess?.prw
+```
 
+##### ``root/api/.tdsignore``
+```
+# A pasta ``api`` e  sub-pastas serão ignoradas.
+.
+
+# Exceto o arquivo ``api_my_test.prw``
+!api_my_test.prw
+```
+
+##### ``root/test/.tdsignore``
+```
+# Processa (não ignora) arquivos iniciados com ``test``
+!test*.prw
+```
