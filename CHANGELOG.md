@@ -38,12 +38,12 @@ Veja detalhes de configuação em [TDS: Linter](docs/linter.md).
 
 ### Verificação do tamanho de linhas em fontes
 
-Introduzido verificação do tamanho da linha de código AdvPL, para evitar mensagem "_File is empty or corrupted_" no _linter_ e na compilação. [DTCLIENT01-3533](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3533)
+Introduzido verificação do tamanho da linha de código AdvPL no _linter_.
 
-No _appServer_, o limite é de 4k durante o pré-processamento (geração _.ppo_) do fonte e para evitar alguma ocorrência, foram definidos os limites (antes do pré-processamento):
+No _appServer_, o limite é de 4k durante o pré-processamento (geração _.ppo_) do fonte, com isso foram definidos os limites:
 
-- 1K, como aviso
-- 2K, como erro
+- acima de 2K, como aviso
+- acima de 4K, como erro
 
 ### Exportação da lista de objetos (Harpia)
 
@@ -51,7 +51,7 @@ Foi implementando opções de exportação em arquivos nos formatos [CSV\*](http
 
 | \* O arquivo CSV usa como separador o sinal ponto-e-virgúla entre valores e estes estão entre aspas.
 
-![Inspector tools bar](./doc/images/inspetor-tool-bar-harpia.png)
+![Inspector tools bar](./docs/images/inspetor-tool-bar-harpia.png)
 
 |     | Descrição                                       |
 | --- | ----------------------------------------------- |
