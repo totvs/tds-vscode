@@ -153,7 +153,7 @@ export function getLanguageClient(
   languageClient.registerProposedFeatures();
 
   languageClient.onNotification("$totvsserver/usageStatus", (params: IUsageStatusInfo) => {
-    updateUsageBarItem(params);
+    //updateUsageBarItem(params);
   });
 
   languageClient.start()

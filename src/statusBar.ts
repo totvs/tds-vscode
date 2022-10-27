@@ -33,7 +33,7 @@ export function initStatusBarItems(context: vscode.ExtensionContext) {
   initPermissionStatusBarItem(context);
   initRpoTokenStatusBarItem(context);
   initSettingsBarItem(context);
-  initusageBarItem(context);
+  //initusageBarItem(context);
 }
 
 export function updateStatusBarItems() {
@@ -333,7 +333,7 @@ function initusageBarItem(context: vscode.ExtensionContext): void {
   usageBarItem.command = "totvs-developer-studio.toggleUsageInfo";
 
   context.subscriptions.push(usageBarItem);
-  updateUsageBarItem();
+  //updateUsageBarItem();
 }
 
 export function updateUsageBarItem(args?: IUsageStatusInfo): void {

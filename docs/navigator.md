@@ -66,7 +66,7 @@ Para ajustar o comportamento acesse ``File > Preference > Settings``, filtre por
 
 `.tdsindexignore` é um arquivo dentro da pasta do projeto (ou sub-pastas) que ignora/impede que os arquivos sejam indexados, lembrando que essa configuração afetará a [navegação em fontes](./navigator.md).
 
-O uso do `.tdsignore` é similar aos usados em outras extensões/aplicativos, p.e. `.gitignore`, `.vscodeignore` e outros.
+O uso do `.tdsindexignore` é similar aos usados em outras extensões/aplicativos, p.e. `.gitignore`, `.vscodeignore` e outros.
 
 ### Sintaxe
 
@@ -86,7 +86,7 @@ O uso do `.tdsignore` é similar aos usados em outras extensões/aplicativos, p.
 
 > Informe primeiro as regras mais restrivas.
 
-> Ao colocar o arquivo ``.tdsignore`` em uma pasta, este será aplicado na pasta onde foi criado e em suas sub-pastas.
+> Ao colocar o arquivo ``.tdsindexignore`` em uma pasta, este será aplicado na pasta onde foi criado e em suas sub-pastas.
 
 > Linhas em branco não tem efeito
 
@@ -98,7 +98,7 @@ O uso do `.tdsignore` é similar aos usados em outras extensões/aplicativos, p.
 ```
 root
   \- api
-  |  |- .tdsignore
+  |  |- .tdsindexignore
   |  |- api_product.prw
   |  |- api_customer.prw
   |  |- api_order.prw
@@ -112,7 +112,7 @@ root
   |  |- dbacess2.prw
   |  |- app_my_test.prw
   \- test
-  |  | .tdsignore
+  |  | .tdsindexignore
   |  \- unit
   |  |  |- test_product.prw
   |  |  |- test_customer.prw
@@ -121,10 +121,10 @@ root
   |     |- customer.prw
   |     |- product.prw
   |     |- order.prw
-  |- .tdsignore
+  |- .tdsindexignore
 ```
 
-##### ``root/.tdsignore``
+##### ``root/.tdsindexignore``
 ```
 # A pasta ``test`` e suas sub-pastas serão ignoradas.
 test
@@ -133,7 +133,7 @@ test
 dbacess?.prw
 ```
 
-##### ``root/api/.tdsignore``
+##### ``root/api/.tdsindexignore``
 ```
 # A pasta ``api`` e  sub-pastas serão ignoradas.
 .
@@ -142,9 +142,9 @@ dbacess?.prw
 !api_my_test.prw
 ```
 
-##### ``root/test/.tdsignore``
+##### ``root/test/.tdsindexignore``
 ```
-# Cria uma excessão a regra em ``root/.tdsignore``
+# Cria uma excessão a regra em ``root/.tdsindexignore``
 # Não ignora arquivos iniciados com ``test``
 !test*.prw
 ```
