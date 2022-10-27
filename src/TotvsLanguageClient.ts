@@ -1,20 +1,20 @@
 import * as vscode from "vscode";
 import {
   LanguageClientOptions,
-  RevealOutputChannelOn,
+  RevealOutputChannelOn
 } from "vscode-languageclient";
 
 import {
   ServerOptions
 } from "vscode-languageclient/node";
 
-import { statSync, chmodSync } from "fs";
+import { chmodSync, statSync } from "fs";
 import { reconnectLastServer } from "./serversView";
 
 import * as nls from "vscode-nls";
 import { getLanguageServerSettings } from "./server/languageServerSettings";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
-import { updateUsageBarItem } from './statusBar';
+//import { updateUsageBarItem } from './statusBar';
 import { IUsageStatusInfo } from './protocolMessages';
 
 let localize = nls.loadMessageBundle();
