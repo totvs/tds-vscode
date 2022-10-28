@@ -139,10 +139,10 @@
 	"tds.package.filesystem.encoding": "Set file system encoding",
 	"tds.package.editor.linter": "Linter behavior",
 	"tds.package.editor.hover.simple": "Простой текст",
-	"tds.package.editor.hover.protheusDoc": "Используйте Protheus Doc, когда это возможно",
-    "tds.package.editor.hover": "Управляйте тем, как отображается презентация при наведении.",
-	"tds.package.editor.index.cache": "Постоянство кэша при просмотре",
-	"tds.package.editor.index.cache.none": "Отключает сохранение кэша между сеансами.",
-	"tds.package.editor.index.cache.json": "Формат сохраняемого кеша — JSON.",
-	"tds.package.editor.index.cache.compact": "Формат сохраняемого кеша COMPACT."
+	"tds.package.editor.hover.protheusDoc": "Используйте ProtheusDoc, когда это возможно",
+	"tds.package.editor.hover": "Управляйте тем, как отображается презентация при наведении.",
+	"tds.package.editor.index.cache": "Browsing cache persistence",
+	"tds.package.editor.index.cache.none": "Disables cache persistence between sessions.",
+	"tds.package.editor.index.cache.json": "Persist cache format is JSON.",
+	"tds.package.editor.index.cache.compact": "Persist cache format is COMPACT."
 }
