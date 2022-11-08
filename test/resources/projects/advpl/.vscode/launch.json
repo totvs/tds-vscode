@@ -6,7 +6,7 @@
 			"request": "launch",
 			"name": "Smart Client Debug",
 			"program": "${command:AskForProgramName}",
-			"smartclientBin": "M:\\protheus\\smartClient\\20-3-0-3\\smartclient.exe",
+			"smartclientBin": "M:\\protheus\\smartClient\\20-3-0-4\\smartclient.exe",
 			"cwb": "${workspaceFolder}",
 			"isMultiSession": true,
 			"enableTableSync": true,
@@ -67,5 +67,6 @@
 			"label": "u_get_func"
 		}
 	],
-	"lastProgramExecuted": "u_get_func"
+	"lastProgramExecuted": "<cancel>",
+	"lastProgramArguments": []
 }

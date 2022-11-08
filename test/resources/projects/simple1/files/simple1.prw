@@ -18,7 +18,7 @@ user function abc(p1, ;
     local y
   
     abc()
-     
+
     u_abc()
 
 conout(XXXX)
