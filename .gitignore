@@ -24,3 +24,5 @@ test/**/no_git
 syntaxes/.antlr
 syntaxes/build
 src/parser/4gl-parser.js
+test/**/fw/**
+
