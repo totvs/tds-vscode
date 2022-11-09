@@ -94,51 +94,16 @@ export function getLanguageClient(
   let clientOptions: LanguageClientOptions = {
     documentSelector: [{ language: "advpl" }, { language: "4gl" }],
     diagnosticCollectionName: "AdvPL",
-    //outputChannel?: OutputChannel;
     outputChannelName: "TOTVS LS",
     traceOutputChannel: vscode.window.createOutputChannel(`TOTVS LS (trace)`),
     revealOutputChannelOn: RevealOutputChannelOn.Error,
     //stdioEncoding?: string;
     initializationOptions: clientConfig,
-    // initializationFailedHandler: (e: any) => {
-    //   vscode.window.showErrorMessage(e);
-
-    //   return false;
-    // },
     progressOnInitialization: false,
-    //errorHandler: new CqueryErrorHandler(workspace.getConfiguration('cquery'))
-    middleware: {
-      // handleWorkDoneProgress:
-      //   (token: ProgressToken, params: WorkDoneProgressBegin | WorkDoneProgressReport | WorkDoneProgressEnd, next: HandleWorkDoneProgressSignature) => {
-      //     console.dir(token);
-      //     console.dir(params);
-      //     next(token, params);
-      //   },
-      // window: {
-
-      // }
-      // workspace: {
-      //   didChangeConfiguration: () => {
-      //     return languageClient.sendNotification(DidChangeConfigurationNotification.type, { settings: [] });
-      //   }
-    },
-    // middleware: {
-    //   // provideCodeLenses: provideCodeLens,
-    //   //provideOnTypeFormattingEdits: provideOnTypeFormatting,
-    //   //provideDocumentFormattingEdits: provideDocumentFormattingEdits,
-    //   //provideDocumentRangeFormattingEdits: provideDocumentRangeFormattingEdits,
-    // },
-    // uriConverters?: {
-    //   code2Protocol: c2p.URIConverter;
-    //   protocol2Code: p2c.URIConverter;
-    // };
     markdown: {
       isTrusted: true,
       supportHtml: false
     },
-    //$ConfigurationOptions = {
-    //synchronize: SynchronizeOptions,
-    //workspaceFolder: {VWorkspaceFolder};
     diagnosticPullOptions: {
       onChange: true,
       onSave: true,
