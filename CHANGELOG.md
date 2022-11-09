@@ -38,12 +38,7 @@ Veja detalhes de configuação em [TDS: Linter](docs/linter.md).
 
 ### Verificação do tamanho de linhas em fontes
 
-Introduzido verificação do tamanho da linha de código AdvPL no _linter_.
-
-No _appServer_, o limite é de 4k durante o pré-processamento (geração _.ppo_) do fonte, com isso foram definidos os limites:
-
-- acima de 2K, como aviso
-- acima de 4K, como erro
+Melhorado tratamento quando há linhas no código fonte iguais ou superiores a 4Kbytes.
 
 ### Exportação da lista de objetos (Harpia)
 
@@ -62,26 +57,30 @@ Foi implementando opções de exportação em arquivos nos formatos [CSV\*](http
 |     | Exportação em texto de largura fixa             |
 |     | _Reset_ de configuração                         |
 
-### Mensagem de TimeLine não encontrada para os pontos de parada existentes
+### Mensagem de _TimeLine_ não encontrada para os pontos de parada existentes
 
-Ao executar um Run durante a execução do TDS Replay, caso não fosse encontrado nenhuma TimeLine correspondente aos pontos de parada existentes, era feito uma parada na última TimeLine da última página.
-Esse comportamento foi removido e implementando uma mensagem informativa. E a TimeLine de origem continuará selecionada.  [DTCLIENT01-3601](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3601)
+Ao executar um Run durante a execução do TDS Replay, caso não fosse encontrado nenhuma _TimeLine_ correspondente aos pontos de parada existentes, era feito uma parada na última _TimeLine_ da última página.
+Esse comportamento foi removido e implementando uma mensagem informativa. E a _TimeLine_ de origem continuará selecionada.  [DTCLIENT01-3601](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3601)
 
-### Validação de patches no Harpia
+### Validação de _patches_ no Harpia
 
-Ajustes na validação de patches aplicados em AppServer Harpia.
+Ajustes na validação de pacotes de atualização (_patches_) aplicados em _AppServer_ Harpia.
 
 ## Correções
+
+### Correção no tratamento da chave ``openglMode`` [DTCLIENT01-3702](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3702)
+
+Foi corrigido o tratamento da chave ``openglMode`` na definição de executores, onde a chave ``--openGL`` passa a ser informada ao _SmartClient_ somente se esta estiver ligada.
 
 ### Erro ao tentar excluir um ambiente [#1022](https://github.com/totvs/tds-vscode/issues/1022)
 
 Corrigido problema ao tentar excluir um ambiente
 
-### Unificação tratamento do tipo text (4GL) com o char (AdvPL)
+### Unificação no tratamento do tipo _text_ (4GL) com o _char_ (AdvPL)
 
-Foi unificado o tratamento do tipo text (4GL) que estava diferente do char (AdvPL).
+Foi unificado o tratamento do tipo _text_ (4GL) que estava diferente do _char_ (AdvPL).
 
-### Erro formatação Classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
+### Erro formatação classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
 
 Corrigido o tratamento de continuação de linhas (;).
 
@@ -408,7 +407,7 @@ Ajustado propriedades dos botões.
 
 ## Melhorias
 
-- Removido opcao de filtro de 1500 timelines para facilitar calculo de paginação
+- Removido opcao de filtro de 1500 _TimeLine_s para facilitar calculo de paginação
 
 ## Processamento de fluxo em um array complexo ([ISSUE 686](https://github.com/totvs/tds-vscode/issues/686)) ([DTCLIENT01-2784](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2784))
 
@@ -424,7 +423,7 @@ Ajustado propriedades dos botões.
 
 ### Problema:
 
-- A lista de exclusão de fontes não levava em consideração fontes que não existissem na área de trabalho. Dessa forma, a timeline é mostrada, sendo que deveria ser filtrada.
+- A lista de exclusão de fontes não levava em consideração fontes que não existissem na área de trabalho. Dessa forma, a _TimeLine_ é mostrada, sendo que deveria ser filtrada.
 
 ### Solução:
 
@@ -452,7 +451,7 @@ Ajustado propriedades dos botões.
 
 ### Problema:
 
-- A lista de exclusão de fontes não levava em consideração fontes que não existissem na área de trabalho. Dessa forma, a timeline é mostrada, sendo que deveria ser filtrada.
+- A lista de exclusão de fontes não levava em consideração fontes que não existissem na área de trabalho. Dessa forma, a _TimeLine_ é mostrada, sendo que deveria ser filtrada.
 
 ### Solução:
 
