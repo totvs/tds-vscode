@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import Utils from "../utils";
 
 const oldSettings: {} = {};
+var needRestart: boolean = false;
 
 function isNewSettings(scope: string, key: string, value: any): boolean {
   let result: boolean = true;
@@ -60,6 +61,7 @@ export function getLanguageServerSettings(): any[] {
       key: "notificationlevel",
       value: config.get("editor.show.notification")
     });
+    needRestart = true;
   }
 
   const usageInfo: string = Utils.isUsageInfoConfig() ? "enabled" : "disabled";
@@ -105,8 +107,18 @@ export function getLanguageServerSettings(): any[] {
       key: "indexCache",
       value: indexCache
     });
+    needRestart = true;
   }
 
   return settings;
 }
 
+export function confirmRestartNow() {
+  if (needRestart) {
+    vscode.window.showInformationMessage("To make the change effective, it is necessary to restart VS-CODE.", "Now", "Later").then((value: string) => {
+      if (value == "Now") {
+        vscode.commands.executeCommand("workbench.action.reloadWindow");
+      }
+    })
+  }
+}

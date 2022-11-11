@@ -536,12 +536,12 @@
           "enum": [
             "none",
             "json",
-            "compact"
+            "package"
           ],
           "enumDescriptions": [
             "%tds.package.editor.index.cache.none%",
             "%tds.package.editor.index.cache.json%",
-            "%tds.package.editor.index.cache.compact%"
+            "%tds.package.editor.index.cache.package%"
           ],
           "default": "none",
           "description": "%tds.package.editor.index.cache%"

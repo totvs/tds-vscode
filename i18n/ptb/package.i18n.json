@@ -150,5 +150,5 @@
 	"tds.package.editor.index.cache": "Persistência do cache de navegação",
 	"tds.package.editor.index.cache.none": "Disables cache persistence between sessions.",
 	"tds.package.editor.index.cache.json": "Persist cache format is JSON.",
-	"tds.package.editor.index.cache.compact": "Persist cache format is COMPACT."
+	"tds.package.editor.index.cache.package": "Persist cache format is binary pack."
 }

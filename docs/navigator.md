@@ -58,7 +58,7 @@ Para ajustar o comportamento acesse ``File > Preference > Settings``, filtre por
 | Opção | Comportamento |
 | `None` | Desabilita _cache_ em disco (padrão) |
 | `JSON` | O _cache_ é gravado em formato (JSON)[https://www.alura.com.br/artigos/o-que-e-json?gclid=Cj0KCQjwkt6aBhDKARIsAAyeLJ24a_dm9QADJrPo6TAG1kzC9y-E13cp5hSu3XKMoQoJmtRcYTI7__IaAjHvEALw_wcB] |
-| `Compact` | O _cache_ é gravado em modo binário e de forma compacta (proprietário) |
+| `package` | O _cache_ é gravado em modo binário (proprietário) |
 
 ## <a name="ignore"></a>Ignorar pastas e arquivos
 

@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { sendDidChangeConfiguration } from "./protocolMessages";
-import { getLanguageServerSettings } from "./server/languageServerSettings";
+import { confirmRestartNow, getLanguageServerSettings } from "./server/languageServerSettings";
 import { updateStatusBarItems } from "./statusBar";
 
 export function registerWorkspace(context: vscode.ExtensionContext) {
@@ -9,6 +9,7 @@ export function registerWorkspace(context: vscode.ExtensionContext) {
 			if (e.affectsConfiguration("totvsLanguageServer")) {
 				const settings: any[] = getLanguageServerSettings();
 				if (settings.length > 0) {
+					confirmRestartNow();
 					sendDidChangeConfiguration(settings).then(() => {
 						updateStatusBarItems();
 					});

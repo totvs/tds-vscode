@@ -144,5 +144,5 @@
 	"tds.package.editor.index.cache": "Persistencia de caché de navegación",
 	"tds.package.editor.index.cache.none": "Deshabilita la persistencia de caché entre sesiones.",
 	"tds.package.editor.index.cache.json": "El formato de caché persistente es JSON.",
-	"tds.package.editor.index.cache.compact": "El formato de caché persistente es COMPACTO."
+	"tds.package.editor.index.cache.package": "El formato de caché persistente es paquete binario."
 }
