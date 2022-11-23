@@ -9,14 +9,16 @@ Função simples com dois argumentos.
 @param p2, variant, param_description
 @return variant, ddddddddddddddddddddddddddddddddddddddddd
 /*/ 
+public abc
 
-user function abc(p1, ;
-                         p2)
+user function abc(p1, p2)
     local x
     local a, b, c := ""
     local abc 
     local y
-   
+
+    private abc   
+
     abc()
       
     u_abc()

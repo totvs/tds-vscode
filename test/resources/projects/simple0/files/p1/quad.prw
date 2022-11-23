@@ -99,7 +99,7 @@ Calcula a ?rea do quadril?tero.
 method area() class TQuad
     //{pdoc} Resultado da ?rea calculada.
     local nArea := -1
-
+    
 	if (::baseMenor == 0) 
 		nArea := ::base * ::altura //quadrados e ret?ngulos
 	else
