@@ -15,6 +15,7 @@ Os problemas estão divididos em **"Gerais"** e **"Depuração"** então procure
 ## Problemas Gerais
 
 São problemas que ocorrem desde a inicialização do **TDS VS Code** até a operação normal do dia-a-dia como compilar, gerar e aplicar patches, etc. Excluindo-se apenas a Depuração que é tratada em outra seção.
+&nbsp;
 
 ### Erro na aplicação de pacotes de atualização (_patchs_) em servidores com versão 19.3.1.7 ou anterior
 
