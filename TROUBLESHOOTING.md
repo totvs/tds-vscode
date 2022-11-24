@@ -18,10 +18,10 @@ São problemas que ocorrem desde a inicialização do **TDS VS Code** até a ope
 
 ### Erro na aplicação de pacotes de atualização (_patchs_) em servidores com versão 19.3.1.7 ou anterior
 
-Temos notícias de problemas em aplicação de pacotes em _appServer_ com versão 19.3.1.7 ou anterior com SSL ligado (conexão segura).
+	Temos notícias de problemas em aplicação de pacotes em _appServer_ com versão 19.3.1.7 ou anterior com SSL ligado (conexão segura).
 
-**Solução:** Assim que possível, atualize o _appServer_
-**Paliativo:** Dsative a comunicação segura (SSL).
+	**Solução:** Assim que possível, atualize o _appServer_
+	**Paliativo:** Dsative a comunicação segura (SSL).
 
 ### Pastas com acentuação
 
