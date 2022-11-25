@@ -1,5 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+//import React from 'react';
+import React = require("react");
+//import PropTypes from 'prop-types';
+import PropTypes = require("prop-types");
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import { DialogContent, Typography } from '@material-ui/core';
@@ -64,6 +66,11 @@ export default function ChangePageWaitDialog(props) {
   );
 }
 
+// ChangePageWaitDialog.propTypes = {
+//   open: false,
+// };
+
+//if(PropTypes)
 ChangePageWaitDialog.propTypes = {
   open: PropTypes.bool.isRequired
 };

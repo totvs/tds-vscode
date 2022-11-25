@@ -11,7 +11,7 @@
 		"skipFiles": [
 			"<node_internals>/**"
 		],
-		"type": "pwa-node"
+		"type": "node"
 	},
 		{
 			"type": "extensionHost",

@@ -86,7 +86,7 @@ private initializePanel(): void {
       )
     );
 
-    const reactAppUri = reactAppPathOnDisk.with({ scheme: "vscode-resource" });
+    const reactAppUri = this._panel?.webview.asWebviewUri(reactAppPathOnDisk);
 
 
     this._debugEvent.body["ignoreSourcesNotFound"] = this._isIgnoreSourcesNotFound;
@@ -103,7 +103,7 @@ private initializePanel(): void {
         <meta http-equiv="Content-Security-Policy"
                     content="default-src 'none';
                              img-src https:;
-                             script-src 'unsafe-eval' 'unsafe-inline' vscode-resource:;
+                             script-src https: 'unsafe-eval' 'unsafe-inline' vscode-resource:;
                              style-src vscode-resource: 'unsafe-inline';">
 
         <script>
