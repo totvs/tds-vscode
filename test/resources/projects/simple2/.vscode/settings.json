@@ -1,0 +1,12 @@
+{
+    "totvsLanguageServer.editor.linter": true,
+    "totvsLanguageServer.welcomePage": false,
+    "totvsLanguageServer.launch.args": [
+        "--log-file=totvsls.log",
+        "--record=totvsls",
+        "--wait-for-attach=20000"
+    ],
+    "totvsLanguageServer.askCompileResult": false,
+    "totvsLanguageServer.busyInfoConfig": true,
+    "totvsLanguageServer.editor.linter.includes": ""
+}

@@ -65,7 +65,7 @@
     "export-i18n": "gulp export-i18n",
     "i18n-import": "gulp i18n-import",
     "---RELEASE---": "",
-    "release": "npx standard-version --skip.changelog --release-as 1.4.0-BETA",
+    "release": "npx standard-version --skip.changelog --release-as 1.4.0-BETA-2",
     "tag": "git push --follow-tags origin dev",
     "package": "gulp package",
     "publish": "gulp publish",

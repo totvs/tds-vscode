@@ -10,6 +10,7 @@ user function funarr()
 return result 
 
 user function escolheNum(replay, replayPath, numbers)
+
 	local n, cResp := "xxxxx", cMsg := ""
 	local aOpcoes := {}
 	private cOpcao

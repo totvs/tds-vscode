@@ -1,5 +1,13 @@
 # Changelog
 
+# Versão [1.4.0-BETA-2]
+
+## Correções
+
+### Indexação de pastas e arquivos com nome acentuados
+
+Indexação de pastas e arquivos com nome acentuados.
+
 # Versão [1.4.0-BETA]
 
 ## Melhorias
