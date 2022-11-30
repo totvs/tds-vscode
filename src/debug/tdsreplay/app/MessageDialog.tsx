@@ -1,4 +1,5 @@
-import React from 'react';
+//import React from 'react';
+import React = require("react");
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
