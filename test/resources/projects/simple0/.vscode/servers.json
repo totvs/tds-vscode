@@ -24,7 +24,7 @@
 			],
 			"username": "admin",
 			"environment": "P12133",
-			"token": "djM6dHlqYTRlYW0za2tsOGJxc21oZW02NDc4dG5oM3dxOjE6bG9jYWxob3N0OjIwMzAyOjE6Ny4wMC4yMTAzMjRQOjM=:djE6UDEyMTMzOmFkbWluOmN0QmNJUHRvcFVYOWIyQTVFVXlsTWZwWEI2Ui96NTB6L08vZkV4eU1ZMk09|djI6MTY2ODAyNzk3MDowOjE6MQ==.fEdWdmSwaTqJpynznD8yWJSSewKR2qXm9daUY/pOiAitti5/Zk0d1EDpG290n7KyaSpA1G6MNpzv/J/gmVxu8kyNKR15Qzz2FTMgQ61OeLvkWXGrmOZjXOxrVg1pQKEE/Kx4hqfbaijWNaLcGWJLwC7T+tFAY1VtsgKdMT6VsHU+1Ep/mTUahya3x6Db6qe4h6Zv4fLN89+imybaswNTyPm6zDeVwWKe0j18qba3vi0sDWWO1H/DrcAXQ+VLezDxNf63qQCOHWgCgIPDbTN2MBFqA0KgC5uezmRPcJJleEhOWFeJ9iZUjSYfGkGnsAC9sM7QiJoCafhpnHBz32Fnbw==",
+			"token": "djM6dHlqYTRlYW0za2tsOGJxc21oZW02NDc4dG5oM3dxOjE6bG9jYWxob3N0OjIwMzAyOjE6Ny4wMC4yMTAzMjRQOjM=:djE6UDEyMTMzOmFkbWluOm1iT08yM3Y4SUd4eVgwNVl3N3V2RnhNc3JmUUtZTGxISFFNeUp6eXNiRU09|djI6MTY2OTgxNDg0NDowOjE6MQ==.M2DPDgTww8SeQlZ0EAQksDbzVGh2En7mB1psiAurr3yxHXh8aDjqNKlSnhweTiMpBZmovyDICDnPMZuVXk1aY3kdoHyhNKaGJO5+QMdHlhAA5mgcvfJr3kWm/ztjCp48gj6+kjd+L9hh0+rAlRTcVkHoInnS3/DgXCwsQYeJpI6z45TNLl8BCXqheCYlHSj0TcGL/CYowH9FB7aA7+V9dasSE+kjhw6FoH5/bjAlNbV7WjHdytADaw0c+WquPVggEWa2VWobmSwEzLenrk17rjpvkUjuHHV3IRPgNubAPjGzFdvjx+SH1vvuw/KvQNenU9mSrgQjPpEBODFq5xpgmg==",
 			"informations": {
 				"permissions": [],
 				"errorMessage": "",
@@ -61,7 +61,7 @@
 			"tyja4eam3kkl8bqsmhem6478tnh3wq:P12133",
 			{
 				"id": "tyja4eam3kkl8bqsmhem6478tnh3wq",
-				"token": "djM6dHlqYTRlYW0za2tsOGJxc21oZW02NDc4dG5oM3dxOjE6bG9jYWxob3N0OjIwMzAyOjE6Ny4wMC4yMTAzMjRQOjM=:djE6UDEyMTMzOmFkbWluOmN0QmNJUHRvcFVYOWIyQTVFVXlsTWZwWEI2Ui96NTB6L08vZkV4eU1ZMk09|djI6MTY2ODAyNzk3MDowOjE6MQ==.fEdWdmSwaTqJpynznD8yWJSSewKR2qXm9daUY/pOiAitti5/Zk0d1EDpG290n7KyaSpA1G6MNpzv/J/gmVxu8kyNKR15Qzz2FTMgQ61OeLvkWXGrmOZjXOxrVg1pQKEE/Kx4hqfbaijWNaLcGWJLwC7T+tFAY1VtsgKdMT6VsHU+1Ep/mTUahya3x6Db6qe4h6Zv4fLN89+imybaswNTyPm6zDeVwWKe0j18qba3vi0sDWWO1H/DrcAXQ+VLezDxNf63qQCOHWgCgIPDbTN2MBFqA0KgC5uezmRPcJJleEhOWFeJ9iZUjSYfGkGnsAC9sM7QiJoCafhpnHBz32Fnbw=="
+				"token": "djM6dHlqYTRlYW0za2tsOGJxc21oZW02NDc4dG5oM3dxOjE6bG9jYWxob3N0OjIwMzAyOjE6Ny4wMC4yMTAzMjRQOjM=:djE6UDEyMTMzOmFkbWluOm1iT08yM3Y4SUd4eVgwNVl3N3V2RnhNc3JmUUtZTGxISFFNeUp6eXNiRU09|djI6MTY2OTgxNDg0NDowOjE6MQ==.M2DPDgTww8SeQlZ0EAQksDbzVGh2En7mB1psiAurr3yxHXh8aDjqNKlSnhweTiMpBZmovyDICDnPMZuVXk1aY3kdoHyhNKaGJO5+QMdHlhAA5mgcvfJr3kWm/ztjCp48gj6+kjd+L9hh0+rAlRTcVkHoInnS3/DgXCwsQYeJpI6z45TNLl8BCXqheCYlHSj0TcGL/CYowH9FB7aA7+V9dasSE+kjhw6FoH5/bjAlNbV7WjHdytADaw0c+WquPVggEWa2VWobmSwEzLenrk17rjpvkUjuHHV3IRPgNubAPjGzFdvjx+SH1vvuw/KvQNenU9mSrgQjPpEBODFq5xpgmg=="
 			}
 		],
 		[
@@ -72,5 +72,5 @@
 			}
 		]
 	],
-	"lastConnectedServer": "tyja4eam3kkl8bqsmhem6478tnh3wq"
+	"lastConnectedServer": ""
 }

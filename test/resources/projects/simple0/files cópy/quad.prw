@@ -75,7 +75,7 @@ method altura(nValor) class TQuad
 		::altura = nValor
 	endif
 return ::altura
-
+ 
 /*/{Protheus.doc} TQuad::baseMenor
 Recupera o valor atual da propriedade ``baseMenor``. Se ``nValue`` for informado, ajusta
 o valor da propriedade ``baseMenor`` para ``nValue``.

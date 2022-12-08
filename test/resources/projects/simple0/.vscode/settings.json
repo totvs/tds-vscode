@@ -7,6 +7,6 @@
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
         "--record=totvsls",
-        "--wait-for-attach=20000",
-        "--debug-ls"
+        "--wait-for-attach=20000"
+    ]
 }

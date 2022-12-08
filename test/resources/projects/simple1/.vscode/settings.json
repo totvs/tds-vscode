@@ -6,7 +6,6 @@
     "totvsLanguageServer.usageInfoConfig": false,
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
-        "--record=totvsls",
         "--wait-for-attach=30000"
     ],
 }

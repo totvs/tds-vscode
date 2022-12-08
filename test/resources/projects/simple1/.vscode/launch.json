@@ -9,7 +9,8 @@
 			"cwb": "${workspaceFolder}",
 			"smartclientBin": "M:\\protheus\\smartClient\\20-3-0-4\\smartclient.exe",
 			"isMultiSession": true,
-			"enableTableSync": true
+			"enableTableSync": true,
+			"logFile": "${workspaceFolder}/daplog.log"
 		}
 	],
 	"lastPrograms": [
@@ -21,9 +22,12 @@
 				"W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\simple\\files"
 			],
 			"label": "u_getfunc"
+		},
+		{
+			"label": "sigafat"
 		}
 	],
-	"lastProgramExecuted": "u_getfunc",
+	"lastProgramExecuted": "sigafat",
 	"lastProgramArgumens": [
 		"W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\simple\\files"
 	]
