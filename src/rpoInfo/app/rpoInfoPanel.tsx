@@ -264,8 +264,12 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
   const doOrderChange = (orderBy: number, direction: string) => {
     const columns = propColumns().columns;
 
-    memento.set(propOrderBy(columns[orderBy]["field"]));
-    memento.set(propOrderDirection(direction));
+    if (columns[orderBy] === null || columns[orderBy] === undefined) {
+      memento.set(propOrderBy(0));
+    } else {
+      memento.set(propOrderBy(columns[orderBy]["field"]));
+      memento.set(propOrderDirection(direction));
+    }
   };
 
   const doChangeRowsPerPage = (value: number) => {
