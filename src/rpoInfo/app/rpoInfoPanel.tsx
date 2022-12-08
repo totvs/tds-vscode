@@ -366,7 +366,7 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
         <Grid container spacing={2}>
           <Grid item xs={2}>
             <Grid container>
-              <Grid item container className={inputTextClasses.root}>
+              <Grid item container direction="column" className={inputTextClasses.root}>
                 <Typography variant="overline" display="block" gutterBottom>
                   RPO
                 </Typography>
