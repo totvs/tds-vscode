@@ -10,7 +10,7 @@
 <!-- markdownlint-enabled -->
 <!-- prettier-ignore-end -->
 
-A extensão do **TOTVS Developer Studio for VS Code** disponibiliza uma suíte de desenvolvimento para o ecossistema **Protheus**.
+A extensão do **TOTVS Developer Studio for VS Code** disponibiliza uma suíte de desenvolvimento para o ecossistema **Protheus/Logix**.
 
 Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP (_Debug Adapter Protocol_), ambos amplamente utilizados e extensíveis à outras _IDEs_ de mercado, como Atom, Visual Studio, Eclipse, Eclipse Theia, Vim e Emacs.
 
@@ -37,7 +37,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 
 ## SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO
 
-As chaves de compilação ou _tokens_ de compilação empregados na construção do _Protheus_ e suas funcionalidades, são de uso restrito dos _desenvolvedores_ de cada módulo.
+As chaves de compilação ou _tokens_ de compilação empregados na construção do _Protheus/Logix_ e suas funcionalidades, são de uso restrito dos _desenvolvedores_ de cada módulo.
 
 Em caso de mau uso destas chaves ou tokens, por qualquer _outra parte_, que não a referida acima, a mesma irá se responsabilizar, direta ou regressivamente, única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações, multas, condenações judiciais, arbitrais e administrativas e quaisquer outras despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros, eximindo a TOTVS de toda e qualquer responsabilidade.
 
