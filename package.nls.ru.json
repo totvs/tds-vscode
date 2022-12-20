@@ -109,7 +109,6 @@
 	"tds.package.properties.trace.description.web": "Включить ведение журнала для протокола адаптера отладки.",
 	"tds.package.properties.smartclientUrl.description": "URL-адрес SmartClient HTML.",
 	"tds.package.properties.workspaceFolders.description.web": "Пути в рабочем пространстве",
-	"tds.package.properties.wsCacheFiles.description.web": "Включение / отключение начального кеширования файлов в папке рабочего пространства (DAP)",
 	"tds.package.properties.webNavigator.description.web": "Веб-Навигатор.",
 	"tds.package.configurationSnippets.description": "Новая конфигурация для «отладки» выбранного пользователем файла AdvPL/4GL.",
 	"tds.package.configurationSnippets.description.web": "Новая конфигурация для «отладки» выбранного пользователем файла AdvPL/4GL с помощью SmartClient HTML.",

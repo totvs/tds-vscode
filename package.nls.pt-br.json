@@ -109,7 +109,6 @@
 	"tds.package.properties.trace.description.web": "Habilitar o log do protocolo do adaptador de depuração.",
 	"tds.package.properties.smartclientUrl.description": "O URL HTML do SmartClient.",
 	"tds.package.properties.workspaceFolders.description.web": "Caminhos na área de trabalho",
-	"tds.package.properties.wsCacheFiles.description.web": "Habilitar/desabilitar o cache inicial dos arquivos de pasta do Workspace (DAP)",
 	"tds.package.properties.webNavigator.description.web": "O Navegador da Web.",
 	"tds.package.configurationSnippets.description": "Uma nova configuração para 'depurar' um arquivo AdvPL/4GL selecionado pelo usuário.",
 	"tds.package.configurationSnippets.description.web": "Uma nova configuração para 'depurar' um arquivo AdvPL/4GL selecionado pelo usuário usando o SmartClient HTML.",
