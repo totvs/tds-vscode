@@ -174,8 +174,12 @@ export default function InspectorPanel(props: IInspectorPanel) {
       ? propObjectsColumns().columns
       : propFunctionsColumns().columns;
 
-    memento.set(propOrderBy(columns[orderBy]["field"]));
-    memento.set(propOrderDirection(direction));
+    if (columns[orderBy] === null || columns[orderBy] === undefined) {
+      memento.set(propOrderBy(0));
+    } else {
+      memento.set(propOrderBy(columns[orderBy]["field"]));
+      memento.set(propOrderDirection(direction));
+    }
   };
 
   const doChangeRowsPerPage = (value: number) => {

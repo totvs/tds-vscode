@@ -232,6 +232,10 @@ export class RpoInfoLoader implements vscode.Disposable {
 
     rpoInfo.rpoPatchs.forEach((rpoPatch: IRpoPatch) => {
       const name: string = rpoPatch.dateFileApplication.split("T")[0];
+      let isCustom: boolean = rpoPatch.typePatch > 10;
+      if (isCustom) {
+        rpoPatch.typePatch = rpoPatch.typePatch - 10;
+      }
 
       let key = name.substr(0, 7);
       if (!map[key]) {
@@ -241,7 +245,7 @@ export class RpoInfoLoader implements vscode.Disposable {
 
       map[key].children.push({
         id: "node_" + key + map[key].children.length,
-        name: name,
+        name: name+(isCustom?" (Custom)":""),
         children: [],
         rpoPatch: rpoPatch,
       });
