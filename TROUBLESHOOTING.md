@@ -11,7 +11,6 @@ Os problemas estão divididos em **"Gerais"** e **"Depuração"** então procure
 
 > **"Issues"** abertas sem as **"Informações importantes"** serão analisadas somente após receberem tais informações,
 
-
 ## Problemas Gerais
 
 São problemas que ocorrem desde a inicialização do **TDS VS Code** até a operação normal do dia-a-dia como compilar, gerar e aplicar patches, etc. Excluindo-se apenas a Depuração que é tratada em outra seção.
@@ -134,6 +133,8 @@ Se a depuração não inicia, verifique se o Smartclient utilizado é o correto 
 **Solução:** Ao invés de iniciar a depuração com o `F5` utilize o `CTRL + F5` e veja se o Smartclient executa corretamente. Se o Smartclient não executar assim, reveja as configurações de depuração (launch.json).
 
 # Gerando Informações sobre o Problema
+
+> ATENÇÃO: Não utilize ambientes, nem usuários/senhas reais de produção durante a geração de informações sobre o problema. Informações sensíveis podem ser gravadas nestes logs gerados.
 
 Se o seu problema não estiver listado acima então será preciso analisá-lo. Para isso precisamos saber de detalhes de seu ambiente, pois sem isso não podemos ajudá-lo.
 
