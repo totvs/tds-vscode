@@ -23,6 +23,46 @@ export function getLanguageClient(
   context: vscode.ExtensionContext
 ): TotvsLanguageClientA {
   let clientConfig = getClientConfig(context);
+  //if (!clientConfig)
+  //	return undefined;
+
+  // Notify the user that if they change a cquery setting they need to restart
+  // vscode.
+  context.subscriptions.push(
+    workspace.onDidChangeConfiguration(() => {
+      for (let key in clientConfig) {
+        if (!clientConfig.hasOwnProperty(key)) {
+          continue;
+        }
+
+        if (
+          !clientConfig ||
+          JSON.stringify(clientConfig[key]) !==
+            JSON.stringify(clientConfig[key])
+        ) {
+          const kReload = localize(
+            "tds.webview.totvsLanguegeClient.reload",
+            "Reload"
+          );
+          const message = localize(
+            "tds.webview.totvsLanguegeClient.pleaseReload",
+            "Please reload to apply the 'TOTVS.{0}' configuration change.",
+            key
+          );
+
+          window.showInformationMessage(message, kReload).then((selected) => {
+            if (selected === kReload) {
+              commands.executeCommand("workbench.action.reloadWindow");
+            }
+          });
+          break;
+        }
+
+        syncSettings();
+      }
+    })
+  );
+
   let args = ["language-server"];
 
   let config = vscode.workspace.getConfiguration("totvsLanguageServer");
@@ -40,6 +80,29 @@ export function getLanguageClient(
     notificationlevel += '"' + notificationlevelConfig + '"';
     args = args.concat(notificationlevel);
   }
+
+  let fsencoding = "--fs-encoding=";
+  let fsencodingConfig = config.get("filesystem.encoding");
+  if (fsencodingConfig) {
+    fsencoding += fsencodingConfig;
+    args = args.concat(fsencoding);
+  }
+
+  const servers = Utils.getServersConfig();
+  if (servers.includes) {
+    let includesList = servers.includes as Array<string>;
+    let includes = "--includes=" + includesList.join(";");
+    args = args.concat(includes);
+  }
+
+  let linter = "--linter=";
+  let linterConfig = config.get("editor.linter");
+  if (linter) {
+    linter += linterConfig ? "enabled" : "disabled";
+    args = args.concat(linter);
+  }
+
+  args = args.concat("--wait-for-attach=20000");
 
   args = args.concat(clientConfig["launchArgs"]);
 
@@ -209,16 +272,16 @@ function getClientConfig(context: vscode.ExtensionContext) {
 
 //     let opts: DecorationOptions[] = [];
 
-//     for (let codeLens of allCodeLens) {
-//       // FIXME: show a real warning or disable on-the-side code lens.
-//       if (!codeLens.isResolved) {
-//         console.error(
-//           localize(
-//             "tds.webview.totvsLanguegeClient.codeLensNotResolved",
-//             "Code lens is not resolved"
-//           )
-//         );
-//       }
+    for (let codeLens of allCodeLens) {
+      // FIXME: show a real warning or disable on-the-side code lens.
+      if (!codeLens.isResolved) {
+        console.error(
+          localize(
+            "tds.webview.totvsLanguegeClient.codeLensNotResolved",
+            "Code lens is not resolved"
+          )
+        );
+      }
 
 //       // Default to after the content.
 //       let position = codeLens.range.end;

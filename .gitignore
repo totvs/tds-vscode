@@ -16,7 +16,8 @@ out-test/
 *.dmp
 src/parser/4gl-parser.js
 notas.md
-syntaxes/.antlr
 syntaxes/build
 src/parser/4gl-parser.js
+test/**/no_git
+test/**/fw/**
 
