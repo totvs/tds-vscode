@@ -8,5 +8,7 @@
         "--log-file=totvsls.log",
         "--record=totvsls",
         "--wait-for-attach=20000"
-    ]
+    ],
+    "totvsLanguageServer.editor.linter.behavior": "enable",
+    "totvsLanguageServer.editor.index.cache": "none"
 }
