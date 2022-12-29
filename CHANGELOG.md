@@ -1,5 +1,23 @@
 # Changelog
 
+# Versão [1.3.17]
+
+## Correções
+
+# Correção na execução Smartclient com caminhos contendo espaços [#1059](https://github.com/totvs/tds-vscode/issues/1059)
+
+Se houvessem espaços no caminho do executável do Smartclient estava ocorrendo erro na execução/depuração.
+
+# Correção no tratamento de 'warnings' de linhas maiores que 2K
+
+O 'warning' de linhas maiores que 2K estavam impedindo a compilação destes fontes.
+
+## Melhoria
+
+# Mensagens na validação de versão do AppServer
+
+Adicionadas mensagens informativas durante a validação de versão do AppServer.
+
 # Versão [1.3.16]
 
 ## Melhorias
