@@ -41,14 +41,19 @@ Ambos os inspetores permitem as mesmas operações.
 
 ![Operations Inspector](./images/inspetor-harpia.png)
 
-|     | Descrição                                                                                                      |
-| --- | -------------------------------------------------------------------------------------------------------------- |
-| A   | Titulo do inspetor em uso e identificação do servidor/ambiente                                                 |
-| B   | Filtro padrão para limitar número de elementos                                                                 |
-| C   | Filtro rápido, aplicado em todas as colunas                                                                    |
-| D   | Acionamento de agrupamento, filtro por coluna, exportação dos dados em arquivo texto e _reset_ de configuração |
-| E   | Informações obtidos nos _RPO´s_                                                                                |
-| F   | Elementos por página e navegação                                                                               |
+|     | Descrição                                                      |
+| --- | -------------------------------------------------------------- |
+| A   | Titulo do inspetor em uso e identificação do servidor/ambiente |
+| B   | Filtro padrão para limitar número de elementos                 |
+| C   | Filtro rápido, aplicado em todas as colunas                    |
+| D   | Barra de ferramentas (na ordem de apresentação)                |
+|     | Exportação CSV ou PDF                                          |
+|     | Agrupamemnto                                                   |
+|     | Filtro por coluna                                              |
+|     | Exportação em texto de largura fixa                            |
+|     | _Reset_ de configuração                                        |
+| E   | Informações obtidos nos _RPO´s_                                |
+| F   | Elementos por página e navegação                               |
 
 ### `Inspetor de Funções`
 

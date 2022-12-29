@@ -1,4 +1,7 @@
-import React, { RefObject } from "react";
+import { RefObject, KeyboardEvent, MouseEvent, ChangeEvent } from "react";
+//O React tem que ser importado de uma das duas formas abaixo. NAO USAR: import React from "React". Ref: https://github.com/microsoft/TypeScript/issues/11057
+import React = require("react");
+//import * as React from "react";
 import {
   makeStyles,
   useTheme,
@@ -25,6 +28,7 @@ import { DebugSessionCustomEvent } from "vscode";
 import { FormControlLabel, Button } from "@material-ui/core";
 import SourcesDialog from "./SourcesDialog";
 import ChangePageWaitDialog from "./ChangePageWaitDialog";
+import MessageDialog from "./MessageDialog";
 
 enum KeyCode {
   BACKSPACE = 8,
@@ -150,7 +154,7 @@ interface TablePaginationActionsProps {
   page: number;
   rowsPerPage: number;
   onChangePage: (
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: MouseEvent<HTMLButtonElement>,
     newPage: number
   ) => void;
 }
@@ -161,25 +165,25 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   const { count, page, rowsPerPage, onChangePage } = props;
 
   const handleFirstPageButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: MouseEvent<HTMLButtonElement>
   ) => {
     onChangePage(event, 0);
   };
 
   const handleBackButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: MouseEvent<HTMLButtonElement>
   ) => {
     onChangePage(event, page - 1);
   };
 
   const handleNextButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: MouseEvent<HTMLButtonElement>
   ) => {
     onChangePage(event, page + 1);
   };
 
   const handleLastPageButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: MouseEvent<HTMLButtonElement>
   ) => {
     onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
   };
@@ -251,6 +255,9 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   const [openSourcesDialog, setOpenSourcesDialog] = React.useState(false);
   const [openWaitPage, setOpenWaitPage] = React.useState(false);
   const [itemsPerPageState, setItemsPerPageState] = React.useState(debugEvent.body.itemsPerPage);
+  const [openMessageDialog, setOpenMessageDialog] = React.useState(false);
+  const [msgType, setMsgType] = React.useState("");
+  const [message, setMessage] = React.useState("");
 
   //Id da timeline inicial a ser selecionada. 500 para selcionar a primeira pois o replay sempre ira parar na primeira linha
   const [selectedRowId, setSelectedRowId] = React.useState(
@@ -267,12 +274,12 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   ///console.log("TimeLineCount: " + jsonBody.timeLines.length);
   //console.log("totaItems: " + jsonBody.totalItems);
 
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeDense = (event: ChangeEvent<HTMLInputElement>) => {
     setDense(event.target.checked);
   };
 
   const handleIgnoreSourceNotFount = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: ChangeEvent<HTMLInputElement>
   ) => {
     //setOpenWaitPage(true); //Essa flag aqui esta com problema
     let command: ICommand = {
@@ -298,7 +305,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   };
 
   const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setOpenWaitPage(true);
     let itemsPerPage: number = Number.parseInt(event.target.value);
@@ -318,6 +325,10 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   const handleCloseSourcesDialog = (value) => {
     setOpenSourcesDialog(false);
   };
+
+  const handleCloseMsgDialog = (value) => {
+    setOpenMessageDialog(false);
+  }
 
   const sendShowAllSourcesRequest = () => {
     let command: ICommand = {
@@ -376,6 +387,11 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           break;
         case CommandToPage.SetUpdatedState:
           setPageData(event, message);
+          break;
+        case CommandToPage.ShowMessageDialog:
+          setOpenMessageDialog(true);
+          setMsgType(message.data.msgType);
+          setMessage(message.data.message);
           break;
       }
       message.command = '';
@@ -447,7 +463,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   };
 
   const scrollToLineIfNeeded = (id: number) => {
-    if (tableElement.current !== null) {
+    if (tableElement && tableElement.current !== null) {
       const rows = Array.from(
           tableElement.current.querySelectorAll("tbody tr")
         ),
@@ -458,7 +474,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   };
 
   const onKeyDown = function (
-    event: React.KeyboardEvent<HTMLTableSectionElement>,
+    event: KeyboardEvent<HTMLTableSectionElement>,
     timeline: any[]
   ) {
     const navigateToRow = (position: number | null, offset?: number) => {
@@ -643,6 +659,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         onClose={handleCloseSourcesDialog}
       />
       <ChangePageWaitDialog open={openWaitPage} />
+      <MessageDialog open={openMessageDialog} msgType={msgType} message={message} onClose={handleCloseMsgDialog}/>
     </TableContainer>
     //</Paper>
   );

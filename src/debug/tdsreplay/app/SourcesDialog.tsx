@@ -1,5 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+//import React from 'react';
+import React = require("react");
+import PropTypes = require("prop-types");
 import { makeStyles } from '@material-ui/core/styles';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
@@ -80,8 +81,15 @@ export default function SourcesDialog(props) {
   );
 }
 
-SourcesDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-  sources: PropTypes.array
-};
+// SourcesDialog.propTypes = {
+//   onClose: false,
+//   open: false,
+//   sources: {}
+//};
+
+//if(PropTypes)
+  SourcesDialog.propTypes = {
+    onClose: PropTypes.func.isRequired,
+    open: PropTypes.bool.isRequired,
+    sources: PropTypes.array
+  };

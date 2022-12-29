@@ -1,5 +1,57 @@
 # Changelog
 
+# Versão [1.3.16]
+
+## Melhorias
+
+### Verificação do tamanho de linhas em fontes
+
+Melhorado tratamento quando há linhas no código fonte iguais ou superiores a 4Kbytes.
+
+### Exportação da lista de objetos (Harpia)
+
+Foi implementando opções de exportação em arquivos nos formatos [CSV\*](https://fileinfo.com/extension/csv) (_Comma Separated values File_) e [PDF](https://fileinfo.com/extension/pdf) (_Portable Document Format File_) [#967](https://github.com/totvs/tds-vscode/issues/967).
+
+| \* O arquivo CSV usa como separador o sinal ponto-e-virgúla entre valores e estes estão entre aspas.
+
+![Inspector tools bar](./docs/images/inspetor-tool-bar-harpia.png)
+
+|     | Descrição                                       |
+| --- | ----------------------------------------------- |
+| D   | Barra de ferramentas (na ordem de apresentação) |
+|     | Exportação CSV ou PDF                           |
+|     | Agrupamemnto                                    |
+|     | Filtro por coluna                               |
+|     | Exportação em texto de largura fixa             |
+|     | _Reset_ de configuração                         |
+
+### Mensagem de _TimeLine_ não encontrada para os pontos de parada existentes
+
+Ao executar um _Run_ durante a execução do TDS Replay, caso não fosse encontrado nenhuma _TimeLine_ correspondente aos pontos de parada existentes, era feito uma parada na última _TimeLine_ da última página.
+Esse comportamento foi removido e implementando uma mensagem informativa. E a _TimeLine_ de origem continuará selecionada.  [DTCLIENT01-3601](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3601)
+
+### Validação de _patches_ no Harpia
+
+Ajustes na validação de pacotes de atualização (_patches_) aplicados em _AppServer_ Harpia.
+
+## Correções
+
+### Correção no tratamento da chave ``openglMode`` [DTCLIENT01-3702](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3702)
+
+Foi corrigido o tratamento da chave ``openglMode`` na definição de executores, onde a chave ``--openGL`` passa a ser informada ao _SmartClient_ somente se esta estiver ligada.
+
+### Erro ao tentar excluir um ambiente [#1022](https://github.com/totvs/tds-vscode/issues/1022)
+
+Corrigido problema ao tentar excluir um ambiente
+
+### Unificação no tratamento do tipo _text_ (4GL) com o _char_ (AdvPL)
+
+Foi unificado o tratamento do tipo _text_ (4GL) que estava diferente do _char_ (AdvPL).
+
+### Erro formatação classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
+
+Corrigido o tratamento de continuação de linhas (;).
+
 # Versão [1.3.15]
 
 ## Melhorias
@@ -323,7 +375,7 @@ Ajustado propriedades dos botões.
 
 ## Melhorias
 
-- Removido opcao de filtro de 1500 timelines para facilitar calculo de paginação
+- Removido opcao de filtro de 1500 _TimeLine_s para facilitar calculo de paginação
 
 ## Processamento de fluxo em um array complexo ([ISSUE 686](https://github.com/totvs/tds-vscode/issues/686)) ([DTCLIENT01-2784](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2784))
 
@@ -339,7 +391,7 @@ Ajustado propriedades dos botões.
 
 ### Problema:
 
-- A lista de exclusão de fontes não levava em consideração fontes que não existissem na área de trabalho. Dessa forma, a timeline é mostrada, sendo que deveria ser filtrada.
+- A lista de exclusão de fontes não levava em consideração fontes que não existissem na área de trabalho. Dessa forma, a _TimeLine_ é mostrada, sendo que deveria ser filtrada.
 
 ### Solução:
 
@@ -367,7 +419,7 @@ Ajustado propriedades dos botões.
 
 ### Problema:
 
-- A lista de exclusão de fontes não levava em consideração fontes que não existissem na área de trabalho. Dessa forma, a timeline é mostrada, sendo que deveria ser filtrada.
+- A lista de exclusão de fontes não levava em consideração fontes que não existissem na área de trabalho. Dessa forma, a _TimeLine_ é mostrada, sendo que deveria ser filtrada.
 
 ### Solução:
 

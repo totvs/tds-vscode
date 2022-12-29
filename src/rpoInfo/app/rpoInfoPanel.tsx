@@ -264,8 +264,12 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
   const doOrderChange = (orderBy: number, direction: string) => {
     const columns = propColumns().columns;
 
-    memento.set(propOrderBy(columns[orderBy]["field"]));
-    memento.set(propOrderDirection(direction));
+    if (columns[orderBy] === null || columns[orderBy] === undefined) {
+      memento.set(propOrderBy(0));
+    } else {
+      memento.set(propOrderBy(columns[orderBy]["field"]));
+      memento.set(propOrderDirection(direction));
+    }
   };
 
   const doChangeRowsPerPage = (value: number) => {
@@ -362,7 +366,7 @@ export default function RpoLogPanel(props: IRpoInfoPanel) {
         <Grid container spacing={2}>
           <Grid item xs={2}>
             <Grid container>
-              <Grid item container className={inputTextClasses.root}>
+              <Grid item container direction="column" className={inputTextClasses.root}>
                 <Typography variant="overline" display="block" gutterBottom>
                   RPO
                 </Typography>

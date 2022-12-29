@@ -108,6 +108,10 @@ export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
   ) {
     const debugConsole = debug.activeDebugConsole;
 
+    if(event.event === undefined) {
+      return;
+    }
+
     if (event.event === "TDA/log") {
       processLogEvent(event, debugConsole);
     } else if (event.event === "TDA/addTimeLine") {
@@ -118,6 +122,8 @@ export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
       processShowProgressEvent(event, debugConsole);
     } else if (event.event === "TDA/showLoadingPageDialog") {
       processShowLoadingDialogEvent(event, debugConsole);
+    }else if (event.event === "TDA/showMsgDialog") {
+      processShowMsgDialogEvent(event, debugConsole);
     } else {
       window.showWarningMessage("Evento desconhecido: " + event.event);
     }
@@ -133,10 +139,7 @@ function processLogEvent(
       const body = event.body;
       const notify = body.notify;
       const level = body.level;
-      const message =
-        body.message !== undefined
-          ? body.message.replace("\n", "\n" + SPACES)
-          : "";
+      const message = body.message !== undefined ? body.message.replace("\n", "\n" + SPACES) : "";
       const time = body.time;
 
       if (notify) {
@@ -261,6 +264,7 @@ function processShowProgressEvent(
     debug.onDidTerminateDebugSession((event) => {
       isFinished = true;
       progressStarted = false;
+      clearMessageQueue(messageQueue);
     });
 
     let withProgress = async function () {
@@ -272,10 +276,9 @@ function processShowProgressEvent(
         },
         async (progress, token) => {
           token.onCancellationRequested(() => {
-            languageClient.outputChannel.appendLine(
-              "User canceled the operation"
-            );
+            languageClient.outputChannel.appendLine("User canceled the operation");
             isFinished = true;
+            clearMessageQueue(messageQueue);
           });
 
           let item;
@@ -285,14 +288,20 @@ function processShowProgressEvent(
             await delay(200);
             while (!isFinished && messageQueue.length > 0) {
               item = messageQueue.pop();
-              languageClient.outputChannel.appendLine(item.message);
-              setTimeout(() => {
-                progress.report({
-                  message: item.message,
-                  increment: item.increment,
-                });
-              }, 100);
+              if(item !== undefined)
+              {
+                languageClient.outputChannel.appendLine(item.message);
+                setTimeout(() =>
+                {
+                  progress.report(
+                  {
+                    message: item.message,
+                    increment: item.increment,
+                  });
+                }, 100);
+              }
             }
+            clearMessageQueue(messageQueue);
           }
 
           setTimeout(() => {
@@ -312,12 +321,22 @@ function processShowProgressEvent(
   }
 }
 
-function processShowLoadingDialogEvent(
-  event: DebugSessionCustomEvent,
-  debugConsole: DebugConsole
-) {
+function clearMessageQueue(messageQueue:  Array<{ message; percent; increment }>) {
+  if(messageQueue !== undefined && messageQueue.length > 0) {
+    messageQueue.splice(0, messageQueue.length);
+  }
+}
+
+function processShowLoadingDialogEvent(event: DebugSessionCustomEvent,debugConsole: DebugConsole) {
   if (createTimeLineWebView !== null) {
     createTimeLineWebView.showLoadingPageDialog(event.body.show);
+  }
+}
+
+function processShowMsgDialogEvent(event: DebugSessionCustomEvent,debugConsole: DebugConsole) {
+  if (createTimeLineWebView !== null) {
+    console.log("Open Msg Dialog Received")
+    createTimeLineWebView.showMessageDialog(event.body.msgType, event.body.message);
   }
 }
 
