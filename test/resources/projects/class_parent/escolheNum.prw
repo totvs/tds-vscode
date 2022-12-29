@@ -9,10 +9,8 @@ user function funarr()
 
 return result 
 
-private aOpcoes := ""
-	static aOpcoes
-
 user function escolheNum(replay, replayPath, numbers)
+
 	local n, cResp := "xxxxx", cMsg := ""
 	local aOpcoes := {}
 	private cOpcao
@@ -31,7 +29,7 @@ user function escolheNum(replay, replayPath, numbers)
 	for n := 1 to 5
 		aAdd(aOpcoes, strZero(n,1,0))
 	next
-// 
+//
 	n := 0
 	while !(cResp == "*")
 		if (replay) 

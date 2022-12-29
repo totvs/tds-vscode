@@ -1,7 +1,7 @@
 {
     "totvsLanguageServer.welcomePage": false,
     "totvsLanguageServer.editor.linter.includes": "W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes;W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes_tlpp",
-    "totvsLanguageServer.editor.show.notification": "all",
+    "totvsLanguageServer.editor.show.notification": "errors and warnings",
     "totvsLanguageServer.trace.server": "verbose",
     "totvsLanguageServer.usageInfoConfig": false,
     "totvsLanguageServer.launch.args": [

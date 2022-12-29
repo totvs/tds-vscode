@@ -1,5 +1,20 @@
 # Changelog
 
+# Versão [1.4.0-BETA-3]
+
+## Melhorias
+
+### Árvore de projeto
+
+Adicionado tratamento quando há mudança na árvore de projeto, tais como, novo arquivo.
+
+## Correções
+
+### Navegação em classes quando usado `self` e `_Super`
+
+- Adicionado tratamento há herança de classe (`_SUper` e `from`)
+- Unificado tratamento de `::` e `self`
+
 # Versão [1.4.0-BETA-2]
 
 ## Correções

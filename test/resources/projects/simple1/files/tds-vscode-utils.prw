@@ -2,7 +2,7 @@
 https://www.universoadvpl.com/advpl-funcoes/
 http://tdn.totvs.com/pages/viewpage.action?pageId=6063792
 
-Retorna um ou mais arrays contendo os dados das funï¿½ï¿½es contidas no RPO - Repositï¿½rio Portï¿½vel de Objetos, a partir de uma mï¿½scara.
+Retorna um ou mais arrays contendo os dados das fuções contidas no RPO, a partir de uma máscara.
 http://tdn.totvs.com/display/tec/GetFuncArray
 
 Retorna um array com o nome dos fontes compilados.
@@ -52,6 +52,7 @@ user function getFunc(targetDir)
 		conout('Erro de abertura : FERROR '+str(ferror(),4))
 		return
 	endif
+
 	doFunction(nHandle, nHandle2)
 
 	fclose(nHandle)
@@ -65,6 +66,8 @@ static function doFunction(nHandle, nHandle2)
 // Lista de funcoes ordenada
 	local i
 	local aFuncs := __funarr()
+	local cPDOC
+
 	aSort(aFuncs, , , {|x,y| lower(x[1]) < lower(y[1])})
 
 	FWrite(nHandle2, "/*")
@@ -96,9 +99,43 @@ static function doFunction(nHandle, nHandle2)
 		FWrite(nHandle2, "functionList.append(line);")
 		FWrite(nHandle2, chr(10))
 
+		cPDOC := getTdnDocument(aFuncs[i,1])
+		if (cPDOC != NIL) 
+			conout(cPDOC)
+			break
+		endif
 	next i
-
 return
+
+static function getTdnDocument(funcName)
+	local cUrl
+	local cContent, cError
+
+	if substr(funcName,1,1) != "_"
+		cUrl := "https://tdn.totvs.com/display/tec/" + funcName
+		cContent := HttpGet(cUrl, , , {;
+			"Host: tdn.totvs.com",;
+			"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0",;
+			"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",;
+			"Accept-Language: pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3",;
+			"Accept-Encoding: deflate, br",;
+			"Connection: keep-alive",;
+			"Cookie: _ga=GA1.2.800609239.1663596109; _ga_8RWQ11H2P1=GS1.1.1671573040.19.1.1671573989.0.0.0; __zlcmid=1C5lFGuQRqgJVaW; __insp_wid=96774380; __insp_slim=1668604757592; __insp_nv=true; __insp_targlpu=aHR0cHM6Ly9jZW50cmFsZGVhdGVuZGltZW50by50b3R2cy5jb20vaGMvcHQtYnIvYXJ0aWNsZXMvMzYwMDI2MjM4NjUyLU1QLUZSQU1FLUxvZ2luLW5vLVByb3RoZXVzLWNvbS1BY3RpdmUtRGlyZWN0b3J5; __insp_targlpt=TVAgLSBGUkFNRSAtIExvZ2luIG5vIFByb3RoZXVzIGNvbSBBY3RpdmUgRGlyZWN0b3J5IOKAkyBDZW50cmFsIGRlIEF0ZW5kaW1lbnRvIFRPVFZT; __insp_norec_sess=true; JSESSIONID=A544AC7E9BB1E02F8FB95FD6C3272058; _gid=GA1.2.1029616331.1671568164",;
+			"Upgrade-Insecure-Requests: 1",;
+			"Sec-Fetch-Dest: document",;
+			"Sec-Fetch-Mode: navigate",;
+			"Sec-Fetch-Site: cross-site"})
+		cError := ""
+		HTTPGetStatus(@cError)
+
+		if (substr(cError,1,2) == "OK")
+			cContent := extractContent(cContent)
+		else
+			cContent := ""	 
+		endif
+	endif
+
+return cContent
 
 // Converte tipos de variaveis
 static function getParamType(cParam)
@@ -175,9 +212,6 @@ static function myLoadFinish(oWebEngine, url)
 	oWebEngine:runJavaScript("alert('RunJavaScript: Termino da carga da pagina');")
 return
 
-
-
-
 user function extractTLPPIncs()
 	Local lRet := .F.
 	Local cRet := ""
@@ -196,3 +230,64 @@ user function extractTLPPIncs()
 		ConOut("OK. 'includes' extracted on path: " + cValToChar(cRet))
 	EndIf
 Return lRet
+
+// Converte tipos de variaveis
+static function extractContent(cContent) 
+	//Busca pela div main-content
+	local nPos := at('id="main-content"', cContent) - 5
+	local cDescription
+	local cSintax
+
+	if nPos > 0 
+		cContent = substr(cContent, nPos)
+		nPos := at("<!-- \#main -->", cContent)
+		cContent := substr(cContent, 1, nPos)
+		nPos := skipDiv(cContent, 2) 
+		nPos := skipP(cContent, nPos) 
+		cDescription := extractP(cContent, @nPos) 
+		nPos := skipH2(cContent, nPos) 
+		cSintax := extractSintax(cContent, @nPos) 
+	endif
+
+return cContent
+
+static function skipDiv(cContent, nStart) 
+	local nPos := at("<div",cContent, nStart)
+
+	if (nPos > 1)
+		nPos := at("</div", cContent, nPos) + 6
+	end
+
+return nPos
+
+static function skipP(cContent, nStart) 
+	local nPos := at("<p",cContent, nStart)
+
+	if (nPos > 1)
+		nPos := at("</p", cContent, nPos) + 4
+	end
+
+return nPos
+
+static function skipH2(cContent, nStart) 
+	local nPos := at("<h2",cContent, nStart)
+
+	if (nPos > 1)
+		nPos := at("</h2", cContent, nPos) + 4
+	end
+
+return nPos
+
+static function extractP(cContent, nStart) 
+	local nPos := at("<p",cContent, nStart)
+	local nPosEnd
+	local cResult := ""
+
+	if (nPos > 1)
+		nPosEnd := at("</p", cContent, nPos)
+		cResult := substr(cContent, nStart+3, nPosEnd - nStart - 3)
+		nPos += nPosEnd + 3
+	end
+
+return cResult
+
