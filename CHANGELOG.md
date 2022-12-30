@@ -50,6 +50,10 @@ Apresenta alguns detalhes sobre o ítem, conforme sua definição.
 
 ## Correções
 
+### Erro formatação classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
+
+Corrigido o tratamento de continuação de linhas (;).
+
 # Correção na execução Smartclient com caminhos contendo espaços [#1059](https://github.com/totvs/tds-vscode/issues/1059)
 
 Se houvessem espaços no caminho do executável do Smartclient estava ocorrendo erro na execução/depuração.
@@ -57,10 +61,6 @@ Se houvessem espaços no caminho do executável do Smartclient estava ocorrendo 
 # Correção no tratamento de 'warnings' de linhas maiores que 2K
 
 O 'warning' de linhas maiores que 2K estavam impedindo a compilação destes fontes.
-
-### Erro formatação classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
-
-Corrigido o tratamento de continuação de linhas (;).
 
 ## Melhoria
 
