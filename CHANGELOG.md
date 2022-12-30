@@ -4,6 +4,10 @@
 
 ## Correções
 
+### Erro formatação classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
+
+Corrigido o tratamento de continuação de linhas (;).
+
 # Correção na execução Smartclient com caminhos contendo espaços [#1059](https://github.com/totvs/tds-vscode/issues/1059)
 
 Se houvessem espaços no caminho do executável do Smartclient estava ocorrendo erro na execução/depuração.
@@ -65,10 +69,6 @@ Corrigido problema ao tentar excluir um ambiente
 ### Unificação no tratamento do tipo _text_ (4GL) com o _char_ (AdvPL)
 
 Foi unificado o tratamento do tipo _text_ (4GL) que estava diferente do _char_ (AdvPL).
-
-### Erro formatação classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
-
-Corrigido o tratamento de continuação de linhas (;).
 
 # Versão [1.3.15]
 
