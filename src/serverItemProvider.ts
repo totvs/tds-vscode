@@ -48,7 +48,7 @@ class ServerItemProvider
     });
 
     vscode.workspace.onDidChangeConfiguration(() => {
-      this.checkServersConfigListener(true);
+    this.checkServersConfigListener(true);
     });
 
   }

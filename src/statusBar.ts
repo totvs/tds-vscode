@@ -33,7 +33,7 @@ export function initStatusBarItems(context: vscode.ExtensionContext) {
   initPermissionStatusBarItem(context);
   initRpoTokenStatusBarItem(context);
   initSettingsBarItem(context);
-  //initusageBarItem(context);
+  initusageBarItem(context);
 }
 
 export function updateStatusBarItems() {

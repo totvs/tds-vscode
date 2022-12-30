@@ -21,10 +21,24 @@
 				"W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\simple\\files"
 			],
 			"label": "u_getfunc"
+		},
+		{
+			"label": "u_lg2Kline"
+		},
+		{
+			"args": [
+				"1",
+				"2"
+			],
+			"label": "u_lg2Kline"
 		}
 	],
-	"lastProgramExecuted": "u_getfunc",
+	"lastProgramExecuted": "u_lg2Kline",
 	"lastProgramArgumens": [
 		"W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\simple\\files"
+	],
+	"lastProgramArguments": [
+		"1",
+		"2"
 	]
 }

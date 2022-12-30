@@ -2,11 +2,12 @@
     "totvsLanguageServer.welcomePage": false,
     "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes",
     "totvsLanguageServer.editor.show.notification": "all",
+    "totvsLanguageServer.trace.debug":"verbose",
     "totvsLanguageServer.trace.server": "verbose",
     "totvsLanguageServer.usageInfoConfig": true,
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
-        "--record=totvsls",
+        "--verbose",
         "--wait-for-attach=20000"
     ]
 }

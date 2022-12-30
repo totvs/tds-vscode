@@ -1,5 +1,6 @@
 #INCLUDE "TOTVS.CH"
-#include "TbiConn.ch"
+//#include "TbiConn.ch"
+
 
 User Function line1K(cRecno)
     Local cCaminho := "" //"C:\\teste.png"//
