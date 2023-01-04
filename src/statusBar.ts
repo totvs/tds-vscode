@@ -368,7 +368,6 @@ function buildTooltipBusyInfo(args: IUsageStatusInfo): vscode.MarkdownString {
     });
   }
 
-  //text.appendMarkdown("\n\nVer <a href=\"command:totvs-developer-studio.detailUsageInfo\">detalhes telemetria</a>.");
   text.appendMarkdown("\n\nVer [detalhes telemetria](command:totvs-developer-studio.detailUsageInfo)");
   text.appendMarkdown("\n\n_Click_ no ícone abaixo para ativar/desativar");
 
