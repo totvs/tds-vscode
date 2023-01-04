@@ -16,7 +16,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 
 > Lista de IDEs com suporte ao [LSP](https://microsoft.github.io/language-server-protocol/implementors/tools) e ao [DAP](https://microsoft.github.io/debug-adapter-protocol/implementors/tools).
 
-> A extensão **TDS-VSCode** somente é suportada apenas por S.O. de 64 bits.
+> A extensão **TDS-VSCode** somente é suportada por S.O. de 64 bits.
 
 ## Funcionalidades
 
@@ -28,7 +28,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 - [Compilação](docs/compilation.md) de fontes, pastas e da área de trabalho
 - [Depuração](docs/debugger.md) e execução (Local e _WebApp_)
 - [TDS Replay](https://github.com/totvs/tds-vscode/wiki/TDS-Replay) - Depuração de execução pré-gravada.
-- [Geração](docs/build-patch.md) e [aplicação](docs/apply-patch.md) de pacotes de atualizações (_patchs_)
+- [Geração](docs/build-patch.md) e [aplicação](docs/apply-patch.md) de pacotes de atualizações (_patches_)
 - [Manutenção](docs/rpo.md) do _RPO_
 - [Inspeção](docs/rpo-inspector.md) do _RPO_
 - [Geração de cliente de serviço web](docs/ws-client-generation.md) (_Web Service_)
@@ -40,29 +40,28 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 
 As chaves de compilação ou _tokens_ de compilação empregados na construção do _Protheus/Logix_ e suas funcionalidades, são de uso restrito dos _desenvolvedores_ de cada módulo.
 
-Em caso de mau uso destas chaves ou tokens, por qualquer _outra parte_, que não a referida acima, a mesma irá se responsabilizar, direta ou regressivamente, única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações, multas, condenações judiciais, arbitrais e administrativas e quaisquer outras despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros, eximindo a TOTVS de toda e qualquer responsabilidade.
+> Em caso de mau uso destas chaves ou tokens, por qualquer _outra parte_, que não a referida acima, a mesma irá se responsabilizar, direta ou regressivamente, única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações, multas, condenações judiciais, arbitrais e administrativas e quaisquer outras despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros, eximindo a TOTVS de toda e qualquer responsabilidade.
 
 ## Guia rápido
 
-> O **VS-Code** pode apresentar problemas em suas funcionalidades em sistemas operacionais da linha **Windows Server**.
-> Veja os requisitos para uso em [Requirements](https://code.visualstudio.com/docs/supporting/requirements).
+> O **VS Code** pode apresentar problemas em suas funcionalidades em sistemas operacionais da linha **Windows Server**.
+> Veja os requisitos para uso no **VS Code** em [Requirements](https://code.visualstudio.com/docs/supporting/requirements).
 
-> **Nunca usei o VS-Code**: Recomendamos a leitura de:
->
+> **Nunca usei o VS Code**: Recomendamos a leitura de:
 > - [User Interface](https://code.visualstudio.com/docs/getstarted/userinterface)
 > - [Multi-root Workspaces](https://code.visualstudio.com/docs/editor/multi-root-workspaces)
 > - [Settings](https://code.visualstudio.com/docs/getstarted/settings)
 > - [Basic Edition](https://code.visualstudio.com/docs/editor/codebasics)
 > - [Marketplace](https://code.visualstudio.com/docs/editor/extension-gallery)
 
-Ao iniciar o **VS-Code** com a extensão **TDS-VSCode** instalada, abra (ou crie) a pasta principal que contém (ou conterá) seus arquivos fontes e de recursos. Essa pasta é denominada genericamente de `projeto`.
+Ao iniciar o **VS Code** com a extensão **TDS-VSCode** instalada, abra (ou crie) a pasta principal que contém (ou conterá) seus arquivos fontes e de recursos. Essa pasta é denominada genericamente de `projeto`.
 
 No primeiro uso da extensão em um projeto, lhe será apresentada as [Boas Vindas](docs/welcome.md) com configurações mínimas necessárias. Faça-as.
 
-- Acione o icone da `TOTVS` na barra de atividades
-- Resgistre o servidor de trabalho na visão (Servidores)[docs/servers.md], acionando a ação `+`
+- Acione o ícone da `TOTVS` na barra de atividades
+- Registre o servidor de trabalho na visão (Servidores)[docs/servers.md], acionando a ação `+`
 - (Conecte-se)[docs/servers.md] ao servidor recém registrado
-- Após a conexão, acione na barra de atividades o icone do `Explorer`
+- Após a conexão, acione na barra de atividades o ícone do `Explorer`
 - Abra (ou crie) o arquivo para edição e faça o desenvolvimento necessário
 - (Compile)[docs/compilation.md] acionando o atalho `ctrl+F9` ou o menu de contexto sobre o arquivo ou recurso
 - Corrija eventuais erros de compilação apresentados na visão `Problems`
@@ -121,7 +120,7 @@ As extensões abaixo não devem ser utilizadas junto com o _TDS-VS-Code_ porque 
 
 Caso tenha problemas com a ferramenta e deseja suporte da equipe de desenvolvimento da extensão, inicie uma ferramenta de coleta de _logs_ para auxiliar no suporte. Essa ferramenta colhe informações como versões de ferramentas e extensões, sistema operacional, configuração de servidores e etc.
 
-- Para ativa-la, selecione pelo atalho `CTRL + SHIFT + P`, digite `TOTVS: On Logger Capture`. Nesse momento o capturador de _log_ será iniciado.
+- Para ativá-la, selecione pelo atalho `CTRL + SHIFT + P`, digite `TOTVS: On Logger Capture`. Nesse momento o capturador de _log_ será iniciado.
 
 - Reproduza o problema e selecione a opção `CTRL + SHIFT + P` digite `TOTVS: Off Logger Capture` ou na Barra inferior clique sobre o texto `Capturando logs...`. O capturador será encerrado e um arquivo chamado `tdsSupport.zip` será gerado. Anexe esse arquivo ao chamado.
 
@@ -135,8 +134,8 @@ Alguns problemas conhecidos e como resolvê-los.
 <!-- markdownlint-disable -->
 | Ocorrência                                        | Solução                   |
 | ----------------------- | ----------------------- |
-| *Aplicação de pacotes de atualização(_patchs_)* | |
-Servidores `Lobo Guara`, versão iqual ou anterior a `19.3.0.5`, podem apresentar mensagem de erro no processo de validação e mesmo assim aplicá-lo. | Atualizar o servidor para versão mais recente. |
+| *Aplicação de pacotes de atualização (_patches_)* | |
+Servidores `Lobo Guara`, versão igual ou anterior a `19.3.0.5`, podem apresentar mensagem de erro no processo de validação e mesmo assim aplicá-lo. | Atualizar o servidor para a versão mais recente. |
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
 

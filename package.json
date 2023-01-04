@@ -17,7 +17,8 @@
     "tds",
     "totvs",
     "monitor",
-    "protheus"
+    "protheus",
+    "logix"
   ],
   "engines": {
     "vscode": "^1.63.1"
@@ -328,7 +329,7 @@
       {
         "id": "totvs_patch",
         "aliases": [
-          "Patch",
+          "patch",
           "totvs_patch"
         ],
         "extensions": [
@@ -340,7 +341,7 @@
       {
         "id": "totvs_template",
         "aliases": [
-          "Template",
+          "template",
           "totvs_template"
         ],
         "extensions": [
