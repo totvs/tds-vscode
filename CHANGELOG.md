@@ -4,9 +4,13 @@
 
 ## Correções
 
-### Erro formatação classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
+# Erro formatação classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
 
 Corrigido o tratamento de continuação de linhas (;).
+
+# Correção na inspeção de variáveis que não mostrava sub objetos previamente expandidos [#1017](https://github.com/totvs/tds-vscode/issues/1017)
+
+Falha na carga de sub objetos expandidos na visão de Inspeção, após reiniciar uma depuração.
 
 # Correção na execução Smartclient com caminhos contendo espaços [#1059](https://github.com/totvs/tds-vscode/issues/1059)
 
