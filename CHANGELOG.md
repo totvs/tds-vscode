@@ -6,7 +6,7 @@
 
 ### Árvore de projeto
 
-Adicionado tratamento quando há mudança na árvore de projeto, tais como, novo arquivo.
+Adicionado tratamento quando há mudança na árvore de projeto, tais como, novo/remoção arquivo ou pasta.
 
 ## Correções
 
