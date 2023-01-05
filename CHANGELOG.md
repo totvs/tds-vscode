@@ -20,6 +20,10 @@ Se houvessem espaços no caminho do executável do Smartclient estava ocorrendo 
 
 O 'warning' de linhas maiores que 2K estavam impedindo a compilação destes fontes.
 
+# Correção no tratamento de includes na compilação de 4GL
+
+As pastas de include não estavam sendo consideradas na compilação de fontes 4GL.
+
 ## Melhoria
 
 # Mensagens na validação de versão do AppServer
