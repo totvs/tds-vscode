@@ -1,9 +1,4 @@
 {
-	"AAdd": {
-		"prefix": "Aadd",
-		"body": ["Aadd(${1:aArray}, ${2:xElement})"],
-		"description": "Adiciona um elemento ao final do array."
-	},
 	"Reclock": {
 		"prefix": "RecLock",
 		"body": ["RecLock(${1:cAlias}, ${2:bInsert})", "\t$0", "MsUnlock()"],
@@ -19,45 +14,15 @@
 		"body": ["DbSelectArea(${1:cAlias})"],
 		"description": ""
 	},
-	"DbSetOrder": {
-		"prefix": "DbSetOrder",
-		"body": ["DbSetOrder(${1:nOrder})"],
-		"description": ""
-	},
 	"MsSeek": {
 		"prefix": "MsSeek",
 		"body": ["MsSeek(${1:cFilter}, ${2:lLast})"],
 		"description": ""
 	},
-	"MsgYesNo": {
-		"prefix": "MsgYesNo",
-		"body": ["MsgYesNo(${1:cText}, ${2:cTitle})"],
-		"description": "Cria uma mensagem com as opçoes Sim/Não, retornando .T. para Sim e .F. para Não."
-	},
-	"MsgAlert": {
-		"prefix": "MsgAlert",
-		"body": ["MsgAlert(${1:cText}, ${2:cTitle})"],
-		"description": "Cria uma mensagem de alerta na tela."
-	},
-	"MsgInfo": {
-		"prefix": "MsgInfo",
-		"body": ["MsgInfo(${1:cText}, ${2:cTitle})"],
-		"description": "Cria uma mensagem de informação na tela."
-	},
-	"MsgStop": {
-		"prefix": "MsgStop",
-		"body": ["MsgStop(${1:cText}, ${2:cTitle})"],
-		"description": "Cria uma mensagem de erro na tela."
-	},
 	"AllTrim": {
 		"prefix": "AllTrim",
 		"body": ["AllTrim(${1:cText})"],
 		"description": "Retira os espaços do início/fim de uma string."
-	},
-	"CValToChar": {
-		"prefix": "CValToChar",
-		"body": ["CValToChar(${1:nNumber})"],
-		"description": "Converte uma valor numérico em uma string."
 	},
 	"Val": {
 		"prefix": "Val",
@@ -69,25 +34,10 @@
 		"body": ["SToD(${1:cText})"],
 		"description": "Retorna a data, a partir de uma string de oito caracteres, no formato ano, mês e dia (aaaammdd)."
 	},
-	"DToS": {
-		"prefix": "DToS",
-		"body": ["DToS(${1:dDate})"],
-		"description": "Retorna uma string, a partir de uma data, no formatada como aaaammdd."
-	},
-	"DToC": {
-		"prefix": "DToC",
-		"body": ["DToC(${1:dDate})"],
-		"description": "Retorna uma string no formato dd/mm/aa, a partir de uma data."
-	},
 	"GdFielPos": {
 		"prefix": "GdFielPos",
 		"body": ["GdFielPos(${1:cField}, ${2:aHeader})"],
 		"description": "Percorre um array de cabecalho para retornar a posição do campo."
-	},
-	"AScan": {
-		"prefix": "AScan",
-		"body": ["AScan(${1:aArray}, ${2:lExpressao})"],
-		"description": "Pesquisa um determinado valor ou avalia um bloco de código pelos elementos de um array."
 	},
 	"RetCodUsr": {
 		"prefix": "RetCodUsr",
@@ -104,11 +54,6 @@
 		"body": ["UsrFullName(${1:cCodUsr})"],
 		"description": "Retorna o nome completo do usuário de acordo com o código."
 	},
-	"GetMV": {
-		"prefix": "GetMV",
-		"body": ["GetMV(${1:cMVPar})"],
-		"description": "Retorna o valor do parametro informado."
-	},
 	"SuperGetMV": {
 		"prefix": "SuperGetMV",
 		"body": ["SuperGetMV(${1:cMVPar})"],
@@ -118,11 +63,6 @@
 		"prefix": "IsInCallStack",
 		"body": ["IsInCallStack(${1:cRotina})"],
 		"description": "Valida se a rotina informa se encontra no STACK de funções."
-	},
-	"Empty": {
-		"prefix": "Empty",
-		"body": ["Empty(${1:xExpressao})"],
-		"description": "Valida se a variável está vazia."
 	},
 	"Len": {
 		"prefix": "Len",
@@ -138,11 +78,6 @@
 		"prefix": "Lower",
 		"body": ["Lower(${1:cString})"],
 		"description": "Retorna uma string de caractéres em minusculo."
-	},
-	"Space": {
-		"prefix": "Space",
-		"body": ["Space(${1:nQuantidade})"],
-		"description": "Retorna uma string de caracteres vazios com a quantidade informada."
 	},
 	"SubStr": {
 		"prefix": "SubStr",
