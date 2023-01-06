@@ -4,7 +4,11 @@
 
 ## Correções
 
-### Erro formatação classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
+# Problema ao carregar snippets dentro do VSCode [#966](https://github.com/totvs/tds-vscode/issues/966)
+
+Ajustado processo de filtro na carga de _snippets_.
+
+# Erro formatação classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
 
 Corrigido o tratamento de continuação de linhas (;).
 
