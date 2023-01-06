@@ -4,29 +4,29 @@
 
 ## Correções
 
-# Erro formatação classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
+### Erro formatação classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
 
 Corrigido o tratamento de continuação de linhas (;).
 
-# Correção na inspeção de variáveis que não mostrava sub objetos previamente expandidos [#1017](https://github.com/totvs/tds-vscode/issues/1017)
+### Correção na inspeção de variáveis que não mostrava sub objetos previamente expandidos [#1017](https://github.com/totvs/tds-vscode/issues/1017)
 
 Falha na carga de sub objetos expandidos na visão de Inspeção, após reiniciar uma depuração.
 
-# Correção na execução Smartclient com caminhos contendo espaços [#1059](https://github.com/totvs/tds-vscode/issues/1059)
+### Correção na execução Smartclient com caminhos contendo espaços [#1059](https://github.com/totvs/tds-vscode/issues/1059)
 
 Se houvessem espaços no caminho do executável do Smartclient estava ocorrendo erro na execução/depuração.
 
-# Correção no tratamento de 'warnings' de linhas maiores que 2K
+### Correção no tratamento de 'warnings' de linhas maiores que 2K
 
 O 'warning' de linhas maiores que 2K estavam impedindo a compilação destes fontes.
 
-# Correção no tratamento de includes na compilação de 4GL
+### Correção no tratamento de includes na compilação de 4GL
 
 As pastas de include não estavam sendo consideradas na compilação de fontes 4GL.
 
 ## Melhoria
 
-# Mensagens na validação de versão do AppServer
+### Mensagens na validação de versão do AppServer
 
 Adicionadas mensagens informativas durante a validação de versão do AppServer.
 
