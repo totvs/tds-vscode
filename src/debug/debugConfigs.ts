@@ -409,7 +409,7 @@ async function pickProgramArguments(
       );
     })
     .map((element: any) => {
-      return new QuickPickProgram(element.args.join(", "), element.args);
+      return new QuickPickProgram(element.program, element.args);
     });
 
   let selectArgs: string[] = [];
