@@ -303,7 +303,6 @@
 		switch (message.command) {
 			case 'rpoObjects':
 				srcAll = message.rpoObjects;
-				FilterInput.value = "";
 				SelectLCount.innerHTML =  "${d.localize['tds.webview.patch.items.showing']}" + ": " + srcAll.length;//Items showing
 				filterLeft();
 				break;
