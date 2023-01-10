@@ -9,17 +9,6 @@
 		"body": ["Private ${1:xVariable}"],
 		"description": "Create a private variable that can be called anywhere inside the scope of the file"
 	},
-	"and": {
-		"prefix": ".and.",
-		"body": [".and."],
-		"description": "Declaração de um operador lógico OR"
-	},
-	"or": {
-		"prefix": ".or.",
-		"body": [".or."],
-		"description": "Declaração de um operador lógico AND"
-	},
-
 	"for_loop": {
 		"prefix": "for",
 		"body": ["for ${1:var} := ${2:value} to ${3:value}", "\t$0", "next"],
