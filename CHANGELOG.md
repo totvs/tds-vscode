@@ -34,6 +34,10 @@ As pastas de include não estavam sendo consideradas na compilação de fontes 4
 
 Adicionadas mensagens informativas durante a validação de versão do AppServer.
 
+### Adicionado tratamento para passar o parâmetro -olddpi para o Smartclient
+
+Inclusão do parâmetro "olddpiMode" no launch.json para ativar a passagem do parâmetro -olddpi para o Smartclient.
+
 # Versão [1.3.16]
 
 ## Melhorias

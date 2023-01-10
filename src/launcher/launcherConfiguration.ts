@@ -64,6 +64,10 @@ const localizeHTML = {
     "tds.webview.launcher.dpi",
     "(-DPI) Enable DPI mode"
   ),
+  "tds.webview.launcher.olddpi": localize(
+    "tds.webview.launcher.olddpi",
+    "(-OLDDPI) Enable OLDDPI mode"
+  ),
   "tds.webview.launcher.language": localize(
     "tds.webview.launcher.language",
     "Language (-L):"
@@ -244,6 +248,7 @@ function updateElement(element: any, message: any) {
   element.doNotShowSplash = message.doNotShowSplash;
   element.openglMode = message.openglMode;
   element.dpiMode = message.dpiMode;
+  element.olddpiMode = message.olddpiMode;
   element.language = message.language;
   element.ignoreFiles = message.ignoreFiles;
   element.enableTableSync = true;

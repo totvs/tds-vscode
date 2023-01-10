@@ -77,8 +77,11 @@
 					<input id="openglModeID" class="checkbox" name="openglMode" type="checkbox" value="openglMode">
 					<label class="checkboxLabel" for="openglMode">${d.localize["tds.webview.launcher.opengl"]}</label><!--(-OPENGL) Enable OpenGL mode-->
 					<br>
-					<input id="dpiModeID" class="checkbox" name="dpiMode" type="checkbox" value="dpiMode">
-					<label class="checkboxLabel" for="dpiMode">${d.localize["tds.webview.launcher.dpi"]}</label><!--(-DIP) Enable DPI mode-->
+					<input id="dpiModeID" class="checkbox" name="dpiMode" type="checkbox" value="dpiMode" onchange="dpiChange(this)">
+					<label class="checkboxLabel" for="dpiMode">${d.localize["tds.webview.launcher.dpi"]}</label><!--(-DPI) Enable DPI mode-->
+					<br>
+					<input id="olddpiModeID" class="checkbox" name="olddpiMode" type="checkbox" value="olddpiMode" onchange="dpiChange(this)">
+					<label class="checkboxLabel" for="olddpiMode">${d.localize["tds.webview.launcher.olddpi"]}</label><!--(-OLDDPI) Enable OLDDPI mode-->
 					<br>
 					<input id="ignoreFilesID" class="checkbox" name="ignoreFiles" type="checkbox" value="ignoreFiles" checked>
 					<label class="checkboxLabel" for="ignoreFiles">${d.localize["tds.webview.launcher.ignoreFiles"]}</label><!--Ignore files not in Workspace-->
@@ -117,10 +120,10 @@
 	const comboBox = getElementLauncherList();
 	// Handle the message inside the webview
 	window.addEventListener('message', event => {
-		const launhConfig = event.data; // The JSON data our extension sent
+		const launchConfig = event.data; // The JSON data our extension sent
 		comboBox.innerText = null; //Zera o combo
 		updateElementProgramArguments([]);
-		launhConfig.configurations.forEach(element => {
+		launchConfig.configurations.forEach(element => {
 			if (element.type === "totvs_language_debug") {
 				let option = document.createElement("option");
 				option.text = element.name;
@@ -180,6 +183,12 @@
 			errorMessage = "Smartclient not defined.";
 			validated = false;
 		}
+		else if (getElementDpiMode().checked && getElementOldDpiMode().checked) {
+			errorMessage = "Only DPI mode or OLDDPI mode must be selected.";
+			getElementDpiMode().checked = false;
+			getElementOldDpiMode().checked = false;
+			validated = false;
+		}
 		//
 		if (errorMessage) {
 			console.log(errorMessage);
@@ -208,6 +217,7 @@
 			doNotShowSplash: 		getElementDoNotShowSplash().checked,
 			openglMode:             getElementOpenglMode().checked,
 			dpiMode:                getElementDpiMode().checked,
+			olddpiMode:             getElementOldDpiMode().checked,
 			language: 				getElementLanguage().value,
 			ignoreFiles:			getElementIgnoreFiles().checked,
 			'close':                close
@@ -229,6 +239,7 @@
 			getElementDoNotShowSplash().checked 		= element.doNotShowSplash;
 			getElementOpenglMode().checked              = element.openglMode;
 			getElementDpiMode().checked                 = element.dpiMode;
+			getElementOldDpiMode().checked              = element.olddpiMode;
 			getElementLanguage().value 					= element.language;
 			getElementIgnoreFiles().checked				= element.ignoreFiles;
 		}
@@ -265,6 +276,7 @@
 	function getElementDoNotShowSplash() { return document.getElementById("doNotShowSplashID"); }
 	function getElementOpenglMode() { return document.getElementById("openglModeID"); }
 	function getElementDpiMode() { return document.getElementById("dpiModeID"); }
+	function getElementOldDpiMode() { return document.getElementById("olddpiModeID"); }
 	function getElementLanguage() { return document.getElementById("languageID"); }
 	function getElementIgnoreFiles() { return document.getElementById("ignoreFilesID"); }
 
@@ -362,6 +374,15 @@
 		var filePath = input.files[0].path;
 		var textArea = getElementSmartclientBin().value = filePath;
 		validateFields();
+	}
+
+	function dpiChange(dpiElement) {
+		if (dpiElement.value == "dpiMode") {
+			getElementOldDpiMode().checked = false;
+		}
+		else if (dpiElement.value == "olddpiMode") {
+			getElementDpiMode().checked = false;
+		}
 	}
 </script>
 
