@@ -50,7 +50,7 @@
       "patterns": [
         {
           "name": "keyword.control.advpl_language",
-          "match": "(?i)\\b(local|static|private|public|default|activate|alias|and|beginsql|between|case|centered|class|constructor|data|define|dialog|do|else|elseif|end|endcase|endclass|enddo|endfunction|endif|endsql|exit|for|from|function|get|if|loop|main|method|next|nil|of|or|otherwise|pixel|return|select|to|user|var|while|where)\\b"
+          "match": "(?i)\\b(local|static|private|public|default|activate|alias|and|beginsql|between|case|centered|class|constructor|data|define|dialog|do|else|elseif|end|endcase|endclass|enddo|endfunction|endif|endsql|exit|for|from|function|get|if|loop|main|method|next|nil|of|or|otherwise|pixel|return|select|step|to|user|var|while|where)\\b"
         }
       ]
     },
