@@ -1063,6 +1063,11 @@
                 "type": "array",
                 "description": "Arguments that will be passed to the called program/function (through key -A)",
                 "default": "${command:AskForProgramArguments}"
+              },
+              "extraParameters": {
+                "type": "string",
+                "description": "%tds.package.properties.extraParameters.description%",
+                "default": ""
               }
             }
           }

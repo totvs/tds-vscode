@@ -102,6 +102,7 @@
   "tds.package.properties.logFile.description": "DAP logfile for troubleshooting only",
   "tds.package.properties.ignoreFiles.description": "Make the debugger ignore break events in files not found in WorkSpace",
   "tds.package.properties.toggleTableSync.description": "Enables or disables the tables sync with the server",
+  "tds.package.properties.extraParameters.description": "Used to pass any extra parameters to SC",
   "tds.package.totvs.language.debug.web": "TOTVS Language Web Debug (SmartClient HTML)",
   "tds.package.server.view": "Servers",
   "tds.package.properties.program.description.web": "Program/Function name",

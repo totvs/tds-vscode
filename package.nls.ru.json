@@ -102,6 +102,7 @@
 	"tds.package.properties.logFile.description": "Файл журнала DAP только для устранения неполадок",
 	"tds.package.properties.ignoreFiles.description": "Команда отладчику игнорировать события прерываний в файлах, которые отсутствуют в WorkSpace",
 	"tds.package.properties.toggleTableSync.description": "Включает или отключает синхронизацию таблиц с сервером",
+	"tds.package.properties.extraParameters.description": "Used to pass any extra parameters to SC",
 	"tds.package.totvs.language.debug.web": "Веб-отладка TOTVS Language (SmartClient HTML)",
 	"tds.package.server.view": "Серверы",
 	"tds.package.properties.program.description.web": "Имя программы / функции",

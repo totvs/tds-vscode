@@ -102,6 +102,7 @@
 	"tds.package.properties.logFile.description": "Arquivo de log DAP apenas para solução de problemas",
 	"tds.package.properties.ignoreFiles.description": "Faça com que o depurador ignore eventos de interrupção em arquivos não encontrados no WorkSpace",
 	"tds.package.properties.toggleTableSync.description": "Ativa ou desativa a sincronização de tabelas com o servidor",
+	"tds.package.properties.extraParameters.description": "Usado para passar quaisquer parêmetros extras para o SC",
 	"tds.package.totvs.language.debug.web": "Depuração da Web no idioma TOTVS (HTML do SmartClient)",
 	"tds.package.server.view": "Servidores",
 	"tds.package.properties.program.description.web": "Nome do programa/função",
