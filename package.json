@@ -80,7 +80,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.11.3-deprecations.1",
     "@totvs/tds-da": "^1.2.51",
-    "@totvs/tds-ls": "^1.2.56",
+    "@totvs/tds-ls": "^1.2.57",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.63.1",
     "@vscode/debugadapter": "^1.51.1",
