@@ -1,0 +1,95 @@
+#include "totvs.ch"
+#include "tlpp-core.th"
+#include "tlpp-rest.th"
+
+@annotation parametros
+nome as char
+tipoParametro as char
+tamanho as numeric
+decimal as numeric
+descricao as char
+
+@end
+
+@annotation classe
+nome as char
+descricao as char
+@end
+
+namespace TesteTlpp
+@classe (nome= "Pessoa", descricao= "Classe de pessoa")
+@parametros(nome = "cNome"      , tipoParametro="character" , tamanho=50, decimal=0, descricao="Nome da pessoa")
+@parametros(nome = "cSobrenome" , tipoParametro="character" , tamanho=50, decimal=0, descricao="Sobrenome da pessoa")
+@parametros(nome = "cCpf"       , tipoParametro="character" , tamanho=11, decimal=0, descricao="CPF da pessoa")
+
+class Pessoa
+	public method  new() constructor
+	public method  getNome()
+	public method  getSobrenome()
+	public method  getCpf()
+
+	private data cNome as char
+	private data cSobrenome as char
+	private data cCpf as char
+
+endClass
+
+/*/{Protheus.doc} Pessoa::new
+Método construtor
+@type method
+@version  1.0
+@author every system
+@since 20/05/2021
+@param cNome, character, nome da pessoa
+@param cSobrenome, character, sobrenome da pessoa
+@param cCpf, character, cpf da pessoa
+/*/
+method new(cNome, cSobrenome, cCpf) class Pessoa
+	self:cNome := cNome
+	self:cSobrenome := cSobrenome
+	self:cCpf := cCpf
+return
+method getNome() class Pessoa
+
+return self:cNome
+method getSobrenome() class Pessoa
+return self:cSobrenome
+method getCpf() class Pessoa
+return self:cCpf
+
+	using namespace EverySystem
+user function testeReflection()
+	local aClasse as array
+
+	local aParams as array
+	//————————————————————————————————————————-
+	//Verificando todas as classes do namespace "EverySystem" com a annotation "classe"
+	//———————————————————————————————————————–
+
+	aClasse := Reflection.getClassesByAnnotation("classe", "EverySystem")
+	//—————————————————-
+	//Verificando os parâmetros da classe
+	//—————————————————-
+
+	aParams := Reflection.getClassAnnotationList(aClasse[1]:cClassName)
+	//———————————————–
+	//Atribuindo valores aos parâmetros
+	//———————————————–
+	&(aParams[2]["nome"]) := "João"
+	&(aParams[3]["nome"]) := "Amaro"
+
+	&(aParams[4]["nome"]) := "12345678911"
+	//—————————————–
+	//Instanciando a classe Pessoa
+	//—————————————–
+
+	oPessoa := aClasse[1]:CreateInstance(&(aParams[2]["nome"]), &(aParams[3]["nome"]), &(aParams[4]["nome"]))
+	//——————————————————
+	//Testando os métodos da classe Pessoa
+	//——————————————————-
+	conout(oPessoa:getNome())
+	conout(oPessoa:getSobrenome())
+
+	conout(oPessoa:getCpf())
+
+return
