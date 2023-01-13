@@ -4,6 +4,10 @@
 
 ## Correções
 
+### Problema ao avaliar expressões iniciadas por "::" durante depuração [#1072](https://github.com/totvs/tds-vscode/issues/1072)
+
+Adicionados tratamentos para substituir "::" por "self:" em situações específicas.
+
 ### Problema ao carregar snippets dentro do VSCode [#966](https://github.com/totvs/tds-vscode/issues/966)
 
 Ajustado processo de filtro na carga de _snippets_.
