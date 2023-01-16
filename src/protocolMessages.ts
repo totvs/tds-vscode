@@ -16,13 +16,24 @@ interface AuthenticationNode {
 }
 
 import { languageClient } from "./extension";
-import { ResponseError } from "vscode-languageclient";
+import { DidChangeConfigurationNotification, ResponseError } from "vscode-languageclient";
 import { CompileResult } from "./compile/CompileResult";
 import { _debugEvent } from "./debug";
 import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
 import { IRpoToken } from "./rpoToken";
 import Utils from "./utils";
 import { ServerItem } from "./serverItem";
+
+export interface IUsageStatusData {
+  key: string;
+  value: string;
+}
+
+export interface IUsageStatusInfo {
+  activate: boolean;
+  counter: number;
+  usageStatus: IUsageStatusData[];
+}
 
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
@@ -750,20 +761,61 @@ export interface IEnvEncode {
   encoding: number;
 }
 
+
 export function sendSetEnvEncodesRequest(server: ServerItem, envEncodeList: IEnvEncode[]): Thenable<any> {
-    return languageClient
-      .sendRequest("$totvsmonitor/setEnvEncodes", {
-        setEnvEncodesInfo : {
-          connectionToken: server.token,
-          envEncodes: envEncodeList
-        },
-      })
-      .then(
-        (response: any) => {
-          return response.message || "";
-        },
-        (err: Error) => {
-          languageClient.error(err.message, err);
-        }
-      );
-  }
+  return languageClient
+    .sendRequest("$totvsmonitor/setEnvEncodes", {
+      setEnvEncodesInfo: {
+        connectionToken: server.token,
+        envEncodes: envEncodeList
+      },
+    })
+    .then(
+      (response: any) => {
+        return response.message || "";
+      },
+      (err: Error) => {
+        languageClient.error(err.message, err);
+      }
+    );
+}
+
+export function sendShutdown(): Thenable<any> {
+  return languageClient.sendRequest("shutdown");
+}
+
+export function sendExit(): Thenable<any> {
+  return languageClient.sendRequest("exit");
+}
+
+interface ITelemetryData {
+  category: string;
+  method: string;
+  key: string;
+  value: number;
+}
+
+interface ITelemetryInfo {
+  telemetryInfos: ITelemetryData[]
+}
+export function sendTelemetry(): Thenable<any> {
+  return languageClient.sendRequest("$totvsserver/telemetry").then((data: ITelemetryInfo) => {
+    const categories: Map<string, any> = new Map<string, []>();
+
+    data.telemetryInfos.forEach((element: ITelemetryData) => {
+      if (!categories[element.category]) {
+        categories[element.category] = new Map<string, any>()
+      }
+      if (!categories[element.category][element.method]) {
+        categories[element.category][element.method] = [];
+      }
+      categories[element.category][element.method].push({ key: element.key, value: element.value });
+    })
+
+    return categories;
+  });
+}
+
+export function sendDidChangeConfiguration(settings: any): Thenable<any> {
+  return languageClient.sendNotification(DidChangeConfigurationNotification.type, { settings: settings });
+}

@@ -1,6 +1,8 @@
 import * as vscode from "vscode";
 import * as nls from "vscode-nls";
 import { CompileKey } from "./compileKey/compileKey";
+import { languageClient } from "./extension";
+import { IUsageStatusInfo, IUsageStatusData } from "./protocolMessages";
 import { IRpoToken } from "./rpoToken";
 import { ServerItem } from "./serverItem";
 import Utils from "./utils";
@@ -16,7 +18,9 @@ let permissionStatusBarItem: vscode.StatusBarItem;
 let settingsStatusBarItem: vscode.StatusBarItem;
 let rpoTokenStatusBarItem: vscode.StatusBarItem;
 let clearRpoTokenStatusBarItem: vscode.StatusBarItem;
+let usageBarItem: vscode.StatusBarItem;
 
+const priorityusageBarItem: number = 104;
 const priorityTotvsStatusBarItem: number = 103;
 const priorityRpoTokenStatusBarItem: number = 102;
 const priorityPermissionStatusBarItem: number = 101;
@@ -29,6 +33,7 @@ export function initStatusBarItems(context: vscode.ExtensionContext) {
   initPermissionStatusBarItem(context);
   initRpoTokenStatusBarItem(context);
   initSettingsBarItem(context);
+  initusageBarItem(context);
 }
 
 export function updateStatusBarItems() {
@@ -36,7 +41,6 @@ export function updateStatusBarItems() {
   updateSaveLocationBarItem();
   updatePermissionStatusBarItem();
   updateRpoTokenStatusBarItem();
-  updateSettingsBarItem();
 }
 
 function initStatusBarItem(context: vscode.ExtensionContext) {
@@ -254,22 +258,6 @@ function initSettingsBarItem(context: vscode.ExtensionContext): void {
   );
   context.subscriptions.push(settingsStatusBarItem);
 }
-
-function updateSettingsBarItem(): void {
-  let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration(
-    "totvsLanguageServer"
-  );
-  let behavior = config.get("editor.toggle.autocomplete");
-
-  settingsStatusBarItem.text = `${behavior}`;
-  settingsStatusBarItem.tooltip = localize(
-    "tds.vscode.lssettings.auto.complete",
-    "Auto complete type"
-  );
-
-  settingsStatusBarItem.show();
-}
-
 function buildTextRpoToken(level: number, text: string): string {
   return (
     text + (level == 2 ? "$(error)" : level == 1 ? "$(alert)" : "$(check)")
@@ -319,3 +307,97 @@ function buildTooltipRpoToken(
 
   return result;
 }
+
+function initusageBarItem(context: vscode.ExtensionContext): void {
+  usageBarItem = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Left,
+    priorityusageBarItem
+  );
+  usageBarItem.command = "totvs-developer-studio.toggleUsageInfo";
+
+  context.subscriptions.push(usageBarItem);
+  //updateUsageBarItem();
+}
+
+export function updateUsageBarItem(args?: IUsageStatusInfo): void {
+  let text: string = `$(lightbulb)`;
+  let tooltip: string | vscode.MarkdownString = "Wait initilize...";
+
+  if (args) {
+    const usageStatus: any = args.usageStatus;
+
+    text = args.activate ? `$(lightbulb-autofix) (${args["counter"]}x)` : `$(light-bulb)`;
+    tooltip = buildTooltipBusyInfo(args);
+
+    usageBarItem.text = text;
+    usageBarItem.tooltip = tooltip;
+
+  }
+
+  usageBarItem.show();
+}
+
+function buildTooltipBusyInfo(args: IUsageStatusInfo): vscode.MarkdownString {
+  let text: vscode.MarkdownString = new vscode.MarkdownString(
+    `**Usage Indicator**\n` +
+    `- Active: ${args.activate ? "Yes" : "No"} (${args.counter}x)`
+  );
+
+  if (args.activate) {
+    const capital = (value: string) => value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+
+    args.usageStatus.forEach((value: IUsageStatusData) => {
+      text.appendMarkdown(`\n- ${capital(value.key)}: ${value.value}`)
+    });
+  }
+
+  text.appendMarkdown("\n\nVer [detalhes telemetria](command:totvs-developer-studio.detailUsageInfo)");
+  text.appendMarkdown("\n\n_Click_ no ícone abaixo para ativar/desativar");
+
+  text.isTrusted = true;
+  text.supportHtml = true;
+
+  return text;
+};
+
+	    // QueryDb busy
+    // (() => {
+    //   // Notifications have a minimum time to live. If the status changes multiple
+    //   // times within that interface, we will show multiple notifications. Try to
+    //   // avoid that.
+    //   const kGracePeriodMs = 250;
+
+    //   let timeout: any;
+    //   let resolvePromise: any;
+    //   languageClient.onReady().then(() => {
+    //     languageClient.onNotification("$totvsserver/queryDbStatus", (args) => {
+    //       let isActive: boolean = args.isActive;
+    //       if (isActive) {
+    //         if (timeout) {
+    //           clearTimeout(timeout);
+    //           timeout = undefined;
+    //         } else {
+    //           window.withProgress(
+    //             {
+    //               location: ProgressLocation.Notification,
+    //               title: "querydb is busy",
+    //             },
+    //             (p) => {
+    //               p.report({ increment: 100 });
+    //               return new Promise((resolve, reject) => {
+    //                 resolvePromise = resolve;
+    //               });
+    //             }
+    //           );
+    //         }
+    //       } else if (resolvePromise) {
+    //         timeout = setTimeout(() => {
+    //           resolvePromise();
+    //           resolvePromise = undefined;
+    //           timeout = undefined;
+    //         }, kGracePeriodMs);
+    //       }
+    //     });
+    //   });
+    // })();
+

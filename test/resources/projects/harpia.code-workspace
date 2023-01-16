@@ -1,0 +1,37 @@
+{
+	"folders": [
+		{
+			"path": ".//advpl",
+			"name": "AdvPL"
+		},
+		{
+			"path": ".//logix",
+			"name": "4GL"
+		},
+		{
+			"path": ".//fw",
+			"name": "FrameWork"
+		}
+	],
+	"settings": {
+		"totvsLanguageServer.editor.linter": true,
+		"totvsLanguageServer.welcomePage": false,
+		"totvsLanguageServer.launch.args": [
+			"--log-file=totvsls.log",
+			"--record=totvsls",
+			"--wait-for-attach=20000"
+		],
+		"totvsLanguageServer.askCompileResult": false,
+		"totvsLanguageServer.usageInfoConfig": true,
+		"totvsLanguageServer.clearConsoleBeforeCompile": true,
+		"totvsLanguageServer.editor.show.notification": "all",
+		"totvsLanguageServer.trace.server": "verbose",
+		"totvsLanguageServer.showConsoleOnCompile": false,
+		"totvsLanguageServer.editor.linter.behavior": "enable",
+		"totvsLanguageServer.workspaceServerConfig": true,
+		"totvsLanguageServer.showConsoleOnCompile": false,
+		"totvsLanguageServer.editor.linter.includes": "W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes;W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes_tlpp",
+		"totvsLanguageServer.editor.linter.behavior": "enable",
+		"totvsLanguageServer.workspaceServerConfig": true,
+	}
+}

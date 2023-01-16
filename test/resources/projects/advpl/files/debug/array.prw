@@ -59,7 +59,7 @@ user function array1()
 
 	conout("display com erro")
    	conout( list_1000[2000])
-
+	
 	conout("depois do display com erro")
 
 return

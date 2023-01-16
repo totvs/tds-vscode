@@ -8,7 +8,7 @@ import {
   procesChangeBreakpointsEvent,
   processDebugCustomEvent,
 } from "./debugEvents";
-import { LanguageClient } from "vscode-languageclient";
+import { LanguageClient } from "vscode-languageclient/node";
 import { TotvsDebugTrackerDescriptorFactory } from "./TotvsDebugTrackerDescriptorFactory";
 
 export let _debugEvent = undefined;

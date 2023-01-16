@@ -6,7 +6,6 @@ import * as ini from "ini";
 import * as nls from "vscode-nls";
 import { languageClient } from "./extension";
 import { Authorization, CompileKey } from "./compileKey/compileKey";
-import { changeSettings } from "./server/languageServerSettings";
 import { IRpoToken } from "./rpoToken";
 import stripJsonComments from "strip-json-comments";
 import {
@@ -49,43 +48,43 @@ export default class Utils {
   /**
    * Subscrição para evento de seleção de servidor/ambiente.
    */
-  static  get onDidSelectedServer(): vscode.Event</*ServerItem*/any> {
+  static get onDidSelectedServer(): vscode.Event</*ServerItem*/any> {
     return Utils._onDidSelectedServer.event;
   }
 
   /**
    * Subscrição para evento de chave de compilação.
    */
-  static  get onDidSelectedKey(): vscode.Event<CompileKey> {
+  static get onDidSelectedKey(): vscode.Event<CompileKey> {
     return Utils._onDidSelectedKey.event;
   }
 
   /**
    * Subscrição para evento de token de RPO.
    */
-  static  get onDidRpoTokenSelected(): vscode.Event<void> {
+  static get onDidRpoTokenSelected(): vscode.Event<void> {
     return Utils._onDidRpoTokenSelected.event;
   }
 
   /**
    * Emite a notificação de seleção de servidor/ambiente
    */
-  private static  _onDidSelectedServer = new vscode.EventEmitter</*ServerItem*/any>();
+  private static _onDidSelectedServer = new vscode.EventEmitter</*ServerItem*/any>();
 
   /**
    * Emite a notificação de seleção de chave de compilação
    */
-  private static  _onDidSelectedKey = new vscode.EventEmitter<CompileKey>();
+  private static _onDidSelectedKey = new vscode.EventEmitter<CompileKey>();
 
   /**
    * Emite a notificação de token de RPO
    */
-  private static  _onDidRpoTokenSelected = new vscode.EventEmitter<void>();
+  private static _onDidRpoTokenSelected = new vscode.EventEmitter<void>();
 
   /**
    * Gera um id de servidor
    */
-  public static  generateRandomID() {
+  public static generateRandomID() {
     return (
       Math.random().toString(36).substring(2, 15) +
       Date.now().toString(36) +
@@ -96,30 +95,46 @@ export default class Utils {
   /**
    * Troca o local da salva de servers.json
    */
-  static  toggleWorkspaceServerConfig() {
+  static toggleWorkspaceServerConfig() {
     const config = vscode.workspace.getConfiguration("totvsLanguageServer");
     config.update("workspaceServerConfig", !this.isWorkspaceServerConfig());
   }
 
   /**
+   * Troca da indicação da atividade.
+   */
+  static toggleUsageInfoConfig() {
+    const config = vscode.workspace.getConfiguration("totvsLanguageServer");
+    config.update("usageInfoConfig", !this.isUsageInfoConfig());
+  }
+
+  /**
    * Pegar o arquivo servers.json da .vscode (workspace)?
    */
-  static  isWorkspaceServerConfig(): boolean {
+  static isWorkspaceServerConfig(): boolean {
     let config = vscode.workspace.getConfiguration("totvsLanguageServer");
     return config.get("workspaceServerConfig");
   }
 
   /**
+ * Indica o status de informações de
+ */
+  static isUsageInfoConfig(): boolean {
+    let config = vscode.workspace.getConfiguration("totvsLanguageServer");
+    return config.get("usageInfoConfig");
+  }
+
+  /**
    * Retorna o path completo do servers.json
    */
-  static  getServerConfigFile() {
+  static getServerConfigFile() {
     return path.join(this.getServerConfigPath(), "servers.json");
   }
 
   /**
    * Retorna o path de onde deve ficar o servers.json
    */
-  static  getServerConfigPath() {
+  static getServerConfigPath() {
     return this.isWorkspaceServerConfig()
       ? this.getVSCodePath()
       : path.join(homedir, "/.totvsls");
@@ -128,14 +143,14 @@ export default class Utils {
   /**
    * Retorna o path completo do launch.json
    */
-  static  getLaunchConfigFile() {
+  static getLaunchConfigFile() {
     return path.join(this.getVSCodePath(), "launch.json");
   }
 
   /**
    * Retorna o path da pasta .vscode dentro do workspace
    */
-  static  getVSCodePath() {
+  static getVSCodePath() {
     let rootPath: string = vscode.workspace.rootPath || process.cwd();
 
     return path.join(rootPath, ".vscode");
@@ -144,7 +159,7 @@ export default class Utils {
   /**
    * Retorna todo o conteudo do servers.json
    */
-  static  getServersConfig() {
+  static getServersConfig() {
     let config: any = {};
     let serversJson = Utils.getServerConfigFile();
     if (!fs.existsSync(serversJson)) {
@@ -187,7 +202,7 @@ export default class Utils {
   /**
    * Retorna todo o conteudo do launch.json
    */
-  static  getLaunchConfig() {
+  static getLaunchConfig() {
     let config: any;
     let exist = fs.existsSync(Utils.getLaunchConfigFile());
     if (exist) {
@@ -205,7 +220,7 @@ export default class Utils {
     return config;
   }
 
-  static  saveLaunchConfig(config: JSON) {
+  static saveLaunchConfig(config: JSON) {
     let fs = require("fs");
     fs.writeFileSync(
       Utils.getLaunchConfigFile(),
@@ -218,7 +233,7 @@ export default class Utils {
     );
   }
 
-  static  updateSavedToken(id: string, environment: string, token: string) {
+  static updateSavedToken(id: string, environment: string, token: string) {
     const servers = Utils.getServersConfig();
 
     const data = { id: id, environment: environment };
@@ -228,7 +243,7 @@ export default class Utils {
     Utils.persistServersInfo(servers);
   }
 
-  static  getSavedTokens(id: string, environment: string): undefined | string {
+  static getSavedTokens(id: string, environment: string): undefined | string {
     const servers = Utils.getServersConfig();
     let token = undefined;
 
@@ -255,7 +270,7 @@ export default class Utils {
    * @param name Nome do servidor logado
    * @param environment Ambiente utilizado no login
    */
-  static  saveSelectServer(
+  static saveSelectServer(
     id: string,
     token: string,
     environment: string,
@@ -294,7 +309,7 @@ export default class Utils {
    * @param environment Ambiente
    * @param username Usuario
    */
-   static saveServerEnvironmentUsername(
+  static saveServerEnvironmentUsername(
     id: string,
     environment: string,
     username: string
@@ -328,7 +343,7 @@ export default class Utils {
    * @param token Token que o LS gerou em cima das informacoes de login
    * @param environment Ambiente utilizado no login
    */
-  static  saveConnectionToken(id: string, token: string, environment: string) {
+  static saveConnectionToken(id: string, token: string, environment: string) {
     const servers = Utils.getServersConfig();
 
     if (!servers.savedTokens) {
@@ -360,7 +375,7 @@ export default class Utils {
    * @param id Id do servidor logado
    * @param environment Ambiente utilizado no login
    */
-  static  removeSavedConnectionToken(id: string, environment: string) {
+  static removeSavedConnectionToken(id: string, environment: string) {
     const servers = Utils.getServersConfig();
     if (servers.savedTokens) {
       let key = id + ":" + environment;
@@ -378,7 +393,7 @@ export default class Utils {
   /**
    * Deleta o servidor logado por ultimo do servers.json
    */
-  static  deleteSelectServer() {
+  static deleteSelectServer() {
     const servers = Utils.getServersConfig();
     if (servers.connectedServer.id) {
       let server = {};
@@ -394,7 +409,7 @@ export default class Utils {
     }
   }
 
-  static  clearConnectedServerConfig() {
+  static clearConnectedServerConfig() {
     const allConfigs = Utils.getServersConfig();
 
     allConfigs.connectedServer = {};
@@ -406,7 +421,7 @@ export default class Utils {
   /**
    * Deleta o servidor logado por ultimo do servers.json
    */
-  static  deleteServer(id: string) {
+  static deleteServer(id: string) {
     const confirmationMessage = "Are you sure want to delete this server?";
     const optionYes = "Yes";
     const optionNo = "No";
@@ -436,7 +451,7 @@ export default class Utils {
    * Grava no arquivo servers.json uma nova configuracao de servers
    * @param JSONServerInfo
    */
-  static  persistServersInfo(JSONServerInfo) {
+  static persistServersInfo(JSONServerInfo) {
     let fs = require("fs");
     fs.writeFileSync(
       Utils.getServerConfigFile(),
@@ -454,7 +469,7 @@ export default class Utils {
    * Grava no arquivo launch.json uma nova configuracao de launchs
    * @param JSONServerInfo
    */
-  static  persistLaunchInfo(JSONLaunchInfo) {
+  static persistLaunchInfo(JSONLaunchInfo) {
     let fs = require("fs");
     fs.writeFileSync(
       Utils.getLaunchConfigFile(),
@@ -470,7 +485,7 @@ export default class Utils {
   /**
    * Cria uma nova configuracao de servidor no servers.json
    */
-  static  createNewServer(
+  static createNewServer(
     typeServer,
     serverName,
     port,
@@ -532,7 +547,7 @@ export default class Utils {
   /**
    * Recupera o ultimo servidor logado
    */
-  static  getCurrentServer() {
+  static getCurrentServer() {
     const servers = Utils.getServersConfig();
 
     if (servers.connectedServer.id) {
@@ -543,7 +558,7 @@ export default class Utils {
     }
   }
 
-  static  getAuthorizationToken(server: /*ServerItem*/any): string {
+  static getAuthorizationToken(server: /*ServerItem*/any): string {
     let authorizationToken: string = "";
     let isSafeRPOServer: boolean = Utils.isServerP20OrGreater(server);
     const permissionsInfos: IRpoToken | CompileKey = isSafeRPOServer
@@ -559,13 +574,13 @@ export default class Utils {
     return authorizationToken;
   }
 
-  static  getRpoTokenInfos(): IRpoToken {
+  static getRpoTokenInfos(): IRpoToken {
     const servers = Utils.getServersConfig();
 
     return servers ? servers.rpoToken : undefined;
   }
 
-  static  saveRpoTokenInfos(infos: IRpoToken) {
+  static saveRpoTokenInfos(infos: IRpoToken) {
     const config = Utils.getServersConfig();
 
     config.rpoToken = infos;
@@ -574,13 +589,13 @@ export default class Utils {
     //Utils._onDidSelectedKey.fire(infos);
   }
 
-  static  getPermissionsInfos(): CompileKey {
+  static getPermissionsInfos(): CompileKey {
     const servers = Utils.getServersConfig();
 
     return servers ? servers.permissions : undefined;
   }
 
-  static  savePermissionsInfos(infos: CompileKey) {
+  static savePermissionsInfos(infos: CompileKey) {
     const config = Utils.getServersConfig();
 
     config.permissions = infos;
@@ -589,7 +604,7 @@ export default class Utils {
     Utils._onDidSelectedKey.fire(infos);
   }
 
-  static  deletePermissionsInfos() {
+  static deletePermissionsInfos() {
     const config = Utils.getServersConfig();
 
     config.permissions = undefined;
@@ -598,7 +613,7 @@ export default class Utils {
     Utils._onDidSelectedKey.fire(undefined);
   }
 
-  static  removeExpiredAuthorization() {
+  static removeExpiredAuthorization() {
     vscode.window.showWarningMessage(
       localize(
         "tds.webview.Utils.removeExpiredAuthorization",
@@ -611,7 +626,7 @@ export default class Utils {
   /**
    * Recupera a lista de includes do arquivod servers.json
    */
-  static  getIncludes(
+  static getIncludes(
     absolutePath: boolean = false,
     server: any = undefined
   ): Array<string> {
@@ -686,7 +701,7 @@ export default class Utils {
   /**
    * Cria o arquivo servers.json caso ele nao exista.
    */
-  static  createServerConfig() {
+  static createServerConfig() {
     if (!fs.existsSync(Utils.getServerConfigPath())) {
       fs.mkdirSync(Utils.getServerConfigPath());
     }
@@ -696,7 +711,7 @@ export default class Utils {
     }
   }
 
-  static  initializeServerConfigFile(serversJson) {
+  static initializeServerConfigFile(serversJson) {
     try {
       fs.writeFileSync(serversJson, JSON.stringify(sampleServer(), null, "\t"));
     } catch (err) {
@@ -707,7 +722,7 @@ export default class Utils {
   /**
    * Cria o arquivo launch.json caso ele nao exista.
    */
-  static  createLaunchConfig(launchInfo: any) {
+  static createLaunchConfig(launchInfo: any) {
     if (launchInfo === undefined) {
       launchInfo = {
         type: "totvs_language_debug",
@@ -806,7 +821,7 @@ export default class Utils {
    * @param id id do servidor alvo.
    * @param serversConfig opcional, se omitido utiliza o padrao
    */
-  static  getServerById(
+  static getServerById(
     id: string,
     serversConfig: any = Utils.getServersConfig()
   ) {
@@ -829,7 +844,7 @@ export default class Utils {
    *Recupera um servidor pelo nome informado.
    * @param name nome do servidor alvo.
    */
-  static  getServerForNameWithConfig(name: string, serversConfig: any) {
+  static getServerForNameWithConfig(name: string, serversConfig: any) {
     let server;
 
     if (serversConfig.configurations) {
@@ -847,7 +862,7 @@ export default class Utils {
     return server;
   }
 
-  static  addCssToHtml(htmlFilePath: vscode.Uri, cssFilePath: vscode.Uri) {
+  static addCssToHtml(htmlFilePath: vscode.Uri, cssFilePath: vscode.Uri) {
     const htmlContent = fs.readFileSync(
       htmlFilePath.with({ scheme: "vscode-resource" }).fsPath
     );
@@ -867,31 +882,35 @@ export default class Utils {
 
     return $.html();
   }
+
   /**
    *Salva uma nova configuracao de include.
    */
-  static  saveIncludePath(includePath) {
+  static saveIncludePath(includePath: string[]) {
     const servers = Utils.getServersConfig();
 
     servers.includes = includePath;
 
     Utils.persistServersInfo(servers);
-
-    let includes = "";
-    includePath.forEach((includeItem) => {
-      includes += includeItem + ";";
-    });
-    changeSettings({
-      changeSettingInfo: { scope: "advpls", key: "includes", value: includes },
-    });
   }
+
+  /**
+   * Atualiza includes do linter.
+   */
+   static updateLinterIncludes() {
+    const servers = Utils.getServersConfig();
+    const includes: string = servers.includes.join(";");
+    const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("totvsLanguageServer");
+
+    config.update("editor.linter.includes", includes); //dispara onDidChangeConfiguration
+   }
 
   /**
    *Atualiza no server.json a build de um servidor
    * @param id ID do server que sera atualizado
    * @param buildVersion Nova build do servidor
    */
-  static  updateBuildVersion(id: string, buildVersion: string, secure: boolean) {
+  static updateBuildVersion(id: string, buildVersion: string, secure: boolean) {
     let result = false;
     if (!id || !buildVersion) {
       return result;
@@ -914,7 +933,7 @@ export default class Utils {
    * @param id ID do server que sera atualizado
    * @param newName Novo nome do servidor
    */
-  static  updateServerName(id: string, newName: string) {
+  static updateServerName(id: string, newName: string) {
     let result = false;
     if (!id || !newName) {
       return result;
@@ -931,7 +950,7 @@ export default class Utils {
     return result;
   }
 
-  static  updatePatchGenerateDir(id: string, patchGenerateDir: string) {
+  static updatePatchGenerateDir(id: string, patchGenerateDir: string) {
     let result = false;
     if (
       !id ||
@@ -952,7 +971,7 @@ export default class Utils {
     return result;
   }
 
-  static  readCompileKeyFile(path): Authorization {
+  static readCompileKeyFile(path): Authorization {
     if (fs.existsSync(path)) {
       const parseIni = ini.parse(fs.readFileSync(path, "utf-8").toLowerCase()); // XXX toLowerCase??
       return parseIni.authorization;
@@ -967,7 +986,7 @@ export default class Utils {
    * @param messageType - The message type
    * @param showDialog - If it must show a dialog.
    */
-  static  logMessage(
+  static logMessage(
     message: string,
     messageType: MESSAGETYPE,
     showDialog: boolean
@@ -1017,7 +1036,7 @@ export default class Utils {
     }
   }
 
-  static  logInvalidLaunchJsonFile(e) {
+  static logInvalidLaunchJsonFile(e) {
     Utils.logMessage(
       `There was a problem reading the launch.json file. (The file may still be functional, but check it to avoid unwanted behavior): ${e}`,
       MESSAGETYPE.Warning,
@@ -1025,7 +1044,7 @@ export default class Utils {
     );
   }
 
-  static  timeAsHHMMSS(date): string {
+  static timeAsHHMMSS(date): string {
     return (
       Utils.leftpad(date.getHours(), 2) +
       ":" +
@@ -1035,13 +1054,13 @@ export default class Utils {
     );
   }
 
-  static  leftpad(val, resultLength = 2, leftpadChar = "0"): string {
+  static leftpad(val, resultLength = 2, leftpadChar = "0"): string {
     return (String(leftpadChar).repeat(resultLength) + String(val)).slice(
       String(val).length
     );
   }
 
-  static  getAllFilesRecursive(folders: Array<string>): string[] {
+  static getAllFilesRecursive(folders: Array<string>): string[] {
     const files: string[] = [];
 
     folders.forEach((folder) => {
@@ -1069,11 +1088,11 @@ export default class Utils {
     return files;
   }
 
-  static  ignoreResource(fileName: string): boolean {
+  static ignoreResource(fileName: string): boolean {
     return processIgnoreList(ignoreListExpressions, path.basename(fileName));
   }
 
-  static  checkDir(selectedDir: string): string {
+  static checkDir(selectedDir: string): string {
     if (fs.existsSync(selectedDir)) {
       if (!fs.lstatSync(selectedDir).isDirectory()) {
         selectedDir = path.dirname(selectedDir);
@@ -1088,7 +1107,7 @@ export default class Utils {
     return "";
   }
 
-  static  deepCopy(obj: any): any {
+  static deepCopy(obj: any): any {
     let copy: any;
 
     // Handle the 3 simple types, and null or undefined
@@ -1131,7 +1150,7 @@ export default class Utils {
   // const advpl = config.get("advpl")["extensions"];
   // const logix = config.get("4gl")["extensions"];
 
-  private static  advpl: string[] = [
+  private static advpl: string[] = [
     ".th",
     ".ch",
     ".prw",
@@ -1146,19 +1165,19 @@ export default class Utils {
     ".apw",
   ];
 
-  private static  logix: string[] = [".4gl", ".per"];
+  private static logix: string[] = [".4gl", ".per"];
 
-  static  isAdvPlSource(fileName: string): boolean {
+  static isAdvPlSource(fileName: string): boolean {
     const ext = path.extname(fileName);
     return this.advpl.indexOf(ext.toLocaleLowerCase()) > -1;
   }
 
-  static  is4glSource(fileName: string): boolean {
+  static is4glSource(fileName: string): boolean {
     const ext = path.extname(fileName);
     return this.logix.indexOf(ext.toLocaleLowerCase()) > -1;
   }
 
-  static  isResource(fileName: string): boolean {
+  static isResource(fileName: string): boolean {
     return !this.isAdvPlSource(fileName) && !this.is4glSource(fileName);
   }
 
@@ -1187,7 +1206,7 @@ export default class Utils {
     }
   }
 
-  static  isServerP20OrGreater(server: /*ServerItem*/any): boolean {
+  static isServerP20OrGreater(server: /*ServerItem*/any): boolean {
     if (server && server.buildVersion) {
       return server.buildVersion.localeCompare("7.00.191205P") > 0;
     }
@@ -1195,11 +1214,11 @@ export default class Utils {
   }
 
   static getEnvironmentsConfig(serverName: string) {
-      const servers = this.getServersConfig();
-      const target: string = serverName.replace("_monitor", "")
-      const serverConfig = servers.configurations.find((element) => element.name == target);
+    const servers = this.getServersConfig();
+    const target: string = serverName.replace("_monitor", "")
+    const serverConfig = servers.configurations.find((element) => element.name == target);
 
-      return serverConfig?.environmentsConfig || [];
+    return serverConfig?.environmentsConfig || [];
   }
 
   static setEnvironmentsConfig(serverName: string, environmentsConfig: any[]) {
@@ -1213,6 +1232,7 @@ export default class Utils {
       }
     });
   }
+
 }
 
 function sampleServer(): any {
@@ -1301,7 +1321,7 @@ async function doUpdateInformations(element: any): Promise</*IServerInformations
     errorMessage: "",
     environmentDetectedType: element.type,
     serverDetectedType: element.type
-   };
+  };
 
   if (/*Utils.*/Utils.isServerP20OrGreater(element)) {
     await sendGetServerInformationsInfo(element).then(

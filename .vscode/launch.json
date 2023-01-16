@@ -24,10 +24,10 @@
 			"outFiles": [
 				"${workspaceFolder}/out/**/*.js"
 			],
-			"preLaunchTask": "npm: compile",
+			"xpreLaunchTask": "npm: compile",
 			"env": {
 				"TOTVS_LS_LOG_FILE": "./TOTVS_LS_LOG_FILE.log"
 			}
-		},
+		},	
 	]
 }

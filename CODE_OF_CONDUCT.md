@@ -1,4 +1,4 @@
-# Contributor Covenant Code of Conduct
+# Contributor Covenant Code of Conduct [Em português](./CODE_OF_CONDUCT.pt-BR.md)
 
 ## Our Pledge
 

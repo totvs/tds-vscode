@@ -1,0 +1,14 @@
+{
+    "totvsLanguageServer.welcomePage": false,
+    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes",
+    "totvsLanguageServer.editor.show.notification": "all",
+    "totvsLanguageServer.trace.server": "verbose",
+    "totvsLanguageServer.usageInfoConfig": true,
+    "totvsLanguageServer.launch.args": [
+        "--log-file=totvsls.log",
+        "--record=totvsls",
+        "--wait-for-attach=20000"
+    ],
+    "totvsLanguageServer.editor.linter.behavior": "enable",
+    "totvsLanguageServer.editor.index.cache": "none"
+}

@@ -1,7 +1,19 @@
 #include "protheus.ch"
 
+user function funarr()
+	conout("executando u_funarr") 
+		
+	private result := __funarr()
+
+	conout("executor u_funarr") 
+
+return result 
+
+private aOpcoes := ""
+	static aOpcoes
+
 user function escolheNum(replay, replayPath, numbers)
-	local n, cResp, cMsg := ""
+	local n, cResp := "xxxxx", cMsg := ""
 	local aOpcoes := {}
 	private cOpcao
 	private ondeEstou := "escolheNum"
@@ -19,7 +31,7 @@ user function escolheNum(replay, replayPath, numbers)
 	for n := 1 to 5
 		aAdd(aOpcoes, strZero(n,1,0))
 	next
-//
+// 
 	n := 0
 	while !(cResp == "*")
 		if (replay) 

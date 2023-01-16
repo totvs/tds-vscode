@@ -3,7 +3,6 @@ import * as path from "path";
 import * as nls from "vscode-nls";
 import * as fs from "fs";
 import { languageClient } from "../extension";
-import { isLSInitialized } from "../TotvsLanguageClient";
 import Utils from "../utils";
 import { ResponseError } from "vscode-languageclient";
 
@@ -73,13 +72,7 @@ export interface Authorization {
 }
 
 export function compileKeyPage(context: vscode.ExtensionContext) {
-  if (!isLSInitialized) {
-    languageClient.onReady().then(async () => {
-      initializePage(context);
-    });
-  } else {
-    initializePage(context);
-  }
+  initializePage(context);
 }
 
 function initializePage(context: vscode.ExtensionContext) {

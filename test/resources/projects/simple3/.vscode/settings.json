@@ -1,0 +1,10 @@
+{
+    "totvsLanguageServer.welcomePage": false,
+    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes",
+    "totvsLanguageServer.launch.args": [
+        "--log-file=totvsls.log",
+        "--record=totvsls",
+        "--log-file-append=totvsls2.log",
+        "--wait-for-attach=20000"
+    ],
+}

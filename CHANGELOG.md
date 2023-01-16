@@ -1,5 +1,63 @@
 # Changelog
 
+# Versão [1.4.0-BETA-4]
+
+## Melhorias
+
+### Assistente de assinatura de funções
+
+Adicionado assistente de assinatura de funções (_SignatureHelp_).
+
+### Informações sobre uso e outras informações
+
+Adicionado informações sobre o uso de funções (_CodeLens_).
+
+# Versão [1.4.0-BETA-3]
+
+## Melhorias
+
+### Árvore de projeto
+
+Adicionado tratamento quando há mudança na árvore de projeto, tais como, novo/remoção arquivo ou pasta.
+
+## Correções
+
+### Navegação em classes quando usado `self` e `_Super`
+
+- Adicionado tratamento há herança de classe (`_SUper` e `from`)
+- Unificado tratamento de `::` e `self`
+
+# Versão [1.4.0-BETA-2]
+
+## Correções
+
+### Indexação de pastas e arquivos com nome acentuados
+
+Indexação de pastas e arquivos com nome acentuados.
+
+# Versão [1.4.0-BETA]
+
+## Melhorias
+
+### Implementação de configuração para ignorar pastas e arquivos
+
+Efetuado a implementação de configuração para a extensão ignorar pastas e arquivos no processo de _Navegação em fontes_ e recursos associados, através da existência do arquivo `.tdsindexignore`.
+
+Detalhes da implementação em [# TDS: Navegador de código](docs/navigator.md#ignore).
+
+### Navegação em fontes, passagem de mouse e referências
+
+Efetuado a implementação de navegação em fontes, passagem de mouse e referências.
+Detalhes da implementação em [# TDS: Navegador de código](docs/navigator.md).
+
+> Os recursos aqui apresentados, podem ser influenciados devido ao _linter_ ignorar o processamento de fontes configurado em [## TDS: Linter -> Ignorar pastas e arquivos](docs/linter.md#tdsignore).
+
+> As informações sobre navegação, podem ou não ficar em [_cache__](docs/navigator.md#cache).
+
+### Visão _Estrutura_
+
+Apresenta alguns detalhes sobre o ítem, conforme sua definição.
+
 # Versão [1.3.17]
 
 ## Correções
@@ -45,6 +103,15 @@ Inclusão do parâmetro "olddpiMode" no launch.json para ativar a passagem do pa
 # Versão [1.3.16]
 
 ## Melhorias
+
+### O comportamento do processo de _linter_ foi modificado.
+
+Este passou a ter três comportamentos:
+- Habilitado somente para arquivos em edição (padrão)
+- Aplica o processo em todos os fontes da área de trabalho
+- Desabilitado
+
+Veja detalhes de configuação em [TDS: Linter](docs/linter.md).
 
 ### Verificação do tamanho de linhas em fontes
 

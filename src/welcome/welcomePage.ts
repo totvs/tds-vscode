@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import Utils from '../utils';
 
-import {ExtensionContext} from 'vscode';
+import { ExtensionContext } from 'vscode';
 
 import * as nls from 'vscode-nls';
 let localize = nls.loadMessageBundle();
@@ -97,7 +97,7 @@ function saveSmartClientBin(smartClient: string) {
 				Utils.persistLaunchInfo(launchConfig);
 			}
 		}
-	} catch(e) {
+	} catch (e) {
 		console.error(e);
 	}
 }

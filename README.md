@@ -1,11 +1,21 @@
 # TOTVS Developer Studio para VSCode
 
 <!-- prettier-ignore-start -->
+[![GitHub license](https://img.shields.io/github/license/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/blob/master/LICENSE)
+![Version](https://img.shields.io/visual-studio-marketplace/v/TOTVS.tds-vscode)
+![Installs](https://img.shields.io/visual-studio-marketplace/i/TOTVS.tds-vscode)
+![Downloads](https://img.shields.io/visual-studio-marketplace/d/TOTVS.tds-vscode)
+![Rating](https://img.shields.io/visual-studio-marketplace/stars/TOTVS.tds-vscode)
+[![GitHub stars](https://img.shields.io/github/stars/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/issues)
+[![GitHub forks](https://img.shields.io/github/forks/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/network)
+![GitHub last commit](https://img.shields.io/github/last-commit/totvs/tds-vscode)
+![Visual Studio Marketplace Last Updated](https://img.shields.io/visual-studio-marketplace/last-updated/TOTVS.tds-vscode)
+![GitHub top language](https://img.shields.io/github/languages/top/totvs/tds-vscode)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/totvs/tds-vscode/Deploy%20Extension)
 <!-- markdownlint-disable -->
-<!--[![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode)-->
-![GitHub](https://img.shields.io/github/license/totvs/tds-vscode)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- markdownlint-enabled -->
 <!-- prettier-ignore-end -->
@@ -22,9 +32,9 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 
 - Sintaxe destacada
 - Comunicação baseada nos protocolos LSP/DAP
-- [Linter](docs/linter.md) - analisador de código estático
+- [Linter](docs/linter.md) para análise de código estático
 - [Console](docs/console.md) informativo e notificações
-- [Edição](docs/edition.md) e [Formatação](docs/formatter/format_config.md) de arquivos fontes (AdvPL, TLPP, 4GL e variantes)
+- [Edição](docs/edition.md), [Formatação](docs/formatter/format_config.md) e [Navegação](docs/navigator.md) de arquivos fontes (AdvPL, TLPP, 4GL e variantes)
 - [Compilação](docs/compilation.md) de fontes, pastas e da área de trabalho
 - [Depuração](docs/debugger.md) e execução (Local e _WebApp_)
 - [TDS Replay](https://github.com/totvs/tds-vscode/wiki/TDS-Replay) - Depuração de execução pré-gravada.
@@ -35,6 +45,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 - [Monitoramento](docs/monitor.md) de servidores
 - [RPO Seguro](docs/rpo.md#Token_de_RPO)
 - [TDS-Cli](https://github.com/totvs/tds-ls/blob/master/TDS-CLi.md) compilação por linha de comando. Da mesma forma que o Eclipse, essa extensão do VSCode possui uma ferramenta de compilação em linha de comando.
+- [Navegação em código](docs/navigator.md)
 
 ## SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO
 
@@ -103,6 +114,12 @@ Por padrão, o _TDS-VSCode_ já vem configurado para usar o _encode_ `WindowsCP1
   Permite uso de _bookmarks_ no estilo Delphi numerados de 1 a 9.
 
   ![Toggle](https://github.com/alefragnani/vscode-numbered-bookmarks/raw/master/images/numbered-bookmarks-toggle.png)
+
+- [Protheus.DOC](https://github.com/totvs/tds-vscode)
+
+  Suporte aos recursos e snippets de documentação TOTVS ProtheusDoc para VsCode.
+
+  ![Protheus.DOC](https://github.com/totvs/tds-vscode/raw/master/images/Example3.gif)
 
 ## Extensões com incompatibilidade
 

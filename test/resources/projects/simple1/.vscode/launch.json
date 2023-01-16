@@ -7,9 +7,22 @@
 			"name": "TOTVS Language Debug",
 			"program": "${command:AskForProgramName}",
 			"cwb": "${workspaceFolder}",
-			"smartclientBin": "../totvs/bin/smartclient/smartclient.exe",
+			"smartclientBin": "M:\\protheus\\smartClient\\20-3-0-4\\smartclient.exe",
 			"isMultiSession": true,
-			"enableTableSync": true
+			"enableTableSync": true,
+			"logFile": "${workspaceFolder}/daplog.log"
 		}
+	],
+	"lastPrograms": [
+		{
+			"args": [
+				"W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\simple1\\files"
+			],
+			"label": "u_getfunc"
+		}
+	],
+	"lastProgramExecuted": "u_getfunc",
+	"lastProgramArguments": [
+		"W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\simple1\\files"
 	]
 }

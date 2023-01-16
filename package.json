@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "1.3.17-RC4",
+  "version": "1.4.0-BETA-3",
   "publisher": "TOTVS",
   "author": {
     "name": "TOTVS",
@@ -66,7 +66,7 @@
     "export-i18n": "gulp export-i18n",
     "i18n-import": "gulp i18n-import",
     "---RELEASE---": "",
-    "release": "npx standard-version --skip.changelog --release-as 1.3.16-RC6",
+    "release": "npx standard-version --skip.changelog --release-as 1.4.0-BETA-3",
     "tag": "git push --follow-tags origin dev",
     "package": "gulp package",
     "publish": "gulp publish",
@@ -83,43 +83,44 @@
     "@totvs/tds-ls": "^1.2.57",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.63.1",
-    "@vscode/debugadapter": "^1.51.1",
+    "@vscode/debugadapter": "^1.57.0",
     "cheerio": "1.0.0-rc.10",
-    "core-js": "^3.19.3",
+    "core-js": "^3.25.2",
     "del": "^6.0.0",
-    "fs-extra": "^10.0.0",
+    "fs-extra": "^10.1.0",
     "ini": "^2.0.0",
     "jszip": "^3.7.1",
     "material-table": "1.69.3",
-    "nvm": "^0.0.4",
+    "prop-types": "^15.8.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "strip-json-comments": "^3.1.1",
     "template-literal": "^1.0.4",
     "tmp": "^0.2.1",
-    "typescript": "^4.5.2",
-    "vscode-languageclient": "^6.1.4",
-    "vscode-nls": "^5.0.0",
+    "typescript": "^4.8.3",
+    "vscode-languageclient": "^8.0.2",
+    "vscode-nls": "^5.2.0",
     "windows-1251": "^1.1.0",
     "windows-1252": "^1.1.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.16.0",
-    "@babel/core": "^7.16.5",
-    "@types/chai": "^4.3.0",
+    "@babel/cli": "^7.18.10",
+    "@babel/core": "^7.19.1",
+    "@types/chai": "^4.3.3",
     "@types/fs-extra": "^9.0.13",
-    "@types/glob": "^7.2.0",
+    "@types/glob": "^8.0.0",
     "@types/ini": "^1.3.31",
-    "@types/mocha": "^9.0.0",
-    "@types/node": "^17.0.4",
-    "@types/react-dom": "^16.9.14",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "^18.7.18",
+    "@types/react-dom": "^18.0.6",
     "@types/vscode": "^1.63.1",
-    "all-contributors-cli": "^6.20.0",
-    "chai": "^4.3.4",
+    "all-contributors-cli": "^6.20.4",
+    "chai": "^4.3.6",
     "cleanup": "^0.3.0",
-    "css-loader": "^6.5.1",
-    "eslint": "^8.5.0",
-    "glob": "^7.2.0",
+    "css-loader": "^6.7.1",
+    "eslint": "^8.23.1",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "glob": "^8.0.3",
     "gulp": "^4.0.2",
     "gulp-filter": "^7.0.0",
     "gulp-run": "^1.7.1",
@@ -139,86 +140,15 @@
     "typescript": "^4.5.4",
     "typescript-eslint": "^0.0.1-alpha.0",
     "vsce": "^2.9.2",
-    "vscode-extension-tester": "^4.2.5",
-    "vscode-nls-dev": "^4.0.0",
-    "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1",
+    "vscode-extension-tester": "^4.4.1",
+    "vscode-nls-dev": "^4.0.1",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
     "webpack-stream": "^7.0.0"
   },
   "main": "./out/extension",
   "activationEvents": [
-    "onLanguage:advpl",
-    "onLanguage:4gl",
-    "onDebugInitialConfigurations",
-    "onCommand:totvs-developer-studio.getProgramArguments",
-    "onCommand:totvs-developer-studio.getProgramName",
-    "onCommand:totvs-developer-studio.build.file",
-    "onCommand:totvs-developer-studio.rebuild.file",
-    "onCommand:totvs-developer-studio.build.workspace",
-    "onCommand:totvs-developer-studio.rebuild.workspace",
-    "onCommand:totvs-developer-studio.build.openEditors",
-    "onCommand:totvs-developer-studio.rebuild.openEditors",
-    "onCommand:totvs-developer-studio.delete.file.fromRPO",
-    "onCommand:totvs-developer-studio.configure.launcher",
-    "onCommand:totvs-developer-studio.inspectorFunctions",
-    "onCommand:totvs-developer-studio.inspectorObjects",
-    "onCommand:totvs-developer-studio.defragRPO",
-    "onCommand:totvs-developer-studio.rpoCheckIntegrity",
-    "onCommand:totvs-developer-studio.revalidateRPO",
-    "onCommand:totvs-developer-studio.delete.file.fromRPO",
-    "onCommand:totvs-developer-studio.getDAP",
-    "onCommand:totvs-developer-studio.connect",
-    "onCommand:totvs-developer-studio.reconnect",
-    "onCommand:totvs-developer-studio.serverSelection",
-    "onCommand:totvs-developer-studio.rpoToken",
-    "onCommand:totvs-developer-studio.clearRpoToken",
-    "onCommand:totvs-developer-studio.toggleSaveLocation",
-    "onCommand:totvs-developer-studio.disconnect",
-    "onCommand:totvs-developer-studio.add",
-    "onCommand:totvs-developer-studio.config",
-    "onCommand:totvs-developer-studio.selectenv",
-    "onCommand:totvs-developer-studio.delete",
-    "onCommand:totvs-developer-studio.delete.environment",
-    "onCommand:totvs-developer-studio.patchGenerate.fromRPO",
-    "onCommand:totvs-developer-studio.patchGenerate.byDifference",
-    "onCommand:totvs-developer-studio.patchGenerate.fromFolder",
-    "onCommand:totvs-developer-studio.patchApply",
-    "onCommand:totvs-developer-studio.patchApply.fromFile",
-    "onCommand:totvs-developer-studio.patchValidate.fromFile",
-    "onCommand:totvs-developer-studio.welcomePage",
-    "onCommand:totvs-developer-studio.include",
-    "onCommand:totvs-developer-studio.ws.show",
-    "onCommand:totvs-developer-studio.logger.on",
-    "onCommand:totvs-developer-studio.logger.off",
-    "onCommand:totvs-developer-studio.compile.key",
-    "onCommand:totvs-developer-studio.templateApply",
-    "onCommand:totvs-developer-studio.templateApply.fromFile",
-    "onCommand:totvs-developer-studio.rename",
-    "onCommand:totvs-developer-studio.toggleTableSync",
-    "onCommand:totvs-developer-studio.patchInfos.fromFile",
-    "onCommand:totvs-developer-studio.toggle.autocomplete.behavior",
-    "onCommand:totvs-developer-studio.run.formatter",
-    "onCommand:totvs-developer-studio.open-loadrpoinfo-view",
-    "onCommand:advpl.freshenIndex",
-    "onCommand:totvs-developer-studio.tdsreplay.configure.launcher",
-    "onCommand:totvs-developer-studio.tdsreplay.webview.timeLine",
-    "onCommand:tds-monitor.open-monitor-view",
-    "onView:totvs_server",
-    "workspaceContains:**/*.prw",
-    "workspaceContains:**/*.ppo",
-    "workspaceContains:**/*.prx",
-    "workspaceContains:**/*.aph",
-    "workspaceContains:**/*.ppx",
-    "workspaceContains:**/*.ppp",
-    "workspaceContains:**/*.tlpp",
-    "workspaceContains:**/*.ch",
-    "workspaceContains:**/*.th",
-    "workspaceContains:**/*.4gl",
-    "workspaceContains:**/*.per",
-    "workspaceContains:**/*.ptm",
-    "workspaceContains:**/*.upd",
-    "workspaceContains:**/*.pak",
-    "workspaceContains:.vscode/servers.json"
+    "onStartupFinished"
   ],
   "contributes": {
     "iconThemes": [
@@ -541,30 +471,79 @@
           "default": "none",
           "description": "%tds.package.editor.notification.show%"
         },
-        "totvsLanguageServer.editor.toggle.autocomplete": {
-          "scope": "window",
+        "totvsLanguageServer.editor.hover": {
+          "scope": "application",
           "type": "string",
           "enum": [
-            "Basic",
-            "LS"
+            "simple",
+            "protheusDoc"
           ],
           "enumDescriptions": [
-            "%tds.package.editor.toggle.autocomplete.basic%",
-            "%tds.package.editor.toggle.autocomplete.ls%"
+            "%tds.package.editor.hover.simple%",
+            "%tds.package.editor.hover.protheusDoc%"
           ],
-          "default": "LS",
-          "description": "%tds.package.editor.toggle.autocomplete%"
+          "default": "protheusDoc",
+          "description": "%tds.package.editor.hover%"
+        },
+        "totvsLanguageServer.editor.signatureHelp": {
+          "scope": "application",
+          "type": "boolean",
+          "default": "true",
+          "description": "%tds.package.editor.signatureHelp%"
+        },
+        "totvsLanguageServer.editor.codeLens": {
+          "scope": "application",
+          "type": "boolean",
+          "default": "true",
+          "description": "%tds.package.editor.codeLens%"
         },
         "totvsLanguageServer.workspaceServerConfig": {
           "type": "boolean",
           "default": false,
           "description": "%tds.package.workspaceServerConfig%"
         },
-        "totvsLanguageServer.editor.linter": {
-          "scope": "window",
+        "totvsLanguageServer.usageInfoConfig": {
           "type": "boolean",
           "default": true,
+          "description": "%tds.package.toggleUsageInfo%"
+        },
+        "totvsLanguageServer.editor.linter.behavior": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "enable",
+            "enableOnlyOpenFiles",
+            "disable"
+          ],
+          "enumDescriptions": [
+            "Applies to all files on the workspace.",
+            "Applies only to files being edited.",
+            "Disable the process."
+          ],
+          "default": "enableOnlyOpenFiles",
           "description": "%tds.package.editor.linter%"
+        },
+        "totvsLanguageServer.editor.linter.includes": {
+          "scope": "window",
+          "type": "string",
+          "default": "",
+          "description": "(Don't edit. It can be overwritten.)"
+        },
+        "totvsLanguageServer.editor.index.cache": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "none",
+            "json",
+            "package"
+          ],
+          "enumDescriptions": [
+            "%tds.package.editor.index.cache.none%",
+            "%tds.package.editor.index.cache.json%",
+            "%tds.package.editor.index.cache.package%"
+          ],
+          "default": "none",
+          "description": "%tds.package.editor.index.cache%"
         },
         "totvsLanguageServer.filesystem.encoding": {
           "scope": "window",
@@ -588,7 +567,7 @@
                 "ignore"
               ],
               "enumDescriptions": [
-                "Em maiúsculuas",
+                "Em maiúsculas",
                 "Em minúsculas",
                 "Manter original"
               ],
@@ -746,6 +725,16 @@
         "category": "TOTVS"
       },
       {
+        "command": "totvs-developer-studio.toggleUsageInfo",
+        "title": "%tds.package.toggleUsageInfo%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.detailUsageInfo",
+        "title": "%tds.package.detailUsageInfo%",
+        "category": "TOTVS"
+      },
+      {
         "command": "totvs-developer-studio.rename",
         "title": "%tds.package.rename%"
       },
@@ -884,11 +873,6 @@
         "category": "TOTVS"
       },
       {
-        "command": "totvs-developer-studio.toggle.autocomplete.behavior",
-        "title": "%tds.toggle.autocomplete.behavior%",
-        "category": "TOTVS"
-      },
-      {
         "command": "totvs-developer-studio.run.formatter",
         "title": "Format",
         "description": "%tds.package.apply.formatting%",
@@ -949,11 +933,6 @@
         "command": "totvs-developer-studio.rebuild.openEditors",
         "key": "ctrl+shift+f10",
         "mac": "cmd+shift+f10"
-      },
-      {
-        "command": "totvs-developer-studio.toggle.autocomplete.behavior",
-        "key": "ctrl+alt+space",
-        "when": "editorTextFocus"
       }
     ],
     "breakpoints": [
@@ -1245,11 +1224,6 @@
                 "type": "array",
                 "description": "%tds.package.properties.workspaceFolders.description.web%",
                 "default": "[${workspaceFolder}]"
-              },
-              "wsCacheFiles": {
-                "type": "boolean",
-                "description": "%tds.package.properties.wsCacheFiles.description.web%",
-                "default": false
               },
               "webNavigator": {
                 "type": "string",
