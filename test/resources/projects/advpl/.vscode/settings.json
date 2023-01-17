@@ -3,10 +3,10 @@
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
         "--record=totvsls",
-        "--wait-for-attach=30000"
+        "--wait-for-attach=20000",
+        "--debug-ls"
     ],
     "totvsLanguageServer.askCompileResult": false,
-    "totvsLanguageServer.busyInfoConfig": true,
     "git.ignoreLimitWarning": true,
     "totvsLanguageServer.editor.linter.includes": "W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes;W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes_tlpp",
     "totvsLanguageServer.editor.linter.behavior": "enable",

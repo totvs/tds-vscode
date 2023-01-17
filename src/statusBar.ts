@@ -33,7 +33,7 @@ export function initStatusBarItems(context: vscode.ExtensionContext) {
   initPermissionStatusBarItem(context);
   initRpoTokenStatusBarItem(context);
   initSettingsBarItem(context);
-  initusageBarItem(context);
+  initUsageBarItem(context);
 }
 
 export function updateStatusBarItems() {
@@ -308,7 +308,7 @@ function buildTooltipRpoToken(
   return result;
 }
 
-function initusageBarItem(context: vscode.ExtensionContext): void {
+function initUsageBarItem(context: vscode.ExtensionContext): void {
   usageBarItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Left,
     priorityusageBarItem
@@ -316,7 +316,7 @@ function initusageBarItem(context: vscode.ExtensionContext): void {
   usageBarItem.command = "totvs-developer-studio.toggleUsageInfo";
 
   context.subscriptions.push(usageBarItem);
-  //updateUsageBarItem();
+  updateUsageBarItem();
 }
 
 export function updateUsageBarItem(args?: IUsageStatusInfo): void {
@@ -331,7 +331,6 @@ export function updateUsageBarItem(args?: IUsageStatusInfo): void {
 
     usageBarItem.text = text;
     usageBarItem.tooltip = tooltip;
-
   }
 
   usageBarItem.show();
@@ -344,14 +343,21 @@ function buildTooltipBusyInfo(args: IUsageStatusInfo): vscode.MarkdownString {
   );
 
   if (args.activate) {
-    const capital = (value: string) => value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+    const capital = (value: string): string => {
+      const values: string[] = value.split("_");
+      values.forEach((element:string, i) => {
+        values[i] = element.charAt(0).toUpperCase() + element.slice(1).toLowerCase();
+      });
+
+      return values.join(" ");
+    }
 
     args.usageStatus.forEach((value: IUsageStatusData) => {
       text.appendMarkdown(`\n- ${capital(value.key)}: ${value.value}`)
     });
   }
 
-  text.appendMarkdown("\n\nVer [detalhes telemetria](command:totvs-developer-studio.detailUsageInfo)");
+ // text.appendMarkdown("\n\nVer [detalhes telemetria](command:totvs-developer-studio.detailUsageInfo)");
   text.appendMarkdown("\n\n_Click_ no ícone abaixo para ativar/desativar");
 
   text.isTrusted = true;
