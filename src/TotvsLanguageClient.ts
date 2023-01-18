@@ -143,7 +143,7 @@ export function getLanguageClient(
         "totvsLanguageServer"
       ); //transformar em configuracao de workspace
 
-      const serverInfo:any = languageClient.initializeResult.serverInfo;
+      const serverInfo: any = languageClient.initializeResult.serverInfo;
       if (serverInfo) {
         languageClient.outputChannel.appendLine(`                     Version: ${serverInfo.name} ${serverInfo.version}`);
       }
@@ -207,6 +207,13 @@ function getClientConfig(context: vscode.ExtensionContext) {
   }
 
   clientConfig["setting"] = getLanguageServerSettings();
+
+  const ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
+  clientConfig["setting"].push({
+    scope: "extension",
+    key: "tdsversion",
+    value: ext.packageJSON["version"]
+  });
 
   return clientConfig;
 }
