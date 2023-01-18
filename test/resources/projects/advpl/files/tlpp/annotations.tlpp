@@ -56,7 +56,8 @@ return self:cSobrenome
 method getCpf() class Pessoa
 return self:cCpf
 
-	using namespace EverySystem
+using namespace EverySystem
+
 user function testeReflection()
 	local aClasse as array
 
