@@ -187,13 +187,6 @@ function getClientConfig(context: vscode.ExtensionContext) {
 
   clientConfig["setting"] = getLanguageServerSettings();
 
-  const ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
-  clientConfig["setting"].push({
-    scope: "extension",
-    key: "tdsversion",
-    value: ext.packageJSON["version"]
-  });
-
   return clientConfig;
 }
 

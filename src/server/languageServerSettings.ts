@@ -52,22 +52,16 @@ export function getModifiedLanguageServerSettings(): any[] {
     settings.push({
       scope: "server",
       key: "usageInfo",
-      value: usageInfo
+      value: String(usageInfo)
     });
   }
 
   let linter = config.get("editor.linter.behavior");
-  if (String(linter) == "true") { //compatibilização com versões anteriores 1.3.18
-    linter = "enabled";
-  } else if (String(linter) == "false") {
-    linter = "disable";
-  }
-
   if (isNewSettings("linter", "behavior", linter)) {
     settings.push({
       scope: "linter",
       key: "behavior",
-      value: linter
+      value: String(linter)
     });
   }
 
@@ -99,23 +93,31 @@ export function getModifiedLanguageServerSettings(): any[] {
     needRestart = true;
   }
 
-  // const codeLens: string = config.get("editor.codeLens");
-  // if (isNewSettings("editor", "codeLens", codeLens)) {
-  //   settings.push({
-  //     scope: "editor",
-  //     key: "codeLens",
-  //     value: codeLens
-  //   });
-  // }
+  const codeLens = config.get("editor.codeLens");
+  if (isNewSettings("editor", "codeLens", codeLens)) {
+    settings.push({
+      scope: "editor",
+      key: "codeLens",
+      value: String(codeLens)
+    });
+  }
 
-  // const signatureHelp: string = config.get("editor.signatureHelp");
-  // if (isNewSettings("editor", "signatureHelp", signatureHelp)) {
-  //   settings.push({
-  //     scope: "editor",
-  //     key: "signatureHelp",
-  //     value: signatureHelp
-  //   });
-  // }
+  const signatureHelp = config.get("editor.signatureHelp");
+  if (isNewSettings("editor", "signatureHelp", signatureHelp)) {
+    settings.push({
+      scope: "editor",
+      key: "signatureHelp",
+      value: String(signatureHelp)
+    });
+  }
+
+  let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
+  const version: string = '1.3.17';  //ext.packageJSON["version"];
+  settings.push({
+    scope: "extension",
+    key: "tdsversion",
+    value: version
+  });
 
   return settings;
 }

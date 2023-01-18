@@ -62,7 +62,17 @@ Apresenta alguns detalhes sobre o ítem, conforme sua definição.
 
 ## Melhoria
 
-###  Formatação Annotation REST TL++ [#1073](https://github.com/totvs/tds-vscode/issues/1073)
+### Formatação Annotation REST TL++ [#1073](https://github.com/totvs/tds-vscode/issues/1073)
+
+Adicionado sintaxe destacada em anotações _REST_ e customizadas.
+
+> Também foi adicionado a sintaxe destacada para outros recursos expecíficos de TL++.
+
+### Abertura de arquivos de definição (.CH)
+
+Adicionado ligação (_link_) para abertura de arquivos de definição (.CH) através do acionamento de ``CTRL+CLICK`` sobre o nome do arquivo.
+
+> Alguns arquivos de definição, são arquivos binários e ao tentar abri-los, ocorrerá um aviso de quê o arquivo é binário ou a codificação (_enconding_) não é suportado.
 
 # Versão [1.3.17]
 
@@ -77,10 +87,6 @@ Ajustado processo de filtro na carga de _snippets_.
 ### Problema ao avaliar expressões iniciadas por "::" durante depuração [#1072](https://github.com/totvs/tds-vscode/issues/1072)
 
 Adicionados tratamentos para substituir "::" por "self:" em situações específicas.
-
-### Problema ao carregar snippets dentro do VSCode [#966](https://github.com/totvs/tds-vscode/issues/966)
-
-Ajustado processo de filtro na carga de _snippets_.
 
 ### Erro formatação classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
 
