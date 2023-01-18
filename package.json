@@ -515,12 +515,14 @@
           "enum": [
             "enable",
             "enableOnlyOpenFiles",
-            "disable"
+            "disable",
+            "true"
           ],
           "enumDescriptions": [
             "Applies to all files on the workspace.",
             "Applies only to files being edited.",
-            "Disable the process."
+            "Disable the process.",
+            "Deprecated. Use any options above."
           ],
           "default": "enableOnlyOpenFiles",
           "description": "%tds.package.editor.linter%"

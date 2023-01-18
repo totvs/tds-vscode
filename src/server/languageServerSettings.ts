@@ -21,12 +21,12 @@ function isNewSettings(scope: string, key: string, value: any): boolean {
 }
 
 export function getLanguageServerSettings(): any[] {
-  return  getModifiedLanguageServerSettings();
+  return getModifiedLanguageServerSettings();
 }
 
 export function getModifiedLanguageServerSettings(): any[] {
   let config = vscode.workspace.getConfiguration("totvsLanguageServer");
-  needRestart  = false;
+  needRestart = false;
 
   const settings: any[] = [];
 
@@ -56,7 +56,13 @@ export function getModifiedLanguageServerSettings(): any[] {
     });
   }
 
-  const linter = config.get("editor.linter.behavior");
+  let linter = config.get("editor.linter.behavior");
+  if (String(linter) == "true") { //compatibilização com versões anteriores 1.3.18
+    linter = "enabled";
+  } else if (String(linter) == "false") {
+    linter = "disable";
+  }
+
   if (isNewSettings("linter", "behavior", linter)) {
     settings.push({
       scope: "linter",
