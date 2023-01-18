@@ -135,13 +135,13 @@
 	"tds.package.clearRpoToken": "Eliminar el Token de Compilación",
 	"tds.package.filesystem.encoding": "Establecer la codificación del sistema de archivos",
 	"tds.package.editor.linter": "Comportamiento el linter",
-	"tds.package.editor.hover.plaintext": "Texto puro",
-	"tds.package.editor.hover..markDown": "Utilice ProtheusDoc cuando sea posible",
+	"tds.package.editor.hover.simple": "Texto sencillo",
+	"tds.package.editor.hover.protheusDoc": "Utilice ProtheusDoc cuando sea posible",
 	"tds.package.editor.hover": "Controlar cómo se muestra la presentación del cursor.",
 	"tds.package.editor.index.cache": "Persistencia de caché de navegación",
 	"tds.package.editor.index.cache.none": "Deshabilita la persistencia de caché entre sesiones.",
 	"tds.package.editor.index.cache.json": "El formato de caché persistente es JSON.",
 	"tds.package.editor.index.cache.package": "El formato de caché persistente es paquete binario.",
-	"tds.package.editor.signatureHelp": "Controla la activación de la ayuda de la firma",
-	"tds.package.editor.codeLens": "Controla la activación de la CodeLens."
+	"tds.package.editor.signatureHelp": "Controla la activación de la ayuda de la firma.",
+	"tds.package.editor.codeLens": "Controls activation of the CodeLens."
 }

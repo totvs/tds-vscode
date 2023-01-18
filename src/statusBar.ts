@@ -345,7 +345,7 @@ function buildTooltipBusyInfo(args: IUsageStatusInfo): vscode.MarkdownString {
   if (args.activate) {
     const capital = (value: string): string => {
       const values: string[] = value.split("_");
-      values.forEach((element:string, i) => {
+      values.forEach((element: string, i) => {
         values[i] = element.charAt(0).toUpperCase() + element.slice(1).toLowerCase();
       });
 
@@ -357,7 +357,7 @@ function buildTooltipBusyInfo(args: IUsageStatusInfo): vscode.MarkdownString {
     });
   }
 
- // text.appendMarkdown("\n\nVer [detalhes telemetria](command:totvs-developer-studio.detailUsageInfo)");
+  // text.appendMarkdown("\n\nVer [detalhes telemetria](command:totvs-developer-studio.detailUsageInfo)");
   text.appendMarkdown("\n\n_Click_ no ícone abaixo para ativar/desativar");
 
   text.isTrusted = true;
