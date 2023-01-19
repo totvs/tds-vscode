@@ -112,7 +112,7 @@ export function getModifiedLanguageServerSettings(): any[] {
   }
 
   let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
-  const version: string = '1.3.17';  //ext.packageJSON["version"];
+  const version: string = ext.packageJSON["version"];
   settings.push({
     scope: "extension",
     key: "tdsversion",

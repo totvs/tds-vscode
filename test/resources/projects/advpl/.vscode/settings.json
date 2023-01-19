@@ -11,5 +11,5 @@
     "totvsLanguageServer.editor.linter.includes": "W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes;W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes_tlpp",
     "totvsLanguageServer.editor.linter.behavior": true,
     "totvsLanguageServer.usageInfoConfig": false,
-    "files.autoSave": "afterDelay"
+    "files.autoSave": "off"
 }

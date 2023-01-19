@@ -2,10 +2,10 @@
 
 > Requisitos
 >
-> - _Code Service_ em execução (inicio automático, em paralelo com o _Language Server_)
+> - DSS (Developer Support Subsystem)_ em execução (inicio automático, em paralelo com o _Language Server_)
 > - Resultados podem ser parciais devido ao processo de indexação em andamento
 
-Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstudio.com/docs/editor/editingevolved) e somente as aqui documentadas se aplicam aos projetos baseados nas linguagens **TOTVS**.
+Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstudio.com/docs/editor/editingevolved) e  aqui, breve documentação das opções suportadas em projetos baseados nas linguagens **TOTVS**.
 
 > As opções de acionamento citadas são as configurações padrão do **VS-Code**, podendo ser diferentes em função de reconfiguração efetuada pelo usuário ou outras extensões.
 
@@ -39,19 +39,31 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 **Acionamento:** ``Alt+F12`` sobre uma chamada de função ou variável.
 
-**Limitações:**
-- Em classes, a operação funciona somente no fonte da própria classe com o operando `::` ou `self:`;
+> Limitações:
+- Em classes, a operação funciona somente no fonte da própria classe com o operando ``::`` ou ``self:``;
 
-## [Passagem de mouse (_hover_)](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#show-hovers)
+## [Passagem de mouse](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#show-hovers)
 
 **Acionamento:** Passe o ponteiro do mouse sobre o item a ser visualizado.
 
 > Você pode ativar ou desativar a passagem de mouse em ``View > Text Editor > Hover: Enabled`` ou mudar o formato de apresentação em ``File > Preference > Settings > Extension > TOTVS > Totvs Language Server > Editor: Hover``.
 
+## [Mostrar definições de um símbolo](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#show-definitions-of-a-symbol)
+
+**Acionamento:** ``Ctrl+<passagem ponteiro do mouse>`` sobre o item a ser visualizado. Se este ficar destacado com um sublinhado, pode ir para definição acionando ``Ctrl+<acionamento do mouse>``.
+
+## [Ajuda com assinatura em funções (_signature help_)](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#help-with-function-and-method-signatures)
+
+Em implementação.
+
+**Acionamento:** Automático ao acionar ``(`` após um identificador.
+
+> Funciona apenas para funções, cujo fonte esteja no seu projeto ou para funções AdvPL binárias (definidas direto no _AppServer_).
+
 ## <a name="cache"></a>Cache de navegação
 
 Por padrão, a extensão utiliza um _cache_ em memória, que é gerado na inicialização da extensão.
-Em alguns casos, pode ser interessante manter esse _cache_ entre sessões, ou seja, ter um _cache_ persistente em disco.
+Em alguns casos, pode ser interessante manter esse _cache_ entre sessões, ou seja, ter um _cache_ persistente.
 
 Para ajustar o comportamento acesse ``File > Preference > Settings``, filtre por ``totvsLanguageServer.editor`` e localize ``Totvs Language Server › Editor › Index: Cache``, configurando o comportamento:
 
