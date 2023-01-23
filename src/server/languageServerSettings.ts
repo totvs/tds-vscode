@@ -9,13 +9,21 @@ function isNewSettings(scope: string, key: string, value: any): boolean {
 
   if (currentSettings[scope]) {
     if (currentSettings[scope][key]) {
-      result = currentSettings[scope][key] !== value;
+      if (Array.isArray(value)) {
+        result = currentSettings[scope][key] !== value.join(";");
+      } else {
+        result = currentSettings[scope][key] !== value;
+      }
     }
   } else {
     currentSettings[scope] = {}
   }
 
-  currentSettings[scope][key] = value;
+  if (Array.isArray(value)) {
+    currentSettings[scope][key] = value.join(";");
+  } else {
+    currentSettings[scope][key] = value;
+  }
 
   return result;
 }
@@ -81,6 +89,11 @@ export function getModifiedLanguageServerSettings(): any[] {
       key: "hoverMode",
       value: hover
     });
+  } 
+
+  const launchArgs = config.get("launch.args");
+  if (isNewSettings("launch", "args", launchArgs)) {
+    needRestart = true;
   }
 
   const indexCache: string = config.get("editor.index.cache");
