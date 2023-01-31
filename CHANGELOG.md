@@ -32,6 +32,10 @@ O 'warning' de linhas maiores que 2K estavam impedindo a compilação destes fon
 
 As pastas de include não estavam sendo consideradas na compilação de fontes 4GL.
 
+### Correção no tratamento de retorno de login
+
+Ajustado tratamento de retorno de login em AppServer Linux.
+
 ## Melhorias
 
 ### Mensagens na validação de versão do AppServer
@@ -41,6 +45,10 @@ Adicionadas mensagens informativas durante a validação de versão do AppServer
 ### Adicionado tratamento para passar o parâmetro -olddpi para o Smartclient
 
 Inclusão do parâmetro "olddpiMode" no launch.json para ativar a passagem do parâmetro -olddpi para o Smartclient.
+
+### Adicionado tratamento padrão de conversão de encoding de caminhos (diretórios)
+
+Caso ainda não tenha sido configurado o encoding padrão para conversão de caminhos (diretórios), utiliza-se o cp1252.
 
 # Versão [1.3.16]
 
