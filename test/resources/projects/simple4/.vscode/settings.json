@@ -1,29 +1,36 @@
 {
-    "problems.decorations.enabled": true,
-    "[advpl]": {
-        "files.encoding": "windows1252",
-        "files.insertFinalNewline": true,
-        "files.eol": "\r\n",
-        "editor.formatOnType": false,
-        "editor.formatOnPaste": false,
-        "editor.formatOnSave": false,
-        "editor.formatOnSaveMode": "file",
-    },
     "totvsLanguageServer.welcomePage": false,
+    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes",
+    "totvsLanguageServer.editor.show.notification": "all",
+    "totvsLanguageServer.trace.debug": "messages",
+    "totvsLanguageServer.trace.server": "messages",
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
-        "--record=totvsls",
-        "--wait-for-attach=20000"
+        "--verbose",
+        "--wait-for-attach=20000",
+        "--debug-ls",
+        "--log-file-append=totvsls2.log"
     ],
-    "totvsLanguageServer.askCompileResult": true,
-    "totvsLanguageServer.usageInfoConfig": true,
-    "problems.defaultViewMode": "table",
-    "totvsLanguageServer.editor.show.notification": "all",
-    "totvsLanguageServer.trace.server": "verbose",
-    "totvsLanguageServer.folder.enableExtensionsFilter": true,
-    "editor.cursorSmoothCaretAnimation": false,
-    "editorconfig.generateAuto": true,
-    "totvsLanguageServer.showConsoleOnCompile": false,
-    "totvsLanguageServer.editor.linter.includes": "W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes;M:/ws_testes_vscode/fw/src/include;M:/ws_testes_vscode/fw/src/include-lib",
-    "totvsLanguageServer.editor.linter.behavior": "enable",
+    "totvsLanguageServer.askCompileResult": false,
+    "totvsLanguageServer.askEncodingChange": false,
+    "totvsLanguageServer.editor.autocomplete": "Off",
+    "xeditor.semanticTokenColorCustomizations": {
+        "[Default Dark+]": {
+            "enabled": true,
+            "rules": {
+                "keyword": "#ff0000"
+            }
+        }
+    },
+    "xeditor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "keyword.control",
+                "settings": {
+                    "foreground": "#FF0000"
+                }
+            }
+        ],
+    },
+    "totvsLanguageServer.compilation.generatePpoFile": false
 }

@@ -1,15 +1,36 @@
 {
     "totvsLanguageServer.welcomePage": false,
+    "totvsLanguageServer.editor.linter.includes": "W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes;W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes_tlpp",
+    "totvsLanguageServer.editor.show.notification": "all",
+    "totvsLanguageServer.trace.debug": "messages",
+    "totvsLanguageServer.trace.server": "messages",
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
-        "--record=totvsls",
+        "--verbose",
         "--wait-for-attach=20000",
-        "--debug-ls"
+        "--debug-ls",
+        "--log-file-append=totvsls2.log"
     ],
     "totvsLanguageServer.askCompileResult": false,
-    "git.ignoreLimitWarning": true,
-    "totvsLanguageServer.editor.linter.includes": "W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes;W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes_tlpp",
-    "totvsLanguageServer.editor.linter.behavior": true,
-    "totvsLanguageServer.usageInfoConfig": false,
-    "files.autoSave": "off"
+    "totvsLanguageServer.askEncodingChange": false,
+    "totvsLanguageServer.editor.autocomplete": "Off",
+    "xeditor.semanticTokenColorCustomizations": {
+        "[Default Dark+]": {
+            "enabled": true,
+            "rules": {
+                "keyword": "#ff0000"
+            }
+        }
+    },
+    "xeditor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "keyword.control",
+                "settings": {
+                    "foreground": "#FF0000"
+                }
+            }
+        ],
+    },
+    "totvsLanguageServer.compilation.generatePpoFile": false
 }
