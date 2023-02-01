@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "1.3.16",
+  "version": "1.3.17",
   "publisher": "TOTVS",
   "author": {
     "name": "TOTVS",
@@ -17,7 +17,8 @@
     "tds",
     "totvs",
     "monitor",
-    "protheus"
+    "protheus",
+    "logix"
   ],
   "engines": {
     "vscode": "^1.63.1"
@@ -78,8 +79,8 @@
     "@material-ui/core": "4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@totvs/tds-da": "^1.2.47",
-    "@totvs/tds-ls": "^1.2.54",
+    "@totvs/tds-da": "^1.2.53",
+    "@totvs/tds-ls": "^1.2.59",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.63.1",
     "@vscode/debugadapter": "^1.51.1",
@@ -328,7 +329,7 @@
       {
         "id": "totvs_patch",
         "aliases": [
-          "Patch",
+          "patch",
           "totvs_patch"
         ],
         "extensions": [
@@ -340,7 +341,7 @@
       {
         "id": "totvs_template",
         "aliases": [
-          "Template",
+          "template",
           "totvs_template"
         ],
         "extensions": [
@@ -1034,6 +1035,11 @@
                 "description": "%tds.package.properties.dpiMode.description%",
                 "default": false
               },
+              "olddpiMode": {
+                "type": "boolean",
+                "description": "%tds.package.properties.olddpiMode.description%",
+                "default": false
+              },
               "language": {
                 "type": "string",
                 "description": "%tds.package.properties.language.description%"
@@ -1057,6 +1063,11 @@
                 "type": "array",
                 "description": "Arguments that will be passed to the called program/function (through key -A)",
                 "default": "${command:AskForProgramArguments}"
+              },
+              "extraParameters": {
+                "type": "string",
+                "description": "%tds.package.properties.extraParameters.description%",
+                "default": ""
               }
             }
           }
