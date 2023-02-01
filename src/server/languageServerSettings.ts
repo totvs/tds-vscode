@@ -89,7 +89,7 @@ export function getModifiedLanguageServerSettings(): any[] {
       key: "hoverMode",
       value: hover
     });
-  } 
+  }
 
   const launchArgs = config.get("launch.args");
   if (isNewSettings("launch", "args", launchArgs)) {
@@ -121,6 +121,14 @@ export function getModifiedLanguageServerSettings(): any[] {
       scope: "editor",
       key: "signatureHelp",
       value: String(signatureHelp)
+    });
+  }
+  const autocomplete = config.get("editor.autocomplete");
+  if (isNewSettings("editor", "autocomplete", autocomplete)) {
+    settings.push({
+      scope: "editor",
+      key: "autocomplete",
+      value: String(autocomplete)
     });
   }
 

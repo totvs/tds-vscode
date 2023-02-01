@@ -40,6 +40,7 @@
   },
   "scripts": {
     "clean2": "gulp clean",
+    "clean-logs": "gulp cleanLogs",
     "compile": "npm-run-all compile:*",
     "compile:parse_4gl": "pegjs -o ./src/parser/4gl-parser.js ./syntaxes/4gl.pegjs",
     "compile:extension": "tsc -p ./src",
@@ -301,6 +302,20 @@
         "path": "./snippets/4gl_snippets.json"
       }
     ],
+    "semanticTokenModifiers": [
+      {
+        "id": "include",
+        "description": "Annotates a symbol that is implemented include"
+      },
+      {
+        "id": "declaration",
+        "description": "Annotates a symbol that is implemented include"
+      },
+      {
+        "id": "implementation",
+        "description": "Annotates a symbol that is implemented include"
+      }
+    ],
     "configurationDefaults": {
       "[4gl]": {
         "files.encoding": "windows1252",
@@ -309,7 +324,8 @@
         "editor.formatOnType": false,
         "editor.formatOnPaste": false,
         "editor.formatOnSave": false,
-        "editor.formatOnSaveMode": "file"
+        "editor.formatOnSaveMode": "file",
+        "editor.semanticHighlighting.enabled": true
       },
       "[advpl]": {
         "files.encoding": "windows1252",
@@ -318,7 +334,8 @@
         "editor.formatOnType": false,
         "editor.formatOnPaste": false,
         "editor.formatOnSave": false,
-        "editor.formatOnSaveMode": "file"
+        "editor.formatOnSaveMode": "file",
+        "editor.semanticHighlighting.enabled": true
       }
     },
     "configuration": {
@@ -470,6 +487,22 @@
           ],
           "default": "none",
           "description": "%tds.package.editor.notification.show%"
+        },
+        "totvsLanguageServer.editor.autocomplete": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "Off",
+            "Basic",
+            "LS"
+          ],
+          "enumDescriptions": [
+            "%tds.package.editor.autocomplete.off%",
+            "%tds.package.editor.autocomplete.basic%",
+            "%tds.package.editor.autocomplete.ls%"
+          ],
+          "default": "LS",
+          "description": "%tds.package.editor.autocomplete%"
         },
         "totvsLanguageServer.editor.hover": {
           "scope": "application",

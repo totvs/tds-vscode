@@ -34,6 +34,14 @@ const cleanTask = function () {
   return del(["out/**", "out-test/**", "package.nls.*.json", "tds-vscode-*.vsix", "totvs.tds-vscode*"]);
 };
 
+const cleanLogsTask = function () {
+  return del(["./**/*.log", "./**/*.dmp"], {
+    onProgress: progress => {
+      //      progress.
+    }
+  });
+};
+
 const internalCompileTask = function () {
   return doCompile(false);
 };
@@ -137,6 +145,8 @@ gulp.task("clean", cleanTask);
 gulp.task("compile", gulp.series(cleanTask, internalCompileTask));
 
 gulp.task("build", buildTask);
+
+gulp.task("cleanLogs", cleanLogsTask);
 
 gulp.task(
   "export-i18n",

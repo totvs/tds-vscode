@@ -18,8 +18,16 @@
 				"kind": "build",
 				"isDefault": true
 			},
-			"problemMatcher": ["$tsc"]
-
+			"problemMatcher": [
+				"$tsc"
+			]
+		},
+		{
+			"type": "npm",
+			"script": "clean-logs",
+			"problemMatcher": [],
+			"label": "npm: clean-logs",
+			"detail": "gulp cleanLogs"
 		}
 	]
 }
