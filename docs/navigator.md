@@ -26,13 +26,15 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 | NI | [Abrir símbolo pelo nome](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name) |
 | OK | [Visualizar](https://code.visualstudio.com/docs/editor/editingevolved#_peek) |
 | (2) | [Informação](https://code.visualstudio.com/docs/editor/editingevolved#_reference-information) |
-| Progress | [Sintaxe destacada](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide) |
+| Execução | [Sintaxe destacada](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide) |
 | | Envolve o tratamento de arguivo de definição (.CH). |
+| Parado | Cache em disco. |
 
 | Legendas | |
 | -------- | - |
 | OK | Funcionalidade pronta. |
-| Progress | Parcialmente implementada, ainda em desenvolvimento. |
+| Execução | Parcialmente implementada, ainda em desenvolvimento. |
+| Parado | | Parcialmente implementada, mas com  desenvolvimento parado devido a outras ocorrências. |
 | NI | Funcionalidade não implementada. |
 | (1) | Ainda a ser definido o comportamento, pois em vários casos não há como diferenciar definição/implementação. |
 | (2) | Parcialmente implementado. Ainda pode apresentar falhas. |
