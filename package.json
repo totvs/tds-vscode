@@ -302,18 +302,13 @@
         "path": "./snippets/4gl_snippets.json"
       }
     ],
-    "semanticTokenModifiers": [
+    "semanticTokenScopes": [
       {
-        "id": "include",
-        "description": "Annotates a symbol that is implemented include"
-      },
-      {
-        "id": "declaration",
-        "description": "Annotates a symbol that is implemented include"
-      },
-      {
-        "id": "implementation",
-        "description": "Annotates a symbol that is implemented include"
+        "scopes": {
+          "keyword": [
+            "keyword.control.advpl_language"
+          ]
+        }
       }
     ],
     "configurationDefaults": {
