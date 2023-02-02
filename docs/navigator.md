@@ -15,6 +15,8 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 | ------ | -------------- |
 | OK | [Estrura](https://code.visualstudio.com/docs/getstarted/userinterface#_outline-view) |
 | | Funcionalidade passou a ser executada pelos LS. |
+| OK | Passagem _mouse_ (_text hover) |
+| | Funcionalidade implementada, porém requer revisão das situações onde há duplicidade do símbolo, com ou sem  escopo. |
 | OK | [Navegação rápida](https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation) |
 | OK | [Trilha](https://code.visualstudio.com/docs/editor/editingevolved#_breadcrumbs) |
 | OK | [Ir para definição](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition) |
