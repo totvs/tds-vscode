@@ -11,7 +11,31 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 > Todas as opções de navegação também pode ser acionadas via menu de contexto do editor.
 
-## [Navegação rápida de arquivos](https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation)
+| Status | Funcionalidade |
+| ------ | -------------- |
+| OK | [Estrura](https://code.visualstudio.com/docs/getstarted/userinterface#_outline-view) |
+| | Funcionalidade passou a ser executada pelos LS. |
+| OK | [Navegação rápida](https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation) |
+| OK | [Trilha](https://code.visualstudio.com/docs/editor/editingevolved#_breadcrumbs) |
+| OK | [Ir para definição](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition) |
+| (1) | [Ir para definição de tipo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-type-definition) |
+| (1) | [Ir para implementação](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-implementation) |
+| OK | [Ir para um símbolo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-symbol) |
+| NI | [Abrir símbolo pelo nome](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name) |
+| OK | [Visualizar](https://code.visualstudio.com/docs/editor/editingevolved#_peek) |
+| (2) | [Informação](https://code.visualstudio.com/docs/editor/editingevolved#_reference-information) |
+| Progress | [Sintaxe destacada](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide) |
+| | Envolve o tratamento de arguivo de definição (.CH). |
+
+| Legendas | |
+| -------- | - |
+| OK | Funcionalidade pronta. |
+| Progress | Parcialmente implementada, ainda em desenvolvimento. |
+| NI | Funcionalidade não implementada. |
+| (1) | Ainda a ser definido o comportamento, pois em vários casos não há como diferenciar definição/implementação. |
+| (2) | Parcialmente implementado. Ainda pode apresentar falhas. |
+
+## [Navegação rápida](https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation)
 
 **Acionamento:** ``Ctrl+P`` ou ``F1`` (iniciar com vazio) e inicie a digitação para o filtro por nome do arquivo.
 
