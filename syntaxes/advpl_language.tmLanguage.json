@@ -1,5 +1,9 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "information_for_contributors": [
+    "If you want to provide a fix or improvement, please create a pull request against the original repository.",
+    "Once accepted there, we are happy to receive an update request."
+  ],
   "name": "AdvPL",
   "scopeName": "source.advpl",
   "patterns": [
@@ -10,66 +14,29 @@
       "include": "#comments"
     },
     {
-      "include": "#keywords"
+      "include": "#strings"
     },
     {
-      "include": "#expression"
+      "include": "#number"
+    },
+    {
+      "include": "#words"
     }
   ],
   "repository": {
     "directives": {
       "patterns": [
         {
-          "name": "keyword.control.directive",
+          "name": "keyword.directive.advpl",
           "match": "(?i)#\\b(define|endif|else|ifdef|ifndef|include|xcommand|xtranslate)\\b"
         }
       ]
     },
-    "keywords": {
+    "words": {
       "patterns": [
         {
-          "name": "keyword.control.advpl_language",
-          "match": "(?i)\\b(local|static|private|public|default|activate|alias|and|beginsql|between|case|centered|class|constructor|data|define|dialog|do|else|elseif|end|endcase|endclass|enddo|endfunction|endif|endsql|exit|for|from|function|get|if|loop|main|method|next|nil|of|or|otherwise|pixel|return|select|step|to|xuser|var|while|where|as)\\b"
-        }
-      ]
-    },
-    "operators": {
-      "patterns": [
-        {
-          "name": "constant.language.logical",
-          "match": "(?i)(\\.t\\.|\\.f\\.|true|false|\\.and\\.|\\.or\\.)"
-        },
-        {
-          "name": "keyword.operator.assignment",
-          "match": ":=|\\*=|(?<!\\()/=|%=|\\+=|\\-="
-        },
-        {
-          "name": "keyword.operator.comparison",
-          "match": "==|!=|<=|>=|<>|<|>"
-        },
-        {
-          "name": "keyword.operator.increment",
-          "match": "\\+\\+"
-        },
-        {
-          "name": "keyword.operator.decrement",
-          "match": "--"
-        },
-        {
-          "name": "keyword.operator.atithmetic",
-          "match": "%|\\*|/|\\+|-"
-        }
-      ]
-    },
-    "separators": {
-      "patterns": [
-        {
-          "name": "entity.name.function.separator.comma",
-          "match": "(,)"
-        },
-        {
-          "name": "entity.name.function.separator.semicolon",
-          "match": "(;)"
+          "name": "word.advpl",
+          "match": "(\\w+)"
         }
       ]
     },
@@ -81,13 +48,13 @@
           "end": "\\*/"
         },
         {
-          "name": "comment.line.double-slash",
+          "name": "comment.line.advpl",
           "begin": "(?=//)",
           "end": "(?=$)"
         }
       ]
     },
-    "string": {
+    "strings": {
       "patterns": [
         {
           "name": "string.quoted.double.advpl",
@@ -102,169 +69,10 @@
       ]
     },
     "number": {
-      "name": "constant.numeric.advpl",
       "patterns": [
         {
-          "include": "#number-float"
-        },
-        {
-          "include": "#number-dec"
-        },
-        {
-          "include": "#number-hex"
-        },
-        {
-          "include": "#number-oct"
-        },
-        {
-          "include": "#number-bin"
-        },
-        {
-          "include": "#number-long"
-        },
-        {
-          "name": "invalid.illegal.name.advpl",
-          "match": "\\b[0-9]+\\w+"
-        }
-      ]
-    },
-    "number-float": {
-      "name": "constant.numeric.float.advpl",
-      "match": "(?x)\n  (?<! \\w)(?:\n    (?:\n      \\.[0-9](?: _?[0-9] )*\n      |\n      [0-9](?: _?[0-9] )* \\. [0-9](?: _?[0-9] )*\n      |\n      [0-9](?: _?[0-9] )* \\.\n    ) (?: [eE][+-]?[0-9](?: _?[0-9] )* )?\n    |\n    [0-9](?: _?[0-9] )* (?: [eE][+-]?[0-9](?: _?[0-9] )* )\n  )([jJ])?\\b\n",
-      "captures": {
-        "1": {
-          "name": "storage.type.imaginary.number.advpl"
-        }
-      },
-      "patterns": []
-    },
-    "number-dec": {
-      "name": "constant.numeric.dec.advpl",
-      "match": "(?x)\n  (?<![\\w\\.])(?:\n      [0-9](?: _?[0-9] )*\n      |\n      0+\n      |\n      [0-9](?: _?[0-9] )* ([jJ])\n      |\n      0 ([0-9]+)(?![eE\\.])\n  )\\b\n",
-      "captures": {
-        "1": {
-          "name": "storage.type.imaginary.number.advpl"
-        },
-        "2": {
-          "name": "invalid.illegal.dec.advpl"
-        },
-        "3": {
-          "name": "invalid.illegal.dec.advpl"
-        }
-      },
-      "patterns": []
-    },
-    "number-hex": {
-      "name": "constant.numeric.hex.advpl",
-      "match": "(?x)\n  (?<![\\w\\.])\n    (0[xX]) (_?[0-9a-fA-F])+\n  \\b\n",
-      "captures": {
-        "1": {
-          "name": "storage.type.number.advpl"
-        }
-      },
-      "patterns": []
-    },
-    "number-oct": {
-      "name": "constant.numeric.oct.advpl",
-      "match": "(?x)\n  (?<![\\w\\.])\n    (0[oO]) (_?[0-7])+\n  \\b\n",
-      "captures": {
-        "1": {
-          "name": "storage.type.number.advpl"
-        }
-      },
-      "patterns": []
-    },
-    "number-bin": {
-      "name": "constant.numeric.bin.advpl",
-      "match": "(?x)\n  (?<![\\w\\.])\n    (0[bB]) (_?[01])+\n  \\b\n",
-      "captures": {
-        "1": {
-          "name": "storage.type.number.advpl"
-        }
-      },
-      "patterns": []
-    },
-    "number-long": {
-      "name": "constant.numeric.bin.advpl",
-      "comment": "this is to support advpl syntax for long ints",
-      "match": "(?x)\n  (?<![\\w\\.])\n    ([1-9][0-9]* | 0) ([lL])\n  \\b\n",
-      "captures": {
-        "2": {
-          "name": "storage.type.number.advpl"
-        }
-      },
-      "patterns": []
-    },
-    "data-type": {
-      "name": "variable.parameter.type.advpl",
-      "match": "(?i)\\s*(as)(?:;?\\s+;?\\s+?)(array|block|codeblock|character|char|date|logical|numeric|object|string|integer|double|decimal)",
-      "captures": {
-        "1": {
-          "name": "keyword.control.keyword.as.advpl"
-        },
-        "2": {
-          "name": "storage.type.name.advpl"
-        }
-      },
-      "patterns": []
-    },
-    "regularVariable": {
-      "name": "variable.other.name.advpl",
-      "match": "(\\w+)",
-      "patterns": []
-    },
-    "objectVariable": {
-      "name": "entity.name.type.object.advpl",
-      "match": "((::)?(\\w+)(?!:=)(?=:))|::o\\w+|o\\w+",
-      "patterns": []
-    },
-    "function-call": {
-      "name": "meta.function.call.advpl",
-      "begin": "(\\w+)(?=\\()",
-      "end": "(?<=\\))",
-      "beginCaptures": {
-        "1": {
-          "name": "entity.name.function.call.functionName.advpl"
-        }
-      },
-      "patterns": [
-        {
-          "include": "#comments"
-        },
-        {
-          "include": "#expression"
-        }
-      ]
-    },
-    "expression": {
-      "name": "meta.expression.advpl",
-      "patterns": [
-        {
-          "include": "#comments"
-        },
-        {
-          "include": "#number"
-        },
-        {
-          "include": "#string"
-        },
-        {
-          "include": "#operators"
-        },
-        {
-          "include": "#function-call"
-        },
-        {
-          "include": "#keywords"
-        },
-        {
-          "include": "#objectVariable"
-        },
-        {
-          "include": "#regularVariable"
-        },
-        {
-          "include": "#separators"
+          "name": "constant.numeric.advpl",
+          "match": "(\\d+)(\\.\\d+)?"
         }
       ]
     }

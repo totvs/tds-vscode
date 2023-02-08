@@ -304,9 +304,10 @@
     ],
     "semanticTokenScopes": [
       {
+        "language": "advpl",
         "scopes": {
           "keyword": [
-            "keyword.control.advpl_language"
+            "xkeyword.advpl"
           ]
         }
       }
@@ -318,7 +319,7 @@
         "files.eol": "\r\n",
         "editor.formatOnType": false,
         "editor.formatOnPaste": false,
-        "editor.formatOnSave": false,
+        "editor.formatOnSave": true,
         "editor.formatOnSaveMode": "file",
         "editor.semanticHighlighting.enabled": true
       },
@@ -328,7 +329,7 @@
         "files.eol": "\r\n",
         "editor.formatOnType": false,
         "editor.formatOnPaste": false,
-        "editor.formatOnSave": false,
+        "editor.formatOnSave": true,
         "editor.formatOnSaveMode": "file",
         "editor.semanticHighlighting.enabled": true
       }

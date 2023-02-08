@@ -41,12 +41,10 @@ export function getLanguageClient(
     env[e] = process.env[e];
   }
 
-  let dir = "";
-  let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
-  if (ext !== undefined) {
-    dir = ext.extensionPath;
-  }
+  const ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
+  const dir = ext.extensionPath;
   let advpls: string;
+
   if (process.platform === "win32") {
     advpls = dir + "/node_modules/@totvs/tds-ls/bin/windows/advpls.exe";
   } else if (process.platform === "linux") {
