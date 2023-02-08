@@ -26,7 +26,7 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 | NI | [Abrir símbolo pelo nome](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name) |
 | OK | [Visualizar](https://code.visualstudio.com/docs/editor/editingevolved#_peek) |
 | (2) | [Informação](https://code.visualstudio.com/docs/editor/editingevolved#_reference-information) |
-| Execução | [Sintaxe destacada](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide) |
+| Execução(2) | [Sintaxe destacada](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide) |
 | | Envolve o tratamento de arguivo de definição (.CH). |
 | Parado | Cache em disco. |
 

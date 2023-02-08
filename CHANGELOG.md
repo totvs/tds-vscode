@@ -2,6 +2,29 @@
 
 # Versão [1.4.0-BETA-4]
 
+## Mudança de comportamento
+
+### Salva de arquivos-fontes (AdvPL/4GL)
+
+Ao salvar arquivos-fontes (AdvPL/4GL), este será formatado. Para restaurar o comportamento anterior, edite o arquivo de configurações _settings.json_ <sup>(1)</sup> e adicione:
+
+- Para AdvPL:
+```JSON
+    "[advpl]": {
+      "editor.formatOnSave": false
+    }
+```
+
+- Para 4GL:
+```JSON
+    "[4gl]": {
+      "editor.formatOnSave": false
+    }
+```
+
+> (1) A configuração pode ser efetuada em qualquer escopo.
+> Detalhes em [User and Workspace Settings](https://code.visualstudio.com/docs/getstarted/settings).
+
 ## Melhorias
 
 ### Assistente de assinatura de funções
