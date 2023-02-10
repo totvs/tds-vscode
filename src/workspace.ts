@@ -3,15 +3,27 @@ import { sendDidChangeConfiguration } from "./protocolMessages";
 import { confirmRestartNow, getModifiedLanguageServerSettings } from "./server/languageServerSettings";
 import { updateStatusBarItems } from "./statusBar";
 
+function updateOpenEditors() {
+	vscode.window.visibleTextEditors.forEach((element: vscode.TextEditor) => {
+		if ((!element.document.isUntitled) &&
+			((element.document.languageId == "advpl") || (element.document.languageId == "4gl"))) {
+			//TODO: UI ficou ruim, ver como efetuar refresh só do editor
+			vscode.commands.executeCommand("workbench.action.reloadWindow");
+		}
+	});
+}
+
 export function registerWorkspace(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.workspace.onDidChangeConfiguration((e: vscode.ConfigurationChangeEvent) => {
 			if (e.affectsConfiguration("totvsLanguageServer")) {
 				const settings: any[] = getModifiedLanguageServerSettings();
 				if (settings.length > 0) {
-					confirmRestartNow();
 					sendDidChangeConfiguration(settings).then(() => {
 						updateStatusBarItems();
+						if (!confirmRestartNow()) {
+							updateOpenEditors();
+						};
 					});
 				}
 			}

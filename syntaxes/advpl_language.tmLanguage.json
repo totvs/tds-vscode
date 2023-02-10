@@ -35,7 +35,7 @@
     "words": {
       "patterns": [
         {
-          "name": "word.advpl",
+          "name": "variable.advpl",
           "match": "(\\w+)"
         }
       ]

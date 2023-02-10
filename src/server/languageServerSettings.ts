@@ -143,7 +143,7 @@ export function getModifiedLanguageServerSettings(): any[] {
   return settings;
 }
 
-export function confirmRestartNow() {
+export function confirmRestartNow(): boolean {
   if (needRestart) {
     vscode.window.showInformationMessage("To make the change effective, it is necessary to restart VS-CODE.", "Now", "Later").then((value: string) => {
       if (value == "Now") {
@@ -151,5 +151,7 @@ export function confirmRestartNow() {
       }
     })
   }
+
+  return needRestart;
 }
 

@@ -56,7 +56,7 @@ import {
   register4glFormatting,
   registerAdvplFormatting,
 } from "./formatter";
-import {  register4glOutline } from "./outline";
+import { register4glOutline } from "./outline";
 import { registerDebug, _debugEvent } from "./debug";
 import { openMonitorView } from "./monitor/monitorLoader";
 import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
@@ -72,6 +72,7 @@ import { ServerItem } from "./serverItem";
 import serverProvider from "./serverItemProvider";
 import { registerWorkspace } from "./workspace";
 import { sendTelemetry } from "./protocolMessages";
+import path from "path";
 
 export let languageClient: TotvsLanguageClientA;
 
