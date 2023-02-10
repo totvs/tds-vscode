@@ -1,6 +1,9 @@
 #include "protheus.ch"
 
-class AB
+
+class AB ;
+		from xxxx
+
 	data bT
 	data bF
 	data dt
@@ -15,7 +18,7 @@ endclass
 
 method ab() ;
 	class AB
-	
+
 	::bT := .t.
 	::bF := .F.
 	::dt := date()

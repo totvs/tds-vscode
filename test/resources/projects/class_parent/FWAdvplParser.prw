@@ -1,6 +1,7 @@
 #include 'protheus.ch' 
 
 //#include "fwadvplexpression.ch"
+
 #define E_COMERCIAL '&'
 #define PLUS '+'
 #define PLUS_PLUS '++'
@@ -33,6 +34,8 @@
 #define RBRACK ']'
 #define SHARP '#'
 #define PERCENT '%'
+
+
 //-------------------------------------------------------------------
 /*/{Protheus.doc} FWAdvplParser
 Fornece um objeto de um parser advpl minimo.

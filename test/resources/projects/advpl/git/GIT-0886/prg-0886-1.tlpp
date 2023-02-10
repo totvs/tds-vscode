@@ -1,3 +1,5 @@
+#include "protheus.ch"
+
 user function prg_0886_1()
 
     local varJson := { "teste" : { "var1" : "oioi", "var2": "oioi2", "var3": "oioi3" }}

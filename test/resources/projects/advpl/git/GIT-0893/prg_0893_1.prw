@@ -1,8 +1,16 @@
 #include "protheus.ch"
 
+// class c1 INHERIT FROM c0
+// endclass
+// class c2 INHERIT c0
+// endclass
+// class c3 OF c0
+// endclass
+// class c4 from  c0
+// endclass
 
-class AB ;
-		from XXX
+class AB  ;
+ from XXX
 	data bT
 	data bF
 	data dt

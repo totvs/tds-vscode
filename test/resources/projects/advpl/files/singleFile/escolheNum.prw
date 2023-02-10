@@ -9,6 +9,8 @@ user function funarr()
 
 return result 
 
+
+
 private aOpcoes := ""
 	static aOpcoes
 
@@ -33,6 +35,7 @@ user function escolheNum(replay, replayPath, numbers)
 	next
 // 
  
+
 	n := 0
 	while !(cResp == "*")
 		if (replay) 
