@@ -8,6 +8,7 @@ import {
   ExtensionContext,
   ProgressLocation,
   window,
+  commands,
 } from "vscode";
 import { TotvsConfigurationProvider } from "./TotvsConfigurationProvider";
 import { TotvsConfigurationTdsReplayProvider } from "./TotvsConfigurationTdsReplayProvider";
@@ -124,6 +125,8 @@ export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
       processShowLoadingDialogEvent(event, debugConsole);
     }else if (event.event === "TDA/showMsgDialog") {
       processShowMsgDialogEvent(event, debugConsole);
+    } else if (event.event === "TDA/showSourcesView") {
+      processShowSourcesView(event, debugConsole);
     } else {
       window.showWarningMessage("Evento desconhecido: " + event.event);
     }
@@ -335,13 +338,16 @@ function processShowLoadingDialogEvent(event: DebugSessionCustomEvent,debugConso
 
 function processShowMsgDialogEvent(event: DebugSessionCustomEvent,debugConsole: DebugConsole) {
   if (createTimeLineWebView !== null) {
-    console.log("Open Msg Dialog Received")
     createTimeLineWebView.showMessageDialog(event.body.msgType, event.body.message);
   }
 }
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function processShowSourcesView(event: DebugSessionCustomEvent, debugConsole: DebugConsole) {
+  commands.executeCommand('tdsreplay.importSourcesOnlyResult',event.body);
 }
 
 export function procesChangeBreakpointsEvent(languageClient: LanguageClient, event: BreakpointsChangeEvent) {

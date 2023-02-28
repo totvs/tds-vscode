@@ -77,6 +77,7 @@ import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import { commandShowBuildTableResult } from "./compile/buildResult";
 import { ServerItem } from "./serverItem";
 import serverProvider from "./serverItemProvider";
+import {ReplayRegisterCommands} from "./debug/tdsreplay/RegisterReplayCommands";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -314,6 +315,8 @@ export function activate(context: ExtensionContext) {
     //     }
     //   });
     // })();
+
+    ReplayRegisterCommands(context);
   }
 
   // Ação para pegar o nome da função e argumentos para  iniciar o debug

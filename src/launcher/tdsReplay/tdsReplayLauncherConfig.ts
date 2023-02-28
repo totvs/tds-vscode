@@ -47,6 +47,10 @@ const localizeHTML = {
     "tds.webview.launcher.ignoreFiles",
     "Ignore files not found in WorkSpace (debugging)"
   ),
+  "tds.webview.launcher.importOnlySources": localize(
+    "tds.webview.launcher.importOnlySources",
+    "Import only the Sources information"
+  ),
 };
 
 
@@ -114,9 +118,9 @@ export default class LauncherConfiguration {
               if (launcherConfig.configurations.length > 0 !== undefined) {
                 let updated: boolean = false;
                 for (let i = 0; i < launcherConfig.configurations.length; i++) {
-                  let element = launcherConfig.configurations[i];
-                  if (element.name === launcherName) {
-                    updateElement(element, message);
+                  let configElement = launcherConfig.configurations[i];
+                  if (configElement.name === launcherName) {
+                    updateElement(configElement, message);
                     updated = true;
                     break;
                   }
@@ -184,12 +188,13 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
   return runTemplate({ css: cssContent, localize: localizeHTML });
 }
 
-function updateElement(element: any, message: any) {
-  element.tdsReplayFile = message.tdsReplayFile;
-  element.password = message.password;
-  element.includeSources = message.includeSources;
-  element.excludeSources = message.excludeSources;
-  element.ignoreSourcesNotFound = message.ignoreSourcesNotFound;
+function updateElement(configElement: any, message: any) {
+  configElement.tdsReplayFile = message.tdsReplayFile;
+  configElement.password = message.password;
+  configElement.includeSources = message.includeSources;
+  configElement.excludeSources = message.excludeSources;
+  configElement.ignoreSourcesNotFound = message.ignoreSourcesNotFound;
+  configElement.importOnlySourcesInfo = message.importOnlySourcesInfo;
 }
 
 function saveNewLauncher(message: any, launchersInfo: any): void {
