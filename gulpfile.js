@@ -47,7 +47,7 @@ const internalCompileEsBuild = function () {
 }
 
 const internalPackageEsBuild = function () {
-  return run("NODE_ENV=production node esbuild.js").exec();
+  return run("cross-env NODE_ENV=production node esbuild.js").exec();
 }
 
 const internalNlsCompileTask = function () {

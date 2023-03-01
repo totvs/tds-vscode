@@ -121,6 +121,7 @@
     "all-contributors-cli": "^6.20.0",
     "chai": "^4.3.4",
     "cleanup": "^0.3.0",
+    "cross-env": "^7.0.3",
     "css-loader": "^6.5.1",
     "esbuild": "^0.16.17",
     "eslint": "^8.5.0",
