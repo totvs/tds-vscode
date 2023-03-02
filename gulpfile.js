@@ -42,11 +42,7 @@ const internalCompileWebpack = function () {
   return run('npm run compile:views').exec();
 };
 
-const internalCompileEsBuild = function () {
-  return run("npm run compile:esbuild").exec();
-}
-
-const internalPackageEsBuild = function () {
+const internalCompileEsBuildProd = function () {
   return run("NODE_ENV=production node esbuild.js").exec();
 }
 
@@ -69,7 +65,7 @@ const addI18nTask = function () {
 // };
 
 
-const buildTask = gulp.series(cleanTask, internalNlsCompileTask, addI18nTask, internalCompileWebpack, internalCompileEsBuild, internalPackageEsBuild);
+const buildTask = gulp.series(cleanTask, internalNlsCompileTask, addI18nTask, internalCompileWebpack, internalCompileEsBuildProd);
 
 const doCompile = function (buildNls) {
   var r = tsProject
