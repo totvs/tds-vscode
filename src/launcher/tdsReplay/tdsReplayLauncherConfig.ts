@@ -49,7 +49,7 @@ const localizeHTML = {
   ),
   "tds.webview.launcher.importOnlySources": localize(
     "tds.webview.launcher.importOnlySources",
-    "Import only the Sources information"
+    "Import only the sources information"
   ),
 };
 
