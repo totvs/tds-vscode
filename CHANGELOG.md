@@ -14,6 +14,10 @@ Adicionado um tratamento especial para MacOS para permitir a execução do Smart
 
 Efetuada alteração para desconsiderar um tratamento de 'case' que causava o comportamento informado.
 
+### TDS Replay - Importação de apenas infromações de fontes (Win/Mac/Linux) [#1057](https://github.com/totvs/tds-vscode/issues/1057)
+
+Implementado nova funcionalidade no TDS Replay para importar apenas as informações dos arquivos fontes gravados.
+
 # Versão [1.3.17]
 
 ## Correções
