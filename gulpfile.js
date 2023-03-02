@@ -42,8 +42,11 @@ const internalCompileWebpack = function () {
   return run('npm run compile:views').exec();
 };
 
+//A opcao NODE_ENV=production fara com que os fontes gerados seja "minificados" e nao incluira os "sourcemaps".
+//Para desenvolvimento e debug, talvez seja melhor usar a opcao comentada abaixo.
 const internalCompileEsBuildProd = function () {
-  return run("NODE_ENV=production node esbuild.js").exec();
+  return run("cross-env NODE_ENV=production node esbuild.js").exec();
+  //return run("npm run compile::esbuild").exec();
 }
 
 const internalNlsCompileTask = function () {
