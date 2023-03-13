@@ -72,7 +72,6 @@ import { ServerItem } from "./serverItem";
 import serverProvider from "./serverItemProvider";
 import { registerWorkspace } from "./workspace";
 import { sendTelemetry } from "./protocolMessages";
-import path from "path";
 
 export let languageClient: TotvsLanguageClientA;
 

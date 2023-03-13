@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "1.4.0-BETA-6",
+  "version": "1.4.0-BETA-7",
   "publisher": "TOTVS",
   "author": {
     "name": "TOTVS",
@@ -544,14 +544,12 @@
           "enum": [
             "enable",
             "enableOnlyOpenFiles",
-            "disable",
-            "true"
+            "disable"
           ],
           "enumDescriptions": [
             "Applies to all files on the workspace.",
             "Applies only to files being edited.",
-            "Disable the process.",
-            "Deprecated. Use any options above."
+            "Disable the process."
           ],
           "default": "enableOnlyOpenFiles",
           "description": "%tds.package.editor.linter%"
@@ -566,16 +564,14 @@
           "scope": "window",
           "type": "string",
           "enum": [
-            "none",
-            "json",
-            "package"
+            "onMemory",
+            "onDisk"
           ],
           "enumDescriptions": [
-            "%tds.package.editor.index.cache.none%",
-            "%tds.package.editor.index.cache.json%",
-            "%tds.package.editor.index.cache.package%"
+            "%tds.package.editor.index.cache.onMemory%",
+            "%tds.package.editor.index.cache.onDisk%"
           ],
-          "default": "none",
+          "default": "onMemory",
           "description": "%tds.package.editor.index.cache%"
         },
         "totvsLanguageServer.filesystem.encoding": {
