@@ -13,22 +13,22 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 | Status | Funcionalidade |
 | ------ | -------------- |
-| OK | [Estrura](https://code.visualstudio.com/docs/getstarted/userinterface#_outline-view) |
-| | Funcionalidade passou a ser executada pelos LS. |
-| OK | Passagem _mouse_ (_text hover) |
-| | Funcionalidade implementada, porém requer revisão das situações onde há duplicidade do símbolo, com ou sem  escopo. |
-| OK | [Navegação rápida](https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation) |
-| OK | [Trilha](https://code.visualstudio.com/docs/editor/editingevolved#_breadcrumbs) |
-| OK | [Ir para definição](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition) |
-| (1) | [Ir para definição de tipo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-type-definition) |
-| (1) | [Ir para implementação](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-implementation) |
-| OK | [Ir para um símbolo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-symbol) |
-| NI | [Abrir símbolo pelo nome](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name) |
-| OK | [Visualizar](https://code.visualstudio.com/docs/editor/editingevolved#_peek) |
-| (2) | [Informação](https://code.visualstudio.com/docs/editor/editingevolved#_reference-information) |
-| Execução(2) | [Sintaxe destacada](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide) |
-| | Envolve o tratamento de arguivo de definição (.CH). |
-| Parado | Cache em disco. |
+|        | [Estrura](https://code.visualstudio.com/docs/getstarted/userinterface#_outline-view) |
+|        | Funcionalidade passou a ser executada pelos LS. |
+|        | Passagem _mouse_ (_text hover) |
+|        | Funcionalidade implementada, porém requer revisão das situações onde há duplicidade do símbolo, com ou sem  escopo. |
+|        | [Navegação rápida](https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation) |
+|        | [Trilha](https://code.visualstudio.com/docs/editor/editingevolved#_breadcrumbs) |
+|        | [Ir para definição](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition) |
+| (1)    | [Ir para definição de tipo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-type-definition) |
+| (1)    | [Ir para implementação](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-implementation) |
+|        | [Ir para um símbolo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-symbol) |
+| NI     | [Abrir símbolo pelo nome](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name) |
+|        | [Visualizar](https://code.visualstudio.com/docs/editor/editingevolved#_peek) |
+| (2)    | [Informação](https://code.visualstudio.com/docs/editor/editingevolved#_reference-information) |
+|      ) | [Sintaxe destacada](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide) |
+|        | Envolve o tratamento de arguivo de definição (.CH). |
+|        | Cache em disco. |
 
 | Legendas | |
 | -------- | - |
