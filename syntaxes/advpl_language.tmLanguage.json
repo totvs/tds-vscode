@@ -97,7 +97,7 @@
     "varDeclaration": {
       "patterns": [
         {
-          "match": "(?i)^\\s*\\b(local|static|private|public|default)\\b(?:;?\\s+;?\\s+?)(\\w+)(?:(?:;?\\s+;?\\s+?)(as)(?:;?\\s+;?\\s+?)(array|block|codeblock|character|char|date|logical|numeric|object|integer|double|decimal))?",
+          "match": "(?i)^\\s*\\b(?:;?\\s+;?\\s+?)(\\w+)(?:(?:;?\\s+;?\\s+?)(as)(?:;?\\s+;?\\s+?)(array|block|codeblock|character|char|date|logical|numeric|object|integer|double|decimal))?",
           "captures": {
             "2": {
               "name": "variable.name.advpl"

@@ -70,6 +70,7 @@ import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import { commandShowBuildTableResult } from "./compile/buildResult";
 import { ServerItem } from "./serverItem";
 import serverProvider from "./serverItemProvider";
+import {ReplayRegisterCommands} from "./debug/tdsreplay/RegisterReplayCommands";
 import { registerWorkspace } from "./workspace";
 import { sendTelemetry } from "./protocolMessages";
 
