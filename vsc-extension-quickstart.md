@@ -1,7 +1,15 @@
 # TOTVS Developer Studio para VSCode
 
-[![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode)
-
+<!-- prettier-ignore-start -->
+[![GitHub license](https://img.shields.io/github/license/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/blob/master/LICENSE)
+![Version](https://img.shields.io/visual-studio-marketplace/v/TOTVS.tds-vscode)
+![Installs](https://img.shields.io/visual-studio-marketplace/i/TOTVS.tds-vscode)
+![Downloads](https://img.shields.io/visual-studio-marketplace/d/TOTVS.tds-vscode)
+![Rating](https://img.shields.io/visual-studio-marketplace/stars/TOTVS.tds-vscode)
+[![GitHub issues](https://img.shields.io/github/issues/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/issues)
+[![GitHub forks](https://img.shields.io/github/forks/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/network)
+![Visual Studio Marketplace Last Updated](https://img.shields.io/visual-studio-marketplace/last-updated/TOTVS.tds-vscode)
+<!-- markdownlint-disable -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
@@ -154,7 +162,6 @@ Para contribuir com o desenvolvimento da extensão, acesse [Git Hub TDS-VSCODE](
     <td align="center"><a href="https://github.com/guilhermebigois"><img src="https://avatars2.githubusercontent.com/u/22408258?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Guilherme Bigois</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=guilhermebigois" title="Documentation">📖</a></td>
   </tr>
 </table>
-
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
 
