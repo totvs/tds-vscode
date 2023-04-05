@@ -49,7 +49,7 @@ const localizeHTML = {
   ),
   "tds.webview.launcher.importOnlySources": localize(
     "tds.webview.launcher.importOnlySources",
-    "Import only the Sources information"
+    "Import only the sources information"
   ),
 };
 
@@ -107,7 +107,8 @@ export default class LauncherConfiguration {
         currentPanel.webview.postMessage(launcherConfig);
       } catch (e) {
         Utils.logInvalidLaunchJsonFile(e);
-        launcherConfig = {};
+        //Devemos realmente limpar todo o conteudo do launch.json em uma situacao de erro?
+        //launcherConfig = {};
       }
 
       currentPanel.webview.onDidReceiveMessage((message) => {

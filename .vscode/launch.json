@@ -1,18 +1,19 @@
 {
 	"version": "0.2.0",
-	"configurations": [
-	{
-		"args": [
-			"task"
-		],
-		"name": "Gulp task",
-		"program": "${workspaceFolder}/node_modules/gulp/bin/gulp.js",
-		"request": "launch",
-		"skipFiles": [
-			"<node_internals>/**"
-		],
-		"type": "node"
-	},
+	"configurations":
+	[
+		{
+			"args": [
+				"task"
+			],
+			"name": "Gulp task",
+			"program": "${workspaceFolder}/node_modules/gulp/bin/gulp.js",
+			"request": "launch",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"type": "node"
+		},
 		{
 			"type": "extensionHost",
 			"request": "launch",
@@ -28,6 +29,6 @@
 			"env": {
 				"TOTVS_LS_LOG_FILE": "./TOTVS_LS_LOG_FILE.log"
 			}
-		},
+		}
 	]
 }
