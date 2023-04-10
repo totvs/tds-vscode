@@ -13,12 +13,12 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 | Status | Funcionalidade |
 | ------ | -------------- |
-|        | [Estrura](https://code.visualstudio.com/docs/getstarted/userinterface#_outline-view) |
+|  OK    | [Estrura](https://code.visualstudio.com/docs/getstarted/userinterface#_outline-view) |
 |        | Funcionalidade passou a ser executada pelos LS. |
 |        | Passagem _mouse_ (_text hover) |
 |        | Funcionalidade implementada, porém requer revisão das situações onde há duplicidade do símbolo, com ou sem  escopo. |
 |        | [Navegação rápida](https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation) |
-|        | [Trilha](https://code.visualstudio.com/docs/editor/editingevolved#_breadcrumbs) |
+|  OK    | [Trilha](https://code.visualstudio.com/docs/editor/editingevolved#_breadcrumbs) |
 |        | [Ir para definição](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition) |
 | (1)    | [Ir para definição de tipo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-type-definition) |
 | (1)    | [Ir para implementação](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-implementation) |

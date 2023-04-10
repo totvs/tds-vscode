@@ -1,16 +1,19 @@
 #include "protheus.ch"
+#include "alan.ch"
 
 user function funarr()
-	conout("executando u_funarr") 
-		
+	conout("executando u_funarr")
+
+	meu comando "xxxxxx"
+
 	private result := __funarr()
 
-	conout("executor u_funarr") 
+	conout("executor u_funarr")
 
-return result 
+return result
 
-private aOpcoes := ""
-static aOpcoes
+	private aOpcoes := ""
+	static aOpcoes
 
 user function escolheNum(replay, replayPath, numbers)
 	local n, cResp := "xxxxx", cMsg := ""
@@ -32,11 +35,11 @@ user function escolheNum(replay, replayPath, numbers)
 		aAdd(aOpcoes, strZero(n,1,0))
 	next
 // 
- 
+
 
 	n := 0
 	while !(cResp == "*")
-		if (replay) 
+		if (replay)
 			cOpcao = substr(numbers, 1, 1)
 			numbers =  substr(numbers, 2)
 			conout("BOT: select number " + cOpcao)
@@ -72,8 +75,8 @@ user function escolheNum(replay, replayPath, numbers)
 
 		if !(cResp == "*")
 			if replay
-				conout("BOT: " + cMsg) 
-			else 
+				conout("BOT: " + cMsg)
+			else
 				msgAlert(cMsg)
 			endif
 		endif

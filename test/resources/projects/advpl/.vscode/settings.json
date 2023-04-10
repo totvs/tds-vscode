@@ -32,5 +32,6 @@
             }
         ],
     },
-    "totvsLanguageServer.compilation.generatePpoFile": false
+    "totvsLanguageServer.compilation.generatePpoFile": false,
+    "totvsLanguageServer.workspaceServerConfig": true
 }

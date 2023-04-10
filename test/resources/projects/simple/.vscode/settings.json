@@ -8,7 +8,7 @@
         "--log-file=totvsls.log",
         "--verbose",
         "--debug-ls",
-        "--wait-for-attach=10000",
+        "--wait-for-attach=20000",
         "--log-file-append=totvsls2.log"
     ],
     "totvsLanguageServer.askCompileResult": false,
@@ -16,5 +16,7 @@
     "totvsLanguageServer.editor.autocomplete": "Off",
     "totvsLanguageServer.compilation.generatePpoFile": true,
     "totvsLanguageServer.workspaceServerConfig": true,
-    "totvsLanguageServer.editor.linter.behavior": "enableOnlyOpenFiles"
+    "totvsLanguageServer.editor.linter.behavior": "enableOnlyOpenFiles",
+    "editor.hover.delay": 1000,
+    "workbench.view.alwaysShowHeaderActions": true
 }
