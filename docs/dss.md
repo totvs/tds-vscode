@@ -15,9 +15,9 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 | ------ | -------------- |
 | OK     | [Estrura](https://code.visualstudio.com/docs/getstarted/userinterface#_outline-view) |
 | OK     | [Trilha](https://code.visualstudio.com/docs/editor/editingevolved#_breadcrumbs) |
-| OK     | [Sintaxe destacada](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide) |
-| OK     | [Abrir símbolo pelo nome](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name) |
+| Parcial| [Abrir símbolo pelo nome](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name) |
 |        | Somente para o fonte em edição. Para a área de trabalho requer revisão do processo |
+| Exec   | [Sintaxe destacada](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide) |
 | OK     | [Navegação rápida](https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation) |
 | OK     | [Ir para definição](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition) |
 | Parado | Passagem _mouse_ (_text hover) |
@@ -33,8 +33,9 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 | Legendas | |
 | -------- | - |
 | OK | Funcionalidade pronta. |
+| Parcial | Parcialmente implementada|
 | Execução | Parcialmente implementada, ainda em desenvolvimento. |
-| Parado | | Parcialmente implementada, mas com  desenvolvimento parado devido a outras ocorrências. |
+| Parado | Parcialmente implementada, mas com  desenvolvimento parado devido a outras ocorrências. |
 | (1) | Ainda a ser definido o comportamento, pois em vários casos não há como diferenciar definição/implementação. |
 | (2) | Parcialmente implementado. Ainda pode apresentar falhas. |
 
