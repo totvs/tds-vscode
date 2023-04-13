@@ -26,9 +26,13 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 | (1)    | [Ir para implementação](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-implementation) |
 | OK     | [Ir para um símbolo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-symbol) |
 | (2)    | [Visualizar](https://code.visualstudio.com/docs/editor/editingevolved#_peek) |
+| Parado | Cache em memória e/ou disco. |
+| Execução | Auto completar. |
+
+|        | Funcionalidades futururas |
+| ------ | -------------- |
 |        | [Informação](https://code.visualstudio.com/docs/editor/editingevolved#_reference-information) |
-|        | Destque visual para código isolado por ``#ifdef``. |
-| Execução | Cache em memória e/ou disco. |
+|        | Destaque visual para código isolado por ``#ifdef``. |
 
 | Legendas | |
 | -------- | - |
