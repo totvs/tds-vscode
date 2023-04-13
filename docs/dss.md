@@ -27,6 +27,7 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 | OK     | [Ir para um símbolo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-symbol) |
 | (2)    | [Visualizar](https://code.visualstudio.com/docs/editor/editingevolved#_peek) |
 |        | [Informação](https://code.visualstudio.com/docs/editor/editingevolved#_reference-information) |
+|        | Destque visual para código isolado por ``#ifdef``. |
 | Execução | Cache em memória e/ou disco. |
 
 | Legendas | |
