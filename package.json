@@ -40,7 +40,7 @@
   },
   "scripts": {
     "clean2": "gulp clean",
-    "clean-logs": "gulp cleanLogs",
+    "clean-logs": "npx rimraf ./**/*.log ./**/*.dmp --verbose",
     "compile": "npm-run-all compile:*",
     "compile:parse_4gl": "pegjs -o ./src/parser/4gl-parser.js ./syntaxes/4gl.pegjs",
     "compile:extension": "tsc -p ./src",
@@ -146,7 +146,7 @@
     "ts-loader": "^9.2.6",
     "typescript": "^4.5.4",
     "typescript-eslint": "^0.0.1-alpha.0",
-    "vsce": "^2.9.2",
+    "@vscode/vsce": "^2.18.0",
     "vscode-extension-tester": "^4.4.1",
     "vscode-nls-dev": "^4.0.1",
     "webpack": "^5.74.0",
@@ -313,7 +313,7 @@
         "language": "advpl",
         "scopes": {
           "keyword": [
-            "xkeyword.advpl"
+            "keyword.advpl"
           ]
         }
       }

@@ -1,4 +1,4 @@
-# TDS: Navegador de código
+# TDS: Developer Support Subsystem
 
 > Requisitos
 >
@@ -13,29 +13,27 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 | Status | Funcionalidade |
 | ------ | -------------- |
-|  OK    | [Estrura](https://code.visualstudio.com/docs/getstarted/userinterface#_outline-view) |
-|        | Funcionalidade passou a ser executada pelos LS. |
-|        | Passagem _mouse_ (_text hover) |
+| OK     | [Estrura](https://code.visualstudio.com/docs/getstarted/userinterface#_outline-view) |
+| OK     | [Trilha](https://code.visualstudio.com/docs/editor/editingevolved#_breadcrumbs) |
+| OK     | [Sintaxe destacada](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide) |
+| OK     | [Abrir símbolo pelo nome](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name) |
+|        | Somente para o fonte em edição. Para a área de trabalho requer revisão do processo |
+| OK     | [Navegação rápida](https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation) |
+| OK     | [Ir para definição](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition) |
+| Parado | Passagem _mouse_ (_text hover) |
 |        | Funcionalidade implementada, porém requer revisão das situações onde há duplicidade do símbolo, com ou sem  escopo. |
-|        | [Navegação rápida](https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation) |
-|  OK    | [Trilha](https://code.visualstudio.com/docs/editor/editingevolved#_breadcrumbs) |
-|        | [Ir para definição](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition) |
 | (1)    | [Ir para definição de tipo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-type-definition) |
 | (1)    | [Ir para implementação](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-implementation) |
-|        | [Ir para um símbolo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-symbol) |
-| NI     | [Abrir símbolo pelo nome](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name) |
-|        | [Visualizar](https://code.visualstudio.com/docs/editor/editingevolved#_peek) |
-| (2)    | [Informação](https://code.visualstudio.com/docs/editor/editingevolved#_reference-information) |
-|      ) | [Sintaxe destacada](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide) |
-|        | Envolve o tratamento de arguivo de definição (.CH). |
-|        | Cache em disco. |
+| OK     | [Ir para um símbolo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-symbol) |
+| (2)    | [Visualizar](https://code.visualstudio.com/docs/editor/editingevolved#_peek) |
+|        | [Informação](https://code.visualstudio.com/docs/editor/editingevolved#_reference-information) |
+| Execução | Cache em memória e/ou disco. |
 
 | Legendas | |
 | -------- | - |
 | OK | Funcionalidade pronta. |
 | Execução | Parcialmente implementada, ainda em desenvolvimento. |
 | Parado | | Parcialmente implementada, mas com  desenvolvimento parado devido a outras ocorrências. |
-| NI | Funcionalidade não implementada. |
 | (1) | Ainda a ser definido o comportamento, pois em vários casos não há como diferenciar definição/implementação. |
 | (2) | Parcialmente implementado. Ainda pode apresentar falhas. |
 
@@ -95,16 +93,18 @@ Em alguns casos, pode ser interessante manter esse _cache_ entre sessões, ou se
 
 Para ajustar o comportamento acesse ``File > Preference > Settings``, filtre por ``totvsLanguageServer.editor`` e localize ``Totvs Language Server › Editor › Index: Cache``, configurando o comportamento:
 
+            "onMemory",
+            "onDisk"
+
 | Opção | Comportamento |
-| `None` | Desabilita _cache_ em disco (padrão) |
-| `JSON` | O _cache_ é gravado em formato (JSON)[https://www.alura.com.br/artigos/o-que-e-json?gclid=Cj0KCQjwkt6aBhDKARIsAAyeLJ24a_dm9QADJrPo6TAG1kzC9y-E13cp5hSu3XKMoQoJmtRcYTI7__IaAjHvEALw_wcB] |
-| `package` | O _cache_ é gravado em modo binário (proprietário) |
+| `OnMemory` | O _cache_ é mantido em memória, sendo recriado a cada sessão do VS-Code. |
+| `onDisk` | O _cache_ é mantido em disco. |
 
 ## <a name="ignore"></a>Ignorar pastas e arquivos
 
 ### Definição
 
-`.tdsindexignore` é um arquivo dentro da pasta do projeto (ou sub-pastas) que ignora/impede que os arquivos sejam indexados, lembrando que essa configuração afetará a [navegação em fontes](./navigator.md).
+`.tdsindexignore` é um arquivo dentro da pasta do projeto (ou sub-pastas) que ignora/impede que os arquivos sejam indexados, lembrando que essa configuração afetará a [navegação em fontes](./dss.md).
 
 O uso do `.tdsindexignore` é similar aos usados em outras extensões/aplicativos, p.e. `.gitignore`, `.vscodeignore` e outros.
 

@@ -1,8 +1,8 @@
 {
     "totvsLanguageServer.welcomePage": false,
-    "totvsLanguageServer.editor.linter.includes": "m:/protheus/includes;W:/ws_tds_vscode/tds-vscode/test/resources/projects/simple0/myIncs",
+    "totvsLanguageServer.editor.linter.includes": "m:/protheus/includes;W:/ws_tds_vscode/tds-vscode/test/resources/projects/simple/myIncs",
     "totvsLanguageServer.editor.show.notification": "all",
-    "totvsLanguageServer.trace.debug": "messages",
+    "totvsLanguageServer.trace.debug": "off",
     "totvsLanguageServer.trace.server": "messages",
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",

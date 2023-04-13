@@ -2,7 +2,7 @@
 	"version": "0.2.2",
 	"includes": [
 		"m:/protheus/includes",
-		"W:/ws_tds_vscode/tds-vscode/test/resources/projects/simple0/myIncs"
+		"W:/ws_tds_vscode/tds-vscode/test/resources/projects/simple/myIncs"
 	],
 	"permissions": {
 		"authorizationtoken": ""
@@ -17,15 +17,12 @@
 			"address": "localhost",
 			"buildVersion": "7.00.210324P",
 			"secure": true,
-			"includes": [
-				"m:\\protheus\\includes"
-			],
 			"environments": [
 				"P12133"
 			],
 			"username": "admin",
 			"environment": "P12133",
-			"token": "djM6dHlqYTRlYW0za2tsOGJxc21oZW02NDc4dG5oM3dxOjE6bG9jYWxob3N0OjIwMzAyOjE6Ny4wMC4yMTAzMjRQOjM=:djE6UDEyMTMzOmFkbWluOmJTK25vU0VDUFd4MXpVU1ZVRGJnQUF4eks3c0p0c3pDazdiMFdCSEtkVG89|djI6MTY3NTI4MDMzOTowOjE6MQ==.mV7wEAkkvPAublfjq30npAfl2/o0FXEDQLQlDUniNOKXcA6TgVnMi6i7GO6O0IBciyzji7/9hdOm4YJQi+TjQ2V4q+lC6Y6H5xXNblffxQkZIPGHoZqvYVPFzMsTBRuuDTZw4XURbmZ2EJTEKM5aMBYUmZMJ0s6BOHXCHz6RpSdjFIu8Kg8eXklT9fFGzn0re/HI9ppcoboaXBqhVyu31EBOSoSy2mYXrfp7/GyFtOUUb3HO53R2rf4RWsfH6CSxXAg+vTPiD7ZfhW8FgrYcOadE+9RMY7W0j3Smvvt8cuwAFSNsNsoHHT8Dvkzr7Vk0Tf+kfx+na+f09ACpbRkL8A==",
+			"token": "djM6dHlqYTRlYW0za2tsOGJxc21oZW02NDc4dG5oM3dxOjE6bG9jYWxob3N0OjIwMzAyOjE6Ny4wMC4yMTAzMjRQOjM=:djE6UDEyMTMzOmFkbWluOjQ3UnA5ZnZmeGlNOEFNUmlNb09FOHZHL2NmQkFJYXR4TjV4QnVJNXZuUjg9|djI6MTY4MTMxMjE5MDowOjE6MQ==.GHIqQOKFn1BGYV27dKE6TUCqXGYqVoKLC63Ya4YYs39mH4zYS81Mh+GbUTOGy464l3ipAQxWAYcfHuu2DbrSQLjWG6/Ky+fJWWwWbijKvm/tbgJ3eSkxzUaI3D8wMnsn7peyJB1Sr3JvNvwJwc8s6NnpUNFrtEHyJLnztWK0AAp/TgV8PctFL9kmKEQOwuykwRRZVjr33w/4XEQS73J3Bf9iWym7FBWxS0OcLb0+PrM22skzW76K45JLnOLBoF9LAO3qP0x//iMGkILIXtGN5ZqhHrB8Y99ml/zSElQZ8FRRXvZTXquVsj35LtsnhEdL8q2KJqCsinn/rN3IMI8T7Q==",
 			"informations": {
 				"permissions": [],
 				"errorMessage": "",
@@ -41,9 +38,6 @@
 			"address": "localhost",
 			"buildVersion": "7.00.191205P",
 			"secure": true,
-			"includes": [
-				"m:/protheus/includes"
-			],
 			"environments": [
 				"p12127"
 			],
@@ -62,7 +56,7 @@
 			"tyja4eam3kkl8bqsmhem6478tnh3wq:P12133",
 			{
 				"id": "tyja4eam3kkl8bqsmhem6478tnh3wq",
-				"token": "djM6dHlqYTRlYW0za2tsOGJxc21oZW02NDc4dG5oM3dxOjE6bG9jYWxob3N0OjIwMzAyOjE6Ny4wMC4yMTAzMjRQOjM=:djE6UDEyMTMzOmFkbWluOmJTK25vU0VDUFd4MXpVU1ZVRGJnQUF4eks3c0p0c3pDazdiMFdCSEtkVG89|djI6MTY3NTI4MDMzOTowOjE6MQ==.mV7wEAkkvPAublfjq30npAfl2/o0FXEDQLQlDUniNOKXcA6TgVnMi6i7GO6O0IBciyzji7/9hdOm4YJQi+TjQ2V4q+lC6Y6H5xXNblffxQkZIPGHoZqvYVPFzMsTBRuuDTZw4XURbmZ2EJTEKM5aMBYUmZMJ0s6BOHXCHz6RpSdjFIu8Kg8eXklT9fFGzn0re/HI9ppcoboaXBqhVyu31EBOSoSy2mYXrfp7/GyFtOUUb3HO53R2rf4RWsfH6CSxXAg+vTPiD7ZfhW8FgrYcOadE+9RMY7W0j3Smvvt8cuwAFSNsNsoHHT8Dvkzr7Vk0Tf+kfx+na+f09ACpbRkL8A=="
+				"token": "djM6dHlqYTRlYW0za2tsOGJxc21oZW02NDc4dG5oM3dxOjE6bG9jYWxob3N0OjIwMzAyOjE6Ny4wMC4yMTAzMjRQOjM=:djE6UDEyMTMzOmFkbWluOjQ3UnA5ZnZmeGlNOEFNUmlNb09FOHZHL2NmQkFJYXR4TjV4QnVJNXZuUjg9|djI6MTY4MTMxMjE5MDowOjE6MQ==.GHIqQOKFn1BGYV27dKE6TUCqXGYqVoKLC63Ya4YYs39mH4zYS81Mh+GbUTOGy464l3ipAQxWAYcfHuu2DbrSQLjWG6/Ky+fJWWwWbijKvm/tbgJ3eSkxzUaI3D8wMnsn7peyJB1Sr3JvNvwJwc8s6NnpUNFrtEHyJLnztWK0AAp/TgV8PctFL9kmKEQOwuykwRRZVjr33w/4XEQS73J3Bf9iWym7FBWxS0OcLb0+PrM22skzW76K45JLnOLBoF9LAO3qP0x//iMGkILIXtGN5ZqhHrB8Y99ml/zSElQZ8FRRXvZTXquVsj35LtsnhEdL8q2KJqCsinn/rN3IMI8T7Q=="
 			}
 		],
 		[

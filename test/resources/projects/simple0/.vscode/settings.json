@@ -8,6 +8,7 @@
         "--log-file=totvsls.log",
         "--verbose",
         "--debug-ls",
+        "--trace-compile",
         "--wait-for-attach=10000",
         "--log-file-append=totvsls2.log"
     ],

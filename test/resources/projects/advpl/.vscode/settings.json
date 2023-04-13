@@ -9,6 +9,7 @@
         "--verbose",
         "--wait-for-attach=20000",
         "--debug-ls",
+        "--trace-compile",
         "--log-file-append=totvsls2.log"
     ],
     "totvsLanguageServer.askCompileResult": false,

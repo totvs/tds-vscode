@@ -35,7 +35,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 - Comunicação baseada nos protocolos LSP/DAP
 - [Linter](docs/linter.md) para análise de código estático
 - [Console](docs/console.md) informativo e notificações
-- [Edição](docs/edition.md), [Formatação](docs/formatter/format_config.md) e [Navegação](docs/navigator.md) de arquivos fontes (AdvPL, TLPP, 4GL e variantes)
+- [Edição](docs/edition.md), [Formatação](docs/formatter/format_config.md) e [Navegação](docs/dss.md) de arquivos fontes (AdvPL, TLPP, 4GL e variantes)
 - [Compilação](docs/compilation.md) de fontes, pastas e da área de trabalho
 - [Depuração](docs/debugger.md) e execução (Local e _WebApp_)
 - [TDS Replay](https://github.com/totvs/tds-vscode/wiki/TDS-Replay) - Depuração de execução pré-gravada.
@@ -46,7 +46,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 - [Monitoramento](docs/monitor.md) de servidores
 - [RPO Seguro](docs/rpo.md#Token_de_RPO)
 - [TDS-Cli](https://github.com/totvs/tds-ls/blob/master/TDS-CLi.md) compilação por linha de comando. Da mesma forma que o Eclipse, essa extensão do VSCode possui uma ferramenta de compilação em linha de comando.
-- [Navegação em código](docs/navigator.md)
+- [Navegação em código](docs/dss.md)
 
 ## SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO
 
