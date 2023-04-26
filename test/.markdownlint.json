@@ -1,0 +1,18 @@
+{
+	"default": true,
+	"no-hard-tabs": false,
+	"MD003": {
+		"style": "atx_closed"
+	},
+	"MD007": {
+		"indent": 4
+	},
+	"MD033": {
+		"allowed_elements": [
+			"a"
+		]
+	},
+	"MD046": {
+		"style": "indented"
+	}
+}

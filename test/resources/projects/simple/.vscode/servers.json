@@ -2,6 +2,7 @@
 	"version": "0.2.2",
 	"includes": [
 		"m:/protheus/includes",
+		"m:/protheus/includes_tlpp",
 		"W:/ws_tds_vscode/tds-vscode/test/resources/projects/simple/myIncs"
 	],
 	"permissions": {

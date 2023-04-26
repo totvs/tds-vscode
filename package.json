@@ -119,6 +119,7 @@
     "@types/react-dom": "^18.0.6",
     "@types/vscode": "^1.63.1",
     "@types/vscode-webview": "^1.57.0",
+    "@vscode/vsce": "^2.18.0",
     "all-contributors-cli": "^6.20.0",
     "chai": "^4.3.4",
     "cleanup": "^0.3.0",
@@ -127,6 +128,7 @@
     "esbuild": "^0.16.17",
     "eslint": "^8.23.1",
     "eslint-config-standard-with-typescript": "^23.0.0",
+    "extest": "^1.0.0",
     "glob": "^8.0.3",
     "gulp": "^4.0.2",
     "gulp-filter": "^7.0.0",
@@ -146,7 +148,6 @@
     "ts-loader": "^9.2.6",
     "typescript": "^4.5.4",
     "typescript-eslint": "^0.0.1-alpha.0",
-    "@vscode/vsce": "^2.18.0",
     "vscode-extension-tester": "^4.4.1",
     "vscode-nls-dev": "^4.0.1",
     "webpack": "^5.74.0",
@@ -507,7 +508,7 @@
           "description": "%tds.package.editor.autocomplete%"
         },
         "totvsLanguageServer.editor.hover": {
-          "scope": "application",
+          "scope": "window",
           "type": "string",
           "enum": [
             "off",
@@ -517,19 +518,19 @@
           "enumDescriptions": [
             "%tds.package.editor.hover.off%",
             "%tds.package.editor.hover.plaintext%",
-            "%tds.package.editor.hover..markDown%"
+            "%tds.package.editor.hover.markDown%"
           ],
           "default": "markDown",
           "description": "%tds.package.editor.hover%"
         },
         "totvsLanguageServer.editor.signatureHelp": {
-          "scope": "application",
+          "scope": "window",
           "type": "boolean",
           "default": "true",
           "description": "%tds.package.editor.signatureHelp%"
         },
         "totvsLanguageServer.editor.codeLens": {
-          "scope": "application",
+          "scope": "window",
           "type": "boolean",
           "default": "true",
           "description": "%tds.package.editor.codeLens%"

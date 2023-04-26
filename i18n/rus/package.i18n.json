@@ -140,9 +140,9 @@
 	"tds.package.clearRpoToken": "Clear Compilation Token",
 	"tds.package.filesystem.encoding": "Set file system encoding",
 	"tds.package.editor.linter": "Linter behavior",
+	"tds.package.editor.hover": "Control how the presentation is displayed on hover.",
 	"tds.package.editor.hover.off": "Off",
-	"tds.package.editor.hover.plaintext": "Plain text",
-	"tds.package.editor.hover..markDown": "Используйте ProtheusDoc, когда это возможно",
-    "tds.package.editor.hover": "Управляйте тем, как отображается презентация при наведении.",
+	"tds.package.editor.hover.plaintext": "Simple text.",
+	"tds.package.editor.hover.markDown": "Formatted text (Markdown). Use PDoc if available.",
 	"tds.package.editor.signatureHelp": "Controls activation of the signature help."
 }

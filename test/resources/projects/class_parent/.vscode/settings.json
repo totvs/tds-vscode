@@ -3,7 +3,7 @@
     "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes",
     "totvsLanguageServer.editor.show.notification": "all",
     "totvsLanguageServer.trace.debug": "messages",
-    "totvsLanguageServer.trace.server": "messages",
+    "totvsLanguageServer.trace.server": "verbose",
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
         "--verbose",
@@ -34,5 +34,6 @@
         ],
     },
     "totvsLanguageServer.compilation.generatePpoFile": false,
-    "totvsLanguageServer.workspaceServerConfig": true
+    "totvsLanguageServer.workspaceServerConfig": true,
+    "totvsLanguageServer.reconnectLastServer": true
 }

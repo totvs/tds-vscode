@@ -2,37 +2,68 @@
 
 > Requisitos
 >
-> - DSS (Developer Support Subsystem)_ em execução (inicio automático, em paralelo com o _Language Server_)
+> - DSS (Developer Support Subsystem)_em execução (inicio automático, em paralelo com o_Language Server_)
 > - Resultados podem ser parciais devido ao processo de indexação em andamento
 
 Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstudio.com/docs/editor/editingevolved) e  aqui, breve documentação das opções suportadas em projetos baseados nas linguagens **TOTVS**.
 
 > As opções de acionamento citadas são as configurações padrão do **VS-Code**, podendo ser diferentes em função de reconfiguração efetuada pelo usuário ou outras extensões.
-
 > Todas as opções de navegação também pode ser acionadas via menu de contexto do editor.
 
 | Status | Funcionalidade |
 | ------ | -------------- |
 | OK     | [Estrura](https://code.visualstudio.com/docs/getstarted/userinterface#_outline-view) |
 | OK     | [Trilha](https://code.visualstudio.com/docs/editor/editingevolved#_breadcrumbs) |
-| Parcial| [Abrir símbolo pelo nome](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name) |
-|        | Somente para o fonte em edição. Para a área de trabalho requer revisão do processo |
-| Exec   | [Sintaxe destacada](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide) |
+| OK     | Visão simbolos |
+| [OK](#P1) | [Abrir símbolo pelo nome](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name). Prefixo ``@`` ou ``#`` |
+| **Exec**   | [Sintaxe destacada](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide) |
 | OK     | [Navegação rápida](https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation) |
-| OK     | [Ir para definição](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition) |
-| Parado | Passagem _mouse_ (_text hover) |
-|        | Funcionalidade implementada, porém requer revisão das situações onde há duplicidade do símbolo, com ou sem  escopo. |
-| (1)    | [Ir para definição de tipo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-type-definition) |
-| (1)    | [Ir para implementação](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-implementation) |
+| [OK](#P1) | [Ir para definição](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition) |
+| OK     | Passagem _mouse_ (_text hover) |
+|        | Funcionalidade implementada, porém requer revisão das situações onde há duplicidade do símbolo, |
+|        | com ou sem  escopo. |
+| **(1)**    | [Ir para definição de tipo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-type-definition) |
+| **(1)**    | [Ir para implementação](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-implementation) |
 | OK     | [Ir para um símbolo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-symbol) |
-| (2)    | [Visualizar](https://code.visualstudio.com/docs/editor/editingevolved#_peek) |
+| _(2)_    | [Visualizar](https://code.visualstudio.com/docs/editor/editingevolved#_peek) |
 | Parado | Cache em memória e/ou disco. |
 | Execução | Auto completar. |
 
-|        | Funcionalidades futururas |
+|        | Funcionalidades futuras |
 | ------ | -------------- |
 |        | [Informação](https://code.visualstudio.com/docs/editor/editingevolved#_reference-information) |
 |        | Destaque visual para código isolado por ``#ifdef``. |
+|        | Strings de tradução (visualização e edição). |
+
+| | Descrição de problemas e comportamentos |
+|-| --------------------------------------- |
+| | Visão ``Symbols``
+| | - agrupar: ``+#include``, ``+#define``?
+| | |
+| | <a name='P1'></a>- ``ctrl+T``, prefixo ``#`` (busca área de trabalho) |
+| | Implementar carga parcial. |
+| | Somente elementos públicos? |
+| | - funções (incluir static?)
+| | - classes
+| | - métodos
+| | - propriedades
+| | - defines
+| | Considerar escopo? |
+| | |
+| | <a name='P2'></a>- ``F12`` e ``alt+F12`` |
+| | Considerar escopo? |
+| | |
+| | - ``#define`` em ch´s padrão não possuem informações de localização. |
+| | |
+| | - TLPP: a lista de definições abaixo, causa erro ou gera detalhes errôneos. |
+| | [TLPP: Tipos nativos](https://tdn.totvs.com/display/tec/Tipos+Nativos) |
+| | Local fDec2 := DEC_CREATE( 7233.759119, 21, 20 ) as Decimal |
+| | Local aArr2 := {1, 2, 3} as array |
+| | Local oObj2 := MyClass():New() as object |
+| | Local jJsn2 := JsonObject():New() as Json |
+| | Local bBlk2 := {|r,l|r*l} as CodeBlock |
+| | Local xVar2 := 4 as variant |
+| | Local xVar3 := "Texto" as variant |
 
 | Legendas | |
 | -------- | - |
@@ -72,6 +103,7 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 **Acionamento:** ``Alt+F12`` sobre uma chamada de função ou variável.
 
 > Limitações:
+
 - Em classes, a operação funciona somente no fonte da própria classe com o operando ``::`` ou ``self:``;
 
 ## [Passagem de mouse](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#show-hovers)
@@ -129,19 +161,16 @@ O uso do `.tdsindexignore` é similar aos usados em outras extensões/aplicativo
 | `@` | Expressão regular [`Perl`](https://perldoc.perl.org/perlre). |
 
 > A aplicação dos padrões de seleção não são sensíveis a caixa (maiúsculas e minúsculas).
-
 > Informe primeiro as regras mais restrivas.
-
 > Ao colocar o arquivo ``.tdsindexignore`` em uma pasta, este será aplicado na pasta onde foi criado e em suas sub-pastas.
-
 > Linhas em branco não tem efeito
-
 > Evite usar nomes acentuados.
 
 ### Exemplos
 
 #### Área de trabalho
-```
+
+```text
 root
   \- api
   |  |- .tdsindexignore
@@ -171,7 +200,8 @@ root
 ```
 
 ##### ``root/.tdsindexignore``
-```
+
+```text
 # A pasta ``test`` e suas sub-pastas serão ignoradas.
 test
 
@@ -180,16 +210,17 @@ dbacess?.prw
 ```
 
 ##### ``root/api/.tdsindexignore``
-```
+
+```text
 # A pasta ``api`` e  sub-pastas serão ignoradas.
-.
 
 # Exceto o arquivo ``api_my_test.prw``
 !api_my_test.prw
 ```
 
 ##### ``root/test/.tdsindexignore``
-```
+
+```text
 # Cria uma excessão a regra em ``root/.tdsindexignore``
 # Não ignora arquivos iniciados com ``test``
 !test*.prw

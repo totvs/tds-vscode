@@ -19,5 +19,10 @@
 		"out": false // set this to true to hide the "out" folder with the compiled JS files
 	},
 	"typescript.tsc.autoDetect": "off",
-	"eslint.enable": false
+	"eslint.enable": false,
+	"[markdown]": {
+		"editor.formatOnSave": true,
+		"editor.formatOnPaste": true
+	},
+	"markdownlint.run": "onSave"
 }

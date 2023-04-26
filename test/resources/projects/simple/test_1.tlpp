@@ -1,0 +1,35 @@
+#include "tlpp-core.th"
+#include "alan.ch"
+
+user function test1()
+	Local nNum1 as numeric
+	Local nNum2 := 3 as numeric
+	Local iInt1 as integer
+	Local iInt2 := 7 as integer
+	Local eDbl1 as double
+	Local eDbl2 := 32.79 as double
+	Local fDec1 as decimal
+	Local cStr1 as character
+	Local cStr2 := "TotvsTec" as character
+	Local lBol1 as logical
+	Local lBol2 := .T. as logical
+	Local dDte1 as date
+	Local dDte2 := CToD("08/29/2021") as date
+	Local aArr1 as array
+	Local oObj1 as object
+	Local jJsn1 as json
+	Local bBlk1 as codeblock
+	Local xVar1 as variant
+	Local xVar2
+	Local xVar3 := .T.
+	Local xVar4 := Date()
+
+	// Local fDec2 := DEC_CREATE( 7233.759119, 21, 20 ) as Decimal
+	//Local aArr2 := {1, 2, 3} as array
+	//Local oObj2 := MyClass():New() as object
+	//Local jJsn2 := JsonObject():New() as Json
+	//Local bBlk2 := {|r,l|r*l} as CodeBlock
+	//Local xVar2 := 4 as variant
+	//Local xVar3 := "Texto" as variant
+
+return
