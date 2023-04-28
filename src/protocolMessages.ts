@@ -227,7 +227,8 @@ export function sendReconnectRequest(
 
 export function sendValidationRequest(
   addres: string,
-  port: number
+  port: number,
+  serverType: string
 ): Thenable<IValidationInfo> {
   if (typeof port !== "number") {
     port = parseInt(port);
@@ -238,6 +239,7 @@ export function sendValidationRequest(
       validationInfo: {
         server: addres,
         port: port,
+        serverType: serverType
       },
     })
     .then(
