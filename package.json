@@ -232,6 +232,17 @@
     ],
     "languages": [
       {
+        "id": "html",
+        "aliases": [
+          "HTML",
+          "advpl/asp"
+        ],
+        "extensions": [
+          ".aph"
+        ],
+        "configuration": "./advpl-language-configuration.json"
+      },
+      {
         "id": "advpl",
         "aliases": [
           "AdvPL",
@@ -246,7 +257,6 @@
           ".ppx",
           ".ppp",
           ".tlpp",
-          ".aph",
           ".ahu",
           ".apl",
           ".apw"
@@ -292,6 +302,17 @@
         "language": "advpl",
         "scopeName": "source.advpl",
         "path": "./syntaxes/advpl_language.tmLanguage.json"
+      },
+      {
+        "language": "html",
+        "scopeName": "text.html.advpl",
+        "path": "./syntaxes/advpl_language.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.json": "json",
+          "source.css": "css",
+          "source.css.scss": "scss",
+          "source.js": "javascript"
+        }
       },
       {
         "language": "4gl",
@@ -571,14 +592,16 @@
           "scope": "window",
           "type": "string",
           "enum": [
+            "off",
             "onMemory",
             "onDisk"
           ],
           "enumDescriptions": [
+            "%tds.package.editor.index.cache.off%",
             "%tds.package.editor.index.cache.onMemory%",
             "%tds.package.editor.index.cache.onDisk%"
           ],
-          "default": "onMemory",
+          "default": "off",
           "description": "%tds.package.editor.index.cache%"
         },
         "totvsLanguageServer.filesystem.encoding": {

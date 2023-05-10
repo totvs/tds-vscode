@@ -35,6 +35,9 @@
     },
     {
       "include": "#expression"
+    },
+    {
+      "include": "#embedded-code"
     }
   ],
   "repository": {
@@ -707,6 +710,17 @@
           "include": "#separators"
         }
       ]
+    },
+    "embedded-code": {
+      "patterns": [
+        {
+          "include": "advpl-asp"
+        }
+      ]
+    },
+    "advpl-asp": {
+      "begin": "&lt%",
+      "end": "%&gt"
     }
   }
 }

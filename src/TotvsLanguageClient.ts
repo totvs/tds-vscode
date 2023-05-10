@@ -62,7 +62,7 @@ export function getLanguageClient(
   let serverOptions: ServerOptions = {
     command: advpls,
     args: args,
-    options: { env: env },
+    options: { env: env, detached: true },
   };
 
   // Inline code lens.
@@ -125,8 +125,8 @@ export function getLanguageClient(
         languageClient.outputChannel.appendLine(`                     Version: ${serverInfo.name} ${serverInfo.version}`);
       }
 
-      languageClient.outputChannel.appendLine("**** initializeResult");
-      languageClient.outputChannel.appendLine(JSON.stringify(languageClient.initializeResult, undefined, "  "));
+      //languageClient.outputChannel.appendLine("**** initializeResult");
+      //languageClient.outputChannel.appendLine(JSON.stringify(languageClient.initializeResult, undefined, "  "));
 
       let isReconnectLastServer = configADVPL.get("reconnectLastServer");
       if (isReconnectLastServer) {

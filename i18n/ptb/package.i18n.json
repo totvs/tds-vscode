@@ -145,7 +145,8 @@
 	"tds.package.editor.hover.plaintext": "Simple text",
 	"tds.package.editor.hover.markDown": "Formatted text (Markdown). Use PDoc if available.",
 	"tds.package.editor.index.cache": "Persistência do cache de navegação",
-	"tds.package.editor.index.cache.onDisk": "Caching is done on disk.",
+	"tds.package.editor.index.cache.off": "Turn off the cache. Some DSS features may become unavailable..",
 	"tds.package.editor.index.cache.onMemory": "Caching is done on memory.",
+	"tds.package.editor.index.cache.onDisk": "Persist cache on disk.",
 	"tds.package.editor.signatureHelp": "Controla a ativação da ajuda de assinatura."
 }
