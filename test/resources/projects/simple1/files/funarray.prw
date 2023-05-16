@@ -31,6 +31,7 @@ user function get_func(target)
 	if target == nil
 		target = "W:\ws_tds_vscode\tds-vscode\test\resources\projects\advpl\files"
 	endif
+	
 	conout("Target: " + target)
 	nHandle := fcreate(target+'\funcs.txt', FC_NORMAL)
 	If nHandle == -1

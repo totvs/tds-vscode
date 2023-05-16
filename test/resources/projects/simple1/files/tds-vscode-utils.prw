@@ -2,13 +2,13 @@
 https://www.universoadvpl.com/advpl-funcoes/
 http://tdn.totvs.com/pages/viewpage.action?pageId=6063792
 
-Retorna um ou mais arrays contendo os dados das fuções contidas no RPO, a partir de uma máscara.
+Retorna um ou mais arrays contendo os dados das fuÃ§Ãµes contidas no RPO, a partir de uma mÃ¡scara.
 http://tdn.totvs.com/display/tec/GetFuncArray
 
 Retorna um array com o nome dos fontes compilados.
 http://tdn.totvs.com/display/tec/GetSrcArray
 
-Retorna um array multidimensional com todas as informaï¿½ï¿½es das propriedades da instï¿½ncia da classe contida no objeto informado como parï¿½metro
+Retorna um array multidimensional com todas as informaÃ§Ãµes das propriedades da instÃ¡ncia da classe contida no objeto informado como parÃ¡metro
 http://tdn.totvs.com/display/tec/ClassDataArr
 
 LIsta Funcoes de BIN
@@ -19,8 +19,8 @@ __funarr()
 #include "fileio.ch"
 
 /*/{Protheus.doc} getFunc
-Gera arquivo binary_functions.inc (c++) com a prototipação das funções AdvPL binárias.
-@type function 
+Gera arquivo binary_functions.inc (c++) com a prototipaÃ§Ãµo das funÃ§Ãµes AdvPL binÃ¡rias.
+@type function
 @version  1.0
 @author acandido
 @since 30/09/2022
@@ -100,7 +100,7 @@ static function doFunction(nHandle, nHandle2)
 		FWrite(nHandle2, chr(10))
 
 		cPDOC := getTdnDocument(aFuncs[i,1])
-		if (cPDOC != NIL) 
+		if (cPDOC != NIL)
 			conout(cPDOC)
 			break
 		endif
@@ -131,7 +131,7 @@ static function getTdnDocument(funcName)
 		if (substr(cError,1,2) == "OK")
 			cContent := extractContent(cContent)
 		else
-			cContent := ""	 
+			cContent := ""
 		endif
 	endif
 
@@ -232,26 +232,26 @@ user function extractTLPPIncs()
 Return lRet
 
 // Converte tipos de variaveis
-static function extractContent(cContent) 
+static function extractContent(cContent)
 	//Busca pela div main-content
 	local nPos := at('id="main-content"', cContent) - 5
 	local cDescription
 	local cSintax
 
-	if nPos > 0 
+	if nPos > 0
 		cContent = substr(cContent, nPos)
 		nPos := at("<!-- \#main -->", cContent)
 		cContent := substr(cContent, 1, nPos)
-		nPos := skipDiv(cContent, 2) 
-		nPos := skipP(cContent, nPos) 
-		cDescription := extractP(cContent, @nPos) 
-		nPos := skipH2(cContent, nPos) 
-		cSintax := extractSintax(cContent, @nPos) 
+		nPos := skipDiv(cContent, 2)
+		nPos := skipP(cContent, nPos)
+		cDescription := extractP(cContent, @nPos)
+		nPos := skipH2(cContent, nPos)
+		cSintax := extractSintax(cContent, @nPos)
 	endif
 
 return cContent
 
-static function skipDiv(cContent, nStart) 
+static function skipDiv(cContent, nStart)
 	local nPos := at("<div",cContent, nStart)
 
 	if (nPos > 1)
@@ -260,7 +260,7 @@ static function skipDiv(cContent, nStart)
 
 return nPos
 
-static function skipP(cContent, nStart) 
+static function skipP(cContent, nStart)
 	local nPos := at("<p",cContent, nStart)
 
 	if (nPos > 1)
@@ -269,7 +269,7 @@ static function skipP(cContent, nStart)
 
 return nPos
 
-static function skipH2(cContent, nStart) 
+static function skipH2(cContent, nStart)
 	local nPos := at("<h2",cContent, nStart)
 
 	if (nPos > 1)
@@ -278,7 +278,7 @@ static function skipH2(cContent, nStart)
 
 return nPos
 
-static function extractP(cContent, nStart) 
+static function extractP(cContent, nStart)
 	local nPos := at("<p",cContent, nStart)
 	local nPosEnd
 	local cResult := ""

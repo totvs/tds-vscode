@@ -1,7 +1,7 @@
 {
     "totvsLanguageServer.welcomePage": false,
-    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes",
-    "totvsLanguageServer.editor.show.notification": "all",
+    "totvsLanguageServer.editor.linter.includes": "W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes;W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\includes_tlpp",
+    "totvsLanguageServer.editor.show.notification": "errors warnings and infos",
     "totvsLanguageServer.trace.debug": "messages",
     "totvsLanguageServer.trace.server": "messages",
     "totvsLanguageServer.launch.args": [
@@ -9,29 +9,12 @@
         "--verbose",
         "--wait-for-attach=20000",
         "--debug-ls",
-        "--trace-compile",
         "--log-file-append=totvsls2.log"
     ],
     "totvsLanguageServer.askCompileResult": false,
     "totvsLanguageServer.askEncodingChange": false,
     "totvsLanguageServer.editor.autocomplete": "Off",
-    "xeditor.semanticTokenColorCustomizations": {
-        "[Default Dark+]": {
-            "enabled": true,
-            "rules": {
-                "keyword": "#ff0000"
-            }
-        }
-    },
-    "xeditor.tokenColorCustomizations": {
-        "textMateRules": [
-            {
-                "scope": "keyword.control",
-                "settings": {
-                    "foreground": "#FF0000"
-                }
-            }
-        ],
-    },
-    "totvsLanguageServer.compilation.generatePpoFile": false
+    "totvsLanguageServer.compilation.generatePpoFile": false,
+    "totvsLanguageServer.editor.index.cache": "onDisk",
+    "totvsLanguageServer.workspaceServerConfig": true
 }
