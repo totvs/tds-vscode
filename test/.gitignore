@@ -1,3 +1,4 @@
 ./resources/**/.vscode/servers.json
 ./resources/**/.vscode/settings.json
 ./resources/**/.vscode/laucher.json
+./resources/**/.cache

@@ -16,14 +16,14 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 | OK     | [Trilha](https://code.visualstudio.com/docs/editor/editingevolved#_breadcrumbs) |
 | OK     | Visão simbolos |
 | [OK](#P1) | [Abrir símbolo pelo nome](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name). Prefixo ``@`` ou ``#`` |
-| **Exec**   | [Sintaxe destacada](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide) |
+| OK   | [Sintaxe destacada](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide) |
 | OK     | [Navegação rápida](https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation) |
 | [OK](#P1) | [Ir para definição](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition) |
 | OK     | Passagem _mouse_ (_text hover) |
 |        | Funcionalidade implementada, porém requer revisão das situações onde há duplicidade do símbolo, |
 |        | com ou sem  escopo. |
-| **(1)**    | [Ir para definição de tipo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-type-definition) |
-| **(1)**    | [Ir para implementação](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-implementation) |
+| OK_(1)_    | [Ir para definição de tipo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-type-definition) |
+| OK_(1)_    | [Ir para implementação](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-implementation) |
 | OK     | [Ir para um símbolo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-symbol) |
 | _(2)_    | [Visualizar](https://code.visualstudio.com/docs/editor/editingevolved#_peek) |
 | Parado | Cache em memória e/ou disco. |
@@ -64,6 +64,12 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 | | Local bBlk2 := {|r,l|r*l} as CodeBlock |
 | | Local xVar2 := 4 as variant |
 | | Local xVar3 := "Texto" as variant |
+| | |
+| | - AdvPL/Asp (ignorado para o **DSS**, extensões .aph e .apl)
+| | APH passa por um pré-proessamento que gera código AdvPL e este  é repassado ao |
+| | pré-processador, que gera o AST, que não bate nada com nada com o fonte original. |
+| |
+| | |
 
 | Legendas | |
 | -------- | - |
@@ -131,12 +137,14 @@ Em alguns casos, pode ser interessante manter esse _cache_ entre sessões, ou se
 
 Para ajustar o comportamento acesse ``File > Preference > Settings``, filtre por ``totvsLanguageServer.editor`` e localize ``Totvs Language Server › Editor › Index: Cache``, configurando o comportamento:
 
-            "onMemory",
-            "onDisk"
-
 | Opção | Comportamento |
-| `OnMemory` | O _cache_ é mantido em memória, sendo recriado a cada sessão do VS-Code. |
-| `onDisk` | O _cache_ é mantido em disco. |
+| `off` | O _cache_  desligado. |
+| `onMemory` | O _cache_ ligado e em memória. |
+| `onDisk` | O _cache_ é armazenado em disco, para uso nas próximas sessões. |
+| `onDiskPerFolder` | Por pasta: arquivo de cache por pasta do projeto. (experimental). |
+| `onDiskPerFile` | Por arquivo: arquivo de cache por arquivo  do projeto. (experimental). |
+
+A opção ``off``, atuará somente nos fontes abertos para edição e o **DSS** terá  limitações em suas funcionalidades. A ``onMemory``, o _cache_ é mantido em memória, sendo recriado a cada nova sessão de uso do **VS-Code**, com o  **DSS** totalmente funcional, incluindo arquivos não abertos para edição. As demais opções, persistem o _cache_ em disco em bloco único (``OnDisk``) ou múltiplos blocos. Essas diferenças mudam o momento em que o _cache_ é persistido, distribuindo o custo de leitura/gravação (I/O) em disco e minimizando eventuais corrupções dos arquivos.
 
 ## <a name="ignore"></a>Ignorar pastas e arquivos
 

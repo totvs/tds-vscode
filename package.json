@@ -594,12 +594,16 @@
           "enum": [
             "off",
             "onMemory",
-            "onDisk"
+            "onDisk",
+            "onDiskPerFolder",
+            "onDiskPerFile"
           ],
           "enumDescriptions": [
             "%tds.package.editor.index.cache.off%",
             "%tds.package.editor.index.cache.onMemory%",
-            "%tds.package.editor.index.cache.onDisk%"
+            "%tds.package.editor.index.cache.onDisk%",
+            "Por pasta: arquivo de cache por pasta do projeto. (experimental).",
+            "Por arquivo: arquivo de cache por arquivo  do projeto. (experimental)."
           ],
           "default": "off",
           "description": "%tds.package.editor.index.cache%"

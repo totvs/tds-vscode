@@ -15,7 +15,7 @@ import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import { IUsageStatusInfo } from './protocolMessages';
 import Utils from "./utils";
 import { updateUsageBarItem } from "./statusBar";
-import { getLanguageServerSettings, getModifiedLanguageServerSettings } from './server/languageServerSettings';
+import { getLanguageServerSettings } from './server/languageServerSettings';
 
 let localize = nls.loadMessageBundle();
 
