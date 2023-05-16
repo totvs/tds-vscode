@@ -89,7 +89,6 @@ user function escolheNum(replay, replayPath, numbers)
 
 return
 
-
 static function tela(aaOpcoes)
 	Local oDlg,oSay1,oBtn
 

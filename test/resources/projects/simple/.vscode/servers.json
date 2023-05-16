@@ -50,6 +50,28 @@
 				"environmentDetectedType": "totvs_server_protheus",
 				"serverDetectedType": "totvs_server_protheus"
 			}
+		},
+		{
+			"id": "43c0hw20p5ylh0xuhxybf34dmikhgg",
+			"type": "totvs_server_logix",
+			"name": "logix",
+			"port": 7085,
+			"address": "localhost",
+			"buildVersion": "7.00.131227A",
+			"secure": false,
+			"includes": [],
+			"environments": [
+				"Logix12_ora"
+			],
+			"username": "aaaa",
+			"environment": "Logix12_ora",
+			"token": "djM6NDNjMGh3MjBwNXlsaDB4dWh4eWJmMzRkbWlraGdnOjI6bG9jYWxob3N0OjcwODU6MDo3LjAwLjEzMTIyN0E6Mw==:djE6TG9naXgxMl9vcmE6YWFhYTp5VW9zeVhmWmI0SFJMR2xxenN5VGVDWVJhQUkrbkRJVHVGUHNLWE5udDdFPQ==|djI6MTY4MjcwOTc1OTowOjE6MQ==.ZrihySc7mHbxY2ItRCZg+0ups/uHh7sQqPctSL+V209r4SAUztIvQw+MZ2EhLvBrGWGYHkVR/sEIjdI2krBoT1/X7YR/URLl8e0xupg7KQxHHWYKL1mZW5Wzg0bG9V8j8jjGID1KU4nX7AbyxY9YW21amR5BrbLvysth+rnjPv2o76SXA/P7bXoU+1/R9w2pddMVHZEf+0eST2AqI+J6YfVkdI090PdAhbPkEppg4yo6nlRyRDfoxiwFv+XUUJKGhbgYbIzNzdmu/b6RVFdXMuLYE/coW94Xb7isHvRTNQdYh8G4MgIAMyIJjNxNZ0GuVVkyCHAARuvGa0gYWkwKwA==",
+			"informations": {
+				"permissions": [],
+				"errorMessage": "",
+				"environmentDetectedType": "totvs_server_logix",
+				"serverDetectedType": "totvs_server_logix"
+			}
 		}
 	],
 	"savedTokens": [
@@ -65,6 +87,13 @@
 			{
 				"id": "030nwvl9jbcel8by2ggouoqqfb9dqhc",
 				"token": "djM6MDMwbnd2bDlqYmNlbDhieTJnZ291b3FxZmI5ZHFoYzoxOmxvY2FsaG9zdDoxOTMxNzoxOjcuMDAuMTkxMjA1UDoz:djE6cDEyMTI3Om5vdXNlcjpDYU5zcTBjQUhVVG96NTdLbmJ4enZmMEdiL0J1S01Rd3lFNzIxZHE4UktnPQ==|djI6MTY2Mzc4NDExMDoyOjE6MA==.QMlDsvrp6IyRNI38/i4hdWvJtMiWYDJkdLlEXFB87gR+hn/1w2Hi0DpysoMd6KQO+vCCS5vPQTmuwRyIzeQcoxWm/Xh/ySBNWOGpjbDo3Kg4bS8ZXgpo9FaetCzifRjWUgY8d2XCccYzoaD1BiJaWlpbW+8WoTONCn9ViBKwth+6sqJ5e0LMthr46Nsbq0YNt5+O72ATDjZYnagHtTXieQWmGyxBk/u/b+HboL9Mwt2BYq3ph2XTfrVrNUF1PchLo9cBn+jnXHcivpNBou2fFxnFoTz5SQN3O+qnfEaGVN87PCGPKHens5vtUducTfWMtAh32IYR3WCZJpNjjtK+mA=="
+			}
+		],
+		[
+			"43c0hw20p5ylh0xuhxybf34dmikhgg:Logix12_ora",
+			{
+				"id": "43c0hw20p5ylh0xuhxybf34dmikhgg",
+				"token": "djM6NDNjMGh3MjBwNXlsaDB4dWh4eWJmMzRkbWlraGdnOjI6bG9jYWxob3N0OjcwODU6MDo3LjAwLjEzMTIyN0E6Mw==:djE6TG9naXgxMl9vcmE6YWFhYTp5VW9zeVhmWmI0SFJMR2xxenN5VGVDWVJhQUkrbkRJVHVGUHNLWE5udDdFPQ==|djI6MTY4MjcwOTc1OTowOjE6MQ==.ZrihySc7mHbxY2ItRCZg+0ups/uHh7sQqPctSL+V209r4SAUztIvQw+MZ2EhLvBrGWGYHkVR/sEIjdI2krBoT1/X7YR/URLl8e0xupg7KQxHHWYKL1mZW5Wzg0bG9V8j8jjGID1KU4nX7AbyxY9YW21amR5BrbLvysth+rnjPv2o76SXA/P7bXoU+1/R9w2pddMVHZEf+0eST2AqI+J6YfVkdI090PdAhbPkEppg4yo6nlRyRDfoxiwFv+XUUJKGhbgYbIzNzdmu/b6RVFdXMuLYE/coW94Xb7isHvRTNQdYh8G4MgIAMyIJjNxNZ0GuVVkyCHAARuvGa0gYWkwKwA=="
 			}
 		]
 	],

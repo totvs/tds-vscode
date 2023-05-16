@@ -20,3 +20,5 @@ syntaxes/build
 test/**/no_git
 test/**/fw/**
 
+*.txt
+*.ppo

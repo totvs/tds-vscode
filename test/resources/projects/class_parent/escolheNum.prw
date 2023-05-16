@@ -83,7 +83,7 @@ user function escolheNum(replay, replayPath, numbers)
 return
 
 static function tela(aaOpcoes)
-	Local oDlg,oSay1,oBtn
+	Local oDlg,oSay1 := "",oBtn
 
 	if !(valType(aaOpcoes) == "A")
 		msgAlerta("Parametro aaOpcoes n�o � uma lista (array)")
