@@ -78,6 +78,12 @@ export function getLanguageClient(
   //  decorationOpts
   //);
 
+  let outputTrace = undefined;
+  let trace = config.get("trace.server");
+  if (trace !== "off") {
+    outputTrace = vscode.window.createOutputChannel(`TOTVS LS (trace)`);
+  }
+
   let languageClient: TotvsLanguageClientA;
 
   // Options to control the language client
@@ -85,7 +91,7 @@ export function getLanguageClient(
     documentSelector: [{ language: "advpl" }, { language: "4gl" }],
     diagnosticCollectionName: "AdvPL",
     outputChannelName: "TOTVS LS",
-    traceOutputChannel: vscode.window.createOutputChannel(`TOTVS LS (trace)`),
+    traceOutputChannel: outputTrace,
     revealOutputChannelOn: RevealOutputChannelOn.Error,
     //stdioEncoding?: string;
     initializationOptions: clientConfig,
