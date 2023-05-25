@@ -5,7 +5,9 @@
     "totvsLanguageServer.trace.server": "verbose",
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
-        "--wait-for-attach=30000"
+        "--wait-for-attach=30000",
+        "--verbose",
+        "--debug-ls"
     ],
     "totvsLanguageServer.askCompileResult": false,
     "totvsLanguageServer.askEncodingChange": false,

@@ -1,39 +1,20 @@
 {
     "totvsLanguageServer.welcomePage": false,
-    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes",
+    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes;m:\\protheus\\include-lib",
     "totvsLanguageServer.editor.show.notification": "all",
     "totvsLanguageServer.trace.debug": "messages",
     "totvsLanguageServer.trace.server": "verbose",
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
-        "--verbose",
-        "--wait-for-attach=20000",
-        "--debug-ls",
-        "--trace-compile",
+        "--wait-for-attach=30000",
         "--log-file-append=totvsls2.log"
     ],
     "totvsLanguageServer.askCompileResult": false,
     "totvsLanguageServer.askEncodingChange": false,
     "totvsLanguageServer.editor.autocomplete": "Off",
-    "xeditor.semanticTokenColorCustomizations": {
-        "[Default Dark+]": {
-            "enabled": true,
-            "rules": {
-                "keyword": "#ff0000"
-            }
-        }
-    },
-    "xeditor.tokenColorCustomizations": {
-        "textMateRules": [
-            {
-                "scope": "keyword.control",
-                "settings": {
-                    "foreground": "#FF0000"
-                }
-            }
-        ],
-    },
     "totvsLanguageServer.compilation.generatePpoFile": false,
     "totvsLanguageServer.workspaceServerConfig": true,
-    "totvsLanguageServer.reconnectLastServer": true
+    "totvsLanguageServer.reconnectLastServer": false,
+    "totvsLanguageServer.editor.linter.behavior": "enable",
+    "totvsLanguageServer.editor.index.cache": "off"
 }

@@ -1,5 +1,6 @@
 #include "protheus.ch"
 
+
 user function funarr()
 	conout("executando u_funarr") 
 		

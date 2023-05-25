@@ -1,7 +1,8 @@
 {
 	"version": "0.2.2",
 	"includes": [
-		"m:\\protheus\\includes"
+		"m:\\protheus\\includes",
+		"m:\\protheus\\include-lib"
 	],
 	"permissions": {
 		"authorizationtoken": ""

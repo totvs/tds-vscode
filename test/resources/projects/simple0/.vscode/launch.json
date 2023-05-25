@@ -1,0 +1,44 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "totvs_language_debug",
+			"request": "launch",
+			"name": "TOTVS Language Debug",
+			"program": "${command:AskForProgramName}",
+			"cwb": "${workspaceFolder}",
+			"smartclientBin": "M:\\protheus\\smartClient\\20-3-0-4\\smartclient.exe",
+			"isMultiSession": true,
+			"enableTableSync": true
+		}
+	],
+	"lastPrograms": [
+		{
+			"label": "u_getfunc"
+		},
+		{
+			"args": [
+				"W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\simple\\files"
+			],
+			"label": "u_getfunc"
+		},
+		{
+			"label": "u_lg2Kline"
+		},
+		{
+			"args": [
+				"1",
+				"2"
+			],
+			"label": "u_lg2Kline"
+		}
+	],
+	"lastProgramExecuted": "u_lg2Kline",
+	"lastProgramArgumens": [
+		"W:\\ws_tds_vscode\\tds-vscode\\test\\resources\\projects\\simple\\files"
+	],
+	"lastProgramArguments": [
+		"1",
+		"2"
+	]
+}
