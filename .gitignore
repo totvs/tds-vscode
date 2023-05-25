@@ -22,3 +22,4 @@ test/**/fw/**
 
 *.txt
 *.ppo
+test/resources/projects/simple1/files/tds-vscode-utils.prw
