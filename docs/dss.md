@@ -141,10 +141,8 @@ Para ajustar o comportamento acesse ``File > Preference > Settings``, filtre por
 | `off` | O _cache_  desligado. |
 | `onMemory` | O _cache_ ligado e em memória. |
 | `onDisk` | O _cache_ é armazenado em disco, para uso nas próximas sessões. |
-| `onDiskPerFolder` | Por pasta: arquivo de cache por pasta do projeto. (experimental). |
-| `onDiskPerFile` | Por arquivo: arquivo de cache por arquivo  do projeto. (experimental). |
 
-A opção ``off``, atuará somente nos fontes abertos para edição e o **DSS** terá  limitações em suas funcionalidades. A ``onMemory``, o _cache_ é mantido em memória, sendo recriado a cada nova sessão de uso do **VS-Code**, com o  **DSS** totalmente funcional, incluindo arquivos não abertos para edição. As demais opções, persistem o _cache_ em disco em bloco único (``OnDisk``) ou múltiplos blocos. Essas diferenças mudam o momento em que o _cache_ é persistido, distribuindo o custo de leitura/gravação (I/O) em disco e minimizando eventuais corrupções dos arquivos.
+A opção ``off``, atuará somente nos fontes abertos para edição e o **DSS** terá  limitações em suas funcionalidades. A ``onMemory``, o _cache_ é mantido em memória, sendo recriado a cada nova sessão de uso do **VS-Code**, com o  **DSS** totalmente funcional, incluindo arquivos não abertos para edição. A opção ``onDisk``, persiste o _cache_ em disco, em diversos blocos (arquicos), procurando distribuit  o custo de leitura/gravação (I/O) em disco e minimizando eventuais corrupções do _cache_.
 
 ## <a name="ignore"></a>Ignorar pastas e arquivos
 
