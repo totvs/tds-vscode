@@ -13,7 +13,6 @@ import { reconnectLastServer } from "./serversView";
 import * as nls from "vscode-nls";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import { IUsageStatusInfo } from './protocolMessages';
-import Utils from "./utils";
 import { updateUsageBarItem } from "./statusBar";
 import { getLanguageServerSettings } from './server/languageServerSettings';
 
@@ -62,7 +61,7 @@ export function getLanguageClient(
   let serverOptions: ServerOptions = {
     command: advpls,
     args: args,
-    options: { env: env, detached: true },
+    options: { env: env, detached: false },
   };
 
   // Inline code lens.
@@ -98,7 +97,7 @@ export function getLanguageClient(
     progressOnInitialization: false,
     markdown: {
       isTrusted: true,
-      supportHtml: false
+      supportHtml: true
     },
     diagnosticPullOptions: {
       onChange: true,
