@@ -4,6 +4,10 @@
 
 ## Correções
 
+### Problem ao depurar em Linux com fonte que possui character especial no "path" [#1113](https://github.com/totvs/tds-vscode/issues/1113)
+
+Corrigido problema de identificação de characters especiais em qualquer ponto do caminho do fonte, fazendo com que ele a depuração fosse interrompida ou o fonte não fosse encontrado.
+
 ### Erro ao executar Debug na versão 1.3.17 (MacOS) [#1083](https://github.com/totvs/tds-vscode/issues/1083)
 
 Adicionado um tratamento especial para MacOS para permitir a execução do Smartclient em pastas com espaços.
