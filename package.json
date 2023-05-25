@@ -1011,6 +1011,11 @@
                 "description": "%tds.package.properties.waitForAttach.description%",
                 "default": 0
               },
+              "forceUtf8": {
+                "type": "boolean",
+                "description": "%tds.package.properties.forceUtf8.description%",
+                "default": false
+              },
               "enableProfile": {
                 "type": "boolean",
                 "description": "%tds.package.properties.enableProfile.description%",
