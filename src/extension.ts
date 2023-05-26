@@ -789,7 +789,7 @@ function verifyEncoding() {
   const defaultConfig = vscode.workspace.getConfiguration();
   const defaultEncoding = defaultConfig.get("files.encoding");
   if (defaultEncoding !== "windows1252" && questionEncodingConfig !== false) {
-    window.showWarningMessage(textQuestion, textYes, textNo, textNoAsk).then(clicked => {
+    window.showWarningMessage(textQuestion, { modal: true }, textYes, textNo, textNoAsk).then(clicked => {
       if (clicked === textYes) {
         const jsonEncoding = {
           "files.encoding": "windows1252"

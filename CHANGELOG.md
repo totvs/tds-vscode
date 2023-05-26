@@ -22,6 +22,10 @@ Efetuada alteração para desconsiderar um tratamento de 'case' que causava o co
 
 Implementado nova funcionalidade no TDS Replay para importar apenas as informações dos arquivos fontes gravados.
 
+### Alteradas as confirmações de ações para o tipo Modal
+
+As confirmações não estavam sendo exibidas caso a opção de "Não Incomodar" (Do Not Disturb) estivesse ativa, causando o não funcionamento de algumas funcionalidades, como por exemplo a remoção de recurso do RPO.
+
 # Versão [1.3.17]
 
 ## Correções

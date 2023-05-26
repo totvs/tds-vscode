@@ -411,7 +411,7 @@ export default class Utils {
     const optionYes = "Yes";
     const optionNo = "No";
     vscode.window
-      .showWarningMessage(confirmationMessage, optionYes, optionNo)
+      .showWarningMessage(confirmationMessage, { modal: true }, optionYes, optionNo)
       .then((clicked) => {
         if (clicked === optionYes) {
           const allConfigs = Utils.getServersConfig();
