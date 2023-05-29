@@ -24,6 +24,7 @@ export function defragRpo() {
           "tds.vscode.defrag.rpo",
           "Are you sure you want to defrag the RPO? (This process may take some time)"
         ),
+        { modal: true },
         localize("tds.vscode.yes", "Yes"),
         localize("tds.vscode.no", "No")
       )
@@ -39,6 +40,7 @@ export function defragRpo() {
                   "tds.vscode.defrag.packPatchInfo",
                   "Clear apply patch history?"
                 ),
+                { modal: true },
                 localize("tds.vscode.yes", "Yes"),
                 localize("tds.vscode.no", "No")
               )

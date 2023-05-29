@@ -97,6 +97,18 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
         setDapArgsArr.push("--wait-for-attach=" + config.waitForAttach);
       }
 
+      if(config.forceUtf8) {
+        setDapArgsArr.push("--forceUtf8");
+      }
+
+      if(config.language) {
+        if(config.language === "1") config.language = "por";
+        else if(config.language === "2") config.language = "spa";
+        else if(config.language === "3") config.language = "eng";
+        else if(config.language === "4") config.language = "rus";
+        setDapArgsArr.push("--language=" + config.language);
+      }
+
       setDapArgs(setDapArgsArr);
 
       return Promise.resolve(config);

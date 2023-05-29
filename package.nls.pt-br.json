@@ -94,6 +94,7 @@
 	"tds.package.properties.enableProfile.description": "Se o perfil precisar ser ativado",
 	"tds.package.properties.startJobList.description": "Lista de serviços a serem inicializados antes da depuração",
 	"tds.package.properties.waitForAttach.description": "Para depuração DAP. NÃO USE.",
+	"tds.package.properties.forceUtf8.description": "Forces de use of UTF-8 characters.",
 	"tds.package.properties.isMultiSession.description": "Se for uma execução multisessão (-M)",
 	"tds.package.properties.isAccessibilityMode.description": "Se o modo de acessibilidade precisar estar ativado (-AC)",
 	"tds.package.properties.doNotShowSplash.description": "Se a tela inicial não aparecer (-Q)",

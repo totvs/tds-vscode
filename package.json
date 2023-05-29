@@ -82,8 +82,8 @@
     "@material-ui/core": "4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@totvs/tds-da": "^1.2.56",
-    "@totvs/tds-ls": "^1.2.64",
+    "@totvs/tds-da": "^1.2.57",
+    "@totvs/tds-ls": "^1.2.65",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.63.1",
     "@vscode/debugadapter": "^1.51.1",
@@ -1042,6 +1042,11 @@
                 "type": "number",
                 "description": "%tds.package.properties.waitForAttach.description%",
                 "default": 0
+              },
+              "forceUtf8": {
+                "type": "boolean",
+                "description": "%tds.package.properties.forceUtf8.description%",
+                "default": false
               },
               "enableProfile": {
                 "type": "boolean",

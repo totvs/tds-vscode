@@ -94,6 +94,7 @@
   "tds.package.properties.enableProfile.description": "If the profile must be enabled",
   "tds.package.properties.startJobList.description": "List of jobs to be started before debugging",
   "tds.package.properties.waitForAttach.description": "For DAP debugging. DO NOT USE.",
+  "tds.package.properties.forceUtf8.description": "Forces de use of UTF-8 characters.",
   "tds.package.properties.isMultiSession.description": "If this is a multisession execution (-M)",
   "tds.package.properties.isAccessibilityMode.description": "If the accessibility mode must be enabled (-AC)",
   "tds.package.properties.doNotShowSplash.description": "If the splash screen must not show (-Q)",

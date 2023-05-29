@@ -195,7 +195,7 @@ export class TotvsConfigurationTdsReplayProvider
     );
 
     await vscode.window
-      .showInformationMessage(textQuestion, textYes, textNo)
+      .showInformationMessage(textQuestion, { modal: true }, textYes, textNo)
       .then((clicked) => {
         mustReimport = clicked === textYes;
       });

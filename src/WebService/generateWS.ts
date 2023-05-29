@@ -77,7 +77,7 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 							const pathFile = message.path + "//" + message.outputFileName;
 
 							if (fs.existsSync(pathFile)){
-								vscode.window.showWarningMessage("The file exists. Would like overwrite? ", 'Yes', 'No').then(clicked => {
+								vscode.window.showWarningMessage("The file exists. Would like overwrite? ", { modal: true }, 'Yes', 'No').then(clicked => {
 									if (clicked === 'Yes') {
 										fs.unlinkSync(pathFile);
 										createAndWriteOpen(pathFile, response.content);
@@ -111,7 +111,7 @@ function createAndWriteOpen(filePath, content){
 		vscode.window.showErrorMessage(err.message);
 	});
 
-	vscode.window.showInformationMessage("The file was successfully created. Would like open? ", 'Yes', 'No').then(clicked => {
+	vscode.window.showInformationMessage("The file was successfully created. Would like open? ", { modal: true }, 'Yes', 'No').then(clicked => {
 		if (clicked === 'Yes') {
 			vscode.window.showTextDocument(vscode.Uri.file(filePath));
 		}
