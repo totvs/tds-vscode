@@ -667,98 +667,81 @@ function registerLog(context: vscode.ExtensionContext) {
         });
       });
 
-      const configADVPL = vscode.workspace.getConfiguration('totvsLanguageServer');
-      const questionEncodingConfig = configADVPL.get("askEncodingChange");
-      const defaultConfig = vscode.workspace.getConfiguration();
-      const defaultEncoding = defaultConfig.get("files.encoding");
-      if (defaultEncoding !== "windows1252" && questionEncodingConfig !== false) {
-        window.showWarningMessage(textQuestion, { modal: true }, textYes, textNo, textNoAsk).then(clicked => {
-          if (clicked === textYes) {
-            const jsonEncoding = {
-              "files.encoding": "windows1252"
-            };
-            defaultConfig.update("[advpl]", jsonEncoding);
-            defaultConfig.update("[4gl]", jsonEncoding);
-            questionAgain = false;
-          } else if (clicked === textNo) {
-            questionAgain = true;
-          } else if (clicked === textNoAsk) {
-            questionAgain = false;
-          }
-          configADVPL.update("askEncodingChange", questionAgain);
-        });
-      }
-    }
-* /
+      fse.closeSync(hf);
+      vscode.window.showTextDocument(vscode.Uri.file(file));
+    })
+  }
+  );
+}
 
 let firstTime = true;
 
-    function showBanner(force: boolean = false) {
-      if (firstTime) {
-        firstTime = false;
-        const config = workspace.getConfiguration("totvsLanguageServer");
-        const showBanner = config.get("showBanner", true);
-        const appLine = languageClient.outputChannel.appendLine;
+function showBanner(force: boolean = false) {
+  if (firstTime) {
+    firstTime = false;
+    const config = workspace.getConfiguration("totvsLanguageServer");
+    const showBanner = config.get("showBanner", true);
+    const appLine = languageClient.outputChannel.appendLine;
 
-        if (showBanner || force) {
-          let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
-          // prettier-ignore
-          {
-            appLine("---------------------------v---------------------------------------------------");
-            appLine("   //////  ////    //////  |  TOTVS Developer Studio for VS-Code");
-            appLine("    //    //  //  //       |  Version " + ext.packageJSON["version"]);
-            appLine("   //    //  //  //////    |  TOTVS Technology");
-            appLine("  //    //  //      //     |");
-            appLine(" //    ////    //////      |  https://github.com/totvs/tds-vscode");
-            appLine("---------------------------^---------------------------------------------------");
-            appLine("");
-          }
-        }
-        // prettier-ignore
-        {
-          appLine("-------------------------------------------------------------------------------");
-          appLine("SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO                                   ");
-          appLine("");
-          appLine("As chaves de compilação ou tokens de compilação empregados na construção do    ");
-          appLine("Protheus e suas funcionalidades, são de uso restrito dos desenvolvedores de    ");
-          appLine("cada módulo.                                                                   ");
-          appLine("");
-          appLine("Em caso de mau uso destas chaves ou tokens, por qualquer outra parte, que não  ");
-          appLine("a referida acima, a mesma irá se responsabilizar, direta ou regressivamente,   ");
-          appLine("única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações,   ");
-          appLine("multas, condenações judiciais, arbitrais e administrativas e quaisquer outras  ");
-          appLine("despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros,   ");
-          appLine("eximindo a TOTVS de toda e qualquer responsabilidade.                          ");
-          appLine("-------------------------------------------------------------------------------");
-        }
+    if (showBanner || force) {
+      let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
+      // prettier-ignore
+      {
+        appLine("---------------------------v---------------------------------------------------");
+        appLine("   //////  ////    //////  |  TOTVS Developer Studio for VS-Code");
+        appLine("    //    //  //  //       |  Version " + ext.packageJSON["version"]);
+        appLine("   //    //  //  //////    |  TOTVS Technology");
+        appLine("  //    //  //      //     |");
+        appLine(" //    ////    //////      |  https://github.com/totvs/tds-vscode");
+        appLine("---------------------------^---------------------------------------------------");
+        appLine("");
       }
     }
-
-    let canBuild: boolean = true;
-
-    export function blockBuildCommands(block: boolean): boolean {
-      if (!canBuild && block) {
-        window.showInformationMessage(
-          `Request cancelled. Build process already in progress.`
-        );
-        return false;
-      }
-
-      canBuild = !block;
-
-      vscode.commands.executeCommand("setContext", "tds-vscode.canBuild", canBuild);
-
-      return true;
+    // prettier-ignore
+    {
+      appLine("-------------------------------------------------------------------------------");
+      appLine("SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO                                   ");
+      appLine("");
+      appLine("As chaves de compilação ou tokens de compilação empregados na construção do    ");
+      appLine("Protheus e suas funcionalidades, são de uso restrito dos desenvolvedores de    ");
+      appLine("cada módulo.                                                                   ");
+      appLine("");
+      appLine("Em caso de mau uso destas chaves ou tokens, por qualquer outra parte, que não  ");
+      appLine("a referida acima, a mesma irá se responsabilizar, direta ou regressivamente,   ");
+      appLine("única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações,   ");
+      appLine("multas, condenações judiciais, arbitrais e administrativas e quaisquer outras  ");
+      appLine("despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros,   ");
+      appLine("eximindo a TOTVS de toda e qualquer responsabilidade.                          ");
+      appLine("-------------------------------------------------------------------------------");
     }
+  }
+}
 
-    export function canDebug(): boolean {
-      const result: boolean = canBuild;
+let canBuild: boolean = true;
 
-      if (!result) {
-        vscode.window.showWarningMessage(
-          "Request cancelled. Build process in progress."
-        );
-      }
+export function blockBuildCommands(block: boolean): boolean {
+  if (!canBuild && block) {
+    window.showInformationMessage(
+      `Request cancelled. Build process already in progress.`
+    );
+    return false;
+  }
 
-      return result;
-    }
+  canBuild = !block;
+
+  vscode.commands.executeCommand("setContext", "tds-vscode.canBuild", canBuild);
+
+  return true;
+}
+
+export function canDebug(): boolean {
+  const result: boolean = canBuild;
+
+  if (!result) {
+    vscode.window.showWarningMessage(
+      "Request cancelled. Build process in progress."
+    );
+  }
+
+  return result;
+}
