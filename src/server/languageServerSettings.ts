@@ -103,7 +103,6 @@ export function getModifiedLanguageServerSettings(): any[] {
       key: "indexCache",
       value: indexCache
     });
-    needRestart = true;
   }
 
   const codeLens = config.get("editor.codeLens");
@@ -144,12 +143,20 @@ export function getModifiedLanguageServerSettings(): any[] {
 }
 
 export function confirmRestartNow(): boolean {
+
   if (needRestart) {
-    vscode.window.showInformationMessage("To make the change effective, it is necessary to restart VS-CODE.", "Now", "Later").then((value: string) => {
-      if (value == "Now") {
-        vscode.commands.executeCommand("workbench.action.reloadWindow");
-      }
-    })
+    vscode.window.showInformationMessage(
+      "To make the change effective, it is necessary to restart VS-CODE.", { modal: true },
+      "Now", "Later").then((value: string) => {
+        if (value == "Now") {
+          vscode.commands.executeCommand("workbench.action.reloadWindow");
+        } else if (value == undefined) {
+          setTimeout(() => {
+            needRestart = true;
+            confirmRestartNow();
+          }, 60000);
+        }
+      })
   }
 
   return needRestart;
