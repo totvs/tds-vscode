@@ -54,10 +54,9 @@ Detalhes da implementação em [# TDS: Developer Support Subsystem](docs/dss.md#
 #### Navegação em fontes, passagem de mouse e referências
 
 Efetuado a implementação de navegação em fontes, passagem de mouse e referências.
-Detalhes da implementação em [# TDS: Developer Support Subsystem](docs/dss.md).
+Detalhes da implementação em [TDS: Developer Support Subsystem](docs/dss.md).
 
-> Os recursos aqui apresentados, podem ser influenciados devido ao _linter_ ignorar o processamento de fontes configurado em [## TDS: Linter -> Ignorar pastas e arquivos](docs/linter.md#tdsignore).
-
+> Os recursos aqui apresentados, podem ser influenciados devido ao _linter_ ignorar o processamento de fontes configurado em [TDS: Linter -> Ignorar pastas e arquivos](docs/linter.md#tdsignore).
 > As informações sobre navegação, podem ou não ficar em [_cache__](docs/dss.md#cache).
 
 #### Visão _Estrutura_
@@ -552,7 +551,7 @@ Ajustado propriedades dos botões.
 
 - Ajustado tratamento de erro no processo de aplicação de pacotes de atualização de acordo com a ocorrência.
 
-# TDS Replay
+## TDS Replay
 
 ### Melhorias
 
@@ -1048,7 +1047,7 @@ Detalhes em
 
 - Corrigido apresentação da estrutura de fontes 4GL na visão `Outline`.
 
-### Correção na compilação 4GL quando há comando "globals <arquivo>"
+### Correção na compilação 4GL quando há comando "globals &lt;arquivo&gt;"
 
 - Resolução do chamado interno [DTCLIENT01-2015](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2015). Requer atualização do _appServer_.
 
@@ -1118,7 +1117,7 @@ Detalhes em
 
 ## Versão 1.0.5
 
-#### Melhorias na visão "Servidores"
+### Melhorias na visão "Servidores"
 
 - Adicionado os comandos abaixo, direto no nó do item:
   - Servidor: Conexão
