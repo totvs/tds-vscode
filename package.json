@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": null,
+  "version": "2.0.0-RC1",
   "publisher": "TOTVS",
   "author": {
     "name": "TOTVS",
@@ -68,7 +68,7 @@
     "export-i18n": "gulp export-i18n",
     "i18n-import": "gulp i18n-import",
     "---RELEASE---": "",
-    "release": "npx standard-version --skip.changelog --release-as 2.0-RC-1",
+    "release": "npx standard-version --skip.changelog --release-as 2.0.0-RC1",
     "tag": "git push --follow-tags origin dev",
     "package": "gulp package",
     "publish": "gulp publish",
