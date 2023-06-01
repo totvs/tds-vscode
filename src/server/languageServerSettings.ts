@@ -3,6 +3,7 @@ import Utils from "../utils";
 
 const currentSettings: {} = {};
 let needRestart: boolean = false;
+let waitRestart: boolean = false;
 
 function isNewSettings(scope: string, key: string, value: any): boolean {
   let result: boolean = true;
@@ -52,7 +53,6 @@ export function getModifiedLanguageServerSettings(): any[] {
       key: "notificationlevel",
       value: config.get("editor.show.notification")
     });
-    needRestart = true;
   }
 
   const usageInfo: string = Utils.isUsageInfoConfig() ? "enabled" : "disabled";
@@ -144,15 +144,17 @@ export function getModifiedLanguageServerSettings(): any[] {
 
 export function confirmRestartNow(): boolean {
 
-  if (needRestart) {
+  if (needRestart && !waitRestart) {
     vscode.window.showInformationMessage(
       "To make the change effective, it is necessary to restart VS-CODE.", { modal: true },
       "Now", "Later").then((value: string) => {
+        waitRestart = true;
         if (value == "Now") {
           vscode.commands.executeCommand("workbench.action.reloadWindow");
         } else if (value == undefined) {
           setTimeout(() => {
             needRestart = true;
+            waitRestart = false;
             confirmRestartNow();
           }, 60000);
         }

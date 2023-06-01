@@ -345,9 +345,6 @@
         "files.encoding": "windows1252",
         "files.insertFinalNewline": true,
         "files.eol": "\r\n",
-        "editor.formatOnType": false,
-        "editor.formatOnPaste": false,
-        "editor.formatOnSave": true,
         "editor.formatOnSaveMode": "file",
         "editor.semanticHighlighting.enabled": true
       },
@@ -355,9 +352,6 @@
         "files.encoding": "windows1252",
         "files.insertFinalNewline": true,
         "files.eol": "\r\n",
-        "editor.formatOnType": false,
-        "editor.formatOnPaste": false,
-        "editor.formatOnSave": true,
         "editor.formatOnSaveMode": "file",
         "editor.semanticHighlighting.enabled": true
       }
