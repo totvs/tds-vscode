@@ -2,31 +2,6 @@
 
 ## Versão [2.0.0]
 
-### Mudança de comportamento
-
-#### Salva de arquivos-fontes (AdvPL/4GL)
-
-Ao salvar arquivos-fontes (AdvPL/4GL), este será formatado. Para restaurar o comportamento anterior, edite o arquivo de configurações _settings.json_ <sup>(1)</sup> e adicione:
-
-- Para AdvPL:
-
-```JSON
-    "[advpl]": {
-      "editor.formatOnSave": false
-    }
-```
-
-- Para 4GL:
-
-```JSON
-    "[4gl]": {
-      "editor.formatOnSave": false
-    }
-```
-
-> (1) A configuração pode ser efetuada em qualquer escopo.
-> Detalhes em [User and Workspace Settings](https://code.visualstudio.com/docs/getstarted/settings).
-
 ### Melhorias
 
 #### Assistente de assinatura de funções
@@ -36,14 +11,6 @@ BETA: Adicionado assistente de assinatura de funções (_SignatureHelp_).
 #### Informações sobre uso e outras informações
 
 BETA: Adicionado informações sobre o uso de funções (_CodeLens_).
-
-#### Árvore de projeto
-
-Adicionado tratamento quando há mudança na árvore de projeto, tais como, novo/remoção arquivo ou pasta.
-
-#### Indexação de pastas e arquivos com nome acentuados
-
-Indexação de pastas e arquivos com nome acentuados.
 
 #### Implementação de configuração para ignorar pastas e arquivos
 
@@ -65,7 +32,7 @@ Apresenta alguns detalhes sobre o ítem, conforme sua definição.
 
 #### Navegação em classes quando usado `self` e `_Super`
 
-- Adicionado tratamento há herança de classe (`_SUper` e `from`)
+- Adicionado tratamento há herança de classe (`_Super` e `from`)
 - Unificado tratamento de `::` e `self`
 
 ## Versão [1.3.18]
