@@ -1,13 +1,15 @@
 # TDS: Compilação
 
-> Requisitos
+> **Requisitos**
 >
 > - servidor/ambiente conectado
 > - usuário autenticado (se requerido)
 > - pastas para buscas de arquivos de definição (_includes_)
 > - acesso exclusivo ao _RPO_
 > - chave de compilação (apenas para _functions_ e _main functions_)
-
+>
+> **Nota**
+>
 > Arquivos fontes 4GL ignoram a pasta para buscas.
 
 ## SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO
@@ -95,7 +97,7 @@ vovê precisa ter uma chave chave de compilação (ou autorização).
 
 > Pode remover a chave atual, acionando `Clean Key`.
 
-### Configuração de Include (busca de arquivos de definição)
+### Configuração de _Include_ (busca de arquivos de definição)
 
 - Na visão de `Servers`, acione o menu de contexto e a opção `Include` ou acione `CTRL + SHIFT + P` e execute `TOTVS: Include`.
 - Informe a pasta (ou pastas) para a busca dos arquivos de definição, separadas por `;`
@@ -110,7 +112,7 @@ Localize a definição do servidor na sessão `configurations` e adicione/modifi
   "configurations": [
   {
     "id": "aq9s9aca8qkasjpnxl7rghymvx3bq",
-		"type": "totvs_server_protheus",
+    "type": "totvs_server_protheus",
     ...
     "includes": [
       "C:/totvs/includes1",

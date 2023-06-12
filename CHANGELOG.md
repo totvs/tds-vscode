@@ -2,6 +2,21 @@
 
 [Changelog V1](CHANGELOG-V1.md)
 
+## Versão [2.0.0-RC-next]
+
+### Correções
+
+### Leitura do cache e aprimoramento na salva/carga do cache (feito)
+
+Ao ler o cache, este está sendo invalidado e com isso reindexa os arquivos.
+
+### Melhoria
+
+### Documentação das funções de binário (_binary function_)
+
+Extração da documentação das funções binárias direto do projeto _totvsvmtests_, via ferramenta _advplDoc_ (solução _TotvsTecTools_).
+Para detalhes, veja ``<local folder>\totvsls\dbcode\dbcode_manager.cpp``, método ``DBCodeManager::loadBinaryFunctions``.
+
 ## Versão [2.0.0]
 
 ### Melhorias
