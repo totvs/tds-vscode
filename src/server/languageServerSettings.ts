@@ -103,6 +103,7 @@ export function getModifiedLanguageServerSettings(): any[] {
       key: "indexCache",
       value: indexCache
     });
+    needRestart = true;
   }
 
   const codeLens = config.get("editor.codeLens");
