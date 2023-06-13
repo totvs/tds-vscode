@@ -6,7 +6,7 @@
 
 ### Correções
 
-### Leitura do cache e aprimoramento na salva/carga do cache (feito)
+### Leitura do cache e aprimoramento na salva/carga do cache
 
 Ao ler o cache, este está sendo invalidado e com isso reindexa os arquivos.
 
