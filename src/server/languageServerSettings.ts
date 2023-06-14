@@ -132,13 +132,15 @@ export function getModifiedLanguageServerSettings(): any[] {
     });
   }
 
-  let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
-  const version: string = ext.packageJSON["version"];
-  settings.push({
-    scope: "extension",
-    key: "tdsversion",
-    value: version
-  });
+  if (settings.length > 0) {
+    let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
+    const version: string = ext.packageJSON["version"];
+    settings.push({
+      scope: "extension",
+      key: "tdsversion",
+      value: version
+    });
+  }
 
   return settings;
 }
@@ -152,12 +154,15 @@ export function confirmRestartNow(): boolean {
         waitRestart = true;
         if (value == "Now") {
           vscode.commands.executeCommand("workbench.action.reloadWindow");
-        } else if (value == undefined) {
+        } else if (value == "Later") {
           setTimeout(() => {
             needRestart = true;
             waitRestart = false;
             confirmRestartNow();
           }, 60000);
+        } else {
+          needRestart = false;
+          waitRestart = false;
         }
       })
   }

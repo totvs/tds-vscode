@@ -21,11 +21,11 @@ export function registerWorkspace(context: vscode.ExtensionContext) {
 				if (settings.length > 0) {
 					sendDidChangeConfiguration(settings).then(() => {
 						updateStatusBarItems();
-						if (!confirmRestartNow()) {
-							updateOpenEditors();
-						};
 					});
 				}
+				if (!confirmRestartNow()) {
+					updateOpenEditors();
+				};
 			}
 		}),
 		// vscode.workspace.onDidChangeWorkspaceFolders((event: vscode.WorkspaceFoldersChangeEvent) => {
