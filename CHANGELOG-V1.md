@@ -1495,6 +1495,9 @@ Ao utilizar **TOTVS Server**, de versão igual ou anterior a 19.3.0.0 de 01/06/2
 
 ### Corrigido travamento do Debug (stacktrace e evalute) [Issue 193](https://github.com/totvs/tds-vscode/issues/193)
 
+> Recomenda-se que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em mínusculas de forma a manter a compatibildade entre os diversos sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes.
+> Leia [Convenção para nomenclatura de File System em ambiente Linux]<https://tdn.totvs.com/x/h8BICw>).
+
 ### Problema
 
 - Ao depurar fontes onde trafegavam informações, no stacktrace ou evaluate, com acentuação ocorria um problema no encoding e desconectava o Debug.

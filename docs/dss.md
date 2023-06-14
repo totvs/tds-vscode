@@ -1,9 +1,12 @@
 # TDS: Developer Support Subsystem
 
 > Requisitos
->
-> - DSS (Developer Support Subsystem)_em execução (inicio automático, em paralelo com o_Language Server_)
-> - Resultados podem ser parciais devido ao processo de indexação em andamento
+
+- DSS (Developer Support Subsystem)_em execução (inicio automático, em paralelo com o_Language Server_)
+- Resultados podem ser parciais devido ao processo de indexação em andamento
+
+> Recomenda-se que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em mínusculas de forma a manter a compatibildade entre os diversos sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes.
+> Leia [Convenção para nomenclatura de File System em ambiente Linux]<https://tdn.totvs.com/x/h8BICw>).
 
 Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstudio.com/docs/editor/editingevolved) e  aqui, breve documentação das opções suportadas em projetos baseados nas linguagens **TOTVS**.
 
@@ -107,6 +110,10 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 ## [Visualizar](https://code.visualstudio.com/docs/editor/editingevolved#_peek)
 
 **Acionamento:** ``Alt+F12`` sobre uma chamada de função ou variável.
+
+## [Assistente de assinatura de funções](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#help-with-function-and-method-signatures)
+
+**Acionamento:** ``(`` após o nome de uma função e ``,`` entre os parâmetros.
 
 > Limitações:
 

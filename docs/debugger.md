@@ -1,11 +1,14 @@
 # TDS: Depuração e execução
 
 > Requisitos
->
-> - servidor/ambiente conectado
-> - usuário autenticado (se requerido)
-> - executor configurado
 
+- servidor/ambiente conectado
+- usuário autenticado (se requerido)
+- executor configurado
+
+> Recomenda-se que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em mínusculas de forma a manter a compatibildade entre os diversos sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes.
+> Leia [Convenção para nomenclatura de File System em ambiente Linux]<https://tdn.totvs.com/x/h8BICw>).
+>
 > Recomendações
 >
 > - **NUNCA** faça depuração em ambiente de produção

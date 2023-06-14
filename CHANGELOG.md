@@ -4,6 +4,10 @@
 
 ## Versão [2.0.0-RC-next]
 
+#### Assistente de assinatura de funções
+
+## Versão [2.0.0-RC2]
+
 ### Correções
 
 ### Leitura do cache e aprimoramento na salva/carga do cache
@@ -23,7 +27,7 @@ Para detalhes, veja ``<local folder>\totvsls\dbcode\dbcode_manager.cpp``, métod
 
 #### Assistente de assinatura de funções
 
-BETA: Adicionado assistente de assinatura de funções (_SignatureHelp_).
+Adicionado assistente de assinatura de funções (_SignatureHelp_).
 
 #### Informações sobre uso e outras informações
 
