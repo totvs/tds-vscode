@@ -4,7 +4,7 @@
 
 ## Correções
 
-### Problema ao depurar em Linux com fonte que possuem caracteres especiais no "path" [#1113](https://github.com/totvs/tds-vscode/issues/1113)
+### Problema ao depurar em Linux com fonte que possuem caracteres especiais no "path" [#1078](https://github.com/totvs/tds-vscode/issues/1078)
 
 Corrigido problema de identificação de caracteres especiais em qualquer ponto do caminho do fonte, fazendo com que a depuração fosse interrompida ou o fonte não fosse encontrado.
 
@@ -14,7 +14,7 @@ Adicionado um tratamento especial para MacOS para permitir a execução do Smart
 
 ## Melhorias
 
-### Acentuação em pastas/arquivos - not found na hora da compilação. (Linux) [#1072](https://github.com/totvs/tds-vscode/issues/1078)
+### Acentuação em pastas/arquivos - not found na hora da compilação. (Linux) [#1078](https://github.com/totvs/tds-vscode/issues/1078)
 
 Efetuada alteração para desconsiderar um tratamento de 'case' que causava o comportamento informado.
 
