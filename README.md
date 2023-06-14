@@ -54,10 +54,16 @@ As chaves de compilação ou _tokens_ de compilação empregados na construção
 
 > Em caso de mau uso destas chaves ou tokens, por qualquer _outra parte_, que não a referida acima, a mesma irá se responsabilizar, direta ou regressivamente, única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações, multas, condenações judiciais, arbitrais e administrativas e quaisquer outras despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros, eximindo a TOTVS de toda e qualquer responsabilidade.
 
+## Interoperabilidade entre sistemas operacionais
+
+Para melhor interoperabilidade do ecosistema **Protheus** (áreas de trabalho, _smartClient_, _appServer_ e demais componentes) entre os sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes, recomenda-se **veementemente** que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em mínusculas.
+
+> Leia [Convenção para nomenclatura de _File System_ em ambiente _Linux_](https://tdn.totvs.com/x/h8BICw).
+
 ## Guia rápido
 
 > O **VS Code** pode apresentar problemas em suas funcionalidades em sistemas operacionais da linha **Windows Server**.
-> Veja os requisitos para uso no **VS Code** em [Requirements](https://code.visualstudio.com/docs/supporting/requirements).
+> Veja os requisitos para uso do **VS Code** em [Requirements](https://code.visualstudio.com/docs/supporting/requirements).
 
 > **Nunca usei o VS Code**: Recomendamos a leitura de:
 > - [User Interface](https://code.visualstudio.com/docs/getstarted/userinterface)
@@ -88,21 +94,21 @@ No primeiro uso da extensão em um projeto, lhe será apresentada as [Boas Vinda
 > [TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 2](https://www.youtube.com/watch?v=Cz4N0XWCXHY)\
 > [TOTVS - TDS-VSCode - Desenvolvimento colaborativo (TEC)](https://www.youtube.com/watch?v=IGWh5ejxhHU)
 
-### Acentuação e caracteres especiais
+### Acentuação e caracteres especiais nos códigos fontes
 
-Tivemos reportes de problemas de _encode_ abrindo fontes antes salvos no TDS, isso ocorre porque o _encode_ original do VSCode é UTF8 e o do TDS-VSCode é outro.
+Tivemos notificações de problemas de _encode_ abrindo fontes antes salvos no *TDS*, isso ocorre porque o _encode_ original do VSCode é UTF8 e o do **TDS-VSCode** é outro.
 Para garantir a compilação é necessário compatibilizar o _encode_ da seguinte maneira:
 
 - No estado original o fonte será mostrado desta maneira:<br/>
   ![Encoding 1](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding1.png)
-- **Antes de editar/salvar qualquer fonte no VS** entre nas configurações do VS `Ctrl + ,`.
-- No campo de busca digite `_encode_` e selecione `Windows1252` ou `Windows1251` se utilizar alfabeto cirílico.<br/>
+- **Antes de editar/salvar qualquer fonte no VS-Code** entre nas configurações (`Ctrl + ,`).
+- No campo de busca digite `_encode_` e selecione `Windows1252` ou `Windows1251`, se utilizar alfabeto cirílico.
 - Abra o fonte com o novo _encode_ (reforçando que NÃO DEVE tê-lo salvo antes em UTF8)<br/>
   ![Encoding 3](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding3.png)
 - Compile e/ou recompile o fonte e execute-o.<br/>
   ![Encoding 4](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding4.png)
 
-Por padrão, o _TDS-VSCode_ já vem configurado para usar o _encode_ `WindowsCP1252`.
+Por padrão, o _TDS-VSCode_ já vem configurado para usar o _encode_ `Windows1252 (cp1252)`.
 
 ### Desenvolvimento Colaborativo
 
@@ -212,4 +218,3 @@ Para contribuir com o desenvolvimento da extensão, acesse [Git Hub TDS-VSCODE](
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-

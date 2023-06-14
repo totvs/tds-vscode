@@ -40,17 +40,17 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 | | Descrição de problemas e comportamentos |
 |-| --------------------------------------- |
-| | Visão ``Symbols``
-| | - agrupar: ``+#include``, ``+#define``?
+| | Visão ``Symbols`` |
+| | - agrupar: ``+#include``, ``+#define``? |
 | | |
 | | <a name='P1'></a>- ``ctrl+T``, prefixo ``#`` (busca área de trabalho) |
 | | Implementar carga parcial. |
 | | Somente elementos públicos? |
-| | - funções (incluir static?)
-| | - classes
-| | - métodos
-| | - propriedades
-| | - defines
+| | - funções (incluir static?) |
+| | - classes |
+| | - métodos |
+| | - propriedades |
+| | - defines |
 | | Considerar escopo? |
 | | |
 | | <a name='P2'></a>- ``F12`` e ``alt+F12`` |
@@ -71,7 +71,6 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 | | - AdvPL/Asp (ignorado para o **DSS**, extensões .aph e .apl)
 | | APH passa por um pré-proessamento que gera código AdvPL e este  é repassado ao |
 | | pré-processador, que gera o AST, que não bate nada com nada com o fonte original. |
-| |
 | | |
 
 | Legendas | |

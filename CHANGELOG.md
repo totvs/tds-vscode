@@ -4,7 +4,29 @@
 
 ## Versão [2.0.0-RC-next]
 
+### Novos recursos
+
 #### Assistente de assinatura de funções
+
+### Melhorias
+
+#### ProtheusDOC em classes
+
+Adicionado tratamento de ProtheusDOC em classes.
+
+### Correção
+
+#### ``Ir para definição`` na inicialização (``new``) de objetos
+
+Corrigido a navegação e _text hover_ na definição de objeto na sua inicialização.
+
+#### Passagem _mouse_ (_text hover_)
+
+Apresentava informações de definição e local de uso de forma indevida.
+
+#### Abrir símbolo pelo nome (``Ctrl+T``)
+
+Correção na execução da mensagem ``workspace/symbol``.
 
 ## Versão [2.0.0-RC2]
 
@@ -22,6 +44,12 @@ Extração da documentação das funções binárias direto do projeto _totvsvmt
 Para detalhes, veja ``<local folder>\totvsls\dbcode\dbcode_manager.cpp``, método ``DBCodeManager::loadBinaryFunctions``.
 
 ## Versão [2.0.0]
+
+### Interoperabilidade entre sistemas operacionais
+
+Para garantir a interoperabilidade das áreas de trabalho entre os sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes, recomenda-se **veementemente** que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em mínusculas.
+
+> Leia [Convenção para nomenclatura de File System em ambiente Linux]<https://tdn.totvs.com/x/h8BICw>).
 
 ### Melhorias
 
