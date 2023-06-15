@@ -7,7 +7,7 @@
 > - executor configurado
 
 > Recomendações
-> 
+>
 > - **NUNCA** faça depuração em ambiente de produção
 > - Não use _appServers_ compartilhado com terceiros, mesmo que ambientes distintos
 > - Prefira sempre um ambiente local
@@ -228,4 +228,14 @@ return
 1. Iniciar a depuração executando qualquer função do _RPO_ para que mantenha uma conxão do depurador com o _appServer_.
    Se serviço _REST_, execute a função `u_startRest` e aguarde a mensagem de serviço inicializado.
 1. Acione o serviço por fora do **VS-CODE**, por exemplo executando o `SmartClient`, uma requisição (http, rest, etc)
-1. Quando a depuração parar no ponto de parade, prossiga com a depuração normalmente.
+1. Quando a depuração parar no ponto de parada, prossiga com a depuração normalmente.
+
+## Depuração de PO UI
+
+| Existe uma particularidade encontrada nas novas rotinas de PO UI. Elas rodam em um processo diferente do executado inicialmente, então ao depurar estes processos, precisamos realizar uma pequena configuração, caso não esteja ativada ainda.
+
+### Preparação para rotinas PO UI
+
+1. Abra o arquivo `.vscode\launch.json`.
+1. Localize a definição de executor que será utilizada e adicione a chave `"enableMultiThread": true`.
+1. Quando a depuração parar no ponto de parada, prossiga com a depuração normalmente.

@@ -49,7 +49,7 @@ export function deleteFileFromRPO(context: any, selectedFiles): void {
 		allFiles = Utils.getAllFilesRecursive(files);
 
 		if (allFiles) {
-			window.showWarningMessage(localize('tds.vscode.delete_prw_file', "Are you sure you want to delete {0} files from RPO?", allFiles.length), localize('tds.vscode.yes', 'Yes'), localize('tds.vscode.no', 'No')).then(clicked => {
+			window.showWarningMessage(localize('tds.vscode.delete_prw_file', "Are you sure you want to delete {0} files from RPO?", allFiles.length), { modal: true }, localize('tds.vscode.yes', 'Yes'), localize('tds.vscode.no', 'No')).then(clicked => {
 				if (clicked === localize('tds.vscode.yes', 'Yes')) {
 					deletePrograms(allFiles);
 				}

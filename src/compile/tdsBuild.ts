@@ -317,7 +317,7 @@ function verifyCompileResult(response) {
   const askCompileResult = configADVPL.get("askCompileResult");
   if (askCompileResult !== false) {
     vscode.window
-      .showInformationMessage(textQuestion, textYes, textNo, textNoAsk)
+      .showInformationMessage(textQuestion, { modal: true }, textYes, textNo, textNoAsk)
       .then((clicked) => {
         if (clicked === textYes) {
           vscode.commands.executeCommand(

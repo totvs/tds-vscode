@@ -13,7 +13,7 @@ let logStatusBarItem: vscode.StatusBarItem;
 
 export function onCaptureLoggers(context: ExtensionContext) {
 
-	vscode.window.showInformationMessage(localize("tds.vscode.logger.authorize","I authorize TOTVS to collect information from my development environment for technical support purposes"), localize("tds.vscode.logger.yes","Yes"), localize("tds.vscode.logger.no","No")).then(clicked => {
+	vscode.window.showInformationMessage(localize("tds.vscode.logger.authorize","I authorize TOTVS to collect information from my development environment for technical support purposes"), { modal: true }, localize("tds.vscode.logger.yes","Yes"), localize("tds.vscode.logger.no","No")).then(clicked => {
 		if (clicked === localize("tds.vscode.logger.yes","Yes")) {
 			if (!logFile) {
 				vscode.window.showInformationMessage(localize("tds.vscode.logger.capture","Capture Logs started. Reproduce the problem and close the grabber."));

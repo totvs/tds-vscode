@@ -1,5 +1,31 @@
 # Changelog
 
+# Versão [1.3.18]
+
+## Correções
+
+### Problema ao depurar em Linux com fonte que possuem caracteres especiais no "path" [#1078](https://github.com/totvs/tds-vscode/issues/1078)
+
+Corrigido problema de identificação de caracteres especiais em qualquer ponto do caminho do fonte, fazendo com que a depuração fosse interrompida ou o fonte não fosse encontrado.
+
+### Erro ao executar Debug na versão 1.3.17 (MacOS) [#1083](https://github.com/totvs/tds-vscode/issues/1083)
+
+Adicionado um tratamento especial para MacOS para permitir a execução do Smartclient em pastas com espaços.
+
+## Melhorias
+
+### Acentuação em pastas/arquivos - not found na hora da compilação. (Linux) [#1078](https://github.com/totvs/tds-vscode/issues/1078)
+
+Efetuada alteração para desconsiderar um tratamento de 'case' que causava o comportamento informado.
+
+### TDS Replay - Importação de apenas informações de fontes (Win/Mac/Linux) [#1057](https://github.com/totvs/tds-vscode/issues/1057)
+
+Implementado nova funcionalidade no TDS Replay para importar apenas as informações dos arquivos fontes gravados.
+
+### Alteradas as confirmações de ações para o tipo Modal
+
+As confirmações não estavam sendo exibidas caso a opção de "Não Incomodar" (Do Not Disturb) estivesse ativa, causando o não funcionamento de algumas funcionalidades, como por exemplo a remoção de recurso do RPO.
+
 # Versão [1.3.17]
 
 ## Correções

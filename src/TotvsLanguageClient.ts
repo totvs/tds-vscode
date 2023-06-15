@@ -71,7 +71,7 @@ export function getLanguageClient(
             key
           );
 
-          window.showInformationMessage(message, kReload).then((selected) => {
+          window.showInformationMessage(message, { modal: true }, kReload).then((selected) => {
             if (selected === kReload) {
               commands.executeCommand("workbench.action.reloadWindow");
             }

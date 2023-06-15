@@ -12,5 +12,12 @@
 			"url": "./schema/scenario.schema.json"
 		}
 	],
+	"search.exclude": {
+        "out": true // set this to false to include "out" folder in search results
+    },
+	"files.exclude": {
+        "out": false // set this to true to hide the "out" folder with the compiled JS files
+    },
 	"totvsLanguageServer.welcomePage": false,
+	"typescript.tsc.autoDetect": "off"
 }

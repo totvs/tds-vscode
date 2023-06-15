@@ -60,8 +60,11 @@
 				<div class="checkboxGroup">
 					<input id="ignoreSourcesNotFoundID" class="checkbox" name="ignoreSourcesNotFound" type="checkbox"
 						value="ignoreSourcesNotFound" checked>
-					<label class="checkboxLabel"
-						for="ignoreSourcesNotFound">${d.localize["tds.webview.launcher.ignoreFiles"]}</label>
+					<label class="checkboxLabel" for="ignoreSourcesNotFound">${d.localize["tds.webview.launcher.ignoreFiles"]}</label>
+					<br>
+					<input id="importOnlySourcesInfoID" class="checkbox" name="importOnlySourcesInfo" type="checkbox"
+						value="importOnlySourcesInfo" onclick="importSourcesOnlyClicked()">
+					<label class="checkboxLabel" for="importOnlySourcesInfo">${d.localize["tds.webview.launcher.importOnlySources"]}</label>
 					<!--Ignore files not in Workspace-->
 				</div>
 				<br>
@@ -147,6 +150,7 @@
 				includeSources: getIncludeSrc().value,
 				excludeSources: getExcludeSrc().value,
 				ignoreSourcesNotFound: getElementIgnoreFiles().checked,
+				importOnlySourcesInfo: getElementImportOnlySources().checked,
 				'close': close
 			});
 		}
@@ -159,6 +163,7 @@
 		getIncludeSrc().value = element !== undefined ? element.includeSources : "";
 		getExcludeSrc().value = element !== undefined ? element.excludeSources : "";
 		getElementIgnoreFiles().value = element !== undefined ? element.ignoreSourcesNotFound : false;
+		getElementImportOnlySources().value = element !== undefined ? element.importOnlySources : false;
 	}
 
 	function getElementLauncherList() { return document.getElementById('launcherListID'); }
@@ -169,6 +174,7 @@
 	function getIncludeSrc() { return document.getElementById("includeSrcID"); }
 	function getExcludeSrc() { return document.getElementById("excludeSrcID"); }
 	function getElementIgnoreFiles() { return document.getElementById("ignoreSourcesNotFoundID"); }
+	function getElementImportOnlySources() { return document.getElementById("importOnlySourcesInfoID"); }
 
 	function setTextArea() {
 		var input = document.getElementById('tdsReplayFileID');
@@ -207,6 +213,12 @@
 			}
 		}
 
+		if(getElementImportOnlySources().checked) {
+			getIncludeSrc().value = "*";
+			getExcludeSrc().value = "";
+			getElementIgnoreFiles().checked = false;
+		}
+
 		if (errorMessage) {
 			console.log(errorMessage);
 			document.getElementById("errorMessageID").innerHTML = errorMessage;
@@ -217,6 +229,14 @@
 		}
 
 		return isValid
+	}
+
+	function importSourcesOnlyClicked()
+	{
+		let isImportOnlySources = getElementImportOnlySources().checked;
+		getElementIgnoreFiles().disabled = isImportOnlySources;
+		getIncludeSrc().disabled = isImportOnlySources;
+		getExcludeSrc().disabled = isImportOnlySources;
 	}
 
 

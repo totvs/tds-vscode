@@ -227,12 +227,7 @@ class ServerItemProvider
         buildVersion,
         token,
         environments,
-        includes,
-        {
-          command: "",
-          title: "",
-          arguments: [serverItem],
-        }
+        includes
       );
     };
     const listServer = new Array<ServerItem>();

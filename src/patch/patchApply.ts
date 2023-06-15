@@ -255,6 +255,7 @@ export function patchApply(
                 "Are you sure you want patch {0} the RPO?",
                 path.basename(filename)
               ),
+              { modal: true },
               localize("tds.vscode.yes", "Yes"),
               localize("tds.vscode.no", "No")
             )

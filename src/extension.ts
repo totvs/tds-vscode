@@ -77,6 +77,7 @@ import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import { commandShowBuildTableResult } from "./compile/buildResult";
 import { ServerItem } from "./serverItem";
 import serverProvider from "./serverItemProvider";
+import {ReplayRegisterCommands} from "./debug/tdsreplay/RegisterReplayCommands";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -314,6 +315,8 @@ export function activate(context: ExtensionContext) {
     //     }
     //   });
     // })();
+
+    ReplayRegisterCommands(context);
   }
 
   // Ação para pegar o nome da função e argumentos para  iniciar o debug
@@ -786,7 +789,7 @@ function verifyEncoding() {
   const defaultConfig = vscode.workspace.getConfiguration();
   const defaultEncoding = defaultConfig.get("files.encoding");
   if (defaultEncoding !== "windows1252" && questionEncodingConfig !== false) {
-    window.showWarningMessage(textQuestion, textYes, textNo, textNoAsk).then(clicked => {
+    window.showWarningMessage(textQuestion, { modal: true }, textYes, textNo, textNoAsk).then(clicked => {
       if (clicked === textYes) {
         const jsonEncoding = {
           "files.encoding": "windows1252"
