@@ -13,74 +13,12 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 > As opções de acionamento citadas são as configurações padrão do **VS-Code**, podendo ser diferentes em função de reconfiguração efetuada pelo usuário ou outras extensões.
 > Todas as opções de navegação também pode ser acionadas via menu de contexto do editor.
 
-| Status | Funcionalidade |
-| ------ | -------------- |
-| OK     | [Estrura](https://code.visualstudio.com/docs/getstarted/userinterface#_outline-view) |
-| OK     | [Trilha](https://code.visualstudio.com/docs/editor/editingevolved#_breadcrumbs) |
-| OK     | Visão simbolos |
-| [OK](#P1) | [Abrir símbolo pelo nome](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name). Prefixo ``@`` ou ``#`` |
-| OK   | [Sintaxe destacada](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide) |
-| OK     | [Navegação rápida](https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation) |
-| [OK](#P1) | [Ir para definição](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition) |
-| OK     | Passagem _mouse_ (_text hover) |
-|        | Funcionalidade implementada, porém requer revisão das situações onde há duplicidade do símbolo, |
-|        | com ou sem  escopo. |
-| OK_(1)_    | [Ir para definição de tipo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-type-definition) |
-| OK_(1)_    | [Ir para implementação](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-implementation) |
-| OK     | [Ir para um símbolo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-symbol) |
-| _(2)_    | [Visualizar](https://code.visualstudio.com/docs/editor/editingevolved#_peek) |
-| Parado | Cache em memória e/ou disco. |
-| Execução | Auto completar. |
-
 |        | Funcionalidades futuras |
 | ------ | -------------- |
 |        | [Informação](https://code.visualstudio.com/docs/editor/editingevolved#_reference-information) |
 |        | Destaque visual para código isolado por ``#ifdef``. |
 |        | Strings de tradução (visualização e edição). |
-
-| | Descrição de problemas e comportamentos |
-|-| --------------------------------------- |
-| | Visão ``Symbols`` |
-| | - agrupar: ``+#include``, ``+#define``? |
-| | |
-| | <a name='P1'></a>- ``ctrl+T``, prefixo ``#`` (busca área de trabalho) |
-| | Implementar carga parcial. |
-| | Somente elementos públicos? |
-| | - funções (incluir static?) |
-| | - classes |
-| | - métodos |
-| | - propriedades |
-| | - defines |
-| | Considerar escopo? |
-| | |
-| | <a name='P2'></a>- ``F12`` e ``alt+F12`` |
-| | Considerar escopo? |
-| | |
-| | - ``#define`` em ch´s padrão não possuem informações de localização. |
-| | |
-| | - TLPP: a lista de definições abaixo, causa erro ou gera detalhes errôneos. |
-| | [TLPP: Tipos nativos](https://tdn.totvs.com/display/tec/Tipos+Nativos) |
-| | Local fDec2 := DEC_CREATE( 7233.759119, 21, 20 ) as Decimal |
-| | Local aArr2 := {1, 2, 3} as array |
-| | Local oObj2 := MyClass():New() as object |
-| | Local jJsn2 := JsonObject():New() as Json |
-| | Local bBlk2 := {|r,l|r*l} as CodeBlock |
-| | Local xVar2 := 4 as variant |
-| | Local xVar3 := "Texto" as variant |
-| | |
-| | - AdvPL/Asp (ignorado para o **DSS**, extensões .aph e .apl)
-| | APH passa por um pré-proessamento que gera código AdvPL e este  é repassado ao |
-| | pré-processador, que gera o AST, que não bate nada com nada com o fonte original. |
-| | |
-
-| Legendas | |
-| -------- | - |
-| OK | Funcionalidade pronta. |
-| Parcial | Parcialmente implementada|
-| Execução | Parcialmente implementada, ainda em desenvolvimento. |
-| Parado | Parcialmente implementada, mas com  desenvolvimento parado devido a outras ocorrências. |
-| (1) | Ainda a ser definido o comportamento, pois em vários casos não há como diferenciar definição/implementação. |
-| (2) | Parcialmente implementado. Ainda pode apresentar falhas. |
+|        | Suporte a AdvPL/Asp (congelado)
 
 ## [Navegação rápida](https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation)
 
