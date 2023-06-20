@@ -2,7 +2,29 @@
 
 [Changelog V1](CHANGELOG-V1.md)
 
-## Versão [2.0.0-RC-next]
+## Versão [2.0.0-next]
+
+### Melhorias planejadas
+
+#### No _hover_ de um parâmetro, apresentar sobre a função e destacar o parâmetro
+
+### Problemas conhecidos
+
+#### Disparar o assistente de assinatura, na lista de parâmetros em código já existente
+
+Código teste: ``oTButton1 := TButton():New( 0, 510, "Ir",oPanel,{||oWebEngine:Navigate(cGet1)}, 20,10,,,.F.,.T.,.F.,,.F.,,,.F. )``
+
+#### Não traz documentação de classes binárias
+
+#### Ao acionar o assistente no método construtor (new), não traz o da classe específica
+
+### Resolvido
+
+#### ``User function`` não aceita identificador numérico
+
+O compilador aceita identificador numérico, pois após o pré-processamento, este passa a contar com prefixo ``u_``, validando o identificador.
+
+## Versão [2.0.0-RC3]
 
 ### Novos recursos
 
