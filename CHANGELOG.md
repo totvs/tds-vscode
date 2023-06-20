@@ -1,5 +1,13 @@
 # Changelog
 
+# Versão [1.3.19]
+
+## Correções
+
+### After the last update the Monitor is not showing corretly nor terminating connections [#1123](https://github.com/totvs/tds-vscode/issues/1123)
+
+Corrigido problema no Monitor que impedia seu correto funcionamento.
+
 # Versão [1.3.18]
 
 ## Correções
