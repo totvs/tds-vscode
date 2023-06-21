@@ -4,18 +4,18 @@
 
 ### Usar context.Secrets para senhas
 
-**(aguarando análise)**
+*(aguardando análise)*
 Armazenar informações sensiveis em área secreta. [VSCode Api: Secret Storage](https://code.visualstudio.com/api/references/vscode-api#SecretStorage)
 
-### No _hover_ de um parâmetro, apresentar sobre a função e destacar o parâmetro)
+### No *hover* de um parâmetro, apresentar sobre a função e destacar o parâmetro)
 
-**(aguarando análise)**
+*(aguardando análise)*
 *TypeScript* apresenta sobre o parâmetro.
 
 ### LSIF: implementar formato de indice
 
-**(aguarando análise)**
-Implementar o _cache_ do **DSS** no formato LSIF, de forma que possa ser utiliado em aplicações de terceiros para análise e outros procedimentos. [LSIF: specification](https://microsoft.github.io/language-server-protocol/specifications/lsif/0.6.0/specification/).
+*(aguardando análise)*
+Implementar o *cache* do **DSS** no formato LSIF, de forma que possa ser utiliado em aplicações de terceiros para análise e outros procedimentos. [LSIF: specification](https://microsoft.github.io/language-server-protocol/specifications/lsif/0.6.0/specification/).
 
 ## Versão [2.0.0-next]
 
@@ -27,20 +27,22 @@ Ao criar um user function em um arquivo tlpp na primeira linha gera um erro que 
 
 #### Navegação no código falha após ler o *cache*
 
-**(em análise)**
+*(em análise)*
 
 #### Disparar o assistente de assinatura, na lista de parâmetros em código já existente
 
-**(em resolução)**
+*(em resolução)*
 Código teste: ``oTButton1 := TButton():New( 0, 510, "Ir",oPanel,{||oWebEngine:Navigate(cGet1)}, 20,10,,,.F.,.T.,.F.,,.F.,,,.F. )``
 
 #### Não traz documentação de classes binárias
 
-**(aguarando análise)**
+*(aguardando análise)*
 Gerar a documentação de classes binárias a partir dos arquivos em ``\advpldoc\advpl\src\classes``
 .
 
 #### Ao acionar o assistente no método construtor (new), não traz o da classe específica
+
+*(aguardando análise)*
 
 ### Resolvido
 
@@ -51,6 +53,8 @@ O compilador aceita identificador numérico, pois após o pré-processamento, es
 #### Navegação em classe
 
 No código ``oGrid:= MyGrid():New(oDlg,aData)``, não vai para a definição da classe ao acionar ``goto definition`` em MyGrid().
+
+Também foi ajustado navegação para métodos estáticos.
 
 ## Versão [2.0.0-RC3]
 
@@ -68,9 +72,9 @@ Adicionado tratamento de ProtheusDOC em classes.
 
 #### ``Ir para definição`` na inicialização (``new``) de objetos
 
-Corrigido a navegação e _text hover_ na definição de objeto na sua inicialização.
+Corrigido a navegação e *text hover* na definição de objeto na sua inicialização.
 
-#### Passagem _mouse_ (_text hover_)
+#### Passagem *mouse* (*text hover*)
 
 Apresentava informações de definição e local de uso de forma indevida.
 
@@ -88,9 +92,9 @@ Ao ler o cache, este está sendo invalidado e com isso reindexa os arquivos.
 
 ### Melhoria
 
-### Documentação das funções de binário (_binary function_)
+### Documentação das funções de binário (*binary function*)
 
-Extração da documentação das funções binárias direto do projeto _totvsvmtests_, via ferramenta _advplDoc_ (solução _TotvsTecTools_).
+Extração da documentação das funções binárias direto do projeto *totvsvmtests*, via ferramenta *advplDoc* (solução *TotvsTecTools*).
 Para detalhes, veja ``<local folder>\totvsls\dbcode\dbcode_manager.cpp``, método ``DBCodeManager::loadBinaryFunctions``.
 
 ## Versão [2.0.0]
@@ -105,15 +109,15 @@ Para garantir a interoperabilidade das áreas de trabalho entre os sistemas oper
 
 #### Assistente de assinatura de funções
 
-Adicionado assistente de assinatura de funções (_SignatureHelp_).
+Adicionado assistente de assinatura de funções (*SignatureHelp*).
 
 #### Informações sobre uso e outras informações
 
-BETA: Adicionado informações sobre o uso de funções (_CodeLens_).
+BETA: Adicionado informações sobre o uso de funções (*CodeLens*).
 
 #### Implementação de configuração para ignorar pastas e arquivos
 
-Efetuado a implementação de configuração para a extensão ignorar pastas e arquivos no processo de _Navegação em fontes_ e recursos associados, através da existência do arquivo `.tdsindexignore`.
+Efetuado a implementação de configuração para a extensão ignorar pastas e arquivos no processo de *Navegação em fontes* e recursos associados, através da existência do arquivo `.tdsindexignore`.
 
 Detalhes da implementação em [# TDS: Developer Support Subsystem](docs/dss.md#ignore).
 
@@ -122,10 +126,10 @@ Detalhes da implementação em [# TDS: Developer Support Subsystem](docs/dss.md#
 Efetuado a implementação de navegação em fontes, passagem de mouse e referências.
 Detalhes da implementação em [TDS: Developer Support Subsystem](docs/dss.md).
 
-> Os recursos aqui apresentados, podem ser influenciados devido ao _linter_ ignorar o processamento de fontes configurado em [TDS: Linter -> Ignorar pastas e arquivos](docs/linter.md#tdsignore).
-> As informações sobre navegação, podem ou não ficar em [_cache__](docs/dss.md#cache).
+> Os recursos aqui apresentados, podem ser influenciados devido ao *linter* ignorar o processamento de fontes configurado em [TDS: Linter -> Ignorar pastas e arquivos](docs/linter.md#tdsignore).
+> As informações sobre navegação, podem ou não ficar em [*cache*_](docs/dss.md#cache).
 
-#### Visão _Estrutura_
+#### Visão *Estrutura*
 
 Apresenta alguns detalhes sobre o ítem, conforme sua definição.
 
