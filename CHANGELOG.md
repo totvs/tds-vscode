@@ -1,20 +1,44 @@
-# Changelog
+# Changelog ([Changelog Versão 1](CHANGELOG-V1.md))
 
-[Changelog V1](CHANGELOG-V1.md)
+## Melhorias planejadas/em estudo
+
+### Usar context.Secrets para senhas
+
+**(aguarando análise)**
+Armazenar informações sensiveis em área secreta. [VSCode Api: Secret Storage](https://code.visualstudio.com/api/references/vscode-api#SecretStorage)
+
+### No _hover_ de um parâmetro, apresentar sobre a função e destacar o parâmetro)
+
+**(aguarando análise)**
+*TypeScript* apresenta sobre o parâmetro.
+
+### LSIF: implementar formato de indice
+
+**(aguarando análise)**
+Implementar o _cache_ do **DSS** no formato LSIF, de forma que possa ser utiliado em aplicações de terceiros para análise e outros procedimentos. [LSIF: specification](https://microsoft.github.io/language-server-protocol/specifications/lsif/0.6.0/specification/).
 
 ## Versão [2.0.0-next]
 
-### Melhorias planejadas
-
-#### No _hover_ de um parâmetro, apresentar sobre a função e destacar o parâmetro
-
 ### Problemas conhecidos
+
+#### Erro ao digitar ao criar função no vscode [DTCLIENT01-4089](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4089)
+
+Ao criar um user function em um arquivo tlpp na primeira linha gera um erro que trava o software do vscode.
+
+#### Navegação no código falha após ler o *cache*
+
+**(em análise)**
 
 #### Disparar o assistente de assinatura, na lista de parâmetros em código já existente
 
+**(em resolução)**
 Código teste: ``oTButton1 := TButton():New( 0, 510, "Ir",oPanel,{||oWebEngine:Navigate(cGet1)}, 20,10,,,.F.,.T.,.F.,,.F.,,,.F. )``
 
 #### Não traz documentação de classes binárias
+
+**(aguarando análise)**
+Gerar a documentação de classes binárias a partir dos arquivos em ``\advpldoc\advpl\src\classes``
+.
 
 #### Ao acionar o assistente no método construtor (new), não traz o da classe específica
 
@@ -23,6 +47,10 @@ Código teste: ``oTButton1 := TButton():New( 0, 510, "Ir",oPanel,{||oWebEngine:N
 #### ``User function`` não aceita identificador numérico
 
 O compilador aceita identificador numérico, pois após o pré-processamento, este passa a contar com prefixo ``u_``, validando o identificador.
+
+#### Navegação em classe
+
+No código ``oGrid:= MyGrid():New(oDlg,aData)``, não vai para a definição da classe ao acionar ``goto definition`` em MyGrid().
 
 ## Versão [2.0.0-RC3]
 
