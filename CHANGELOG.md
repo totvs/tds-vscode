@@ -25,10 +25,6 @@ Implementar o *cache* do **DSS** no formato LSIF, de forma que possa ser utiliad
 
 Ao criar um user function em um arquivo tlpp na primeira linha gera um erro que trava o software do vscode.
 
-#### Navegação no código falha após ler o *cache*
-
-*(em análise)*
-
 #### Disparar o assistente de assinatura, na lista de parâmetros em código já existente
 
 *(em resolução)*
@@ -40,15 +36,17 @@ Código teste: ``oTButton1 := TButton():New( 0, 510, "Ir",oPanel,{||oWebEngine:N
 Gerar a documentação de classes binárias a partir dos arquivos em ``\advpldoc\advpl\src\classes``
 .
 
-#### Ao acionar o assistente no método construtor (new), não traz o da classe específica
-
-*(aguardando análise)*
-
 ### Resolvido
+
+#### Navegação no código falha após ler o *cache*
+
+#### Ao acionar o assistente no método construtor (new), não traz o da classe específica
 
 #### ``User function`` não aceita identificador numérico
 
 O compilador aceita identificador numérico, pois após o pré-processamento, este passa a contar com prefixo ``u_``, validando o identificador.
+
+> Mesmo comportamento com outros escopos de função.
 
 #### Navegação em classe
 
