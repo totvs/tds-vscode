@@ -21,32 +21,56 @@ Implementar o *cache* do **DSS** no formato LSIF, de forma que possa ser utiliad
 
 ### Problemas conhecidos
 
-#### Erro ao digitar ao criar função no vscode [DTCLIENT01-4089](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4089)
+### Auto completar (Otto)
 
+*(aguardando análise)*
+*Auto-Complete* para *user function* é "estranho", ele acha o nome da função mas não como ``u_``.
+
+### Assistente de assinatura (Otto)
+
+*(aguardando análise)*
+*InteliSense* para visualizar os paramêtros de funções advpl não tem o comportamento esperado.
+
+### Renomear variável local (Otto)
+
+*(aguardando análise)*
+Mudar o nome de uma variável local, não altera o nome mostrado no outline (fechar e abrir o vscode "resolve")
+
+### ``Ir para definição`` em variável local (Otto)
+
+*(aguardando análise)*
+*Ctrl-click* (``go to definition``) em uma variável definida como local não está levando na definição (apesar de mostrar no *outline*)
+
+#### Erro ao digitar ao criar função no vscode [DTCLIENT01-4089](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4089)(John)
+
+*(aguardando análise)*
 Ao criar um user function em um arquivo tlpp na primeira linha gera um erro que trava o software do vscode.
 
-#### Disparar o assistente de assinatura, na lista de parâmetros em código já existente
+#### Navegação no código falha após ler o *cache* (Otto)
 
-*(em resolução)*
-Código teste: ``oTButton1 := TButton():New( 0, 510, "Ir",oPanel,{||oWebEngine:Navigate(cGet1)}, 20,10,,,.F.,.T.,.F.,,.F.,,,.F. )``
+*(em análise)*
 
-#### Não traz documentação de classes binárias
+#### Disparar o assistente de assinatura, na lista de parâmetros em código já existente (Otto)
+
+*(em resolução)*Código teste: ``oTButton1 := TButton():New( 0, 510, "Ir",oPanel,{||oWebEngine:Navigate(cGet1)}, 20,10,,,.F.,.T.,.F.,,.F.,,,.F. )``
+
+#### Não traz documentação de classes binárias (Otto)
 
 *(aguardando análise)*
 Gerar a documentação de classes binárias a partir dos arquivos em ``\advpldoc\advpl\src\classes``
 .
 
+#### Ao acionar o assistente no método construtor (new), não traz o da classe específica (Otto)
+
+*(aguardando análise)*
+
 ### Resolvido
-
-#### Navegação no código falha após ler o *cache*
-
-#### Ao acionar o assistente no método construtor (new), não traz o da classe específica
 
 #### ``User function`` não aceita identificador numérico
 
 O compilador aceita identificador numérico, pois após o pré-processamento, este passa a contar com prefixo ``u_``, validando o identificador.
 
-> Mesmo comportamento com outros escopos de função.
+> Mesmo  coisa com outros escopos de função.
 
 #### Navegação em classe
 
