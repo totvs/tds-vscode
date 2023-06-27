@@ -21,38 +21,20 @@ Implementar o *cache* do **DSS** no formato LSIF, de forma que possa ser utiliad
 
 ### Problemas conhecidos
 
-### Auto completar (Otto)
+#### Auto completar (Otto)
 
 *(aguardando análise)*
 *Auto-Complete* para *user function* é "estranho", ele acha o nome da função mas não como ``u_``.
 
-### Assistente de assinatura (Otto)
-
-*(aguardando análise)*
-*InteliSense* para visualizar os paramêtros de funções advpl não tem o comportamento esperado.
-
-### Renomear variável local (Otto)
+#### Renomear variável local (Otto)
 
 *(aguardando análise)*
 Mudar o nome de uma variável local, não altera o nome mostrado no outline (fechar e abrir o vscode "resolve")
-
-### ``Ir para definição`` em variável local (Otto)
-
-*(aguardando análise)*
-*Ctrl-click* (``go to definition``) em uma variável definida como local não está levando na definição (apesar de mostrar no *outline*)
 
 #### Erro ao digitar ao criar função no vscode [DTCLIENT01-4089](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4089)(John)
 
 *(aguardando análise)*
 Ao criar um user function em um arquivo tlpp na primeira linha gera um erro que trava o software do vscode.
-
-#### Navegação no código falha após ler o *cache* (Otto)
-
-*(em análise)*
-
-#### Disparar o assistente de assinatura, na lista de parâmetros em código já existente (Otto)
-
-*(em resolução)*Código teste: ``oTButton1 := TButton():New( 0, 510, "Ir",oPanel,{||oWebEngine:Navigate(cGet1)}, 20,10,,,.F.,.T.,.F.,,.F.,,,.F. )``
 
 #### Não traz documentação de classes binárias (Otto)
 
@@ -60,23 +42,44 @@ Ao criar um user function em um arquivo tlpp na primeira linha gera um erro que 
 Gerar a documentação de classes binárias a partir dos arquivos em ``\advpldoc\advpl\src\classes``
 .
 
+#### Assistente de assinatura (Otto)
+
+*(em resolução)*
+InteliSense* para visualizar os paramêtros de funções advpl não tem o comportamento esperado.
+
+#### Disparar o assistente de assinatura, na lista de parâmetros em código já existente (Otto)
+
+*(em resolução)*Código teste: ``oTButton1 := TButton():New( 0, 510, "Ir",oPanel,{||oWebEngine:Navigate(cGet1)}, 20,10,,,.F.,.T.,.F.,,.F.,,,.F. )``
+
 #### Ao acionar o assistente no método construtor (new), não traz o da classe específica (Otto)
 
-*(aguardando análise)*
+*(em resolução)*
 
-### Resolvido
+### Resolvido: RC4
+
+#### ``Ir para definição`` em variável local (Otto)
+
+*Ctrl-click* (``go to definition``) em uma variável definida como local não está levando na definição (apesar de mostrar no *outline*)
+
+#### Navegação no código falha após ler o *cache* (Otto)
+
+Revisto processo de salva e carga de *cache*.
+
+> Efetuado higienização de código, eliminando propriedades e processos desnecessários.
 
 #### ``User function`` não aceita identificador numérico
 
 O compilador aceita identificador numérico, pois após o pré-processamento, este passa a contar com prefixo ``u_``, validando o identificador.
 
-> Mesmo  coisa com outros escopos de função.
+> Mesmo coisa com outros escopos de função.
 
 #### Navegação em classe
 
 No código ``oGrid:= MyGrid():New(oDlg,aData)``, não vai para a definição da classe ao acionar ``goto definition`` em MyGrid().
 
-Também foi ajustado navegação para métodos estáticos.
+#### Navegação em método estático
+
+Ajustado navegação para métodos estáticos.
 
 ## Versão [2.0.0-RC3]
 
