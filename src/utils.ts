@@ -642,7 +642,7 @@ export default class Utils {
     if (includes.length > 0) {
       if (absolutePath) {
         // resolve caminhos relativos ao workspace
-        let ws: string = "";
+        let ws: string = vscode.workspace.rootPath;;
 
         if (vscode.window.activeTextEditor) {
           const workspaceFolder: vscode.WorkspaceFolder =
@@ -897,13 +897,13 @@ export default class Utils {
   /**
    * Atualiza includes do linter.
    */
-   static updateLinterIncludes() {
+  static updateLinterIncludes() {
     const servers = Utils.getServersConfig();
     const includes: string = servers.includes.join(";");
     const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("totvsLanguageServer");
 
     config.update("editor.linter.includes", includes); //dispara onDidChangeConfiguration
-   }
+  }
 
   /**
    *Atualiza no server.json a build de um servidor
@@ -1184,7 +1184,7 @@ export default class Utils {
   /**
    * Deleta o servidor logado por ultimo do servers.json
    */
-  static  deleteEnvironmentServer(environment: EnvSection) {
+  static deleteEnvironmentServer(environment: EnvSection) {
     const allConfigs = Utils.getServersConfig();
 
     if (allConfigs.configurations) {

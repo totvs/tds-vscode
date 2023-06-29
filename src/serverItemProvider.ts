@@ -184,9 +184,9 @@ class ServerItemProvider
         this.localServerItems = this.setConfigWithServerConfig();
         this.refresh();
       }
-
-      Utils.updateLinterIncludes();
     }
+    
+    Utils.updateLinterIncludes();
   }
 
   /**

@@ -164,7 +164,7 @@ export function confirmRestartNow(): boolean {
           needRestart = false;
           waitRestart = false;
         }
-      })
+      });
   }
 
   return needRestart;

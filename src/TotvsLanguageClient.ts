@@ -123,7 +123,7 @@ export function getLanguageClient(
 
       const configADVPL = vscode.workspace.getConfiguration(
         "totvsLanguageServer"
-      ); //transformar em configuracao de workspace
+      ); 
 
       const serverInfo: any = languageClient.initializeResult.serverInfo;
       if (serverInfo) {
