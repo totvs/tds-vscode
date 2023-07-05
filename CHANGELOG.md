@@ -2,6 +2,10 @@
 
 ## Melhorias planejadas/em estudo
 
+### Amostra de novos arquivos
+
+Adicionar amostra (*template*) para novos arquivos com cabeçalho ``ProtheusDOC``.
+
 ### Usar context.Secrets para senhas
 
 *(aguardando análise)*
@@ -31,17 +35,6 @@ Implementar o *cache* do **DSS** no formato LSIF, de forma que possa ser utiliad
 *(aguardando análise)*
 Mudar o nome de uma variável local, não altera o nome mostrado no outline (fechar e abrir o vscode "resolve")
 
-#### Erro ao digitar ao criar função no vscode [DTCLIENT01-4089](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4089)(John)
-
-*(aguardando análise)*
-Ao criar um user function em um arquivo tlpp na primeira linha gera um erro que trava o software do vscode.
-
-#### Não traz documentação de classes binárias (Otto)
-
-*(aguardando análise)*
-Gerar a documentação de classes binárias a partir dos arquivos em ``\advpldoc\advpl\src\classes``
-.
-
 #### Assistente de assinatura (Otto)
 
 *(em resolução)*
@@ -55,7 +48,17 @@ InteliSense* para visualizar os paramêtros de funções advpl não tem o compor
 
 *(em resolução)*
 
-### Resolvido: RC4
+### Resolvido: RC5
+
+#### Não traz documentação de classes binárias (Otto)
+
+Gerar a documentação de classes binárias a partir dos arquivos em ``\advpldoc\advpl\src\classes``.
+
+#### Erro ao digitar ao criar função no vscode [DTCLIENT01-4089](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4089)(John)
+
+Ao criar um user function em um arquivo tlpp na primeira linha gera um erro que trava o software do vscode.
+
+### Versão [2.0.0-RC4]
 
 #### ``Ir para definição`` em variável local (Otto)
 
@@ -124,11 +127,11 @@ Para detalhes, veja ``<local folder>\totvsls\dbcode\dbcode_manager.cpp``, métod
 
 ## Versão [2.0.0]
 
-### Interoperabilidade entre sistemas operacionais
-
-Para garantir a interoperabilidade das áreas de trabalho entre os sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes, recomenda-se **veementemente** que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em mínusculas.
-
-> Leia [Convenção para nomenclatura de File System em ambiente Linux]<https://tdn.totvs.com/x/h8BICw>).
+> Interoperabilidade entre sistemas operacionais
+>
+> Para garantir a interoperabilidade das áreas de trabalho entre os sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes, recomenda-se **veementemente** que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em mínusculas.
+>
+> Leia [Convenção para nomenclatura de *File System* em ambiente Linux](<https://tdn.totvs.com/x/h8BICw>).
 
 ### Melhorias
 
@@ -142,7 +145,7 @@ BETA: Adicionado informações sobre o uso de funções (*CodeLens*).
 
 #### Implementação de configuração para ignorar pastas e arquivos
 
-Efetuado a implementação de configuração para a extensão ignorar pastas e arquivos no processo de *Navegação em fontes* e recursos associados, através da existência do arquivo `.tdsindexignore`.
+Efetuado a implementação de configuração para a extensão ignorar pastas e arquivos no processo de *Navegação em fontes* e recursos associados, através da existência do arquivo `.tdsignore`.
 
 Detalhes da implementação em [# TDS: Developer Support Subsystem](docs/dss.md#ignore).
 
@@ -152,13 +155,13 @@ Efetuado a implementação de navegação em fontes, passagem de mouse e referê
 Detalhes da implementação em [TDS: Developer Support Subsystem](docs/dss.md).
 
 > Os recursos aqui apresentados, podem ser influenciados devido ao *linter* ignorar o processamento de fontes configurado em [TDS: Linter -> Ignorar pastas e arquivos](docs/linter.md#tdsignore).
-> As informações sobre navegação, podem ou não ficar em [*cache*_](docs/dss.md#cache).
+> As informações sobre navegação, podem ou não ficar em [*cache*](docs/dss.md#cache).
 
 #### Visão *Estrutura*
 
-Apresenta alguns detalhes sobre o ítem, conforme sua definição.
+Apresenta alguns detalhes sobre o ítem de acordo com sua definição.
 
-#### Navegação em classes quando usado `self` e `_Super`
+#### Navegação em classes quando usado ``self`` e ``_Super``
 
-- Adicionado tratamento há herança de classe (`_Super` e `from`)
-- Unificado tratamento de `::` e `self`
+- Adicionado tratamento há herança de classe (``_Super``,  ``from``, ``inherited`` e ``of``)
+- Unificado tratamento de ``::`` e ``self``
