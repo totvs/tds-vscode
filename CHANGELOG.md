@@ -4,6 +4,7 @@
 
 ### Amostra de novos arquivos
 
+*(aguardando análise)*
 Adicionar amostra (*template*) para novos arquivos com cabeçalho ``ProtheusDOC``.
 
 ### Usar context.Secrets para senhas
@@ -21,34 +22,25 @@ Armazenar informações sensiveis em área secreta. [VSCode Api: Secret Storage]
 *(aguardando análise)*
 Implementar o *cache* do **DSS** no formato LSIF, de forma que possa ser utiliado em aplicações de terceiros para análise e outros procedimentos. [LSIF: specification](https://microsoft.github.io/language-server-protocol/specifications/lsif/0.6.0/specification/).
 
-## Versão [2.0.0-next]
+## Versão [2.0.0-RC5]
 
-### Problemas conhecidos
+#### Assistente de assinatura (Otto)
+
+*InteliSense* para visualizar os paramêtros de funções advpl não tem o comportamento esperado.
+
+#### Disparar o assistente de assinatura, na lista de parâmetros em código já existente (Otto)
+
+Código teste: ``oTButton1 := TButton():New( 0, 510, "Ir",oPanel,{||oWebEngine:Navigate(cGet1)}, 20,10,,,.F.,.T.,.F.,,.F.,,,.F. )``
+
+#### Ao acionar o assistente no método construtor (new), não traz o da classe específica (Otto)
 
 #### Auto completar (Otto)
 
-*(aguardando análise)*
 *Auto-Complete* para *user function* é "estranho", ele acha o nome da função mas não como ``u_``.
 
 #### Renomear variável local (Otto)
 
-*(aguardando análise)*
 Mudar o nome de uma variável local, não altera o nome mostrado no outline (fechar e abrir o vscode "resolve")
-
-#### Assistente de assinatura (Otto)
-
-*(em resolução)*
-InteliSense* para visualizar os paramêtros de funções advpl não tem o comportamento esperado.
-
-#### Disparar o assistente de assinatura, na lista de parâmetros em código já existente (Otto)
-
-*(em resolução)*Código teste: ``oTButton1 := TButton():New( 0, 510, "Ir",oPanel,{||oWebEngine:Navigate(cGet1)}, 20,10,,,.F.,.T.,.F.,,.F.,,,.F. )``
-
-#### Ao acionar o assistente no método construtor (new), não traz o da classe específica (Otto)
-
-*(em resolução)*
-
-### Resolvido: RC5
 
 #### Não traz documentação de classes binárias (Otto)
 
