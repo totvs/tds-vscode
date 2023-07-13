@@ -11,11 +11,10 @@
 Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstudio.com/docs/editor/editingevolved) e  aqui, breve documentação das opções suportadas em projetos baseados nas linguagens **TOTVS**.
 
 > As opções de acionamento citadas são as configurações padrão do **VS-Code**, podendo ser diferentes em função de reconfiguração efetuada pelo usuário ou outras extensões.
-> Todas as opções de navegação também pode ser acionadas via menu de contexto do editor.
+> Algumas operações  de navegação também pode ser acionadas via menu de contexto do editor.
 
 |        | Funcionalidades futuras |
 | ------ | -------------- |
-|        | [Informação](https://code.visualstudio.com/docs/editor/editingevolved#_reference-information) |
 |        | Destaque visual para código isolado por ``#ifdef``. |
 |        | Strings de tradução (visualização e edição). |
 |        | Suporte a AdvPL/Asp (congelado)
@@ -68,13 +67,21 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 ## [Ajuda com assinatura em funções (_signature help_)](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#help-with-function-and-method-signatures)
 
-Em implementação.
+**Acionamento:** Automático ao acionar ``(`` após um identificador de função/método ou ``ctrl+shitf+space``, na lista de argumentos.
 
-**Acionamento:** Automático ao acionar ``(`` após um identificador.
+> Funciona apenas para funções/métodos, cujo fonte esteja no seu projeto ou para funções/métodos AdvPL binários (definidas no núcleo da linguagem).
 
-> Funciona apenas para funções, cujo fonte esteja no seu projeto ou para funções AdvPL binárias (definidas direto no _AppServer_).
+## [Informação/Referências](https://code.visualstudio.com/docs/editor/editingevolved#_reference-information)
+
+> Em **métodos** o valor apresentado pode não ser preciso.
+
+**Acionamento:** Ativação efetuada por pela configuração ``editor.codeLens``, sendo que o padrão é ativado.
+
+> Para configurar somente para fontes **TOTVS**, use a configuração ``totvsLanguageServer.editor.codeLens``.
 
 ## <a name="cache"></a>Cache de navegação
+
+> Usuários ``Git``, ``SVN``, ``CVS`` e similares: O conteúdo da pasta ``.vscode/.temp`` é inicializado a cada sessão do **VS-Code**, portanto, recomenda-se ignorar essa pasta nos processos de versionamento.
 
 Por padrão, a extensão utiliza um _cache_ em memória, que é gerado na inicialização da extensão.
 Em alguns casos, pode ser interessante manter esse _cache_ entre sessões, ou seja, ter um _cache_ persistente.
