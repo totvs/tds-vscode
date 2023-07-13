@@ -75,7 +75,7 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 > Em **métodos** o valor apresentado pode não ser preciso.
 
-**Acionamento:** Ativação efetuada por pela configuração ``editor.codeLens``, sendo que o padrão é ativado.
+**Acionamento:** Ativação efetuada pela configuração ``editor.codeLens``, sendo que o padrão é ativado.
 
 > Para configurar somente para fontes **TOTVS**, use a configuração ``totvsLanguageServer.editor.codeLens``.
 
