@@ -1,0 +1,14 @@
+{
+	"version": "0.2.2",
+	"includes": [
+		"../includes",
+		"../includes_tlpp"
+	],
+	"permissions": {
+		"authorizationtoken": ""
+	},
+	"connectedServer": {},
+	"configurations": [],
+	"savedTokens": [],
+	"lastConnectedServer": ""
+}

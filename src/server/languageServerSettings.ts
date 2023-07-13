@@ -113,6 +113,7 @@ export function getModifiedLanguageServerSettings(): any[] {
       key: "codeLens",
       value: String(codeLens)
     });
+    needRestart = true;
   }
 
   const signatureHelp = config.get("editor.signatureHelp");

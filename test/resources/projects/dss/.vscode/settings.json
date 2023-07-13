@@ -1,0 +1,19 @@
+{
+    "totvsLanguageServer.welcomePage": false,
+    "totvsLanguageServer.editor.linter.includes": "../includes;../includes_tlpp",
+    "totvsLanguageServer.editor.show.notification": "all",
+    "totvsLanguageServer.launch.args": [
+        "--log-file=totvsls.log",
+        "--record=totls",
+        "--wait-for-attach=30000",
+        "--debug-ls"
+    ],
+    "totvsLanguageServer.askCompileResult": false,
+    "totvsLanguageServer.askEncodingChange": false,
+    "totvsLanguageServer.editor.autocomplete": "Off",
+    "totvsLanguageServer.compilation.generatePpoFile": false,
+    "totvsLanguageServer.workspaceServerConfig": true,
+    "git.autoRepositoryDetection": false,
+    "totvsLanguageServer.editor.index.cache": "onDisk",
+    "totvsLanguageServer.trace.server": "verbose"
+}
