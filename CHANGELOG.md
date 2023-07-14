@@ -8,6 +8,10 @@
 
 Corrigido problema no Monitor que impedia seu correto funcionamento.
 
+### TDSReplay - Variavel LRET nao apresenta o valor correto
+
+Corrigido problema na importação do TDS Replay, onde a variável local booleana LRET deveria conter o valor .T. porém apresentava "N/A (Value exists in a source that was not imported)"
+
 ### Monitoramento de AppServer com Broker exibindo menos informações
 
 Corrigido problema de monitoramento de AppServer com Broker que exige uma conexão diferenciada.
