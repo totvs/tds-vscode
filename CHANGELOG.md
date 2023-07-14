@@ -8,6 +8,16 @@
 
 Corrigido problema no Monitor que impedia seu correto funcionamento.
 
+### Monitoramento de AppServer com Broker exibindo menos informações
+
+Corrigido problema de monitoramento de AppServer com Broker que exige uma conexão diferenciada.
+
+## Melhorias
+
+### Adicionadas mais informações de condições de erro para algumas ações
+
+Adicionadas informações de erro do AppServer durante aplicação de patches, remoção de arquivo do RPO, desfragmentação do RPO e revalidação do RPO.
+
 # Versão [1.3.18]
 
 ## Correções
