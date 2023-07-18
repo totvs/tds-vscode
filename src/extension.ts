@@ -70,9 +70,10 @@ import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import { commandShowBuildTableResult } from "./compile/buildResult";
 import { ServerItem } from "./serverItem";
 import serverProvider from "./serverItemProvider";
-import { ReplayRegisterCommands } from "./debug/tdsreplay/RegisterReplayCommands";
+//import { ReplayRegisterCommands } from "./debug/tdsreplay/RegisterReplayCommands";
 import { registerWorkspace } from "./workspace";
 import { sendTelemetry } from "./protocolMessages";
+import { registerXRef } from "./xreferences";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -569,6 +570,9 @@ export function activate(context: ExtensionContext) {
       }
     )
   );
+
+  //Tratamento de XReference e similares
+  registerXRef(context);
 
   //Eventos e outros associados a vscode.workspace
   registerWorkspace(context);
