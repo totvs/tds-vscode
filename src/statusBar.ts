@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import * as nls from "vscode-nls";
 import { CompileKey } from "./compileKey/compileKey";
-import { languageClient } from "./extension";
 import { IUsageStatusInfo, IUsageStatusData } from "./protocolMessages";
 import { IRpoToken } from "./rpoToken";
 import { ServerItem } from "./serverItem";

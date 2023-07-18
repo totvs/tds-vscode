@@ -64,19 +64,6 @@ export function getLanguageClient(
     options: { env: env, detached: false },
   };
 
-  // Inline code lens.
-  let decorationOpts: vscode.DecorationRenderOptions = {
-    after: {
-      fontStyle: "italic",
-      color: new vscode.ThemeColor("editorCodeLens.foreground"),
-    },
-    rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed,
-  };
-
-  // let codeLensDecoration = window.createTextEditorDecorationType(
-  //  decorationOpts
-  //);
-
   let outputTrace = undefined;
   let trace = config.get("trace.server");
   if (trace !== "off") {
@@ -106,6 +93,14 @@ export function getLanguageClient(
       onTabs: false,
       //match:
     },
+    // middleware: {
+    //   provideCodeLenses: (doc, next, token) => {
+    //     console.log("xxxxxxxxxxx");
+
+    //     return [];
+    //   }
+    // },
+
     ///notebookDocumentOptions: false
   };
 
@@ -123,7 +118,7 @@ export function getLanguageClient(
 
       const configADVPL = vscode.workspace.getConfiguration(
         "totvsLanguageServer"
-      ); 
+      );
 
       const serverInfo: any = languageClient.initializeResult.serverInfo;
       if (serverInfo) {
@@ -147,7 +142,6 @@ export function getLanguageClient(
 }
 
 //Internal Functions
-
 function getClientConfig(context: vscode.ExtensionContext) {
   function resolveVariablesInString(value: string) {
     let rootPath: string = vscode.workspace.rootPath || process.cwd();
@@ -192,83 +186,3 @@ function getClientConfig(context: vscode.ExtensionContext) {
 
   return clientConfig;
 }
-
-// function displayCodeLens(
-//   document: vscode.TextDocument,
-//   allCodeLens: vscode.CodeLens[],
-//   codeLensDecoration: TextEditorDecorationType
-// ) {
-//   for (let editor of window.visibleTextEditors) {
-//     if (editor.document !== document) {
-//       continue;
-//     }
-
-//     let opts: DecorationOptions[] = [];
-
-    // for (let codeLens of allCodeLens) {
-    //   // FIXME: show a real warning or disable on-the-side code lens.
-    //   if (!codeLens.isResolved) {
-    //     console.error(
-    //       localize(
-    //         "tds.webview.totvsLanguegeClient.codeLensNotResolved",
-    //         "Code lens is not resolved"
-    //       )
-    //     );
-    //   }
-
-//       // Default to after the content.
-//       let position = codeLens.range.end;
-
-//       // If multiline push to the end of the first line - works better for
-//       // functions.
-//       if (codeLens.range.start.line !== codeLens.range.end.line) {
-//         position = new Position(codeLens.range.start.line, 1000000);
-//       }
-
-//       let range = new Range(position, position);
-//       let title = codeLens.command === undefined ? "" : codeLens.command.title;
-//       let opt: DecorationOptions = {
-//         range: range,
-//         renderOptions: { after: { contentText: " " + title + " " } },
-//       };
-
-//       opts.push(opt);
-//     }
-
-//     editor.setDecorations(codeLensDecoration, opts);
-//   }
-// }
-
-// function provideDocumentRangeFormattingEdits(
-//   this: void,
-//   document: TextDocument,
-//   range: Range,
-//   options: FormattingOptions,
-//   token: CancellationToken,
-//   next: ProvideDocumentRangeFormattingEditsSignature
-// ): ProviderResult<TextEdit[]> {
-//   return next(document, range, options, token);
-// }
-
-// function provideDocumentFormattingEdits(
-//   this: void,
-//   document: TextDocument,
-//   options: FormattingOptions,
-//   token: CancellationToken,
-//   next: ProvideDocumentFormattingEditsSignature
-// ): ProviderResult<TextEdit[]> {
-//   return next(document, options, token);
-// }
-
-// function provideOnTypeFormatting(
-//   document: TextDocument,
-//   position: Position,
-//   ch: string,
-//   options: FormattingOptions,
-//   token: CancellationToken,
-//   next: ProvideOnTypeFormattingEditsSignature
-// ): ProviderResult<TextEdit[]> {
-//   //const result: vscode.TextEdit[] = [];
-
-//   return next(document, position, ch, options, token);
-// }
