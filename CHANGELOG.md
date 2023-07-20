@@ -26,6 +26,10 @@ Corrigido erro de execução de navegador em ambientes Linux.
 
 Adicionadas informações de erro do AppServer durante geração de patches, remoção de arquivo do RPO, desfragmentação do RPO e revalidação do RPO.
 
+### Adicionados tratamento de erro durante aplicação de patch.
+
+Adicionados tratamentos para prevenir quedas do Language Server.
+
 # Versão [1.3.18]
 
 ## Correções
