@@ -16,6 +16,10 @@ Corrigido problema na importação do TDS Replay, onde a variável local boolean
 
 Corrigido problema de monitoramento de AppServer com Broker que exige uma conexão diferenciada.
 
+### Erro ao iniciar depuração via Smartclient Web em Linux
+
+Corrigido erro de execução de navegador em ambientes Linux.
+
 ## Melhorias
 
 ### Adicionadas informações de condições de erro para algumas ações
