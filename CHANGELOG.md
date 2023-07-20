@@ -27,12 +27,11 @@ Armazenar informações sensiveis em área secreta. [VSCode Api: Secret Storage]
 *(aguardando análise)*
 Implementar o *cache* do **DSS** no formato LSIF, de forma que possa ser utiliado em aplicações de terceiros para análise e outros procedimentos. [LSIF: specification](https://microsoft.github.io/language-server-protocol/specifications/lsif/0.6.0/specification/).
 
-## Versão [2.0.0-next]
+## Versão [2.0.0-RC6]
 
-## [Informação/Referências](https://code.visualstudio.com/docs/editor/editingevolved#_reference-information)
+## [Informação/Referências](docs/dss.md#informaçãoreferências)
 
-*(em desenvolvimento)*
-Informação de quantas vezes uma função/método é utilizado.
+Informação de quantas vezes e onde, uma função, classe ou método estático é utilizado.
 
 ## Versão [2.0.0-RC5]
 
