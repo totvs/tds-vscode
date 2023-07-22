@@ -902,7 +902,10 @@ export default class Utils {
     const includes: string = servers.includes.join(";");
     const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("totvsLanguageServer");
 
-    config.update("editor.linter.includes", includes); //dispara onDidChangeConfiguration
+    const includeLinter = config.get("editor.linter.includes", "");
+    if ((includes.length > 0) && (includes != includeLinter)) {
+      config.update("editor.linter.includes", includes); //dispara onDidChangeConfiguration
+    }
   }
 
   /**
