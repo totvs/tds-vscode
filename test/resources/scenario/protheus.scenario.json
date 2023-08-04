@@ -3,7 +3,6 @@
 	"description": [
 		"Cenário para o ambiente Protheus."
 	],
-	"projectFolder": "advpl",
 	"variables": {
 		"rootPath": {
 			"linux": "~/protheus",

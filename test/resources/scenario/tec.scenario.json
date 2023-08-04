@@ -3,7 +3,6 @@
 	"description": [
 		"Cenário para o ambiente TotvsTec (Harpia)."
 	],
-	"projectFolder": "advpl",
 	"variables": {
 		"rootPath": {
 			"linux": "~/protheus",

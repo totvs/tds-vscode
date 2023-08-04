@@ -10,7 +10,6 @@
 			"windows": "m:/protheus"
 		}
 	},
-	"projectFolder": "advpl",
 	"server": {
 		"includePath": [
 			"../includes"
