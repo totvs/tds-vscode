@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { delay, openProject } from "../../helper";
+import { delay, prepareProject } from "../../helper";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA } from "../../scenario";
 import { DebugPageObject, VariablePO } from "../../page-objects/debug-view-po";
@@ -102,7 +102,7 @@ describe("Debug primitive variables", async () => {
   let serverTreeItemPO: ServerTreeItemPageObject;
 
   before(async () => {
-    await openProject();
+    await prepareProject();
 
     workbenchPO = new WorkbenchPageObject();
 

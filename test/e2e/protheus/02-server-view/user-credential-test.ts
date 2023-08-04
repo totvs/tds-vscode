@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { openProject } from "../../helper";
+import { prepareProject } from "../../helper";
 import { OutputLsPageObject } from "../../page-objects/output-ls-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
@@ -15,7 +15,7 @@ describe("Credentials Users Connect", async () => {
   let outputPO: OutputLsPageObject;
 
   before(async () => {
-    await openProject();
+    await prepareProject();
 
     workbenchPO = new WorkbenchPageObject();
     outputPO = await workbenchPO.openOutputLs();

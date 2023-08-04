@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import { Marker, TreeItem } from "vscode-extension-tester";
-import { openProject } from "../../helper";
+import { prepareProject } from "../../helper";
 import { BuildPageObject } from "../../page-objects/build-po";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
 import { ProblemsPageObject } from "../../page-objects/problem-view-po";
@@ -20,7 +20,7 @@ describe("DTCLIENT01-3148: Build messages are no longer shown", async () => {
   let problemPO: ProblemsPageObject;
 
   before(async () => {
-    await openProject();
+    await prepareProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();

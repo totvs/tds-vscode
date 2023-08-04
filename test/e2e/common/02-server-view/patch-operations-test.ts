@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { delay, openProject } from "../../helper";
+import { delay, prepareProject } from "../../helper";
 import { PatchGeneratePageObject } from "../../page-objects/patch-generate-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
@@ -13,7 +13,7 @@ describe("Patch Operations (forms)", async () => {
   let workbenchPO: WorkbenchPageObject;
 
   before(async () => {
-    await openProject();
+    await prepareProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();

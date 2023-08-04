@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import { TreeItem } from "vscode-extension-tester";
-import { openProject } from "../../helper";
+import { prepareProject } from "../../helper";
 import { BuildPageObject } from "../../page-objects/build-po";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
 import { OutputLsPageObject } from "../../page-objects/output-ls-po";
@@ -19,7 +19,7 @@ describe("Compile Simple File (basic test)", async () => {
   let serverPO: ServerTreeItemPageObject;
 
   before(async () => {
-    await openProject();
+    await prepareProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();

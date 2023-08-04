@@ -6,7 +6,7 @@ import {
   DEFAULT_DELAY,
   fillEnvironment,
   fillUserdata,
-  openProject,
+  prepareProject,
 } from "../../helper";
 import { ServerPageObject } from "../../page-objects/server-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
@@ -20,7 +20,7 @@ describe("Server View Basic Operations", async () => {
   let workbenchPO: WorkbenchPageObject;
 
   before(async () => {
-    await openProject();
+    await prepareProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();
@@ -48,12 +48,12 @@ describe("Server View Basic Operations", async () => {
   });
 
   it("Connection Process", async () => {
-      await fillEnvironment(APPSERVER_DATA.environment);
-      await delay();
-      await fillUserdata(ADMIN_USER_DATA);
-      await delay();
+    await fillEnvironment(APPSERVER_DATA.environment);
+    await delay();
+    await fillUserdata(ADMIN_USER_DATA);
+    await delay();
 
-      await workbenchPO.waitAuthenticating();
+    await workbenchPO.waitAuthenticating();
   })
 
   it("Localhost Server Connected", async () => {

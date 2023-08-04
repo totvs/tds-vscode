@@ -5,7 +5,7 @@ import {
   DEFAULT_DELAY,
   fillEnvironment,
   fillUserdata,
-  openProject,
+  prepareProject,
 } from "../../helper";
 import { ServerPageObject } from "../../page-objects/server-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
@@ -19,7 +19,7 @@ describe("Validate server type and environments", async () => {
   let workbenchPO: WorkbenchPageObject;
 
   before(async () => {
-    await openProject();
+    await prepareProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();

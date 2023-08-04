@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { delay, openProject } from "../../helper";
+import { delay, prepareProject } from "../../helper";
 import { FunctionsInspectorPageObject } from "../../page-objects/functions-inspector-po";
 import { ObjectsInspectorPageObject } from "../../page-objects/objects-inspector-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
@@ -17,7 +17,7 @@ describe("DTCLIENT01-3240: Side-by-side inspectors, one of the two locks on load
   let functionsInspectorPO: FunctionsInspectorPageObject;
 
   before(async () => {
-    await openProject();
+    await prepareProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();

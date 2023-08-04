@@ -25,6 +25,6 @@
 				"${workspaceFolder}/out/**/*.js"
 			],
 			"preLaunchTask": "npm: clean-logs",
-		},
+		}
 	]
 }

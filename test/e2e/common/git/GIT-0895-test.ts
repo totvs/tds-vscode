@@ -6,7 +6,7 @@ import {
   EditorView,
   TextEditor,
 } from "vscode-extension-tester";
-import { delay, DELAY_LONG, openProject } from "../../helper";
+import { delay, DELAY_LONG, prepareProject } from "../../helper";
 import { BuildPageObject } from "../../page-objects/build-po";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
@@ -24,7 +24,7 @@ describe("GIT-0895: Does not show table as build results", async () => {
   let resourceItem: TreeItem;
 
   before(async () => {
-    await openProject();
+    await prepareProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();

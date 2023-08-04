@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import path = require("path");
-import { delay, DEFAULT_DELAY, openProject } from "../../helper";
+import { delay, DEFAULT_DELAY, prepareProject } from "../../helper";
 import { ApplyPatchPageObject } from "../../page-objects/apply-patch-po";
 import { ApplyTemplatePageObject } from "../../page-objects/apply-template-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
@@ -22,7 +22,7 @@ describe("Apply Template", async () => {
   let workbenchPO: WorkbenchPageObject;
 
   before(async () => {
-    await openProject();
+    await prepareProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();
