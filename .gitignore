@@ -19,7 +19,5 @@ notas.md
 syntaxes/build
 test/**/no_git
 test/**/fw/**
-
 *.txt
 *.ppo
-test/resources/projects/simple1/files/tds-vscode-utils.prw
