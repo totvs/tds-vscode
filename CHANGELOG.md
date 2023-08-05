@@ -20,15 +20,23 @@ Corrigido problema de monitoramento de AppServer com Broker que exige uma conex�
 
 Corrigido erro de execução de navegador em ambientes Linux.
 
+### Logpoint não resolve {variavel}
+
+Corrigido erro de resolução de {variavel} em logpoints.
+
 ## Melhorias
 
 ### Adicionadas informações de condições de erro para algumas ações
 
 Adicionadas informações de erro do AppServer durante geração de patches, remoção de arquivo do RPO, desfragmentação do RPO e revalidação do RPO.
 
-### Adicionados tratamento de erro durante aplicação de patch.
+### Adicionados tratamento de erro durante aplicação de patch
 
 Adicionados tratamentos para prevenir quedas do Language Server.
+
+### Reformulada a aplicação de patch
+
+Otimização de processo e diminuição de mensagens exibidas. O tempo de aplicação também foi reduzido significativamente.
 
 # Versão [1.3.18]
 
