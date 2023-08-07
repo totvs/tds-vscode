@@ -24,6 +24,10 @@ Corrigido erro de execução de navegador em ambientes Linux.
 
 Corrigido erro de resolução de {variavel} em logpoints.
 
+### 'Command not found' ao clicar em um environment de um servidor [#1131](https://github.com/totvs/tds-vscode/issues/1131)
+
+Corrigido erro de 'Command not found' ao clicar em um environment de um servidor. Utilizar o ícone de seleção deste environment para sua conexão.
+
 ## Melhorias
 
 ### Adicionadas informações de condições de erro para algumas ações
