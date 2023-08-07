@@ -117,12 +117,6 @@ class ServerItemProvider
                 new EnvSection(
                   env,
                   element,
-                  vscode.TreeItemCollapsibleState.None,
-                  {
-                    command: "totvs-developer-studio.environmentSelection",
-                    title: "",
-                    arguments: [env],
-                  }
                 )
             );
           this.localServerItems[element.id].collapsibleState =
@@ -139,9 +133,6 @@ class ServerItemProvider
             new EnvSection(
               element.name,
               element,
-              element.collapsibleState,
-              undefined,
-              listOfEnvironments
             )
           );
         } else {
@@ -241,13 +232,6 @@ class ServerItemProvider
           const env = new EnvSection(
             environment,
             element,
-            vscode.TreeItemCollapsibleState.None,
-            {
-              command: "totvs-developer-studio.environmentSelection",
-              title: "",
-              arguments: [environment],
-            },
-            environment
           );
 
           if (serverConfig.savedTokens) {

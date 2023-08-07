@@ -1,5 +1,47 @@
 # Changelog
 
+# Versão [1.3.19]
+
+## Correções
+
+### After the last update the Monitor is not showing corretly nor terminating connections [#1123](https://github.com/totvs/tds-vscode/issues/1123)
+
+Corrigido problema no Monitor que impedia seu correto funcionamento.
+
+### TDSReplay - Variavel LRET nao apresenta o valor correto
+
+Corrigido problema na importação do TDS Replay, onde a variável local booleana LRET deveria conter o valor .T. porém apresentava "N/A (Value exists in a source that was not imported)"
+
+### Monitoramento de AppServer com Broker exibindo menos informações
+
+Corrigido problema de monitoramento de AppServer com Broker que exige uma conexão diferenciada.
+
+### Erro ao iniciar depuração via Smartclient Web em Linux
+
+Corrigido erro de execução de navegador em ambientes Linux.
+
+### Logpoint não resolve {variavel}
+
+Corrigido erro de resolução de {variavel} em logpoints.
+
+### 'Command not found' ao clicar em um environment de um servidor [#1131](https://github.com/totvs/tds-vscode/issues/1131)
+
+Corrigido erro de 'Command not found' ao clicar em um environment de um servidor. Utilizar o ícone de seleção deste environment para sua conexão.
+
+## Melhorias
+
+### Adicionadas informações de condições de erro para algumas ações
+
+Adicionadas informações de erro do AppServer durante geração de patches, remoção de arquivo do RPO, desfragmentação do RPO e revalidação do RPO.
+
+### Adicionados tratamento de erro durante aplicação de patch
+
+Adicionados tratamentos para prevenir quedas do Language Server.
+
+### Reformulada a aplicação de patch
+
+Otimização de processo e diminuição de mensagens exibidas. O tempo de aplicação também foi reduzido significativamente.
+
 # Versão [1.3.18]
 
 ## Correções
