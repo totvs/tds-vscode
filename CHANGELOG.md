@@ -1,5 +1,13 @@
 # Changelog
 
+# Versão [1.3.20]
+
+## Correções
+
+### Erro "Connection to server got closed. Server will restart." durante inserção de servidor
+
+Corrigido erro de "Connection to server got closed. Server will restart." durante cadastro de novo servidor.
+
 # Versão [1.3.19]
 
 ## Correções
