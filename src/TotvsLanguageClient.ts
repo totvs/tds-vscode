@@ -182,7 +182,7 @@ function getClientConfig(context: vscode.ExtensionContext) {
     }
   }
 
-  clientConfig["setting"] = getLanguageServerSettings();
+  clientConfig["settings"] = getLanguageServerSettings();
 
   return clientConfig;
 }
