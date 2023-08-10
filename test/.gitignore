@@ -1,6 +1,6 @@
 ./resources/**/.vscode/servers.json
 ./resources/**/.vscode/settings.json
-./resources/**/.vscode/laucher.json
+./resources/**/.vscode/launch.json
+./resources/**/.vscode/servers.json
 ./resources/**/.cache
-./resources/**/.temp
 ./resources/**/.advpl
