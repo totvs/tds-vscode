@@ -69,11 +69,8 @@ export class EnvSection extends vscode.TreeItem {
   constructor(
     public label: string,
     public readonly serverItemParent: ServerItem,
-    public collapsibleState: vscode.TreeItemCollapsibleState,
-    public readonly command?: vscode.Command,
-    public environments?: string[]
   ) {
-    super(label, collapsibleState);
+    super(label);
   }
 
   public get isCurrent(): boolean {

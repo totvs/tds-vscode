@@ -2,6 +2,14 @@
 
 [Changelog versão atual](CHANGELOG.md)
 
+# Versão [1.3.20]
+
+## Correções
+
+### Erro "Connection to server got closed. Server will restart." durante inserção de servidor
+
+Corrigido erro de "Connection to server got closed. Server will restart." durante cadastro de novo servidor.
+
 # Versão [1.3.19]
 
 ## Correções
@@ -18,7 +26,37 @@ Corrigido problema na importação do TDS Replay, onde a variável local boolean
 
 ### Correções
 
-#### Problema ao depurar em Linux com fonte que possuem caracteres especiais no "path" [#1113](https://github.com/totvs/tds-vscode/issues/1113)
+### Erro ao iniciar depuração via Smartclient Web em Linux
+
+Corrigido erro de execução de navegador em ambientes Linux.
+
+### Logpoint não resolve {variavel}
+
+Corrigido erro de resolução de {variavel} em logpoints.
+
+### 'Command not found' ao clicar em um environment de um servidor [#1131](https://github.com/totvs/tds-vscode/issues/1131)
+
+Corrigido erro de 'Command not found' ao clicar em um environment de um servidor. Utilizar o ícone de seleção deste environment para sua conexão.
+
+## Melhorias
+
+### Adicionadas informações de condições de erro para algumas ações
+
+Adicionadas informações de erro do AppServer durante geração de patches, remoção de arquivo do RPO, desfragmentação do RPO e revalidação do RPO.
+
+### Adicionados tratamento de erro durante aplicação de patch
+
+Adicionados tratamentos para prevenir quedas do Language Server.
+
+### Reformulada a aplicação de patch
+
+Otimização de processo e diminuição de mensagens exibidas. O tempo de aplicação também foi reduzido significativamente.
+
+# Versão [1.3.18]
+
+## Correções
+
+### Problema ao depurar em Linux com fonte que possuem caracteres especiais no "path" [#1078](https://github.com/totvs/tds-vscode/issues/1078)
 
 Corrigido problema de identificação de caracteres especiais em qualquer ponto do caminho do fonte, fazendo com que a depuração fosse interrompida ou o fonte não fosse encontrado.
 

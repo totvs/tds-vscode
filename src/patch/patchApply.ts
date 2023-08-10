@@ -23,6 +23,7 @@ const localizeHTML = {
   "tds.webview.applyOld": localize("tds.webview.applyOld", "Apply old files"),
   "tds.webview.col01": localize("tds.webview.col01", "Patch Name"),
   "tds.webview.col02": localize("tds.webview.col02", "Patch Full Path"),
+  "tds.webview.col03": localize("tds.webview.col03", "Validation"),
 };
 
 export function patchApply(
@@ -74,6 +75,63 @@ export function patchApply(
         currentPanel.webview.onDidReceiveMessage(
           async (message) => {
             switch (message.command) {
+              case "patchValidate":
+                if (message.patchFiles.length === 0) {
+                  vscode.window.showErrorMessage(
+                    localize(
+                      "tds.webview.patch.validate.fail",
+                      "Validate Patch Fail. Please input patch file."
+                    )
+                  );
+                } else {
+                  vscode.window
+                    .withProgress(
+                      {
+                        cancellable: false,
+                        location: vscode.ProgressLocation.Notification,
+                        title: localize(
+                          "tds.webview.validating_patch",
+                          `Validating patch`
+                        ),
+                      },
+                      async (progress, token) => {
+                        let step: number = 100 / (message.patchFiles.length + 1);
+                        progress.report({ increment: step / 2 });
+                        let index: number = 0;
+
+                        for await (const element of message.patchFiles) {
+                          index++;
+                          progress.report({
+                            increment: step,
+                            message: `(${index}/${message.patchFiles.length}) ${element}`,
+                          });
+
+                          await doValidatePatch(
+                            server,
+                            vscode.Uri.file(element).toString()
+                          ).then(
+                            () => {},
+                            (reason: any) => {
+                              languageClient.error(reason);
+                            }
+                          );
+                        }
+
+                        progress.report({
+                          increment: 100,
+                          message: localize(
+                            "tds.webview.patchs_validated",
+                            "Patchs validate ( files)" //${index}
+                          ),
+                        });
+                      }
+                    )
+                    .then(() => {
+                    });
+                }
+
+                break;
+
               case "patchApply":
                 if (message.patchFile.length === 0) {
                   vscode.window.showErrorMessage(
@@ -197,7 +255,7 @@ export function patchApply(
                 );
                 break;
 
-              case "patchValidate":
+              case "patchValidateFile":
                 if (message.file) {
                   vscode.window.showInformationMessage("PatchValidate");
                   const validateArgs = {
@@ -385,6 +443,54 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 
 class PatchResult {
   returnCode: number;
+}
+
+async function doValidatePatch(
+  server: ServerItem,
+  patchUri: string
+) {
+  return languageClient
+    .sendRequest("$totvsserver/patchApply", {
+      patchApplyInfo: {
+        connectionToken: server.token,
+        authorizationToken: Utils.getAuthorizationToken(server),
+        environment: server.environment,
+        patchUri: patchUri,
+        isLocal: true,
+        isValidOnly: true,
+        applyScope: "none",
+      },
+    })
+    .then(
+      (response: any) => {
+        const patchFile = vscode.Uri.parse(patchUri);
+        //const patchFile = vscode.Uri.file(patchUri).toString();
+        var patchFilePath = patchFile.path;
+        var retMessage = "No validation errors";
+        var oldResource = false;
+        if (patchFilePath.startsWith("/")) {
+          patchFilePath = patchFilePath.substring(1);
+        }
+        if (!response.error) {
+          vscode.window.showInformationMessage("Patch validated.");
+        } else {
+          retMessage = response.message
+          oldResource = (response.errorCode == 5);
+          languageClient.error(retMessage);
+          vscode.window.showErrorMessage(retMessage);
+        }
+        currentPanel.webview.postMessage({
+          command: "patchValidationRet",
+          file: patchFilePath,
+          message: retMessage,
+          errorCode: response.errorCode,
+          oldResource: oldResource,
+        });
+      },
+      (err: ResponseError<object>) => {
+        vscode.window.showErrorMessage(err.message);
+      }
+    );
 }
 
 async function doApplyPatch(
