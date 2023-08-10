@@ -21,9 +21,4 @@ syntaxes/build
 *.ppo
 test/**/no_git
 test/**/fw/**
-test/**/.vscode/servers.json
-test/**/.vscode/settings.json
-test/**/.vscode/launch.json
-test/**/.vscode/servers.json
-test/**/.cache
-test/**/.advpl
+test/**/.vscode
