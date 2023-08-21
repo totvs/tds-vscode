@@ -68,7 +68,7 @@
     "i18n-import": "gulp i18n-import",
     "---RELEASE---": "",
     "release": "npx standard-version --skip.changelog --release-as 2.0.0-RC1",
-    "tag": "git push --follow-tags origin dev",
+    "tag": "git push --follow-tags origin dev2",
     "package": "gulp package",
     "publish": "gulp publish",
     "pre-release": "gulp prerelease",
