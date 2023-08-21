@@ -4,6 +4,7 @@
   "description": "%tds.package.description%",
   "version": "2.0.0-RC7",
   "publisher": "TOTVS",
+  "preview": true,
   "author": {
     "name": "TOTVS",
     "email": "tecnologia@totvs.com.br"
