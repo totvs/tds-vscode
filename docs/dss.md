@@ -19,7 +19,7 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 |        | Strings de tradução (visualização e edição). |
 |        | Suporte a AdvPL/Asp (congelado)
 
-## [Navegação rápida](https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation)
+## [Navegação rápida (_Quick file navigation_)](https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation)
 
 **Acionamento:** ``Ctrl+P`` ou ``F1`` (iniciar com vazio) e inicie a digitação para o filtro por nome do arquivo.
 
