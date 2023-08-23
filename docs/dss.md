@@ -23,55 +23,47 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 **Acionamento:** ``Ctrl+P`` ou ``F1`` (iniciar com vazio) e inicie a digitação para o filtro por nome do arquivo.
 
-## [Trilha](https://code.visualstudio.com/docs/editor/editingevolved#_breadcrumbs)
+## [Trilha (_Breadcrumbs_)](https://code.visualstudio.com/docs/editor/editingevolved#_breadcrumbs)
 
 **Acionamento:** Você pode ativar ou desativar a trilha via ``View > Show Breadcrumbs`` ou com a configuração ``breadcrumbs.enabled``.
 
-## [Ir para definição](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition)
+## [Ir para definição (_Go to definition_)](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition)
 
 **Acionamento:** ``Ctrl+Click`` (abre) ou ``Ctrl+Alt+Click`` (abre ao lado) ou ``F12`` sobre uma chamada de função ou variável.
 
-## [Ir para um símbolo](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-symbol)
+## [Ir para um símbolo (_Go to symbol_)](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-symbol)
 
 **Acionamento:** ``Ctrl+Shift+O`` e inicie a digitação para o filtro por nome do simbolo.
 
-## [Abrir símbolo por nome](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name)
+## [Abrir símbolo por nome (_Open symbol by name_)](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name)
 
 **Acionamento:** ``Ctrl+T`` ou ``F1`` (iniciar com ``#``) e inicie a digitação para o filtro por nome do símbolo.
 
-## [Procurar/ir para referência](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition)
+## [Procurar/ir para referência (_Go to definition_)](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition)
 
 **Acionamento:** ``Shift+F12`` sobre uma chamada de função ou variável.
 
-## [Visualizar](https://code.visualstudio.com/docs/editor/editingevolved#_peek)
+## [Visualizar (_Peek_)](https://code.visualstudio.com/docs/editor/editingevolved#_peek)
 
 **Acionamento:** ``Alt+F12`` sobre uma chamada de função ou variável.
 
-## [Assistente de assinatura de funções](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#help-with-function-and-method-signatures)
-
-**Acionamento:** ``(`` após o nome de uma função e ``,`` entre os parâmetros.
-
-> Limitações:
-
-- Em classes, a operação funciona somente no fonte da própria classe com o operando ``::`` ou ``self:``;
-
-## [Passagem de mouse](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#show-hovers)
+## [Passagem de mouse (_Show hover_)](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#show-hovers)
 
 **Acionamento:** Passe o ponteiro do mouse sobre o item a ser visualizado.
 
 > Você pode ativar ou desativar a passagem de mouse em ``View > Text Editor > Hover: Enabled`` ou mudar o formato de apresentação em ``File > Preference > Settings > Extension > TOTVS > Totvs Language Server > Editor: Hover``.
 
-## [Mostrar definições de um símbolo](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#show-definitions-of-a-symbol)
+## [Mostrar definições de um símbolo (_Show definitions of a symbol_)](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#show-definitions-of-a-symbol)
 
 **Acionamento:** ``Ctrl+<passagem ponteiro do mouse>`` sobre o item a ser visualizado. Se este ficar destacado com um sublinhado, pode ir para definição acionando ``Ctrl+<acionamento do mouse>``.
 
-## [Ajuda com assinatura em funções (_signature help_)](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#help-with-function-and-method-signatures)
+## [Ajuda com assinatura em funções (_Signature help_)](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#help-with-function-and-method-signatures)
 
 **Acionamento:** Automático ao acionar ``(`` após um identificador de função/método ou ``ctrl+shitf+space``, na lista de argumentos.
 
 > Funciona apenas para funções/métodos, cujo fonte esteja no seu projeto ou para funções/métodos AdvPL binários (definidas no núcleo da linguagem).
 
-## [Informação/Referências](https://code.visualstudio.com/docs/editor/editingevolved#_reference-information)
+## [Informação/Referências (_Reference information_)](https://code.visualstudio.com/docs/editor/editingevolved#_reference-information)
 
 > Em **métodos** o valor apresentado pode não ser preciso.
 
