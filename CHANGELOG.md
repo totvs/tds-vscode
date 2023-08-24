@@ -1,5 +1,25 @@
 # Changelog
 
+# Versão [1.3.21]
+
+## Correções
+
+### Erro Validate Patch Fail. Please input patch file. (arquivos zip) [#1136](https://github.com/totvs/tds-vscode/issues/1136)
+
+Corrigido de validação de patch em arquivos Zip.
+
+### Erro "Get organization list could not be executed" ao aplicar patch em ambiente TSS [#1139](https://github.com/totvs/tds-vscode/issues/1139)
+
+Corrigido problema que causava erro ao aplicar patch em ambiente TSS.
+
+### Não permite aplicar patch com fontes mais antigos que o do RPO
+
+Removida a trava adicionada que estava impedindo a aplicação de patches com fontes mais antigos de o do RPO.
+
+### Validação de patch não finaliza no Linux/MaoOS
+
+Após validação no Linux/MacOS a ação de aplicação de patch não estava sendo liberada.
+
 # Versão [1.3.20]
 
 ## Correções
