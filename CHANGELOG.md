@@ -1,10 +1,18 @@
 # Changelog ([Changelog Versão 1](CHANGELOG-V1.md))
 
+## Versão [2.0.0-RC8]
+
+### Correção
+
+#### Assistente de assinatura (_Signature Help_)
+
+Ajustado posicionamento do parâmetro corrente na documentação apresentada.
+
 ## Versão [2.0.0-RC7]
 
 ### Novos recursos
 
-Liberação ['TDS: Developer Support Subsystem (DSS)']](docs/dss.md).
+Liberação ['TDS: Developer Support Subsystem (DSS)'](docs/dss.md).
 
 ## Versão [2.0.0-RC6]
 
@@ -26,7 +34,7 @@ Código teste: ``oTButton1 := TButton():New( 0, 510, "Ir",oPanel,{||oWebEngine:N
 
 ### Auto completar (Otto)
 
-*Auto-Complete* para *user function* é "estranho", ele acha o nome da função mas não como ``u_``.
+*Auto-Complete* para _user function_ é "estranho", ele acha o nome da função mas não como ``u_``.
 
 ### Renomear variável local (Otto)
 
@@ -44,11 +52,11 @@ Ao criar um user function em um arquivo tlpp na primeira linha gera um erro que 
 
 ### ``Ir para definição`` em variável local (Otto)
 
-*Ctrl-click* (``go to definition``) em uma variável definida como local não está levando na definição (apesar de mostrar no *outline*)
+*Ctrl-click* (``go to definition``) em uma variável definida como local não está levando na definição (apesar de mostrar no _outline_)
 
-#### Navegação no código falha após ler o *cache* (Otto)
+#### Navegação no código falha após ler o _cache_ (Otto)
 
-Revisto processo de salva e carga de *cache*.
+Revisto processo de salva e carga de _cache_.
 
 > Efetuado higienização de código, eliminando propriedades e processos desnecessários.
 
@@ -82,9 +90,9 @@ Adicionado tratamento de ProtheusDOC em classes.
 
 #### ``Ir para definição`` na inicialização (``new``) de objetos
 
-Corrigido a navegação e *text hover* na definição de objeto na sua inicialização.
+Corrigido a navegação e _text hover_ na definição de objeto na sua inicialização.
 
-#### Passagem *mouse* (*text hover*)
+#### Passagem _mouse_ (_text hover_)
 
 Apresentava informações de definição e local de uso de forma indevida.
 
@@ -102,9 +110,9 @@ Ao ler o cache, este está sendo invalidado e com isso reindexa os arquivos.
 
 ### Melhoria
 
-### Documentação das funções de binário (*binary function*)
+### Documentação das funções de binário (_binary function_)
 
-Extração da documentação das funções binárias direto do projeto *totvsvmtests*, via ferramenta *advplDoc* (solução *TotvsTecTools*).
+Extração da documentação das funções binárias direto do projeto _totvsvmtests_, via ferramenta _advplDoc_ (solução _TotvsTecTools_).
 Para detalhes, veja ``<local folder>\totvsls\dbcode\dbcode_manager.cpp``, método ``DBCodeManager::loadBinaryFunctions``.
 
 ## Versão [2.0.0]
@@ -113,21 +121,21 @@ Para detalhes, veja ``<local folder>\totvsls\dbcode\dbcode_manager.cpp``, métod
 >
 > Para garantir a interoperabilidade das áreas de trabalho entre os sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes, recomenda-se **veementemente** que pastas e arquivos não contenham caracteres especiais (exceto hífen e sublinhado) e/ou acentuados e sempre em mínusculas.
 >
-> Leia [Convenção para nomenclatura de *File System* em ambiente Linux](<https://tdn.totvs.com/x/h8BICw>).
+> Leia [Convenção para nomenclatura de _File System_ em ambiente Linux](<https://tdn.totvs.com/x/h8BICw>).
 
 ### Melhorias
 
 #### Assistente de assinatura de funções
 
-Adicionado assistente de assinatura de funções (*SignatureHelp*).
+Adicionado assistente de assinatura de funções (_SignatureHelp_).
 
 #### Informações sobre uso e outras informações
 
-BETA: Adicionado informações sobre o uso de funções (*CodeLens*).
+BETA: Adicionado informações sobre o uso de funções (_CodeLens_).
 
 #### Implementação de configuração para ignorar pastas e arquivos
 
-Efetuado a implementação de configuração para a extensão ignorar pastas e arquivos no processo de *Navegação em fontes* e recursos associados, através da existência do arquivo `.tdsignore`.
+Efetuado a implementação de configuração para a extensão ignorar pastas e arquivos no processo de _Navegação em fontes_ e recursos associados, através da existência do arquivo `.tdsignore`.
 
 Detalhes da implementação em [# TDS: Developer Support Subsystem](docs/dss.md#ignore).
 
@@ -136,8 +144,8 @@ Detalhes da implementação em [# TDS: Developer Support Subsystem](docs/dss.md#
 Efetuado a implementação de navegação em fontes, passagem de mouse e referências.
 Detalhes da implementação em [TDS: Developer Support Subsystem](docs/dss.md).
 
-> Os recursos aqui apresentados, podem ser influenciados devido ao *linter* ignorar o processamento de fontes configurado em [TDS: Linter -> Ignorar pastas e arquivos](docs/linter.md#tdsignore).
-> As informações sobre navegação, podem ou não ficar em [*cache*](docs/dss.md#cache).
+> Os recursos aqui apresentados, podem ser influenciados devido ao _linter_ ignorar o processamento de fontes configurado em [TDS: Linter -> Ignorar pastas e arquivos](docs/linter.md#tdsignore).
+> As informações sobre navegação, podem ou não ficar em [_cache_](docs/dss.md#cache).
 
 #### Visão *Estrutura*
 
