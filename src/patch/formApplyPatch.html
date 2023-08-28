@@ -231,6 +231,7 @@
 
 	window.addEventListener('message', event => {
 		const message = event.data; // The JSON data our extension sent
+		//console.log("formApplyPatch receive: " + message.command);
 		switch (message.command) {
 			case 'setCurrentServer':
 				const server = message.serverCurrent;
@@ -238,8 +239,24 @@
 				document.getElementById('serverAddressID').value = server.address + ":" + server.port;
 				document.getElementById('serverEnvironmentID').value = server.environment
 				break;
-			case 'addFilepath':
-				addFile(message.file);
+			case 'patchValidationRet':
+				const file = message.file.toLowerCase();
+				//console.log("file: "+file);
+				var patchs = tableAPI.data();
+				for (var i = 0; i < patchs.length; i++) {
+					var patchPath = patchs[i][3].replaceAll('\\\\', '/').toLowerCase();
+					//console.log("patchPath: "+patchPath);
+					if (patchPath === file) {
+						var validationMessage = message.message;
+						//console.log("FOUND! "+message.message);
+						tableAPI.cell(i,1).data(validationMessage);
+						var errorCode = message.errorCode;
+						//console.log("FOUND! "+message.errorCode);
+						tableAPI.cell(i,4).data(errorCode);
+						tableAPI.draw();
+					}
+				};
+				checkValidations();
 				break;
 			case 'patchValidationRet':
 				//console.log("patchValidationRet");
@@ -301,14 +318,7 @@
 		var ext = getExtension(filename);
 		//console.log("ext: "+ext);
 
-		if (ext.toLowerCase() === 'zip') {
-			vscode.postMessage({
-				command: 'extractPatchsFiles',
-				files: [fullPath]
-			})
-		} else {
-			fnProc(filename, fullPath);
-		}
+		fnProc(filename, fullPath);
 	}
 
 	function getFilename(filePath) {
@@ -362,14 +372,15 @@
 		//console.log("hasOld: "+hasOld);
 		if (hasOld) {
 			//console.log("ApplyOldID: "+(document.getElementById('ApplyOldID').checked?"checked":"not checked"));
+			document.getElementById('OutputMessage').style = "color: red";
 			if (!document.getElementById('ApplyOldID').checked) {
-				document.getElementById('OutputMessage').style = "color: red";
-				document.getElementById('OutputMessage').innerHTML = "There are patches with resources older than RPO. To apply those patches you must enable 'Apply old files' checkbox.";
-				return;
+				// warning: has Old resource
+				document.getElementById('OutputMessage').innerHTML = "There are patches with resources older than RPO.";
 			} else {
-				// has Old resource but user agreed to apply anyway
-				validationOk = true;
+				// warning: has Old resource but user choose to overwrite anyway
+				document.getElementById('OutputMessage').innerHTML = "There are patches with resources older than RPO and they will overwrite newer resources in RPO.";
 			}
+			validationOk = true;
 		}
 		//console.log("validationInProgress: "+validationInProgress);
 		//console.log("validationOk: "+validationOk);
