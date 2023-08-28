@@ -45,7 +45,7 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 ## [Visualizar (_Peek_)](https://code.visualstudio.com/docs/editor/editingevolved#_peek)
 
-**Acionamento:** ``Alt+F12`` sobre uma chamada de função ou variável.
+**Acionamento:** ``Shift+F12`` sobre uma chamada de função ou variável.
 
 ## [Passagem de mouse (_Show hover_)](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#show-hovers)
 
