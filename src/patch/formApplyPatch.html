@@ -258,6 +258,26 @@
 				};
 				checkValidations();
 				break;
+			case 'patchValidationRet':
+				//console.log("patchValidationRet");
+				const file = message.file.toLowerCase();
+				//console.log("file: "+file);
+				var patchs = tableAPI.data();
+				for (var i = 0; i < patchs.length; i++) {
+					var patchPath = patchs[i][3].replaceAll('\\\\', '/').toLowerCase();
+					//console.log("patchPath: "+patchPath);
+					if (patchPath === file) {
+						var validationMessage = message.message;
+						//console.log("FOUND! "+message.message);
+						tableAPI.cell(i,1).data(validationMessage);
+						var errorCode = message.errorCode;
+						//console.log("FOUND! "+message.errorCode);
+						tableAPI.cell(i,4).data(errorCode);
+						tableAPI.draw();
+					}
+				};
+				checkValidations();
+				break;
 		}
 	});
 
