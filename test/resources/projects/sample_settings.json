@@ -7,7 +7,7 @@
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
         "--verbose",
-        "--wait-for-attach=20",
+        "--wait-for-attach=20000",
         "--debug-ls",
         "--trace-compile",
         "--log-file-append=totvsls2.log"
