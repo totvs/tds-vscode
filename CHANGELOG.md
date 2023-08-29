@@ -1,5 +1,13 @@
 # Changelog
 
+# Versão [1.3.22]
+
+## Correções
+
+### Publicação de vsix não respeita limitador de versão "^1.2.74"
+
+O publicador de pacotes vsix não respeita o limitador de versão no formato "^1.2.74".
+
 # Versão [1.3.21]
 
 ## Correções
