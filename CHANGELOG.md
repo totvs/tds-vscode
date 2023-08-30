@@ -1,5 +1,13 @@
 # Changelog
 
+# Versão [1.3.23]
+
+## Correções
+
+### Aplicação de Patch [#1145](https://github.com/totvs/tds-vscode/issues/1145)
+
+A aplicação de patches não carrega informação de servidor e não permite aplicação.
+
 # Versão [1.3.22]
 
 ## Correções
