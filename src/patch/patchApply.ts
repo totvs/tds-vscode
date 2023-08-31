@@ -201,54 +201,6 @@ export function patchApply(
 
                 break;
 
-              case "extractPatchsFiles":
-                // msg emitida com tempo, pois o processo de verificação do zip
-                // é muito rápido (zip de expedição contiuna com +40M e 4 ptm, leva < 2 seg)
-
-                vscode.window.withProgress(
-                  {
-                    location: vscode.ProgressLocation.Window,
-                    cancellable: false,
-                    title: `${localize(
-                      "tds.vscode.starting.build.patch",
-                      "Checking zip files"
-                    )}`,
-                  },
-                  async (progress) => {
-                    progress.report({ increment: 0 });
-
-                    await extractPatchsFiles(message.files).then(
-                      async (files) => {
-                        if (files.length === 0) {
-                          vscode.window.showWarningMessage(
-                            "No patch file found in zip files."
-                          );
-                        } else {
-                          const step = 100 / (files.length + 2);
-
-                          for await (const element of files) {
-                            progress.report({
-                              increment: step,
-                            });
-
-                            if (currentPanel) {
-                              currentPanel.webview.postMessage({
-                                command: "addFilepath",
-                                file: element,
-                              });
-                            }
-                          }
-                        }
-                      },
-                      (reason: any) => {
-                        vscode.window.showErrorMessage(reason);
-                      }
-                    );
-                    progress.report({ increment: 100 });
-                  }
-                );
-                break;
-
               case "showDuplicateWarning":
                 vscode.window.showWarningMessage(
                   "Already selected. File: " + message.filename
@@ -468,7 +420,9 @@ async function doValidatePatch(
         var patchFilePath = patchFile.path;
         var retMessage = "No validation errors";
         var oldResource = false;
-        if (patchFilePath.startsWith("/")) {
+        if (patchFilePath.startsWith("/") && patchFilePath.length > 2 && patchFilePath.at(2) === ':') {
+          // se formato for windows /d:/totvs/patch/12.1.2210/expedicao_continua_12_1_2210_atf_tttm120_hp.ptm
+          // remove a / inicial
           patchFilePath = patchFilePath.substring(1);
         }
         if (!response.error) {
