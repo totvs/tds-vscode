@@ -8,7 +8,7 @@
 > Recomenda-se que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em mínusculas de forma a manter a compatibildade entre os diversos sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes.
 > Leia [Convenção para nomenclatura de File System em ambiente Linux]<https://tdn.totvs.com/x/h8BICw>).
 
-Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstudio.com/docs/editor/editingevolved) e  aqui, breve documentação das opções suportadas em projetos baseados nas linguagens **TOTVS**.
+Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstudio.com/docs/editor/editingevolved) e aqui, breve documentação das opções suportadas em projetos baseados nas linguagens **TOTVS**.
 
 > As opções de acionamento citadas são as configurações padrão do **VS-Code**, podendo ser diferentes em função de reconfiguração efetuada pelo usuário ou outras extensões.
 > Algumas operações  de navegação também pode ser acionadas via menu de contexto do editor.
@@ -17,11 +17,13 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 | ------ | -------------- |
 |        | Destaque visual para código isolado por ``#ifdef``. |
 |        | Strings de tradução (visualização e edição). |
-|        | Suporte a AdvPL/Asp (congelado)
+|        | Suporte a AdvPL/Asp (congelado) |
 
 ## [Navegação rápida (_Quick file navigation_)](https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation)
 
 **Acionamento:** ``Ctrl+P`` ou ``F1`` (iniciar com vazio) e inicie a digitação para o filtro por nome do arquivo.
+
+![Quick File Navigation](./dss/quick-file-navigation.gif)
 
 ## [Trilha (_Breadcrumbs_)](https://code.visualstudio.com/docs/editor/editingevolved#_breadcrumbs)
 
