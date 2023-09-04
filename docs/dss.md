@@ -29,43 +29,69 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 **Acionamento:** Você pode ativar ou desativar a trilha via ``View > Show Breadcrumbs`` ou com a configuração ``breadcrumbs.enabled``.
 
+![Breadcrumbs](./dss/breadcrumbs.gif)
+
 ## [Ir para definição (_Go to definition_)](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition)
 
 **Acionamento:** ``Ctrl+Click`` (abre) ou ``Ctrl+Alt+Click`` (abre ao lado) ou ``F12`` sobre uma chamada de função ou variável.
+
+![Go to Definition](./dss/go-to-definition.gif)
 
 ## [Ir para um símbolo (_Go to symbol_)](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-symbol)
 
 **Acionamento:** ``Ctrl+Shift+O`` e inicie a digitação para o filtro por nome do simbolo.
 
+![Go to Symbol](./dss/go-to-symbol.gif)
+
 ## [Abrir símbolo por nome (_Open symbol by name_)](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name)
 
 **Acionamento:** ``Ctrl+T`` ou ``F1`` (iniciar com ``#``) e inicie a digitação para o filtro por nome do símbolo.
 
-## [Procurar/ir para referência (_Go to definition_)](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition)
-
-**Acionamento:** ``Shift+F12`` sobre uma chamada de função ou variável.
+![Open Symbol by Name](./dss/open-symbol-by-name.gif)
 
 ## [Visualizar (_Peek_)](https://code.visualstudio.com/docs/editor/editingevolved#_peek)
 
 **Acionamento:** ``Shift+F12`` sobre uma chamada de função ou variável.
 
+![Peek](./dss/peek.gif)
+
 ## [Passagem de mouse (_Show hover_)](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#show-hovers)
 
 **Acionamento:** Passe o ponteiro do mouse sobre o item a ser visualizado.
 
+![Hover](./dss/hover.gif)
+
 > Você pode ativar ou desativar a passagem de mouse em ``View > Text Editor > Hover: Enabled`` ou mudar o formato de apresentação em ``File > Preference > Settings > Extension > TOTVS > Totvs Language Server > Editor: Hover``.
+
+![Hover](./dss/hover-setup.png)
+
+Os formatos disponíveis são:
+
+| Opção | Comportamento |
+| `off` | Desativa a apesentação. |
+| `plain text` | Apresenta a documentação em um formato simples. |
+| `markdown` | Apresenta a documentação formatada. |
+
+> Para as duas últimas, ``View > Text Editor > Hover: Enabled`` deve estar habilitado.
 
 ## [Mostrar definições de um símbolo (_Show definitions of a symbol_)](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#show-definitions-of-a-symbol)
 
 **Acionamento:** ``Ctrl+<passagem ponteiro do mouse>`` sobre o item a ser visualizado. Se este ficar destacado com um sublinhado, pode ir para definição acionando ``Ctrl+<acionamento do mouse>``.
 
+hover-show-symbol
+![Hover + Ctrl](./dss/hover-show-symbol.png)
+
 ## [Ajuda com assinatura em funções (_Signature help_)](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#help-with-function-and-method-signatures)
 
 **Acionamento:** Automático ao acionar ``(`` após um identificador de função/método ou ``ctrl+shitf+space``, na lista de argumentos.
 
+![Signatture Help](./dss/signature-help.gif)
+
 > Funciona apenas para funções/métodos, cujo fonte esteja no seu projeto ou para funções/métodos AdvPL binários (definidas no núcleo da linguagem).
 
 ## [Informação/Referências (_Reference information_)](https://code.visualstudio.com/docs/editor/editingevolved#_reference-information)
+
+![References Information](./dss/reference-information.gif)
 
 > Em **métodos** o valor apresentado pode não ser preciso.
 
@@ -73,9 +99,9 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 > Para configurar somente para fontes **TOTVS**, use a configuração ``totvsLanguageServer.editor.codeLens``.
 
-## <a name="cache"></a>Cache de navegação
+## (#cache)</a>Cache de navegação
 
-> Usuários ``Git``, ``SVN``, ``CVS`` e similares: O conteúdo da pasta ``.vscode/.temp`` é inicializado a cada sessão do **VS-Code**, portanto, recomenda-se ignorar essa pasta nos processos de versionamento.
+> Usuários ``Git``, ``SVN``, ``CVS`` e similares: O conteúdo da pasta ``.vscode/.advpl`` é inicializado a cada sessão do **VS-Code**, portanto, recomenda-se ignorar essa pasta nos processos de versionamento.
 
 Por padrão, a extensão utiliza um _cache_ em memória, que é gerado na inicialização da extensão.
 Em alguns casos, pode ser interessante manter esse _cache_ entre sessões, ou seja, ter um _cache_ persistente.
@@ -89,7 +115,7 @@ Para ajustar o comportamento acesse ``File > Preference > Settings``, filtre por
 
 A opção ``off``, atuará somente nos fontes abertos para edição e o **DSS** terá  limitações em suas funcionalidades. A ``onMemory``, o _cache_ é mantido em memória, sendo recriado a cada nova sessão de uso do **VS-Code**, com o  **DSS** totalmente funcional, incluindo arquivos não abertos para edição. A opção ``onDisk``, persiste o _cache_ em disco, em diversos blocos (arquicos), procurando distribuit  o custo de leitura/gravação (I/O) em disco e minimizando eventuais corrupções do _cache_.
 
-## <a name="ignore"></a>Ignorar pastas e arquivos
+## (#ignore)</a>Ignorar pastas e arquivos
 
 ### Definição
 
