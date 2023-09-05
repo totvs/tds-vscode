@@ -39,9 +39,13 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 ## [Ir para um símbolo (_Go to symbol_)](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-symbol)
 
-**Acionamento:** ``Ctrl+Shift+O`` e inicie a digitação para o filtro por nome do simbolo.
+**Acionamento:** ``Ctrl+Shift+O`` ou ``F1`` (iniciar com ``@``) e inicie a digitação para o filtro por nome do simbolo.
 
 ![Go to Symbol](./dss/go-to-symbol.gif)
+
+> No _prompt_ do filtro, informe ``@:`` para agrupar os elementos.
+
+![Go to Symbol (grouped by category)](./dss/go-to-symbol-grouped.gif)
 
 ## [Abrir símbolo por nome (_Open symbol by name_)](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name)
 
