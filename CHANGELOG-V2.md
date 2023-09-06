@@ -6,13 +6,13 @@
 
 #### Documentação DSS
 
-Adiciona imagens animadas demonstrando os recursos.
+Adicionado imagens animadas demonstrando os recursos.
 
 ### Correção
 
 #### Assistente de assinatura (_Signature Help_)
 
-Ajustado tratamento quando cursor esta sobre a virgula de separação de parâmetros.
+Ajustado tratamento quando cursor esta sobre a vírgula de separação de parâmetros.
 
 #### Ir para definição (_Go to Definition_)
 
