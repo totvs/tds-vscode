@@ -1,44 +1,24 @@
-# Changelog Versão 1
+# Changelog ([Changelog Versão 1](CHANGELOG.md))
 
-[Changelog versão atual](CHANGELOG.md)
+## Versão [2.0.0-RC9]
 
-# Versão [1.3.23]
+### Melhoria
 
-## Correções
+#### Documentação DSS
 
-### Aplicação de Patch [#1145](https://github.com/totvs/tds-vscode/issues/1145)
+Adiciona imagens animadas demonstrando os recursos.
 
-A aplicação de patches não carrega informação de servidor e não permite aplicação.
+### Correção
 
-# Versão [1.3.22]
+#### Assistente de assinatura (_Signature Help_)
 
-## Correções
+Ajustado tratamento quando cursor esta sobre a virgula de separação de parâmetros.
 
-### Publicação de vsix não respeita limitador de versão "^1.2.74"
+#### Ir para definição (_Go to Definition_)
 
-O publicador de pacotes vsix não respeita o limitador de versão no formato "^1.2.74".
+Corrigido caminho do arquivo que contem a definição.
 
-# Versão [1.3.21]
-
-## Correções
-
-### Erro Validate Patch Fail. Please input patch file. (arquivos zip) [#1136](https://github.com/totvs/tds-vscode/issues/1136)
-
-Corrigido de validação de patch em arquivos Zip.
-
-### Erro "Get organization list could not be executed" ao aplicar patch em ambiente TSS [#1139](https://github.com/totvs/tds-vscode/issues/1139)
-
-Corrigido problema que causava erro ao aplicar patch em ambiente TSS.
-
-### Não permite aplicar patch com fontes mais antigos que o do RPO
-
-Removida a trava adicionada que estava impedindo a aplicação de patches com fontes mais antigos de o do RPO.
-
-### Validação de patch não finaliza no Linux/MaoOS
-
-Após validação no Linux/MacOS a ação de aplicação de patch não estava sendo liberada.
-
-# Versão [1.3.20]
+## Versão [2.0.0-RC8]
 
 ### Correção
 

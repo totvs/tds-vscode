@@ -85,7 +85,7 @@ Os formatos disponíveis são:
 hover-show-symbol
 ![Hover + Ctrl](./dss/hover-show-symbol.png)
 
-## [Ajuda com assinatura em funções (_Signature help_)](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#help-with-function-and-method-signatures)
+## [Assistente de assinatura em funções (_Signature help_)](https://code.visualstudio.com/api/language-extensions/programmatic-language-features#help-with-function-and-method-signatures)
 
 **Acionamento:** Automático ao acionar ``(`` após um identificador de função/método ou ``ctrl+shitf+space``, na lista de argumentos.
 
