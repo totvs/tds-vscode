@@ -27,7 +27,7 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 ## [Trilha (_Breadcrumbs_)](https://code.visualstudio.com/docs/editor/editingevolved#_breadcrumbs)
 
-**Acionamento:** Você pode ativar ou desativar a trilha via ``View > Show Breadcrumbs`` ou com a configuração ``breadcrumbs.enabled``.
+**Acionamento:** Você pode ativar ou desativar a trilha via ``View > Appearence > Show Breadcrumbs`` ou com a configuração ``breadcrumbs.enabled``.
 
 ![Breadcrumbs](./dss/breadcrumbs.gif)
 
@@ -55,7 +55,7 @@ Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstu
 
 ## [Visualizar (_Peek_)](https://code.visualstudio.com/docs/editor/editingevolved#_peek)
 
-**Acionamento:** ``Shift+F12`` sobre uma chamada de função ou variável.
+**Acionamento:** ``Alt+F12`` sobre uma chamada de função ou variável.
 
 ![Peek](./dss/peek.gif)
 
