@@ -1,5 +1,19 @@
 # Changelog ([Changelog Versão 1](CHANGELOG.md))
 
+## Versão [2.0.0-RC10]
+
+### Melhoria
+
+### Correção
+
+#### Documentação DSS [DTCLIENT01-4282](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4282)  [DTCLIENT01-4283](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4283)
+
+Correções na documentação.
+
+#### No mouseover sobre a função a descrição do retorno precisa ajustes [DTCLIENT01-4279](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4279)
+
+Corrigido montagem do texto da documentação.
+
 ## Versão [2.0.0-RC9]
 
 ### Melhoria
