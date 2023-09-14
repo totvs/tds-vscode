@@ -13,7 +13,7 @@ O objetivo do *ProtheusDOC* é permitir a autodocumentação dos programas-fonte
 
 O *ProtheusDOC*, é uma forma estruturada de escrever comentários, sobre funções, classes, métodos ou qualquer outro elemento de um programa-fonte TOTVS, que descreve a utilização deste elemento.
 
-Essa documentação pode ser exportada em formato HTML ou _Markdown_, para que possa ser publicado.
+Essa documentação pode ser exportada em formato HTML ou *Markdown*, para que possa ser publicado.
 
 ## Sintaxe
 
@@ -27,7 +27,7 @@ Comentáro sucinto sobre a finalizada do elemento.
 /*/
 ```
 
-A estrutura completa é formada por um bloco de comentários, iniciado com ``/*/{Protheus.doc} \<id>`` para AdvPL e ``{/{Protheus.doc} \<id>`` para o 4GL, onde ``\<id>`` é o nome do elemento sendo documentado. Na segunda linha do bloco _Protheus.doc_, coloca-se comentário sucinto. Após o comentário, informe a marcação ``@type \<type>``, onde ``\<elementType>``, identifica o tipo do elemento, pois é possível existirem identificadores de funções, métodos, classes, etc. com o mesmo nome. Isso faz-se necessário para indicar o final do comentário sucinto e para que a documentação seja apresentada de forma correta com base no contexto do elemento.
+A estrutura completa é formada por um bloco de comentários, iniciado com ``/*/{Protheus.doc} \<id>`` para AdvPL e ``{/{Protheus.doc} \<id>`` para o 4GL, onde ``\<id>`` é o nome do elemento sendo documentado. Na segunda linha do bloco*Protheus.doc*, coloca-se comentário sucinto. Após o comentário, informe a marcação ``@type \<type>``, onde ``\<elementType>``, identifica o tipo do elemento, pois é possível existirem identificadores de funções, métodos, classes, etc. com o mesmo nome. Isso faz-se necessário para indicar o final do comentário sucinto e para que a documentação seja apresentada de forma correta com base no contexto do elemento.
 
 O identificador (``\<id>``) precisa ser exatamente o nome da função ou da classe, ou ainda, na implementações dos métodos de uma classe, devem ser ``\<id da Classe>::\<id do Método>``.
 
@@ -124,10 +124,10 @@ return nArea
 
 As marcações aceitas pelo **ProtheusDOC**, são:
 
-
 | Marcação | Descrição da marcação
 | - | -
-| @type	<type-text> | Identifica o tipo do ProtheusDoc que está sendo documentado:
+| @type <type-text> | Identifica o tipo do ProtheusDoc que está sendo documentado:
+|  | "user function" para Funções de Usuário
 |  | "function" para Funções
 |  | "class" para Classes
 |  | "method" para Métodos
@@ -143,18 +143,18 @@ As marcações aceitas pelo **ProtheusDOC**, são:
 | @deprecated \<deprecated-text> | Texto com comentários sobre a depreciação, como por exemplo, motivo e alternativa recomendada ou que pode ser utilizada.
 | @example \<example-text> | Cria uma entrada no tópico “Exemplos” no documento final.
 | @history \<date-text>,\<username-text>,<description-text> | Cria uma entrada no tópico “Histórico" no documento final, com as alterações efetuadas no código-fonte.
-| @sample \<example-text> | O mesmo que ``@example``. 
+| @sample \<example-text> | O mesmo que ``@example``.
 | @language \<language-text> | Idioma para o qual elemento está customizado.
-| @link \<link-text> | Cria uma ligação (_link_) para o _target_ especificado (ver notas). O atributo ``label`` será apresentado ao desenvolvedor no lugar da URI e é opcional. Esta marcação deve ser utilizada como complemento as demais marcações.
+| @link \<link-text> | Cria uma ligação (*link*) para o *target* especificado (ver notas). O atributo ``label`` será apresentado ao desenvolvedor no lugar da URI e é opcional. Esta marcação deve ser utilizada como complemento as demais marcações.
 | @obs \<obs-text> | Adiciona uma entrada de observação no documento final.
-| @param \<parameter-name>\[,\<parameter-type>] \<description> | Adiciona uma especificação de parâmetro (de função ou método), identificando-o como \<parameter-name>. 
+| @param \<parameter-name>\[,\<parameter-type>] \<description> | Adiciona uma especificação de parâmetro (de função ou método), identificando-o como \<parameter-name>.
 | @proptype \<proptype-text> | Indica o tipo da propriedade.
 | @protected | Indica que o método deve ser visto com escopo de “não publico”.
 | @readonly | Indica que a propriedade é apenas de leitura.
-| @return \<return-type> \<description-text> | Especifica o retorno (de função ou método).
+| @return \<return-type>, \<description-text> | Especifica o retorno (de função ou método).
 | @source \<source-text> | Indica o código fonte.
 | @systemOper \<systemOper-text> | Indica qual o sistema operacional requerido.
-| @see |<see-text> | Adiciona uma entrada “Veja também”.
+| @see | \<see-text> | Adiciona uma entrada “Veja também”.
 | @since \<since-text> | Identifica a partir de quando, uma determinada funcionalidade foi implementada.
 | @table \<table-name>\[,...] | Identifica quais tabelas são utilizadas pela classe, método ou função.
 | @todo \<todo-text> | Indica uma tarefa a ser realizada.
@@ -164,6 +164,6 @@ As marcações aceitas pelo **ProtheusDOC**, são:
 
 - [Protheus.DOC para VS-Code](https://github.com/AlencarGabriel/ProtheusDoc-VsCode)
 
-  Suporte aos recursos e _snippets_ de documentação *Protheus.Doc*.
+  Suporte aos recursos e amostras (*snippets*) de documentação **Protheus.Doc**.
 
   ![Protheus.DOC](https://github.com/AlencarGabriel/ProtheusDoc-VsCode/raw/master/images/Example3.gif)
