@@ -87,7 +87,7 @@ Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
 |                       | Valores armazenados automaticamente quando o login é realizado com sucesso.                 |
 |                       | \<id>:\<ambiente> (id: identificação do servidor _e_ token: código de acesso)               |
 | `lastConnectedServer` | Último servidor utilizado e que será reconectado na próxima sessão de forma automática.     |
-| `rpoToken`            | Token de compilação utilizado a partir da versão igual ao superior 7.00.210324P (*Harpia*). |
+| `rpoToken`            | Token de compilação utilizado a partir da versão igual ou superior 7.00.210324P (*Harpia*). |
 | `permissions`         | Antiga configuração de chave de compilação, substituida pelo rpoToken.                      |
 
 Configuração de servidor
@@ -98,7 +98,7 @@ Configuração de servidor
 | `type`                | Tipo do servidor, podem ser:                                                            |
 |                       | - _totvs_server_protheus_, para servidores com suporte a Adv/PL. (versão)               |
 |                       | - _totvs_server_logix_, para servidores com suporte a Adv/PL e 4GL.                     |
-|                       | - _totvs_server_totvstec_, para servidores com suporte a Adv/PL e 4GL, versão igual ao superior 7.00.210324P (*Harpia*). |
+|                       | - _totvs_server_totvstec_, para servidores com suporte a Adv/PL e 4GL, versão igual ou superior 7.00.210324P (*Harpia*). |
 | `name`                | Identificação do servidor para humanos.                                                 |
 | `port`                | Porta de conexão.                                                                       |
 | `address`             | Endereço IP ou nome da estação do servidor.                                             |
