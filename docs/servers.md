@@ -39,10 +39,7 @@ Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
 ```json
 {
   "version": "0.3.0",
-  "includes": ["m:\\protheus\\includes"], //definição global
-  "permissions": {
-    "authorizationtoken": ""
-  },
+  "includes": ["m:\\protheus\\includes"],
   "configurations": [
     {
       "id": "pgfb077eunhkt1u2mu4794eqxtfvj",
@@ -68,13 +65,6 @@ Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
       }
     ],
     [
-      "hgzteu0iau7kt1v9dqlbank94bu3qk:admin",
-      {
-        "id": "hgzteu0iau7kt1v9dqlbank94bu3qk",
-        "token": "djM6aGd6..."
-      }
-    ],
-    [
       "hgzteu0iau7kt1v9dqlbank94bu3qk:p12",
       {
         "id": "hgzteu0iau7kt1v9dqlbank94bu3qk",
@@ -86,36 +76,40 @@ Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
 }
 ```
 
+| Chave                 | Descrição/uso                                                                               |
+| --------------------- | ------------------------------------------------------------------------------------------- |
+| `version`             | Versão do arquivo. *Não editar*.                                                            |
+| `includes`            | Lista de pastas global para busca de arquivos de definição.                                 |
+|                       | Utilizada quando não informada na definição do servidor e para o [linter](docs/linter).     |
+| `configurations`      | Lista de configurações de servidores registrados para uso.                                  |
+|                       | As configurações de servidores são descritas na próxima tabela.                             |
+| `savedTokens`         | Listas de código de acesso, associados a um servidor e ambientes.                           |
+|                       | Valores armazenados automaticamente quando o login é realizado com sucesso.                 |
+|                       | \<id>:\<ambiente> (id: identificação do servidor _e_ token: código de acesso)               |
+| `lastConnectedServer` | Último servidor utilizado e que será reconectado na próxima sessão de forma automática.     |
+| `rpoToken`            | Token de compilação utilizado a partir da versão igual ao superior 7.00.210324P (*Harpia*). |
+| `permissions`         | Antiga configuração de chave de compilação, substituida pelo rpoToken.                      |
+
+Configuração de servidor
+
 | Chave                 | Descrição/uso                                                                           |
 | --------------------- | --------------------------------------------------------------------------------------- |
-| `version`             | Versão do arquivo. Não editar.                                                          |
-| `includes `           | Lista de pastas global para busca de arquivos de definição. |
-|                       | Utilizada quando não informada na definição do servidor e para o [linter](docs/linter). |
-| `permissions `        | Lista de permissões.                                                                    |
-| `authorizationtoken`  | Chave de compilação com as permissões.                                                  |
-| `configurations `     | Configurações de servidores registrados para uso.                                       |
-| `id `                 | Identificação única, gerada no momento de seu registro.                                 |
-| `type `               | Tipo do servidor, podem ser:                                                            |
-|                       | - _totvs_server_protheus_, para servidores com suporte a Adv/PL. (versão )                        |
+| `id`                  | Identificação única, gerada no momento de seu registro.                                 |
+| `type`                | Tipo do servidor, podem ser:                                                            |
+|                       | - _totvs_server_protheus_, para servidores com suporte a Adv/PL. (versão)               |
 |                       | - _totvs_server_logix_, para servidores com suporte a Adv/PL e 4GL.                     |
-|                       | - _totvs_server_totvstec_, para servidores com suporte a Adv/PL e 4GL, versão iqual ao superior 7.00.210324P (*Harpia*) .                     |
-| `name `               | Identificação do servidor para humanos.                                                 |
-| `port `               | Porta de conexão.                                                                       |
-| `address `            | Endereço IP ou nome da estação do servidor.                                             |
-| `buildVersion `       | Versão do servidor. Valor obtido automaticamente.                                       |
-| `secure `             | Conexão segura (SSL) ou não. Valor obtido automaticamente.                              |
-| `includes `           | Lista de pastas para busca de arquivos de definição.                                    |
-| ` `                   | Se não informada utilizará a lista padrão.                                              |
-| `environments `       | Ambientes acessados.                                                                    |
-| `username `           | Último usuário utilizado na conexão.                                                    |
-| `environment `        | Último ambiente utilizado na conexão.                                                   |
-| `token `              | Código de acesso para reconexão. Valor obtido automaticamente.                          |
-| `savedTokens `        | Listas de código de acesso, associados a um servidor e ambientes.                       |
-|                       | Valores obtidos automaticamente.                                                        |
-|                       | \<id>:\<ambiente>                                                                       |
-|                       | id: identificaão do servidor                                                            |
-|                       | token: código de acesso                                                                 |
-| `lastConnectedServer` | Último servidor utilizado e que será reconectado na próxima sessão de forma automática. |
+|                       | - _totvs_server_totvstec_, para servidores com suporte a Adv/PL e 4GL, versão igual ao superior 7.00.210324P (*Harpia*). |
+| `name`                | Identificação do servidor para humanos.                                                 |
+| `port`                | Porta de conexão.                                                                       |
+| `address`             | Endereço IP ou nome da estação do servidor.                                             |
+| `buildVersion`        | Versão do servidor. Valor obtido automaticamente.                                       |
+| `secure`              | Conexão segura (SSL) ou não. Valor obtido automaticamente.                              |
+| `includes`            | Lista de pastas para busca de arquivos de definição.                                    |
+|                       | Se não informada utilizará a lista padrão.                                              |
+| `environments`        | Lista de ambientes acessados previamente.                                               |
+| `username`            | Último usuário utilizado na conexão.                                                    |
+| `environment`         | Último ambiente utilizado na conexão.                                                   |
+| `token`               | Código de acesso para reconexão. Valor obtido automaticamente.                          |
 
 ## Local de gravação de _servers.json_
 
