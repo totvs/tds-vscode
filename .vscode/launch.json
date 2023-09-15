@@ -24,7 +24,7 @@
 			"outFiles": [
 				"${workspaceFolder}/out/**/*.js"
 			],
-			"preLaunchTask": "npm: clean-logs",
+			"preLaunchTask": "npm: compile",
 		}
 	]
 }
