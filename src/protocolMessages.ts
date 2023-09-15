@@ -71,7 +71,7 @@ interface ReconnectNode {
 
 interface NodeInfo {
   id: any;
-  buildVersion: string;
+  build: string;
   secure: number;
 }
 
@@ -141,7 +141,7 @@ export function sendConnectRequest(
         serverType: thisServerType,
         server: serverItem.address,
         port: serverItem.port,
-        buildVersion: serverItem.buildVersion,
+        build: serverItem.buildVersion,
         bSecure: serverItem.secure ? 1 : 0,
         environment: environment,
         autoReconnect: true,
@@ -256,7 +256,7 @@ export function sendValidationRequest(
     .then(
       (validInfoNode: NodeInfo) => {
         return {
-          build: validInfoNode.buildVersion,
+          build: validInfoNode.build,
           secure: validInfoNode.secure ? true : false,
         };
       },
