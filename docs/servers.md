@@ -151,12 +151,7 @@ O **TDS-VSCode**, suporta um sistema simples de privilégios, baseada em configu
 [TDS]
 AllowApplyPatch=<IP/name list>
 AllowBuildPatch=<IP/name list>
-AllowMonitor=<IP/name list>
 AllowCompile=<IP/name list>
-EnableDisconnectUser=<IP/name list>
-EnableSendMessage=<IP/name list>
-EnableBlockNewConnection=<IP/name list>
-EnableStopServer=<IP/name list>
 AllowApplyTemplate=<IP/name list>
 
 ```
@@ -165,11 +160,6 @@ AllowApplyTemplate=<IP/name list>
 | AllowApplyPatch          | Aplicar pacotes de atualização (_patchs_) |
 | AllowBuildPatch          | Gerar pacotes de atualização (_patchs_)   |
 | AllowCompile             | Compilar fontes e recursos                |
-| AllowMonitor             | Acesso ao monitor de conexões             |
-| EnableDisconnectUser     | Desconectar usuários                      |
-| EnableSendMessage        | Enviar mensagens                          |
-| EnableBlockNewConnection | Bloquear novas conexões                   |
-| EnableStopServer         | Encerrar o _appServer_                    |
 | AllowApplyTemplate       | Aplicar pacotes de amostras (\*.tpl)      |
 
 - `<IP/name>` é a lista de estações com o privilégio liberado, identificadas pelo seu endereço IP ou nome (_host name_) e separadas por `,` (vírgula).
@@ -185,20 +175,12 @@ AllowApplyTemplate=<IP/name list>
 AllowApplyPatch=PRODUCAO, 10.173.7.129
 AllowBuildPatch=0
 AllowCompile=0
-AllowMonitor=ADMIN_1, ADMIN_2, SUPER_ADMIN
-EnableDisconnectUser=*
-EnableSendMessage=*
-EnableBlockNewConnection=SUPER_ADMIN
-EnableStopServer=SUPER_ADMIN
 ```
 
 Neste exemplo, temos:
 
 - Somente a estação `PRODUCAO` ou com o IP `10.173.7.129` podem aplicar atualizações;
 - Ninguém pode gerar pacotes de atualização ou compilar;
-- Somente as estações `ADMIN_1`, `ADMIN_2` e `SUPER_ADMIN` podem monitorar conexões;
-- Todos que tenham privilégio de acesso ao monitor, podem desconectar usuários;
-- Somente a estação `SUPER_ADMIN` pode bloquear novas conexões e parar o servidor,
 
 ![My privileges](./images/my-privileges.png)
 
