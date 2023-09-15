@@ -14,6 +14,10 @@ Correções na documentação.
 
 Corrigido montagem do texto da documentação.
 
+#### Erro ao declarar uma variável [DTCLIENT01-4284](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4284)
+
+Ao iniciar a declaração de uma variável ``local``, apresentava mensagem de erro na resposta da requisição da mensagem ``textDocument/documentSymbol``.
+
 ## Versão [2.0.0-RC9]
 
 ### Melhoria
