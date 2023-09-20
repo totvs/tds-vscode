@@ -78,10 +78,25 @@
 				<input class="inputText" type="file" accept='.ptm,.zip,.upd' id="btn-File" name="btn-File"
 					onchange="setTextArea(event)" multiple />
 
-				<div class="wrap-input">
+				<div class="wrap-output">
+					<p id="ApplyOldOutputMessage"></p>
+				</div>
+
+				<div class="wrap-input" id="ApplyOldDiv" hidden>
 					<label for="ApplyOld">${d.localize["tds.webview.applyOld"]}</label>
 					<!--Apply fontes mais antigos -->
 					<input class="" type="checkbox" id="ApplyOldID" name="ApplyOld"
+						onclick="checkValidations()">
+				</div>
+
+				<div class="wrap-output">
+					<p id="NewerPatchesOutputMessage"></p>
+				</div>
+
+				<div class="wrap-input" id="NewerPatchesDiv" hidden>
+					<label for="NewerPatches">${d.localize["tds.webview.newerPatches"]}</label>
+					<!--Apply patches desatualizados -->
+					<input class="" type="checkbox" id="NewerPatchesID" name="NewerPatches"
 						onclick="checkValidations()">
 				</div>
 
@@ -249,9 +264,17 @@
 					//console.log("patchPath: "+patchPath);
 					if (patchPath === file) {
 						var validationMessage = message.message;
+						var errorCode = message.errorCode;
+						if (errorCode == 5) {
+							validationMessage = "Resources in patch older than RPO. Check Output for details.";
+						} else if (errorCode == 7) {
+							validationMessage = "Patch apply denied. Check Output for details.";
+						} else if (errorCode == 8) {
+							console.log(validationMessage);
+							validationMessage = "Newer patches available. Check Output for details.";
+						}
 						//console.log("FOUND! "+message.message);
 						tableAPI.cell(i,1).data(validationMessage);
-						var errorCode = message.errorCode;
 						//console.log("FOUND! "+message.errorCode);
 						tableAPI.cell(i,4).data(errorCode);
 						tableAPI.draw();
@@ -273,6 +296,7 @@
 		}
 
 		document.getElementById('ApplyOldID').checked = false;
+		document.getElementById('NewerPatchesID').checked = false;
 		patchValidate();
 
 		input.value = '';
@@ -326,9 +350,15 @@
 	function checkValidations() {
 		//console.log("checkValidations");
 		var validationOk = true;
+		var criticalError = false;
 		var hasOld = false;
+		var newerPatches = false;
 		var validationInProgress = false;
 		// reset messages and disable submit buttons
+		document.getElementById('ApplyOldOutputMessage').innerHTML = "";
+		document.getElementById('NewerPatchesOutputMessage').innerHTML = "";
+		document.getElementById('ApplyOldDiv').hidden = true;
+		document.getElementById('NewerPatchesDiv').hidden = true;
 		document.getElementById('OutputMessage').innerHTML = "";
 		document.getElementById('submitID').setAttribute("disabled","disabled");
 		document.getElementById('submitCloseID').setAttribute("disabled","disabled");
@@ -344,34 +374,60 @@
 				break;
 			} else if (errorCode > 0) {
 				validationOk = false;
+				if (!criticalError && ((errorCode >= 1 && errorCode <= 4) || errorCode == 7)) {
+					criticalError = true;
+				}
 				if (!hasOld && errorCode == 5) {
 					hasOld = true;
 				}
-				break;
+				if (!newerPatches && errorCode == 8) {
+					newerPatches = true;
+				}
 			}
-		}
-		//console.log("hasOld: "+hasOld);
-		if (hasOld) {
-			//console.log("ApplyOldID: "+(document.getElementById('ApplyOldID').checked?"checked":"not checked"));
-			document.getElementById('OutputMessage').style = "color: red";
-			if (!document.getElementById('ApplyOldID').checked) {
-				// warning: has Old resource
-				document.getElementById('OutputMessage').innerHTML = "There are patches with resources older than RPO.";
-			} else {
-				// warning: has Old resource but user choose to overwrite anyway
-				document.getElementById('OutputMessage').innerHTML = "There are patches with resources older than RPO and they will overwrite newer resources in RPO.";
-			}
-			validationOk = true;
 		}
 		//console.log("validationInProgress: "+validationInProgress);
+		if (!validationInProgress && !criticalError) {
+			//console.log("hasOld: "+hasOld);
+			if (hasOld) {
+				document.getElementById('ApplyOldDiv').hidden = false;
+				//console.log("ApplyOldID: "+(document.getElementById('ApplyOldID').checked?"checked":"not checked"));
+				document.getElementById('ApplyOldOutputMessage').style = "color: red";
+				if (!document.getElementById('ApplyOldID').checked) {
+					// warning: has Old resource
+					document.getElementById('ApplyOldOutputMessage').innerHTML = "There are patches with sources/resources older than RPO.";
+				} else {
+					// warning: has Old resource but user choose to overwrite anyway
+					document.getElementById('ApplyOldOutputMessage').innerHTML = "This action will overwrite newer sources/resources in the current RPO.";
+				}
+				validationOk = true;
+			}
+			//console.log("newerPatches: "+newerPatches);
+			if (newerPatches) {
+				document.getElementById('NewerPatchesDiv').hidden = false;
+				//console.log("NewerPatchesID: "+(document.getElementById('NewerPatchesID').checked?"checked":"not checked"));
+				document.getElementById('NewerPatchesOutputMessage').style = "color: red";
+				if (!document.getElementById('NewerPatchesID').checked) {
+					// warning: has newer patches
+					document.getElementById('NewerPatchesOutputMessage').innerHTML = "There are newer patches available at TOTVS Update Center.";
+					validationOk = false;
+				} else {
+					// warning:
+					document.getElementById('NewerPatchesOutputMessage').innerHTML = "This action will apply outdated patches.";
+					validationOk = true;
+				}
+			}
+		}
 		//console.log("validationOk: "+validationOk);
 		if (validationInProgress) {
 			document.getElementById('OutputMessage').style = "color: blue";
 			document.getElementById('OutputMessage').innerHTML = "Patch validation in progress.";
+		} else  if (criticalError) {
+			document.getElementById('OutputMessage').style = "color: red";
+			document.getElementById('OutputMessage').innerHTML = "There are patches that cannot be applied and must be removed from the list.";
 		} else {
 			if (!validationOk) {
 				document.getElementById('OutputMessage').style = "color: red";
-				document.getElementById('OutputMessage').innerHTML = "There are patches with validation problems.";
+				document.getElementById('OutputMessage').innerHTML = "Action required. There are patches with validation problems.";
 			} else {
 				document.getElementById('submitID').removeAttribute("disabled");
 				document.getElementById('submitCloseID').removeAttribute("disabled");
