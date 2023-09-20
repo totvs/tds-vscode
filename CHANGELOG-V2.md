@@ -12,11 +12,15 @@ Correções na documentação.
 
 #### No mouseover sobre a função a descrição do retorno precisa ajustes [DTCLIENT01-4279](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4279)
 
-Corrigido montagem do texto da documentação.
+Corrigido montagem do texto da documentação (ProtheusDOC).
 
 #### Erro ao declarar uma variável [DTCLIENT01-4284](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4284)
 
 Ao iniciar a declaração de uma variável ``local``, apresentava mensagem de erro na resposta da requisição da mensagem ``textDocument/documentSymbol``.
+
+#### Múltipla exibição de variável [DTCLIENT01-4286](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4286)
+
+Ajustado seleção de elementos de acordo com o escopo do elemento.
 
 ## Versão [2.0.0-RC9]
 
