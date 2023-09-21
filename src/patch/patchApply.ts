@@ -21,6 +21,7 @@ const localizeHTML = {
   "tds.webview.environment": localize("tds.webview.environment", "Environment"),
   "tds.webview.patch.file": localize("tds.webview.patch.file", "Patch File"),
   "tds.webview.applyOld": localize("tds.webview.applyOld", "Apply old files"),
+  "tds.webview.newerPatches": localize("tds.webview.newerPatches", "Apply outdated patches"),
   "tds.webview.col01": localize("tds.webview.col01", "Patch Name"),
   "tds.webview.col02": localize("tds.webview.col02", "Patch Full Path"),
   "tds.webview.col03": localize("tds.webview.col03", "Validation"),
@@ -419,7 +420,6 @@ async function doValidatePatch(
         //const patchFile = vscode.Uri.file(patchUri).toString();
         var patchFilePath = patchFile.path;
         var retMessage = "No validation errors";
-        var oldResource = false;
         if (patchFilePath.startsWith("/") && patchFilePath.length > 2 && patchFilePath.at(2) === ':') {
           // se formato for windows /d:/totvs/patch/12.1.2210/expedicao_continua_12_1_2210_atf_tttm120_hp.ptm
           // remove a / inicial
@@ -429,16 +429,17 @@ async function doValidatePatch(
           vscode.window.showInformationMessage("Patch validated.");
         } else {
           retMessage = response.message
-          oldResource = (response.errorCode == 5);
-          languageClient.error(retMessage);
-          vscode.window.showErrorMessage(retMessage);
+          if (response.errorCode != 5 && response.errorCode != 7 && response.errorCode != 8) {
+            // ignore errorCode for apply_old, apply_denied and newer_patches
+            languageClient.error(retMessage);
+            vscode.window.showErrorMessage(retMessage);
+          }
         }
         currentPanel.webview.postMessage({
           command: "patchValidationRet",
           file: patchFilePath,
           message: retMessage,
           errorCode: response.errorCode,
-          oldResource: oldResource,
         });
       },
       (err: ResponseError<object>) => {
