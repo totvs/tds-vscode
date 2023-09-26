@@ -132,7 +132,7 @@
 	"totvs-developer-studio.open-rpoinfo": "Журнал репозитория",
 	"tds.package.templateApply": "Apply Template",
 	"tds.package.templateApply.fromFile": "Apply Template from file",
-	"tds.package.selectRpoToken": "Select Compilation Token",
+	"tds.package.selectRpoToken": "Select action for Compilation Token",
 	"tds.package.selectRpoToken.enable": "Enable Compilation Token",
 	"tds.package.selectRpoToken.disable": "Disable Compilation Token",
 	"tds.package.inputRpoToken": "Input Compilation Token",
