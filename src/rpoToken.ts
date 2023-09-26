@@ -140,7 +140,7 @@ export function getEnabledRpoToken(rpoToken: IRpoToken) {
   return (rpoToken && rpoToken.enabled !== undefined) ? rpoToken.enabled : true;
 }
 
-function setEnabledRpoToken(enable: boolean) {
+export function setEnabledRpoToken(enable: boolean) {
   let rpoToken: IRpoToken = utils.getRpoTokenInfos();
   if (rpoToken === undefined) {
     rpoToken = noRpoToken();
