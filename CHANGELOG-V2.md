@@ -20,11 +20,15 @@ Ao iniciar a declaração de uma variável ``local``, apresentava mensagem de er
 
 #### Múltipla exibição de variável [DTCLIENT01-4286](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4286)
 
-Ajustado seleção de elementos de acordo com o escopo do elemento.
+Ajustado seleção de elementos de acordo com o escopo do mesmo. Também foi ajustado a seleção de ``static function``.
 
 #### Erro mouse _hover_ em `DEFINE` [DTCLIENT01-4285](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4285)
 
 Implementado tratamento de diretivas `#define` de constantes efetuadas no próprio fonte.
+
+#### _Peek_ em variáveis não apresenta resultados [DTCLIENT01-4301](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4301)
+
+Correção em filtro de seleção em variáveis de acordo com escopo de definição e definições (``#define``).
 
 ## Versão [2.0.0-RC9]
 
@@ -68,7 +72,7 @@ Informação de quantas vezes e onde, uma função, classe ou método estático 
 
 ### Assistente de assinatura (Otto)
 
-*InteliSense* para visualizar os paramêtros de funções advpl não tem o comportamento esperado.
+*InteliSense* para visualizar os parâmetros de funções Advpl/PL não tem o comportamento esperado.
 
 ### Disparar o assistente de assinatura, na lista de parâmetros em código já existente (Otto)
 
@@ -90,7 +94,7 @@ Gerar a documentação de classes binárias a partir dos arquivos em ``\advpldoc
 
 ### Erro ao digitar ao criar função no vscode [DTCLIENT01-4089](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4089)(John)
 
-Ao criar um user function em um arquivo tlpp na primeira linha gera um erro que trava o software do vscode.
+Ao criar um user function em um arquivo ``tlpp`` na primeira linha gera um erro que trava o software do vscode.
 
 ## Versão [2.0.0-RC4]
 
@@ -163,7 +167,7 @@ Para detalhes, veja ``<local folder>\totvsls\dbcode\dbcode_manager.cpp``, métod
 
 > Interoperabilidade entre sistemas operacionais
 >
-> Para garantir a interoperabilidade das áreas de trabalho entre os sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes, recomenda-se **veementemente** que pastas e arquivos não contenham caracteres especiais (exceto hífen e sublinhado) e/ou acentuados e sempre em mínusculas.
+> Para garantir a interoperabilidade das áreas de trabalho entre os sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes, recomenda-se que pastas e arquivos não contenham caracteres especiais (exceto hífen e sublinhado) ou acentuados e sempre em minúsculas.
 >
 > Leia [Convenção para nomenclatura de _File System_ em ambiente Linux](<https://tdn.totvs.com/x/h8BICw>).
 
@@ -193,7 +197,7 @@ Detalhes da implementação em [TDS: Developer Support Subsystem](docs/dss.md).
 
 #### Visão *Estrutura*
 
-Apresenta alguns detalhes sobre o ítem de acordo com sua definição.
+Apresenta alguns detalhes sobre o item de acordo com sua definição.
 
 #### Navegação em classes quando usado ``self`` e ``_Super``
 

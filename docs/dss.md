@@ -119,6 +119,8 @@ Para ajustar o comportamento acesse ``File > Preference > Settings``, filtre por
 
 A opção ``off``, atuará somente nos fontes abertos para edição e o **DSS** terá  limitações em suas funcionalidades. A ``onMemory``, o _cache_ é mantido em memória, sendo recriado a cada nova sessão de uso do **VS-Code**, com o  **DSS** totalmente funcional, incluindo arquivos não abertos para edição. A opção ``onDisk``, persiste o _cache_ em disco, em diversos blocos (arquicos), procurando distribuit  o custo de leitura/gravação (I/O) em disco e minimizando eventuais corrupções do _cache_.
 
+> Devido ao escopo de atuação da opção ``off`` em relação as demais opções, os resultados das ações de navegações e de informação, podem variar para o mesmo fonte e elemento.
+
 ## (#ignore)</a>Ignorar pastas e arquivos
 
 ### Definição
