@@ -167,7 +167,7 @@ Para detalhes, veja ``<local folder>\totvsls\dbcode\dbcode_manager.cpp``, métod
 
 > Interoperabilidade entre sistemas operacionais
 >
-> Para garantir a interoperabilidade das áreas de trabalho entre os sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes, recomenda-se **veementemente** que pastas e arquivos não contenham caracteres especiais (exceto hífen e sublinhado) e/ou acentuados e sempre em minúsculas.
+> Para garantir a interoperabilidade das áreas de trabalho entre os sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes, recomenda-se que pastas e arquivos não contenham caracteres especiais (exceto hífen e sublinhado) ou acentuados e sempre em minúsculas.
 >
 > Leia [Convenção para nomenclatura de _File System_ em ambiente Linux](<https://tdn.totvs.com/x/h8BICw>).
 
