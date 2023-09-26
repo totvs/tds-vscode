@@ -6,7 +6,7 @@ import * as ini from "ini";
 import * as nls from "vscode-nls";
 import { languageClient } from "./extension";
 import { Authorization, CompileKey } from "./compileKey/compileKey";
-import { IRpoToken, getEnabledRpoToken } from "./rpoToken";
+import { IRpoToken, getEnabledRpoTokenInfos } from "./rpoToken";
 import stripJsonComments from "strip-json-comments";
 import {
   IGetServerInformationsResult,
@@ -567,7 +567,7 @@ export default class Utils {
     if (permissionsInfos) {
       if (isSafeRPOServer) {
         // necessita dois IFs separados, pois senão cairia no ELSE e não é o esperado
-        if (getEnabledRpoToken()) {
+        if (getEnabledRpoTokenInfos()) {
           // somente seta o authorizationToken se estiver habilitado
           authorizationToken = (<IRpoToken>permissionsInfos).token;
         }

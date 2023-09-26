@@ -100,7 +100,7 @@ export function rpoTokenQuickPick() {
     'tds.package.clearRpoToken',
     'Clear Compilation Token',
   );
-  let enabled = getEnabledRpoToken();
+  let enabled = getEnabledRpoTokenInfos();
   let actionRpoToken = enabled ? localize(
     'tds.package.selectRpoToken.disable',
     'Disable Compilation Token',
@@ -130,9 +130,14 @@ export function rpoTokenQuickPick() {
   }
 }
 
-export function getEnabledRpoToken() {
+export function getEnabledRpoTokenInfos() {
   let rpoToken: IRpoToken = utils.getRpoTokenInfos();
-  return (rpoToken && rpoToken.enabled !== undefined) ? rpoToken.enabled : false;
+  return getEnabledRpoToken(rpoToken);
+}
+
+export function getEnabledRpoToken(rpoToken: IRpoToken) {
+  // token sem informação enabled serão considerados true (compatibilidade token existente)
+  return (rpoToken && rpoToken.enabled !== undefined) ? rpoToken.enabled : true;
 }
 
 function setEnabledRpoToken(enable: boolean) {

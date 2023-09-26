@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import * as nls from "vscode-nls";
 import { CompileKey } from "./compileKey/compileKey";
 import { IUsageStatusInfo, IUsageStatusData } from "./protocolMessages";
-import { IRpoToken } from "./rpoToken";
+import { IRpoToken, getEnabledRpoToken } from "./rpoToken";
 import { ServerItem } from "./serverItem";
 import Utils from "./utils";
 
@@ -134,7 +134,8 @@ function updateRpoTokenStatusBarItem(): void {
       "Input RPO token"
     )
   } else {
-    text = buildTextRpoToken(error ? 2 : warning ? 1 : 0, text) + " RPO Token";
+    let enabled = getEnabledRpoToken(rpoToken);
+    text = buildTextRpoToken(error ? 2 : warning ? 1 : 0, enabled, text) + " RPO Token";
     tooltip = buildTooltipRpoToken(error || warning, tooltip, rpoToken);
   }
 
@@ -151,9 +152,9 @@ function initSettingsBarItem(context: vscode.ExtensionContext): void {
   );
   context.subscriptions.push(settingsStatusBarItem);
 }
-function buildTextRpoToken(level: number, text: string): string {
+function buildTextRpoToken(level: number, enabled: boolean, text: string): string {
   return (
-    text + (level == 2 ? "$(error)" : level == 1 ? "$(alert)" : "$(check)")
+    text + (level == 2 ? "$(error)" : level == 1 ? "$(alert)" : (enabled ? "$(check)" : "$(circle-slash)"))
   );
 }
 
@@ -191,9 +192,10 @@ function buildTooltipRpoToken(
 
   result += message ? `${message}\n` : "";
   if (rpoToken.body) {
-    let status = rpoToken.enabled ? "ENABLED" : "DISABLED";
+    let enabled = getEnabledRpoToken(rpoToken);
+    let status = enabled ? "ENABLED" : "DISABLED";
     result += `STATUS: ${status}`;
-    if (rpoToken.enabled) {
+    if (enabled) {
       result += `\nSubject: ${rpoToken.body.sub}\n`;
       result += `Authorization: ${rpoToken.body.auth}\n`;
       result += `Issued: ${rpoToken.body.iat}\n`;
