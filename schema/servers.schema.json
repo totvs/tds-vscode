@@ -60,6 +60,11 @@
 			"description": "Current connection. Automatically updated.",
 			"type": "object",
 			"$ref": "./server.schema.json"
+		},
+		"rpoToken": {
+			"description": "RPO Token provided by ESP.",
+			"type": "object",
+			"$ref": "./rpoToken.schema.json"
 		}
 	},
 	"required": [

@@ -63,7 +63,7 @@ import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
 import { initStatusBarItems } from "./statusBar";
 import { PatchEditorProvider } from "./patch/inspect/patchEditor";
 import { openTemplateApplyView } from "./template/apply/formApplyTemplate";
-import { rpoTokenInputBox, saveRpoTokenString } from "./rpoToken";
+import { rpoTokenQuickPick, rpoTokenInputBox, saveRpoTokenString } from "./rpoToken";
 import { openGeneratePatchView } from "./patch/generate/generatePatchLoader";
 import { patchApply } from "./patch/patchApply";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
@@ -491,7 +491,13 @@ export function activate(context: ExtensionContext) {
 
   //Seleção/remoção do arquivo com RPO Token.
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.rpoToken", () => {
+    commands.registerCommand("totvs-developer-studio.selectRpoToken", () => {
+      rpoTokenQuickPick();
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("totvs-developer-studio.inputRpoToken", () => {
       rpoTokenInputBox();
     })
   );

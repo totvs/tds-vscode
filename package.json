@@ -763,8 +763,23 @@
         "category": "TOTVS"
       },
       {
-        "command": "totvs-developer-studio.rpoToken",
-        "title": "%tds.package.rpoToken%",
+        "command": "totvs-developer-studio.selectRpoToken",
+        "title": "%tds.package.selectRpoToken%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.selectRpoToken.enable",
+        "title": "%tds.package.selectRpoToken.enable%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.selectRpoToken.disable",
+        "title": "%tds.package.selectRpoToken.disable%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.inputRpoToken",
+        "title": "%tds.package.inputRpoToken%",
         "category": "TOTVS"
       },
       {
@@ -1611,7 +1626,10 @@
       ],
       "commandPalette": [
         {
-          "command": "totvs-developer-studio.rpoToken"
+          "command": "totvs-developer-studio.selectRpoToken"
+        },
+        {
+          "command": "totvs-developer-studio.inputRpoToken"
         },
         {
           "command": "totvs-developer-studio.clearRpoToken"
