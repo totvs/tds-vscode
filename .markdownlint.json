@@ -1,11 +1,12 @@
 {
 	"no-hard-tabs": false,
-	"no-duplicate-header": true,
-	"MD003": {
-		"style": "atx_closed"
-	},
+	"no-duplicate-header": false,
 	"MD007": {
 		"indent": 4
+	},
+	"MD013": {
+		"line_length": 200,
+		"heading_line_length": 120
 	},
 	"MD033": {
 		"allowed_elements": [
