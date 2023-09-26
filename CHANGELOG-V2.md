@@ -22,6 +22,10 @@ Ao iniciar a declaração de uma variável ``local``, apresentava mensagem de er
 
 Ajustado seleção de elementos de acordo com o escopo do elemento.
 
+#### Erro mouse _hover_ em `DEFINE` [DTCLIENT01-4285](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4285)
+
+Implementado tratamento de diretivas `#define` de constantes efetuadas no próprio fonte.
+
 ## Versão [2.0.0-RC9]
 
 ### Melhoria
