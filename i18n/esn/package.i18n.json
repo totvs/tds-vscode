@@ -98,6 +98,7 @@
 	"tds.package.properties.enableProfile.description": "Si el perfil debe estar habilitado",
 	"tds.package.properties.startJobList.description": "Lista de servicios que se iniciarán antes de depurar",
 	"tds.package.properties.waitForAttach.description": "Para depuración DAP. NO UTILICE.",
+	"tds.package.properties.forceUtf8.description": "Forces de use of UTF-8 characters.",
 	"tds.package.properties.isMultiSession.description": "Si se trata de una ejecución multisesión (-M)",
 	"tds.package.properties.isAccessibilityMode.description": "Si el modo de accesibilidad debe estar habilitado (-AC)",
 	"tds.package.properties.doNotShowSplash.description": "Si la pantalla de presentación no debe mostrar (-Q)",
@@ -135,7 +136,10 @@
 	"totvs-developer-studio.open-rpoinfo": "Registro del repositorio",
 	"tds.package.templateApply": "Aplicación de Template",
 	"tds.package.templateApply.fromFile": "Aplicar Template desde archivo",
-	"tds.package.rpoToken": "Poner el Token de Compilación",
+	"tds.package.selectRpoToken": "Select Compilation Token",
+	"tds.package.selectRpoToken.enable": "Enable Compilation Token",
+	"tds.package.selectRpoToken.disable": "Disable Compilation Token",
+	"tds.package.inputRpoToken": "Poner el Token de Compilación",
 	"tds.package.clearRpoToken": "Eliminar el Token de Compilación",
 	"tds.package.filesystem.encoding": "Establecer la codificación del sistema de archivos",
 	"tds.package.editor.linter": "Comportamiento el linter",
@@ -148,5 +152,10 @@
 	"tds.package.editor.index.cache.off": "Turn off the cache. Some DSS features may become unavailable..",
 	"tds.package.editor.index.cache.onMemory": "Caching is done on memory.",
 	"tds.package.editor.index.cache.onDisk": "Persist cache on disk.",
-	"tds.package.editor.signatureHelp": "Controla la activación de la ayuda de la firma."
-}
+	"tds.package.editor.signatureHelp": "Controla la activación de la ayuda de la firma.",
+	"tds.package.editor.codeLens": "Controls activation of the CodeLens.",
+	"tds.package.editor.autocomplete": "Toggle auto complete mode.",
+	"tds.package.editor.autocomplete.off": "Off.",
+	"tds.package.editor.autocomplete.basic": "Basic (VS-Code mode).",
+	"tds.package.editor.autocomplete.ls": "LS (run by LS)."
+  }

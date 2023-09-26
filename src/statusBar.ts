@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import * as nls from "vscode-nls";
 import { CompileKey } from "./compileKey/compileKey";
 import { IUsageStatusInfo, IUsageStatusData } from "./protocolMessages";
-import { IRpoToken } from "./rpoToken";
+import { IRpoToken, getEnabledRpoToken } from "./rpoToken";
 import { ServerItem } from "./serverItem";
 import Utils from "./utils";
 
@@ -13,10 +13,8 @@ const localize = nls.config({
 
 let serverStatusBarItem: vscode.StatusBarItem;
 let saveLocationBarItem: vscode.StatusBarItem;
-let permissionStatusBarItem: vscode.StatusBarItem;
 let settingsStatusBarItem: vscode.StatusBarItem;
 let rpoTokenStatusBarItem: vscode.StatusBarItem;
-let clearRpoTokenStatusBarItem: vscode.StatusBarItem;
 let usageBarItem: vscode.StatusBarItem;
 
 const priorityusageBarItem: number = 104;
@@ -29,16 +27,14 @@ const prioritySaveLocationBarItem: number = 100;
 export function initStatusBarItems(context: vscode.ExtensionContext) {
   initStatusBarItem(context);
   initSaveLocationBarItem(context);
-  initPermissionStatusBarItem(context);
   initRpoTokenStatusBarItem(context);
   initSettingsBarItem(context);
   initUsageBarItem(context);
 }
 
 export function updateStatusBarItems() {
-  updateStatusBarItem(undefined); 
+  updateStatusBarItem(undefined);
   updateSaveLocationBarItem();
-  updatePermissionStatusBarItem();
   updateRpoTokenStatusBarItem();
 }
 
@@ -109,145 +105,44 @@ function updateSaveLocationBarItem() {
   saveLocationBarItem.show();
 }
 
-function initPermissionStatusBarItem(context: vscode.ExtensionContext) {
-  permissionStatusBarItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Left,
-    priorityPermissionStatusBarItem
-  );
-  permissionStatusBarItem.command = "totvs-developer-studio.compile.key";
-  context.subscriptions.push(permissionStatusBarItem);
-  context.subscriptions.push(
-    Utils.onDidSelectedKey(updatePermissionStatusBarItem)
-  );
-
-  updatePermissionStatusBarItem();
-}
-
-function updatePermissionStatusBarItem(): void {
-  const infos: CompileKey = Utils.getPermissionsInfos();
-  const toolTips: string[] = [];
-
-  if (infos && infos.authorizationToken && infos.buildType && infos.expire) {
-    const [dd, mm, yyyy] = infos.expire.split("/");
-    const expiryDate: Date = new Date(`${yyyy}-${mm}-${dd} 23:59:59`);
-    if (expiryDate.getTime() >= new Date().getTime()) {
-      permissionStatusBarItem.text = localize(
-        "tds.vscode.have_key",
-        "HAVE key"
-      );
-      if (infos.machineId) {
-        toolTips.push(
-          localize("tds.vscode.machine_id", "Machine ID: {0}", infos.machineId)
-        );
-      } else if (infos.userId) {
-        toolTips.push(
-          localize("tds.vscode.user_id", "User ID: {0}", infos.userId)
-        );
-      }
-      toolTips.push(
-        localize(
-          "tds.vscode.expires_in",
-          "Expires in {0}",
-          expiryDate.toLocaleString()
-        )
-      );
-
-      if (infos.buildType === "0") {
-        toolTips.push(
-          localize(
-            "tds.vscode.compile_override",
-            "Allow compile functions and overwrite default TOTVS"
-          )
-        );
-      } else if (infos.buildType === "1") {
-        toolTips.push(
-          localize(
-            "tds.vscode.compile_users",
-            "Allow only compile users functions"
-          )
-        );
-      } else if (infos.buildType === "2") {
-        toolTips.push(
-          localize("tds.vscode.copile_functions", "Allow compile functions")
-        );
-      }
-    } else {
-      permissionStatusBarItem.text = localize(
-        "tds.vscode.expired_in",
-        "Expired in {0}",
-        expiryDate.toLocaleString()
-      );
-    }
-  } else {
-    permissionStatusBarItem.text = localize("tds.vscode.not_key", "NOT key");
-  }
-
-  permissionStatusBarItem.text = `$(key) ${permissionStatusBarItem.text}`;
-  permissionStatusBarItem.tooltip = toolTips.join("\n");
-
-  permissionStatusBarItem.show();
-}
-
 function initRpoTokenStatusBarItem(context: vscode.ExtensionContext) {
   rpoTokenStatusBarItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Left,
     priorityRpoTokenStatusBarItem
   );
-  rpoTokenStatusBarItem.command = "totvs-developer-studio.rpoToken";
-  rpoTokenStatusBarItem.text = "RPO$(gear)";
-  rpoTokenStatusBarItem.tooltip = localize(
-    "tds.vscode.rpoToken.initial.tooltip",
-    "Input RPO token"
-  );
+  rpoTokenStatusBarItem.command = "totvs-developer-studio.selectRpoToken";
 
-  clearRpoTokenStatusBarItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Left,
-    priorityRpoTokenStatusBarItem
-  );
-  clearRpoTokenStatusBarItem.command = "totvs-developer-studio.clearRpoToken";
-  clearRpoTokenStatusBarItem.text = "$(notifications-clear)";
-  clearRpoTokenStatusBarItem.tooltip = localize(
-    "tds.vscode.rpoToken.clear.tooltip",
-    "Clear RPO token"
-  );
-
-  context.subscriptions.push(
-    rpoTokenStatusBarItem,
-    clearRpoTokenStatusBarItem,
-    Utils.onDidSelectedServer(updateRpoTokenStatusBarItem),
-    Utils.onDidRpoTokenSelected(updateRpoTokenStatusBarItem)
-  );
-
-  rpoTokenStatusBarItem.show();
-  clearRpoTokenStatusBarItem.show();
+  updateRpoTokenStatusBarItem();
 }
 
 function updateRpoTokenStatusBarItem(): void {
   let text: string = "";
   let tooltip: string = "";
 
-  const rpoToken: IRpoToken = Utils.getRpoTokenInfos();
-  if (rpoToken) {
-    const error: string = rpoToken.error; // || rpoAux.error;
-    const warning: string = rpoToken.warning; // || rpoAux.warning;
+  let rpoToken: IRpoToken = Utils.getRpoTokenInfos();
+  if (rpoToken === undefined) {
+    rpoToken = { token: "", enabled: false };
+  }
 
-    if (rpoToken.token.length == 0) {
-      text = "$(gear) RPO";
-      tooltip = localize(
-        "tds.vscode.rpoToken.initial.tooltip",
-        "Input RPO token"
-      )
-    } else {
-      text = buildTextRpoToken(error ? 2 : warning ? 1 : 0, text) + " RPO";
-      tooltip = buildTooltipRpoToken(error || warning, tooltip, rpoToken);
-    }
+  const error: string = rpoToken.error;
+  const warning: string = rpoToken.warning;
+
+  if (rpoToken.token.length == 0) {
+    text = "$(gear) RPO Token";
+    tooltip = localize(
+      "tds.package.inputRpoToken",
+      "Input RPO token"
+    )
+  } else {
+    let enabled = getEnabledRpoToken(rpoToken);
+    text = buildTextRpoToken(error ? 2 : warning ? 1 : 0, enabled, text) + " RPO Token";
+    tooltip = buildTooltipRpoToken(error || warning, tooltip, rpoToken);
   }
 
   rpoTokenStatusBarItem.text = text;
   rpoTokenStatusBarItem.tooltip = tooltip;
 
   rpoTokenStatusBarItem.show();
-  clearRpoTokenStatusBarItem.show();
 }
 
 function initSettingsBarItem(context: vscode.ExtensionContext): void {
@@ -257,9 +152,9 @@ function initSettingsBarItem(context: vscode.ExtensionContext): void {
   );
   context.subscriptions.push(settingsStatusBarItem);
 }
-function buildTextRpoToken(level: number, text: string): string {
+function buildTextRpoToken(level: number, enabled: boolean, text: string): string {
   return (
-    text + (level == 2 ? "$(error)" : level == 1 ? "$(alert)" : "$(check)")
+    text + (level == 2 ? "$(error)" : level == 1 ? "$(alert)" : (enabled ? "$(check)" : "$(circle-slash)"))
   );
 }
 
@@ -297,11 +192,16 @@ function buildTooltipRpoToken(
 
   result += message ? `${message}\n` : "";
   if (rpoToken.body) {
-    result += `Name: ${rpoToken.body.name}\n`;
-    result += `Subject: ${rpoToken.body.sub}\n`;
-    result += `Auth: ${rpoToken.body.auth}\n`;
-    result += `Validate: ${rpoToken.body.exp} at ${rpoToken.body.iat}\n`;
-    result += `Emitter: ${rpoToken.body.iss}`;
+    let enabled = getEnabledRpoToken(rpoToken);
+    let status = enabled ? "ENABLED" : "DISABLED";
+    result += `STATUS: ${status}`;
+    if (enabled) {
+      result += `\nSubject: ${rpoToken.body.sub}\n`;
+      result += `Authorization: ${rpoToken.body.auth}\n`;
+      result += `Issued: ${rpoToken.body.iat}\n`;
+      result += `Emitter: ${rpoToken.body.iss}\n`;
+      result += `Validity: ${rpoToken.body.exp}`;
+    }
   }
 
   return result;

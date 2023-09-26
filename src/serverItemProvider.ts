@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import { EnvSection, ServerItem, ServerType } from "./serverItem";
 import Utils from "./utils";
+import { updateStatusBarItems } from "./statusBar";
 
 class ServerItemProvider
   implements vscode.TreeDataProvider<ServerItem | EnvSection>
@@ -164,6 +165,7 @@ class ServerItemProvider
 
       fs.watch(serversJson, { encoding: "buffer" }, (eventType, filename) => {
         if (filename && eventType === "change") {
+          updateStatusBarItems();
           this.localServerItems = this.setConfigWithServerConfig();
           this.refresh();
         }
@@ -176,7 +178,7 @@ class ServerItemProvider
         this.refresh();
       }
     }
-    
+
     Utils.updateLinterIncludes();
   }
 
