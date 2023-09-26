@@ -4,10 +4,7 @@ import Utils from './utils';
 import * as nls from 'vscode-nls';
 import utils from './utils';
 
-const localize = nls.config({
-  locale: vscode.env.language,
-  bundleFormat: nls.BundleFormat.standalone,
-})();
+const localize: nls.LocalizeFunc = nls.loadMessageBundle();
 
 export interface IRpoToken {
   token: string;

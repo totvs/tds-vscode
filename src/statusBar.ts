@@ -6,10 +6,7 @@ import { IRpoToken, getEnabledRpoToken } from "./rpoToken";
 import { ServerItem } from "./serverItem";
 import Utils from "./utils";
 
-const localize = nls.config({
-  locale: vscode.env.language,
-  bundleFormat: nls.BundleFormat.standalone,
-})();
+let localize = nls.loadMessageBundle();
 
 let serverStatusBarItem: vscode.StatusBarItem;
 let saveLocationBarItem: vscode.StatusBarItem;
