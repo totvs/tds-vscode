@@ -981,13 +981,13 @@
     ],
     "keybindings": [
       {
-        "command": "totvs-developer-studio.build.file",
+        "command": "totvs-developer-studio.rebuild.file",
         "key": "ctrl+f9",
         "mac": "cmd+f9",
         "when": "editorTextFocus"
       },
       {
-        "command": "totvs-developer-studio.rebuild.file",
+        "command": "totvs-developer-studio.build.file",
         "key": "ctrl+shift+f9",
         "mac": "cmd+shift+f9",
         "when": "editorTextFocus"
@@ -1431,8 +1431,8 @@
           "group": "totvsBuild@1"
         },
         {
-          "command": "totvs-developer-studio.build.file",
-          "alt": "totvs-developer-studio.rebuild.file",
+          "command": "totvs-developer-studio.rebuild.file",
+          "alt": "totvs-developer-studio.build.file",
           "group": "totvsBuild@3"
         },
         {

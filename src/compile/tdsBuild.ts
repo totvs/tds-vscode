@@ -353,7 +353,6 @@ export function commandBuildFile(
       return;
     }
     filename = editor.document.uri.fsPath;
-    recompile = true;
   }
 
   vscode.window.setStatusBarMessage(
