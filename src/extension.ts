@@ -387,7 +387,7 @@ export function activate(context: ExtensionContext) {
       (context) => patchGenerateFromFolder(context)
     )
   );
-  //Valida o conteudo de um patch pelo menu de contexto em arquivos de patch
+  //Valida o conteúdo de um patch pelo menu de contexto em arquivos de patch
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.patchValidate.fromFile",
@@ -395,7 +395,7 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-  //Verifica o conteudo de um patch pelo menu de contexto em arquivos de patch
+  //Verifica o conteúdo de um patch pelo menu de contexto em arquivos de patch
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.patchInfos.fromFile",
@@ -412,7 +412,7 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-  //Adicona página de geração de WSDL
+  //Adiciona página de geração de WSDL
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.ws.show", () =>
       showWSPage(context)
@@ -435,7 +435,7 @@ export function activate(context: ExtensionContext) {
       (args: any) => {
         vscode.window.setStatusBarMessage(
           `$(gear~spin) ${localize(
-            "tds.vscode.starting.apply.teplate",
+            "tds.vscode.starting.apply.template",
             "Starting template application..."
           )}`,
           Promise.resolve(openTemplateApplyView(context, args))

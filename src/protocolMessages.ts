@@ -34,6 +34,10 @@ export interface IUsageStatusInfo {
   counter: number;
   usageStatus: IUsageStatusData[];
 }
+export interface IServerNotificationInfo {
+  code: string;
+  message: string;
+}
 
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,

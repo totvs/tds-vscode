@@ -437,6 +437,8 @@ export async function commandBuildOpenEditors(recompile: boolean) {
       }
     }
   }
+
+  //TODO: melhorar essa rotina usando vscode.workspace.textDocuments
   do {
     vscode.commands.executeCommand("workbench.action.nextEditor");
     await delay(delayNext);

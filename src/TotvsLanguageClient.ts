@@ -12,7 +12,7 @@ import { chmodSync, statSync } from "fs";
 import { reconnectLastServer } from "./serversView";
 import * as nls from "vscode-nls";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
-import { IUsageStatusInfo } from './protocolMessages';
+import { IServerNotificationInfo, IUsageStatusInfo } from './protocolMessages';
 import { updateUsageBarItem } from "./statusBar";
 import { getLanguageServerSettings } from './server/languageServerSettings';
 
@@ -107,9 +107,18 @@ export function getLanguageClient(
   languageClient = new TotvsLanguageClientA(serverOptions, clientOptions);
   languageClient.registerProposedFeatures();
 
-  languageClient.onNotification("$totvsserver/usageStatus", (params: IUsageStatusInfo) => {
-    updateUsageBarItem(params);
-  });
+  languageClient
+    .onNotification("$totvsserver/usageStatus", (params: IUsageStatusInfo) => {
+      updateUsageBarItem(params);
+    });
+  languageClient
+    .onNotification("$totvsserver/notification", (params: IServerNotificationInfo) => {
+      vscode.window.showInformationMessage(params.code + params.message);
+
+      vscode.workspace.textDocuments.forEach((document: vscode.TextDocument) => {
+        //document.fileName
+      });
+    });
 
   languageClient.start()
     .then(async (disposable: any) => {
