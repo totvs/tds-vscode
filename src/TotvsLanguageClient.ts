@@ -113,7 +113,7 @@ export function getLanguageClient(
     });
   languageClient
     .onNotification("$totvsserver/notification", (params: IServerNotificationInfo) => {
-      vscode.window.showInformationMessage(params.code + params.message);
+      //vscode.window.showInformationMessage(params.code + params.message);
 
       vscode.workspace.textDocuments.forEach((document: vscode.TextDocument) => {
         //TODO: forçar 'refresh' do editor corrente (references)
