@@ -116,7 +116,7 @@ export function getLanguageClient(
       vscode.window.showInformationMessage(params.code + params.message);
 
       vscode.workspace.textDocuments.forEach((document: vscode.TextDocument) => {
-        //document.fileName
+        //TODO: forçar 'refresh' do editor corrente (references)
       });
     });
 

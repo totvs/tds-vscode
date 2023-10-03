@@ -1,5 +1,21 @@
 # Changelog ([Changelog Versão 1](CHANGELOG.md))
 
+## Versão [2.0.0-RC11]
+
+### Melhoria
+
+Otimização de código e ajustes na apresentação dos resultados da ação ``peek``.
+
+### Correção
+
+Na obtenção da estrutura de fonte (_outline_) em definições de variáveis com atribuição de valor. Por exemplo:
+
+```
+local v1, v2 := 0, v3 := {|| .f.}
+```
+
+A estrutura apresentava apenas ``v1`` e ``v3``.
+
 ## Versão [2.0.0-RC10]
 
 ### Melhoria
