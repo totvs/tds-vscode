@@ -1,5 +1,11 @@
 # Changelog ([Changelog Versão 1](CHANGELOG.md))
 
+## Versão [2.0.0-RC12]
+
+### Correção
+
+A formatação de arquivos HTML não estava sendo realizada e apareciam como um texto simples.
+
 ## Versão [2.0.0-RC11]
 
 ### Melhoria
