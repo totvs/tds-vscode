@@ -25,6 +25,14 @@ const localizeHTML = {
   "tds.webview.col01": localize("tds.webview.col01", "Patch Name"),
   "tds.webview.col02": localize("tds.webview.col02", "Patch Full Path"),
   "tds.webview.col03": localize("tds.webview.col03", "Validation"),
+  "tds.webview.patch.newest.exp": localize("tds.webview.patch.newest.exp", "Continuous Dispatch"),
+  "tds.webview.patch.newest.ptm": localize("tds.webview.patch.newest.ptm", "Patch"),
+  "tds.webview.patch.newest.module": localize("tds.webview.patch.newest.module", "Module:"),
+  "tds.webview.patch.newest.generated": localize("tds.webview.patch.newest.generated", "Generated:"),
+  "tds.webview.patch.newest.description": localize("tds.webview.patch.newest.description", "Description:"),
+  "tds.webview.patch.newest.summary": localize("tds.webview.patch.newest.summary", "Summary:"),
+  "tds.webview.patch.newest.link": localize("tds.webview.patch.newest.link", "Download the patch from the Update Center:"),
+  "tds.webview.patch.newest.doc": localize("tds.webview.patch.newest.doc", "Read the documentation at:"),
 };
 
 export function patchApply(
@@ -420,6 +428,7 @@ async function doValidatePatch(
         //const patchFile = vscode.Uri.file(patchUri).toString();
         var patchFilePath = patchFile.path;
         var retMessage = "No validation errors";
+        var tphInfoRet = { exp: undefined, ptm: undefined };
         if (patchFilePath.startsWith("/") && patchFilePath.length > 2 && patchFilePath.at(2) === ':') {
           // se formato for windows /d:/totvs/patch/12.1.2210/expedicao_continua_12_1_2210_atf_tttm120_hp.ptm
           // remove a / inicial
@@ -434,12 +443,34 @@ async function doValidatePatch(
             languageClient.error(retMessage);
             vscode.window.showErrorMessage(retMessage);
           }
+          if (response.errorCode == 5) { // Erro de patch com resources mais antigos que o do RPO
+            // exibir os recursos mais antigos
+          }
+          if (response.errorCode == 8) { // Erro de TPH apenas ocorre se existem patches mais recentes que o validado
+            // exibir mensagens e links para patches mais recentes
+            retMessage = "check tphInfoRet";
+            const tphInfo: any = JSON.parse(response.message);
+            const recommendedPatches = tphInfo.recommended;
+            if (recommendedPatches) {
+              if (recommendedPatches.exp) {
+                // exp
+                recommendedPatches.exp.module_name = "Nome do Módulo";
+                tphInfoRet.exp = recommendedPatches.exp;
+              }
+              if (recommendedPatches.ptm) {
+                // ptm
+                recommendedPatches.ptm.module_name = "Nome do Módulo";
+                tphInfoRet.ptm = recommendedPatches.ptm;
+              }
+            }
+          }
         }
         currentPanel.webview.postMessage({
           command: "patchValidationRet",
           file: patchFilePath,
           message: retMessage,
           errorCode: response.errorCode,
+          tphInfoRet: tphInfoRet,
         });
       },
       (err: ResponseError<object>) => {

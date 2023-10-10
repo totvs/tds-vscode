@@ -25,6 +25,55 @@
 		left: 100px;
 		top: -515px;
 	}
+
+	/* The Modal (background) */
+	.modal {
+	position: fixed; /* Stay in place */
+	z-index: 1; /* Sit on top */
+	padding-top: 100px; /* Location of the box */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0,0,0); /* Fallback color */
+	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	}
+	/* Modal Content */
+	.modal-content {
+	background-color: #f3f3f3;
+	margin: auto;
+	padding: 5px 15px;
+	border: 1px solid #888;
+	width: 80%;
+	}
+	/* Modal Section */
+	/* .modal-section {
+	} */
+	.section-header {
+		margin-bottom: 10px;
+	}
+	.section-title {
+		padding: 0px;
+		margin: 0px;
+	}
+	.section-module {
+		padding: 0px;
+		margin: 0px;
+	}
+	/* The Close Button */
+	.close {
+	color: #aaaaaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+	}
+	.close:hover,
+	.close:focus {
+	color: #000;
+	text-decoration: none;
+	cursor: pointer;
+	}
 </style>
 <!--<link rel="stylesheet" type="text/css" href="../../resources/css/table_materialize.css">-->
 
@@ -117,6 +166,39 @@
 			</form>
 		</div>
 	</div>
+	<dialog id="tph_dialog" class="modal">
+		<!-- Modal content -->
+		<div class="modal-content">
+		  <span id="close" class="close" onClick="closeTph()">&times;</span>
+		  <p>Foram localizados pacotes mais recentes que os selecionados para serem aplicados.</p>
+		  <hr class="solid">
+		  <div id="exp" class="modal-section" hidden>
+			<header class="section-header">
+			  <h3 class="section-title">${d.localize["tds.webview.patch.newest.exp"]}</h3>
+			  <p class="section-module">${d.localize["tds.webview.patch.newest.module"]} <span id="exp_module"></span></p>
+			  <p class="section-module">${d.localize["tds.webview.patch.newest.generated"]} <time id="exp_generated"></time></p>
+			</header>
+			<p>${d.localize["tds.webview.patch.newest.description"]} <span id="exp_description"></span></p>
+			<p>${d.localize["tds.webview.patch.newest.summary"]} <span id="exp_summary"></span></p>
+			<p>${d.localize["tds.webview.patch.newest.link"]} <span id="exp_link_patch"></span></p>
+			<p>${d.localize["tds.webview.patch.newest.doc"]} <span id="exp_link_doc"></span></p>
+		  </div>
+
+		  <hr id="sep" class="solid" hidden>
+
+		  <div id="ptm" class="modal-section" hidden>
+			<header class="section-header">
+				<h3 class="section-title">${d.localize["tds.webview.patch.newest.ptm"]}</h3>
+				<p class="section-module">${d.localize["tds.webview.patch.newest.module"]} <span id="ptm_module"></span></p>
+				<p class="section-module">${d.localize["tds.webview.patch.newest.generated"]} <time id="ptm_generated"></time></p>
+			</header>
+			<p>${d.localize["tds.webview.patch.newest.description"]} <span id="ptm_description"></span></p>
+			<p>${d.localize["tds.webview.patch.newest.summary"]} <span id="ptm_summary"></span></p>
+			<p>${d.localize["tds.webview.patch.newest.link"]} <span id="ptm_link_patch"></span></p>
+			<p>${d.localize["tds.webview.patch.newest.doc"]} <span id="ptm_link_doc"></span></p>
+		  </div>
+		</div>
+	</dialog>
 </body>
 <script>
 	${ d.script }
@@ -208,6 +290,7 @@
 			}
 		]
 	}).api();
+	var tphInfos = new Map();
 
 	function patchApply(close) {
 		var patchs = tableAPI.data();
@@ -270,8 +353,9 @@
 						} else if (errorCode == 7) {
 							validationMessage = "Patch apply denied. Check Output for details.";
 						} else if (errorCode == 8) {
-							console.log(validationMessage);
-							validationMessage = "Newer patches available. Check Output for details.";
+							//console.log(validationMessage);
+							validationMessage = "Newer patches available. Click <a href='#' onClick='showTphInfo("+i+")'>here</a> for details.";
+							tphInfos.set(i, message.tphInfoRet);
 						}
 						//console.log("FOUND! "+message.message);
 						tableAPI.cell(i,1).data(validationMessage);
@@ -345,6 +429,44 @@
 		};
 
 		return false;
+	}
+
+	function closeTph() {
+    	document.getElementById("tph_dialog").close("TPH Dialog");
+	}
+
+	function showTphInfo(patchIdx) {
+		//console.log("showTphInfo");
+		//var patchs = tableAPI.data();
+		//var patchPath = patchs[patchIdx][3].replaceAll('\\\\', '/').toLowerCase();
+		document.getElementById("tph_dialog").showModal();
+		var tphInfo = tphInfos.get(patchIdx);
+		const exp = document.getElementById("exp");
+		exp.hidden = true;
+		if (tphInfo.exp) {
+			exp.hidden = false;
+			document.getElementById("exp_module").innerHTML = tphInfo.exp.module_name;
+			document.getElementById("exp_generated").innerHTML = tphInfo.exp.generated;
+			document.getElementById("exp_description").innerHTML = tphInfo.exp.description;
+			document.getElementById("exp_summary").innerHTML = tphInfo.exp.resume;
+			document.getElementById("exp_link_patch").innerHTML = '<a href="'+tphInfo.exp.link_doc+'" target="_blank">Pacote EXP</a>';
+			document.getElementById("exp_link_doc").innerHTML = '<a href="'+tphInfo.exp.link_patch+'" target="_blank">'+tphInfo.exp.link_patch+'</a>';
+		}
+		const ptm = document.getElementById("ptm");
+		ptm.hidden = true;
+		if (tphInfo.ptm) {
+			ptm.hidden = false;
+			document.getElementById("ptm_module").innerHTML = tphInfo.exp.module_name;
+			document.getElementById("ptm_generated").innerHTML = tphInfo.ptm.generated;
+			document.getElementById("ptm_description").innerHTML = tphInfo.ptm.description;
+			document.getElementById("ptm_summary").innerHTML = tphInfo.ptm.resume;
+			document.getElementById("ptm_link_patch").innerHTML = '<a href="'+tphInfo.ptm.link_doc+'" target="_blank">Pacote PTM</a>';
+			document.getElementById("ptm_link_doc").innerHTML = '<a href="'+tphInfo.ptm.link_patch+'" target="_blank">'+tphInfo.ptm.link_patch+'</a>';
+		}
+		if (!exp.hidden && !ptm.hidden) {
+			const sep = document.getElementById("sep");
+			sep.hidden = false; // Exibe separador se as duas opçoes forem exibidas
+		}
 	}
 
 	function checkValidations() {
