@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "2.0.0-RC11",
+  "version": "2.0.0-RC12",
   "publisher": "TOTVS",
   "preview": true,
   "author": {
@@ -232,7 +232,7 @@
     ],
     "languages": [
       {
-        "id": "html",
+        "id": "aph",
         "aliases": [
           "HTML",
           "advpl/asp"
@@ -304,7 +304,7 @@
         "path": "./syntaxes/advpl_language.tmLanguage.json"
       },
       {
-        "language": "html",
+        "language": "aph",
         "scopeName": "text.html.advpl",
         "path": "./syntaxes/advpl_language.tmLanguage.json",
         "embeddedLanguages": {
