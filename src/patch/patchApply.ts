@@ -454,12 +454,10 @@ async function doValidatePatch(
             if (recommendedPatches) {
               if (recommendedPatches.exp) {
                 // exp
-                recommendedPatches.exp.module_name = "Nome do Módulo";
                 tphInfoRet.exp = recommendedPatches.exp;
               }
               if (recommendedPatches.ptm) {
                 // ptm
-                recommendedPatches.ptm.module_name = "Nome do Módulo";
                 tphInfoRet.ptm = recommendedPatches.ptm;
               }
             }
