@@ -1,5 +1,13 @@
 # Changelog ([Changelog Versão 1](CHANGELOG.md))
 
+## Versão [2.0.0-RC-NEXT]
+
+### Correção
+
+#### Sintaxe destacada em HTML e APH não está funcionando [DTCLIENT01-4345](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4345)
+
+Implementado tratamento específico para arquivo ``.aph``, para suporte a sintaxe destacada de HTML e outros.
+
 ## Versão [2.0.0-RC12]
 
 ### Correção
