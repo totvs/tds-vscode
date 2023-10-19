@@ -1,0 +1,72 @@
+{
+  "name": "AdvPL/Asp",
+  "scopeName": "text.html.advpl",
+	"injections": {
+		"text.html.advpl - (meta.embedded | meta.tag), L:((text.html.advpl meta.tag) - (meta.embedded.block.advpl | meta.embedded.line.advpl)), L:(source.js - (meta.embedded.block.advpl | meta.embedded.line.advpl)), L:(source.css - (meta.embedded.block.advpl | meta.embedded.line.advpl))": {
+			"patterns": [
+				{
+					"include": "#advpl-tag"
+				}
+			]
+		}
+	},
+	"patterns": [
+		{
+			"include": "text.html.derivative"
+		}
+	],
+	"repository": {
+		"advpl-tag": {
+			"patterns": [
+				{
+					"begin": "<\\?(?i:php|=)?(?![^?]*\\?>)",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.section.embedded.begin.advpl"
+						}
+					},
+					"end": "(\\?)>",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.section.embedded.end.advpl"
+						},
+						"1": {
+							"name": "source.advpl"
+						}
+					},
+					"name": "meta.embedded.block.advpl",
+					"contentName": "source.advpl",
+					"patterns": [
+						{
+							"include": "source.advpl"
+						}
+					]
+				},
+				{
+					"begin": "<\\?(?i:php|=)?",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.section.embedded.begin.advpl"
+						}
+					},
+					"end": "(\\?)>",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.section.embedded.end.advpl"
+						},
+						"1": {
+							"name": "source.advpl"
+						}
+					},
+					"name": "meta.embedded.line.advpl",
+					"contentName": "source.advpl",
+					"patterns": [
+						{
+							"include": "source.advpl"
+						}
+					]
+				}
+			]
+		}
+	}
+}

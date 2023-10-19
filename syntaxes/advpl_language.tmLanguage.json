@@ -1,5 +1,9 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"information_for_contributors": [
+		"To debug textMate files, trigger the command:",
+    "Developer: Start Text Mate Syntax Grammar Logging"
+	],
   "name": "AdvPL",
   "scopeName": "source.advpl",
   "patterns": [
@@ -35,9 +39,6 @@
     },
     {
       "include": "#expression"
-    },
-    {
-      "include": "#embedded-code"
     }
   ],
   "repository": {
@@ -710,17 +711,6 @@
           "include": "#separators"
         }
       ]
-    },
-    "embedded-code": {
-      "patterns": [
-        {
-          "include": "advpl-asp"
-        }
-      ]
-    },
-    "advpl-asp": {
-      "begin": "&lt%",
-      "end": "%&gt"
     }
   }
 }
