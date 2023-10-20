@@ -1,716 +1,712 @@
 {
-  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-	"information_for_contributors": [
-		"To debug textMate files, trigger the command:",
-    "Developer: Start Text Mate Syntax Grammar Logging"
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "AdvPL",
+	"scopeName": "source.advpl",
+	"patterns": [
+		{
+			"include": "#directives"
+		},
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#function-decl"
+		},
+		{
+			"include": "#varDeclaration"
+		},
+		{
+			"include": "#class-decl"
+		},
+		{
+			"include": "#method-decl"
+		},
+		{
+			"include": "#wsstruct-decl"
+		},
+		{
+			"include": "#wsmethod-decl"
+		},
+		{
+			"include": "#wsscr-decl"
+		},
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#expression"
+		}
 	],
-  "name": "AdvPL",
-  "scopeName": "source.advpl",
-  "patterns": [
-    {
-      "include": "#directives"
-    },
-    {
-      "include": "#comments"
-    },
-    {
-      "include": "#function-decl"
-    },
-    {
-      "include": "#varDeclaration"
-    },
-    {
-      "include": "#class-decl"
-    },
-    {
-      "include": "#method-decl"
-    },
-    {
-      "include": "#wsstruct-decl"
-    },
-    {
-      "include": "#wsmethod-decl"
-    },
-    {
-      "include": "#wsscr-decl"
-    },
-    {
-      "include": "#keywords"
-    },
-    {
-      "include": "#expression"
-    }
-  ],
-  "repository": {
-    "directives": {
-      "patterns": [
-        {
-          "name": "keyword.control.directive",
-          "match": "(?i)#\\b(define|endif|else|ifdef|ifndef|include|xcommand|xtranslate)\\b"
-        }
-      ]
-    },
-    "keywords": {
-      "patterns": [
-        {
-          "name": "keyword.control.advpl_language",
+	"repository": {
+		"directives": {
+			"patterns": [
+				{
+					"name": "keyword.control.directive",
+					"match": "(?i)#\\b(define|endif|else|ifdef|ifndef|include|xcommand|xtranslate)\\b"
+				}
+			]
+		},
+		"keywords": {
+			"patterns": [
+				{
+					"name": "keyword.control.advpl_language",
           "match": "(?i)\\b(local|static|private|public|default|activate|alias|and|beginsql|between|case|centered|class|constructor|data|define|dialog|do|else|elseif|end|endcase|endclass|enddo|endfunction|endif|endsql|exit|for|from|function|get|if|loop|main|method|next|nil|of|or|otherwise|pixel|return|select|step|to|user|var|while|where|as)\\b"
-        }
-      ]
-    },
-    "operators": {
-      "patterns": [
-        {
-          "name": "constant.language.logical",
-          "match": "(?i)(\\.t\\.|\\.f\\.|true|false|\\.and\\.|\\.or\\.)"
-        },
-        {
-          "name": "keyword.operator.assignment",
-          "match": ":=|\\*=|(?<!\\()/=|%=|\\+=|\\-="
-        },
-        {
-          "name": "keyword.operator.comparison",
-          "match": "==|!=|<=|>=|<>|<|>"
-        },
-        {
-          "name": "keyword.operator.increment",
-          "match": "\\+\\+"
-        },
-        {
-          "name": "keyword.operator.decrement",
-          "match": "--"
-        },
-        {
-          "name": "keyword.operator.atithmetic",
-          "match": "%|\\*|/|\\+|-"
-        }
-      ]
-    },
-    "separators": {
-      "patterns": [
-        {
-          "name": "entity.name.function.separator.comma",
-          "match": "(,)"
-        },
-        {
-          "name": "entity.name.function.separator.semicolon",
-          "match": "(;)"
-        }
-      ]
-    },
-    "varDeclaration": {
-      "patterns": [
-        {
-          "match": "(?i)^\\s*\\b(?:;?\\s+;?\\s+?)(\\w+)(?:(?:;?\\s+;?\\s+?)(as)(?:;?\\s+;?\\s+?)(array|block|codeblock|character|char|date|logical|numeric|object|integer|double|decimal))?",
-          "captures": {
-            "2": {
-              "name": "variable.name.advpl"
-            },
-            "3": {
-              "name": "keyword.control.as.advpl"
-            },
-            "4": {
-              "name": "storage.type.advpl"
-            }
-          }
-        }
-      ]
-    },
-    "comments": {
-      "patterns": [
-        {
-          "name": "comment.block.advpl",
-          "begin": "/\\*",
-          "end": "\\*/"
-        },
-        {
-          "name": "comment.line.double-slash",
-          "begin": "(?=//)",
-          "end": "(?=$)"
-        }
-      ]
-    },
-    "string": {
-      "patterns": [
-        {
-          "name": "string.quoted.double.advpl",
-          "begin": "\"",
-          "end": "(?=$)|\""
-        },
-        {
-          "name": "string.quoted.single.advpl",
-          "begin": "'",
-          "end": "(?=$)|'"
-        }
-      ]
-    },
-    "number": {
-      "name": "constant.numeric.advpl",
-      "patterns": [
-        {
-          "include": "#number-float"
-        },
-        {
-          "include": "#number-dec"
-        },
-        {
-          "include": "#number-hex"
-        },
-        {
-          "include": "#number-oct"
-        },
-        {
-          "include": "#number-bin"
-        },
-        {
-          "include": "#number-long"
-        },
-        {
-          "name": "invalid.illegal.name.advpl",
-          "match": "\\b[0-9]+\\w+"
-        }
-      ]
-    },
-    "number-float": {
-      "name": "constant.numeric.float.advpl",
-      "match": "(?x)\n  (?<! \\w)(?:\n    (?:\n      \\.[0-9](?: _?[0-9] )*\n      |\n      [0-9](?: _?[0-9] )* \\. [0-9](?: _?[0-9] )*\n      |\n      [0-9](?: _?[0-9] )* \\.\n    ) (?: [eE][+-]?[0-9](?: _?[0-9] )* )?\n    |\n    [0-9](?: _?[0-9] )* (?: [eE][+-]?[0-9](?: _?[0-9] )* )\n  )([jJ])?\\b\n",
-      "captures": {
-        "1": {
-          "name": "storage.type.imaginary.number.advpl"
-        }
-      },
-      "patterns": []
-    },
-    "number-dec": {
-      "name": "constant.numeric.dec.advpl",
-      "match": "(?x)\n  (?<![\\w\\.])(?:\n      [0-9](?: _?[0-9] )*\n      |\n      0+\n      |\n      [0-9](?: _?[0-9] )* ([jJ])\n      |\n      0 ([0-9]+)(?![eE\\.])\n  )\\b\n",
-      "captures": {
-        "1": {
-          "name": "storage.type.imaginary.number.advpl"
-        },
-        "2": {
-          "name": "invalid.illegal.dec.advpl"
-        },
-        "3": {
-          "name": "invalid.illegal.dec.advpl"
-        }
-      },
-      "patterns": []
-    },
-    "number-hex": {
-      "name": "constant.numeric.hex.advpl",
-      "match": "(?x)\n  (?<![\\w\\.])\n    (0[xX]) (_?[0-9a-fA-F])+\n  \\b\n",
-      "captures": {
-        "1": {
-          "name": "storage.type.number.advpl"
-        }
-      },
-      "patterns": []
-    },
-    "number-oct": {
-      "name": "constant.numeric.oct.advpl",
-      "match": "(?x)\n  (?<![\\w\\.])\n    (0[oO]) (_?[0-7])+\n  \\b\n",
-      "captures": {
-        "1": {
-          "name": "storage.type.number.advpl"
-        }
-      },
-      "patterns": []
-    },
-    "number-bin": {
-      "name": "constant.numeric.bin.advpl",
-      "match": "(?x)\n  (?<![\\w\\.])\n    (0[bB]) (_?[01])+\n  \\b\n",
-      "captures": {
-        "1": {
-          "name": "storage.type.number.advpl"
-        }
-      },
-      "patterns": []
-    },
-    "number-long": {
-      "name": "constant.numeric.bin.advpl",
-      "comment": "this is to support advpl syntax for long ints",
-      "match": "(?x)\n  (?<![\\w\\.])\n    ([1-9][0-9]* | 0) ([lL])\n  \\b\n",
-      "captures": {
-        "2": {
-          "name": "storage.type.number.advpl"
-        }
-      },
-      "patterns": []
-    },
-    "data-type": {
-      "name": "variable.parameter.type.advpl",
-      "match": "(?i)\\s*(as)(?:;?\\s+;?\\s+?)(array|block|codeblock|character|char|date|logical|numeric|object|string|integer|double|decimal)",
-      "captures": {
-        "1": {
-          "name": "keyword.control.keyword.as.advpl"
-        },
-        "2": {
-          "name": "storage.type.name.advpl"
-        }
-      },
-      "patterns": []
-    },
-    "regularVariable": {
-      "name": "variable.other.name.advpl",
-      "match": "(\\w+)",
-      "patterns": []
-    },
-    "objectVariable": {
-      "name": "entity.name.type.object.advpl",
-      "match": "((::)?(\\w+)(?!:=)(?=:))|::o\\w+|o\\w+",
-      "patterns": []
-    },
-    "function-decl": {
-      "name": "meta.function.declaration.advpl",
-      "patterns": [
-        {
-          "include": "#function-decl-body"
-        },
-        {
-          "include": "#data-type"
-        }
-      ]
-    },
-    "function-decl-body": {
-      "name": "meta.function.declaration.body.advpl",
+				}
+			]
+		},
+		"operators": {
+			"patterns": [
+				{
+					"name": "constant.language.logical",
+					"match": "(?i)(\\.t\\.|\\.f\\.|true|false|\\.and\\.|\\.or\\.)"
+				},
+				{
+					"name": "keyword.operator.assignment",
+					"match": ":=|\\*=|(?<!\\()/=|%=|\\+=|\\-="
+				},
+				{
+					"name": "keyword.operator.comparison",
+					"match": "==|!=|<=|>=|<>|<|>"
+				},
+				{
+					"name": "keyword.operator.increment",
+					"match": "\\+\\+"
+				},
+				{
+					"name": "keyword.operator.decrement",
+					"match": "--"
+				},
+				{
+					"name": "keyword.operator.atithmetic",
+					"match": "%|\\*|/|\\+|-"
+				}
+			]
+		},
+		"separators": {
+			"patterns": [
+				{
+					"name": "entity.name.function.separator.comma",
+					"match": "(,)"
+				},
+				{
+					"name": "entity.name.function.separator.semicolon",
+					"match": "(;)"
+				}
+			]
+		},
+		"varDeclaration": {
+			"patterns": [
+				{
+          "match": "(?i)^\\s*\\b(?:;?\\s+;?\\s+?)(\\w+)(?:(?:;?\\s+;?\\s+?)(as)(?:;?\\s+;?\\s+?)(array|block|codeblock|character|char|date|logical|numeric|object|integer|double|decimal|json|variant))?",
+					"captures": {
+						"2": {
+							"name": "variable.name.advpl"
+						},
+						"3": {
+							"name": "keyword.control.as.advpl"
+						},
+						"4": {
+							"name": "storage.type.advpl"
+						}
+					}
+				}
+			]
+		},
+		"comments": {
+			"patterns": [
+				{
+					"name": "comment.block.advpl",
+					"begin": "/\\*",
+					"end": "\\*/"
+				},
+				{
+					"name": "comment.line.double-slash",
+					"begin": "(?=//)",
+					"end": "(?=$)"
+				}
+			]
+		},
+		"string": {
+			"patterns": [
+				{
+					"name": "string.quoted.double.advpl",
+					"begin": "\"",
+					"end": "(?=$)|\""
+				},
+				{
+					"name": "string.quoted.single.advpl",
+					"begin": "'",
+					"end": "(?=$)|'"
+				}
+			]
+		},
+		"number": {
+			"name": "constant.numeric.advpl",
+			"patterns": [
+				{
+					"include": "#number-float"
+				},
+				{
+					"include": "#number-dec"
+				},
+				{
+					"include": "#number-hex"
+				},
+				{
+					"include": "#number-oct"
+				},
+				{
+					"include": "#number-bin"
+				},
+				{
+					"include": "#number-long"
+				},
+				{
+					"name": "invalid.illegal.name.advpl",
+					"match": "\\b[0-9]+\\w+"
+				}
+			]
+		},
+		"number-float": {
+			"name": "constant.numeric.float.advpl",
+			"match": "(?x)\n  (?<! \\w)(?:\n    (?:\n      \\.[0-9](?: _?[0-9] )*\n      |\n      [0-9](?: _?[0-9] )* \\. [0-9](?: _?[0-9] )*\n      |\n      [0-9](?: _?[0-9] )* \\.\n    ) (?: [eE][+-]?[0-9](?: _?[0-9] )* )?\n    |\n    [0-9](?: _?[0-9] )* (?: [eE][+-]?[0-9](?: _?[0-9] )* )\n  )([jJ])?\\b\n",
+			"captures": {
+				"1": {
+					"name": "storage.type.imaginary.number.advpl"
+				}
+			},
+			"patterns": []
+		},
+		"number-dec": {
+			"name": "constant.numeric.dec.advpl",
+			"match": "(?x)\n  (?<![\\w\\.])(?:\n      [0-9](?: _?[0-9] )*\n      |\n      0+\n      |\n      [0-9](?: _?[0-9] )* ([jJ])\n      |\n      0 ([0-9]+)(?![eE\\.])\n  )\\b\n",
+			"captures": {
+				"1": {
+					"name": "storage.type.imaginary.number.advpl"
+				},
+				"2": {
+					"name": "invalid.illegal.dec.advpl"
+				},
+				"3": {
+					"name": "invalid.illegal.dec.advpl"
+				}
+			},
+			"patterns": []
+		},
+		"number-hex": {
+			"name": "constant.numeric.hex.advpl",
+			"match": "(?x)\n  (?<![\\w\\.])\n    (0[xX]) (_?[0-9a-fA-F])+\n  \\b\n",
+			"captures": {
+				"1": {
+					"name": "storage.type.number.advpl"
+				}
+			},
+			"patterns": []
+		},
+		"number-oct": {
+			"name": "constant.numeric.oct.advpl",
+			"match": "(?x)\n  (?<![\\w\\.])\n    (0[oO]) (_?[0-7])+\n  \\b\n",
+			"captures": {
+				"1": {
+					"name": "storage.type.number.advpl"
+				}
+			},
+			"patterns": []
+		},
+		"number-bin": {
+			"name": "constant.numeric.bin.advpl",
+			"match": "(?x)\n  (?<![\\w\\.])\n    (0[bB]) (_?[01])+\n  \\b\n",
+			"captures": {
+				"1": {
+					"name": "storage.type.number.advpl"
+				}
+			},
+			"patterns": []
+		},
+		"number-long": {
+			"name": "constant.numeric.bin.advpl",
+			"comment": "this is to support advpl syntax for long ints",
+			"match": "(?x)\n  (?<![\\w\\.])\n    ([1-9][0-9]* | 0) ([lL])\n  \\b\n",
+			"captures": {
+				"2": {
+					"name": "storage.type.number.advpl"
+				}
+			},
+			"patterns": []
+		},
+		"data-type": {
+			"name": "variable.parameter.type.advpl",
+      "match": "(?i)\\s*(as)(?:;?\\s+;?\\s+?)(array|block|codeblock|character|char|date|logical|numeric|object|string|integer|double|decimal|json|variant|variadic)",
+			"captures": {
+				"1": {
+					"name": "keyword.control.keyword.as.advpl"
+				},
+				"2": {
+					"name": "storage.type.name.advpl"
+				}
+			},
+			"patterns": []
+		},
+		"regularVariable": {
+			"name": "variable.other.name.advpl",
+			"match": "(\\w+)",
+			"patterns": []
+		},
+		"objectVariable": {
+			"name": "entity.name.type.object.advpl",
+			"match": "((::)?(\\w+)(?!:=)(?=:))|::o\\w+|o\\w+",
+			"patterns": []
+		},
+		"function-decl": {
+			"name": "meta.function.declaration.advpl",
+			"patterns": [
+				{
+					"include": "#function-decl-body"
+				},
+				{
+					"include": "#data-type"
+				}
+			]
+		},
+		"function-decl-body": {
+			"name": "meta.function.declaration.body.advpl",
       "begin": "(?i)^\\s*(?:(html|main|project|pyme|static|template|user|web|webuser)(?:;?\\s+;?\\s+?))?(function)(?:;?\\s+;?\\s+?)(\\w+)",
-      "end": "(?<=\\)|\\s)",
-      "captures": {
-        "1": {
-          "name": "storage.modifier.function.modifier.advpl"
-        },
-        "2": {
-          "name": "storage.type.function.keyword.advpl"
-        },
-        "3": {
-          "name": "entity.name.function.declaration.functionName.advpl"
-        }
-      },
-      "patterns": [
-        {
-          "include": "#function-decl-parameters"
-        }
-      ]
-    },
-    "function-decl-parameters": {
-      "name": "meta.brace.round.function-decl.advpl",
-      "begin": "\\s*(\\()\\s*",
-      "end": "(\\))",
-      "patterns": [
-        {
-          "include": "#function-decl-parameter-variable"
-        },
-        {
-          "include": "#function-decl-parameter-comma"
-        },
-        {
-          "include": "#comments"
-        },
-        {
-          "include": "#data-type"
-        }
-      ]
-    },
-    "function-decl-parameter-variable": {
-      "name": "variable.parameter.name.advpl",
-      "match": "\\w+",
-      "patterns": []
-    },
-    "function-decl-parameter-comma": {
-      "name": "variable.parameter.separator.comma",
-      "match": "(,)",
-      "captures": {
-        "1": {
-          "name": "entity.name.function.separator.comma"
-        }
-      },
-      "patterns": []
-    },
-    "function-call": {
-      "name": "meta.function.call.advpl",
-      "begin": "(\\w+)(?=\\()",
-      "end": "(?<=\\))",
-      "beginCaptures": {
-        "1": {
-          "name": "entity.name.function.call.functionName.advpl"
-        }
-      },
-      "patterns": [
-        {
-          "include": "#comments"
-        },
-        {
-          "include": "#expression"
-        }
-      ]
-    },
-    "class-decl": {
-      "name": "meta.class.declaration.advpl",
+			"end": "(?<=\\)|\\s)",
+			"captures": {
+				"1": {
+					"name": "storage.modifier.function.modifier.advpl"
+				},
+				"2": {
+					"name": "storage.type.function.keyword.advpl"
+				},
+				"3": {
+					"name": "entity.name.function.declaration.functionName.advpl"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#function-decl-parameters"
+				}
+			]
+		},
+		"function-decl-parameters": {
+			"name": "meta.brace.round.function-decl.advpl",
+			"begin": "\\s*(\\()\\s*",
+			"end": "(\\))",
+			"patterns": [
+				{
+					"include": "#function-decl-parameter-variable"
+				},
+				{
+					"include": "#function-decl-parameter-comma"
+				},
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#data-type"
+				}
+			]
+		},
+		"function-decl-parameter-variable": {
+			"name": "variable.parameter.name.advpl",
+			"match": "\\w+",
+			"patterns": []
+		},
+		"function-decl-parameter-comma": {
+			"name": "variable.parameter.separator.comma",
+			"match": "(,)",
+			"captures": {
+				"1": {
+					"name": "entity.name.function.separator.comma"
+				}
+			},
+			"patterns": []
+		},
+		"function-call": {
+			"name": "meta.function.call.advpl",
+			"begin": "(\\w+)(?=\\()",
+			"end": "(?<=\\))",
+			"beginCaptures": {
+				"1": {
+					"name": "entity.name.function.call.functionName.advpl"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#expression"
+				}
+			]
+		},
+		"class-decl": {
+			"name": "meta.class.declaration.advpl",
       "begin": "(?i)^\\s*(class)(?:;?\\s+;?\\s+?)(\\w+)(?:(?:(?:;?\\s+;?\\s+?)(inherit(?:\\sfrom)|from|of)(?:;?\\s+;?\\s+?)(\\w+)))?",
-      "beginCaptures": {
-        "1": {
-          "name": "storage.type.class.advpl"
-        },
-        "2": {
-          "name": "entity.name.type.class.advpl"
-        },
-        "3": {
-          "name": "storage.type.class.advpl"
-        },
-        "4": {
-          "name": "entity.name.type.class.advpl"
-        }
-      },
-      "end": "(?i)(end\\s*class)",
-      "endCaptures": {
-        "1": {
-          "name": "storage.type.class.advpl"
-        }
-      },
-      "patterns": [
-        {
-          "include": "#comments"
-        },
-        {
-          "include": "#class-decl-content-data"
-        },
-        {
-          "include": "#class-decl-content-method"
-        }
-      ]
-    },
-    "class-decl-content-data": {
-      "name": "meta.class.declaration.content.data.advpl",
+			"beginCaptures": {
+				"1": {
+					"name": "storage.type.class.advpl"
+				},
+				"2": {
+					"name": "entity.name.type.class.advpl"
+				},
+				"3": {
+					"name": "storage.type.class.advpl"
+				},
+				"4": {
+					"name": "entity.name.type.class.advpl"
+				}
+			},
+			"end": "(?i)(end\\s*class)",
+			"endCaptures": {
+				"1": {
+					"name": "storage.type.class.advpl"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#class-decl-content-data"
+				},
+				{
+					"include": "#class-decl-content-method"
+				}
+			]
+		},
+		"class-decl-content-data": {
+			"name": "meta.class.declaration.content.data.advpl",
       "begin": "(?i)\\b((?:ws)?data)(?:;?\\s+;?\\s+?)(\\w+)",
-      "beginCaptures": {
-        "1": {
-          "name": "storage.modifier.advpl"
-        },
-        "2": {
-          "name": "variable.object.property.advpl"
-        },
-        "3": {
-          "name": "variable.object.property.advpl"
-        }
-      },
-      "end": "(?i)(?=\\s*(as|data|method|end\\s*class))(?:(?:;?\\s+;?\\s+?)(as)(?:;?\\s+;?\\s+?)((array)\\s(of)(?:;?\\s+;?\\s+?))?(?:(array|block|codeblock|character|char|date|logical|numeric|object|string)|(\\w+))\\s*)?(optional)?",
-      "endCaptures": {
-        "1": {
-          "name": "storage.modifier.advpl"
-        },
-        "2": {
-          "name": "keyword.control.as.advpl"
-        },
-        "3": {
-          "name": "keyword.control.array.advpl"
-        },
-        "4": {
-          "name": "storage.type.advpl"
-        },
-        "5": {
-          "name": "storage.type.advpl"
-        },
-        "6": {
-          "name": "storage.type.advpl"
-        },
-        "7": {
-          "name": "variable.object.property.advpl"
-        },
-        "8": {
-          "name": "storage.type.advpl"
-        },
-        "9": {
-          "name": "keyword.control.optional.advpl"
-        }
-      },
-      "patterns": [
-        {
-          "include": "#expression"
-        }
-      ]
-    },
-    "class-decl-content-method": {
-      "name": "meta.class.declaration.content.method.advpl",
-      "begin": "(?i)\\s*(method)\\s*",
-      "beginCaptures": {
-        "1": {
-          "name": "storage.type.method.advpl"
-        }
-      },
+			"beginCaptures": {
+				"1": {
+					"name": "storage.modifier.advpl"
+				},
+				"2": {
+					"name": "variable.object.property.advpl"
+				},
+				"3": {
+					"name": "variable.object.property.advpl"
+				}
+			},
+      "end": "(?i)(?=\\s*(as|data|method|end\\s*class))(?:(?:;?\\s+;?\\s+?)(as)(?:;?\\s+;?\\s+?)((array)\\s(of)(?:;?\\s+;?\\s+?))?(?:(array|block|codeblock|character|char|date|logical|numeric|object|string|variant|json|integer|double|decimal)|(\\w+))\\s*)?(optional)?",
+			"endCaptures": {
+				"1": {
+					"name": "storage.modifier.advpl"
+				},
+				"2": {
+					"name": "keyword.control.as.advpl"
+				},
+				"3": {
+					"name": "keyword.control.array.advpl"
+				},
+				"4": {
+					"name": "storage.type.advpl"
+				},
+				"5": {
+					"name": "storage.type.advpl"
+				},
+				"6": {
+					"name": "storage.type.advpl"
+				},
+				"7": {
+					"name": "variable.object.property.advpl"
+				},
+				"8": {
+					"name": "storage.type.advpl"
+				},
+				"9": {
+					"name": "keyword.control.optional.advpl"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#expression"
+				}
+			]
+		},
+		"class-decl-content-method": {
+			"name": "meta.class.declaration.content.method.advpl",
+			"begin": "(?i)\\s*(method)\\s*",
+			"beginCaptures": {
+				"1": {
+					"name": "storage.type.method.advpl"
+				}
+			},
       "end": "$",
-      "patterns": [
-        {
-          "include": "#class-decl-content-method-call"
-        },
-        {
-          "include": "#expression"
-        },
-        {
-          "include": "#data-type"
-        }
-      ]
-    },
-    "class-decl-content-method-call": {
-      "name": "meta.function.method.call.advpl",
-      "begin": "\\s*(\\w+)(\\()",
-      "end": "(\\))",
-      "beginCaptures": {
-        "1": {
-          "name": "entity.name.function.method.call.name.advpl"
-        }
-      },
-      "patterns": [
-        {
-          "include": "#comments"
-        },
-        {
-          "include": "#expression"
-        }
-      ]
-    },
-    "method-decl": {
-      "name": "meta.method.declaration.advpl",
-      "patterns": [
-        {
-          "include": "#method-decl-body"
-        },
-        {
-          "include": "#data-type"
-        }
-      ]
-    },
-    "method-decl-body": {
-      "name": "meta.method.declaration.body.advpl",
+			"patterns": [
+				{
+					"include": "#class-decl-content-method-call"
+				},
+				{
+					"include": "#expression"
+				},
+				{
+					"include": "#data-type"
+				}
+			]
+		},
+		"class-decl-content-method-call": {
+			"name": "meta.function.method.call.advpl",
+			"begin": "\\s*(\\w+)(\\()",
+			"end": "(\\))",
+			"beginCaptures": {
+				"1": {
+					"name": "entity.name.function.method.call.name.advpl"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#expression"
+				}
+			]
+		},
+		"method-decl": {
+			"name": "meta.method.declaration.advpl",
+			"patterns": [
+				{
+					"include": "#method-decl-body"
+				},
+				{
+					"include": "#data-type"
+				}
+			]
+		},
+		"method-decl-body": {
+			"name": "meta.method.declaration.body.advpl",
       "begin": "(?i)^\\s*(method)(?:;?\\s+;?\\s+?)(\\w+)",
-      "beginCaptures": {
-        "1": {
-          "name": "storage.type.method.advpl"
-        },
-        "2": {
-          "name": "entity.name.function.advpl"
-        }
-      },
+			"beginCaptures": {
+				"1": {
+					"name": "storage.type.method.advpl"
+				},
+				"2": {
+					"name": "entity.name.function.advpl"
+				}
+			},
       "end": "(?<=\\)|\\s)((?:;?\\s+;?\\s+?)(?i:class)(?:;?\\s+;?\\s+?)(\\w+))?",
-      "endCaptures": {
-        "1": {
-          "name": "storage.type.class.advpl"
-        },
-        "2": {
-          "name": "entity.name.type.method.advpl"
-        }
-      },
-      "patterns": [
-        {
-          "include": "#function-decl-parameters"
-        }
-      ]
-    },
-    "wsstruct-decl": {
-      "name": "meta.wsstruct.declaration.advpl",
+			"endCaptures": {
+				"1": {
+					"name": "storage.type.class.advpl"
+				},
+				"2": {
+					"name": "entity.name.type.method.advpl"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#function-decl-parameters"
+				}
+			]
+		},
+		"wsstruct-decl": {
+			"name": "meta.wsstruct.declaration.advpl",
       "begin": "(?i)^\\s*(wsstruct)(?:;?\\s+;?\\s+?)(\\w+)",
-      "beginCaptures": {
-        "1": {
-          "name": "storage.type.wsstruct.advpl"
-        },
-        "2": {
-          "name": "entity.name.type.object.advpl"
-        }
-      },
-      "end": "(?i)^\\s*(endwsstruct)",
-      "endCaptures": {
-        "1": {
-          "name": "storage.type.wsstruct.advpl"
-        }
-      },
-      "patterns": [
-        {
-          "include": "#comments"
-        },
-        {
-          "include": "#wsdata"
-        },
-        {
+			"beginCaptures": {
+				"1": {
+					"name": "storage.type.wsstruct.advpl"
+				},
+				"2": {
+					"name": "entity.name.type.object.advpl"
+				}
+			},
+			"end": "(?i)^\\s*(endwsstruct)",
+			"endCaptures": {
+				"1": {
+					"name": "storage.type.wsstruct.advpl"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#wsdata"
+				},
+				{
           "match": "(?i)(wsmethod)(?:;?\\s+;?\\s+?)(\\w+)((?:;?\\s+;?\\s+?)description)?",
-          "captures": {
-            "1": {
-              "name": "storage.type.method.advpl"
-            },
-            "2": {
-              "name": "entity.name.function.advpl"
-            },
-            "3": {
-              "name": "keyword.control.struct.advpl"
-            }
-          }
-        }
-      ]
-    },
-    "wsdata": {
-      "patterns": [
-        {
+					"captures": {
+						"1": {
+							"name": "storage.type.method.advpl"
+						},
+						"2": {
+							"name": "entity.name.function.advpl"
+						},
+						"3": {
+							"name": "keyword.control.struct.advpl"
+						}
+					}
+				}
+			]
+		},
+		"wsdata": {
+			"patterns": [
+				{
           "match": "(?i)((?:ws)?data)(?:;?\\s+;?\\s+?)(\\w+)(?:(?:;?\\s+;?\\s+?)(as)(?:;?\\s+;?\\s+?)(array of(?:;?\\s+;?\\s+?))?(?:(string|date|integer|float|boolean|character)|(\\w+))\\s*)?(optional)?",
-          "captures": {
-            "1": {
-              "name": "storage.modifier.advpl"
-            },
-            "2": {
-              "name": "variable.object.property.advpl"
-            },
-            "3": {
-              "name": "keyword.control.as.advpl"
-            },
-            "4": {
-              "name": "keyword.control.arrayof.advpl"
-            },
-            "5": {
-              "name": "storage.type.advpl"
-            },
-            "6": {
-              "name": "entity.name.type.class.advpl"
-            },
-            "7": {
-              "name": "keyword.control.optional.advpl"
-            }
-          }
-        }
-      ]
-    },
-    "wsmethod-decl": {
+					"captures": {
+						"1": {
+							"name": "storage.modifier.advpl"
+						},
+						"2": {
+							"name": "variable.object.property.advpl"
+						},
+						"3": {
+							"name": "keyword.control.as.advpl"
+						},
+						"4": {
+							"name": "keyword.control.arrayof.advpl"
+						},
+						"5": {
+							"name": "storage.type.advpl"
+						},
+						"6": {
+							"name": "entity.name.type.class.advpl"
+						},
+						"7": {
+							"name": "keyword.control.optional.advpl"
+						}
+					}
+				}
+			]
+		},
+		"wsmethod-decl": {
       "begin": "(?i)^\\s*(wsmethod)(?:;?\\s+;?\\s+?)(\\w+)",
-      "beginCaptures": {
-        "1": {
-          "name": "storage.type.wsmethod.advpl"
-        },
-        "2": {
-          "name": "entity.name.function.advpl"
-        }
-      },
+			"beginCaptures": {
+				"1": {
+					"name": "storage.type.wsmethod.advpl"
+				},
+				"2": {
+					"name": "entity.name.function.advpl"
+				}
+			},
       "end": "(?i)(wsservice|wsclient|wsrestful|wsrest)(?:;?\\s+;?\\s+?)(\\w+)",
-      "endCaptures": {
-        "1": {
-          "name": "storage.type.wstype.advpl"
-        },
-        "2": {
-          "name": "entity.name.type.class.advpl"
-        }
-      },
-      "patterns": [
-        {
-          "match": "(?i)(wssend|wsreceive)",
-          "name": "storage.type.parameter.advpl"
-        },
-        {
-          "match": "(\\w+)",
-          "name": "variable.parameter.advpl"
-        },
-        {
-          "include": "#separators"
-        }
-      ]
-    },
-    "wsscr-decl": {
-      "comment": "This is a rule for wsservice, wsclient and wsrestul, hence wsSCR",
-      "name": "meta.wsscr.advpl",
+			"endCaptures": {
+				"1": {
+					"name": "storage.type.wstype.advpl"
+				},
+				"2": {
+					"name": "entity.name.type.class.advpl"
+				}
+			},
+			"patterns": [
+				{
+					"match": "(?i)(wssend|wsreceive)",
+					"name": "storage.type.parameter.advpl"
+				},
+				{
+					"match": "(\\w+)",
+					"name": "variable.parameter.advpl"
+				},
+				{
+					"include": "#separators"
+				}
+			]
+		},
+		"wsscr-decl": {
+			"comment": "This is a rule for wsservice, wsclient and wsrestul, hence wsSCR",
+			"name": "meta.wsscr.advpl",
       "begin": "(?i)^\\s*(?<!wsmethod)(wsservice|wsclient|wsrestful)(?:;?\\s+;?\\s+?)(\\w+)((?:;?\\s+;?\\s+?)description)?",
-      "beginCaptures": {
-        "1": {
-          "name": "storage.type.wsscr.advpl"
-        },
-        "2": {
-          "name": "entity.name.type.wsscr.advpl"
-        },
-        "3": {
-          "name": "keyword.control.wsscr.advpl"
-        }
-      },
-      "end": "(?i)\\s*(endwsservice|endwsclient|endwsrestful|end\\s*wsrestful)",
-      "endCaptures": {
-        "1": {
-          "name": "storage.type.wsscr.advpl"
-        }
-      },
-      "patterns": [
-        {
-          "include": "#comments"
-        },
-        {
-          "include": "#string"
-        },
-        {
-          "include": "#wsdata"
-        },
-        {
+			"beginCaptures": {
+				"1": {
+					"name": "storage.type.wsscr.advpl"
+				},
+				"2": {
+					"name": "entity.name.type.wsscr.advpl"
+				},
+				"3": {
+					"name": "keyword.control.wsscr.advpl"
+				}
+			},
+			"end": "(?i)\\s*(endwsservice|endwsclient|endwsrestful|end\\s*wsrestful)",
+			"endCaptures": {
+				"1": {
+					"name": "storage.type.wsscr.advpl"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#string"
+				},
+				{
+					"include": "#wsdata"
+				},
+				{
           "match": "(?i)(wsmethod)(?:;?\\s+;?\\s+?)(\\w+)((?:;?\\s+;?\\s+?)(?!description)\\w+)?((?:;?\\s+;?\\s+?)(description))?",
-          "captures": {
-            "1": {
-              "name": "storage.type.wsscr.advpl"
-            },
-            "2": {
-              "name": "entity.name.function.advpl"
-            },
-            "3": {
-              "name": "variable.other.advpl"
-            },
-            "4": {
-              "name": "keyword.control.wsscr.advpl"
-            }
-          }
-        },
-        {
-          "name": "keyword.control.wsscr.advpl",
-          "match": "(?i)format"
-        },
-        {
-          "name": "keyword.control.wsscr.advpl",
-          "match": "(?i)path"
-        },
-        {
-          "name": "keyword.control.wsscr.advpl",
-          "match": "(?i)description"
-        },
-        {
-          "name": "variable.other.advpl",
+					"captures": {
+						"1": {
+							"name": "storage.type.wsscr.advpl"
+						},
+						"2": {
+							"name": "entity.name.function.advpl"
+						},
+						"3": {
+							"name": "variable.other.advpl"
+						},
+						"4": {
+							"name": "keyword.control.wsscr.advpl"
+						}
+					}
+				},
+				{
+					"name": "keyword.control.wsscr.advpl",
+					"match": "(?i)format"
+				},
+				{
+					"name": "keyword.control.wsscr.advpl",
+					"match": "(?i)path"
+				},
+				{
+					"name": "keyword.control.wsscr.advpl",
+					"match": "(?i)description"
+				},
+				{
+					"name": "variable.other.advpl",
           "match": "(?i)(produces)((?:;?\\s+;?\\s+?)\\w+)+",
-          "captures": {
-            "1": {
-              "name": "keyword.control.wsscr.advpl"
-            }
-          }
-        }
-      ]
-    },
-    "expression": {
-      "name": "meta.expression.advpl",
-      "patterns": [
-        {
-          "include": "#comments"
-        },
-        {
-          "include": "#number"
-        },
-        {
-          "include": "#string"
-        },
-        {
-          "include": "#operators"
-        },
-        {
-          "include": "#function-call"
-        },
-        {
-          "include": "#keywords"
-        },
-        {
-          "include": "#objectVariable"
-        },
-        {
-          "include": "#regularVariable"
-        },
-        {
-          "include": "#separators"
-        }
-      ]
-    }
-  }
+					"captures": {
+						"1": {
+							"name": "keyword.control.wsscr.advpl"
+						}
+					}
+				}
+			]
+		},
+		"expression": {
+			"name": "meta.expression.advpl",
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#number"
+				},
+				{
+					"include": "#string"
+				},
+				{
+					"include": "#operators"
+				},
+				{
+					"include": "#function-call"
+				},
+				{
+					"include": "#keywords"
+				},
+				{
+					"include": "#objectVariable"
+				},
+				{
+					"include": "#regularVariable"
+				},
+				{
+					"include": "#separators"
+				}
+			]
+		}
+	}
 }
