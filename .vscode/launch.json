@@ -25,6 +25,25 @@
 				"${workspaceFolder}/out/**/*.js"
 			],
 			"preLaunchTask": "npm: compile",
-		}
+			"env": {
+				"TOTVS_LS_LOG_FILE": "./TOTVS_LS_LOG_FILE.log"
+			}
+		},
+		{
+			"type": "extensionHost",
+			"request": "launch",
+			"name": "Extension WithoutCompile",
+			"runtimeExecutable": "${execPath}",
+			"args": [
+				"--extensionDevelopmentPath=${workspaceFolder}"
+			],
+			"outFiles": [
+				"${workspaceFolder}/out/**/*.js"
+			],
+			"preLaunchTask": "",
+			"env": {
+				"TOTVS_LS_LOG_FILE": "./TOTVS_LS_LOG_FILE.log"
+			}
+		},
 	]
 }
