@@ -50,7 +50,7 @@
 			"patterns": [
 				{
 					"name": "keyword.control.advpl_language",
-					"match": "(?i)\\b(activate|alias|and|beginsql|between|case|centered|class|constructor|data|define|dialog|do|else|elseif|end|endcase|endclass|enddo|endfunction|endif|endsql|exit|for|from|function|get|if|loop|main|method|next|nil|of|or|otherwise|pixel|return|select|to|user|var|while|where)\\b"
+          "match": "(?i)\\b(local|static|private|public|default|activate|alias|and|beginsql|between|case|centered|class|constructor|data|define|dialog|do|else|elseif|end|endcase|endclass|enddo|endfunction|endif|endsql|exit|for|from|function|get|if|loop|main|method|next|nil|of|or|otherwise|pixel|return|select|step|to|user|var|while|where|as)\\b"
 				}
 			]
 		},
@@ -97,11 +97,8 @@
 		"varDeclaration": {
 			"patterns": [
 				{
-					"match": "(?i)^\\s*\\b(local|static|private|public|default)\\b\\s+(\\w+)(?:\\s+(as)\\s+(array|block|codeblock|character|char|date|logical|numeric|object|integer|double|decimal|json|variant))?",
+          "match": "(?i)^\\s*\\b(?:;?\\s+;?\\s+?)(\\w+)(?:(?:;?\\s+;?\\s+?)(as)(?:;?\\s+;?\\s+?)(array|block|codeblock|character|char|date|logical|numeric|object|integer|double|decimal|json|variant))?",
 					"captures": {
-						"1": {
-							"name": "variable.language.declaration.advpl"
-						},
 						"2": {
 							"name": "variable.name.advpl"
 						},
@@ -239,7 +236,7 @@
 		},
 		"data-type": {
 			"name": "variable.parameter.type.advpl",
-			"match": "(?i)\\s*(as)\\s+(array|block|codeblock|character|char|date|logical|numeric|object|string|integer|double|decimal|json|variant|variadic)",
+      "match": "(?i)\\s*(as)(?:;?\\s+;?\\s+?)(array|block|codeblock|character|char|date|logical|numeric|object|string|integer|double|decimal|json|variant|variadic)",
 			"captures": {
 				"1": {
 					"name": "keyword.control.keyword.as.advpl"
@@ -273,7 +270,7 @@
 		},
 		"function-decl-body": {
 			"name": "meta.function.declaration.body.advpl",
-			"begin": "(?i)^\\s*(?:(html|main|project|pyme|static|template|user|web|webuser)\\s+)?(function)\\s+(\\w+)",
+      "begin": "(?i)^\\s*(?:(html|main|project|pyme|static|template|user|web|webuser)(?:;?\\s+;?\\s+?))?(function)(?:;?\\s+;?\\s+?)(\\w+)",
 			"end": "(?<=\\)|\\s)",
 			"captures": {
 				"1": {
@@ -346,7 +343,7 @@
 		},
 		"class-decl": {
 			"name": "meta.class.declaration.advpl",
-			"begin": "(?i)^\\s*(class)\\s+(\\w+)(?:(?:\\s+(inherit(?:\\sfrom)|from|of)\\s+(\\w+)))?",
+      "begin": "(?i)^\\s*(class)(?:;?\\s+;?\\s+?)(\\w+)(?:(?:(?:;?\\s+;?\\s+?)(inherit(?:\\sfrom)|from|of)(?:;?\\s+;?\\s+?)(\\w+)))?",
 			"beginCaptures": {
 				"1": {
 					"name": "storage.type.class.advpl"
@@ -381,7 +378,7 @@
 		},
 		"class-decl-content-data": {
 			"name": "meta.class.declaration.content.data.advpl",
-			"begin": "(?i)\\b((?:ws)?data)\\s+(\\w+)",
+      "begin": "(?i)\\b((?:ws)?data)(?:;?\\s+;?\\s+?)(\\w+)",
 			"beginCaptures": {
 				"1": {
 					"name": "storage.modifier.advpl"
@@ -393,7 +390,7 @@
 					"name": "variable.object.property.advpl"
 				}
 			},
-			"end": "(?i)(?=\\s*(as|data|method|end\\s*class))(?:\\s+(as)\\s+((array)\\s(of)\\s+)?(?:(array|block|codeblock|character|char|date|logical|numeric|object|string|variant|json|integer|double|decimal)|(\\w+))\\s*)?(optional)?",
+      "end": "(?i)(?=\\s*(as|data|method|end\\s*class))(?:(?:;?\\s+;?\\s+?)(as)(?:;?\\s+;?\\s+?)((array)\\s(of)(?:;?\\s+;?\\s+?))?(?:(array|block|codeblock|character|char|date|logical|numeric|object|string|variant|json|integer|double|decimal)|(\\w+))\\s*)?(optional)?",
 			"endCaptures": {
 				"1": {
 					"name": "storage.modifier.advpl"
@@ -437,7 +434,7 @@
 					"name": "storage.type.method.advpl"
 				}
 			},
-			"end": ";|$",
+      "end": "$",
 			"patterns": [
 				{
 					"include": "#class-decl-content-method-call"
@@ -481,7 +478,7 @@
 		},
 		"method-decl-body": {
 			"name": "meta.method.declaration.body.advpl",
-			"begin": "(?i)^\\s*(method)\\s+(\\w+)",
+      "begin": "(?i)^\\s*(method)(?:;?\\s+;?\\s+?)(\\w+)",
 			"beginCaptures": {
 				"1": {
 					"name": "storage.type.method.advpl"
@@ -490,7 +487,7 @@
 					"name": "entity.name.function.advpl"
 				}
 			},
-			"end": "(?<=\\)|\\s)(\\s+(?i:class)\\s+(\\w+))?",
+      "end": "(?<=\\)|\\s)((?:;?\\s+;?\\s+?)(?i:class)(?:;?\\s+;?\\s+?)(\\w+))?",
 			"endCaptures": {
 				"1": {
 					"name": "storage.type.class.advpl"
@@ -507,7 +504,7 @@
 		},
 		"wsstruct-decl": {
 			"name": "meta.wsstruct.declaration.advpl",
-			"begin": "(?i)^\\s*(wsstruct)\\s+(\\w+)",
+      "begin": "(?i)^\\s*(wsstruct)(?:;?\\s+;?\\s+?)(\\w+)",
 			"beginCaptures": {
 				"1": {
 					"name": "storage.type.wsstruct.advpl"
@@ -530,7 +527,7 @@
 					"include": "#wsdata"
 				},
 				{
-					"match": "(?i)(wsmethod)\\s+(\\w+)(\\s+description)?",
+          "match": "(?i)(wsmethod)(?:;?\\s+;?\\s+?)(\\w+)((?:;?\\s+;?\\s+?)description)?",
 					"captures": {
 						"1": {
 							"name": "storage.type.method.advpl"
@@ -548,7 +545,7 @@
 		"wsdata": {
 			"patterns": [
 				{
-					"match": "(?i)((?:ws)?data)\\s+(\\w+)(?:\\s+(as)\\s+(array of\\s+)?(?:(string|date|integer|float|boolean|character)|(\\w+))\\s*)?(optional)?",
+          "match": "(?i)((?:ws)?data)(?:;?\\s+;?\\s+?)(\\w+)(?:(?:;?\\s+;?\\s+?)(as)(?:;?\\s+;?\\s+?)(array of(?:;?\\s+;?\\s+?))?(?:(string|date|integer|float|boolean|character)|(\\w+))\\s*)?(optional)?",
 					"captures": {
 						"1": {
 							"name": "storage.modifier.advpl"
@@ -576,7 +573,7 @@
 			]
 		},
 		"wsmethod-decl": {
-			"begin": "(?i)^\\s*(wsmethod)\\s+(\\w+)",
+      "begin": "(?i)^\\s*(wsmethod)(?:;?\\s+;?\\s+?)(\\w+)",
 			"beginCaptures": {
 				"1": {
 					"name": "storage.type.wsmethod.advpl"
@@ -585,7 +582,7 @@
 					"name": "entity.name.function.advpl"
 				}
 			},
-			"end": "(?i)(wsservice|wsclient|wsrestful|wsrest)\\s+(\\w+)",
+      "end": "(?i)(wsservice|wsclient|wsrestful|wsrest)(?:;?\\s+;?\\s+?)(\\w+)",
 			"endCaptures": {
 				"1": {
 					"name": "storage.type.wstype.advpl"
@@ -611,7 +608,7 @@
 		"wsscr-decl": {
 			"comment": "This is a rule for wsservice, wsclient and wsrestul, hence wsSCR",
 			"name": "meta.wsscr.advpl",
-			"begin": "(?i)^\\s*(?<!wsmethod)(wsservice|wsclient|wsrestful)\\s+(\\w+)(\\s+description)?",
+      "begin": "(?i)^\\s*(?<!wsmethod)(wsservice|wsclient|wsrestful)(?:;?\\s+;?\\s+?)(\\w+)((?:;?\\s+;?\\s+?)description)?",
 			"beginCaptures": {
 				"1": {
 					"name": "storage.type.wsscr.advpl"
@@ -640,7 +637,7 @@
 					"include": "#wsdata"
 				},
 				{
-					"match": "(?i)(wsmethod)\\s+(\\w+)(\\s+(?!description)\\w+)?(\\s+(description))?",
+          "match": "(?i)(wsmethod)(?:;?\\s+;?\\s+?)(\\w+)((?:;?\\s+;?\\s+?)(?!description)\\w+)?((?:;?\\s+;?\\s+?)(description))?",
 					"captures": {
 						"1": {
 							"name": "storage.type.wsscr.advpl"
@@ -670,7 +667,7 @@
 				},
 				{
 					"name": "variable.other.advpl",
-					"match": "(?i)(produces)(\\s+\\w+)+",
+          "match": "(?i)(produces)((?:;?\\s+;?\\s+?)\\w+)+",
 					"captures": {
 						"1": {
 							"name": "keyword.control.wsscr.advpl"
