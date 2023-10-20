@@ -20,3 +20,5 @@ out-test/
 src/parser/4gl-parser.js
 notas.md
 test/**/no_git
+test/**/fw/**
+

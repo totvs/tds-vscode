@@ -22,6 +22,7 @@ import {
 import { i18n } from "../helper";
 import { useToolbarStyles } from "../helper/theme";
 import SaveAlt from "@material-ui/icons/SaveAlt";
+import TextRotateVerticalOutlinedIcon from '@material-ui/icons/TextRotateVerticalOutlined';
 import InspectorTheme from "../helper/theme";
 import {
   Checkbox,
@@ -173,8 +174,12 @@ export default function InspectorPanel(props: IInspectorPanel) {
       ? propObjectsColumns().columns
       : propFunctionsColumns().columns;
 
-    memento.set(propOrderBy(columns[orderBy]["field"]));
-    memento.set(propOrderDirection(direction));
+    if (columns[orderBy] === null || columns[orderBy] === undefined) {
+      memento.set(propOrderBy(0));
+    } else {
+      memento.set(propOrderBy(columns[orderBy]["field"]));
+      memento.set(propOrderDirection(direction));
+    }
   };
 
   const doChangeRowsPerPage = (value: number) => {
@@ -266,7 +271,7 @@ export default function InspectorPanel(props: IInspectorPanel) {
   });
 
   actions.push({
-    icon: () => <SaveAlt />,
+    icon: () => <TextRotateVerticalOutlinedIcon />,
     tooltip: i18n.localize("EXPORT", "Export as text file"),
     isFreeAction: true,
     onClick: () => {
@@ -295,9 +300,9 @@ export default function InspectorPanel(props: IInspectorPanel) {
   const labelIncludeOutScope = props.options.objectsInspector
     ? i18n.localize("INCLUDE_TRES", "Include TRES Objects")
     : i18n.localize(
-        "INCLUDE_NOT_PUBLIC",
-        "Include sources without public elements"
-      );
+      "INCLUDE_NOT_PUBLIC",
+      "Include sources without public elements"
+    );
   const refTable = React.useRef(null);
 
   return (
@@ -305,6 +310,7 @@ export default function InspectorPanel(props: IInspectorPanel) {
       <Paper variant="outlined">
         <MaterialTable
           tableRef={refTable}
+          title={`${title} ${subtitle}`}
           components={{
             Toolbar: (props) => (
               <div id="toolbarID">
@@ -341,7 +347,20 @@ export default function InspectorPanel(props: IInspectorPanel) {
             selection: false,
             grouping: grouping,
             filtering: filtering,
-            exportButton: false,
+            exportButton: true,
+            exportAllData: true,
+            exportCsv: (columns, data) => {
+              let command: IInspectorPanelAction = {
+                action: InspectorPanelAction.ExportToTxt,
+                content: {
+                  columns: columns,
+                  rows: data,
+                  csv: true
+                },
+              };
+
+              props.vscode.postMessage(command);
+            },
             padding: "dense",
             columnsButton: false,
             sorting: true,

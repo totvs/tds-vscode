@@ -207,20 +207,18 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 
   if (server) {
     //Só faz sentido processar os includes se existir um servidor selecionado onde sera compilado.
-    let serverItem = Utils.getServerById(server.id);
+    //Verifica se existem arquivos AdvPL na lista de arquivos a serem compilados
     let hasAdvplsource: boolean =
       filesPaths.filter((file) => {
         return Utils.isAdvPlSource(file);
       }).length > 0;
+    //Pega os includes do servidor conectado
     let includes: Array<string> = [];
-
-    if (hasAdvplsource) {
-      includes = Utils.getIncludes(true, serverItem) || [];
-      if (!includes.toString()) {
-        return;
-      }
+    includes = Utils.getIncludes(true, server) || [];
+    if (!includes.toString()) {
+      return;
     }
-
+    //Converte os includes em URIs
     let includesUris: Array<string> = [];
     for (let idx = 0; idx < includes.length; idx++) {
       includesUris.push(vscode.Uri.file(includes[idx]).toString());
@@ -231,7 +229,7 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
       });
       includesUris.push(...wp);
     }
-
+    //Converte os arquivos a serem compilados para URIs
     let filesUris: Array<string> = [];
     filesPaths.forEach((file) => {
       if (!Utils.ignoreResource(file)) {
@@ -246,12 +244,12 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
         );
       }
     });
-
+    //Obtem a lista de extensoes permitidas, se houver
     let extensionsAllowed: string[];
     if (configADVPL.get("folder.enableExtensionsFilter", true)) {
       extensionsAllowed = configADVPL.get("folder.extensionsAllowed", []); // Le a chave especifica
     }
-
+    //Envia a mensagem de compilacao
     if (blockBuildCommands(true)) {
       sendCompilation(
         server,
@@ -319,7 +317,7 @@ function verifyCompileResult(response) {
   const askCompileResult = configADVPL.get("askCompileResult");
   if (askCompileResult !== false) {
     vscode.window
-      .showInformationMessage(textQuestion, textYes, textNo, textNoAsk)
+      .showInformationMessage(textQuestion, { modal: true }, textYes, textNo, textNoAsk)
       .then((clicked) => {
         if (clicked === textYes) {
           vscode.commands.executeCommand(

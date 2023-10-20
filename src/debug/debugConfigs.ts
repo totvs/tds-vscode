@@ -82,7 +82,14 @@ class QuickPickProgram implements QuickPickItem {
   }
 
   get description(): string {
-    return this.args ? `(${this.args.join(", ")})` : "<nil>";
+    return this.args ? `(${this.args.map((element) => {
+        // se um argumento contiver ',' ele devolve o argumento entre aspas para facilitar a visualização.
+        if (element && element.indexOf(',') > 0)
+          return "\""+element+"\"";
+        else
+          return element;
+      })
+      .join(", ")})` : "<nil>";
   }
 }
 
@@ -113,7 +120,7 @@ export async function getProgramName(
       return new QuickPickProgram(element.label, element.args);
     });
   } else {
-    config.lastPrograms = lastPrograms;
+    config.lastPrograms = [];
   }
 
   let programArgs: ProgramArgs = undefined;
@@ -144,6 +151,11 @@ export async function getProgramName(
       qp.canSelectMany = false;
 
       disposables.push(
+        qp.onDidHide(() => {
+          qp.hide();
+          programArgs = new ProgramArgs("<cancel>", []);
+          resolve(programArgs);
+        }),
         qp.onDidTriggerButton((e: QuickInputButton) => {
           qp.hide();
           programArgs = new ProgramArgs("<cancel>", []);
@@ -154,6 +166,8 @@ export async function getProgramName(
           resolve(programArgs);
         }),
         qp.onDidAccept(() => {
+          // se vier de uma seleção 'programArgs' virá preenchido
+          // senão parseia o input do usuario 'qp.value'
           if (!programArgs) {
             programArgs = extractProgramArgs(qp.value);
           }
@@ -187,11 +201,11 @@ export async function getProgramName(
   }
 
   config.lastProgramExecuted = programArgs.program;
-  config.lastProgramArgumens = programArgs.args;
+  config.lastProgramArguments = programArgs.args;
   Utils.saveLaunchConfig(config);
 
-  return `${config.lastProgramExecuted} ${programArgs.args ? programArgs.args.join(", ") : ""
-    }`;
+  //return `${config.lastProgramExecuted}`;
+  return `${config.lastProgramExecuted}${programArgs.args ? ("("+programArgs.args.map((element)=>{if(element.indexOf(',')>0)return "\""+element+"\"";else return element;}).join(", ")+")") : ""}`;
 }
 
 const programArgsRegex = /^([\w\.\-\_]+)(\(?[^)\n]*\)?)?/i;
@@ -201,12 +215,14 @@ export function extractProgramArgs(value: string): ProgramArgs {
 
   if (value) {
     let testRegex = value.trim().match(programArgsRegex);
-    if (testRegex[0]) {
+    if (testRegex && testRegex[0]) {
       let args: string[];
       if (testRegex.length >= 3 && testRegex[2]) {
         args = extractArgs(testRegex[2]);
       }
       programArgs = new ProgramArgs(testRegex[1], args);
+    } else {
+      programArgs = new ProgramArgs("<cancel>", []);
     }
   }
   return programArgs;
@@ -232,15 +248,16 @@ function extractArgs(value: string): string[] {
                 element.length > 1 &&
                 ((element.startsWith('"') && element.endsWith('"')) ||
                   (element.startsWith("'") && element.endsWith("'")))
-              ) {
+                ) {
                 element = element.substring(1, element.length - 1);
               }
               args.push(element);
             }
           });
         } else {
-          splited = value.split(/,/);
-          splited.forEach((element) => {
+          splited = value.split(",");
+          while (splited.length > 0) {
+            var element = splited.shift();
             element = element.trim();
             if (element.length == 0) {
               element = undefined;
@@ -248,11 +265,26 @@ function extractArgs(value: string): string[] {
               element.length > 1 &&
               ((element.startsWith('"') && element.endsWith('"')) ||
                 (element.startsWith("'") && element.endsWith("'")))
-            ) {
+              ) {
               element = element.substring(1, element.length - 1);
+            } else if (
+              element.length > 1 &&
+              ((element.startsWith('"') && !element.endsWith('"')) ||
+                (element.startsWith("'") && !element.endsWith("'")))
+              ) {
+              var startChar = element.charAt(0); // salva tipo de aspas antes de remover
+              element = element.substring(1); // remove 1a aspas
+              while (splited.length > 0) {
+                var newElement = splited.shift();
+                element += ("," + newElement); // recoloca o token "," splitado incorretamente
+                if (element.length > 1 && element.endsWith(startChar)) {
+                  element = element.substring(0, element.length - 1); // remove ultima aspas
+                  break;
+                }
+              }
             }
             args.push(element);
-          });
+          }
         }
       }
     }
@@ -261,7 +293,9 @@ function extractArgs(value: string): string[] {
 }
 
 export async function getProgramArguments(config: DebugConfiguration) {
-  return await pickProgramArguments(config);
+  var argsJson = await pickProgramArguments(config);
+  return argsJson;
+  //return await pickProgramArguments(config);
 }
 
 export function toggleTableSync() {
@@ -363,8 +397,8 @@ async function pickProgramArguments(
   if (lastProgramExecuted == "<cancel>") {
     return undefined;
   }
-  let lastArgumentsExecuted = config.lastProgramArgumens
-    ? config.lastProgramArgumens
+  let lastArgumentsExecuted = config.lastProgramArguments
+    ? config.lastProgramArguments
     : []
 
   let lastPrograms: QuickPickProgram[] = config.lastPrograms
@@ -375,7 +409,7 @@ async function pickProgramArguments(
       );
     })
     .map((element: any) => {
-      return new QuickPickProgram(element.args.join(", "), element.args);
+      return new QuickPickProgram(element.program, element.args);
     });
 
   let selectArgs: string[] = [];
@@ -407,6 +441,11 @@ async function pickProgramArguments(
       qp.value = lastArgumentsExecuted?.join(", ");
 
       disposables.push(
+        qp.onDidHide(() => {
+          qp.hide();
+          selectArgs = ["<cancel>"];
+          resolve();
+        }),
         qp.onDidTriggerButton((e: QuickInputButton) => {
           qp.hide();
           selectArgs = ["<cancel>"];
@@ -440,7 +479,7 @@ async function pickProgramArguments(
                 new QuickPickProgram(program, selectArgs)
               );
             }
-            config.lastProgramArgs = selectArgs;
+            config.lastProgramArguments = selectArgs;
             Utils.saveLaunchConfig(config);
             resolve();
           }
@@ -455,5 +494,6 @@ async function pickProgramArguments(
     disposables.forEach((d) => d.dispose());
   }
 
-  return selectArgs.join(", ");
+  return JSON.stringify(selectArgs);
+  //return selectArgs.join(", ");
 }

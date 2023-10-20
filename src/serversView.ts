@@ -118,7 +118,7 @@ export class ServersExplorer {
                     message.includes
                   );
                   if (serverId !== undefined) {
-                    sendValidationRequest(message.address, message.port).then(
+                    sendValidationRequest(message.address, message.port, message.serverType).then(
                       (validInfoNode: IValidationInfo) => {
                         Utils.updateBuildVersion(
                           serverId,
@@ -601,7 +601,7 @@ async function doValidation(
   context: vscode.ExtensionContext,
   serverItem: ServerItem
 ) {
-  await sendValidationRequest(serverItem.address, serverItem.port).then(
+  await sendValidationRequest(serverItem.address, serverItem.port, serverItem.type).then(
     (validationInfo: IValidationInfo) => {
       //retornou uma versao valida no servidor.
       const updated = Utils.updateBuildVersion(

@@ -6,10 +6,14 @@
 			"label": "npm",
 			"script": "watch",
 			"problemMatcher": [
-				"$tsc-watch"
+				"$tsc-watch",
+				"$esbuild-watch"
 			],
 			"isBackground": true,
-			"group": "build"
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		},
 		{
 			"type": "npm",

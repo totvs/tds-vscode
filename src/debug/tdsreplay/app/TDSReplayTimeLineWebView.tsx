@@ -19,6 +19,10 @@ export default function TDSReplayTimeLineWebView(props: IConfigProps, state: ICo
 
   let oldState = vscode.getState();
 
+  // let initialData =  props.initialData;
+  // let initDataKeys =  Object.keys(initialData);
+  // let initDataValues =  Object.values(initialData);
+
   if (oldState) {
 
     let command: ICommand = {

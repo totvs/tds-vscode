@@ -59,19 +59,19 @@ export function getLanguageClient(
         if (
           !clientConfig ||
           JSON.stringify(clientConfig[key]) !==
-            JSON.stringify(clientConfig[key])
+          JSON.stringify(clientConfig[key])
         ) {
           const kReload = localize(
-            "tds.webview.totvsLanguegeClient.reload",
+            "tds.webview.totvsLanguageClient.reload",
             "Reload"
           );
           const message = localize(
-            "tds.webview.totvsLanguegeClient.pleaseReload",
+            "tds.webview.totvsLanguageClient.pleaseReload",
             "Please reload to apply the 'TOTVS.{0}' configuration change.",
             key
           );
 
-          window.showInformationMessage(message, kReload).then((selected) => {
+          window.showInformationMessage(message, { modal: true }, kReload).then((selected) => {
             if (selected === kReload) {
               commands.executeCommand("workbench.action.reloadWindow");
             }
@@ -122,8 +122,6 @@ export function getLanguageClient(
     linter += linterConfig ? "enabled" : "disabled";
     args = args.concat(linter);
   }
-
-  args = args.concat("--wait-for-attach=20000");
 
   args = args.concat(clientConfig["launchArgs"]);
 
@@ -300,7 +298,7 @@ function displayCodeLens(
       if (!codeLens.isResolved) {
         console.error(
           localize(
-            "tds.webview.totvsLanguegeClient.codeLensNotResolved",
+            "tds.webview.totvsLanguageClient.codeLensNotResolved",
             "Code lens is not resolved"
           )
         );

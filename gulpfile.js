@@ -42,6 +42,13 @@ const internalCompileWebpack = function () {
   return run('npm run compile:views').exec();
 };
 
+//A opcao NODE_ENV=production fara com que os fontes gerados seja "minificados" e nao incluira os "sourcemaps".
+//Para desenvolvimento e debug, talvez seja melhor usar a opcao comentada abaixo.
+const internalCompileEsBuildProd = function () {
+  return run("cross-env NODE_ENV=production node esbuild.js").exec();
+  //return run("npm run compile::esbuild").exec();
+}
+
 const internalNlsCompileTask = function () {
   return doCompile(true);
 };
@@ -61,7 +68,7 @@ const addI18nTask = function () {
 // };
 
 
-const buildTask = gulp.series(cleanTask, internalNlsCompileTask, addI18nTask, internalCompileWebpack);
+const buildTask = gulp.series(cleanTask, internalNlsCompileTask, addI18nTask, internalCompileWebpack, internalCompileEsBuildProd);
 
 const doCompile = function (buildNls) {
   var r = tsProject

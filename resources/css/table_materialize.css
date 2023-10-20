@@ -260,6 +260,12 @@ input::-webkit-calendar-picker-indicator {
   padding: 4 px;
 }
 
+.btn-submit:disabled {
+  border-color: #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+
 .totvs-col-reorder {
   cursor: ns-resize;
   width: 20px;

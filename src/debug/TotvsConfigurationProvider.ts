@@ -46,7 +46,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
         if (editor && editor.document.languageId === "totvs-developer-studio") {
           this.initialize(config);
           config.request = "launch";
-          config.program = "${workspaceFolder}/${command:AskForProgramName}";
+          config.program = "${command:AskForProgramName}";
         }
       }
 
@@ -97,6 +97,18 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
         setDapArgsArr.push("--wait-for-attach=" + config.waitForAttach);
       }
 
+      if(config.forceUtf8) {
+        setDapArgsArr.push("--forceUtf8");
+      }
+
+      if(config.language) {
+        if(config.language === "1") config.language = "por";
+        else if(config.language === "2") config.language = "spa";
+        else if(config.language === "3") config.language = "eng";
+        else if(config.language === "4") config.language = "rus";
+        setDapArgsArr.push("--language=" + config.language);
+      }
+
       setDapArgs(setDapArgsArr);
 
       return Promise.resolve(config);
@@ -131,7 +143,12 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
       debugConfiguration.program
     );
     if (debugConfiguration.programArguments) {
-      programArgs.args = debugConfiguration.programArguments;
+      if (typeof debugConfiguration.programArguments === 'string') {
+        debugConfiguration.programArguments = JSON.parse(debugConfiguration.programArguments);
+      }
+      if (debugConfiguration.programArguments.length > 0) {
+        programArgs.args = debugConfiguration.programArguments;
+      }
     }
 
     if (
