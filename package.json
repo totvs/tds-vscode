@@ -300,7 +300,10 @@
       {
         "language": "advpl",
         "scopeName": "source.advpl",
-        "path": "./syntaxes/advpl_language.tmLanguage.json"
+        "path": "./syntaxes/advpl_language.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.sql": "sql"
+        }
       },
       {
         "language": "4gl",
@@ -313,7 +316,7 @@
         "path": "./syntaxes/advpl_asp_language.tmLanguage.json",
         "embeddedLanguages": {
           "meta.embedded.block.advpl": "advpl",
-          "text.html": "html",  
+          "text.html": "html",
           "source.advpl": "advpl",
           "source.js": "javascript",
           "source.json": "json",
@@ -328,6 +331,16 @@
         ],
         "embeddedLanguages": {
           "meta.embedded.block.advpl": "advpl"
+        }
+      },
+      {
+        "scopeName": "sql.advpl.codeblock",
+        "path": "./syntaxes/advpl_sql.tmLanguage.json",
+        "injectTo": [
+          "source.advpl"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.advpl.sql": "sql"
         }
       }
     ],
