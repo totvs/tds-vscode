@@ -1,5 +1,10 @@
 {
-  "name": "4gl",
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"information_for_contributors": [
+		"To debug textMate files, trigger the command:",
+    "Developer: Start Text Mate Syntax Grammar Logging"
+	],
+ "name": "4gl",
   "scopeName": "source.4gl",
   "fileTypes": ["4gl", "per"],
   "foldingStartMarker": "(\\{\\s*(//.*)?$|^\\s*// \\{\\{\\{)",

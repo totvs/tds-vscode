@@ -232,17 +232,6 @@
     ],
     "languages": [
       {
-        "id": "aph",
-        "aliases": [
-          "HTML",
-          "advpl/asp"
-        ],
-        "extensions": [
-          ".aph"
-        ],
-        "configuration": "./advpl-language-configuration.json"
-      },
-      {
         "id": "advpl",
         "aliases": [
           "AdvPL",
@@ -260,6 +249,16 @@
           ".ahu",
           ".apl",
           ".apw"
+        ],
+        "configuration": "./advpl-language-configuration.json"
+      },
+      {
+        "id": "advpl-asp",
+        "aliases": [
+          "AdvPL/Asp"
+        ],
+        "extensions": [
+          ".aph"
         ],
         "configuration": "./advpl-language-configuration.json"
       },
@@ -304,20 +303,32 @@
         "path": "./syntaxes/advpl_language.tmLanguage.json"
       },
       {
-        "language": "aph",
-        "scopeName": "text.html.advpl",
-        "path": "./syntaxes/advpl_language.tmLanguage.json",
-        "embeddedLanguages": {
-          "source.json": "json",
-          "source.css": "css",
-          "source.css.scss": "scss",
-          "source.js": "javascript"
-        }
-      },
-      {
         "language": "4gl",
         "scopeName": "source.4gl",
         "path": "./syntaxes/4gl_language.tmLanguage.json"
+      },
+      {
+        "language": "advpl-asp",
+        "scopeName": "text.html.advpl",
+        "path": "./syntaxes/advpl_asp_language.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.advpl": "advpl",
+          "text.html": "html",  
+          "source.advpl": "advpl",
+          "source.js": "javascript",
+          "source.json": "json",
+          "source.css": "css"
+        }
+      },
+      {
+        "scopeName": "markdown.advpl.codeblock",
+        "path": "./syntaxes/advpl-md.tmLanguage.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.advpl": "advpl"
+        }
       }
     ],
     "snippets": [
@@ -1006,6 +1017,9 @@
     "breakpoints": [
       {
         "language": "advpl"
+      },
+      {
+        "language": "advpl-asp"
       },
       {
         "language": "4gl"

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="ANSI">
+  <title>Agenda em AdvPL ASP</title>
+  <style>
+    .agbutton {
+      display: inline-block;
+      text-decoration: none;
+      width: 120px;
+      height: 18px;
+      background: rgb(240, 240, 240);
+      text-align: center;
+      color: black;
+      padding-top: 4px;
+    }
+
+    .agget {
+      display: block;
+      width: 110px;
+      height: 22px;
+      color: black;
+      padding-top: 6px;
+      text-align: right;
+    }
+
+    .aginput {
+      width: 320px;
+      height: 22px;
+      color: black;
+      padding-top: 0px;
+      padding-right: 10px;
+      text-align: left;
+    }
+  </style>
+</head>
+
+<script>
+  function doLogoff() {
+    var f = document.getElementById("F_AGENDA");
+    f.action = "/logoff.apw"
+    f.submit();
+  };
+</script>
+
+  <pre>
+  <% For nI := 1 to len(HTTPCOOKIES->ACOOKIES) %>
+  <%= HTTPCOOKIES->ACOOKIES[nI] %>
+  <% Next %>
+  </pre>
+
+< body style="font-family:Courier New;font-size: 12px;background-color:rgb(128,128,128);">
+
+  <pre>
+<% For nI := 1 to len(HTTPCOOKIES->ACOOKIES) %>
+<%= HTTPCOOKIES->ACOOKIES[nI] %>
+<% Next %>
+</pre>
+
+  <table align="left">
+    <tr>
+
+      <!-- Primeira Tabela - Opções e Imagem 3x4 -->
+      <td align="left" valign="top">
+        <table>
+          <tr>
+            <td><a class="agbutton" href="?Op=1">Incluir</a></td>
+          </tr>
+          <tr>
+            <td><a class="agbutton" href="?Op=2">Alterar</a></td>
+          </tr>
+          <tr>
+            <td><a class="agbutton" href="?Op=3">Excluir</a></td>
+          </tr>
+          <tr>
+            <td style="height: 22px;">&nbsp;</td>
+          </tr>
+          <tr>
+            <td><a class="agbutton" href="javascript:void(0)" onclick="doLogoff()">Sair</a></td>
+          </tr>
+          <tr>
+            <td style="height: 22px;">&nbsp;</td>
+          </tr>
+          <tr>
+            <td><img style="width: 120px;height: 160px;" src="./images/Agenda_3x4.png"></td>
+          </tr>
+        </table>
+      </td>
+
+      <!-- Segunda Tabela - Mais Opções -->
+      <td align="left" valign="top">
+        <table>
+          <tr>
+            <td><a class="agbutton" href="?Op=4">Primeiro</a></td>
+          </tr>
+          <tr>
+            <td><a class="agbutton" href="?Op=5">Anterior</a></td>
+          </tr>
+          <tr>
+            <td><a class="agbutton" href="?Op=6">Próximo</a></td>
+          </tr>
+          <tr>
+            <td><a class="agbutton" href="?Op=7">Último</a></td>
+          </tr>
+          <tr>
+            <td><a class="agbutton" href="?Op=8">Pesquisa</a></td>
+          </tr>
+          <tr>
+            <td><a class="agbutton" href="?Op=9">Ordem</a></td>
+          </tr>
+          <tr>
+            <td><a class="agbutton" href="?Op=10">Mapa</a></td>
+          </tr>
+          <tr>
+            <td><a class="agbutton" href="?Op=11">G-Mail</a></td>
+          </tr>
+          <tr>
+            <td><a class="agbutton" href="?Op=12">Foto 3x4</a></td>
+          </tr>
+        </table>
+      </td>
+
+      <!-- Terceira Tabela - Dados do Contato -->
+      <td align="left" valign="top">
+        <form id="F_AGENDA" action="#" method="post">
+          <table style="border-spacing: 1px; background: rgb(192,192,192);">
+            <tr>
+              <td colspan="2"
+                style="width: 500px; height: 22px; color: white; padding-top: 4px; background: rgb(0,0,128);">
+                &nbsp;Ordem ...</td>
+            </tr>
+            <tr>
+              <td class="agget">ID</td>
+              <td class="aginput"><input id="I_D" type="text" name="ID" disabled size="6"></td>
+            </tr>
+            <tr>
+              <td class="agget">Nome</td>
+              <td class="aginput"><input id="I_NOME" type="text" name="NOME" disabled size="50"></td>
+            </tr>
+            <tr>
+              <td class="agget">Endereço</td>
+              <td class="aginput"><input id="I_ENDER" type="text" name="ENDER" disabled size="50"></td>
+            </tr>
+            <tr>
+              <td class="agget">Complemento</td>
+              <td class="aginput"><input id="I_COMPL" type="text" name="COMPL" disabled size="20"></td>
+            </tr>
+            <tr>
+              <td class="agget">Bairro</td>
+              <td class="aginput"><input id="I_BAIRRO" type="text" name="BAIRRO" disabled size="30"></td>
+            </tr>
+            <tr>
+              <td class="agget">Cidade</td>
+              <td class="aginput"><input id="I_CIDADE" type="text" name="CIDADE" disabled size="40"></td>
+            </tr>
+            <tr>
+              <td class="agget">UF</td>
+              <td class="aginput"><input id="I_UF" type="text" name="UF" disabled size="2"></td>
+            </tr>
+            <tr>
+              <td class="agget">CEP</td>
+              <td class="aginput"><input id="I_CEP" type="text" name="CEP" disabled size="9"></td>
+            </tr>
+            <tr>
+              <td class="agget">Fone 1</td>
+              <td class="aginput"><input id="I_FONE1" type="text" name="FONE1" disabled size="20"></td>
+            </tr>
+            <tr>
+              <td class="agget">Fone 2</td>
+              <td class="aginput"><input id="I_FONE2" type="text" name="FONE2" disabled size="20"></td>
+            </tr>
+            <tr>
+              <td class="agget">e-Mail</td>
+              <td class="aginput"><input id="I_EMAIL" type="text" name="EMAIL" disabled size="40"></td>
+            </tr>
+            <tr>
+              <td class="agget">&nbsp;</td>
+              <td>
+                <a class="agbutton" id="btnConfirm" href="?Op=13">Confirmar</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a class="agbutton" id="btnVoltar" href="?Op=14">Voltar</a>
+              </td>
+            </tr>
+          </table>
+        </form>
+
+      </td>
+    </tr>
+  </table>
+
+  </body>
+
+</html>
