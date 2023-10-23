@@ -4,11 +4,9 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { extensions, window, Uri, ViewColumn } from 'vscode';
 import * as nls from 'vscode-nls';
-import Utils from '../utils';
+import Utils, { ServersConfig } from '../utils';
 import { ResponseError } from 'vscode-languageclient';
 import { _debugEvent } from '../debug';
-import { IRpoToken } from '../rpoToken';
-import { CompileKey } from '../compileKey/compileKey';
 
 let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
@@ -91,7 +89,7 @@ function changeToArrayString(allFiles) {
 }
 
 export function deletePrograms(programs: string[]) {
-	const server = Utils.getCurrentServer();
+	const server = ServersConfig.getCurrentServer();
 	try {
 		if (server) {
 			if (_debugEvent) {
@@ -102,13 +100,13 @@ export function deletePrograms(programs: string[]) {
 			languageClient.sendRequest('$totvsserver/deletePrograms', {
 				"deleteProgramsInfo": {
 					connectionToken: server.token,
-					authorizationToken: Utils.getAuthorizationToken(server),
+					authorizationToken: ServersConfig.getAuthorizationToken(server),
 					environment: server.environment,
 					programs: programs
 				}
 			}).then((response: DeleteProgramResult) => {
 				if (response.returnCode === 40840) { // AuthorizationTokenExpiredError
-					Utils.removeExpiredAuthorization();
+					ServersConfig.removeExpiredAuthorization();
 				}
 				// const message: string  = response.message;
 				// if(message === "Success"){

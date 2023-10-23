@@ -1,6 +1,6 @@
 //import * as vscode from 'vscode';
 import { ExtensionContext, QuickInputButton, Uri, QuickPickItem, workspace } from "vscode";
-import Utils from "./utils";
+import Utils, { ServersConfig } from "./utils";
 import * as path from 'path';
 import { MultiStepInput } from "./multiStepInput";
 import { connectServer, reconnectServer } from "./serversView";
@@ -36,9 +36,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 	let CONNECT_SERVER_STEP = 1;
 	let CONNECT_ENVIRONMENT_STEP = 2;
 
-	const serversConfig = Utils.getServersConfig();
-
-	const servers: QuickPickItem[] = serversConfig.configurations
+	const servers: QuickPickItem[] = ServersConfig.getServers()
 		.map(element => ({ detail: element.id, label: element.name, description: `${element.address}:${element.port}` }));
 
 	interface State {
@@ -60,12 +58,12 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 			CONNECT_SERVER_STEP -= 1;
 			CONNECT_ENVIRONMENT_STEP -= 1;
 
-			await MultiStepInput.run(input => pickEnvironment(input, state, serversConfig));
+			await MultiStepInput.run(input => pickEnvironment(input, state));
 		} else if (serverParam instanceof EnvSection) {
 			state.server = serverParam.serverItemParent.id;
 			state.environment = serverParam.label;
 		} else {
-			await MultiStepInput.run(input => pickServer(input, state, serversConfig));
+			await MultiStepInput.run(input => pickServer(input, state));
 		}
 
 		// reconnection token requires server and environment informations
@@ -73,13 +71,13 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 		if (reconnect) {//@acandido
 			let serverId = (typeof state.server === "string") ? state.server : (state.server as QuickPickItem).detail;
 			let environmentName = (typeof state.environment === "string") ? state.environment : (state.environment as QuickPickItem).label;
-			state.reconnectionToken = Utils.getSavedTokens(serverId, environmentName);
+			state.reconnectionToken = ServersConfig.getSavedTokens(serverId, environmentName);
 		}
 
 		return state as State;
 	}
 
-	async function pickServer(input: MultiStepInput, state: Partial<State>, serversConfig: any) {
+	async function pickServer(input: MultiStepInput, state: Partial<State>) {
 		const pick = await input.showQuickPick({
 			title: title,
 			step: CONNECT_SERVER_STEP,
@@ -93,11 +91,11 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 
 		state.server = pick;
 
-		return (input: MultiStepInput) => pickEnvironment(input, state, serversConfig);
+		return (input: MultiStepInput) => pickEnvironment(input, state);
 	}
 
-	async function pickEnvironment(input: MultiStepInput, state: Partial<State>, serversConfig: any) {
-		const environments = await getEnvironments(state, serversConfig);
+	async function pickEnvironment(input: MultiStepInput, state: Partial<State>) {
+		const environments = await getEnvironments(state);
 
 		if (environments.length > 0) {
 			const pick = await input.showQuickPick({
@@ -112,16 +110,16 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 			});
 
 			if (pick instanceof NewEnvironmentButton) {
-				return (input: MultiStepInput) => inputEnvironment(input, state, serversConfig);
+				return (input: MultiStepInput) => inputEnvironment(input, state);
 			}
 			state.environment = pick;
 			return null;
 		} else {
-			return (input: MultiStepInput) => inputEnvironment(input, state, serversConfig);
+			return (input: MultiStepInput) => inputEnvironment(input, state);
 		}
 	}
 
-	async function inputEnvironment(input: MultiStepInput, state: Partial<State>, serversConfig: any) {
+	async function inputEnvironment(input: MultiStepInput, state: Partial<State>) {
 		state.environment = await input.showInputBox({
 			title: title,
 			step: CONNECT_ENVIRONMENT_STEP,
@@ -161,13 +159,13 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 		return value === '' ? localize('REQUIRED_INFORMATION', 'Required information') : undefined;
 	}
 
-	async function getEnvironments(state: Partial<State>, serversConfig: any): Promise<QuickPickItem[]> {
+	async function getEnvironments(state: Partial<State>): Promise<QuickPickItem[]> {
 		// ...retrieve...
 		//await new Promise(resolve => setTimeout(resolve, VALIDADE_TIME_OUT));
 
 		let target;
 		if (state.server) {
-			target = Utils.getServerById((typeof state.server !== 'string') ? (state.server.detail ? state.server.detail : "") : state.server, serversConfig);
+			target = ServersConfig.getServerById((typeof state.server !== 'string') ? (state.server.detail ? state.server.detail : "") : state.server);
 			if (target) {
 				state.environment = target.environment;
 			}
@@ -179,7 +177,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 
 	async function main() {
 		const connectState = await collectConnectInputs();
-		const server = Utils.getServerById((typeof connectState.server !== 'string') ? (connectState.server.detail ? connectState.server.detail : "") : connectState.server, serversConfig);
+		const server = ServersConfig.getServerById((typeof connectState.server !== 'string') ? (connectState.server.detail ? connectState.server.detail : "") : connectState.server);
 
 		if (connectState.reconnectionToken) {
 			let environmentName = (typeof connectState.environment === "string") ? connectState.environment : (connectState.environment as QuickPickItem).label;

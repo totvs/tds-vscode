@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
 import * as os from "os";
-import Utils from "../utils";
+import Utils, { ServersConfig } from "../utils";
 import { languageClient } from "../extension";
 import * as nls from "vscode-nls";
 import { ResponseError } from "vscode-languageclient";
@@ -43,10 +43,10 @@ export function patchApply(
   if (currentPanel) {
     currentPanel.reveal();
   } else {
-    const server = Utils.getCurrentServer();
+    const server = ServersConfig.getCurrentServer();
 
     if (server) {
-      const allInfoServer: any = Utils.getServerById(server.id);
+      const allInfoServer: any = ServersConfig.getServerById(server.id);
 
       if (allInfoServer) {
         server.address = allInfoServer.address;
@@ -286,7 +286,7 @@ export function patchApply(
                   .sendRequest("$totvsserver/patchApply", {
                     patchApplyInfo: {
                       connectionToken: server.token,
-                      authorizationToken: Utils.getAuthorizationToken(server),
+                      authorizationToken: ServersConfig.getAuthorizationToken(server),
                       environment: server.environment,
                       patchUri: patchUri,
                       isLocal: true,
@@ -298,7 +298,7 @@ export function patchApply(
                     (response: any) => {
                       if ((response as PatchResult).returnCode === 40840) {
                         // AuthorizationTokenExpiredError
-                        Utils.removeExpiredAuthorization();
+                        ServersConfig.removeExpiredAuthorization();
                       }
                       if (response.error == 1) {
                         vscode.window.showErrorMessage(
@@ -414,7 +414,7 @@ async function doValidatePatch(
     .sendRequest("$totvsserver/patchApply", {
       patchApplyInfo: {
         connectionToken: server.token,
-        authorizationToken: Utils.getAuthorizationToken(server),
+        authorizationToken: ServersConfig.getAuthorizationToken(server),
         environment: server.environment,
         patchUri: patchUri,
         isLocal: true,
@@ -486,7 +486,7 @@ async function doApplyPatch(
     .sendRequest("$totvsserver/patchApply", {
       patchApplyInfo: {
         connectionToken: server.token,
-        authorizationToken: Utils.getAuthorizationToken(server),
+        authorizationToken: ServersConfig.getAuthorizationToken(server),
         environment: server.environment,
         patchUri: patchUri,
         isLocal: true,
@@ -498,7 +498,7 @@ async function doApplyPatch(
       (response: any) => {
         if (response.returnCode === 40840) {
           // AuthorizationTokenExpiredError
-          Utils.removeExpiredAuthorization();
+          ServersConfig.removeExpiredAuthorization();
         }
         if (response.error == 1) {
           if (response.errorCode > 1) {

@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import Utils from "../utils";
+import Utils, { ServersConfig } from "../utils";
 
 const currentSettings: {} = {};
 let needRestart: boolean = false;
@@ -39,6 +39,19 @@ export function getModifiedLanguageServerSettings(): any[] {
 
   const settings: any[] = [];
 
+  let tmp = config.inspect("editor.linter");
+  console.log(tmp);
+
+  if (config.has("editor.linter")) {
+    let oldLinter = config.get("editor.linter");
+    if (oldLinter !== Object(oldLinter)) {
+      let newLinter = oldLinter ? "enabled" : "disabled";
+      config.update("editor.linter.behavior", newLinter);
+      config.update("editor.linter", undefined, vscode.ConfigurationTarget.Global);
+      config.update("editor.linter", undefined, vscode.ConfigurationTarget.Workspace);
+    }
+  }
+
   if (isNewSettings("advpls", "fsencoding", config.get("filesystem.encoding"))) {
     settings.push({
       scope: "advpls",
@@ -64,16 +77,18 @@ export function getModifiedLanguageServerSettings(): any[] {
     });
   }
 
-  let linter = config.get("editor.linter.behavior");
-  if (isNewSettings("linter", "behavior", linter)) {
-    settings.push({
-      scope: "linter",
-      key: "behavior",
-      value: String(linter)
-    });
+  let linterBehavior = config.get("editor.linter.behavior");
+  if (linterBehavior === String(linterBehavior)) { // proteção: só entra se behavior for um Object (evitar bug que pega informacao de editor.linter)
+    if (isNewSettings("linter", "behavior", linterBehavior)) {
+      settings.push({
+        scope: "linter",
+        key: "behavior",
+        value: String(linterBehavior)
+      });
+    }
   }
 
-  const includes: string = (Utils.getIncludes(true, Utils.getCurrentServer()) || []).join(";");
+  const includes: string = (ServersConfig.getIncludes(true, ServersConfig.getCurrentServer()) || []).join(";");
   if (isNewSettings("linter", "includes", includes)) {
     settings.push({
       scope: "linter",

@@ -1,8 +1,7 @@
 import * as fs from 'fs';
 import * as vscode from 'vscode';
-import Utils from './utils';
+import { ServersConfig } from './utils';
 import * as nls from 'vscode-nls';
-import utils from './utils';
 
 const localize: nls.LocalizeFunc = nls.loadMessageBundle();
 
@@ -107,7 +106,7 @@ export function rpoTokenQuickPick() {
   );
   //
   let options: Array<string> = [ inputRpoToken ];
-  let rpoToken: IRpoToken = utils.getRpoTokenInfos();
+  let rpoToken: IRpoToken = ServersConfig.getRpoTokenInfos();
   if (rpoToken !== undefined && rpoToken.token.length > 0) { // valid rpoToken
     options.push(actionRpoToken);
     options.push(clearRpoToken);
@@ -128,7 +127,7 @@ export function rpoTokenQuickPick() {
 }
 
 export function getEnabledRpoTokenInfos() {
-  let rpoToken: IRpoToken = utils.getRpoTokenInfos();
+  let rpoToken: IRpoToken = ServersConfig.getRpoTokenInfos();
   return getEnabledRpoToken(rpoToken);
 }
 
@@ -138,13 +137,13 @@ export function getEnabledRpoToken(rpoToken: IRpoToken) {
 }
 
 export function setEnabledRpoToken(enable: boolean) {
-  let rpoToken: IRpoToken = utils.getRpoTokenInfos();
+  let rpoToken: IRpoToken = ServersConfig.getRpoTokenInfos();
   if (rpoToken === undefined) {
     rpoToken = noRpoToken();
   } else {
     rpoToken.enabled = enable;
   }
-  utils.saveRpoTokenInfos(rpoToken);
+  ServersConfig.saveRpoTokenInfos(rpoToken);
 }
 
 export function enableRpoToken() {
@@ -156,7 +155,7 @@ export function disableRpoToken() {
 }
 
 export function rpoTokenInputBox() {
-  let rpoToken: IRpoToken = utils.getRpoTokenInfos();
+  let rpoToken: IRpoToken = ServersConfig.getRpoTokenInfos();
   if (rpoToken === undefined) {
     rpoToken = noRpoToken();
   }
@@ -185,7 +184,7 @@ export function saveRpoTokenString(rpoTokenString: string): Promise<boolean> {
     if (rpoToken.error) {
       reject(rpoToken.error);
     } else {
-      Utils.saveRpoTokenInfos(rpoToken);
+      ServersConfig.saveRpoTokenInfos(rpoToken);
       resolve(true);
     }
   });

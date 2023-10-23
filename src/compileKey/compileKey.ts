@@ -3,7 +3,7 @@ import * as path from "path";
 import * as nls from "vscode-nls";
 import * as fs from "fs";
 import { languageClient } from "../extension";
-import Utils from "../utils";
+import { ServersConfig } from "../utils";
 import { ResponseError } from "vscode-languageclient";
 
 let localize = nls.loadMessageBundle();
@@ -102,7 +102,7 @@ function initializePage(context: vscode.ExtensionContext) {
 
   getId(currentPanel);
 
-  const compileKey = Utils.getPermissionsInfos();
+  const compileKey = ServersConfig.getPermissionsInfos();
   if (compileKey && compileKey.authorizationToken) {
     // && !compileKey.userId) {
     const generated = compileKey.issued;
@@ -132,7 +132,7 @@ function initializePage(context: vscode.ExtensionContext) {
           }
           break;
         case "readFile":
-          const authorization: Authorization = Utils.readCompileKeyFile(
+          const authorization: Authorization = ServersConfig.readCompileKeyFile(
             message.path
           );
           if (authorization) {
@@ -169,7 +169,7 @@ function initializePage(context: vscode.ExtensionContext) {
           }
           break;
         case "cleanKey":
-          Utils.deletePermissionsInfos();
+          ServersConfig.deletePermissionsInfos();
           break;
       }
     },
@@ -258,7 +258,7 @@ function validateKey(currentPanel, message, close: boolean) {
                 authorizationToken: response.authorizationToken,
                 userId: "",
               };
-              Utils.savePermissionsInfos(permission);
+              ServersConfig.savePermissionsInfos(permission);
             }
             outputMessageText =
               localizeHTML["tds.webview.compile.key.validated"];

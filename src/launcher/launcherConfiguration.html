@@ -123,7 +123,7 @@
 		const launchConfig = event.data; // The JSON data our extension sent
 		comboBox.innerText = null; //Zera o combo
 		updateElementProgramArguments([]);
-		launchConfig.configurations.forEach(element => {
+		launchConfig.forEach(element => {
 			if (element.type === "totvs_language_debug") {
 				let option = document.createElement("option");
 				option.text = element.name;

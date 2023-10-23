@@ -9,7 +9,7 @@ import {
 import { InspectorPanelAction, IInspectorPanelAction } from "./actions";
 import { ServerItem } from "../serverItem";
 import * as nls from "vscode-nls";
-import Utils from "../utils";
+import { ServersConfig } from "../utils";
 import { languageClient } from "../extension";
 import * as fse from "fs-extra";
 
@@ -29,7 +29,7 @@ export function openInspectView(
   context: vscode.ExtensionContext,
   options: IInspectOptiosView
 ) {
-  const server = Utils.getCurrentServer();
+  const server = ServersConfig.getCurrentServer();
   const key = options.objectsInspector ? "objects" : "functions";
 
   if (!inspectLoader.has(key)) {
@@ -56,7 +56,7 @@ export class InspectorLoader implements vscode.Disposable {
     this._context = context;
 
     this._disposables.push(
-      Utils.onDidSelectedServer((newServer: ServerItem) => {
+      ServersConfig.onDidSelectedServer((newServer: ServerItem) => {
         const key = options.objectsInspector ? "objects" : "functions";
         if (inspectLoader.has(key)) {
           inspectLoader.get(key).toggleServerToInspect(newServer);

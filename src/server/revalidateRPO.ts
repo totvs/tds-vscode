@@ -1,4 +1,4 @@
-import Utils from "../utils";
+import { ServersConfig } from "../utils";
 import { languageClient } from "../extension";
 import * as vscode from "vscode";
 import { ResponseError } from "vscode-languageclient";
@@ -8,7 +8,7 @@ import { _debugEvent } from "../debug";
 const localize = nls.loadMessageBundle();
 
 export function revalidateRpo() {
-  const server = Utils.getCurrentServer();
+  const server = ServersConfig.getCurrentServer();
 
   if (server) {
     if (_debugEvent) {

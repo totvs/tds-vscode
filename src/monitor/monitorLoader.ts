@@ -13,7 +13,7 @@ import {
   IEnvEncode,
 } from "../protocolMessages";
 import { MonitorPanelAction, IMonitorPanelAction } from "./actions";
-import Utils, { groupBy } from "../utils";
+import Utils, { ServersConfig, groupBy } from "../utils";
 import {
   sendDisconnectRequest,
   ConnTypeIds,
@@ -31,7 +31,7 @@ const WS_STATE_KEY = "MONITOR_TABLE";
 let monitorLoader: MonitorLoader = undefined;
 
 export function openMonitorView(context: vscode.ExtensionContext) {
-  const server = Utils.getCurrentServer();
+  const server = ServersConfig.getCurrentServer();
 
   if (monitorLoader === undefined || monitorLoader === null) {
     monitorLoader = new MonitorLoader(context);
@@ -71,7 +71,7 @@ export class MonitorLoader {
     this._context = context;
 
     this._disposables.push(
-      Utils.onDidSelectedServer((newServer: ServerItem) => {
+      ServersConfig.onDidSelectedServer((newServer: ServerItem) => {
         monitorLoader?.toggleServerToMonitor(newServer);
       })
     );
@@ -177,7 +177,7 @@ export class MonitorLoader {
 
     if (serverItem) {
       const monitorItem: ServerItem = Utils.deepCopy(
-        Utils.getServerById(serverItem.id)
+        ServersConfig.getServerById(serverItem.id)
       ) as ServerItem;
 
       monitorItem.id += "_monitor";
@@ -512,7 +512,7 @@ export class MonitorLoader {
 
   private updateCodePage(environment: string, codepage: string, save: boolean) {
     const envEncodeList: IEnvEncode[] = [];
-    const environmentConfig: any[] = Utils.getEnvironmentsConfig(this.monitorServer.name);
+    const environmentConfig: any[] = ServersConfig.getEnvironmentsConfig(this.monitorServer.name);
 
     if (save) {
       const index: number = environmentConfig.findIndex(((element) => {
@@ -525,7 +525,7 @@ export class MonitorLoader {
         environmentConfig[index] = { "name": environment.toLowerCase(), "encoding": codepage };
       }
 
-      Utils.setEnvironmentsConfig(this.monitorServer.name, environmentConfig);
+      ServersConfig.setEnvironmentsConfig(this.monitorServer.name, environmentConfig);
     }
 
     environmentConfig.forEach((environment) => {

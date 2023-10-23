@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
-import Utils from "../utils";
+import Utils, { ServersConfig } from "../utils";
 import { languageClient } from "../extension";
 import { commandBuildFile } from "../compile/tdsBuild";
 import * as nls from "vscode-nls";
@@ -66,7 +66,7 @@ const localizeHTML = {
 
 export function patchGenerate(context: vscode.ExtensionContext) {
   {
-    const server = Utils.getCurrentServer();
+    const server = ServersConfig.getCurrentServer();
     let extensionPath = "";
     if (!context || context === undefined) {
       let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
@@ -101,7 +101,7 @@ export function patchGenerate(context: vscode.ExtensionContext) {
         context.subscriptions
       );
 
-      const allInfoServer: any = Utils.getServerById(server.id);
+      const allInfoServer: any = ServersConfig.getServerById(server.id);
 
       if (allInfoServer) {
         server.address = allInfoServer.address;
@@ -210,7 +210,7 @@ export function patchGenerate(context: vscode.ExtensionContext) {
                 );
               } else {
                 // save last patchGenerateDir
-                Utils.updatePatchGenerateDir(server.id, message.patchDest);
+                ServersConfig.updatePatchGenerateDir(server.id, message.patchDest);
                 //vscode.window.showInformationMessage(localize("tds.webview.patch.generate.start","Start Generate Patch"));
                 sendPatchGenerateMessage(
                   server,
@@ -247,7 +247,7 @@ export function patchGenerate(context: vscode.ExtensionContext) {
 }
 
 export function patchGenerateFromFolder(context: any) {
-  const server = Utils.getCurrentServer();
+  const server = ServersConfig.getCurrentServer();
   if (!server) {
     vscode.window.showErrorMessage(
       localize(

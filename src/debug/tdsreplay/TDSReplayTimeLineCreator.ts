@@ -1,7 +1,7 @@
 import { debug, commands, Disposable, window, WebviewPanel, ExtensionContext, DebugSessionCustomEvent, ViewColumn, Uri } from 'vscode';
 import * as path from "path";
 import { ICommand, CommandToDA, CommandToPage } from "./Command";
-import Utils, { MESSAGETYPE } from "../../utils";
+import Utils, { LaunchConfig, MESSAGETYPE } from "../../utils";
 import { DebugEvent } from '../debugEvents';
 
 let timeLineWebView: CreateTDSReplayTimeLineWebView;
@@ -261,31 +261,14 @@ function handleChangeItemsPerPageCommand(command: ICommand) {
 }
 
 function handleSetIgnoreSourcesNotFound(command: ICommand) {
-  if(debug.activeDebugSession) {
+  let debugSession = debug.activeDebugSession;
+  if(debugSession) {
+    LaunchConfig.saveIgnoreSourcesNotFound(debugSession, command.content.isIgnoreSourceNotFound);
 
-    let debugSession = debug.activeDebugSession;
-    let launchConfig = undefined;
-
-    try {
-			launchConfig = Utils.getLaunchConfig();
-      for (let key = 0; key < launchConfig.configurations.length; key++) {
-        let launchElement = launchConfig.configurations[key];
-        if(debugSession !== undefined && launchElement.name === debugSession.name) {
-          launchElement.ignoreSourcesNotFound = command.content.isIgnoreSourceNotFound;
-          break;
-        }
-      }
-
-      Utils.saveLaunchConfig(launchConfig);
-
-      let requestJson = {
-        "isIgnoreSourceNotFound": command.content.isIgnoreSourceNotFound
-      };
-      debug.activeDebugSession.customRequest("TDA/setIgnoreSourcesNotFound", requestJson);
-
-		} catch(e) {
-      Utils.logInvalidLaunchJsonFile(e);
-		}
+    let requestJson = {
+      "isIgnoreSourceNotFound": command.content.isIgnoreSourceNotFound
+    };
+    debugSession.customRequest("TDA/setIgnoreSourcesNotFound", requestJson);
   }
 }
 

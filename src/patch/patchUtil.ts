@@ -17,14 +17,14 @@ import * as vscode from "vscode";
 import { ResponseError } from "vscode-languageclient";
 import { _debugEvent } from "../debug";
 import { languageClient } from "../extension";
-import Utils from "../utils";
+import { ServersConfig } from "../utils";
 import { PatchResult } from "./patchGenerate";
 
 export function sendPatchGenerateMessage(server, patchMaster, patchDest, patchType, patchName, filesPath) {
 	return languageClient.sendRequest('$totvsserver/patchGenerate', {
 		"patchGenerateInfo": {
 			connectionToken: server.token,
-			authorizationToken: Utils.getAuthorizationToken(server),
+			authorizationToken: ServersConfig.getAuthorizationToken(server),
 			environment: server.environment,
 			patchMaster: patchMaster,
 			patchDest: patchDest,
@@ -35,7 +35,7 @@ export function sendPatchGenerateMessage(server, patchMaster, patchDest, patchTy
 		}
 	}).then((response: PatchResult) => {
 		if (response.returnCode === 40840) { // AuthorizationTokenExpiredError
-			Utils.removeExpiredAuthorization();
+			ServersConfig.removeExpiredAuthorization();
 		}
 		return response;
 	}, (err: ResponseError<object>) => {

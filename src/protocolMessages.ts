@@ -1,4 +1,12 @@
 import * as vscode from "vscode";
+import { languageClient } from "./extension";
+import { DidChangeConfigurationNotification, ResponseError } from "vscode-languageclient";
+import { CompileResult } from "./compile/CompileResult";
+import { _debugEvent } from "./debug";
+import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
+import { IRpoToken } from "./rpoToken";
+import { ServersConfig } from "./utils";
+import { ServerItem } from "./serverItem";
 
 interface ConnectionNode {
   // These properties come directly from the language server.
@@ -14,15 +22,6 @@ interface AuthenticationNode {
   osType: number;
   connectionToken: string;
 }
-
-import { languageClient } from "./extension";
-import { DidChangeConfigurationNotification, ResponseError } from "vscode-languageclient";
-import { CompileResult } from "./compile/CompileResult";
-import { _debugEvent } from "./debug";
-import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
-import { IRpoToken } from "./rpoToken";
-import Utils from "./utils";
-import { ServerItem } from "./serverItem";
 
 export interface IUsageStatusData {
   key: string;
@@ -428,7 +427,7 @@ export function sendCompilation(
   return languageClient.sendRequest("$totvsserver/compilation", {
     compilationInfo: {
       connectionToken: server.token,
-      authorizationToken: Utils.getAuthorizationToken(server),
+      authorizationToken: ServersConfig.getAuthorizationToken(server),
       environment: server.environment,
       includeUris: includesUris,
       fileUris: filesUris,
@@ -472,7 +471,7 @@ export function sendPatchInfo(
     .sendRequest("$totvsserver/patchInfo", {
       patchInfoInfo: {
         connectionToken: server.token,
-        authorizationToken: Utils.getAuthorizationToken(server),
+        authorizationToken: ServersConfig.getAuthorizationToken(server),
         environment: server.environment,
         patchUri: patchUri,
         isLocal: true,
@@ -503,7 +502,7 @@ export function sendApplyTemplateRequest(
     .sendRequest("$totvsserver/templateApply", {
       templateApplyInfo: {
         connectionToken: server.token,
-        authorizationToken: Utils.getAuthorizationToken(server),
+        authorizationToken: ServersConfig.getAuthorizationToken(server),
         environment: server.environment,
         includeUris: includesUris,
         templateUri: templateUri.toString(),

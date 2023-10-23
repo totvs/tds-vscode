@@ -1,10 +1,9 @@
 import * as vscode from "vscode";
 import * as nls from "vscode-nls";
-import { CompileKey } from "./compileKey/compileKey";
 import { IUsageStatusInfo, IUsageStatusData } from "./protocolMessages";
 import { IRpoToken, getEnabledRpoToken } from "./rpoToken";
 import { ServerItem } from "./serverItem";
-import Utils from "./utils";
+import Utils, { ServersConfig } from "./utils";
 
 let localize = nls.loadMessageBundle();
 
@@ -48,7 +47,7 @@ function initStatusBarItem(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     serverStatusBarItem,
-    Utils.onDidSelectedServer((newServer: ServerItem) => {
+    ServersConfig.onDidSelectedServer((newServer: ServerItem) => {
       updateStatusBarItem(newServer);
     })
   );
@@ -90,7 +89,7 @@ function initSaveLocationBarItem(context: vscode.ExtensionContext) {
 
 function updateSaveLocationBarItem() {
   const workspace: boolean = Utils.isWorkspaceServerConfig();
-  const location: string = Utils.getServerConfigFile();
+  const location: string = ServersConfig.getServerConfigFile();
 
   if (workspace) {
     saveLocationBarItem.text = "$(home)";
@@ -116,7 +115,7 @@ function updateRpoTokenStatusBarItem(): void {
   let text: string = "";
   let tooltip: string = "";
 
-  let rpoToken: IRpoToken = Utils.getRpoTokenInfos();
+  let rpoToken: IRpoToken = ServersConfig.getRpoTokenInfos();
   if (rpoToken === undefined) {
     rpoToken = { token: "", enabled: false };
   }

@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import Utils from '../utils';
+import Utils, { ServersConfig } from '../utils';
 import { languageClient } from '../extension';
 const compile = require('template-literal');
 import * as nls from 'vscode-nls';
@@ -26,7 +26,7 @@ const localizeHTML = {
 };
 
 export function inspectObject(context: vscode.ExtensionContext) {
-	const server = Utils.getCurrentServer();
+	const server = ServersConfig.getCurrentServer();
 	if (server) {
 		if (Utils.isServerP20OrGreater(server)) {
 			openInspectView(context, {
@@ -40,7 +40,7 @@ export function inspectObject(context: vscode.ExtensionContext) {
 }
 
 function inspectObjectLegado(context: vscode.ExtensionContext) {
-	const server = Utils.getCurrentServer();
+	const server = ServersConfig.getCurrentServer();
 
 	if (server) {
 		let extensionPath = "";

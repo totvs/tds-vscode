@@ -17,7 +17,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { GeneratePatchPanelAction, IGeneratePatchPanelAction } from './actions';
 import * as nls from 'vscode-nls';
-import Utils from '../../utils';
+import { ServersConfig } from '../../utils';
 import {
   IGeneratePatchData,
   IServerFS,
@@ -39,7 +39,7 @@ export function openGeneratePatchView(
   context: vscode.ExtensionContext,
   args: any = {}
 ) {
-  const server = Utils.getCurrentServer();
+  const server = ServersConfig.getCurrentServer();
 
   if (generatePathLoader === undefined || generatePathLoader === null) {
     generatePathLoader = new GeneratePatchLoader(context, args);

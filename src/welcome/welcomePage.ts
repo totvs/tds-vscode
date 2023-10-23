@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import Utils from '../utils';
+import Utils, { ServersConfig, LaunchConfig } from '../utils';
 
 import { ExtensionContext } from 'vscode';
 
@@ -46,7 +46,7 @@ export default class WelcomePage {
 			);
 
 			if (forcedShow) {
-				const includePath = Utils.getIncludes();
+				const includePath = ServersConfig.getIncludes();
 				currentPanel.webview.postMessage({
 					command: "setCurrentInclude",
 					include: includePath
@@ -66,8 +66,8 @@ export default class WelcomePage {
 						const smartClientBin = message.smartClientBin;
 						const includePath = message.includes;
 
-						Utils.saveIncludePath(includePath);
-						saveSmartClientBin(smartClientBin);
+						ServersConfig.saveIncludePath(includePath);
+						LaunchConfig.saveSmartClientBin(smartClientBin);
 						if (currentPanel) {
 							if (message.close) {
 								currentPanel.dispose();
@@ -82,24 +82,6 @@ export default class WelcomePage {
 		}
 	}
 
-}
-
-function saveSmartClientBin(smartClient: string) {
-	let launchConfig = undefined;
-	try {
-		launchConfig = Utils.getLaunchConfig();
-		if (launchConfig) {
-			if (launchConfig.configurations) {
-				const configs = launchConfig.configurations;
-				configs.forEach(element => {
-					element.smartclientBin = smartClient;
-				});
-				Utils.persistLaunchInfo(launchConfig);
-			}
-		}
-	} catch (e) {
-		console.error(e);
-	}
 }
 
 function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {

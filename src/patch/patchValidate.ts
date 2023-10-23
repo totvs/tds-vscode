@@ -2,14 +2,12 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
 import * as os from "os";
-import Utils from "../utils";
+import { ServersConfig } from "../utils";
 import { languageClient } from "../extension";
 const compile = require("template-literal");
 import * as nls from "vscode-nls";
 import { ResponseError } from "vscode-languageclient";
-import { CompileKey } from "../compileKey/compileKey";
 import { _debugEvent } from "../debug";
-import { IRpoToken } from "../rpoToken";
 
 let localize = nls.loadMessageBundle();
 
@@ -58,7 +56,7 @@ const localizeHTML = {
 };
 
 export function patchValidates(context: vscode.ExtensionContext, args: any) {
-  const server = Utils.getCurrentServer();
+  const server = ServersConfig.getCurrentServer();
 
   if (server) {
     let extensionPath = "";
@@ -196,7 +194,7 @@ function sendPatchValidate(patchFile, server, currentPanel): Promise<any> {
     .sendRequest("$totvsserver/patchApply", {
       patchApplyInfo: {
         connectionToken: server.token,
-        authorizationToken: Utils.getAuthorizationToken(server),
+        authorizationToken: ServersConfig.getAuthorizationToken(server),
         environment: server.environment,
         patchUri: patchURI,
         isLocal: true,

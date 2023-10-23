@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as nls from 'vscode-nls';
 import { languageClient } from '../extension';
-import Utils from '../utils';
+import Utils, { ServersConfig } from '../utils';
 import { ResponseError } from 'vscode-languageclient';
 import { _debugEvent } from '../debug';
 import { IRpoToken } from '../rpoToken';
@@ -25,7 +25,7 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 	if (currentPanel) {
 		currentPanel.reveal();
 	} else {
-		let server = Utils.getCurrentServer();
+		let server = ServersConfig.getCurrentServer();
 		if (server) {
 			currentPanel = vscode.window.createWebviewPanel(
 				'totvs-developer-studio.ws.show',
@@ -65,11 +65,11 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 							vscode.window.showWarningMessage("This operation is not allowed during a debug.")
 							return;
 						}
-						server = Utils.getCurrentServer();
+						server = ServersConfig.getCurrentServer();
 						languageClient.sendRequest('$totvsserver/wsdlGenerate', {
 							"wsdlGenerateInfo": {
 								connectionToken: server.token,
-								authorizationToken : Utils.getAuthorizationToken(server),
+								authorizationToken : ServersConfig.getAuthorizationToken(server),
 								environment: server.environment,
 								wsdlUrl: message.url
 							}

@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
-import Utils from "./utils";
+import Utils, { ServersConfig } from "./utils";
 import * as nls from "vscode-nls";
 import { inputConnectionParameters } from "./inputConnectionParameters";
 import { inputAuthenticationParameters } from "./inputAuthenticationParameters";
@@ -120,7 +120,7 @@ export class ServersExplorer {
                   if (serverId !== undefined) {
                     sendValidationRequest(message.address, message.port, message.serverType).then(
                       (validInfoNode: IValidationInfo) => {
-                        Utils.updateBuildVersion(
+                        ServersConfig.updateBuildVersion(
                           serverId,
                           validInfoNode.build,
                           validInfoNode.secure
@@ -161,7 +161,7 @@ export class ServersExplorer {
         vscode.window.showErrorMessage("No folder opened.");
         return;
       }
-      const servers = Utils.getServerConfigFile();
+      const servers = ServersConfig.getServerConfigFile();
       if (servers) {
         vscode.window.showTextDocument(vscode.Uri.file(servers));
       }
@@ -282,7 +282,7 @@ export class ServersExplorer {
       (serverItem: ServerItem) => {
         let ix = serverProvider.localServerItems.indexOf(serverItem);
         if (ix >= 0) {
-          Utils.deleteServer(serverItem.id);
+          ServersConfig.deleteServer(serverItem.id);
         }
       }
     );
@@ -290,7 +290,7 @@ export class ServersExplorer {
     vscode.commands.registerCommand(
       "totvs-developer-studio.delete.environment",
       (environmentItem: EnvSection) => {
-        Utils.deleteEnvironmentServer(environmentItem);
+        ServersConfig.deleteEnvironmentServer(environmentItem);
       }
     );
 
@@ -311,7 +311,7 @@ export class ServersExplorer {
                   : (serverItem.label as vscode.TreeItemLabel).label,
             })
             .then((newName: string) => {
-              Utils.updateServerName(serverItem.id, newName);
+              ServersConfig.updateServerName(serverItem.id, newName);
             });
         }
       }
@@ -327,7 +327,7 @@ export class ServersExplorer {
       showSucess: boolean,
       includes: string[]
     ): string | undefined {
-      const serverId = Utils.createNewServer(
+      const serverId = ServersConfig.createNewServer(
         typeServer,
         serverName,
         port,
@@ -377,8 +377,8 @@ function doFinishConnectProcess(
   token: string,
   environment: string
 ) {
-  Utils.saveConnectionToken(serverItem.id, token, environment);
-  Utils.saveSelectServer(
+  ServersConfig.saveConnectionToken(serverItem.id, token, environment);
+  ServersConfig.saveSelectServer(
     serverItem.id,
     token,
     environment,
@@ -508,7 +508,7 @@ function doReconnect(
   environment: string,
   connType: ConnTypeIds
 ): Thenable<boolean> {
-  const token = Utils.getSavedTokens(serverItem.id, environment);
+  const token = ServersConfig.getSavedTokens(serverItem.id, environment);
 
   if (token) {
     return sendReconnectRequest(serverItem, token, connType).then(
@@ -557,18 +557,13 @@ export function reconnectServer(
 }
 
 export function reconnectLastServer() {
-  const servers = Utils.getServersConfig();
-
-  if (servers.lastConnectedServer && servers.configurations) {
-    servers.configurations.forEach((element) => {
-      if (element.id === servers.lastConnectedServer) {
-        reconnectServer(
-          element,
-          element.environment,
-          ConnTypeIds.CONNT_DEBUGGER
-        );
-      }
-    });
+  const lastConnectedServer = ServersConfig.lastConnectedServer();
+  if (lastConnectedServer) {
+    reconnectServer(
+      lastConnectedServer,
+      lastConnectedServer.environment,
+      ConnTypeIds.CONNT_DEBUGGER
+    );
   }
 }
 
@@ -604,7 +599,7 @@ async function doValidation(
   await sendValidationRequest(serverItem.address, serverItem.port, serverItem.type).then(
     (validationInfo: IValidationInfo) => {
       //retornou uma versao valida no servidor.
-      const updated = Utils.updateBuildVersion(
+      const updated = ServersConfig.updateBuildVersion(
         serverItem.id,
         validationInfo.build,
         validationInfo.secure
@@ -660,7 +655,7 @@ export function createNewProtheusServer(
   username: string,
 ): Promise<boolean> {
   return new Promise<boolean>((resolve, reject) => {
-    const serverId = Utils.createNewServer(
+    const serverId = ServersConfig.createNewServer(
       "totvs_server_protheus",
       serverName,
       port,
@@ -670,7 +665,7 @@ export function createNewProtheusServer(
       []
     );
     if (serverId !== undefined) {
-      Utils.saveServerEnvironmentUsername(serverId, environment, username);
+      ServersConfig.saveServerEnvironmentUsername(serverId, environment, username);
       resolve(true);
     } else {
       resolve(false);

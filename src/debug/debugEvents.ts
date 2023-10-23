@@ -12,7 +12,7 @@ import {
 } from "vscode";
 import { TotvsConfigurationProvider } from "./TotvsConfigurationProvider";
 import { TotvsConfigurationTdsReplayProvider } from "./TotvsConfigurationTdsReplayProvider";
-import Utils, { groupBy, MESSAGETYPE } from "../utils";
+import Utils, { groupBy, LaunchConfig, MESSAGETYPE } from "../utils";
 import { CreateTDSReplayTimeLineWebView } from "./tdsreplay/TDSReplayTimeLineCreator";
 
 import { LanguageClient } from "vscode-languageclient/node";
@@ -178,7 +178,7 @@ function processAddTimeLineEvent(
   console: DebugConsole
 ) {
   if (createTimeLineWebView === null) {
-    let isIgnoreSourceNotFound: boolean = getIgnoreSourceNotFoundValue();
+    let isIgnoreSourceNotFound: boolean = LaunchConfig.getIgnoreSourceNotFoundValue(debug.activeDebugSession);
     createTimeLineWebView = new CreateTDSReplayTimeLineWebView(
       context,
       debugEvent,
@@ -188,7 +188,7 @@ function processAddTimeLineEvent(
     if (createTimeLineWebView.isDisposed()) {
       createTimeLineWebView.reveal();
     }
-    let isIgnoreSourceNotFound: boolean = getIgnoreSourceNotFoundValue();
+    let isIgnoreSourceNotFound: boolean = LaunchConfig.getIgnoreSourceNotFoundValue(debug.activeDebugSession);
     createTimeLineWebView.postAddTimeLineEvent(
       debugEvent,
       isIgnoreSourceNotFound
@@ -206,34 +206,6 @@ function processSelectTimeLineEvent(
     createTimeLineWebView.selectTimeLine(event.body.id);
   }
 }
-
-function getIgnoreSourceNotFoundValue(): boolean {
-  let debugSession = debug.activeDebugSession;
-  let launchConfig;
-  let isIgnoreSourceNotFound: boolean = true;
-  try {
-    launchConfig = Utils.getLaunchConfig();
-
-    for (let key = 0; key < launchConfig.configurations.length; key++) {
-      let launchElement = launchConfig.configurations[key];
-      if (
-        debugSession !== undefined &&
-        launchElement.name === debugSession.name
-      ) {
-        if (launchElement.ignoreSourcesNotFound !== undefined) {
-          isIgnoreSourceNotFound = launchElement.ignoreSourcesNotFound;
-          break;
-        }
-      }
-    }
-  } catch (e) {
-    Utils.logInvalidLaunchJsonFile(e);
-  }
-
-  return isIgnoreSourceNotFound;
-}
-
-
 
 //let showProgressInfoEachPercent: number = 2;
 let progressStarted: boolean = false;

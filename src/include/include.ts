@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import Utils from '../utils';
+import Utils, { ServersConfig } from '../utils';
 
 import * as nls from 'vscode-nls';
 let localize = nls.loadMessageBundle();
@@ -40,7 +40,7 @@ export default function showInclude(context: vscode.ExtensionContext) {
 			context.subscriptions
 		);
 
-		const includes = Utils.getIncludes();
+		const includes = ServersConfig.getIncludes();
 		const includeString: string = includes.toString();
 		if (includeString) {
 			const aux = includeString.replace(/,/g, ";");
@@ -62,7 +62,7 @@ export default function showInclude(context: vscode.ExtensionContext) {
 					break;
 				case 'includeClose':
 					const includePath = message.include;
-					Utils.saveIncludePath(includePath);
+					ServersConfig.saveIncludePath(includePath);
 					if (currentPanel) {
 						if (message.close) {
 							currentPanel.dispose();

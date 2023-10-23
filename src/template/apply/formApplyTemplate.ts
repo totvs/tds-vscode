@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
-import Utils from "../../utils";
+import { ServersConfig } from "../../utils";
 const compile = require("template-literal");
 import * as nls from "vscode-nls";
 import {
@@ -23,7 +23,7 @@ export function openTemplateApplyView(
   context: vscode.ExtensionContext,
   args: any
 ) {
-  const server = Utils.getCurrentServer();
+  const server = ServersConfig.getCurrentServer();
   if (server) {
     let extensionPath = "";
     if (!context || context === undefined) {
@@ -139,8 +139,8 @@ function setTemplatePath(path, currentPanel) {
 }
 
 function templateApply(templateFile) {
-  const server = Utils.getCurrentServer();
-  const includes = Utils.getIncludes(true, server) || [];
+  const server = ServersConfig.getCurrentServer();
+  const includes = ServersConfig.getIncludes(true, server) || [];
   let includesUris: Array<string> = includes.map((include) => {
     return vscode.Uri.file(include).toString();
   });

@@ -19,7 +19,7 @@ import {
   Uri,
   StatusBarAlignment,
 } from "vscode";
-import Utils from "./utils";
+import Utils, { LaunchConfig, ServersConfig } from "./utils";
 import { createNewProtheusServer, ServersExplorer } from "./serversView";
 import { compileKeyPage } from "./compileKey/compileKey";
 import { getLanguageClient } from "./TotvsLanguageClient";
@@ -91,8 +91,8 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-  Utils.createServerConfig();
-  Utils.createLaunchConfig(undefined);
+  ServersConfig.createServerConfig();
+  LaunchConfig.createLaunchConfig(undefined);
 
   context.subscriptions.push(
     commands.registerCommand("tds.getDAP", () => getDAP())
@@ -476,7 +476,7 @@ export function activate(context: ExtensionContext) {
   //Mostra a pagina de Welcome.
   showWelcomePage(context, false);
 
-  Utils.onDidSelectedServer((newServer: ServerItem) => {
+  ServersConfig.onDidSelectedServer((newServer: ServerItem) => {
     serverProvider.connectedServerItem = newServer;
   })
   serverProvider.checkServersConfigListener(true);
@@ -653,7 +653,7 @@ function instanceOfUriArray(object: any): object is Uri[] {
 
 // this method is called when your extension is deactivated
 export function deactivate(): Thenable<void> | undefined {
-  Utils.deleteSelectServer();
+  ServersConfig.deleteSelectServer();
   return languageClient.stop(5000);
 }
 

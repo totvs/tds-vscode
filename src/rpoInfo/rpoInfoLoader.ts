@@ -4,7 +4,7 @@ import { sendRpoInfo } from "../protocolMessages";
 import { RpoInfoPanelAction, IRpoInfoPanelAction } from "./actions";
 import { ServerItem } from "../serverItem";
 import * as nls from "vscode-nls";
-import Utils from "../utils";
+import { ServersConfig } from "../utils";
 import { languageClient } from "../extension";
 import { IProgramApp, IRpoInfoData, IRpoPatch } from "./rpoPath";
 
@@ -13,7 +13,7 @@ const localize = nls.loadMessageBundle();
 let rpoInfoLoader: RpoInfoLoader = undefined;
 
 export function openRpoInfoView(context: vscode.ExtensionContext) {
-  const server = Utils.getCurrentServer();
+  const server = ServersConfig.getCurrentServer();
 
   if (rpoInfoLoader === null || rpoInfoLoader == undefined) {
     rpoInfoLoader = new RpoInfoLoader(context);
@@ -47,7 +47,7 @@ export class RpoInfoLoader implements vscode.Disposable {
     this._context = context;
 
     this._disposables.push(
-      Utils.onDidSelectedServer((newServer: ServerItem) => {
+      ServersConfig.onDidSelectedServer((newServer: ServerItem) => {
         if (rpoInfoLoader) {
           rpoInfoLoader.toggleServerToMonitor(newServer);
         }

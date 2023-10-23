@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import Utils from "../../utils";
+import Utils, { LaunchConfig } from "../../utils";
 import * as fs from "fs";
 import * as nls from "vscode-nls";
 
@@ -8,8 +8,8 @@ let localize = nls.loadMessageBundle();
 const compile = require("template-literal");
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
-let currentLaunchersInfoContent: any | undefined;
-let launcherInfoChangedManually = false;
+//let currentLaunchersInfoContent: any | undefined;
+//let launcherInfoChangedManually = false;
 
 const localizeHTML = {
   "tds.webview.launcher.welcome": localize(
@@ -67,7 +67,7 @@ export default class LauncherConfiguration {
     if (currentPanel) {
       currentPanel.reveal();
     } else {
-      addLaunchJsonListener();
+      //addLaunchJsonListener();
 
       currentPanel = vscode.window.createWebviewPanel(
         "totvs-developer-studio.tdsreplay.configure.launcher",
@@ -88,60 +88,61 @@ export default class LauncherConfiguration {
         currentPanel = undefined;
       }, null);
 
-      currentPanel.onDidChangeViewState((event) => {
-        if (currentPanel !== undefined && currentPanel.visible) {
-          if (launcherInfoChangedManually) {
-            launcherInfoChangedManually = false;
-            try {
-              currentPanel.webview.postMessage(Utils.getLaunchConfig());
-            } catch (e) {
-              //Utils.logMessage(`"Não foi possivel ler o arquivo launch.json\nError: ${e}`, MESSAGETYPE.Error, true);
-            }
-          }
-        }
-      });
+      // currentPanel.onDidChangeViewState((event) => {
+      //   if (currentPanel !== undefined && currentPanel.visible) {
+      //     if (launcherInfoChangedManually) {
+      //       launcherInfoChangedManually = false;
+      //       try {
+      //         currentPanel.webview.postMessage(Utils.getLaunchConfig());
+      //       } catch (e) {
+      //         //Utils.logMessage(`"Não foi possivel ler o arquivo launch.json\nError: ${e}`, MESSAGETYPE.Error, true);
+      //       }
+      //     }
+      //   }
+      // });
 
-      let launcherConfig = undefined;
+      let launcherConfiguration = undefined;
       try {
-        launcherConfig = Utils.getLaunchConfig();
-        currentPanel.webview.postMessage(launcherConfig);
+        launcherConfiguration = LaunchConfig.getLaunchers();
+        currentPanel.webview.postMessage(launcherConfiguration);
       } catch (e) {
-        Utils.logInvalidLaunchJsonFile(e);
+        //Utils.logInvalidLaunchJsonFile(e);
         //Devemos realmente limpar todo o conteudo do launch.json em uma situacao de erro?
-        //launcherConfig = {};
+        //launcherConfiguration = {};
       }
 
       currentPanel.webview.onDidReceiveMessage((message) => {
         switch (message.command) {
           case "saveLaunchConfig":
             const launcherName = message.launcherName;
-            if (launcherConfig.configurations !== undefined) {
-              if (launcherConfig.configurations.length > 0 !== undefined) {
-                let updated: boolean = false;
-                for (let i = 0; i < launcherConfig.configurations.length; i++) {
-                  let configElement = launcherConfig.configurations[i];
-                  if (configElement.name === launcherName) {
-                    updateElement(configElement, message);
-                    updated = true;
-                    break;
-                  }
+            if (launcherConfiguration !== undefined) {
+              let updated: boolean = false;
+              for (let i = 0; i < launcherConfiguration.length; i++) {
+                let configElement = launcherConfiguration[i];
+                if (configElement.name === launcherName) {
+                  updateElement(configElement, message);
+                  LaunchConfig.updateConfiguration(launcherName, configElement)
+                  updated = true;
+                  break;
                 }
-                if (!updated) {
-                  saveNewLauncher(message, launcherConfig);
-                }
-              } else {
-                saveNewLauncher(message, launcherConfig);
+              }
+              if (!updated) {
+                //saveNewLauncher(message, launcherConfiguration);
+                replayLaunchInfo.name = message.launcherName;
+                updateElement(replayLaunchInfo, message);
+                //launcherConfiguration.push(replayLaunchInfo);
+                LaunchConfig.saveNewConfiguration(replayLaunchInfo)
               }
             }
 
-            Utils.persistLaunchInfo(launcherConfig);
-            currentLaunchersInfoContent = fs.readFileSync(
-              Utils.getLaunchConfigFile(),
-              "utf8"
-            );
+            //Utils.persistLaunchInfo(launcherConfig); // XXX
+            // currentLaunchersInfoContent = fs.readFileSync(
+            //   Utils.getLaunchConfigFile(),
+            //   "utf8"
+            // );
 
             if (currentPanel !== undefined) {
-              currentPanel.webview.postMessage(launcherConfig);
+              currentPanel.webview.postMessage(launcherConfiguration);
             }
 
             vscode.window.showInformationMessage(
@@ -198,33 +199,33 @@ function updateElement(configElement: any, message: any) {
   configElement.importOnlySourcesInfo = message.importOnlySourcesInfo;
 }
 
-function saveNewLauncher(message: any, launchersInfo: any): void {
-  replayLaunchInfo.name = message.launcherName;
-  updateElement(replayLaunchInfo, message);
-  launchersInfo.configurations.push(replayLaunchInfo);
-}
+// function saveNewLauncher(message: any, launchersInfo: any): void {
+//   replayLaunchInfo.name = message.launcherName;
+//   updateElement(replayLaunchInfo, message);
+//   launchersInfo.configurations.push(replayLaunchInfo);
+// }
 
-function addLaunchJsonListener(): void {
-  let launchJson = Utils.getLaunchConfigFile();
+// function addLaunchJsonListener(): void {
+//   let launchJson = Utils.getLaunchConfigFile();
 
-  if (!fs.existsSync(launchJson)) {
-    Utils.createLaunchConfig(replayLaunchInfo);
-  }
+//   if (!fs.existsSync(launchJson)) {
+//     Utils.createLaunchConfig(replayLaunchInfo);
+//   }
 
-  if (fs.existsSync(launchJson)) {
-    fs.watch(launchJson, { encoding: "buffer" }, (eventType, filename) => {
-      if (filename && eventType === "change") {
-        let tmpLaunchIfo = Utils.getLaunchConfigFile();
-        let tmpContent = fs.readFileSync(tmpLaunchIfo, "utf-8");
-        if (currentLaunchersInfoContent !== tmpContent) {
-          currentLaunchersInfoContent = tmpContent;
-          //Nao é possivel pedir para atualizar a pagina caso ela nao esteja visivel, o que esta acontecendo
-          //se entrar aqui pois o usuario alterou o launch.json manualmente.
-          //Portanto apenas seta a flag para que o painel seja atualizado assim que ficar visivel.
-          //Obs.: Verficar chamada: currentPanel.onDidChangeViewState(...)
-          launcherInfoChangedManually = true;
-        }
-      }
-    });
-  }
-}
+//   if (fs.existsSync(launchJson)) {
+//     fs.watch(launchJson, { encoding: "buffer" }, (eventType, filename) => {
+//       if (filename && eventType === "change") {
+//         let tmpLaunchIfo = Utils.getLaunchConfigFile();
+//         let tmpContent = fs.readFileSync(tmpLaunchIfo, "utf-8");
+//         if (currentLaunchersInfoContent !== tmpContent) {
+//           currentLaunchersInfoContent = tmpContent;
+//           //Nao é possivel pedir para atualizar a pagina caso ela nao esteja visivel, o que esta acontecendo
+//           //se entrar aqui pois o usuario alterou o launch.json manualmente.
+//           //Portanto apenas seta a flag para que o painel seja atualizado assim que ficar visivel.
+//           //Obs.: Verficar chamada: currentPanel.onDidChangeViewState(...)
+//           launcherInfoChangedManually = true;
+//         }
+//       }
+//     });
+//   }
+// }

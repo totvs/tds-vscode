@@ -1,5 +1,5 @@
 import * as nls from "vscode-nls";
-import Utils from "./utils";
+import { ServersConfig } from "./utils";
 import { MultiStepInput } from "./multiStepInput";
 import { authenticate } from "./serversView";
 import { ServerItem } from "./serverItem";
@@ -25,8 +25,6 @@ export async function inputAuthenticationParameters(
   let AUTH_USERNAME_STEP = 1;
   let AUTH_PASSWORD_STEP = 2;
 
-  const serversConfig = Utils.getServersConfig();
-
   interface State {
     title: string;
     step: number;
@@ -38,12 +36,12 @@ export async function inputAuthenticationParameters(
   async function collectAuthenticationInputs() {
     const state = {} as Partial<State>;
 
-    let target = Utils.getServerById(serverItem.id, serversConfig);
+    let target = ServersConfig.getServerById(serverItem.id);
     if (target) {
       state.username = target.username;
     }
     await MultiStepInput.run((input) =>
-      inputUsername(input, state, serversConfig)
+      inputUsername(input, state)
     );
 
     return state as State;
@@ -51,8 +49,7 @@ export async function inputAuthenticationParameters(
 
   async function inputUsername(
     input: MultiStepInput,
-    state: Partial<State>,
-    serversConfig: any
+    state: Partial<State>
   ) {
     state.username = await input.showInputBox({
       title: title,
@@ -66,13 +63,12 @@ export async function inputAuthenticationParameters(
     });
 
     return (input: MultiStepInput) =>
-      inputPassword(input, state, serversConfig);
+      inputPassword(input, state);
   }
 
   async function inputPassword(
     input: MultiStepInput,
-    state: Partial<State>,
-    serversConfig: any
+    state: Partial<State>
   ) {
     state.password = await input.showInputBox({
       title: title,

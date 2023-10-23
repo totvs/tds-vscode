@@ -1,4 +1,4 @@
-import Utils from "../utils";
+import Utils, { ServersConfig } from "../utils";
 import { languageClient } from "../extension";
 import * as vscode from "vscode";
 import { ResponseError } from "vscode-languageclient";
@@ -8,7 +8,7 @@ import { _debugEvent } from "../debug";
 const localize = nls.loadMessageBundle();
 
 export function defragRpo() {
-  const server = Utils.getCurrentServer();
+  const server = ServersConfig.getCurrentServer();
 
   if (server) {
     if (_debugEvent) {
@@ -32,7 +32,7 @@ export function defragRpo() {
         if (clicked === localize("tds.vscode.yes", "Yes")) {
           if (Utils.isServerP20OrGreater(server)) {
             let packPatchInfo = false;
-            let authorizationToken: string = Utils.getAuthorizationToken(server);
+            let authorizationToken: string = ServersConfig.getAuthorizationToken(server);
             if (authorizationToken.length > 0) {
               vscode.window
               .showWarningMessage(

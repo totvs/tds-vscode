@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { blockBuildCommands, languageClient } from "../extension";
 import * as fs from "fs";
-import Utils from "../utils";
+import Utils, { ServersConfig } from "../utils";
 
 var windows1252 = require("windows-1252");
 var windows1251 = require("windows-1251");
@@ -55,7 +55,7 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
       return;
     }
 
-    const server = Utils.getCurrentServer();
+    const server = ServersConfig.getCurrentServer();
     if (!server) {
       reject(
         new Error(
@@ -65,7 +65,7 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
       return;
     }
 
-    const serverItem = Utils.getServerById(server.id);
+    const serverItem = ServersConfig.getServerById(server.id);
     let isAdvplsource: boolean = Utils.isAdvPlSource(filePath);
     if (!isAdvplsource) {
       reject(
@@ -74,7 +74,7 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
       return;
     }
 
-    const includes = Utils.getIncludes(true, serverItem) || [];
+    const includes = ServersConfig.getIncludes(true, serverItem) || [];
     let includesUris: Array<string> = includes.map((include) => {
       return vscode.Uri.file(include).toString();
     });
@@ -174,7 +174,7 @@ export function buildFile(filename: string[], recompile: boolean) {
  * Build a file list.
  */
 async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
-  const server = Utils.getCurrentServer();
+  const server = ServersConfig.getCurrentServer();
 
   const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
   const shouldClearConsole = configADVPL.get("clearConsoleBeforeCompile");
@@ -214,7 +214,7 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
       }).length > 0;
     //Pega os includes do servidor conectado
     let includes: Array<string> = [];
-    includes = Utils.getIncludes(true, server) || [];
+    includes = ServersConfig.getIncludes(true, server) || [];
     if (!includes.toString()) {
       return;
     }
@@ -263,7 +263,7 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
           blockBuildCommands(false);
 
           if (response.returnCode === 40840) {
-            Utils.removeExpiredAuthorization();
+            ServersConfig.removeExpiredAuthorization();
           }
           if (response.compileInfos.length > 0) {
             // Exibe aba problems casa haja pelo menos um erro ou warning
