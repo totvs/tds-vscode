@@ -4,7 +4,7 @@
 
 ### Correção
 
-#### Problema com referencia de array na importacao do TDS Replay [DTCLIENT01-4264](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4264)
+#### Problema com referencia de array na importação do TDS Replay [DTCLIENT01-4264](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4264)
 
 Ajustado processamento da identificação de retornos de funções, gravadas no log do TDSReplay.
 

@@ -24,5 +24,9 @@
 		"editor.formatOnSave": true,
 		"editor.formatOnPaste": true
 	},
-	"markdownlint.run": "onSave"
+	"markdownlint.run": "onSave",
+	"cSpell.language": "pt-BR,en",
+	"cSpell.words": [
+		"DTCLIENT"
+	]
 }
