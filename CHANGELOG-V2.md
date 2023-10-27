@@ -4,6 +4,10 @@
 
 ### Correção
 
+#### Consumo de CPU
+
+Solucionado consumo de CPU exagerado em algumas situações.
+
 #### Problema com referencia de array na importação do TDS Replay [DTCLIENT01-4264](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4264)
 
 Ajustado processamento da identificação de retornos de funções, gravadas no log do TDSReplay.
