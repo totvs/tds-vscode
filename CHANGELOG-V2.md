@@ -1,6 +1,6 @@
 # Changelog ([Changelog Versão 1](CHANGELOG.md))
 
-## Versão [2.0.0-RC-NEXT]
+## Versão [2.0.0-RC13]
 
 ### Correção
 

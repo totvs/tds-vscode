@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "2.0.0-RC12",
+  "version": "2.0.0-RC13",
   "publisher": "TOTVS",
   "preview": true,
   "author": {
@@ -82,8 +82,8 @@
     "@material-ui/core": "4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@totvs/tds-da": "^1.2.62",
-    "@totvs/tds-ls": "^2.0.4",
+    "@totvs/tds-da": "^1.2.63",
+    "@totvs/tds-ls": "^2.0.5",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.63.1",
     "@vscode/debugadapter": "^1.51.1",
@@ -313,7 +313,7 @@
         "path": "./syntaxes/advpl_asp_language.tmLanguage.json",
         "embeddedLanguages": {
           "meta.embedded.block.advpl": "advpl",
-          "text.html": "html",  
+          "text.html": "html",
           "source.advpl": "advpl",
           "source.js": "javascript",
           "source.json": "json",
