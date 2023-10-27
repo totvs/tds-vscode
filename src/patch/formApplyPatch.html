@@ -197,6 +197,9 @@
 			<p>${d.localize["tds.webview.patch.newest.link"]} <span id="ptm_link_patch"></span></p>
 			<p>${d.localize["tds.webview.patch.newest.doc"]} <span id="ptm_link_doc"></span></p>
 		  </div>
+
+		  <hr id="endsep" class="solid">
+
 		</div>
 	</dialog>
 </body>
@@ -291,6 +294,7 @@
 		]
 	}).api();
 	var tphInfos = new Map();
+	var language = "pt-br";
 
 	function patchApply(close) {
 		var patchs = tableAPI.data();
@@ -341,6 +345,8 @@
 				//console.log("patchValidationRet");
 				const file = message.file.toLowerCase();
 				//console.log("file: "+file);
+				language = message.language;
+				console.log("language: "+language);
 				var patchs = tableAPI.data();
 				for (var i = 0; i < patchs.length; i++) {
 					var patchPath = patchs[i][3].replaceAll('\\\\', '/').toLowerCase();
@@ -447,8 +453,8 @@
 			exp.hidden = false;
 			document.getElementById("exp_module").innerHTML = tphInfo.exp.module;
 			document.getElementById("exp_generated").innerHTML = tphInfo.exp.generated;
-			document.getElementById("exp_description").innerHTML = tphInfo.exp.description;
-			document.getElementById("exp_summary").innerHTML = tphInfo.exp.resume;
+			document.getElementById("exp_description").innerHTML = tphInfo.exp.description[language];
+			document.getElementById("exp_summary").innerHTML = tphInfo.exp.summary;
 			document.getElementById("exp_link_patch").innerHTML = '<a href="'+tphInfo.exp.link_doc+'" target="_blank">Pacote EXP</a>';
 			document.getElementById("exp_link_doc").innerHTML = '<a href="'+tphInfo.exp.link_patch+'" target="_blank">'+tphInfo.exp.link_patch+'</a>';
 		}
@@ -458,8 +464,8 @@
 			ptm.hidden = false;
 			document.getElementById("ptm_module").innerHTML = tphInfo.exp.module;
 			document.getElementById("ptm_generated").innerHTML = tphInfo.ptm.generated;
-			document.getElementById("ptm_description").innerHTML = tphInfo.ptm.description;
-			document.getElementById("ptm_summary").innerHTML = tphInfo.ptm.resume;
+			document.getElementById("ptm_description").innerHTML = tphInfo.ptm.description[language];
+			document.getElementById("ptm_summary").innerHTML = tphInfo.ptm.summary;
 			document.getElementById("ptm_link_patch").innerHTML = '<a href="'+tphInfo.ptm.link_doc+'" target="_blank">Pacote PTM</a>';
 			document.getElementById("ptm_link_doc").innerHTML = '<a href="'+tphInfo.ptm.link_patch+'" target="_blank">'+tphInfo.ptm.link_patch+'</a>';
 		}

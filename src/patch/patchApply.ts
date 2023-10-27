@@ -468,6 +468,7 @@ async function doValidatePatch(
           file: patchFilePath,
           message: retMessage,
           errorCode: response.errorCode,
+          language: vscode.env.language,
           tphInfoRet: tphInfoRet,
         });
       },
