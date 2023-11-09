@@ -5,54 +5,23 @@ import * as os from "os";
 import { ServersConfig } from "../utils";
 import { languageClient } from "../extension";
 const compile = require("template-literal");
-import * as nls from "vscode-nls";
 import { ResponseError } from "vscode-languageclient";
 import { _debugEvent } from "../debug";
 
-let localize = nls.loadMessageBundle();
-
 let patchValidatesData: any;
-
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
 const localizeHTML = {
-  "tds.webview.validate.patch": localize(
-    "tds.webview.validate.patch",
-    "Patch Validate"
-  ),
-  "tds.webview.validate.ignore.files": localize(
-    "tds.webview.validate.ignore.files",
-    "Ignore files"
-  ),
-  "tds.webview.validate.export.files": localize(
-    "tds.webview.validate.export.files",
-    "Export to file"
-  ),
-  "tds.webview.validate.export.files2": localize(
-    "tds.webview.validate.export.files2",
-    "Export items filted to file"
-  ),
-  "tds.webview.validate.export.close": localize(
-    "tds.webview.validate.export.close",
-    "Close"
-  ),
-  "tds.webview.validate.filter": localize(
-    "tds.webview.validate.filter",
-    "Filter, ex: MAT or * All (slow)"
-  ),
-  "tds.webview.validate.items.showing": localize(
-    "tds.webview.validate.items.showing",
-    "Items showing"
-  ),
-  "tds.webview.validate.col01": localize("tds.webview.validate.col01", "File"),
-  "tds.webview.validate.col02": localize(
-    "tds.webview.validate.col02",
-    "Date Patch"
-  ),
-  "tds.webview.validate.col03": localize(
-    "tds.webview.validate.col02",
-    "Date Rpo"
-  ),
+  "tds.webview.validate.patch": vscode.l10n.t("Patch Validate"),
+  "tds.webview.validate.ignore.files": vscode.l10n.t("Ignore files"),
+  "tds.webview.validate.export.files": vscode.l10n.t("Export to file"),
+  "tds.webview.validate.export.files2": vscode.l10n.t("Export items filted to file"),
+  "tds.webview.validate.export.close": vscode.l10n.t("Close"),
+  "tds.webview.validate.filter": vscode.l10n.t("Filter, ex: MAT or * All (slow)"),
+  "tds.webview.validate.items.showing": vscode.l10n.t("Items showing"),
+  "tds.webview.validate.col01": vscode.l10n.t("File"),
+  "tds.webview.validate.col02": vscode.l10n.t("Date Patch"),
+  "tds.webview.validate.col03": vscode.l10n.t("Date Rpo"),
 };
 
 export function patchValidates(context: vscode.ExtensionContext, args: any) {
@@ -98,20 +67,14 @@ export function patchValidates(context: vscode.ExtensionContext, args: any) {
           switch (message.command) {
             case "patchValidate":
               vscode.window.setStatusBarMessage(
-                `$(gear~spin) ${localize(
-                  "tds.patch.validade.executing",
-                  "Executing patch validation..."
-                )}`,
+                `$(gear~spin) ${vscode.l10n.t("Executing patch validation...")}`,
                 sendPatchValidate(message.patchFile, server, currentPanel)
               );
 
               break;
             case "exportPatchValidate":
               vscode.window.setStatusBarMessage(
-                `$(gear~spin) ${localize(
-                  "tds.patch.validade.export",
-                  "Exporting patch validation..."
-                )}`,
+                `$(gear~spin) ${vscode.l10n.t("Exporting patch validation...")}`,
                 exportPatchValidate()
               );
               break;
@@ -134,10 +97,7 @@ export function patchValidates(context: vscode.ExtensionContext, args: any) {
       if (args.fsPath) {
         sendPatchPath(args.fsPath, currentPanel);
         vscode.window.setStatusBarMessage(
-          `$(gear~spin) ${localize(
-            "tds.vscode.starting.apply.teplate",
-            "Starting package generation..."
-          )}`,
+          `$(gear~spin) ${vscode.l10n.t("Starting package generation...")}`,
           5000
         );
         sendPatchValidate(args.fsPath, server, currentPanel);

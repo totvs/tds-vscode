@@ -2,21 +2,17 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import Utils, { ServersConfig, LaunchConfig } from '../utils';
-
 import { ExtensionContext } from 'vscode';
 
-import * as nls from 'vscode-nls';
-let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
 
-
 const localizeHTML = {
-	"tds.webview.welcome": localize("tds.webview.welcome", "Welcome"),
-	"tds.webview.path.smartclient": localize("tds.webview.path.smartclient", "Path to your SmartClient:"),
-	"tds.webview.dir.include": localize("tds.webview.dir.include", "Includes directory:"),
-	"tds.webview.dir.include2": localize("tds.webview.dir.include2", "Allow multiple directories"),
-	"tds.webview.dir.include.info": localize("tds.webview.dir.include.info", "These settings can also be changed in"),
-	"tds.webview.dir.include.info.or": localize("tds.webview.dir.include.info.or", "or")
+	"tds.webview.welcome": vscode.l10n.t("Welcome"),
+	"tds.webview.path.smartclient": vscode.l10n.t("Path to your SmartClient:"),
+	"tds.webview.dir.include": vscode.l10n.t("Includes directory:"),
+	"tds.webview.dir.include2": vscode.l10n.t("Allow multiple directories"),
+	"tds.webview.dir.include.info": vscode.l10n.t("These settings can also be changed in"),
+	"tds.webview.dir.include.info.or": vscode.l10n.t("or")
 };
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
@@ -28,7 +24,7 @@ export default class WelcomePage {
 		} else {
 			currentPanel = vscode.window.createWebviewPanel(
 				'totvs-developer-studio.welcomePage',
-				localize("tds.webview.welcome", "Welcome"),
+				vscode.l10n.t("Welcome"),
 				vscode.ViewColumn.One,
 				{
 					enableScripts: true,

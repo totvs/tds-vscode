@@ -6,11 +6,9 @@ import Utils, { ServersConfig } from "../utils";
 var windows1252 = require("windows-1252");
 var windows1251 = require("windows-1251");
 
-import * as nls from "vscode-nls";
 import { ResponseError } from "vscode-languageclient";
 import { CompileResult } from "./CompileResult";
 import { sendCompilation } from "../protocolMessages";
-let localize = nls.loadMessageBundle();
 
 interface CompileOptions {
   recompile: boolean;
@@ -193,15 +191,12 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
   if (count !== 0) {
     if (!vscode.workspace.saveAll(false)) {
       vscode.window.showWarningMessage(
-        localize(
-          "tds.webview.tdsBuild.canceled",
-          "Operation canceled because it is not possible to save edited files."
-        )
+        vscode.l10n.t("Operation canceled because it is not possible to save edited files.")
       );
       return;
     }
     vscode.window.showWarningMessage(
-      localize("tds.webview.tdsBuild.saved", "Files saved successfully.")
+      vscode.l10n.t("Files saved successfully.")
     );
   }
 
@@ -236,11 +231,7 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
         filesUris.push(vscode.Uri.file(file).toString());
       } else {
         languageClient.warn(
-          localize(
-            "tds.webview.tdsBuild.resourceInList",
-            "Resource appears in the list of files to ignore. Resource: {0}",
-            file
-          )
+          vscode.l10n.t("Resource appears in the list of files to ignore. Resource: {0}", file)
         );
       }
     });
@@ -297,19 +288,16 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
     }
   } else {
     vscode.window.showErrorMessage(
-      localize("tds.webview.tdsBuild.noServer", "No server connected")
+      vscode.l10n.t("No server connected")
     );
   }
 }
 
 function verifyCompileResult(response) {
-  const textNoAsk = localize("tds.vscode.noAskAgain", "Don't ask again");
-  const textNo = localize("tds.vscode.no", "No");
-  const textYes = localize("tds.vscode.yes", "Yes");
-  const textQuestion = localize(
-    "tds.vscode.question.showCompileResult",
-    "Show table with compile results?"
-  );
+  const textNoAsk = vscode.l10n.t("Don't ask again");
+  const textNo = vscode.l10n.t("No");
+  const textYes = vscode.l10n.t("Yes");
+  const textQuestion = vscode.l10n.t("Show table with compile results?");
 
   let questionAgain = true;
 
@@ -345,10 +333,7 @@ export function commandBuildFile(
     editor = vscode.window.activeTextEditor;
     if (!editor) {
       vscode.window.showInformationMessage(
-        localize(
-          "tds.vscode.editornotactive",
-          "No editor is active, cannot find current file to build."
-        )
+        vscode.l10n.t("No editor is active, cannot find current file to build.")
       );
       return;
     }
@@ -356,7 +341,7 @@ export function commandBuildFile(
   }
 
   vscode.window.setStatusBarMessage(
-    `$(gear~spin) ${localize("tds.vscode.building", "Building...")}`,
+    `$(gear~spin) ${vscode.l10n.t("Building...")}`,
     new Promise((resolve, reject) => {
       if (files) {
         const arrayFiles: string[] = changeToArrayString(files);
@@ -408,10 +393,7 @@ export async function commandBuildOpenEditors(recompile: boolean) {
   let nextEditor = editor;
   if (!editor) {
     vscode.window.showInformationMessage(
-      localize(
-        "tds.vscode.editornotactive",
-        "No editor is active, cannot find current file to build."
-      )
+      vscode.l10n.t("No editor is active, cannot find current file to build.")
     );
     return;
   }

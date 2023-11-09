@@ -2,7 +2,6 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 import Utils, { ServersConfig } from "./utils";
-import * as nls from "vscode-nls";
 import { inputConnectionParameters } from "./inputConnectionParameters";
 import { inputAuthenticationParameters } from "./inputAuthenticationParameters";
 import { ResponseError } from "vscode-languageclient";
@@ -22,40 +21,18 @@ import {
 } from "./protocolMessages";
 import { EnvSection, ServerItem } from "./serverItem";
 
-let localize = nls.loadMessageBundle();
 const compile = require("template-literal");
 
 const localizeHTML = {
-  "tds.webview.newServer.title": localize(
-    "tds.webview.newServer.title",
-    "New Server"
-  ),
-  "tds.webview.newServer.name": localize(
-    "tds.webview.newServer.name",
-    "Server Name"
-  ),
-  "tds.webview.newServer.address": localize(
-    "tds.webview.newServer.address",
-    "Address"
-  ),
-  "tds.webview.newServer.port": localize("tds.webview.newServer.port", "Port"),
-  "tds.webview.newServer.save": localize("tds.webview.newServer.save", "Save"),
-  "tds.webview.newServer.saveClose": localize(
-    "tds.webview.newServer.saveClose",
-    "Save/Close"
-  ),
-  "tds.webview.newServer.secure": localize(
-    "tds.webview.newServer.secure",
-    "Secure(SSL)"
-  ),
-  "tds.webview.dir.include": localize(
-    "tds.webview.dir.include",
-    "Includes directory"
-  ),
-  "tds.webview.dir.include2": localize(
-    "tds.webview.dir.include2",
-    "Allow multiple directories"
-  ),
+  "tds.webview.newServer.title": vscode.l10n.t("New Server"),
+  "tds.webview.newServer.name": vscode.l10n.t("Server Name"),
+  "tds.webview.newServer.address": vscode.l10n.t("Address"),
+  "tds.webview.newServer.port": vscode.l10n.t("Port"),
+  "tds.webview.newServer.save": vscode.l10n.t("Save"),
+  "tds.webview.newServer.saveClose": vscode.l10n.t("Save/Close"),
+  "tds.webview.newServer.secure": vscode.l10n.t("Secure(SSL)"),
+  "tds.webview.dir.include": vscode.l10n.t("Includes directory"),
+  "tds.webview.dir.include2": vscode.l10n.t("Allow multiple directories"),
 };
 
 export class ServersExplorer {
@@ -73,7 +50,7 @@ export class ServersExplorer {
       } else {
         currentPanel = vscode.window.createWebviewPanel(
           "totvs-developer-studio.add",
-          localize("tds.webview.newServer.title", "New Server"),
+          vscode.l10n.t("New Server"),
           vscode.ViewColumn.One,
           {
             enableScripts: true,
@@ -136,10 +113,7 @@ export class ServersExplorer {
                   }
                 } else {
                   vscode.window.showErrorMessage(
-                    localize(
-                      "tds.webview.serversView.addServerFail",
-                      "Add Server Fail. Name, port and Address are need"
-                    )
+                    vscode.l10n.t("Add Server Fail. Name, port and Address are need")
                   );
                 }
 
@@ -197,11 +171,7 @@ export class ServersExplorer {
             vscode.window.withProgress(
               {
                 location: vscode.ProgressLocation.Window,
-                title: localize(
-                  "tds.webview.validating_server",
-                  "Validating server {0}",
-                  serverItem.name
-                ),
+                title: vscode.l10n.t("Validating server {0}", serverItem.name),
               },
               async (progress, token) => {
                 progress.report({ increment: 0 });
@@ -229,11 +199,7 @@ export class ServersExplorer {
             );
           } else {
             vscode.window.showErrorMessage(
-              localize(
-                "tds.webview.serversView.couldNotReconn",
-                "Could not reconnect to server {0}",
-                serverItem.name
-              )
+              vscode.l10n.t("Could not reconnect to server {0}", serverItem.name)
             );
           }
         }
@@ -247,11 +213,7 @@ export class ServersExplorer {
           vscode.window.withProgress(
             {
               location: vscode.ProgressLocation.Window,
-              title: localize(
-                "tds.webview.disconnecting",
-                "Disconnecting from the server [{0}]",
-                serverItem.name
-              ),
+              title: vscode.l10n.t("Disconnecting from the server [{0}]", serverItem.name),
             },
             async (progress, token) => {
               progress.report({ increment: 0 });
@@ -301,10 +263,7 @@ export class ServersExplorer {
         if (ix >= 0) {
           vscode.window
             .showInputBox({
-              placeHolder: localize(
-                "tds.webview.serversView.renameServer",
-                "Rename the server"
-              ),
+              placeHolder: vscode.l10n.t("Rename the server"),
               value:
                 typeof serverItem.label === "string"
                   ? serverItem.label
@@ -339,11 +298,7 @@ export class ServersExplorer {
 
       if (serverId !== undefined && showSucess) {
         vscode.window.showInformationMessage(
-          localize(
-            "tds.webview.serversView.serverSaved",
-            "Serve saved. Name: {0}",
-            serverName
-          )
+          vscode.l10n.t("Serve saved. Name: {0}", serverName)
         );
       }
 
@@ -421,10 +376,7 @@ export function connectServer(
 ) {
   if (serverItem.isConnected && serverItem.environment === environment) {
     vscode.window.showInformationMessage(
-      localize(
-        "tds.webview.serversView.alreadyConn",
-        "The server selected is already connected."
-      )
+      vscode.l10n.t("The server selected is already connected.")
     );
   } else {
     if (serverProvider.connectedServerItem !== undefined) {
@@ -437,11 +389,7 @@ export function connectServer(
     vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Window,
-        title: localize(
-          "tds.webview.connecting",
-          "Connecting to the server {0}",
-          serverItem.name
-        ),
+        title: vscode.l10n.t("Connecting to the server {0}", serverItem.name),
       },
       async (progress, token) => {
         progress.report({ increment: 0 });
@@ -466,12 +414,7 @@ export function authenticate(
   vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Window,
-      title: localize(
-        "tds.webview.authenticating_user",
-        "Authenticating user [{0}] in server [{1}]",
-        username,
-        serverItem.name
-      ),
+      title: vscode.l10n.t("Authenticating user [{0}] in server [{1}]", username, serverItem.name),
     },
     async (progress, token) => {
       progress.report({ increment: 0 });
@@ -542,11 +485,7 @@ export function reconnectServer(
   vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Window,
-      title: localize(
-        "tds.webview.reconnecting",
-        "Reconnecting to the server {0}",
-        serverItem.name
-      ),
+      title: vscode.l10n.t("Reconnecting to the server {0}", serverItem.name),
     },
     async (progress, token) => {
       progress.report({ increment: 0 });

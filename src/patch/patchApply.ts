@@ -2,37 +2,35 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
 import * as os from "os";
-import Utils, { ServersConfig } from "../utils";
+import { ServersConfig } from "../utils";
 import { languageClient } from "../extension";
-import * as nls from "vscode-nls";
 import { ResponseError } from "vscode-languageclient";
 import JSZip = require("jszip");
 import { ServerItem } from "../serverItem";
 
-let localize = nls.loadMessageBundle();
 const compile = require("template-literal");
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
 const localizeHTML = {
-  "tds.webview.patch.apply": localize("tds.webview.patch.apply", "Apply Patch"),
-  "tds.webview.server.name": localize("tds.webview.server.name", "Server Name"),
-  "tds.webview.address": localize("tds.webview.address", "Address"),
-  "tds.webview.environment": localize("tds.webview.environment", "Environment"),
-  "tds.webview.patch.file": localize("tds.webview.patch.file", "Patch File"),
-  "tds.webview.applyOld": localize("tds.webview.applyOld", "Apply old files"),
-  "tds.webview.newerPatches": localize("tds.webview.newerPatches", "Apply outdated patches"),
-  "tds.webview.col01": localize("tds.webview.col01", "Patch Name"),
-  "tds.webview.col02": localize("tds.webview.col02", "Patch Full Path"),
-  "tds.webview.col03": localize("tds.webview.col03", "Validation"),
-  "tds.webview.patch.newest.exp": localize("tds.webview.patch.newest.exp", "Continuous Dispatch"),
-  "tds.webview.patch.newest.ptm": localize("tds.webview.patch.newest.ptm", "Patch"),
-  "tds.webview.patch.newest.module": localize("tds.webview.patch.newest.module", "Module:"),
-  "tds.webview.patch.newest.generated": localize("tds.webview.patch.newest.generated", "Generated:"),
-  "tds.webview.patch.newest.description": localize("tds.webview.patch.newest.description", "Description:"),
-  "tds.webview.patch.newest.summary": localize("tds.webview.patch.newest.summary", "Summary:"),
-  "tds.webview.patch.newest.link": localize("tds.webview.patch.newest.link", "Download the patch from the Update Center:"),
-  "tds.webview.patch.newest.doc": localize("tds.webview.patch.newest.doc", "Read the documentation at:"),
+  "tds.webview.patch.apply": vscode.l10n.t("Apply Patch"),
+  "tds.webview.server.name": vscode.l10n.t("Server Name"),
+  "tds.webview.address": vscode.l10n.t("Address"),
+  "tds.webview.environment": vscode.l10n.t("Environment"),
+  "tds.webview.patch.file": vscode.l10n.t("Patch File"),
+  "tds.webview.applyOld": vscode.l10n.t("Apply old files"),
+  "tds.webview.newerPatches": vscode.l10n.t("Apply outdated patches"),
+  "tds.webview.col01": vscode.l10n.t("Patch Name"),
+  "tds.webview.col02": vscode.l10n.t("Patch Full Path"),
+  "tds.webview.col03": vscode.l10n.t("Validation"),
+  "tds.webview.patch.newest.exp": vscode.l10n.t("Continuous Dispatch"),
+  "tds.webview.patch.newest.ptm": vscode.l10n.t("Patch"),
+  "tds.webview.patch.newest.module": vscode.l10n.t("Module:"),
+  "tds.webview.patch.newest.generated": vscode.l10n.t("Generated:"),
+  "tds.webview.patch.newest.description": vscode.l10n.t("Description:"),
+  "tds.webview.patch.newest.summary": vscode.l10n.t("Summary:"),
+  "tds.webview.patch.newest.link": vscode.l10n.t("Download the patch from the Update Center:"),
+  "tds.webview.patch.newest.doc": vscode.l10n.t("Read the documentation at:"),
 };
 
 export function patchApply(
@@ -87,10 +85,7 @@ export function patchApply(
               case "patchValidate":
                 if (message.patchFiles.length === 0) {
                   vscode.window.showErrorMessage(
-                    localize(
-                      "tds.webview.patch.validate.fail",
-                      "Validate Patch Fail. Please input patch file."
-                    )
+                    vscode.l10n.t("Validate Patch Fail. Please input patch file.")
                   );
                 } else {
                   vscode.window
@@ -98,10 +93,7 @@ export function patchApply(
                       {
                         cancellable: false,
                         location: vscode.ProgressLocation.Notification,
-                        title: localize(
-                          "tds.webview.validating_patch",
-                          `Validating patch`
-                        ),
+                        title: vscode.l10n.t(`Validating patch`),
                       },
                       async (progress, token) => {
                         let step: number = 100 / (message.patchFiles.length + 1);
@@ -119,7 +111,7 @@ export function patchApply(
                             server,
                             vscode.Uri.file(element).toString()
                           ).then(
-                            () => {},
+                            () => { },
                             (reason: any) => {
                               languageClient.error(reason);
                             }
@@ -128,10 +120,7 @@ export function patchApply(
 
                         progress.report({
                           increment: 100,
-                          message: localize(
-                            "tds.webview.patchs_validated",
-                            "Patchs validate ( files)" //${index}
-                          ),
+                          message: vscode.l10n.t("Patchs validate ( files)"),
                         });
                       }
                     )
@@ -144,10 +133,7 @@ export function patchApply(
               case "patchApply":
                 if (message.patchFile.length === 0) {
                   vscode.window.showErrorMessage(
-                    localize(
-                      "tds.webview.patch.apply.fail",
-                      "Apply Patch Fail. Please input patch file."
-                    )
+                    vscode.l10n.t("Apply Patch Fail. Please input patch file.")
                   );
                 } else {
                   vscode.window
@@ -155,10 +141,7 @@ export function patchApply(
                       {
                         cancellable: false,
                         location: vscode.ProgressLocation.Notification,
-                        title: localize(
-                          "tds.webview.applying_server",
-                          `Applying patch`
-                        ),
+                        title: vscode.l10n.t(`Applying patch`),
                       },
                       async (progress, token) => {
                         let step: number = 100 / (message.patchFile.length + 1);
@@ -177,7 +160,7 @@ export function patchApply(
                             vscode.Uri.file(element).toString(),
                             message.applyOld
                           ).then(
-                            () => {},
+                            () => { },
                             (reason: any) => {
                               languageClient.error(reason);
                             }
@@ -186,10 +169,7 @@ export function patchApply(
 
                         progress.report({
                           increment: 100,
-                          message: localize(
-                            "tds.webview.patchs_applied",
-                            "Patchs applied ( files)" //${index}
-                          ),
+                          message: vscode.l10n.t("Patchs applied ( files)"),
                         });
                       }
                     )
@@ -228,10 +208,7 @@ export function patchApply(
                   );
                 } else {
                   vscode.window.showInformationMessage(
-                    localize(
-                      "tds.webview.patch.apply.select.file",
-                      "Select a file for operation."
-                    )
+                    vscode.l10n.t("Select a file for operation.")
                   );
                 }
                 break;
@@ -247,10 +224,7 @@ export function patchApply(
                   );
                 } else {
                   vscode.window.showInformationMessage(
-                    localize(
-                      "tds.webview.patch.apply.select.file",
-                      "Select a file for operation."
-                    )
+                    vscode.l10n.t("Select a file for operation.")
                   );
                 }
                 break;
@@ -269,17 +243,13 @@ export function patchApply(
           const patchFile = filename;
           vscode.window
             .showWarningMessage(
-              localize(
-                "tds.webview.patch.apply.file",
-                "Are you sure you want patch {0} the RPO?",
-                path.basename(filename)
-              ),
+              vscode.l10n.t("Are you sure you want patch {0} the RPO?", path.basename(filename)),
               { modal: true },
-              localize("tds.vscode.yes", "Yes"),
-              localize("tds.vscode.no", "No")
+              vscode.l10n.t("Yes"),
+              vscode.l10n.t("No")
             )
             .then((clicked) => {
-              if (clicked === localize("tds.vscode.yes", "Yes")) {
+              if (clicked === vscode.l10n.t("Yes")) {
                 const patchUri = vscode.Uri.file(patchFile).toString();
 
                 languageClient
@@ -302,10 +272,7 @@ export function patchApply(
                       }
                       if (response.error == 1) {
                         vscode.window.showErrorMessage(
-                          localize(
-                            "tds.webview.patch.oldFiles",
-                            "Patch contains files older than RPO. Patch not applied."
-                          )
+                          vscode.l10n.t("Patch contains files older than RPO. Patch not applied.")
                         );
                       }
                       // const message: string  = response.message;
@@ -324,9 +291,7 @@ export function patchApply(
         }
       }
     } else {
-      vscode.window.showErrorMessage(
-        localize("tds.webview.server.not.connected", "No server connected.")
-      );
+      vscode.window.showErrorMessage(vscode.l10n.t("No server connected."));
     }
   }
 }
@@ -507,16 +472,13 @@ async function doApplyPatch(
             vscode.window.showErrorMessage(response.message);
           } else {
             vscode.window.showErrorMessage(
-              localize(
-                "tds.webview.patch.oldFiles",
-                "Patch contains files older than RPO. Patch not applied."
-              )
+              vscode.l10n.t("Patch contains files older than RPO. Patch not applied.")
             );
           }
         } else if (applyOld) {
-          vscode.window.showInformationMessage("Old files applied.");
+          vscode.window.showInformationMessage(vscode.l10n.t("Old files applied."));
         } else {
-          vscode.window.showInformationMessage("Patch applied.");
+          vscode.window.showInformationMessage(vscode.l10n.t("Patch applied."));
         }
       },
       (err: ResponseError<object>) => {

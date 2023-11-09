@@ -1,10 +1,8 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import Utils, { LaunchConfig } from "../../utils";
+import { LaunchConfig } from "../../utils";
 import * as fs from "fs";
-import * as nls from "vscode-nls";
 
-let localize = nls.loadMessageBundle();
 const compile = require("template-literal");
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
@@ -12,45 +10,18 @@ let currentPanel: vscode.WebviewPanel | undefined = undefined;
 //let launcherInfoChangedManually = false;
 
 const localizeHTML = {
-  "tds.webview.launcher.welcome": localize(
-    "tds.webview.launcher.welcome",
-    "Welcome"
-  ),
-  "tds.webview.launcher.launcherTitle": localize(
-    "tds.webview.launcher.launcherTitle",
-    "TDS Replay Launcher Config"
-  ),
-  "tds.webview.launcher.name": localize(
-    "tds.webview.launcher.name",
-    "Choose launcher:"
-  ),
-  "tds.webview.launcher.file": localize("tds.webview.launcher.file", "File:"),
-  "tds.webview.launcher.pwd": localize("tds.webview.launcher.pwd", "Password:"),
-  "tds.webview.launcher.includeSrc": localize(
-    "tds.webview.launcher.includeSrc",
-    "Include Sources:"
-  ),
-  "tds.webview.launcher.excludeSrc": localize(
-    "tds.webview.launcher.excludeSrc",
-    "Exclude Sources:"
-  ),
-  "tds.webview.launcher.save": localize("tds.webview.launcher.save", "Save"),
-  "tds.webview.launcher.saveClose": localize(
-    "tds.webview.launcher.saveClose",
-    "Save/Close"
-  ),
-  "tds.webview.launcher.bottomInfo": localize(
-    "tds.webview.launcher.bottomInfo",
-    "This config could be altered editing file"
-  ),
-  "tds.webview.launcher.ignoreFiles": localize(
-    "tds.webview.launcher.ignoreFiles",
-    "Ignore files not found in WorkSpace (debugging)"
-  ),
-  "tds.webview.launcher.importOnlySources": localize(
-    "tds.webview.launcher.importOnlySources",
-    "Import only the sources information"
-  ),
+  "tds.webview.launcher.welcome": vscode.l10n.t("Welcome"),
+  "tds.webview.launcher.launcherTitle": vscode.l10n.t("TDS Replay Launcher Config"),
+  "tds.webview.launcher.name": vscode.l10n.t("Choose launcher:"),
+  "tds.webview.launcher.file": vscode.l10n.t("File:"),
+  "tds.webview.launcher.pwd": vscode.l10n.t("Password:"),
+  "tds.webview.launcher.includeSrc": vscode.l10n.t("Include Sources:"),
+  "tds.webview.launcher.excludeSrc": vscode.l10n.t("Exclude Sources:"),
+  "tds.webview.launcher.save": vscode.l10n.t("Save"),
+  "tds.webview.launcher.saveClose": vscode.l10n.t("Save/Close"),
+  "tds.webview.launcher.bottomInfo": vscode.l10n.t("This config could be altered editing file"),
+  "tds.webview.launcher.ignoreFiles": vscode.l10n.t("Ignore files not found in WorkSpace (debugging)"),
+  "tds.webview.launcher.importOnlySources": vscode.l10n.t("Import only the sources information"),
 };
 
 
@@ -71,10 +42,7 @@ export default class LauncherConfiguration {
 
       currentPanel = vscode.window.createWebviewPanel(
         "totvs-developer-studio.tdsreplay.configure.launcher",
-        localize(
-          "tds.vscode.tdsreplay.launcher.configuration",
-          "TDS Replay Launcher Configuration"
-        ),
+        vscode.l10n.t("TDS Replay Launcher Configuration"),
         vscode.ViewColumn.One,
         {
           enableScripts: true,
@@ -146,10 +114,7 @@ export default class LauncherConfiguration {
             }
 
             vscode.window.showInformationMessage(
-              localize(
-                "tds.vscode.launcher.configuration.saved",
-                "Launcher Configuration saved."
-              )
+              vscode.l10n.t("Launcher Configuration saved.")
             );
 
             if (currentPanel) {

@@ -9,11 +9,8 @@ import * as vscode from "vscode";
 import * as Net from "net";
 import { setDapArgs, ProgramArgs, extractProgramArgs } from "./debugConfigs";
 import serverProvider from "../serverItemProvider";
-import * as nls from "vscode-nls";
 import { canDebug } from "../extension";
 import { ServerItem } from "../serverItem";
-
-const localize = nls.loadMessageBundle();
 
 export class TotvsConfigurationProvider implements DebugConfigurationProvider {
   static _TYPE: string = "totvs_language_debug";
@@ -78,11 +75,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
       if (!config.cwb || config.cwb === "") {
         config.cwb = folder.uri.fsPath;
         window.showInformationMessage(
-          localize(
-            "tds.vscode.cwb_warning",
-            "Parameter CWB not informed. Setting to {0}",
-            config.cwb
-          )
+          vscode.l10n.t("Parameter CWB not informed. Setting to {0}", config.cwb)
         );
       }
 
@@ -114,7 +107,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
       return Promise.resolve(config);
     } else {
       window.showErrorMessage(
-        localize("tds.vscode.server_not_connected", "No servers connected")
+        vscode.l10n.t("No servers connected")
       );
       return undefined;
     }
@@ -156,17 +149,14 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
       programArgs.args?.includes("<cancel>")
     ) {
       window.showInformationMessage(
-        localize("tds.vscode.cancel_by_user", "Canceled by user.")
+        vscode.l10n.t("Canceled by user.")
       );
       return undefined; // abort launch
     }
 
     if (!debugConfiguration.program) {
       window.showInformationMessage(
-        localize(
-          "tds.vscode.program_not_found",
-          "Cannot find a program to debug"
-        )
+        vscode.l10n.t("Cannot find a program to debug")
       );
       return undefined; // abort launch
     }

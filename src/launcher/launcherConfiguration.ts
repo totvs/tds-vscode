@@ -1,10 +1,8 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import Utils, { LaunchConfig } from "../utils";
+import { LaunchConfig } from "../utils";
 import * as fs from "fs";
-import * as nls from "vscode-nls";
 
-let localize = nls.loadMessageBundle();
 const compile = require("template-literal");
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
@@ -12,95 +10,29 @@ let currentPanel: vscode.WebviewPanel | undefined = undefined;
 //let launcherInfoChangedManually = false;
 
 const localizeHTML = {
-  "tds.webview.launcher.welcome": localize(
-    "tds.webview.launcher.welcome",
-    "Welcome"
-  ),
-  "tds.webview.launcher.launcherTitle": localize(
-    "tds.webview.launcher.launcherTitle",
-    "Launcher Config"
-  ),
-  "tds.webview.launcher.name": localize(
-    "tds.webview.launcher.name",
-    "Choose launcher:"
-  ),
-  "tds.webview.launcher.program": localize(
-    "tds.webview.launcher.program",
-    "Program:"
-  ),
-  "tds.webview.launcher.program.arguments": localize(
-    "tds.webview.launcher.program.arguments",
-    "Arguments (-A):"
-  ),
-  "tds.webview.launcher.smartclient": localize(
-    "tds.webview.launcher.smartclient",
-    "SmartClient:"
-  ),
-  "tds.webview.launcher.multiThread": localize(
-    "tds.webview.launcher.multiThread",
-    "Enable multiple threads"
-  ),
-  "tds.webview.launcher.profile": localize(
-    "tds.webview.launcher.profile",
-    "Enable Profile"
-  ),
-  "tds.webview.launcher.multiSession": localize(
-    "tds.webview.launcher.multiSession",
-    "(-M) Multiple sessions"
-  ),
-  "tds.webview.launcher.acc": localize(
-    "tds.webview.launcher.acc",
-    "(-AC) Accessibility module"
-  ),
-  "tds.webview.launcher.splash": localize(
-    "tds.webview.launcher.splash",
-    "(-Q) Don't display 'splash'"
-  ),
-  "tds.webview.launcher.opengl": localize(
-    "tds.webview.launcher.opengl",
-    "(-OPENGL) Enable OpenGL mode"
-  ),
-  "tds.webview.launcher.dpi": localize(
-    "tds.webview.launcher.dpi",
-    "(-DPI) Enable DPI mode"
-  ),
-  "tds.webview.launcher.olddpi": localize(
-    "tds.webview.launcher.olddpi",
-    "(-OLDDPI) Enable OLDDPI mode"
-  ),
-  "tds.webview.launcher.language": localize(
-    "tds.webview.launcher.language",
-    "Language (-L):"
-  ),
-  "tds.webview.launcher.langPT": localize(
-    "tds.webview.launcher.langPT",
-    "Portuguese"
-  ),
-  "tds.webview.launcher.langEN": localize(
-    "tds.webview.launcher.langEN",
-    "English"
-  ),
-  "tds.webview.launcher.langES": localize(
-    "tds.webview.launcher.langES",
-    "Spanish"
-  ),
-  "tds.webview.launcher.langRU": localize(
-    "tds.webview.launcher.langRU",
-    "Russian"
-  ),
-  "tds.webview.launcher.save": localize("tds.webview.launcher.save", "Save"),
-  "tds.webview.launcher.saveClose": localize(
-    "tds.webview.launcher.saveClose",
-    "Save/Close"
-  ),
-  "tds.webview.launcher.bottomInfo": localize(
-    "tds.webview.launcher.bottomInfo",
-    "This config could be altered editing file"
-  ),
-  "tds.webview.launcher.ignoreFiles": localize(
-    "tds.webview.launcher.ignoreFiles",
-    "Ignore files not found in WorkSpace (debugging)"
-  ),
+  "tds.webview.launcher.welcome": vscode.l10n.t("Welcome"),
+  "tds.webview.launcher.launcherTitle": vscode.l10n.t("Launcher Config"),
+  "tds.webview.launcher.name": vscode.l10n.t("Choose launcher:"),
+  "tds.webview.launcher.program": vscode.l10n.t("Program:"),
+  "tds.webview.launcher.program.arguments": vscode.l10n.t("Arguments (-A):"),
+  "tds.webview.launcher.smartclient": vscode.l10n.t("SmartClient:"),
+  "tds.webview.launcher.multiThread": vscode.l10n.t("Enable multiple threads"),
+  "tds.webview.launcher.profile": vscode.l10n.t("Enable Profile"),
+  "tds.webview.launcher.multiSession": vscode.l10n.t("(-M) Multiple sessions"),
+  "tds.webview.launcher.acc": vscode.l10n.t("(-AC) Accessibility module"),
+  "tds.webview.launcher.splash": vscode.l10n.t("(-Q) Don't display 'splash'"),
+  "tds.webview.launcher.opengl": vscode.l10n.t("(-OPENGL) Enable OpenGL mode"),
+  "tds.webview.launcher.dpi": vscode.l10n.t("(-DPI) Enable DPI mode"),
+  "tds.webview.launcher.olddpi": vscode.l10n.t("(-OLDDPI) Enable OLDDPI mode"),
+  "tds.webview.launcher.language": vscode.l10n.t("Language (-L):"),
+  "tds.webview.launcher.langPT": vscode.l10n.t("Portuguese"),
+  "tds.webview.launcher.langEN": vscode.l10n.t("English"),
+  "tds.webview.launcher.langES": vscode.l10n.t("Spanish"),
+  "tds.webview.launcher.langRU": vscode.l10n.t("Russian"),
+  "tds.webview.launcher.save": vscode.l10n.t("Save"),
+  "tds.webview.launcher.saveClose": vscode.l10n.t("Save/Close"),
+  "tds.webview.launcher.bottomInfo": vscode.l10n.t("This config could be altered editing file"),
+  "tds.webview.launcher.ignoreFiles": vscode.l10n.t("Ignore files not found in WorkSpace (debugging)"),
 };
 
 const debugLaunchInfo: any = {
@@ -119,7 +51,7 @@ export default class LauncherConfiguration {
 
       currentPanel = vscode.window.createWebviewPanel(
         "totvs-developer-studio.configure.launcher",
-        localize("tds.vscode.launcher.configuration", "Launcher Configuration"),
+        vscode.l10n.t("Launcher Configuration"),
         vscode.ViewColumn.One,
         {
           enableScripts: true,
@@ -161,8 +93,7 @@ export default class LauncherConfiguration {
             const launcherName = message.launcherName;
             if (launcherConfiguration !== undefined) {
               let updated: boolean = false;
-              for (let i = 0; i < launcherConfiguration.length; i++)
-              {
+              for (let i = 0; i < launcherConfiguration.length; i++) {
                 let element = launcherConfiguration[i];
                 if (element.name === launcherName) {
                   updateElement(element, message);
@@ -191,10 +122,7 @@ export default class LauncherConfiguration {
               }
 
               vscode.window.showInformationMessage(
-                localize(
-                  "tds.vscode.launcher.configuration.saved",
-                  "Launcher Configuration saved."
-                )
+                vscode.l10n.t("Launcher Configuration saved.")
               );
 
               if (currentPanel) {

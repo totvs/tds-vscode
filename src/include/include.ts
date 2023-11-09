@@ -3,16 +3,14 @@ import * as path from 'path';
 import * as fs from 'fs';
 import Utils, { ServersConfig } from '../utils';
 
-import * as nls from 'vscode-nls';
-let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
 
 
 const localizeHTML = {
-	"tds.webview.title": localize("tds.webview.title", "Include"),
-	"tds.webview.dir.include": localize("tds.webview.dir.include", "Includes directory:"),
-	"tds.webview.dir.include2": localize("tds.webview.dir.include2", "Allow multiple directories"),
-	"tds.webview.dir.include.info": localize("tds.webview.dir.include.info", "These settings can also be changed in")
+	"tds.webview.title": vscode.l10n.t("Include"),
+	"tds.webview.dir.include": vscode.l10n.t("Includes directory:"),
+	"tds.webview.dir.include2": vscode.l10n.t("Allow multiple directories"),
+	"tds.webview.dir.include.info": vscode.l10n.t("These settings can also be changed in")
 };
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
@@ -23,7 +21,7 @@ export default function showInclude(context: vscode.ExtensionContext) {
 	} else {
 		currentPanel = vscode.window.createWebviewPanel(
 			'totvs-developer-studio.include',
-			localize("tds.webview.title", "Global Include"),
+			vscode.l10n.t("Global Include"),
 			vscode.ViewColumn.One,
 			{
 				enableScripts: true,

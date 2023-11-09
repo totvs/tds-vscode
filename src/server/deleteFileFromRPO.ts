@@ -3,21 +3,19 @@ import { languageClient } from '../extension';
 import * as path from 'path';
 import * as fs from 'fs';
 import { extensions, window, Uri, ViewColumn } from 'vscode';
-import * as nls from 'vscode-nls';
 import Utils, { ServersConfig } from '../utils';
 import { ResponseError } from 'vscode-languageclient';
 import { _debugEvent } from '../debug';
 
-let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
 
 const localizeHTML = {
-	"tds.webview.deleteFile.title": localize("tds.webview.deleteFile.title", "Deleting source/resource from RPO"),
-	"tds.webview.deleteFile.line1": localize("tds.webview.deleteFile.line1", "In order to delete a source/resource from RPO follow these steps:"),
-	"tds.webview.deleteFile.line2": localize("tds.webview.deleteFile.line2", "Find source/resource in workspace"),
-	"tds.webview.deleteFile.line3": localize("tds.webview.deleteFile.line3", "Select source/recourse with rigth mouse buttom"),
-	"tds.webview.deleteFile.line4": localize("tds.webview.deleteFile.line4", "Select the option 'Delete source/resource from RPO' on popup menu"),
-	"tds.webview.deleteFile.line5": localize("tds.webview.deleteFile.line5", "Confirm file deletion selecting the option 'YES' in the form displayed on the bottom right corner.")
+	"tds.webview.deleteFile.title": vscode.l10n.t( "Deleting source/resource from RPO"),
+	"tds.webview.deleteFile.line1": vscode.l10n.t( "In order to delete a source/resource from RPO follow these steps:"),
+	"tds.webview.deleteFile.line2": vscode.l10n.t( "Find source/resource in workspace"),
+	"tds.webview.deleteFile.line3": vscode.l10n.t( "Select source/recourse with rigth mouse buttom"),
+	"tds.webview.deleteFile.line4": vscode.l10n.t( "Select the option 'Delete source/resource from RPO' on popup menu"),
+	"tds.webview.deleteFile.line5": vscode.l10n.t( "Confirm file deletion selecting the option 'YES' in the form displayed on the bottom right corner.")
 };
 
 export function deleteFileFromRPO(context: any, selectedFiles): void {
@@ -26,7 +24,7 @@ export function deleteFileFromRPO(context: any, selectedFiles): void {
 	if (context.contextValue === "serverItem") {
 		const currentPanel = window.createWebviewPanel(
 			'totvs-developer-studio.delete.file.fromRPO',
-			localize('tds.vscode.deleteFile', 'Delete File From RPO'),
+			vscode.l10n.t( 'Delete File From RPO'),
 			ViewColumn.One,
 			{
 				enableScripts: true,
@@ -47,8 +45,8 @@ export function deleteFileFromRPO(context: any, selectedFiles): void {
 		allFiles = Utils.getAllFilesRecursive(files);
 
 		if (allFiles) {
-			window.showWarningMessage(localize('tds.vscode.delete_prw_file', "Are you sure you want to delete {0} files from RPO?", allFiles.length), { modal: true }, localize('tds.vscode.yes', 'Yes'), localize('tds.vscode.no', 'No')).then(clicked => {
-				if (clicked === localize('tds.vscode.yes', 'Yes')) {
+			window.showWarningMessage(vscode.l10n.t( 'No')).then(clicked => {
+				if (clicked === vscode.l10n.t( 'Yes')) {
 					deletePrograms(allFiles);
 				}
 			});
@@ -118,7 +116,7 @@ export function deletePrograms(programs: string[]) {
 				vscode.window.showErrorMessage(err.message);
 			});
 		} else {
-			vscode.window.showErrorMessage(localize("tds.webview.tdsBuild.noServer", 'No server connected'));
+			vscode.window.showErrorMessage(vscode.l10n.t( 'No server connected'));
 		}
 	} catch (error) {
 		languageClient.error(error);

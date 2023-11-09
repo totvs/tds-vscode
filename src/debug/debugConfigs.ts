@@ -9,14 +9,12 @@ import {
   QuickPickItem,
   Uri,
   window,
+  l10n
 } from "vscode";
 import { statSync, chmodSync } from "fs";
-import * as fse from "fs-extra";
 import Utils, { LaunchConfig, MESSAGETYPE } from "../utils";
 import * as path from "path";
-import * as nls from "vscode-nls";
 
-const localize = nls.loadMessageBundle();
 const RESOURCES_FOLDER = path.join(__filename, "..", "..", "..", "resources");
 
 //let isTableSyncEnabled = false;
@@ -83,12 +81,12 @@ class QuickPickProgram implements QuickPickItem {
 
   get description(): string {
     return this.args ? `(${this.args.map((element) => {
-        // se um argumento contiver ',' ele devolve o argumento entre aspas para facilitar a visualização.
-        if (element && element.indexOf(',') > 0)
-          return "\""+element+"\"";
-        else
-          return element;
-      })
+      // se um argumento contiver ',' ele devolve o argumento entre aspas para facilitar a visualização.
+      if (element && element.indexOf(',') > 0)
+        return "\"" + element + "\"";
+      else
+        return element;
+    })
       .join(", ")})` : "<nil>";
   }
 }
@@ -117,16 +115,13 @@ export async function getProgramName(
           dark: Uri.file(path.join(RESOURCES_FOLDER, "dark", "cancel.png")),
           light: Uri.file(path.join(RESOURCES_FOLDER, "light", "cancel.png")),
         },
-        tooltip: localize("CANCEL_DEBUG", "Cancel Debug "),
+        tooltip: l10n.t("Cancel Debug "),
       };
 
       const qp: QuickPick<QuickPickProgram> =
         window.createQuickPick<QuickPickProgram>();
 
-      qp.title = localize(
-        "tds.vscode.getProgramName",
-        "Please enter the name of an AdvPL/4GL function"
-      );
+      qp.title = l10n.t("Please enter the name of an AdvPL/4GL function");
       qp.items = lastPrograms;
       qp.value = lastProgramExecuted;
       qp.placeholder = qp.title;
@@ -191,7 +186,7 @@ export async function getProgramName(
   LaunchConfig.saveLastProgram(programArgs.program, programArgs.args);
 
   //return `${config.lastProgramExecuted}`;
-  return `${programArgs.program}${programArgs.args ? ("("+programArgs.args.map((element)=>{if(element.indexOf(',')>0)return "\""+element+"\"";else return element;}).join(", ")+")") : ""}`;
+  return `${programArgs.program}${programArgs.args ? ("(" + programArgs.args.map((element) => { if (element.indexOf(',') > 0) return "\"" + element + "\""; else return element; }).join(", ") + ")") : ""}`;
 }
 
 const programArgsRegex = /^([\w\.\-\_]+)(\(?[^)\n]*\)?)?/i;
@@ -234,7 +229,7 @@ function extractArgs(value: string): string[] {
                 element.length > 1 &&
                 ((element.startsWith('"') && element.endsWith('"')) ||
                   (element.startsWith("'") && element.endsWith("'")))
-                ) {
+              ) {
                 element = element.substring(1, element.length - 1);
               }
               args.push(element);
@@ -251,13 +246,13 @@ function extractArgs(value: string): string[] {
               element.length > 1 &&
               ((element.startsWith('"') && element.endsWith('"')) ||
                 (element.startsWith("'") && element.endsWith("'")))
-              ) {
+            ) {
               element = element.substring(1, element.length - 1);
             } else if (
               element.length > 1 &&
               ((element.startsWith('"') && !element.endsWith('"')) ||
                 (element.startsWith("'") && !element.endsWith("'")))
-              ) {
+            ) {
               var startChar = element.charAt(0); // salva tipo de aspas antes de remover
               element = element.substring(1); // remove 1a aspas
               while (splited.length > 0) {
@@ -290,30 +285,19 @@ export function toggleTableSync() {
     sendChangeTableSyncSetting(isTableSyncEnabled);
     LaunchConfig.saveIsTableSyncEnabled(debugSession, isTableSyncEnabled);
     if (isTableSyncEnabled) {
-      Utils.logMessage(
-        localize(
-          "tds.debug.tableSync.enabled",
-          "Tables synchronism enabled"
-        ),
+      Utils.logMessage(l10n.t("Tables synchronism enabled"),
         MESSAGETYPE.Info,
         true
       );
     } else {
-      Utils.logMessage(
-        localize(
-          "tds.debug.tableSync.disabled",
-          "Tables synchronism disabled"
-        ),
+      Utils.logMessage(l10n.t("Tables synchronism disabled"),
         MESSAGETYPE.Info,
         true
       );
     }
   } else {
     Utils.logMessage(
-      localize(
-        "tds.debug.tableSync.disabled",
-        "The command to Disable/Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually"
-      ),
+      l10n.t("The command to Disable/Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually"),
       MESSAGETYPE.Error,
       true
     );
@@ -379,21 +363,15 @@ async function pickProgramArguments(
         dark: Uri.file(path.join(RESOURCES_FOLDER, "dark", "cancel.png")),
         light: Uri.file(path.join(RESOURCES_FOLDER, "light", "cancel.png")),
       },
-      tooltip: localize("CANCEL_DEBUG", "Cancel Debug "),
+      tooltip: l10n.t("Cancel Debug "),
     };
 
     await new Promise<void>((resolve, reject) => {
       const qp: QuickPick<QuickPickProgram> =
         window.createQuickPick<QuickPickProgram>();
-      qp.title = localize(
-        "tds.vscode.getProgramArguments",
-        "Enter comma-separated list of arguments"
-      );
+      qp.title = l10n.t("Enter comma-separated list of arguments");
       qp.items = lastPrograms;
-      qp.placeholder = localize(
-        "tds.vscode.getProgramArguments",
-        "Enter comma-separated list of arguments"
-      );
+      qp.placeholder = l10n.t("Enter comma-separated list of arguments");
       qp.ignoreFocusOut = true;
       qp.canSelectMany = false;
       qp.buttons = [cancelButton];

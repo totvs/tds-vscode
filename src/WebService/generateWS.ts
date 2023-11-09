@@ -1,22 +1,18 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import * as nls from 'vscode-nls';
 import { languageClient } from '../extension';
 import Utils, { ServersConfig } from '../utils';
 import { ResponseError } from 'vscode-languageclient';
 import { _debugEvent } from '../debug';
-import { IRpoToken } from '../rpoToken';
-import { CompileKey } from '../compileKey/compileKey';
 
-let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
 
 const localizeHTML = {
-	"tds.webview.title": localize("tds.webview.title", "Generate WS"),
-	"tds.webview.ws.URL": localize("tds.webview.ws.URL", "URL Web Service / WSDL FIle"),
-	"tds.webview.ws.path": localize("tds.webview.ws.path", "File Directory"),
-	"tds.webview.ws.name": localize("tds.webview.ws.name", "Output File Name")
+	"tds.webview.title": vscode.l10n.t( "Generate WS"),
+	"tds.webview.ws.URL": vscode.l10n.t( "URL Web Service / WSDL FIle"),
+	"tds.webview.ws.path": vscode.l10n.t( "File Directory"),
+	"tds.webview.ws.name": vscode.l10n.t( "Output File Name")
 };
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
@@ -29,7 +25,7 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 		if (server) {
 			currentPanel = vscode.window.createWebviewPanel(
 				'totvs-developer-studio.ws.show',
-				localize("tds.webview.title", "Generate WS Protheus"),
+				vscode.l10n.t( "Generate WS Protheus"),
 				vscode.ViewColumn.One,
 				{
 					enableScripts: true,
@@ -101,7 +97,7 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 				context.subscriptions
 			);
 		}else{
-			vscode.window.showErrorMessage(localize("tds.webview.server.not.connected","There is no server connected."));
+			vscode.window.showErrorMessage(vscode.l10n.t("There is no server connected."));
 		}
 	}
 }

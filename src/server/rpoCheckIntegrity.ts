@@ -2,10 +2,7 @@ import { ServersConfig } from '../utils';
 import { languageClient } from '../extension';
 import * as vscode from 'vscode';
 import { ResponseError } from 'vscode-languageclient';
-import * as nls from 'vscode-nls';
 import { _debugEvent } from '../debug';
-
-const localize = nls.loadMessageBundle();
 
 export function rpoCheckIntegrity() {
 	const server = ServersConfig.getCurrentServer();
@@ -34,7 +31,7 @@ export function rpoCheckIntegrity() {
 
 		vscode.window.setStatusBarMessage("Checking RPO integrity", exec);
 	} else {
-		vscode.window.showErrorMessage(localize('tds.vscode.servernotconnected', 'There is no server connected'));
+		vscode.window.showErrorMessage(vscode.l10n.t( 'There is no server connected'));
 	}
 }
 

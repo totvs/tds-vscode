@@ -10,13 +10,10 @@ import {
 
 import { chmodSync, statSync } from "fs";
 import { reconnectLastServer } from "./serversView";
-import * as nls from "vscode-nls";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import { IServerNotificationInfo, IUsageStatusInfo } from './protocolMessages';
 import { updateUsageBarItem } from "./statusBar";
 import { getLanguageServerSettings } from './server/languageServerSettings';
-
-let localize = nls.loadMessageBundle();
 
 export function getLanguageClient(
   context: vscode.ExtensionContext

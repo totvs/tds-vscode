@@ -4,25 +4,23 @@ import * as fs from 'fs';
 import Utils, { ServersConfig } from '../utils';
 import { languageClient } from '../extension';
 const compile = require('template-literal');
-import * as nls from 'vscode-nls';
 import { ResponseError } from 'vscode-languageclient';
-let localize = nls.loadMessageBundle();
 import { openInspectView } from "../inspect-harpia";
 
 const localizeHTML = {
-	"tds.webview.inspect.generate": localize("tds.webview.inspect.generate", "Patch Generation"),
-	"tds.webview.inspect.ignore.files": localize("tds.webview.inspect.ignore.files", "Ignore files"),
-	"tds.webview.inspect.filter": localize("tds.webview.inspect.filter", "Filter, ex: MAT or * All (slow)"),
-	"tds.webview.inspect.clean.selected": localize("tds.webview.inspect.clean.selected", "Clear Selected"),
-	"tds.webview.inspect.clean.all": localize("tds.webview.inspect.clean.all", "Clear All"),
-	"tds.webview.inspect.items": localize("tds.webview.inspect.items", "Items"),
-	"tds.webview.inspect.directory": localize("tds.webview.inspect.directory", "Patch Generation Directory"),
-	"tds.webview.inspect.file.name.patch": localize("tds.webview.inspect.file.name.patch", "Patch file name"),
-	"tds.webview.inspect.file.name": localize("tds.webview.inspect.file.name", "File name"),
-	"tds.webview.inspect.items.generate": localize("tds.webview.inspect.items.generate", "Generate"),
-	"tds.webview.inspect.items.generate.close": localize("tds.webview.inspect.items.generate.close", "Generate/Close"),
-	"tds.webview.inspect.message1": localize("tds.webview.inspect.message1", "The generated patch is based on the files from RPO. Be sure that the included fonts are compiled."),
-	"tds.webview.inspect.items.showing": localize("tds.webview.inspect.items.showing", "Items showing")
+	"tds.webview.inspect.generate": vscode.l10n.t("Patch Generation"),
+	"tds.webview.inspect.ignore.files": vscode.l10n.t("Ignore files"),
+	"tds.webview.inspect.filter": vscode.l10n.t("Filter, ex: MAT or * All (slow)"),
+	"tds.webview.inspect.clean.selected": vscode.l10n.t("Clear Selected"),
+	"tds.webview.inspect.clean.all": vscode.l10n.t("Clear All"),
+	"tds.webview.inspect.items": vscode.l10n.t("Items"),
+	"tds.webview.inspect.directory": vscode.l10n.t("Patch Generation Directory"),
+	"tds.webview.inspect.file.name.patch": vscode.l10n.t("Patch file name"),
+	"tds.webview.inspect.file.name": vscode.l10n.t("File name"),
+	"tds.webview.inspect.items.generate": vscode.l10n.t("Generate"),
+	"tds.webview.inspect.items.generate.close": vscode.l10n.t("Generate/Close"),
+	"tds.webview.inspect.message1": vscode.l10n.t("The generated patch is based on the files from RPO. Be sure that the included fonts are compiled."),
+	"tds.webview.inspect.items.showing": vscode.l10n.t("Items showing")
 };
 
 export function inspectObject(context: vscode.ExtensionContext) {

@@ -3,12 +3,9 @@ import * as path from "path";
 import { sendRpoInfo } from "../protocolMessages";
 import { RpoInfoPanelAction, IRpoInfoPanelAction } from "./actions";
 import { ServerItem } from "../serverItem";
-import * as nls from "vscode-nls";
 import { ServersConfig } from "../utils";
 import { languageClient } from "../extension";
 import { IProgramApp, IRpoInfoData, IRpoPatch } from "./rpoPath";
-
-const localize = nls.loadMessageBundle();
 
 let rpoInfoLoader: RpoInfoLoader = undefined;
 
@@ -56,7 +53,7 @@ export class RpoInfoLoader implements vscode.Disposable {
 
     this._panel = vscode.window.createWebviewPanel(
       "rpoInfoLoader",
-      localize("RPO_LOG", "Repository Log"),
+      vscode.l10n.t("Repository Log"),
       vscode.ViewColumn.One,
       {
         enableScripts: true,
@@ -111,7 +108,7 @@ export class RpoInfoLoader implements vscode.Disposable {
     switch (command.action) {
       case RpoInfoPanelAction.ExportToJson: {
         this.updateStatus(
-          localize("EXPORT_JSON", "Waiting for export JSON file")
+          vscode.l10n.t("Waiting for export JSON file")
         );
 
         break;
@@ -182,10 +179,9 @@ export class RpoInfoLoader implements vscode.Disposable {
 
       writeLine(`File`);
       writeLine(
-        `  Applyed .....: ${
-          rpoPath.typePatch == 1
-            ? "Update"
-            : rpoPath.typePatch == 2
+        `  Applyed .....: ${rpoPath.typePatch == 1
+          ? "Update"
+          : rpoPath.typePatch == 2
             ? "Package"
             : "Correction"
         }`
@@ -245,7 +241,7 @@ export class RpoInfoLoader implements vscode.Disposable {
 
       map[key].children.push({
         id: "node_" + key + map[key].children.length,
-        name: name+(isCustom?" (Custom)":""),
+        name: name + (isCustom ? " (Custom)" : ""),
         children: [],
         rpoPatch: rpoPatch,
       });
@@ -270,11 +266,7 @@ export class RpoInfoLoader implements vscode.Disposable {
 
     vscode.window.setStatusBarMessage(
       "$(gear~spin)" +
-        localize(
-          "REQUESTING_DATA_FROM_SERVER",
-          "Requesting data from the server [{0}]",
-          this.monitorServer.name
-        ),
+      vscode.l10n.t("Requesting data from the server [{0}]", this.monitorServer.name),
       sendRpoInfo(this.monitorServer).then(
         (rpoInfo: IRpoInfoData) => {
           const parent: any = {
@@ -295,7 +287,7 @@ export class RpoInfoLoader implements vscode.Disposable {
         (err: Error) => {
           languageClient.error(err.message, err);
           vscode.window.showErrorMessage(
-            err.message + localize("SEE_LOG", ". See log for details.")
+            err.message + vscode.l10n.t(". See log for details.")
           );
         }
       )
@@ -352,39 +344,33 @@ export class RpoInfoLoader implements vscode.Disposable {
 
 function getTranslations() {
   return {
-    NO_INFO_FROM_RPO: localize(
-      "NO_INFO_FROM_RPO",
-      "There is no information about the RPO."
-    ),
-    ACTIONS: localize("ACTIONS", "Actions"),
-    DRAG_HEADERS: localize("DRAG_HEADERS", "Drag headers ..."),
-    FILTER: localize("FILTER", "Filter"),
-    FILTERING_ON_OFF: localize("FILTERING_ON_OFF", "Filtering on/off"),
-    FIRST: localize("FIRST", "First"),
-    FIRST_PAGE: localize("FIRST_PAGE", "First page"),
-    FROM_TO_OF_COUNT: localize("FROM_TO_OF_COUNT", "from-to de count"),
-    GROUPED_BY: localize("GROUPED_BY", "Grouped by:"),
-    GROUPING_ON_OFF: localize("GROUPING_ON_OFF", "Grouping on/off"),
-    TREE_ON_OFF: localize("TREE_ON_OFF", "Tree server on/off"),
-    LAST: localize("LAST", "Last"),
-    LAST_PAGE: localize("LAST_PAGE", "Last page"),
-    LINES_PAGE: localize("LINES_PAGE", "lines/p."),
-    NEXT: localize("NEXT", "Next"),
-    NEXT_PAGE: localize("NEXT_PAGE", "Next page"),
-    PREVIOUS: localize("PREVIOUS", "Previous"),
-    PREVIOUS_PAGE: localize("PREVIOUS_PAGE", "Previous page"),
-    RESET_CONFIGURATIONS: localize(
-      "RESET_CONFIGURATIONS",
-      "Reset configurations"
-    ),
-    SEARCH: localize("SEARCH", "Search"),
-    SEARCH_ALL_COLUMNS: localize("SEARCH_ALL_COLUMNS", "Search in all columns"),
-    SERVER: localize("SERVER", "Server"),
-    SHOW_HIDE_COLUMNS: localize("SHOW_HIDE_COLUMNS", "Show/hide columns"),
-    INITIALIZING: localize("INITIALIZING", "(initializing)"),
-    SHOW_COLUMNS: localize("SHOW_COLUMNS", "Show Columns"),
-    RESOURCES: localize("RESOURCES", "Resources"),
-    EXPORT_TXT: localize("EXPORT_TXT", "Export as Text"),
-    RPO_LOG: localize("RPO_LOG", "Repository Log"),
+    NO_INFO_FROM_RPO: vscode.l10n.t("There is no information about the RPO."),
+    ACTIONS: vscode.l10n.t("Actions"),
+    DRAG_HEADERS: vscode.l10n.t("Drag headers ..."),
+    FILTER: vscode.l10n.t("Filter"),
+    FILTERING_ON_OFF: vscode.l10n.t("Filtering on/off"),
+    FIRST: vscode.l10n.t("First"),
+    FIRST_PAGE: vscode.l10n.t("First page"),
+    FROM_TO_OF_COUNT: vscode.l10n.t("from-to de count"),
+    GROUPED_BY: vscode.l10n.t("Grouped by:"),
+    GROUPING_ON_OFF: vscode.l10n.t("Grouping on/off"),
+    TREE_ON_OFF: vscode.l10n.t("Tree server on/off"),
+    LAST: vscode.l10n.t("Last"),
+    LAST_PAGE: vscode.l10n.t("Last page"),
+    LINES_PAGE: vscode.l10n.t("lines/p."),
+    NEXT: vscode.l10n.t("Next"),
+    NEXT_PAGE: vscode.l10n.t("Next page"),
+    PREVIOUS: vscode.l10n.t("Previous"),
+    PREVIOUS_PAGE: vscode.l10n.t("Previous page"),
+    RESET_CONFIGURATIONS: vscode.l10n.t("Reset configurations"),
+    SEARCH: vscode.l10n.t("Search"),
+    SEARCH_ALL_COLUMNS: vscode.l10n.t("Search in all columns"),
+    SERVER: vscode.l10n.t("Server"),
+    SHOW_HIDE_COLUMNS: vscode.l10n.t("Show/hide columns"),
+    INITIALIZING: vscode.l10n.t("(initializing)"),
+    SHOW_COLUMNS: vscode.l10n.t("Show Columns"),
+    RESOURCES: vscode.l10n.t("Resources"),
+    EXPORT_TXT: vscode.l10n.t("Export as Text"),
+    RPO_LOG: vscode.l10n.t("Repository Log"),
   };
 }

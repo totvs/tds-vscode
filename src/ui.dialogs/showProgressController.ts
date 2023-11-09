@@ -1,15 +1,11 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-//import Utils from '../utils';
 
-import * as nls from 'vscode-nls';
-let localize = nls.loadMessageBundle();
 const showProgressController = require('template-literal');
 
-
 const localizeHTML = {
-	"tds.webview.title": localize("tds.webview.title", "Progress..."),
+	"tds.webview.title": vscode.l10n.t( "Progress..."),
 };
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
@@ -19,7 +15,7 @@ export default class ShowProgressControllerDialog {
 	initializePage(context: vscode.ExtensionContext) {
 		currentPanel = vscode.window.createWebviewPanel(
 			'totvs-developer-studio.showProgress',
-			localize("tds.webview.title", "Progress..."),
+			vscode.l10n.t( "Progress..."),
 			vscode.ViewColumn.One,
 			{
 				enableScripts: true,

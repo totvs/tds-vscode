@@ -3,20 +3,15 @@ import * as path from "path";
 import * as fs from "fs";
 import { ServersConfig } from "../../utils";
 const compile = require("template-literal");
-import * as nls from "vscode-nls";
 import {
   IApplyTemplateResult,
   sendApplyTemplateRequest,
 } from "../../protocolMessages";
-let localize = nls.loadMessageBundle();
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
 const localizeHTML = {
-  "tds.webview.template.apply": localize(
-    "tds.webview.template.apply",
-    "Apply Template"
-  ),
+  "tds.webview.template.apply": vscode.l10n.t("Apply Template"),
 };
 
 export function openTemplateApplyView(
@@ -148,7 +143,7 @@ function templateApply(templateFile) {
   vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Window,
-      title: localize("APPLYING_TEMPLATE", "Applying template"),
+      title: vscode.l10n.t("Applying template"),
       cancellable: true,
     },
     async (progress, token) => {
@@ -158,17 +153,14 @@ function templateApply(templateFile) {
 
       progress.report({
         increment: 0,
-        message: localize(
-          "STARTINT_TEMPLATE",
-          "Processing... (may take several minutes)"
-        ),
+        message: vscode.l10n.t("Processing... (may take several minutes)"),
       });
 
       return sendApplyTemplateRequest(server, includesUris, templateUri).then(
         (response: IApplyTemplateResult) => {
           progress.report({
             increment: 100,
-            message: localize("FINISHED_TEMPLATE", "Finished."),
+            message: vscode.l10n.t("Finished."),
           });
           console.log(response.message);
         }

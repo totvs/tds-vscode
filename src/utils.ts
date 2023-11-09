@@ -3,7 +3,6 @@ import * as path from "path";
 import * as fs from "fs";
 import * as cheerio from "cheerio";
 import * as ini from "ini";
-import * as nls from "vscode-nls";
 import { languageClient } from "./extension";
 import { Authorization, CompileKey } from "./compileKey/compileKey";
 import { IRpoToken, getEnabledRpoTokenInfos } from "./rpoToken";
@@ -17,7 +16,6 @@ import {
 import { EnvSection, ServerItem } from "./serverItem";
 
 const homedir = require("os").homedir();
-const localize = nls.loadMessageBundle();
 
 export enum MESSAGETYPE {
   /**
@@ -633,10 +631,7 @@ export class ServersConfig {
         })
       ) {
         vscode.window.showErrorMessage(
-          localize(
-            "tds.webview.serversView.serverNameDuplicated",
-            "Server name already exists"
-          )
+          vscode.l10n.t("Server name already exists")
         );
         return undefined;
       } else {
@@ -740,10 +735,7 @@ export class ServersConfig {
 
   static removeExpiredAuthorization() {
     vscode.window.showWarningMessage(
-      localize(
-        "tds.webview.Utils.removeExpiredAuthorization",
-        "Expired authorization token deleted"
-      )
+      vscode.l10n.t("Expired authorization token deleted")
     );
     this.deletePermissionsInfos(); // remove expired authorization key
   }
@@ -758,7 +750,7 @@ export class ServersConfig {
       includes = servers.includes as Array<string>;
     }
     return includes;
-}
+  }
 
   /**
    * Recupera a lista de includes do arquivod servers.json
@@ -804,20 +796,12 @@ export class ServersConfig {
           try {
             const fi: fs.Stats = fs.lstatSync(value);
             if (!fi.isDirectory()) {
-              const msg: string = localize(
-                "tds.webview.Utils.reviewList",
-                "Review the folder list in order to search for settings (.ch). Not recognized as folder: {0}",
-                value
-              );
+              const msg: string = vscode.l10n.t("Review the folder list in order to search for settings (.ch). Not recognized as folder: {0}", value);
               vscode.window.showWarningMessage(msg);
               return false;
             }
           } catch (error) {
-            const msg: string = localize(
-              "tds.webview.Utils.reviewList2",
-              "Review the folder list in order to search for settings (.ch). Invalid folder: {0}",
-              value
-            );
+            const msg: string = vscode.l10n.t("Review the folder list in order to search for settings (.ch). Invalid folder: {0}", value);
             vscode.window.showWarningMessage(msg);
             return false;
           }
@@ -826,10 +810,7 @@ export class ServersConfig {
       }
     } else {
       vscode.window.showWarningMessage(
-        localize(
-          "tds.webview.Utils.listFolders",
-          "List of folders to search for definitions not configured."
-        )
+        vscode.l10n.t("List of folders to search for definitions not configured.")
       );
     }
     return includes;
@@ -1223,7 +1204,7 @@ export class LaunchConfig {
   static lastProgramsAdd(newProgram) {
     let launchConfig = getLaunchConfig();
     if (launchConfig) {
-      if(launchConfig.lastPrograms === undefined) {
+      if (launchConfig.lastPrograms === undefined) {
         launchConfig.lastPrograms = [];
       }
       launchConfig.lastPrograms.push(newProgram);
@@ -1315,16 +1296,16 @@ export class LaunchConfig {
       if (launchConfig) {
         for (let key = 0; key < launchConfig.configurations.length; key++) {
           let launchElement = launchConfig.configurations[key];
-          if(debugSession !== undefined && launchElement.name === debugSession.name) {
+          if (debugSession !== undefined && launchElement.name === debugSession.name) {
             launchElement.ignoreSourcesNotFound = isIgnoreSourceNotFound;
             break;
           }
         }
         persistLaunchInfo(launchConfig);
       }
-		} catch(e) {
+    } catch (e) {
       this.logInvalidLaunchJsonFile(e);
-		}
+    }
   }
 
   /**

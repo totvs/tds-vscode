@@ -21,10 +21,8 @@ import {
 } from "../protocolMessages";
 import { languageClient } from "../extension";
 import serverProvider from "../serverItemProvider";
-import * as nls from "vscode-nls";
 import { ServerItem } from "../serverItem";
 
-const localize = nls.loadMessageBundle();
 const DEFAULT_SPEED = 30;
 const WS_STATE_KEY = "MONITOR_TABLE";
 
@@ -80,7 +78,7 @@ export class MonitorLoader {
 
     this._panel = vscode.window.createWebviewPanel(
       "monitorLoader",
-      localize("MONITOR", "Monitor"),
+      vscode.l10n.t("Monitor"),
       vscode.ViewColumn.One,
       {
         enableScripts: true,
@@ -98,10 +96,7 @@ export class MonitorLoader {
         this.updateUsers(listener.webviewPanel.visible);
 
         if (!listener.webviewPanel.visible) {
-          this.updateSpeedStatus(localize(
-            "MSG_MONITOR_NOT_VISIBLE",
-            "Monitor tab is not visible."
-          ))
+          this.updateSpeedStatus(vscode.l10n.t("Monitor tab is not visible."))
         }
       },
       undefined,
@@ -121,11 +116,7 @@ export class MonitorLoader {
 
       if (this.monitorServer) {
         vscode.window.setStatusBarMessage(
-          localize(
-            "MSG_DISCONECT_MONITOR",
-            "Disconnecting monitor from server [{0}]",
-            this.monitorServer.name
-          ),
+          vscode.l10n.t("Disconnecting monitor from server [{0}]", this.monitorServer.name),
           sendDisconnectRequest(this.monitorServer).then(() => {
             vscode.window.setStatusBarMessage("");
           })
@@ -164,11 +155,7 @@ export class MonitorLoader {
   public toggleServerToMonitor(serverItem: ServerItem) {
     if (this.monitorServer) {
       vscode.window.setStatusBarMessage(
-        localize(
-          "DISCONNECTING_SERVER",
-          "Disconnecting [{0}] from the server ",
-          this.monitorServer.name
-        ),
+        vscode.l10n.t("Disconnecting [{0}] from the server ", this.monitorServer.name),
         sendDisconnectRequest(this.monitorServer)
       );
     }
@@ -195,11 +182,7 @@ export class MonitorLoader {
             this.monitorServer = monitorItem;
           } else {
             vscode.window.showErrorMessage(
-              localize(
-                "NOT_POSSIBLE_CONNECTION",
-                "It was not possible to make the monitoring connection at [{0}].",
-                this.monitorServer.name
-              )
+              vscode.l10n.t("It was not possible to make the monitoring connection at [{0}].", this.monitorServer.name)
             );
           }
         })
@@ -248,10 +231,7 @@ export class MonitorLoader {
           this.isLockServer(server);
         } else {
           vscode.window.showErrorMessage(
-            localize(
-              "NOT_BLOCK_NEW_CONNECTIONS",
-              "Could not block new connections."
-            )
+            vscode.l10n.t("Could not block new connections.")
           );
           console.log(result);
         }
@@ -268,10 +248,7 @@ export class MonitorLoader {
         this.lock = response;
         if (response) {
           vscode.window.showInformationMessage(
-            localize(
-              "NEW_CONNECTIONS_BLOCKED",
-              "Server with new connections blocked."
-            )
+            vscode.l10n.t("Server with new connections blocked.")
           );
         }
       },
@@ -286,11 +263,7 @@ export class MonitorLoader {
       (response: string) => {
         if (response !== "OK") {
           vscode.window.showErrorMessage(
-            localize(
-              "SERVER_NOT_BE_SHUTDOWN",
-              "The server could not be shut down. Return: {0}",
-              response
-            )
+            vscode.l10n.t("The server could not be shut down. Return: {0}", response)
           );
         } else {
           serverProvider.connectedServerItem = undefined;
@@ -312,7 +285,7 @@ export class MonitorLoader {
     vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
-        title: localize("CLOSING_CONNECTIONS", "Closing connections."),
+        title: vscode.l10n.t("Closing connections."),
         cancellable: true,
       },
       (progress, token) => {
@@ -327,12 +300,7 @@ export class MonitorLoader {
         recipients.forEach((recipient) => {
           cnt++;
           progress.report({
-            message: localize(
-              "SHUTTING_DOWN",
-              "Shutting down #{0}/{1}",
-              cnt,
-              total
-            ),
+            message: vscode.l10n.t("Shutting down #{0}/{1}", cnt, total),
             increment: inc,
           });
 
@@ -376,7 +344,7 @@ export class MonitorLoader {
     vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
-        title: localize("SENDING_MESSAGE", "Sending message to users."),
+        title: vscode.l10n.t("Sending message to users."),
         cancellable: true,
       },
       (progress, token) => {
@@ -391,7 +359,7 @@ export class MonitorLoader {
         recipients.forEach((recipient) => {
           cnt++;
           progress.report({
-            message: localize("SENDING", "Sending #{0}/{1}", cnt, total),
+            message: vscode.l10n.t("Sending #{0}/{1}", cnt, total),
             increment: inc,
           });
 
@@ -427,14 +395,11 @@ export class MonitorLoader {
         if (reason === 1) {
           //1 dialog open, 2 selected row
           this.updateSpeedStatus(
-            localize(
-              "WAIT_CONFIG_UPDATE",
-              "Waiting for preview configuration changes."
-            )
+            vscode.l10n.t("Waiting for preview configuration changes.")
           );
         } else if (reason === 2) {
           this.updateSpeedStatus(
-            localize("SELECTED_CONNECTIONS", "Selected connections.")
+            vscode.l10n.t("Selected connections.")
           );
         } else {
           this.updateSpeedStatus();
@@ -533,12 +498,7 @@ export class MonitorLoader {
     })
 
     vscode.window.setStatusBarMessage(
-      "$(sync~spin)" +
-      localize(
-        "MONITOR_SETTING",
-        "Setting server [{0}]...",
-        this.monitorServer.name
-      ),
+      `$(sync~spin)${vscode.l10n.t("Setting server [{0}]...", this.monitorServer.name)}`,
       sendSetEnvEncodesRequest(this.monitorServer, envEncodeList).then(
         (message: string) => {
           if (message !== "OK") {
@@ -549,7 +509,7 @@ export class MonitorLoader {
         (err: Error) => {
           languageClient.error(err.message, err);
           vscode.window.showErrorMessage(
-            err.message + localize("SEE_LOG", ". See log for details.")
+            err.message + vscode.l10n.t(". See log for details.")
           );
         }
       )
@@ -582,18 +542,14 @@ export class MonitorLoader {
         this._panel.webview.postMessage({
           command: MonitorPanelAction.UpdateUsers,
           data: {
-            serverName: localize("AWAITING_SELECTION", "(awaiting selection)"),
+            serverName: vscode.l10n.t("(awaiting selection)"),
             users: [],
           },
         });
       } else {
         vscode.window.setStatusBarMessage(
           "$(gear~spin)" +
-          localize(
-            "REQUESTING_DATA_FROM_SERVER",
-            "Requesting data from the server [{0}]",
-            this.monitorServer.name
-          ),
+          vscode.l10n.t("Requesting data from the server [{0}]", this.monitorServer.name),
           sendGetUsersRequest(this.monitorServer).then(
             (users: any) => {
               if (users) {
@@ -611,13 +567,8 @@ export class MonitorLoader {
                 const servers = Array.from(map.keys());
 
                 const complement = users.length
-                  ? localize(
-                    "THREADS",
-                    " ({0} thread(s) in {1} server(s))",
-                    users.length,
-                    servers.length
-                  )
-                  : localize("THREADS_NONE", " (none thread)");
+                  ? vscode.l10n.t(" ({0} thread(s) in {1} server(s))", users.length, servers.length)
+                  : vscode.l10n.t(" (none thread)");
 
                 this._panel.webview.postMessage({
                   command: MonitorPanelAction.UpdateUsers,
@@ -641,21 +592,12 @@ export class MonitorLoader {
             (err: Error) => {
               languageClient.error(err.message, err);
               vscode.window.showErrorMessage(
-                err.message + localize("SEE_LOG", ". See log for details.")
+                err.message + vscode.l10n.t(". See log for details.")
               );
 
               if (this.speed > 0) {
-                languageClient.info(
-                  localize(
-                    "AUTOMATIC_UPDATE_STOPPED",
-                    "Automatic update stopped."
-                  )
-                );
-                languageClient.info(
-                  localize(
-                    "PLEASE_CLICK_REACTIVATE",
-                    "Please click on [Update] to reactivate."
-                  )
+                languageClient.info(vscode.l10n.t("Automatic update stopped."));
+                languageClient.info(vscode.l10n.t("Please click on [Update] to reactivate.")
                 );
               }
             }
@@ -673,26 +615,15 @@ export class MonitorLoader {
 
     if (pauseReason) {
       icon = "$(debug-pause)";
-      msg1 = localize("UPDATE_PAUSED", "Monitor paused: {0}", pauseReason);
+      msg1 = vscode.l10n.t("Monitor paused: {0}", pauseReason);
     } else {
-      msg1 = localize(
-        "MSG_1",
-        "Monitor: Updated as {0}.",
-        `${nextUpdate.toLocaleTimeString()}`
-      );
+      msg1 = vscode.l10n.t("Monitor: Updated as {0}.", `${nextUpdate.toLocaleTimeString()}`);
 
       if (this.speed === 0) {
-        msg2 = localize(
-          "MSG_2_REQUEST",
-          "The next one will take place on request."
-        );
+        msg2 = vscode.l10n.t("The next one will take place on request.");
       } else {
         nextUpdate.setSeconds(nextUpdate.getSeconds() + this.speed);
-        msg2 = localize(
-          "MSG_2_NEXT",
-          "The next one will occur {0}.",
-          `${nextUpdate.toLocaleTimeString()}`
-        );
+        msg2 = vscode.l10n.t("The next one will occur {0}.", `${nextUpdate.toLocaleTimeString()}`);
       }
     }
 
@@ -775,134 +706,83 @@ function updateScheduledUsers(monitor: MonitorLoader, scheduler: boolean) {
 
 function getTranslations() {
   return {
-    ACTIONS: localize("ACTIONS", "Actions"),
-    ENVIRONMENT: localize("ENVIRONMENT", "Environment"),
-    CANCEL: localize("CANCEL", "Cancel"),
-    COMMENT: localize("COMMENT", "Comment"),
-    COMPUTER_NAME: localize("COMPUTER_NAME", "Computer Name"),
-    CONNECTION: localize("CONNECTION", "Connection"),
-    CONNECTIONS: localize("CONNECTIONS", "connections"),
-    CONNECTIONS_SELECTED: localize(
-      "CONNECTIONS_SELECTED",
-      "{0} connections selected"
-    ),
-    "CONNECTION_TYPE ": localize("CONNECTION_TYPE ", "Connection Type"),
-    CTREE_ID: localize("CTREE_ID", "CTree ID"),
-    DISCONNECT_ALL_USERS: localize(
-      "DISCONNECT_ALL_USERS",
-      "Disconnect all users"
-    ),
-    DISCONNECT_SELECTD_USERS: localize(
-      "DISCONNECT_SELECTD_USERS",
-      "Disconnect selectd users"
-    ),
-    DRAG_HEADERS: localize("DRAG_HEADERS", "Drag headers ..."),
-    ELAPSED_TIME: localize("ELAPSED_TIME", "Elapsed time"),
-    FILTER: localize("FILTER", "Filter"),
-    FILTERING_ON_OFF: localize("FILTERING_ON_OFF", "Filtering on/off"),
-    FIRST: localize("FIRST", "First"),
-    FIRST_PAGE: localize("FIRST_PAGE", "First page"),
-    FROM_TO_OF_COUNT: localize("FROM_TO_OF_COUNT", "from-to de count"),
-    GROUPED_BY: localize("GROUPED_BY", "Grouped by:"),
-    GROUPING_ON_OFF: localize("GROUPING_ON_OFF", "Grouping on/off"),
-    TREE_ON_OFF: localize("TREE_ON_OFF", "Tree server on/off"),
-    INACTIVITY_TIME: localize("INACTIVITY_TIME", "Idle time"),
-    INFO_RELEASE_CONNECTION: localize(
-      "INFO_RELEASE_CONNECTION",
-      "When confirming the release of new connections, users can connect to that server again."
-    ),
-    "INSTRUCTIONS_SEG ": localize("INSTRUCTIONS_SEG ", "Instructions/sec"),
-    LAST: localize("LAST", "Last"),
-    LAST_PAGE: localize("LAST_PAGE", "Last page"),
-    "LINES_PAGE.": localize("LINES_PAGE.", "lines/p."),
-    LOCK_SERVER: localize("LOCK_SERVER", "Lock server"),
-    LONG: localize("LONG", "(long)"),
-    MANUAL: localize("MANUAL", "(manual)"),
-    MEMORY_USE: localize("MEMORY_USE", "Memory in Use"),
-    MESSAGE_TEXT: localize("MESSAGE_TEXT", "Message Text"),
-    NEXT: localize("NEXT", "Next"),
-    NEXT_PAGE: localize("NEXT_PAGE", "Next page"),
-    NORMAL: localize("NORMAL", "(normal)"),
-    NO_CONNECTIONS: localize(
-      "NO_CONNECTIONS",
-      "There are no connections or they are not visible to the monitor."
-    ),
-    OK: localize("OK", "OK"),
-    PREVIOUS: localize("PREVIOUS", "Previous"),
-    PREVIOUS_PAGE: localize("PREVIOUS_PAGE", "Previous page"),
-    PROGRAM: localize("PROGRAM", "Program"),
-    REFRESH_DATA: localize("REFRESH_DATA", "Refresh data"),
-    REMARKS: localize("REMARKS", "Remarks"),
-    RESET_CONFIGURATIONS: localize(
-      "RESET_CONFIGURATIONS",
-      "Reset configurations"
-    ),
-    SEARCH: localize("SEARCH", "Search"),
-    SEARCH_ALL_COLUMNS: localize("SEARCH_ALL_COLUMNS", "Search in all columns"),
-    SEND: localize("SEND", "Submit"),
-    SEND_MESSAGE_ALL_USERS: localize(
-      "SEND_MESSAGE_ALL_USERS",
-      "Send message to all users"
-    ),
-    SEND_MESSAGE_SELECTED_USERS: localize(
-      "SEND_MESSAGE_SELECTED_USERS",
-      "Send message to selected users"
-    ),
-    SERVER: localize("SERVER", "Server"),
-    SHORT: localize("SHORT", "(short)"),
-    SHOW_HIDE_COLUMNS: localize("SHOW_HIDE_COLUMNS", "Show/hide columns"),
-    SID: localize("SID", "SID"),
-    STOP_SERVER: localize("STOP_SERVER", "Stop server"),
-    THREAD: localize("THREAD", "ThreadID"),
-    "TOTAL_INSTRUCTIONS ": localize("TOTAL_INSTRUCTIONS ", "Instructions"),
-    UNLOCK_SERVER: localize("UNLOCK_SERVER", "Unlock server"),
-    UPDATE_SPEED: localize("UPDATE_SPEED", "Update speed {0}"),
-    USER: localize("USER", "User"),
-    USER_NAME: localize("USER_NAME", "User Name"),
-    WARNING_BLOCKING_CONNECTIONS: localize(
-      "WARNING_BLOCKING_CONNECTIONS",
-      "When confirming the blocking of new connections, no user can connect to that server."
-    ),
-    WARN_ALL_CONNECTIONS_CLOSE_1: localize(
-      "WARN_ALL_CONNECTIONS_CLOSE_1",
-      "When confirming the server stop, all connections (including this) will be closed, as well as other processes."
-    ),
-    WARN_ALL_CONNECTIONS_CLOSE_2: localize(
-      "ERROR_ALL_CONNECTIONS_CLOSE_2",
-      "Restarting will only be possible by physically accessing the server."
-    ),
-    SECONDS: localize("SECONDS", "{0} seconds"),
-    WARN_CONNECTION_TERMINATED: localize(
-      "WARN_CONNECTION_TERMINATED",
-      "The users listed below will have their connections terminated."
-    ),
-    TERMINATE_CONNECTIONS_IMMEDIATELY: localize(
-      "TERMINATE_CONNECTIONS_IMMEDIATELY",
-      "Terminate connections immediately."
-    ),
-    DLG_TITLE_SEND_MESSAGE: localize(
-      "DLG_TITLE_SEND_MESSAGE",
-      "Message sending"
-    ),
-    DLG_TITLE_CLOSE_CONNECTIONS: localize(
-      "DLG_TITLE_CLOSE_CONNECTIONS",
-      "Closes user connections"
-    ),
-    DLG_TITLE_SPEED: localize("DLG_TITLE_SPEED", "Interval between updates"),
-    DLG_TITLE_STOP_SERVER: localize(
-      "DLG_TITLE_STOP_SERVER",
-      "Confirm the server stop?"
-    ),
-    DLG_TITLE_LOCK_SERVER: localize(
-      "DLG_TITLE_LOCK_SERVER",
-      "Block new connections?"
-    ),
-    DLG_TITLE_REMARKS: localize("DLG_TITLE_REMARKS", "Remarks"),
-    DLG_TITLE_CHANGE_CODE_PAGE: localize("DLG_TITLE_CHANGE_CODE_PAGE", "Change Environment Encoding"),
-    DLG_TITLE_UNLOCK: localize("DLG_TITLE_UNLOCK", "Unlock new connections?"),
-    ENVIRONEMNT: localize("ENVIRONEMNT", "Environemnt"),
-    MONITOR: localize("MONITOR", "Monitor"),
-    INITIALIZING: localize("INITIALIZING", "(initializing)"),
-    SHOW_COLUMNS: localize("SHOW_COLUMNS", "Show Columns"),
+    ACTIONS: vscode.l10n.t("Actions"),
+    ENVIRONMENT: vscode.l10n.t("Environment"),
+    CANCEL: vscode.l10n.t("Cancel"),
+    COMMENT: vscode.l10n.t("Comment"),
+    COMPUTER_NAME: vscode.l10n.t("Computer Name"),
+    CONNECTION: vscode.l10n.t("Connection"),
+    CONNECTIONS: vscode.l10n.t("connections"),
+    CONNECTIONS_SELECTED: vscode.l10n.t("{0} connections selected"),
+    "CONNECTION_TYPE ": vscode.l10n.t("Connection Type"),
+    CTREE_ID: vscode.l10n.t("CTree ID"),
+    DISCONNECT_ALL_USERS: vscode.l10n.t("Disconnect all users"),
+    DISCONNECT_SELECTD_USERS: vscode.l10n.t("Disconnect selectd users"),
+    DRAG_HEADERS: vscode.l10n.t("Drag headers ..."),
+    ELAPSED_TIME: vscode.l10n.t("Elapsed time"),
+    FILTER: vscode.l10n.t("Filter"),
+    FILTERING_ON_OFF: vscode.l10n.t("Filtering on/off"),
+    FIRST: vscode.l10n.t("First"),
+    FIRST_PAGE: vscode.l10n.t("First page"),
+    FROM_TO_OF_COUNT: vscode.l10n.t("from-to de count"),
+    GROUPED_BY: vscode.l10n.t("Grouped by:"),
+    GROUPING_ON_OFF: vscode.l10n.t("Grouping on/off"),
+    TREE_ON_OFF: vscode.l10n.t("Tree server on/off"),
+    INACTIVITY_TIME: vscode.l10n.t("Idle time"),
+    INFO_RELEASE_CONNECTION: vscode.l10n.t("When confirming the release of new connections, users can connect to that server again."),
+    "INSTRUCTIONS_SEG ": vscode.l10n.t("Instructions/sec"),
+    LAST: vscode.l10n.t("Last"),
+    LAST_PAGE: vscode.l10n.t("Last page"),
+    "LINES_PAGE.": vscode.l10n.t("lines/p."),
+    LOCK_SERVER: vscode.l10n.t("Lock server"),
+    LONG: vscode.l10n.t("(long)"),
+    MANUAL: vscode.l10n.t("(manual)"),
+    MEMORY_USE: vscode.l10n.t("Memory in Use"),
+    MESSAGE_TEXT: vscode.l10n.t("Message Text"),
+    NEXT: vscode.l10n.t("Next"),
+    NEXT_PAGE: vscode.l10n.t("Next page"),
+    NORMAL: vscode.l10n.t("(normal)"),
+    NO_CONNECTIONS: vscode.l10n.t("There are no connections or they are not visible to the monitor."),
+    OK: vscode.l10n.t("OK"),
+    PREVIOUS: vscode.l10n.t("Previous"),
+    PREVIOUS_PAGE: vscode.l10n.t("Previous page"),
+    PROGRAM: vscode.l10n.t("Program"),
+    REFRESH_DATA: vscode.l10n.t("Refresh data"),
+    REMARKS: vscode.l10n.t("Remarks"),
+    RESET_CONFIGURATIONS: vscode.l10n.t("Reset configurations"),
+    SEARCH: vscode.l10n.t("Search"),
+    SEARCH_ALL_COLUMNS: vscode.l10n.t("Search in all columns"),
+    SEND: vscode.l10n.t("Submit"),
+    SEND_MESSAGE_ALL_USERS: vscode.l10n.t("Send message to all users"),
+    SEND_MESSAGE_SELECTED_USERS: vscode.l10n.t("Send message to selected users"),
+    SERVER: vscode.l10n.t("Server"),
+    SHORT: vscode.l10n.t("(short)"),
+    SHOW_HIDE_COLUMNS: vscode.l10n.t("Show/hide columns"),
+    SID: vscode.l10n.t("SID"),
+    STOP_SERVER: vscode.l10n.t("Stop server"),
+    THREAD: vscode.l10n.t("ThreadID"),
+    "TOTAL_INSTRUCTIONS ": vscode.l10n.t("Instructions"),
+    UNLOCK_SERVER: vscode.l10n.t("Unlock server"),
+    UPDATE_SPEED: vscode.l10n.t("Update speed {0}"),
+    USER: vscode.l10n.t("User"),
+    USER_NAME: vscode.l10n.t("User Name"),
+    WARNING_BLOCKING_CONNECTIONS: vscode.l10n.t("When confirming the blocking of new connections, no user can connect to that server."),
+    WARN_ALL_CONNECTIONS_CLOSE_1: vscode.l10n.t("When confirming the server stop, all connections (including this) will be closed, as well as other processes."),
+    WARN_ALL_CONNECTIONS_CLOSE_2: vscode.l10n.t("Restarting will only be possible by physically accessing the server."),
+    SECONDS: vscode.l10n.t("{0} seconds"),
+    WARN_CONNECTION_TERMINATED: vscode.l10n.t("WARN_CONNECTION_TERMINATED", "The users listed below will have their connections terminated."),
+    TERMINATE_CONNECTIONS_IMMEDIATELY: vscode.l10n.t("Terminate connections immediately."),
+    DLG_TITLE_SEND_MESSAGE: vscode.l10n.t("Message sending"),
+    DLG_TITLE_CLOSE_CONNECTIONS: vscode.l10n.t("Closes user connections"),
+    DLG_TITLE_SPEED: vscode.l10n.t("Interval between updates"),
+    DLG_TITLE_STOP_SERVER: vscode.l10n.t("Confirm the server stop?"),
+    DLG_TITLE_LOCK_SERVER: vscode.l10n.t("Block new connections?"),
+    DLG_TITLE_REMARKS: vscode.l10n.t("Remarks"),
+    DLG_TITLE_CHANGE_CODE_PAGE: vscode.l10n.t("Change Environment Encoding"),
+    DLG_TITLE_UNLOCK: vscode.l10n.t("Unlock new connections?"),
+    ENVIRONEMNT: vscode.l10n.t("Environemnt"),
+    MONITOR: vscode.l10n.t("Monitor"),
+    INITIALIZING: vscode.l10n.t("(initializing)"),
+    SHOW_COLUMNS: vscode.l10n.t("Show Columns"),
   };
 }

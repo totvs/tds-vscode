@@ -1,4 +1,4 @@
-//import * as vscode from 'vscode';
+import * as vscode from 'vscode';
 import { ExtensionContext, QuickInputButton, Uri, QuickPickItem, workspace } from "vscode";
 import Utils, { ServersConfig } from "./utils";
 import * as path from 'path';
@@ -6,9 +6,7 @@ import { MultiStepInput } from "./multiStepInput";
 import { connectServer, reconnectServer } from "./serversView";
 import { ConnTypeIds } from "./protocolMessages";
 
-import * as nls from 'vscode-nls';
 import { ServerItem, EnvSection } from "./serverItem";
-const localize = nls.loadMessageBundle();
 
 /**
  * Coleta os dados necessarios para conectar a um servidor advpl/4gl.
@@ -21,7 +19,7 @@ const localize = nls.loadMessageBundle();
 export async function inputConnectionParameters(context: ExtensionContext, serverParam: any, connType: ConnTypeIds, reconnect: boolean) {
 
 	//const VALIDADE_TIME_OUT = 1000;
-	const title = localize('CONNECTION', 'Connection');
+	const title = vscode.l10n.t('Connection');
 
 	class NewEnvironmentButton implements QuickInputButton {
 		constructor(public iconPath: { light: Uri; dark: Uri; }, public tooltip: string) { }
@@ -30,7 +28,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 	const addEnvironmentButton = new NewEnvironmentButton({
 		dark: Uri.file(path.join(__filename, '..', '..', 'resources', 'dark', 'add.png')),
 		light: Uri.file(path.join(__filename, '..', '..', 'resources', 'light', 'add.png')),
-	}, localize('NEW_ENVIRONMENT', 'New environment'));
+	}, vscode.l10n.t('New environment'));
 
 	let CONNECT_TOTAL_STEPS = 2;
 	let CONNECT_SERVER_STEP = 1;
@@ -82,7 +80,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 			title: title,
 			step: CONNECT_SERVER_STEP,
 			totalSteps: CONNECT_TOTAL_STEPS,
-			placeholder: localize('SELECT_SERVER', 'Select server'),
+			placeholder: vscode.l10n.t('Select server'),
 			items: servers,
 			activeItem: typeof state.server !== 'string' ? state.server : undefined,
 			shouldResume: shouldResume,
@@ -102,7 +100,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 				title: title,
 				step: CONNECT_ENVIRONMENT_STEP,
 				totalSteps: CONNECT_TOTAL_STEPS,
-				placeholder: localize('tds.vscode.select_environment', 'Select environment'),
+				placeholder: vscode.l10n.t('Select environment'),
 				items: environments,
 				activeItem: typeof state.environment !== 'string' ? state.environment : undefined,
 				buttons: [addEnvironmentButton],
@@ -125,7 +123,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 			step: CONNECT_ENVIRONMENT_STEP,
 			totalSteps: CONNECT_TOTAL_STEPS,
 			value: typeof state.environment === 'string' ? state.environment : '',
-			prompt: localize('ENTER_ENVIRONMENT', 'Enter the name of the environment'),
+			prompt: vscode.l10n.t('Enter the name of the environment'),
 			shouldResume: shouldResume,
 			validate: validateRequiredValue,
 			password: false
@@ -156,7 +154,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 		// ...validate...
 		//Nao esta claro o motivo desse timeout, pois o resolve nunca é passado e sempre é esperado o total do timeout antes de continuar
 		//await new Promise(resolve => setTimeout(resolve, VALIDADE_TIME_OUT));
-		return value === '' ? localize('REQUIRED_INFORMATION', 'Required information') : undefined;
+		return value === '' ? vscode.l10n.t('Required information') : undefined;
 	}
 
 	async function getEnvironments(state: Partial<State>): Promise<QuickPickItem[]> {

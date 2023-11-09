@@ -1,9 +1,6 @@
 import * as fs from 'fs';
 import * as vscode from 'vscode';
 import { ServersConfig } from './utils';
-import * as nls from 'vscode-nls';
-
-const localize: nls.LocalizeFunc = nls.loadMessageBundle();
 
 export interface IRpoToken {
   token: string;
@@ -42,11 +39,7 @@ export function getRpoTokenFromFile(path: string): IRpoToken {
         result.error = error.message;
       }
     } else {
-      result.error = localize(
-        'tds.vscode.rpoToken.file.not.found',
-        'File not found. File: {0}',
-        path
-      );
+      result.error = vscode.l10n.t('File not found. File: {0}', path);
     }
   }
 
@@ -88,22 +81,12 @@ export function getRpoTokenFromString(value: string): IRpoToken {
 }
 
 export function rpoTokenQuickPick() {
-  let inputRpoToken = localize(
-    'tds.package.inputRpoToken',
-    'Input Compilation Token',
-  );
-  let clearRpoToken = localize(
-    'tds.package.clearRpoToken',
-    'Clear Compilation Token',
-  );
+  let inputRpoToken = vscode.l10n.t('Input Compilation Token');
+  let clearRpoToken = vscode.l10n.t('Clear Compilation Token');
   let enabled = getEnabledRpoTokenInfos();
-  let actionRpoToken = enabled ? localize(
-    'tds.package.selectRpoToken.disable',
-    'Disable Compilation Token',
-  ) : localize(
-    'tds.package.selectRpoToken.enable',
-    'Enable Compilation Token',
-  );
+  let actionRpoToken = enabled ?
+    vscode.l10n.t('Disable Compilation Token')
+    : vscode.l10n.t('Enable Compilation Token');
   //
   let options: Array<string> = [ inputRpoToken ];
   let rpoToken: IRpoToken = ServersConfig.getRpoTokenInfos();
