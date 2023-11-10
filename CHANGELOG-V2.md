@@ -1,5 +1,13 @@
 # Changelog ([Changelog Versão 1](CHANGELOG.md))
 
+## Versão [2.0.0-next]
+
+### Melhoria
+
+#### Migração do mecanismo de tradução de vscode-nls para @vscode/l10n [DTCLIENT01-4399](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4399)
+
+Devido a descontinuação do [vscode-nls](https://github.com/microsoft/vscode-nls#vscode-nls), foi efetuado migração para @vscode/l1on e revisão das traduções e ortografia.
+
 ## Versão [2.0.0-RC13]
 
 ### Correção
