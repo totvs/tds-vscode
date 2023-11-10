@@ -71,7 +71,6 @@
   "Filtering on/off": "Filtrado encendido/apagado",
   "First": "Primera",
   "First page": "Primera página",
-  "from-to de count": "from-to de count",
   "Grouped by:": "Agrupado por:",
   "Grouping on/off": "Agrupación de encendido/apagado",
   "Tree server on/off": "Árbol de servidores encendido/apagado",
@@ -339,5 +338,6 @@
   "Global Include": "Global Include",
   "Removed [{0}] invalid breakpoints.": "Eliminado [{0}] puntos de interrupción no válidos.",
   "The command to Disable/Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually": "El comando para deshabilitar/habilitar el sincronismo de la tabla necesita una sesión de depuración activa.Para una configuración inicial, cambie el archivo la launch.json manualmente",
-  "Compile Key": "Compilar la llave"
+  "Compile Key": "Compilar la llave",
+  "from-to of count": "from-to el count"
 }
