@@ -178,7 +178,7 @@ export function activate(context: ExtensionContext) {
     let statusStyle = config.get("misc.status");
     if (statusStyle === "short" || statusStyle === "detailed") {
       let statusIcon = window.createStatusBarItem(StatusBarAlignment.Right);
-      statusIcon.text = vscode.l10n.t("advpl: loading");
+      statusIcon.text = vscode.l10n.t("Advpl: loading");
       statusIcon.tooltip = vscode.l10n.t("advpl is loading project metadata (ie, compile_commands.json)");
       statusIcon.show();
     }

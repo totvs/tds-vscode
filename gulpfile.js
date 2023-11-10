@@ -68,14 +68,6 @@ const addI18nTask = function () {
     .pipe(gulp.dest("."));
 };
 
-// const webPack = function () {
-//   return gulp
-//     .src("src/entry.js")
-//     .pipe(webpack(require("./webpack.config.js")))
-//     .pipe(gulp.dest("dist/"));
-// };
-
-
 const buildTask = gulp.series(cleanTask, internalNlsCompileTask, addI18nTask, internalCompileWebpack, internalCompileEsBuildProd);
 
 const doCompile = function (buildNls) {
@@ -155,6 +147,47 @@ gulp.task("build", buildTask);
 
 gulp.task("cleanLogs", cleanLogsTask);
 
+const internalExportL10n = function () {
+  return run('npx @vscode/l10n-dev export --outDir ./l10n ./src', { verbosity: true }).exec()
+};
+
+const internalGenerateXlf = function () {
+  return run('npx @vscode/l10n-dev generate-xlf ./package.nls.json ./l10n/bundle.l10n.json --outFile vscode-git.xlf', { verbosity: true }).exec()
+};
+
+const internalImportXlf = function (translationFile) {
+  return run('npx @vscode/l10n-dev import-xlf ' + translationFile, { verbosity: true }).exec();
+};
+
+gulp.task("export-l10n", (done) => {
+  return es.merge(
+    [""].map((ignore) => {
+      return gulp
+        .pipe(internalExportL10n())
+        .pipe(internalGenerateXlf())
+        .on("end", () => done());
+    })
+  )
+}
+);
+
+gulp.task("l10n-import", (done) => {
+  return es.merge(
+    languages.map((language) => {
+      const id = language.id;
+      log(`Processing ${id}`);
+      return gulp
+        .pipe(internalImportXlf(language))
+        .on("end", () => done());
+    })
+  );
+});
+
+
+/*
+OBSOLETE code
+>>> begin
+*/
 gulp.task(
   "export-i18n",
   gulp.series("build", function (done) {
@@ -183,7 +216,10 @@ gulp.task("i18n-import", (done) => {
     })
   );
 });
-
+/*
+<<< end
+OBSOLETE code
+*/
 function runTX(prefix, args) {
   const { execFile, spawn } = require("child_process");
 

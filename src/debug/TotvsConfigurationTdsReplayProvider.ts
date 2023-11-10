@@ -47,7 +47,7 @@ export class TotvsConfigurationTdsReplayProvider
       if (!config.cwb || config.cwb === "") {
         config.cwb = vscode.workspace.rootPath;
         window.showInformationMessage(
-          vscode.l10n.t("Parameter cwb not informed. Setting to {0}", config.cwb)
+          vscode.l10n.t("Parameter CWB not informed. Setting to {0}", config.cwb)
         );
       }
 
