@@ -66,7 +66,6 @@
   "Requesting data from the server [{0}]": "Solicitando dados do servidor [{0}]",
   "There is no information about the RPO.": "Não há informações sobre o RPO.",
   "Actions": "Ações",
-  "Drag headers...": "Arrastar cabeçalhos...",
   "Filter": "Filtro",
   "Filtering on/off": "Filtrando ON/OFF",
   "First": "Primeira",
@@ -149,7 +148,6 @@
   "Active:": "Ativa:",
   "Ending log on ": "Ending Log On ",
   "Finish log capture.": "Conclua a captura do log.",
-  "Capturing logs... Click here to close.": "Captura de toras... clique aqui para fechar.",
   "Collection has already been started. Reproduce the problem and close the grabber.": "A coleta já foi iniciada.Reproduza o problema e feche o grabber.",
   "Log file successfully generated in": "Arquivo de log gerado com sucesso em",
   "First start logging": "Primeiro inicie o log",
@@ -339,5 +337,7 @@
   "Global Include": "Include Global",
   "Removed [{0}] invalid breakpoints.": "Removido [{0}] pontos de interrupção inválidos.",
   "The command to Disable/Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually": "O comando para desativar/ativar o sincronismo da tabela precisa de uma sessão de depuração ativa.Para uma configuração inicial, altere o arquivo de lançamento.json manualmente",
-  "Compile Key": "Chave de compilação"
+  "Compile Key": "Chave de compilação",
+  "Drag headers ...": "Arrastar cabeçalhos...",
+  "Capturing logs ... Click here to close.": "Captura de logs... clique aqui para fechar."
 }
