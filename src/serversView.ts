@@ -309,7 +309,7 @@ export class ServersExplorer {
       const htmlOnDiskPath = vscode.Uri.file(
         path.join(context.extensionPath, "src", "server", "addServer.html")
       );
-      const cssOniskPath = vscode.Uri.file(
+      const cssOnDIskPath = vscode.Uri.file(
         path.join(context.extensionPath, "resources", "css", "form.css")
       );
 
@@ -317,7 +317,7 @@ export class ServersExplorer {
         htmlOnDiskPath.with({ scheme: "vscode-resource" }).fsPath
       );
       const cssContent = fs.readFileSync(
-        cssOniskPath.with({ scheme: "vscode-resource" }).fsPath
+        cssOnDIskPath.with({ scheme: "vscode-resource" }).fsPath
       );
 
       let runTemplate = compile(htmlContent);

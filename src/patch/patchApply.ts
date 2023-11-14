@@ -331,7 +331,7 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
   const htmlOnDiskPath = vscode.Uri.file(
     path.join(context.extensionPath, "src", "patch", "formApplyPatch.html")
   );
-  const cssOniskPath = vscode.Uri.file(
+  const cssOnDIskPath = vscode.Uri.file(
     path.join(
       context.extensionPath,
       "resources",
@@ -352,7 +352,7 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
     htmlOnDiskPath.with({ scheme: "vscode-resource" }).fsPath
   );
   const cssContent = fs.readFileSync(
-    cssOniskPath.with({ scheme: "vscode-resource" }).fsPath
+    cssOnDIskPath.with({ scheme: "vscode-resource" }).fsPath
   );
   const scriptContent = fs.readFileSync(
     tableScriptPath.with({ scheme: "vscode-resource" }).fsPath

@@ -275,11 +275,11 @@ export class ObjectsResult {
 // 		path.join(extensionPath, 'src', 'patch', 'formGenPatch.html')
 // 	);
 
-// 	const cssOniskPath = vscode.Uri.file(
+// 	const cssOnDIskPath = vscode.Uri.file(
 // 		path.join(extensionPath, 'resources', 'css', 'form.css')
 // 	);
 
-// 	return Utils.addCssToHtml(htmlOnDiskPath, cssOniskPath);
+// 	return Utils.addCssToHtml(htmlOnDiskPath, cssOnDIskPath);
 // }
 
 function readFiles(
@@ -310,7 +310,7 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
   const htmlOnDiskPath = vscode.Uri.file(
     path.join(context.extensionPath, "src", "patch", "formGenPatch.html")
   );
-  const cssOniskPath = vscode.Uri.file(
+  const cssOnDIskPath = vscode.Uri.file(
     path.join(context.extensionPath, "resources", "css", "form.css")
   );
 
@@ -318,7 +318,7 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
     htmlOnDiskPath.with({ scheme: "vscode-resource" }).fsPath
   );
   const cssContent = fs.readFileSync(
-    cssOniskPath.with({ scheme: "vscode-resource" }).fsPath
+    cssOnDIskPath.with({ scheme: "vscode-resource" }).fsPath
   );
 
   let runTemplate = compile(htmlContent);

@@ -9,10 +9,10 @@ import { _debugEvent } from '../debug';
 const compile = require('template-literal');
 
 const localizeHTML = {
-	"tds.webview.title": vscode.l10n.t( "Generate WS"),
-	"tds.webview.ws.URL": vscode.l10n.t( "URL Web Service / WSDL FIle"),
-	"tds.webview.ws.path": vscode.l10n.t( "File Directory"),
-	"tds.webview.ws.name": vscode.l10n.t( "Output File Name")
+	"tds.webview.title": vscode.l10n.t("Generate WS"),
+	"tds.webview.ws.URL": vscode.l10n.t("URL Web Service / WSDL FIle"),
+	"tds.webview.ws.path": vscode.l10n.t("File Directory"),
+	"tds.webview.ws.name": vscode.l10n.t("Output File Name")
 };
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
@@ -25,7 +25,7 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 		if (server) {
 			currentPanel = vscode.window.createWebviewPanel(
 				'totvs-developer-studio.ws.show',
-				vscode.l10n.t( "Generate WS Protheus"),
+				vscode.l10n.t("Generate WS Protheus"),
 				vscode.ViewColumn.One,
 				{
 					enableScripts: true,
@@ -52,8 +52,8 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 						});
 						break;
 					case 'wsClose':
-						const extension:string = message.outputFileName.split('.').pop().toLowerCase();
-						if( extension !== "prw" && extension !== "prx" && extension !== "tlpp") {
+						const extension: string = message.outputFileName.split('.').pop().toLowerCase();
+						if (extension !== "prw" && extension !== "prx" && extension !== "tlpp") {
 							vscode.window.showErrorMessage("The output file must have one of the following extensions: .prw, .prx or .tlpp");
 							return;
 						}
@@ -65,21 +65,21 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 						languageClient.sendRequest('$totvsserver/wsdlGenerate', {
 							"wsdlGenerateInfo": {
 								connectionToken: server.token,
-								authorizationToken : ServersConfig.getAuthorizationToken(server),
+								authorizationToken: ServersConfig.getAuthorizationToken(server),
 								environment: server.environment,
 								wsdlUrl: message.url
 							}
 						}).then((response: any) => {
 							const pathFile = message.path + "//" + message.outputFileName;
 
-							if (fs.existsSync(pathFile)){
+							if (fs.existsSync(pathFile)) {
 								vscode.window.showWarningMessage("The file exists. Would like overwrite? ", { modal: true }, 'Yes', 'No').then(clicked => {
 									if (clicked === 'Yes') {
 										fs.unlinkSync(pathFile);
 										createAndWriteOpen(pathFile, response.content);
 									}
 								});
-							}else{
+							} else {
 								createAndWriteOpen(pathFile, response.content);
 							}
 							if (currentPanel) {
@@ -96,13 +96,13 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 				undefined,
 				context.subscriptions
 			);
-		}else{
+		} else {
 			vscode.window.showErrorMessage(vscode.l10n.t("There is no server connected."));
 		}
 	}
 }
 
-function createAndWriteOpen(filePath, content){
+function createAndWriteOpen(filePath, content) {
 	fs.appendFile(filePath, content, (err) => {
 		vscode.window.showErrorMessage(err.message);
 	});
@@ -116,10 +116,10 @@ function createAndWriteOpen(filePath, content){
 function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 
 	const htmlOnDiskPath = vscode.Uri.file(path.join(context.extensionPath, 'src', 'WebService', 'generateWS.html'));
-	const cssOniskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
+	const cssOnDIskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
 
 	const htmlContent = fs.readFileSync(htmlOnDiskPath.with({ scheme: 'vscode-resource' }).fsPath);
-	const cssContent = fs.readFileSync(cssOniskPath.with({ scheme: 'vscode-resource' }).fsPath);
+	const cssContent = fs.readFileSync(cssOnDIskPath.with({ scheme: 'vscode-resource' }).fsPath);
 
 	let runTemplate = compile(htmlContent);
 

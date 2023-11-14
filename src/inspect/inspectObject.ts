@@ -28,8 +28,8 @@ export function inspectObject(context: vscode.ExtensionContext) {
 	if (server) {
 		if (Utils.isServerP20OrGreater(server)) {
 			openInspectView(context, {
-			  objectsInspector: true,
-			  includeOutScope: false, //TRES
+				objectsInspector: true,
+				includeOutScope: false, //TRES
 			});
 		} else {
 			inspectObjectLegado(context);
@@ -52,17 +52,17 @@ function inspectObjectLegado(context: vscode.ExtensionContext) {
 		}
 
 		const currentPanel = vscode.window.createWebviewPanel(
-      "totvs-developer-studio.inspect.object",
-      "Objects Inspector",
-      vscode.ViewColumn.One,
-      {
-        enableScripts: true,
-        localResourceRoots: [
-          vscode.Uri.file(path.join(extensionPath, "src", "patch")),
-        ],
-        retainContextWhenHidden: true,
-      }
-    );
+			"totvs-developer-studio.inspect.object",
+			"Objects Inspector",
+			vscode.ViewColumn.One,
+			{
+				enableScripts: true,
+				localResourceRoots: [
+					vscode.Uri.file(path.join(extensionPath, "src", "patch")),
+				],
+				retainContextWhenHidden: true,
+			}
+		);
 
 		//currentPanel.webview.html = getWizardGeneratePatch(extensionPath);
 		currentPanel.webview.html = getWebViewContent(context, localizeHTML);
@@ -130,10 +130,10 @@ function inspectObjectLegado(context: vscode.ExtensionContext) {
 function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 
 	const htmlOnDiskPath = vscode.Uri.file(path.join(context.extensionPath, 'src', 'inspect', 'formInspectObject.html'));
-	const cssOniskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
+	const cssOnDIskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
 
 	const htmlContent = fs.readFileSync(htmlOnDiskPath.with({ scheme: 'vscode-resource' }).fsPath);
-	const cssContent = fs.readFileSync(cssOniskPath.with({ scheme: 'vscode-resource' }).fsPath);
+	const cssContent = fs.readFileSync(cssOnDIskPath.with({ scheme: 'vscode-resource' }).fsPath);
 
 	let runTemplate = compile(htmlContent);
 

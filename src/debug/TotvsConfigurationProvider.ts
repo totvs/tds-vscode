@@ -20,7 +20,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
   protected _server?: Net.Server;
   private _connectedServerItem: ServerItem;
 
-  constructor() {}
+  constructor() { }
 
   /**
    * Massage a debug configuration just before a debug session is being launched,
@@ -35,7 +35,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
       return undefined;
     }
 
-     this._connectedServerItem = serverProvider.connectedServerItem;
+    this._connectedServerItem = serverProvider.connectedServerItem;
 
     if (this._connectedServerItem !== undefined) {
       if (!config.type && !config.request && !config.name) {
@@ -90,15 +90,16 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
         setDapArgsArr.push("--wait-for-attach=" + config.waitForAttach);
       }
 
-      if(config.forceUtf8) {
-        setDapArgsArr.push("--forceUtf8");
+      if (config.forceUtf8) {
+        vscode.window.showInformationMessage(vscode.l10n.t("--forceUtf8 deprecated. Setting will be ignored."))
+        //setDapArgsArr.push("--forceUtf8");
       }
 
-      if(config.language) {
-        if(config.language === "1") config.language = "por";
-        else if(config.language === "2") config.language = "spa";
-        else if(config.language === "3") config.language = "eng";
-        else if(config.language === "4") config.language = "rus";
+      if (config.language) {
+        if (config.language === "1") config.language = "por";
+        else if (config.language === "2") config.language = "spa";
+        else if (config.language === "3") config.language = "eng";
+        else if (config.language === "4") config.language = "rus";
         setDapArgsArr.push("--language=" + config.language);
       }
 

@@ -77,7 +77,7 @@ function getWebViewContent(extensionPath, localizeHTML) {
   const htmlOnDiskPath = vscode.Uri.file(
     path.join(extensionPath, "src", "compile", "compileResultPage.html")
   );
-  const cssOniskPath = vscode.Uri.file(
+  const cssOnDIskPath = vscode.Uri.file(
     path.join(extensionPath, "resources", "css", "table_materialize.css")
   );
   const tableScriptPath = vscode.Uri.file(
@@ -88,7 +88,7 @@ function getWebViewContent(extensionPath, localizeHTML) {
     htmlOnDiskPath.with({ scheme: "vscode-resource" }).fsPath
   );
   const cssContent = fs.readFileSync(
-    cssOniskPath.with({ scheme: "vscode-resource" }).fsPath
+    cssOnDIskPath.with({ scheme: "vscode-resource" }).fsPath
   );
   const scriptContent = fs.readFileSync(
     tableScriptPath.with({ scheme: "vscode-resource" }).fsPath
