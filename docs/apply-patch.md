@@ -1,5 +1,5 @@
 
-# Aplicando de pacotes de atualização (_patch)
+# Aplicando de pacotes de atualização (_patch_)
 
 Auxilia no processo de aplicação de pacotes de atualização (_patchs_).
 
@@ -9,23 +9,22 @@ Auxilia no processo de aplicação de pacotes de atualização (_patchs_).
 > - usuário autenticado (se requerido)
 > - acesso ao RPO exclusivo
 >
-> Recomenda-se que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em mínusculas de forma a manter a compatibildade entre os diversos sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes.
+> Recomenda-se que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em minusculas de forma a manter a compatibilidade entre os diversos sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes.
 > Leia [Convenção para nomenclatura de File System em ambiente Linux]<https://tdn.totvs.com/x/h8BICw>).
 
 ## Visualização do conteúdo do pacote
 
 Acione duplo-click no pacote que esta na árvore de projetos ou o menu ``File | Open File ...`` e selecione o pacote a ser aberto (não precisa estar na árvore de navegação).
 
-
 ## Via assistente do servidor
 
 Acesse a visão de ``Servidores``, acione "Aplicar Pacote" no menu de contexto do servidor-alvo e no assistente apresentado, selecione o(s) arquivo(s) de pacotes de atualização que serão aplicados.
 
-> Atalho para a abertura do assistente: `CTRL + SHIFT + P `, digite `TOTVS` e selecione a opção `TOTVS: Patch Apply`.
+> Atalho para a abertura do assistente: `CTRL + SHIFT + P`, digite `TOTVS` e selecione a opção `TOTVS: Patch Apply`.
 
 ![Abertura do assistente](./patch/open-wizard.gif)
 
-#### Ações individuais
+### Ações individuais
 
 Na mesma linha de identificação do pacote, você pode acionar ações para cada pacote, individualmente.
 
