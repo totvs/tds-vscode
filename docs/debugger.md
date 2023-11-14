@@ -52,8 +52,8 @@ A definição de executores encontra-se no arquivo `.vscode/launch.json` que, no
 - Na barra de atividades, acione o `Debug`
 - Na barra de ferramentas (parte superior) da visão de `Debug`, abra a lista de seleção e acione `Add Configuration...`.
 - Comece a digitar `TOTVS` e selecione o tipo desejado
-  - _totvs_language_debug_, para usar _SmartClient Desktop_ (padrão)
-  - _totvs_language_web_debug_, para usar _SmartClient Html_
+    - _totvs_language_debug_, para usar _SmartClient Desktop_ (padrão)
+    - _totvs_language_web_debug_, para usar _SmartClient Html_
     ![Type Debugger](images/select-type-debugger.png)
 - Preencha os atributos solicitados conforme seu ambiente
 - Salve o arquivo
@@ -243,3 +243,40 @@ return
 1. Abra o arquivo `.vscode\launch.json`.
 1. Localize a definição de executor que será utilizada e adicione a chave `"enableMultiThread": true`.
 1. Quando a depuração parar no ponto de parada, prossiga com a depuração normalmente.
+
+## Depuração com variáveis do tipo _string_
+
+variáveis do tipo _string_, podem conter dados nos formatos CP1252/CP1251 ou UTF8, que podem ser diferenciadas pelo prefixo ``UTF8`` em seus valores nas visões ``Variables`` e ``Watchs`` e ao passar o mouse sobre a variável.
+
+![Variables](./images/debugger-variables.png)
+
+Na imagem acima, ``\<variável>`` esta com conteúdo CP1252 (padrão AdvPL) e ``\<variável>2``, o conteúdo é UTF8.
+Ao expandir a ``\<variável>``, você obterá maiores detalhes.
+
+![Variables: expanded](./images/debugger-variables-expanded.png.png)
+
+Onde:
+
+| | |
+| - | - |
+| ``Raw`` | É o dado bruto (como armazenado). |
+| ``Length`` | É o tamanho da string do dado bruto. |
+|    | Sequencia byte a byte da string apresentando caractere ASCII e seu código decimal. |
+
+Ao utilizar o _console de debug (REPL)_ para entrada de expressões esta será tratada para apresentar da mesma forma.
+Lembre-se que o padrão é CP1252/CP1251.
+
+![REPL](./images/debug-repl1.png)
+![REPL](./images/debug-repl2.png)
+
+Caso queira informar conteúdo em UTF-8, deverá usar a função ``encodeUTF8``.
+
+![REPL](./images/debug-repl3.png)
+
+Ao comparar variáveis com conteúdo em formato diferente, sempre resultará em ``.F.`` (veja a sequencia de bytes).
+
+![REPL](./images/debug-repl4.png)
+
+Outras operações com _strings_ terão comportamento diferente se o conteúdo for UTF8.
+
+![REPL](./images/debug-repl5.png)

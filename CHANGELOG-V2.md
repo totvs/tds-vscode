@@ -8,6 +8,11 @@
 
 Devido a descontinuação do [vscode-nls](https://github.com/microsoft/vscode-nls#vscode-nls), foi efetuado migração para @vscode/l1on e revisão das traduções e ortografia.
 
+#### Problemas de acentuações no debug [#1113](https://github.com/totvs/tds-vscode/issues/1113) [DTCLIENT01-4042](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4042)
+
+Implementado tratamento de código de página na interface entre o depurador do VS-Code e o DebugAdapter (motor de depuração).
+Veja detalhes em [Depuração com variáveis do tipo string](docs\debugger.md#depuração-com-variáveis-do-tipo-string).
+
 ## Versão [2.0.0-RC13]
 
 ### Correção
@@ -118,7 +123,7 @@ Informação de quantas vezes e onde, uma função, classe ou método estático 
 
 ### Assistente de assinatura (Otto)
 
-*InteliSense* para visualizar os parâmetros de funções Advpl/PL não tem o comportamento esperado.
+*Intellisense* para visualizar os parâmetros de funções Advpl/PL não tem o comportamento esperado.
 
 ### Disparar o assistente de assinatura, na lista de parâmetros em código já existente (Otto)
 

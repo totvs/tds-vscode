@@ -10,12 +10,12 @@ import { _debugEvent } from '../debug';
 const compile = require('template-literal');
 
 const localizeHTML = {
-	"tds.webview.deleteFile.title": vscode.l10n.t( "Deleting source/resource from RPO"),
-	"tds.webview.deleteFile.line1": vscode.l10n.t( "In order to delete a source/resource from RPO follow these steps:"),
-	"tds.webview.deleteFile.line2": vscode.l10n.t( "Find source/resource in workspace"),
-	"tds.webview.deleteFile.line3": vscode.l10n.t( "Select source/recourse with rigth mouse buttom"),
-	"tds.webview.deleteFile.line4": vscode.l10n.t( "Select the option 'Delete source/resource from RPO' on popup menu"),
-	"tds.webview.deleteFile.line5": vscode.l10n.t( "Confirm file deletion selecting the option 'YES' in the form displayed on the bottom right corner.")
+	"tds.webview.deleteFile.title": vscode.l10n.t("Deleting source/resource from RPO"),
+	"tds.webview.deleteFile.line1": vscode.l10n.t("In order to delete a source/resource from RPO follow these steps:"),
+	"tds.webview.deleteFile.line2": vscode.l10n.t("Find source/resource in workspace"),
+	"tds.webview.deleteFile.line3": vscode.l10n.t("Select source/recourse with rigth mouse buttom"),
+	"tds.webview.deleteFile.line4": vscode.l10n.t("Select the option 'Delete source/resource from RPO' on popup menu"),
+	"tds.webview.deleteFile.line5": vscode.l10n.t("Confirm file deletion selecting the option 'YES' in the form displayed on the bottom right corner.")
 };
 
 export function deleteFileFromRPO(context: any, selectedFiles): void {
@@ -24,7 +24,7 @@ export function deleteFileFromRPO(context: any, selectedFiles): void {
 	if (context.contextValue === "serverItem") {
 		const currentPanel = window.createWebviewPanel(
 			'totvs-developer-studio.delete.file.fromRPO',
-			vscode.l10n.t( 'Delete File From RPO'),
+			vscode.l10n.t('Delete File From RPO'),
 			ViewColumn.One,
 			{
 				enableScripts: true,
@@ -45,8 +45,8 @@ export function deleteFileFromRPO(context: any, selectedFiles): void {
 		allFiles = Utils.getAllFilesRecursive(files);
 
 		if (allFiles) {
-			window.showWarningMessage(vscode.l10n.t( 'No')).then(clicked => {
-				if (clicked === vscode.l10n.t( 'Yes')) {
+			window.showWarningMessage(vscode.l10n.t('No')).then(clicked => {
+				if (clicked === vscode.l10n.t('Yes')) {
 					deletePrograms(allFiles);
 				}
 			});
@@ -56,10 +56,10 @@ export function deleteFileFromRPO(context: any, selectedFiles): void {
 	function getWebViewContent(context, localizeHTML) {
 
 		const htmlOnDiskPath = Uri.file(path.join(context.extensionPath, 'src', 'server', 'deleteFileFromRPO.html'));
-		const cssOniskPath = Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
+		const cssOnDIskPath = Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
 
 		const htmlContent = fs.readFileSync(htmlOnDiskPath.with({ scheme: 'vscode-resource' }).fsPath);
-		const cssContent = fs.readFileSync(cssOniskPath.with({ scheme: 'vscode-resource' }).fsPath);
+		const cssContent = fs.readFileSync(cssOnDIskPath.with({ scheme: 'vscode-resource' }).fsPath);
 
 		let runTemplate = compile(htmlContent);
 
@@ -71,7 +71,7 @@ export function deleteFileFromRPO(context: any, selectedFiles): void {
 function changeToArrayString(allFiles) {
 	let arrayFiles: string[] = [];
 
-	if(allFiles !== undefined) {
+	if (allFiles !== undefined) {
 		allFiles.forEach(element => {
 			if (element.fsPath) {
 				arrayFiles.push(element.fsPath);
@@ -116,7 +116,7 @@ export function deletePrograms(programs: string[]) {
 				vscode.window.showErrorMessage(err.message);
 			});
 		} else {
-			vscode.window.showErrorMessage(vscode.l10n.t( 'No server connected'));
+			vscode.window.showErrorMessage(vscode.l10n.t('No server connected'));
 		}
 	} catch (error) {
 		languageClient.error(error);
