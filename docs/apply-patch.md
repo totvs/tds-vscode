@@ -37,7 +37,7 @@ Remover | Remove o pacote da lista de arquivos a processar.
 Validar | Valida o pacote contra o RPO do ambiente corrente.
 Aplicar | Aplica o pacote no RPO do ambiente corrente.
 
-#### Ações em lote
+### Ações em lote
 
 Na botoeira de ações, ao acionar uma ação esta será aplicada em todos os pacotes informados..
 
@@ -50,7 +50,7 @@ Validar | Valida todos os pacotes contra o RPO do ambiente corrente.
 Aplicar | Aplica todos os pacote válidos no RPO do ambiente corrente.
 Remover | Remove todos os pacote da lista de arquivos a processar.
 
-#### Arquivo compactado com pacotes
+### Arquivo compactado com pacotes
 
 Ao selecionar um arquivo compactado com pacotes, lhe será apresentado o nome do arquivo compactado e uma pequena seta a esquerda. Acione-a para ver os pacotes. As ações descritas, funcionam da mesma forma.
 
