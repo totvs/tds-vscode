@@ -13,6 +13,12 @@ Devido a descontinuação do [vscode-nls](https://github.com/microsoft/vscode-nl
 Implementado tratamento de código de página na interface entre o depurador do VS-Code e o DebugAdapter (motor de depuração).
 Veja detalhes em [Depuração com variáveis do tipo string](docs\debugger.md#depuração-com-variáveis-do-tipo-string).
 
+### Correção
+
+#### Identificação do servidor corrente na barra de status (rodapé)
+
+Ajustado a apresentação do servidor e ambiente corrente na barra de status. Nas versões anteriores não era atualizado.
+
 ## Versão [2.0.0-RC13]
 
 ### Correção
