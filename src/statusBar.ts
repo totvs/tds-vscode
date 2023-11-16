@@ -26,7 +26,7 @@ export function initStatusBarItems(context: vscode.ExtensionContext) {
 }
 
 export function updateStatusBarItems() {
-  updateStatusBarItem(undefined);
+  //updateStatusBarItem(undefined);
   updateSaveLocationBarItem();
   updateRpoTokenStatusBarItem();
 }
