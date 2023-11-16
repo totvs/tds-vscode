@@ -157,7 +157,7 @@ function buildServerTooltip(server: ServerItem) {
 
     serverStatusBarItem.tooltip = new vscode.MarkdownString(
       `**Address: _${server.address}:${server.port}_** ` +
-      `${server.buildVersion}\n ${group("Actions", "S")}\n ${group("Monitor", "M")}`
+      `${server.buildVersion}\n\n${group("Actions", "S")}\n\n${group("Monitor", "M")}`
     );
   } else {
     serverStatusBarItem.tooltip = error;
