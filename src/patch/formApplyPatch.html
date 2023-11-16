@@ -455,8 +455,8 @@
 			document.getElementById("exp_generated").innerHTML = tphInfo.exp.generated;
 			document.getElementById("exp_description").innerHTML = tphInfo.exp.description[language];
 			document.getElementById("exp_summary").innerHTML = tphInfo.exp.summary;
-			document.getElementById("exp_link_patch").innerHTML = '<a href="'+tphInfo.exp.link_doc+'" target="_blank">Pacote EXP</a>';
-			document.getElementById("exp_link_doc").innerHTML = '<a href="'+tphInfo.exp.link_patch+'" target="_blank">'+tphInfo.exp.link_patch+'</a>';
+			document.getElementById("exp_link_patch").innerHTML = '<a href="'+tphInfo.exp.link_patch+'" target="_blank">Pacote EXP</a>';
+			document.getElementById("exp_link_doc").innerHTML = '<a href="'+tphInfo.exp.link_doc+'" target="_blank">link</a>';
 		}
 		const ptm = document.getElementById("ptm");
 		ptm.hidden = true;
@@ -466,8 +466,8 @@
 			document.getElementById("ptm_generated").innerHTML = tphInfo.ptm.generated;
 			document.getElementById("ptm_description").innerHTML = tphInfo.ptm.description[language];
 			document.getElementById("ptm_summary").innerHTML = tphInfo.ptm.summary;
-			document.getElementById("ptm_link_patch").innerHTML = '<a href="'+tphInfo.ptm.link_doc+'" target="_blank">Pacote PTM</a>';
-			document.getElementById("ptm_link_doc").innerHTML = '<a href="'+tphInfo.ptm.link_patch+'" target="_blank">'+tphInfo.ptm.link_patch+'</a>';
+			document.getElementById("ptm_link_patch").innerHTML = '<a href="'+tphInfo.ptm.link_patch+'" target="_blank">Pacote PTM</a>';
+			document.getElementById("ptm_link_doc").innerHTML = '<a href="'+tphInfo.ptm.link_doc+'" target="_blank">link</a>';
 		}
 		if (!exp.hidden && !ptm.hidden) {
 			const sep = document.getElementById("sep");
