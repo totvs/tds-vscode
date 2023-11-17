@@ -175,7 +175,7 @@
 		  <div id="exp" class="modal-section" hidden>
 			<header class="section-header">
 			  <h3 class="section-title">${d.localize["tds.webview.patch.newest.exp"]}</h3>
-			  <p class="section-module">${d.localize["tds.webview.patch.newest.module"]} <span id="exp_module"></span></p>
+			  <p id="exp_module_section" class="section-module" hidden>${d.localize["tds.webview.patch.newest.module"]} <span id="exp_module"></span></p>
 			  <p class="section-module">${d.localize["tds.webview.patch.newest.generated"]} <time id="exp_generated"></time></p>
 			</header>
 			<p>${d.localize["tds.webview.patch.newest.description"]} <span id="exp_description"></span></p>
@@ -189,7 +189,7 @@
 		  <div id="ptm" class="modal-section" hidden>
 			<header class="section-header">
 				<h3 class="section-title">${d.localize["tds.webview.patch.newest.ptm"]}</h3>
-				<p class="section-module">${d.localize["tds.webview.patch.newest.module"]} <span id="ptm_module"></span></p>
+				<p id="ptm_module_section" class="section-module" hidden>${d.localize["tds.webview.patch.newest.module"]} <span id="ptm_module"></span></p>
 				<p class="section-module">${d.localize["tds.webview.patch.newest.generated"]} <time id="ptm_generated"></time></p>
 			</header>
 			<p>${d.localize["tds.webview.patch.newest.description"]} <span id="ptm_description"></span></p>
@@ -451,7 +451,10 @@
 		exp.hidden = true;
 		if (tphInfo.exp) {
 			exp.hidden = false;
-			document.getElementById("exp_module").innerHTML = tphInfo.exp.module;
+			if (tphInfo.exp.module) {
+				document.getElementById("exp_module_section").hidden = false;
+				document.getElementById("exp_module").innerHTML = tphInfo.exp.module;
+			}
 			document.getElementById("exp_generated").innerHTML = tphInfo.exp.generated;
 			document.getElementById("exp_description").innerHTML = tphInfo.exp.description[language];
 			document.getElementById("exp_summary").innerHTML = tphInfo.exp.summary;
@@ -462,7 +465,10 @@
 		ptm.hidden = true;
 		if (tphInfo.ptm) {
 			ptm.hidden = false;
-			document.getElementById("ptm_module").innerHTML = tphInfo.exp.module;
+			if (tphInfo.ptm.module) {
+				document.getElementById("ptm_module_section").hidden = false;
+				document.getElementById("ptm_module").innerHTML = tphInfo.ptm.module;
+			}
 			document.getElementById("ptm_generated").innerHTML = tphInfo.ptm.generated;
 			document.getElementById("ptm_description").innerHTML = tphInfo.ptm.description[language];
 			document.getElementById("ptm_summary").innerHTML = tphInfo.ptm.summary;
