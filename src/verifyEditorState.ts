@@ -21,7 +21,7 @@ export async function verifyEditorState(): Promise<ConfirmResult> {
 
 	const saveAll = vscode.l10n.t("Save All");
 	const save = vscode.l10n.t("Save");
-	const dontSave = vscode.l10n.t("Don´t save");
+	const dontSave = vscode.l10n.t("Don't save");
 
 	const buttons: string[] = [
 		resourcesToConfirm.length > 1 ? saveAll : save,

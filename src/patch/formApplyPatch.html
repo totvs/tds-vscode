@@ -107,7 +107,7 @@
 				</div>
 
 				<div class="wrap-input">
-					<label for="patchFile">Patch File</label>
+					<label for="patchFile">${d.localize["tds.webview.patch.file"]}</label>
 					<br></br>
 					<div class="material-table z-depth-3 hoverable">
 						<table id="tableInfos" class="mdl-data-table" width="100%">
@@ -154,12 +154,12 @@
 				</div>
 
 				<div class="wrap-submit">
-					<input class="btn-submit" readonly style="cursor: pointer;" id="submitID" value="Apply"
+					<input class="btn-submit" readonly style="cursor: pointer;" id="submitID" value="${d.localize['tds.webview.patch.apply.action']}"
 						onclick="patchApply(false);" disabled />
 				</div>
 
 				<div class="wrap-submit">
-					<input class="btn-submit" readonly style="cursor: pointer;" id="submitCloseID" value="Apply/Close"
+					<input class="btn-submit" readonly style="cursor: pointer;" id="submitCloseID" value="${d.localize['tds.webview.patch.applyclose.action']}"
 						onclick="patchApply(true);" disabled />
 				</div>
 
@@ -170,7 +170,7 @@
 		<!-- Modal content -->
 		<div class="modal-content">
 		  <span id="close" class="close" onClick="closeTph()">&times;</span>
-		  <p>Foram localizados pacotes mais recentes que os selecionados para serem aplicados.</p>
+		  <p>${d.localize["tds.webview.patch.newest.located"]}</p>
 		  <hr class="solid">
 		  <div id="exp" class="modal-section" hidden>
 			<header class="section-header">
@@ -233,7 +233,7 @@
 		dom: 'Bfrtip',
 		buttons: [
 			{
-				text: 'Delete Selected',
+				text: '${d.localize["tds.webview.table.delete.action"]}',
 				className: "btn-submit",
 				exportOptions: {
 					modifier: {
@@ -246,30 +246,7 @@
 				}
 			},
 			{
-				text: 'Patch Validate',
-				className: "btn-submit",
-				exportOptions: {
-					modifier: {
-						selected: null
-					}
-				},
-				action: function (e, dt, node, config) {
-					var data = tableAPI.row('.selected').data();
-					if (data) {
-						vscode.postMessage({
-							command: 'patchValidateFile',
-							file: data[3]
-						});
-					} else {
-						vscode.postMessage({
-							command: 'patchValidateFile',
-							file: null
-						});
-					}
-				}
-			},
-			{
-				text: 'Patch Info',
+				text: '${d.localize["tds.webview.table.info.action"]}',
 				className: "btn-submit",
 				exportOptions: {
 					modifier: {
@@ -346,7 +323,7 @@
 				const file = message.file.toLowerCase();
 				//console.log("file: "+file);
 				language = message.language;
-				console.log("language: "+language);
+				//console.log("language: "+language);
 				var patchs = tableAPI.data();
 				for (var i = 0; i < patchs.length; i++) {
 					var patchPath = patchs[i][3].replaceAll('\\\\', '/').toLowerCase();
@@ -458,8 +435,8 @@
 			document.getElementById("exp_generated").innerHTML = tphInfo.exp.generated;
 			document.getElementById("exp_description").innerHTML = tphInfo.exp.description[language];
 			document.getElementById("exp_summary").innerHTML = tphInfo.exp.summary;
-			document.getElementById("exp_link_patch").innerHTML = '<a href="'+tphInfo.exp.link_patch+'" target="_blank">Pacote EXP</a>';
-			document.getElementById("exp_link_doc").innerHTML = '<a href="'+tphInfo.exp.link_doc+'" target="_blank">link</a>';
+			document.getElementById("exp_link_patch").innerHTML = '<a href="'+tphInfo.exp.link_patch+'" target="_blank">Patch EXP</a>';
+			document.getElementById("exp_link_doc").innerHTML = '<a href="'+tphInfo.exp.link_doc+'" target="_blank">Link</a>';
 		}
 		const ptm = document.getElementById("ptm");
 		ptm.hidden = true;
@@ -472,8 +449,8 @@
 			document.getElementById("ptm_generated").innerHTML = tphInfo.ptm.generated;
 			document.getElementById("ptm_description").innerHTML = tphInfo.ptm.description[language];
 			document.getElementById("ptm_summary").innerHTML = tphInfo.ptm.summary;
-			document.getElementById("ptm_link_patch").innerHTML = '<a href="'+tphInfo.ptm.link_patch+'" target="_blank">Pacote PTM</a>';
-			document.getElementById("ptm_link_doc").innerHTML = '<a href="'+tphInfo.ptm.link_doc+'" target="_blank">link</a>';
+			document.getElementById("ptm_link_patch").innerHTML = '<a href="'+tphInfo.ptm.link_patch+'" target="_blank">Patch PTM</a>';
+			document.getElementById("ptm_link_doc").innerHTML = '<a href="'+tphInfo.ptm.link_doc+'" target="_blank">Link</a>';
 		}
 		if (!exp.hidden && !ptm.hidden) {
 			const sep = document.getElementById("sep");
@@ -528,10 +505,10 @@
 				document.getElementById('ApplyOldOutputMessage').style = "color: red";
 				if (!document.getElementById('ApplyOldID').checked) {
 					// warning: has Old resource
-					document.getElementById('ApplyOldOutputMessage').innerHTML = "There are patches with sources/resources older than RPO.";
+					document.getElementById('ApplyOldOutputMessage').innerHTML = '${d.localize["tds.webview.patch.validation.applyold"]}';
 				} else {
 					// warning: has Old resource but user choose to overwrite anyway
-					document.getElementById('ApplyOldOutputMessage').innerHTML = "This action will overwrite newer sources/resources in the current RPO.";
+					document.getElementById('ApplyOldOutputMessage').innerHTML = '${d.localize["tds.webview.patch.validation.applyold.overwrite"]}';
 				}
 				validationOk = true;
 			}
@@ -542,11 +519,11 @@
 				document.getElementById('NewerPatchesOutputMessage').style = "color: red";
 				if (!document.getElementById('NewerPatchesID').checked) {
 					// warning: has newer patches
-					document.getElementById('NewerPatchesOutputMessage').innerHTML = "There are newer patches available at TOTVS Update Center.";
+					document.getElementById('NewerPatchesOutputMessage').innerHTML = '${d.localize["tds.webview.patch.validation.newer"]}';
 					validationOk = false;
 				} else {
 					// warning:
-					document.getElementById('NewerPatchesOutputMessage').innerHTML = "This action will apply outdated patches.";
+					document.getElementById('NewerPatchesOutputMessage').innerHTML = '${d.localize["tds.webview.patch.validation.newer.overwrite"]}';
 					validationOk = true;
 				}
 			}
@@ -554,14 +531,14 @@
 		//console.log("validationOk: "+validationOk);
 		if (validationInProgress) {
 			document.getElementById('OutputMessage').style = "color: blue";
-			document.getElementById('OutputMessage').innerHTML = "Patch validation in progress.";
+			document.getElementById('OutputMessage').innerHTML = '${d.localize["tds.webview.patch.validation.inprogress"]}';
 		} else  if (criticalError) {
 			document.getElementById('OutputMessage').style = "color: red";
-			document.getElementById('OutputMessage').innerHTML = "There are patches that cannot be applied and must be removed from the list.";
+			document.getElementById('OutputMessage').innerHTML = '${d.localize["tds.webview.patch.validation.critical"]}';
 		} else {
 			if (!validationOk) {
 				document.getElementById('OutputMessage').style = "color: red";
-				document.getElementById('OutputMessage').innerHTML = "Action required. There are patches with validation problems.";
+				document.getElementById('OutputMessage').innerHTML = '${d.localize["tds.webview.patch.validation.problem"]}';
 			} else {
 				document.getElementById('submitID').removeAttribute("disabled");
 				document.getElementById('submitCloseID').removeAttribute("disabled");

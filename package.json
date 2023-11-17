@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "2.0.0-RC14",
+  "version": "2.0.0-RC15",
   "publisher": "TOTVS",
   "preview": true,
   "author": {
@@ -129,6 +129,7 @@
     "esbuild": "^0.16.17",
     "eslint": "^8.23.1",
     "eslint-config-standard-with-typescript": "^23.0.0",
+    "event-stream": "^4.0.1",
     "glob": "^8.0.3",
     "gulp": "^4.0.2",
     "gulp-filter": "^7.0.0",
@@ -154,6 +155,7 @@
     "webpack-stream": "^7.0.0"
   },
   "main": "./out/extension.js",
+  "l10n": "./l10n",
   "activationEvents": [
     "workspaceContains:**/*.pr[wgx]",
     "workspaceContains:**/*.tlpp"
