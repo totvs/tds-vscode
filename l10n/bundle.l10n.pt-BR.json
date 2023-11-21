@@ -250,7 +250,7 @@
   "Read the documentation at:": "Leia a documentação em:",
   "There are patches with sources/resources older than RPO.": "Existem patches com fontes/recursos mais antigos ao RPO.",
   "This action will overwrite newer sources/resources in the current RPO.": "Esta ação substituirá fontes/recursos mais recentes no RPO atual.",
-  "There are newer patches available at TOTVS Update Center.": "Existem patches mais recentes disponíveis no Central de Atualizações.",
+  "There are newer patches available at TOTVS Update Center.": "Existem patches mais recentes disponíveis na Central de Atualizações.",
   "This action will apply outdated patches.": "Esta ação aplicará patches desatualizados.",
   "Patch validation in progress.": "Validação de patch em andamento.",
   "There are patches that cannot be applied and must be removed from the list.": "Existem patches que não podem ser aplicados e devem ser removidos da lista.",
