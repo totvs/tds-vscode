@@ -24,6 +24,8 @@ const localizeHTML = {
   "tds.webview.patch.items.generate.close": vscode.l10n.t("Generate/Close"),
   "tds.webview.patch.message1": vscode.l10n.t("The generated patch is based on the files from RPO. Be sure that the included fonts are compiled."),
   "tds.webview.patch.items.showing": vscode.l10n.t("Items showing"),
+  "tds.webview.patch.select": vscode.l10n.t("Select folder"),
+  "tds.webview.patch.display": vscode.l10n.t("Use filter to display objects"),
 };
 
 export function patchGenerate(context: vscode.ExtensionContext) {
@@ -173,7 +175,7 @@ export function patchGenerate(context: vscode.ExtensionContext) {
                   patchName,
                   filesPath
                 ).then(() => {
-                  vscode.window.showInformationMessage("Patch file generated");
+                  vscode.window.showInformationMessage(vscode.l10n.t("Patch file generated"));
                 });
               }
 
@@ -245,7 +247,7 @@ export function patchGenerateFromFolder(context: any) {
               patchName,
               allFilesNames
             ).then(() => {
-              vscode.window.showInformationMessage("Patch file generated");
+              vscode.window.showInformationMessage(vscode.l10n.t("Patch file generated"));
             });
             //});
           });
@@ -300,7 +302,7 @@ function readFiles(
       }
     } else {
       vscode.window.showWarningMessage(
-        "File/folder '" + filename + "' was ignored."
+        vscode.l10n.t("File/folder '{0}' was ignored.", filename)
       );
     }
   });

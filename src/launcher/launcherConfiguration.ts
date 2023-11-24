@@ -31,6 +31,10 @@ const localizeHTML = {
   "tds.webview.launcher.langRU": vscode.l10n.t("Russian"),
   "tds.webview.launcher.save": vscode.l10n.t("Save"),
   "tds.webview.launcher.saveClose": vscode.l10n.t("Save/Close"),
+  "tds.webview.launcher.error.name": vscode.l10n.t("Launcher config name not defined."),
+  "tds.webview.launcher.error.program": vscode.l10n.t("Program not defined."),
+  "tds.webview.launcher.error.smartclient": vscode.l10n.t("Smartclient not defined."),
+  "tds.webview.launcher.error.olddpi": vscode.l10n.t("Only DPI mode or OLDDPI mode must be selected."),
   "tds.webview.launcher.bottomInfo": vscode.l10n.t("This config could be altered editing file"),
   "tds.webview.launcher.ignoreFiles": vscode.l10n.t("Ignore files not found in WorkSpace (debugging)"),
 };
@@ -117,7 +121,7 @@ export default class LauncherConfiguration {
               // );
 
               if (currentPanel !== undefined) {
-                console.log("Carregando launch Config onDidReceiveMessage");
+                //console.log("Carregando launch Config onDidReceiveMessage");
                 currentPanel.webview.postMessage(launcherConfiguration);
               }
 

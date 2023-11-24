@@ -294,9 +294,9 @@
 		var patchs = tableAPI.data();
 		var completePaths = new Array();
 		for (var i = 0; i < patchs.length; i++) {
-			if (patchs[i][1] === "Awaiting validation") {
+			if (patchs[i][1] === "${d.localize['tds.webview.patch.validation.action.awaiting']}") {
 				completePaths.push(patchs[i][3]);
-				tableAPI.cell(i,1).data("Validating");
+				tableAPI.cell(i,1).data("${d.localize['tds.webview.patch.validation.action.validating']}");
 				tableAPI.draw();
 			}
 		};
@@ -332,12 +332,12 @@
 						var validationMessage = message.message;
 						var errorCode = message.errorCode;
 						if (errorCode == 5) {
-							validationMessage = "Resources in patch older than RPO. Check Output for details.";
+							validationMessage = "${d.localize['tds.webview.patch.validation.error.older']}"; //"Resources in patch older than RPO. Check Output for details.";
 						} else if (errorCode == 7) {
-							validationMessage = "Patch apply denied. Check Output for details.";
+							validationMessage = "${d.localize['tds.webview.patch.validation.error.denied']}"; //"Patch apply denied. Check Output for details.";
 						} else if (errorCode == 8) {
 							//console.log(validationMessage);
-							validationMessage = "Newer patches available. Click <a href='#' onClick='showTphInfo("+i+")'>here</a> for details.";
+							validationMessage = "${d.localize['tds.webview.patch.validation.error.newer']} <a href='#' onClick='showTphInfo("+i+")'>${d.localize['tds.webview.patch.validation.error.here']}</a> ${d.localize['tds.webview.patch.validation.error.details']}"; //"Newer patches available. Click <a href='#' onClick='showTphInfo("+i+")'>here</a> for details.";
 							tphInfos.set(i, message.tphInfoRet);
 						}
 						//console.log("FOUND! "+message.message);
@@ -373,7 +373,7 @@
 		//console.log("addFile");
 		const fnProc = function (filename, fullPath) {
 			if (!searchPatch(fullPath)) {
-				row = new Array('&#8942;', "Awaiting validation", filename, fullPath, -1);
+				row = new Array('&#8942;', "${d.localize['tds.webview.patch.validation.action.awaiting']}", filename, fullPath, -1);
 				tableAPI.row.add(row).draw();
 			} else {
 				vscode.postMessage({

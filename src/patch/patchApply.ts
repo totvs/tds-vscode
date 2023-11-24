@@ -34,6 +34,13 @@ const localizeHTML = {
   "tds.webview.patch.newest.summary": vscode.l10n.t("Summary:"),
   "tds.webview.patch.newest.link": vscode.l10n.t("Download the patch from the Update Center:"),
   "tds.webview.patch.newest.doc": vscode.l10n.t("Read the documentation at:"),
+  "tds.webview.patch.validation.error.older": vscode.l10n.t("Resources in patch older than RPO. Check Output for details."),
+  "tds.webview.patch.validation.error.denied": vscode.l10n.t("Patch apply denied. Check Output for details."),
+  "tds.webview.patch.validation.error.newer": vscode.l10n.t("Newer patches available. Click"),
+  "tds.webview.patch.validation.error.here": vscode.l10n.t("here"),
+  "tds.webview.patch.validation.error.details": vscode.l10n.t("for details."),
+  "tds.webview.patch.validation.action.awaiting": vscode.l10n.t("Awaiting validation"),
+  "tds.webview.patch.validation.action.validating": vscode.l10n.t("Validating"),
   "tds.webview.patch.validation.inprogress": vscode.l10n.t("Patch validation in progress."),
   "tds.webview.patch.validation.applyold": vscode.l10n.t("There are patches with sources/resources older than RPO."),
   "tds.webview.patch.validation.applyold.overwrite": vscode.l10n.t("This action will overwrite newer sources/resources in the current RPO."),
@@ -97,7 +104,7 @@ export function patchApply(
               case "patchValidate":
                 if (message.patchFiles.length === 0) {
                   vscode.window.showErrorMessage(
-                    vscode.l10n.t("Validate Patch Fail. Please input patch file.")
+                    vscode.l10n.t("Patch validate failed. Please input patch file.")
                   );
                 } else {
                   vscode.window
@@ -145,7 +152,7 @@ export function patchApply(
               case "patchApply":
                 if (message.patchFile.length === 0) {
                   vscode.window.showErrorMessage(
-                    vscode.l10n.t("Apply Patch Fail. Please input patch file.")
+                    vscode.l10n.t("Patch apply failed. Please input patch file.")
                   );
                 } else {
                   vscode.window
@@ -204,7 +211,7 @@ export function patchApply(
 
               case "showDuplicateWarning":
                 vscode.window.showWarningMessage(
-                  "Already selected. File: " + message.filename
+                  vscode.l10n.t("File already selected: {0}", message.filename)
                 );
                 break;
 
@@ -255,7 +262,7 @@ export function patchApply(
           const patchFile = filename;
           vscode.window
             .showWarningMessage(
-              vscode.l10n.t("Are you sure you want patch {0} the RPO?", path.basename(filename)),
+              vscode.l10n.t("Are you sure you want to apply patch file {0} in RPO?", path.basename(filename)),
               { modal: true },
               vscode.l10n.t("Yes"),
               vscode.l10n.t("No")
@@ -284,7 +291,7 @@ export function patchApply(
                       }
                       if (response.error == 1) {
                         vscode.window.showErrorMessage(
-                          vscode.l10n.t("Patch contains files older than RPO. Patch not applied.")
+                          vscode.l10n.t("Patch contains files older than RPO. Patch will not be applied.")
                         );
                       }
                       // const message: string  = response.message;
@@ -404,7 +411,7 @@ async function doValidatePatch(
         const patchFile = vscode.Uri.parse(patchUri);
         //const patchFile = vscode.Uri.file(patchUri).toString();
         var patchFilePath = patchFile.path;
-        var retMessage = "No validation errors";
+        var retMessage = vscode.l10n.t("No validation errors");
         var tphInfoRet = { exp: undefined, ptm: undefined };
         if (patchFilePath.startsWith("/") && patchFilePath.length > 2 && patchFilePath.at(2) === ':') {
           // se formato for windows /d:/totvs/patch/12.1.2210/expedicao_continua_12_1_2210_atf_tttm120_hp.ptm
@@ -412,7 +419,7 @@ async function doValidatePatch(
           patchFilePath = patchFilePath.substring(1);
         }
         if (!response.error) {
-          vscode.window.showInformationMessage("Patch validated.");
+          vscode.window.showInformationMessage(vscode.l10n.t("Patch validated."))
         } else {
           retMessage = response.message
           if (response.errorCode != 5 && response.errorCode != 7 && response.errorCode != 8) {
@@ -484,7 +491,7 @@ async function doApplyPatch(
             vscode.window.showErrorMessage(response.message);
           } else {
             vscode.window.showErrorMessage(
-              vscode.l10n.t("Patch contains files older than RPO. Patch not applied.")
+              vscode.l10n.t("Patch contains files older than RPO. Patch will not be applied.")
             );
           }
         } else if (applyOld) {

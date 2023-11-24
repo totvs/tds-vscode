@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>${d.localize["tds.webview.patch.generate"]}</title><!--Patch Generate-->
+	<title>${d.localize["tds.webview.objectsinspector"]}</title><!--Objects Inspector-->
 </head>
 
 <style>
@@ -35,11 +35,11 @@
 						<span class="formTitle">Objects Inspector</span><!--Patch Generate-->
 					</div>
 							<br>
-							<input type="checkbox" id="CheckIgnoreTRes" checked><label for="CheckIgnoreTRes">Ignore Files .TRES</label><!--Ignore files-->
+							<input type="checkbox" id="CheckIgnoreTRes" checked><label for="CheckIgnoreTRes">${d.localize["tds.webview.objectsinspector.ignore.files"]} .TRES</label><!--Ignore files-->
 							<div id="parent">
 								<div id="child">
 									<p>
-										<input id="FilterInput" type="text" value="" placeholder="Filter, ex: MAT or * All (slow)" style="width: 595px;" onFocusOut="filterLeft();"><!--Filter, ex: MAT or * All (slow)-->
+										<input id="FilterInput" type="text" value="" placeholder="${d.localize['tds.webview.objectsinspector.filter']}" style="width: 595px;" onFocusOut="filterLeft();"><!--Filter, ex: MAT or * All (slow)-->
 									</p>
 
 									<select class="select-unique" id="SelectL" multiple="multiple">
@@ -49,8 +49,8 @@
 								</div>
 							</div>
 							<div class="wrap-submit">
-								<input class="btn-submit" readonly id="exportID" type="button" value=" Export to file " onclick="exportData()" placeholder="Export items filted to file"/><!--Export-->
-								<input class="btn-submit" readonly id="submitID" type="button" value=" Close " onclick="fechar()"/><!--Close-->
+								<input class="btn-submit" readonly id="exportID" type="button" value="${d.localize['tds.webview.objectsinspector.export2file']}" onclick="exportData()" placeholder="${d.localize['tds.webview.objectsinspector.export']}"/><!--Export-->
+								<input class="btn-submit" readonly id="submitID" type="button" value="${d.localize['tds.webview.objectsinspector.close']}" onclick="fechar()"/><!--Close-->
 							</div>
 
 							<div id="loading">
@@ -102,7 +102,7 @@
 			// }
 
 			FilterInput.value = "";
-			SelectLCount.innerHTML =  "Items showing" + ": " + srcAll.length;//Items showing
+			SelectLCount.innerHTML =  "${d.localize['tds.webview.objectsinspector.items.showing']}" + ": " + srcAll.length;//Items showing
 			filterLeft();
 		});
 
@@ -141,7 +141,7 @@
     let lenQuery = query.length;
 
 		if (query === "") {
-			filterData = [ "<< Use filter to display objects >>" ];
+			filterData = [ "<< ${d.localize['tds.webview.objectsinspector.filter.objects']} >>" ];
 		} else if (query === "*" && CheckIgnoreTRes.checked == false){
 			filterData = [...srcAll]; // Spread é a clonagem mais rapida de Arrays
 		}

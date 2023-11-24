@@ -12,7 +12,9 @@ const localizeHTML = {
 	"tds.webview.title": vscode.l10n.t("Generate WS"),
 	"tds.webview.ws.URL": vscode.l10n.t("URL Web Service / WSDL FIle"),
 	"tds.webview.ws.path": vscode.l10n.t("File Directory"),
-	"tds.webview.ws.name": vscode.l10n.t("Output File Name")
+	"tds.webview.ws.name": vscode.l10n.t("Output File Name"),
+	"tds.webview.ws.save.action": vscode.l10n.t("Save"),
+	"tds.webview.ws.saveclose.action": vscode.l10n.t("Save/Close"),
 };
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;

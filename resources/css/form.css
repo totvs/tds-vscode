@@ -14,7 +14,7 @@ textarea:focus, input:focus {
 }
 
 .formWrap {
-	width: 512px;
+	width: 768px;
 	background-color: #F3F3F3/*#FAFAFA*/;
 	box-sizing: border-box;
 	background-position-x: 0%;

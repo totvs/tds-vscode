@@ -12,7 +12,9 @@ const localizeHTML = {
 	"tds.webview.dir.include": vscode.l10n.t("Includes directory:"),
 	"tds.webview.dir.include2": vscode.l10n.t("Allow multiple directories"),
 	"tds.webview.dir.include.info": vscode.l10n.t("These settings can also be changed in"),
-	"tds.webview.dir.include.info.or": vscode.l10n.t("or")
+	"tds.webview.dir.include.info.or": vscode.l10n.t("or"),
+	"tds.webview.dir.include.save.action": vscode.l10n.t("Save"),
+	"tds.webview.dir.include.saveclose.action": vscode.l10n.t("Save/Close"),
 };
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;

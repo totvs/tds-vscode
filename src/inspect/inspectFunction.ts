@@ -8,19 +8,13 @@ import { ResponseError } from 'vscode-languageclient';
 import { openInspectView } from "../inspect-harpia";
 
 const localizeHTML = {
-	"tds.webview.inspect.generate": vscode.l10n.t("Patch Generation"),
-	"tds.webview.inspect.ignore.files": vscode.l10n.t("Ignore files"),
-	"tds.webview.inspect.filter": vscode.l10n.t("Filter, ex: MAT or * All (slow)"),
-	"tds.webview.inspect.clean.selected": vscode.l10n.t("Clear Selected"),
-	"tds.webview.inspect.clean.all": vscode.l10n.t("Clear All"),
-	"tds.webview.inspect.items": vscode.l10n.t("Items"),
-	"tds.webview.inspect.directory": vscode.l10n.t("Patch Generation Directory"),
-	"tds.webview.inspect.file.name.patch": vscode.l10n.t("Patch file name"),
-	"tds.webview.inspect.file.name": vscode.l10n.t("File name"),
-	"tds.webview.inspect.items.generate": vscode.l10n.t("Generate"),
-	"tds.webview.inspect.items.generate.close": vscode.l10n.t("Generate/Close"),
-	"tds.webview.inspect.message1": vscode.l10n.t("The generated patch is based on the files from RPO. Be sure that the included fonts are compiled."),
-	"tds.webview.inspect.items.showing": vscode.l10n.t("Items showing")
+	"tds.webview.functionsinspector": vscode.l10n.t("Functions Inspector"),
+	"tds.webview.functionsinspector.filter": vscode.l10n.t("Filter, ex: MAT or * All (slow)"),
+	"tds.webview.functionsinspector.export2file": vscode.l10n.t("Export to file"),
+	"tds.webview.functionsinspector.export": vscode.l10n.t("Export filtered items to file"),
+	"tds.webview.functionsinspector.items.showing": vscode.l10n.t("Items showing"),
+	"tds.webview.functionsinspector.filter.functions": vscode.l10n.t("Use filter to display functions"),
+	"tds.webview.functionsinspector.close": vscode.l10n.t("Close")
 };
 
 export function inspectFunctions(context: vscode.ExtensionContext) {
@@ -119,7 +113,9 @@ function inspectFunctionsLegado(context: vscode.ExtensionContext) {
 			context.subscriptions
 		);
 	} else {
-		vscode.window.showErrorMessage("There is no server connected.");
+		vscode.window.showErrorMessage(
+			vscode.l10n.t("There is no server connected")
+		  );
 	}
 }
 
