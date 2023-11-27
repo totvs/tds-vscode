@@ -457,7 +457,7 @@ export class InspectorLoader implements vscode.Disposable {
 
 function getTranslations() {
   return {
-    INSPECTOR_FUNCTIONS: vscode.l10n.t("Functions Inspector "),
+    INSPECTOR_FUNCTIONS: vscode.l10n.t("Functions Inspector"),
     INSPECTOR_OBJECTS: vscode.l10n.t("Objects Inspector"),
     NO_INFO_FROM_RPO: vscode.l10n.t("There is no information about the RPO."),
     ACTIONS: vscode.l10n.t("Actions"),
