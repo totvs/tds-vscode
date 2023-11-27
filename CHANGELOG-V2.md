@@ -1,5 +1,11 @@
 # Changelog ([Changelog Versão 1](CHANGELOG.md))
 
+## Versão [2.0.0-RC16]
+
+### Correção
+
+#### Correções de tradução.
+
 ## Versão [2.0.0-RC15]
 
 ### Correção
