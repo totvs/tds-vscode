@@ -15,7 +15,7 @@ const localizeHTML = {
   "tds.webview.validate.patch": vscode.l10n.t("Patch Validate"),
   "tds.webview.validate.ignore.files": vscode.l10n.t("Ignore files"),
   "tds.webview.validate.export.files": vscode.l10n.t("Export to file"),
-  "tds.webview.validate.export.files2": vscode.l10n.t("Export items filted to file"),
+  "tds.webview.validate.export.files2": vscode.l10n.t("Export filtered items to file"),
   "tds.webview.validate.export.close": vscode.l10n.t("Close"),
   "tds.webview.validate.filter": vscode.l10n.t("Filter, ex: MAT or * All (slow)"),
   "tds.webview.validate.items.showing": vscode.l10n.t("Items showing"),
