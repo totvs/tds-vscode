@@ -1,16 +1,21 @@
 # Changelog ([Changelog Versão 1](CHANGELOG.md))
 
+
 ## Versão [2.0.0-RC16]
 
 ### Correção
 
-#### Correções de tradução.
+#### Correções de tradução
+
+#### _Linter_: tratamento de avisos
+
+Corrigido o tratamento de avisos do _linter_, que haviam sido retirados indevidamente na implementação do _DSS_.
 
 ## Versão [2.0.0-RC15]
 
 ### Correção
 
-#### Correções e melhorias pontuais na interface de validação na aplicação de Patches.
+#### Correções e melhorias pontuais na interface de validação na aplicação de Patches
 
 ## Versão [2.0.0-RC14]
 
