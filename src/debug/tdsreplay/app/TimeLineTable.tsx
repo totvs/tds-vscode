@@ -265,14 +265,14 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   );
   const [sources, setSources] = React.useState([]);
 
-  //console.log("Do state:" + ignoreSourcesNotfound);
-  //console.log("current TimeLine ID:" + jsonBody.currentSelectedTimeLineId);
-  //console.log("itemsPerPageJson:" + jsonBody.itemsPerPage);
-  //console.log("itemsPerPage:" + itemsPerPageState);
-  //console.log("currentPage: " + jsonBody.currentPage);
-  //console.log("totalPages: " + jsonBody.totalPages);
-  ///console.log("TimeLineCount: " + jsonBody.timeLines.length);
-  //console.log("totaItems: " + jsonBody.totalItems);
+  //console.debug("Do state:" + ignoreSourcesNotfound);
+  //console.debug("current TimeLine ID:" + jsonBody.currentSelectedTimeLineId);
+  //console.debug("itemsPerPageJson:" + jsonBody.itemsPerPage);
+  //console.debug("itemsPerPage:" + itemsPerPageState);
+  //console.debug("currentPage: " + jsonBody.currentPage);
+  //console.debug("totalPages: " + jsonBody.totalPages);
+  ///console.debug("TimeLineCount: " + jsonBody.timeLines.length);
+  //console.debug("totaItems: " + jsonBody.totalItems);
 
   const handleChangeDense = (event: ChangeEvent<HTMLInputElement>) => {
     setDense(event.target.checked);
@@ -537,7 +537,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     const classes = tableStyles();
     let items = [];
     let timeLines = jsonBody.timeLines;
-    //console.log("Criando TIMELINES:");
+    //console.debug("Criando TIMELINES:");
     //let timeLineFoundInPage = false;
     for (let index = 0; index < jsonBody.timeLines.length; index++) {
       let timeLine = timeLines[index];

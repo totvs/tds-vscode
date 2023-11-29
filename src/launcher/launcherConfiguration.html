@@ -170,7 +170,7 @@
 	function validateFields() {
 		let errorMessage;
 		let validated = true;
-		console.log(getElementLauncherName().value);
+		//console.debug(getElementLauncherName().value);
 		if (!getElementLauncherName().value || getElementLauncherName().value.trim() === "") {
 			errorMessage = "${d.localize['tds.webview.launcher.error.name']}";
 			validated = false;
@@ -191,14 +191,14 @@
 		}
 		//
 		if (errorMessage) {
-			console.log(errorMessage);
+			console.error(errorMessage);
 			document.getElementById("errorMessageID").innerHTML = errorMessage;
 			document.getElementById("errorMessageDIV").style.display = "inline";
 		}
 		else {
 			document.getElementById("errorMessageDIV").style.display = "none";
 		}
-		console.log("validated: "+validated);
+		//console.debug("validated: "+validated);
 		document.getElementById("saveID").disabled = !validated;
 		document.getElementById("saveCloseID").disabled = !validated;
 	}
@@ -354,10 +354,10 @@
 	function getElementProgramArgumentsValues() {
 		var currentArgumentsList = [];
 		var children = getElementProgramArguments().childNodes;
-		console.log(children);
+		//console.debug(children);
 		children.forEach(thisArgumentTR => {
-			console.log(thisArgumentTR);
-			console.log(thisArgumentTR.getAttribute("id"));
+			//console.debug(thisArgumentTR);
+			//console.debug(thisArgumentTR.getAttribute("id"));
 			if (thisArgumentTR.getAttribute("id") !== "noneArgumentsID") {
 				var thisArgumentTD = thisArgumentTR.firstChild;
 				var thisArgumentInput = thisArgumentTD.firstChild;
@@ -365,7 +365,7 @@
 				currentArgumentsList.push(data);
 			}
 		});
-		console.log(currentArgumentsList);
+		//console.debug(currentArgumentsList);
 		return currentArgumentsList;
 	}
 

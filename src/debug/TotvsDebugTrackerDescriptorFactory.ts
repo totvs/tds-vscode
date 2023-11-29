@@ -26,7 +26,6 @@ export class TotvsDebugTrackerDescriptorFactory implements DebugAdapterTrackerFa
 				text = `${text}\n${JSON.stringify(message, undefined, "  ")}`
 			}
 
-			console.log(text);
 			debug.activeDebugConsole?.appendLine(text);
 		};
 

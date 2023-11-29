@@ -119,7 +119,7 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
                   let encoding: string = (<string>(
                     options.encoding
                   )).toLowerCase();
-                  //console.log("encoding: "+encoding);
+                  //console.debug("encoding: "+encoding);
                   if (options.encoding === "utf8") {
                     resolve(compileInfo.detail);
                   } else if (
@@ -127,14 +127,14 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
                     encoding === "cp1252"
                   ) {
                     //let apple = "Maçã";
-                    //console.log(apple);
+                    //console.debug(apple);
                     resolve(windows1252.encode(compileInfo.detail));
                   } else if (
                     encoding === "windows-1251" ||
                     encoding === "cp1251"
                   ) {
                     //let helloWorld = "Привет мир";
-                    //console.log(helloWorld);
+                    //console.debug(helloWorld);
                     //resolve(windows1251.encode(helloWorld));
                     resolve(windows1251.encode(compileInfo.detail));
                   } else {

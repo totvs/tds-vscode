@@ -24,10 +24,10 @@ export class CreateTDSReplayTimeLineWebView {
     this.initializePanel();
 
     window.onDidChangeActiveTextEditor(editor => {
-      if(editor !== undefined) {
-        //console.log(editor);
+      if (editor !== undefined) {
+        //console.debug(editor);
         //if(editor.viewColumn !== 1) {
-          //editor.viewColumn = 1;
+        //editor.viewColumn = 1;
         //}
       }
     });
@@ -49,7 +49,7 @@ export class CreateTDSReplayTimeLineWebView {
 
   }
 
-private initializePanel(): void {
+  private initializePanel(): void {
     this._panel = window.createWebviewPanel(
       "CreateTDSReplayTimeLineWebView",
       "TDS Replay TimeLineView",
@@ -121,7 +121,7 @@ private initializePanel(): void {
 
 
   public reveal() {
-    if(!this._isDisposed) {
+    if (!this._isDisposed) {
       this._panel.reveal();
     } else {
       this.initializePanel();
@@ -214,7 +214,7 @@ function handleRequestFromPage(command: ICommand) {
       handleSetIgnoreSourcesNotFound(command);
       break;
     case CommandToDA.ShowSources:
-        handleShowSourcesCommand(command);
+      handleShowSourcesCommand(command);
       break;
     case CommandToDA.GetCurrentState:
       getTimeLineWebView().postSetUpdatedState();
@@ -238,7 +238,7 @@ function handleChangePageCommand(command: ICommand) {
     //Envia para o debug adapter uma solicitação para mudar de pagina.
     //O proprio debug adapter ira enviar uma mensagem para adicionar as timelines da nova pagina
     let newPage = { "newPage": parseInt(command.content.newPage) };
-    //console.log("Enviando requisição para troca de pagina: " + newPage);
+    //console.debug("Enviando requisição para troca de pagina: " + newPage);
     debug.activeDebugSession.customRequest("TDA/changeTimeLinePage", newPage);
   }
 }
@@ -246,14 +246,14 @@ function handleChangePageCommand(command: ICommand) {
 
 
 function handleChangeItemsPerPageCommand(command: ICommand) {
-  if(debug.activeDebugSession) {
+  if (debug.activeDebugSession) {
     //Envia para o debug adapter uma solicitação para alterar a quantidade de items por pagina.
     //O proprio dap ja calcula a nova quantidade de paginas e enviar uma solicitação para adicionar
     //as novas timelines na pagina corrente, mantendo a seleção corrente ou selecionando a primeira
     //timeLine da pagina caso nao seja possivel manter a selecao.
     let requestJson = {
       "itemsPerPage": parseInt(command.content.itemsPerPage),
-      "currentSelectedTimeLineId" : parseInt(command.content.currentSelectedTimeLineId)
+      "currentSelectedTimeLineId": parseInt(command.content.currentSelectedTimeLineId)
     };
 
     debug.activeDebugSession.customRequest("TDA/changeItemsPerPage", requestJson);
@@ -262,7 +262,7 @@ function handleChangeItemsPerPageCommand(command: ICommand) {
 
 function handleSetIgnoreSourcesNotFound(command: ICommand) {
   let debugSession = debug.activeDebugSession;
-  if(debugSession) {
+  if (debugSession) {
     LaunchConfig.saveIgnoreSourcesNotFound(debugSession, command.content.isIgnoreSourceNotFound);
 
     let requestJson = {
@@ -277,13 +277,13 @@ function handleShowSourcesCommand(command: ICommand) {
     let requestJson = {
       "sourceName": command.content.data
     };
-    //console.log("Enviando requisição para trocar a quantidade de items por pagina");
+    //console.debug("Enviando requisição para trocar a quantidade de items por pagina");
     debug.activeDebugSession.customRequest("TDA/getSourceInfo", requestJson)
-    .then((jsonResponse) => {
-      //console.log(jsonResponse);
-      if(timeLineWebView) {
-        timeLineWebView.openSourcesDialog(jsonResponse);
-      }
-    });
+      .then((jsonResponse) => {
+        //console.debug(jsonResponse);
+        if (timeLineWebView) {
+          timeLineWebView.openSourcesDialog(jsonResponse);
+        }
+      });
   }
 }

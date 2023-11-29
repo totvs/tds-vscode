@@ -94,7 +94,7 @@ function initializePage(context: vscode.ExtensionContext) {
 
   currentPanel.webview.onDidReceiveMessage(
     (message) => {
-      //console.log('onDidReceiveMessage: ' + message.command);
+      //console.debug('onDidReceiveMessage: ' + message.command);
       switch (message.command) {
         case "saveKey":
           if (message.token) {
@@ -212,14 +212,14 @@ function validateKey(currentPanel, message, close: boolean) {
       })
       .then(
         (response: ValidKeyResult) => {
-          // console.log(
+          // console.debug(
           //   'validateKey response authorizationToken: ' +
           //     response.authorizationToken
           //);
           let outputMessageText: string;
           let outputMessageType: string;
           if (response.authorizationToken !== "") {
-            //console.log("validateKey success");
+            //console.debbug("validateKey success");
             if (close) {
               let permission: CompileKey = {
                 path: message.path,
@@ -237,7 +237,7 @@ function validateKey(currentPanel, message, close: boolean) {
               localizeHTML["tds.webview.compile.key.validated"];
             outputMessageType = "success";
           } else {
-            //console.log("validateKey error");
+            //console.debug("validateKey error");
             outputMessageText = localizeHTML["tds.webview.compile.key.invalid"];
             outputMessageType = "error";
           }

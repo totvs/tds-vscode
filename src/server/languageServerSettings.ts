@@ -40,7 +40,6 @@ export function getModifiedLanguageServerSettings(): any[] {
   const settings: any[] = [];
 
   let tmp = config.inspect("editor.linter");
-  console.log(tmp);
 
   if (config.has("editor.linter")) {
     let oldLinter = config.get("editor.linter");

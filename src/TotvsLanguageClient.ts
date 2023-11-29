@@ -92,7 +92,7 @@ export function getLanguageClient(
     },
     // middleware: {
     //   provideCodeLenses: (doc, next, token) => {
-    //     console.log("xxxxxxxxxxx");
+    //     console.debug("xxxxxxxxxxx");
 
     //     return [];
     //   }

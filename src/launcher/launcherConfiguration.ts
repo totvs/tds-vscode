@@ -121,7 +121,7 @@ export default class LauncherConfiguration {
               // );
 
               if (currentPanel !== undefined) {
-                //console.log("Carregando launch Config onDidReceiveMessage");
+                //console.debug("Carregando launch Config onDidReceiveMessage");
                 currentPanel.webview.postMessage(launcherConfiguration);
               }
 

@@ -94,7 +94,7 @@ const SPACES: string = " ".repeat(11);
 };*/
 
 // export function procesStartDebugSessionEvent(event: any) {
-//   console.log(event);
+//   console.debug(event);
 // }
 
 export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
@@ -198,8 +198,8 @@ function processSelectTimeLineEvent(
   debugConsole: DebugConsole
 ) {
   if (createTimeLineWebView !== null) {
-    //console.log("RECEIVED SELECT TIME LINE FROM SERVER: ");
-    //console.log(event.body.id)
+    //console.debug("RECEIVED SELECT TIME LINE FROM SERVER: ");
+    //console.debug(event.body.id)
     createTimeLineWebView.selectTimeLine(event.body.id);
   }
 }

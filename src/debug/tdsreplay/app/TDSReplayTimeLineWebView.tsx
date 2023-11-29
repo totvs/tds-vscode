@@ -32,7 +32,7 @@ export default function TDSReplayTimeLineWebView(props: IConfigProps, state: ICo
     vscode.postMessage(command);
 
   } else {
-    //console.log("Setting new state");
+    //console.debug("Setting new state");
     let initialData = props.initialData;
     let _state = {
       config: initialData,

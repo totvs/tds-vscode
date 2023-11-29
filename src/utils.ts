@@ -163,14 +163,14 @@ export default class Utils {
     let notificationLevel = config.get("editor.show.notification");
     switch (messageType) {
       case MESSAGETYPE.Error:
-        console.log(message);
+        console.error(message);
         languageClient?.error(message);
         if (showDialog && notificationLevel !== "none") {
           vscode.window.showErrorMessage(message);
         }
         break;
       case MESSAGETYPE.Info:
-        console.log(message);
+        console.info(message);
         languageClient?.info(message);
         if (
           (showDialog && notificationLevel === "all") ||
@@ -180,7 +180,7 @@ export default class Utils {
         }
         break;
       case MESSAGETYPE.Warning:
-        console.log(message);
+        console.warn(message);
         languageClient?.warn(message);
         if (
           showDialog &&
@@ -1532,7 +1532,7 @@ async function doUpdateInformations(element: any): Promise</*IServerInformations
       },
       (error) => {
         serverInformations.errorMessage = error.message;
-        console.log(error);
+        console.error(error);
       }
     );
   } else {
@@ -1546,7 +1546,7 @@ async function doUpdateInformations(element: any): Promise</*IServerInformations
       },
       (error) => {
         serverInformations.errorMessage = error.message;
-        console.log(error);
+        console.error(error);
       }
     );
   }

@@ -63,7 +63,7 @@ export class ImportSourcesOnlyResultPanel {
 	let sourceListAsJsonString = JSON.stringify(sourceList);
 	let regex = / /g;
 	sourceListAsJsonString = sourceListAsJsonString.replace(regex, "\u00a0");
-	console.log(sourceListAsJsonString);
+	//console.debug(sourceListAsJsonString);
 	const webviewUri = getUri(webview, extensionUri, ["out","debug","tdsreplay","webviews","ImportSourcesOnlyWebView.js"]);
     const nonce = getNonce();
 

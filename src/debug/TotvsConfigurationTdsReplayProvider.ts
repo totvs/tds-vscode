@@ -134,8 +134,8 @@ export class TotvsConfigurationTdsReplayProvider
           let jsonParsed = JSON.parse(json);
           //A rotina abaixo é um exemplo de como ler um json sem saber explicitamente as chaves...
           //for(var exKey in jsonParsed) {
-          //	console.log("key:"+exKey+", value:"+jsonParsed[exKey]);
-          //	console.log("");
+          //	console.debug("key:"+exKey+", value:"+jsonParsed[exKey]);
+          //	console.debug("");
           //}
           if (jsonParsed.hasOwnProperty(tdsReplayFile)) {
             tdsReplayFileLocation = jsonParsed[tdsReplayFile];

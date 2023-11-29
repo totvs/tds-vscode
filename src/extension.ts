@@ -537,7 +537,7 @@ export function activate(context: ExtensionContext) {
     vscode.commands.registerCommand(
       "totvs-developer-studio.run.formatter",
       (args: any[]) => {
-        //console.log("formatador ativado");
+        //console.debug("formatador ativado");
         if (args === undefined) {
           let aeditor = vscode.window.activeTextEditor;
           if (aeditor !== undefined) {

@@ -233,7 +233,7 @@ export class MonitorLoader {
           vscode.window.showErrorMessage(
             vscode.l10n.t("Could not block new connections.")
           );
-          console.log(result);
+          //console.debug(result);
         }
       },
       (error) => {
@@ -294,7 +294,7 @@ export class MonitorLoader {
         let inc: number = recipients.length / 100;
 
         token.onCancellationRequested(() => {
-          console.log("User canceled the operation");
+          console.info("User canceled the operation");
         });
 
         recipients.forEach((recipient) => {
@@ -353,7 +353,7 @@ export class MonitorLoader {
         let inc: number = recipients.length / 100;
 
         token.onCancellationRequested(() => {
-          console.log("User canceled the operation");
+          console.info("User canceled the operation");
         });
 
         recipients.forEach((recipient) => {
@@ -581,9 +581,9 @@ export class MonitorLoader {
                     environments: environments
                   },
                 }).then((value: boolean) => {
-                  //console.log(`>>>>>>> postMessge ${value}`);
+                  //console.debugg(`>>>>>>> postMessge ${value}`);
                 }, (reason: any) => {
-                  console.log(reason);
+                  console.error(reason);
                 });
               }
               this.updateSpeedStatus();

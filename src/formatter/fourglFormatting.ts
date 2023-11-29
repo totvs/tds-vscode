@@ -52,7 +52,7 @@ class FourglFormatting
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
 
     return Promise.resolve(result);

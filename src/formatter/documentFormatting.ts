@@ -184,7 +184,7 @@ export async function resourceFormatting(
                       vscode.window.showErrorMessage(
                         `Formatting error: ${reason}`
                       );
-                      console.log(reason);
+                      console.error(reason);
                     }
                   );
                 }
