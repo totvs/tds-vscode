@@ -1,15 +1,11 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-//import Utils from '../utils';
 
-import * as nls from 'vscode-nls';
-let localize = nls.loadMessageBundle();
 const showProgressController = require('template-literal');
 
-
 const localizeHTML = {
-	"tds.webview.title": localize("tds.webview.title", "Progress..."),
+	"tds.webview.title": vscode.l10n.t("Progress..."),
 };
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
@@ -19,7 +15,7 @@ export default class ShowProgressControllerDialog {
 	initializePage(context: vscode.ExtensionContext) {
 		currentPanel = vscode.window.createWebviewPanel(
 			'totvs-developer-studio.showProgress',
-			localize("tds.webview.title", "Progress..."),
+			vscode.l10n.t("Progress..."),
 			vscode.ViewColumn.One,
 			{
 				enableScripts: true,
@@ -53,8 +49,8 @@ export default class ShowProgressControllerDialog {
 		}
 	}
 
-	setTitle(title:string) {
-		if(currentPanel) {
+	setTitle(title: string) {
+		if (currentPanel) {
 			currentPanel.webview.postMessage({
 				command: "setTitle",
 				title: title
@@ -62,8 +58,8 @@ export default class ShowProgressControllerDialog {
 		}
 	}
 
-	setMainMessage(mainMessage:string) {
-		if(currentPanel) {
+	setMainMessage(mainMessage: string) {
+		if (currentPanel) {
 			currentPanel.webview.postMessage({
 				command: "setMainMessage",
 				mainMessage: mainMessage
@@ -71,8 +67,8 @@ export default class ShowProgressControllerDialog {
 		}
 	}
 
-	setDetailMessage(detailMessage:string) {
-		if(currentPanel) {
+	setDetailMessage(detailMessage: string) {
+		if (currentPanel) {
 			currentPanel.webview.postMessage({
 				command: "detailMessage",
 				detailMessage: detailMessage
@@ -81,7 +77,7 @@ export default class ShowProgressControllerDialog {
 	}
 
 	setPercentageCompleted(percentageCompleted) {
-		if(currentPanel) {
+		if (currentPanel) {
 			currentPanel.webview.postMessage({
 				command: "setPercentageCompleted",
 				percentageCompleted: percentageCompleted
@@ -105,10 +101,10 @@ export default class ShowProgressControllerDialog {
 function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 
 	const htmlOnDiskPath = vscode.Uri.file(path.join(context.extensionPath, 'src', 'ui.dialogs', 'showProgressPage.html'));
-	const cssOniskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
+	const cssOnDIskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
 
 	const htmlContent = fs.readFileSync(htmlOnDiskPath.with({ scheme: 'vscode-resource' }).fsPath);
-	const cssContent = fs.readFileSync(cssOniskPath.with({ scheme: 'vscode-resource' }).fsPath);
+	const cssContent = fs.readFileSync(cssOnDIskPath.with({ scheme: 'vscode-resource' }).fsPath);
 
 	let runTemplate = showProgressController(htmlContent);
 

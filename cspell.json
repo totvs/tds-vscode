@@ -1,0 +1,19 @@
+{
+    "version": "0.2",
+    "ignorePaths": [],
+    "dictionaryDefinitions": [
+        {
+            "name": "custom-words",
+            "path": "./custom-words.txt"
+        }
+    ],
+    "dictionaries": [
+        "pt-BR",
+        "es",
+        "en",
+        "custom-words"
+    ],
+    "words": [],
+    "ignoreWords": [],
+    "import": []
+}

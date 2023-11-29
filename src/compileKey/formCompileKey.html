@@ -73,11 +73,11 @@
 				</div>
 
 				<div class="wrap-submit">
-					<input class="btn-submit" readonly id="validateID" type="button" value="Validate Key"
+					<input class="btn-submit" readonly id="validateID" type="button" value="${d.localize['tds.webview.compile.key.validate']}"
 						onclick="validateKey()" />
 					&nbsp
 					<!--espaco-->
-					<input class="btn-submit" readonly id="cleanID" type="button" value="Clean Key"
+					<input class="btn-submit" readonly id="cleanID" type="button" value="${d.localize['tds.webview.compile.key.clean']}"
 						onclick="clean()" />
 				</div>
 
@@ -86,16 +86,15 @@
 				</div>
 
 				<div class="wrap-submit">
-					<input class="btn-submit" readonly id="submitID" type="button" value=" Save "
+					<input class="btn-submit" readonly id="submitID" type="button" value="${d.localize['tds.webview.compile.key.save']}"
 						onclick="save(false)" />
 					&nbsp
 					<!--espaco-->
-					<input class="btn-submit" readonly id="submitCloseID" type="button" value=" Save/Close "
+					<input class="btn-submit" readonly id="submitCloseID" type="button" value="${d.localize['tds.webview.compile.key.saveclose']}"
 						onclick="save(true)" />
 				</div>
 
-				<p>* A partir de 17/05/2019 todas as chaves terão de ser regeradas utlizando o Machine ID exibido acima.
-					Isso permitirá a compatibilidade com Linux e macOS.</p>
+				<p>${d.localize['tds.webview.compile.key.memo']}</p>
 				<!--These settings can be changed in-->
 			</form>
 		</div>

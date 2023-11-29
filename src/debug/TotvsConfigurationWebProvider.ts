@@ -1,9 +1,6 @@
 import { window, DebugConfiguration, DebugConfigurationProvider } from "vscode";
 import * as vscode from "vscode";
-import * as nls from "vscode-nls";
 import { TotvsConfigurationProvider } from "./TotvsConfigurationProvider";
-
-const localize = nls.loadMessageBundle();
 
 export class TotvsConfigurationWebProvider
   extends TotvsConfigurationProvider
@@ -26,10 +23,7 @@ export class TotvsConfigurationWebProvider
 
     if (!webNavigator || webNavigator === "") {
       window.showErrorMessage(
-        localize(
-          "tds.vscode.web_navigator",
-          "Parameter WebNavigator not informed."
-        )
+        vscode.l10n.t("Parameter WebNavigator not informed.")
       );
       return undefined; // abort launch
     }

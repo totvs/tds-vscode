@@ -3,13 +3,7 @@
  *--------------------------------------------------------*/
 "use strict";
 import * as vscode from "vscode";
-import * as nls from "vscode-nls";
 import * as fse from "fs-extra";
-
-const localize = nls.config({
-  locale: vscode.env.language,
-  bundleFormat: nls.BundleFormat.standalone,
-})();
 
 import {
   window,
@@ -19,7 +13,7 @@ import {
   Uri,
   StatusBarAlignment,
 } from "vscode";
-import Utils from "./utils";
+import Utils, { LaunchConfig, ServersConfig } from "./utils";
 import { createNewProtheusServer, ServersExplorer } from "./serversView";
 import { compileKeyPage } from "./compileKey/compileKey";
 import { getLanguageClient } from "./TotvsLanguageClient";
@@ -85,14 +79,11 @@ const LANG_ADVPL_ID = "advpl";
 
 export function activate(context: ExtensionContext) {
   console.log(
-    localize(
-      "tds.console.congratulations",
-      'Congratulations, your extension "totvs-developer-studio" is now active!'
-    )
+    vscode.l10n.t('Congratulations, your extension "totvs-developer-studio" is now active!')
   );
 
-  Utils.createServerConfig();
-  Utils.createLaunchConfig(undefined);
+  ServersConfig.createServerConfig();
+  LaunchConfig.createLaunchConfig(undefined);
 
   context.subscriptions.push(
     commands.registerCommand("tds.getDAP", () => getDAP())
@@ -187,14 +178,8 @@ export function activate(context: ExtensionContext) {
     let statusStyle = config.get("misc.status");
     if (statusStyle === "short" || statusStyle === "detailed") {
       let statusIcon = window.createStatusBarItem(StatusBarAlignment.Right);
-      statusIcon.text = localize(
-        "tds.vscode.statusIcon.text1",
-        "advpl: loading"
-      );
-      statusIcon.tooltip = localize(
-        "tds.vscode.statusIcon.tooltip1",
-        "advpl is loading project metadata (ie, compile_commands.json)"
-      );
+      statusIcon.text = vscode.l10n.t("Advpl: loading");
+      statusIcon.tooltip = vscode.l10n.t("advpl is loading project metadata (ie, compile_commands.json)");
       statusIcon.show();
     }
   })();
@@ -342,10 +327,7 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.patchGenerate.byDifference",
       () => {
         vscode.window.setStatusBarMessage(
-          `$(gear~spin) ${localize(
-            "tds.vscode.starting.build.patch",
-            "Starting package generation..."
-          )}`,
+          `$(gear~spin) ${vscode.l10n.t("Starting package generation...")}`,
           Promise.resolve(openGeneratePatchView(context))
         );
       }
@@ -356,10 +338,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("totvs-developer-studio.patchApply", () => {
       vscode.window.setStatusBarMessage(
-        `$(gear~spin) ${localize(
-          "tds.vscode.starting.apply.patch",
-          "Starting patch application..."
-        )}`,
+        `$(gear~spin) ${vscode.l10n.t("Starting patch application...")}`,
         Promise.resolve(patchApply(context, false))
       );
     })
@@ -370,10 +349,7 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.patchApply.fromFile",
       (args: any) => {
         vscode.window.setStatusBarMessage(
-          `$(gear~spin) ${localize(
-            "tds.vscode.starting.apply.patch",
-            "Starting patch application..."
-          )}`,
+          `$(gear~spin) ${vscode.l10n.t("Starting patch application...")}`,
           Promise.resolve(patchApply(context, true, args))
         );
       }
@@ -434,10 +410,7 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.templateApply.fromFile",
       (args: any) => {
         vscode.window.setStatusBarMessage(
-          `$(gear~spin) ${localize(
-            "tds.vscode.starting.apply.template",
-            "Starting template application..."
-          )}`,
+          `$(gear~spin) ${vscode.l10n.t("Starting template application...")}`,
           Promise.resolve(openTemplateApplyView(context, args))
         );
       }
@@ -448,10 +421,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("tds-monitor.open-monitor-view", () => {
       vscode.window.setStatusBarMessage(
-        `$(gear~spin) ${localize(
-          "tds.vscode.starting.monitor",
-          "Starting monitor..."
-        )}`,
+        `$(gear~spin) ${vscode.l10n.t("Starting monitor...")}`,
         Promise.resolve(openMonitorView(context))
       );
     })
@@ -463,10 +433,7 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.open-loadrpoinfo-view",
       () => {
         vscode.window.setStatusBarMessage(
-          `$(gear~spin) ${localize(
-            "tds.vscode.starting.rpo.loadinfo",
-            "Starting RPO load information..."
-          )}`,
+          `$(gear~spin) ${vscode.l10n.t("Starting RPO load information...")}`,
           Promise.resolve(openRpoInfoView(context))
         );
       }
@@ -476,7 +443,7 @@ export function activate(context: ExtensionContext) {
   //Mostra a pagina de Welcome.
   showWelcomePage(context, false);
 
-  Utils.onDidSelectedServer((newServer: ServerItem) => {
+  ServersConfig.onDidSelectedServer((newServer: ServerItem) => {
     serverProvider.connectedServerItem = newServer;
   })
   serverProvider.checkServersConfigListener(true);
@@ -653,7 +620,7 @@ function instanceOfUriArray(object: any): object is Uri[] {
 
 // this method is called when your extension is deactivated
 export function deactivate(): Thenable<void> | undefined {
-  Utils.deleteSelectServer();
+  ServersConfig.deleteSelectServer();
   return languageClient.stop(5000);
 }
 

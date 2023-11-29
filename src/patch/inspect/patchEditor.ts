@@ -1,7 +1,7 @@
 import * as path from "path";
 import * as vscode from "vscode";
 import { sendPatchInfo } from "../../protocolMessages";
-import Utils from "../../utils";
+import { ServersConfig } from "../../utils";
 import { ApplyViewAction } from "./actions";
 import { Disposable, disposeAll } from "./dispose";
 import * as fs from "fs"
@@ -25,7 +25,7 @@ class PatchDocument extends Disposable implements vscode.CustomDocument {
   }
 
   private static async readFile(uri: vscode.Uri): Promise<IPatchData> {
-    const server = Utils.getCurrentServer();
+    const server = ServersConfig.getCurrentServer();
     const data: IPatchData = {
       filename: path.basename(uri.fsPath),
       lengthFile: (await vscode.workspace.fs.stat(uri)).size,

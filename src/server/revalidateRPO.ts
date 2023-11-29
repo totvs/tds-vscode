@@ -1,14 +1,11 @@
-import Utils from "../utils";
+import { ServersConfig } from "../utils";
 import { languageClient } from "../extension";
 import * as vscode from "vscode";
 import { ResponseError } from "vscode-languageclient";
-import * as nls from "vscode-nls";
 import { _debugEvent } from "../debug";
 
-const localize = nls.loadMessageBundle();
-
 export function revalidateRpo() {
-  const server = Utils.getCurrentServer();
+  const server = ServersConfig.getCurrentServer();
 
   if (server) {
     if (_debugEvent) {
@@ -30,10 +27,10 @@ export function revalidateRpo() {
           vscode.window.showErrorMessage(err.message);
         }
       );
-    vscode.window.setStatusBarMessage(localize("tds.vscode.revalidating","Revalidating RPO"), exec);
+    vscode.window.setStatusBarMessage(vscode.l10n.t("Revalidating RPO"), exec);
   } else {
     vscode.window.showErrorMessage(
-      localize("tds.vscode.servernotconnected", "There is no server connected")
+      vscode.l10n.t("There is no server connected")
     );
   }
 }

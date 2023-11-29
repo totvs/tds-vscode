@@ -8,9 +8,6 @@ import {
 import * as vscode from "vscode";
 import { setDapArgs } from "./debugConfigs";
 const fs = require("fs");
-import * as nls from "vscode-nls";
-
-const localize = nls.loadMessageBundle();
 
 /*
  * Set the following compile time flag to true if the
@@ -50,20 +47,13 @@ export class TotvsConfigurationTdsReplayProvider
       if (!config.cwb || config.cwb === "") {
         config.cwb = vscode.workspace.rootPath;
         window.showInformationMessage(
-          localize(
-            "tds.vscode.cwb_warning",
-            "Parameter cwb not informed. Setting to {0}",
-            config.cwb
-          )
+          vscode.l10n.t("Parameter CWB not informed. Setting to {0}", config.cwb)
         );
       }
 
       if (config.forceImport === true) {
         window.showWarningMessage(
-          localize(
-            "tds.vscode.replay.forceImport",
-            'The parameter "forceImport" is defined to "true". Note that this will consume more disk space.'
-          )
+          vscode.l10n.t('The parameter "forceImport" is defined to "true". Note that this will consume more disk space.')
         );
       }
 
@@ -85,10 +75,7 @@ export class TotvsConfigurationTdsReplayProvider
       return Promise.resolve(config);
     } else {
       window.showErrorMessage(
-        localize(
-          "tds.vscode.tdsReplay.fileNotInformed",
-          "TDS Replay file not informed"
-        )
+        vscode.l10n.t("TDS Replay file not informed")
       );
       return null;
     }
@@ -119,17 +106,11 @@ export class TotvsConfigurationTdsReplayProvider
         }
         if (mustImport) {
           vscode.window.showInformationMessage(
-            localize(
-              "tds.vscode.tdsReplay.deletingDbFile",
-              "Cleaning current database..."
-            )
+            vscode.l10n.t("Cleaning current database...")
           );
           fs.unlinkSync(dbFile);
           vscode.window.showInformationMessage(
-            localize(
-              "tds.vscode.tdsReplay.dbDeleted",
-              "Current database cleaned."
-            )
+            vscode.l10n.t("Current database cleaned.")
           );
         }
       } else {
@@ -187,12 +168,9 @@ export class TotvsConfigurationTdsReplayProvider
   async askIfMustReImportTDSReplay(): Promise<boolean> {
     let mustReimport = false;
     //const textNoAsk = localize('tds.vscode.noAskAgain', "Don't ask again");
-    const textNo = localize("tds.vscode.no", "No");
-    const textYes = localize("tds.vscode.yes", "Yes");
-    const textQuestion = localize(
-      "tds.vscode.question.tdsReplay.mustReimport",
-      "The filter informed is different from the last one. Do you wish to re-import using the current?"
-    );
+    const textNo = vscode.l10n.t("No");
+    const textYes = vscode.l10n.t("Yes");
+    const textQuestion = vscode.l10n.t("The filter informed is different from the last one. Do you wish to re-import using the current?");
 
     await vscode.window
       .showInformationMessage(textQuestion, { modal: true }, textYes, textNo)

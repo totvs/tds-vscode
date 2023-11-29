@@ -1,12 +1,8 @@
 import * as vscode from "vscode";
-import * as nls from "vscode-nls";
-import { CompileKey } from "./compileKey/compileKey";
 import { IUsageStatusInfo, IUsageStatusData } from "./protocolMessages";
 import { IRpoToken, getEnabledRpoToken } from "./rpoToken";
 import { ServerItem } from "./serverItem";
-import Utils from "./utils";
-
-let localize = nls.loadMessageBundle();
+import Utils, { ServersConfig } from "./utils";
 
 let serverStatusBarItem: vscode.StatusBarItem;
 let saveLocationBarItem: vscode.StatusBarItem;
@@ -30,7 +26,7 @@ export function initStatusBarItems(context: vscode.ExtensionContext) {
 }
 
 export function updateStatusBarItems() {
-  updateStatusBarItem(undefined);
+  //updateStatusBarItem(undefined);
   updateSaveLocationBarItem();
   updateRpoTokenStatusBarItem();
 }
@@ -41,14 +37,11 @@ function initStatusBarItem(context: vscode.ExtensionContext) {
     priorityTotvsStatusBarItem
   );
   serverStatusBarItem.command = "totvs-developer-studio.serverSelection";
-  serverStatusBarItem.text = `$(gear~spin) ${localize(
-    "tds.vscode.initializing",
-    "(initializing)"
-  )}`;
+  serverStatusBarItem.text = `$(gear~spin) ${vscode.l10n.t("(initializing)")}`;
 
   context.subscriptions.push(
     serverStatusBarItem,
-    Utils.onDidSelectedServer((newServer: ServerItem) => {
+    ServersConfig.onDidSelectedServer((newServer: ServerItem) => {
       updateStatusBarItem(newServer);
     })
   );
@@ -63,14 +56,8 @@ function updateStatusBarItem(selectServer: ServerItem | undefined): void {
     serverStatusBarItem.text += `${selectServer.name} / ${selectServer.environment}\n`;
     buildServerTooltip(selectServer);
   } else {
-    serverStatusBarItem.text += localize(
-      "tds.vscode.select_server_environment",
-      "Select server/environment"
-    );
-    serverStatusBarItem.tooltip = localize(
-      "tds.vscode.select_server_environment.tooltip",
-      "Select a server and environment in the server view"
-    );
+    serverStatusBarItem.text += vscode.l10n.t("Select server/environment");
+    serverStatusBarItem.tooltip = vscode.l10n.t("Select a server and environment in the server view");
   }
 
   serverStatusBarItem.show();
@@ -90,7 +77,7 @@ function initSaveLocationBarItem(context: vscode.ExtensionContext) {
 
 function updateSaveLocationBarItem() {
   const workspace: boolean = Utils.isWorkspaceServerConfig();
-  const location: string = Utils.getServerConfigFile();
+  const location: string = ServersConfig.getServerConfigFile();
 
   if (workspace) {
     saveLocationBarItem.text = "$(home)";
@@ -116,7 +103,7 @@ function updateRpoTokenStatusBarItem(): void {
   let text: string = "";
   let tooltip: string = "";
 
-  let rpoToken: IRpoToken = Utils.getRpoTokenInfos();
+  let rpoToken: IRpoToken = ServersConfig.getRpoTokenInfos();
   if (rpoToken === undefined) {
     rpoToken = { token: "", enabled: false };
   }
@@ -126,10 +113,7 @@ function updateRpoTokenStatusBarItem(): void {
 
   if (rpoToken.token.length == 0) {
     text = "$(gear) RPO Token";
-    tooltip = localize(
-      "tds.package.inputRpoToken",
-      "Input RPO token"
-    )
+    tooltip = vscode.l10n.t("Input RPO token")
   } else {
     let enabled = getEnabledRpoToken(rpoToken);
     text = buildTextRpoToken(error ? 2 : warning ? 1 : 0, enabled, text) + " RPO Token";
@@ -173,7 +157,7 @@ function buildServerTooltip(server: ServerItem) {
 
     serverStatusBarItem.tooltip = new vscode.MarkdownString(
       `**Address: _${server.address}:${server.port}_** ` +
-      `${server.buildVersion}\n ${group("Actions", "S")}\n ${group("Monitor", "M")}`
+      `${server.buildVersion}\n\n${group("Actions", "S")}\n\n${group("Monitor", "M")}`
     );
   } else {
     serverStatusBarItem.tooltip = error;

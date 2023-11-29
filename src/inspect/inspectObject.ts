@@ -1,37 +1,30 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import Utils from '../utils';
+import Utils, { ServersConfig } from '../utils';
 import { languageClient } from '../extension';
 const compile = require('template-literal');
-import * as nls from 'vscode-nls';
 import { ResponseError } from 'vscode-languageclient';
-let localize = nls.loadMessageBundle();
 import { openInspectView } from "../inspect-harpia";
 
 const localizeHTML = {
-	"tds.webview.inspect.generate": localize("tds.webview.inspect.generate", "Patch Generation"),
-	"tds.webview.inspect.ignore.files": localize("tds.webview.inspect.ignore.files", "Ignore files"),
-	"tds.webview.inspect.filter": localize("tds.webview.inspect.filter", "Filter, ex: MAT or * All (slow)"),
-	"tds.webview.inspect.clean.selected": localize("tds.webview.inspect.clean.selected", "Clear Selected"),
-	"tds.webview.inspect.clean.all": localize("tds.webview.inspect.clean.all", "Clear All"),
-	"tds.webview.inspect.items": localize("tds.webview.inspect.items", "Items"),
-	"tds.webview.inspect.directory": localize("tds.webview.inspect.directory", "Patch Generation Directory"),
-	"tds.webview.inspect.file.name.patch": localize("tds.webview.inspect.file.name.patch", "Patch file name"),
-	"tds.webview.inspect.file.name": localize("tds.webview.inspect.file.name", "File name"),
-	"tds.webview.inspect.items.generate": localize("tds.webview.inspect.items.generate", "Generate"),
-	"tds.webview.inspect.items.generate.close": localize("tds.webview.inspect.items.generate.close", "Generate/Close"),
-	"tds.webview.inspect.message1": localize("tds.webview.inspect.message1", "The generated patch is based on the files from RPO. Be sure that the included fonts are compiled."),
-	"tds.webview.inspect.items.showing": localize("tds.webview.inspect.items.showing", "Items showing")
+	"tds.webview.objectsinspector": vscode.l10n.t("Objects Inspector"),
+	"tds.webview.objectsinspector.ignore.files": vscode.l10n.t("Ignore files"),
+	"tds.webview.objectsinspector.filter": vscode.l10n.t("Filter, ex: MAT or * All (slow)"),
+	"tds.webview.objectsinspector.export2file": vscode.l10n.t("Export to file"),
+	"tds.webview.objectsinspector.export": vscode.l10n.t("Export filtered items to file"),
+	"tds.webview.objectsinspector.items.showing": vscode.l10n.t("Items showing"),
+	"tds.webview.objectsinspector.filter.objects": vscode.l10n.t("Use filter to display objects"),
+	"tds.webview.objectsinspector.close": vscode.l10n.t("Close")
 };
 
 export function inspectObject(context: vscode.ExtensionContext) {
-	const server = Utils.getCurrentServer();
+	const server = ServersConfig.getCurrentServer();
 	if (server) {
 		if (Utils.isServerP20OrGreater(server)) {
 			openInspectView(context, {
-			  objectsInspector: true,
-			  includeOutScope: false, //TRES
+				objectsInspector: true,
+				includeOutScope: false, //TRES
 			});
 		} else {
 			inspectObjectLegado(context);
@@ -40,7 +33,7 @@ export function inspectObject(context: vscode.ExtensionContext) {
 }
 
 function inspectObjectLegado(context: vscode.ExtensionContext) {
-	const server = Utils.getCurrentServer();
+	const server = ServersConfig.getCurrentServer();
 
 	if (server) {
 		let extensionPath = "";
@@ -54,17 +47,17 @@ function inspectObjectLegado(context: vscode.ExtensionContext) {
 		}
 
 		const currentPanel = vscode.window.createWebviewPanel(
-      "totvs-developer-studio.inspect.object",
-      "Objects Inspector",
-      vscode.ViewColumn.One,
-      {
-        enableScripts: true,
-        localResourceRoots: [
-          vscode.Uri.file(path.join(extensionPath, "src", "patch")),
-        ],
-        retainContextWhenHidden: true,
-      }
-    );
+			"totvs-developer-studio.inspect.object",
+			"Objects Inspector",
+			vscode.ViewColumn.One,
+			{
+				enableScripts: true,
+				localResourceRoots: [
+					vscode.Uri.file(path.join(extensionPath, "src", "patch")),
+				],
+				retainContextWhenHidden: true,
+			}
+		);
 
 		//currentPanel.webview.html = getWizardGeneratePatch(extensionPath);
 		currentPanel.webview.html = getWebViewContent(context, localizeHTML);
@@ -124,7 +117,9 @@ function inspectObjectLegado(context: vscode.ExtensionContext) {
 			context.subscriptions
 		);
 	} else {
-		vscode.window.showErrorMessage("There is no server connected.");
+		vscode.window.showErrorMessage(
+			vscode.l10n.t("There is no server connected")
+		  );
 	}
 }
 
@@ -132,10 +127,10 @@ function inspectObjectLegado(context: vscode.ExtensionContext) {
 function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 
 	const htmlOnDiskPath = vscode.Uri.file(path.join(context.extensionPath, 'src', 'inspect', 'formInspectObject.html'));
-	const cssOniskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
+	const cssOnDIskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
 
 	const htmlContent = fs.readFileSync(htmlOnDiskPath.with({ scheme: 'vscode-resource' }).fsPath);
-	const cssContent = fs.readFileSync(cssOniskPath.with({ scheme: 'vscode-resource' }).fsPath);
+	const cssContent = fs.readFileSync(cssOnDIskPath.with({ scheme: 'vscode-resource' }).fsPath);
 
 	let runTemplate = compile(htmlContent);
 

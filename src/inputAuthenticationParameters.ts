@@ -1,5 +1,5 @@
-import * as nls from "vscode-nls";
-import Utils from "./utils";
+import * as vscode from "vscode";
+import { ServersConfig } from "./utils";
 import { MultiStepInput } from "./multiStepInput";
 import { authenticate } from "./serversView";
 import { ServerItem } from "./serverItem";
@@ -12,20 +12,16 @@ import { ServerItem } from "./serverItem";
  *
  * This first part uses the helper class `MultiStepInput` that wraps the API for the multi-step case.
  */
-const localize = nls.loadMessageBundle();
-
 export async function inputAuthenticationParameters(
   serverItem: ServerItem,
   environment: string
 ) {
   //const VALIDADE_TIME_OUT = 1000;
-  const title = localize("AUTHENTICATION", "Authentication");
+  const title = vscode.l10n.t("Authentication");
 
   let AUTH_TOTAL_STEPS = 2;
   let AUTH_USERNAME_STEP = 1;
   let AUTH_PASSWORD_STEP = 2;
-
-  const serversConfig = Utils.getServersConfig();
 
   interface State {
     title: string;
@@ -38,12 +34,12 @@ export async function inputAuthenticationParameters(
   async function collectAuthenticationInputs() {
     const state = {} as Partial<State>;
 
-    let target = Utils.getServerById(serverItem.id, serversConfig);
+    let target = ServersConfig.getServerById(serverItem.id);
     if (target) {
       state.username = target.username;
     }
     await MultiStepInput.run((input) =>
-      inputUsername(input, state, serversConfig)
+      inputUsername(input, state)
     );
 
     return state as State;
@@ -51,35 +47,33 @@ export async function inputAuthenticationParameters(
 
   async function inputUsername(
     input: MultiStepInput,
-    state: Partial<State>,
-    serversConfig: any
+    state: Partial<State>
   ) {
     state.username = await input.showInputBox({
       title: title,
       step: AUTH_USERNAME_STEP,
       totalSteps: AUTH_TOTAL_STEPS,
       value: state.username || "",
-      prompt: localize("USER_IDENTIFICATION", "User identification"),
+      prompt: vscode.l10n.t("User identification"),
       validate: validateRequiredValue,
       shouldResume: shouldResume,
       password: false,
     });
 
     return (input: MultiStepInput) =>
-      inputPassword(input, state, serversConfig);
+      inputPassword(input, state);
   }
 
   async function inputPassword(
     input: MultiStepInput,
-    state: Partial<State>,
-    serversConfig: any
+    state: Partial<State>
   ) {
     state.password = await input.showInputBox({
       title: title,
       step: AUTH_PASSWORD_STEP,
       totalSteps: AUTH_TOTAL_STEPS,
       value: state.password || "",
-      prompt: localize("ACCESS PASSWORD", "Access password"),
+      prompt: vscode.l10n.t("Access password"),
       validate: allTrueValue,
       shouldResume: shouldResume,
       password: true,
@@ -105,7 +99,7 @@ export async function inputAuthenticationParameters(
     //Nao esta claro o motivo desse timeout, pois o resolve nunca é passado e sempre é esperado o total do timeout antes de continuar
     //await new Promise(resolve => setTimeout(resolve, VALIDADE_TIME_OUT));
     return value === ""
-      ? localize("REQUIRED_INFORMATION", "Required information")
+      ? vscode.l10n.t("Required information")
       : undefined;
   }
 

@@ -1,14 +1,11 @@
-import Utils from "../utils";
+import Utils, { ServersConfig } from "../utils";
 import { languageClient } from "../extension";
 import * as vscode from "vscode";
 import { ResponseError } from "vscode-languageclient";
-import * as nls from "vscode-nls";
 import { _debugEvent } from "../debug";
 
-const localize = nls.loadMessageBundle();
-
 export function defragRpo() {
-  const server = Utils.getCurrentServer();
+  const server = ServersConfig.getCurrentServer();
 
   if (server) {
     if (_debugEvent) {
@@ -20,36 +17,30 @@ export function defragRpo() {
 
     vscode.window
       .showWarningMessage(
-        localize(
-          "tds.vscode.defrag.rpo",
-          "Are you sure you want to defrag the RPO? (This process may take some time)"
-        ),
+        vscode.l10n.t("Are you sure you want to defrag the RPO? (This process may take some time)"),
         { modal: true },
-        localize("tds.vscode.yes", "Yes"),
-        localize("tds.vscode.no", "No")
+        vscode.l10n.t("Yes"),
+        vscode.l10n.t("No")
       )
       .then((clicked) => {
-        if (clicked === localize("tds.vscode.yes", "Yes")) {
+        if (clicked === vscode.l10n.t("Yes")) {
           if (Utils.isServerP20OrGreater(server)) {
             let packPatchInfo = false;
-            let authorizationToken: string = Utils.getAuthorizationToken(server);
+            let authorizationToken: string = ServersConfig.getAuthorizationToken(server);
             if (authorizationToken.length > 0) {
               vscode.window
-              .showWarningMessage(
-                localize(
-                  "tds.vscode.defrag.packPatchInfo",
-                  "Clear apply patch history?"
-                ),
-                { modal: true },
-                localize("tds.vscode.yes", "Yes"),
-                localize("tds.vscode.no", "No")
-              )
-              .then((clicked) => {
-                if (clicked === localize("tds.vscode.yes", "Yes")) {
-                  packPatchInfo = true;
-                }
-                execDefragRpo(server.token, authorizationToken, server.environment, packPatchInfo);
-              });
+                .showWarningMessage(
+                  vscode.l10n.t("Clear apply patch history?"),
+                  { modal: true },
+                  vscode.l10n.t("Yes"),
+                  vscode.l10n.t("No")
+                )
+                .then((clicked) => {
+                  if (clicked === vscode.l10n.t("Yes")) {
+                    packPatchInfo = true;
+                  }
+                  execDefragRpo(server.token, authorizationToken, server.environment, packPatchInfo);
+                });
             }
             else {
               execDefragRpo(server.token, authorizationToken, server.environment, packPatchInfo);
@@ -64,7 +55,7 @@ export function defragRpo() {
       });
   } else {
     vscode.window.showErrorMessage(
-      localize("tds.vscode.servernotconnected", "There is no server connected")
+      vscode.l10n.t("There is no server connected")
     );
   }
 }
@@ -88,10 +79,7 @@ function execDefragRpo(connectionToken, authorizationToken, environment, packPat
       }
     );
   vscode.window.setStatusBarMessage(
-    `$(gear~spin) ${localize(
-      "tds.vscode.servernotconnected",
-      "Defragmenting RPO (process may take some time)"
-    )}`,
+    `$(gear~spin) ${vscode.l10n.t("Defragmenting RPO (process may take some time)")}`,
     exec
   );
 }

@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import { EnvSection, ServerItem, ServerType } from "./serverItem";
-import Utils from "./utils";
+import Utils, { ServersConfig } from "./utils";
 import { updateStatusBarItems } from "./statusBar";
 
 class ServerItemProvider
@@ -66,13 +66,12 @@ class ServerItemProvider
     if (this._connectedServerItem !== server) {
       this._connectedServerItem = server;
 
-      let includes = "";
+      let includes = ""; // XXX porque? apenas populando uma lista local e nao usa depois???
       if (server === undefined) {
-        Utils.clearConnectedServerConfig();
-        const serversConfig = Utils.getServersConfig();
-        if (serversConfig.includes) {
-          let includesList = serversConfig.includes as Array<string>;
-          includesList.forEach((includeItem) => {
+        ServersConfig.clearConnectedServerConfig();
+        const serversIncludes = ServersConfig.getGlobalIncludes();
+        if (serversIncludes) {
+          serversIncludes.forEach((includeItem) => {
             includes += includeItem + ";";
           });
         }
@@ -97,9 +96,7 @@ class ServerItemProvider
       if (element.environments) {
         return Promise.resolve(element.environments);
       } else {
-        const servers = Utils.getServersConfig();
-        const listOfEnvironments =
-          servers.configurations[element.id].environments;
+        const listOfEnvironments = ServersConfig.getServerById(element.id).environments;
         if (listOfEnvironments.size > 0) {
           this.localServerItems[element.id].environments =
             listOfEnvironments.map(
@@ -131,7 +128,6 @@ class ServerItemProvider
       }
     } else {
       if (!this.localServerItems) {
-        const serverConfig = Utils.getServersConfig();
         this.localServerItems = this.setConfigWithServerConfig();
       }
     }
@@ -152,7 +148,7 @@ class ServerItemProvider
   }
 
   checkServersConfigListener(refresh: boolean): void {
-    let serversJson: string = Utils.getServerConfigFile();
+    let serversJson: string = ServersConfig.getServerConfigFile();
 
     if (this.configFilePath !== serversJson) {
       if (this.configFilePath) {
@@ -160,7 +156,7 @@ class ServerItemProvider
       }
 
       if (!fs.existsSync(serversJson)) {
-        Utils.createServerConfig();
+        ServersConfig.createServerConfig();
       }
 
       fs.watch(serversJson, { encoding: "buffer" }, (eventType, filename) => {
@@ -179,15 +175,13 @@ class ServerItemProvider
       }
     }
 
-    Utils.updateLinterIncludes();
+    ServersConfig.updateLinterIncludes();
   }
 
   /**
    * Cria os itens da arvore de servidores a partir da leitura do arquivo servers.json
    */
   private setConfigWithServerConfig() {
-    const serverConfig = Utils.getServersConfig();
-
     const serverItem = (
       serverItem: string,
       type: ServerType,
@@ -216,7 +210,7 @@ class ServerItemProvider
     };
     const listServer = new Array<ServerItem>();
 
-    serverConfig.configurations.forEach((element) => {
+    ServersConfig.getServers().forEach((element) => {
       let environmentsServer = new Array<EnvSection>();
       let token: string = element.token ? element.token : "";
 
@@ -227,13 +221,15 @@ class ServerItemProvider
             element,
           );
 
-          if (serverConfig.savedTokens) {
-            serverConfig.savedTokens.forEach((savedToken) => {
-              if (savedToken[0] === element.id + ":" + element.environment) {
-                token = savedToken[1].token;
-              }
-            });
-          }
+          // // XXX porque? sao dois forEach (servidores e environments) mas token seria sobrescrito e guardaria apenas o ultimo???
+          // if (serverConfig.savedTokens) {
+          //   serverConfig.savedTokens.forEach((savedToken) => {
+          //     if (savedToken[0] === element.id + ":" + element.environment) {
+          //       token = savedToken[1].token;
+          //     }
+          //   });
+          // }
+          token = ServersConfig.getSavedTokens(element.id, element.environment);
 
           environmentsServer.push(env);
         });

@@ -1,8 +1,52 @@
 # Changelog ([Changelog Versão 1](CHANGELOG.md))
 
-## Versão [2.0.0-RC-NEXT]
+
+## Versão [2.0.0-RC16]
 
 ### Correção
+
+#### Correções de tradução
+
+#### _Linter_: tratamento de avisos
+
+Corrigido o tratamento de avisos do _linter_, que haviam sido retirados indevidamente na implementação do _DSS_.
+
+## Versão [2.0.0-RC15]
+
+### Correção
+
+#### Correções e melhorias pontuais na interface de validação na aplicação de Patches
+
+## Versão [2.0.0-RC14]
+
+### Melhoria
+
+#### Migração do mecanismo de tradução de vscode-nls para @vscode/l10n [DTCLIENT01-4399](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4399)
+
+Devido a descontinuação do [vscode-nls](https://github.com/microsoft/vscode-nls#vscode-nls), foi efetuado migração para @vscode/l10n e revisão das traduções e ortografia.
+
+#### Problemas de acentuações no debug [#1113](https://github.com/totvs/tds-vscode/issues/1113) [DTCLIENT01-4042](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4042)
+
+Implementado tratamento de código de página na interface entre o depurador do VS-Code e o DebugAdapter (motor de depuração).
+Veja detalhes em [Depuração com variáveis do tipo string](docs\debugger.md#depuração-com-variáveis-do-tipo-string).
+
+### Correção
+
+#### Identificação do servidor corrente na barra de status (rodapé)
+
+Ajustado a apresentação do servidor e ambiente corrente na barra de status. Nas versões anteriores não era atualizado.
+
+## Versão [2.0.0-RC13]
+
+### Correção
+
+#### Consumo de CPU
+
+Solucionado consumo de CPU exagerado em algumas situações.
+
+#### Problema com referencia de array na importação do TDS Replay [DTCLIENT01-4264](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4264)
+
+Ajustado processamento da identificação de retornos de funções, gravadas no log do TDSReplay.
 
 #### Sintaxe destacada em HTML e APH não está funcionando [DTCLIENT01-4345](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-4345)
 
@@ -102,7 +146,7 @@ Informação de quantas vezes e onde, uma função, classe ou método estático 
 
 ### Assistente de assinatura (Otto)
 
-*InteliSense* para visualizar os parâmetros de funções Advpl/PL não tem o comportamento esperado.
+*Intellisense* para visualizar os parâmetros de funções Advpl/PL não tem o comportamento esperado.
 
 ### Disparar o assistente de assinatura, na lista de parâmetros em código já existente (Otto)
 
