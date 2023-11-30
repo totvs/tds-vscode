@@ -34,6 +34,7 @@ const localizeHTML = {
   "tds.webview.patch.newest.summary": vscode.l10n.t("Summary:"),
   "tds.webview.patch.newest.link": vscode.l10n.t("Download the patch from the Update Center:"),
   "tds.webview.patch.newest.doc": vscode.l10n.t("Read the documentation at:"),
+  "tds.webview.patch.validation.error.undefined": vscode.l10n.t("Undefined error. Check AppServer logs for more details."),
   "tds.webview.patch.validation.error.older": vscode.l10n.t("Resources in patch older than RPO. Check Output for details."),
   "tds.webview.patch.validation.error.denied": vscode.l10n.t("Patch apply denied. Check Output for details."),
   "tds.webview.patch.validation.error.newer": vscode.l10n.t("Newer patches available. Click"),

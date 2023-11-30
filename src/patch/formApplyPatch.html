@@ -331,7 +331,9 @@
 					if (patchPath === file) {
 						var validationMessage = message.message;
 						var errorCode = message.errorCode;
-						if (errorCode == 5) {
+						if (errorCode == 1) {
+							validationMessage = "${d.localize['tds.webview.patch.validation.error.undefined']}"; //"Undefined error. Check AppServer logs for more details."
+						} else if (errorCode == 5) {
 							validationMessage = "${d.localize['tds.webview.patch.validation.error.older']}"; //"Resources in patch older than RPO. Check Output for details.";
 						} else if (errorCode == 7) {
 							validationMessage = "${d.localize['tds.webview.patch.validation.error.denied']}"; //"Patch apply denied. Check Output for details.";

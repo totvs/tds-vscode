@@ -166,6 +166,7 @@
   "Summary:": "Summary:",
   "Download the patch from the Update Center:": "Download the patch from the Update Center:",
   "Read the documentation at:": "Read the documentation at:",
+  "Undefined error. Check AppServer logs for more details.": "Undefined error. Check AppServer logs for more details.",
   "Resources in patch older than RPO. Check Output for details.": "Resources in patch older than RPO. Check Output for details.",
   "Patch apply denied. Check Output for details.": "Patch apply denied. Check Output for details.",
   "Newer patches available. Click": "Newer patches available. Click",

@@ -265,6 +265,7 @@
   "No validation errors": "Sem erros de validação",
   "Patch validated.": "Patch validado.",
   "File already selected: {0}": "Arquivo já selecionado: {0}",
+  "Undefined error. Check AppServer logs for more details.": "Erro indefinido. Verifique os logs do AppServer para obter mais detalhes.",
   "Resources in patch older than RPO. Check Output for details.": "Recursos em patch anteriores ao RPO. Verifique a saída para obter detalhes.",
   "Patch apply denied. Check Output for details.": "Aplicação de patch negada. Verifique a Saída para obter detalhes.",
   "Newer patches available. Click": "Patches mais recentes disponíveis. Clique",

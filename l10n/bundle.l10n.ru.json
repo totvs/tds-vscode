@@ -180,6 +180,7 @@
   "No validation errors": "Никаких ошибок валидации",
   "Patch validated.": "Патч проверен.",
   "File already selected: {0}": "Файл уже выбран: {0}",
+  "Undefined error. Check AppServer logs for more details.": "Неопределенная ошибка. Проверьте журналы AppServer для получения более подробной информации.",
   "Resources in patch older than RPO. Check Output for details.": "Ресурсы в патче старше RPO. Подробности см. в разделе Вывод.",
   "Patch apply denied. Check Output for details.": "Применение патча отклонено. Подробности см. в разделе Вывод.",
   "Newer patches available. Click": "Доступны новые патчи. Нажмите",
