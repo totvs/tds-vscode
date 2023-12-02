@@ -1,6 +1,12 @@
 # Changelog ([Changelog Versão 1](CHANGELOG.md))
 
 
+## Versão [2.0.0-RC17]
+
+### Correção
+
+#### Tratamento de erro genérico na interface de validação na aplicação de Patches
+
 ## Versão [2.0.0-RC16]
 
 ### Correção
