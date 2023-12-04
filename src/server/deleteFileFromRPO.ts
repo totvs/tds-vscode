@@ -13,7 +13,7 @@ const localizeHTML = {
 	"tds.webview.deleteFile.title": vscode.l10n.t("Deleting source/resource from RPO"),
 	"tds.webview.deleteFile.line1": vscode.l10n.t("In order to delete a source/resource from RPO follow these steps:"),
 	"tds.webview.deleteFile.line2": vscode.l10n.t("Find source/resource in workspace"),
-	"tds.webview.deleteFile.line3": vscode.l10n.t("Select source/recourse with rigth mouse buttom"),
+	"tds.webview.deleteFile.line3": vscode.l10n.t("Select source/resource with right mouse button"),
 	"tds.webview.deleteFile.line4": vscode.l10n.t("Select the option 'Delete source/resource from RPO' on popup menu"),
 	"tds.webview.deleteFile.line5": vscode.l10n.t("Confirm file deletion selecting the option 'YES' in the form displayed on the bottom right corner.")
 };
@@ -45,7 +45,7 @@ export function deleteFileFromRPO(context: any, selectedFiles): void {
 		allFiles = Utils.getAllFilesRecursive(files);
 
 		if (allFiles) {
-			window.showWarningMessage(vscode.l10n.t('No')).then(clicked => {
+			window.showWarningMessage(vscode.l10n.t("Are you sure you want to delete {0} files from RPO?", allFiles.length), { modal: true }, vscode.l10n.t('Yes'), vscode.l10n.t('No')).then(clicked => {
 				if (clicked === vscode.l10n.t('Yes')) {
 					deletePrograms(allFiles);
 				}
