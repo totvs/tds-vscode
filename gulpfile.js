@@ -119,12 +119,17 @@ const vscePackageTask = function () {
   return vsce.createVSIX();
 };
 
+const vscePackagePrereleaseTask = function () {
+  return vsce.createVSIX({'preRelease':true});
+};
 
 gulp.task("publish", gulp.series(buildTask, vscePublishTask));
 
 gulp.task("prerelease", gulp.series(buildTask, vscePrereleaseTask));
 
 gulp.task("package", gulp.series(buildTask, vscePackageTask));
+
+gulp.task("package-prerelease", gulp.series(buildTask, vscePackagePrereleaseTask));
 
 gulp.task("default", buildTask);
 
