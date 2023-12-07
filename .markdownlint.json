@@ -5,9 +5,10 @@
 		"indent": 4
 	},
 	"MD013": {
-		"line_length": 200,
+		"line_length": 1024,
 		"heading_line_length": 120
 	},
+	"MD024": false,
 	"MD033": {
 		"allowed_elements": [
 			"a"

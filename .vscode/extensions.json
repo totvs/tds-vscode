@@ -8,7 +8,6 @@
 		"pflannery.vscode-versionlens",
 		"naumovs.color-highlight",
 		"compulim.vscode-mocha",
-		"streetsidesoftware.code-spell-checker",
-		"streetsidesoftware.code-spell-checker-portuguese-brazilian"
+		"pedro-w.tmlanguage"
 	]
 }
