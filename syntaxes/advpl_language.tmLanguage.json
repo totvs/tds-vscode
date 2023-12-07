@@ -31,6 +31,12 @@
 			"include": "#wsscr-decl"
 		},
 		{
+			"include": "#beginSql"
+		},
+		{
+			"include": "#beginContent"
+		},
+		{
 			"include": "#keywords"
 		},
 		{
@@ -50,7 +56,7 @@
 			"patterns": [
 				{
 					"name": "keyword.control.advpl_language",
-          "match": "(?i)\\b(local|static|private|public|default|activate|alias|and|beginsql|between|case|centered|class|constructor|data|define|dialog|do|else|elseif|end|endcase|endclass|enddo|endfunction|endif|endsql|exit|for|from|function|get|if|loop|main|method|next|nil|of|or|otherwise|pixel|return|select|step|to|user|var|while|where|as)\\b"
+					"match": "(?i)\\b(local|static|private|public|default|activate|alias|and|between|case|centered|class|constructor|data|define|dialog|do|else|elseif|end|endcase|endclass|enddo|endfunction|endif|exit|for|from|function|get|if|loop|main|method|next|nil|of|or|otherwise|pixel|return|select|step|to|user|var|while|where|as)\\b"
 				}
 			]
 		},
@@ -97,7 +103,7 @@
 		"varDeclaration": {
 			"patterns": [
 				{
-          "match": "(?i)^\\s*\\b(?:;?\\s+;?\\s+?)(\\w+)(?:(?:;?\\s+;?\\s+?)(as)(?:;?\\s+;?\\s+?)(array|block|codeblock|character|char|date|logical|numeric|object|integer|double|decimal|json|variant))?",
+					"match": "(?i)^\\s*\\b(?:;?\\s+;?\\s+?)(\\w+)(?:(?:;?\\s+;?\\s+?)(as)(?:;?\\s+;?\\s+?)(array|block|codeblock|character|char|date|logical|numeric|object|integer|double|decimal|json|variant))?",
 					"captures": {
 						"2": {
 							"name": "variable.name.advpl"
@@ -236,7 +242,7 @@
 		},
 		"data-type": {
 			"name": "variable.parameter.type.advpl",
-      "match": "(?i)\\s*(as)(?:;?\\s+;?\\s+?)(array|block|codeblock|character|char|date|logical|numeric|object|string|integer|double|decimal|json|variant|variadic)",
+			"match": "(?i)\\s*(as)(?:;?\\s+;?\\s+?)(array|block|codeblock|character|char|date|logical|numeric|object|string|integer|double|decimal|json|variant|variadic)",
 			"captures": {
 				"1": {
 					"name": "keyword.control.keyword.as.advpl"
@@ -270,7 +276,7 @@
 		},
 		"function-decl-body": {
 			"name": "meta.function.declaration.body.advpl",
-      "begin": "(?i)^\\s*(?:(html|main|project|pyme|static|template|user|web|webuser)(?:;?\\s+;?\\s+?))?(function)(?:;?\\s+;?\\s+?)(\\w+)",
+			"begin": "(?i)^\\s*(?:(html|main|project|pyme|static|template|user|web|webuser)(?:;?\\s+;?\\s+?))?(function)(?:;?\\s+;?\\s+?)(\\w+)",
 			"end": "(?<=\\)|\\s)",
 			"captures": {
 				"1": {
@@ -343,7 +349,7 @@
 		},
 		"class-decl": {
 			"name": "meta.class.declaration.advpl",
-      "begin": "(?i)^\\s*(class)(?:;?\\s+;?\\s+?)(\\w+)(?:(?:(?:;?\\s+;?\\s+?)(inherit(?:\\sfrom)|from|of)(?:;?\\s+;?\\s+?)(\\w+)))?",
+			"begin": "(?i)^\\s*(class)(?:;?\\s+;?\\s+?)(\\w+)(?:(?:(?:;?\\s+;?\\s+?)(inherit(?:\\sfrom)|from|of)(?:;?\\s+;?\\s+?)(\\w+)))?",
 			"beginCaptures": {
 				"1": {
 					"name": "storage.type.class.advpl"
@@ -378,7 +384,7 @@
 		},
 		"class-decl-content-data": {
 			"name": "meta.class.declaration.content.data.advpl",
-      "begin": "(?i)\\b((?:ws)?data)(?:;?\\s+;?\\s+?)(\\w+)",
+			"begin": "(?i)\\b((?:ws)?data)(?:;?\\s+;?\\s+?)(\\w+)",
 			"beginCaptures": {
 				"1": {
 					"name": "storage.modifier.advpl"
@@ -390,7 +396,7 @@
 					"name": "variable.object.property.advpl"
 				}
 			},
-      "end": "(?i)(?=\\s*(as|data|method|end\\s*class))(?:(?:;?\\s+;?\\s+?)(as)(?:;?\\s+;?\\s+?)((array)\\s(of)(?:;?\\s+;?\\s+?))?(?:(array|block|codeblock|character|char|date|logical|numeric|object|string|variant|json|integer|double|decimal)|(\\w+))\\s*)?(optional)?",
+			"end": "(?i)(?=\\s*(as|data|method|end\\s*class))(?:(?:;?\\s+;?\\s+?)(as)(?:;?\\s+;?\\s+?)((array)\\s(of)(?:;?\\s+;?\\s+?))?(?:(array|block|codeblock|character|char|date|logical|numeric|object|string|variant|json|integer|double|decimal)|(\\w+))\\s*)?(optional)?",
 			"endCaptures": {
 				"1": {
 					"name": "storage.modifier.advpl"
@@ -434,7 +440,7 @@
 					"name": "storage.type.method.advpl"
 				}
 			},
-      "end": "$",
+			"end": "$",
 			"patterns": [
 				{
 					"include": "#class-decl-content-method-call"
@@ -478,7 +484,7 @@
 		},
 		"method-decl-body": {
 			"name": "meta.method.declaration.body.advpl",
-      "begin": "(?i)^\\s*(method)(?:;?\\s+;?\\s+?)(\\w+)",
+			"begin": "(?i)^\\s*(method)(?:;?\\s+;?\\s+?)(\\w+)",
 			"beginCaptures": {
 				"1": {
 					"name": "storage.type.method.advpl"
@@ -487,7 +493,7 @@
 					"name": "entity.name.function.advpl"
 				}
 			},
-      "end": "(?<=\\)|\\s)((?:;?\\s+;?\\s+?)(?i:class)(?:;?\\s+;?\\s+?)(\\w+))?",
+			"end": "(?<=\\)|\\s)((?:;?\\s+;?\\s+?)(?i:class)(?:;?\\s+;?\\s+?)(\\w+))?",
 			"endCaptures": {
 				"1": {
 					"name": "storage.type.class.advpl"
@@ -504,7 +510,7 @@
 		},
 		"wsstruct-decl": {
 			"name": "meta.wsstruct.declaration.advpl",
-      "begin": "(?i)^\\s*(wsstruct)(?:;?\\s+;?\\s+?)(\\w+)",
+			"begin": "(?i)^\\s*(wsstruct)(?:;?\\s+;?\\s+?)(\\w+)",
 			"beginCaptures": {
 				"1": {
 					"name": "storage.type.wsstruct.advpl"
@@ -527,7 +533,7 @@
 					"include": "#wsdata"
 				},
 				{
-          "match": "(?i)(wsmethod)(?:;?\\s+;?\\s+?)(\\w+)((?:;?\\s+;?\\s+?)description)?",
+					"match": "(?i)(wsmethod)(?:;?\\s+;?\\s+?)(\\w+)((?:;?\\s+;?\\s+?)description)?",
 					"captures": {
 						"1": {
 							"name": "storage.type.method.advpl"
@@ -545,7 +551,7 @@
 		"wsdata": {
 			"patterns": [
 				{
-          "match": "(?i)((?:ws)?data)(?:;?\\s+;?\\s+?)(\\w+)(?:(?:;?\\s+;?\\s+?)(as)(?:;?\\s+;?\\s+?)(array of(?:;?\\s+;?\\s+?))?(?:(string|date|integer|float|boolean|character)|(\\w+))\\s*)?(optional)?",
+					"match": "(?i)((?:ws)?data)(?:;?\\s+;?\\s+?)(\\w+)(?:(?:;?\\s+;?\\s+?)(as)(?:;?\\s+;?\\s+?)(array of(?:;?\\s+;?\\s+?))?(?:(string|date|integer|float|boolean|character)|(\\w+))\\s*)?(optional)?",
 					"captures": {
 						"1": {
 							"name": "storage.modifier.advpl"
@@ -573,7 +579,7 @@
 			]
 		},
 		"wsmethod-decl": {
-      "begin": "(?i)^\\s*(wsmethod)(?:;?\\s+;?\\s+?)(\\w+)",
+			"begin": "(?i)^\\s*(wsmethod)(?:;?\\s+;?\\s+?)(\\w+)",
 			"beginCaptures": {
 				"1": {
 					"name": "storage.type.wsmethod.advpl"
@@ -582,7 +588,7 @@
 					"name": "entity.name.function.advpl"
 				}
 			},
-      "end": "(?i)(wsservice|wsclient|wsrestful|wsrest)(?:;?\\s+;?\\s+?)(\\w+)",
+			"end": "(?i)(wsservice|wsclient|wsrestful|wsrest)(?:;?\\s+;?\\s+?)(\\w+)",
 			"endCaptures": {
 				"1": {
 					"name": "storage.type.wstype.advpl"
@@ -608,7 +614,7 @@
 		"wsscr-decl": {
 			"comment": "This is a rule for wsservice, wsclient and wsrestul, hence wsSCR",
 			"name": "meta.wsscr.advpl",
-      "begin": "(?i)^\\s*(?<!wsmethod)(wsservice|wsclient|wsrestful)(?:;?\\s+;?\\s+?)(\\w+)((?:;?\\s+;?\\s+?)description)?",
+			"begin": "(?i)^\\s*(?<!wsmethod)(wsservice|wsclient|wsrestful)(?:;?\\s+;?\\s+?)(\\w+)((?:;?\\s+;?\\s+?)description)?",
 			"beginCaptures": {
 				"1": {
 					"name": "storage.type.wsscr.advpl"
@@ -637,7 +643,7 @@
 					"include": "#wsdata"
 				},
 				{
-          "match": "(?i)(wsmethod)(?:;?\\s+;?\\s+?)(\\w+)((?:;?\\s+;?\\s+?)(?!description)\\w+)?((?:;?\\s+;?\\s+?)(description))?",
+					"match": "(?i)(wsmethod)(?:;?\\s+;?\\s+?)(\\w+)((?:;?\\s+;?\\s+?)(?!description)\\w+)?((?:;?\\s+;?\\s+?)(description))?",
 					"captures": {
 						"1": {
 							"name": "storage.type.wsscr.advpl"
@@ -667,7 +673,7 @@
 				},
 				{
 					"name": "variable.other.advpl",
-          "match": "(?i)(produces)((?:;?\\s+;?\\s+?)\\w+)+",
+					"match": "(?i)(produces)((?:;?\\s+;?\\s+?)\\w+)+",
 					"captures": {
 						"1": {
 							"name": "keyword.control.wsscr.advpl"
@@ -707,6 +713,296 @@
 					"include": "#separators"
 				}
 			]
+		},
+		"beginSql": {
+			"patterns": [
+				{
+					"begin": "(?i)\\b(beginsql\\s+alias)\\b",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.control.advpl_language"
+						}
+					},
+					"contentName": "source.sql",
+					"end": "(?i)\\b(endsql)\\b",
+					"endCaptures": {
+						"1": {
+							"name": "keyword.control.advpl_language"
+						}
+					},
+					"name": "meta.embedded.sql",
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#interpolation"
+						},
+						{
+							"include": "source.sql"
+						}
+					]
+				}
+			]
+		},
+		"beginContent": {
+			"patterns": [
+				{
+					"include": "#beginContentJS"
+				},
+				{
+					"include": "#beginContentTS"
+				},
+				{
+					"include": "#beginContentHTML"
+				},
+				{
+					"include": "#beginContentCSS"
+				},
+				{
+					"include": "#beginContentJSON"
+				},
+				{
+					"include": "#beginContentXML"
+				}
+			]
+		},
+		"beginContentJS": {
+			"patterns": [
+				{
+					"begin": "(?i)\\b(beginContent\\s+var)\\b\\s+(\\w+)\\s+(as)\\b\\s*\\b(JS|JavaScript)\\b\\s*",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.control.advpl_language"
+						},
+						"2": {
+							"name": "variable.name.advpl"
+						},
+						"3": {
+							"name": "keyword.control.advpl_language"
+						},
+						"4": {
+							"name": "keyword.control.advpl_language"
+						}
+					},
+					"contentName": "source.js",
+					"end": "(?i)\\b(endContent)\\b",
+					"endCaptures": {
+						"1": {
+							"name": "keyword.control.advpl_language"
+						}
+					},
+					"name": "meta.embedded.js",
+					"patterns": [
+						{
+							"include": "#interpolation"
+						},
+						{
+							"include": "source.js"
+						}
+					]
+				}
+			]
+		},
+		"beginContentTS": {
+			"patterns": [
+				{
+					"begin": "(?i)\\b(beginContent\\s+var)\\b\\s+(\\w+)\\s+(as)\\b\\s*\\b(TS|typeScript)\\b\\s*",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.control.advpl_language"
+						},
+						"2": {
+							"name": "variable.name.advpl"
+						},
+						"3": {
+							"name": "keyword.control.advpl_language"
+						},
+						"4": {
+							"name": "keyword.control.advpl_language"
+						}
+					},
+					"contentName": "source.ts",
+					"end": "(?i)\\b(endContent)\\b",
+					"endCaptures": {
+						"1": {
+							"name": "keyword.control.advpl_language"
+						}
+					},
+					"name": "meta.embedded.ts",
+					"patterns": [
+						{
+							"include": "#interpolation"
+						},
+						{
+							"include": "source.ts"
+						}
+					]
+				}
+			]
+		},
+		"beginContentHTML": {
+			"patterns": [
+				{
+					"begin": "(?i)\\b(beginContent\\s+var)\\b\\s+(\\w+)\\s+(as)\\b\\s*\\b(HTML)\\b\\s*",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.control.advpl_language"
+						},
+						"2": {
+							"name": "variable.name.advpl"
+						},
+						"3": {
+							"name": "keyword.control.advpl_language"
+						},
+						"4": {
+							"name": "keyword.control.advpl_language"
+						}
+					},
+					"contentName": "text.html",
+					"end": "(?i)\\b(endContent)\\b",
+					"endCaptures": {
+						"1": {
+							"name": "keyword.control.advpl_language"
+						}
+					},
+					"name": "meta.embedded.html",
+					"patterns": [
+						{
+							"include": "#interpolation"
+						},
+						{
+							"include": "text.html.basic"
+						}
+					]
+				}
+			]
+		},
+		"beginContentCSS": {
+			"patterns": [
+				{
+					"begin": "(?i)\\b(beginContent\\s+var)\\b\\s+(\\w+)\\s+(as)\\b\\s*\\b(CSS)\\b\\s*",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.control.advpl_language"
+						},
+						"2": {
+							"name": "variable.name.advpl"
+						},
+						"3": {
+							"name": "keyword.control.advpl_language"
+						},
+						"4": {
+							"name": "keyword.control.advpl_language"
+						}
+					},
+					"contentName": "source.css",
+					"end": "(?i)\\b(endContent)\\b",
+					"endCaptures": {
+						"1": {
+							"name": "keyword.control.advpl_language"
+						}
+					},
+					"name": "meta.embedded.css",
+					"patterns": [
+						{
+							"include": "#interpolation"
+						},
+						{
+							"include": "source.css"
+						}
+					]
+				}
+			]
+		},
+		"beginContentJSON": {
+			"patterns": [
+				{
+					"begin": "(?i)\\b(beginContent\\s+var)\\b\\s+(\\w+)\\s+(as)\\b\\s*\\b(JSON)\\b\\s*",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.control.advpl_language"
+						},
+						"2": {
+							"name": "variable.name.advpl"
+						},
+						"3": {
+							"name": "keyword.control.advpl_language"
+						},
+						"4": {
+							"name": "keyword.control.advpl_language"
+						}
+					},
+					"contentName": "source.json",
+					"end": "(?i)\\b(endContent)\\b",
+					"endCaptures": {
+						"1": {
+							"name": "keyword.control.advpl_language"
+						}
+					},
+					"name": "meta.embedded.json",
+					"patterns": [
+						{
+							"include": "#interpolation"
+						},
+						{
+							"include": "source.json"
+						}
+					]
+				}
+			]
+		},
+		"beginContentXML": {
+			"patterns": [
+				{
+					"begin": "(?i)\\b(beginContent\\s+var)\\b\\s+(\\w+)\\s+(as)\\b\\s*\\b(XML)\\b\\s*",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.control.advpl_language"
+						},
+						"2": {
+							"name": "variable.name.advpl"
+						},
+						"3": {
+							"name": "keyword.control.advpl_language"
+						},
+						"4": {
+							"name": "keyword.control.advpl_language"
+						}
+					},
+					"contentName": "text.xml",
+					"end": "(?i)\\b(endContent)\\b",
+					"endCaptures": {
+						"1": {
+							"name": "keyword.control.advpl_language"
+						}
+					},
+					"name": "meta.embedded.xml",
+					"patterns": [
+						{
+							"include": "#interpolation"
+						},
+						{
+							"include": "text.xml"
+						}
+					]
+				}
+			]
+		},
+		"interpolation": {
+			"begin": "%",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.variable.parameter.advpl"
+				}
+			},
+			"end": "%",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.variable.parameter.advpl"
+				}
+			},
+			"contentName": "variable.parameter.advpl"
 		}
 	}
 }

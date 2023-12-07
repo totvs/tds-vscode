@@ -13,63 +13,63 @@ export interface RuleMatch {
 }
 
 export abstract class RulesFormatting {
-  private lastMatch: RuleMatch | null = null;
-  private customRules: IndentationRule[] = null;
-  private rulesExpressions: IndentationRule[] = null;
+	private lastMatch: RuleMatch | null = null;
+	private customRules: IndentationRule[] = null;
+	private rulesExpressions: IndentationRule[] = null;
 
-  constructor() {
-    this.rulesExpressions = this.loadRulesExpressions();
-    this.customRules = this.loadCustomRules();
-  }
+	constructor() {
+		this.rulesExpressions = this.loadRulesExpressions();
+		this.customRules = this.loadCustomRules();
+	}
 
-  private instanceOfRule(object: any): object is IndentationRule {
-    return 'expression' in object;
-  }
+	private instanceOfRule(object: any): object is IndentationRule {
+		return 'expression' in object;
+	}
 
-  public match(line: string): boolean {
-    if (line.trim().length === 0) {
-      return false;
-    }
+	public match(line: string): boolean {
+		if (line.trim().length === 0) {
+			return false;
+		}
 
-    line += '\n';
-    let finddedRule: RuleMatch | null = null;
+		line += '\n';
+		let ruleFound: RuleMatch | null = null;
 
-    this.getRules().every((rule: IndentationRule) => {
-      if (this.instanceOfRule(rule)) {
-        if (line.match(rule.expression)) {
-          finddedRule = { rule: rule };
-        }
-      }
+		this.getRules().every((rule: IndentationRule) => {
+			if (this.instanceOfRule(rule)) {
+				if (line.match(rule.expression)) {
+					ruleFound = { rule: rule };
+				}
+			}
 
-      return finddedRule === null;
-    });
+			return ruleFound === null;
+		});
 
-    if (finddedRule !== null) {
-      this.lastMatch = finddedRule;
-      return true;
-    }
+		if (ruleFound !== null) {
+			this.lastMatch = ruleFound;
+			return true;
+		}
 
-    return false;
-  }
+		return false;
+	}
 
-  public getLastMatch(): RuleMatch | null {
-    return this.lastMatch;
-  }
+	public getLastMatch(): RuleMatch | null {
+		return this.lastMatch;
+	}
 
-  public getRules(): IndentationRule[] {
-    return [...this.rulesExpressions, ...this.customRules];
-  }
+	public getRules(): IndentationRule[] {
+		return [...this.rulesExpressions, ...this.customRules];
+	}
 
-  // marcadores regexp utilizados
-  // (\s+) = um ou mais whitespaces
-  // (\w+) = uma ou mais letras/digitos => palavra
-  // (constante) = constante (palavra chave)
-  // (.*) =  qualquer coisa
-  // ? = 0 ou mais ocorrências
-  // ^ = inicio da linha
-  // /i = ignorar caixa
-  protected abstract loadCustomRules(): IndentationRule[];
-  protected abstract loadRulesExpressions(): IndentationRule[];
+	// marcadores regexp utilizados
+	// (\s+) = um ou mais whitespaces
+	// (\w+) = uma ou mais letras/digitos => palavra
+	// (constante) = constante (palavra chave)
+	// (.*) =  qualquer coisa
+	// ? = 0 ou mais ocorrências
+	// ^ = inicio da linha
+	// /i = ignorar caixa
+	protected abstract loadCustomRules(): IndentationRule[];
+	protected abstract loadRulesExpressions(): IndentationRule[];
 }
 
 /*
