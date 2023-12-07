@@ -1,0 +1,44 @@
+{
+	"fileTypes": [],
+	"injectionSelector": "L:source.advpl.sql",
+	"scopeName": "sql.advpl.codeblock",
+	"patterns": [
+		{
+			"include": "#sql-advpl-code-block"
+		}
+	],
+	"repository": {
+		"sql-advpl-code-block": {
+			"begin": "(?i)\\b(beginSQL)\\s+(alias)\\s+(.*)",
+			"beginCaptures": {
+				"1": {
+					"name": "keyword.control.advpl_language"
+				},
+				"2": {
+					"name": "keyword.control.advpl_language"
+				},
+				"3": {
+					"name": "storage.type.advpl"
+				}
+			},
+			"end": "(?i)\\b(endSql)$",
+			"endCaptures": {
+				"0": {
+					"name": "keyword.control.advpl_language"
+				}
+			},
+			"patterns": [
+				{
+					"begin": "(^|\\G)(\\s*)(.*)",
+					"while": "(^|\\G)(?i)(?!)(endSql)$",
+					"contentName": "meta.embedded.block.advpl.sql",
+					"patterns": [
+						{
+							"include": "source.sql"
+						}
+					]
+				}
+			]
+		}
+	}
+}

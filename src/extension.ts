@@ -530,7 +530,7 @@ export function activate(context: ExtensionContext) {
     () => tdsReplayLauncherConfig.show(context)
   );
 
-  //inicialliza items da barra de status.
+  //inicializa items da barra de status.
   initStatusBarItems(context);
 
   context.subscriptions.push(

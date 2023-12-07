@@ -359,6 +359,21 @@ export class AdvplFormattingRules extends RulesFormatting {
         decrement: false,
         reset: false,
       },
+      {
+        id: 'begin content block',
+        expression: /^(\s*)(beginContent)(\s+)(var)/i,
+        increment: false,
+        decrement: false,
+        reset: false,
+        ignore_at: 'end content block',
+      },
+      {
+        id: 'end content block',
+        expression: /^(\s*)(endContent)/i,
+        increment: false,
+        decrement: false,
+        reset: false,
+      },
     ];
   }
 }

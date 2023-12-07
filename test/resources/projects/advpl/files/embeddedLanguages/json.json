@@ -1,0 +1,10 @@
+{
+    "titulo": "JSON x XML",
+    "resumo": "o duelo de dois modelos de representação de informações",
+    "ano": 2012,
+    "genero": [
+        "aventura",
+        "ação",
+        "ficção"
+    ]
+}

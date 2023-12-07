@@ -1,5 +1,17 @@
 # Changelog
 
+## Versão [2.0.0-next]
+
+### Melhoria
+
+#### Comando ``BeginContent`` passa a aceitar o tipo de conteúdo
+
+```
+beginComment var myVar [as <language: javascript | JS | html | json | xml | css | typeScript | TS>]
+```
+
+Essa informação é utilizada apenas para fins visuais não sendo efetuado nenhum tipo de validação.
+
 ## Versão [2.0.0]
 
 > Interoperabilidade entre sistemas operacionais
@@ -1102,7 +1114,7 @@ Detalhes em
 
 - Corrigido apresentação da estrutura de fontes 4GL na visão `Outline`.
 
-#### Correção na compilação 4GL quando há comando "globals <arquivo>"
+#### Correção na compilação 4GL quando há comando "globals \<arquivo\>"
 
 - Resolução do chamado interno [DTCLIENT01-2015](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2015). Requer atualização do _appServer_.
 
