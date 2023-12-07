@@ -1,5 +1,17 @@
 # Changelog
 
+## Versão [2.0.0-next]
+
+### Melhoria
+
+#### Comando ``BeginContent`` passa a aceitar o tipo de conteúdo
+
+```
+beginComment var myVar [as <language: javascript | JS | html | json | xml | css | typeScript | TS>]
+```
+
+Essa informação é utilizada apenas para fins visuais não sendo efetuado nenhum tipo de validação.
+
 ## Versão [2.0.0]
 
 > Interoperabilidade entre sistemas operacionais
