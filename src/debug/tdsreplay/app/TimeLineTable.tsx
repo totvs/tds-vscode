@@ -26,9 +26,9 @@ import LastPageIcon from "@material-ui/icons/LastPage";
 import { ICommand, CommandToDA, CommandToPage } from "../Command";
 import { DebugSessionCustomEvent } from "vscode";
 import { FormControlLabel, Button } from "@material-ui/core";
-import SourcesDialog from "./SourcesDialog";
 import ChangePageWaitDialog from "./ChangePageWaitDialog";
 import MessageDialog from "./MessageDialog";
+import SourceDialog from "./SourcesDialog";
 
 enum KeyCode {
   BACKSPACE = 8,
@@ -226,7 +226,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
       >
         {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
       </IconButton>
-      </label>
+    </label>
   );
 }
 
@@ -237,14 +237,16 @@ interface ITimeLineTableInterface {
 
 let tableElement: RefObject<HTMLTableElement> = null;
 
+interface ITimeLineData {
+  sources: any[];
+  selected: string[];
+}
+
 export default function TimeLineTable(props: ITimeLineTableInterface) {
 
   const vscode = props.vscode;
-
   const debugEvent = vscode.getState().config;
-
   tableElement = React.createRef();
-
   const tableClasses = tableStyles();
 
   const [jsonBody, setJsonBody] = React.useState(debugEvent.body);
@@ -263,7 +265,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   const [selectedRowId, setSelectedRowId] = React.useState(
     jsonBody.currentSelectedTimeLineId
   );
-  const [sources, setSources] = React.useState([]);
+  const [timeLineData, setTimeLineData] = React.useState<ITimeLineData>({ sources: [], selected: [] });
 
   //console.log("Do state:" + ignoreSourcesNotfound);
   //console.log("current TimeLine ID:" + jsonBody.currentSelectedTimeLineId);
@@ -299,7 +301,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     setOpenWaitPage(true);
     let command: ICommand = {
       action: CommandToDA.ChangePage,
-      content: { newPage: newPage },
+      content: { newPage: newPage, selected: this.selected },
     };
     vscode.postMessage(command);
   };
@@ -322,18 +324,35 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     vscode.postMessage(command);
   };
 
-  const handleCloseSourcesDialog = (value) => {
+  const handleCloseSourcesDialog = (value: []) => {
     setOpenSourcesDialog(false);
+
+    if (value !== undefined) {
+      var data: ITimeLineData = timeLineData;
+      data.selected = value;
+      setTimeLineData(data);
+    }
+
+    let command: ICommand = {
+      action: CommandToDA.ShowSources,
+      content: { data: value },
+    };
+    vscode.postMessage(command);
   };
+
+  const handleSelectChangeSourcesDialog = (value: []) => {
+    console.log("handleSelectChangeSourcesDialog");
+    console.dir(value);
+  }
 
   const handleCloseMsgDialog = (value) => {
     setOpenMessageDialog(false);
-  }
+  };
 
-  const sendShowAllSourcesRequest = () => {
+  const sendShowSourcesRequest = () => {
     let command: ICommand = {
       action: CommandToDA.ShowSources,
-      content: { data: "all" },
+      content: { data: undefined },
     };
     vscode.postMessage(command);
   };
@@ -373,13 +392,12 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           setPageData(event, message);
           break;
         case CommandToPage.OpenSourcesDialog:
-          setSources((sources) => {
-            if (event !== undefined) {
-              event.preventDefault();
-            }
-            sources = message.data;
-            return sources;
-          });
+          var data: ITimeLineData = timeLineData;
+
+          data.sources = message.data.sources;
+          data.selected = data.selected;
+          setTimeLineData(data);
+
           setOpenSourcesDialog(true);
           break;
         case CommandToPage.ShowLoadingPageDialog:
@@ -415,7 +433,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
       return message.data.body.ignoreSourcesNotFound;
     });
     let itemsPerPage = message.data.body.itemsPerPage;
-    if(itemsPerPage !== itemsPerPageState) {
+    if (itemsPerPage !== itemsPerPageState) {
       setItemsPerPageState((value) => {
         if (event !== undefined) {
           event.preventDefault();
@@ -450,9 +468,9 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
       overTop = target.offsetTop - parent.offsetTop < parent.scrollTop,
       overBottom =
         target.offsetTop -
-          parent.offsetTop +
-          target.clientHeight -
-          parentBorderTopWidth >
+        parent.offsetTop +
+        target.clientHeight -
+        parentBorderTopWidth >
         parent.scrollTop + parent.clientHeight;
 
     if (overTop) {
@@ -465,8 +483,8 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   const scrollToLineIfNeeded = (id: number) => {
     if (tableElement && tableElement.current !== null) {
       const rows = Array.from(
-          tableElement.current.querySelectorAll("tbody tr")
-        ),
+        tableElement.current.querySelectorAll("tbody tr")
+      ),
         newRow = rows.find((row) => row.id === `${id}`) as HTMLElement;
       //tableElement.current.scrollTo()
       scrollIntoViewIfNeeded(newRow);
@@ -589,79 +607,80 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   //const theme = useTheme();
 
   return (
-    //<Paper className={tableClasses.root}>
-    <TableContainer className={tableClasses.tableContainer} component={Paper}>
-      <Table
-        className={tableClasses.table}
-        stickyHeader
-        aria-label="sticky table"
-        ref={tableElement}
-        size={dense ? 'medium' : 'small'}
-      >
-        <TableHead>
-          <TableRow>
-            {columns.map((column) => (
-              <TableCell
-                className={tableClasses.headCell}
-                key={column.id}
-                align={column.align}
-                style={{ minWidth: column.minWidth }}
-              >
-                {column.label}
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody onKeyDown={(event) => onKeyDown(event, jsonBody.timeLines)}>
-          {createTimeLineItem(debugEvent)}
-        </TableBody>
-      </Table>
-      <TablePagination
-        className={tableClasses.pagination}
-        rowsPerPageOptions={[100, 500, 1000, 2000, 3000, 5000]}
-        count={parseInt(jsonBody.totalItems)}
-        rowsPerPage={itemsPerPageState}
-        page={jsonBody.currentPage}
-        SelectProps={{
-          inputProps: { "aria-label": "rows per page" },
-          native: true,
-        }}
-        onPageChange={(event, value) => handleChangePage(value)}
-        onChangePage={(event, value) => handleChangePage(value)}
-        onRowsPerPageChange={(event) => handleChangeRowsPerPage(event)}
-        ActionsComponent={TablePaginationActions}
-      />
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
-      <FormControlLabel
-        control={
-          <Switch
-            checked={ignoreSourcesNotfound}
-            onChange={handleIgnoreSourceNotFount}
-          />
-        }
-        label="Ignore Source Not Found"
-      />
-      <Button
-        className={tableClasses.sources}
-        variant="contained"
-        startIcon={<LibraryBooksIcon />}
-        onClick={sendShowAllSourcesRequest}
-      >
-        Sources
-      </Button>
-      {/*<SourcesDialog selectedValue={selectedValue} open={open} onClose={handleCloseSourcesDialog} />*/}
-      <SourcesDialog
-        sources={sources}
-        open={openSourcesDialog}
-        onClose={handleCloseSourcesDialog}
-      />
-      <ChangePageWaitDialog open={openWaitPage} />
-      <MessageDialog open={openMessageDialog} msgType={msgType} message={message} onClose={handleCloseMsgDialog}/>
-    </TableContainer>
-    //</Paper>
+    <Paper className={tableClasses.root}>
+      <TableContainer className={tableClasses.tableContainer}>
+        <Table
+          className={tableClasses.table}
+          stickyHeader
+          aria-label="sticky table"
+          ref={tableElement}
+          size={dense ? 'small' : 'medium'}
+        >
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell
+                  className={tableClasses.headCell}
+                  key={column.id}
+                  align={column.align}
+                  style={{ minWidth: column.minWidth }}
+                >
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody onKeyDown={(event) => onKeyDown(event, jsonBody.timeLines)}>
+            {createTimeLineItem(debugEvent)}
+          </TableBody>
+        </Table>
+        <TablePagination
+          className={tableClasses.pagination}
+          rowsPerPageOptions={[100, 500, 1000, 2000, 3000, 5000]}
+          count={parseInt(jsonBody.totalItems)}
+          rowsPerPage={itemsPerPageState}
+          page={jsonBody.currentPage}
+          SelectProps={{
+            inputProps: { "aria-label": "rows per page" },
+            native: true,
+          }}
+          onPageChange={(event, value) => handleChangePage(value)}
+          onChangePage={(event, value) => handleChangePage(value)}
+          onRowsPerPageChange={(event) => handleChangeRowsPerPage(event)}
+          ActionsComponent={TablePaginationActions}
+        />
+        <FormControlLabel
+          control={<Switch checked={dense} onChange={handleChangeDense} />}
+          label="Dense padding"
+        />
+        <FormControlLabel
+          control={
+            <Switch
+              checked={ignoreSourcesNotfound}
+              onChange={handleIgnoreSourceNotFount}
+            />
+          }
+          label="Ignore Source Not Found"
+        />
+        <Button
+          className={tableClasses.sources}
+          variant="contained"
+          startIcon={<LibraryBooksIcon />}
+          onClick={sendShowSourcesRequest}
+        >
+          Sources
+        </Button>
+        <SourceDialog
+          sources={timeLineData.sources}
+          selected={timeLineData.selected}
+          open={openSourcesDialog}
+          onClose={handleCloseSourcesDialog}
+          onSelectChange={handleSelectChangeSourcesDialog}
+        />
+        <ChangePageWaitDialog open={openWaitPage} />
+        <MessageDialog open={openMessageDialog} msgType={msgType} message={message} onClose={handleCloseMsgDialog} />
+      </TableContainer>
+    </Paper>
   );
 }
 

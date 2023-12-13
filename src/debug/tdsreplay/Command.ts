@@ -4,13 +4,13 @@ export interface ICommand {
 }
 
 export enum CommandToDA {
-    SetTimeLine,
-    ChangeRowsPerPage,
-    ChangePage,
-    ChangeItemsPerPage,
-    SetIgnoreSourcesNotFound,
-    ShowSources,
-    GetCurrentState
+  SetTimeLine,
+  ChangeRowsPerPage,
+  ChangePage,
+  ChangeItemsPerPage,
+  SetIgnoreSourcesNotFound,
+  GetCurrentState,
+  ShowSources
 }
 
 export enum CommandToPage {
