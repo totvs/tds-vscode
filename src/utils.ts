@@ -1308,6 +1308,49 @@ export class LaunchConfig {
     }
   }
 
+  static getSelectedSourcesValue(debugSession): string[] {
+    let selectedSources: string[] = [];
+
+    try {
+      const launchConfig = getLaunchConfig();
+
+      for (let key = 0; key < launchConfig.configurations.length; key++) {
+        let launchElement = launchConfig.configurations[key];
+        if (
+          debugSession !== undefined &&
+          launchElement.name === debugSession.name
+        ) {
+          if (launchElement.selectedSources !== undefined) {
+            selectedSources = launchElement.selectedSources;
+            break;
+          }
+        }
+      }
+    } catch (e) {
+      LaunchConfig.logInvalidLaunchJsonFile(e);
+    }
+
+    return selectedSources;
+  }
+
+  static saveSelectedSources(debugSession, selectedSources: string[]) {
+    try {
+      let launchConfig = getLaunchConfig();
+      if (launchConfig) {
+        for (let key = 0; key < launchConfig.configurations.length; key++) {
+          let launchElement = launchConfig.configurations[key];
+          if (debugSession !== undefined && launchElement.name === debugSession.name) {
+            launchElement.selectedSources = selectedSources;
+            break;
+          }
+        }
+        persistLaunchInfo(launchConfig);
+      }
+    } catch (e) {
+      this.logInvalidLaunchJsonFile(e);
+    }
+  }
+
   /**
    * Cria o arquivo launch.json caso ele nao exista.
    */

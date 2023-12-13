@@ -10,7 +10,8 @@ export enum CommandToDA {
   ChangeItemsPerPage,
   SetIgnoreSourcesNotFound,
   GetCurrentState,
-  ShowSources
+  ShowSources,
+  SetSelectedSources,
 }
 
 export enum CommandToPage {

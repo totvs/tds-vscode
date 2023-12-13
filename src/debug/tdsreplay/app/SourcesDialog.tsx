@@ -157,5 +157,5 @@ SourcesDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   sources: PropTypes.array.isRequired,
   selected: PropTypes.array.isRequired,
-  onSelectChange: PropTypes.func.isRequired,
+  //onSelectChange: PropTypes.func.isRequired,
 };

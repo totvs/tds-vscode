@@ -20,6 +20,7 @@ import Switch from "@material-ui/core/Switch";
 import IconButton from "@material-ui/core/IconButton";
 import FirstPageIcon from "@material-ui/icons/FirstPage";
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
+import FilterListIcon from "@material-ui/icons/FilterList";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
@@ -79,15 +80,18 @@ const useStyles1 = makeStyles((theme: Theme) =>
 const tableStyles = makeStyles((_theme) => ({
   root: {
     width: "100%",
+    height: "100%",
   },
   tableContainer: {
-    //Esse parametro faz com que o container ocupe todo espaço disponivel do webview
+    //Esse parâmetro faz com que o container ocupe todo espaço disponivel do webview
     flex: 1,
     //maxHeight: 610
     //flexDirection: "row",
     //flexGrow: "inherit"
   },
-  table: {},
+  table: {
+    width: "80%"
+  },
   headCell: {
     //backgroundColor: this.props.muiTheme.palette.primary1Color,
     //color: "white"
@@ -250,7 +254,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   const tableClasses = tableStyles();
 
   const [jsonBody, setJsonBody] = React.useState(debugEvent.body);
-  const [dense, setDense] = React.useState(false);
+  const [dense, setDense] = React.useState(true);
   const [ignoreSourcesNotfound, setIgnoreSourcesNotfound] = React.useState(
     debugEvent.body.ignoreSourcesNotFound
   );
@@ -297,11 +301,11 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     });
   };
 
-  const handleChangePage = (newPage: number) => {
+  const handleChangePage = (newPage: number, selected: any[]) => {
     setOpenWaitPage(true);
     let command: ICommand = {
       action: CommandToDA.ChangePage,
-      content: { newPage: newPage, selected: this.selected },
+      content: { newPage: newPage },
     };
     vscode.postMessage(command);
   };
@@ -331,19 +335,9 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
       var data: ITimeLineData = timeLineData;
       data.selected = value;
       setTimeLineData(data);
+      sendSelectedSourcesLineRequest(value);
     }
-
-    let command: ICommand = {
-      action: CommandToDA.ShowSources,
-      content: { data: value },
-    };
-    vscode.postMessage(command);
   };
-
-  const handleSelectChangeSourcesDialog = (value: []) => {
-    console.log("handleSelectChangeSourcesDialog");
-    console.dir(value);
-  }
 
   const handleCloseMsgDialog = (value) => {
     setOpenMessageDialog(false);
@@ -352,7 +346,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   const sendShowSourcesRequest = () => {
     let command: ICommand = {
       action: CommandToDA.ShowSources,
-      content: { data: undefined },
+      content: { data: "all" },
     };
     vscode.postMessage(command);
   };
@@ -364,6 +358,14 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     };
     vscode.postMessage(command);
     selectTimeLineInTable(id);
+  };
+
+  const sendSelectedSourcesLineRequest = (sources: string[]) => {
+    let command: ICommand = {
+      action: CommandToDA.SetSelectedSources,
+      content: { selected: sources },
+    };
+    vscode.postMessage(command);
   };
 
   const selectTimeLineInTable = (timeLineIdAsString: string) => {
@@ -644,8 +646,8 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
             inputProps: { "aria-label": "rows per page" },
             native: true,
           }}
-          onPageChange={(event, value) => handleChangePage(value)}
-          onChangePage={(event, value) => handleChangePage(value)}
+          onPageChange={(event, value) => handleChangePage(value, [])}
+          onChangePage={(event, value) => handleChangePage(value, [])}
           onRowsPerPageChange={(event) => handleChangeRowsPerPage(event)}
           ActionsComponent={TablePaginationActions}
         />
@@ -665,7 +667,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         <Button
           className={tableClasses.sources}
           variant="contained"
-          startIcon={<LibraryBooksIcon />}
+          startIcon={timeLineData.selected!.length > 0 ? <FilterListIcon /> : <LibraryBooksIcon />}
           onClick={sendShowSourcesRequest}
         >
           Sources
@@ -675,7 +677,6 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           selected={timeLineData.selected}
           open={openSourcesDialog}
           onClose={handleCloseSourcesDialog}
-          onSelectChange={handleSelectChangeSourcesDialog}
         />
         <ChangePageWaitDialog open={openWaitPage} />
         <MessageDialog open={openMessageDialog} msgType={msgType} message={message} onClose={handleCloseMsgDialog} />

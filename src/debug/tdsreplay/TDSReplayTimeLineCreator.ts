@@ -14,7 +14,7 @@ export class CreateTDSReplayTimeLineWebView {
   private _debugEvent: DebugSessionCustomEvent;
   private _isDisposed = false;
   private _isIgnoreSourcesNotFound = true;
-  private selected: string[] = [];
+  private selectedSources: string[] = [];
 
   constructor(context: ExtensionContext, debugEvent: DebugSessionCustomEvent, isIgnoreSourcesNotFound: boolean) {
     this._extensionPath = context.extensionPath;
@@ -156,22 +156,34 @@ export class CreateTDSReplayTimeLineWebView {
     });
   }
 
-  public postAddTimeLineEvent(debugEvent: DebugSessionCustomEvent, isIgnoreSourceNotFound: boolean) {
+  public postAddTimeLineEvent(debugEvent: DebugSessionCustomEvent, isIgnoreSourceNotFound: boolean, selectedSources: string[]) {
     //Envio de mensagem para página
     this._isIgnoreSourcesNotFound = isIgnoreSourceNotFound;
+    this.selectedSources = selectedSources;
+
     this._debugEvent = debugEvent;
     debugEvent.body["ignoreSourcesNotFound"] = this._isIgnoreSourcesNotFound;
+    debugEvent.body["selectedSources"] = this.selectedSources;
     this._panel.webview.postMessage({
       command: CommandToPage.AddTimeLines,
       data: debugEvent
     });
+
+    // if (this.selected.length > 0) {
+    //   handleSetSelectedSourcesCommand({
+    //     action: CommandToDA.SetSelectedSources,
+    //     content: {
+    //       selected: this.selected
+    //     }
+    //   });
+    // }
   }
 
   public openSourcesDialog(jsonResponse: any) {
     //this._debugEvent.body["sources"] = jsonResponse.sources
-    var selected: string[] = [...this.selected];
+    var selected: string[] = [...this.selectedSources];
 
-    if (this.selected.length == 0) {
+    if (this.selectedSources.length == 0) {
       jsonResponse.sources.forEach((source: any) => {
         selected.push(source.name);
       })
@@ -228,6 +240,9 @@ function handleRequestFromPage(command: ICommand) {
     case CommandToDA.GetCurrentState:
       getTimeLineWebView().postSetUpdatedState();
       break;
+    case CommandToDA.SetSelectedSources:
+      handleSetSelectedSourcesCommand(command);
+      break;
   }
 }
 
@@ -245,7 +260,7 @@ function handleChangePageCommand(command: ICommand) {
   if (debug.activeDebugSession) {
     //Envia para o debug adapter uma solicitação para mudar de pagina.
     //O proprio debug adapter ira enviar uma mensagem para adicionar as timelines da nova pagina
-    let newPage = { "newPage": parseInt(command.content.newPage), "sources": command.content.selected };
+    let newPage = { "newPage": parseInt(command.content.newPage) };
     //console.log("Enviando requisição para troca de pagina: " + newPage);
     debug.activeDebugSession.customRequest("TDA/changeTimeLinePage", newPage);
   }
@@ -291,5 +306,17 @@ function handleShowSourcesCommand(command: ICommand) {
           timeLineWebView.openSourcesDialog(jsonResponse);
         }
       });
+  }
+}
+
+function handleSetSelectedSourcesCommand(command: ICommand) {
+  let debugSession = debug.activeDebugSession;
+  if (debugSession) {
+    LaunchConfig.saveSelectedSources(debugSession, command.content.selected);
+
+    let requestJson = {
+      "selected": command.content.selected.join(";")
+    };
+    debugSession.customRequest("TDA/setSelectedSources", requestJson);
   }
 }

@@ -186,9 +186,12 @@ function processAddTimeLineEvent(
       createTimeLineWebView.reveal();
     }
     let isIgnoreSourceNotFound: boolean = LaunchConfig.getIgnoreSourceNotFoundValue(debug.activeDebugSession);
+    let selectedSources: string[] = LaunchConfig.getSelectedSourcesValue(debug.activeDebugSession);
+
     createTimeLineWebView.postAddTimeLineEvent(
       debugEvent,
-      isIgnoreSourceNotFound
+      isIgnoreSourceNotFound,
+      selectedSources
     );
   }
 }

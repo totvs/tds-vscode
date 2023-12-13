@@ -19,7 +19,7 @@ user function replayTela(aaOpcoes, acOpcao)
 
 	oSay1 := TSAY():Create(oDlg)
 	oSay1:cName := "oSay1"
-	oSay1:cCaption := "Escolha um número acionando um dos botï¿½es abaixo."
+	oSay1:cCaption := "Escolha um número acionando um dos botões abaixo."
 	oSay1:nLeft := 10
 	oSay1:nTop := 28
 	oSay1:nWidth := 250
