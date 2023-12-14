@@ -14,6 +14,10 @@
 > **Nota**
 >
 > Arquivos fontes 4GL ignoram a pasta para buscas.
+>
+> **Drives Locais**
+>
+> _Não_ se deve utilizar drives de rede compartilhados ou drives na nuvem (Google Drive, OneDrive, etc.), pois eles podem causar comportamentos adversos como a compilação parcial de um fonte, por exemplo.
 
 ## Sobre o uso de chaves e tokens de compilação
 
