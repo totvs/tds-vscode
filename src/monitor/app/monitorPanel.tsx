@@ -241,11 +241,6 @@ export default function MonitorPanel(props: IMonitorPanel) {
           break;
         }
         case MonitorPanelAction.UpdateUsers: {
-          // setRows((rows) => {
-          //   return message.data.users;
-          // });
-          console.log("setRows");
-
           setRows(message.data.users);
           setSubtitle(message.data.serverName);
           setEnvironments(message.data.environments);
@@ -704,8 +699,8 @@ export default function MonitorPanel(props: IMonitorPanel) {
           actions={actions}
           onSelectionChange={(rows) => setSelected(rows)}
           onChangeRowsPerPage={(value) => doChangeRowsPerPage(value)}
-          //As versoes mais novas do @material/core usam as propriedades abaixo, porem por problemas de compatibilidade
-          //entre a versao mais nova do "@material-ui/core" e do material-table: 1.69.3, é necesaario manter o "@material-ui/core" na versao 4.11.4,
+          //As versões mais novas do @material/core usam as propriedades abaixo, porem por problemas de compatibilidade
+          //entre a versão mais nova do "@material-ui/core" e do material-table: 1.69.3, é necessário manter o "@material-ui/core" na versão 4.11.4,
           //onRowsPerPageChange={(value) => doChangeRowsPerPage(value)}
           onChangeColumnHidden={(column, hidden) =>
             doColumnHidden(column, hidden)

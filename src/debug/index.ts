@@ -39,7 +39,8 @@ export const registerDebug = (context: vscode.ExtensionContext, languageClient: 
     context,
     TotvsConfigurationTdsReplayProvider._TYPE,
     tdsReplayProvider,
-    factory
+    factory,
+    tracker
   );
 
   /***** Configuração de debug web *****/
@@ -51,7 +52,8 @@ export const registerDebug = (context: vscode.ExtensionContext, languageClient: 
     context,
     TotvsConfigurationWebProvider._TYPE,
     webProvider,
-    factory)
+    factory,
+    tracker)
 
   /** Configurações gerais de debug  */
   context.subscriptions.push(

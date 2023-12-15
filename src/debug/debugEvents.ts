@@ -174,21 +174,25 @@ function processAddTimeLineEvent(
   debugEvent: DebugSessionCustomEvent,
   console: DebugConsole
 ) {
+  let isIgnoreSourceNotFound: boolean = LaunchConfig.getIgnoreSourceNotFoundValue(debug.activeDebugSession);
+  let selectedSources: string[] = LaunchConfig.getSelectedSourcesValue(debug.activeDebugSession);
+
   if (createTimeLineWebView === null) {
-    let isIgnoreSourceNotFound: boolean = LaunchConfig.getIgnoreSourceNotFoundValue(debug.activeDebugSession);
     createTimeLineWebView = new CreateTDSReplayTimeLineWebView(
       context,
       debugEvent,
-      isIgnoreSourceNotFound
+      isIgnoreSourceNotFound,
+      selectedSources
     );
   } else {
     if (createTimeLineWebView.isDisposed()) {
       createTimeLineWebView.reveal();
     }
-    let isIgnoreSourceNotFound: boolean = LaunchConfig.getIgnoreSourceNotFoundValue(debug.activeDebugSession);
+
     createTimeLineWebView.postAddTimeLineEvent(
       debugEvent,
-      isIgnoreSourceNotFound
+      isIgnoreSourceNotFound,
+      selectedSources
     );
   }
 }
