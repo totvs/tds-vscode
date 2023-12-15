@@ -16,6 +16,16 @@ Essa informação é utilizada apenas para fins visuais não sendo efetuado nenh
 
 Foi implementado opção de [filtro nos fontes](https://github.com/totvs/tds-vscode/wiki/TDS-Replay#filtro-de-fontes-na-linha-do-tempo) que serão apresentados na Linha de Tempo.
 
+## Correções
+
+### Erro na inicialização do language server com MACOS #1173
+
+A inicialização do `DSS` falhava (permissão) em sistemas MacOS, com erro:
+
+```
+ 7.391s) [languageServer ] dbcode_manager.cpp:544 | Binary file error. Error: [/Users/XXXXXXXXXX/gitfolder/ma3-tmp/ma3/.vscode/.advpl/_binary_functions.prw] Permission denied
+```
+
 ## Versão [2.0.0]
 
 > Interoperabilidade entre sistemas operacionais
