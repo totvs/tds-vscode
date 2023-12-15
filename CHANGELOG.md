@@ -23,8 +23,12 @@ Foi implementado opção de [filtro nos fontes](https://github.com/totvs/tds-vsc
 A inicialização do `DSS` falhava (permissão) em sistemas MacOS, com erro:
 
 ```
- 7.391s) [languageServer ] dbcode_manager.cpp:544 | Binary file error. Error: [/Users/XXXXXXXXXX/gitfolder/ma3-tmp/ma3/.vscode/.advpl/_binary_functions.prw] Permission denied
+ (7.391s) [languageServer ] dbcode_manager.cpp:544 | Binary file error. Error: [/Users/XXXXXXXXXX/gitfolder/ma3-tmp/ma3/.vscode/.advpl/_binary_functions.prw] Permission denied
 ```
+
+### DSS: Corrigido processo de renomear e remover fontes
+
+Em determinadas circunstâncias, ao renomear ou remover fontes, os processos podiam deixar resíduos no cache, causando duplicidade de informação ou não ser finalizados, requerendo acionar a ação ``Cancelar`` no diálogo de notificação.
 
 ## Versão [2.0.0]
 
