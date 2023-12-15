@@ -12,6 +12,10 @@ beginComment var myVar [as <language: javascript | JS | html | json | xml | css 
 
 Essa informação é utilizada apenas para fins visuais não sendo efetuado nenhum tipo de validação.
 
+### Filtro na Linha de Tempo do TDS Replay [#DTCLIENT01-2533](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2533)
+
+Foi implementado opção de [filtro nos fontes](https://github.com/totvs/tds-vscode/wiki/TDS-Replay#filtro-de-fontes-na-linha-do-tempo) que serão apresentados na Linha de Tempo.
+
 ## Versão [2.0.0]
 
 > Interoperabilidade entre sistemas operacionais
