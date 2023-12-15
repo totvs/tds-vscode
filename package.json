@@ -1265,6 +1265,12 @@
                 "description": "The sources that must be excluded when importing the information. WildCards (*) can be used.",
                 "default": ""
               },
+              "selectedSources": {
+                "type": "array",
+                "description": "Source filter to be applied to the timeline.",
+                "default": [],
+                "item": "string"
+              },
               "logFile": {
                 "type": "string",
                 "default": "${workspaceFolder}\\tdsreplayDAP.log"

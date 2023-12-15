@@ -26,7 +26,7 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import { ICommand, CommandToDA, CommandToPage } from "../Command";
 import { DebugSessionCustomEvent } from "vscode";
-import { FormControlLabel, Button } from "@material-ui/core";
+import { FormControlLabel, Button, Typography } from "@material-ui/core";
 import ChangePageWaitDialog from "./ChangePageWaitDialog";
 import MessageDialog from "./MessageDialog";
 import SourceDialog from "./SourcesDialog";
@@ -265,7 +265,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
   const [msgType, setMsgType] = React.useState("");
   const [message, setMessage] = React.useState("");
 
-  //Id da timeline inicial a ser selecionada. 500 para selcionar a primeira pois o replay sempre ira parar na primeira linha
+  //Id da timeline inicial a ser selecionada. 500 para selecionar a primeira pois o replay sempre ira parar na primeira linha
   const [selectedRowId, setSelectedRowId] = React.useState(
     jsonBody.currentSelectedTimeLineId
   );
@@ -343,6 +343,10 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
     setOpenMessageDialog(false);
   };
 
+  const isFiltered = (source: string) => {
+    return (timeLineData.selected!.length > 0) && (timeLineData.selected.indexOf(source) != -1);
+  }
+
   const sendShowSourcesRequest = () => {
     let command: ICommand = {
       action: CommandToDA.ShowSources,
@@ -394,12 +398,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           setPageData(event, message);
           break;
         case CommandToPage.OpenSourcesDialog:
-          var data: ITimeLineData = timeLineData;
-
-          data.sources = message.data.sources;
-          data.selected = data.selected;
-          setTimeLineData(data);
-
+          setTimeLineData({ sources: message.data.sources, selected: message.data.selected });
           setOpenSourcesDialog(true);
           break;
         case CommandToPage.ShowLoadingPageDialog:
@@ -443,6 +442,9 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         return itemsPerPage;
       });
     }
+    console.log(">>>>>>>>>>>>>>>>>");
+    console.dir(message);
+    //setTimeLineData({ ...timeLineData, selected: message.data.body.selectedSource});
     selectTimeLineInTable(message.data.body.currentSelectedTimeLineId);
   }
 
@@ -595,7 +597,9 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
           <TableCell component="th" scope="row">
             {timeLine.timeStamp}
           </TableCell>
-          <TableCell align="left">{timeLine.srcName}</TableCell>
+          <TableCell align="left">
+            {!isFiltered(timeLine.srcName) ? timeLine.srcName : <Typography color="secondary">{timeLine.srcName}</Typography>}
+          </TableCell>
           <TableCell align="left">{timeLine.line}</TableCell>
         </TableRow>
       );
@@ -667,7 +671,7 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         <Button
           className={tableClasses.sources}
           variant="contained"
-          startIcon={timeLineData.selected!.length > 0 ? <FilterListIcon /> : <LibraryBooksIcon />}
+          startIcon={isFiltered("") ? <FilterListIcon /> : <LibraryBooksIcon />}
           onClick={sendShowSourcesRequest}
         >
           Sources

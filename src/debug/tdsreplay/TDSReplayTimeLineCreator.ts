@@ -1,37 +1,35 @@
 import { debug, commands, Disposable, window, WebviewPanel, ExtensionContext, DebugSessionCustomEvent, ViewColumn, Uri } from 'vscode';
 import * as path from "path";
 import { ICommand, CommandToDA, CommandToPage } from "./Command";
-import Utils, { LaunchConfig, MESSAGETYPE } from "../../utils";
-import { DebugEvent } from '../debugEvents';
+import { LaunchConfig } from "../../utils";
 
 let timeLineWebView: CreateTDSReplayTimeLineWebView;
 
 export class CreateTDSReplayTimeLineWebView {
   protected _panel: WebviewPanel | undefined;
-  private _context: ExtensionContext;
   private readonly _extensionPath: string;
   private _disposables: Disposable[] = [];
   private _debugEvent: DebugSessionCustomEvent;
   private _isDisposed = false;
   private _isIgnoreSourcesNotFound = true;
-  private selectedSources: string[] = [];
+  private _selectedSources: string[] = [];
 
-  constructor(context: ExtensionContext, debugEvent: DebugSessionCustomEvent, isIgnoreSourcesNotFound: boolean) {
+  constructor(context: ExtensionContext, debugEvent: DebugSessionCustomEvent, isIgnoreSourcesNotFound: boolean, selectedSources: string[]) {
     this._extensionPath = context.extensionPath;
     this._debugEvent = debugEvent;
-    this._context = context;
     this._isIgnoreSourcesNotFound = isIgnoreSourcesNotFound;
+    this._selectedSources = selectedSources;
 
     this.initializePanel();
 
-    window.onDidChangeActiveTextEditor(editor => {
-      if (editor !== undefined) {
-        //console.log(editor);
-        //if(editor.viewColumn !== 1) {
-        //editor.viewColumn = 1;
-        //}
-      }
-    });
+    // window.onDidChangeActiveTextEditor(editor => {
+    //   if (editor !== undefined) {
+    //     //console.log(editor);
+    //     //if(editor.viewColumn !== 1) {
+    //     //editor.viewColumn = 1;
+    //     //}
+    //   }
+    // });
 
     //window.onDidChangeTextEditorViewColumn
 
@@ -47,7 +45,6 @@ export class CreateTDSReplayTimeLineWebView {
     });
 
     timeLineWebView = this;
-
   }
 
   private initializePanel(): void {
@@ -89,10 +86,10 @@ export class CreateTDSReplayTimeLineWebView {
 
     const reactAppUri = this._panel?.webview.asWebviewUri(reactAppPathOnDisk);
 
-
     this._debugEvent.body["ignoreSourcesNotFound"] = this._isIgnoreSourcesNotFound;
+    this._debugEvent.body["selectedSources"] = this._selectedSources;
+
     const configJson = JSON.stringify(this._debugEvent);
-    const sources = "";
 
     return `<!DOCTYPE html>
     <html lang="en">
@@ -159,11 +156,11 @@ export class CreateTDSReplayTimeLineWebView {
   public postAddTimeLineEvent(debugEvent: DebugSessionCustomEvent, isIgnoreSourceNotFound: boolean, selectedSources: string[]) {
     //Envio de mensagem para página
     this._isIgnoreSourcesNotFound = isIgnoreSourceNotFound;
-    this.selectedSources = selectedSources;
+    this._selectedSources = selectedSources;
 
     this._debugEvent = debugEvent;
     debugEvent.body["ignoreSourcesNotFound"] = this._isIgnoreSourcesNotFound;
-    debugEvent.body["selectedSources"] = this.selectedSources;
+    debugEvent.body["selectedSources"] = this._selectedSources;
     this._panel.webview.postMessage({
       command: CommandToPage.AddTimeLines,
       data: debugEvent
@@ -181,9 +178,9 @@ export class CreateTDSReplayTimeLineWebView {
 
   public openSourcesDialog(jsonResponse: any) {
     //this._debugEvent.body["sources"] = jsonResponse.sources
-    var selected: string[] = [...this.selectedSources];
+    var selected: string[] = [...this._selectedSources];
 
-    if (this.selectedSources.length == 0) {
+    if (this._selectedSources.length == 0) {
       jsonResponse.sources.forEach((source: any) => {
         selected.push(source.name);
       })
@@ -271,7 +268,7 @@ function handleChangeItemsPerPageCommand(command: ICommand) {
     //Envia para o debug adapter uma solicitação para alterar a quantidade de items por pagina.
     //O proprio dap ja calcula a nova quantidade de paginas e enviar uma solicitação para adicionar
     //as novas timelines na pagina corrente, mantendo a seleção corrente ou selecionando a primeira
-    //timeLine da pagina caso nao seja possivel manter a selecao.
+    //timeLine da pagina caso nao seja possível manter a seleção.
     let requestJson = {
       "itemsPerPage": parseInt(command.content.itemsPerPage),
       "currentSelectedTimeLineId": parseInt(command.content.currentSelectedTimeLineId)
@@ -315,7 +312,7 @@ function handleSetSelectedSourcesCommand(command: ICommand) {
     LaunchConfig.saveSelectedSources(debugSession, command.content.selected);
 
     let requestJson = {
-      "selected": command.content.selected.join(";")
+      "selected": command.content.selected.filter((source) => source != "<empty>").join(";")
     };
     debugSession.customRequest("TDA/setSelectedSources", requestJson);
   }

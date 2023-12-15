@@ -75,12 +75,16 @@ export default function SourcesDialog(props) {
     }
   };
 
+  const handleResetClick = (event: any) => {
+    _setSelected([]);
+  };
+
   const isSelectAllClick = (): boolean => {
     return _selected.length == 0;
   };
 
   const handleSelectClick = (name: string) => {
-    const selectedIndex = _selected.indexOf(name);
+    let selectedIndex = _selected.indexOf(name);
     let newSelected: string[] = [];
 
     if (selectedIndex === -1) {
@@ -137,7 +141,7 @@ export default function SourcesDialog(props) {
     <Dialog onClose={handleCancel} aria-labelledby="customized-dialog-title" open={open}>
       <DialogTitle id="customized-dialog-title">
         Sources<br />
-        <small>Selected sources will be presented.</small>
+        <small>Selected sources will be displayed.</small>
       </DialogTitle>
       <DialogContent dividers>
         {
@@ -145,8 +149,9 @@ export default function SourcesDialog(props) {
         }
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleCancel} color="secondary">Cancel</Button>
-        <Button autoFocus onClick={handleApply} color="primary">Apply</Button>
+        <Button onClick={handleResetClick} title="Apply default selection." color="default">Reset</Button>
+        <Button onClick={handleCancel} title="Close this without applying selection." color="secondary">Cancel</Button>
+        <Button autoFocus onClick={handleApply} title="Close this and apply selection." color="primary">Apply</Button>
       </DialogActions>
     </Dialog>
   );
