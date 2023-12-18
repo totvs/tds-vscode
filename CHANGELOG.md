@@ -1,6 +1,6 @@
 # Changelog
 
-## Versão [2.0.0-next]
+## Versão [2.0.1]
 
 ### Melhoria
 
@@ -12,13 +12,13 @@ beginComment var myVar [as <language: javascript | JS | html | json | xml | css 
 
 Essa informação é utilizada apenas para fins visuais não sendo efetuado nenhum tipo de validação.
 
-### Filtro na Linha de Tempo do TDS Replay [#DTCLIENT01-2533](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2533)
+#### Filtro na Linha de Tempo do TDS Replay [#DTCLIENT01-2533](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2533)
 
 Foi implementado opção de [filtro nos fontes](https://github.com/totvs/tds-vscode/wiki/TDS-Replay#filtro-de-fontes-na-linha-do-tempo) que serão apresentados na Linha de Tempo.
 
-## Correções
+### Correções
 
-### Erro na inicialização do language server com MACOS #1173
+#### Erro na inicialização do language server com MACOS #1173
 
 A inicialização do `DSS` falhava (permissão) em sistemas MacOS, com erro:
 
@@ -26,7 +26,7 @@ A inicialização do `DSS` falhava (permissão) em sistemas MacOS, com erro:
  (7.391s) [languageServer ] dbcode_manager.cpp:544 | Binary file error. Error: [/Users/XXXXXXXXXX/gitfolder/ma3-tmp/ma3/.vscode/.advpl/_binary_functions.prw] Permission denied
 ```
 
-### DSS: Corrigido processo de renomear e remover fontes
+#### DSS: Corrigido processo de renomear e remover fontes
 
 Em determinadas circunstâncias, ao renomear ou remover fontes, os processos podiam deixar resíduos no cache, causando duplicidade de informação ou não ser finalizados, requerendo acionar a ação ``Cancelar`` no diálogo de notificação.
 
