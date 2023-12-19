@@ -47,10 +47,10 @@ const internalCompileTask = function () {
 };
 
 const internalCompileWebpack = function () {
-  return run('npm run compile:views').exec();
+  return run('npm run compile:views-production').exec();
 };
 
-//A opção NODE_ENV=production fara com que os fontes gerados sejam "minificados" e nao incluirá os "sourcemaps".
+//A opção NODE_ENV=production fara com que os fontes gerados sejam "minificados" e não incluirá os "sourcemaps".
 //Para desenvolvimento e debug, talvez seja melhor usar a opção comentada abaixo.
 const internalCompileEsBuildProd = function () {
   return run("cross-env NODE_ENV=production node esbuild.js").exec();
@@ -77,18 +77,18 @@ const doCompile = function (buildNls) {
     .src()
     .pipe(sourcemaps.init())
     .pipe(tsProject());
-    //.pipe(buildNls ? nls.rewriteLocalizeCalls() : es.through())
-    // .pipe(
-    //   buildNls
-    //     ? nls.createAdditionalLanguageFiles(languages, "i18n", "out")
-    //     : es.through()
-    // )
-    // .pipe(
-    //   buildNls
-    //     ? nls.bundleMetaDataFiles("ms-vscode.tds-vscode", "out")
-    //     : es.through()
-    // )
-    //.pipe(buildNls ? nls.bundleLanguageFiles() : es.through());
+  //.pipe(buildNls ? nls.rewriteLocalizeCalls() : es.through())
+  // .pipe(
+  //   buildNls
+  //     ? nls.createAdditionalLanguageFiles(languages, "i18n", "out")
+  //     : es.through()
+  // )
+  // .pipe(
+  //   buildNls
+  //     ? nls.bundleMetaDataFiles("ms-vscode.tds-vscode", "out")
+  //     : es.through()
+  // )
+  //.pipe(buildNls ? nls.bundleLanguageFiles() : es.through());
 
   if (inlineMap && inlineSource) {
     r = r.pipe(sourcemaps.write());
@@ -120,7 +120,7 @@ const vscePackageTask = function () {
 };
 
 const vscePackagePrereleaseTask = function () {
-  return vsce.createVSIX({'preRelease':true});
+  return vsce.createVSIX({ 'preRelease': true });
 };
 
 gulp.task("publish", gulp.series(buildTask, vscePublishTask));

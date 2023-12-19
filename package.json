@@ -46,6 +46,7 @@
     "compile:parse_4gl": "pegjs -o ./src/parser/4gl-parser.js ./syntaxes/4gl.pegjs",
     "compile:extension": "tsc -p ./src",
     "compile:views": "webpack --mode development",
+    "compile:views-production": "webpack --mode production",
     "compile:esbuild": "node ./esbuild.js",
     "compile-test": "tsc -p ./test",
     "--LINT--": "",
