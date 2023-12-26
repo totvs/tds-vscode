@@ -10,12 +10,12 @@ const vsce = require("@vscode/vsce");
 const ts = require("gulp-typescript");
 const typescript = require("typescript");
 const sourcemaps = require("gulp-sourcemaps");
-const del = require("del");
+//const del = require("del");
+//const rimraf = require('rimraf');
 
 const es = require("event-stream");
 const nls = require("@vscode/l10n-dev");
 const log = require("gulp-util").log;
-const webpack = require("webpack-stream");
 
 const tsProject = ts.createProject("./src/tsconfig.json", { typescript });
 
@@ -30,17 +30,45 @@ const languages = [
   { id: "pt-br", folderName: "ptb", transifexId: "pt_BR" },
 ];
 
-const cleanTask = function () {
-  return del(["out/**", "out-test/**", "tds-vscode-*.vsix", "totvs.tds-vscode*"]);
+const rimrafOptions = {
+  glob: true
+}
+
+const rimrafCallback = (errState) => {
+  if (errState) {
+    throw errState;
+  }
+}
+
+const internalCleanTask = function () {
+  const result = [];
+
+  [
+    "out/**",
+    "out-test/**",
+    "tds-vscode-*.vsix",
+    "webview-ui/build"
+  ].forEach((value) => {
+    //result.push(rimraf(value, rimrafOptions, rimrafCallback));
+  });
+
+  return Promise.race(result);
 };
 
-const cleanLogsTask = function () {
-  return del(["./**/*.log", "./**/*.dmp"], {
-    onProgress: progress => {
-      //      progress.
-    }
+const internalCleanLogsTask = function () {
+  const result = [];
+
+  [
+    "./**/*.log",
+    "./**/*.dmp"
+  ].forEach((value) => {
+    //result.push(rimraf(value, rimrafOptions, rimrafCallback));
   });
+
+  return Promise.race(result);
 };
+
+const cleanTask = gulp.series(internalCleanTask, internalCleanLogsTask);
 
 const internalCompileTask = function () {
   return doCompile(false);
@@ -138,8 +166,6 @@ gulp.task("clean", cleanTask);
 gulp.task("compile", gulp.series(cleanTask, internalCompileTask));
 
 gulp.task("build", buildTask);
-
-gulp.task("cleanLogs", cleanLogsTask);
 
 const internalExportL10n = function () {
   return run('npx @vscode/l10n-dev export --outDir ./l10n ./src', { verbosity: true }).exec()

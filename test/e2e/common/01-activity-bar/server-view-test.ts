@@ -29,7 +29,7 @@ describe("Server View", async () => {
   it("Add Local Server", async () => {
     await outputPO.clearConsole();
     const serverPO: ServerPageObject = new ServerPageObject(APPSERVER_DATA);
-    await workbenchPO.executeCommand("totvs-developer-studio.add");
+    await workbenchPO.executeCommand("totvs-developer-studio.addServer");
 
     await serverPO.fillServerPage(APPSERVER_DATA);
     await serverPO.fireSaveClose();

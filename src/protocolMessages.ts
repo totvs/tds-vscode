@@ -3,7 +3,7 @@ import { languageClient } from "./extension";
 import { DidChangeConfigurationNotification, ResponseError } from "vscode-languageclient";
 import { CompileResult } from "./compile/CompileResult";
 import { _debugEvent } from "./debug";
-import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
+// @@ import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
 import { IRpoToken } from "./rpoToken";
 import { ServersConfig } from "./utils";
 import { ServerItem } from "./serverItem";
@@ -438,7 +438,7 @@ export function sendCompilation(
   });
 }
 
-export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
+export function sendRpoInfo(server: ServerItem): Thenable<any /*RpoInfoResult*/> {
   if (_debugEvent) {
     return Promise.reject(
       new Error("This operation is not allowed during a debug.")
@@ -452,7 +452,7 @@ export function sendRpoInfo(server: ServerItem): Thenable<RpoInfoResult> {
         environment: server.environment,
       },
     })
-    .then((response: RpoInfoResult) => {
+    .then((response: any /*RpoInfoResult*/) => {
       return response;
     });
 }

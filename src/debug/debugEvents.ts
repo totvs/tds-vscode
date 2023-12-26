@@ -13,7 +13,7 @@ import {
 } from "vscode";
 import { TotvsConfigurationProvider } from "./TotvsConfigurationProvider";
 import { TotvsConfigurationTdsReplayProvider } from "./TotvsConfigurationTdsReplayProvider";
-import Utils, { groupBy, LaunchConfig, MESSAGETYPE } from "../utils";
+import Utils, { groupBy, LaunchConfig, MESSAGE_TYPE } from "../utils";
 import { CreateTDSReplayTimeLineWebView } from "./tdsreplay/TDSReplayTimeLineCreator";
 import { LanguageClient } from "vscode-languageclient/node";
 import { TotvsConfigurationWebProvider } from "./TotvsConfigurationWebProvider";
@@ -158,7 +158,7 @@ function processLogEvent(
         debugConsole.appendLine(`[${time}] ${level}: ${message}`);
         Utils.logMessage(
           `[${time}] ${level}: ${message}`,
-          MESSAGETYPE.Info,
+          MESSAGE_TYPE.Info,
           true
         );
         //debugConsole.appendLine(`${COLOR_TABLE['TIME']}[${time}] ${COLOR_TABLE[level]}${level}${COLOR_TABLE['CONSOLE']}: ${message}`);

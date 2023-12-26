@@ -20,6 +20,7 @@ import {
   ENABLE_CODE_PAGE,
 } from "./protocolMessages";
 import { EnvSection, ServerItem } from "./serverItem";
+import { AddServerPanel } from "./panels/addServerPanel";
 
 const compile = require("template-literal");
 
@@ -39,95 +40,13 @@ export class ServersExplorer {
   constructor(context: vscode.ExtensionContext) {
     let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
-    vscode.commands.registerCommand("totvs-developer-studio.add", () => {
+    vscode.commands.registerCommand("totvs-developer-studio.addServer", () => {
       if (vscode.workspace.workspaceFolders === undefined) {
         vscode.window.showErrorMessage("No folder opened.");
         return;
       }
 
-      if (currentPanel) {
-        currentPanel.reveal();
-      } else {
-        currentPanel = vscode.window.createWebviewPanel(
-          "totvs-developer-studio.add",
-          vscode.l10n.t("New Server"),
-          vscode.ViewColumn.One,
-          {
-            enableScripts: true,
-            localResourceRoots: [
-              vscode.Uri.file(
-                path.join(context.extensionPath, "src", "server")
-              ),
-            ],
-            retainContextWhenHidden: true,
-          }
-        );
-
-        currentPanel.webview.html = getWebViewContent(context, localizeHTML);
-        currentPanel.onDidDispose(
-          () => {
-            currentPanel = undefined;
-          },
-          null,
-          context.subscriptions
-        );
-
-        currentPanel.webview.onDidReceiveMessage(
-          (message) => {
-            switch (message.command) {
-              case "checkDir":
-                let checkedDir = Utils.checkDir(message.selectedDir);
-                currentPanel.webview.postMessage({
-                  command: "checkedDir",
-                  checkedDir: checkedDir,
-                });
-                break;
-              case "saveServer":
-                if (message.serverName && message.port && message.address) {
-                  const serverId = createServer(
-                    message.serverType,
-                    message.serverName,
-                    message.port,
-                    message.address,
-                    0,
-                    "",
-                    true,
-                    message.includes
-                  );
-                  if (serverId !== undefined) {
-                    sendValidationRequest(message.address, message.port, message.serverType).then(
-                      (validInfoNode: IValidationInfo) => {
-                        ServersConfig.updateBuildVersion(
-                          serverId,
-                          validInfoNode.build,
-                          validInfoNode.secure
-                        );
-
-                        currentPanel?.dispose();
-                        return;
-                      },
-                      (err: ResponseError<object>) => {
-                        vscode.window.showErrorMessage(err.message);
-                      }
-                    );
-                  }
-                } else {
-                  vscode.window.showErrorMessage(
-                    vscode.l10n.t("Add Server Fail. Name, port and Address are need")
-                  );
-                }
-
-                if (currentPanel) {
-                  if (message.close) {
-                    currentPanel.dispose();
-                  }
-                }
-            }
-          },
-          undefined,
-          context.subscriptions
-        );
-      }
+      AddServerPanel.render(context.extension.extensionUri);
     });
 
     vscode.commands.registerCommand("totvs-developer-studio.config", () => {

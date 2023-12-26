@@ -42,7 +42,7 @@ São problemas que ocorrem desde a inicialização do **TDS VS Code** até a ope
 
 ******************************************************
 
-### Falhas gerais na inicialização (command 'totvs-developer-studio.add' not found)
+### Falhas gerais na inicialização (command 'totvs-developer-studio.addServer' not found)
 
  Tivemos relatos de problemas de problemas ao utilizar o **TDS VS Code** sem uma pasta aberta (projeto/workspace).
 

@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    // "allowSyntheticDefaultImports": true,
+    // "experimentalDecorators": true,
+    //"allowJs": true,
+    //"declaration": true,
+    //"declarationMap": true,
+    //"esModuleInterop": false,
+    "forceConsistentCasingInFileNames": false,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "es2020"
+    ],
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    //"noEmit": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES6",
+    "useDefineForClassFields": true,
+  },
+  "include": [
+    "./src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

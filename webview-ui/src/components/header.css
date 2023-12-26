@@ -1,0 +1,19 @@
+div .header {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	height: fit-content;
+	background-color: rgb(220, 220, 220, 0.5);
+}
+
+div .logo {
+	width: 35px;
+	height: 35px;
+	padding: 3px;
+	flex-grow: 0;
+	flex-shrink: 0;
+}
+
+div .header h1 {
+	margin: 3px;
+}

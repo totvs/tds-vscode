@@ -7,6 +7,8 @@
 			"script": "watch",
 			"problemMatcher": [
 				"$tsc-watch",
+				"$ts-webpack-watch",
+				"$tslint-webpack-watch",
 				"$esbuild-watch"
 			],
 			"isBackground": true,
@@ -23,15 +25,11 @@
 				"isDefault": true
 			},
 			"problemMatcher": [
-				"$tsc"
+				"$tsc",
+				"$tslint-webpack",
+				"$ts-webpack",
+				"$esbuild"
 			]
-		},
-		{
-			"type": "npm",
-			"script": "clean-logs",
-			"problemMatcher": [],
-			"label": "npm: clean-logs",
-			"detail": "gulp cleanLogs"
 		}
 	]
 }

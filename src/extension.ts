@@ -52,13 +52,12 @@ import {
 } from "./formatter";
 import { register4glOutline } from "./outline";
 import { registerDebug, _debugEvent } from "./debug";
-import { openMonitorView } from "./monitor/monitorLoader";
-import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
+// @@ import { openMonitorView } from "./monitor/monitorLoader";
+// @@ import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
 import { initStatusBarItems } from "./statusBar";
-import { PatchEditorProvider } from "./patch/inspect/patchEditor";
+// @@ import { PatchEditorProvider } from "./patch/inspect/patchEditor";
 import { openTemplateApplyView } from "./template/apply/formApplyTemplate";
 import { rpoTokenQuickPick, rpoTokenInputBox, saveRpoTokenString, setEnabledRpoToken } from "./rpoToken";
-import { openGeneratePatchView } from "./patch/generate/generatePatchLoader";
 import { patchApply } from "./patch/patchApply";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import { commandShowBuildTableResult } from "./compile/buildResult";
@@ -68,6 +67,8 @@ import serverProvider from "./serverItemProvider";
 import { registerWorkspace } from "./workspace";
 import { sendTelemetry } from "./protocolMessages";
 import { registerXRef } from "./xreferences";
+import { GeneratePatchPanel } from "./panels/generatePatchPanel";
+import { ImportSourcesOnlyResultPanel } from "./panels/importSourcesOnlyResultPanel";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -328,9 +329,19 @@ export function activate(context: ExtensionContext) {
       () => {
         vscode.window.setStatusBarMessage(
           `$(gear~spin) ${vscode.l10n.t("Starting package generation...")}`,
-          Promise.resolve(openGeneratePatchView(context))
+          Promise.resolve(GeneratePatchPanel.render(context.extensionUri))
         );
       }
+    )
+  );
+
+
+  context.subscriptions.push(
+    commands.registerCommand(
+      "tdsreplay.importSourcesOnlyResult",
+      (sourceList: any) => {
+        ImportSourcesOnlyResultPanel.render(context.extensionUri, sourceList);
+    }
     )
   );
 
@@ -422,7 +433,7 @@ export function activate(context: ExtensionContext) {
     vscode.commands.registerCommand("tds-monitor.open-monitor-view", () => {
       vscode.window.setStatusBarMessage(
         `$(gear~spin) ${vscode.l10n.t("Starting monitor...")}`,
-        Promise.resolve(openMonitorView(context))
+        // @@ Promise.resolve(openMonitorView(context))
       );
     })
   );
@@ -434,7 +445,7 @@ export function activate(context: ExtensionContext) {
       () => {
         vscode.window.setStatusBarMessage(
           `$(gear~spin) ${vscode.l10n.t("Starting RPO load information...")}`,
-          Promise.resolve(openRpoInfoView(context))
+          // @@ Promise.resolve(openRpoInfoView(context))
         );
       }
     )
@@ -576,7 +587,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(register4glOutline());
 
   // Register custom editor for patch files
-  context.subscriptions.push(PatchEditorProvider.register(context));
+  // @@ context.subscriptions.push(PatchEditorProvider.register(context));
 
   blockBuildCommands(false);
   showBanner();

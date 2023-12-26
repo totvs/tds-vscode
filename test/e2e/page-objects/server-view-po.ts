@@ -43,7 +43,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
   }
 
   async addServer(data: IServerData): Promise<void> {
-    await this.workbenchPO.executeCommand("totvs-developer-studio.add");
+    await this.workbenchPO.executeCommand("totvs-developer-studio.addServer");
 
     const serverPO: ServerPageObject = new ServerPageObject(data);
     await serverPO.fillServerPage(data);
@@ -117,20 +117,20 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
   }
 
   async changeEnvironment(
-      serverName: string,
+    serverName: string,
     environment: string
     , userData: IUserData): Promise<ServerTreeItemPageObject> {
-        const serverPO: ServerTreeItemPageObject = new ServerTreeItemPageObject(
-          await this.getTreeItem([serverName])
-        );
+    const serverPO: ServerTreeItemPageObject = new ServerTreeItemPageObject(
+      await this.getTreeItem([serverName])
+    );
 
-        await serverPO.changeEnvironment(environment, userData);
+    await serverPO.changeEnvironment(environment, userData);
 
-        expect(await this.workbenchPO.isConnected(serverName, environment)).is
-            .true;
+    expect(await this.workbenchPO.isConnected(serverName, environment)).is
+      .true;
 
-        return serverPO;
-    }
+    return serverPO;
+  }
 
   async disconnectAllServers(): Promise<void> {
     const elements: ViewItem[] = await this.getVisibleItems();

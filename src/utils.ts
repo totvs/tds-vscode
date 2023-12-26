@@ -17,10 +17,10 @@ import { EnvSection, ServerItem } from "./serverItem";
 
 const homedir = require("os").homedir();
 
-export enum MESSAGETYPE {
+export enum MESSAGE_TYPE {
   /**
    * Type for informative and resumed messages
-   * i.e.: Inform only the begining and the end of a compilation process.
+   * i.e.: Inform only the beginning and the end of a compilation process.
    */
   Info = "Info",
 
@@ -156,20 +156,20 @@ export default class Utils {
    */
   static logMessage(
     message: string,
-    messageType: MESSAGETYPE,
+    messageType: MESSAGE_TYPE,
     showDialog: boolean
   ) {
     let config = vscode.workspace.getConfiguration("totvsLanguageServer");
     let notificationLevel = config.get("editor.show.notification");
     switch (messageType) {
-      case MESSAGETYPE.Error:
+      case MESSAGE_TYPE.Error:
         console.log(message);
         languageClient?.error(message);
         if (showDialog && notificationLevel !== "none") {
           vscode.window.showErrorMessage(message);
         }
         break;
-      case MESSAGETYPE.Info:
+      case MESSAGE_TYPE.Info:
         console.log(message);
         languageClient?.info(message);
         if (
@@ -179,7 +179,7 @@ export default class Utils {
           vscode.window.showInformationMessage(message);
         }
         break;
-      case MESSAGETYPE.Warning:
+      case MESSAGE_TYPE.Warning:
         console.log(message);
         languageClient?.warn(message);
         if (
@@ -191,7 +191,7 @@ export default class Utils {
           vscode.window.showWarningMessage(message);
         }
         break;
-      case MESSAGETYPE.Log:
+      case MESSAGE_TYPE.Log:
         let time = Utils.timeAsHHMMSS(new Date());
         console.log(message);
         languageClient?.outputChannel.appendLine(
@@ -1426,7 +1426,7 @@ export class LaunchConfig {
   static logInvalidLaunchJsonFile(e) {
     Utils.logMessage(
       `There was a problem reading the launch.json file. (The file may still be functional, but check it to avoid unwanted behavior): ${e}`,
-      MESSAGETYPE.Warning,
+      MESSAGE_TYPE.Warning,
       true
     );
   }

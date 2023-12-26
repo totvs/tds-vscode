@@ -5,7 +5,7 @@ import Utils, { ServersConfig } from '../utils';
 import { languageClient } from '../extension';
 const compile = require('template-literal');
 import { ResponseError } from 'vscode-languageclient';
-import { openInspectView } from "../inspect-harpia";
+// @@ import { openInspectView } from "../inspect-harpia";
 
 const localizeHTML = {
 	"tds.webview.functionsinspector": vscode.l10n.t("Functions Inspector"),
@@ -21,10 +21,10 @@ export function inspectFunctions(context: vscode.ExtensionContext) {
 	const server = ServersConfig.getCurrentServer();
 	if (server) {
 		if (Utils.isServerP20OrGreater(server)) {
-			openInspectView(context, {
-				objectsInspector: false,
-				includeOutScope: false, //inicia com #NONE
-			});
+			// @@ openInspectView(context, {
+			// 	objectsInspector: false,
+			// 	includeOutScope: false, //inicia com #NONE
+			// });
 		} else {
 			inspectFunctionsLegado(context);
 		}
