@@ -10,8 +10,8 @@ export interface IHeader {
 export default function Header(props: IHeader) {
 
 	return (
-		<div className="header">
-			<div className="logo">
+		<div className="tds-header">
+			<div className="tds-logo">
 				<img src="https://twitter.com/TOTVSDevelopers" alt="TOTVS S.A." />
 			</div>
 			<h1>{props.title}</h1>

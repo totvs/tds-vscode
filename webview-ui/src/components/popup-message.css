@@ -1,27 +1,29 @@
-.popup {
+.tds-popup {
 	position: relative;
-	display: inline-block;
+	display: in--type-ramp-minus2-line-height-block;
 	cursor: pointer;
 }
 
 /* The actual popup (appears on top) */
-.popup .popuptext {
+.tds-popup .tds-popuptext {
 	visibility: hidden;
-	width: 160px;
-	background-color: #555;
-	color: #fff;
+	width: fit-content;
+	text-wrap: nowrap;
+	background-color: var(--vscode-inputValidation-infoBackground);
+	color: var(--vscode-descriptionForeground);
 	text-align: center;
 	border-radius: 6px;
-	padding: 8px 0;
+	border-color: var(--vscode-inputValidation-infoBorder);
+	padding: 8px;
 	position: absolute;
-	z-index: 1;
-	bottom: 125%;
+	z-index: 1000;
+	bottom: 200%;
 	left: 50%;
 	margin-left: -80px;
 }
 
 /* Popup arrow */
-.popup .popuptext::after {
+/* .tds-popup .tds-popuptext::after {
 	content: "";
 	position: absolute;
 	top: 100%;
@@ -29,14 +31,14 @@
 	margin-left: -5px;
 	border-width: 5px;
 	border-style: solid;
-	border-color: #555 transparent transparent transparent;
-}
+	border-color: var(--vscode-inputValidation-infoBorder) transparent transparent transparent;
+} */
 
 /* Toggle this class when clicking on the popup container (hide and show the popup) */
-.popup .show {
+.tds-popup .show {
 	visibility: visible;
-	-webkit-animation: fadeIn 1s;
-	animation: fadeIn 1s
+	-webkit-animation: fadeIn 1.5s;
+	animation: fadeIn 1.5s
 }
 
 /* Add animation (fade in the popup) */

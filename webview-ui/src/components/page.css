@@ -1,4 +1,4 @@
-page {
+page .tds-page {
 	display: flex;
 	flex-direction: column;
 	flex-wrap: nowrap;
@@ -7,13 +7,13 @@ page {
 	align-content: normal;
 }
 
-div .header {
+div .tds-header {
 	flex-grow: 0;
 	flex-shrink: 1;
 	order: 0;
 }
 
-div .content {
+div .tds-content {
 	display: flex;
 	flex-direction: column;
 	flex-grow: 1;
@@ -25,47 +25,81 @@ div .content {
 	/* width: 100%; */
 }
 
-footer {
-	display: block;
+div .tds-actions {
+	display: flex;
+	flex-direction: row-reverse;
+	flex-grow: 0;
+	flex-shrink: 1;
+	align-self: normal;
+	order: 0;
+	overflow: hidden;
+	width: 100%;
+}
+
+div .tds-actions vscode-button {
+	align-self: normal;
+	margin-left: calc(var(--type-ramp-minus2-line-height) /2);
+}
+
+footer .tds-footer {
+	display: flex;
+	flex-direction: row-reverse;
 	flex-grow: 0;
 	flex-shrink: 1;
 	order: 0;
-	/* width: 100%; */
+	width: 100%;
 	height: fit-content;
-	margin-bottom: 10px;
+	margin-bottom: var(--type-ramp-minus2-line-height);
 }
 
-.dropdown-container {
+.tds-group-container {
+	box-sizing: border-box;
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+	justify-content: flex-start;
+	border: 1px;
+	margin: 0px;
+	width: 100%;
+}
+
+.tds-item-grow-group {
+	flex-grow: 1;
+	flex-shrink: 0;
+	;
+}
+
+.tds-dropdown-container {
 	box-sizing: border-box;
 	display: flex;
 	flex-flow: column nowrap;
 	align-items: flex-start;
 	justify-content: flex-start;
 
-	margin-bottom: 12px;
+	margin-bottom: var(--type-ramp-minus2-line-height);
 }
 
-.dropdown-container label {
+.tds-dropdown-container label {
 	display: block;
 	cursor: pointer;
-	margin-bottom: 6px;
+	margin-bottom: calc(var(--type-ramp-minus2-line-height) / 2);
 }
 
-.text-field-container {
+.tds-text-field-container {
 	box-sizing: border-box;
 	display: flex;
 	flex-flow: column nowrap;
 	align-items: flex-start;
 	justify-content: flex-start;
 
-	margin-bottom: 12px;
+	margin-bottom: var(--type-ramp-minus2-line-height);
 }
 
-.text-field-container label {
-	margin-bottom: 6px;
+.tds-text-field-container label {
+	margin-bottom: calc(var(--type-ramp-minus2-line-height) / 2);
 }
 
-.helper-text-field {
+.tds-helper-text-field {
 	font-size: 90%;
 	font-style: italic;
 	margin: 0;

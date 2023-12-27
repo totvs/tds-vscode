@@ -22,7 +22,7 @@ export default function Footer(props: IFooter) {
 	}
 
 	return (
-		<footer>
+		<footer className="tds-footer">
 			{props.linkToDoc && <VSCodeLink href={href}>{text}</VSCodeLink>}
 		</footer>
 	);
