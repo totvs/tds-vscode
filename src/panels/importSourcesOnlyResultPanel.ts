@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
-import { getExtraPanelConfigurations } from "./utilities/getExtraPanelConfigurations";
-import { getWebviewContent } from "./utilities/getWebviewContent";
 import Utils, { MESSAGE_TYPE } from "../utils";
+import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 
 const fs = require("fs");
 var os = require('os');

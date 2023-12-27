@@ -264,6 +264,7 @@ export default class Utils {
     vscode.window.showErrorMessage(
       selectedDir + " does not exist or it is not a directory."
     );
+    
     return "";
   }
 

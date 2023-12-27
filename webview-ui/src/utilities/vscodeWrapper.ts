@@ -1,4 +1,20 @@
 import type { WebviewApi } from "vscode-webview";
+import { CommandFromPanelEnum, CommandToPanelEnum } from "./command-panel";
+
+
+export type ICommandToPanel<T> = {
+  [key in keyof T]: any;
+} & {
+  command: CommandToPanelEnum;
+  model: {};
+};
+
+export type ICommandFromPanel<T> = {
+  [key in keyof T]: any;
+} & {
+  command: CommandFromPanelEnum;
+  model: {};
+};
 
 /**
  * A utility wrapper around the acquireVsCodeApi() function, which enables
@@ -28,7 +44,7 @@ class VSCodeAPIWrapper {
    *
    * @param message Arbitrary data (must be JSON serializable) to send to the extension context.
    */
-  public postMessage(message: unknown) {
+  public postMessage<T>(message: ICommandToPanel<T>) {
     if (this.vsCodeApi) {
       this.vsCodeApi.postMessage(message);
     } else {

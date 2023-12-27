@@ -7,9 +7,11 @@ import Footer from "./footer";
 import { ButtonAppearance } from "@vscode/webview-ui-toolkit";
 
 export interface IPageAction {
+	id: number;
 	caption: string;
-	appearance?: ButtonAppearance
 	action: any;
+	enabled?: boolean;
+	appearance?: ButtonAppearance;
 }
 
 export interface IPageView {
@@ -30,9 +32,9 @@ export default function Page(props: IPageView) {
 			<div className="tds-actions">
 				{props.actions.map((action: IPageAction) => {
 					if (action.appearance) {
-						return <VSCodeButton appearance={action.appearance}>{action.caption}</VSCodeButton>
+						return <VSCodeButton key={action.id} appearance={action.appearance}>{action.caption}</VSCodeButton>
 					} else {
-						return <VSCodeButton>{action.caption}</VSCodeButton>
+						return <VSCodeButton key={action.id}>{action.caption}</VSCodeButton>
 					}
 				})}
 			</div>

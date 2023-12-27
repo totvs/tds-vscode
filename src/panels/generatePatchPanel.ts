@@ -27,8 +27,7 @@ limitations under the License.
 // import { ServerItem } from '../../serverItem';
 
 import * as vscode from "vscode";
-import { getWebviewContent } from "./utilities/getWebviewContent";
-import { getCspSource } from "./utilities/getCspSource";
+import { getCspSource, getWebviewContent } from "./utilities/webview-utils";
 
 // const fs = require('fs');
 // const os = require('os');F

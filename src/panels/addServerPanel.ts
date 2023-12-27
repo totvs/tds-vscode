@@ -15,8 +15,9 @@ limitations under the License.
 */
 
 import * as vscode from "vscode";
-import { getWebviewContent } from "./utilities/getWebviewContent";
-import { getExtraPanelConfigurations } from "./utilities/getExtraPanelConfigurations";
+import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
+import Utils from "../utils";
+import { CommandFromUiEnum, CommandToUiEnum } from "./utilities/command-ui";
 
 export class AddServerPanel {
   public static currentPanel: AddServerPanel | undefined;
@@ -118,17 +119,33 @@ export class AddServerPanel {
         const text = message.text;
 
         switch (command) {
-          case "hello":
-            // Code that should run in response to the hello message command
-            vscode.window.showInformationMessage(text);
-            return;
-          // Add more switch case statements here as more webview message commands
-          // are created within the webview context (i.e. inside media/main.js)
+          case CommandFromUiEnum.Ready:
+            break;
+          case CommandFromUiEnum.CheckDir:
+            let checkedDir: string = Utils.checkDir(message.selectedDir);
+
+            if (checkedDir.length > 0) {
+              message.model.includePatches.push({
+                id: message.model.includePatches.length + 1,
+                path: checkedDir
+              })
+            }
+
+            this.sendUpdateModel(message.model);
+
+            break;
         }
       },
       undefined,
       this._disposables
     );
+  }
+
+  private sendUpdateModel(model: {}) {
+    this._panel.webview.postMessage({
+      command: CommandToUiEnum.UpdateModel,
+      model: model,
+    });
   }
 }
 
