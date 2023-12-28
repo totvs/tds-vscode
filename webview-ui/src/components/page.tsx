@@ -18,7 +18,7 @@ export interface IPageAction {
 export interface IPageView {
 	title: string;
 	linkToDoc?: string
-	actions: IPageAction[];
+	actions?: IPageAction[];
 	children: any
 }
 
@@ -31,7 +31,7 @@ export default function Page(props: IPageView) {
 				{props.children}
 			</div>
 			<div className="tds-actions">
-				{props.actions.map((action: IPageAction) => {
+				{props.actions?.map((action: IPageAction) => {
 					const type: any = action.type || "button";
 
 					if (action.appearance) {

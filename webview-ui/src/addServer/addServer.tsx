@@ -12,6 +12,7 @@ import { sendCheckDir, sendReady, sendSave, sendSaveAndClose, sendValidateModel 
 import { TextField } from "@vscode/webview-ui-toolkit";
 import { Controller, SubmitHandler, UseControllerProps, useController, useForm } from "react-hook-form";
 import { PopupError, PopupInfo } from "../components/popup-message";
+import TDSForm, { IFormAction } from "../components/form";
 
 enum ACTIONS {
   ACT_SAVE,
@@ -54,9 +55,9 @@ function TDSTextField(props: UseControllerProps<TFields> & TDSFieldProps) {
 
   return (
     <section className="tds-text-field-container">
-      <label htmlFor={props.name}>{`${props.label}${props.rules?.required ? "*" : ""}`}</label>
+      <label htmlFor={props.name}>{props.label} {props.rules!.required && <span className="tds-required" />}</label>
       <VSCodeTextField {...field} >
-        {fieldState.error ?
+        {fieldState.invalid ?
           <PopupError fieldName={props.name} message={message} />
           : <PopupInfo fieldName={props.name} message={message} />
         }
@@ -168,33 +169,15 @@ export default function AddServer() {
     //setModel({ ...model, [attrName]: input.value });
   }
 
-  const actions: IPageAction[] = [
-    {
-      id: ACTIONS.ACT_SAVE,
-      caption: "Save",
-      appearance: "secondary",
-      type: "submit",
-      action: () => { /*sendSave(model)*/ }
-    },
-    {
-      id: ACTIONS.ACT_SAVE_CLOSE,
-      caption: "Save/Close",
-      appearance: "primary",
-      action: () => { /*sendSaveAndClose(model)*/ }
-    }
-  ];
-
   let model: any = undefined;
 
   return (
     <main>
       <ErrorBoundary>
         <Page title={`Add Server`}
-          actions={actions}
           linkToDoc="[Registro de Servidores]servers.md#registro-de-servidores"
         >
-          <form onSubmit={handleSubmit(onSubmit)}>
-
+          <TDSForm onSubmit={handleSubmit(onSubmit)}>
             <section className="tds-dropdown-container">
               <label htmlFor="serverType">Server Type</label>
 
@@ -225,19 +208,11 @@ export default function AddServer() {
             />
 
             <TDSNumericField
-              name="address"
-              label="Address"
-              info="Informe IP ou nome do servidor no qual esta o Protheus"
-              control={control}
-              rules={{ required: true, min: { value: 1, message: "[Port] is not valid range. Min: 1 Max: 65535" } }}
-            />
-
-            <TDSNumericField
               name="port"
               label="Port"
               info="Informe a porta de conexão do SC"
               control={control}
-              rules={{ required: true }}
+              rules={{ required: true, min: { value: 1, message: "[Port] is not valid range. Min: 1 Max: 65535" } }}
             />
 
             <section className="tds-group-container" >
@@ -249,8 +224,6 @@ export default function AddServer() {
                 onChange={(event) => checkDir(event)}
                 webkitdirectory="" directory="" />
             </section>
-
-            {errors.serverName && <>{errors.serverName.message}</>}
 
             <VSCodeButton type="submit" appearance="primary">Save</VSCodeButton>
 
@@ -264,7 +237,7 @@ export default function AddServer() {
                 </VSCodeDataGridRow>
               ))}
             </VSCodeDataGrid>
-          </form>
+          </TDSForm>
         </Page>
       </ErrorBoundary>
     </main >

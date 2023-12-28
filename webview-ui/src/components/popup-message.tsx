@@ -17,11 +17,11 @@ function PopupMessage(type: "info" | "warning" | "error", props: IPopupMessage):
 	};
 
 	return (
-		<span slot="end" className={`tds-popup codicon codicon-${type}`}
+		<span slot="end" className={`tds-popup codicon codicon-${type} tds-${type}`}
 			onMouseOver={(event) => mouseOver(event)}
 			onMouseOut={(event) => mouseOut(event)}
 		>
-			<span className="tds-popuptext" id={"popup_" + props.fieldName}>{props.message}.</span>
+			<span className={`tds-popuptext tds-${type}`} id={"popup_" + props.fieldName}>{props.message}.</span>
 		</span>
 	);
 }

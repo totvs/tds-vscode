@@ -1,0 +1,58 @@
+span .tds-required {
+	content: "*";
+	color: red;
+}
+
+.tds-group-container {
+	box-sizing: border-box;
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+	justify-content: flex-start;
+	border: 1px;
+	margin: 0px;
+	width: 100%;
+}
+
+.tds-item-grow-group {
+	flex-grow: 1;
+	flex-shrink: 0;
+	;
+}
+
+.tds-dropdown-container {
+	box-sizing: border-box;
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: flex-start;
+	justify-content: flex-start;
+
+	margin-bottom: var(--type-ramp-minus2-line-height);
+}
+
+.tds-dropdown-container label {
+	display: block;
+	cursor: pointer;
+	margin-bottom: calc(var(--type-ramp-minus2-line-height) / 2);
+}
+
+.tds-numeric-field-container,
+.tds-text-field-container {
+	box-sizing: border-box;
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: flex-start;
+	justify-content: flex-start;
+
+	margin-bottom: var(--type-ramp-minus2-line-height);
+}
+
+.tds-numeric-field-container label,
+.tds-text-field-container label {
+	margin-bottom: calc(var(--type-ramp-minus2-line-height) / 2);
+}
+
+.tds-numeric-field-container input.control {
+	text-align: right !important;
+	background-color: aqua;
+}
