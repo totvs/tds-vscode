@@ -4,12 +4,14 @@ import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VS
 import "./AddServer.css";
 import Page, { IPageAction } from "../components/page";
 import ErrorBoundary from "../components/errorBoundary";
-import PopupMessage from "../components/popup-message";
-import { ChangeEvent } from "react";
+import { ChangeEvent, FormEvent } from "react";
 import React from "react";
-import { TAddServerModel, TIncludeData } from "../model/addServerModel";
+import { TIncludeData } from "../model/addServerModel";
 import { CommandFromPanelEnum, CommandToPanelEnum } from "../utilities/command-panel";
-import { sendCheckDir, sendReady, sendSave, sendSaveAndClose } from "./sendCommand";
+import { sendCheckDir, sendReady, sendSave, sendSaveAndClose, sendValidateModel } from "./sendCommand";
+import { TextField } from "@vscode/webview-ui-toolkit";
+import { Controller, SubmitHandler, UseControllerProps, useController, useForm } from "react-hook-form";
+import { PopupError, PopupInfo } from "../components/popup-message";
 
 enum ACTIONS {
   ACT_SAVE,
@@ -23,25 +25,113 @@ declare module "react" {
   }
 }
 
+type TFields = {
+  serverName: string;
+  address: string;
+  port: number;
+  includePatches: TIncludeData[]
+}
+
+type TDSFieldProps =
+  {
+    label: string;
+    info: string;
+  }
+
+function TDSTextField(props: UseControllerProps<TFields> & TDSFieldProps) {
+  const { field, fieldState } = useController(props)
+
+  let message: string = "";
+  if (fieldState.error) {
+    if (fieldState.error.type == "required") {
+      message = `[${props.label}] is required`;
+    } else {
+      message = fieldState.error.message || "<Unknown>"
+    }
+  } else {
+    message = props.info || "";
+  }
+
+  return (
+    <section className="tds-text-field-container">
+      <label htmlFor={props.name}>{`${props.label}${props.rules?.required ? "*" : ""}`}</label>
+      <VSCodeTextField {...field} >
+        {fieldState.error ?
+          <PopupError fieldName={props.name} message={message} />
+          : <PopupInfo fieldName={props.name} message={message} />
+        }
+      </VSCodeTextField>
+      <span>{fieldState.isDirty && "Dirty "}</span>
+      <span>{fieldState.invalid ? "invalid " : "valid"}</span>
+      <span>{fieldState.error?.type}</span>
+    </section>
+  )
+}
+
+function TDSNumericField(props: UseControllerProps<TFields> & TDSFieldProps) {
+  const { field, fieldState } = useController(props)
+
+  let message: string = "";
+  if (fieldState.error) {
+    if (fieldState.error.type == "required") {
+      message = `[${props.label}] is required`;
+    } else {
+      message = fieldState.error.message || "<Unknown>"
+    }
+  } else {
+    message = props.info || "";
+  }
+
+  return (
+    <section className="tds-numeric-field-container">
+      <label htmlFor={props.name}>{props.label}</label>
+      <VSCodeTextField {...field} >
+        {fieldState.error ?
+          <PopupError fieldName={props.name} message={message} />
+          : <PopupInfo fieldName={props.name} message={message} />
+        }
+      </VSCodeTextField>
+      <span>{fieldState.isDirty && "Dirty "}</span>
+      <span>{fieldState.invalid ? "invalid " : "valid"}</span>
+      <span>{fieldState.error?.type}</span>
+    </section>
+  )
+}
+
 export default function AddServer() {
   console.log(">>> AddServer: initialize")
-  const [model, setModel] = React.useState<TAddServerModel>({
-    serverName: "",
-    includePatches: []
-  });
-  const [_call, set_Call] = React.useState(0);
+  const {
+    control,
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<TFields>({
+    defaultValues: {
+      serverName: "",
+      address: "",
+      port: 0,
+      includePatches: []
+    },
+    mode: "onChange"
+  })
+
+  const onSubmit: SubmitHandler<TFields> = (data) => console.log(data)
 
   React.useEffect(() => {
-    console.log("React.useEffect");
     let listener = (event: any) => {
       const command: ICommandFromPanel<any> = event.data as ICommandFromPanel<any>;
 
       switch (command.command) {
         case CommandFromPanelEnum.UpdateModel:
-          setModel({ ...model, ...command.model as TAddServerModel });
+          //setModel({ ...model, ...command.model as TAddServerModel });
 
           break;
+        case CommandFromPanelEnum.ValidateResponse:
+          console.log(">>> validade response")
+          console.dir(command.data);
 
+          break;
         default:
           break;
       }
@@ -56,15 +146,26 @@ export default function AddServer() {
     }
   }, []);
 
+  // React.useEffect(() => {
+  //   console.log("React.useEffect model");
+  //   //sendValidateModel(model);
+  //   return () => {
+  //   }
+  // }, [model]);
+
   function checkDir(event: ChangeEvent<HTMLInputElement>) {
     var input: any = event.target;
 
     if (input.files.length > 0) {
       var selectedDir = input.files[0].path;
-      sendCheckDir(model!, selectedDir);
-
-      set_Call(_call + 1);
+      //sendCheckDir(model, selectedDir);
     }
+  }
+
+  function setModelAttr(event: FormEvent<HTMLElement> | Event, attrName: string) {
+    var input: any = event.target as TextField;
+
+    //setModel({ ...model, [attrName]: input.value });
   }
 
   const actions: IPageAction[] = [
@@ -72,77 +173,98 @@ export default function AddServer() {
       id: ACTIONS.ACT_SAVE,
       caption: "Save",
       appearance: "secondary",
-      action: () => { sendSave(model!) }
+      type: "submit",
+      action: () => { /*sendSave(model)*/ }
     },
     {
       id: ACTIONS.ACT_SAVE_CLOSE,
       caption: "Save/Close",
       appearance: "primary",
-      action: () => { sendSaveAndClose(model!) }
+      action: () => { /*sendSaveAndClose(model)*/ }
     }
   ];
+
+  let model: any = undefined;
 
   return (
     <main>
       <ErrorBoundary>
-        <Page title={`Add Server ${_call} times`}
+        <Page title={`Add Server`}
           actions={actions}
           linkToDoc="[Registro de Servidores]servers.md#registro-de-servidores"
         >
-          <section className="tds-dropdown-container">
-            <label htmlFor="serverType">Server Type</label>
-            <VSCodeDropdown name="serverType">
-              <VSCodeOption value="totvs_server_protheus">Protheus (Adv/PL)</VSCodeOption>
-              <VSCodeOption value="totvs_server_logix">Logix (4GL)</VSCodeOption>
-              <VSCodeOption value="totvs_server_totvstec">TOTVS Tec (Adv/PL e 4GL)</VSCodeOption>
-              <PopupMessage fieldName="serverType" message="Selecione o tipo do servidor Protheus" />
-            </VSCodeDropdown>
-          </section>
+          <form onSubmit={handleSubmit(onSubmit)}>
 
-          <section className="tds-text-field-container">
-            <label htmlFor="serverName">Server Name</label>
-            <VSCodeTextField name="serverName" placeholder="Local Server | Production Server"
-              value={model!.serverName || "<no name>"}
-              onChange={(event) => setModel({ ...model!, serverName: "event." })}
-            >
-              <PopupMessage fieldName="serverName" message="Informe um nome que o ajude a identificar o servidor" />
-            </VSCodeTextField>
-          </section>
+            <section className="tds-dropdown-container">
+              <label htmlFor="serverType">Server Type</label>
 
-          <section className="tds-text-field-container">
-            <label htmlFor="address">Address</label>
-            <VSCodeTextField name="address" placeholder="127.0.0.1 | localhost | myServer">
-              <PopupMessage fieldName="address" message="Informe IP ou nome do servidor no qual esta o Protheus" />
-            </VSCodeTextField>
-          </section>
+              <VSCodeDropdown name="serverType"
+                onChange={(event) => setModelAttr(event, "serverType")}
+              >
+                <VSCodeOption value="totvs_server_protheus">Protheus (Adv/PL)</VSCodeOption>
+                <VSCodeOption value="totvs_server_logix">Logix (4GL)</VSCodeOption>
+                <VSCodeOption value="totvs_server_totvstec">TOTVS Tec (Adv/PL e 4GL)</VSCodeOption>
+                <PopupInfo fieldName="serverType" message="Selecione o tipo do servidor Protheus" />
+              </VSCodeDropdown>
+            </section>
 
-          <section className="tds-text-field-container">
-            <label htmlFor="port">Port</label>
-            <VSCodeTextField name="port" placeholder="1234">
-              <PopupMessage fieldName="port" message="Informe a porta de conexão do SC" />
-            </VSCodeTextField>
-          </section>
+            <TDSTextField
+              name="serverName"
+              label="Server name"
+              info="Informe um nome que o ajude a identificar o servidor"
+              control={control}
+              rules={{ required: true }}
+            />
 
-          <section className="tds-group-container" >
-            <p className="tds-item-grow-group">Include directories
-              <PopupMessage fieldName="include" message="Informe as pastas onde os arquivos de definição devem ser procurados" />
-            </p>
-            {/* ts-expect-error */}
-            <input type="file" name="btn-FileInclude"
-              onChange={(event) => checkDir(event)}
-              webkitdirectory="" directory="" />
-          </section>
+            <TDSTextField
+              name="address"
+              label="Address"
+              info="Informe IP ou nome do servidor no qual esta o Protheus"
+              control={control}
+              rules={{ required: true }}
+            />
 
-          <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
-            {model && model.includePatches.map((row: TIncludeData) => (
-              <VSCodeDataGridRow key={row.id}>
-                <VSCodeDataGridCell grid-column="1">
-                  <span className="codicon codicon-close"></span>
-                </VSCodeDataGridCell>
-                <VSCodeDataGridCell grid-column="2">{row.path}</VSCodeDataGridCell>
-              </VSCodeDataGridRow>
-            ))}
-          </VSCodeDataGrid>
+            <TDSNumericField
+              name="address"
+              label="Address"
+              info="Informe IP ou nome do servidor no qual esta o Protheus"
+              control={control}
+              rules={{ required: true, min: { value: 1, message: "[Port] is not valid range. Min: 1 Max: 65535" } }}
+            />
+
+            <TDSNumericField
+              name="port"
+              label="Port"
+              info="Informe a porta de conexão do SC"
+              control={control}
+              rules={{ required: true }}
+            />
+
+            <section className="tds-group-container" >
+              <p className="tds-item-grow-group">Include directories
+                <PopupInfo fieldName="include" message="Informe as pastas onde os arquivos de definição devem ser procurados" />
+              </p>
+              {/* ts-expect-error */}
+              <input type="file" name="btn-FileInclude"
+                onChange={(event) => checkDir(event)}
+                webkitdirectory="" directory="" />
+            </section>
+
+            {errors.serverName && <>{errors.serverName.message}</>}
+
+            <VSCodeButton type="submit" appearance="primary">Save</VSCodeButton>
+
+            <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
+              {model && model.includePatches.map((row: TIncludeData) => (
+                <VSCodeDataGridRow key={row.id}>
+                  <VSCodeDataGridCell grid-column="1">
+                    <span className="codicon codicon-close"></span>
+                  </VSCodeDataGridCell>
+                  <VSCodeDataGridCell grid-column="2">{row.path}</VSCodeDataGridCell>
+                </VSCodeDataGridRow>
+              ))}
+            </VSCodeDataGrid>
+          </form>
         </Page>
       </ErrorBoundary>
     </main >

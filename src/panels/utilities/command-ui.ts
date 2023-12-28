@@ -4,6 +4,7 @@
 export enum CommandToUiEnum {
   InitializeData = "INITIALIZE_DATA",
   UpdateModel = "UPDATE_MODEL",
+  ValidateResponse = "VALIDATE_RESPONSE",
 }
 
 // Comandos aqui definidos, tem seus equivalentes definidos
@@ -14,4 +15,5 @@ export enum CommandFromUiEnum {
   CheckDir = "CHECK_DIR",
   Save = "SAVE",
   SaveAndClose = "SAVE_AND_CLOSE",
+  Validate = "VALIDATE",
 }

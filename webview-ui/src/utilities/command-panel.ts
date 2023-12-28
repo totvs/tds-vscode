@@ -5,7 +5,8 @@ export enum CommandToPanelEnum {
 	CheckDir = "CHECK_DIR",
 	Save = "SAVE",
 	SaveAndClose = "SAVE_AND_CLOSE",
-	Ready = "Ready"
+	Ready = "Ready",
+	Validate = "VALIDATE"
 }
 
 // Comandos aqui definidos, tem seus equivalentes definidos
@@ -14,4 +15,5 @@ export enum CommandToPanelEnum {
 export enum CommandFromPanelEnum {
 	InitialData = "INITIAL_DATA",
 	UpdateModel = "UPDATE_MODEL",
+	ValidateResponse = "VALIDATE_RESPONSE"
 }

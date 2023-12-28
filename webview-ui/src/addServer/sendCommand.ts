@@ -1,9 +1,13 @@
-import { TAddServerModel } from "../model/addServerModel";
+import { TModelData } from "../model/addServerModel";
 import { CommandToPanelEnum } from "../utilities/command-panel";
 import { vscode } from "../utilities/vscodeWrapper";
 
 export interface IAddServerCommand {
 	selectedDir: string;
+}
+
+export interface IValidateCommand {
+	model: {};
 }
 
 export function sendReady() {
@@ -13,7 +17,14 @@ export function sendReady() {
 	});
 }
 
-export function sendCheckDir(model: TAddServerModel, selectedDir: string) {
+export function sendValidateModel(model: TModelData) {
+	vscode.postMessage<IValidateCommand>({
+		command: CommandToPanelEnum.Validate,
+		model: model
+	});
+}
+
+export function sendCheckDir(model: any, selectedDir: string) {
 	vscode.postMessage<IAddServerCommand>({
 		command: CommandToPanelEnum.CheckDir,
 		model: model,
@@ -21,14 +32,14 @@ export function sendCheckDir(model: TAddServerModel, selectedDir: string) {
 	});
 }
 
-export function sendSave(model: TAddServerModel) {
+export function sendSave(model: any) {
 	vscode.postMessage({
 		command: CommandToPanelEnum.Save,
 		model: model
 	});
 }
 
-export function sendSaveAndClose(model: TAddServerModel) {
+export function sendSaveAndClose(model: any) {
 	vscode.postMessage({
 		command: CommandToPanelEnum.SaveAndClose,
 		model: model

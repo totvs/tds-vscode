@@ -11,6 +11,7 @@ export interface IPageAction {
 	caption: string;
 	action: any;
 	enabled?: boolean;
+	type?: "submit" | "reset" | "button";
 	appearance?: ButtonAppearance;
 }
 
@@ -31,10 +32,12 @@ export default function Page(props: IPageView) {
 			</div>
 			<div className="tds-actions">
 				{props.actions.map((action: IPageAction) => {
+					const type: any = action.type || "button";
+
 					if (action.appearance) {
-						return <VSCodeButton key={action.id} appearance={action.appearance}>{action.caption}</VSCodeButton>
+						return <VSCodeButton type={type} key={action.id} appearance={action.appearance}>{action.caption}</VSCodeButton>
 					} else {
-						return <VSCodeButton key={action.id}>{action.caption}</VSCodeButton>
+						return <VSCodeButton type={type} key={action.id}>{action.caption}</VSCodeButton>
 					}
 				})}
 			</div>

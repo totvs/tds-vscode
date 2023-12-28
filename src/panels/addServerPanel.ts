@@ -134,11 +134,21 @@ export class AddServerPanel {
             this.sendUpdateModel(message.model);
 
             break;
+          case CommandFromUiEnum.Validate:
+            let occurrences: string[] = this.validateModel(message.model);
+
+            this.sendValidateResponse(occurrences);
+
+            break;
         }
       },
       undefined,
       this._disposables
     );
+  }
+
+  private validateModel(model: {}): string[] {
+    return [];
   }
 
   private sendUpdateModel(model: {}) {
@@ -147,6 +157,14 @@ export class AddServerPanel {
       model: model,
     });
   }
+
+  private sendValidateResponse(occurrences: string[]) {
+    this._panel.webview.postMessage({
+      command: CommandToUiEnum.ValidateResponse,
+      data: occurrences,
+    });
+  }
+
 }
 
 /*
