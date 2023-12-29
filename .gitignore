@@ -1,21 +1,16 @@
-*.log
-*.map
-*.vsix
 .editorconfig
 .vscode-test
 .vscode/mapa timestamp.txt
-~/
+*.dmp
+*.log
+*.map
+*.ppo
+*.vsix
+build
 nls.*
 node_modules
 out
-out-test
 package-lock.json
-test-extension/
-test-resources/
-out-test/
-*.dmp
 src/parser/4gl-parser.js
 syntaxes/build
-*.ppo
 test/**/.vscode
-build
