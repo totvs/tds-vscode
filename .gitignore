@@ -15,10 +15,7 @@ test-resources/
 out-test/
 *.dmp
 src/parser/4gl-parser.js
-notas.md
 syntaxes/build
-*.txt
 *.ppo
-test/**/no_git
-test/**/fw/**
 test/**/.vscode
+build
