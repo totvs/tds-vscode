@@ -5,7 +5,7 @@
 }
 
 /* The actual popup (appears on top) */
-.tds-popup .tds-popuptext {
+.tds-popup .tds-popup-text {
 	visibility: hidden;
 	width: fit-content;
 	text-wrap: nowrap;
@@ -20,7 +20,7 @@
 }
 
 /* Popup arrow */
-/* .tds-popup .tds-popuptext::after {
+/* .tds-popup .tds-popup-text::after {
 	content: "";
 	position: absolute;
 	top: 100%;

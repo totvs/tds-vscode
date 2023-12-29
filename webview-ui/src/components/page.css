@@ -54,8 +54,14 @@ footer .tds-footer {
 
 .tds-error {
 	background-color: var(--vscode-inputValidation-errorBackground);
-	border-color: var(--vscode-errorBorder);
-	color: var(--vscode-inputValidation-errorForeground);
+	border-color: var(--vscode-inputValidation-errorBorder);
+	color: var(--vscode-editorError-foreground);
+}
+
+.tds-warning {
+	background-color: var(--vscode-inputValidation-warningBackground);
+	border-color: var(--vscode-inputValidation-warningBorder);
+	color: var(--vscode-editorWarning-foreground);
 }
 
 .tds-info {

@@ -3,9 +3,12 @@ import "./popup-message.css";
 export interface IPopupMessage {
 	fieldName: string;
 	message: string
+	type?: "info" | "warning" | "error"
 }
 
-function PopupMessage(type: "info" | "warning" | "error", props: IPopupMessage): JSX.Element {
+export default function PopupMessage(props: IPopupMessage): JSX.Element {
+	const type = props.type || "info";
+
 	const mouseOver: any = (event: any) => {
 		var popup = document.getElementById("popup_" + props.fieldName) as HTMLElement;
 		popup.classList.toggle("show");
@@ -21,19 +24,7 @@ function PopupMessage(type: "info" | "warning" | "error", props: IPopupMessage):
 			onMouseOver={(event) => mouseOver(event)}
 			onMouseOut={(event) => mouseOut(event)}
 		>
-			<span className={`tds-popuptext tds-${type}`} id={"popup_" + props.fieldName}>{props.message}.</span>
+			<span className={`tds-popup-text tds-${type}`} id={"popup_" + props.fieldName}>{props.message}.</span>
 		</span>
 	);
-}
-
-export function PopupInfo(props: IPopupMessage): JSX.Element {
-	return PopupMessage("info", props);
-}
-
-export function PopupError(props: IPopupMessage): JSX.Element {
-	return PopupMessage("error", props);
-}
-
-export function PopupWarning(props: IPopupMessage): JSX.Element {
-	return PopupMessage("warning", props);
 }

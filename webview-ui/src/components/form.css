@@ -1,6 +1,6 @@
-span .tds-required {
+span.tds-required::after {
 	content: "*";
-	color: red;
+	color: var(--vscode-editorError-foreground);
 }
 
 .tds-group-container {

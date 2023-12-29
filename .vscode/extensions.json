@@ -1,13 +1,10 @@
 {
 	"recommendations": [
-		"nucllear.vscode-extension-auto-import",
 		"dbaeumer.vscode-eslint",
-		"tombonnike.vscode-status-bar-format-toggle",
 		"esbenp.prettier-vscode",
 		"jock.svg",
-		"pflannery.vscode-versionlens",
-		"naumovs.color-highlight",
-		"compulim.vscode-mocha",
-		"pedro-w.tmlanguage"
+		"pedro-w.tmlanguage",
+		"amodio.tsl-problem-matcher",
+		"ms-vscode.extension-test-runner"
 	]
 }

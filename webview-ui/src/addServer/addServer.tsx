@@ -1,18 +1,18 @@
-import { ICommandFromPanel, vscode } from "../utilities/vscodeWrapper";
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeDropdown, VSCodeOption, VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
+import { ICommandFromPanel } from "../utilities/vscodeWrapper";
+import { VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeDropdown, VSCodeOption } from "@vscode/webview-ui-toolkit/react";
 
-import "./AddServer.css";
-import Page, { IPageAction } from "../components/page";
+import "./addServer.css";
+import Page from "../components/page";
 import ErrorBoundary from "../components/errorBoundary";
 import { ChangeEvent, FormEvent } from "react";
 import React from "react";
 import { TIncludeData } from "../model/addServerModel";
-import { CommandFromPanelEnum, CommandToPanelEnum } from "../utilities/command-panel";
-import { sendCheckDir, sendReady, sendSave, sendSaveAndClose, sendValidateModel } from "./sendCommand";
+import { CommandFromPanelEnum } from "../utilities/command-panel";
+import { sendReady } from "./sendCommand";
 import { TextField } from "@vscode/webview-ui-toolkit";
-import { Controller, SubmitHandler, UseControllerProps, useController, useForm } from "react-hook-form";
-import { PopupError, PopupInfo } from "../components/popup-message";
-import TDSForm, { IFormAction } from "../components/form";
+import { SubmitHandler, useForm } from "react-hook-form";
+import TDSForm, { TDSNumericField, TDSSelectionField, TDSTextField } from "../components/form";
+import PopupMessage from "../components/popup-message";
 
 enum ACTIONS {
   ACT_SAVE,
@@ -33,72 +33,6 @@ type TFields = {
   includePatches: TIncludeData[]
 }
 
-type TDSFieldProps =
-  {
-    label: string;
-    info: string;
-  }
-
-function TDSTextField(props: UseControllerProps<TFields> & TDSFieldProps) {
-  const { field, fieldState } = useController(props)
-
-  let message: string = "";
-  if (fieldState.error) {
-    if (fieldState.error.type == "required") {
-      message = `[${props.label}] is required`;
-    } else {
-      message = fieldState.error.message || "<Unknown>"
-    }
-  } else {
-    message = props.info || "";
-  }
-
-  return (
-    <section className="tds-text-field-container">
-      <label htmlFor={props.name}>{props.label} {props.rules!.required && <span className="tds-required" />}</label>
-      <VSCodeTextField {...field} >
-        {fieldState.invalid ?
-          <PopupError fieldName={props.name} message={message} />
-          : <PopupInfo fieldName={props.name} message={message} />
-        }
-      </VSCodeTextField>
-      <span>{fieldState.isDirty && "Dirty "}</span>
-      <span>{fieldState.invalid ? "invalid " : "valid"}</span>
-      <span>{fieldState.error?.type}</span>
-    </section>
-  )
-}
-
-function TDSNumericField(props: UseControllerProps<TFields> & TDSFieldProps) {
-  const { field, fieldState } = useController(props)
-
-  let message: string = "";
-  if (fieldState.error) {
-    if (fieldState.error.type == "required") {
-      message = `[${props.label}] is required`;
-    } else {
-      message = fieldState.error.message || "<Unknown>"
-    }
-  } else {
-    message = props.info || "";
-  }
-
-  return (
-    <section className="tds-numeric-field-container">
-      <label htmlFor={props.name}>{props.label}</label>
-      <VSCodeTextField {...field} >
-        {fieldState.error ?
-          <PopupError fieldName={props.name} message={message} />
-          : <PopupInfo fieldName={props.name} message={message} />
-        }
-      </VSCodeTextField>
-      <span>{fieldState.isDirty && "Dirty "}</span>
-      <span>{fieldState.invalid ? "invalid " : "valid"}</span>
-      <span>{fieldState.error?.type}</span>
-    </section>
-  )
-}
-
 export default function AddServer() {
   console.log(">>> AddServer: initialize")
   const {
@@ -114,10 +48,10 @@ export default function AddServer() {
       port: 0,
       includePatches: []
     },
-    mode: "onChange"
+    //mode: "onChange"
   })
 
-  const onSubmit: SubmitHandler<TFields> = (data) => console.log(data)
+  const onSubmit: SubmitHandler<TFields> = (data) => console.log(data);
 
   React.useEffect(() => {
     let listener = (event: any) => {
@@ -174,22 +108,24 @@ export default function AddServer() {
   return (
     <main>
       <ErrorBoundary>
-        <Page title={`Add Server`}
+        <Page title="Add Server"
           linkToDoc="[Registro de Servidores]servers.md#registro-de-servidores"
         >
-          <TDSForm onSubmit={handleSubmit(onSubmit)}>
-            <section className="tds-dropdown-container">
-              <label htmlFor="serverType">Server Type</label>
-
-              <VSCodeDropdown name="serverType"
-                onChange={(event) => setModelAttr(event, "serverType")}
-              >
-                <VSCodeOption value="totvs_server_protheus">Protheus (Adv/PL)</VSCodeOption>
-                <VSCodeOption value="totvs_server_logix">Logix (4GL)</VSCodeOption>
-                <VSCodeOption value="totvs_server_totvstec">TOTVS Tec (Adv/PL e 4GL)</VSCodeOption>
-                <PopupInfo fieldName="serverType" message="Selecione o tipo do servidor Protheus" />
-              </VSCodeDropdown>
-            </section>
+          <TDSForm
+            control={control}
+            onSubmit={handleSubmit(onSubmit)}>
+            <TDSSelectionField
+              name="serverType"
+              label="Server Type"
+              info={"Selecione o tipo do servidor Protheus"}
+              control={control}
+              rules={{ required: true }}
+              options={[
+                { value: "totvs_server_protheus", text: "Protheus (Adv/PL)" },
+                { value: "totvs_server_logix", text: "Logix (4GL)" },
+                { value: "totvs_server_totvstec", text: "TOTVS Tec (Adv/PL e 4GL)" }
+              ]}
+            />
 
             <TDSTextField
               name="serverName"
@@ -217,15 +153,13 @@ export default function AddServer() {
 
             <section className="tds-group-container" >
               <p className="tds-item-grow-group">Include directories
-                <PopupInfo fieldName="include" message="Informe as pastas onde os arquivos de definição devem ser procurados" />
+                <PopupMessage fieldName="include" message="Informe as pastas onde os arquivos de definição devem ser procurados" />
               </p>
               {/* ts-expect-error */}
               <input type="file" name="btn-FileInclude"
                 onChange={(event) => checkDir(event)}
                 webkitdirectory="" directory="" />
             </section>
-
-            <VSCodeButton type="submit" appearance="primary">Save</VSCodeButton>
 
             <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
               {model && model.includePatches.map((row: TIncludeData) => (
