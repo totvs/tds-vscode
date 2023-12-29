@@ -47,5 +47,21 @@
 				"TOTVS_LS_LOG_FILE": "./TOTVS_LS_LOG_FILE.log"
 			}
 		},
+		{
+			"name": "Extension Tests",
+			"type": "extensionHost",
+			"request": "launch",
+			"runtimeExecutable": "${execPath}",
+			"args": [
+				"--extensionDevelopmentPath=${workspaceFolder}",
+				"--extensionTestsPath=${workspaceFolder}/out/test/index.js",
+				"${workspaceFolder}/test/resources/projects/advpl"
+			],
+			"sourceMaps": true,
+			"preLaunchTask": "npm: compile",
+			"outFiles": [
+				"${workspaceFolder}/out/test/**/*.test.js"
+			]
+		}
 	]
 }

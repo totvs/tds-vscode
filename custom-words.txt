@@ -1,0 +1,9 @@
+advpl
+autodocumentação
+codicon
+logix
+protheus
+TLPP
+totvs
+totvstec
+Webviews

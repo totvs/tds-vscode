@@ -17,7 +17,6 @@ span.tds-required::after {
 .tds-item-grow-group {
 	flex-grow: 1;
 	flex-shrink: 0;
-	;
 }
 
 .tds-dropdown-container {
