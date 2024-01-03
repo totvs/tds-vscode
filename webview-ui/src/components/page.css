@@ -1,3 +1,12 @@
+main {
+	align-items: flex-start;
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	width: 100%;
+	justify-content: normal;
+}
+
 page .tds-page {
 	align-content: normal;
 	align-items: normal;
@@ -14,21 +23,18 @@ div .tds-header {
 }
 
 div .tds-content {
-	/* width: 100%; */
-	align-content: normal;
-	align-items: normal;
-	align-self: stretch;
+	/* align-items: normal;
+	align-self: stretch; */
 	display: flex;
 	flex-direction: column;
 	flex-grow: 1;
 	order: 0;
-	overflow: auto;
+	overflow: hidden;
 }
 
 div .tds-actions {
 	align-self: normal;
 	display: flex;
-	flex-direction: row-reverse;
 	flex-grow: 0;
 	flex-shrink: 1;
 	order: 0;
@@ -36,8 +42,16 @@ div .tds-actions {
 	width: 100%;
 }
 
-div .tds-actions vscode-button {
-	align-self: normal;
+div .tds-actions .tds-message {
+	align-self: flex-start;
+	flex-grow: 2;
+}
+
+div .tds-actions .tds-buttons {
+	flex-grow: 1;
+	align-self: flex-end;
+	flex-flow: row-reverse;
+	display: flex;
 	margin-left: calc(var(--type-ramp-minus2-line-height) /2);
 }
 

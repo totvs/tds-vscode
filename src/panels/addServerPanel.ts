@@ -16,8 +16,18 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import Utils from "../utils";
-import { CommandFromUiEnum, CommandToUiEnum } from "./utilities/command-ui";
+import Utils, { ServersConfig } from "../utils";
+import { CommonCommandFromWebView, CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
+import { IValidationInfo, sendValidationRequest } from "../protocolMessages";
+import { TServerModel, TServerType } from "../model/serverModel";
+import { TFieldErrors, isErrors } from "../model/field-model";
+import { ResponseError } from "vscode-languageclient";
+
+enum AddServerCommandEnum {
+  CheckDir = "CHECK_DIR"
+}
+
+type AddServerCommand = CommonCommandFromWebViewEnum & AddServerCommandEnum;
 
 export class AddServerPanel {
   public static currentPanel: AddServerPanel | undefined;
@@ -85,6 +95,7 @@ export class AddServerPanel {
     // Dispose of all disposables (i.e. commands) for the current webview panel
     while (this._disposables.length) {
       const disposable = this._disposables.pop();
+
       if (disposable) {
         disposable.dispose();
       }
@@ -114,30 +125,39 @@ export class AddServerPanel {
    */
   private _setWebviewMessageListener(webview: vscode.Webview) {
     webview.onDidReceiveMessage(
-      (message: any) => {
-        const command = message.command;
-        const text = message.text;
+      (message: ReceiveMessage<AddServerCommand>) => {
+        const command: AddServerCommand = message.command;
+        const data = message.data;
 
         switch (command) {
-          case CommandFromUiEnum.Ready:
+          case CommonCommandFromWebViewEnum.Ready:
             break;
-          case CommandFromUiEnum.CheckDir:
-            let checkedDir: string = Utils.checkDir(message.selectedDir);
+          case CommonCommandFromWebViewEnum.Close:
+            AddServerPanel.currentPanel.dispose();
+            break;
+          case CommonCommandFromWebViewEnum.SaveAndClose:
+            let errors: TFieldErrors<TServerModel> = {};
+
+            if (this.validateModel(data.model, errors)) {
+              if (this.saveModel(data.model)) {
+                AddServerPanel.currentPanel.dispose();
+              }
+            } else {
+              this.sendValidateResponse(errors);
+            }
+
+            break;
+          case AddServerCommandEnum.CheckDir:
+            let checkedDir: string = Utils.checkDir(data.selectedDir);
 
             if (checkedDir.length > 0) {
-              message.model.includePatches.push({
-                id: message.model.includePatches.length + 1,
+              data.model.includePaths.push({
+                id: data.model.includePaths.length + 1,
                 path: checkedDir
               })
             }
 
-            this.sendUpdateModel(message.model);
-
-            break;
-          case CommandFromUiEnum.Validate:
-            let occurrences: string[] = this.validateModel(message.model);
-
-            this.sendValidateResponse(occurrences);
+            this.sendUpdateModel(data.model);
 
             break;
         }
@@ -147,21 +167,114 @@ export class AddServerPanel {
     );
   }
 
-  private validateModel(model: {}): string[] {
-    return [];
+  private validateModel(model: TServerModel, errors: TFieldErrors<TServerModel>): boolean {
+    try {
+      model.serverType = model.serverType.trim() as TServerType;
+      model.serverName = model.serverName.trim();
+      model.port = parseInt(model.port.toString());
+      model.address = model.address.trim();
+
+      if (model.serverType.length == 0) {
+        errors.serverType = { type: "required" };
+      }
+
+      if (model.serverName.length == 0) {
+        errors.serverName = { type: "required" };
+      }
+      const server = ServersConfig.getServerByName(model.serverName);
+      if (server !== undefined) {
+        errors.root = { type: "validate", message: "Server already exist" };
+        errors.serverName = { type: "validate", message: "Server already exist" };
+      }
+
+      if (model.address.length == 0) {
+        errors.address = { type: "required" };
+      }
+
+      if (Number.isNaN(model.port)) {
+        errors.port = { type: "validate", message: "[Port] is not a number" };
+      } else if (!(model.port > 0)) {
+        errors.port = { type: "min" };
+      } else if (model.port > 65535) {
+        errors.port = { type: "max" };
+      }
+    } catch (error) {
+      errors.root = { type: "validate", message: `Internal error: ${error}` }
+    }
+
+    return !isErrors(errors);
+  }
+
+  private createServer(
+    typeServer: string,
+    serverName: string,
+    port: number,
+    address: string,
+    secure: number,
+    buildVersion: string,
+    includes: string[]
+  ): string | undefined {
+    const serverId = ServersConfig.createNewServer(
+      typeServer,
+      serverName,
+      port,
+      address,
+      buildVersion,
+      secure,
+      includes
+    );
+
+    if (serverId !== undefined) {
+      vscode.window.showInformationMessage(
+        vscode.l10n.t("Serve saved. Name: {0}", serverName)
+      );
+    }
+
+    return serverId;
+  }
+
+  private saveModel(model: TServerModel): boolean {
+    const serverId = this.createServer(
+      model.serverType,
+      model.serverName,
+      model.port,
+      model.address,
+      0,
+      "",
+      model.includePaths
+    );
+    if (serverId !== undefined) {
+      sendValidationRequest(model.address, model.port, model.serverType).then(
+        (validInfoNode: IValidationInfo) => {
+          ServersConfig.updateBuildVersion(
+            serverId,
+            validInfoNode.build,
+            validInfoNode.secure
+          );
+
+          return true;
+        },
+        (err: ResponseError<object>) => {
+          vscode.window.showErrorMessage(err.message);
+          return false;
+        }
+      );
+    }
+
+    return true;
   }
 
   private sendUpdateModel(model: {}) {
     this._panel.webview.postMessage({
-      command: CommandToUiEnum.UpdateModel,
+      command: CommonCommandToWebViewEnum.UpdateModel,
       model: model,
     });
   }
 
-  private sendValidateResponse(occurrences: string[]) {
+  private sendValidateResponse(errors: TFieldErrors<TServerModel>) {
     this._panel.webview.postMessage({
-      command: CommandToUiEnum.ValidateResponse,
-      data: occurrences,
+      command: CommonCommandToWebViewEnum.ValidateResponse,
+      data: errors,
     });
   }
 

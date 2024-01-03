@@ -1,20 +1,16 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import serverProvider from "./serverItemProvider";
+import { TServerType } from "./model/serverModel";
 
 const RESOURCE_FOLDER = path.join(__filename, "..", "..", "resources");
 const RESOURCE_DARK = path.join(RESOURCE_FOLDER, "dark");
 const RESOURCE_LIGHT = path.join(RESOURCE_FOLDER, "light");
 
-export type ServerType =
-  | "totvs_server_protheus"
-  | "totvs_server_logix"
-  | "totvs_server_totvstec";
-
 export interface IServerInformations {
   errorMessage: string;
   serverDetectedType: string;
-  environmentDetectedType: ServerType;
+  environmentDetectedType: TServerType;
   permissions: string[];
 }
 
@@ -26,7 +22,7 @@ export class ServerItem extends vscode.TreeItem {
 
   constructor(
     public name: string,
-    public readonly type: ServerType,
+    public readonly type: TServerType,
     public readonly address: string,
     public readonly port: number,
     public secure: number,
@@ -87,14 +83,14 @@ export class EnvSection extends vscode.TreeItem {
   contextValue = this.isCurrent ? "envSection" : "envSectionNotCurrent";
 }
 
-function serverTypeString(type: ServerType): string {
+function serverTypeString(type: TServerType): string {
   const label: string = type.substring(type.lastIndexOf("_") + 1);
 
   return label.charAt(0).toUpperCase() + label.substring(1);
 }
 
 function serverTypeImage(server: ServerItem): string {
-  const type: ServerType = server.type;
+  const type: TServerType = server.type;
   const connected: boolean = server.isConnected;
 
   const sufix: string = type.substring(type.lastIndexOf("_") + 1);
@@ -107,28 +103,28 @@ function environmentTypeString(environment: EnvSection): string {
 }
 
 function environmentTypeImage(environment: EnvSection): string {
-  let sufix: string = "";
+  let suffix: string = "";
   const server: ServerItem = environment.serverItemParent;
 
   //esta chegando somente os dados!!! acandido
   //if (server.isServerP20OrGreater) {
   if (server.buildVersion) {
     if ((server.buildVersion.localeCompare("7.00.191205P") > 0) && (environment.isCurrent)) {
-      const type: ServerType = server.type;
+      const type: TServerType = server.type;
       if (
         type == "totvs_server_totvstec" &&
         server.informations?.environmentDetectedType
       ) {
         const type: string = server.informations.environmentDetectedType;
-        sufix = "_" + type.substring(type.lastIndexOf("_") + 1);
+        suffix = "_" + type.substring(type.lastIndexOf("_") + 1);
       }
     }
 
     const current: boolean = environment.isCurrent;
     if (current) {
-      sufix += "_connected";
+      suffix += "_connected";
     }
   }
 
-  return `environment${sufix}.svg`;
+  return `environment${suffix}.svg`;
 }

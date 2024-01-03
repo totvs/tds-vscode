@@ -264,7 +264,7 @@ export default class Utils {
     vscode.window.showErrorMessage(
       selectedDir + " does not exist or it is not a directory."
     );
-    
+
     return "";
   }
 
@@ -603,7 +603,7 @@ export class ServersConfig {
   }
 
   /**
-   * Cria uma nova configuracao de servidor no servers.json
+   * Cria uma nova configuração de servidor no servers.json
    */
   static createNewServer(
     typeServer,
@@ -838,34 +838,10 @@ export class ServersConfig {
     }
   }
 
-  // Duplicado: Usar o getServerById
-  // /**
-  //  *Recupera um servidor pelo ID informado.
-  //  * @param ID ID do servidor que sera selecionado.
-  //  */
-  // static  getServerForID(ID: string) {
-  //   let server;
-  //   const allConfigs = getServersConfig();
-
-  //   if (allConfigs.configurations) {
-  //     const configs = allConfigs.configurations;
-
-  //     configs.forEach((element) => {
-  //       if (element.id === ID) {
-  //         server = element;
-  //         if (server.environments === undefined) {
-  //           server.environments = [];
-  //         }
-  //       }
-  //     });
-  //   }
-  //   return server;
-  // }
-
   /**
    *Recupera um servidor pelo id informado.
    * @param id id do servidor alvo.
-   * @param serversConfig opcional, se omitido utiliza o padrao
+   * @param serversConfig opcional, se omitido utiliza o padrão
    */
   static getServerById(id: string) {
     let server;
@@ -886,16 +862,16 @@ export class ServersConfig {
 
   /**
    *Recupera um servidor pelo nome informado.
-   * @param name nome do servidor alvo.
-   */
-  static getServerForNameWithConfig(name: string, serversConfig: any) {
+  * @param name nome do servidor alvo.
+  * @param serversConfig opcional, se omitido utiliza o padrão
+  */
+  static getServerByName(name: string) {
     let server;
-
+    const serversConfig: any = getServersConfig();
     if (serversConfig.configurations) {
       const configs = serversConfig.configurations;
-
       configs.forEach((element) => {
-        if (element.name === name) {
+        if (element.name.toLowerCase() === name.toLowerCase()) {
           server = element;
           if (server.environments === undefined) {
             server.environments = [];
@@ -907,7 +883,7 @@ export class ServersConfig {
   }
 
   /**
-   *Salva uma nova configuracao de include.
+   *Salva uma nova configuração de include.
    */
   static saveIncludePath(includePath: string[]) {
     const servers = getServersConfig();
@@ -1076,7 +1052,7 @@ function sampleServer(): any {
 }
 
 /**
- * Retorna todo o conteudo do servers.json
+ * Retorna todo o conteúdo do servers.json
  */
 function getServersConfig() {
   let config: any = {};
@@ -1094,7 +1070,7 @@ function getServersConfig() {
     }
   }
 
-  //garante a existencia da sessão
+  //garante a existência da sessão
   if (!config.savedTokens) {
     config.savedTokens = [];
   }
@@ -1119,7 +1095,7 @@ function getServersConfig() {
 }
 
 /**
- * Grava no arquivo servers.json uma nova configuracao de servers
+ * Grava no arquivo servers.json uma nova configuração de servers
  * @param JSONServerInfo
  */
 function persistServersInfo(JSONServerInfo) {

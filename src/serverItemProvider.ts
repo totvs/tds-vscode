@@ -1,8 +1,9 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
-import { EnvSection, ServerItem, ServerType } from "./serverItem";
+import { EnvSection, ServerItem } from "./serverItem";
 import Utils, { ServersConfig } from "./utils";
 import { updateStatusBarItems } from "./statusBar";
+import { TServerType } from "./model/serverModel";
 
 class ServerItemProvider
   implements vscode.TreeDataProvider<ServerItem | EnvSection>
@@ -184,7 +185,7 @@ class ServerItemProvider
   private setConfigWithServerConfig() {
     const serverItem = (
       serverItem: string,
-      type: ServerType,
+      type: TServerType,
       address: string,
       port: number,
       secure: number,

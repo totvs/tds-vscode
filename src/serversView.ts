@@ -194,55 +194,6 @@ export class ServersExplorer {
         }
       }
     );
-
-    function createServer(
-      typeServer: string,
-      serverName: string,
-      port: number,
-      address: string,
-      secure: number,
-      buildVersion: string,
-      showSucess: boolean,
-      includes: string[]
-    ): string | undefined {
-      const serverId = ServersConfig.createNewServer(
-        typeServer,
-        serverName,
-        port,
-        address,
-        buildVersion,
-        secure,
-        includes
-      );
-
-      if (serverId !== undefined && showSucess) {
-        vscode.window.showInformationMessage(
-          vscode.l10n.t("Serve saved. Name: {0}", serverName)
-        );
-      }
-
-      return serverId;
-    }
-
-    function getWebViewContent(context, localizeHTML) {
-      const htmlOnDiskPath = vscode.Uri.file(
-        path.join(context.extensionPath, "src", "server", "addServer.html")
-      );
-      const cssOnDIskPath = vscode.Uri.file(
-        path.join(context.extensionPath, "resources", "css", "form.css")
-      );
-
-      const htmlContent = fs.readFileSync(
-        htmlOnDiskPath.with({ scheme: "vscode-resource" }).fsPath
-      );
-      const cssContent = fs.readFileSync(
-        cssOnDIskPath.with({ scheme: "vscode-resource" }).fsPath
-      );
-
-      let runTemplate = compile(htmlContent);
-
-      return runTemplate({ css: cssContent, localize: localizeHTML });
-    }
   }
 }
 

@@ -17,7 +17,7 @@ export interface IPageAction {
 
 export interface IPageView {
 	title: string;
-	linkToDoc?: string
+	linkToDoc: string
 	actions?: IPageAction[];
 	children: any
 }
@@ -26,7 +26,7 @@ export default function Page(props: IPageView) {
 
 	return (
 		<>
-			<Header title={props.title} />
+			<Header title={props.title} linkToDoc={props.linkToDoc} />
 			<div className="tds-content">
 				{props.children}
 			</div>
@@ -41,7 +41,7 @@ export default function Page(props: IPageView) {
 					}
 				})}
 			</div>
-			<Footer linkToDoc={props.linkToDoc} />
+			<Footer />
 		</>
 	);
 }
