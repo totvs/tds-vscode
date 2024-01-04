@@ -125,7 +125,7 @@ export class AddServerPanel {
    */
   private _setWebviewMessageListener(webview: vscode.Webview) {
     webview.onDidReceiveMessage(
-      (message: ReceiveMessage<AddServerCommand>) => {
+      (message: ReceiveMessage<AddServerCommand, TServerModel>) => {
         const command: AddServerCommand = message.command;
         const data = message.data;
 
@@ -151,13 +151,17 @@ export class AddServerPanel {
             let checkedDir: string = Utils.checkDir(data.selectedDir);
 
             if (checkedDir.length > 0) {
-              data.model.includePaths.push({
-                id: data.model.includePaths.length + 1,
-                path: checkedDir
-              })
-            }
+              const indexFirstPathFree: number = data.model.includePaths.findIndex((row: any) => row.path == "");
 
-            this.sendUpdateModel(data.model);
+              if (indexFirstPathFree !== -1) {
+                data.model.includePaths.push({ id: indexFirstPathFree.toString(), path: checkedDir });
+                this.sendUpdateModel(data.model);
+              } else {
+                let errors: TFieldErrors<TServerModel> = {};
+                errors.root = { type: "validate", message: "Para adicionar mais de 5 elementos, após salvar o servidor favor editar o arquivo 'servers.json'" };
+                this.sendValidateResponse(errors);
+              }
+            }
 
             break;
         }
@@ -241,7 +245,7 @@ export class AddServerPanel {
       model.address,
       0,
       "",
-      model.includePaths
+      model.includePaths.map((row: any) => row.path)
     );
     if (serverId !== undefined) {
       sendValidationRequest(model.address, model.port, model.serverType).then(
@@ -267,7 +271,7 @@ export class AddServerPanel {
   private sendUpdateModel(model: {}) {
     this._panel.webview.postMessage({
       command: CommonCommandToWebViewEnum.UpdateModel,
-      model: model,
+      model: model
     });
   }
 

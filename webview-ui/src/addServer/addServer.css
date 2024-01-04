@@ -14,4 +14,6 @@
 	width: 10rem;
 }
 
-/* includePaths: TIncludeData[] */
+[name^="includePaths."] {
+	width: 100%;
+}

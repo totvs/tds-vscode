@@ -12,5 +12,8 @@ export type TServerModel = {
 	address: string;
 	buildVersion: string;
 	secure: boolean;
-	includePaths: string[];
+	includePaths: {
+		id: string;
+		path: string;
+	}[]
 }

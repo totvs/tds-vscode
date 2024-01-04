@@ -5,6 +5,7 @@ import { ButtonAppearance } from "@vscode/webview-ui-toolkit";
 import PopupMessage from "./popup-message";
 import { FieldError, Form, FormProps, UseControllerProps, useController } from "react-hook-form";
 import { sendClose } from "../utilities/common-command-webview";
+import { ChangeEvent, ChangeEventHandler, EventHandler } from "react";
 
 declare module "react" {
 	interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
@@ -28,15 +29,23 @@ export interface IFormProps {
 	children: any
 }
 
-type TDSFieldProps =
-	{
-		label: string;
-		info: string;
-		options?: {
-			value: string;
-			text: string;
-		}[]
-	}
+type TDSFieldProps = {
+	label: string;
+	info: string;
+}
+
+type TDSSelectionFieldProps = TDSFieldProps & {
+	options?: {
+		value: string;
+		text: string;
+	}[]
+}
+
+
+type TDSSelectionFolderFieldProps = {
+	info: string;
+	onSelect: (event: ChangeEvent<HTMLInputElement>) => any;
+}
 
 function buildMessage(props: any, error: FieldError | undefined): string {
 	const { label, info } = props;
@@ -57,7 +66,7 @@ function buildMessage(props: any, error: FieldError | undefined): string {
 	return message;
 }
 
-export function TDSSelectionField(props: UseControllerProps<any> & TDSFieldProps) {
+export function TDSSelectionField(props: UseControllerProps<any> & TDSSelectionFieldProps) {
 	const { field, fieldState } = useController(props);
 	const options = props.options || [];
 	const rules = props.rules || {};
@@ -89,8 +98,22 @@ export function TDSTextField(props: UseControllerProps<any> & TDSFieldProps) {
 				{props.label}
 				{props.rules?.required && <span className="tds-required" />}
 			</label>
-			<VSCodeTextField {...field} >
+			<VSCodeTextField
+				{...field} >
 				<PopupMessage type={fieldState.invalid ? "error" : "info"} fieldName={props.name} message={message} />
+			</VSCodeTextField>
+		</section>
+	)
+}
+
+export function TDSSimpleTextField(props: UseControllerProps<any>) {
+	const { field, fieldState } = useController(props);
+	let message: string = buildMessage(props, fieldState.error);
+
+	return (
+		<section className="tds-simple-text-field-container">
+			<VSCodeTextField
+				{...field} >
 			</VSCodeTextField>
 		</section>
 	)
@@ -123,17 +146,7 @@ export function TDSNumericField(props: UseControllerProps<any> & TDSFieldProps) 
 }
 
 export default function TDSForm(props: /*FormProps*/ any): JSX.Element {
-	//return <button disabled={!isDirty || !isValid} />;
 	let actions: IFormAction[] | undefined = props.actions;
-	console.log(">>>>> TDSForm");
-	console.dir(props)
-	// props.rules = {
-	// 	...props.rules,
-	// 	validate: {
-	// 		value: /\d+/gm,
-	// 		message: `[${props.label}] only accepts numbers`
-	// 	}
-	// };
 
 	if (actions == undefined) {
 		actions = [
@@ -182,8 +195,6 @@ export default function TDSForm(props: /*FormProps*/ any): JSX.Element {
 						if (action.action) {
 							propsField["onClick"] = action.action;
 						}
-						console.log(">>>> BUTTONS");
-						console.dir(propsField);
 
 						return (<VSCodeButton {...propsField} >{action.caption}</VSCodeButton>)
 					})}
@@ -193,12 +204,27 @@ export default function TDSForm(props: /*FormProps*/ any): JSX.Element {
 	);
 }
 
-export function TDSSelectionFolder(props: Omit<UseControllerProps<any>, "name"> & Omit<TDSFieldProps, "label">) {
-	//onChange={(event) => checkDir(event)}
+export function TDSSelectionFolderField(props: UseControllerProps<any> & TDSSelectionFolderFieldProps) {
+	const fireBtnFile = () => {
+		const button: HTMLInputElement = document.getElementsByName(`btn-file-${props.name}`)[0] as HTMLInputElement;
+		button.click();
+	};
+
+	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+		console.dir(event);
+		var input: any = event.target;
+
+		if (input.files.length > 0) {
+			props.onSelect(event);
+		}
+	}
+
 	return (
-		<>
+		<section className="tds-selection-field-container">
 			{/* ts-expect-error */}
-			<input type="file" name="btn-FileInclude"
-				webkitdirectory="" directory="" />
-		</>)
+			<VSCodeButton name={props.name} onClick={() => fireBtnFile()}>Select folder</VSCodeButton>
+			<input type="file" name={`btn-file-${props.name}`}
+				onChange={(event) => onChange(event)}
+				webkitdirectory="" directory="" className="display:hidden" />
+		</section>)
 }

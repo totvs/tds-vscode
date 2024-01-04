@@ -1,19 +1,21 @@
-import { VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
+import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
 
 import "./addServer.css";
 import Page from "../components/page";
 import ErrorBoundary from "../components/errorBoundary";
-import React from "react";
+import React, { ChangeEvent } from "react";
 import { TIncludeData } from "../model/addServerModel";
-import { SubmitHandler, useForm } from "react-hook-form";
-import TDSForm, { TDSNumericField, TDSSelectionField, TDSSelectionFolder, TDSTextField } from "../components/form";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import TDSForm, { TDSNumericField, TDSSelectionField, TDSSelectionFolderField, TDSSimpleTextField, TDSTextField } from "../components/form";
 import PopupMessage from "../components/popup-message";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
+import { sendCheckDir } from "./sendCommand";
+import { object } from "prop-types";
+import path from "path";
 
 
 enum ReceiveCommandEnum {
 }
-type _AddServerCommand = CommonCommandToPanel & AddServerCommand;
 type ReceiveCommand = ReceiveMessage<CommonCommandFromPanelEnum & ReceiveCommandEnum, TFields>;
 
 type TFields = {
@@ -24,6 +26,19 @@ type TFields = {
   includePaths: TIncludeData[]
 }
 
+type TLogProps = {
+  message: string;
+  object?: any
+}
+
+function Log(props: TLogProps) {
+  console.log(`>>>>> ${props.message}`);
+  if (props.object) {
+    console.dir(props.object)
+  }
+
+  return (<></>)
+}
 export default function AddServer() {
   console.log(">>> AddServer: initialize")
   const {
@@ -38,19 +53,33 @@ export default function AddServer() {
       serverName: "",
       address: "",
       port: 0,
-      includePaths: ["", "", "", "", ""]
+      includePaths: [
+        { id: "0", path: "" },
+        { id: "1", path: "" },
+        { id: "2", path: "" },
+        { id: "3", path: "" },
+        { id: "4", path: "" }
+      ]
     },
     mode: "all"
   })
+  const { fields, replace, append, prepend, remove, swap, move, insert } = useFieldArray(
+    {
+      control,
+      name: "includePaths"
+    });
 
   const onSubmit: SubmitHandler<TFields> = (data) => {
+    console.log(">>>>>>>>>>>>> SubmitHandler");
+    console.dir(data);
+
     sendSaveAndClose(data);
   }
 
   React.useEffect(() => {
     let listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
-      const model: TFields = command.data.model;
+      const model: TFields = event.data.model;
 
       switch (command.command) {
         case CommonCommandFromPanelEnum.UpdateModel:
@@ -82,15 +111,25 @@ export default function AddServer() {
     }
   }, []);
 
-  // React.useEffect(() => {
-  //   console.log("React.useEffect model");
-  //   //sendValidateModel(model);
-  //   return () => {
-  //   }
-  // }, [model]);
+  function addIncludePath(event: ChangeEvent<HTMLInputElement>, index: number) {
+    var input: any = event.target;
+
+    if (input.files.length > 0) {
+      const path: string = input.files[0].path;
+      const pos: number = path.lastIndexOf("\\") == -1 ? path.lastIndexOf("/") : path.lastIndexOf("\\");
+      var selectedDir: string = path.substring(0, pos + 1);
+      insert(index, { id: model.includePaths.length.toString(), path: selectedDir });
+      remove(index + 1);
+    }
+  }
+
+  function removeIncludePath(index: number) {
+    remove(index + 1);
+    append({ id: index.toString(), path: "" });
+  }
 
   const model: TFields = getValues();
-  const indexFirstPathFree: number = model.includePaths.findIndex((path: TIncludeData) => path == "");
+  const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludeData) => row.path == "");
 
   return (
     <main>
@@ -147,33 +186,48 @@ export default function AddServer() {
                 <PopupMessage fieldName="include" message="Informe as pastas onde os arquivos de definição devem ser procurados" />
               </p>
             </section>
+
             <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
-              {model && model.includePaths.map((path: TIncludeData, index: number) => (
-                <VSCodeDataGridRow key={index}>
-                  {path !== "" &&
-                    <>
-                      <VSCodeDataGridCell grid-column="1">
-                        <span className="codicon codicon-close"></span>
-                      </VSCodeDataGridCell>
-                      <VSCodeDataGridCell grid-column="2">{path}</VSCodeDataGridCell>
-                    </>
-                  }
-                  {index == indexFirstPathFree &&
-                    <>
-                      <VSCodeDataGridCell grid-column="1">
-                      <TDSSelectionFolder
-                        info={"Selecione uma pasta que contenha arquivos de definição"} />
-                      </VSCodeDataGridCell>
-                    </>
-                  }
-                  {path == "" &&
-                    <>
-                      <VSCodeDataGridCell grid-column="1">&nbsp;</VSCodeDataGridCell>
-                      <VSCodeDataGridCell grid-column="2">&nbsp;</VSCodeDataGridCell>
-                    </>
-                  }
-                </VSCodeDataGridRow>
-              ))}
+              {fields.map((row: TIncludeData, index: number) => (
+                <>
+                  <VSCodeDataGridRow key={row.id}>
+                    {row.path !== "" &&
+                      <>
+                        <VSCodeDataGridCell grid-column="1">
+                          <VSCodeButton appearance="icon" onClick={() => removeIncludePath(index)} >
+                            <span className="codicon codicon-close"></span>
+                          </VSCodeButton>
+                        </VSCodeDataGridCell>
+                        <VSCodeDataGridCell grid-column="2">
+                          <TDSSimpleTextField
+                            name={`includePaths.${index}.path`}
+                            control={control}
+                            disabled={true}
+                          />
+                        </VSCodeDataGridCell>
+                      </>
+                    }
+                    {((row.path == "") && (index !== indexFirstPathFree)) &&
+                      <>
+                        <VSCodeDataGridCell grid-column="1">&nbsp;</VSCodeDataGridCell>
+                        <VSCodeDataGridCell grid-column="2">&nbsp;</VSCodeDataGridCell>
+                      </>
+                    }
+                    {index == indexFirstPathFree &&
+                      <>
+                        <VSCodeDataGridCell grid-column="2">
+                          <TDSSelectionFolderField
+                            control={control}
+                            onSelect={(event) => addIncludePath(event, index)}
+                            name={`btnSelectFolder.${index}`}
+                            info={"Selecione uma pasta que contenha arquivos de definição"} />
+                        </VSCodeDataGridCell>
+                      </>
+                    }
+                  </VSCodeDataGridRow>
+                </>
+              ))
+              }
             </VSCodeDataGrid>
           </TDSForm>
         </Page>

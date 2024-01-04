@@ -22,7 +22,8 @@ export enum CommonCommandToPanelEnum {
 	SaveAndClose = "SAVE_AND_CLOSE",
 	Close = "CLOSE",
 	Ready = "READY",
-	Validate = "VALIDATE"
+	Validate = "VALIDATE",
+	CheckDir = "CHECK_DIR"
 }
 
 export type CommonCommandToPanel = CommonCommandToPanelEnum;
