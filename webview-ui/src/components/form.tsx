@@ -5,7 +5,13 @@ import { ButtonAppearance } from "@vscode/webview-ui-toolkit";
 import PopupMessage from "./popup-message";
 import { FieldError, Form, FormProps, UseControllerProps, useController } from "react-hook-form";
 import { sendClose } from "../utilities/common-command-webview";
-import { error } from "console";
+
+declare module "react" {
+	interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
+		webkitdirectory?: string;
+		directory?: string;
+	}
+}
 
 export interface IFormAction {
 	id: number;
@@ -118,7 +124,7 @@ export function TDSNumericField(props: UseControllerProps<any> & TDSFieldProps) 
 
 export default function TDSForm(props: /*FormProps*/ any): JSX.Element {
 	//return <button disabled={!isDirty || !isValid} />;
-	let actions: IFormAction[] = props.actions || [];
+	let actions: IFormAction[] | undefined = props.actions;
 	console.log(">>>>> TDSForm");
 	console.dir(props)
 	// props.rules = {
@@ -129,7 +135,7 @@ export default function TDSForm(props: /*FormProps*/ any): JSX.Element {
 	// 	}
 	// };
 
-	if (actions.length == 0) {
+	if (actions == undefined) {
 		actions = [
 			{
 				id: -1,
@@ -185,4 +191,14 @@ export default function TDSForm(props: /*FormProps*/ any): JSX.Element {
 			</div>
 		</Form >
 	);
+}
+
+export function TDSSelectionFolder(props: Omit<UseControllerProps<any>, "name"> & Omit<TDSFieldProps, "label">) {
+	//onChange={(event) => checkDir(event)}
+	return (
+		<>
+			{/* ts-expect-error */}
+			<input type="file" name="btn-FileInclude"
+				webkitdirectory="" directory="" />
+		</>)
 }

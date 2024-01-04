@@ -1,8 +1,10 @@
 main {
-	align-items: flex-start;
 	display: flex;
 	flex-direction: column;
-	height: 100vh;
-	width: 100%;
-	justify-content: normal;
+	height: fit-content;
+	width: fit-content;
+	justify-content: center;
+	align-self: center;
+	margin: auto;
+	margin-top: 5%;
 }
