@@ -22,7 +22,8 @@ export enum CommonCommandToPanelEnum {
 	SaveAndClose = "SAVE_AND_CLOSE",
 	Close = "CLOSE",
 	Ready = "READY",
-	Validate = "VALIDATE"
+	Validate = "VALIDATE",
+	CheckDir = "CHECK_DIR"
 }
 
 export type CommonCommandToPanel = CommonCommandToPanelEnum;
@@ -66,8 +67,6 @@ export function sendValidateModel(model: TModelData) {
 }
 
 export function sendSave(model: TModelData) {
-	console.log(">>>> sendSave");
-	console.dir(model);
 	const message: SendMessage<CommonCommandToPanelEnum, TModelData> = {
 		command: CommonCommandToPanelEnum.Save,
 		data: {

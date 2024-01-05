@@ -55,3 +55,15 @@ span.tds-required::after {
 	text-align: right !important;
 	background-color: aqua;
 }
+
+.tds-selection-field-container input[type="file"] {
+	visibility: hidden;
+}
+
+.tds-simple-text-field-container input.control {
+	width: 100%;
+}
+
+vscode-data-grid-row:hover {
+	background-color: transparent;
+}

@@ -19,12 +19,11 @@ import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webv
 import Utils, { ServersConfig } from "../utils";
 import { CommonCommandFromWebView, CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
 import { IValidationInfo, sendValidationRequest } from "../protocolMessages";
-import { TServerModel, TServerType } from "../model/serverModel";
+import { TIncludePathModel, TServerModel, TServerType } from "../model/serverModel";
 import { TFieldErrors, isErrors } from "../model/field-model";
 import { ResponseError } from "vscode-languageclient";
 
 enum AddServerCommandEnum {
-  CheckDir = "CHECK_DIR"
 }
 
 type AddServerCommand = CommonCommandFromWebViewEnum & AddServerCommandEnum;
@@ -125,7 +124,7 @@ export class AddServerPanel {
    */
   private _setWebviewMessageListener(webview: vscode.Webview) {
     webview.onDidReceiveMessage(
-      (message: ReceiveMessage<AddServerCommand>) => {
+      (message: ReceiveMessage<AddServerCommand, TServerModel>) => {
         const command: AddServerCommand = message.command;
         const data = message.data;
 
@@ -145,19 +144,6 @@ export class AddServerPanel {
             } else {
               this.sendValidateResponse(errors);
             }
-
-            break;
-          case AddServerCommandEnum.CheckDir:
-            let checkedDir: string = Utils.checkDir(data.selectedDir);
-
-            if (checkedDir.length > 0) {
-              data.model.includePaths.push({
-                id: data.model.includePaths.length + 1,
-                path: checkedDir
-              })
-            }
-
-            this.sendUpdateModel(data.model);
 
             break;
         }
@@ -194,10 +180,19 @@ export class AddServerPanel {
       if (Number.isNaN(model.port)) {
         errors.port = { type: "validate", message: "[Port] is not a number" };
       } else if (!(model.port > 0)) {
-        errors.port = { type: "min" };
+        errors.port = { type: "min", message: "[Port] is not valid range. Min: 1 Max: 65535" };
       } else if (model.port > 65535) {
-        errors.port = { type: "max" };
-      }
+        errors.port = { type: "max", message: "[Port] is not valid range. Min: 1 Max: 65535" };
+      };
+
+      model.includePaths.forEach((includePath: TIncludePathModel, index: number) => {
+        let checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/);
+
+        if (checkedDir.length == 0) {
+          errors[`includePaths.${index}.path`] = { type: "validate", message: "Pasta inválida ou não contém arquivos de definição (.CH ou .TH)" };
+        }
+      })
+
     } catch (error) {
       errors.root = { type: "validate", message: `Internal error: ${error}` }
     }
@@ -241,7 +236,7 @@ export class AddServerPanel {
       model.address,
       0,
       "",
-      model.includePaths
+      model.includePaths.map((row: any) => row.path)
     );
     if (serverId !== undefined) {
       sendValidationRequest(model.address, model.port, model.serverType).then(
@@ -267,7 +262,7 @@ export class AddServerPanel {
   private sendUpdateModel(model: {}) {
     this._panel.webview.postMessage({
       command: CommonCommandToWebViewEnum.UpdateModel,
-      model: model,
+      model: model
     });
   }
 
