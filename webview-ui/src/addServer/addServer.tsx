@@ -5,8 +5,8 @@ import Page from "../components/page";
 import ErrorBoundary from "../components/errorBoundary";
 import React, { ChangeEvent } from "react";
 import { TIncludeData } from "../model/addServerModel";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import TDSForm, { TDSNumericField, TDSSelectionField, TDSSelectionFolderField, TDSSimpleTextField, TDSTextField } from "../components/form";
+import { SubmitHandler, useFieldArray, useForm, useWatch } from "react-hook-form";
+import TDSForm, { IFormAction, TDSNumericField, TDSSelectionField, TDSSelectionFolderField, TDSSimpleTextField, TDSTextField, getDefaultActionsForm } from "../components/form";
 import PopupMessage from "../components/popup-message";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
 import { sendCheckDir } from "./sendCommand";
@@ -26,21 +26,7 @@ type TFields = {
   includePaths: TIncludeData[]
 }
 
-type TLogProps = {
-  message: string;
-  object?: any
-}
-
-function Log(props: TLogProps) {
-  console.log(`>>>>> ${props.message}`);
-  if (props.object) {
-    console.dir(props.object)
-  }
-
-  return (<></>)
-}
 export default function AddServer() {
-  console.log(">>> AddServer: initialize")
   const {
     control,
     handleSubmit,
@@ -54,25 +40,23 @@ export default function AddServer() {
       address: "",
       port: 0,
       includePaths: [
-        { id: "0", path: "" },
-        { id: "1", path: "" },
-        { id: "2", path: "" },
-        { id: "3", path: "" },
-        { id: "4", path: "" }
+        { path: "" },
+        { path: "" },
+        { path: "" },
+        { path: "" },
+        { path: "" }
       ]
     },
     mode: "all"
   })
-  const { fields, replace, append, prepend, remove, swap, move, insert } = useFieldArray(
+  const { fields, remove, insert } = useFieldArray(
     {
       control,
       name: "includePaths"
     });
 
   const onSubmit: SubmitHandler<TFields> = (data) => {
-    console.log(">>>>>>>>>>>>> SubmitHandler");
-    console.dir(data);
-
+    data.includePaths = data.includePaths.filter((includePath: TIncludeData) => includePath.path.length > 0);
     sendSaveAndClose(data);
   }
 
@@ -118,26 +102,27 @@ export default function AddServer() {
       const path: string = input.files[0].path;
       const pos: number = path.lastIndexOf("\\") == -1 ? path.lastIndexOf("/") : path.lastIndexOf("\\");
       var selectedDir: string = path.substring(0, pos + 1);
-      insert(index, { id: model.includePaths.length.toString(), path: selectedDir });
-      remove(index + 1);
+      remove(index);
+      insert(index, { path: selectedDir });
     }
   }
 
   function removeIncludePath(index: number) {
-    remove(index + 1);
-    append({ id: index.toString(), path: "" });
+    remove(index);
+    insert(index, { path: "" });
   }
 
   const model: TFields = getValues();
   const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludeData) => row.path == "");
+  const actions: IFormAction[] = getDefaultActionsForm();
+  actions[0].enabled = isDirty && isValid;
 
   return (
     <main>
       <ErrorBoundary>
         <Page title="Add Server" linkToDoc="[Registro de Servidores]servers.md#registro-de-servidores">
           <TDSForm
-            isDirty={isDirty}
-            isValid={isValid}
+            actions={actions}
             errors={errors}
             control={control}
             onSubmit={handleSubmit(onSubmit)}>
@@ -190,7 +175,7 @@ export default function AddServer() {
             <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
               {fields.map((row: TIncludeData, index: number) => (
                 <>
-                  <VSCodeDataGridRow key={row.id}>
+                  <VSCodeDataGridRow key={index}>
                     {row.path !== "" &&
                       <>
                         <VSCodeDataGridCell grid-column="1">
@@ -202,7 +187,7 @@ export default function AddServer() {
                           <TDSSimpleTextField
                             name={`includePaths.${index}.path`}
                             control={control}
-                            disabled={true}
+                            readOnly={true}
                           />
                         </VSCodeDataGridCell>
                       </>

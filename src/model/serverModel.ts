@@ -4,6 +4,10 @@ export type TServerType =
 	| "totvs_server_totvstec";
 
 
+export type TIncludePathModel = {
+	path: string;
+}
+
 export type TServerModel = {
 	id?: string;  //undefined indica que não foi salvo
 	serverType: TServerType;
@@ -12,8 +16,5 @@ export type TServerModel = {
 	address: string;
 	buildVersion: string;
 	secure: boolean;
-	includePaths: {
-		id: string;
-		path: string;
-	}[]
+	includePaths: TIncludePathModel[];
 }

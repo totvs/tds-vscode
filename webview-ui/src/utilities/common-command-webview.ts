@@ -67,8 +67,6 @@ export function sendValidateModel(model: TModelData) {
 }
 
 export function sendSave(model: TModelData) {
-	console.log(">>>> sendSave");
-	console.dir(model);
 	const message: SendMessage<CommonCommandToPanelEnum, TModelData> = {
 		command: CommonCommandToPanelEnum.Save,
 		data: {

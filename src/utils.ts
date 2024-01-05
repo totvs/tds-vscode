@@ -252,13 +252,22 @@ export default class Utils {
     return processIgnoreList(ignoreListExpressions, path.basename(fileName));
   }
 
-  static checkDir(selectedDir: string): string {
+  static checkDir(selectedDir: string, expectedFiles?: RegExp): string {
     if (fs.existsSync(selectedDir)) {
       if (!fs.lstatSync(selectedDir).isDirectory()) {
         selectedDir = path.dirname(selectedDir);
       }
       if (fs.lstatSync(selectedDir).isDirectory()) {
-        return selectedDir;
+        let foundFiles: boolean = true;
+
+        if (expectedFiles !== undefined) {
+          foundFiles = fs.readdirSync(selectedDir)
+            .filter((file) => {
+              return expectedFiles.test(file);
+            }).length > 0;
+        }
+
+        return foundFiles ? selectedDir : "";
       }
     }
     vscode.window.showErrorMessage(

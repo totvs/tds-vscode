@@ -19,12 +19,11 @@ import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webv
 import Utils, { ServersConfig } from "../utils";
 import { CommonCommandFromWebView, CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
 import { IValidationInfo, sendValidationRequest } from "../protocolMessages";
-import { TServerModel, TServerType } from "../model/serverModel";
+import { TIncludePathModel, TServerModel, TServerType } from "../model/serverModel";
 import { TFieldErrors, isErrors } from "../model/field-model";
 import { ResponseError } from "vscode-languageclient";
 
 enum AddServerCommandEnum {
-  CheckDir = "CHECK_DIR"
 }
 
 type AddServerCommand = CommonCommandFromWebViewEnum & AddServerCommandEnum;
@@ -147,23 +146,6 @@ export class AddServerPanel {
             }
 
             break;
-          case AddServerCommandEnum.CheckDir:
-            let checkedDir: string = Utils.checkDir(data.selectedDir);
-
-            if (checkedDir.length > 0) {
-              const indexFirstPathFree: number = data.model.includePaths.findIndex((row: any) => row.path == "");
-
-              if (indexFirstPathFree !== -1) {
-                data.model.includePaths.push({ id: indexFirstPathFree.toString(), path: checkedDir });
-                this.sendUpdateModel(data.model);
-              } else {
-                let errors: TFieldErrors<TServerModel> = {};
-                errors.root = { type: "validate", message: "Para adicionar mais de 5 elementos, após salvar o servidor favor editar o arquivo 'servers.json'" };
-                this.sendValidateResponse(errors);
-              }
-            }
-
-            break;
         }
       },
       undefined,
@@ -202,6 +184,16 @@ export class AddServerPanel {
       } else if (model.port > 65535) {
         errors.port = { type: "max" };
       }
+
+      model.includePaths.forEach((includePath: TIncludePathModel, index: number) => {
+        let checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th)$/);
+        if (checkedDir.length == 0) {
+          errors.includePaths = { type: "validate", message: "Pasta inválida ou não contém arquivos de definição (.CH ou .TH)" };
+          errors.root = { type: "validate", message: index + "=Pasta inválida ou não contém arquivos de definição (.CH ou .TH)" };
+        }
+
+      })
+
     } catch (error) {
       errors.root = { type: "validate", message: `Internal error: ${error}` }
     }

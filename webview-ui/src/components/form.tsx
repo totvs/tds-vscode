@@ -3,9 +3,15 @@ import { VSCodeButton, VSCodeDropdown, VSCodeOption, VSCodeTextField } from "@vs
 import "./form.css";
 import { ButtonAppearance } from "@vscode/webview-ui-toolkit";
 import PopupMessage from "./popup-message";
-import { FieldError, Form, FormProps, UseControllerProps, useController } from "react-hook-form";
+import { FieldError, FieldValues, Form, FormProps, UseControllerProps, useController } from "react-hook-form";
 import { sendClose } from "../utilities/common-command-webview";
 import { ChangeEvent, ChangeEventHandler, EventHandler } from "react";
+
+/**
+ * - 'hook' useFieldArray e propriedade 'disabled':
+ *   Por comportamento do 'hook', campos com 'disabled' ativo não são armazenados no array associado ao 'hook'.
+ *   Use 'readOnly' como paliativo.
+ */
 
 declare module "react" {
 	interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
@@ -24,12 +30,19 @@ export interface IFormAction {
 	appearance?: ButtonAppearance;
 }
 
-export interface IFormProps {
-	actions?: IFormAction[];
-	children: any
+type TDSFromProps = any //o correto é FormProps<T, U>, mas não consegui usar. acandido.
+	& {
+		actions: IFormAction[];
+		isValid?: boolean;
+		isDirty?: boolean;
+		children: any
+	};
+
+type TDSReadOnlyProp = {
+	readOnly?: boolean
 }
 
-type TDSFieldProps = {
+type TDSFieldProps = TDSReadOnlyProp & {
 	label: string;
 	info: string;
 }
@@ -40,7 +53,6 @@ type TDSSelectionFieldProps = TDSFieldProps & {
 		text: string;
 	}[]
 }
-
 
 type TDSSelectionFolderFieldProps = {
 	info: string;
@@ -66,6 +78,13 @@ function buildMessage(props: any, error: FieldError | undefined): string {
 	return message;
 }
 
+/**
+ *
+ * Se usar em 'hook' useFieldArray, ver nota inicio do fonte.
+ *
+ * @param props
+ * @returns
+ */
 export function TDSSelectionField(props: UseControllerProps<any> & TDSSelectionFieldProps) {
 	const { field, fieldState } = useController(props);
 	const options = props.options || [];
@@ -88,6 +107,13 @@ export function TDSSelectionField(props: UseControllerProps<any> & TDSSelectionF
 	)
 }
 
+/**
+ *
+ * Se usar em 'hook' useFieldArray, ver nota inicio do fonte.
+ *
+ * @param props
+ * @returns
+ */
 export function TDSTextField(props: UseControllerProps<any> & TDSFieldProps) {
 	const { field, fieldState } = useController(props);
 	let message: string = buildMessage(props, fieldState.error);
@@ -106,19 +132,37 @@ export function TDSTextField(props: UseControllerProps<any> & TDSFieldProps) {
 	)
 }
 
-export function TDSSimpleTextField(props: UseControllerProps<any>) {
+/**
+ *
+ * Se usar em 'hook' useFieldArray, ver nota inicio do fonte.
+ *
+ * @param props
+ * @returns
+ */
+export function TDSSimpleTextField(props: UseControllerProps<any> & TDSReadOnlyProp) {
 	const { field, fieldState } = useController(props);
-	let message: string = buildMessage(props, fieldState.error);
+	const message: string = buildMessage(props, fieldState.error);
+	const readOnly: boolean = (props.readOnly) || false;
 
 	return (
 		<section className="tds-simple-text-field-container">
 			<VSCodeTextField
-				{...field} >
+				readOnly={readOnly}
+				{...field}
+			>
+				{fieldState.invalid && <PopupMessage type={"error"} fieldName={props.name} message={message} />}
 			</VSCodeTextField>
 		</section>
 	)
 }
 
+/**
+ *
+ * Se usar em 'hook' useFieldArray, ver nota inicio do fonte.
+ *
+ * @param props
+ * @returns
+ */
 export function TDSNumericField(props: UseControllerProps<any> & TDSFieldProps) {
 	const rules = {
 		...props.rules,
@@ -145,30 +189,37 @@ export function TDSNumericField(props: UseControllerProps<any> & TDSFieldProps) 
 	)
 }
 
-export default function TDSForm(props: /*FormProps*/ any): JSX.Element {
-	let actions: IFormAction[] | undefined = props.actions;
-
-	if (actions == undefined) {
-		actions = [
-			{
-				id: -1,
-				caption: "Save",
-				hint: "Salva as informações e fecha a página",
-				appearance: "primary",
-				type: "submit",
-				enabled: props.isDirty && props.isValid
+export function getDefaultActionsForm(): IFormAction[] {
+	return [
+		{
+			id: -1,
+			caption: "Save",
+			hint: "Salva as informações e fecha a página",
+			appearance: "primary",
+			type: "submit",
+		},
+		{
+			id: -2,
+			caption: "Close",
+			hint: "Fecha a página, sem salvar as informações",
+			appearance: "secondary",
+			action: () => {
+				sendClose();
 			},
-			{
-				id: -2,
-				caption: "Close",
-				hint: "Fecha a página, sem salvar as informações",
-				appearance: "secondary",
-				action: () => {
-					sendClose();
-				},
-			}
-		];
-	}
+		}
+	];
+}
+
+/**
+ *
+ * Se usar em 'hook' useFieldArray, ver nota inicio do fonte.
+ *
+ * @param props
+ * @returns
+ */
+
+export default function TDSForm(props: TDSFromProps): JSX.Element {
+	let actions: IFormAction[] = props.actions;
 
 	return (
 		<Form {...props}>
@@ -204,6 +255,13 @@ export default function TDSForm(props: /*FormProps*/ any): JSX.Element {
 	);
 }
 
+/**
+ *
+ * Se usar em 'hook' useFieldArray, ver nota inicio do fonte.
+ *
+ * @param props
+ * @returns
+ */
 export function TDSSelectionFolderField(props: UseControllerProps<any> & TDSSelectionFolderFieldProps) {
 	const fireBtnFile = () => {
 		const button: HTMLInputElement = document.getElementsByName(`btn-file-${props.name}`)[0] as HTMLInputElement;
