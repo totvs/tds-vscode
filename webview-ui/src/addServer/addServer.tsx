@@ -174,43 +174,41 @@ export default function AddServer() {
 
             <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
               {fields.map((row: TIncludeData, index: number) => (
-                <>
-                  <VSCodeDataGridRow key={index}>
-                    {row.path !== "" &&
-                      <>
-                        <VSCodeDataGridCell grid-column="1">
-                          <VSCodeButton appearance="icon" onClick={() => removeIncludePath(index)} >
-                            <span className="codicon codicon-close"></span>
-                          </VSCodeButton>
-                        </VSCodeDataGridCell>
-                        <VSCodeDataGridCell grid-column="2">
-                          <TDSSimpleTextField
-                            name={`includePaths.${index}.path`}
-                            control={control}
-                            readOnly={true}
-                          />
-                        </VSCodeDataGridCell>
-                      </>
-                    }
-                    {((row.path == "") && (index !== indexFirstPathFree)) &&
-                      <>
-                        <VSCodeDataGridCell grid-column="1">&nbsp;</VSCodeDataGridCell>
-                        <VSCodeDataGridCell grid-column="2">&nbsp;</VSCodeDataGridCell>
-                      </>
-                    }
-                    {index == indexFirstPathFree &&
-                      <>
-                        <VSCodeDataGridCell grid-column="2">
-                          <TDSSelectionFolderField
-                            control={control}
-                            onSelect={(event) => addIncludePath(event, index)}
-                            name={`btnSelectFolder.${index}`}
-                            info={"Selecione uma pasta que contenha arquivos de definição"} />
-                        </VSCodeDataGridCell>
-                      </>
-                    }
-                  </VSCodeDataGridRow>
-                </>
+                <VSCodeDataGridRow key={index}>
+                  {row.path !== "" &&
+                    <>
+                      <VSCodeDataGridCell grid-column="1">
+                        <VSCodeButton appearance="icon" onClick={() => removeIncludePath(index)} >
+                          <span className="codicon codicon-close"></span>
+                        </VSCodeButton>
+                      </VSCodeDataGridCell>
+                      <VSCodeDataGridCell grid-column="2">
+                        <TDSSimpleTextField
+                          name={`includePaths.${index}.path`}
+                          control={control}
+                          readOnly={true}
+                        />
+                      </VSCodeDataGridCell>
+                    </>
+                  }
+                  {((row.path == "") && (index !== indexFirstPathFree)) &&
+                    <>
+                      <VSCodeDataGridCell grid-column="1">&nbsp;</VSCodeDataGridCell>
+                      <VSCodeDataGridCell grid-column="2">&nbsp;</VSCodeDataGridCell>
+                    </>
+                  }
+                  {index == indexFirstPathFree &&
+                    <>
+                      <VSCodeDataGridCell grid-column="2">
+                        <TDSSelectionFolderField
+                          control={control}
+                          onSelect={(event) => addIncludePath(event, index)}
+                          name={`btnSelectFolder.${index}`}
+                          info={"Selecione uma pasta que contenha arquivos de definição"} />
+                      </VSCodeDataGridCell>
+                    </>
+                  }
+                </VSCodeDataGridRow>
               ))
               }
             </VSCodeDataGrid>

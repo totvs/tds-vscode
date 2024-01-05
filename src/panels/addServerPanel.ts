@@ -180,18 +180,17 @@ export class AddServerPanel {
       if (Number.isNaN(model.port)) {
         errors.port = { type: "validate", message: "[Port] is not a number" };
       } else if (!(model.port > 0)) {
-        errors.port = { type: "min" };
+        errors.port = { type: "min", message: "[Port] is not valid range. Min: 1 Max: 65535" };
       } else if (model.port > 65535) {
-        errors.port = { type: "max" };
-      }
+        errors.port = { type: "max", message: "[Port] is not valid range. Min: 1 Max: 65535" };
+      };
 
       model.includePaths.forEach((includePath: TIncludePathModel, index: number) => {
-        let checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th)$/);
-        if (checkedDir.length == 0) {
-          errors.includePaths = { type: "validate", message: "Pasta inválida ou não contém arquivos de definição (.CH ou .TH)" };
-          errors.root = { type: "validate", message: index + "=Pasta inválida ou não contém arquivos de definição (.CH ou .TH)" };
-        }
+        let checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/);
 
+        if (checkedDir.length == 0) {
+          errors[`includePaths.${index}.path`] = { type: "validate", message: "Pasta inválida ou não contém arquivos de definição (.CH ou .TH)" };
+        }
       })
 
     } catch (error) {

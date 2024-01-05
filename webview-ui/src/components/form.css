@@ -63,3 +63,7 @@ span.tds-required::after {
 .tds-simple-text-field-container input.control {
 	width: 100%;
 }
+
+vscode-data-grid-row:hover {
+	background-color: transparent;
+}
