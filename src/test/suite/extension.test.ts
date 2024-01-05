@@ -1,21 +1,41 @@
-//src/test/suite/extension.test.ts
-
 import * as assert from 'assert';
-
-// You can import and use all API from the 'vscode' module
-// as well as import your extension to test it
 import * as vscode from 'vscode';
-import * as TDSVSCode from '../../extension';
 
+function sleep(ms: number): Promise<void> {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// function getOpenWebviews(): vscode.WebviewPanel[] {
+// 	return vscode.window.visibleTextEditors
+// 		.filter(editor => editor.viewType === "totvs-developer-studio.addServer"))
+// 		.map(editor => editor as vscode.WebviewPanel);
+// }
+
+function getOpenWebviews(): vscode.WebviewPanel[] {
+	return (vscode.window.visibleTextEditors as unknown as vscode.WebviewPanel[])
+		.filter(editor => editor.viewType === "totvs-developer-studio.addServer")
+		.map(editor => editor as vscode.WebviewPanel);
+}
 suite('Extension Test Suite', () => {
 
-	test('Add Server', () => {
-		vscode.commands.executeCommand("totvs-developer-studio.addServer");
+	test('Add Server', async () => {
+		await vscode.commands.executeCommand("totvs-developer-studio.addServer").then(async (result: any) => {
+			assert.notEqual(result, undefined);
+			let times = 5;
+			await sleep(2000);
+			const views = getOpenWebviews();
 
-		const editor:vscode.TextEditor = vscode.window.activeTextEditor;
+			console.log("webview", result._getPanel());
+			result._getPanel().webview.postMessage({ command: 'close' });
 
-		assert.notEqual(editor, undefined);
+			assert.notEqual(result, undefined);
+
+		});
 	});
 
-
 });
+
+
+
+
+

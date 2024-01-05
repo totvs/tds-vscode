@@ -59,7 +59,17 @@ export class AddServerPanel {
    *
    * @param extensionUri The URI of the directory containing the extension.
    */
-  public static render(extensionUri: vscode.Uri) {
+  public _getPanel(): vscode.WebviewPanel | undefined {
+    if (this._panel) {
+      console.log("AddServerPanel.webview", this._panel.webview);
+
+      return this._panel;
+    }
+
+    return undefined;
+  }
+
+  public static render(extensionUri: vscode.Uri): AddServerPanel {
     if (AddServerPanel.currentPanel) {
       // If the webview panel already exists reveal it
       AddServerPanel.currentPanel._panel.reveal(); //vscode.ViewColumn.One
@@ -80,6 +90,8 @@ export class AddServerPanel {
 
       AddServerPanel.currentPanel = new AddServerPanel(panel, extensionUri);
     }
+
+    return AddServerPanel.currentPanel;
   }
 
   /**
@@ -274,90 +286,3 @@ export class AddServerPanel {
   }
 
 }
-
-/*
-      if (currentPanel) {
-        currentPanel.reveal();
-      } else {
-        currentPanel = vscode.window.createWebviewPanel(
-          "totvs-developer-studio.addServer",
-          vscode.l10n.t("New Server"),
-          vscode.ViewColumn.One,
-          {
-            enableScripts: true,
-            localResourceRoots: [
-              vscode.Uri.file(
-                path.join(context.extensionPath, "src", "server")
-              ),
-            ],
-            retainContextWhenHidden: true,
-          }
-        );
-
-        currentPanel.webview.html = getWebViewContent(context, localizeHTML);
-        currentPanel.onDidDispose(
-          () => {
-            currentPanel = undefined;
-          },
-          null,
-          context.subscriptions
-        );
-
-        currentPanel.webview.onDidReceiveMessage(
-          (message) => {
-            switch (message.command) {
-              case "checkDir":
-                let checkedDir = Utils.checkDir(message.selectedDir);
-                currentPanel.webview.postMessage({
-                  command: "checkedDir",
-                  checkedDir: checkedDir,
-                });
-                break;
-              case "saveServer":
-                if (message.serverName && message.port && message.address) {
-                  const serverId = createServer(
-                    message.serverType,
-                    message.serverName,
-                    message.port,
-                    message.address,
-                    0,
-                    "",
-                    true,
-                    message.includes
-                  );
-                  if (serverId !== undefined) {
-                    sendValidationRequest(message.address, message.port, message.serverType).then(
-                      (validInfoNode: IValidationInfo) => {
-                        ServersConfig.updateBuildVersion(
-                          serverId,
-                          validInfoNode.build,
-                          validInfoNode.secure
-                        );
-
-                        currentPanel?.dispose();
-                        return;
-                      },
-                      (err: ResponseError<object>) => {
-                        vscode.window.showErrorMessage(err.message);
-                      }
-                    );
-                  }
-                } else {
-                  vscode.window.showErrorMessage(
-                    vscode.l10n.t("Add Server Fail. Name, port and Address are need")
-                  );
-                }
-
-                if (currentPanel) {
-                  if (message.close) {
-                    currentPanel.dispose();
-                  }
-                }
-            }
-          },
-          undefined,
-          context.subscriptions
-        );
-      }
-
-*/

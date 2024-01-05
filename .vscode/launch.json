@@ -50,20 +50,20 @@
 			}
 		},
 		{
-			"name": "Extension Tests",
+			"name": "Run Extension Tests",
 			"type": "extensionHost",
 			"request": "launch",
 			"runtimeExecutable": "${execPath}",
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}",
-				"--extensionTestsPath=${workspaceFolder}/out/test/index.js",
+				"--extensionTestsPath=${workspaceFolder}/out/test/suite/index",
 				"${workspaceFolder}/test/resources/projects/advpl"
 			],
 			"sourceMaps": true,
-			"preLaunchTask": "npm: compile",
 			"outFiles": [
-				"${workspaceFolder}/out/test/**/*.test.js"
-			]
+				"${workspaceFolder}/out/test/**/*.js"
+			],
+			"preLaunchTask": "npm: compile"
 		}
 	]
 }

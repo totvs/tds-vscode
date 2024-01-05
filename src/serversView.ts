@@ -46,7 +46,8 @@ export class ServersExplorer {
         return;
       }
 
-      AddServerPanel.render(context.extension.extensionUri);
+      const panel = AddServerPanel.render(context.extension.extensionUri);
+      return panel;
     });
 
     vscode.commands.registerCommand("totvs-developer-studio.config", () => {

@@ -6,7 +6,8 @@ import * as ini from "ini";
 import { languageClient } from "./extension";
 import { Authorization, CompileKey } from "./compileKey/compileKey";
 import { IRpoToken, getEnabledRpoTokenInfos } from "./rpoToken";
-import stripJsonComments from "strip-json-comments";
+// esse módulo dá erro de carga do vscode ESM
+//import stripJsonComments from "strip-json-comments";
 import {
   IGetServerInformationsResult,
   IGetServerPermissionsResult,
@@ -1613,4 +1614,8 @@ function numberToServerType(type: number): /*ServerType*/string {
   }
 
   return "totvs_server_totvstec";
+}
+
+function stripJsonComments(json: string): string {
+  return json;
 }
