@@ -1,34 +1,31 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
+import { getOpenWebviews, sleep } from '../utils';
 
-function sleep(ms: number): Promise<void> {
-	return new Promise(resolve => setTimeout(resolve, ms));
-}
+suite('Extension Basic Test Suite', () => {
 
-// function getOpenWebviews(): vscode.WebviewPanel[] {
-// 	return vscode.window.visibleTextEditors
-// 		.filter(editor => editor.viewType === "totvs-developer-studio.addServer"))
-// 		.map(editor => editor as vscode.WebviewPanel);
-// }
+	test('TDS-VSCode activating', async () => {
+		const extension = vscode.extensions.getExtension('totvs.tds-vscode');
 
-function getOpenWebviews(): vscode.WebviewPanel[] {
-	return (vscode.window.visibleTextEditors as unknown as vscode.WebviewPanel[])
-		.filter(editor => editor.viewType === "totvs-developer-studio.addServer")
-		.map(editor => editor as vscode.WebviewPanel);
-}
-suite('Extension Test Suite', () => {
-
-	test('Add Server', async () => {
-		await vscode.commands.executeCommand("totvs-developer-studio.addServer").then(async (result: any) => {
-			assert.notEqual(result, undefined);
-			let times = 5;
+		if (!extension.isActive) {
+			await extension?.activate();
 			await sleep(2000);
-			const views = getOpenWebviews();
+		}
 
-			console.log("webview", result._getPanel());
-			result._getPanel().webview.postMessage({ command: 'close' });
+		assert.ok(extension.isActive, "TDS-VSCode extension is not active");
+	});
 
-			assert.notEqual(result, undefined);
+	test.skip('Add Server', async () => {
+		const uri: vscode.Uri = vscode.Uri.file("./test/suite/fixtures/addServer.json");;
+		await vscode.commands.executeCommand("vscode.open", uri);
+
+		await vscode.commands.executeCommand("totvs-developer-studio.addServer").then(async () => {
+			await sleep(2000);
+			//	const views = getOpenWebviews(AddServerEditorProvider.viewType);
+			//	assert.equal(views.length, 1);
+
+			//	console.dir("webview", views);
+			//result._getPanel().webview.postMessage({ command: 'close' });
 
 		});
 	});

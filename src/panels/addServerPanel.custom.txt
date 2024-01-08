@@ -1,0 +1,237 @@
+import * as vscode from 'vscode';
+import { getWebviewContent } from './utilities/webview-utils';
+import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum, ReceiveMessage } from './utilities/common-command-panel';
+import { TIncludePathModel, TServerModel, TServerType } from '../model/serverModel';
+import { TFieldErrors, isErrors } from '../model/field-model';
+import Utils, { ServersConfig } from '../utils';
+import { IValidationInfo, sendValidationRequest } from '../protocolMessages';
+import { ResponseError } from 'vscode-languageclient';
+
+enum AddServerCommandEnum {
+}
+
+type AddServerCommand = CommonCommandFromWebViewEnum & AddServerCommandEnum;
+
+export class AddServerEditorProvider implements vscode.CustomTextEditorProvider {
+
+	public static register(context: vscode.ExtensionContext): vscode.Disposable {
+		console.log(">>> register");
+
+		const provider = new AddServerEditorProvider(context);
+		const providerRegistration = vscode.window.registerCustomEditorProvider(AddServerEditorProvider.viewType, provider);
+
+		return providerRegistration;
+	}
+
+	static readonly viewType = 'tds.addServerEditor';
+
+	constructor(
+		private readonly context: vscode.ExtensionContext
+	) {
+		console.log(">>> constructor");
+
+	 }
+
+	/**
+	 * Called when our custom editor is opened.
+	 *
+	 *
+	 */
+	public async resolveCustomTextEditor(
+		document: vscode.TextDocument,
+		webviewPanel: vscode.WebviewPanel,
+		_token: vscode.CancellationToken
+	): Promise<void> {
+		// Setup initial content for the webview
+		webviewPanel.webview.options = {
+			enableScripts: true,
+		};
+		webviewPanel.webview.html = this.getHtmlForWebview(webviewPanel.webview, "Add server");
+
+		function updateWebview() {
+			webviewPanel.webview.postMessage({
+				type: 'update',
+				text: document.getText(),
+			});
+		}
+
+		function sendUpdateModel(model: {}) {
+			webviewPanel.webview.postMessage({
+				command: CommonCommandToWebViewEnum.UpdateModel,
+				model: model
+			});
+		}
+
+		function sendValidateResponse(errors: TFieldErrors<TServerModel>) {
+			webviewPanel.webview.postMessage({
+				command: CommonCommandToWebViewEnum.ValidateResponse,
+				data: errors,
+			});
+		}
+
+		// Hook up event handlers so that we can synchronize the webview with the text document.
+		//
+		// The text document acts as our model, so we have to sync change in the document to our
+		// editor and sync changes in the editor back to the document.
+		//
+		// Remember that a single text document can also be shared between multiple custom
+		// editors (this happens for example when you split a custom editor)
+
+		const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(e => {
+			if (e.document.uri.toString() === document.uri.toString()) {
+				updateWebview();
+			}
+		});
+
+		// Make sure we get rid of the listener when our editor is closed.
+		webviewPanel.onDidDispose(() => {
+			changeDocumentSubscription.dispose();
+		});
+
+		// Receive message from the webview.
+		webviewPanel.webview.onDidReceiveMessage(
+			(message: ReceiveMessage<AddServerCommand, TServerModel>) => {
+				const command: AddServerCommand = message.command;
+				const data = message.data;
+
+				switch (command) {
+					case CommonCommandFromWebViewEnum.Ready:
+						break;
+					case CommonCommandFromWebViewEnum.Close:
+						//webview.dispose();
+						break;
+					case CommonCommandFromWebViewEnum.SaveAndClose:
+						let errors: TFieldErrors<TServerModel> = {};
+
+						if (this.validateModel(data.model, errors)) {
+							if (this.saveModel(data.model)) {
+								//this.dispose();
+							}
+						} else {
+							sendValidateResponse(errors);
+						}
+
+						break;
+				}
+			},
+			undefined,
+			undefined //this._disposables
+		);
+
+		updateWebview();
+	}
+
+	/**
+	 * Get the static html used for the editor webviews.
+	 */
+	private getHtmlForWebview(webview: vscode.Webview, title: string): string {
+
+		return getWebviewContent(webview, this.context.extensionUri, "addServerView", { title: title });
+	}
+
+	private validateModel(model: TServerModel, errors: TFieldErrors<TServerModel>): boolean {
+		try {
+			model.serverType = model.serverType.trim() as TServerType;
+			model.serverName = model.serverName.trim();
+			model.port = parseInt(model.port.toString());
+			model.address = model.address.trim();
+
+			if (model.serverType.length == 0) {
+				errors.serverType = { type: "required" };
+			}
+
+			if (model.serverName.length == 0) {
+				errors.serverName = { type: "required" };
+			}
+			const server = ServersConfig.getServerByName(model.serverName);
+			if (server !== undefined) {
+				errors.root = { type: "validate", message: "Server already exist" };
+				errors.serverName = { type: "validate", message: "Server already exist" };
+			}
+
+			if (model.address.length == 0) {
+				errors.address = { type: "required" };
+			}
+
+			if (Number.isNaN(model.port)) {
+				errors.port = { type: "validate", message: "[Port] is not a number" };
+			} else if (!(model.port > 0)) {
+				errors.port = { type: "min", message: "[Port] is not valid range. Min: 1 Max: 65535" };
+			} else if (model.port > 65535) {
+				errors.port = { type: "max", message: "[Port] is not valid range. Min: 1 Max: 65535" };
+			};
+
+			model.includePaths.forEach((includePath: TIncludePathModel, index: number) => {
+				let checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/);
+
+				if (checkedDir.length == 0) {
+					errors[`includePaths.${index}.path`] = { type: "validate", message: "Pasta inválida ou não contém arquivos de definição (.CH ou .TH)" };
+				}
+			})
+
+		} catch (error) {
+			errors.root = { type: "validate", message: `Internal error: ${error}` }
+		}
+
+		return !isErrors(errors);
+	}
+
+	private createServer(
+		typeServer: string,
+		serverName: string,
+		port: number,
+		address: string,
+		secure: number,
+		buildVersion: string,
+		includes: string[]
+	): string | undefined {
+		const serverId = ServersConfig.createNewServer(
+			typeServer,
+			serverName,
+			port,
+			address,
+			buildVersion,
+			secure,
+			includes
+		);
+
+		if (serverId !== undefined) {
+			vscode.window.showInformationMessage(
+				vscode.l10n.t("Serve saved. Name: {0}", serverName)
+			);
+		}
+
+		return serverId;
+	}
+
+	private saveModel(model: TServerModel): boolean {
+		const serverId = this.createServer(
+			model.serverType,
+			model.serverName,
+			model.port,
+			model.address,
+			0,
+			"",
+			model.includePaths.map((row: any) => row.path)
+		);
+		if (serverId !== undefined) {
+			sendValidationRequest(model.address, model.port, model.serverType).then(
+				(validInfoNode: IValidationInfo) => {
+					ServersConfig.updateBuildVersion(
+						serverId,
+						validInfoNode.build,
+						validInfoNode.secure
+					);
+
+					return true;
+				},
+				(err: ResponseError<object>) => {
+					vscode.window.showErrorMessage(err.message);
+					return false;
+				}
+			);
+		}
+
+		return true;
+	}
+}

@@ -82,6 +82,7 @@ export default function AddServer() {
           })
           break;
         default:
+          console.error("Unknown command :", event.data);
           break;
       }
     };

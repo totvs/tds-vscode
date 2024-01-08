@@ -46,7 +46,7 @@ export class ServersExplorer {
         return;
       }
 
-      const panel = AddServerPanel.render(context.extension.extensionUri);
+      const panel = AddServerPanel.render(context);
       return panel;
     });
 

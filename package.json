@@ -56,7 +56,6 @@
     "lint-fix": "eslint \"src/**/*.ts\" --fix",
     "--TEST--": "",
     "test": "node ./out/test/runTest.js",
-    "_test": "vscode-test",
     "pretest": "npm run compile",
     "--SCENARIO--": "",
     "scenario:vsix-install": "set SCENARIO=p20 && npm run test -- -r ./test/resources/projects/advpl -- './out-test/**/common/**/*test.js'",

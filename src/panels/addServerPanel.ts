@@ -69,7 +69,9 @@ export class AddServerPanel {
     return undefined;
   }
 
-  public static render(extensionUri: vscode.Uri): AddServerPanel {
+  public static render(context: vscode.ExtensionContext): AddServerPanel {
+    const extensionUri: vscode.Uri = context.extensionUri;
+
     if (AddServerPanel.currentPanel) {
       // If the webview panel already exists reveal it
       AddServerPanel.currentPanel._panel.reveal(); //vscode.ViewColumn.One
