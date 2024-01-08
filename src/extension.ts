@@ -341,7 +341,7 @@ export function activate(context: ExtensionContext) {
       "tdsreplay.importSourcesOnlyResult",
       (sourceList: any) => {
         ImportSourcesOnlyResultPanel.render(context.extensionUri, sourceList);
-    }
+      }
     )
   );
 
@@ -617,6 +617,11 @@ export function activate(context: ExtensionContext) {
   };
 
   window.showInformationMessage('"TDS-VSCode" is ready.');
+
+
+  // Register context variables for use in when clause
+  vscode.commands.executeCommand('setContext', 'tdsWorkspaceOpenState', vscode.workspace.workspaceFolders.length > 0);
+  vscode.commands.executeCommand('setContext', 'tdsHaveServersState', ServersConfig.getServers().length > 0);
 
   return exportedApi;
 }

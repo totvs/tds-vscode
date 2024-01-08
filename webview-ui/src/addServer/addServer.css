@@ -2,6 +2,10 @@
 	width: 20rem;
 }
 
+[name="immediateConnection"] {
+	margin-left: 1rem;
+}
+
 [name="serverName"] {
 	width: 30rem;
 }

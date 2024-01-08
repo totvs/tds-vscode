@@ -1,4 +1,4 @@
-import { VSCodeButton, VSCodeDropdown, VSCodeOption, VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
+import { VSCodeButton, VSCodeDropdown, VSCodeOption, VSCodeTextField, VSCodeCheckbox } from "@vscode/webview-ui-toolkit/react";
 
 import "./form.css";
 import { ButtonAppearance } from "@vscode/webview-ui-toolkit";
@@ -45,6 +45,11 @@ type TDSReadOnlyProp = {
 type TDSFieldProps = TDSReadOnlyProp & {
 	label: string;
 	info: string;
+}
+
+type TDSCheckBoxProps = TDSReadOnlyProp & {
+	label: string;
+	textLabel: string;
 }
 
 type TDSSelectionFieldProps = TDSFieldProps & {
@@ -128,6 +133,31 @@ export function TDSTextField(props: UseControllerProps<any> & TDSFieldProps) {
 				{...field} >
 				<PopupMessage type={fieldState.invalid ? "error" : "info"} fieldName={props.name} message={message} />
 			</VSCodeTextField>
+		</section>
+	)
+}
+
+/**
+ *
+ * Se usar em 'hook' useFieldArray, ver nota inicio do fonte.
+ *
+ * @param props
+ * @returns
+ */
+export function TDSCheckBoxField(props: UseControllerProps<any> & TDSCheckBoxProps) {
+	const { field, fieldState } = useController(props);
+
+	return (
+		<section className="tds-text-field-container">
+			<label htmlFor={props.name}>
+				{props.label}
+				{props.rules?.required && <span className="tds-required" />}
+			</label>
+			<VSCodeCheckbox
+				checked={field.value}
+				{...field} >
+				{props.textLabel}
+			</VSCodeCheckbox>
 		</section>
 	)
 }

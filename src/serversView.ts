@@ -21,6 +21,7 @@ import {
 } from "./protocolMessages";
 import { EnvSection, ServerItem } from "./serverItem";
 import { AddServerPanel } from "./panels/addServerPanel";
+import { Server } from "http";
 
 const compile = require("template-literal");
 
@@ -46,7 +47,7 @@ export class ServersExplorer {
         return;
       }
 
-      AddServerPanel.render(context.extension.extensionUri);
+      AddServerPanel.render(context);
     });
 
     vscode.commands.registerCommand("totvs-developer-studio.config", () => {
@@ -74,7 +75,18 @@ export class ServersExplorer {
 
     vscode.commands.registerCommand(
       "totvs-developer-studio.connect",
-      (serverItem: ServerItem) => {
+      (serverItemOrID: ServerItem | string) => {
+        let serverItem: ServerItem;
+
+        if (typeof serverItemOrID === "string") {
+          const server = serverProvider.localServerItems.find((value: ServerItem) => value.id = serverItemOrID);
+          if (server) {
+            serverItem = server;
+          }
+        } else {
+          serverItem = serverItemOrID;
+        }
+
         let ix = serverProvider.localServerItems.indexOf(serverItem);
         if (ix >= 0) {
           //Verifica se ha um buildVersion cadastrado.

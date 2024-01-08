@@ -95,4 +95,6 @@ export function sendClose() {
 			model: undefined
 		}
 	}
+
+	vscode.postMessage(message);
 }

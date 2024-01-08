@@ -6,7 +6,7 @@ import ErrorBoundary from "../components/errorBoundary";
 import React, { ChangeEvent } from "react";
 import { TIncludeData } from "../model/addServerModel";
 import { SubmitHandler, useFieldArray, useForm, useWatch } from "react-hook-form";
-import TDSForm, { IFormAction, TDSNumericField, TDSSelectionField, TDSSelectionFolderField, TDSSimpleTextField, TDSTextField, getDefaultActionsForm } from "../components/form";
+import TDSForm, { IFormAction, TDSCheckBoxField, TDSNumericField, TDSSelectionField, TDSSelectionFolderField, TDSSimpleTextField, TDSTextField, getDefaultActionsForm } from "../components/form";
 import PopupMessage from "../components/popup-message";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
 import { sendCheckDir } from "./sendCommand";
@@ -24,6 +24,7 @@ type TFields = {
   address: string;
   port: number;
   includePaths: TIncludeData[]
+  immediateConnection: boolean
 }
 
 export default function AddServer() {
@@ -45,7 +46,8 @@ export default function AddServer() {
         { path: "" },
         { path: "" },
         { path: "" }
-      ]
+      ],
+      immediateConnection: true
     },
     mode: "all"
   })
@@ -126,18 +128,29 @@ export default function AddServer() {
             errors={errors}
             control={control}
             onSubmit={handleSubmit(onSubmit)}>
-            <TDSSelectionField
-              name="serverType"
-              label="Server Type"
-              info={"Selecione o tipo do servidor Protheus"}
-              control={control}
-              rules={{ required: true }}
-              options={[
-                { value: "totvs_server_protheus", text: "Protheus (Adv/PL)" },
-                { value: "totvs_server_logix", text: "Logix (4GL)" },
-                { value: "totvs_server_totvstec", text: "TOTVS Tec (Adv/PL e 4GL)" }
-              ]}
-            />
+
+            <section className="tds-group-container" >
+              <TDSSelectionField
+                name="serverType"
+                label="Server Type"
+                info={"Selecione o tipo do servidor Protheus"}
+                control={control}
+                rules={{ required: true }}
+                options={[
+                  { value: "totvs_server_protheus", text: "Protheus (Adv/PL)" },
+                  { value: "totvs_server_logix", text: "Logix (4GL)" },
+                  { value: "totvs_server_totvstec", text: "TOTVS Tec (Adv/PL e 4GL)" }
+                ]}
+              />
+
+              <TDSCheckBoxField
+                name="immediateConnection"
+                label="&nbsp;"
+                textLabel="Connect immediately"
+                control={control}
+              />
+
+            </section>
 
             <TDSTextField
               name="serverName"

@@ -17,4 +17,5 @@ export type TServerModel = {
 	buildVersion: string;
 	secure: boolean;
 	includePaths: TIncludePathModel[];
+	immediateConnection: boolean
 }
