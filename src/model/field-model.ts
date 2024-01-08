@@ -30,8 +30,8 @@ export type TModelPanel = {
  * Considerar métodos com prefixo '_' como privados.
  */
 export interface ITdsPanel<M extends TModelPanel> {
-	_validateModel(model: M, errors: TFieldErrors<M>): boolean;
-	_saveModel(model: M): boolean;
+	_validateModel(model: M, errors: TFieldErrors<M>): Promise<boolean> | boolean;
+	_saveModel(model: M): Promise<boolean> | boolean;
 	_sendValidateResponse(errors: TFieldErrors<M>): void;
 	_sendUpdateModel(model: M): void;
 }
