@@ -20,7 +20,7 @@ import Utils, { ServersConfig } from "../utils";
 import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
 import { IValidationInfo, sendValidationRequest } from "../protocolMessages";
 import { TServerModel, TServerType } from "../model/serverModel";
-import { TFieldErrors, TIncludePath, isErrors } from "../model/field-model";
+import { ITdsPanel, TFieldErrors, TIncludePath, isErrors } from "../model/field-model";
 import { ResponseError } from "vscode-languageclient";
 
 enum AddServerCommandEnum {
@@ -28,7 +28,7 @@ enum AddServerCommandEnum {
 
 type AddServerCommand = CommonCommandFromWebViewEnum & AddServerCommandEnum;
 
-export class AddServerPanel {
+export class AddServerPanel implements ITdsPanel<TServerModel> {
   public static currentPanel: AddServerPanel | undefined;
   private readonly _panel: vscode.WebviewPanel;
   private _disposables: vscode.Disposable[] = [];
@@ -122,7 +122,7 @@ export class AddServerPanel {
    */
   private _setWebviewMessageListener(webview: vscode.Webview) {
     webview.onDidReceiveMessage(
-      (message: ReceiveMessage<AddServerCommand, TServerModel>) => {
+      async (message: ReceiveMessage<AddServerCommand, TServerModel>) => {
         const command: AddServerCommand = message.command;
         const data = message.data;
 
@@ -135,12 +135,12 @@ export class AddServerPanel {
           case CommonCommandFromWebViewEnum.SaveAndClose:
             let errors: TFieldErrors<TServerModel> = {};
 
-            if (this.validateModel(data.model, errors)) {
-              if (this.saveModel(data.model)) {
+            if (await this._validateModel(data.model, errors)) {
+              if (this._saveModel(data.model)) {
                 AddServerPanel.currentPanel.dispose();
               }
             } else {
-              this.sendValidateResponse(errors);
+              this._sendValidateResponse(errors);
             }
 
             break;
@@ -151,7 +151,35 @@ export class AddServerPanel {
     );
   }
 
-  private validateModel(model: TServerModel, errors: TFieldErrors<TServerModel>): boolean {
+  private createServer(
+    typeServer: string,
+    serverName: string,
+    port: number,
+    address: string,
+    secure: number,
+    buildVersion: string,
+    includes: string[]
+  ): string | undefined {
+    const serverId = ServersConfig.createNewServer(
+      typeServer,
+      serverName,
+      port,
+      address,
+      buildVersion,
+      secure,
+      includes
+    );
+
+    if (serverId !== undefined) {
+      vscode.window.showInformationMessage(
+        vscode.l10n.t("Serve saved. Name: {0}", serverName)
+      );
+    }
+
+    return serverId;
+  }
+
+  async _validateModel(model: TServerModel, errors: TFieldErrors<TServerModel>): Promise<boolean> {
     try {
       model.serverType = model.serverType.trim() as TServerType;
       model.serverName = model.serverName.trim();
@@ -191,6 +219,18 @@ export class AddServerPanel {
         }
       })
 
+      if (!isErrors(errors)) {
+        vscode.window.setStatusBarMessage(
+          `$(gear~spin) ${vscode.l10n.t("Validating connection...")}`);
+
+        const validInfoNode: IValidationInfo = await sendValidationRequest(model.address, model.port, model.serverType);
+        if (validInfoNode.build == "") {
+          errors.root = { type: "validate", message: "Server not found for build validate" };
+        }
+
+        vscode.window.setStatusBarMessage("");
+      }
+
     } catch (error) {
       errors.root = { type: "validate", message: `Internal error: ${error}` }
     }
@@ -198,35 +238,7 @@ export class AddServerPanel {
     return !isErrors(errors);
   }
 
-  private createServer(
-    typeServer: string,
-    serverName: string,
-    port: number,
-    address: string,
-    secure: number,
-    buildVersion: string,
-    includes: string[]
-  ): string | undefined {
-    const serverId = ServersConfig.createNewServer(
-      typeServer,
-      serverName,
-      port,
-      address,
-      buildVersion,
-      secure,
-      includes
-    );
-
-    if (serverId !== undefined) {
-      vscode.window.showInformationMessage(
-        vscode.l10n.t("Serve saved. Name: {0}", serverName)
-      );
-    }
-
-    return serverId;
-  }
-
-  private saveModel(model: TServerModel): boolean {
+  async _saveModel(model: TServerModel): Promise<boolean> {
     const serverId = this.createServer(
       model.serverType,
       model.serverName,
@@ -237,35 +249,34 @@ export class AddServerPanel {
       model.includePaths.map((row: any) => row.path)
     );
     if (serverId !== undefined) {
-      sendValidationRequest(model.address, model.port, model.serverType).then(
-        (validInfoNode: IValidationInfo) => {
-          ServersConfig.updateBuildVersion(
-            serverId,
-            validInfoNode.build,
-            validInfoNode.secure
-          );
-
-          if (model.immediateConnection) {
-            vscode.commands.executeCommand("totvs-developer-studio.connect", serverId);
-          }
-
-          return true;
-        },
-        (err: ResponseError<object>) => {
-          vscode.window.showErrorMessage(err.message);
-          return false;
-        }
+      const validInfoNode: IValidationInfo = await sendValidationRequest(model.address, model.port, model.serverType);
+      ServersConfig.updateBuildVersion(
+        serverId,
+        validInfoNode.build,
+        validInfoNode.secure
       );
+
+      if (model.immediateConnection) {
+        vscode.commands.executeCommand("totvs-developer-studio.connect", serverId);
+      }
+
+      return true;
     }
 
     return true;
   }
 
-  private sendValidateResponse(errors: TFieldErrors<TServerModel>) {
+  _sendValidateResponse(errors: TFieldErrors<TServerModel>) {
     this._panel.webview.postMessage({
       command: CommonCommandToWebViewEnum.ValidateResponse,
       data: errors,
     });
+  }
+
+  // neste painel, essa função não é utilizada,
+  // pois não há necessidade de atualizar o modelo.
+  _sendUpdateModel(model: TServerModel): void {
+    throw new Error("Method not implemented.");
   }
 
 }
