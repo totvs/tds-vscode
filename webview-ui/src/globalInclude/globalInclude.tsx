@@ -106,12 +106,14 @@ export default function GlobalInclude() {
   return (
     <main>
       <ErrorBoundary>
-        <Page title="Globally Includes" linkToDoc="[Include global]servers.md#registro-de-servidores">
+        <Page title="Global Includes" linkToDoc="[Include global]servers.md#registro-de-servidores">
           <TDSForm
             actions={actions}
             errors={errors}
             control={control}
             onSubmit={handleSubmit(onSubmit)}>
+
+            <p>The global search folder list is used when not specified in the server definition</p>
 
             <section className="tds-group-container" >
               <p className="tds-item-grow-group">Include directories
