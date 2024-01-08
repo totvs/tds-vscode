@@ -1,33 +1,24 @@
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
+import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 
-import "./addServer.css";
+import "./globalInclude.css";
 import Page from "../components/page";
 import ErrorBoundary from "../components/errorBoundary";
 import React, { ChangeEvent } from "react";
 import { TIncludeData } from "../model/addServerModel";
-import { SubmitHandler, useFieldArray, useForm, useWatch } from "react-hook-form";
-import TDSForm, { IFormAction, TDSCheckBoxField, TDSNumericField, TDSSelectionField, TDSSelectionFolderField, TDSSimpleTextField, TDSTextField, getDefaultActionsForm } from "../components/form";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import TDSForm, { IFormAction, TDSSelectionFolderField, TDSSimpleTextField, getDefaultActionsForm } from "../components/form";
 import PopupMessage from "../components/popup-message";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
-import { sendCheckDir } from "./sendCommand";
-import { object } from "prop-types";
-import path from "path";
-
 
 enum ReceiveCommandEnum {
 }
 type ReceiveCommand = ReceiveMessage<CommonCommandFromPanelEnum & ReceiveCommandEnum, TFields>;
 
 type TFields = {
-  serverType: string
-  serverName: string;
-  address: string;
-  port: number;
   includePaths: TIncludeData[]
-  immediateConnection: boolean
 }
 
-export default function AddServer() {
+export default function GlobalInclude() {
   const {
     control,
     handleSubmit,
@@ -37,17 +28,9 @@ export default function AddServer() {
     formState: { errors, isDirty, isValid },
   } = useForm<TFields>({
     defaultValues: {
-      serverName: "",
-      address: "",
-      port: 0,
-      includePaths: [
-        { path: "" },
-        { path: "" },
-        { path: "" },
-        { path: "" },
-        { path: "" }
-      ],
-      immediateConnection: true
+      includePaths: [0 - 20].map(() => {
+        return { path: "" };
+      })
     },
     mode: "all"
   })
@@ -65,13 +48,14 @@ export default function AddServer() {
   React.useEffect(() => {
     let listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
-      const model: TFields = event.data.model;
+      const model: TFields = command.data.model;
+      console.log(">>>>>>>>>>>>>>>>");
+      console.dir(event.data);
+      console.dir(command);
+      console.dir(model);
 
       switch (command.command) {
         case CommonCommandFromPanelEnum.UpdateModel:
-          setValue("serverName", model.serverName);
-          setValue("address", model.address);
-          setValue("port", model.port);
           setValue("includePaths", model.includePaths);
 
           break;
@@ -122,62 +106,12 @@ export default function AddServer() {
   return (
     <main>
       <ErrorBoundary>
-        <Page title="Add Server" linkToDoc="[Registro de Servidores]servers.md#registro-de-servidores">
+        <Page title="Globally Includes" linkToDoc="[Include global]servers.md#registro-de-servidores">
           <TDSForm
             actions={actions}
             errors={errors}
             control={control}
             onSubmit={handleSubmit(onSubmit)}>
-
-            <section className="tds-group-container" >
-              <TDSSelectionField
-                name="serverType"
-                label="Server Type"
-                info={"Selecione o tipo do servidor Protheus"}
-                control={control}
-                rules={{ required: true }}
-                options={[
-                  { value: "totvs_server_protheus", text: "Protheus (Adv/PL)" },
-                  { value: "totvs_server_logix", text: "Logix (4GL)" },
-                  { value: "totvs_server_totvstec", text: "TOTVS Tec (Adv/PL e 4GL)" }
-                ]}
-              />
-
-              <TDSCheckBoxField
-                name="immediateConnection"
-                label="&nbsp;"
-                textLabel="Connect immediately"
-                control={control}
-              />
-
-            </section>
-
-            <TDSTextField
-              name="serverName"
-              label="Server name"
-              info="Informe um nome que o ajude a identificar o servidor"
-              control={control}
-              rules={{ required: true }}
-            />
-
-            <TDSTextField
-              name="address"
-              label="Address"
-              info="Informe IP ou nome do servidor no qual esta o Protheus"
-              control={control}
-              rules={{ required: true }}
-            />
-
-            <TDSNumericField
-              name="port"
-              label="Port"
-              info="Informe a porta de conexão do SC"
-              control={control}
-              rules={{
-                required: true,
-                min: { value: 1, message: "[Port] is not valid range. Min: 1 Max: 65535" },
-                max: { value: 65535, message: "[Port] is not valid range. Min: 1 Max: 65535" }
-              }} />
 
             <section className="tds-group-container" >
               <p className="tds-item-grow-group">Include directories

@@ -32,7 +32,6 @@ import { serverSelection } from "./inputConnectionParameters";
 import { inspectObject } from "./inspect/inspectObject";
 import { inspectFunctions } from "./inspect/inspectFunction";
 import { showWelcomePage } from "./welcome/welcomePage";
-import showInclude from "./include/include";
 import showWSPage from "./WebService/generateWS";
 import launcherConfig from "./launcher/launcherConfiguration";
 import { onCaptureLoggers, offCaptureLoggers } from "./loggerCapture/logger";
@@ -69,6 +68,7 @@ import { sendTelemetry } from "./protocolMessages";
 import { registerXRef } from "./xreferences";
 import { GeneratePatchPanel } from "./panels/generatePatchPanel";
 import { ImportSourcesOnlyResultPanel } from "./panels/importSourcesOnlyResultPanel";
+import { GlobalIncludePanel } from "./panels/globalIncludePanel";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -392,14 +392,15 @@ export function activate(context: ExtensionContext) {
       }
     )
   );
-  //Adiciona página de Includes
+
+  //Apresenta página de Includes
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.include", () =>
-      showInclude(context)
+      GlobalIncludePanel.render(context)
     )
   );
 
-  //Adiciona página de geração de WSDL
+  //Apresenta página de geração de WSDL
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.ws.show", () =>
       showWSPage(context)

@@ -18,23 +18,30 @@ import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import Utils, { ServersConfig } from "../utils";
 import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
-import { IValidationInfo, sendValidationRequest } from "../protocolMessages";
-import { TServerModel, TServerType } from "../model/serverModel";
-import { TFieldErrors, TIncludePath, isErrors } from "../model/field-model";
-import { ResponseError } from "vscode-languageclient";
+import { ITdsPanel, TFieldError, TFieldErrors, TIncludePath, isErrors } from "../model/field-model";
+import { TIncludeModel } from "../model/includeModel";
 
-enum AddServerCommandEnum {
+const localizeHTML = {
+  "tds.webview.title": vscode.l10n.t("Include"),
+  "tds.webview.dir.include": vscode.l10n.t("Includes directory:"),
+  "tds.webview.dir.include2": vscode.l10n.t("Allow multiple directories"),
+  "tds.webview.dir.include.info": vscode.l10n.t("These settings can also be changed in"),
+  "tds.webview.dir.include.save": vscode.l10n.t("Save"),
+  "tds.webview.dir.include.saveclose": vscode.l10n.t("Save/Close"),
+};
+
+enum GlobalIncludeCommandEnum {
 }
 
-type AddServerCommand = CommonCommandFromWebViewEnum & AddServerCommandEnum;
+type GlobalIncludeCommand = CommonCommandFromWebViewEnum & GlobalIncludeCommandEnum;
 
-export class AddServerPanel {
-  public static currentPanel: AddServerPanel | undefined;
+export class GlobalIncludePanel implements ITdsPanel<TIncludeModel> {
+  public static currentPanel: GlobalIncludePanel | undefined;
   private readonly _panel: vscode.WebviewPanel;
   private _disposables: vscode.Disposable[] = [];
 
   /**
-   * The AddServerPanel class private constructor (called only from the render method).
+   * The GlobalIncludePanel class private constructor (called only from the render method).
    *
    * @param panel A reference to the webview panel
    * @param extensionUri The URI of the directory containing the extension
@@ -53,19 +60,19 @@ export class AddServerPanel {
     this._setWebviewMessageListener(this._panel.webview);
   }
 
-  public static render(context: vscode.ExtensionContext): AddServerPanel {
+  public static render(context: vscode.ExtensionContext): GlobalIncludePanel {
     const extensionUri: vscode.Uri = context.extensionUri;
 
-    if (AddServerPanel.currentPanel) {
+    if (GlobalIncludePanel.currentPanel) {
       // If the webview panel already exists reveal it
-      AddServerPanel.currentPanel._panel.reveal(); //vscode.ViewColumn.One
+      GlobalIncludePanel.currentPanel._panel.reveal(); //vscode.ViewColumn.One
     } else {
       // If a webview panel does not already exist create and show a new one
       const panel = vscode.window.createWebviewPanel(
         // Panel view type
-        "add-server-panel",
+        "global-include-panel",
         // Panel title
-        vscode.l10n.t('Add Server'),
+        vscode.l10n.t("Global Include"),
         // The editor column the panel should be displayed in
         vscode.ViewColumn.One,
         // Extra panel configurations
@@ -74,17 +81,17 @@ export class AddServerPanel {
         }
       );
 
-      AddServerPanel.currentPanel = new AddServerPanel(panel, extensionUri);
+      GlobalIncludePanel.currentPanel = new GlobalIncludePanel(panel, extensionUri);
     }
 
-    return AddServerPanel.currentPanel;
+    return GlobalIncludePanel.currentPanel;
   }
 
   /**
    * Cleans up and disposes of webview resources when the webview panel is closed.
    */
   public dispose() {
-    AddServerPanel.currentPanel = undefined;
+    GlobalIncludePanel.currentPanel = undefined;
 
     // Dispose of the current webview panel
     this._panel.dispose();
@@ -111,7 +118,7 @@ export class AddServerPanel {
    */
   private _getWebviewContent(extensionUri: vscode.Uri) {
 
-    return getWebviewContent(this._panel.webview, extensionUri, "addServerView", { title: this._panel.title });
+    return getWebviewContent(this._panel.webview, extensionUri, "globalIncludeView", { title: this._panel.title });
   }
 
   /**
@@ -122,25 +129,38 @@ export class AddServerPanel {
    */
   private _setWebviewMessageListener(webview: vscode.Webview) {
     webview.onDidReceiveMessage(
-      (message: ReceiveMessage<AddServerCommand, TServerModel>) => {
-        const command: AddServerCommand = message.command;
+      (message: ReceiveMessage<GlobalIncludeCommand, TIncludeModel>) => {
+        const command: GlobalIncludeCommand = message.command;
         const data = message.data;
 
         switch (command) {
           case CommonCommandFromWebViewEnum.Ready:
+            const includes = ServersConfig.getIncludes();
+            const includeString: string = includes.toString();
+            if (includeString) {
+              const aux = includeString.replace(/,/g, ";");
+              if (aux) {
+                const model: TIncludeModel = {
+                  includePaths: aux.split(";").map((value: string) => { return { path: value } })
+                  //aux.split(";").map((value: string) => { path: value });
+                }
+                this._sendUpdateModel(model);
+              }
+            }
+
             break;
           case CommonCommandFromWebViewEnum.Close:
-            AddServerPanel.currentPanel.dispose();
+            GlobalIncludePanel.currentPanel.dispose();
             break;
           case CommonCommandFromWebViewEnum.SaveAndClose:
-            let errors: TFieldErrors<TServerModel> = {};
+            let errors: TFieldErrors<TIncludeModel> = {};
 
-            if (this.validateModel(data.model, errors)) {
-              if (this.saveModel(data.model)) {
-                AddServerPanel.currentPanel.dispose();
+            if (this._validateModel(data.model, errors)) {
+              if (this._saveModel(data.model)) {
+                GlobalIncludePanel.currentPanel.dispose();
               }
             } else {
-              this.sendValidateResponse(errors);
+              this._sendValidateResponse(errors);
             }
 
             break;
@@ -151,38 +171,8 @@ export class AddServerPanel {
     );
   }
 
-  private validateModel(model: TServerModel, errors: TFieldErrors<TServerModel>): boolean {
+  _validateModel(model: TIncludeModel, errors: TFieldErrors<TIncludeModel>): boolean {
     try {
-      model.serverType = model.serverType.trim() as TServerType;
-      model.serverName = model.serverName.trim();
-      model.port = parseInt(model.port.toString());
-      model.address = model.address.trim();
-
-      if (model.serverType.length == 0) {
-        errors.serverType = { type: "required" };
-      }
-
-      if (model.serverName.length == 0) {
-        errors.serverName = { type: "required" };
-      }
-      const server = ServersConfig.getServerByName(model.serverName);
-      if (server !== undefined) {
-        errors.root = { type: "validate", message: "Server already exist" };
-        errors.serverName = { type: "validate", message: "Server already exist" };
-      }
-
-      if (model.address.length == 0) {
-        errors.address = { type: "required" };
-      }
-
-      if (Number.isNaN(model.port)) {
-        errors.port = { type: "validate", message: "[Port] is not a number" };
-      } else if (!(model.port > 0)) {
-        errors.port = { type: "min", message: "[Port] is not valid range. Min: 1 Max: 65535" };
-      } else if (model.port > 65535) {
-        errors.port = { type: "max", message: "[Port] is not valid range. Min: 1 Max: 65535" };
-      };
-
       model.includePaths.forEach((includePath: TIncludePath, index: number) => {
         let checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/);
 
@@ -198,73 +188,26 @@ export class AddServerPanel {
     return !isErrors(errors);
   }
 
-  private createServer(
-    typeServer: string,
-    serverName: string,
-    port: number,
-    address: string,
-    secure: number,
-    buildVersion: string,
-    includes: string[]
-  ): string | undefined {
-    const serverId = ServersConfig.createNewServer(
-      typeServer,
-      serverName,
-      port,
-      address,
-      buildVersion,
-      secure,
-      includes
-    );
-
-    if (serverId !== undefined) {
-      vscode.window.showInformationMessage(
-        vscode.l10n.t("Serve saved. Name: {0}", serverName)
-      );
-    }
-
-    return serverId;
-  }
-
-  private saveModel(model: TServerModel): boolean {
-    const serverId = this.createServer(
-      model.serverType,
-      model.serverName,
-      model.port,
-      model.address,
-      0,
-      "",
-      model.includePaths.map((row: any) => row.path)
-    );
-    if (serverId !== undefined) {
-      sendValidationRequest(model.address, model.port, model.serverType).then(
-        (validInfoNode: IValidationInfo) => {
-          ServersConfig.updateBuildVersion(
-            serverId,
-            validInfoNode.build,
-            validInfoNode.secure
-          );
-
-          if (model.immediateConnection) {
-            vscode.commands.executeCommand("totvs-developer-studio.connect", serverId);
-          }
-
-          return true;
-        },
-        (err: ResponseError<object>) => {
-          vscode.window.showErrorMessage(err.message);
-          return false;
-        }
-      );
-    }
+  _saveModel(model: TIncludeModel): boolean {
+    const includePath: string[] = model.includePaths.map((row: TIncludePath) => row.path);
+    ServersConfig.saveIncludePath(includePath);
 
     return true;
   }
 
-  private sendValidateResponse(errors: TFieldErrors<TServerModel>) {
+  _sendValidateResponse(errors: TFieldErrors<TIncludeModel>) {
     this._panel.webview.postMessage({
       command: CommonCommandToWebViewEnum.ValidateResponse,
       data: errors,
+    });
+  }
+
+  _sendUpdateModel(model: TIncludeModel) {
+    this._panel.webview.postMessage({
+      command: CommonCommandToWebViewEnum.UpdateModel,
+      data: {
+        model: model
+      }
     });
   }
 

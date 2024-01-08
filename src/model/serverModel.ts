@@ -1,12 +1,9 @@
+import { TIncludePath } from "./field-model";
+
 export type TServerType =
 	| "totvs_server_protheus"
 	| "totvs_server_logix"
 	| "totvs_server_totvstec";
-
-
-export type TIncludePathModel = {
-	path: string;
-}
 
 export type TServerModel = {
 	id?: string;  //undefined indica que não foi salvo
@@ -16,6 +13,6 @@ export type TServerModel = {
 	address: string;
 	buildVersion: string;
 	secure: boolean;
-	includePaths: TIncludePathModel[];
+	includePaths: TIncludePath[];
 	immediateConnection: boolean
 }

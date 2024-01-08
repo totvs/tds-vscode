@@ -21,6 +21,7 @@ const SOURCE_FOLDER = path.resolve(path.join(
 ));
 
 const ADD_SERVER_PATH = path.join(SOURCE_FOLDER, "addServer");
+const GLOBAL_INCLUDE_PATH = path.join(SOURCE_FOLDER, "globalInclude");
 
 // const REPLAY_PATH = path.join(__dirname, "./src/debug/tdsreplay/");
 // const MONITOR_PATH = path.join(__dirname, "./src/monitor/");
@@ -73,6 +74,8 @@ module.exports = (env, argv) => {
     //O entry pode ser definido com um objeto. A chave, ou no nome da propriedade, nesse caso sera o nome de saída do arquivo.
     entry: {
       addServerView: path.join(ADD_SERVER_PATH, "index.tsx"),
+      globalIncludeView: path.join(GLOBAL_INCLUDE_PATH, "index.tsx"),
+
       // timeLineView: path.join(REPLAY_PATH, "app/index.tsx"),
       // monitorPanel: path.join(MONITOR_PATH, "app/index.tsx"),
       // rpoInfoPanel: path.join(RPO_INFO_PATH, "app/index.tsx"),
