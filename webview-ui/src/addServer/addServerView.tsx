@@ -147,6 +147,7 @@ export default function AddServerView() {
                 label="&nbsp;"
                 textLabel="Connect immediately"
                 control={control}
+                onChecked={(checked: boolean) => setValue("immediateConnection", checked)}
               />
 
             </section>

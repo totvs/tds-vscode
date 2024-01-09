@@ -5,7 +5,7 @@ import { ButtonAppearance } from "@vscode/webview-ui-toolkit";
 import PopupMessage from "./popup-message";
 import { FieldError, FieldValues, Form, FormProps, UseControllerProps, useController } from "react-hook-form";
 import { sendClose } from "../utilities/common-command-webview";
-import { ChangeEvent, ChangeEventHandler, EventHandler } from "react";
+import { ChangeEvent, ChangeEventHandler, EventHandler, FormEvent, FormEventHandler } from "react";
 
 /**
  * - 'hook' useFieldArray e propriedade 'disabled':
@@ -52,6 +52,7 @@ type TDSFieldProps = TDSCommonProps & {
 type TDSCheckBoxProps = TDSCommonProps & {
 	label: string;
 	textLabel: string;
+	onChecked: (checked: boolean) => any;
 }
 
 type TDSSelectionFieldProps = TDSFieldProps & {
@@ -153,6 +154,18 @@ export function TDSTextField(props: UseControllerProps<any> & TDSFieldProps) {
  */
 export function TDSCheckBoxField(props: UseControllerProps<any> & TDSCheckBoxProps) {
 	const { field, fieldState } = useController(props);
+
+	const onInput = (event: FormEvent<HTMLElement>) => {
+		var input: any = event;
+		props.onChecked(input.target.checked);
+	}
+
+	field.onChange = (event: ChangeEvent<HTMLInputElement>) => {
+		console.log(">>>>>>>>>>>>>>>>")
+		console.log(field.value, event.target.checked);
+
+		props.onChecked(event.target.checked);
+	}
 
 	return (
 		<section className={`tds-text-field-container ${props.className ? props.className : ''}`}>

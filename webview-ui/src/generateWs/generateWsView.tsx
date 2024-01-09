@@ -150,6 +150,7 @@ export default function GenerateWsView() {
                 label="&nbsp;"
                 textLabel="If already exist, can overwrite"
                 control={control}
+                onChecked={(checked: boolean) => setValue("overwrite", checked)}
               />
 
             </section>
