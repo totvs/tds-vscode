@@ -18,6 +18,8 @@ type TFields = {
   includePaths: TIncludeData[]
 }
 
+const ROWS_LIMIT: number = 5;
+
 export default function GlobalInclude() {
   const {
     control,
@@ -28,7 +30,7 @@ export default function GlobalInclude() {
     formState: { errors, isDirty, isValid },
   } = useForm<TFields>({
     defaultValues: {
-      includePaths: [0 - 20].map(() => {
+      includePaths: Array(ROWS_LIMIT).map(() => {
         return { path: "" };
       })
     },
@@ -49,13 +51,12 @@ export default function GlobalInclude() {
     let listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
       const model: TFields = command.data.model;
-      console.log(">>>>>>>>>>>>>>>>");
-      console.dir(event.data);
-      console.dir(command);
-      console.dir(model);
 
       switch (command.command) {
         case CommonCommandFromPanelEnum.UpdateModel:
+          while (model.includePaths.length < ROWS_LIMIT) {
+            model.includePaths.push({ path: "" });
+          }
           setValue("includePaths", model.includePaths);
 
           break;
@@ -88,8 +89,11 @@ export default function GlobalInclude() {
       const path: string = input.files[0].path;
       const pos: number = path.lastIndexOf("\\") == -1 ? path.lastIndexOf("/") : path.lastIndexOf("\\");
       var selectedDir: string = path.substring(0, pos + 1);
-      remove(index);
-      insert(index, { path: selectedDir });
+
+      if (getValues().includePaths.findIndex((includePath: TIncludeData) => includePath.path.toLowerCase() == selectedDir.toLowerCase()) == -1) {
+        remove(index);
+        insert(index, { path: selectedDir });
+      };
     }
   }
 

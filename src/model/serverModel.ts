@@ -1,6 +1,6 @@
 import { TIncludePath } from "./field-model";
 
-export type TServerType =
+export type TServerType = ""
 	| "totvs_server_protheus"
 	| "totvs_server_logix"
 	| "totvs_server_totvstec";

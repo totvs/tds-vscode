@@ -1,4 +1,4 @@
-import { VSCodeButton, VSCodeDropdown, VSCodeOption, VSCodeTextField, VSCodeCheckbox } from "@vscode/webview-ui-toolkit/react";
+import { VSCodeButton, VSCodeDropdown, VSCodeOption, VSCodeTextField, VSCodeCheckbox, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
 
 import "./form.css";
 import { ButtonAppearance } from "@vscode/webview-ui-toolkit";
@@ -26,11 +26,12 @@ export interface IFormAction {
 	hint?: string;
 	action?: any;
 	enabled?: boolean;
+	isProcessRing?: boolean
 	type?: "submit" | "reset" | "button";
 	appearance?: ButtonAppearance;
 }
 
-type TDSFromProps = any //o correto é FormProps<T, U>, mas não consegui usar. acandido.
+type TDSFormProps = any //o correto é FormProps<T, U>, mas não consegui usar. acandido.
 	& {
 		actions: IFormAction[];
 		isValid?: boolean;
@@ -227,6 +228,7 @@ export function getDefaultActionsForm(): IFormAction[] {
 			hint: "Salva as informações e fecha a página",
 			appearance: "primary",
 			type: "submit",
+			isProcessRing: true
 		},
 		{
 			id: -2,
@@ -248,17 +250,37 @@ export function getDefaultActionsForm(): IFormAction[] {
  * @returns
  */
 
-export default function TDSForm(props: TDSFromProps): JSX.Element {
+export default function TDSForm(props: TDSFormProps): JSX.Element {
 	let actions: IFormAction[] = props.actions;
+	let isProcessRing: boolean = false;
+	actions.forEach((action: IFormAction) => isProcessRing = isProcessRing || (action.isProcessRing || false));
 
 	return (
-		<Form {...props}>
+		<Form
+			onSubmitCapture={() => {
+				var progressRing = document.getElementById("tds-loading-form");
+
+				if (progressRing) {
+					progressRing.classList.toggle("show");
+					progressRing = document.getElementById("tds-loading--1");
+					progressRing?.classList.toggle("show");
+				}
+
+				var buttons = document.getElementsByClassName("tds-button-button");
+				for (var i = 0; i < buttons.length; i++) {
+					(buttons[i] as HTMLButtonElement).disabled = true;
+				}
+
+				//props.onSubmit();
+			}}
+			{...props}>
 			<div className={"tds-form-content"}>
 				{props.children}
 			</div>
 			<div className="tds-actions">
 				<div className="tds-message">
 					{props.errors.root && <span className={`tds-error`}>{props.errors.root.message}.</span>}
+					{isProcessRing && <span className="tds-loading" id={"tds-loading-form"}>Wait please. Processing...</span>}
 				</div>
 				<div className="tds-buttons">
 					{actions.map((action: IFormAction) => {
@@ -277,7 +299,10 @@ export default function TDSForm(props: TDSFromProps): JSX.Element {
 							propsField["onClick"] = action.action;
 						}
 
-						return (<VSCodeButton {...propsField} >{action.caption}</VSCodeButton>)
+						return (<VSCodeButton className="tds-button-button" {...propsField} >
+							{isProcessRing && <span className="tds-loading" id={`tds-loading-action$${action.id}`}><VSCodeProgressRing />.</span>}
+							{action.caption}
+						</VSCodeButton>)
 					})}
 				</div>
 			</div>

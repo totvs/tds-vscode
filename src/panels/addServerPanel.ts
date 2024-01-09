@@ -128,6 +128,18 @@ export class AddServerPanel implements ITdsPanel<TServerModel> {
 
         switch (command) {
           case CommonCommandFromWebViewEnum.Ready:
+            if (data.model == undefined) {
+              this._sendUpdateModel( {
+                serverType: "",
+                serverName: "",
+                port: 0,
+                address: "",
+                includePaths: [],
+                immediateConnection: true,
+                secure: false,
+                buildVersion: ""
+              });
+            }
             break;
           case CommonCommandFromWebViewEnum.Close:
             AddServerPanel.currentPanel.dispose();
@@ -273,10 +285,13 @@ export class AddServerPanel implements ITdsPanel<TServerModel> {
     });
   }
 
-  // neste painel, essa função não é utilizada,
-  // pois não há necessidade de atualizar o modelo.
   _sendUpdateModel(model: TServerModel): void {
-    throw new Error("Method not implemented.");
+    this._panel.webview.postMessage({
+      command: CommonCommandToWebViewEnum.UpdateModel,
+      data: {
+        model: model
+      }
+    });
   }
 
 }

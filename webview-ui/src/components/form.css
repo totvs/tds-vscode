@@ -67,3 +67,7 @@ span.tds-required::after {
 vscode-data-grid-row:hover {
 	background-color: transparent;
 }
+
+.tds-loading {
+	visibility: hidden;
+}

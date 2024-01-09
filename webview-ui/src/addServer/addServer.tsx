@@ -1,4 +1,4 @@
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
+import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeProgressRing, VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
 
 import "./addServer.css";
 import Page from "../components/page";
@@ -27,6 +27,8 @@ type TFields = {
   immediateConnection: boolean
 }
 
+const ROWS_LIMIT: number = 5;
+
 export default function AddServer() {
   const {
     control,
@@ -40,17 +42,14 @@ export default function AddServer() {
       serverName: "",
       address: "",
       port: 0,
-      includePaths: [
-        { path: "" },
-        { path: "" },
-        { path: "" },
-        { path: "" },
-        { path: "" }
-      ],
+      includePaths: Array(ROWS_LIMIT).map(() => {
+        return { path: "" };
+      }),
       immediateConnection: true
     },
     mode: "all"
   })
+
   const { fields, remove, insert } = useFieldArray(
     {
       control,
@@ -59,16 +58,21 @@ export default function AddServer() {
 
   const onSubmit: SubmitHandler<TFields> = (data) => {
     data.includePaths = data.includePaths.filter((includePath: TIncludeData) => includePath.path.length > 0);
+
     sendSaveAndClose(data);
   }
 
   React.useEffect(() => {
     let listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
-      const model: TFields = event.data.model;
+      const model: TFields = command.data.model;
 
       switch (command.command) {
         case CommonCommandFromPanelEnum.UpdateModel:
+          while (model.includePaths.length < ROWS_LIMIT) {
+            model.includePaths.push({ path: "" });
+          }
+
           setValue("serverName", model.serverName);
           setValue("address", model.address);
           setValue("port", model.port);
@@ -104,8 +108,11 @@ export default function AddServer() {
       const path: string = input.files[0].path;
       const pos: number = path.lastIndexOf("\\") == -1 ? path.lastIndexOf("/") : path.lastIndexOf("\\");
       var selectedDir: string = path.substring(0, pos + 1);
-      remove(index);
-      insert(index, { path: selectedDir });
+
+      if (getValues().includePaths.findIndex((includePath: TIncludeData) => includePath.path.toLowerCase() == selectedDir.toLowerCase()) == -1) {
+        remove(index);
+        insert(index, { path: selectedDir });
+      };
     }
   }
 
@@ -128,7 +135,6 @@ export default function AddServer() {
             errors={errors}
             control={control}
             onSubmit={handleSubmit(onSubmit)}>
-
             <section className="tds-group-container" >
               <TDSSelectionField
                 name="serverType"
