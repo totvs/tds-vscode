@@ -7,14 +7,14 @@ span.tds-required::after {
 	box-sizing: border-box;
 	display: flex;
 	flex-flow: row;
-	align-items: center;
+	align-items: flex-end;
 	justify-content: flex-start;
 	border: 1px;
 	margin: 0px;
 	width: 100%;
 }
 
-.tds-item-grow-group {
+.tds-item-grow {
 	flex-grow: 1;
 	flex-shrink: 0;
 }
@@ -56,7 +56,13 @@ span.tds-required::after {
 	background-color: aqua;
 }
 
-.tds-selection-field-container input[type="file"] {
+.tds-selection-folder-container,
+.tds-selection-file-container {
+	margin-left: 1rem;
+}
+
+.tds-selection-folder-container input[type="file"],
+.tds-selection-file-container input[type="file"] {
 	visibility: hidden;
 }
 

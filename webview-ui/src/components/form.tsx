@@ -39,16 +39,17 @@ type TDSFormProps = any //o correto é FormProps<T, U>, mas não consegui usar. 
 		children: any
 	};
 
-type TDSReadOnlyProp = {
+type TDSCommonProps = {
 	readOnly?: boolean
+	className?: string;
 }
 
-type TDSFieldProps = TDSReadOnlyProp & {
+type TDSFieldProps = TDSCommonProps & {
 	label: string;
 	info: string;
 }
 
-type TDSCheckBoxProps = TDSReadOnlyProp & {
+type TDSCheckBoxProps = TDSCommonProps & {
 	label: string;
 	textLabel: string;
 }
@@ -62,7 +63,12 @@ type TDSSelectionFieldProps = TDSFieldProps & {
 
 type TDSSelectionFolderFieldProps = {
 	info: string;
-	onSelect: (event: ChangeEvent<HTMLInputElement>) => any;
+	onSelect: (folder: string) => any;
+}
+
+type TDSSelectionFileFieldProps = {
+	info: string;
+	onSelect: (files: string[]) => any;
 }
 
 function buildMessage(props: any, error: FieldError | undefined): string {
@@ -125,7 +131,7 @@ export function TDSTextField(props: UseControllerProps<any> & TDSFieldProps) {
 	let message: string = buildMessage(props, fieldState.error);
 
 	return (
-		<section className="tds-text-field-container">
+		<section className={`tds-text-field-container ${props.className ? props.className : ''}`}>
 			<label htmlFor={props.name}>
 				{props.label}
 				{props.rules?.required && <span className="tds-required" />}
@@ -149,7 +155,7 @@ export function TDSCheckBoxField(props: UseControllerProps<any> & TDSCheckBoxPro
 	const { field, fieldState } = useController(props);
 
 	return (
-		<section className="tds-text-field-container">
+		<section className={`tds-text-field-container ${props.className ? props.className : ''}`}>
 			<label htmlFor={props.name}>
 				{props.label}
 				{props.rules?.required && <span className="tds-required" />}
@@ -170,7 +176,7 @@ export function TDSCheckBoxField(props: UseControllerProps<any> & TDSCheckBoxPro
  * @param props
  * @returns
  */
-export function TDSSimpleTextField(props: UseControllerProps<any> & TDSReadOnlyProp) {
+export function TDSSimpleTextField(props: UseControllerProps<any> & TDSCommonProps) {
 	const { field, fieldState } = useController(props);
 	const message: string = buildMessage(props, fieldState.error);
 	const readOnly: boolean = (props.readOnly) || false;
@@ -324,20 +330,62 @@ export function TDSSelectionFolderField(props: UseControllerProps<any> & TDSSele
 	};
 
 	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-		console.dir(event);
 		var input: any = event.target;
 
 		if (input.files.length > 0) {
-			props.onSelect(event);
+			let path: string = input.files[0].path;
+
+			if (path.endsWith("/") || path.endsWith("\\")) {
+				path = path.substring(0, path.length - 1);
+			}
+
+			props.onSelect(path);
 		}
 	}
 
 	return (
-		<section className="tds-selection-field-container">
+		<section className="tds-selection-folder-container">
 			{/* ts-expect-error */}
 			<VSCodeButton name={props.name} onClick={() => fireBtnFile()}>Select folder</VSCodeButton>
 			<input type="file" name={`btn-file-${props.name}`}
 				onChange={(event) => onChange(event)}
-				webkitdirectory="" directory="" className="display:hidden" />
+				webkitdirectory="" directory="" />
+		</section>)
+}
+
+/**
+ *
+ * Se usar em 'hook' useFieldArray, ver nota inicio do fonte.
+ *
+ * @param props
+ * @returns
+ */
+export function TDSSelectionFileField(props: UseControllerProps<any> & TDSSelectionFileFieldProps) {
+	const fireBtnFile = () => {
+		const button: HTMLInputElement = document.getElementsByName(`btn-file-${props.name}`)[0] as HTMLInputElement;
+		button.click();
+	};
+
+	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+		var input: any = event.target;
+
+		if (input.files.length > 0) {
+			let filenames: string[] = [];
+
+			for (let i = 0; i < input.files.length; i++) {
+				const element = input.files[i];
+				filenames.push(element.path);
+			}
+
+			props.onSelect(filenames);
+		}
+	}
+
+	return (
+		<section className="tds-selection-file-container">
+			{/* ts-expect-error */}
+			<VSCodeButton name={props.name} onClick={() => fireBtnFile()}>Select file</VSCodeButton>
+			<input type="file" name={`btn-file-${props.name}`}
+				onChange={(event) => onChange(event)} />
 		</section>)
 }

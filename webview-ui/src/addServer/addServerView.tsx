@@ -101,19 +101,12 @@ export default function AddServerView() {
     }
   }, []);
 
-  function addIncludePath(event: ChangeEvent<HTMLInputElement>, index: number) {
-    var input: any = event.target;
+  function addIncludePath(folder: string, index: number) {
 
-    if (input.files.length > 0) {
-      const path: string = input.files[0].path;
-      const pos: number = path.lastIndexOf("\\") == -1 ? path.lastIndexOf("/") : path.lastIndexOf("\\");
-      var selectedDir: string = path.substring(0, pos + 1);
-
-      if (getValues().includePaths.findIndex((includePath: TIncludeData) => includePath.path.toLowerCase() == selectedDir.toLowerCase()) == -1) {
-        remove(index);
-        insert(index, { path: selectedDir });
-      };
-    }
+    if (getValues().includePaths.findIndex((includePath: TIncludeData) => includePath.path.toLowerCase() == folder.toLowerCase()) == -1) {
+      remove(index);
+      insert(index, { path: folder });
+    };
   }
 
   function removeIncludePath(index: number) {
@@ -186,7 +179,7 @@ export default function AddServerView() {
               }} />
 
             <section className="tds-group-container" >
-              <p className="tds-item-grow-group">Include directories
+              <p className="tds-item-grow">Include directories
                 <PopupMessage fieldName="include" message="Informe as pastas onde os arquivos de definição devem ser procurados" />
               </p>
             </section>
@@ -221,7 +214,7 @@ export default function AddServerView() {
                       <VSCodeDataGridCell grid-column="2">
                         <TDSSelectionFolderField
                           control={control}
-                          onSelect={(event) => addIncludePath(event, index)}
+                          onSelect={(folder) => addIncludePath(folder, index)}
                           name={`btnSelectFolder.${index}`}
                           info={"Selecione uma pasta que contenha arquivos de definição"} />
                       </VSCodeDataGridCell>

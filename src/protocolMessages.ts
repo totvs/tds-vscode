@@ -240,7 +240,7 @@ export function sendReconnectRequest(
 }
 
 export function sendValidationRequest(
-  addres: string,
+  address: string,
   port: number,
   serverType: string
 ): Thenable<IValidationInfo> {
@@ -251,7 +251,7 @@ export function sendValidationRequest(
   return languageClient
     .sendRequest("$totvsserver/validation", {
       validationInfo: {
-        server: addres,
+        server: address,
         port: port,
         serverType: serverType
       },
@@ -271,7 +271,6 @@ export function sendValidationRequest(
       }
     );
 }
-
 
 export function sendGetUsersRequest(server: ServerItem): Thenable<any> {
   return languageClient
@@ -823,4 +822,29 @@ export function sendTelemetry(): Thenable<any> {
 
 export function sendDidChangeConfiguration(settings: any): Thenable<any> {
   return languageClient.sendNotification(DidChangeConfigurationNotification.type, { settings: settings });
+}
+
+
+export interface IWsdlGenerateResult {
+  content: string;
+  returnCode: number;
+};
+
+export function sendWsdlGenerateRequest(
+  server: any,
+  urlOrFile: string
+): Thenable<IWsdlGenerateResult> {
+  return languageClient
+    .sendRequest('$totvsserver/wsdlGenerate', {
+      "wsdlGenerateInfo": {
+        connectionToken: server.token,
+        authorizationToken: ServersConfig.getAuthorizationToken(server),
+        environment: server.environment,
+        wsdlUrl: urlOrFile
+      }
+    }).then((response: any) => {
+      return response;
+    }, (err: ResponseError<object>) => {
+      vscode.window.showErrorMessage(err.message);
+    });
 }
