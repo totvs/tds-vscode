@@ -1,11 +1,11 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import "../css/main.css"
-import GlobalInclude from "./globalInclude";
+import GlobalIncludeView from "./globalIncludeView";
 
 const root = createRoot(document.getElementById("root")!);
 root.render(
   <React.StrictMode>
-    <GlobalInclude />
+    <GlobalIncludeView />
   </React.StrictMode>,
 );

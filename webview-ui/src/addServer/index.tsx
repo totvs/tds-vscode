@@ -1,11 +1,11 @@
 import React from "react";
-import AddServer from "./AddServer";
+import AddServerView from "./addServerView";
 import { createRoot } from "react-dom/client";
 import "../css/main.css"
 
 const root = createRoot(document.getElementById("root")!);
 root.render(
   <React.StrictMode>
-    <AddServer />
+    <AddServerView />
   </React.StrictMode>,
 );

@@ -20,7 +20,7 @@ type TFields = {
 
 const ROWS_LIMIT: number = 5;
 
-export default function GlobalInclude() {
+export default function GlobalIncludeView() {
   const {
     control,
     handleSubmit,

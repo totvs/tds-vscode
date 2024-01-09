@@ -29,7 +29,7 @@ type TFields = {
 
 const ROWS_LIMIT: number = 5;
 
-export default function AddServer() {
+export default function AddServerView() {
   const {
     control,
     handleSubmit,
