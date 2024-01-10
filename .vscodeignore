@@ -10,6 +10,7 @@
 .mocharc.js
 .vscode-test/**
 .vscode/**
+src/**
 ~
 docs/**
 gulpfile.js
