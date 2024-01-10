@@ -11,11 +11,11 @@
 >
 > Recomendações
 >
-> - **NUNCA** faça depuração em ambiente de produção
-> - **NÃO** utilize o _SIGAMDI_ para realizar uma depuraração, utilize diretamente os módulos ou utilize o _SIGAADV_
-> - Não use _appServers_ compartilhado com terceiros, mesmo que ambientes distintos
-> - Prefira sempre um ambiente local
-> - **Clientes TCloud** : Os ambientes que estão no _TCloud_ em produção são _bloqueados_ para depuração.
+> - **NUNCA** faça depuração em ambiente de produção.
+> - **NÃO** utilize o _SIGAMDI_ nem o_SIGAADV_ para realizar uma depuraração, utilize diretamente os módulos.
+> - Não use _appServers_ compartilhado com terceiros, mesmo que ambientes distintos.
+> - Prefira sempre um ambiente local durante a depuração.
+> - **Clientes TCloud**: Os ambientes que estão no _TCloud_ em produção são _bloqueados_, por padrão, para depuração.
 >   Promova o _RPO_ para `DEV` e use esse ambiente, e se necessário, promova-o de volta para produção.
 >   Para detalhes, entre em contato com o suporte do _TCloud_.
 
