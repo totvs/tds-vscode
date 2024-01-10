@@ -138,26 +138,25 @@ const vscePublishTask = function () {
   return vsce.publish();
 };
 
-const vscePrereleaseTask = function (done) {
-  process.stderr.write("\n*****\nExecute no terminal:\n\tvsce publish --pre-release\n*****\n")
-  return done();
+const vscePublishPreReleaseTask = function (done) {
+  return vsce.publish({ 'preRelease': true });
 };
 
 const vscePackageTask = function () {
   return vsce.createVSIX();
 };
 
-const vscePackagePrereleaseTask = function () {
+const vscePackagePreReleaseTask = function () {
   return vsce.createVSIX({ 'preRelease': true });
 };
 
 gulp.task("publish", gulp.series(buildTask, vscePublishTask));
 
-gulp.task("prerelease", gulp.series(buildTask, vscePrereleaseTask));
+gulp.task("publish-prerelease", gulp.series(buildTask, vscePublishPreReleaseTask));
 
 gulp.task("package", gulp.series(buildTask, vscePackageTask));
 
-gulp.task("package-prerelease", gulp.series(buildTask, vscePackagePrereleaseTask));
+gulp.task("package-prerelease", gulp.series(buildTask, vscePackagePreReleaseTask));
 
 gulp.task("default", buildTask);
 

@@ -72,7 +72,7 @@
     "package": "gulp package",
     "package-prerelease": "gulp package-prerelease",
     "publish": "gulp publish",
-    "prerelease": "gulp prerelease",
+    "publish-prerelease": "gulp publish-prerelease",
     "watch": "node ./esbuild.js --watch",
     "---MISC---": "",
     "all-contributors:generate": "all-contributors generate",
