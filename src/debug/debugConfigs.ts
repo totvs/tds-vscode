@@ -1,3 +1,4 @@
+import * as vscode from "vscode";
 import {
   debug,
   DebugConfiguration,
@@ -180,12 +181,18 @@ export async function getProgramName(
     }
   }
 
-  // config.lastProgramExecuted = programArgs.program;
-  // config.lastProgramArguments = programArgs.args;
-  // Utils.saveLaunchConfig(config);
+  // add modal dialog confirmation warning for debugging using SIGAMDI or SIGAADV
+  if (programArgs.program.toUpperCase() === 'SIGAMDI' || programArgs.program.toUpperCase() === 'SIGAADV') {
+    const textYes = vscode.l10n.t("Yes");
+    const textQuestion = vscode.l10n.t("Debugging using SIGAMDI or SIGAADV may result in unexpected behavior, instead use the modules directly. Do you want to continue?");
+    const warnDialog = await vscode.window.showWarningMessage(textQuestion, { modal: true }, textYes);
+    if (warnDialog !== textYes) {
+      return "<cancel>";
+    }
+  }
+
   LaunchConfig.saveLastProgram(programArgs.program, programArgs.args);
 
-  //return `${config.lastProgramExecuted}`;
   return `${programArgs.program}${programArgs.args ? ("(" + programArgs.args.map((element) => { if (element.indexOf(',') > 0) return "\"" + element + "\""; else return element; }).join(", ") + ")") : ""}`;
 }
 

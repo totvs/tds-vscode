@@ -376,5 +376,6 @@
   "Result": "Result",
   "Message": "Message",
   "Detail": "Detail",
-  "Path": "Path"
+  "Path": "Path",
+  "Debugging using SIGAMDI or SIGAADV may result in unexpected behavior, instead use the modules directly. Do you want to continue?": "Debugging using SIGAMDI or SIGAADV may result in unexpected behavior, instead use the modules directly. Do you want to continue?"
 }
