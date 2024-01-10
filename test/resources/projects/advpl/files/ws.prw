@@ -2,14 +2,14 @@
 #INCLUDE "apwebsrv.ch"
 
 /* ===============================================================================
-WSDL Location    \tmptdsspon010124835/FachadaWSSGS09-01-2024-15-43-20.wsdl
-Gerado em        09/01/24 15:43:22
+WSDL Location    \tmptdsspon010124835/FachadaWSSGS09-01-2024-17-32-13.wsdl
+Gerado em        09/01/24 17:32:14
 Observa��es      C�digo-Fonte gerado por ADVPL WSDL Client 1.120703
                  Altera��es neste arquivo podem causar funcionamento incorreto
                  e ser�o perdidas caso o c�digo-fonte seja gerado novamente.
 =============================================================================== */
 
-User Function _SWEZTQR ; Return  // "dummy" function - Internal Use 
+User Function _IXNRKSM ; Return  // "dummy" function - Internal Use 
 
 /* -------------------------------------------------------------------------------
 WSDL Service WSFachadaWSSGSService

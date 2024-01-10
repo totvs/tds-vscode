@@ -44,18 +44,18 @@ export enum ConnTypeIds {
 }
 
 export interface ITokenInfo {
-  sucess: boolean;
+  success: boolean;
   token: string;
   needAuthentication: boolean;
 }
 
 export interface IAuthenticationInfo {
-  sucess: boolean;
+  success: boolean;
   token: string;
 }
 
 export interface IReconnectInfo {
-  sucess: boolean;
+  success: boolean;
   token: string;
   environment: string;
   user: string;
@@ -98,13 +98,13 @@ export function sendDisconnectRequest(
       (disconnectInfo: DisconnectReturnInfo) => {
         if (disconnectInfo !== undefined && disconnectInfo.code === undefined) {
           return {
-            sucess: false,
+            success: false,
             token: "",
             needAuthentication: connectedServerItem.secure === 1,
           };
         } else {
           return {
-            sucess: true,
+            success: true,
             token: connectedServerItem.token,
             needAuthentication: connectedServerItem.secure === 1,
           };
@@ -112,7 +112,7 @@ export function sendDisconnectRequest(
       },
       (err: ResponseError<object>) => {
         return {
-          sucess: false,
+          success: false,
           token: "",
           needAuthentication: connectedServerItem.secure === 1,
         };
@@ -155,16 +155,16 @@ export function sendConnectRequest(
         let token: string = connectionNode.connectionToken;
         if (token) {
           return {
-            sucess: true,
+            success: true,
             token: token,
             needAuthentication: connectionNode.needAuthentication,
           };
         } else {
-          return { sucess: false, token: "", needAuthentication: false };
+          return { success: false, token: "", needAuthentication: false };
         }
       },
       (err: ResponseError<object>) => {
-        return { sucess: false, token: "", needAuthentication: false };
+        return { success: false, token: "", needAuthentication: false };
       }
     );
 }
@@ -195,13 +195,13 @@ export function sendAuthenticateRequest(
       (authenticationNode: AuthenticationNode) => {
         let token: string = authenticationNode.connectionToken;
         if (token) {
-          return { sucess: true, token: token };
+          return { success: true, token: token };
         } else {
-          return { sucess: false, token: token };
+          return { success: false, token: token };
         }
       },
       (err: ResponseError<object>) => {
-        return { sucess: false, token: "" };
+        return { success: false, token: "" };
       }
     );
 }
@@ -224,17 +224,17 @@ export function sendReconnectRequest(
         let token: string = reconnectNode.connectionToken;
         if (token) {
           return {
-            sucess: true,
+            success: true,
             environment: reconnectNode.environment,
             user: reconnectNode.user,
             token: token,
           };
         } else {
-          return { sucess: false, environment: "", user: "", token: "" };
+          return { success: false, environment: "", user: "", token: "" };
         }
       },
       (error: any) => {
-        return { sucess: false, environment: "", user: "", token: "" };
+        return { success: false, environment: "", user: "", token: "" };
       }
     );
 }
@@ -415,7 +415,7 @@ export function sendCompilation(
   filesUris: string[],
   compileOptions,
   extensionsAllowed: string[],
-  hasAdvplsource: boolean
+  hasAdvplSource: boolean
 ): Thenable<CompileResult> {
   if (_debugEvent) {
     return Promise.reject(
@@ -432,7 +432,7 @@ export function sendCompilation(
       fileUris: filesUris,
       compileOptions: compileOptions,
       extensionsAllowed: extensionsAllowed,
-      includeUrisRequired: hasAdvplsource,
+      includeUrisRequired: hasAdvplSource,
     },
   });
 }
@@ -527,7 +527,7 @@ export function sendApplyTemplateRequest(
 }
 
 interface IRpoTokenResult {
-  sucess: boolean;
+  success: boolean;
   message: string;
 }
 
@@ -536,7 +536,7 @@ export function sendRpoToken(
   rpoToken: IRpoToken
 ): Thenable<IRpoTokenResult> {
   if (rpoToken.token === "") {
-    return Promise.resolve({ sucess: false, message: "" });
+    return Promise.resolve({ success: false, message: "" });
   }
 
   return languageClient
@@ -553,7 +553,7 @@ export function sendRpoToken(
         return response;
       },
       (err: ResponseError<object>) => {
-        return { sucess: false, message: err.message };
+        return { success: false, message: err.message };
       }
     );
 }
@@ -593,7 +593,7 @@ export interface IGetServerPermissionsResult {
  *
  * @param server
  * @returns Informações de privilégios
- * @see Para servidores P20 (Harpia) ou superiores, prefira {@link sendGetServerInformationsInfo}
+ * @see Para servidores P20 (Harpia) ou superiores, prefira {@link sendGetServerInformationInfo}
  */
 export function sendGetServerPermissionsInfo(
   server: ServerItem
@@ -609,9 +609,9 @@ export function sendGetServerPermissionsInfo(
     });
 }
 
-export interface IGetServerInformationsResult {
+export interface IGetServerInformationResult {
   message: string;
-  serverInformations: {
+  serverInformation: {
     server: {
       serverDetectedType: number;
       environmentDetectedType: number;
@@ -626,18 +626,18 @@ export interface IGetServerInformationsResult {
 /**
  *
  * @param server
- * @returns Informações de privilégios e como o server vê o ambiente (Prothes ou Logix)
+ * @returns Informações de privilégios e como o server vê o ambiente (Protheus ou Logix)
  */
-export function sendGetServerInformationsInfo(
+export function sendGetServerInformationInfo(
   server: ServerItem
-): Promise<IGetServerInformationsResult> {
+): Promise<IGetServerInformationResult> {
   return languageClient
-    .sendRequest("$totvsserver/serverInformations", {
-      serverInformationsInfo: {
+    .sendRequest("$totvsserver/serverInformation", {
+      serverInformationInfo: {
         connectionToken: server.token,
       },
     })
-    .then((response: IGetServerInformationsResult) => {
+    .then((response: IGetServerInformationResult) => {
       return response;
     });
 }

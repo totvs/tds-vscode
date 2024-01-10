@@ -310,7 +310,7 @@ export function authenticate(
         .then(
           (result: IAuthenticationInfo) => {
             let token: string = result.token;
-            return result.sucess ? token : "";
+            return result.success ? token : "";
           },
           (error: any) => {
             vscode.window.showErrorMessage(error);
@@ -338,10 +338,10 @@ function doReconnect(
   if (token) {
     return sendReconnectRequest(serverItem, token, connType).then(
       (ri: IReconnectInfo) => {
-        if (ri.sucess) {
+        if (ri.success) {
           doFinishConnectProcess(serverItem, ri.token, environment);
         }
-        return ri.sucess;
+        return ri.success;
       }
     );
   } else {
@@ -400,7 +400,7 @@ function handleError(nodeError: NodeError) {
 async function doDisconnect(serverItem: ServerItem) {
   await sendDisconnectRequest(serverItem).then(
     (ti: ITokenInfo) => {
-      if (!ti.sucess) {
+      if (!ti.success) {
         serverProvider.connectedServerItem = undefined;
       }
 
@@ -450,7 +450,7 @@ async function doConnect(
 ) {
   await sendConnectRequest(serverItem, environment, connType).then(
     (result: ITokenInfo) => {
-      if (result.sucess) {
+      if (result.success) {
         if (result.needAuthentication) {
           serverItem.token = result.token;
           inputAuthenticationParameters(serverItem, environment);
@@ -458,7 +458,7 @@ async function doConnect(
           doFinishConnectProcess(serverItem, result.token, environment);
         }
       }
-      return result.sucess;
+      return result.success;
     },
     (error) => {
       vscode.window.showErrorMessage(error);

@@ -8,9 +8,9 @@ import { Authorization, CompileKey } from "./compileKey/compileKey";
 import { IRpoToken, getEnabledRpoTokenInfos } from "./rpoToken";
 import stripJsonComments from "strip-json-comments";
 import {
-  IGetServerInformationsResult,
+  IGetServerInformationResult,
   IGetServerPermissionsResult,
-  sendGetServerInformationsInfo,
+  sendGetServerInformationInfo,
   sendGetServerPermissionsInfo,
 } from "./protocolMessages";
 import { EnvSection, ServerItem } from "./serverItem";
@@ -459,7 +459,7 @@ export class ServersConfig {
       }
     });
 
-    doUpdateInformations(servers.connectedServer).then((value: /*IServerInformations*/any) => {
+    doUpdateInformation(servers.connectedServer).then((value: /*IServerInformation*/any) => {
       servers.connectedServer.informations = value;
 
       persistServersInfo(servers);
@@ -1532,8 +1532,8 @@ function processIgnoreList(
   return result;
 }
 
-async function doUpdateInformations(element: any): Promise</*IServerInformations*/any> {
-  const serverInformations: /*IServerInformations*/any = {
+async function doUpdateInformation(element: any): Promise</*IServerInformation*/any> {
+  const serverInformation: /*IServerInformation*/any = {
     permissions: [],
     errorMessage: "",
     environmentDetectedType: element.type,
@@ -1541,26 +1541,26 @@ async function doUpdateInformations(element: any): Promise</*IServerInformations
   };
 
   if (Utils.isServerP20OrGreater(element)) {
-    await sendGetServerInformationsInfo(element).then(
-      (informations: IGetServerInformationsResult) => {
+    await sendGetServerInformationInfo(element).then(
+      (informations: IGetServerInformationResult) => {
         if (informations.message == "OK") {
-          const info = informations.serverInformations;
+          const info = informations.serverInformation;
 
-          serverInformations.permissions = buildPermissionsList(
+          serverInformation.permissions = buildPermissionsList(
             info.permissions
           );
-          serverInformations.environmentDetectedType = numberToServerType(
+          serverInformation.environmentDetectedType = numberToServerType(
             info.server.environmentDetectedType
           );
-          serverInformations.serverDetectedType = numberToServerType(
+          serverInformation.serverDetectedType = numberToServerType(
             info.server.serverDetectedType
           );
         } else {
-          serverInformations.errorMessage = informations.message;
+          serverInformation.errorMessage = informations.message;
         }
       },
       (error) => {
-        serverInformations.errorMessage = error.message;
+        serverInformation.errorMessage = error.message;
         console.log(error);
       }
     );
@@ -1568,19 +1568,19 @@ async function doUpdateInformations(element: any): Promise</*IServerInformations
     await sendGetServerPermissionsInfo(element).then(
       (permissions: IGetServerPermissionsResult) => {
         if (permissions.message == "OK") {
-          serverInformations.permissions = buildPermissionsList(permissions.serverPermissions);
+          serverInformation.permissions = buildPermissionsList(permissions.serverPermissions);
         } else {
-          serverInformations.errorMessage = permissions.message;
+          serverInformation.errorMessage = permissions.message;
         }
       },
       (error) => {
-        serverInformations.errorMessage = error.message;
+        serverInformation.errorMessage = error.message;
         console.log(error);
       }
     );
   }
 
-  return serverInformations;
+  return serverInformation;
 }
 
 function buildPermissionsList(serverPermissions) {

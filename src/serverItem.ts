@@ -7,7 +7,7 @@ const RESOURCE_FOLDER = path.join(__filename, "..", "..", "resources");
 const RESOURCE_DARK = path.join(RESOURCE_FOLDER, "dark");
 const RESOURCE_LIGHT = path.join(RESOURCE_FOLDER, "light");
 
-export interface IServerInformations {
+export interface IServerInformation {
   errorMessage: string;
   serverDetectedType: string;
   environmentDetectedType: TServerType;
@@ -18,7 +18,7 @@ export class ServerItem extends vscode.TreeItem {
   public environment: string = "";
   public username: string = "";
   public smartclientBin: string = "";
-  public informations: IServerInformations;
+  public informations: IServerInformation;
 
   constructor(
     public name: string,
