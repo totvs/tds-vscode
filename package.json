@@ -1735,11 +1735,6 @@
     "viewsWelcome": [
       {
         "view": "totvs_server",
-        "contents": "In order to use this features, you need open a folder.\n[Open Folder](command:vscode.openFolder)\nTo learn more about how to use this extension [read our docs](https://github.com/totvs/tds-vscode/blob/master/docs/welcome.md).",
-        "when": "tdsWorkspaceOpenState == false"
-      },
-      {
-        "view": "totvs_server",
         "contents": "Register a Protheus server, please.\n[Register Server](command:totvs-developer-studio.addServer)\nTo learn more about how to use this extension [read our docs](https://github.com/totvs/tds-vscode/blob/master/docs/welcome.md).",
         "when": "tdsWorkspaceOpenState && tdsHaveServersState == false"
       }

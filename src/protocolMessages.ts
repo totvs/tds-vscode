@@ -3,10 +3,15 @@ import { languageClient } from "./extension";
 import { DidChangeConfigurationNotification, ResponseError } from "vscode-languageclient";
 import { CompileResult } from "./compile/CompileResult";
 import { _debugEvent } from "./debug";
-// @@ import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
+//import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
 import { IRpoToken } from "./rpoToken";
 import { ServersConfig } from "./utils";
 import { ServerItem } from "./serverItem";
+
+//
+// Nota sobre ortografia Informations
+// Antes de corrigir aqui, deve-se corrigir no LS
+//
 
 interface ConnectionNode {
   // These properties come directly from the language server.
@@ -240,7 +245,7 @@ export function sendReconnectRequest(
 }
 
 export function sendValidationRequest(
-  address: string,
+  addres: string,
   port: number,
   serverType: string
 ): Thenable<IValidationInfo> {
@@ -251,7 +256,7 @@ export function sendValidationRequest(
   return languageClient
     .sendRequest("$totvsserver/validation", {
       validationInfo: {
-        server: address,
+        server: addres,
         port: port,
         serverType: serverType
       },
@@ -271,6 +276,7 @@ export function sendValidationRequest(
       }
     );
 }
+
 
 export function sendGetUsersRequest(server: ServerItem): Thenable<any> {
   return languageClient
@@ -415,7 +421,7 @@ export function sendCompilation(
   filesUris: string[],
   compileOptions,
   extensionsAllowed: string[],
-  hasAdvplSource: boolean
+  hasAdvplsource: boolean
 ): Thenable<CompileResult> {
   if (_debugEvent) {
     return Promise.reject(
@@ -432,12 +438,12 @@ export function sendCompilation(
       fileUris: filesUris,
       compileOptions: compileOptions,
       extensionsAllowed: extensionsAllowed,
-      includeUrisRequired: hasAdvplSource,
+      includeUrisRequired: hasAdvplsource,
     },
   });
 }
 
-export function sendRpoInfo(server: ServerItem): Thenable<any /*RpoInfoResult*/> {
+export function sendRpoInfo(server: ServerItem): Thenable<any> { //RpoInfoResult
   if (_debugEvent) {
     return Promise.reject(
       new Error("This operation is not allowed during a debug.")
@@ -451,7 +457,7 @@ export function sendRpoInfo(server: ServerItem): Thenable<any /*RpoInfoResult*/>
         environment: server.environment,
       },
     })
-    .then((response: any /*RpoInfoResult*/) => {
+    .then((response: any) => { //RpoInfoResult
       return response;
     });
 }
@@ -527,7 +533,7 @@ export function sendApplyTemplateRequest(
 }
 
 interface IRpoTokenResult {
-  success: boolean;
+  sucess: boolean;
   message: string;
 }
 
@@ -536,7 +542,7 @@ export function sendRpoToken(
   rpoToken: IRpoToken
 ): Thenable<IRpoTokenResult> {
   if (rpoToken.token === "") {
-    return Promise.resolve({ success: false, message: "" });
+    return Promise.resolve({ sucess: false, message: "" });
   }
 
   return languageClient
@@ -553,7 +559,7 @@ export function sendRpoToken(
         return response;
       },
       (err: ResponseError<object>) => {
-        return { success: false, message: err.message };
+        return { sucess: false, message: err.message };
       }
     );
 }
@@ -593,7 +599,7 @@ export interface IGetServerPermissionsResult {
  *
  * @param server
  * @returns Informações de privilégios
- * @see Para servidores P20 (Harpia) ou superiores, prefira {@link sendGetServerInformationInfo}
+ * @see Para servidores P20 (Harpia) ou superiores, prefira {@link sendGetServerInformationInfo} // não corrigir Informations
  */
 export function sendGetServerPermissionsInfo(
   server: ServerItem
@@ -609,9 +615,9 @@ export function sendGetServerPermissionsInfo(
     });
 }
 
-export interface IGetServerInformationResult {
+export interface IGetServerInformationsResult { // não corrigir Informations
   message: string;
-  serverInformation: {
+  serverInformations: {
     server: {
       serverDetectedType: number;
       environmentDetectedType: number;
@@ -628,16 +634,16 @@ export interface IGetServerInformationResult {
  * @param server
  * @returns Informações de privilégios e como o server vê o ambiente (Protheus ou Logix)
  */
-export function sendGetServerInformationInfo(
+export function sendGetServerInformationInfo( // não corrigir Informations
   server: ServerItem
-): Promise<IGetServerInformationResult> {
+): Promise<IGetServerInformationsResult> {
   return languageClient
-    .sendRequest("$totvsserver/serverInformation", {
-      serverInformationInfo: {
+    .sendRequest("$totvsserver/serverInformations", {
+      serverInformationsInfo: {
         connectionToken: server.token,
       },
     })
-    .then((response: IGetServerInformationResult) => {
+    .then((response: IGetServerInformationsResult) => { // não corrigir Informations
       return response;
     });
 }
@@ -823,7 +829,6 @@ export function sendTelemetry(): Thenable<any> {
 export function sendDidChangeConfiguration(settings: any): Thenable<any> {
   return languageClient.sendNotification(DidChangeConfigurationNotification.type, { settings: settings });
 }
-
 
 export interface IWsdlGenerateResult {
   content: string;

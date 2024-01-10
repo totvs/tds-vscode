@@ -8,7 +8,7 @@ import { Authorization, CompileKey } from "./compileKey/compileKey";
 import { IRpoToken, getEnabledRpoTokenInfos } from "./rpoToken";
 import stripJsonComments from "strip-json-comments";
 import {
-  IGetServerInformationResult,
+  IGetServerInformationsResult,
   IGetServerPermissionsResult,
   sendGetServerInformationInfo,
   sendGetServerPermissionsInfo,
@@ -1542,9 +1542,9 @@ async function doUpdateInformation(element: any): Promise</*IServerInformation*/
 
   if (Utils.isServerP20OrGreater(element)) {
     await sendGetServerInformationInfo(element).then(
-      (informations: IGetServerInformationResult) => {
+      (informations: IGetServerInformationsResult) => { // não corrigir ortografia em Informations
         if (informations.message == "OK") {
-          const info = informations.serverInformation;
+          const info = informations.serverInformations;
 
           serverInformation.permissions = buildPermissionsList(
             info.permissions
