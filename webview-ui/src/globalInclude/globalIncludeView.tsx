@@ -3,9 +3,9 @@ import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } f
 import "./globalInclude.css";
 import Page from "../components/page";
 import ErrorBoundary from "../components/errorBoundary";
-import React, { ChangeEvent } from "react";
+import React from "react";
 import { TIncludeData } from "../model/addServerModel";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { FieldArrayWithId, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import TDSForm, { IFormAction, TDSSelectionFolderField, TDSSimpleTextField, getDefaultActionsForm } from "../components/form";
 import PopupMessage from "../components/popup-message";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
@@ -119,8 +119,8 @@ export default function GlobalIncludeView() {
             </section>
 
             <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
-              {fields.map((row: TIncludeData, index: number) => (
-                <VSCodeDataGridRow key={index}>
+              {fields.map((row: FieldArrayWithId<TFields, "includePaths", "id">, index: number) => (
+                <VSCodeDataGridRow key={row.id}>
                   {row.path !== "" &&
                     <>
                       <VSCodeDataGridCell grid-column="1">

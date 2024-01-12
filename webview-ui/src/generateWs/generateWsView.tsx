@@ -1,17 +1,11 @@
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeProgressRing, VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
 
 import "./generateWs.css";
 import Page from "../components/page";
 import ErrorBoundary from "../components/errorBoundary";
-import React, { ChangeEvent } from "react";
-import { TIncludeData } from "../model/addServerModel";
-import { SubmitHandler, useFieldArray, useForm, useWatch } from "react-hook-form";
-import TDSForm, { IFormAction, TDSCheckBoxField, TDSNumericField, TDSSelectionField, TDSSelectionFileField, TDSSelectionFolderField, TDSSimpleTextField, TDSTextField, getDefaultActionsForm } from "../components/form";
-import PopupMessage from "../components/popup-message";
+import React from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import TDSForm, { IFormAction, TDSCheckBoxField, TDSSelectionFileField, TDSSelectionFolderField, TDSTextField, getDefaultActionsForm } from "../components/form";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
-import { sendCheckDir } from "./sendCommand";
-import { object } from "prop-types";
-import path from "path";
 
 
 enum ReceiveCommandEnum {

@@ -5,7 +5,7 @@ import Page from "../components/page";
 import ErrorBoundary from "../components/errorBoundary";
 import React, { ChangeEvent } from "react";
 import { TIncludeData } from "../model/addServerModel";
-import { SubmitHandler, useFieldArray, useForm, useWatch } from "react-hook-form";
+import { FieldArrayWithId, SubmitHandler, useFieldArray, useForm, useWatch } from "react-hook-form";
 import TDSForm, { IFormAction, TDSCheckBoxField, TDSNumericField, TDSSelectionField, TDSSelectionFolderField, TDSSimpleTextField, TDSTextField, getDefaultActionsForm } from "../components/form";
 import PopupMessage from "../components/popup-message";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
@@ -186,8 +186,8 @@ export default function AddServerView() {
             </section>
 
             <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
-              {fields.map((row: TIncludeData, index: number) => (
-                <VSCodeDataGridRow key={index}>
+              {fields.map((row: FieldArrayWithId<TFields, "includePaths", "id">, index: number) => (
+                <VSCodeDataGridRow key={row.id}>
                   {row.path !== "" &&
                     <>
                       <VSCodeDataGridCell grid-column="1">

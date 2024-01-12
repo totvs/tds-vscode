@@ -16,10 +16,10 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import Utils, { ServersConfig } from "../utils";
+import { ServersConfig } from "../utils";
 import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
-import { IValidationInfo, IWsdlGenerateResult, sendValidationRequest, sendWsdlGenerateRequest } from "../protocolMessages";
-import { ITdsPanel, TFieldErrors, TIncludePath, isErrors } from "../model/field-model";
+import { IWsdlGenerateResult, sendWsdlGenerateRequest } from "../protocolMessages";
+import { ITdsPanel, TFieldErrors, isErrors } from "../model/field-model";
 import { TWebServiceModel } from "../model/webServiceModel";
 import * as fse from "fs-extra";
 import path from "path";

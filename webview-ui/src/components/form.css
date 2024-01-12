@@ -3,6 +3,10 @@ span.tds-required::after {
 	color: var(--vscode-editorError-foreground);
 }
 
+.tds-no-margin {
+	margin: 0px;
+}
+
 .tds-group-container {
 	box-sizing: border-box;
 	display: flex;
@@ -25,8 +29,6 @@ span.tds-required::after {
 	flex-flow: column nowrap;
 	align-items: flex-start;
 	justify-content: flex-start;
-
-	margin-bottom: var(--type-ramp-minus2-line-height);
 }
 
 .tds-dropdown-container label {
@@ -42,13 +44,6 @@ span.tds-required::after {
 	flex-flow: column nowrap;
 	align-items: flex-start;
 	justify-content: flex-start;
-
-	margin-bottom: var(--type-ramp-minus2-line-height);
-}
-
-.tds-numeric-field-container label,
-.tds-text-field-container label {
-	margin-bottom: calc(var(--type-ramp-minus2-line-height) / 2);
 }
 
 .tds-numeric-field-container input.control {
@@ -76,4 +71,14 @@ vscode-data-grid-row:hover {
 
 .tds-loading {
 	visibility: hidden;
+}
+
+.tds-hidden {
+	visibility: hidden;
+}
+
+.tds-button-button+.tds-button-button {
+	margin-right: 2rem;
+	padding: 0;
+	text-align: center;
 }

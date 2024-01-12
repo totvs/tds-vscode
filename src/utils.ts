@@ -961,26 +961,26 @@ export class ServersConfig {
     return result;
   }
 
-  static updatePatchGenerateDir(id: string, patchGenerateDir: string) {
-    let result = false;
-    if (
-      !id ||
-      id.length == 0 ||
-      !patchGenerateDir ||
-      patchGenerateDir.length == 0
-    ) {
-      return result;
-    }
-    const serverConfig = getServersConfig();
-    serverConfig.configurations.forEach((element) => {
-      if (element.id === id) {
-        element.patchGenerateDir = patchGenerateDir;
-        persistServersInfo(serverConfig);
-        result = true;
-      }
-    });
-    return result;
-  }
+  // static updatePatchGenerateDir(id: string, patchGenerateDir: string) {
+  //   let result = false;
+  //   if (
+  //     !id ||
+  //     id.length == 0 ||
+  //     !patchGenerateDir ||
+  //     patchGenerateDir.length == 0
+  //   ) {
+  //     return result;
+  //   }
+  //   const serverConfig = getServersConfig();
+  //   serverConfig.configurations.forEach((element) => {
+  //     if (element.id === id) {
+  //       element.patchGenerateDir = patchGenerateDir;
+  //       persistServersInfo(serverConfig);
+  //       result = true;
+  //     }
+  //   });
+  //   return result;
+  // }
 
   static readCompileKeyFile(path): Authorization {
     if (fs.existsSync(path)) {

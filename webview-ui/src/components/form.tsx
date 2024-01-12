@@ -3,9 +3,9 @@ import { VSCodeButton, VSCodeDropdown, VSCodeOption, VSCodeTextField, VSCodeChec
 import "./form.css";
 import { ButtonAppearance } from "@vscode/webview-ui-toolkit";
 import PopupMessage from "./popup-message";
-import { FieldError, FieldValues, Form, FormProps, UseControllerProps, useController } from "react-hook-form";
+import { FieldError, Form, UseControllerProps, useController } from "react-hook-form";
 import { sendClose } from "../utilities/common-command-webview";
-import { ChangeEvent, ChangeEventHandler, EventHandler, FormEvent, FormEventHandler } from "react";
+import { ChangeEvent } from "react";
 
 /**
  * - 'hook' useFieldArray e propriedade 'disabled':
@@ -26,6 +26,7 @@ export interface IFormAction {
 	hint?: string;
 	action?: any;
 	enabled?: boolean;
+	visible?: boolean;
 	isProcessRing?: boolean
 	type?: "submit" | "reset" | "button";
 	appearance?: ButtonAppearance;
@@ -47,10 +48,16 @@ type TDSCommonProps = {
 type TDSFieldProps = TDSCommonProps & {
 	label: string;
 	info: string;
+	onChange?: (event: ChangeEvent<HTMLInputElement>) => any;
 }
 
 type TDSCheckBoxProps = TDSCommonProps & {
 	label: string;
+	textLabel: string;
+	onChecked: (checked: boolean) => any;
+}
+
+type TDSSimpleCheckBoxProps = TDSCommonProps & {
 	textLabel: string;
 	onChecked: (checked: boolean) => any;
 }
@@ -62,12 +69,12 @@ type TDSSelectionFieldProps = TDSFieldProps & {
 	}[]
 }
 
-type TDSSelectionFolderFieldProps = {
+type TDSSelectionFolderFieldProps = TDSCommonProps & {
 	info: string;
 	onSelect: (folder: string) => any;
 }
 
-type TDSSelectionFileFieldProps = {
+type TDSSelectionFileFieldProps = TDSCommonProps & {
 	info: string;
 	onSelect: (files: string[]) => any;
 }
@@ -105,7 +112,7 @@ export function TDSSelectionField(props: UseControllerProps<any> & TDSSelectionF
 	let message: string = buildMessage(props, fieldState.error);
 
 	return (
-		<section className="tds-dropdown-container">
+		<section className={`tds-dropdown-container ${props.className ? props.className : ''}`}>
 			<label htmlFor={props.name}>
 				{props.label}
 				{rules.required && <span className="tds-required" />}
@@ -131,6 +138,12 @@ export function TDSTextField(props: UseControllerProps<any> & TDSFieldProps) {
 	const { field, fieldState } = useController(props);
 	let message: string = buildMessage(props, fieldState.error);
 
+	field.onChange = (event: ChangeEvent<HTMLInputElement>) => {
+		if (props.onChange) {
+			props.onChange(event);
+		}
+	}
+
 	return (
 		<section className={`tds-text-field-container ${props.className ? props.className : ''}`}>
 			<label htmlFor={props.name}>
@@ -155,15 +168,7 @@ export function TDSTextField(props: UseControllerProps<any> & TDSFieldProps) {
 export function TDSCheckBoxField(props: UseControllerProps<any> & TDSCheckBoxProps) {
 	const { field, fieldState } = useController(props);
 
-	const onInput = (event: FormEvent<HTMLElement>) => {
-		var input: any = event;
-		props.onChecked(input.target.checked);
-	}
-
 	field.onChange = (event: ChangeEvent<HTMLInputElement>) => {
-		console.log(">>>>>>>>>>>>>>>>")
-		console.log(field.value, event.target.checked);
-
 		props.onChecked(event.target.checked);
 	}
 
@@ -195,7 +200,7 @@ export function TDSSimpleTextField(props: UseControllerProps<any> & TDSCommonPro
 	const readOnly: boolean = (props.readOnly) || false;
 
 	return (
-		<section className="tds-simple-text-field-container">
+		<section className={`tds-simple-text-field-container ${props.className ? props.className : ''}`}>
 			<VSCodeTextField
 				readOnly={readOnly}
 				{...field}
@@ -226,7 +231,7 @@ export function TDSNumericField(props: UseControllerProps<any> & TDSFieldProps) 
 	let message: string = buildMessage(props, fieldState.error);
 
 	return (
-		<section className="tds-numeric-field-container">
+		<section className={`tds-numeric-field-container ${props.className ? props.className : ''}`}>
 			<label htmlFor={props.name}>
 				{props.label}
 				{props.rules?.required && <span className="tds-required" />}
@@ -257,7 +262,16 @@ export function getDefaultActionsForm(): IFormAction[] {
 			action: () => {
 				sendClose();
 			},
+		},
+		{
+			id: -3,
+			caption: "Clear",
+			hint: "Reinicia os campos do formulário",
+			appearance: "secondary",
+			type: "reset",
+			visible: false
 		}
+
 	];
 }
 
@@ -304,6 +318,7 @@ export default function TDSForm(props: TDSFormProps): JSX.Element {
 				<div className="tds-buttons">
 					{actions.map((action: IFormAction) => {
 						let propsField: any = {};
+						let visible: string = "";
 
 						propsField["key"] = action.id;
 						propsField["type"] = action.type || "button";
@@ -311,14 +326,23 @@ export default function TDSForm(props: TDSFormProps): JSX.Element {
 						if (action.enabled !== undefined) {
 							propsField["disabled"] = !action.enabled;
 						}
+
 						if (action.appearance) {
 							propsField["appearance"] = action.appearance;
 						}
+
 						if (action.action) {
 							propsField["onClick"] = action.action;
 						}
 
-						return (<VSCodeButton className="tds-button-button" {...propsField} >
+						if (action.visible !== undefined) {
+							visible = action.visible ? "" : "tds-hidden";
+							console.log(">>> %s = %s", propsField["type"], visible);
+						}
+
+						return (<VSCodeButton
+							className={`tds-button-button ${visible}`}
+							{...propsField} >
 							{isProcessRing && <span className="tds-loading" id={`tds-loading-action$${action.id}`}><VSCodeProgressRing />.</span>}
 							{action.caption}
 						</VSCodeButton>)
@@ -357,7 +381,7 @@ export function TDSSelectionFolderField(props: UseControllerProps<any> & TDSSele
 	}
 
 	return (
-		<section className="tds-selection-folder-container">
+		<section className={`tds-selection-folder-container ${props.className ? props.className : ''}`}>
 			{/* ts-expect-error */}
 			<VSCodeButton name={props.name} onClick={() => fireBtnFile()}>Select folder</VSCodeButton>
 			<input type="file" name={`btn-file-${props.name}`}
@@ -395,10 +419,35 @@ export function TDSSelectionFileField(props: UseControllerProps<any> & TDSSelect
 	}
 
 	return (
-		<section className="tds-selection-file-container">
+		<section className={`tds-selection-file-container ${props.className ? props.className : ''}`}>
 			{/* ts-expect-error */}
 			<VSCodeButton name={props.name} onClick={() => fireBtnFile()}>Select file</VSCodeButton>
 			<input type="file" name={`btn-file-${props.name}`}
 				onChange={(event) => onChange(event)} />
 		</section>)
+}
+
+/**
+ *
+ * Se usar em 'hook' useFieldArray, ver nota inicio do fonte.
+ *
+ * @param props
+ * @returns
+ */
+export function TDSSimpleCheckBoxField(props: UseControllerProps<any> & TDSSimpleCheckBoxProps) {
+	const { field, fieldState } = useController(props);
+
+	field.onChange = (event: ChangeEvent<HTMLInputElement>) => {
+		props.onChecked(event.target.checked);
+	}
+
+	return (
+		<section className={`tds-text-field-container ${props.className ? props.className : ''}`}>
+			<VSCodeCheckbox
+				checked={field.value}
+				{...field} >
+				{props.textLabel}
+			</VSCodeCheckbox>
+		</section>
+	)
 }

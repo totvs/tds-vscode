@@ -1,4 +1,4 @@
-import { TModelData } from "../model/addServerModel";
+import { TModelData } from "../model/modelData";
 import { vscode } from "./vscodeWrapper";
 
 export enum CommonCommandFromPanelEnum {

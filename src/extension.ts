@@ -17,7 +17,6 @@ import Utils, { LaunchConfig, ServersConfig } from "./utils";
 import { createNewProtheusServer, ServersExplorer } from "./serversView";
 import { compileKeyPage } from "./compileKey/compileKey";
 import { getLanguageClient } from "./TotvsLanguageClient";
-import { patchGenerate, patchGenerateFromFolder } from "./patch/patchGenerate";
 import {
   commandBuildFile,
   commandBuildWorkspace,
@@ -65,10 +64,11 @@ import serverProvider from "./serverItemProvider";
 import { registerWorkspace } from "./workspace";
 import { sendTelemetry } from "./protocolMessages";
 import { registerXRef } from "./xreferences";
-import { GeneratePatchPanel } from "./panels/generatePatchPanel";
 import { ImportSourcesOnlyResultPanel } from "./panels/importSourcesOnlyResultPanel";
 import { GlobalIncludePanel } from "./panels/globalIncludePanel";
 import { GenerateWebServicePanel } from "./panels/generateWSPanel";
+import { PatchGeneratePanel } from "./panels/patchGeneratePanel";
+import { patchGenerateFromFolder } from "./patch/patchUtil";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -319,7 +319,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.patchGenerate.fromRPO",
-      () => patchGenerate(context)
+      () => PatchGeneratePanel.render(context)
     )
   );
 
@@ -329,7 +329,7 @@ export function activate(context: ExtensionContext) {
       () => {
         vscode.window.setStatusBarMessage(
           `$(gear~spin) ${vscode.l10n.t("Starting package generation...")}`,
-          Promise.resolve(GeneratePatchPanel.render(context.extensionUri))
+          Promise.resolve(PatchGeneratePanel.render(context))
         );
       }
     )

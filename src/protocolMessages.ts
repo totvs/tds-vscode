@@ -853,3 +853,40 @@ export function sendWsdlGenerateRequest(
       vscode.window.showErrorMessage(err.message);
     });
 }
+
+export interface IPatchResult {
+  returnCode: number;
+  files: string;
+  message?: string
+}
+
+export function sendPatchGenerateMessage(server, patchMaster, patchDest, patchType, patchName, filesPath) {
+  return languageClient.sendRequest('$totvsserver/patchGenerate', {
+    "patchGenerateInfo": {
+      connectionToken: server.token,
+      authorizationToken: ServersConfig.getAuthorizationToken(server),
+      environment: server.environment,
+      patchMaster: patchMaster,
+      patchDest: patchDest,
+      isLocal: true,
+      patchType: patchType,
+      name: patchName,
+      patchFiles: filesPath
+    }
+  }).then((response: IPatchResult) => {
+    if (response.returnCode === 40840) { // AuthorizationTokenExpiredError
+      ServersConfig.removeExpiredAuthorization();
+    }
+
+    return response;
+  }, (err: ResponseError<object>) => {
+    vscode.window.showErrorMessage(err.message);
+    const response: IPatchResult = {
+      returnCode: -1,
+      files: "",
+      message: err.message
+    };
+
+    return response;
+  });
+}
