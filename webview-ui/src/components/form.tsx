@@ -45,6 +45,10 @@ type TDSCommonProps = {
 	className?: string;
 }
 
+type TDSLabelProps = TDSCommonProps & {
+	label: string;
+}
+
 type TDSFieldProps = TDSCommonProps & {
 	label: string;
 	info: string;
@@ -448,6 +452,26 @@ export function TDSSimpleCheckBoxField(props: UseControllerProps<any> & TDSSimpl
 				{...field} >
 				{props.textLabel}
 			</VSCodeCheckbox>
+		</section>
+	)
+}
+
+/**
+ *
+ * Se usar em 'hook' useFieldArray, ver nota inicio do fonte.
+ *
+ * @param props
+ * @returns
+ */
+export function TDSLabelField(props: UseControllerProps<any> & TDSLabelProps) {
+	const { field, fieldState } = useController(props);
+	let message: string = buildMessage(props, fieldState.error);
+
+	return (
+		<section className={`tds-label-field-container ${props.className ? props.className : ''}`}>
+			<label>
+				{props.label}
+			</label>
 		</section>
 	)
 }

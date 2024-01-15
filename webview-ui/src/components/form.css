@@ -11,7 +11,7 @@ span.tds-required::after {
 	box-sizing: border-box;
 	display: flex;
 	flex-flow: row;
-	align-items: flex-end;
+	align-items: flex-start;
 	justify-content: flex-start;
 	border: 1px;
 	margin: 0px;
@@ -37,6 +37,7 @@ span.tds-required::after {
 	margin-bottom: calc(var(--type-ramp-minus2-line-height) / 2);
 }
 
+.tds-label-field-container,
 .tds-numeric-field-container,
 .tds-text-field-container {
 	box-sizing: border-box;

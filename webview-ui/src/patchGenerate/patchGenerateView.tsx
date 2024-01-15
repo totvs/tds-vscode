@@ -1,14 +1,14 @@
-import { VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
+import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 
 import "./patchGenerate.css";
 import Page from "../components/page";
 import ErrorBoundary from "../components/errorBoundary";
 import React, { ChangeEvent } from "react";
-import { FieldArrayWithId, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import TDSForm, { IFormAction, TDSCheckBoxField, TDSSimpleCheckBoxField, TDSSimpleTextField, TDSTextField, getDefaultActionsForm } from "../components/form";
+import { Control, FieldArrayWithId, FieldValues, SubmitHandler, UseControllerProps, UseFormSetValue, useFieldArray, useForm } from "react-hook-form";
+import TDSForm, { IFormAction, TDSCheckBoxField, TDSLabelField, TDSSimpleCheckBoxField, TDSSimpleTextField, TDSTextField, getDefaultActionsForm } from "../components/form";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
 import { TInspectorObject } from "../model/inspectorObjectModel";
-
+import { log } from "console";
 
 enum ReceiveCommandEnum {
 }
@@ -21,6 +21,7 @@ type TFields = {
   patchDest: string;
   includeTRes: boolean;
   filter: string;
+  warningManyItens: boolean;
   objectsLeft: TInspectorObject[];
   objectsRight: TInspectorObject[];
   objectsFiltered: TObjectFiltered[];
@@ -39,9 +40,68 @@ const EMPTY_MODEL: TFields = {
   patchName: "", //(vscode.getState() | {})["patchName"],
   includeTRes: false,
   filter: "",
+  warningManyItens: false,
   objectsLeft: Array(ROWS_LIMIT).map(() => EMPTY_INSPECTOR_OBJECT),
   objectsRight: Array(ROWS_LIMIT).map(() => EMPTY_INSPECTOR_OBJECT),
   objectsFiltered: []
+}
+
+interface ISelectObjectComponentProps<T extends FieldValues> extends UseControllerProps<T> {
+  //fieldName: string
+}
+
+function SelectObjectComponent(props: ISelectObjectComponentProps<TFields> & { _setValue: UseFormSetValue<TFields> }) {
+  const { fields, replace } = useFieldArray(
+    {
+      control: props.control,
+      name: props.name == "objectsFiltered" ? "objectsFiltered" : "objectsRight"
+    });
+
+  //const warningManyItens: boolean = model.objects.length > ROWS_LIMIT;
+
+  return (
+    <VSCodeDataGrid>
+      {fields
+        .filter((row: any, index: number) => {
+          return (index < ROWS_LIMIT);
+        })
+        .map((row: any, index: number) => {
+          return (
+            <VSCodeDataGridRow key={row.id}>
+              <VSCodeDataGridCell grid-column="1" >
+                <TDSSimpleCheckBoxField
+                  className="tds-no-margin"
+                  name={`${props.name}.${index}.check`}
+                  textLabel={row.name}
+                  control={props.control}
+                  onChecked={(checked: boolean) => {
+                    console.log("checked=", checked);
+                    props._setValue(`objectsFiltered.${index}.check`, checked);
+                  }} />
+              </VSCodeDataGridCell>
+              <VSCodeDataGridCell grid-column="2">
+                <TDSSimpleTextField
+                  className="tds-no-margin"
+                  name={`${props.name}.${index}.type`}
+                  control={props.control}
+                  readOnly={true}
+                />
+              </VSCodeDataGridCell>
+              <VSCodeDataGridCell grid-column="3">
+                <TDSSimpleTextField
+                  className="tds-no-margin"
+                  name={`${props.name}.${index}.date`}
+                  control={props.control}
+                  readOnly={true}
+                />
+              </VSCodeDataGridCell>
+            </VSCodeDataGridRow>
+          )
+        }
+        )
+      }
+    </VSCodeDataGrid>
+  );
 }
 
 export default function PatchGenerateView() {
@@ -51,18 +111,15 @@ export default function PatchGenerateView() {
     setValue,
     setError,
     getValues,
+    watch,
     formState: { errors, isDirty, isValid },
   } = useForm<TFields>({
     defaultValues: EMPTY_MODEL,
     mode: "all"
   })
 
-  const { fields, replace } = useFieldArray(
-    {
-      control,
-      name: "objectsFiltered"
-    });
-
+  //watch("filter");
+  const watchWarningManyItens = watch("warningManyItens");
   const onSubmit: SubmitHandler<TFields> = (data) => {
     data.objectsRight = data.objectsRight.filter((object: TInspectorObject) => object.name.length > 0);
 
@@ -74,10 +131,20 @@ export default function PatchGenerateView() {
       const command: ReceiveCommand = event.data as ReceiveCommand;
       const model: TFields = command.data.model;
 
+      console.log("listener " + command.command);
+      console.dir(model);
+
       switch (command.command) {
         case CommonCommandFromPanelEnum.UpdateModel:
+          const objectsFiltered = extractData(getValues("filter") || "", model.objectsLeft);
+          console.log("objectsLeft=", model.objectsLeft.length);
+          console.log("filtered=", objectsFiltered.length);
+
           setValue("objectsLeft", model.objectsLeft);
-          replace(extractData(getValues("filter") || "", model.objectsLeft));
+          setValue("objectsFiltered", objectsFiltered);
+          setValue("warningManyItens", objectsFiltered.length > ROWS_LIMIT);
+
+          //replace(extractData(getValues("filter") || "", model.objectsLeft));
           break;
         case CommonCommandFromPanelEnum.ValidateResponse:
           Object.keys(command.data).forEach((fieldName: string) => {
@@ -122,16 +189,16 @@ export default function PatchGenerateView() {
     }
   }
 
-  const model: TFields = getValues();
-  model.filter = model.filter.trim();
+  // const model: TFields = getValues();
+  // model.filter = model.filter.trim();
   const actions: IFormAction[] = getDefaultActionsForm();
   actions[0].enabled = isDirty && isValid;
 
-  const warningManyItens: boolean = model.objectsFiltered.length > ROWS_LIMIT;
+  //const warningManyItens: boolean = model.objectsFiltered.length > ROWS_LIMIT;
   //setValue("objectsLeft", fieldsFiltered);
   //replace(fieldsFiltered)
-  console.log("fields", fields.length);
-  console.log("fieldsFiltered", model.objectsFiltered.length);
+  //console.log("fields", fields.length);
+  //console.log("fieldsFiltered", model.objectsFiltered.length);
 
   return (
     <main>
@@ -151,12 +218,16 @@ export default function PatchGenerateView() {
                 control={control}
                 info="Filtrar por nome do objeto. Ex: MAT or FAT*"
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                  console.log((">>>>> onChange filter"));
+
                   const filter: string = event.currentTarget.value.trim();
                   const objectsLeft: TInspectorObject[] = getValues("objectsLeft");
-                  const objectsFiltered: TObjectFiltered[] = extractData(filter, objectsLeft);
-
-                  setValue("filter", filter);
-                  replace(objectsFiltered)
+                  const objectsFiltered = extractData(filter, objectsLeft);
+                  console.log("filtered=", objectsFiltered.length);
+                  //setValue("objectsLeft", model.objectsLeft);
+                  setValue("objectsFiltered", objectsFiltered);
+                  setValue("warningManyItens", objectsFiltered.length > ROWS_LIMIT);
+                  //replace(objectsFiltered)
                 }}
               />
 
@@ -171,52 +242,41 @@ export default function PatchGenerateView() {
             </section>
 
             <section className="tds-group-container" >
-              {warningManyItens ?
-                <p className="tds-no-margin">List has more than <b>{ROWS_LIMIT}</b> items. Enter a more restrictive filter</p>
-                : <p>&nbsp;</p>}
+              {watchWarningManyItens ?
+                <TDSLabelField
+                  name="warningManyItens"
+                  control={control}
+                  label=
+                  {`List has more than ${ROWS_LIMIT} items. Enter a more restrictive filter.`}
+                />
+                :
+                <TDSLabelField
+                  name="warningManyItens"
+                  control={control}
+                  label="&nbsp;" />
+              }
             </section>
 
             <section className="tds-group-container" >
-              <VSCodeDataGrid id="objectsFilteredGrid">
-                {fields
-                  .filter((row: FieldArrayWithId<TFields, "objectsFiltered", "id">, index: number) => {
-                    return (index < ROWS_LIMIT);
-                  })
-                  .map((row: FieldArrayWithId<TFields, "objectsFiltered", "id">, index: number) => {
-                    return (
-                      <VSCodeDataGridRow className="compact" key={row.id}>
-                        <VSCodeDataGridCell grid-column="1">
-                          <TDSSimpleCheckBoxField
-                            className="tds-no-margin"
-                            name={`objectsFiltered.${index}.check`}
-                            textLabel={row.name}
-                            control={control}
-                            onChecked={(checked: boolean) => {
-                              setValue(`objectsFiltered.${index}.check`, checked);
-                            }} />
-                        </VSCodeDataGridCell>
-                        <VSCodeDataGridCell grid-column="2">
-                          <TDSSimpleTextField
-                            className="tds-no-margin"
-                            name={`objectsFiltered.${index}.type`}
-                            control={control}
-                            readOnly={true}
-                          />
-                        </VSCodeDataGridCell>
-                        <VSCodeDataGridCell grid-column="3">
-                          <TDSSimpleTextField
-                            className="tds-no-margin"
-                            name={`objectsFiltered.${index}.date`}
-                            control={control}
-                            readOnly={true}
-                          />
-                        </VSCodeDataGridCell>
-                      </VSCodeDataGridRow>
-                    )
-                  }
-                  )
-                }
-              </VSCodeDataGrid>
+              <SelectObjectComponent
+                name="objectsFiltered"
+                control={control}
+                _setValue={setValue}
+              />
+              <VSCodeButton appearance="icon" onClick={() => {
+                const selectedObjects = getValues("objectsFiltered").filter((value) => value.check);
+                console.log(">>>>> confirm select");
+                console.log("selectedObjects=", selectedObjects.length);
+
+                setValue("objectsRight", selectedObjects);
+              }} >
+                <span className="codicon codicon-arrow-right"></span>
+              </VSCodeButton>
+              <SelectObjectComponent
+                control={control}
+                name="objectsRight"
+                _setValue={setValue}
+              />
             </section>
           </TDSForm>
         </Page>
