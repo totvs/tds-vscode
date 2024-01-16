@@ -5,31 +5,17 @@
 }
 
 /* The actual popup (appears on top) */
-.tds-popup .tds-popup-text {
+.tds-popup-text {
 	visibility: hidden;
-	width: fit-content;
-	text-wrap: nowrap;
-	text-align: center;
-	border-radius: 6px;
+	width: 350px;
+	height: fit-content;
+	text-wrap: wrap;
+	text-align: left;
 	padding: 8px;
 	position: absolute;
 	z-index: 1000;
-	bottom: 200%;
-	left: 50%;
-	margin-left: -80px;
+	padding-left: 13px;
 }
-
-/* Popup arrow */
-/* .tds-popup .tds-popup-text::after {
-	content: "";
-	position: absolute;
-	top: 100%;
-	left: 50%;
-	margin-left: -5px;
-	border-width: 5px;
-	border-style: solid;
-	border-color: var(--vscode-inputValidation-infoBorder) transparent transparent transparent;
-} */
 
 /* Toggle this class when clicking on the popup container (hide and show the popup) */
 .tds-popup .show {
