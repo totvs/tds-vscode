@@ -39,7 +39,7 @@ export interface IFormAction {
 export type TdsFieldProps = {
 	name: string;
 	label: string;
-	info: string;
+	info?: string;
 	readOnly?: boolean
 	className?: string;
 	rules?: RegisterOptions<FieldValues, string>;

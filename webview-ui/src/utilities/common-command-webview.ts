@@ -24,7 +24,7 @@ export enum CommonCommandToPanelEnum {
 	Ready = "READY",
 	Validate = "VALIDATE",
 	CheckDir = "CHECK_DIR",
-	SelectFolder = "SELECT_FOLDER",
+	SelectResource = "SELECT_RESOURCE",
 	UpdateModel = "UPDATE_MODEL",
 }
 
@@ -57,14 +57,20 @@ export function sendReady() {
 	vscode.postMessage(message);
 }
 
+export type TSendSelectResourceProps = {
+	model: TModelData;
+	folder: boolean;
+	file: boolean;
+	currentFolder: string;
+	dialogTitle: string;
+	label: string;
+	selectMany: boolean
+}
 
-export function sendSelectFolder(model: TModelData, currentFolder: string) {
+export function sendSelectResource(props: TSendSelectResourceProps) {
 	const message: SendMessage<CommonCommandToPanelEnum, TModelData> = {
-		command: CommonCommandToPanelEnum.SelectFolder,
-		data: {
-			model: model,
-			currentFolder: currentFolder
-		}
+		command: CommonCommandToPanelEnum.SelectResource,
+		data: props
 	}
 
 	vscode.postMessage(message);

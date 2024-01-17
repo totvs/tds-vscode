@@ -1,13 +1,12 @@
-import { VSCodeButton, VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
-import React from "react";
-import { FieldValues, RegisterOptions, useController, useFormContext } from "react-hook-form";
+import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
+import { useController, useFormContext } from "react-hook-form";
 import PopupMessage from "../popup-message";
 import { TdsFieldProps } from "../form";
+import { TSendSelectResourceProps, sendSelectResource } from "../../utilities/common-command-webview";
 
 type TdsSelectionFolderFieldProps = TdsFieldProps & {
-	onSelect: (folder: string) => any;
-
-	//onChange?: (event: ChangeEvent<HTMLInputElement>) => any;
+	dialogTitle: string;
+	selectMany?: boolean
 }
 
 /**
@@ -28,6 +27,7 @@ type TdsSelectionFolderFieldProps = TdsFieldProps & {
 export function TdsSelectionFolderField(props: TdsSelectionFolderFieldProps): JSX.Element {
 	const {
 		register,
+		getValues,
 		formState: { isDirty }
 	} = useFormContext();
 	const { field, fieldState } = useController(props);
@@ -41,11 +41,21 @@ export function TdsSelectionFolderField(props: TdsSelectionFolderFieldProps): JS
 		>
 			<VSCodeButton
 				onClick={() => {
-					alert("TODO: Implementar a seleção de pasta");
+					const propSelectResource: TSendSelectResourceProps = {
+						model: getValues(),
+						folder: true,
+						file: false,
+						currentFolder: "",
+						dialogTitle: props.dialogTitle,
+						label: label,
+						selectMany: props.selectMany || false
+					}
+
+					sendSelectResource(propSelectResource);
 				}}
 				{...registerField}
 			>
-				Select Folder
+				{label}
 				<PopupMessage field={{ ...props, label: label }} fieldState={fieldState} />
 			</VSCodeButton>
 		</section>

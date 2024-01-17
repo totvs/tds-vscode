@@ -106,18 +106,12 @@ export abstract class TdsPanel<M extends TModelPanel> {
 
 	protected abstract saveModel(model: M): Promise<boolean> | boolean;
 
-	protected sendValidateResponse(errors: TFieldErrors<M>) {
-		this._panel.webview.postMessage({
-			command: CommonCommandToWebViewEnum.ValidateResponse,
-			data: errors,
-		});
-	}
-
-	protected sendUpdateModel(model: M): void {
+	protected sendUpdateModel(model: M, errors: TFieldErrors<M>): void {
 		this._panel.webview.postMessage({
 			command: CommonCommandToWebViewEnum.UpdateModel,
 			data: {
-				model: model
+				model: model,
+				errors: errors
 			}
 		});
 	}
@@ -138,10 +132,10 @@ export abstract class TdsPanel<M extends TModelPanel> {
 					if (this.saveModel(data.model) && (command == CommonCommandFromWebViewEnum._SaveAndClose)) {
 						this.dispose();
 					} else {
-						this.sendUpdateModel(data.model);
+						this.sendUpdateModel(data.model, errors);
 					}
 				} else {
-					this.sendValidateResponse(errors);
+					this.sendUpdateModel(data.model, errors);
 				}
 
 				break;
@@ -150,12 +144,14 @@ export abstract class TdsPanel<M extends TModelPanel> {
 				this.dispose();
 
 				break;
-			case CommonCommandFromWebViewEnum.SelectFolder:
+			case CommonCommandFromWebViewEnum.SelectResource:
 				const options: vscode.OpenDialogOptions = {
-					canSelectMany: false,
-					canSelectFiles: false,
-					canSelectFolders: true,
-					openLabel: vscode.l10n.t("Select folder"),
+					canSelectMany: data.selectMany,
+					canSelectFiles: data.file,
+					canSelectFolders: data.folder,
+					defaultUri: vscode.Uri.file(data.currentFolder),
+					title: data.dialogTitle,
+					openLabel: data.label,
 				};
 
 				result = await vscode.window.showOpenDialog(options).then((fileUri) => {

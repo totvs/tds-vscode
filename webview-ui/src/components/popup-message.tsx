@@ -14,7 +14,7 @@ function buildMessage(props: IPopupMessage): string {
 
 	if (error) {
 		if (error.type == "required") {
-			message = `[${label}] is required`;
+			message = `[${label}] is required.`;
 		} else if (error.type == "min") {
 			message = `[${label}] is not valid range (min value).`;
 		} else if (error.type == "max") {
@@ -34,7 +34,7 @@ export default function PopupMessage(props: IPopupMessage): JSX.Element {
 
 	let message: string = buildMessage(props);
 
-	const prepareElement: any = (event: any): HTMLSpanElement => {
+	const preparePopup: any = (event: any): HTMLSpanElement => {
 		var popup = document.getElementById("popup_" + props.field.name) as HTMLElement;
 		var parent = popup.parentElement!.parentElement as HTMLElement;
 
@@ -48,7 +48,7 @@ export default function PopupMessage(props: IPopupMessage): JSX.Element {
 	};
 
 	const mouseOver: any = (event: any) => {
-		const popup = prepareElement(event);
+		const popup = preparePopup(event);
 
 		popup.classList.toggle("show");
 	};
@@ -59,11 +59,13 @@ export default function PopupMessage(props: IPopupMessage): JSX.Element {
 	};
 
 	return (
-		<span slot="end" className={`tds-popup codicon codicon-${type} tds-${type}`}
-			onMouseOver={(event) => mouseOver(event)}
-			onMouseOut={(event) => mouseOut(event)}
-		>
-			<span className={`tds-popup-text tds-${type}`} id={"popup_" + props.field.name}>{message}.</span>
-		</span>
+		(message.length > 0) ?
+			<span slot="end" className={`tds-popup codicon codicon-${type} tds-${type}`}
+				onMouseOver={(event) => mouseOver(event)}
+				onMouseOut={(event) => mouseOut(event)}
+			>
+				<span className={`tds-popup-text tds-${type}`} id={"popup_" + props.field.name}>{message}.</span>
+			</span>
+			: <></>
 	);
 }

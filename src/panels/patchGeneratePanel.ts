@@ -133,7 +133,7 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
 
               progress.report({ increment: 100 });
 
-              this.sendUpdateModel(model);
+              this.sendUpdateModel(model, undefined);
             }
           );
         }
@@ -203,19 +203,22 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
       vscode.window.showInformationMessage(vscode.l10n.t("Patch file generated"));
     });
 
-    if (!response) {
-      let errors: TFieldErrors<TGeneratePatchModel> = {};
-      errors.root = { type: "validate", message: "Internal error: See more information in log" };
-      this.sendValidateResponse(errors)
-    } else if (response.returnCode !== 0) {
-      let errors: TFieldErrors<TGeneratePatchModel> = {};
-      errors.root = { type: "validate", message: `Protheus server was unable to generate the patch. Reason: ${response.message}` };;
-      this.sendValidateResponse(errors)
+    let errors: TFieldErrors<TGeneratePatchModel> = {};
+    let ok: boolean = true;
 
-      return false;
+    if (!response) {
+      errors.root = { type: "validate", message: "Internal error: See more information in log" };
+      ok = false
+    } else if (response.returnCode !== 0) {
+      errors.root = { type: "validate", message: `Protheus server was unable to generate the patch. Reason: ${response.message}` };;
+      ok = false
     }
 
-    return true;
+    if (!ok) {
+      this.sendUpdateModel(model, errors);
+    }
+
+    return ok;
   }
 
 }

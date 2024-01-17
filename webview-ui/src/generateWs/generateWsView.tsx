@@ -43,20 +43,10 @@ export default function GenerateWsView() {
       switch (command.command) {
         case CommonCommandFromPanelEnum.UpdateModel:
           setDataModel(methods.setValue, model);
-          // setValue("urlOrWsdlFile", model.urlOrWsdlFile);
-          // setValue("outputPath", model.outputPath);
-          // setValue("outputFilename", model.outputFilename);
-          // setValue("overwrite", model.overwrite);
 
           break;
         case CommonCommandFromPanelEnum.ValidateResponse:
           setErrorModel(methods.setError, command.data as any);
-          // Object.keys(command.data).forEach((fieldName: string) => {
-          //   setError(fieldName as any, {
-          //     message: command.data[fieldName].message,
-          //     type: command.data[fieldName].type
-          //   })
-          // })
           break;
         default:
           break;
@@ -114,12 +104,11 @@ export default function GenerateWsView() {
               />
 
               <TdsSelectionFolderField
-                label=""
+                label="Output Folder"
                 name="btn-outputPath"
                 info={"Selecione a pasta de onde o fonte gerado será gravado"}
-                onSelect={function (folder: string) {
-                  throw new Error("Function not implemented.");
-                }} />
+                dialogTitle="Select Output Directory"
+              />
             </section>
 
             <section className="tds-group-container" >

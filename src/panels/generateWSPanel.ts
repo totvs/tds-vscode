@@ -102,7 +102,7 @@ export class GenerateWebServicePanel extends TdsPanel<TWebServiceModel> {
 						outputPath: "",
 						outputFilename: "",
 						overwrite: false
-					});
+					}, undefined);
 				}
 				break;
 		}
@@ -147,7 +147,7 @@ export class GenerateWebServicePanel extends TdsPanel<TWebServiceModel> {
 		if (response.returnCode !== 0) {
 			let errors: TFieldErrors<TWebServiceModel> = {};
 			errors.root = { type: "validate", message: `Protheus server was unable to generate the WS client. Code: ${response.returnCode}` };
-			this.sendValidateResponse(errors)
+			this.sendUpdateModel(model, errors)
 
 			return false;
 		}

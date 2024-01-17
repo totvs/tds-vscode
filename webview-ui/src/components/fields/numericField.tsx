@@ -1,6 +1,5 @@
 import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
-import React from "react";
-import { FieldValues, RegisterOptions, useController, useFormContext } from "react-hook-form";
+import { useController, useFormContext } from "react-hook-form";
 import PopupMessage from "../popup-message";
 import { IFormAction, TdsFieldProps } from "../form";
 import { sendClose } from "../../utilities/common-command-webview";
@@ -36,7 +35,6 @@ export function getDefaultActionsForm(): IFormAction[] {
 			type: "reset",
 			visible: false
 		}
-
 	];
 }
 
@@ -77,7 +75,8 @@ export function TdsNumericField(props: TdsNumericFieldProps): JSX.Element {
 				{props.label}
 				{props.rules?.required && <span className="tds-required" />}
 			</label>
-			< VSCodeTextField
+			<VSCodeTextField
+				readOnly={props.readOnly || false}
 				{...registerField}
 			>
 				<PopupMessage field={props} fieldState={fieldState} />

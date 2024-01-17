@@ -108,26 +108,25 @@ export class GlobalIncludePanel extends TdsPanel<TIncludeModel> {
           includePaths: aux.split(";").map((value: string) => { return { path: value } })
           //aux.split(";").map((value: string) => { path: value });
         }
-        this.sendUpdateModel(model);
+        this.sendUpdateModel(model, undefined);
 
         break;
-      case CommonCommandFromWebViewEnum.SelectFolder:
+      case CommonCommandFromWebViewEnum.SelectResource:
         if (result && result.length > 0) {
           const selectedPath: string = (result[0] as vscode.Uri).fsPath;
           const includePaths: TIncludePath[] = data.model.includePaths
             .filter((includePath: TIncludePath) => includePath.path.trim().length > 0);
           const alreadyExist: boolean = includePaths.findIndex((includePath: TIncludePath) => includePath.path == selectedPath) > -1;
           const index: number = includePaths.push({ path: selectedPath }) - 1;
+          const errors: TFieldErrors<TIncludeModel> = {};
 
           data.model.includePaths = includePaths;
-          this.sendUpdateModel(data.model);
 
           if (alreadyExist) {
-            const errors: TFieldErrors<TIncludeModel> = {};
-
             errors[`includePaths.${[index]}.path`] = { type: "validade", message: "Path already informed" };
-            this.sendValidateResponse(errors);
           }
+          
+          this.sendUpdateModel(data.model, errors);
         }
 
         break;

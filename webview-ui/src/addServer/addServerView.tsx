@@ -8,8 +8,9 @@ import { TIncludeData } from "../model/addServerModel";
 import { FieldArrayWithId, FormProvider, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import PopupMessage from "../components/popup-message";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
-import { IFormAction, TdsCheckBoxField, TdsForm, TdsLabelField, TdsNumericField, TdsSelectionField, TdsSimpleTextField, TdsTextField, setDataModel, setErrorModel } from "../components/form";
+import { IFormAction, TdsCheckBoxField, TdsForm, TdsLabelField, TdsNumericField, TdsSelectionField, TdsSelectionFolderField, TdsSimpleTextField, TdsTextField, setDataModel, setErrorModel } from "../components/form";
 import { getDefaultActionsForm } from "../components/fields/numericField";
+import { VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 
 
 enum ReceiveCommandEnum {
@@ -56,28 +57,20 @@ export default function AddServerView() {
   React.useEffect(() => {
     let listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
-      const model: TFields = command.data.model;
 
       switch (command.command) {
         case CommonCommandFromPanelEnum.UpdateModel:
+          const model: TFields = command.data.model;
+          const errors: any = command.data.errors;
+
           while (model.includePaths.length < ROWS_LIMIT) {
             model.includePaths.push({ path: "" });
           }
-          setDataModel<TFields>(methods.setValue, model);
-          // setValue("serverName", model.serverName);
-          // setValue("address", model.address);
-          // setValue("port", model.port);
-          // setValue("includePaths", model.includePaths);
 
-          break;
-        case CommonCommandFromPanelEnum.ValidateResponse:
-          //command.data as any);
-          Object.keys(command.data).forEach((fieldName: string) => {
-            methods.setError(fieldName as any, {
-              message: command.data[fieldName].message,
-              type: command.data[fieldName].type
-            })
-          })
+          setDataModel<TFields>(methods.setValue, model);
+          if (errors) {
+            setErrorModel(methods.setError, errors);
+          }
           break;
         default:
           break;
@@ -166,11 +159,59 @@ export default function AddServerView() {
                 max: { value: 65535, message: "[Port] is not valid range. Min: 1 Max: 65535" }
               }} />
 
-            <TdsLabelField
-              name={"includeDirectoriesLabel"}
-              label={"Include directories"}
-              info={"Informe as pastas onde os arquivos de definição devem ser procurados"} />
 
+            <section className="tds-group-container" >
+              <TdsLabelField
+                name={"includeDirectoriesLabel"}
+                label={"Include directories"}
+                info={"Informe as pastas onde os arquivos de definição devem ser procurados"} />
+            </section>
+
+            <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
+              {model && model.includePaths.map((row: TIncludeData, index: number) => (
+                <VSCodeDataGridRow key={index}>
+                  {row.path !== "" &&
+                    <>
+                      <VSCodeDataGridCell grid-column="1">
+                        <span className="codicon codicon-close"></span>
+                      </VSCodeDataGridCell>
+                      <VSCodeDataGridCell grid-column="2">
+                        <TdsSimpleTextField
+                          name={`includePaths.${index}.path`}
+                          label={""}
+                          readOnly={true}
+                        />
+                      </VSCodeDataGridCell>
+                    </>
+                  }
+                  {((row.path == "") && (index !== indexFirstPathFree)) &&
+                    <>
+                      <VSCodeDataGridCell grid-column="1">
+                        &nbsp;
+                      </VSCodeDataGridCell>
+                      <VSCodeDataGridCell grid-column="2">
+                        &nbsp;
+                      </VSCodeDataGridCell>
+                    </>
+                  }
+                  {(index === indexFirstPathFree) &&
+                    <>
+                      <VSCodeDataGridCell grid-column="1">
+                        &nbsp;
+                      </VSCodeDataGridCell>
+                      <VSCodeDataGridCell grid-column="2">
+                        <TdsSelectionFolderField
+                          name={`btnSelectFolder.${index}`}
+                          info={"Selecione uma pasta que contenha arquivos de definição"}
+                          label={""}
+                          dialogTitle="Select folder with define files"
+                        />
+                      </VSCodeDataGridCell>
+                    </>
+                  }
+                </VSCodeDataGridRow>
+              ))}
+            </VSCodeDataGrid>
           </TdsForm>
         </FormProvider>
       </Page>

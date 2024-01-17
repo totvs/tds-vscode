@@ -3,7 +3,7 @@ export enum CommonCommandFromWebViewEnum {
 	_SaveAndClose = "SAVE_AND_CLOSE",
 	_Close = "CLOSE",
 	Ready = "READY",
-	SelectFolder = "SELECT_FOLDER"
+	SelectResource = "SELECT_RESOURCE"
 }
 
 export type CommonCommandFromWebView = CommonCommandFromWebViewEnum;
@@ -11,7 +11,6 @@ export type CommonCommandFromWebView = CommonCommandFromWebViewEnum;
 export enum CommonCommandToWebViewEnum {
 	InitialData = "INITIAL_DATA",
 	UpdateModel = "UPDATE_MODEL",
-	ValidateResponse = "VALIDATE_RESPONSE"
 }
 
 export type ReceiveMessage<C extends CommonCommandFromWebView, T = any> = {

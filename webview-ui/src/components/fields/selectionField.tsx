@@ -1,6 +1,5 @@
-import { VSCodeDropdown, VSCodeOption, VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
-import React from "react";
-import { FieldValues, RegisterOptions, useController, useFormContext } from "react-hook-form";
+import { VSCodeDropdown, VSCodeOption } from "@vscode/webview-ui-toolkit/react";
+import { useController, useFormContext } from "react-hook-form";
 import PopupMessage from "../popup-message";
 import { TdsFieldProps } from "../form";
 

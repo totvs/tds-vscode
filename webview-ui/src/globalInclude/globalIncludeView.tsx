@@ -50,17 +50,10 @@ export default function GlobalIncludeView() {
             model.includePaths.push({ path: "" });
           }
           setDataModel(methods.setValue, model);
-          //setValue("includePaths", model.includePaths);
 
           break;
         case CommonCommandFromPanelEnum.ValidateResponse:
           setErrorModel(methods.setError, command.data as any);
-          // Object.keys(command.data).forEach((fieldName: string) => {
-          //   setError(fieldName as any, {
-          //     message: command.data[fieldName].message,
-          //     type: command.data[fieldName].type
-          //   })
-          // })
           break;
         default:
           break;
@@ -125,8 +118,8 @@ export default function GlobalIncludeView() {
                       <VSCodeDataGridCell grid-column="2">
                         <TdsSimpleTextField
                           name={`includePaths.${index}.path`}
-                          label={""}
-                          info={""} />
+                        label={""}
+                      />
                       </VSCodeDataGridCell>
                     </>
                   }
@@ -140,7 +133,7 @@ export default function GlobalIncludeView() {
                     <>
                       <VSCodeDataGridCell grid-column="2">
                         <TdsSelectionFolderField
-                          onSelect={(folder) => addIncludePath(folder, index)}
+                          dialogTitle="Select folder with definition files"
                           name={`btnSelectFolder.${index}`}
                           info={"Selecione uma pasta que contenha arquivos de definição"}
                           label={""} />

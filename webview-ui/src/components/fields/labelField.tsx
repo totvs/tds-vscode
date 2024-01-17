@@ -1,7 +1,4 @@
-import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
-import React from "react";
-import { FieldValues, RegisterOptions, useController, useFormContext } from "react-hook-form";
-import PopupMessage from "../popup-message";
+import { useController, useFormContext } from "react-hook-form";
 import { TdsFieldProps } from "../form";
 
 type TdsLabelFieldProps = TdsFieldProps & {

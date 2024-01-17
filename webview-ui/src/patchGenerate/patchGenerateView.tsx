@@ -132,20 +132,11 @@ export default function PatchGenerateView() {
           console.log("objectsLeft=", model.objectsLeft.length);
           console.log("filtered=", model.objectsFiltered.length);
           setDataModel(methods.setValue, model);
-          // setValue("objectsLeft", model.objectsLeft);
-          // setValue("objectsFiltered", objectsFiltered);
-          // setValue("warningManyItens", objectsFiltered.length > ROWS_LIMIT);
 
           //replace(extractData(getValues("filter") || "", model.objectsLeft));
           break;
         case CommonCommandFromPanelEnum.ValidateResponse:
           setErrorModel(methods.setError, command.data as any);
-          // Object.keys(command.data).forEach((fieldName: string) => {
-          //   setError(fieldName as any, {
-          //     message: command.data[fieldName].message,
-          //     type: command.data[fieldName].type
-          //   })
-          // })
           break;
         default:
           break;
@@ -214,7 +205,7 @@ export default function PatchGenerateView() {
                 name="includeTRes"
                 label="&nbsp;"
                 textLabel={"Include *.TRES"}
-                info={""} />
+                 />
             </section>
 
             <section className="tds-group-container" >
@@ -222,12 +213,12 @@ export default function PatchGenerateView() {
                 <TdsLabelField
                   name="warningManyItens"
                   label={`List has more than ${ROWS_LIMIT} items. Enter a more restrictive filter.`}
-                  info={""} />
+                   />
                 :
                 <TdsLabelField
                   name="warningManyItens"
                   label="&nbsp;"
-                  info={""} />
+                   />
               }
             </section>
 

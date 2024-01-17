@@ -1,6 +1,5 @@
 import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
-import React from "react";
-import { FieldValues, RegisterOptions, useController, useFormContext } from "react-hook-form";
+import { useController, useFormContext } from "react-hook-form";
 import PopupMessage from "../popup-message";
 import { TdsFieldProps } from "../form";
 
@@ -32,7 +31,8 @@ export function TdsSimpleTextField(props: TdsSimpleTextFieldProps): JSX.Element 
 		<section
 			className={`tds-field-container tds-simple-text-field ${props.className ? props.className : ''}`}
 		>
-			< VSCodeTextField
+			<VSCodeTextField
+				readOnly={props.readOnly || false}
 				{...registerField}
 			>
 				{props.label}

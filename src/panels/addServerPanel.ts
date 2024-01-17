@@ -103,9 +103,27 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
             immediateConnection: true,
             secure: false,
             buildVersion: ""
-          });
+          }, undefined);
         }
         break;
+      case CommonCommandFromWebViewEnum.SelectResource:
+        if (result && result.length > 0) {
+          const selectedPath: string = (result[0] as vscode.Uri).fsPath;
+          const includePaths: TIncludePath[] = data.model.includePaths
+            .filter((includePath: TIncludePath) => includePath.path.trim().length > 0);
+          const alreadyExist: boolean = includePaths.findIndex((includePath: TIncludePath) => includePath.path == selectedPath) > -1;
+          const index: number = includePaths.push({ path: selectedPath }) - 1;
+          const errors: TFieldErrors<TServerModel> = {};
+
+          data.model.includePaths = includePaths;
+
+          if (alreadyExist) {
+            errors[`includePaths.${[index]}.path`] = { type: "validade", message: "Path already informed" };
+          }
+
+          this.sendUpdateModel(data.model, errors);
+        }
+        break
     }
   }
 
