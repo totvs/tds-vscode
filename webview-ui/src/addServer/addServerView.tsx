@@ -1,17 +1,15 @@
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeProgressRing, VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
+//import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 
 import "./addServer.css";
 import Page from "../components/page";
 import ErrorBoundary from "../components/errorBoundary";
-import React, { ChangeEvent } from "react";
+import React from "react";
 import { TIncludeData } from "../model/addServerModel";
-import { FieldArrayWithId, SubmitHandler, useFieldArray, useForm, useWatch } from "react-hook-form";
-import TDSForm, { IFormAction, TDSCheckBoxField, TDSNumericField, TDSSelectionField, TDSSelectionFolderField, TDSSimpleTextField, TDSTextField, getDefaultActionsForm } from "../components/form";
+import { FieldArrayWithId, FormProvider, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import PopupMessage from "../components/popup-message";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
-import { sendCheckDir } from "./sendCommand";
-import { object } from "prop-types";
-import path from "path";
+import { IFormAction, TdsCheckBoxField, TdsForm, TdsLabelField, TdsNumericField, TdsSelectionField, TdsSimpleTextField, TdsTextField, setDataModel, setErrorModel } from "../components/form";
+import { getDefaultActionsForm } from "../components/fields/numericField";
 
 
 enum ReceiveCommandEnum {
@@ -30,14 +28,7 @@ type TFields = {
 const ROWS_LIMIT: number = 5;
 
 export default function AddServerView() {
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    setError,
-    getValues,
-    formState: { errors, isDirty, isValid },
-  } = useForm<TFields>({
+  const methods = useForm<TFields>({
     defaultValues: {
       serverName: "",
       address: "",
@@ -52,7 +43,7 @@ export default function AddServerView() {
 
   const { fields, remove, insert } = useFieldArray(
     {
-      control,
+      control: methods.control,
       name: "includePaths"
     });
 
@@ -72,16 +63,17 @@ export default function AddServerView() {
           while (model.includePaths.length < ROWS_LIMIT) {
             model.includePaths.push({ path: "" });
           }
-
-          setValue("serverName", model.serverName);
-          setValue("address", model.address);
-          setValue("port", model.port);
-          setValue("includePaths", model.includePaths);
+          setDataModel<TFields>(methods.setValue, model);
+          // setValue("serverName", model.serverName);
+          // setValue("address", model.address);
+          // setValue("port", model.port);
+          // setValue("includePaths", model.includePaths);
 
           break;
         case CommonCommandFromPanelEnum.ValidateResponse:
+          //command.data as any);
           Object.keys(command.data).forEach((fieldName: string) => {
-            setError(fieldName as any, {
+            methods.setError(fieldName as any, {
               message: command.data[fieldName].message,
               type: command.data[fieldName].type
             })
@@ -103,7 +95,7 @@ export default function AddServerView() {
 
   function addIncludePath(folder: string, index: number) {
 
-    if (getValues().includePaths.findIndex((includePath: TIncludeData) => includePath.path.toLowerCase() == folder.toLowerCase()) == -1) {
+    if (methods.getValues().includePaths.findIndex((includePath: TIncludeData) => includePath.path.toLowerCase() == folder.toLowerCase()) == -1) {
       remove(index);
       insert(index, { path: folder });
     };
@@ -114,26 +106,25 @@ export default function AddServerView() {
     insert(index, { path: "" });
   }
 
-  const model: TFields = getValues();
+  const model: TFields = methods.getValues();
   const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludeData) => row.path == "");
   const actions: IFormAction[] = getDefaultActionsForm();
-  actions[0].enabled = isDirty && isValid;
+  //actions[0].enabled = isDirty && isValid;
 
   return (
     <main>
-      <ErrorBoundary>
-        <Page title="Add Server" linkToDoc="[Registro de Servidores]servers.md#registro-de-servidores">
-          <TDSForm
-            actions={actions}
-            errors={errors}
-            control={control}
-            onSubmit={handleSubmit(onSubmit)}>
+      <Page title="Add Server" linkToDoc="[Registro de Servidores]servers.md#registro-de-servidores">
+        <FormProvider {...methods} >
+          <TdsForm<TFields>
+            onSubmit={onSubmit}
+            methods={methods}
+            actions={actions}>
+
             <section className="tds-group-container" >
-              <TDSSelectionField
+              <TdsSelectionField
                 name="serverType"
                 label="Server Type"
                 info={"Selecione o tipo do servidor Protheus"}
-                control={control}
                 rules={{ required: true }}
                 options={[
                   { value: "totvs_server_protheus", text: "Protheus (Adv/PL)" },
@@ -142,93 +133,48 @@ export default function AddServerView() {
                 ]}
               />
 
-              <TDSCheckBoxField
+              <TdsCheckBoxField
+                info=""
                 name="immediateConnection"
                 label="&nbsp;"
                 textLabel="Connect immediately"
-                control={control}
-                onChecked={(checked: boolean) => setValue("immediateConnection", checked)}
               />
 
             </section>
 
-            <TDSTextField
+            <TdsTextField
               name="serverName"
               label="Server name"
               info="Informe um nome que o ajude a identificar o servidor"
-              control={control}
               rules={{ required: true }}
             />
 
-            <TDSTextField
+            <TdsTextField
               name="address"
               label="Address"
               info="Informe IP ou nome do servidor no qual esta o Protheus"
-              control={control}
               rules={{ required: true }}
             />
 
-            <TDSNumericField
+            <TdsNumericField
               name="port"
               label="Port"
               info="Informe a porta de conexão do SC"
-              control={control}
               rules={{
                 required: true,
                 min: { value: 1, message: "[Port] is not valid range. Min: 1 Max: 65535" },
                 max: { value: 65535, message: "[Port] is not valid range. Min: 1 Max: 65535" }
               }} />
 
-            <section className="tds-group-container" >
-              <p className="tds-item-grow">Include directories
-                <PopupMessage fieldName="include" message="Informe as pastas onde os arquivos de definição devem ser procurados" />
-              </p>
-            </section>
+            <TdsLabelField
+              name={"includeDirectoriesLabel"}
+              label={"Include directories"}
+              info={"Informe as pastas onde os arquivos de definição devem ser procurados"} />
 
-            <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
-              {fields.map((row: FieldArrayWithId<TFields, "includePaths", "id">, index: number) => (
-                <VSCodeDataGridRow key={row.id}>
-                  {row.path !== "" &&
-                    <>
-                      <VSCodeDataGridCell grid-column="1">
-                        <VSCodeButton appearance="icon" onClick={() => removeIncludePath(index)} >
-                          <span className="codicon codicon-close"></span>
-                        </VSCodeButton>
-                      </VSCodeDataGridCell>
-                      <VSCodeDataGridCell grid-column="2">
-                        <TDSSimpleTextField
-                          name={`includePaths.${index}.path`}
-                          control={control}
-                          readOnly={true}
-                        />
-                      </VSCodeDataGridCell>
-                    </>
-                  }
-                  {((row.path == "") && (index !== indexFirstPathFree)) &&
-                    <>
-                      <VSCodeDataGridCell grid-column="1">&nbsp;</VSCodeDataGridCell>
-                      <VSCodeDataGridCell grid-column="2">&nbsp;</VSCodeDataGridCell>
-                    </>
-                  }
-                  {index == indexFirstPathFree &&
-                    <>
-                      <VSCodeDataGridCell grid-column="2">
-                        <TDSSelectionFolderField
-                          control={control}
-                          onSelect={(folder) => addIncludePath(folder, index)}
-                          name={`btnSelectFolder.${index}`}
-                          info={"Selecione uma pasta que contenha arquivos de definição"} />
-                      </VSCodeDataGridCell>
-                    </>
-                  }
-                </VSCodeDataGridRow>
-              ))
-              }
-            </VSCodeDataGrid>
-            <p>These settings can also be changed in %HOME_USER%/.totvsls/servers.json</p>
-          </TDSForm>
-        </Page>
-      </ErrorBoundary>
+          </TdsForm>
+        </FormProvider>
+      </Page>
     </main >
   );
 }
+

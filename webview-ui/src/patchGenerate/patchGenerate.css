@@ -1,22 +1,35 @@
-#objectsFilteredGrid {
-	width: 40%;
-}
+  [name="outputPath"] {
+  	width: 30rem;
+  }
 
-[name^="filter."] {
-	width: 20rem;
-}
+  [name="btn-outputPath"] {
+  	margin-top: 1rem;
+  	width: 110px;
+  }
 
-[name^="objectsFiltered."][name$=".check"] {
-	width: 15rem;
-	margin: 0;
-}
+  [name="outputFilename"] {
+  	width: 20rem;
+  }
 
-[name^="objectsFiltered."][name$=".type"] {
-	width: 3rem;
-	margin: 0;
-}
+  #objectsFilteredGrid {
+  	width: 40%;
+  }
 
-[name^="objectsFiltered."][name$=".data"] {
-	width: 10rem;
-	margin: 0;
-}
+  [name^="filter."] {
+  	width: 20rem;
+  }
+
+  [name^="objectsFiltered."][name$=".check"] {
+  	width: 15rem;
+  	margin: 0;
+  }
+
+  [name^="objectsFiltered."][name$=".type"] {
+  	width: 3rem;
+  	margin: 0;
+  }
+
+  [name^="objectsFiltered."][name$=".data"] {
+  	width: 10rem;
+  	margin: 0;
+  }

@@ -1,0 +1,47 @@
+import { VSCodeButton, VSCodeDropdown, VSCodeOption, VSCodeTextField, VSCodeCheckbox, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
+
+import { ButtonAppearance } from "@vscode/webview-ui-toolkit";
+import PopupMessage from "./popup-message";
+import { FieldError, FieldValues, Form, FormProps, SubmitHandler, UseControllerProps, UseFormReturn, useController, useForm } from "react-hook-form";
+import { sendClose } from "../utilities/common-command-webview";
+import { ChangeEvent } from "react";
+
+/**
+ * - 'hook' useFieldArray e propriedade 'disabled':
+ *   Por comportamento do 'hook', campos com 'disabled' ativo não são armazenados no array associado ao 'hook'.
+ *   Use 'readOnly' como paliativo.
+ */
+
+declare module "react" {
+	interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
+		webkitdirectory?: string;
+		directory?: string;
+	}
+}
+
+
+
+type TDSCommonProps = {
+	readOnly?: boolean
+	className?: string;
+}
+
+type TDSLabelProps = TDSCommonProps & {
+	label: string;
+}
+
+type TDSFieldProps = TDSCommonProps & {
+	label: string;
+	info: string;
+	onChange?: (event: ChangeEvent<HTMLInputElement>) => any;
+}
+
+
+type TDSSimpleCheckBoxProps = TDSCommonProps & {
+	textLabel: string;
+	onChecked: (checked: boolean) => any;
+}
+
+
+
+

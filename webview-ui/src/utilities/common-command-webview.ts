@@ -23,7 +23,9 @@ export enum CommonCommandToPanelEnum {
 	Close = "CLOSE",
 	Ready = "READY",
 	Validate = "VALIDATE",
-	CheckDir = "CHECK_DIR"
+	CheckDir = "CHECK_DIR",
+	SelectFolder = "SELECT_FOLDER",
+	UpdateModel = "UPDATE_MODEL",
 }
 
 export type CommonCommandToPanel = CommonCommandToPanelEnum;
@@ -55,6 +57,19 @@ export function sendReady() {
 	vscode.postMessage(message);
 }
 
+
+export function sendSelectFolder(model: TModelData, currentFolder: string) {
+	const message: SendMessage<CommonCommandToPanelEnum, TModelData> = {
+		command: CommonCommandToPanelEnum.SelectFolder,
+		data: {
+			model: model,
+			currentFolder: currentFolder
+		}
+	}
+
+	vscode.postMessage(message);
+}
+
 export function sendValidateModel(model: TModelData) {
 	const message: SendMessage<CommonCommandToPanelEnum, TModelData> = {
 		command: CommonCommandToPanelEnum.Validate,
@@ -80,6 +95,17 @@ export function sendSave(model: TModelData) {
 export function sendSaveAndClose(model: any) {
 	const message: SendMessage<CommonCommandToPanelEnum, TModelData> = {
 		command: CommonCommandToPanelEnum.SaveAndClose,
+		data: {
+			model: model
+		}
+	}
+
+	vscode.postMessage(message);
+}
+
+export function sendUpdateModel(model: any) {
+	const message: SendMessage<CommonCommandToPanelEnum, TModelData> = {
+		command: CommonCommandToPanelEnum.UpdateModel,
 		data: {
 			model: model
 		}

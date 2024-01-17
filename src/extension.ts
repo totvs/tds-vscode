@@ -319,18 +319,20 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.patchGenerate.fromRPO",
-      () => PatchGeneratePanel.render(context)
-    )
+      () => {
+        if (checkServer() && checkDebug()) {
+          PatchGeneratePanel.render(context)
+        }
+      })
   );
 
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.patchGenerate.byDifference",
       () => {
-        vscode.window.setStatusBarMessage(
-          `$(gear~spin) ${vscode.l10n.t("Starting package generation...")}`,
-          Promise.resolve(PatchGeneratePanel.render(context))
-        );
+        if (checkServer() && checkDebug()) {
+          PatchGeneratePanel.render(context);
+        }
       }
     )
   );
@@ -402,8 +404,11 @@ export function activate(context: ExtensionContext) {
 
   //Apresenta página de geração de WSDL
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.ws.show", () =>
-      GenerateWebServicePanel.render(context)
+    commands.registerCommand("totvs-developer-studio.ws.show", () => {
+      if (checkServer() && checkDebug()) {
+        GenerateWebServicePanel.render(context)
+      }
+    }
     )
   );
 
@@ -750,4 +755,24 @@ export function canDebug(): boolean {
   }
 
   return result;
+}
+
+function checkServer(silent: boolean = false): boolean {
+  const server = ServersConfig.getCurrentServer();
+
+  if (!server && !silent) {
+    vscode.window.showErrorMessage(
+      vscode.l10n.t("There is no server connected.")
+    );
+  }
+
+  return server != undefined;
+}
+
+function checkDebug(silent: boolean = false): boolean {
+  if (_debugEvent && !silent) {
+    vscode.window.showWarningMessage("This operation is not allowed during a debug.")
+  }
+
+  return _debugEvent == undefined ? true : _debugEvent;
 }

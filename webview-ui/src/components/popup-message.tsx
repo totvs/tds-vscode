@@ -1,20 +1,41 @@
+import { ControllerFieldState } from "react-hook-form";
 import "./popup-message.css";
+import { TdsFieldProps } from "./form";
 
 export interface IPopupMessage {
-	fieldName: string;
-	message: string
-	type?: "info" | "warning" | "error"
+	field: TdsFieldProps,
+	fieldState: ControllerFieldState
+}
+
+function buildMessage(props: IPopupMessage): string {
+	const { label, info } = props.field;
+	const { error } = props.fieldState;
+	let message: string = info || "";
+
+	if (error) {
+		if (error.type == "required") {
+			message = `[${label}] is required`;
+		} else if (error.type == "min") {
+			message = `[${label}] is not valid range (min value).`;
+		} else if (error.type == "max") {
+			message = `[${label}] is not valid range (max value).`;
+		} else {
+			message = error.message || `${error.type}<Unknown>`
+		}
+	}
+
+	return message;
 }
 
 export default function PopupMessage(props: IPopupMessage): JSX.Element {
 	const OFFSET_LEFT: number = 20;
 	const OFFSET_TOP: number = 2;
+	const type: string = props.fieldState.invalid ? "error" : "info";
 
-	const type = props.type || "info";
-	var activateClick: boolean = false;
+	let message: string = buildMessage(props);
 
 	const prepareElement: any = (event: any): HTMLSpanElement => {
-		var popup = document.getElementById("popup_" + props.fieldName) as HTMLElement;
+		var popup = document.getElementById("popup_" + props.field.name) as HTMLElement;
 		var parent = popup.parentElement!.parentElement as HTMLElement;
 
 		if (parent) {
@@ -27,32 +48,22 @@ export default function PopupMessage(props: IPopupMessage): JSX.Element {
 	};
 
 	const mouseOver: any = (event: any) => {
-		if (!activateClick) {
-			const popup = prepareElement(event);
-
-			popup.classList.toggle("show");
-		}
-	};
-
-	const mouseOut: any = (event: any) => {
-		var popup = document.getElementById("popup_" + props.fieldName) as HTMLElement;
-		popup.classList.toggle("show");
-	};
-
-	const mouseClick: any = (event: any) => {
 		const popup = prepareElement(event);
 
 		popup.classList.toggle("show");
-		activateClick = !activateClick;
 	};
 
-	//onClick={(event) => mouseClick(event)}
+	const mouseOut: any = (event: any) => {
+		var popup = document.getElementById("popup_" + props.field.name) as HTMLElement;
+		popup.classList.toggle("show");
+	};
+
 	return (
 		<span slot="end" className={`tds-popup codicon codicon-${type} tds-${type}`}
 			onMouseOver={(event) => mouseOver(event)}
 			onMouseOut={(event) => mouseOut(event)}
 		>
-			<span className={`tds-popup-text tds-${type}`} id={"popup_" + props.fieldName}>{props.message}.</span>
+			<span className={`tds-popup-text tds-${type}`} id={"popup_" + props.field.name}>{message}.</span>
 		</span>
 	);
 }

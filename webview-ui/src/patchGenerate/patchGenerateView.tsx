@@ -2,13 +2,12 @@ import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } f
 
 import "./patchGenerate.css";
 import Page from "../components/page";
-import ErrorBoundary from "../components/errorBoundary";
-import React, { ChangeEvent } from "react";
-import { Control, FieldArrayWithId, FieldValues, SubmitHandler, UseControllerProps, UseFormSetValue, useFieldArray, useForm } from "react-hook-form";
-import TDSForm, { IFormAction, TDSCheckBoxField, TDSLabelField, TDSSimpleCheckBoxField, TDSSimpleTextField, TDSTextField, getDefaultActionsForm } from "../components/form";
+import React from "react";
+import { FieldValues, FormProvider, SubmitHandler, UseControllerProps, UseFormSetValue, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
 import { TInspectorObject } from "../model/inspectorObjectModel";
-import { log } from "console";
+import { TdsSimpleCheckBoxField, TdsSimpleTextField, IFormAction, TdsForm, TdsTextField, TdsCheckBoxField, TdsLabelField, setDataModel, setErrorModel } from "../components/form";
+import { getDefaultActionsForm } from "../components/fields/numericField";
 
 enum ReceiveCommandEnum {
 }
@@ -50,7 +49,8 @@ interface ISelectObjectComponentProps<T extends FieldValues> extends UseControll
   //fieldName: string
 }
 
-function SelectObjectComponent(props: ISelectObjectComponentProps<TFields> & { _setValue: UseFormSetValue<TFields> }) {
+function SelectObjectComponent(props: ISelectObjectComponentProps<TFields>
+  & { _setValue?: UseFormSetValue<TFields> }) {
   const { fields, replace } = useFieldArray(
     {
       control: props.control,
@@ -69,29 +69,29 @@ function SelectObjectComponent(props: ISelectObjectComponentProps<TFields> & { _
           return (
             <VSCodeDataGridRow key={row.id}>
               <VSCodeDataGridCell grid-column="1" >
-                <TDSSimpleCheckBoxField
+                <TdsSimpleCheckBoxField
                   className="tds-no-margin"
                   name={`${props.name}.${index}.check`}
                   textLabel={row.name}
-                  control={props.control}
-                  onChecked={(checked: boolean) => {
-                    console.log("checked=", checked);
-                    props._setValue(`objectsFiltered.${index}.check`, checked);
-                  }} />
+                  info=""
+                  label={""}
+                />
               </VSCodeDataGridCell>
               <VSCodeDataGridCell grid-column="2">
-                <TDSSimpleTextField
+                <TdsSimpleTextField
                   className="tds-no-margin"
                   name={`${props.name}.${index}.type`}
-                  control={props.control}
                   readOnly={true}
+                  info=""
+                  label={""}
                 />
               </VSCodeDataGridCell>
               <VSCodeDataGridCell grid-column="3">
-                <TDSSimpleTextField
+                <TdsSimpleTextField
                   className="tds-no-margin"
                   name={`${props.name}.${index}.date`}
-                  control={props.control}
+                  info=""
+                  label={""}
                   readOnly={true}
                 />
               </VSCodeDataGridCell>
@@ -105,21 +105,13 @@ function SelectObjectComponent(props: ISelectObjectComponentProps<TFields> & { _
 }
 
 export default function PatchGenerateView() {
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    setError,
-    getValues,
-    watch,
-    formState: { errors, isDirty, isValid },
-  } = useForm<TFields>({
+  const methods = useForm<TFields>({
     defaultValues: EMPTY_MODEL,
     mode: "all"
   })
 
   //watch("filter");
-  const watchWarningManyItens = watch("warningManyItens");
+  const watchWarningManyItens = methods.watch("warningManyItens");
   const onSubmit: SubmitHandler<TFields> = (data) => {
     data.objectsRight = data.objectsRight.filter((object: TInspectorObject) => object.name.length > 0);
 
@@ -136,23 +128,24 @@ export default function PatchGenerateView() {
 
       switch (command.command) {
         case CommonCommandFromPanelEnum.UpdateModel:
-          const objectsFiltered = extractData(getValues("filter") || "", model.objectsLeft);
+          model.objectsFiltered = extractData(methods.getValues("filter") || "", model.objectsLeft);
           console.log("objectsLeft=", model.objectsLeft.length);
-          console.log("filtered=", objectsFiltered.length);
-
-          setValue("objectsLeft", model.objectsLeft);
-          setValue("objectsFiltered", objectsFiltered);
-          setValue("warningManyItens", objectsFiltered.length > ROWS_LIMIT);
+          console.log("filtered=", model.objectsFiltered.length);
+          setDataModel(methods.setValue, model);
+          // setValue("objectsLeft", model.objectsLeft);
+          // setValue("objectsFiltered", objectsFiltered);
+          // setValue("warningManyItens", objectsFiltered.length > ROWS_LIMIT);
 
           //replace(extractData(getValues("filter") || "", model.objectsLeft));
           break;
         case CommonCommandFromPanelEnum.ValidateResponse:
-          Object.keys(command.data).forEach((fieldName: string) => {
-            setError(fieldName as any, {
-              message: command.data[fieldName].message,
-              type: command.data[fieldName].type
-            })
-          })
+          setErrorModel(methods.setError, command.data as any);
+          // Object.keys(command.data).forEach((fieldName: string) => {
+          //   setError(fieldName as any, {
+          //     message: command.data[fieldName].message,
+          //     type: command.data[fieldName].type
+          //   })
+          // })
           break;
         default:
           break;
@@ -192,7 +185,7 @@ export default function PatchGenerateView() {
   // const model: TFields = getValues();
   // model.filter = model.filter.trim();
   const actions: IFormAction[] = getDefaultActionsForm();
-  actions[0].enabled = isDirty && isValid;
+  //actions[0].enabled = isDirty && isValid;
 
   //const warningManyItens: boolean = model.objectsFiltered.length > ROWS_LIMIT;
   //setValue("objectsLeft", fieldsFiltered);
@@ -202,85 +195,62 @@ export default function PatchGenerateView() {
 
   return (
     <main>
-      <ErrorBoundary>
-        <Page title="Patch generation from RPO" linkToDoc="[Geração de pacote de atualização]servers.md#registro-de-servidores">
-          <TDSForm
+      <Page title="Patch generation from RPO" linkToDoc="[Geração de pacote de atualização]servers.md#registro-de-servidores">
+        <FormProvider {...methods} >
+          <TdsForm
+            methods={methods}
             actions={actions}
-            errors={errors}
-            control={control}
-            onSubmit={handleSubmit(onSubmit)}>
+            onSubmit={onSubmit}>
 
             <section className="tds-group-container" >
-              <TDSTextField
+              <TdsTextField
                 className="tds-item-grow"
                 name="filter"
                 label="Filter"
-                control={control}
                 info="Filtrar por nome do objeto. Ex: MAT or FAT*"
-                onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                  console.log((">>>>> onChange filter"));
-
-                  const filter: string = event.currentTarget.value.trim();
-                  const objectsLeft: TInspectorObject[] = getValues("objectsLeft");
-                  const objectsFiltered = extractData(filter, objectsLeft);
-                  console.log("filtered=", objectsFiltered.length);
-                  //setValue("objectsLeft", model.objectsLeft);
-                  setValue("objectsFiltered", objectsFiltered);
-                  setValue("warningManyItens", objectsFiltered.length > ROWS_LIMIT);
-                  //replace(objectsFiltered)
-                }}
               />
 
-              <TDSCheckBoxField
+              <TdsCheckBoxField
                 name="includeTRes"
                 label="&nbsp;"
                 textLabel={"Include *.TRES"}
-                control={control}
-                onChecked={(checked: boolean) => {
-                  setValue("includeTRes", checked);
-                }} />
+                info={""} />
             </section>
 
             <section className="tds-group-container" >
               {watchWarningManyItens ?
-                <TDSLabelField
+                <TdsLabelField
                   name="warningManyItens"
-                  control={control}
-                  label=
-                  {`List has more than ${ROWS_LIMIT} items. Enter a more restrictive filter.`}
-                />
+                  label={`List has more than ${ROWS_LIMIT} items. Enter a more restrictive filter.`}
+                  info={""} />
                 :
-                <TDSLabelField
+                <TdsLabelField
                   name="warningManyItens"
-                  control={control}
-                  label="&nbsp;" />
+                  label="&nbsp;"
+                  info={""} />
               }
             </section>
 
             <section className="tds-group-container" >
               <SelectObjectComponent
                 name="objectsFiltered"
-                control={control}
-                _setValue={setValue}
               />
               <VSCodeButton appearance="icon" onClick={() => {
-                const selectedObjects = getValues("objectsFiltered").filter((value) => value.check);
+                const selectedObjects = methods.getValues("objectsFiltered").filter((value) => value.check);
                 console.log(">>>>> confirm select");
                 console.log("selectedObjects=", selectedObjects.length);
 
-                setValue("objectsRight", selectedObjects);
+                methods.setValue("objectsRight", selectedObjects);
               }} >
                 <span className="codicon codicon-arrow-right"></span>
               </VSCodeButton>
               <SelectObjectComponent
-                control={control}
                 name="objectsRight"
-                _setValue={setValue}
               />
             </section>
-          </TDSForm>
-        </Page>
-      </ErrorBoundary>
+          </TdsForm>
+        </FormProvider>
+      </Page>
     </main >
   );
 }

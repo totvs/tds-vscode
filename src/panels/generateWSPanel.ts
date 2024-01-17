@@ -19,7 +19,7 @@ import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webv
 import { ServersConfig } from "../utils";
 import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
 import { IWsdlGenerateResult, sendWsdlGenerateRequest } from "../protocolMessages";
-import { ITdsPanel, TFieldErrors, isErrors } from "../model/field-model";
+import { TdsPanel, TFieldErrors, isErrors } from "../model/field-model";
 import { TWebServiceModel } from "../model/webServiceModel";
 import * as fse from "fs-extra";
 import path from "path";
@@ -30,30 +30,8 @@ enum GenerateWebServiceCommandEnum {
 
 type GenerateWebServiceCommand = CommonCommandFromWebViewEnum & GenerateWebServiceCommandEnum;
 
-export class GenerateWebServicePanel implements ITdsPanel<TWebServiceModel> {
+export class GenerateWebServicePanel extends TdsPanel<TWebServiceModel> {
 	public static currentPanel: GenerateWebServicePanel | undefined;
-	private readonly _panel: vscode.WebviewPanel;
-	private _disposables: vscode.Disposable[] = [];
-
-	/**
-	 * The GenerateWebServicePanel class private constructor (called only from the render method).
-	 *
-	 * @param panel A reference to the webview panel
-	 * @param extensionUri The URI of the directory containing the extension
-	 */
-	private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
-		this._panel = panel;
-
-		// Set an event listener to listen for when the panel is disposed (i.e. when the user closes
-		// the panel or when the panel is closed programmatically)
-		this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
-
-		// Set the HTML content for the webview panel
-		this._panel.webview.html = this._getWebviewContent(extensionUri);
-
-		// Set an event listener to listen for messages passed from the webview context
-		this._setWebviewMessageListener(this._panel.webview);
-	}
 
 	public static render(context: vscode.ExtensionContext): GenerateWebServicePanel {
 		const extensionUri: vscode.Uri = context.extensionUri;
@@ -88,17 +66,7 @@ export class GenerateWebServicePanel implements ITdsPanel<TWebServiceModel> {
 	public dispose() {
 		GenerateWebServicePanel.currentPanel = undefined;
 
-		// Dispose of the current webview panel
-		this._panel.dispose();
-
-		// Dispose of all disposables (i.e. commands) for the current webview panel
-		while (this._disposables.length) {
-			const disposable = this._disposables.pop();
-
-			if (disposable) {
-				disposable.dispose();
-			}
-		}
+		super.dispose();
 	}
 
 	/**
@@ -111,7 +79,7 @@ export class GenerateWebServicePanel implements ITdsPanel<TWebServiceModel> {
 	 * @returns A template string literal containing the HTML that should be
 	 * rendered within the webview panel
 	 */
-	private _getWebviewContent(extensionUri: vscode.Uri) {
+	protected getWebviewContent(extensionUri: vscode.Uri) {
 
 		return getWebviewContent(this._panel.webview, extensionUri, "generateWebServiceView", { title: this._panel.title });
 	}
@@ -122,56 +90,25 @@ export class GenerateWebServicePanel implements ITdsPanel<TWebServiceModel> {
 	 *
 	 * @param webview A reference to the extension webview
 	 */
-	private _setWebviewMessageListener(webview: vscode.Webview) {
-		webview.onDidReceiveMessage(
-			async (message: ReceiveMessage<GenerateWebServiceCommand, TWebServiceModel>) => {
-				const command: GenerateWebServiceCommand = message.command;
-				const data = message.data;
+	protected async panelListener(message: ReceiveMessage<GenerateWebServiceCommand, TWebServiceModel>, result: any): Promise<any> {
+		const command: GenerateWebServiceCommand = message.command;
+		const data = message.data;
 
-				switch (command) {
-					case CommonCommandFromWebViewEnum.Ready:
-						if (data.model == undefined) {
-							this._sendUpdateModel({
-								urlOrWsdlFile: "",
-								outputPath: "",
-								outputFilename: "",
-								overwrite: false
-							});
-						}
-						break;
-					case CommonCommandFromWebViewEnum.Close:
-						GenerateWebServicePanel.currentPanel.dispose();
-						break;
-					case CommonCommandFromWebViewEnum.Save:
-					case CommonCommandFromWebViewEnum.SaveAndClose:
-						let errors: TFieldErrors<TWebServiceModel> = {};
-
-						if (await this._validateModel(data.model, errors)) {
-							if (this._saveModel(data.model)) {
-								if (command === CommonCommandFromWebViewEnum.SaveAndClose) {
-									GenerateWebServicePanel.currentPanel.dispose();
-								} else {
-									this._sendUpdateModel({
-										urlOrWsdlFile: "",
-										outputPath: data.model.outputFilename,
-										outputFilename: "",
-										overwrite: false
-									});
-								}
-							}
-						} else {
-							this._sendValidateResponse(errors);
-						}
-
-						break;
+		switch (command) {
+			case CommonCommandFromWebViewEnum.Ready:
+				if (data.model == undefined) {
+					this.sendUpdateModel({
+						urlOrWsdlFile: "",
+						outputPath: "",
+						outputFilename: "",
+						overwrite: false
+					});
 				}
-			},
-			undefined,
-			this._disposables
-		);
+				break;
+		}
 	}
 
-	async _validateModel(model: TWebServiceModel, errors: TFieldErrors<TWebServiceModel>): Promise<boolean> {
+	protected async validateModel(model: TWebServiceModel, errors: TFieldErrors<TWebServiceModel>): Promise<boolean> {
 		try {
 			model.urlOrWsdlFile = model.urlOrWsdlFile.trim();
 			model.outputPath = model.outputPath.trim();
@@ -204,17 +141,13 @@ export class GenerateWebServicePanel implements ITdsPanel<TWebServiceModel> {
 		return !isErrors(errors);
 	}
 
-	async _saveModel(model: TWebServiceModel): Promise<boolean> {
-		if (_debugEvent) {
-			vscode.window.showWarningMessage("This operation is not allowed during a debug.")
-			return;
-		}
+	protected async saveModel(model: TWebServiceModel): Promise<boolean> {
 		let server = ServersConfig.getCurrentServer();
 		const response: IWsdlGenerateResult = await sendWsdlGenerateRequest(server, model.urlOrWsdlFile);
 		if (response.returnCode !== 0) {
 			let errors: TFieldErrors<TWebServiceModel> = {};
 			errors.root = { type: "validate", message: `Protheus server was unable to generate the WS client. Code: ${response.returnCode}` };
-			this._sendValidateResponse(errors)
+			this.sendValidateResponse(errors)
 
 			return false;
 		}
@@ -228,22 +161,6 @@ export class GenerateWebServicePanel implements ITdsPanel<TWebServiceModel> {
 		this.createAndWriteOpen(pathFile, response.content);
 
 		return true;
-	}
-
-	_sendValidateResponse(errors: TFieldErrors<TWebServiceModel>) {
-		this._panel.webview.postMessage({
-			command: CommonCommandToWebViewEnum.ValidateResponse,
-			data: errors,
-		});
-	}
-
-	_sendUpdateModel(model: TWebServiceModel): void {
-		this._panel.webview.postMessage({
-			command: CommonCommandToWebViewEnum.UpdateModel,
-			data: {
-				model: model
-			}
-		});
 	}
 
 	private createAndWriteOpen(filePath: string, content: string) {

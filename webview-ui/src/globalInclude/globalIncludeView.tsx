@@ -2,13 +2,12 @@ import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } f
 
 import "./globalInclude.css";
 import Page from "../components/page";
-import ErrorBoundary from "../components/errorBoundary";
 import React from "react";
 import { TIncludeData } from "../model/addServerModel";
-import { FieldArrayWithId, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import TDSForm, { IFormAction, TDSSelectionFolderField, TDSSimpleTextField, getDefaultActionsForm } from "../components/form";
-import PopupMessage from "../components/popup-message";
+import { FieldArrayWithId, SubmitHandler, useFieldArray, useForm, FormProvider } from "react-hook-form";
+import { IFormAction, TdsForm, TdsLabelField, TdsSelectionFolderField, TdsSimpleTextField, setDataModel, setErrorModel } from "../components/form";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
+import { getDefaultActionsForm } from "../components/fields/numericField";
 
 enum ReceiveCommandEnum {
 }
@@ -21,14 +20,7 @@ type TFields = {
 const ROWS_LIMIT: number = 5;
 
 export default function GlobalIncludeView() {
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    setError,
-    getValues,
-    formState: { errors, isDirty, isValid },
-  } = useForm<TFields>({
+  const methods = useForm<TFields>({
     defaultValues: {
       includePaths: Array(ROWS_LIMIT).map(() => {
         return { path: "" };
@@ -38,7 +30,7 @@ export default function GlobalIncludeView() {
   })
   const { fields, remove, insert } = useFieldArray(
     {
-      control,
+      control: methods.control,
       name: "includePaths"
     });
 
@@ -57,16 +49,18 @@ export default function GlobalIncludeView() {
           while (model.includePaths.length < ROWS_LIMIT) {
             model.includePaths.push({ path: "" });
           }
-          setValue("includePaths", model.includePaths);
+          setDataModel(methods.setValue, model);
+          //setValue("includePaths", model.includePaths);
 
           break;
         case CommonCommandFromPanelEnum.ValidateResponse:
-          Object.keys(command.data).forEach((fieldName: string) => {
-            setError(fieldName as any, {
-              message: command.data[fieldName].message,
-              type: command.data[fieldName].type
-            })
-          })
+          setErrorModel(methods.setError, command.data as any);
+          // Object.keys(command.data).forEach((fieldName: string) => {
+          //   setError(fieldName as any, {
+          //     message: command.data[fieldName].message,
+          //     type: command.data[fieldName].type
+          //   })
+          // })
           break;
         default:
           break;
@@ -84,7 +78,7 @@ export default function GlobalIncludeView() {
 
   function addIncludePath(folder: string, index: number) {
 
-    if (getValues().includePaths.findIndex((includePath: TIncludeData) => includePath.path.toLowerCase() == folder.toLowerCase()) == -1) {
+    if (methods.getValues().includePaths.findIndex((includePath: TIncludeData) => includePath.path.toLowerCase() == folder.toLowerCase()) == -1) {
       remove(index);
       insert(index, { path: folder });
     };
@@ -95,27 +89,27 @@ export default function GlobalIncludeView() {
     insert(index, { path: "" });
   }
 
-  const model: TFields = getValues();
+  const model: TFields = methods.getValues();
   const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludeData) => row.path == "");
   const actions: IFormAction[] = getDefaultActionsForm();
-  actions[0].enabled = isDirty && isValid;
+  //actions[0].enabled = isDirty && isValid;
 
   return (
     <main>
-      <ErrorBoundary>
-        <Page title="Global Includes" linkToDoc="[Include global]servers.md#registro-de-servidores">
-          <TDSForm
+      <Page title="Global Includes" linkToDoc="[Include global]servers.md#registro-de-servidores">
+        <FormProvider {...methods} >
+          <TdsForm
             actions={actions}
-            errors={errors}
-            control={control}
-            onSubmit={handleSubmit(onSubmit)}>
+            methods={methods}
+            onSubmit={onSubmit}>
 
             <p>The global search folder list is used when not specified in the server definition</p>
 
             <section className="tds-group-container" >
-              <p className="tds-item-grow">Include directories
-                <PopupMessage fieldName="include" message="Informe as pastas onde os arquivos de definição devem ser procurados" />
-              </p>
+              <TdsLabelField
+                label="Include directories"
+                name={"includeDirectoriesLabel"}
+                info={"Informe as pastas onde os arquivos de definição devem ser procurados"} />
             </section>
 
             <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
@@ -129,11 +123,10 @@ export default function GlobalIncludeView() {
                         </VSCodeButton>
                       </VSCodeDataGridCell>
                       <VSCodeDataGridCell grid-column="2">
-                        <TDSSimpleTextField
+                        <TdsSimpleTextField
                           name={`includePaths.${index}.path`}
-                          control={control}
-                          readOnly={true}
-                        />
+                          label={""}
+                          info={""} />
                       </VSCodeDataGridCell>
                     </>
                   }
@@ -146,11 +139,11 @@ export default function GlobalIncludeView() {
                   {index == indexFirstPathFree &&
                     <>
                       <VSCodeDataGridCell grid-column="2">
-                        <TDSSelectionFolderField
-                          control={control}
+                        <TdsSelectionFolderField
                           onSelect={(folder) => addIncludePath(folder, index)}
                           name={`btnSelectFolder.${index}`}
-                          info={"Selecione uma pasta que contenha arquivos de definição"} />
+                          info={"Selecione uma pasta que contenha arquivos de definição"}
+                          label={""} />
                       </VSCodeDataGridCell>
                     </>
                   }
@@ -159,9 +152,10 @@ export default function GlobalIncludeView() {
               }
             </VSCodeDataGrid>
             <p>These settings can also be changed in %HOME_USER%/.totvsls/servers.json</p>
-          </TDSForm>
-        </Page>
-      </ErrorBoundary>
+          </TdsForm>
+        </FormProvider>
+      </Page>
     </main >
   );
 }
+

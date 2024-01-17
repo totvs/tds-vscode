@@ -1,12 +1,11 @@
 
 import "./generateWs.css";
 import Page from "../components/page";
-import ErrorBoundary from "../components/errorBoundary";
 import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import TDSForm, { IFormAction, TDSCheckBoxField, TDSSelectionFileField, TDSSelectionFolderField, TDSTextField, getDefaultActionsForm } from "../components/form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
-
+import { IFormAction, TdsCheckBoxField, TdsForm, TdsSelectionFileField, TdsSelectionFolderField, TdsTextField, setDataModel, setErrorModel } from "../components/form";
+import { getDefaultActionsForm } from "../components/fields/numericField";
 
 enum ReceiveCommandEnum {
 }
@@ -20,14 +19,7 @@ type TFields = {
 }
 
 export default function GenerateWsView() {
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    setError,
-    getValues,
-    formState: { errors, isDirty, isValid },
-  } = useForm<TFields>({
+  const methods = useForm<TFields>({
     defaultValues: {
       urlOrWsdlFile: "",
       outputPath: "",
@@ -50,19 +42,21 @@ export default function GenerateWsView() {
 
       switch (command.command) {
         case CommonCommandFromPanelEnum.UpdateModel:
-          setValue("urlOrWsdlFile", model.urlOrWsdlFile);
-          setValue("outputPath", model.outputPath);
-          setValue("outputFilename", model.outputFilename);
-          setValue("overwrite", model.overwrite);
+          setDataModel(methods.setValue, model);
+          // setValue("urlOrWsdlFile", model.urlOrWsdlFile);
+          // setValue("outputPath", model.outputPath);
+          // setValue("outputFilename", model.outputFilename);
+          // setValue("overwrite", model.overwrite);
 
           break;
         case CommonCommandFromPanelEnum.ValidateResponse:
-          Object.keys(command.data).forEach((fieldName: string) => {
-            setError(fieldName as any, {
-              message: command.data[fieldName].message,
-              type: command.data[fieldName].type
-            })
-          })
+          setErrorModel(methods.setError, command.data as any);
+          // Object.keys(command.data).forEach((fieldName: string) => {
+          //   setError(fieldName as any, {
+          //     message: command.data[fieldName].message,
+          //     type: command.data[fieldName].type
+          //   })
+          // })
           break;
         default:
           break;
@@ -79,78 +73,76 @@ export default function GenerateWsView() {
   }, []);
 
   const actions: IFormAction[] = getDefaultActionsForm();
-  actions[0].enabled = isDirty && isValid;
+  //actions[0].enabled = isDirty && isValid;
 
   return (
     <main>
-      <ErrorBoundary>
-        <Page title="Generate Web Service Client" linkToDoc="[Geração de Web Service]servers.md#registro-de-servidores">
-          <TDSForm
+      <Page title="Generate Web Service Client" linkToDoc="[Geração de Web Service]servers.md#registro-de-servidores">
+        <FormProvider {...methods} >
+          <TdsForm
+            methods={methods}
             actions={actions}
-            errors={errors}
-            control={control}
-            onSubmit={handleSubmit(onSubmit)}>
+            onSubmit={onSubmit}
+          >
 
             <section className="tds-group-container" >
-              <TDSTextField
+              <TdsTextField
                 className="tds-item-grow"
                 name="urlOrWsdlFile"
                 label="URL or Wsdl File"
                 info="Informe a URL de acesso ao WSDL ou o arquivo com a definição do serviço"
-                control={control}
                 rules={{ required: true }}
               />
 
-              <TDSSelectionFileField
+              <TdsSelectionFileField
+                label={""}
                 name="btn-urlOrWsdlFile"
-                control={control}
-                onSelect={(files) => setValue("urlOrWsdlFile", files[0])}
-                info={"Selecione o arquivo com a definição do serviço"} />
+                info={"Selecione o arquivo com a definição do serviço"}
+                onSelect={function (file: string[]) {
+                  throw new Error("Function not implemented.");
+                }} />
             </section>
 
             <section className="tds-group-container" >
-
-              <TDSTextField
+              <TdsTextField
                 className="tds-item-grow"
                 name="outputPath"
                 label="Output directory"
-                control={control}
                 readOnly={true}
                 rules={{ required: true }}
                 info={"Selecione a pasta de onde o fonte gerado será gravado"}
               />
 
-              <TDSSelectionFolderField
+              <TdsSelectionFolderField
+                label=""
                 name="btn-outputPath"
-                control={control}
-                onSelect={(folder) => setValue("outputPath", folder)}
-                info={"Selecione a pasta de onde o fonte gerado será gravado"} />
-
+                info={"Selecione a pasta de onde o fonte gerado será gravado"}
+                onSelect={function (folder: string) {
+                  throw new Error("Function not implemented.");
+                }} />
             </section>
 
             <section className="tds-group-container" >
-              <TDSTextField
+              <TdsTextField
                 name="outputFilename"
                 label="Output Filename"
-                control={control}
                 readOnly={true}
                 rules={{ required: true }}
                 info={"Selecione nome do fonte a ser  gravado"}
               />
 
-              <TDSCheckBoxField
+              <TdsCheckBoxField
+                info=""
                 className="tds-item-grow"
                 name="overwrite"
                 label="&nbsp;"
                 textLabel="If already exist, can overwrite"
-                control={control}
-                onChecked={(checked: boolean) => setValue("overwrite", checked)}
               />
-
             </section>
-          </TDSForm>
-        </Page>
-      </ErrorBoundary>
+          </TdsForm>
+        </FormProvider>
+      </Page>
     </main >
   );
 }
+

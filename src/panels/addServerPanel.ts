@@ -20,38 +20,15 @@ import Utils, { ServersConfig } from "../utils";
 import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
 import { IValidationInfo, sendValidationRequest } from "../protocolMessages";
 import { TServerModel, TServerType } from "../model/serverModel";
-import { ITdsPanel, TFieldErrors, TIncludePath, isErrors } from "../model/field-model";
-import { ResponseError } from "vscode-languageclient";
+import { TFieldErrors, TIncludePath, TdsPanel, isErrors } from "../model/field-model";
 
 enum AddServerCommandEnum {
 }
 
 type AddServerCommand = CommonCommandFromWebViewEnum & AddServerCommandEnum;
 
-export class AddServerPanel implements ITdsPanel<TServerModel> {
+export class AddServerPanel extends TdsPanel<TServerModel> {
   public static currentPanel: AddServerPanel | undefined;
-  private readonly _panel: vscode.WebviewPanel;
-  private _disposables: vscode.Disposable[] = [];
-
-  /**
-   * The AddServerPanel class private constructor (called only from the render method).
-   *
-   * @param panel A reference to the webview panel
-   * @param extensionUri The URI of the directory containing the extension
-   */
-  private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
-    this._panel = panel;
-
-    // Set an event listener to listen for when the panel is disposed (i.e. when the user closes
-    // the panel or when the panel is closed programmatically)
-    this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
-
-    // Set the HTML content for the webview panel
-    this._panel.webview.html = this._getWebviewContent(extensionUri);
-
-    // Set an event listener to listen for messages passed from the webview context
-    this._setWebviewMessageListener(this._panel.webview);
-  }
 
   public static render(context: vscode.ExtensionContext): AddServerPanel {
     const extensionUri: vscode.Uri = context.extensionUri;
@@ -86,17 +63,7 @@ export class AddServerPanel implements ITdsPanel<TServerModel> {
   public dispose() {
     AddServerPanel.currentPanel = undefined;
 
-    // Dispose of the current webview panel
-    this._panel.dispose();
-
-    // Dispose of all disposables (i.e. commands) for the current webview panel
-    while (this._disposables.length) {
-      const disposable = this._disposables.pop();
-
-      if (disposable) {
-        disposable.dispose();
-      }
-    }
+    super.dispose();
   }
 
   /**
@@ -109,7 +76,7 @@ export class AddServerPanel implements ITdsPanel<TServerModel> {
    * @returns A template string literal containing the HTML that should be
    * rendered within the webview panel
    */
-  private _getWebviewContent(extensionUri: vscode.Uri) {
+  protected getWebviewContent(extensionUri: vscode.Uri) {
 
     return getWebviewContent(this._panel.webview, extensionUri, "addServerView", { title: this._panel.title });
   }
@@ -120,47 +87,26 @@ export class AddServerPanel implements ITdsPanel<TServerModel> {
    *
    * @param webview A reference to the extension webview
    */
-  private _setWebviewMessageListener(webview: vscode.Webview) {
-    webview.onDidReceiveMessage(
-      async (message: ReceiveMessage<AddServerCommand, TServerModel>) => {
-        const command: AddServerCommand = message.command;
-        const data = message.data;
+  protected async panelListener(message: ReceiveMessage<AddServerCommand, TServerModel>, result: any): Promise<any> {
+    const command: AddServerCommand = message.command;
+    const data = message.data;
 
-        switch (command) {
-          case CommonCommandFromWebViewEnum.Ready:
-            if (data.model == undefined) {
-              this._sendUpdateModel( {
-                serverType: "",
-                serverName: "",
-                port: 0,
-                address: "",
-                includePaths: [],
-                immediateConnection: true,
-                secure: false,
-                buildVersion: ""
-              });
-            }
-            break;
-          case CommonCommandFromWebViewEnum.Close:
-            AddServerPanel.currentPanel.dispose();
-            break;
-          case CommonCommandFromWebViewEnum.SaveAndClose:
-            let errors: TFieldErrors<TServerModel> = {};
-
-            if (await this._validateModel(data.model, errors)) {
-              if (this._saveModel(data.model)) {
-                AddServerPanel.currentPanel.dispose();
-              }
-            } else {
-              this._sendValidateResponse(errors);
-            }
-
-            break;
+    switch (command) {
+      case CommonCommandFromWebViewEnum.Ready:
+        if (data.model == undefined) {
+          this.sendUpdateModel({
+            serverType: "",
+            serverName: "",
+            port: 0,
+            address: "",
+            includePaths: [],
+            immediateConnection: true,
+            secure: false,
+            buildVersion: ""
+          });
         }
-      },
-      undefined,
-      this._disposables
-    );
+        break;
+    }
   }
 
   private createServer(
@@ -191,7 +137,7 @@ export class AddServerPanel implements ITdsPanel<TServerModel> {
     return serverId;
   }
 
-  async _validateModel(model: TServerModel, errors: TFieldErrors<TServerModel>): Promise<boolean> {
+  async validateModel(model: TServerModel, errors: TFieldErrors<TServerModel>): Promise<boolean> {
     try {
       model.serverType = model.serverType.trim() as TServerType;
       model.serverName = model.serverName.trim();
@@ -250,7 +196,7 @@ export class AddServerPanel implements ITdsPanel<TServerModel> {
     return !isErrors(errors);
   }
 
-  async _saveModel(model: TServerModel): Promise<boolean> {
+  async saveModel(model: TServerModel): Promise<boolean> {
     const serverId = this.createServer(
       model.serverType,
       model.serverName,
@@ -260,8 +206,10 @@ export class AddServerPanel implements ITdsPanel<TServerModel> {
       "",
       model.includePaths.map((row: any) => row.path)
     );
+
     if (serverId !== undefined) {
       const validInfoNode: IValidationInfo = await sendValidationRequest(model.address, model.port, model.serverType);
+
       ServersConfig.updateBuildVersion(
         serverId,
         validInfoNode.build,
@@ -277,21 +225,4 @@ export class AddServerPanel implements ITdsPanel<TServerModel> {
 
     return true;
   }
-
-  _sendValidateResponse(errors: TFieldErrors<TServerModel>) {
-    this._panel.webview.postMessage({
-      command: CommonCommandToWebViewEnum.ValidateResponse,
-      data: errors,
-    });
-  }
-
-  _sendUpdateModel(model: TServerModel): void {
-    this._panel.webview.postMessage({
-      command: CommonCommandToWebViewEnum.UpdateModel,
-      data: {
-        model: model
-      }
-    });
-  }
-
 }

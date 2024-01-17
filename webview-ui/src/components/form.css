@@ -37,32 +37,34 @@ span.tds-required::after {
 	margin-bottom: calc(var(--type-ramp-minus2-line-height) / 2);
 }
 
-.tds-label-field-container,
-.tds-numeric-field-container,
-.tds-text-field-container {
+.tds-field-container {
 	box-sizing: border-box;
 	display: flex;
 	flex-flow: column nowrap;
 	align-items: flex-start;
 	justify-content: flex-start;
+	width: 100%;
 }
 
-.tds-numeric-field-container input.control {
+.tds-field-container+.tds-field-container {
+	margin-top: calc(var(--type-ramp-minus2-line-height));
+}
+
+.tds-text-field input.control {
+	background-color: aqua;
+}
+
+.tds-numeric-field input.control {
 	text-align: right !important;
 	background-color: aqua;
 }
 
-.tds-selection-folder-container,
-.tds-selection-file-container {
-	margin-left: 1rem;
-}
-
-.tds-selection-folder-container input[type="file"],
-.tds-selection-file-container input[type="file"] {
+.tds-selection-folder-field input[type="file"],
+.tds-selection-file-field input[type="file"] {
 	visibility: hidden;
 }
 
-.tds-simple-text-field-container input.control {
+.tds-simple-text-field input.control {
 	width: 100%;
 }
 

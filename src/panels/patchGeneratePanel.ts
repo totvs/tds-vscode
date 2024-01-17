@@ -16,15 +16,12 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import Utils, { ServersConfig } from "../utils";
-import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
-import { IObjectData, IPatchResult, IValidationInfo, IWsdlGenerateResult, sendInspectorObjectsRequest, sendPatchGenerateMessage, sendValidationRequest, sendWsdlGenerateRequest } from "../protocolMessages";
-import { ITdsPanel, TFieldErrors, TIncludePath, isErrors } from "../model/field-model";
-import * as fse from "fs-extra";
-import path from "path";
+import { ServersConfig } from "../utils";
+import { CommonCommandFromWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
+import { IObjectData, IPatchResult, sendInspectorObjectsRequest, sendPatchGenerateMessage } from "../protocolMessages";
+import { TFieldErrors, TdsPanel, isErrors } from "../model/field-model";
 import { _debugEvent } from "../debug";
 import { TGeneratePatchModel } from "../model/generatePatchModel";
-import { TInspectorObject } from "../patch/patchUtil";
 
 enum PatchGenerateCommandEnum {
 }
@@ -32,36 +29,18 @@ enum PatchGenerateCommandEnum {
 type PatchGenerateCommand = CommonCommandFromWebViewEnum & PatchGenerateCommandEnum;
 
 const EMPTY_MODEL: TGeneratePatchModel = {
+  patchName: "",
+  outputPath: "",
+  includeTRes: false,
+  filter: "",
+  warningManyItens: false,
   objectsLeft: [],
   objectsRight: [],
-  patchDest: "",
-  patchName: "",
+  objectsFiltered: []
 }
 
-export class PatchGeneratePanel implements ITdsPanel<TGeneratePatchModel> {
+export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
   public static currentPanel: PatchGeneratePanel | undefined;
-  private readonly _panel: vscode.WebviewPanel;
-  private _disposables: vscode.Disposable[] = [];
-
-  /**
-   * The PatchGeneratePanel class private constructor (called only from the render method).
-   *
-   * @param panel A reference to the webview panel
-   * @param extensionUri The URI of the directory containing the extension
-   */
-  private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
-    this._panel = panel;
-
-    // Set an event listener to listen for when the panel is disposed (i.e. when the user closes
-    // the panel or when the panel is closed programmatically)
-    this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
-
-    // Set the HTML content for the webview panel
-    this._panel.webview.html = this._getWebviewContent(extensionUri);
-
-    // Set an event listener to listen for messages passed from the webview context
-    this._setWebviewMessageListener(this._panel.webview);
-  }
 
   public static render(context: vscode.ExtensionContext): PatchGeneratePanel {
     const extensionUri: vscode.Uri = context.extensionUri;
@@ -96,17 +75,7 @@ export class PatchGeneratePanel implements ITdsPanel<TGeneratePatchModel> {
   public dispose() {
     PatchGeneratePanel.currentPanel = undefined;
 
-    // Dispose of the current webview panel
-    this._panel.dispose();
-
-    // Dispose of all disposables (i.e. commands) for the current webview panel
-    while (this._disposables.length) {
-      const disposable = this._disposables.pop();
-
-      if (disposable) {
-        disposable.dispose();
-      }
-    }
+    super.dispose();
   }
 
   /**
@@ -119,7 +88,7 @@ export class PatchGeneratePanel implements ITdsPanel<TGeneratePatchModel> {
    * @returns A template string literal containing the HTML that should be
    * rendered within the webview panel
    */
-  private _getWebviewContent(extensionUri: vscode.Uri) {
+  protected getWebviewContent(extensionUri: vscode.Uri) {
 
     return getWebviewContent(this._panel.webview, extensionUri, "patchGenerateView", { title: this._panel.title });
   }
@@ -130,82 +99,72 @@ export class PatchGeneratePanel implements ITdsPanel<TGeneratePatchModel> {
    *
    * @param webview A reference to the extension webview
    */
-  private _setWebviewMessageListener(webview: vscode.Webview) {
-    webview.onDidReceiveMessage(
-      async (message: ReceiveMessage<PatchGenerateCommand, TGeneratePatchModel>) => {
-        const command: PatchGenerateCommand = message.command;
-        const data = message.data;
+  protected async panelListener(message: ReceiveMessage<PatchGenerateCommand, TGeneratePatchModel>, result: any): Promise<any> {
+    const command: PatchGenerateCommand = message.command;
+    const data = message.data;
 
-        switch (command) {
-          case CommonCommandFromWebViewEnum.Ready:
-            if (data.model == undefined) {
-              vscode.window.withProgress(
-                {
-                  location: vscode.ProgressLocation.Window,
-                  title: vscode.l10n.t("Loading RPO content..."),
-                },
-                async (progress, token) => {
-                  const server = ServersConfig.getCurrentServer();
-                  const model: TGeneratePatchModel = EMPTY_MODEL;
-                  let includeTRes: boolean = false;
+    switch (command) {
+      case CommonCommandFromWebViewEnum.Ready:
+        if (data.model == undefined) {
+          vscode.window.withProgress(
+            {
+              location: vscode.ProgressLocation.Window,
+              title: vscode.l10n.t("Loading RPO content..."),
+            },
+            async (progress, token) => {
+              const server = ServersConfig.getCurrentServer();
+              const model: TGeneratePatchModel = EMPTY_MODEL;
+              let includeTRes: boolean = false;
 
-                  progress.report({ increment: 0 });
-                  const objectsData: IObjectData[] = await sendInspectorObjectsRequest(server, includeTRes);
+              progress.report({ increment: 0 });
+              const objectsData: IObjectData[] = await sendInspectorObjectsRequest(server, includeTRes);
 
-                  model.objectsLeft = [];
-                  if (objectsData) {
-                    objectsData.forEach((object: IObjectData) => {
-                      model.objectsLeft.push({
-                        name: object.source,
-                        type: object.source_status.toString(),
-                        date: object.date
-                      });
-                    });
+              model.objectsLeft = [];
+              if (objectsData) {
+                objectsData.forEach((object: IObjectData) => {
+                  model.objectsLeft.push({
+                    name: object.source,
+                    type: object.source_status.toString(),
+                    date: object.date
+                  });
+                });
 
-                  }
-
-                  progress.report({ increment: 100 });
-
-                  this._sendUpdateModel(model);
-                }
-              );
-            }
-            break;
-          case CommonCommandFromWebViewEnum.Close:
-            PatchGeneratePanel.currentPanel.dispose();
-            break;
-          case CommonCommandFromWebViewEnum.Save:
-          case CommonCommandFromWebViewEnum.SaveAndClose:
-            let errors: TFieldErrors<TGeneratePatchModel> = {};
-
-            if (await this._validateModel(data.model, errors)) {
-              if (this._saveModel(data.model)) {
-                if (command === CommonCommandFromWebViewEnum.SaveAndClose) {
-                  PatchGeneratePanel.currentPanel.dispose();
-                } else {
-                  // this._sendUpdateModel({
-                  //   urlOrWsdlFile: "",
-                  //   outputPath: data.model.outputFilename,
-                  //   outputFilename: "",
-                  //   overwrite: false
-                  // });
-                }
               }
-            } else {
-              this._sendValidateResponse(errors);
-            }
 
-            break;
+              progress.report({ increment: 100 });
+
+              this.sendUpdateModel(model);
+            }
+          );
         }
-      },
-      undefined,
-      this._disposables
-    );
+        break;
+        // case CommonCommandFromWebViewEnum.Save:
+        // case CommonCommandFromWebViewEnum.SaveAndClose:
+        //   let errors: TFieldErrors<TGeneratePatchModel> = {};
+
+        //   if (await this.validateModel(data.model, errors)) {
+        //     if (this.saveModel(data.model)) {
+        //       if (command === CommonCommandFromWebViewEnum.SaveAndClose) {
+        //         PatchGeneratePanel.currentPanel.dispose();
+        //       } else {
+        //         // this._sendUpdateModel({
+        //         //   urlOrWsdlFile: "",
+        //         //   outputPath: data.model.outputFilename,
+        //         //   outputFilename: "",
+        //         //   overwrite: false
+        //         // });
+        //       }
+        //     }
+        //   } else {
+        //     this.sendValidateResponse(errors);
+        //   }
+
+        break;
+    }
   }
 
-  async _validateModel(model: TGeneratePatchModel, errors: TFieldErrors<TGeneratePatchModel>): Promise<boolean> {
+  protected async validateModel(model: TGeneratePatchModel, errors: TFieldErrors<TGeneratePatchModel>): Promise<boolean> {
     try {
-
       if (model.objectsRight.length == 0) {
         errors.objectsRight = { type: "required" };
       }
@@ -216,11 +175,7 @@ export class PatchGeneratePanel implements ITdsPanel<TGeneratePatchModel> {
     return !isErrors(errors);
   }
 
-  async _saveModel(model: TGeneratePatchModel): Promise<boolean> {
-    if (_debugEvent) {
-      vscode.window.showWarningMessage("This operation is not allowed during a debug.")
-      return;
-    }
+  protected async saveModel(model: TGeneratePatchModel): Promise<boolean> {
     let server = ServersConfig.getCurrentServer();
 
     // const filesPath = message.pathFiles;
@@ -240,7 +195,7 @@ export class PatchGeneratePanel implements ITdsPanel<TGeneratePatchModel> {
     const response: IPatchResult | void = await sendPatchGenerateMessage(
       server,
       "",
-      model.patchDest,
+      model.outputPath,
       3,
       model.patchName,
       model.objectsRight
@@ -251,11 +206,11 @@ export class PatchGeneratePanel implements ITdsPanel<TGeneratePatchModel> {
     if (!response) {
       let errors: TFieldErrors<TGeneratePatchModel> = {};
       errors.root = { type: "validate", message: "Internal error: See more information in log" };
-      this._sendValidateResponse(errors)
+      this.sendValidateResponse(errors)
     } else if (response.returnCode !== 0) {
       let errors: TFieldErrors<TGeneratePatchModel> = {};
       errors.root = { type: "validate", message: `Protheus server was unable to generate the patch. Reason: ${response.message}` };;
-      this._sendValidateResponse(errors)
+      this.sendValidateResponse(errors)
 
       return false;
     }
@@ -263,19 +218,4 @@ export class PatchGeneratePanel implements ITdsPanel<TGeneratePatchModel> {
     return true;
   }
 
-  _sendValidateResponse(errors: TFieldErrors<TGeneratePatchModel>) {
-    this._panel.webview.postMessage({
-      command: CommonCommandToWebViewEnum.ValidateResponse,
-      data: errors,
-    });
-  }
-
-  _sendUpdateModel(model: TGeneratePatchModel): void {
-    this._panel.webview.postMessage({
-      command: CommonCommandToWebViewEnum.UpdateModel,
-      data: {
-        model: model
-      }
-    });
-  }
 }
