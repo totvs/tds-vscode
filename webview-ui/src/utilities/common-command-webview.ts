@@ -4,7 +4,6 @@ import { vscode } from "./vscodeWrapper";
 export enum CommonCommandFromPanelEnum {
 	InitialData = "INITIAL_DATA",
 	UpdateModel = "UPDATE_MODEL",
-	ValidateResponse = "VALIDATE_RESPONSE"
 }
 
 export type CommonCommandFromPanel = CommonCommandFromPanelEnum;

@@ -3,7 +3,7 @@ import { useController, useFormContext } from "react-hook-form";
 import PopupMessage from "../popup-message";
 import { TdsFieldProps } from "../form";
 
-type TdsSimpleTextFieldProps = TdsFieldProps & {
+type TdsSimpleTextFieldProps = Omit<TdsFieldProps, "label"> & {
 	//onChange?: (event: ChangeEvent<HTMLInputElement>) => any;
 }
 
@@ -35,8 +35,7 @@ export function TdsSimpleTextField(props: TdsSimpleTextFieldProps): JSX.Element 
 				readOnly={props.readOnly || false}
 				{...registerField}
 			>
-				{props.label}
-				<PopupMessage field={props} fieldState={fieldState} />
+				<PopupMessage field={{...props, label: ""}} fieldState={fieldState} />
 			</VSCodeTextField>
 		</section>
 	)

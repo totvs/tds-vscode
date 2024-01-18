@@ -42,18 +42,19 @@ export default function GlobalIncludeView() {
   React.useEffect(() => {
     let listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
-      const model: TFields = command.data.model;
 
       switch (command.command) {
         case CommonCommandFromPanelEnum.UpdateModel:
+          const model: TFields = command.data.model;
+          const errors: TFields = command.data.errors;
+
           while (model.includePaths.length < ROWS_LIMIT) {
             model.includePaths.push({ path: "" });
           }
-          setDataModel(methods.setValue, model);
 
-          break;
-        case CommonCommandFromPanelEnum.ValidateResponse:
-          setErrorModel(methods.setError, command.data as any);
+          setDataModel(methods.setValue, model);
+          setErrorModel(methods.setError, errors as any);
+
           break;
         default:
           break;
@@ -118,8 +119,8 @@ export default function GlobalIncludeView() {
                       <VSCodeDataGridCell grid-column="2">
                         <TdsSimpleTextField
                           name={`includePaths.${index}.path`}
-                        label={""}
-                      />
+                          readOnly={true}
+                        />
                       </VSCodeDataGridCell>
                     </>
                   }

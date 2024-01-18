@@ -10,7 +10,7 @@ import PopupMessage from "../components/popup-message";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
 import { IFormAction, TdsCheckBoxField, TdsForm, TdsLabelField, TdsNumericField, TdsSelectionField, TdsSelectionFolderField, TdsSimpleTextField, TdsTextField, setDataModel, setErrorModel } from "../components/form";
 import { getDefaultActionsForm } from "../components/fields/numericField";
-import { VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
+import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 
 
 enum ReceiveCommandEnum {
@@ -172,13 +172,15 @@ export default function AddServerView() {
                 <VSCodeDataGridRow key={index}>
                   {row.path !== "" &&
                     <>
-                      <VSCodeDataGridCell grid-column="1">
+                    <VSCodeDataGridCell grid-column="1">
+                      <VSCodeButton appearance="icon"
+                        onClick={() => removeIncludePath(index)} >
                         <span className="codicon codicon-close"></span>
+                      </VSCodeButton>
                       </VSCodeDataGridCell>
                       <VSCodeDataGridCell grid-column="2">
                         <TdsSimpleTextField
                           name={`includePaths.${index}.path`}
-                          label={""}
                           readOnly={true}
                         />
                       </VSCodeDataGridCell>

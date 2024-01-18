@@ -38,15 +38,15 @@ export default function GenerateWsView() {
   React.useEffect(() => {
     let listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
-      const model: TFields = command.data.model;
 
       switch (command.command) {
         case CommonCommandFromPanelEnum.UpdateModel:
-          setDataModel(methods.setValue, model);
+          const model: TFields = command.data.model;
+          const errors: TFields = command.data.errors;
 
-          break;
-        case CommonCommandFromPanelEnum.ValidateResponse:
-          setErrorModel(methods.setError, command.data as any);
+          setDataModel(methods.setValue, model);
+          setErrorModel(methods.setError, errors as any);
+
           break;
         default:
           break;

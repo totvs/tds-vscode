@@ -125,9 +125,10 @@ export class GlobalIncludePanel extends TdsPanel<TIncludeModel> {
           if (alreadyExist) {
             errors[`includePaths.${[index]}.path`] = { type: "validade", message: "Path already informed" };
           }
-          
+
           this.sendUpdateModel(data.model, errors);
         }
+        break
 
         break;
     }
