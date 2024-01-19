@@ -21,10 +21,10 @@ type TdsSimpleTextFieldProps = Omit<TdsFieldProps, "label"> & {
 export function TdsSimpleTextField(props: TdsSimpleTextFieldProps): JSX.Element {
 	const {
 		register,
+		setValue,
 		formState: { isDirty }
 	} = useFormContext();
 	const { field, fieldState } = useController(props);
-
 	const registerField = register(props.name, props.rules);
 
 	return (
@@ -35,7 +35,7 @@ export function TdsSimpleTextField(props: TdsSimpleTextFieldProps): JSX.Element 
 				readOnly={props.readOnly || false}
 				{...registerField}
 			>
-				<PopupMessage field={{...props, label: ""}} fieldState={fieldState} />
+				<PopupMessage field={{ ...props, label: "" }} fieldState={fieldState} />
 			</VSCodeTextField>
 		</section>
 	)

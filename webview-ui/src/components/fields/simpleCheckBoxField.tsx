@@ -27,7 +27,6 @@ export function TdsSimpleCheckBoxField(props: TdsSimpleCheckBoxFieldProps): JSX.
 		formState: { isDirty }
 	} = useFormContext();
 	const { field, fieldState } = useController(props);
-
 	const registerField = register(props.name, props.rules);
 	const originalChange = registerField.onChange;
 	registerField.onChange = (e) => {
@@ -35,8 +34,11 @@ export function TdsSimpleCheckBoxField(props: TdsSimpleCheckBoxFieldProps): JSX.
 			originalChange(e)
 		}
 
-		//const c = e.target as VSCodeCheckbox;
-		setValue(registerField.name, e.target.checked ? "true" : "false");
+		if ((e.target as HTMLInputElement).indeterminate) {
+			setValue(registerField.name, "indeterminate");
+		} else {
+			setValue(registerField.name, e.target.checked ? "true" : "false");
+		}
 
 		return e.target.checked;
 	}
@@ -45,7 +47,9 @@ export function TdsSimpleCheckBoxField(props: TdsSimpleCheckBoxFieldProps): JSX.
 		<section
 			className={`tds-field-container tds-simple-checkbox-field  ${props.className ? props.className : ''}`}
 		>
-			< VSCodeCheckbox
+			<VSCodeCheckbox
+				checked={field.value.toString() === "true"}
+				indeterminate={field.value.toString() !== "true" && field.value.toString() !== "false"}
 				readOnly={props.readOnly || false}
 				{...registerField}
 			>

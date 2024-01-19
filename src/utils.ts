@@ -751,7 +751,7 @@ export class ServersConfig {
   }
 
   /**
-   * Recupera a lista de includes do arquivod servers.json
+   * Recupera a lista de includes do arquivo servers.json
    */
   static getGlobalIncludes(): Array<string> {
     let includes: Array<string>;

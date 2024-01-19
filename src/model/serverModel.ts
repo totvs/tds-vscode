@@ -14,5 +14,6 @@ export type TServerModel = TModelPanel & {
 	buildVersion: string;
 	secure: boolean;
 	includePaths: TIncludePath[];
-	immediateConnection: boolean
+	immediateConnection: boolean;
+	globalIncludeDirectories: string;
 }

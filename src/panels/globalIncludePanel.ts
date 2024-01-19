@@ -111,7 +111,7 @@ export class GlobalIncludePanel extends TdsPanel<TIncludeModel> {
         this.sendUpdateModel(model, undefined);
 
         break;
-      case CommonCommandFromWebViewEnum.SelectResource:
+      case CommonCommandFromWebViewEnum.AfterSelectResource:
         if (result && result.length > 0) {
           const selectedPath: string = (result[0] as vscode.Uri).fsPath;
           const includePaths: TIncludePath[] = data.model.includePaths

@@ -21,10 +21,10 @@ type TdsTextFieldProps = TdsFieldProps & {
 export function TdsTextField(props: TdsTextFieldProps): JSX.Element {
 	const {
 		register,
+		setValue,
 		formState: { isDirty }
 	} = useFormContext();
 	const { field, fieldState } = useController(props);
-
 	const registerField = register(props.name, props.rules);
 
 	return (

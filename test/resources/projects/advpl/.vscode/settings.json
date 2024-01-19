@@ -1,6 +1,6 @@
 {
     "totvsLanguageServer.welcomePage": false,
-    "totvsLanguageServer.editor.linter.includes": "M:\\protheus\\includes",
+    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes",
     "totvsLanguageServer.editor.show.notification": "all",
     "totvsLanguageServer.trace.debug": "messages",
     "totvsLanguageServer.trace.server": "messages",

@@ -134,10 +134,10 @@ export default function GlobalIncludeView() {
                     <>
                       <VSCodeDataGridCell grid-column="2">
                         <TdsSelectionFolderField
-                          dialogTitle="Select folder with definition files"
+                          title="Select folder with definition files"
                           name={`btnSelectFolder.${index}`}
                           info={"Selecione uma pasta que contenha arquivos de definição"}
-                          label={""} />
+                        />
                       </VSCodeDataGridCell>
                     </>
                   }

@@ -19,7 +19,7 @@ import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webv
 import { ServersConfig } from "../utils";
 import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
 import { IWsdlGenerateResult, sendWsdlGenerateRequest } from "../protocolMessages";
-import { TdsPanel, TFieldErrors, isErrors } from "../model/field-model";
+import { TdsPanel, TFieldErrors, isErrors, TModelPanel, TSendSelectResourceProps } from "../model/field-model";
 import { TWebServiceModel } from "../model/webServiceModel";
 import * as fse from "fs-extra";
 import path from "path";
@@ -96,14 +96,36 @@ export class GenerateWebServicePanel extends TdsPanel<TWebServiceModel> {
 
 		switch (command) {
 			case CommonCommandFromWebViewEnum.Ready:
-				if (data.model == undefined) {
-					this.sendUpdateModel({
-						urlOrWsdlFile: "",
-						outputPath: "",
-						outputFilename: "",
-						overwrite: false
-					}, undefined);
+				data.model = {
+					urlOrWsdlFile: "",
+					outputPath: "",
+					outputFilename: "",
+					overwrite: false
+				};
+
+				this.sendUpdateModel(data.model, undefined);
+				break;
+			case CommonCommandFromWebViewEnum.AfterSelectResource:
+				if (result && result.length > 0) {
+					const selectionProps: TSendSelectResourceProps = data as unknown as TSendSelectResourceProps;
+					const selectedFile: string = (result[0] as vscode.Uri).fsPath;
+
+					if (selectionProps.firedBy == "btn-urlOrWsdlFile") {
+						data.model.urlOrWsdlFile = selectedFile;
+					} else if (selectionProps.firedBy == "btn-outputPath") {
+						data.model.outputPath = selectedFile;
+					} else if (selectionProps.firedBy == "btn-outputFilename") {
+						const folder: string = path.dirname(selectedFile);
+						const file: string = path.basename(selectedFile);
+
+						data.model.outputPath = folder;
+						data.model.outputFilename = file;
+						data.model.overwrite = true;
+					}
+
+					this.sendUpdateModel(data.model, undefined);
 				}
+
 				break;
 		}
 	}

@@ -45,15 +45,27 @@ export type TdsFieldProps = {
 	rules?: RegisterOptions<FieldValues, string>;
 }
 
+/**
+ * Sets form values from a data model object.
+ * Maps the data model object values to the form values by field name.
+ * Handles undefined values to avoid errors.
+ *
+ * Passing ``setValue`` is necessary, as this function
+ * is executed outside the form context.
+*/
 export function setDataModel<DataModel extends FieldValues>
 	(setValue: UseFormSetValue<DataModel>, dataModel: Partial<DataModel>) {
-	Object.keys(dataModel).forEach((fieldName: string) => {
-		if (dataModel[fieldName] !== undefined) {
-			setValue(fieldName as any, dataModel[fieldName]!);
-		} else {
-			console.error(`Erro chamar setValue no campo ${fieldName}`);
-		}
-	})
+	if (dataModel) {
+		Object.keys(dataModel).forEach((fieldName: string) => {
+			if (dataModel[fieldName] !== undefined) {
+				setValue(fieldName as any, dataModel[fieldName]!);
+			} else {
+				console.error(`Erro chamar setValue no campo ${fieldName}`);
+			}
+		})
+	} else {
+		console.error("Parâmetro [DataModel] não informando (indefinido)");
+	}
 }
 
 type TFieldError = {
@@ -63,17 +75,28 @@ type TFieldError = {
 
 type TFieldErrors<M> = Partial<Record<keyof M | "root", TFieldError>>;
 
-export function setErrorModel<DataModel extends FieldValues>(setError: UseFormSetError<DataModel>, dataModel: TFieldErrors<DataModel>) {
-	Object.keys(dataModel).forEach((fieldName: string) => {
-		if (dataModel[fieldName] !== undefined) {
-			setError(fieldName as any, {
-				message: dataModel[fieldName]?.message,
-				type: dataModel[fieldName]?.type
-			})
-		} else {
-			console.error(`Erro ao chamar setError no campo ${fieldName}`);
-		}
-	});
+/**
+ * Sets form field errors from an error model object.
+ * Maps the error model object to field errors by field name.
+ * Handles undefined error values to avoid errors.
+ *
+ * Passing ``setError`` is necessary, as this function
+ * is executed outside the form context.
+*
+*/
+export function setErrorModel<DataModel extends FieldValues>(setError: UseFormSetError<DataModel>, errorModel: TFieldErrors<DataModel>) {
+	if (errorModel) {
+		Object.keys(errorModel).forEach((fieldName: string) => {
+			if (errorModel[fieldName] !== undefined) {
+				setError(fieldName as any, {
+					message: errorModel[fieldName]?.message,
+					type: errorModel[fieldName]?.type
+				})
+			} else {
+				console.error(`Erro ao chamar setError no campo ${fieldName}`);
+			}
+		});
+	}
 }
 
 /**
@@ -144,8 +167,8 @@ export { TdsCheckBoxField } from "./fields/checkBoxField";
 export { TdsLabelField } from "./fields/labelField";
 export { TdsNumericField } from "./fields/numericField";
 export { TdsSelectionField } from "./fields/selectionField";
-export { TdsSelectionFileField } from "./fields/selectionFileField";
-export { TdsSelectionFolderField } from "./fields/selectionFolderField";
+export { TdsSelectionFileField } from "./fields/selectionResourceField";
+export { TdsSelectionFolderField } from "./fields/selectionResourceField";
 export { TdsSimpleCheckBoxField } from "./fields/simpleCheckBoxField";
 export { TdsTextField } from "./fields/textField";
 export { TdsSimpleTextField } from "./fields/simpleTextField";

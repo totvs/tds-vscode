@@ -4,7 +4,7 @@ import Page from "../components/page";
 import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
-import { IFormAction, TdsCheckBoxField, TdsForm, TdsSelectionFileField, TdsSelectionFolderField, TdsTextField, setDataModel, setErrorModel } from "../components/form";
+import { IFormAction, TdsCheckBoxField, TdsForm, TdsSelectionFileField, TdsSelectionFolderField, TdsSimpleCheckBoxField, TdsTextField, setDataModel, setErrorModel } from "../components/form";
 import { getDefaultActionsForm } from "../components/fields/numericField";
 
 enum ReceiveCommandEnum {
@@ -30,8 +30,6 @@ export default function GenerateWsView() {
   })
 
   const onSubmit: SubmitHandler<TFields> = (data) => {
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>");
-    console.dir(data);
     sendSaveAndClose(data);
   }
 
@@ -77,7 +75,6 @@ export default function GenerateWsView() {
 
             <section className="tds-group-container" >
               <TdsTextField
-                className="tds-item-grow"
                 name="urlOrWsdlFile"
                 label="URL or Wsdl File"
                 info="Informe a URL de acesso ao WSDL ou o arquivo com a definição do serviço"
@@ -85,17 +82,17 @@ export default function GenerateWsView() {
               />
 
               <TdsSelectionFileField
-                label={""}
                 name="btn-urlOrWsdlFile"
                 info={"Selecione o arquivo com a definição do serviço"}
-                onSelect={function (file: string[]) {
-                  throw new Error("Function not implemented.");
+                title={"Arquivo com a definição WSDL"}
+                filters={{
+                  "WSDL Files": ["wsdl"],
+                  "All Files": ["*"]
                 }} />
             </section>
 
             <section className="tds-group-container" >
               <TdsTextField
-                className="tds-item-grow"
                 name="outputPath"
                 label="Output directory"
                 readOnly={true}
@@ -104,10 +101,10 @@ export default function GenerateWsView() {
               />
 
               <TdsSelectionFolderField
-                label="Output Folder"
+                openLabel="Output Folder"
                 name="btn-outputPath"
                 info={"Selecione a pasta de onde o fonte gerado será gravado"}
-                dialogTitle="Select Output Directory"
+                title="Select Output Directory"
               />
             </section>
 
@@ -115,19 +112,26 @@ export default function GenerateWsView() {
               <TdsTextField
                 name="outputFilename"
                 label="Output Filename"
-                readOnly={true}
                 rules={{ required: true }}
-                info={"Selecione nome do fonte a ser  gravado"}
+                info={"Informe nome do fonte a ser gravado"}
               />
 
-              <TdsCheckBoxField
-                info=""
-                className="tds-item-grow"
-                name="overwrite"
-                label="&nbsp;"
-                textLabel="If already exist, can overwrite"
-              />
+              <TdsSelectionFileField
+                name="btn-outputFilename"
+                info={"Selecione o arquivo que receberá  a definição do serviço"}
+                title={"Arquivo Fonte AdvPL"}
+                currentFolder={methods.getValues("outputPath")}
+                filters={{
+                  "AdvPL Source File": ["prx", "prw", "tlpp"]
+                }} />
             </section>
+
+            <TdsSimpleCheckBoxField
+              info=""
+              name="overwrite"
+              label="&nbsp;"
+              textLabel="If already exist, can overwrite"
+            />
           </TdsForm>
         </FormProvider>
       </Page>

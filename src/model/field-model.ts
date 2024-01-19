@@ -30,6 +30,21 @@ export type TModelPanel = {
 
 }
 
+export type TSendSelectResourceProps = TModelPanel & {
+	firedBy: string;
+	canSelectMany: boolean,
+	canSelectFiles: boolean,
+	canSelectFolders: boolean,
+	currentFolder: string,
+	title: string,
+	openLabel: string,
+	filters: {
+		//"All Files": ["*"],
+		//"JSON": ["json"],
+		[key: string]: string[]
+	}
+}
+
 export abstract class TdsPanel<M extends TModelPanel> {
 
 	protected readonly _panel: vscode.WebviewPanel;
@@ -145,16 +160,22 @@ export abstract class TdsPanel<M extends TModelPanel> {
 
 				break;
 			case CommonCommandFromWebViewEnum.SelectResource:
+				const selectionProps: TSendSelectResourceProps = data as unknown as TSendSelectResourceProps;
+
 				const options: vscode.OpenDialogOptions = {
-					canSelectMany: data.selectMany,
-					canSelectFiles: data.file,
-					canSelectFolders: data.folder,
-					defaultUri: vscode.Uri.file(data.currentFolder),
-					title: data.dialogTitle,
-					openLabel: data.label,
+					canSelectMany: selectionProps.canSelectMany,
+					canSelectFiles: selectionProps.canSelectFiles,
+					canSelectFolders: selectionProps.canSelectFolders,
+					defaultUri: vscode.Uri.file(selectionProps.currentFolder),
+					title: selectionProps.title,
+					openLabel: selectionProps.openLabel,
+					filters: selectionProps.filters || {
+						"All Files": ["*"]
+					}
 				};
 
 				result = await vscode.window.showOpenDialog(options).then((fileUri) => {
+					message.command = CommonCommandFromWebViewEnum.AfterSelectResource;
 					return fileUri
 				});
 				break;

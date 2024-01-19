@@ -102,11 +102,13 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
             includePaths: [],
             immediateConnection: true,
             secure: false,
-            buildVersion: ""
+            buildVersion: "",
+            globalIncludeDirectories: ServersConfig.getGlobalIncludes().join(";"),
+
           }, undefined);
         }
         break;
-      case CommonCommandFromWebViewEnum.SelectResource:
+      case CommonCommandFromWebViewEnum.AfterSelectResource:
         if (result && result.length > 0) {
           const selectedPath: string = (result[0] as vscode.Uri).fsPath;
           const includePaths: TIncludePath[] = data.model.includePaths

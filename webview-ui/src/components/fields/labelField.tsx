@@ -1,8 +1,8 @@
 import { useController, useFormContext } from "react-hook-form";
 import { TdsFieldProps } from "../form";
+import PopupMessage from "../popup-message";
 
 type TdsLabelFieldProps = TdsFieldProps & {
-	//onChange?: (event: ChangeEvent<HTMLInputElement>) => any;
 }
 
 /**
@@ -33,6 +33,7 @@ export function TdsLabelField(props: TdsLabelFieldProps): JSX.Element {
 				{...registerField}
 			>
 				{props.label}
+				<PopupMessage field={props} fieldState={fieldState} />
 			</label>
 		</section>
 	)

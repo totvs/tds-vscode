@@ -35,8 +35,11 @@ export function TdsCheckBoxField(props: TdsCheckBoxFieldProps): JSX.Element {
 			originalChange(e)
 		}
 
-		//const c = e.target as VSCodeCheckbox;
-		setValue(registerField.name, e.target.checked ? "true" : "false");
+		if ((e.target as HTMLInputElement).indeterminate) {
+			setValue(registerField.name, "indeterminate");
+		} else {
+			setValue(registerField.name, e.target.checked ? "true" : "false");
+		}
 
 		return e.target.checked;
 	}
@@ -51,7 +54,11 @@ export function TdsCheckBoxField(props: TdsCheckBoxFieldProps): JSX.Element {
 				{props.label}
 				{props.rules?.required && <span className="tds-required" />}
 			</label>
-			< VSCodeCheckbox
+			<VSCodeCheckbox
+				checked={field.value.toString() === "true"}
+				indeterminate={field.value.toString() !== "true" && field.value.toString() !== "false"}
+				readOnly={props.readOnly || false}
+
 				{...registerField}
 			>
 				{props.textLabel}

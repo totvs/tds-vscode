@@ -21,9 +21,10 @@ type TFields = {
   serverType: string
   serverName: string;
   address: string;
-  port: number;
+  port: number | string;
   includePaths: TIncludeData[]
-  immediateConnection: boolean
+  immediateConnection: boolean,
+  globalIncludeDirectories: string
 }
 
 const ROWS_LIMIT: number = 5;
@@ -33,7 +34,7 @@ export default function AddServerView() {
     defaultValues: {
       serverName: "",
       address: "",
-      port: 0,
+      port: "",
       includePaths: Array(ROWS_LIMIT).map(() => {
         return { path: "" };
       }),
@@ -67,10 +68,13 @@ export default function AddServerView() {
             model.includePaths.push({ path: "" });
           }
 
-          setDataModel<TFields>(methods.setValue, model);
-          if (errors) {
-            setErrorModel(methods.setError, errors);
+          if (model.port == 0) {
+            model.port = "";
           }
+
+          setDataModel<TFields>(methods.setValue, model);
+          setErrorModel(methods.setError, errors);
+
           break;
         default:
           break;
@@ -164,7 +168,14 @@ export default function AddServerView() {
               <TdsLabelField
                 name={"includeDirectoriesLabel"}
                 label={"Include directories"}
-                info={"Informe as pastas onde os arquivos de definição devem ser procurados"} />
+                info={"Enter the folders where the definition files should be searched"} />
+            </section>
+
+            <section className="tds-group-container" >
+              <TdsLabelField
+                name={"warningIncludeDirectoriesLabel"}
+                label={"May be informed later. If you do not inform, the global configuration will be used."}
+                info={methods.getValues("globalIncludeDirectories")} />
             </section>
 
             <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
@@ -172,11 +183,11 @@ export default function AddServerView() {
                 <VSCodeDataGridRow key={index}>
                   {row.path !== "" &&
                     <>
-                    <VSCodeDataGridCell grid-column="1">
-                      <VSCodeButton appearance="icon"
-                        onClick={() => removeIncludePath(index)} >
-                        <span className="codicon codicon-close"></span>
-                      </VSCodeButton>
+                      <VSCodeDataGridCell grid-column="1">
+                        <VSCodeButton appearance="icon"
+                          onClick={() => removeIncludePath(index)} >
+                          <span className="codicon codicon-close"></span>
+                        </VSCodeButton>
                       </VSCodeDataGridCell>
                       <VSCodeDataGridCell grid-column="2">
                         <TdsSimpleTextField
@@ -205,8 +216,7 @@ export default function AddServerView() {
                         <TdsSelectionFolderField
                           name={`btnSelectFolder.${index}`}
                           info={"Selecione uma pasta que contenha arquivos de definição"}
-                          label={""}
-                          dialogTitle="Select folder with define files"
+                          title="Select folder with define files"
                         />
                       </VSCodeDataGridCell>
                     </>

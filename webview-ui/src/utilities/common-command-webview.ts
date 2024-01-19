@@ -57,19 +57,25 @@ export function sendReady() {
 }
 
 export type TSendSelectResourceProps = {
-	model: TModelData;
-	folder: boolean;
-	file: boolean;
-	currentFolder: string;
-	dialogTitle: string;
-	label: string;
-	selectMany: boolean
+	//model: TModelData;
+	canSelectMany: boolean,
+	canSelectFiles: boolean,
+	canSelectFolders: boolean,
+	currentFolder: string,
+	title: string,
+	openLabel: string,
+	filters: {
+		[key: string]: string[]
+	}
 }
 
-export function sendSelectResource(props: TSendSelectResourceProps) {
+export function sendSelectResource(firedBy: string, props: TSendSelectResourceProps & { model: TModelData }) {
 	const message: SendMessage<CommonCommandToPanelEnum, TModelData> = {
 		command: CommonCommandToPanelEnum.SelectResource,
-		data: props
+		data: {
+			...props,
+			firedBy: firedBy
+		}
 	}
 
 	vscode.postMessage(message);

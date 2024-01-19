@@ -52,6 +52,7 @@ export function getDefaultActionsForm(): IFormAction[] {
 export function TdsNumericField(props: TdsNumericFieldProps): JSX.Element {
 	const {
 		register,
+		setValue,
 		formState: { isDirty }
 	} = useFormContext();
 	const rules = {
@@ -60,7 +61,7 @@ export function TdsNumericField(props: TdsNumericFieldProps): JSX.Element {
 		pattern: {
 			value: /\d+/gm,
 			message: `[${props.label}] only accepts numbers`
-		}
+		},
 	};
 	const { field, fieldState } = useController({ ...props, rules: rules });
 	const registerField = register(props.name);

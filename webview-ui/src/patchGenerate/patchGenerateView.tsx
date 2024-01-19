@@ -83,7 +83,6 @@ function SelectObjectComponent(props: ISelectObjectComponentProps<TFields>
                   name={`${props.name}.${index}.type`}
                   readOnly={true}
                   info=""
-                  label={""}
                 />
               </VSCodeDataGridCell>
               <VSCodeDataGridCell grid-column="3">
@@ -91,7 +90,6 @@ function SelectObjectComponent(props: ISelectObjectComponentProps<TFields>
                   className="tds-no-margin"
                   name={`${props.name}.${index}.date`}
                   info=""
-                  label={""}
                   readOnly={true}
                 />
               </VSCodeDataGridCell>
@@ -121,22 +119,22 @@ export default function PatchGenerateView() {
   React.useEffect(() => {
     let listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
-      const model: TFields = command.data.model;
 
       console.log("listener " + command.command);
-      console.dir(model);
 
       switch (command.command) {
         case CommonCommandFromPanelEnum.UpdateModel:
+          const model: TFields = command.data.model;
+          const errors: TFields = command.data.errors;
+
           model.objectsFiltered = extractData(methods.getValues("filter") || "", model.objectsLeft);
           console.log("objectsLeft=", model.objectsLeft.length);
           console.log("filtered=", model.objectsFiltered.length);
+
           setDataModel(methods.setValue, model);
+          setErrorModel(methods.setError, errors as any);
 
           //replace(extractData(getValues("filter") || "", model.objectsLeft));
-          break;
-        case CommonCommandFromPanelEnum.ValidateResponse:
-          setErrorModel(methods.setError, command.data as any);
           break;
         default:
           break;
@@ -195,7 +193,6 @@ export default function PatchGenerateView() {
 
             <section className="tds-group-container" >
               <TdsTextField
-                className="tds-item-grow"
                 name="filter"
                 label="Filter"
                 info="Filtrar por nome do objeto. Ex: MAT or FAT*"
@@ -205,7 +202,7 @@ export default function PatchGenerateView() {
                 name="includeTRes"
                 label="&nbsp;"
                 textLabel={"Include *.TRES"}
-                 />
+              />
             </section>
 
             <section className="tds-group-container" >
@@ -213,12 +210,12 @@ export default function PatchGenerateView() {
                 <TdsLabelField
                   name="warningManyItens"
                   label={`List has more than ${ROWS_LIMIT} items. Enter a more restrictive filter.`}
-                   />
+                />
                 :
                 <TdsLabelField
                   name="warningManyItens"
                   label="&nbsp;"
-                   />
+                />
               }
             </section>
 

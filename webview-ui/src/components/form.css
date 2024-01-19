@@ -51,6 +51,10 @@ span.tds-required::after {
 	margin-top: var(--type-ramp-minus2-line-height);
 }
 
+.tds-field-container+.tds-field-container {
+	margin-left: calc(1rem / 2);
+}
+
 .tds-field-container label {
 	margin-bottom: calc(var(--type-ramp-minus2-line-height) / 2);
 }

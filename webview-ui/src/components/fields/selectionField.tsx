@@ -1,5 +1,5 @@
 import { VSCodeDropdown, VSCodeOption } from "@vscode/webview-ui-toolkit/react";
-import { useController, useFormContext } from "react-hook-form";
+import { ChangeHandler, useController, useFormContext } from "react-hook-form";
 import PopupMessage from "../popup-message";
 import { TdsFieldProps } from "../form";
 
@@ -26,6 +26,7 @@ export function TdsSelectionField(props: TdsSelectionFieldProps): JSX.Element {
 	const {
 		register,
 		getValues,
+		setValue,
 		formState: { isDirty }
 	} = useFormContext();
 	const { field, fieldState } = useController(props);

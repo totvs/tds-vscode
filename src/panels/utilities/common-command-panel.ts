@@ -3,7 +3,9 @@ export enum CommonCommandFromWebViewEnum {
 	_SaveAndClose = "SAVE_AND_CLOSE",
 	_Close = "CLOSE",
 	Ready = "READY",
-	SelectResource = "SELECT_RESOURCE"
+	SelectResource = "SELECT_RESOURCE",
+	AfterSelectResource = "AFTER_SELECT_RESOURCE"
+
 }
 
 export type CommonCommandFromWebView = CommonCommandFromWebViewEnum;
@@ -14,7 +16,7 @@ export enum CommonCommandToWebViewEnum {
 }
 
 export type ReceiveMessage<C extends CommonCommandFromWebView, T = any> = {
-	readonly command: C,
+	command: C,
 	data: {
 		model: T,
 		[key: string]: any,
