@@ -1,5 +1,13 @@
 # Changelog
 
+## Versão [2.0.2]
+
+### Melhoria
+
+#### Adicionado alerta na depuração utilizando SIGAMDI/SIGAADV
+
+Caso o usuário inicie uma depuração utilizando SIGAMDI/SIGAADV, será exibido um alerta informando que na depuração é recomendada o uso direto dos módulos, por exemplo SIGAFAT.
+
 ## Versão [2.0.1]
 
 ### Melhoria
