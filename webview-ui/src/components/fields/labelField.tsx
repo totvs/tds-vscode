@@ -1,6 +1,8 @@
 import { useController, useFormContext } from "react-hook-form";
 import { TdsFieldProps } from "../form";
 import PopupMessage from "../popup-message";
+import { markdownToHtml } from "../../utilities/mdToHtml";
+import { MarkdownString } from "vscode";
 
 type TdsLabelFieldProps = TdsFieldProps & {
 }
@@ -24,6 +26,7 @@ export function TdsLabelField(props: TdsLabelFieldProps): JSX.Element {
 	const { field, fieldState } = useController(props);
 
 	const registerField = register(props.name, props.rules);
+	const label = markdownToHtml(props.label);
 
 	return (
 		<section
@@ -32,7 +35,7 @@ export function TdsLabelField(props: TdsLabelFieldProps): JSX.Element {
 			<label
 				{...registerField}
 			>
-				{props.label}
+				{label}
 				<PopupMessage field={props} fieldState={fieldState} />
 			</label>
 		</section>

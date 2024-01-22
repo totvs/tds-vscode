@@ -245,7 +245,7 @@ export function sendReconnectRequest(
 }
 
 export function sendValidationRequest(
-  addres: string,
+  address: string,
   port: number,
   serverType: string
 ): Thenable<IValidationInfo> {
@@ -256,7 +256,7 @@ export function sendValidationRequest(
   return languageClient
     .sendRequest("$totvsserver/validation", {
       validationInfo: {
-        server: addres,
+        server: address,
         port: port,
         serverType: serverType
       },
@@ -276,7 +276,6 @@ export function sendValidationRequest(
       }
     );
 }
-
 
 export function sendGetUsersRequest(server: ServerItem): Thenable<any> {
   return languageClient
@@ -889,4 +888,79 @@ export function sendPatchGenerateMessage(server, patchMaster, patchDest, patchTy
 
     return response;
   });
+}
+
+
+export function sendGetIdMessage(): Promise<string> {
+  return languageClient.sendRequest("$totvsserver/getId").then(
+    (response: any) => {
+      if (response.id) {
+        return response.id;
+      } else {
+        vscode.window.showErrorMessage("Couldn't get [Machine ID].");
+        return ""
+      }
+    },
+    (err: ResponseError<object>) => {
+      vscode.window.showErrorMessage(err.message);
+      return "";
+    }
+  );
+}
+
+export type TValidKeyResult = {
+  authorizationToken: string;
+  buildType: number;
+  errorMessage?: string
+}
+
+export function sendValidKey(id: string, issued: string, expiry: string, canOverride: boolean, token: string): Thenable<TValidKeyResult | undefined> {
+
+  return languageClient
+    .sendRequest("$totvsserver/validKey", {
+      keyInfo: {
+        id: id,
+        issued: issued,
+        expiry: expiry,
+        canOverride: canOverride ? "1":"0",
+        token: token,
+      },
+    })
+    .then(
+      (response: TValidKeyResult) => {
+        return response;
+        // let outputMessageText: string;
+        // let outputMessageType: string;
+        // response.authorizationToken = response.authorizationToken.trim();
+
+        // if (response.authorizationToken !== "") {
+        //   if (close) {
+        //   }
+        //   outputMessageText =
+        //     localizeHTML["tds.webview.compile.key.validated"];
+        //   outputMessageType = "success";
+        // } else {
+        //   //console.log("validateKey error");
+        //   outputMessageText = localizeHTML["tds.webview.compile.key.invalid"];
+        //   outputMessageType = "error";
+        // }
+        // if (!close) {
+        //   currentPanel.webview.postMessage({
+        //     command: "setOutputMessage",
+        //     output: outputMessageText,
+        //     type: outputMessageType,
+        //   });
+        // }
+      },
+      (err: ResponseError<object>) => {
+        const response: TValidKeyResult = {
+          authorizationToken: "",
+          buildType: -1,
+          errorMessage: err.message
+        }
+
+        return response;
+      }
+    );
+
 }

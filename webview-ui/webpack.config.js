@@ -24,6 +24,7 @@ const ADD_SERVER_PATH = path.join(SOURCE_FOLDER, "addServer");
 const GLOBAL_INCLUDE_PATH = path.join(SOURCE_FOLDER, "globalInclude");
 const GENERATE_WS_PATH = path.join(SOURCE_FOLDER, "generateWs");
 const PATCH_GENERATE_PATH = path.join(SOURCE_FOLDER, "patchGenerate");
+const COMPILE_KEY_PATH = path.join(SOURCE_FOLDER, "compileKey");
 
 // const REPLAY_PATH = path.join(__dirname, "./src/debug/tdsreplay/");
 // const MONITOR_PATH = path.join(__dirname, "./src/monitor/");
@@ -79,6 +80,7 @@ module.exports = (env, argv) => {
       globalIncludeView: path.join(GLOBAL_INCLUDE_PATH, "index.tsx"),
       generateWebServiceView: path.join(GENERATE_WS_PATH, "index.tsx"),
       patchGenerateView: path.join(PATCH_GENERATE_PATH, "index.tsx"),
+      compileKeyView: path.join(COMPILE_KEY_PATH, "index.tsx"),
 
       // timeLineView: path.join(REPLAY_PATH, "app/index.tsx"),
       // monitorPanel: path.join(MONITOR_PATH, "app/index.tsx"),

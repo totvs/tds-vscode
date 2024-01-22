@@ -18,7 +18,7 @@ user function escolheNum(replay, replayPath, numbers)
 	endif
 
 	// essa seq. UTF 8 inválida para json do DA
-	//corrigido versão DA 1.1.24 / srv
+	//corrigido versão DA 1.1.24 / srv1
 	//private paraDeFuncionar := "se fizer hover aqui, para de funcionar Ãº"
 	//
 	//

@@ -3,7 +3,7 @@ import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } f
 import "./patchGenerate.css";
 import Page from "../components/page";
 import React from "react";
-import { FieldValues, FormProvider, SubmitHandler, UseControllerProps, UseFormSetValue, useFieldArray, useForm } from "react-hook-form";
+import { FieldValues, FormProvider, SubmitHandler, UseControllerProps, UseFormSetValue, useFieldArray, useForm, useFormContext } from "react-hook-form";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
 import { TInspectorObject } from "../model/inspectorObjectModel";
 import { TdsSimpleCheckBoxField, TdsSimpleTextField, IFormAction, TdsForm, TdsTextField, TdsCheckBoxField, TdsLabelField, setDataModel, setErrorModel } from "../components/form";
@@ -22,7 +22,7 @@ type TFields = {
   filter: string;
   warningManyItens: boolean;
   objectsLeft: TInspectorObject[];
-  objectsRight: TInspectorObject[];
+  objectsRight: TObjectFiltered[];
   objectsFiltered: TObjectFiltered[];
 }
 
@@ -34,6 +34,13 @@ const EMPTY_INSPECTOR_OBJECT: TInspectorObject = {
   date: ""
 }
 
+const EMPTY_CHECK_INSPECTOR_OBJECT: TObjectFiltered = {
+  name: "",
+  type: "",
+  date: "",
+  check: false
+}
+
 const EMPTY_MODEL: TFields = {
   patchDest: "", //(vscode.getState() | {})["patchDest"],
   patchName: "", //(vscode.getState() | {})["patchName"],
@@ -41,20 +48,26 @@ const EMPTY_MODEL: TFields = {
   filter: "",
   warningManyItens: false,
   objectsLeft: Array(ROWS_LIMIT).map(() => EMPTY_INSPECTOR_OBJECT),
-  objectsRight: Array(ROWS_LIMIT).map(() => EMPTY_INSPECTOR_OBJECT),
+  objectsRight: Array(ROWS_LIMIT).map(() => EMPTY_CHECK_INSPECTOR_OBJECT),
   objectsFiltered: []
 }
 
-interface ISelectObjectComponentProps<T extends FieldValues> extends UseControllerProps<T> {
-  //fieldName: string
+type TSelectObjectComponentProps = {
+  fieldName: string
 }
 
-function SelectObjectComponent(props: ISelectObjectComponentProps<TFields>
-  & { _setValue?: UseFormSetValue<TFields> }) {
+function SelectObjectComponent(props: TSelectObjectComponentProps) {
+  const {
+    register,
+    setValue,
+    control,
+    formState: { isDirty }
+  } = useFormContext();
+
   const { fields, replace } = useFieldArray(
     {
-      control: props.control,
-      name: props.name == "objectsFiltered" ? "objectsFiltered" : "objectsRight"
+      control: control,
+      name: props.fieldName //props.name == "objectsFiltered" ? "objectsFiltered" : "objectsRight"
     });
 
   //const warningManyItens: boolean = model.objects.length > ROWS_LIMIT;
@@ -71,25 +84,22 @@ function SelectObjectComponent(props: ISelectObjectComponentProps<TFields>
               <VSCodeDataGridCell grid-column="1" >
                 <TdsSimpleCheckBoxField
                   className="tds-no-margin"
-                  name={`${props.name}.${index}.check`}
+                  name={`${props.fieldName}.${index}.check`}
                   textLabel={row.name}
-                  info=""
                   label={""}
                 />
               </VSCodeDataGridCell>
               <VSCodeDataGridCell grid-column="2">
                 <TdsSimpleTextField
                   className="tds-no-margin"
-                  name={`${props.name}.${index}.type`}
+                  name={`${props.fieldName}.${index}.type`}
                   readOnly={true}
-                  info=""
                 />
               </VSCodeDataGridCell>
               <VSCodeDataGridCell grid-column="3">
                 <TdsSimpleTextField
                   className="tds-no-margin"
-                  name={`${props.name}.${index}.date`}
-                  info=""
+                  name={`${props.fieldName}.${index}.date`}
                   readOnly={true}
                 />
               </VSCodeDataGridCell>
@@ -127,14 +137,17 @@ export default function PatchGenerateView() {
           const model: TFields = command.data.model;
           const errors: TFields = command.data.errors;
 
+          model.objectsLeft = model.objectsLeft.filter((objectLeft: TInspectorObject) => model.objectsRight.findIndex((objectRight) => objectLeft.name == objectRight.name) == -1);
           model.objectsFiltered = extractData(methods.getValues("filter") || "", model.objectsLeft);
+          model.warningManyItens = model.objectsFiltered.length > ROWS_LIMIT;
+
           console.log("objectsLeft=", model.objectsLeft.length);
           console.log("filtered=", model.objectsFiltered.length);
+          console.log("objectsRight=", model.objectsRight.length);
 
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);
 
-          //replace(extractData(getValues("filter") || "", model.objectsLeft));
           break;
         default:
           break;
@@ -221,19 +234,32 @@ export default function PatchGenerateView() {
 
             <section className="tds-group-container" >
               <SelectObjectComponent
-                name="objectsFiltered"
+                fieldName="objectsFiltered"
               />
-              <VSCodeButton appearance="icon" onClick={() => {
-                const selectedObjects = methods.getValues("objectsFiltered").filter((value) => value.check);
-                console.log(">>>>> confirm select");
-                console.log("selectedObjects=", selectedObjects.length);
 
-                methods.setValue("objectsRight", selectedObjects);
-              }} >
-                <span className="codicon codicon-arrow-right"></span>
-              </VSCodeButton>
+              <section className="tds-group-container-column" >
+                <VSCodeButton appearance="icon" onClick={() => {
+                  const selectedObjects = methods.getValues("objectsFiltered").filter((value) => value.check);
+                  console.log(">>>>> confirm select");
+                  console.log("selectedObjects=", selectedObjects.length);
+
+                  methods.setValue("objectsRight", selectedObjects);
+                }} >
+                  <span className="codicon codicon-arrow-right"></span>
+                </VSCodeButton>
+                <VSCodeButton appearance="icon" onClick={() => {
+                  const selectedObjects = methods.getValues("objectsRight").filter((value) => value.check);
+                  console.log(">>>>> confirm select");
+                  console.log("selectedObjects=", selectedObjects.length);
+
+                  methods.setValue("objectsRight", selectedObjects);
+                }} >
+                  <span className="codicon codicon-arrow-left"></span>
+                </VSCodeButton>
+              </section>
+
               <SelectObjectComponent
-                name="objectsRight"
+                fieldName="objectsRight"
               />
             </section>
           </TdsForm>

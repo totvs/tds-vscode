@@ -4,7 +4,6 @@ import * as fs from "fs";
 import * as cheerio from "cheerio";
 import * as ini from "ini";
 import { languageClient } from "./extension";
-import { Authorization, CompileKey } from "./compileKey/compileKey";
 import { IRpoToken, getEnabledRpoTokenInfos } from "./rpoToken";
 import stripJsonComments from "strip-json-comments";
 import {
@@ -14,6 +13,7 @@ import {
   sendGetServerPermissionsInfo,
 } from "./protocolMessages";
 import { EnvSection, ServerItem } from "./serverItem";
+import { TAuthorization, TCompileKey } from "./model/compileKeyModel";
 
 const homedir = require("os").homedir();
 
@@ -46,7 +46,7 @@ export default class Utils {
   /**
    * Subscrição para evento de chave de compilação.
    */
-  static get onDidSelectedKey(): vscode.Event<CompileKey> {
+  static get onDidSelectedKey(): vscode.Event<TCompileKey> {
     return Utils._onDidSelectedKey.event;
   }
 
@@ -60,7 +60,7 @@ export default class Utils {
   /**
    * Emite a notificação de seleção de chave de compilação
    */
-  private static _onDidSelectedKey = new vscode.EventEmitter<CompileKey>();
+  private static _onDidSelectedKey = new vscode.EventEmitter<TCompileKey>();
 
   /**
    * Emite a notificação de token de RPO
@@ -687,7 +687,7 @@ export class ServersConfig {
   static getAuthorizationToken(server: /*ServerItem*/any): string {
     let authorizationToken: string = "";
     let isSafeRPOServer: boolean = Utils.isServerP20OrGreater(server);
-    const permissionsInfos: IRpoToken | CompileKey = isSafeRPOServer
+    const permissionsInfos: IRpoToken | TCompileKey = isSafeRPOServer
       ? this.getRpoTokenInfos()
       : this.getPermissionsInfos();
     if (permissionsInfos) {
@@ -698,7 +698,7 @@ export class ServersConfig {
           authorizationToken = (<IRpoToken>permissionsInfos).token;
         }
       } else {
-        authorizationToken = (<CompileKey>permissionsInfos).authorizationToken;
+        authorizationToken = (<TCompileKey>permissionsInfos).authorizationToken;
       }
     }
     return authorizationToken;
@@ -719,13 +719,13 @@ export class ServersConfig {
     //Utils._onDidSelectedKey.fire(infos);
   }
 
-  static getPermissionsInfos(): CompileKey {
+  static getPermissionsInfos(): TCompileKey {
     const servers = getServersConfig();
 
     return servers ? servers.permissions : undefined;
   }
 
-  static savePermissionsInfos(infos: CompileKey) {
+  static savePermissionsInfos(infos: TCompileKey) {
     const config = getServersConfig();
 
     config.permissions = infos;
@@ -982,7 +982,7 @@ export class ServersConfig {
   //   return result;
   // }
 
-  static readCompileKeyFile(path): Authorization {
+  static readCompileKeyFile(path: string): TAuthorization {
     if (fs.existsSync(path)) {
       const parseIni = ini.parse(fs.readFileSync(path, "utf-8").toLowerCase()); // XXX toLowerCase??
       return parseIni.authorization;

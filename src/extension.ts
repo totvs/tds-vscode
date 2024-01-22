@@ -15,7 +15,6 @@ import {
 } from "vscode";
 import Utils, { LaunchConfig, ServersConfig } from "./utils";
 import { createNewProtheusServer, ServersExplorer } from "./serversView";
-import { compileKeyPage } from "./compileKey/compileKey";
 import { getLanguageClient } from "./TotvsLanguageClient";
 import {
   commandBuildFile,
@@ -69,6 +68,7 @@ import { GlobalIncludePanel } from "./panels/globalIncludePanel";
 import { GenerateWebServicePanel } from "./panels/generateWSPanel";
 import { PatchGeneratePanel } from "./panels/patchGeneratePanel";
 import { patchGenerateFromFolder } from "./patch/patchUtil";
+import { CompileKeyPanel } from "./panels/compileKey/compileKeyPanel";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -532,13 +532,15 @@ export function activate(context: ExtensionContext) {
   );
 
   //Compile key
-  commands.registerCommand("totvs-developer-studio.compile.key", () =>
-    compileKeyPage(context)
-  );
+  commands.registerCommand("totvs-developer-studio.compile.key",
+    () => {
+      CompileKeyPanel.render(context);
+    });
 
   // Abre a tela de configuração de launchers
-  commands.registerCommand("totvs-developer-studio.configure.launcher", () =>
-    launcherConfig.show(context)
+  commands.registerCommand("totvs-developer-studio.configure.launcher",
+    () =>
+      launcherConfig.show(context)
   );
 
   // Abre a tela de configuração de launchers

@@ -1,5 +1,11 @@
 # Changelog
 
+## Versão [2.0.next]
+
+### Melhoria
+
+Melhor integração de formulários com o tema selecionado pelo usuário no VSCode.
+
 ## Versão [2.0.1]
 
 ### Melhoria
