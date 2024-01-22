@@ -68,7 +68,7 @@
 							<div class="wrap-input">
 								<label for="NamePatch">${d.localize["tds.webview.patch.directory"]}</label><!--Patch Generation Directory-->
 								<input class="inputWithButton" type="text" id="FilePatch" name="FilePatch" onchange="checkDir(event)" placeholder="Ex: C:/totvs/patchs...">
-								<input class="inputButton" type="button" id="btn-PatchDir" onclick="selectPatchGenerateDir()" name="btn-PatchDir" value="Select folder" />
+								<input class="inputButton" type="button" id="btn-PatchDir" onclick="selectPatchGenerateDir()" name="btn-PatchDir" value="${d.localize['tds.webview.patch.select']}" />
 								<label for="NamePatch">${d.localize["tds.webview.patch.file.name.patch"]}</label><!--Patch file name-->
 								<input class="inputText" type="text" id="NamePatch" placeholder="${d.localize['tds.webview.patch.file.name']}"><!--File name-->
 							</div>
@@ -159,7 +159,7 @@
 		let filterData;
 
 		if (query === "") {
-			filterData = [ "<< Use filter to display objects >>" ];
+			filterData = [ "<< ${d.localize['tds.webview.patch.display']} >>" ];
 		} else if (query === "*" && CheckIgnoreTRes.checked == false){
 			filterData = [...srcAll]; // Spread é a clonagem mais rapida de Arrays
 		}

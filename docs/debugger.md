@@ -1,18 +1,21 @@
 # TDS: Depuração e execução
 
 > Requisitos
->
-> - servidor/ambiente conectado
-> - usuário autenticado (se requerido)
-> - executor configurado
 
+- servidor/ambiente conectado
+- usuário autenticado (se requerido)
+- executor configurado
+
+> Recomenda-se que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em mínusculas de forma a manter a compatibildade entre os diversos sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes.
+> Leia [Convenção para nomenclatura de File System em ambiente Linux]<https://tdn.totvs.com/x/h8BICw>).
+>
 > Recomendações
 >
-> - **NUNCA** faça depuração em ambiente de produção
-> - **NÃO** utilize o _SIGAMDI_ para realizar uma depuraração, utilize diretamente os módulos ou utilize o _SIGAADV_
-> - Não use _appServers_ compartilhado com terceiros, mesmo que ambientes distintos
-> - Prefira sempre um ambiente local
-> - **Clientes TCloud** : Os ambientes que estão no _TCloud_ em produção são _bloqueados_ para depuração.
+> - **NUNCA** faça depuração em ambiente de produção.
+> - **NÃO** utilize o _SIGAMDI_ nem o_SIGAADV_ para realizar uma depuraração, utilize diretamente os módulos.
+> - Não use _appServers_ compartilhado com terceiros, mesmo que ambientes distintos.
+> - Prefira sempre um ambiente local durante a depuração.
+> - **Clientes TCloud**: Os ambientes que estão no _TCloud_ em produção são _bloqueados_, por padrão, para depuração.
 >   Promova o _RPO_ para `DEV` e use esse ambiente, e se necessário, promova-o de volta para produção.
 >   Para detalhes, entre em contato com o suporte do _TCloud_.
 
@@ -49,8 +52,8 @@ A definição de executores encontra-se no arquivo `.vscode/launch.json` que, no
 - Na barra de atividades, acione o `Debug`
 - Na barra de ferramentas (parte superior) da visão de `Debug`, abra a lista de seleção e acione `Add Configuration...`.
 - Comece a digitar `TOTVS` e selecione o tipo desejado
-  - _totvs_language_debug_, para usar _SmartClient Desktop_ (padrão)
-  - _totvs_language_web_debug_, para usar _SmartClient Html_
+    - _totvs_language_debug_, para usar _SmartClient Desktop_ (padrão)
+    - _totvs_language_web_debug_, para usar _SmartClient Html_
     ![Type Debugger](images/select-type-debugger.png)
 - Preencha os atributos solicitados conforme seu ambiente
 - Salve o arquivo
@@ -240,3 +243,40 @@ return
 1. Abra o arquivo `.vscode\launch.json`.
 1. Localize a definição de executor que será utilizada e adicione a chave `"enableMultiThread": true`.
 1. Quando a depuração parar no ponto de parada, prossiga com a depuração normalmente.
+
+## Depuração com variáveis do tipo _string_
+
+variáveis do tipo _string_, podem conter dados nos formatos CP1252/CP1251 ou UTF8, que podem ser diferenciadas pelo prefixo ``UTF8`` em seus valores nas visões ``Variables`` e ``Watchs`` e ao passar o mouse sobre a variável.
+
+![Variables](./images/debugger-variables.png)
+
+Na imagem acima, ``\<variável>`` esta com conteúdo CP1252 (padrão AdvPL) e ``\<variável>2``, o conteúdo é UTF8.
+Ao expandir a ``\<variável>``, você obterá maiores detalhes.
+
+![Variables: expanded](./images/debugger-variables-expanded.png.png)
+
+Onde:
+
+| | |
+| - | - |
+| ``Raw`` | É o dado bruto (como armazenado). |
+| ``Length`` | É o tamanho da string do dado bruto. |
+|    | Sequencia byte a byte da string apresentando caractere ASCII e seu código decimal. |
+
+Ao utilizar o _console de debug (REPL)_ para entrada de expressões esta será tratada para apresentar da mesma forma.
+Lembre-se que o padrão é CP1252/CP1251.
+
+![REPL](./images/debug-repl1.png)
+![REPL](./images/debug-repl2.png)
+
+Caso queira informar conteúdo em UTF-8, deverá usar a função ``encodeUTF8``.
+
+![REPL](./images/debug-repl3.png)
+
+Ao comparar variáveis com conteúdo em formato diferente, sempre resultará em ``.F.`` (veja a sequencia de bytes).
+
+![REPL](./images/debug-repl4.png)
+
+Outras operações com _strings_ terão comportamento diferente se o conteúdo for UTF8.
+
+![REPL](./images/debug-repl5.png)

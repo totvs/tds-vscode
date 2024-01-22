@@ -93,7 +93,7 @@
 		const launhConfig = event.data; // The JSON data our extension sent
 		let index = 0;
 		comboBox.innerText = null; //Zera o combo
-		launhConfig.configurations.forEach(element => {
+		launhConfig.forEach(element => {
 			//Adiciona os launchers no combo, porem filtra apenas os launchers com o id do replay:
 			if (element.type == "totvs_tdsreplay_debug") {
 				let option = document.createElement("option");

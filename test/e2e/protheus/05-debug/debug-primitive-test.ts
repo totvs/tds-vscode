@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { delay, openProject, toAdvplType } from "../../helper";
+import { delay, prepareProject, toAdvplType } from "../../helper";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { ADMIN_USER_DATA, APPSERVER_DATA } from "../../scenario";
 import { DebugPageObject, VariablePO } from "../../page-objects/debug-view-po";
@@ -65,7 +65,7 @@ describe("PROTHEUS: Debug primitive variables", async () => {
   let debugBar: DebugToolbar;
 
   before(async () => {
-    await openProject();
+    await prepareProject();
 
     workbenchPO = new WorkbenchPageObject();
 

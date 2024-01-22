@@ -27,7 +27,7 @@ export class TextEditorPageObject {
   }
 
   async sendKeys(
-    ...var_args: Array<string | number | promise.Promise<string | number>>
+    ...var_args: Array<string | number | Promise<string | number>>
   ) {
     await this.editor
       .findElement(By.className("inputarea"))

@@ -57,28 +57,24 @@ async function closeAllEditors(): Promise<void> {
   await delay();
 }
 
-export interface IOpenProject {
+export interface IPrepareProject {
   linter: boolean;
   resetRpo: boolean;
   resetRpoCustom: boolean;
 }
 
-const DEFAULT_OPEN_PROJECT: IOpenProject = {
+const DEFAULT_PREPARE_PROJECT: IPrepareProject = {
   linter: false,
   resetRpo: false,
   resetRpoCustom: true,
 };
 
-export async function openProjectWithReset() {
-  openProject({ resetRpo: true, resetRpoCustom: true });
-}
-
-export async function openProject(
-  optionsOpenProject: Partial<IOpenProject> = {}
+export async function prepareProject(
+  optionsPrepareProject: Partial<IPrepareProject> = {}
 ): Promise<void> {
-  const options: IOpenProject = {
-    ...DEFAULT_OPEN_PROJECT,
-    ...optionsOpenProject,
+  const options: IPrepareProject = {
+    ...DEFAULT_PREPARE_PROJECT,
+    ...optionsPrepareProject,
   };
 
   clearVscodeFiles(PROJECT_FOLDER);
@@ -90,9 +86,9 @@ export async function openProject(
     resetRpoCustom();
   }
 
-  await VSBrowser.instance.openResources(PROJECT_FOLDER);
+  // await VSBrowser.instance.openResources(PROJECT_FOLDER);
 
-  await delay();
+  // await delay();
 
   //const settingsPO: SettingsPageObject = new SettingsPageObject();
   //await settingsPO.openView();

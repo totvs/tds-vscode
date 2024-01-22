@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { delay, DEFAULT_DELAY, openProject } from "../../helper";
+import { delay, DEFAULT_DELAY, prepareProject } from "../../helper";
 import { ReplayPageObject } from "../../page-objects/replay-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { REPLAY_FILES } from "../../scenario";
@@ -16,7 +16,7 @@ const LONG_IMPORT_TIMEOUT = 3 * 60 * 1000; // 3min
   let debugBar: DebugToolbar;
 
   before(async () => {
-    await openProject();
+    await prepareProject();
 
     workbenchPO = new WorkbenchPageObject();
     workbenchPO.openTotvsView();

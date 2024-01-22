@@ -1,11 +1,22 @@
 # TOTVS Developer Studio para VSCode
 
+<!--[![GitHub stars](https://img.shields.io/github/stars/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/stargazers)
+![GitHub top language](https://img.shields.io/github/languages/top/totvs/tds-vscode)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/totvs/tds-vscode/Deploy%20Extension)
+![GitHub last commit](https://img.shields.io/github/last-commit/totvs/tds-vscode)
+-->
 <!-- prettier-ignore-start -->
+[![GitHub license](https://img.shields.io/github/license/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/blob/master/LICENSE)
+![Version](https://img.shields.io/visual-studio-marketplace/v/TOTVS.tds-vscode)
+![Installs](https://img.shields.io/visual-studio-marketplace/i/TOTVS.tds-vscode)
+![Downloads](https://img.shields.io/visual-studio-marketplace/d/TOTVS.tds-vscode)
+![Rating](https://img.shields.io/visual-studio-marketplace/stars/TOTVS.tds-vscode)
+[![GitHub issues](https://img.shields.io/github/issues/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/issues)
+[![GitHub forks](https://img.shields.io/github/forks/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/network)
+![Visual Studio Marketplace Last Updated](https://img.shields.io/visual-studio-marketplace/last-updated/TOTVS.tds-vscode)
 <!-- markdownlint-disable -->
-<!--[![Build Status](https://travis-ci.org/totvs/tds-vscode.svg?branch=master)](https://travis-ci.org/totvs/tds-vscode)-->
-![GitHub](https://img.shields.io/github/license/totvs/tds-vscode)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- markdownlint-enabled -->
 <!-- prettier-ignore-end -->
@@ -22,9 +33,9 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 
 - Sintaxe destacada
 - Comunicação baseada nos protocolos LSP/DAP
-- [Linter](docs/linter.md) - analisador de código estático
+- [Linter](docs/linter.md) para análise de código estático
 - [Console](docs/console.md) informativo e notificações
-- [Edição](docs/edition.md) e [Formatação](docs/formatter/format_config.md) de arquivos fontes (AdvPL, TLPP, 4GL e variantes)
+- [Edição](docs/edition.md), [Formatação](docs/formatter/format_config.md) e [Navegação](docs/dss.md) de arquivos fontes (AdvPL, TLPP, 4GL e variantes)
 - [Compilação](docs/compilation.md) de fontes, pastas e da área de trabalho
 - [Depuração](docs/debugger.md) e execução (Local e _WebApp_)
 - [TDS Replay](https://github.com/totvs/tds-vscode/wiki/TDS-Replay) - Depuração de execução pré-gravada.
@@ -35,6 +46,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 - [Monitoramento](docs/monitor.md) de servidores
 - [RPO Seguro](docs/rpo.md#Token_de_RPO)
 - [TDS-Cli](https://github.com/totvs/tds-ls/blob/master/TDS-CLi.md) compilação por linha de comando. Da mesma forma que o Eclipse, essa extensão do VSCode possui uma ferramenta de compilação em linha de comando.
+- [Navegação em código](docs/dss.md)
 
 ## SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO
 
@@ -42,10 +54,16 @@ As chaves de compilação ou _tokens_ de compilação empregados na construção
 
 > Em caso de mau uso destas chaves ou tokens, por qualquer _outra parte_, que não a referida acima, a mesma irá se responsabilizar, direta ou regressivamente, única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações, multas, condenações judiciais, arbitrais e administrativas e quaisquer outras despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros, eximindo a TOTVS de toda e qualquer responsabilidade.
 
+## Interoperabilidade entre sistemas operacionais
+
+Para melhor interoperabilidade do ecosistema **Protheus** (áreas de trabalho, _smartClient_, _appServer_ e demais componentes) entre os sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes, recomenda-se **veementemente** que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em mínusculas.
+
+> Leia [Convenção para nomenclatura de _File System_ em ambiente _Linux_](https://tdn.totvs.com/x/h8BICw).
+
 ## Guia rápido
 
 > O **VS Code** pode apresentar problemas em suas funcionalidades em sistemas operacionais da linha **Windows Server**.
-> Veja os requisitos para uso no **VS Code** em [Requirements](https://code.visualstudio.com/docs/supporting/requirements).
+> Veja os requisitos para uso do **VS Code** em [Requirements](https://code.visualstudio.com/docs/supporting/requirements).
 
 > **Nunca usei o VS Code**: Recomendamos a leitura de:
 > - [User Interface](https://code.visualstudio.com/docs/getstarted/userinterface)
@@ -76,21 +94,21 @@ No primeiro uso da extensão em um projeto, lhe será apresentada as [Boas Vinda
 > [TOTVS - Extensão de desenvolvimento para VSCode (TEC) - Parte 2](https://www.youtube.com/watch?v=Cz4N0XWCXHY)\
 > [TOTVS - TDS-VSCode - Desenvolvimento colaborativo (TEC)](https://www.youtube.com/watch?v=IGWh5ejxhHU)
 
-### Acentuação e caracteres especiais
+### Acentuação e caracteres especiais nos códigos fontes
 
-Tivemos reportes de problemas de _encode_ abrindo fontes antes salvos no TDS, isso ocorre porque o _encode_ original do VSCode é UTF8 e o do TDS-VSCode é outro.
+Tivemos notificações de problemas de _encode_ abrindo fontes antes salvos no *TDS*, isso ocorre porque o _encode_ original do VSCode é UTF8 e o do **TDS-VSCode** é outro.
 Para garantir a compilação é necessário compatibilizar o _encode_ da seguinte maneira:
 
 - No estado original o fonte será mostrado desta maneira:<br/>
   ![Encoding 1](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding1.png)
-- **Antes de editar/salvar qualquer fonte no VS** entre nas configurações do VS `Ctrl + ,`.
-- No campo de busca digite `_encode_` e selecione `Windows1252` ou `Windows1251` se utilizar alfabeto cirílico.<br/>
+- **Antes de editar/salvar qualquer fonte no VS-Code** entre nas configurações (`Ctrl + ,`).
+- No campo de busca digite `_encode_` e selecione `Windows1252` ou `Windows1251`, se utilizar alfabeto cirílico.
 - Abra o fonte com o novo _encode_ (reforçando que NÃO DEVE tê-lo salvo antes em UTF8)<br/>
   ![Encoding 3](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding3.png)
 - Compile e/ou recompile o fonte e execute-o.<br/>
   ![Encoding 4](https://raw.githubusercontent.com/totvs/tds-vscode/master/imagens/encoding/encoding4.png)
 
-Por padrão, o _TDS-VSCode_ já vem configurado para usar o _encode_ `WindowsCP1252`.
+Por padrão, o _TDS-VSCode_ já vem configurado para usar o _encode_ `Windows1252 (cp1252)`.
 
 ### Desenvolvimento Colaborativo
 
@@ -103,6 +121,12 @@ Por padrão, o _TDS-VSCode_ já vem configurado para usar o _encode_ `WindowsCP1
   Permite uso de _bookmarks_ no estilo Delphi numerados de 1 a 9.
 
   ![Toggle](https://github.com/alefragnani/vscode-numbered-bookmarks/raw/master/images/numbered-bookmarks-toggle.png)
+
+- [Protheus.DOC](https://github.com/totvs/tds-vscode)
+
+  Suporte aos recursos e snippets de documentação TOTVS ProtheusDoc para VsCode.
+
+  ![Protheus.DOC](https://github.com/totvs/tds-vscode/raw/master/images/Example3.gif)
 
 ## Extensões com incompatibilidade
 
@@ -167,7 +191,7 @@ Para contribuir com o desenvolvimento da extensão, acesse [Git Hub TDS-VSCODE](
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/brodao"><img src="https://avatars0.githubusercontent.com/u/949914?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Alan Cândido</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=brodao" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=brodao" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/brodao2"><img src="https://avatars0.githubusercontent.com/u/949914?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Alan Cândido</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=brodao2" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=brodao2" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/lwtnb-wrk"><img src="https://avatars1.githubusercontent.com/u/49563478?v=4?s=50" width="50px;" alt=""/><br /><sub><b>lwtnb-wrk</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=lwtnb-wrk" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=lwtnb-wrk" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/DanielYampolschi"><img src="https://avatars1.githubusercontent.com/u/10711513?v=4?s=50" width="50px;" alt=""/><br /><sub><b>DanielYampolschi</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=DanielYampolschi" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=DanielYampolschi" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/matheus-sales"><img src="https://avatars2.githubusercontent.com/u/11618741?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Matheus Sales</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=matheus-sales" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=matheus-sales" title="Documentation">📖</a></td>
@@ -194,4 +218,3 @@ Para contribuir com o desenvolvimento da extensão, acesse [Git Hub TDS-VSCODE](
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-

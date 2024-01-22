@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { delay, openProject } from "../../helper";
+import { delay, prepareProject } from "../../helper";
 import { CompileKeyPageObject } from "../../page-objects/compile-key-po";
 import { ICompileKeyData } from "../../page-objects/interface-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
@@ -16,7 +16,7 @@ import { COMPILE_KEY_FILE, DELETE_DATA } from "../../scenario";
     let workbenchPO: WorkbenchPageObject;
 
     before(async () => {
-      await openProject();
+      await prepareProject();
 
       workbenchPO = new WorkbenchPageObject();
       serverTreePO = await workbenchPO.openTotvsView();

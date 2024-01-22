@@ -123,7 +123,7 @@
 		const launchConfig = event.data; // The JSON data our extension sent
 		comboBox.innerText = null; //Zera o combo
 		updateElementProgramArguments([]);
-		launchConfig.configurations.forEach(element => {
+		launchConfig.forEach(element => {
 			if (element.type === "totvs_language_debug") {
 				let option = document.createElement("option");
 				option.text = element.name;
@@ -172,19 +172,19 @@
 		let validated = true;
 		console.log(getElementLauncherName().value);
 		if (!getElementLauncherName().value || getElementLauncherName().value.trim() === "") {
-			errorMessage = "Launcher config name not defined.";
+			errorMessage = "${d.localize['tds.webview.launcher.error.name']}";
 			validated = false;
 		}
 		else if (!getElementProgram().value || getElementProgram().value.trim() === "") {
-			errorMessage = "Program not defined.";
+			errorMessage = "${d.localize['tds.webview.launcher.error.program']}";
 			validated = false;
 		}
 		else if (!getElementSmartclientBin().value || getElementSmartclientBin().value.trim() === "") {
-			errorMessage = "Smartclient not defined.";
+			errorMessage = "${d.localize['tds.webview.launcher.error.smartclient']}";
 			validated = false;
 		}
 		else if (getElementDpiMode().checked && getElementOldDpiMode().checked) {
-			errorMessage = "Only DPI mode or OLDDPI mode must be selected.";
+			errorMessage = "${d.localize['tds.webview.launcher.error.olddpi']}";
 			getElementDpiMode().checked = false;
 			getElementOldDpiMode().checked = false;
 			validated = false;

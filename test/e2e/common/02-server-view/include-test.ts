@@ -5,7 +5,7 @@ import {
   avoidsBacksliding,
   delay,
   readServersJsonFile,
-  openProject,
+  prepareProject,
 } from "../../helper";
 import { IncludePageObject } from "../../page-objects/include-po";
 import { ServerTreeItemPageObject } from "../../page-objects/server-tree-item-po";
@@ -19,7 +19,7 @@ describe("Include operations and server file structure", async () => {
   let workbenchPO: WorkbenchPageObject;
 
   before(async () => {
-    await openProject();
+    await prepareProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();

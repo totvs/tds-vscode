@@ -9,19 +9,15 @@ import {
   ProgressLocation,
   window,
   commands,
+  l10n,
 } from "vscode";
 import { TotvsConfigurationProvider } from "./TotvsConfigurationProvider";
 import { TotvsConfigurationTdsReplayProvider } from "./TotvsConfigurationTdsReplayProvider";
-import Utils, { groupBy, MESSAGETYPE } from "../utils";
+import Utils, { groupBy, LaunchConfig, MESSAGETYPE } from "../utils";
 import { CreateTDSReplayTimeLineWebView } from "./tdsreplay/TDSReplayTimeLineCreator";
-
-import { getLanguageClient } from "../TotvsLanguageClient";
-import { LanguageClient } from "vscode-languageclient";
+import { LanguageClient } from "vscode-languageclient/node";
 import { TotvsConfigurationWebProvider } from "./TotvsConfigurationWebProvider";
-
-import * as nls from "vscode-nls";
 import { languageClient } from "../extension";
-let localize = nls.loadMessageBundle();
 
 const DEBUG_TYPE = TotvsConfigurationProvider._TYPE;
 const WEB_DEBUG_TYPE: string = TotvsConfigurationWebProvider._TYPE;
@@ -109,7 +105,7 @@ export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
   ) {
     const debugConsole = debug.activeDebugConsole;
 
-    if(event.event === undefined) {
+    if (event.event === undefined) {
       return;
     }
 
@@ -123,7 +119,7 @@ export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
       processShowProgressEvent(event, debugConsole);
     } else if (event.event === "TDA/showLoadingPageDialog") {
       processShowLoadingDialogEvent(event, debugConsole);
-    }else if (event.event === "TDA/showMsgDialog") {
+    } else if (event.event === "TDA/showMsgDialog") {
       processShowMsgDialogEvent(event, debugConsole);
     } else if (event.event === "TDA/showSourcesView") {
       processShowSourcesView(event, debugConsole);
@@ -178,21 +174,25 @@ function processAddTimeLineEvent(
   debugEvent: DebugSessionCustomEvent,
   console: DebugConsole
 ) {
+  let isIgnoreSourceNotFound: boolean = LaunchConfig.getIgnoreSourceNotFoundValue(debug.activeDebugSession);
+  let selectedSources: string[] = LaunchConfig.getSelectedSourcesValue(debug.activeDebugSession);
+
   if (createTimeLineWebView === null) {
-    let isIgnoreSourceNotFound: boolean = getIgnoreSourceNotFoundValue();
     createTimeLineWebView = new CreateTDSReplayTimeLineWebView(
       context,
       debugEvent,
-      isIgnoreSourceNotFound
+      isIgnoreSourceNotFound,
+      selectedSources
     );
   } else {
     if (createTimeLineWebView.isDisposed()) {
       createTimeLineWebView.reveal();
     }
-    let isIgnoreSourceNotFound: boolean = getIgnoreSourceNotFoundValue();
+
     createTimeLineWebView.postAddTimeLineEvent(
       debugEvent,
-      isIgnoreSourceNotFound
+      isIgnoreSourceNotFound,
+      selectedSources
     );
   }
 }
@@ -207,34 +207,6 @@ function processSelectTimeLineEvent(
     createTimeLineWebView.selectTimeLine(event.body.id);
   }
 }
-
-function getIgnoreSourceNotFoundValue(): boolean {
-  let debugSession = debug.activeDebugSession;
-  let launchConfig;
-  let isIgnoreSourceNotFound: boolean = true;
-  try {
-    launchConfig = Utils.getLaunchConfig();
-
-    for (let key = 0; key < launchConfig.configurations.length; key++) {
-      let launchElement = launchConfig.configurations[key];
-      if (
-        debugSession !== undefined &&
-        launchElement.name === debugSession.name
-      ) {
-        if (launchElement.ignoreSourcesNotFound !== undefined) {
-          isIgnoreSourceNotFound = launchElement.ignoreSourcesNotFound;
-          break;
-        }
-      }
-    }
-  } catch (e) {
-    Utils.logInvalidLaunchJsonFile(e);
-  }
-
-  return isIgnoreSourceNotFound;
-}
-
-
 
 //let showProgressInfoEachPercent: number = 2;
 let progressStarted: boolean = false;
@@ -291,16 +263,14 @@ function processShowProgressEvent(
             await delay(200);
             while (!isFinished && messageQueue.length > 0) {
               item = messageQueue.pop();
-              if(item !== undefined)
-              {
+              if (item !== undefined) {
                 languageClient.outputChannel.appendLine(item.message);
-                setTimeout(() =>
-                {
+                setTimeout(() => {
                   progress.report(
-                  {
-                    message: item.message,
-                    increment: item.increment,
-                  });
+                    {
+                      message: item.message,
+                      increment: item.increment,
+                    });
                 }, 100);
               }
             }
@@ -324,19 +294,19 @@ function processShowProgressEvent(
   }
 }
 
-function clearMessageQueue(messageQueue:  Array<{ message; percent; increment }>) {
-  if(messageQueue !== undefined && messageQueue.length > 0) {
+function clearMessageQueue(messageQueue: Array<{ message; percent; increment }>) {
+  if (messageQueue !== undefined && messageQueue.length > 0) {
     messageQueue.splice(0, messageQueue.length);
   }
 }
 
-function processShowLoadingDialogEvent(event: DebugSessionCustomEvent,debugConsole: DebugConsole) {
+function processShowLoadingDialogEvent(event: DebugSessionCustomEvent, debugConsole: DebugConsole) {
   if (createTimeLineWebView !== null) {
     createTimeLineWebView.showLoadingPageDialog(event.body.show);
   }
 }
 
-function processShowMsgDialogEvent(event: DebugSessionCustomEvent,debugConsole: DebugConsole) {
+function processShowMsgDialogEvent(event: DebugSessionCustomEvent, debugConsole: DebugConsole) {
   if (createTimeLineWebView !== null) {
     createTimeLineWebView.showMessageDialog(event.body.msgType, event.body.message);
   }
@@ -347,7 +317,7 @@ function delay(ms: number) {
 }
 
 function processShowSourcesView(event: DebugSessionCustomEvent, debugConsole: DebugConsole) {
-  commands.executeCommand('tdsreplay.importSourcesOnlyResult',event.body);
+  commands.executeCommand('tdsreplay.importSourcesOnlyResult', event.body);
 }
 
 export function procesChangeBreakpointsEvent(languageClient: LanguageClient, event: BreakpointsChangeEvent) {
@@ -375,21 +345,13 @@ export function procesChangeBreakpointsEvent(languageClient: LanguageClient, eve
     debug.removeBreakpoints(bpList);
 
     window.showWarningMessage(
-      localize(
-        "tds.debug.removed.breakpoints",
-        "Removed [{0}] invalid breakpoints. See TOTVS LS console for details.",
-        removedList.length
-      ));
+      l10n.t("Removed [{0}] invalid breakpoints. See TOTVS LS console for details.", removedList.length));
 
     const map = groupBy(removedList, (item: any) => {
       return item.location.uri.fsPath;
     });
 
-    let msg: string = localize(
-      "tds.debug.removed.breakpoints",
-      "Removed [{0}] invalid breakpoints.",
-      removedList.length
-    );
+    let msg: string = l10n.t("Removed [{0}] invalid breakpoints.", removedList.length);
 
     map.forEach((item: any, key: any) => {
       msg += `\n\t${key} :`

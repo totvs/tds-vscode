@@ -1,66 +1,188 @@
-import { languageClient } from "../extension";
 import * as vscode from "vscode";
-import * as nls from "vscode-nls";
-import Utils from "../utils";
+import Utils, { ServersConfig } from "../utils";
 
-export function toggleAutocompleteBehavior() {
-  let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration(
-    "totvsLanguageServer"
-  );
-  let behavior = config.get("editor.toggle.autocomplete");
+const currentSettings: {} = {};
+let needRestart: boolean = false;
+let waitRestart: boolean = false;
 
-  if (behavior === "Basic") {
-    behavior = "LS";
+function isNewSettings(scope: string, key: string, value: any): boolean {
+  let result: boolean = true;
+
+  if (currentSettings[scope]) {
+    if (currentSettings[scope][key]) {
+      if (Array.isArray(value)) {
+        result = currentSettings[scope][key] !== value.join(";");
+      } else {
+        result = currentSettings[scope][key] !== value;
+      }
+    }
   } else {
-    behavior = "Basic";
+    currentSettings[scope] = {}
   }
-  config.update("editor.toggle.autocomplete", behavior);
+
+  if (Array.isArray(value)) {
+    currentSettings[scope][key] = value.join(";");
+  } else {
+    currentSettings[scope][key] = value;
+  }
+
+  return result;
 }
 
-export function syncSettings() {
-  if (!languageClient.isReady) {
-    return;
+export function getLanguageServerSettings(): any[] {
+  return getModifiedLanguageServerSettings();
+}
+
+export function getModifiedLanguageServerSettings(): any[] {
+  let config = vscode.workspace.getConfiguration("totvsLanguageServer");
+  needRestart = false;
+
+  const settings: any[] = [];
+
+  let tmp = config.inspect("editor.linter");
+  console.log(tmp);
+
+  if (config.has("editor.linter")) {
+    let oldLinter = config.get("editor.linter");
+    if (oldLinter !== Object(oldLinter)) {
+      let newLinter = oldLinter ? "enabled" : "disabled";
+      config.update("editor.linter.behavior", newLinter);
+      config.update("editor.linter", undefined, vscode.ConfigurationTarget.Global);
+      config.update("editor.linter", undefined, vscode.ConfigurationTarget.Workspace);
+    }
   }
 
-  let config = vscode.workspace.getConfiguration("totvsLanguageServer");
-
-  let fsencoding = config.get("filesystem.encoding");
-  changeSettings({
-    changeSettingInfo: {
+  if (isNewSettings("advpls", "fsencoding", config.get("filesystem.encoding"))) {
+    settings.push({
       scope: "advpls",
       key: "fsencoding",
-      value: fsencoding,
-    },
-  });
+      value: config.get("filesystem.encoding"),
+    });
+  }
 
-  let behavior = config.get("editor.toggle.autocomplete");
-  changeSettings({
-    changeSettingInfo: {
-      scope: "advpls",
-      key: "autocomplete",
-      value: behavior,
-    },
-  });
-
-  let notificationlevel = config.get("editor.show.notification");
-  changeSettings({
-    changeSettingInfo: {
+  if (isNewSettings("advpls", "notificationlevel", config.get("editor.show.notification"))) {
+    settings.push({
       scope: "advpls",
       key: "notificationlevel",
-      value: notificationlevel,
-    },
-  });
+      value: config.get("editor.show.notification")
+    });
+  }
 
-  let linter = config.get("editor.linter");
-  changeSettings({
-    changeSettingInfo: {
-      scope: "advpls",
-      key: "linter",
-      value: linter ? "enabled" : "disabled",
-    },
-  });
+  const usageInfo: string = Utils.isUsageInfoConfig() ? "enabled" : "disabled";
+  if (isNewSettings("server", "usageInfo", usageInfo)) {
+    settings.push({
+      scope: "server",
+      key: "usageInfo",
+      value: String(usageInfo)
+    });
+  }
+
+  let linterBehavior = config.get("editor.linter.behavior");
+  if (linterBehavior === String(linterBehavior)) { // proteção: só entra se behavior for um Object (evitar bug que pega informacao de editor.linter)
+    if (isNewSettings("linter", "behavior", linterBehavior)) {
+      settings.push({
+        scope: "linter",
+        key: "behavior",
+        value: String(linterBehavior)
+      });
+    }
+  }
+
+  const includes: string = (ServersConfig.getIncludes(true, ServersConfig.getCurrentServer()) || []).join(";");
+  if (isNewSettings("linter", "includes", includes)) {
+    settings.push({
+      scope: "linter",
+      key: "includes",
+      value: includes
+    });
+  }
+
+  const hover: string = config.get("editor.hover");
+  if (isNewSettings("editor", "hoverMode", hover)) {
+    settings.push({
+      scope: "editor",
+      key: "hoverMode",
+      value: hover
+    });
+  }
+
+  const launchArgs = config.get("launch.args");
+  if (isNewSettings("launch", "args", launchArgs)) {
+    needRestart = true;
+  }
+
+  const indexCache: string = config.get("editor.index.cache");
+  if (isNewSettings("editor", "index.cache", indexCache)) {
+    settings.push({
+      scope: "editor",
+      key: "indexCache",
+      value: indexCache
+    });
+    needRestart = true;
+  }
+
+  const codeLens = config.get("editor.codeLens");
+  if (isNewSettings("editor", "codeLens", codeLens)) {
+    settings.push({
+      scope: "editor",
+      key: "codeLens",
+      value: String(codeLens)
+    });
+    needRestart = true;
+  }
+
+  const signatureHelp = config.get("editor.signatureHelp");
+  if (isNewSettings("editor", "signatureHelp", signatureHelp)) {
+    settings.push({
+      scope: "editor",
+      key: "signatureHelp",
+      value: String(signatureHelp)
+    });
+  }
+  const autocomplete = config.get("editor.autocomplete");
+  if (isNewSettings("editor", "autocomplete", autocomplete)) {
+    settings.push({
+      scope: "editor",
+      key: "autocomplete",
+      value: String(autocomplete)
+    });
+  }
+
+  if (settings.length > 0) {
+    let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
+    const version: string = ext.packageJSON["version"];
+    settings.push({
+      scope: "extension",
+      key: "tdsversion",
+      value: version
+    });
+  }
+
+  return settings;
 }
 
-export function changeSettings(jsonData: any) {
-  languageClient.sendRequest("$totvsserver/changeSetting", jsonData);
+export function confirmRestartNow(): boolean {
+
+  if (needRestart && !waitRestart) {
+    vscode.window.showInformationMessage(
+      "To make the change effective, it is necessary to restart VS-CODE.", { modal: true },
+      "Now", "Later").then((value: string) => {
+        waitRestart = true;
+        if (value == "Now") {
+          vscode.commands.executeCommand("workbench.action.reloadWindow");
+        } else if (value == "Later") {
+          setTimeout(() => {
+            needRestart = true;
+            waitRestart = false;
+            confirmRestartNow();
+          }, 60000);
+        } else {
+          needRestart = false;
+          waitRestart = false;
+        }
+      });
+  }
+
+  return needRestart;
 }
+

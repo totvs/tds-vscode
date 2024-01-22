@@ -68,18 +68,18 @@ user function file_03(replay, replayPath)
 
 return
 
-	class AB
-		data bT
-		data bF
-		data dt
-		data c
-		data n0
-		data n2
-		data n8
-		data cb
+class AB
+	data bT
+	data bF
+	data dt
+	data c
+	data n0
+	data n2
+	data n8
+	data cb
 
-		method ab()
-	endclass
+	method ab()
+endclass
 
 method ab() class AB
 	::bT := .t.

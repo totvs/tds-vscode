@@ -3,7 +3,6 @@
 	"description": [
 		"Cenário para o ambiente TotvsTec (Harpia) e projeto 4gl."
 	],
-	"projectFolder": "logix",
 	"variables": {
 		"rootPath": {
 			"linux": "~/protheus",

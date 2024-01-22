@@ -19,11 +19,13 @@
 			"name": "Extension",
 			"runtimeExecutable": "${execPath}",
 			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}"
+				"--extensionDevelopmentPath=${workspaceFolder}",
+				"--inspect"
 			],
 			"outFiles": [
 				"${workspaceFolder}/out/**/*.js"
 			],
+			"sourceMaps": true,
 			"preLaunchTask": "npm: compile",
 			"env": {
 				"TOTVS_LS_LOG_FILE": "./TOTVS_LS_LOG_FILE.log"
@@ -45,25 +47,5 @@
 				"TOTVS_LS_LOG_FILE": "./TOTVS_LS_LOG_FILE.log"
 			}
 		},
-		{
-			"type": "totvs_language_debug",
-			"request": "launch",
-			"cwb": "${workspaceRoot}",
-			"name": "teste",
-			"smartclientBin": "D:\\Totvs\\SmartClients\\SC-20.3.0.x\\smartclient.exe",
-			"program": "u_exgrid",
-			"programArguments": [],
-			"enableMultiThread": false,
-			"enableProfile": false,
-			"isMultiSession": true,
-			"isAccessibilityMode": false,
-			"doNotShowSplash": false,
-			"openglMode": false,
-			"dpiMode": false,
-			"olddpiMode": false,
-			"language": "2",
-			"ignoreFiles": true,
-			"enableTableSync": true
-		}
 	]
 }

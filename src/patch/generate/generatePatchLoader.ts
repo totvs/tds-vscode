@@ -16,8 +16,7 @@ limitations under the License.
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { GeneratePatchPanelAction, IGeneratePatchPanelAction } from './actions';
-import * as nls from 'vscode-nls';
-import Utils from '../../utils';
+import { ServersConfig } from '../../utils';
 import {
   IGeneratePatchData,
   IServerFS,
@@ -30,7 +29,6 @@ import { ServerItem } from '../../serverItem';
 const fs = require('fs');
 const os = require('os');
 
-const localize = nls.loadMessageBundle();
 const WS_STATE_KEY = 'GENERATE_PATCH_TABLE';
 
 let generatePathLoader: GeneratePatchLoader = undefined;
@@ -39,7 +37,7 @@ export function openGeneratePatchView(
   context: vscode.ExtensionContext,
   args: any = {}
 ) {
-  const server = Utils.getCurrentServer();
+  const server = ServersConfig.getCurrentServer();
 
   if (generatePathLoader === undefined || generatePathLoader === null) {
     generatePathLoader = new GeneratePatchLoader(context, args);
@@ -79,7 +77,7 @@ class GeneratePatchLoader {
     const ext = vscode.extensions.getExtension('TOTVS.tds-vscode');
     this._panel = vscode.window.createWebviewPanel(
       'generatePathLoader',
-      localize('GENERATE_PATCH', 'Generate Patch'),
+      vscode.l10n.t('Generate Patch'),
       vscode.ViewColumn.One,
       {
         enableScripts: true,
@@ -204,7 +202,7 @@ class GeneratePatchLoader {
       directory: boolean
     ): IServerFS {
       return {
-        id: (directory ? 'folder_' : 'file_') + Date.now().toString(36)+'_'+parent.children.length,
+        id: (directory ? 'folder_' : 'file_') + Date.now().toString(36) + '_' + parent.children.length,
         name: resource,
         children: [],
         directory: directory,
@@ -261,7 +259,7 @@ class GeneratePatchLoader {
     vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
-        title: localize('generating_MESSAGE', 'Generating Patch'),
+        title: vscode.l10n.t('Generating Patch'),
         cancellable: true,
       },
       async (progress, token) => {
@@ -350,45 +348,45 @@ class GeneratePatchLoader {
 
 function getTranslations() {
   return {
-    GENERATE_PATCH: localize('GENERATE_PATCH', 'Generate Patch'),
+    GENERATE_PATCH: vscode.l10n.t('Generate Patch'),
     //   NO_DATA: localize(
     //     "NO_DATA",
     //     "There are no patchs to validate or apply."
     //   ),
-    //   FILES: localize("FILES", "files"),
-    //   FILTER: localize("FILTER", "Filter"),
-    //   FILTERING_ON_OFF: localize("FILTERING_ON_OFF", "Filtering on/off"),
-    //   FIRST: localize("FIRST", "First"),
-    //   FIRST_PAGE: localize("FIRST_PAGE", "First page"),
-    //   FROM_TO_OF_COUNT: localize("FROM_TO_OF_COUNT", "from-to de count"),
-    //   LAST: localize("LAST", "Last"),
-    //   LAST_PAGE: localize("LAST_PAGE", "Last page"),
-    //   LINES_PAGE: localize("LINES_PAGE.", "lines/p."),
-    //   NEXT: localize("NEXT", "Next"),
-    //   NEXT_PAGE: localize("NEXT_PAGE", "Next page"),
-    //   PREVIOUS: localize("PREVIOUS", "Previous"),
-    //   PREVIOUS_PAGE: localize("PREVIOUS_PAGE", "Previous page"),
-    //   SEARCH: localize("SEARCH", "Search"),
-    //   SEARCH_ALL_COLUMNS: localize("SEARCH_ALL_COLUMNS", "Search in all columns"),
+    //   FILES: vscode.l10n.t( "files"),
+    //   FILTER: vscode.l10n.t( "Filter"),
+    //   FILTERING_ON_OFF: vscode.l10n.t( "Filtering on/off"),
+    //   FIRST: vscode.l10n.t( "First"),
+    //   FIRST_PAGE: vscode.l10n.t( "First page"),
+    //   FROM_TO_OF_COUNT: vscode.l10n.t( "from-to de count"),
+    //   LAST: vscode.l10n.t( "Last"),
+    //   LAST_PAGE: vscode.l10n.t( "Last page"),
+    //   LINES_PAGE: vscode.l10n.t( "lines/p."),
+    //   NEXT: vscode.l10n.t( "Next"),
+    //   NEXT_PAGE: vscode.l10n.t( "Next page"),
+    //   PREVIOUS: vscode.l10n.t( "Previous"),
+    //   PREVIOUS_PAGE: vscode.l10n.t( "Previous page"),
+    //   SEARCH: vscode.l10n.t( "Search"),
+    //   SEARCH_ALL_COLUMNS: vscode.l10n.t( "Search in all columns"),
     //   FILES_SELECTED: localize(
     //     "FILES_SELECTED",
     //     "{0} files selected"
     //   ),
-    //   STATUS: localize("STATUS", "Status"),
-    //   NAME: localize("NAME", "Name"),
-    //   FULLPATH: localize("FULLPATH", "Full File Name"),
-    //   SIZE: localize("SIZE", "Size(KB)"),
-    //   ACTIONS: localize("ACTIONS", "Actions"),
-    //   REMOVE_PATCH: localize("REMOVE_PATCH", "Remove patch"),
-    //   VALIDATE_PATCH: localize("VALIDATE_PATCH", "Validate patch"),
+    //   STATUS: vscode.l10n.t( "Status"),
+    //   NAME: vscode.l10n.t( "Name"),
+    //   FULLPATH: vscode.l10n.t( "Full File Name"),
+    //   SIZE: vscode.l10n.t( "Size(KB)"),
+    //   ACTIONS: vscode.l10n.t( "Actions"),
+    //   REMOVE_PATCH: vscode.l10n.t( "Remove patch"),
+    //   VALIDATE_PATCH: vscode.l10n.t( "Validate patch"),
     //   //
-    //   ENVIRONMENT: localize("ENVIRONMENT", "Environment"),
-    //   RESOURCE: localize("RESOURCE", "Resource"),
-    //   RPO: localize("RPO", "RPO"),
-    //   PACK: localize("PACK", "Patch"),
-    //   DLG_TITLE_RESOURCES: localize("DLG_TITLE_RESOURCES", "Resources"),
-    //   ENVIRONEMNT: localize("ENVIRONEMNT", "Environemnt"),
-    //   SHOW_COLUMNS: localize("SHOW_COLUMNS", "Show Columns"),
+    //   ENVIRONMENT: vscode.l10n.t( "Environment"),
+    //   RESOURCE: vscode.l10n.t( "Resource"),
+    //   RPO: vscode.l10n.t( "RPO"),
+    //   PACK: vscode.l10n.t( "Patch"),
+    //   DLG_TITLE_RESOURCES: vscode.l10n.t( "Resources"),
+    //   ENVIRONEMNT: vscode.l10n.t( "Environemnt"),
+    //   SHOW_COLUMNS: vscode.l10n.t( "Show Columns"),
     //
   };
 }

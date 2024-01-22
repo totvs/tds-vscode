@@ -1,0 +1,690 @@
+#INCLUDE 'protheus.ch'
+#INCLUDE 'restful.ch'
+#Include 'TopConn.ch'
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} 
+@author  Lucas Brustolin
+@version Protheus 12
+@since   30/03/2023
+/*/
+//-------------------------------------------------------------------
+WsRestful NosurPagar Description "NOSUR - Contas a Pagar" Format APPLICATION_JSON
+
+    //Atributos gerais padrao guia TOTVS - https://api.totvs.com.br/guia
+   
+    //Endpoints
+    WSMETHOD POST Provisao DESCRIPTION "[4.1] - Provisão" ;
+    WSsyntax "/ContasPagar/Provisao" ;
+    PATH "/ContasPagar/Provisao" PRODUCES APPLICATION_JSON
+
+
+    WSMETHOD POST Libera DESCRIPTION "[4.2] - Liberação de Pagamento" ;
+    WSsyntax "/ContasPagar/LiberacaoPagamento" ;
+    PATH "/ContasPagar/LiberacaoPagamento" PRODUCES APPLICATION_JSON
+    
+
+End WsRestful
+
+WsMethod Post Libera WsService NosurPagar
+Local lRet := .F.
+Local cBodyJson := ::GetContent()    
+Local nCont
+Local lXml := .F.
+Local lPDF := .F.
+Local jRet := JsonObject():New()
+
+Default Empresa := '01'
+Default Filial := '01'
+
+Private oBody := JsonObject():new()
+
+::SetContentType("application/json")
+
+cTenantId := HTTPHeader("tenantId") 
+
+If "," $ cTenantId
+    empresa := StrTokArr2(cTenantId, ",")[1]
+    filial  := StrTokArr2(cTenantId, ",")[2]
+EndIf
+
+cEmpAnt := empresa 
+cFilAnt := filial
+
+oBody:fromJson(cBodyJson) 
+
+aFields := oBody:getNames()
+
+If Len(aFields) > 0
+    For nCont := 1 to Len(aFields)
+        If Upper(aFields[nCont]) == 'XML'
+            lXML := .T.
+        ElseIf Upper(aFields[nCont]) == 'PDF'
+            lPDF := .T.
+        EndIf
+    Next
+
+    If lXml
+       aMsgRet := salvaXML()
+    EndIf
+    If lPdf
+       aMsgRet := salvaPDF()
+    EndIf
+    If !lPdf .and. !lXML
+       aMsgRet := geraNFE()
+    EndIf
+
+EndIf
+
+jRet["idPedidoCompra"] := SC7->C7_NUM
+jRet["codRetorno"]    := aMsgRet[1]
+jRet["Mensagem"]      := aMsgRet[2]
+
+::SetResponse(jRet)
+
+Return lRet
+
+/*/{Protheus.doc} geraNFE
+Atualização de valor e Geração da NFE
+@type function
+@version 1.0 
+@author eduardo.williams
+@since 4/23/2023
+@return variant, Mensagem de retorno
+/*/
+Static Function geraNFE
+Local cOrdSer := oBody["numOrdemServico"]
+Local nValSrv := oBody:DadosServico:ValTotal
+Local aMsgRet := {}
+
+cQuery := "SELECT C7_TOTAL, R_E_C_N_O_ RECNO "
+cQuery += "FROM " + RetSqlName("SC7") + " SC7 "
+cQuery += "WHERE SC7.D_E_L_E_T_ = '' "
+cQuery += "AND C7_XORDSER = '" + cOrdSer + "'"
+TcQuery cQuery Alias ValPed New
+
+If ValPed->(EOF())
+    // Ordem de serviço não encontrada
+    aadd(aMsgRet,422)
+    aadd(aMsgRet,'Ordem de serviço não encontrada')
+Else
+    SC7->(dbGoto(ValPed->RECNO))
+    If ValPed->C7_TOTAL <> nValSrv
+		aAutoCab	:= {}
+		aAutoDet	:= {}
+		aAdd(aAutoCab,{"C7_NUM", 	    SC7->C7_NUM,        Nil})
+        aAdd(aAutoCab,{"C7_EMISSAO",    SC7->C7_EMISSAO,    Nil})
+        aAdd(aAutoCab,{"C7_FORNECE",    SC7->C7_FORNECE,    Nil})
+        aAdd(aAutoCab,{"C7_LOJA",       SC7->C7_LOJA,       Nil})
+        aAdd(aAutoCab,{"C7_COND",       SC7->C7_COND,       Nil})
+        aAdd(aAutoCab,{"C7_CONTATO",    SC7->C7_CONTATO,    Nil})
+		aAdd(aAutoCab,{"C7_FILENT",	    SC7->C7_FILENT,     Nil})
+
+        aLinha := {}
+        aAdd(aLinha,{"C7_ITEM",     SC7->C7_ITEM,   Nil})
+        aAdd(aLinha,{"C7_PRODUTO",  SC7->C7_PRODUTO,Nil})
+        aAdd(aLinha,{"C7_QUANT",    SC7->C7_QUANT,  Nil})
+        aAdd(aLinha,{"C7_PRECO",    SC7->C7_PRECO,  Nil})
+        aAdd(aLinha,{"C7_TOTAL",    SC7->C7_TOTAL,  Nil})
+        aAdd(aLinha,{"C7_CC",       SC7->C7_CC,     Nil})
+        aAdd(aLinha,{"C7_ITEMCTA",  SC7->C7_ITEMCTA,Nil})
+        aAdd(aLinha,{"C7_CLVL",     SC7->C7_CLVL,   Nil})
+        aAdd(aLinha,{"C7_XDESCCL",  SC7->C7_XDESCCL,Nil})
+        aAdd(aLinha,{"C7_XDESCIT",  SC7->C7_XDESCIT,Nil})
+        aAdd(aLinha,{"C7_XORDSER",  SC7->C7_XORDSER,Nil})
+        aAdd(aLinha,{"C7_XTPOS",    SC7->C7_XTPOS,  Nil})
+        aAdd(aLinha,{"C7_XDESCOS",  SC7->C7_XDESCOS,Nil})
+        aAdd(aLinha,{"C7_XSTATUS",  SC7->C7_XSTATUS,Nil})
+        aAdd(aLinha,{"C7_XBOOKIN",  SC7->C7_XBOOKIN,Nil})
+        aAdd(aLinha,{"C7_XADGRIS",  SC7->C7_XADGRIS,Nil})
+        aAdd(aLinha,{"C7_XTPDOC",   SC7->C7_XTPDOC, Nil})
+        aAdd(aLinha,{"C7_XIDTDOC",  SC7->C7_XIDTDOC,Nil})
+
+        aadd(aAutoDet,aLinha)
+
+		nTipoPed    := 1  // 1 - Ped. Compra / 2 - Aut. Entrega
+		
+        //Apaga o pedido
+		MSExecAuto({|v, x, y, z| MATA120(v, x, y, z)}, nTipoPed, aAutoCab, aAutoDet, 5)
+        
+        aLinha[4,2] := nValSrv
+        aLinha[5,2] := nValSrv
+        
+        aAutoDet := {}
+        aadd(aAutoDet,aLinha)
+
+        //Gera o pedido com o novo valor
+		MSExecAuto({|v, x, y, z| MATA120(v, x, y, z)}, nTipoPed, aAutoCab, aAutoDet, 3)
+
+    Else
+
+        aadd(aCab,{"F1_TIPO",       "N",    NIL})
+        aadd(aCab,{"F1_FORMUL",     "N",    NIL})
+        aadd(aCab,{"F1_DOC",        SC7->C7_NUM,   NIL})
+        aadd(aCab,{"F1_SERIE",      "1 ",   NIL})
+        aadd(aCab,{"F1_EMISSAO",    DDATABASE,  NIL})
+        aadd(aCab,{"F1_DTDIGIT",    DDATABASE,  NIL})
+        aadd(aCab,{"F1_FORNECE",    SC7->C7_FORNECE, NIL})
+        aadd(aCab,{"F1_LOJA",       SC7->C7_LOJA,   NIL})
+        aadd(aCab,{"F1_ESPECIE",    "SPED",  NIL})
+        aadd(aCab,{"F1_COND",       SC7->C7_COND,  NIL})
+        aadd(aCab,{"F1_DESPESA",    0,  NIL})
+        aadd(aCab,{"F1_DESCONT",    0,  Nil})
+        aadd(aCab,{"F1_SEGURO",     0,  Nil})
+        aadd(aCab,{"F1_FRETE",      0,  Nil})
+        aadd(aCab,{"F1_MOEDA",      1,  Nil})
+        aadd(aCab,{"F1_TXMOEDA",    1,  Nil})
+        aadd(aCab,{"F1_STATUS",     "A",    Nil})
+
+        //Itens
+        aItem := {}
+        aadd(aItem,{"D1_ITEM",  StrZero(1,4),   NIL})
+        aadd(aItem,{"D1_COD",   SC7->C7_PRODUTO,    NIL})
+        aadd(aItem,{"D1_UM",    SC7->C7_UM, NIL})
+        aadd(aItem,{"D1_LOCAL", SC7->C7_LOCAL,  NIL})
+        aadd(aItem,{"D1_QUANT", SC7->C7_QUANT,  NIL})
+        aadd(aItem,{"D1_VUNIT" ,SC7->C7_PRECO,    NIL})
+        aadd(aItem,{"D1_TOTAL" ,SC7->C7_TOTAL,    NIL})
+        aadd(aItem,{"D1_TES",   SC7->C7_TES,    NIL})
+        aadd(aItens,aItem)
+        aadd(aItens[Len(aItens)], {'D1_PEDIDO ', SC7->C7_NUM ,}) // Número do Pedido de Compras
+        aadd(aItens[Len(aItens)], {'D1_ITEMPC ', SC7->C7_ITEM ,}) // Item do Pedido de Compras
+
+        //3-Inclusão / 4-Classificação / 5-Exclusão
+        nOpc := 3
+        MSExecAuto({|x,y,z,k,a,b| MATA103(x,y,z,,,,k,a,,,b)},aCab,aItens,nOpc,aParamAux,aItensRat,aCodRet)    
+    EndIf
+EndIf
+
+Return aMsgRet
+
+/*/{Protheus.doc} salvaXML
+salva o xml
+@type function
+@version  1
+@author eduardo.williams
+@since 4/22/2023
+@return variant, mensagem de retorno
+/*/
+Static Function salvaXML
+Local nCont
+Local aMsgRet := {}
+
+For nCont := 1 to Len(aFields) 
+    If Upper(aFields[nCont]) == 'XML'
+        cXML := oBody["Xml"]
+    ElseIf Upper(aFields[nCont]) == 'NUMORDEMSERVICO'
+        cOrdSer := oBody["numOrdemServico"]
+    ElseIf Upper(aFields[nCont]) == 'CHAVE'
+        cChave := oBody["Chave"]
+    EndIf
+Next
+
+cFileName := '\dirdoc\co' + cEmpAnt + '\shared\' +  cChave + '.xml'
+nHand     := fcreate(cFileName)
+FWrite(nHand, Decode64(oBody["Xml"]))
+fclose(nHand)
+cChave := SC7->(C7_FILIAL+C7_NUM+C7_ITEM+C7_SEQUEN+C7_ITEMGRD)
+
+grvDoc(cChave + '.xml', cChave)
+
+aadd(aMsgRet,200)
+aadd(aMsgRet,'Documento anexado com sucesso')
+
+Return aMsgRet
+
+/*/{Protheus.doc} grvDoc
+anexa o documento no conhecimento
+@type function
+@version  1
+@author eduardo.williams
+@since 4/22/2023
+@param cFileName, character, nome do objeto
+@param cChave, character, chave do registro
+@return variant, sem retorno
+/*/
+Static Function grvDoc(cFileName, cChave)
+
+Local cCodObj := GetSXENum("ACB","ACB_CODOBJ")
+
+ConfirmSx8()
+
+RecLock("ACB",.t.)
+ACB->ACB_FILIAL := xFilial("ACB")
+ACB->ACB_CODOBJ := cCodObj
+ACB->ACB_OBJETO := AllTrim(cFileName)
+ACB->ACB_DESCRI := AllTrim(cFileName)
+ACB->(MsUnlock())
+
+If !AC9->(dbSeek(xFilial("AC9") + xFilial("SC7") + 'SC7' + cChave + cCodObj))
+    RecLock("AC9",.t.)
+    AC9->AC9_FILIAL := xFilial("AC9")
+    AC9->AC9_FILENT := xFilial("SC7")
+    AC9->AC9_ENTIDA := 'SC7'
+    AC9->AC9_CODENT := cChave
+    AC9->AC9_CODOBJ := cCodObj
+    AC9->(MsUnlock())
+EndIf
+
+Return
+
+/*/{Protheus.doc} salvaPDF
+salva o pdf
+@type function
+@version 1 
+@author eduardo.williams
+@since 4/22/2023
+@return variant, mensagem de retorno
+/*/
+Static Function salvaPDF
+Local aMsgRet := {}
+Local cOrdSer     := oBody['numOrdemServico']
+Local cFileName   := '\dirdoc\co' + cEmpAnt + '\shared\' + AllTrim(cOrdSer) + ".pdf"
+Local nHand       := fcreate(cFileName)
+
+FWrite(nHand, Decode64(oBody['Pdf']))
+fclose(nHand)
+
+cChave := SC7->(C7_FILIAL+C7_NUM+C7_ITEM+C7_SEQUEN+C7_ITEMGRD)
+
+grvDoc(AllTrim(cOrdSer) + ".pdf", cChave)
+
+aadd(aMsgRet,200)
+aadd(aMsgRet,'Documento anexado com sucesso')
+
+Return aMsgRet
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} Provisao
+Disponibilizar o serviço 'Provisão' Criação do Pedido de Compras.
+
+@author  Lucas Brustolin
+@version Protheus 12
+@since   30/03/2023
+@Json Entrada:
+
+{
+   "ProvisaoId":1799470,
+   "NumOrdemServico":"3SPO5346A",
+   "TipoOrdemServico":null,
+   "CodTipoOrdemSerivo":0,
+   "Emissor":null,
+   "Status":"1",
+   "DataAtualizacao":"2023-04-17T16:08:52.317",
+   "NumBooking":"1156",
+   "CodItemContabilErp":"123       ",
+   "NomeItemContabilErp":"NAVIO SIGNA",
+   "CodClasseValorErp":"2",
+   "NomeClasseValorErp":"PADR\u00C3O",
+   "CodCentroCustoErp":"MAO ",
+   "DadosFornecedor":{
+      "CodigoFornecedor":"84098383",
+      "LojaFornecedor":"840",
+      "CondPagamento":""
+   },
+   "DadosFilial":{
+      "CnpjFilial":"49009424000106"
+   },
+   "DadosOrigem":null,
+   "DadosDestino":{
+      "NomeDestinatario":"HAPAG-LLOYD BRASIL AGENCIAMENTO MARITIMO",
+      "CnpjDestinatario":"96452545000108",
+      "IeDestinatario":"ISENTO",
+      "CodMunicipioDestinatario":"02603",
+      "EnderecoDestinatario":"RUA FERNANDO ANDRADE, 374",
+      "BairroDestinatario":"COROADO",
+      "LogradouroDestinatario":"RUA FERNANDO ANDRADE",
+      "ComplementoDestinatario":"",
+      "NumeroDestinatario":"374",
+      "CepDestinatario":"69082307"
+   },
+   "DadosServico":{
+      "CodTipoServico":"",
+      "ValorUni":0,
+      "Qtde":1,
+      "TipoUnidade":"Qtde",
+      "ValTotal":175.00,
+      "ValAdValorEmGris":0
+   },
+   "DadosImpIss":{
+      "AliqIss":5,
+      "ValIss":8.75,
+      "BaseIss":175.00
+   },
+   "DadosImpIcms":null,
+   "DadosDoDocumentoDeCobranca":[
+      {
+         "TipoDocto":"",
+         "IdentificadorDocto":"",
+         "Xml":"",
+         "Pdf":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+         "ArquivoXml":"",
+         "ArquivoPdf":""
+      }
+   ]
+}
+
+/*/
+//-------------------------------------------------------------------
+WSMETHOD POST Provisao WSSERVICE NosurPagar
+        
+	Local cJson 	 	:= Self:GetContent() // Pega a string do JSON 
+	Local oBody 		:= Nil 
+	Local jRequest		:= Nil 
+	Local cNumPC		:= ""
+	Local cCodForn		:= ""
+	Local cLojaForn		:= ""
+	Local cProduto 		:= ""
+	Local cDescErro		:= ""
+	Local nTipoPed		:= 0
+	Local nX			:= 0
+	Local lTest 		:= .F. 
+
+	::SetContentType("application/json")
+
+	If ( lTest )
+
+		FwLogMsg("INFO", , "REST", FunName(), "", "01", "["+Time()+"] - INICIO", 0, 0, {}) 
+
+		FWJsonDeserialize(cJson, @oBody)
+
+		jRequest					:= JsonObject():New()
+		jRequest["idPedidoCompra"]	:= "001553"
+		jRequest["codRetorno"]		:= 200
+		jRequest["mensagem"]		:= EncodeUtf8("Provisão (Pedido de Compra) efetuada com sucesso!") 
+
+		cJsonRet := FWJsonSerialize(jRequest)
+
+		::SetResponse(cJsonRet)
+
+		FwLogMsg("INFO", , "REST", FunName(), "", "01", "["+Time()+"] - FIM", 0, 0, {}) 
+	Else 
+
+		FwLogMsg("INFO", , "REST", FunName(), "", "01", "["+Time()+"] - INICIO", 0, 0, {}) 
+
+		FWJsonDeserialize(cJson, @oBody)
+
+		lMsErroAuto 	:= .F.
+		lMsHelpAuto		:= .T.
+		lAutoErrNoFile 	:= .T.
+
+		cCodForn 	:= PadR(oBody:DadosFornecedor:CodigoFornecedor	, TamSx3("C7_FORNECE")[1])
+		cLojaForn	:= PadR(oBody:DadosFornecedor:LojaFornecedor	, TamSx3("C7_LOJA")[1])
+
+		// VALIDA SE O CNPJ INFORMADO ESTÁ CADASTRADO NA SYS_COMPANY (SM0)
+		cCNPJ := oBody:DadosFilial:CnpjFilial
+		cQuery := "SELECT M0_CODIGO, M0_CODFIL "
+		cQuery += "FROM SYS_COMPANY "
+		cQuery += "WHERE D_E_L_E_T_ = '' "
+		cQuery += "AND M0_CGC = '" + cCNPJ + "' "
+		TcQuery cQuery Alias NORFIL New
+
+		If NORFIL->(EOF())
+
+			jRequest					:= JsonObject():New()
+			jRequest["idPedidoCompra"]	:= ""
+			jRequest["codRetorno"]		:= 422
+			jRequest["mensagem"]		:= "CNPJ ["+ AllTrim(cCNPJ) +"] nao foi encontrado."
+		 
+			::SetResponse(jRequest)	
+			
+			NORFIL->(dbCloseArea())
+
+			Return( .T. )
+
+		Else
+
+			cEmpAnt := NORFIL->M0_CODIGO
+			cFilAnt := NORFIL->M0_CODFIL
+
+			NORFIL->(dbCloseArea())
+
+		EndIf
+
+		// VALIDA ORDEM DE SERVIÇO JÁ ENVIADA
+		cOrdSer := PadR(oBody:NumOrdemServico,TamSX3("C7_XORDSER")[1])
+		cQuery := "SELECT C7_NUM "
+		cQuery += "FROM " + RetSqlName("SC7") + " SC7 "
+		cQuery += "WHERE C7_FILIAL = '" + xFilial("SC7") + "' "
+		cQuery += "AND C7_XORDSER = '" + cOrdSer + "' "
+		TcQuery cQuery Alias ORDSER New
+
+		If !ORDSER->(EOF())
+
+			jRequest					:= JsonObject():New()
+			jRequest["idPedidoCompra"]	:= ""
+			jRequest["codRetorno"]		:= 422
+			jRequest["mensagem"]		:= "Ordem de Servico ["+ AllTrim(cOrdSer) +"] já utilizada no pedido [" + ORDSER->C7_NUM + "]"
+		 
+			::SetResponse(jRequest)	
+			
+			Return( .T. )
+
+		EndIf
+
+		// -----------------------------------------------------------------------------------------------
+		// VALIDA FORNECEDOR
+		DbSelectArea("SA2")
+		SA2->(dbSetorder(1))
+
+		If ! SA2->(dbSeek(xFilial('SA2')+ cCodForn + cLojaForn ))	
+		
+			jRequest					:= JsonObject():New()
+			jRequest["idPedidoCompra"]	:= ""
+			jRequest["codRetorno"]		:= 422
+			jRequest["mensagem"]		:= "Fornecedor ["+ AllTrim(cCodForn) +" "+ AllTrim(cLojaForn) +"] nao foi encontrado."
+		 
+			::SetResponse(jRequest)	
+			
+			Return( .T. )
+		EndIf 
+
+		// -----------------------------------------------------------------------------------------------
+		// VALIDA PRODUTO
+		cProduto := PadR(oBody:DadosServico:CodTipoServico, TamSx3("C7_PRODUTO")[1])
+		
+		DbSelectArea("SB1")
+		SB1->(dbSetorder(1))
+
+		If ! SB1->(dbSeek(xFilial('SB1') + cProduto ))	
+		
+			jRequest					:= JsonObject():New()
+			jRequest["idPedidoCompra"]	:= ""
+			jRequest["codRetorno"]		:= 422
+			jRequest["mensagem"]		:= "Produto ["+ AllTrim(cProduto) +"] nao foi encontrado." 
+		
+			::SetResponse(jRequest)	
+			
+			Return( .T. )
+		EndIf 
+
+		// -----------------------------------------------------------------------------------------------
+		// INCLUSAO DP PEDIDO DE COMPRA
+		cNumPC 		:= CriaVar('C7_NUM', .T.) //GetNumSC7()
+		aAutoCab	:= {}
+		aAutoDet	:= {}
+		aAdd(aAutoCab,{"C7_NUM"			, 	cNumPC																				, Nil})
+        aAdd(aAutoCab,{"C7_EMISSAO"		, 	dDataBase																			, Nil})
+        aAdd(aAutoCab,{"C7_FORNECE"		, 	SA2->A2_COD																			, Nil})
+        aAdd(aAutoCab,{"C7_LOJA"		,  	SA2->A2_LOJA																		, Nil})
+        aAdd(aAutoCab,{"C7_COND"		,  	TrataDados("condPagamento", oBody:DadosFornecedor:CondPagamento)					, Nil})
+        aAdd(aAutoCab,{"C7_CONTATO"		, 	"AUTO"																				, Nil})
+		aAdd(aAutoCab,{"C7_FILENT" 		,	cFilAnt																				, Nil})
+        //For n1:= 1 To Len(oBody:itensPedido)-----------------------------------------------------------------------------------------
+			aLinha := {}
+        	aAdd(aLinha,{"C7_ITEM"		, STRZERO(1,4)																			, Nil})
+            aAdd(aLinha,{"C7_PRODUTO"	, cProduto																				, Nil})
+            aAdd(aLinha,{"C7_QUANT"		, oBody:DadosServico:Qtde																, Nil})
+            aAdd(aLinha,{"C7_PRECO"		, oBody:DadosServico:ValorUnit															, Nil})
+            aAdd(aLinha,{"C7_TOTAL"		, oBody:DadosServico:ValTotal															, Nil})
+            aAdd(aLinha,{"C7_CC"		, PadR(oBody:CodCentroCustoERP, TamSx3("C7_CC")[1])										, Nil})
+			aAdd(aLinha,{"C7_ITEMCTA" 	, PadR(oBody:CodItemContabilERP,TamSX3("C7_ITEMCTA")[1])								, Nil})
+			aAdd(aLinha,{"C7_CLVL" 		, PadR(oBody:CodClasseValorERP,TamSX3("C7_CLVL")[1])									, Nil})
+			// ------------------------------------------------------------------------------------------------------------------------
+			aAdd(aLinha,{"C7_XDESCCL" 	, PadR(oBody:NomeClasseValorERP,TamSX3("C7_XDESCCL")[1])								, Nil})
+			aAdd(aLinha,{"C7_XDESCIT" 	, PadR(oBody:NomeItemContabilERP,TamSX3("C7_XDESCIT")[1])								, Nil})
+			aAdd(aLinha,{"C7_XORDSER" 	, PadR(oBody:NumOrdemServico,TamSX3("C7_XORDSER")[1])									, Nil})
+			aAdd(aLinha,{"C7_XTPOS" 	, PadR(oBody:CodTIpoOrdemServico,TamSX3("C7_XTPOS")[1])									, Nil})
+			aAdd(aLinha,{"C7_XDESCOS" 	, PadR(oBody:TipoOrdemServico,TamSX3("C7_XDESCOS")[1])									, Nil})
+			aAdd(aLinha,{"C7_XSTATUS" 	, PadR(oBody:Status,TamSX3("C7_XSTATUS")[1])											, Nil})
+			aAdd(aLinha,{"C7_XBOOKIN" 	, PadR(oBody:NumBooking,TamSX3("C7_XBOOKIN")[1])										, Nil})
+
+			aAdd(aLinha,{"C7_XADGRIS" 	, oBody:DadosServico:ValAdValoremGRIS													, Nil})
+			aAdd(aLinha,{"C7_XTPDOC" 	, PadR(oBody:DadosDoDocumentoDeCobranca[1]:TipoDocto,TamSX3("C7_XTPDOC")[1])			, Nil})
+			aAdd(aLinha,{"C7_XIDTDOC" 	, PadR(oBody:DadosDoDocumentoDeCobranca[1]:IdentificadorDocto,TamSX3("C7_XIDTDOC")[1])	, Nil})
+
+            aadd(aAutoDet,aLinha)
+        //next
+
+		nTipoPed    := 1  // 1 - Ped. Compra / 2 - Aut. Entrega
+		
+		MSExecAuto({|v, x, y, z| MATA120(v, x, y, z)}, nTipoPed, aAutoCab, aAutoDet, 3)
+
+
+        If ( lMsErroAuto )
+            RollBackSX8()
+        	cDescErro := ""
+        	aErro := GetAutoGRLog()
+        	For nX := 1 To Len(aErro)
+        		cDescErro += AllTrim(aErro[nX])
+        	Next
+   
+			jRequest					:= JsonObject():New()
+			jRequest["idPedidoCompra"]	:= ""
+			jRequest["codRetorno"]		:= 422
+			jRequest["mensagem"]		:= EncodeUtf8(AllTrim(cDescErro)) 
+			
+			::SetResponse(jRequest)
+		Else
+            ConfirmSX8()
+
+			jRequest					:= JsonObject():New()
+			jRequest["idPedidoCompra"]	:= SC7->C7_NUM
+			jRequest["codRetorno"]		:= 200
+			jRequest["mensagem"]		:= EncodeUtf8("Provisão (Pedido de Compra) incluído com sucesso!") 
+			
+			::SetResponse(jRequest)
+        Endif
+
+		FwLogMsg("INFO", , "REST", FunName(), "", "01", "["+Time()+"] - FIM", 0, 0, {}) 
+	
+	EndIf 
+
+Return .T.
+
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} LiberacaoPagamento
+
+
+@author  Lucas Brustolin
+@version Protheus 12
+@since   30/03/2023
+/*/
+//-------------------------------------------------------------------
+WSMETHOD POST LiberacaoPagamento WSSERVICE NosurPagar
+        
+	Local cJson 	:= Self:GetContent() // Pega a string do JSON 
+	Local oBody 	:= Nil 
+	Local jRequest	:= Nil 
+	Local nX 		:= 0
+
+
+	::SetContentType("application/json")
+
+	// If Select("SX6") == 0
+	// 	PREPARE ENVIRONMENT EMPRESA ( "01" ) FILIAL ( "0101" ) MODULO "FAT"
+	// EndIf
+
+	FwLogMsg("INFO", , "REST", FunName(), "", "01", "["+Time()+"] - INICIO", 0, 0, {}) 
+
+	FWJsonDeserialize(cJson, @oBody)
+
+
+	// -------------------------------------------------------------------------------
+	// VERIFICA A NECESSIDADE DE CANCELAR O PEDIDO DE COMPRA ATUAL
+
+	cPedido := AllTrim(oBody:idPedidoCompra)
+
+	lDelete := ExistDivergencia(cPedido)
+
+	If ( lDelete )
+
+		DbSelectArea("SC7")
+		SC7->(DbSetOrder(1))
+		If SC7->(DsSeek(xFilial('SC7')+cPedido))
+
+			aCabec := {}
+			aadd(aCabec,{"C7_NUM"     , SC7->C7_NUM     })
+
+			lMsErroAuto 	:= .F.
+			lMsHelpAuto		:= .T.
+			lAutoErrNoFile 	:= .T.
+
+			MATA120(1,aCabec,{},5)
+
+			If ( lMsErroAuto )
+
+				cDescErro := ""
+				aErro := GetAutoGRLog()
+				For nX := 1 To Len(aErro)
+					cDescErro += AllTrim(aErro[nX])
+				Next
+	
+				jRequest					:= JsonObject():New()
+				jRequest["idPedidoCompra"]	:= ""
+				jRequest["codRetorno"]		:= 422
+				jRequest["mensagem"]		:= EncodeUtf8(AllTrim(cDescErro)) 
+
+			Else 
+				//-------------------------------------------------------------------------
+				// Cria pedido de compra com base no que foi excluído ajustando os valores 
+
+				CreatePedidoCompra( )
+
+
+
+			EndIf
+
+		EndIf 
+
+
+	EndIf 
+
+
+	jRequest					:= JsonObject():New()
+	jRequest["idContasPagar"]	:= "010203"
+	jRequest["codRetorno"]		:= 200
+	jRequest["mensagem"]		:= EncodeUtf8("Liberação de Pagamento efetivada sucesso!") 
+	
+
+	cJsonRet := FWJsonSerialize(jRequest)
+
+	::SetResponse(cJsonRet)
+
+	FwLogMsg("INFO", , "REST", FunName(), "", "01", "["+Time()+"] - FIM", 0, 0, {}) 
+
+Return .T.
+
+
+Static Function TrataDados( cPropriedade, xConteudo )
+
+Local xRet := Nil 
+
+	cPropriedade := UPPER(AllTrim( cPropriedade ))
+
+	Do Case 
+		Case cPropriedade == "CONDPAGAMENTO"
+		
+			xRet := PadR(xConteudo, TamSx3("C7_COND")[1])
+		
+			If Empty(xRet)
+				xRet := GetMv("MV_CONDPAD")
+			EndIf 
+		
+		Case "" == cPropriedade 
+		
+	EndCase 
+
+
+Return(xRet)

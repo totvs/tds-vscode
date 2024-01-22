@@ -1,21 +1,15 @@
 import * as fs from 'fs';
 import * as vscode from 'vscode';
-import Utils from './utils';
-import * as nls from 'vscode-nls';
-import utils from './utils';
-
-const localize = nls.config({
-  locale: vscode.env.language,
-  bundleFormat: nls.BundleFormat.standalone,
-})();
+import { ServersConfig } from './utils';
 
 export interface IRpoToken {
   token: string;
-  header: {
+  enabled?: boolean,
+  header?: {
     alg: string;
     typ: string;
   };
-  body: {
+  body?: {
     auth: string;
     exp: Date;
     iat: Date;
@@ -28,23 +22,7 @@ export interface IRpoToken {
 }
 
 function noRpoToken(): IRpoToken {
-  return {
-    token: '',
-    header: {
-      alg: '',
-      typ: '',
-    },
-    body: {
-      auth: '',
-      exp: new Date(0),
-      iat: new Date(0),
-      iss: '',
-      name: '',
-      sub: '',
-    },
-    error: '',
-    warning: '',
-  };
+  return { token: "", enabled: false };
 }
 
 export function getRpoTokenFromFile(path: string): IRpoToken {
@@ -61,11 +39,7 @@ export function getRpoTokenFromFile(path: string): IRpoToken {
         result.error = error.message;
       }
     } else {
-      result.error = localize(
-        'tds.vscode.rpoToken.file.not.found',
-        'File not found. File: {0}',
-        path
-      );
+      result.error = vscode.l10n.t('File not found. File: {0}', path);
     }
   }
 
@@ -75,36 +49,96 @@ export function getRpoTokenFromFile(path: string): IRpoToken {
 export function getRpoTokenFromString(value: string): IRpoToken {
   let result: IRpoToken = noRpoToken();
 
-  const token: string = value;
-  const content: string = Buffer.from(token, 'base64').toString('ascii');
-  const header: string = content.substring(
-    content.indexOf('{'),
-    content.indexOf('}') + 1
-  );
-  let body: string = content.substring(header.length);
-  body = content.substring(
-    header.length,
-    header.length + body.indexOf('}') + 1
-  );
+  if (value.length > 0) {
+    const token: string = value;
+    const content: string = Buffer.from(token, 'base64').toString('ascii');
+    const header: string = content.substring(
+      content.indexOf('{'),
+      content.indexOf('}') + 1
+    );
+    let body: string = content.substring(header.length);
+    body = content.substring(
+      header.length,
+      header.length + body.indexOf('}') + 1
+    );
 
-  if (header && body) {
-    const headerJson: any = JSON.parse(header);
-    const bodyJson: any = JSON.parse(body);
+    if (header && body) {
+      const headerJson: any = JSON.parse(header);
+      const bodyJson: any = JSON.parse(body);
 
-    result.token = token;
-    result.header = headerJson;
-    result.body = {
-      ...bodyJson,
-      exp: new Date(bodyJson.exp * 1000),
-      iat: new Date(bodyJson.iat * 1000),
-    };
+      result.token = token;
+      result.header = headerJson;
+      result.body = {
+        ...bodyJson,
+        exp: new Date(bodyJson.exp * 1000),
+        iat: new Date(bodyJson.iat * 1000),
+      };
+      result.enabled = true;
+    }
   }
 
   return result;
 }
 
+export function rpoTokenQuickPick() {
+  let inputRpoToken = vscode.l10n.t('Input Compilation Token');
+  let clearRpoToken = vscode.l10n.t('Clear Compilation Token');
+  let enabled = getEnabledRpoTokenInfos();
+  let actionRpoToken = enabled ?
+    vscode.l10n.t('Disable Compilation Token')
+    : vscode.l10n.t('Enable Compilation Token');
+  //
+  let options: Array<string> = [ inputRpoToken ];
+  let rpoToken: IRpoToken = ServersConfig.getRpoTokenInfos();
+  if (rpoToken !== undefined && rpoToken.token.length > 0) { // valid rpoToken
+    options.push(actionRpoToken);
+    options.push(clearRpoToken);
+  }
+  if (options.length === 1) {
+    rpoTokenInputBox();
+  } else {
+    vscode.window.showQuickPick(options, { canPickMany: false }).then((selected: string) => {
+      if (selected === inputRpoToken) {
+        rpoTokenInputBox();
+      } else if (selected === actionRpoToken) {
+        setEnabledRpoToken(!enabled);
+      } else if (selected === clearRpoToken) {
+        saveRpoTokenString("");
+      }
+    });
+  }
+}
+
+export function getEnabledRpoTokenInfos() {
+  let rpoToken: IRpoToken = ServersConfig.getRpoTokenInfos();
+  return getEnabledRpoToken(rpoToken);
+}
+
+export function getEnabledRpoToken(rpoToken: IRpoToken) {
+  // token sem informação enabled serão considerados true (compatibilidade token existente)
+  return (rpoToken && rpoToken.enabled !== undefined) ? rpoToken.enabled : true;
+}
+
+export function setEnabledRpoToken(enable: boolean) {
+  let rpoToken: IRpoToken = ServersConfig.getRpoTokenInfos();
+  if (rpoToken === undefined) {
+    rpoToken = noRpoToken();
+  } else {
+    rpoToken.enabled = enable;
+  }
+  ServersConfig.saveRpoTokenInfos(rpoToken);
+}
+
+export function enableRpoToken() {
+  setEnabledRpoToken(true);
+}
+
+export function disableRpoToken() {
+  setEnabledRpoToken(false);
+}
+
 export function rpoTokenInputBox() {
-  let rpoToken: IRpoToken = utils.getRpoTokenInfos();
+  let rpoToken: IRpoToken = ServersConfig.getRpoTokenInfos();
   if (rpoToken === undefined) {
     rpoToken = noRpoToken();
   }
@@ -133,7 +167,7 @@ export function saveRpoTokenString(rpoTokenString: string): Promise<boolean> {
     if (rpoToken.error) {
       reject(rpoToken.error);
     } else {
-      Utils.saveRpoTokenInfos(rpoToken);
+      ServersConfig.saveRpoTokenInfos(rpoToken);
       resolve(true);
     }
   });

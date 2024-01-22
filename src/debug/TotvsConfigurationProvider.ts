@@ -9,11 +9,8 @@ import * as vscode from "vscode";
 import * as Net from "net";
 import { setDapArgs, ProgramArgs, extractProgramArgs } from "./debugConfigs";
 import serverProvider from "../serverItemProvider";
-import * as nls from "vscode-nls";
 import { canDebug } from "../extension";
 import { ServerItem } from "../serverItem";
-
-const localize = nls.loadMessageBundle();
 
 export class TotvsConfigurationProvider implements DebugConfigurationProvider {
   static _TYPE: string = "totvs_language_debug";
@@ -23,7 +20,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
   protected _server?: Net.Server;
   private _connectedServerItem: ServerItem;
 
-  constructor() {}
+  constructor() { }
 
   /**
    * Massage a debug configuration just before a debug session is being launched,
@@ -38,7 +35,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
       return undefined;
     }
 
-     this._connectedServerItem = serverProvider.connectedServerItem;
+    this._connectedServerItem = serverProvider.connectedServerItem;
 
     if (this._connectedServerItem !== undefined) {
       if (!config.type && !config.request && !config.name) {
@@ -78,11 +75,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
       if (!config.cwb || config.cwb === "") {
         config.cwb = folder.uri.fsPath;
         window.showInformationMessage(
-          localize(
-            "tds.vscode.cwb_warning",
-            "Parameter CWB not informed. Setting to {0}",
-            config.cwb
-          )
+          vscode.l10n.t("Parameter CWB not informed. Setting to {0}", config.cwb)
         );
       }
 
@@ -97,15 +90,16 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
         setDapArgsArr.push("--wait-for-attach=" + config.waitForAttach);
       }
 
-      if(config.forceUtf8) {
-        setDapArgsArr.push("--forceUtf8");
+      if (config.forceUtf8) {
+        vscode.window.showInformationMessage(vscode.l10n.t("--forceUtf8 deprecated. Setting will be ignored."))
+        //setDapArgsArr.push("--forceUtf8");
       }
 
-      if(config.language) {
-        if(config.language === "1") config.language = "por";
-        else if(config.language === "2") config.language = "spa";
-        else if(config.language === "3") config.language = "eng";
-        else if(config.language === "4") config.language = "rus";
+      if (config.language) {
+        if (config.language === "1") config.language = "por";
+        else if (config.language === "2") config.language = "spa";
+        else if (config.language === "3") config.language = "eng";
+        else if (config.language === "4") config.language = "rus";
         setDapArgsArr.push("--language=" + config.language);
       }
 
@@ -114,7 +108,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
       return Promise.resolve(config);
     } else {
       window.showErrorMessage(
-        localize("tds.vscode.server_not_connected", "No servers connected")
+        vscode.l10n.t("No servers connected")
       );
       return undefined;
     }
@@ -156,17 +150,14 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
       programArgs.args?.includes("<cancel>")
     ) {
       window.showInformationMessage(
-        localize("tds.vscode.cancel_by_user", "Canceled by user.")
+        vscode.l10n.t("Canceled by user.")
       );
       return undefined; // abort launch
     }
 
     if (!debugConfiguration.program) {
       window.showInformationMessage(
-        localize(
-          "tds.vscode.program_not_found",
-          "Cannot find a program to debug"
-        )
+        vscode.l10n.t("Cannot find a program to debug")
       );
       return undefined; // abort launch
     }

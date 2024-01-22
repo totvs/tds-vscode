@@ -1,7 +1,5 @@
 import * as vscode from "vscode";
-import * as fs from "fs";
 import * as path from "path";
-import { changeSettings } from "./server/languageServerSettings";
 import serverProvider from "./serverItemProvider";
 
 const RESOURCE_FOLDER = path.join(__filename, "..", "..", "resources");

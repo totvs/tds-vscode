@@ -1,27 +1,18 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import * as nls from 'vscode-nls';
 import { CompileResult } from './CompileResult';
 import { CompileInfo } from './CompileInfo';
 
 const compile = require('template-literal');
 
-let localize = nls.loadMessageBundle();
-
 const localizeHTML = {
-  'tds.webview.build.result': localize(
-    'tds.webview.build.result',
-    'Compilation Result'
-  ),
-  'tds.webview.compile.col01': localize(
-    'tds.webview.compile.col01',
-    'File Name'
-  ),
-  'tds.webview.compile.col02': localize('tds.webview.compile.col02', 'Result'),
-  'tds.webview.compile.col03': localize('tds.webview.compile.col03', 'Message'),
-  'tds.webview.compile.col04': localize('tds.webview.compile.col04', 'Detail'),
-  'tds.webview.compile.col05': localize('tds.webview.compile.col05', 'Path'),
+  'tds.webview.build.result': vscode.l10n.t('Compilation Result'),
+  'tds.webview.compile.col01': vscode.l10n.t('File Name'),
+  'tds.webview.compile.col02': vscode.l10n.t('Result'),
+  'tds.webview.compile.col03': vscode.l10n.t('Message'),
+  'tds.webview.compile.col04': vscode.l10n.t('Detail'),
+  'tds.webview.compile.col05': vscode.l10n.t('Path'),
 };
 
 export function commandShowBuildTableResult(
@@ -86,7 +77,7 @@ function getWebViewContent(extensionPath, localizeHTML) {
   const htmlOnDiskPath = vscode.Uri.file(
     path.join(extensionPath, "src", "compile", "compileResultPage.html")
   );
-  const cssOniskPath = vscode.Uri.file(
+  const cssOnDIskPath = vscode.Uri.file(
     path.join(extensionPath, "resources", "css", "table_materialize.css")
   );
   const tableScriptPath = vscode.Uri.file(
@@ -97,7 +88,7 @@ function getWebViewContent(extensionPath, localizeHTML) {
     htmlOnDiskPath.with({ scheme: "vscode-resource" }).fsPath
   );
   const cssContent = fs.readFileSync(
-    cssOniskPath.with({ scheme: "vscode-resource" }).fsPath
+    cssOnDIskPath.with({ scheme: "vscode-resource" }).fsPath
   );
   const scriptContent = fs.readFileSync(
     tableScriptPath.with({ scheme: "vscode-resource" }).fsPath

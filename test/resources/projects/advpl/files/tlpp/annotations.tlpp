@@ -3,17 +3,16 @@
 #include "tlpp-rest.th"
 
 @annotation parametros
-nome as char
-tipoParametro as char
+nome as character
+tipoParametro as character
 tamanho as numeric
 decimal as numeric
-descricao as char
-
+descricao as character
 @end
 
 @annotation classe
-nome as char
-descricao as char
+nome as character
+descricao as character
 @end
 
 namespace TesteTlpp
@@ -28,9 +27,9 @@ class Pessoa
 	public method  getSobrenome()
 	public method  getCpf()
 
-	private data cNome as char
-	private data cSobrenome as char
-	private data cCpf as char
+	private data cNome as character
+	private data cSobrenome as character
+	private data cCpf as character
 
 endClass
 
@@ -58,6 +57,7 @@ method getCpf() class Pessoa
 return self:cCpf
 
 	using namespace EverySystem
+
 user function testeReflection()
 	local aClasse as array
 

@@ -1,22 +1,20 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import Utils from '../utils';
+import Utils, { ServersConfig, LaunchConfig } from '../utils';
+import { ExtensionContext } from 'vscode';
 
-import {ExtensionContext} from 'vscode';
-
-import * as nls from 'vscode-nls';
-let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
 
-
 const localizeHTML = {
-	"tds.webview.welcome": localize("tds.webview.welcome", "Welcome"),
-	"tds.webview.path.smartclient": localize("tds.webview.path.smartclient", "Path to your SmartClient:"),
-	"tds.webview.dir.include": localize("tds.webview.dir.include", "Includes directory:"),
-	"tds.webview.dir.include2": localize("tds.webview.dir.include2", "Allow multiple directories"),
-	"tds.webview.dir.include.info": localize("tds.webview.dir.include.info", "These settings can also be changed in"),
-	"tds.webview.dir.include.info.or": localize("tds.webview.dir.include.info.or", "or")
+	"tds.webview.welcome": vscode.l10n.t("Welcome"),
+	"tds.webview.path.smartclient": vscode.l10n.t("Path to your SmartClient:"),
+	"tds.webview.dir.include": vscode.l10n.t("Includes directory:"),
+	"tds.webview.dir.include2": vscode.l10n.t("Allow multiple directories"),
+	"tds.webview.dir.include.info": vscode.l10n.t("These settings can also be changed in"),
+	"tds.webview.dir.include.info.or": vscode.l10n.t("or"),
+	"tds.webview.dir.include.save.action": vscode.l10n.t("Save"),
+	"tds.webview.dir.include.saveclose.action": vscode.l10n.t("Save/Close"),
 };
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
@@ -28,7 +26,7 @@ export default class WelcomePage {
 		} else {
 			currentPanel = vscode.window.createWebviewPanel(
 				'totvs-developer-studio.welcomePage',
-				localize("tds.webview.welcome", "Welcome"),
+				vscode.l10n.t("Welcome"),
 				vscode.ViewColumn.One,
 				{
 					enableScripts: true,
@@ -46,7 +44,7 @@ export default class WelcomePage {
 			);
 
 			if (forcedShow) {
-				const includePath = Utils.getIncludes();
+				const includePath = ServersConfig.getIncludes();
 				currentPanel.webview.postMessage({
 					command: "setCurrentInclude",
 					include: includePath
@@ -66,8 +64,8 @@ export default class WelcomePage {
 						const smartClientBin = message.smartClientBin;
 						const includePath = message.includes;
 
-						Utils.saveIncludePath(includePath);
-						saveSmartClientBin(smartClientBin);
+						ServersConfig.saveIncludePath(includePath);
+						LaunchConfig.saveSmartClientBin(smartClientBin);
 						if (currentPanel) {
 							if (message.close) {
 								currentPanel.dispose();
@@ -84,31 +82,13 @@ export default class WelcomePage {
 
 }
 
-function saveSmartClientBin(smartClient: string) {
-	let launchConfig = undefined;
-	try {
-		launchConfig = Utils.getLaunchConfig();
-		if (launchConfig) {
-			if (launchConfig.configurations) {
-				const configs = launchConfig.configurations;
-				configs.forEach(element => {
-					element.smartclientBin = smartClient;
-				});
-				Utils.persistLaunchInfo(launchConfig);
-			}
-		}
-	} catch(e) {
-		console.error(e);
-	}
-}
-
 function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 
 	const htmlOnDiskPath = vscode.Uri.file(path.join(context.extensionPath, 'src', 'welcome', 'welcomePage.html'));
-	const cssOniskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
+	const cssOnDIskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
 
 	const htmlContent = fs.readFileSync(htmlOnDiskPath.with({ scheme: 'vscode-resource' }).fsPath);
-	const cssContent = fs.readFileSync(cssOniskPath.with({ scheme: 'vscode-resource' }).fsPath);
+	const cssContent = fs.readFileSync(cssOnDIskPath.with({ scheme: 'vscode-resource' }).fsPath);
 
 	let runTemplate = compile(htmlContent);
 

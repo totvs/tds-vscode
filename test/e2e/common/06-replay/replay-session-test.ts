@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { delay, openProject } from "../../helper";
+import { delay, prepareProject } from "../../helper";
 import { ReplayPageObject } from "../../page-objects/replay-po";
 import { WorkbenchPageObject } from "../../page-objects/workbench-po";
 import { REPLAY_FILES } from "../../scenario";
@@ -16,7 +16,7 @@ describe("Record Replay Session", async () => {
   let debugBar: DebugToolbar;
 
   before(async () => {
-    await openProject();
+    await prepareProject();
 
     workbenchPO = new WorkbenchPageObject();
     workbenchPO.openTotvsView();

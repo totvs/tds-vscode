@@ -1,8 +1,11 @@
 # TDS: Edição de códigos fontes
 
 > Requisitos
->
-> - projeto aberto
+
+- projeto aberto
+
+> Recomenda-se que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em mínusculas de forma a manter a compatibildade entre os diversos sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes.
+> Leia [Convenção para nomenclatura de File System em ambiente Linux]<https://tdn.totvs.com/x/h8BICw>).
 
 Veja o básico da edição em [Basic Edition](https://code.visualstudio.com/docs/editor/codebasics) e abaixo os atalhos específicos do editor de código fontes suportados pela extensão.
 

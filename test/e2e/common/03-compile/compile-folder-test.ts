@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
 import { TreeItem } from "vscode-extension-tester";
-import { delay, openProject, openProjectWithReset } from "../../helper";
+import { delay, prepareProject } from "../../helper";
 import { BuildPageObject } from "../../page-objects/build-po";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
 import {
@@ -25,7 +25,7 @@ describe("Compile folders", async () => {
   let serverPO: ServerTreeItemPageObject;
 
   before(async () => {
-    await openProjectWithReset();
+    await prepareProject();
 
     workbenchPO = new WorkbenchPageObject();
     serverTreePO = await workbenchPO.openTotvsView();

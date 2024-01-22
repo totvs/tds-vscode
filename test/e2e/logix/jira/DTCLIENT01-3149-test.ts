@@ -5,7 +5,7 @@ import {
   DebugToolbar,
   TreeItem,
 } from "vscode-extension-tester";
-import { delay, openProject } from "../../helper";
+import { delay, prepareProject } from "../../helper";
 import { BuildPageObject } from "../../page-objects/build-po";
 import { DebugPageObject } from "../../page-objects/debug-view-po";
 import { ExplorerPageObject } from "../../page-objects/explorer-view-po";
@@ -26,7 +26,7 @@ describe("DTCLIENT01-3149: [VSCode] dynamic 4GL array shows incorrect SIZE in DE
   let editor: TextEditorPageObject;
 
   before(async () => {
-    await openProject();
+    await prepareProject();
 
     workbenchPO = new WorkbenchPageObject();
 

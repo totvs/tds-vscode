@@ -1,56 +1,28 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import * as nls from "vscode-nls";
 import * as fs from "fs";
 import { languageClient } from "../extension";
-import { isLSInitialized } from "../TotvsLanguageClient";
-import Utils from "../utils";
+import { ServersConfig } from "../utils";
 import { ResponseError } from "vscode-languageclient";
 
-let localize = nls.loadMessageBundle();
 const compile = require("template-literal");
 const localizeHTML = {
-  "tds.webview.title": localize("tds.webview.title", "Compile Key"),
-  "tds.webview.compile.machine.id": localize(
-    "tds.webview.compile.machine.id",
-    "This Machine ID"
-  ),
-  "tds.webview.compile.key.file": localize(
-    "tds.webview.compile.key.file",
-    "Compile Key File"
-  ),
-  "tds.webview.compile.key.id": localize(
-    "tds.webview.compile.key.id",
-    "Compile Key ID"
-  ),
-  "tds.webview.compile.key.generated": localize(
-    "tds.webview.compile.key.generated",
-    "Generated"
-  ),
-  "tds.webview.compile.key.expire": localize(
-    "tds.webview.compile.key.expire",
-    "Expire"
-  ),
-  "tds.webview.compile.key.token": localize(
-    "tds.webview.compile.key.token",
-    "Token"
-  ),
-  "tds.webview.compile.key.overwrite": localize(
-    "tds.webview.compile.key.overwrite",
-    "Allow overwrite default"
-  ),
-  "tds.webview.compile.key.setting": localize(
-    "tds.webview.compile.key.setting",
-    "These settings can also be changed in"
-  ),
-  "tds.webview.compile.key.validated": localize(
-    "tds.webview.compile.key.validated",
-    "Key successfully validated"
-  ),
-  "tds.webview.compile.key.invalid": localize(
-    "tds.webview.compile.key.invalid",
-    "Invalid key"
-  ),
+  "tds.webview.title": vscode.l10n.t("Compile Key"),
+  "tds.webview.compile.machine.id": vscode.l10n.t("This Machine ID"),
+  "tds.webview.compile.key.file": vscode.l10n.t("Compile Key File"),
+  "tds.webview.compile.key.id": vscode.l10n.t("Compile Key ID"),
+  "tds.webview.compile.key.generated": vscode.l10n.t("Generated"),
+  "tds.webview.compile.key.expire": vscode.l10n.t("Expire"),
+  "tds.webview.compile.key.token": vscode.l10n.t("Token"),
+  "tds.webview.compile.key.overwrite": vscode.l10n.t("Allow overwrite default"),
+  "tds.webview.compile.key.validate": vscode.l10n.t("Validate Key"),
+  "tds.webview.compile.key.clean": vscode.l10n.t("Clean Key"),
+  "tds.webview.compile.key.save": vscode.l10n.t("Save"),
+  "tds.webview.compile.key.saveclose": vscode.l10n.t("Save/Close"),
+  "tds.webview.compile.key.memo": vscode.l10n.t("* From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS."),
+  "tds.webview.compile.key.setting": vscode.l10n.t("These settings can also be changed in"),
+  "tds.webview.compile.key.validated": vscode.l10n.t("Key successfully validated"),
+  "tds.webview.compile.key.invalid": vscode.l10n.t("Invalid key"),
 };
 
 export interface CompileKey {
@@ -73,13 +45,7 @@ export interface Authorization {
 }
 
 export function compileKeyPage(context: vscode.ExtensionContext) {
-  if (!isLSInitialized) {
-    languageClient.onReady().then(async () => {
-      initializePage(context);
-    });
-  } else {
-    initializePage(context);
-  }
+  initializePage(context);
 }
 
 function initializePage(context: vscode.ExtensionContext) {
@@ -109,7 +75,7 @@ function initializePage(context: vscode.ExtensionContext) {
 
   getId(currentPanel);
 
-  const compileKey = Utils.getPermissionsInfos();
+  const compileKey = ServersConfig.getPermissionsInfos();
   if (compileKey && compileKey.authorizationToken) {
     // && !compileKey.userId) {
     const generated = compileKey.issued;
@@ -139,7 +105,7 @@ function initializePage(context: vscode.ExtensionContext) {
           }
           break;
         case "readFile":
-          const authorization: Authorization = Utils.readCompileKeyFile(
+          const authorization: Authorization = ServersConfig.readCompileKeyFile(
             message.path
           );
           if (authorization) {
@@ -176,7 +142,7 @@ function initializePage(context: vscode.ExtensionContext) {
           }
           break;
         case "cleanKey":
-          Utils.deletePermissionsInfos();
+          ServersConfig.deletePermissionsInfos();
           break;
       }
     },
@@ -265,7 +231,7 @@ function validateKey(currentPanel, message, close: boolean) {
                 authorizationToken: response.authorizationToken,
                 userId: "",
               };
-              Utils.savePermissionsInfos(permission);
+              ServersConfig.savePermissionsInfos(permission);
             }
             outputMessageText =
               localizeHTML["tds.webview.compile.key.validated"];
@@ -296,7 +262,7 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
   const htmlOnDiskPath = vscode.Uri.file(
     path.join(context.extensionPath, "src", "compileKey", "formCompileKey.html")
   );
-  const cssOniskPath = vscode.Uri.file(
+  const cssOnDIskPath = vscode.Uri.file(
     path.join(context.extensionPath, "resources", "css", "form.css")
   );
 
@@ -304,7 +270,7 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
     htmlOnDiskPath.with({ scheme: "vscode-resource" }).fsPath
   );
   const cssContent = fs.readFileSync(
-    cssOniskPath.with({ scheme: "vscode-resource" }).fsPath
+    cssOnDIskPath.with({ scheme: "vscode-resource" }).fsPath
   );
 
   let runTemplate = compile(htmlContent);

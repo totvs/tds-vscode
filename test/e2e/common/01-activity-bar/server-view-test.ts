@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { describe, before, it } from "mocha";
-import { avoidsBacksliding, delay, openProject } from "../../helper";
+import { avoidsBacksliding, delay, prepareProject } from "../../helper";
 import { OutputLsPageObject } from "../../page-objects/output-ls-po";
 import { ServerPageObject } from "../../page-objects/server-po";
 import { ServerViewPageObject } from "../../page-objects/server-view-po";
@@ -14,7 +14,7 @@ describe("Server View", async () => {
   let outputPO: OutputLsPageObject;
 
   before(async () => {
-    await openProject();
+    await prepareProject();
 
     workbenchPO = new WorkbenchPageObject();
     outputPO = await workbenchPO.openOutputLs();

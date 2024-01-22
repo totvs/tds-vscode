@@ -1,18 +1,18 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import Utils from '../utils';
+import Utils, { ServersConfig } from '../utils';
 
-import * as nls from 'vscode-nls';
-let localize = nls.loadMessageBundle();
 const compile = require('template-literal');
 
 
 const localizeHTML = {
-	"tds.webview.title": localize("tds.webview.title", "Include"),
-	"tds.webview.dir.include": localize("tds.webview.dir.include", "Includes directory:"),
-	"tds.webview.dir.include2": localize("tds.webview.dir.include2", "Allow multiple directories"),
-	"tds.webview.dir.include.info": localize("tds.webview.dir.include.info", "These settings can also be changed in")
+	"tds.webview.title": vscode.l10n.t("Include"),
+	"tds.webview.dir.include": vscode.l10n.t("Includes directory:"),
+	"tds.webview.dir.include2": vscode.l10n.t("Allow multiple directories"),
+	"tds.webview.dir.include.info": vscode.l10n.t("These settings can also be changed in"),
+	"tds.webview.dir.include.save": vscode.l10n.t("Save"),
+	"tds.webview.dir.include.saveclose": vscode.l10n.t("Save/Close"),
 };
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
@@ -23,7 +23,7 @@ export default function showInclude(context: vscode.ExtensionContext) {
 	} else {
 		currentPanel = vscode.window.createWebviewPanel(
 			'totvs-developer-studio.include',
-			localize("tds.webview.title", "Global Include"),
+			vscode.l10n.t("Global Include"),
 			vscode.ViewColumn.One,
 			{
 				enableScripts: true,
@@ -40,7 +40,7 @@ export default function showInclude(context: vscode.ExtensionContext) {
 			context.subscriptions
 		);
 
-		const includes = Utils.getIncludes();
+		const includes = ServersConfig.getIncludes();
 		const includeString: string = includes.toString();
 		if (includeString) {
 			const aux = includeString.replace(/,/g, ";");
@@ -62,7 +62,7 @@ export default function showInclude(context: vscode.ExtensionContext) {
 					break;
 				case 'includeClose':
 					const includePath = message.include;
-					Utils.saveIncludePath(includePath);
+					ServersConfig.saveIncludePath(includePath);
 					if (currentPanel) {
 						if (message.close) {
 							currentPanel.dispose();
@@ -80,10 +80,10 @@ export default function showInclude(context: vscode.ExtensionContext) {
 function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 
 	const htmlOnDiskPath = vscode.Uri.file(path.join(context.extensionPath, 'src', 'include', 'include.html'));
-	const cssOniskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
+	const cssOnDIskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
 
 	const htmlContent = fs.readFileSync(htmlOnDiskPath.with({ scheme: 'vscode-resource' }).fsPath);
-	const cssContent = fs.readFileSync(cssOniskPath.with({ scheme: 'vscode-resource' }).fsPath);
+	const cssContent = fs.readFileSync(cssOnDIskPath.with({ scheme: 'vscode-resource' }).fsPath);
 
 	let runTemplate = compile(htmlContent);
 

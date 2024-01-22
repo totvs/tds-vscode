@@ -7,7 +7,8 @@
 
 #include "totvs.ch"
 
-user function array1()
+user function ;
+		array1()
 	local list_50   := array(50)
 	local list_100  := array(100)
 	local list_101  := array(101)
@@ -59,7 +60,7 @@ user function array1()
 
 	conout("display com erro")
    	conout( list_1000[2000])
-
+	
 	conout("depois do display com erro")
 
 return

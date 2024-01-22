@@ -1,16 +1,25 @@
 # TDS: Compilação
 
-> Requisitos
+> **Requisitos**
 >
 > - servidor/ambiente conectado
 > - usuário autenticado (se requerido)
 > - pastas para buscas de arquivos de definição (_includes_)
 > - acesso exclusivo ao _RPO_
 > - chave de compilação (apenas para _functions_ e _main functions_)
-
+>
+> Recomenda-se que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em mínusculas de forma a manter a compatibildade entre os diversos sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes.
+> Leia [Convenção para nomenclatura de File System em ambiente Linux]<https://tdn.totvs.com/x/h8BICw>).
+>
+> **Nota**
+>
 > Arquivos fontes 4GL ignoram a pasta para buscas.
+>
+> **Drives Locais**
+>
+> _Não_ se deve utilizar drives de rede compartilhados ou drives na nuvem (Google Drive, OneDrive, etc.), pois eles podem causar comportamentos adversos como a compilação parcial de um fonte, por exemplo.
 
-## SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO
+## Sobre o uso de chaves e tokens de compilação
 
 As chaves de compilação ou _tokens_ de compilação empregados na construção do _Protheus_ e suas funcionalidades, são de uso restrito dos _desenvolvedores_ de cada módulo.
 
@@ -95,7 +104,7 @@ vovê precisa ter uma chave chave de compilação (ou autorização).
 
 > Pode remover a chave atual, acionando `Clean Key`.
 
-### Configuração de Include (busca de arquivos de definição)
+### Configuração de _Include_ (busca de arquivos de definição)
 
 - Na visão de `Servers`, acione o menu de contexto e a opção `Include` ou acione `CTRL + SHIFT + P` e execute `TOTVS: Include`.
 - Informe a pasta (ou pastas) para a busca dos arquivos de definição, separadas por `;`
@@ -110,7 +119,7 @@ Localize a definição do servidor na sessão `configurations` e adicione/modifi
   "configurations": [
   {
     "id": "aq9s9aca8qkasjpnxl7rghymvx3bq",
-		"type": "totvs_server_protheus",
+    "type": "totvs_server_protheus",
     ...
     "includes": [
       "C:/totvs/includes1",

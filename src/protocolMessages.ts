@@ -1,4 +1,12 @@
 import * as vscode from "vscode";
+import { languageClient } from "./extension";
+import { DidChangeConfigurationNotification, ResponseError } from "vscode-languageclient";
+import { CompileResult } from "./compile/CompileResult";
+import { _debugEvent } from "./debug";
+import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
+import { IRpoToken } from "./rpoToken";
+import { ServersConfig } from "./utils";
+import { ServerItem } from "./serverItem";
 
 interface ConnectionNode {
   // These properties come directly from the language server.
@@ -15,14 +23,20 @@ interface AuthenticationNode {
   connectionToken: string;
 }
 
-import { languageClient } from "./extension";
-import { ResponseError } from "vscode-languageclient";
-import { CompileResult } from "./compile/CompileResult";
-import { _debugEvent } from "./debug";
-import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
-import { IRpoToken } from "./rpoToken";
-import Utils from "./utils";
-import { ServerItem } from "./serverItem";
+export interface IUsageStatusData {
+  key: string;
+  value: string;
+}
+
+export interface IUsageStatusInfo {
+  activate: boolean;
+  counter: number;
+  usageStatus: IUsageStatusData[];
+}
+export interface IServerNotificationInfo {
+  code: string;
+  message: string;
+}
 
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
@@ -60,7 +74,7 @@ interface ReconnectNode {
 
 interface NodeInfo {
   id: any;
-  buildVersion: string;
+  build: string;
   secure: number;
 }
 
@@ -130,7 +144,7 @@ export function sendConnectRequest(
         serverType: thisServerType,
         server: serverItem.address,
         port: serverItem.port,
-        buildVersion: serverItem.buildVersion,
+        build: serverItem.buildVersion,
         bSecure: serverItem.secure ? 1 : 0,
         environment: environment,
         autoReconnect: true,
@@ -245,7 +259,7 @@ export function sendValidationRequest(
     .then(
       (validInfoNode: NodeInfo) => {
         return {
-          build: validInfoNode.buildVersion,
+          build: validInfoNode.build,
           secure: validInfoNode.secure ? true : false,
         };
       },
@@ -413,7 +427,7 @@ export function sendCompilation(
   return languageClient.sendRequest("$totvsserver/compilation", {
     compilationInfo: {
       connectionToken: server.token,
-      authorizationToken: Utils.getAuthorizationToken(server),
+      authorizationToken: ServersConfig.getAuthorizationToken(server),
       environment: server.environment,
       includeUris: includesUris,
       fileUris: filesUris,
@@ -457,7 +471,7 @@ export function sendPatchInfo(
     .sendRequest("$totvsserver/patchInfo", {
       patchInfoInfo: {
         connectionToken: server.token,
-        authorizationToken: Utils.getAuthorizationToken(server),
+        authorizationToken: ServersConfig.getAuthorizationToken(server),
         environment: server.environment,
         patchUri: patchUri,
         isLocal: true,
@@ -488,7 +502,7 @@ export function sendApplyTemplateRequest(
     .sendRequest("$totvsserver/templateApply", {
       templateApplyInfo: {
         connectionToken: server.token,
-        authorizationToken: Utils.getAuthorizationToken(server),
+        authorizationToken: ServersConfig.getAuthorizationToken(server),
         environment: server.environment,
         includeUris: includesUris,
         templateUri: templateUri.toString(),
@@ -752,20 +766,61 @@ export interface IEnvEncode {
   encoding: number;
 }
 
+
 export function sendSetEnvEncodesRequest(server: ServerItem, envEncodeList: IEnvEncode[]): Thenable<any> {
-    return languageClient
-      .sendRequest("$totvsmonitor/setEnvEncodes", {
-        setEnvEncodesInfo : {
-          connectionToken: server.token,
-          envEncodes: envEncodeList
-        },
-      })
-      .then(
-        (response: any) => {
-          return response.message || "";
-        },
-        (err: Error) => {
-          languageClient.error(err.message, err);
-        }
-      );
-  }
+  return languageClient
+    .sendRequest("$totvsmonitor/setEnvEncodes", {
+      setEnvEncodesInfo: {
+        connectionToken: server.token,
+        envEncodes: envEncodeList
+      },
+    })
+    .then(
+      (response: any) => {
+        return response.message || "";
+      },
+      (err: Error) => {
+        languageClient.error(err.message, err);
+      }
+    );
+}
+
+export function sendShutdown(): Thenable<any> {
+  return languageClient.sendRequest("shutdown");
+}
+
+export function sendExit(): Thenable<any> {
+  return languageClient.sendRequest("exit");
+}
+
+interface ITelemetryData {
+  category: string;
+  method: string;
+  key: string;
+  value: number;
+}
+
+interface ITelemetryInfo {
+  telemetryInfos: ITelemetryData[]
+}
+export function sendTelemetry(): Thenable<any> {
+  return languageClient.sendRequest("$totvsserver/telemetry").then((data: ITelemetryInfo) => {
+    const categories: Map<string, any> = new Map<string, []>();
+
+    data.telemetryInfos.forEach((element: ITelemetryData) => {
+      if (!categories[element.category]) {
+        categories[element.category] = new Map<string, any>()
+      }
+      if (!categories[element.category][element.method]) {
+        categories[element.category][element.method] = [];
+      }
+      categories[element.category][element.method].push({ key: element.key, value: element.value });
+    })
+
+    return categories;
+  });
+}
+
+export function sendDidChangeConfiguration(settings: any): Thenable<any> {
+  return languageClient.sendNotification(DidChangeConfigurationNotification.type, { settings: settings });
+}

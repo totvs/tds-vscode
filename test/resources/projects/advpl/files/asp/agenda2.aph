@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ANSI">
+<title>Agenda em AdvPL ASP</title>
+<style>
+.agbutton {
+display: inline-block;
+	text-decoration: none;
+	width: 120px;
+	height: 18px;
+	background: rgb(240, 240, 240);
+	text-align: center;
+	color: black;
+	padding-top: 4px;
+	}
+</style>
+</html>
+
+
+<%=conout()%>
+<% conout() %>
+<%
+For nI := 1 to len(HTTPCOOKIES->ACOOKIES)
+	conout("xaasas")
+	%>
+	<%= HTTPCOOKIES->ACOOKIES[nI] %>
+	<%
+Next
+%>

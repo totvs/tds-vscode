@@ -1,3 +1,4 @@
+import fs = require("fs");
 import glob = require("glob");
 import path = require("path");
 import jsonMerger = require("json-merger");
@@ -15,9 +16,9 @@ export interface IServerScenarioSchema {
    * The server type.
    */
   serverType:
-    | "totvs_server_protheus"
-    | "totvs_server_logix"
-    | "totvs_server_totvstec";
+  | "totvs_server_protheus"
+  | "totvs_server_logix"
+  | "totvs_server_totvstec";
   /**
    * Short name to identify the server.
    */
@@ -60,18 +61,18 @@ export interface IUserDataScenarioSchema {
 }
 
 export interface IIncludeScenarioSchema {
-    /**
-     * Valid folders for update 'includePath' propertie. One per line.
-     */
-    toChange: string[];
-    /**
-     * Valid folders for add in 'includePath' propertie. One per line.
-     */
-    toAdd: string[];
-  };
+  /**
+   * Valid folders for update 'includePath' propertie. One per line.
+   */
+  toChange: string[];
+  /**
+   * Valid folders for add in 'includePath' propertie. One per line.
+   */
+  toAdd: string[];
+};
 
 export interface ICompileKeyScenarioSchema {
-    machineId: string;
+  machineId: string;
   compileKeyFile: string;
   key: string;
   generatedIn: string;
@@ -138,10 +139,6 @@ export interface ITestScenarioSchema {
    * Folder with templates files.
    */
   templatesFolder?: string;
-  /**
-   * Folder with source and resource files.
-   */
-  projectFolder?: string;
   /**
    * Folder with TDS Replay files.
    */
@@ -248,11 +245,24 @@ export const PATCHS_FILES = {
 const templateFiles: string[] = getFileParams(templateFolder, true);
 export const TEMPLATE_FILES = templateFiles ? { ...templateFiles } : undefined;
 
-export const PROJECT_FOLDER = path.join(
-  TEST_RESOURCE,
-  "projects",
-  values.projectFolder
-);
+var _projectFolder: string = "";
+process.argv.forEach(function (value, index, args) {
+  console.log(index + ":" + value);
+
+  if ((value == '-r') || (value == '--open_resource')) {
+    _projectFolder = args[index + 1];
+  }
+});
+
+if (_projectFolder.length == 0) {
+  throw "--open_resource (or -r) is required."
+}
+
+if (!fs.existsSync(_projectFolder)) {
+  throw "--open_resource (or -r) is no found. Value: " + _projectFolder;
+}
+
+export const PROJECT_FOLDER = _projectFolder;
 
 const sourceFiles: string[] = getFileParams(PROJECT_FOLDER, false);
 export const COMPILE_FILES = {

@@ -1,3 +1,4 @@
+import * as vscode from "vscode";
 import {
   debug,
   DebugConfiguration,
@@ -9,17 +10,15 @@ import {
   QuickPickItem,
   Uri,
   window,
+  l10n
 } from "vscode";
 import { statSync, chmodSync } from "fs";
-import * as fse from "fs-extra";
-import Utils, { MESSAGETYPE } from "../utils";
+import Utils, { LaunchConfig, MESSAGETYPE } from "../utils";
 import * as path from "path";
-import * as nls from "vscode-nls";
 
-const localize = nls.loadMessageBundle();
 const RESOURCES_FOLDER = path.join(__filename, "..", "..", "..", "resources");
 
-let isTableSyncEnabled = false;
+//let isTableSyncEnabled = false;
 let debugSession: DebugSession | undefined;
 let dapArgs: string[] = [];
 
@@ -83,12 +82,12 @@ class QuickPickProgram implements QuickPickItem {
 
   get description(): string {
     return this.args ? `(${this.args.map((element) => {
-        // se um argumento contiver ',' ele devolve o argumento entre aspas para facilitar a visualização.
-        if (element && element.indexOf(',') > 0)
-          return "\""+element+"\"";
-        else
-          return element;
-      })
+      // se um argumento contiver ',' ele devolve o argumento entre aspas para facilitar a visualização.
+      if (element && element.indexOf(',') > 0)
+        return "\"" + element + "\"";
+      else
+        return element;
+    })
       .join(", ")})` : "<nil>";
   }
 }
@@ -98,29 +97,14 @@ export async function getProgramName(
 ): Promise<string> {
   const disposables: Disposable[] = [];
 
-  let config = undefined;
-
-  try {
-    config = Utils.getLaunchConfig();
-  } catch (e) {
-    Utils.logInvalidLaunchJsonFile(e);
-  }
-
-  if (!config) {
-    return undefined;
-  }
-
-  let lastProgramExecuted = config.lastProgramExecuted || "";
-  lastProgramExecuted =
-    lastProgramExecuted == "<cancel>" ? "" : lastProgramExecuted;
+  let lastProgramExecuted = LaunchConfig.lastProgramExecuted() || "";
+  lastProgramExecuted = (lastProgramExecuted == "<cancel>") ? "" : lastProgramExecuted;
   let lastPrograms: QuickPickProgram[] = [];
 
-  if (config.lastPrograms) {
-    lastPrograms = config.lastPrograms.map((element: any) => {
+  if (LaunchConfig.lastPrograms()) {
+    lastPrograms = LaunchConfig.lastPrograms().map((element: any) => {
       return new QuickPickProgram(element.label, element.args);
     });
-  } else {
-    config.lastPrograms = [];
   }
 
   let programArgs: ProgramArgs = undefined;
@@ -132,16 +116,13 @@ export async function getProgramName(
           dark: Uri.file(path.join(RESOURCES_FOLDER, "dark", "cancel.png")),
           light: Uri.file(path.join(RESOURCES_FOLDER, "light", "cancel.png")),
         },
-        tooltip: localize("CANCEL_DEBUG", "Cancel Debug "),
+        tooltip: l10n.t("Cancel Debug "),
       };
 
       const qp: QuickPick<QuickPickProgram> =
         window.createQuickPick<QuickPickProgram>();
 
-      qp.title = localize(
-        "tds.vscode.getProgramName",
-        "Please enter the name of an AdvPL/4GL function"
-      );
+      qp.title = l10n.t("Please enter the name of an AdvPL/4GL function");
       qp.items = lastPrograms;
       qp.value = lastProgramExecuted;
       qp.placeholder = qp.title;
@@ -184,7 +165,7 @@ export async function getProgramName(
   }
 
   if (programArgs && programArgs.program !== "<cancel>") {
-    const find: boolean = config.lastPrograms.some(
+    const find: boolean = LaunchConfig.lastPrograms().some(
       (element: QuickPickProgram) => {
         return (
           element.label.toLowerCase() === programArgs.program.toLowerCase() &&
@@ -194,18 +175,25 @@ export async function getProgramName(
     );
 
     if (!find) {
-      config.lastPrograms.push(
+      LaunchConfig.lastProgramsAdd(
         new QuickPickProgram(programArgs.program, programArgs.args)
       );
     }
   }
 
-  config.lastProgramExecuted = programArgs.program;
-  config.lastProgramArguments = programArgs.args;
-  Utils.saveLaunchConfig(config);
+  // add modal dialog confirmation warning for debugging using SIGAMDI or SIGAADV
+  if (programArgs.program.toUpperCase() === 'SIGAMDI' || programArgs.program.toUpperCase() === 'SIGAADV') {
+    const textYes = vscode.l10n.t("Yes");
+    const textQuestion = vscode.l10n.t("Debugging using SIGAMDI or SIGAADV may result in unexpected behavior, instead use the modules directly. Do you want to continue?");
+    const warnDialog = await vscode.window.showWarningMessage(textQuestion, { modal: true }, textYes);
+    if (warnDialog !== textYes) {
+      return "<cancel>";
+    }
+  }
 
-  //return `${config.lastProgramExecuted}`;
-  return `${config.lastProgramExecuted}${programArgs.args ? ("("+programArgs.args.map((element)=>{if(element.indexOf(',')>0)return "\""+element+"\"";else return element;}).join(", ")+")") : ""}`;
+  LaunchConfig.saveLastProgram(programArgs.program, programArgs.args);
+
+  return `${programArgs.program}${programArgs.args ? ("(" + programArgs.args.map((element) => { if (element.indexOf(',') > 0) return "\"" + element + "\""; else return element; }).join(", ") + ")") : ""}`;
 }
 
 const programArgsRegex = /^([\w\.\-\_]+)(\(?[^)\n]*\)?)?/i;
@@ -248,7 +236,7 @@ function extractArgs(value: string): string[] {
                 element.length > 1 &&
                 ((element.startsWith('"') && element.endsWith('"')) ||
                   (element.startsWith("'") && element.endsWith("'")))
-                ) {
+              ) {
                 element = element.substring(1, element.length - 1);
               }
               args.push(element);
@@ -265,13 +253,13 @@ function extractArgs(value: string): string[] {
               element.length > 1 &&
               ((element.startsWith('"') && element.endsWith('"')) ||
                 (element.startsWith("'") && element.endsWith("'")))
-              ) {
+            ) {
               element = element.substring(1, element.length - 1);
             } else if (
               element.length > 1 &&
               ((element.startsWith('"') && !element.endsWith('"')) ||
                 (element.startsWith("'") && !element.endsWith("'")))
-              ) {
+            ) {
               var startChar = element.charAt(0); // salva tipo de aspas antes de remover
               element = element.substring(1); // remove 1a aspas
               while (splited.length > 0) {
@@ -300,49 +288,23 @@ export async function getProgramArguments(config: DebugConfiguration) {
 
 export function toggleTableSync() {
   if (debugSession !== undefined) {
-    let launchConfig = undefined;
-
-    try {
-      launchConfig = fse.readJSONSync(Utils.getLaunchConfigFile());
-      launchConfig.configurations.forEach((launchElement) => {
-        if (
-          debugSession !== undefined &&
-          launchElement.name === debugSession.name
-        ) {
-          isTableSyncEnabled = !launchElement.enableTableSync;
-          sendChangeTableSyncSetting();
-          launchElement.enableTableSync = isTableSyncEnabled;
-          if (isTableSyncEnabled) {
-            Utils.logMessage(
-              localize(
-                "tds.debug.tableSync.enabled",
-                "Tables synchronism enabled"
-              ),
-              MESSAGETYPE.Info,
-              true
-            );
-          } else {
-            Utils.logMessage(
-              localize(
-                "tds.debug.tableSync.disabled",
-                "Tables synchronism disabled"
-              ),
-              MESSAGETYPE.Info,
-              true
-            );
-          }
-        }
-      });
-      Utils.saveLaunchConfig(launchConfig);
-    } catch (e) {
-      Utils.logInvalidLaunchJsonFile(e);
+    let isTableSyncEnabled = !LaunchConfig.isTableSyncEnabled(debugSession);
+    sendChangeTableSyncSetting(isTableSyncEnabled);
+    LaunchConfig.saveIsTableSyncEnabled(debugSession, isTableSyncEnabled);
+    if (isTableSyncEnabled) {
+      Utils.logMessage(l10n.t("Tables synchronism enabled"),
+        MESSAGETYPE.Info,
+        true
+      );
+    } else {
+      Utils.logMessage(l10n.t("Tables synchronism disabled"),
+        MESSAGETYPE.Info,
+        true
+      );
     }
   } else {
     Utils.logMessage(
-      localize(
-        "tds.debug.tableSync.disabled",
-        "The command to (Dis)Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually"
-      ),
+      l10n.t("The command to Disable/Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually"),
       MESSAGETYPE.Error,
       true
     );
@@ -353,7 +315,7 @@ debug.onDidChangeActiveDebugSession((newDebugSession: DebugSession | undefined) 
   debugSession = newDebugSession;
 });
 
-function sendChangeTableSyncSetting(): void {
+function sendChangeTableSyncSetting(isTableSyncEnabled: boolean): void {
   if (debugSession === undefined) {
     debugSession = debug.activeDebugSession;
   }
@@ -381,27 +343,15 @@ async function pickProgramArguments(
 ): Promise<string | undefined> {
   const disposables: Disposable[] = [];
 
-  let config = undefined;
-
-  try {
-    config = Utils.getLaunchConfig();
-  } catch (e) {
-    Utils.logInvalidLaunchJsonFile(e);
-  }
-
-  if (!config) {
-    return undefined;
-  }
-
-  let lastProgramExecuted = config.lastProgramExecuted || "";
+  let lastProgramExecuted = LaunchConfig.lastProgramExecuted() || "";
   if (lastProgramExecuted == "<cancel>") {
     return undefined;
   }
-  let lastArgumentsExecuted = config.lastProgramArguments
-    ? config.lastProgramArguments
+  let lastArgumentsExecuted = LaunchConfig.lastProgramArguments()
+    ? LaunchConfig.lastProgramArguments()
     : []
 
-  let lastPrograms: QuickPickProgram[] = config.lastPrograms
+  let lastPrograms: QuickPickProgram[] = LaunchConfig.lastPrograms()
     .filter((element: QuickPickProgram) => {
       return (
         element.label.toLowerCase() === lastProgramExecuted.toLowerCase() &&
@@ -420,21 +370,15 @@ async function pickProgramArguments(
         dark: Uri.file(path.join(RESOURCES_FOLDER, "dark", "cancel.png")),
         light: Uri.file(path.join(RESOURCES_FOLDER, "light", "cancel.png")),
       },
-      tooltip: localize("CANCEL_DEBUG", "Cancel Debug "),
+      tooltip: l10n.t("Cancel Debug "),
     };
 
     await new Promise<void>((resolve, reject) => {
       const qp: QuickPick<QuickPickProgram> =
         window.createQuickPick<QuickPickProgram>();
-      qp.title = localize(
-        "tds.vscode.getProgramArguments",
-        "Enter comma-separated list of arguments"
-      );
+      qp.title = l10n.t("Enter comma-separated list of arguments");
       qp.items = lastPrograms;
-      qp.placeholder = localize(
-        "tds.vscode.getProgramArguments",
-        "Enter comma-separated list of arguments"
-      );
+      qp.placeholder = l10n.t("Enter comma-separated list of arguments");
       qp.ignoreFocusOut = true;
       qp.canSelectMany = false;
       qp.buttons = [cancelButton];
@@ -464,7 +408,7 @@ async function pickProgramArguments(
             selectArgs = extractArgs(qp.value);
           }
           if (selectArgs) {
-            const find: boolean = config.lastPrograms.some(
+            const find: boolean = LaunchConfig.lastPrograms().some(
               (element: QuickPickProgram) => {
                 return (
                   element.label.toLowerCase() ===
@@ -475,12 +419,13 @@ async function pickProgramArguments(
             );
 
             if (!find) {
-              config.lastPrograms.push(
+              LaunchConfig.lastProgramsAdd(
                 new QuickPickProgram(program, selectArgs)
               );
             }
-            config.lastProgramArguments = selectArgs;
-            Utils.saveLaunchConfig(config);
+            // config.lastProgramArguments = selectArgs;
+            // Utils.saveLaunchConfig(config);
+            LaunchConfig.saveLastProgram(undefined, selectArgs);
             resolve();
           }
         })
