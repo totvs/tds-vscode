@@ -182,7 +182,7 @@ export async function getProgramName(
   }
 
   // add modal dialog confirmation warning for debugging using SIGAMDI or SIGAADV
-  if (programArgs.program.toUpperCase() === 'SIGAMDI' || programArgs.program.toUpperCase() === 'SIGAADV') {
+  if (!_config.noDebug && (programArgs.program.toUpperCase() === 'SIGAMDI' || programArgs.program.toUpperCase() === 'SIGAADV')) {
     const textYes = vscode.l10n.t("Yes");
     const textQuestion = vscode.l10n.t("Debugging using SIGAMDI or SIGAADV may result in unexpected behavior, instead use the modules directly. Do you want to continue?");
     const warnDialog = await vscode.window.showWarningMessage(textQuestion, { modal: true }, textYes);
