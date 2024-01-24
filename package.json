@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "publisher": "TOTVS",
   "preview": true,
   "author": {
@@ -85,8 +85,8 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/data-grid": "4.0.0-alpha.2",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@totvs/tds-da": "^1.2.65",
-    "@totvs/tds-ls": "^2.0.9",
+    "@totvs/tds-da": "^1.2.66",
+    "@totvs/tds-ls": "^2.0.10",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.63.1",
     "@vscode/debugadapter": "^1.51.1",
@@ -1043,12 +1043,12 @@
         "when": "editorTextFocus"
       },
       {
-        "command": "totvs-developer-studio.build.openEditors",
+        "command": "totvs-developer-studio.rebuild.openEditors",
         "key": "ctrl+f10",
         "mac": "cmd+f10"
       },
       {
-        "command": "totvs-developer-studio.rebuild.openEditors",
+        "command": "totvs-developer-studio.build.openEditors",
         "key": "ctrl+shift+f10",
         "mac": "cmd+shift+f10"
       }
@@ -1485,8 +1485,8 @@
       "explorer/context": [
         {
           "when": "explorerResourceIsFolder ",
-          "command": "totvs-developer-studio.build.workspace",
-          "alt": "totvs-developer-studio.rebuild.workspace",
+          "command": "totvs-developer-studio.rebuild.workspace",
+          "alt": "totvs-developer-studio.build.workspace",
           "group": "totvsBuild@1"
         },
         {
@@ -1495,8 +1495,8 @@
           "group": "totvsBuild@3"
         },
         {
-          "command": "totvs-developer-studio.build.openEditors",
-          "alt": "totvs-developer-studio.rebuild.openEditors",
+          "command": "totvs-developer-studio.rebuild.openEditors",
+          "alt": "totvs-developer-studio.build.openEditors",
           "group": "totvsBuild@4"
         },
         {

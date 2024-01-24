@@ -1,5 +1,31 @@
 # Changelog
 
+## Versão [2.0.3]
+
+### Correções
+
+#### Exibição de erro de C++ Runtime
+
+Durante a indexação ocorria a exibição de erro de C++ Runtime em uma determinada circunstância.
+
+#### Queda do LS durante edição
+
+Durante a edição de um arquivo fora da área de trabalho corrente, ocorria a queda do LS.
+
+#### Erro na inicialização do tds-vscode
+
+A extensão do tds-vscode nem subia caso a versão do VS Code fosse menor que 1.73.0.
+
+#### Queda durante depuração
+
+Durante a depuração se existisse um 'watch' de tabela (por exemplo: "table:pcy") ocorria a queda na depuração.
+
+### Melhoria
+
+#### Uniformização de comandos de Recompile em primeiro plano
+
+Ao acionar o menu de contexto os comandos de "Recompile" serão exibidos inicialmente, para exibir os comandos de "Compile" o acionamento da tecla modificadora SHIFT deve ser feito.
+
 ## Versão [2.0.2]
 
 ### Melhoria
