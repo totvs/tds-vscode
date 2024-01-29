@@ -2,6 +2,14 @@
 
 ## Versão [2.0.3]
 
+### Melhorias
+
+#### Depuração com variáveis do tipo _string_
+
+Variáveis do tipo _string_, podem conter dados nos formatos CP1252/CP1251 ou UTF8, que podem ser diferenciadas pelo prefixo ``UTF8`` em seus valores nas visões ``Variables`` e ``Watchs`` e ao passar o mouse sobre a variável.
+
+Também foi modificado a forma de apresentação. Detalhes em [Depuração com variáveis do tipo _string_](.../docs/debugger.md#debug-string-variables).
+
 ### Correções
 
 #### Exibição de erro de C++ Runtime
