@@ -12,7 +12,7 @@
 > Recomendações
 >
 > - **NUNCA** faça depuração em ambiente de produção.
-> - **NÃO** utilize o _SIGAMDI_ nem o_SIGAADV_ para realizar uma depuraração, utilize diretamente os módulos.
+> - **NÃO** utilize o _SIGAMDI_ nem o_SIGAADV_ para realizar uma depuração, utilize diretamente os módulos.
 > - Não use _appServers_ compartilhado com terceiros, mesmo que ambientes distintos.
 > - Prefira sempre um ambiente local durante a depuração.
 > - **Clientes TCloud**: Os ambientes que estão no _TCloud_ em produção são _bloqueados_, por padrão, para depuração.
@@ -29,7 +29,7 @@ O _appServer_ também envia para o VS-Code algumas informações, tais como, "ol
 
 Isso pode acontecer se tiver um, dez, cem, mil, usuários. Imagina o problema. Cresce exponencialmente ao número de usuários.>
 
-Outra razão, é que devido ao processo de depuração do _appServer_, normalmente é necessário que o processo de depuração seja o primeiro a ser inicializados, pois somente as _threads_ iniciadas após eles que serão passíveis de depuração e para garantir isso, é comum encerrar na "força" todas as _threds_ no ar, principalmente se a depuração for em _jobs_, _schedullers_, _rest_, e outros do tipo.
+Outra razão, é que devido ao processo de depuração do _appServer_, normalmente é necessário que o processo de depuração seja o primeiro a ser inicializados, pois somente as _threads_ iniciadas após eles que serão passíveis de depuração e para garantir isso, é comum encerrar na "força" todas as _threads_ no ar, principalmente se a depuração for em _jobs_, _schedulers_, _rest_, e outros do tipo.
 
 Espero ter esclarecido porquê não deve usar ambiente "produção" em processos de depuração.
 
@@ -37,7 +37,7 @@ Espero ter esclarecido porquê não deve usar ambiente "produção" em processos
 
 > Recomendamos a leitura [Debugging](https://code.visualstudio.com/docs/editor/debugging).
 
-Por utilizar o Smartclient para iniciar o processo de depuração no Application Server é necessário que o Sistema Operacional onde o tds-vscode está sendo executado, esteja na lista de plataformas homologadas paro o Smartclient conforme [Sistemas operacionais homologados - Smartclient](https://tdn.totvs.com/display/tec/SmartClient+-+Sistemas+operacionais).
+Por utilizar o SmartClient para iniciar o processo de depuração no Application Server é necessário que o Sistema Operacional onde o tds-vscode está sendo executado, esteja na lista de plataformas homologadas paro o SmartClient conforme [Sistemas operacionais homologados - SmartClient](https://tdn.totvs.com/display/tec/SmartClient+-+Sistemas+operacionais).
 
 ### Criando um executor com assistente
 
@@ -246,14 +246,14 @@ return
 
 ## Depuração com variáveis do tipo _string_
 
-variáveis do tipo _string_, podem conter dados nos formatos CP1252/CP1251 ou UTF8, que podem ser diferenciadas pelo prefixo ``UTF8`` em seus valores nas visões ``Variables`` e ``Watchs`` e ao passar o mouse sobre a variável.
+Variáveis do tipo _string_ (_character_), podem conter dados nos formatos CP1252/CP1251 ou UTF8, que podem ser diferenciadas pelo prefixo ``UTF8`` em seus valores nas visões ``Variables`` e ``Watches`` e ao passar o mouse sobre a variável.
 
 ![Variables](./images/debugger-variables.png)
 
 Na imagem acima, ``\<variável>`` esta com conteúdo CP1252 (padrão AdvPL) e ``\<variável>2``, o conteúdo é UTF8.
-Ao expandir a ``\<variável>``, você obterá maiores detalhes.
+Ao expandir a ``\<variável>``, você obterá mais detalhes.
 
-![Variables: expanded](./images/debugger-variables-expanded.png.png)
+![Variables: expanded](./images/debugger-variables-expanded.png)
 
 Onde:
 
@@ -261,7 +261,7 @@ Onde:
 | - | - |
 | ``Raw`` | É o dado bruto (como armazenado). |
 | ``Length`` | É o tamanho da string do dado bruto. |
-|    | Sequencia byte a byte da string apresentando caractere ASCII e seu código decimal. |
+| ``<variável> (ASCII)``   | Sequencia _byte_ a _byte_ da _string,_ apresentando o caractere ASCII, seu código em hexadecimal e seu código decimal. |
 
 Ao utilizar o _console de debug (REPL)_ para entrada de expressões esta será tratada para apresentar da mesma forma.
 Lembre-se que o padrão é CP1252/CP1251.

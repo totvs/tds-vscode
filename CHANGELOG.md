@@ -4,13 +4,17 @@
 
 ### Melhorias
 
-#### Depuração com variáveis do tipo _string_
+#### Depuração com variáveis do tipo _string_ (_character_)
 
-Variáveis do tipo _string_, podem conter dados nos formatos CP1252/CP1251 ou UTF8, que podem ser diferenciadas pelo prefixo ``UTF8`` em seus valores nas visões ``Variables`` e ``Watchs`` e ao passar o mouse sobre a variável.
+Variáveis do tipo _string_ (_character_), podem conter dados nos formatos CP1252/CP1251 ou UTF8, que podem ser diferenciadas pelo prefixo ``UTF8`` em seus valores nas visões ``Variables`` e ``Watches`` e ao passar o mouse sobre a variável.
 
 Também foi modificado a forma de apresentação. Detalhes em [Depuração com variáveis do tipo _string_](.../docs/debugger.md#debug-string-variables).
 
 ### Correções
+
+#### Montagem/apresentação de "Estrutura" (Outline) de fontes [#1192](https://github.com/totvs/tds-vscode/issues/1192)
+
+Correção pontuais na montagem/apresentação de "Estrutura" (Outline).
 
 #### Exibição de erro de C++ Runtime
 
