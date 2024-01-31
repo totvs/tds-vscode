@@ -9,6 +9,7 @@ import stripJsonComments from "strip-json-comments";
 import {
   IGetServerInformationsResult,
   IGetServerPermissionsResult,
+  ServerExceptionCodes,
   sendGetServerInformationInfo,
   sendGetServerPermissionsInfo,
 } from "./protocolMessages";
@@ -161,6 +162,7 @@ export default class Utils {
   ) {
     let config = vscode.workspace.getConfiguration("totvsLanguageServer");
     let notificationLevel = config.get("editor.show.notification");
+
     switch (messageType) {
       case MESSAGE_TYPE.Error:
         console.log(message);
@@ -744,8 +746,12 @@ export class ServersConfig {
   }
 
   static removeExpiredAuthorization() {
+    const message: string = vscode.l10n.t("Expired authorization token deleted");
+
+    Utils.logMessage(message, MESSAGE_TYPE.Warning, false);
+
     vscode.window.showWarningMessage(
-      vscode.l10n.t("Expired authorization token deleted")
+      message
     );
     this.deletePermissionsInfos(); // remove expired authorization key
   }
@@ -1613,4 +1619,31 @@ function numberToServerType(type: number): /*ServerType*/string {
   }
 
   return "totvs_server_totvstec";
+
+}
+
+export function serverExceptionCodeToString(codeError: number): string {
+  let message: string = "";
+
+  switch (codeError) {
+    case ServerExceptionCodes.ConnectionRetrieveError:
+      message = "Connection retrieve error";
+      break;
+    case ServerExceptionCodes.AuthorizationTokenExpiredError:
+      message = "Authorization token expired";
+      break;
+    case ServerExceptionCodes.StartBuildError:
+      message = "Start build error";
+      break;
+    case ServerExceptionCodes.ReadOnlyError:
+      message = "Read only error";
+      break;
+    case ServerExceptionCodes.InsufficientPrivilegesError:
+      message = "Insufficient privileges error";
+      break;
+    default:
+      message = `<unknown code ${codeError}>`;
+  }
+
+  return message;
 }

@@ -48,6 +48,14 @@ export enum ConnTypeIds {
   CONNT_MONITOR = 13,
 }
 
+export enum ServerExceptionCodes {
+  ConnectionRetrieveError = 40820, // connection
+  AuthorizationTokenExpiredError = 40840, // authorization
+  StartBuildError = 40910,
+  ReadOnlyError = 40911,
+  InsufficientPrivilegesError = 99999
+};
+
 export interface ITokenInfo {
   success: boolean;
   token: string;
@@ -873,7 +881,7 @@ export function sendPatchGenerateMessage(server, patchMaster, patchDest, patchTy
       patchFiles: filesPath
     }
   }).then((response: IPatchResult) => {
-    if (response.returnCode === 40840) { // AuthorizationTokenExpiredError
+    if (response.returnCode === ServerExceptionCodes.AuthorizationTokenExpiredError) {
       ServersConfig.removeExpiredAuthorization();
     }
 
@@ -922,7 +930,7 @@ export function sendValidKey(id: string, issued: string, expiry: string, canOver
         id: id,
         issued: issued,
         expiry: expiry,
-        canOverride: canOverride ? "1":"0",
+        canOverride: canOverride ? "1" : "0",
         token: token,
       },
     })

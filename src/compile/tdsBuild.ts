@@ -8,7 +8,7 @@ var windows1251 = require("windows-1251");
 
 import { ResponseError } from "vscode-languageclient";
 import { CompileResult } from "./CompileResult";
-import { sendCompilation } from "../protocolMessages";
+import { ServerExceptionCodes, sendCompilation } from "../protocolMessages";
 
 interface CompileOptions {
   recompile: boolean;
@@ -253,9 +253,10 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
         (response: CompileResult) => {
           blockBuildCommands(false);
 
-          if (response.returnCode === 40840) {
+          if (response.returnCode === ServerExceptionCodes.AuthorizationTokenExpiredError) {
             ServersConfig.removeExpiredAuthorization();
           }
+
           if (response.compileInfos.length > 0) {
             // Exibe aba problems casa haja pelo menos um erro ou warning
             let showProblems = false;

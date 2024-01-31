@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum, ReceiveMessage } from "../panels/utilities/common-command-panel";
+import Utils, { MESSAGE_TYPE } from "../utils";
 
 export type TErrorType =
 	"required"
@@ -51,11 +52,11 @@ export abstract class TdsPanel<M extends TModelPanel> {
 	protected _disposables: vscode.Disposable[] = [];
 
 	/**
-  * The  TdsPanel class protected constructor (called only from the render method).
-  *
-  * @param panel A reference to the webview panel
-  * @param extensionUri The URI of the directory containing the extension
-  */
+	 * The  TdsPanel class protected constructor (called only from the render method).
+	 *
+	 * @param panel A reference to the webview panel
+	 * @param extensionUri The URI of the directory containing the extension
+	 */
 	protected constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
 		this._panel = panel;
 
@@ -142,14 +143,18 @@ export abstract class TdsPanel<M extends TModelPanel> {
 			case CommonCommandFromWebViewEnum._Save:
 			case CommonCommandFromWebViewEnum._SaveAndClose:
 				let errors: TFieldErrors<M> = {};
-
-				if (await this.validateModel(data.model, errors)) {
-					if (this.saveModel(data.model) && (command == CommonCommandFromWebViewEnum._SaveAndClose)) {
-						this.dispose();
+				try {
+					if (await this.validateModel(data.model, errors)) {
+						if (await this.saveModel(data.model) && (command == CommonCommandFromWebViewEnum._SaveAndClose)) {
+							this.dispose();
+						} else {
+							this.sendUpdateModel(data.model, errors);
+						}
 					} else {
 						this.sendUpdateModel(data.model, errors);
 					}
-				} else {
+				} catch (error) {
+					errors.root = { type: "validate", message: `Internal error: ${error}` }
 					this.sendUpdateModel(data.model, errors);
 				}
 
@@ -187,5 +192,15 @@ export abstract class TdsPanel<M extends TModelPanel> {
 		return result;
 	}
 
+	logWarning(message: string) {
+		Utils.logMessage(message, MESSAGE_TYPE.Warning, false);
+	}
 
+	logInfo(message: string) {
+		Utils.logMessage(message, MESSAGE_TYPE.Info, false);
+	}
+
+	logError(message: string) {
+		Utils.logMessage(message, MESSAGE_TYPE.Error, false);
+	}
 }
