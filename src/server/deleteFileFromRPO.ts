@@ -6,6 +6,7 @@ import { extensions, window, Uri, ViewColumn } from 'vscode';
 import Utils, { ServersConfig } from '../utils';
 import { ResponseError } from 'vscode-languageclient';
 import { _debugEvent } from '../debug';
+import { ServerExceptionCodes } from '../protocolMessages';
 
 const compile = require('template-literal');
 
@@ -103,15 +104,9 @@ export function deletePrograms(programs: string[]) {
 					programs: programs
 				}
 			}).then((response: DeleteProgramResult) => {
-				if (response.returnCode === 40840) { // AuthorizationTokenExpiredError
+				if (response.returnCode === ServerExceptionCodes.AuthorizationTokenExpiredError) {
 					ServersConfig.removeExpiredAuthorization();
 				}
-				// const message: string  = response.message;
-				// if(message === "Success"){
-				// 	vscode.window.showInformationMessage("Program " + path.basename(filename) + " deleted succesfully from RPO!");
-				// }else {
-				// 	vscode.window.showErrorMessage(message);
-				// }
 			}, (err: ResponseError<object>) => {
 				vscode.window.showErrorMessage(err.message);
 			});

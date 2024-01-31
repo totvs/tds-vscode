@@ -179,40 +179,34 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
   }
 
   async validateModel(model: TCompileKeyModel, errors: TFieldErrors<TCompileKeyModel>): Promise<boolean> {
-    try {
+    // validateKey(
+    //   currentPanel,
+    //   {
+    //     id: authorization.id.toUpperCase(),
+    //     generated: authorization.generation,
+    //     expire: authorization.validation,
+    //     overwrite: canOverride,
+    //     token: authorization.key.toUpperCase(),
+    //   },
+    //   false
+    // );
 
-      // validateKey(
-      //   currentPanel,
-      //   {
-      //     id: authorization.id.toUpperCase(),
-      //     generated: authorization.generation,
-      //     expire: authorization.validation,
-      //     overwrite: canOverride,
-      //     token: authorization.key.toUpperCase(),
-      //   },
-      //   false
-      // );
+    vscode.window.setStatusBarMessage(
+      `$(gear~spin) ${vscode.l10n.t("Validating compile key...")}`);
 
-      vscode.window.setStatusBarMessage(
-        `$(gear~spin) ${vscode.l10n.t("Validating compile key...")}`);
+    const validKey: TValidKeyResult | undefined = await sendValidKey(model.id, model.generation, model.expire, model.canOverride, model.tokenKey);
 
-      const validKey: TValidKeyResult | undefined = await sendValidKey(model.id, model.generation, model.expire, model.canOverride, model.tokenKey);
+    if (validKey.buildType == -1) {
+      const lines: string[] = validKey.errorMessage.split("\n");
+      console.log(lines);
 
-      if (validKey.buildType == -1) {
-        const lines: string[] = validKey.errorMessage.split("\n");
-        console.log(lines);
-
-        errors.root = { type: "validate", message: "Invalid key" };
-      }
-      if (validKey.authorizationToken == "") {
-        errors.root = { type: "validate", message: "Invalid key" };
-      }
-
-      vscode.window.setStatusBarMessage("");
-
-    } catch (error) {
-      errors.root = { type: "validate", message: `Internal error: ${error}` }
+      errors.root = { type: "validate", message: "Invalid key" };
     }
+    if (validKey.authorizationToken == "") {
+      errors.root = { type: "validate", message: "Invalid key" };
+    }
+
+    vscode.window.setStatusBarMessage("");
 
     return !isErrors(errors);
   }

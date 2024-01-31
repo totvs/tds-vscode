@@ -135,18 +135,13 @@ export class GlobalIncludePanel extends TdsPanel<TIncludeModel> {
   }
 
   protected validateModel(model: TIncludeModel, errors: TFieldErrors<TIncludeModel>): boolean {
-    try {
-      model.includePaths.forEach((includePath: TIncludePath, index: number) => {
-        let checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/);
+    model.includePaths.forEach((includePath: TIncludePath, index: number) => {
+      let checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/);
 
-        if (checkedDir.length == 0) {
-          errors[`includePaths.${index}.path`] = { type: "validate", message: "Pasta inválida ou não contém arquivos de definição (.CH ou .TH)" };
-        }
-      })
-
-    } catch (error) {
-      errors.root = { type: "validate", message: `Internal error: ${error}` }
-    }
+      if (checkedDir.length == 0) {
+        errors[`includePaths.${index}.path`] = { type: "validate", message: "Pasta inválida ou não contém arquivos de definição (.CH ou .TH)" };
+      }
+    })
 
     return !isErrors(errors);
   }

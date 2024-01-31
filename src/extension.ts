@@ -320,7 +320,7 @@ export function activate(context: ExtensionContext) {
     commands.registerCommand(
       "totvs-developer-studio.patchGenerate.fromRPO",
       () => {
-        if (checkServer() && checkDebug()) {
+        if (checkServer() && !checkDebug()) {
           PatchGeneratePanel.render(context)
         }
       })
@@ -330,7 +330,7 @@ export function activate(context: ExtensionContext) {
     commands.registerCommand(
       "totvs-developer-studio.patchGenerate.byDifference",
       () => {
-        if (checkServer() && checkDebug()) {
+        if (checkServer() && !checkDebug()) {
           PatchGeneratePanel.render(context);
         }
       }
@@ -405,7 +405,7 @@ export function activate(context: ExtensionContext) {
   //Apresenta página de geração de WSDL
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.ws.show", () => {
-      if (checkServer() && checkDebug()) {
+      if (checkServer() && !checkDebug()) {
         GenerateWebServicePanel.render(context)
       }
     }
@@ -776,5 +776,5 @@ function checkDebug(silent: boolean = false): boolean {
     vscode.window.showWarningMessage("This operation is not allowed during a debug.")
   }
 
-  return _debugEvent == undefined ? true : _debugEvent;
+  return _debugEvent == undefined ? _debugEvent : false;
 }

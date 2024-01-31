@@ -7,6 +7,7 @@ import { languageClient } from "../extension";
 import { ResponseError } from "vscode-languageclient";
 import JSZip = require("jszip");
 import { ServerItem } from "../serverItem";
+import { ServerExceptionCodes } from "../protocolMessages";
 
 const compile = require("template-literal");
 
@@ -286,8 +287,7 @@ export function patchApply(
                   })
                   .then(
                     (response: any) => {
-                      if ((response as PatchResult).returnCode === 40840) {
-                        // AuthorizationTokenExpiredError
+                      if ((response as PatchResult).returnCode === ServerExceptionCodes.AuthorizationTokenExpiredError) {
                         ServersConfig.removeExpiredAuthorization();
                       }
                       if (response.error == 1) {
@@ -482,8 +482,7 @@ async function doApplyPatch(
     })
     .then(
       (response: any) => {
-        if (response.returnCode === 40840) {
-          // AuthorizationTokenExpiredError
+        if (response.returnCode === ServerExceptionCodes.AuthorizationTokenExpiredError) {
           ServersConfig.removeExpiredAuthorization();
         }
         if (response.error == 1) {

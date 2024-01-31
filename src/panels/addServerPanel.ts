@@ -158,59 +158,54 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
   }
 
   async validateModel(model: TServerModel, errors: TFieldErrors<TServerModel>): Promise<boolean> {
-    try {
-      model.serverType = model.serverType.trim() as TServerType;
-      model.serverName = model.serverName.trim();
-      model.port = parseInt(model.port.toString());
-      model.address = model.address.trim();
+    model.serverType = model.serverType.trim() as TServerType;
+    model.serverName = model.serverName.trim();
+    model.port = parseInt(model.port.toString());
+    model.address = model.address.trim();
 
-      if (model.serverType.length == 0) {
-        errors.serverType = { type: "required" };
+    if (model.serverType.length == 0) {
+      errors.serverType = { type: "required" };
+    }
+
+    if (model.serverName.length == 0) {
+      errors.serverName = { type: "required" };
+    }
+    const server = ServersConfig.getServerByName(model.serverName);
+    if (server !== undefined) {
+      errors.root = { type: "validate", message: "Server already exist" };
+      errors.serverName = { type: "validate", message: "Server already exist" };
+    }
+
+    if (model.address.length == 0) {
+      errors.address = { type: "required" };
+    }
+
+    if (Number.isNaN(model.port)) {
+      errors.port = { type: "validate", message: "[Port] is not a number" };
+    } else if (!(model.port > 0)) {
+      errors.port = { type: "min", message: "[Port] is not valid range. Min: 1 Max: 65535" };
+    } else if (model.port > 65535) {
+      errors.port = { type: "max", message: "[Port] is not valid range. Min: 1 Max: 65535" };
+    };
+
+    model.includePaths.forEach((includePath: TIncludePath, index: number) => {
+      let checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/);
+
+      if (checkedDir.length == 0) {
+        errors[`includePaths.${index}.path`] = { type: "validate", message: "Pasta inválida ou não contém arquivos de definição (.CH ou .TH)" };
+      }
+    })
+
+    if (!isErrors(errors)) {
+      vscode.window.setStatusBarMessage(
+        `$(gear~spin) ${vscode.l10n.t("Validating connection...")}`);
+
+      const validInfoNode: IValidationInfo = await sendValidationRequest(model.address, model.port, model.serverType);
+      if (validInfoNode.build == "") {
+        errors.root = { type: "validate", message: "Server not found for build validate" };
       }
 
-      if (model.serverName.length == 0) {
-        errors.serverName = { type: "required" };
-      }
-      const server = ServersConfig.getServerByName(model.serverName);
-      if (server !== undefined) {
-        errors.root = { type: "validate", message: "Server already exist" };
-        errors.serverName = { type: "validate", message: "Server already exist" };
-      }
-
-      if (model.address.length == 0) {
-        errors.address = { type: "required" };
-      }
-
-      if (Number.isNaN(model.port)) {
-        errors.port = { type: "validate", message: "[Port] is not a number" };
-      } else if (!(model.port > 0)) {
-        errors.port = { type: "min", message: "[Port] is not valid range. Min: 1 Max: 65535" };
-      } else if (model.port > 65535) {
-        errors.port = { type: "max", message: "[Port] is not valid range. Min: 1 Max: 65535" };
-      };
-
-      model.includePaths.forEach((includePath: TIncludePath, index: number) => {
-        let checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/);
-
-        if (checkedDir.length == 0) {
-          errors[`includePaths.${index}.path`] = { type: "validate", message: "Pasta inválida ou não contém arquivos de definição (.CH ou .TH)" };
-        }
-      })
-
-      if (!isErrors(errors)) {
-        vscode.window.setStatusBarMessage(
-          `$(gear~spin) ${vscode.l10n.t("Validating connection...")}`);
-
-        const validInfoNode: IValidationInfo = await sendValidationRequest(model.address, model.port, model.serverType);
-        if (validInfoNode.build == "") {
-          errors.root = { type: "validate", message: "Server not found for build validate" };
-        }
-
-        vscode.window.setStatusBarMessage("");
-      }
-
-    } catch (error) {
-      errors.root = { type: "validate", message: `Internal error: ${error}` }
+      vscode.window.setStatusBarMessage("");
     }
 
     return !isErrors(errors);
