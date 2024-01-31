@@ -1,4 +1,14 @@
+Advpl
+ADVPL
+CONNT
+defragment
+Defragmenting
+OLDDPI
+OPENGL
+Protheus
+Testrunner
 tlpp
+Totvs
 totvsls
 totvsmonitor
 totvsserver
