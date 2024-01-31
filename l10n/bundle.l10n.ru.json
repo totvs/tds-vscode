@@ -374,5 +374,6 @@
   "Result": "Результат",
   "Message": "Сообщение",
   "Detail": "Деталь",
-  "Path": "Путь"
+  "Path": "Путь",
+  "Debugging using SIGAMDI or SIGAADV may result in unexpected behavior, instead use the modules directly. Do you want to continue?": "Отладка с использованием SIGAMDI или SIGAADV может привести к неожиданному поведению. Вместо этого используйте модули напрямую. Продолжить?"
 }

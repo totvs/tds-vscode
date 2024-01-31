@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "publisher": "TOTVS",
   "preview": true,
   "author": {
@@ -22,7 +22,7 @@
     "logix"
   ],
   "engines": {
-    "vscode": "^1.63.1"
+    "vscode": "^1.73.0"
   },
   "icon": "icons/totvs-developer-studio.png",
   "categories": [
@@ -79,17 +79,20 @@
     "all-contributors:check": "all-contributors check"
   },
   "dependencies": {
-    "@totvs/tds-da": "^1.2.65",
-    "@totvs/tds-ls": "^2.0.9",
-    "@types/react": "^18.2.45",
-    "@types/vscode": "^1.85.0",
-    "@vscode/debugadapter": "^1.64.0",
-    "@vscode/l10n": "^0.0.18",
-    "core-js": "^3.34.0",
-    "eslint-config-standard-with-typescript": "^43.0.0",
-    "fs-extra": "^11.2.0",
-    "ini": "^4.1.1",
-    "jszip": "^3.10.1",
+    "@totvs/tds-da": "^1.2.66",
+    "@totvs/tds-ls": "^2.0.10",
+    "@types/react": "^16.14.20",
+    "@types/vscode": "^1.63.1",
+    "@vscode/debugadapter": "^1.51.1",
+    "@vscode/l10n": "^0.0.16",
+    "@vscode/webview-ui-toolkit": "^1.2.1",
+    "cheerio": "1.0.0-rc.10",
+    "core-js": "^3.25.2",
+    "del": "^6.0.0",
+    "fs-extra": "^10.1.0",
+    "ini": "^2.0.0",
+    "jszip": "^3.7.1",
+    "material-table": "1.69.3",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -102,6 +105,7 @@
     "windows-1252": "^3.0.4"
   },
   "devDependencies": {
+    "eslint-config-standard-with-typescript": "^43.0.0",
     "@babel/cli": "^7.23.4",
     "@babel/core": "^7.23.6",
     "@types/fs-extra": "^11.0.4",
@@ -1020,12 +1024,12 @@
         "when": "editorTextFocus"
       },
       {
-        "command": "totvs-developer-studio.build.openEditors",
+        "command": "totvs-developer-studio.rebuild.openEditors",
         "key": "ctrl+f10",
         "mac": "cmd+f10"
       },
       {
-        "command": "totvs-developer-studio.rebuild.openEditors",
+        "command": "totvs-developer-studio.build.openEditors",
         "key": "ctrl+shift+f10",
         "mac": "cmd+shift+f10"
       }
@@ -1150,6 +1154,17 @@
                 "type": "string",
                 "description": "%tds.package.properties.extraParameters.description%",
                 "default": ""
+              },
+              "extendFeatures": {
+                "type": "object",
+                "description": "%tds.package.debug.extend.features%",
+                "properties": {
+                  "charDetails": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "%tds.package.debug.extend.features.charDetails%"
+                  }
+                }
               }
             }
           }
@@ -1163,7 +1178,10 @@
             "cwb": "${workspaceFolder}",
             "smartclientBin": "../totvs/bin/smartclient/smartclient.exe",
             "isMultiSession": true,
-            "enableTableSync": true
+            "enableTableSync": true,
+            "extendFeatures": {
+              "charDetails": false
+            }
           }
         ],
         "variables": {
@@ -1182,7 +1200,10 @@
               "smartclientBin": "${2:../totvs/bin/smartclient/smartclient.exe}",
               "cwb": "^\"\\${workspaceFolder}\"",
               "isMultiSession": true,
-              "enableTableSync": true
+              "enableTableSync": true,
+              "extendFeatures": {
+                "charDetails": false
+              }
             }
           },
           {
@@ -1199,7 +1220,10 @@
               "smartclientBin": "${3:../totvs/bin/smartclient/smartclient.exe}",
               "cwb": "^\"\\${workspaceFolder}\"",
               "isMultiSession": true,
-              "enableTableSync": true
+              "enableTableSync": true,
+              "extendFeatures": {
+                "charDetails": false
+              }
             }
           }
         ]
@@ -1462,8 +1486,8 @@
       "explorer/context": [
         {
           "when": "explorerResourceIsFolder ",
-          "command": "totvs-developer-studio.build.workspace",
-          "alt": "totvs-developer-studio.rebuild.workspace",
+          "command": "totvs-developer-studio.rebuild.workspace",
+          "alt": "totvs-developer-studio.build.workspace",
           "group": "totvsBuild@1"
         },
         {
@@ -1472,8 +1496,8 @@
           "group": "totvsBuild@3"
         },
         {
-          "command": "totvs-developer-studio.build.openEditors",
-          "alt": "totvs-developer-studio.rebuild.openEditors",
+          "command": "totvs-developer-studio.rebuild.openEditors",
+          "alt": "totvs-developer-studio.build.openEditors",
           "group": "totvsBuild@4"
         },
         {

@@ -138,5 +138,7 @@
 	"tds.package.rpoToken": "Poner el Token de Compilación",
 	"tds.package.clearRpoToken": "Eliminar el Token de Compilación",
 	"tds.package.filesystem.encoding": "Establecer la codificación del sistema de archivos",
-	"tds.package.editor.linter": "Habilitar el Linter"
+	"tds.package.editor.linter": "Habilitar el Linter",
+	"tds.package.debug.extend.features": "Habilita la funcionalidad de depuración extendida",
+	"tds.package.debug.extend.features.charDetails": "Detalles de los tipos [char] (string)"
 }

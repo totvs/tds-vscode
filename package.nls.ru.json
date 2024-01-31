@@ -138,5 +138,7 @@
 	"tds.package.rpoToken": "Input Compilation Token",
 	"tds.package.clearRpoToken": "Clear Compilation Token",
 	"tds.package.filesystem.encoding": "Set file system encoding",
-	"tds.package.editor.linter": "Enable Linter"
+	"tds.package.editor.linter": "Enable Linter",
+	"tds.package.debug.extend.features": "Enables extended debugging functionality",
+	"tds.package.debug.extend.features.charDetails": "Details of [char (string)] types"
 }

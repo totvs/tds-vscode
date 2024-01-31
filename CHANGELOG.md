@@ -1,10 +1,58 @@
 # Changelog
 
-## Versão [2.0.next]
+## Versão [2.0.3]
+
+### Melhorias
+
+#### Fontes fora da área de trabalho
+
+Os fontes abertos fora da área de trabalho, não são mais processados para fins da visão ``Estrutura (_Outline_)`` e funcionalidades providas pelo [``DSS``](./docs/dss.md) e [``linter```](./docs/linter.md).
+Demais funcionalidades continuam funcionando normalmente.
+
+> Fontes fora da área de trabalho receberá uma notificação na visão ``Problemas`` como uma informação.
+![``Problema`` com informação de fora da área de trabalho](./docs/images/info-source-outside.png)
+
+#### Depuração com variáveis do tipo _string_ (_character_)
+
+Variáveis do tipo  _character_ (_string_), podem conter dados nos formatos CP1252/CP1251 ou UTF8, que podem ser diferenciadas pelo prefixo ``UTF8`` em seus valores nas visões ``Variables`` e ``Watches`` e ao passar o mouse sobre a variável. Também foi modificado a forma de apresentação.
+
+Leia [Recursos Estendidos de Depuração](../docs/debugger.md#funcionalidades_estendidas_de_depuração) para maiores detalhes e como ativar/desativar.
+
+### Correções
+
+#### Montagem/apresentação de "Estrutura" (Outline) de fontes [#1192](https://github.com/totvs/tds-vscode/issues/1192)
+
+Correção pontuais na montagem/apresentação de "Estrutura" (Outline).
+
+#### Exibição de erro de C++ Runtime
+
+Durante a indexação ocorria a exibição de erro de C++ Runtime em uma determinada circunstância.
+
+#### Queda do LS durante edição
+
+Durante a edição de um arquivo fora da área de trabalho corrente, ocorria a queda do LS.
+
+#### Erro na inicialização do tds-vscode
+
+A extensão do tds-vscode nem subia caso a versão do VS Code fosse menor que 1.73.0.
+
+#### Queda durante depuração
+
+Durante a depuração se existisse um 'watch' de tabela (por exemplo: "table:pcy") ocorria a queda na depuração.
 
 ### Melhoria
 
-Melhor integração de formulários com o tema selecionado pelo usuário no VSCode.
+#### Uniformização de comandos de Recompile em primeiro plano
+
+Ao acionar o menu de contexto os comandos de "Recompile" serão exibidos inicialmente, para exibir os comandos de "Compile" o acionamento da tecla modificadora SHIFT deve ser feito.
+
+## Versão [2.0.2]
+
+### Melhoria
+
+#### Adicionado alerta na depuração utilizando SIGAMDI/SIGAADV
+
+Caso o usuário inicie uma depuração utilizando SIGAMDI/SIGAADV, será exibido um alerta informando que na depuração é recomendada o uso direto dos módulos, por exemplo SIGAFAT.
 
 ## Versão [2.0.1]
 
@@ -58,7 +106,7 @@ BETA: Adicionado informações sobre o uso de funções (_CodeLens_).
 
 Efetuado a implementação de configuração para a extensão ignorar pastas e arquivos no processo de _Navegação em fontes_ e recursos associados, através da existência do arquivo `.tdsignore`.
 
-Detalhes da implementação em [# TDS: Developer Support Subsystem](docs/dss.md#ignore).
+Detalhes da implementação em [# TDS: Developer Support Subsystem](docs/dss.md#ignorar-pastas-e-arquivos).
 
 #### Navegação em fontes, passagem de mouse e referências
 
@@ -141,9 +189,9 @@ Corrigido problema de monitoramento de AppServer com Broker que exige uma conex�
 
 Corrigido erro de execução de navegador em ambientes Linux.
 
-#### Logpoint não resolve {variavel}
+#### _Logpoint_ não resolve {variável}
 
-Corrigido erro de resolução de {variavel} em logpoints.
+Corrigido erro de resolução de {variável} em _logpoints_.
 
 #### 'Command not found' ao clicar em um environment de um servidor [#1131](https://github.com/totvs/tds-vscode/issues/1131)
 

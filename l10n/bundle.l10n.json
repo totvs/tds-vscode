@@ -347,6 +347,7 @@
   "Removed [{0}] invalid breakpoints.": "Removed [{0}] invalid breakpoints.",
   "Cancel Debug ": "Cancel Debug ",
   "Please enter the name of an AdvPL/4GL function": "Please enter the name of an AdvPL/4GL function",
+  "Debugging using SIGAMDI or SIGAADV may result in unexpected behavior, instead use the modules directly. Do you want to continue?": "Debugging using SIGAMDI or SIGAADV may result in unexpected behavior, instead use the modules directly. Do you want to continue?",
   "Tables synchronism enabled": "Tables synchronism enabled",
   "Tables synchronism disabled": "Tables synchronism disabled",
   "The command to Disable/Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually": "The command to Disable/Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually",
