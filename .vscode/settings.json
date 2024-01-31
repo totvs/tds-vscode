@@ -25,4 +25,6 @@
 		"editor.formatOnPaste": true
 	},
 	"markdownlint.run": "onSave",
+	"totvsLanguageServer.welcomePage": false,
+	"totvsLanguageServer.editor.linter.includes": "M:\\protheus\\includes;M:\\protheus\\includes_tlpp",
 }
