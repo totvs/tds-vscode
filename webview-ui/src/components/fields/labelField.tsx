@@ -26,7 +26,6 @@ export function TdsLabelField(props: TdsLabelFieldProps): JSX.Element {
 	const { field, fieldState } = useController(props);
 
 	const registerField = register(props.name, props.rules);
-	const label = markdownToHtml(props.label);
 
 	return (
 		<section
@@ -35,7 +34,7 @@ export function TdsLabelField(props: TdsLabelFieldProps): JSX.Element {
 			<label
 				{...registerField}
 			>
-				{label}
+				{props.label}
 				<PopupMessage field={props} fieldState={fieldState} />
 			</label>
 		</section>

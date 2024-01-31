@@ -94,3 +94,7 @@ vscode-data-grid-row:hover {
 	padding: 0;
 	text-align: center;
 }
+
+div.tds-message {
+	margin-top: var(--type-ramp-minus2-line-height);
+}

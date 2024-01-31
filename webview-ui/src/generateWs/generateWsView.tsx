@@ -118,7 +118,7 @@ export default function GenerateWsView() {
 
               <TdsSelectionFileField
                 name="btn-outputFilename"
-                info={"Selecione o arquivo que receberá  a definição do serviço"}
+                info={"Selecione o arquivo que receberá a definição do serviço"}
                 title={"Arquivo Fonte AdvPL"}
                 currentFolder={methods.getValues("outputPath")}
                 filters={{

@@ -113,6 +113,7 @@ export function TdsForm<DataModel extends FieldValues>(props: TDSFormProps<DataM
 
 	let actions: IFormAction[] = props.actions;
 	let isProcessRing: boolean = false;
+
 	actions.forEach((action: IFormAction) => isProcessRing = isProcessRing || (action.isProcessRing || false));
 
 	return (
@@ -150,10 +151,11 @@ export function TdsForm<DataModel extends FieldValues>(props: TDSFormProps<DataM
 							console.log(">>> %s = %s", propsField["type"], visible);
 						}
 
+
 						return (<VSCodeButton
 							className={`tds-button-button ${visible}`}
 							{...propsField} >
-							{isProcessRing && <span className="tds-loading" id={`tds-loading-action$${action.id}`}><VSCodeProgressRing />.</span>}
+							{isProcessRing && <span className="tds-loading" id={`tds-loading-action$${action.id}`}><VSCodeProgressRing /></span>}
 							{action.caption}
 						</VSCodeButton>)
 					})}

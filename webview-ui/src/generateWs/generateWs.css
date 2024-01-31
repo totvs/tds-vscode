@@ -1,25 +1,22 @@
-  [name="urlOrWsdlFile"] {
-    width: 30rem;
-  }
+[name="urlOrWsdlFile"] {
+  width: 30rem;
+}
 
-  [name="btn-urlOrWsdlFile"] {
-    margin-top: 0.5rem;
-    width: 110px;
-  }
+[name="btn-outputPath"],
+[name="btn-outputFilename"],
+[name="btn-urlOrWsdlFile"] {
+  margin-top: 0.5rem;
+  width: 110px;
+}
 
-  [name="outputPath"] {
-    width: 30rem;
-  }
+[name="outputPath"] {
+  width: 30rem;
+}
 
-  [name="btn-outputPath"] {
-    margin-top: 0.5rem;
-    width: 110px;
-  }
+[name="outputFilename"] {
+  width: 20rem;
+}
 
-  [name="outputFilename"] {
-    width: 20rem;
-  }
-
-  [name="overwrite"] {
-    margin-left: 1rem;
-  }
+[name="overwrite"] {
+  margin-left: 1rem;
+}
