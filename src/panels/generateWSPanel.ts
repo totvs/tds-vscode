@@ -16,7 +16,7 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import { ServersConfig } from "../utils";
+import { ServersConfig, serverExceptionCodeToString } from "../utils";
 import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
 import { IWsdlGenerateResult, sendWsdlGenerateRequest } from "../protocolMessages";
 import { TdsPanel, TFieldErrors, isErrors, TModelPanel, TSendSelectResourceProps } from "../model/field-model";
@@ -131,33 +131,29 @@ export class GenerateWebServicePanel extends TdsPanel<TWebServiceModel> {
 	}
 
 	protected async validateModel(model: TWebServiceModel, errors: TFieldErrors<TWebServiceModel>): Promise<boolean> {
-		try {
-			model.urlOrWsdlFile = model.urlOrWsdlFile.trim();
-			model.outputPath = model.outputPath.trim();
-			model.outputFilename = model.outputFilename.trim();
+		model.urlOrWsdlFile = model.urlOrWsdlFile.trim();
+		model.outputPath = model.outputPath.trim();
+		model.outputFilename = model.outputFilename.trim();
 
-			if ((model.urlOrWsdlFile.length == 0)) {
-				errors.urlOrWsdlFile = { type: "required" };
-			}
+		if ((model.urlOrWsdlFile.length == 0)) {
+			errors.urlOrWsdlFile = { type: "required" };
+		}
 
-			if (model.outputPath.length == 0) {
-				errors.outputPath = { type: "required" };
-			} else if (!fse.existsSync(model.outputPath)) {
-				errors.outputPath = { type: "validate", message: "[Output folder] not exist or invalid" };
-			}
+		if (model.outputPath.length == 0) {
+			errors.outputPath = { type: "required" };
+		} else if (!fse.existsSync(model.outputPath)) {
+			errors.outputPath = { type: "validate", message: "[Output folder] not exist or invalid" };
+		}
 
-			const extension: string = path.extname(model.outputFilename).toLowerCase();
-			if (model.outputFilename.length == 0) {
-				errors.outputFilename = { type: "required" };
-			} else if (extension !== ".prw" && extension !== ".prx" && extension !== ".tlpp") {
-				errors.outputFilename = { type: "validate", message: "[Output file] must have one of the following extensions: .prw, .prx or .tlpp" };
-			} else if (fse.existsSync(path.join(model.outputPath, model.outputFilename))) {
-				if (!model.overwrite) {
-					errors.outputFilename = { type: "validate", message: "[Output file] already exist" };
-				}
+		const extension: string = path.extname(model.outputFilename).toLowerCase();
+		if (model.outputFilename.length == 0) {
+			errors.outputFilename = { type: "required" };
+		} else if (extension !== ".prw" && extension !== ".prx" && extension !== ".tlpp") {
+			errors.outputFilename = { type: "validate", message: "[Output file] must have one of the following extensions: .prw, .prx or .tlpp" };
+		} else if (fse.existsSync(path.join(model.outputPath, model.outputFilename))) {
+			if (!model.overwrite) {
+				errors.outputFilename = { type: "validate", message: "[Output file] already exist" };
 			}
-		} catch (error) {
-			errors.root = { type: "validate", message: `Internal error: ${error}` }
 		}
 
 		return !isErrors(errors);
@@ -166,10 +162,16 @@ export class GenerateWebServicePanel extends TdsPanel<TWebServiceModel> {
 	protected async saveModel(model: TWebServiceModel): Promise<boolean> {
 		let server = ServersConfig.getCurrentServer();
 		const response: IWsdlGenerateResult = await sendWsdlGenerateRequest(server, model.urlOrWsdlFile);
+
 		if (response.returnCode !== 0) {
 			let errors: TFieldErrors<TWebServiceModel> = {};
-			errors.root = { type: "validate", message: `Protheus server was unable to generate the WS client. Code: ${response.returnCode}` };
+			let error: string = `Protheus server was unable to generate the WS client. Code: ${response.returnCode}`;
+
+			errors.root = { type: "validate", message: error };
 			this.sendUpdateModel(model, errors)
+
+			error += ` [${serverExceptionCodeToString(response.returnCode)}]`;
+			this.logError(error);
 
 			return false;
 		}
