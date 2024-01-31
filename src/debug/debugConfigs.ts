@@ -342,28 +342,6 @@ interface IExtendFeatures {
   charDetails: boolean
 }
 
-function sendExtendFeatures(extendFeatures: IExtendFeatures): void {
-  if (debugSession === undefined) {
-    debugSession = debug.activeDebugSession;
-  }
-  if (debugSession !== undefined) {
-    const settingsArray = [
-      { key: "extendFeatures", value: extendFeatures },
-    ];
-    const arg = { settings: settingsArray };
-
-    debugSession
-      .customRequest("$changeSettings", arg)
-      .then((value: any) => {
-        Utils.logMessage("Extended debugging functionality changed", MESSAGETYPE.Info, true);
-      })
-      .then(undefined, (err) => {
-        console.error(err.message);
-        Utils.logMessage(err.message, MESSAGETYPE.Error, true);
-      });
-  }
-}
-
 async function pickProgramArguments(
   _config: DebugConfiguration
 ): Promise<string | undefined> {
