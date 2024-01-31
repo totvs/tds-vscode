@@ -1,13 +1,11 @@
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 
 import "./CompileKey.css";
 import Page from "../components/page";
 import React from "react";
-import { FieldValues, FormProvider, SubmitHandler, UseControllerProps, UseFormSetValue, useFieldArray, useForm, useFormContext } from "react-hook-form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
 import { TInspectorObject } from "../model/inspectorObjectModel";
-import { TdsSimpleCheckBoxField, TdsSimpleTextField, IFormAction, TdsForm, TdsTextField, TdsCheckBoxField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionFolderField, TdsSelectionFileField } from "../components/form";
-import { getDefaultActionsForm } from "../components/fields/numericField";
+import { TdsSimpleCheckBoxField, IFormAction, TdsForm, TdsTextField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionFileField } from "../components/form";
 
 enum ReceiveCommandEnum {
 }
@@ -103,16 +101,12 @@ export default function CompileKeyView() {
     }
   }, []);
 
-  const actions: IFormAction[] = getDefaultActionsForm();
-  //actions[0].enabled = isDirty && isValid;
-
   return (
     <main>
       <Page title="Compile Key" linkToDoc="[Chave de Compilação]servers.md#registro-de-servidores">
         <FormProvider {...methods} >
           <TdsForm
             methods={methods}
-            actions={actions}
             onSubmit={onSubmit}>
 
             <TdsTextField

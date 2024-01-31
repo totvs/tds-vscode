@@ -2,14 +2,11 @@
 
 import "./addServer.css";
 import Page from "../components/page";
-import ErrorBoundary from "../components/errorBoundary";
 import React from "react";
 import { TIncludeData } from "../model/addServerModel";
-import { FieldArrayWithId, FormProvider, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import PopupMessage from "../components/popup-message";
+import { FormProvider, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
-import { IFormAction, TdsCheckBoxField, TdsForm, TdsLabelField, TdsNumericField, TdsSelectionField, TdsSelectionFolderField, TdsSimpleTextField, TdsTextField, setDataModel, setErrorModel } from "../components/form";
-import { getDefaultActionsForm } from "../components/fields/numericField";
+import { TdsCheckBoxField, TdsForm, TdsLabelField, TdsNumericField, TdsSelectionField, TdsSelectionFolderField, TdsSimpleTextField, TdsTextField, getDefaultActionsForm, setDataModel, setErrorModel } from "../components/form";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 
 
@@ -105,8 +102,6 @@ export default function AddServerView() {
 
   const model: TFields = methods.getValues();
   const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludeData) => row.path == "");
-  const actions: IFormAction[] = getDefaultActionsForm();
-  //actions[0].enabled = isDirty && isValid;
 
   return (
     <main>
@@ -114,8 +109,7 @@ export default function AddServerView() {
         <FormProvider {...methods} >
           <TdsForm<TFields>
             onSubmit={onSubmit}
-            methods={methods}
-            actions={actions}>
+            methods={methods}>
 
             <section className="tds-group-container" >
               <TdsSelectionField

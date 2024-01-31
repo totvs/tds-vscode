@@ -1,8 +1,41 @@
 import { ButtonAppearance } from "@vscode/webview-ui-toolkit";
 import "./form.css";
-import { FieldValues, RegisterOptions, UseFormReturn, UseFormSetError, UseFormSetValue, useFormContext } from "react-hook-form";
+import { FieldValues, FormState, RegisterOptions, UseFormReturn, UseFormSetError, UseFormSetValue, useFormContext } from "react-hook-form";
 import { VSCodeButton, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
+import { sendClose } from "../utilities/common-command-webview";
 
+export function getDefaultActionsForm(): IFormAction[] {
+	return [
+		{
+			id: -1,
+			caption: "Save",
+			hint: "Salva as informações e fecha a página",
+			appearance: "primary",
+			type: "submit",
+			isProcessRing: true,
+			enabled: (isDirty: boolean, isValid: boolean) => {
+				return isDirty && isValid;
+			},
+		},
+		{
+			id: -2,
+			caption: "Close",
+			hint: "Fecha a página, sem salvar as informações",
+			appearance: "secondary",
+			action: () => {
+				sendClose();
+			},
+		},
+		{
+			id: -3,
+			caption: "Clear",
+			hint: "Reinicia os campos do formulário",
+			appearance: "secondary",
+			type: "reset",
+			visible: false
+		}
+	];
+}
 
 /**
 * Notas:
@@ -20,7 +53,7 @@ import { VSCodeButton, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/rea
 type TDSFormProps<DataModel extends FieldValues> = {
 	onSubmit: (data: any) => void;
 	methods: UseFormReturn<DataModel>;
-	actions: IFormAction[];
+	actions?: IFormAction[];
 	children: any
 };
 
@@ -29,8 +62,8 @@ export interface IFormAction {
 	caption: string;
 	hint?: string;
 	action?: any;
-	enabled?: boolean;
-	visible?: boolean;
+	enabled?: boolean | ((isDirty: boolean, isValid: boolean) => boolean);
+	visible?: boolean | ((isDirty: boolean, isValid: boolean) => boolean);
 	isProcessRing?: boolean
 	type?: "submit" | "reset" | "button";
 	appearance?: ButtonAppearance;
@@ -106,15 +139,24 @@ export function setErrorModel<DataModel extends FieldValues>(setError: UseFormSe
  * @param props
  * @returns
  */
+let isProcessRing: boolean = false;
+
 export function TdsForm<DataModel extends FieldValues>(props: TDSFormProps<DataModel>): JSX.Element {
 	const {
-		formState: { errors }
+		formState: { errors, isDirty, isValid, isSubmitting },
 	} = useFormContext();
 
-	let actions: IFormAction[] = props.actions;
-	let isProcessRing: boolean = false;
+	let actions: IFormAction[] = props.actions ? props.actions : getDefaultActionsForm();
 
-	actions.forEach((action: IFormAction) => isProcessRing = isProcessRing || (action.isProcessRing || false));
+	if (isSubmitting) {
+		isProcessRing = true;
+	} else if (!isValid) {
+		isProcessRing = false;
+	}
+
+	actions.forEach((action: IFormAction) => {
+		action.isProcessRing = (action.isProcessRing !== undefined ? action.isProcessRing && isProcessRing : undefined)
+	});
 
 	return (
 		<form onSubmit={props.methods.handleSubmit(props.onSubmit)}>
@@ -124,7 +166,7 @@ export function TdsForm<DataModel extends FieldValues>(props: TDSFormProps<DataM
 			<div className="tds-actions">
 				<div className="tds-message">
 					{errors.root && <span className={`tds-error`}>{errors.root.message}.</span>}
-					{isProcessRing && <span className="tds-loading" id={"tds-loading-form"}>Wait please. Processing...</span>}
+					{isProcessRing && <><VSCodeProgressRing /><span>Wait please. Processing...</span></>}
 				</div>
 				<div className="tds-buttons">
 					{actions.map((action: IFormAction) => {
@@ -134,8 +176,14 @@ export function TdsForm<DataModel extends FieldValues>(props: TDSFormProps<DataM
 						propsField["key"] = action.id;
 						propsField["type"] = action.type || "button";
 
-						if (action.enabled !== undefined) {
-							propsField["disabled"] = !action.enabled;
+						if (isProcessRing) {
+							propsField["disabled"] = true;
+						} else if (action.enabled !== undefined) {
+							if (typeof action.enabled === "function") {
+								propsField["disabled"] = !(action.enabled as Function)(isDirty, isValid);
+							} else {
+								propsField["disabled"] = !action.enabled;
+							}
 						}
 
 						if (action.appearance) {
@@ -147,15 +195,21 @@ export function TdsForm<DataModel extends FieldValues>(props: TDSFormProps<DataM
 						}
 
 						if (action.visible !== undefined) {
-							visible = action.visible ? "" : "tds-hidden";
+							let isVisible: false;
+
+							if (action.visible = typeof action.visible === "function") {
+								isVisible = (Function)(action.visible)(isDirty, isValid)
+							} else {
+								isVisible = action.visible;
+							}
+
+							visible = isVisible ? "" : "tds-hidden";
 							console.log(">>> %s = %s", propsField["type"], visible);
 						}
-
 
 						return (<VSCodeButton
 							className={`tds-button-button ${visible}`}
 							{...propsField} >
-							{isProcessRing && <span className="tds-loading" id={`tds-loading-action$${action.id}`}><VSCodeProgressRing /></span>}
 							{action.caption}
 						</VSCodeButton>)
 					})}

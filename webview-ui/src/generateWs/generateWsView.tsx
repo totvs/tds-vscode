@@ -4,8 +4,7 @@ import Page from "../components/page";
 import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
-import { IFormAction, TdsCheckBoxField, TdsForm, TdsSelectionFileField, TdsSelectionFolderField, TdsSimpleCheckBoxField, TdsTextField, setDataModel, setErrorModel } from "../components/form";
-import { getDefaultActionsForm } from "../components/fields/numericField";
+import { IFormAction, TdsForm, TdsSelectionFileField, TdsSelectionFolderField, TdsSimpleCheckBoxField, TdsTextField, setDataModel, setErrorModel } from "../components/form";
 
 enum ReceiveCommandEnum {
 }
@@ -60,16 +59,12 @@ export default function GenerateWsView() {
     }
   }, []);
 
-  const actions: IFormAction[] = getDefaultActionsForm();
-  //actions[0].enabled = isDirty && isValid;
-
   return (
     <main>
       <Page title="Generate Web Service Client" linkToDoc="[Geração de Web Service]servers.md#registro-de-servidores">
         <FormProvider {...methods} >
           <TdsForm
             methods={methods}
-            actions={actions}
             onSubmit={onSubmit}
           >
 

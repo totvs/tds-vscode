@@ -7,7 +7,6 @@ import { TIncludeData } from "../model/addServerModel";
 import { FieldArrayWithId, SubmitHandler, useFieldArray, useForm, FormProvider } from "react-hook-form";
 import { IFormAction, TdsForm, TdsLabelField, TdsSelectionFolderField, TdsSimpleTextField, setDataModel, setErrorModel } from "../components/form";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
-import { getDefaultActionsForm } from "../components/fields/numericField";
 
 enum ReceiveCommandEnum {
 }
@@ -85,15 +84,12 @@ export default function GlobalIncludeView() {
 
   const model: TFields = methods.getValues();
   const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludeData) => row.path == "");
-  const actions: IFormAction[] = getDefaultActionsForm();
-  //actions[0].enabled = isDirty && isValid;
 
   return (
     <main>
       <Page title="Global Includes" linkToDoc="[Include global]servers.md#registro-de-servidores">
         <FormProvider {...methods} >
           <TdsForm
-            actions={actions}
             methods={methods}
             onSubmit={onSubmit}>
 

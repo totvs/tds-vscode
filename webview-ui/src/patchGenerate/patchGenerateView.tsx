@@ -3,11 +3,10 @@ import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } f
 import "./patchGenerate.css";
 import Page from "../components/page";
 import React from "react";
-import { FieldValues, FormProvider, SubmitHandler, UseControllerProps, UseFormSetValue, useFieldArray, useForm, useFormContext } from "react-hook-form";
+import { FormProvider, SubmitHandler, useFieldArray, useForm, useFormContext } from "react-hook-form";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
 import { TInspectorObject } from "../model/inspectorObjectModel";
 import { TdsSimpleCheckBoxField, TdsSimpleTextField, IFormAction, TdsForm, TdsTextField, TdsCheckBoxField, TdsLabelField, setDataModel, setErrorModel } from "../components/form";
-import { getDefaultActionsForm } from "../components/fields/numericField";
 
 enum ReceiveCommandEnum {
 }
@@ -186,8 +185,6 @@ export default function PatchGenerateView() {
 
   // const model: TFields = getValues();
   // model.filter = model.filter.trim();
-  const actions: IFormAction[] = getDefaultActionsForm();
-  //actions[0].enabled = isDirty && isValid;
 
   //const warningManyItens: boolean = model.objectsFiltered.length > ROWS_LIMIT;
   //setValue("objectsLeft", fieldsFiltered);
@@ -201,7 +198,6 @@ export default function PatchGenerateView() {
         <FormProvider {...methods} >
           <TdsForm
             methods={methods}
-            actions={actions}
             onSubmit={onSubmit}>
 
             <section className="tds-group-container" >

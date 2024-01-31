@@ -46,15 +46,6 @@ span.tds-required::after {
 	width: 100%;
 }
 
-.tds-field-container+.tds-group-container,
-.tds-field-container+.tds-field-container {
-	margin-top: var(--type-ramp-minus2-line-height);
-}
-
-.tds-field-container+.tds-field-container {
-	margin-left: calc(1rem / 2);
-}
-
 .tds-field-container label {
 	margin-bottom: calc(var(--type-ramp-minus2-line-height) / 2);
 }
@@ -97,4 +88,5 @@ vscode-data-grid-row:hover {
 
 div.tds-message {
 	margin-top: var(--type-ramp-minus2-line-height);
+	display: flex;
 }

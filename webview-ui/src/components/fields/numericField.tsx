@@ -8,36 +8,6 @@ type TdsNumericFieldProps = TdsFieldProps & {
 	//onChange?: (event: ChangeEvent<HTMLInputElement>) => any;
 }
 
-export function getDefaultActionsForm(): IFormAction[] {
-	return [
-		{
-			id: -1,
-			caption: "Save",
-			hint: "Salva as informações e fecha a página",
-			appearance: "primary",
-			type: "submit",
-			isProcessRing: true
-		},
-		{
-			id: -2,
-			caption: "Close",
-			hint: "Fecha a página, sem salvar as informações",
-			appearance: "secondary",
-			action: () => {
-				sendClose();
-			},
-		},
-		{
-			id: -3,
-			caption: "Clear",
-			hint: "Reinicia os campos do formulário",
-			appearance: "secondary",
-			type: "reset",
-			visible: false
-		}
-	];
-}
-
 /**
  *
  * - Uso de _hook_ ``useFieldArray`` e propriedade ``disabled``:
