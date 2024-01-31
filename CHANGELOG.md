@@ -14,9 +14,9 @@ Demais funcionalidades continuam funcionando normalmente.
 
 #### Depuração com variáveis do tipo _string_ (_character_)
 
-Variáveis do tipo _string_ (_character_), podem conter dados nos formatos CP1252/CP1251 ou UTF8, que podem ser diferenciadas pelo prefixo ``UTF8`` em seus valores nas visões ``Variables`` e ``Watches`` e ao passar o mouse sobre a variável.
+Variáveis do tipo  _character_ (_string_), podem conter dados nos formatos CP1252/CP1251 ou UTF8, que podem ser diferenciadas pelo prefixo ``UTF8`` em seus valores nas visões ``Variables`` e ``Watches`` e ao passar o mouse sobre a variável. Também foi modificado a forma de apresentação.
 
-Também foi modificado a forma de apresentação. Detalhes em [Depuração com variáveis do tipo _string_](.../docs/debugger.md#debug-string-variables).
+Leia [Recursos Estendidos de Depuração](../docs/debugger.md#funcionalidades_estendidas_de_depuração) para maiores detalhes e como ativar/desativar.
 
 ### Correções
 

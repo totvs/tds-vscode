@@ -1173,6 +1173,17 @@
                 "type": "string",
                 "description": "%tds.package.properties.extraParameters.description%",
                 "default": ""
+              },
+              "extendFeatures": {
+                "type": "object",
+                "description": "%tds.package.debug.extend.features%",
+                "properties": {
+                  "charDetails": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "%tds.package.debug.extend.features.charDetails%"
+                  }
+                }
               }
             }
           }
@@ -1186,7 +1197,10 @@
             "cwb": "${workspaceFolder}",
             "smartclientBin": "../totvs/bin/smartclient/smartclient.exe",
             "isMultiSession": true,
-            "enableTableSync": true
+            "enableTableSync": true,
+            "extendFeatures": {
+              "charDetails": false
+            }
           }
         ],
         "variables": {
@@ -1205,7 +1219,10 @@
               "smartclientBin": "${2:../totvs/bin/smartclient/smartclient.exe}",
               "cwb": "^\"\\${workspaceFolder}\"",
               "isMultiSession": true,
-              "enableTableSync": true
+              "enableTableSync": true,
+              "extendFeatures": {
+                "charDetails": false
+              }
             }
           },
           {
@@ -1222,7 +1239,10 @@
               "smartclientBin": "${3:../totvs/bin/smartclient/smartclient.exe}",
               "cwb": "^\"\\${workspaceFolder}\"",
               "isMultiSession": true,
-              "enableTableSync": true
+              "enableTableSync": true,
+              "extendFeatures": {
+                "charDetails": false
+              }
             }
           }
         ]
