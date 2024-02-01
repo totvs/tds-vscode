@@ -61,10 +61,15 @@ Caso o usuário inicie uma depuração utilizando SIGAMDI/SIGAADV, será exibido
 #### Comando ``BeginContent`` passa a aceitar o tipo de conteúdo
 
 ```
-beginComment var myVar [as <language: javascript | JS | html | json | xml | css | typeScript | TS>]
+beginContent var myVar [as <language: javascript | JS | html | json | xml | css | typeScript | TS>]
 ```
 
 Essa informação é utilizada apenas para fins visuais não sendo efetuado nenhum tipo de validação.
+
+#### Comandos ``BeginSql`` e ``EndSql``
+
+Ao utilizar o bloco de comandos ``BeginSql`` e ``EndSql``, o seu conteúdo será apresentado usando as configurações de destaque de sintaxe da linguagem SQL.
+Esse destaque é utilizada apenas para fins visuais não sendo afetado a funcionalidade do bloco.
 
 #### Filtro na Linha de Tempo do TDS Replay [#DTCLIENT01-2533](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2533)
 
