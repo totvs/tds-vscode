@@ -18,17 +18,29 @@ span.tds-required::after {
 	width: 100%;
 }
 
+.tds-flow-column {
+	flex-flow: column;
+}
+
+.tds-group-container+.tds-group-container {
+	margin-bottom: calc(var(--type-ramp-minus2-line-height) / 2);
+}
+
 .tds-item-grow {
 	flex-grow: 1;
 	flex-shrink: 0;
+}
+
+.tds-item-align-vertical-center {
+	align-self: center;
 }
 
 .tds-dropdown-container {
 	box-sizing: border-box;
 	display: flex;
 	flex-flow: column nowrap;
-	align-items: flex-start;
-	justify-content: flex-start;
+	/* align-items: flex-start;
+	justify-content: flex-start; */
 }
 
 .tds-dropdown-container label {
@@ -37,31 +49,40 @@ span.tds-required::after {
 	margin-bottom: calc(var(--type-ramp-minus2-line-height) / 2);
 }
 
-.tds-field-container {
+.tds-grid-container {
 	box-sizing: border-box;
 	display: flex;
 	flex-flow: column nowrap;
-	align-items: flex-start;
+	align-items: flex-end;
 	justify-content: flex-start;
 	width: 100%;
 }
 
+.tds-grid-container div.scroll {
+	overflow: scroll;
+	/* height: calc(100% - var(--type-ramp-minus2-line-height)); calculado não funcionou */
+	height: 400px;
+}
+
+.tds-field-container {
+	box-sizing: border-box;
+	display: flex;
+	flex-flow: column nowrap;
+	/* justify-content: flex-start; */
+	align-self: flex-end;
+	width: 100%;
+}
+
 .tds-field-container label {
-	margin-bottom: calc(var(--type-ramp-minus2-line-height) / 2);
+	/* margin-bottom: calc(var(--type-ramp-minus2-line-height) / 2); */
 }
 
-.tds-text-field input.control {
-	background-color: aqua;
+.tds-field-container+.tds-field-container {
+	margin-left: var(--type-ramp-minus2-line-height);
 }
 
-.tds-numeric-field input.control {
-	text-align: right !important;
-	background-color: aqua;
-}
-
-.tds-selection-folder-field input[type="file"],
-.tds-selection-file-field input[type="file"] {
-	visibility: hidden;
+.tds-selection-selection-resource-field {
+	width: 120px;
 }
 
 .tds-simple-text-field input.control {
@@ -72,18 +93,19 @@ vscode-data-grid-row:hover {
 	background-color: transparent;
 }
 
-.tds-loading {
-	visibility: hidden;
-}
-
 .tds-hidden {
 	visibility: hidden;
 }
 
+.tds-button-button {
+	/* margin-right: 2rem; */
+	/* padding: 0; */
+	text-align: center;
+	width: 120px;
+}
+
 .tds-button-button+.tds-button-button {
 	margin-right: 2rem;
-	padding: 0;
-	text-align: center;
 }
 
 div.tds-message {

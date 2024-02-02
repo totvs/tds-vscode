@@ -2,6 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import "../css/main.css"
 import CompileKeyView from "./compileKeyView";
+import { sendReady } from "../utilities/common-command-webview";
 
 const root = createRoot(document.getElementById("root")!);
 root.render(
@@ -9,3 +10,5 @@ root.render(
     <CompileKeyView />
   </React.StrictMode>,
 );
+
+sendReady();

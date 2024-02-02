@@ -15,14 +15,6 @@
     "totvsLanguageServer.askCompileResult": false,
     "totvsLanguageServer.askEncodingChange": false,
     "totvsLanguageServer.editor.autocomplete": "Off",
-    "xeditor.semanticTokenColorCustomizations": {
-        "[Default Dark+]": {
-            "enabled": true,
-            "rules": {
-                "keyword": "#ff0000"
-            }
-        }
-    },
     "totvsLanguageServer.compilation.generatePpoFile": false,
     "totvsLanguageServer.workspaceServerConfig": true
 }

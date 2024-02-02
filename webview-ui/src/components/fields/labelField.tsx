@@ -1,8 +1,6 @@
 import { useController, useFormContext } from "react-hook-form";
 import { TdsFieldProps } from "../form";
 import PopupMessage from "../popup-message";
-import { markdownToHtml } from "../../utilities/mdToHtml";
-import { MarkdownString } from "vscode";
 
 type TdsLabelFieldProps = TdsFieldProps & {
 }

@@ -94,8 +94,6 @@ export default function CompileKeyView() {
 
     window.addEventListener('message', listener);
 
-    sendReady();
-
     return () => {
       window.removeEventListener('message', listener);
     }

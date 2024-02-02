@@ -2,12 +2,12 @@
   width: 30rem;
 }
 
-[name="btn-outputPath"],
+/* [name="btn-outputPath"],
 [name="btn-outputFilename"],
 [name="btn-urlOrWsdlFile"] {
   margin-top: 0.5rem;
   width: 110px;
-}
+} */
 
 [name="outputPath"] {
   width: 30rem;

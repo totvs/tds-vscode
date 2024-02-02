@@ -1,11 +1,12 @@
 export enum CommonCommandFromWebViewEnum {
-	_Save = "SAVE",
-	_SaveAndClose = "SAVE_AND_CLOSE",
-	_Close = "CLOSE",
+	Save = "SAVE",
+	SaveAndClose = "SAVE_AND_CLOSE",
+	Close = "CLOSE",
 	Ready = "READY",
 	SelectResource = "SELECT_RESOURCE",
-	AfterSelectResource = "AFTER_SELECT_RESOURCE"
-
+	AfterSelectResource = "AFTER_SELECT_RESOURCE",
+	MoveElements = "MOVE_ELEMENTS",
+	IncludeTRes = "INCLUDE_TRES",
 }
 
 export type CommonCommandFromWebView = CommonCommandFromWebViewEnum;

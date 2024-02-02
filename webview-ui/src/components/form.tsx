@@ -1,6 +1,6 @@
 import { ButtonAppearance } from "@vscode/webview-ui-toolkit";
 import "./form.css";
-import { FieldValues, FormState, RegisterOptions, UseFormReturn, UseFormSetError, UseFormSetValue, useFormContext } from "react-hook-form";
+import { ChangeHandler, FieldValues, FormState, RegisterOptions, UseFormReturn, UseFormSetError, UseFormSetValue, useFormContext } from "react-hook-form";
 import { VSCodeButton, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
 import { sendClose } from "../utilities/common-command-webview";
 
@@ -76,6 +76,7 @@ export type TdsFieldProps = {
 	readOnly?: boolean
 	className?: string;
 	rules?: RegisterOptions<FieldValues, string>;
+	onChange?: ChangeHandler;
 }
 
 /**

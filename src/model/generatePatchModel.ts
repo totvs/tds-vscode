@@ -3,7 +3,7 @@ import { TModelPanel } from "./field-model";
 
 export type TGeneratePatchModel = TModelPanel & {
 	patchName: string;
-	outputPath: string;
+	patchDest: string;
 	includeTRes: boolean;
 	filter: string;
 	warningManyItens: boolean;

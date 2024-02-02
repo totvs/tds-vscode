@@ -15,7 +15,7 @@ export default function Header(props: IHeader) {
 	let href: string;
 
 	if (match && match.length > 1) {
-		text = match[1];
+		text = "Help";  //match[1];
 		href = "https://github.com/totvs/tds-vscode/blob/master/docs/" + match[2];
 	} else {
 		text = props.linkToDoc || "";

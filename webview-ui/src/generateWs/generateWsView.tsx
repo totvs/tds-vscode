@@ -52,8 +52,6 @@ export default function GenerateWsView() {
 
     window.addEventListener('message', listener);
 
-    sendReady();
-
     return () => {
       window.removeEventListener('message', listener);
     }

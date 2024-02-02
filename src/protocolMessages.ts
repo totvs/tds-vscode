@@ -5,7 +5,7 @@ import { CompileResult } from "./compile/CompileResult";
 import { _debugEvent } from "./debug";
 //import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
 import { IRpoToken } from "./rpoToken";
-import { ServersConfig } from "./utils";
+import { ServersConfig, serverExceptionCodeToString } from "./utils";
 import { ServerItem } from "./serverItem";
 
 //
@@ -54,6 +54,23 @@ export enum ServerExceptionCodes {
   StartBuildError = 40910,
   ReadOnlyError = 40911,
   InsufficientPrivilegesError = 99999
+};
+
+export enum LanguageServerErrorCodes { // no LS enum lsErrorCodes
+  // Defined by JSON RPC
+  ParseError = -32700,
+  InvalidRequest = -32600,
+  MethodNotFound = -32601,
+  InvalidParams = -32602,
+  InternalError = -32603,
+  serverErrorStart = -32099,
+  serverErrorEnd = -32000,
+  ServerNotInitialized = -32002,
+  UnknownErrorCode = -32001,
+
+  // Defined by the protocol.
+  RequestCancelled = -32800,
+  ContentModified = -32801,
 };
 
 export interface ITokenInfo {
@@ -867,7 +884,7 @@ export interface IPatchResult {
   message?: string
 }
 
-export function sendPatchGenerateMessage(server, patchMaster, patchDest, patchType, patchName, filesPath) {
+export function sendPatchGenerateMessage(server, patchMaster, patchDest, patchType, patchName, filesPath: string[]) {
   return languageClient.sendRequest('$totvsserver/patchGenerate', {
     "patchGenerateInfo": {
       connectionToken: server.token,
@@ -884,15 +901,6 @@ export function sendPatchGenerateMessage(server, patchMaster, patchDest, patchTy
     if (response.returnCode === ServerExceptionCodes.AuthorizationTokenExpiredError) {
       ServersConfig.removeExpiredAuthorization();
     }
-
-    return response;
-  }, (err: ResponseError<object>) => {
-    vscode.window.showErrorMessage(err.message);
-    const response: IPatchResult = {
-      returnCode: -1,
-      files: "",
-      message: err.message
-    };
 
     return response;
   });

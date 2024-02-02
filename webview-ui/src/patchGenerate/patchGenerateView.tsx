@@ -4,12 +4,16 @@ import "./patchGenerate.css";
 import Page from "../components/page";
 import React from "react";
 import { FormProvider, SubmitHandler, useFieldArray, useForm, useFormContext } from "react-hook-form";
-import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
+import { CommonCommandFromPanelEnum, ReceiveMessage, sendSaveAndClose } from "../utilities/common-command-webview";
 import { TInspectorObject } from "../model/inspectorObjectModel";
-import { TdsSimpleCheckBoxField, TdsSimpleTextField, IFormAction, TdsForm, TdsTextField, TdsCheckBoxField, TdsLabelField, setDataModel, setErrorModel } from "../components/form";
+import { TdsSimpleCheckBoxField, TdsSimpleTextField, TdsForm, TdsTextField, TdsCheckBoxField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionField, TdsSelectionFolderField, TdsSelectionFileField } from "../components/form";
+import { sendIncludeTRes, sendToLeft, sendToRight } from "./sendCommand";
 
 enum ReceiveCommandEnum {
+  MOVE_TO_LEFT = "moveToLeft",
+  MOVE_TO_RIGHT = "moveToRight"
 }
+
 type ReceiveCommand = ReceiveMessage<CommonCommandFromPanelEnum & ReceiveCommandEnum, TFields>;
 
 type TObjectFiltered = TInspectorObject & { check: boolean };
@@ -23,9 +27,8 @@ type TFields = {
   objectsLeft: TInspectorObject[];
   objectsRight: TObjectFiltered[];
   objectsFiltered: TObjectFiltered[];
+  rowsLimit: number | 100 | 250 | 500;
 }
-
-const ROWS_LIMIT: number = 500;
 
 const EMPTY_INSPECTOR_OBJECT: TInspectorObject = {
   name: "",
@@ -46,68 +49,73 @@ const EMPTY_MODEL: TFields = {
   includeTRes: false,
   filter: "",
   warningManyItens: false,
-  objectsLeft: Array(ROWS_LIMIT).map(() => EMPTY_INSPECTOR_OBJECT),
-  objectsRight: Array(ROWS_LIMIT).map(() => EMPTY_CHECK_INSPECTOR_OBJECT),
-  objectsFiltered: []
+  objectsLeft: Array(10).map(() => EMPTY_INSPECTOR_OBJECT),
+  objectsRight: Array(10).map(() => EMPTY_CHECK_INSPECTOR_OBJECT),
+  objectsFiltered: [],
+  rowsLimit: 100
 }
 
 type TSelectObjectComponentProps = {
-  fieldName: string
+  id?: string;
+  label: string;
+  fieldName: string;
+  rowsLimit: number;
 }
 
-function SelectObjectComponent(props: TSelectObjectComponentProps) {
-  const {
-    register,
-    setValue,
-    control,
-    formState: { isDirty }
-  } = useFormContext();
-
-  const { fields, replace } = useFieldArray(
+function SelectResourceComponent(props: TSelectObjectComponentProps) {
+  const { control } = useFormContext();
+  const { fields } = useFieldArray(
     {
       control: control,
-      name: props.fieldName //props.name == "objectsFiltered" ? "objectsFiltered" : "objectsRight"
+      name: props.fieldName
     });
 
-  //const warningManyItens: boolean = model.objects.length > ROWS_LIMIT;
-
   return (
-    <VSCodeDataGrid>
-      {fields
-        .filter((row: any, index: number) => {
-          return (index < ROWS_LIMIT);
-        })
-        .map((row: any, index: number) => {
-          return (
-            <VSCodeDataGridRow key={row.id}>
-              <VSCodeDataGridCell grid-column="1" >
-                <TdsSimpleCheckBoxField
-                  className="tds-no-margin"
-                  name={`${props.fieldName}.${index}.check`}
-                  textLabel={row.name}
-                  label={""}
-                />
-              </VSCodeDataGridCell>
-              <VSCodeDataGridCell grid-column="2">
-                <TdsSimpleTextField
-                  className="tds-no-margin"
-                  name={`${props.fieldName}.${index}.type`}
-                  readOnly={true}
-                />
-              </VSCodeDataGridCell>
-              <VSCodeDataGridCell grid-column="3">
-                <TdsSimpleTextField
-                  className="tds-no-margin"
-                  name={`${props.fieldName}.${index}.date`}
-                  readOnly={true}
-                />
-              </VSCodeDataGridCell>
-            </VSCodeDataGridRow>
-          )
-        }
-        )
-      }
-    </VSCodeDataGrid>
+    <section className="tds-grid-container">
+      {props.label && <TdsLabelField name={props.fieldName} label={props.label} />}
+      <VSCodeDataGrid
+        id={props.id ? props.id : props.fieldName}
+        generate-header="none"
+        grid-template-columns="1fr 8fr 3fr"
+      >
+        <div className="scroll" >
+          {
+            fields
+              .filter((row: any, index: number) => {
+                return (index < (props.rowsLimit == 0 ? 1000 : props.rowsLimit));
+              })
+              .map((row: any, index: number) => {
+                return (
+                  <VSCodeDataGridRow key={row.id}>
+                    <VSCodeDataGridCell grid-column="1" >
+                      <TdsSimpleCheckBoxField
+                        name={`${props.fieldName}.${index}.check`}
+                        textLabel={""}
+                        label={""}
+                      />
+                    </VSCodeDataGridCell>
+                    <VSCodeDataGridCell grid-column="2">
+                      <TdsSimpleTextField
+                        className="tds-no-margin"
+                        name={`${props.fieldName}.${index}.name`}
+                        readOnly={true}
+                      />
+                    </VSCodeDataGridCell>
+                    <VSCodeDataGridCell grid-column="3">
+                      <TdsSimpleTextField
+                        className="tds-no-margin"
+                        name={`${props.fieldName}.${index}.date`}
+                        readOnly={true}
+                      />
+                    </VSCodeDataGridCell>
+                  </VSCodeDataGridRow>
+                )
+              }
+              )
+          }
+        </div>
+      </VSCodeDataGrid>
+    </section>
   );
 }
 
@@ -117,7 +125,6 @@ export default function PatchGenerateView() {
     mode: "all"
   })
 
-  //watch("filter");
   const watchWarningManyItens = methods.watch("warningManyItens");
   const onSubmit: SubmitHandler<TFields> = (data) => {
     data.objectsRight = data.objectsRight.filter((object: TInspectorObject) => object.name.length > 0);
@@ -126,23 +133,24 @@ export default function PatchGenerateView() {
   }
 
   React.useEffect(() => {
+
     let listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
       console.log("listener " + command.command);
+      const rowsLimit: number = methods.getValues("rowsLimit") as number
+      console.log("rowsLimit " + rowsLimit);
 
       switch (command.command) {
         case CommonCommandFromPanelEnum.UpdateModel:
           const model: TFields = command.data.model;
           const errors: TFields = command.data.errors;
 
-          model.objectsLeft = model.objectsLeft.filter((objectLeft: TInspectorObject) => model.objectsRight.findIndex((objectRight) => objectLeft.name == objectRight.name) == -1);
-          model.objectsFiltered = extractData(methods.getValues("filter") || "", model.objectsLeft);
-          model.warningManyItens = model.objectsFiltered.length > ROWS_LIMIT;
+          model.objectsFiltered = applyFilter(methods.getValues("filter") || "", model.objectsLeft);
+          model.warningManyItens = model.objectsFiltered.length > rowsLimit;
 
-          console.log("objectsLeft=", model.objectsLeft.length);
-          console.log("filtered=", model.objectsFiltered.length);
-          console.log("objectsRight=", model.objectsRight.length);
+          console.log("model ");
+          console.dir(model);
 
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);
@@ -155,21 +163,19 @@ export default function PatchGenerateView() {
 
     window.addEventListener('message', listener);
 
-    sendReady();
-
     return () => {
       window.removeEventListener('message', listener);
     }
   }, []);
 
-  function extractData(filter: string, objects: TInspectorObject[]): TObjectFiltered[] {
+  function applyFilter(filter: string, objects: TInspectorObject[]): TObjectFiltered[] {
+
     if (filter.length > 0) {
       const wildcard: RegExp = new RegExp(`^${filter.replace("?", ".").replace("*", ".*")}$`, "gi");
-      console.log("wildcard = ", wildcard.source);
 
       return [...objects
         .filter((row: TInspectorObject) => {
-          return wildcard.test(row.name);
+          return wildcard.test(row.name)
         }).map((row: TInspectorObject) => {
           return { ...row, check: false }
         })
@@ -183,42 +189,80 @@ export default function PatchGenerateView() {
     }
   }
 
-  // const model: TFields = getValues();
-  // model.filter = model.filter.trim();
-
-  //const warningManyItens: boolean = model.objectsFiltered.length > ROWS_LIMIT;
-  //setValue("objectsLeft", fieldsFiltered);
-  //replace(fieldsFiltered)
-  //console.log("fields", fields.length);
-  //console.log("fieldsFiltered", model.objectsFiltered.length);
+  const model: TFields = methods.getValues();
+  const rowsLimit: number = model.rowsLimit;
 
   return (
     <main>
-      <Page title="Patch generation from RPO" linkToDoc="[Geração de pacote de atualização]servers.md#registro-de-servidores">
+      <Page title="Patch Generation from RPO" linkToDoc="[Geração de pacote de atualização]servers.md#registro-de-servidores">
         <FormProvider {...methods} >
           <TdsForm
             methods={methods}
             onSubmit={onSubmit}>
+            <section className="tds-group-container">
+              <TdsTextField
+                name="patchDest"
+                label="Output directory"
+                readOnly={true}
+                rules={{ required: true }}
+                info={"Informe a pasta de destino do pacote de atualização gerado"}
+              />
+
+              <TdsSelectionFolderField
+                openLabel="Output Folder"
+                name="btn-patchDest"
+                info={"Selecione a pasta de destino do pacote de atualização gerado"}
+                title="Select Output Directory"
+              />
+
+              <TdsTextField
+                name="patchName"
+                label="Output Patch Filename"
+                info={"Informe nome do pacote de atualização."}
+              />
+
+            </section>
 
             <section className="tds-group-container" >
               <TdsTextField
                 name="filter"
                 label="Filter"
                 info="Filtrar por nome do objeto. Ex: MAT or FAT*"
+                onChange={(e) => {
+                  return new Promise(() => {
+                    methods.setValue("objectsFiltered", applyFilter(e.target.value, methods.getValues("objectsLeft")));
+                    methods.setValue("warningManyItens", methods.getValues("objectsFiltered").length > rowsLimit);
+                  });
+                }}
               />
 
               <TdsCheckBoxField
                 name="includeTRes"
                 label="&nbsp;"
                 textLabel={"Include *.TRES"}
+                onChange={(e) => {
+                  return new Promise(() => {
+                    sendIncludeTRes(methods.getValues(), e.target.checked);
+                  });
+                }}
+
               />
+
+              <TdsSelectionField
+                name={"rowsLimit"}
+                label={"Resource count limit"}
+                options={[
+                  { value: "100", text: "100 (fast render)" },
+                  { value: "250", text: "250" },
+                  { value: "500", text: "500 (slow render)" },
+                ]} />
             </section>
 
             <section className="tds-group-container" >
               {watchWarningManyItens ?
                 <TdsLabelField
                   name="warningManyItens"
-                  label={`List has more than ${ROWS_LIMIT} items. Enter a more restrictive filter.`}
+                  label={`Resource list has more than ${rowsLimit} items. Enter a more restrictive filter.`}
                 />
                 :
                 <TdsLabelField
@@ -229,33 +273,36 @@ export default function PatchGenerateView() {
             </section>
 
             <section className="tds-group-container" >
-              <SelectObjectComponent
+              <SelectResourceComponent
                 fieldName="objectsFiltered"
+                label="RPO Objects"
+                rowsLimit={rowsLimit}
               />
 
-              <section className="tds-group-container-column" >
+              <section className="tds-group-container-column tds-item-align-vertical-center" >
                 <VSCodeButton appearance="icon" onClick={() => {
-                  const selectedObjects = methods.getValues("objectsFiltered").filter((value) => value.check);
-                  console.log(">>>>> confirm select");
-                  console.log("selectedObjects=", selectedObjects.length);
-
-                  methods.setValue("objectsRight", selectedObjects);
+                  const selectedObjects = methods.getValues("objectsFiltered").filter((value) =>
+                    (typeof value.check == "string") ? value.check == "true" : value.check);
+                  sendToRight(methods.getValues(), selectedObjects);
                 }} >
                   <span className="codicon codicon-arrow-right"></span>
                 </VSCodeButton>
                 <VSCodeButton appearance="icon" onClick={() => {
-                  const selectedObjects = methods.getValues("objectsRight").filter((value) => value.check);
-                  console.log(">>>>> confirm select");
-                  console.log("selectedObjects=", selectedObjects.length);
+                  const selectedObjects = methods.getValues("objectsRight").filter((value) =>
+                    (typeof value.check == "string") ? value.check == "true" : value.check);
 
-                  methods.setValue("objectsRight", selectedObjects);
+                  console.log("selectedObjects", selectedObjects);
+
+                  sendToLeft(methods.getValues(), selectedObjects);
                 }} >
                   <span className="codicon codicon-arrow-left"></span>
                 </VSCodeButton>
               </section>
 
-              <SelectObjectComponent
+              <SelectResourceComponent
+                label="To patch"
                 fieldName="objectsRight"
+                rowsLimit={0}
               />
             </section>
           </TdsForm>

@@ -14,13 +14,13 @@ function buildMessage(props: IPopupMessage): string {
 
 	if (error) {
 		if (error.type == "required") {
-			message = `[${label}] is required.`;
+			message = error.message || `[${label}] is required.`;
 		} else if (error.type == "min") {
-			message = `[${label}] is not valid range (min value).`;
+			message = error.message || `[${label}] is not valid range (min value).`;
 		} else if (error.type == "max") {
-			message = `[${label}] is not valid range (max value).`;
+			message = error.message || `[${label}] is not valid range (max value).`;
 		} else {
-			message = error.message || `${error.type}<Unknown>`
+			message = error.message || error.message || `${error.type}<Unknown>`
 		}
 	}
 
@@ -64,7 +64,7 @@ export default function PopupMessage(props: IPopupMessage): JSX.Element {
 				onMouseOver={(event) => mouseOver(event)}
 				onMouseOut={(event) => mouseOut(event)}
 			>
-				<span className={`tds-popup-text tds-${type}`} id={"popup_" + props.field.name}>{message}.</span>
+				<span className={`tds-popup-text tds-${type}`} id={"popup_" + props.field.name}>{message}</span>
 			</span>
 			: <></>
 	);

@@ -35,16 +35,15 @@ type TdsSelectionFileFieldProps = Omit<TdsSelectionResourceFieldProps, "folders"
 export function TdsSelectionResourceField(props: TdsSelectionResourceFieldProps): JSX.Element {
 	const {
 		register,
-		getValues,
-		formState: { isDirty }
+		getValues
 	} = useFormContext();
-	const { field, fieldState } = useController(props);
+	const { fieldState } = useController(props);
 
 	const registerField = register(props.name, props.rules);
 
 	return (
 		<section
-			className={`tds-field-container tds-label-field ${props.className ? props.className : ''}`}
+			className={`tds-field-container tds-selection-resource-field tds-label-field ${props.className ? props.className : ''}`}
 		>
 			<VSCodeButton
 				onClick={() => {

@@ -9,6 +9,7 @@ import stripJsonComments from "strip-json-comments";
 import {
   IGetServerInformationsResult,
   IGetServerPermissionsResult,
+  LanguageServerErrorCodes,
   ServerExceptionCodes,
   sendGetServerInformationInfo,
   sendGetServerPermissionsInfo,
@@ -1627,19 +1628,68 @@ export function serverExceptionCodeToString(codeError: number): string {
 
   switch (codeError) {
     case ServerExceptionCodes.ConnectionRetrieveError:
-      message = "Connection retrieve error";
+      message = "(Protheus) Connection retrieve error";
+
       break;
     case ServerExceptionCodes.AuthorizationTokenExpiredError:
-      message = "Authorization token expired";
+      message = "(Protheus) Authorization token expired";
+
       break;
     case ServerExceptionCodes.StartBuildError:
-      message = "Start build error";
+      message = "(Protheus) Start build error";
+
       break;
     case ServerExceptionCodes.ReadOnlyError:
-      message = "Read only error";
+      message = "(Protheus) Read only error";
+
       break;
     case ServerExceptionCodes.InsufficientPrivilegesError:
-      message = "Insufficient privileges error";
+      message = "(Protheus) Insufficient privileges error";
+
+      break;
+    case LanguageServerErrorCodes.ParseError:
+      message = "(LS) Parse error";
+
+      break;
+    case LanguageServerErrorCodes.InvalidRequest:
+      message = "(LS) Invalid request";
+
+      break;
+    case LanguageServerErrorCodes.MethodNotFound:
+      message = "(LS) Method not found";
+
+      break;
+    case LanguageServerErrorCodes.InvalidParams:
+      message = "(LS) Invalid params";
+
+      break;
+    case LanguageServerErrorCodes.InternalError:
+      message = "(LS) Internal error";
+
+      break;
+    case LanguageServerErrorCodes.serverErrorStart:
+      message = "(LS) Server error start";
+
+      break;
+    case LanguageServerErrorCodes.serverErrorEnd:
+      message = "(LS) Server error end";
+
+      break;
+    case LanguageServerErrorCodes.ServerNotInitialized:
+      message = "(LS) Server not initialized";
+
+      break;
+    case LanguageServerErrorCodes.UnknownErrorCode:
+      message = "(LS) Unknown error code";
+
+      break;
+    case LanguageServerErrorCodes.RequestCancelled:
+      message = "(LS) Request cancelled";
+
+      break;
+    case LanguageServerErrorCodes.ContentModified:
+      message = "(LS) Content modified";
+
       break;
     default:
       message = `<unknown code ${codeError}>`;

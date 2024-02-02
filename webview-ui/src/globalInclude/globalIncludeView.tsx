@@ -62,8 +62,6 @@ export default function GlobalIncludeView() {
 
     window.addEventListener('message', listener);
 
-    sendReady();
-
     return () => {
       window.removeEventListener('message', listener);
     }

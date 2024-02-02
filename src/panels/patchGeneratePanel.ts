@@ -16,12 +16,15 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import { ServersConfig } from "../utils";
+import { ServersConfig, serverExceptionCodeToString } from "../utils";
 import { CommonCommandFromWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
 import { IObjectData, IPatchResult, sendInspectorObjectsRequest, sendPatchGenerateMessage } from "../protocolMessages";
 import { TFieldErrors, TdsPanel, isErrors } from "../model/field-model";
 import { _debugEvent } from "../debug";
 import { TGeneratePatchModel } from "../model/generatePatchModel";
+import { TInspectorObject } from "../patch/patchUtil";
+import { ResponseError } from "vscode-languageclient";
+import { object } from "prop-types";
 
 enum PatchGenerateCommandEnum {
 }
@@ -30,7 +33,7 @@ type PatchGenerateCommand = CommonCommandFromWebViewEnum & PatchGenerateCommandE
 
 const EMPTY_MODEL: TGeneratePatchModel = {
   patchName: "",
-  outputPath: "",
+  patchDest: "",
   includeTRes: false,
   filter: "",
   warningManyItens: false,
@@ -54,7 +57,7 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
         // Panel view type
         "patch-generate-panel",
         // Panel title
-        vscode.l10n.t("Patch generation from RPO"),
+        vscode.l10n.t("Patch Generation from RPO"),
         // The editor column the panel should be displayed in
         vscode.ViewColumn.One,
         // Extra panel configurations
@@ -112,61 +115,98 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
               title: vscode.l10n.t("Loading RPO content..."),
             },
             async (progress, token) => {
-              const server = ServersConfig.getCurrentServer();
-              const model: TGeneratePatchModel = EMPTY_MODEL;
-              let includeTRes: boolean = false;
-
               progress.report({ increment: 0 });
-              const objectsData: IObjectData[] = await sendInspectorObjectsRequest(server, includeTRes);
 
-              model.objectsLeft = [];
-              if (objectsData) {
-                objectsData.forEach((object: IObjectData) => {
-                  model.objectsLeft.push({
-                    name: object.source,
-                    type: object.source_status.toString(),
-                    date: object.date
-                  });
-                });
+              data.model = await this.getDataFromServer(EMPTY_MODEL, false);
 
-              }
+              this.sendUpdateModel(data.model, undefined);
 
               progress.report({ increment: 100 });
-
-              this.sendUpdateModel(model, undefined);
             }
           );
         }
-        break;
-        // case CommonCommandFromWebViewEnum.Save:
-        // case CommonCommandFromWebViewEnum.SaveAndClose:
-        //   let errors: TFieldErrors<TGeneratePatchModel> = {};
 
-        //   if (await this.validateModel(data.model, errors)) {
-        //     if (this.saveModel(data.model)) {
-        //       if (command === CommonCommandFromWebViewEnum.SaveAndClose) {
-        //         PatchGeneratePanel.currentPanel.dispose();
-        //       } else {
-        //         // this._sendUpdateModel({
-        //         //   urlOrWsdlFile: "",
-        //         //   outputPath: data.model.outputFilename,
-        //         //   outputFilename: "",
-        //         //   overwrite: false
-        //         // });
-        //       }
-        //     }
-        //   } else {
-        //     this.sendValidateResponse(errors);
-        //   }
+        break;
+      case CommonCommandFromWebViewEnum.IncludeTRes:
+        vscode.window.withProgress(
+          {
+            location: vscode.ProgressLocation.Window,
+            title: vscode.l10n.t("Loading RPO content..."),
+          },
+          async (progress, token) => {
+            progress.report({ increment: 0 });
+
+            data.model = await this.getDataFromServer(data.model, data.includeTRes);
+
+            this.sendUpdateModel(data.model, undefined);
+
+            progress.report({ increment: 100 });
+          }
+        );
+
+        break;
+      case CommonCommandFromWebViewEnum.MoveElements:
+        const selectedObject: TInspectorObject[] = data.selectedObject;
+        const direction: string = data.direction;
+
+        if (direction == "right") {
+          data.model.objectsLeft = data.model.objectsLeft.filter((x: TInspectorObject) => selectedObject.findIndex(y => x.name == y.name) == -1);
+          data.model.objectsRight.push(...selectedObject);
+        } else {
+          data.model.objectsRight = data.model.objectsRight.filter((x: TInspectorObject) => selectedObject.findIndex(y => x.name == y.name) == -1);
+          data.model.objectsLeft.push(...selectedObject);
+        }
+
+        data.model.objectsRight = data.model.objectsRight.sort((a: TInspectorObject, b: TInspectorObject) => a.name.localeCompare(b.name));
+        data.model.objectsLeft = data.model.objectsLeft.sort((a: TInspectorObject, b: TInspectorObject) => a.name.localeCompare(b.name));
+
+        this.sendUpdateModel(data.model, undefined);
+
+        break;
+      case CommonCommandFromWebViewEnum.AfterSelectResource:
+        if (result && result.length > 0) {
+          const selectedFile: string = (result[0] as vscode.Uri).fsPath;
+
+          data.model.patchDest = selectedFile;
+          this.sendUpdateModel(data.model, undefined);
+        }
 
         break;
     }
   }
 
+  private async getDataFromServer(model: TGeneratePatchModel, includeTRes: boolean): Promise<TGeneratePatchModel> {
+    const server = ServersConfig.getCurrentServer();
+    const objectsData: IObjectData[] = await sendInspectorObjectsRequest(server, includeTRes);
+
+    model.objectsLeft = [];
+    if (objectsData) {
+      objectsData.forEach((object: IObjectData) => {
+        model.objectsLeft.push({
+          name: object.source,
+          type: object.source_status.toString(),
+          date: object.date
+        });
+      });
+
+    }
+
+    model.objectsLeft = model.objectsLeft.sort((a: TInspectorObject, b: TInspectorObject) => a.name.localeCompare(b.name));
+    model.objectsRight = model.objectsRight.sort((a: TInspectorObject, b: TInspectorObject) => a.name.localeCompare(b.name));
+    model.includeTRes = includeTRes;
+
+    return model;
+
+  }
+
   protected async validateModel(model: TGeneratePatchModel, errors: TFieldErrors<TGeneratePatchModel>): Promise<boolean> {
     try {
+      if (model.patchDest.length == 0) {
+        errors.patchDest = { type: "required" };
+      }
+
       if (model.objectsRight.length == 0) {
-        errors.objectsRight = { type: "required" };
+        errors.objectsRight = { type: "required", message: "Please select objects to include in the patch." };
       }
     } catch (error) {
       errors.root = { type: "validate", message: `Internal error: ${error}` }
@@ -195,12 +235,22 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
     const response: IPatchResult | void = await sendPatchGenerateMessage(
       server,
       "",
-      model.outputPath,
+      model.patchDest,
       3,
       model.patchName,
-      model.objectsRight
+      model.objectsRight.map((object: TInspectorObject) => object.name),
     ).then(() => {
       vscode.window.showInformationMessage(vscode.l10n.t("Patch file generated"));
+    }, (err: ResponseError<object>) => {
+      serverExceptionCodeToString(err.code);
+
+      const response: IPatchResult = {
+        returnCode: err.code,
+        files: "",
+        message: err.message
+      };
+
+      return response;
     });
 
     let errors: TFieldErrors<TGeneratePatchModel> = {};
@@ -210,7 +260,10 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
       errors.root = { type: "validate", message: "Internal error: See more information in log" };
       ok = false
     } else if (response.returnCode !== 0) {
-      errors.root = { type: "validate", message: `Protheus server was unable to generate the patch. Reason: ${response.message}` };;
+      const msgError = ` ${serverExceptionCodeToString(response.returnCode)} ${response.message}`;
+      this.logError(msgError)
+      vscode.window.showErrorMessage(msgError);
+      errors.root = { type: "validate", message: `Protheus Server was unable to generate the patch. Code: ${response.returnCode}` };;
       ok = false
     }
 

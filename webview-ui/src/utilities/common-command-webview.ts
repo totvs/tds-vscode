@@ -25,6 +25,8 @@ export enum CommonCommandToPanelEnum {
 	CheckDir = "CHECK_DIR",
 	SelectResource = "SELECT_RESOURCE",
 	UpdateModel = "UPDATE_MODEL",
+	MoveElements = "MOVE_ELEMENTS",
+	IncludeTRes = "INCLUDE_TRES",
 }
 
 export type CommonCommandToPanel = CommonCommandToPanelEnum;

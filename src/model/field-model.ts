@@ -140,12 +140,12 @@ export abstract class TdsPanel<M extends TModelPanel> {
 		const data = message.data;
 
 		switch (command) {
-			case CommonCommandFromWebViewEnum._Save:
-			case CommonCommandFromWebViewEnum._SaveAndClose:
+			case CommonCommandFromWebViewEnum.Save:
+			case CommonCommandFromWebViewEnum.SaveAndClose:
 				let errors: TFieldErrors<M> = {};
 				try {
 					if (await this.validateModel(data.model, errors)) {
-						if (await this.saveModel(data.model) && (command == CommonCommandFromWebViewEnum._SaveAndClose)) {
+						if (await this.saveModel(data.model) && (command == CommonCommandFromWebViewEnum.SaveAndClose)) {
 							this.dispose();
 						} else {
 							this.sendUpdateModel(data.model, errors);
@@ -160,7 +160,7 @@ export abstract class TdsPanel<M extends TModelPanel> {
 
 				break;
 
-			case CommonCommandFromWebViewEnum._Close:
+			case CommonCommandFromWebViewEnum.Close:
 				this.dispose();
 
 				break;

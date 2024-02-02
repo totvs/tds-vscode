@@ -80,8 +80,6 @@ export default function AddServerView() {
 
     window.addEventListener('message', listener);
 
-    sendReady();
-
     return () => {
       window.removeEventListener('message', listener);
     }
@@ -133,30 +131,33 @@ export default function AddServerView() {
 
             </section>
 
-            <TdsTextField
-              name="serverName"
-              label="Server name"
-              info="Informe um nome que o ajude a identificar o servidor"
-              rules={{ required: true }}
-            />
+            <section className="tds-group-container" >
+              <TdsTextField
+                name="serverName"
+                label="Server name"
+                info="Informe um nome que o ajude a identificar o servidor"
+                rules={{ required: true }}
+              />
+            </section>
 
-            <TdsTextField
-              name="address"
-              label="Address"
-              info="Informe IP ou nome do servidor no qual esta o Protheus"
-              rules={{ required: true }}
-            />
+            <section className="tds-group-container" >
+              <TdsTextField
+                name="address"
+                label="Address"
+                info="Informe IP ou nome do servidor no qual esta o Protheus"
+                rules={{ required: true }}
+              />
 
-            <TdsNumericField
-              name="port"
-              label="Port"
-              info="Informe a porta de conexão do SC"
-              rules={{
-                required: true,
-                min: { value: 1, message: "[Port] is not valid range. Min: 1 Max: 65535" },
-                max: { value: 65535, message: "[Port] is not valid range. Min: 1 Max: 65535" }
-              }} />
-
+              <TdsNumericField
+                name="port"
+                label="Port"
+                info="Informe a porta de conexão do SC"
+                rules={{
+                  required: true,
+                  min: { value: 1, message: "[Port] is not valid range. Min: 1 Max: 65535" },
+                  max: { value: 65535, message: "[Port] is not valid range. Min: 1 Max: 65535" }
+                }} />
+            </section>
 
             <section className="tds-group-container" >
               <TdsLabelField

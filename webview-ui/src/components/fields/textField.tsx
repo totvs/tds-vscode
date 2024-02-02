@@ -3,9 +3,7 @@ import { useController, useFormContext } from "react-hook-form";
 import PopupMessage from "../popup-message";
 import { TdsFieldProps } from "../form";
 
-type TdsTextFieldProps = TdsFieldProps & {
-	//onChange?: (event: ChangeEvent<HTMLInputElement>) => any;
-}
+type TdsTextFieldProps = TdsFieldProps;
 
 /**
  *
@@ -20,12 +18,14 @@ type TdsTextFieldProps = TdsFieldProps & {
  */
 export function TdsTextField(props: TdsTextFieldProps): JSX.Element {
 	const {
-		register,
-		setValue,
-		formState: { isDirty }
+		register
 	} = useFormContext();
 	const { field, fieldState } = useController(props);
 	const registerField = register(props.name, props.rules);
+
+	if (props.onChange) {
+		registerField.onChange = props.onChange;
+	}
 
 	return (
 		<section

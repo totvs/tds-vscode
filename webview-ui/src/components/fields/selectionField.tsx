@@ -26,13 +26,12 @@ export function TdsSelectionField(props: TdsSelectionFieldProps): JSX.Element {
 	const {
 		register,
 		getValues,
-		setValue,
 		formState: { isDirty }
 	} = useFormContext();
 	const { field, fieldState } = useController(props);
 	const registerField = register(props.name, props.rules);
 	const options = props.options || [];
-	const currentValue: string = getValues(props.name);
+	const currentValue: string = getValues(props.name) as string;
 
 	return (
 		<section
