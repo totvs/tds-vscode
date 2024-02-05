@@ -1,0 +1,16 @@
+section.tds-footer {
+	/* display: flex;
+	flex-direction: row-reverse;
+	flex-grow: 0;
+	flex-shrink: 1;
+	height: fit-content;
+	margin-bottom: var(--type-ramp-minus2-line-height);
+	order: 0;
+	width: 100%;
+	display: block; */
+	flex-grow: 0;
+	flex-shrink: 1;
+	flex-basis: auto;
+	align-self: auto;
+	order: 0;
+}

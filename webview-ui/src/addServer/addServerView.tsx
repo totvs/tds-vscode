@@ -1,7 +1,7 @@
 //import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 
 import "./addServer.css";
-import Page from "../components/page";
+import TdsPage from "../components/page";
 import React from "react";
 import { TIncludeData } from "../model/addServerModel";
 import { FormProvider, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
@@ -103,7 +103,7 @@ export default function AddServerView() {
 
   return (
     <main>
-      <Page title="Add Server" linkToDoc="[Registro de Servidores]servers.md#registro-de-servidores">
+      <TdsPage title="Add Server" linkToDoc="[Registro de Servidores]servers.md#registro-de-servidores">
         <FormProvider {...methods} >
           <TdsForm<TFields>
             onSubmit={onSubmit}
@@ -221,7 +221,7 @@ export default function AddServerView() {
             </VSCodeDataGrid>
           </TdsForm>
         </FormProvider>
-      </Page>
+      </TdsPage>
     </main >
   );
 }

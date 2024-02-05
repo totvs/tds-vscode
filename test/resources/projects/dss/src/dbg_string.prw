@@ -4,7 +4,7 @@ user function dbgString()
 	local int := 1234
 	local flot := 123.45
 	local bool := .t.
-
+	local empty := ""
 	local s010 := "ABCDEFGHI*"
 	local s050 := replicate(s010, 5)
 	local s100 := replicate(s010, 10)

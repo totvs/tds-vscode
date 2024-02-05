@@ -160,7 +160,7 @@ export function TdsForm<DataModel extends FieldValues>(props: TDSFormProps<DataM
 	});
 
 	return (
-		<form onSubmit={props.methods.handleSubmit(props.onSubmit)}>
+		<form className="tds-form" onSubmit={props.methods.handleSubmit(props.onSubmit)}>
 			<div className={"tds-form-content"}>
 				{props.children}
 			</div>

@@ -1,0 +1,15 @@
+div .tds-content {
+	/* align-items: normal;
+	align-self: stretch; */
+	/* display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	order: 0;
+	overflow: hidden;
+	display: block; */
+	flex-grow: 1;
+	flex-shrink: 1;
+	flex-basis: auto;
+	align-self: auto;
+	order: 0;
+}

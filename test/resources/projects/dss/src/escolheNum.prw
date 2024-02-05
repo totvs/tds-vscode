@@ -1,28 +1,33 @@
 #include "protheus.ch"
 
 user function escolheNum(replay, replayPath, numbers)
+	local cOpcao := ""
+	// local n, cResp := "xxxxx", cMsgxxxx := ""
+	// local aOpcoes := {}
+	// private ondeEstou := "escolheNum"
+	// public aPublic := {}
 
-	local zzzzzzz
-	
-	local n, cResp := "xxxxx", cMsg := ""
-	local aOpcoes := {}
-	private cOpcao
-	private ondeEstou := "escolheNum"
-	public aPublic := {}
-
-	if replay == "true"
-		replay = .t.
-		TDSReplay(.T. , {"*"}, {}, {"*"} , replayPath, 0 , .t. , "")
+	if replay != nil .and. lower(replay) == "true"
+		if replay != nil .and. lower(replay) == "true"
+			replay = .t.
+			TDSReplay(.T. , {"*"}, {}, {"*"} , replayPath, 0 , .t. , "")
+			numbers += " *"
+		else
+			replay := .f.
+		endif
 	endif
 
 	// essa seq. UTF 8 invÃ¡lida para json do DA
-	//corrigido versÃ£o DA 1.1.24 / srv
+	//corrigido versÃ£o DA 1.1.24 / srv1
 	//private paraDeFuncionar := "se fizer hover aqui, para de funcionar ÃƒÂº"
-//
+	//
+	//
 	for n := 1 to 5
 		aAdd(aOpcoes, strZero(n,1,0))
 	next
-//
+	//
+	//
+
 	n := 0
 	while !(cResp == "*")
 		if (replay)
@@ -30,32 +35,38 @@ user function escolheNum(replay, replayPath, numbers)
 			numbers =  substr(numbers, 2)
 			conout("BOT: select number " + cOpcao)
 		else
-			tela(aOpcoes)
+			cOpcao := ""
 		endif
+		cOpcao := u_replayTela(aOpcoes, cOpcao)
 
 		n++
 		//cResp := trim(cOpcao)
 		cResp := cOpcao
 
 		if cResp == "1"
-			cMsg := "Vocï¿½ escolheu o nï¿½mero 1"
+			cMsg := "Você escolheu o número 1"
 		elseif cResp == "2"
-			cMsg := "Vocï¿½ escolheu o nï¿½mero 2"
+			cMsg := "Você escolheu o número 2"
 		elseif cResp == "3"
-			cMsg := "Vocï¿½ escolheu o nï¿½mero 3"
+			cMsg := "Você escolheu o número 3"
 		elseif cResp == "4"
-			cMsg := "Vocï¿½ escolheu o nï¿½mero 4"
+			cMsg := "Você escolheu o número 4"
 		elseif cResp == "5"
-			cMsg := "Vocï¿½ escolheu o nï¿½mero 5"
+			cMsg := "Você escolheu o número 5"
+		elseif replay .and. cResp == " "
+			loop
+		elseif replay
+			cResp := "*"
+			loop
 		else
-			cMsg := "Nenhum nï¿½mero escolhido"
+			cMsg := "Nenhum número escolhido"
 		endif
 
 		if !empty(cResp)
 			if cResp == "2" .or. cResp == "4"
-				cMsg += " e ï¿½ PAR"
+				cMsg += " e é PAR"
 			else
-				cMsg += " e ï¿½ IMPAR"
+				cMsg += " e é IMPAR"
 			endif
 		endif
 
@@ -74,58 +85,3 @@ user function escolheNum(replay, replayPath, numbers)
 	endif
 
 return
-
-static function tela(aaOpcoes)
-	Local oDlg,oSay1 := "",oBtn
-
-	if !(valType(aaOpcoes) == "A")
-		msgAlerta("Parametro aaOpcoes nï¿½o ï¿½ uma lista (array)")
-		return cOpcao
-	endif
-
-	oDlg := MSDIALOG():Create()
-	oDlg:cName := "oDlg"
-	oDlg:cCaption := "Escolha um nï¿½mero"
-	oDlg:nLeft := 0
-	oDlg:nTop := 0
-	oDlg:nWidth := 400
-	oDlg:nHeight := 250
-	oDlg:lCentered := .T.
-
-	oSay1 := TSAY():Create(oDlg)
-	oSay1:cName := "oSay1"
-	oSay1:cCaption := "Escolha um nï¿½mero acionando um dos botï¿½es abaixo."
-	oSay1:nLeft := 10
-	oSay1:nTop := 28
-	oSay1:nWidth := 250
-	oSay1:nHeight := 17
-	oSay1:lTransparent := .T.
-
-	oBtn := TButton():Create(oDlg)
-	oBtn:cCaption := "<nenhum>"
-	oBtn:blClicked := {|| cOpcao := "", oDlg:end() }
-	oBtn:nWidth := 90
-	oBtn:nTop := 90
-	oBtn:nLeft := 10
-
-	oBtn := TButton():Create(oDlg)
-	oBtn:cCaption := "<encerrar>"
-	oBtn:blClicked := {|| cOpcao := "*", oDlg:end() }
-	oBtn:nWidth := 90
-	oBtn:nTop := 90
-	oBtn:nLeft := 110
-
-	aEval(aaOpcoes, { |x,i| ;
-		oBtn := TButton():Create(oDlg),;
-		oBtn:cCaption := x,;
-		oBtn:blClicked := &("{|| conout('Foi acionado "+x+"'),cOpcao := '"+x+"', oDlg:end() }"),;
-		oBtn:nWidth := 30,;
-		oBtn:nTop := 60,;
-		oBtn:nLeft := (10 * i) + (oBtn:nWidth*(i-1));
-		})
-
-//ACTIVATE DIALOG oDlg CENTERED
-	oDlg:Activate( oDlg:bLClicked, oDlg:bMoved, oDlg:bPainted,.T.,,,, oDlg:bRClicked, )
-//oDlg:Activate()
-
-Return cOpcao

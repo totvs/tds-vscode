@@ -1,7 +1,7 @@
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 
 import "./patchGenerate.css";
-import Page from "../components/page";
+import TdsPage from "../components/page";
 import React from "react";
 import { FormProvider, SubmitHandler, useFieldArray, useForm, useFormContext } from "react-hook-form";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendSaveAndClose } from "../utilities/common-command-webview";
@@ -194,7 +194,7 @@ export default function PatchGenerateView() {
 
   return (
     <main>
-      <Page title="Patch Generation from RPO" linkToDoc="[Geração de pacote de atualização]servers.md#registro-de-servidores">
+      <TdsPage title="Patch Generation from RPO" linkToDoc="[Geração de pacote de atualização]servers.md#registro-de-servidores">
         <FormProvider {...methods} >
           <TdsForm
             methods={methods}
@@ -307,7 +307,7 @@ export default function PatchGenerateView() {
             </section>
           </TdsForm>
         </FormProvider>
-      </Page>
+      </TdsPage>
     </main >
   );
 }

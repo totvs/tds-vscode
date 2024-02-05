@@ -1,17 +1,16 @@
 
-import "./CompileKey.css";
-import Page from "../components/page";
+import TdsPage from "../components/page";
 import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
 import { TInspectorObject } from "../model/inspectorObjectModel";
 import { TdsSimpleCheckBoxField, IFormAction, TdsForm, TdsTextField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionFileField } from "../components/form";
 
+import "./CompileKey.css";
+
 enum ReceiveCommandEnum {
 }
 type ReceiveCommand = ReceiveMessage<CommonCommandFromPanelEnum & ReceiveCommandEnum, TFields>;
-
-type TObjectFiltered = TInspectorObject & { check: boolean };
 
 type TCompileKey = {
   path: string;
@@ -101,18 +100,20 @@ export default function CompileKeyView() {
 
   return (
     <main>
-      <Page title="Compile Key" linkToDoc="[Chave de Compilação]servers.md#registro-de-servidores">
+      <TdsPage title="Compile Key" linkToDoc="[Chave de Compilação]servers.md#registro-de-servidores">
         <FormProvider {...methods} >
           <TdsForm
             methods={methods}
             onSubmit={onSubmit}>
 
-            <TdsTextField
-              name="machineId"
-              label="Machine ID"
-              info="Identificador único da estação. Obtido automaticamente"
-              readOnly={true}
-            />
+            <section className="tds-group-container">
+              <TdsTextField
+                name="machineId"
+                label="Machine ID"
+                info="Identificador único da estação. Obtido automaticamente"
+                readOnly={true}
+              />
+            </section>
 
             <section className="tds-group-container">
               <TdsTextField
@@ -134,45 +135,48 @@ export default function CompileKeyView() {
               />
             </section>
 
-            <TdsTextField
-              name="id"
-              label="Compile Key ID"
-              info="Chave de compilação"
-              rules={{ required: true }}
-            />
+            <section className="tds-group-container">
+              <TdsTextField
+                name="issued"
+                label="Generated"
+                info="Data da geração da chave"
+                rules={{ required: true }}
+              />
 
-            <TdsTextField
-              name="issued"
-              label="Generated"
-              info="Data da geração da chave"
-              rules={{ required: true }}
-            />
+              <TdsTextField
+                name="expire"
+                label="Expire"
+                info="Data da expiração da chave"
+                rules={{ required: true }}
+              />
+            </section>
 
-            <TdsTextField
-              name="expire"
-              label="Expire"
-              info="Data da expiração da chave"
-              rules={{ required: true }}
-            />
+            <section className="tds-group-container">
 
-            <TdsTextField
-              name="key"
-              label="Token"
-              info="Token gerado"
-              rules={{ required: true }}
-            />
+              <TdsTextField
+                name="key"
+                label="Token"
+                info="Token gerado"
+                rules={{ required: true }}
+              />
+            </section>
 
-            <TdsSimpleCheckBoxField
-              name={"canOverride"}
-              label={""}
-              textLabel={"Allow override default"} />
+            <section className="tds-group-container">
+              <TdsSimpleCheckBoxField
+                name={"canOverride"}
+                label={""}
+                textLabel={"Allow override default"} />
+            </section>
 
-            <TdsLabelField
-              name={"warningCompatibility"}
-              label={"_* From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS._"} />
+            <section className="tds-group-container">
+              <TdsLabelField
+                name={"warningCompatibility"}
+                label={"From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS."}
+              />
+            </section>
           </TdsForm>
         </FormProvider>
-      </Page>
+      </TdsPage>
     </main >
   );
 }

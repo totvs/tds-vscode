@@ -1,6 +1,6 @@
 
 import "./generateWs.css";
-import Page from "../components/page";
+import TdsPage from "../components/page";
 import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
@@ -59,7 +59,7 @@ export default function GenerateWsView() {
 
   return (
     <main>
-      <Page title="Generate Web Service Client" linkToDoc="[Geração de Web Service]servers.md#registro-de-servidores">
+      <TdsPage title="Generate Web Service Client" linkToDoc="[Geração de Web Service]servers.md#registro-de-servidores">
         <FormProvider {...methods} >
           <TdsForm
             methods={methods}
@@ -127,7 +127,7 @@ export default function GenerateWsView() {
             />
           </TdsForm>
         </FormProvider>
-      </Page>
+      </TdsPage>
     </main >
   );
 }

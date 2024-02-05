@@ -1,47 +1,23 @@
-import { vscode } from "../utilities/vscodeWrapper";
-import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
-
 import "./page.css";
-import Header from "./header";
-import Footer from "./footer";
-import { ButtonAppearance } from "@vscode/webview-ui-toolkit";
-
-export interface IPageAction {
-	id: number;
-	caption: string;
-	action: any;
-	enabled?: boolean;
-	type?: "submit" | "reset" | "button";
-	appearance?: ButtonAppearance;
-}
+import TdsHeader from "./header";
+import TdsFooter from "./footer";
+import TdsContent from "./content";
 
 export interface IPageView {
 	title: string;
 	linkToDoc: string
-	actions?: IPageAction[];
 	children: any
 }
 
-export default function Page(props: IPageView) {
+export default function TdsPage(props: IPageView) {
 
 	return (
-		<>
-			<Header title={props.title} linkToDoc={props.linkToDoc} />
-			<div className="tds-content">
+		<section className="tds-page">
+			<TdsHeader title={props.title} linkToDoc={props.linkToDoc} />
+			<TdsContent>
 				{props.children}
-			</div>
-			<div className="tds-actions">
-				{props.actions?.map((action: IPageAction) => {
-					const type: any = action.type || "button";
-
-					if (action.appearance) {
-						return <VSCodeButton type={type} key={action.id} appearance={action.appearance}>{action.caption}</VSCodeButton>
-					} else {
-						return <VSCodeButton type={type} key={action.id}>{action.caption}</VSCodeButton>
-					}
-				})}
-			</div>
-			<Footer />
-		</>
+			</TdsContent>
+			<TdsFooter linkToDoc={"link"} />
+		</section>
 	);
 }

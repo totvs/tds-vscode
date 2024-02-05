@@ -1,13 +1,23 @@
-div .tds-header {
+section.tds-header {
+	/* flex-grow: 0;
+	flex-shrink: 1;
+	order: 0; */
 	display: flex;
+	flex-grow: 0;
+	flex-shrink: 1;
+	flex-basis: auto;
+	align-self: auto;
+	order: 0;
 	flex-direction: row;
-	width: 100%;
-	height: fit-content;
-	margin-bottom: calc(var(--type-ramp-minus2-line-height));
-	border-bottom: 2px solid var(--vscode-commandCenter-border);
+	align-items: flex-end;
 }
 
-div .tds-logo {
+section.tds-header h1 {
+	margin: 3px;
+	flex-grow: 1;
+}
+
+div.tds-logo {
 	width: 35px;
 	height: 35px;
 	padding: 3px;
@@ -16,12 +26,7 @@ div .tds-logo {
 	margin-right: 1rem;
 }
 
-div .tds-header h1 {
-	margin: 3px;
-	flex-grow: 1;
-}
-
-div .tds-help-doc {
+div.tds-help-doc {
 	text-align: left;
 	align-self: flex-end;
 }

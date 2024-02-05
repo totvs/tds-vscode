@@ -1,11 +1,11 @@
 #include "protheus.ch"
 
 user function escolheNum(replay, replayPath, numbers)
-	local n, cResp := "xxxxx", cMsg := ""
-	local aOpcoes := {}
 	local cOpcao := ""
-	private ondeEstou := "escolheNum"
-	public aPublic := {}
+	// local n, cResp := "xxxxx", cMsgxxxx := ""
+	// local aOpcoes := {}
+	// private ondeEstou := "escolheNum"
+	// public aPublic := {}
 
 	if replay != nil .and. lower(replay) == "true"
 		if replay != nil .and. lower(replay) == "true"

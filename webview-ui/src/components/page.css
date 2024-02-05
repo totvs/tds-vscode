@@ -1,80 +1,14 @@
-main {
-	margin-top: 5%;
-}
-
-page .tds-page {
-	align-content: normal;
+section.tds-page {
+	/* display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	justify-content: normal;
 	align-items: normal;
+	align-content: normal; */
 	display: flex;
 	flex-direction: column;
 	flex-wrap: nowrap;
 	justify-content: normal;
-}
-
-div .tds-header {
-	flex-grow: 0;
-	flex-shrink: 1;
-	order: 0;
-}
-
-div .tds-content {
-	/* align-items: normal;
-	align-self: stretch; */
-	display: flex;
-	flex-direction: column;
-	flex-grow: 1;
-	order: 0;
-	overflow: hidden;
-}
-
-div .tds-actions {
-	align-self: normal;
-	display: flex;
-	flex-grow: 0;
-	flex-shrink: 1;
-	order: 0;
-	overflow: hidden;
-	width: 100%;
-}
-
-div .tds-actions .tds-message {
-	align-self: flex-start;
-	flex-grow: 2;
-}
-
-div .tds-actions .tds-buttons {
-	flex-grow: 1;
-	align-self: flex-end;
-	flex-flow: row-reverse;
-	display: flex;
-	margin-left: calc(var(--type-ramp-minus2-line-height) /2);
-}
-
-footer .tds-footer {
-	display: flex;
-	flex-direction: row-reverse;
-	flex-grow: 0;
-	flex-shrink: 1;
-	height: fit-content;
-	margin-bottom: var(--type-ramp-minus2-line-height);
-	order: 0;
-	width: 100%;
-}
-
-.tds-error {
-	background-color: var(--vscode-inputValidation-errorBackground);
-	border-color: var(--vscode-inputValidation-errorBorder);
-	color: var(--vscode-editorError-foreground);
-}
-
-.tds-warning {
-	background-color: var(--vscode-inputValidation-warningBackground);
-	border-color: var(--vscode-inputValidation-warningBorder);
-	color: var(--vscode-editorWarning-foreground);
-}
-
-.tds-info {
-	background-color: var(--vscode-inputValidation-infoBackground);
-	border-color: var(--vscode-inputValidation-infoBorder);
-	color: var(--vscode-descriptionForeground);
+	align-items: normal;
+	align-content: normal;
 }

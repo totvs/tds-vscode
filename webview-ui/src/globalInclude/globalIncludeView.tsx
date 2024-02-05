@@ -1,7 +1,7 @@
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 
 import "./globalInclude.css";
-import Page from "../components/page";
+import TdsPage from "../components/page";
 import React from "react";
 import { TIncludeData } from "../model/addServerModel";
 import { FieldArrayWithId, SubmitHandler, useFieldArray, useForm, FormProvider } from "react-hook-form";
@@ -85,7 +85,7 @@ export default function GlobalIncludeView() {
 
   return (
     <main>
-      <Page title="Global Includes" linkToDoc="[Include global]servers.md#registro-de-servidores">
+      <TdsPage title="Global Includes" linkToDoc="[Include global]servers.md#registro-de-servidores">
         <FormProvider {...methods} >
           <TdsForm
             methods={methods}
@@ -142,7 +142,7 @@ export default function GlobalIncludeView() {
             <p>These settings can also be changed in %HOME_USER%/.totvsls/servers.json</p>
           </TdsForm>
         </FormProvider>
-      </Page>
+      </TdsPage>
     </main >
   );
 }
