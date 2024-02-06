@@ -1,3 +1,7 @@
+.tds-form {
+  width: 75%;
+}
+
 [name="urlOrWsdlFile"] {
   width: 30rem;
 }

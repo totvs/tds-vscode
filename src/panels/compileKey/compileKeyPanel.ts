@@ -111,9 +111,10 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
     const data = message.data;
 
     switch (command) {
+      case CommonCommandFromWebViewEnum.Reset:
       case CommonCommandFromWebViewEnum.Ready:
         const machineId = await sendGetIdMessage();
-        const compileKey = ServersConfig.getPermissionsInfos();
+        const compileKey: TCompileKey = ServersConfig.getPermissionsInfos();
         const authorization: any = {};
         const model: TCompileKeyModel = data.model || EMPTY_MODEL;
         model.machineId = machineId;
@@ -133,6 +134,22 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
           model.permission = authorization.permission;
           model.key = authorization.key;
           model.canOverride = compileKey.buildType === "0";
+        } else {
+          model.path = "";
+          model.issued = "";
+          model.expire = "";
+          model.buildType = "";
+          model.tokenKey = "";
+          model.authorizationToken = "";
+          model.userId = "";
+
+          model.id = "";
+          model.generation = "";
+          model.validation = "";
+          model.permission = "";
+          model.key = "";
+          model.canOverride = false;
+
         }
 
         const errors: TFieldErrors<TCompileKeyModel> = {};
@@ -164,7 +181,7 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
             data.model.key = authorization.key;
             data.model.canOverride = authorization.permission === "1";
 
-            this.validateModel(data.model, errors);
+            await this.validateModel(data.model, errors);
           } else {
             errors.path = {
               type: "validate",
@@ -197,13 +214,11 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
     const validKey: TValidKeyResult | undefined = await sendValidKey(model.id, model.generation, model.expire, model.canOverride, model.tokenKey);
 
     if (validKey.buildType == -1) {
-      const lines: string[] = validKey.errorMessage.split("\n");
-      console.log(lines);
-
-      errors.root = { type: "validate", message: "Invalid key" };
+      errors.root = { type: "validate", message: "Server refused compile key" };
     }
+
     if (validKey.authorizationToken == "") {
-      errors.root = { type: "validate", message: "Invalid key" };
+      errors.authorizationToken = { type: "validate", message: "Invalid token" };
     }
 
     vscode.window.setStatusBarMessage("");

@@ -21,6 +21,7 @@ export enum CommonCommandToPanelEnum {
 	SaveAndClose = "SAVE_AND_CLOSE",
 	Close = "CLOSE",
 	Ready = "READY",
+	Reset = "RESET",
 	Validate = "VALIDATE",
 	CheckDir = "CHECK_DIR",
 	SelectResource = "SELECT_RESOURCE",
@@ -58,8 +59,18 @@ export function sendReady() {
 	vscode.postMessage(message);
 }
 
+export function sendReset(model: TModelData) {
+	const message: SendMessage<CommonCommandToPanelEnum, TModelData> = {
+		command: CommonCommandToPanelEnum.Reset,
+		data: {
+			model: model
+		}
+	}
+
+	vscode.postMessage(message);
+}
+
 export type TSendSelectResourceProps = {
-	//model: TModelData;
 	canSelectMany: boolean,
 	canSelectFiles: boolean,
 	canSelectFolders: boolean,

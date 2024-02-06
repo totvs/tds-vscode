@@ -1,12 +1,25 @@
-
-[name="machineId"] {
-  width: 20rem;
-}
+/* .tds-row-container .tds-field-container:nth-child(1) {
+  flex-grow: 0;
+} */
 
 [name="warningCompatibility"] {
   font-weight: bold;
 }
 
+[name="issue"] {
+  flex-grow: 0;
+}
+
+[name="expired"] {
+  flex-grow: 0;
+}
+
+/*
+[name="machineId"] {
+  width: 20rem;
+}
+
+
 [name="path"] {
   width: 30rem;
-}
+} */

@@ -1,10 +1,9 @@
 
-import TdsPage from "../components/page";
 import React from "react";
+import TdsPage from "../components/page";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
-import { TInspectorObject } from "../model/inspectorObjectModel";
-import { TdsSimpleCheckBoxField, IFormAction, TdsForm, TdsTextField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionFileField } from "../components/form";
+import { CommonCommandFromPanelEnum, ReceiveMessage, sendSaveAndClose } from "../utilities/common-command-webview";
+import { TdsSimpleCheckBoxField, TdsForm, TdsTextField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionFileField } from "../components/form";
 
 import "./CompileKey.css";
 
@@ -106,14 +105,12 @@ export default function CompileKeyView() {
             methods={methods}
             onSubmit={onSubmit}>
 
-            <section className="tds-row-container">
-              <TdsTextField
-                name="machineId"
-                label="Machine ID"
-                info="Identificador único da estação. Obtido automaticamente"
-                readOnly={true}
-              />
-            </section>
+            <TdsTextField
+              name="machineId"
+              label="Machine ID"
+              info="Identificador único da estação. Obtido automaticamente"
+              readOnly={true}
+            />
 
             <section className="tds-row-container">
               <TdsTextField
@@ -135,7 +132,7 @@ export default function CompileKeyView() {
               />
             </section>
 
-            <section className="tds-row-container">
+            <section className="tds-row-container tds-same-width">
               <TdsTextField
                 name="issued"
                 label="Generated"
@@ -151,29 +148,22 @@ export default function CompileKeyView() {
               />
             </section>
 
-            <section className="tds-row-container">
+            <TdsTextField
+              name="key"
+              label="Token"
+              info="Token gerado"
+              rules={{ required: true }}
+            />
 
-              <TdsTextField
-                name="key"
-                label="Token"
-                info="Token gerado"
-                rules={{ required: true }}
-              />
-            </section>
+            <TdsSimpleCheckBoxField
+              name={"canOverride"}
+              label={""}
+              textLabel={"Allow override default"} />
 
-            <section className="tds-row-container">
-              <TdsSimpleCheckBoxField
-                name={"canOverride"}
-                label={""}
-                textLabel={"Allow override default"} />
-            </section>
-
-            <section className="tds-row-container">
-              <TdsLabelField
-                name={"warningCompatibility"}
-                label={"From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS."}
-              />
-            </section>
+            <TdsLabelField
+              name={"warningCompatibility"}
+              label={"From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS."}
+            />
           </TdsForm>
         </FormProvider>
       </TdsPage>
