@@ -35,15 +35,11 @@ export function TdsSimpleCheckBoxField(props: TdsSimpleCheckBoxFieldProps): JSX.
 			originalChange(e)
 		}
 
-		console.log(">>>>> %s = %s", registerField.name, e.target.checked);
-
 		if ((e.target as HTMLInputElement).indeterminate) {
 			setValue(registerField.name, null);
 		} else {
 			setValue(registerField.name, e.target.checked ? true : false);
 		}
-
-		console.log(">>>>>  = %s", getValues(registerField.name));
 
 		return e.target.checked;
 	}

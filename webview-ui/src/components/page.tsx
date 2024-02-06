@@ -18,7 +18,7 @@ export default function TdsPage(props: IPageView) {
 			<TdsContent>
 				{props.children}
 			</TdsContent>
-			<TdsFooter linkToDoc={"link"} >
+			<TdsFooter>
 				{props.footerContent}
 			</TdsFooter>
 		</section>

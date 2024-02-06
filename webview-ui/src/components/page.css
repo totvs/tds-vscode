@@ -2,9 +2,22 @@
 	margin: 0px;
 	margin-left: auto;
 	margin-right: auto;
-	flex-direction: column;
-	flex-wrap: nowrap;
-	justify-content: normal;
-	align-items: normal;
-	align-content: normal;
+}
+
+.tds-error {
+	background-color: var(--vscode-inputValidation-errorBackground);
+	border-color: var(--vscode-inputValidation-errorBorder);
+	color: var(--vscode-editorError-foreground);
+}
+
+.tds-warning {
+	background-color: var(--vscode-inputValidation-warningBackground);
+	border-color: var(--vscode-inputValidation-warningBorder);
+	color: var(--vscode-editorWarning-foreground);
+}
+
+.tds-info {
+	background-color: var(--vscode-inputValidation-infoBackground);
+	border-color: var(--vscode-inputValidation-infoBorder);
+	color: var(--vscode-descriptionForeground);
 }

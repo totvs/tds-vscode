@@ -1,6 +1,4 @@
 .tds-form {
-	/* width: fit-content; */
-	/* max-width: 100%; */
 	display: flex;
 	flex-direction: column;
 }
@@ -11,10 +9,6 @@
 	flex-basis: auto;
 	align-self: auto;
 	order: 0;
-	/* width: 100%; */
-	/* overflow: scroll; */
-	/* height: calc(100% - var(--type-ramp-minus2-line-height)); calculado não funcionou */
-	/* height: 400px; */
 }
 
 .tds-form .tds-form-footer {
@@ -24,11 +18,8 @@
 	flex-basis: auto;
 	align-self: auto;
 	order: 0;
-	/* width: 100%; */
 	flex-direction: row;
 	align-items: flex-end;
-	/* width: 100%; */
-	/* height: fit-content; */
 	margin-top: var(--type-ramp-minus2-line-height);
 }
 
@@ -43,16 +34,17 @@
 }
 
 .tds-form-footer .tds-button-button+.tds-button-button {
-	margin-left: 1rem;
+	margin-right: 1rem;
 }
 
 .tds-form-footer .tds-button-button {
-	width: 120px;
+	width: 80px;
 }
 
 .tds-form-footer .tds-actions {
-	flex-flow: column-reverse;
+	flex-flow: row-reverse;
 	display: flex;
+	flex-wrap: nowrap;
 }
 
 .tds-field-container vscode-text-field {
@@ -88,6 +80,12 @@
 	flex-grow: 1;
 }
 
+.tds-same-width .tds-field-container:nth-child(1),
+.tds-same-width .tds-field-container:nth-child(2),
+.tds-same-width .tds-field-container:nth-child(3) {
+	flex-grow: 1;
+}
+
 .tds-row-container+.tds-field-container,
 .tds-field-container+.tds-field-container,
 .tds-field-container+.tds-row-container,
@@ -109,11 +107,12 @@
 	height: 400px;
 }
 
-/*
 span.tds-required::after {
 	content: "*";
 	color: var(--vscode-editorError-foreground);
 }
+
+/*
 
 .tds-no-margin {
 	margin: 0px;

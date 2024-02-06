@@ -2,7 +2,7 @@ import { ButtonAppearance } from "@vscode/webview-ui-toolkit";
 import "./form.css";
 import { ChangeHandler, FieldValues, FormState, RegisterOptions, UseFormReturn, UseFormSetError, UseFormSetValue, useFormContext } from "react-hook-form";
 import { VSCodeButton, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
-import { sendClose } from "../utilities/common-command-webview";
+import { sendClose, sendReset } from "../utilities/common-command-webview";
 import { Children } from 'react';
 import React from "react";
 
@@ -164,7 +164,10 @@ export function TdsForm<DataModel extends FieldValues>(props: TDSFormProps<DataM
 	const children = React.Children.toArray(props.children);
 
 	return (
-		<form className="tds-form" onSubmit={props.methods.handleSubmit(props.onSubmit)}>
+		<form className="tds-form"
+			onSubmit={props.methods.handleSubmit(props.onSubmit)}
+			onReset={() => sendReset(props.methods.getValues())}
+		>
 			<section className={"tds-form-content"}>
 				{...children}
 			</section>
@@ -209,7 +212,6 @@ export function TdsForm<DataModel extends FieldValues>(props: TDSFormProps<DataM
 							}
 
 							visible = isVisible ? "" : "tds-hidden";
-							console.log(">>> %s = %s", propsField["type"], visible);
 						}
 
 						return (<VSCodeButton
