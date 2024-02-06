@@ -1,16 +1,22 @@
-section.tds-footer {
-	/* display: flex;
-	flex-direction: row-reverse;
-	flex-grow: 0;
-	flex-shrink: 1;
-	height: fit-content;
-	margin-bottom: var(--type-ramp-minus2-line-height);
-	order: 0;
-	width: 100%;
-	display: block; */
+.tds-footer {
+	display: flex;
 	flex-grow: 0;
 	flex-shrink: 1;
 	flex-basis: auto;
 	align-self: auto;
 	order: 0;
+	/* width: 100%; */
+	flex-direction: row;
+	align-items: flex-end;
+	margin-top: calc(var(--type-ramp-minus2-line-height)/2);
+}
+
+.tds-footer .tds-footer-content {
+	display: flex;
+	flex-grow: 1;
+}
+
+.tds-help-doc {
+	text-align: left;
+	align-self: flex-end;
 }

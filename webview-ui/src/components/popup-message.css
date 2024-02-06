@@ -1,14 +1,13 @@
 .tds-popup {
 	position: relative;
-	display: in--type-ramp-minus2-line-height-block;
+	/* display: in--type-ramp-minus2-line-height-block; */
 	cursor: pointer;
 }
 
 /* The actual popup (appears on top) */
 .tds-popup-text {
 	visibility: hidden;
-	width: 350px;
-	height: fit-content;
+	min-width: 150px;
 	text-wrap: wrap;
 	text-align: left;
 	padding: 8px;

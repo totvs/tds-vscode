@@ -159,19 +159,15 @@ export default function AddServerView() {
                 }} />
             </section>
 
-            <section className="tds-group-container" >
-              <TdsLabelField
-                name={"includeDirectoriesLabel"}
-                label={"Include directories"}
-                info={"Enter the folders where the definition files should be searched"} />
-            </section>
+            <TdsLabelField
+              name={"includeDirectoriesLabel"}
+              label={"Include directories"}
+              info={"Enter the folders where the definition files should be searched"} />
 
-            <section className="tds-group-container" >
-              <TdsLabelField
-                name={"warningIncludeDirectoriesLabel"}
-                label={"May be informed later. If you do not inform, the global configuration will be used."}
-                info={methods.getValues("globalIncludeDirectories")} />
-            </section>
+            <TdsLabelField
+              name={"warningIncludeDirectoriesLabel"}
+              label={"May be informed later. If you do not inform, the global configuration will be used."}
+              info={methods.getValues("globalIncludeDirectories")} />
 
             <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
               {model && model.includePaths.map((row: TIncludeData, index: number) => (

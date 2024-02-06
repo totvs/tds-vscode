@@ -1,8 +1,115 @@
 .tds-form {
-	width: fit-content;
-	max-width: 80%
+	/* width: fit-content; */
+	/* max-width: 100%; */
+	display: flex;
+	flex-direction: column;
 }
 
+.tds-form .tds-form-content {
+	flex-grow: 1;
+	flex-shrink: 1;
+	flex-basis: auto;
+	align-self: auto;
+	order: 0;
+	/* width: 100%; */
+	/* overflow: scroll; */
+	/* height: calc(100% - var(--type-ramp-minus2-line-height)); calculado não funcionou */
+	/* height: 400px; */
+}
+
+.tds-form .tds-form-footer {
+	display: flex;
+	flex-grow: 0;
+	flex-shrink: 1;
+	flex-basis: auto;
+	align-self: auto;
+	order: 0;
+	/* width: 100%; */
+	flex-direction: row;
+	align-items: flex-end;
+	/* width: 100%; */
+	/* height: fit-content; */
+	margin-top: var(--type-ramp-minus2-line-height);
+}
+
+.tds-form p {
+	margin: 0;
+	margin-bottom: var(--type-ramp-minus2-line-height);
+}
+
+.tds-form-footer .tds-message {
+	display: flex;
+	flex-grow: 1;
+}
+
+.tds-form-footer .tds-button-button+.tds-button-button {
+	margin-left: 1rem;
+}
+
+.tds-form-footer .tds-button-button {
+	width: 120px;
+}
+
+.tds-form-footer .tds-actions {
+	flex-flow: column-reverse;
+	display: flex;
+}
+
+.tds-field-container vscode-text-field {
+	width: 100%;
+}
+
+.tds-field-container vscode-button {
+	width: 120px;
+}
+
+.tds-group-container {
+	box-sizing: border-box;
+	display: flex;
+	flex-flow: row;
+	align-items: flex-end;
+	justify-content: flex-start;
+	margin: 0px;
+	/* width: 100%; */
+}
+
+.tds-group-container .tds-field-container:nth-child(1),
+.tds-group-container .tds-field-container:nth-child(2),
+.tds-group-container .tds-field-container:nth-child(3) {
+	display: block;
+	flex-grow: 0;
+	flex-shrink: 0;
+	flex-basis: auto;
+	align-self: auto;
+	order: 0;
+}
+
+.tds-group-container .tds-field-container:nth-child(1) {
+	flex-grow: 1;
+}
+
+.tds-group-container+.tds-field-container,
+.tds-field-container+.tds-field-container,
+.tds-field-container+.tds-group-container,
+.tds-group-container+.tds-group-container {
+	margin-top: calc(var(--type-ramp-minus2-line-height) / 2);
+}
+
+.tds-group-container .tds-field-container+.tds-field-container {
+	margin-top: 0;
+	margin-left: 1rem;
+}
+
+.tds-field-container label {
+	line-height: 250%;
+}
+
+.tds-scroll {
+	overflow: scroll;
+	height: 400px;
+}
+
+/*
 span.tds-required::after {
 	content: "*";
 	color: var(--vscode-editorError-foreground);
@@ -12,35 +119,17 @@ span.tds-required::after {
 	margin: 0px;
 }
 
-.tds-group-container {
-	box-sizing: border-box;
-	display: flex;
-	flex-flow: row;
-	align-items: flex-start;
-	justify-content: flex-start;
-	border: 1px;
-	margin: 0px;
-	width: 100%;
-}
 
 .tds-flow-column {
 	flex-flow: column;
 }
 
-.tds-group-container+.tds-field-container,
-.tds-field-container+.tds-group-container,
-.tds-group-container+.tds-group-container {
-	margin-top: var(--type-ramp-minus2-line-height);
-}
 
 .tds-item-grow {
 	flex-grow: 1;
 	flex-shrink: 0;
 }
 
-.tds-item-align-vertical-center {
-	align-self: center;
-}
 
 .tds-dropdown-container {
 	box-sizing: border-box;
@@ -48,7 +137,7 @@ span.tds-required::after {
 	flex-flow: column nowrap;
 	/* align-items: flex-start;
 	justify-content: flex-start; */
-}
+/*}
 
 .tds-dropdown-container label {
 	display: block;
@@ -65,28 +154,15 @@ span.tds-required::after {
 	width: 100%;
 }
 
-.tds-grid-container div.scroll {
-	overflow: scroll;
-	/* height: calc(100% - var(--type-ramp-minus2-line-height)); calculado não funcionou */
-	height: 400px;
-}
-
 .tds-field-container {
 	box-sizing: border-box;
 	display: flex;
 	flex-flow: column nowrap;
 	/* justify-content: flex-start; */
-	align-self: flex-end;
-	width: 100%;
-}
+/* align-self: flex-end; */
+/* width: 100%; */
+/*}
 
-.tds-field-container label {
-	margin-bottom: calc(var(--type-ramp-minus2-line-height) / 2);
-}
-
-.tds-field-container+.tds-field-container {
-	margin-left: var(--type-ramp-minus2-line-height);
-}
 
 .tds-selection-selection-resource-field {
 	width: 120px;
@@ -106,16 +182,10 @@ vscode-data-grid-row:hover {
 
 .tds-button-button {
 	/* margin-right: 2rem; */
-	/* padding: 0; */
-	text-align: center;
-	width: 120px;
-}
+/* padding: 0; */
+/* text-align: center; */
+/* width: 120px; */
+/*}
 
-.tds-button-button+.tds-button-button {
-	margin-right: 2rem;
-}
 
-div.tds-message {
-	margin-top: var(--type-ramp-minus2-line-height);
-	display: flex;
-}
+*/

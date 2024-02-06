@@ -6,7 +6,8 @@ import TdsContent from "./content";
 export interface IPageView {
 	title: string;
 	linkToDoc: string
-	children: any
+	children: any;
+	footerContent?: any;
 }
 
 export default function TdsPage(props: IPageView) {
@@ -17,7 +18,9 @@ export default function TdsPage(props: IPageView) {
 			<TdsContent>
 				{props.children}
 			</TdsContent>
-			<TdsFooter linkToDoc={"link"} />
+			<TdsFooter linkToDoc={"link"} >
+				{props.footerContent}
+			</TdsFooter>
 		</section>
 	);
 }

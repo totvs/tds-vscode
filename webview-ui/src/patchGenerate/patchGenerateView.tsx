@@ -78,7 +78,7 @@ function SelectResourceComponent(props: TSelectObjectComponentProps) {
         generate-header="none"
         grid-template-columns="1fr 8fr 3fr"
       >
-        <div className="scroll" >
+        <div className="tds-scroll" >
           {
             fields
               .filter((row: any, index: number) => {
@@ -272,14 +272,14 @@ export default function PatchGenerateView() {
               }
             </section>
 
-            <section className="tds-group-container" >
+            <section className="tds-group-container" id="selectGrid" >
               <SelectResourceComponent
                 fieldName="objectsFiltered"
                 label="RPO Objects"
                 rowsLimit={rowsLimit}
               />
 
-              <section className="tds-group-container-column tds-item-align-vertical-center" >
+              <section className="tds-group-container-column" id="directionButtons" >
                 <VSCodeButton appearance="icon" onClick={() => {
                   const selectedObjects = methods.getValues("objectsFiltered").filter((value) =>
                     (typeof value.check == "string") ? value.check == "true" : value.check);

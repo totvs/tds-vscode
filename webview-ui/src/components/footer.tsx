@@ -30,9 +30,11 @@
 
 import { VSCodeLink } from "@vscode/webview-ui-toolkit/react";
 import "./footer.css";
+import React from "react";
 
 export interface IFooter {
 	linkToDoc?: string
+	children: any
 }
 
 export default function TdsFooter(props: IFooter) {
@@ -49,10 +51,15 @@ export default function TdsFooter(props: IFooter) {
 		href = props.linkToDoc || ""
 	}
 
+	const children = React.Children.toArray(props.children);
+
 	return (
 		<section className="tds-footer">
 			<div className="tds-logo">
 				<img src="..\..\icons\totvs-32x32.png" alt="TOTVS S.A." />
+			</div>
+			<div className="tds-footer-content">
+				{...children}
 			</div>
 			{props.linkToDoc && <div className="tds-help-doc"><VSCodeLink href={href}>{text}</VSCodeLink></div>}
 		</section>

@@ -1,52 +1,7 @@
-  [name="patchDest"] {
-    width: 30rem;
-  }
+#selectGrid {
+  align-items: flex-start;
+}
 
-  /* [name="btn-outputPath"] {
-    margin-top: 1rem;
-    width: 110px;
-  } */
-
-  [name="patchName"] {
-    width: 20rem;
-  }
-
-  [name="filter"] {
-    width: 25rem;
-  }
-
-  [name="rowsLimit"] {
-    width: 10rem;
-  }
-
-  [name^="objectsFiltered."][name$=".check"],
-  [name^="objectsRight."][name$=".check"] {
-    /* width: 1rem !important; */
-    margin: 0;
-  }
-
-  [name^="objectsFiltered."][name$=".name"],
-  [name^="objectsRight."][name$=".name"] {
-    /* width: 15rem; */
-    margin: 0;
-  }
-
-  [name^="objectsFiltered."][name$=".type"],
-  [name^="objectsRight."][name$=".type"] {
-    /* width: 3rem; */
-    margin: 0;
-  }
-
-  [name^="objectsFiltered."][name$=".date"],
-  [name^="objectsRight."][name$=".date"] {
-    /* width: 10rem; */
-    margin: 0;
-  }
-
-  #objectsFiltered {
-    border: 2px;
-  }
-
-  #objectsRight {
-    border: 2px;
-  }
+#directionButtons {
+  align-self: center;
+}

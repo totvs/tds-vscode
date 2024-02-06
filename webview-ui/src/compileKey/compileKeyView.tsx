@@ -100,7 +100,8 @@ export default function CompileKeyView() {
 
   return (
     <main>
-      <TdsPage title="Compile Key" linkToDoc="[Chave de Compilação]servers.md#registro-de-servidores">
+      <TdsPage title="Compile Key" linkToDoc="[Chave de Compilação]servers.md#registro-de-servidores"
+        footerContent={<>Apenas um teste de compilação é permitido por usuário.</>}>
         <FormProvider {...methods} >
           <TdsForm
             methods={methods}

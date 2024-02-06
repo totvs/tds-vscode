@@ -10,6 +10,8 @@ section.tds-header {
 	order: 0;
 	flex-direction: row;
 	align-items: flex-end;
+	/* width: 100%; */
+	margin-bottom: var(--type-ramp-minus2-line-height);
 }
 
 section.tds-header h1 {
@@ -18,8 +20,8 @@ section.tds-header h1 {
 }
 
 div.tds-logo {
-	width: 35px;
-	height: 35px;
+	width: 32px;
+	height: 32px;
 	padding: 3px;
 	flex-grow: 0;
 	flex-shrink: 0;

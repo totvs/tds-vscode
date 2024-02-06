@@ -2,26 +2,8 @@
 	width: 20rem;
 }
 
-[name="immediateConnection"] {
-	margin-left: 1rem;
-}
-
-[name="serverName"] {
-	width: 30rem;
-}
-
-[name="address"] {
-	width: 30rem;
-}
-
-[name="port"] {
-	width: 10rem;
-}
-
-[name^="includePaths."] {
-	width: 100%;
-}
-
 [name="includeDirectoriesLabel"] {
 	margin-top: var(--type-ramp-minus2-line-height);
+	margin-bottom: calc(var(--type-ramp-minus2-line-height) / 2);
+	font-weight: bold;
 }

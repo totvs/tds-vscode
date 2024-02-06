@@ -43,6 +43,7 @@ export function TdsSelectionField(props: TdsSelectionFieldProps): JSX.Element {
 				{props.label}
 				{props.rules?.required && <span className="tds-required" />}
 			</label>
+			<br />
 			<VSCodeDropdown
 				{...registerField}
 			>

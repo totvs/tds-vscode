@@ -3,6 +3,8 @@ import "./form.css";
 import { ChangeHandler, FieldValues, FormState, RegisterOptions, UseFormReturn, UseFormSetError, UseFormSetValue, useFormContext } from "react-hook-form";
 import { VSCodeButton, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
 import { sendClose } from "../utilities/common-command-webview";
+import { Children } from 'react';
+import React from "react";
 
 export function getDefaultActionsForm(): IFormAction[] {
 	return [
@@ -159,17 +161,19 @@ export function TdsForm<DataModel extends FieldValues>(props: TDSFormProps<DataM
 		action.isProcessRing = (action.isProcessRing !== undefined ? action.isProcessRing && isProcessRing : undefined)
 	});
 
+	const children = React.Children.toArray(props.children);
+
 	return (
 		<form className="tds-form" onSubmit={props.methods.handleSubmit(props.onSubmit)}>
-			<div className={"tds-form-content"}>
-				{props.children}
-			</div>
-			<div className="tds-actions">
+			<section className={"tds-form-content"}>
+				{...children}
+			</section>
+			<section className="tds-form-footer">
 				<div className="tds-message">
 					{errors.root && <span className={`tds-error`}>{errors.root.message}.</span>}
 					{isProcessRing && <><VSCodeProgressRing /><span>Wait please. Processing...</span></>}
 				</div>
-				<div className="tds-buttons">
+				<div className="tds-actions">
 					{actions.map((action: IFormAction) => {
 						let propsField: any = {};
 						let visible: string = "";
@@ -215,7 +219,7 @@ export function TdsForm<DataModel extends FieldValues>(props: TDSFormProps<DataM
 						</VSCodeButton>)
 					})}
 				</div>
-			</div>
+			</section>
 		</form >
 	);
 }

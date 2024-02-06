@@ -1,11 +1,7 @@
-section.tds-page {
-	/* display: flex;
-	flex-direction: column;
-	flex-wrap: nowrap;
-	justify-content: normal;
-	align-items: normal;
-	align-content: normal; */
-	display: flex;
+.tds-page {
+	margin: 0px;
+	margin-left: auto;
+	margin-right: auto;
 	flex-direction: column;
 	flex-wrap: nowrap;
 	justify-content: normal;

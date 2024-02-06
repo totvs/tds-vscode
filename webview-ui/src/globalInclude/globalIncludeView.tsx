@@ -91,7 +91,7 @@ export default function GlobalIncludeView() {
             methods={methods}
             onSubmit={onSubmit}>
 
-            <p>The global search folder list is used when not specified in the server definition</p>
+            <p>The global search folder list is used when not specified in the server definition.</p>
 
             <section className="tds-group-container" >
               <TdsLabelField
