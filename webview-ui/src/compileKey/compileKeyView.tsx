@@ -100,14 +100,13 @@ export default function CompileKeyView() {
 
   return (
     <main>
-      <TdsPage title="Compile Key" linkToDoc="[Chave de Compilação]servers.md#registro-de-servidores"
-        footerContent={<>Apenas um teste de compilação é permitido por usuário.</>}>
+      <TdsPage title="Compile Key" linkToDoc="[Chave de Compilação]servers.md#registro-de-servidores">
         <FormProvider {...methods} >
           <TdsForm
             methods={methods}
             onSubmit={onSubmit}>
 
-            <section className="tds-group-container">
+            <section className="tds-row-container">
               <TdsTextField
                 name="machineId"
                 label="Machine ID"
@@ -116,7 +115,7 @@ export default function CompileKeyView() {
               />
             </section>
 
-            <section className="tds-group-container">
+            <section className="tds-row-container">
               <TdsTextField
                 name="path"
                 label="Compile Key File"
@@ -136,7 +135,7 @@ export default function CompileKeyView() {
               />
             </section>
 
-            <section className="tds-group-container">
+            <section className="tds-row-container">
               <TdsTextField
                 name="issued"
                 label="Generated"
@@ -152,7 +151,7 @@ export default function CompileKeyView() {
               />
             </section>
 
-            <section className="tds-group-container">
+            <section className="tds-row-container">
 
               <TdsTextField
                 name="key"
@@ -162,14 +161,14 @@ export default function CompileKeyView() {
               />
             </section>
 
-            <section className="tds-group-container">
+            <section className="tds-row-container">
               <TdsSimpleCheckBoxField
                 name={"canOverride"}
                 label={""}
                 textLabel={"Allow override default"} />
             </section>
 
-            <section className="tds-group-container">
+            <section className="tds-row-container">
               <TdsLabelField
                 name={"warningCompatibility"}
                 label={"From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS."}

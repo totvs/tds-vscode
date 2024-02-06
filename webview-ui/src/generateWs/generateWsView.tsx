@@ -66,7 +66,7 @@ export default function GenerateWsView() {
             onSubmit={onSubmit}
           >
 
-            <section className="tds-group-container" >
+            <section className="tds-row-container" >
               <TdsTextField
                 name="urlOrWsdlFile"
                 label="URL or Wsdl File"
@@ -84,7 +84,7 @@ export default function GenerateWsView() {
                 }} />
             </section>
 
-            <section className="tds-group-container" >
+            <section className="tds-row-container" >
               <TdsTextField
                 name="outputPath"
                 label="Output directory"
@@ -101,7 +101,7 @@ export default function GenerateWsView() {
               />
             </section>
 
-            <section className="tds-group-container" >
+            <section className="tds-row-container" >
               <TdsTextField
                 name="outputFilename"
                 label="Output Filename"

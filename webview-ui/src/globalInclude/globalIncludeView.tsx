@@ -93,7 +93,7 @@ export default function GlobalIncludeView() {
 
             <p>The global search folder list is used when not specified in the server definition.</p>
 
-            <section className="tds-group-container" >
+            <section className="tds-row-container" >
               <TdsLabelField
                 label="Include directories"
                 name={"includeDirectoriesLabel"}

@@ -199,7 +199,7 @@ export default function PatchGenerateView() {
           <TdsForm
             methods={methods}
             onSubmit={onSubmit}>
-            <section className="tds-group-container">
+            <section className="tds-row-container">
               <TdsTextField
                 name="patchDest"
                 label="Output directory"
@@ -223,7 +223,7 @@ export default function PatchGenerateView() {
 
             </section>
 
-            <section className="tds-group-container" >
+            <section className="tds-row-container" >
               <TdsTextField
                 name="filter"
                 label="Filter"
@@ -258,7 +258,7 @@ export default function PatchGenerateView() {
                 ]} />
             </section>
 
-            <section className="tds-group-container" >
+            <section className="tds-row-container" >
               {watchWarningManyItens ?
                 <TdsLabelField
                   name="warningManyItens"
@@ -272,14 +272,14 @@ export default function PatchGenerateView() {
               }
             </section>
 
-            <section className="tds-group-container" id="selectGrid" >
+            <section className="tds-row-container" id="selectGrid" >
               <SelectResourceComponent
                 fieldName="objectsFiltered"
                 label="RPO Objects"
                 rowsLimit={rowsLimit}
               />
 
-              <section className="tds-group-container-column" id="directionButtons" >
+              <section className="tds-row-container-column" id="directionButtons" >
                 <VSCodeButton appearance="icon" onClick={() => {
                   const selectedObjects = methods.getValues("objectsFiltered").filter((value) =>
                     (typeof value.check == "string") ? value.check == "true" : value.check);

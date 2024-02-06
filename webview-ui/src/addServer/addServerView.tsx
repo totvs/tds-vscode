@@ -109,7 +109,7 @@ export default function AddServerView() {
             onSubmit={onSubmit}
             methods={methods}>
 
-            <section className="tds-group-container" >
+            <section className="tds-row-container" >
               <TdsSelectionField
                 name="serverType"
                 label="Server Type"
@@ -131,7 +131,7 @@ export default function AddServerView() {
 
             </section>
 
-            <section className="tds-group-container" >
+            <section className="tds-row-container" >
               <TdsTextField
                 name="serverName"
                 label="Server name"
@@ -140,7 +140,7 @@ export default function AddServerView() {
               />
             </section>
 
-            <section className="tds-group-container" >
+            <section className="tds-row-container" >
               <TdsTextField
                 name="address"
                 label="Address"
