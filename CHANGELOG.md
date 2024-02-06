@@ -2,6 +2,16 @@
 
 ## Versão [2.0.4]
 
+### Correções
+
+#### Pending response rejected since connection got disposed Code: -32097 [#1190](https://github.com/totvs/tds-vscode/issues/1190)
+
+Ocorria um erro ao compilar pasta/workspace com mais de 89 fontes.
+
+#### Adição de configuração de pasta temporária
+
+Adicionada uma configuração extra ("totvsLanguageServer.compilation.tempDir") que sobrescreve a pasta temporária padrão do SO, caso o usuário não queira alterar a pasta temporária existente. Esta pasta é utilizada durante a pré-compilação (appre) e pode causar erros em SO que sejam "case-sensitive" (Linux/MacOS).
+
 ### Melhorias
 
 #### Fontes fora da área de trabalho
