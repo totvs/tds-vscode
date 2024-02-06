@@ -2,10 +2,10 @@
 
 user function escolheNum(replay, replayPath, numbers)
 	local cOpcao := ""
-	// local n, cResp := "xxxxx", cMsgxxxx := ""
-	// local aOpcoes := {}
-	// private ondeEstou := "escolheNum"
-	// public aPublic := {}
+	local n, cResp := "xxxxx", cMsg := ""
+	local aOpcoes := {}
+	private ondeEstou := "escolheNum"
+	public aPublic := {}
 
 	if replay != nil .and. lower(replay) == "true"
 		if replay != nil .and. lower(replay) == "true"
