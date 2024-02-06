@@ -18,6 +18,7 @@
 	"tds.package.show.precompile": "Показать команду предварительной компиляции.",
 	"tds.package.compilation.commit": "Commit compilation with errors/warnings",
 	"tds.package.compilation.includes": "Компиляция включает.",
+	"tds.package.compilation.tempDir": "временный каталог",
 	"tds.package.web.navigator.debug": "Веб-навигатор (отладка с помощью SmartClientHtml).",
 	"tds.package.editor.notification.show": "Уровень уведомления будет отображаться во всплывающем окне",
 	"tds.package.editor.notification.show.none": "Нет",

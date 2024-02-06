@@ -18,6 +18,7 @@
 	"tds.package.show.precompile": "Mostrar el comando precompilador.",
 	"tds.package.compilation.commit": "Cometer la compilación con errores/alertas",
 	"tds.package.compilation.includes": "La compilación incluye.",
+	"tds.package.compilation.tempDir": "Directorio temporal",
 	"tds.package.web.navigator.debug": "Navegador web (depuración con SmartClientHtml).",
 	"tds.package.editor.notification.show": "Nivel de notificación que se mostrará en 'popup'",
 	"tds.package.editor.notification.show.none": "Ninguna",
