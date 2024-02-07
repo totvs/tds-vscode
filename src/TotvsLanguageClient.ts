@@ -41,19 +41,40 @@ export function getLanguageClient(
   const dir = ext.extensionPath;
   let advpls: string;
 
+  let tempDir = config.get("compilation.tempDir");
   if (process.platform === "win32") {
     advpls = dir + "/node_modules/@totvs/tds-ls/bin/windows/advpls.exe";
+    if (!tempDir) {
+      tempDir = process.env["TEMP"] || process.env["TMP"];
+    }
+    if (tempDir) {
+      env["TEMP"] = tempDir;
+      env["TMP"] = tempDir;
+    }
   } else if (process.platform === "linux") {
     advpls = dir + "/node_modules/@totvs/tds-ls/bin/linux/advpls";
+    if (!tempDir) {
+      tempDir = process.env["TMPDIR"];
+    }
+    if (tempDir) {
+      env["TMPDIR"] = tempDir;
+    }
     if (statSync(advpls).mode !== 33261) {
       chmodSync(advpls, "755");
     }
   } else if (process.platform === "darwin") {
     advpls = dir + "/node_modules/@totvs/tds-ls/bin/mac/advpls";
+    if (!tempDir) {
+      tempDir = process.env["TMPDIR"];
+    }
+    if (tempDir) {
+      env["TMPDIR"] = tempDir;
+    }
     if (statSync(advpls).mode !== 33261) {
       chmodSync(advpls, "755");
     }
   }
+  console.log("tempDir: "+tempDir);
 
   let serverOptions: ServerOptions = {
     command: advpls,
