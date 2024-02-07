@@ -1,5 +1,5 @@
-// Place your settings in this file to overwrite default and user settings.FALSE
 {
+	// Place your settings in this file to overwrite default and user settings.FALSE
 	"files.trimTrailingWhitespace": true,
 	"editor.insertSpaces": false,
 	"typescript.tsdk": "node_modules\\typescript\\lib",
@@ -25,6 +25,4 @@
 		"editor.formatOnPaste": true
 	},
 	"markdownlint.run": "onSave",
-	"totvsLanguageServer.welcomePage": false,
-	"totvsLanguageServer.editor.linter.includes": "M:\\protheus\\includes;M:\\protheus\\includes_tlpp",
 }

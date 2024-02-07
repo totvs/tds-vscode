@@ -15,8 +15,5 @@
     ],
     "words": [],
     "ignoreWords": [],
-    "import": [],
-    "enableFiletypes": [
-        "!plaintext"
-    ]
+    "import": []
 }
