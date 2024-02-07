@@ -174,7 +174,7 @@ O sincronismo de tabelas pode ser alterado por configuração no executor, usand
 
 ![Debug Table Sync](./gifs/TableSync-EnableTableSyncProperty.gif)
 
-Também é possível alterar essa opção durante o processo de depuração acionando o atalho `CTRL + SHOFT + P`, executando `TOTVS: Toggle table sync`. Note que ao usar esse comando, o parâmetro do executor é alterado, portanto na próxima depuração irá utilizar essa definição.
+Também é possível alterar essa opção durante o processo de depuração acionando o atalho `CTRL + SHIFT + P`, executando `TOTVS: Toggle table sync`. Note que ao usar esse comando, o parâmetro do executor é alterado, portanto na próxima depuração irá utilizar essa definição.
 
 ![Debug Table Sync](./gifs/TableSync-CommandToggleTableSync.gif)
 
@@ -205,7 +205,7 @@ O restante será basicamente o mesmo, respeitando os pontos de paradas e exibind
 1. Localize a definição de executor que será utilizada e adicione a chave `"enableMultiThread": true`.
 1. Crie um arquivo-fonte e adicione o código abaixo, adequando-o se necessário.
 
-```
+```ADVPL
 user function startRest()
   //O nome do job REST e ambiente de execução dele, podem ser obtidos no arquivo
   //de configuração do _appServer_.
@@ -250,7 +250,7 @@ Por padrão, as funcionalidades estendidas estão desligadas. Para ligá-las, ad
 
 Algo semelhante a:
 
-```
+```ADVPL
 {
 	"version": "0.2.0",
 	"configurations": [
