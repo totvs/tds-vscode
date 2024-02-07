@@ -52,7 +52,10 @@
 	}
 
 	function save(close) {
-		const includePath = document.getElementById('includePath').value.split(";");
+		var includePath = [];
+		if (document.getElementById('includePath').value.length > 0) {
+			includePath = document.getElementById('includePath').value.split(";");
+		}
 
 		vscode.postMessage({
 			command: 'includeClose',

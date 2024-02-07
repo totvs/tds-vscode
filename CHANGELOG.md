@@ -145,7 +145,7 @@ Corrigido erro de execução de navegador em ambientes Linux.
 
 #### Logpoint não resolve {variavel}
 
-Corrigido erro de resolução de {variavel} em logpoints.
+Corrigido erro de resolução de {variável} em _logpoints_.
 
 #### 'Command not found' ao clicar em um environment de um servidor [#1131](https://github.com/totvs/tds-vscode/issues/1131)
 

@@ -182,7 +182,7 @@ export async function getProgramName(
   }
 
   // add modal dialog confirmation warning for debugging using SIGAMDI or SIGAADV
-  if (programArgs.program.toUpperCase() === 'SIGAMDI' || programArgs.program.toUpperCase() === 'SIGAADV') {
+  if (!_config.noDebug && (programArgs.program.toUpperCase() === 'SIGAMDI' || programArgs.program.toUpperCase() === 'SIGAADV')) {
     const textYes = vscode.l10n.t("Yes");
     const textQuestion = vscode.l10n.t("Debugging using SIGAMDI or SIGAADV may result in unexpected behavior, instead use the modules directly. Do you want to continue?");
     const warnDialog = await vscode.window.showWarningMessage(textQuestion, { modal: true }, textYes);
@@ -196,7 +196,7 @@ export async function getProgramName(
   return `${programArgs.program}${programArgs.args ? ("(" + programArgs.args.map((element) => { if (element.indexOf(',') > 0) return "\"" + element + "\""; else return element; }).join(", ") + ")") : ""}`;
 }
 
-const programArgsRegex = /^([\w\.\-\_]+)(\(?[^)\n]*\)?)?/i;
+const programArgsRegex = /([^()]*)(\(.*\))*/i;
 
 export function extractProgramArgs(value: string): ProgramArgs {
   let programArgs: ProgramArgs;
@@ -205,7 +205,8 @@ export function extractProgramArgs(value: string): ProgramArgs {
     let testRegex = value.trim().match(programArgsRegex);
     if (testRegex && testRegex[0]) {
       let args: string[];
-      if (testRegex.length >= 3 && testRegex[2]) {
+      // se houver match verifica se tem match na 3a posicao opcional "()"
+      if (testRegex.length == 3 && testRegex[2]) {
         args = extractArgs(testRegex[2]);
       }
       programArgs = new ProgramArgs(testRegex[1], args);
@@ -220,9 +221,10 @@ function extractArgs(value: string): string[] {
   let args: string[];
   if (value) {
     value = value.trim();
-    if (value.length > 0) {
+    if (value.length >= 2) {
       args = [];
-      value = value.replace("(", "").replace(")", "").trim();
+      // remove apenas o 1o e ultimo caracter que deveriam ser os parênteses
+      value = value.substring(1, value.length - 1).trim();
       if (value.length > 0) {
         let splited: string[];
         if (value.toLowerCase().indexOf("-a=") >= 0) {
@@ -330,6 +332,32 @@ function sendChangeTableSyncSetting(isTableSyncEnabled: boolean): void {
       .then((value: any) => {
         //let status = isTableSyncEnabled ? localize('tds.debug.tableSync.satus.enabled',"enabled") : localize('tds.debug.tableSync.satus.disabled',"disabled");
         //Utils.logMessage(localize('tds.debug.tableSync.satus',`Tables synchronism ${status}`) , MESSAGETYPE.Info, true);
+      })
+      .then(undefined, (err) => {
+        console.error(err.message);
+        Utils.logMessage(err.message, MESSAGETYPE.Error, true);
+      });
+  }
+}
+
+interface IExtendFeatures {
+  charDetails: boolean
+}
+
+function sendExtendFeatures(extendFeatures: IExtendFeatures): void {
+  if (debugSession === undefined) {
+    debugSession = debug.activeDebugSession;
+  }
+  if (debugSession !== undefined) {
+    const settingsArray = [
+      { key: "extendFeatures", value: extendFeatures },
+    ];
+    const arg = { settings: settingsArray };
+
+    debugSession
+      .customRequest("$changeSettings", arg)
+      .then((value: any) => {
+        Utils.logMessage("Extended debugging functionality changed", MESSAGETYPE.Info, true);
       })
       .then(undefined, (err) => {
         console.error(err.message);

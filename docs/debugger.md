@@ -29,7 +29,7 @@ O _appServer_ também envia para o VS-Code algumas informações, tais como, "ol
 
 Isso pode acontecer se tiver um, dez, cem, mil, usuários. Imagina o problema. Cresce exponencialmente ao número de usuários.>
 
-Outra razão, é que devido ao processo de depuração do _appServer_, normalmente é necessário que o processo de depuração seja o primeiro a ser inicializados, pois somente as _threads_ iniciadas após eles que serão passíveis de depuração e para garantir isso, é comum encerrar na "força" todas as _threds_ no ar, principalmente se a depuração for em _jobs_, _schedullers_, _rest_, e outros do tipo.
+Outra razão, é que devido ao processo de depuração do _appServer_, normalmente é necessário que o processo de depuração seja o primeiro a ser inicializados, pois somente as _threads_ iniciadas após eles que serão passíveis de depuração e para garantir isso, é comum encerrar na "força" todas as _threads_ no ar, principalmente se a depuração for em _jobs_, _schedulers_, _rest_, e outros do tipo.
 
 Espero ter esclarecido porquê não deve usar ambiente "produção" em processos de depuração.
 
@@ -37,7 +37,7 @@ Espero ter esclarecido porquê não deve usar ambiente "produção" em processos
 
 > Recomendamos a leitura [Debugging](https://code.visualstudio.com/docs/editor/debugging).
 
-Por utilizar o Smartclient para iniciar o processo de depuração no Application Server é necessário que o Sistema Operacional onde o tds-vscode está sendo executado, esteja na lista de plataformas homologadas paro o Smartclient conforme [Sistemas operacionais homologados - Smartclient](https://tdn.totvs.com/display/tec/SmartClient+-+Sistemas+operacionais).
+Por utilizar o SmartClient para iniciar o processo de depuração no Application Server é necessário que o Sistema Operacional onde o tds-vscode está sendo executado, esteja na lista de plataformas homologadas paro o SmartClient conforme [Sistemas operacionais homologados - SmartClient](https://tdn.totvs.com/display/tec/SmartClient+-+Sistemas+operacionais).
 
 ### Criando um executor com assistente
 

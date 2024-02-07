@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "2.0.2",
+  "version": "2.0.4",
   "publisher": "TOTVS",
   "preview": true,
   "author": {
@@ -22,7 +22,7 @@
     "logix"
   ],
   "engines": {
-    "vscode": "^1.63.1"
+    "vscode": "^1.73.0"
   },
   "icon": "icons/totvs-developer-studio.png",
   "categories": [
@@ -85,8 +85,8 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/data-grid": "4.0.0-alpha.2",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@totvs/tds-da": "^1.2.65",
-    "@totvs/tds-ls": "^2.0.9",
+    "@totvs/tds-da": "^1.2.68",
+    "@totvs/tds-ls": "^2.0.12",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.63.1",
     "@vscode/debugadapter": "^1.51.1",
@@ -530,6 +530,11 @@
           "type": "boolean",
           "default": false,
           "description": "%tds.package.compilation.commit%"
+        },
+        "totvsLanguageServer.compilation.tempDir": {
+          "type": "string",
+          "default": "",
+          "description": "%tds.package.compilation.tempDir%"
         },
         "totvsLanguageServer.web.navigator": {
           "type": "string",
@@ -1043,12 +1048,12 @@
         "when": "editorTextFocus"
       },
       {
-        "command": "totvs-developer-studio.build.openEditors",
+        "command": "totvs-developer-studio.rebuild.openEditors",
         "key": "ctrl+f10",
         "mac": "cmd+f10"
       },
       {
-        "command": "totvs-developer-studio.rebuild.openEditors",
+        "command": "totvs-developer-studio.build.openEditors",
         "key": "ctrl+shift+f10",
         "mac": "cmd+shift+f10"
       }
@@ -1173,6 +1178,17 @@
                 "type": "string",
                 "description": "%tds.package.properties.extraParameters.description%",
                 "default": ""
+              },
+              "extendFeatures": {
+                "type": "object",
+                "description": "%tds.package.debug.extend.features%",
+                "properties": {
+                  "charDetails": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "%tds.package.debug.extend.features.charDetails%"
+                  }
+                }
               }
             }
           }
@@ -1186,7 +1202,10 @@
             "cwb": "${workspaceFolder}",
             "smartclientBin": "../totvs/bin/smartclient/smartclient.exe",
             "isMultiSession": true,
-            "enableTableSync": true
+            "enableTableSync": true,
+            "extendFeatures": {
+              "charDetails": false
+            }
           }
         ],
         "variables": {
@@ -1205,7 +1224,10 @@
               "smartclientBin": "${2:../totvs/bin/smartclient/smartclient.exe}",
               "cwb": "^\"\\${workspaceFolder}\"",
               "isMultiSession": true,
-              "enableTableSync": true
+              "enableTableSync": true,
+              "extendFeatures": {
+                "charDetails": false
+              }
             }
           },
           {
@@ -1222,7 +1244,10 @@
               "smartclientBin": "${3:../totvs/bin/smartclient/smartclient.exe}",
               "cwb": "^\"\\${workspaceFolder}\"",
               "isMultiSession": true,
-              "enableTableSync": true
+              "enableTableSync": true,
+              "extendFeatures": {
+                "charDetails": false
+              }
             }
           }
         ]
@@ -1485,8 +1510,8 @@
       "explorer/context": [
         {
           "when": "explorerResourceIsFolder ",
-          "command": "totvs-developer-studio.build.workspace",
-          "alt": "totvs-developer-studio.rebuild.workspace",
+          "command": "totvs-developer-studio.rebuild.workspace",
+          "alt": "totvs-developer-studio.build.workspace",
           "group": "totvsBuild@1"
         },
         {
@@ -1495,8 +1520,8 @@
           "group": "totvsBuild@3"
         },
         {
-          "command": "totvs-developer-studio.build.openEditors",
-          "alt": "totvs-developer-studio.rebuild.openEditors",
+          "command": "totvs-developer-studio.rebuild.openEditors",
+          "alt": "totvs-developer-studio.build.openEditors",
           "group": "totvsBuild@4"
         },
         {
