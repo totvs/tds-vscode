@@ -113,16 +113,15 @@ Em alguns casos, pode ser interessante manter esse _cache_ entre sessões, ou se
 Para ajustar o comportamento acesse ``File > Preference > Settings``, filtre por ``totvsLanguageServer.editor`` e localize ``Totvs Language Server › Editor › Index: Cache``, configurando o comportamento:
 
 | Opção | Comportamento |
-| ----- | ------------- |
 | `off` | O _cache_  desligado. |
 | `onMemory` | O _cache_ ligado e em memória. |
 | `onDisk` | O _cache_ é armazenado em disco, para uso nas próximas sessões. |
 
-A opção ``off``, atuará somente nos fontes abertos para edição e o **DSS** terá  limitações em suas funcionalidades. A ``onMemory``, o _cache_ é mantido em memória, sendo recriado a cada nova sessão de uso do **VS-Code**, com o  **DSS** totalmente funcional, incluindo arquivos não abertos para edição. A opção ``onDisk``, persiste o _cache_ em disco, em diversos blocos (arquivos), procurando distribuir o custo de leitura/gravação (I/O) em disco e minimizando eventuais corrupções do _cache_.
+A opção ``off``, atuará somente nos fontes abertos para edição e o **DSS** terá  limitações em suas funcionalidades. A ``onMemory``, o _cache_ é mantido em memória, sendo recriado a cada nova sessão de uso do **VS-Code**, com o  **DSS** totalmente funcional, incluindo arquivos não abertos para edição. A opção ``onDisk``, persiste o _cache_ em disco, em diversos blocos (arquicos), procurando distribuit  o custo de leitura/gravação (I/O) em disco e minimizando eventuais corrupções do _cache_.
 
 > Devido ao escopo de atuação da opção ``off`` em relação as demais opções, os resultados das ações de navegações e de informação, podem variar para o mesmo fonte e elemento.
 
-## Ignorar pastas e arquivos
+## (#ignore)</a>Ignorar pastas e arquivos
 
 ### Definição
 
@@ -145,7 +144,7 @@ O uso do `.tdsindexignore` é similar aos usados em outras extensões/aplicativo
 | `@` | Expressão regular [`Perl`](https://perldoc.perl.org/perlre). |
 
 > A aplicação dos padrões de seleção não são sensíveis a caixa (maiúsculas e minúsculas).
-> Informe primeiro as regras mais restritivas.
+> Informe primeiro as regras mais restrivas.
 > Ao colocar o arquivo ``.tdsindexignore`` em uma pasta, este será aplicado na pasta onde foi criado e em suas sub-pastas.
 > Linhas em branco não tem efeito
 > Evite usar nomes acentuados.
@@ -189,7 +188,7 @@ root
 # A pasta ``test`` e suas sub-pastas serão ignoradas.
 test
 
-# Arquivos ``dbacess``, seguido de um caractere e em qualquer pasta será ignorado
+# Arquivos ``dbacess``, seguido de um caracter e em qualquer pasta será ignorado
 dbacess?.prw
 ```
 
@@ -205,7 +204,7 @@ dbacess?.prw
 ##### ``root/test/.tdsindexignore``
 
 ```text
-# Cria uma exceção a regra em ``root/.tdsindexignore``
+# Cria uma excessão a regra em ``root/.tdsindexignore``
 # Não ignora arquivos iniciados com ``test``
 !test*.prw
 ```
