@@ -109,11 +109,7 @@ vovê precisa ter uma chave chave de compilação (ou autorização).
 - Na visão de `Servers`, acione o menu de contexto e a opção `Include` ou acione `CTRL + SHIFT + P` e execute `TOTVS: Include`.
 - Informe a pasta (ou pastas) para a busca dos arquivos de definição, separadas por `;`
 
-A configuração efetuada via assistente será aplicado em todos os servidores e ambientes por padrão.
-
-![Configure Include](gifs/Include.gif)
-
-Para configurar por servidor, abra para edição o arquivo `%USERHOME%/.totvsls/servers.json` ou acione o menu de contexto e a opção `Configure Server View`.
+A configuração efetuada via assistente será aplicado em todos os servidores e ambientes por padrão. Para configurar por servidor, abra para edição o arquivo `%USERHOME%/.totvsls/servers.json` ou acione o menu de contexto e a opção `Configure Server View`.
 
 Localize a definição do servidor na sessão `configurations` e adicione/modifique a chave `"includes"`, com a lista de pastas a ser utilizada.
 
@@ -135,3 +131,5 @@ Localize a definição do servidor na sessão `configurations` e adicione/modifi
   ...
 }
 ```
+
+![Configure Include](gifs/Include.gif)

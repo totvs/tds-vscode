@@ -40,12 +40,12 @@ export function onCaptureLoggers(context: ExtensionContext) {
 				data += tab + vscode.l10n.t("Folders length:") + " " + work.length + newLine;
 				data += vscode.l10n.t("All Extensions:") + " \n";
 
-				//A gravação esta separada para diminuir o consumo de memoria.
+				//A gravacao esta separada para diminuir o consumo de memoria.
 				fs.appendFileSync(logFile, data, { flag: "a" }, (err) => {
 					console.log(err);
 				});
 
-				//A gravação esta separada para diminuir o consumo de memoria.
+				//A gravacao esta separada para diminuir o consumo de memoria.
 				vscode.extensions.all.forEach(element => {
 					if (!element.id.startsWith("vscode.") && !element.id.startsWith("ms-vscode.")) {
 						let version = tab + "ID: " + element.id + "\n";
@@ -60,7 +60,7 @@ export function onCaptureLoggers(context: ExtensionContext) {
 
 				let final = "--------------------------------------------------\n" + vscode.l10n.t("Ending log on ") + new Date().toString() + newLine;
 
-				//A gravação esta separada para diminuir o consumo de memoria.
+				//A gravacao esta separada para diminuir o consumo de memoria.
 				fs.appendFileSync(logFile, final, { flag: "a" }, (err) => {
 					console.log(err);
 				});
