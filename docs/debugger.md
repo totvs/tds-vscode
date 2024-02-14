@@ -6,13 +6,13 @@
 - usuário autenticado (se requerido)
 - executor configurado
 
-> Recomenda-se que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em mínusculas de forma a manter a compatibildade entre os diversos sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes.
+> Recomenda-se que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em mínusculas de forma a manter a compatibilidade entre os diversos sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes.
 > Leia [Convenção para nomenclatura de File System em ambiente Linux]<https://tdn.totvs.com/x/h8BICw>).
 >
 > Recomendações
 >
 > - **NUNCA** faça depuração em ambiente de produção.
-> - **NÃO** utilize o _SIGAMDI_ nem o_SIGAADV_ para realizar uma depuraração, utilize diretamente os módulos.
+> - **NÃO** utilize o _SIGAMDI_ nem o _SIGAADV_ para realizar uma depuração, utilize diretamente os módulos.
 > - Não use _appServers_ compartilhado com terceiros, mesmo que ambientes distintos.
 > - Prefira sempre um ambiente local durante a depuração.
 > - **Clientes TCloud**: Os ambientes que estão no _TCloud_ em produção são _bloqueados_, por padrão, para depuração.
@@ -174,7 +174,7 @@ O sincronismo de tabelas pode ser alterado por configuração no executor, usand
 
 ![Debug Table Sync](./gifs/TableSync-EnableTableSyncProperty.gif)
 
-Também é possível alterar essa opção durante o processo de depuração acionando o atalho `CTRL + SHOFT + P`, executando `TOTVS: Toggle table sync`. Note que ao usar esse comando, o parâmetro do executor é alterado, portanto na próxima depuração irá utilizar essa definição.
+Também é possível alterar essa opção durante o processo de depuração acionando o atalho `CTRL + SHIFT + P`, executando `TOTVS: Toggle table sync`. Note que ao usar esse comando, o parâmetro do executor é alterado, portanto na próxima depuração irá utilizar essa definição.
 
 ![Debug Table Sync](./gifs/TableSync-CommandToggleTableSync.gif)
 
@@ -205,7 +205,7 @@ O restante será basicamente o mesmo, respeitando os pontos de paradas e exibind
 1. Localize a definição de executor que será utilizada e adicione a chave `"enableMultiThread": true`.
 1. Crie um arquivo-fonte e adicione o código abaixo, adequando-o se necessário.
 
-```
+```ADVPL
 user function startRest()
   //O nome do job REST e ambiente de execução dele, podem ser obtidos no arquivo
   //de configuração do _appServer_.
@@ -244,26 +244,59 @@ return
 1. Localize a definição de executor que será utilizada e adicione a chave `"enableMultiThread": true`.
 1. Quando a depuração parar no ponto de parada, prossiga com a depuração normalmente.
 
-## Depuração com variáveis do tipo _string_
+## Funcionalidades estendidas de depuração
 
-variáveis do tipo _string_, podem conter dados nos formatos CP1252/CP1251 ou UTF8, que podem ser diferenciadas pelo prefixo ``UTF8`` em seus valores nas visões ``Variables`` e ``Watchs`` e ao passar o mouse sobre a variável.
+Por padrão, as funcionalidades estendidas estão desligadas. Para ligá-las, adicionar na configuração do lançador de depuração a chave ``extend.Features``, ligando as funcionalidades que deseja ativar.
+
+Algo semelhante a:
+
+```ADVPL
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "totvs_language_debug",
+			"request": "launch",
+
+      ...
+
+      "extendFeatures": {
+				"charDetails": true
+			}
+		}
+	],
+
+...
+
+}
+```
+
+### Funcionalidade estendida: ``charDetails``
+
+Quando desligada (padrão) a depuração de tipos ``char`` (_string_), não apresenta alteração e e ativada, passa a apresentar detalhes sobre a variável/campo, mudando a forma de visualização.
+
+| Desligada | Ligada |
+| --------- | ------ |
+| ![CharDetails desligada](./images/char-details-false.png) | ![CharDetails ligada](./images/char-details-true.png) |
+
+Variáveis do tipo _string_ (_character_), podem conter dados nos formatos CP1252/CP1251 ou UTF8, que podem ser diferenciadas pelo prefixo ``UTF8`` em seus valores nas visões ``Variables`` e ``Watches`` e ao passar o mouse sobre a variável.
 
 ![Variables](./images/debugger-variables.png)
 
-Na imagem acima, ``\<variável>`` esta com conteúdo CP1252 (padrão AdvPL) e ``\<variável>2``, o conteúdo é UTF8.
-Ao expandir a ``\<variável>``, você obterá maiores detalhes.
+Na imagem acima, ``<variável>`` esta com conteúdo CP1252 (padrão AdvPL) e ``<variável2>``, o conteúdo é UTF8.
+Ao expandir a ``<variável>``, você obterá mais detalhes.
 
-![Variables: expanded](./images/debugger-variables-expanded.png.png)
+![Variables: expanded](./images/debugger-variables-expanded.png)
 
 Onde:
 
 | | |
 | - | - |
-| ``Raw`` | É o dado bruto (como armazenado). |
-| ``Length`` | É o tamanho da string do dado bruto. |
-|    | Sequencia byte a byte da string apresentando caractere ASCII e seu código decimal. |
+| ``Raw`` | É o dado bruto (como armazenado na memória do Protheus). |
+| ``Length`` | É o tamanho da _string_ do dado bruto. |
+| ``<variável> (ASCII)``   | Sequencia _byte_ a _byte_ da _string,_ apresentando o caractere ASCII, seu código em hexadecimal e seu código decimal. |
 
-Ao utilizar o _console de debug (REPL)_ para entrada de expressões esta será tratada para apresentar da mesma forma.
+Ao utilizar o _console de debug (REPL)_ para entrada de expressões, esta será tratada para apresentar da mesma forma.
 Lembre-se que o padrão é CP1252/CP1251.
 
 ![REPL](./images/debug-repl1.png)
@@ -273,7 +306,7 @@ Caso queira informar conteúdo em UTF-8, deverá usar a função ``encodeUTF8``.
 
 ![REPL](./images/debug-repl3.png)
 
-Ao comparar variáveis com conteúdo em formato diferente, sempre resultará em ``.F.`` (veja a sequencia de bytes).
+Ao comparar variáveis com conteúdo em formato diferente, sempre resultará em ``.F.`` (veja a sequencia de _bytes_).
 
 ![REPL](./images/debug-repl4.png)
 
