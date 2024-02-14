@@ -3,10 +3,9 @@ import TdsPage from "../components/page";
 import React from "react";
 import { FormProvider, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandFromPanelEnum, ReceiveMessage, sendSaveAndClose } from "../utilities/common-command-webview";
-import { TdsCheckBoxField, TdsForm, TdsLabelField, TdsSelectionFileField, TdsSelectionFolderField, TdsSimpleCheckBoxField, TdsSimpleTextField, TdsTextField, setDataModel, setErrorModel } from "../components/form";
+import { TdsForm, TdsLabelField, TdsSelectionFileField, TdsSimpleCheckBoxField, TdsSimpleTextField, TdsTextField, setDataModel, setErrorModel } from "../components/form";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
 import { TPatchFileData } from "../model/applyPatchModel";
-import { onCaptureLoggers } from './../../../src/loggerCapture/logger';
 
 enum ReceiveCommandEnum {
 }
