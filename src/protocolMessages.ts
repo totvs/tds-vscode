@@ -980,3 +980,102 @@ export function sendValidKey(id: string, issued: string, expiry: string, canOver
     );
 
 }
+
+export interface IPatchApplyResult {
+  file: vscode.Uri;
+  message: string;
+  errorCode: number;
+  language: string;
+  tphInfoRet: {};
+}
+
+export enum PathErrorCodes {
+  Unknown = -1,
+  Ok = 0,
+  ReturnUndefined = 1,
+  InvalidReturn = 2,
+  InsufficientPrivileges = 3,
+  GenericError = 4,
+  OldResources = 5,
+  EmptyEmpFilList = 6, // deprecated
+  ApplyDenied = 7,
+  NewerPatches = 8
+}
+
+export function sendValidatePatchRequest(
+  server: any,
+  patchUri: vscode.Uri
+): Thenable<IPatchApplyResult> {
+  return languageClient
+    .sendRequest("$totvsserver/patchApply", {
+      patchApplyInfo: {
+        connectionToken: server.token,
+        authorizationToken: ServersConfig.getAuthorizationToken(server),
+        environment: server.environment,
+        patchUri: patchUri.toString(),
+        isLocal: true,
+        isValidOnly: true,
+        applyScope: "none",
+      },
+    })
+    .then(
+      (response: any) => {
+        var patchFilePath = patchUri.fsPath;
+        var retMessage = vscode.l10n.t("No validation errors");
+        var tphInfoRet = { exp: undefined, ptm: undefined };
+
+        if (patchFilePath.startsWith("/") && patchFilePath.length > 2 && patchFilePath.at(2) === ':') {
+          // se formato for windows /d:/totvs/patch/12.1.2210/expedicao_continua_12_1_2210_atf_tttm120_hp.ptm
+          // remove a / inicial
+          patchFilePath = patchFilePath.substring(1);
+        }
+
+        if (response.error) {
+          retMessage = response.message
+          if (response.errorCode != 5 && response.errorCode != 7 && response.errorCode != 8) {
+            // ignore errorCode for apply_old, apply_denied and newer_patches
+            languageClient.error(retMessage);
+            //vscode.window.showErrorMessage(retMessage);
+          }
+          if (response.errorCode == 5) { // Erro de patch com resources mais antigos que o do RPO
+            // exibir os recursos mais antigos
+          }
+          if (response.errorCode == 8) { // Erro de TPH apenas ocorre se existem patches mais recentes que o validado
+            // exibir mensagens e links para patches mais recentes
+            retMessage = "check tphInfoRet";
+            const tphInfo: any = JSON.parse(response.message);
+            const recommendedPatches = tphInfo.recommended;
+            if (recommendedPatches) {
+              if (recommendedPatches.exp) {
+                // exp
+                tphInfoRet.exp = recommendedPatches.exp;
+              }
+              if (recommendedPatches.ptm) {
+                // ptm
+                tphInfoRet.ptm = recommendedPatches.ptm;
+              }
+            }
+          }
+        }
+
+        return {
+          file: patchUri,
+          message: retMessage,
+          errorCode: response.errorCode,
+          language: vscode.env.language,
+          tphInfoRet: tphInfoRet,
+        };
+      },
+      (err: ResponseError<object>) => {
+        vscode.window.showErrorMessage(err.message);
+        return {
+          file: patchUri,
+          message: err.message,
+          errorCode: PathErrorCodes.Unknown,
+          language: vscode.env.language,
+          tphInfoRet: {}
+        };
+      }
+    );
+}
+

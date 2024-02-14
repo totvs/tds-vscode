@@ -13,19 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-// import * as vscode from 'vscode';
-// import * as path from 'path';
-// import { GeneratePatchPanelAction, IGeneratePatchPanelAction } from './actions';
-// import { ServersConfig } from '../../utils';
-// import {
-//   IGeneratePatchData,
-//   IServerFS,
-//   PatchProcess,
-// } from './generatePatchData';
-// import { IGetPatchDirResult, sendGetPatchDir } from '../../protocolMessages';
-// import { sendPatchGenerateMessage } from '../patchUtil';
-// import { ServerItem } from '../../serverItem';
-
 import * as vscode from "vscode";
 import { getCspSource, getWebviewContent } from "./utilities/webview-utils";
 

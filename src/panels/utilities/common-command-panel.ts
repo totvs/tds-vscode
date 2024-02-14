@@ -1,8 +1,6 @@
 export enum CommonCommandFromWebViewEnum {
 	AfterSelectResource = "AFTER_SELECT_RESOURCE",
 	Close = "CLOSE",
-	IncludeTRes = "INCLUDE_TRES",
-	MoveElements = "MOVE_ELEMENTS",
 	Ready = "READY",
 	Reset = "RESET",
 	Save = "SAVE",

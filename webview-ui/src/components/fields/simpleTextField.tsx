@@ -3,9 +3,7 @@ import { useController, useFormContext } from "react-hook-form";
 import PopupMessage from "../popup-message";
 import { TdsFieldProps } from "../form";
 
-type TdsSimpleTextFieldProps = Omit<TdsFieldProps, "label"> & {
-	//onChange?: (event: ChangeEvent<HTMLInputElement>) => any;
-}
+type TdsSimpleTextFieldProps = Omit<TdsFieldProps, "label">;
 
 /**
  *

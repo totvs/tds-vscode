@@ -123,7 +123,6 @@ export default function CompileKeyView() {
 
               <TdsSelectionFileField
                 title={"Arquivo de Chave de Compilação"}
-                canSelectFiles={true}
                 filters={
                   {
                     "Compile Key File": ["AUT"]

@@ -79,8 +79,7 @@ export default function GenerateWsView() {
                 info={"Selecione o arquivo com a definição do serviço"}
                 title={"Arquivo com a definição WSDL"}
                 filters={{
-                  "WSDL Files": ["wsdl"],
-                  "All Files": ["*"]
+                  "WSDL Files": ["wsdl"]
                 }} />
             </section>
 

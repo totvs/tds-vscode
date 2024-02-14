@@ -1,0 +1,11 @@
+[name^="patchFiles."] {
+	border: 0px;
+}
+
+[name^="patchFiles,"][name$="name"] {
+	width: 20rem;
+}
+
+[name^="patchFiles,"][name$="path"] {
+	width: 30rem;
+}

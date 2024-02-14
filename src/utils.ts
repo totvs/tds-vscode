@@ -10,6 +10,7 @@ import {
   IGetServerInformationsResult,
   IGetServerPermissionsResult,
   LanguageServerErrorCodes,
+  PathErrorCodes,
   ServerExceptionCodes,
   sendGetServerInformationInfo,
   sendGetServerPermissionsInfo,
@@ -1693,6 +1694,33 @@ export function serverExceptionCodeToString(codeError: number): string {
       break;
     default:
       message = `<unknown code ${codeError}>`;
+  }
+
+  return message;
+}
+
+export function pathErrorCodeToString(codeError: number, _default: string): string {
+  let message: string = "";
+
+  switch (codeError) {
+    case PathErrorCodes.ReturnUndefined:
+      message = "Undefined error. Check AppServer logs for more details.";
+
+      break;
+    case PathErrorCodes.OldResources:
+      message = "Resources in patch older than RPO. Check Output for details.";
+
+      break;
+    case PathErrorCodes.ApplyDenied:
+      message = "Patch apply denied. Check Output for details.";
+
+      break;
+    case PathErrorCodes.NewerPatches:
+      message = "Newer patches available. Check Output for details.";
+
+      break;
+    default:
+      message = `${codeError} ${_default}`;
   }
 
   return message;

@@ -20,13 +20,13 @@ import { ServersConfig, serverExceptionCodeToString } from "../utils";
 import { CommonCommandFromWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
 import { IObjectData, IPatchResult, sendInspectorObjectsRequest, sendPatchGenerateMessage } from "../protocolMessages";
 import { TFieldErrors, TdsPanel, isErrors } from "../model/field-model";
-import { _debugEvent } from "../debug";
 import { TGeneratePatchModel } from "../model/generatePatchModel";
 import { TInspectorObject } from "../patch/patchUtil";
 import { ResponseError } from "vscode-languageclient";
-import { object } from "prop-types";
 
 enum PatchGenerateCommandEnum {
+  IncludeTRes = "INCLUDE_TRES",
+  MoveElements = "MOVE_ELEMENTS",
 }
 
 type PatchGenerateCommand = CommonCommandFromWebViewEnum & PatchGenerateCommandEnum;
@@ -127,7 +127,7 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
         }
 
         break;
-      case CommonCommandFromWebViewEnum.IncludeTRes:
+      case PatchGenerateCommandEnum.IncludeTRes:
         vscode.window.withProgress(
           {
             location: vscode.ProgressLocation.Window,
@@ -145,7 +145,7 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
         );
 
         break;
-      case CommonCommandFromWebViewEnum.MoveElements:
+      case PatchGenerateCommandEnum.MoveElements:
         const selectedObject: TInspectorObject[] = data.selectedObject;
         const direction: string = data.direction;
 

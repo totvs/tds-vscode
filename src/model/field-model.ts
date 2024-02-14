@@ -40,8 +40,6 @@ export type TSendSelectResourceProps = TModelPanel & {
 	title: string,
 	openLabel: string,
 	filters: {
-		//"All Files": ["*"],
-		//"JSON": ["json"],
 		[key: string]: string[]
 	}
 }
@@ -166,6 +164,11 @@ export abstract class TdsPanel<M extends TModelPanel> {
 				break;
 			case CommonCommandFromWebViewEnum.SelectResource:
 				const selectionProps: TSendSelectResourceProps = data as unknown as TSendSelectResourceProps;
+				let filters = selectionProps.filters || {};
+
+				if (!filters["All files"]) {
+					filters["All files"] = ["*"];
+				}
 
 				const options: vscode.OpenDialogOptions = {
 					canSelectMany: selectionProps.canSelectMany,
@@ -174,9 +177,7 @@ export abstract class TdsPanel<M extends TModelPanel> {
 					defaultUri: vscode.Uri.file(selectionProps.currentFolder),
 					title: selectionProps.title,
 					openLabel: selectionProps.openLabel,
-					filters: selectionProps.filters || {
-						"All Files": ["*"]
-					}
+					filters: filters
 				};
 
 				result = await vscode.window.showOpenDialog(options).then((fileUri) => {

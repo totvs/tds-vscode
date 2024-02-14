@@ -54,7 +54,6 @@ import { initStatusBarItems } from "./statusBar";
 // @@ import { PatchEditorProvider } from "./patch/inspect/patchEditor";
 import { openTemplateApplyView } from "./template/apply/formApplyTemplate";
 import { rpoTokenQuickPick, rpoTokenInputBox, saveRpoTokenString, setEnabledRpoToken } from "./rpoToken";
-import { patchApply } from "./patch/patchApply";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import { commandShowBuildTableResult } from "./compile/buildResult";
 import { ServerItem } from "./serverItem";
@@ -68,7 +67,8 @@ import { GlobalIncludePanel } from "./panels/globalIncludePanel";
 import { GenerateWebServicePanel } from "./panels/generateWSPanel";
 import { PatchGeneratePanel } from "./panels/patchGeneratePanel";
 import { patchGenerateFromFolder } from "./patch/patchUtil";
-import { CompileKeyPanel } from "./panels/compileKey/compileKeyPanel";
+import { CompileKeyPanel } from "./panels/compileKeyPanel";
+import { ApplyPatchPanel } from "./panels/patchApplyPanel";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -337,7 +337,6 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-
   context.subscriptions.push(
     commands.registerCommand(
       "tdsreplay.importSourcesOnlyResult",
@@ -349,22 +348,22 @@ export function activate(context: ExtensionContext) {
 
   //Aplica um pacote de atualização (patch).
   context.subscriptions.push(
-    vscode.commands.registerCommand("totvs-developer-studio.patchApply", () => {
-      vscode.window.setStatusBarMessage(
-        `$(gear~spin) ${vscode.l10n.t("Starting patch application...")}`,
-        Promise.resolve(patchApply(context, false))
-      );
-    })
+    vscode.commands.registerCommand("totvs-developer-studio.patchApply",
+      () => {
+        if (checkServer() && !checkDebug()) {
+          ApplyPatchPanel.render(context);
+        }
+      }
+    )
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "totvs-developer-studio.patchApply.fromFile",
       (args: any) => {
-        vscode.window.setStatusBarMessage(
-          `$(gear~spin) ${vscode.l10n.t("Starting patch application...")}`,
-          Promise.resolve(patchApply(context, true, args))
-        );
+        if (checkServer() && !checkDebug()) {
+          ApplyPatchPanel.render(context, args);
+        }
       }
     )
   );
@@ -760,12 +759,13 @@ export function canDebug(): boolean {
 }
 
 function checkServer(silent: boolean = false): boolean {
-  const server = ServersConfig.getCurrentServer();
+  let server = ServersConfig.getCurrentServer();
 
-  if (!server && !silent) {
+  if ((server == "") && !silent) {
     vscode.window.showErrorMessage(
       vscode.l10n.t("There is no server connected.")
     );
+    server = undefined;
   }
 
   return server != undefined;

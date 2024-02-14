@@ -51,6 +51,16 @@
 	width: 100%;
 }
 
+/*
+revisar
+:host([readonly]) {
+	input.control {
+		text-overflow: ellipsis;
+		background-color: blue;
+	}
+}
+*/
+
 .tds-field-container vscode-button {
 	width: 120px;
 }
@@ -112,6 +122,26 @@ span.tds-required::after {
 	color: var(--vscode-editorError-foreground);
 }
 
+
+vscode-data-grid-row {
+	/* margin: 0px 1rem 1rem 0px;
+	padding: 0px; */
+}
+
+vscode-data-grid-cell {
+	margin: 0px;
+	padding: 0px;
+	padding-left: calc(var(--design-unit) * 3px);
+}
+
+vscode-data-grid-row:hover {
+	background-color: transparent;
+}
+
+.tds-progress-ring {
+	display: inline;
+}
+
 /*
 
 .tds-no-margin {
@@ -171,9 +201,6 @@ span.tds-required::after {
 	width: 100%;
 }
 
-vscode-data-grid-row:hover {
-	background-color: transparent;
-}
 
 .tds-hidden {
 	visibility: hidden;

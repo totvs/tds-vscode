@@ -1,4 +1,4 @@
-import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
+import { VSCodeButton, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
 import { useController, useFormContext } from "react-hook-form";
 import PopupMessage from "../popup-message";
 import { TdsFieldProps } from "../form";
@@ -38,7 +38,6 @@ export function TdsSelectionResourceField(props: TdsSelectionResourceFieldProps)
 		getValues
 	} = useFormContext();
 	const { fieldState } = useController(props);
-
 	const registerField = register(props.name, props.rules);
 
 	return (
@@ -126,6 +125,7 @@ export function TdsSelectionFolderField(props: Partial<TdsSelectionFolderFieldPr
  * @returns
  */
 export function TdsSelectionFileField(props: Partial<TdsSelectionFileFieldProps>): JSX.Element {
+	const filters = props.filters ? props.filters : {};
 
 	return (<TdsSelectionResourceField
 		name={props.name || "btnSelectionFile"}
@@ -135,6 +135,6 @@ export function TdsSelectionFileField(props: Partial<TdsSelectionFileFieldProps>
 		canSelectMany={props.canSelectMany || false}
 		currentFolder={props.currentFolder || ""}
 		openLabel={props.openLabel || "Select File"}
-		filters={props.filters || {}}
+		filters={filters || {}}
 	/>)
 }
