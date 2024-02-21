@@ -6,5 +6,6 @@ export type TPatchFileData = {
 	validation: string;
 	tphInfo: any;
 	isProcessing: boolean;
+	fsPath: string;
 };
 

@@ -6,6 +6,8 @@ import { CommonCommandFromPanelEnum, ReceiveMessage, sendSaveAndClose } from "..
 import { TdsForm, TdsLabelField, TdsSelectionFileField, TdsSimpleCheckBoxField, TdsSimpleTextField, TdsTextField, setDataModel, setErrorModel } from "../components/form";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
 import { TPatchFileData } from "../model/applyPatchModel";
+import { TIncludeData } from "../model/addServerModel";
+import { sendGetInfo } from "./sendCommand";
 
 enum ReceiveCommandEnum {
 }
@@ -24,7 +26,8 @@ const EMPTY_PATCH_FILE: TPatchFileData = {
   uri: undefined,
   validation: "",
   tphInfo: {},
-  isProcessing: false
+  isProcessing: false,
+  fsPath: ""
 }
 
 const ROWS_LIMIT: number = 5;
@@ -67,6 +70,8 @@ export default function ApplyPatchView() {
             model.patchFiles.push(EMPTY_PATCH_FILE);
           }
 
+          console.dir(model)
+
           setDataModel<TFields>(methods.setValue, model);
           setErrorModel(methods.setError, errors);
 
@@ -89,12 +94,12 @@ export default function ApplyPatchView() {
   }
 
   function infoPatchFile(index: number) {
-    remove(index);
-    //insert(index, { path: "" });
+    sendGetInfo(methods.getValues(), index);
   }
 
   const model: TFields = methods.getValues();
   const indexFirstPathFree: number = model.patchFiles.findIndex((row: TPatchFileData) => row.uri == undefined);
+  const isProcessing: boolean = model.patchFiles.filter((row: TPatchFileData) => row.isProcessing).length > 0;
 
   return (
     <main>
@@ -132,22 +137,33 @@ export default function ApplyPatchView() {
             />
 
             <section className="tds-row-container" >
-              <VSCodeDataGrid id="patchGrid" grid-template-columns="30px 30px 15rem 20rem">
+              <VSCodeDataGrid id="patchGrid" grid-template-columns="30px 60px 15rem 20rem">
                 {model && model.patchFiles.map((row: TPatchFileData, index: number) => (
                   <VSCodeDataGridRow key={index}>
                     {row.uri !== undefined &&
                       <>
                         <VSCodeDataGridCell grid-column="1">
-                          <VSCodeButton appearance="icon"
-                            onClick={() => removePatchFile(index)} >
-                            <span className="codicon codicon-close"></span>
-                          </VSCodeButton>
+                          {row.isProcessing ?
+                            <VSCodeProgressRing className="tds-progress-ring" />
+                            :
+                            <VSCodeButton appearance="icon"
+                              onClick={() => removePatchFile(index)} >
+                              <span className="codicon codicon-close"></span>
+                            </VSCodeButton>
+                          }
                         </VSCodeDataGridCell>
                         <VSCodeDataGridCell grid-column="2">
-                          <VSCodeButton appearance="icon"
-                            onClick={() => infoPatchFile(index)} >
-                            <span className="codicon codicon-info"></span>
-                          </VSCodeButton>
+                          {!row.isProcessing &&
+                            <VSCodeButton appearance="icon"
+                              onClick={() => infoPatchFile(index)} >
+                              <span className="codicon codicon-info"></span>
+                            </VSCodeButton>
+                          }
+                          {row.validation == "OK" &&
+                            <VSCodeButton appearance="icon" >
+                              <span className="codicon codicon-check"></span>
+                            </VSCodeButton>
+                          }
                         </VSCodeDataGridCell>
                         <VSCodeDataGridCell grid-column="3">
                           <TdsSimpleTextField
@@ -158,7 +174,7 @@ export default function ApplyPatchView() {
                         </VSCodeDataGridCell>
                         <VSCodeDataGridCell grid-column="4">
                           <TdsSimpleTextField
-                            name={`patchFiles.${index}.uri.fsPath`}
+                            name={`patchFiles.${index}.fsPath`}
                             readOnly={true}
                             info={row.uri.fsPath}
                           />
@@ -178,12 +194,10 @@ export default function ApplyPatchView() {
                     {(index === indexFirstPathFree) &&
                       <>
                         <VSCodeDataGridCell grid-column="1">
-                          {row.isProcessing &&
-                            <VSCodeProgressRing className="tds-progress-ring" />
-                          }
+                          &nbsp;
                         </VSCodeDataGridCell>
                         <VSCodeDataGridCell grid-column="2">
-                        <TdsSelectionFileField
+                          <TdsSelectionFileField
                             name={`btnSelectFile.${index}`}
                             canSelectMany={true}
                             title={"Selecione o(s) pacote(s) de atualização"}
@@ -192,6 +206,7 @@ export default function ApplyPatchView() {
                                 "Patch file": ["PTM", "ZIP", "UPD"]
                               }
                             }
+                            readOnly={isProcessing}
                           />
                         </VSCodeDataGridCell>
                       </>
@@ -199,10 +214,6 @@ export default function ApplyPatchView() {
                   </VSCodeDataGridRow>
                 ))}
               </VSCodeDataGrid>
-              <div id="patchInfo" className="tds-field-container">
-                Painel de informação
-
-              </div>
             </section>
 
             <TdsSimpleCheckBoxField

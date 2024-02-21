@@ -1006,6 +1006,15 @@ export function sendValidatePatchRequest(
   server: any,
   patchUri: vscode.Uri
 ): Thenable<IPatchApplyResult> {
+  return sendApplyPatchRequest(server, patchUri, true, "none");
+}
+
+export function sendApplyPatchRequest(
+  server: any,
+  patchUri: vscode.Uri,
+  validOnly: boolean = false,
+  applyScope: string = "only_new"
+): Thenable<IPatchApplyResult> {
   return languageClient
     .sendRequest("$totvsserver/patchApply", {
       patchApplyInfo: {
@@ -1014,8 +1023,8 @@ export function sendValidatePatchRequest(
         environment: server.environment,
         patchUri: patchUri.toString(),
         isLocal: true,
-        isValidOnly: true,
-        applyScope: "none",
+        isValidOnly: validOnly,
+        applyScope: applyScope
       },
     })
     .then(
@@ -1078,4 +1087,3 @@ export function sendValidatePatchRequest(
       }
     );
 }
-

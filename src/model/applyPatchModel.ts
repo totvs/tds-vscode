@@ -7,6 +7,8 @@ export type TPatchFileData = {
 	uri: vscode.Uri;
 	validation: string;
 	tphInfo: any;
+	isProcessing: boolean;
+	fsPath: string;
 };
 
 export type TApplyPatchModel = TModelPanel & {

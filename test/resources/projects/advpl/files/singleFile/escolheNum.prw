@@ -1,11 +1,14 @@
 #include "protheus.ch"
 
 user function escolheNum(replay, replayPath, numbers)
+	default numbers := "12345"
+
 	local cOpcao := ""
 	local n, cResp := "xxxxx", cMsg := ""
 	local aOpcoes := {}
 	private ondeEstou := "escolheNum"
 	public aPublic := {}
+
 
 	if replay != nil .and. lower(replay) == "true"
 		if replay != nil .and. lower(replay) == "true"

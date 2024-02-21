@@ -16,9 +16,9 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import { ServersConfig, pathErrorCodeToString, serverExceptionCodeToString } from "../utils";
+import { ServersConfig, pathErrorCodeToString } from "../utils";
 import { CommonCommandFromWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
-import { IPatchApplyResult, IPatchResult, PathErrorCodes, sendValidatePatchRequest } from "../protocolMessages";
+import { IPatchApplyResult, PathErrorCodes, sendApplyPatchRequest, sendValidatePatchRequest } from "../protocolMessages";
 import { TFieldErrors, TdsPanel, isErrors } from "../model/field-model";
 import { TApplyPatchModel, TPatchFileData } from "../model/applyPatchModel";
 import { ServerItem } from "../serverItem";
@@ -26,7 +26,8 @@ import * as path from "path";
 import * as fse from "fs-extra";
 
 enum ApplyPatchCommandEnum {
-  PATCH_VALIDATE = "PATCH_VALIDATE"
+  PATCH_VALIDATE = "PATCH_VALIDATE",
+  GET_INFO_PATCH = "GET_INFO_PATCH"
 }
 
 type ApplyPatchCommand = CommonCommandFromWebViewEnum & ApplyPatchCommandEnum;
@@ -149,63 +150,126 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
             .filter((patchFile: TPatchFileData) => patchFile.uri);
           const errors: TFieldErrors<TPatchFileData> = {};
 
-          const processSelectedFile = async (selectedFile: vscode.Uri) => {
-            const alreadyExist: boolean = patchFiles.findIndex((patchFile: TPatchFileData) => patchFile.uri.path == selectedFile.path) > -1;
+          for await (const file of result) {
+            const alreadyExist: boolean = patchFiles.findIndex((patchFile: TPatchFileData) => patchFile.uri.path == file.path) > -1;
             const index: number = patchFiles.push(
               {
-                uri: selectedFile,
-                name: path.basename(selectedFile.path),
+                uri: file,
+                name: path.basename(file.path),
                 validation: "",
-                tphInfo: {}
+                tphInfo: {},
+                isProcessing: true,
+                fsPath: file.fsPath
               }
             ) - 1;
 
             if (alreadyExist) {
               errors[`patchFiles.${[index]}.name`] = { type: "validade", message: "Patch already informed" };
-            } else {
-              let server = ServersConfig.getCurrentServer();
-              await this.doValidatePatch(server, patchFiles[index], index, errors);
             }
-          };
-
-          for await (const file of result) {
-            await processSelectedFile(file);
           }
 
           data.model.patchFiles = patchFiles;
+          this.sendUpdateModel(data.model, errors);
+
+          let i: number = 0
+          for await (const file of data.model.patchFiles) {
+            if (data.model.patchFiles[i].isProcessing) {
+              let server = ServersConfig.getCurrentServer();
+
+              await this.doValidatePatch(server, data.model.patchFiles[i], i, errors);
+
+              data.model.patchFiles[i].isProcessing = false;
+            }
+
+            i++;
+          }
 
           this.sendUpdateModel(data.model, errors);
         }
 
         break;
 
+      case ApplyPatchCommandEnum.GET_INFO_PATCH:
+        {
+          const errors: TFieldErrors<TPatchFileData> = {};
+          data.model.patchFiles = data.model.patchFiles
+            .filter((patchFile: TPatchFileData) => patchFile.uri);
+          const selectedPatch: number = data.selectedPatch;
+
+          data.model.patchFiles[selectedPatch].isProcessing = true;
+          this.sendUpdateModel(data.model, errors);
+
+          await vscode.commands.executeCommand(
+            "totvs-developer-studio.patchInfos.fromFile",
+            {
+              fsPath: data.model.patchFiles[selectedPatch].fsPath,
+            });
+
+          data.model.patchFiles[selectedPatch].isProcessing = false;
+          this.sendUpdateModel(data.model, errors);
+
+          break;
+        }
       case ApplyPatchCommandEnum.PATCH_VALIDATE:
-        const errors: TFieldErrors<TPatchFileData> = {};
-        const patchFiles: TPatchFileData[] = data.model.patchFiles
-          .filter((patchFile: TPatchFileData) => patchFile.uri);
+        {
+          const errors: TFieldErrors<TPatchFileData> = {};
+          const patchFiles: TPatchFileData[] = data.model.patchFiles
+            .filter((patchFile: TPatchFileData) => patchFile.uri);
 
-        this.validateModel(data.model, errors);
-        this.sendUpdateModel(data.model, errors);
+          this.validateModel(data.model, errors);
+          this.sendUpdateModel(data.model, errors);
 
-        break;
-
+          break;
+        }
     }
   }
 
   protected async validateModel(model: TApplyPatchModel, errors: TFieldErrors<TApplyPatchModel>): Promise<boolean> {
-    try {
-      if (model.patchFiles.length == 0) {
-        errors.root = { type: "validate", message: "Ao menos um pacote deve ser informado" }
-      }
-    } catch (error) {
-      errors.root = { type: "validate", message: `Internal error: ${error}` }
+    if (model.patchFiles.length == 0) {
+      errors.root = { type: "validate", message: "Ao menos um pacote deve ser informado" }
+    } else {
+      vscode.window.withProgress(
+        {
+          cancellable: false,
+          location: vscode.ProgressLocation.Notification,
+          title: vscode.l10n.t(`Validating patch`),
+        },
+        async (progress, token) => {
+          const server: ServerItem = ServersConfig.getCurrentServer();
+          let step: number = 100 / (model.patchFiles.length + 1);
+          let index: number = 0;
+
+          progress.report({ increment: step / 2 });
+
+          for await (const element of model.patchFiles) {
+            progress.report({
+              increment: step,
+              message: `(${index + 1}/${model.patchFiles.length}) ${element.name}`,
+            });
+
+            await this.doValidatePatch(server, element, index, errors);
+
+            if (!isErrors(errors) || token.isCancellationRequested) {
+              break;
+            }
+
+            index++;
+          }
+        }
+      );
     }
+
+    return !isErrors(errors);
+  }
+
+  protected async saveModel(model: TApplyPatchModel): Promise<boolean> {
+    let errors: TFieldErrors<TApplyPatchModel>;
 
     vscode.window.withProgress(
       {
         cancellable: false,
         location: vscode.ProgressLocation.Notification,
-        title: vscode.l10n.t(`Validating patch`),
+        title: vscode.l10n.t(`Applying patch`),
       },
       async (progress, token) => {
         const server: ServerItem = ServersConfig.getCurrentServer();
@@ -215,67 +279,30 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
         progress.report({ increment: step / 2 });
 
         for await (const element of model.patchFiles) {
-          index++;
           progress.report({
             increment: step,
-            message: `(${index}/${model.patchFiles.length}) ${element.name}`,
+            message: `(${index + 1}/${model.patchFiles.length}) ${element.name}`,
           });
 
-          this.doValidatePatch(server, element, index, errors);
+          model.patchFiles[index].isProcessing = true;
+          this.sendUpdateModel(model, errors);
 
-          if (!isErrors(errors) || token.isCancellationRequested) {
+          this.doApplyPatch(server, element, index, errors);
+
+          model.patchFiles[index].isProcessing = false;
+          this.sendUpdateModel(model, errors);
+
+          if (token.isCancellationRequested) {
             break;
           }
+          index++;
         }
       }
     );
 
+    this.sendUpdateModel(model, errors);
+
     return !isErrors(errors);
-  }
-
-  protected async saveModel(model: TApplyPatchModel): Promise<boolean> {
-    let server = ServersConfig.getCurrentServer();
-
-    const response: IPatchResult | void = undefined; //await sendApplyPatchMessage(
-    //   server,
-    //   "",
-    //   model.patchDest,
-    //   3,
-    //   model.patchName,
-    //   model.objectsRight.map((object: TInspectorObject) => object.name),
-    // ).then(() => {
-    //   vscode.window.showInformationMessage(vscode.l10n.t("Patch file generated"));
-    // }, (err: ResponseError<object>) => {
-    //   serverExceptionCodeToString(err.code);
-
-    //   const response: IPatchResult = {
-    //     returnCode: err.code,
-    //     files: "",
-    //     message: err.message
-    //   };
-
-    //   return response;
-    // });
-
-    let errors: TFieldErrors<TApplyPatchModel> = {};
-    let ok: boolean = true;
-
-    if (!response) {
-      errors.root = { type: "validate", message: "Internal error: See more information in log" };
-      ok = false
-    } else if (response.returnCode !== 0) {
-      const msgError = ` ${serverExceptionCodeToString(response.returnCode)} ${response.message}`;
-      this.logError(msgError)
-      vscode.window.showErrorMessage(msgError);
-      errors.root = { type: "validate", message: `Protheus Server was unable to generate the patch. Code: ${response.returnCode}` };;
-      ok = false
-    }
-
-    if (!ok) {
-      this.sendUpdateModel(model, errors);
-    }
-
-    return ok;
   }
 
   async doValidatePatch(server: ServerItem, patchFile: TPatchFileData, index: number, errors: TFieldErrors<TApplyPatchModel>) {
@@ -292,8 +319,6 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
       patchFile.validation = "OK";
       patchFile.tphInfo = {};
     } else {
-      //languageClient.error(`File: ${response.file}`, false);
-
       if (response.errorCode !== PathErrorCodes.Ok) {
         const msg: string = pathErrorCodeToString(response.errorCode, response.message);
 
@@ -310,7 +335,6 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
 
       if (response.errorCode == PathErrorCodes.NewerPatches) { // Erro de TPH apenas ocorre se existem patches mais recentes que o validado
         // exibir mensagens e links para patches mais recentes
-        response.tphInfoRet
         const tphInfo: any = JSON.parse(response.message);
         const recommendedPatches = tphInfo.recommended;
         if (recommendedPatches) {
@@ -322,6 +346,29 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
 
         vscode.window.showWarningMessage(response.message);
       }
+    }
+  }
+
+  async doApplyPatch(server: ServerItem, patchFile: TPatchFileData, index: number, errors: TFieldErrors<TApplyPatchModel>) {
+
+    if (!fse.existsSync(patchFile.uri.fsPath)) {
+      errors[`patchFiles.${index}.name`] = { type: "validate", message: "File nor found" };
+      return;
+    }
+
+    const response: IPatchApplyResult = await sendApplyPatchRequest(server, patchFile.uri, false, "only_new");
+
+    if (response.errorCode == PathErrorCodes.Ok) {
+      vscode.window.showInformationMessage(vscode.l10n.t("Patch applied."));
+      patchFile.validation = "Applied";
+      patchFile.tphInfo = {};
+    } else {
+      const msg: string = pathErrorCodeToString(response.errorCode, response.message);
+
+      errors[`patchFiles.${index}.name`] = { type: "validate", message: response.message };
+      errors.root = { type: "validate", message: msg };
+
+      vscode.window.showErrorMessage(response.message);
     }
   }
 }

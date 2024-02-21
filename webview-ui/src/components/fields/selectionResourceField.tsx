@@ -40,6 +40,8 @@ export function TdsSelectionResourceField(props: TdsSelectionResourceFieldProps)
 	const { fieldState } = useController(props);
 	const registerField = register(props.name, props.rules);
 
+	registerField.disabled = props.readOnly || false;
+
 	return (
 		<section
 			className={`tds-field-container tds-selection-resource-field tds-label-field ${props.className ? props.className : ''}`}
@@ -96,6 +98,7 @@ export function TdsSelectionFolderField(props: Partial<TdsSelectionFolderFieldPr
 		currentFolder={props.currentFolder || ""}
 		openLabel={props.openLabel || "Select Folder"}
 		filters={{}}
+		readOnly={props.readOnly || false}
 	/>)
 }
 
@@ -136,5 +139,6 @@ export function TdsSelectionFileField(props: Partial<TdsSelectionFileFieldProps>
 		currentFolder={props.currentFolder || ""}
 		openLabel={props.openLabel || "Select File"}
 		filters={filters || {}}
+		readOnly={props.readOnly || false}
 	/>)
 }

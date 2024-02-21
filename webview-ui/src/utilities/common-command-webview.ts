@@ -28,6 +28,7 @@ export enum CommonCommandToPanelEnum {
 	UpdateModel = "UPDATE_MODEL",
 	MoveElements = "MOVE_ELEMENTS",
 	IncludeTRes = "INCLUDE_TRES",
+	GetInfoPatch = "GET_INFO_PATCH",
 }
 
 export type CommonCommandToPanel = CommonCommandToPanelEnum;
