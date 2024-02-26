@@ -1,5 +1,13 @@
 # Changelog
 
+## Versão [2.0.5]
+
+### Correções
+
+#### Problemas não eram removidos ao fechar o editor
+
+Ao fechar um fonte aberto no editor com "Problemas", os registros na aba de "Problemas" não estavam sendo removidos.
+
 ## Versão [2.0.4]
 
 ### Correções

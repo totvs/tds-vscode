@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "publisher": "TOTVS",
   "preview": true,
   "author": {
@@ -86,7 +86,7 @@
     "@material-ui/data-grid": "4.0.0-alpha.2",
     "@material-ui/lab": "^4.11.3-deprecations.1",
     "@totvs/tds-da": "^1.2.68",
-    "@totvs/tds-ls": "^2.0.12",
+    "@totvs/tds-ls": "^2.0.13",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.63.1",
     "@vscode/debugadapter": "^1.51.1",
