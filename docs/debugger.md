@@ -45,6 +45,8 @@ Acione o atalho `CTRL + SHIFT + P` e execute `TOTVS: Configure Launchers` que lh
 
 ![New Launcher](./gifs/CreateLauncher.gif)
 
+> Observação: A seleção do `Smartclient` no MacOS não é suportada. Veja em [Smartclient MacOS](#sc-macos) como configurar manualmente um executor do Smartclient para o MacOS.
+
 ### Criando um executor manualmente
 
 A definição de executores encontra-se no arquivo `.vscode/launch.json` que, normalmente, é criado através na abertura da página de `Boas Vindas`. Caso isso não ocorra (devido a configurações do seu ambiente), você pode criá-lo manualmente executando:
@@ -100,15 +102,15 @@ A definição de executores encontra-se no arquivo `.vscode/launch.json` que, no
 }
 ```
 
-No caso de efetuar depuração via `SmartClient Html`, indique qual o navegador web será utilizado, no arquivo `.\vscode\settings.json`.
+No caso de efetuar uma depuração via `SmartClient Html`, é necessário informar qual o navegador web será utilizado. Configure o caminho completo do navegador web através das preferências de usuário, clicando em `Arquivo > Preferências > Configurações` e procure por `Web: Navigator`. Note que existem duas seções distintas, a de `Usuário` e a de `Workspace`. Aconselhamos a utilizar as configurações de `Usuário` que será utilizada por todas as `Workspaces` do usuário. Caso seja necessária uma configuração específica e diferente em uma `Workspace`, configure na seção `Workspace` e neste caso apenas esta `Workspace` será afetada.
 
-```JSON
-{
-  ...
-  "totvsLanguageServer.web.navigator": "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
-  ...
-}
-```
+![Web Navigator](images/web-navigator.png)
+
+## Smartclient MacOS<a name="sc-macos"></a>
+
+A configuração do parâmetro `smartclientBin` para o MacOS deve seguir o exemplo a seguir.
+
+![SmartclientBin MacOS](images/macos-smartclient.png)
 
 ## <a name="variable"></a>Variáveis de substituição
 
