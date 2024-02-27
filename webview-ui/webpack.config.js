@@ -26,12 +26,11 @@ const GENERATE_WS_PATH = path.join(SOURCE_FOLDER, "generateWs");
 const PATCH_GENERATE_PATH = path.join(SOURCE_FOLDER, "patchGenerate");
 const COMPILE_KEY_PATH = path.join(SOURCE_FOLDER, "compileKey");
 const APPLY_PATCH_PATH = path.join(SOURCE_FOLDER, "applyPatch");
+const INSPECT_PATCH_PATH = path.join(SOURCE_FOLDER, "inspectPatch");
 
 // const REPLAY_PATH = path.join(__dirname, "./src/debug/tdsreplay/");
 // const MONITOR_PATH = path.join(__dirname, "./src/monitor/");
 // const RPO_INFO_PATH = path.join(__dirname, "./src/rpoInfo/");
-// const INSPECT_PATCH_PATH = path.join(__dirname, "./src/patch/inspect");
-// const GENERATE_PATCH_PATH = path.join(__dirname, "./src/patch/generate");
 // const INSPECTOR_PATH = path.join(__dirname, "./src/inspect-harpia");
 
 module.exports = (env, argv) => {
@@ -87,7 +86,7 @@ module.exports = (env, argv) => {
       // timeLineView: path.join(REPLAY_PATH, "app/index.tsx"),
       // monitorPanel: path.join(MONITOR_PATH, "app/index.tsx"),
       // rpoInfoPanel: path.join(RPO_INFO_PATH, "app/index.tsx"),
-      // inspectPatchPanel: path.join(INSPECT_PATCH_PATH, "app/index.tsx"),
+      inspectPatchPanel: path.join(INSPECT_PATCH_PATH, "app/index.tsx"),
       // inspectPanel: path.join(INSPECTOR_PATH, "app/index.tsx"),
     },
     output: {

@@ -53,6 +53,7 @@ export function getDefaultActionsForm(): IFormAction[] {
 **/
 
 type TDSFormProps<DataModel extends FieldValues> = {
+	id?: string;
 	onSubmit: (data: any) => void;
 	methods: UseFormReturn<DataModel>;
 	actions?: IFormAction[];
@@ -151,7 +152,7 @@ export function TdsForm<DataModel extends FieldValues>(props: TDSFormProps<DataM
 
 	let actions: IFormAction[] = props.actions ? props.actions : getDefaultActionsForm();
 
-	if (isSubmitting) {
+	if (isSubmitting && (actions.length > 0)) {
 		isProcessRing = true;
 	} else if (!isValid) {
 		isProcessRing = false;
@@ -161,10 +162,12 @@ export function TdsForm<DataModel extends FieldValues>(props: TDSFormProps<DataM
 		action.isProcessRing = (action.isProcessRing !== undefined ? action.isProcessRing && isProcessRing : undefined)
 	});
 
+	const id: string = props.id ? props.id : "form";
 	const children = React.Children.toArray(props.children);
 
 	return (
 		<form className="tds-form"
+			id={id}
 			onSubmit={props.methods.handleSubmit(props.onSubmit)}
 			onReset={() => sendReset(props.methods.getValues())}
 		>

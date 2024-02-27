@@ -1,7 +1,5 @@
 import * as vscode from "vscode";
-import * as fs from "fs";
-import * as path from "path";
-import Utils, { ServersConfig } from "./utils";
+import { ServersConfig } from "./utils";
 import { inputConnectionParameters } from "./inputConnectionParameters";
 import { inputAuthenticationParameters } from "./inputAuthenticationParameters";
 import { ResponseError } from "vscode-languageclient";
@@ -21,7 +19,6 @@ import {
 } from "./protocolMessages";
 import { EnvSection, ServerItem } from "./serverItem";
 import { AddServerPanel } from "./panels/addServerPanel";
-import { Server } from "http";
 
 const compile = require("template-literal");
 
@@ -235,7 +232,7 @@ function doFinishConnectProcess(
 
 /*
  * O comando é registrado na tela do monitor, portanto, caso ela nao sido aberta, o comando nao existira, entao faz a busca antes de mais nada.
- * Segundo a documentacao, comandos que começam com "_" sao tratados com internos.
+ * Segundo a documentação, comandos que começam com "_" sao tratados com internos.
  * doc: https://vshaxe.github.io/vscode-extern/VscodeCommands.html
  */
 function executeCommand(commandId: string) {
@@ -288,7 +285,7 @@ export function authenticate(
   username: string,
   password: string
 ) {
-  const enconding: string =
+  const encoding: string =
     vscode.env.language === "ru"
       ? ENABLE_CODE_PAGE.CP1251
       : ENABLE_CODE_PAGE.CP1252;
@@ -305,7 +302,7 @@ export function authenticate(
         environment,
         username,
         password,
-        enconding
+        encoding
       )
         .then(
           (result: IAuthenticationInfo) => {
@@ -419,7 +416,7 @@ async function doValidation(
 ) {
   await sendValidationRequest(serverItem.address, serverItem.port, serverItem.type).then(
     (validationInfo: IValidationInfo) => {
-      //retornou uma versao valida no servidor.
+      //retornou uma versão valida no servidor.
       const updated = ServersConfig.updateBuildVersion(
         serverItem.id,
         validationInfo.build,
@@ -427,7 +424,7 @@ async function doValidation(
       );
       serverItem.buildVersion = validationInfo.build;
       if (updated) {
-        //continua a autenticacao.
+        //continua a autenticação.
         inputConnectionParameters(
           context,
           serverItem,

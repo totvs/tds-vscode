@@ -10,7 +10,7 @@ let settingsStatusBarItem: vscode.StatusBarItem;
 let rpoTokenStatusBarItem: vscode.StatusBarItem;
 let usageBarItem: vscode.StatusBarItem;
 
-const priorityusageBarItem: number = 104;
+const priorityUsageBarItem: number = 104;
 const priorityTotvsStatusBarItem: number = 103;
 const priorityRpoTokenStatusBarItem: number = 102;
 const priorityPermissionStatusBarItem: number = 101;
@@ -191,7 +191,7 @@ function buildTooltipRpoToken(
 function initUsageBarItem(context: vscode.ExtensionContext): void {
   usageBarItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Left,
-    priorityusageBarItem
+    priorityUsageBarItem
   );
   usageBarItem.command = "totvs-developer-studio.toggleUsageInfo";
 

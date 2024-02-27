@@ -158,10 +158,11 @@ export function getExtraPanelConfigurations(extensionUri: vscode.Uri): {} {
 
 // Restrict the webview to only load resources from the `out` and `webview-ui/build` directories
 export function getCspSource(extensionUri: vscode.Uri) {
-  return [
-    vscode.Uri.joinPath(extensionUri, "out"),
-    vscode.Uri.joinPath(extensionUri, "webview-ui/build"),
-    vscode.Uri.joinPath(extensionUri, "webview-ui/node_modules/@vscode"),
-    vscode.Uri.joinPath(extensionUri, "webview-ui/media")
-  ];
+  return [extensionUri]
+  // return [
+  //   vscode.Uri.joinPath(extensionUri, "out"),
+  //   vscode.Uri.joinPath(extensionUri, "webview-ui/build"),
+  //   vscode.Uri.joinPath(extensionUri, "webview-ui/node_modules/@vscode"),
+  //   vscode.Uri.joinPath(extensionUri, "webview-ui/media")
+  // ];
 }
