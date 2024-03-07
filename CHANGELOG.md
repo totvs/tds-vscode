@@ -1,5 +1,12 @@
 # Changelog
 
+## Versão [2.0.NEXT]
+
+### Correções
+
+- TDS Replay - Não exibe quantidade de linhas na linha do tempo #1193
+  Correção no tratamento de linhas quando opção ``ignoreSourcesNotFound`` ativa.
+
 ## Versão [2.0.5]
 
 ### Correções
