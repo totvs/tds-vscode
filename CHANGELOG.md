@@ -1,5 +1,19 @@
 # Changelog
 
+## Versão [2.0.6]
+
+### Correções
+
+#### Indexação DSS não respeitava configurações de cache
+
+Mesmo com a configuração de cache desligada ocorria a indexação do DSS.
+
+### Melhorias
+
+#### Ignorar pasta durante compilação
+
+Caso necessite ignorar uma pasta durante a compilação, adicione o arquivo ".tdscompileignore" na raiz desta pasta.
+
 ## Versão [2.0.5]
 
 ### Correções
