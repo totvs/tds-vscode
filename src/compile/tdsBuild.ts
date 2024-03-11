@@ -345,7 +345,7 @@ export function commandBuildFile(
     new Promise((resolve, reject) => {
       if (files) {
         const arrayFiles: string[] = changeToArrayString(files);
-        let allFiles = Utils.getAllFilesRecursive(arrayFiles);
+        let allFiles = Utils.getAllFilesRecursive(arrayFiles, true);
         buildFile(allFiles, recompile);
       } else if (filename !== undefined) {
         buildFile([filename], recompile);
@@ -379,7 +379,7 @@ export function commandBuildWorkspace(recompile: boolean) {
       folders.push(value.uri.fsPath);
     });
 
-    let allFiles = Utils.getAllFilesRecursive(folders);
+    let allFiles = Utils.getAllFilesRecursive(folders, true);
 
     buildFile(allFiles, recompile);
   }

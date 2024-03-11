@@ -220,26 +220,29 @@ export default class Utils {
     );
   }
 
-  static getAllFilesRecursive(folders: Array<string>): string[] {
+  static getAllFilesRecursive(folders: Array<string>, checkCompileIgnore: boolean = false): string[] {
     const files: string[] = [];
 
     folders.forEach((folder) => {
       if (fs.lstatSync(folder).isDirectory()) {
-        fs.readdirSync(folder).forEach((file) => {
-          if (!Utils.ignoreResource(file)) {
-            const fn = path.join(folder, file);
-            const ss = fs.statSync(fn);
-            if (ss.isDirectory()) {
-              files.push(...Utils.getAllFilesRecursive([fn]));
+        let ignoreFolder = checkCompileIgnore ? fs.existsSync(path.join(folder, ".tdscompileignore")) : false;
+        if (!ignoreFolder) {
+          fs.readdirSync(folder).forEach((file) => {
+            if (!Utils.ignoreResource(file)) {
+              const fn = path.join(folder, file);
+              const ss = fs.statSync(fn);
+              if (ss.isDirectory()) {
+                files.push(...Utils.getAllFilesRecursive([fn], checkCompileIgnore));
+              } else {
+                files.push(fn);
+              }
             } else {
-              files.push(fn);
+              vscode.window.showWarningMessage(
+                "File/folder '" + file + "' was ignored."
+              );
             }
-          } else {
-            vscode.window.showWarningMessage(
-              "File/folder '" + file + "' was ignored."
-            );
-          }
-        });
+          });
+        }
       } else {
         files.push(folder);
       }
