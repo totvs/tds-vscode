@@ -4,6 +4,10 @@
 
 ### Correções
 
+#### TDS Replay - Não exibe quantidade de linhas na linha do tempo [#1193](https://github.com/totvs/tds-vscode/issues/1193)
+
+Correção no tratamento de linhas quando opção ``ignoreSourcesNotFound`` ativa.
+
 #### Indexação DSS não respeitava configurações de cache
 
 Mesmo com a configuração de cache desligada ocorria a indexação do DSS.
