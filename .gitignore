@@ -3,7 +3,7 @@
 *.vsix
 .editorconfig
 .vscode-test
-.vscode/mapa timestamp.txt
+.vscode
 ~/
 nls.*
 node_modules
