@@ -25,4 +25,5 @@
 		"editor.formatOnPaste": true
 	},
 	"markdownlint.run": "onSave",
+	"totvsLanguageServer.editor.linter.includes": "C:\\Totvs\\Servers\\Protheus\\includes;C:\\Totvs\\logix\\include;C:\\Totvs\\logix\\includeABL",
 }
