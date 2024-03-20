@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "2.0.3",
+  "version": "2.0.6",
   "publisher": "TOTVS",
   "preview": true,
   "author": {
@@ -85,8 +85,8 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/data-grid": "4.0.0-alpha.2",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@totvs/tds-da": "^1.2.66",
-    "@totvs/tds-ls": "^2.0.10",
+    "@totvs/tds-da": "^1.2.69",
+    "@totvs/tds-ls": "^2.0.14",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.63.1",
     "@vscode/debugadapter": "^1.51.1",
@@ -530,6 +530,11 @@
           "type": "boolean",
           "default": false,
           "description": "%tds.package.compilation.commit%"
+        },
+        "totvsLanguageServer.compilation.tempDir": {
+          "type": "string",
+          "default": "",
+          "description": "%tds.package.compilation.tempDir%"
         },
         "totvsLanguageServer.web.navigator": {
           "type": "string",
@@ -1173,6 +1178,17 @@
                 "type": "string",
                 "description": "%tds.package.properties.extraParameters.description%",
                 "default": ""
+              },
+              "extendFeatures": {
+                "type": "object",
+                "description": "%tds.package.debug.extend.features%",
+                "properties": {
+                  "charDetails": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "%tds.package.debug.extend.features.charDetails%"
+                  }
+                }
               }
             }
           }
@@ -1186,7 +1202,10 @@
             "cwb": "${workspaceFolder}",
             "smartclientBin": "../totvs/bin/smartclient/smartclient.exe",
             "isMultiSession": true,
-            "enableTableSync": true
+            "enableTableSync": true,
+            "extendFeatures": {
+              "charDetails": false
+            }
           }
         ],
         "variables": {
@@ -1205,7 +1224,10 @@
               "smartclientBin": "${2:../totvs/bin/smartclient/smartclient.exe}",
               "cwb": "^\"\\${workspaceFolder}\"",
               "isMultiSession": true,
-              "enableTableSync": true
+              "enableTableSync": true,
+              "extendFeatures": {
+                "charDetails": false
+              }
             }
           },
           {
@@ -1222,7 +1244,10 @@
               "smartclientBin": "${3:../totvs/bin/smartclient/smartclient.exe}",
               "cwb": "^\"\\${workspaceFolder}\"",
               "isMultiSession": true,
-              "enableTableSync": true
+              "enableTableSync": true,
+              "extendFeatures": {
+                "charDetails": false
+              }
             }
           }
         ]

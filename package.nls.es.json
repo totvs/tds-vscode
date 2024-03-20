@@ -18,6 +18,7 @@
 	"tds.package.show.precompile": "Mostrar el comando precompilador.",
 	"tds.package.compilation.commit": "Cometer la compilación con errores/alertas",
 	"tds.package.compilation.includes": "La compilación incluye.",
+	"tds.package.compilation.tempDir": "Directorio temporal",
 	"tds.package.web.navigator.debug": "Navegador web (depuración con SmartClientHtml).",
 	"tds.package.editor.notification.show": "Nivel de notificación que se mostrará en 'popup'",
 	"tds.package.editor.notification.show.none": "Ninguna",
@@ -138,5 +139,7 @@
 	"tds.package.rpoToken": "Poner el Token de Compilación",
 	"tds.package.clearRpoToken": "Eliminar el Token de Compilación",
 	"tds.package.filesystem.encoding": "Establecer la codificación del sistema de archivos",
-	"tds.package.editor.linter": "Habilitar el Linter"
+	"tds.package.editor.linter": "Habilitar el Linter",
+	"tds.package.debug.extend.features": "Habilita la funcionalidad de depuración extendida",
+	"tds.package.debug.extend.features.charDetails": "Detalles de los tipos [char] (string)"
 }

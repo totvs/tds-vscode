@@ -1,8 +1,66 @@
 # Changelog
 
+## Versão [2.0.6]
+
+### Correções
+
+#### TDS Replay - Não exibe quantidade de linhas na linha do tempo [#1193](https://github.com/totvs/tds-vscode/issues/1193)
+
+Correção no tratamento de linhas quando opção ``ignoreSourcesNotFound`` ativa.
+
+#### Indexação DSS não respeitava configurações de cache
+
+Mesmo com a configuração de cache desligada ocorria a indexação do DSS.
+
+### Melhorias
+
+#### Ignorar pasta durante compilação
+
+Caso necessite ignorar uma pasta durante a compilação, adicione o arquivo ".tdscompileignore" na raiz desta pasta.
+
+## Versão [2.0.5]
+
+### Correções
+
+#### Problemas não eram removidos ao fechar o editor
+
+Ao fechar um fonte aberto no editor com "Problemas", os registros na aba de "Problemas" não estavam sendo removidos.
+
+## Versão [2.0.4]
+
+### Correções
+
+#### Pending response rejected since connection got disposed Code: -32097 [#1190](https://github.com/totvs/tds-vscode/issues/1190)
+
+Ocorria um erro ao compilar pasta/workspace com mais de 89 fontes.
+
+#### Adição de configuração de pasta temporária
+
+Adicionada uma configuração extra ("totvsLanguageServer.compilation.tempDir") que sobrescreve a pasta temporária padrão do SO, caso o usuário não queira alterar a pasta temporária existente. Esta pasta é utilizada durante a pré-compilação (appre) e pode causar erros em SO que sejam "case-sensitive" (Linux/MacOS).
+
+### Melhorias
+
+#### Fontes fora da área de trabalho
+
+Os fontes abertos fora da área de trabalho, não são mais processados para fins da visão ``Estrutura (_Outline_)`` e funcionalidades providas pelo [``DSS``](./docs/dss.md) e [``linter```](./docs/linter.md).
+Demais funcionalidades continuam funcionando normalmente.
+
+> Fontes fora da área de trabalho receberá uma notificação na visão ``Problemas`` como uma informação.
+![``Problema`` com informação de fora da área de trabalho](./docs/images/info-source-outside.png)
+
+#### Depuração com variáveis do tipo _string_ (_character_)
+
+Variáveis do tipo  _character_ (_string_), podem conter dados nos formatos CP1252/CP1251 ou UTF8, que podem ser diferenciadas pelo prefixo ``UTF8`` em seus valores nas visões ``Variables`` e ``Watches`` e ao passar o mouse sobre a variável. Também foi modificado a forma de apresentação.
+
+Leia [Recursos Estendidos de Depuração](../docs/debugger.md#funcionalidades_estendidas_de_depuração) para maiores detalhes e como ativar/desativar.
+
 ## Versão [2.0.3]
 
 ### Correções
+
+#### Montagem/apresentação de "Estrutura" (Outline) de fontes [#1192](https://github.com/totvs/tds-vscode/issues/1192)
+
+Correção pontuais na montagem/apresentação de "Estrutura" (Outline).
 
 #### Exibição de erro de C++ Runtime
 
@@ -41,10 +99,15 @@ Caso o usuário inicie uma depuração utilizando SIGAMDI/SIGAADV, será exibido
 #### Comando ``BeginContent`` passa a aceitar o tipo de conteúdo
 
 ```
-beginComment var myVar [as <language: javascript | JS | html | json | xml | css | typeScript | TS>]
+beginContent var myVar [as <language: javascript | JS | html | json | xml | css | typeScript | TS>]
 ```
 
 Essa informação é utilizada apenas para fins visuais não sendo efetuado nenhum tipo de validação.
+
+#### Comandos ``BeginSql`` e ``EndSql``
+
+Ao utilizar o bloco de comandos ``BeginSql`` e ``EndSql``, o seu conteúdo será apresentado usando as configurações de destaque de sintaxe da linguagem SQL.
+Esse destaque é utilizada apenas para fins visuais não sendo afetado a funcionalidade do bloco.
 
 #### Filtro na Linha de Tempo do TDS Replay [#DTCLIENT01-2533](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2533)
 
@@ -86,7 +149,7 @@ BETA: Adicionado informações sobre o uso de funções (_CodeLens_).
 
 Efetuado a implementação de configuração para a extensão ignorar pastas e arquivos no processo de _Navegação em fontes_ e recursos associados, através da existência do arquivo `.tdsignore`.
 
-Detalhes da implementação em [# TDS: Developer Support Subsystem](docs/dss.md#ignore).
+Detalhes da implementação em [# TDS: Developer Support Subsystem](docs/dss.md#ignorar-pastas-e-arquivos).
 
 #### Navegação em fontes, passagem de mouse e referências
 
@@ -169,9 +232,9 @@ Corrigido problema de monitoramento de AppServer com Broker que exige uma conex�
 
 Corrigido erro de execução de navegador em ambientes Linux.
 
-#### Logpoint não resolve {variavel}
+#### _Logpoint_ não resolve {variável}
 
-Corrigido erro de resolução de {variavel} em logpoints.
+Corrigido erro de resolução de {variável} em _logpoints_.
 
 #### 'Command not found' ao clicar em um environment de um servidor [#1131](https://github.com/totvs/tds-vscode/issues/1131)
 
