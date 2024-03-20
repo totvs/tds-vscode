@@ -31,9 +31,6 @@
 			"include": "#wsscr-decl"
 		},
 		{
-			"include": "#beginSql"
-		},
-		{
 			"include": "#beginContent"
 		},
 		{
@@ -711,37 +708,6 @@
 				},
 				{
 					"include": "#separators"
-				}
-			]
-		},
-		"beginSql": {
-			"patterns": [
-				{
-					"begin": "(?i)\\b(beginsql\\s+alias)\\b",
-					"beginCaptures": {
-						"1": {
-							"name": "keyword.control.advpl_language"
-						}
-					},
-					"contentName": "source.sql",
-					"end": "(?i)\\b(endsql)\\b",
-					"endCaptures": {
-						"1": {
-							"name": "keyword.control.advpl_language"
-						}
-					},
-					"name": "meta.embedded.sql",
-					"patterns": [
-						{
-							"include": "#comments"
-						},
-						{
-							"include": "#interpolation"
-						},
-						{
-							"include": "source.sql"
-						}
-					]
 				}
 			]
 		},

@@ -346,7 +346,7 @@
         }
       },
       {
-        "scopeName": "sql.advpl.codeblock",
+        "scopeName": "sql.advpl",
         "path": "./syntaxes/advpl_sql.tmLanguage.json",
         "injectTo": [
           "source.advpl"
