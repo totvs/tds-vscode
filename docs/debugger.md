@@ -106,6 +106,8 @@ No caso de efetuar uma depuração via `SmartClient Html`, é necessário inform
 
 ![Web Navigator](images/web-navigator.png)
 
+| Devido a uma limitação na execução do navegador `Safari` por linha de comando, este navegador não é suportado para depuração via `SmartClient HTML`.
+
 ## Smartclient MacOS<a name="sc-macos"></a>
 
 A configuração do parâmetro `smartclientBin` para o MacOS deve seguir o exemplo a seguir.
