@@ -1,5 +1,13 @@
 # Changelog
 
+## Versão [2.0.NEXT]
+
+### Correções
+
+#### Erro no _linter_ [#1224](https://github.com/totvs/tds-vscode/issues/1224)
+
+Em determinadas estruturas, p.e. `class` sem identificador, poderia ocorrer _crash_ durante processos do _DSS_.
+
 ## Versão [2.0.6]
 
 ### Correções
@@ -159,7 +167,7 @@ Detalhes da implementação em [TDS: Developer Support Subsystem](docs/dss.md).
 > Os recursos aqui apresentados, podem ser influenciados devido ao _linter_ ignorar o processamento de fontes configurado em [TDS: Linter -> Ignorar pastas e arquivos](docs/linter.md#tdsignore).
 > As informações sobre navegação, podem ou não ficar em [_cache_](docs/dss.md#cache).
 
-#### Visão *Estrutura*
+#### Visão _Estrutura_
 
 Apresenta alguns detalhes sobre o item de acordo com sua definição.
 
