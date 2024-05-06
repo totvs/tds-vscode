@@ -669,7 +669,7 @@ export class ServersConfig {
   static getCurrentServer() {
     const servers = getServersConfig();
 
-    if (servers.connectedServer.id) {
+    if (servers && servers.connectedServer && servers.connectedServer.id) {
       // busca sempre pelo ID pois pode ter ocorrido alguma alteração nas configurações do servidor conectado
       return this.getServerById(servers.connectedServer.id);
     } else {
