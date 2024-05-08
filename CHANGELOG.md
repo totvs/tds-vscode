@@ -1,12 +1,16 @@
 # Changelog
 
-## Versão [2.0.NEXT]
+## Versão [2.0.7]
 
 ### Correções
 
 #### Erro no _linter_ [#1224](https://github.com/totvs/tds-vscode/issues/1224)
 
 Em determinadas estruturas, p.e. `class` sem identificador, poderia ocorrer _crash_ durante processos do _DSS_.
+
+#### Problema na paginação do TDS Replay
+
+Ao executar o TDS Replay, a paginação não estava funcionando corretamente.
 
 ## Versão [2.0.6]
 
