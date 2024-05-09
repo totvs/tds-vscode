@@ -15,3 +15,8 @@ src/parser/4gl-parser.js
 syntaxes/build
 test/**/.vscode
 *.AUT
+*.txt
+*.ppo
+test/**/no_git
+test/**/fw/**
+test/**/.vscode

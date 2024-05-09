@@ -31,9 +31,6 @@
 			"include": "#wsscr-decl"
 		},
 		{
-			"include": "#beginSql"
-		},
-		{
 			"include": "#beginContent"
 		},
 		{
@@ -56,7 +53,7 @@
 			"patterns": [
 				{
 					"name": "keyword.control.advpl_language",
-					"match": "(?i)\\b(local|static|private|public|default|activate|alias|and|between|case|centered|class|constructor|data|define|dialog|do|else|elseif|end|endcase|endclass|enddo|endfunction|endif|exit|for|from|function|get|if|loop|main|method|next|nil|of|or|otherwise|pixel|return|select|step|to|user|var|while|where|as)\\b"
+					"match": "(?i)\\b(local|static|private|public|default|activate|alias|and|begin|between|case|centered|class|constructor|data|define|dialog|do|else|elseif|end|endcase|endclass|enddo|endfunction|endif|exit|for|from|function|get|if|loop|main|method|next|nil|of|or|otherwise|pixel|return|select|step|to|user|var|while|where|as)\\b"
 				}
 			]
 		},
@@ -711,37 +708,6 @@
 				},
 				{
 					"include": "#separators"
-				}
-			]
-		},
-		"beginSql": {
-			"patterns": [
-				{
-					"begin": "(?i)\\b(beginsql\\s+alias)\\b",
-					"beginCaptures": {
-						"1": {
-							"name": "keyword.control.advpl_language"
-						}
-					},
-					"contentName": "source.sql",
-					"end": "(?i)\\b(endsql)\\b",
-					"endCaptures": {
-						"1": {
-							"name": "keyword.control.advpl_language"
-						}
-					},
-					"name": "meta.embedded.sql",
-					"patterns": [
-						{
-							"include": "#comments"
-						},
-						{
-							"include": "#interpolation"
-						},
-						{
-							"include": "source.sql"
-						}
-					]
 				}
 			]
 		},

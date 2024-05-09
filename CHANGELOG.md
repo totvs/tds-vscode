@@ -1,5 +1,39 @@
 # Changelog
 
+## Versão [2.0.NEXT]
+
+### Correções
+
+#### Erro no _linter_ [#1224](https://github.com/totvs/tds-vscode/issues/1224)
+
+Em determinadas estruturas, p.e. `class` sem identificador, poderia ocorrer _crash_ durante processos do _DSS_.
+
+## Versão [2.0.6]
+
+### Correções
+
+#### TDS Replay - Não exibe quantidade de linhas na linha do tempo [#1193](https://github.com/totvs/tds-vscode/issues/1193)
+
+Correção no tratamento de linhas quando opção ``ignoreSourcesNotFound`` ativa.
+
+#### Indexação DSS não respeitava configurações de cache
+
+Mesmo com a configuração de cache desligada ocorria a indexação do DSS.
+
+### Melhorias
+
+#### Ignorar pasta durante compilação
+
+Caso necessite ignorar uma pasta durante a compilação, adicione o arquivo ".tdscompileignore" na raiz desta pasta.
+
+## Versão [2.0.5]
+
+### Correções
+
+#### Problemas não eram removidos ao fechar o editor
+
+Ao fechar um fonte aberto no editor com "Problemas", os registros na aba de "Problemas" não estavam sendo removidos.
+
 ## Versão [2.0.4]
 
 ### Correções
@@ -133,7 +167,7 @@ Detalhes da implementação em [TDS: Developer Support Subsystem](docs/dss.md).
 > Os recursos aqui apresentados, podem ser influenciados devido ao _linter_ ignorar o processamento de fontes configurado em [TDS: Linter -> Ignorar pastas e arquivos](docs/linter.md#tdsignore).
 > As informações sobre navegação, podem ou não ficar em [_cache_](docs/dss.md#cache).
 
-#### Visão *Estrutura*
+#### Visão _Estrutura_
 
 Apresenta alguns detalhes sobre o item de acordo com sua definição.
 
