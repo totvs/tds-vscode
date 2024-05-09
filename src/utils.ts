@@ -683,7 +683,7 @@ export class ServersConfig {
   static getCurrentServer() {
     const servers = getServersConfig();
 
-    if (servers.connectedServer.id) {
+    if (servers && servers.connectedServer && servers.connectedServer.id) {
       // busca sempre pelo ID pois pode ter ocorrido alguma alteração nas configurações do servidor conectado
       return this.getServerById(servers.connectedServer.id);
     } else {
@@ -786,7 +786,11 @@ export class ServersConfig {
       includes = server.includes as Array<string>;
     } else {
       const servers = getServersConfig();
-      includes = servers.includes as Array<string>;
+      if (servers.includes) {
+        includes = servers.includes as Array<string>;
+      } else {
+        includes = [];
+      }
     }
 
     if (includes.length > 0) {
@@ -1090,9 +1094,15 @@ function getServersConfig() {
     }
   }
 
-  //garante a existência da sessão
+  //garante a existência de sessões criticas
   if (!config.savedTokens) {
     config.savedTokens = [];
+  }
+  if (!config.connectedServer) {
+    config.connectedServer = {};
+  }
+  if (!config.includes) {
+    config.includes = [];
   }
 
   //compatibilização com arquivos gravados com versão da extensão
