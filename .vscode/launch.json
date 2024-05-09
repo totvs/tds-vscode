@@ -38,13 +38,8 @@
 			"name": "Extension WithoutCompile",
 			"runtimeExecutable": "${execPath}",
 			"args": [
-<<<<<<< HEAD
 				"--extensionDevelopmentPath=${workspaceFolder}",
 				"${workspaceFolder}/test/resources/projects/advpl"
-=======
-				"${workspaceFolder}/test/resources/projects/advpl/files/tlpp",
-				"--extensionDevelopmentPath=${workspaceFolder}"
->>>>>>> dev2
 			],
 			"outFiles": [
 				"${workspaceFolder}/out/**/*.js"
