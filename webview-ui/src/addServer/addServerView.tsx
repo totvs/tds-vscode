@@ -1,18 +1,18 @@
 //import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 
 import "./addServer.css";
-import TdsPage from "../components/page";
+import { TdsPage } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { TIncludeData } from "../model/addServerModel";
 import { FormProvider, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
-import { TdsCheckBoxField, TdsForm, TdsLabelField, TdsNumericField, TdsSelectionField, TdsSelectionFolderField, TdsSimpleTextField, TdsTextField, getDefaultActionsForm, setDataModel, setErrorModel } from "../components/form";
+import { CommonCommandEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "@totvs/tds-webtoolkit";
+import { TdsCheckBoxField, TdsForm, TdsLabelField, TdsNumericField, TdsSelectionField, TdsSelectionFolderField, TdsSimpleTextField, TdsTextField, getDefaultActionsForm, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 
 
 enum ReceiveCommandEnum {
 }
-type ReceiveCommand = ReceiveMessage<CommonCommandFromPanelEnum & ReceiveCommandEnum, TFields>;
+type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TFields>;
 
 type TFields = {
   serverType: string
@@ -57,7 +57,7 @@ export default function AddServerView() {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
       switch (command.command) {
-        case CommonCommandFromPanelEnum.UpdateModel:
+        case CommonCommandEnum.UpdateModel:
           const model: TFields = command.data.model;
           const errors: any = command.data.errors;
 
@@ -111,6 +111,7 @@ export default function AddServerView() {
 
             <section className="tds-row-container" >
               <TdsSelectionField
+                methods={methods}
                 name="serverType"
                 label="Server Type"
                 info={"Selecione o tipo do servidor Protheus"}
@@ -123,6 +124,7 @@ export default function AddServerView() {
               />
 
               <TdsCheckBoxField
+                methods={methods}
                 info=""
                 name="immediateConnection"
                 label="&nbsp;"
@@ -133,6 +135,7 @@ export default function AddServerView() {
 
             <section className="tds-row-container" >
               <TdsTextField
+                methods={methods}
                 name="serverName"
                 label="Server name"
                 info="Informe um nome que o ajude a identificar o servidor"
@@ -142,6 +145,7 @@ export default function AddServerView() {
 
             <section className="tds-row-container" >
               <TdsTextField
+                methods={methods}
                 name="address"
                 label="Address"
                 info="Informe IP ou nome do servidor no qual esta o Protheus"
@@ -149,6 +153,7 @@ export default function AddServerView() {
               />
 
               <TdsNumericField
+                methods={methods}
                 name="port"
                 label="Port"
                 info="Informe a porta de conexão do SC"
@@ -160,11 +165,13 @@ export default function AddServerView() {
             </section>
 
             <TdsLabelField
+              methods={methods}
               name={"includeDirectoriesLabel"}
               label={"Include directories"}
               info={"Enter the folders where the definition files should be searched"} />
 
             <TdsLabelField
+              methods={methods}
               name={"warningIncludeDirectoriesLabel"}
               label={"May be informed later. If you do not inform, the global configuration will be used."}
               info={methods.getValues("globalIncludeDirectories")} />
@@ -182,6 +189,7 @@ export default function AddServerView() {
                       </VSCodeDataGridCell>
                       <VSCodeDataGridCell grid-column="2">
                         <TdsSimpleTextField
+                          methods={methods}
                           name={`includePaths.${index}.path`}
                           readOnly={true}
                         />
@@ -205,6 +213,7 @@ export default function AddServerView() {
                       </VSCodeDataGridCell>
                       <VSCodeDataGridCell grid-column="2">
                         <TdsSelectionFolderField
+                          methods={methods}
                           name={`btnSelectFolder.${index}`}
                           info={"Selecione uma pasta que contenha arquivos de definição"}
                           title="Select folder with define files"

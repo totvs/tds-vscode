@@ -2,7 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import "../css/main.css"
 import GenerateWsView from "./generateWsView";
-import { sendReady } from "../utilities/common-command-webview";
+import { sendReady } from "@totvs/tds-webtoolkit";
 
 const root = createRoot(document.getElementById("root")!);
 root.render(

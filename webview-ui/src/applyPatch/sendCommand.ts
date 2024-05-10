@@ -1,5 +1,5 @@
-import { CommonCommandToPanelEnum, SendMessage } from "../utilities/common-command-webview";
-import { vscode } from "../utilities/vscodeWrapper";
+// import { CommonCommandToPanelEnum, SendMessage } from "@totvs/tds-webtoolkit";
+// import { vscode } from "../utilities/vscodeWrapper";
 
 
 

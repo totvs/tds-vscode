@@ -1,12 +1,12 @@
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 
 import "./patchGenerate.css";
-import TdsPage from "../components/page";
 import React from "react";
-import { FormProvider, SubmitHandler, useFieldArray, useForm, useFormContext } from "react-hook-form";
-import { CommonCommandFromPanelEnum, ReceiveMessage, sendSaveAndClose } from "../utilities/common-command-webview";
+import { TdsPage } from "@totvs/tds-webtoolkit";
+import { FormProvider, SubmitHandler, UseFormReturn, useFieldArray, useForm, useFormContext } from "react-hook-form";
+import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TInspectorObject } from "../model/inspectorObjectModel";
-import { TdsSimpleCheckBoxField, TdsSimpleTextField, TdsForm, TdsTextField, TdsCheckBoxField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionField, TdsSelectionFolderField, TdsSelectionFileField } from "../components/form";
+import { TdsSimpleCheckBoxField, TdsSimpleTextField, TdsForm, TdsTextField, TdsCheckBoxField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionField, TdsSelectionFolderField } from "@totvs/tds-webtoolkit";
 import { sendIncludeTRes, sendToLeft, sendToRight } from "./sendCommand";
 
 enum ReceiveCommandEnum {
@@ -14,7 +14,7 @@ enum ReceiveCommandEnum {
   MOVE_TO_RIGHT = "moveToRight"
 }
 
-type ReceiveCommand = ReceiveMessage<CommonCommandFromPanelEnum & ReceiveCommandEnum, TFields>;
+type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TFields>;
 
 type TObjectFiltered = TInspectorObject & { check: boolean };
 
@@ -56,6 +56,7 @@ const EMPTY_MODEL: TFields = {
 }
 
 type TSelectObjectComponentProps = {
+  methods: UseFormReturn<any>;
   id?: string;
   label: string;
   fieldName: string;
@@ -72,7 +73,7 @@ function SelectResourceComponent(props: TSelectObjectComponentProps) {
 
   return (
     <section className="tds-grid-container">
-      {props.label && <TdsLabelField name={props.fieldName} label={props.label} />}
+      {props.label && <TdsLabelField methods={props.methods} name={props.fieldName} label={props.label} />}
       <VSCodeDataGrid
         id={props.id ? props.id : props.fieldName}
         generate-header="none"
@@ -89,6 +90,7 @@ function SelectResourceComponent(props: TSelectObjectComponentProps) {
                   <VSCodeDataGridRow key={row.id}>
                     <VSCodeDataGridCell grid-column="1" >
                       <TdsSimpleCheckBoxField
+                        methods={props.methods}
                         name={`${props.fieldName}.${index}.check`}
                         textLabel={""}
                         label={""}
@@ -96,6 +98,7 @@ function SelectResourceComponent(props: TSelectObjectComponentProps) {
                     </VSCodeDataGridCell>
                     <VSCodeDataGridCell grid-column="2">
                       <TdsSimpleTextField
+                        methods={props.methods}
                         className="tds-no-margin"
                         name={`${props.fieldName}.${index}.name`}
                         readOnly={true}
@@ -103,6 +106,7 @@ function SelectResourceComponent(props: TSelectObjectComponentProps) {
                     </VSCodeDataGridCell>
                     <VSCodeDataGridCell grid-column="3">
                       <TdsSimpleTextField
+                        methods={props.methods}
                         className="tds-no-margin"
                         name={`${props.fieldName}.${index}.date`}
                         readOnly={true}
@@ -142,7 +146,7 @@ export default function PatchGenerateView() {
       console.log("rowsLimit " + rowsLimit);
 
       switch (command.command) {
-        case CommonCommandFromPanelEnum.UpdateModel:
+        case CommonCommandEnum.UpdateModel:
           const model: TFields = command.data.model;
           const errors: TFields = command.data.errors;
 
@@ -201,6 +205,7 @@ export default function PatchGenerateView() {
             onSubmit={onSubmit}>
             <section className="tds-row-container">
               <TdsTextField
+                methods={methods}
                 name="patchDest"
                 label="Output directory"
                 readOnly={true}
@@ -209,6 +214,7 @@ export default function PatchGenerateView() {
               />
 
               <TdsSelectionFolderField
+                methods={methods}
                 openLabel="Output Folder"
                 name="btn-patchDest"
                 info={"Selecione a pasta de destino do pacote de atualização gerado"}
@@ -216,6 +222,7 @@ export default function PatchGenerateView() {
               />
 
               <TdsTextField
+                methods={methods}
                 name="patchName"
                 label="Output Patch Filename"
                 info={"Informe nome do pacote de atualização."}
@@ -225,10 +232,11 @@ export default function PatchGenerateView() {
 
             <section className="tds-row-container" >
               <TdsTextField
+                methods={methods}
                 name="filter"
                 label="Filter"
                 info="Filtrar por nome do objeto. Ex: MAT or FAT*"
-                onChange={(e) => {
+                onInput={(e: any) => {
                   return new Promise(() => {
                     methods.setValue("objectsFiltered", applyFilter(e.target.value, methods.getValues("objectsLeft")));
                     methods.setValue("warningManyItens", methods.getValues("objectsFiltered").length > rowsLimit);
@@ -237,10 +245,11 @@ export default function PatchGenerateView() {
               />
 
               <TdsCheckBoxField
+                methods={methods}
                 name="includeTRes"
                 label="&nbsp;"
                 textLabel={"Include *.TRES"}
-                onChange={(e) => {
+                onInput={(e: any) => {
                   return new Promise(() => {
                     sendIncludeTRes(methods.getValues(), e.target.checked);
                   });
@@ -249,6 +258,7 @@ export default function PatchGenerateView() {
               />
 
               <TdsSelectionField
+                methods={methods}
                 name={"rowsLimit"}
                 label={"Resource count limit"}
                 options={[
@@ -261,11 +271,13 @@ export default function PatchGenerateView() {
             <section className="tds-row-container" >
               {watchWarningManyItens ?
                 <TdsLabelField
+                  methods={methods}
                   name="warningManyItens"
                   label={`Resource list has more than ${rowsLimit} items. Enter a more restrictive filter.`}
                 />
                 :
                 <TdsLabelField
+                  methods={methods}
                   name="warningManyItens"
                   label="&nbsp;"
                 />
@@ -274,6 +286,7 @@ export default function PatchGenerateView() {
 
             <section className="tds-row-container" id="selectGrid" >
               <SelectResourceComponent
+                methods={methods}
                 fieldName="objectsFiltered"
                 label="RPO Objects"
                 rowsLimit={rowsLimit}
@@ -300,6 +313,7 @@ export default function PatchGenerateView() {
               </section>
 
               <SelectResourceComponent
+                methods={methods}
                 label="To patch"
                 fieldName="objectsRight"
                 rowsLimit={0}

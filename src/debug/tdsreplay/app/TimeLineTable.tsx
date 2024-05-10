@@ -234,7 +234,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   );
 }
 
-let listener = undefined;
+let listener: any = undefined;
 interface ITimeLineTableInterface {
   vscode: any;
 }

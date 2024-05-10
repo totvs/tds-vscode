@@ -1,14 +1,14 @@
 
 import "./generateWs.css";
-import TdsPage from "../components/page";
+import { TdsPage } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
-import { IFormAction, TdsForm, TdsSelectionFileField, TdsSelectionFolderField, TdsSimpleCheckBoxField, TdsTextField, setDataModel, setErrorModel } from "../components/form";
+import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
+import { TdsForm, TdsSelectionFileField, TdsSelectionFolderField, TdsSimpleCheckBoxField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 
 enum ReceiveCommandEnum {
 }
-type ReceiveCommand = ReceiveMessage<CommonCommandFromPanelEnum & ReceiveCommandEnum, TFields>;
+type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TFields>;
 
 type TFields = {
   urlOrWsdlFile: string;
@@ -37,7 +37,7 @@ export default function GenerateWsView() {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
       switch (command.command) {
-        case CommonCommandFromPanelEnum.UpdateModel:
+        case CommonCommandEnum.UpdateModel:
           const model: TFields = command.data.model;
           const errors: TFields = command.data.errors;
 
@@ -68,6 +68,7 @@ export default function GenerateWsView() {
 
             <section className="tds-row-container" >
               <TdsTextField
+                methods={methods}
                 name="urlOrWsdlFile"
                 label="URL or Wsdl File"
                 info="Informe a URL de acesso ao WSDL ou o arquivo com a definição do serviço"
@@ -75,6 +76,7 @@ export default function GenerateWsView() {
               />
 
               <TdsSelectionFileField
+                methods={methods}
                 name="btn-urlOrWsdlFile"
                 info={"Selecione o arquivo com a definição do serviço"}
                 title={"Arquivo com a definição WSDL"}
@@ -85,6 +87,7 @@ export default function GenerateWsView() {
 
             <section className="tds-row-container" >
               <TdsTextField
+                methods={methods}
                 name="outputPath"
                 label="Output directory"
                 readOnly={true}
@@ -93,6 +96,7 @@ export default function GenerateWsView() {
               />
 
               <TdsSelectionFolderField
+                methods={methods}
                 openLabel="Output Folder"
                 name="btn-outputPath"
                 info={"Selecione a pasta de onde o fonte gerado será gravado"}
@@ -102,6 +106,7 @@ export default function GenerateWsView() {
 
             <section className="tds-row-container" >
               <TdsTextField
+                methods={methods}
                 name="outputFilename"
                 label="Output Filename"
                 rules={{ required: true }}
@@ -109,6 +114,7 @@ export default function GenerateWsView() {
               />
 
               <TdsSelectionFileField
+                methods={methods}
                 name="btn-outputFilename"
                 info={"Selecione o arquivo que receberá a definição do serviço"}
                 title={"Arquivo Fonte AdvPL"}
@@ -119,6 +125,7 @@ export default function GenerateWsView() {
             </section>
 
             <TdsSimpleCheckBoxField
+              methods={methods}
               info=""
               name="overwrite"
               label="&nbsp;"

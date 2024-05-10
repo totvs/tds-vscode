@@ -1,10 +1,14 @@
+import { tdsVscode } from "@totvs/tds-webtoolkit";
 import { TInspectorObject } from "../model/inspectorObjectModel";
-import { CommonCommandToPanelEnum, SendMessage } from "../utilities/common-command-webview";
-import { vscode } from "../utilities/vscodeWrapper";
+
+enum PatchGenerateCommandEnum {
+	IncludeTRes = "INCLUDE_TRES",
+	MoveElements = "MOVE_ELEMENTS",
+}
 
 export function sendToLeft(model: any, selectedObject: TInspectorObject[]) {
-	vscode.postMessage({
-		command: CommonCommandToPanelEnum.MoveElements,
+	tdsVscode.postMessage({
+		command: PatchGenerateCommandEnum.MoveElements,
 		data: {
 			model: model,
 			selectedObject: selectedObject,
@@ -14,8 +18,8 @@ export function sendToLeft(model: any, selectedObject: TInspectorObject[]) {
 }
 
 export function sendIncludeTRes(model: any, includeTRes: boolean[]) {
-	vscode.postMessage({
-		command: CommonCommandToPanelEnum.IncludeTRes,
+	tdsVscode.postMessage({
+		command: PatchGenerateCommandEnum.IncludeTRes,
 		data: {
 			model: model,
 			includeTRes: includeTRes
@@ -24,8 +28,8 @@ export function sendIncludeTRes(model: any, includeTRes: boolean[]) {
 }
 
 export function sendToRight(model: any, selectedObject: TInspectorObject[]) {
-	vscode.postMessage({
-		command: CommonCommandToPanelEnum.MoveElements,
+	tdsVscode.postMessage({
+		command: PatchGenerateCommandEnum.MoveElements,
 		data: {
 			model: model,
 			selectedObject: selectedObject,

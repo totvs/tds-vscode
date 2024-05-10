@@ -1,17 +1,16 @@
 import "./applyPatch.css";
-import TdsPage from "../components/page";
 import React from "react";
+import { TdsPage } from "@totvs/tds-webtoolkit";
 import { FormProvider, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import { CommonCommandFromPanelEnum, ReceiveMessage, sendSaveAndClose } from "../utilities/common-command-webview";
-import { TdsForm, TdsLabelField, TdsSelectionFileField, TdsSimpleCheckBoxField, TdsSimpleTextField, TdsTextField, setDataModel, setErrorModel } from "../components/form";
+import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
+import { TdsForm, TdsLabelField, TdsSelectionFileField, TdsSimpleCheckBoxField, TdsSimpleTextField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
 import { TPatchFileData } from "../model/applyPatchModel";
-import { TIncludeData } from "../model/addServerModel";
-import { sendGetInfo } from "./sendCommand";
 
 enum ReceiveCommandEnum {
 }
-type ReceiveCommand = ReceiveMessage<CommonCommandFromPanelEnum & ReceiveCommandEnum, TFields>;
+
+type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TFields>;
 
 type TFields = {
   serverName: string;
@@ -62,7 +61,7 @@ export default function ApplyPatchView() {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
       switch (command.command) {
-        case CommonCommandFromPanelEnum.UpdateModel:
+        case CommonCommandEnum.UpdateModel:
           const model: TFields = command.data.model;
           const errors: any = command.data.errors;
 
@@ -111,12 +110,14 @@ export default function ApplyPatchView() {
 
             <section className="tds-row-container" >
               <TdsTextField
+                methods={methods}
                 name="serverName"
                 label="Server name"
                 info="Identificador do servidor alvo"
                 readOnly={true}
               />
               <TdsTextField
+                methods={methods}
                 name="address"
                 label="Address"
                 info="Endereço do servidor alvo"
@@ -125,6 +126,7 @@ export default function ApplyPatchView() {
             </section>
 
             <TdsTextField
+              methods={methods}
               name="environment"
               label="Environment"
               info="Ambiente  alvo"
@@ -132,6 +134,7 @@ export default function ApplyPatchView() {
             />
 
             <TdsLabelField
+              methods={methods}
               name="patchFilesLabel"
               label={"Patch Files"}
             />
@@ -167,6 +170,7 @@ export default function ApplyPatchView() {
                         </VSCodeDataGridCell>
                         <VSCodeDataGridCell grid-column="3">
                           <TdsSimpleTextField
+                            methods={methods}
                             name={`patchFiles.${index}.name`}
                             readOnly={true}
                             info={row.name}
@@ -174,6 +178,7 @@ export default function ApplyPatchView() {
                         </VSCodeDataGridCell>
                         <VSCodeDataGridCell grid-column="4">
                           <TdsSimpleTextField
+                            methods={methods}
                             name={`patchFiles.${index}.fsPath`}
                             readOnly={true}
                             info={row.uri.fsPath}
@@ -198,6 +203,7 @@ export default function ApplyPatchView() {
                         </VSCodeDataGridCell>
                         <VSCodeDataGridCell grid-column="2">
                           <TdsSelectionFileField
+                            methods={methods}
                             name={`btnSelectFile.${index}`}
                             canSelectMany={true}
                             title={"Selecione o(s) pacote(s) de atualização"}
@@ -217,6 +223,7 @@ export default function ApplyPatchView() {
             </section>
 
             <TdsSimpleCheckBoxField
+              methods={methods}
               name="applyOldFiles"
               label="Apply old files"
               textLabel={"Apply old files"} />
@@ -226,3 +233,7 @@ export default function ApplyPatchView() {
     </main >
   );
 }
+function sendGetInfo(arg0: TFields, index: number) {
+  throw new Error("Function not implemented.");
+}
+

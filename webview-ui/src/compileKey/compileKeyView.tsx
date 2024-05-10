@@ -1,15 +1,15 @@
 
 import React from "react";
-import TdsPage from "../components/page";
+import { TdsPage } from "@totvs/tds-webtoolkit";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { CommonCommandFromPanelEnum, ReceiveMessage, sendSaveAndClose } from "../utilities/common-command-webview";
-import { TdsSimpleCheckBoxField, TdsForm, TdsTextField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionFileField } from "../components/form";
+import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
+import { TdsSimpleCheckBoxField, TdsForm, TdsTextField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionFileField } from "@totvs/tds-webtoolkit";
 
 import "./CompileKey.css";
 
 enum ReceiveCommandEnum {
 }
-type ReceiveCommand = ReceiveMessage<CommonCommandFromPanelEnum & ReceiveCommandEnum, TFields>;
+type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TFields>;
 
 type TCompileKey = {
   path: string;
@@ -77,7 +77,7 @@ export default function CompileKeyView() {
       console.dir(command.data);
 
       switch (command.command) {
-        case CommonCommandFromPanelEnum.UpdateModel:
+        case CommonCommandEnum.UpdateModel:
           const model: TFields = command.data.model;
           const errors: TFields = command.data.errors;
 
@@ -106,6 +106,7 @@ export default function CompileKeyView() {
             onSubmit={onSubmit}>
 
             <TdsTextField
+              methods={methods}
               name="machineId"
               label="Machine ID"
               info="Identificador único da estação. Obtido automaticamente"
@@ -114,6 +115,7 @@ export default function CompileKeyView() {
 
             <section className="tds-row-container">
               <TdsTextField
+                methods={methods}
                 name="path"
                 label="Compile Key File"
                 readOnly={true}
@@ -122,6 +124,7 @@ export default function CompileKeyView() {
               />
 
               <TdsSelectionFileField
+                methods={methods}
                 title={"Arquivo de Chave de Compilação"}
                 filters={
                   {
@@ -133,6 +136,7 @@ export default function CompileKeyView() {
 
             <section className="tds-row-container tds-same-width">
               <TdsTextField
+                methods={methods}
                 name="issued"
                 label="Generated"
                 info="Data da geração da chave"
@@ -140,6 +144,7 @@ export default function CompileKeyView() {
               />
 
               <TdsTextField
+                methods={methods}
                 name="expire"
                 label="Expire"
                 info="Data da expiração da chave"
@@ -148,6 +153,7 @@ export default function CompileKeyView() {
             </section>
 
             <TdsTextField
+              methods={methods}
               name="key"
               label="Token"
               info="Token gerado"
@@ -155,11 +161,13 @@ export default function CompileKeyView() {
             />
 
             <TdsSimpleCheckBoxField
+              methods={methods}
               name={"canOverride"}
               label={""}
               textLabel={"Allow override default"} />
 
             <TdsLabelField
+              methods={methods}
               name={"warningCompatibility"}
               label={"From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS."}
             />

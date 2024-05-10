@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import { sendReady } from "../utilities/common-command-webview";
+import { sendReady } from "@totvs/tds-webtoolkit";
 
 ReactDOM.render(
   <React.StrictMode>

@@ -1,5 +1,3 @@
-import { vscode } from "../utilities/vscodeWrapper";
-import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
 import "./App.css";
 
 function App() {

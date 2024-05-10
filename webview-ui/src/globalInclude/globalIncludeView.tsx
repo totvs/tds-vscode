@@ -1,16 +1,16 @@
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 
 import "./globalInclude.css";
-import TdsPage from "../components/page";
+import { TdsPage } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { TIncludeData } from "../model/addServerModel";
 import { FieldArrayWithId, SubmitHandler, useFieldArray, useForm, FormProvider } from "react-hook-form";
-import { IFormAction, TdsForm, TdsLabelField, TdsSelectionFolderField, TdsSimpleTextField, setDataModel, setErrorModel } from "../components/form";
-import { CommonCommandFromPanelEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "../utilities/common-command-webview";
+import { IFormAction, TdsForm, TdsLabelField, TdsSelectionFolderField, TdsSimpleTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
+import { CommonCommandEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 
 enum ReceiveCommandEnum {
 }
-type ReceiveCommand = ReceiveMessage<CommonCommandFromPanelEnum & ReceiveCommandEnum, TFields>;
+type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TFields>;
 
 type TFields = {
   includePaths: TIncludeData[]
@@ -43,7 +43,7 @@ export default function GlobalIncludeView() {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
       switch (command.command) {
-        case CommonCommandFromPanelEnum.UpdateModel:
+        case CommonCommandEnum.UpdateModel:
           const model: TFields = command.data.model;
           const errors: TFields = command.data.errors;
 
@@ -95,6 +95,7 @@ export default function GlobalIncludeView() {
 
             <section className="tds-row-container" >
               <TdsLabelField
+                methods={methods}
                 label="Include directories"
                 name={"includeDirectoriesLabel"}
                 info={"Informe as pastas onde os arquivos de definição devem ser procurados"} />
@@ -112,6 +113,7 @@ export default function GlobalIncludeView() {
                       </VSCodeDataGridCell>
                       <VSCodeDataGridCell grid-column="2">
                         <TdsSimpleTextField
+                          methods={methods}
                           name={`includePaths.${index}.path`}
                           readOnly={true}
                         />
@@ -128,6 +130,7 @@ export default function GlobalIncludeView() {
                     <>
                       <VSCodeDataGridCell grid-column="2">
                         <TdsSelectionFolderField
+                          methods={methods}
                           title="Select folder with definition files"
                           name={`btnSelectFolder.${index}`}
                           info={"Selecione uma pasta que contenha arquivos de definição"}

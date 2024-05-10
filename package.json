@@ -79,6 +79,11 @@
     "all-contributors:check": "all-contributors check"
   },
   "dependencies": {
+    "@material-ui/core": "4.12.4",
+    "@material-ui/icons": "^4.11.3",
+    "@material-ui/data-grid": "4.0.0-alpha.2",
+    "@material-ui/lab": "^4.11.3-deprecations.1",
+    "material-table": "1.69.3",
     "@totvs/tds-da": "^1.2.70",
     "@totvs/tds-ls": "^2.0.15",
     "@types/react": "^16.14.20",
@@ -92,7 +97,6 @@
     "fs-extra": "^10.1.0",
     "ini": "^2.0.0",
     "jszip": "^3.7.1",
-    "material-table": "1.69.3",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

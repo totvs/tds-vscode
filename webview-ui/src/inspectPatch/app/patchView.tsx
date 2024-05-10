@@ -1,5 +1,5 @@
 import * as React from "react";
-import MaterialTable from "material-table";
+//import MaterialTable from "material-table";
 import { i18n, PatchTheme, patchViewIcons } from "../helper";
 import Paper from "@material-ui/core/Paper";
 import { ApplyViewAction } from "../actions";
@@ -9,7 +9,7 @@ interface IPatchViewPanel {
   vscode: any;
 }
 
-let listener = undefined;
+let listener: any = undefined;
 
 const cellDefaultStyle = {
   cellStyle: {
@@ -49,7 +49,7 @@ function headCells(): any[] {
       title: i18n.localize("SIZE", "Size"),
       type: "numeric",
       ...cellDefaultStyle,
-    } ,
+    },
     //  {
     //   field: "buildType",
     //   title: i18n.localize("BUILD_TYPE", "Build Type"),
@@ -81,10 +81,8 @@ export function PatchView(props: IPatchViewPanel) {
     props.vscode.postMessage({ action: ApplyViewAction.Ready });
   }
 
-  return (
-    <PatchTheme>
-      <Paper variant="outlined">
-        <MaterialTable
+  /*
+          <MaterialTable
           title={patchData.filename}
           localization={i18n.materialTableLocalization}
           icons={patchViewIcons.table}
@@ -100,6 +98,10 @@ export function PatchView(props: IPatchViewPanel) {
             grouping: true
           }}
         />
+          */
+  return (
+    <PatchTheme>
+      <Paper variant="outlined">
       </Paper>
     </PatchTheme>
   );
