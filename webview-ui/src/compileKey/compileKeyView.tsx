@@ -1,7 +1,22 @@
+/*
+Copyright 2021-2024 TOTVS S.A
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http: //www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 import React from "react";
-import { TdsPage } from "@totvs/tds-webtoolkit";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsSimpleCheckBoxField, TdsForm, TdsTextField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionFileField } from "@totvs/tds-webtoolkit";
 
@@ -73,9 +88,6 @@ export default function CompileKeyView() {
     let listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
-      console.log("listener " + command.command);
-      console.dir(command.data);
-
       switch (command.command) {
         case CommonCommandEnum.UpdateModel:
           const model: TFields = command.data.model;
@@ -98,82 +110,78 @@ export default function CompileKeyView() {
   }, []);
 
   return (
-    <main>
-      <TdsPage title="Compile Key" linkToDoc="[Chave de Compilação]servers.md#registro-de-servidores">
-        <FormProvider {...methods} >
-          <TdsForm
+    <TdsPage title={tdsVscode.l10n.t("Compile Key")} linkToDoc="[Chave de Compilação]servers.md#registro-de-servidores">
+      <TdsForm
+        methods={methods}
+        onSubmit={onSubmit}>
+
+        <TdsTextField
+          methods={methods}
+          name="machineId"
+          label={tdsVscode.l10n.t("Machine ID")}
+          info={tdsVscode.l10n.t("Single Identifier of the Station.Automatically obtained")}
+          readOnly={true}
+        />
+
+        <section className="tds-row-container">
+          <TdsTextField
             methods={methods}
-            onSubmit={onSubmit}>
+            name="path"
+            label={tdsVscode.l10n.t("Compile Key File")}
+            info={tdsVscode.l10n.t("Generated compilation key file (.Aut)")}
+            readOnly={true}
+            rules={{ required: true }}
+          />
 
-            <TdsTextField
-              methods={methods}
-              name="machineId"
-              label="Machine ID"
-              info="Identificador único da estação. Obtido automaticamente"
-              readOnly={true}
-            />
+          <TdsSelectionFileField
+            methods={methods}
+            title={tdsVscode.l10n.t("Compilation key file")}
+            filters={
+              {
+                "Compile Key File": ["AUT"]
+              }
+            }
+          />
+        </section>
 
-            <section className="tds-row-container">
-              <TdsTextField
-                methods={methods}
-                name="path"
-                label="Compile Key File"
-                readOnly={true}
-                info="Arquivo de chave de compilação gerado (.AUT)"
-                rules={{ required: true }}
-              />
+        <section className="tds-row-container tds-same-width">
+          <TdsTextField
+            methods={methods}
+            name="issued"
+            label={tdsVscode.l10n.t("Generated")}
+            info={tdsVscode.l10n.t("Date of key generation")}
+            rules={{ required: true }}
+          />
 
-              <TdsSelectionFileField
-                methods={methods}
-                title={"Arquivo de Chave de Compilação"}
-                filters={
-                  {
-                    "Compile Key File": ["AUT"]
-                  }
-                }
-              />
-            </section>
+          <TdsTextField
+            methods={methods}
+            name="expire"
+            label={tdsVscode.l10n.t("Expire")}
+            info={tdsVscode.l10n.t("Date of Key Expiration")}
+            rules={{ required: true }}
+          />
+        </section>
 
-            <section className="tds-row-container tds-same-width">
-              <TdsTextField
-                methods={methods}
-                name="issued"
-                label="Generated"
-                info="Data da geração da chave"
-                rules={{ required: true }}
-              />
+        <TdsTextField
+          methods={methods}
+          name="key"
+          label={tdsVscode.l10n.t("Token")}
+          info={tdsVscode.l10n.t("Token generated")}
+          rules={{ required: true }}
+        />
 
-              <TdsTextField
-                methods={methods}
-                name="expire"
-                label="Expire"
-                info="Data da expiração da chave"
-                rules={{ required: true }}
-              />
-            </section>
+        <TdsSimpleCheckBoxField
+          methods={methods}
+          name={"canOverride"}
+          label={""}
+          textLabel={tdsVscode.l10n.t("Allow override default")} />
 
-            <TdsTextField
-              methods={methods}
-              name="key"
-              label="Token"
-              info="Token gerado"
-              rules={{ required: true }}
-            />
-
-            <TdsSimpleCheckBoxField
-              methods={methods}
-              name={"canOverride"}
-              label={""}
-              textLabel={"Allow override default"} />
-
-            <TdsLabelField
-              methods={methods}
-              name={"warningCompatibility"}
-              label={"From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS."}
-            />
-          </TdsForm>
-        </FormProvider>
-      </TdsPage>
-    </main >
+        <TdsLabelField
+          methods={methods}
+          name={"warningCompatibility"}
+          label={tdsVscode.l10n.t("From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS.")}
+        />
+      </TdsForm>
+    </TdsPage>
   );
 }

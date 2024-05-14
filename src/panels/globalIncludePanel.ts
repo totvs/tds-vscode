@@ -1,5 +1,5 @@
 /*
-Copyright 2021 TOTVS S.A
+Copyright 2021-2024 TOTVS S.A
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,17 +18,8 @@ import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import Utils, { ServersConfig } from "../utils";
 import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
-import { TFieldErrors, TIncludePath, TdsPanel, isErrors } from "../model/field-model";
-import { TIncludeModel } from "../model/includeModel";
-
-const localizeHTML = {
-  "tds.webview.title": vscode.l10n.t("Include"),
-  "tds.webview.dir.include": vscode.l10n.t("Includes directory:"),
-  "tds.webview.dir.include2": vscode.l10n.t("Allow multiple directories"),
-  "tds.webview.dir.include.info": vscode.l10n.t("These settings can also be changed in"),
-  "tds.webview.dir.include.save": vscode.l10n.t("Save"),
-  "tds.webview.dir.include.saveclose": vscode.l10n.t("Save/Close"),
-};
+import { TFieldErrors, TdsPanel, isErrors } from "./panel";
+import { TIncludeModel, TIncludePath } from "../model/includeModel";
 
 enum GlobalIncludeCommandEnum {
 }
@@ -86,7 +77,8 @@ export class GlobalIncludePanel extends TdsPanel<TIncludeModel> {
    */
   protected getWebviewContent(extensionUri: vscode.Uri) {
 
-    return getWebviewContent(this._panel.webview, extensionUri, "globalIncludeView", { title: this._panel.title });
+    return getWebviewContent(this._panel.webview, extensionUri, "globalIncludeView",
+      { title: this._panel.title, translations: this.getTranslations() });
   }
 
   /**
@@ -152,4 +144,16 @@ export class GlobalIncludePanel extends TdsPanel<TIncludeModel> {
 
     return true;
   }
+
+  protected getTranslations(): Record<string, string> {
+    return {
+      "tds.webview.title": vscode.l10n.t("Include"),
+      "tds.webview.dir.include": vscode.l10n.t("Includes directory:"),
+      "tds.webview.dir.include2": vscode.l10n.t("Allow multiple directories"),
+      "tds.webview.dir.include.info": vscode.l10n.t("These settings can also be changed in"),
+      "tds.webview.dir.include.save": vscode.l10n.t("Save"),
+      "tds.webview.dir.include.saveclose": vscode.l10n.t("Save/Close"),
+    };
+  }
+
 }

@@ -2,7 +2,7 @@ import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } f
 
 import "./patchGenerate.css";
 import React from "react";
-import { TdsPage } from "@totvs/tds-webtoolkit";
+import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
 import { FormProvider, SubmitHandler, UseFormReturn, useFieldArray, useForm, useFormContext } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TInspectorObject } from "../model/inspectorObjectModel";
@@ -140,10 +140,7 @@ export default function PatchGenerateView() {
 
     let listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
-
-      console.log("listener " + command.command);
       const rowsLimit: number = methods.getValues("rowsLimit") as number
-      console.log("rowsLimit " + rowsLimit);
 
       switch (command.command) {
         case CommonCommandEnum.UpdateModel:
@@ -152,9 +149,6 @@ export default function PatchGenerateView() {
 
           model.objectsFiltered = applyFilter(methods.getValues("filter") || "", model.objectsLeft);
           model.warningManyItens = model.objectsFiltered.length > rowsLimit;
-
-          console.log("model ");
-          console.dir(model);
 
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);
@@ -197,131 +191,125 @@ export default function PatchGenerateView() {
   const rowsLimit: number = model.rowsLimit;
 
   return (
-    <main>
-      <TdsPage title="Patch Generation from RPO" linkToDoc="[Geração de pacote de atualização]servers.md#registro-de-servidores">
-        <FormProvider {...methods} >
-          <TdsForm
+    <TdsPage title={tdsVscode.l10n.t("Patch Generation from RPO")} linkToDoc="[Geração de pacote de atualização]servers.md#registro-de-servidores">
+      <TdsForm
+        methods={methods}
+        onSubmit={onSubmit}>
+        <section className="tds-row-container">
+          <TdsTextField
             methods={methods}
-            onSubmit={onSubmit}>
-            <section className="tds-row-container">
-              <TdsTextField
-                methods={methods}
-                name="patchDest"
-                label="Output directory"
-                readOnly={true}
-                rules={{ required: true }}
-                info={"Informe a pasta de destino do pacote de atualização gerado"}
-              />
+            name="patchDest"
+            label={tdsVscode.l10n.t("Output directory")}
+            info={tdsVscode.l10n.t("Enter the destination folder of the generated update package")}
+            readOnly={true}
+            rules={{ required: true }}
+          />
 
-              <TdsSelectionFolderField
-                methods={methods}
-                openLabel="Output Folder"
-                name="btn-patchDest"
-                info={"Selecione a pasta de destino do pacote de atualização gerado"}
-                title="Select Output Directory"
-              />
+          <TdsSelectionFolderField
+            methods={methods}
+            openLabel={tdsVscode.l10n.t("Output Folder")}
+            info={tdsVscode.l10n.t("Select the destination folder of the generated update package")}
+            name="btn-patchDest"
+            title={tdsVscode.l10n.t("Select Output Directory")}
+          />
 
-              <TdsTextField
-                methods={methods}
-                name="patchName"
-                label="Output Patch Filename"
-                info={"Informe nome do pacote de atualização."}
-              />
+          <TdsTextField
+            methods={methods}
+            name="patchName"
+            label={tdsVscode.l10n.t("Output Patch Filename")}
+            info={tdsVscode.l10n.t("Enter update package name.")}
+          />
 
-            </section>
+        </section>
 
-            <section className="tds-row-container" >
-              <TdsTextField
-                methods={methods}
-                name="filter"
-                label="Filter"
-                info="Filtrar por nome do objeto. Ex: MAT or FAT*"
-                onInput={(e: any) => {
-                  return new Promise(() => {
-                    methods.setValue("objectsFiltered", applyFilter(e.target.value, methods.getValues("objectsLeft")));
-                    methods.setValue("warningManyItens", methods.getValues("objectsFiltered").length > rowsLimit);
-                  });
-                }}
-              />
+        <section className="tds-row-container" >
+          <TdsTextField
+            methods={methods}
+            name="filter"
+            label={tdsVscode.l10n.t("Filter")}
+            info={tdsVscode.l10n.t("Filter by Object Name. Ex: Mat or Fat*")}
+            onInput={(e: any) => {
+              return new Promise(() => {
+                methods.setValue("objectsFiltered", applyFilter(e.target.value, methods.getValues("objectsLeft")));
+                methods.setValue("warningManyItens", methods.getValues("objectsFiltered").length > rowsLimit);
+              });
+            }}
+          />
 
-              <TdsCheckBoxField
-                methods={methods}
-                name="includeTRes"
-                label="&nbsp;"
-                textLabel={"Include *.TRES"}
-                onInput={(e: any) => {
-                  return new Promise(() => {
-                    sendIncludeTRes(methods.getValues(), e.target.checked);
-                  });
-                }}
+          <TdsCheckBoxField
+            methods={methods}
+            name="includeTRes"
+            label="&nbsp;"
+            textLabel={tdsVscode.l10n.t("Include *.TRES")}
+            onInput={(e: any) => {
+              return new Promise(() => {
+                sendIncludeTRes(methods.getValues(), e.target.checked);
+              });
+            }}
 
-              />
+          />
 
-              <TdsSelectionField
-                methods={methods}
-                name={"rowsLimit"}
-                label={"Resource count limit"}
-                options={[
-                  { value: "100", text: "100 (fast render)" },
-                  { value: "250", text: "250" },
-                  { value: "500", text: "500 (slow render)" },
-                ]} />
-            </section>
+          <TdsSelectionField
+            methods={methods}
+            name={"rowsLimit"}
+            label={tdsVscode.l10n.t("Resource count limit")}
+            options={[
+              { value: "100", text: tdsVscode.l10n.t("100 (fast render)") },
+              { value: "250", text: "250" },
+              { value: "500", text: tdsVscode.l10n.t("500 (slow render)") },
+            ]} />
+        </section>
 
-            <section className="tds-row-container" >
-              {watchWarningManyItens ?
-                <TdsLabelField
-                  methods={methods}
-                  name="warningManyItens"
-                  label={`Resource list has more than ${rowsLimit} items. Enter a more restrictive filter.`}
-                />
-                :
-                <TdsLabelField
-                  methods={methods}
-                  name="warningManyItens"
-                  label="&nbsp;"
-                />
-              }
-            </section>
+        <section className="tds-row-container" >
+          {watchWarningManyItens ?
+            <TdsLabelField
+              methods={methods}
+              name="warningManyItens"
+              label={tdsVscode.l10n.t("Resource list has more than {0} items. Enter a more restrictive filter.", rowsLimit)}
+            />
+            :
+            <TdsLabelField
+              methods={methods}
+              name="warningManyItens"
+              label="&nbsp;"
+            />
+          }
+        </section>
 
-            <section className="tds-row-container" id="selectGrid" >
-              <SelectResourceComponent
-                methods={methods}
-                fieldName="objectsFiltered"
-                label="RPO Objects"
-                rowsLimit={rowsLimit}
-              />
+        <section className="tds-row-container" id="selectGrid" >
+          <SelectResourceComponent
+            methods={methods}
+            fieldName="objectsFiltered"
+            label={tdsVscode.l10n.t("RPO Objects")}
+            rowsLimit={rowsLimit}
+          />
 
-              <section className="tds-row-container-column" id="directionButtons" >
-                <VSCodeButton appearance="icon" onClick={() => {
-                  const selectedObjects = methods.getValues("objectsFiltered").filter((value) =>
-                    (typeof value.check == "string") ? value.check == "true" : value.check);
-                  sendToRight(methods.getValues(), selectedObjects);
-                }} >
-                  <span className="codicon codicon-arrow-right"></span>
-                </VSCodeButton>
-                <VSCodeButton appearance="icon" onClick={() => {
-                  const selectedObjects = methods.getValues("objectsRight").filter((value) =>
-                    (typeof value.check == "string") ? value.check == "true" : value.check);
+          <section className="tds-row-container-column" id="directionButtons" >
+            <VSCodeButton appearance="icon" onClick={() => {
+              const selectedObjects = methods.getValues("objectsFiltered").filter((value) =>
+                (typeof value.check == "string") ? value.check == "true" : value.check);
+              sendToRight(methods.getValues(), selectedObjects);
+            }} >
+              <span className="codicon codicon-arrow-right"></span>
+            </VSCodeButton>
+            <VSCodeButton appearance="icon" onClick={() => {
+              const selectedObjects = methods.getValues("objectsRight").filter((value) =>
+                (typeof value.check == "string") ? value.check == "true" : value.check);
 
-                  console.log("selectedObjects", selectedObjects);
+              sendToLeft(methods.getValues(), selectedObjects);
+            }} >
+              <span className="codicon codicon-arrow-left"></span>
+            </VSCodeButton>
+          </section>
 
-                  sendToLeft(methods.getValues(), selectedObjects);
-                }} >
-                  <span className="codicon codicon-arrow-left"></span>
-                </VSCodeButton>
-              </section>
-
-              <SelectResourceComponent
-                methods={methods}
-                label="To patch"
-                fieldName="objectsRight"
-                rowsLimit={0}
-              />
-            </section>
-          </TdsForm>
-        </FormProvider>
-      </TdsPage>
-    </main >
+          <SelectResourceComponent
+            methods={methods}
+            label={tdsVscode.l10n.t("To patch")}
+            fieldName="objectsRight"
+            rowsLimit={0}
+          />
+        </section>
+      </TdsForm>
+    </TdsPage>
   );
 }

@@ -21,6 +21,6 @@ export enum GeneratePatchPanelAction {
   Generate,
   UpdatePage,
   UpdateData,
-  SelectFoler,
+  SelectFolder,
   Cancel,
 }

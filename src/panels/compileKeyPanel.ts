@@ -1,5 +1,5 @@
 /*
-Copyright 2021 TOTVS S.A
+Copyright 2021-2024 TOTVS S.A
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { TCompileKeyModel, TCompileKey, TAuthorization } from "../model/compileKeyModel";
-import { TdsPanel, TFieldErrors, isErrors } from "../model/field-model";
+import { TdsPanel, TFieldErrors, isErrors } from "./panel";
 import { sendGetIdMessage, TValidKeyResult, sendValidKey } from "../protocolMessages";
 import { ServersConfig } from "../utils";
 import { CommonCommandFromWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
@@ -96,7 +96,8 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
    */
   protected getWebviewContent(extensionUri: vscode.Uri) {
 
-    return getWebviewContent(this._panel.webview, extensionUri, "compileKeyView", { title: this._panel.title });
+    return getWebviewContent(this._panel.webview, extensionUri, "compileKeyView",
+      { title: this._panel.title, translations: this.getTranslations() });
   }
 
   /**
@@ -231,4 +232,23 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
 
     return true;
   }
+
+  protected getTranslations(): Record<string, string> {
+    return {
+      "Compile Key": vscode.l10n.t("Compile Key"),
+      "Machine ID": vscode.l10n.t("Machine ID"),
+      "Single Identifier of the Station.Automatically obtained": vscode.l10n.t("Single Identifier of the Station.Automatically obtained"),
+      "Compile Key File": vscode.l10n.t("Compile Key File"),
+      "Generated compilation key file (.Aut)": vscode.l10n.t("Generated compilation key file (.Aut)"),
+      "Generated": vscode.l10n.t("Generated"),
+      "Date of key generation": vscode.l10n.t("Date of key generation"),
+      "Expire": vscode.l10n.t("Expire"),
+      "Date of Key Expiration": vscode.l10n.t("Date of Key Expiration"),
+      "Token": vscode.l10n.t("Token"),
+      "Token generated": vscode.l10n.t("Token generated"),
+      "Allow override default": vscode.l10n.t("Allow override default"),
+      "From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS.": vscode.l10n.t("From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS.")
+    }
+  }
+
 }

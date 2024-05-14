@@ -1,7 +1,7 @@
 import "./applyPatch.css";
 import React from "react";
-import { TdsPage } from "@totvs/tds-webtoolkit";
-import { FormProvider, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsLabelField, TdsSelectionFileField, TdsSimpleCheckBoxField, TdsSimpleTextField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
@@ -101,138 +101,135 @@ export default function ApplyPatchView() {
   const isProcessing: boolean = model.patchFiles.filter((row: TPatchFileData) => row.isProcessing).length > 0;
 
   return (
-    <main>
-      <TdsPage title="Apply Patch" linkToDoc="[Apply Patch]servers.md#registro-de-servidores">
-        <FormProvider {...methods} >
-          <TdsForm<TFields>
-            onSubmit={onSubmit}
-            methods={methods}>
+    <TdsPage title={tdsVscode.l10n.t("Apply Patch")} linkToDoc="[Apply Patch]servers.md#registro-de-servidores">
+      <TdsForm<TFields>
+        onSubmit={onSubmit}
+        methods={methods}>
 
-            <section className="tds-row-container" >
-              <TdsTextField
-                methods={methods}
-                name="serverName"
-                label="Server name"
-                info="Identificador do servidor alvo"
-                readOnly={true}
-              />
-              <TdsTextField
-                methods={methods}
-                name="address"
-                label="Address"
-                info="Endereço do servidor alvo"
-                readOnly={true}
-              />
-            </section>
+        <section className="tds-row-container" >
+          <TdsTextField
+            methods={methods}
+            name="serverName"
+            label={tdsVscode.l10n.t("Server name")}
+            info={tdsVscode.l10n.t("Target Server Identifier")}
+            readOnly={true}
+          />
+          <TdsTextField
+            methods={methods}
+            name="address"
+            label={tdsVscode.l10n.t("Address")}
+            info={tdsVscode.l10n.t("Target server address")}
+            readOnly={true}
+          />
+        </section>
 
-            <TdsTextField
-              methods={methods}
-              name="environment"
-              label="Environment"
-              info="Ambiente  alvo"
-              readOnly={true}
-            />
+        <TdsTextField
+          methods={methods}
+          name="environment"
+          label={tdsVscode.l10n.t("Environment")}
+          info={tdsVscode.l10n.t("Target environment")}
+          readOnly={true}
+        />
 
-            <TdsLabelField
-              methods={methods}
-              name="patchFilesLabel"
-              label={"Patch Files"}
-            />
+        <TdsLabelField
+          methods={methods}
+          name="patchFilesLabel"
+          label={tdsVscode.l10n.t("Patch Files")}
+        />
 
-            <section className="tds-row-container" >
-              <VSCodeDataGrid id="patchGrid" grid-template-columns="30px 60px 15rem 20rem">
-                {model && model.patchFiles.map((row: TPatchFileData, index: number) => (
-                  <VSCodeDataGridRow key={index}>
-                    {row.uri !== undefined &&
-                      <>
-                        <VSCodeDataGridCell grid-column="1">
-                          {row.isProcessing ?
-                            <VSCodeProgressRing className="tds-progress-ring" />
-                            :
-                            <VSCodeButton appearance="icon"
-                              onClick={() => removePatchFile(index)} >
-                              <span className="codicon codicon-close"></span>
-                            </VSCodeButton>
+        <section className="tds-row-container" >
+          <VSCodeDataGrid id="patchGrid" grid-template-columns="30px 60px 15rem 20rem">
+            {model && model.patchFiles.map((row: TPatchFileData, index: number) => (
+              <VSCodeDataGridRow key={index}>
+                {row.uri !== undefined &&
+                  <>
+                    <VSCodeDataGridCell grid-column="1">
+                      {row.isProcessing ?
+                        <VSCodeProgressRing className="tds-progress-ring" />
+                        :
+                        <VSCodeButton appearance="icon"
+                          onClick={() => removePatchFile(index)} >
+                          <span className="codicon codicon-close"></span>
+                        </VSCodeButton>
+                      }
+                    </VSCodeDataGridCell>
+                    <VSCodeDataGridCell grid-column="2">
+                      {!row.isProcessing &&
+                        <VSCodeButton appearance="icon"
+                          onClick={() => infoPatchFile(index)} >
+                          <span className="codicon codicon-info"></span>
+                        </VSCodeButton>
+                      }
+                      {row.validation == "OK" &&
+                        <VSCodeButton appearance="icon" >
+                          <span className="codicon codicon-check"></span>
+                        </VSCodeButton>
+                      }
+                    </VSCodeDataGridCell>
+                    <VSCodeDataGridCell grid-column="3">
+                      <TdsSimpleTextField
+                        methods={methods}
+                        name={`patchFiles.${index}.name`}
+                        readOnly={true}
+                        info={row.name}
+                      />
+                    </VSCodeDataGridCell>
+                    <VSCodeDataGridCell grid-column="4">
+                      <TdsSimpleTextField
+                        methods={methods}
+                        name={`patchFiles.${index}.fsPath`}
+                        readOnly={true}
+                        info={row.uri.fsPath}
+                      />
+                    </VSCodeDataGridCell>
+                  </>
+                }
+                {((row.uri == undefined) && (index !== indexFirstPathFree)) &&
+                  <>
+                    <VSCodeDataGridCell grid-column="1">
+                      &nbsp;
+                    </VSCodeDataGridCell>
+                    <VSCodeDataGridCell grid-column="2">
+                      &nbsp;
+                    </VSCodeDataGridCell>
+                  </>
+                }
+                {(index === indexFirstPathFree) &&
+                  <>
+                    <VSCodeDataGridCell grid-column="1">
+                      &nbsp;
+                    </VSCodeDataGridCell>
+                    <VSCodeDataGridCell grid-column="2">
+                      <TdsSelectionFileField
+                        methods={methods}
+                        name={`btnSelectFile.${index}`}
+                        canSelectMany={true}
+                        title={tdsVscode.l10n.t("Select the update package (s)")}
+                        filters={
+                          {
+                            "Patch file": ["PTM", "ZIP", "UPD"]
                           }
-                        </VSCodeDataGridCell>
-                        <VSCodeDataGridCell grid-column="2">
-                          {!row.isProcessing &&
-                            <VSCodeButton appearance="icon"
-                              onClick={() => infoPatchFile(index)} >
-                              <span className="codicon codicon-info"></span>
-                            </VSCodeButton>
-                          }
-                          {row.validation == "OK" &&
-                            <VSCodeButton appearance="icon" >
-                              <span className="codicon codicon-check"></span>
-                            </VSCodeButton>
-                          }
-                        </VSCodeDataGridCell>
-                        <VSCodeDataGridCell grid-column="3">
-                          <TdsSimpleTextField
-                            methods={methods}
-                            name={`patchFiles.${index}.name`}
-                            readOnly={true}
-                            info={row.name}
-                          />
-                        </VSCodeDataGridCell>
-                        <VSCodeDataGridCell grid-column="4">
-                          <TdsSimpleTextField
-                            methods={methods}
-                            name={`patchFiles.${index}.fsPath`}
-                            readOnly={true}
-                            info={row.uri.fsPath}
-                          />
-                        </VSCodeDataGridCell>
-                      </>
-                    }
-                    {((row.uri == undefined) && (index !== indexFirstPathFree)) &&
-                      <>
-                        <VSCodeDataGridCell grid-column="1">
-                          &nbsp;
-                        </VSCodeDataGridCell>
-                        <VSCodeDataGridCell grid-column="2">
-                          &nbsp;
-                        </VSCodeDataGridCell>
-                      </>
-                    }
-                    {(index === indexFirstPathFree) &&
-                      <>
-                        <VSCodeDataGridCell grid-column="1">
-                          &nbsp;
-                        </VSCodeDataGridCell>
-                        <VSCodeDataGridCell grid-column="2">
-                          <TdsSelectionFileField
-                            methods={methods}
-                            name={`btnSelectFile.${index}`}
-                            canSelectMany={true}
-                            title={"Selecione o(s) pacote(s) de atualização"}
-                            filters={
-                              {
-                                "Patch file": ["PTM", "ZIP", "UPD"]
-                              }
-                            }
-                            readOnly={isProcessing}
-                          />
-                        </VSCodeDataGridCell>
-                      </>
-                    }
-                  </VSCodeDataGridRow>
-                ))}
-              </VSCodeDataGrid>
-            </section>
+                        }
+                        readOnly={isProcessing}
+                      />
+                    </VSCodeDataGridCell>
+                  </>
+                }
+              </VSCodeDataGridRow>
+            ))}
+          </VSCodeDataGrid>
+        </section>
 
-            <TdsSimpleCheckBoxField
-              methods={methods}
-              name="applyOldFiles"
-              label="Apply old files"
-              textLabel={"Apply old files"} />
-          </TdsForm>
-        </FormProvider>
-      </TdsPage >
-    </main >
+        <TdsSimpleCheckBoxField
+          methods={methods}
+          name="applyOldFiles"
+          label={tdsVscode.l10n.t("Apply old files")}
+          textLabel={tdsVscode.l10n.t("Apply old files")} />
+      </TdsForm>
+    </TdsPage >
   );
 }
+
 function sendGetInfo(arg0: TFields, index: number) {
   throw new Error("Function not implemented.");
 }

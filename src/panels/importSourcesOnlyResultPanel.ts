@@ -92,7 +92,12 @@ export class ImportSourcesOnlyResultPanel {
    */
   private _getWebviewContent(extensionUri: vscode.Uri) {
 
-    return getWebviewContent(this._panel.webview, extensionUri, "ImportSourcesOnlyResultView", { title: this._panel.title, data: this.sourceList });
+    return getWebviewContent(this._panel.webview, extensionUri, "ImportSourcesOnlyResultView",
+      { title: this._panel.title, data: this.sourceList, translations: this.getTranslations() });
+  }
+
+  getTranslations(): Record<string, string> {
+    throw new Error("Method not implemented.");
   }
 
   /*

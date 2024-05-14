@@ -16,13 +16,13 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import { ServersConfig, serverExceptionCodeToString } from "../utils";
+import Utils, { MESSAGE_TYPE, ServersConfig, serverExceptionCodeToString } from "../utils";
 import { CommonCommandFromWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
 import { IObjectData, IPatchResult, sendInspectorObjectsRequest, sendPatchGenerateMessage } from "../protocolMessages";
-import { TFieldErrors, TdsPanel, isErrors } from "../model/field-model";
 import { TGeneratePatchModel } from "../model/generatePatchModel";
 import { TInspectorObject } from "../patch/patchUtil";
 import { ResponseError } from "vscode-languageclient";
+import { TFieldErrors, TdsPanel, isErrors } from "./panel";
 
 enum PatchGenerateCommandEnum {
   IncludeTRes = "INCLUDE_TRES",
@@ -93,7 +93,8 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
    */
   protected getWebviewContent(extensionUri: vscode.Uri) {
 
-    return getWebviewContent(this._panel.webview, extensionUri, "patchGenerateView", { title: this._panel.title });
+    return getWebviewContent(this._panel.webview, extensionUri, "patchGenerateView",
+      { title: this._panel.title, translations: this.getTranslations() });
   }
 
   /**
@@ -261,7 +262,7 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
       ok = false
     } else if (response.returnCode !== 0) {
       const msgError = ` ${serverExceptionCodeToString(response.returnCode)} ${response.message}`;
-      this.logError(msgError)
+      Utils.logMessage(msgError, MESSAGE_TYPE.Error, false);
       vscode.window.showErrorMessage(msgError);
       errors.root = { type: "validate", message: `Protheus Server was unable to generate the patch. Code: ${response.returnCode}` };;
       ok = false
@@ -274,4 +275,25 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
     return ok;
   }
 
+  getTranslations(): Record<string, string> {
+    return {
+      "Patch Generation from RPO": vscode.l10n.t("Patch Generation from RPO"),
+      "Output directory": vscode.l10n.t("Output directory"),
+      "Enter the destination folder of the generated update package": vscode.l10n.t("Enter the destination folder of the generated update package"),
+      "Output Folder": vscode.l10n.t("Output Folder"),
+      "Select the destination folder of the generated update package": vscode.l10n.t("Select the destination folder of the generated update package"),
+      "Select Output Directory": vscode.l10n.t("Select Output Directory"),
+      "Output Patch Filename": vscode.l10n.t("Output Patch Filename"),
+      "Enter update package name.": vscode.l10n.t("Enter update package name."),
+      "Filter": vscode.l10n.t("Filter"),
+      "Filter by Object Name. Ex: Mat or Fat*": vscode.l10n.t("Filter by Object Name. Ex: Mat or Fat*"),
+      "Include *.TRES": vscode.l10n.t("Include *.TRES"),
+      "Resource count limit": vscode.l10n.t("Resource count limit"),
+      "100 (fast render)": vscode.l10n.t("100 (fast render)"),
+      "500 (slow render)": vscode.l10n.t("500 (slow render)"),
+      "Resource list has more than {0} items. Enter a more restrictive filter.": vscode.l10n.t("Resource list has more than {0} items. Enter a more restrictive filter."),
+      "RPO Objects": vscode.l10n.t("RPO Objects"),
+      "To patch": vscode.l10n.t("To patch"),
+    }
+  }
 }

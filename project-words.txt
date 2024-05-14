@@ -1,5 +1,6 @@
 Advpl
 ADVPL
+codicons
 CONNT
 defragment
 Defragmenting
@@ -12,4 +13,5 @@ Totvs
 totvsls
 totvsmonitor
 totvsserver
+webtoolkit
 webviews

@@ -1,12 +1,12 @@
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 
 import "./globalInclude.css";
-import { TdsPage } from "@totvs/tds-webtoolkit";
+import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { TIncludeData } from "../model/addServerModel";
-import { FieldArrayWithId, SubmitHandler, useFieldArray, useForm, FormProvider } from "react-hook-form";
-import { IFormAction, TdsForm, TdsLabelField, TdsSelectionFolderField, TdsSimpleTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
-import { CommonCommandEnum, ReceiveMessage, sendReady, sendSaveAndClose } from "@totvs/tds-webtoolkit";
+import { FieldArrayWithId, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { TdsForm, TdsLabelField, TdsSelectionFolderField, TdsSimpleTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
+import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 
 enum ReceiveCommandEnum {
 }
@@ -84,69 +84,64 @@ export default function GlobalIncludeView() {
   const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludeData) => row.path == "");
 
   return (
-    <main>
-      <TdsPage title="Global Includes" linkToDoc="[Include global]servers.md#registro-de-servidores">
-        <FormProvider {...methods} >
-          <TdsForm
+    <TdsPage title="Global Includes" linkToDoc="[Include global]servers.md#registro-de-servidores">
+      <TdsForm
+        methods={methods}
+        onSubmit={onSubmit}
+        description={tdsVscode.l10n.t("The global search folder list is used when not specified in the server definition.")}>
+
+        <section className="tds-row-container" >
+          <TdsLabelField
             methods={methods}
-            onSubmit={onSubmit}>
+            label="Include directories"
+            name={"includeDirectoriesLabel"}
+            info={"Informe as pastas onde os arquivos de definição devem ser procurados"} />
+        </section>
 
-            <p>The global search folder list is used when not specified in the server definition.</p>
-
-            <section className="tds-row-container" >
-              <TdsLabelField
-                methods={methods}
-                label="Include directories"
-                name={"includeDirectoriesLabel"}
-                info={"Informe as pastas onde os arquivos de definição devem ser procurados"} />
-            </section>
-
-            <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
-              {fields.map((row: FieldArrayWithId<TFields, "includePaths", "id">, index: number) => (
-                <VSCodeDataGridRow key={row.id}>
-                  {row.path !== "" &&
-                    <>
-                      <VSCodeDataGridCell grid-column="1">
-                        <VSCodeButton appearance="icon" onClick={() => removeIncludePath(index)} >
-                          <span className="codicon codicon-close"></span>
-                        </VSCodeButton>
-                      </VSCodeDataGridCell>
-                      <VSCodeDataGridCell grid-column="2">
-                        <TdsSimpleTextField
-                          methods={methods}
-                          name={`includePaths.${index}.path`}
-                          readOnly={true}
-                        />
-                      </VSCodeDataGridCell>
-                    </>
-                  }
-                  {((row.path == "") && (index !== indexFirstPathFree)) &&
-                    <>
-                      <VSCodeDataGridCell grid-column="1">&nbsp;</VSCodeDataGridCell>
-                      <VSCodeDataGridCell grid-column="2">&nbsp;</VSCodeDataGridCell>
-                    </>
-                  }
-                  {index == indexFirstPathFree &&
-                    <>
-                      <VSCodeDataGridCell grid-column="2">
-                        <TdsSelectionFolderField
-                          methods={methods}
-                          title="Select folder with definition files"
-                          name={`btnSelectFolder.${index}`}
-                          info={"Selecione uma pasta que contenha arquivos de definição"}
-                        />
-                      </VSCodeDataGridCell>
-                    </>
-                  }
-                </VSCodeDataGridRow>
-              ))
+        <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
+          {fields.map((row: FieldArrayWithId<TFields, "includePaths", "id">, index: number) => (
+            <VSCodeDataGridRow key={row.id}>
+              {row.path !== "" &&
+                <>
+                  <VSCodeDataGridCell grid-column="1">
+                    <VSCodeButton appearance="icon" onClick={() => removeIncludePath(index)} >
+                      <span className="codicon codicon-close"></span>
+                    </VSCodeButton>
+                  </VSCodeDataGridCell>
+                  <VSCodeDataGridCell grid-column="2">
+                    <TdsSimpleTextField
+                      methods={methods}
+                      name={`includePaths.${index}.path`}
+                      readOnly={true}
+                    />
+                  </VSCodeDataGridCell>
+                </>
               }
-            </VSCodeDataGrid>
-            <p>These settings can also be changed in %HOME_USER%/.totvsls/servers.json</p>
-          </TdsForm>
-        </FormProvider>
-      </TdsPage>
-    </main >
+              {((row.path == "") && (index !== indexFirstPathFree)) &&
+                <>
+                  <VSCodeDataGridCell grid-column="1">&nbsp;</VSCodeDataGridCell>
+                  <VSCodeDataGridCell grid-column="2">&nbsp;</VSCodeDataGridCell>
+                </>
+              }
+              {index == indexFirstPathFree &&
+                <>
+                  <VSCodeDataGridCell grid-column="2">
+                    <TdsSelectionFolderField
+                      methods={methods}
+                      title="Select folder with definition files"
+                      name={`btnSelectFolder.${index}`}
+                      info={"Selecione uma pasta que contenha arquivos de definição"}
+                    />
+                  </VSCodeDataGridCell>
+                </>
+              }
+            </VSCodeDataGridRow>
+          ))
+          }
+        </VSCodeDataGrid>
+        <p>These settings can also be changed in %HOME_USER%/.totvsls/servers.json</p>
+      </TdsForm>
+    </TdsPage>
   );
 }
 

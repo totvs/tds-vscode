@@ -1,5 +1,5 @@
+import { TModelPanel } from "../panels/panel";
 import { TInspectorObject } from "../patch/patchUtil";
-import { TModelPanel } from "./field-model";
 
 export type TGeneratePatchModel = TModelPanel & {
 	patchName: string;

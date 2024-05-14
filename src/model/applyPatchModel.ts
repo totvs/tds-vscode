@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
+import { TModelPanel } from "../panels/panel";
 
-import { TModelPanel } from "./field-model";
 
 export type TPatchFileData = {
 	name: string;

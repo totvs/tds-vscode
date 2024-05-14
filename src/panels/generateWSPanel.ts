@@ -16,14 +16,14 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import { ServersConfig, serverExceptionCodeToString } from "../utils";
-import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
+import Utils, { MESSAGE_TYPE, ServersConfig, serverExceptionCodeToString } from "../utils";
+import { CommonCommandFromWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
 import { IWsdlGenerateResult, sendWsdlGenerateRequest } from "../protocolMessages";
-import { TdsPanel, TFieldErrors, isErrors, TModelPanel, TSendSelectResourceProps } from "../model/field-model";
 import { TWebServiceModel } from "../model/webServiceModel";
 import * as fse from "fs-extra";
 import path from "path";
 import { _debugEvent } from "../debug";
+import { TFieldErrors, TSendSelectResourceProps, TdsPanel, isErrors } from "./panel";
 
 enum GenerateWebServiceCommandEnum {
 }
@@ -81,7 +81,8 @@ export class GenerateWebServicePanel extends TdsPanel<TWebServiceModel> {
 	 */
 	protected getWebviewContent(extensionUri: vscode.Uri) {
 
-		return getWebviewContent(this._panel.webview, extensionUri, "generateWebServiceView", { title: this._panel.title });
+		return getWebviewContent(this._panel.webview, extensionUri, "generateWebServiceView",
+			{ title: this._panel.title, translations: this.getTranslations() });
 	}
 
 	/**
@@ -171,7 +172,7 @@ export class GenerateWebServicePanel extends TdsPanel<TWebServiceModel> {
 			this.sendUpdateModel(model, errors)
 
 			error += ` [${serverExceptionCodeToString(response.returnCode)}]`;
-			this.logError(error);
+			Utils.logMessage(error, MESSAGE_TYPE.Error, true);
 
 			return false;
 		}
@@ -201,4 +202,20 @@ export class GenerateWebServicePanel extends TdsPanel<TWebServiceModel> {
 		}
 	}
 
+	protected getTranslations(): Record<string, string> {
+		return {
+			"URL or Wsdl File": vscode.l10n.t("URL or Wsdl File"),
+			"Enter the WSDL access URL or the file with the service definition": vscode.l10n.t("Enter the WSDL access URL or the file with the service definition"),
+			"Select the file with the service definition": vscode.l10n.t("Select the file with the service definition"),
+			"File with WSDL definition": vscode.l10n.t("File with WSDL definition"),
+			"Output directory": vscode.l10n.t("Output directory"),
+			"Select the folder from where the generated source will be recorded": vscode.l10n.t("Select the folder from where the generated source will be recorded"),
+			"Select Output Directory": vscode.l10n.t("Select Output Directory"),
+			"Output Filename": vscode.l10n.t("Output Filename"),
+			"Source Name to be recorded": vscode.l10n.t("Source Name to be recorded"),
+			"Select the file that will receive the definition of the service": vscode.l10n.t("Select the file that will receive the definition of the service"),
+			"ADVPL Source File": vscode.l10n.t("ADVPL Source File"),
+			"If already exist, can overwrite": vscode.l10n.t("If already exist, can overwrite")
+		}
+	}
 }

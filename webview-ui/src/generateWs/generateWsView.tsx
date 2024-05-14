@@ -1,8 +1,8 @@
 
 import "./generateWs.css";
-import { TdsPage } from "@totvs/tds-webtoolkit";
+import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
 import React from "react";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsSelectionFileField, TdsSelectionFolderField, TdsSimpleCheckBoxField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 
@@ -58,83 +58,79 @@ export default function GenerateWsView() {
   }, []);
 
   return (
-    <main>
-      <TdsPage title="Generate Web Service Client" linkToDoc="[Geração de Web Service]servers.md#registro-de-servidores">
-        <FormProvider {...methods} >
-          <TdsForm
+    <TdsPage title="Generate Web Service Client" linkToDoc="[Geração de Web Service]servers.md#registro-de-servidores">
+      <TdsForm
+        methods={methods}
+        onSubmit={onSubmit}
+      >
+
+        <section className="tds-row-container" >
+          <TdsTextField
             methods={methods}
-            onSubmit={onSubmit}
-          >
+            name="urlOrWsdlFile"
+            label={tdsVscode.l10n.t("URL or Wsdl File")}
+            info={tdsVscode.l10n.t("Enter the WSDL access URL or the file with the service definition")}
+            rules={{ required: true }}
+          />
 
-            <section className="tds-row-container" >
-              <TdsTextField
-                methods={methods}
-                name="urlOrWsdlFile"
-                label="URL or Wsdl File"
-                info="Informe a URL de acesso ao WSDL ou o arquivo com a definição do serviço"
-                rules={{ required: true }}
-              />
+          <TdsSelectionFileField
+            methods={methods}
+            name="btn-urlOrWsdlFile"
+            info={tdsVscode.l10n.t("Select the file with the service definition")}
+            title={tdsVscode.l10n.t("File with WSDL definition")}
+            filters={{
+              "WSDL Files": ["wsdl"]
+            }} />
+        </section>
 
-              <TdsSelectionFileField
-                methods={methods}
-                name="btn-urlOrWsdlFile"
-                info={"Selecione o arquivo com a definição do serviço"}
-                title={"Arquivo com a definição WSDL"}
-                filters={{
-                  "WSDL Files": ["wsdl"]
-                }} />
-            </section>
+        <section className="tds-row-container" >
+          <TdsTextField
+            methods={methods}
+            name="outputPath"
+            label={tdsVscode.l10n.t("Output directory")}
+            info={tdsVscode.l10n.t("Select the folder from where the generated source will be recorded")}
+            readOnly={true}
+            rules={{ required: true }}
+          />
 
-            <section className="tds-row-container" >
-              <TdsTextField
-                methods={methods}
-                name="outputPath"
-                label="Output directory"
-                readOnly={true}
-                rules={{ required: true }}
-                info={"Selecione a pasta de onde o fonte gerado será gravado"}
-              />
+          <TdsSelectionFolderField
+            methods={methods}
+            openLabel="Output Folder"
+            name="btn-outputPath"
+            info={tdsVscode.l10n.t("Select the folder from where the generated source will be recorded")}
+            title={tdsVscode.l10n.t("Select Output Directory")}
+          />
+        </section>
 
-              <TdsSelectionFolderField
-                methods={methods}
-                openLabel="Output Folder"
-                name="btn-outputPath"
-                info={"Selecione a pasta de onde o fonte gerado será gravado"}
-                title="Select Output Directory"
-              />
-            </section>
+        <section className="tds-row-container" >
+          <TdsTextField
+            methods={methods}
+            name="outputFilename"
+            label={tdsVscode.l10n.t("Output Filename")}
+            info={tdsVscode.l10n.t("Source Name to be recorded")}
+            rules={{ required: true }}
+          />
 
-            <section className="tds-row-container" >
-              <TdsTextField
-                methods={methods}
-                name="outputFilename"
-                label="Output Filename"
-                rules={{ required: true }}
-                info={"Informe nome do fonte a ser gravado"}
-              />
+          <TdsSelectionFileField
+            methods={methods}
+            name="btn-outputFilename"
+            info={tdsVscode.l10n.t("Select the file that will receive the definition of the service")}
+            title={tdsVscode.l10n.t("ADVPL Source File")}
+            currentFolder={methods.getValues("outputPath")}
+            filters={{
+              "AdvPL Source File": ["prx", "prw", "tlpp"]
+            }} />
+        </section>
 
-              <TdsSelectionFileField
-                methods={methods}
-                name="btn-outputFilename"
-                info={"Selecione o arquivo que receberá a definição do serviço"}
-                title={"Arquivo Fonte AdvPL"}
-                currentFolder={methods.getValues("outputPath")}
-                filters={{
-                  "AdvPL Source File": ["prx", "prw", "tlpp"]
-                }} />
-            </section>
-
-            <TdsSimpleCheckBoxField
-              methods={methods}
-              info=""
-              name="overwrite"
-              label="&nbsp;"
-              textLabel="If already exist, can overwrite"
-            />
-          </TdsForm>
-        </FormProvider>
-      </TdsPage>
-    </main >
+        <TdsSimpleCheckBoxField
+          methods={methods}
+          info=""
+          name="overwrite"
+          label="&nbsp;"
+          textLabel={tdsVscode.l10n.t("If already exist, can overwrite")}
+        />
+      </TdsForm>
+    </TdsPage>
   );
 }
 

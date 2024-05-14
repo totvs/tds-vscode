@@ -9,8 +9,9 @@ import * as vscode from "vscode";
  * @remarks Extra files is add after de main files and storage in 'webview-ui/src/js' or 'webview-ui/src/css'
  */
 export interface IWebviewContent {
+  translations: Record<string, string>;
   title?: string;
-  data?: {}
+  data?: Record<string, string>;
 }
 
 // * @property cssExtraFiles Additional CSS files
@@ -93,7 +94,7 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
           <meta name="theme-color" content="#000000">
           <meta http-equiv="Content-Security-Policy"
               content="default-src 'none';
-                      img-src https: 'unsafe-inline' ${webview.cspSource};
+                      img-src https: 'unsafe-inline' ${webview.cspSource} vscode-resource:;
                       font-src ${webview.cspSource};
                       style-src 'unsafe-inline' ${webview.cspSource};
                       script-src 'nonce-${nonce}';"
@@ -152,17 +153,22 @@ export function getExtraPanelConfigurations(extensionUri: vscode.Uri): {} {
     // Enable JavaScript in the webview
     enableScripts: true,
     // Restrict the webview to only load resources from the `out` and `webview-ui/build` directories
-    localResourceRoots: getCspSource(extensionUri)
+    localResourceRoots: getCspSource(extensionUri),
+    //  Retains the context of the webview when it is hidden, allowing it to resume its state when shown again.
+    retainContextWhenHidden: true
   };
 }
 
 // Restrict the webview to only load resources from the `out` and `webview-ui/build` directories
 export function getCspSource(extensionUri: vscode.Uri) {
-  return [extensionUri]
-  // return [
-  //   vscode.Uri.joinPath(extensionUri, "out"),
-  //   vscode.Uri.joinPath(extensionUri, "webview-ui/build"),
-  //   vscode.Uri.joinPath(extensionUri, "webview-ui/node_modules/@vscode"),
-  //   vscode.Uri.joinPath(extensionUri, "webview-ui/media")
-  // ];
+  return [
+    extensionUri,
+    vscode.Uri.joinPath(extensionUri, "webview-ui", "build", "node_modules", "@totvs", "tds-webview-ui", "dist", "icons"),
+  ]
+  return [
+    vscode.Uri.joinPath(extensionUri, "out"),
+    vscode.Uri.joinPath(extensionUri, "webview-ui/build"),
+    //   vscode.Uri.joinPath(extensionUri, "webview-ui/node_modules/@vscode"),
+    //   vscode.Uri.joinPath(extensionUri, "webview-ui/media")
+  ];
 }

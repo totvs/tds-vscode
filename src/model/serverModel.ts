@@ -1,4 +1,5 @@
-import { TIncludePath, TModelPanel } from "./field-model";
+import { TModelPanel } from "../panels/panel";
+import { TIncludePath } from "./includeModel";
 
 export type TServerType = ""
 	| "totvs_server_protheus"

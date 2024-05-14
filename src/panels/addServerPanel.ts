@@ -1,5 +1,5 @@
 /*
-Copyright 2021 TOTVS S.A
+Copyright 2021-2024 TOTVS S.A
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,7 +20,8 @@ import Utils, { ServersConfig } from "../utils";
 import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
 import { IValidationInfo, sendValidationRequest } from "../protocolMessages";
 import { TServerModel, TServerType } from "../model/serverModel";
-import { TFieldErrors, TIncludePath, TdsPanel, isErrors } from "../model/field-model";
+import { TFieldErrors, TdsPanel, isErrors } from "./panel";
+import { TIncludePath } from "../model/includeModel";
 
 enum AddServerCommandEnum {
 }
@@ -78,7 +79,8 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
    */
   protected getWebviewContent(extensionUri: vscode.Uri) {
 
-    return getWebviewContent(this._panel.webview, extensionUri, "addServerView", { title: this._panel.title });
+    return getWebviewContent(this._panel.webview, extensionUri, "addServerView",
+      { title: this._panel.title, translations: this.getTranslations() });
   }
 
   /**
@@ -172,8 +174,8 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
     }
     const server = ServersConfig.getServerByName(model.serverName);
     if (server !== undefined) {
-      errors.root = { type: "validate", message: "Server already exist" };
-      errors.serverName = { type: "validate", message: "Server already exist" };
+      errors.root = { type: "validate", message: vscode.l10n.t("Server already exist") };
+      errors.serverName = { type: "validate", message: vscode.l10n.t("Server already exist") };
     }
 
     if (model.address.length == 0) {
@@ -181,18 +183,18 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
     }
 
     if (Number.isNaN(model.port)) {
-      errors.port = { type: "validate", message: "[Port] is not a number" };
+      errors.port = { type: "validate", message: vscode.l10n.t("[Port] is not a number") };
     } else if (!(model.port > 0)) {
-      errors.port = { type: "min", message: "[Port] is not valid range. Min: 1 Max: 65535" };
+      errors.port = { type: "min", message: vscode.l10n.t("[Port] is not valid range. Min: 1 Max: 65535") };
     } else if (model.port > 65535) {
-      errors.port = { type: "max", message: "[Port] is not valid range. Min: 1 Max: 65535" };
+      errors.port = { type: "max", message: vscode.l10n.t("[Port] is not valid range. Min: 1 Max: 65535") };
     };
 
     model.includePaths.forEach((includePath: TIncludePath, index: number) => {
       let checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/);
 
       if (checkedDir.length == 0) {
-        errors[`includePaths.${index}.path`] = { type: "validate", message: "Pasta inválida ou não contém arquivos de definição (.CH ou .TH)" };
+        errors[`includePaths.${index}.path`] = { type: "validate", message: vscode.l10n.t("Invalid folder or not contains definition files (.ch or .th)") };
       }
     })
 
@@ -202,7 +204,7 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
 
       const validInfoNode: IValidationInfo = await sendValidationRequest(model.address, model.port, model.serverType);
       if (validInfoNode.build == "") {
-        errors.root = { type: "validate", message: "Server not found for build validate" };
+        errors.root = { type: "validate", message: vscode.l10n.t("Server not found for build validate") };
       }
 
       vscode.window.setStatusBarMessage("");
@@ -240,4 +242,26 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
 
     return true;
   }
+
+  protected getTranslations(): Record<string, string> {
+    return {
+      "Add Server": vscode.l10n.t("Add Server"),
+      "[Server Registration]servers.md#registro-de-servidores": vscode.l10n.t("[Registro de Servidores]servers.md#registro-de-servidores"),
+      "Server Type": vscode.l10n.t("Server Type"),
+      "Select the Protheus server type": vscode.l10n.t("Select the Protheus server type"),
+      "Connect immediately": vscode.l10n.t("Connect immediately"),
+      "Server name": vscode.l10n.t("Server name"),
+      "Enter a name that helps you identify the server": vscode.l10n.t("Enter a name that helps you identify the server"),
+      "Address": vscode.l10n.t("Address"),
+      "Enter the IP or name of the server where Protheus is located": vscode.l10n.t("Enter the IP or name of the server where Protheus is located"),
+      "Port": vscode.l10n.t("Port"),
+      "Enter the SC connection port": vscode.l10n.t("Enter the SC connection port"),
+      "[Port] is not valid range. Min: 1 Max: 65535": vscode.l10n.t("[Port] is not valid range. Min: 1 Max: 65535"),
+      "Include directories": vscode.l10n.t("Include directories"),
+      "Enter the folders where the definition files should be searched": vscode.l10n.t("Enter the folders where the definition files should be searched"),
+      "May be informed later. If you do not inform, the global configuration will be used.": vscode.l10n.t("May be informed later. If you do not inform, the global configuration will be used."),
+      "Enter the connection parameters to the Protheus server.": vscode.l10n.t("Enter the connection parameters to the Protheus server.")
+    }
+  }
+
 }

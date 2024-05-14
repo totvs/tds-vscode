@@ -281,40 +281,13 @@ export class PatchEditorProvider
    */
   private getHtmlForWebview(webview: vscode.Webview): string {
 
-    return getWebviewContent(webview, this._context.extensionUri, "patchEditorView", { title: "Patch Editor" });
+    return getWebviewContent(webview, this._context.extensionUri, "patchEditorView",
+      { title: "Patch Editor", translations: this.getTranslations() });
+  }
 
-    // const ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
-    // const extensionPath = ext.extensionPath;
-
-    // // Local path to main script run in the webview
-    // const reactAppPathOnDisk = vscode.Uri.file(
-    //   path.join(extensionPath, "out", "webpack", "inspectPatchPanel.js")
-    // );
-
-    // const reactAppUri = webview.asWebviewUri(reactAppPathOnDisk);
-
-    // return `<!DOCTYPE html>
-    // <html lang="en">
-    // <head>
-    //     <meta charset="UTF-8">
-    //     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    //     <title>Monitor View</title>
-
-    //     <meta http-equiv="Content-Security-Policy"
-    //                 content="default-src 'none';
-    //                          img-src https:;
-    //                          script-src 'unsafe-eval' 'unsafe-inline' vscode-resource:;
-    //                          style-src vscode-resource: 'unsafe-inline';">
-
-    //     <script>
-    //       window.acquireVsCodeApi = acquireVsCodeApi;
-    //     </script>
-    // </head>
-    // <body>
-    //     <div id="root"></div>
-    //     <script crossorigin src="${reactAppUri}"></script>
-    // </body>
-    // </html>`;
+  protected getTranslations(): Record<string, string> {
+    return {
+    }
   }
 
   private _requestId = 1;
@@ -374,4 +347,5 @@ class WebviewCollection {
       this._webviews.delete(entry);
     });
   }
+
 }

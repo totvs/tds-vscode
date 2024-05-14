@@ -1,4 +1,4 @@
-import { TIncludePath, TModelPanel } from "./field-model";
+import { TModelPanel } from "../panels/panel";
 
 export type TWebServiceModel = TModelPanel & {
 	urlOrWsdlFile: string;

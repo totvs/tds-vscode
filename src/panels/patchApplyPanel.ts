@@ -19,11 +19,11 @@ import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webv
 import { ServersConfig, pathErrorCodeToString } from "../utils";
 import { CommonCommandFromWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
 import { IPatchApplyResult, PathErrorCodes, sendApplyPatchRequest, sendValidatePatchRequest } from "../protocolMessages";
-import { TFieldErrors, TdsPanel, isErrors } from "../model/field-model";
 import { TApplyPatchModel, TPatchFileData } from "../model/applyPatchModel";
 import { ServerItem } from "../serverItem";
 import * as path from "path";
 import * as fse from "fs-extra";
+import { TFieldErrors, TdsPanel, isErrors } from "./panel";
 
 enum ApplyPatchCommandEnum {
   PATCH_VALIDATE = "PATCH_VALIDATE",
@@ -105,7 +105,8 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
    */
   protected getWebviewContent(extensionUri: vscode.Uri) {
 
-    return getWebviewContent(this._panel.webview, extensionUri, "ApplyPatchView", { title: this._panel.title });
+    return getWebviewContent(this._panel.webview, extensionUri, "ApplyPatchView",
+      { title: this._panel.title, translations: this.getTranslations() });
   }
 
   /**
@@ -370,5 +371,21 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
 
       vscode.window.showErrorMessage(response.message);
     }
+  }
+
+  protected getTranslations(): Record<string, string> {
+    return {
+      "Apply Patch": vscode.l10n.t("Apply Patch"),
+      "Server name": vscode.l10n.t("Server name"),
+      "Target Server Identifier": vscode.l10n.t("Target Server Identifier"),
+      "Address": vscode.l10n.t("Address"),
+      "Target server address": vscode.l10n.t("Target server address"),
+      "Environment": vscode.l10n.t("Environment"),
+      "Target environment": vscode.l10n.t("Target environment"),
+      "Patch Files": vscode.l10n.t("Patch Files"),
+      "Select the update package (s)": vscode.l10n.t("Select the update package (s)"),
+      "Apply old files": vscode.l10n.t("Apply old files"),
+    }
+
   }
 }
