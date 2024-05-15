@@ -92,7 +92,7 @@ export function deletePrograms(programs: string[]) {
 	try {
 		if (server) {
 			if (_debugEvent) {
-				vscode.window.showWarningMessage("This operation is not allowed during a debug.")
+				vscode.window.showWarningMessage(vscode.l10n.t("This operation is not allowed during a debug."))
 				return;
 			}
 			//vscode.window.showInformationMessage("Compilação iniciada");

@@ -180,7 +180,7 @@ export function activate(context: ExtensionContext) {
     if (statusStyle === "short" || statusStyle === "detailed") {
       let statusIcon = window.createStatusBarItem(StatusBarAlignment.Right);
       statusIcon.text = vscode.l10n.t("Advpl: loading");
-      statusIcon.tooltip = vscode.l10n.t("advpl is loading project metadata (ie, compile_commands.json)");
+      statusIcon.tooltip = vscode.l10n.t("Advpl is loading project metadata (ie, compile_commands.json)");
       statusIcon.show();
     }
   })();
@@ -773,7 +773,7 @@ function checkServer(silent: boolean = false): boolean {
 
 function checkDebug(silent: boolean = false): boolean {
   if (_debugEvent && !silent) {
-    vscode.window.showWarningMessage("This operation is not allowed during a debug.")
+    vscode.window.showWarningMessage(vscode.l10n.t("This operation is not allowed during a debug."))
   }
 
   return _debugEvent == undefined ? _debugEvent : false;

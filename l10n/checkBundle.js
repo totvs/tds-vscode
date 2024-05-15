@@ -29,6 +29,8 @@ function verifyResult(language, update) {
 	const dataLanguage = JSON5.parse(contentLanguage);
 	var updateLanguage = false;
 
+	console.info("\n\nVerifying: " + language);
+
 	for (const key in dataMaster) {
 		if (!dataLanguage[key]) {
 			console.info(key + " not in " + language);
@@ -46,18 +48,17 @@ function verifyResult(language, update) {
 	};
 
 	if (update && updateLanguage) {
-		const bundleFile = path.join(process.cwd(), "l10n", "bundle.l10n." + language + ".json");
-		console.log(">>>> Updating %s", bundleFile);
-		fse.writeJSONSync(bundleFile, dataLanguage, { encoding: "utf-8", spaces: "  " });
+		console.log(">>>> Updating %s", bundleLanguage);
+		fse.writeJSONSync(bundleLanguage, dataLanguage, { encoding: "utf-8", spaces: "  " });
 	}
 }
 
 function main() {
 	console.log("Start check data files");
 
-	verifyResult("esn", true);
-	verifyResult("rus", true);
-	verifyResult("pt-BR", true);
+	verifyResult("es", false);
+	verifyResult("ru", false);
+	verifyResult("pt-BR", false);
 
 	console.log("End check data files");
 }

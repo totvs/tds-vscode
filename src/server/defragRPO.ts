@@ -10,7 +10,7 @@ export function defragRpo() {
   if (server) {
     if (_debugEvent) {
       vscode.window.showWarningMessage(
-        "This operation is not allowed during a debug."
+        vscode.l10n.t("This operation is not allowed during a debug.")
       );
       return;
     }

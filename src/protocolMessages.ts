@@ -449,7 +449,7 @@ export function sendCompilation(
 ): Thenable<CompileResult> {
   if (_debugEvent) {
     return Promise.reject(
-      new Error("This operation is not allowed during a debug.")
+      new Error(vscode.l10n.t("This operation is not allowed during a debug."))
     );
   }
 
@@ -470,7 +470,7 @@ export function sendCompilation(
 export function sendRpoInfo(server: ServerItem): Thenable<any> { //RpoInfoResult
   if (_debugEvent) {
     return Promise.reject(
-      new Error("This operation is not allowed during a debug.")
+      new Error(vscode.l10n.t("This operation is not allowed during a debug."))
     );
   }
 
@@ -492,7 +492,7 @@ export function sendPatchInfo(
 ): Thenable<any> {
   if (_debugEvent) {
     return Promise.reject(
-      new Error("This operation is not allowed during a debug.")
+      new Error(vscode.l10n.t("This operation is not allowed during a debug."))
     );
   }
 

@@ -9,7 +9,7 @@ export function rpoCheckIntegrity() {
 
 	if (server) {
 		if (_debugEvent) {
-			vscode.window.showWarningMessage("This operation is not allowed during a debug.")
+			vscode.window.showWarningMessage(vscode.l10n.t("This operation is not allowed during a debug."))
 			return;
 		}
 
@@ -29,9 +29,9 @@ export function rpoCheckIntegrity() {
 				vscode.window.showErrorMessage(err.message);
 			});
 
-		vscode.window.setStatusBarMessage("Checking RPO integrity", exec);
+		vscode.window.setStatusBarMessage(vscode.l10n.t("Checking RPO integrity"), exec);
 	} else {
-		vscode.window.showErrorMessage(vscode.l10n.t( 'There is no server connected'));
+		vscode.window.showErrorMessage(vscode.l10n.t('There is no server connected'));
 	}
 }
 
