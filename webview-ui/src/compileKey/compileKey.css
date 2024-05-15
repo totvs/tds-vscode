@@ -1,6 +1,6 @@
-/* .tds-row-container .tds-field-container:nth-child(1) {
-  flex-grow: 0;
-} */
+.tds-page {
+  width: 70%;
+}
 
 [name="warningCompatibility"] {
   font-weight: bold;

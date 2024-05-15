@@ -84,7 +84,7 @@ export default function GlobalIncludeView() {
   const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludeData) => row.path == "");
 
   return (
-    <TdsPage title="Global Includes" linkToDoc="[Include global]servers.md#registro-de-servidores">
+    <TdsPage title={tdsVscode.l10n.t("Global Include")} linkToDoc="[Include global]servers.md#registro-de-servidores">
       <TdsForm
         methods={methods}
         onSubmit={onSubmit}
@@ -93,9 +93,9 @@ export default function GlobalIncludeView() {
         <section className="tds-row-container" >
           <TdsLabelField
             methods={methods}
-            label="Include directories"
+            label={tdsVscode.l10n.t("Include directories")}
             name={"includeDirectoriesLabel"}
-            info={"Informe as pastas onde os arquivos de definição devem ser procurados"} />
+            info={tdsVscode.l10n.t("Enter the folders where the definition files should be searched")} />
         </section>
 
         <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
@@ -128,9 +128,9 @@ export default function GlobalIncludeView() {
                   <VSCodeDataGridCell grid-column="2">
                     <TdsSelectionFolderField
                       methods={methods}
-                      title="Select folder with definition files"
+                      title={tdsVscode.l10n.t("Select folder with definition files")}
                       name={`btnSelectFolder.${index}`}
-                      info={"Selecione uma pasta que contenha arquivos de definição"}
+                      info={tdsVscode.l10n.t("Select the folder where the definition files are located")}
                     />
                   </VSCodeDataGridCell>
                 </>
@@ -139,7 +139,7 @@ export default function GlobalIncludeView() {
           ))
           }
         </VSCodeDataGrid>
-        <p>These settings can also be changed in %HOME_USER%/.totvsls/servers.json</p>
+        <p>{tdsVscode.l10n.t("These settings can also be changed in {0}", "%HOME_USER%/.totvsls/servers.json")}</p>
       </TdsForm>
     </TdsPage>
   );

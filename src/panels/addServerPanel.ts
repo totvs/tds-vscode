@@ -194,7 +194,7 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
       let checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/);
 
       if (checkedDir.length == 0) {
-        errors[`includePaths.${index}.path`] = { type: "validate", message: vscode.l10n.t("Invalid folder or not contains definition files (.ch or .th)") };
+        errors[`includePaths.${index}.path`] = { type: "validate", message: vscode.l10n.t("Invalid folder or not contains definition files (.CH or .TH)") };
       }
     })
 

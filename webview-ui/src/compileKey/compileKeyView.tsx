@@ -128,7 +128,7 @@ export default function CompileKeyView() {
             methods={methods}
             name="path"
             label={tdsVscode.l10n.t("Compile Key File")}
-            info={tdsVscode.l10n.t("Generated compilation key file (.Aut)")}
+            info={tdsVscode.l10n.t("Generated compilation key file (.AUT)")}
             readOnly={true}
             rules={{ required: true }}
           />
@@ -147,7 +147,7 @@ export default function CompileKeyView() {
         <section className="tds-row-container tds-same-width">
           <TdsTextField
             methods={methods}
-            name="issued"
+            name="generation"
             label={tdsVscode.l10n.t("Generated")}
             info={tdsVscode.l10n.t("Date of key generation")}
             rules={{ required: true }}
@@ -155,7 +155,7 @@ export default function CompileKeyView() {
 
           <TdsTextField
             methods={methods}
-            name="expire"
+            name="validation"
             label={tdsVscode.l10n.t("Expire")}
             info={tdsVscode.l10n.t("Date of Key Expiration")}
             rules={{ required: true }}

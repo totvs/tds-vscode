@@ -1,3 +1,7 @@
+.tds-page {
+	width: 70%;
+}
+
 [name="includeDirectoriesLabel"] {
 	margin-top: var(--type-ramp-minus2-line-height);
 	margin-bottom: calc(var(--type-ramp-minus2-line-height) / 2);

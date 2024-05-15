@@ -131,7 +131,7 @@ export class GlobalIncludePanel extends TdsPanel<TIncludeModel> {
       let checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/);
 
       if (checkedDir.length == 0) {
-        errors[`includePaths.${index}.path`] = { type: "validate", message: "Pasta inválida ou não contém arquivos de definição (.CH ou .TH)" };
+        errors[`includePaths.${index}.path`] = { type: "validate", message: vscode.l10n.t("Invalid folder or not contains definition files (.CH or .TH)") };
       }
     })
 
@@ -147,12 +147,13 @@ export class GlobalIncludePanel extends TdsPanel<TIncludeModel> {
 
   protected getTranslations(): Record<string, string> {
     return {
-      "tds.webview.title": vscode.l10n.t("Include"),
-      "tds.webview.dir.include": vscode.l10n.t("Includes directory:"),
-      "tds.webview.dir.include2": vscode.l10n.t("Allow multiple directories"),
-      "tds.webview.dir.include.info": vscode.l10n.t("These settings can also be changed in"),
-      "tds.webview.dir.include.save": vscode.l10n.t("Save"),
-      "tds.webview.dir.include.saveclose": vscode.l10n.t("Save/Close"),
+      "Global Include": vscode.l10n.t("Global Include"),
+      "The global search folder list is used when not specified in the server definition.": vscode.l10n.t("The global search folder list is used when not specified in the server definition."),
+      "Include directories": vscode.l10n.t("Include directories"),
+      "Enter the folders where the definition files should be searched": vscode.l10n.t("Enter the folders where the definition files should be searched"),
+      "Select folder with definition files": vscode.l10n.t("Select folder with definition files"),
+      "Select the folder where the definition files are located": vscode.l10n.t("Select the folder where the definition files are located"),
+      "These settings can also be changed in {0}": vscode.l10n.t("These settings can also be changed in {0}"),
     };
   }
 
