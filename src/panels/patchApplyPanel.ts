@@ -383,7 +383,7 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
       "Environment": vscode.l10n.t("Environment"),
       "Target environment": vscode.l10n.t("Target environment"),
       "Patch Files": vscode.l10n.t("Patch Files"),
-      "Select the update package (s)": vscode.l10n.t("Select the update package (s)"),
+      "Select the update package(s)": vscode.l10n.t("Select the update package(s)"),
       "Apply old files": vscode.l10n.t("Apply old files"),
     }
 

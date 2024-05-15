@@ -208,7 +208,7 @@ export class GenerateWebServicePanel extends TdsPanel<TWebServiceModel> {
 			"Enter the WSDL access URL or the file with the service definition": vscode.l10n.t("Enter the WSDL access URL or the file with the service definition"),
 			"Select the file with the service definition": vscode.l10n.t("Select the file with the service definition"),
 			"File with WSDL definition": vscode.l10n.t("File with WSDL definition"),
-			"Output directory": vscode.l10n.t("Output directory"),
+			"Output Folder": vscode.l10n.t("Output Folder"),
 			"Select the folder from where the generated source will be recorded": vscode.l10n.t("Select the folder from where the generated source will be recorded"),
 			"Select Output Directory": vscode.l10n.t("Select Output Directory"),
 			"Output Filename": vscode.l10n.t("Output Filename"),

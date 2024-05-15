@@ -199,7 +199,7 @@ export default function PatchGenerateView() {
           <TdsTextField
             methods={methods}
             name="patchDest"
-            label={tdsVscode.l10n.t("Output directory")}
+            label={tdsVscode.l10n.t("Output Folder")}
             info={tdsVscode.l10n.t("Enter the destination folder of the generated update package")}
             readOnly={true}
             rules={{ required: true }}

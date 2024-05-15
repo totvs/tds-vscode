@@ -119,7 +119,7 @@ export default function CompileKeyView() {
           methods={methods}
           name="machineId"
           label={tdsVscode.l10n.t("Machine ID")}
-          info={tdsVscode.l10n.t("Single Identifier of the Station.Automatically obtained")}
+          info={tdsVscode.l10n.t("Single Identifier of the Station. Automatically obtained.")}
           readOnly={true}
         />
 

@@ -204,7 +204,7 @@ export default function ApplyPatchView() {
                         methods={methods}
                         name={`btnSelectFile.${index}`}
                         canSelectMany={true}
-                        title={tdsVscode.l10n.t("Select the update package (s)")}
+                        title={tdsVscode.l10n.t("Select the update package(s)")}
                         filters={
                           {
                             "Patch file": ["PTM", "ZIP", "UPD"]

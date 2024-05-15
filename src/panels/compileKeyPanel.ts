@@ -237,7 +237,7 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
     return {
       "Compile Key": vscode.l10n.t("Compile Key"),
       "Machine ID": vscode.l10n.t("Machine ID"),
-      "Single Identifier of the Station.Automatically obtained": vscode.l10n.t("Single Identifier of the Station.Automatically obtained"),
+      "Single Identifier of the Station. Automatically obtained.": vscode.l10n.t("Single Identifier of the Station. Automatically obtained."),
       "Compile Key File": vscode.l10n.t("Compile Key File"),
       "Generated compilation key file (.Aut)": vscode.l10n.t("Generated compilation key file (.Aut)"),
       "Generated": vscode.l10n.t("Generated"),

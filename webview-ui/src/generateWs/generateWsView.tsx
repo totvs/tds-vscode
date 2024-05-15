@@ -87,7 +87,7 @@ export default function GenerateWsView() {
           <TdsTextField
             methods={methods}
             name="outputPath"
-            label={tdsVscode.l10n.t("Output directory")}
+            label={tdsVscode.l10n.t("Output Folder")}
             info={tdsVscode.l10n.t("Select the folder from where the generated source will be recorded")}
             readOnly={true}
             rules={{ required: true }}

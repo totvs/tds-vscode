@@ -476,9 +476,8 @@ export class GeneratePatchPanel {
   getTranslations(): Record<string, string> {
     return {
       "Patch Generation from RPO": vscode.l10n.t("Patch Generation from RPO"),
-      "Output directory": vscode.l10n.t("Output directory"),
-      "Enter the destination folder of the generated update package": vscode.l10n.t("Enter the destination folder of the generated update package"),
       "Output Folder": vscode.l10n.t("Output Folder"),
+      "Enter the destination folder of the generated update package": vscode.l10n.t("Enter the destination folder of the generated update package"),
       "Select the destination folder of the generated update package": vscode.l10n.t("Select the destination folder of the generated update package"),
       "Select Output Directory": vscode.l10n.t("Select Output Directory"),
       "Output Patch Filename": vscode.l10n.t("Output Patch Filename"),

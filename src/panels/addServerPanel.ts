@@ -246,7 +246,7 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
   protected getTranslations(): Record<string, string> {
     return {
       "Add Server": vscode.l10n.t("Add Server"),
-      "[Server Registration]servers.md#registro-de-servidores": vscode.l10n.t("[Registro de Servidores]servers.md#registro-de-servidores"),
+      "[Server Registration]servers.md#registro-de-servidores": vscode.l10n.t("[Add Server]servers.md#registro-de-servidores"),
       "Server Type": vscode.l10n.t("Server Type"),
       "Select the Protheus server type": vscode.l10n.t("Select the Protheus server type"),
       "Connect immediately": vscode.l10n.t("Connect immediately"),
