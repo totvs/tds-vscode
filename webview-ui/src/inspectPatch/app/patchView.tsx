@@ -1,6 +1,6 @@
 import * as React from "react";
 //import MaterialTable from "material-table";
-import { i18n, PatchTheme, patchViewIcons } from "../helper";
+import {  PatchTheme } from "../helper";
 import Paper from "@material-ui/core/Paper";
 import { ApplyViewAction } from "../actions";
 import { EmptyPatchData, IPatchData } from "../patchData";
@@ -38,15 +38,15 @@ function headCells(): any[] {
   return [
     {
       field: "name",
-      title: i18n.localize("NAME", "Name"),
+      //title: i18n.localize("NAME", "Name"),
       ...cellDefaultStyle,
     }, {
       field: "date",
-      title: i18n.localize("DATE", "Date"),
+      //title: i18n.localize("DATE", "Date"),
       ...cellDefaultStyle,
     }, {
       field: "size",
-      title: i18n.localize("SIZE", "Size"),
+      //title: i18n.localize("SIZE", "Size"),
       type: "numeric",
       ...cellDefaultStyle,
     },
@@ -57,7 +57,7 @@ function headCells(): any[] {
     // },
     {
       field: "type",
-      title: i18n.localize("TYPE", "Type"),
+      //title: i18n.localize("TYPE", "Type"),
       ...cellDefaultStyle,
     }
   ];
