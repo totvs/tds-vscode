@@ -64,7 +64,12 @@ type TSelectObjectComponentProps = {
 }
 
 function SelectResourceComponent(props: TSelectObjectComponentProps) {
-  const { control } = useFormContext();
+  const { register, control } = props.methods;
+  // const fieldState: ControllerFieldState = props.methods.control.getFieldState(props.fieldName);
+  // const registerField = register(props.name, props.rules);
+  // const options = props.options || [];
+  // const currentValue: string = props.methods.getValues(props.name) as string;
+  //const { control } = useFormContext();
   const { fields } = useFieldArray(
     {
       control: control,
