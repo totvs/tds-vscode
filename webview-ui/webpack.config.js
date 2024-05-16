@@ -27,6 +27,7 @@ const PATCH_GENERATE_PATH = path.join(SOURCE_FOLDER, "patchGenerate");
 const COMPILE_KEY_PATH = path.join(SOURCE_FOLDER, "compileKey");
 const APPLY_PATCH_PATH = path.join(SOURCE_FOLDER, "applyPatch");
 const INSPECT_PATCH_PATH = path.join(SOURCE_FOLDER, "inspectPatch");
+const INSPECT_OBJECT_PATH = path.join(SOURCE_FOLDER, "inspectObject");
 
 // const REPLAY_PATH = path.join(__dirname, "./src/debug/tdsreplay/");
 // const MONITOR_PATH = path.join(__dirname, "./src/monitor/");
@@ -82,12 +83,11 @@ module.exports = (env, argv) => {
       patchGenerateView: path.join(PATCH_GENERATE_PATH, "index.tsx"),
       compileKeyView: path.join(COMPILE_KEY_PATH, "index.tsx"),
       applyPatchView: path.join(APPLY_PATCH_PATH, "index.tsx"),
+      inspectObjectView: path.join(INSPECT_OBJECT_PATH, "index.tsx"),
 
       // timeLineView: path.join(REPLAY_PATH, "app/index.tsx"),
       // monitorPanel: path.join(MONITOR_PATH, "app/index.tsx"),
       // rpoInfoPanel: path.join(RPO_INFO_PATH, "app/index.tsx"),
-      inspectPatchPanel: path.join(INSPECT_PATCH_PATH, "app/index.tsx"),
-      // inspectPanel: path.join(INSPECTOR_PATH, "app/index.tsx"),
     },
     output: {
       //Todos os arquivos tsx serão compilados e gerados seus equivalentes js na mesma pasta
