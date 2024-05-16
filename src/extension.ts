@@ -27,7 +27,6 @@ import { defragRpo } from "./server/defragRPO";
 import { rpoCheckIntegrity } from "./server/rpoCheckIntegrity";
 import { revalidateRpo } from "./server/revalidateRPO";
 import { serverSelection } from "./inputConnectionParameters";
-import { inspectObject } from "./inspect/inspectObject";
 import { inspectFunctions } from "./inspect/inspectFunction";
 import { showWelcomePage } from "./welcome/welcomePage";
 import launcherConfig from "./launcher/launcherConfiguration";
@@ -69,6 +68,7 @@ import { PatchGeneratePanel } from "./panels/patchGeneratePanel";
 import { patchGenerateFromFolder } from "./patch/patchUtil";
 import { CompileKeyPanel } from "./panels/compileKeyPanel";
 import { ApplyPatchPanel } from "./panels/patchApplyPanel";
+import { InspectorObjectPanel } from "./panels/inspectObjectPanel";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -233,10 +233,12 @@ export function activate(context: ExtensionContext) {
 
   //Ação par abrir a tela de inspetor de objetos.
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.inspectorObjects", () =>
-      inspectObject(context)
-    )
-  );
+    commands.registerCommand("totvs-developer-studio.inspectorObjects", () => {
+      if (checkServer() && !checkDebug()) {
+        InspectorObjectPanel.render(context)
+
+      }
+    }));
 
   //Ação par abrir a tela de inspetor de funções.
   context.subscriptions.push(
