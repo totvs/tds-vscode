@@ -1,0 +1,68 @@
+/*
+Copyright 2024 TOTVS S.A
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http: //www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+.tds-data-grid {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.tds-data-grid .tds-data-grid-header {
+	display: flex;
+	flex-grow: 0;
+	flex-shrink: 1;
+	order: 0;
+	flex-direction: row;
+	/* align-items: flex-end; */
+	/* margin-top: var(--tds-hor-spacing); */
+}
+
+.tds-data-grid .tds-data-grid-content {
+	flex-grow: 1;
+	flex-shrink: 1;
+	order: 0;
+	flex-direction: column;
+	overflow: hidden scroll;
+}
+
+.tds-data-grid .tds-data-grid-footer {
+	display: flex;
+	flex-grow: 0;
+	flex-shrink: 1;
+	order: 0;
+	flex-direction: row;
+	/* align-items: flex-end; */
+	/* margin-top: var(--tds-hor-spacing); */
+}
+
+.tds-data-grid-footer .tds-data-grid-pagination {
+	display: flex;
+	flex-direction: row;
+	max-width: max-content;
+	min-width: min-content;
+}
+
+.tds-data-grid-pagination vscode-button {
+	align-items: flex-end;
+}
+
+.tds-data-grid-pagination div.tds-data-grid-pagination-label {
+	align-items: flex-end;
+	display: flex;
+	margin-bottom: 3px;
+}

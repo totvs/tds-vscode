@@ -7,6 +7,7 @@ import { UseFormReturn, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { TdsSimpleTextField, TdsForm, TdsTextField, TdsCheckBoxField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionField } from "@totvs/tds-webtoolkit";
 import { sendExport, sendIncludeTRes } from "./sendCommand";
+import TdsDataGrid, { TdsDataGridColumnDef } from "../_component/dataGrid/dataGrid";
 
 enum ReceiveCommandEnum {
 }
@@ -141,14 +142,12 @@ export default function InspectObjectView() {
 
   //   sendSaveAndClose(data);
   // }
+  const [dataSource, setDataSource] = React.useState<TInspectorObject[]>([]);
 
   React.useEffect(() => {
 
     let listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
-      const rowsLimit: number = methods.getValues("rowsLimit") as number
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.dir(command);
 
       switch (command.command) {
         case CommonCommandEnum.UpdateModel:
@@ -159,28 +158,28 @@ export default function InspectObjectView() {
           // model.warningManyItens = model.objectsFiltered.length > rowsLimit;
           //console.log("model", model);
           model.objects.forEach((row: TInspectorObject, index: number) => {
-            if (row.status == "N") {
-              model.objects[index].status = "NoAuth";
-            } else if (row.status == "P") {
-              model.objects[index].status = "Prod";
-            } else if (row.status == "D") {
-              model.objects[index].status = "Dev";
-            }
+            // if (row.status == "N") {
+            //   model.objects[index].status = "NoAuth";
+            // } else if (row.status == "P") {
+            //   model.objects[index].status = "Prod";
+            // } else if (row.status == "D") {
+            //   model.objects[index].status = "Dev";
+            // }
 
-            if (row.rpo == "N") {
-              model.objects[index].rpo = "None";
-            } else if (row.rpo == "D") {
-              model.objects[index].rpo = "Default";
-            } else if (row.rpo == "T") {
-              model.objects[index].rpo = "TLPP";
-            } else if (row.rpo == "C") {
-              model.objects[index].rpo = "Custom";
-            }
+            // if (row.rpo == "N") {
+            //   model.objects[index].rpo = "None";
+            // } else if (row.rpo == "D") {
+            //   model.objects[index].rpo = "Default";
+            // } else if (row.rpo == "T") {
+            //   model.objects[index].rpo = "TLPP";
+            // } else if (row.rpo == "C") {
+            //   model.objects[index].rpo = "Custom";
+            // }
           });
 
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);
-
+          setDataSource(model.objects);
           break;
         default:
           break;
@@ -216,7 +215,6 @@ export default function InspectObjectView() {
   }
 
   const model: TFields = methods.getValues();
-  const rowsLimit: number = model.rowsLimit;
 
   const actions: IFormAction[] = getDefaultActionsForm();
   actions.push({
@@ -240,60 +238,59 @@ export default function InspectObjectView() {
     }
   });
 
+  const columnDef: TdsDataGridColumnDef[] = [
+    {
+      name: "program",
+      label: tdsVscode.l10n.t("Object Name"),
+      width: "8fr"
+    },
+    {
+      name: "date",
+      label: tdsVscode.l10n.t("Compile Date"),
+      width: "8fr"
+    },
+    {
+      name: "status",
+      label: tdsVscode.l10n.t("Status"),
+      width: "3fr",
+      lookup: {
+        N: "NoAuth",
+        P: "Prod",
+        D: "Dev"
+      },
+    },
+    {
+      name: "rpo",
+      label: tdsVscode.l10n.t("RPO"),
+      width: "3fr",
+      lookup: {
+        N: "None",
+        D: "Default",
+        T: "Tlpp",
+        C: "Custom",
+      },
+    },
+  ];
+
   return (
     <TdsPage title={tdsVscode.l10n.t("Objects Inspector")} linkToDoc="">
-      <TdsForm
-        methods={methods}
-        onSubmit={() => { }}
-        actions={actions}>
-
-        <section className="tds-row-container" >
-          <TdsTextField
-            methods={methods}
-            name="filter"
-            label={tdsVscode.l10n.t("Filter")}
-            info={tdsVscode.l10n.t("Filter by Object Name. Ex: Mat or Fat*")}
-            onInput={(e: any) => {
-              return new Promise(() => {
-                // methods.setValue("objectsFiltered", applyFilter(e.target.value, methods.getValues("objectsLeft")));
-                // methods.setValue("warningManyItens", methods.getValues("objectsFiltered").length > rowsLimit);
-              });
-            }}
-          />
-
-          <TdsCheckBoxField
-            methods={methods}
-            name="includeTRes"
-            label="&nbsp;"
-            textLabel={tdsVscode.l10n.t("Include *.TRES")}
-            onInput={(e: any) => {
-              return new Promise(() => {
-                sendIncludeTRes(methods.getValues(), e.target.checked);
-              });
-            }}
-
-          />
-
-          <TdsSelectionField
-            methods={methods}
-            name={"rowsLimit"}
-            label={tdsVscode.l10n.t("Resource count limit")}
-            options={[
-              { value: "100", text: tdsVscode.l10n.t("100 (fast render)") },
-              { value: "250", text: "250" },
-              { value: "500", text: tdsVscode.l10n.t("500 (slow render)") },
-            ]} />
-        </section>
-
-        <section className="tds-row-container" id="selectGrid" >
-          <InspectorObjectComponent
-            methods={methods}
-            fieldName="objects"
-            label={tdsVscode.l10n.t("RPO Objects")}
-            rowsLimit={100}
-          />
-        </section>
-      </TdsForm>
+      <TdsDataGrid
+        id="inspectorObjectGrid"
+        columnDef={columnDef}
+        dataSource={dataSource}
+        options={{
+          translations: {
+            "Filter": tdsVscode.l10n.t("Filter"),
+            "FilterInfo": tdsVscode.l10n.t("Filter by Object Name. Ex: Mat or Fat*"),
+            "Lines/page": tdsVscode.l10n.t("Resources/pages")
+          },
+          pageSize: 10,
+          pageSizeOptions: [10, 50, 100, 500, 1000],
+        }}
+        onFilterChanged={(filterValue: string) => {
+          setDataSource(applyFilter(filterValue, model.objects));
+        }}
+      />
     </TdsPage>
   );
 }
