@@ -18,67 +18,12 @@ import "./dataGrid.css";
 import React from "react";
 import {
 	VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow,
-	VSCodeTextField, VSCodeDropdown, VSCodeOption
+	VSCodeTextField, VSCodeDropdown, VSCodeOption,
+	VSCodeLink
 } from "@vscode/webview-ui-toolkit/react";
+import { UseFormReturn } from "react-hook-form";
+import TdsPaginator, { TdsDataGridAction } from "./paginator";
 import { TdsSelectionField, TdsTextField } from "@totvs/tds-webtoolkit";
-import { UseFormReturn, useForm } from "react-hook-form";
-import TdsPaginator from "./paginator";
-
-const FirstPage = () => {
-	return (
-		<svg
-			viewBox="0 0 24 24"
-			fill="currentColor"
-			height="1em"
-			width="1em"
-		>
-			<path d="M18 6h2v12h-2zm-2 5H7.414l4.293-4.293-1.414-1.414L3.586 12l6.707 6.707 1.414-1.414L7.414 13H16z" />
-		</svg>
-	);
-}
-
-
-const LastPage = () => {
-
-	return (
-		<svg
-			viewBox="0 0 24 24"
-			fill="currentColor"
-			height="1em"
-			width="1em"
-		>
-			<path d="M4 6h2v12H4zm4 7h8.586l-4.293 4.293 1.414 1.414L20.414 12l-6.707-6.707-1.414 1.414L16.586 11H8z" />
-		</svg>
-	);
-}
-
-const LeftPage = () => {
-
-	return (
-		<svg
-			viewBox="0 0 24 24"
-			fill="currentColor"
-			height="1em"
-			width="1em"
-		>
-			<path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z" />
-		</svg>
-	);
-}
-
-const RightPage = () => {
-	return (
-		<svg
-			viewBox="0 0 24 24"
-			fill="currentColor"
-			height="1em"
-			width="1em"
-			transform="matrix(-1,0,0,1,0,0)"
-		>
-			<path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z" />
-		</svg>
-	);
-}
 
 export type TdsDataGridColumnDef = {
 	name: string;
@@ -93,9 +38,11 @@ export type TdsDataGridColumnDef = {
 
 export interface ITdsDataGridProps {
 	id: string;
+	methods: UseFormReturn<any>;
 	columnDef: TdsDataGridColumnDef[]
 	dataSource: any; //Record<string, string | number | Date | boolean>[]
 	options: {
+		bottomActions?: TdsDataGridAction[];
 		translations: Translation | undefined;
 		filter?: boolean;
 		pageSize?: number,
@@ -168,7 +115,7 @@ function FieldFilter(props: TFieldFilterProps) {
 		<VSCodeTextField
 			onInput={(e: any) => {
 				e.preventDefault();
-				return props.onFilterChanged(props.fieldDef.name,  e.target.value);
+				return props.onFilterChanged(props.fieldDef.name, e.target.value);
 			}}
 		>
 			<span slot="end" className="codicon codicon-list-filter"></span>
@@ -177,16 +124,6 @@ function FieldFilter(props: TFieldFilterProps) {
 }
 
 export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElement {
-	const methods = useForm<TFields>({
-		defaultValues: {
-			filter: "",
-			// currentPage: 1,
-			// pageSize: 20,
-			// pageSizeOptions: [10, 50, 100, 500, 1000],
-			// totalItens: props.dataSource.length,
-		},
-		mode: "all"
-	})
 	const [itemOffset, setItemOffset] = React.useState(0);
 	const [currentPage, setCurrentPage] = React.useState(1);
 	const [pageSize, setPageSize] = React.useState(props.options.pageSize || 10);
@@ -222,7 +159,7 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 					{(props.options.filter || props.onFilterChanged || false) &&
 						<>
 							<TdsTextField
-								methods={methods}
+								methods={props.methods}
 								name="filter"
 								label={translations["Filter"]}
 								info={translations["FilterInfo"]}
@@ -231,7 +168,7 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 									console.log("*** filter ***", e.target.value);
 									console.log(props.onFilterChanged);
 
-									return props.onFilterChanged && props.onFilterChanged("_filter_",  e.target.value);
+									return props.onFilterChanged && props.onFilterChanged("_filter_", e.target.value);
 								}}
 							/>
 							<VSCodeButton appearance="icon" aria-label="Filter"
@@ -265,10 +202,10 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 							{props.columnDef.map((cd: TdsDataGridColumnDef, indexCol: number) => (
 								<VSCodeDataGridCell grid-column={indexCol + 1}>
 									<FieldFilter
-										methods={methods}
+										methods={props.methods}
 										fieldDef={cd}
 										onFilterChanged={
-											(fieldName: string, filter:string) => {
+											(fieldName: string, filter: string) => {
 												props.onFilterChanged ? props.onFilterChanged(fieldName, filter) : null;
 											}
 										}
@@ -294,30 +231,80 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 				</VSCodeDataGrid>
 			</div>
 			<div className="tds-data-grid-footer">
-				<div className="tds-data-grid-pagination">
-					<TdsSelectionField
-						methods={methods}
-						name={"pageSize"}
-						label={translations["Lines/page"]}
-						options={(props.options.pageSizeOptions || [])
-							.map((value: number) => { return { value: value.toString(), text: value.toString() } })
+				<TdsSelectionField
+					methods={props.methods}
+					name={"pageSize"}
+					label={translations["Lines/page"]}
+					options={(props.options.pageSizeOptions || [])
+						.map((value: number) => { return { value: value.toString(), text: value.toString() } })
+					}
+					onInput={(e: any) => {
+						console.log("onInput", e.target.value);
+						e.preventDefault();
+						setPageSize(parseInt(e.target.value));
+						setCurrentPage(0);
+						setItemOffset(0);
+					}}
+				/>
+				<TdsPaginator
+					onPageChange={handlePageClick}
+					pageSize={pageSize}
+					currentPage={currentPage}
+					currentItem={itemOffset}
+					totalItems={totalItems}
+				/>
+				{props.options.bottomActions && <div className="tds-data-grid-actions">
+					{props.options.bottomActions.map((action: TdsDataGridAction) => {
+						let propsField: any = {};
+						let visible: string = "";
+
+						if (typeof action.id === "string") {
+							propsField["id"] = action.id;
 						}
-						onInput={(e: any) => {
-							console.log("onInput", e.target.value);
-							e.preventDefault();
-							setPageSize(parseInt(e.target.value));
-							setCurrentPage(0);
-							setItemOffset(0);
-						}}
-					/>
-					<TdsPaginator
-						onPageChange={handlePageClick}
-						pageSize={pageSize}
-						currentPage={currentPage}
-						currentItem={itemOffset}
-						totalItems={totalItems}
-					/>
+
+						propsField["key"] = action.id;
+						propsField["type"] = action.type || "button";
+
+						if (action.enabled !== undefined) {
+							if (typeof action.enabled === "function") {
+								propsField["disabled"] = !(action.enabled as Function)(false, true);
+							} else {
+								propsField["disabled"] = !action.enabled;
+							}
+						}
+
+						if (action.appearance) {
+							propsField["appearance"] = action.appearance;
+						}
+
+						if (action.onClick) {
+							propsField["onClick"] = action.onClick;
+						}
+
+						if (action.visible !== undefined) {
+							let isVisible: boolean = false;
+
+							if (action.visible = typeof action.visible === "function") {
+								isVisible = (Function)(action.visible)(false, true)
+							} else {
+								isVisible = action.visible;
+							}
+
+							visible = isVisible ? "" : "tds-hidden";
+						}
+
+						return (action.type == "link" ?
+							<VSCodeLink key={action.id}
+								href={action.href}>{action.caption}
+							</VSCodeLink>
+							: <VSCodeButton
+								className={`tds-button-button ${visible}`}
+								{...propsField} >
+								{action.caption}
+							</VSCodeButton>)
+					})}
 				</div>
+				}
 			</div>
 		</section >
 	);

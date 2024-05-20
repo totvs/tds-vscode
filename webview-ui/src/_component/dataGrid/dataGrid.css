@@ -57,16 +57,29 @@ limitations under the License.
 .tds-data-grid-footer .tds-data-grid-pagination {
 	display: flex;
 	flex-direction: row;
-	max-width: max-content;
-	min-width: min-content;
+	align-items: flex-end;
+	flex-grow: 1;
+	flex-shrink: 0;
 }
 
-.tds-data-grid-pagination vscode-button {
+/* .tds-data-grid-pagination vscode-button {
 	align-items: flex-end;
-}
+} */
 
 .tds-data-grid-pagination div.tds-data-grid-pagination-label {
 	align-items: flex-end;
 	display: flex;
 	margin-bottom: 3px;
+}
+
+.tds-data-grid-footer .tds-data-grid-actions {
+	display: flex;
+	flex-direction: row;
+	max-width: max-content;
+	min-width: min-content;
+	align-items: flex-end;
+	align-self: self-end;
+	gap: 10px;
+	flex-grow: 0;
+	flex-shrink: 0;
 }

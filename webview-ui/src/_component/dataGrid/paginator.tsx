@@ -15,7 +15,22 @@ limitations under the License.
 */
 
 import React, { useState } from "react";
-import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
+import { VSCodeButton, VSCodeLink } from "@vscode/webview-ui-toolkit/react";
+import { IFormAction } from "@totvs/tds-webtoolkit";
+import { ButtonAppearance } from "@vscode/webview-ui-toolkit";
+
+export type TdsDataGridAction = {
+	id: number | string;
+	caption: string;
+	hint?: string;
+	onClick?: any;
+	enabled?: boolean | ((isDirty: boolean, isValid: boolean) => boolean);
+	visible?: boolean | ((isDirty: boolean, isValid: boolean) => boolean);
+	isProcessRing?: boolean;
+	type?: "button" | "link";
+	appearance?: ButtonAppearance;
+	href?: string;
+};
 
 const FirstPage = () => {
 	return (
