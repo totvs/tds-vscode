@@ -16,10 +16,12 @@ limitations under the License.
 
 import "./dataGrid.css";
 import React from "react";
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
+import {
+	VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow,
+	VSCodeTextField, VSCodeDropdown, VSCodeOption
+} from "@vscode/webview-ui-toolkit/react";
 import { TdsSelectionField, TdsTextField } from "@totvs/tds-webtoolkit";
-import { useForm } from "react-hook-form";
-import ReactPaginate from 'react-paginate';
+import { UseFormReturn, useForm } from "react-hook-form";
 import TdsPaginator from "./paginator";
 
 const FirstPage = () => {
@@ -99,7 +101,7 @@ export interface ITdsDataGridProps {
 		pageSize?: number,
 		pageSizeOptions?: number[],
 	}
-	onFilterChanged(filter: string): void;
+	onFilterChanged?(fieldName: string, filter: string): void;
 }
 
 type TranslationKey = "Filter" | "FilterInfo" | "Lines/page";
@@ -118,6 +120,62 @@ type TFields = {
 	totalItens: number,
 }
 
+type TFieldFilterProps = {
+	methods: UseFormReturn<any>;
+	fieldDef: TdsDataGridColumnDef;
+	dataSource: any;
+	onFilterChanged(fieldName: string, filter: string): void;
+}
+
+function FieldFilter(props: TFieldFilterProps) {
+	if (props.fieldDef.lookup) {
+		const currentValue: string = props.methods.getValues(props.fieldDef.name) as string;
+		const options: Record<string, string> = props.dataSource.reduce((acc: Record<string, string>, item: any) => {
+
+			if (!acc[item[props.fieldDef.name]]) {
+				acc[item[props.fieldDef.name]] = props.fieldDef.lookup![item[props.fieldDef.name]];
+			}
+
+			return acc;
+		}, []);
+
+		if (Object.keys(options).length > 0) {
+			return (
+				<VSCodeDropdown
+					onChange={(e: any) => {
+						e.preventDefault();
+						const value: string = e?.target?.value;
+						return props.onFilterChanged(props.fieldDef.name, value);
+					}}>
+					<VSCodeOption key={0}
+						value={""}
+						checked={currentValue === ""}>{""}
+					</VSCodeOption>
+					{Object.keys(options).map((key: string, index: number) => {
+						return (
+							<VSCodeOption key={index}
+								value={key}
+								checked={currentValue === key}>{options[key]}
+							</VSCodeOption>
+						)
+					})}
+				</VSCodeDropdown>
+			)
+		}
+	}
+
+	return (
+		<VSCodeTextField
+			onInput={(e: any) => {
+				e.preventDefault();
+				return props.onFilterChanged(props.fieldDef.name,  e.target.value);
+			}}
+		>
+			<span slot="end" className="codicon codicon-list-filter"></span>
+		</VSCodeTextField>
+	)
+}
+
 export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElement {
 	const methods = useForm<TFields>({
 		defaultValues: {
@@ -133,6 +191,7 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 	const [currentPage, setCurrentPage] = React.useState(1);
 	const [pageSize, setPageSize] = React.useState(props.options.pageSize || 10);
 	const [totalItems, setTotalItems] = React.useState(props.dataSource.length);
+	const [showFilter, setShowFilter] = React.useState(false);
 
 	const gridTemplateColumns: string[] = props.columnDef.map(column => column.width || "1fr");
 	const gridHeaders: string[] = props.columnDef.map(column => column.label || column.name);
@@ -160,7 +219,7 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 		<section className="tds-data-grid" id={`${props.id}`}>
 			<div className="tds-data-grid-header">
 				<section className="tds-row-container">
-					{(props.options.filter || true) &&
+					{(props.options.filter || props.onFilterChanged || false) &&
 						<>
 							<TdsTextField
 								methods={methods}
@@ -169,10 +228,17 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 								info={translations["FilterInfo"]}
 								onInput={(e: any) => {
 									e.preventDefault();
-									return props.onFilterChanged(e.target.value);
+									console.log("*** filter ***", e.target.value);
+									console.log(props.onFilterChanged);
+
+									return props.onFilterChanged && props.onFilterChanged("_filter_",  e.target.value);
 								}}
 							/>
-							<VSCodeButton appearance="icon" aria-label="Filter">
+							<VSCodeButton appearance="icon" aria-label="Filter"
+								onClick={() => {
+									setShowFilter(!showFilter);
+								}}
+							>
 								<span className="codicon codicon-list-filter"></span>
 							</VSCodeButton>
 						</>
@@ -194,7 +260,24 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 							))}
 						</VSCodeDataGridRow>
 					}
-
+					{showFilter &&
+						<VSCodeDataGridRow row-type="default" key={0}>
+							{props.columnDef.map((cd: TdsDataGridColumnDef, indexCol: number) => (
+								<VSCodeDataGridCell grid-column={indexCol + 1}>
+									<FieldFilter
+										methods={methods}
+										fieldDef={cd}
+										onFilterChanged={
+											(fieldName: string, filter:string) => {
+												props.onFilterChanged ? props.onFilterChanged(fieldName, filter) : null;
+											}
+										}
+										dataSource={props.dataSource}
+									/>
+								</VSCodeDataGridCell>
+							))}
+						</VSCodeDataGridRow>
+					}
 					{props.dataSource.slice(itemOffset, itemOffset + pageSize).map((row: any, index: number) => (
 						<VSCodeDataGridRow row-type="default" key={itemOffset + index}>
 							{props.columnDef.map((cd: TdsDataGridColumnDef, indexCol: number) => (

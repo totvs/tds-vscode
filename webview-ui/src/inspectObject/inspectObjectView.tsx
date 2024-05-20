@@ -15,6 +15,7 @@ enum ReceiveCommandEnum {
 type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TFields>;
 
 type TInspectorObject = {
+  [key: string]: string | Date | number | boolean | undefined
   program: string;
   date: Date;
   status: string;
@@ -214,6 +215,24 @@ export default function InspectObjectView() {
     }
   }
 
+  function applyFilter2(filter: any, objects: TInspectorObject[]): TInspectorObject[] {
+
+    if (Object.keys(filter).length > 0) {
+
+      return objects
+        .filter((row: TInspectorObject) => {
+          let found: boolean = true;
+          Object.keys(filter).forEach((key: string) =>{
+            found = found && (filter[key].test(row[key]))
+          });
+
+          return found ? row : null;
+        });
+    } else {
+      return objects;
+    }
+  }
+
   const model: TFields = methods.getValues();
 
   const actions: IFormAction[] = getDefaultActionsForm();
@@ -287,8 +306,18 @@ export default function InspectObjectView() {
           pageSize: 10,
           pageSizeOptions: [10, 50, 100, 500, 1000],
         }}
-        onFilterChanged={(filterValue: string) => {
-          setDataSource(applyFilter(filterValue, model.objects));
+        onFilterChanged={(fieldName: string, filter: string) => {
+          let filters;
+          console.log("filter", filter);
+
+          const wildcard: RegExp = new RegExp(`^${filter.replace("?", ".").replace("*", ".*")}$`, "gi");
+          if (fieldName == "_filter_") { //filtro simples
+            filters = { "program": wildcard };
+          } else {
+            filters = { [fieldName]: wildcard };
+          }
+
+          setDataSource(applyFilter2(filters, model.objects));
         }}
       />
     </TdsPage>

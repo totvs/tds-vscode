@@ -40,6 +40,10 @@ limitations under the License.
 	overflow: hidden scroll;
 }
 
+.tds-data-grid-content vscode-text-field {
+	width: 100%;
+}
+
 .tds-data-grid .tds-data-grid-footer {
 	display: flex;
 	flex-grow: 0;
