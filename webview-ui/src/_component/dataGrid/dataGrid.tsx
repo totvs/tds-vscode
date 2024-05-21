@@ -196,7 +196,9 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 				.filter((row: any) => {
 					let found: boolean = false;
 					Object.keys(filter).forEach((key: string) => {
-						found = found || (filter[key].test(row[key]))
+						const wildcard: RegExp = new RegExp(`${filter[key]}`, "gi");
+
+						found = found || (wildcard.test(row[key]))
 					});
 
 					return found ? row : null;
@@ -248,9 +250,8 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 
 								let filters: any = {};
 								if (e.target.value.trim() !== "") {
-									const wildcard: RegExp = new RegExp(`^${e.target.value.trim().replace("?", ".").replace("*", ".*")}$`, "gi");
 									props.columnDef.forEach((columnDef: TdsDataGridColumnDef) => {
-										filters[columnDef.name] = wildcard;
+										filters[columnDef.name] = e.target.value;
 									});
 								}
 
@@ -337,9 +338,7 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 								<VSCodeButton
 									appearance="secondary"
 									onClick={() => {
-										let filters: any = {};
-										const wildcard: RegExp = new RegExp(`^${data}$`, "gi");
-										filters = { [groupingInfo.name]: wildcard };
+										let filters: any = { [groupingInfo.name]: data };
 										setDataSource(applyFilter(filters, props.dataSource));
 									}}
 								>
@@ -405,8 +404,7 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 												(fieldName: string, filter: string) => {
 													let filters: any = {};
 													if (filter.trim() !== "") {
-														const wildcard: RegExp = new RegExp(`^${filter.replace("?", ".").replace("*", ".*")}$`, "gi");
-														filters = { [fieldName]: wildcard };
+														filters = { [fieldName]: filter };
 													}
 													setDataSource(applyFilter(filters, props.dataSource));
 												}
