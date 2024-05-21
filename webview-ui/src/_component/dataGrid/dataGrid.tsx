@@ -24,6 +24,7 @@ import {
 import { UseFormReturn } from "react-hook-form";
 import TdsPaginator, { TdsDataGridAction } from "./paginator";
 import { TdsSelectionField, TdsTextField } from "@totvs/tds-webtoolkit";
+import { vsCodeButton } from '@vscode/webview-ui-toolkit';
 
 export type TdsDataGridColumnDef = {
 	name: string;
@@ -31,8 +32,8 @@ export type TdsDataGridColumnDef = {
 	width?: string;
 	lookup?: Record<string, string>;
 	//align?: "left" | "center" | "right";
-	//sortable?: boolean;
-	//sortDirection?: "asc" | "desc";
+	sortable?: boolean;
+	sortDirection?: "asc" | "desc" | "";
 	//onSort?: (key: string) => void;
 }
 
@@ -48,7 +49,7 @@ export interface ITdsDataGridProps {
 		pageSize?: number,
 		pageSizeOptions?: number[],
 	}
-	onFilterChanged?(fieldName: string, filter: string): void;
+	//onFilterChanged?(fieldName: string, filter: string): void;
 }
 
 type TranslationKey = "Filter" | "FilterInfo" | "Lines/page";
@@ -129,6 +130,8 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 	const [pageSize, setPageSize] = React.useState(props.options.pageSize || 10);
 	const [totalItems, setTotalItems] = React.useState(props.dataSource.length);
 	const [showFilter, setShowFilter] = React.useState(false);
+	const [_, setSortedInfo] = React.useState(props.columnDef[0]);
+	const [dataSource, setDataSource] = React.useState(props.dataSource);
 
 	const gridTemplateColumns: string[] = props.columnDef.map(column => column.width || "1fr");
 	const gridHeaders: string[] = props.columnDef.map(column => column.label || column.name);
@@ -139,24 +142,63 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 	};
 
 	const handlePageClick = (newPage: number) => {
-		console.log("handlePageClick", newPage);
+		const newOffset = (newPage * (props.options.pageSize || 10)) % dataSource.length;
 
-		const newOffset = (newPage * (props.options.pageSize || 10)) % props.dataSource.length;
 		setItemOffset(newOffset);
 		setCurrentPage(newPage);
-		//props.onPageChange && props.onPageChange(newPage);
 	};
+
+	const changeSortCallback = (indexColumn: number) => {
+		const columnDef = props.columnDef[indexColumn];
+		const newColumnDef: TdsDataGridColumnDef = {
+			...columnDef,
+			sortDirection: columnDef.sortDirection === "asc" ? "desc" : columnDef.sortDirection === "desc" ? "" : "asc"
+		}
+
+		props.columnDef.forEach((columnDef: TdsDataGridColumnDef) => {
+			columnDef.sortDirection = "";
+		})
+
+		props.columnDef[indexColumn] = newColumnDef;
+
+		if (newColumnDef.sortDirection == "asc") {
+			setDataSource(dataSource.sort((r1: any, r2: any) => r1[columnDef.name] > r2[columnDef.name] ? 1 : -1));
+		} else if (newColumnDef.sortDirection == "desc") {
+			setDataSource(dataSource.sort((r1: any, r2: any) => r1[columnDef.name] > r2[columnDef.name] ? -1 : 1));
+		} else {
+			setDataSource(props.dataSource);
+		}
+
+		setSortedInfo(props.columnDef[indexColumn])
+	}
+
+	const applyFilter = (filter: any, objects: any[]): any[] => {
+		if (Object.keys(filter).length > 0) {
+			return objects
+				.filter((row: any) => {
+					let found: boolean = false;
+					Object.keys(filter).forEach((key: string) => {
+						found = found || (filter[key].test(row[key]))
+					});
+
+					return found ? row : null;
+				});
+		} else {
+			return objects;
+		}
+	}
 
 	React.useEffect(() => {
 		setPageSize(props.options.pageSize || 10);
-		setTotalItems(props.dataSource.length);
+		setTotalItems(dataSource.length);
+		setDataSource(props.dataSource);
 	}, [props.dataSource.length, props.options.pageSize]);
 
 	return (
 		<section className="tds-data-grid" id={`${props.id}`}>
 			<div className="tds-data-grid-header">
 				<section className="tds-row-container">
-					{(props.options.filter || props.onFilterChanged || false) &&
+					{(props.options.filter || false) &&
 						<>
 							<TdsTextField
 								methods={props.methods}
@@ -165,10 +207,16 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 								info={translations["FilterInfo"]}
 								onInput={(e: any) => {
 									e.preventDefault();
-									console.log("*** filter ***", e.target.value);
-									console.log(props.onFilterChanged);
 
-									return props.onFilterChanged && props.onFilterChanged("_filter_", e.target.value);
+									let filters: any = {};
+									if (e.target.value.trim() !== "") {
+										const wildcard: RegExp = new RegExp(`^${e.target.value.trim().replace("?", ".").replace("*", ".*")}$`, "gi");
+										props.columnDef.forEach((columnDef: TdsDataGridColumnDef) => {
+											filters[columnDef.name] = wildcard;
+										});
+									}
+
+									setDataSource(applyFilter(filters, props.dataSource));
 								}}
 							/>
 							<VSCodeButton appearance="icon" aria-label="Filter"
@@ -193,6 +241,18 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 							{gridHeaders.map((header: string, index: number) => (
 								<VSCodeDataGridCell cell-type="columnheader" grid-column={index + 1}>
 									{header}
+									{props.columnDef[index].sortable &&
+										<VSCodeButton
+											appearance="icon"
+											onClick={() => {
+												changeSortCallback(index);
+											}}
+										>
+											{props.columnDef[index].sortDirection == "asc" && <span className="codicon codicon-arrow-small-down"></span>}
+											{props.columnDef[index].sortDirection == "desc" && <span className="codicon codicon-arrow-small-up"></span>}
+											{props.columnDef[index].sortDirection == "" && <span className="codicon codicon-sort-precedence"></span>}
+										</VSCodeButton>
+									}
 								</VSCodeDataGridCell>
 							))}
 						</VSCodeDataGridRow>
@@ -206,16 +266,21 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 										fieldDef={cd}
 										onFilterChanged={
 											(fieldName: string, filter: string) => {
-												props.onFilterChanged ? props.onFilterChanged(fieldName, filter) : null;
+												let filters: any = {};
+												if (filter.trim() !== "") {
+													const wildcard: RegExp = new RegExp(`^${filter.replace("?", ".").replace("*", ".*")}$`, "gi");
+													filters = { [fieldName]: wildcard };
+												}
+												setDataSource(applyFilter(filters, props.dataSource));
 											}
 										}
-										dataSource={props.dataSource}
+										dataSource={dataSource}
 									/>
 								</VSCodeDataGridCell>
 							))}
 						</VSCodeDataGridRow>
 					}
-					{props.dataSource.slice(itemOffset, itemOffset + pageSize).map((row: any, index: number) => (
+					{dataSource.slice(itemOffset, itemOffset + pageSize).map((row: any, index: number) => (
 						<VSCodeDataGridRow row-type="default" key={itemOffset + index}>
 							{props.columnDef.map((cd: TdsDataGridColumnDef, indexCol: number) => (
 								<VSCodeDataGridCell grid-column={indexCol + 1}>

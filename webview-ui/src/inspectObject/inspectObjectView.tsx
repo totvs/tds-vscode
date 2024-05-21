@@ -95,24 +95,6 @@ export default function InspectObjectView() {
     }
   }, []);
 
-  function applyFilter2(filter: any, objects: TInspectorObject[]): TInspectorObject[] {
-
-    if (Object.keys(filter).length > 0) {
-
-      return objects
-        .filter((row: TInspectorObject) => {
-          let found: boolean = true;
-          Object.keys(filter).forEach((key: string) => {
-            found = found && (filter[key].test(row[key]))
-          });
-
-          return found ? row : null;
-        });
-    } else {
-      return objects;
-    }
-  }
-
   const model: TFields = methods.getValues();
 
   const bottomActions: TdsDataGridAction[] = [{
@@ -139,12 +121,16 @@ export default function InspectObjectView() {
     {
       name: "program",
       label: tdsVscode.l10n.t("Object Name"),
-      width: "8fr"
+      width: "8fr",
+      sortable: true,
+      sortDirection: "asc",
     },
     {
       name: "date",
       label: tdsVscode.l10n.t("Compile Date"),
-      width: "8fr"
+      width: "8fr",
+      sortable: true,
+      sortDirection: "",
     },
     {
       name: "status",
@@ -155,6 +141,7 @@ export default function InspectObjectView() {
         P: "Prod",
         D: "Dev"
       },
+      sortable: false,
     },
     {
       name: "rpo",
@@ -166,6 +153,7 @@ export default function InspectObjectView() {
         T: "Tlpp",
         C: "Custom",
       },
+      sortable: false,
     },
   ];
 
@@ -177,6 +165,7 @@ export default function InspectObjectView() {
         columnDef={columnDef}
         dataSource={dataSource}
         options={{
+          filter: true,
           bottomActions: bottomActions,
           translations: {
             "Filter": tdsVscode.l10n.t("Filter"),
@@ -185,19 +174,6 @@ export default function InspectObjectView() {
           },
           pageSize: 10,
           pageSizeOptions: [10, 50, 100, 500, 1000],
-        }}
-        onFilterChanged={(fieldName: string, filter: string) => {
-          let filters;
-          console.log("filter", filter);
-
-          const wildcard: RegExp = new RegExp(`^${filter.replace("?", ".").replace("*", ".*")}$`, "gi");
-          if (fieldName == "_filter_") { //filtro simples
-            filters = { "program": wildcard };
-          } else {
-            filters = { [fieldName]: wildcard };
-          }
-
-          setDataSource(applyFilter2(filters, model.objects));
         }}
       />
     </TdsPage>
