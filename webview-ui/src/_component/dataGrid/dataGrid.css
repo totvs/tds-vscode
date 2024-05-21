@@ -27,7 +27,7 @@ limitations under the License.
 	flex-grow: 0;
 	flex-shrink: 1;
 	order: 0;
-	flex-direction: row;
+	flex-direction: column;
 	/* align-items: flex-end; */
 	/* margin-top: var(--tds-hor-spacing); */
 }
@@ -38,6 +38,19 @@ limitations under the License.
 	order: 0;
 	flex-direction: column;
 	overflow: hidden scroll;
+}
+
+.tds-data-grid-grouping {
+	display: flex;
+	flex-grow: 0;
+	flex-shrink: 0;
+	order: 0;
+	flex-direction: row;
+	gap: 5px;
+	background-color: var(--vscode-editor-selectionBackground);
+	align-items: center;
+	width: 100%;
+	padding-left: 1em;
 }
 
 .tds-data-grid-content vscode-text-field {

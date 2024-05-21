@@ -142,6 +142,7 @@ export default function InspectObjectView() {
         D: "Dev"
       },
       sortable: false,
+      grouping: true,
     },
     {
       name: "rpo",
@@ -154,6 +155,7 @@ export default function InspectObjectView() {
         C: "Custom",
       },
       sortable: false,
+      grouping: true,
     },
   ];
 
@@ -165,6 +167,7 @@ export default function InspectObjectView() {
         columnDef={columnDef}
         dataSource={dataSource}
         options={{
+          grouping: true,
           filter: true,
           bottomActions: bottomActions,
           translations: {
