@@ -284,6 +284,8 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
       "RPO Objects": vscode.l10n.t("RPO Objects"),
       "Export (TXT)": vscode.l10n.t("Export (TXT)"),
       "Export (CSV)": vscode.l10n.t("Export (CSV)"),
+      "Include TRES": vscode.l10n.t("Include TRES"),
+      "Exclude TRES": vscode.l10n.t("Exclude TRES")
     }
   }
 

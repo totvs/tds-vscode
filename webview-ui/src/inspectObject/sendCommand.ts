@@ -28,7 +28,7 @@ export function sendExport(type: string, model: any) {
 	});
 }
 
-export function sendIncludeTRes(model: any, includeTRes: boolean[]) {
+export function sendIncludeTRes(model: any, includeTRes: boolean) {
 	tdsVscode.postMessage({
 		command: PatchGenerateCommandEnum.IncludeTRes,
 		data: {

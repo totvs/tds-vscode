@@ -5,7 +5,7 @@ import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
 import { UseFormReturn, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
-import { sendExport } from "./sendCommand";
+import { sendExport, sendIncludeTRes } from "./sendCommand";
 import TdsDataGrid, { TdsDataGridColumnDef } from "../_component/dataGrid/dataGrid";
 import { TdsDataGridAction } from "../_component/dataGrid/paginator";
 
@@ -117,6 +117,15 @@ export default function InspectObjectView() {
     }
   }];
 
+  const topActions: TdsDataGridAction[] = [{
+    id: "btnIncludeTes",
+    caption: methods.getValues("includeTRes") ? tdsVscode.l10n.t("Exclude TRES") : tdsVscode.l10n.t("Include TRES"),
+    type: "button",
+    onClick: () => {
+      sendIncludeTRes(methods.getValues(), !methods.getValues("includeTRes"));
+    }
+  }];
+
   const columnDef: TdsDataGridColumnDef[] = [
     {
       name: "program",
@@ -170,11 +179,7 @@ export default function InspectObjectView() {
           grouping: true,
           filter: true,
           bottomActions: bottomActions,
-          translations: {
-            "Filter": tdsVscode.l10n.t("Filter"),
-            "FilterInfo": tdsVscode.l10n.t("Filter by Object Name. Ex: Mat or Fat*"),
-            "Lines/page": tdsVscode.l10n.t("Resources/pages")
-          },
+          topActions: topActions,
           pageSize: 10,
           pageSizeOptions: [10, 50, 100, 500, 1000],
         }}

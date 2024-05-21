@@ -141,7 +141,8 @@ export default function TdsPaginator(props: ITdsPaginatorProps): React.ReactElem
 				<LeftPage />
 			</VSCodeButton>
 
-			<div className="tds-data-grid-pagination-label">{currentItem + 1}-{currentItem + props.pageSize + 1} of {totalItems} (Page: {currentPage + 1} of {totalPages})
+			<div className="tds-data-grid-pagination-label">
+				{currentItem + 1}-{currentItem + props.pageSize} of {totalItems} (Page: {currentPage + 1} of {totalPages})
 			</div>
 
 			<VSCodeButton appearance="icon" aria-label="Next page"

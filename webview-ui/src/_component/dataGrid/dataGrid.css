@@ -22,6 +22,10 @@ limitations under the License.
 	overflow: hidden;
 }
 
+.tds-data-grid .tds-row-container {
+	column-gap: 10px;
+}
+
 .tds-data-grid .tds-data-grid-header {
 	display: flex;
 	flex-grow: 0;

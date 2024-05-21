@@ -24,6 +24,7 @@ import {
 import { UseFormReturn } from "react-hook-form";
 import TdsPaginator, { TdsDataGridAction } from "./paginator";
 import { TdsSelectionField, TdsTextField } from "@totvs/tds-webtoolkit";
+import { tdsVscode } from '@totvs/tds-webtoolkit';
 
 export type TdsDataGridColumnDef = {
 	name: string;
@@ -45,7 +46,8 @@ export interface ITdsDataGridProps {
 	dataSource: any; //Record<string, string | number | Date | boolean>[]
 	options: {
 		bottomActions?: TdsDataGridAction[];
-		translations: Translation | undefined;
+		topActions?: TdsDataGridAction[];
+		//translations: Translation | undefined;
 		filter?: boolean;
 		pageSize?: number,
 		pageSizeOptions?: number[],
@@ -54,8 +56,8 @@ export interface ITdsDataGridProps {
 	//onFilterChanged?(fieldName: string, filter: string): void;
 }
 
-type TranslationKey = "Filter" | "FilterInfo" | "Lines/page";
-type Translation = Record<TranslationKey, string>;
+//type TranslationKey = "Filter" | "FilterInfo" | "Lines/page";
+//type Translation = Record<TranslationKey, string>;
 
 /**
  * Renders the data grid component.
@@ -135,12 +137,6 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 	const [_, setSortedInfo] = React.useState(props.columnDef[0]);
 	const [groupingInfo, setGroupingInfo] = React.useState<TdsDataGridColumnDef>();
 	const [dataSource, setDataSource] = React.useState(props.dataSource);
-
-	const translations: Record<TranslationKey, string> = props.options.translations || {
-		"Filter": "Filter",
-		"FilterInfo": `Filter by any field`,
-		"Lines/page": "Lines/page"
-	};
 
 	const handlePageClick = (newPage: number) => {
 		const newOffset = (newPage * (props.options.pageSize || 10)) % dataSource.length;
@@ -245,8 +241,8 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 						<TdsTextField
 							methods={props.methods}
 							name="filter"
-							label={translations["Filter"]}
-							info={translations["FilterInfo"]}
+							label={tdsVscode.l10n.t("Filter")}
+							info={tdsVscode.l10n.t("FilterInfo")}
 							onInput={(e: any) => {
 								e.preventDefault();
 
@@ -268,6 +264,60 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 						>
 							<span className="codicon codicon-list-filter"></span>
 						</VSCodeButton>
+						{props.options.topActions &&
+							<div className="tds-data-grid-actions">
+								{props.options.topActions.map((action: TdsDataGridAction) => {
+									let propsField: any = {};
+									let visible: string = "";
+
+									if (typeof action.id === "string") {
+										propsField["id"] = action.id;
+									}
+
+									propsField["key"] = action.id;
+									propsField["type"] = action.type || "button";
+
+									if (action.enabled !== undefined) {
+										if (typeof action.enabled === "function") {
+											propsField["disabled"] = !(action.enabled as Function)(false, true);
+										} else {
+											propsField["disabled"] = !action.enabled;
+										}
+									}
+
+									if (action.appearance) {
+										propsField["appearance"] = action.appearance;
+									}
+
+									if (action.onClick) {
+										propsField["onClick"] = action.onClick;
+									}
+
+									if (action.visible !== undefined) {
+										let isVisible: boolean = false;
+
+										if (action.visible = typeof action.visible === "function") {
+											isVisible = (Function)(action.visible)(false, true)
+										} else {
+											isVisible = action.visible;
+										}
+
+										visible = isVisible ? "" : "tds-hidden";
+									}
+
+									return (action.type == "link" ?
+										<VSCodeLink key={action.id}
+											href={action.href}>{action.caption}
+										</VSCodeLink>
+										: <VSCodeButton
+											className={`tds-button-button ${visible}`}
+											{...propsField} >
+											{action.caption}
+										</VSCodeButton>)
+								})}
+							</div>
+						}
+
 					</section>
 				}
 				{
@@ -302,7 +352,8 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 					</section>
 				}
 
-			</div >
+			</div>
+
 			<div className="tds-data-grid-content">
 				<VSCodeDataGrid
 					id={`${props.id}_grid`}
@@ -387,12 +438,11 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 				<TdsSelectionField
 					methods={props.methods}
 					name={"pageSize"}
-					label={translations["Lines/page"]}
+					label={tdsVscode.l10n.t("Lines/page")}
 					options={(props.options.pageSizeOptions || [])
 						.map((value: number) => { return { value: value.toString(), text: value.toString() } })
 					}
 					onInput={(e: any) => {
-						console.log("onInput", e.target.value);
 						e.preventDefault();
 						setPageSize(parseInt(e.target.value));
 						setCurrentPage(0);
