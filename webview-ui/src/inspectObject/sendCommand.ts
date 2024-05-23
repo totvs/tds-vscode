@@ -1,39 +1,26 @@
 import { tdsVscode } from "@totvs/tds-webtoolkit";
-import { TInspectorObject } from "../model/inspectorObjectModel";
 
-enum PatchGenerateCommandEnum {
-	IncludeTRes = "INCLUDE_TRES",
+enum InspectObjectCommandEnum {
+	IncludeOutScope = "INCLUDE_OUT_SCOPE",
 	Export = "EXPORT",
-	// 	MoveElements = "MOVE_ELEMENTS",
 }
 
-// export function sendToLeft(model: any, selectedObject: TInspectorObject[]) {
-// 	tdsVscode.postMessage({
-// 		command: PatchGenerateCommandEnum.MoveElements,
-// 		data: {
-// 			model: model,
-// 			selectedObject: selectedObject,
-// 			direction: "left"
-// 		}
-// 	});
-// }
-
-export function sendExport(type: string, model: any) {
+export function sendExport(model: any, type: string) {
 	tdsVscode.postMessage({
-		command: PatchGenerateCommandEnum.Export,
+		command: InspectObjectCommandEnum.Export,
 		data: {
-			type: type,
 			model: model,
+			type: type,
 		}
 	});
 }
 
-export function sendIncludeTRes(model: any, includeTRes: boolean) {
+export function sendIncludeOutScope(model: any, includeOutScope: boolean) {
 	tdsVscode.postMessage({
-		command: PatchGenerateCommandEnum.IncludeTRes,
+		command: InspectObjectCommandEnum.IncludeOutScope,
 		data: {
 			model: model,
-			includeTRes: includeTRes
+			includeOutScope: includeOutScope
 		}
 	});
 }

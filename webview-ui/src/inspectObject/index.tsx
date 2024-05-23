@@ -8,7 +8,9 @@ tdsVscode.l10n.translations = window.translations;
 const root = createRoot(document.getElementById("root")!);
 root.render(
   <React.StrictMode>
-    <InspectObjectView />
+    <InspectObjectView
+      objectsInspector={window.initialData.objectsInspector}
+      isServerP20OrGreater={window.initialData.isServerP20OrGreater} />
   </React.StrictMode>,
 );
 

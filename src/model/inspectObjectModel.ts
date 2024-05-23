@@ -1,14 +1,15 @@
 import { TModelPanel } from "../panels/panel";
 
 export type TInspectorObject = {
-	program: string;
+	source: string;
 	date: string;
-	status: string;
-	rpo: string;
+	rpo_status: string | number;
+	source_status: string | number;
+	function: string;
+	line: number;
 }
 
 export type TInspectorObjectModel = TModelPanel & {
-	includeTRes: boolean;
-	filter: string;
+	includeOutScope: boolean;
 	objects: TInspectorObject[];
 }

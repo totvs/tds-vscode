@@ -235,17 +235,24 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.inspectorObjects", () => {
       if (checkServer() && !checkDebug()) {
-        InspectorObjectPanel.render(context)
-
+        InspectorObjectPanel.render(context, {
+          objectsInspector: true,
+          includeOutScope: false //TRES para objetos e "fontes sem função publica" para funções
+        });
       }
     }));
 
   //Ação par abrir a tela de inspetor de funções.
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.inspectorFunctions", () =>
-      inspectFunctions(context)
-    )
-  );
+    commands.registerCommand("totvs-developer-studio.inspectorFunctions", () => {
+      if (checkServer() && !checkDebug()) {
+        InspectorObjectPanel.render(context, {
+          objectsInspector: false,
+          includeOutScope: false //TRES para objetos e "fontes sem função publica" para funções
+        });
+
+      }
+    }));
 
   //Compila os fontes/recursos selecionados
   context.subscriptions.push(

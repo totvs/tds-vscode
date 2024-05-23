@@ -43,6 +43,7 @@ export abstract class TdsPanel<M extends TModelPanel> {
 
 	protected readonly _panel: vscode.WebviewPanel;
 	protected _disposables: vscode.Disposable[] = [];
+	protected _options: any;
 
 	/**
 	 * The  TdsPanel class protected constructor (called only from the render method).
@@ -50,8 +51,9 @@ export abstract class TdsPanel<M extends TModelPanel> {
 	 * @param panel A reference to the webview panel
 	 * @param extensionUri The URI of the directory containing the extension
 	 */
-	protected constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
+	protected constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, options: any = {}) {
 		this._panel = panel;
+		this._options = options;
 
 		// Set an event listener to listen for when the panel is disposed (i.e. when the user closes
 		// the panel or when the panel is closed programmatically)

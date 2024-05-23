@@ -59,31 +59,7 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
     `${entryPointName}.js`,
   ]))
 
-  // cssFiles.forEach((filename) => {
-  //   stylesUri.push(getUri(webview, extensionUri, [
-  //     ...CSS_BASE_FOLDER,
-  //     //folderName,
-  //     filename
-  //   ]))
-  // });
-
-  // jsFiles.forEach((filename) => {
-  //   scriptsUri.push(getUri(webview, extensionUri, [
-  //     ...JS_BASE_FOLDER,
-  //     //folderName,
-  //     filename
-  //   ]))
-  // });
-
   const nonce = getNonce();
-
-  const data = { ...options!.data };
-
-  //         <meta http-equiv="Content-Security-Policy"
-  //                     content="default-src 'none';
-  //                              img-src https:;
-  //                              script-src 'unsafe-eval' 'unsafe-inline' vscode-resource:;
-  //                              style-src vscode-resource: 'unsafe-inline';">
 
   return /*html*/ `
       <!DOCTYPE html>
@@ -108,6 +84,10 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
         <body>
           <noscript>You need to enable JavaScript to run this app.</noscript>
           <div id="root"></div>
+          <script nonce="${nonce}">
+            window.initialData = ${JSON.stringify(options.data || {})};
+            window.translations = ${JSON.stringify(options.translations)};
+          </script>
           ${scriptsUri.map((uri: vscode.Uri) => {
     return `<script nonce="${nonce}" src="${uri}"></script>\n`;
   })}

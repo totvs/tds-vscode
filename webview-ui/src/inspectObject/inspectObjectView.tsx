@@ -2,10 +2,10 @@
 import "./inspectObject.css";
 import React from "react";
 import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
-import { UseFormReturn, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
-import { sendExport, sendIncludeTRes } from "./sendCommand";
+import { sendExport, sendIncludeOutScope } from "./sendCommand";
 import TdsDataGrid, { TdsDataGridColumnDef } from "../_component/dataGrid/dataGrid";
 import { TdsDataGridAction } from "../_component/dataGrid/paginator";
 
@@ -15,15 +15,16 @@ enum ReceiveCommandEnum {
 type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TFields>;
 
 type TInspectorObject = {
-  [key: string]: string | Date | number | boolean | undefined
-  program: string;
-  date: Date;
-  status: string;
-  rpo: string;
+  source: string;
+  date: string;
+  rpo_status: string | number;
+  source_status: string | number;
+  function: string;
+  line: number;
 }
 
 type TInspectorObjectModel = {
-  includeTRes: boolean;
+  includeOutScope: boolean;
   filter: string;
   objects: TInspectorObject[];
   rowsLimit: number | 100 | 250 | 500;
@@ -31,39 +32,135 @@ type TInspectorObjectModel = {
 
 type TFields = TInspectorObjectModel;
 
-const EMPTY_INSPECTOR_OBJECT: TInspectorObject = {
-  program: "",
-  date: new Date(0, 0, 0, 0, 0, 0, 0),
-  status: "",
-  rpo: ""
+function objectColumns(isServerP20OrGreater: boolean): TdsDataGridColumnDef[] {
+  const result: TdsDataGridColumnDef[] = [
+    {
+      name: "program",
+      label: tdsVscode.l10n.t("Object Name"),
+      width: "8fr",
+      sortable: true,
+      sortDirection: "asc",
+    },
+    {
+      name: "date",
+      label: tdsVscode.l10n.t("Compile Date"),
+      width: "8fr",
+      sortable: true,
+      sortDirection: "",
+    }
+  ];
+
+  if (isServerP20OrGreater) {
+    result.push({
+      name: "source_status",
+      label: tdsVscode.l10n.t("Status"),
+      width: "3fr",
+      lookup: {
+        N: "NoAuth",
+        P: "Prod",
+        D: "Dev"
+      },
+      sortable: false,
+      grouping: true,
+    });
+
+    result.push({
+      name: "rpo_status",
+      label: tdsVscode.l10n.t("RPO"),
+      width: "3fr",
+      lookup: {
+        N: "None",
+        D: "Default",
+        T: "Tlpp",
+        C: "Custom",
+      },
+      sortable: false,
+      grouping: true,
+    });
+  }
+
+  return result;
+}
+
+function functionColumns(isServerP20OrGreater: boolean): TdsDataGridColumnDef[] {
+  const result: TdsDataGridColumnDef[] = [
+    {
+      name: "function",
+      label: tdsVscode.l10n.t("Function"),
+      width: "8fr",
+      sortable: true,
+      sortDirection: "asc",
+    },
+    {
+      name: "line",
+      label: tdsVscode.l10n.t("Line"),
+      width: "8fr",
+      sortable: true,
+      sortDirection: "",
+    },
+    {
+      name: "source",
+      label: tdsVscode.l10n.t("source"),
+      width: "8fr",
+      sortable: true,
+      sortDirection: "",
+    }
+  ];
+
+  if (isServerP20OrGreater) {
+    result.push({
+      name: "source_status",
+      label: tdsVscode.l10n.t("Status"),
+      width: "3fr",
+      lookup: {
+        N: "NoAuth",
+        P: "Prod",
+        D: "Dev"
+      },
+      sortable: false,
+      grouping: true,
+    });
+    result.push({
+      name: "rpo_status",
+      label: tdsVscode.l10n.t("RPO"),
+      width: "3fr",
+      lookup: {
+        N: "None",
+        D: "Default",
+        T: "Tlpp",
+        C: "Custom",
+      },
+      sortable: false,
+      grouping: true,
+    });
+  }
+
+  return result;
 }
 
 const EMPTY_MODEL: TFields = {
-  includeTRes: false,
+  includeOutScope: false,
   filter: "",
-  objects: Array(10).map(() => EMPTY_INSPECTOR_OBJECT),
+  objects: [],
   rowsLimit: 100
 }
 
 type TInspectorObjectComponentProps = {
-  methods: UseFormReturn<any>;
-  id?: string;
-  label: string;
-  fieldName: string;
-  rowsLimit: number;
+  objectsInspector: boolean;
+  isServerP20OrGreater: boolean
 }
 
-export default function InspectObjectView() {
+export default function InspectObjectView(props: TInspectorObjectComponentProps) {
+  // const props: TInspectorObjectComponentProps =
+  // {
+  //   objectsInspector: true,
+  //   isServerP20OrGreater: true
+  // };
   const methods = useForm<TFields>({
     defaultValues: EMPTY_MODEL,
     mode: "all"
   })
 
-  // const onSubmit: SubmitHandler<TFields> = (data) => {
-  //   data.objectsRight = data.objectsRight.filter((object: TInspectorObject) => object.name.length > 0);
-
-  //   sendSaveAndClose(data);
-  // }
   const [dataSource, setDataSource] = React.useState<TInspectorObject[]>([]);
 
   React.useEffect(() => {
@@ -95,8 +192,6 @@ export default function InspectObjectView() {
     }
   }, []);
 
-  const model: TFields = methods.getValues();
-
   const bottomActions: TdsDataGridAction[] = [{
     id: "btnExportTxt",
     caption: tdsVscode.l10n.t("Export (TXT)"),
@@ -104,7 +199,7 @@ export default function InspectObjectView() {
     enabled: methods.formState.isValid,
     type: "button",
     onClick: () => {
-      sendExport("TXT", methods.getValues());
+      sendExport(methods.getValues(), "TXT");
     }
   }, {
     id: "btnExportCsv",
@@ -113,63 +208,32 @@ export default function InspectObjectView() {
     enabled: methods.formState.isValid,
     type: "button",
     onClick: () => {
-      sendExport("CSV", methods.getValues());
+      sendExport(methods.getValues(), "CSV");
     }
   }];
 
   const topActions: TdsDataGridAction[] = [{
-    id: "btnIncludeTes",
-    caption: methods.getValues("includeTRes") ? tdsVscode.l10n.t("Exclude TRES") : tdsVscode.l10n.t("Include TRES"),
+    id: "btnIncludeOutScope",
+    caption:
+      props.objectsInspector
+        ? methods.getValues("includeOutScope") ? tdsVscode.l10n.t("Exclude TRES") : tdsVscode.l10n.t("Include TRES")
+        : methods.getValues("includeOutScope") ? tdsVscode.l10n.t("Exclude sources without public elements") : tdsVscode.l10n.t("Include sources without public elements"),
     type: "button",
     onClick: () => {
-      sendIncludeTRes(methods.getValues(), !methods.getValues("includeTRes"));
+      sendIncludeOutScope(methods.getValues(), !methods.getValues("includeOutScope"));
     }
   }];
 
-  const columnDef: TdsDataGridColumnDef[] = [
-    {
-      name: "program",
-      label: tdsVscode.l10n.t("Object Name"),
-      width: "8fr",
-      sortable: true,
-      sortDirection: "asc",
-    },
-    {
-      name: "date",
-      label: tdsVscode.l10n.t("Compile Date"),
-      width: "8fr",
-      sortable: true,
-      sortDirection: "",
-    },
-    {
-      name: "status",
-      label: tdsVscode.l10n.t("Status"),
-      width: "3fr",
-      lookup: {
-        N: "NoAuth",
-        P: "Prod",
-        D: "Dev"
-      },
-      sortable: false,
-      grouping: true,
-    },
-    {
-      name: "rpo",
-      label: tdsVscode.l10n.t("RPO"),
-      width: "3fr",
-      lookup: {
-        N: "None",
-        D: "Default",
-        T: "Tlpp",
-        C: "Custom",
-      },
-      sortable: false,
-      grouping: true,
-    },
-  ];
+  let columnDef: TdsDataGridColumnDef[] = props.objectsInspector
+    ? objectColumns(props.isServerP20OrGreater)
+    : functionColumns(props.isServerP20OrGreater);
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("Objects Inspector")} linkToDoc="">
+    <TdsPage title={
+      props.objectsInspector
+        ? tdsVscode.l10n.t("Objects Inspector")
+        : tdsVscode.l10n.t("Functions Inspector")
+    } linkToDoc="">
       <TdsDataGrid
         id="inspectorObjectGrid"
         methods={methods}

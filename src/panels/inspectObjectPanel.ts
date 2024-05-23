@@ -16,14 +16,21 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import { ServersConfig } from "../utils";
+import Utils, { ServersConfig } from "../utils";
 import { CommonCommandFromWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
-import { IObjectData, sendInspectorObjectsRequest } from "../protocolMessages";
+import { IFunctionData, IObjectData, sendInspectorObjectsRequest } from "../protocolMessages";
 import { TFieldErrors, TdsPanel, isErrors } from "./panel";
 import { TInspectorObject, TInspectorObjectModel } from "../model/inspectObjectModel";
+import { sendInspectorFunctionsRequest } from './../protocolMessages';
+import options from './../../test/mocha.config';
+
+export interface IInspectOptionsView {
+  objectsInspector: boolean;
+  includeOutScope: boolean; //TRES para objetos e "fontes sem função publica" para funções
+}
 
 enum InspectObjectCommandEnum {
-  IncludeTRes = "INCLUDE_TRES",
+  IncludeOutScope = "INCLUDE_OUT_SCOPE",
   Export = "EXPORT"
 
 }
@@ -31,46 +38,66 @@ enum InspectObjectCommandEnum {
 type InspectObjectCommand = CommonCommandFromWebViewEnum & InspectObjectCommandEnum;
 
 const EMPTY_MODEL: TInspectorObjectModel = {
-  includeTRes: false,
-  filter: "",
+  includeOutScope: false,
   objects: [],
 }
 
-export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
-  public static currentPanel: InspectorObjectPanel | undefined;
+const panels: {
+  objects?: InspectorObjectPanel;
+  functions?: InspectorObjectPanel;
+} = {};
 
-  public static render(context: vscode.ExtensionContext): InspectorObjectPanel {
+export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
+
+  protected constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, options: IInspectOptionsView) {
+    super(panel, extensionUri, options);
+  }
+
+  public static render(context: vscode.ExtensionContext, options: IInspectOptionsView): InspectorObjectPanel {
     const extensionUri: vscode.Uri = context.extensionUri;
 
-    if (InspectorObjectPanel.currentPanel) {
-      // If the webview panel already exists reveal it
-      InspectorObjectPanel.currentPanel._panel.reveal(); //vscode.ViewColumn.One
-    } else {
-      // If a webview panel does not already exist create and show a new one
-      const panel = vscode.window.createWebviewPanel(
-        // Panel view type
-        "inspector-objects-panel",
-        // Panel title
-        vscode.l10n.t("Objects Inspector"),
-        // The editor column the panel should be displayed in
-        vscode.ViewColumn.One,
-        // Extra panel configurations
-        {
-          ...getExtraPanelConfigurations(extensionUri)
-        }
-      );
-
-      InspectorObjectPanel.currentPanel = new InspectorObjectPanel(panel, extensionUri);
+    if (options.objectsInspector) {
+      if (panels.objects) {
+        panels.objects._panel.reveal(); //vscode.ViewColumn.One
+        return panels.objects;
+      }
+      if (panels.functions) {
+        panels.functions._panel.reveal(); //vscode.ViewColumn.One
+        return panels.functions;
+      }
     }
 
-    return InspectorObjectPanel.currentPanel;
+    // If a webview panel does not already exist create and show a new one
+    const panel = vscode.window.createWebviewPanel(
+      // Panel view type
+      "inspector-objects-panel",
+      // Panel title
+      options.objectsInspector
+        ? vscode.l10n.t("Objects Inspector")
+        : vscode.l10n.t("Functions Inspector"),
+      // The editor column the panel should be displayed in
+      vscode.ViewColumn.One,
+      // Extra panel configurations
+      {
+        ...getExtraPanelConfigurations(extensionUri)
+      }
+    );
+
+    if (options.objectsInspector) {
+      panels.objects = new InspectorObjectPanel(panel, extensionUri, options);
+    } else {
+      panels.functions = new InspectorObjectPanel(panel, extensionUri, options);
+    }
+
+    return options.objectsInspector
+      ? panels.objects
+      : panels.functions;
   }
 
   /**
    * Cleans up and disposes of webview resources when the webview panel is closed.
    */
   public dispose() {
-    InspectorObjectPanel.currentPanel = undefined;
 
     super.dispose();
   }
@@ -86,9 +113,18 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
    * rendered within the webview panel
    */
   protected getWebviewContent(extensionUri: vscode.Uri) {
+    const server = ServersConfig.getCurrentServer();
 
     return getWebviewContent(this._panel.webview, extensionUri, "inspectObjectView",
-      { title: this._panel.title, translations: this.getTranslations() });
+      {
+        title: this._panel.title,
+        translations: this.getTranslations(),
+        data: {
+          "objectsInspector": this._options.objectsInspector.toString(),
+          "isServerP20OrGreater": Utils.isServerP20OrGreater(server).toString()
+        },
+      }
+    )
   }
 
   /**
@@ -112,7 +148,7 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
             async (progress, token) => {
               progress.report({ increment: 0 });
 
-              data.model = await this.getDataFromServer(EMPTY_MODEL, false);
+              data.model = await this.getDataFromServer(EMPTY_MODEL);
 
               this.sendUpdateModel(data.model, undefined);
 
@@ -122,7 +158,7 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
         }
 
         break;
-      case InspectObjectCommandEnum.IncludeTRes:
+      case InspectObjectCommandEnum.IncludeOutScope:
         vscode.window.withProgress(
           {
             location: vscode.ProgressLocation.Window,
@@ -130,8 +166,8 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
           },
           async (progress, token) => {
             progress.report({ increment: 0 });
-
-            data.model = await this.getDataFromServer(data.model, data.includeTRes);
+            this._options.includeOutScope = data.includeOutScope;
+            data.model = await this.getDataFromServer(data.model);
 
             this.sendUpdateModel(data.model, undefined);
 
@@ -179,25 +215,42 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
     }
   }
 
-  private async getDataFromServer(model: TInspectorObjectModel, includeTRes: boolean): Promise<TInspectorObjectModel> {
+  private async getDataFromServer(model: TInspectorObjectModel): Promise<TInspectorObjectModel> {
     const server = ServersConfig.getCurrentServer();
-    const objectsData: IObjectData[] = await sendInspectorObjectsRequest(server, includeTRes);
+    const objectsData: IObjectData[] | IFunctionData[] =
+      this._options.objectsInspector
+        ? await sendInspectorObjectsRequest(server, this._options.includeOutScope)
+        : await sendInspectorFunctionsRequest(server, this._options.includeOutScope);
 
     model.objects = [];
     if (objectsData) {
-      objectsData.forEach((object: IObjectData) => {
-        model.objects.push({
-          program: object.source,
-          date: object.date,
-          status: object.source_status.toString(),
-          rpo: object.rpo_status.toString(),
-        });
+      objectsData.forEach((object: IObjectData | IFunctionData) => {
+        let data: TInspectorObject = {
+          source: "",
+          date: "",
+          rpo_status: "",
+          source_status: "",
+          function: "",
+          line: 0
+        };
+
+        data.source = object.source;
+        data.rpo_status = object.rpo_status;
+        data.source_status = object.source_status;
+
+        if (this._options.objectsInspector) {
+          data.date = (object as IObjectData).date;
+        } else {
+          data.function = (object as IFunctionData).function;
+          data.line = (object as IFunctionData).line;
+        }
+
+        model.objects.push(data);
       });
 
     }
 
-    model.objects = model.objects.sort((a: TInspectorObject, b: TInspectorObject) => a.program.localeCompare(b.program));
-    model.includeTRes = includeTRes;
+    model.includeOutScope = this._options.includeOutScope;
 
     return model;
 
@@ -276,6 +329,7 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
   getTranslations(): Record<string, string> {
     return {
       "Objects Inspector": vscode.l10n.t("Objects Inspector"),
+      "Functions Inspector": vscode.l10n.t("Functions Inspector"),
       "Filter": vscode.l10n.t("Filter"),
       "Filter by Object Name. Ex: Mat or Fat*": vscode.l10n.t("Filter by Object Name. Ex: Mat or Fat*"),
       "Include *.TRES": vscode.l10n.t("Include *.TRES"),
