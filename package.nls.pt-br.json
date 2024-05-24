@@ -20,6 +20,7 @@
 	"tds.package.compilation.includes": "Compilação inclui.",
 	"tds.package.compilation.tempDir": "Diretório temporário",
 	"tds.package.web.navigator.debug": "Navegador da Web (depuração com SmartClientHtml).",
+	"tds.package.web.arguments": "Argumentos para navegador web",
 	"tds.package.editor.notification.show": "Nível de notificação a ser exibido no 'pop-up'",
 	"tds.package.editor.notification.show.none": "Nenhum",
 	"tds.package.editor.notification.show.only_errors": "Apenas erros",
