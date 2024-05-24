@@ -1,5 +1,20 @@
 # Changelog
 
+## Versão [2.0.NEXT]
+
+### Melhorias
+
+#### Abrir uma janela do navegador quando iniciar o debug do tipo `totvs_language_web_debug` [#1233](https://github.com/totvs/tds-vscode/issues/1233)
+
+Foi adicionado a possibilidade de passar parâmetros para o navegador a ser utilizado na depuração do tipo [`totvs_language_web_debug`](./docs/debugger.md#totvs-language-web-debug-html).
+
+### Correções
+
+#### Classe no TL++ [#1225](https://github.com/totvs/tds-vscode/issues/1225)
+
+Em estruturas sem a devida finalização, p.e. `class` e `end class`, poderia gerar lista de símbolos (visão _Outline_) incorreta e/ou gerar um erro no log.
+Foi adicionado tratamento para esses blocos, de forma a evitar a ocorrência.
+
 ## Versão [2.0.7]
 
 ### Correções
@@ -7,11 +22,6 @@
 #### Erro no _linter_ [#1224](https://github.com/totvs/tds-vscode/issues/1224)
 
 Em determinadas estruturas, p.e. `class` sem identificador, poderia ocorrer _crash_ durante processos do _DSS_.
-
-#### Classe no TL++ [#1225](https://github.com/totvs/tds-vscode/issues/1225)
-
-Em estruturas sem a devida finalização, p.e. `class` e `end class`, poderia gerar lista de símbolos (visão _Outline_`) incorretas ou gerar um erro no log.
-Foi adicionado tratamento para esses blocos, de forma a evitar a ocorrência.
 
 #### Problema na paginação do TDS Replay
 
