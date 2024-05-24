@@ -106,9 +106,21 @@ No caso de efetuar uma depuração via `SmartClient Html`, é necessário inform
 
 ![Web Navigator](images/web-navigator.png)
 
+Caso queira modificar o comportamento do navegador no momento da sua inicialização, você pode informar uma lista de argumentos que serão passados para o navegador via linha de comandos. Por exemplo, para forçar a abertura de uma nova janela no `FireFox`, informe na lista `Web: Navigator Arguments` com o valor `["-new-window"]`. Para maiores detalhes, consulte a documentação do seu navegador.
+
+![Web Arguments](images/web-arguments.png)
+
+| Navegador |
+| --------- |
+| [Firefox](https://wiki.mozilla.org/Firefox/CommandLineOptions) |
+| [Chromium](https://www.chromium.org/developers/how-tos/run-chromium-with-flags/) |
+| [Edge](https://textslashplain.com/2022/01/05/edge-command-line-arguments/) Não oficial |
+
+> Páginas acessadas em Maio/2024.
+
 | Devido a uma limitação na execução do navegador `Safari` por linha de comando, este navegador não é suportado para depuração via `SmartClient HTML`.
 
-## Smartclient MacOS<a name="sc-macos"></a>
+## SmartClient MacOS<a name="sc-macos"></a>
 
 A configuração do parâmetro `smartclientBin` para o MacOS deve seguir o exemplo a seguir.
 
