@@ -1,6 +1,6 @@
 # Changelog
 
-## Versão [2.0.NEXT]
+## Versão [2.0.7]
 
 ### Correções
 
@@ -12,6 +12,10 @@ Em determinadas estruturas, p.e. `class` sem identificador, poderia ocorrer _cra
 
 Em estruturas sem a devida finalização, p.e. `class` e `end class`, poderia gerar lista de símbolos (visão _Outline_`) incorretas ou gerar um erro no log.
 Foi adicionado tratamento para esses blocos, de forma a evitar a ocorrência.
+
+#### Problema na paginação do TDS Replay
+
+Ao executar o TDS Replay, a paginação não estava funcionando corretamente.
 
 ## Versão [2.0.6]
 
