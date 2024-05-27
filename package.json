@@ -513,6 +513,14 @@
           "default": "",
           "description": "%tds.package.web.navigator.debug%"
         },
+        "totvsLanguageServer.web.arguments": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "description": "%tds.package.web.arguments%"
+        },
         "totvsLanguageServer.editor.show.notification": {
           "scope": "window",
           "type": "string",
