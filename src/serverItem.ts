@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import serverProvider from "./serverItemProvider";
-import { TServerType } from "./model/serverModel";
+import { TServerType } from "tds-shared/lib";
 
 const RESOURCE_FOLDER = path.join(__filename, "..", "..", "resources");
 const RESOURCE_DARK = path.join(RESOURCE_FOLDER, "dark");

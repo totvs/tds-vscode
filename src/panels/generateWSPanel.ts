@@ -17,13 +17,13 @@ limitations under the License.
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import Utils, { MESSAGE_TYPE, ServersConfig, serverExceptionCodeToString } from "../utils";
-import { CommonCommandFromWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
+import { CommonCommandFromWebViewEnum, ReceiveMessage } from "tds-shared/lib";
 import { IWsdlGenerateResult, sendWsdlGenerateRequest } from "../protocolMessages";
-import { TWebServiceModel } from "../model/webServiceModel";
+import { TWebServiceModel } from "tds-shared/lib";
 import * as fse from "fs-extra";
 import path from "path";
 import { _debugEvent } from "../debug";
-import { TFieldErrors, TSendSelectResourceProps, TdsPanel, isErrors } from "./panel";
+import { TFieldErrors, TSendSelectResourceProps, TdsPanel, isErrors } from "tds-shared/lib";
 
 enum GenerateWebServiceCommandEnum {
 }

@@ -17,12 +17,11 @@ limitations under the License.
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import Utils, { ServersConfig } from "../utils";
-import { CommonCommandFromWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
+import { CommonCommandFromWebViewEnum, ReceiveMessage } from "tds-shared/lib";
 import { IFunctionData, IObjectData, sendInspectorObjectsRequest } from "../protocolMessages";
-import { TFieldErrors, TdsPanel, isErrors } from "./panel";
-import { TInspectorObject, TInspectorObjectModel } from "../model/inspectObjectModel";
+import { TFieldErrors, TdsPanel, isErrors } from "tds-shared/lib";
+import { TInspectorObject, TInspectorObjectModel } from "tds-shared/lib";
 import { sendInspectorFunctionsRequest } from './../protocolMessages';
-import options from './../../test/mocha.config';
 
 export interface IInspectOptionsView {
   objectsInspector: boolean;

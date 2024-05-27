@@ -5,7 +5,7 @@ import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsLabelField, TdsSelectionFileField, TdsSimpleCheckBoxField, TdsSimpleTextField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
-import { TPatchFileData } from "../model/applyPatchModel";
+import { TPatchFileData } from "tds-shared/lib";
 
 enum ReceiveCommandEnum {
 }

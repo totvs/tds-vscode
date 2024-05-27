@@ -70,6 +70,7 @@ import { CompileKeyPanel } from "./panels/compileKeyPanel";
 import { ApplyPatchPanel } from "./panels/patchApplyPanel";
 import { InspectorObjectPanel } from "./panels/inspectObjectPanel";
 
+
 export let languageClient: TotvsLanguageClientA;
 
 export function parseUri(u): Uri {

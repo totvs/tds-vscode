@@ -1,10 +1,9 @@
 import * as vscode from "vscode";
-import { TModelPanel } from "../panels/panel";
-
+import { TModelPanel } from "../panels/panelInterface";
 
 export type TPatchFileData = {
 	name: string;
-	uri: vscode.Uri;
+	uri?: vscode.Uri;
 	validation: string;
 	tphInfo: any;
 	isProcessing: boolean;

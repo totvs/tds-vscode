@@ -3,11 +3,10 @@ import * as fs from "fs";
 import { EnvSection, ServerItem } from "./serverItem";
 import Utils, { ServersConfig } from "./utils";
 import { updateStatusBarItems } from "./statusBar";
-import { TServerType } from "./model/serverModel";
+import { TServerType } from "tds-shared/lib";
 
 class ServerItemProvider
-  implements vscode.TreeDataProvider<ServerItem | EnvSection>
-{
+  implements vscode.TreeDataProvider<ServerItem | EnvSection> {
   isConnected(server: ServerItem) {
     return (
       this._connectedServerItem !== undefined &&
@@ -50,7 +49,7 @@ class ServerItemProvider
     });
 
     vscode.workspace.onDidChangeConfiguration(() => {
-    this.checkServersConfigListener(true);
+      this.checkServersConfigListener(true);
     });
 
   }

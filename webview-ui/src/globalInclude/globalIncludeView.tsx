@@ -3,17 +3,17 @@ import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } f
 import "./globalInclude.css";
 import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
 import React from "react";
-import { TIncludeData } from "../model/addServerModel";
 import { FieldArrayWithId, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { TdsForm, TdsLabelField, TdsSelectionFolderField, TdsSimpleTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
+import { TIncludePath } from "tds-shared/lib";
 
 enum ReceiveCommandEnum {
 }
 type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TFields>;
 
 type TFields = {
-  includePaths: TIncludeData[]
+  includePaths: TIncludePath[]
 }
 
 const ROWS_LIMIT: number = 5;
@@ -34,7 +34,7 @@ export default function GlobalIncludeView() {
     });
 
   const onSubmit: SubmitHandler<TFields> = (data) => {
-    data.includePaths = data.includePaths.filter((includePath: TIncludeData) => includePath.path.length > 0);
+    data.includePaths = data.includePaths.filter((includePath: TIncludePath) => includePath.path.length > 0);
     sendSaveAndClose(data);
   }
 
@@ -69,7 +69,7 @@ export default function GlobalIncludeView() {
 
   function addIncludePath(folder: string, index: number) {
 
-    if (methods.getValues().includePaths.findIndex((includePath: TIncludeData) => includePath.path.toLowerCase() == folder.toLowerCase()) == -1) {
+    if (methods.getValues().includePaths.findIndex((includePath: TIncludePath) => includePath.path.toLowerCase() == folder.toLowerCase()) == -1) {
       remove(index);
       insert(index, { path: folder });
     };
@@ -81,7 +81,7 @@ export default function GlobalIncludeView() {
   }
 
   const model: TFields = methods.getValues();
-  const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludeData) => row.path == "");
+  const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludePath) => row.path == "");
 
   return (
     <TdsPage title={tdsVscode.l10n.t("Global Include")} linkToDoc="[Include global]servers.md#registro-de-servidores">

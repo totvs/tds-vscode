@@ -1,43 +1,6 @@
 import * as vscode from "vscode";
-import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
-
-export type TErrorType =
-	"required"
-	| "min"
-	| "max"
-	| "minLength"
-	| "maxLength"
-	| "pattern"
-	| "validate"
-	| "warning";
-
-export type TFieldError = {
-	type: TErrorType;
-	message?: string
-};
-
-export type TFieldErrors<M> = Partial<Record<keyof M | "root", TFieldError>>;
-
-export function isErrors<M>(errors: TFieldErrors<M>) {
-	return Object.keys(errors).length > 0
-};
-
-export type TModelPanel = {
-
-}
-
-export type TSendSelectResourceProps = TModelPanel & {
-	firedBy: string;
-	canSelectMany: boolean,
-	canSelectFiles: boolean,
-	canSelectFolders: boolean,
-	currentFolder: string,
-	title: string,
-	openLabel: string,
-	filters: {
-		[key: string]: string[]
-	}
-}
+import { CommonCommandToWebViewEnum, CommonCommandFromWebViewEnum } from "../webviewProtocol";
+import { TModelPanel, ReceiveMessage, TFieldErrors, TSendSelectResourceProps } from "./panelInterface";
 
 export abstract class TdsPanel<M extends TModelPanel> {
 

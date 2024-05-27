@@ -16,7 +16,7 @@ import {
   sendGetServerPermissionsInfo,
 } from "./protocolMessages";
 import { EnvSection, ServerItem } from "./serverItem";
-import { TAuthorization, TCompileKey } from "./model/compileKeyModel";
+import { TAuthorization, TCompileKey } from "tds-shared/lib";
 
 const homedir = require("os").homedir();
 

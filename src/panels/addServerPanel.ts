@@ -17,11 +17,11 @@ limitations under the License.
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import Utils, { ServersConfig } from "../utils";
-import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
+import { CommonCommandFromWebViewEnum, ReceiveMessage } from "tds-shared/lib";
 import { IValidationInfo, sendValidationRequest } from "../protocolMessages";
-import { TServerModel, TServerType } from "../model/serverModel";
-import { TFieldErrors, TdsPanel, isErrors } from "./panel";
-import { TIncludePath } from "../model/includeModel";
+import { TServerModel, TServerType } from "tds-shared/lib";
+import { TFieldErrors, TdsPanel, isErrors } from "tds-shared/lib";
+import { TIncludePath } from "tds-shared/lib";
 
 enum AddServerCommandEnum {
 }

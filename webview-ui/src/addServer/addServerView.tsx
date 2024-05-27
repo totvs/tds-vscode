@@ -17,13 +17,12 @@ limitations under the License.
 import "./addServer.css";
 import { TdsPage } from "@totvs/tds-webtoolkit";
 import React from "react";
-import { TIncludeData } from "../model/addServerModel";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsCheckBoxField, TdsForm, TdsLabelField, TdsNumericField, TdsSelectionField, TdsSelectionFolderField, TdsSimpleTextField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 import { tdsVscode } from '@totvs/tds-webtoolkit';
-
+import { TIncludePath } from "tds-shared/lib";
 
 enum ReceiveCommandEnum {
 }
@@ -34,7 +33,7 @@ type TFields = {
   serverName: string;
   address: string;
   port: number | string;
-  includePaths: TIncludeData[]
+  includePaths: TIncludePath[]
   immediateConnection: boolean,
   globalIncludeDirectories: string
 }
@@ -62,7 +61,7 @@ export default function AddServerView() {
     });
 
   const onSubmit: SubmitHandler<TFields> = (data) => {
-    data.includePaths = data.includePaths.filter((includePath: TIncludeData) => includePath.path.length > 0);
+    data.includePaths = data.includePaths.filter((includePath: TIncludePath) => includePath.path.length > 0);
 
     sendSaveAndClose(data);
   }
@@ -102,7 +101,7 @@ export default function AddServerView() {
 
   function addIncludePath(folder: string, index: number) {
 
-    if (methods.getValues().includePaths.findIndex((includePath: TIncludeData) => includePath.path.toLowerCase() == folder.toLowerCase()) == -1) {
+    if (methods.getValues().includePaths.findIndex((includePath: TIncludePath) => includePath.path.toLowerCase() == folder.toLowerCase()) == -1) {
       remove(index);
       insert(index, { path: folder });
     };
@@ -114,7 +113,7 @@ export default function AddServerView() {
   }
 
   const model: TFields = methods.getValues();
-  const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludeData) => row.path == "");
+  const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludePath) => row.path == "");
 
   return (
     <TdsPage title={tdsVscode.l10n.t("Add Server")} linkToDoc="[Server Registration]servers.md#registro-de-servidores">
@@ -191,7 +190,7 @@ export default function AddServerView() {
           info={methods.getValues("globalIncludeDirectories")} />
 
         <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
-          {model && model.includePaths.map((row: TIncludeData, index: number) => (
+          {model && model.includePaths.map((row: TIncludePath, index: number) => (
             <VSCodeDataGridRow key={index}>
               {row.path !== "" &&
                 <>

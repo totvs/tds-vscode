@@ -17,12 +17,9 @@ limitations under the License.
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import Utils, { MESSAGE_TYPE, ServersConfig, serverExceptionCodeToString } from "../utils";
-import { CommonCommandFromWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
 import { IObjectData, IPatchResult, sendInspectorObjectsRequest, sendPatchGenerateMessage } from "../protocolMessages";
-import { TGeneratePatchModel } from "../model/generatePatchModel";
-import { TInspectorObject } from "../patch/patchUtil";
 import { ResponseError } from "vscode-languageclient";
-import { TFieldErrors, TdsPanel, isErrors } from "./panel";
+import { CommonCommandFromWebViewEnum, ReceiveMessage, TFieldErrors, TGeneratePatchModel, TInspectorObject, TdsPanel, isErrors } from "tds-shared/lib";
 
 enum PatchGenerateCommandEnum {
   IncludeTRes = "INCLUDE_TRES",
@@ -151,15 +148,15 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
         const direction: string = data.direction;
 
         if (direction == "right") {
-          data.model.objectsLeft = data.model.objectsLeft.filter((x: TInspectorObject) => selectedObject.findIndex(y => x.name == y.name) == -1);
+          data.model.objectsLeft = data.model.objectsLeft.filter((x: TInspectorObject) => selectedObject.findIndex(y => x.source == y.source) == -1);
           data.model.objectsRight.push(...selectedObject);
         } else {
-          data.model.objectsRight = data.model.objectsRight.filter((x: TInspectorObject) => selectedObject.findIndex(y => x.name == y.name) == -1);
+          data.model.objectsRight = data.model.objectsRight.filter((x: TInspectorObject) => selectedObject.findIndex(y => x.source == y.source) == -1);
           data.model.objectsLeft.push(...selectedObject);
         }
 
-        data.model.objectsRight = data.model.objectsRight.sort((a: TInspectorObject, b: TInspectorObject) => a.name.localeCompare(b.name));
-        data.model.objectsLeft = data.model.objectsLeft.sort((a: TInspectorObject, b: TInspectorObject) => a.name.localeCompare(b.name));
+        data.model.objectsRight = data.model.objectsRight.sort((a: TInspectorObject, b: TInspectorObject) => a.source.localeCompare(b.source));
+        data.model.objectsLeft = data.model.objectsLeft.sort((a: TInspectorObject, b: TInspectorObject) => a.source.localeCompare(b.source));
 
         this.sendUpdateModel(data.model, undefined);
 
@@ -184,16 +181,19 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
     if (objectsData) {
       objectsData.forEach((object: IObjectData) => {
         model.objectsLeft.push({
-          name: object.source,
-          type: object.source_status.toString(),
-          date: object.date
+          source: object.source,
+          date: object.date,
+          source_status: object.source_status.toString(),
+          rpo_status: "",
+          function: "",
+          line: 0
         });
       });
 
     }
 
-    model.objectsLeft = model.objectsLeft.sort((a: TInspectorObject, b: TInspectorObject) => a.name.localeCompare(b.name));
-    model.objectsRight = model.objectsRight.sort((a: TInspectorObject, b: TInspectorObject) => a.name.localeCompare(b.name));
+    model.objectsLeft = model.objectsLeft.sort((a: TInspectorObject, b: TInspectorObject) => a.source.localeCompare(b.source));
+    model.objectsRight = model.objectsRight.sort((a: TInspectorObject, b: TInspectorObject) => a.source.localeCompare(b.source));
     model.includeTRes = includeTRes;
 
     return model;
@@ -239,7 +239,7 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
       model.patchDest,
       3,
       model.patchName,
-      model.objectsRight.map((object: TInspectorObject) => object.name),
+      model.objectsRight.map((object: TInspectorObject) => object.source),
     ).then(() => {
       vscode.window.showInformationMessage(vscode.l10n.t("Patch file generated"));
     }, (err: ResponseError<object>) => {

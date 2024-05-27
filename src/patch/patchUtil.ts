@@ -81,12 +81,6 @@ export function patchGenerateFromFolder(context: any) {
 }
 
 
-export type TInspectorObject = {
-	name: string;
-	type: string;
-	date: string;
-}
-
 function readFiles(
 	dirname: string,
 	allFilesNames: Array<String>,

@@ -17,13 +17,13 @@ limitations under the License.
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import { ServersConfig, pathErrorCodeToString } from "../utils";
-import { CommonCommandFromWebViewEnum, ReceiveMessage } from "./utilities/common-command-panel";
+import { CommonCommandFromWebViewEnum, ReceiveMessage } from "tds-shared/lib";
 import { IPatchApplyResult, PathErrorCodes, sendApplyPatchRequest, sendValidatePatchRequest } from "../protocolMessages";
-import { TApplyPatchModel, TPatchFileData } from "../model/applyPatchModel";
+import { TApplyPatchModel, TPatchFileData } from "tds-shared/lib";
 import { ServerItem } from "../serverItem";
 import * as path from "path";
 import * as fse from "fs-extra";
-import { TFieldErrors, TdsPanel, isErrors } from "./panel";
+import { TFieldErrors, TdsPanel, isErrors } from "tds-shared/lib";
 
 enum ApplyPatchCommandEnum {
   PATCH_VALIDATE = "PATCH_VALIDATE",

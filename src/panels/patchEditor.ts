@@ -1,10 +1,10 @@
 import * as path from "path";
 import * as vscode from "vscode";
-import { IPatchData } from "../model/patchData";
+import { IPatchData } from "tds-shared/lib";
 import { Disposable } from "./utilities/dispose";
 import { ServersConfig } from "../utils";
 import { sendPatchInfo } from "../protocolMessages";
-import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum } from "./utilities/common-command-panel";
+import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum } from "tds-shared/lib";
 import { getWebviewContent } from "./utilities/webview-utils";
 
 interface PatchDocumentDelegate {

@@ -1,4 +1,4 @@
-import { TModelPanel } from "../panels/panel";
+import { TModelPanel } from "../panels/panelInterface";
 
 export type TIncludePath = {
 	path: string;

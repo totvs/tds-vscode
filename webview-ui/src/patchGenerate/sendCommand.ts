@@ -1,5 +1,5 @@
 import { tdsVscode } from "@totvs/tds-webtoolkit";
-import { TInspectorObject } from "../model/inspectorObjectModel";
+import { TInspectorObject } from "tds-shared/lib";
 
 enum PatchGenerateCommandEnum {
 	IncludeTRes = "INCLUDE_TRES",

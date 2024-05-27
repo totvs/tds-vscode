@@ -21,30 +21,31 @@ import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-
 import { TdsSimpleCheckBoxField, TdsForm, TdsTextField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionFileField } from "@totvs/tds-webtoolkit";
 
 import "./CompileKey.css";
+import { TAuthorization, TCompileKey } from "tds-shared/lib";
 
 enum ReceiveCommandEnum {
 }
 type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TFields>;
 
-type TCompileKey = {
-  path: string;
-  machineId: string;
-  issued: string;
-  expire: string;
-  buildType: string;
-  tokenKey: string;
-  authorizationToken: string;
-  userId: string;
-}
+// type TCompileKey = {
+//   path: string;
+//   machineId: string;
+//   issued: string;
+//   expire: string;
+//   buildType: string;
+//   tokenKey: string;
+//   authorizationToken: string;
+//   userId: string;
+// }
 
-type TAuthorization = {
-  id: string;
-  generation: string;
-  validation: string;
-  permission: string;
-  key: string;
-  canOverride: boolean;
-}
+// type TAuthorization = {
+//   id: string;
+//   generation: string;
+//   validation: string;
+//   permission: string;
+//   key: string;
+//   canOverride: boolean;
+// }
 
 type TFields = TCompileKey & TAuthorization;
 

@@ -1,4 +1,4 @@
-import { TModelPanel } from "../panels/panel";
+import { TModelPanel } from "../panels/panelInterface";
 import { TIncludePath } from "./includeModel";
 
 export type TServerType = ""

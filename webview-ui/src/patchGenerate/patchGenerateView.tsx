@@ -3,11 +3,11 @@ import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } f
 import "./patchGenerate.css";
 import React from "react";
 import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
-import { FormProvider, SubmitHandler, UseFormReturn, useFieldArray, useForm, useFormContext } from "react-hook-form";
+import { SubmitHandler, UseFormReturn, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
-import { TInspectorObject } from "../model/inspectorObjectModel";
 import { TdsSimpleCheckBoxField, TdsSimpleTextField, TdsForm, TdsTextField, TdsCheckBoxField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionField, TdsSelectionFolderField } from "@totvs/tds-webtoolkit";
 import { sendIncludeTRes, sendToLeft, sendToRight } from "./sendCommand";
+import { TInspectorObject } from "tds-shared/lib";
 
 enum ReceiveCommandEnum {
   MOVE_TO_LEFT = "moveToLeft",
@@ -31,15 +31,16 @@ type TFields = {
 }
 
 const EMPTY_INSPECTOR_OBJECT: TInspectorObject = {
-  name: "",
-  type: "",
-  date: ""
+  source: "",
+  date: "",
+  rpo_status: "",
+  source_status: "",
+  function: "",
+  line: 0
 }
 
 const EMPTY_CHECK_INSPECTOR_OBJECT: TObjectFiltered = {
-  name: "",
-  type: "",
-  date: "",
+  ...EMPTY_INSPECTOR_OBJECT,
   check: false
 }
 
@@ -136,7 +137,7 @@ export default function PatchGenerateView() {
 
   const watchWarningManyItens = methods.watch("warningManyItens");
   const onSubmit: SubmitHandler<TFields> = (data) => {
-    data.objectsRight = data.objectsRight.filter((object: TInspectorObject) => object.name.length > 0);
+    data.objectsRight = data.objectsRight.filter((object: TInspectorObject) => object.source.length > 0);
 
     sendSaveAndClose(data);
   }
@@ -178,7 +179,7 @@ export default function PatchGenerateView() {
 
       return [...objects
         .filter((row: TInspectorObject) => {
-          return wildcard.test(row.name)
+          return wildcard.test(row.source)
         }).map((row: TInspectorObject) => {
           return { ...row, check: false }
         })
