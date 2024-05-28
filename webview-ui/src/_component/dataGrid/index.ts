@@ -14,19 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { TAbstractModelPanel } from "../panels/panelInterface";
-
-export type TInspectorObject = {
-	source: string;
-	date: Date;
-	rpo_status: string | number;
-	source_status: string | number;
-	function: string;
-	line: number;
-	checked?: boolean;
-}
-
-export type TInspectorObjectModel = TAbstractModelPanel & {
-	includeOutScope: boolean;
-	objects: TInspectorObject[];
-}
+export { TdsDataGrid } from "./dataGrid";
+export type { TdsDataGridColumnDef, } from "./dataGrid";
+export type { TdsDataGridAction } from "./paginator";

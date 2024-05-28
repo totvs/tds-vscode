@@ -1,9 +1,9 @@
-import { TModelPanel } from "../panels/panelInterface";
+import { TAbstractModelPanel } from "../panels/panelInterface";
 
 export type TIncludePath = {
 	path: string;
 }
 
-export type TIncludeModel = TModelPanel & {
+export type TIncludeModel = TAbstractModelPanel & {
 	includePaths: TIncludePath[];
 }

@@ -25,27 +25,8 @@ import { TAuthorization, TCompileKey } from "tds-shared/lib";
 
 enum ReceiveCommandEnum {
 }
+
 type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TFields>;
-
-// type TCompileKey = {
-//   path: string;
-//   machineId: string;
-//   issued: string;
-//   expire: string;
-//   buildType: string;
-//   tokenKey: string;
-//   authorizationToken: string;
-//   userId: string;
-// }
-
-// type TAuthorization = {
-//   id: string;
-//   generation: string;
-//   validation: string;
-//   permission: string;
-//   key: string;
-//   canOverride: boolean;
-// }
 
 type TFields = TCompileKey & TAuthorization;
 
@@ -81,6 +62,8 @@ export default function CompileKeyView() {
   })
 
   const onSubmit: SubmitHandler<TFields> = (data) => {
+    console.log("***********************************");
+    console.log(data);
 
     sendSaveAndClose(data);
   }

@@ -19,9 +19,10 @@ import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webv
 import Utils, { ServersConfig } from "../utils";
 import { CommonCommandFromWebViewEnum, ReceiveMessage } from "tds-shared/lib";
 import { IFunctionData, IObjectData, sendInspectorObjectsRequest } from "../protocolMessages";
-import { TFieldErrors, TdsPanel, isErrors } from "tds-shared/lib";
+import { TFieldErrors, isErrors } from "tds-shared/lib";
 import { TInspectorObject, TInspectorObjectModel } from "tds-shared/lib";
 import { sendInspectorFunctionsRequest } from './../protocolMessages';
+import { TdsPanel } from "./panel";
 
 export interface IInspectOptionsView {
   objectsInspector: boolean;
@@ -226,7 +227,7 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
       objectsData.forEach((object: IObjectData | IFunctionData) => {
         let data: TInspectorObject = {
           source: "",
-          date: "",
+          date: new Date(),
           rpo_status: "",
           source_status: "",
           function: "",
@@ -238,7 +239,7 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
         data.source_status = object.source_status;
 
         if (this._options.objectsInspector) {
-          data.date = (object as IObjectData).date;
+          data.date = new Date((object as IObjectData).date);
         } else {
           data.function = (object as IFunctionData).function;
           data.line = (object as IFunctionData).line;
@@ -256,72 +257,12 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
   }
 
   protected async validateModel(model: TInspectorObjectModel, errors: TFieldErrors<TInspectorObjectModel>): Promise<boolean> {
-    try {
-      //
-    } catch (error) {
-      errors.root = { type: "validate", message: `Internal error: ${error}` }
-    }
-
+    //does not apply to this model
     return !isErrors(errors);
   }
 
   protected async saveModel(model: TInspectorObjectModel): Promise<boolean> {
-    // let server = ServersConfig.getCurrentServer();
-
-    // // const filesPath = message.pathFiles;
-    // // const patchName = message.patchName;
-    // // const patchDestUri = vscode.Uri.file(
-    // //   message.patchDest
-    // // ).toString();
-
-    // // if (patchDestUri === "" || filesPath.length === 0) {
-    // //   vscode.window.showErrorMessage(
-    // //     vscode.l10n.t("Patch Generation failed. Please check destination directory and sources/resources list.")
-    // //   );
-    // // } else {
-    // // save last patchGenerateDir
-    // //  ServersConfig.updatePatchGenerateDir(server.id, model.patchDest);
-    // //vscode.window.showInformationMessage(localize("tds.webview.patch.generate.start","Start Generate Patch"));
-    // const response: IPatchResult | void = await sendPatchGenerateMessage(
-    //   server,
-    //   "",
-    //   model.patchDest,
-    //   3,
-    //   model.patchName,
-    //   model.objectsRight.map((object: TInspectorObject) => object.name),
-    // ).then(() => {
-    //   vscode.window.showInformationMessage(vscode.l10n.t("Patch file generated"));
-    // }, (err: ResponseError<object>) => {
-    //   serverExceptionCodeToString(err.code);
-
-    //   const response: IPatchResult = {
-    //     returnCode: err.code,
-    //     files: "",
-    //     message: err.message
-    //   };
-
-    //   return response;
-    // });
-
-    // let errors: TFieldErrors<TInspectObjectModel> = {};
-    // let ok: boolean = true;
-
-    // if (!response) {
-    //   errors.root = { type: "validate", message: "Internal error: See more information in log" };
-    //   ok = false
-    // } else if (response.returnCode !== 0) {
-    //   const msgError = ` ${serverExceptionCodeToString(response.returnCode)} ${response.message}`;
-    //   Utils.logMessage(msgError, MESSAGE_TYPE.Error, false);
-    //   vscode.window.showErrorMessage(msgError);
-    //   errors.root = { type: "validate", message: `Protheus Server was unable to generate the patch. Code: ${response.returnCode}` };;
-    //   ok = false
-    // }
-
-    // if (!ok) {
-    //   this.sendUpdateModel(model, errors);
-    // }
-
-    // return ok;
+    //does not apply to this model
     return true;
   }
 

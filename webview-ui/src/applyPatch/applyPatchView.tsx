@@ -179,7 +179,7 @@ export default function ApplyPatchView() {
                         methods={methods}
                         name={`patchFiles.${index}.fsPath`}
                         readOnly={true}
-                        info={row.uri.fsPath}
+                        info={row.uri}
                       />
                     </VSCodeDataGridCell>
                   </>

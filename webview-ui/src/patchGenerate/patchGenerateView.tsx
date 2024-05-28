@@ -1,59 +1,43 @@
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
+/*
+Copyright 2021 TOTVS S.A
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http: //www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
 
 import "./patchGenerate.css";
 import React from "react";
 import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
-import { SubmitHandler, UseFormReturn, useFieldArray, useForm } from "react-hook-form";
+import { SubmitHandler, UseFormReturn, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
-import { TdsSimpleCheckBoxField, TdsSimpleTextField, TdsForm, TdsTextField, TdsCheckBoxField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionField, TdsSelectionFolderField } from "@totvs/tds-webtoolkit";
-import { sendIncludeTRes, sendToLeft, sendToRight } from "./sendCommand";
-import { TInspectorObject } from "tds-shared/lib";
+import { TdsForm, TdsTextField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionFolderField } from "@totvs/tds-webtoolkit";
+import { TdsDataGrid, TdsDataGridAction, TdsDataGridColumnDef } from "../_component/dataGrid";
+import { TGeneratePatchModel, TInspectorObject, PatchGenerateCommandEnum } from "tds-shared/lib";
 
 enum ReceiveCommandEnum {
   MOVE_TO_LEFT = "moveToLeft",
   MOVE_TO_RIGHT = "moveToRight"
 }
 
-type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TFields>;
+type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TGeneratePatchModel>;
 
-type TObjectFiltered = TInspectorObject & { check: boolean };
-
-type TFields = {
-  patchName: string;
-  patchDest: string;
-  includeTRes: boolean;
-  filter: string;
-  warningManyItens: boolean;
-  objectsLeft: TInspectorObject[];
-  objectsRight: TObjectFiltered[];
-  objectsFiltered: TObjectFiltered[];
-  rowsLimit: number | 100 | 250 | 500;
-}
-
-const EMPTY_INSPECTOR_OBJECT: TInspectorObject = {
-  source: "",
-  date: "",
-  rpo_status: "",
-  source_status: "",
-  function: "",
-  line: 0
-}
-
-const EMPTY_CHECK_INSPECTOR_OBJECT: TObjectFiltered = {
-  ...EMPTY_INSPECTOR_OBJECT,
-  check: false
-}
-
-const EMPTY_MODEL: TFields = {
+const EMPTY_MODEL: TGeneratePatchModel = {
   patchDest: "", //(vscode.getState() | {})["patchDest"],
   patchName: "", //(vscode.getState() | {})["patchName"],
   includeTRes: false,
-  filter: "",
-  warningManyItens: false,
-  objectsLeft: Array(10).map(() => EMPTY_INSPECTOR_OBJECT),
-  objectsRight: Array(10).map(() => EMPTY_CHECK_INSPECTOR_OBJECT),
-  objectsFiltered: [],
-  rowsLimit: 100
+  objectsLeft: [],
+  objectsRight: [],
 }
 
 type TSelectObjectComponentProps = {
@@ -61,82 +45,111 @@ type TSelectObjectComponentProps = {
   id?: string;
   label: string;
   fieldName: string;
-  rowsLimit: number;
+  showIncludeTRes: boolean;
+}
+
+function sendToRight(model: any, selectedObject: TInspectorObject[]) {
+  console.log("sendToRight", model, selectedObject);
+
+  tdsVscode.postMessage({
+    command: PatchGenerateCommandEnum.MoveElements,
+    data: {
+      model: model,
+      selectedObject: selectedObject,
+      direction: "right"
+    }
+  });
+}
+
+function sendToLeft(model: any, selectedObject: TInspectorObject[]) {
+  tdsVscode.postMessage({
+    command: PatchGenerateCommandEnum.MoveElements,
+    data: {
+      model: model,
+      selectedObject: selectedObject,
+      direction: "left"
+    }
+  });
+}
+
+function sendIncludeTRes(model: any, includeTRes: boolean) {
+  tdsVscode.postMessage({
+    command: PatchGenerateCommandEnum.IncludeTRes,
+    data: {
+      model: model,
+      includeTRes: includeTRes
+    }
+  });
 }
 
 function SelectResourceComponent(props: TSelectObjectComponentProps) {
-  const { register, control } = props.methods;
-  // const fieldState: ControllerFieldState = props.methods.control.getFieldState(props.fieldName);
-  // const registerField = register(props.name, props.rules);
-  // const options = props.options || [];
-  // const currentValue: string = props.methods.getValues(props.name) as string;
-  //const { control } = useFormContext();
-  const { fields } = useFieldArray(
+  const columnDef: TdsDataGridColumnDef[] = [
     {
-      control: control,
-      name: props.fieldName
-    });
+      type: "boolean",
+      name: "check",
+      label: " ",
+      width: "0.5fr",
+      sortable: false,
+      readOnly: false
+    },
+    {
+      type: "string",
+      name: "source",
+      label: "Object",
+      width: "3fr",
+      sortable: true,
+      sortDirection: "",
+    },
+    {
+      type: "datetime",
+      name: "date",
+      label: "Date",
+      width: "3fr",
+      sortable: true,
+      sortDirection: ""
+    },
+  ]
+
+  const topActions: TdsDataGridAction[] = [{
+    id: "btnIncludeTRes",
+    caption: props.methods.getValues("includeTRes") ? tdsVscode.l10n.t("Exclude TRES") : tdsVscode.l10n.t("Include TRES"),
+    type: "button",
+    onClick: () => {
+      sendIncludeTRes(props.methods.getValues(), !props.methods.getValues("includeTRes"));
+    }
+  }];
 
   return (
-    <section className="tds-grid-container">
+    <section className="tds-grid-container select-resource-component">
       {props.label && <TdsLabelField methods={props.methods} name={props.fieldName} label={props.label} />}
-      <VSCodeDataGrid
+      <TdsDataGrid
         id={props.id ? props.id : props.fieldName}
-        generate-header="none"
-        grid-template-columns="1fr 8fr 3fr"
-      >
-        <div className="tds-scroll" >
-          {
-            fields
-              .filter((row: any, index: number) => {
-                return (index < (props.rowsLimit == 0 ? 1000 : props.rowsLimit));
-              })
-              .map((row: any, index: number) => {
-                return (
-                  <VSCodeDataGridRow key={row.id}>
-                    <VSCodeDataGridCell grid-column="1" >
-                      <TdsSimpleCheckBoxField
-                        methods={props.methods}
-                        name={`${props.fieldName}.${index}.check`}
-                        textLabel={""}
-                        label={""}
-                      />
-                    </VSCodeDataGridCell>
-                    <VSCodeDataGridCell grid-column="2">
-                      <TdsSimpleTextField
-                        methods={props.methods}
-                        className="tds-no-margin"
-                        name={`${props.fieldName}.${index}.name`}
-                        readOnly={true}
-                      />
-                    </VSCodeDataGridCell>
-                    <VSCodeDataGridCell grid-column="3">
-                      <TdsSimpleTextField
-                        methods={props.methods}
-                        className="tds-no-margin"
-                        name={`${props.fieldName}.${index}.date`}
-                        readOnly={true}
-                      />
-                    </VSCodeDataGridCell>
-                  </VSCodeDataGridRow>
-                )
-              }
-              )
-          }
-        </div>
-      </VSCodeDataGrid>
+        methods={props.methods}
+        columnDef={columnDef}
+        dataSource={props.methods.getValues(props.fieldName) as TInspectorObject[]}
+        options={{
+          bottomActions: undefined,
+          topActions: props.showIncludeTRes ? topActions : undefined,
+          filter: true,
+          pageSize: 50,
+          pageSizeOptions: [50, 100, 250, 500],
+          grouping: false
+        }}>
+
+      </TdsDataGrid>
     </section>
   );
 }
 
 export default function PatchGenerateView() {
-  const methods = useForm<TFields>({
+  const methods = useForm<TGeneratePatchModel>({
     defaultValues: EMPTY_MODEL,
     mode: "all"
   })
+  const watchObjectsLeft: any = methods.watch("objectsLeft");
+  const watchObjectsRight: any = methods.watch("objectsRight");
 
-  const watchWarningManyItens = methods.watch("warningManyItens");
-  const onSubmit: SubmitHandler<TFields> = (data) => {
+  const onSubmit: SubmitHandler<TGeneratePatchModel> = (data) => {
     data.objectsRight = data.objectsRight.filter((object: TInspectorObject) => object.source.length > 0);
 
     sendSaveAndClose(data);
@@ -146,15 +159,20 @@ export default function PatchGenerateView() {
 
     let listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
-      const rowsLimit: number = methods.getValues("rowsLimit") as number
 
       switch (command.command) {
         case CommonCommandEnum.UpdateModel:
-          const model: TFields = command.data.model;
-          const errors: TFields = command.data.errors;
+          const model: TGeneratePatchModel = command.data.model;
+          const errors: TGeneratePatchModel = command.data.errors;
 
-          model.objectsFiltered = applyFilter(methods.getValues("filter") || "", model.objectsLeft);
-          model.warningManyItens = model.objectsFiltered.length > rowsLimit;
+          model.objectsLeft.forEach((row: TInspectorObject, index: number, array: TInspectorObject[]) => {
+            array[index].date = new Date(array[index].date);
+            //array[index].checked = array[index].check || false;
+          });
+          model.objectsRight.forEach((row: TInspectorObject, index: number, array: TInspectorObject[]) => {
+            array[index].date = new Date(array[index].date);
+            //array[index].check = array[index].check || false;
+          });
 
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);
@@ -171,30 +189,6 @@ export default function PatchGenerateView() {
       window.removeEventListener('message', listener);
     }
   }, []);
-
-  function applyFilter(filter: string, objects: TInspectorObject[]): TObjectFiltered[] {
-
-    if (filter.length > 0) {
-      const wildcard: RegExp = new RegExp(`^${filter.replace("?", ".").replace("*", ".*")}$`, "gi");
-
-      return [...objects
-        .filter((row: TInspectorObject) => {
-          return wildcard.test(row.source)
-        }).map((row: TInspectorObject) => {
-          return { ...row, check: false }
-        })
-      ]
-    } else {
-      return [...objects
-        .map((row: TInspectorObject) => {
-          return { ...row, check: false }
-        })
-      ]
-    }
-  }
-
-  const model: TFields = methods.getValues();
-  const rowsLimit: number = model.rowsLimit;
 
   return (
     <TdsPage title={tdsVscode.l10n.t("Patch Generation from RPO")} linkToDoc="[Geração de pacote de atualização]servers.md#registro-de-servidores">
@@ -228,79 +222,25 @@ export default function PatchGenerateView() {
 
         </section>
 
-        <section className="tds-row-container" >
-          <TdsTextField
-            methods={methods}
-            name="filter"
-            label={tdsVscode.l10n.t("Filter")}
-            info={tdsVscode.l10n.t("Filter by Object Name. Ex: Mat or Fat*")}
-            onInput={(e: any) => {
-              return new Promise(() => {
-                methods.setValue("objectsFiltered", applyFilter(e.target.value, methods.getValues("objectsLeft")));
-                methods.setValue("warningManyItens", methods.getValues("objectsFiltered").length > rowsLimit);
-              });
-            }}
-          />
-
-          <TdsCheckBoxField
-            methods={methods}
-            name="includeTRes"
-            label="&nbsp;"
-            textLabel={tdsVscode.l10n.t("Include *.TRES")}
-            onInput={(e: any) => {
-              return new Promise(() => {
-                sendIncludeTRes(methods.getValues(), e.target.checked);
-              });
-            }}
-
-          />
-
-          <TdsSelectionField
-            methods={methods}
-            name={"rowsLimit"}
-            label={tdsVscode.l10n.t("Resource count limit")}
-            options={[
-              { value: "100", text: tdsVscode.l10n.t("100 (fast render)") },
-              { value: "250", text: "250" },
-              { value: "500", text: tdsVscode.l10n.t("500 (slow render)") },
-            ]} />
-        </section>
-
-        <section className="tds-row-container" >
-          {watchWarningManyItens ?
-            <TdsLabelField
-              methods={methods}
-              name="warningManyItens"
-              label={tdsVscode.l10n.t("Resource list has more than {0} items. Enter a more restrictive filter.", rowsLimit)}
-            />
-            :
-            <TdsLabelField
-              methods={methods}
-              name="warningManyItens"
-              label="&nbsp;"
-            />
-          }
-        </section>
-
         <section className="tds-row-container" id="selectGrid" >
-          <SelectResourceComponent
+          {watchObjectsLeft && <SelectResourceComponent
             methods={methods}
-            fieldName="objectsFiltered"
+            fieldName="objectsLeft"
             label={tdsVscode.l10n.t("RPO Objects")}
-            rowsLimit={rowsLimit}
+            showIncludeTRes={true}
           />
-
+          }
           <section className="tds-row-container-column" id="directionButtons" >
             <VSCodeButton appearance="icon" onClick={() => {
-              const selectedObjects = methods.getValues("objectsFiltered").filter((value) =>
-                (typeof value.check == "string") ? value.check == "true" : value.check);
+              const selectedObjects = methods.getValues("objectsLeft").filter((value) =>
+                (typeof value.checked == "string") ? value.checked == "true" : value.checked);
               sendToRight(methods.getValues(), selectedObjects);
             }} >
               <span className="codicon codicon-arrow-right"></span>
             </VSCodeButton>
             <VSCodeButton appearance="icon" onClick={() => {
               const selectedObjects = methods.getValues("objectsRight").filter((value) =>
-                (typeof value.check == "string") ? value.check == "true" : value.check);
+                (typeof value.checked == "string") ? value.checked == "true" : value.checked);
 
               sendToLeft(methods.getValues(), selectedObjects);
             }} >
@@ -308,12 +248,13 @@ export default function PatchGenerateView() {
             </VSCodeButton>
           </section>
 
-          <SelectResourceComponent
+          {watchObjectsRight && <SelectResourceComponent
             methods={methods}
             label={tdsVscode.l10n.t("To patch")}
             fieldName="objectsRight"
-            rowsLimit={0}
+            showIncludeTRes={false}
           />
+          }
         </section>
       </TdsForm>
     </TdsPage>

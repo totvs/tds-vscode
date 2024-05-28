@@ -20,8 +20,9 @@ import Utils, { ServersConfig } from "../utils";
 import { CommonCommandFromWebViewEnum, ReceiveMessage } from "tds-shared/lib";
 import { IValidationInfo, sendValidationRequest } from "../protocolMessages";
 import { TServerModel, TServerType } from "tds-shared/lib";
-import { TFieldErrors, TdsPanel, isErrors } from "tds-shared/lib";
+import { TFieldErrors, isErrors } from "tds-shared/lib";
 import { TIncludePath } from "tds-shared/lib";
+import { TdsPanel } from "./panel";
 
 enum AddServerCommandEnum {
 }
@@ -174,7 +175,6 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
     }
     const server = ServersConfig.getServerByName(model.serverName);
     if (server !== undefined) {
-      errors.root = { type: "validate", message: vscode.l10n.t("Server already exist") };
       errors.serverName = { type: "validate", message: vscode.l10n.t("Server already exist") };
     }
 
@@ -204,7 +204,7 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
 
       const validInfoNode: IValidationInfo = await sendValidationRequest(model.address, model.port, model.serverType);
       if (validInfoNode.build == "") {
-        errors.root = { type: "validate", message: vscode.l10n.t("Server not found for build validate") };
+        errors.serverName = { type: "validate", message: vscode.l10n.t("Server not found for build validate") };
       }
 
       vscode.window.setStatusBarMessage("");

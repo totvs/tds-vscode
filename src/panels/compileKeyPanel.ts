@@ -16,11 +16,12 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { TCompileKeyModel, TCompileKey, TAuthorization } from "tds-shared/lib";
-import { TdsPanel, TFieldErrors, isErrors } from "tds-shared/lib";
+import { TFieldErrors, isErrors } from "tds-shared/lib";
 import { sendGetIdMessage, TValidKeyResult, sendValidKey } from "../protocolMessages";
 import { ServersConfig } from "../utils";
 import { CommonCommandFromWebViewEnum, ReceiveMessage } from "tds-shared/lib";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
+import { TdsPanel } from "./panel";
 
 enum CompileKeyCommandEnum {
 }
@@ -214,7 +215,7 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
     const validKey: TValidKeyResult | undefined = await sendValidKey(model.id, model.generation, model.expire, model.canOverride, model.tokenKey);
 
     if (validKey.buildType == -1) {
-      errors.root = { type: "validate", message: "Server refused compile key" };
+      errors.path = { type: "validate", message: "Server refused compile key" };
     }
 
     if (validKey.authorizationToken == "") {

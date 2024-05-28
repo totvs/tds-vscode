@@ -1,8 +1,23 @@
-import * as vscode from "vscode";
-import { CommonCommandToWebViewEnum, CommonCommandFromWebViewEnum } from "../webviewProtocol";
-import { TModelPanel, ReceiveMessage, TFieldErrors, TSendSelectResourceProps } from "./panelInterface";
+/*
+Copyright 2021 TOTVS S.A
 
-export abstract class TdsPanel<M extends TModelPanel> {
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http: //www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+import * as vscode from "vscode";
+import { ReceiveMessage, TAbstractModelPanel, TFieldErrors, CommonCommandToWebViewEnum, CommonCommandFromWebViewEnum, TSendSelectResourceProps } from "tds-shared/lib";
+
+export abstract class TdsPanel<M extends TAbstractModelPanel> {
 
 	protected readonly _panel: vscode.WebviewPanel;
 	protected _disposables: vscode.Disposable[] = [];
@@ -112,7 +127,7 @@ export abstract class TdsPanel<M extends TModelPanel> {
 						this.sendUpdateModel(data.model, errors);
 					}
 				} catch (error) {
-					errors.root = { type: "validate", message: `Internal error: ${error}` }
+					//errors.root = { type: "validate", message: `Internal error: ${error}` }
 					this.sendUpdateModel(data.model, errors);
 				}
 

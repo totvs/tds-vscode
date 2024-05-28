@@ -1,4 +1,4 @@
-import { TModelPanel } from "../panels/panelInterface";
+import { TAbstractModelPanel } from "../panels/panelInterface";
 import { TIncludePath } from "./includeModel";
 
 export type TServerType = ""
@@ -6,7 +6,7 @@ export type TServerType = ""
 	| "totvs_server_logix"
 	| "totvs_server_totvstec";
 
-export type TServerModel = TModelPanel & {
+export type TServerModel = TAbstractModelPanel & {
 	id?: string;  //undefined indica que não foi salvo
 	serverType: TServerType;
 	serverName: string;

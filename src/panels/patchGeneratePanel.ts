@@ -19,24 +19,16 @@ import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webv
 import Utils, { MESSAGE_TYPE, ServersConfig, serverExceptionCodeToString } from "../utils";
 import { IObjectData, IPatchResult, sendInspectorObjectsRequest, sendPatchGenerateMessage } from "../protocolMessages";
 import { ResponseError } from "vscode-languageclient";
-import { CommonCommandFromWebViewEnum, ReceiveMessage, TFieldErrors, TGeneratePatchModel, TInspectorObject, TdsPanel, isErrors } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, PatchGenerateCommand, PatchGenerateCommandEnum, ReceiveMessage, TFieldErrors, TGeneratePatchModel, TInspectorObject, isErrors } from "tds-shared/lib";
+import { TdsPanel } from "./panel";
 
-enum PatchGenerateCommandEnum {
-  IncludeTRes = "INCLUDE_TRES",
-  MoveElements = "MOVE_ELEMENTS",
-}
-
-type PatchGenerateCommand = CommonCommandFromWebViewEnum & PatchGenerateCommandEnum;
 
 const EMPTY_MODEL: TGeneratePatchModel = {
   patchName: "",
   patchDest: "",
   includeTRes: false,
-  filter: "",
-  warningManyItens: false,
   objectsLeft: [],
-  objectsRight: [],
-  objectsFiltered: []
+  objectsRight: []
 }
 
 export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
@@ -152,7 +144,7 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
           data.model.objectsRight.push(...selectedObject);
         } else {
           data.model.objectsRight = data.model.objectsRight.filter((x: TInspectorObject) => selectedObject.findIndex(y => x.source == y.source) == -1);
-          data.model.objectsLeft.push(...selectedObject);
+          data.model.objectsLeft.push(...selectedObject.map((element: TInspectorObject) => { return { ...element, checked: false } }));
         }
 
         data.model.objectsRight = data.model.objectsRight.sort((a: TInspectorObject, b: TInspectorObject) => a.source.localeCompare(b.source));
@@ -201,16 +193,12 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
   }
 
   protected async validateModel(model: TGeneratePatchModel, errors: TFieldErrors<TGeneratePatchModel>): Promise<boolean> {
-    try {
-      if (model.patchDest.length == 0) {
-        errors.patchDest = { type: "required" };
-      }
+    if (model.patchDest.length == 0) {
+      errors.patchDest = { type: "required" };
+    }
 
-      if (model.objectsRight.length == 0) {
-        errors.objectsRight = { type: "required", message: "Please select objects to include in the patch." };
-      }
-    } catch (error) {
-      errors.root = { type: "validate", message: `Internal error: ${error}` }
+    if (model.objectsRight.length == 0) {
+      errors.objectsRight = { type: "required", message: "Please select objects to include in the patch." };
     }
 
     return !isErrors(errors);
@@ -258,13 +246,13 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
     let ok: boolean = true;
 
     if (!response) {
-      errors.root = { type: "validate", message: "Internal error: See more information in log" };
+      errors.patchName = { type: "validate", message: "Internal error: See more information in log" };
       ok = false
     } else if (response.returnCode !== 0) {
       const msgError = ` ${serverExceptionCodeToString(response.returnCode)} ${response.message}`;
       Utils.logMessage(msgError, MESSAGE_TYPE.Error, false);
       vscode.window.showErrorMessage(msgError);
-      errors.root = { type: "validate", message: `Protheus Server was unable to generate the patch. Code: ${response.returnCode}` };;
+      errors.patchName = { type: "validate", message: `Protheus Server was unable to generate the patch. Code: ${response.returnCode}` };;
       ok = false
     }
 
@@ -290,7 +278,6 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
       "Resource count limit": vscode.l10n.t("Resource count limit"),
       "100 (fast render)": vscode.l10n.t("100 (fast render)"),
       "500 (slow render)": vscode.l10n.t("500 (slow render)"),
-      "Resource list has more than {0} items. Enter a more restrictive filter.": vscode.l10n.t("Resource list has more than {0} items. Enter a more restrictive filter."),
       "RPO Objects": vscode.l10n.t("RPO Objects"),
       "To patch": vscode.l10n.t("To patch"),
     }

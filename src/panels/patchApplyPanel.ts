@@ -15,15 +15,16 @@ limitations under the License.
 */
 
 import * as vscode from "vscode";
+import * as path from "path";
+import * as fse from "fs-extra";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import { ServersConfig, pathErrorCodeToString } from "../utils";
 import { CommonCommandFromWebViewEnum, ReceiveMessage } from "tds-shared/lib";
 import { IPatchApplyResult, PathErrorCodes, sendApplyPatchRequest, sendValidatePatchRequest } from "../protocolMessages";
 import { TApplyPatchModel, TPatchFileData } from "tds-shared/lib";
 import { ServerItem } from "../serverItem";
-import * as path from "path";
-import * as fse from "fs-extra";
-import { TFieldErrors, TdsPanel, isErrors } from "tds-shared/lib";
+import { TFieldErrors, isErrors } from "tds-shared/lib";
+import { TdsPanel } from "./panel";
 
 enum ApplyPatchCommandEnum {
   PATCH_VALIDATE = "PATCH_VALIDATE",
@@ -152,7 +153,7 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
           const errors: TFieldErrors<TPatchFileData> = {};
 
           for await (const file of result) {
-            const alreadyExist: boolean = patchFiles.findIndex((patchFile: TPatchFileData) => patchFile.uri.path == file.path) > -1;
+            const alreadyExist: boolean = patchFiles.findIndex((patchFile: TPatchFileData) => vscode.Uri.parse(patchFile.uri).path == file.path) > -1;
             const index: number = patchFiles.push(
               {
                 uri: file,
@@ -227,7 +228,7 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
 
   protected async validateModel(model: TApplyPatchModel, errors: TFieldErrors<TApplyPatchModel>): Promise<boolean> {
     if (model.patchFiles.length == 0) {
-      errors.root = { type: "validate", message: "Ao menos um pacote deve ser informado" }
+      errors.patchFiles = { type: "validate", message: "Ao menos um pacote deve ser informado" }
     } else {
       vscode.window.withProgress(
         {
@@ -308,12 +309,12 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
 
   async doValidatePatch(server: ServerItem, patchFile: TPatchFileData, index: number, errors: TFieldErrors<TApplyPatchModel>) {
 
-    if (!fse.existsSync(patchFile.uri.fsPath)) {
+    if (!fse.existsSync(vscode.Uri.parse(patchFile.uri).fsPath)) {
       errors[`patchFiles.${index}.name`] = { type: "validate", message: "File nor found" };
       return;
     }
 
-    const response: IPatchApplyResult = await sendValidatePatchRequest(server, patchFile.uri);
+    const response: IPatchApplyResult = await sendValidatePatchRequest(server, vscode.Uri.parse(patchFile.uri));
 
     if (response.errorCode == PathErrorCodes.Ok) {
       vscode.window.showInformationMessage(vscode.l10n.t("Patch validated."));
@@ -324,7 +325,6 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
         const msg: string = pathErrorCodeToString(response.errorCode, response.message);
 
         errors[`patchFiles.${index}.name`] = { type: "validate", message: response.message };
-        errors.root = { type: "validate", message: msg };
       }
 
       if (response.errorCode !== PathErrorCodes.OldResources
@@ -352,12 +352,12 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
 
   async doApplyPatch(server: ServerItem, patchFile: TPatchFileData, index: number, errors: TFieldErrors<TApplyPatchModel>) {
 
-    if (!fse.existsSync(patchFile.uri.fsPath)) {
+    if (!fse.existsSync(vscode.Uri.parse(patchFile.uri).fsPath)) {
       errors[`patchFiles.${index}.name`] = { type: "validate", message: "File nor found" };
       return;
     }
 
-    const response: IPatchApplyResult = await sendApplyPatchRequest(server, patchFile.uri, false, "only_new");
+    const response: IPatchApplyResult = await sendApplyPatchRequest(server, vscode.Uri.parse(patchFile.uri), false, "only_new");
 
     if (response.errorCode == PathErrorCodes.Ok) {
       vscode.window.showInformationMessage(vscode.l10n.t("Patch applied."));
@@ -367,7 +367,6 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
       const msg: string = pathErrorCodeToString(response.errorCode, response.message);
 
       errors[`patchFiles.${index}.name`] = { type: "validate", message: response.message };
-      errors.root = { type: "validate", message: msg };
 
       vscode.window.showErrorMessage(response.message);
     }

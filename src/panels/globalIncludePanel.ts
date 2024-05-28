@@ -17,7 +17,8 @@ limitations under the License.
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import Utils, { ServersConfig } from "../utils";
-import { CommonCommandFromWebViewEnum, ReceiveMessage, TFieldErrors, TIncludeModel, TIncludePath, TdsPanel, isErrors } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, ReceiveMessage, TFieldErrors, TIncludeModel, TIncludePath, isErrors } from "tds-shared/lib";
+import { TdsPanel } from "./panel";
 
 enum GlobalIncludeCommandEnum {
 }

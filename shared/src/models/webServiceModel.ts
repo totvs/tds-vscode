@@ -1,6 +1,6 @@
-import { TModelPanel } from "../panels/panelInterface";
+import { TAbstractModelPanel } from "../panels/panelInterface";
 
-export type TWebServiceModel = TModelPanel & {
+export type TWebServiceModel = TAbstractModelPanel & {
 	urlOrWsdlFile: string;
 	outputPath: string;
 	outputFilename: string;

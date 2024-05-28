@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { sendExport, sendIncludeOutScope } from "./sendCommand";
-import TdsDataGrid, { TdsDataGridColumnDef } from "../_component/dataGrid/dataGrid";
+import { TdsDataGrid, TdsDataGridColumnDef } from "../_component/dataGrid/dataGrid";
 import { TdsDataGridAction } from "../_component/dataGrid/paginator";
 
 enum ReceiveCommandEnum {
@@ -35,6 +35,7 @@ type TFields = TInspectorObjectModel;
 function objectColumns(isServerP20OrGreater: boolean): TdsDataGridColumnDef[] {
   const result: TdsDataGridColumnDef[] = [
     {
+      type: "string",
       name: "program",
       label: tdsVscode.l10n.t("Object Name"),
       width: "8fr",
@@ -42,6 +43,7 @@ function objectColumns(isServerP20OrGreater: boolean): TdsDataGridColumnDef[] {
       sortDirection: "asc",
     },
     {
+      type: "datetime",
       name: "date",
       label: tdsVscode.l10n.t("Compile Date"),
       width: "8fr",
@@ -52,6 +54,7 @@ function objectColumns(isServerP20OrGreater: boolean): TdsDataGridColumnDef[] {
 
   if (isServerP20OrGreater) {
     result.push({
+      type: "string",
       name: "source_status",
       label: tdsVscode.l10n.t("Status"),
       width: "3fr",
@@ -65,6 +68,7 @@ function objectColumns(isServerP20OrGreater: boolean): TdsDataGridColumnDef[] {
     });
 
     result.push({
+      type: "string",
       name: "rpo_status",
       label: tdsVscode.l10n.t("RPO"),
       width: "3fr",
@@ -85,6 +89,7 @@ function objectColumns(isServerP20OrGreater: boolean): TdsDataGridColumnDef[] {
 function functionColumns(isServerP20OrGreater: boolean): TdsDataGridColumnDef[] {
   const result: TdsDataGridColumnDef[] = [
     {
+      type: "string",
       name: "function",
       label: tdsVscode.l10n.t("Function"),
       width: "8fr",
@@ -92,6 +97,7 @@ function functionColumns(isServerP20OrGreater: boolean): TdsDataGridColumnDef[] 
       sortDirection: "asc",
     },
     {
+      type: "number",
       name: "line",
       label: tdsVscode.l10n.t("Line"),
       width: "8fr",
@@ -99,6 +105,7 @@ function functionColumns(isServerP20OrGreater: boolean): TdsDataGridColumnDef[] 
       sortDirection: "",
     },
     {
+      type: "string",
       name: "source",
       label: tdsVscode.l10n.t("source"),
       width: "8fr",
@@ -109,6 +116,7 @@ function functionColumns(isServerP20OrGreater: boolean): TdsDataGridColumnDef[] 
 
   if (isServerP20OrGreater) {
     result.push({
+      type: "string",
       name: "source_status",
       label: tdsVscode.l10n.t("Status"),
       width: "3fr",
@@ -121,6 +129,7 @@ function functionColumns(isServerP20OrGreater: boolean): TdsDataGridColumnDef[] 
       grouping: true,
     });
     result.push({
+      type: "string",
       name: "rpo_status",
       label: tdsVscode.l10n.t("RPO"),
       width: "3fr",

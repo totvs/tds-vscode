@@ -19,7 +19,8 @@ import React from "react";
 import {
 	VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow,
 	VSCodeTextField, VSCodeDropdown, VSCodeOption,
-	VSCodeLink
+	VSCodeLink,
+	VSCodeCheckbox
 } from "@vscode/webview-ui-toolkit/react";
 import { UseFormReturn } from "react-hook-form";
 import TdsPaginator, { TdsDataGridAction } from "./paginator";
@@ -29,6 +30,7 @@ import { tdsVscode } from '@totvs/tds-webtoolkit';
 export type TdsDataGridColumnDef = {
 	name: string;
 	label: string;
+	type: "string" | "number" | "boolean" | "date" | "time" | "datetime";
 	width?: string;
 	lookup?: Record<string, string>;
 	//align?: "left" | "center" | "right";
@@ -36,6 +38,7 @@ export type TdsDataGridColumnDef = {
 	sortDirection?: "asc" | "desc" | "";
 	grouping?: boolean,
 	visible?: boolean,
+	readOnly?: boolean,
 	//onSort?: (key: string) => void;
 }
 
@@ -79,17 +82,24 @@ type TFieldFilterProps = {
 	onFilterChanged(fieldName: string, filter: string): void;
 }
 
+type TFieldDataProps = {
+	fieldDef: TdsDataGridColumnDef;
+	row: any;
+}
+
 function FieldFilter(props: TFieldFilterProps) {
 	if (props.fieldDef.lookup) {
 		const currentValue: string = props.methods.getValues(props.fieldDef.name) as string;
-		const options: Record<string, string> = props.dataSource.reduce((acc: Record<string, string>, item: any) => {
+		const options: Record<string, string> = !props.dataSource
+			? {}
+			: props.dataSource.reduce((acc: Record<string, string>, item: any) => {
 
-			if (!acc[item[props.fieldDef.name]]) {
-				acc[item[props.fieldDef.name]] = props.fieldDef.lookup![item[props.fieldDef.name]];
-			}
+				if (!acc[item[props.fieldDef.name]]) {
+					acc[item[props.fieldDef.name]] = props.fieldDef.lookup![item[props.fieldDef.name]];
+				}
 
-			return acc;
-		}, []);
+				return acc;
+			}, []);
 
 		if (Object.keys(options).length > 0) {
 			return (
@@ -128,15 +138,50 @@ function FieldFilter(props: TFieldFilterProps) {
 	)
 }
 
-export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElement {
+function FieldData(props: TFieldDataProps) {
+	const column = props.fieldDef;
+	const row = props.row;
+
+	//Campo DATE, TIME e DATETIME
+	if ((column.type == "date") || (column.type == "time") || (column.type == "datetime")) {
+		return (
+			<VSCodeTextField
+				readOnly={column.readOnly == undefined ? true : column.readOnly}
+				value={column.lookup && column.lookup[row[column.name]]
+					? column.lookup[row[column.name]] : row[column.name].toLocaleString()}
+			></VSCodeTextField>
+		)
+	}
+
+	//Campo BOOLEAN
+	if (column.type == "boolean") {
+		return (
+			<VSCodeCheckbox
+				readOnly={column.readOnly == undefined ? true : column.readOnly}
+				value={column.lookup && column.lookup[row[column.name]]
+					? column.lookup[row[column.name]] : row[column.name]}
+			></VSCodeCheckbox>
+		)
+	}
+
+	return (
+		<VSCodeTextField
+			readOnly={column.readOnly == undefined ? true : column.readOnly}
+			value={column.lookup && column.lookup[row[column.name]]
+				? column.lookup[row[column.name]] : row[column.name]}
+		></VSCodeTextField>
+	)
+}
+
+export function TdsDataGrid(props: ITdsDataGridProps): React.ReactElement {
 	const [itemOffset, setItemOffset] = React.useState(0);
 	const [currentPage, setCurrentPage] = React.useState(1);
 	const [pageSize, setPageSize] = React.useState(props.options.pageSize || 10);
-	const [totalItems, setTotalItems] = React.useState(props.dataSource.length);
+	const [totalItems, setTotalItems] = React.useState(props.dataSource ? props.dataSource.length : 0);
 	const [showFilter, setShowFilter] = React.useState(false);
 	const [_, setSortedInfo] = React.useState(props.columnDef[0]);
 	const [groupingInfo, setGroupingInfo] = React.useState<TdsDataGridColumnDef>();
-	const [dataSource, setDataSource] = React.useState(props.dataSource);
+	const [dataSource, setDataSource] = React.useState(props.dataSource || []);;
 
 	const handlePageClick = (newPage: number) => {
 		const newOffset = (newPage * (props.options.pageSize || 10)) % dataSource.length;
@@ -356,16 +401,24 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 			<div className="tds-data-grid-content">
 				<VSCodeDataGrid
 					id={`${props.id}_grid`}
+					key={`${props.id}_grid`}
 					generate-header="sticky"
 					grid-template-columns={
 						props.columnDef.filter(column => column.visible)
 							.map(column => column.width || "1fr").join(" ")
 					}
 				>
-					<VSCodeDataGridRow row-type="header">
+					<VSCodeDataGridRow
+						row-type="header"
+						key={`${props.id}_header`}
+					>
 						{props.columnDef.filter(column => column.visible)
 							.map((column, _index: number) => (
-								<VSCodeDataGridCell cell-type="columnheader" grid-column={_index + 1}>
+								<VSCodeDataGridCell
+									cell-type="columnheader"
+									grid-column={_index + 1}
+									key={`${props.id}_header_column_${_index}`}
+								>
 									{column.label || column.name}
 									{column.sortable &&
 										<VSCodeButton
@@ -396,8 +449,12 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 						<VSCodeDataGridRow row-type="default" key={0}>
 							{props.columnDef.filter(column => column.visible)
 								.map((column, indexCol: number) => (
-									<VSCodeDataGridCell grid-column={indexCol + 1}>
+									<VSCodeDataGridCell
+										grid-column={indexCol + 1}
+										key={`${props.id}_cell_${indexCol + 1}`}
+									>
 										<FieldFilter
+											key={`${props.id}_field_filter_${indexCol + 1}`}
 											methods={props.methods}
 											fieldDef={column}
 											onFilterChanged={
@@ -420,12 +477,10 @@ export default function TdsDataGrid(props: ITdsDataGridProps): React.ReactElemen
 							{props.columnDef.filter(column => column.visible)
 								.map((column, indexCol: number) => (
 									<VSCodeDataGridCell grid-column={indexCol + 1}>
-										<VSCodeTextField
-											readOnly={true}
-											value={column.lookup && column.lookup[row[column.name]]
-												? column.lookup[row[column.name]] : row[column.name]}
-										></VSCodeTextField>
-
+										<FieldData
+											fieldDef={column}
+											row={row}
+										></FieldData>
 									</VSCodeDataGridCell>
 								))}
 						</VSCodeDataGridRow>

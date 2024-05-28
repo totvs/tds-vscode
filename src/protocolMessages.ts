@@ -1,3 +1,19 @@
+/*
+Copyright 2021 TOTVS S.A
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http: //www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 import * as vscode from "vscode";
 import { languageClient } from "./extension";
 import { DidChangeConfigurationNotification, ResponseError } from "vscode-languageclient";
@@ -692,9 +708,21 @@ export interface IFunctionData {
 
 export interface IObjectData {
   source: string;
-  date: string;
+  date: Date;
   rpo_status: string | number;
   source_status: string | number;
+}
+
+function toISOFormat(dateTimeString: string) {
+  const [date, time] = dateTimeString.split(' ');
+  const [DD, MM, YYYY] = date.split('/');
+  const [HH, mm, ss] = time.split(':');
+
+  return `${YYYY}-${MM}-${DD}T${HH}:${mm}:${ss}`;
+}
+
+function stringToDate(value: string): Date {
+  return new Date(Date.parse(toISOFormat(value)));
 }
 
 export function sendInspectorObjectsRequest(
@@ -720,14 +748,14 @@ export function sendInspectorObjectsRequest(
         if (groups) {
           data = {
             source: groups[1],
-            date: groups[2],
+            date: stringToDate(groups[2]),
             rpo_status: groups[4],
             source_status: groups[3],
           };
         } else {
           data = {
             source: line,
-            date: "",
+            date: stringToDate(""),
             rpo_status: "",
             source_status: "",
           };

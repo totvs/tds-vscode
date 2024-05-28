@@ -23,7 +23,8 @@ import { TWebServiceModel } from "tds-shared/lib";
 import * as fse from "fs-extra";
 import path from "path";
 import { _debugEvent } from "../debug";
-import { TFieldErrors, TSendSelectResourceProps, TdsPanel, isErrors } from "tds-shared/lib";
+import { TFieldErrors, TSendSelectResourceProps, isErrors } from "tds-shared/lib";
+import { TdsPanel } from "./panel";
 
 enum GenerateWebServiceCommandEnum {
 }
@@ -168,7 +169,7 @@ export class GenerateWebServicePanel extends TdsPanel<TWebServiceModel> {
 			let errors: TFieldErrors<TWebServiceModel> = {};
 			let error: string = `Protheus server was unable to generate the WS client. Code: ${response.returnCode}`;
 
-			errors.root = { type: "validate", message: error };
+			errors.urlOrWsdlFile = { type: "validate", message: error };
 			this.sendUpdateModel(model, errors)
 
 			error += ` [${serverExceptionCodeToString(response.returnCode)}]`;

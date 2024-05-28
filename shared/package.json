@@ -11,19 +11,18 @@
     "url": "https://github.com/totvs/tds-vscode.git"
   },
   "main": "./dist/index.js",
+  "l10n": "l10n",
   "scripts": {
     "compile": "tsc --build",
     "build": "tsc --build",
     "watch": "tsc --watch",
-    "prepublishOnly": "tsc --build --clean && pnpm run build"
-  },
-  "engines": {
-    "vscode": "^1.85.0"
+    "prepublishOnly": "tsc --build --clean && pnpm run build",
+    "--L10N--": "",
+    "l10n:export": "npx @vscode/l10n-dev export -o ./l10n ./src"
   },
   "dependencies": {
-    "@types/vscode": "^1.85.0"
   },
   "devDependencies": {
-    "@types/vscode": "^1.85.0"
+    "typescript": "^5.4.5"
   }
 }

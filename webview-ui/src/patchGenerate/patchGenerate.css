@@ -2,6 +2,11 @@
   align-items: flex-start;
 }
 
+#selectGrid .select-resource-component {
+  width: 50%;
+  height: 50%;
+}
+
 #directionButtons {
   align-self: center;
 }
