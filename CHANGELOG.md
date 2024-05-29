@@ -5,7 +5,7 @@
 ### Novidades
 
 - A interface do **TDS-VSCode** passa a utilizar o tema definido no **VS-Code**.
-  Isso permite que os usuários tenham a opção de escolher o tema que melhor lhe agrades. Em algumas interfaces, há campos do tipo _date_. Por padrão, o formato da data apresentada é do idioma selecionado no **VS-Code**. Caso o idioma seja o inglês, o formato da data é apresentado no padrão americano (mm/dd/yyyy hh:mm:ss AM/PM). Caso queira alterar o formato da data, informe o idioma no qual deseja o formato em [totvsLanguageServer.formatDate](./docs/settings.md#totvsLanguageServer.formatDate)
+  Isso permite que os usuários tenham a opção de escolher o tema que melhor lhe agrades. Em algumas interfaces, há campos que armazenam data e hora. Por padrão, o formato da deste é no idioma selecionado no **VS-Code**. Caso o idioma seja o inglês, o formato da data é apresentado no padrão americano (mm/dd/yyyy hh:mm:ss AM/PM). Caso queira alterar o formato da data, informe o idioma no qual deseja o formato em [totvsLanguageServer.formatDate](./docs/settings.md#totvsLanguageServer.formatDate)
 
 - Documentação das configurações do **TDS-VSCode** em [Configurações](./docs/settings.md).
 
@@ -134,7 +134,7 @@ Caso o usuário inicie uma depuração utilizando SIGAMDI/SIGAADV, será exibido
 
 #### Comando ``BeginContent`` passa a aceitar o tipo de conteúdo
 
-```
+```code
 beginContent var myVar [as <language: javascript | JS | html | json | xml | css | typeScript | TS>]
 ```
 
@@ -155,7 +155,7 @@ Foi implementado opção de [filtro nos fontes](https://github.com/totvs/tds-vsc
 
 A inicialização do `DSS` falhava (permissão) em sistemas MacOS, com erro:
 
-```
+```code
  (7.391s) [languageServer ] dbcode_manager.cpp:544 | Binary file error. Error: [/Users/XXXXXXXXXX/gitfolder/ma3-tmp/ma3/.vscode/.advpl/_binary_functions.prw] Permission denied
 ```
 

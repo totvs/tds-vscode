@@ -34,7 +34,7 @@ Essas chaves de configuração são específicas do **TDS-VSCode** e podem ser u
 | .filesystem.encoding | cp1252 | Definir a codificação do sistema de arquivos. |
 | .folder.enableExtensionsFilter | true | Compile apenas arquivos com extensões permitidas. |
 | .folder.extensionsAllowed | \* | Extensões permitidas para compilação. |
-| .formatDate | | Informe o código do idioma/país que usa o formato de data desejada, que será utilizado na formatação de datas nas interfaces com o usuário. O padrão é o idioma/país configurado no **VS-Code**. Formato: `<código idioma>-<código país>`, ambos com duas letras. |
+| <a name="totvsLanguageServer.formatDate"></a>.formatDate | | Informe o código do idioma/país que usa o formato de data desejada, que será utilizado na formatação de datas nas interfaces com o usuário. O padrão é o idioma/país configurado no **VS-Code**. Formato: `<código idioma>-<código país>`, ambos com duas letras. |
 | | [Language Code (IETF)](https://en.wikipedia.org/wiki/IETF_language_tag) [Country Code (ISO 3166-1)](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes). |
 | .launch.args| [] | Lista contendo argumentos extras para passar ao binário do TOTVS Language Server. |
 | .reconnectLastServer | true | Reconectar ao último servidor conectado na inicialização. |
