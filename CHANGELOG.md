@@ -1,5 +1,14 @@
 # Changelog
 
+## Versão [2.1.NEXT]
+
+### Novidades
+
+- A interface do **TDS-VSCode** passa a utilizar o tema definido no **VS-Code**.
+  Isso permite que os usuários tenham a opção de escolher o tema que melhor lhe agrades. Em algumas interfaces, há campos do tipo _date_. Por padrão, o formato da data apresentada é do idioma selecionado no **VS-Code**. Caso o idioma seja o inglês, o formato da data é apresentado no padrão americano (mm/dd/yyyy hh:mm:ss AM/PM). Caso queira alterar o formato da data, informe-o em [totvsLanguageServer.formatDate](./docs/settings.md#totvsLanguageServer.formatDate)
+
+- Documentação das configurações do **TDS-VSCode** em [Configurações](./docs/settings.md).
+
 ## Versão [2.0.NEXT]
 
 ### Melhorias
