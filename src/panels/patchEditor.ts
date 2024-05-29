@@ -120,11 +120,7 @@ class PatchDocument extends Disposable implements vscode.CustomDocument {
     targetResource: vscode.Uri,
     cancellation: vscode.CancellationToken
   ): Promise<void> {
-    const fileData = await this._delegate.getFileData();
-    if (cancellation.isCancellationRequested) {
-      return;
-    }
-    //await vscode.workspace.fs.writeFile(targetResource, fileData);
+    throw new Error(vscode.l10n.t("PTM files cannot be saved by TDS-Vscode. Please build them using the command [TOTVS: Patch Generation]."));
   }
 
   /**

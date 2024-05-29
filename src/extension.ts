@@ -50,7 +50,6 @@ import { registerDebug, _debugEvent } from "./debug";
 // @@ import { openMonitorView } from "./monitor/monitorLoader";
 // @@ import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
 import { initStatusBarItems } from "./statusBar";
-// @@ import { PatchEditorProvider } from "./patch/inspect/patchEditor";
 import { openTemplateApplyView } from "./template/apply/formApplyTemplate";
 import { rpoTokenQuickPick, rpoTokenInputBox, saveRpoTokenString, setEnabledRpoToken } from "./rpoToken";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
@@ -69,6 +68,7 @@ import { patchGenerateFromFolder } from "./patch/patchUtil";
 import { CompileKeyPanel } from "./panels/compileKeyPanel";
 import { ApplyPatchPanel } from "./panels/patchApplyPanel";
 import { InspectorObjectPanel } from "./panels/inspectObjectPanel";
+import { PatchEditorProvider } from "./panels/patchEditor";
 
 
 export let languageClient: TotvsLanguageClientA;
@@ -604,7 +604,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(register4glOutline());
 
   // Register custom editor for patch files
-  // @@ context.subscriptions.push(PatchEditorProvider.register(context));
+  context.subscriptions.push(PatchEditorProvider.register(context));
 
   blockBuildCommands(false);
   showBanner();
