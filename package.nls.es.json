@@ -142,5 +142,6 @@
 	"tds.package.filesystem.encoding": "Establecer la codificación del sistema de archivos",
 	"tds.package.editor.linter": "Habilitar el Linter",
 	"tds.package.debug.extend.features": "Habilita la funcionalidad de depuración extendida",
-	"tds.package.debug.extend.features.charDetails": "Detalles de los tipos [char] (string)"
+	"tds.package.debug.extend.features.charDetails": "Detalles de los tipos [char] (string)",
+	"tds.package.format.date": "Ingrese el código de idioma/país que utiliza el formato de fecha deseado. El valor predeterminado es utilizar el formato de idioma configurado en VS-Code."
 }

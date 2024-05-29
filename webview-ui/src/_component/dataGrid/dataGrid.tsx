@@ -148,7 +148,7 @@ function FieldData(props: TFieldDataProps) {
 			<VSCodeTextField
 				readOnly={column.readOnly == undefined ? true : column.readOnly}
 				value={column.lookup && column.lookup[row[column.name]]
-					? column.lookup[row[column.name]] : row[column.name].toLocaleString()}
+					? column.lookup[row[column.name]] : tdsVscode.l10n.formatDate(row[column.name])}
 			></VSCodeTextField>
 		)
 	}

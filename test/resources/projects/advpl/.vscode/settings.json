@@ -16,5 +16,6 @@
     "totvsLanguageServer.askEncodingChange": false,
     "totvsLanguageServer.editor.autocomplete": "Off",
     "totvsLanguageServer.compilation.generatePpoFile": false,
-    "totvsLanguageServer.workspaceServerConfig": true
+    "totvsLanguageServer.workspaceServerConfig": true,
+    "totvsLanguageServer.formatDate": "pt-BR"
 }

@@ -508,6 +508,11 @@
           "default": "",
           "description": "%tds.package.compilation.tempDir%"
         },
+        "totvsLanguageServer.formatDate": {
+          "type": "string",
+          "default": "",
+          "description": "%tds.package.format.date%"
+        },
         "totvsLanguageServer.web.navigator": {
           "type": "string",
           "default": "",

@@ -142,5 +142,6 @@
 	"tds.package.filesystem.encoding": "Set file system encoding",
 	"tds.package.editor.linter": "Enable Linter",
 	"tds.package.debug.extend.features": "Enables extended debugging functionality",
-	"tds.package.debug.extend.features.charDetails": "Details of [char (string)] types"
+	"tds.package.debug.extend.features.charDetails": "Details of [char (string)] types",
+	"tds.package.format.date": "Enter the language/country code that uses the desired date format. The default is to use the language format configured in the VS-Code."
 }

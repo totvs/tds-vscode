@@ -33,7 +33,7 @@ const JS_BASE_FOLDER: string[] = [
 ];
 
 /**
- * A helper function which will get the webview content..
+ * A helper function which will get the webview content.
  *
  * @param webview A reference to the extension webview
  * @param extensionUri The URI of the directory containing the extension
@@ -60,6 +60,8 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
   ]))
 
   const nonce = getNonce();
+  const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
+  const formatDate: string = configADVPL.get("formatDate", "");
 
   return /*html*/ `
       <!DOCTYPE html>
@@ -86,7 +88,10 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
           <div id="root"></div>
           <script nonce="${nonce}">
             window.initialData = ${JSON.stringify(options.data || {})};
-            window.translations = ${JSON.stringify(options.translations)};
+            window.translations = ${JSON.stringify({
+    translations: options.translations,
+    formatDate: formatDate
+  })};
           </script>
           ${scriptsUri.map((uri: vscode.Uri) => {
     return `<script nonce="${nonce}" src="${uri}"></script>\n`;

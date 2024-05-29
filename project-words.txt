@@ -9,6 +9,7 @@ OPENGL
 Protheus
 Testrunner
 tlpp
+totvs
 Totvs
 totvsls
 totvsmonitor
