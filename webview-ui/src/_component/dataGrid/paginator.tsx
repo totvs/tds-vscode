@@ -15,8 +15,7 @@ limitations under the License.
 */
 
 import React, { useState } from "react";
-import { VSCodeButton, VSCodeLink } from "@vscode/webview-ui-toolkit/react";
-import { IFormAction } from "@totvs/tds-webtoolkit";
+import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
 import { ButtonAppearance } from "@vscode/webview-ui-toolkit";
 
 export type TdsDataGridAction = {
@@ -101,6 +100,7 @@ export default function TdsPaginator(props: ITdsPaginatorProps): React.ReactElem
 	const [totalPages, setTotalPages] = useState(0);
 	const [currentItem, setCurrentItem] = useState(0);
 	const [totalItems, setTotalItems] = useState(props.totalItems);
+	const lastItem: number = currentItem + props.pageSize > totalItems ? totalItems : currentItem + props.pageSize;
 
 	const changePageCallback = (selectedPage: number) => {
 		if (currentPage != selectedPage) {
@@ -142,7 +142,7 @@ export default function TdsPaginator(props: ITdsPaginatorProps): React.ReactElem
 			</VSCodeButton>
 
 			<div className="tds-data-grid-pagination-label">
-				{currentItem + 1}-{currentItem + props.pageSize} of {totalItems} (Page: {currentPage + 1} of {totalPages})
+				{currentItem + 1}-{lastItem} of {totalItems} (Page: {currentPage + 1} of {totalPages})
 			</div>
 
 			<VSCodeButton appearance="icon" aria-label="Next page"

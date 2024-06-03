@@ -277,7 +277,7 @@ export function TdsDataGrid(props: ITdsDataGridProps): React.ReactElement {
 
 	React.useEffect(() => {
 		setPageSize(props.options.pageSize || 10);
-		setTotalItems(dataSource.length);
+		setTotalItems(props.dataSource.length);
 		setDataSource(props.dataSource);
 	}, [props.dataSource.length, props.options.pageSize]);
 
