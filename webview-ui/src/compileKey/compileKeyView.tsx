@@ -62,9 +62,6 @@ export default function CompileKeyView() {
   })
 
   const onSubmit: SubmitHandler<TFields> = (data) => {
-    console.log("***********************************");
-    console.log(data);
-
     sendSaveAndClose(data);
   }
 

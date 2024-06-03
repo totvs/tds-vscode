@@ -49,8 +49,6 @@ type TSelectObjectComponentProps = {
 }
 
 function sendToRight(model: any, selectedObject: TInspectorObject[]) {
-  console.log("sendToRight", model, selectedObject);
-
   tdsVscode.postMessage({
     command: PatchGenerateCommandEnum.MoveElements,
     data: {

@@ -105,9 +105,6 @@ export default function SourcesDialog(props) {
   };
 
   const isSelected = (name: string) => {
-    console.log("-------------------------");
-    console.dir(_selected);
-
     return _selected.length == 0 || _selected.indexOf(name) !== -1;
   }
 
