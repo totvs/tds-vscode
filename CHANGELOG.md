@@ -24,6 +24,10 @@ Foi adicionado a possibilidade de passar parâmetros para o navegador a ser util
 Em estruturas sem a devida finalização, p.e. `class` e `end class`, poderia gerar lista de símbolos (visão _Outline_) incorreta e/ou gerar um erro no log.
 Foi adicionado tratamento para esses blocos, de forma a evitar a ocorrência.
 
+#### Validações chave TDS [#1238](https://github.com/totvs/tds-vscode/issues/1238)
+
+Ajuste na validação das chaves TDS.
+
 ## Versão [2.0.7]
 
 ### Correções

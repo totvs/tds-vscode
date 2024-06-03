@@ -48,7 +48,7 @@ const localizeHTML = {
   "tds.webview.patch.validation.applyold.overwrite": vscode.l10n.t("This action will overwrite newer sources/resources in the current RPO."),
   "tds.webview.patch.validation.newer": vscode.l10n.t("There are newer patches available at TOTVS Update Center."),
   "tds.webview.patch.validation.newer.overwrite": vscode.l10n.t("This action will apply outdated patches."),
-  "tds.webview.patch.validation.critical": vscode.l10n.t("There are patches that cannot be applied and must be removed from the list."),
+  "tds.webview.patch.validation.critical": vscode.l10n.t("There are patches that cannot be applied and must be removed from the list. See log for details."),
   "tds.webview.patch.validation.problem": vscode.l10n.t("Action required. There are patches with validation problems."),
   "tds.webview.patch.apply.action": vscode.l10n.t("Apply"),
   "tds.webview.patch.applyclose.action": vscode.l10n.t("Apply/Close"),

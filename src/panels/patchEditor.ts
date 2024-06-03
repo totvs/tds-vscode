@@ -31,7 +31,7 @@ class PatchDocument extends Disposable implements vscode.CustomDocument {
       lengthFile: (await vscode.workspace.fs.stat(uri)).size,
       patchInfo: await sendPatchInfo(
         server,
-        uri.fsPath
+        uri.toString()
       ),
     };
 
