@@ -31,7 +31,7 @@ Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
 
 ![Edit file server](./gifs/serversEditFile.gif)
 
-## Estrutura do arquivo _servers.json_
+## Estrutura do arquivo *servers.json*
 
 > Recomenda-se que a edição seja efetuada com *nenhum* servidor conectado/selecionado.
 > Faça um cópia de segurança antes. Modificações erradas podem inviabilizar seu uso ou mesmo da extensão.
@@ -89,35 +89,35 @@ Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
 | Chave                 | Descrição/uso                                                                           |
 | --------------------- | --------------------------------------------------------------------------------------- |
 | `version`             | Versão do arquivo. Não editar.                                                          |
-| `includes `           | Lista de pastas global para busca de arquivos de definição. |
+| `includes`           | Lista de pastas global para busca de arquivos de definição. |
 |                       | Utilizada quando não informada na definição do servidor e para o [linter](docs/linter). |
-| `permissions `        | Lista de permissões.                                                                    |
+| `permissions`        | Lista de permissões.                                                                    |
 | `authorizationtoken`  | Chave de compilação com as permissões.                                                  |
-| `configurations `     | Configurações de servidores registrados para uso.                                       |
-| `id `                 | Identificação única, gerada no momento de seu registro.                                 |
-| `type `               | Tipo do servidor, podem ser:                                                            |
-|                       | - _totvs_server_protheus_, para servidores com suporte a Adv/PL. (versão )                        |
-|                       | - _totvs_server_logix_, para servidores com suporte a Adv/PL e 4GL.                     |
-|                       | - _totvs_server_totvstec_, para servidores com suporte a Adv/PL e 4GL, versão iqual ao superior 7.00.210324P (*Harpia*) .                     |
-| `name `               | Identificação do servidor para humanos.                                                 |
-| `port `               | Porta de conexão.                                                                       |
-| `address `            | Endereço IP ou nome da estação do servidor.                                             |
-| `buildVersion `       | Versão do servidor. Valor obtido automaticamente.                                       |
-| `secure `             | Conexão segura (SSL) ou não. Valor obtido automaticamente.                              |
-| `includes `           | Lista de pastas para busca de arquivos de definição.                                    |
-| ` `                   | Se não informada utilizará a lista padrão.                                              |
-| `environments `       | Ambientes acessados.                                                                    |
-| `username `           | Último usuário utilizado na conexão.                                                    |
-| `environment `        | Último ambiente utilizado na conexão.                                                   |
-| `token `              | Código de acesso para reconexão. Valor obtido automaticamente.                          |
-| `savedTokens `        | Listas de código de acesso, associados a um servidor e ambientes.                       |
+| `configurations`     | Configurações de servidores registrados para uso.                                       |
+| `id`                 | Identificação única, gerada no momento de seu registro.                                 |
+| `type`               | Tipo do servidor, podem ser:                                                            |
+|                       | - *totvs_server_protheus*, para servidores com suporte a Adv/PL. (versão )                        |
+|                       | - *totvs_server_logix*, para servidores com suporte a Adv/PL e 4GL.                     |
+|                       | - *totvs_server_totvstec*, para servidores com suporte a Adv/PL e 4GL, versão iqual ao superior 7.00.210324P (*Harpia*) .                     |
+| `name`               | Identificação do servidor para humanos.                                                 |
+| `port`               | Porta de conexão.                                                                       |
+| `address`            | Endereço IP ou nome da estação do servidor.                                             |
+| `buildVersion`       | Versão do servidor. Valor obtido automaticamente.                                       |
+| `secure`             | Conexão segura (SSL) ou não. Valor obtido automaticamente.                              |
+| `includes`           | Lista de pastas para busca de arquivos de definição.                                    |
+| ``                   | Se não informada utilizará a lista padrão.                                              |
+| `environments`       | Ambientes acessados.                                                                    |
+| `username`           | Último usuário utilizado na conexão.                                                    |
+| `environment`        | Último ambiente utilizado na conexão.                                                   |
+| `token`              | Código de acesso para reconexão. Valor obtido automaticamente.                          |
+| `savedTokens`        | Listas de código de acesso, associados a um servidor e ambientes.                       |
 |                       | Valores obtidos automaticamente.                                                        |
 |                       | \<id>:\<ambiente>                                                                       |
 |                       | id: identificaão do servidor                                                            |
 |                       | token: código de acesso                                                                 |
 | `lastConnectedServer` | Último servidor utilizado e que será reconectado na próxima sessão de forma automática. |
 
-## Local de gravação de _servers.json_
+## Local de gravação de *servers.json*
 
 Por padrão, o arquivo com os registros de servidores é armazenado no arquivo `_servers.json_`, na área do usuário conforme o sistema operacional.
 
@@ -129,7 +129,7 @@ Caso deseje ter o registro de servidores por área de trabalho, ative a opção 
 
 ![Workspace Server Config](./images/workspaceServerConfig.png)
 
-Ou use a troca rápida disponível na barra de _status_.
+Ou use a troca rápida disponível na barra de *status*.
 
 ![Workspace Server Config](./gifs/toggleSaveLocation.gif)
 
@@ -137,11 +137,11 @@ Ou use a troca rápida disponível na barra de _status_.
 
 ## Sistema de Privilégios
 
-O **TDS-VSCode**, suporta um sistema simples de privilégios, baseada em configuração efetuada no arquivo _appServer.ini_, podendo-se configurar privilégios para determinadas operações e estações, através da adição de chaves na sessão `[TDS]`.
+O **TDS-VSCode**, suporta um sistema simples de privilégios, baseada em configuração efetuada no arquivo *appServer.ini*, podendo-se configurar privilégios para determinadas operações e estações, através da adição de chaves na sessão `[TDS]`.
 
-> Quando a conexão é local (_localhost_), não há restrições (sessão `[TDS]` é ignorada).
+> Quando a conexão é local (*localhost*), não há restrições (sessão `[TDS]` é ignorada).
 
-> Modificações na sessão `[TDS]` requer **reconexão** do _VS-Code_.
+> Modificações na sessão `[TDS]` requer **reconexão** do *VS-Code*.
 
 > Para manter o mesmo comportamento de ambientes com versões mais antigas, todas as operações vem liberadas por padrão na ausência da sessão `[TDS]` ou da chave da operação.
 
@@ -160,19 +160,20 @@ EnableStopServer=<IP/name list>
 AllowApplyTemplate=<IP/name list>
 
 ```
+
 | Chave                    | Permissão                                 |
 | ------------------------ | ----------------------------------------- |
-| AllowApplyPatch          | Aplicar pacotes de atualização (_patchs_) |
-| AllowBuildPatch          | Gerar pacotes de atualização (_patchs_)   |
+| AllowApplyPatch          | Aplicar pacotes de atualização (*patchs*) |
+| AllowBuildPatch          | Gerar pacotes de atualização (*patchs*)   |
 | AllowCompile             | Compilar fontes e recursos                |
 | AllowMonitor             | Acesso ao monitor de conexões             |
 | EnableDisconnectUser     | Desconectar usuários                      |
 | EnableSendMessage        | Enviar mensagens                          |
 | EnableBlockNewConnection | Bloquear novas conexões                   |
-| EnableStopServer         | Encerrar o _appServer_                    |
+| EnableStopServer         | Encerrar o *appServer*                    |
 | AllowApplyTemplate       | Aplicar pacotes de amostras (\*.tpl)      |
 
-- `<IP/name>` é a lista de estações com o privilégio liberado, identificadas pelo seu endereço IP ou nome (_host name_) e separadas por `,` (vírgula).
+- `<IP/name list>` é a lista de estações com o privilégio liberado, identificadas pelo seu endereço IP ou nome (*host name*) e separadas por `,` (vírgula).
 
 > Para liberar o privilégio a qualquer estação, coloque `*` (valor padrão).
 
@@ -202,4 +203,4 @@ Neste exemplo, temos:
 
 ![My privileges](./images/my-privileges.png)
 
-Passando o ponteiro do _mouse_ sobre a indicação de servidor/ambiente selecionado (barra de status), lhe será apresentado os privilégios que lhe foram concedidos.
+Passando o ponteiro do *mouse* sobre a indicação de servidor/ambiente selecionado (barra de status), lhe será apresentado os privilégios que lhe foram concedidos.
