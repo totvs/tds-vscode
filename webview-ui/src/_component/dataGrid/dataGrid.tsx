@@ -83,8 +83,10 @@ type TFieldFilterProps = {
 }
 
 type TFieldDataProps = {
+	methods: UseFormReturn<any>;
 	fieldDef: TdsDataGridColumnDef;
 	row: any;
+	fieldName?: string;
 }
 
 function FieldFilter(props: TFieldFilterProps) {
@@ -141,6 +143,7 @@ function FieldFilter(props: TFieldFilterProps) {
 function FieldData(props: TFieldDataProps) {
 	const column = props.fieldDef;
 	const row = props.row;
+	const fieldName: string = props.fieldName ? props.fieldName : column.name;
 
 	//Campo DATE, TIME e DATETIME
 	if ((column.type == "date") || (column.type == "time") || (column.type == "datetime")) {
@@ -158,8 +161,15 @@ function FieldData(props: TFieldDataProps) {
 		return (
 			<VSCodeCheckbox
 				readOnly={column.readOnly == undefined ? true : column.readOnly}
-				value={column.lookup && column.lookup[row[column.name]]
+				checked={column.lookup && column.lookup[row[column.name]]
 					? column.lookup[row[column.name]] : row[column.name]}
+				onChange={(e) => {
+					e.preventDefault();
+					const target = e.target as HTMLInputElement;
+					props.methods.setValue(fieldName, target.checked ? true : false);
+
+					return target.checked;
+				}}
 			></VSCodeCheckbox>
 		)
 	}
@@ -478,8 +488,10 @@ export function TdsDataGrid(props: ITdsDataGridProps): React.ReactElement {
 								.map((column, indexCol: number) => (
 									<VSCodeDataGridCell grid-column={indexCol + 1}>
 										<FieldData
+											methods={props.methods}
 											fieldDef={column}
 											row={row}
+											fieldName={`${props.id}.${itemOffset + index}.${column.name}`}
 										></FieldData>
 									</VSCodeDataGridCell>
 								))}

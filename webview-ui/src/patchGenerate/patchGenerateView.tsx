@@ -86,7 +86,7 @@ function SelectResourceComponent(props: TSelectObjectComponentProps) {
   const columnDef: TdsDataGridColumnDef[] = [
     {
       type: "boolean",
-      name: "check",
+      name: "checked",
       label: " ",
       width: "0.5fr",
       sortable: false,
@@ -167,11 +167,11 @@ export default function PatchGenerateView() {
 
           model.objectsLeft.forEach((row: TInspectorObject, index: number, array: TInspectorObject[]) => {
             array[index].date = new Date(array[index].date);
-            //array[index].checked = array[index].check || false;
+            array[index].checked = false;
           });
           model.objectsRight.forEach((row: TInspectorObject, index: number, array: TInspectorObject[]) => {
             array[index].date = new Date(array[index].date);
-            //array[index].check = array[index].check || false;
+            array[index].checked = false;
           });
 
           setDataModel(methods.setValue, model);

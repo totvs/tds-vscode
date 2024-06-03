@@ -10,3 +10,11 @@
 #directionButtons {
   align-self: center;
 }
+
+[name="objectLeft"] {
+  font-weight: "bold"
+}
+
+[name="objectRight"] {
+  font-weight: "bold"
+}

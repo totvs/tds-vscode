@@ -147,9 +147,6 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
           data.model.objectsLeft.push(...selectedObject.map((element: TInspectorObject) => { return { ...element, checked: false } }));
         }
 
-        data.model.objectsRight = data.model.objectsRight.sort((a: TInspectorObject, b: TInspectorObject) => a.source.localeCompare(b.source));
-        data.model.objectsLeft = data.model.objectsLeft.sort((a: TInspectorObject, b: TInspectorObject) => a.source.localeCompare(b.source));
-
         this.sendUpdateModel(data.model, undefined);
 
         break;
