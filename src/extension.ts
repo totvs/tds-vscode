@@ -27,7 +27,6 @@ import { defragRpo } from "./server/defragRPO";
 import { rpoCheckIntegrity } from "./server/rpoCheckIntegrity";
 import { revalidateRpo } from "./server/revalidateRPO";
 import { serverSelection } from "./inputConnectionParameters";
-import { inspectFunctions } from "./inspect/inspectFunction";
 import { showWelcomePage } from "./welcome/welcomePage";
 import launcherConfig from "./launcher/launcherConfiguration";
 import { onCaptureLoggers, offCaptureLoggers } from "./loggerCapture/logger";
@@ -237,7 +236,7 @@ export function activate(context: ExtensionContext) {
     commands.registerCommand("totvs-developer-studio.inspectorObjects", () => {
       if (checkServer() && !checkDebug()) {
         InspectorObjectPanel.render(context, {
-          objectsInspector: true,
+          inspector: "objects",
           includeOutScope: false //TRES para objetos e "fontes sem função publica" para funções
         });
       }
@@ -248,7 +247,7 @@ export function activate(context: ExtensionContext) {
     commands.registerCommand("totvs-developer-studio.inspectorFunctions", () => {
       if (checkServer() && !checkDebug()) {
         InspectorObjectPanel.render(context, {
-          objectsInspector: false,
+          inspector: "functions",
           includeOutScope: false //TRES para objetos e "fontes sem função publica" para funções
         });
 
