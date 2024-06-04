@@ -46,6 +46,7 @@ type TSelectObjectComponentProps = {
   label: string;
   fieldName: string;
   showIncludeTRes: boolean;
+  isServerP20OrGreater: boolean;
 }
 
 function sendToRight(model: any, selectedObject: TInspectorObject[]) {
@@ -105,8 +106,39 @@ function SelectResourceComponent(props: TSelectObjectComponentProps) {
       width: "3fr",
       sortable: true,
       sortDirection: ""
-    },
-  ]
+    }
+  ];
+
+  if (props.isServerP20OrGreater) {
+    columnDef.push({
+      type: "string",
+      name: "source_status",
+      label: tdsVscode.l10n.t("Status"),
+      width: "2fr",
+      lookup: {
+        N: "NoAuth",
+        P: "Prod",
+        D: "Dev"
+      },
+      sortable: false,
+      grouping: true,
+    });
+
+    columnDef.push({
+      type: "string",
+      name: "rpo_status",
+      label: tdsVscode.l10n.t("RPO"),
+      width: "2fr",
+      lookup: {
+        N: "None",
+        D: "Default",
+        T: "Tlpp",
+        C: "Custom",
+      },
+      sortable: false,
+      grouping: true,
+    });
+  }
 
   const topActions: TdsDataGridAction[] = [{
     id: "btnIncludeTRes",
@@ -139,7 +171,11 @@ function SelectResourceComponent(props: TSelectObjectComponentProps) {
   );
 }
 
-export default function PatchGenerateView() {
+interface IPatchGenerateViewProps {
+  isServerP20OrGreater: boolean;
+}
+
+export default function PatchGenerateView(props: IPatchGenerateViewProps) {
   const methods = useForm<TGeneratePatchModel>({
     defaultValues: EMPTY_MODEL,
     mode: "all"
@@ -222,6 +258,7 @@ export default function PatchGenerateView() {
 
         <section className="tds-row-container" id="selectGrid" >
           {watchObjectsLeft && <SelectResourceComponent
+            isServerP20OrGreater={props.isServerP20OrGreater}
             methods={methods}
             fieldName="objectsLeft"
             label={tdsVscode.l10n.t("RPO Objects")}
@@ -247,6 +284,7 @@ export default function PatchGenerateView() {
           </section>
 
           {watchObjectsRight && <SelectResourceComponent
+            isServerP20OrGreater={props.isServerP20OrGreater}
             methods={methods}
             label={tdsVscode.l10n.t("To patch")}
             fieldName="objectsRight"

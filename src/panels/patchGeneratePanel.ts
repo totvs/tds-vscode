@@ -81,9 +81,16 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
    * rendered within the webview panel
    */
   protected getWebviewContent(extensionUri: vscode.Uri) {
+    const server = ServersConfig.getCurrentServer();
 
     return getWebviewContent(this._panel.webview, extensionUri, "patchGenerateView",
-      { title: this._panel.title, translations: this.getTranslations() });
+      {
+        title: this._panel.title,
+        translations: this.getTranslations(),
+        data: {
+          isServerP20OrGreater: Utils.isServerP20OrGreater(server).toString()
+        },
+      });
   }
 
   /**
@@ -173,7 +180,7 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
           source: object.source,
           date: object.date,
           source_status: object.source_status.toString(),
-          rpo_status: "",
+          rpo_status: object.rpo_status.toString(),
           function: "",
           line: 0
         });
@@ -204,20 +211,6 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
   protected async saveModel(model: TGeneratePatchModel): Promise<boolean> {
     let server = ServersConfig.getCurrentServer();
 
-    // const filesPath = message.pathFiles;
-    // const patchName = message.patchName;
-    // const patchDestUri = vscode.Uri.file(
-    //   message.patchDest
-    // ).toString();
-
-    // if (patchDestUri === "" || filesPath.length === 0) {
-    //   vscode.window.showErrorMessage(
-    //     vscode.l10n.t("Patch Generation failed. Please check destination directory and sources/resources list.")
-    //   );
-    // } else {
-    // save last patchGenerateDir
-    //  ServersConfig.updatePatchGenerateDir(server.id, model.patchDest);
-    //vscode.window.showInformationMessage(localize("tds.webview.patch.generate.start","Start Generate Patch"));
     const response: IPatchResult | void = await sendPatchGenerateMessage(
       server,
       "",
@@ -249,7 +242,10 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
       const msgError = ` ${serverExceptionCodeToString(response.returnCode)} ${response.message}`;
       Utils.logMessage(msgError, MESSAGE_TYPE.Error, false);
       vscode.window.showErrorMessage(msgError);
-      errors.patchName = { type: "validate", message: `Protheus Server was unable to generate the patch. Code: ${response.returnCode}` };;
+      errors.patchName = {
+        type: "validate",
+        message: vscode.l10n.t("Protheus Server was unable to generate the patch. Code: {0}", response.returnCode)
+      };;
       ok = false
     }
 
