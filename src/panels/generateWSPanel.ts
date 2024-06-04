@@ -167,7 +167,7 @@ export class GenerateWebServicePanel extends TdsPanel<TWebServiceModel> {
 
 		if (response.returnCode !== 0) {
 			let errors: TFieldErrors<TWebServiceModel> = {};
-			let error: string = `Protheus server was unable to generate the WS client. Code: ${response.returnCode}`;
+			let error: string = vscode.l10n.t("Protheus server was unable to generate the WS client. Code: {0}", response.returnCode);
 
 			errors.urlOrWsdlFile = { type: "validate", message: error };
 			this.sendUpdateModel(model, errors)
