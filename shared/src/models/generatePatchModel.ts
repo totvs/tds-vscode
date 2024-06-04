@@ -25,10 +25,17 @@ export enum PatchGenerateCommandEnum {
 
 export type PatchGenerateCommand = CommonCommandFromWebViewEnum & PatchGenerateCommandEnum;
 
-export type TGeneratePatchModel = TAbstractModelPanel & {
+export type TGeneratePatchFromRpoModel = TAbstractModelPanel & {
 	patchName: string;
 	patchDest: string;
 	includeTRes: boolean;
 	objectsLeft: TInspectorObject[];
 	objectsRight: TInspectorObject[];
+}
+
+export type TGeneratePatchByDifferenceModel = TAbstractModelPanel & {
+	rpoMasterFile: string;
+	rpoMasterFolder: string;
+	patchName: string;
+	patchDest: string;
 }

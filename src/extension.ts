@@ -62,12 +62,13 @@ import { registerXRef } from "./xreferences";
 import { ImportSourcesOnlyResultPanel } from "./panels/importSourcesOnlyResultPanel";
 import { GlobalIncludePanel } from "./panels/globalIncludePanel";
 import { GenerateWebServicePanel } from "./panels/generateWSPanel";
-import { PatchGeneratePanel } from "./panels/patchGeneratePanel";
+import { PatchGenerateFromRpoPanel } from "./panels/patchGeneratePanel";
 import { patchGenerateFromFolder } from "./patch/patchUtil";
 import { CompileKeyPanel } from "./panels/compileKeyPanel";
 import { ApplyPatchPanel } from "./panels/patchApplyPanel";
 import { InspectorObjectPanel } from "./panels/inspectObjectPanel";
 import { PatchEditorProvider } from "./panels/patchEditor";
+import { PatchGenerateByDifferencePanel } from "./panels/patchGenerateByDifferencePanel";
 
 
 export let languageClient: TotvsLanguageClientA;
@@ -330,7 +331,7 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.patchGenerate.fromRPO",
       () => {
         if (checkServer() && !checkDebug()) {
-          PatchGeneratePanel.render(context)
+          PatchGenerateFromRpoPanel.render(context)
         }
       })
   );
@@ -340,7 +341,7 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.patchGenerate.byDifference",
       () => {
         if (checkServer() && !checkDebug()) {
-          PatchGeneratePanel.render(context);
+          PatchGenerateByDifferencePanel.render(context);
         }
       }
     )

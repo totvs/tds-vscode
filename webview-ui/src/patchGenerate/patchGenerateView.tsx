@@ -23,16 +23,16 @@ import { SubmitHandler, UseFormReturn, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsTextField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionFolderField } from "@totvs/tds-webtoolkit";
 import { TdsDataGrid, TdsDataGridAction, TdsDataGridColumnDef } from "../_component/dataGrid";
-import { TGeneratePatchModel, TInspectorObject, PatchGenerateCommandEnum } from "tds-shared/lib";
+import { TGeneratePatchFromRpoModel, TInspectorObject, PatchGenerateCommandEnum } from "tds-shared/lib";
 
 enum ReceiveCommandEnum {
   MOVE_TO_LEFT = "moveToLeft",
   MOVE_TO_RIGHT = "moveToRight"
 }
 
-type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TGeneratePatchModel>;
+type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TGeneratePatchFromRpoModel>;
 
-const EMPTY_MODEL: TGeneratePatchModel = {
+const EMPTY_MODEL: TGeneratePatchFromRpoModel = {
   patchDest: "", //(vscode.getState() | {})["patchDest"],
   patchName: "", //(vscode.getState() | {})["patchName"],
   includeTRes: false,
@@ -176,14 +176,14 @@ interface IPatchGenerateViewProps {
 }
 
 export default function PatchGenerateView(props: IPatchGenerateViewProps) {
-  const methods = useForm<TGeneratePatchModel>({
+  const methods = useForm<TGeneratePatchFromRpoModel>({
     defaultValues: EMPTY_MODEL,
     mode: "all"
   })
   const watchObjectsLeft: any = methods.watch("objectsLeft");
   const watchObjectsRight: any = methods.watch("objectsRight");
 
-  const onSubmit: SubmitHandler<TGeneratePatchModel> = (data) => {
+  const onSubmit: SubmitHandler<TGeneratePatchFromRpoModel> = (data) => {
     data.objectsRight = data.objectsRight.filter((object: TInspectorObject) => object.source.length > 0);
 
     sendSaveAndClose(data);
@@ -196,8 +196,8 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
 
       switch (command.command) {
         case CommonCommandEnum.UpdateModel:
-          const model: TGeneratePatchModel = command.data.model;
-          const errors: TGeneratePatchModel = command.data.errors;
+          const model: TGeneratePatchFromRpoModel = command.data.model;
+          const errors: TGeneratePatchFromRpoModel = command.data.errors;
 
           model.objectsLeft.forEach((row: TInspectorObject, index: number, array: TInspectorObject[]) => {
             array[index].date = new Date(array[index].date);

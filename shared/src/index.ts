@@ -16,10 +16,9 @@ limitations under the License.
 
 export { CommonCommandFromWebViewEnum } from "./webviewProtocol";
 export { CommonCommandToWebViewEnum } from "./webviewProtocol";
-//export { CommonCommandFromWebView } from "./webviewProtocol";
 export { TApplyPatchModel, TPatchFileData } from "./models/applyPatchModel";
 export { TAuthorization, TCompileKey, TCompileKeyModel } from "./models/compileKeyModel";
-export { PatchGenerateCommandEnum, PatchGenerateCommand, TGeneratePatchModel } from "./models/generatePatchModel";
+export { PatchGenerateCommandEnum, PatchGenerateCommand, TGeneratePatchFromRpoModel, TGeneratePatchByDifferenceModel } from "./models/generatePatchModel";
 export { TIncludePath, TIncludeModel } from "./models/includeModel";
 export { TInspectorObject, TInspectorObjectModel } from "./models/inspectObjectModel";
 export { IPatchData } from "./models/patchData";

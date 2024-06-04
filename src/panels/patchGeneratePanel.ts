@@ -19,11 +19,11 @@ import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webv
 import Utils, { MESSAGE_TYPE, ServersConfig, serverExceptionCodeToString } from "../utils";
 import { IObjectData, IPatchResult, sendInspectorObjectsRequest, sendPatchGenerateMessage } from "../protocolMessages";
 import { ResponseError } from "vscode-languageclient";
-import { CommonCommandFromWebViewEnum, PatchGenerateCommand, PatchGenerateCommandEnum, ReceiveMessage, TFieldErrors, TGeneratePatchModel, TInspectorObject, isErrors } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, PatchGenerateCommand, PatchGenerateCommandEnum, ReceiveMessage, TFieldErrors, TGeneratePatchFromRpoModel, TInspectorObject, isErrors } from "tds-shared/lib";
 import { TdsPanel } from "./panel";
 
 
-const EMPTY_MODEL: TGeneratePatchModel = {
+const EMPTY_MODEL: TGeneratePatchFromRpoModel = {
   patchName: "",
   patchDest: "",
   includeTRes: false,
@@ -31,15 +31,15 @@ const EMPTY_MODEL: TGeneratePatchModel = {
   objectsRight: []
 }
 
-export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
-  public static currentPanel: PatchGeneratePanel | undefined;
+export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoModel> {
+  public static currentPanel: PatchGenerateFromRpoPanel | undefined;
 
-  public static render(context: vscode.ExtensionContext): PatchGeneratePanel {
+  public static render(context: vscode.ExtensionContext): PatchGenerateFromRpoPanel {
     const extensionUri: vscode.Uri = context.extensionUri;
 
-    if (PatchGeneratePanel.currentPanel) {
+    if (PatchGenerateFromRpoPanel.currentPanel) {
       // If the webview panel already exists reveal it
-      PatchGeneratePanel.currentPanel._panel.reveal(); //vscode.ViewColumn.One
+      PatchGenerateFromRpoPanel.currentPanel._panel.reveal(); //vscode.ViewColumn.One
     } else {
       // If a webview panel does not already exist create and show a new one
       const panel = vscode.window.createWebviewPanel(
@@ -55,17 +55,17 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
         }
       );
 
-      PatchGeneratePanel.currentPanel = new PatchGeneratePanel(panel, extensionUri);
+      PatchGenerateFromRpoPanel.currentPanel = new PatchGenerateFromRpoPanel(panel, extensionUri);
     }
 
-    return PatchGeneratePanel.currentPanel;
+    return PatchGenerateFromRpoPanel.currentPanel;
   }
 
   /**
    * Cleans up and disposes of webview resources when the webview panel is closed.
    */
   public dispose() {
-    PatchGeneratePanel.currentPanel = undefined;
+    PatchGenerateFromRpoPanel.currentPanel = undefined;
 
     super.dispose();
   }
@@ -99,7 +99,7 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
    *
    * @param webview A reference to the extension webview
    */
-  protected async panelListener(message: ReceiveMessage<PatchGenerateCommand, TGeneratePatchModel>, result: any): Promise<any> {
+  protected async panelListener(message: ReceiveMessage<PatchGenerateCommand, TGeneratePatchFromRpoModel>, result: any): Promise<any> {
     const command: PatchGenerateCommand = message.command;
     const data = message.data;
 
@@ -169,7 +169,7 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
     }
   }
 
-  private async getDataFromServer(model: TGeneratePatchModel, includeTRes: boolean): Promise<TGeneratePatchModel> {
+  private async getDataFromServer(model: TGeneratePatchFromRpoModel, includeTRes: boolean): Promise<TGeneratePatchFromRpoModel> {
     const server = ServersConfig.getCurrentServer();
     const objectsData: IObjectData[] = await sendInspectorObjectsRequest(server, includeTRes);
 
@@ -196,7 +196,7 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
 
   }
 
-  protected async validateModel(model: TGeneratePatchModel, errors: TFieldErrors<TGeneratePatchModel>): Promise<boolean> {
+  protected async validateModel(model: TGeneratePatchFromRpoModel, errors: TFieldErrors<TGeneratePatchFromRpoModel>): Promise<boolean> {
     if (model.patchDest.length == 0) {
       errors.patchDest = { type: "required" };
     }
@@ -208,7 +208,7 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
     return !isErrors(errors);
   }
 
-  protected async saveModel(model: TGeneratePatchModel): Promise<boolean> {
+  protected async saveModel(model: TGeneratePatchFromRpoModel): Promise<boolean> {
     let server = ServersConfig.getCurrentServer();
 
     const response: IPatchResult | void = await sendPatchGenerateMessage(
@@ -232,7 +232,7 @@ export class PatchGeneratePanel extends TdsPanel<TGeneratePatchModel> {
       return response;
     });
 
-    let errors: TFieldErrors<TGeneratePatchModel> = {};
+    let errors: TFieldErrors<TGeneratePatchFromRpoModel> = {};
     let ok: boolean = true;
 
     if (!response) {

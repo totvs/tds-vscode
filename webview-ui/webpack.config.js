@@ -24,9 +24,9 @@ const ADD_SERVER_PATH = path.join(SOURCE_FOLDER, "addServer");
 const GLOBAL_INCLUDE_PATH = path.join(SOURCE_FOLDER, "globalInclude");
 const GENERATE_WS_PATH = path.join(SOURCE_FOLDER, "generateWs");
 const PATCH_GENERATE_PATH = path.join(SOURCE_FOLDER, "patchGenerate");
+const PATCH_GENERATE_BY_DIFFERENCE_PATH = path.join(SOURCE_FOLDER, "patchGenerateByDifference");
 const COMPILE_KEY_PATH = path.join(SOURCE_FOLDER, "compileKey");
 const APPLY_PATCH_PATH = path.join(SOURCE_FOLDER, "applyPatch");
-const INSPECT_PATCH_PATH = path.join(SOURCE_FOLDER, "inspectPatch");
 const INSPECT_OBJECT_PATH = path.join(SOURCE_FOLDER, "inspectObject");
 
 // const REPLAY_PATH = path.join(__dirname, "./src/debug/tdsreplay/");
@@ -81,6 +81,7 @@ module.exports = (env, argv) => {
       globalIncludeView: path.join(GLOBAL_INCLUDE_PATH, "index.tsx"),
       generateWebServiceView: path.join(GENERATE_WS_PATH, "index.tsx"),
       patchGenerateView: path.join(PATCH_GENERATE_PATH, "index.tsx"),
+      patchGenerateByDifferenceView: path.join(PATCH_GENERATE_BY_DIFFERENCE_PATH, "index.tsx"),
       compileKeyView: path.join(COMPILE_KEY_PATH, "index.tsx"),
       applyPatchView: path.join(APPLY_PATCH_PATH, "index.tsx"),
       inspectObjectView: path.join(INSPECT_OBJECT_PATH, "index.tsx"),
