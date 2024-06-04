@@ -1738,3 +1738,36 @@ export function pathErrorCodeToString(codeError: number, _default: string): stri
 
   return message;
 }
+
+/**
+ * Formats a given date object as a string using the specified locale format.
+ *
+ * @param value - The date object to be formatted.
+ * @returns The formatted date string.
+ */
+export function formatDate(value: Date): string {
+  let result: string = value.toLocaleString();
+  const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
+  const formatDate: string = configADVPL.get("formatDate", "");
+
+  if (formatDate !== "") {
+    try {
+      const options: Intl.DateTimeFormatOptions = {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric"
+      };
+      const dateTimeFormat1 = new Intl.DateTimeFormat(formatDate, options);
+
+      result = dateTimeFormat1.format(value);
+    } catch (error) {
+      result = value.toLocaleString()
+    }
+  }
+
+  return result;
+}
+

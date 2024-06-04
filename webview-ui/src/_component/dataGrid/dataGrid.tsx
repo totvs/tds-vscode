@@ -50,7 +50,6 @@ export interface ITdsDataGridProps {
 	options: {
 		bottomActions?: TdsDataGridAction[];
 		topActions?: TdsDataGridAction[];
-		//translations: Translation | undefined;
 		filter?: boolean;
 		pageSize?: number,
 		pageSizeOptions?: number[],
@@ -499,11 +498,12 @@ export function TdsDataGrid(props: ITdsDataGridProps): React.ReactElement {
 					))}
 				</VSCodeDataGrid>
 			</div>
+
 			<div className="tds-data-grid-footer">
 				<TdsSelectionField
 					methods={props.methods}
 					name={"pageSize"}
-					label={tdsVscode.l10n.t("Lines/page")}
+					label={tdsVscode.l10n.t("Elements/page")}
 					options={(props.options.pageSizeOptions || [])
 						.map((value: number) => { return { value: value.toString(), text: value.toString() } })
 					}

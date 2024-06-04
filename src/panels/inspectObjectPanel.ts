@@ -16,7 +16,7 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import Utils, { ServersConfig } from "../utils";
+import Utils, { ServersConfig, formatDate } from "../utils";
 import { CommonCommandFromWebViewEnum, ReceiveMessage } from "tds-shared/lib";
 import { IFunctionData, IObjectData, sendInspectorObjectsRequest } from "../protocolMessages";
 import { TFieldErrors, isErrors } from "tds-shared/lib";
@@ -187,18 +187,19 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel, IInspe
       case InspectObjectCommandEnum.Export: {
         vscode.window.withProgress(
           {
-            location: vscode.ProgressLocation.Notification,
-            title: `$(gear~spin) Export inspector information. Wait...`,
+            location: vscode.ProgressLocation.Window,
+            title: `Export inspector information. Wait...`,
+            cancellable: true,
           },
-          async (progress, token) => {
+          async (progress, token: vscode.CancellationToken) => {
             progress.report({ increment: 0 });
 
             let filename: string = "";
 
             if (data.type == "TXT") {
-              filename = this.doExportToTxt(data.model.objects);
+              filename = this.doExportToTxt(data.model.objects, token);
             } else {
-              filename = this.doExportToCsv(data.model.objects);
+              filename = this.doExportToCsv(data.model.objects, token);
             }
 
             const uri: vscode.Uri = vscode.Uri.parse("file:" + filename);
@@ -228,6 +229,11 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel, IInspe
       this._options.inspector == "objects"
         ? await sendInspectorObjectsRequest(server, this._options.includeOutScope)
         : await sendInspectorFunctionsRequest(server, this._options.includeOutScope);
+    const sourceData: IObjectData[] = this._options.inspector == "functions"
+      ? await sendInspectorObjectsRequest(server, false)
+      : [];
+    let oldSOurce: string = "";
+    let indexSource: number = -1;
 
     model.objects = [];
     if (objectsData) {
@@ -248,6 +254,14 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel, IInspe
         if (this._options.inspector == "objects") {
           data.date = new Date((object as IObjectData).date);
         } else {
+          if (oldSOurce !== object.source) {
+            oldSOurce = object.source;
+            data.source = object.source;
+            indexSource = sourceData.findIndex((source: IObjectData) => source.source === object.source);
+          }
+          if (indexSource !== -1) {
+            data.date = new Date(sourceData[indexSource].date);
+          }
           data.function = (object as IFunctionData).function;
           data.line = (object as IFunctionData).line;
         }
@@ -275,18 +289,24 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel, IInspe
 
   getTranslations(): Record<string, string> {
     return {
-      "Objects Inspector": vscode.l10n.t("Objects Inspector"),
-      "Functions Inspector": vscode.l10n.t("Functions Inspector"),
-      "Filter": vscode.l10n.t("Filter"),
-      "Filter by Object Name. Ex: Mat or Fat*": vscode.l10n.t("Filter by Object Name. Ex: Mat or Fat*"),
-      "Include *.TRES": vscode.l10n.t("Include *.TRES"),
-      "100 (fast render)": vscode.l10n.t("100 (fast render)"),
-      "500 (slow render)": vscode.l10n.t("500 (slow render)"),
-      "RPO Objects": vscode.l10n.t("RPO Objects"),
+      "Object Name": vscode.l10n.t("Object Name"),
+      "Compile Date": vscode.l10n.t("Compile Date"),
+      "Status": vscode.l10n.t("Status"),
+      "Status RPO": vscode.l10n.t("Status RPO"),
+      "Function": vscode.l10n.t("Function"),
+      "Line": vscode.l10n.t("Line"),
+      "Source": vscode.l10n.t("Source"),
       "Export (TXT)": vscode.l10n.t("Export (TXT)"),
       "Export (CSV)": vscode.l10n.t("Export (CSV)"),
       "Include TRES": vscode.l10n.t("Include TRES"),
-      "Exclude TRES": vscode.l10n.t("Exclude TRES")
+      "Exclude TRES": vscode.l10n.t("Exclude TRES"),
+      "Exclude sources without public elements": vscode.l10n.t("Exclude sources without public elements"),
+      "Include sources without public elements": vscode.l10n.t("Include sources without public elements"),
+      "Objects Inspector": vscode.l10n.t("Objects Inspector"),
+      "Functions Inspector": vscode.l10n.t("Functions Inspector"),
+      "Elements/page": vscode.l10n.t("Elements/page"),
+      "Filter": vscode.l10n.t("Filter"),
+      "FilterInfo": vscode.l10n.t("Filter by Object Name. Ex: Mat or Fat*"),
     }
   }
 
@@ -296,9 +316,19 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel, IInspe
    * @param objects - An array of `TInspectorObject` objects containing the information to be exported.
    * @returns The path to the generated text file.
    */
-  private doExportToTxt(objects: TInspectorObject[]): string {
+  private doExportToTxt(objects: TInspectorObject[], token: vscode.CancellationToken): string {
+    const keys: string[] = this._options.inspector == "objects"
+      ? ["source", "date", "rpo_status", "source_status"]
+      : ["function", "line", "source", "date", "rpo_status", "source_status"];
+    const colWidths: Record<string, number> = {
+      "source": this._options.inspector == "objects" ? 35 : 45,
+      "date": 25,
+      "rpo_status": 15,
+      "source_status": 15,
+      "function": this._options.inspector == "objects" ? 35 : 45,
+      "line": 10,
+    }
     const server = ServersConfig.getCurrentServer();
-
     const tmp = require("tmp");
     const file = tmp.fileSync({ prefix: "vscode-tds-rpo", postfix: ".txt" });
     const fs = require("fs");
@@ -310,7 +340,7 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel, IInspe
       write(line);
       fs.appendFileSync(file.fd, "\n");
     };
-    const SEPARATOR_LINE = "-".repeat(100);
+    const SEPARATOR_LINE = "-".repeat(this._options.inspector == "objects" ? 90 : 155);
 
     writeLine(SEPARATOR_LINE);
     writeLine(`Server ........: ${server.name}`);
@@ -319,19 +349,29 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel, IInspe
     writeLine(`Environment ...: ${server.environment}`);
     writeLine(SEPARATOR_LINE);
 
-    write("Object Name".padEnd(30));
-    write("Date".padEnd(30));
-    write("Status".padEnd(30));
-    writeLine("RPO".padEnd(30));
+    keys.forEach((key: string) => {
+      write(`${key}`.padEnd(colWidths[key]));
+    });
 
+    writeLine("");
     writeLine(SEPARATOR_LINE);
 
     for (const value of objects) {
-      let line: string = "";
+      if (token.isCancellationRequested) {
+        writeLine("");
+        writeLine(SEPARATOR_LINE);
+        writeLine("Export canceled by user");
 
-      ['program', 'date', 'status', 'rpo'].forEach((key: string) => {
-        write(`${value[key]}`.padEnd(25));
-        write("".padEnd(5));
+        break;
+      }
+
+      keys.forEach((key: string) => {
+        if (key == "date") {
+          write(formatDate(new Date(value[key])).padEnd(colWidths[key]));
+        } else {
+          write(`${value[key]}`.padEnd(colWidths[key]));
+        }
+
       });
 
       writeLine("");
@@ -351,10 +391,13 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel, IInspe
     return file.name;
   }
 
-  private doExportToCsv(objects: TInspectorObject[]): string {
+  private doExportToCsv(objects: TInspectorObject[], token: vscode.CancellationToken): string {
     const tmp = require("tmp");
     const file = tmp.fileSync({ prefix: "vscode-tds-rpo", postfix: ".csv" });
     const fs = require("fs");
+    const keys: string[] = this._options.inspector == "objects"
+      ? ["source", "date", "rpo_status", "source_status"]
+      : ["function", "line", "source", "date", "rpo_status", "source_status"];
 
     const write = (line: string) => {
       fs.appendFileSync(file.fd, line);
@@ -364,15 +407,31 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel, IInspe
       fs.appendFileSync(file.fd, "\n");
     };
 
-    writeLine("\"Object Name\";\"Date\";\"Status\";\"RPO\"");
+    keys.forEach((key: string) => {
+      write(`"${key}"`);
+
+      if (key !== "source_status") {
+        write(";");
+      }
+    });
+    writeLine("");
 
     for (const value of objects) {
-      let line: string = "";
+      if (token.isCancellationRequested) {
+        writeLine("");
+        writeLine("Export canceled by user");
 
-      ['program', 'date', 'status', 'rpo'].forEach((key: string) => {
-        write(`\"${value[key]}\"`);
+        break;
+      }
 
-        if (key !== "rpo") {
+      keys.forEach((key: string) => {
+        if (key == "date") {
+          write(`\"${formatDate(new Date(value[key]))}\"`);
+        } else {
+          write(`\"${value[key]}\"`);
+        }
+
+        if (key !== "source_status") {
           write(";");
         }
       });
