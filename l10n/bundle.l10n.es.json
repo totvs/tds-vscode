@@ -274,7 +274,7 @@
   "for details.": "para más detalles.",
   "Awaiting validation": "Esperando Validación",
   "Validating": "Validando",
-  "There are patches that cannot be applied and must be removed from the list.": "Hay parches que no se pueden aplicar y deben eliminarse de la lista.",
+  "There are patches that cannot be applied and must be removed from the list.": "Hay parches que no se pueden aplicar y deben eliminarse de la lista. Consulte el log para obtener más detalles.",
   "Action required. There are patches with validation problems.": "Acción requerida. Hay parches con problemas de validación.",
   "Patch validate failed. Please input patch file.": "La validación del parche falló. Por favor ingrese el archivo de parche.",
   "Validating patch": "Patch de validación",

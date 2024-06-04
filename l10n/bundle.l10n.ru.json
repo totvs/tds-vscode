@@ -188,7 +188,7 @@
   "for details.": "чтобы узнать подробности.",
   "Awaiting validation": "Ожидание проверки",
   "Validating": "Проверка",
-  "There are patches that cannot be applied and must be removed from the list.": "Есть патчи, которые невозможно применить и их необходимо удалить из списка.",
+  "There are patches that cannot be applied and must be removed from the list.": "Есть патчи, которые невозможно применить и их необходимо удалить из списка. Подробности смотрите в журнале.",
   "Action required. There are patches with validation problems.": "Необходимое действие. Есть патчи с проблемами валидации.",
   "Patch validate failed. Please input patch file.": "Проверка исправления не удалась. Пожалуйста, введите файл патча.",
   "Validating patch": "Проверка патча",
