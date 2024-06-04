@@ -5,11 +5,13 @@ import InspectObjectView from "./inspectObjectView";
 
 tdsVscode.l10n.translations = window.translations;
 
+console.log("***********************", window.initialData);
+
 const root = createRoot(document.getElementById("root")!);
 root.render(
   <React.StrictMode>
     <InspectObjectView
-      objectsInspector={window.initialData.objectsInspector}
+      inspector={window.initialData.inspector}
       isServerP20OrGreater={window.initialData.isServerP20OrGreater} />
   </React.StrictMode>,
 );

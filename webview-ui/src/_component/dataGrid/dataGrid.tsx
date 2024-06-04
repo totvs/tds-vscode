@@ -147,11 +147,11 @@ function FieldData(props: TFieldDataProps) {
 
 	//Campo DATE, TIME e DATETIME
 	if ((column.type == "date") || (column.type == "time") || (column.type == "datetime")) {
+
 		return (
 			<VSCodeTextField
 				readOnly={column.readOnly == undefined ? true : column.readOnly}
-				value={column.lookup && column.lookup[row[column.name]]
-					? column.lookup[row[column.name]] : tdsVscode.l10n.formatDate(row[column.name])}
+				value={tdsVscode.l10n.formatDate(row[column.name])}
 			></VSCodeTextField>
 		)
 	}

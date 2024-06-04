@@ -17,11 +17,11 @@ limitations under the License.
 import * as vscode from "vscode";
 import { ReceiveMessage, TAbstractModelPanel, TFieldErrors, CommonCommandToWebViewEnum, CommonCommandFromWebViewEnum, TSendSelectResourceProps } from "tds-shared/lib";
 
-export abstract class TdsPanel<M extends TAbstractModelPanel> {
+export abstract class TdsPanel<M extends TAbstractModelPanel, O extends any = {}> {
 
 	protected readonly _panel: vscode.WebviewPanel;
 	protected _disposables: vscode.Disposable[] = [];
-	protected _options: any;
+	protected _options: O;
 
 	/**
 	 * The  TdsPanel class protected constructor (called only from the render method).

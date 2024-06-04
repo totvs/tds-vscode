@@ -25,7 +25,7 @@ import { sendInspectorFunctionsRequest } from './../protocolMessages';
 import { TdsPanel } from "./panel";
 
 export interface IInspectOptionsView {
-  objectsInspector: boolean;
+  inspector: "objects" | "functions";
   includeOutScope: boolean; //TRES para objetos e "fontes sem função publica" para funções
 }
 
@@ -47,7 +47,7 @@ const panels: {
   functions?: InspectorObjectPanel;
 } = {};
 
-export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
+export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel, IInspectOptionsView> {
 
   protected constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, options: IInspectOptionsView) {
     super(panel, extensionUri, options);
@@ -56,11 +56,12 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
   public static render(context: vscode.ExtensionContext, options: IInspectOptionsView): InspectorObjectPanel {
     const extensionUri: vscode.Uri = context.extensionUri;
 
-    if (options.objectsInspector) {
+    if (options.inspector == "objects") {
       if (panels.objects) {
         panels.objects._panel.reveal(); //vscode.ViewColumn.One
         return panels.objects;
       }
+    } else {
       if (panels.functions) {
         panels.functions._panel.reveal(); //vscode.ViewColumn.One
         return panels.functions;
@@ -72,7 +73,7 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
       // Panel view type
       "inspector-objects-panel",
       // Panel title
-      options.objectsInspector
+      options.inspector == "objects"
         ? vscode.l10n.t("Objects Inspector")
         : vscode.l10n.t("Functions Inspector"),
       // The editor column the panel should be displayed in
@@ -83,13 +84,19 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
       }
     );
 
-    if (options.objectsInspector) {
+    if (options.inspector == "objects") {
       panels.objects = new InspectorObjectPanel(panel, extensionUri, options);
+      panels.objects._panel.onDidDispose(() => {
+        panels.objects = undefined;
+      }, null, context.subscriptions);
     } else {
       panels.functions = new InspectorObjectPanel(panel, extensionUri, options);
+      panels.functions._panel.onDidDispose(() => {
+        panels.functions = undefined;
+      }, null, context.subscriptions);
     }
 
-    return options.objectsInspector
+    return options.inspector == "objects"
       ? panels.objects
       : panels.functions;
   }
@@ -120,8 +127,8 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
         title: this._panel.title,
         translations: this.getTranslations(),
         data: {
-          "objectsInspector": this._options.objectsInspector.toString(),
-          "isServerP20OrGreater": Utils.isServerP20OrGreater(server).toString()
+          inspector: this._options.inspector.toString(),
+          isServerP20OrGreater: Utils.isServerP20OrGreater(server).toString()
         },
       }
     )
@@ -218,7 +225,7 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
   private async getDataFromServer(model: TInspectorObjectModel): Promise<TInspectorObjectModel> {
     const server = ServersConfig.getCurrentServer();
     const objectsData: IObjectData[] | IFunctionData[] =
-      this._options.objectsInspector
+      this._options.inspector == "objects"
         ? await sendInspectorObjectsRequest(server, this._options.includeOutScope)
         : await sendInspectorFunctionsRequest(server, this._options.includeOutScope);
 
@@ -238,7 +245,7 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel> {
         data.rpo_status = object.rpo_status;
         data.source_status = object.source_status;
 
-        if (this._options.objectsInspector) {
+        if (this._options.inspector == "objects") {
           data.date = new Date((object as IObjectData).date);
         } else {
           data.function = (object as IFunctionData).function;

@@ -16,7 +16,7 @@ type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TFi
 
 type TInspectorObject = {
   source: string;
-  date: string;
+  date: Date;
   rpo_status: string | number;
   source_status: string | number;
   function: string;
@@ -36,7 +36,7 @@ function objectColumns(isServerP20OrGreater: boolean): TdsDataGridColumnDef[] {
   const result: TdsDataGridColumnDef[] = [
     {
       type: "string",
-      name: "program",
+      name: "source",
       label: tdsVscode.l10n.t("Object Name"),
       width: "8fr",
       sortable: true,
@@ -154,17 +154,12 @@ const EMPTY_MODEL: TFields = {
   rowsLimit: 100
 }
 
-type TInspectorObjectComponentProps = {
-  objectsInspector: boolean;
+export type TInspectorObjectComponentProps = {
+  inspector: "objects" | "functions";
   isServerP20OrGreater: boolean
 }
 
 export default function InspectObjectView(props: TInspectorObjectComponentProps) {
-  // const props: TInspectorObjectComponentProps =
-  // {
-  //   objectsInspector: true,
-  //   isServerP20OrGreater: true
-  // };
   const methods = useForm<TFields>({
     defaultValues: EMPTY_MODEL,
     mode: "all"
@@ -182,9 +177,10 @@ export default function InspectObjectView(props: TInspectorObjectComponentProps)
           const model: TFields = command.data.model;
           const errors: TFields = command.data.errors;
 
-          // model.objectsFiltered = applyFilter(methods.getValues("filter") || "", model.objectsLeft);
-          // model.warningManyItens = model.objectsFiltered.length > rowsLimit;
-          //console.log("model", model);
+          model.objects.forEach((row: TInspectorObject, index: number, array: TInspectorObject[]) => {
+            array[index].date = new Date(array[index].date);
+          });
+
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);
           setDataSource(model.objects);
@@ -224,7 +220,7 @@ export default function InspectObjectView(props: TInspectorObjectComponentProps)
   const topActions: TdsDataGridAction[] = [{
     id: "btnIncludeOutScope",
     caption:
-      props.objectsInspector
+      props.inspector == "objects"
         ? methods.getValues("includeOutScope") ? tdsVscode.l10n.t("Exclude TRES") : tdsVscode.l10n.t("Include TRES")
         : methods.getValues("includeOutScope") ? tdsVscode.l10n.t("Exclude sources without public elements") : tdsVscode.l10n.t("Include sources without public elements"),
     type: "button",
@@ -233,13 +229,13 @@ export default function InspectObjectView(props: TInspectorObjectComponentProps)
     }
   }];
 
-  let columnDef: TdsDataGridColumnDef[] = props.objectsInspector
+  let columnDef: TdsDataGridColumnDef[] = props.inspector == "objects"
     ? objectColumns(props.isServerP20OrGreater)
     : functionColumns(props.isServerP20OrGreater);
 
   return (
     <TdsPage title={
-      props.objectsInspector
+      props.inspector == "objects"
         ? tdsVscode.l10n.t("Objects Inspector")
         : tdsVscode.l10n.t("Functions Inspector")
     } linkToDoc="">

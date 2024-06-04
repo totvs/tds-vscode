@@ -32,8 +32,7 @@ limitations under the License.
 	flex-shrink: 1;
 	order: 0;
 	flex-direction: column;
-	/* align-items: flex-end; */
-	/* margin-top: var(--tds-hor-spacing); */
+	margin-bottom: var(--tds-hor-spacing);
 }
 
 .tds-data-grid .tds-data-grid-content {
