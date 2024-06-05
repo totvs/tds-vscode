@@ -220,26 +220,29 @@ export default class Utils {
     );
   }
 
-  static getAllFilesRecursive(folders: Array<string>): string[] {
+  static getAllFilesRecursive(folders: Array<string>, checkCompileIgnore: boolean = false): string[] {
     const files: string[] = [];
 
     folders.forEach((folder) => {
       if (fs.lstatSync(folder).isDirectory()) {
-        fs.readdirSync(folder).forEach((file) => {
-          if (!Utils.ignoreResource(file)) {
-            const fn = path.join(folder, file);
-            const ss = fs.statSync(fn);
-            if (ss.isDirectory()) {
-              files.push(...Utils.getAllFilesRecursive([fn]));
+        let ignoreFolder = checkCompileIgnore ? fs.existsSync(path.join(folder, ".tdscompileignore")) : false;
+        if (!ignoreFolder) {
+          fs.readdirSync(folder).forEach((file) => {
+            if (!Utils.ignoreResource(file)) {
+              const fn = path.join(folder, file);
+              const ss = fs.statSync(fn);
+              if (ss.isDirectory()) {
+                files.push(...Utils.getAllFilesRecursive([fn], checkCompileIgnore));
+              } else {
+                files.push(fn);
+              }
             } else {
-              files.push(fn);
+              vscode.window.showWarningMessage(
+                "File/folder '" + file + "' was ignored."
+              );
             }
-          } else {
-            vscode.window.showWarningMessage(
-              "File/folder '" + file + "' was ignored."
-            );
-          }
-        });
+          });
+        }
       } else {
         files.push(folder);
       }
@@ -666,7 +669,7 @@ export class ServersConfig {
   static getCurrentServer() {
     const servers = getServersConfig();
 
-    if (servers.connectedServer.id) {
+    if (servers && servers.connectedServer && servers.connectedServer.id) {
       // busca sempre pelo ID pois pode ter ocorrido alguma alteração nas configurações do servidor conectado
       return this.getServerById(servers.connectedServer.id);
     } else {
@@ -765,7 +768,11 @@ export class ServersConfig {
       includes = server.includes as Array<string>;
     } else {
       const servers = getServersConfig();
-      includes = servers.includes as Array<string>;
+      if (servers.includes) {
+        includes = servers.includes as Array<string>;
+      } else {
+        includes = [];
+      }
     }
 
     if (includes.length > 0) {
@@ -1093,9 +1100,15 @@ function getServersConfig() {
     }
   }
 
-  //garante a existencia da sessão
+  //garante a existencia de sessões criticas
   if (!config.savedTokens) {
     config.savedTokens = [];
+  }
+  if (!config.connectedServer) {
+    config.connectedServer = {};
+  }
+  if (!config.includes) {
+    config.includes = [];
   }
 
   //compatibilização com arquivos gravados com versão da extensão

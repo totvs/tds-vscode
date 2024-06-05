@@ -770,7 +770,7 @@ function getTranslations() {
     WARN_ALL_CONNECTIONS_CLOSE_1: vscode.l10n.t("When confirming the server stop, all connections (including this) will be closed, as well as other processes."),
     WARN_ALL_CONNECTIONS_CLOSE_2: vscode.l10n.t("Restarting will only be possible by physically accessing the server."),
     SECONDS: vscode.l10n.t("{0} seconds"),
-    WARN_CONNECTION_TERMINATED: vscode.l10n.t("WARN_CONNECTION_TERMINATED", "The users listed below will have their connections terminated."),
+    WARN_CONNECTION_TERMINATED: vscode.l10n.t("The users listed below will have their connections terminated."),
     TERMINATE_CONNECTIONS_IMMEDIATELY: vscode.l10n.t("Terminate connections immediately."),
     DLG_TITLE_SEND_MESSAGE: vscode.l10n.t("Message sending"),
     DLG_TITLE_CLOSE_CONNECTIONS: vscode.l10n.t("Closes user connections"),
