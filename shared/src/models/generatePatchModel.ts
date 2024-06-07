@@ -34,7 +34,6 @@ export type TGeneratePatchFromRpoModel = TAbstractModelPanel & {
 }
 
 export type TGeneratePatchByDifferenceModel = TAbstractModelPanel & {
-	rpoMasterFile: string;
 	rpoMasterFolder: string;
 	patchName: string;
 	patchDest: string;

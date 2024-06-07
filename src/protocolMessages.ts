@@ -608,12 +608,12 @@ export interface IGetPatchDirResult {
   directory: string[];
 }
 
-export function sendGetPatchDir(
+export async function sendGetPatchDir(
   server: ServerItem,
   folder: string,
   includeDir: boolean
 ): Promise<IGetPatchDirResult> {
-  return languageClient
+  return await languageClient
     .sendRequest("$totvsserver/getPatchDir", {
       pathDirListInfo: {
         connectionToken: server.token,

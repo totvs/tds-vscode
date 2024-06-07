@@ -16,22 +16,25 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import { ServersConfig } from "../utils";
 import { CommonCommandFromWebViewEnum, PatchGenerateCommand, ReceiveMessage, TFieldErrors, TGeneratePatchByDifferenceModel, isErrors } from "tds-shared/lib";
 import { TdsPanel } from "./panel";
-
+import { ServerFileSystemProvider } from "../serverFileSystemProvider";
+import Utils, { MESSAGE_TYPE, ServersConfig, serverExceptionCodeToString } from "../utils";
+import { IPatchResult, sendPatchGenerateMessage } from "../protocolMessages";
+import { ResponseError } from "vscode-languageclient";
+import { logger } from "@vscode/debugadapter";
 
 const EMPTY_MODEL: TGeneratePatchByDifferenceModel = {
   patchName: "",
   patchDest: "",
-  rpoMasterFile: "",
-  rpoMasterFolder: ""
+  rpoMasterFolder: "\\protheus_data\\patchs_dif"
 }
 
 export class PatchGenerateByDifferencePanel extends TdsPanel<TGeneratePatchByDifferenceModel> {
   public static currentPanel: PatchGenerateByDifferencePanel | undefined;
+  public static _serverFs: ServerFileSystemProvider;
 
-  public static render(context: vscode.ExtensionContext): PatchGenerateByDifferencePanel {
+  public static async render(context: vscode.ExtensionContext): Promise<PatchGenerateByDifferencePanel> {
     const extensionUri: vscode.Uri = context.extensionUri;
 
     if (PatchGenerateByDifferencePanel.currentPanel) {
@@ -52,11 +55,24 @@ export class PatchGenerateByDifferencePanel extends TdsPanel<TGeneratePatchByDif
         }
       );
 
+      if (PatchGenerateByDifferencePanel._serverFs == undefined) {
+        PatchGenerateByDifferencePanel._serverFs = new ServerFileSystemProvider();
+        PatchGenerateByDifferencePanel._serverFs.root = await PatchGenerateByDifferencePanel._serverFs.loadServerFS(
+          true, /^.*\.rpo$/i, "", false);
+
+
+        context.subscriptions.push(
+          vscode.workspace.registerFileSystemProvider(ServerFileSystemProvider.scheme, PatchGenerateByDifferencePanel._serverFs, { isCaseSensitive: false, isReadonly: true })
+        );
+      }
+
       PatchGenerateByDifferencePanel.currentPanel = new PatchGenerateByDifferencePanel(panel, extensionUri);
     }
 
     return PatchGenerateByDifferencePanel.currentPanel;
   }
+
+  private _serverFs: ServerFileSystemProvider;
 
   /**
    * Cleans up and disposes of webview resources when the webview panel is closed.
@@ -78,7 +94,6 @@ export class PatchGenerateByDifferencePanel extends TdsPanel<TGeneratePatchByDif
    * rendered within the webview panel
    */
   protected getWebviewContent(extensionUri: vscode.Uri) {
-    const server = ServersConfig.getCurrentServer();
 
     return getWebviewContent(this._panel.webview, extensionUri, "patchGenerateByDifferenceView",
       {
@@ -110,6 +125,8 @@ export class PatchGenerateByDifferencePanel extends TdsPanel<TGeneratePatchByDif
 
         break;
       case CommonCommandFromWebViewEnum.AfterSelectResource:
+
+
         if (result && result.length > 0) {
           const selectedFile: string = (result[0] as vscode.Uri).fsPath;
 
@@ -130,57 +147,74 @@ export class PatchGenerateByDifferencePanel extends TdsPanel<TGeneratePatchByDif
       errors.rpoMasterFolder = { type: "required" };
     }
 
-    if (model.rpoMasterFile.length == 0) {
-      errors.rpoMasterFolder = { type: "required" };
-    }
+    // if (model.rpoMasterFile.length == 0) {
+    //   errors.rpoMasterFolder = { type: "required" };
+    // }
 
     return !isErrors(errors);
   }
 
   protected async saveModel(model: TGeneratePatchByDifferenceModel): Promise<boolean> {
-    let errors: TFieldErrors<TGeneratePatchByDifferenceModel> = {};
-    let ok: boolean = true;
-    // let server = ServersConfig.getCurrentServer();
+    let ok: boolean = false;
 
-    // const response: IPatchResult | void = await sendPatchGenerateMessage(
-    //   server,
-    //   "",
-    //   model.patchDest,
-    //   3,
-    //   model.patchName,
-    //   model.objectsRight.map((object: TInspectorObject) => object.source),
-    // ).then(() => {
-    //   vscode.window.showInformationMessage(vscode.l10n.t("Patch file generated"));
-    // }, (err: ResponseError<object>) => {
-    //   serverExceptionCodeToString(err.code);
+    vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: vscode.l10n.t('Generating Patch'),
+        cancellable: true,
+      },
+      async (progress, token) => {
+        let server = ServersConfig.getCurrentServer();
 
-    //   const response: IPatchResult = {
-    //     returnCode: err.code,
-    //     files: "",
-    //     message: err.message
-    //   };
+        token.onCancellationRequested(() => {
+          vscode.window.showInformationMessage('User canceled the operation');
+        });
+        progress.report({ increment: 0, message: 'Inicializando...' });
 
-    //   return response;
-    // });
+        const response: IPatchResult = await sendPatchGenerateMessage(server, model.rpoMasterFolder,
+          model.patchDest, 3, model.patchName, []).then((result) => {
+            progress.report({ increment: 100, message: 'Finalizado' });
+            this._panel.dispose();
+          }).then((response) => {
+            vscode.window.showInformationMessage(vscode.l10n.t("Patch file generated"));
 
+            return response;
+          }, (err: ResponseError<object>) => {
+            serverExceptionCodeToString(err.code);
 
-    // if (!response) {
-    //   errors.patchName = { type: "validate", message: "Internal error: See more information in log" };
-    //   ok = false
-    // } else if (response.returnCode !== 0) {
-    //   const msgError = ` ${serverExceptionCodeToString(response.returnCode)} ${response.message}`;
-    //   Utils.logMessage(msgError, MESSAGE_TYPE.Error, false);
-    //   vscode.window.showErrorMessage(msgError);
-    //   errors.patchName = {
-    //     type: "validate",
-    //     message: vscode.l10n.t("Protheus Server was unable to generate the patch. Code: {0}", response.returnCode)
-    //   };;
-    //   ok = false
-    // }
+            const response: IPatchResult = {
+              returnCode: err.code,
+              files: "",
+              message: err.message
+            };
 
-    // if (!ok) {
-    //   this.sendUpdateModel(model, errors);
-    // }
+            ok = true;
+            return response;
+          });
+
+        let errors: TFieldErrors<TGeneratePatchByDifferenceModel> = {};
+
+        if (!response) {
+          errors.patchName = { type: "validate", message: "Internal error: See more information in log" };
+          ok = false
+        } else if (response.returnCode !== 0) {
+          const msgError = ` ${serverExceptionCodeToString(response.returnCode)} ${response.message}`;
+          Utils.logMessage(msgError, MESSAGE_TYPE.Error, false);
+          vscode.window.showErrorMessage(msgError);
+          errors.patchName = {
+            type: "validate",
+            message: vscode.l10n.t("Protheus Server was unable to generate the patch. Code: {0}", response.returnCode)
+          };;
+          ok = false
+        }
+
+        if (!ok) {
+          this.sendUpdateModel(model, errors);
+        }
+
+        return ok;
+      }
+    );
 
     return ok;
   }

@@ -30,7 +30,7 @@ type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TGe
 const EMPTY_MODEL: TGeneratePatchByDifferenceModel = {
   patchDest: "", //(vscode.getState() | {})["patchDest"],
   patchName: "",
-  rpoMasterFile: "",
+//  rpoMasterFile: "",
   rpoMasterFolder: ""
 }
 
@@ -86,7 +86,7 @@ export default function PatchGenerateByDifferenceView(props: IPatchGenerateByDif
             label={tdsVscode.l10n.t("RPO Master Location")}
             info={tdsVscode.l10n.t("Select RPO Master Location")}
             rules={{ required: true }}
-            readOnly={true}
+            readOnly={false}
           />
 
           <TdsSelectionFolderField
@@ -95,6 +95,7 @@ export default function PatchGenerateByDifferenceView(props: IPatchGenerateByDif
             info={tdsVscode.l10n.t("Use the navigation tree on the side")}
             name="btn-rpoMaster"
             title={tdsVscode.l10n.t("Select RPO Master Location")}
+            fileSystem="serverFS"
           />
         </section>
 

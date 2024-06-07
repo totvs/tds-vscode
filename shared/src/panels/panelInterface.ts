@@ -90,8 +90,10 @@ export type SendMessage<C, T = any> = {
  * @property title - The title to display in the panel.
  * @property openLabel - The label for the button to open the selected resources.
  * @property filters - An object that maps file extensions to arrays of human-readable names for those extensions.
+ * @property fileSystem - The string identifier of the filesystem for use in the panel.
  */
 export type TSendSelectResourceProps = TAbstractModelPanel & {
+	fileSystem?: string;
 	firedBy: string;
 	canSelectMany: boolean,
 	canSelectFiles: boolean,

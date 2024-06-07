@@ -16,6 +16,7 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { ReceiveMessage, TAbstractModelPanel, TFieldErrors, CommonCommandToWebViewEnum, CommonCommandFromWebViewEnum, TSendSelectResourceProps } from "tds-shared/lib";
+import { debug } from 'vscode';
 
 export abstract class TdsPanel<M extends TAbstractModelPanel, O extends any = {}> {
 
@@ -145,11 +146,15 @@ export abstract class TdsPanel<M extends TAbstractModelPanel, O extends any = {}
 					filters["All files"] = ["*"];
 				}
 
+				//selectionProps.fileSystem = "serverFS";
+
 				const options: vscode.OpenDialogOptions = {
 					canSelectMany: selectionProps.canSelectMany,
 					canSelectFiles: selectionProps.canSelectFiles,
 					canSelectFolders: selectionProps.canSelectFolders,
-					defaultUri: vscode.Uri.file(selectionProps.currentFolder),
+					defaultUri: selectionProps.fileSystem
+						? vscode.Uri.parse(`${selectionProps.fileSystem}:///${selectionProps.currentFolder}`)
+						: vscode.Uri.file(selectionProps.currentFolder),
 					title: selectionProps.title,
 					openLabel: selectionProps.openLabel,
 					filters: filters
