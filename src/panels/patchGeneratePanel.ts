@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+//TODO: Revisar processo. Aguardando documentação sobre regras de aplicação/geração de pacotes
+
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import Utils, { MESSAGE_TYPE, ServersConfig, serverExceptionCodeToString } from "../utils";

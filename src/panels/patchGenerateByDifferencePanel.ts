@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+//TODO: Revisar processo. Aguardando documentação sobre regras de aplicação/geração de pacotes
+
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import { CommonCommandFromWebViewEnum, PatchGenerateCommand, ReceiveMessage, TFieldErrors, TGeneratePatchByDifferenceModel, isErrors } from "tds-shared/lib";
@@ -171,7 +173,7 @@ export class PatchGenerateByDifferencePanel extends TdsPanel<TGeneratePatchByDif
         });
         progress.report({ increment: 0, message: 'Inicializando...' });
 
-        const response: IPatchResult = await sendPatchGenerateMessage(server, model.rpoMasterFolder,
+        const response: IPatchResult | void = await sendPatchGenerateMessage(server, model.rpoMasterFolder,
           model.patchDest, 3, model.patchName, []).then((result) => {
             progress.report({ increment: 100, message: 'Finalizado' });
             this._panel.dispose();

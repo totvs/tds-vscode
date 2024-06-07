@@ -242,6 +242,8 @@ export class ServerFileSystemProvider implements vscode.FileSystemProvider {
 		const server = ServersConfig.getCurrentServer();
 		const parts: string[] = startFolder.split('/').filter(x => x !== '');
 		const folder: Directory = new Directory(parts.length > 0 ? parts[parts.length - 1] : "");
+
+		//TODO: Revisar processo. Mensagem não adequada. MS_DBGGETROOTPATHDIRLIST ou MS_DIRLIST
 		const resultFolders: IGetPatchDirResult = await sendGetPatchDir(server, startFolder, true);
 
 		const resultFiles: IGetPatchDirResult = await sendGetPatchDir(server, startFolder, false)
