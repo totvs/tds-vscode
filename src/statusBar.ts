@@ -13,7 +13,6 @@ let usageBarItem: vscode.StatusBarItem;
 const priorityUsageBarItem: number = 104;
 const priorityTotvsStatusBarItem: number = 103;
 const priorityRpoTokenStatusBarItem: number = 102;
-const priorityPermissionStatusBarItem: number = 101;
 const prioritySettingsStatusBarItem: number = 100;
 const prioritySaveLocationBarItem: number = 100;
 
