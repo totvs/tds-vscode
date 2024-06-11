@@ -48,18 +48,15 @@ export interface ITdsDataGridProps {
 	columnDef: TdsDataGridColumnDef[]
 	dataSource: any; //Record<string, string | number | Date | boolean>[]
 	options: {
-		bottomActions?: TdsDataGridAction[];
-		topActions?: TdsDataGridAction[];
-		filter?: boolean;
-		pageSize?: number,
-		pageSizeOptions?: number[],
+		bottomActions: TdsDataGridAction[];
+		topActions: TdsDataGridAction[];
+		filter: boolean;
+		pageSize: number,
+		pageSizeOptions: number[],
 		grouping: boolean;
 	}
 	//onFilterChanged?(fieldName: string, filter: string): void;
 }
-
-//type TranslationKey = "Filter" | "FilterInfo" | "Lines/page";
-//type Translation = Record<TranslationKey, string>;
 
 /**
  * Renders the data grid component.
@@ -112,7 +109,7 @@ function FieldFilter(props: TFieldFilterProps) {
 					}}>
 					<VSCodeOption key={0}
 						value={""}
-						checked={currentValue === ""}>{""}
+						checked={currentValue === ""}>{"(All)"}
 					</VSCodeOption>
 					{Object.keys(options).map((key: string, index: number) => {
 						return (
@@ -150,7 +147,7 @@ function FieldData(props: TFieldDataProps) {
 		return (
 			<VSCodeTextField
 				readOnly={column.readOnly == undefined ? true : column.readOnly}
-				value={tdsVscode.l10n.formatDate(row[column.name])}
+				value={tdsVscode.l10n.formatDate(row[column.name], column.type)}
 			></VSCodeTextField>
 		)
 	}
@@ -185,15 +182,15 @@ function FieldData(props: TFieldDataProps) {
 export function TdsDataGrid(props: ITdsDataGridProps): React.ReactElement {
 	const [itemOffset, setItemOffset] = React.useState(0);
 	const [currentPage, setCurrentPage] = React.useState(1);
-	const [pageSize, setPageSize] = React.useState(props.options.pageSize || 10);
+	const [pageSize, setPageSize] = React.useState(props.options.pageSize);
 	const [totalItems, setTotalItems] = React.useState(props.dataSource ? props.dataSource.length : 0);
 	const [showFilter, setShowFilter] = React.useState(false);
 	const [_, setSortedInfo] = React.useState(props.columnDef[0]);
 	const [groupingInfo, setGroupingInfo] = React.useState<TdsDataGridColumnDef>();
-	const [dataSource, setDataSource] = React.useState(props.dataSource || []);;
+	const [dataSource, setDataSource] = React.useState((props.dataSource || []).slice(0));
 
 	const handlePageClick = (newPage: number) => {
-		const newOffset = (newPage * (props.options.pageSize || 10)) % dataSource.length;
+		const newOffset = (newPage * (props.options.pageSize)) % dataSource.length;
 
 		setItemOffset(newOffset);
 		setCurrentPage(newPage);
@@ -275,7 +272,7 @@ export function TdsDataGrid(props: ITdsDataGridProps): React.ReactElement {
 	}
 
 	React.useEffect(() => {
-		setPageSize(props.options.pageSize || 10);
+		setPageSize(props.options.pageSize);
 		setTotalItems(props.dataSource.length);
 		setDataSource(props.dataSource);
 	}, [props.dataSource.length, props.options.pageSize]);
@@ -404,7 +401,6 @@ export function TdsDataGrid(props: ITdsDataGridProps): React.ReactElement {
 						</div>
 					</section>
 				}
-
 			</div>
 
 			<div className="tds-data-grid-content">
