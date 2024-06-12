@@ -11,6 +11,8 @@
 
 ## Versão [2.0.NEXT]
 
+## Versão [2.0.8]
+
 ### Melhorias
 
 #### Abrir uma janela do navegador quando iniciar o debug do tipo `totvs_language_web_debug` [#1233](https://github.com/totvs/tds-vscode/issues/1233)
@@ -19,7 +21,15 @@ Foi adicionado a possibilidade de passar parâmetros para o navegador a ser util
 
 ### Correções
 
-#### Classe no TL++ [#1225](https://github.com/totvs/tds-vscode/issues/1225)
+#### Ignorando chaves de permissões de acesso a ações de Monitor [#1238](https://github.com/totvs/tds-vscode/issues/1238)
+
+As chaves "AllowMonitor" dentre outras de Monitor não estavam sendo consideradas corretamente.
+
+#### Falha na visualização de informações de patch [#1237](https://github.com/totvs/tds-vscode/issues/1237)
+
+Ao acionar o "Patch Info" de um patch que se encontra em um caminho com acentuação, ocorria a falha "File could not be copied to the server".
+
+#### Classe no TL++ [#1234](https://github.com/totvs/tds-vscode/issues/1234)
 
 Em estruturas sem a devida finalização, p.e. `class` e `end class`, poderia gerar lista de símbolos (visão _Outline_) incorreta e/ou gerar um erro no log.
 Foi adicionado tratamento para esses blocos, de forma a evitar a ocorrência.
