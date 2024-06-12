@@ -10,7 +10,7 @@
   "bugs": {
     "url": "https://github.com/totvs/tds-vscode.git"
   },
-  "main": "./dist/index.js",
+  "main": "./out/index.js",
   "l10n": "l10n",
   "scripts": {
     "compile": "tsc --build",
