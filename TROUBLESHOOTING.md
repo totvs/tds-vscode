@@ -1,6 +1,6 @@
 # Resolução de Problemas
 
-> O **VS-Code** pode apresentar problemas em suas funcionalidades em sistemas operacionias da linha **Windows Server**.
+> O **VS-Code** pode apresentar problemas em suas funcionalidades em sistemas operacionais da linha **Windows Server**.
 > Veja os requisitos para uso em [Requirements](https://code.visualstudio.com/docs/supporting/requirements).
 
 > Antes de abrir uma nova **"Issue"**:
