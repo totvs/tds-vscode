@@ -156,11 +156,7 @@ function SelectResourceComponent(props: TSelectObjectComponentProps) {
         columnDef={columnDef}
         dataSource={(getValues(props.fieldName) || []) as TInspectorObject[]}
         options={{
-          bottomActions: [],
           topActions: props.showIncludeTRes ? topActions : [],
-          filter: true,
-          pageSize: 50,
-          pageSizeOptions: [50, 100, 250, 500],
           grouping: false
         }}>
 

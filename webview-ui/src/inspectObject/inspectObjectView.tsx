@@ -263,6 +263,7 @@ export default function InspectObjectView(props: TInspectorObjectComponentProps)
         : tdsVscode.l10n.t("Functions Inspector")
     } linkToDoc="">
       <TdsForm
+        onSubmit={methods.handleSubmit(() => { })}
         methods={methods}
       >
         <TdsDataGrid
@@ -270,12 +271,8 @@ export default function InspectObjectView(props: TInspectorObjectComponentProps)
           columnDef={columnDef}
           dataSource={dataSource}
           options={{
-            grouping: true,
-            filter: true,
             bottomActions: bottomActions,
-            topActions: topActions,
-            pageSize: 10,
-            pageSizeOptions: [10, 50, 100, 500, 1000],
+            topActions: topActions
           }}
         />
       </TdsForm>
