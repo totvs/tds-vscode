@@ -5,7 +5,7 @@
 - DSS (Developer Support Subsystem)_em execução (inicio automático, em paralelo com o_Language Server_)
 - Resultados podem ser parciais devido ao processo de indexação em andamento
 
-> Recomenda-se que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em mínusculas de forma a manter a compatibildade entre os diversos sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes.
+> Recomenda-se que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em minusculas de forma a manter a compatibilidade entre os diversos sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes.
 > Leia [Convenção para nomenclatura de File System em ambiente Linux]<https://tdn.totvs.com/x/h8BICw>).
 
 Saiba todas as opções disponíveis em [Code Navigation](https://code.visualstudio.com/docs/editor/editingevolved) e aqui, breve documentação das opções suportadas em projetos baseados nas linguagens **TOTVS**.
