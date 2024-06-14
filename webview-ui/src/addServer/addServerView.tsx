@@ -22,35 +22,18 @@ import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-
 import { TdsCheckBoxField, TdsForm, TdsLabelField, TdsNumericField, TdsSelectionField, TdsSelectionFolderField, TdsSimpleTextField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 import { tdsVscode } from '@totvs/tds-webtoolkit';
-import { TIncludePath } from "tds-shared/lib";
+import { EMPTY_SERVER_MODEL, TIncludePath, TServerModel } from "tds-shared/lib";
+import { prepareDataModel } from "@totvs/tds-webtoolkit/dist/components/form/form";
 
 enum ReceiveCommandEnum {
 }
-type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TFields>;
+type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TServerModel>
 
-type TFields = {
-  serverType: string
-  serverName: string;
-  address: string;
-  port: number | string;
-  includePaths: TIncludePath[]
-  immediateConnection: boolean,
-  globalIncludeDirectories: string
-}
-
-const ROWS_LIMIT: number = 5;
+const INCLUDE_ROWS_LIMIT: number = 5;
 
 export default function AddServerView() {
-  const methods = useForm<TFields>({
-    defaultValues: {
-      serverName: "",
-      address: "",
-      port: "",
-      includePaths: Array(ROWS_LIMIT).map(() => {
-        return { path: "" };
-      }),
-      immediateConnection: true
-    },
+  const methods = useForm<TServerModel>({
+    defaultValues: EMPTY_SERVER_MODEL,
     mode: "all"
   })
 
@@ -60,8 +43,14 @@ export default function AddServerView() {
       name: "includePaths"
     });
 
-  const onSubmit: SubmitHandler<TFields> = (data) => {
-    data.includePaths = data.includePaths.filter((includePath: TIncludePath) => includePath.path.length > 0);
+  const onSubmit: SubmitHandler<TServerModel> = (data) => {
+    data = prepareDataModel(data);
+
+    if (!data.includePaths) {
+      data.includePaths = [];
+    } else {
+      data.includePaths = data.includePaths.filter((includePath: TIncludePath) => includePath.path.length > 0);
+    }
 
     sendSaveAndClose(data);
   }
@@ -72,18 +61,16 @@ export default function AddServerView() {
 
       switch (command.command) {
         case CommonCommandEnum.UpdateModel:
-          const model: TFields = command.data.model;
+          const model: TServerModel = command.data.model;
           const errors: any = command.data.errors;
 
-          while (model.includePaths.length < ROWS_LIMIT) {
+          console.log("UpdateModel", model, errors);
+
+          while (model.includePaths.length < INCLUDE_ROWS_LIMIT) {
             model.includePaths.push({ path: "" });
           }
 
-          if (model.port == 0) {
-            model.port = "";
-          }
-
-          setDataModel<TFields>(methods.setValue, model);
+          setDataModel<TServerModel>(methods.setValue, model);
           setErrorModel(methods.setError, errors);
 
           break;
@@ -112,23 +99,20 @@ export default function AddServerView() {
     insert(index, { path: "" });
   }
 
-  const model: TFields = methods.getValues();
+  const model: TServerModel = methods.getValues();
   const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludePath) => row.path == "");
 
   return (
     <TdsPage title={tdsVscode.l10n.t("Add Server")} linkToDoc="[Server Registration]servers.md#registro-de-servidores">
-      <TdsForm<TFields>
+      <TdsForm<TServerModel> methods={methods}
         onSubmit={onSubmit}
-        methods={methods}
         description={tdsVscode.l10n.t("Enter the connection parameters to the Protheus server.")}>
 
         <section className="tds-row-container" >
           <TdsSelectionField
-            methods={methods}
             name="serverType"
             label="Server Type"
             info={tdsVscode.l10n.t("Select the Protheus server type")}
-            rules={{ required: true }}
             options={[
               { value: "totvs_server_protheus", text: "Protheus (Adv/PL)" },
               { value: "totvs_server_logix", text: "Logix (4GL)" },
@@ -137,7 +121,6 @@ export default function AddServerView() {
           />
 
           <TdsCheckBoxField
-            methods={methods}
             info=""
             name="immediateConnection"
             label="&nbsp;"
@@ -148,7 +131,6 @@ export default function AddServerView() {
 
         <section className="tds-row-container" >
           <TdsTextField
-            methods={methods}
             name="serverName"
             label={tdsVscode.l10n.t("Server name")}
             info={tdsVscode.l10n.t("Enter a name that helps you identify the server")}
@@ -158,7 +140,6 @@ export default function AddServerView() {
 
         <section className="tds-row-container" >
           <TdsTextField
-            methods={methods}
             name="address"
             label={tdsVscode.l10n.t("Address")}
             info={tdsVscode.l10n.t("Enter the IP or name of the server where Protheus is located")}
@@ -166,7 +147,6 @@ export default function AddServerView() {
           />
 
           <TdsNumericField
-            methods={methods}
             name="port"
             label={tdsVscode.l10n.t("Port")}
             info={tdsVscode.l10n.t("Enter the SC connection port")}
@@ -178,20 +158,20 @@ export default function AddServerView() {
         </section>
 
         <TdsLabelField
-          methods={methods}
           name={"includeDirectoriesLabel"}
           label={tdsVscode.l10n.t("Include directories")}
           info={tdsVscode.l10n.t("Enter the folders where the definition files should be searched")} />
 
         <TdsLabelField
-          methods={methods}
           name={"warningIncludeDirectoriesLabel"}
           label={tdsVscode.l10n.t("May be informed later. If you do not inform, the global configuration will be used.")}
           info={methods.getValues("globalIncludeDirectories")} />
 
         <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
           {model && model.includePaths.map((row: TIncludePath, index: number) => (
-            <VSCodeDataGridRow key={index}>
+            <VSCodeDataGridRow
+              key={index}
+            >
               {row.path !== "" &&
                 <>
                   <VSCodeDataGridCell grid-column="1">
@@ -202,7 +182,6 @@ export default function AddServerView() {
                   </VSCodeDataGridCell>
                   <VSCodeDataGridCell grid-column="2">
                     <TdsSimpleTextField
-                      methods={methods}
                       name={`includePaths.${index}.path`}
                       readOnly={true}
                     />
@@ -226,7 +205,6 @@ export default function AddServerView() {
                   </VSCodeDataGridCell>
                   <VSCodeDataGridCell grid-column="2">
                     <TdsSelectionFolderField
-                      methods={methods}
                       name={`btnSelectFolder.${index}`}
                       info={"Selecione uma pasta que contenha arquivos de definição"}
                       title="Select folder with define files"

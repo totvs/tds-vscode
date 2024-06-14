@@ -59,14 +59,12 @@ export default function GenerateWsView() {
 
   return (
     <TdsPage title="Generate Web Service Client" linkToDoc="[Geração de Web Service]servers.md#registro-de-servidores">
-      <TdsForm
-        methods={methods}
+      <TdsForm<TFields> methods={methods}
         onSubmit={onSubmit}
       >
 
         <section className="tds-row-container" >
           <TdsTextField
-            methods={methods}
             name="urlOrWsdlFile"
             label={tdsVscode.l10n.t("URL or Wsdl File")}
             info={tdsVscode.l10n.t("Enter the WSDL access URL or the file with the service definition")}
@@ -74,7 +72,6 @@ export default function GenerateWsView() {
           />
 
           <TdsSelectionFileField
-            methods={methods}
             name="btn-urlOrWsdlFile"
             info={tdsVscode.l10n.t("Select the file with the service definition")}
             title={tdsVscode.l10n.t("File with WSDL definition")}
@@ -85,7 +82,6 @@ export default function GenerateWsView() {
 
         <section className="tds-row-container" >
           <TdsTextField
-            methods={methods}
             name="outputPath"
             label={tdsVscode.l10n.t("Output Folder")}
             info={tdsVscode.l10n.t("Select the folder from where the generated source will be recorded")}
@@ -94,7 +90,6 @@ export default function GenerateWsView() {
           />
 
           <TdsSelectionFolderField
-            methods={methods}
             openLabel="Output Folder"
             name="btn-outputPath"
             info={tdsVscode.l10n.t("Select the folder from where the generated source will be recorded")}
@@ -104,7 +99,6 @@ export default function GenerateWsView() {
 
         <section className="tds-row-container" >
           <TdsTextField
-            methods={methods}
             name="outputFilename"
             label={tdsVscode.l10n.t("Output Filename")}
             info={tdsVscode.l10n.t("Source Name to be recorded")}
@@ -112,7 +106,6 @@ export default function GenerateWsView() {
           />
 
           <TdsSelectionFileField
-            methods={methods}
             name="btn-outputFilename"
             info={tdsVscode.l10n.t("Select the file that will receive the definition of the service")}
             title={tdsVscode.l10n.t("ADVPL Source File")}
@@ -123,12 +116,12 @@ export default function GenerateWsView() {
         </section>
 
         <TdsSimpleCheckBoxField
-          methods={methods}
           info=""
           name="overwrite"
           label="&nbsp;"
           textLabel={tdsVscode.l10n.t("If already exist, can overwrite")}
         />
+
       </TdsForm>
     </TdsPage>
   );

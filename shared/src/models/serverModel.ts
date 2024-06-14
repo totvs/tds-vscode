@@ -18,3 +18,15 @@ export type TServerModel = TAbstractModelPanel & {
 	immediateConnection: boolean;
 	globalIncludeDirectories: string;
 }
+
+export const EMPTY_SERVER_MODEL: TServerModel = {
+	serverType: "",
+	serverName: "",
+	port: 0,
+	address: "",
+	includePaths: [],
+	immediateConnection: true,
+	secure: false,
+	buildVersion: "",
+	globalIncludeDirectories: ""
+}

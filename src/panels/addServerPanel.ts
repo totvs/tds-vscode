@@ -17,7 +17,7 @@ limitations under the License.
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import Utils, { ServersConfig } from "../utils";
-import { CommonCommandFromWebViewEnum, ReceiveMessage } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, EMPTY_SERVER_MODEL, ReceiveMessage } from "tds-shared/lib";
 import { IValidationInfo, sendValidationRequest } from "../protocolMessages";
 import { TServerModel, TServerType } from "tds-shared/lib";
 import { TFieldErrors, isErrors } from "tds-shared/lib";
@@ -98,16 +98,8 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
       case CommonCommandFromWebViewEnum.Ready:
         if (data.model == undefined) {
           this.sendUpdateModel({
-            serverType: "",
-            serverName: "",
-            port: 0,
-            address: "",
-            includePaths: [],
-            immediateConnection: true,
-            secure: false,
-            buildVersion: "",
-            globalIncludeDirectories: ServersConfig.getGlobalIncludes().join(";"),
-
+            ...EMPTY_SERVER_MODEL,
+            globalIncludeDirectories: ServersConfig.getGlobalIncludes().join(";")
           }, undefined);
         }
         break;

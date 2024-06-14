@@ -1,4 +1,5 @@
 /*
+import { EMPTY_GLOBAL_INCLUDE_MODEL } from './models/includeModel';
 Copyright 2021 TOTVS S.A
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +20,13 @@ export { CommonCommandToWebViewEnum } from "./webviewProtocol";
 export { TApplyPatchModel, TPatchFileData } from "./models/applyPatchModel";
 export { TAuthorization, TCompileKey, TCompileKeyModel } from "./models/compileKeyModel";
 export { PatchGenerateCommandEnum, PatchGenerateCommand, TGeneratePatchFromRpoModel, TGeneratePatchByDifferenceModel } from "./models/generatePatchModel";
-export { TIncludePath, TIncludeModel } from "./models/includeModel";
 export { TInspectorObject, TInspectorObjectModel } from "./models/inspectObjectModel";
 export { IPatchData } from "./models/patchData";
-export { TServerType, TServerModel } from "./models/serverModel"
 export { TWebServiceModel } from "./models/webServiceModel"
 export { TErrorType, TFieldError, TFieldErrors, isErrors, TAbstractModelPanel, ReceiveMessage, SendMessage, TSendSelectResourceProps } from "./panels/panelInterface"
+
+export type { TServerType, TServerModel } from "./models/serverModel"
+export { EMPTY_SERVER_MODEL } from "./models/serverModel"
+
+export type { TIncludePath, TIncludeModel, TGlobalIncludeModel } from "./models/includeModel";
+export { EMPTY_GLOBAL_INCLUDE_MODEL, EMPTY_INCLUDE_MODEL } from "./models/includeModel";

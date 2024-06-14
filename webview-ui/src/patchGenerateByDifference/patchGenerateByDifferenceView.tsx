@@ -30,7 +30,7 @@ type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TGe
 const EMPTY_MODEL: TGeneratePatchByDifferenceModel = {
   patchDest: "", //(vscode.getState() | {})["patchDest"],
   patchName: "",
-//  rpoMasterFile: "",
+  //  rpoMasterFile: "",
   rpoMasterFolder: ""
 }
 
@@ -76,12 +76,10 @@ export default function PatchGenerateByDifferenceView(props: IPatchGenerateByDif
 
   return (
     <TdsPage title={tdsVscode.l10n.t("Patch Generation by Difference RPO")} linkToDoc="">
-      <TdsForm
-        methods={methods}
+      <TdsForm methods={methods}
         onSubmit={onSubmit}>
         <section className="tds-row-container">
           <TdsTextField
-            methods={methods}
             name="rpoMasterFolder"
             label={tdsVscode.l10n.t("RPO Master Location")}
             info={tdsVscode.l10n.t("Select RPO Master Location")}
@@ -90,7 +88,6 @@ export default function PatchGenerateByDifferenceView(props: IPatchGenerateByDif
           />
 
           <TdsSelectionFolderField
-            methods={methods}
             openLabel={tdsVscode.l10n.t("RPO Master Location")}
             info={tdsVscode.l10n.t("Use the navigation tree on the side")}
             name="btn-rpoMaster"
@@ -101,7 +98,6 @@ export default function PatchGenerateByDifferenceView(props: IPatchGenerateByDif
 
         <section className="tds-row-container">
           <TdsTextField
-            methods={methods}
             name="patchDest"
             label={tdsVscode.l10n.t("Output Folder")}
             info={tdsVscode.l10n.t("Select the folder from where the generated package will be recorded")}
@@ -110,7 +106,6 @@ export default function PatchGenerateByDifferenceView(props: IPatchGenerateByDif
           />
 
           <TdsSelectionFolderField
-            methods={methods}
             openLabel={tdsVscode.l10n.t("Output Folder")}
             info={tdsVscode.l10n.t("Select the destination folder of the generated update package")}
             name="btn-patchDest"
@@ -118,7 +113,6 @@ export default function PatchGenerateByDifferenceView(props: IPatchGenerateByDif
           />
 
           <TdsTextField
-            methods={methods}
             name="patchName"
             label={tdsVscode.l10n.t("Output Patch Filename")}
             info={tdsVscode.l10n.t("Enter update package name.")}

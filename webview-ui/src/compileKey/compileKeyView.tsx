@@ -92,12 +92,10 @@ export default function CompileKeyView() {
 
   return (
     <TdsPage title={tdsVscode.l10n.t("Compile Key")} linkToDoc="[Chave de Compilação]servers.md#registro-de-servidores">
-      <TdsForm
-        methods={methods}
+      <TdsForm<TFields> methods={methods}
         onSubmit={onSubmit}>
 
         <TdsTextField
-          methods={methods}
           name="machineId"
           label={tdsVscode.l10n.t("Machine ID")}
           info={tdsVscode.l10n.t("Single Identifier of the Station. Automatically obtained.")}
@@ -106,7 +104,6 @@ export default function CompileKeyView() {
 
         <section className="tds-row-container">
           <TdsTextField
-            methods={methods}
             name="path"
             label={tdsVscode.l10n.t("Compile Key File")}
             info={tdsVscode.l10n.t("Generated compilation key file (.AUT)")}
@@ -115,7 +112,6 @@ export default function CompileKeyView() {
           />
 
           <TdsSelectionFileField
-            methods={methods}
             title={tdsVscode.l10n.t("Compilation key file")}
             filters={
               {
@@ -127,7 +123,6 @@ export default function CompileKeyView() {
 
         <section className="tds-row-container tds-same-width">
           <TdsTextField
-            methods={methods}
             name="generation"
             label={tdsVscode.l10n.t("Generated")}
             info={tdsVscode.l10n.t("Date of key generation")}
@@ -135,7 +130,6 @@ export default function CompileKeyView() {
           />
 
           <TdsTextField
-            methods={methods}
             name="validation"
             label={tdsVscode.l10n.t("Expire")}
             info={tdsVscode.l10n.t("Date of Key Expiration")}
@@ -144,7 +138,6 @@ export default function CompileKeyView() {
         </section>
 
         <TdsTextField
-          methods={methods}
           name="key"
           label={tdsVscode.l10n.t("Token")}
           info={tdsVscode.l10n.t("Token generated")}
@@ -152,15 +145,13 @@ export default function CompileKeyView() {
         />
 
         <TdsSimpleCheckBoxField
-          methods={methods}
           name={"canOverride"}
           label={""}
           textLabel={tdsVscode.l10n.t("Allow override default")} />
 
         <TdsLabelField
-          methods={methods}
           name={"warningCompatibility"}
-          label={tdsVscode.l10n.t("From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS.")}
+          label={tdsVscode.l10n.t("From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and MacOS.")}
         />
       </TdsForm>
     </TdsPage>

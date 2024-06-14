@@ -36,7 +36,7 @@ export type TFieldErrors<M> = Partial<Record<keyof M | "root", TFieldError>>;
  * Checks if the provided `errors` object has any keys, indicating that there are errors.
  *
  * @param errors - An object of field errors, where the keys are the field names and the values are the error messages.
- * @returns `true` if the `errors` object has any keys, indicating that there are errors, `false` otherwise.
+ * @returns {boolean} `true` if the `errors` object has any keys, indicating that there are errors, `false` otherwise.
  */
 export function isErrors<M>(errors: TFieldErrors<M>) {
 	return Object.keys(errors).length > 0

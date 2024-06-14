@@ -1,13 +1,27 @@
+/*
+Copyright 2021 TOTVS S.A
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http: //www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 import "./inspectObject.css";
 import React from "react";
-import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
+import { TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsForm, TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
 import { useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { sendExport, sendIncludeOutScope } from "./sendCommand";
-import { TdsDataGrid, TdsDataGridColumnDef } from "../_component/dataGrid/dataGrid";
-import { TdsDataGridAction } from "../_component/dataGrid/paginator";
+import { Key } from 'vscode-extension-tester';
 
 enum ReceiveCommandEnum {
 }
@@ -32,8 +46,8 @@ type TInspectorObjectModel = {
 
 type TFields = TInspectorObjectModel;
 
-function objectColumns(isServerP20OrGreater: boolean): TdsDataGridColumnDef[] {
-  const result: TdsDataGridColumnDef[] = [
+function objectColumns(isServerP20OrGreater: boolean): TTdsDataGridColumnDef[] {
+  const result: TTdsDataGridColumnDef[] = [
     {
       type: "string",
       name: "source",
@@ -86,8 +100,8 @@ function objectColumns(isServerP20OrGreater: boolean): TdsDataGridColumnDef[] {
   return result;
 }
 
-function functionColumns(isServerP20OrGreater: boolean): TdsDataGridColumnDef[] {
-  const result: TdsDataGridColumnDef[] = [
+function functionColumns(isServerP20OrGreater: boolean): TTdsDataGridColumnDef[] {
+  const result: TTdsDataGridColumnDef[] = [
     {
       type: "string",
       name: "function",
@@ -191,6 +205,7 @@ export default function InspectObjectView(props: TInspectorObjectComponentProps)
 
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);
+          console.log("UpdateModel", model);
           setDataSource(model.objects);
           break;
         default:
@@ -205,7 +220,7 @@ export default function InspectObjectView(props: TInspectorObjectComponentProps)
     }
   }, []);
 
-  const bottomActions: TdsDataGridAction[] = [{
+  const bottomActions: TTdsDataGridAction[] = [{
     id: "btnExportTxt",
     caption: tdsVscode.l10n.t("Export (TXT)"),
     isProcessRing: true,
@@ -225,7 +240,7 @@ export default function InspectObjectView(props: TInspectorObjectComponentProps)
     }
   }];
 
-  const topActions: TdsDataGridAction[] = [{
+  const topActions: TTdsDataGridAction[] = [{
     id: "btnIncludeOutScope",
     caption:
       props.inspector == "objects"
@@ -237,7 +252,7 @@ export default function InspectObjectView(props: TInspectorObjectComponentProps)
     }
   }];
 
-  let columnDef: TdsDataGridColumnDef[] = props.inspector == "objects"
+  let columnDef: TTdsDataGridColumnDef[] = props.inspector == "objects"
     ? objectColumns(props.isServerP20OrGreater)
     : functionColumns(props.isServerP20OrGreater);
 
@@ -247,20 +262,23 @@ export default function InspectObjectView(props: TInspectorObjectComponentProps)
         ? tdsVscode.l10n.t("Objects Inspector")
         : tdsVscode.l10n.t("Functions Inspector")
     } linkToDoc="">
-      <TdsDataGrid
-        id="inspectorObjectGrid"
+      <TdsForm
         methods={methods}
-        columnDef={columnDef}
-        dataSource={dataSource}
-        options={{
-          grouping: true,
-          filter: true,
-          bottomActions: bottomActions,
-          topActions: topActions,
-          pageSize: 10,
-          pageSizeOptions: [10, 50, 100, 500, 1000],
-        }}
-      />
+      >
+        <TdsDataGrid
+          id="inspectorObjectGrid"
+          columnDef={columnDef}
+          dataSource={dataSource}
+          options={{
+            grouping: true,
+            filter: true,
+            bottomActions: bottomActions,
+            topActions: topActions,
+            pageSize: 10,
+            pageSizeOptions: [10, 50, 100, 500, 1000],
+          }}
+        />
+      </TdsForm>
     </TdsPage>
   );
 }

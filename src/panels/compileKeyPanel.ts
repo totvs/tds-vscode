@@ -248,7 +248,7 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
       "Token": vscode.l10n.t("Token"),
       "Token generated": vscode.l10n.t("Token generated"),
       "Allow override default": vscode.l10n.t("Allow override default"),
-      "From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS.": vscode.l10n.t("From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS.")
+      "From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and MacOS.": vscode.l10n.t("From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and MacOS.")
     }
   }
 

@@ -16,7 +16,6 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { ReceiveMessage, TAbstractModelPanel, TFieldErrors, CommonCommandToWebViewEnum, CommonCommandFromWebViewEnum, TSendSelectResourceProps } from "tds-shared/lib";
-import { debug } from 'vscode';
 
 export abstract class TdsPanel<M extends TAbstractModelPanel, O extends any = {}> {
 

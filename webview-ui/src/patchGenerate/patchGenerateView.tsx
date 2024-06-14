@@ -18,12 +18,11 @@ import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
 
 import "./patchGenerate.css";
 import React from "react";
-import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
-import { SubmitHandler, UseFormReturn, useForm } from "react-hook-form";
+import { TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
+import { SubmitHandler, UseFormReturn, useFieldArray, useForm, useFormContext } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsTextField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionFolderField } from "@totvs/tds-webtoolkit";
-import { TdsDataGrid, TdsDataGridAction, TdsDataGridColumnDef } from "../_component/dataGrid";
-import { TGeneratePatchFromRpoModel, TInspectorObject, PatchGenerateCommandEnum } from "tds-shared/lib";
+import { TGeneratePatchFromRpoModel, TInspectorObject, PatchGenerateCommandEnum, TFieldError } from "tds-shared/lib";
 
 enum ReceiveCommandEnum {
   MOVE_TO_LEFT = "moveToLeft",
@@ -41,7 +40,6 @@ const EMPTY_MODEL: TGeneratePatchFromRpoModel = {
 }
 
 type TSelectObjectComponentProps = {
-  methods: UseFormReturn<any>;
   id?: string;
   label: string;
   fieldName: string;
@@ -82,7 +80,8 @@ function sendIncludeTRes(model: any, includeTRes: boolean) {
 }
 
 function SelectResourceComponent(props: TSelectObjectComponentProps) {
-  const columnDef: TdsDataGridColumnDef[] = [
+  const { control, getValues } = useForm();
+  const columnDef: TTdsDataGridColumnDef[] = [
     {
       type: "boolean",
       name: "checked",
@@ -140,23 +139,22 @@ function SelectResourceComponent(props: TSelectObjectComponentProps) {
     });
   }
 
-  const topActions: TdsDataGridAction[] = [{
+  const topActions: TTdsDataGridAction[] = [{
     id: "btnIncludeTRes",
-    caption: props.methods.getValues("includeTRes") ? tdsVscode.l10n.t("Exclude TRES") : tdsVscode.l10n.t("Include TRES"),
+    caption: getValues("includeTRes") ? tdsVscode.l10n.t("Exclude TRES") : tdsVscode.l10n.t("Include TRES"),
     type: "button",
     onClick: () => {
-      sendIncludeTRes(props.methods.getValues(), !props.methods.getValues("includeTRes"));
+      sendIncludeTRes(getValues(), !getValues("includeTRes"));
     }
   }];
 
   return (
     <section className="tds-grid-container select-resource-component">
-      {props.label && <TdsLabelField methods={props.methods} name={props.fieldName} label={props.label} />}
+      {props.label && <TdsLabelField name={props.fieldName} label={props.label} />}
       <TdsDataGrid
         id={props.id ? props.id : props.fieldName}
-        methods={props.methods}
         columnDef={columnDef}
-        dataSource={props.methods.getValues(props.fieldName) as TInspectorObject[]}
+        dataSource={(getValues(props.fieldName) || []) as TInspectorObject[]}
         options={{
           bottomActions: [],
           topActions: props.showIncludeTRes ? topActions : [],
@@ -226,12 +224,10 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
 
   return (
     <TdsPage title={tdsVscode.l10n.t("Patch Generation from RPO")} linkToDoc="[Geração de pacote de atualização]servers.md#registro-de-servidores">
-      <TdsForm
-        methods={methods}
+      <TdsForm methods={methods}
         onSubmit={onSubmit}>
         <section className="tds-row-container">
           <TdsTextField
-            methods={methods}
             name="patchDest"
             label={tdsVscode.l10n.t("Output Folder")}
             info={tdsVscode.l10n.t("Enter the destination folder of the generated update package")}
@@ -240,7 +236,6 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
           />
 
           <TdsSelectionFolderField
-            methods={methods}
             openLabel={tdsVscode.l10n.t("Output Folder")}
             info={tdsVscode.l10n.t("Select the destination folder of the generated update package")}
             name="btn-patchDest"
@@ -248,7 +243,6 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
           />
 
           <TdsTextField
-            methods={methods}
             name="patchName"
             label={tdsVscode.l10n.t("Output Patch Filename")}
             info={tdsVscode.l10n.t("Enter update package name.")}
@@ -259,7 +253,6 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
         <section className="tds-row-container" id="selectGrid" >
           {watchObjectsLeft && <SelectResourceComponent
             isServerP20OrGreater={props.isServerP20OrGreater}
-            methods={methods}
             fieldName="objectsLeft"
             label={tdsVscode.l10n.t("RPO Objects")}
             showIncludeTRes={true}
@@ -285,7 +278,6 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
 
           {watchObjectsRight && <SelectResourceComponent
             isServerP20OrGreater={props.isServerP20OrGreater}
-            methods={methods}
             label={tdsVscode.l10n.t("To patch")}
             fieldName="objectsRight"
             showIncludeTRes={false}

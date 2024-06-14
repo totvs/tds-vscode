@@ -17,7 +17,7 @@ limitations under the License.
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import Utils, { ServersConfig } from "../utils";
-import { CommonCommandFromWebViewEnum, ReceiveMessage, TFieldErrors, TIncludeModel, TIncludePath, isErrors } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, EMPTY_GLOBAL_INCLUDE_MODEL, ReceiveMessage, TFieldErrors, TGlobalIncludeModel, TIncludePath, isErrors } from "tds-shared/lib";
 import { TdsPanel } from "./panel";
 
 enum GlobalIncludeCommandEnum {
@@ -25,9 +25,17 @@ enum GlobalIncludeCommandEnum {
 
 type GlobalIncludeCommand = CommonCommandFromWebViewEnum & GlobalIncludeCommandEnum;
 
-export class GlobalIncludePanel extends TdsPanel<TIncludeModel> {
+export class GlobalIncludePanel extends TdsPanel<TGlobalIncludeModel> {
   public static currentPanel: GlobalIncludePanel | undefined;
 
+  /**
+   * Renders the Global Include panel in the Visual Studio Code editor.
+   *
+   * If the panel already exists, it will be revealed. Otherwise, a new panel will be created and shown in the first editor column.
+   *
+   * @param context The extension context, used to get the extension URI.
+   * @returns The current instance of the GlobalIncludePanel.
+   */
   public static render(context: vscode.ExtensionContext): GlobalIncludePanel {
     const extensionUri: vscode.Uri = context.extensionUri;
 
@@ -86,18 +94,15 @@ export class GlobalIncludePanel extends TdsPanel<TIncludeModel> {
    *
    * @param webview A reference to the extension webview
    */
-  protected async panelListener(message: ReceiveMessage<GlobalIncludeCommand, TIncludeModel>, result: any): Promise<any> {
+  protected async panelListener(message: ReceiveMessage<GlobalIncludeCommand, TGlobalIncludeModel>, result: any): Promise<any> {
     const command: GlobalIncludeCommand = message.command;
     const data = message.data;
 
     switch (command) {
       case CommonCommandFromWebViewEnum.Ready:
-        const includes = ServersConfig.getIncludes();
-        const includeString: string = includes.toString() || "";
-        const aux = includeString.replace(/,/g, ";");
-        const model: TIncludeModel = {
-          includePaths: aux.split(";").map((value: string) => { return { path: value } })
-          //aux.split(";").map((value: string) => { path: value });
+        const includes: string[] = ServersConfig.getIncludes();
+        const model: TGlobalIncludeModel = EMPTY_GLOBAL_INCLUDE_MODEL && {
+          includePaths: includes.map((value: string) => { return { path: value } })
         }
         this.sendUpdateModel(model, undefined);
 
@@ -109,7 +114,7 @@ export class GlobalIncludePanel extends TdsPanel<TIncludeModel> {
             .filter((includePath: TIncludePath) => includePath.path.trim().length > 0);
           const alreadyExist: boolean = includePaths.findIndex((includePath: TIncludePath) => includePath.path == selectedPath) > -1;
           const index: number = includePaths.push({ path: selectedPath }) - 1;
-          const errors: TFieldErrors<TIncludeModel> = {};
+          const errors: TFieldErrors<TGlobalIncludeModel> = {};
 
           data.model.includePaths = includePaths;
 
@@ -125,7 +130,7 @@ export class GlobalIncludePanel extends TdsPanel<TIncludeModel> {
     }
   }
 
-  protected validateModel(model: TIncludeModel, errors: TFieldErrors<TIncludeModel>): boolean {
+  protected validateModel(model: TGlobalIncludeModel, errors: TFieldErrors<TGlobalIncludeModel>): boolean {
     model.includePaths.forEach((includePath: TIncludePath, index: number) => {
       let checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/);
 
@@ -137,7 +142,7 @@ export class GlobalIncludePanel extends TdsPanel<TIncludeModel> {
     return !isErrors(errors);
   }
 
-  protected saveModel(model: TIncludeModel): boolean {
+  protected saveModel(model: TGlobalIncludeModel): boolean {
     const includePath: string[] = model.includePaths.map((row: TIncludePath) => row.path);
     ServersConfig.saveIncludePath(includePath);
 

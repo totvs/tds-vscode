@@ -102,20 +102,18 @@ export default function ApplyPatchView() {
 
   return (
     <TdsPage title={tdsVscode.l10n.t("Apply Patch")} linkToDoc="[Apply Patch]servers.md#registro-de-servidores">
-      <TdsForm<TFields>
+      <TdsForm<TFields> methods={methods}
         onSubmit={onSubmit}
-        methods={methods}>
+      >
 
         <section className="tds-row-container" >
           <TdsTextField
-            methods={methods}
             name="serverName"
             label={tdsVscode.l10n.t("Server name")}
             info={tdsVscode.l10n.t("Target Server Identifier")}
             readOnly={true}
           />
           <TdsTextField
-            methods={methods}
             name="address"
             label={tdsVscode.l10n.t("Address")}
             info={tdsVscode.l10n.t("Target server address")}
@@ -124,7 +122,6 @@ export default function ApplyPatchView() {
         </section>
 
         <TdsTextField
-          methods={methods}
           name="environment"
           label={tdsVscode.l10n.t("Environment")}
           info={tdsVscode.l10n.t("Target environment")}
@@ -132,7 +129,6 @@ export default function ApplyPatchView() {
         />
 
         <TdsLabelField
-          methods={methods}
           name="patchFilesLabel"
           label={tdsVscode.l10n.t("Patch Files")}
         />
@@ -168,7 +164,6 @@ export default function ApplyPatchView() {
                     </VSCodeDataGridCell>
                     <VSCodeDataGridCell grid-column="3">
                       <TdsSimpleTextField
-                        methods={methods}
                         name={`patchFiles.${index}.name`}
                         readOnly={true}
                         info={row.name}
@@ -176,7 +171,6 @@ export default function ApplyPatchView() {
                     </VSCodeDataGridCell>
                     <VSCodeDataGridCell grid-column="4">
                       <TdsSimpleTextField
-                        methods={methods}
                         name={`patchFiles.${index}.fsPath`}
                         readOnly={true}
                         info={row.uri}
@@ -201,7 +195,6 @@ export default function ApplyPatchView() {
                     </VSCodeDataGridCell>
                     <VSCodeDataGridCell grid-column="2">
                       <TdsSelectionFileField
-                        methods={methods}
                         name={`btnSelectFile.${index}`}
                         canSelectMany={true}
                         title={tdsVscode.l10n.t("Select the update package(s)")}
@@ -221,7 +214,6 @@ export default function ApplyPatchView() {
         </section>
 
         <TdsSimpleCheckBoxField
-          methods={methods}
           name="applyOldFiles"
           label={tdsVscode.l10n.t("Apply old files")}
           textLabel={tdsVscode.l10n.t("Apply old files")} />
