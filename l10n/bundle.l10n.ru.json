@@ -246,7 +246,7 @@
   "Date of Key Expiration": "Date of Key Expiration",
   "Token generated": "Token generated",
   "Allow override default": "Allow override default",
-  "From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS.": "From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS.",
+  "From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and MacOS.": "From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and MacOS.",
   "Add Server": "Add Server",
   "Server already exist": "Server already exist",
   "[Port] is not a number": "[Port] is not a number",

@@ -159,7 +159,7 @@
   "Token": "Token",
   "Token generated": "Token generated",
   "Allow override default": "Allow override default",
-  "From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS.": "From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS.",
+  "From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and MacOS.": "From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and MacOS.",
   "Add Server": "Add Server",
   "Serve saved. Name: {0}": "Serve saved. Name: {0}",
   "Server already exist": "Server already exist",

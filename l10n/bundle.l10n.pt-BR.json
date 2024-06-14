@@ -246,7 +246,7 @@
   "Date of Key Expiration": "Data da expiração das chaves",
   "Token generated": "Token gerado",
   "Allow override default": "Permitir substituir o padrão",
-  "From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS.": "A partir de 17/05/2019, todas as chaves terão que ser regeneradas usando o ID da máquina mostrado acima.Isso permitirá compatibilidade com Linux e MacOS.",
+  "From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and MacOS.": "A partir de 17/05/2019, todas as chaves terão que ser regeneradas usando o ID da máquina mostrado acima.Isso permitirá compatibilidade com Linux e MacOS.",
   "Add Server": "Adicionar servidor",
   "Server already exist": "Servidor já existe",
   "[Port] is not a number": "[Porta] não é um número",
