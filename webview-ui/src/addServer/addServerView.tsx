@@ -23,7 +23,6 @@ import { TdsCheckBoxField, TdsForm, TdsLabelField, TdsNumericField, TdsSelection
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 import { tdsVscode } from '@totvs/tds-webtoolkit';
 import { EMPTY_SERVER_MODEL, TIncludePath, TServerModel } from "tds-shared/lib";
-import { prepareDataModel } from "@totvs/tds-webtoolkit/dist/components/form/form";
 
 enum ReceiveCommandEnum {
 }
@@ -44,13 +43,8 @@ export default function AddServerView() {
     });
 
   const onSubmit: SubmitHandler<TServerModel> = (data) => {
-    data = prepareDataModel(data);
 
-    if (!data.includePaths) {
-      data.includePaths = [];
-    } else {
-      data.includePaths = data.includePaths.filter((includePath: TIncludePath) => includePath.path.length > 0);
-    }
+    data.includePaths = data.includePaths.filter((includePath: TIncludePath) => includePath.path.length > 0);
 
     sendSaveAndClose(data);
   }
