@@ -1,45 +1,46 @@
+/*
+Copyright 2021-2024 TOTVS S.A
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http: //www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 import "./applyPatch.css";
 import React from "react";
 import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
-import { TdsForm, TdsLabelField, TdsSelectionFileField, TdsSimpleCheckBoxField, TdsSimpleTextField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
-import { TPatchFileData } from "tds-shared/lib";
+import {
+  TdsForm, TdsLabelField, TdsSelectionFileField, TdsSimpleCheckBoxField, TdsSimpleTextField,
+  TdsTextField, TdsProgressRing,
+  setDataModel, setErrorModel
+} from "@totvs/tds-webtoolkit";
+import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
+import { ApplyPatchCommand, TApplyPatchModel, TPatchFileData } from "tds-shared/lib";
+import { ApplyPatchCommandEnum, EMPTY_APPLY_PATCH_MODEL, EMPTY_PATCH_FILE } from "tds-shared/lib/models/applyPatchModel";
 
 enum ReceiveCommandEnum {
 }
 
-type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TFields>;
-
-type TFields = {
-  serverName: string;
-  address: string;
-  environment: string;
-  patchFiles: TPatchFileData[];
-  applyOldFiles: boolean;
-}
-
-const EMPTY_PATCH_FILE: TPatchFileData = {
-  name: "",
-  uri: undefined,
-  validation: "",
-  tphInfo: {},
-  isProcessing: false,
-  fsPath: ""
-}
+type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TApplyPatchModel>;
 
 const ROWS_LIMIT: number = 5;
 
 export default function ApplyPatchView() {
-  const methods = useForm<TFields>({
-    defaultValues: {
-      serverName: "",
-      address: "",
+  const methods = useForm<TApplyPatchModel>({
+    defaultValues: EMPTY_APPLY_PATCH_MODEL && {
       patchFiles: Array(ROWS_LIMIT).map(() => {
         return EMPTY_PATCH_FILE;
-      }),
-      applyOldFiles: false
+      })
     },
     mode: "all"
   })
@@ -50,7 +51,7 @@ export default function ApplyPatchView() {
       name: "patchFiles"
     });
 
-  const onSubmit: SubmitHandler<TFields> = (data) => {
+  const onSubmit: SubmitHandler<TApplyPatchModel> = (data) => {
     data.patchFiles = data.patchFiles.filter((patchFile: TPatchFileData) => patchFile.uri !== undefined);
 
     sendSaveAndClose(data);
@@ -62,7 +63,7 @@ export default function ApplyPatchView() {
 
       switch (command.command) {
         case CommonCommandEnum.UpdateModel:
-          const model: TFields = command.data.model;
+          const model: TApplyPatchModel = command.data.model;
           const errors: any = command.data.errors;
 
           while (model.patchFiles.length < ROWS_LIMIT) {
@@ -71,7 +72,7 @@ export default function ApplyPatchView() {
 
           console.dir(model)
 
-          setDataModel<TFields>(methods.setValue, model);
+          setDataModel<TApplyPatchModel>(methods.setValue, model);
           setErrorModel(methods.setError, errors);
 
           break;
@@ -96,13 +97,23 @@ export default function ApplyPatchView() {
     sendGetInfo(methods.getValues(), index);
   }
 
-  const model: TFields = methods.getValues();
+  function sendGetInfo(model: any, index: number) {
+    tdsVscode.postMessage({
+      command: ApplyPatchCommandEnum.GET_INFO_PATCH,
+      data: {
+        model: model,
+        index: index,
+      }
+    });
+  }
+
+  const model: TApplyPatchModel = methods.getValues();
   const indexFirstPathFree: number = model.patchFiles.findIndex((row: TPatchFileData) => row.uri == undefined);
   const isProcessing: boolean = model.patchFiles.filter((row: TPatchFileData) => row.isProcessing).length > 0;
 
   return (
     <TdsPage title={tdsVscode.l10n.t("Apply Patch")} linkToDoc="[Apply Patch]servers.md#registro-de-servidores">
-      <TdsForm<TFields> methods={methods}
+      <TdsForm<TApplyPatchModel> methods={methods}
         onSubmit={onSubmit}
       >
 
@@ -113,20 +124,21 @@ export default function ApplyPatchView() {
             info={tdsVscode.l10n.t("Target Server Identifier")}
             readOnly={true}
           />
+
           <TdsTextField
             name="address"
             label={tdsVscode.l10n.t("Address")}
             info={tdsVscode.l10n.t("Target server address")}
             readOnly={true}
           />
-        </section>
 
-        <TdsTextField
-          name="environment"
-          label={tdsVscode.l10n.t("Environment")}
-          info={tdsVscode.l10n.t("Target environment")}
-          readOnly={true}
-        />
+          <TdsTextField
+            name="environment"
+            label={tdsVscode.l10n.t("Environment")}
+            info={tdsVscode.l10n.t("Target environment")}
+            readOnly={true}
+          />
+        </section>
 
         <TdsLabelField
           name="patchFilesLabel"
@@ -134,27 +146,24 @@ export default function ApplyPatchView() {
         />
 
         <section className="tds-row-container" >
-          <VSCodeDataGrid id="patchGrid" grid-template-columns="30px 60px 15rem 20rem">
+          <VSCodeDataGrid id="patchGrid" grid-template-columns="60px 1fr 2fr">
             {model && model.patchFiles.map((row: TPatchFileData, index: number) => (
               <VSCodeDataGridRow key={index}>
                 {row.uri !== undefined &&
                   <>
                     <VSCodeDataGridCell grid-column="1">
-                      {row.isProcessing ?
-                        <VSCodeProgressRing className="tds-progress-ring" />
-                        :
-                        <VSCodeButton appearance="icon"
-                          onClick={() => removePatchFile(index)} >
-                          <span className="codicon codicon-close"></span>
-                        </VSCodeButton>
-                      }
-                    </VSCodeDataGridCell>
-                    <VSCodeDataGridCell grid-column="2">
-                      {!row.isProcessing &&
-                        <VSCodeButton appearance="icon"
-                          onClick={() => infoPatchFile(index)} >
-                          <span className="codicon codicon-info"></span>
-                        </VSCodeButton>
+                      {row.isProcessing
+                        ? <TdsProgressRing size="small" />
+                        : <>
+                          <VSCodeButton appearance="icon"
+                            onClick={() => removePatchFile(index)} >
+                            <span className="codicon codicon-close"></span>
+                          </VSCodeButton>
+                          <VSCodeButton appearance="icon"
+                            onClick={() => infoPatchFile(index)} >
+                            <span className="codicon codicon-info"></span>
+                          </VSCodeButton>
+                        </>
                       }
                       {row.validation == "OK" &&
                         <VSCodeButton appearance="icon" >
@@ -162,14 +171,14 @@ export default function ApplyPatchView() {
                         </VSCodeButton>
                       }
                     </VSCodeDataGridCell>
-                    <VSCodeDataGridCell grid-column="3">
+                    <VSCodeDataGridCell grid-column="2">
                       <TdsSimpleTextField
                         name={`patchFiles.${index}.name`}
                         readOnly={true}
                         info={row.name}
                       />
                     </VSCodeDataGridCell>
-                    <VSCodeDataGridCell grid-column="4">
+                    <VSCodeDataGridCell grid-column="3">
                       <TdsSimpleTextField
                         name={`patchFiles.${index}.fsPath`}
                         readOnly={true}
@@ -222,7 +231,4 @@ export default function ApplyPatchView() {
   );
 }
 
-function sendGetInfo(arg0: TFields, index: number) {
-  throw new Error("Function not implemented.");
-}
 

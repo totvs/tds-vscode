@@ -25,21 +25,7 @@ import { TApplyPatchModel, TPatchFileData } from "tds-shared/lib";
 import { ServerItem } from "../serverItem";
 import { TFieldErrors, isErrors } from "tds-shared/lib";
 import { TdsPanel } from "./panel";
-
-enum ApplyPatchCommandEnum {
-  PATCH_VALIDATE = "PATCH_VALIDATE",
-  GET_INFO_PATCH = "GET_INFO_PATCH"
-}
-
-type ApplyPatchCommand = CommonCommandFromWebViewEnum & ApplyPatchCommandEnum;
-
-const EMPTY_MODEL: TApplyPatchModel = {
-  serverName: "",
-  address: "",
-  environment: "",
-  patchFiles: [],
-  applyOldFiles: false
-}
+import { ApplyPatchCommand, ApplyPatchCommandEnum, EMPTY_APPLY_PATCH_MODEL } from "tds-shared/lib/models/applyPatchModel";
 
 export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
   public static currentPanel: ApplyPatchPanel | undefined;
@@ -132,9 +118,9 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
               progress.report({ increment: 0 });
               const server = ServersConfig.getCurrentServer();
 
-              data.model = EMPTY_MODEL;
+              data.model = EMPTY_APPLY_PATCH_MODEL;
               data.model.serverName = server.name;
-              data.model.address = server.address;
+              data.model.address = `${server.address}:${server.port}`;
               data.model.environment = server.environment;
               data.model.patchFiles = this.files;
 
@@ -193,22 +179,13 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
 
       case ApplyPatchCommandEnum.GET_INFO_PATCH:
         {
-          const errors: TFieldErrors<TPatchFileData> = {};
-          data.model.patchFiles = data.model.patchFiles
-            .filter((patchFile: TPatchFileData) => patchFile.uri);
-          const selectedPatch: number = data.selectedPatch;
+          const selectedPatch: number = data.index;
 
-          data.model.patchFiles[selectedPatch].isProcessing = true;
-          this.sendUpdateModel(data.model, errors);
-
-          await vscode.commands.executeCommand(
+          vscode.commands.executeCommand(
             "totvs-developer-studio.patchInfos.fromFile",
             {
               fsPath: data.model.patchFiles[selectedPatch].fsPath,
             });
-
-          data.model.patchFiles[selectedPatch].isProcessing = false;
-          this.sendUpdateModel(data.model, errors);
 
           break;
         }

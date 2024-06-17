@@ -17,13 +17,15 @@ limitations under the License.
 
 export { CommonCommandFromWebViewEnum } from "./webviewProtocol";
 export { CommonCommandToWebViewEnum } from "./webviewProtocol";
-export { TApplyPatchModel, TPatchFileData } from "./models/applyPatchModel";
 export { TAuthorization, TCompileKey, TCompileKeyModel } from "./models/compileKeyModel";
 export { PatchGenerateCommandEnum, PatchGenerateCommand, TGeneratePatchFromRpoModel, TGeneratePatchByDifferenceModel } from "./models/generatePatchModel";
 export { TInspectorObject, TInspectorObjectModel } from "./models/inspectObjectModel";
 export { IPatchData } from "./models/patchData";
 export { TWebServiceModel } from "./models/webServiceModel"
 export { TErrorType, TFieldError, TFieldErrors, isErrors, TAbstractModelPanel, ReceiveMessage, SendMessage, TSendSelectResourceProps } from "./panels/panelInterface"
+
+export { TApplyPatchModel, TPatchFileData } from "./models/applyPatchModel";
+export type { ApplyPatchCommand, ApplyPatchCommandEnum } from "./models/applyPatchModel";
 
 export type { TServerType, TServerModel } from "./models/serverModel"
 export { EMPTY_SERVER_MODEL } from "./models/serverModel"

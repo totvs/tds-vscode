@@ -15,6 +15,14 @@ limitations under the License.
 */
 
 import { TAbstractModelPanel } from "../panels/panelInterface";
+import { CommonCommandFromWebViewEnum } from "../webviewProtocol";
+
+export enum ApplyPatchCommandEnum {
+	PATCH_VALIDATE = "PATCH_VALIDATE",
+	GET_INFO_PATCH = "GET_INFO_PATCH"
+}
+
+export type ApplyPatchCommand = CommonCommandFromWebViewEnum & ApplyPatchCommandEnum;
 
 export type TPatchFileData = {
 	name: string;
@@ -31,4 +39,21 @@ export type TApplyPatchModel = TAbstractModelPanel & {
 	environment: string;
 	patchFiles: TPatchFileData[];
 	applyOldFiles: boolean;
+}
+
+export const EMPTY_PATCH_FILE: TPatchFileData = {
+	name: "",
+	uri: undefined,
+	validation: "",
+	tphInfo: {},
+	isProcessing: false,
+	fsPath: ""
+}
+
+export const EMPTY_APPLY_PATCH_MODEL: TApplyPatchModel = {
+	serverName: "",
+	address: "",
+	environment: "",
+	patchFiles: [],
+	applyOldFiles: false
 }
