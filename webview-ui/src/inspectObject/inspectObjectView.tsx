@@ -21,7 +21,6 @@ import { useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { sendExport, sendIncludeOutScope } from "./sendCommand";
-import { Key } from 'vscode-extension-tester';
 
 enum ReceiveCommandEnum {
 }

@@ -524,7 +524,15 @@ export function sendPatchInfo(
     })
     .then(
       (response: any) => {
-        return response.patchInfos;
+        return response.patchInfos.map((element: any) => {
+          return {
+            name: element.name,
+            type: element.type,
+            buildType: element.buildType,
+            date: new Date(element.date),
+            size: Number.parseInt(element.size)
+          };
+        });
       },
       (err: ResponseError<object>) => {
         vscode.window.showErrorMessage(err.message);

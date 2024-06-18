@@ -1748,9 +1748,9 @@ export function pathErrorCodeToString(codeError: number, _default: string): stri
 export function formatDate(value: Date): string {
   let result: string = value.toLocaleString();
   const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
-  const formatDate: string = configADVPL.get("formatDate", "");
+  const formatLocale: string = configADVPL.get("formatLocale", "");
 
-  if (formatDate !== "") {
+  if (formatLocale !== "") {
     try {
       const options: Intl.DateTimeFormatOptions = {
         year: "numeric",
@@ -1760,7 +1760,7 @@ export function formatDate(value: Date): string {
         minute: "numeric",
         second: "numeric"
       };
-      const dateTimeFormat1 = new Intl.DateTimeFormat(formatDate, options);
+      const dateTimeFormat1 = new Intl.DateTimeFormat(formatLocale, options);
 
       result = dateTimeFormat1.format(value);
     } catch (error) {

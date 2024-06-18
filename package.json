@@ -152,7 +152,7 @@
     ],
     "customEditors": [
       {
-        "viewType": "tds.patchView",
+        "viewType": "tds.patchEditorView",
         "displayName": "Patch file",
         "selector": [
           {
@@ -508,10 +508,10 @@
           "default": "",
           "description": "%tds.package.compilation.tempDir%"
         },
-        "totvsLanguageServer.formatDate": {
+        "totvsLanguageServer.formatLocale": {
           "type": "string",
           "default": "",
-          "description": "%tds.package.format.date%"
+          "description": "%tds.package.format.locale%"
         },
         "totvsLanguageServer.web.navigator": {
           "type": "string",

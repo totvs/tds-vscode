@@ -143,5 +143,5 @@
 	"tds.package.editor.linter": "Habilitar o Linter",
 	"tds.package.debug.extend.features": "Habilita funcionalidades estendidas de depuração",
 	"tds.package.debug.extend.features.charDetails": "Detalhes de tipos [char] (strings)",
-	"tds.package.format.date": "Insira o código do idioma/país que usa o formato de data desejado. O padrão é usar o formato de idioma configurado no VS-Code."
+	"tds.package.format.locale": "Insira o código do idioma/país que usa o formato de data/número desejado. O padrão é usar o formato de idioma configurado no VS-Code."
 }

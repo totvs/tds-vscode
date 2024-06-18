@@ -61,7 +61,7 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
 
   const nonce = getNonce();
   const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
-  const formatDate: string = configADVPL.get("formatDate", "");
+  const formatLocale: string = configADVPL.get("formatLocale", "");
 
   return /*html*/ `
       <!DOCTYPE html>
@@ -90,7 +90,7 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
             window.initialData = ${JSON.stringify(options.data || {})};
             window.translations = ${JSON.stringify({
     translations: options.translations,
-    formatDate: formatDate
+    formatLocale: formatLocale
   })};
           </script>
           ${scriptsUri.map((uri: vscode.Uri) => {

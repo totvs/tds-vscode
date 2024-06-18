@@ -67,8 +67,8 @@ import { patchGenerateFromFolder } from "./patch/patchUtil";
 import { CompileKeyPanel } from "./panels/compileKeyPanel";
 import { ApplyPatchPanel } from "./panels/patchApplyPanel";
 import { InspectorObjectPanel } from "./panels/inspectObjectPanel";
-import { PatchEditorProvider } from "./panels/patchEditor";
 import { PatchGenerateByDifferencePanel } from "./panels/patchGenerateByDifferencePanel";
+import { PatchEditorProvider } from "./panels/patchEditorPanel";
 
 
 export let languageClient: TotvsLanguageClientA;
@@ -399,7 +399,7 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.patchInfos.fromFile",
       (args) => {
         const uri: vscode.Uri = vscode.Uri.file(args["fsPath"]);
-        vscode.commands.executeCommand("vscode.openWith", uri, "tds.patchView");
+        vscode.commands.executeCommand("vscode.openWith", uri, PatchEditorProvider.viewType);
       }
     )
   );

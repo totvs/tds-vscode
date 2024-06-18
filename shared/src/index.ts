@@ -20,9 +20,10 @@ export { CommonCommandToWebViewEnum } from "./webviewProtocol";
 export { TAuthorization, TCompileKey, TCompileKeyModel } from "./models/compileKeyModel";
 export { PatchGenerateCommandEnum, PatchGenerateCommand, TGeneratePatchFromRpoModel, TGeneratePatchByDifferenceModel } from "./models/generatePatchModel";
 export { TInspectorObject, TInspectorObjectModel } from "./models/inspectObjectModel";
-export { IPatchData } from "./models/patchData";
 export { TWebServiceModel } from "./models/webServiceModel"
 export { TErrorType, TFieldError, TFieldErrors, isErrors, TAbstractModelPanel, ReceiveMessage, SendMessage, TSendSelectResourceProps } from "./panels/panelInterface"
+
+export type { TPatchEditorModel } from "./models/patchEditorModel";
 
 export { TApplyPatchModel, TPatchFileData } from "./models/applyPatchModel";
 export type { ApplyPatchCommand, ApplyPatchCommandEnum } from "./models/applyPatchModel";

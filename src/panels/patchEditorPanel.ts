@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as vscode from "vscode";
-import { IPatchData } from "tds-shared/lib";
+import { TPatchEditorModel } from "tds-shared/lib";
 import { Disposable } from "./utilities/dispose";
 import { ServersConfig } from "../utils";
 import { sendPatchInfo } from "../protocolMessages";
@@ -8,11 +8,11 @@ import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum } from "tds-sh
 import { getWebviewContent } from "./utilities/webview-utils";
 
 interface PatchDocumentDelegate {
-  getFileData(): Promise<IPatchData>;
+  getFileData(): Promise<TPatchEditorModel>;
 }
 
 /**
- * Define the document (the data model) used for paw draw files.
+ * Define the document (the data model) used for patches files.
  */
 class PatchDocument extends Disposable implements vscode.CustomDocument {
   static async create(
@@ -20,13 +20,13 @@ class PatchDocument extends Disposable implements vscode.CustomDocument {
     delegate: PatchDocumentDelegate
   ): Promise<PatchDocument | PromiseLike<PatchDocument>> {
     // If we have a backup, read that. Otherwise read the resource from the workspace
-    const fileData: IPatchData = await PatchDocument.readFile(uri);
+    const fileData: TPatchEditorModel = await PatchDocument.readFile(uri);
     return new PatchDocument(uri, fileData, delegate);
   }
 
-  private static async readFile(uri: vscode.Uri): Promise<IPatchData> {
+  private static async readFile(uri: vscode.Uri): Promise<TPatchEditorModel> {
     const server = ServersConfig.getCurrentServer();
-    const data: IPatchData = {
+    const data: TPatchEditorModel = {
       filename: path.basename(uri.fsPath),
       lengthFile: (await vscode.workspace.fs.stat(uri)).size,
       patchInfo: await sendPatchInfo(
@@ -40,12 +40,12 @@ class PatchDocument extends Disposable implements vscode.CustomDocument {
 
   private readonly _uri: vscode.Uri;
 
-  private _documentData: IPatchData;
+  private _documentData: TPatchEditorModel;
   private readonly _delegate: PatchDocumentDelegate;
 
   private constructor(
     uri: vscode.Uri,
-    initialContent: IPatchData,
+    initialContent: TPatchEditorModel,
     delegate: PatchDocumentDelegate
   ) {
     super();
@@ -58,7 +58,7 @@ class PatchDocument extends Disposable implements vscode.CustomDocument {
     return this._uri;
   }
 
-  public get documentData(): IPatchData {
+  public get documentData(): TPatchEditorModel {
     return this._documentData;
   }
 
@@ -73,7 +73,7 @@ class PatchDocument extends Disposable implements vscode.CustomDocument {
 
   private readonly _onDidChangeDocument = this._register(
     new vscode.EventEmitter<{
-      readonly content?: IPatchData;
+      readonly content?: TPatchEditorModel;
     }>()
   );
   /**
@@ -120,7 +120,7 @@ class PatchDocument extends Disposable implements vscode.CustomDocument {
     targetResource: vscode.Uri,
     cancellation: vscode.CancellationToken
   ): Promise<void> {
-    throw new Error(vscode.l10n.t("PTM files cannot be saved by TDS-Vscode. Please build them using the command [TOTVS: Patch Generation]."));
+    throw new Error(vscode.l10n.t("PTM files cannot be saved by TDS-VSCode. Please build them using the command [TOTVS: Patch Generation]."));
   }
 
   /**
@@ -160,9 +160,10 @@ class PatchDocument extends Disposable implements vscode.CustomDocument {
   }
 }
 
-export class PatchEditorProvider
+export class PatchEditorProvider //aka PatchEditorPanel
   implements vscode.CustomEditorProvider<PatchDocument> {
   private static newPatchFileId = 1;
+  public static readonly viewType = "tds.patchEditorView";
 
   public static register(context: vscode.ExtensionContext): vscode.Disposable {
 
@@ -178,7 +179,6 @@ export class PatchEditorProvider
     );
   }
 
-  static readonly viewType = "tds.patchView";
 
   /**
    * Tracks all known webviews
@@ -206,7 +206,7 @@ export class PatchEditorProvider
           {}
         );
 
-        return { filename: "", lengthFile: 0, patchInfo: {} }
+        return { filename: "", lengthFile: 0, patchInfo: [] }
       },
     });
 
@@ -228,12 +228,31 @@ export class PatchEditorProvider
     webviewPanel.webview.html = this.getHtmlForWebview(webviewPanel.webview);
 
     // Wait for the webview to be properly ready before we init
-    webviewPanel.webview.onDidReceiveMessage((e) => {
-      if (e.action === CommonCommandFromWebViewEnum.Ready) {
-        const data: IPatchData = document.documentData;
-        this.postMessage(webviewPanel, CommonCommandToWebViewEnum.UpdateModel, data);
-      }
-    });
+    this._setWebviewMessageListener(webviewPanel.webview, document);
+  }
+
+  /**
+   * Sets up an event listener to listen for messages passed from the webview context and
+   * executes code based on the message that is received.
+   *
+   * @param webview A reference to the extension webview
+   */
+  private _setWebviewMessageListener(webview: vscode.Webview, document: PatchDocument) {
+    webview.onDidReceiveMessage(
+      (message: any) => {
+        if (message.command === CommonCommandFromWebViewEnum.Ready) {
+          webview.postMessage({
+            command: CommonCommandToWebViewEnum.UpdateModel,
+            data: {
+              model: document.documentData,
+              errors: []
+            }
+          });
+        };
+      },
+      undefined,
+      //this._disposables
+    );
   }
 
   private readonly _onDidChangeCustomDocument = new vscode.EventEmitter<
@@ -277,7 +296,7 @@ export class PatchEditorProvider
    */
   private getHtmlForWebview(webview: vscode.Webview): string {
 
-    return getWebviewContent(webview, this._context.extensionUri, "patchEditorView",
+    return getWebviewContent(webview, this._context.extensionUri, "editorPatchView",
       { title: "Patch Editor", translations: this.getTranslations() });
   }
 
@@ -302,13 +321,6 @@ export class PatchEditorProvider
     return p;
   }
 
-  private postMessage(
-    panel: vscode.WebviewPanel,
-    action: CommonCommandToWebViewEnum,
-    content: any
-  ): void {
-    panel.webview.postMessage({ action: action, content: content });
-  }
 }
 
 /**
