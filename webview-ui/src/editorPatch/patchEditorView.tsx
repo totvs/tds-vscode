@@ -94,7 +94,9 @@ export default function PatchEditorView() {
           const model: TPatchEditorModel = command.data.model;
           const errors: TPatchEditorModel = command.data.errors;
 
-          console.log("PatchEditorView: UpdateModel", model, errors);
+          model.patchInfo.forEach((row: TPatchInfo, index: number, array: TPatchInfo[]) => {
+            array[index].date = new Date(array[index].date);
+          });
 
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);

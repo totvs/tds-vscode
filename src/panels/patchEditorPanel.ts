@@ -302,6 +302,13 @@ export class PatchEditorProvider //aka PatchEditorPanel
 
   protected getTranslations(): Record<string, string> {
     return {
+      "Patch Objects": vscode.l10n.t("Patch Objects"),
+      "**File:** `{0}` **Size:** `{1} bytes (~{2} KBytes)`": vscode.l10n.t("**File:** `{0}` **Size:** `{1} bytes (~{2} KBytes)`"),
+      "Object Name": vscode.l10n.t("Object Name"),
+      "Compile Date": vscode.l10n.t("Compile Date"),
+      "Type": vscode.l10n.t("Type"),
+      "Size": vscode.l10n.t("Size"),
+      "Build Type": vscode.l10n.t("Build Type"),
     }
   }
 
