@@ -58,8 +58,6 @@ export default function AddServerView() {
           const model: TServerModel = command.data.model;
           const errors: any = command.data.errors;
 
-          console.log("UpdateModel", model, errors);
-
           while (model.includePaths.length < INCLUDE_ROWS_LIMIT) {
             model.includePaths.push({ path: "" });
           }

@@ -442,8 +442,6 @@ export default function TimeLineTable(props: ITimeLineTableInterface) {
         return itemsPerPage;
       });
     }
-    console.log(">>>>>>>>>>>>>>>>>");
-    console.dir(message);
     //setTimeLineData({ ...timeLineData, selected: message.data.body.selectedSource});
     selectTimeLineInTable(message.data.body.currentSelectedTimeLineId);
   }

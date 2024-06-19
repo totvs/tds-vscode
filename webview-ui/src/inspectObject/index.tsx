@@ -5,8 +5,6 @@ import InspectObjectView from "./inspectObjectView";
 
 tdsVscode.l10n.translations = window.translations;
 
-console.log("***********************", window.initialData);
-
 const root = createRoot(document.getElementById("root")!);
 root.render(
   <React.StrictMode>

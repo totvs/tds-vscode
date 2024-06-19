@@ -204,7 +204,6 @@ export default function InspectObjectView(props: TInspectorObjectComponentProps)
 
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);
-          console.log("UpdateModel", model);
           setDataSource(model.objects);
           break;
         default:

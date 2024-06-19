@@ -58,8 +58,6 @@ export default function GlobalIncludeView() {
             model.includePaths.push({ path: "" });
           }
 
-          console.log(model);
-
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);
 
