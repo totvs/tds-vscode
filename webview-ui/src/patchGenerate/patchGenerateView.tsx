@@ -18,11 +18,11 @@ import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
 
 import "./patchGenerate.css";
 import React from "react";
-import { TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
-import { SubmitHandler, UseFormReturn, useFieldArray, useForm, useFormContext } from "react-hook-form";
+import { TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsLabelField, TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
-import { TdsForm, TdsTextField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionFolderField } from "@totvs/tds-webtoolkit";
-import { TGeneratePatchFromRpoModel, TInspectorObject, PatchGenerateCommandEnum, TFieldError } from "tds-shared/lib";
+import { TdsForm, TdsTextField, setDataModel, setErrorModel, TdsSelectionFolderField } from "@totvs/tds-webtoolkit";
+import { TGeneratePatchFromRpoModel, TInspectorObject, PatchGenerateCommandEnum, EMPTY_GENERATE_PATCH_FROM_RPO_MODEL } from "tds-shared/lib";
 
 enum ReceiveCommandEnum {
   MOVE_TO_LEFT = "moveToLeft",
@@ -30,22 +30,6 @@ enum ReceiveCommandEnum {
 }
 
 type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TGeneratePatchFromRpoModel>;
-
-const EMPTY_MODEL: TGeneratePatchFromRpoModel = {
-  patchDest: "", //(vscode.getState() | {})["patchDest"],
-  patchName: "", //(vscode.getState() | {})["patchName"],
-  includeTRes: false,
-  objectsLeft: [],
-  objectsRight: [],
-}
-
-type TSelectObjectComponentProps = {
-  id?: string;
-  label: string;
-  fieldName: string;
-  showIncludeTRes: boolean;
-  isServerP20OrGreater: boolean;
-}
 
 function sendToRight(model: any, selectedObject: TInspectorObject[]) {
   tdsVscode.postMessage({
@@ -69,26 +53,42 @@ function sendToLeft(model: any, selectedObject: TInspectorObject[]) {
   });
 }
 
-function sendIncludeTRes(model: any, includeTRes: boolean) {
-  tdsVscode.postMessage({
-    command: PatchGenerateCommandEnum.IncludeTRes,
-    data: {
-      model: model,
-      includeTRes: includeTRes
-    }
-  });
-}
 
-function SelectResourceComponent(props: TSelectObjectComponentProps) {
-  const { control, getValues } = useForm();
+interface IPatchGenerateViewProps {
+  isServerP20OrGreater: boolean;
+}
+//FIX: REVISAR PROCESSO. MUITO RUIM.
+let selectedObjects: Record<string, string[]> = {};
+
+function columnsDef(isServerP20OrGreater: boolean): TTdsDataGridColumnDef[] {
   const columnDef: TTdsDataGridColumnDef[] = [
     {
       type: "boolean",
       name: "checked",
       label: " ",
-      width: "0.5fr",
+      width: "2fr",
       sortable: false,
-      readOnly: false
+      readOnly: false,
+      onChange: (e: any, fieldName: string, row: any) => {
+        e.preventDefault();
+        const target = e.target as HTMLInputElement;
+        const targetField: string = fieldName.split(".")[0];
+
+        if (selectedObjects[targetField]) {
+          const i: number = selectedObjects[targetField].indexOf(row.source);
+          if (i > -1) {
+            delete selectedObjects[targetField][i];
+          } else {
+            selectedObjects[targetField].push(row.source);
+          }
+        } else {
+          selectedObjects[targetField] = [];
+          selectedObjects[targetField].push(row.source);
+        }
+
+        return target.checked;
+
+      }
     },
     {
       type: "string",
@@ -96,7 +96,7 @@ function SelectResourceComponent(props: TSelectObjectComponentProps) {
       label: "Object",
       width: "3fr",
       sortable: true,
-      sortDirection: "",
+      sortDirection: "asc",
     },
     {
       type: "datetime",
@@ -108,7 +108,7 @@ function SelectResourceComponent(props: TSelectObjectComponentProps) {
     }
   ];
 
-  if (props.isServerP20OrGreater) {
+  if (isServerP20OrGreater) {
     columnDef.push({
       type: "string",
       name: "source_status",
@@ -139,40 +139,14 @@ function SelectResourceComponent(props: TSelectObjectComponentProps) {
     });
   }
 
-  const topActions: TTdsDataGridAction[] = [{
-    id: "btnIncludeTRes",
-    caption: getValues("includeTRes") ? tdsVscode.l10n.t("Exclude TRES") : tdsVscode.l10n.t("Include TRES"),
-    type: "button",
-    onClick: () => {
-      sendIncludeTRes(getValues(), !getValues("includeTRes"));
-    }
-  }];
-
-  return (
-    <section className="tds-grid-container select-resource-component">
-      {props.label && <TdsLabelField name={props.fieldName} label={props.label} />}
-      <TdsDataGrid
-        id={props.id ? props.id : props.fieldName}
-        columnDef={columnDef}
-        dataSource={(getValues(props.fieldName) || []) as TInspectorObject[]}
-        options={{
-          topActions: props.showIncludeTRes ? topActions : [],
-          grouping: false
-        }}>
-
-      </TdsDataGrid>
-    </section>
-  );
-}
-
-interface IPatchGenerateViewProps {
-  isServerP20OrGreater: boolean;
+  return columnDef;
 }
 
 export default function PatchGenerateView(props: IPatchGenerateViewProps) {
   const methods = useForm<TGeneratePatchFromRpoModel>({
-    defaultValues: EMPTY_MODEL,
-    mode: "all"
+    defaultValues: EMPTY_GENERATE_PATCH_FROM_RPO_MODEL,
+    mode: "all",
+    // values: props.
   })
   const watchObjectsLeft: any = methods.watch("objectsLeft");
   const watchObjectsRight: any = methods.watch("objectsRight");
@@ -204,7 +178,7 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
 
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);
-
+          selectedObjects = {}
           break;
         default:
           break;
@@ -217,6 +191,44 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
       window.removeEventListener('message', listener);
     }
   }, []);
+
+  const sendIncludeTRes = (model: any, includeTRes: boolean) => {
+    tdsVscode.postMessage({
+      command: PatchGenerateCommandEnum.IncludeTRes,
+      data: {
+        model: model,
+        includeTRes: includeTRes
+      }
+    });
+  }
+
+  const topActions: TTdsDataGridAction[] = [{
+    id: "btnIncludeTRes",
+    caption: methods.getValues("includeTRes") ? tdsVscode.l10n.t("Exclude TRES") : tdsVscode.l10n.t("Include TRES"),
+    type: "button",
+    onClick: () => {
+      sendIncludeTRes(methods.getValues(), !methods.getValues("includeTRes"));
+    }
+  }];
+
+  const selectResource = (id: string, label: string, dataSource: any[], showIncludeTRes: boolean, modelField: string) => {
+
+    return (
+      <section className="tds-grid-container select-resource-component">
+        <TdsLabelField key={`resource_name_${id}`} name="resource_name" className="tds-bold" label={label} />
+        <TdsDataGrid
+          key={`data_grid_${id}`}
+          id={id}
+          columnDef={columnsDef(props.isServerP20OrGreater)}
+          dataSource={dataSource}
+          options={{
+            topActions: showIncludeTRes ? topActions : [],
+            grouping: false
+          }}>
+        </TdsDataGrid>
+      </section>
+    )
+  }
 
   return (
     <TdsPage title={tdsVscode.l10n.t("Patch Generation from RPO")} linkToDoc="[Geração de pacote de atualização]servers.md#registro-de-servidores">
@@ -247,38 +259,30 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
         </section>
 
         <section className="tds-row-container" id="selectGrid" >
-          {watchObjectsLeft && <SelectResourceComponent
-            isServerP20OrGreater={props.isServerP20OrGreater}
-            fieldName="objectsLeft"
-            label={tdsVscode.l10n.t("RPO Objects")}
-            showIncludeTRes={true}
-          />
-          }
+          {watchObjectsLeft && selectResource("objects_left", tdsVscode.l10n.t("RPO Objects"),
+            methods.getValues("objectsLeft"), true, "objectsLeft")}
+
           <section className="tds-row-container-column" id="directionButtons" >
             <VSCodeButton appearance="icon" onClick={() => {
-              const selectedObjects = methods.getValues("objectsLeft").filter((value) =>
-                (typeof value.checked == "string") ? value.checked == "true" : value.checked);
-              sendToRight(methods.getValues(), selectedObjects);
+              const objects = methods.getValues("objectsLeft").filter((value) =>
+                selectedObjects["objects_left"].indexOf(value.source) > -1);
+
+              sendToRight(methods.getValues(), objects);
             }} >
               <span className="codicon codicon-arrow-right"></span>
             </VSCodeButton>
             <VSCodeButton appearance="icon" onClick={() => {
-              const selectedObjects = methods.getValues("objectsRight").filter((value) =>
-                (typeof value.checked == "string") ? value.checked == "true" : value.checked);
+              const objects = methods.getValues("objectsRight").filter((value) =>
+                selectedObjects["objects_right"].indexOf(value.source) > -1);
 
-              sendToLeft(methods.getValues(), selectedObjects);
+              sendToLeft(methods.getValues(), objects);
             }} >
               <span className="codicon codicon-arrow-left"></span>
             </VSCodeButton>
           </section>
 
-          {watchObjectsRight && <SelectResourceComponent
-            isServerP20OrGreater={props.isServerP20OrGreater}
-            label={tdsVscode.l10n.t("To patch")}
-            fieldName="objectsRight"
-            showIncludeTRes={false}
-          />
-          }
+          {watchObjectsRight && selectResource("objects_right", tdsVscode.l10n.t("To patch"),
+            methods.getValues("objectsRight"), false, "objectsRight")}
         </section>
       </TdsForm>
     </TdsPage>

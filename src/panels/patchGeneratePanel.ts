@@ -21,17 +21,8 @@ import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webv
 import Utils, { MESSAGE_TYPE, ServersConfig, serverExceptionCodeToString } from "../utils";
 import { IObjectData, IPatchResult, sendInspectorObjectsRequest, sendPatchGenerateMessage } from "../protocolMessages";
 import { ResponseError } from "vscode-languageclient";
-import { CommonCommandFromWebViewEnum, PatchGenerateCommand, PatchGenerateCommandEnum, ReceiveMessage, TFieldErrors, TGeneratePatchFromRpoModel, TInspectorObject, isErrors } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, EMPTY_GENERATE_PATCH_FROM_RPO_MODEL, PatchGenerateCommand, PatchGenerateCommandEnum, ReceiveMessage, TFieldErrors, TGeneratePatchFromRpoModel, TInspectorObject, isErrors } from "tds-shared/lib";
 import { TdsPanel } from "./panel";
-
-
-const EMPTY_MODEL: TGeneratePatchFromRpoModel = {
-  patchName: "",
-  patchDest: "",
-  includeTRes: false,
-  objectsLeft: [],
-  objectsRight: []
-}
 
 export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoModel> {
   public static currentPanel: PatchGenerateFromRpoPanel | undefined;
@@ -116,7 +107,7 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
             async (progress, token) => {
               progress.report({ increment: 0 });
 
-              data.model = await this.getDataFromServer(EMPTY_MODEL, false);
+              data.model = await this.getDataFromServer(EMPTY_GENERATE_PATCH_FROM_RPO_MODEL, false);
 
               this.sendUpdateModel(data.model, undefined);
 

@@ -15,10 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+
 export { CommonCommandFromWebViewEnum } from "./webviewProtocol";
 export { CommonCommandToWebViewEnum } from "./webviewProtocol";
 export { TAuthorization, TCompileKey, TCompileKeyModel } from "./models/compileKeyModel";
-export { PatchGenerateCommandEnum, PatchGenerateCommand, TGeneratePatchFromRpoModel, TGeneratePatchByDifferenceModel } from "./models/generatePatchModel";
 export { TInspectorObject, TInspectorObjectModel } from "./models/inspectObjectModel";
 export { TWebServiceModel } from "./models/webServiceModel"
 export { TErrorType, TFieldError, TFieldErrors, isErrors, TAbstractModelPanel, ReceiveMessage, SendMessage, TSendSelectResourceProps } from "./panels/panelInterface"
@@ -33,3 +33,6 @@ export { EMPTY_SERVER_MODEL } from "./models/serverModel"
 
 export type { TIncludePath, TIncludeModel, TGlobalIncludeModel } from "./models/includeModel";
 export { EMPTY_GLOBAL_INCLUDE_MODEL, EMPTY_INCLUDE_MODEL } from "./models/includeModel";
+
+export type { TGeneratePatchFromRpoModel, TGeneratePatchByDifferenceModel } from "./models/generatePatchModel";
+export { PatchGenerateCommandEnum, PatchGenerateCommand, EMPTY_GENERATE_PATCH_FROM_RPO_MODEL } from "./models/generatePatchModel";

@@ -38,3 +38,11 @@ export type TGeneratePatchByDifferenceModel = TAbstractModelPanel & {
 	patchName: string;
 	patchDest: string;
 }
+
+export const EMPTY_GENERATE_PATCH_FROM_RPO_MODEL: TGeneratePatchFromRpoModel = {
+	patchDest: "",
+	patchName: "",
+	includeTRes: false,
+	objectsLeft: [],
+	objectsRight: [],
+}
