@@ -14,6 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { CommonCommandFromWebViewEnum } from "../webviewProtocol";
+
+export enum PatchEditorCommandEnum {
+	Export = "EXPORT"
+}
+
+export type PatchEditorCommand = CommonCommandFromWebViewEnum & PatchEditorCommandEnum;
+
 export type TPatchInfo = {
 	name: string,
 	type: string,

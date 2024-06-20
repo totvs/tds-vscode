@@ -16,12 +16,12 @@ limitations under the License.
 
 import "./patchEditor.css";
 import React from "react";
-import { TTdsDataGridColumnDef, TdsDataGrid, TdsForm, TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
+import { IFormAction, TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsForm, TdsFormActionsEnum, TdsPage, getDefaultActionsForm, tdsVscode } from "@totvs/tds-webtoolkit";
 import { useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { TPatchEditorModel } from "tds-shared/lib";
-import { EMPTY_PATCH_EDITOR_MODEL, TPatchInfo } from "tds-shared/lib/models/patchEditorModel";
+import { EMPTY_PATCH_EDITOR_MODEL, PatchEditorCommandEnum, TPatchInfo } from "tds-shared/lib/models/patchEditorModel";
 
 enum ReceiveCommandEnum {
 }
@@ -77,6 +77,16 @@ function objectColumns(): TTdsDataGridColumnDef[] {
   return result;
 }
 
+function sendExport(model: any, type: string) {
+  tdsVscode.postMessage({
+    command: PatchEditorCommandEnum.Export,
+    data: {
+      model: model,
+      type: type,
+    }
+  });
+}
+
 export default function PatchEditorView() {
   const methods = useForm<TPatchEditorModel>({
     defaultValues: EMPTY_PATCH_EDITOR_MODEL,
@@ -114,6 +124,19 @@ export default function PatchEditorView() {
     }
   }, []);
 
+  const bottomActions: TTdsDataGridAction[] = [
+    {
+      id: "btnExportTxt",
+      caption: tdsVscode.l10n.t("Export (TXT)"),
+      isProcessRing: true,
+      enabled: methods.formState.isValid,
+      type: "button",
+      onClick: () => {
+        sendExport(methods.getValues(), "TXT");
+      }
+    }
+  ];
+
   return (
     <TdsPage title={tdsVscode.l10n.t("Patch Objects")} >
       <TdsForm
@@ -123,14 +146,14 @@ export default function PatchEditorView() {
           tdsVscode.l10n.formatNumber(methods.getValues("lengthFile"), "int"),
           tdsVscode.l10n.formatNumber(methods.getValues("lengthFile") / 1024, "float", 1))
         }
+        actions={[]}
       >
         <TdsDataGrid
           id="patchEditorGrid"
           columnDef={objectColumns()}
           dataSource={dataSource}
           options={{
-            // sortable: true,
-            // grouping:
+            bottomActions: bottomActions
           }}
         />
       </TdsForm>

@@ -1771,3 +1771,61 @@ export function formatDate(value: Date): string {
   return result;
 }
 
+type TNumberFormat = "int" | "float" | "hex" | "HEX" | "number";
+
+/**
+  * Formats a number value using the specified format type and the configured locale.
+  *
+  * @param value - The number value to format.
+  * @param type - The format type, can be "int", "float", "hex", or "HEX".
+  * @param decimalsOrHexDigits - The number of decimal places or hex digits to use for the formatted number.
+  * @returns The formatted number string.
+  */
+export function formatNumber(value: number, type: TNumberFormat, decimalsOrHexDigits: number = 8): string {
+  let result: string = value.toLocaleString();
+  const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
+  const formatLocale: string = configADVPL.get("formatLocale", "");
+
+  if (formatLocale !== "") {
+    try {
+      if ((type === "hex") || (type === "HEX")) {
+        result = "0".repeat(decimalsOrHexDigits) + value.toString(16);
+        result = result.substring(result.length - decimalsOrHexDigits);
+        if (type === "HEX") {
+          result = result.toUpperCase();
+        }
+      } else {
+        let options: Intl.NumberFormatOptions = {
+          useGrouping: true,
+          minimumIntegerDigits: 1
+        }
+
+        if (type === "int") {
+          options = {
+            ...options,
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+            // minimumSignificantDigits: 0,
+            // maximumSignificantDigits: 0
+          };
+        } else if (type === "float") {
+          options = {
+            ...options,
+            minimumFractionDigits: decimalsOrHexDigits,
+            maximumFractionDigits: decimalsOrHexDigits,
+            // minimumSignificantDigits: decimalsOrHexDigits,
+            // maximumSignificantDigits: decimalsOrHexDigits
+          };
+        }
+        const valueFormat = new Intl.NumberFormat(formatLocale, options);
+        result = valueFormat.format(value);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  return result;
+}
+
+

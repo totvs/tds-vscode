@@ -23,8 +23,6 @@ export { TInspectorObject, TInspectorObjectModel } from "./models/inspectObjectM
 export { TWebServiceModel } from "./models/webServiceModel"
 export { TErrorType, TFieldError, TFieldErrors, isErrors, TAbstractModelPanel, ReceiveMessage, SendMessage, TSendSelectResourceProps } from "./panels/panelInterface"
 
-export type { TPatchEditorModel } from "./models/patchEditorModel";
-
 export { TApplyPatchModel, TPatchFileData } from "./models/applyPatchModel";
 export type { ApplyPatchCommand, ApplyPatchCommandEnum } from "./models/applyPatchModel";
 
@@ -36,3 +34,6 @@ export { EMPTY_GLOBAL_INCLUDE_MODEL, EMPTY_INCLUDE_MODEL } from "./models/includ
 
 export type { TGeneratePatchFromRpoModel, TGeneratePatchByDifferenceModel } from "./models/generatePatchModel";
 export { PatchGenerateCommandEnum, PatchGenerateCommand, EMPTY_GENERATE_PATCH_FROM_RPO_MODEL } from "./models/generatePatchModel";
+
+export type { TPatchEditorModel, PatchEditorCommand } from "./models/patchEditorModel";
+export { PatchEditorCommandEnum } from "./models/patchEditorModel";
