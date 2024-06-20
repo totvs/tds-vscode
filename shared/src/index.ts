@@ -1,5 +1,6 @@
 /*
 import { EMPTY_GLOBAL_INCLUDE_MODEL } from './models/includeModel';
+import { TRpoInfo } from 'tds-shared/lib';
 Copyright 2021 TOTVS S.A
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +15,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
 
 export { CommonCommandFromWebViewEnum } from "./webviewProtocol";
 export { CommonCommandToWebViewEnum } from "./webviewProtocol";
@@ -37,3 +37,6 @@ export { PatchGenerateCommandEnum, PatchGenerateCommand, EMPTY_GENERATE_PATCH_FR
 
 export type { TPatchEditorModel, PatchEditorCommand } from "./models/patchEditorModel";
 export { PatchEditorCommandEnum } from "./models/patchEditorModel";
+
+export type { TRpoInfo, TTreeNodeRpo, TRepositoryLogModel } from "./models/repositoryLogModel";
+export { EMPTY_RPO_INFO, EMPTY_TREE_NODE, EMPTY_REPOSITORY_MODEL } from "./models/repositoryLogModel";

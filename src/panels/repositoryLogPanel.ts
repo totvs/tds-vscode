@@ -1,0 +1,201 @@
+/*
+Copyright 2021-2024 TOTVS S.A
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http: //www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+import * as vscode from "vscode";
+import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
+import { ServersConfig, formatDate } from "../utils";
+import { CommonCommandFromWebViewEnum, EMPTY_REPOSITORY_MODEL, ReceiveMessage, TRpoInfo, TTreeNodeRpo } from "tds-shared/lib";
+import { IProgramApp, IRpoInfoData, IRpoPatch, IValidationInfo, sendRpoInfo, sendValidationRequest } from "../protocolMessages";
+import { TRepositoryLogModel, TServerType } from "tds-shared/lib";
+import { TFieldErrors, isErrors } from "tds-shared/lib";
+import { TdsPanel } from "./panel";
+import { languageClient } from "../extension";
+
+enum RepositoryLogCommandEnum {
+  ExportToTxt = "EXPORT_TO_TXT",
+  ExportToJson = "EXPORT_TO_JSON",
+}
+
+type RepositoryLogCommand = CommonCommandFromWebViewEnum & RepositoryLogCommandEnum;
+
+export class RepositoryLogPanel extends TdsPanel<TRepositoryLogModel> {
+  public static currentPanel: RepositoryLogPanel | undefined;
+
+  public static render(context: vscode.ExtensionContext): RepositoryLogPanel {
+    const extensionUri: vscode.Uri = context.extensionUri;
+
+    if (RepositoryLogPanel.currentPanel) {
+      // If the webview panel already exists reveal it
+      RepositoryLogPanel.currentPanel._panel.reveal(); //vscode.ViewColumn.One
+    } else {
+      // If a webview panel does not already exist create and show a new one
+      const panel = vscode.window.createWebviewPanel(
+        // Panel view type
+        "repository-log--panel",
+        // Panel title
+        vscode.l10n.t('Repository Log'),
+        // The editor column the panel should be displayed in
+        vscode.ViewColumn.One,
+        // Extra panel configurations
+        {
+          ...getExtraPanelConfigurations(extensionUri)
+        }
+      );
+
+      RepositoryLogPanel.currentPanel = new RepositoryLogPanel(panel, extensionUri);
+    }
+
+    return RepositoryLogPanel.currentPanel;
+  }
+
+  /**
+   * Cleans up and disposes of webview resources when the webview panel is closed.
+   */
+  public dispose() {
+    RepositoryLogPanel.currentPanel = undefined;
+
+    super.dispose();
+  }
+
+  /**
+   * Defines and returns the HTML that should be rendered within the webview panel.
+   *
+   * @remarks This is also the place where references to the React webview build files
+   * are created and inserted into the webview HTML.
+   *
+   * @param extensionUri The URI of the directory containing the extension
+   * @returns A template string literal containing the HTML that should be
+   * rendered within the webview panel
+   */
+  protected getWebviewContent(extensionUri: vscode.Uri) {
+
+    return getWebviewContent(this._panel.webview, extensionUri, "repositoryLogView",
+      { title: this._panel.title, translations: this.getTranslations() });
+  }
+
+  /**
+   * Sets up an event listener to listen for messages passed from the webview context and
+   * executes code based on the message that is received.
+   *
+   * @param webview A reference to the extension webview
+   */
+  protected async panelListener(message: ReceiveMessage<RepositoryLogCommand, TRepositoryLogModel>, result: any): Promise<any> {
+    const command: RepositoryLogCommand = message.command;
+    const data = message.data;
+
+    switch (command) {
+      case CommonCommandFromWebViewEnum.Ready:
+        if (data.model == undefined) {
+          let model: TRepositoryLogModel = EMPTY_REPOSITORY_MODEL;
+
+          this.updateRpoInfo(model);
+          this.sendUpdateModel(model, undefined);
+        }
+        break;
+    }
+  }
+
+  async validateModel(model: TRepositoryLogModel, errors: TFieldErrors<TRepositoryLogModel>): Promise<boolean> {
+
+    // if (model.rpoInfo.serverName.length == 0) {
+    //   errors.rpoInfo = { type: "required" };
+    // }
+
+    // if (!isErrors(errors)) {
+    //   vscode.window.setStatusBarMessage(
+    //     `$(gear~spin) ${vscode.l10n.t("Validating connection...")}`);
+
+    //   const validInfoNode: IValidationInfo = await sendValidationRequest(model.address, model.port, model.serverType);
+    //   if (validInfoNode.build == "") {
+    //     errors.serverName = { type: "validate", message: vscode.l10n.t("Server not found for build validate") };
+    //   }
+
+    //   vscode.window.setStatusBarMessage("");
+    // }
+
+    return !isErrors(errors);
+  }
+
+  async saveModel(model: TRepositoryLogModel): Promise<boolean> {
+
+    return true;
+  }
+
+  protected getTranslations(): Record<string, string> {
+    return {
+    }
+  }
+
+  private prepareNodes(parent: TTreeNodeRpo, rpoInfo: IRpoInfoData) {
+    const map: Record<string, TTreeNodeRpo> = {};
+
+    rpoInfo.rpoPatchs.forEach((rpoPatch: IRpoPatch) => {
+      const name: string = formatDate(rpoPatch.dateFileApplication, "date");
+      const key: string = name.replace("/", "_");
+
+      if (!map[key]) {
+        map[key] = { id: `node_${key}`, name: name, children: [], rpoPatch: undefined };
+        parent.children.push(map[key]);
+      }
+
+      map[key].children.push({
+        id: `node_${key}_${map[key].children.length}`,
+        name: name + (rpoPatch.isCustom ? " (Custom)" : ""),
+        children: [],
+        rpoPatch: rpoPatch,
+      });
+    });
+  }
+
+  private updateRpoInfo(model: TRepositoryLogModel): boolean {
+    const server = ServersConfig.getCurrentServer();
+
+    vscode.window.setStatusBarMessage(
+      "$(gear~spin)" +
+      vscode.l10n.t("Requesting data from the server [{0}]", server.name),
+      sendRpoInfo(server).then(
+        (rpoInfo: IRpoInfoData) => {
+          const parent: TTreeNodeRpo = {
+            id: "node_" + rpoInfo.environment,
+            name: rpoInfo.environment,
+            children: [],
+            rpoPatch: undefined,
+          };
+
+          model.rpoInfo.serverName = server.name;
+          model.rpoInfo.environment = server.environment;
+          model.rpoInfo.dateGeneration = new Date(rpoInfo.dateGeneration);
+          model.rpoInfo.rpoVersion = rpoInfo.rpoVersion;
+
+          this.prepareNodes(parent, rpoInfo);
+          model.treeNodes = parent;
+
+          this.sendUpdateModel(model, undefined);
+        },
+        (err: Error) => {
+          languageClient.error(err.message, err);
+          vscode.window.showErrorMessage(
+            err.message + vscode.l10n.t(". See log for details.")
+          );
+        }
+      )
+    );
+
+    return true;
+  }
+
+
+}

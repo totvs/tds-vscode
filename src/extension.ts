@@ -69,6 +69,7 @@ import { ApplyPatchPanel } from "./panels/patchApplyPanel";
 import { InspectorObjectPanel } from "./panels/inspectObjectPanel";
 import { PatchGenerateByDifferencePanel } from "./panels/patchGenerateByDifferencePanel";
 import { PatchEditorProvider } from "./panels/patchEditorPanel";
+import { RepositoryLogPanel } from "./panels/repositoryLogPanel";
 
 
 export let languageClient: TotvsLanguageClientA;
@@ -456,12 +457,11 @@ export function activate(context: ExtensionContext) {
   //rpo log
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      "totvs-developer-studio.open-loadrpoinfo-view",
+      "totvs-developer-studio.open-repositoryLog",
       () => {
-        vscode.window.setStatusBarMessage(
-          `$(gear~spin) ${vscode.l10n.t("Starting RPO load information...")}`,
-          // @@ Promise.resolve(openRpoInfoView(context))
-        );
+        if (checkServer() && !checkDebug()) {
+          RepositoryLogPanel.render(context)
+        }
       }
     )
   );

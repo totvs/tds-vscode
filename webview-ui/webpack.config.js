@@ -29,11 +29,11 @@ const COMPILE_KEY_PATH = path.join(SOURCE_FOLDER, "compileKey");
 const APPLY_PATCH_PATH = path.join(SOURCE_FOLDER, "applyPatch");
 const INSPECT_OBJECT_PATH = path.join(SOURCE_FOLDER, "inspectObject");
 const EDITOR_PATCH_PATH = path.join(SOURCE_FOLDER, "editorPatch");
+const REPOSITORY_LOG_PATH = path.join(SOURCE_FOLDER, "repositoryLog");
 
 // const REPLAY_PATH = path.join(__dirname, "./src/debug/tdsreplay/");
 // const MONITOR_PATH = path.join(__dirname, "./src/monitor/");
 // const RPO_INFO_PATH = path.join(__dirname, "./src/rpoInfo/");
-// const INSPECTOR_PATH = path.join(__dirname, "./src/inspect-harpia");
 
 module.exports = (env, argv) => {
   const production = (argv.mode === 'production') || (env.NODE_ENV === 'production');
@@ -87,6 +87,7 @@ module.exports = (env, argv) => {
       applyPatchView: path.join(APPLY_PATCH_PATH, "index.tsx"),
       inspectObjectView: path.join(INSPECT_OBJECT_PATH, "index.tsx"),
       editorPatchView: path.join(EDITOR_PATCH_PATH, "index.tsx"),
+      repositoryLogView: path.join(REPOSITORY_LOG_PATH, "index.tsx"),
 
       // timeLineView: path.join(REPLAY_PATH, "app/index.tsx"),
       // monitorPanel: path.join(MONITOR_PATH, "app/index.tsx"),

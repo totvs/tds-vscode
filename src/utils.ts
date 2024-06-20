@@ -1739,30 +1739,50 @@ export function pathErrorCodeToString(codeError: number, _default: string): stri
   return message;
 }
 
+type TDateFormat = "date" | "time" | "datetime";
+
 /**
  * Formats a given date object as a string using the specified locale format.
  *
  * @param value - The date object to be formatted.
- * @returns The formatted date string.
+    * @param type - The format type, can be "date", "time", or "datetime".
+* @returns The formatted date string.
  */
-export function formatDate(value: Date): string {
+export function formatDate(value: Date, type: TDateFormat = "datetime"): string {
   let result: string = value.toLocaleString();
   const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
   const formatLocale: string = configADVPL.get("formatLocale", "");
 
   if (formatLocale !== "") {
     try {
-      const options: Intl.DateTimeFormatOptions = {
-        year: "numeric",
-        month: "numeric",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        second: "numeric"
-      };
-      const dateTimeFormat1 = new Intl.DateTimeFormat(formatLocale, options);
+      let options: Intl.DateTimeFormatOptions = {};
 
-      result = dateTimeFormat1.format(value);
+      if (type === "date") {
+        options = {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric"
+        };
+      } else if (type === "time") {
+        options = {
+          hour: "numeric",
+          minute: "numeric",
+          second: "numeric"
+        };
+      } else if (type === "datetime") {
+        options = {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+          second: "numeric"
+        };
+      }
+
+      const dateTimeFormat = new Intl.DateTimeFormat(formatLocale, options);
+
+      result = dateTimeFormat.format(value);
     } catch (error) {
       result = value.toLocaleString()
     }

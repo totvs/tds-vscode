@@ -19,7 +19,6 @@ import { languageClient } from "./extension";
 import { DidChangeConfigurationNotification, ResponseError } from "vscode-languageclient";
 import { CompileResult } from "./compile/CompileResult";
 import { _debugEvent } from "./debug";
-//import { IRpoInfoData as RpoInfoResult } from "./rpoInfo/rpoPath";
 import { IRpoToken } from "./rpoToken";
 import { ServersConfig, serverExceptionCodeToString } from "./utils";
 import { ServerItem } from "./serverItem";
@@ -483,7 +482,33 @@ export function sendCompilation(
   });
 }
 
-export function sendRpoInfo(server: ServerItem): Thenable<any> { //RpoInfoResult
+export interface IProgramApp {
+  name: string;
+  date: Date;
+}
+
+export interface IRpoInfoData {
+  environment: string;
+  rpoVersion: string;
+  dateGeneration: Date;
+  rpoPatchs: IRpoPatch[]
+}
+
+export interface IRpoPatch {
+  dateFileApplication: Date;
+  dateFileGeneration: Date;
+  typePatch: number;
+  isCustom: boolean;
+  programsApp: IProgramApp[];
+}
+
+/**
+ * Sends a request to the language server to retrieve information about the RPO for the specified server.
+ *
+ * @param server - The server item containing the connection details.
+ * @returns A Promise that resolves to the RPO information data.
+ */
+export function sendRpoInfo(server: ServerItem): Thenable<IRpoInfoData> {
   if (_debugEvent) {
     return Promise.reject(
       new Error(vscode.l10n.t("This operation is not allowed during a debug."))
@@ -497,9 +522,38 @@ export function sendRpoInfo(server: ServerItem): Thenable<any> { //RpoInfoResult
         environment: server.environment,
       },
     })
-    .then((response: any) => { //RpoInfoResult
-      return response;
-    });
+    .then((response: IRpoInfoData) => { //RpoInfoResult
+      let rpoInfo: IRpoInfoData = {
+        environment: response.environment,
+        rpoVersion: response.rpoVersion,
+        dateGeneration: response.dateGeneration,
+        rpoPatchs: [],
+      };
+
+      response.rpoPatchs.forEach((rpoPatch: IRpoPatch) => {
+        const rpoPatchItem: IRpoPatch = {
+          dateFileApplication: new Date(rpoPatch.dateFileApplication),
+          dateFileGeneration: new Date(rpoPatch.dateFileGeneration),
+          typePatch: rpoPatch.typePatch > 10 ? rpoPatch.typePatch - 10 : rpoPatch.typePatch,
+          isCustom: rpoPatch.typePatch > 10,
+          programsApp: [],
+        };
+        rpoInfo.rpoPatchs.push(rpoPatchItem);
+
+        rpoPatch.programsApp.forEach((program: IProgramApp) => {
+          const programApp: IProgramApp = {
+            name: program.name,
+            date: new Date(program.date),
+          };
+
+          rpoPatchItem.programsApp.push(programApp);
+        });
+
+      });
+
+      return rpoInfo;
+    }
+    )
 }
 
 export function sendPatchInfo(

@@ -1010,7 +1010,7 @@
         }
       },
       {
-        "command": "totvs-developer-studio.open-loadrpoinfo-view",
+        "command": "totvs-developer-studio.open-repositoryLog",
         "title": "%totvs-developer-studio.open-rpoinfo%",
         "category": "TOTVS",
         "icon": {
@@ -1591,7 +1591,7 @@
           "group": "CtotvsPatch@3"
         },
         {
-          "command": "totvs-developer-studio.open-loadrpoinfo-view",
+          "command": "totvs-developer-studio.open-repositoryLog",
           "when": "view == totvs_server && viewItem == serverItem",
           "group": "CtotvsPatch@4"
         },
