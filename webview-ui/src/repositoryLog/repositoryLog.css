@@ -28,13 +28,19 @@ limitations under the License.
 	height: 100%;
 	flex-grow: 1;
 	align-items: flex-start;
-	gap: calc(var(--tds-hor-spacing)/2)
+	gap: 0 calc(var(--tds-hor-spacing)/2)
 }
 
 #rpoTree {
 	width: 25%;
 	margin: 0;
-	background-color: red;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+#rpoTree .tds-field-container+.tds-field-container {
+	margin-left: 0;
+	margin-top: calc(var(--tds-ver-spacing)/2)
 }
 
 #rpoInfo {

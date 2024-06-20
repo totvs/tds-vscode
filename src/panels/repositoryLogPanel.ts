@@ -17,9 +17,9 @@ limitations under the License.
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import { ServersConfig, formatDate } from "../utils";
-import { CommonCommandFromWebViewEnum, EMPTY_REPOSITORY_MODEL, ReceiveMessage, TRpoInfo, TTreeNodeRpo } from "tds-shared/lib";
-import { IProgramApp, IRpoInfoData, IRpoPatch, IValidationInfo, sendRpoInfo, sendValidationRequest } from "../protocolMessages";
-import { TRepositoryLogModel, TServerType } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, EMPTY_REPOSITORY_MODEL, ReceiveMessage, TTreeNodeRpo } from "tds-shared/lib";
+import { IRpoInfoData, IRpoPatch, sendRpoInfo } from "../protocolMessages";
+import { TRepositoryLogModel } from "tds-shared/lib";
 import { TFieldErrors, isErrors } from "tds-shared/lib";
 import { TdsPanel } from "./panel";
 import { languageClient } from "../extension";
@@ -175,10 +175,10 @@ export class RepositoryLogPanel extends TdsPanel<TRepositoryLogModel> {
             rpoPatch: undefined,
           };
 
-          model.rpoInfo.serverName = server.name;
-          model.rpoInfo.environment = server.environment;
-          model.rpoInfo.dateGeneration = new Date(rpoInfo.dateGeneration);
-          model.rpoInfo.rpoVersion = rpoInfo.rpoVersion;
+          model.serverName = server.name;
+          model.environment = server.environment;
+          model.dateGeneration = new Date(rpoInfo.dateGeneration);
+          model.rpoVersion = rpoInfo.rpoVersion;
 
           this.prepareNodes(parent, rpoInfo);
           model.treeNodes = parent;

@@ -17,14 +17,12 @@ limitations under the License.
 import "./repositoryLog.css";
 import { IFormAction, TdsFormActionsEnum, TdsPage, TdsProgressRing, getDefaultActionsForm } from "@totvs/tds-webtoolkit";
 import React from "react";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
-import { TdsCheckBoxField, TdsForm, TdsLabelField, TdsNumericField, TdsSelectionField, TdsSelectionFolderField, TdsSimpleTextField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
+import { TdsForm, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { tdsVscode } from '@totvs/tds-webtoolkit';
-import { TIncludePath, TRepositoryLogModel } from "tds-shared/lib";
+import { TRepositoryLogModel } from "tds-shared/lib";
 import { EMPTY_REPOSITORY_MODEL } from "tds-shared/lib/models/repositoryLogModel";
-import { Flex } from "./components/Flex";
 
 enum ReceiveCommandEnum {
 }
@@ -35,6 +33,8 @@ export default function RepositoryLogView() {
     defaultValues: EMPTY_REPOSITORY_MODEL,
     mode: "all"
   })
+  const rpoInfoWatch = methods.watch("serverName");
+  console.log("rpoInfoWatch ", rpoInfoWatch);
 
   const onSubmit: SubmitHandler<TRepositoryLogModel> = (data) => {
     // Não se aplica
@@ -79,28 +79,34 @@ export default function RepositoryLogView() {
 
         <section className="tds-row-container" id="repositoryLog">
           <section className="tds-row-container" id="rpoTree">
-            {model.rpoInfo.serverName !== ""
+            {rpoInfoWatch
               ? <>
-                <TdsLabelField
-                  key={"rpoInfo.serverName"}
-                  name={"rpoInfo.serverName"}
+                <TdsTextField
+                  key={"serverName"}
+                  name={"serverName"}
+                  readOnly={true}
                   label={tdsVscode.l10n.t("Server")} />
-                <TdsLabelField
-                  key={"rpoInfo.environment"}
-                  name={"rpoInfo.environment"}
+                <TdsTextField
+                  key={"environment"}
+                  name={"environment"}
+                  readOnly={true}
                   label={tdsVscode.l10n.t("Environment")} />
-                <TdsLabelField
-                  key={"rpoInfo.rpoVersion"}
-                  name={"rpoInfo.rpoVersion"}
+                <TdsTextField
+                  key={"rpoVersion"}
+                  name={"rpoVersion"}
+                  readOnly={true}
                   label={tdsVscode.l10n.t("RPO Version")} />
-                <TdsLabelField
-                  key={"rpoInfo.dateGeneration"}
-                  name={"rpoInfo.dateGeneration"}
+                <TdsTextField
+                  key={"dateGeneration"}
+                  name={"dateGeneration"}
+                  format={(value: string): string => {
+                    console.log("value", value);
+                    return tdsVscode.l10n.formatDate(new Date(value), "date");
+                  }}
+                  readOnly={true}
                   label={tdsVscode.l10n.t("Generation")}
                 />
-
-                {tdsVscode.l10n.formatDate(model.rpoInfo.dateGeneration, "date")}
-                {model.rpoInfo.rpoVersion}model.rpoInfo
+                {model.rpoVersion}model.rpoInfo
               </>
               :
               <TdsProgressRing />
