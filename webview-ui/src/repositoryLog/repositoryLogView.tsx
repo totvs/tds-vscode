@@ -23,7 +23,7 @@ import { TdsForm, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-w
 import { tdsVscode } from '@totvs/tds-webtoolkit';
 import { TRepositoryLogModel } from "tds-shared/lib";
 import { EMPTY_REPOSITORY_MODEL, TPatchInfoModel, TProgramAppModel } from "tds-shared/lib/models/repositoryLogModel";
-import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
+import { FastTreeItem, FastTreeView } from "./components/tree";
 
 enum ReceiveCommandEnum {
 }
@@ -106,52 +106,67 @@ export default function RepositoryLogView() {
         methods={methods}
         actions={formActions}>
 
+        <section className="tds-row-container">
+          <TdsTextField
+            key={"serverName"}
+            name={"serverName"}
+            readOnly={true}
+            label={tdsVscode.l10n.t("Server")} />
+          <TdsTextField
+            key={"rpoVersion"}
+            name={"rpoVersion"}
+            readOnly={true}
+            label={tdsVscode.l10n.t("RPO Version")} />
+        </section>
+
+        <section className="tds-row-container">
+          <TdsTextField
+            key={"environment"}
+            name={"environment"}
+            readOnly={true}
+            label={tdsVscode.l10n.t("Environment")} />
+          <TdsTextField
+            key={"dateGeneration"}
+            name={"dateGeneration"}
+            format={(value: string): string => {
+              return tdsVscode.l10n.formatDate(new Date(value), "date");
+            }}
+            readOnly={true}
+            label={tdsVscode.l10n.t("Generation")}
+          />
+        </section>
+
         <section className="tds-row-container" id="repositoryLog">
           <section className="tds-row-container" id="rpoTree">
             {rpoInfoWatch
               ? <>
-                <TdsTextField
-                  key={"serverName"}
-                  name={"serverName"}
-                  readOnly={true}
-                  label={tdsVscode.l10n.t("Server")} />
-                <TdsTextField
-                  key={"rpoVersion"}
-                  name={"rpoVersion"}
-                  readOnly={true}
-                  label={tdsVscode.l10n.t("RPO Version")} />
-                <TdsTextField
-                  key={"dateGeneration"}
-                  name={"dateGeneration"}
-                  format={(value: string): string => {
-                    return tdsVscode.l10n.formatDate(new Date(value), "date");
-                  }}
-                  readOnly={true}
-                  label={tdsVscode.l10n.t("Generation")}
-                />
-                <TdsTextField
-                  key={"environment"}
-                  name={"environment"}
-                  readOnly={true}
-                  label={tdsVscode.l10n.t("Environment")} />
                 <TdsLabelField
                   name={"lbl_monthly"}
                   label={tdsVscode.l10n.t("Applied in")}
                   className="tds-bold"
                 />
-                {
-                  getMonthly(model.rpoPatches).map((months: string, index: number) => {
-                    return (
-                      <VSCodeButton
-                        key={`btn_${index}`}
-                        className={`tds-button-button`}
-                        onClick={() => {
-                          console.log("patch ", months);
-                        }} >
-                        {months}
-                      </VSCodeButton>)
-                  })
-                }
+                <FastTreeView >
+                  {tdsVscode.l10n.t("Applied in")}
+                  {
+                    getMonthly(model.rpoPatches).map((month: string, index: number) => {
+                      return (
+                        <FastTreeItem>
+                          {month}
+                          {
+                            model.rpoPatches.map((patch: TPatchInfoModel) => {
+                              return (
+                                <FastTreeItem>
+                                  {tdsVscode.l10n.formatDate(patch.dateFileApplication, "date")}
+                                </FastTreeItem>
+                              )
+                            }
+                            )
+                          }
+                        </FastTreeItem>
+                      )
+                    })
+                  }
+                </FastTreeView>
               </>
               :
               <TdsProgressRing />
