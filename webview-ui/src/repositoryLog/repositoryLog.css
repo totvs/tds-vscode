@@ -46,5 +46,21 @@ limitations under the License.
 #rpoInfo {
 	width: 75%;
 	margin: 0;
-	background-color: green;
+	flex-direction: column;
+	align-items: unset;
+	justify-content: unset;
+}
+
+.tds-tree-view {
+	background-color: red;
+	width: 100%;
+}
+
+.tds-tree-view fast-tree-item {
+	background-color: blue;
+}
+
+.tds-tree-view ::shadow .position-region,
+.tds-tree-view ::shadow .content-region {
+	background-color: transparent;
 }

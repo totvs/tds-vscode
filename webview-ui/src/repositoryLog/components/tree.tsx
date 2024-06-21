@@ -16,6 +16,8 @@ const { wrap } = provideReactWrapper(
 	React,
 	provideFASTDesignSystem()
 );
+const x = fastTreeItem();
+
 export const FastTreeView = wrap(fastTreeView());
 export const FastTreeItem = wrap(fastTreeItem());
 

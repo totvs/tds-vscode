@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import "./repositoryLog.css";
-import { IFormAction, TdsFormActionsEnum, TdsLabelField, TdsPage, TdsProgressRing, getDefaultActionsForm } from "@totvs/tds-webtoolkit";
+import { IFormAction, TdsDataGrid, TdsFormActionsEnum, TdsLabelField, TdsPage, TdsProgressRing, getDefaultActionsForm } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
@@ -51,7 +51,7 @@ export default function RepositoryLogView() {
     mode: "all"
   })
   const rpoInfoWatch = methods.watch("serverName");
-  console.log("rpoInfoWatch ", rpoInfoWatch);
+  const [currentPatch, setCurrentPatch] = React.useState<TPatchInfoModel | undefined>(undefined);
 
   const onSubmit: SubmitHandler<TRepositoryLogModel> = (data) => {
     // Não se aplica
@@ -137,50 +137,114 @@ export default function RepositoryLogView() {
         </section>
 
         <section className="tds-row-container" id="repositoryLog">
-          <section className="tds-row-container" id="rpoTree">
-            {rpoInfoWatch
-              ? <>
+          {rpoInfoWatch
+            ? <>
+              <section className="tds-row-container" id="rpoTree">
                 <TdsLabelField
+                  key={"lbl_monthly"}
                   name={"lbl_monthly"}
                   label={tdsVscode.l10n.t("Applied in")}
                   className="tds-bold"
                 />
-                <FastTreeView >
+                <FastTreeView className="tds-tree-view"
+                  key={"tree_monthly"}
+                >
                   {tdsVscode.l10n.t("Applied in")}
                   {
-                    getMonthly(model.rpoPatches).map((month: string, index: number) => {
-                      return (
-                        <FastTreeItem>
-                          {month}
-                          {
-                            model.rpoPatches.map((patch: TPatchInfoModel) => {
-                              return (
-                                <FastTreeItem>
-                                  {tdsVscode.l10n.formatDate(patch.dateFileApplication, "date")}
-                                </FastTreeItem>
-                              )
+                    getMonthly(model.rpoPatches)
+                      .sort((a: string, b: string) => a.localeCompare(b))
+                      .map((month: string, index: number) => {
+                        return (
+                          <FastTreeItem key={`tree_item_${index}`} className="tds-tree-item">
+                            {month}
+                            {
+                              model.rpoPatches
+                                .filter((patch: TPatchInfoModel) => {
+                                  const dateFileApplicationMonth: string = patch.dateFileApplication.toLocaleString(tdsVscode.l10n.formatLocale, { month: "numeric", year: "numeric" });
+
+                                  return dateFileApplicationMonth == month;
+                                }
+                                )
+                                .sort((a: TPatchInfoModel, b: TPatchInfoModel) => a.dateFileApplication.getTime() - b.dateFileApplication.getTime())
+                                .map((patch: TPatchInfoModel, indexMonth: number) => {
+                                  return (
+                                    <FastTreeItem key={`tree_item_${index}_${indexMonth}`} className="tds-tree-item"
+                                      onClick={() => {
+                                        setCurrentPatch(patch);
+                                      }}
+                                    >
+                                      {tdsVscode.l10n.formatDate(patch.dateFileApplication, "date")}
+                                    </FastTreeItem>
+                                  )
+                                }
+                                )
                             }
-                            )
-                          }
-                        </FastTreeItem>
-                      )
-                    })
+                          </FastTreeItem>
+                        )
+                      })
                   }
                 </FastTreeView>
-              </>
-              :
-              <TdsProgressRing />
-            }
-          </section>
+              </section>
 
-          <section className="tds-row-container" id="rpoInfo">
-            RpoInfo
-          </section>
-
+              {currentPatch !== undefined
+                ? <section className="tds-row-container" id="rpoInfo">
+                  <section className="tds-row-container">
+                    <TdsTextField
+                      key={"generation_date"}
+                      name={"generation_date"}
+                      readOnly={true}
+                      label={tdsVscode.l10n.t("Generated in")}
+                      format={(value: string): string => {
+                        return tdsVscode.l10n.formatDate(currentPatch.dateFileGeneration, "date");
+                      }}
+                    />
+                    <TdsTextField
+                      key={"date_applied"}
+                      name={"date_applied"}
+                      format={(value: string): string => {
+                        return tdsVscode.l10n.formatDate(currentPatch.dateFileApplication, "date");
+                      }}
+                      readOnly={true}
+                      label={tdsVscode.l10n.t("Applied in")}
+                    />
+                  </section>
+                  <section className="tds-row-container">
+                    <TdsDataGrid
+                      id={"grd_pathInfo"}
+                      columnDef={[
+                        {
+                          name: "name",
+                          label: "Program",
+                          type: "string",
+                          width: "2fr",
+                          sortDirection: "asc",
+                          grouping: false
+                        },
+                        {
+                          name: "date",
+                          label: "Date",
+                          type: "datetime",
+                          width: "1fr",
+                          grouping: false
+                        }
+                      ]}
+                      dataSource={currentPatch.programsApp}
+                      options={{
+                        bottomActions: [],
+                        topActions: [],
+                        pageSize: 1000,
+                        pageSizeOptions: []
+                      }} />
+                  </section>
+                </section>
+                : <>{tdsVscode.l10n.t("Select the application date to see the details.")}.</>
+              }
+            </>
+            :
+            <TdsProgressRing />
+          }
         </section>
-
-
       </TdsForm>
-    </TdsPage>
+    </TdsPage >
   );
 }
