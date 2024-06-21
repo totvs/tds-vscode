@@ -38,5 +38,5 @@ export { PatchGenerateCommandEnum, PatchGenerateCommand, EMPTY_GENERATE_PATCH_FR
 export type { TPatchEditorModel, PatchEditorCommand } from "./models/patchEditorModel";
 export { PatchEditorCommandEnum } from "./models/patchEditorModel";
 
-export type { TTreeNodeRpo, TRepositoryLogModel } from "./models/repositoryLogModel";
-export { EMPTY_TREE_NODE, EMPTY_REPOSITORY_MODEL } from "./models/repositoryLogModel";
+export type { TRepositoryLogModel, TPatchInfoModel, TProgramAppModel } from "./models/repositoryLogModel";
+export {EMPTY_REPOSITORY_MODEL } from "./models/repositoryLogModel";

@@ -16,12 +16,12 @@ limitations under the License.
 
 import { TAbstractModelPanel } from "../panels/panelInterface";
 
-export type TTreeNodeRpo = {
-	id: string;
-	name: string;
-	children: TTreeNodeRpo[];
-	rpoPatch: any;
-}
+// export type TTreeNodeRpo = {
+// 	id: string;
+// 	name: string;
+// 	children: TTreeNodeRpo[];
+// 	rpoPatch: any;
+// }
 
 export type TRepositoryLogModel = TAbstractModelPanel & {
 	serverName: string;
@@ -35,20 +35,26 @@ export type TRepositoryLogModel = TAbstractModelPanel & {
 	// rpoDate: string;
 	// rpoUser: Date;
 	// rpoComment: string;
-	treeNodes: TTreeNodeRpo,
+	rpoPatches: TPatchInfoModel[],
 }
 
-export const EMPTY_TREE_NODE: TTreeNodeRpo = {
-	id: "",
-	name: "",
-	children: [],
-	rpoPatch: undefined
+export type TPatchInfoModel = {
+	dateFileApplication: Date;
+	dateFileGeneration: Date;
+	typePatch: number;
+	isCustom: boolean;
+	programsApp: TProgramAppModel[];
+}
+
+export type TProgramAppModel = {
+	name: string;
+	date: Date;
 }
 
 export const EMPTY_REPOSITORY_MODEL: TRepositoryLogModel = {
 	serverName: "",
 	environment: "",
 	rpoVersion: "",
-	dateGeneration: new Date(),
-	treeNodes: EMPTY_TREE_NODE
+	dateGeneration: new Date(0),
+	rpoPatches: []
 }

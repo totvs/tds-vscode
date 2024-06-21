@@ -15,18 +15,35 @@ limitations under the License.
 */
 
 import "./repositoryLog.css";
-import { IFormAction, TdsFormActionsEnum, TdsPage, TdsProgressRing, getDefaultActionsForm } from "@totvs/tds-webtoolkit";
+import { IFormAction, TdsFormActionsEnum, TdsLabelField, TdsPage, TdsProgressRing, getDefaultActionsForm } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { tdsVscode } from '@totvs/tds-webtoolkit';
 import { TRepositoryLogModel } from "tds-shared/lib";
-import { EMPTY_REPOSITORY_MODEL } from "tds-shared/lib/models/repositoryLogModel";
+import { EMPTY_REPOSITORY_MODEL, TPatchInfoModel, TProgramAppModel } from "tds-shared/lib/models/repositoryLogModel";
+import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
 
 enum ReceiveCommandEnum {
 }
 type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TRepositoryLogModel>;
+
+function getMonthly(rpoInfos: TPatchInfoModel[]): string[] {
+  const monthly: string[] = [];
+
+  console.log("rpoInfos ", rpoInfos);
+
+  rpoInfos.forEach((rpoInfo: TPatchInfoModel) => {
+    const dateFileApplicationMonth: string = rpoInfo.dateFileApplication.toLocaleString(tdsVscode.l10n.formatLocale, { month: "numeric", year: "numeric" });
+
+    if (!monthly.includes(dateFileApplicationMonth)) {
+      monthly.push(dateFileApplicationMonth);
+    }
+  })
+
+  return monthly;
+}
 
 export default function RepositoryLogView() {
   const methods = useForm({
@@ -49,7 +66,19 @@ export default function RepositoryLogView() {
           const model: TRepositoryLogModel = command.data.model;
           const errors: any = command.data.errors;
 
-          console.log(model);
+          model.dateGeneration = new Date(model.dateGeneration);
+          model.rpoPatches = model.rpoPatches.map((patch: TPatchInfoModel) => {
+            patch.dateFileApplication = new Date(patch.dateFileApplication);
+            patch.dateFileGeneration = new Date(patch.dateFileGeneration);
+
+            patch.programsApp = patch.programsApp.map((programApp: TProgramAppModel) => {
+              programApp.date = new Date(programApp.date);
+
+              return programApp;
+            });
+
+            return patch;
+          });
 
           setDataModel<TRepositoryLogModel>(methods.setValue, model);
           setErrorModel(methods.setError, errors);
@@ -87,11 +116,6 @@ export default function RepositoryLogView() {
                   readOnly={true}
                   label={tdsVscode.l10n.t("Server")} />
                 <TdsTextField
-                  key={"environment"}
-                  name={"environment"}
-                  readOnly={true}
-                  label={tdsVscode.l10n.t("Environment")} />
-                <TdsTextField
                   key={"rpoVersion"}
                   name={"rpoVersion"}
                   readOnly={true}
@@ -100,13 +124,34 @@ export default function RepositoryLogView() {
                   key={"dateGeneration"}
                   name={"dateGeneration"}
                   format={(value: string): string => {
-                    console.log("value", value);
                     return tdsVscode.l10n.formatDate(new Date(value), "date");
                   }}
                   readOnly={true}
                   label={tdsVscode.l10n.t("Generation")}
                 />
-                {model.rpoVersion}model.rpoInfo
+                <TdsTextField
+                  key={"environment"}
+                  name={"environment"}
+                  readOnly={true}
+                  label={tdsVscode.l10n.t("Environment")} />
+                <TdsLabelField
+                  name={"lbl_monthly"}
+                  label={tdsVscode.l10n.t("Applied in")}
+                  className="tds-bold"
+                />
+                {
+                  getMonthly(model.rpoPatches).map((months: string, index: number) => {
+                    return (
+                      <VSCodeButton
+                        key={`btn_${index}`}
+                        className={`tds-button-button`}
+                        onClick={() => {
+                          console.log("patch ", months);
+                        }} >
+                        {months}
+                      </VSCodeButton>)
+                  })
+                }
               </>
               :
               <TdsProgressRing />

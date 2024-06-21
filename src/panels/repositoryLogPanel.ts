@@ -16,9 +16,9 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import { ServersConfig, formatDate } from "../utils";
-import { CommonCommandFromWebViewEnum, EMPTY_REPOSITORY_MODEL, ReceiveMessage, TTreeNodeRpo } from "tds-shared/lib";
-import { IRpoInfoData, IRpoPatch, sendRpoInfo } from "../protocolMessages";
+import { ServersConfig } from "../utils";
+import { CommonCommandFromWebViewEnum, EMPTY_REPOSITORY_MODEL, ReceiveMessage, TPatchInfoModel } from "tds-shared/lib";
+import { IRpoInfoData, sendRpoInfo } from "../protocolMessages";
 import { TRepositoryLogModel } from "tds-shared/lib";
 import { TFieldErrors, isErrors } from "tds-shared/lib";
 import { TdsPanel } from "./panel";
@@ -110,26 +110,13 @@ export class RepositoryLogPanel extends TdsPanel<TRepositoryLogModel> {
 
   async validateModel(model: TRepositoryLogModel, errors: TFieldErrors<TRepositoryLogModel>): Promise<boolean> {
 
-    // if (model.rpoInfo.serverName.length == 0) {
-    //   errors.rpoInfo = { type: "required" };
-    // }
-
-    // if (!isErrors(errors)) {
-    //   vscode.window.setStatusBarMessage(
-    //     `$(gear~spin) ${vscode.l10n.t("Validating connection...")}`);
-
-    //   const validInfoNode: IValidationInfo = await sendValidationRequest(model.address, model.port, model.serverType);
-    //   if (validInfoNode.build == "") {
-    //     errors.serverName = { type: "validate", message: vscode.l10n.t("Server not found for build validate") };
-    //   }
-
-    //   vscode.window.setStatusBarMessage("");
-    // }
+    //Does not apply
 
     return !isErrors(errors);
   }
 
   async saveModel(model: TRepositoryLogModel): Promise<boolean> {
+    //Does not apply
 
     return true;
   }
@@ -137,27 +124,6 @@ export class RepositoryLogPanel extends TdsPanel<TRepositoryLogModel> {
   protected getTranslations(): Record<string, string> {
     return {
     }
-  }
-
-  private prepareNodes(parent: TTreeNodeRpo, rpoInfo: IRpoInfoData) {
-    const map: Record<string, TTreeNodeRpo> = {};
-
-    rpoInfo.rpoPatchs.forEach((rpoPatch: IRpoPatch) => {
-      const name: string = formatDate(rpoPatch.dateFileApplication, "date");
-      const key: string = name.replace("/", "_");
-
-      if (!map[key]) {
-        map[key] = { id: `node_${key}`, name: name, children: [], rpoPatch: undefined };
-        parent.children.push(map[key]);
-      }
-
-      map[key].children.push({
-        id: `node_${key}_${map[key].children.length}`,
-        name: name + (rpoPatch.isCustom ? " (Custom)" : ""),
-        children: [],
-        rpoPatch: rpoPatch,
-      });
-    });
   }
 
   private updateRpoInfo(model: TRepositoryLogModel): boolean {
@@ -168,20 +134,13 @@ export class RepositoryLogPanel extends TdsPanel<TRepositoryLogModel> {
       vscode.l10n.t("Requesting data from the server [{0}]", server.name),
       sendRpoInfo(server).then(
         (rpoInfo: IRpoInfoData) => {
-          const parent: TTreeNodeRpo = {
-            id: "node_" + rpoInfo.environment,
-            name: rpoInfo.environment,
-            children: [],
-            rpoPatch: undefined,
-          };
-
           model.serverName = server.name;
           model.environment = server.environment;
           model.dateGeneration = new Date(rpoInfo.dateGeneration);
           model.rpoVersion = rpoInfo.rpoVersion;
+          model.rpoPatches = [];
 
-          this.prepareNodes(parent, rpoInfo);
-          model.treeNodes = parent;
+          model.rpoPatches.push(...rpoInfo.rpoPatchs);
 
           this.sendUpdateModel(model, undefined);
         },
