@@ -241,7 +241,7 @@ export default function RepositoryLogView() {
               }
             </>
             :
-            <TdsProgressRing />
+            <TdsProgressRing size="full" />
           }
         </section>
       </TdsForm>
