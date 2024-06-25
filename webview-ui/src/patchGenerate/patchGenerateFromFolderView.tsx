@@ -60,7 +60,7 @@ interface IPatchGenerateViewProps {
 //FIX: REVISAR PROCESSO. MUITO RUIM.
 let selectedObjects: Record<string, string[]> = {};
 
-export default function PatchGenerateView(props: IPatchGenerateViewProps) {
+export default function PatchGenerateFromFolderView(props: IPatchGenerateViewProps) {
   const methods = useForm<TGeneratePatchFromRpoModel>({
     defaultValues: EMPTY_GENERATE_PATCH_FROM_RPO_MODEL,
     mode: "all",
@@ -74,8 +74,9 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
 
     sendSaveAndClose(data);
   }
+  console.log("Dentro do folder");
 
-  const columnsDef = (isServerP20OrGreater: boolean): TTdsDataGridColumnDef[] => {
+  const columnsDef = (): TTdsDataGridColumnDef[] => {
     const columnDef: TTdsDataGridColumnDef[] = [
       {
         type: "boolean",
@@ -109,7 +110,7 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
         type: "string",
         name: "source",
         label: "Object",
-        width: "3fr",
+        width: "4fr",
         sortable: true,
         sortDirection: "asc",
       },
@@ -117,42 +118,11 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
         type: "datetime",
         name: "date",
         label: "Date",
-        width: "3fr",
+        width: "4fr",
         sortable: true,
         sortDirection: ""
       }
     ];
-
-    if (isServerP20OrGreater) {
-      columnDef.push({
-        type: "string",
-        name: "source_status",
-        label: tdsVscode.l10n.t("Status"),
-        width: "2fr",
-        lookup: {
-          N: "NoAuth",
-          P: "Prod",
-          D: "Dev"
-        },
-        sortable: false,
-        grouping: true,
-      });
-
-      columnDef.push({
-        type: "string",
-        name: "rpo_status",
-        label: tdsVscode.l10n.t("RPO"),
-        width: "2fr",
-        lookup: {
-          N: "None",
-          D: "Default",
-          T: "Tlpp",
-          C: "Custom",
-        },
-        sortable: false,
-        grouping: true,
-      });
-    }
 
     return columnDef;
   }
@@ -192,26 +162,7 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
     }
   }, []);
 
-  const sendIncludeTRes = (model: any, includeTRes: boolean) => {
-    tdsVscode.postMessage({
-      command: PatchGenerateCommandEnum.IncludeTRes,
-      data: {
-        model: model,
-        includeTRes: includeTRes
-      }
-    });
-  }
-
-  const topActions: TTdsDataGridAction[] = [{
-    id: "btnIncludeTRes",
-    caption: methods.getValues("includeTRes") ? tdsVscode.l10n.t("Exclude TRES") : tdsVscode.l10n.t("Include TRES"),
-    type: "button",
-    onClick: () => {
-      sendIncludeTRes(methods.getValues(), !methods.getValues("includeTRes"));
-    }
-  }];
-
-  const selectResource = (id: string, label: string, dataSource: any[], showIncludeTRes: boolean, modelField: string) => {
+  const selectFolderResource = (id: string, label: string, dataSource: any[], modelField: string) => {
 
     return (
       <section className="tds-grid-container select-resource-component">
@@ -219,10 +170,10 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
         <TdsDataGrid
           key={`data_grid_${id}`}
           id={id}
-          columnDef={columnsDef(props.isServerP20OrGreater)}
+          columnDef={columnsDef()}
           dataSource={dataSource}
           options={{
-            topActions: showIncludeTRes ? topActions : [],
+            topActions: [],
             grouping: false
           }}>
         </TdsDataGrid>
@@ -231,7 +182,7 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
   }
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("Patch Generation from RPO")} linkToDoc="[Geração de pacote de atualização]servers.md#registro-de-servidores">
+    <TdsPage title={tdsVscode.l10n.t("Patch Generation from Folder")}>
       <TdsForm methods={methods}
         onSubmit={onSubmit}>
         <section className="tds-row-container">
@@ -258,9 +209,26 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
 
         </section>
 
+        <section className="tds-row-container">
+          <TdsTextField
+            name="folder"
+            label={tdsVscode.l10n.t("Folder")}
+            info={tdsVscode.l10n.t("Enter the source folder")}
+            readOnly={true}
+            rules={{ required: true }}
+          />
+
+          <TdsSelectionFolderField
+            openLabel={tdsVscode.l10n.t("Source Folder")}
+            info={tdsVscode.l10n.t("Select source folder")}
+            name="btn-SourceFolder"
+            title={tdsVscode.l10n.t("Select source folder")}
+          />
+        </section>
+
         <section className="tds-row-container" id="selectGrid" >
-          {watchObjectsLeft && selectResource("objects_left", tdsVscode.l10n.t("RPO Objects"),
-            methods.getValues("objectsLeft"), true, "objectsLeft")}
+          {watchObjectsLeft && selectFolderResource("objects_left", tdsVscode.l10n.t("Files"),
+            methods.getValues("objectsLeft"), "objectsLeft")}
 
           <section className="tds-row-container-column" id="directionButtons" >
             <VSCodeButton appearance="icon" onClick={() => {
@@ -281,8 +249,8 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
             </VSCodeButton>
           </section>
 
-          {watchObjectsRight && selectResource("objects_right", tdsVscode.l10n.t("To patch"),
-            methods.getValues("objectsRight"), false, "objectsRight")}
+          {watchObjectsRight && selectFolderResource("objects_right", tdsVscode.l10n.t("To patch"),
+            methods.getValues("objectsRight"), "objectsRight")}
         </section>
       </TdsForm>
     </TdsPage>

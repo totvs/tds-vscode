@@ -17,41 +17,79 @@ limitations under the License.
 //TODO: Revisar processo. Aguardando documentação sobre regras de aplicação/geração de pacotes
 
 import * as vscode from "vscode";
+import * as fse from "fs-extra";
+import * as path from "path";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import Utils, { MESSAGE_TYPE, ServersConfig, serverExceptionCodeToString } from "../utils";
 import { IObjectData, IPatchResult, sendInspectorObjectsRequest, sendPatchGenerateMessage } from "../protocolMessages";
 import { ResponseError } from "vscode-languageclient";
 import { CommonCommandFromWebViewEnum, EMPTY_GENERATE_PATCH_FROM_RPO_MODEL, PatchGenerateCommand, PatchGenerateCommandEnum, ReceiveMessage, TFieldErrors, TGeneratePatchFromRpoModel, TInspectorObject, isErrors } from "tds-shared/lib";
 import { TdsPanel } from "./panel";
+import { basename } from 'path';
 
-export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoModel> {
+interface IGeneratePatchOptions {
+  fromRpo: boolean;
+  folder: vscode.Uri
+}
+const panels: {
+  rpo?: PatchGenerateFromRpoPanel;
+  folder?: PatchGenerateFromRpoPanel;
+} = {};
+
+/**
+ * Represents a panel for generating patches from RPO or folder models.
+ *
+ * The `PatchGenerateFromRpoPanel` class is responsible for rendering and managing the webview panel
+ * that allows users to generate patches from RPO models. It provides methods for handling user
+ * interactions, fetching data from the server, and saving the generated patch.
+ *
+ * This panel is a part of the TOTVS S.A. extension for Visual Studio Code.
+ */
+export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoModel, IGeneratePatchOptions> {
   public static currentPanel: PatchGenerateFromRpoPanel | undefined;
 
-  public static render(context: vscode.ExtensionContext): PatchGenerateFromRpoPanel {
+  public static render(context: vscode.ExtensionContext, folder: vscode.Uri): PatchGenerateFromRpoPanel {
     const extensionUri: vscode.Uri = context.extensionUri;
 
-    if (PatchGenerateFromRpoPanel.currentPanel) {
-      // If the webview panel already exists reveal it
-      PatchGenerateFromRpoPanel.currentPanel._panel.reveal(); //vscode.ViewColumn.One
+    if (folder) {
+      if (panels.folder) {
+        panels.folder._panel.reveal(); //vscode.ViewColumn.One
+        return panels.folder;
+      }
     } else {
-      // If a webview panel does not already exist create and show a new one
-      const panel = vscode.window.createWebviewPanel(
-        // Panel view type
-        "patch-generate-panel",
-        // Panel title
-        vscode.l10n.t("Patch Generation from RPO"),
-        // The editor column the panel should be displayed in
-        vscode.ViewColumn.One,
-        // Extra panel configurations
-        {
-          ...getExtraPanelConfigurations(extensionUri)
-        }
-      );
-
-      PatchGenerateFromRpoPanel.currentPanel = new PatchGenerateFromRpoPanel(panel, extensionUri);
+      if (panels.rpo) {
+        panels.rpo._panel.reveal(); //vscode.ViewColumn.One
+        return panels.rpo;
+      }
     }
 
-    return PatchGenerateFromRpoPanel.currentPanel;
+    // If a webview panel does not already exist create and show a new one
+    const panel = vscode.window.createWebviewPanel(
+      // Panel view type
+      "patch-generate-panel",
+      // Panel title
+      folder == undefined ? vscode.l10n.t("Patch Generation (RPO)") : vscode.l10n.t("Patch Generation (FOLDER)"),
+      // The editor column the panel should be displayed in
+      vscode.ViewColumn.One,
+      // Extra panel configurations
+      {
+        ...getExtraPanelConfigurations(extensionUri)
+      }
+    );
+
+    if (folder == undefined) {
+      panels.rpo = new PatchGenerateFromRpoPanel(panel, extensionUri, { fromRpo: true, folder: folder });
+      panels.rpo._panel.onDidDispose(() => {
+        panels.rpo = undefined;
+      }, null, context.subscriptions);
+    } else {
+      panels.folder = new PatchGenerateFromRpoPanel(panel, extensionUri, { fromRpo: false, folder: folder });
+      panels.folder._panel.onDidDispose(() => {
+        panels.folder = undefined;
+      }, null, context.subscriptions);
+    }
+
+    return folder == undefined ? panels.rpo : panels.folder;
   }
 
   /**
@@ -81,7 +119,8 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
         title: this._panel.title,
         translations: this.getTranslations(),
         data: {
-          isServerP20OrGreater: Utils.isServerP20OrGreater(server).toString()
+          isServerP20OrGreater: Utils.isServerP20OrGreater(server).toString(),
+          fromRpo: this._options.fromRpo ? "true" : "false"
         },
       });
   }
@@ -107,7 +146,12 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
             async (progress, token) => {
               progress.report({ increment: 0 });
 
-              data.model = await this.getDataFromServer(EMPTY_GENERATE_PATCH_FROM_RPO_MODEL, false);
+              if (this._options.fromRpo) {
+                data.model = await this.getDataFromServer(EMPTY_GENERATE_PATCH_FROM_RPO_MODEL, false);
+              } else {
+                data.model = await this.getDataFromFolder(
+                  { ...EMPTY_GENERATE_PATCH_FROM_RPO_MODEL, folder: this._options.folder.fsPath }, false);
+              }
 
               this.sendUpdateModel(data.model, undefined);
 
@@ -178,7 +222,6 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
           line: 0
         });
       });
-
     }
 
     model.objectsLeft = model.objectsLeft.sort((a: TInspectorObject, b: TInspectorObject) => a.source.localeCompare(b.source));
@@ -186,7 +229,40 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
     model.includeTRes = includeTRes;
 
     return model;
+  }
 
+  private async getDataFromFolder(model: TGeneratePatchFromRpoModel, includeTRes: boolean): Promise<TGeneratePatchFromRpoModel> {
+    var glob = require('glob');
+
+    const files: string[] = glob.sync(`*.*`, {
+      cwd: model.folder,
+      absolute: true,
+      ignore: ['**/node_modules/**']
+    });
+
+    model.objectsLeft = [];
+    if (files) {
+      files.forEach((resource: string) => {
+        const lstat: fse.Stats = fse.lstatSync(resource);
+
+        if (lstat.isFile()) {
+          model.objectsLeft.push({
+            source: path.basename(resource),
+            date: new Date(lstat.mtime),
+            source_status: "",
+            rpo_status: "",
+            function: "",
+            line: 0
+          });
+        }
+      });
+    }
+
+    model.objectsLeft = model.objectsLeft.sort((a: TInspectorObject, b: TInspectorObject) => a.source.localeCompare(b.source));
+    model.objectsRight = model.objectsRight.sort((a: TInspectorObject, b: TInspectorObject) => a.source.localeCompare(b.source));
+    model.includeTRes = includeTRes;
+
+    return model;
   }
 
   protected async validateModel(model: TGeneratePatchFromRpoModel, errors: TFieldErrors<TGeneratePatchFromRpoModel>): Promise<boolean> {
@@ -252,6 +328,7 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
   getTranslations(): Record<string, string> {
     return {
       "Patch Generation from RPO": vscode.l10n.t("Patch Generation from RPO"),
+      "Patch Generation from Folder": vscode.l10n.t("Patch Generation from Folder"),
       "Output Folder": vscode.l10n.t("Output Folder"),
       "Enter the destination folder of the generated update package": vscode.l10n.t("Enter the destination folder of the generated update package"),
       "Select the destination folder of the generated update package": vscode.l10n.t("Select the destination folder of the generated update package"),

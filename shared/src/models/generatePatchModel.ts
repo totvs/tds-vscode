@@ -31,6 +31,7 @@ export type TGeneratePatchFromRpoModel = TAbstractModelPanel & {
 	includeTRes: boolean;
 	objectsLeft: TInspectorObject[];
 	objectsRight: TInspectorObject[];
+	folder: string;
 }
 
 export type TGeneratePatchByDifferenceModel = TAbstractModelPanel & {
@@ -45,4 +46,5 @@ export const EMPTY_GENERATE_PATCH_FROM_RPO_MODEL: TGeneratePatchFromRpoModel = {
 	includeTRes: false,
 	objectsLeft: [],
 	objectsRight: [],
+	folder: ""
 }

@@ -61,7 +61,6 @@ import { ImportSourcesOnlyResultPanel } from "./panels/importSourcesOnlyResultPa
 import { GlobalIncludePanel } from "./panels/globalIncludePanel";
 import { GenerateWebServicePanel } from "./panels/generateWSPanel";
 import { PatchGenerateFromRpoPanel } from "./panels/patchGeneratePanel";
-import { patchGenerateFromFolder } from "./patch/patchUtil";
 import { CompileKeyPanel } from "./panels/compileKeyPanel";
 import { ApplyPatchPanel, OperationApplyPatchEnum } from "./panels/patchApplyPanel";
 import { InspectorObjectPanel } from "./panels/inspectObjectPanel";
@@ -330,7 +329,7 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.patchGenerate.fromRPO",
       () => {
         if (checkServer() && !checkDebug()) {
-          PatchGenerateFromRpoPanel.render(context)
+          PatchGenerateFromRpoPanel.render(context, undefined)
         }
       })
   );
@@ -390,22 +389,7 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-  // context.subscriptions.push(
-  //   vscode.commands.registerCommand(
-  //     "totvs-developer-studio.patchApply.fromFile",
-  //     (args: any) => {
-  //       if (checkServer() && !checkDebug()) {
-  //         if (instanceOfUri(args)) {
-  //           ApplyPatchPanel.render(context, [args], OperationApplyPatchEnum.APPLY);
-  //         } else {
-  //           ApplyPatchPanel.render(context, args, OperationApplyPatchEnum.APPLY);
-  //         }
-  //       }
-  //     }
-  //   )
-  // );
-
-  //Verifica o conteúdo de um patch pelo menu de contexto em arquivos de patch
+  //Apresenta o conteúdo de um patch pelo menu de contexto em arquivos de patch
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.patchInfos",
@@ -420,8 +404,11 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.patchGenerate.fromFolder",
-      (context) => patchGenerateFromFolder(context)
-    )
+      (args) => {
+        if (checkServer() && !checkDebug()) {
+          PatchGenerateFromRpoPanel.render(context, args)
+        }
+      })
   );
 
   //Apresenta página de Includes
