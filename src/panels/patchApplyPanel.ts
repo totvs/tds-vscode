@@ -425,5 +425,4 @@ function getRecursiveFiles(targetList: vscode.Uri[]): vscode.Uri[] {
   });
 
   return foundFiles;
-
 }

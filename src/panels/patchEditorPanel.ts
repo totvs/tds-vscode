@@ -6,7 +6,6 @@ import { ServersConfig, formatDate, formatNumber } from "../utils";
 import { sendPatchInfo } from "../protocolMessages";
 import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum } from "tds-shared/lib";
 import { getWebviewContent } from "./utilities/webview-utils";
-import { Key } from 'vscode-extension-tester';
 
 interface PatchDocumentDelegate {
   getFileData(): Promise<TPatchEditorModel>;
