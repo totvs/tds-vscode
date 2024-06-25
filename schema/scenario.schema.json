@@ -198,10 +198,6 @@
 			"type": "string",
 			"description": "Folder with patch files."
 		},
-		"templatesFolder": {
-			"type": "string",
-			"description": "Folder with templates files."
-		},
 		"projectFolder": {
 			"type": "string",
 			"description": "Folder with source and resource files."

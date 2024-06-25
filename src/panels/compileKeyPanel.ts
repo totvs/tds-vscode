@@ -92,7 +92,7 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
    * are created and inserted into the webview HTML.
    *
    * @param extensionUri The URI of the directory containing the extension
-   * @returns A template string literal containing the HTML that should be
+   * @returns A _template_ string literal containing the HTML that should be
    * rendered within the webview panel
    */
   protected getWebviewContent(extensionUri: vscode.Uri) {

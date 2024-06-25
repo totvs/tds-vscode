@@ -193,10 +193,6 @@ export class WorkbenchPageObject {
     return await this.testNotification(/Patch applied/);
   }
 
-  async isTemplateApplied(): Promise<boolean> {
-    return await this.testNotification(/Template applied/);
-  }
-
   async isOneOrMoreFileHaveError(): Promise<boolean> {
     await this.testNotification(/\[FATAL\] Aborting/);
     return await this.testNotification(/One or more files have.*/);
@@ -322,13 +318,6 @@ export class WorkbenchPageObject {
     return await this.testNotification(/User authenticated successfully/);
   }
 
-  async applyTemplateInProgress(): Promise<boolean> {
-    return await this.processInProgress(/Applying template/);
-  }
-
-  async waitApplyTemplate() {
-    await this.waitProcessFinish(/Applying template/, SLOW_PROCESS_TIMEOUT);
-  }
 
   async applyCheckingZipInProgress(): Promise<boolean> {
     return await this.processInProgress(/Checking zip files/);

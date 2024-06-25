@@ -35,7 +35,6 @@ test               raiz dos testes
  | | projecs       arquivos fontes, recursos e definições, em _AdvPL_ ou _4GL_
  | | replay        arquivos de gravação do _TDS Replay_
  | | scenario      arquivos com configurações dos cenários
- | | templayes     arquivos _templates_(_.tpl_)
  | unit            testes unitários
 ```
 

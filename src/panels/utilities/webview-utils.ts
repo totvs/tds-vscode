@@ -39,7 +39,7 @@ const JS_BASE_FOLDER: string[] = [
  * @param extensionUri The URI of the directory containing the extension
  * @param entryPointName The entry point name
  * @param options An json with extra options
- * @returns A template string literal containing the HTML that should be
+ * @returns A _template_ string literal containing the HTML that should be
  * rendered within the webview panel
  */
 export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri, entryPointName: string, options?: IWebviewContent): string {

@@ -47,7 +47,6 @@ import { register4glOutline } from "./outline";
 import { registerDebug, _debugEvent } from "./debug";
 // @@ import { openMonitorView } from "./monitor/monitorLoader";
 import { initStatusBarItems } from "./statusBar";
-import { openTemplateApplyView } from "./template/apply/formApplyTemplate";
 import { rpoTokenQuickPick, rpoTokenInputBox, saveRpoTokenString, setEnabledRpoToken } from "./rpoToken";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import { commandShowBuildTableResult } from "./compile/buildResult";
@@ -425,28 +424,6 @@ export function activate(context: ExtensionContext) {
         GenerateWebServicePanel.render(context)
       }
     }
-    )
-  );
-
-  //Aplica um template.
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "totvs-developer-studio.templateApply",
-      () => {
-        openTemplateApplyView(context, undefined);
-      }
-    )
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "totvs-developer-studio.templateApply.fromFile",
-      (args: any) => {
-        vscode.window.setStatusBarMessage(
-          `$(gear~spin) ${vscode.l10n.t("Starting template application...")}`,
-          Promise.resolve(openTemplateApplyView(context, args))
-        );
-      }
     )
   );
 

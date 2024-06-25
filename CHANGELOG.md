@@ -9,6 +9,10 @@
 
 - Documentação das configurações do **TDS-VSCode** em [Configurações](./docs/settings.md).
 
+## Descontinuado
+
+- Aplicação de _templates_
+
 ## Versão [2.0.NEXT]
 
 ## Versão [2.0.8]

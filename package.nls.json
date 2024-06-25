@@ -132,8 +132,6 @@
   "tds.package.OpenTimeLineWebview": "Open TimeLine Webview",
   "tds.package.apply.formatting": "Applies formatting to TOTVS source files and their variations.",
   "totvs-developer-studio.open-rpoinfo": "Repository Log",
-  "tds.package.templateApply": "Apply Template",
-  "tds.package.templateApply.fromFile": "Apply Template from file",
   "tds.package.selectRpoToken": "Select action for Compilation Token",
   "tds.package.selectRpoToken.enable": "Enable Compilation Token",
   "tds.package.selectRpoToken.disable": "Disable Compilation Token",
