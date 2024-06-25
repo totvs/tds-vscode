@@ -11,7 +11,8 @@
 
 ## Descontinuado
 
-- Aplicação de _templates_
+- Aplicação de _templates_;
+- Propriedade `totvsLanguageServer.askCompileResult` em favor de `totvsLanguageServer.showCompileResult` [(detalhes)](./docs/compilation.md#resultado-da-compilação)
 
 ## Versão [2.0.NEXT]
 

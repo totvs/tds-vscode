@@ -48,7 +48,16 @@ Após a compilação de múltiplos arquivos, exite a opção de abrir uma tabela
 
 ![ShowCompileResult](./compile/askCompileResult.PNG)
 
-Se confirma, uma tabela de resultados semelhante a abaixo será exibida, ordenada pela coluna de resultado.
+Ao confirmar, uma tabela de resultados semelhante a abaixo será exibida, ordenada pela coluna de resultado. As opções:
+
+- `Sim`, pergunta a cada compilação em lote e abre a tabela de resultados.
+- `Sim, sempre`, abre a tabela de resultados a cada compilação em lote.
+- `Não`, pergunta a cada compilação em lote e não abre a tabela de resultados.
+- `Não, sempre`, não abre a tabela de resultados.
+
+O comportamento pode ser modificado através da propriedade `totvsLanguageServer.showCompileResult` no arquivo `settings.json`.
+
+> A propriedade `totvsLanguageServer.askCompileResult`esta depreciada em favor de `totvsLanguageServer.showCompileResult`. Caso a mesma tenha sido definida o comportamento para `true`, será o mesmo que `Sim` e se `false`, será o mesmo que `Não, sempre`.
 
 ![TableCompileResult](./compile/CompileResults.PNG)
 

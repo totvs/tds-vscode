@@ -16,6 +16,7 @@ Os problemas estão divididos em **"Gerais"** e **"Depuração"** então procure
 São problemas que ocorrem desde a inicialização do **TDS VS Code** até a operação normal do dia-a-dia como compilar, gerar e aplicar patches, etc. Excluindo-se apenas a Depuração que é tratada em outra seção.
 
 ******************************************************
+
 ### Erro na aplicação de pacotes de atualização (_patchs_) em servidores com versão 19.3.1.7 ou anterior
 
  Temos notícias de problemas em aplicação de pacotes em _appServer_ com versão 19.3.1.7 ou anterior com SSL ligado (conexão segura).
@@ -36,7 +37,7 @@ São problemas que ocorrem desde a inicialização do **TDS VS Code** até a ope
 
 ### Maiúsculas e Minúsculas (_Case_)
 
- É sabido que no Windows o *case* (maiúsculas e minúsculas) não importa, mas no Linux e Mac, que são S.O. baseados no Unix, o *case* faz diferença. Devido ao uso de bibliotecas internas do **TOTVS Server**, o *case* do arquivos no Linux e Mac são convertidos para minúsculas sempre, causando problemas quando existem caracteres em letras maiúsculas.
+ É sabido que no Windows o _case_ (maiúsculas e minúsculas) não importa, mas no Linux e Mac, que são S.O. baseados no Unix, o _case_ faz diferença. Devido ao uso de bibliotecas internas do **TOTVS Server**, o _case_ do arquivos no Linux e Mac são convertidos para minúsculas sempre, causando problemas quando existem caracteres em letras maiúsculas.
 
  Solução: Utilize somente letras minúsculas em todo o caminho, inclusive no nome dos arquivos quando utilizar o **TDS VS Code** em Linux ou Mac.
 
@@ -66,9 +67,9 @@ São problemas que ocorrem desde a inicialização do **TDS VS Code** até a ope
 
 ### Compilação de fontes
 
- Os problemas mais frequentes que causam falha na compilação estão associadas a configuração de *includes*.
+ Os problemas mais frequentes que causam falha na compilação estão associadas a configuração de _includes_.
 
- Solução: Verifique as configurações de *includes* no arquivo "servers.json" (na pasta ".totvsls" em sua pasta de usuário). Os *includes* podem ser definidos por servidores (em "configurations") e no nível geral *includes*. Se não estiver definido no servidor o *includes* geral será utilizado. Note que os *includes* devem ser os diretórios onde os arquivos `.ch` estão localizados.
+ Solução: Verifique as configurações de _includes_ no arquivo "servers.json" (na pasta ".totvsls" em sua pasta de usuário). Os _includes_ podem ser definidos por servidores (em "configurations") e no nível geral _includes_. Se não estiver definido no servidor o _includes_ geral será utilizado. Note que os _includes_ devem ser os diretórios onde os arquivos `.ch` estão localizados.
 
 > de qualquer formam, os erros ocorridos durante a compilação de um fonte devem aparecer na visão "Problems" do **TDS VS Code** ou exibidos na visão "Output - TOTVS". Se nenhuma informação sobre o erro for apresentada, crie uma nova "Issue".
 
@@ -112,7 +113,7 @@ São problemas que ocorrem desde a inicialização do **TDS VS Code** até a ope
 
  A operação falha com uma mensagem semelhante a:
   `[FATAL] Aborting: the user must be logged in before xxxxx.`
- Certifique-se de que seu TOTVS Server está atualizado, pois se for uma versão RC (Release Candidate), do tipo `Build Version: 19.3.0.1_RC13`, é possível que esteja com um problema que foi corrigido no *TOTVS Server*.
+ Certifique-se de que seu TOTVS Server está atualizado, pois se for uma versão RC (Release Candidate), do tipo `Build Version: 19.3.0.1_RC13`, é possível que esteja com um problema que foi corrigido no _TOTVS Server_.
 
  Solução: Pegue a última versão do portal e tente novamente.
 
@@ -128,9 +129,9 @@ São problemas que ocorrem desde a inicialização do **TDS VS Code** até a ope
 
 ### Windows Server
 
- Tivemos relatos de problemas na instalação do **TDS VS Code** em *S.O.* do tipo *Windows Server*. Nossas suspeitas são de que este tipos de *S.O.* não posssuem *DLLs*, que existem na distribuições voltadas para Desktops, e que são necessárias para o funcionamento do *VS Code*.
+ Tivemos relatos de problemas na instalação do **TDS VS Code** em _S.O._ do tipo _Windows Server_. Nossas suspeitas são de que este tipos de _S.O._ não posssuem _DLLs_, que existem na distribuições voltadas para Desktops, e que são necessárias para o funcionamento do _VS Code_.
 
- Solução: Utilize um *S.O.* diferente de *Windows Server*.
+ Solução: Utilize um _S.O._ diferente de _Windows Server_.
 
 ******************************************************
 
@@ -159,14 +160,16 @@ São problemas que ocorrem desde a inicialização do **TDS VS Code** até a ope
 > [Estrutura do arquivo servers.json](docs/servers.md#estrutura-do-arquivo-serversjson)
 
 ******************************************************
+
 ## Problemas em Depuração
+
 ******************************************************
 São problemas que ocorrem especificamente durante a depuração de um programa.
 ******************************************************
 
 ### Pastas com acentuação
 
- Apesar de já descrita na seção de **"Problemas Gerais"** existem problemas que ocorrem ao adicionar um *Ponto de Parada* em fontes cujos caminhos contem acentuação em qualquer nível.
+ Apesar de já descrita na seção de **"Problemas Gerais"** existem problemas que ocorrem ao adicionar um _Ponto de Parada_ em fontes cujos caminhos contem acentuação em qualquer nível.
 
  Solução: Remova quaisquer acentuações que existam no projeto/workspace que estiver trabalhando.
 
@@ -181,6 +184,7 @@ São problemas que ocorrem especificamente durante a depuração de um programa.
 ******************************************************
 
 ## Problemas com TDS Replay
+
 ******************************************************
 Problemas na ferramenta TDS Replay
 ******************************************************
@@ -195,8 +199,8 @@ Problemas na ferramenta TDS Replay
 
 ******************************************************
 
-
 &nbsp;
+
 # Gerando Informações sobre o Problema
 
 > ATENÇÃO: Não utilize ambientes, nem usuários/senhas reais de produção durante a geração de informações sobre o problema. Informações sensíveis podem ser gravadas nestes logs gerados.
@@ -218,6 +222,7 @@ Se possível anexe os logs de apoio do **TDS VS Code**. Veja como gerar os logs 
 #### Versão do **VS Code**
 
 Para obter os dados do **VS Code** acione: `Help > About`
+
 ```
 Version: 1.44.0 (user setup)
 Commit: 2aae1f26c72891c399f860409176fe435a154b13
@@ -247,6 +252,7 @@ TOTVS Server version;19.3.0.2
 Servidor 64 bits;Sim
 Servidor Unix;Não
 ```
+
 ```
 Informações da LIB
 Versão da Lib;20200214
@@ -262,13 +268,16 @@ Dicionário no banco de dados;Sim
 ## Gerando logs
 
 Para gerar os logs **"Gerais"** adicione as linhas abaixo, em seu arquivo **"settings.json"** dentro da pasta _".vscode"_ de seu projeto aberto.
+
 ```
 "totvsLanguageServer.launch.args": [
     "--log-file=totvsls.log",
     "--record=totvsls"
 ]
 ```
+
 O arquivo **"settings.json"** deve ficar como a seguir, observem a vírgula que foi introduzida, pois existem outras configurações, caso contrário o arquivo JSON acusará problema de parse:
+
 ```
 {
     "totvsLanguageServer.launch.args": [
@@ -276,7 +285,7 @@ O arquivo **"settings.json"** deve ficar como a seguir, observem a vírgula que 
         "--record=totvsls"
     ],
     "totvsLanguageServer.welcomePage": false,
-    "totvsLanguageServer.askCompileResult": true,
+    "totvsLanguageServer.showCompileResult": "yesAlways",
     "totvsLanguageServer.askEncodingChange": false
 }
 ```
@@ -286,10 +295,13 @@ O arquivo **"settings.json"** deve ficar como a seguir, observem a vírgula que 
 Os arquivos **"totvsls.log"**, **"totvsls_in.log"** e **"totvsls_out.log"** serão gerados na raiz do projeto aberto.
 
 Se o problema for relacionado a depuração, além dos logs **"Gerais"** deve ser gerado o log de **"Depuração"**. Adicione a linha abaixo, na seção _"configurations"_ em seu arquivo **"launch.json"** dentro da pasta _".vscode"_ de seu projeto aberto.
+
 ```
 "logFile": "${workspaceFolder}\\dap.log"
 ```
+
 O arquivo **"launch.json"** deve ficar como a seguir, observem que uma vírgula foi adicionada a linha anterior, caso contrário o arquivo JSON acusará problema de parse:
+
 ```
 ...
 "configurations": [
@@ -308,4 +320,5 @@ O arquivo **"launch.json"** deve ficar como a seguir, observem que uma vírgula 
 ],
 ...
 ```
+
 O arquivo **"dap.log"** será gerado na raiz do projeto aberto.
