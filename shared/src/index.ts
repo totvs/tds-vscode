@@ -23,8 +23,8 @@ export { TInspectorObject, TInspectorObjectModel } from "./models/inspectObjectM
 export { TWebServiceModel } from "./models/webServiceModel"
 export { TErrorType, TFieldError, TFieldErrors, isErrors, TAbstractModelPanel, ReceiveMessage, SendMessage, TSendSelectResourceProps } from "./panels/panelInterface"
 
-export { TApplyPatchModel, TPatchFileData } from "./models/applyPatchModel";
-export type { ApplyPatchCommand, ApplyPatchCommandEnum } from "./models/applyPatchModel";
+export type { TApplyPatchModel, TPatchFileData } from "./models/applyPatchModel";
+export { ApplyPatchCommand, ApplyPatchCommandEnum, EMPTY_APPLY_PATCH_MODEL } from "./models/applyPatchModel";
 
 export type { TServerType, TServerModel } from "./models/serverModel"
 export { EMPTY_SERVER_MODEL } from "./models/serverModel"
@@ -39,4 +39,4 @@ export type { TPatchEditorModel, PatchEditorCommand } from "./models/patchEditor
 export { PatchEditorCommandEnum } from "./models/patchEditorModel";
 
 export type { TRepositoryLogModel, TPatchInfoModel, TProgramAppModel } from "./models/repositoryLogModel";
-export {EMPTY_REPOSITORY_MODEL } from "./models/repositoryLogModel";
+export { EMPTY_REPOSITORY_MODEL } from "./models/repositoryLogModel";

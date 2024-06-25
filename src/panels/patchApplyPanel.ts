@@ -27,11 +27,20 @@ import { TFieldErrors, isErrors } from "tds-shared/lib";
 import { TdsPanel } from "./panel";
 import { ApplyPatchCommand, ApplyPatchCommandEnum, EMPTY_APPLY_PATCH_MODEL } from "tds-shared/lib/models/applyPatchModel";
 
-export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
+export enum OperationApplyPatchEnum {
+  APPLY = "apply",
+  VALIDATE = "validate"
+}
+
+interface IApplyPatchOptions {
+  operation: OperationApplyPatchEnum;
+}
+
+export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptions> {
   public static currentPanel: ApplyPatchPanel | undefined;
   files: TPatchFileData[];
 
-  public static render(context: vscode.ExtensionContext, files?: any[]): ApplyPatchPanel {
+  public static async render(context: vscode.ExtensionContext, files: vscode.Uri[], operation: OperationApplyPatchEnum): Promise<ApplyPatchPanel> {
     const extensionUri: vscode.Uri = context.extensionUri;
 
     if (ApplyPatchPanel.currentPanel) {
@@ -43,7 +52,7 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
         // Panel view type
         "patch-generate-panel",
         // Panel title
-        vscode.l10n.t("Apply Patch"),
+        operation == OperationApplyPatchEnum.APPLY ? vscode.l10n.t("Apply Patch") : vscode.l10n.t("Validate Patch"),
         // The editor column the panel should be displayed in
         vscode.ViewColumn.One,
         // Extra panel configurations
@@ -52,7 +61,8 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
         }
       );
 
-      ApplyPatchPanel.currentPanel = new ApplyPatchPanel(panel, extensionUri, files);
+
+      ApplyPatchPanel.currentPanel = new ApplyPatchPanel(panel, extensionUri, files, { operation: operation });
     }
 
     return ApplyPatchPanel.currentPanel;
@@ -65,10 +75,23 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
    * @param extensionUri The URI of the directory containing the extension
    * @param files The pre selected files
    */
-  protected constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, files: any[]) {
-    super(panel, extensionUri);
+  protected constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, files: vscode.Uri[], options: IApplyPatchOptions) {
+    super(panel, extensionUri, options);
 
-    this.files = files || [];
+    const foundFile: vscode.Uri[] = getRecursiveFiles(files);
+
+    this.files = foundFile.map((file: vscode.Uri) => {
+      const data: TPatchFileData = {
+        name: path.basename(file.path),
+        validation: "",
+        tphInfo: {},
+        isProcessing: false,
+        uri: file.path.startsWith("/") ? file.path.substring(1) : file.path
+      }
+
+      return data;
+    }) || [];
+
   }
 
   /**
@@ -76,7 +99,7 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
    */
   public dispose() {
     ApplyPatchPanel.currentPanel = undefined;
-
+    this.files = [];
     super.dispose();
   }
 
@@ -122,11 +145,24 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
               data.model.serverName = server.name;
               data.model.address = `${server.address}:${server.port}`;
               data.model.environment = server.environment;
-              data.model.patchFiles = this.files;
+              data.model.patchFiles = this.files.sort((a: TPatchFileData, b: TPatchFileData) => a.uri.localeCompare(b.uri));
 
               this.sendUpdateModel(data.model, undefined);
 
               progress.report({ increment: 100 });
+
+              if (this._options.operation == OperationApplyPatchEnum.VALIDATE) {
+                const errors: TFieldErrors<TPatchFileData> = {};
+
+                data.model.patchFiles = data.model.patchFiles.map((patchFile: TPatchFileData) => {
+                  patchFile.isProcessing = true;
+                  return patchFile;
+                });
+                this.sendUpdateModel(data.model, errors);
+
+                this.validateModel(data.model, errors);
+                this.sendUpdateModel(data.model, errors);
+              }
             }
           );
         }
@@ -139,17 +175,16 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
           const errors: TFieldErrors<TPatchFileData> = {};
 
           for await (const file of result) {
-            const alreadyExist: boolean = patchFiles.findIndex((patchFile: TPatchFileData) => vscode.Uri.parse(patchFile.uri).path == file.path) > -1;
-            const index: number = patchFiles.push(
-              {
-                uri: file,
-                name: path.basename(file.path),
-                validation: "",
-                tphInfo: {},
-                isProcessing: true,
-                fsPath: file.fsPath
-              }
-            ) - 1;
+            const alreadyExist: boolean = patchFiles.findIndex((patchFile: TPatchFileData) => patchFile.uri == file.path) > -1;
+            const pathData: TPatchFileData = {
+              uri: file.path,
+              name: path.basename(file.path),
+              validation: "",
+              tphInfo: {},
+              isProcessing: true,
+            }
+            pathData.uri = pathData.uri.startsWith("/") ? pathData.uri.substring(1) : pathData.uri;
+            const index: number = patchFiles.push(pathData) - 1;
 
             if (alreadyExist) {
               errors[`patchFiles.${[index]}.name`] = { type: "validade", message: "Patch already informed" };
@@ -182,9 +217,9 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
           const selectedPatch: number = data.index;
 
           vscode.commands.executeCommand(
-            "totvs-developer-studio.patchInfos.fromFile",
+            "totvs-developer-studio.patchInfos",
             {
-              fsPath: data.model.patchFiles[selectedPatch].fsPath,
+              fsPath: data.model.patchFiles[selectedPatch].uri,
             });
 
           break;
@@ -192,8 +227,6 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
       case ApplyPatchCommandEnum.PATCH_VALIDATE:
         {
           const errors: TFieldErrors<TPatchFileData> = {};
-          const patchFiles: TPatchFileData[] = data.model.patchFiles
-            .filter((patchFile: TPatchFileData) => patchFile.uri);
 
           this.validateModel(data.model, errors);
           this.sendUpdateModel(data.model, errors);
@@ -228,7 +261,12 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
 
             await this.doValidatePatch(server, element, index, errors);
 
-            if (!isErrors(errors) || token.isCancellationRequested) {
+            if (this._options.operation == OperationApplyPatchEnum.VALIDATE) {
+              element.isProcessing = false;
+              this.sendUpdateModel(model, errors);
+            }
+
+            if (token.isCancellationRequested) {
               break;
             }
 
@@ -286,12 +324,12 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
 
   async doValidatePatch(server: ServerItem, patchFile: TPatchFileData, index: number, errors: TFieldErrors<TApplyPatchModel>) {
 
-    if (!fse.existsSync(vscode.Uri.parse(patchFile.uri).fsPath)) {
+    if (!fse.existsSync(patchFile.uri)) {
       errors[`patchFiles.${index}.name`] = { type: "validate", message: "File nor found" };
       return;
     }
 
-    const response: IPatchApplyResult = await sendValidatePatchRequest(server, vscode.Uri.parse(patchFile.uri));
+    const response: IPatchApplyResult = await sendValidatePatchRequest(server, vscode.Uri.parse("file:///" + patchFile.uri));
 
     if (response.errorCode == PathErrorCodes.Ok) {
       vscode.window.showInformationMessage(vscode.l10n.t("Patch validated."));
@@ -351,7 +389,9 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
 
   protected getTranslations(): Record<string, string> {
     return {
-      "Apply Patch": vscode.l10n.t("Apply Patch"),
+      "Apply Patch": this._options.operation == OperationApplyPatchEnum.VALIDATE
+        ? vscode.l10n.t("Validate Patch")
+        : vscode.l10n.t("Apply Patch"),
       "Server name": vscode.l10n.t("Server name"),
       "Target Server Identifier": vscode.l10n.t("Target Server Identifier"),
       "Address": vscode.l10n.t("Address"),
@@ -364,4 +404,26 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel> {
     }
 
   }
+}
+
+function getRecursiveFiles(targetList: vscode.Uri[]): vscode.Uri[] {
+  var glob = require('glob');
+  var foundFiles: vscode.Uri[] = [];
+
+  targetList.forEach((target: vscode.Uri) => {
+    ["ptm", "upd", "zip"].forEach((ext: string) => {
+      const files: string[] = glob.sync(`**/*.${ext}`, {
+        cwd: target.fsPath,
+        absolute: true,
+        ignore: ['**/node_modules/**']
+      });
+
+      files.forEach((file: string) => {
+        foundFiles.push(vscode.Uri.parse(`file:///${file}`));
+      });
+    });
+  });
+
+  return foundFiles;
+
 }

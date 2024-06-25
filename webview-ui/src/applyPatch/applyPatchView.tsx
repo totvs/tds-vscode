@@ -180,7 +180,7 @@ export default function ApplyPatchView() {
                     </VSCodeDataGridCell>
                     <VSCodeDataGridCell grid-column="3">
                       <TdsSimpleTextField
-                        name={`patchFiles.${index}.fsPath`}
+                        name={`patchFiles.${index}.uri`}
                         readOnly={true}
                         info={row.uri}
                       />

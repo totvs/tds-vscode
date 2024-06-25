@@ -38,7 +38,6 @@ import {
   toggleTableSync,
 } from "./debug/debugConfigs";
 import { createTimeLineWebView } from "./debug/debugEvents";
-import { patchValidates } from "./patch/patchValidate";
 import {
   documentFormatting,
   register4glFormatting,
@@ -47,7 +46,6 @@ import {
 import { register4glOutline } from "./outline";
 import { registerDebug, _debugEvent } from "./debug";
 // @@ import { openMonitorView } from "./monitor/monitorLoader";
-// @@ import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
 import { initStatusBarItems } from "./statusBar";
 import { openTemplateApplyView } from "./template/apply/formApplyTemplate";
 import { rpoTokenQuickPick, rpoTokenInputBox, saveRpoTokenString, setEnabledRpoToken } from "./rpoToken";
@@ -65,7 +63,7 @@ import { GenerateWebServicePanel } from "./panels/generateWSPanel";
 import { PatchGenerateFromRpoPanel } from "./panels/patchGeneratePanel";
 import { patchGenerateFromFolder } from "./patch/patchUtil";
 import { CompileKeyPanel } from "./panels/compileKeyPanel";
-import { ApplyPatchPanel } from "./panels/patchApplyPanel";
+import { ApplyPatchPanel, OperationApplyPatchEnum } from "./panels/patchApplyPanel";
 import { InspectorObjectPanel } from "./panels/inspectObjectPanel";
 import { PatchGenerateByDifferencePanel } from "./panels/patchGenerateByDifferencePanel";
 import { PatchEditorProvider } from "./panels/patchEditorPanel";
@@ -360,21 +358,60 @@ export function activate(context: ExtensionContext) {
   //Aplica um pacote de atualização (patch).
   context.subscriptions.push(
     vscode.commands.registerCommand("totvs-developer-studio.patchApply",
-      () => {
+      (args) => {
         if (checkServer() && !checkDebug()) {
-          ApplyPatchPanel.render(context);
+          if (instanceOfUriArray(args)) {
+            ApplyPatchPanel.render(context, args, OperationApplyPatchEnum.APPLY);
+          } else if (instanceOfUri(args)) {
+            ApplyPatchPanel.render(context, [args], OperationApplyPatchEnum.APPLY);
+          } else {
+            ApplyPatchPanel.render(context, [], OperationApplyPatchEnum.APPLY);
+          }
         }
       }
     )
   );
 
+  //Valida o conteúdo de um patch pelo menu de contexto em arquivos de patch
   context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "totvs-developer-studio.patchApply.fromFile",
-      (args: any) => {
+    commands.registerCommand(
+      "totvs-developer-studio.patchValidate",
+      (args) => {
         if (checkServer() && !checkDebug()) {
-          ApplyPatchPanel.render(context, args);
+          if (instanceOfUriArray(args)) {
+            ApplyPatchPanel.render(context, args, OperationApplyPatchEnum.VALIDATE);
+          } else if (instanceOfUri(args)) {
+            ApplyPatchPanel.render(context, [args], OperationApplyPatchEnum.VALIDATE);
+          } else {
+            ApplyPatchPanel.render(context, [], OperationApplyPatchEnum.VALIDATE);
+          }
         }
+      }
+    )
+  );
+
+  // context.subscriptions.push(
+  //   vscode.commands.registerCommand(
+  //     "totvs-developer-studio.patchApply.fromFile",
+  //     (args: any) => {
+  //       if (checkServer() && !checkDebug()) {
+  //         if (instanceOfUri(args)) {
+  //           ApplyPatchPanel.render(context, [args], OperationApplyPatchEnum.APPLY);
+  //         } else {
+  //           ApplyPatchPanel.render(context, args, OperationApplyPatchEnum.APPLY);
+  //         }
+  //       }
+  //     }
+  //   )
+  // );
+
+  //Verifica o conteúdo de um patch pelo menu de contexto em arquivos de patch
+  context.subscriptions.push(
+    commands.registerCommand(
+      "totvs-developer-studio.patchInfos",
+      (args) => {
+        const uri: vscode.Uri = vscode.Uri.file(args["fsPath"]);
+        vscode.commands.executeCommand("vscode.openWith", uri, PatchEditorProvider.viewType);
       }
     )
   );
@@ -384,24 +421,6 @@ export function activate(context: ExtensionContext) {
     commands.registerCommand(
       "totvs-developer-studio.patchGenerate.fromFolder",
       (context) => patchGenerateFromFolder(context)
-    )
-  );
-  //Valida o conteúdo de um patch pelo menu de contexto em arquivos de patch
-  context.subscriptions.push(
-    commands.registerCommand(
-      "totvs-developer-studio.patchValidate.fromFile",
-      (args) => patchValidates(context, args)
-    )
-  );
-
-  //Verifica o conteúdo de um patch pelo menu de contexto em arquivos de patch
-  context.subscriptions.push(
-    commands.registerCommand(
-      "totvs-developer-studio.patchInfos.fromFile",
-      (args) => {
-        const uri: vscode.Uri = vscode.Uri.file(args["fsPath"]);
-        vscode.commands.executeCommand("vscode.openWith", uri, PatchEditorProvider.viewType);
-      }
     )
   );
 

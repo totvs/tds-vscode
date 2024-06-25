@@ -30,7 +30,7 @@ export type TPatchFileData = {
 	validation: string;
 	tphInfo: any;
 	isProcessing: boolean;
-	fsPath: string;
+	//fsPath: string;
 };
 
 export type TApplyPatchModel = TAbstractModelPanel & {
@@ -47,7 +47,7 @@ export const EMPTY_PATCH_FILE: TPatchFileData = {
 	validation: "",
 	tphInfo: {},
 	isProcessing: false,
-	fsPath: ""
+	//fsPath: ""
 }
 
 export const EMPTY_APPLY_PATCH_MODEL: TApplyPatchModel = {
