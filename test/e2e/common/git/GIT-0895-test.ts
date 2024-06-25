@@ -53,7 +53,7 @@ describe("GIT-0895: Does not show table as build results", async () => {
   });
 
   it("Open result compile table", async () => {
-    await compilePO.askShowCompileResult(true);
+    await compilePO.showCompileResult(true);
     await delay();
 
     const view: EditorView = new EditorView();

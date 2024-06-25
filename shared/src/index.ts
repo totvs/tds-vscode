@@ -40,3 +40,6 @@ export { PatchEditorCommandEnum } from "./models/patchEditorModel";
 
 export type { TRepositoryLogModel, TPatchInfoModel, TProgramAppModel } from "./models/repositoryLogModel";
 export { EMPTY_REPOSITORY_MODEL } from "./models/repositoryLogModel";
+
+export type { TBuildResultModel, TBuildInfoResult } from "./models/buildResultModel";
+export { EMPTY_BUILD_RESULT_MODEL, BuildResultCommandEnum, BuildResultCommand } from "./models/buildResultModel";

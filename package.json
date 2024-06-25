@@ -466,7 +466,24 @@
           "scope": "window",
           "type": "boolean",
           "default": true,
-          "description": "%tds.package.show.ask.compile.result%"
+          "description": "%tds.package.show.ask.compile.result%",
+          "deprecationMessage": "Use property 'totvsLanguageServer.showCompileResult'"
+        },
+        "totvsLanguageServer.showCompileResult": {
+          "scope": "window",
+          "type": "string",
+          "default": "true",
+          "description": "%tds.package.show.ask.compile.result%",
+          "enum": [
+            "true",
+            "yesAlways",
+            "noAlways"
+          ],
+          "enumDescriptions": [
+            "Pergunta a cada compilação em lote.",
+            "Sempre apresenta a tabela de resultados.",
+            "Nunca apresenta a tabela de resultados."
+          ]
         },
         "totvsLanguageServer.clearConsoleBeforeCompile": {
           "type": "boolean",

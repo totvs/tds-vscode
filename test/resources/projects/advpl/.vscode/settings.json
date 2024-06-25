@@ -1,6 +1,5 @@
 {
     "totvsLanguageServer.welcomePage": false,
-    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes;m:\\protheus\\includes_tlpp",
     "totvsLanguageServer.editor.show.notification": "all",
     "totvsLanguageServer.trace.debug": "off",
     "totvsLanguageServer.trace.server": "verbose",
@@ -12,11 +11,12 @@
         "--trace-compile",
         "--log-file-append=totvsls2.log"
     ],
-    "totvsLanguageServer.askCompileResult": false,
     "totvsLanguageServer.askEncodingChange": false,
     "totvsLanguageServer.editor.autocomplete": "Off",
     "totvsLanguageServer.compilation.generatePpoFile": false,
     "totvsLanguageServer.workspaceServerConfig": true,
     "totvsLanguageServer.formatLocale": "pt-BR",
-    "esp.mainAdvplExtension": "totvs.tds-vscode"
+    "esp.mainAdvplExtension": "totvs.tds-vscode",
+    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes;m:\\protheus\\includes_tlpp",
+    "totvsLanguageServer.showCompileResult": "true"
 }

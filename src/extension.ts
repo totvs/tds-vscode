@@ -49,7 +49,6 @@ import { registerDebug, _debugEvent } from "./debug";
 import { initStatusBarItems } from "./statusBar";
 import { rpoTokenQuickPick, rpoTokenInputBox, saveRpoTokenString, setEnabledRpoToken } from "./rpoToken";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
-import { commandShowBuildTableResult } from "./compile/buildResult";
 import { ServerItem } from "./serverItem";
 import serverProvider from "./serverItemProvider";
 //import { ReplayRegisterCommands } from "./debug/tdsreplay/RegisterReplayCommands";
@@ -66,6 +65,8 @@ import { InspectorObjectPanel } from "./panels/inspectObjectPanel";
 import { PatchGenerateByDifferencePanel } from "./panels/patchGenerateByDifferencePanel";
 import { PatchEditorProvider } from "./panels/patchEditorPanel";
 import { RepositoryLogPanel } from "./panels/repositoryLogPanel";
+import { BuildResultPanel } from "./panels/buildResultPanel";
+import { CompileResult } from "./compile/CompileResult";
 
 
 export let languageClient: TotvsLanguageClientA;
@@ -296,9 +297,11 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.show.result.build",
-      (compileResult: any) =>
-        commandShowBuildTableResult(context, compileResult)
-    )
+      (compileResult: CompileResult) => {
+        if (checkServer()) {
+          BuildResultPanel.render(context, compileResult)
+        }
+      })
   );
 
   //View

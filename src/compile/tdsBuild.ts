@@ -7,8 +7,8 @@ var windows1252 = require("windows-1252");
 var windows1251 = require("windows-1251");
 
 import { ResponseError } from "vscode-languageclient";
-import { CompileResult } from "./CompileResult";
 import { ServerExceptionCodes, sendCompilation } from "../protocolMessages";
+import { CompileResult } from "./CompileResult";
 
 interface CompileOptions {
   recompile: boolean;
@@ -294,31 +294,42 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
   }
 }
 
-function verifyCompileResult(response) {
-  const textNoAsk = vscode.l10n.t("Don't ask again");
+function verifyCompileResult(response: CompileResult) {
+  const textQuestion = vscode.l10n.t("Show table with compile results?");
+  const textYesAlways = vscode.l10n.t("Yes, always.");
+  const textNoAlways = vscode.l10n.t("No, always.");
   const textNo = vscode.l10n.t("No");
   const textYes = vscode.l10n.t("Yes");
-  const textQuestion = vscode.l10n.t("Show table with compile results?");
 
   let questionAgain = true;
 
   const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
-  const askCompileResult = configADVPL.get("askCompileResult");
-  if (askCompileResult !== false) {
+  let showCompileResult = configADVPL.get("showCompileResult");
+
+  if (showCompileResult == "true") {
     vscode.window
-      .showInformationMessage(textQuestion, { modal: true }, textYes, textNo, textNoAsk)
+      .showInformationMessage(textQuestion,
+        { modal: true }, textYes, textYesAlways, textNo, textNoAlways)
       .then((clicked) => {
-        if (clicked === textYes) {
+        if ((clicked === textYes) || (clicked === textYesAlways)) {
           vscode.commands.executeCommand(
             "totvs-developer-studio.show.result.build",
             response
           );
-        } else if (clicked === textNoAsk) {
-          questionAgain = false;
-          configADVPL.update("askCompileResult", questionAgain);
+        }
+        if (clicked === textYesAlways) {
+          configADVPL.update("showCompileResult", "yesAlways");
+        } else if (clicked === textNoAlways) {
+          configADVPL.update("showCompileResult", "noAlways");
         }
       });
+  } else if (showCompileResult == "yesAlways") {
+    vscode.commands.executeCommand(
+      "totvs-developer-studio.show.result.build",
+      response
+    );
   }
+
 }
 
 export function commandBuildFile(

@@ -46,7 +46,7 @@ describe("DTCLIENT01-3148: Build messages are no longer shown", async () => {
     await compilePO.fireBuildFile(resourceItem);
     await workbenchPO.waitBuilding();
 
-    await compilePO.askShowCompileResult(false);
+    await compilePO.showCompileResult(false);
   });
 
   it("Source with warning", async () => {

@@ -68,7 +68,7 @@ describe("Compile folders", async () => {
     await compilePO.fireBuildFile(folderItem);
 
     await workbenchPO.waitBuilding();
-    await compilePO.askShowCompileResult(false);
+    await compilePO.showCompileResult(false);
 
     const text: string[] = await outputPO.extractCompileSequenceTest();
     expect(text).is.eqls(COMPILE_SEQUENCE);

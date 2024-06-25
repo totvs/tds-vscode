@@ -24,11 +24,11 @@ export class BuildPageObject extends AbstractPageObject {
     );
   }
 
-  async askShowCompileResult(open: boolean): Promise<boolean> {
+  async showCompileResult(open: boolean): Promise<boolean> {
     const notification: Notification =
       await this.workbenchPO.waitAskShowCompileResult();
 
-    expect(notification, "askShowCompileResult").not.is.undefined;
+    expect(notification, "showCompileResult").not.is.undefined;
 
     if (open) {
       await notification.takeAction("Yes");
@@ -50,7 +50,7 @@ export class BuildPageObject extends AbstractPageObject {
     await this.workbenchPO.waitBuilding();
 
     if (expandable) {
-      await this.askShowCompileResult(false);
+      await this.showCompileResult(false);
     }
   }
 }

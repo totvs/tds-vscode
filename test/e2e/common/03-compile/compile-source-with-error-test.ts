@@ -61,7 +61,7 @@ describe("Compile Source With Error and/or Warnings", async () => {
 
     await workbenchPO.waitBuilding();
 
-    await compilePO.askShowCompileResult(false);
+    await compilePO.showCompileResult(false);
   });
 
   it("Detect warning and errors", async () => {
