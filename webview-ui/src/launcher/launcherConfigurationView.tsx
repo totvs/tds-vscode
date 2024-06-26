@@ -23,7 +23,6 @@ import { TdsForm, TdsLabelField, TdsSelectionField, TdsTextField, setDataModel, 
 import { tdsVscode } from '@totvs/tds-webtoolkit';
 import { EMPTY_LAUNCHER_CONFIGURATION, TLauncherConfigurationModel } from "tds-shared/lib";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
-import { vsCodeButton } from '@vscode/webview-ui-toolkit';
 
 enum ReceiveCommandEnum {
 }
@@ -64,7 +63,6 @@ export default function LauncherConfigurationView() {
 
           model.launcherType = model.launcherType ? model.launcherType : "totvs_language_debug";
 
-          console.log(model);
           setDataModel<TLauncherConfigurationModel>(methods.setValue, model);
           setErrorModel(methods.setError, errors);
 
@@ -142,7 +140,7 @@ export default function LauncherConfigurationView() {
             <TdsTextField
               name="webAppUrl"
               label={tdsVscode.l10n.t("Web App URL")}
-              placeholder={"http(s)://<server>:<port>"}
+              placeholder={"http(s)://<server>:<port>/webapp"}
               info={tdsVscode.l10n.t("Start Web App URL.")}
             />
           }
@@ -172,7 +170,7 @@ export default function LauncherConfigurationView() {
           <section className="tds-row-container" >
             <TdsLabelField
               name={"lblWarning"}
-              label={tdsVscode.l10n.t("If not informed, it will use the `http(s)://<server>:<port>` of current server configuration.")}
+              label={tdsVscode.l10n.t("If not informed, it will use the `http(s)://<server>:<port>/webapp` of current server configuration.")}
             />
           </section>
         }
