@@ -68,6 +68,7 @@ import serverProvider from "./serverItemProvider";
 import { registerWorkspace } from "./workspace";
 import { sendTelemetry } from "./protocolMessages";
 import { registerXRef } from "./xreferences";
+import { tlppTools } from "./tlpp-tools/tlppTools";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -603,6 +604,9 @@ export function activate(context: ExtensionContext) {
     ): Promise<boolean> {
       return createNewProtheusServer(serverName, port, address, secure, buildVersion, environment, username);
     },
+    apiTlppTools(message: string): Promise<string> {
+      return tlppTools(message);
+    }
   };
 
   window.showInformationMessage('"TDS-VSCode" is ready.');
