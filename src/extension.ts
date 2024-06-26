@@ -68,6 +68,7 @@ import { BuildResultPanel } from "./panels/buildResultPanel";
 import { CompileResult } from "./compile/CompileResult";
 import { LauncherConfigurationPanel } from "./panels/launcherConfigurationPanel";
 
+import { tlppTools } from "./tlpp-tools/tlppTools";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -616,6 +617,9 @@ export function activate(context: ExtensionContext) {
     ): Promise<boolean> {
       return createNewProtheusServer(serverName, port, address, secure, buildVersion, environment, username);
     },
+    apiTlppTools(message: string): Promise<string> {
+      return tlppTools(message);
+    }
   };
 
   window.showInformationMessage('"TDS-VSCode" is ready.');
