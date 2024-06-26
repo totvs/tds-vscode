@@ -43,3 +43,6 @@ export { EMPTY_REPOSITORY_MODEL } from "./models/repositoryLogModel";
 
 export type { TBuildResultModel, TBuildInfoResult } from "./models/buildResultModel";
 export { EMPTY_BUILD_RESULT_MODEL, BuildResultCommandEnum, BuildResultCommand } from "./models/buildResultModel";
+
+export type { TLauncherType, TLauncherConfigurationModel, } from "./models/launchConfigurationModel";
+export { EMPTY_LAUNCHER_CONFIGURATION, TLanguagesEnum } from "./models/launchConfigurationModel";

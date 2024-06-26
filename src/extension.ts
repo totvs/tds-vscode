@@ -28,7 +28,6 @@ import { rpoCheckIntegrity } from "./server/rpoCheckIntegrity";
 import { revalidateRpo } from "./server/revalidateRPO";
 import { serverSelection } from "./inputConnectionParameters";
 import { showWelcomePage } from "./welcome/welcomePage";
-import launcherConfig from "./launcher/launcherConfiguration";
 import { onCaptureLoggers, offCaptureLoggers } from "./loggerCapture/logger";
 import tdsReplayLauncherConfig from "./launcher/tdsReplay/tdsReplayLauncherConfig";
 import {
@@ -67,6 +66,7 @@ import { PatchEditorProvider } from "./panels/patchEditorPanel";
 import { RepositoryLogPanel } from "./panels/repositoryLogPanel";
 import { BuildResultPanel } from "./panels/buildResultPanel";
 import { CompileResult } from "./compile/CompileResult";
+import { LauncherConfigurationPanel } from "./panels/launcherConfigurationPanel";
 
 
 export let languageClient: TotvsLanguageClientA;
@@ -535,10 +535,9 @@ export function activate(context: ExtensionContext) {
   // Abre a tela de configuração de launchers
   commands.registerCommand("totvs-developer-studio.configure.launcher",
     () =>
-      launcherConfig.show(context)
+      LauncherConfigurationPanel.render(context)
   );
 
-  // Abre a tela de configuração de launchers
   commands.registerCommand(
     "totvs-developer-studio.tdsreplay.configure.launcher",
     () => tdsReplayLauncherConfig.show(context)

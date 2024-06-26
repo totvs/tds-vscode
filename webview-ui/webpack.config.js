@@ -31,10 +31,10 @@ const INSPECT_OBJECT_PATH = path.join(SOURCE_FOLDER, "inspectObject");
 const EDITOR_PATCH_PATH = path.join(SOURCE_FOLDER, "editorPatch");
 const REPOSITORY_LOG_PATH = path.join(SOURCE_FOLDER, "repositoryLog");
 const BUILD_RESULT_PATH = path.join(SOURCE_FOLDER, "buildResult");
+const LAUNCHER_CONFIGURATION_PATH = path.join(SOURCE_FOLDER, "launcher");
 
 // const REPLAY_PATH = path.join(__dirname, "./src/debug/tdsreplay/");
 // const MONITOR_PATH = path.join(__dirname, "./src/monitor/");
-// const RPO_INFO_PATH = path.join(__dirname, "./src/rpoInfo/");
 
 module.exports = (env, argv) => {
   const production = (argv.mode === 'production') || (env.NODE_ENV === 'production');
@@ -90,6 +90,7 @@ module.exports = (env, argv) => {
       editorPatchView: path.join(EDITOR_PATCH_PATH, "index.tsx"),
       repositoryLogView: path.join(REPOSITORY_LOG_PATH, "index.tsx"),
       buildResultView: path.join(BUILD_RESULT_PATH, "index.tsx"),
+      launcherConfigurationView: path.join(LAUNCHER_CONFIGURATION_PATH, "index.tsx"),
 
       // timeLineView: path.join(REPLAY_PATH, "app/index.tsx"),
       // monitorPanel: path.join(MONITOR_PATH, "app/index.tsx"),
