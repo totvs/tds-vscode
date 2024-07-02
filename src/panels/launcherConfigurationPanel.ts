@@ -136,10 +136,10 @@ export class LauncherConfigurationPanel extends TdsPanel<TLauncherConfigurationM
       errors.launcherType = { type: "required" };
     }
 
-    if (model.smartClient.length == 0) {
-      errors.launcherType = { type: "required" };
-    } else if (!fse.existsSync(model.smartClient)) {
-      errors["smartClient"] = { type: "validate", message: vscode.l10n.t("File not found.") };
+    if (model.smartClient.length !== 0) {
+      if (!fse.existsSync(model.smartClient)) {
+        errors["smartClient"] = { type: "validate", message: vscode.l10n.t("File not found.") };
+      }
     }
 
     if (model.program.length == 0) {

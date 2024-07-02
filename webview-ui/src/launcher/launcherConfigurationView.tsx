@@ -45,6 +45,19 @@ export default function LauncherConfigurationView() {
 
   const onSubmit: SubmitHandler<TLauncherConfigurationModel> = (data) => {
 
+    model.programArgs = model.programArgs.filter((item) => {
+      return item.value.trim() !== "";
+    });
+    console.log(">>>> save", model);
+    if (model.launcherType == "totvs_language_debug") {
+      if (model.program == "") {
+        model.program = "${command:AskForProgramName}";
+      }
+      model.webAppUrl = "";
+    } else {
+      model.smartClient = "";
+    }
+
     sendSaveAndClose(data);
   }
 
