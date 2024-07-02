@@ -1,0 +1,25 @@
+#INCLUDE 'TOTVS.CH'
+
+User Function TSTADAP
+	process('W:\ws_tds_vscode\tds-vscode\test\resources\projects\advpl\files\singleFile\jsonteste_name.json')
+	process('W:\ws_tds_vscode\tds-vscode\test\resources\projects\advpl\files\singleFile\jsonteste_name2.json')
+	process('W:\ws_tds_vscode\tds-vscode\test\resources\projects\advpl\files\singleFile\jsonteste.json')
+	process('W:\ws_tds_vscode\tds-vscode\test\resources\projects\advpl\files\singleFile\jsonteste_big.json')
+Return
+
+static function process(filename)
+	Local jTeste    := JsonObject():New()
+	Local cJson     := ''
+	Local oFile     := Nil
+	Local aLines    := {}
+
+	oFile := FwFileReader():New(filename)
+	If(oFile:Open())
+		aLines := oFile:GetAllLines()
+		oFile:Close()
+		aEval(aLines, { |x| cJson += x })
+	EndIf
+	jTeste:FromJson(cJson)
+
+Return
+
