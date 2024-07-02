@@ -95,7 +95,7 @@
   "tds.package.properties.enableMultiThread.description": "If the debug must enable multi thread execution",
   "tds.package.properties.enableProfile.description": "If the profile must be enabled",
   "tds.package.properties.startJobList.description": "List of jobs to be started before debugging",
-  "tds.package.properties.waitForAttach.description": "For DAP debugging. DO NOT USE.",
+  "tds.package.properties.waitForAttach.description": "For DAP debugging. DO NOT USE. (Value in milliseconds)",
   "tds.package.properties.forceUtf8.description": "Force the use of UTF-8 codepage.",
   "tds.package.properties.isMultiSession.description": "If this is a multisession execution (-M)",
   "tds.package.properties.isAccessibilityMode.description": "If the accessibility mode must be enabled (-AC)",

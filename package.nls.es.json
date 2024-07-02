@@ -93,7 +93,7 @@
 	"tds.package.properties.enableMultiThread.description": "Si la depuración debe habilitar la ejecución de subprocesos múltiples",
 	"tds.package.properties.enableProfile.description": "Si el perfil debe estar habilitado",
 	"tds.package.properties.startJobList.description": "Lista de servicios que se iniciarán antes de depurar",
-	"tds.package.properties.waitForAttach.description": "Para depuración DAP. NO UTILICE.",
+	"tds.package.properties.waitForAttach.description": "Para depuración DAP. NO UTILICE. (Value in milliseconds)",
 	"tds.package.properties.forceUtf8.description": "Forces de use of UTF-8 characters.",
 	"tds.package.properties.isMultiSession.description": "Si se trata de una ejecución multisesión (-M)",
 	"tds.package.properties.isAccessibilityMode.description": "Si el modo de accesibilidad debe estar habilitado (-AC)",
