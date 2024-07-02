@@ -2,8 +2,6 @@
 
 ## Versão [2.1.NEXT]
 
-### Novidades
-
 - A interface do **TDS-VSCode** passa a utilizar o tema definido no **VS-Code**.
   Isso permite que os usuários tenham a opção de escolher o tema que melhor lhe agrades. Em algumas interfaces, há campos que armazenam data e hora. Por padrão, o formato da deste é no idioma selecionado no **VS-Code**. Caso o idioma seja o inglês, o formato da data e números é apresentado no padrão americano (``mm/dd/yyyy hh:mm:ss AM/PM`` ou ``9,999.99``). Caso queira alterar o formato de apresentação, informe o idioma no qual deseja o formato em [totvsLanguageServer.formatLocale](./docs/settings.md#totvsLanguageServer.formatLocale)
 
@@ -13,8 +11,6 @@
 
 - Aplicação de _templates_;
 - Propriedade `totvsLanguageServer.askCompileResult` em favor de `totvsLanguageServer.showCompileResult` [(detalhes)](./docs/compilation.md#resultado-da-compilação)
-
-## Versão [2.0.8]
 
 ## Versão [2.0.8]
 
