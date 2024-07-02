@@ -18,6 +18,14 @@
 
 ## Versão [2.0.8]
 
+### Correções
+
+#### Não exibe informações do Json ao depurar [#1090](https://github.com/totvs/tds-vscode/issues/1090)
+
+Implementado tratamento específico para objetos JSON com array no 1o nível.
+
+## Versão [2.0.8]
+
 ### Melhorias
 
 #### Abrir uma janela do navegador quando iniciar o debug do tipo `totvs_language_web_debug` [#1233](https://github.com/totvs/tds-vscode/issues/1233)
