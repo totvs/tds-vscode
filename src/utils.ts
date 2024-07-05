@@ -129,27 +129,6 @@ export default class Utils {
     return path.join(rootPath, ".vscode");
   }
 
-  static addCssToHtml(htmlFilePath: vscode.Uri, cssFilePath: vscode.Uri) {
-    const htmlContent = fs.readFileSync(
-      htmlFilePath.with({ scheme: "vscode-resource" }).fsPath
-    );
-    const cssContent = fs.readFileSync(
-      cssFilePath.with({ scheme: "vscode-resource" }).fsPath
-    );
-
-    const $ = cheerio.load(htmlContent.toString());
-
-    let style = $("style").html();
-
-    if (style === undefined || style === null || style === "") {
-      $("html").append("<style>" + cssContent + "</style>");
-    } else {
-      $("style").append(cssContent.toString());
-    }
-
-    return $.html();
-  }
-
   /**
    * Logs the informed messaged in the console and/or shows a dialog
    * Please note that the dialog opening respects the dialog settings defined by the user in editor.show.notification
@@ -593,9 +572,11 @@ export class ServersConfig {
    * Deleta o servidor logado por ultimo do servers.json
    */
   static deleteServer(id: string) {
-    const confirmationMessage = "Are you sure want to delete this server?";
-    const optionYes = "Yes";
-    const optionNo = "No";
+    const server = this.getServerById(id);
+    const confirmationMessage = vscode.l10n.t("Are you sure want to delete this server?\nThis action can't be undone.\nServer: {0}", server.name);
+    const optionYes = vscode.l10n.t("Yes");
+    const optionNo = vscode.l10n.t("No");
+    
     vscode.window
       .showWarningMessage(confirmationMessage, { modal: true }, optionYes, optionNo)
       .then((clicked) => {

@@ -20,7 +20,7 @@ export type TServerModel = TAbstractModelPanel & {
 }
 
 export const EMPTY_SERVER_MODEL: TServerModel = {
-	serverType: "",
+	serverType: "totvs_server_protheus",
 	serverName: "",
 	port: 0,
 	address: "",

@@ -110,6 +110,7 @@ export default function AddServerView() {
               { value: "totvs_server_logix", text: "Logix (4GL)" },
               { value: "totvs_server_totvstec", text: "TOTVS Tec (Adv/PL e 4GL)" }
             ]}
+            rules={{ required: true }}
           />
 
           <TdsCheckBoxField
