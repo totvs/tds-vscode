@@ -75,13 +75,12 @@
     "all-contributors:check": "all-contributors check"
   },
   "dependencies": {
-    "@totvs/tds-da": "^1.2.70",
-    "@totvs/tds-ls": "^2.0.15",
+    "@totvs/tds-da": "^1.2.71",
+    "@totvs/tds-ls": "^2.0.16",
     "@types/vscode": "^1.85.0",
-    "@vscode/debugadapter": "^1.51.1",
-    "@vscode/l10n": "^0.0.16",
-    "@vscode/webview-ui-toolkit": "^1.2.1",
-    "cheerio": "1.0.0-rc.10",
+    "@vscode/debugadapter": "^1.65.0",
+    "@vscode/l10n": "^0.0.18",
+    "@vscode/webview-ui-toolkit": "^1.4.0",
     "core-js": "^3.25.2",
     "del": "^6.0.0",
     "fs-extra": "^10.1.0",
