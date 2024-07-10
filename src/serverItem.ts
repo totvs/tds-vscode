@@ -93,9 +93,9 @@ function serverTypeImage(server: ServerItem): string {
   const type: TServerType = server.type;
   const connected: boolean = server.isConnected;
 
-  const sufix: string = type.substring(type.lastIndexOf("_") + 1);
+  const suffix: string = type.substring(type.lastIndexOf("_") + 1);
 
-  return connected ? `server_${sufix}_connected.svg` : `server_${sufix}.svg`;
+  return connected ? `server_${suffix}_connected.svg` : `server_${suffix}.svg`;
 }
 
 function environmentTypeString(environment: EnvSection): string {
