@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import "./repositoryLog.css";
-import { IFormAction, TdsDataGrid, TdsFormActionsEnum, TdsLabelField, TdsPage, TdsProgressRing, getDefaultActionsForm } from "@totvs/tds-webtoolkit";
+import { IFormAction, TdsDataGrid, TdsFormActionsEnum, TdsLabelField, TdsPage, TdsProgressRing, TdsTreeItem, TdsTreeView, getDefaultActionsForm } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
@@ -23,7 +23,6 @@ import { TdsForm, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-w
 import { tdsVscode } from '@totvs/tds-webtoolkit';
 import { TRepositoryLogModel } from "tds-shared/lib";
 import { EMPTY_REPOSITORY_MODEL, TPatchInfoModel, TProgramAppModel } from "tds-shared/lib/models/repositoryLogModel";
-import { FastTreeItem, FastTreeView } from "./components/tree";
 
 enum ReceiveCommandEnum {
 }
@@ -145,7 +144,7 @@ export default function RepositoryLogView() {
                   label={tdsVscode.l10n.t("Applied in")}
                   className="tds-bold"
                 />
-                <FastTreeView
+                <TdsTreeView
                   className="tds-tree-view"
                   key={"tree_monthly"}
                 >
@@ -155,7 +154,7 @@ export default function RepositoryLogView() {
                       .sort((a: string, b: string) => a.localeCompare(b))
                       .map((month: string, index: number) => {
                         return (
-                          <FastTreeItem key={`tree_item_${index}`} className="tds-tree-item">
+                          <TdsTreeItem key={`tree_item_${index}`} className="tds-tree-item">
                             {month}
                             {
                               model.rpoPatches
@@ -168,22 +167,22 @@ export default function RepositoryLogView() {
                                 .sort((a: TPatchInfoModel, b: TPatchInfoModel) => a.dateFileApplication.getTime() - b.dateFileApplication.getTime())
                                 .map((patch: TPatchInfoModel, indexMonth: number) => {
                                   return (
-                                    <FastTreeItem key={`tree_item_${index}_${indexMonth}`} className="tds-tree-item"
+                                    <TdsTreeItem key={`tree_item_${index}_${indexMonth}`} className="tds-tree-item"
                                       onClick={() => {
                                         setCurrentPatch(patch);
                                       }}
                                     >
                                       {tdsVscode.l10n.formatDate(patch.dateFileApplication, "date")}
-                                    </FastTreeItem>
+                                    </TdsTreeItem>
                                   )
                                 }
                                 )
                             }
-                          </FastTreeItem>
+                          </TdsTreeItem>
                         )
                       })
                   }
-                </FastTreeView>
+                </TdsTreeView>
               </section>
 
               {currentPatch !== undefined

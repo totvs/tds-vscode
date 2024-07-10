@@ -50,34 +50,3 @@ limitations under the License.
 	align-items: unset;
 	justify-content: unset;
 }
-
-.tds-tree-view {
-	width: 100%;
-}
-
-.tds-tree-view fast-tree-item {
-	background: var(--input-background);
-}
-
-.tds-tree-view fast-tree-item::part(positioning-region) {
-	background-color: transparent;
-	border: none;
-	height: calc(((8 + var(--density)) * var(--design-unit) + 1) * 1px);
-}
-
-.tds-tree-view fast-tree-item::part(content-region) {
-	margin-top: calc(var(--design-unit) * -1px);
-	color: var(--vscode-editor-foreground);
-}
-
-.tds-tree-view fast-tree-item::part(expand-collapse-button) {
-	background: initial;
-}
-
-.tds-tree-view fast-tree-item::part(expand-collapse-button):hover {
-	color: var(--vscode-editor-background);
-}
-
-.tds-tree-view fast-tree-item::part(content-region) fast-tree-item::part(content-region) {
-	background-color: red;
-}
