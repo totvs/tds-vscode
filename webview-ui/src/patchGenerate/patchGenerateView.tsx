@@ -215,7 +215,10 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
 
     return (
       <section className="tds-grid-container select-resource-component">
-        <TdsLabelField key={`resource_name_${id}`} name="resource_name" className="tds-bold" label={label} />
+        <TdsLabelField
+          key={`resource_name_${id}`}
+          name="resource_name"
+          className="tds-bold" label={label} />
         <TdsDataGrid
           key={`data_grid_${id}`}
           id={id}

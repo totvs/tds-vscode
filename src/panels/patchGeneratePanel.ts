@@ -234,7 +234,8 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
   private async getDataFromFolder(model: TGeneratePatchFromRpoModel, includeTRes: boolean): Promise<TGeneratePatchFromRpoModel> {
     var glob = require('glob');
 
-    const files: string[] = glob.sync(`*.*`, {
+
+    const files: string[] = glob.sync(`**/*.*`, {
       cwd: model.folder,
       absolute: true,
       ignore: ['**/node_modules/**']
@@ -242,19 +243,40 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
 
     model.objectsLeft = [];
     if (files) {
-      files.forEach((resource: string) => {
-        const lstat: fse.Stats = fse.lstatSync(resource);
+      let extensionsAllowed: string[];
+      const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
 
-        if (lstat.isFile()) {
-          model.objectsLeft.push({
+      if (configADVPL.get("folder.enableExtensionsFilter", true)) {
+        extensionsAllowed = configADVPL.get("folder.extensionsAllowed", []); // Le a chave especifica
+      }
+
+      files.forEach((resource: string) => {
+        const validFile: boolean = (extensionsAllowed.length == 0)
+          ? Utils.isAdvPlSource(resource) || Utils.is4glSource(resource) || Utils.isResource(resource)
+          : (extensionsAllowed.findIndex((ext: string) => resource.toLowerCase().endsWith(ext.toLowerCase())) > -1);
+
+        if (validFile) {
+          model.objectsRight.push({
             source: path.basename(resource),
-            date: new Date(lstat.mtime),
+            date: new Date(fse.lstatSync(resource).mtime),
             source_status: "",
             rpo_status: "",
             function: "",
             line: 0
           });
         }
+        // const lstat: fse.Stats = fse.lstatSync(resource);
+
+        // if (lstat.isFile()) {
+        //   model.objectsLeft.push({
+        //     source: path.basename(resource),
+        //     date: new Date(lstat.mtime),
+        //     source_status: "",
+        //     rpo_status: "",
+        //     function: "",
+        //     line: 0
+        //   });
+        // }
       });
     }
 

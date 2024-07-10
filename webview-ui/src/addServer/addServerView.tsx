@@ -88,7 +88,7 @@ export default function AddServerView() {
 
   function removeIncludePath(index: number) {
     remove(index);
-    insert(index, { path: "" });
+    insert(index + 1, { path: "" });
   }
 
   const model: TServerModel = methods.getValues();

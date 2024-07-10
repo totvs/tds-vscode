@@ -78,7 +78,7 @@ export default function GlobalIncludeView() {
 
     if (methods.getValues().includePaths.findIndex((includePath: TIncludePath) => includePath.path.toLowerCase() == folder.toLowerCase()) == -1) {
       remove(index);
-      insert(index, { path: folder });
+      insert(index + 1, { path: folder });
     };
   }
 
