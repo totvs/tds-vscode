@@ -70,8 +70,6 @@ export default function ApplyPatchView() {
             model.patchFiles.push(EMPTY_PATCH_FILE);
           }
 
-          console.dir(model)
-
           setDataModel<TApplyPatchModel>(methods.setValue, model);
           setErrorModel(methods.setError, errors);
 

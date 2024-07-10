@@ -27,12 +27,11 @@ import { FastTreeItem, FastTreeView } from "./components/tree";
 
 enum ReceiveCommandEnum {
 }
+
 type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TRepositoryLogModel>;
 
 function getMonthly(rpoInfos: TPatchInfoModel[]): string[] {
   const monthly: string[] = [];
-
-  console.log("rpoInfos ", rpoInfos);
 
   rpoInfos.forEach((rpoInfo: TPatchInfoModel) => {
     const dateFileApplicationMonth: string = rpoInfo.dateFileApplication.toLocaleString(tdsVscode.l10n.formatLocale, { month: "numeric", year: "numeric" });
@@ -146,7 +145,8 @@ export default function RepositoryLogView() {
                   label={tdsVscode.l10n.t("Applied in")}
                   className="tds-bold"
                 />
-                <FastTreeView className="tds-tree-view"
+                <FastTreeView
+                  className="tds-tree-view"
                   key={"tree_monthly"}
                 >
                   {tdsVscode.l10n.t("Applied in")}
