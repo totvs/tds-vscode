@@ -113,16 +113,20 @@ export class BuildResultPanel extends TdsPanel<TBuildResultModel, BuildResultOpt
       case CommonCommandFromWebViewEnum.Ready:
         if (data.model == undefined) {
           const model: TBuildResultModel = EMPTY_BUILD_RESULT_MODEL;
-
           model.timeStamp = new Date();
           model.returnCode = this._options.buildResult.returnCode;
           model.buildInfos = [];
           this._options.buildResult.compileInfos.forEach((info: CompileInfo) => {
+            const filename: string = path.basename(info.filePath);
+            const detail: string = info.detail.toLowerCase().startsWith(filename.toLowerCase())
+              ? info.detail.substring(filename.length)
+              : info.detail;
+
             const buildInfo: TBuildInfoResult = {
-              filename: path.basename(info.filePath),
+              filename: filename,
               status: info.status,
               message: info.message,
-              detail: info.detail,
+              detail: detail,
               uri: info.filePath
             };
 
