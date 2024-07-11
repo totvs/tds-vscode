@@ -576,7 +576,7 @@ export class ServersConfig {
     const confirmationMessage = vscode.l10n.t("Are you sure want to delete this server?\nThis action can't be undone.\nServer: {0}", server.name);
     const optionYes = vscode.l10n.t("Yes");
     const optionNo = vscode.l10n.t("No");
-    
+
     vscode.window
       .showWarningMessage(confirmationMessage, { modal: true }, optionYes, optionNo)
       .then((clicked) => {
@@ -1236,21 +1236,6 @@ export class LaunchConfig {
    */
   static getLaunchConfigFile() {
     return path.join(Utils.getVSCodePath(), "launch.json");
-  }
-
-  // Atualiza a informacao de smartclientBin em configurations
-  static saveSmartClientBin(smartClient: string) {
-    try {
-      let launchConfig = getLaunchConfig();
-      if (launchConfig && launchConfig.configurations) {
-        launchConfig.configurations = launchConfig.configurations.forEach(launchElement => {
-          launchElement.smartclientBin = smartClient;
-        });
-        persistLaunchInfo(launchConfig);
-      }
-    } catch (e) {
-      console.error(e);
-    }
   }
 
   static getIgnoreSourceNotFoundValue(debugSession): boolean {

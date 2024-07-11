@@ -80,7 +80,6 @@
 	"tds.package.logger.off": "Off Logger Capture",
 	"tds.package.patchApply": "Aplicação de Patch",
 	"tds.package.patchApply.fromFile": "Aplicar Patch do arquivo",
-	"tds.package.welcomePage": "Página de boas-vindas",
 	"tds.package.include": "Incluir",
 	"tds.package.ws.show": "Generate WS Protheus",
 	"tds.package.totvs_language_debug": "Depuração do idioma TOTVS",

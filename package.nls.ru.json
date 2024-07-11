@@ -80,7 +80,6 @@
 	"tds.package.logger.off": "Отключить средство захвата журналов",
 	"tds.package.patchApply": "Применить пакет исправлений",
 	"tds.package.patchApply.fromFile": "Применить пакет исправлений из файла",
-	"tds.package.welcomePage": "Страница приветствия",
 	"tds.package.include": "Включ.",
 	"tds.package.ws.show": "Генерировать WS Protheus",
 	"tds.package.totvs_language_debug": "Отладка TOTVS Language",

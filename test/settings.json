@@ -5,7 +5,6 @@
     "totvsLanguageServer.workspaceServerConfig": true,
     "telemetry.telemetryLevel": "off",
     "workbench.editor.enablePreview": false,
-    "totvsLanguageServer.welcomePage": false,
     "update.mode": "none",
     "extensions.ignoreRecommendations": false,
     "git.autoRepositoryDetection": false,

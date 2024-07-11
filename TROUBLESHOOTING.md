@@ -201,7 +201,7 @@ Problemas na ferramenta TDS Replay
 
 &nbsp;
 
-# Gerando Informações sobre o Problema
+## Gerando Informações sobre o Problema
 
 > ATENÇÃO: Não utilize ambientes, nem usuários/senhas reais de produção durante a geração de informações sobre o problema. Informações sensíveis podem ser gravadas nestes logs gerados.
 
@@ -219,7 +219,7 @@ E se o problema ocorrer com um servidor informe também:
 
 Se possível anexe os logs de apoio do **TDS VS Code**. Veja como gerar os logs a seguir em **"Gerando logs"**
 
-#### Versão do **VS Code**
+### Versão do **VS Code**
 
 Para obter os dados do **VS Code** acione: `Help > About`
 
@@ -234,13 +234,13 @@ V8: 7.8.279.23-electron.0
 OS: Windows_NT x64 10.0.18362
 ```
 
-#### Versão da extensão **tds-vscode**
+### Versão da extensão **tds-vscode**
 
 Para obter os dados da extensão **tds-vscode** instalada selecione a visão _Extensions_ ( `CTRL + Shift + X` ) e confirme a versão instalada.
 
 ![tds-vscode extension version](https://raw.githubusercontent.com/totvs/tds-vscode/master/docs/gifs/tds-vscode_version.PNG)
 
-#### Versão do **RPO (LIB)** e do **TOTVS Server**
+### Versão do **RPO (LIB)** e do **TOTVS Server**
 
 Para obter os dados do **RPO (LIB)** e do **TOTVS Server**, de qualquer ponto de execução de um **RPO** (acessado através de um _Smartclient_), acione `Shift + F6` e exporte as informações do **TOTVS Server** e **RPO**:
 
@@ -284,7 +284,6 @@ O arquivo **"settings.json"** deve ficar como a seguir, observem a vírgula que 
         "--log-file=totvsls.log",
         "--record=totvsls"
     ],
-    "totvsLanguageServer.welcomePage": false,
     "totvsLanguageServer.showCompileResult": "yesAlways",
     "totvsLanguageServer.askEncodingChange": false
 }

@@ -45,7 +45,6 @@ Essas chaves de configuração são específicas do **TDS-VSCode** e podem ser u
 | .usageInfoConfig | false | Toggle indication of use. |
 | .web.arguments | [] | Argumentos para navegador web. |
 | .web.navigator | | Navegador da Web (depuração com SmartClientHtml). |
-| .welcomePage | true | Mostrar página de boas-vindas na primeira inicialização. |
 | .workspaceServerConfig | false | Use a área de trabalho para manter as configurações do servidor. |
 
 * Extensões padrão para compilação: \[".PRW",".PRX",".PRG",".PPX",".PPP",".TLPP",".APW",".APH",".APL",".AHU",".TRES",".PNG",".BMP",".RES",".4GL",".PER",".JS",".RPTDESIGN"\]

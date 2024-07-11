@@ -7,10 +7,15 @@
 
 - Documentação das configurações do **TDS-VSCode** em [Configurações](./docs/settings.md).
 
+- Nova interface de [boas-vindas](./docs/welcome.md)
+
 ## Descontinuado
 
-- Aplicação de _templates_;
+- Aplicação de _templates_
+
 - Propriedade `totvsLanguageServer.askCompileResult` em favor de `totvsLanguageServer.showCompileResult` [(detalhes)](./docs/compilation.md#resultado-da-compilação)
+
+- Propriedade `totvsLanguageServer.welcomePage` em favor da nova interface [(detalhes)](./docs/welcome.md)
 
 ## Versão [2.0.8]
 

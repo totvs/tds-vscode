@@ -4,6 +4,7 @@ codicons
 CONNT
 defragment
 Defragmenting
+Engpro
 OLDDPI
 OPENGL
 Protheus

@@ -402,12 +402,6 @@
             "%tds.package.trace.vscode.verbose%"
           ]
         },
-        "totvsLanguageServer.welcomePage": {
-          "scope": "window",
-          "type": "boolean",
-          "default": true,
-          "description": "%tds.package.show.welcome.first.initialize%"
-        },
         "totvsLanguageServer.askEncodingChange": {
           "scope": "window",
           "type": "boolean",
@@ -659,6 +653,10 @@
       {
         "command": "totvs-developer-studio.getDAP",
         "title": "Get DAP"
+      },
+      {
+        "command": "totvs-developer-studio.selectSmartClient",
+        "title": "Select default SmartClient"
       },
       {
         "command": "totvs-developer-studio.inspectorFunctions",
@@ -917,11 +915,6 @@
       {
         "command": "totvs-developer-studio.patchValidate",
         "title": "%tds.package.patchValidate.fromFile%",
-        "category": "TOTVS"
-      },
-      {
-        "command": "totvs-developer-studio.welcomePage",
-        "title": "%tds.package.welcomePage%",
         "category": "TOTVS"
       },
       {
@@ -1710,10 +1703,6 @@
           "when": "1 == 0"
         },
         {
-          "command": "totvs-developer-studio.welcomePage",
-          "when": "1 == 0"
-        },
-        {
           "command": "totvs-developer-studio.tdsreplay.webview.timeLine",
           "when": "debugType == totvs_tdsreplay_debug"
         }
@@ -1742,6 +1731,87 @@
         "view": "totvs_server",
         "contents": "Register a Protheus server, please.\n[Register Server](command:totvs-developer-studio.addServer)\nTo learn more about how to use this extension [read our docs](https://github.com/totvs/tds-vscode/blob/master/docs/welcome.md).",
         "when": "tdsWorkspaceOpenState && tdsHaveServersState == false"
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "tds-vscode",
+        "title": "Welcome: First Steps",
+        "description": "Initial configuration assistant for use of TDS-Vscode",
+        "steps": [
+          {
+            "id": "openFolder",
+            "title": "Open Folder",
+            "description": "Open a folder or repository, containing (or not) Advpl or 4GL sources.\n[Open Folder](command:workbench.action.files.openFolder)",
+            "media": {
+              "image": "media/open-folder.png",
+              "altText": "Dialog to open a folder"
+            },
+            "completionEvents": [
+              "onContext:tdsWorkspaceOpenState"
+            ]
+          },
+          {
+            "id": "addServer",
+            "title": "Register a Protheus Server",
+            "description": "Register a Protheus Server, which will be responsible for the various steps and development processes.\n[Add Server](command:totvs-developer-studio.addServer)",
+            "media": {
+              "image": "media/add-server.png",
+              "altText": "Server Registration"
+            },
+            "completionEvents": [
+              "onContext:tdsHaveServersState"
+            ]
+          },
+          {
+            "id": "globalInclude",
+            "title": "The global search folder list",
+            "description": "Enter the default list of locations to search for definition files (.CH, .TH e .R).\n[Global Include](command:totvs-developer-studio.include)",
+            "media": {
+              "image": "media/global-include.png",
+              "altText": "Server registration"
+            },
+            "completionEvents": [
+              "onCommand:totvs-developer-studio.include"
+            ]
+          },
+          {
+            "id": "selectSmartClientWindows",
+            "title": "Select SmartClient",
+            "description": "Select SmartClient Executable to be used in debugging when not informed in the launcher.\n[Select SmartClient](command:totvs-developer-studio.selectSmartClient)",
+            "when": "isWindows",
+            "media": {
+              "markdown": "media/windows.md"
+            },
+            "completionEvents": [
+              "onCommand:totvs-developer-studio.selectSmartClient"
+            ]
+          },
+          {
+            "id": "selectSmartClientLinux",
+            "title": "Select SmartClient",
+            "description": "Select SmartClient Executable to be used in debugging when not informed in the launcher.\n[Select SmartClient](command:totvs-developer-studio.selectSmartClient)",
+            "when": "isLinux",
+            "media": {
+              "markdown": "media/linux.md"
+            },
+            "completionEvents": [
+              "onCommand:totvs-developer-studio.selectSmartClient"
+            ]
+          },
+          {
+            "id": "selectSmartClientMac",
+            "title": "Select SmartClient",
+            "description": "Select SmartClient Executable to be used in debugging when not informed in the launcher.\n[Select SmartClient](command:totvs-developer-studio.selectSmartClient)",
+            "when": "isMac",
+            "media": {
+              "markdown": "media/mac.md"
+            },
+            "completionEvents": [
+              "onCommand:totvs-developer-studio.selectSmartClient"
+            ]
+          }
+        ]
       }
     ]
   }

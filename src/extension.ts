@@ -27,7 +27,6 @@ import { defragRpo } from "./server/defragRPO";
 import { rpoCheckIntegrity } from "./server/rpoCheckIntegrity";
 import { revalidateRpo } from "./server/revalidateRPO";
 import { serverSelection } from "./inputConnectionParameters";
-import { showWelcomePage } from "./welcome/welcomePage";
 import { onCaptureLoggers, offCaptureLoggers } from "./loggerCapture/logger";
 import tdsReplayLauncherConfig from "./launcher/tdsReplay/tdsReplayLauncherConfig";
 import {
@@ -453,9 +452,6 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-  //Mostra a pagina de Welcome.
-  showWelcomePage(context, false);
-
   ServersConfig.onDidSelectedServer((newServer: ServerItem) => {
     serverProvider.connectedServerItem = newServer;
   })
@@ -551,11 +547,10 @@ export function activate(context: ExtensionContext) {
     vscode.commands.registerCommand(
       "totvs-developer-studio.run.formatter",
       (args: any[]) => {
-        //console.log("formatador ativado");
         if (args === undefined) {
-          let aeditor = vscode.window.activeTextEditor;
-          if (aeditor !== undefined) {
-            args = [aeditor.document.uri];
+          let activeEditor = vscode.window.activeTextEditor;
+          if (activeEditor !== undefined) {
+            args = [activeEditor.document.uri];
           }
         }
         if (instanceOfUri(args)) {
@@ -621,6 +616,42 @@ export function activate(context: ExtensionContext) {
       return tlppTools(message);
     }
   };
+
+  vscode.commands.registerCommand(
+    "totvs-developer-studio.selectSmartClient",
+    () => {
+      const isWindows: boolean = process.platform === 'win32';
+      let filters: { [name: string]: string[] } = {};
+
+      if (isWindows) {
+        filters["Executables"] = ["exe"];
+      }
+
+      filters["All files"] = ["*"];
+
+      const options: vscode.OpenDialogOptions = {
+        canSelectMany: false,
+        canSelectFiles: true,
+        canSelectFolders: false,
+        defaultUri: undefined,
+        title: vscode.l10n.t("Select SmartClient Executable"),
+        openLabel: vscode.l10n.t("Select"),
+        filters: filters
+      };
+
+      vscode.window.showOpenDialog(options)
+        .then((fileUri) => {
+          if (fileUri === undefined) {
+            return;
+          }
+
+          let fileUriString = fileUri[0].toString();
+          vscode.window.showErrorMessage(fileUriString)
+
+          return fileUri;
+        });
+
+    })
 
   window.showInformationMessage('"TDS-VSCode" is ready.');
 
