@@ -122,7 +122,7 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel, IInspe
   protected getWebviewContent(extensionUri: vscode.Uri) {
     const server = ServersConfig.getCurrentServer();
 
-    return getWebviewContent(this._panel.webview, extensionUri, "inspectObjectView",
+    return getWebviewContent(this._panel.webview, extensionUri, "objectInspectorView",
       {
         title: this._panel.title,
         translations: this.getTranslations(),

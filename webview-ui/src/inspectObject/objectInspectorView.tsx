@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import "./inspectObject.css";
+import "./objectInspector.css";
 import React from "react";
 import { TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsForm, TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
 import { useForm } from "react-hook-form";
@@ -180,7 +180,7 @@ export type TInspectorObjectComponentProps = {
   isServerP20OrGreater: boolean
 }
 
-export default function InspectObjectView(props: TInspectorObjectComponentProps) {
+export default function ObjectInspectorView(props: TInspectorObjectComponentProps) {
   const methods = useForm<TFields>({
     defaultValues: EMPTY_MODEL,
     mode: "all"

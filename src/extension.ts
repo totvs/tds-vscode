@@ -60,7 +60,7 @@ import { GenerateWebServicePanel } from "./panels/generateWSPanel";
 import { PatchGenerateFromRpoPanel } from "./panels/patchGeneratePanel";
 import { CompileKeyPanel } from "./panels/compileKeyPanel";
 import { ApplyPatchPanel, OperationApplyPatchEnum } from "./panels/patchApplyPanel";
-import { InspectorObjectPanel } from "./panels/inspectObjectPanel";
+import { InspectorObjectPanel } from "./panels/objectInspectorPanel";
 import { PatchGenerateByDifferencePanel } from "./panels/patchGenerateByDifferencePanel";
 import { PatchEditorProvider } from "./panels/patchEditorPanel";
 import { RepositoryLogPanel } from "./panels/repositoryLogPanel";

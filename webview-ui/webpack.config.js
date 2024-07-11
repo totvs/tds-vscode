@@ -86,7 +86,7 @@ module.exports = (env, argv) => {
       patchGenerateByDifferenceView: path.join(PATCH_GENERATE_BY_DIFFERENCE_PATH, "index.tsx"),
       compileKeyView: path.join(COMPILE_KEY_PATH, "index.tsx"),
       applyPatchView: path.join(APPLY_PATCH_PATH, "index.tsx"),
-      inspectObjectView: path.join(INSPECT_OBJECT_PATH, "index.tsx"),
+      objectInspectorView: path.join(INSPECT_OBJECT_PATH, "index.tsx"),
       editorPatchView: path.join(EDITOR_PATCH_PATH, "index.tsx"),
       repositoryLogView: path.join(REPOSITORY_LOG_PATH, "index.tsx"),
       buildResultView: path.join(BUILD_RESULT_PATH, "index.tsx"),
