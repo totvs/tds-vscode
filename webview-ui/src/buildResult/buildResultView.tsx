@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import "./buildResult.css";
-import { IFormAction, TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsFormActionsEnum, TdsPage, getDefaultActionsForm } from "@totvs/tds-webtoolkit";
+import { IFormAction, TTdsDataGridColumnDef, TdsDataGrid, TdsFormActionsEnum, TdsPage, getDefaultActionsForm } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
@@ -37,14 +37,7 @@ function columnsDef(): TTdsDataGridColumnDef[] {
       width: "8fr",
       sortable: true,
       sortDirection: "asc",
-    },
-    {
-      type: "string",
-      name: "status",
-      label: tdsVscode.l10n.t("Status"),
-      width: "4fr",
-      sortable: true,
-      sortDirection: "",
+      row: 0
     },
     {
       type: "string",
@@ -53,6 +46,16 @@ function columnsDef(): TTdsDataGridColumnDef[] {
       width: "10fr",
       sortable: true,
       sortDirection: "",
+      row: 0
+    },
+    {
+      type: "string",
+      name: "status",
+      label: tdsVscode.l10n.t("Status"),
+      width: "4fr",
+      sortable: true,
+      sortDirection: "",
+      row: 0
     },
     {
       type: "string",
@@ -61,6 +64,7 @@ function columnsDef(): TTdsDataGridColumnDef[] {
       width: "10fr",
       sortable: true,
       sortDirection: "",
+      row: 1
     },
     {
       type: "string",
@@ -69,6 +73,7 @@ function columnsDef(): TTdsDataGridColumnDef[] {
       width: "10fr",
       sortable: true,
       sortDirection: "",
+      row: 1
     }
   ];
 
@@ -150,28 +155,24 @@ export default function BuildResultView() {
   });
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("Build result")}>
+    <TdsPage title={tdsVscode.l10n.t("Build Result")}>
       <TdsForm<TBuildResultModel>
         methods={methods}
         onSubmit={onSubmit}
         actions={formActions}
-        description={tdsVscode.l10n.t("Compilation results made at [{0}]", tdsVscode.l10n.formatDate(model.timeStamp))}>
-
-        {(model.returnCode == -1) &&
-          <section className="tds-row-container" >
-            <TdsLabelField
-              className="tds-error"
-              name="returnCode"
-              label={tdsVscode.l10n.t("Compilation aborted.")}
-            />
-          </section>
-        }
+        description={
+          tdsVscode.l10n.t("Compilation results made at [{0}]", tdsVscode.l10n.formatDate(model.timeStamp)) +
+            (model.returnCode != -1)
+            ? ""
+            : `**${tdsVscode.l10n.t("Compilation aborted.")}**`
+        }>
 
         <TdsDataGrid id={"result_dataGrid"}
           columnDef={columnsDef()}
           dataSource={model.buildInfos}
           options={{
             grouping: false,
+            rowSeparator: true
           }} />
       </TdsForm>
     </TdsPage>

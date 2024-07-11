@@ -44,7 +44,7 @@ export class BuildResultPanel extends TdsPanel<TBuildResultModel, BuildResultOpt
         // Panel view type
         "build-result-panel",
         // Panel title
-        vscode.l10n.t('Build result'),
+        vscode.l10n.t('Build Result'),
         // The editor column the panel should be displayed in
         vscode.ViewColumn.One,
         // Extra panel configurations
