@@ -16,7 +16,7 @@ limitations under the License.
 
 import "./objectInspector.css";
 import React from "react";
-import { TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsForm, TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
+import { TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsForm, TdsPage, TdsProgressRing, tdsVscode } from "@totvs/tds-webtoolkit";
 import { useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
@@ -153,7 +153,7 @@ function functionColumns(isServerP20OrGreater: boolean): TTdsDataGridColumnDef[]
       type: "string",
       name: "rpo_status",
       label: tdsVscode.l10n.t("Status RPO"),
-      width: "4fr",
+      width: "5fr",
       lookup: {
         N: "None",
         D: "Default",
@@ -264,15 +264,19 @@ export default function ObjectInspectorView(props: TInspectorObjectComponentProp
         onSubmit={methods.handleSubmit(() => { })}
         methods={methods}
       >
-        <TdsDataGrid
-          id="inspectorObjectGrid"
-          columnDef={columnDef}
-          dataSource={dataSource}
-          options={{
-            bottomActions: bottomActions,
-            topActions: topActions
-          }}
-        />
+        {(dataSource.length == 0)
+          ? <TdsProgressRing size="full" />
+          :
+          <TdsDataGrid
+            id="inspectorObjectGrid"
+            columnDef={columnDef}
+            dataSource={dataSource}
+            options={{
+              bottomActions: bottomActions,
+              topActions: topActions
+            }}
+          />
+        }
       </TdsForm>
     </TdsPage>
   );
