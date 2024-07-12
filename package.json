@@ -1616,11 +1616,6 @@
           "command": "totvs-developer-studio.revalidateRPO",
           "when": "view == totvs_server && viewItem == serverItem && tds-vscode.isServerP20OrGreater",
           "group": "EtotvsRPO@3"
-        },
-        {
-          "command": "totvs-developer-studio.delete.file.fromRPO",
-          "when": "view == totvs_server && viewItem == serverItem",
-          "group": "EtotvsRPO@4"
         }
       ],
       "view/title": [

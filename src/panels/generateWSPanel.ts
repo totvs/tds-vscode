@@ -22,7 +22,6 @@ import { IWsdlGenerateResult, sendWsdlGenerateRequest } from "../protocolMessage
 import { TWebServiceModel } from "tds-shared/lib";
 import * as fse from "fs-extra";
 import path from "path";
-import { _debugEvent } from "../debug";
 import { TFieldErrors, TSendSelectResourceProps, isErrors } from "tds-shared/lib";
 import { TdsPanel } from "./panel";
 

@@ -203,31 +203,43 @@ export function activate(context: ExtensionContext) {
       }
     )
   );
+
   //Ação para desfragmentar o RPO do servidor corrente.
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.defragRPO", () =>
-      defragRpo()
-    )
+    commands.registerCommand("totvs-developer-studio.defragRPO", () => {
+      if (checkServer() && !checkDebug()) {
+        defragRpo();
+      }
+    })
   );
+
   //Ação para checar a integridade do RPO do servidor corrente.
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.rpoCheckIntegrity", () =>
-      rpoCheckIntegrity()
-    )
+    commands.registerCommand("totvs-developer-studio.rpoCheckIntegrity", () => {
+      if (checkServer() && !checkDebug()) {
+        rpoCheckIntegrity()
+      }
+    })
   );
+
   //Ação para revalidar o RPO do servidor corrente.
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.revalidateRPO", () =>
-      revalidateRpo()
-    )
+    commands.registerCommand("totvs-developer-studio.revalidateRPO", () => {
+      if (checkServer() && !checkDebug()) {
+        revalidateRpo()
+      }
+    })
   );
 
   //Ação para deletar um fonte selecionado do RPO.
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.delete.file.fromRPO",
-      (context, files) => deleteFileFromRPO(context, files)
-    )
+      (context, files) => {
+        if (checkServer() && !checkDebug()) {
+          deleteFileFromRPO(context, files)
+        }
+      })
   );
 
   //Ação par abrir a tela de inspetor de objetos.

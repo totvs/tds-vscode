@@ -3,9 +3,10 @@
 > O **VS-Code** pode apresentar problemas em suas funcionalidades em sistemas operacionais da linha **Windows Server**.
 > Veja os requisitos para uso em [Requirements](https://code.visualstudio.com/docs/supporting/requirements).
 
-> Antes de abrir uma nova **"Issue"**:
-> Verifique se a extensão esta atualizada (`Manage | Check for Update..`) e se necessário, faça as atualizações e refaça a operação que esta gerando uma ocorrência.
-> Verifique se o seu problema está na lista de problemas conhecidos e se existe uma solução de contorno para ele. Caso contrário abra uma nova **"Issue"** e adicione o maior número de informações possíveis (veja abaixo na seção **"Informações importantes"**) para ajudar a identificar a causa do problema.
+## Antes de abrir uma nova **"Issue"**
+
+* Verifique se a extensão esta atualizada (`Manage | Check for Update..`) e se necessário, faça as atualizações e refaça a operação que esta gerando uma ocorrência.
+* Verifique se o seu problema está na lista de problemas conhecidos e se existe uma solução de contorno para ele. Caso contrário abra uma nova **"Issue"** e adicione o maior número de informações possíveis (veja abaixo na seção **"Informações importantes"**) para ajudar a identificar a causa do problema.
 
 Os problemas estão divididos em **"Gerais"** e **"Depuração"** então procure na seção em que seu problema se enquadra.
 
@@ -223,7 +224,7 @@ Se possível anexe os logs de apoio do **TDS VS Code**. Veja como gerar os logs 
 
 Para obter os dados do **VS Code** acione: `Help > About`
 
-```
+```text
 Version: 1.44.0 (user setup)
 Commit: 2aae1f26c72891c399f860409176fe435a154b13
 Date: 2020-04-07T23:31:18.860Z
@@ -244,7 +245,7 @@ Para obter os dados da extensão **tds-vscode** instalada selecione a visão _Ex
 
 Para obter os dados do **RPO (LIB)** e do **TOTVS Server**, de qualquer ponto de execução de um **RPO** (acessado através de um _Smartclient_), acione `Shift + F6` e exporte as informações do **TOTVS Server** e **RPO**:
 
-```
+```text
 Informações do TOTVS Server
 Tipo do servidor;Console
 TOTVS Server Build;7.00.191205P-20200220
@@ -253,7 +254,7 @@ Servidor 64 bits;Sim
 Servidor Unix;Não
 ```
 
-```
+```text
 Informações da LIB
 Versão da Lib;20200214
 Data da Lib;20200219_175422
@@ -269,7 +270,7 @@ Dicionário no banco de dados;Sim
 
 Para gerar os logs **"Gerais"** adicione as linhas abaixo, em seu arquivo **"settings.json"** dentro da pasta _".vscode"_ de seu projeto aberto.
 
-```
+```json
 "totvsLanguageServer.launch.args": [
     "--log-file=totvsls.log",
     "--record=totvsls"
@@ -278,7 +279,7 @@ Para gerar os logs **"Gerais"** adicione as linhas abaixo, em seu arquivo **"set
 
 O arquivo **"settings.json"** deve ficar como a seguir, observem a vírgula que foi introduzida, pois existem outras configurações, caso contrário o arquivo JSON acusará problema de parse:
 
-```
+```json
 {
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
@@ -295,13 +296,13 @@ Os arquivos **"totvsls.log"**, **"totvsls_in.log"** e **"totvsls_out.log"** ser�
 
 Se o problema for relacionado a depuração, além dos logs **"Gerais"** deve ser gerado o log de **"Depuração"**. Adicione a linha abaixo, na seção _"configurations"_ em seu arquivo **"launch.json"** dentro da pasta _".vscode"_ de seu projeto aberto.
 
-```
+```text
 "logFile": "${workspaceFolder}\\dap.log"
 ```
 
 O arquivo **"launch.json"** deve ficar como a seguir, observem que uma vírgula foi adicionada a linha anterior, caso contrário o arquivo JSON acusará problema de parse:
 
-```
+```json
 ...
 "configurations": [
  {
