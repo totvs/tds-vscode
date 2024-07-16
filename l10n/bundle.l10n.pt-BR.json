@@ -190,7 +190,7 @@
   "Use filter to display objects": "Use filtro para exibir objetos",
   "Use filter to display functions": "Use filtro para exibir funções",
   "Date Rpo": "Data RPO",
-  "Launcher Config": "Configuração do lançador",
+  "Launcher Debug Config": "Configuração do lançador de depuração",
   "Include": "Include",
   "Global Include": "Include Global",
   "Removed [{0}] invalid breakpoints.": "Removidos [{0}] pontos de interrupção inválidos.",

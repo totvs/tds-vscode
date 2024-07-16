@@ -149,7 +149,7 @@
   "Invalid folder or not contains definition files (.CH or .TH)": "Invalid folder or not contains definition files (.CH or .TH)",
   "Items showing": "Items showing",
   "Language (-L):": "Language (-L):",
-  "Launcher Config": "Launcher Config",
+  "Launcher Debug Config": "Launcher Debug Config",
   "Launcher config name not defined.": "Launcher config name not defined.",
   "Launcher Configuration": "Launcher Configuration",
   "Launcher Configuration saved.": "Launcher Configuration saved.",

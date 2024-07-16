@@ -124,7 +124,7 @@
   "Collection has already been started. Reproduce the problem and close the grabber.": "Сбор уже начался. Воспроизведите проблему и закройте граббер.",
   "Log file successfully generated in": "Файл журнала успешно создан в",
   "First start logging": "Сначала начните вести журнал",
-  "Launcher Config": "Конфигурация лаунчера",
+  "Launcher Debug Config": "Launcher Debug Config",
   "Choose launcher:": "Выберите лаунчер:",
   "Program:": "Программа:",
   "Arguments (-A):": "Аргументы (-A):",

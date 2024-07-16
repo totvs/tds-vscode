@@ -138,7 +138,7 @@
   "Invalid folder or not contains definition files (.CH or .TH)": "Carpeta no válida o no contiene archivos de definición(.CH or .TH)",
   "Items showing": "Elementos que se muestran",
   "Language (-L):": "(-L) Lenguaje",
-  "Launcher Config": "Configuración del lanzador",
+  "Launcher Debug Config": "Configuración del lanzador debug",
   "Launcher config name not defined.": "Nombre de configuración del iniciador no definido.",
   "Launcher Configuration": "Configuración del lanzador",
   "Launcher Configuration saved.": "Configuración del lanzador Guardada.",
