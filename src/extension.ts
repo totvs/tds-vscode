@@ -28,7 +28,6 @@ import { rpoCheckIntegrity } from "./server/rpoCheckIntegrity";
 import { revalidateRpo } from "./server/revalidateRPO";
 import { serverSelection } from "./inputConnectionParameters";
 import { onCaptureLoggers, offCaptureLoggers } from "./loggerCapture/logger";
-import tdsReplayLauncherConfig from "./launcher/tdsReplay/tdsReplayLauncherConfig";
 import {
   getDAP,
   getProgramName,
