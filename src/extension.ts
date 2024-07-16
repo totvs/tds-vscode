@@ -372,7 +372,7 @@ export function activate(context: ExtensionContext) {
     commands.registerCommand(
       "tdsreplay.importSourcesOnlyResult",
       (sourceList: any) => {
-        ImportSourcesOnlyResultPanel.render(context.extensionUri, sourceList);
+        ImportSourcesOnlyResultPanel.render(context, sourceList.sourceList);
       }
     )
   );

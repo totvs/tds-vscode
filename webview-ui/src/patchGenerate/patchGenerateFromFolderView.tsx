@@ -74,7 +74,6 @@ export default function PatchGenerateFromFolderView(props: IPatchGenerateViewPro
 
     sendSaveAndClose(data);
   }
-  console.log("Dentro do folder");
 
   const columnsDef = (): TTdsDataGridColumnDef[] => {
     const columnDef: TTdsDataGridColumnDef[] = [

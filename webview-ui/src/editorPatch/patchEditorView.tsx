@@ -16,7 +16,7 @@ limitations under the License.
 
 import "./patchEditor.css";
 import React from "react";
-import { IFormAction, TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsForm, TdsFormActionsEnum, TdsPage, getDefaultActionsForm, tdsVscode } from "@totvs/tds-webtoolkit";
+import { TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsForm, TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
 import { useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";

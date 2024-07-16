@@ -1,13 +1,15 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App";
-import { sendReady } from "@totvs/tds-webtoolkit";
+import { createRoot } from "react-dom/client";
+import { sendReady, tdsVscode } from "@totvs/tds-webtoolkit";
+import ImportSourcesOnlyResultView from "./importSourcesOnlyResultView";
 
-ReactDOM.render(
+tdsVscode.l10n.translations = window.translations;
+
+const root = createRoot(document.getElementById("root")!);
+root.render(
   <React.StrictMode>
-    <App />
+    <ImportSourcesOnlyResultView />
   </React.StrictMode>,
-  document.getElementById("root")
 );
 
 sendReady();
