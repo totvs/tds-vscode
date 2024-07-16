@@ -59,6 +59,9 @@
 				"--extensionTestsPath=${workspaceFolder}/out/test/index.js",
 				"${workspaceFolder}/test/resources/projects/advpl"
 			],
+			"skipFiles": [
+				"<node_internals>/**"
+			],
 			"sourceMaps": true,
 			"preLaunchTask": "npm: compile",
 			"outFiles": [
