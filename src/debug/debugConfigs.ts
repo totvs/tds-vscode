@@ -284,8 +284,31 @@ function extractArgs(value: string): string[] {
 
 export async function getProgramArguments(config: DebugConfiguration) {
   var argsJson = await pickProgramArguments(config);
+
   return argsJson;
-  //return await pickProgramArguments(config);
+}
+
+export async function getReplayFile(config: DebugConfiguration) {
+  const options: vscode.OpenDialogOptions = {
+    canSelectMany: false,
+    canSelectFiles: true,
+    canSelectFolders: false,
+    // defaultUri: selectionProps.fileSystem
+    //   ? vscode.Uri.parse(`${selectionProps.fileSystem}:///${selectionProps.currentFolder}`)
+    //   : vscode.Uri.file(selectionProps.currentFolder),
+    title: vscode.l10n.t("Select a file to replay"),
+    openLabel: vscode.l10n.t("Select"),
+    filters: {
+      "TDS Replay": ["trplay"],
+      "All files": ["*"],
+    },
+  };
+
+  const result = await vscode.window.showOpenDialog(options).then((fileUri) => {
+    return fileUri ? fileUri[0].fsPath : undefined;
+  });
+
+  return result;
 }
 
 export function toggleTableSync() {

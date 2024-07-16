@@ -44,5 +44,8 @@ export { EMPTY_REPOSITORY_MODEL } from "./models/repositoryLogModel";
 export type { TBuildResultModel, TBuildInfoResult } from "./models/buildResultModel";
 export { EMPTY_BUILD_RESULT_MODEL, BuildResultCommandEnum, BuildResultCommand } from "./models/buildResultModel";
 
-export type { TLauncherType, TLauncherConfigurationModel, } from "./models/launchConfigurationModel";
-export { EMPTY_LAUNCHER_CONFIGURATION, TLanguagesEnum } from "./models/launchConfigurationModel";
+export type { TDebugDataConfiguration, TDebugConfigurationModel } from "./models/launchConfigurationModel";
+export type { TReplayDataConfiguration, TReplayConfigurationModel } from "./models/launchConfigurationModel";
+export { LauncherTypeEnum, LanguagesEnum } from "./models/launchConfigurationModel";
+export { EMPTY_DEBUG_DATA_CONFIGURATION, EMPTY_DEBUG_CONFIGURATION } from "./models/launchConfigurationModel";
+export { EMPTY_REPLAY_DATA_CONFIGURATION, EMPTY_REPLAY_CONFIGURATION } from "./models/launchConfigurationModel";

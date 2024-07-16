@@ -15,27 +15,27 @@ limitations under the License.
 */
 
 import "./launcherConfiguration.css";
-import { TdsCheckBoxField, TdsPage, TdsSelectionFileField, TdsSimpleCheckBoxField, TdsSimpleTextField } from "@totvs/tds-webtoolkit";
 import React from "react";
+import { TdsSimpleCheckBoxField, TdsPage, TdsSelectionFileField, TdsSimpleTextField } from "@totvs/tds-webtoolkit";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsLabelField, TdsSelectionField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { tdsVscode } from '@totvs/tds-webtoolkit';
-import { EMPTY_LAUNCHER_CONFIGURATION, TLauncherConfigurationModel } from "tds-shared/lib";
+import { EMPTY_DEBUG_CONFIGURATION, LauncherTypeEnum, TDebugConfigurationModel } from "tds-shared/lib";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
+import { LanguagesEnum } from 'tds-shared/lib';
 
 enum ReceiveCommandEnum {
 }
-type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TLauncherConfigurationModel>
+type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TDebugConfigurationModel>
 
 const ROW_LIMIT: number = 5;
 
 export default function LauncherConfigurationView() {
-  const methods = useForm<TLauncherConfigurationModel>({
-    defaultValues: EMPTY_LAUNCHER_CONFIGURATION,
+  const methods = useForm<TDebugConfigurationModel>({
+    defaultValues: EMPTY_DEBUG_CONFIGURATION,
     mode: "all"
   })
-  const launcherTypeWatch = methods.watch("launcherType");
 
   const { fields, remove, insert } = useFieldArray(
     {
@@ -43,20 +43,19 @@ export default function LauncherConfigurationView() {
       name: "programArgs"
     });
 
-  const onSubmit: SubmitHandler<TLauncherConfigurationModel> = (data) => {
+  const onSubmit: SubmitHandler<TDebugConfigurationModel> = (data) => {
 
-    model.programArgs = model.programArgs.filter((item) => {
+    data.programArgs = data.programArgs.filter((item) => {
       return item.value.trim() !== "";
     });
-    console.log(">>>> save", model);
-    if (model.launcherType == "totvs_language_debug") {
-      if (model.program == "") {
-        model.program = "${command:AskForProgramName}";
-      }
-      model.webAppUrl = "";
+
+    if (data.launcherType == LauncherTypeEnum.TotvsLanguageDebug) {
+      data.webAppUrl = "";
     } else {
-      model.smartClient = "";
+      data.smartClient = "";
     }
+
+    console.dir(data);
 
     sendSaveAndClose(data);
   }
@@ -67,16 +66,14 @@ export default function LauncherConfigurationView() {
 
       switch (command.command) {
         case CommonCommandEnum.UpdateModel:
-          const model: TLauncherConfigurationModel = command.data.model;
+          const model: TDebugConfigurationModel = command.data.model;
           const errors: any = command.data.errors;
 
           while (model.programArgs.length < ROW_LIMIT) {
             model.programArgs.push({ value: "" });
           }
 
-          model.launcherType = model.launcherType ? model.launcherType : "totvs_language_debug";
-
-          setDataModel<TLauncherConfigurationModel>(methods.setValue, model);
+          setDataModel<TDebugConfigurationModel>(methods.setValue, model);
           setErrorModel(methods.setError, errors);
 
           break;
@@ -102,12 +99,12 @@ export default function LauncherConfigurationView() {
     insert(fields.length, { value: "" });
   }
 
-  const model: TLauncherConfigurationModel = methods.getValues();
+  const model: TDebugConfigurationModel = methods.getValues();
   const indexFirstArgFree: number = model.programArgs.findIndex((arg: { value: string }) => arg.value == "");
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("Launcher Config")} linkToDoc="[Server Registration]servers.md#registro-de-servidores">
-      <TdsForm<TLauncherConfigurationModel>
+    <TdsPage title={tdsVscode.l10n.t("Launcher Debug Config")}>
+      <TdsForm<TDebugConfigurationModel>
         methods={methods}
         onSubmit={onSubmit}
       >
@@ -120,19 +117,21 @@ export default function LauncherConfigurationView() {
             options={[
               { value: "totvs_language_debug", text: "TOTVS Language Debug" },
               { value: "totvs_language_web_debug", text: "TOTVS Language Debug via Web App" },
+              { value: "totvs_tdsreplay_debug", text: "TDS Replay" },
             ]}
           />
           <TdsTextField
             name="name"
             label={tdsVscode.l10n.t("Name")}
             info={tdsVscode.l10n.t("Enter a name that helps you identify the launcher")}
+            data-list={Object.keys(model.launchers).join(",")}
             rules={{ required: true }}
           />
         </section>
 
         <section className="tds-row-container" >
-
-          {launcherTypeWatch && (model.launcherType !== "totvs_language_web_debug") &&
+          {
+            (model.launcherType !== "totvs_language_web_debug") &&
             <>
               <TdsTextField
                 name="smartClient"
@@ -149,7 +148,8 @@ export default function LauncherConfigurationView() {
             </>
           }
 
-          {launcherTypeWatch && model.launcherType == "totvs_language_web_debug" &&
+          {
+            model.launcherType == "totvs_language_web_debug" &&
             <TdsTextField
               name="webAppUrl"
               label={tdsVscode.l10n.t("Web App URL")}
@@ -157,21 +157,10 @@ export default function LauncherConfigurationView() {
               info={tdsVscode.l10n.t("Start Web App URL.")}
             />
           }
-
-          <div id="smartClientOptions" >
-            <TdsCheckBoxField
-              name={"enableMultiThread"}
-              label={"SmartClient Options"}
-              textLabel={"Multi Thread"} />
-
-            <TdsCheckBoxField
-              name={"enableProfile"}
-              label={""}
-              textLabel={"Profile"} />
-          </div>
         </section>
 
-        {launcherTypeWatch && model.launcherType !== "totvs_language_web_debug" &&
+        {
+          model.launcherType !== "totvs_language_web_debug" &&
           <section className="tds-row-container" >
             <TdsLabelField
               name={"lblWarning"}
@@ -179,7 +168,9 @@ export default function LauncherConfigurationView() {
             />
           </section>
         }
-        {launcherTypeWatch && model.launcherType == "totvs_language_web_debug" &&
+
+        {
+          model.launcherType == "totvs_language_web_debug" &&
           <section className="tds-row-container" >
             <TdsLabelField
               name={"lblWarning"}
@@ -201,7 +192,7 @@ export default function LauncherConfigurationView() {
         <section className="tds-row-container" id="arguments">
           <div id="advplArguments">
             <TdsLabelField
-              name={"argumentsAdvPLLabel"}
+              name="argumentsAdvPLLabel"
               label={tdsVscode.l10n.t("AdvPL Arguments `-A`")}
               info={tdsVscode.l10n.t("Enter the arguments for AdvPL function.")}
             />
@@ -209,7 +200,7 @@ export default function LauncherConfigurationView() {
             <VSCodeDataGrid id="argumentsGrid" grid-template-columns="30px 1fr" >
               {fields.map((field, index) => (
                 <VSCodeDataGridRow
-                  key={index}
+                  key={`arguments_grid_${index}`}
                 >
                   {field.value !== "" &&
                     <>
@@ -217,6 +208,7 @@ export default function LauncherConfigurationView() {
                         <VSCodeButton appearance="icon"
                           onClick={() => removeArgument(index)} >
                           <span className="codicon codicon-close"></span>
+                          {index}
                         </VSCodeButton>
                       </VSCodeDataGridCell>
                       <VSCodeDataGridCell grid-column="2">
@@ -224,7 +216,6 @@ export default function LauncherConfigurationView() {
                           key={field.id}
                           name={`programArgs.${index}.value`}
                           readOnly={field.value == "<empty>"}
-
                         />
                       </VSCodeDataGridCell>
                     </>
@@ -251,7 +242,7 @@ export default function LauncherConfigurationView() {
                       </VSCodeDataGridCell>
                       <VSCodeDataGridCell grid-column="2">
                         <VSCodeButton
-                          onClick={() => addIncludeArgument("value", index)}
+                          onClick={() => addIncludeArgument("<value>", index)}
                         >
                           {tdsVscode.l10n.t("Add Argument")}
                         </VSCodeButton>
@@ -273,43 +264,63 @@ export default function LauncherConfigurationView() {
             <TdsLabelField
               name={"argumentsLabel"}
               label={tdsVscode.l10n.t("Smart Client Arguments")}
-              info={tdsVscode.l10n.t("Mark the desired arguments and/or write in text area, which will be passed to the SmartClient.")}
+              info={tdsVscode.l10n.t("Mark the arguments which will be passed to the SmartClient.")}
             />
             <TdsSimpleCheckBoxField
               name={"multiSession"}
-              label={""}
-              textLabel={"`-M` Multiple sessions"} />
+              label={"`-M` Multiple sessions"} />
             <TdsSimpleCheckBoxField
               name={"accessibilityMode"}
-              label={""}
-              textLabel={"`-AC` Accessibility module"} />
+              label={"`-AC` Accessibility module"} />
             <TdsSimpleCheckBoxField
               name={"doNotShowSplash"}
-              label={""}
-              textLabel={"`-Q` Don't display 'splash'"} />
+              label={"`-Q` Don't display 'splash'"} />
             <TdsSimpleCheckBoxField
               name={"openGlMode"}
-              label={""}
-              textLabel={"`-OPENGL` Enable OpenGL mode"} />
+              label={"`-OPENGL` Enable OpenGL mode"} />
             <TdsSimpleCheckBoxField
               name={"dpiMode"}
-              label={""}
-              textLabel={"`-DPI` Enable DPI mode"} />
+              label={"`-DPI` Enable DPI mode"} />
             <TdsSimpleCheckBoxField
               name={"oldDpiMode"}
-              label={""}
-              textLabel={"`-OLDDPI` Enable old DPI mode"} />
+              label={"`-OLDDPI` Enable old DPI mode"} />
+            <TdsSelectionField
+              name={"language"}
+              label={"Language"}
+              options={[
+                { value: LanguagesEnum.DEFAULT, text: "Default" },
+                { value: LanguagesEnum.POR, text: "Português" },
+                { value: LanguagesEnum.SPA, text: "Español" },
+                { value: LanguagesEnum.ENG, text: "English" },
+                { value: LanguagesEnum.RUS, text: "Русский" }
+              ]
+              }
+            />
+
           </div>
 
-          <TdsTextField
-            name={"smartClientArguments"}
-            label={" "}
-            textArea={true}
-            rows={7}
-            cols={30}
-          />
-        </section>
+          <div id="debuggerOptions">
+            <TdsLabelField
+              name={"debuggerOptionsLabel"}
+              label={tdsVscode.l10n.t("Debugger Options")}
+              info={tdsVscode.l10n.t("Mark the arguments which will be passed to the process of debugging.")}
+            />
 
+            <TdsSimpleCheckBoxField
+              name="enableMultiThread"
+              label={"Multi Thread"} />
+
+            <TdsSimpleCheckBoxField
+              name="enableProfile"
+              label={"Profile"} />
+
+            <TdsSimpleCheckBoxField
+              name="ignoreFiles"
+              label={"Ignore files not found in WorkSpace (debugging)"} />
+
+          </div>
+
+        </section>
       </TdsForm>
     </TdsPage >
   );

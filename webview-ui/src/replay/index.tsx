@@ -14,34 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-.tds-page {
-	width: 70%;
-}
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { ErrorBoundary, sendReady, tdsVscode } from "@totvs/tds-webtoolkit";
+import ReplayConfigurationView from "./replayConfigurationView";
 
-.tds-row-container .tds-field-container:nth-child(2) {
-	flex-grow: 1;
-}
+tdsVscode.l10n.translations = window.translations;
 
-.tds-row-container .tds-field-container:nth-child(3) {
-	display: flex;
-	flex-grow: 2;
-}
+const root = createRoot(document.getElementById("root")!);
+root.render(
+  <React.StrictMode>
+    <ErrorBoundary>
+      <ReplayConfigurationView />
+    </ErrorBoundary>
+  </React.StrictMode>,
+);
 
-div #smartClientOptions {
-	display: flex;
-	align-items: flex-end;
-}
-
-section #arguments {
-	align-items: flex-start;
-}
-
-div #advplArguments,
-div #scArgumentsOptions,
-div #debuggerOptions {
-	flex-grow: 1;
-}
-
-vscode-button+vscode-button {
-	margin-left: var(--tds-hor-spacing);
-}
+sendReady();

@@ -96,10 +96,12 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
       }
 
       if (config.language) {
+        //mantido por compatibilidade com configuração já existente
         if (config.language === "1") config.language = "por";
         else if (config.language === "2") config.language = "spa";
         else if (config.language === "3") config.language = "eng";
         else if (config.language === "4") config.language = "rus";
+        
         setDapArgsArr.push("--language=" + config.language);
       }
 

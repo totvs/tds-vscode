@@ -34,6 +34,7 @@ import {
   getProgramName,
   getProgramArguments,
   toggleTableSync,
+  getReplayFile,
 } from "./debug/debugConfigs";
 import { createTimeLineWebView } from "./debug/debugEvents";
 import {
@@ -66,7 +67,7 @@ import { RepositoryLogPanel } from "./panels/repositoryLogPanel";
 import { BuildResultPanel } from "./panels/buildResultPanel";
 import { CompileResult } from "./compile/CompileResult";
 import { LauncherConfigurationPanel } from "./panels/launcherConfigurationPanel";
-
+import { ReplayConfigurationPanel } from "./panels/replayConfigurationPanel";
 import { tlppTools } from "./tlpp-tools/tlppTools";
 
 export let languageClient: TotvsLanguageClientA;
@@ -200,6 +201,15 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.getProgramArguments",
       (config: vscode.DebugConfiguration) => {
         return getProgramArguments(config);
+      }
+    )
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand(
+      "totvs-developer-studio.selectReplayFile",
+      (config: vscode.DebugConfiguration) => {
+        return getReplayFile(config);
       }
     )
   );
@@ -541,15 +551,16 @@ export function activate(context: ExtensionContext) {
       CompileKeyPanel.render(context);
     });
 
-  // Abre a tela de configuração de launchers
+  // Abre a tela de configuração de launchers (debug SC ou WEB)
   commands.registerCommand("totvs-developer-studio.configure.launcher",
     () =>
       LauncherConfigurationPanel.render(context)
   );
 
-  commands.registerCommand(
-    "totvs-developer-studio.tdsreplay.configure.launcher",
-    () => tdsReplayLauncherConfig.show(context)
+  // Abre a tela de configuração de launchers (TDS Replay)
+  commands.registerCommand("totvs-developer-studio.configure.replay",
+    () =>
+      ReplayConfigurationPanel.render(context)
   );
 
   //inicializa items da barra de status.

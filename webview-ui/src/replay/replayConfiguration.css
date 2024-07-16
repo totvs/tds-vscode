@@ -18,30 +18,16 @@ limitations under the License.
 	width: 70%;
 }
 
-.tds-row-container .tds-field-container:nth-child(2) {
+
+#options {
+	display: flex;
 	flex-grow: 1;
 }
 
-.tds-row-container .tds-field-container:nth-child(3) {
-	display: flex;
+#options div {
+	flex-grow: 1;
+}
+
+#options div col-2 {
 	flex-grow: 2;
-}
-
-div #smartClientOptions {
-	display: flex;
-	align-items: flex-end;
-}
-
-section #arguments {
-	align-items: flex-start;
-}
-
-div #advplArguments,
-div #scArgumentsOptions,
-div #debuggerOptions {
-	flex-grow: 1;
-}
-
-vscode-button+vscode-button {
-	margin-left: var(--tds-hor-spacing);
 }

@@ -1146,12 +1146,27 @@ export class LaunchConfig {
     }
   }
 
-  static saveNewConfiguration(launcher) {
+  static saveNewConfiguration(launcher, defaultValue) {
     let launchConfig = getLaunchConfig();
     if (launchConfig) {
       if (launchConfig.configurations === undefined) {
         launchConfig.configurations = [];
       }
+
+      if (defaultValue) {
+        Object.keys(defaultValue).forEach(key => {
+          if (launcher[key] !== undefined) {
+            if (key === "programArguments") {
+              if (launcher[key].length === 0) {
+                delete launcher[key];
+              }
+            } else if (launcher[key] === defaultValue[key]) {
+              delete launcher[key];
+            }
+          }
+        });
+      }
+
       launchConfig.configurations.push(launcher);
       persistLaunchInfo(launchConfig);
     }
