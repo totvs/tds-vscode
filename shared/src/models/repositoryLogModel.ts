@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { TAbstractModelPanel } from "../panels/panelInterface";
+import { deepCopy, TAbstractModelPanel } from "../panels/panelInterface";
 
 // export type TTreeNodeRpo = {
 // 	id: string;
@@ -51,10 +51,11 @@ export type TProgramAppModel = {
 	date: Date;
 }
 
-export const EMPTY_REPOSITORY_MODEL: TRepositoryLogModel = {
-	serverName: "",
-	environment: "",
-	rpoVersion: "",
-	dateGeneration: new Date(0),
-	rpoPatches: []
-}
+export const EMPTY_REPOSITORY_MODEL: TRepositoryLogModel =
+	deepCopy<TRepositoryLogModel>({
+		serverName: "",
+		environment: "",
+		rpoVersion: "",
+		dateGeneration: new Date(0),
+		rpoPatches: []
+	});

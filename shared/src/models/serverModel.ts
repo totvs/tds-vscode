@@ -1,4 +1,4 @@
-import { TAbstractModelPanel } from "../panels/panelInterface";
+import { deepCopy, TAbstractModelPanel } from "../panels/panelInterface";
 import { TIncludePath } from "./includeModel";
 
 export type TServerType = ""
@@ -19,14 +19,15 @@ export type TServerModel = TAbstractModelPanel & {
 	globalIncludeDirectories: string;
 }
 
-export const EMPTY_SERVER_MODEL: TServerModel = {
-	serverType: "totvs_server_protheus",
-	serverName: "",
-	port: 0,
-	address: "",
-	includePaths: [],
-	immediateConnection: true,
-	secure: false,
-	buildVersion: "",
-	globalIncludeDirectories: ""
-}
+export const EMPTY_SERVER_MODEL: TServerModel =
+	deepCopy<TServerModel>({
+		serverType: "totvs_server_protheus",
+		serverName: "",
+		port: 0,
+		address: "",
+		includePaths: [],
+		immediateConnection: true,
+		secure: false,
+		buildVersion: "",
+		globalIncludeDirectories: ""
+	});

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { deepCopy } from "../panels/panelInterface";
 import { CommonCommandFromWebViewEnum } from "../webviewProtocol";
 
 export enum PatchEditorCommandEnum {
@@ -36,8 +37,9 @@ export type TPatchEditorModel = {
 	patchInfo: TPatchInfo[];
 }
 
-export const EMPTY_PATCH_EDITOR_MODEL: TPatchEditorModel = {
-	filename: "",
-	lengthFile: 0,
-	patchInfo: []
-}
+export const EMPTY_PATCH_EDITOR_MODEL: TPatchEditorModel =
+	deepCopy<TPatchEditorModel>({
+		filename: "",
+		lengthFile: 0,
+		patchInfo: []
+	});

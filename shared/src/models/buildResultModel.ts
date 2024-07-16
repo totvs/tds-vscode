@@ -16,6 +16,7 @@ limitations under the License.
 
 import { TAbstractModelPanel } from "../panels/panelInterface";
 import { CommonCommandFromWebViewEnum } from "../webviewProtocol";
+import { deepCopy } from './../panels/panelInterface';
 
 export enum BuildResultCommandEnum {
 	Export = "EXPORT"
@@ -38,8 +39,9 @@ export type TBuildResultModel = TAbstractModelPanel & {
 	buildInfos: TBuildInfoResult[];
 }
 
-export const EMPTY_BUILD_RESULT_MODEL: TBuildResultModel = {
-	timeStamp: new Date(0),
-	returnCode: 0,
-	buildInfos: []
-}
+export const EMPTY_BUILD_RESULT_MODEL: TBuildResultModel =
+	deepCopy<TBuildResultModel>({
+		timeStamp: new Date(0),
+		returnCode: 0,
+		buildInfos: []
+	});

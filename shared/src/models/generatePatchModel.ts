@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { TAbstractModelPanel } from "../panels/panelInterface";
+import { deepCopy, TAbstractModelPanel } from "../panels/panelInterface";
 import { CommonCommandFromWebViewEnum } from "../webviewProtocol";
 import { TInspectorObject } from "./inspectObjectModel";
 
@@ -40,11 +40,12 @@ export type TGeneratePatchByDifferenceModel = TAbstractModelPanel & {
 	patchDest: string;
 }
 
-export const EMPTY_GENERATE_PATCH_FROM_RPO_MODEL: TGeneratePatchFromRpoModel = {
-	patchDest: "",
-	patchName: "",
-	includeTRes: false,
-	objectsLeft: [],
-	objectsRight: [],
-	folder: ""
-}
+export const EMPTY_GENERATE_PATCH_FROM_RPO_MODEL: TGeneratePatchFromRpoModel =
+	deepCopy<TGeneratePatchFromRpoModel>({
+		patchDest: "",
+		patchName: "",
+		includeTRes: false,
+		objectsLeft: [],
+		objectsRight: [],
+		folder: ""
+	});

@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { TAbstractModelPanel } from "../panels/panelInterface";
+import { deepCopy, TAbstractModelPanel } from "../panels/panelInterface";
 import { CommonCommandFromWebViewEnum } from "../webviewProtocol";
 
 export enum ApplyPatchCommandEnum {
@@ -41,19 +41,21 @@ export type TApplyPatchModel = TAbstractModelPanel & {
 	applyOldFiles: boolean;
 }
 
-export const EMPTY_PATCH_FILE: TPatchFileData = {
-	name: "",
-	uri: undefined,
-	validation: "",
-	tphInfo: {},
-	isProcessing: false,
-	//fsPath: ""
-}
+export const EMPTY_PATCH_FILE: TPatchFileData =
+	deepCopy<TPatchFileData>({
+		name: "",
+		uri: undefined,
+		validation: "",
+		tphInfo: {},
+		isProcessing: false,
+		//fsPath: ""
+	});
 
-export const EMPTY_APPLY_PATCH_MODEL: TApplyPatchModel = {
-	serverName: "",
-	address: "",
-	environment: "",
-	patchFiles: [],
-	applyOldFiles: false
-}
+export const EMPTY_APPLY_PATCH_MODEL: TApplyPatchModel =
+	deepCopy<TApplyPatchModel>({
+		serverName: "",
+		address: "",
+		environment: "",
+		patchFiles: [],
+		applyOldFiles: false
+	});

@@ -105,3 +105,25 @@ export type TSendSelectResourceProps = TAbstractModelPanel & {
 		[key: string]: string[]
 	}
 }
+
+/**
+ * Creates a deep copy of the provided object.
+ *
+ * @template T - The type of the object to copy.
+ * @param obj - The object to copy.
+ * @returns A deep copy of the provided object.
+ */
+export function deepCopy<T>(obj: T): T {
+	if (typeof obj !== 'object' || obj === null) {
+		return obj;
+	}
+
+	const res: any = Array.isArray(obj) ? [] : {};
+	for (const key in obj) {
+		if (obj.hasOwnProperty(key)) {
+			res[key] = deepCopy(obj[key]);
+		}
+	}
+
+	return Object.assign(res, obj) as T;
+}
