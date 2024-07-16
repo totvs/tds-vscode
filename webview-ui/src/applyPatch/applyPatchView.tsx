@@ -223,7 +223,7 @@ export default function ApplyPatchView() {
         <TdsSimpleCheckBoxField
           name="applyOldFiles"
           label={tdsVscode.l10n.t("Apply old files")}
-          textLabel={tdsVscode.l10n.t("Apply old files")} />
+        />
       </TdsForm>
     </TdsPage >
   );

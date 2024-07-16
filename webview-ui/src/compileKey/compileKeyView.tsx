@@ -146,8 +146,7 @@ export default function CompileKeyView() {
 
         <TdsSimpleCheckBoxField
           name={"canOverride"}
-          label={""}
-          textLabel={tdsVscode.l10n.t("Allow override default")} />
+          label={tdsVscode.l10n.t("Allow override default")} />
 
         <TdsLabelField
           name={"warningCompatibility"}

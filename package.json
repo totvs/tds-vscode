@@ -743,6 +743,12 @@
         "category": "TOTVS"
       },
       {
+        "command": "totvs-developer-studio.configure.replay",
+        "title": "%tds.package.configure.replay.title%",
+        "description": "%tds.package.configure.replay.description%",
+        "category": "TOTVS"
+      },
+      {
         "command": "totvs-developer-studio.getProgramName",
         "title": "%tds.package.getProgramName.title%",
         "description": "%tds.package.getProgramName.description%"
@@ -948,11 +954,6 @@
         }
       },
       {
-        "command": "totvs-developer-studio.tdsreplay.configure.launcher",
-        "title": "%tds.package.configure.launcher.title%",
-        "category": "TDSReplay"
-      },
-      {
         "command": "totvs-developer-studio.tdsreplay.webview.timeLine",
         "title": "%tds.package.OpenTimeLineWebview%",
         "category": "TDSReplay"
@@ -1035,7 +1036,7 @@
               "smartclientBin": {
                 "type": "string",
                 "description": "%tds.package.properties.smartclientBin.description%",
-                "default": "../totvs/bin/smartclient/smartclient.exe"
+                "default": ""
               },
               "cwb": {
                 "type": "string",
@@ -1094,7 +1095,19 @@
               },
               "language": {
                 "type": "string",
-                "description": "%tds.package.properties.language.description%"
+                "description": "%tds.package.properties.language.description%",
+                "enum": [
+                  "por",
+                  "spa",
+                  "eng",
+                  "rus"
+                ],
+                "enumDescriptions": [
+                  "Português",
+                  "Español",
+                  "English",
+                  "Русский"
+                ]
               },
               "logFile": {
                 "type": "string",
@@ -1114,7 +1127,7 @@
               "programArguments": {
                 "type": "array",
                 "description": "Arguments that will be passed to the called program/function (through key -A)",
-                "default": "${command:AskForProgramArguments}"
+                "default": []
               },
               "extraParameters": {
                 "type": "string",
@@ -1211,7 +1224,7 @@
               "tdsReplayFile": {
                 "type": "string",
                 "description": "The TDS Replay File recorder by the server.",
-                "default": ""
+                "default": "${command:SelectReplayFile}"
               },
               "ignoreSourcesNotFound": {
                 "type": "boolean",
@@ -1262,13 +1275,16 @@
             }
           }
         },
+        "variables": {
+          "SelectReplayFile": "totvs-developer-studio.selectReplayFile"
+        },
         "initialConfigurations": [
           {
             "type": "totvs_tdsreplay_debug",
             "request": "launch",
             "name": "${1:%tds.package.tdsreplay.debug%}",
             "cwb": "${workspaceFolder}",
-            "tdsReplayFile": "",
+            "tdsReplayFile": "${command:SelectReplayFile}",
             "ignoreFiles": false,
             "password": "",
             "includeSources": "*",
@@ -1285,7 +1301,7 @@
               "name": "${1:TDS Replay}",
               "cwb": "${workspaceFolder}",
               "ignoreFiles": false,
-              "tdsReplayFile": "",
+              "tdsReplayFile": "${command:SelectReplayFile}",
               "password": "",
               "includeSources": "*",
               "excludeSources": ""
@@ -1370,7 +1386,19 @@
               },
               "language": {
                 "type": "string",
-                "description": "%tds.package.properties.language.description%"
+                "description": "%tds.package.properties.language.description%",
+                "enum": [
+                  "por",
+                  "spa",
+                  "eng",
+                  "rus"
+                ],
+                "enumDescriptions": [
+                  "Português",
+                  "Español",
+                  "English",
+                  "Русский"
+                ]
               },
               "logFile": {
                 "type": "string",

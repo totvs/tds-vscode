@@ -118,8 +118,7 @@ export default function GenerateWsView() {
         <TdsSimpleCheckBoxField
           info=""
           name="overwrite"
-          label="&nbsp;"
-          textLabel={tdsVscode.l10n.t("If already exist, can overwrite")}
+          label={tdsVscode.l10n.t("If already exist, can overwrite")}
         />
 
       </TdsForm>

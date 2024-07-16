@@ -116,8 +116,7 @@ export default function AddServerView() {
           <TdsCheckBoxField
             info=""
             name="immediateConnection"
-            label="&nbsp;"
-            textLabel={tdsVscode.l10n.t("Connect immediately")}
+            label={tdsVscode.l10n.t("Connect immediately")}
           />
 
         </section>

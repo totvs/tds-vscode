@@ -13,7 +13,7 @@ export class ImportSourcesOnlyResultPanel {
   private _disposables: vscode.Disposable[] = [];
 
   /**
-   * The AddServerPanel class private constructor (called only from the render method).
+   * The ImportSourcesOnlyResultPanel class private constructor (called only from the render method).
    *
    * @param panel A reference to the webview panel
    * @param extensionUri The URI of the directory containing the extension
