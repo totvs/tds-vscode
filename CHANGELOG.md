@@ -7,7 +7,11 @@
 
 - Documentação das configurações do **TDS-VSCode** em [Configurações](./docs/settings.md).
 
-- Nova interface de [boas-vindas](./docs/welcome.md)
+- Nova interface de [boas-vindas](./docs/welcome.md).
+
+- Unificação das interfaces de configuração de depuração (_dekstop_, _webApp_ e _TDS-Replay_).
+
+- Na definição do lançador do TDS-Replay, no lugar de informar um arquivo do TDS-Replay, pode colocar `"${command:SelectReplayFile}` em `tdsReplayFile`. Com isso, lhe será solicitado qual o arquivo a processar no momento que iniciar a execução do debug.
 
 ## Descontinuado
 
