@@ -19,8 +19,7 @@ import { deepCopy, TAbstractModelPanel } from "../panels/panelInterface";
 import { CommonCommandFromWebViewEnum } from "../webviewProtocol";
 
 export enum ImportSourcesOnlyResultCommandEnum {
-	EXPORT_TXT = "EXPORT_TXT",
-	EXPORT_CSV = "EXPORT_CVS",
+	EXPORT = "EXPORT",
 }
 
 export type ImportSourcesOnlyResultCommand = CommonCommandFromWebViewEnum & ImportSourcesOnlyResultCommandEnum;

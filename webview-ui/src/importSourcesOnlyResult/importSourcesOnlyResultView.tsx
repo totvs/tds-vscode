@@ -1,10 +1,10 @@
 import "./importSourcesOnlyResult.css";
-import { getDefaultActionsForm, IFormAction, TdsDataGrid, TdsFormActionsEnum, TdsPage, tdsVscode, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
+import { getDefaultActionsForm, IFormAction, TdsDataGrid, TdsFormActionsEnum, TdsPage, tdsVscode, TTdsDataGridAction, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsSelectionFileField, TdsSelectionFolderField, TdsSimpleCheckBoxField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
-import { BuildResultCommandEnum, EMPTY_IMPORT_SOURCES_ONLY_RESULT_MODEL, TImportSourcesOnlyResultData, TImportSourcesOnlyResultModel } from "tds-shared/lib";
+import { BuildResultCommandEnum, EMPTY_IMPORT_SOURCES_ONLY_RESULT_MODEL, ImportSourcesOnlyResultCommandEnum, TImportSourcesOnlyResultData, TImportSourcesOnlyResultModel } from "tds-shared/lib";
 
 enum ReceiveCommandEnum {
 }
@@ -68,7 +68,7 @@ export default function ImportSourcesOnlyResultView() {
 
   const sendExportTxt = (model: any) => {
     tdsVscode.postMessage({
-      command: BuildResultCommandEnum.Export,
+      command: ImportSourcesOnlyResultCommandEnum.EXPORT,
       data: {
         type: "text",
         model: model
@@ -89,7 +89,7 @@ export default function ImportSourcesOnlyResultView() {
   const formActions: IFormAction[] = getDefaultActionsForm().filter((action: IFormAction) => action.id == TdsFormActionsEnum.Close);
   formActions.push({
     id: "btnExportTxt",
-    caption: tdsVscode.l10n.t("Export TXT"),
+    caption: tdsVscode.l10n.t("Export (TXT)"),
     isProcessRing: true,
     type: "button",
     onClick: () => {
@@ -98,7 +98,7 @@ export default function ImportSourcesOnlyResultView() {
   });
   formActions.push({
     id: "btnExportCsv",
-    caption: tdsVscode.l10n.t("Export CSV"),
+    caption: tdsVscode.l10n.t("Export (CSV)"),
     isProcessRing: true,
     type: "button",
     onClick: () => {
@@ -119,16 +119,8 @@ export default function ImportSourcesOnlyResultView() {
           columnDef={columnsDef()}
           dataSource={model.sourceObj}
           options={{
-            bottomActions: undefined,
-            topActions: undefined,
-            sortable: undefined,
-            filter: undefined,
-            grouping: false,
-            pageSize: undefined,
-            pageSizeOptions: undefined,
-            moveRow: undefined,
-            rowSeparator: undefined
-          }} />
+          }}
+        />
       </TdsForm>
     </TdsPage>
   );
