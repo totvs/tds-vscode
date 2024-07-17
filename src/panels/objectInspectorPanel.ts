@@ -292,7 +292,7 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel, IInspe
       "Object Name": vscode.l10n.t("Object Name"),
       "Compile Date": vscode.l10n.t("Compile Date"),
       "Status": vscode.l10n.t("Status"),
-      "Status RPO": vscode.l10n.t("Status RPO"),
+      "RPO": vscode.l10n.t("RPO"),
       "Function": vscode.l10n.t("Function"),
       "Line": vscode.l10n.t("Line"),
       "Source": vscode.l10n.t("Source"),

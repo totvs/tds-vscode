@@ -37,7 +37,7 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
 
     if (AddServerPanel.currentPanel) {
       // If the webview panel already exists reveal it
-      AddServerPanel.currentPanel._panel.reveal(); //vscode.ViewColumn.One
+      AddServerPanel.currentPanel.reveal(); //vscode.ViewColumn.One
     } else {
       // If a webview panel does not already exist create and show a new one
       const panel = vscode.window.createWebviewPanel(

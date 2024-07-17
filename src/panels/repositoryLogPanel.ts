@@ -39,7 +39,7 @@ export class RepositoryLogPanel extends TdsPanel<TRepositoryLogModel> {
 
     if (RepositoryLogPanel.currentPanel) {
       // If the webview panel already exists reveal it
-      RepositoryLogPanel.currentPanel._panel.reveal(); //vscode.ViewColumn.One
+      RepositoryLogPanel.currentPanel.reveal(); //vscode.ViewColumn.One
     } else {
       // If a webview panel does not already exist create and show a new one
       const panel = vscode.window.createWebviewPanel(

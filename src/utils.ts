@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
-import * as cheerio from "cheerio";
 import * as ini from "ini";
 import { languageClient } from "./extension";
 import { IRpoToken, getEnabledRpoTokenInfos } from "./rpoToken";

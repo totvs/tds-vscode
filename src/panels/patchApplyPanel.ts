@@ -45,7 +45,7 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
 
     if (ApplyPatchPanel.currentPanel) {
       // If the webview panel already exists reveal it
-      ApplyPatchPanel.currentPanel._panel.reveal(); //vscode.ViewColumn.One
+      ApplyPatchPanel.currentPanel.reveal(); //vscode.ViewColumn.One
     } else {
       // If a webview panel does not already exist create and show a new one
       const panel = vscode.window.createWebviewPanel(

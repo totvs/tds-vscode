@@ -38,7 +38,7 @@ export class LauncherConfigurationPanel extends TdsPanel<TDebugConfigurationMode
 
     if (LauncherConfigurationPanel.currentPanel) {
       // If the webview panel already exists reveal it
-      LauncherConfigurationPanel.currentPanel._panel.reveal(); //vscode.ViewColumn.One
+      LauncherConfigurationPanel.currentPanel.reveal(); //vscode.ViewColumn.One
     } else {
       // If a webview panel does not already exist create and show a new one
       const panel = vscode.window.createWebviewPanel(

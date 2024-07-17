@@ -38,7 +38,7 @@ export class ReplayConfigurationPanel extends TdsPanel<TReplayConfigurationModel
 
     if (ReplayConfigurationPanel.currentPanel) {
       // If the webview panel already exists reveal it
-      ReplayConfigurationPanel.currentPanel._panel.reveal(); //vscode.ViewColumn.One
+      ReplayConfigurationPanel.currentPanel.reveal(); //vscode.ViewColumn.One
     } else {
       // If a webview panel does not already exist create and show a new one
       const panel = vscode.window.createWebviewPanel(

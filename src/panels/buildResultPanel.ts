@@ -37,7 +37,7 @@ export class BuildResultPanel extends TdsPanel<TBuildResultModel, BuildResultOpt
 
     if (BuildResultPanel.currentPanel) {
       // If the webview panel already exists reveal it
-      BuildResultPanel.currentPanel._panel.reveal(); //vscode.ViewColumn.One
+      BuildResultPanel.currentPanel.reveal(); //vscode.ViewColumn.One
     } else {
       // If a webview panel does not already exist create and show a new one
       const panel = vscode.window.createWebviewPanel(

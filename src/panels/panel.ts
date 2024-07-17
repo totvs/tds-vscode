@@ -22,6 +22,7 @@ export abstract class TdsPanel<M extends TAbstractModelPanel, O extends any = {}
 	protected readonly _panel: vscode.WebviewPanel;
 	protected _disposables: vscode.Disposable[] = [];
 	protected _options: O;
+	private _isDisposed: boolean;
 
 	/**
 	 * The  TdsPanel class protected constructor (called only from the render method).
@@ -48,6 +49,8 @@ export abstract class TdsPanel<M extends TAbstractModelPanel, O extends any = {}
 	 * Cleans up and disposes of webview resources when the webview panel is closed.
 	 */
 	public dispose() {
+		this._isDisposed = true;
+
 		// Dispose of the current webview panel
 		this._panel.dispose();
 
@@ -91,8 +94,21 @@ export abstract class TdsPanel<M extends TAbstractModelPanel, O extends any = {}
 
 	}
 
+	/**
+	 * Validates the provided model and populates the errors object with any validation errors.
+	 *
+	 * @param model - The model to validate.
+	 * @param errors - An object to store any validation errors.
+	 * @returns `true` if the model is valid, `false` otherwise.
+	 */
 	protected abstract validateModel(model: M, errors: TFieldErrors<M>): Promise<boolean> | boolean;
 
+	/**
+	 * Saves the provided model.
+	 *
+	 * @param model - The model to save.
+	 * @returns `true` if the model was saved successfully, `false` otherwise.
+	 */
 	protected abstract saveModel(model: M): Promise<boolean> | boolean;
 
 	protected sendUpdateModel(model: M, errors: TFieldErrors<M>): void {
@@ -105,8 +121,21 @@ export abstract class TdsPanel<M extends TAbstractModelPanel, O extends any = {}
 		});
 	}
 
+	/**
+	 * Handles messages received from the webview context and executes the appropriate logic.
+	 *
+	 * @param message - The message received from the webview context.
+	 * @param result - The result of the default listener.
+	 * @returns A promise that resolves with the result of the panel listener.
+	 */
 	protected abstract panelListener<C extends CommonCommandFromWebViewEnum, T>(message: ReceiveMessage<C, M>, result: any): Promise<T>;
 
+	/**
+	 * Handles messages received from the webview context and executes the appropriate process.
+	 *
+	 * @param message - The message received from the webview context.
+	 * @returns A promise that resolves with the result of the default listener.
+	 */
 	private async defaultListener<T>(message: ReceiveMessage<any, M>): Promise<T> {
 		let result: any = undefined;
 		const command: string = message.command;
@@ -177,5 +206,14 @@ export abstract class TdsPanel<M extends TAbstractModelPanel, O extends any = {}
 	 * @returns An object containing the translated strings for the panel.
 	 */
 	protected abstract getTranslations(): Record<string, string>;
+
+	/**
+	* Reveals the panel if it has not been disposed, or initializes the panel if it has been disposed.
+	*/
+	public reveal() {
+		if (!this._isDisposed) {
+			this._panel.reveal();
+		}
+	}
 
 }

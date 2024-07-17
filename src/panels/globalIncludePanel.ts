@@ -41,7 +41,7 @@ export class GlobalIncludePanel extends TdsPanel<TGlobalIncludeModel> {
 
     if (GlobalIncludePanel.currentPanel) {
       // If the webview panel already exists reveal it
-      GlobalIncludePanel.currentPanel._panel.reveal(); //vscode.ViewColumn.One
+      GlobalIncludePanel.currentPanel.reveal(); //vscode.ViewColumn.One
     } else {
       // If a webview panel does not already exist create and show a new one
       const panel = vscode.window.createWebviewPanel(

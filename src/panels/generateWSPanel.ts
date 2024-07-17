@@ -38,7 +38,7 @@ export class GenerateWebServicePanel extends TdsPanel<TWebServiceModel> {
 
 		if (GenerateWebServicePanel.currentPanel) {
 			// If the webview panel already exists reveal it
-			GenerateWebServicePanel.currentPanel._panel.reveal(); //vscode.ViewColumn.One
+			GenerateWebServicePanel.currentPanel.reveal(); //vscode.ViewColumn.One
 		} else {
 			// If a webview panel does not already exist create and show a new one
 			const panel = vscode.window.createWebviewPanel(
