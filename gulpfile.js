@@ -40,7 +40,7 @@ const rimrafCallback = (errState) => {
   }
 }
 
-const internalCleanTask = function () {
+const internalCleanTask =  function () {
   const result = [];
 
   [
@@ -49,7 +49,7 @@ const internalCleanTask = function () {
     "tds-vscode-*.vsix",
     "webview-ui/build"
   ].forEach((value) => {
-    //result.push(rimraf(value, rimrafOptions, rimrafCallback));
+    result.push(rimraf(value, rimrafOptions, rimrafCallback));
   });
 
   return Promise.race(result);
@@ -62,7 +62,7 @@ const internalCleanLogsTask = function () {
     "./**/*.log",
     "./**/*.dmp"
   ].forEach((value) => {
-    //result.push(rimraf(value, rimrafOptions, rimrafCallback));
+    result.push(rimraf(value, rimrafOptions, rimrafCallback));
   });
 
   return Promise.race(result);
@@ -75,7 +75,7 @@ const internalCompileTask = function () {
 };
 
 const internalCompileWebpack = function () {
-  return run('npm run compile:views-production').exec();
+  return run('npm run build:views-production').exec();
 };
 
 //A opção NODE_ENV=production fara com que os fontes gerados sejam "minificados" e não incluirá os "sourcemaps".
@@ -98,7 +98,9 @@ const addL10nTask = function () {
   //   .pipe(gulp.dest("."));
 };
 
-const buildTask = gulp.series(cleanTask, internalNlsCompileTask, addL10nTask, internalCompileWebpack, internalCompileEsBuildProd);
+const buildTask = gulp.series(
+  //cleanTask,
+  internalNlsCompileTask, addL10nTask, internalCompileWebpack, internalCompileEsBuildProd);
 
 const doCompile = function (buildNls) {
   var r = tsProject

@@ -48,6 +48,7 @@
     "compile:views": "cd webview-ui && npm run compile",
     "compile:esbuild": "node ./esbuild.js",
     "compile-test": "tsc -p ./test",
+    "build:views-production": "cd webview-ui && npm run build",
     "-- INSTALL --": "",
     "postinstall": "npm-run-all postinstall:*",
     "postinstall:webview": "cd webview-ui && npm install",
@@ -89,14 +90,14 @@
     "material-table": "1.69.3",
     "prop-types": "^15.8.1",
     "strip-json-comments": "^5.0.1",
+    "tds-shared": "file:./shared",
     "template-literal": "^1.0.4",
     "tmp": "^0.2.1",
     "vscode-extension-tester": "^8.2.0",
     "vscode-languageclient": "^9.0.1",
     "vscode-languageserver-types": "^3.17.5",
     "windows-1251": "^3.0.4",
-    "windows-1252": "^3.0.4",
-    "tds-shared": "file:./shared"
+    "windows-1252": "^3.0.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.9",
@@ -213,16 +214,6 @@
           ".ptm",
           ".upd",
           ".pak"
-        ]
-      },
-      {
-        "id": "totvs_template",
-        "aliases": [
-          "template",
-          "totvs_template"
-        ],
-        "extensions": [
-          ".tpl"
         ]
       }
     ],
@@ -934,16 +925,6 @@
         "category": "TOTVS"
       },
       {
-        "command": "totvs-developer-studio.templateApply",
-        "title": "%tds.package.templateApply%",
-        "category": "TOTVS"
-      },
-      {
-        "command": "totvs-developer-studio.templateApply.fromFile",
-        "title": "%tds.package.templateApply.fromFile%",
-        "category": "TOTVS"
-      },
-      {
         "command": "totvs-developer-studio.run.formatter",
         "title": "Format",
         "description": "%tds.package.apply.formatting%",
@@ -1503,11 +1484,6 @@
         {
           "command": "totvs-developer-studio.delete.file.fromRPO",
           "group": "totvsBuild@6"
-        },
-        {
-          "when": "resourceLangId == totvs_template",
-          "command": "totvs-developer-studio.templateApply.fromFile",
-          "group": "totvsBuild@5"
         },
         {
           "when": "explorerResourceIsFolder",

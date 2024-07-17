@@ -8,6 +8,15 @@ const baseConfig = {
   sourcemap: process.env.NODE_ENV !== "production",
 };
 
+const sharedConfig = {
+  ...baseConfig,
+  platform: "node",
+  format: "cjs",
+  entryPoints: ["./shared/src/index.ts"],
+  outfile: "./shared/dist/shared.js",
+  external: ["vscode"],
+};
+
 const extensionConfig = {
   ...baseConfig,
   platform: "node",
@@ -15,14 +24,6 @@ const extensionConfig = {
   entryPoints: ["./src/extension.ts"],
   outfile: "./out/extension.js",
   external: ["vscode"],
-};
-
-const replaySourcesOnlyWVConfig = {
-  ...baseConfig,
-  target: "es2020",
-  format: "esm",
-  entryPoints: ["./src/debug/tdsreplay/webviews/ImportSourcesOnlyWebView.ts"],
-  outfile: "./out/debug/tdsreplay/webviews/ImportSourcesOnlyWebView.js",
 };
 
 const watchConfig = {
@@ -49,18 +50,15 @@ const watchConfig = {
       // Build and watch source code
       console.log("[watch] build started");
       await build({
+        ...sharedConfig,
         ...extensionConfig,
-        ...watchConfig,
-      });
-      await build({
-        ...replaySourcesOnlyWVConfig,
         ...watchConfig,
       });
       console.log("[watch] build finished");
     } else {
       // Build source code
+      await build(sharedConfig);
       await build(extensionConfig);
-      await build(replaySourcesOnlyWVConfig);
       console.log("build complete");
     }
   } catch (err) {
