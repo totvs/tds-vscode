@@ -16,7 +16,7 @@ limitations under the License.
 
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { ErrorBoundary, sendReady, tdsVscode } from "@totvs/tds-webtoolkit";
+import { sendReady, tdsVscode } from "@totvs/tds-webtoolkit";
 import ReplayConfigurationView from "./replayConfigurationView";
 
 tdsVscode.l10n.translations = window.translations;
@@ -24,9 +24,7 @@ tdsVscode.l10n.translations = window.translations;
 const root = createRoot(document.getElementById("root")!);
 root.render(
   <React.StrictMode>
-    <ErrorBoundary>
       <ReplayConfigurationView />
-    </ErrorBoundary>
   </React.StrictMode>,
 );
 

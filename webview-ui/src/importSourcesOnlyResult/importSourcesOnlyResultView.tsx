@@ -1,5 +1,5 @@
 import "./importSourcesOnlyResult.css";
-import { getDefaultActionsForm, IFormAction, TdsDataGrid, TdsFormActionsEnum, TdsPage, tdsVscode, TTdsDataGridAction, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
+import { getDefaultActionsForm, IFormAction, TdsDataGrid, TdsFormActionsEnum, TdsPage, TdsProgressRing, tdsVscode, TTdsDataGridAction, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
@@ -29,6 +29,10 @@ export default function ImportSourcesOnlyResultView() {
         case CommonCommandEnum.UpdateModel:
           const model: TImportSourcesOnlyResultModel = command.data.model;
 
+          model.sourceObj.forEach((row: TImportSourcesOnlyResultData, index: number, array: TImportSourcesOnlyResultData[]) => {
+            array[index].compileDate = new Date(row.compileDate);
+          });
+
           setDataModel(methods.setValue, model);
           setDataSource(model.sourceObj);
 
@@ -51,7 +55,7 @@ export default function ImportSourcesOnlyResultView() {
         type: "string",
         name: "name",
         label: "Source",
-        width: "3fr",
+        width: "6fr",
         sortable: true,
         sortDirection: "asc",
       },
@@ -59,7 +63,7 @@ export default function ImportSourcesOnlyResultView() {
         type: "datetime",
         name: "compileDate",
         label: "Compilation Date",
-        width: "1fr",
+        width: "3fr",
         sortable: true,
         sortDirection: ""
       }
@@ -86,7 +90,13 @@ export default function ImportSourcesOnlyResultView() {
     });
   }
 
-  const formActions: IFormAction[] = getDefaultActionsForm().filter((action: IFormAction) => action.id == TdsFormActionsEnum.Close);
+  const formActions: IFormAction[] = getDefaultActionsForm()
+    .filter((action: IFormAction) => action.id == TdsFormActionsEnum.Close)
+    .map((action: IFormAction) => {
+      action.appearance == "primary";
+
+      return action;
+    });
   formActions.push({
     id: "btnExportTxt",
     caption: tdsVscode.l10n.t("Export (TXT)"),
@@ -115,12 +125,15 @@ export default function ImportSourcesOnlyResultView() {
         onSubmit={onSubmit}
         actions={formActions}
       >
-        <TdsDataGrid id={""}
-          columnDef={columnsDef()}
-          dataSource={model.sourceObj}
-          options={{
-          }}
-        />
+        {model.sourceObj.length == 0
+          ? <TdsProgressRing size="full" />
+          : <TdsDataGrid id={""}
+            columnDef={columnsDef()}
+            dataSource={model.sourceObj}
+            options={{
+            }}
+          />
+        }
       </TdsForm>
     </TdsPage>
   );

@@ -148,7 +148,7 @@ export async function getProgramName(
         }),
         qp.onDidAccept(() => {
           // se vier de uma seleção 'programArgs' virá preenchido
-          // senão parseia o input do usuario 'qp.value'
+          // senão analisa o input do usuário 'qp.value'
           if (!programArgs) {
             programArgs = extractProgramArgs(qp.value);
           }
@@ -288,6 +288,20 @@ export async function getProgramArguments(config: DebugConfiguration) {
   return argsJson;
 }
 
+function automaticLauncher(fileReplay: string, importOnlySource: boolean): DebugConfiguration {
+  let result: DebugConfiguration = {
+    request: "launch",
+    type: "totvs_tdsreplay_debug",
+    name: "automatic-launcher",
+    tdsReplayFile: fileReplay,
+    includeSources: "*",
+    excludeSources: "",
+    importOnlySourcesInfo: importOnlySource,
+    //waitForAttach: 30000,
+  };
+
+  return result;
+}
 export async function getReplayFile(config: DebugConfiguration) {
   const options: vscode.OpenDialogOptions = {
     canSelectMany: false,
@@ -309,6 +323,30 @@ export async function getReplayFile(config: DebugConfiguration) {
   });
 
   return result;
+}
+
+export function launcherReplayFile(replayFile: string) {
+  const replayUri: vscode.Uri = vscode.Uri.parse(replayFile);
+  const workspaceFolder: vscode.WorkspaceFolder = vscode.workspace.getWorkspaceFolder(replayUri);
+
+  debug.startDebugging(workspaceFolder, { ...automaticLauncher(replayFile, false), "cwb": replayUri.fsPath })
+    .then((result: boolean) => {
+      if (!result) {
+        vscode.window.showErrorMessage(l10n.t("There was an error in the importation of the file. See log for more details."));
+      }
+    });
+}
+
+export function prepareReplayFile(replayFile: string) {
+  const replayUri: vscode.Uri = vscode.Uri.parse(replayFile);
+  const workspaceFolder: vscode.WorkspaceFolder = vscode.workspace.getWorkspaceFolder(replayUri);
+
+  debug.startDebugging(workspaceFolder, { ...automaticLauncher(replayFile, true), "cwb": replayUri.fsPath })
+    .then((result: boolean) => {
+    if (!result) {
+      vscode.window.showErrorMessage(l10n.t("There was an error in the importation of the file. See log for more details."));
+    }
+  });
 }
 
 export function toggleTableSync() {

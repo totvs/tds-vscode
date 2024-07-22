@@ -18,6 +18,7 @@ import { CreateTDSReplayTimeLineWebView } from "./tdsreplay/TDSReplayTimeLineCre
 import { LanguageClient } from "vscode-languageclient/node";
 import { TotvsConfigurationWebProvider } from "./TotvsConfigurationWebProvider";
 import { languageClient } from "../extension";
+import { ReplayTimelineOptions, ReplayTimelinePanel } from "../panels/replayTimelinePanel";
 
 const DEBUG_TYPE = TotvsConfigurationProvider._TYPE;
 const WEB_DEBUG_TYPE: string = TotvsConfigurationWebProvider._TYPE;
@@ -31,7 +32,7 @@ interface LogBody {
 }
 
 let context: ExtensionContext;
-export let createTimeLineWebView: CreateTDSReplayTimeLineWebView = null;
+export let createTimeLineWebView: ReplayTimelinePanel = null;
 
 export class DebugEvent {
   constructor(pContext: ExtensionContext) {
@@ -52,50 +53,6 @@ enum eLogLevelEvent {
   ellConsole = "CONSOLE",
 }
 const SPACES: string = " ".repeat(11);
-
-// comandos ANSI para formatação (alguns podem não funcionar)
-// mais informações https://en.wikipedia.org/wiki/ANSI_escape_code
-
-//const SANE = "\u001B[0m";
-//const HIGH_INTENSITY = "\u001B[1m";
-//const LOW_INTENSITY = "\u001B[2m";
-
-//const ITALIC = "\u001B[3m";
-//const UNDERLINE = "\u001B[4m";
-//const BLINK = "\u001B[5m";
-//const RAPID_BLINK = "\u001B[6m";
-//const REVERSE_VIDEO = "\u001B[7m"; //não funcionou
-//const INVISIBLE_TEXT = "\u001B[8m";
-
-//const BLACK = "\u001B[30m";
-//const RED = "\u001B[31;m";
-//const GREEN = "\u001B[32m";
-//const YELLOW = "\u001B[33m";
-//const BLUE = "\u001B[34m";
-//const MAGENTA = "\u001B[35m";
-//const CYAN = "\u001B[36m";
-//const WHITE = "\u001B[37m";
-
-//const BACKGROUND_BLACK = "\u001B[40m";
-//const BACKGROUND_RED = "\u001B[41m";
-//const BACKGROUND_GREEN = "\u001B[42m";
-//const BACKGROUND_YELLOW = "\u001B[43m";
-//const BACKGROUND_BLUE = "\u001B[44m";
-//const BACKGROUND_MAGENTA = "\u001B[45m";
-//const BACKGROUND_CYAN = "\u001B[46m";
-//const BACKGROUND_WHITE = "\u001B[47m";
-
-/*const COLOR_TABLE = {
-  'INFO': GREEN,
-  'WARN': YELLOW,
-  'ERROR': RED,
-  'CONSOLE': BLACK,
-  'TIME': CYAN
-};*/
-
-// export function procesStartDebugSessionEvent(event: any) {
-//   console.log(event);
-// }
 
 export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
   if (
@@ -153,7 +110,6 @@ function processLogEvent(
 
       if (level === eLogLevelEvent.ellConsole) {
         debugConsole.appendLine(`[${time}]      : ${message}`);
-        //console.appendLine(`${COLOR_TABLE['TIME']}[${time}]      ${COLOR_TABLE['CONSOLE']}: ${message}`);
       } else {
         debugConsole.appendLine(`[${time}] ${level}: ${message}`);
         Utils.logMessage(
@@ -161,7 +117,6 @@ function processLogEvent(
           MESSAGE_TYPE.Info,
           true
         );
-        //debugConsole.appendLine(`${COLOR_TABLE['TIME']}[${time}] ${COLOR_TABLE[level]}${level}${COLOR_TABLE['CONSOLE']}: ${message}`);
       }
     } else {
       debugConsole.appendLine("<evento desconhecido>");
@@ -174,27 +129,35 @@ function processAddTimeLineEvent(
   debugEvent: DebugSessionCustomEvent,
   console: DebugConsole
 ) {
-  let isIgnoreSourceNotFound: boolean = LaunchConfig.getIgnoreSourceNotFoundValue(debug.activeDebugSession);
-  let selectedSources: string[] = LaunchConfig.getSelectedSourcesValue(debug.activeDebugSession);
+  const options: ReplayTimelineOptions = {
+    isIgnoreSourceNotFound: debugEvent.session.configuration.ignoreSourcesNotFound,
+    selectedSources: debugEvent.session.configuration.selectedSources,
+    //debugEvent: debugEvent,
+    replayFile: debugEvent.session.configuration.tdsReplayFile,
+    debugSession: debug.activeDebugSession
+  };
 
-  if (createTimeLineWebView === null) {
-    createTimeLineWebView = new CreateTDSReplayTimeLineWebView(
-      context,
-      debugEvent,
-      isIgnoreSourceNotFound,
-      selectedSources
-    );
-  } else {
-    if (createTimeLineWebView.isDisposed()) {
-      createTimeLineWebView.reveal();
-    }
+  createTimeLineWebView = ReplayTimelinePanel.render(context, options);
 
-    createTimeLineWebView.postAddTimeLineEvent(
-      debugEvent,
-      isIgnoreSourceNotFound,
-      selectedSources
-    );
-  }
+  // if (createTimeLineWebView === null) {
+  //   createTimeLineWebView = new CreateTDSReplayTimeLineWebView(
+  //     context,
+  //     debugEvent,
+  //     isIgnoreSourceNotFound,
+  //     selectedSources
+  //   );
+  // } else {
+  //   if (createTimeLineWebView.isDisposed()) {
+  //     createTimeLineWebView.reveal();
+  //   }
+
+  // createTimeLineWebView.postAddTimeLineEvent(
+  //   debugEvent,
+  //   options.isIgnoreSourceNotFound,
+  //   options.selectedSources
+  // );
+
+  createTimeLineWebView.revealData(debugEvent);
 }
 
 function processSelectTimeLineEvent(
@@ -202,8 +165,6 @@ function processSelectTimeLineEvent(
   debugConsole: DebugConsole
 ) {
   if (createTimeLineWebView !== null) {
-    //console.log("RECEIVED SELECT TIME LINE FROM SERVER: ");
-    //console.log(event.body.id)
     createTimeLineWebView.selectTimeLine(event.body.id);
   }
 }

@@ -19,3 +19,4 @@ test/**/.vscode
 test/**/.vscode
 test/**/fw/**
 test/**/no_git
+/shared/dist

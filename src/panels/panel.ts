@@ -142,6 +142,9 @@ export abstract class TdsPanel<M extends TAbstractModelPanel, O extends any = {}
 		const data = message.data;
 
 		switch (command) {
+			case "ERROR_BOUNDARY_LOG":
+				console.log(data);
+				break;
 			case CommonCommandFromWebViewEnum.Save:
 			case CommonCommandFromWebViewEnum.SaveAndClose:
 				let errors: TFieldErrors<M> = {};

@@ -52,3 +52,6 @@ export { EMPTY_REPLAY_DATA_CONFIGURATION, EMPTY_REPLAY_CONFIGURATION } from "./m
 
 export type { ImportSourcesOnlyResultCommand, TImportSourcesOnlyResultModel, TImportSourcesOnlyResultData } from "./models/importSourcesOnlyResultModel";
 export { EMPTY_IMPORT_SOURCES_ONLY_RESULT_MODEL, ImportSourcesOnlyResultCommandEnum } from "./models/importSourcesOnlyResultModel";
+
+export type { ReplayTimelineCommand, TReplayTimelineModel, TReplayTimelineData, TPaginatorData } from "./models/replayTimelineModel";
+export { EMPTY_REPLAY_TIMELINE_MODEL, ReplayTimelineCommandEnum } from "./models/replayTimelineModel";
