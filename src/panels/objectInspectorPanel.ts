@@ -229,6 +229,8 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel, IInspe
       this._options.inspector == "objects"
         ? await sendInspectorObjectsRequest(server, this._options.includeOutScope)
         : await sendInspectorFunctionsRequest(server, this._options.includeOutScope);
+    //chamada abaixo necessária para complementar as informações das funções
+    //TODO: rever processo no LS para obter em apenas uma chamada
     const sourceData: IObjectData[] = this._options.inspector == "functions"
       ? await sendInspectorObjectsRequest(server, false)
       : [];
