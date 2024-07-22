@@ -34,6 +34,8 @@ import {
   getProgramArguments,
   toggleTableSync,
   getReplayFile,
+  prepareReplayFile,
+  launcherReplayFile,
 } from "./debug/debugConfigs";
 import { createTimeLineWebView } from "./debug/debugEvents";
 import {
@@ -346,6 +348,47 @@ export function activate(context: ExtensionContext) {
     )
   );
 
+  context.subscriptions.push(
+    commands.registerCommand(
+      "tdsreplay.importSourcesOnlyResult",
+      (sourceList: any) => {
+        ImportSourcesOnlyResultPanel.render(context, sourceList.sourceList);
+      }
+    )
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand(
+      "totvs-developer-studio.configure.showSourcesInReplay",
+      (args: any) => {
+        if (args) {
+          prepareReplayFile(args.fsPath);
+        } else {
+          getReplayFile(undefined).then((file: string) => {
+            if (file) {
+              prepareReplayFile(file);
+            }
+          }
+          );
+        }
+      })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand(
+      "totvs-developer-studio.configure.automaticLauncher",
+      (args: any) => {
+        if (args) {
+          launcherReplayFile(args.fsPath);
+        } else {
+          getReplayFile(undefined).then((file: string) => {
+            launcherReplayFile(file);
+          }
+          );
+        }
+      })
+  );
+
   //Abre a tela de geração de patch com seleção de arquivos do RPO.
   context.subscriptions.push(
     commands.registerCommand(
@@ -364,15 +407,6 @@ export function activate(context: ExtensionContext) {
         if (checkServer() && !checkDebug()) {
           PatchGenerateByDifferencePanel.render(context);
         }
-      }
-    )
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand(
-      "tdsreplay.importSourcesOnlyResult",
-      (sourceList: any) => {
-        ImportSourcesOnlyResultPanel.render(context, sourceList.sourceList);
       }
     )
   );
