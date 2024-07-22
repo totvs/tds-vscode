@@ -20,19 +20,19 @@ import {
 import { EnvSection, ServerItem } from "./serverItem";
 import { AddServerPanel } from "./panels/addServerPanel";
 
-const compile = require("template-literal");
+// const compile = require("template-literal");
 
-const localizeHTML = {
-  "tds.webview.newServer.title": vscode.l10n.t("New Server"),
-  "tds.webview.newServer.name": vscode.l10n.t("Server Name"),
-  "tds.webview.newServer.address": vscode.l10n.t("Address"),
-  "tds.webview.newServer.port": vscode.l10n.t("Port"),
-  "tds.webview.newServer.save": vscode.l10n.t("Save"),
-  "tds.webview.newServer.saveClose": vscode.l10n.t("Save/Close"),
-  "tds.webview.newServer.secure": vscode.l10n.t("Secure(SSL)"),
-  "tds.webview.dir.include": vscode.l10n.t("Includes directory"),
-  "tds.webview.dir.include2": vscode.l10n.t("Allow multiple directories"),
-};
+// const localizeHTML = {
+//   "tds.webview.newServer.title": vscode.l10n.t("New Server"),
+//   "tds.webview.newServer.name": vscode.l10n.t("Server Name"),
+//   "tds.webview.newServer.address": vscode.l10n.t("Address"),
+//   "tds.webview.newServer.port": vscode.l10n.t("Port"),
+//   "tds.webview.newServer.save": vscode.l10n.t("Save"),
+//   "tds.webview.newServer.saveClose": vscode.l10n.t("Save/Close"),
+//   "tds.webview.newServer.secure": vscode.l10n.t("Secure(SSL)"),
+//   "tds.webview.dir.include": vscode.l10n.t("Includes directory"),
+//   "tds.webview.dir.include2": vscode.l10n.t("Allow multiple directories"),
+// };
 
 export class ServersExplorer {
   constructor(context: vscode.ExtensionContext) {

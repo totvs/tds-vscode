@@ -1252,30 +1252,30 @@ export class LaunchConfig {
     return path.join(Utils.getVSCodePath(), "launch.json");
   }
 
-  static getIgnoreSourceNotFoundValue(debugSession): boolean {
-    let isIgnoreSourceNotFound: boolean = true;
+  // static getIgnoreSourceNotFoundValue(debugSession): boolean {
+  //   let isIgnoreSourceNotFound: boolean = true;
 
-    try {
-      const launchConfig = getLaunchConfig();
+  //   try {
+  //     const launchConfig = getLaunchConfig();
 
-      for (let key = 0; key < launchConfig.configurations.length; key++) {
-        let launchElement = launchConfig.configurations[key];
-        if (
-          debugSession !== undefined &&
-          launchElement.name === debugSession.name
-        ) {
-          if (launchElement.ignoreSourcesNotFound !== undefined) {
-            isIgnoreSourceNotFound = launchElement.ignoreSourcesNotFound;
-            break;
-          }
-        }
-      }
-    } catch (e) {
-      LaunchConfig.logInvalidLaunchJsonFile(e);
-    }
+  //     for (let key = 0; key < launchConfig.configurations.length; key++) {
+  //       let launchElement = launchConfig.configurations[key];
+  //       if (
+  //         debugSession !== undefined &&
+  //         launchElement.name === debugSession.name
+  //       ) {
+  //         if (launchElement.ignoreSourcesNotFound !== undefined) {
+  //           isIgnoreSourceNotFound = launchElement.ignoreSourcesNotFound;
+  //           break;
+  //         }
+  //       }
+  //     }
+  //   } catch (e) {
+  //     LaunchConfig.logInvalidLaunchJsonFile(e);
+  //   }
 
-    return isIgnoreSourceNotFound;
-  }
+  //   return isIgnoreSourceNotFound;
+  // }
 
   static saveIgnoreSourcesNotFound(debugSession, isIgnoreSourceNotFound) { // XXX
     try {
@@ -1295,30 +1295,30 @@ export class LaunchConfig {
     }
   }
 
-  static getSelectedSourcesValue(debugSession): string[] {
-    let selectedSources: string[] = [];
+  // static getSelectedSourcesValue(debugSession): string[] {
+  //   let selectedSources: string[] = [];
 
-    try {
-      const launchConfig = getLaunchConfig();
+  //   try {
+  //     const launchConfig = getLaunchConfig();
 
-      for (let key = 0; key < launchConfig.configurations.length; key++) {
-        let launchElement = launchConfig.configurations[key];
-        if (
-          debugSession !== undefined &&
-          launchElement.name === debugSession.name
-        ) {
-          if (launchElement.selectedSources !== undefined) {
-            selectedSources = launchElement.selectedSources;
-            break;
-          }
-        }
-      }
-    } catch (e) {
-      LaunchConfig.logInvalidLaunchJsonFile(e);
-    }
+  //     for (let key = 0; key < launchConfig.configurations.length; key++) {
+  //       let launchElement = launchConfig.configurations[key];
+  //       if (
+  //         debugSession !== undefined &&
+  //         launchElement.name === debugSession.name
+  //       ) {
+  //         if (launchElement.selectedSources !== undefined) {
+  //           selectedSources = launchElement.selectedSources;
+  //           break;
+  //         }
+  //       }
+  //     }
+  //   } catch (e) {
+  //     LaunchConfig.logInvalidLaunchJsonFile(e);
+  //   }
 
-    return selectedSources;
-  }
+  //   return selectedSources;
+  // }
 
   static saveSelectedSources(debugSession, selectedSources: string[]) {
     try {
