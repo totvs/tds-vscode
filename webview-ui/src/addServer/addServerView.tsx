@@ -95,7 +95,7 @@ export default function AddServerView() {
   const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludePath) => row.path == "");
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("Add Server")} linkToDoc="[Server Registration]servers.md#registro-de-servidores">
+    <TdsPage title={tdsVscode.l10n.t("Add Server")}>
       <TdsForm<TServerModel> methods={methods}
         onSubmit={onSubmit}
         description={tdsVscode.l10n.t("Enter the connection parameters to the Protheus server.")}>

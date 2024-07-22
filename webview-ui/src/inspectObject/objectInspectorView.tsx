@@ -16,7 +16,7 @@ limitations under the License.
 
 import "./objectInspector.css";
 import React from "react";
-import { TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsForm, TdsPage, TdsProgressRing, tdsVscode } from "@totvs/tds-webtoolkit";
+import { IFormAction, TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsForm, TdsFormActionsEnum, TdsPage, TdsProgressRing, getCloseActionForm, getDefaultActionsForm, tdsVscode } from "@totvs/tds-webtoolkit";
 import { useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
@@ -83,7 +83,7 @@ function objectColumns(isServerP20OrGreater: boolean): TTdsDataGridColumnDef[] {
     result.push({
       type: "string",
       name: "rpo_status",
-      label: tdsVscode.l10n.t("Status RPO"),
+      label: tdsVscode.l10n.t("RPO"),
       width: "4fr",
       lookup: {
         N: "None",
@@ -152,7 +152,7 @@ function functionColumns(isServerP20OrGreater: boolean): TTdsDataGridColumnDef[]
     result.push({
       type: "string",
       name: "rpo_status",
-      label: tdsVscode.l10n.t("Status RPO"),
+      label: tdsVscode.l10n.t("RPO"),
       width: "5fr",
       lookup: {
         N: "None",
@@ -199,7 +199,7 @@ export default function ObjectInspectorView(props: TInspectorObjectComponentProp
           const errors: TFields = command.data.errors;
 
           model.objects.forEach((row: TInspectorObject, index: number, array: TInspectorObject[]) => {
-            array[index].date = new Date(array[index].date);
+            array[index].date = new Date(row.date);
           });
 
           setDataModel(methods.setValue, model);
@@ -218,7 +218,9 @@ export default function ObjectInspectorView(props: TInspectorObjectComponentProp
     }
   }, []);
 
-  const bottomActions: TTdsDataGridAction[] = [{
+  const actions: IFormAction[] = [getCloseActionForm()];
+
+  actions.push({
     id: "btnExportTxt",
     caption: tdsVscode.l10n.t("Export (TXT)"),
     isProcessRing: true,
@@ -227,7 +229,8 @@ export default function ObjectInspectorView(props: TInspectorObjectComponentProp
     onClick: () => {
       sendExport(methods.getValues(), "TXT");
     }
-  }, {
+  });
+  actions.push({
     id: "btnExportCsv",
     caption: tdsVscode.l10n.t("Export (CSV)"),
     isProcessRing: true,
@@ -236,7 +239,7 @@ export default function ObjectInspectorView(props: TInspectorObjectComponentProp
     onClick: () => {
       sendExport(methods.getValues(), "CSV");
     }
-  }];
+  });
 
   const topActions: TTdsDataGridAction[] = [{
     id: "btnIncludeOutScope",
@@ -259,10 +262,11 @@ export default function ObjectInspectorView(props: TInspectorObjectComponentProp
       props.inspector == "objects"
         ? tdsVscode.l10n.t("Objects Inspector")
         : tdsVscode.l10n.t("Functions Inspector")
-    } linkToDoc="">
+    }>
       <TdsForm
         onSubmit={methods.handleSubmit(() => { })}
         methods={methods}
+        actions={actions}
       >
         {(dataSource.length == 0)
           ? <TdsProgressRing size="full" />
@@ -272,7 +276,6 @@ export default function ObjectInspectorView(props: TInspectorObjectComponentProp
             columnDef={columnDef}
             dataSource={dataSource}
             options={{
-              bottomActions: bottomActions,
               topActions: topActions
             }}
           />

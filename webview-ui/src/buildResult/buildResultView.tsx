@@ -133,16 +133,6 @@ export default function BuildResultView() {
   }
 
   const model: TBuildResultModel = methods.getValues();
-  // const bottomActions: TTdsDataGridAction[] = [{
-  //   id: "btnExportTxt",
-  //   caption: tdsVscode.l10n.t("Export (TXT)"),
-  //   isProcessRing: true,
-  //   enabled: methods.formState.isValid,
-  //   type: "button",
-  //   onClick: () => {
-  //     sendExport(methods.getValues(), "TXT");
-  //   }
-  // }];
   const formActions: IFormAction[] = getDefaultActionsForm().filter((action: IFormAction) => action.id == TdsFormActionsEnum.Close);
   formActions.push({
     id: "btnExportTxt",

@@ -87,11 +87,9 @@
     "fs-extra": "^10.1.0",
     "ini": "^2.0.0",
     "jszip": "^3.7.1",
-    "material-table": "1.69.3",
     "prop-types": "^15.8.1",
     "strip-json-comments": "^5.0.1",
     "tds-shared": "file:./shared",
-    "template-literal": "^1.0.4",
     "tmp": "^0.2.1",
     "vscode-extension-tester": "^8.2.0",
     "vscode-languageclient": "^9.0.1",
@@ -734,10 +732,16 @@
         "category": "TOTVS"
       },
       {
-        "command": "totvs-developer-studio.configure.replay",
-        "title": "%tds.package.configure.replay.title%",
-        "description": "%tds.package.configure.replay.description%",
-        "category": "TOTVS"
+        "command": "totvs-developer-studio.configure.showSourcesInReplay",
+        "title": "Show sources",
+        "description": "Show used sources in TDS-Replay file",
+        "category": "TDS-Replay"
+      },
+      {
+        "command": "totvs-developer-studio.configure.automaticLauncher",
+        "title": "Run",
+        "description": "Launches TDS-Replay execution with default configuration.",
+        "category": "TDS-Replay"
       },
       {
         "command": "totvs-developer-studio.getProgramName",
@@ -937,7 +941,7 @@
       {
         "command": "totvs-developer-studio.tdsreplay.webview.timeLine",
         "title": "%tds.package.OpenTimeLineWebview%",
-        "category": "TDSReplay"
+        "category": "TDS-Replay"
       },
       {
         "command": "tds-monitor.open-monitor-view",
@@ -1205,7 +1209,7 @@
               "tdsReplayFile": {
                 "type": "string",
                 "description": "The TDS Replay File recorder by the server.",
-                "default": "${command:SelectReplayFile}"
+                "default": "${command:selectReplayFile}"
               },
               "ignoreSourcesNotFound": {
                 "type": "boolean",
@@ -1257,7 +1261,7 @@
           }
         },
         "variables": {
-          "SelectReplayFile": "totvs-developer-studio.selectReplayFile"
+          "selectReplayFile": "totvs-developer-studio.selectReplayFile"
         },
         "initialConfigurations": [
           {
@@ -1265,7 +1269,7 @@
             "request": "launch",
             "name": "${1:%tds.package.tdsreplay.debug%}",
             "cwb": "${workspaceFolder}",
-            "tdsReplayFile": "${command:SelectReplayFile}",
+            "tdsReplayFile": "${command:selectReplayFile}",
             "ignoreFiles": false,
             "password": "",
             "includeSources": "*",
@@ -1282,7 +1286,7 @@
               "name": "${1:TDS Replay}",
               "cwb": "${workspaceFolder}",
               "ignoreFiles": false,
-              "tdsReplayFile": "${command:SelectReplayFile}",
+              "tdsReplayFile": "${command:selectReplayFile}",
               "password": "",
               "includeSources": "*",
               "excludeSources": ""
@@ -1461,12 +1465,16 @@
       {
         "id": "totvs-developer-studio.submenu.patch",
         "label": "Patches Operations"
+      },
+      {
+        "id": "totvs-developer-studio.submenu.replay",
+        "label": "TDS-Replay Operations"
       }
     ],
     "menus": {
       "explorer/context": [
         {
-          "when": "explorerResourceIsFolder ",
+          "when": "explorerResourceIsFolder",
           "command": "totvs-developer-studio.rebuild.workspace",
           "alt": "totvs-developer-studio.build.workspace",
           "group": "totvsBuild@1"
@@ -1502,7 +1510,13 @@
         },
         {
           "submenu": "totvs-developer-studio.submenu.patch",
+          "when": "explorerResourceIsFolder || resourceExtname == .ptm || resourceExtname == .upd",
           "group": "totvsSource@3"
+        },
+        {
+          "submenu": "totvs-developer-studio.submenu.replay",
+          "when": "resourceExtname == .trplay",
+          "group": "totvsSource@4"
         }
       ],
       "view/item/context": [
@@ -1722,6 +1736,16 @@
         {
           "when": "explorerResourceIsFolder",
           "command": "totvs-developer-studio.patchGenerate.fromFolder"
+        }
+      ],
+      "totvs-developer-studio.submenu.replay": [
+        {
+          "command": "totvs-developer-studio.configure.showSourcesInReplay",
+          "group": "replay@1"
+        },
+        {
+          "command": "totvs-developer-studio.configure.automaticLauncher",
+          "group": "replay@2"
         }
       ]
     },

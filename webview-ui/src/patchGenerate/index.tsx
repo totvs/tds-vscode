@@ -1,7 +1,7 @@
 import React from "react";
 import PatchGenerateView from "./patchGenerateView";
 import { createRoot } from "react-dom/client";
-import { sendReady, tdsVscode, ErrorBoundary } from "@totvs/tds-webtoolkit";
+import { sendReady, tdsVscode } from "@totvs/tds-webtoolkit";
 import PatchGenerateFromFolderView from "./patchGenerateFromFolderView";
 
 tdsVscode.l10n.translations = window.translations;

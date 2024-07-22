@@ -234,7 +234,7 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
   }
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("Patch Generation from RPO")} linkToDoc="[Geração de pacote de atualização]servers.md#registro-de-servidores">
+    <TdsPage title={tdsVscode.l10n.t("Patch Generation from RPO")}>
       <TdsForm methods={methods}
         onSubmit={onSubmit}>
         <section className="tds-row-container">

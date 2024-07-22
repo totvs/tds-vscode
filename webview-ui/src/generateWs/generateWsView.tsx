@@ -58,7 +58,7 @@ export default function GenerateWsView() {
   }, []);
 
   return (
-    <TdsPage title="Generate Web Service Client" linkToDoc="[Geração de Web Service]servers.md#registro-de-servidores">
+    <TdsPage title="Generate Web Service Client">
       <TdsForm<TFields> methods={methods}
         onSubmit={onSubmit}
       >

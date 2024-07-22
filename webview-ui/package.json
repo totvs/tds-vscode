@@ -1,6 +1,6 @@
 {
   "name": "tds-vscode-webview-ui",
-  "_version": "0.0.1",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "-- COMPILE --": "",

@@ -98,7 +98,7 @@ export default function RepositoryLogView() {
   const formActions: IFormAction[] = getDefaultActionsForm().filter((action: IFormAction) => action.id == TdsFormActionsEnum.Close);
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("Repository Log")} linkToDoc="">
+    <TdsPage title={tdsVscode.l10n.t("Repository Log")}>
       <TdsForm<TRepositoryLogModel>
         onSubmit={onSubmit}
         methods={methods}

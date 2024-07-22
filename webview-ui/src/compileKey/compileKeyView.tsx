@@ -91,7 +91,7 @@ export default function CompileKeyView() {
   }, []);
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("Compile Key")} linkToDoc="[Chave de Compilação]servers.md#registro-de-servidores">
+    <TdsPage title={tdsVscode.l10n.t("Compile Key")}>
       <TdsForm<TFields> methods={methods}
         onSubmit={onSubmit}>
 
