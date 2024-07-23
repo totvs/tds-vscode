@@ -5,3 +5,7 @@
 .tds-table {
 	height: 70vh;
 }
+
+.tds-source-not-found {
+	opacity: .50;
+}

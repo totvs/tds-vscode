@@ -234,23 +234,29 @@ export default function ReplayTimelineView() {
             onSubmit={onSubmit}
             actions={actions}
           >
-            {
-              <TdsTable
-                id={"tblTimeLine"}
-                headerColumns={["Time", "Source", "Line"]}
-                widthColumns={[1, 3, 1]}
-                dataColumns={["timeStamp", "srcName", "line"]}
-                dataSource={timeline}
-                highlighRows={[paginator.currentLine]}
-                ref={tableElement}
-                onClick={(
-                  target: HTMLElement,
-                  rowIndex: number) => {
-                  sendSetTimeline(methods.getValues(), timeline[rowIndex].id);
-                }
-                }
-              />
-            }
+            <TdsTable
+              id={"tblTimeLine"}
+              headerColumns={["Time", "Source", "Line"]}
+              widthColumns={[1, 3, 1]}
+              dataColumns={["timeStamp", "srcName", "line"]}
+              dataSource={timeline}
+              highlightRows={[paginator.currentLine]}
+              highlightGroup={{
+                "tds-source-not-found": timeline
+                  .map((element: TReplayTimelineData, index: number) => {
+                    if (!element.srcFoundInWS) {
+                      return index;
+                    }
+                  }).filter((value: number | undefined) => value !== undefined)
+              }}
+              _ref={tableElement}
+              onClick={(
+                target: HTMLElement,
+                rowIndex: number) => {
+                sendSetTimeline(methods.getValues(), timeline[rowIndex].id);
+              }
+              }
+            />
             {paginatorWatch && <TdsPaginator
               currentPage={paginator.currentPage}
               firstPageItem={paginator.firstPageItem}
