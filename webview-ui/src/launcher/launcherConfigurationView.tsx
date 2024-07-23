@@ -33,7 +33,7 @@ const ROW_LIMIT: number = 5;
 
 export default function LauncherConfigurationView() {
   const methods = useForm<TDebugConfigurationModel>({
-    defaultValues: EMPTY_DEBUG_CONFIGURATION,
+    defaultValues: EMPTY_DEBUG_CONFIGURATION(),
     mode: "all"
   })
 

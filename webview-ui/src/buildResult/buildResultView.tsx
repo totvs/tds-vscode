@@ -82,7 +82,7 @@ function columnsDef(): TTdsDataGridColumnDef[] {
 
 export default function BuildResultView() {
   const methods = useForm<TBuildResultModel>({
-    defaultValues: EMPTY_BUILD_RESULT_MODEL,
+    defaultValues: EMPTY_BUILD_RESULT_MODEL(),
     mode: "all"
   })
 

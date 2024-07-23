@@ -59,8 +59,8 @@ export type TReplayTimelineModel = TAbstractModelPanel & {
 	}
 }
 
-export const EMPTY_REPLAY_TIMELINE_MODEL: TReplayTimelineModel =
-	deepCopy<TReplayTimelineModel>({
+export function EMPTY_REPLAY_TIMELINE_MODEL(): TReplayTimelineModel {
+	return {
 		paginator: {
 			currentLine: 0,
 			currentPage: 0,
@@ -74,4 +74,5 @@ export const EMPTY_REPLAY_TIMELINE_MODEL: TReplayTimelineModel =
 			sources: [],
 			selected: []
 		}
-	});
+	};
+}

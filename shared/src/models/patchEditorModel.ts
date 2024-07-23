@@ -37,9 +37,10 @@ export type TPatchEditorModel = {
 	patchInfo: TPatchInfo[];
 }
 
-export const EMPTY_PATCH_EDITOR_MODEL: TPatchEditorModel =
-	deepCopy<TPatchEditorModel>({
+export function EMPTY_PATCH_EDITOR_MODEL(): TPatchEditorModel {
+	return {
 		filename: "",
 		lengthFile: 0,
 		patchInfo: []
-	});
+	};
+}

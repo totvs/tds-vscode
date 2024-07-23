@@ -33,7 +33,7 @@ const ROW_LIMIT: number = 5;
 
 export default function ReplayConfigurationView() {
   const methods = useForm<TReplayConfigurationModel>({
-    defaultValues: EMPTY_REPLAY_CONFIGURATION,
+    defaultValues: EMPTY_REPLAY_CONFIGURATION(),
     mode: "all"
   })
 

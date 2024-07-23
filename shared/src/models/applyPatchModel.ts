@@ -41,21 +41,23 @@ export type TApplyPatchModel = TAbstractModelPanel & {
 	applyOldFiles: boolean;
 }
 
-export const EMPTY_PATCH_FILE: TPatchFileData =
-	deepCopy<TPatchFileData>({
+export function EMPTY_PATCH_FILE(): TPatchFileData {
+	return {
 		name: "",
 		uri: undefined,
 		validation: "",
 		tphInfo: {},
 		isProcessing: false,
 		//fsPath: ""
-	});
+	};
+}
 
-export const EMPTY_APPLY_PATCH_MODEL: TApplyPatchModel =
-	deepCopy<TApplyPatchModel>({
+export function EMPTY_APPLY_PATCH_MODEL(): TApplyPatchModel {
+	return {
 		serverName: "",
 		address: "",
 		environment: "",
 		patchFiles: [],
 		applyOldFiles: false
-	});
+	};
+}

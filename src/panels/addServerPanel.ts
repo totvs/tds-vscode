@@ -98,7 +98,7 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
       case CommonCommandFromWebViewEnum.Ready:
         if (data.model == undefined) {
           this.sendUpdateModel({
-            ...EMPTY_SERVER_MODEL,
+            ...EMPTY_SERVER_MODEL(),
             globalIncludeDirectories: ServersConfig.getGlobalIncludes().join(";")
           }, undefined);
         }

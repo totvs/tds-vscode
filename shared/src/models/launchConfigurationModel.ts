@@ -68,8 +68,8 @@ export type TReplayConfigurationModel = TAbstractModelPanel & TReplayDataConfigu
 	launchers: Record<string, TReplayDataConfiguration>;
 }
 
-export const EMPTY_DEBUG_DATA_CONFIGURATION: TDebugDataConfiguration =
-	deepCopy<TDebugDataConfiguration>({
+export function EMPTY_DEBUG_DATA_CONFIGURATION(): TDebugDataConfiguration {
+	return {
 		launcherType: LauncherTypeEnum.TotvsLanguageDebug,
 		name: "",
 		program: "",
@@ -86,17 +86,18 @@ export const EMPTY_DEBUG_DATA_CONFIGURATION: TDebugDataConfiguration =
 		language: LanguagesEnum.DEFAULT,
 		doNotShowSplash: false,
 		ignoreFiles: true
-	});
+	};
+}
 
-
-export const EMPTY_DEBUG_CONFIGURATION: TDebugConfigurationModel =
-	deepCopy<TDebugConfigurationModel>({
-		...EMPTY_DEBUG_DATA_CONFIGURATION,
+export function EMPTY_DEBUG_CONFIGURATION(): TDebugConfigurationModel {
+	return {
+		...EMPTY_DEBUG_DATA_CONFIGURATION(),
 		launchers: {},
-	});
+	};
+}
 
-export const EMPTY_REPLAY_DATA_CONFIGURATION: TReplayDataConfiguration =
-	deepCopy<TReplayDataConfiguration>({
+export function EMPTY_REPLAY_DATA_CONFIGURATION(): TReplayDataConfiguration {
+	return {
 		launcherType: LauncherTypeEnum.ReplayDebug,
 		name: "",
 		replayFile: "",
@@ -105,10 +106,12 @@ export const EMPTY_REPLAY_DATA_CONFIGURATION: TReplayDataConfiguration =
 		excludeSources: [],
 		ignoreFiles: true,
 		importOnlySourcesInfo: false
-	});
+	};
+}
 
-export const EMPTY_REPLAY_CONFIGURATION: TReplayConfigurationModel =
-	deepCopy<TReplayConfigurationModel>({
-		...EMPTY_REPLAY_DATA_CONFIGURATION,
+export function EMPTY_REPLAY_CONFIGURATION(): TReplayConfigurationModel {
+	return {
+		...EMPTY_REPLAY_DATA_CONFIGURATION(),
 		launchers: {},
-	});
+	};
+}

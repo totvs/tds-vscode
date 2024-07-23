@@ -101,7 +101,7 @@ export class ReplayConfigurationPanel extends TdsPanel<TReplayConfigurationModel
     switch (command) {
       case CommonCommandFromWebViewEnum.Ready:
         if (data.model == undefined) {
-          data.model = EMPTY_REPLAY_CONFIGURATION;
+          data.model = EMPTY_REPLAY_CONFIGURATION();
 
           let launcherConfiguration = undefined;
           try {
@@ -117,7 +117,7 @@ export class ReplayConfigurationPanel extends TdsPanel<TReplayConfigurationModel
                 continue;
               }
 
-              let dataDebug: TReplayDataConfiguration = EMPTY_REPLAY_CONFIGURATION;
+              let dataDebug: TReplayDataConfiguration = EMPTY_REPLAY_CONFIGURATION();
 
               dataDebug.launcherType = element.type;
               dataDebug.name = element.name;

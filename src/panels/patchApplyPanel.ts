@@ -141,7 +141,7 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
               progress.report({ increment: 0 });
               const server = ServersConfig.getCurrentServer();
 
-              data.model = EMPTY_APPLY_PATCH_MODEL;
+              data.model = EMPTY_APPLY_PATCH_MODEL();
               data.model.serverName = server.name;
               data.model.address = `${server.address}:${server.port}`;
               data.model.environment = server.environment;

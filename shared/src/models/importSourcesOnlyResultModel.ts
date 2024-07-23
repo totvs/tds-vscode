@@ -32,7 +32,8 @@ export type TImportSourcesOnlyResultModel = TAbstractModelPanel & {
 	sourceObj: TImportSourcesOnlyResultData[]
 }
 
-export const EMPTY_IMPORT_SOURCES_ONLY_RESULT_MODEL: TImportSourcesOnlyResultModel =
-	deepCopy<TImportSourcesOnlyResultModel>({
+export function EMPTY_IMPORT_SOURCES_ONLY_RESULT_MODEL(): TImportSourcesOnlyResultModel {
+	return {
 		sourceObj: []
-	});
+	};
+}

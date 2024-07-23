@@ -101,7 +101,7 @@ export class LauncherConfigurationPanel extends TdsPanel<TDebugConfigurationMode
     switch (command) {
       case CommonCommandFromWebViewEnum.Ready:
         if (data.model == undefined) {
-          data.model = EMPTY_DEBUG_CONFIGURATION;
+          data.model = EMPTY_DEBUG_CONFIGURATION();
 
           let launcherConfiguration = undefined;
           try {
@@ -117,7 +117,7 @@ export class LauncherConfigurationPanel extends TdsPanel<TDebugConfigurationMode
                 continue;
               }
 
-              let dataDebug: TDebugDataConfiguration = EMPTY_DEBUG_DATA_CONFIGURATION;
+              let dataDebug: TDebugDataConfiguration = EMPTY_DEBUG_DATA_CONFIGURATION();
 
               dataDebug.smartClient = element.smartclientBin;
               dataDebug.program = element.program;

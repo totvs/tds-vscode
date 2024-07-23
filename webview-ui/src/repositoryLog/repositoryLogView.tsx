@@ -45,7 +45,7 @@ function getMonthly(rpoInfos: TPatchInfoModel[]): string[] {
 
 export default function RepositoryLogView() {
   const methods = useForm({
-    defaultValues: EMPTY_REPOSITORY_MODEL,
+    defaultValues: EMPTY_REPOSITORY_MODEL(),
     mode: "all"
   })
   const rpoInfoWatch = methods.watch("serverName");

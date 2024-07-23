@@ -19,8 +19,8 @@ export type TServerModel = TAbstractModelPanel & {
 	globalIncludeDirectories: string;
 }
 
-export const EMPTY_SERVER_MODEL: TServerModel =
-	deepCopy<TServerModel>({
+export function EMPTY_SERVER_MODEL(): TServerModel {
+	return {
 		serverType: "totvs_server_protheus",
 		serverName: "",
 		port: 0,
@@ -30,4 +30,5 @@ export const EMPTY_SERVER_MODEL: TServerModel =
 		secure: false,
 		buildVersion: "",
 		globalIncludeDirectories: ""
-	});
+	};
+}

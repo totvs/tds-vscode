@@ -24,12 +24,13 @@ import { ServerFileSystemProvider } from "../serverFileSystemProvider";
 import Utils, { MESSAGE_TYPE, ServersConfig, serverExceptionCodeToString } from "../utils";
 import { IPatchResult, sendPatchGenerateMessage } from "../protocolMessages";
 import { ResponseError } from "vscode-languageclient";
-import { logger } from "@vscode/debugadapter";
 
-const EMPTY_MODEL: TGeneratePatchByDifferenceModel = {
-  patchName: "",
-  patchDest: "",
-  rpoMasterFolder: "\\protheus_data\\patchs_dif"
+function EMPTY_MODEL(): TGeneratePatchByDifferenceModel {
+  return {
+    patchName: "",
+    patchDest: "",
+    rpoMasterFolder: "\\protheus_data\\patchs_dif"
+  }
 }
 
 export class PatchGenerateByDifferencePanel extends TdsPanel<TGeneratePatchByDifferenceModel> {
@@ -120,7 +121,7 @@ export class PatchGenerateByDifferencePanel extends TdsPanel<TGeneratePatchByDif
     switch (command) {
       case CommonCommandFromWebViewEnum.Ready:
         if (data.model == undefined) {
-          data.model = EMPTY_MODEL;
+          data.model = EMPTY_MODEL();
 
           this.sendUpdateModel(data.model, undefined);
         }

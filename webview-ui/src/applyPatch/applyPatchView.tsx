@@ -37,9 +37,9 @@ const ROWS_LIMIT: number = 5;
 
 export default function ApplyPatchView() {
   const methods = useForm<TApplyPatchModel>({
-    defaultValues: EMPTY_APPLY_PATCH_MODEL && {
+    defaultValues: EMPTY_APPLY_PATCH_MODEL() && {
       patchFiles: Array(ROWS_LIMIT).map(() => {
-        return EMPTY_PATCH_FILE;
+        return EMPTY_PATCH_FILE();
       })
     },
     mode: "all"
@@ -67,7 +67,7 @@ export default function ApplyPatchView() {
           const errors: any = command.data.errors;
 
           while (model.patchFiles.length < ROWS_LIMIT) {
-            model.patchFiles.push(EMPTY_PATCH_FILE);
+            model.patchFiles.push(EMPTY_PATCH_FILE());
           }
 
           setDataModel<TApplyPatchModel>(methods.setValue, model);
@@ -88,7 +88,7 @@ export default function ApplyPatchView() {
 
   function removePatchFile(index: number) {
     remove(index);
-    insert(index, EMPTY_PATCH_FILE);
+    insert(index, EMPTY_PATCH_FILE());
   }
 
   function infoPatchFile(index: number) {

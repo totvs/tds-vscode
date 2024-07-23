@@ -40,12 +40,13 @@ export type TGeneratePatchByDifferenceModel = TAbstractModelPanel & {
 	patchDest: string;
 }
 
-export const EMPTY_GENERATE_PATCH_FROM_RPO_MODEL: TGeneratePatchFromRpoModel =
-	deepCopy<TGeneratePatchFromRpoModel>({
+export function EMPTY_GENERATE_PATCH_FROM_RPO_MODEL(): TGeneratePatchFromRpoModel {
+	return {
 		patchDest: "",
 		patchName: "",
 		includeTRes: false,
 		objectsLeft: [],
 		objectsRight: [],
 		folder: ""
-	});
+	};
+}

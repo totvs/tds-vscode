@@ -45,8 +45,9 @@ export class ReplayTimelinePanel extends TdsPanel<TReplayTimelineModel, ReplayTi
       // If the webview panel already exists reveal it
       ReplayTimelinePanel.currentPanel.reveal(); //vscode.ViewColumn.One
     } else {
-      //const tabGroups: vscode.TabGroups = vscode.window.tabGroups;
-      //tabGroups.all.activeTabGroup
+      const tabGroups: vscode.TabGroups = vscode.window.tabGroups;
+      const viewColumn: vscode.ViewColumn = tabGroups.all.length > 1
+        ? vscode.ViewColumn.Two : vscode.ViewColumn.Beside;
 
       // If a webview panel does not already exist create and show a new one
       const panel = vscode.window.createWebviewPanel(
@@ -55,7 +56,7 @@ export class ReplayTimelinePanel extends TdsPanel<TReplayTimelineModel, ReplayTi
         // Panel title
         vscode.l10n.t("TDS-Replay Timeline"),
         // The editor column the panel should be displayed in
-        vscode.ViewColumn.Beside,
+        viewColumn,
         // Extra panel configurations
         {
           ...getExtraPanelConfigurations(extensionUri)
@@ -105,7 +106,7 @@ export class ReplayTimelinePanel extends TdsPanel<TReplayTimelineModel, ReplayTi
 
     switch (command) {
       case CommonCommandFromWebViewEnum.Ready:
-        const model: TReplayTimelineModel = EMPTY_REPLAY_TIMELINE_MODEL;
+        const model: TReplayTimelineModel = EMPTY_REPLAY_TIMELINE_MODEL();
 
         this.sendUpdateModel(model, undefined);
 
@@ -176,7 +177,7 @@ export class ReplayTimelinePanel extends TdsPanel<TReplayTimelineModel, ReplayTi
   }
 
   public revealData(debugEvent: vscode.DebugSessionCustomEvent): void {
-    const model: TReplayTimelineModel = EMPTY_REPLAY_TIMELINE_MODEL;
+    const model: TReplayTimelineModel = EMPTY_REPLAY_TIMELINE_MODEL();
 
     model.timeline = debugEvent.body.timeLines;
     model.paginator = {

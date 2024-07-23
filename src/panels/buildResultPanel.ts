@@ -112,7 +112,8 @@ export class BuildResultPanel extends TdsPanel<TBuildResultModel, BuildResultOpt
     switch (command) {
       case CommonCommandFromWebViewEnum.Ready:
         if (data.model == undefined) {
-          const model: TBuildResultModel = EMPTY_BUILD_RESULT_MODEL;
+          const model: TBuildResultModel = EMPTY_BUILD_RESULT_MODEL();
+          
           model.timeStamp = new Date();
           model.returnCode = this._options.buildResult.returnCode;
           model.buildInfos = [];

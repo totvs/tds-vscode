@@ -51,11 +51,12 @@ export type TProgramAppModel = {
 	date: Date;
 }
 
-export const EMPTY_REPOSITORY_MODEL: TRepositoryLogModel =
-	deepCopy<TRepositoryLogModel>({
+export function EMPTY_REPOSITORY_MODEL(): TRepositoryLogModel {
+	return {
 		serverName: "",
 		environment: "",
 		rpoVersion: "",
 		dateGeneration: new Date(0),
 		rpoPatches: []
-	});
+	};
+}

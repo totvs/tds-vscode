@@ -62,7 +62,7 @@ let selectedObjects: Record<string, string[]> = {};
 
 export default function PatchGenerateFromFolderView(props: IPatchGenerateViewProps) {
   const methods = useForm<TGeneratePatchFromRpoModel>({
-    defaultValues: EMPTY_GENERATE_PATCH_FROM_RPO_MODEL,
+    defaultValues: EMPTY_GENERATE_PATCH_FROM_RPO_MODEL(),
     mode: "all",
     // values: props.
   })

@@ -89,7 +89,7 @@ function sendExport(model: any, type: string) {
 
 export default function PatchEditorView() {
   const methods = useForm<TPatchEditorModel>({
-    defaultValues: EMPTY_PATCH_EDITOR_MODEL,
+    defaultValues: EMPTY_PATCH_EDITOR_MODEL(),
     mode: "all"
   })
   const [dataSource, setDataSource] = React.useState<TPatchInfo[]>([]);

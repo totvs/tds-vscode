@@ -10,10 +10,12 @@ export type TIncludeModel = TAbstractModelPanel & {
 
 export type TGlobalIncludeModel = TIncludeModel;
 
-export const EMPTY_INCLUDE_MODEL: TIncludeModel =
-	deepCopy<TIncludeModel>({
+export function EMPTY_INCLUDE_MODEL(): TIncludeModel {
+	return {
 		includePaths: []
-	});
+	};
+}
 
-export const EMPTY_GLOBAL_INCLUDE_MODEL: TGlobalIncludeModel =
-	deepCopy<TGlobalIncludeModel>({ ...EMPTY_INCLUDE_MODEL });
+export function EMPTY_GLOBAL_INCLUDE_MODEL(): TGlobalIncludeModel {
+	return { ...EMPTY_INCLUDE_MODEL() };
+}

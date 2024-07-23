@@ -12,7 +12,7 @@ type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TIm
 
 export default function ImportSourcesOnlyResultView() {
   const methods = useForm<TImportSourcesOnlyResultModel>({
-    defaultValues: EMPTY_IMPORT_SOURCES_ONLY_RESULT_MODEL,
+    defaultValues: EMPTY_IMPORT_SOURCES_ONLY_RESULT_MODEL(),
     mode: "all"
   })
   const [dataSource, setDataSource] = React.useState<TImportSourcesOnlyResultData[]>([]);

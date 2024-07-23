@@ -101,7 +101,7 @@ export class GlobalIncludePanel extends TdsPanel<TGlobalIncludeModel> {
     switch (command) {
       case CommonCommandFromWebViewEnum.Ready:
         const includes: string[] = ServersConfig.getIncludes();
-        const model: TGlobalIncludeModel = EMPTY_GLOBAL_INCLUDE_MODEL && {
+        const model: TGlobalIncludeModel = EMPTY_GLOBAL_INCLUDE_MODEL() && {
           includePaths: includes.map((value: string) => { return { path: value } })
         }
         this.sendUpdateModel(model, undefined);

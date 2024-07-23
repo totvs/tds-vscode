@@ -14,12 +14,12 @@ let tableElement: RefObject<HTMLTableElement> | undefined = undefined;
 
 export default function ReplayTimelineView() {
   const methods = useForm<TReplayTimelineModel>({
-    defaultValues: EMPTY_REPLAY_TIMELINE_MODEL,
+    defaultValues: EMPTY_REPLAY_TIMELINE_MODEL(),
     mode: "all"
   })
   const [timeline, setTimeline] = React.useState<TReplayTimelineData[]>([]);
   const [timelineCurrent, setTimelineCurrent] = React.useState<number>(-1);
-  const [paginator, setPaginator] = React.useState<TPaginatorData>(EMPTY_REPLAY_TIMELINE_MODEL.paginator);
+  const [paginator, setPaginator] = React.useState<TPaginatorData>(EMPTY_REPLAY_TIMELINE_MODEL().paginator);
   const [openSourceDialog, setOpenSourceDialog] = React.useState(false);
   //const tableElement: React.RefObject<HTMLTableElement> = null;
   const paginatorWatch = methods.watch("paginator");

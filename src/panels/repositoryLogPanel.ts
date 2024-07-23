@@ -99,7 +99,7 @@ export class RepositoryLogPanel extends TdsPanel<TRepositoryLogModel> {
     switch (command) {
       case CommonCommandFromWebViewEnum.Ready:
         if (data.model == undefined) {
-          let model: TRepositoryLogModel = EMPTY_REPOSITORY_MODEL;
+          let model: TRepositoryLogModel = EMPTY_REPOSITORY_MODEL();
 
           this.updateRpoInfo(model);
           this.sendUpdateModel(model, undefined);

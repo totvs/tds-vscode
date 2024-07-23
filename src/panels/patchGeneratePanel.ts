@@ -147,10 +147,10 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
               progress.report({ increment: 0 });
 
               if (this._options.fromRpo) {
-                data.model = await this.getDataFromServer(EMPTY_GENERATE_PATCH_FROM_RPO_MODEL, false);
+                data.model = await this.getDataFromServer(EMPTY_GENERATE_PATCH_FROM_RPO_MODEL(), false);
               } else {
                 data.model = await this.getDataFromFolder(
-                  { ...EMPTY_GENERATE_PATCH_FROM_RPO_MODEL, folder: this._options.folder.fsPath }, false);
+                  { ...EMPTY_GENERATE_PATCH_FROM_RPO_MODEL(), folder: this._options.folder.fsPath }, false);
               }
 
               this.sendUpdateModel(data.model, undefined);

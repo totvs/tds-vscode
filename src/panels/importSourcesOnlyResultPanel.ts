@@ -99,7 +99,8 @@ export class ImportSourcesOnlyResultPanel extends TdsPanel<TImportSourcesOnlyRes
 
     switch (command) {
       case CommonCommandFromWebViewEnum.Ready:
-        const model: TImportSourcesOnlyResultModel = EMPTY_IMPORT_SOURCES_ONLY_RESULT_MODEL;
+        const model: TImportSourcesOnlyResultModel = EMPTY_IMPORT_SOURCES_ONLY_RESULT_MODEL();
+        
         model.sourceObj = this._options.data;
 
         this.sendUpdateModel(model, undefined);

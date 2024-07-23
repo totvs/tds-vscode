@@ -39,9 +39,10 @@ export type TBuildResultModel = TAbstractModelPanel & {
 	buildInfos: TBuildInfoResult[];
 }
 
-export const EMPTY_BUILD_RESULT_MODEL: TBuildResultModel =
-	deepCopy<TBuildResultModel>({
+export function EMPTY_BUILD_RESULT_MODEL(): TBuildResultModel {
+	return {
 		timeStamp: new Date(0),
 		returnCode: 0,
 		buildInfos: []
-	});
+	};
+}

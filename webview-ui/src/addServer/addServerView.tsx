@@ -32,7 +32,7 @@ const INCLUDE_ROWS_LIMIT: number = 5;
 
 export default function AddServerView() {
   const methods = useForm<TServerModel>({
-    defaultValues: EMPTY_SERVER_MODEL,
+    defaultValues: EMPTY_SERVER_MODEL(),
     mode: "all"
   })
 
