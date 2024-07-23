@@ -25,7 +25,7 @@ import {
   setDataModel, setErrorModel
 } from "@totvs/tds-webtoolkit";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
-import { ApplyPatchCommand, TApplyPatchModel, TPatchFileData } from "tds-shared/lib";
+import { TApplyPatchModel, TPatchFileData } from "tds-shared/lib";
 import { ApplyPatchCommandEnum, EMPTY_APPLY_PATCH_MODEL, EMPTY_PATCH_FILE } from "tds-shared/lib/models/applyPatchModel";
 
 enum ReceiveCommandEnum {

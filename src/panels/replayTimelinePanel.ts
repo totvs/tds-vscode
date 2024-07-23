@@ -16,7 +16,7 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import { CommonCommandFromWebViewEnum, ReplayTimelineCommand, ReceiveMessage, TFieldErrors, TReplayTimelineData, TReplayTimelineModel, isErrors, EMPTY_REPLAY_TIMELINE_MODEL, ReplayTimelineCommandEnum, TImportSourcesOnlyResultData } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, ReplayTimelineCommand, ReceiveMessage, TFieldErrors, TReplayTimelineModel, isErrors, EMPTY_REPLAY_TIMELINE_MODEL, ReplayTimelineCommandEnum, TImportSourcesOnlyResultData } from "tds-shared/lib";
 import { TdsPanel } from "./panel";
 
 export type ReplayTimelineOptions = {

@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { deepCopy, TAbstractModelPanel } from "../panels/panelInterface";
+import { TAbstractModelPanel } from "../panels/panelInterface";
 
 // export type TTreeNodeRpo = {
 // 	id: string;

@@ -32,7 +32,6 @@
         "../out/",
         "**/app",
         ".vscode-test",
-        "test-resources",
-        "src/debug/tdsreplay/webviews/"
+        "test-resources"
     ]
 }

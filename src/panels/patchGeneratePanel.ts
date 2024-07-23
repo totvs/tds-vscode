@@ -25,7 +25,6 @@ import { IObjectData, IPatchResult, sendInspectorObjectsRequest, sendPatchGenera
 import { ResponseError } from "vscode-languageclient";
 import { CommonCommandFromWebViewEnum, EMPTY_GENERATE_PATCH_FROM_RPO_MODEL, PatchGenerateCommand, PatchGenerateCommandEnum, ReceiveMessage, TFieldErrors, TGeneratePatchFromRpoModel, TInspectorObject, isErrors } from "tds-shared/lib";
 import { TdsPanel } from "./panel";
-import { basename } from 'path';
 
 interface IGeneratePatchOptions {
   fromRpo: boolean;

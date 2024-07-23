@@ -1,3 +1,19 @@
+/*
+Copyright 2021-2024 TOTVS S.A
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http: //www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 import * as vscode from "vscode";
 import * as fse from "fs-extra";
 import {
@@ -14,13 +30,11 @@ import {
 } from "vscode";
 import { TotvsConfigurationProvider } from "./TotvsConfigurationProvider";
 import { TotvsConfigurationTdsReplayProvider } from "./TotvsConfigurationTdsReplayProvider";
-import Utils, { groupBy, LaunchConfig, MESSAGE_TYPE } from "../utils";
-import { CreateTDSReplayTimeLineWebView } from "./tdsreplay/TDSReplayTimeLineCreator";
+import Utils, { groupBy, MESSAGE_TYPE } from "../utils";
 import { LanguageClient } from "vscode-languageclient/node";
 import { TotvsConfigurationWebProvider } from "./TotvsConfigurationWebProvider";
 import { languageClient } from "../extension";
 import { ReplayTimelineOptions, ReplayTimelinePanel } from "../panels/replayTimelinePanel";
-import { DebugSession } from "@vscode/debugadapter";
 
 const DEBUG_TYPE = TotvsConfigurationProvider._TYPE;
 const WEB_DEBUG_TYPE: string = TotvsConfigurationWebProvider._TYPE;
@@ -66,8 +80,6 @@ export function processShowTimelineView(debugSession: vscode.DebugSession) {
   };
 
   createTimeLineWebView = ReplayTimelinePanel.render(context, options);
-
-  //createTimeLineWebView.revealData(debugEvent);
 }
 
 export function processEndDebug() {

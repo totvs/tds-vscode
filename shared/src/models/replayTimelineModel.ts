@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { deepCopy, TAbstractModelPanel } from "../panels/panelInterface";
+import { TAbstractModelPanel } from "../panels/panelInterface";
 import { CommonCommandFromWebViewEnum } from "../webviewProtocol";
 import { TImportSourcesOnlyResultData } from "./importSourcesOnlyResultModel";
 
@@ -23,10 +23,7 @@ export enum ReplayTimelineCommandEnum {
 	AddTimeLines = 'addTimeLines',
 	SelectTimeLine = 'selectTimeLine',
 	OpenSourcesDialog = 'openSourcesDialog',
-	//OpenWaitPage = 'openWaitPage',
-	//ShowLoadingPageDialog = 'showLoadingPageDialog',
 	ShowMessageDialog = 'showMessageDialog',
-	//SetUpdatedState = 'setUpdatedState',
 	SetTimeline = "SetTimeline",
 	ChangePage = "ChangePage"
 }

@@ -53,7 +53,6 @@ function sendToLeft(model: any, selectedObject: TInspectorObject[]) {
   });
 }
 
-
 interface IPatchGenerateViewProps {
   isServerP20OrGreater: boolean;
 }

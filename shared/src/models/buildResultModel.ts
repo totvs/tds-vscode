@@ -16,7 +16,6 @@ limitations under the License.
 
 import { TAbstractModelPanel } from "../panels/panelInterface";
 import { CommonCommandFromWebViewEnum } from "../webviewProtocol";
-import { deepCopy } from './../panels/panelInterface';
 
 export enum BuildResultCommandEnum {
 	Export = "EXPORT"

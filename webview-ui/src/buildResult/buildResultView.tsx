@@ -19,7 +19,7 @@ import { IFormAction, TTdsDataGridColumnDef, TdsDataGrid, TdsFormActionsEnum, Td
 import React from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
-import { TdsForm, TdsLabelField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
+import { TdsForm, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { tdsVscode } from '@totvs/tds-webtoolkit';
 import { BuildResultCommandEnum, EMPTY_BUILD_RESULT_MODEL, TBuildResultModel } from "tds-shared/lib";
 

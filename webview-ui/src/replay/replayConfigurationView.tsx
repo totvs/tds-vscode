@@ -17,11 +17,11 @@ limitations under the License.
 import "./replayConfiguration.css";
 import React from "react";
 import { TdsCheckBoxField, TdsLabelField, TdsPage, TdsProgressRing, TdsSelectionFileField, TdsSimpleTextField } from "@totvs/tds-webtoolkit";
-import { FieldArrayWithId, SubmitHandler, useFieldArray, UseFieldArrayInsert, UseFieldArrayRemove, useForm } from "react-hook-form";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsSelectionField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { tdsVscode } from '@totvs/tds-webtoolkit';
-import { EMPTY_REPLAY_CONFIGURATION, LauncherTypeEnum, TReplayConfigurationModel } from "tds-shared/lib";
+import { EMPTY_REPLAY_CONFIGURATION, TReplayConfigurationModel } from "tds-shared/lib";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 
 enum ReceiveCommandEnum {

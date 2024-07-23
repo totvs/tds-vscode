@@ -19,11 +19,9 @@ import * as fse from "fs-extra";
 
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import { LaunchConfig } from "../utils";
-import { CommonCommandFromWebViewEnum, ReceiveMessage, LauncherTypeEnum, TReplayDataConfiguration, TReplayConfigurationModel, EMPTY_DEBUG_DATA_CONFIGURATION, EMPTY_REPLAY_CONFIGURATION } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, ReceiveMessage, LauncherTypeEnum, TReplayDataConfiguration, TReplayConfigurationModel, EMPTY_REPLAY_CONFIGURATION } from "tds-shared/lib";
 import { TFieldErrors, isErrors } from "tds-shared/lib";
 import { TdsPanel } from "./panel";
-import { LanguagesEnum } from 'tds-shared/lib';
-import { EMPTY_DEBUG_CONFIGURATION } from 'tds-shared/lib';
 
 enum ReplayConfigurationCommandEnum {
 }

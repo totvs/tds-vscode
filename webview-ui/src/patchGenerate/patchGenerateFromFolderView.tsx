@@ -18,7 +18,7 @@ import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
 
 import "./patchGenerate.css";
 import React from "react";
-import { TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsLabelField, TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
+import { TTdsDataGridColumnDef, TdsDataGrid, TdsLabelField, TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsTextField, setDataModel, setErrorModel, TdsSelectionFolderField } from "@totvs/tds-webtoolkit";
@@ -52,7 +52,6 @@ function sendToLeft(model: any, selectedObject: TInspectorObject[]) {
     }
   });
 }
-
 
 interface IPatchGenerateViewProps {
   isServerP20OrGreater: boolean;
