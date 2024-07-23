@@ -1,3 +1,4 @@
+import * as vscode from "vscode";
 import * as fse from "fs-extra";
 import {
   Breakpoint,
@@ -19,6 +20,7 @@ import { LanguageClient } from "vscode-languageclient/node";
 import { TotvsConfigurationWebProvider } from "./TotvsConfigurationWebProvider";
 import { languageClient } from "../extension";
 import { ReplayTimelineOptions, ReplayTimelinePanel } from "../panels/replayTimelinePanel";
+import { DebugSession } from "@vscode/debugadapter";
 
 const DEBUG_TYPE = TotvsConfigurationProvider._TYPE;
 const WEB_DEBUG_TYPE: string = TotvsConfigurationWebProvider._TYPE;
@@ -54,6 +56,34 @@ enum eLogLevelEvent {
 }
 const SPACES: string = " ".repeat(11);
 
+export function processShowTimelineView(debugSession: vscode.DebugSession) {
+  const options: ReplayTimelineOptions = {
+    isIgnoreSourceNotFound: false,  //debugSession.configuration.ignoreSourcesNotFound,
+    selectedSources: [], //debugEvent.session.configuration.selectedSources,
+    //debugEvent: debugEvent,
+    replayFile: "", //debugEvent.session.configuration.tdsReplayFile,
+    debugSession: debug.activeDebugSession
+  };
+
+  createTimeLineWebView = ReplayTimelinePanel.render(context, options);
+
+  //createTimeLineWebView.revealData(debugEvent);
+}
+
+export function processEndDebug() {
+  if (createTimeLineWebView !== undefined) {
+    createTimeLineWebView.dispose();
+    createTimeLineWebView = null;
+
+    const tabGroups: vscode.TabGroups = vscode.window.tabGroups;
+    tabGroups.all.forEach((tabGroup: vscode.TabGroup) => {
+      if (tabGroup.tabs.length == 0) {
+        tabGroups.close(tabGroup);
+      }
+    })
+  };
+}
+
 export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
   if (
     event.session.type.startsWith(DEBUG_TYPE) ||
@@ -75,7 +105,7 @@ export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
     } else if (event.event === "TDA/showProgress") {
       processShowProgressEvent(event, debugConsole);
     } else if (event.event === "TDA/showLoadingPageDialog") {
-      processShowLoadingDialogEvent(event, debugConsole);
+      //processShowLoadingDialogEvent(event, debugConsole);
     } else if (event.event === "TDA/showMsgDialog") {
       processShowMsgDialogEvent(event, debugConsole);
     } else if (event.event === "TDA/showSourcesView") {
@@ -227,6 +257,8 @@ function processShowProgressEvent(
               if (item !== undefined) {
                 languageClient.outputChannel.appendLine(item.message);
                 setTimeout(() => {
+                  processUpdateProgress(item.message, item.percent);
+
                   progress.report(
                     {
                       message: item.message,
@@ -261,9 +293,15 @@ function clearMessageQueue(messageQueue: Array<{ message; percent; increment }>)
   }
 }
 
-function processShowLoadingDialogEvent(event: DebugSessionCustomEvent, debugConsole: DebugConsole) {
+// function processShowLoadingDialogEvent(event: DebugSessionCustomEvent, debugConsole: DebugConsole) {
+//   if (createTimeLineWebView !== null) {
+//     createTimeLineWebView.showLoadingPageDialog(event.body.show);
+//   }
+// }
+
+function processUpdateProgress(message: string, percent: number) {
   if (createTimeLineWebView !== null) {
-    createTimeLineWebView.showLoadingPageDialog(event.body.show);
+    createTimeLineWebView.updateProgress(message, percent);
   }
 }
 

@@ -289,7 +289,7 @@ export async function getProgramArguments(config: DebugConfiguration) {
 }
 
 function automaticLauncher(fileReplay: string, importOnlySource: boolean): DebugConfiguration {
-  let result: DebugConfiguration = {
+  return {
     request: "launch",
     type: "totvs_tdsreplay_debug",
     name: "automatic-launcher",
@@ -297,11 +297,11 @@ function automaticLauncher(fileReplay: string, importOnlySource: boolean): Debug
     includeSources: "*",
     excludeSources: "",
     importOnlySourcesInfo: importOnlySource,
+    forceImport: true,
     //waitForAttach: 30000,
   };
-
-  return result;
 }
+
 export async function getReplayFile(config: DebugConfiguration) {
   const options: vscode.OpenDialogOptions = {
     canSelectMany: false,
@@ -329,7 +329,10 @@ export function launcherReplayFile(replayFile: string) {
   const replayUri: vscode.Uri = vscode.Uri.parse(replayFile);
   const workspaceFolder: vscode.WorkspaceFolder = vscode.workspace.getWorkspaceFolder(replayUri);
 
-  debug.startDebugging(workspaceFolder, { ...automaticLauncher(replayFile, false), "cwb": replayUri.fsPath })
+  debug.startDebugging(workspaceFolder, {
+    ...automaticLauncher(replayFile, false),
+    "cwb": replayUri.fsPath
+  })
     .then((result: boolean) => {
       if (!result) {
         vscode.window.showErrorMessage(l10n.t("There was an error in the importation of the file. See log for more details."));
@@ -343,10 +346,10 @@ export function prepareReplayFile(replayFile: string) {
 
   debug.startDebugging(workspaceFolder, { ...automaticLauncher(replayFile, true), "cwb": replayUri.fsPath })
     .then((result: boolean) => {
-    if (!result) {
-      vscode.window.showErrorMessage(l10n.t("There was an error in the importation of the file. See log for more details."));
-    }
-  });
+      if (!result) {
+        vscode.window.showErrorMessage(l10n.t("There was an error in the importation of the file. See log for more details."));
+      }
+    });
 }
 
 export function toggleTableSync() {

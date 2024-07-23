@@ -17,16 +17,18 @@ limitations under the License.
 
 import { deepCopy, TAbstractModelPanel } from "../panels/panelInterface";
 import { CommonCommandFromWebViewEnum } from "../webviewProtocol";
+import { TImportSourcesOnlyResultData } from "./importSourcesOnlyResultModel";
 
 export enum ReplayTimelineCommandEnum {
-	_AddTimeLines = 'addTimeLines',
+	AddTimeLines = 'addTimeLines',
 	SelectTimeLine = 'selectTimeLine',
 	OpenSourcesDialog = 'openSourcesDialog',
-	OpenWaitPage = 'openWaitPage',
-	ShowLoadingPageDialog = 'showLoadingPageDialog',
+	//OpenWaitPage = 'openWaitPage',
+	//ShowLoadingPageDialog = 'showLoadingPageDialog',
 	ShowMessageDialog = 'showMessageDialog',
-	SetUpdatedState = 'setUpdatedState',
-	SetTimeline = "SetTimeline"
+	//SetUpdatedState = 'setUpdatedState',
+	SetTimeline = "SetTimeline",
+	ChangePage = "ChangePage"
 }
 
 export type ReplayTimelineCommand = CommonCommandFromWebViewEnum & ReplayTimelineCommandEnum;
@@ -50,6 +52,11 @@ export type TPaginatorData = {
 export type TReplayTimelineModel = TAbstractModelPanel & {
 	paginator: TPaginatorData;
 	timeline: TReplayTimelineData[]
+	sources: {
+		showDialog: boolean;
+		sources: TImportSourcesOnlyResultData[];
+		selected: string[];
+	}
 }
 
 export const EMPTY_REPLAY_TIMELINE_MODEL: TReplayTimelineModel =
@@ -61,5 +68,10 @@ export const EMPTY_REPLAY_TIMELINE_MODEL: TReplayTimelineModel =
 			totalItems: 0,
 			pageSize: 0
 		},
-		timeline: []
+		timeline: [],
+		sources: {
+			showDialog: false,
+			sources: [],
+			selected: []
+		}
 	});

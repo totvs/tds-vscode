@@ -5,8 +5,10 @@ import { TotvsDebugAdapterDescriptorFactory } from "./TotvsDebugAdapterDescripto
 import { TotvsConfigurationTdsReplayProvider } from "./TotvsConfigurationTdsReplayProvider";
 import {
   DebugEvent,
-  procesChangeBreakpointsEvent,
+  procesChangeBreakpointsEvent as processChangeBreakpointsEvent,
   processDebugCustomEvent,
+  processEndDebug,
+  processShowTimelineView,
 } from "./debugEvents";
 import { LanguageClient } from "vscode-languageclient/node";
 import { TotvsDebugTrackerDescriptorFactory } from "./TotvsDebugTrackerDescriptorFactory";
@@ -58,7 +60,7 @@ export const registerDebug = (context: vscode.ExtensionContext, languageClient: 
   /** Configurações gerais de debug  */
   context.subscriptions.push(
     vscode.debug.onDidChangeBreakpoints((event: vscode.BreakpointsChangeEvent) => {
-      procesChangeBreakpointsEvent(languageClient, event);
+      processChangeBreakpointsEvent(languageClient, event);
     })
   );
 
@@ -72,7 +74,13 @@ export const registerDebug = (context: vscode.ExtensionContext, languageClient: 
   );
 
   context.subscriptions.push(
+    vscode.debug.onDidStartDebugSession((debugSession: vscode.DebugSession) => {
+      if (debugSession.type.startsWith(TotvsConfigurationTdsReplayProvider._TYPE)) {
+        processShowTimelineView(debugSession);
+      }
+    }),
     vscode.debug.onDidTerminateDebugSession(() => {
+      processEndDebug();
       _debugEvent = undefined;
     })
   );

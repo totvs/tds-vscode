@@ -1,10 +1,10 @@
 import "./replayTimeline.css";
-import { ErrorBoundary, getCloseActionForm, getDefaultActionsForm, IFormAction, TdsDataGrid, TdsFormActionsEnum, TdsLabelField, TdsPage, TdsPaginator, TdsProgressRing, TdsTable, tdsVscode, TTdsDataGridAction, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
+import { ErrorBoundary, getCloseActionForm, getDefaultActionsForm, IFormAction, TdsDataGrid, TdsDialog, TdsFormActionsEnum, TdsLabelField, TdsPage, TdsPaginator, TdsProgressRing, TdsTable, tdsVscode, TTdsDataGridAction, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
 import React, { createRef, RefObject } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsSelectionFileField, TdsSelectionFolderField, TdsSimpleCheckBoxField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
-import { BuildResultCommandEnum, EMPTY_IMPORT_SOURCES_ONLY_RESULT_MODEL, EMPTY_REPLAY_TIMELINE_MODEL, ReplayTimelineCommandEnum, TPaginatorData, TReplayTimelineData, TReplayTimelineModel } from "tds-shared/lib";
+import { BuildResultCommandEnum, EMPTY_IMPORT_SOURCES_ONLY_RESULT_MODEL, EMPTY_REPLAY_TIMELINE_MODEL, ReplayTimelineCommandEnum, TImportSourcesOnlyResultData, TPaginatorData, TReplayTimelineData, TReplayTimelineModel } from "tds-shared/lib";
 
 enum ReceiveCommandEnum {
 }
@@ -18,9 +18,13 @@ export default function ReplayTimelineView() {
     mode: "all"
   })
   const [timeline, setTimeline] = React.useState<TReplayTimelineData[]>([]);
+  const [timelineCurrent, setTimelineCurrent] = React.useState<number>(-1);
   const [paginator, setPaginator] = React.useState<TPaginatorData>(EMPTY_REPLAY_TIMELINE_MODEL.paginator);
-  const [openWaitPage, setOpenWaitPage] = React.useState(false);
+  const [openSourceDialog, setOpenSourceDialog] = React.useState(false);
   //const tableElement: React.RefObject<HTMLTableElement> = null;
+  const paginatorWatch = methods.watch("paginator");
+  const [percent, setPercent] = React.useState(0);
+  const [message, setMessage] = React.useState("");
 
   const onSubmit: SubmitHandler<TReplayTimelineModel> = (data) => {
     //not applicable
@@ -29,57 +33,38 @@ export default function ReplayTimelineView() {
   React.useEffect(() => {
     let listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
-      //const message: TReplayTimelineModel = event.data; // The JSON data our extension sent
-
-      console.log("************************************")
-      console.log(event);
-
-      // switch (message.command) {
-      //   case ReplayTimelineCommandEnum.SelectTimeLine:
-      //     let timeLineId = message.data;
-      //     //selectTimeLineInTable(timeLineId);
-      //     break;
-      //   case ReplayTimelineCommandEnum.AddTimeLines:
-      //     setOpenWaitPage(false);
-      //     //setPageData(event, message);
-      //     setDataSource(event.timeLines);
-
-      //     break;
-      //   case ReplayTimelineCommandEnum.OpenSourcesDialog:
-      //     //setTimeLineData({ sources: message.data.sources, selected: message.data.selected });
-      //     //setOpenSourcesDialog(true);
-      //     break;
-      //   case ReplayTimelineCommandEnum.ShowLoadingPageDialog:
-      //     setOpenWaitPage(message.data);
-      //     break;
-      //   case ReplayTimelineCommandEnum.SetUpdatedState:
-      //     //setPageData(event, message);
-      //     break;
-      //   case ReplayTimelineCommandEnum.ShowMessageDialog:
-      //     //setOpenMessageDialog(true);
-      //     //setMsgType(message.data.msgType);
-      //     //setMessage(message.data.message);
-      //     break;
-      // }
+      const data = command.data;
       let model: TReplayTimelineModel;
 
       switch (command.command) {
         case CommonCommandEnum.UpdateModel:
-          model = command.data.model;
+          model = data.model;
 
           setDataModel(methods.setValue, model);
           setTimeline(model.timeline);
           setPaginator(model.paginator);
 
-          if (model.timeline.length > 0) {
-            scrollToLineIfNeeded(model.timeline[0].id);
+          if (model.sources && model.sources.showDialog) {
+            model.sources.sources.forEach((element: TImportSourcesOnlyResultData, index: number) => {
+              model.sources.sources[index].compileDate = new Date(element.compileDate);
+            });
+
+            setOpenSourceDialog(true);
           }
 
           break;
+
         case ReplayTimelineCommandEnum.SelectTimeLine:
-          const timeLineId: number = command.data.timeLineId;
+          const timeLineId: number = data.timeLineId;
           const currentLine: number = methods.getValues("timeline").findIndex((row: TReplayTimelineData) => row.id == timeLineId);
-          setPaginator({ ...paginator, currentLine: currentLine });
+
+          setPaginator({ ...methods.getValues("paginator"), currentLine: currentLine });
+          setTimelineCurrent(timeLineId);
+
+          break;
+        case "update_progress_ring":
+          setPercent(event.data.data.percent);
+          setMessage(event.data.data.message);
 
         default:
           break;
@@ -92,6 +77,12 @@ export default function ReplayTimelineView() {
       window.removeEventListener('message', listener);
     }
   }, []);
+
+  React.useEffect(() => {
+    if (timelineCurrent > 0) {
+      scrollToLineIfNeeded(timelineCurrent);
+    }
+  }, [timelineCurrent, setTimelineCurrent]);
 
   const sendShowSources = (model: any) => {
     tdsVscode.postMessage({
@@ -108,6 +99,16 @@ export default function ReplayTimelineView() {
       data: {
         model: model,
         timelineId: timelineId
+      }
+    });
+  }
+
+  const sendChangePage = (page: number) => {
+    tdsVscode.postMessage({
+      command: ReplayTimelineCommandEnum.ChangePage,
+      data: {
+        model: methods.getValues(),
+        newPage: page
       }
     });
   }
@@ -142,23 +143,19 @@ export default function ReplayTimelineView() {
         parent.scrollTop + parent.clientHeight;
 
     if (overTop) {
-      target.scrollIntoView(true);
+      target.scrollIntoView({ block: "start", behavior: "smooth" });
     } else if (overBottom) {
-      target.scrollIntoView(false);
+      target.scrollIntoView({ block: "end", behavior: "smooth" });
     }
   };
 
   const scrollToLineIfNeeded = (id: number) => {
-    if (tableElement && tableElement.current !== null) {
-      const rows = Array.from(
-        tableElement.current.querySelectorAll("tbody tr")
-      ),
-        newRow = rows.find((row) => row.id === `${id}`) as HTMLElement;
-      //tableElement.current.scrollTo()
-      scrollIntoViewIfNeeded(newRow);
+    const targetRow = document.getElementById(`tblTimeLine_id_${id}`);
+
+    if (targetRow) {
+      scrollIntoViewIfNeeded(targetRow);
     }
   };
-
 
   const actions: IFormAction[] = [
     {
@@ -170,26 +167,73 @@ export default function ReplayTimelineView() {
       }
     },
     {
-      id: "chkIgnoreNotFOund",
+      id: "chkIgnoreNotFound",
       caption: tdsVscode.l10n.t("Ignore Sources not found"),
       type: "checkbox",
       onClick: () => {
-        console.log("btnShowSources");
+        console.log("chkIgnoreNotFound");
         //sendExport(methods.getValues(), "TXT");
       }
     }
   ]
 
+  const buildShowSourcesDialog = () => {
+    function columnsDef(): TTdsDataGridColumnDef[] {
+
+      const result: TTdsDataGridColumnDef[] = [
+        {
+          type: "string",
+          name: "name",
+          label: tdsVscode.l10n.t("Source"),
+          width: "8fr",
+          sortable: true,
+          sortDirection: "asc",
+        },
+        {
+          type: "datetime",
+          name: "compileDate",
+          label: tdsVscode.l10n.t("Compile Date"),
+          width: "8fr",
+          sortable: true,
+          sortDirection: "",
+        },
+      ];
+
+      return result;
+    }
+
+    const sources = methods.getValues("sources");
+
+    return (
+      <TdsDataGrid
+        id={"grdSources"}
+        columnDef={columnsDef()}
+        dataSource={sources.sources}
+        options={{
+          bottomActions: undefined,
+          topActions: undefined,
+          sortable: undefined,
+          filter: undefined,
+          grouping: undefined,
+          pageSize: undefined,
+          pageSizeOptions: undefined,
+          moveRow: undefined,
+          rowSeparator: undefined
+        }} />
+    )
+  }
+
   return (
-    <TdsPage>
-      <TdsForm<TReplayTimelineModel>
-        methods={methods}
-        onSubmit={onSubmit}
-        actions={actions}
-      >
+    <>
+      <TdsPage>
         {!timeline || timeline.length == 0
-          ? <TdsProgressRing size="full" />
-          : <>
+          ? <TdsProgressRing size="full" message={message} value={percent} />
+          : <TdsForm<TReplayTimelineModel>
+            id="frmReplayTimeline"
+            methods={methods}
+            onSubmit={onSubmit}
+            actions={actions}
+          >
             {
               <TdsTable
                 id={"tblTimeLine"}
@@ -201,48 +245,38 @@ export default function ReplayTimelineView() {
                 ref={tableElement}
                 onClick={(
                   target: HTMLElement,
-                  rowIndex: number,
-                  modifiers: {
-                    altKey: boolean;
-                    ctrlKey: boolean;
-                    shiftKey: boolean;
-                    metaKey: boolean;
-                  }) => {
+                  rowIndex: number) => {
                   sendSetTimeline(methods.getValues(), timeline[rowIndex].id);
                 }
                 }
               />
             }
-            <TdsPaginator
+            {paginatorWatch && <TdsPaginator
               currentPage={paginator.currentPage}
               firstPageItem={paginator.firstPageItem}
               totalItems={paginator.totalItems}
               pageSize={paginator.pageSize}
               onPageChange={(page: number) => {
-                console.log("onPageChange", page);
+                sendChangePage(page);
               }}
             />
-          </>
+            }
+          </TdsForm>
         }
-        {
-          // < TdsDataGrid id={"replay-timeline-table"}
-          //   columnDef={columnsDef()}
-          //   dataSource={timeline}
-          //   options={{
-          //     bottomActions: [],
-          //     topActions: [],
-          //     sortable: false,
-          //     filter: false,
-          //     grouping: false,
-          //     //pageSize?: number;
-          //     //pageSizeOptions?: number[];
-          //     moveRow: false,
-          //     rowSeparator: false
-          //   }}
-          // />
-        }
+      </TdsPage>
 
-      </TdsForm>
-    </TdsPage>
+      {openSourceDialog && <TdsDialog
+        title={tdsVscode.l10n.t("Sources")}
+        onClose={(ok: boolean, data: any) => { setOpenSourceDialog(false); }}
+      >
+        <TdsForm<TReplayTimelineModel>
+          methods={methods}
+          onSubmit={onSubmit}
+          actions={actions}
+        >
+          {buildShowSourcesDialog()}
+        </TdsForm>
+      </TdsDialog>}
+    </>
   );
 }

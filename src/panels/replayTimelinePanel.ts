@@ -16,7 +16,7 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import { CommonCommandFromWebViewEnum, ReplayTimelineCommand, ReceiveMessage, TFieldErrors, TReplayTimelineData, TReplayTimelineModel, isErrors, EMPTY_REPLAY_TIMELINE_MODEL, ReplayTimelineCommandEnum } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, ReplayTimelineCommand, ReceiveMessage, TFieldErrors, TReplayTimelineData, TReplayTimelineModel, isErrors, EMPTY_REPLAY_TIMELINE_MODEL, ReplayTimelineCommandEnum, TImportSourcesOnlyResultData } from "tds-shared/lib";
 import { TdsPanel } from "./panel";
 
 export type ReplayTimelineOptions = {
@@ -45,6 +45,9 @@ export class ReplayTimelinePanel extends TdsPanel<TReplayTimelineModel, ReplayTi
       // If the webview panel already exists reveal it
       ReplayTimelinePanel.currentPanel.reveal(); //vscode.ViewColumn.One
     } else {
+      //const tabGroups: vscode.TabGroups = vscode.window.tabGroups;
+      //tabGroups.all.activeTabGroup
+
       // If a webview panel does not already exist create and show a new one
       const panel = vscode.window.createWebviewPanel(
         // Panel view type
@@ -102,36 +105,53 @@ export class ReplayTimelinePanel extends TdsPanel<TReplayTimelineModel, ReplayTi
 
     switch (command) {
       case CommonCommandFromWebViewEnum.Ready:
-        //this.revealData(this._options);
         const model: TReplayTimelineModel = EMPTY_REPLAY_TIMELINE_MODEL;
+
         this.sendUpdateModel(model, undefined);
-
-        // model.timeline = this._options.debugEvent.body.timeLines;
-        // model.paginator = {
-        //   currentLine: model.timeline.findIndex(item => item.id === this._options.debugEvent.body.currentSelectedLine as number),
-        //   currentPage: this._options.debugEvent.body.currentPage,
-        //   firstPageItem: 0,
-        //   totalItems: this._options.debugEvent.body.totalItems,
-        //   pageSize: this._options.debugEvent.body.itemsPerPage
-        // };
-
-        // this.selectTimeLine(this._options.debugEvent.body.currentSelectedLine);
 
         break;
 
       case ReplayTimelineCommandEnum.OpenSourcesDialog:
-        vscode.commands.executeCommand("totvs-developer-studio.configure.automaticLauncher",
-          vscode.Uri.parse("file:///" + this._options.replayFile));
+        if (this._options.debugSession) {
+          let requestJson = {
+            "sourceName": "all"
+          };
 
-        this.sendUpdateModel(data.model, undefined);
+          this._options.debugSession.customRequest("TDA/getSourceInfo", requestJson)
+            .then((jsonResponse) => {
+              data.model.sources.sources = jsonResponse.sources;
+              data.model.sources.selected = [];
+              data.model.sources.showDialog = true;
+
+              if (this._options.selectedSources.length == 0) {
+                jsonResponse.sources.forEach((source: TImportSourcesOnlyResultData) => {
+                  data.model.sources.selected.push(source.name);
+                })
+              }
+
+              this.sendUpdateModel(data.model, undefined);
+            });
+
+        }
         break;
 
       case ReplayTimelineCommandEnum.SetTimeline:
         if (this._options.debugSession) {
+          //Envia para o debug adapter uma solicitação para setar o timeline
           let timeLine = { "id": parseInt(data.timelineId) };
           this._options.debugSession.customRequest("TDA/setTimeLine", timeLine);
 
           this.selectTimeLine(timeLine.id);
+        }
+        break;
+
+      case ReplayTimelineCommandEnum.ChangePage:
+        if (this._options.debugSession) {
+          //Envia para o debug adapter uma solicitação para mudar de página.
+          //O próprio debug adapter ira enviar uma mensagem para adicionar as timelines da nova pagina
+          let newPage = { "newPage": parseInt(data.newPage) };
+          //console.log("Enviando requisição para troca de pagina: " + newPage);
+          this._options.debugSession.customRequest("TDA/changeTimeLinePage", newPage);
         }
         break;
 
@@ -162,7 +182,7 @@ export class ReplayTimelinePanel extends TdsPanel<TReplayTimelineModel, ReplayTi
     model.paginator = {
       currentLine: model.timeline.findIndex(item => item.id === debugEvent.body.currentSelectedTimeLineId as number),
       currentPage: debugEvent.body.currentPage,
-      firstPageItem: 0,
+      firstPageItem: debugEvent.body.itemsPerPage * debugEvent.body.currentPage,
       totalItems: debugEvent.body.totalItems,
       pageSize: debugEvent.body.itemsPerPage
     };
@@ -180,12 +200,23 @@ export class ReplayTimelinePanel extends TdsPanel<TReplayTimelineModel, ReplayTi
     });
   }
 
-  public showLoadingPageDialog(showLoadingPageDialog: boolean) {
+  // public showLoadingPageDialog(showLoadingPageDialog: boolean) {
+  //   this._panel.webview.postMessage({
+  //     command: ReplayTimelineCommandEnum.ShowLoadingPageDialog,
+  //     data: showLoadingPageDialog
+  //   });
+  // }
+
+  public updateProgress(message: string, percent: number) {
     this._panel.webview.postMessage({
-      command: ReplayTimelineCommandEnum.ShowLoadingPageDialog,
-      data: showLoadingPageDialog
+      command: "update_progress_ring",
+      data: {
+        message: message,
+        percent: percent
+      }
     });
   }
+
 
   public showMessageDialog(msgType: string, message: string) {
     this._panel.webview.postMessage({
@@ -197,26 +228,11 @@ export class ReplayTimelinePanel extends TdsPanel<TReplayTimelineModel, ReplayTi
     });
   }
 
-  public openSourcesDialog(jsonResponse: any) {
-    var selected: string[] = [];// [...this._selectedSources];
-
-    // if (this._selectedSources.length == 0) {
-    //   jsonResponse.sources.forEach((source: any) => {
-    //     selected.push(source.name);
-    //   })
-    // }
-
-    this._panel.webview.postMessage({
-      command: ReplayTimelineCommandEnum.OpenSourcesDialog,
-      data: { sources: jsonResponse.sources, selected: selected }
-    });
-  }
-
-  public postSetUpdatedState() {
-    this._panel.webview.postMessage({
-      command: ReplayTimelineCommandEnum.SetUpdatedState,
-      //data: this._debugEvent
-    });
-  }
+  // public postSetUpdatedState() {
+  //   this._panel.webview.postMessage({
+  //     command: ReplayTimelineCommandEnum.SetUpdatedState,
+  //     //data: this._debugEvent
+  //   });
+  // }
 
 }
