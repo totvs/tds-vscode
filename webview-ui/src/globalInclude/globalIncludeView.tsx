@@ -107,7 +107,7 @@ export default function GlobalIncludeView() {
   const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludePath) => row.path == "");
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("Global Include")}>
+    <TdsPage>
       <TdsForm<TGlobalIncludeModel> methods={methods}
         onSubmit={onSubmit}
         description={tdsVscode.l10n.t("The global search folder list is used when not specified in the server definition.")}>

@@ -95,8 +95,6 @@ export default function ReplayConfigurationView() {
     const indexFirstArgFree: number = fields.findIndex((arg: { value: string }) => arg.value == "");
 
     const addIncludeArgument = (value: string, index: number) => {
-      console.log("addIncludeArgument", value, index);
-
       insert(index, { value: value });
       remove(index + 1);
     }
@@ -168,7 +166,7 @@ export default function ReplayConfigurationView() {
   }
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("TDS Replay Launcher Config")}>
+    <TdsPage>
       <TdsForm<TReplayConfigurationModel>
         methods={methods}
         onSubmit={onSubmit}

@@ -233,7 +233,7 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
   }
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("Patch Generation from RPO")}>
+    <TdsPage>
       <TdsForm methods={methods}
         onSubmit={onSubmit}>
         <section className="tds-row-container">

@@ -180,7 +180,7 @@ export default function PatchGenerateFromFolderView(props: IPatchGenerateViewPro
   }
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("Patch Generation from Folder")}>
+    <TdsPage>
       <TdsForm methods={methods}
         onSubmit={onSubmit}>
         <section className="tds-row-container">

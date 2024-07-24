@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import "./repositoryLog.css";
-import { IFormAction, TdsDataGrid, TdsFormActionsEnum, TdsLabelField, TdsPage, TdsProgressRing, TdsTreeItem, TdsTreeView, getDefaultActionsForm } from "@totvs/tds-webtoolkit";
+import { IFormAction, TdsDataGrid, TdsFormActionsEnum, TdsLabelField, TdsPage, TdsProgressRing, TdsTreeItem, TdsTreeView, getCloseActionForm, getDefaultActionsForm } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
@@ -95,10 +95,10 @@ export default function RepositoryLogView() {
   }, []);
 
   const model: TRepositoryLogModel = methods.getValues();
-  const formActions: IFormAction[] = getDefaultActionsForm().filter((action: IFormAction) => action.id == TdsFormActionsEnum.Close);
+  const formActions: IFormAction[] = [getCloseActionForm()];
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("Repository Log")}>
+    <TdsPage>
       <TdsForm<TRepositoryLogModel>
         onSubmit={onSubmit}
         methods={methods}

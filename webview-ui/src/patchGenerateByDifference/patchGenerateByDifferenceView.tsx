@@ -75,7 +75,7 @@ export default function PatchGenerateByDifferenceView(props: IPatchGenerateByDif
   }, []);
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("Patch Generation by Difference RPO")}>
+    <TdsPage>
       <TdsForm methods={methods}
         onSubmit={onSubmit}>
         <section className="tds-row-container">

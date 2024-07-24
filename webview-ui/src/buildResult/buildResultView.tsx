@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import "./buildResult.css";
-import { IFormAction, TTdsDataGridColumnDef, TdsDataGrid, TdsFormActionsEnum, TdsPage, getDefaultActionsForm } from "@totvs/tds-webtoolkit";
+import { IFormAction, TTdsDataGridColumnDef, TdsDataGrid, TdsFormActionsEnum, TdsPage, getCloseActionForm, getDefaultActionsForm } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
@@ -133,7 +133,7 @@ export default function BuildResultView() {
   }
 
   const model: TBuildResultModel = methods.getValues();
-  const formActions: IFormAction[] = getDefaultActionsForm().filter((action: IFormAction) => action.id == TdsFormActionsEnum.Close);
+  const formActions: IFormAction[] = [getCloseActionForm()];
   formActions.push({
     id: "btnExportTxt",
     caption: tdsVscode.l10n.t("Export"),
@@ -145,7 +145,7 @@ export default function BuildResultView() {
   });
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("Build Result")}>
+    <TdsPage>
       <TdsForm<TBuildResultModel>
         methods={methods}
         onSubmit={onSubmit}

@@ -91,7 +91,7 @@ export default function CompileKeyView() {
   }, []);
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("Compile Key")}>
+    <TdsPage>
       <TdsForm<TFields> methods={methods}
         onSubmit={onSubmit}>
 

@@ -110,7 +110,7 @@ export default function ApplyPatchView() {
   const isProcessing: boolean = model.patchFiles.filter((row: TPatchFileData) => row.isProcessing).length > 0;
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("Apply Patch")}>
+    <TdsPage>
       <TdsForm<TApplyPatchModel> methods={methods}
         onSubmit={onSubmit}
       >

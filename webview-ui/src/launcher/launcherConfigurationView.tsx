@@ -103,10 +103,11 @@ export default function LauncherConfigurationView() {
   const indexFirstArgFree: number = model.programArgs.findIndex((arg: { value: string }) => arg.value == "");
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("Launcher Debug Config")}>
+    <TdsPage>
       <TdsForm<TDebugConfigurationModel>
         methods={methods}
         onSubmit={onSubmit}
+        description={tdsVscode.l10n.t("Configure an launcher for debugging")}
       >
         <section className="tds-row-container" >
           <TdsSelectionField
@@ -208,7 +209,6 @@ export default function LauncherConfigurationView() {
                         <VSCodeButton appearance="icon"
                           onClick={() => removeArgument(index)} >
                           <span className="codicon codicon-close"></span>
-                          {index}
                         </VSCodeButton>
                       </VSCodeDataGridCell>
                       <VSCodeDataGridCell grid-column="2">
@@ -230,7 +230,6 @@ export default function LauncherConfigurationView() {
                           key={field.id}
                           name={`programArgs.${index}.value`}
                           info={tdsVscode.l10n.t("Enter the value of parameters.")}
-                          readOnly={false}
                         />
                       </VSCodeDataGridCell>
                     </>
@@ -249,7 +248,7 @@ export default function LauncherConfigurationView() {
                         <VSCodeButton
                           onClick={() => addIncludeArgument("<empty>", index)}
                         >
-                          {tdsVscode.l10n.t("Add Empty Argument")}
+                          {tdsVscode.l10n.t("Empty Argument")}
                         </VSCodeButton>
                       </VSCodeDataGridCell>
                     </>

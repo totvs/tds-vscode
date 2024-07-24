@@ -35,12 +35,9 @@ export function getLanguageServerSettings(): any[] {
 
 export function getModifiedLanguageServerSettings(): any[] {
   let config = vscode.workspace.getConfiguration("totvsLanguageServer");
-  needRestart = false;
-
   const settings: any[] = [];
 
-  let tmp = config.inspect("editor.linter");
-  console.log(tmp);
+  needRestart = false;
 
   if (config.has("editor.linter")) {
     let oldLinter = config.get("editor.linter");

@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import "./importSourcesOnlyResult.css";
-import { getDefaultActionsForm, IFormAction, TdsDataGrid, TdsFormActionsEnum, TdsPage, TdsProgressRing, tdsVscode, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
+import { getCloseActionForm, getDefaultActionsForm, IFormAction, TdsDataGrid, TdsFormActionsEnum, TdsPage, TdsProgressRing, tdsVscode, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
@@ -106,13 +106,8 @@ export default function ImportSourcesOnlyResultView() {
     });
   }
 
-  const formActions: IFormAction[] = getDefaultActionsForm()
-    .filter((action: IFormAction) => action.id == TdsFormActionsEnum.Close)
-    .map((action: IFormAction) => {
-      action.appearance == "primary";
+  const formActions: IFormAction[] = [getCloseActionForm()];
 
-      return action;
-    });
   formActions.push({
     id: "btnExportTxt",
     caption: tdsVscode.l10n.t("Export (TXT)"),

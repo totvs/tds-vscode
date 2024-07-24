@@ -258,11 +258,7 @@ export default function ObjectInspectorView(props: TInspectorObjectComponentProp
     : functionColumns(props.isServerP20OrGreater);
 
   return (
-    <TdsPage title={
-      props.inspector == "objects"
-        ? tdsVscode.l10n.t("Objects Inspector")
-        : tdsVscode.l10n.t("Functions Inspector")
-    }>
+    <TdsPage>
       <TdsForm
         onSubmit={methods.handleSubmit(() => { })}
         methods={methods}

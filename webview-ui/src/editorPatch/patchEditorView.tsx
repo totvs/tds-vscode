@@ -138,7 +138,7 @@ export default function PatchEditorView() {
   ];
 
   return (
-    <TdsPage title={tdsVscode.l10n.t("Patch Objects")} >
+    <TdsPage>
       <TdsForm
         onSubmit={methods.handleSubmit(() => { })}
         methods={methods}

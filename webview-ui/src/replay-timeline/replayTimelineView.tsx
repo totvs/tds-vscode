@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import "./replayTimeline.css";
-import { IFormAction, TdsDataGrid, TdsDialog, TdsPage, TdsPaginator, TdsProgressRing, TdsTable, tdsVscode, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
+import { getCloseActionForm, IFormAction, TdsDataGrid, TdsDialog, TdsPage, TdsPaginator, TdsProgressRing, TdsTable, tdsVscode, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
 import React, { RefObject } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
@@ -240,53 +240,50 @@ export default function ReplayTimelineView() {
   }
 
   return (
-    <>
-      <TdsPage>
-        {!timeline || timeline.length == 0
-          ? <TdsProgressRing size="full" message={message} value={percent} />
-          : <TdsForm<TReplayTimelineModel>
-            id="frmReplayTimeline"
-            methods={methods}
-            onSubmit={onSubmit}
-            actions={actions}
-          >
-            <TdsTable
-              id={"tblTimeLine"}
-              headerColumns={["Time", "Source", "Line"]}
-              widthColumns={[1, 3, 1]}
-              dataColumns={["timeStamp", "srcName", "line"]}
-              dataSource={timeline}
-              highlightRows={[paginator.currentLine]}
-              highlightGroup={{
-                "tds-source-not-found": timeline
-                  .map((element: TReplayTimelineData, index: number) => {
-                    if (!element.srcFoundInWS) {
-                      return index;
-                    }
-                  }).filter((value: number | undefined) => value !== undefined)
-              }}
-              _ref={tableElement}
-              onClick={(
-                target: HTMLElement,
-                rowIndex: number) => {
-                sendSetTimeline(methods.getValues(), timeline[rowIndex].id);
-              }
-              }
-            />
-            {paginatorWatch && <TdsPaginator
-              currentPage={paginator.currentPage}
-              firstPageItem={paginator.firstPageItem}
-              totalItems={paginator.totalItems}
-              pageSize={paginator.pageSize}
-              onPageChange={(page: number) => {
-                sendChangePage(page);
-              }}
-            />
+    <TdsPage>
+      {!timeline || timeline.length == 0
+        ? <TdsProgressRing size="full" message={message} value={percent} />
+        : <TdsForm<TReplayTimelineModel>
+          id="frmReplayTimeline"
+          methods={methods}
+          onSubmit={onSubmit}
+          actions={actions}
+        >
+          <TdsTable
+            id={"tblTimeLine"}
+            headerColumns={["Time", "Source", "Line"]}
+            widthColumns={[1, 3, 1]}
+            dataColumns={["timeStamp", "srcName", "line"]}
+            dataSource={timeline}
+            highlightRows={[paginator.currentLine]}
+            highlightGroup={{
+              "tds-source-not-found": timeline
+                .map((element: TReplayTimelineData, index: number) => {
+                  if (!element.srcFoundInWS) {
+                    return index;
+                  }
+                }).filter((value: number | undefined) => value !== undefined)
+            }}
+            _ref={tableElement}
+            onClick={(
+              target: HTMLElement,
+              rowIndex: number) => {
+              sendSetTimeline(methods.getValues(), timeline[rowIndex].id);
             }
-          </TdsForm>
-        }
-      </TdsPage>
-
+            }
+          />
+          {paginatorWatch && <TdsPaginator
+            currentPage={paginator.currentPage}
+            firstPageItem={paginator.firstPageItem}
+            totalItems={paginator.totalItems}
+            pageSize={paginator.pageSize}
+            onPageChange={(page: number) => {
+              sendChangePage(page);
+            }}
+          />
+          }
+        </TdsForm>
+      }
       {openSourceDialog && <TdsDialog
         title={tdsVscode.l10n.t("Sources")}
         onClose={(ok: boolean, data: any) => { setOpenSourceDialog(false); }}
@@ -294,11 +291,11 @@ export default function ReplayTimelineView() {
         <TdsForm<TReplayTimelineModel>
           methods={methods}
           onSubmit={onSubmit}
-          actions={actions}
+          actions={[getCloseActionForm()]}
         >
           {buildShowSourcesDialog()}
         </TdsForm>
       </TdsDialog>}
-    </>
+    </TdsPage>
   );
 }
