@@ -404,7 +404,7 @@ export class ServersConfig {
     const data = { id: id, environment: environment };
     servers.savedTokens[id + ":" + environment] = data;
 
-    // persistir a configuracao
+    // persistir a configuração
     persistServersInfo(servers);
   }
 
@@ -670,6 +670,57 @@ export class ServersConfig {
         return serverId;
       }
     }
+    return undefined;
+  }
+
+  /**
+   * Atualiza a  configuração de servidor no servers.json
+   */
+  static updateServer(
+    serverId,
+    typeServer,
+    serverName,
+    port,
+    address,
+    buildVersion,
+    secure,
+    includes
+  ): string | undefined {
+    let serverConfig = getServersConfig();
+
+    if (serverConfig.configurations) {
+      const servers = serverConfig.configurations;
+      const index: number = servers.findIndex((element) => {
+        return element.id === serverId;
+      });
+
+      if (index == -1) {
+        return undefined;
+      }
+
+      let validate_includes: string[] = [];
+      includes.forEach((element) => {
+        if (element !== undefined && element.length > 0) {
+          validate_includes.push(element);
+        }
+      });
+
+      servers[index] = {
+        id: serverId,
+        type: typeServer,
+        name: serverName,
+        port: parseInt(port),
+        address: address,
+        buildVersion: buildVersion,
+        secure: secure,
+        includes: validate_includes,
+      };
+
+      persistServersInfo(serverConfig);
+
+      return serverId;
+    }
+
     return undefined;
   }
 

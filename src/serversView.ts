@@ -1,3 +1,19 @@
+/*
+Copyright 2021-2024 TOTVS S.A
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http: //www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 import * as vscode from "vscode";
 import { ServersConfig } from "./utils";
 import { inputConnectionParameters } from "./inputConnectionParameters";
@@ -20,20 +36,6 @@ import {
 import { EnvSection, ServerItem } from "./serverItem";
 import { AddServerPanel } from "./panels/addServerPanel";
 
-// const compile = require("template-literal");
-
-// const localizeHTML = {
-//   "tds.webview.newServer.title": vscode.l10n.t("New Server"),
-//   "tds.webview.newServer.name": vscode.l10n.t("Server Name"),
-//   "tds.webview.newServer.address": vscode.l10n.t("Address"),
-//   "tds.webview.newServer.port": vscode.l10n.t("Port"),
-//   "tds.webview.newServer.save": vscode.l10n.t("Save"),
-//   "tds.webview.newServer.saveClose": vscode.l10n.t("Save/Close"),
-//   "tds.webview.newServer.secure": vscode.l10n.t("Secure(SSL)"),
-//   "tds.webview.dir.include": vscode.l10n.t("Includes directory"),
-//   "tds.webview.dir.include2": vscode.l10n.t("Allow multiple directories"),
-// };
-
 export class ServersExplorer {
   constructor(context: vscode.ExtensionContext) {
     let currentPanel: vscode.WebviewPanel | undefined = undefined;
@@ -44,7 +46,7 @@ export class ServersExplorer {
         return;
       }
 
-      AddServerPanel.render(context);
+      AddServerPanel.render(context, { serverId: "" });
     });
 
     vscode.commands.registerCommand("totvs-developer-studio.config", () => {
@@ -174,6 +176,13 @@ export class ServersExplorer {
         if (ix >= 0) {
           ServersConfig.deleteServer(serverItem.id);
         }
+      }
+    );
+
+    vscode.commands.registerCommand(
+      "totvs-developer-studio.edit",
+      (serverItem: ServerItem) => {
+        AddServerPanel.render(context, { serverId: serverItem.id });
       }
     );
 

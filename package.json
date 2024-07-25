@@ -866,6 +866,14 @@
         }
       },
       {
+        "command": "totvs-developer-studio.edit",
+        "title": "%tds.package.edit%",
+        "icon": {
+          "light": "resources/light/edit.svg",
+          "dark": "resources/dark/edit.svg"
+        }
+      },
+      {
         "command": "totvs-developer-studio.delete.environment",
         "title": "%tds.package.delete%",
         "icon": {
@@ -1607,6 +1615,11 @@
         },
         {
           "command": "totvs-developer-studio.delete",
+          "when": "view == totvs_server && viewItem == serverItemNotConnected",
+          "group": "inline@1"
+        },
+        {
+          "command": "totvs-developer-studio.edit",
           "when": "view == totvs_server && viewItem == serverItemNotConnected",
           "group": "inline@1"
         },

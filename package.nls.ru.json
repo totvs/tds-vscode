@@ -73,6 +73,7 @@
 	"tds.package.add": "Добавить сервер",
 	"tds.package.config": "Настроить представление серверов",
 	"tds.package.delete": "Удалить сервер",
+	"tds.package.edit": "Edit server",
 	"tds.package.patchGenerate.fromRPO": "Генерация пакета исправлений (из RPO)",
 	"tds.package.patchGenerate.fromFolder": "Генерация пакета исправлений (из папки)",
 	"tds.package.patchGenerate.byDifference": "Генерация пакета исправлений (по разнице)",

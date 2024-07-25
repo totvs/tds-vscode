@@ -73,6 +73,7 @@
 	"tds.package.add": "Agregar servidor",
 	"tds.package.config": "Configurar la vista del servidor",
 	"tds.package.delete": "Eliminar servidor",
+	"tds.package.edit": "Editar servidor",
 	"tds.package.patchGenerate.fromRPO": "Generación de parches (de RPO)",
 	"tds.package.patchGenerate.fromFolder": "Generación de parches (de carpeta)",
 	"tds.package.patchGenerate.byDifference": "Generación de parches (por diferencia)",

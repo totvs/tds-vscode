@@ -75,6 +75,7 @@
   "tds.package.add": "Add Server",
   "tds.package.config": "Configure Server View",
   "tds.package.delete": "Delete Server",
+  "tds.package.edit": "Edit Server",
   "tds.package.patchGenerate.fromRPO": "Patch Generation (from RPO)",
   "tds.package.patchGenerate.fromFolder": "Patch Generation (from Folder)",
   "tds.package.patchGenerate.byDifference": "Patch Generation (by Difference)",

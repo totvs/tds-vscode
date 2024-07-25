@@ -28,11 +28,14 @@ enum AddServerCommandEnum {
 }
 
 type AddServerCommand = CommonCommandFromWebViewEnum & AddServerCommandEnum;
+type TServerOptions = {
+  serverId: string;
+}
 
-export class AddServerPanel extends TdsPanel<TServerModel> {
+export class AddServerPanel extends TdsPanel<TServerModel, TServerOptions> {
   public static currentPanel: AddServerPanel | undefined;
 
-  public static render(context: vscode.ExtensionContext): AddServerPanel {
+  public static render(context: vscode.ExtensionContext, options: TServerOptions): AddServerPanel {
     const extensionUri: vscode.Uri = context.extensionUri;
 
     if (AddServerPanel.currentPanel) {
@@ -44,7 +47,7 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
         // Panel view type
         "add-server-panel",
         // Panel title
-        vscode.l10n.t('Add Server'),
+        options.serverId.length > 0 ? vscode.l10n.t('Edit Server') : vscode.l10n.t('Add Server'),
         // The editor column the panel should be displayed in
         vscode.ViewColumn.One,
         // Extra panel configurations
@@ -53,7 +56,7 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
         }
       );
 
-      AddServerPanel.currentPanel = new AddServerPanel(panel, extensionUri);
+      AddServerPanel.currentPanel = new AddServerPanel(panel, extensionUri, options);
     }
 
     return AddServerPanel.currentPanel;
@@ -97,8 +100,9 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
     switch (command) {
       case CommonCommandFromWebViewEnum.Ready:
         if (data.model == undefined) {
+
           this.sendUpdateModel({
-            ...EMPTY_SERVER_MODEL(),
+            ...this.getServerModel(),
             globalIncludeDirectories: ServersConfig.getGlobalIncludes().join(";")
           }, undefined);
         }
@@ -122,6 +126,24 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
         }
         break
     }
+  }
+  getServerModel(): TServerModel {
+    let result: TServerModel = EMPTY_SERVER_MODEL();
+
+    if (this._options.serverId.length > 0) {
+      const server = ServersConfig.getServerById(this._options.serverId);
+
+      result.address = server.address;
+      result.buildVersion = server.buildVersion;
+      result.id = server.id;
+      result.includePaths = server.includes;
+      result.port = server.port;
+      result.serverType = server.type;
+      result.serverName = server.name;
+      result.secure = server.secure;
+    }
+
+    return result;
   }
 
   private createServer(
@@ -152,6 +174,35 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
     return serverId;
   }
 
+  private updateServer(
+    serverId: string,
+    typeServer: string,
+    serverName: string,
+    port: number,
+    address: string,
+    secure: number,
+    buildVersion: string,
+    includes: string[]
+  ): string | undefined {
+    if (ServersConfig.updateServer(
+      serverId,
+      typeServer,
+      serverName,
+      port,
+      address,
+      buildVersion,
+      secure,
+      includes
+    )) {
+      vscode.window.showInformationMessage(
+        vscode.l10n.t("Serve updated. Name: {0}", serverName)
+      );
+      return serverId;
+    }
+
+    return undefined;
+  }
+
   async validateModel(model: TServerModel, errors: TFieldErrors<TServerModel>): Promise<boolean> {
     model.serverType = model.serverType.trim() as TServerType;
     model.serverName = model.serverName.trim();
@@ -165,8 +216,9 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
     if (model.serverName.length == 0) {
       errors.serverName = { type: "required" };
     }
+
     const server = ServersConfig.getServerByName(model.serverName);
-    if (server !== undefined) {
+    if ((server !== undefined) && (server.id != model.id)) {
       errors.serverName = { type: "validate", message: vscode.l10n.t("Server already exist") };
     }
 
@@ -206,15 +258,25 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
   }
 
   async saveModel(model: TServerModel): Promise<boolean> {
-    const serverId = this.createServer(
-      model.serverType,
-      model.serverName,
-      model.port,
-      model.address,
-      0,
-      "",
-      model.includePaths.map((row: any) => row.path)
-    );
+    const serverId = model.id == undefined ?
+      this.createServer(
+        model.serverType,
+        model.serverName,
+        model.port,
+        model.address,
+        0,
+        "",
+        model.includePaths.map((row: any) => row.path)
+      ) : this.updateServer(
+        model.id,
+        model.serverType,
+        model.serverName,
+        model.port,
+        model.address,
+        0,
+        "",
+        model.includePaths.map((row: any) => row.path)
+      );
 
     if (serverId !== undefined) {
       const validInfoNode: IValidationInfo = await sendValidationRequest(model.address, model.port, model.serverType);
@@ -232,12 +294,13 @@ export class AddServerPanel extends TdsPanel<TServerModel> {
       return true;
     }
 
-    return true;
+    return serverId !== undefined;
   }
 
   protected getTranslations(): Record<string, string> {
     return {
       "Add Server": vscode.l10n.t("Add Server"),
+      "Edit Server": vscode.l10n.t("Edit  Server"),
       "[Server Registration]servers.md#registro-de-servidores": vscode.l10n.t("[Add Server]servers.md#registro-de-servidores"),
       "Server Type": vscode.l10n.t("Server Type"),
       "Select the Protheus server type": vscode.l10n.t("Select the Protheus server type"),
