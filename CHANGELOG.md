@@ -6,11 +6,15 @@
 
 - Nova interface de [boas-vindas](./docs/welcome.md) baseada em tarefas.
 
+- Documentação migrada para a sessão [Wiki](https://github.com/totvs/tds-vscode/wiki).
+
 - Na definição do lançador do TDS-Replay, no lugar de informar um arquivo do TDS-Replay, pode colocar `"${command:selectReplayFile}` em `tdsReplayFile`. Com isso, lhe será solicitado qual o arquivo a processar no momento que iniciar a execução do debug.
 
 - Caso o arquivo do TDS-Replay esteja na área de trabalho, poderá:
     - No menu de contexto ou painel de comandos, acionar `Show sources in TDS-Replay` para exibir fontes utilizados no arquivo do TDS Replay.
     - No menu de contexto ou painel de comandos, acionar `Run TDS-Replay` para acionar a execução da depuração do TDS-Replay, sem a necessidade de criar um lançador. Os parâmetros de execução serão os valores padrão e caso deseje modificá-los deverá criar um lançador.
+
+- Ao passar o _mouse_ sobre uma definição de servidor, pode-se editar as suas definições.
 
 ### Melhorias
 
