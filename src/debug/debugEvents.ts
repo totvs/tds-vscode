@@ -331,7 +331,7 @@ function processShowSourcesView(event: DebugSessionCustomEvent, debugConsole: De
   commands.executeCommand('tdsreplay.importSourcesOnlyResult', event.body);
 }
 
-export function procesChangeBreakpointsEvent(languageClient: LanguageClient, event: BreakpointsChangeEvent) {
+export function processChangeBreakpointsEvent(languageClient: LanguageClient, event: BreakpointsChangeEvent) {
   const removedList: Breakpoint[] = [];
 
   const verifyBp = (bp: Breakpoint) => {

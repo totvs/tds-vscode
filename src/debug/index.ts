@@ -5,7 +5,7 @@ import { TotvsDebugAdapterDescriptorFactory } from "./TotvsDebugAdapterDescripto
 import { TotvsConfigurationTdsReplayProvider } from "./TotvsConfigurationTdsReplayProvider";
 import {
   DebugEvent,
-  procesChangeBreakpointsEvent as processChangeBreakpointsEvent,
+  processChangeBreakpointsEvent,
   processDebugCustomEvent,
   processEndDebug,
   processShowTimelineView,
