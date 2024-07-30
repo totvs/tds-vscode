@@ -16,7 +16,7 @@
 ![Visual Studio Marketplace Last Updated](https://img.shields.io/visual-studio-marketplace/last-updated/TOTVS.tds-vscode)
 <!-- markdownlint-disable -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- markdownlint-enabled -->
 <!-- prettier-ignore-end -->
@@ -192,28 +192,27 @@ Para contribuir com o desenvolvimento da extensão, acesse [Git Hub TDS-VSCODE](
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 <table>
-  <tr>
-    <td align="center"><a href="https://github.com/brodao2"><img src="https://avatars0.githubusercontent.com/u/949914?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Alan Cândido</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=brodao2" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=brodao2" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/lwtnb-wrk"><img src="https://avatars1.githubusercontent.com/u/49563478?v=4?s=50" width="50px;" alt=""/><br /><sub><b>lwtnb-wrk</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=lwtnb-wrk" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=lwtnb-wrk" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/DanielYampolschi"><img src="https://avatars1.githubusercontent.com/u/10711513?v=4?s=50" width="50px;" alt=""/><br /><sub><b>DanielYampolschi</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=DanielYampolschi" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=DanielYampolschi" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/matheus-sales"><img src="https://avatars2.githubusercontent.com/u/11618741?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Matheus Sales</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=matheus-sales" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=matheus-sales" title="Documentation">📖</a></td>
-    <td align="center"><a href="http://youtube.com/user/MansanoRicardo"><img src="https://avatars1.githubusercontent.com/u/33813921?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Mansano</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=ricardomansano" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=ricardomansano" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/acacioegas"><img src="https://avatars0.githubusercontent.com/u/369099?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Acacio Egas</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=acacioegas" title="Code">💻</a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/danielbolognani"><img src="https://avatars1.githubusercontent.com/u/25229827?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Daniel Otto Bolognani</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=danielbolognani" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/leowww"><img src="https://avatars0.githubusercontent.com/u/4183539?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Leo Watanabe</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=leowww" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=leowww" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/rogeriorc"><img src="https://avatars1.githubusercontent.com/u/2599798?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Rogério Ribeiro da Cruz</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=rogeriorc" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/robsonwilliam"><img src="https://avatars3.githubusercontent.com/u/11349311?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Robson William</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=robsonwilliam" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/caiadofelipe"><img src="https://avatars3.githubusercontent.com/u/49681823?v=4?s=50" width="50px;" alt=""/><br /><sub><b>FELIPE CAIADO ALMEIDA</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/issues?q=author%3Acaiadofelipe" title="Bug reports">🐛</a></td>
-    <td align="center"><a href="https://github.com/isaquerochak"><img src="https://avatars0.githubusercontent.com/u/19375217?v=4?s=50" width="50px;" alt=""/><br /><sub><b>isaquerochak</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/issues?q=author%3Aisaquerochak" title="Bug reports">🐛</a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/rodrigopg"><img src="https://avatars0.githubusercontent.com/u/5282959?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Rodrigo Gonçalves</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/issues?q=author%3Arodrigopg" title="Bug reports">🐛</a></td>
-    <td align="center"><a href="https://www.linkedin.com/in/ramorais/"><img src="https://avatars0.githubusercontent.com/u/9218184?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Rogério A. Morais</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=ramorais" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/alexmmartins"><img src="https://avatars0.githubusercontent.com/u/24897997?v=4?s=50" width="50px;" alt=""/><br /><sub><b>alexmmartins</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=alexmmartins" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/guilhermebigois"><img src="https://avatars2.githubusercontent.com/u/22408258?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Guilherme Bigois</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=guilhermebigois" title="Documentation">📖</a></td>
-  </tr>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/brodao2"><img src="https://avatars0.githubusercontent.com/u/949914?v=4?s=50" width="50px;" alt="Alan Cândido"/><br /><sub><b>Alan Cândido</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=brodao2" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=brodao2" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/lwtnb-wrk"><img src="https://avatars1.githubusercontent.com/u/49563478?v=4?s=50" width="50px;" alt="lwtnb-wrk"/><br /><sub><b>lwtnb-wrk</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=lwtnb-wrk" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=lwtnb-wrk" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/DanielYampolschi"><img src="https://avatars1.githubusercontent.com/u/10711513?v=4?s=50" width="50px;" alt="DanielYampolschi"/><br /><sub><b>DanielYampolschi</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=DanielYampolschi" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=DanielYampolschi" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/matheus-sales"><img src="https://avatars2.githubusercontent.com/u/11618741?v=4?s=50" width="50px;" alt="Matheus Sales"/><br /><sub><b>Matheus Sales</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=matheus-sales" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=matheus-sales" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://youtube.com/user/MansanoRicardo"><img src="https://avatars1.githubusercontent.com/u/33813921?v=4?s=50" width="50px;" alt="Mansano"/><br /><sub><b>Mansano</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=ricardomansano" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=ricardomansano" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/acacioegas"><img src="https://avatars0.githubusercontent.com/u/369099?v=4?s=50" width="50px;" alt="Acacio Egas"/><br /><sub><b>Acacio Egas</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=acacioegas" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/danielbolognani"><img src="https://avatars1.githubusercontent.com/u/25229827?v=4?s=50" width="50px;" alt="Daniel Otto Bolognani"/><br /><sub><b>Daniel Otto Bolognani</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=danielbolognani" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/leowww"><img src="https://avatars0.githubusercontent.com/u/4183539?v=4?s=50" width="50px;" alt="Leo Watanabe"/><br /><sub><b>Leo Watanabe</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=leowww" title="Code">💻</a> <a href="https://github.com/totvs/tds-vscode/commits?author=leowww" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/rogeriorc"><img src="https://avatars1.githubusercontent.com/u/2599798?v=4?s=50" width="50px;" alt="Rogério Ribeiro da Cruz"/><br /><sub><b>Rogério Ribeiro da Cruz</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=rogeriorc" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/robsonwilliam"><img src="https://avatars3.githubusercontent.com/u/11349311?v=4?s=50" width="50px;" alt="Robson William"/><br /><sub><b>Robson William</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=robsonwilliam" title="Tests">⚠️</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://www.linkedin.com/in/ramorais/"><img src="https://avatars0.githubusercontent.com/u/9218184?v=4?s=50" width="50px;" alt="Rogério A. Morais"/><br /><sub><b>Rogério A. Morais</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=ramorais" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/alexmmartins"><img src="https://avatars0.githubusercontent.com/u/24897997?v=4?s=50" width="50px;" alt="alexmmartins"/><br /><sub><b>alexmmartins</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=alexmmartins" title="Documentation">📖</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/guilhermebigois"><img src="https://avatars2.githubusercontent.com/u/22408258?v=4?s=50" width="50px;" alt="Guilherme Bigois"/><br /><sub><b>Guilherme Bigois</b></sub></a><br /><a href="https://github.com/totvs/tds-vscode/commits?author=guilhermebigois" title="Documentation">📖</a></td>
+    </tr>
+  </tbody>
 </table>
 
 <!-- markdownlint-restore -->

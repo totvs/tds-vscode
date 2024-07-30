@@ -1,20 +1,88 @@
-# !src/**/*.html
-# **/*.d.*
-# **/*.map
-# **/tsconfig.json
-# *.code-workspace
-# *.log
-# .all-contributorsrc
-# .github
-# .gitignore
-# .mocharc.js
-# .vscode-test/**
-# .vscode/**
-# src/**
-# ~
-# docs/**
-# gulpfile.js
-# imagens/**
-# out-test/**
-# test/**
-# vsc-extension-quickstart*.md
+# Ignorar node_modules, mas incluir dependências de produção
+# node_modules/**
+# !node_modules
+
+# Ignorar dependências de desenvolvimento específicas
+node_modules/typescript/
+node_modules/@types/
+node_modules/@vscode/l10n-dev/
+node_modules/@test*/
+node_modules/vsce/
+node_modules/all-contributors-cli/
+node_modules/cleanup/
+node_modules/cross-env/
+node_modules/globals/
+node_modules/json-merger/
+node_modules/source-map-support/
+node_modules/style-loader/
+node_modules/ts-loader/
+node_modules/ts-node/
+node_modules/typescript/
+node_modules/vscode-extension-tester/
+node_modules/vscode-languageclient/
+node_modules/vscode-languageserver-types/
+node_modules/webpack/
+node_modules/webpack-bundle-analyzer/
+node_modules/webpack-cli/
+node_modules/webpack-stream/
+node_modules/css-minimizer-webpack-plugin/
+node_modules/source-map/
+node_modules/jest*/
+node_modules/@jest/
+node_modules/rimraf/
+node_modules/webpack-sources/
+node_modules/*-webpack-plugin/
+node_modules/dotenv/
+
+# Ignorar diretório de saída de build
+#out/
+# Exceção para incluir o arquivo de entrada gerado pela compilação
+#!out/extension.js
+
+# Ignorar arquivos de configuração e logs
+.vscode/
+*.code-workspace
+*.log
+
+# Ignorar arquivos de controle de versão
+.git/
+.gitignore
+.github/
+
+# Ignorar arquivos do TypeScript
+src/**/*.ts
+shared/**/*.ts
+webview-ui/**/*.ts
+webview-ui/**/*.tsx
+**/*.d.ts
+**/*.map
+
+# Ignorar arquivos de teste
+test/
+tests/
+__tests__/
+
+# Ignorar arquivos de bundler
+webpack.config.js
+
+# Ignorar arquivos de ambiente
+.env
+
+# Ignorar arquivos projeto
+docs/
+l10n/
+syntaxes/
+webview-ui/
+CHANGELOG-V1.md
+TROUBLESHOOTING.md
+package.nls.*.json
+LOCALIZATION.*.md
+.all-contributorsrc
+CODE_OF_CONDUCT.pt-BR.md
+FUTURE.md
+tsconfi.json
+cspell.json
+eslint.config.mjs
+.markdownlint.json
+project-words.txt
+custom-words.txt
