@@ -38,7 +38,7 @@ import { AddServerPanel } from "./panels/addServerPanel";
 
 export class ServersExplorer {
   constructor(context: vscode.ExtensionContext) {
-    let currentPanel: vscode.WebviewPanel | undefined = undefined;
+    const currentPanel: vscode.WebviewPanel | undefined = undefined;
 
     vscode.commands.registerCommand("totvs-developer-studio.addServer", () => {
       if (vscode.workspace.workspaceFolders === undefined) {
@@ -86,7 +86,7 @@ export class ServersExplorer {
           serverItem = serverItemOrID;
         }
 
-        let ix = serverProvider.localServerItems.indexOf(serverItem);
+        const ix = serverProvider.localServerItems.indexOf(serverItem);
         if (ix >= 0) {
           //Verifica se ha um buildVersion cadastrado.
           if (serverItem.buildVersion) {
@@ -117,7 +117,7 @@ export class ServersExplorer {
     vscode.commands.registerCommand(
       "totvs-developer-studio.reconnect",
       (serverItem: ServerItem) => {
-        let ix = serverProvider.localServerItems.indexOf(serverItem);
+        const ix = serverProvider.localServerItems.indexOf(serverItem);
         if (ix >= 0) {
           //Verifica se ha um buildVersion cadastrado.
           if (serverItem.buildVersion) {
@@ -172,7 +172,7 @@ export class ServersExplorer {
     vscode.commands.registerCommand(
       "totvs-developer-studio.delete",
       (serverItem: ServerItem) => {
-        let ix = serverProvider.localServerItems.indexOf(serverItem);
+        const ix = serverProvider.localServerItems.indexOf(serverItem);
         if (ix >= 0) {
           ServersConfig.deleteServer(serverItem.id);
         }
@@ -196,7 +196,7 @@ export class ServersExplorer {
     vscode.commands.registerCommand(
       "totvs-developer-studio.rename",
       (serverItem: ServerItem) => {
-        let ix = serverProvider.localServerItems.indexOf(serverItem);
+        const ix = serverProvider.localServerItems.indexOf(serverItem);
         if (ix >= 0) {
           vscode.window
             .showInputBox({
@@ -230,7 +230,7 @@ function doFinishConnectProcess(
 
   runCommandUpdateMonitor();
   //let isSafeRPO = serverItem.isSafeRPO; // this is not working returning => undefined
-  let isSafeRPO = serverItem.buildVersion.localeCompare("7.00.191205P") > 0;
+  const isSafeRPO = serverItem.buildVersion.localeCompare("7.00.191205P") > 0;
   // custom context tds-vscode.isSafeRPO
   vscode.commands.executeCommand(
     "setContext",
@@ -246,7 +246,7 @@ function doFinishConnectProcess(
  */
 function executeCommand(commandId: string) {
   return vscode.commands.getCommands(false).then((commands: string[]) => {
-    let index = commands.indexOf(commandId);
+    const index = commands.indexOf(commandId);
     if (index > -1) {
       vscode.commands.executeCommand(commandId);
     }
@@ -315,7 +315,7 @@ export function authenticate(
       )
         .then(
           (result: IAuthenticationInfo) => {
-            let token: string = result.token;
+            const token: string = result.token;
             return result.success ? token : "";
           },
           (error: any) => {

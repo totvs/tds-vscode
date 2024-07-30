@@ -18,7 +18,7 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import { CommonCommandFromWebViewEnum, PatchGenerateCommand, ReceiveMessage, TFieldErrors, TGeneratePatchByDifferenceModel, isErrors } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, PatchGenerateCommand, ReceiveMessage, TFieldErrors, TGeneratePatchByDifferenceModel, isErrors } from "@tds-shared/index";
 import { TdsPanel } from "./panel";
 import { ServerFileSystemProvider } from "../serverFileSystemProvider";
 import Utils, { MESSAGE_TYPE, ServersConfig, serverExceptionCodeToString } from "../utils";
@@ -167,7 +167,7 @@ export class PatchGenerateByDifferencePanel extends TdsPanel<TGeneratePatchByDif
         cancellable: true,
       },
       async (progress, token) => {
-        let server = ServersConfig.getCurrentServer();
+        const server = ServersConfig.getCurrentServer();
 
         token.onCancellationRequested(() => {
           vscode.window.showInformationMessage('User canceled the operation');
@@ -195,7 +195,7 @@ export class PatchGenerateByDifferencePanel extends TdsPanel<TGeneratePatchByDif
             return response;
           });
 
-        let errors: TFieldErrors<TGeneratePatchByDifferenceModel> = {};
+        const errors: TFieldErrors<TGeneratePatchByDifferenceModel> = {};
 
         if (!response) {
           errors.patchName = { type: "validate", message: "Internal error: See more information in log" };

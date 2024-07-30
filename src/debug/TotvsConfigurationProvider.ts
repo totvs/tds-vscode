@@ -59,9 +59,9 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
       if (folder) {
         config.workspaceFolders = folder;
       } else {
-        let workspaceFolders = vscode.workspace.workspaceFolders;
+        const workspaceFolders = vscode.workspace.workspaceFolders;
         if (workspaceFolders) {
-          let wsPaths = new Array(workspaceFolders.length);
+          const wsPaths = new Array(workspaceFolders.length);
           let i = 0;
           for (const workspaceFolder of workspaceFolders) {
             const workspaceFolderPath = workspaceFolder.uri.fsPath;
@@ -79,7 +79,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
         );
       }
 
-      let setDapArgsArr: string[] = [];
+      const setDapArgsArr: string[] = [];
       if (config.logFile) {
         const ws: string = vscode.workspace.rootPath || "";
         setDapArgsArr.push(

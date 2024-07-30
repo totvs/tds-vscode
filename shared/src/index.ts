@@ -1,6 +1,6 @@
 /*
 import { EMPTY_GLOBAL_INCLUDE_MODEL } from './models/includeModel';
-import { TRpoInfo } from 'tds-shared/lib';
+import { TRpoInfo } from '@tds-shared/index';
 Copyright 2021 TOTVS S.A
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,7 @@ export { TWebServiceModel } from "./models/webServiceModel"
 export { TErrorType, TFieldError, TFieldErrors, isErrors, TAbstractModelPanel, ReceiveMessage, SendMessage, TSendSelectResourceProps } from "./panels/panelInterface"
 
 export type { TApplyPatchModel, TPatchFileData } from "./models/applyPatchModel";
-export { ApplyPatchCommand, ApplyPatchCommandEnum, EMPTY_APPLY_PATCH_MODEL } from "./models/applyPatchModel";
+export { ApplyPatchCommand, ApplyPatchCommandEnum, EMPTY_APPLY_PATCH_MODEL, EMPTY_PATCH_FILE } from "./models/applyPatchModel";
 
 export type { TServerType, TServerModel } from "./models/serverModel"
 export { EMPTY_SERVER_MODEL } from "./models/serverModel"
@@ -36,7 +36,7 @@ export type { TGeneratePatchFromRpoModel, TGeneratePatchByDifferenceModel } from
 export { PatchGenerateCommandEnum, PatchGenerateCommand, EMPTY_GENERATE_PATCH_FROM_RPO_MODEL } from "./models/generatePatchModel";
 
 export type { TPatchEditorModel, PatchEditorCommand } from "./models/patchEditorModel";
-export { PatchEditorCommandEnum } from "./models/patchEditorModel";
+export { EMPTY_PATCH_EDITOR_MODEL, PatchEditorCommandEnum, TPatchInfo } from "./models/patchEditorModel";
 
 export type { TRepositoryLogModel, TPatchInfoModel, TProgramAppModel } from "./models/repositoryLogModel";
 export { EMPTY_REPOSITORY_MODEL } from "./models/repositoryLogModel";

@@ -34,15 +34,15 @@ export function getLanguageServerSettings(): any[] {
 }
 
 export function getModifiedLanguageServerSettings(): any[] {
-  let config = vscode.workspace.getConfiguration("totvsLanguageServer");
+  const config = vscode.workspace.getConfiguration("totvsLanguageServer");
   const settings: any[] = [];
 
   needRestart = false;
 
   if (config.has("editor.linter")) {
-    let oldLinter = config.get("editor.linter");
+    const oldLinter = config.get("editor.linter");
     if (oldLinter !== Object(oldLinter)) {
-      let newLinter = oldLinter ? "enabled" : "disabled";
+      const newLinter = oldLinter ? "enabled" : "disabled";
       config.update("editor.linter.behavior", newLinter);
       config.update("editor.linter", undefined, vscode.ConfigurationTarget.Global);
       config.update("editor.linter", undefined, vscode.ConfigurationTarget.Workspace);
@@ -74,7 +74,7 @@ export function getModifiedLanguageServerSettings(): any[] {
     });
   }
 
-  let linterBehavior = config.get("editor.linter.behavior");
+  const linterBehavior = config.get("editor.linter.behavior");
   if (linterBehavior === String(linterBehavior)) { // proteção: só entra se behavior for um Object (evitar bug que pega informacao de editor.linter)
     if (isNewSettings("linter", "behavior", linterBehavior)) {
       settings.push({
@@ -146,7 +146,7 @@ export function getModifiedLanguageServerSettings(): any[] {
   }
 
   if (settings.length > 0) {
-    let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
+    const ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
     const version: string = ext.packageJSON["version"];
     settings.push({
       scope: "extension",

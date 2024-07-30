@@ -20,8 +20,8 @@ export abstract class OutlineAbstractDocumentSymbolProvider
     _token: vscode.CancellationToken
   ): Promise<vscode.DocumentSymbol[]> {
     return new Promise((resolve) => {
-      let symbols: vscode.DocumentSymbol[] = [];
-      let nodes = [symbols];
+      const symbols: vscode.DocumentSymbol[] = [];
+      const nodes = [symbols];
 
       nodes[nodes.length - 1].push(...this.doProcessDocument(document));
 
@@ -40,7 +40,7 @@ export abstract class OutlineAbstractDocumentSymbolProvider
     }
 
     for (let i = 0; i < document.lineCount; i++) {
-      let line: vscode.TextLine = document.lineAt(i);
+      const line: vscode.TextLine = document.lineAt(i);
       if (line.text.length === 0) {
         continue;
       }

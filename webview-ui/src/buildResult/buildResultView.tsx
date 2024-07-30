@@ -21,7 +21,7 @@ import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { TdsForm, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { tdsVscode } from '@totvs/tds-webtoolkit';
-import { BuildResultCommandEnum, EMPTY_BUILD_RESULT_MODEL, TBuildResultModel } from "tds-shared/lib";
+import { BuildResultCommandEnum, EMPTY_BUILD_RESULT_MODEL, TBuildResultModel } from "@tds-shared/index";
 
 enum ReceiveCommandEnum {
 }
@@ -97,7 +97,7 @@ export default function BuildResultView() {
   }
 
   React.useEffect(() => {
-    let listener = (event: any) => {
+    const listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
       switch (command.command) {

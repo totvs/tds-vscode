@@ -15,7 +15,7 @@
     "totvsLanguageServer.workspaceServerConfig": true,
     "totvsLanguageServer.formatLocale": "pt-BR",
     "esp.mainAdvplExtension": "totvs.tds-vscode",
-    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes_tlpp;m:\\protheus\\includes",
+    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes;m:\\protheus\\includes_tlpp",
     "totvsLanguageServer.showCompileResult": "yesAlways",
     "totvsLanguageServer.usageInfoConfig": true
 }

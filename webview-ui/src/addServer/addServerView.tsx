@@ -22,7 +22,7 @@ import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-
 import { TdsCheckBoxField, TdsForm, TdsLabelField, TdsNumericField, TdsSelectionField, TdsSelectionFolderField, TdsSimpleTextField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 import { tdsVscode } from '@totvs/tds-webtoolkit';
-import { EMPTY_SERVER_MODEL, TIncludePath, TServerModel } from "tds-shared/lib";
+import { EMPTY_SERVER_MODEL, TIncludePath, TServerModel } from "@tds-shared/index";
 
 enum ReceiveCommandEnum {
 }
@@ -50,7 +50,7 @@ export default function AddServerView() {
   }
 
   React.useEffect(() => {
-    let listener = (event: any) => {
+    const listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
       switch (command.command) {

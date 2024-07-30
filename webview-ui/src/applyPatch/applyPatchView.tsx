@@ -25,8 +25,8 @@ import {
   setDataModel, setErrorModel
 } from "@totvs/tds-webtoolkit";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
-import { TApplyPatchModel, TPatchFileData } from "tds-shared/lib";
-import { ApplyPatchCommandEnum, EMPTY_APPLY_PATCH_MODEL, EMPTY_PATCH_FILE } from "tds-shared/lib/models/applyPatchModel";
+import { TApplyPatchModel, TPatchFileData } from "@tds-shared/index";
+import { ApplyPatchCommandEnum, EMPTY_APPLY_PATCH_MODEL, EMPTY_PATCH_FILE } from "@tds-shared/index";
 
 enum ReceiveCommandEnum {
 }
@@ -58,7 +58,7 @@ export default function ApplyPatchView() {
   }
 
   React.useEffect(() => {
-    let listener = (event: any) => {
+    const listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
       switch (command.command) {

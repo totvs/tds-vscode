@@ -178,7 +178,7 @@ describe("PROTHEUS: Debug primitive variables", async () => {
 
     it("PROTHEUS: Private (level 1)", async () => {
       await debugBar.continue();
-      let targetValues = [...PRIVATE_VAR_L1_VALUES];
+      const targetValues = [...PRIVATE_VAR_L1_VALUES];
 
       await debugBar.waitForBreakPoint();
       await delay();
@@ -197,7 +197,7 @@ describe("PROTHEUS: Debug primitive variables", async () => {
 
     it("PROTHEUS: Private (level 2)", async () => {
       await debugBar.continue();
-      let targetValues = [...PRIVATE_VAR_L2_VALUES];
+      const targetValues = [...PRIVATE_VAR_L2_VALUES];
 
       await debugBar.waitForBreakPoint();
       await delay();
@@ -216,7 +216,7 @@ describe("PROTHEUS: Debug primitive variables", async () => {
 
     it("PROTHEUS: Private (level 3)", async () => {
       await debugBar.continue();
-      let targetValues = [...PRIVATE_VAR_L3_VALUES];
+      const targetValues = [...PRIVATE_VAR_L3_VALUES];
 
       await debugBar.waitForBreakPoint();
       await delay();
@@ -244,7 +244,7 @@ describe("PROTHEUS: Debug primitive variables", async () => {
       await debugBar.waitForBreakPoint();
       await delay();
 
-      let targetValues = [
+      const targetValues = [
         ...LOCAL_VAR_INIT_VALUES,
         ...PRIVATE_VAR_L1_VALUES,
         ...PUBLIC_VAR_VALUES,

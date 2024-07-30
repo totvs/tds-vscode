@@ -213,7 +213,7 @@ export class WorkbenchPageObject {
   private async processInProgress(
     targetText: RegExp | string
   ): Promise<boolean> {
-    let notification: Notification = await this.getNotification(targetText);
+    const notification: Notification = await this.getNotification(targetText);
 
     return await notification?.hasProgress();
   }
@@ -223,7 +223,7 @@ export class WorkbenchPageObject {
     _wait: number = FAST_PROCESS_TIMEOUT
   ) {
     let steps: number = _wait / 500;
-    let notification: Notification = await this.getNotification(targetText);
+    const notification: Notification = await this.getNotification(targetText);
 
     if (notification) {
       let notificationAux;
@@ -243,7 +243,7 @@ export class WorkbenchPageObject {
     _wait: number = FAST_PROCESS_TIMEOUT
   ): Promise<Notification> {
     let steps: number = _wait / 500;
-    let notification: Notification = await this.getNotification(targetText);
+    const notification: Notification = await this.getNotification(targetText);
 
     if (notification) {
       try {

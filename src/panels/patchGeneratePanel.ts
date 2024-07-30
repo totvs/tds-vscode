@@ -23,7 +23,7 @@ import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webv
 import Utils, { MESSAGE_TYPE, ServersConfig, serverExceptionCodeToString } from "../utils";
 import { IObjectData, IPatchResult, sendInspectorObjectsRequest, sendPatchGenerateMessage } from "../protocolMessages";
 import { ResponseError } from "vscode-languageclient";
-import { CommonCommandFromWebViewEnum, EMPTY_GENERATE_PATCH_FROM_RPO_MODEL, PatchGenerateCommand, PatchGenerateCommandEnum, ReceiveMessage, TFieldErrors, TGeneratePatchFromRpoModel, TInspectorObject, isErrors } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, EMPTY_GENERATE_PATCH_FROM_RPO_MODEL, PatchGenerateCommand, PatchGenerateCommandEnum, ReceiveMessage, TFieldErrors, TGeneratePatchFromRpoModel, TInspectorObject, isErrors } from "@tds-shared/index";
 import { TdsPanel } from "./panel";
 
 interface IGeneratePatchOptions {
@@ -231,7 +231,7 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
   }
 
   private async getDataFromFolder(model: TGeneratePatchFromRpoModel, includeTRes: boolean): Promise<TGeneratePatchFromRpoModel> {
-    var glob = require('glob');
+    const glob = require('glob');
 
 
     const files: string[] = glob.sync(`**/*.*`, {
@@ -299,7 +299,7 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
   }
 
   protected async saveModel(model: TGeneratePatchFromRpoModel): Promise<boolean> {
-    let server = ServersConfig.getCurrentServer();
+    const server = ServersConfig.getCurrentServer();
 
     const response: IPatchResult | void = await sendPatchGenerateMessage(
       server,
@@ -322,7 +322,7 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
       return response;
     });
 
-    let errors: TFieldErrors<TGeneratePatchFromRpoModel> = {};
+    const errors: TFieldErrors<TGeneratePatchFromRpoModel> = {};
     let ok: boolean = true;
 
     if (!response) {

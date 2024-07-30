@@ -106,7 +106,7 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 	const htmlContent = fs.readFileSync(htmlOnDiskPath.with({ scheme: 'vscode-resource' }).fsPath);
 	const cssContent = fs.readFileSync(cssOnDIskPath.with({ scheme: 'vscode-resource' }).fsPath);
 
-	let runTemplate = showProgressController(htmlContent);
+	const runTemplate = showProgressController(htmlContent);
 
 	return runTemplate({ css: cssContent, localize: localizeHTML });
 }

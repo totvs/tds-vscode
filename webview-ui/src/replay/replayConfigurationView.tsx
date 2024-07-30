@@ -21,7 +21,7 @@ import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsSelectionField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { tdsVscode } from '@totvs/tds-webtoolkit';
-import { EMPTY_REPLAY_CONFIGURATION, TReplayConfigurationModel } from "tds-shared/lib";
+import { EMPTY_REPLAY_CONFIGURATION, TReplayConfigurationModel } from "@tds-shared/index";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 
 enum ReceiveCommandEnum {
@@ -42,7 +42,7 @@ export default function ReplayConfigurationView() {
   }
 
   React.useEffect(() => {
-    let listener = (event: any) => {
+    const listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
       switch (command.command) {

@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import * as vscode from "vscode";
-import { ReceiveMessage, TAbstractModelPanel, TFieldErrors, CommonCommandToWebViewEnum, CommonCommandFromWebViewEnum, TSendSelectResourceProps } from "tds-shared/lib";
+import { ReceiveMessage, TAbstractModelPanel, TFieldErrors, CommonCommandToWebViewEnum, CommonCommandFromWebViewEnum, TSendSelectResourceProps } from "@tds-shared/index";
 
 export abstract class TdsPanel<M extends TAbstractModelPanel, O extends any = {}> {
 
@@ -147,7 +147,7 @@ export abstract class TdsPanel<M extends TAbstractModelPanel, O extends any = {}
 				break;
 			case CommonCommandFromWebViewEnum.Save:
 			case CommonCommandFromWebViewEnum.SaveAndClose:
-				let errors: TFieldErrors<M> = {};
+				const errors: TFieldErrors<M> = {};
 				try {
 					if (await this.validateModel(data.model, errors)) {
 						if (await this.saveModel(data.model) && (command == CommonCommandFromWebViewEnum.SaveAndClose)) {
@@ -171,7 +171,7 @@ export abstract class TdsPanel<M extends TAbstractModelPanel, O extends any = {}
 				break;
 			case CommonCommandFromWebViewEnum.SelectResource:
 				const selectionProps: TSendSelectResourceProps = data as unknown as TSendSelectResourceProps;
-				let filters = selectionProps.filters || {};
+				const filters = selectionProps.filters || {};
 
 				if (!filters["All files"]) {
 					filters["All files"] = ["*"];

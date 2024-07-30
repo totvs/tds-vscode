@@ -14,11 +14,11 @@
         "allowJs": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
+        "jsx": "react",
         "lib": [
             "es2016",
             "dom"
         ],
-        "jsx": "react",
         "declaration": true,
         "declarationMap": true,
         "strict": false, /* enable all strict type-checking options */
@@ -26,12 +26,18 @@
         "resolveJsonModule": true,
         "skipLibCheck": true,
         "skipDefaultLibCheck": true,
+        "paths": {
+            "@tds-shared/*": [
+                "./shared/src/*"
+            ]
+        }
     },
+    "include": [
+        "shared/src/**/*",
+        "src/**/*",
+        "webview-ui/src/**/*"
+    ],
     "exclude": [
-        "node_modules/",
-        "../out/",
-        "**/app",
-        ".vscode-test",
-        "test-resources"
+        "node_modules/**",
     ]
 }

@@ -16,7 +16,7 @@ export function onCaptureLoggers(context: ExtensionContext) {
 				vscode.window.showInformationMessage(vscode.l10n.t("Capture Logs started. Reproduce the problem and close the grabber."));
 				const tmpFile = tmp.fileSync({ prefix: "vscode-tds-infos", postfix: ".log" });
 				logFile = tmpFile.name;
-				const newLine: String = "\n--------------------------------------------------\n";
+				const newLine: string = "\n--------------------------------------------------\n";
 				const tab = "\t";
 				const fs = require('fs');
 
@@ -58,7 +58,7 @@ export function onCaptureLoggers(context: ExtensionContext) {
 					}
 				});
 
-				let final = "--------------------------------------------------\n" + vscode.l10n.t("Ending log on ") + new Date().toString() + newLine;
+				const final = "--------------------------------------------------\n" + vscode.l10n.t("Ending log on ") + new Date().toString() + newLine;
 
 				//A gravação esta separada para diminuir o consumo de memoria.
 				fs.appendFileSync(logFile, final, { flag: "a" }, (err) => {

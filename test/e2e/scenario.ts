@@ -245,7 +245,7 @@ export const PATCHS_FILES = {
 const templateFiles: string[] = getFileParams(templateFolder, true);
 export const TEMPLATE_FILES = templateFiles ? { ...templateFiles } : undefined;
 
-var _projectFolder: string = "";
+let _projectFolder: string = "";
 process.argv.forEach(function (value, index, args) {
   console.log(index + ":" + value);
 

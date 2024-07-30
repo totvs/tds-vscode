@@ -265,7 +265,7 @@ export class ServerFileSystemProvider implements vscode.FileSystemProvider {
 
 		for (let index = 0; index < resultFolders.directory.length; index++) {
 			const resource: string = resultFolders.directory[index];
-			let childFolder: Directory = new Directory(resource);
+			const childFolder: Directory = new Directory(resource);
 
 			if (recursive) {
 				const x = await this.loadServerFS(recursive, filterFiles, startFolder + "/" + childFolder.name, emptyFolder);

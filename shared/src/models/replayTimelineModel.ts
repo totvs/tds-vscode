@@ -25,7 +25,8 @@ export enum ReplayTimelineCommandEnum {
 	OpenSourcesDialog = 'openSourcesDialog',
 	ShowMessageDialog = 'showMessageDialog',
 	SetTimeline = "SetTimeline",
-	ChangePage = "ChangePage"
+	ChangePage = "ChangePage",
+	UpdateProgressRing = "UpdateProgressRing"
 }
 
 export type ReplayTimelineCommand = CommonCommandFromWebViewEnum & ReplayTimelineCommandEnum;

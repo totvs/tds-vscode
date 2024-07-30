@@ -56,8 +56,8 @@ export class CallHierarchyProvider implements TreeDataProvider<CallHierarchyNode
 
     let label = element.name;
     if (element.location) {
-      let path = parseUri(element.location.uri).path;
-      let name = path.substr(path.lastIndexOf('/') + 1);
+      const path = parseUri(element.location.uri).path;
+      const name = path.substr(path.lastIndexOf('/') + 1);
       label += ` (${name}:${element.location.range.start.line + 1})`;
     }
 

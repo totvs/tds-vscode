@@ -141,7 +141,7 @@ export class OutputPageObject {
   }
 
   private clearText(text: (string | undefined)[]): Promise<string[]> {
-    let result: string[] = [];
+    const result: string[] = [];
 
     text.forEach((line: string | undefined) => {
       line = line?.replace(/\t|\r/gi, "").replace(/\[.*\] /, "") || "";

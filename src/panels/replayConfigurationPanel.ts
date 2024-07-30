@@ -19,8 +19,8 @@ import * as fse from "fs-extra";
 
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import { LaunchConfig } from "../utils";
-import { CommonCommandFromWebViewEnum, ReceiveMessage, LauncherTypeEnum, TReplayDataConfiguration, TReplayConfigurationModel, EMPTY_REPLAY_CONFIGURATION } from "tds-shared/lib";
-import { TFieldErrors, isErrors } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, ReceiveMessage, LauncherTypeEnum, TReplayDataConfiguration, TReplayConfigurationModel, EMPTY_REPLAY_CONFIGURATION } from "@tds-shared/index";
+import { TFieldErrors, isErrors } from "@tds-shared/index";
 import { TdsPanel } from "./panel";
 
 enum ReplayConfigurationCommandEnum {
@@ -115,14 +115,14 @@ export class ReplayConfigurationPanel extends TdsPanel<TReplayConfigurationModel
                 continue;
               }
 
-              let dataDebug: TReplayDataConfiguration = EMPTY_REPLAY_CONFIGURATION();
+              const dataDebug: TReplayDataConfiguration = EMPTY_REPLAY_CONFIGURATION();
 
               dataDebug.launcherType = element.type;
               dataDebug.name = element.name;
               dataDebug.replayFile = element.tdsReplayFile;
               dataDebug.password = element.password;
-              dataDebug.includeSources = element.includeSource.map((e: string) => { value: e }); //necessário como objeto para satisfazer React
-              dataDebug.excludeSources = element.excludeSource.map((e: string) => { value: e }); //necessário como objeto para satisfazer React
+              dataDebug.includeSources = element.includeSource.map((e: string) => { e }); //necessário como objeto para satisfazer React
+              dataDebug.excludeSources = element.excludeSource.map((e: string) => { e }); //necessário como objeto para satisfazer React
               dataDebug.ignoreFiles = element.ignoreSourcesNotFound;
               dataDebug.importOnlySourcesInfo = element.importOnlySourcesInfo;
 
@@ -199,7 +199,7 @@ export class ReplayConfigurationPanel extends TdsPanel<TReplayConfigurationModel
     }
 
     for (let i = 0; i < launcherConfiguration.length; i++) {
-      let element = launcherConfiguration[i];
+      const element = launcherConfiguration[i];
       if (element.name.toLowerCase() === model.name.toLocaleLowerCase()) {
         updateElement(element);
         LaunchConfig.updateConfiguration(model.name, element)
@@ -209,7 +209,7 @@ export class ReplayConfigurationPanel extends TdsPanel<TReplayConfigurationModel
     }
 
     if (!updated) {
-      let debugLaunchInfo = {};
+      const debugLaunchInfo = {};
       updateElement(debugLaunchInfo);
 
       LaunchConfig.saveNewConfiguration(debugLaunchInfo, this.getDefaultLauncherType(model.launcherType));
@@ -220,7 +220,7 @@ export class ReplayConfigurationPanel extends TdsPanel<TReplayConfigurationModel
 
   private getDefaultLauncherType(launcherType: LauncherTypeEnum): {} {
     const ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
-    let defaultLaunch = {};
+    const defaultLaunch = {};
 
     if (ext) {
       const packageJSON = ext.packageJSON;

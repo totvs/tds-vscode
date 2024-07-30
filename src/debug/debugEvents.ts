@@ -214,7 +214,7 @@ function processSelectTimeLineEvent(
 //let showProgressInfoEachPercent: number = 2;
 let progressStarted: boolean = false;
 let isFinished: boolean = false;
-let messageQueue: Array<{ message; percent; increment }> = new Array<{
+const messageQueue: Array<{ message; percent; increment }> = new Array<{
   message;
   percent;
   increment;
@@ -245,7 +245,7 @@ function processShowProgressEvent(
       clearMessageQueue(messageQueue);
     });
 
-    let withProgress = async function () {
+    const withProgress = async function () {
       window.withProgress(
         {
           cancellable: true,

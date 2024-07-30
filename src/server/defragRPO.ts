@@ -34,7 +34,7 @@ export function defragRpo() {
         if (clicked === vscode.l10n.t("Yes")) {
           if (Utils.isServerP20OrGreater(server)) {
             let packPatchInfo = false;
-            let authorizationToken: string = ServersConfig.getAuthorizationToken(server);
+            const authorizationToken: string = ServersConfig.getAuthorizationToken(server);
             if (authorizationToken.length > 0) {
               vscode.window
                 .showWarningMessage(

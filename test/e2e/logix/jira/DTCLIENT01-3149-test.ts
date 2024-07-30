@@ -93,7 +93,7 @@ describe("DTCLIENT01-3149: [VSCode] dynamic 4GL array shows incorrect SIZE in DE
 
     await debugConsole.evaluateExpression("ma_dados");
 
-    let text: string = await debugConsole.getText();
+    const text: string = await debugConsole.getText();
 
     expect(text, "P1 expected value").to.have.string("value1-P1");
   });

@@ -15,11 +15,11 @@ limitations under the License.
 */
 
 import * as vscode from "vscode";
-import { TCompileKeyModel, TCompileKey, TAuthorization } from "tds-shared/lib";
-import { TFieldErrors, isErrors } from "tds-shared/lib";
+import { TCompileKeyModel, TCompileKey, TAuthorization } from "@tds-shared/index";
+import { TFieldErrors, isErrors } from "@tds-shared/index";
 import { sendGetIdMessage, TValidKeyResult, sendValidKey } from "../protocolMessages";
 import { ServersConfig } from "../utils";
-import { CommonCommandFromWebViewEnum, ReceiveMessage } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, ReceiveMessage } from "@tds-shared/index";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import { TdsPanel } from "./panel";
 

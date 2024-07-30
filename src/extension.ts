@@ -176,10 +176,10 @@ export function activate(context: ExtensionContext) {
 
   // Progress
   (() => {
-    let config = workspace.getConfiguration(LANG_ADVPL_ID);
-    let statusStyle = config.get("misc.status");
+    const config = workspace.getConfiguration(LANG_ADVPL_ID);
+    const statusStyle = config.get("misc.status");
     if (statusStyle === "short" || statusStyle === "detailed") {
-      let statusIcon = window.createStatusBarItem(StatusBarAlignment.Right);
+      const statusIcon = window.createStatusBarItem(StatusBarAlignment.Right);
       statusIcon.text = vscode.l10n.t("Advpl: loading");
       statusIcon.tooltip = vscode.l10n.t("Advpl is loading project metadata (ie, compile_commands.json)");
       statusIcon.show();
@@ -328,7 +328,7 @@ export function activate(context: ExtensionContext) {
   );
 
   //View
-  let viewServer = new ServersExplorer(context);
+  const viewServer = new ServersExplorer(context);
   if (!viewServer) {
     console.error("Servers view not initialized.");
   }
@@ -604,7 +604,7 @@ export function activate(context: ExtensionContext) {
       "totvs-developer-studio.run.formatter",
       (args: any[]) => {
         if (args === undefined) {
-          let activeEditor = vscode.window.activeTextEditor;
+          const activeEditor = vscode.window.activeTextEditor;
           if (activeEditor !== undefined) {
             args = [activeEditor.document.uri];
           }
@@ -647,7 +647,7 @@ export function activate(context: ExtensionContext) {
   showBanner();
 
   // 'export' public api-surface
-  let exportedApi = {
+  const exportedApi = {
     generatePPO(filePath: string, options?: any): Promise<string> {
       return generatePpo(filePath, options);
     },
@@ -677,7 +677,7 @@ export function activate(context: ExtensionContext) {
     "totvs-developer-studio.selectSmartClient",
     () => {
       const isWindows: boolean = process.platform === 'win32';
-      let filters: { [name: string]: string[] } = {};
+      const filters: { [name: string]: string[] } = {};
 
       if (isWindows) {
         filters["Executables"] = ["exe"];
@@ -701,7 +701,7 @@ export function activate(context: ExtensionContext) {
             return;
           }
 
-          let fileUriString = fileUri[0].toString();
+          const fileUriString = fileUri[0].toString();
           vscode.window.showErrorMessage(fileUriString)
 
           return fileUri;
@@ -782,7 +782,7 @@ function showBanner(force: boolean = false) {
     const appLine = languageClient.outputChannel.appendLine;
 
     if (showBanner || force) {
-      let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
+      const ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
       // prettier-ignore
       {
         appLine("---------------------------v---------------------------------------------------");

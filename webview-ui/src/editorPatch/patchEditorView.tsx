@@ -20,8 +20,8 @@ import { TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsForm, TdsPag
 import { useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
-import { TPatchEditorModel } from "tds-shared/lib";
-import { EMPTY_PATCH_EDITOR_MODEL, PatchEditorCommandEnum, TPatchInfo } from "tds-shared/lib/models/patchEditorModel";
+import { TPatchEditorModel } from "@tds-shared/index";
+import { EMPTY_PATCH_EDITOR_MODEL, PatchEditorCommandEnum, TPatchInfo } from "@tds-shared/index";
 
 enum ReceiveCommandEnum {
 }
@@ -96,7 +96,7 @@ export default function PatchEditorView() {
 
   React.useEffect(() => {
 
-    let listener = (event: any) => {
+    const listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
       switch (command.command) {

@@ -21,9 +21,9 @@ import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsLabelField, TdsSelectionField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { tdsVscode } from '@totvs/tds-webtoolkit';
-import { EMPTY_DEBUG_CONFIGURATION, LauncherTypeEnum, TDebugConfigurationModel } from "tds-shared/lib";
+import { EMPTY_DEBUG_CONFIGURATION, LauncherTypeEnum, TDebugConfigurationModel } from "@tds-shared/index";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
-import { LanguagesEnum } from 'tds-shared/lib';
+import { LanguagesEnum } from '@tds-shared/index';
 
 enum ReceiveCommandEnum {
 }
@@ -61,7 +61,7 @@ export default function LauncherConfigurationView() {
   }
 
   React.useEffect(() => {
-    let listener = (event: any) => {
+    const listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
       switch (command.command) {

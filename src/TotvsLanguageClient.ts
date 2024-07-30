@@ -18,12 +18,12 @@ import { getLanguageServerSettings } from './server/languageServerSettings';
 export function getLanguageClient(
   context: vscode.ExtensionContext
 ): TotvsLanguageClientA {
-  let clientConfig = getClientConfig(context);
+  const clientConfig = getClientConfig(context);
   let args = ["language-server"]; //, "--enable-auto-complete=Basic" default;
-  let config = vscode.workspace.getConfiguration("totvsLanguageServer");
+  const config = vscode.workspace.getConfiguration("totvsLanguageServer");
 
   let notificationlevel = "--notification-level=";
-  let notificationlevelConfig = config.get("editor.show.notification");
+  const notificationlevelConfig = config.get("editor.show.notification");
   if (notificationlevelConfig) {
     notificationlevel += '"' + notificationlevelConfig + '"';
     args = args.concat(notificationlevel);
@@ -31,9 +31,9 @@ export function getLanguageClient(
 
   args = args.concat(clientConfig["launchArgs"]);
 
-  let env: any = {};
-  let kToForward = ["ProgramData", "PATH", "LD_LIBRARY_PATH", "HOME", "USER"];
-  for (let e of kToForward) {
+  const env: any = {};
+  const kToForward = ["ProgramData", "PATH", "LD_LIBRARY_PATH", "HOME", "USER"];
+  for (const e of kToForward) {
     env[e] = process.env[e];
   }
 
@@ -76,14 +76,14 @@ export function getLanguageClient(
   }
   console.log("tempDir: "+tempDir);
 
-  let serverOptions: ServerOptions = {
+  const serverOptions: ServerOptions = {
     command: advpls,
     args: args,
     options: { env: env, detached: false },
   };
 
   let outputTrace = undefined;
-  let trace = config.get("trace.server");
+  const trace = config.get("trace.server");
   if (trace !== "off") {
     outputTrace = vscode.window.createOutputChannel(`TOTVS LS (trace)`);
   }
@@ -91,7 +91,7 @@ export function getLanguageClient(
   let languageClient: TotvsLanguageClientA;
 
   // Options to control the language client
-  let clientOptions: LanguageClientOptions = {
+  const clientOptions: LanguageClientOptions = {
     documentSelector: [{ language: "advpl" }, { language: "4gl" }],
     diagnosticCollectionName: "AdvPL",
     outputChannelName: "TOTVS LS",
@@ -155,7 +155,7 @@ export function getLanguageClient(
       //languageClient.outputChannel.appendLine("**** initializeResult");
       //languageClient.outputChannel.appendLine(JSON.stringify(languageClient.initializeResult, undefined, "  "));
 
-      let isReconnectLastServer = configADVPL.get("reconnectLastServer");
+      const isReconnectLastServer = configADVPL.get("reconnectLastServer");
       if (isReconnectLastServer) {
         reconnectLastServer();
       }
@@ -171,7 +171,7 @@ export function getLanguageClient(
 //Internal Functions
 function getClientConfig(context: vscode.ExtensionContext) {
   function resolveVariablesInString(value: string) {
-    let rootPath: string = vscode.workspace.rootPath || process.cwd();
+    const rootPath: string = vscode.workspace.rootPath || process.cwd();
     return value.replace("${workspaceFolder}", rootPath);
   }
 
@@ -189,17 +189,17 @@ function getClientConfig(context: vscode.ExtensionContext) {
     return value;
   }
 
-  let configMapping = [["launchArgs", "launch.args"]];
-  let clientConfig = {};
-  let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("totvsLanguageServer");
+  const configMapping = [["launchArgs", "launch.args"]];
+  const clientConfig = {};
+  const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("totvsLanguageServer");
 
-  for (let prop of configMapping) {
-    let value = config.get(prop[1]);
+  for (const prop of configMapping) {
+    const value = config.get(prop[1]);
 
     if (value !== undefined && value !== null) {
-      let subprops = prop[0].split(".");
+      const subprops = prop[0].split(".");
       let subconfig = clientConfig;
-      for (let subprop of subprops.slice(0, subprops.length - 1)) {
+      for (const subprop of subprops.slice(0, subprops.length - 1)) {
         if (!subconfig.hasOwnProperty(subprop)) {
           subconfig[subprop] = {};
         }

@@ -17,7 +17,7 @@ limitations under the License.
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import Utils, { ServersConfig } from "../utils";
-import { CommonCommandFromWebViewEnum, EMPTY_GLOBAL_INCLUDE_MODEL, ReceiveMessage, TFieldErrors, TGlobalIncludeModel, TIncludePath, isErrors } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, EMPTY_GLOBAL_INCLUDE_MODEL, ReceiveMessage, TFieldErrors, TGlobalIncludeModel, TIncludePath, isErrors } from "@tds-shared/index";
 import { TdsPanel } from "./panel";
 
 enum GlobalIncludeCommandEnum {
@@ -132,7 +132,7 @@ export class GlobalIncludePanel extends TdsPanel<TGlobalIncludeModel> {
 
   protected validateModel(model: TGlobalIncludeModel, errors: TFieldErrors<TGlobalIncludeModel>): boolean {
     model.includePaths.forEach((includePath: TIncludePath, index: number) => {
-      let checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/);
+      const checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/);
 
       if (checkedDir.length == 0) {
         errors[`includePaths.${index}.path`] = { type: "validate", message: vscode.l10n.t("Invalid folder or not contains definition files (.CH or .TH)") };

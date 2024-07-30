@@ -33,7 +33,7 @@ export class ViewPageObject<T> {
   }
 
   async openView(): Promise<T> {
-    let result: T = (await (
+    const result: T = (await (
       await new ActivityBar().getViewControl(this.viewName)
     )?.openView()) as unknown as T;
 

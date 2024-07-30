@@ -17,8 +17,8 @@ limitations under the License.
 import * as vscode from "vscode";
 import * as path from "path";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import { BuildResultCommand, BuildResultCommandEnum, CommonCommandFromWebViewEnum, EMPTY_BUILD_RESULT_MODEL, ReceiveMessage, TBuildInfoResult, TBuildResultModel } from "tds-shared/lib";
-import { TFieldErrors, isErrors } from "tds-shared/lib";
+import { BuildResultCommand, BuildResultCommandEnum, CommonCommandFromWebViewEnum, EMPTY_BUILD_RESULT_MODEL, ReceiveMessage, TBuildInfoResult, TBuildResultModel } from "@tds-shared/index";
+import { TFieldErrors, isErrors } from "@tds-shared/index";
 import { TdsPanel } from "./panel";
 import { CompileResult } from "../compile/CompileResult";
 import { CompileInfo } from "../compile/CompileInfo";
@@ -113,7 +113,7 @@ export class BuildResultPanel extends TdsPanel<TBuildResultModel, BuildResultOpt
       case CommonCommandFromWebViewEnum.Ready:
         if (data.model == undefined) {
           const model: TBuildResultModel = EMPTY_BUILD_RESULT_MODEL();
-          
+
           model.timeStamp = new Date();
           model.returnCode = this._options.buildResult.returnCode;
           model.buildInfos = [];
@@ -147,7 +147,7 @@ export class BuildResultPanel extends TdsPanel<TBuildResultModel, BuildResultOpt
           async (progress, token: vscode.CancellationToken) => {
             progress.report({ increment: 0 });
 
-            let filename: string = this.doExportToTxt(data.model, token);
+            const filename: string = this.doExportToTxt(data.model, token);
 
             const uri: vscode.Uri = vscode.Uri.parse("file:" + filename);
             await vscode.workspace.openTextDocument(uri).then(

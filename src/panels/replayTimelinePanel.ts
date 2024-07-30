@@ -16,7 +16,9 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import { CommonCommandFromWebViewEnum, ReplayTimelineCommand, ReceiveMessage, TFieldErrors, TReplayTimelineModel, isErrors, EMPTY_REPLAY_TIMELINE_MODEL, ReplayTimelineCommandEnum, TImportSourcesOnlyResultData } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, ReplayTimelineCommand, ReceiveMessage, TFieldErrors } from "@tds-shared/index";
+import { TReplayTimelineModel, isErrors, EMPTY_REPLAY_TIMELINE_MODEL, ReplayTimelineCommandEnum } from "@tds-shared/index";
+import { TImportSourcesOnlyResultData } from "@tds-shared/index";
 import { TdsPanel } from "./panel";
 
 export type ReplayTimelineOptions = {
@@ -114,7 +116,7 @@ export class ReplayTimelinePanel extends TdsPanel<TReplayTimelineModel, ReplayTi
 
       case ReplayTimelineCommandEnum.OpenSourcesDialog:
         if (this._options.debugSession) {
-          let requestJson = {
+          const requestJson = {
             "sourceName": "all"
           };
 
@@ -139,7 +141,7 @@ export class ReplayTimelinePanel extends TdsPanel<TReplayTimelineModel, ReplayTi
       case ReplayTimelineCommandEnum.SetTimeline:
         if (this._options.debugSession) {
           //Envia para o debug adapter uma solicitação para setar o timeline
-          let timeLine = { "id": parseInt(data.timelineId) };
+          const timeLine = { "id": parseInt(data.timelineId) };
           this._options.debugSession.customRequest("TDA/setTimeLine", timeLine);
 
           this.selectTimeLine(timeLine.id);
@@ -150,7 +152,7 @@ export class ReplayTimelinePanel extends TdsPanel<TReplayTimelineModel, ReplayTi
         if (this._options.debugSession) {
           //Envia para o debug adapter uma solicitação para mudar de página.
           //O próprio debug adapter ira enviar uma mensagem para adicionar as timelines da nova pagina
-          let newPage = { "newPage": parseInt(data.newPage) };
+          const newPage = { "newPage": parseInt(data.newPage) };
           //console.log("Enviando requisição para troca de pagina: " + newPage);
           this._options.debugSession.customRequest("TDA/changeTimeLinePage", newPage);
         }

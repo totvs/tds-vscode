@@ -20,7 +20,7 @@ import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
 import { SubmitHandler, UseFormReturn, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsTextField, setDataModel, setErrorModel, TdsSelectionFolderField } from "@totvs/tds-webtoolkit";
-import { TGeneratePatchByDifferenceModel } from "tds-shared/lib";
+import { TGeneratePatchByDifferenceModel } from "@tds-shared/index";
 
 enum ReceiveCommandEnum {
 }
@@ -50,7 +50,7 @@ export default function PatchGenerateByDifferenceView(props: IPatchGenerateByDif
 
   React.useEffect(() => {
 
-    let listener = (event: any) => {
+    const listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
       switch (command.command) {

@@ -20,7 +20,7 @@ import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { TdsForm, setDataModel } from "@totvs/tds-webtoolkit";
-import { BuildResultCommandEnum, EMPTY_IMPORT_SOURCES_ONLY_RESULT_MODEL, ImportSourcesOnlyResultCommandEnum, TImportSourcesOnlyResultData, TImportSourcesOnlyResultModel } from "tds-shared/lib";
+import { BuildResultCommandEnum, EMPTY_IMPORT_SOURCES_ONLY_RESULT_MODEL, ImportSourcesOnlyResultCommandEnum, TImportSourcesOnlyResultData, TImportSourcesOnlyResultModel } from "@tds-shared/index";
 
 enum ReceiveCommandEnum {
 }
@@ -38,7 +38,7 @@ export default function ImportSourcesOnlyResultView() {
   }
 
   React.useEffect(() => {
-    let listener = (event: any) => {
+    const listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
       switch (command.command) {

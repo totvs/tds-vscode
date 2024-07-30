@@ -21,7 +21,7 @@ import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-
 import { TdsSimpleCheckBoxField, TdsForm, TdsTextField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionFileField } from "@totvs/tds-webtoolkit";
 
 import "./CompileKey.css";
-import { TAuthorization, TCompileKey } from "tds-shared/lib";
+import { TAuthorization, TCompileKey } from "@tds-shared/index";
 
 enum ReceiveCommandEnum {
 }
@@ -66,7 +66,7 @@ export default function CompileKeyView() {
   }
 
   React.useEffect(() => {
-    let listener = (event: any) => {
+    const listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
       switch (command.command) {

@@ -1,10 +1,10 @@
 import * as path from "path";
 import * as vscode from "vscode";
-import { PatchEditorCommandEnum, TPatchEditorModel } from "tds-shared/lib";
+import { PatchEditorCommandEnum, TPatchEditorModel } from "@tds-shared/index";
 import { Disposable } from "./utilities/dispose";
 import { ServersConfig, formatDate, formatNumber } from "../utils";
 import { sendPatchInfo } from "../protocolMessages";
-import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum } from "@tds-shared/index";
 import { getWebviewContent } from "./utilities/webview-utils";
 
 interface PatchDocumentDelegate {
@@ -258,7 +258,7 @@ export class PatchEditorProvider //aka PatchEditorPanel
             async (progress, token: vscode.CancellationToken) => {
               progress.report({ increment: 0 });
 
-              let filename: string = this.doExportToTxt(document.documentData, token);
+              const filename: string = this.doExportToTxt(document.documentData, token);
 
               const uri: vscode.Uri = vscode.Uri.parse("file:" + filename);
               await vscode.workspace.openTextDocument(uri).then(

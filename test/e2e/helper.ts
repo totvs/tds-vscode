@@ -248,7 +248,7 @@ export function toAdvplType(variable: any): string {
     return `${variable.value}`;
   } else if (variable.type == "D") {
     const d: Date = variable.value as Date;
-    var date = d.toJSON().slice(0, 10);
+    const date = d.toJSON().slice(0, 10);
     return `${date.slice(5, 7)}/${date.slice(8, 10)}/${date.slice(2, 4)}`;
   } else if (variable.type == "C") {
     return `"${variable.value}"`;
@@ -268,7 +268,7 @@ export function to4GLType(variable: any): string {
     return `${variable.value}`;
   } else if (variable.type == "D") {
     const d: Date = variable.value as Date;
-    var date = d.toJSON().slice(0, 10);
+    const date = d.toJSON().slice(0, 10);
     return `${date.slice(5, 7)}/${date.slice(8, 10)}/${date.slice(2, 4)}`;
   } else if (variable.type == "C") {
     return `"${variable.value}"`;

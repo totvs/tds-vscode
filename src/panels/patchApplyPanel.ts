@@ -19,13 +19,13 @@ import * as path from "path";
 import * as fse from "fs-extra";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import { ServersConfig, pathErrorCodeToString } from "../utils";
-import { CommonCommandFromWebViewEnum, ReceiveMessage } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, ReceiveMessage } from "@tds-shared/index";
 import { IPatchApplyResult, PathErrorCodes, sendApplyPatchRequest, sendValidatePatchRequest } from "../protocolMessages";
-import { TApplyPatchModel, TPatchFileData } from "tds-shared/lib";
+import { TApplyPatchModel, TPatchFileData } from "@tds-shared/index";
 import { ServerItem } from "../serverItem";
-import { TFieldErrors, isErrors } from "tds-shared/lib";
+import { TFieldErrors, isErrors } from "@tds-shared/index";
 import { TdsPanel } from "./panel";
-import { ApplyPatchCommand, ApplyPatchCommandEnum, EMPTY_APPLY_PATCH_MODEL } from "tds-shared/lib/models/applyPatchModel";
+import { ApplyPatchCommand, ApplyPatchCommandEnum, EMPTY_APPLY_PATCH_MODEL } from "@tds-shared/index";
 
 export enum OperationApplyPatchEnum {
   APPLY = "apply",
@@ -197,7 +197,7 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
           let i: number = 0
           for await (const file of data.model.patchFiles) {
             if (data.model.patchFiles[i].isProcessing) {
-              let server = ServersConfig.getCurrentServer();
+              const server = ServersConfig.getCurrentServer();
 
               await this.doValidatePatch(server, data.model.patchFiles[i], i, errors);
 
@@ -248,7 +248,7 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
         },
         async (progress, token) => {
           const server: ServerItem = ServersConfig.getCurrentServer();
-          let step: number = 100 / (model.patchFiles.length + 1);
+          const step: number = 100 / (model.patchFiles.length + 1);
           let index: number = 0;
 
           progress.report({ increment: step / 2 });
@@ -290,7 +290,7 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
       },
       async (progress, token) => {
         const server: ServerItem = ServersConfig.getCurrentServer();
-        let step: number = 100 / (model.patchFiles.length + 1);
+        const step: number = 100 / (model.patchFiles.length + 1);
         let index: number = 0;
 
         progress.report({ increment: step / 2 });
@@ -407,8 +407,8 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
 }
 
 function getRecursiveFiles(targetList: vscode.Uri[]): vscode.Uri[] {
-  var glob = require('glob');
-  var foundFiles: vscode.Uri[] = [];
+  const glob = require('glob');
+  const foundFiles: vscode.Uri[] = [];
 
   targetList.forEach((target: vscode.Uri) => {
     ["ptm", "upd", "zip"].forEach((ext: string) => {

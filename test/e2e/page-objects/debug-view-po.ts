@@ -125,7 +125,7 @@ export class DebugPageObject extends ViewPageObject<DebugView> {
     const pickBox = new InputBox();
     await delay();
 
-    let title = await pickBox.getTitle();
+    const title = await pickBox.getTitle();
     expect(title).is.equal("Please enter the name of an AdvPL/4GL function");
 
     await pickBox.setText(`${program} ${args ? args.join(",") : ""}`);

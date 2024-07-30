@@ -47,7 +47,7 @@ export function getRpoTokenFromFile(path: string): IRpoToken {
 }
 
 export function getRpoTokenFromString(value: string): IRpoToken {
-  let result: IRpoToken = noRpoToken();
+  const result: IRpoToken = noRpoToken();
 
   if (value.length > 0) {
     const token: string = value;
@@ -81,15 +81,15 @@ export function getRpoTokenFromString(value: string): IRpoToken {
 }
 
 export function rpoTokenQuickPick() {
-  let inputRpoToken = vscode.l10n.t('Input Compilation Token');
-  let clearRpoToken = vscode.l10n.t('Clear Compilation Token');
-  let enabled = getEnabledRpoTokenInfos();
-  let actionRpoToken = enabled ?
+  const inputRpoToken = vscode.l10n.t('Input Compilation Token');
+  const clearRpoToken = vscode.l10n.t('Clear Compilation Token');
+  const enabled = getEnabledRpoTokenInfos();
+  const actionRpoToken = enabled ?
     vscode.l10n.t('Disable Compilation Token')
     : vscode.l10n.t('Enable Compilation Token');
   //
-  let options: Array<string> = [ inputRpoToken ];
-  let rpoToken: IRpoToken = ServersConfig.getRpoTokenInfos();
+  const options: Array<string> = [ inputRpoToken ];
+  const rpoToken: IRpoToken = ServersConfig.getRpoTokenInfos();
   if (rpoToken !== undefined && rpoToken.token.length > 0) { // valid rpoToken
     options.push(actionRpoToken);
     options.push(clearRpoToken);
@@ -110,7 +110,7 @@ export function rpoTokenQuickPick() {
 }
 
 export function getEnabledRpoTokenInfos() {
-  let rpoToken: IRpoToken = ServersConfig.getRpoTokenInfos();
+  const rpoToken: IRpoToken = ServersConfig.getRpoTokenInfos();
   return getEnabledRpoToken(rpoToken);
 }
 

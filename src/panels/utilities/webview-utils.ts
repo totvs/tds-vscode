@@ -18,8 +18,8 @@ export interface IWebviewContent {
 //   * @property jsExtraFiles Additional JS files
 
 const BASE_FOLDER: string[] = [
+  "out",
   "webview-ui",
-  "build",
 ];
 
 const CSS_BASE_FOLDER: string[] = [
@@ -46,7 +46,7 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
   // The CSS file from the React build output
   const stylesUri: vscode.Uri[] = [];
   const codiconsUri = webview.asWebviewUri(
-    vscode.Uri.joinPath(extensionUri, 'webview-ui', 'node_modules', '@vscode', 'codicons', 'dist', 'codicon.css'));
+    vscode.Uri.joinPath(extensionUri, 'node_modules', '@vscode', 'codicons', 'dist', 'codicon.css'));
   stylesUri.push(codiconsUri);
 
   // const cssFiles: string[] = options.cssExtraFiles || [];
@@ -148,7 +148,7 @@ export function getExtraPanelConfigurations(extensionUri: vscode.Uri): {} {
 export function getCspSource(extensionUri: vscode.Uri) {
   return [
     extensionUri,
-    vscode.Uri.joinPath(extensionUri, "webview-ui", "build", "node_modules", "@totvs", "tds-webview-ui", "dist", "icons"),
+    vscode.Uri.joinPath(extensionUri, "node_modules", "@totvs", "tds-webview-ui", "dist", "icons"),
   ]
   return [
     vscode.Uri.joinPath(extensionUri, "out"),

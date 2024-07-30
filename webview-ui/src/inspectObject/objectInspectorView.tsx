@@ -190,7 +190,7 @@ export default function ObjectInspectorView(props: TInspectorObjectComponentProp
 
   React.useEffect(() => {
 
-    let listener = (event: any) => {
+    const listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
       switch (command.command) {
@@ -253,7 +253,7 @@ export default function ObjectInspectorView(props: TInspectorObjectComponentProp
     }
   }];
 
-  let columnDef: TTdsDataGridColumnDef[] = props.inspector == "objects"
+  const columnDef: TTdsDataGridColumnDef[] = props.inspector == "objects"
     ? objectColumns(props.isServerP20OrGreater)
     : functionColumns(props.isServerP20OrGreater);
 

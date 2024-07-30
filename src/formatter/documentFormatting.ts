@@ -34,7 +34,7 @@ export class DocumentFormatting implements DocumentFormattingEditProvider {
     let identBlock: string = "";
     let cont: number = 0;
 
-    let result: TextEdit[] = [];
+    const result: TextEdit[] = [];
     const lc = document.lineCount;
     this.ignore_at = null;
 
@@ -42,7 +42,7 @@ export class DocumentFormatting implements DocumentFormattingEditProvider {
       const line = document.lineAt(nl);
 
       if (!line.isEmptyOrWhitespace && rules.match(line.text)) {
-        let ruleMatch: RuleMatch | null = rules.getLastMatch();
+        const ruleMatch: RuleMatch | null = rules.getLastMatch();
 
         if (ruleMatch) {
           const rule = ruleMatch.rule;
@@ -136,7 +136,7 @@ export async function resourceFormatting(
   } else {
     vscode.window.showInformationMessage("Formatação em lote iniciada.");
 
-    let lc = await vscode.window.withProgress(
+    const lc = await vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
         title: "Formatting",

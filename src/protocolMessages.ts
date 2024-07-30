@@ -197,7 +197,7 @@ export function sendConnectRequest(
     })
     .then(
       (connectionNode: ConnectionNode) => {
-        let token: string = connectionNode.connectionToken;
+        const token: string = connectionNode.connectionToken;
         if (token) {
           return {
             success: true,
@@ -238,7 +238,7 @@ export function sendAuthenticateRequest(
     })
     .then(
       (authenticationNode: AuthenticationNode) => {
-        let token: string = authenticationNode.connectionToken;
+        const token: string = authenticationNode.connectionToken;
         if (token) {
           return { success: true, token: token };
         } else {
@@ -266,7 +266,7 @@ export function sendReconnectRequest(
     })
     .then(
       (reconnectNode: ReconnectNode) => {
-        let token: string = reconnectNode.connectionToken;
+        const token: string = reconnectNode.connectionToken;
         if (token) {
           return {
             success: true,
@@ -523,7 +523,7 @@ export function sendRpoInfo(server: ServerItem): Thenable<IRpoInfoData> {
       },
     })
     .then((response: IRpoInfoData) => { //RpoInfoResult
-      let rpoInfo: IRpoInfoData = {
+      const rpoInfo: IRpoInfoData = {
         environment: response.environment,
         rpoVersion: response.rpoVersion,
         dateGeneration: response.dateGeneration,
@@ -1079,9 +1079,9 @@ export function sendApplyPatchRequest(
     })
     .then(
       (response: any) => {
-        var patchFilePath = patchUri.fsPath;
-        var retMessage = vscode.l10n.t("No validation errors");
-        var tphInfoRet = { exp: undefined, ptm: undefined };
+        let patchFilePath = patchUri.fsPath;
+        let retMessage = vscode.l10n.t("No validation errors");
+        const tphInfoRet = { exp: undefined, ptm: undefined };
 
         if (patchFilePath.startsWith("/") && patchFilePath.length > 2 && patchFilePath.at(2) === ':') {
           // se formato for windows /d:/totvs/patch/12.1.2210/expedicao_continua_12_1_2210_atf_tttm120_hp.ptm

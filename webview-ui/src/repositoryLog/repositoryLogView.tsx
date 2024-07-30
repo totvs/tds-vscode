@@ -15,14 +15,13 @@ limitations under the License.
 */
 
 import "./repositoryLog.css";
-import { IFormAction, TdsDataGrid, TdsFormActionsEnum, TdsLabelField, TdsPage, TdsProgressRing, TdsTreeItem, TdsTreeView, getCloseActionForm, getDefaultActionsForm } from "@totvs/tds-webtoolkit";
+import { IFormAction, TdsDataGrid, TdsLabelField, TdsPage, TdsProgressRing, TdsTreeItem, TdsTreeView, getCloseActionForm } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { tdsVscode } from '@totvs/tds-webtoolkit';
-import { TRepositoryLogModel } from "tds-shared/lib";
-import { EMPTY_REPOSITORY_MODEL, TPatchInfoModel, TProgramAppModel } from "tds-shared/lib/models/repositoryLogModel";
+import { TRepositoryLogModel, EMPTY_REPOSITORY_MODEL, TPatchInfoModel, TProgramAppModel } from "@tds-shared/index";
 
 enum ReceiveCommandEnum {
 }
@@ -56,7 +55,7 @@ export default function RepositoryLogView() {
   }
 
   React.useEffect(() => {
-    let listener = (event: any) => {
+    const listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
       switch (command.command) {

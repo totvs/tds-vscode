@@ -11,7 +11,7 @@ function convertRange(range: lsp.Range): vscode.Range {
 }
 
 function showXrefsHandlerCmd(kind: string, uri: vscode.Uri, position: vscode.Position, xrefArgs: any[]) {
-	var locations: any[] = [];
+	let locations: any[] = [];
 
 	if (kind == "function") {
 		locations = (xrefArgs).map(loc => {

@@ -31,7 +31,7 @@ import {
   sendGetServerPermissionsInfo,
 } from "./protocolMessages";
 import { EnvSection, ServerItem } from "./serverItem";
-import { TAuthorization, TCompileKey } from "tds-shared/lib";
+import { TAuthorization, TCompileKey } from "@tds-shared/index";
 
 const homedir = require("os").homedir();
 
@@ -116,7 +116,7 @@ export default class Utils {
    * Pegar o arquivo servers.json da .vscode (workspace)?
    */
   static isWorkspaceServerConfig(): boolean {
-    let config = vscode.workspace.getConfiguration("totvsLanguageServer");
+    const config = vscode.workspace.getConfiguration("totvsLanguageServer");
     return config.get("workspaceServerConfig");
   }
 
@@ -124,7 +124,7 @@ export default class Utils {
  * Indica o status de informações de
  */
   static isUsageInfoConfig(): boolean {
-    let config = vscode.workspace.getConfiguration("totvsLanguageServer");
+    const config = vscode.workspace.getConfiguration("totvsLanguageServer");
     return config.get("usageInfoConfig");
   }
 
@@ -139,7 +139,7 @@ export default class Utils {
    * Retorna o path da pasta .vscode dentro do workspace
    */
   static getVSCodePath() {
-    let rootPath: string = vscode.workspace.rootPath || process.cwd();
+    const rootPath: string = vscode.workspace.rootPath || process.cwd();
 
     return path.join(rootPath, ".vscode");
   }
@@ -156,8 +156,8 @@ export default class Utils {
     messageType: MESSAGE_TYPE,
     showDialog: boolean
   ) {
-    let config = vscode.workspace.getConfiguration("totvsLanguageServer");
-    let notificationLevel = config.get("editor.show.notification");
+    const config = vscode.workspace.getConfiguration("totvsLanguageServer");
+    const notificationLevel = config.get("editor.show.notification");
 
     switch (messageType) {
       case MESSAGE_TYPE.Error:
@@ -190,7 +190,7 @@ export default class Utils {
         }
         break;
       case MESSAGE_TYPE.Log:
-        let time = Utils.timeAsHHMMSS(new Date());
+        const time = Utils.timeAsHHMMSS(new Date());
         console.log(message);
         languageClient?.outputChannel.appendLine(
           "[Log   + " + time + "] " + message
@@ -223,7 +223,7 @@ export default class Utils {
 
     folders.forEach((folder) => {
       if (fs.lstatSync(folder).isDirectory()) {
-        let ignoreFolder = checkCompileIgnore ? fs.existsSync(path.join(folder, ".tdscompileignore")) : false;
+        const ignoreFolder = checkCompileIgnore ? fs.existsSync(path.join(folder, ".tdscompileignore")) : false;
         if (!ignoreFolder) {
           fs.readdirSync(folder).forEach((file) => {
             if (!Utils.ignoreResource(file)) {
@@ -305,7 +305,7 @@ export default class Utils {
     // Handle Object
     if (obj instanceof Object) {
       copy = {};
-      for (let attr in obj) {
+      for (const attr in obj) {
         if (obj.hasOwnProperty(attr)) {
           copy[attr] = Utils.deepCopy(obj[attr]);
         }
@@ -512,11 +512,11 @@ export class ServersConfig {
     const servers = getServersConfig();
 
     if (!servers.savedTokens) {
-      let emptySavedTokens: Array<[string, object]> = [];
+      const emptySavedTokens: Array<[string, object]> = [];
       servers.savedTokens = emptySavedTokens;
     } else {
       let found: boolean = false;
-      let key = id + ":" + environment;
+      const key = id + ":" + environment;
       if (servers.savedTokens) {
         servers.savedTokens.forEach((element) => {
           if (element[0] === key) {
@@ -543,7 +543,7 @@ export class ServersConfig {
   static removeSavedConnectionToken(id: string, environment: string) {
     const servers = getServersConfig();
     if (servers.savedTokens) {
-      let key = id + ":" + environment;
+      const key = id + ":" + environment;
       servers.savedTokens.forEach((element) => {
         if (element[0] === key) {
           const index = servers.savedTokens.indexOf(element, 0);
@@ -561,12 +561,12 @@ export class ServersConfig {
   static deleteSelectServer() {
     const servers = getServersConfig();
     if (servers.connectedServer.id) {
-      let server = {};
+      const server = {};
       servers.connectedServer = server;
       const configADVPL = vscode.workspace.getConfiguration(
         "totvsLanguageServer"
       ); //transformar em configuracao de workspace
-      let isReconnectLastServer = configADVPL.get("reconnectLastServer");
+      const isReconnectLastServer = configADVPL.get("reconnectLastServer");
       if (!isReconnectLastServer) {
         servers.lastConnectedServer = "";
       }
@@ -630,7 +630,7 @@ export class ServersConfig {
     let serverConfig = getServersConfig();
 
     if (!serverConfig || !serverConfig.configurations) {
-      let serversJson = this.getServerConfigFile();
+      const serversJson = this.getServerConfigFile();
       this.initializeServerConfigFile(serversJson);
       serverConfig = getServersConfig();
     }
@@ -648,7 +648,7 @@ export class ServersConfig {
         );
         return undefined;
       } else {
-        let validate_includes: string[] = [];
+        const validate_includes: string[] = [];
         includes.forEach((element) => {
           if (element !== undefined && element.length > 0) {
             validate_includes.push(element);
@@ -686,7 +686,7 @@ export class ServersConfig {
     secure,
     includes
   ): string | undefined {
-    let serverConfig = getServersConfig();
+    const serverConfig = getServersConfig();
 
     if (serverConfig.configurations) {
       const servers = serverConfig.configurations;
@@ -698,7 +698,7 @@ export class ServersConfig {
         return undefined;
       }
 
-      let validate_includes: string[] = [];
+      const validate_includes: string[] = [];
       includes.forEach((element) => {
         if (element !== undefined && element.length > 0) {
           validate_includes.push(element);
@@ -740,7 +740,7 @@ export class ServersConfig {
 
   static getAuthorizationToken(server: /*ServerItem*/any): string {
     let authorizationToken: string = "";
-    let isSafeRPOServer: boolean = Utils.isServerP20OrGreater(server);
+    const isSafeRPOServer: boolean = Utils.isServerP20OrGreater(server);
     const permissionsInfos: IRpoToken | TCompileKey = isSafeRPOServer
       ? this.getRpoTokenInfos()
       : this.getPermissionsInfos();
@@ -895,7 +895,7 @@ export class ServersConfig {
     if (!fs.existsSync(this.getServerConfigPath())) {
       fs.mkdirSync(this.getServerConfigPath());
     }
-    let serversJson = this.getServerConfigFile();
+    const serversJson = this.getServerConfigFile();
     if (!fs.existsSync(serversJson)) {
       this.initializeServerConfigFile(serversJson);
     }
@@ -1127,11 +1127,11 @@ function sampleServer(): any {
  */
 function getServersConfig() {
   let config: any = {};
-  let serversJson = ServersConfig.getServerConfigFile();
+  const serversJson = ServersConfig.getServerConfigFile();
   if (!fs.existsSync(serversJson)) {
     ServersConfig.initializeServerConfigFile(serversJson);
   }
-  let json = fs.readFileSync(serversJson).toString();
+  const json = fs.readFileSync(serversJson).toString();
 
   if (json) {
     try {
@@ -1176,7 +1176,7 @@ function getServersConfig() {
  * @param JSONServerInfo
  */
 function persistServersInfo(JSONServerInfo) {
-  let fs = require("fs");
+  const fs = require("fs");
   fs.writeFileSync(
     ServersConfig.getServerConfigFile(),
     JSON.stringify(JSONServerInfo, null, "\t"),
@@ -1201,7 +1201,7 @@ export class LaunchConfig {
   }
 
   static updateConfiguration(launcherName, launcher) {
-    let launchConfig = getLaunchConfig();
+    const launchConfig = getLaunchConfig();
     if (launchConfig && launchConfig.configurations) {
       for (let key = 0; key < launchConfig.configurations.length; key++) {
         if (launchConfig.configurations[key].name === launcherName) {
@@ -1213,7 +1213,7 @@ export class LaunchConfig {
   }
 
   static saveNewConfiguration(launcher, defaultValue) {
-    let launchConfig = getLaunchConfig();
+    const launchConfig = getLaunchConfig();
     if (launchConfig) {
       if (launchConfig.configurations === undefined) {
         launchConfig.configurations = [];
@@ -1252,7 +1252,7 @@ export class LaunchConfig {
   }
 
   static saveIsTableSyncEnabled(debugSession, isTableSyncEnabled: boolean) {
-    let launchConfig = getLaunchConfig();
+    const launchConfig = getLaunchConfig();
     if (launchConfig && launchConfig.configurations) {
       launchConfig.configurations = launchConfig.configurations.forEach(launchElement => {
         launchElement.enableTableSync = isTableSyncEnabled;
@@ -1271,7 +1271,7 @@ export class LaunchConfig {
   }
 
   static lastProgramsAdd(newProgram) {
-    let launchConfig = getLaunchConfig();
+    const launchConfig = getLaunchConfig();
     if (launchConfig) {
       if (launchConfig.lastPrograms === undefined) {
         launchConfig.lastPrograms = [];
@@ -1300,7 +1300,7 @@ export class LaunchConfig {
   }
 
   static saveLastProgram(lastProgramExecuted, lastProgramArguments) {
-    let launchConfig = getLaunchConfig();
+    const launchConfig = getLaunchConfig();
     if (launchConfig) {
       if (lastProgramExecuted) {
         launchConfig.lastProgramExecuted = lastProgramExecuted;
@@ -1346,10 +1346,10 @@ export class LaunchConfig {
 
   static saveIgnoreSourcesNotFound(debugSession, isIgnoreSourceNotFound) { // XXX
     try {
-      let launchConfig = getLaunchConfig();
+      const launchConfig = getLaunchConfig();
       if (launchConfig) {
         for (let key = 0; key < launchConfig.configurations.length; key++) {
-          let launchElement = launchConfig.configurations[key];
+          const launchElement = launchConfig.configurations[key];
           if (debugSession !== undefined && launchElement.name === debugSession.name) {
             launchElement.ignoreSourcesNotFound = isIgnoreSourceNotFound;
             break;
@@ -1389,10 +1389,10 @@ export class LaunchConfig {
 
   static saveSelectedSources(debugSession, selectedSources: string[]) {
     try {
-      let launchConfig = getLaunchConfig();
+      const launchConfig = getLaunchConfig();
       if (launchConfig) {
         for (let key = 0; key < launchConfig.configurations.length; key++) {
-          let launchElement = launchConfig.configurations[key];
+          const launchElement = launchConfig.configurations[key];
           if (debugSession !== undefined && launchElement.name === debugSession.name) {
             launchElement.selectedSources = selectedSources;
             break;
@@ -1421,18 +1421,18 @@ export class LaunchConfig {
     try {
       const launchConfig = getLaunchConfig();
       if (!launchConfig) {
-        let fs = require("fs");
-        let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
+        const fs = require("fs");
+        const ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
         if (ext) {
           let sampleLaunch = {
             version: "0.2.0",
             configurations: [],
           };
 
-          let pkg = ext.packageJSON;
-          let contributes = pkg["contributes"];
+          const pkg = ext.packageJSON;
+          const contributes = pkg["contributes"];
           //const regexp: RegExp = /totvs_language_.*debug/i;
-          let debug = (contributes["debuggers"] as any[]).filter(
+          const debug = (contributes["debuggers"] as any[]).filter(
             (element: any) => {
               //return regexp.exec(element.type) ? false : true;
               //return element.type === "totvs_language_debug";
@@ -1441,7 +1441,7 @@ export class LaunchConfig {
           );
 
           if (debug.length === 1) {
-            let initCfg = (debug[0]["initialConfigurations"] as any[]).filter(
+            const initCfg = (debug[0]["initialConfigurations"] as any[]).filter(
               (element: any) => {
                 return element.request === "launch";
               }
@@ -1459,7 +1459,7 @@ export class LaunchConfig {
             fs.mkdirSync(Utils.getVSCodePath());
           }
 
-          let launchJson = this.getLaunchConfigFile();
+          const launchJson = this.getLaunchConfigFile();
 
           fs.writeFileSync(
             launchJson,
@@ -1501,9 +1501,9 @@ export class LaunchConfig {
  */
 function getLaunchConfig() {
   let config: any;
-  let exist = fs.existsSync(LaunchConfig.getLaunchConfigFile());
+  const exist = fs.existsSync(LaunchConfig.getLaunchConfigFile());
   if (exist) {
-    let json = fs.readFileSync(LaunchConfig.getLaunchConfigFile()).toString();
+    const json = fs.readFileSync(LaunchConfig.getLaunchConfigFile()).toString();
     if (json) {
       try {
         config = JSON.parse(stripJsonComments(json));
@@ -1522,7 +1522,7 @@ function getLaunchConfig() {
  * @param JSONServerInfo
  */
 function persistLaunchInfo(JSONLaunchInfo) {
-  let fs = require("fs");
+  const fs = require("fs");
   fs.writeFileSync(
     LaunchConfig.getLaunchConfigFile(),
     JSON.stringify(JSONLaunchInfo, null, "\t"),

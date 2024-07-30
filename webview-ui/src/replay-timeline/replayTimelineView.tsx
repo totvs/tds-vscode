@@ -20,13 +20,13 @@ import React, { RefObject } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { TdsForm, setDataModel } from "@totvs/tds-webtoolkit";
-import { EMPTY_REPLAY_TIMELINE_MODEL, ReplayTimelineCommandEnum, TImportSourcesOnlyResultData, TPaginatorData, TReplayTimelineData, TReplayTimelineModel } from "tds-shared/lib";
+import { EMPTY_REPLAY_TIMELINE_MODEL, ReplayTimelineCommandEnum, TImportSourcesOnlyResultData, TPaginatorData, TReplayTimelineData, TReplayTimelineModel } from "@tds-shared/index";
 
 enum ReceiveCommandEnum {
 }
 type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TReplayTimelineModel>;
 
-let tableElement: RefObject<HTMLTableElement> | undefined = undefined;
+const tableElement: RefObject<HTMLTableElement> | undefined = undefined;
 
 export default function ReplayTimelineView() {
   const methods = useForm<TReplayTimelineModel>({
@@ -47,7 +47,7 @@ export default function ReplayTimelineView() {
   }
 
   React.useEffect(() => {
-    let listener = (event: any) => {
+    const listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
       const data = command.data;
       let model: TReplayTimelineModel;
@@ -78,10 +78,11 @@ export default function ReplayTimelineView() {
           setTimelineCurrent(timeLineId);
 
           break;
-        case "update_progress_ring":
+        case ReplayTimelineCommandEnum.UpdateProgressRing:
           setPercent(event.data.data.percent);
           setMessage(event.data.data.message);
 
+          break;
         default:
           break;
       }
@@ -142,11 +143,11 @@ export default function ReplayTimelineView() {
       }
     }
 
-    let parent = getScrollParent(target.parentNode as HTMLElement);
+    const parent = getScrollParent(target.parentNode as HTMLElement);
 
     if (!parent) return;
 
-    let parentComputedStyle = window.getComputedStyle(parent, null),
+    const parentComputedStyle = window.getComputedStyle(parent, null),
       parentBorderTopWidth = parseInt(
         parentComputedStyle.getPropertyValue("border-top-width")
       ),

@@ -1,20 +1,20 @@
-!src/**/*.html
-**/*.d.*
-**/*.map
-**/tsconfig.json
-*.code-workspace
-*.log
-.all-contributorsrc
-.github
-.gitignore
-.mocharc.js
-.vscode-test/**
-.vscode/**
-src/**
-~
-docs/**
-gulpfile.js
-imagens/**
-out-test/**
-test/**
-vsc-extension-quickstart*.md
+# !src/**/*.html
+# **/*.d.*
+# **/*.map
+# **/tsconfig.json
+# *.code-workspace
+# *.log
+# .all-contributorsrc
+# .github
+# .gitignore
+# .mocharc.js
+# .vscode-test/**
+# .vscode/**
+# src/**
+# ~
+# docs/**
+# gulpfile.js
+# imagens/**
+# out-test/**
+# test/**
+# vsc-extension-quickstart*.md

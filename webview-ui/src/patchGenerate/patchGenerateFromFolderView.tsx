@@ -22,7 +22,7 @@ import { TTdsDataGridColumnDef, TdsDataGrid, TdsLabelField, TdsPage, tdsVscode }
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsTextField, setDataModel, setErrorModel, TdsSelectionFolderField } from "@totvs/tds-webtoolkit";
-import { TGeneratePatchFromRpoModel, TInspectorObject, PatchGenerateCommandEnum, EMPTY_GENERATE_PATCH_FROM_RPO_MODEL } from "tds-shared/lib";
+import { TGeneratePatchFromRpoModel, TInspectorObject, PatchGenerateCommandEnum, EMPTY_GENERATE_PATCH_FROM_RPO_MODEL } from "@tds-shared/index";
 
 enum ReceiveCommandEnum {
   MOVE_TO_LEFT = "moveToLeft",
@@ -127,7 +127,7 @@ export default function PatchGenerateFromFolderView(props: IPatchGenerateViewPro
 
   React.useEffect(() => {
 
-    let listener = (event: any) => {
+    const listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
       switch (command.command) {

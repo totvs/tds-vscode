@@ -17,10 +17,10 @@ limitations under the License.
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import Utils, { ServersConfig, formatDate } from "../utils";
-import { CommonCommandFromWebViewEnum, ReceiveMessage } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, ReceiveMessage } from "@tds-shared/index";
 import { IFunctionData, IObjectData, sendInspectorObjectsRequest } from "../protocolMessages";
-import { TFieldErrors, isErrors } from "tds-shared/lib";
-import { TInspectorObject, TInspectorObjectModel } from "tds-shared/lib";
+import { TFieldErrors, isErrors } from "@tds-shared/index";
+import { TInspectorObject, TInspectorObjectModel } from "@tds-shared/index";
 import { sendInspectorFunctionsRequest } from './../protocolMessages';
 import { TdsPanel } from "./panel";
 
@@ -240,7 +240,7 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel, IInspe
     model.objects = [];
     if (objectsData) {
       objectsData.forEach((object: IObjectData | IFunctionData) => {
-        let data: TInspectorObject = {
+        const data: TInspectorObject = {
           source: "",
           date: new Date(),
           rpo_status: "",

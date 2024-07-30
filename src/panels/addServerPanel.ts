@@ -17,11 +17,11 @@ limitations under the License.
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import Utils, { ServersConfig } from "../utils";
-import { CommonCommandFromWebViewEnum, EMPTY_SERVER_MODEL, ReceiveMessage } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, EMPTY_SERVER_MODEL, ReceiveMessage } from "@tds-shared/index";
 import { IValidationInfo, sendValidationRequest } from "../protocolMessages";
-import { TServerModel, TServerType } from "tds-shared/lib";
-import { TFieldErrors, isErrors } from "tds-shared/lib";
-import { TIncludePath } from "tds-shared/lib";
+import { TServerModel, TServerType } from "@tds-shared/index";
+import { TFieldErrors, isErrors } from "@tds-shared/index";
+import { TIncludePath } from "@tds-shared/index";
 import { TdsPanel } from "./panel";
 
 enum AddServerCommandEnum {
@@ -128,7 +128,7 @@ export class AddServerPanel extends TdsPanel<TServerModel, TServerOptions> {
     }
   }
   getServerModel(): TServerModel {
-    let result: TServerModel = EMPTY_SERVER_MODEL();
+    const result: TServerModel = EMPTY_SERVER_MODEL();
 
     if (this._options.serverId.length > 0) {
       const server = ServersConfig.getServerById(this._options.serverId);
@@ -235,7 +235,7 @@ export class AddServerPanel extends TdsPanel<TServerModel, TServerOptions> {
     };
 
     model.includePaths.forEach((includePath: TIncludePath, index: number) => {
-      let checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/);
+      const checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/);
 
       if (checkedDir.length == 0) {
         errors[`includePaths.${index}.path`] = { type: "validate", message: vscode.l10n.t("Invalid folder or not contains definition files (.CH or .TH)") };

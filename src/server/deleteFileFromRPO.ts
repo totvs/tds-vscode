@@ -43,7 +43,7 @@ export function deleteFileFromRPO(context: any, selectedFiles): void {
 }
 
 function changeToArrayString(allFiles) {
-	let arrayFiles: string[] = [];
+	const arrayFiles: string[] = [];
 
 	if (allFiles !== undefined) {
 		allFiles.forEach(element => {

@@ -22,7 +22,7 @@ import React from "react";
 import { FieldArrayWithId, FormProvider, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { TdsForm, TdsLabelField, TdsSelectionFolderField, TdsSimpleTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
-import { EMPTY_GLOBAL_INCLUDE_MODEL, TGlobalIncludeModel, TIncludePath } from "tds-shared/lib";
+import { EMPTY_GLOBAL_INCLUDE_MODEL, TGlobalIncludeModel, TIncludePath } from "@tds-shared/index";
 
 enum ReceiveCommandEnum {
 }
@@ -62,7 +62,7 @@ export default function GlobalIncludeView() {
   }
 
   React.useEffect(() => {
-    let listener = (event: any) => {
+    const listener = (event: any) => {
       const command: ReceiveCommand = event.data as ReceiveCommand;
 
       switch (command.command) {

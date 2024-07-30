@@ -19,9 +19,9 @@ export async function inputAuthenticationParameters(
   //const VALIDADE_TIME_OUT = 1000;
   const title = vscode.l10n.t("Authentication");
 
-  let AUTH_TOTAL_STEPS = 2;
-  let AUTH_USERNAME_STEP = 1;
-  let AUTH_PASSWORD_STEP = 2;
+  const AUTH_TOTAL_STEPS = 2;
+  const AUTH_USERNAME_STEP = 1;
+  const AUTH_PASSWORD_STEP = 2;
 
   interface State {
     title: string;
@@ -34,7 +34,7 @@ export async function inputAuthenticationParameters(
   async function collectAuthenticationInputs() {
     const state = {} as Partial<State>;
 
-    let target = ServersConfig.getServerById(serverItem.id);
+    const target = ServersConfig.getServerById(serverItem.id);
     if (target) {
       state.username = target.username;
     }

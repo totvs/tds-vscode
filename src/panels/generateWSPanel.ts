@@ -17,12 +17,12 @@ limitations under the License.
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import Utils, { MESSAGE_TYPE, ServersConfig, serverExceptionCodeToString } from "../utils";
-import { CommonCommandFromWebViewEnum, ReceiveMessage } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, ReceiveMessage } from "@tds-shared/index";
 import { IWsdlGenerateResult, sendWsdlGenerateRequest } from "../protocolMessages";
-import { TWebServiceModel } from "tds-shared/lib";
+import { TWebServiceModel } from "@tds-shared/index";
 import * as fse from "fs-extra";
 import path from "path";
-import { TFieldErrors, TSendSelectResourceProps, isErrors } from "tds-shared/lib";
+import { TFieldErrors, TSendSelectResourceProps, isErrors } from "@tds-shared/index";
 import { TdsPanel } from "./panel";
 
 enum GenerateWebServiceCommandEnum {
@@ -161,11 +161,11 @@ export class GenerateWebServicePanel extends TdsPanel<TWebServiceModel> {
 	}
 
 	protected async saveModel(model: TWebServiceModel): Promise<boolean> {
-		let server = ServersConfig.getCurrentServer();
+		const server = ServersConfig.getCurrentServer();
 		const response: IWsdlGenerateResult = await sendWsdlGenerateRequest(server, model.urlOrWsdlFile);
 
 		if (response.returnCode !== 0) {
-			let errors: TFieldErrors<TWebServiceModel> = {};
+			const errors: TFieldErrors<TWebServiceModel> = {};
 			let error: string = vscode.l10n.t("Protheus server was unable to generate the WS client. Code: {0}", response.returnCode);
 
 			errors.urlOrWsdlFile = { type: "validate", message: error };

@@ -17,10 +17,10 @@ limitations under the License.
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import { ServersConfig } from "../utils";
-import { CommonCommandFromWebViewEnum, EMPTY_REPOSITORY_MODEL, ReceiveMessage, TPatchInfoModel } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, EMPTY_REPOSITORY_MODEL, ReceiveMessage } from "@tds-shared/index";
 import { IRpoInfoData, sendRpoInfo } from "../protocolMessages";
-import { TRepositoryLogModel } from "tds-shared/lib";
-import { TFieldErrors, isErrors } from "tds-shared/lib";
+import { TRepositoryLogModel } from "@tds-shared/index";
+import { TFieldErrors, isErrors } from "@tds-shared/index";
 import { TdsPanel } from "./panel";
 import { languageClient } from "../extension";
 
@@ -99,7 +99,7 @@ export class RepositoryLogPanel extends TdsPanel<TRepositoryLogModel> {
     switch (command) {
       case CommonCommandFromWebViewEnum.Ready:
         if (data.model == undefined) {
-          let model: TRepositoryLogModel = EMPTY_REPOSITORY_MODEL();
+          const model: TRepositoryLogModel = EMPTY_REPOSITORY_MODEL();
 
           this.updateRpoInfo(model);
           this.sendUpdateModel(model, undefined);

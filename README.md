@@ -62,9 +62,11 @@ Para melhor interoperabilidade do ecosistema **Protheus** (áreas de trabalho, _
 
 ## Guia rápido
 
+> [!CAUTION]
 > O **VS Code** pode apresentar problemas em suas funcionalidades em sistemas operacionais da linha **Windows Server**.
 > Veja os requisitos para uso do **VS Code** em [Requirements](https://code.visualstudio.com/docs/supporting/requirements).
 
+> [TIP]
 > **Nunca usei o VS Code**: Recomendamos a leitura de:
 > - [User Interface](https://code.visualstudio.com/docs/getstarted/userinterface)
 > - [Multi-root Workspaces](https://code.visualstudio.com/docs/editor/multi-root-workspaces)

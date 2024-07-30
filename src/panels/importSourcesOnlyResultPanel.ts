@@ -16,7 +16,7 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import { CommonCommandFromWebViewEnum, EMPTY_IMPORT_SOURCES_ONLY_RESULT_MODEL, ImportSourcesOnlyResultCommand, ImportSourcesOnlyResultCommandEnum, ReceiveMessage, TFieldErrors, TImportSourcesOnlyResultData, TImportSourcesOnlyResultModel, isErrors } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, EMPTY_IMPORT_SOURCES_ONLY_RESULT_MODEL, ImportSourcesOnlyResultCommand, ImportSourcesOnlyResultCommandEnum, ReceiveMessage, TFieldErrors, TImportSourcesOnlyResultData, TImportSourcesOnlyResultModel, isErrors } from "@tds-shared/index";
 import { TdsPanel } from "./panel";
 import { formatDate, ServersConfig } from "../utils";
 
@@ -100,7 +100,7 @@ export class ImportSourcesOnlyResultPanel extends TdsPanel<TImportSourcesOnlyRes
     switch (command) {
       case CommonCommandFromWebViewEnum.Ready:
         const model: TImportSourcesOnlyResultModel = EMPTY_IMPORT_SOURCES_ONLY_RESULT_MODEL();
-        
+
         model.sourceObj = this._options.data;
 
         this.sendUpdateModel(model, undefined);

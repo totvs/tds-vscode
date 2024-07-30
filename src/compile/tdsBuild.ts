@@ -3,8 +3,8 @@ import { blockBuildCommands, languageClient } from "../extension";
 import * as fs from "fs";
 import Utils, { ServersConfig } from "../utils";
 
-var windows1252 = require("windows-1252");
-var windows1251 = require("windows-1251");
+const windows1252 = require("windows-1252");
+const windows1251 = require("windows-1251");
 
 import { ResponseError } from "vscode-languageclient";
 import { ServerExceptionCodes, sendCompilation } from "../protocolMessages";
@@ -23,10 +23,10 @@ interface CompileOptions {
 
 //TODO: pegar as opções de compilação da configuração (talvez por server? ou workspace?)
 function _getCompileOptionsDefault(): CompileOptions {
-  let config = vscode.workspace.getConfiguration("totvsLanguageServer");
-  let generatePpoFile = config.get("compilation.generatePpoFile");
-  let showPreCompiler = config.get("compilation.showPreCompiler");
-  let commitWithErrorOrWarning = config.get(
+  const config = vscode.workspace.getConfiguration("totvsLanguageServer");
+  const generatePpoFile = config.get("compilation.generatePpoFile");
+  const showPreCompiler = config.get("compilation.showPreCompiler");
+  const commitWithErrorOrWarning = config.get(
     "compilation.commitWithErrorOrWarning"
   );
 
@@ -64,7 +64,7 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
     }
 
     const serverItem = ServersConfig.getServerById(server.id);
-    let isAdvplsource: boolean = Utils.isAdvPlSource(filePath);
+    const isAdvplsource: boolean = Utils.isAdvPlSource(filePath);
     if (!isAdvplsource) {
       reject(
         new Error("This file has an invalid AdvPL source file extension.")
@@ -73,7 +73,7 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
     }
 
     const includes = ServersConfig.getIncludes(true, serverItem) || [];
-    let includesUris: Array<string> = includes.map((include) => {
+    const includesUris: Array<string> = includes.map((include) => {
       return vscode.Uri.file(include).toString();
     });
     if (includesUris.length == 0) {
@@ -81,7 +81,7 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
       return;
     }
 
-    let filesUris: Array<string> = [];
+    const filesUris: Array<string> = [];
     filesUris.push(vscode.Uri.file(filePath).toString());
 
     //const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
@@ -116,7 +116,7 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
                 // a extensão tds-vscode realiza a conversão para o enconding conforme informado em options.encoding
                 // caso nenhum encoding seja informado, converte para o padrão AdvPL cp1252
                 if (options && options.encoding) {
-                  let encoding: string = (<string>(
+                  const encoding: string = (<string>(
                     options.encoding
                   )).toLowerCase();
                   //console.log("encoding: "+encoding);
@@ -203,7 +203,7 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
   if (server) {
     //Só faz sentido processar os includes se existir um servidor selecionado onde sera compilado.
     //Verifica se existem arquivos AdvPL na lista de arquivos a serem compilados
-    let hasAdvplsource: boolean =
+    const hasAdvplsource: boolean =
       filesPaths.filter((file) => {
         return Utils.isAdvPlSource(file);
       }).length > 0;
@@ -214,7 +214,7 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
       return;
     }
     //Converte os includes em URIs
-    let includesUris: Array<string> = [];
+    const includesUris: Array<string> = [];
     for (let idx = 0; idx < includes.length; idx++) {
       includesUris.push(vscode.Uri.file(includes[idx]).toString());
     }
@@ -225,7 +225,7 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
       includesUris.push(...wp);
     }
     //Converte os arquivos a serem compilados para URIs
-    let filesUris: Array<string> = [];
+    const filesUris: Array<string> = [];
     filesPaths.forEach((file) => {
       if (!Utils.ignoreResource(file)) {
         filesUris.push(vscode.Uri.file(file).toString());
@@ -301,10 +301,10 @@ function verifyCompileResult(response: CompileResult) {
   const textNo = vscode.l10n.t("No");
   const textYes = vscode.l10n.t("Yes");
 
-  let questionAgain = true;
+  const questionAgain = true;
 
   const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
-  let showCompileResult = configADVPL.get("showCompileResult");
+  const showCompileResult = configADVPL.get("showCompileResult");
 
   if (showCompileResult == "true") {
     vscode.window
@@ -357,7 +357,7 @@ export function commandBuildFile(
     new Promise((resolve, reject) => {
       if (files) {
         const arrayFiles: string[] = changeToArrayString(files);
-        let allFiles = Utils.getAllFilesRecursive(arrayFiles, true);
+        const allFiles = Utils.getAllFilesRecursive(arrayFiles, true);
         buildFile(allFiles, recompile);
       } else if (filename !== undefined) {
         buildFile([filename], recompile);
@@ -368,7 +368,7 @@ export function commandBuildFile(
 }
 
 function changeToArrayString(allFiles) {
-  let arrayFiles: string[] = [];
+  const arrayFiles: string[] = [];
 
   allFiles.forEach((element) => {
     if (element.fsPath) {
@@ -385,21 +385,21 @@ function changeToArrayString(allFiles) {
 
 export function commandBuildWorkspace(recompile: boolean) {
   if (vscode.workspace.workspaceFolders) {
-    let folders: string[] = [];
+    const folders: string[] = [];
 
     vscode.workspace.workspaceFolders.forEach((value) => {
       folders.push(value.uri.fsPath);
     });
 
-    let allFiles = Utils.getAllFilesRecursive(folders, true);
+    const allFiles = Utils.getAllFilesRecursive(folders, true);
 
     buildFile(allFiles, recompile);
   }
 }
 
 export async function commandBuildOpenEditors(recompile: boolean) {
-  let delayNext = 250;
-  let files: string[] = [];
+  const delayNext = 250;
+  const files: string[] = [];
   let filename: string | undefined = undefined;
   let editor = vscode.window.activeTextEditor;
   let nextEditor = editor;

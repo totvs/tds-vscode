@@ -8,8 +8,7 @@
 			"problemMatcher": [
 				"$tsc-watch",
 				"$ts-webpack-watch",
-				"$tslint-webpack-watch",
-				"$esbuild-watch"
+				"$tslint-webpack-watch"
 			],
 			"isBackground": true,
 			"group": {
@@ -27,8 +26,7 @@
 			"problemMatcher": [
 				"$tsc",
 				"$tslint-webpack",
-				"$ts-webpack",
-				"$esbuild"
+				"$ts-webpack"
 			]
 		}
 	]

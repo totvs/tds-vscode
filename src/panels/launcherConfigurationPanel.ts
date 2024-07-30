@@ -19,11 +19,11 @@ import * as fse from "fs-extra";
 
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import { LaunchConfig } from "../utils";
-import { CommonCommandFromWebViewEnum, ReceiveMessage, LauncherTypeEnum, TDebugDataConfiguration, TDebugConfigurationModel, EMPTY_DEBUG_DATA_CONFIGURATION } from "tds-shared/lib";
-import { TFieldErrors, isErrors } from "tds-shared/lib";
+import { CommonCommandFromWebViewEnum, ReceiveMessage, LauncherTypeEnum, TDebugDataConfiguration, TDebugConfigurationModel, EMPTY_DEBUG_DATA_CONFIGURATION } from "@tds-shared/index";
+import { TFieldErrors, isErrors } from "@tds-shared/index";
 import { TdsPanel } from "./panel";
-import { LanguagesEnum } from 'tds-shared/lib';
-import { EMPTY_DEBUG_CONFIGURATION } from 'tds-shared/lib';
+import { LanguagesEnum } from '@tds-shared/index';
+import { EMPTY_DEBUG_CONFIGURATION } from '@tds-shared/index';
 
 enum LauncherConfigurationCommandEnum {
 }
@@ -117,7 +117,7 @@ export class LauncherConfigurationPanel extends TdsPanel<TDebugConfigurationMode
                 continue;
               }
 
-              let dataDebug: TDebugDataConfiguration = EMPTY_DEBUG_DATA_CONFIGURATION();
+              const dataDebug: TDebugDataConfiguration = EMPTY_DEBUG_DATA_CONFIGURATION();
 
               dataDebug.smartClient = element.smartclientBin;
               dataDebug.program = element.program;
@@ -226,7 +226,7 @@ export class LauncherConfigurationPanel extends TdsPanel<TDebugConfigurationMode
     }
 
     for (let i = 0; i < launcherConfiguration.length; i++) {
-      let element = launcherConfiguration[i];
+      const element = launcherConfiguration[i];
       if (element.name.toLowerCase() === model.name.toLocaleLowerCase()) {
         updateElement(element);
         LaunchConfig.updateConfiguration(model.name, element)
@@ -236,7 +236,7 @@ export class LauncherConfigurationPanel extends TdsPanel<TDebugConfigurationMode
     }
 
     if (!updated) {
-      let debugLaunchInfo = {};
+      const debugLaunchInfo = {};
       updateElement(debugLaunchInfo);
 
       LaunchConfig.saveNewConfiguration(debugLaunchInfo, this.getDefaultLauncherType(model.launcherType));
@@ -247,7 +247,7 @@ export class LauncherConfigurationPanel extends TdsPanel<TDebugConfigurationMode
 
   private getDefaultLauncherType(launcherType: LauncherTypeEnum): {} {
     const ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
-    let defaultLaunch = {};
+    const defaultLaunch = {};
 
     if (ext) {
       const packageJSON = ext.packageJSON;

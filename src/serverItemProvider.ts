@@ -3,7 +3,7 @@ import * as fs from "fs";
 import { EnvSection, ServerItem } from "./serverItem";
 import Utils, { ServersConfig } from "./utils";
 import { updateStatusBarItems } from "./statusBar";
-import { TServerType } from "tds-shared/lib";
+import { TServerType } from "@tds-shared/index";
 
 class ServerItemProvider
   implements vscode.TreeDataProvider<ServerItem | EnvSection> {
@@ -148,7 +148,7 @@ class ServerItemProvider
   }
 
   checkServersConfigListener(refresh: boolean): void {
-    let serversJson: string = ServersConfig.getServerConfigFile();
+    const serversJson: string = ServersConfig.getServerConfigFile();
 
     if (this.configFilePath !== serversJson) {
       if (this.configFilePath) {
@@ -211,7 +211,7 @@ class ServerItemProvider
     const listServer = new Array<ServerItem>();
 
     ServersConfig.getServers().forEach((element) => {
-      let environmentsServer = new Array<EnvSection>();
+      const environmentsServer = new Array<EnvSection>();
       let token: string = element.token ? element.token : "";
 
       if (element.environments) {

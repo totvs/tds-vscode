@@ -24,7 +24,7 @@ let dapArgs: string[] = [];
 
 export function getDAP() {
   let pathDAP = "";
-  let ext = extensions.getExtension("TOTVS.tds-vscode");
+  const ext = extensions.getExtension("TOTVS.tds-vscode");
   if (ext) {
     if (process.platform === "win32") {
       pathDAP = path.join(
@@ -202,7 +202,7 @@ export function extractProgramArgs(value: string): ProgramArgs {
   let programArgs: ProgramArgs;
 
   if (value) {
-    let testRegex = value.trim().match(programArgsRegex);
+    const testRegex = value.trim().match(programArgsRegex);
     if (testRegex && testRegex[0]) {
       let args: string[];
       // se houver match verifica se tem match na 3a posicao opcional "()"
@@ -247,7 +247,7 @@ function extractArgs(value: string): string[] {
         } else {
           splited = value.split(",");
           while (splited.length > 0) {
-            var element = splited.shift();
+            let element = splited.shift();
             element = element.trim();
             if (element.length == 0) {
               element = undefined;
@@ -262,10 +262,10 @@ function extractArgs(value: string): string[] {
               ((element.startsWith('"') && !element.endsWith('"')) ||
                 (element.startsWith("'") && !element.endsWith("'")))
             ) {
-              var startChar = element.charAt(0); // salva tipo de aspas antes de remover
+              const startChar = element.charAt(0); // salva tipo de aspas antes de remover
               element = element.substring(1); // remove 1a aspas
               while (splited.length > 0) {
-                var newElement = splited.shift();
+                const newElement = splited.shift();
                 element += ("," + newElement); // recoloca o token "," splitado incorretamente
                 if (element.length > 1 && element.endsWith(startChar)) {
                   element = element.substring(0, element.length - 1); // remove ultima aspas
@@ -283,7 +283,7 @@ function extractArgs(value: string): string[] {
 }
 
 export async function getProgramArguments(config: DebugConfiguration) {
-  var argsJson = await pickProgramArguments(config);
+  const argsJson = await pickProgramArguments(config);
 
   return argsJson;
 }
@@ -354,7 +354,7 @@ export function prepareReplayFile(replayFile: string) {
 
 export function toggleTableSync() {
   if (debugSession !== undefined) {
-    let isTableSyncEnabled = !LaunchConfig.isTableSyncEnabled(debugSession);
+    const isTableSyncEnabled = !LaunchConfig.isTableSyncEnabled(debugSession);
     sendChangeTableSyncSetting(isTableSyncEnabled);
     LaunchConfig.saveIsTableSyncEnabled(debugSession, isTableSyncEnabled);
     if (isTableSyncEnabled) {
@@ -413,15 +413,15 @@ async function pickProgramArguments(
 ): Promise<string | undefined> {
   const disposables: Disposable[] = [];
 
-  let lastProgramExecuted = LaunchConfig.lastProgramExecuted() || "";
+  const lastProgramExecuted = LaunchConfig.lastProgramExecuted() || "";
   if (lastProgramExecuted == "<cancel>") {
     return undefined;
   }
-  let lastArgumentsExecuted = LaunchConfig.lastProgramArguments()
+  const lastArgumentsExecuted = LaunchConfig.lastProgramArguments()
     ? LaunchConfig.lastProgramArguments()
     : []
 
-  let lastPrograms: QuickPickProgram[] = LaunchConfig.lastPrograms()
+  const lastPrograms: QuickPickProgram[] = LaunchConfig.lastPrograms()
     .filter((element: QuickPickProgram) => {
       return (
         element.label.toLowerCase() === lastProgramExecuted.toLowerCase() &&

@@ -32,9 +32,9 @@ export class TotvsConfigurationTdsReplayProvider
       config.tdsReplayFile !== undefined &&
       config.tdsReplayFile.trim().length !== 0
     ) {
-      let workspaceFolders = vscode.workspace.workspaceFolders;
+      const workspaceFolders = vscode.workspace.workspaceFolders;
       if (workspaceFolders) {
-        let wsPaths = new Array(workspaceFolders.length);
+        const wsPaths = new Array(workspaceFolders.length);
         let i = 0;
         for (const workspaceFolder of workspaceFolders) {
           const workspaceFolderPath = workspaceFolder.uri.fsPath;
@@ -57,7 +57,7 @@ export class TotvsConfigurationTdsReplayProvider
         );
       }
 
-      let setDapArgsArr: string[] = [];
+      const setDapArgsArr: string[] = [];
 
       if (config.waitForAttach) {
         setDapArgsArr.push("--wait-for-attach=" + config.waitForAttach);
@@ -95,7 +95,7 @@ export class TotvsConfigurationTdsReplayProvider
       const filterFile = replayFileLocation.concat("/.lastFilter");
       if (fs.existsSync(dbFile)) {
         if (fs.existsSync(filterFile)) {
-          let isTheSameFilter = this.compareFilter(filterFile, config);
+          const isTheSameFilter = this.compareFilter(filterFile, config);
           if (!isTheSameFilter) {
             await this.askIfMustReImportTDSReplay().then(
               (value) => (mustImport = value)
@@ -121,7 +121,7 @@ export class TotvsConfigurationTdsReplayProvider
     return mustImport;
   }
 
-  getReplayFileLocation(tdsReplayFile: string): String {
+  getReplayFileLocation(tdsReplayFile: string): string {
     let tdsReplayFileLocation = "";
     const homedir = require("os").homedir();
     const tdsReplayFolder = homedir.concat("\\.tdsreplay");
@@ -129,9 +129,9 @@ export class TotvsConfigurationTdsReplayProvider
       const dbMapFile = tdsReplayFolder.concat("\\.dbmap");
       if (fs.existsSync(dbMapFile)) {
         //ler o arquivo .dbmap para pegar o local onde deve estar o arquivo do tds replay
-        let json = fs.readFileSync(dbMapFile).toString();
+        const json = fs.readFileSync(dbMapFile).toString();
         if (json) {
-          let jsonParsed = JSON.parse(json);
+          const jsonParsed = JSON.parse(json);
           //A rotina abaixo é um exemplo de como ler um json sem saber explicitamente as chaves...
           //for(var exKey in jsonParsed) {
           //	console.log("key:"+exKey+", value:"+jsonParsed[exKey]);
@@ -150,7 +150,7 @@ export class TotvsConfigurationTdsReplayProvider
     let isTheSameFilter = true;
     let lastIncludeFilterUsed;
     let lastExcludeFilterUsed;
-    let allLines = fs.readFileSync(filterFile).toString().split("\n");
+    const allLines = fs.readFileSync(filterFile).toString().split("\n");
     if (allLines !== undefined && allLines.length > 0) {
       if (allLines.length > 2) {
         lastIncludeFilterUsed = allLines[1];
@@ -192,7 +192,7 @@ export class TotvsConfigurationTdsReplayProvider
       <excludeList>
     */
     if (mustImport) {
-      let content =
+      const content =
         "-i\n" + config.includeSources + "\n" + "-e\n" + config.excludeSources;
       //Essa funcao cria o arquivo caso nao exista ou substitui o conteudo caso ja exista
       fs.writeFileSync(lastFilterFile, content, function (err) {

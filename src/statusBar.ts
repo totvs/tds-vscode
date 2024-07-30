@@ -114,7 +114,7 @@ function updateRpoTokenStatusBarItem(): void {
     text = "$(gear) RPO Token";
     tooltip = vscode.l10n.t("Input RPO token")
   } else {
-    let enabled = getEnabledRpoToken(rpoToken);
+    const enabled = getEnabledRpoToken(rpoToken);
     text = buildTextRpoToken(error ? 2 : warning ? 1 : 0, enabled, text) + " RPO Token";
     tooltip = buildTooltipRpoToken(error || warning, tooltip, rpoToken);
   }
@@ -172,8 +172,8 @@ function buildTooltipRpoToken(
 
   result += message ? `${message}\n` : "";
   if (rpoToken.body) {
-    let enabled = getEnabledRpoToken(rpoToken);
-    let status = enabled ? "ENABLED" : "DISABLED";
+    const enabled = getEnabledRpoToken(rpoToken);
+    const status = enabled ? "ENABLED" : "DISABLED";
     result += `STATUS: ${status}`;
     if (enabled) {
       result += `\nSubject: ${rpoToken.body.sub}\n`;
@@ -216,7 +216,7 @@ export function updateUsageBarItem(args?: IUsageStatusInfo): void {
 }
 
 function buildTooltipBusyInfo(args: IUsageStatusInfo): vscode.MarkdownString {
-  let text: vscode.MarkdownString = new vscode.MarkdownString(
+  const text: vscode.MarkdownString = new vscode.MarkdownString(
     `**Usage Indicator**\n` +
     `- Active: ${args.activate ? "Yes" : "No"} (${args.counter}x)`
   );
