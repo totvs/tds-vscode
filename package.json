@@ -60,9 +60,8 @@
     "package": "vsce pack",
     "package-prerelease": "vsce pack --pre-release",
     "prepackage": "npm run build",
-    "REVER": "",
-    "publish": "gulp publish",
-    "publish-prerelease": "gulp publish-prerelease",
+    "publish": "npm run package && vsce publish",
+    "publish-prerelease": "npm run package-prerelease && vsce publish --pre-release",
     "---MISC---": "",
     "all-contributors:generate": "all-contributors generate",
     "all-contributors:check": "all-contributors check"
@@ -1587,14 +1586,24 @@
           "group": "ABtotvsServer@3"
         },
         {
+          "command": "totvs-developer-studio.rename",
+          "when": "view == totvs_server && viewItem == serverItemNotConnected",
+          "group": "ABtotvsServer@4"
+        },
+        {
+          "command": "totvs-developer-studio.edit",
+          "when": "view == totvs_server && viewItem == serverItemNotConnected",
+          "group": "ABtotvsServer@5"
+        },
+        {
+          "command": "totvs-developer-studio.delete",
+          "when": "view == totvs_server && viewItem == serverItemNotConnected",
+          "group": "ABtotvsServer@6"
+        },
+        {
           "command": "totvs-developer-studio.config",
           "when": "view == totvs_server",
           "group": "XtotvsServer@1"
-        },
-        {
-          "command": "totvs-developer-studio.rename",
-          "when": "view == totvs_server && viewItem == serverItem",
-          "group": "ABtotvsServer@4"
         },
         {
           "command": "totvs-developer-studio.compile.key",
