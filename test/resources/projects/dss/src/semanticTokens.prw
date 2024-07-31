@@ -1,9 +1,10 @@
 #include "protheus.ch"
 
-user function signatureHelp()
+user function semanticTokens()
   local a := []
 
   aAdd(aOpcoes, time())
 
   //##new_code
 return
+
