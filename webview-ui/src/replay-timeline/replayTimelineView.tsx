@@ -234,7 +234,6 @@ export default function ReplayTimelineView() {
           grouping: undefined,
           pageSize: undefined,
           pageSizeOptions: undefined,
-          moveRow: undefined,
           rowSeparator: undefined
         }} />
     )

@@ -13,8 +13,6 @@ import {
 import { LanguageClient } from "vscode-languageclient/node";
 import { TotvsDebugTrackerDescriptorFactory } from "./TotvsDebugTrackerDescriptorFactory";
 
-export let _debugEvent = undefined;
-
 export const registerDebug = (context: vscode.ExtensionContext, languageClient: LanguageClient) => {
   new DebugEvent(context); //força inicialização e registra contexto
   const factory = new TotvsDebugAdapterDescriptorFactory();
@@ -67,7 +65,6 @@ export const registerDebug = (context: vscode.ExtensionContext, languageClient: 
   context.subscriptions.push(
     vscode.debug.onDidReceiveDebugSessionCustomEvent(
       (debugEvent: vscode.DebugSessionCustomEvent) => {
-        _debugEvent = debugEvent;
         processDebugCustomEvent(debugEvent);
       }
     )
@@ -81,7 +78,6 @@ export const registerDebug = (context: vscode.ExtensionContext, languageClient: 
     }),
     vscode.debug.onDidTerminateDebugSession(() => {
       processEndDebug();
-      _debugEvent = undefined;
     })
   );
 };

@@ -44,7 +44,7 @@ import {
   registerAdvplFormatting,
 } from "./formatter";
 import { register4glOutline } from "./outline";
-import { registerDebug, _debugEvent } from "./debug";
+import { registerDebug } from "./debug";
 // @@ import { openMonitorView } from "./monitor/monitorLoader";
 import { initStatusBarItems } from "./statusBar";
 import { rpoTokenQuickPick, rpoTokenInputBox, saveRpoTokenString, setEnabledRpoToken } from "./rpoToken";
@@ -70,6 +70,7 @@ import { CompileResult } from "./compile/CompileResult";
 import { LauncherConfigurationPanel } from "./panels/launcherConfigurationPanel";
 import { ReplayConfigurationPanel } from "./panels/replayConfigurationPanel";
 import { tlppTools } from "./tlpp-tools/tlppTools";
+import { getWebviewContent } from "./panels/utilities/webview-utils";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -337,7 +338,7 @@ export function activate(context: ExtensionContext) {
     commands.registerCommand(
       "totvs-developer-studio.tdsreplay.webview.timeLine",
       () => {
-        if (_debugEvent !== undefined) {
+        if (checkDebug(false)) {
           if (createTimeLineWebView !== null) {
             createTimeLineWebView.reveal();
           }
@@ -491,6 +492,15 @@ export function activate(context: ExtensionContext) {
       vscode.window.setStatusBarMessage(
         `$(gear~spin) ${vscode.l10n.t("Starting monitor...")}`,
         // @@ Promise.resolve(openMonitorView(context))
+      );
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("tds-monitor.open-web-monitor", () => {
+      vscode.window.setStatusBarMessage(
+        `$(gear~spin) ${vscode.l10n.t("Starting monitor...")}`,
+        Promise.resolve(openWebMonitorView(context))
       );
     })
   );
@@ -857,10 +867,42 @@ function checkServer(silent: boolean = false): boolean {
   return server != undefined;
 }
 
-function checkDebug(silent: boolean = false): boolean {
-  if (_debugEvent && !silent) {
+export function checkDebug(silent: boolean = false): boolean {
+  if (vscode.debug.activeDebugSession && !silent) {
     vscode.window.showWarningMessage(vscode.l10n.t("This operation is not allowed during a debug."))
   }
 
-  return _debugEvent == undefined ? _debugEvent : false;
+  return vscode.debug.activeDebugSession != undefined;
 }
+
+function openWebMonitorView(context: vscode.ExtensionContext): any {
+  const view = vscode.window.createWebviewPanel(
+    "webMonitor",
+    "Web Monitor",
+    vscode.ViewColumn.One,
+    {
+      enableScripts: true,
+      retainContextWhenHidden: true
+    }
+  );
+
+  const html = (): string => {
+    return /*html*/ `
+      <html lang="en" style="height: 100%;">
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+          <meta name="theme-color" content="#000000">
+          <meta http-equiv="Content-Security-Policy" content="frame-src http://localhost:60000">
+        </head>
+
+        <body style="height: 100%; width: 100%">
+          <iframe style="height: auto; min-height: 100%; width: 100%" src="http://localhost:60000/webmonitor" />
+        </body>
+      </html>
+    `
+  };
+
+  view.webview.html = html();
+}
+

@@ -15,10 +15,9 @@ limitations under the License.
 */
 
 import * as vscode from "vscode";
-import { languageClient } from "./extension";
+import { checkDebug, languageClient } from "./extension";
 import { DidChangeConfigurationNotification, ResponseError } from "vscode-languageclient";
 import { CompileResult } from "./compile/CompileResult";
-import { _debugEvent } from "./debug";
 import { IRpoToken } from "./rpoToken";
 import { ServersConfig, serverExceptionCodeToString } from "./utils";
 import { ServerItem } from "./serverItem";
@@ -462,7 +461,7 @@ export function sendCompilation(
   extensionsAllowed: string[],
   hasAdvplsource: boolean
 ): Thenable<CompileResult> {
-  if (_debugEvent) {
+  if (checkDebug(true)) {
     return Promise.reject(
       new Error(vscode.l10n.t("This operation is not allowed during a debug."))
     );
@@ -509,11 +508,6 @@ export interface IRpoPatch {
  * @returns A Promise that resolves to the RPO information data.
  */
 export function sendRpoInfo(server: ServerItem): Thenable<IRpoInfoData> {
-  if (_debugEvent) {
-    return Promise.reject(
-      new Error(vscode.l10n.t("This operation is not allowed during a debug."))
-    );
-  }
 
   return languageClient
     .sendRequest("$totvsserver/rpoInfo", {
@@ -560,11 +554,6 @@ export function sendPatchInfo(
   server: ServerItem,
   patchUri: string
 ): Thenable<any> {
-  if (_debugEvent) {
-    return Promise.reject(
-      new Error(vscode.l10n.t("This operation is not allowed during a debug."))
-    );
-  }
 
   return languageClient
     .sendRequest("$totvsserver/patchInfo", {

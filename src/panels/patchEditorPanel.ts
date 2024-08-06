@@ -6,6 +6,7 @@ import { ServersConfig, formatDate, formatNumber } from "../utils";
 import { sendPatchInfo } from "../protocolMessages";
 import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum } from "@tds-shared/index";
 import { getWebviewContent } from "./utilities/webview-utils";
+import { checkDebug } from "../extension";
 
 interface PatchDocumentDelegate {
   getFileData(): Promise<TPatchEditorModel>;
@@ -52,6 +53,11 @@ class PatchDocument extends Disposable implements vscode.CustomDocument {
     this._uri = uri;
     this._documentData = initialContent;
     this._delegate = delegate;
+
+    if (checkDebug(true)) {
+      throw new Error(vscode.l10n.t("This operation is not allowed during a debug."))
+    };
+
   }
 
   public get uri() {

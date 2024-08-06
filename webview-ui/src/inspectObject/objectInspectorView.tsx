@@ -51,7 +51,7 @@ function objectColumns(isServerP20OrGreater: boolean): TTdsDataGridColumnDef[] {
       type: "string",
       name: "source",
       label: tdsVscode.l10n.t("Object Name"),
-      width: "8fr",
+      width: "10fr",
       sortable: true,
       sortDirection: "asc",
     },
