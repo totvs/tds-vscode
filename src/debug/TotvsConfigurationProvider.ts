@@ -51,8 +51,8 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
       config.environmentType = this._connectedServerItem.informations.environmentDetectedType;
       config.token = this._connectedServerItem.token;
 
-      // se no server conectado houver a informacao de smartclientBin utiliza a informacao
-      if (this._connectedServerItem.smartclientBin) {
+      // se no server conectado houver a informação de smartclientBin utiliza-a
+      if (!config.smartclientBin && this._connectedServerItem.smartclientBin) {
         config.smartclientBin = this._connectedServerItem.smartclientBin;
       }
 
@@ -101,7 +101,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
         else if (config.language === "2") config.language = "spa";
         else if (config.language === "3") config.language = "eng";
         else if (config.language === "4") config.language = "rus";
-        
+
         setDapArgsArr.push("--language=" + config.language);
       }
 
