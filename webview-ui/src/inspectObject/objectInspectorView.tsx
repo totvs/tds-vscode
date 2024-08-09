@@ -269,7 +269,7 @@ export default function ObjectInspectorView(props: TInspectorObjectComponentProp
           :
           <TdsDataGrid
             id="inspectorObjectGrid"
-            columnDef={columnDef}
+            columnsDef={columnDef}
             dataSource={dataSource}
             options={{
               topActions: topActions
