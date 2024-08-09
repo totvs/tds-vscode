@@ -72,10 +72,10 @@ const SPACES: string = " ".repeat(11);
 
 export function processShowTimelineView(debugSession: vscode.DebugSession) {
   const options: ReplayTimelineOptions = {
-    isIgnoreSourceNotFound: false,  //debugSession.configuration.ignoreSourcesNotFound,
-    selectedSources: [], //debugEvent.session.configuration.selectedSources,
+    isIgnoreSourceNotFound: debugSession.configuration.ignoreSourcesNotFound,
+    selectedSources: debugSession.configuration.selectedSources || [],
     //debugEvent: debugEvent,
-    replayFile: "", //debugEvent.session.configuration.tdsReplayFile,
+    replayFile: debugSession.configuration.tdsReplayFile,
     debugSession: debug.activeDebugSession
   };
 

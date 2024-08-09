@@ -25,12 +25,14 @@ export type ReplayTimelineOptions = {
   replayFile: string;
   isIgnoreSourceNotFound: boolean;
   selectedSources: string[];
-  //debugEvent: vscode.DebugSessionCustomEvent;
   debugSession: vscode.DebugSession;
+  debugEvent?: vscode.DebugSessionCustomEvent;
 };
 
 export class ReplayTimelinePanel extends TdsPanel<TReplayTimelineModel, ReplayTimelineOptions> {
   public static currentPanel: ReplayTimelinePanel | undefined;
+
+  public isReady: boolean = false;
 
   /**
    * Renders the Global Include panel in the Visual Studio Code editor.
@@ -50,18 +52,19 @@ export class ReplayTimelinePanel extends TdsPanel<TReplayTimelineModel, ReplayTi
       const tabGroups: vscode.TabGroups = vscode.window.tabGroups;
       const viewColumn: vscode.ViewColumn = tabGroups.all.length > 1
         ? vscode.ViewColumn.Two : vscode.ViewColumn.Beside;
-
       // If a webview panel does not already exist create and show a new one
       const panel = vscode.window.createWebviewPanel(
         // Panel view type
-        "replay-timeline--panel",
+        "replay-timeline-panel",
         // Panel title
-        vscode.l10n.t("TDS-Replay Timeline"),
-        // The editor column the panel should be displayed in
-        viewColumn,
+        vscode.l10n.t("TDS-Replay: {0}", options.replayFile),
+        {        // The editor column the panel should be displayed in
+          viewColumn: viewColumn,
+          preserveFocus: false
+        },
         // Extra panel configurations
         {
-          ...getExtraPanelConfigurations(extensionUri)
+          ...getExtraPanelConfigurations(extensionUri),
         }
       );
 
@@ -108,10 +111,10 @@ export class ReplayTimelinePanel extends TdsPanel<TReplayTimelineModel, ReplayTi
 
     switch (command) {
       case CommonCommandFromWebViewEnum.Ready:
-        const model: TReplayTimelineModel = EMPTY_REPLAY_TIMELINE_MODEL();
-
-        this.sendUpdateModel(model, undefined);
-
+        //const model: TReplayTimelineModel = EMPTY_REPLAY_TIMELINE_MODEL();
+        this.isReady = true;
+        this.revealData(this._options.debugEvent);
+        //this.sendUpdateModel(model, undefined);
         break;
 
       case ReplayTimelineCommandEnum.OpenSourcesDialog:
@@ -190,8 +193,12 @@ export class ReplayTimelinePanel extends TdsPanel<TReplayTimelineModel, ReplayTi
       pageSize: debugEvent.body.itemsPerPage
     };
 
-    this.sendUpdateModel(model, undefined);
-    this.selectTimeLine(debugEvent.body.currentSelectedTimeLineId);
+    if (this.isReady) {
+      this.sendUpdateModel(model, undefined);
+      this.selectTimeLine(debugEvent.body.currentSelectedTimeLineId);
+    } else {
+      this._options.debugEvent = debugEvent;
+    }
   }
 
   //-------------------- Envio de mensagens PARA a pagina
