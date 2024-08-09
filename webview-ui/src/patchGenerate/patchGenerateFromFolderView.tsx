@@ -168,7 +168,7 @@ export default function PatchGenerateFromFolderView(props: IPatchGenerateViewPro
         <TdsDataGrid
           key={`data_grid_${id}`}
           id={id}
-          columnDef={columnsDef()}
+          columnsDef={columnsDef()}
           dataSource={dataSource}
           options={{
             topActions: [],

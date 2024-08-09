@@ -150,8 +150,14 @@ export default function CompileKeyView() {
 
         <TdsLabelField
           name={"warningCompatibility"}
-          label={tdsVscode.l10n.t("From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and MacOS.")}
+          label={tdsVscode.l10n.t("From **05/17/2019** all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and MacOS.")}
         />
+
+        <TdsLabelField
+          name={"warningCompatibility"}
+          label={tdsVscode.l10n.t("From **servers 7.00.210324p (Harpia)**, compilation keys should be replaced by _Token RPO_.")}
+        />
+
       </TdsForm>
     </TdsPage>
   );

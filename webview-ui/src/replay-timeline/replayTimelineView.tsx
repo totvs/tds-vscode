@@ -26,7 +26,7 @@ enum ReceiveCommandEnum {
 }
 type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TReplayTimelineModel>;
 
-const tableElement: RefObject<HTMLTableElement> | undefined = undefined;
+//const tableElement: RefObject<HTMLTableElement> | undefined = undefined;
 
 export default function ReplayTimelineView() {
   const methods = useForm<TReplayTimelineModel>({
@@ -167,7 +167,8 @@ export default function ReplayTimelineView() {
   };
 
   const scrollToLineIfNeeded = (id: number) => {
-    const targetRow = document.getElementById(`tblTimeLine_id_${id}`);
+    //const row: TReplayTimelineData = timeline[0];
+    const targetRow = document.getElementById("tblTimeLine_header");
 
     if (targetRow) {
       scrollIntoViewIfNeeded(targetRow);
@@ -224,7 +225,7 @@ export default function ReplayTimelineView() {
     return (
       <TdsDataGrid
         id={"grdSources"}
-        columnDef={columnsDef()}
+        columnsDef={columnsDef()}
         dataSource={sources.sources}
         options={{
           bottomActions: undefined,
@@ -251,12 +252,16 @@ export default function ReplayTimelineView() {
         >
           <TdsTable
             id={"tblTimeLine"}
-            headerColumns={["Time", "Source", "Line"]}
-            widthColumns={[1, 3, 1]}
-            dataColumns={["timeStamp", "srcName", "line"]}
-            dataSource={timeline}
+            columns={[
+              { type: "string", label: "Time", width: "2fr" },
+              { type: "string", label: "Source", width: "*fr" },
+              { type: "number", label: "Line", width: "2fr" }
+            ]}
+            dataSource={timeline.map((row: TReplayTimelineData) => [
+              row.timeStamp, row.srcName, row.line
+            ])}
             highlightRows={[paginator.currentLine]}
-            highlightGroup={{
+            highlightGroups={{
               "tds-source-not-found": timeline
                 .map((element: TReplayTimelineData, index: number) => {
                   if (!element.srcFoundInWS) {
@@ -264,9 +269,8 @@ export default function ReplayTimelineView() {
                   }
                 }).filter((value: number | undefined) => value !== undefined)
             }}
-            _ref={tableElement}
             onClick={(
-              target: HTMLElement,
+              _target: HTMLElement,
               rowIndex: number) => {
               sendSetTimeline(methods.getValues(), timeline[rowIndex].id);
             }

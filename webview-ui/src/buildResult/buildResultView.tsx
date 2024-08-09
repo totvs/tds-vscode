@@ -37,7 +37,7 @@ function columnsDef(): TTdsDataGridColumnDef[] {
       width: "8fr",
       sortable: true,
       sortDirection: "asc",
-      row: 0
+      rowGroup:  0
     },
     {
       type: "string",
@@ -46,7 +46,7 @@ function columnsDef(): TTdsDataGridColumnDef[] {
       width: "10fr",
       sortable: true,
       sortDirection: "",
-      row: 0
+      rowGroup:  0
     },
     {
       type: "string",
@@ -55,7 +55,7 @@ function columnsDef(): TTdsDataGridColumnDef[] {
       width: "4fr",
       sortable: true,
       sortDirection: "",
-      row: 0
+      rowGroup:  0
     },
     {
       type: "string",
@@ -64,7 +64,7 @@ function columnsDef(): TTdsDataGridColumnDef[] {
       width: "10fr",
       sortable: true,
       sortDirection: "",
-      row: 1
+      rowGroup:  1
     },
     {
       type: "string",
@@ -73,7 +73,7 @@ function columnsDef(): TTdsDataGridColumnDef[] {
       width: "10fr",
       sortable: true,
       sortDirection: "",
-      row: 1
+      rowGroup:  1
     }
   ];
 
@@ -81,16 +81,11 @@ function columnsDef(): TTdsDataGridColumnDef[] {
 }
 
 export default function BuildResultView() {
+  const [_model, setModel] = React.useState<TBuildResultModel>(EMPTY_BUILD_RESULT_MODEL());
   const methods = useForm<TBuildResultModel>({
     defaultValues: EMPTY_BUILD_RESULT_MODEL(),
     mode: "all"
   })
-
-  const { fields, remove, insert } = useFieldArray(
-    {
-      control: methods.control,
-      name: "buildInfos"
-    });
 
   const onSubmit: SubmitHandler<TBuildResultModel> = (data) => {
     // no applicable
@@ -106,7 +101,7 @@ export default function BuildResultView() {
           const errors: any = command.data.errors;
 
           model.timeStamp = new Date(model.timeStamp);
-
+          setModel(model); //força atualização.TODO: rever porque o setDataModel atualiza o componente, mas não dispara 'render'
           setDataModel<TBuildResultModel>(methods.setValue, model);
           setErrorModel(methods.setError, errors);
 
@@ -132,7 +127,7 @@ export default function BuildResultView() {
     });
   }
 
-  const model: TBuildResultModel = methods.getValues();
+  //const model: TBuildResultModel = methods.getValues();
   const formActions: IFormAction[] = [getCloseActionForm()];
   formActions.push({
     id: "btnExportTxt",
@@ -151,15 +146,15 @@ export default function BuildResultView() {
         onSubmit={onSubmit}
         actions={formActions}
         description={
-          tdsVscode.l10n.t("Compilation results made at [{0}]", tdsVscode.l10n.formatDate(model.timeStamp)) +
-            (model.returnCode != -1)
+          tdsVscode.l10n.t("Compilation results made at [{0}]", tdsVscode.l10n.formatDate(_model.timeStamp)) +
+            (_model.returnCode != -1)
             ? ""
             : `**${tdsVscode.l10n.t("Compilation aborted.")}**`
         }>
 
         <TdsDataGrid id={"result_dataGrid"}
-          columnDef={columnsDef()}
-          dataSource={model.buildInfos}
+          columnsDef={columnsDef()}
+          dataSource={_model.buildInfos}
           options={{
             grouping: false,
             rowSeparator: true

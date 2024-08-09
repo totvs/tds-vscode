@@ -139,7 +139,7 @@ export default function ImportSourcesOnlyResultView() {
         {model.sourceObj.length == 0
           ? <TdsProgressRing size="full" />
           : <TdsDataGrid id={""}
-            columnDef={columnsDef()}
+            columnsDef={columnsDef()}
             dataSource={model.sourceObj}
             options={{
             }}

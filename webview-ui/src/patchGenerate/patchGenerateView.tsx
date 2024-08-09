@@ -221,7 +221,7 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
         <TdsDataGrid
           key={`data_grid_${id}`}
           id={id}
-          columnDef={columnsDef(props.isServerP20OrGreater)}
+          columnsDef={columnsDef(props.isServerP20OrGreater)}
           dataSource={dataSource}
           options={{
             topActions: showIncludeTRes ? topActions : [],

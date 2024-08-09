@@ -209,7 +209,7 @@ export default function RepositoryLogView() {
                   <section className="tds-row-container">
                     <TdsDataGrid
                       id={"grd_pathInfo"}
-                      columnDef={[
+                      columnsDef={[
                         {
                           name: "name",
                           label: "Program",
