@@ -44,7 +44,7 @@
     "clean": "npx -y rimraf -v build out",
     "compile": "npm-run-all compile:*",
     "compile:parse_4gl": "npx --yes pegjs -o ./src/parser/4gl-parser.js ./syntaxes/4gl.pegjs",
-    "compile:all": "webpack --mode=development",
+    "compile:all": "webpack --mode=development --stats-error-details",
     "--BUILD--": "",
     "build": "npm-run-all build:*",
     "build:parse_4gl": "npx --yes pegjs -O speed -o ./src/parser/4gl-parser.js ./syntaxes/4gl.pegjs",
@@ -69,7 +69,7 @@
   "dependencies": {
     "@totvs/tds-da": "^1.2.71",
     "@totvs/tds-ls": "^2.0.16",
-    "@totvs/tds-webtoolkit": "^0.0.10",
+    "@totvs/tds-webtoolkit": "file:../tds-webtoolkit",
     "@types/vscode": "^1.85.0",
     "@vscode/codicons": "^0.0.36",
     "@vscode/debugadapter": "^1.66.0",
@@ -84,7 +84,7 @@
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-hook-form": "^7.52.1",
+    "react-hook-form": "=7.51.4",
     "strip-json-comments": "^5.0.1",
     "terser-webpack-plugin": "^5.3.10",
     "tmp": "^0.2.3",
@@ -953,6 +953,15 @@
         }
       },
       {
+        "command": "tds-monitor.open-web-monitor",
+        "title": "%tds-monitor.open-web-monitor%",
+        "category": "TOTVSMonitor",
+        "icon": {
+          "light": "resources/light/monitor.png",
+          "dark": "resources/dark/monitor.png"
+        }
+      },
+      {
         "command": "totvs-developer-studio.open-repositoryLog",
         "title": "%totvs-developer-studio.open-rpoinfo%",
         "category": "TOTVS",
@@ -1537,6 +1546,11 @@
         },
         {
           "command": "tds-monitor.open-monitor-view",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "AAtotvsServer@3"
+        },
+        {
+          "command": "tds-monitor.open-web-monitor",
           "when": "view == totvs_server && viewItem == serverItem",
           "group": "AAtotvsServer@3"
         },
