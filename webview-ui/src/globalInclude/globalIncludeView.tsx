@@ -159,6 +159,13 @@ export default function GlobalIncludeView() {
           ))
           }
         </VSCodeDataGrid>
+        {
+          //TODO: melhorar e adicionar link (cuidado que pode ser por na área de trabalho)
+          //servers.md#Local de gravação de *servers.json*
+          //| Windows* |  `%USERPROFILE%\.totvsls\settings.json` |
+          //| MacOS |`$HOME/.totvsls/settings.json` |
+          //| Linux | `$HOME/.totvsls/settings.json`
+        }
         <p>{tdsVscode.l10n.t("These settings can also be changed in {0}", "%HOME_USER%/.totvsls/servers.json")}</p>
       </TdsForm>
     </TdsPage>

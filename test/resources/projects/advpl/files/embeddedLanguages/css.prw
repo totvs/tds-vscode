@@ -5,6 +5,7 @@ user Function css()
 	local myVar := "Variavel preenchida manualmente via ADVPL"
 	local cCode
 
+/*
 	BeginContent var cCode as CSS
 	body {
 	background-color: lightblue;
@@ -21,5 +22,5 @@ user Function css()
 		font-size: 20px;
 		}
 	endContent
-
+*/
 return myVar

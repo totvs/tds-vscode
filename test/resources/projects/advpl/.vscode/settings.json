@@ -1,12 +1,7 @@
 {
-    "totvsLanguageServer.welcomePage": false,
-    "totvsLanguageServer.editor.show.notification": "all",
-    "totvsLanguageServer.trace.debug": "off",
-    "totvsLanguageServer.trace.server": "verbose",
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
         "--verbose",
-        "--wait-for-attach=20",
         "--debug-ls",
         "--trace-compile",
         "--log-file-append=totvsls2.log"
@@ -15,9 +10,9 @@
     "totvsLanguageServer.workspaceServerConfig": false,
     "totvsLanguageServer.formatLocale": "pt-BR",
     "esp.mainAdvplExtension": "totvs.tds-vscode",
-    "totvsLanguageServer.editor.linter.includes": "M:\\protheus\\includes;m:\\protheus\\includes_tlpp",
-    "totvsLanguageServer.showCompileResult": "yesAlways",
+    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes;m:\\protheus\\includes_tlpp",
     "totvsLanguageServer.usageInfoConfig": true,
     "totvsLanguageServer.editor.linter.behavior": "enable",
-    "totvsLanguageServer.editor.index.cache": "onDisk"
+    "totvsLanguageServer.editor.index.cache": "onDisk",
+    "totvsLanguageServer.showCompileResult": "yesAlways"
 }

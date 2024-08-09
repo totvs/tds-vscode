@@ -150,7 +150,7 @@ export default function PatchEditorView() {
       >
         <TdsDataGrid
           id="patchEditorGrid"
-          columnDef={objectColumns()}
+          columnsDef={objectColumns()}
           dataSource={dataSource}
           options={{
             bottomActions: bottomActions
