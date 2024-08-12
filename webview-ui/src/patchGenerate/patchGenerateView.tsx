@@ -18,7 +18,7 @@ import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
 
 import "./patchGenerate.css";
 import React from "react";
-import { TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsLabelField, TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
+import { TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsLabelField, TdsPage, TdsProgressRing, tdsVscode } from "@totvs/tds-webtoolkit";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsTextField, setDataModel, setErrorModel, TdsSelectionFolderField } from "@totvs/tds-webtoolkit";
@@ -67,9 +67,12 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
   })
   const watchObjectsLeft: any = methods.watch("objectsLeft");
   const watchObjectsRight: any = methods.watch("objectsRight");
+  // const [objectsLeft, setObjectsLeft]: any = React.useState<TInspectorObject[]>([]);
+  // const [objectsRight, setObjectsRight]: any = React.useState<TInspectorObject[]>([]);
 
   const onSubmit: SubmitHandler<TGeneratePatchFromRpoModel> = (data) => {
     data.objectsRight = data.objectsRight.filter((object: TInspectorObject) => object.source.length > 0);
+    data.objectsLeft = data.objectsLeft.filter((object: TInspectorObject) => object.source.length > 0);
 
     sendSaveAndClose(data);
   }
@@ -175,9 +178,12 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
             array[index].checked = false;
           });
 
+          selectedObjects = {}
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);
-          selectedObjects = {}
+          // setObjectsLeft(model.objectsLeft);
+          // setObjectsRight(model.objectsRight);
+
           break;
         default:
           break;
@@ -201,16 +207,42 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
     });
   }
 
-  const topActions: TTdsDataGridAction[] = [{
-    id: "btnIncludeTRes",
-    caption: methods.getValues("includeTRes") ? tdsVscode.l10n.t("Exclude TRES") : tdsVscode.l10n.t("Include TRES"),
-    type: "button",
-    onClick: () => {
-      sendIncludeTRes(methods.getValues(), !methods.getValues("includeTRes"));
-    }
-  }];
+  const sendImportTXT = (model: any) => {
+    tdsVscode.postMessage({
+      command: PatchGenerateCommandEnum.ImportTxt,
+      data: {
+        model: model
+      }
+    });
+  }
 
-  const selectResource = (id: string, label: string, dataSource: any[], showIncludeTRes: boolean, modelField: string) => {
+  const topActionsLeft: TTdsDataGridAction[] = [
+    {
+      id: "btnIncludeTRes",
+      caption: methods.getValues("includeTRes") ? tdsVscode.l10n.t("Exclude TRES") : tdsVscode.l10n.t("Include TRES"),
+      type: "button",
+      onClick: () => {
+        sendIncludeTRes(methods.getValues(), !methods.getValues("includeTRes"));
+      }
+    }
+  ];
+
+  const topActionsRight: TTdsDataGridAction[] = [
+    {
+      id: "btnImportTxt",
+      caption: tdsVscode.l10n.t("Import (TXT)"),
+      type: "button",
+      onClick: () => {
+        sendImportTXT({
+          ...methods.getValues(),
+          // objectsLeft: objectsLeft,
+          // objectsRight: objectsRight
+        });
+      }
+    }
+  ];
+
+  const selectResource = (id: string, label: string, dataSource: any[], topActions: TTdsDataGridAction[]) => {
 
     return (
       <section className="tds-grid-container select-resource-component">
@@ -224,13 +256,15 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
           columnsDef={columnsDef(props.isServerP20OrGreater)}
           dataSource={dataSource}
           options={{
-            topActions: showIncludeTRes ? topActions : [],
+            topActions: topActions,
             grouping: false
           }}>
         </TdsDataGrid>
       </section>
     )
   }
+
+  const model: TGeneratePatchFromRpoModel = methods.getValues();
 
   return (
     <TdsPage>
@@ -261,30 +295,39 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
         </section>
 
         <section className="tds-row-container" id="selectGrid" >
-          {watchObjectsLeft && selectResource("objects_left", tdsVscode.l10n.t("RPO Objects"),
-            methods.getValues("objectsLeft"), true, "objectsLeft")}
+          {(watchObjectsLeft && model.objectsLeft.length == 0) && <TdsProgressRing size="full" />}
+          {(watchObjectsLeft && model.objectsLeft.length > 0) && selectResource("objects_left", tdsVscode.l10n.t("RPO Objects"),
+            model.objectsLeft, topActionsLeft)}
 
           <section className="tds-row-container-column" id="directionButtons" >
             <VSCodeButton appearance="icon" onClick={() => {
-              const objects = methods.getValues("objectsLeft").filter((value) =>
+              const objects = model.objectsLeft.filter((value) =>
                 selectedObjects["objects_left"].indexOf(value.source) > -1);
 
-              sendToRight(methods.getValues(), objects);
+              sendToRight({
+                ...methods.getValues(),
+                // objectsLeft: objectsLeft,
+                // objectsRight: objectsRight
+              }, objects);
             }} >
               <span className="codicon codicon-arrow-right"></span>
             </VSCodeButton>
             <VSCodeButton appearance="icon" onClick={() => {
-              const objects = methods.getValues("objectsRight").filter((value) =>
+              const objects = model.objectsRight.filter((value) =>
                 selectedObjects["objects_right"].indexOf(value.source) > -1);
 
-              sendToLeft(methods.getValues(), objects);
+              sendToLeft({
+                ...methods.getValues(),
+                // objectsLeft: objectsLeft,
+                // objectsRight: objectsRight
+              }, objects);
             }} >
               <span className="codicon codicon-arrow-left"></span>
             </VSCodeButton>
           </section>
 
-          {watchObjectsRight && selectResource("objects_right", tdsVscode.l10n.t("To patch"),
-            methods.getValues("objectsRight"), false, "objectsRight")}
+          {(watchObjectsLeft && model.objectsLeft.length > 0) && model.objectsRight && selectResource("objects_right", tdsVscode.l10n.t("To patch"),
+            model.objectsRight, topActionsRight)}
         </section>
       </TdsForm>
     </TdsPage>

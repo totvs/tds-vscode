@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-//TODO: Revisar processo. Aguardando documentação sobre regras de aplicação/geração de pacotes
-
 import * as vscode from "vscode";
 import * as fse from "fs-extra";
 import * as path from "path";
@@ -25,6 +23,7 @@ import { IObjectData, IPatchResult, sendInspectorObjectsRequest, sendPatchGenera
 import { ResponseError } from "vscode-languageclient";
 import { CommonCommandFromWebViewEnum, EMPTY_GENERATE_PATCH_FROM_RPO_MODEL, PatchGenerateCommand, PatchGenerateCommandEnum, ReceiveMessage, TFieldErrors, TGeneratePatchFromRpoModel, TInspectorObject, isErrors } from "@tds-shared/index";
 import { TdsPanel } from "./panel";
+import { languageClient } from "../extension";
 
 interface IGeneratePatchOptions {
   fromRpo: boolean;
@@ -178,6 +177,58 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
         );
 
         break;
+      case PatchGenerateCommandEnum.ImportTxt:
+        const filters: {} = {
+          "Text": ["txt"],
+          "All files": ["*"],
+        };
+
+        const options: vscode.OpenDialogOptions = {
+          canSelectMany: false,
+          canSelectFiles: true,
+          canSelectFolders: false,
+          //defaultUri: ,
+          title: vscode.l10n.t("Import Text File"),
+          openLabel: vscode.l10n.t("Import"),
+          filters: filters
+        };
+
+        await vscode.window.showOpenDialog(options).then((fileUri) => {
+          if (fileUri == undefined) {
+            return;
+          }
+
+          const file = fileUri[0].fsPath;
+          let count: number = 0;
+          fse.readFileSync(file, "utf8").split(/\n/i).forEach((line) => {
+            line = line.trim();
+            if (line == "") {
+              //ignora
+            } else if (line.startsWith("#")) {
+              languageClient.outputChannel.appendLine(vscode.l10n.t("Source {0} ignored. Line: {1}", line, count));
+            } else {
+              const indexSource: number = data.model.objectsLeft.findIndex((element: TInspectorObject) => element.source.toLowerCase() == line.toLowerCase());
+              line = path.basename(line);
+
+              if (indexSource > -1) {
+                data.model.objectsRight.push({
+                  ...data.model.objectsLeft[indexSource],
+                  checked: true
+                });
+
+                //delete data.model.objectsLeft[indexSource];
+              } else {
+                languageClient.outputChannel.appendLine(vscode.l10n.t("Source {0} not found in RPO. Line: {1}", line, count));
+              }
+            }
+            count++;
+          });
+
+          this.sendUpdateModel(data.model, undefined);
+          return fileUri
+        });
+        break;
+
       case PatchGenerateCommandEnum.MoveElements:
         const selectedObject: TInspectorObject[] = data.selectedObject;
         const direction: string = data.direction;
