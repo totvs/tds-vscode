@@ -724,6 +724,12 @@
         "category": "TOTVS"
       },
       {
+        "command": "totvs-developer-studio.configure.replay",
+        "title": "%tds.package.configure.replay.title%",
+        "description": "%tds.package.configure.replay.description%",
+        "category": "TOTVS"
+      },
+      {
         "command": "totvs-developer-studio.configure.showSourcesInReplay",
         "title": "Show sources",
         "description": "Show used sources in TDS-Replay file",

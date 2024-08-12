@@ -161,6 +161,14 @@ export class ReplayTimelinePanel extends TdsPanel<TReplayTimelineModel, ReplayTi
         }
         break;
 
+      case ReplayTimelineCommandEnum.IgnoreSourceNotFound:
+        if (this._options.debugSession) {
+          this._options.isIgnoreSourceNotFound = data.model.ignoresSourcesNotFound;
+          (this._options.debugSession as any).ignoresSourcesNotFound = data.model.ignoresSourcesNotFound;
+          vscode.commands.executeCommand("workbench.action.debug.restart")
+        }
+        break;
+
     }
   }
 

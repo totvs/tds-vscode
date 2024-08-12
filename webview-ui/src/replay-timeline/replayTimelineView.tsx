@@ -16,7 +16,7 @@ limitations under the License.
 
 import "./replayTimeline.css";
 import { getCloseActionForm, IFormAction, TdsDataGrid, TdsDialog, TdsPage, TdsPaginator, TdsProgressRing, TdsTable, tdsVscode, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
-import React, { RefObject } from "react";
+import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { TdsForm, setDataModel } from "@totvs/tds-webtoolkit";
@@ -25,8 +25,6 @@ import { EMPTY_REPLAY_TIMELINE_MODEL, ReplayTimelineCommandEnum, TImportSourcesO
 enum ReceiveCommandEnum {
 }
 type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TReplayTimelineModel>;
-
-//const tableElement: RefObject<HTMLTableElement> | undefined = undefined;
 
 export default function ReplayTimelineView() {
   const methods = useForm<TReplayTimelineModel>({
@@ -104,6 +102,15 @@ export default function ReplayTimelineView() {
   const sendShowSources = (model: any) => {
     tdsVscode.postMessage({
       command: ReplayTimelineCommandEnum.OpenSourcesDialog,
+      data: {
+        model: model
+      }
+    });
+  }
+
+  const sendIgnoreSourcesNotFound = (model: any) => {
+    tdsVscode.postMessage({
+      command: ReplayTimelineCommandEnum.IgnoreSourceNotFound,
       data: {
         model: model
       }
@@ -190,7 +197,7 @@ export default function ReplayTimelineView() {
       type: "checkbox",
       onClick: () => {
         console.log("chkIgnoreNotFound");
-        //sendExport(methods.getValues(), "TXT");
+        sendIgnoreSourcesNotFound({ ...methods.getValues(), ignoresSourcesNotFound: !methods.getValues("ignoresSourcesNotFound") });
       }
     }
   ]
@@ -199,6 +206,13 @@ export default function ReplayTimelineView() {
     function columnsDef(): TTdsDataGridColumnDef[] {
 
       const result: TTdsDataGridColumnDef[] = [
+        {
+          type: "boolean",
+          name: "selected",
+          label: tdsVscode.l10n.t(" "),
+          width: "1fr",
+          sortable: false
+        },
         {
           type: "string",
           name: "name",
@@ -240,6 +254,35 @@ export default function ReplayTimelineView() {
     )
   }
 
+  const dlgSourceActions: IFormAction[] = [
+    {
+      id: "btnCloseDialog",
+      caption: tdsVscode.l10n.t("Close"),
+      type: "button",
+      onClick: () => {
+        setOpenSourceDialog(false)
+      }
+    },
+    {
+      id: "btnApplyDialog",
+      caption: tdsVscode.l10n.t("Apply"),
+      type: "button",
+      onClick: () => {
+        sendShowSources(methods.getValues());
+        setOpenSourceDialog(false)
+      }
+    },
+    {
+      id: "btnResetDialog",
+      caption: tdsVscode.l10n.t("Reset"),
+      type: "button",
+      onClick: () => {
+        methods.getValues("sources").selected = [];
+      }
+    },
+
+  ];
+
   return (
     <TdsPage>
       {!timeline || timeline.length == 0
@@ -264,6 +307,7 @@ export default function ReplayTimelineView() {
             highlightGroups={{
               "tds-source-not-found": timeline
                 .map((element: TReplayTimelineData, index: number) => {
+                  console.log(element);
                   if (!element.srcFoundInWS) {
                     return index;
                   }
@@ -290,12 +334,19 @@ export default function ReplayTimelineView() {
       }
       {openSourceDialog && <TdsDialog
         title={tdsVscode.l10n.t("Sources")}
-        onClose={(ok: boolean, data: any) => { setOpenSourceDialog(false); }}
+        onClose={(ok: boolean, data: any) => {
+          console.log(">>>>>>> ", ok,)
+          if (ok) {
+            sendShowSources(methods.getValues());
+          }
+
+          setOpenSourceDialog(false);
+        }}
       >
         <TdsForm<TReplayTimelineModel>
           methods={methods}
           onSubmit={onSubmit}
-          actions={[getCloseActionForm()]}
+          actions={dlgSourceActions}
         >
           {buildShowSourcesDialog()}
         </TdsForm>

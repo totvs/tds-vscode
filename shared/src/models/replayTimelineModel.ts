@@ -26,6 +26,7 @@ export enum ReplayTimelineCommandEnum {
 	ShowMessageDialog = 'showMessageDialog',
 	SetTimeline = "SetTimeline",
 	ChangePage = "ChangePage",
+	IgnoreSourceNotFound = "IgnoreSourceNotFound",
 	UpdateProgressRing = "UpdateProgressRing"
 }
 
@@ -54,11 +55,13 @@ export type TReplayTimelineModel = TAbstractModelPanel & {
 		showDialog: boolean;
 		sources: TImportSourcesOnlyResultData[];
 		selected: string[];
-	}
+	},
+	ignoresSourcesNotFound: boolean;
 }
 
 export function EMPTY_REPLAY_TIMELINE_MODEL(): TReplayTimelineModel {
 	return {
+		ignoresSourcesNotFound: false,
 		paginator: {
 			currentLine: 0,
 			currentPage: 0,

@@ -298,6 +298,7 @@ function automaticLauncher(fileReplay: string, importOnlySource: boolean): Debug
     excludeSources: "",
     importOnlySourcesInfo: importOnlySource,
     forceImport: true,
+    ignoreSourcesNotFound: false,
     //waitForAttach: 30000,
   };
 }
