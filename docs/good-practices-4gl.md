@@ -1,1 +1,0 @@
-# 4GL: Boas práticas

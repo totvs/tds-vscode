@@ -1,1 +1,0 @@
-# ADV/PL: Boas práticas
