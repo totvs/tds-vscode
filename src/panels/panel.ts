@@ -177,8 +177,6 @@ export abstract class TdsPanel<M extends TAbstractModelPanel, O extends any = {}
 					filters["All files"] = ["*"];
 				}
 
-				//selectionProps.fileSystem = "serverFS";
-
 				const options: vscode.OpenDialogOptions = {
 					canSelectMany: selectionProps.canSelectMany,
 					canSelectFiles: selectionProps.canSelectFiles,
