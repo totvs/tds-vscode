@@ -44,7 +44,7 @@ export default function ApplyPatchView() {
     },
     mode: "all"
   })
-
+  const [showOldFiles, setShowOldFiles] = React.useState<boolean>(false);
   const { fields, remove, insert } = useFieldArray(
     {
       control: methods.control,
@@ -72,6 +72,17 @@ export default function ApplyPatchView() {
 
           setDataModel<TApplyPatchModel>(methods.setValue, model);
           setErrorModel(methods.setError, errors);
+
+          let haveOldSourceError: boolean = false;
+          Object.keys(errors).forEach((key) => {
+            if (errors[key].message !== undefined) {
+              if (errors[key].message == tdsVscode.l10n.t("Source/resource files in patch older than RPO.")) {
+                haveOldSourceError = true;
+              }
+            }
+          });
+
+          setShowOldFiles(haveOldSourceError)
 
           break;
         default:
@@ -144,86 +155,112 @@ export default function ApplyPatchView() {
         />
 
         <section className="tds-row-container" >
-          <VSCodeDataGrid id="patchGrid" grid-template-columns="60px 1fr 2fr">
+          <VSCodeDataGrid id="patchGrid" grid-template-columns="90px 1fr 2fr">
             {model && model.patchFiles.map((row: TPatchFileData, index: number) => (
-              <VSCodeDataGridRow key={index}>
-                {row.uri !== undefined &&
-                  <>
-                    <VSCodeDataGridCell grid-column="1">
-                      {row.isProcessing
-                        ? <TdsProgressRing size="small" />
-                        : <>
-                          <VSCodeButton appearance="icon"
-                            onClick={() => removePatchFile(index)} >
-                            <span className="codicon codicon-close"></span>
-                          </VSCodeButton>
-                          <VSCodeButton appearance="icon"
-                            onClick={() => infoPatchFile(index)} >
-                            <span className="codicon codicon-info"></span>
-                          </VSCodeButton>
-                        </>
-                      }
-                      {row.validation == "OK" &&
-                        <VSCodeButton appearance="icon" >
-                          <span className="codicon codicon-check"></span>
-                        </VSCodeButton>
-                      }
-                    </VSCodeDataGridCell>
-                    <VSCodeDataGridCell grid-column="2">
-                      <TdsSimpleTextField
-                        name={`patchFiles.${index}.name`}
-                        readOnly={true}
-                        info={row.name}
-                      />
-                    </VSCodeDataGridCell>
-                    <VSCodeDataGridCell grid-column="3">
-                      <TdsSimpleTextField
-                        name={`patchFiles.${index}.uri`}
-                        readOnly={true}
-                        info={row.uri}
-                      />
-                    </VSCodeDataGridCell>
-                  </>
-                }
-                {((row.uri == undefined) && (index !== indexFirstPathFree)) &&
-                  <>
-                    <VSCodeDataGridCell grid-column="1">
-                      &nbsp;
-                    </VSCodeDataGridCell>
-                    <VSCodeDataGridCell grid-column="2">
-                      &nbsp;
-                    </VSCodeDataGridCell>
-                  </>
-                }
-                {(index === indexFirstPathFree) &&
-                  <>
-                    <VSCodeDataGridCell grid-column="1">
-                      &nbsp;
-                    </VSCodeDataGridCell>
-                    <VSCodeDataGridCell grid-column="2">
-                      <TdsSelectionFileField
-                        name={`btnSelectFile.${index}`}
-                        canSelectMany={true}
-                        title={tdsVscode.l10n.t("Select the update package(s)")}
-                        filters={
-                          {
-                            "Patch file": ["PTM", "ZIP", "UPD"]
-                          }
+              <>
+                <VSCodeDataGridRow key={index}>
+                  {row.uri !== undefined &&
+                    <>
+                      <VSCodeDataGridCell grid-column="1">
+                        {row.isProcessing
+                          ? <TdsProgressRing size="small" />
+                          : <>
+                            <VSCodeButton appearance="icon"
+                              onClick={() => removePatchFile(index)} >
+                              <span className="codicon codicon-close"></span>
+                            </VSCodeButton>
+                            <VSCodeButton appearance="icon"
+                              onClick={() => infoPatchFile(index)} >
+                              <span className="codicon codicon-info"></span>
+                            </VSCodeButton>
+                          </>
                         }
-                        readOnly={isProcessing}
-                      />
+                        {row.validation == "OK" &&
+                          <VSCodeButton appearance="icon" >
+                            <span className="codicon codicon-check"></span>
+                          </VSCodeButton>
+                        }
+                      </VSCodeDataGridCell>
+                      <VSCodeDataGridCell grid-column="2">
+                        <TdsSimpleTextField
+                          key={`patchFiles.${index}.name`}
+                          name={`patchFiles.${index}.name`}
+                          readOnly={true}
+                          info={row.name}
+                        />
+                      </VSCodeDataGridCell>
+                      <VSCodeDataGridCell grid-column="3">
+                        <TdsSimpleTextField
+                          key={`patchFiles.${index}.uri`}
+                          name={`patchFiles.${index}.uri`}
+                          readOnly={true}
+                          info={row.uri}
+                        />
+                      </VSCodeDataGridCell>
+                    </>
+                  }
+                  {((row.uri == undefined) && (index !== indexFirstPathFree)) &&
+                    <>
+                      <VSCodeDataGridCell grid-column="1">
+                        &nbsp;
+                      </VSCodeDataGridCell>
+                      <VSCodeDataGridCell grid-column="2">
+                        &nbsp;
+                      </VSCodeDataGridCell>
+                    </>
+                  }
+                  {(index === indexFirstPathFree) &&
+                    <>
+                      <VSCodeDataGridCell grid-column="1">
+                        &nbsp;
+                      </VSCodeDataGridCell>
+                      <VSCodeDataGridCell grid-column="2">
+                        <TdsSelectionFileField
+                          name={`btnSelectFile.${index}`}
+                          canSelectMany={true}
+                          title={tdsVscode.l10n.t("Select the update package(s)")}
+                          filters={
+                            {
+                              "Patch file": ["PTM", "ZIP", "UPD"]
+                            }
+                          }
+                          readOnly={isProcessing}
+                        />
+                      </VSCodeDataGridCell>
+                    </>
+                  }
+                </VSCodeDataGridRow>
+                {methods.getFieldState(`patchFiles.${index}.name`).error &&
+                  <VSCodeDataGridRow key={`${index}_error`} >
+                    <VSCodeDataGridCell grid-column="1">
+                      &nbsp;
                     </VSCodeDataGridCell>
-                  </>
+                    <VSCodeDataGridCell grid-column="span 2">
+                      {methods.getFieldState(`patchFiles.${index}.name`).error.message}
+                    </VSCodeDataGridCell>
+                  </VSCodeDataGridRow>
                 }
-              </VSCodeDataGridRow>
+              </>
             ))}
+
           </VSCodeDataGrid>
         </section>
 
-        <TdsSimpleCheckBoxField
+        {showOldFiles && <TdsSimpleCheckBoxField
           name="applyOldFiles"
           label={tdsVscode.l10n.t("Apply old files")}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            const patchFiles: TPatchFileData[] = methods.getValues("patchFiles");
+            console.log("old >>>>>>")
+            patchFiles.forEach((value: TPatchFileData, index: number) => {
+              const error: string = methods.getFieldState(`patchFiles.${index}.name`).error.message
+              if (error == tdsVscode.l10n.t("Source/resource files in patch older than RPO.")) {
+                methods.clearErrors(`patchFiles.${index}.name`);
+              }
+            })
+          }}
         />
+        }
       </TdsForm>
     </TdsPage >
   );

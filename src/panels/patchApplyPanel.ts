@@ -199,7 +199,7 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
             if (data.model.patchFiles[i].isProcessing) {
               const server = ServersConfig.getCurrentServer();
 
-              await this.doValidatePatch(server, data.model.patchFiles[i], i, errors);
+              await this.doValidatePatch(server, data.model.patchFiles[i], i, data.model.applyOldFiles, errors);
 
               data.model.patchFiles[i].isProcessing = false;
             }
@@ -259,7 +259,7 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
               message: `(${index + 1}/${model.patchFiles.length}) ${element.name}`,
             });
 
-            await this.doValidatePatch(server, element, index, errors);
+            await this.doValidatePatch(server, element, index, model.applyOldFiles, errors);
 
             if (this._options.operation == OperationApplyPatchEnum.VALIDATE) {
               element.isProcessing = false;
@@ -304,7 +304,7 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
           model.patchFiles[index].isProcessing = true;
           this.sendUpdateModel(model, errors);
 
-          this.doApplyPatch(server, element, index, errors);
+          this.doApplyPatch(server, element, index, model.applyOldFiles, errors);
 
           model.patchFiles[index].isProcessing = false;
           this.sendUpdateModel(model, errors);
@@ -322,7 +322,7 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
     return !isErrors(errors);
   }
 
-  async doValidatePatch(server: ServerItem, patchFile: TPatchFileData, index: number, errors: TFieldErrors<TApplyPatchModel>) {
+  async doValidatePatch(server: ServerItem, patchFile: TPatchFileData, index: number, applyOldFile: boolean, errors: TFieldErrors<TApplyPatchModel>) {
 
     if (!fse.existsSync(patchFile.uri)) {
       errors[`patchFiles.${index}.name`] = { type: "validate", message: "File nor found" };
@@ -339,7 +339,11 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
       if (response.errorCode !== PathErrorCodes.Ok) {
         const msg: string = pathErrorCodeToString(response.errorCode, response.message);
 
-        errors[`patchFiles.${index}.name`] = { type: "validate", message: response.message };
+        if (applyOldFile && response.errorCode == PathErrorCodes.OldResources) {
+          //ignora o erro
+        } else {
+          errors[`patchFiles.${index}.name`] = { type: "validate", message: response.message };
+        }
       }
 
       if (response.errorCode !== PathErrorCodes.OldResources
@@ -365,14 +369,15 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
     }
   }
 
-  async doApplyPatch(server: ServerItem, patchFile: TPatchFileData, index: number, errors: TFieldErrors<TApplyPatchModel>) {
+  async doApplyPatch(server: ServerItem, patchFile: TPatchFileData, index: number, applyOld: boolean, errors: TFieldErrors<TApplyPatchModel>) {
 
     if (!fse.existsSync(vscode.Uri.parse(patchFile.uri).fsPath)) {
       errors[`patchFiles.${index}.name`] = { type: "validate", message: "File nor found" };
       return;
     }
 
-    const response: IPatchApplyResult = await sendApplyPatchRequest(server, vscode.Uri.parse(patchFile.uri), false, "only_new");
+    const response: IPatchApplyResult = await sendApplyPatchRequest(server, vscode.Uri.parse(patchFile.uri),
+      false, !applyOld ? "" : "only_new");
 
     if (response.errorCode == PathErrorCodes.Ok) {
       vscode.window.showInformationMessage(vscode.l10n.t("Patch applied."));
