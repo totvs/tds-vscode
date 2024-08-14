@@ -237,19 +237,27 @@ export function patchGenerateFromFolder(context: any) {
                 vscode.window.showErrorMessage(err);
               }
             );
-            commandBuildFile(context, false, allFilesFullPath);
-            let destFolder = fileUri[0].toString();
-            sendPatchGenerateMessage(
-              server,
-              "",
-              destFolder,
-              3,
-              patchName,
-              allFilesNames
-            ).then(() => {
-              vscode.window.showInformationMessage(vscode.l10n.t("Patch file generated"));
-            });
-            //});
+            vscode.window.showWarningMessage(vscode.l10n.t("Would you like to compile all the files?"),
+              { modal: true },
+              vscode.l10n.t("Yes")
+            ).then(
+              (result) => {
+                if (result === vscode.l10n.t("Yes")) {
+                  commandBuildFile(context, false, allFilesFullPath);
+                }
+                let destFolder = fileUri[0].toString();
+                sendPatchGenerateMessage(
+                  server,
+                  "",
+                  destFolder,
+                  3,
+                  patchName,
+                  allFilesNames
+                ).then(() => {
+                  vscode.window.showInformationMessage(vscode.l10n.t("Patch file generated"));
+                });
+              }
+            );
           });
       }
     });
@@ -290,6 +298,8 @@ function readFiles(
   allFilesFullPath: Array<string>,
   onError: any
 ) {
+  let ignore = fs.existsSync(path.join(dirname, ".tdspatchignore"))
+  if (ignore) return
   let filenames = fs.readdirSync(dirname);
   filenames.forEach(function (filename) {
     if (!Utils.ignoreResource(filename)) {
