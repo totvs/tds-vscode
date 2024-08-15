@@ -21,9 +21,10 @@ import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webv
 import { CommonCommandFromWebViewEnum, PatchGenerateCommand, ReceiveMessage, TFieldErrors, TGeneratePatchByDifferenceModel, isErrors } from "@tds-shared/index";
 import { TdsPanel } from "./panel";
 import { ServerFileSystemProvider } from "../serverFileSystemProvider";
-import Utils, { MESSAGE_TYPE, ServersConfig, serverExceptionCodeToString } from "../utils";
+import Utils, { ServersConfig, serverExceptionCodeToString } from "../utils";
 import { IPatchResult, sendPatchGenerateMessage } from "../protocolMessages";
 import { ResponseError } from "vscode-languageclient";
+import { Logger } from "../logger";
 
 function EMPTY_MODEL(): TGeneratePatchByDifferenceModel {
   return {
@@ -202,8 +203,7 @@ export class PatchGenerateByDifferencePanel extends TdsPanel<TGeneratePatchByDif
           ok = false
         } else if (response.returnCode !== 0) {
           const msgError = ` ${serverExceptionCodeToString(response.returnCode)} ${response.message}`;
-          Utils.logMessage(msgError, MESSAGE_TYPE.Error, false);
-          vscode.window.showErrorMessage(msgError);
+          Logger.logError(msgError);
           errors.patchName = {
             type: "validate",
             message: vscode.l10n.t("Protheus Server was unable to generate the patch. Code: {0}", response.returnCode)

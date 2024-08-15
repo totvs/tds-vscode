@@ -18,7 +18,6 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
 import * as ini from "ini";
-import { languageClient } from "./extension";
 import { IRpoToken, getEnabledRpoTokenInfos } from "./rpoToken";
 import stripJsonComments from "strip-json-comments";
 import {
@@ -32,32 +31,10 @@ import {
 } from "./protocolMessages";
 import { EnvSection, ServerItem } from "./serverItem";
 import { TAuthorization, TCompileKey } from "@tds-shared/index";
+import { Logger } from "./logger";
+import { AuthSettings } from "./authSettings";
 
 const homedir = require("os").homedir();
-
-export enum MESSAGE_TYPE {
-  /**
-   * Type for informative and resumed messages
-   * i.e.: Inform only the beginning and the end of a compilation process.
-   */
-  Info = "Info",
-
-  /**
-   * Type for error messages
-   */
-  Error = "Error",
-
-  /**
-   * Type for warning messages
-   */
-  Warning = "Warning",
-
-  /**
-   * Type for detailed messages
-   * i.e.: During a compilation process, inform the status of each file and it's result.
-   */
-  Log = "Log",
-}
 
 export default class Utils {
 
@@ -142,80 +119,6 @@ export default class Utils {
     const rootPath: string = vscode.workspace.rootPath || process.cwd();
 
     return path.join(rootPath, ".vscode");
-  }
-
-  /**
-   * Logs the informed messaged in the console and/or shows a dialog
-   * Please note that the dialog opening respects the dialog settings defined by the user in editor.show.notification
-   * @param message - The message to be shown
-   * @param messageType - The message type
-   * @param showDialog - If it must show a dialog.
-   */
-  static logMessage(
-    message: string,
-    messageType: MESSAGE_TYPE,
-    showDialog: boolean
-  ) {
-    const config = vscode.workspace.getConfiguration("totvsLanguageServer");
-    const notificationLevel = config.get("editor.show.notification");
-
-    switch (messageType) {
-      case MESSAGE_TYPE.Error:
-        console.log(message);
-        languageClient?.error(message);
-        if (showDialog && notificationLevel !== "none") {
-          vscode.window.showErrorMessage(message);
-        }
-        break;
-      case MESSAGE_TYPE.Info:
-        console.log(message);
-        languageClient?.info(message);
-        if (
-          (showDialog && notificationLevel === "all") ||
-          notificationLevel === "errors warnings and infos"
-        ) {
-          vscode.window.showInformationMessage(message);
-        }
-        break;
-      case MESSAGE_TYPE.Warning:
-        console.log(message);
-        languageClient?.warn(message);
-        if (
-          showDialog &&
-          (notificationLevel === "all" ||
-            notificationLevel === "errors warnings and infos" ||
-            notificationLevel === "errors and warnings")
-        ) {
-          vscode.window.showWarningMessage(message);
-        }
-        break;
-      case MESSAGE_TYPE.Log:
-        const time = Utils.timeAsHHMMSS(new Date());
-        console.log(message);
-        languageClient?.outputChannel.appendLine(
-          "[Log   + " + time + "] " + message
-        );
-        if (showDialog && notificationLevel === "all") {
-          vscode.window.showInformationMessage(message);
-        }
-        break;
-    }
-  }
-
-  static timeAsHHMMSS(date): string {
-    return (
-      Utils.leftpad(date.getHours(), 2) +
-      ":" +
-      Utils.leftpad(date.getMinutes(), 2) +
-      ":" +
-      Utils.leftpad(date.getSeconds(), 2)
-    );
-  }
-
-  static leftpad(val, resultLength = 2, leftpadChar = "0"): string {
-    return (String(leftpadChar).repeat(resultLength) + String(val)).slice(
-      String(val).length
-    );
   }
 
   static getAllFilesRecursive(folders: Array<string>, checkCompileIgnore: boolean = false): string[] {
@@ -429,17 +332,19 @@ export class ServersConfig {
   }
 
   /**
-   * Salva o servidor logado por ultimo.
+   * Salva o servidor logado por último.
    * @param id Id do servidor logado
-   * @param token Token que o LS gerou em cima das informacoes de login
-   * @param name Nome do servidor logado
+   * @param token Token que o LS gerou em cima das informações de login
    * @param environment Ambiente utilizado no login
+   * @param username Nome do usuário
+   * @param password Senha do usuário
    */
   static saveSelectServer(
     id: string,
     token: string,
     environment: string,
-    username: string
+    username: string,
+    password: string
   ) {
     const servers = getServersConfig();
 
@@ -464,6 +369,14 @@ export class ServersConfig {
       servers.connectedServer.informations = value;
 
       persistServersInfo(servers);
+
+      AuthSettings.instance.storeAuthData({
+        token: token,
+        environment: environment,
+        username: username,
+        password: password
+      });
+
       this._onDidSelectedServer.fire(servers.connectedServer);
     });
   }
@@ -800,11 +713,7 @@ export class ServersConfig {
   static removeExpiredAuthorization() {
     const message: string = vscode.l10n.t("Expired authorization token deleted");
 
-    Utils.logMessage(message, MESSAGE_TYPE.Warning, false);
-
-    vscode.window.showWarningMessage(
-      message
-    );
+    Logger.logWarning(message, true);
     this.deletePermissionsInfos(); // remove expired authorization key
   }
 
@@ -928,6 +837,7 @@ export class ServersConfig {
         }
       });
     }
+
     return server;
   }
 
@@ -971,8 +881,8 @@ export class ServersConfig {
     const servers = getServersConfig();
     const includes: string = servers.includes.join(";");
     const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("totvsLanguageServer");
-
     const includeLinter = config.get("editor.linter.includes", "");
+
     if ((includes.length > 0) && (includes != includeLinter)) {
       config.update("editor.linter.includes", includes); //dispara onDidChangeConfiguration
     }
@@ -1478,9 +1388,8 @@ export class LaunchConfig {
   }
 
   static logInvalidLaunchJsonFile(e) {
-    Utils.logMessage(
+    Logger.logWarning(
       `There was a problem reading the launch.json file. (The file may still be functional, but check it to avoid unwanted behavior): ${e}`,
-      MESSAGE_TYPE.Warning,
       true
     );
   }

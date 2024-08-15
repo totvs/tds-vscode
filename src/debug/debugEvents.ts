@@ -30,11 +30,12 @@ import {
 } from "vscode";
 import { TotvsConfigurationProvider } from "./TotvsConfigurationProvider";
 import { TotvsConfigurationTdsReplayProvider } from "./TotvsConfigurationTdsReplayProvider";
-import Utils, { groupBy, MESSAGE_TYPE } from "../utils";
+import Utils, { groupBy } from "../utils";
 import { LanguageClient } from "vscode-languageclient/node";
 import { TotvsConfigurationWebProvider } from "./TotvsConfigurationWebProvider";
 import { languageClient } from "../extension";
 import { ReplayTimelineOptions, ReplayTimelinePanel } from "../panels/replayTimelinePanel";
+import { Logger } from "../logger";
 
 const DEBUG_TYPE = TotvsConfigurationProvider._TYPE;
 const WEB_DEBUG_TYPE: string = TotvsConfigurationWebProvider._TYPE;
@@ -154,11 +155,7 @@ function processLogEvent(
         debugConsole.appendLine(`[${time}]      : ${message}`);
       } else {
         debugConsole.appendLine(`[${time}] ${level}: ${message}`);
-        Utils.logMessage(
-          `[${time}] ${level}: ${message}`,
-          MESSAGE_TYPE.Info,
-          true
-        );
+        Logger.logInfo(`[${time}] ${level}: ${message}`);
       }
     } else {
       debugConsole.appendLine("<evento desconhecido>");

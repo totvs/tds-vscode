@@ -1,5 +1,6 @@
 import { DebugSession, ProviderResult, ExtensionContext, DebugAdapterTrackerFactory, DebugAdapterTracker, debug, workspace } from 'vscode';
 import Utils from '../utils';
+import { Logger } from '../logger';
 
 export class TotvsDebugTrackerDescriptorFactory implements DebugAdapterTrackerFactory {
 
@@ -14,7 +15,7 @@ export class TotvsDebugTrackerDescriptorFactory implements DebugAdapterTrackerFa
 			}
 
 			const now: Date = new Date();
-			let text: string = `[${Utils.timeAsHHMMSS(now)}] TRACE: ${label}`;
+			let text: string = `[${Logger.timeAsHHMMSS(now)}] TRACE: ${label}`;
 
 			if (trace == "verbose") {
 				text = `${text}\n${JSON.stringify(message, undefined, "  ")}`

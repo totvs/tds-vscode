@@ -13,8 +13,9 @@ import {
   l10n
 } from "vscode";
 import { statSync, chmodSync } from "fs";
-import Utils, { LaunchConfig, MESSAGE_TYPE } from "../utils";
+import Utils, { LaunchConfig } from "../utils";
 import * as path from "path";
+import { Logger } from "../logger";
 
 const RESOURCES_FOLDER = path.join(__filename, "..", "..", "..", "resources");
 
@@ -359,20 +360,17 @@ export function toggleTableSync() {
     sendChangeTableSyncSetting(isTableSyncEnabled);
     LaunchConfig.saveIsTableSyncEnabled(debugSession, isTableSyncEnabled);
     if (isTableSyncEnabled) {
-      Utils.logMessage(l10n.t("Tables synchronism enabled"),
-        MESSAGE_TYPE.Info,
+      Logger.logInfo(l10n.t("Tables synchronism enabled"),
         true
       );
     } else {
-      Utils.logMessage(l10n.t("Tables synchronism disabled"),
-        MESSAGE_TYPE.Info,
+      Logger.logInfo(l10n.t("Tables synchronism disabled"),
         true
       );
     }
   } else {
-    Utils.logMessage(
+    Logger.logError(
       l10n.t("The command to Disable/Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually"),
-      MESSAGE_TYPE.Error,
       true
     );
   }
@@ -400,7 +398,7 @@ function sendChangeTableSyncSetting(isTableSyncEnabled: boolean): void {
       })
       .then(undefined, (err) => {
         console.error(err.message);
-        Utils.logMessage(err.message, MESSAGE_TYPE.Error, true);
+        Logger.logError(err.message, true);
       });
   }
 }

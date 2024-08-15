@@ -18,12 +18,13 @@ import * as vscode from "vscode";
 import * as fse from "fs-extra";
 import * as path from "path";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import Utils, { MESSAGE_TYPE, ServersConfig, serverExceptionCodeToString } from "../utils";
+import Utils, { ServersConfig, serverExceptionCodeToString } from "../utils";
 import { IObjectData, IPatchResult, sendInspectorObjectsRequest, sendPatchGenerateMessage } from "../protocolMessages";
 import { ResponseError } from "vscode-languageclient";
 import { CommonCommandFromWebViewEnum, EMPTY_GENERATE_PATCH_FROM_RPO_MODEL, PatchGenerateCommand, PatchGenerateCommandEnum, ReceiveMessage, TFieldErrors, TGeneratePatchFromRpoModel, TInspectorObject, isErrors } from "@tds-shared/index";
 import { TdsPanel } from "./panel";
 import { languageClient } from "../extension";
+import { Logger } from "../logger";
 
 interface IGeneratePatchOptions {
   fromRpo: boolean;
@@ -381,8 +382,7 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
       ok = false
     } else if (response.returnCode !== 0) {
       const msgError = ` ${serverExceptionCodeToString(response.returnCode)} ${response.message}`;
-      Utils.logMessage(msgError, MESSAGE_TYPE.Error, false);
-      vscode.window.showErrorMessage(msgError);
+      Logger.logError(msgError);
       errors.patchName = {
         type: "validate",
         message: vscode.l10n.t("Protheus Server was unable to generate the patch. Code: {0}", response.returnCode)

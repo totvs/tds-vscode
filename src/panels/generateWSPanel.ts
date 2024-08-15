@@ -16,7 +16,7 @@ limitations under the License.
 
 import * as vscode from "vscode";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import Utils, { MESSAGE_TYPE, ServersConfig, serverExceptionCodeToString } from "../utils";
+import Utils, { ServersConfig, serverExceptionCodeToString } from "../utils";
 import { CommonCommandFromWebViewEnum, ReceiveMessage } from "@tds-shared/index";
 import { IWsdlGenerateResult, sendWsdlGenerateRequest } from "../protocolMessages";
 import { TWebServiceModel } from "@tds-shared/index";
@@ -24,6 +24,7 @@ import * as fse from "fs-extra";
 import path from "path";
 import { TFieldErrors, TSendSelectResourceProps, isErrors } from "@tds-shared/index";
 import { TdsPanel } from "./panel";
+import { Logger } from "../logger";
 
 enum GenerateWebServiceCommandEnum {
 }
@@ -172,7 +173,7 @@ export class GenerateWebServicePanel extends TdsPanel<TWebServiceModel> {
 			this.sendUpdateModel(model, errors)
 
 			error += ` [${serverExceptionCodeToString(response.returnCode)}]`;
-			Utils.logMessage(error, MESSAGE_TYPE.Error, true);
+			Logger.logError(error);
 
 			return false;
 		}
