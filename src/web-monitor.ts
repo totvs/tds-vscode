@@ -1,12 +1,29 @@
+/*
+Copyright 2021-2024 TOTVS S.A
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http: //www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 import * as vscode from "vscode";
-import { ConfigPackage } from "./config";
 import { ServersConfig } from "./utils";
 import { AuthSettings } from "./authSettings";
 import { Logger } from "./logger";
 
 export async function openWebMonitorView(context: vscode.ExtensionContext): Promise<any> {
 	const data: {} = await AuthSettings.instance.getAuthData();
-	let url: string = ConfigPackage.UrlWebMonitor();
+	const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("totvsLanguageServer");
+	let url: string = config.get("url.webMonitor", "");
+
 	if (url.length == 0) {
 		const server = ServersConfig.getCurrentServer();
 		if (server.secure) {
@@ -20,6 +37,22 @@ export async function openWebMonitorView(context: vscode.ExtensionContext): Prom
 	var request = new Request(`${url}/webmonitor/main?token=${encodeData(data)}`);
 
 	await fetch(request).then((response) => {
+		let msg: string = "";
+
+		if (response.status == 401) {
+			msg = vscode.l10n.t("Unauthorized access to Web Monitor. Please check your credentials.");
+		} else if (response.status == 403) {
+			msg = vscode.l10n.t("Forbidden access to Web Monitor. Please check your credentials.");
+		} else if (response.status == 404) {
+			msg = vscode.l10n.t("Web Monitor not found. Please check your credentials.");
+		}
+
+		if (msg.length > 0) {
+			Logger.logError(msg);
+			Logger.logInfo(vscode.l10n.t("It was not possible to validate its user with current credentials."), false);
+			Logger.logInfo(vscode.l10n.t("Try disconnecting and connecting the server again."), false);
+		}
+
 		const view = vscode.window.createWebviewPanel(
 			"webMonitor",
 			"Web Monitor",
