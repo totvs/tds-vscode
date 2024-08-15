@@ -592,6 +592,12 @@
           "default": "cp1252",
           "description": "%tds.package.filesystem.encoding%"
         },
+        "totvsLanguageServer.url.webMonitor": {
+          "scope": "window",
+          "type": "string",
+          "default": "",
+          "description": "%tds.package.url.webMonitor%"
+        },
         "4gl.formatter": {
           "type": "object",
           "description": "Formatação 4GL",

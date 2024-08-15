@@ -141,6 +141,7 @@
 	"tds.package.rpoToken": "Informar o Token de Compilação",
 	"tds.package.clearRpoToken": "Remover o Token de Compilação",
 	"tds.package.filesystem.encoding": "Definir a codificação do sistema de arquivos",
+	"tds.package.url.webMonitor": "Webmonitor access URL. If not informed, current server address will be used.",
 	"tds.package.editor.linter": "Habilitar o Linter",
 	"tds.package.debug.extend.features": "Habilita funcionalidades estendidas de depuração",
 	"tds.package.debug.extend.features.charDetails": "Detalhes de tipos [char] (strings)",

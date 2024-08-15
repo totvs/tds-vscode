@@ -141,6 +141,7 @@
   "tds.package.inputRpoToken": "Input Compilation Token",
   "tds.package.clearRpoToken": "Clear Compilation Token",
   "tds.package.filesystem.encoding": "Set file system encoding",
+  "tds.package.url.webMonitor": "Webmonitor access URL. If not informed, current server address will be used.",
   "tds.package.editor.linter": "Linter behavior",
   "tds.package.editor.hover": "Control how the presentation is displayed on hover.",
   "tds.package.editor.hover.off": "Off",

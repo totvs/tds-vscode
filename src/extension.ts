@@ -1,10 +1,22 @@
-/*---------------------------------------------------------
- * Copyright (C) TOTVS S.A. All rights reserved.
- *--------------------------------------------------------*/
+/*
+Copyright 2021-2024 TOTVS S.A
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http: //www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 "use strict";
 import * as vscode from "vscode";
 import * as fse from "fs-extra";
-
 import {
   window,
   commands,
@@ -51,7 +63,6 @@ import { rpoTokenQuickPick, rpoTokenInputBox, saveRpoTokenString, setEnabledRpoT
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import { ServerItem } from "./serverItem";
 import serverProvider from "./serverItemProvider";
-//import { ReplayRegisterCommands } from "./debug/tdsreplay/RegisterReplayCommands";
 import { registerWorkspace } from "./workspace";
 import { sendTelemetry } from "./protocolMessages";
 import { registerXRef } from "./xreferences";
@@ -70,7 +81,8 @@ import { CompileResult } from "./compile/CompileResult";
 import { LauncherConfigurationPanel } from "./panels/launcherConfigurationPanel";
 import { ReplayConfigurationPanel } from "./panels/replayConfigurationPanel";
 import { tlppTools } from "./tlpp-tools/tlppTools";
-import { getWebviewContent } from "./panels/utilities/webview-utils";
+import { openWebMonitorView } from "./web-monitor";
+import { AuthSettings } from "./authSettings";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -85,6 +97,7 @@ export function activate(context: ExtensionContext) {
     vscode.l10n.t('Congratulations, your extension "totvs-developer-studio" is now active!')
   );
 
+  AuthSettings.init(context);
   ServersConfig.createServerConfig();
   LaunchConfig.createLaunchConfig(undefined);
 
@@ -94,86 +107,6 @@ export function activate(context: ExtensionContext) {
 
   //Load Language Client and start Language Server
   languageClient = getLanguageClient(context);
-
-  //createTimeLineDataProvider();
-
-  // //General commands.
-  // (() => {
-  //   commands.registerCommand("advpl.freshenIndex", () => {
-  //     languageClient.sendNotification("$advpl/freshenIndex");
-  //   });
-  //   function makeRefHandler(methodName, autoGotoIfSingle = false) {
-  //     return () => {
-  //       let position;
-  //       let uri;
-  //       if (window.activeTextEditor !== undefined) {
-  //         position = window.activeTextEditor.selection.active;
-  //         uri = window.activeTextEditor.document.uri;
-  //       }
-  //       languageClient
-  //         .sendRequest(methodName, {
-  //           textDocument: {
-  //             uri: uri.toString(),
-  //           },
-  //           position: position,
-  //         })
-  //         .then((locations: Array<ls.Location>) => {
-  //           if (autoGotoIfSingle && locations.length === 1) {
-  //             let location = p2c.asLocation(locations[0]);
-  //             commands.executeCommand(
-  //               "advpl.goto",
-  //               location.uri,
-  //               location.range.start,
-  //               []
-  //             );
-  //           } else {
-  //             commands.executeCommand(
-  //               "editor.action.showReferences",
-  //               uri,
-  //               position,
-  //               locations.map(p2c.asLocation)
-  //             );
-  //           }
-  //         });
-  //     };
-  //   }
-  //   commands.registerCommand("advpl.vars", makeRefHandler("$advpl/vars"));
-  //   commands.registerCommand(
-  //     "advpl.callers",
-  //     makeRefHandler("$advpl/callers")
-  //   );
-  //   commands.registerCommand(
-  //     "advpl.base",
-  //     makeRefHandler("$advpl/base", true)
-  //   );
-  // })();
-
-  // The language client does not correctly deserialize arguments, so we have a
-  // wrapper command that does it for us.
-  // (() => {
-  //   commands.registerCommand(
-  //     "advpl.showReferences",
-  //     (uri: string, position: ls.Position, locations: ls.Location[]) => {
-  //       commands.executeCommand(
-  //         "editor.action.showReferences",
-  //         p2c.asUri(uri),
-  //         p2c.asPosition(position),
-  //         locations.map(p2c.asLocation)
-  //       );
-  //     }
-  //   );
-
-  //   commands.registerCommand(
-  //     "advpl.goto",
-  //     (uri: string, position: ls.Position, locations: ls.Location[]) => {
-  //       jumpToUriAtPosition(
-  //         p2c.asUri(uri),
-  //         p2c.asPosition(position),
-  //         false /*preserveFocus*/
-  //       );
-  //     }
-  //   );
-  // })();
 
   // Progress
   (() => {
@@ -498,10 +431,9 @@ export function activate(context: ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand("tds-monitor.open-web-monitor", () => {
-      vscode.window.setStatusBarMessage(
-        `$(gear~spin) ${vscode.l10n.t("Starting monitor...")}`,
-        Promise.resolve(openWebMonitorView(context))
-      );
+      if (checkServer() && !checkDebug()) {
+        openWebMonitorView(context);
+      }
     })
   );
 
@@ -721,7 +653,6 @@ export function activate(context: ExtensionContext) {
 
   window.showInformationMessage('"TDS-VSCode" is ready.');
 
-
   // Register context variables for use in when clause
   vscode.commands.executeCommand('setContext', 'tdsWorkspaceOpenState', vscode.workspace.workspaceFolders.length > 0);
   vscode.commands.executeCommand('setContext', 'tdsHaveServersState', ServersConfig.getServers().length > 0);
@@ -874,35 +805,3 @@ export function checkDebug(silent: boolean = false): boolean {
 
   return vscode.debug.activeDebugSession != undefined;
 }
-
-function openWebMonitorView(context: vscode.ExtensionContext): any {
-  const view = vscode.window.createWebviewPanel(
-    "webMonitor",
-    "Web Monitor",
-    vscode.ViewColumn.One,
-    {
-      enableScripts: true,
-      retainContextWhenHidden: true
-    }
-  );
-
-  const html = (): string => {
-    return /*html*/ `
-      <html lang="en" style="height: 100%;">
-        <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
-          <meta name="theme-color" content="#000000">
-          <meta http-equiv="Content-Security-Policy" content="frame-src http://localhost:60000">
-        </head>
-
-        <body style="height: 100%; width: 100%">
-          <iframe style="height: auto; min-height: 100%; width: 100%" src="http://localhost:60000/webmonitor" />
-        </body>
-      </html>
-    `
-  };
-
-  view.webview.html = html();
-}
-

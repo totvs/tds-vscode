@@ -35,6 +35,7 @@ import {
 } from "./protocolMessages";
 import { EnvSection, ServerItem } from "./serverItem";
 import { AddServerPanel } from "./panels/addServerPanel";
+import { AuthSettings } from "./authSettings";
 
 export class ServersExplorer {
   constructor(context: vscode.ExtensionContext) {
@@ -218,14 +219,16 @@ export class ServersExplorer {
 function doFinishConnectProcess(
   serverItem: ServerItem,
   token: string,
-  environment: string
+  environment: string,
+  password: string
 ) {
   ServersConfig.saveConnectionToken(serverItem.id, token, environment);
   ServersConfig.saveSelectServer(
     serverItem.id,
     token,
     environment,
-    serverItem.username
+    serverItem.username,
+    password
   );
 
   runCommandUpdateMonitor();
@@ -325,7 +328,7 @@ export function authenticate(
         .then((token: string) => {
           if (token) {
             serverItem.username = username;
-            doFinishConnectProcess(serverItem, token, environment);
+            doFinishConnectProcess(serverItem, token, environment, password);
           }
         });
 
@@ -343,9 +346,10 @@ function doReconnect(
 
   if (token) {
     return sendReconnectRequest(serverItem, token, connType).then(
-      (ri: IReconnectInfo) => {
+      async (ri: IReconnectInfo) => {
         if (ri.success) {
-          doFinishConnectProcess(serverItem, ri.token, environment);
+          const authData = await AuthSettings.instance.getAuthData();
+          doFinishConnectProcess(serverItem, ri.token, environment, authData["password"]);
         }
         return ri.success;
       }
@@ -409,7 +413,7 @@ async function doDisconnect(serverItem: ServerItem) {
       if (!ti.success) {
         serverProvider.connectedServerItem = undefined;
       }
-
+      AuthSettings.instance.removeAuthData();
       executeCommand("_totvs-developer-studio.clearMonitorPanel");
     },
     (err: ResponseError<object>) => {
@@ -461,7 +465,8 @@ async function doConnect(
           serverItem.token = result.token;
           inputAuthenticationParameters(serverItem, environment);
         } else {
-          doFinishConnectProcess(serverItem, result.token, environment);
+          const authData = AuthSettings.instance.getAuthData();
+          doFinishConnectProcess(serverItem, result.token, environment, authData!["password"] || "");
         }
       }
       return result.success;
