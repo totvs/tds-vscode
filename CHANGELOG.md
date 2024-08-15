@@ -22,6 +22,10 @@ Este problema estava limitado a pastas com alguns caracteres específico de acen
 
 Realizado ajustes para evitar alterações de encoding em SO Linux e MacOS.
 
+#### Não exibe informações do Json ao depurar [#1090](https://github.com/totvs/tds-vscode/issues/1090)
+
+Implementado tratamento específico para objetos JSON com array no 1o nível.
+
 ## Versão [2.0.8]
 
 ### Melhorias

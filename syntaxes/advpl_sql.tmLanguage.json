@@ -1,6 +1,6 @@
 {
 	"fileTypes": [],
-	"injectionSelector": "L:source.advpl",
+	"injectionSelector": "L:source.advpl - comment.block.advpl - comment.line.double-slash",
 	"scopeName": "sql.advpl",
 	"patterns": [
 		{
