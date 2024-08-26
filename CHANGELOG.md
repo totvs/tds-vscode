@@ -1,5 +1,31 @@
 # Changelog
 
+## Versão [2.0.9]
+
+### Melhorias
+
+#### Adição de confirmação ao gerar patch da pasta
+
+Adição de confirmação de compilação de pasta ao gerar patch da pasta.
+
+#### Consolidação de mensagem de confirmação no defrag do RPO
+
+Consolidação de mensagem de confirmação de limpeza de histórico ao realizar o defrag do RPO.
+
+### Correções
+
+#### Breakpoints desaparecem ao debugar arquivos em pastas com acentos [#1252](https://github.com/totvs/tds-vscode/issues/1252)
+
+Este problema estava limitado a pastas com alguns caracteres específico de acentuação (ÁÍÏ).
+
+#### Acentuação em pastas/arquivos - not found na hora da compilação [#1244](https://github.com/totvs/tds-vscode/issues/1244)
+
+Realizado ajustes para evitar alterações de encoding em SO Linux e MacOS.
+
+#### Não exibe informações do Json ao depurar [#1090](https://github.com/totvs/tds-vscode/issues/1090)
+
+Implementado tratamento específico para objetos JSON com array no 1o nível.
+
 ## Versão [2.0.8]
 
 ### Melhorias

@@ -15,41 +15,42 @@ export function defragRpo() {
       return;
     }
 
+    let packPatchInfo = false;
+    let authorizationToken: string = "";
+    var confirmCleanHistory = false;
+    if (Utils.isServerP20OrGreater(server)) {
+      authorizationToken = ServersConfig.getAuthorizationToken(server);
+      if (authorizationToken.length > 0) {
+        confirmCleanHistory = true;
+      }
+    } else {
+      packPatchInfo = true; // LG 19 e anteriores
+    }
+    var first = vscode.l10n.t("Yes"); // Confirmacao de defrag (sempre com limpeza do histórico - LG 19 e anteriores)
+    var second = undefined;
+    if (confirmCleanHistory) {
+      first = vscode.l10n.t("Yes and clear history"); // Confirmacao de defrag com limpeza do histórico
+      second = vscode.l10n.t("Yes but keep history"); // Confirmacao de defrag sem limpeza do histórico
+    }
     vscode.window
       .showWarningMessage(
         vscode.l10n.t("Are you sure you want to defrag the RPO? (This process may take some time)"),
         { modal: true },
-        vscode.l10n.t("Yes"),
-        vscode.l10n.t("No")
+        first,
+        second
       )
       .then((clicked) => {
-        if (clicked === vscode.l10n.t("Yes")) {
-          if (Utils.isServerP20OrGreater(server)) {
-            let packPatchInfo = false;
-            let authorizationToken: string = ServersConfig.getAuthorizationToken(server);
-            if (authorizationToken.length > 0) {
-              vscode.window
-                .showWarningMessage(
-                  vscode.l10n.t("Clear apply patch history?"),
-                  { modal: true },
-                  vscode.l10n.t("Yes"),
-                  vscode.l10n.t("No")
-                )
-                .then((clicked) => {
-                  if (clicked === vscode.l10n.t("Yes")) {
-                    packPatchInfo = true;
-                  }
-                  execDefragRpo(server.token, authorizationToken, server.environment, packPatchInfo);
-                });
-            }
-            else {
-              execDefragRpo(server.token, authorizationToken, server.environment, packPatchInfo);
-            }
-          }
-          else {
+        if (clicked) {
+          if (clicked === vscode.l10n.t("Yes")) {
             // até a LG 19 e anteriores, efetuar sempre a remoção do log de aplicação de patch
             // pois o RPO guardava uma "cópia" do patch aplicado fazendo com que o RPO aumentasse muito de tamanho
-            execDefragRpo(server.token, "", server.environment, true);
+            execDefragRpo(server.token, "", server.environment, packPatchInfo);
+            // Ou é um Harpia, mas não possui token de compilação, então não precisa limpar o histórico
+          } else {
+            if (clicked === vscode.l10n.t("Yes and clear history")) {
+              packPatchInfo = true;
+            }
+            execDefragRpo(server.token, authorizationToken, server.environment, packPatchInfo);
           }
         }
       });
