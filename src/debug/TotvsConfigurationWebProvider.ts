@@ -32,6 +32,10 @@ export class TotvsConfigurationWebProvider
     config.webNavigator = webNavigator;
     config.webNavigatorArgs = webNavigatorArgs;
 
+    if (config.smartclientUrl && !config.smartclientUrl.endsWith("/")) {
+      config.smartclientUrl = config.smartclientUrl + '/';
+    }
+
     return config;
   }
 }
