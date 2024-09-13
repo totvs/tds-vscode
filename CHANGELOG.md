@@ -1,5 +1,15 @@
 # Changelog
 
+## Versão [2.0.10]
+
+### Depreciado
+
+#### Propriedade `SmartClientURL`
+
+Em executores de depuração web (`totvs_language_web_debug`), a propriedade `smartClientURL` foi depreciada e deve ser removida da definição do executor.
+
+Seu uso deve ser efetuado somente sob orientação. Caso não seja informado, a URL será montada utilizando os parâmetros atuais de conexão do servidor. Informe-a somente sob orientação.
+
 ## Versão [2.0.9]
 
 ### Melhorias

@@ -1,19 +1,21 @@
 import { window, DebugConfiguration, DebugConfigurationProvider } from "vscode";
 import * as vscode from "vscode";
 import { TotvsConfigurationProvider } from "./TotvsConfigurationProvider";
+import serverProvider from "../serverItemProvider";
+import { ServerItem } from "../serverItem";
 
 export class TotvsConfigurationWebProvider
   extends TotvsConfigurationProvider
   implements DebugConfigurationProvider {
   static _TYPE: string = "totvs_language_web_debug";
   static _NAME: string = "TOTVS Language Web Debug (SmartClient HTML)";
-  static _SC_BIN: string = "http://localhost:8080";
 
   protected initialize(config: DebugConfiguration) {
+
     config.type = TotvsConfigurationWebProvider._TYPE;
     config.name = TotvsConfigurationWebProvider._NAME;
     config.smartclientBin = null;
-    config.smartclientUrl = TotvsConfigurationWebProvider._SC_BIN;
+    config.smartclientUrl = null;
   }
 
   protected finalize(config: DebugConfiguration) {
@@ -31,6 +33,16 @@ export class TotvsConfigurationWebProvider
 
     config.webNavigator = webNavigator;
     config.webNavigatorArgs = webNavigatorArgs;
+
+    const connectedServerItem: ServerItem = serverProvider.connectedServerItem;
+    if (!config.smartclientUrl) {
+      config.smartclientUrl = `${connectedServerItem.address}:${connectedServerItem.port}/webapp/`;
+      if (connectedServerItem.secure) {
+        config.smartclientUrl = `https://${config.smartclientUrl}`;
+      } else {
+        config.smartclientUrl = `http://${config.smartclientUrl}`;
+      }
+    }
 
     if (config.smartclientUrl && !config.smartclientUrl.endsWith("/")) {
       config.smartclientUrl = config.smartclientUrl + '/';
