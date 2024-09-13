@@ -94,13 +94,17 @@ A definição de executores encontra-se no arquivo `.vscode/launch.json` que, no
       "name": "TOTVS Language Debug",
       "program": "${command:AskForProgramName}",
       "cwb": "${workspaceFolder}",
-      "smartclientUrl": "http://localhost:8080",
       "isMultiSession": true,
       "enableTableSync": true
     }
   ]
 }
 ```
+
+> IMPORTANTE:
+>
+> A propriedade `smartclientUrl` passa a ser considerada obsoleta. Informe-a  apenas sob orientação.
+> Caso não seja informada, a URL será montada utilizando os parâmetros atuais de conexão do servidor.
 
 No caso de efetuar uma depuração via `SmartClient Html`, é necessário informar qual o navegador web será utilizado. Configure o caminho completo do navegador web através das preferências de usuário, clicando em `Arquivo > Preferências > Configurações` e procure por `Web: Navigator`. Note que existem duas seções distintas, a de `Usuário` e a de `Workspace`. Aconselhamos a utilizar as configurações de `Usuário` que será utilizada por todas as `Workspaces` do usuário. Caso seja necessária uma configuração específica e diferente em uma `Workspace`, configure na seção `Workspace` e neste caso apenas esta `Workspace` será afetada.
 

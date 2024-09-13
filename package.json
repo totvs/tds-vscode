@@ -1363,8 +1363,7 @@
         "configurationAttributes": {
           "launch": {
             "required": [
-              "program",
-              "smartclientUrl"
+              "program"
             ],
             "properties": {
               "program": {
@@ -1380,7 +1379,8 @@
               "smartclientUrl": {
                 "type": "string",
                 "description": "%tds.package.properties.smartclientUrl.description%",
-                "default": "http://localhost:8080"
+                "default": "http://localhost:8080/webapp/",
+                "deprecationMessage": "Enter only under guidance. Upon not informed, the URL will be assembled using the current server connection parameters."
               },
               "cwb": {
                 "type": "string",
@@ -1468,8 +1468,6 @@
             "name": "%tds.package.totvs_language_debug%",
             "program": "${command:AskForProgramName}",
             "cwb": "${workspaceFolder}",
-            "environment": "environment",
-            "smartclientUrl": "http://localhost:8080",
             "isMultiSession": true,
             "enableTableSync": true
           }
@@ -1485,11 +1483,10 @@
             "body": {
               "type": "totvs_language_web_debug",
               "request": "launch",
-              "name": "${1:Smart Client Web Debug%}",
+              "name": "${1:Smart Client Web Debug}",
               "program": "^\"\\${command:AskForProgramName}\"",
               "isMultiSession": true,
-              "enableTableSync": true,
-              "smartclientUrl": "${2:http://localhost:8080}"
+              "enableTableSync": true
             }
           }
         ]
