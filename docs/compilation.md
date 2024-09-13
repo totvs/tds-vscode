@@ -6,10 +6,10 @@
 > - usuário autenticado (se requerido)
 > - pastas para buscas de arquivos de definição (_includes_)
 > - acesso exclusivo ao _RPO_
-> - chave de compilação (apenas para _functions_ e _main functions_)
+> - token de compilação (apenas para _functions_ e _main functions_)
 >
 > Recomenda-se que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em mínusculas de forma a manter a compatibildade entre os diversos sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes.
-> Leia [Convenção para nomenclatura de File System em ambiente Linux]<https://tdn.totvs.com/x/h8BICw>).
+> Leia [Convenção para nomenclatura de File System em ambiente Linux](<https://tdn.totvs.com/x/h8BICw>).
 >
 > **Nota**
 >
@@ -27,28 +27,28 @@ Em caso de mau uso destas chaves ou tokens, por qualquer _outra parte_, que não
 
 ## Compilando fonte do editor corrente
 
-Para compilar o fonte do editor corrente, acione o atalho `CTRL + F9` (ou `CTRL + SHIFT + F9`) ou `CTRL + SHIFT + P` e execute o comando `TOTVS: Compile Selection`.
+Para recompilar o fonte do editor corrente, acione o atalho `CTRL + F9` (ou `CTRL + SHIFT + F9` para compilar) ou `CTRL + SHIFT + P` e execute o comando `TOTVS: Recompile File/Folder` para recompilar (ou o comando `TOTVS: Compile File/Folder` para compilar).
 
-> A compilação acionada no editor, sempre irá recompilar o fonte.
+> A compilação acionada no editor, sempre irá recompilar o fonte em foco.
 
 ## Compilando todos os fontes abertos
 
-Para compilar todos os fontes abertos para edição, acione `CTRL + F10` ou `CTRL + SHIFT + P` e execute o comando `TOTVS: Compile Open Editors`. Para recompilar, acione `CTRL + SHIFT + F10`.
+Para recompilar todos os fontes abertos para edição, acione `CTRL + F10` ou `CTRL + SHIFT + P` e execute o comando `TOTVS: Recompile Open Editors`. Para compilar, acione `CTRL + SHIFT + F10` (ou o comando `TOTVS: Compile Open Editors` para compilar).
 
 ## Compilando arquivos não abertos para edição ou pastas
 
 - Na visão `Explorer`, selecione um ou mais arquivos (ou pastas)
-- Acione o menu de contexto sobre a seleção e acione a opção `Compilar` ou `CTRL + F9`
+- Acione o menu de contexto (botão direito do mouse) sobre a seleção e acione a opção `Recompilar ...`.
 
-> Para recompilar, acionar o menu de contexto pressionando a tecla `ALT` ou `CTRL + ALT + F9`.
+> Para compilar, pressione a tecla `ALT` ou `SHIFT` antes de acionar o menu de contexto. As opções serão alteradas para `Compilar ...`.
 
 ## Resultado da compilação
 
-Após a compilação de múltiplos arquivos, exite a opção de abrir uma tabela com informações de todos os arquivos que foram compilados. Para exibir essa tabela, selecione mais de um arquivo, compile e após a compilação lhe será questionado a apresentação ou não.
+Após a compilação de múltiplos arquivos, existe a opção de abrir uma tabela com informações de todos os arquivos que foram compilados. Para exibir essa tabela, selecione mais de um arquivo, execute a ação e após a recompilação/compilação lhe será questionado a apresentação ou não dos resultados.
 
 ![ShowCompileResult](./compile/askCompileResult.PNG)
 
-Se confirma, uma tabela de resultados semelhante a abaixo será exibida, ordenada pela coluna de resultado.
+Ao confirmar, uma tabela de resultados semelhante a abaixo será exibida, ordenada pela coluna de resultado.
 
 ![TableCompileResult](./compile/CompileResults.PNG)
 
@@ -60,11 +60,11 @@ Para compilar necessitamos de acesso exclusivo ao RPO. Caso contrário, o Applic
 
 Nesse caso você precisará desconectar todos os usuário (inclusive JOBS) que estejam acessando o _RPO_.
 
-Uma forma mais simples é configurar a chave [buildKillUser](https://centraldeatendimento.totvs.com/hc/pt-br/articles/360018481631-MP-ADVPL-ENCERRAR-TODAS-AS-CONEX%C3%95ES-QUANDO-SOLICITADO-UMA-COMPILA%C3%87%C3%83O-) no Application Server e ele fará a desconexão de todos os usuários (e JOBS) antes de efetuar a compilação.
+Uma forma mais simples é configurar a chave [BuildKillUsers](https://centraldeatendimento.totvs.com/hc/pt-br/articles/360018481631-MP-ADVPL-ENCERRAR-TODAS-AS-CONEX%C3%95ES-QUANDO-SOLICITADO-UMA-COMPILA%C3%87%C3%83O-) na seção `GENERAL` do Application Server e ele fará a desconexão de todos os usuários (e JOBS) antes de efetuar a compilação.
 
 ## Configurações de Compilação
 
-O processo de compilação pode ter o seu compoprtamento modificado, acessando
+O processo de compilação pode ter o seu comportamento modificado, acessando
 `File | Preferences | Settings | Extensions | TOTVS`. Ao lado esquerdo, selecione a opção e configure conforme desejado.
 
 ### Opções
