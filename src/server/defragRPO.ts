@@ -23,13 +23,6 @@ export function defragRpo() {
   const server = ServersConfig.getCurrentServer();
 
   if (server) {
-    if (_debugEvent) {
-      vscode.window.showWarningMessage(
-        "This operation is not allowed during a debug."
-      );
-      return;
-    }
-
     let packPatchInfo = false;
     let authorizationToken: string = "";
     var confirmCleanHistory = false;
