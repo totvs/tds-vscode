@@ -30,13 +30,41 @@
 - Propriedade `totvsLanguageServer.askCompileResult` em favor de `totvsLanguageServer.showCompileResult` [(detalhes)](./docs/compilation.md#resultado-da-compilação)
 - Propriedade `totvsLanguageServer.welcomePage` em favor da nova interface de [boas-vindas](./docs/welcome.md)
 
-## Versão [2.0.8]
+## Versão [2.0.10]
+
+### Depreciado
+
+#### Propriedade `SmartClientURL`
+
+Em executores de depuração web (`totvs_language_web_debug`), a propriedade `smartClientURL` foi depreciada e deve ser removida da definição do executor.
+
+Seu uso deve ser efetuado somente sob orientação. Caso não seja informado, a URL será montada utilizando os parâmetros atuais de conexão do servidor. Informe-a somente sob orientação.
+
+## Versão [2.0.9]
+
+### Melhorias
+
+#### Adição de confirmação ao gerar patch da pasta
+
+Adição de confirmação de compilação de pasta ao gerar patch da pasta.
+
+#### Consolidação de mensagem de confirmação no defrag do RPO
+
+Consolidação de mensagem de confirmação de limpeza de histórico ao realizar o defrag do RPO.
 
 ### Correções
 
+#### Breakpoints desaparecem ao debugar arquivos em pastas com acentos [#1252](https://github.com/totvs/tds-vscode/issues/1252)
+
+Este problema estava limitado a pastas com alguns caracteres específico de acentuação (ÁÍÏ).
+
+#### Acentuação em pastas/arquivos - not found na hora da compilação [#1244](https://github.com/totvs/tds-vscode/issues/1244)
+
+Realizado ajustes para evitar alterações de encoding em SO Linux e MacOS.
+
 #### Não exibe informações do Json ao depurar [#1090](https://github.com/totvs/tds-vscode/issues/1090)
 
-Implementado tratamento específico para objetos JSON com _array_ no 1º nível.
+Implementado tratamento específico para objetos JSON com array no 1o nível.
 
 ## Versão [2.0.8]
 
@@ -47,6 +75,10 @@ Implementado tratamento específico para objetos JSON com _array_ no 1º nível.
 Foi adicionado a possibilidade de passar parâmetros para o navegador a ser utilizado na depuração do tipo [`totvs_language_web_debug`](./docs/debugger.md#totvs-language-web-debug-html).
 
 ### Correções
+    
+#### Não exibe informações do Json ao depurar [#1090](https://github.com/totvs/tds-vscode/issues/1090)
+
+Implementado tratamento específico para objetos JSON com _array_ no 1º nível.
 
 #### Ignorando chaves de permissões de acesso a ações de Monitor [#1238](https://github.com/totvs/tds-vscode/issues/1238)
 
