@@ -52,8 +52,7 @@ node_modules/dotenv/
 # Ignorar arquivos do TypeScript
 src/**/*.ts
 shared/**/*.ts
-webview-ui/**/*.ts
-webview-ui/**/*.tsx
+webview-ui/
 **/*.d.ts
 **/*.map
 
@@ -68,19 +67,16 @@ webpack.config.js
 # Ignorar arquivos de ambiente
 .env
 
-# Ignorar arquivos projeto
-docs/
+# Ignorar arquivos/pastas do projeto
 l10n/
-syntaxes/
-webview-ui/
+docs/
 CHANGELOG-V1.md
 TROUBLESHOOTING.md
-package.nls.*.json
 LOCALIZATION.*.md
 .all-contributorsrc
 CODE_OF_CONDUCT.pt-BR.md
 FUTURE.md
-tsconfi.json
+tsconfig.json
 cspell.json
 eslint.config.mjs
 .markdownlint.json
