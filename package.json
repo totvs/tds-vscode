@@ -12,7 +12,7 @@
   "license": "Apache-2.0",
   "keywords": [
     "multi-root ready",
-    "advpl",
+    "advpl",  
     "tlpp",
     "4gl",
     "tds",
@@ -70,7 +70,7 @@
   "dependencies": {
     "@totvs/tds-da": "^1.2.72",
     "@totvs/tds-ls": "^2.0.18",
-    "@totvs/tds-webtoolkit": "0.0.13",
+    "@totvs/tds-webtoolkit": "0.0.16",
     "@types/vscode": "^1.85.0",
     "@vscode/codicons": "^0.0.36",
     "@vscode/debugadapter": "^1.66.0",
@@ -934,6 +934,10 @@
       {
         "command": "totvs-developer-studio.include",
         "title": "%tds.package.include%",
+        "icon": {
+          "dark": "./fileicons/dark/folder-dark.svg",
+          "light": "./fileicons/dark/folder-light.svg"
+        },
         "category": "TOTVS"
       },
       {
@@ -1635,11 +1639,6 @@
           "group": "BBtotvsCompileKey@1"
         },
         {
-          "command": "totvs-developer-studio.include",
-          "when": "view == totvs_server",
-          "group": "BAtotvsInclude@1"
-        },
-        {
           "command": "totvs-developer-studio.delete",
           "when": "view == totvs_server && viewItem == serverItemNotConnected",
           "group": "inline@1"
@@ -1676,6 +1675,11 @@
         }
       ],
       "view/title": [
+        {
+          "command": "totvs-developer-studio.include",
+          "when": "view == totvs_server",
+          "group": "navigation"
+        },
         {
           "command": "totvs-developer-studio.addServer",
           "when": "view == totvs_server",
