@@ -27,14 +27,45 @@ export async function openWebMonitorView(context: vscode.ExtensionContext): Prom
 	if (url.length == 0) {
 		const server = ServersConfig.getCurrentServer();
 		if (server.secure) {
-			url = `https://${server.address}:${server.port}`;
+			url = `https://${server.address}:${server.port}/webmonitor`;
 		} else {
-			url = `http://${server.address}:${server.port}`;
+			url = `http://${server.address}:${server.port}/webmonitor`;
 		}
+	} else if (!url.toLowerCase().endsWith("/webmonitor")) {
+		url = url.concat("/webmonitor");
+	}
+	if (!url.endsWith("/")) {
+		url = url.concat("/");
+	}
+
+	vscode.env.openExternal(vscode.Uri.parse(`${url}/main?token=${encodeData(data)}`)).then(() => {
+		Logger.logWarning(vscode.l10n.t("Web Monitor was opened on your browser. URL: {0}", url));
+	}, (error) => {
+		Logger.logError(error, false);
+	});
+}
+
+export async function openEmbeddedWebMonitorView(context: vscode.ExtensionContext): Promise<any> {
+	const data: {} = await AuthSettings.instance.getAuthData();
+	const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("totvsLanguageServer");
+	let url: string = config.get("url.webMonitor", "");
+
+	if (url.length == 0) {
+		const server = ServersConfig.getCurrentServer();
+		if (server.secure) {
+			url = `https://${server.address}:${server.port}/webmonitor`;
+		} else {
+			url = `http://${server.address}:${server.port}/webmonitor`;
+		}
+	} else if (!url.toLowerCase().endsWith("/webmonitor")) {
+		url = url.concat("/webmonitor");
+	}
+	if (!url.endsWith("/")) {
+		url = url.concat("/");
 	}
 
 	//valida a requisição, pois iframe não tem tratamento de erro
-	var request = new Request(`${url}/webmonitor/main?token=${encodeData(data)}`);
+	var request = new Request(`${url}/main?token=${encodeData(data)}`);
 
 	await fetch(request).then((response) => {
 		let msg: string = "";
@@ -90,7 +121,6 @@ export async function openWebMonitorView(context: vscode.ExtensionContext): Prom
 	});
 
 }
-
 
 function encodeData(data: {}): string {
 	let result: string = "";

@@ -422,10 +422,9 @@ export function activate(context: ExtensionContext) {
   //monitor
   context.subscriptions.push(
     vscode.commands.registerCommand("tds-monitor.open-monitor-view", () => {
-      vscode.window.setStatusBarMessage(
-        `$(gear~spin) ${vscode.l10n.t("Starting monitor...")}`,
-        // @@ Promise.resolve(openMonitorView(context))
-      );
+      if (checkServer() && !checkDebug()) {
+        openWebMonitorView(context);
+      }
     })
   );
 
