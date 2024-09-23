@@ -339,7 +339,7 @@ export class ServersConfig {
    * @param username Nome do usuário
    * @param password Senha do usuário
    */
-  static saveSelectServer(
+  static async saveSelectServer(
     id: string,
     token: string,
     environment: string,
@@ -365,7 +365,7 @@ export class ServersConfig {
       }
     });
 
-    doUpdateInformation(servers.connectedServer).then((value: /*IServerInformation*/any) => {
+    await doUpdateInformation(servers.connectedServer).then((value: /*IServerInformation*/any) => {
       servers.connectedServer.informations = value;
 
       persistServersInfo(servers);

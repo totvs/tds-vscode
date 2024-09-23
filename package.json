@@ -12,7 +12,7 @@
   "license": "Apache-2.0",
   "keywords": [
     "multi-root ready",
-    "advpl",  
+    "advpl",
     "tlpp",
     "4gl",
     "tds",
@@ -1610,7 +1610,7 @@
         },
         {
           "command": "totvs-developer-studio.addServer",
-          "when": "view == totvs_server",
+          "when": "view == totvs_server && viewItem == serverItem",
           "group": "ABtotvsServer@3"
         },
         {
@@ -1630,12 +1630,12 @@
         },
         {
           "command": "totvs-developer-studio.config",
-          "when": "view == totvs_server",
+          "when": "view == totvs_server && viewItem == serverItem",
           "group": "XtotvsServer@1"
         },
         {
           "command": "totvs-developer-studio.compile.key",
-          "when": "view == totvs_server",
+          "when": "view == totvs_server && viewItem == serverItem",
           "group": "BBtotvsCompileKey@1"
         },
         {

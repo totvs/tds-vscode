@@ -174,7 +174,7 @@
   "[Port] is not valid range. Min: 1 Max: 65535": "[Port] is not valid range. Min: 1 Max: 65535",
   "Validating connection...": "Validating connection...",
   "Server not found for build validate": "Server not found for build validate",
-  "Edit  Server": "Edit  Server",
+  "Edit Server": "Edit Server",
   "[Add Server]servers.md#registro-de-servidores": "[Add Server]servers.md#registro-de-servidores",
   "Server Type": "Server Type",
   "Select the Protheus server type": "Select the Protheus server type",

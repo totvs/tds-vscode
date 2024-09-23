@@ -413,7 +413,7 @@ async function doDisconnect(serverItem: ServerItem) {
       if (!ti.success) {
         serverProvider.connectedServerItem = undefined;
       }
-      AuthSettings.instance.removeAuthData();
+      //AuthSettings.instance.removeAuthData();
       executeCommand("_totvs-developer-studio.clearMonitorPanel");
     },
     (err: ResponseError<object>) => {

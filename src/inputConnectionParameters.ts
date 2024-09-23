@@ -25,7 +25,7 @@ import { ConnTypeIds } from "./protocolMessages";
 import { ServerItem, EnvSection } from "./serverItem";
 
 /**
- * Coleta os dados necessarios para conectar a um servidor advpl/4gl.
+ * Coleta os dados necessários para conectar a um servidor advpl/4gl.
  *
  * A multi-step input using window.createQuickPick() and window.createInputBox().
  *
@@ -81,7 +81,6 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 		}
 
 		// reconnection token requires server and environment information
-		const configADVPL = workspace.getConfiguration('totvsLanguageServer');
 		if (reconnect) {//@acandido
 			const serverId = (typeof state.server === "string") ? state.server : (state.server as QuickPickItem).detail;
 			const environmentName = (typeof state.environment === "string") ? state.environment : (state.environment as QuickPickItem).label;
@@ -206,7 +205,7 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 	main();
 }
 
-export function serverSelection(args, context) {
+export function serverSelection(args: any[], context: vscode.ExtensionContext) {
 	if (args && args.length > 0) {
 		inputConnectionParameters(context, args[0], ConnTypeIds.CONNT_DEBUGGER, true);
 	} else {
