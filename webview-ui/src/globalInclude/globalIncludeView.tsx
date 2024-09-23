@@ -19,7 +19,7 @@ import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } f
 import "./globalInclude.css";
 import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
 import React from "react";
-import { FieldArrayWithId, FormProvider, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { FieldArrayWithId, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { TdsForm, TdsLabelField, TdsSelectionFolderField, TdsSimpleTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { EMPTY_GLOBAL_INCLUDE_MODEL, TGlobalIncludeModel, TIncludePath } from "@tds-shared/index";
@@ -105,6 +105,11 @@ export default function GlobalIncludeView() {
 
   const model: TFields = methods.getValues();
   const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludePath) => row.path == "");
+
+  //necessário pois o "reset" zera a lista
+  while (model.includePaths.length < 5) {
+    model.includePaths.push({ path: "" });
+  };
 
   return (
     <TdsPage>
