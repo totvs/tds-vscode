@@ -70,7 +70,7 @@
   "dependencies": {
     "@totvs/tds-da": "^1.2.72",
     "@totvs/tds-ls": "^2.0.18",
-    "@totvs/tds-webtoolkit": "0.0.16",
+    "@totvs/tds-webtoolkit": "0.0.17",
     "@types/vscode": "^1.85.0",
     "@vscode/codicons": "^0.0.36",
     "@vscode/debugadapter": "^1.66.0",
