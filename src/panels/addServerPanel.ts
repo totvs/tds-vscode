@@ -136,7 +136,7 @@ export class AddServerPanel extends TdsPanel<TServerModel, TServerOptions> {
       result.address = server.address;
       result.buildVersion = server.buildVersion;
       result.id = server.id;
-      result.includePaths = server.includes;
+      result.includePaths = server.includes.map((folder: string) => { return { path: folder } });
       result.port = server.port;
       result.serverType = server.type;
       result.serverName = server.name;
@@ -300,7 +300,7 @@ export class AddServerPanel extends TdsPanel<TServerModel, TServerOptions> {
   protected getTranslations(): Record<string, string> {
     return {
       "Add Server": vscode.l10n.t("Add Server"),
-      "Edit Server": vscode.l10n.t("Edit  Server"),
+      "Edit Server": vscode.l10n.t("Edit Server"),
       "[Server Registration]servers.md#registro-de-servidores": vscode.l10n.t("[Add Server]servers.md#registro-de-servidores"),
       "Server Type": vscode.l10n.t("Server Type"),
       "Select the Protheus server type": vscode.l10n.t("Select the Protheus server type"),

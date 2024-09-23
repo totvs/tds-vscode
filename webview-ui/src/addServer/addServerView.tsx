@@ -62,6 +62,8 @@ export default function AddServerView() {
             model.includePaths.push({ path: "" });
           }
 
+          console.log(model);
+
           setDataModel<TServerModel>(methods.setValue, model);
           setErrorModel(methods.setError, errors);
 
@@ -93,6 +95,10 @@ export default function AddServerView() {
 
   const model: TServerModel = methods.getValues();
   const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludePath) => row.path == "");
+  //necessário pois o "reset" zera a lista
+  while (model.includePaths.length < 5) {
+    model.includePaths.push({ path: "" });
+  };
 
   return (
     <TdsPage>
