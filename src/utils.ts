@@ -730,7 +730,7 @@ export class ServersConfig {
   }
 
   /**
-   * Recupera a lista de includes do arquivod servers.json
+   * Recupera a lista de includes do arquivo servers.json
    */
   static getIncludes(
     absolutePath: boolean = false,
@@ -772,7 +772,7 @@ export class ServersConfig {
           }
           elements[index] = value;
         });
-        // filtra diretorios invalidos e nao encontrados
+        // filtra diretórios inválidos e não encontrados
         includes = includes.filter(function (value) {
           try {
             const fi: fs.Stats = fs.lstatSync(value);
