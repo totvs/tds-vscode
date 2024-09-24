@@ -197,17 +197,6 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
   }
 
   async validateModel(model: TCompileKeyModel, errors: TFieldErrors<TCompileKeyModel>): Promise<boolean> {
-    // validateKey(
-    //   currentPanel,
-    //   {
-    //     id: authorization.id.toUpperCase(),
-    //     generated: authorization.generation,
-    //     expire: authorization.validation,
-    //     overwrite: canOverride,
-    //     token: authorization.key.toUpperCase(),
-    //   },
-    //   false
-    // );
 
     vscode.window.setStatusBarMessage(
       `$(gear~spin) ${vscode.l10n.t("Validating compile key...")}`);
