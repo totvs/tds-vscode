@@ -6,7 +6,7 @@ let needRestart: boolean = false;
 let waitRestart: boolean = false;
 
 function isNewSettings(scope: string, key: string, value: any): boolean {
-  let result: boolean = true;
+  let result: boolean = false;
 
   if (currentSettings[scope]) {
     if (currentSettings[scope][key]) {
@@ -15,9 +15,12 @@ function isNewSettings(scope: string, key: string, value: any): boolean {
       } else {
         result = currentSettings[scope][key] !== value;
       }
+    } else {
+      result = true; //chave nova
     }
   } else {
     currentSettings[scope] = {}
+    result = true;
   }
 
   if (Array.isArray(value)) {
@@ -75,7 +78,7 @@ export function getModifiedLanguageServerSettings(): any[] {
   }
 
   const linterBehavior = config.get("editor.linter.behavior");
-  if (linterBehavior === String(linterBehavior)) { // proteção: só entra se behavior for um Object (evitar bug que pega informacao de editor.linter)
+  if (linterBehavior === String(linterBehavior)) { // proteção: só entra se behavior for um Object (evitar bug que pega informação de editor.linter)
     if (isNewSettings("linter", "behavior", linterBehavior)) {
       settings.push({
         scope: "linter",
@@ -136,6 +139,7 @@ export function getModifiedLanguageServerSettings(): any[] {
       value: String(signatureHelp)
     });
   }
+
   const autocomplete = config.get("editor.autocomplete");
   if (isNewSettings("editor", "autocomplete", autocomplete)) {
     settings.push({
@@ -158,26 +162,34 @@ export function getModifiedLanguageServerSettings(): any[] {
   return settings;
 }
 
-export function confirmRestartNow(): boolean {
+export function confirmRestartNow(onlyLog: boolean = false): boolean {
 
   if (needRestart && !waitRestart) {
-    vscode.window.showInformationMessage(
-      "To make the change effective, it is necessary to restart VS-CODE.", { modal: true },
-      "Now", "Later").then((value: string) => {
-        waitRestart = true;
-        if (value == "Now") {
-          vscode.commands.executeCommand("workbench.action.reloadWindow");
-        } else if (value == "Later") {
-          setTimeout(() => {
-            needRestart = true;
+    if (!onlyLog) {
+      vscode.window.showInformationMessage(
+        vscode.l10n.t("To make the change effective, it is necessary to restart VS-CODE."),
+        { modal: true },
+        "Now", "Later").then((value: string) => {
+          waitRestart = true;
+          if (value == "Now") {
+            vscode.commands.executeCommand("workbench.action.reloadWindow");
+          } else if (value == "Later") {
+            setInterval(() => {
+              needRestart = true;
+              waitRestart = false;
+              confirmRestartNow(true);
+              waitRestart = true;
+
+            }, 60000 * 2);
+          } else {
+            needRestart = false;
             waitRestart = false;
-            confirmRestartNow();
-          }, 60000);
-        } else {
-          needRestart = false;
-          waitRestart = false;
-        }
-      });
+          }
+        });
+    } else {
+      vscode.window.showWarningMessage(
+        vscode.l10n.t("There are configurations pending application. Need to restart VS-Code."));
+    }
   }
 
   return needRestart;
