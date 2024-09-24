@@ -22,6 +22,7 @@ import { TdsSimpleCheckBoxField, TdsForm, TdsTextField, TdsLabelField, setDataMo
 
 import "./CompileKey.css";
 import { TAuthorization, TCompileKey } from "@tds-shared/index";
+import { IFormAction } from "@totvs/tds-webtoolkit";
 
 enum ReceiveCommandEnum {
 }
@@ -93,7 +94,8 @@ export default function CompileKeyView() {
   return (
     <TdsPage>
       <TdsForm<TFields> methods={methods}
-        onSubmit={onSubmit}>
+        onSubmit={onSubmit}
+      >
 
         <TdsTextField
           name="machineId"
@@ -108,7 +110,7 @@ export default function CompileKeyView() {
             label={tdsVscode.l10n.t("Compile Key File")}
             info={tdsVscode.l10n.t("Generated compilation key file (.AUT)")}
             readOnly={true}
-            rules={{ required: true }}
+            rules={{ required: false }}
           />
 
           <TdsSelectionFileField
@@ -142,6 +144,13 @@ export default function CompileKeyView() {
           label={tdsVscode.l10n.t("Token")}
           info={tdsVscode.l10n.t("Token generated")}
           rules={{ required: true }}
+        />
+
+        <TdsTextField
+          name="authorizationToken"
+          label={tdsVscode.l10n.t("Authorization Token")}
+          info={tdsVscode.l10n.t("Authorization Token")}
+          readOnly={true}
         />
 
         <TdsSimpleCheckBoxField
