@@ -106,11 +106,6 @@ export default function GlobalIncludeView() {
   const model: TFields = methods.getValues();
   const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludePath) => row.path == "");
 
-  //necessário pois o "reset" zera a lista
-  while (model.includePaths.length < 5) {
-    model.includePaths.push({ path: "" });
-  };
-
   return (
     <TdsPage>
       <TdsForm<TGlobalIncludeModel> methods={methods}

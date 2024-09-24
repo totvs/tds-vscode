@@ -32,7 +32,10 @@ const INCLUDE_ROWS_LIMIT: number = 5;
 
 export default function AddServerView() {
   const methods = useForm<TServerModel>({
-    defaultValues: EMPTY_SERVER_MODEL(),
+    defaultValues: {
+      ...EMPTY_SERVER_MODEL(),
+      includePaths: Array(INCLUDE_ROWS_LIMIT).fill({ path: "" })
+    },
     mode: "all"
   })
 
@@ -95,10 +98,6 @@ export default function AddServerView() {
 
   const model: TServerModel = methods.getValues();
   const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludePath) => row.path == "");
-  //necessário pois o "reset" zera a lista
-  while (model.includePaths.length < 5) {
-    model.includePaths.push({ path: "" });
-  };
 
   return (
     <TdsPage>
