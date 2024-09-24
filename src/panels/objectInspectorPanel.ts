@@ -174,6 +174,10 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel, IInspe
           async (progress, token) => {
             progress.report({ increment: 0 });
             this._options.includeOutScope = data.includeOutScope;
+
+            data.model.objects = [];
+            this.sendUpdateModel(data.model, undefined);
+
             data.model = await this.getDataFromServer(data.model);
 
             this.sendUpdateModel(data.model, undefined);
