@@ -34,7 +34,9 @@ export default function AddServerView() {
   const methods = useForm<TServerModel>({
     defaultValues: {
       ...EMPTY_SERVER_MODEL(),
-      includePaths: Array(INCLUDE_ROWS_LIMIT).fill({ path: "" })
+      includePaths: Array(INCLUDE_ROWS_LIMIT).fill(() => {
+        return { path: "" };
+      })
     },
     mode: "all"
   })

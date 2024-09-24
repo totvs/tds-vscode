@@ -34,8 +34,9 @@ const ROWS_LIMIT: number = 5;
 
 export default function GlobalIncludeView() {
   const methods = useForm<TFields>({
-    defaultValues: EMPTY_GLOBAL_INCLUDE_MODEL() && {
-      includePaths: Array(ROWS_LIMIT).map(() => {
+    defaultValues: {
+      ...EMPTY_GLOBAL_INCLUDE_MODEL(),
+      includePaths: Array(ROWS_LIMIT).fill(() => {
         return { path: "" };
       })
     },
