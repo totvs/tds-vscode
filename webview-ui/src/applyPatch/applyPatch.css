@@ -19,5 +19,6 @@ limitations under the License.
 }
 
 vscode-tag {
+	padding-top: 3px;
 	cursor: pointer;
 }

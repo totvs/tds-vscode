@@ -190,15 +190,15 @@ export default function ApplyPatchView() {
                   }
                 </VSCodeDataGridRow>
 
-                {methods.getFieldState(`patchFiles.${index}.name`).error &&
-                  <VSCodeDataGridRow key={`${index}_error`} >
+                {(row.validation.length > 0) &&
+                  <VSCodeDataGridRow >
                     <VSCodeDataGridCell grid-column="1">
                       &nbsp;
                     </VSCodeDataGridCell>
                     <VSCodeDataGridCell grid-column="span 2">
-                      {methods.getFieldState(`patchFiles.${index}.name`).error.message}
+                      {row.validation}
                     </VSCodeDataGridCell>
-                  </VSCodeDataGridRow>
+                  </VSCodeDataGridRow >
                 }
               </>
             ))}
