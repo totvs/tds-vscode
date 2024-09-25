@@ -184,6 +184,14 @@ export class BuildResultPanel extends TdsPanel<TBuildResultModel, BuildResultOpt
 
   protected getTranslations(): Record<string, string> {
     return {
+      "Filename": vscode.l10n.t("Filename"),
+      "Message": vscode.l10n.t("Message"),
+      "Status": vscode.l10n.t("Status"),
+      "Detail": vscode.l10n.t("Detail"),
+      "Path": vscode.l10n.t("Path"),
+      "Export": vscode.l10n.t("Export"),
+      "Compilation results made at [{0}]": vscode.l10n.t("Compilation results made at [{0}]"),
+      "Compilation aborted.": vscode.l10n.t("Compilation aborted.")
     }
   }
 

@@ -1,7 +1,8 @@
 #include "protheus.ch"
 
-user function escolheNum(replay, replayPath, numbers)
+user function escolheNum2(replay, replayPath, numbers)
 	default numbers := "12345"
+
 
 	local cOpcao := ""
 	local n, cResp := "xxxxx", cMsg := ""

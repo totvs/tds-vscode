@@ -315,7 +315,9 @@ export class AddServerPanel extends TdsPanel<TServerModel, TServerOptions> {
       "Include directories": vscode.l10n.t("Include directories"),
       "Enter the folders where the definition files should be searched": vscode.l10n.t("Enter the folders where the definition files should be searched"),
       "May be informed later. If you do not inform, the global configuration will be used.": vscode.l10n.t("May be informed later. If you do not inform, the global configuration will be used."),
-      "Enter the connection parameters to the Protheus server.": vscode.l10n.t("Enter the connection parameters to the Protheus server.")
+      "Enter the connection parameters to the Protheus server.": vscode.l10n.t("Enter the connection parameters to the Protheus server."),
+      "Select folder with define files": vscode.l10n.t("Select folder with define files"),
+      "Select a folder containing definition files": vscode.l10n.t("Select a folder containing definition files")
     }
   }
 

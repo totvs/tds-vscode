@@ -110,7 +110,7 @@ export default function AddServerView() {
         <section className="tds-row-container" >
           <TdsSelectionField
             name="serverType"
-            label="Server Type"
+            label={tdsVscode.l10n.t("Server Type")}
             info={tdsVscode.l10n.t("Select the Protheus server type")}
             options={[
               { value: "totvs_server_protheus", text: "Protheus (Adv/PL)" },
@@ -205,8 +205,8 @@ export default function AddServerView() {
                   <VSCodeDataGridCell grid-column="2">
                     <TdsSelectionFolderField
                       name={`btnSelectFolder.${index}`}
-                      info={"Selecione uma pasta que contenha arquivos de definição"}
-                      title="Select folder with define files"
+                      info={tdsVscode.l10n.t("Select a folder containing definition files")}
+                      title={tdsVscode.l10n.t("Select folder with define files")}
                     />
                   </VSCodeDataGridCell>
                 </>

@@ -212,7 +212,7 @@ export default function RepositoryLogView() {
                       columnsDef={[
                         {
                           name: "name",
-                          label: "Program",
+                          label: tdsVscode.l10n.t("Program"),
                           type: "string",
                           width: "2fr",
                           sortDirection: "asc",
@@ -220,7 +220,7 @@ export default function RepositoryLogView() {
                         },
                         {
                           name: "date",
-                          label: "Date",
+                          label: tdsVscode.l10n.t("Date"),
                           type: "datetime",
                           width: "1fr",
                           grouping: false

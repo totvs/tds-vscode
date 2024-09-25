@@ -186,6 +186,15 @@ export class ReplayTimelinePanel extends TdsPanel<TReplayTimelineModel, ReplayTi
 
   protected getTranslations(): Record<string, string> {
     return {
+      "Sources": vscode.l10n.t("Sources"),
+      "Ignore Sources not found": vscode.l10n.t("Ignore Sources not found"),
+      "Source": vscode.l10n.t("Source"),
+      "Compile Date": vscode.l10n.t("Compile Date"),
+      "Close": vscode.l10n.t("Close"),
+      "Apply": vscode.l10n.t("Apply"),
+      "Reset": vscode.l10n.t("Reset"),
+      "Time": vscode.l10n.t("Time"),
+      "Line": vscode.l10n.t("Line")
     };
   }
 

@@ -10,9 +10,9 @@
     "totvsLanguageServer.workspaceServerConfig": false,
     "totvsLanguageServer.formatLocale": "pt-BR",
     "esp.mainAdvplExtension": "totvs.tds-vscode",
-    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes;m:\\protheus\\includes_tlpp",
+    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes_tlpp",
     "totvsLanguageServer.usageInfoConfig": true,
     "totvsLanguageServer.editor.linter.behavior": "enable",
     "totvsLanguageServer.editor.index.cache": "onDisk",
-    "totvsLanguageServer.showCompileResult": "yesAlways"
+    "totvsLanguageServer.showCompileResult": "yesAlways",
 }

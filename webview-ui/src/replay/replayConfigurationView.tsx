@@ -178,7 +178,7 @@ export default function ReplayConfigurationView() {
             <section className="tds-row-container" >
               <TdsSelectionField
                 name="launcherType"
-                label="Launcher Type"
+                label={tdsVscode.l10n.t("Launcher Type")}
                 info={tdsVscode.l10n.t("Select the launcher type to config")}
                 rules={{ required: true }}
                 readOnly={true}
@@ -214,13 +214,14 @@ export default function ReplayConfigurationView() {
                 }
               />
             </section>
-            <TdsTextField name={"password"} label={tdsVscode.l10n.t("Password")} />
+            <TdsTextField name={"password"}
+              label={tdsVscode.l10n.t("Password")} />
 
             <section className="tds-row-container" id="options">
               <div className="col-2">
                 <TdsLabelField
                   name="lblOptions"
-                  label={"**Options**"} />
+                  label={tdsVscode.l10n.t("**Options**")} />
                 <TdsCheckBoxField name={"ignoreFiles"} label={"Ignore files not found in WorkSpace"} />
                 <TdsCheckBoxField name={"importOnlySourcesInfo"} label={"Import only the sources information"} />
               </div>
@@ -228,16 +229,16 @@ export default function ReplayConfigurationView() {
               <div>
                 <TdsLabelField
                   name="lblIncludeSources"
-                  label={"**Include Sources**"}
-                  info="List of sources to include. Can use wildcard characters (*,?)" />
+                  label={tdsVscode.l10n.t("**Include Sources**")}
+                  info={tdsVscode.l10n.t("List of sources to include. Can use wildcard characters (*,?)")} />
                 {buildSourceList(includeFields, includeRemove, includeInsert, "includeSources")}
               </div>
 
               <div>
                 <TdsLabelField
                   name="lblExcludeSources"
-                  label={"**Exclude Sources**"}
-                  info="List of sources to exclude. Can use wildcard characters (*,?)" />
+                  label={tdsVscode.l10n.t("**Exclude Sources**")}
+                  info={tdsVscode.l10n.t("List of sources to exclude. Can use wildcard characters (*,?)")} />
                 {buildSourceList(excludeFields, excludeRemove, excludeInsert, "excludeSources")}
               </div>
             </section>
@@ -245,7 +246,7 @@ export default function ReplayConfigurationView() {
             <section className="tds-row-container">
               <TdsLabelField
                 name={"lblWarning"}
-                label={"_* This config could be altered editing file./vscode/launch.json_"} />
+                label={tdsVscode.l10n.t("_* This config could be altered editing file./vscode/launch.json_")} />
             </section>
           </>
         }

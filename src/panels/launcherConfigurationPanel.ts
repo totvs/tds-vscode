@@ -275,6 +275,37 @@ export class LauncherConfigurationPanel extends TdsPanel<TDebugConfigurationMode
 
   protected getTranslations(): Record<string, string> {
     return {
+      "Launcher Type": vscode.l10n.t("Launcher Type"),
+      "AdvPL Arguments `-A`": vscode.l10n.t("AdvPL Arguments `-A`"),
+      "AdvPL Function": vscode.l10n.t("AdvPL Function"),
+      "Configure an launcher for debugging": vscode.l10n.t("Configure an launcher for debugging"),
+      "Debugger Options": vscode.l10n.t("Debugger Options"),
+      "Enter a name that helps you identify the launcher": vscode.l10n.t("Enter a name that helps you identify the launcher"),
+      "Enter the arguments for AdvPL function.": vscode.l10n.t("Enter the arguments for AdvPL function."),
+      "Enter the name of the function to be performed.": vscode.l10n.t("Enter the name of the function to be performed."),
+      "Enter the value of parameters.": vscode.l10n.t("Enter the value of parameters."),
+      "If not informed, it will use the definition made in the current server configuration.": vscode.l10n.t("If not informed, it will use the definition made in the current server configuration."),
+      "If not informed, it will use the `http(s)://<server>:<port>/webapp` of current server configuration.": vscode.l10n.t("If not informed, it will use the `http(s)://<server>:<port>/webapp` of current server configuration."),
+      "Ignore files not found in WorkSpace (debugging)": vscode.l10n.t("Ignore files not found in WorkSpace (debugging)"),
+      "Language": vscode.l10n.t("Language"),
+      "Mark the arguments which will be passed to the process of debugging.": vscode.l10n.t("Mark the arguments which will be passed to the process of debugging."),
+      "Mark the arguments which will be passed to the SmartClient.": vscode.l10n.t("Mark the arguments which will be passed to the SmartClient."),
+      "Multi Thread": vscode.l10n.t("Multi Thread"),
+      "Name": vscode.l10n.t("Name"),
+      "Profile": vscode.l10n.t("Profile"),
+      "Select the launcher type to config": vscode.l10n.t("Select the launcher type to config"),
+      "Select the SmartClient binary to be used.": vscode.l10n.t("Select the SmartClient binary to be used."),
+      "Smart Client (Desktop)": vscode.l10n.t("Smart Client (Desktop)"),
+      "Smart Client Arguments": vscode.l10n.t("Smart Client Arguments"),
+      "Start Web App URL.": vscode.l10n.t("Start Web App URL."),
+      "Web App URL": vscode.l10n.t("Web App URL"),
+      "`-AC` Accessibility module": vscode.l10n.t("`-AC` Accessibility module"),
+      "`-DPI` Enable DPI mode": vscode.l10n.t("`-DPI` Enable DPI mode"),
+      "`-M` Multiple sessions": vscode.l10n.t("`-M` Multiple sessions"),
+      "`-OLDDPI` Enable old DPI mode": vscode.l10n.t("`-OLDDPI` Enable old DPI mode"),
+      "`-OPENGL` Enable OpenGL mode": vscode.l10n.t("`-OPENGL` Enable OpenGL mode"),
+      "`-Q` Don't display 'splash'": vscode.l10n.t("`-Q` Don't display 'splash'"),
+      "Select Smart Client Desktop": vscode.l10n.t("Select Smart Client Desktop")
     }
   }
 

@@ -123,6 +123,16 @@ export class RepositoryLogPanel extends TdsPanel<TRepositoryLogModel> {
 
   protected getTranslations(): Record<string, string> {
     return {
+      "Server": vscode.l10n.t("Server"),
+      "RPO Version": vscode.l10n.t("RPO Version"),
+      "Environment": vscode.l10n.t("Environment"),
+      "Generation": vscode.l10n.t("Generation"),
+      "Applied in": vscode.l10n.t("Applied in"),
+      "Generated in": vscode.l10n.t("Generated in"),
+      "Program": vscode.l10n.t("Program"),
+      "Date": vscode.l10n.t("Date"),
+      "Select the application date to see the details.": vscode.l10n.t("Select the application date to see the details.")
+
     }
   }
 

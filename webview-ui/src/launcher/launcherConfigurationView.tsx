@@ -33,7 +33,10 @@ const ROW_LIMIT: number = 5;
 
 export default function LauncherConfigurationView() {
   const methods = useForm<TDebugConfigurationModel>({
-    defaultValues: EMPTY_DEBUG_CONFIGURATION(),
+    defaultValues: {
+      ...EMPTY_DEBUG_CONFIGURATION(),
+      programArgs: Array(ROW_LIMIT).fill({ value: "" })
+    },
     mode: "all"
   })
 
@@ -54,8 +57,6 @@ export default function LauncherConfigurationView() {
     } else {
       data.smartClient = "";
     }
-
-    console.dir(data);
 
     sendSaveAndClose(data);
   }
@@ -112,7 +113,7 @@ export default function LauncherConfigurationView() {
         <section className="tds-row-container" >
           <TdsSelectionField
             name="launcherType"
-            label="Launcher Type"
+            label={tdsVscode.l10n.t("Launcher Type")}
             info={tdsVscode.l10n.t("Select the launcher type to config")}
             rules={{ required: true }}
             options={[
@@ -144,7 +145,7 @@ export default function LauncherConfigurationView() {
               <TdsSelectionFileField
                 name={`btnSelectSmartClient`}
                 info={tdsVscode.l10n.t("Select the SmartClient binary to be used.")}
-                title="Select Smart Client Desktop"
+                title={tdsVscode.l10n.t("Select Smart Client Desktop")}
               />
             </>
           }
@@ -267,25 +268,25 @@ export default function LauncherConfigurationView() {
             />
             <TdsSimpleCheckBoxField
               name={"multiSession"}
-              label={"`-M` Multiple sessions"} />
+              label={tdsVscode.l10n.t("`-M` Multiple sessions")} />
             <TdsSimpleCheckBoxField
               name={"accessibilityMode"}
-              label={"`-AC` Accessibility module"} />
+              label={tdsVscode.l10n.t("`-AC` Accessibility module")} />
             <TdsSimpleCheckBoxField
               name={"doNotShowSplash"}
-              label={"`-Q` Don't display 'splash'"} />
+              label={tdsVscode.l10n.t("`-Q` Don't display 'splash'")} />
             <TdsSimpleCheckBoxField
               name={"openGlMode"}
-              label={"`-OPENGL` Enable OpenGL mode"} />
+              label={tdsVscode.l10n.t("`-OPENGL` Enable OpenGL mode")} />
             <TdsSimpleCheckBoxField
               name={"dpiMode"}
-              label={"`-DPI` Enable DPI mode"} />
+              label={tdsVscode.l10n.t("`-DPI` Enable DPI mode")} />
             <TdsSimpleCheckBoxField
               name={"oldDpiMode"}
-              label={"`-OLDDPI` Enable old DPI mode"} />
+              label={tdsVscode.l10n.t("`-OLDDPI` Enable old DPI mode")} />
             <TdsSelectionField
               name={"language"}
-              label={"Language"}
+              label={tdsVscode.l10n.t("Language")}
               options={[
                 { value: LanguagesEnum.DEFAULT, text: "Default" },
                 { value: LanguagesEnum.POR, text: "Português" },
@@ -307,15 +308,15 @@ export default function LauncherConfigurationView() {
 
             <TdsSimpleCheckBoxField
               name="enableMultiThread"
-              label={"Multi Thread"} />
+              label={tdsVscode.l10n.t("Multi Thread")} />
 
             <TdsSimpleCheckBoxField
               name="enableProfile"
-              label={"Profile"} />
+              label={tdsVscode.l10n.t("Profile")} />
 
             <TdsSimpleCheckBoxField
               name="ignoreFiles"
-              label={"Ignore files not found in WorkSpace (debugging)"} />
+              label={tdsVscode.l10n.t("Ignore files not found in WorkSpace (debugging)")} />
 
           </div>
 

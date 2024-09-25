@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import "./replayTimeline.css";
-import { getCloseActionForm, IFormAction, TdsDataGrid, TdsDialog, TdsPage, TdsPaginator, TdsProgressRing, TdsTable, tdsVscode, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
+import { IFormAction, TdsDataGrid, TdsDialog, TdsPage, TdsPaginator, TdsProgressRing, TdsTable, tdsVscode, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
@@ -174,7 +174,6 @@ export default function ReplayTimelineView() {
   };
 
   const scrollToLineIfNeeded = (id: number) => {
-    //const row: TReplayTimelineData = timeline[0];
     const targetRow = document.getElementById("tblTimeLine_header");
 
     if (targetRow) {
@@ -209,7 +208,7 @@ export default function ReplayTimelineView() {
         {
           type: "boolean",
           name: "selected",
-          label: tdsVscode.l10n.t(" "),
+          label: " ",
           width: "1fr",
           sortable: false
         },
@@ -296,9 +295,9 @@ export default function ReplayTimelineView() {
           <TdsTable
             id={"tblTimeLine"}
             columns={[
-              { type: "string", label: "Time", width: "2fr" },
-              { type: "string", label: "Source", width: "*fr" },
-              { type: "number", label: "Line", width: "2fr" }
+              { type: "string", label: tdsVscode.l10n.t("Time"), width: "2fr" },
+              { type: "string", label: tdsVscode.l10n.t("Source"), width: "*fr" },
+              { type: "number", label: tdsVscode.l10n.t("Line"), width: "2fr" }
             ]}
             dataSource={timeline.map((row: TReplayTimelineData) => [
               row.timeStamp, row.srcName, row.line
@@ -335,7 +334,6 @@ export default function ReplayTimelineView() {
       {openSourceDialog && <TdsDialog
         title={tdsVscode.l10n.t("Sources")}
         onClose={(ok: boolean, data: any) => {
-          console.log(">>>>>>> ", ok,)
           if (ok) {
             sendShowSources(methods.getValues());
           }

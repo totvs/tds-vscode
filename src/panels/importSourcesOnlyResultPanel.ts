@@ -159,6 +159,10 @@ export class ImportSourcesOnlyResultPanel extends TdsPanel<TImportSourcesOnlyRes
 
   protected getTranslations(): Record<string, string> {
     return {
+      "Source": vscode.l10n.t("Source"),
+      "Compilation Date": vscode.l10n.t("Compilation Date"),
+      "Export (TXT)": vscode.l10n.t("Export (TXT)"),
+      "Export (CSV)": vscode.l10n.t("Export (CSV)")
     };
   }
 

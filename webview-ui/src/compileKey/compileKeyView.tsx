@@ -22,7 +22,6 @@ import { TdsSimpleCheckBoxField, TdsForm, TdsTextField, TdsLabelField, setDataMo
 
 import "./CompileKey.css";
 import { TAuthorization, TCompileKey } from "@tds-shared/index";
-import { IFormAction } from "@totvs/tds-webtoolkit";
 
 enum ReceiveCommandEnum {
 }
@@ -38,7 +37,7 @@ const EMPTY_COMPILE_KEY: TCompileKey = {
   expire: "",
   buildType: "",
   tokenKey: "",
-  authorizationToken: "",
+  label={tdsVscode.l10n.t(": "",
   userId: ""
 }
 

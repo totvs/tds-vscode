@@ -204,11 +204,13 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
     const validKey: TValidKeyResult | undefined = await sendValidKey(model.id, model.generation, model.expire, model.canOverride, model.tokenKey);
 
     if (validKey.buildType == -1) {
-      errors.path = { type: "validate", message: "Server refused compile key" };
+      errors.path = { type: "validate", message: vscode.l10n.t("Server refused compile key") };
     }
 
     if (validKey.authorizationToken == "") {
-      errors.authorizationToken = { type: "validate", message: "Invalid token" };
+      errors.authorizationToken = {
+        type: "validate", message: vscode.l10n.t("Invalid token")
+      };
     }
 
     vscode.window.setStatusBarMessage("");
@@ -237,7 +239,9 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
       "Token": vscode.l10n.t("Token"),
       "Token generated": vscode.l10n.t("Token generated"),
       "Allow override default": vscode.l10n.t("Allow override default"),
-      "From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and MacOS.": vscode.l10n.t("From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and MacOS.")
+      "From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and MacOS.": vscode.l10n.t("From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and MacOS."),
+      "Authorization Token": vscode.l10n.t("Authorization Token"),
+      "From **servers 7.00.210324p (Harpia)**, compilation keys should be replaced by _Token RPO_.": vscode.l10n.t("From **servers 7.00.210324p (Harpia)**, compilation keys should be replaced by _Token RPO_.")
     }
   }
 

@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import "./importSourcesOnlyResult.css";
-import { getCloseActionForm, getDefaultActionsForm, IFormAction, TdsDataGrid, TdsFormActionsEnum, TdsPage, TdsProgressRing, tdsVscode, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
+import { getCloseActionForm, IFormAction, TdsDataGrid, TdsPage, TdsProgressRing, tdsVscode, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
@@ -70,7 +70,7 @@ export default function ImportSourcesOnlyResultView() {
       {
         type: "string",
         name: "name",
-        label: "Source",
+        label: tdsVscode.l10n.t("Source"),
         width: "6fr",
         sortable: true,
         sortDirection: "asc",
@@ -78,7 +78,7 @@ export default function ImportSourcesOnlyResultView() {
       {
         type: "datetime",
         name: "compileDate",
-        label: "Compilation Date",
+        label: tdsVscode.l10n.t("Compilation Date"),
         width: "3fr",
         sortable: true,
         sortDirection: ""
