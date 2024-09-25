@@ -18,7 +18,7 @@
   "Compile Key File": "Arquivo da chave de compilação",
   "Generated": "Gerada",
   "Expire": "Expira",
-  "Token": "Token",
+  "Token": "!Token",
   "These settings can also be changed in": "Essas configurações podem ser alteradas em",
   "Cancel Debug ": "Cancelar Depuração ",
   "Please enter the name of an AdvPL/4GL function": "Por favor, digite o nome de uma função AdvPL/4GL",
@@ -194,7 +194,7 @@
   "Use filter to display functions": "Use filtro para exibir funções",
   "Date Rpo": "Data RPO",
   "Launcher Debug Config": "Configuração do lançador de depuração",
-  "Include": "Include",
+  "Include": "!Include",
   "Global Include": "Include Global",
   "Removed [{0}] invalid breakpoints.": "Removidos [{0}] pontos de interrupção inválidos.",
   "The command to Disable/Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually": "O comando para desativar/ativar o sincronismo da tabela precisa de uma sessão de depuração ativa. Para uma configuração inicial, altere o arquivo launch.json manualmente",
@@ -202,7 +202,6 @@
   "Capturing logs ... Click here to close.": "Capturando logs... Clique aqui para fechar.",
   "Debugging using SIGAMDI or SIGAADV may result in unexpected behavior, instead use the modules directly. Do you want to continue?": "A depuração usando SIGAMDI ou SIGAADV pode resultar em comportamento inesperado; em vez disso, use os módulos diretamente. Deseja continuar?",
   "Patch Generation from RPO": "Geração de patches da RPO",
-  "Output Folder": "Pasta de saída",
   "Enter the destination folder of the generated update package": "Digite a pasta de destino do pacote de atualização gerado",
   "Output Folder": "Pasta de saída",
   "Select the destination folder of the generated update package": "Selecione a pasta de destino do pacote de atualização gerado",
@@ -267,5 +266,6 @@
   "Enter the connection parameters to the Protheus server.": "Digite os parâmetros de conexão no servidor Protheus.",
   "Starting Log on": "Iniciando logon",
   "VSCode Version:": "Versão VSCode:",
-  "--forceUtf8 deprecated. Setting will be ignored.": "--forceUtf8 descontinuada. A configuração será ignorada."
+  "--forceUtf8 deprecated. Setting will be ignored.": "--forceUtf8 descontinuada. A configuração será ignorada.",
+  "Monitor": "!Monitor"
 }
