@@ -18,3 +18,6 @@ limitations under the License.
 	width: 65%;
 }
 
+vscode-tag {
+	cursor: pointer;
+}

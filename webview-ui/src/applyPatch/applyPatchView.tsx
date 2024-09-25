@@ -24,7 +24,7 @@ import {
   TdsTextField, TdsProgressRing,
   setDataModel, setErrorModel
 } from "@totvs/tds-webtoolkit";
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
+import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeTag } from "@vscode/webview-ui-toolkit/react";
 import { TApplyPatchModel, TPatchFileData } from "@tds-shared/index";
 import { ApplyPatchCommandEnum, EMPTY_APPLY_PATCH_MODEL, EMPTY_PATCH_FILE } from "@tds-shared/index";
 
@@ -33,15 +33,9 @@ enum ReceiveCommandEnum {
 
 type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TApplyPatchModel>;
 
-const ROWS_LIMIT: number = 5;
-
 export default function ApplyPatchView() {
   const methods = useForm<TApplyPatchModel>({
-    defaultValues: EMPTY_APPLY_PATCH_MODEL() && {
-      patchFiles: Array(ROWS_LIMIT).map(() => {
-        return EMPTY_PATCH_FILE();
-      })
-    },
+    defaultValues: EMPTY_APPLY_PATCH_MODEL(),
     mode: "all"
   })
   const [showOldFiles, setShowOldFiles] = React.useState<boolean>(false);
@@ -65,10 +59,6 @@ export default function ApplyPatchView() {
         case CommonCommandEnum.UpdateModel:
           const model: TApplyPatchModel = command.data.model;
           const errors: any = command.data.errors;
-
-          while (model.patchFiles.length < ROWS_LIMIT) {
-            model.patchFiles.push(EMPTY_PATCH_FILE());
-          }
 
           setDataModel<TApplyPatchModel>(methods.setValue, model);
           setErrorModel(methods.setError, errors);
@@ -117,7 +107,6 @@ export default function ApplyPatchView() {
   }
 
   const model: TApplyPatchModel = methods.getValues();
-  const indexFirstPathFree: number = model.patchFiles.findIndex((row: TPatchFileData) => row.uri == undefined);
   const isProcessing: boolean = model.patchFiles.filter((row: TPatchFileData) => row.isProcessing).length > 0;
 
   return (
@@ -169,10 +158,10 @@ export default function ApplyPatchView() {
                               onClick={() => removePatchFile(index)} >
                               <span className="codicon codicon-close"></span>
                             </VSCodeButton>
-                            <VSCodeButton appearance="icon"
+                            <VSCodeTag
                               onClick={() => infoPatchFile(index)} >
-                              <span className="codicon codicon-info"></span>
-                            </VSCodeButton>
+                              {tdsVscode.l10n.t("Info")}
+                            </VSCodeTag>
                           </>
                         }
                         {row.validation == "OK" &&
@@ -199,37 +188,8 @@ export default function ApplyPatchView() {
                       </VSCodeDataGridCell>
                     </>
                   }
-                  {((row.uri == undefined) && (index !== indexFirstPathFree)) &&
-                    <>
-                      <VSCodeDataGridCell grid-column="1">
-                        &nbsp;
-                      </VSCodeDataGridCell>
-                      <VSCodeDataGridCell grid-column="2">
-                        &nbsp;
-                      </VSCodeDataGridCell>
-                    </>
-                  }
-                  {(index === indexFirstPathFree) &&
-                    <>
-                      <VSCodeDataGridCell grid-column="1">
-                        &nbsp;
-                      </VSCodeDataGridCell>
-                      <VSCodeDataGridCell grid-column="2">
-                        <TdsSelectionFileField
-                          name={`btnSelectFile.${index}`}
-                          canSelectMany={true}
-                          title={tdsVscode.l10n.t("Select the update package(s)")}
-                          filters={
-                            {
-                              "Patch file": ["PTM", "ZIP", "UPD"]
-                            }
-                          }
-                          readOnly={isProcessing}
-                        />
-                      </VSCodeDataGridCell>
-                    </>
-                  }
                 </VSCodeDataGridRow>
+
                 {methods.getFieldState(`patchFiles.${index}.name`).error &&
                   <VSCodeDataGridRow key={`${index}_error`} >
                     <VSCodeDataGridCell grid-column="1">
@@ -243,6 +203,25 @@ export default function ApplyPatchView() {
               </>
             ))}
 
+            <VSCodeDataGridRow >
+              <VSCodeDataGridCell grid-column="1">
+                &nbsp;
+              </VSCodeDataGridCell>
+              <VSCodeDataGridCell grid-column="2">
+                <TdsSelectionFileField
+                  name={`btnSelectFile.${model.patchFiles.length}`}
+                  canSelectMany={true}
+                  title={tdsVscode.l10n.t("Select the update package(s)")}
+                  filters={
+                    {
+                      "Patch file": ["PTM", "ZIP", "UPD"]
+                    }
+                  }
+                  readOnly={isProcessing}
+                />
+              </VSCodeDataGridCell>
+            </VSCodeDataGridRow>
+
           </VSCodeDataGrid>
         </section>
 
@@ -251,7 +230,6 @@ export default function ApplyPatchView() {
           label={tdsVscode.l10n.t("Apply old files")}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             const patchFiles: TPatchFileData[] = methods.getValues("patchFiles");
-            console.log("old >>>>>>")
             patchFiles.forEach((value: TPatchFileData, index: number) => {
               const error: string = methods.getFieldState(`patchFiles.${index}.name`).error.message
               if (error == tdsVscode.l10n.t("Source/resource files in patch older than RPO.")) {

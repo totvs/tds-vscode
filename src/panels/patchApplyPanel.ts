@@ -195,19 +195,19 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
           this.sendUpdateModel(data.model, errors);
 
           let i: number = 0
+          const server = ServersConfig.getCurrentServer();
+
           for await (const file of data.model.patchFiles) {
             if (data.model.patchFiles[i].isProcessing) {
-              const server = ServersConfig.getCurrentServer();
-
               await this.doValidatePatch(server, data.model.patchFiles[i], i, data.model.applyOldFiles, errors);
 
               data.model.patchFiles[i].isProcessing = false;
             }
 
+            this.sendUpdateModel(data.model, errors);
             i++;
           }
 
-          this.sendUpdateModel(data.model, errors);
         }
 
         break;
