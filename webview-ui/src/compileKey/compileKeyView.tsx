@@ -37,7 +37,7 @@ const EMPTY_COMPILE_KEY: TCompileKey = {
   expire: "",
   buildType: "",
   tokenKey: "",
-  label={tdsVscode.l10n.t(": "",
+  authorizationToken: "",
   userId: ""
 }
 
