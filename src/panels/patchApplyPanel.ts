@@ -325,7 +325,8 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
   async doValidatePatch(server: ServerItem, patchFile: TPatchFileData, index: number, applyOldFile: boolean, errors: TFieldErrors<TApplyPatchModel>) {
 
     if (!fse.existsSync(patchFile.uri)) {
-      errors[`patchFiles.${index}.name`] = { type: "validate", message: "File nor found" };
+      errors[`patchFiles.${index}.name`] = { type: "validate", message: vscode.l10n.t("File nor found") };
+      patchFile.validation = vscode.l10n.t("File not fond");
       return;
     }
 
@@ -333,7 +334,7 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
 
     if (response.errorCode == PathErrorCodes.Ok) {
       vscode.window.showInformationMessage(vscode.l10n.t("Patch validated."));
-      patchFile.validation = "OK";
+      patchFile.validation = "";
       patchFile.tphInfo = {};
     } else {
       if (response.errorCode !== PathErrorCodes.Ok) {
@@ -343,6 +344,7 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
           //ignora o erro
         } else {
           errors[`patchFiles.${index}.name`] = { type: "validate", message: response.message };
+          patchFile.validation = response.message;
         }
       }
 
