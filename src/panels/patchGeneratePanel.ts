@@ -152,6 +152,7 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
                   { ...EMPTY_GENERATE_PATCH_FROM_RPO_MODEL(), folder: this._options.folder.fsPath }, false);
               }
 
+              data.model.isReady = true;
               this.sendUpdateModel(data.model, undefined);
 
               progress.report({ increment: 100 });

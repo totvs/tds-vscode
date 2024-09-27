@@ -27,6 +27,7 @@ export enum PatchGenerateCommandEnum {
 export type PatchGenerateCommand = CommonCommandFromWebViewEnum & PatchGenerateCommandEnum;
 
 export type TGeneratePatchFromRpoModel = TAbstractModelPanel & {
+	isReady: boolean;
 	patchName: string;
 	patchDest: string;
 	includeTRes: boolean;
@@ -43,6 +44,7 @@ export type TGeneratePatchByDifferenceModel = TAbstractModelPanel & {
 
 export function EMPTY_GENERATE_PATCH_FROM_RPO_MODEL(): TGeneratePatchFromRpoModel {
 	return {
+		isReady: false,
 		patchDest: "",
 		patchName: "",
 		includeTRes: false,
