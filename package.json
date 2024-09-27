@@ -71,11 +71,11 @@
   "dependencies": {
     "@totvs/tds-da": "^1.2.72",
     "@totvs/tds-ls": "^2.0.18",
-    "@totvs/tds-webtoolkit": "0.0.19",
+    "@totvs/tds-webtoolkit": "0.0.20",
     "@types/vscode": "^1.85.0",
     "@vscode/codicons": "^0.0.36",
     "@vscode/debugadapter": "^1.66.0",
-  "@vscode/l10n": "^0.0.18",
+    "@vscode/l10n": "^0.0.18",
     "@vscode/webview-ui-toolkit": "^1.4.0",
     "core-js": "^3.37.1",
     "css-loader": "^7.1.2",
