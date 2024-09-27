@@ -37,7 +37,7 @@ function columnsDef(): TTdsDataGridColumnDef[] {
       width: "8fr",
       sortable: true,
       sortDirection: "asc",
-      rowGroup:  0
+      rowGroup: 0
     },
     {
       type: "string",
@@ -46,7 +46,7 @@ function columnsDef(): TTdsDataGridColumnDef[] {
       width: "10fr",
       sortable: true,
       sortDirection: "",
-      rowGroup:  0
+      rowGroup: 0
     },
     {
       type: "string",
@@ -55,7 +55,7 @@ function columnsDef(): TTdsDataGridColumnDef[] {
       width: "4fr",
       sortable: true,
       sortDirection: "",
-      rowGroup:  0
+      rowGroup: 0
     },
     {
       type: "string",
@@ -64,7 +64,7 @@ function columnsDef(): TTdsDataGridColumnDef[] {
       width: "10fr",
       sortable: true,
       sortDirection: "",
-      rowGroup:  1
+      rowGroup: 0
     },
     {
       type: "string",
@@ -73,7 +73,7 @@ function columnsDef(): TTdsDataGridColumnDef[] {
       width: "10fr",
       sortable: true,
       sortDirection: "",
-      rowGroup:  1
+      rowGroup: 0
     }
   ];
 
@@ -81,7 +81,7 @@ function columnsDef(): TTdsDataGridColumnDef[] {
 }
 
 export default function BuildResultView() {
-  const [_model, setModel] = React.useState<TBuildResultModel>(EMPTY_BUILD_RESULT_MODEL());
+  const [model, setModel] = React.useState<TBuildResultModel>(undefined);
   const methods = useForm<TBuildResultModel>({
     defaultValues: EMPTY_BUILD_RESULT_MODEL(),
     mode: "all"
@@ -141,25 +141,27 @@ export default function BuildResultView() {
 
   return (
     <TdsPage>
-      <TdsForm<TBuildResultModel>
-        methods={methods}
-        onSubmit={onSubmit}
-        actions={formActions}
-        description={
-          tdsVscode.l10n.t("Compilation results made at [{0}]", tdsVscode.l10n.formatDate(_model.timeStamp)) +
-            (_model.returnCode != -1)
-            ? ""
-            : `**${tdsVscode.l10n.t("Compilation aborted.")}**`
-        }>
+      {model &&
+        <TdsForm<TBuildResultModel>
+          methods={methods}
+          onSubmit={onSubmit}
+          actions={formActions}
+          description={
+            tdsVscode.l10n.t("Compilation results made at [{0}]", tdsVscode.l10n.formatDate(model.timeStamp)) +
+              (model.returnCode != -1)
+              ? ""
+              : `**${tdsVscode.l10n.t("Compilation aborted.")}**`
+          }>
 
-        <TdsDataGrid id={"result_dataGrid"}
-          columnsDef={columnsDef()}
-          dataSource={_model.buildInfos}
-          options={{
-            grouping: false,
-            rowSeparator: true
-          }} />
-      </TdsForm>
+          <TdsDataGrid id={"result_dataGrid"}
+            columnsDef={columnsDef()}
+            dataSource={model.buildInfos}
+            options={{
+              grouping: false,
+              rowSeparator: true
+            }} />
+        </TdsForm>
+      }
     </TdsPage>
   );
 }

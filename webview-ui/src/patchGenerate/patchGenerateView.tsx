@@ -183,13 +183,9 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
             array[index].checked = false;
           });
 
-          // selectedObjects["objects_left"] = [];
-          // selectedObjects["objects_right"] = [];
           console.log(model);
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);
-          // setObjectsLeft(model.objectsLeft);
-          // setObjectsRight(model.objectsRight);
 
           break;
         default:
@@ -241,9 +237,7 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
       type: "button",
       onClick: () => {
         sendImportTXT({
-          ...methods.getValues(),
-          // objectsLeft: objectsLeft,
-          // objectsRight: objectsRight
+          ...methods.getValues()
         });
       }
     }
@@ -252,6 +246,7 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
   const selectResource = (id: string, label: string, dataSource: any[], topActions: TTdsDataGridAction[]) => {
     const forceRefresh: number = Date.now();
     console.log(">>> selectResource", id)
+
     return (
       <section className="tds-grid-container select-resource-component">
         <TdsLabelField
@@ -315,25 +310,20 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
                   const objects = methods.getValues("objectsLeft").filter((value) =>
                     selectedObjects["objectsLeft"].indexOf(value.source) > -1);
                   console.log(">>>> toRight", objects)
+
                   sendToRight({
-                    ...methods.getValues(),
-                    // objectsLeft: objectsLeft,
-                    // objectsRight: objectsRight
+                    ...methods.getValues()
                   }, objects);
                 }} >
                   <span className="codicon codicon-arrow-right"></span>
                 </VSCodeButton>
                 <VSCodeButton appearance="icon" onClick={() => {
-                  // const objects = model.objectsRight.filter((value) =>
-                  //   selectedObjects["objects_right"].indexOf(value.source) > -1);
                   const objects = methods.getValues("objectsRight").filter((value) =>
                     selectedObjects["objectsRight"].indexOf(value.source) > -1);
                   console.log(">>>> toLeft", objects)
 
                   sendToLeft({
-                    ...methods.getValues(),
-                    // objectsLeft: objectsLeft,
-                    // objectsRight: objectsRight
+                    ...methods.getValues()
                   }, objects);
                 }} >
                   <span className="codicon codicon-arrow-left"></span>
