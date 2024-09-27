@@ -56,8 +56,12 @@ function sendToLeft(model: any, selectedObject: TInspectorObject[]) {
 interface IPatchGenerateViewProps {
   isServerP20OrGreater: boolean;
 }
+
 //FIX: REVISAR PROCESSO. MUITO RUIM.
-let selectedObjects: Record<string, string[]> = {};
+let selectedObjects: Record<string, string[]> = {
+  "objectsLeft": [],
+  "objectsRight": []
+};
 
 export default function PatchGenerateView(props: IPatchGenerateViewProps) {
   const methods = useForm<TGeneratePatchFromRpoModel>({
@@ -66,7 +70,7 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
     // values: props.
   })
   const watchObjectsLeft: any = methods.watch("objectsLeft");
-  const watchObjectsRight: any = methods.watch("objectsRight");
+  //const watchObjectsRight: any = methods.watch("objectsRight");
   // const [objectsLeft, setObjectsLeft]: any = React.useState<TInspectorObject[]>([]);
   // const [objectsRight, setObjectsRight]: any = React.useState<TInspectorObject[]>([]);
 
@@ -90,6 +94,7 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
           e.preventDefault();
           const target = e.target as HTMLInputElement;
           const targetField: string = fieldName.split(".")[0];
+          console.log(">>>>>>>>>>>> selectedObjects");
 
           if (selectedObjects[targetField]) {
             const i: number = selectedObjects[targetField].indexOf(row.source);
@@ -178,7 +183,9 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
             array[index].checked = false;
           });
 
-          selectedObjects = {}
+          // selectedObjects["objects_left"] = [];
+          // selectedObjects["objects_right"] = [];
+          console.log(model);
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);
           // setObjectsLeft(model.objectsLeft);
@@ -243,7 +250,8 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
   ];
 
   const selectResource = (id: string, label: string, dataSource: any[], topActions: TTdsDataGridAction[]) => {
-
+    const forceRefresh: number = Date.now();
+    console.log(">>> selectResource", id)
     return (
       <section className="tds-grid-container select-resource-component">
         <TdsLabelField
@@ -251,7 +259,7 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
           name="resource_name"
           className="tds-bold" label={label} />
         <TdsDataGrid
-          key={`data_grid_${id}`}
+          key={`data_grid_${id}_${forceRefresh}`}
           id={id}
           columnsDef={columnsDef(props.isServerP20OrGreater)}
           dataSource={dataSource}
@@ -270,65 +278,73 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
     <TdsPage>
       <TdsForm methods={methods}
         onSubmit={onSubmit}>
-        <section className="tds-row-container">
-          <TdsTextField
-            name="patchDest"
-            label={tdsVscode.l10n.t("Output Folder")}
-            info={tdsVscode.l10n.t("Enter the destination folder of the generated update package")}
-            readOnly={true}
-            rules={{ required: true }}
-          />
+        {(!model.isReady) && <TdsProgressRing size="full" />}
+        {(model.isReady) &&
+          <>
+            <section className="tds-row-container">
+              <TdsTextField
+                name="patchDest"
+                label={tdsVscode.l10n.t("Output Folder")}
+                info={tdsVscode.l10n.t("Enter the destination folder of the generated update package")}
+                readOnly={true}
+                rules={{ required: true }}
+              />
 
-          <TdsSelectionFolderField
-            openLabel={tdsVscode.l10n.t("Output Folder")}
-            info={tdsVscode.l10n.t("Select the destination folder of the generated update package")}
-            name="btn-patchDest"
-            title={tdsVscode.l10n.t("Select Output Directory")}
-          />
+              <TdsSelectionFolderField
+                openLabel={tdsVscode.l10n.t("Output Folder")}
+                info={tdsVscode.l10n.t("Select the destination folder of the generated update package")}
+                name="btn-patchDest"
+                title={tdsVscode.l10n.t("Select Output Directory")}
+              />
 
-          <TdsTextField
-            name="patchName"
-            label={tdsVscode.l10n.t("Output Patch Filename")}
-            info={tdsVscode.l10n.t("Enter update package name.")}
-          />
+              <TdsTextField
+                name="patchName"
+                label={tdsVscode.l10n.t("Output Patch Filename")}
+                info={tdsVscode.l10n.t("Enter update package name.")}
+              />
 
-        </section>
+            </section>
 
-        <section className="tds-row-container" id="selectGrid" >
-          {(watchObjectsLeft && model.objectsLeft.length == 0) && <TdsProgressRing size="full" />}
-          {(watchObjectsLeft && model.objectsLeft.length > 0) && selectResource("objects_left", tdsVscode.l10n.t("RPO Objects"),
-            model.objectsLeft, topActionsLeft)}
+            <section className="tds-row-container" id="selectGrid" >
+              {selectResource("objectsLeft", tdsVscode.l10n.t("RPO Objects"),
+                model.objectsLeft, topActionsLeft)}
 
-          <section className="tds-row-container-column" id="directionButtons" >
-            <VSCodeButton appearance="icon" onClick={() => {
-              const objects = model.objectsLeft.filter((value) =>
-                selectedObjects["objects_left"].indexOf(value.source) > -1);
+              <section className="tds-row-container-column" id="directionButtons" >
+                <VSCodeButton appearance="icon" onClick={() => {
+                  console.log("MODEL", methods.getValues());
+                  const objects = methods.getValues("objectsLeft").filter((value) =>
+                    selectedObjects["objectsLeft"].indexOf(value.source) > -1);
+                  console.log(">>>> toRight", objects)
+                  sendToRight({
+                    ...methods.getValues(),
+                    // objectsLeft: objectsLeft,
+                    // objectsRight: objectsRight
+                  }, objects);
+                }} >
+                  <span className="codicon codicon-arrow-right"></span>
+                </VSCodeButton>
+                <VSCodeButton appearance="icon" onClick={() => {
+                  // const objects = model.objectsRight.filter((value) =>
+                  //   selectedObjects["objects_right"].indexOf(value.source) > -1);
+                  const objects = methods.getValues("objectsRight").filter((value) =>
+                    selectedObjects["objectsRight"].indexOf(value.source) > -1);
+                  console.log(">>>> toLeft", objects)
 
-              sendToRight({
-                ...methods.getValues(),
-                // objectsLeft: objectsLeft,
-                // objectsRight: objectsRight
-              }, objects);
-            }} >
-              <span className="codicon codicon-arrow-right"></span>
-            </VSCodeButton>
-            <VSCodeButton appearance="icon" onClick={() => {
-              const objects = model.objectsRight.filter((value) =>
-                selectedObjects["objects_right"].indexOf(value.source) > -1);
+                  sendToLeft({
+                    ...methods.getValues(),
+                    // objectsLeft: objectsLeft,
+                    // objectsRight: objectsRight
+                  }, objects);
+                }} >
+                  <span className="codicon codicon-arrow-left"></span>
+                </VSCodeButton>
+              </section>
 
-              sendToLeft({
-                ...methods.getValues(),
-                // objectsLeft: objectsLeft,
-                // objectsRight: objectsRight
-              }, objects);
-            }} >
-              <span className="codicon codicon-arrow-left"></span>
-            </VSCodeButton>
-          </section>
-
-          {(watchObjectsLeft && model.objectsLeft.length > 0) && model.objectsRight && selectResource("objects_right", tdsVscode.l10n.t("To patch"),
-            model.objectsRight, topActionsRight)}
-        </section>
+              {selectResource("objectsRight", tdsVscode.l10n.t("To patch"),
+                model.objectsRight, topActionsRight)}
+            </section>
+          </>
+        }
       </TdsForm>
     </TdsPage>
   );
