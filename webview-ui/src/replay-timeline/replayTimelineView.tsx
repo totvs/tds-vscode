@@ -295,18 +295,15 @@ export default function ReplayTimelineView() {
           <TdsTable
             id={"tblTimeLine"}
             columns={[
-              { type: "string", label: tdsVscode.l10n.t("Time"), width: "2fr" },
-              { type: "string", label: tdsVscode.l10n.t("Source"), width: "*fr" },
-              { type: "number", label: tdsVscode.l10n.t("Line"), width: "2fr" }
+              { type: "string", name: "time", label: tdsVscode.l10n.t("Time"), width: "2fr" },
+              { type: "string", name: "source", label: tdsVscode.l10n.t("Source"), width: "*fr" },
+              { type: "number", name: "line", label: tdsVscode.l10n.t("Line"), width: "2fr" }
             ]}
-            dataSource={timeline.map((row: TReplayTimelineData) => [
-              row.timeStamp, row.srcName, row.line
-            ])}
+            dataSource={timeline}
             highlightRows={[paginator.currentLine]}
             highlightGroups={{
               "tds-source-not-found": timeline
                 .map((element: TReplayTimelineData, index: number) => {
-                  console.log(element);
                   if (!element.srcFoundInWS) {
                     return index;
                   }
