@@ -34,7 +34,7 @@ function verifyResult(language, update) {
 	for (const key in dataMaster) {
 		if (!dataLanguage[key]) {
 			console.info(key + " not in " + language);
-			dataLanguage[key] = "";
+			dataLanguage[key] = key;
 			updateLanguage = true;
 		}
 	};
@@ -63,7 +63,7 @@ function verifyTranslate(language, update) {
 	console.info("\n\n>>>> Verifying: " + language);
 
 	for (const key in dataLanguage) {
-		if (dataLanguage[key] == key) {
+		if ((dataLanguage[key] == key) || (dataLanguage[key] === "")) {
 			console.info(key);
 			toTranslate[key] = dataLanguage[key];
 			count++;
@@ -90,8 +90,8 @@ function verifyNeedTranslate() {
 
 	console.log("Start check data files");
 
-	//toTranslate.es = verifyTranslate("es");
-	//toTranslate.ru = verifyTranslate("ru");
+	toTranslate.es = verifyTranslate("es");
+	toTranslate.ru = verifyTranslate("ru");
 	toTranslate.pt = verifyTranslate("pt-BR");
 
 	let data = {};
@@ -110,7 +110,6 @@ function verifyNeedTranslate() {
 	fse.writeSync(file, "key,es,ru,pt\n", { encoding: "utf-8" });
 
 	for (const key in data) {
-		data[key]["pt"] = key;
 		fse.writeSync(file, "\"", { encoding: "utf-8" });
 		fse.writeSync(file, key, { encoding: "utf-8" });
 		fse.writeSync(file, "\",\"", { encoding: "utf-8" });
@@ -127,5 +126,5 @@ function verifyNeedTranslate() {
 	console.log("End check data files");
 }
 
-//verifyDataFiles();
+verifyDataFiles();
 verifyNeedTranslate();
