@@ -28,20 +28,16 @@ enum ReceiveCommandEnum {
 }
 type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TServerModel>
 
-const INCLUDE_ROWS_LIMIT: number = 5;
-
 export default function AddServerView() {
   const methods = useForm<TServerModel>({
     defaultValues: {
       ...EMPTY_SERVER_MODEL(),
-      includePaths: Array(INCLUDE_ROWS_LIMIT).fill(() => {
-        return { path: "" };
-      })
+      includePaths: []
     },
     mode: "all"
   })
 
-  const { fields, remove, insert } = useFieldArray(
+  const { fields, remove } = useFieldArray(
     {
       control: methods.control,
       name: "includePaths"
@@ -63,12 +59,6 @@ export default function AddServerView() {
           const model: TServerModel = command.data.model;
           const errors: any = command.data.errors;
 
-          while (model.includePaths.length < INCLUDE_ROWS_LIMIT) {
-            model.includePaths.push({ path: "" });
-          }
-
-          console.log(model);
-
           setDataModel<TServerModel>(methods.setValue, model);
           setErrorModel(methods.setError, errors);
 
@@ -85,21 +75,12 @@ export default function AddServerView() {
     }
   }, []);
 
-  function addIncludePath(folder: string, index: number) {
-
-    if (methods.getValues().includePaths.findIndex((includePath: TIncludePath) => includePath.path.toLowerCase() == folder.toLowerCase()) == -1) {
-      remove(index);
-      insert(index, { path: folder });
-    };
-  }
-
   function removeIncludePath(index: number) {
     remove(index);
-    insert(index + 1, { path: "" });
+    //insert(index + 1, { path: "" });
   }
 
   const model: TServerModel = methods.getValues();
-  const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludePath) => row.path == "");
 
   return (
     <TdsPage>
@@ -167,52 +148,38 @@ export default function AddServerView() {
           info={methods.getValues("globalIncludeDirectories")} />
 
         <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
-          {model && model.includePaths.map((row: TIncludePath, index: number) => (
+          {fields.map((row, index: number) => (
             <VSCodeDataGridRow
-              key={index}
+              key={row.id}
             >
-              {row.path !== "" &&
-                <>
-                  <VSCodeDataGridCell grid-column="1">
-                    <VSCodeButton appearance="icon"
-                      onClick={() => removeIncludePath(index)} >
-                      <span className="codicon codicon-close"></span>
-                    </VSCodeButton>
-                  </VSCodeDataGridCell>
-                  <VSCodeDataGridCell grid-column="2">
-                    <TdsSimpleTextField
-                      name={`includePaths.${index}.path`}
-                      readOnly={true}
-                    />
-                  </VSCodeDataGridCell>
-                </>
-              }
-              {((row.path == "") && (index !== indexFirstPathFree)) &&
-                <>
-                  <VSCodeDataGridCell grid-column="1">
-                    &nbsp;
-                  </VSCodeDataGridCell>
-                  <VSCodeDataGridCell grid-column="2">
-                    &nbsp;
-                  </VSCodeDataGridCell>
-                </>
-              }
-              {(index === indexFirstPathFree) &&
-                <>
-                  <VSCodeDataGridCell grid-column="1">
-                    &nbsp;
-                  </VSCodeDataGridCell>
-                  <VSCodeDataGridCell grid-column="2">
-                    <TdsSelectionFolderField
-                      name={`btnSelectFolder.${index}`}
-                      info={tdsVscode.l10n.t("Select a folder containing definition files")}
-                      title={tdsVscode.l10n.t("Select folder with define files")}
-                    />
-                  </VSCodeDataGridCell>
-                </>
-              }
+              <VSCodeDataGridCell grid-column="1">
+                <VSCodeButton appearance="icon"
+                  onClick={() => removeIncludePath(index)} >
+                  <span className="codicon codicon-close"></span>
+                </VSCodeButton>
+              </VSCodeDataGridCell>
+              <VSCodeDataGridCell grid-column="2">
+                <TdsSimpleTextField
+                  name={`includePaths.${index}.path`}
+                  readOnly={true}
+                />
+              </VSCodeDataGridCell>
             </VSCodeDataGridRow>
           ))}
+
+          <VSCodeDataGridRow>
+            <VSCodeDataGridCell grid-column="1">
+              &nbsp;
+            </VSCodeDataGridCell>
+            <VSCodeDataGridCell grid-column="2">
+              <TdsSelectionFolderField
+                name={`btnSelectFolder`}
+                info={tdsVscode.l10n.t("Select a folder containing definition files")}
+                title={tdsVscode.l10n.t("Select folder with define files")}
+              />
+            </VSCodeDataGridCell>
+          </VSCodeDataGridRow>
+
         </VSCodeDataGrid>
       </TdsForm>
     </TdsPage>

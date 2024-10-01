@@ -30,32 +30,20 @@ type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TFi
 
 type TFields = TGlobalIncludeModel;
 
-const ROWS_LIMIT: number = 5;
-
 export default function GlobalIncludeView() {
   const methods = useForm<TFields>({
     defaultValues: {
       ...EMPTY_GLOBAL_INCLUDE_MODEL(),
-      includePaths: Array(ROWS_LIMIT).fill(() => {
-        return { path: "" };
-      })
+      includePaths:[]
     },
     mode: "all"
   })
 
-  const { fields, remove, insert } = useFieldArray(
+  const { fields, remove } = useFieldArray(
     {
       control: methods.control,
       name: "includePaths"
     });
-
-  const watchFieldArray = methods.watch("includePaths");
-  const includePathsFields = fields.map((field, index) => {
-    return {
-      ...field,
-      ...watchFieldArray[index]
-    };
-  });
 
   const onSubmit: SubmitHandler<TFields> = (data) => {
     data.includePaths = data.includePaths.filter((includePath: TIncludePath) => includePath.path.length > 0);
@@ -70,10 +58,6 @@ export default function GlobalIncludeView() {
         case CommonCommandEnum.UpdateModel:
           const model: TFields = command.data.model;
           const errors: TFields = command.data.errors;
-
-          while (model.includePaths.length < ROWS_LIMIT) {
-            model.includePaths.push({ path: "" });
-          }
 
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);
@@ -91,26 +75,18 @@ export default function GlobalIncludeView() {
     }
   }, []);
 
-  function addIncludePath(folder: string, index: number) {
-
-    if (methods.getValues().includePaths.findIndex((includePath: TIncludePath) => includePath.path.toLowerCase() == folder.toLowerCase()) == -1) {
-      remove(index);
-      insert(index + 1, { path: folder });
-    };
-  }
-
   function removeIncludePath(index: number) {
     remove(index);
-    insert(index, { path: "" });
   }
-
-  const model: TFields = methods.getValues();
-  const indexFirstPathFree: number = model.includePaths.findIndex((row: TIncludePath) => row.path == "");
 
   return (
     <TdsPage>
-      <TdsForm<TGlobalIncludeModel> methods={methods}
+      <TdsForm<TGlobalIncludeModel>
+        methods={methods}
         onSubmit={onSubmit}
+        onManualReset={() => {
+          methods.resetField("includePaths", { defaultValue: [] });
+        }}
         description={tdsVscode.l10n.t("The global search folder list is used when not specified in the server definition.")}>
 
         <section className="tds-row-container" >
@@ -121,44 +97,38 @@ export default function GlobalIncludeView() {
         </section>
 
         <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
-          {includePathsFields.map((row: FieldArrayWithId<TFields, "includePaths", "id">, index: number) => (
-            <VSCodeDataGridRow key={row.id}>
-              {row.path !== "" &&
-                <>
-                  <VSCodeDataGridCell grid-column="1">
-                    <VSCodeButton appearance="icon" onClick={() => removeIncludePath(index)} >
-                      <span className="codicon codicon-close"></span>
-                    </VSCodeButton>
-                  </VSCodeDataGridCell>
-                  <VSCodeDataGridCell grid-column="2">
-                    <TdsSimpleTextField
-                      key={`includePaths.${index}.path`}
-                      name={`includePaths.${index}.path`}
-                      readOnly={true}
-                    />
-                  </VSCodeDataGridCell>
-                </>
-              }
-              {((row.path == "") && (index !== indexFirstPathFree)) &&
-                <>
-                  <VSCodeDataGridCell grid-column="1">&nbsp;</VSCodeDataGridCell>
-                  <VSCodeDataGridCell grid-column="2">&nbsp;</VSCodeDataGridCell>
-                </>
-              }
-              {index == indexFirstPathFree &&
-                <>
-                  <VSCodeDataGridCell grid-column="2">
-                    <TdsSelectionFolderField
-                      title={tdsVscode.l10n.t("Select folder with definition files")}
-                      name={`btnSelectFolder.${index}`}
-                      info={tdsVscode.l10n.t("Select the folder where the definition files are located")}
-                    />
-                  </VSCodeDataGridCell>
-                </>
-              }
+          {fields.map((row, index: number) => (
+            <VSCodeDataGridRow
+              key={row.id}
+            >
+              <VSCodeDataGridCell grid-column="1">
+                <VSCodeButton appearance="icon"
+                  onClick={() => removeIncludePath(index)} >
+                  <span className="codicon codicon-close"></span>
+                </VSCodeButton>
+              </VSCodeDataGridCell>
+              <VSCodeDataGridCell grid-column="2">
+                <TdsSimpleTextField
+                  name={`includePaths.${index}.path`}
+                  readOnly={true}
+                />
+              </VSCodeDataGridCell>
             </VSCodeDataGridRow>
-          ))
-          }
+          ))}
+
+          <VSCodeDataGridRow>
+            <VSCodeDataGridCell grid-column="1">
+              &nbsp;
+            </VSCodeDataGridCell>
+            <VSCodeDataGridCell grid-column="2">
+              <TdsSelectionFolderField
+                name={`btnSelectFolder`}
+                info={tdsVscode.l10n.t("Select a folder containing definition files")}
+                title={tdsVscode.l10n.t("Select folder with define files")}
+              />
+            </VSCodeDataGridCell>
+          </VSCodeDataGridRow>
+
         </VSCodeDataGrid>
         {
           //TODO: melhorar e adicionar link (cuidado que pode ser por na área de trabalho)
