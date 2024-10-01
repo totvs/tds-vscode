@@ -55,6 +55,8 @@ const EMPTY_MODEL: TFields = {
   ...EMPTY_AUTHORIZATION_KEY
 }
 
+let machineId: string = "";
+
 export default function CompileKeyView() {
   const methods = useForm<TFields>({
     defaultValues: EMPTY_MODEL,
@@ -77,6 +79,7 @@ export default function CompileKeyView() {
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);
 
+          machineId = model.machineId;
           break;
         default:
           break;
@@ -94,6 +97,9 @@ export default function CompileKeyView() {
     <TdsPage>
       <TdsForm<TFields> methods={methods}
         onSubmit={onSubmit}
+        onManualReset={() => {
+          methods.setValue("machineId", machineId)
+        }}
       >
 
         <TdsTextField
