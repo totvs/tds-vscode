@@ -173,7 +173,7 @@
   "The parameter \"forceImport\" is defined to \"true\". Note that this will consume more disk space.": "El parámetro \"forceImport\" se define a \"true\". Tenga en cuenta que esto consumirá más espacio en disco.",
   "This operation is not allowed during a debug.": "Esta operación no está permitida durante una depuración.",
   "To patch": "Parchear",
-  "Token": "!Token",
+  "Token": "Token",
   "Token generated": "Token generado",
   "URL or Wsdl File": "URL o archivo Wsdl",
   "User identification": "Identificación de usuario",
