@@ -984,28 +984,6 @@ export function sendValidKey(id: string, issued: string, expiry: string, canOver
     .then(
       (response: TValidKeyResult) => {
         return response;
-        // let outputMessageText: string;
-        // let outputMessageType: string;
-        // response.authorizationToken = response.authorizationToken.trim();
-
-        // if (response.authorizationToken !== "") {
-        //   if (close) {
-        //   }
-        //   outputMessageText =
-        //     localizeHTML["tds.webview.compile.key.validated"];
-        //   outputMessageType = "success";
-        // } else {
-        //   //console.log("validateKey error");
-        //   outputMessageText = localizeHTML["tds.webview.compile.key.invalid"];
-        //   outputMessageType = "error";
-        // }
-        // if (!close) {
-        //   currentPanel.webview.postMessage({
-        //     command: "setOutputMessage",
-        //     output: outputMessageText,
-        //     type: outputMessageType,
-        //   });
-        // }
       },
       (err: ResponseError<object>) => {
         const response: TValidKeyResult = {
