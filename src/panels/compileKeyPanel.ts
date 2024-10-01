@@ -23,6 +23,7 @@ import { CommonCommandFromWebViewEnum, ReceiveMessage } from "@tds-shared/index"
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import { TdsPanel } from "./panel";
 import * as fse from "fs-extra";
+import { languageClient } from "../extension";
 
 enum CompileKeyCommandEnum {
 }
@@ -176,11 +177,6 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
             type: "validate",
             message: vscode.l10n.t("AUT file is required")
           }
-          // } else if (!fse.existsSync(data.model.path)) {
-          //   errors.path = {
-          //     type: "validate",
-          //     message: vscode.l10n.t("File not found")
-          //   }
         } else {
           errors = await this.validateAuthorization(data.model.path, data.model);
         }
@@ -207,7 +203,7 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
     const validKey: TValidKeyResult | undefined = await sendValidKey(model.id, model.generation, model.expire, model.canOverride, model.tokenKey);
 
     if (validKey.buildType == -1) {
-      errors.path = { type: "validate", message: vscode.l10n.t("Server refused compile key") };
+      errors.path = { type: "validate", message: vscode.l10n.t("Server refused compile key").concat(` ${validKey.errorMessage}`) };
     } else if (validKey.authorizationToken == "") {
       errors.path = { type: "validate", message: vscode.l10n.t("Invalid Token") };
       // errors.authorizationToken = {
@@ -261,6 +257,9 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
       model.validation = authorization.validation;
       model.key = authorization.key;
       model.canOverride = authorization.permission === "1";
+
+      model.expire = authorization.validation;
+      model.tokenKey = model.key;
 
       await this.validateModel(model, errors);
     } else {
