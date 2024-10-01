@@ -258,7 +258,7 @@ export class ReplayConfigurationPanel extends TdsPanel<TReplayConfigurationModel
       "List of sources to include. Can use wildcard characters (*,?)": vscode.l10n.t("List of sources to include. Can use wildcard characters (*,?)"),
       "**Exclude Sources**": vscode.l10n.t("**Exclude Sources**"),
       "List of sources to exclude. Can use wildcard characters (*,?)": vscode.l10n.t("List of sources to exclude. Can use wildcard characters (*,?)"),
-      "_* This config could be altered editing file./vscode/launch.json_": vscode.l10n.t("_* This config could be altered editing file./vscode/launch.json_")
+      "_This config could be altered editing file./vscode/launch.json_": vscode.l10n.t("_This config could be altered editing file./vscode/launch.json_")
     }
   }
 }

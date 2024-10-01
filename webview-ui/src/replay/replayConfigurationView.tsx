@@ -246,7 +246,7 @@ export default function ReplayConfigurationView() {
             <section className="tds-row-container">
               <TdsLabelField
                 name={"lblWarning"}
-                label={tdsVscode.l10n.t("_* This config could be altered editing file./vscode/launch.json_")} />
+                label={tdsVscode.l10n.t("_This config could be altered editing file./vscode/launch.json_")} />
             </section>
           </>
         }

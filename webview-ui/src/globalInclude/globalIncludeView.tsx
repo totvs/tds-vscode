@@ -34,7 +34,7 @@ export default function GlobalIncludeView() {
   const methods = useForm<TFields>({
     defaultValues: {
       ...EMPTY_GLOBAL_INCLUDE_MODEL(),
-      includePaths:[]
+      includePaths: []
     },
     mode: "all"
   })
@@ -84,9 +84,6 @@ export default function GlobalIncludeView() {
       <TdsForm<TGlobalIncludeModel>
         methods={methods}
         onSubmit={onSubmit}
-        onManualReset={() => {
-          methods.resetField("includePaths", { defaultValue: [] });
-        }}
         description={tdsVscode.l10n.t("The global search folder list is used when not specified in the server definition.")}>
 
         <section className="tds-row-container" >
@@ -123,8 +120,8 @@ export default function GlobalIncludeView() {
             <VSCodeDataGridCell grid-column="2">
               <TdsSelectionFolderField
                 name={`btnSelectFolder`}
-                info={tdsVscode.l10n.t("Select a folder containing definition files")}
-                title={tdsVscode.l10n.t("Select folder with define files")}
+                info={tdsVscode.l10n.t("Select folder with definition files")}
+                title={tdsVscode.l10n.t("Select folder with definition files")}
               />
             </VSCodeDataGridCell>
           </VSCodeDataGridRow>

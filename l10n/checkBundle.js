@@ -20,6 +20,15 @@ function bundleI18n(language) {
 	return dataResult;
 }
 
+const ignore = [
+	"Token",
+	"TDS-Replay: {0}",
+	"RPO",
+	"Status",
+	"Smart Client (Desktop)",
+	"Multi Thread",
+];
+
 function verifyResult(language, update) {
 	const master = path.join(process.cwd(), "l10n", "bundle.l10n.json")
 	const contentMaster = fse.readFileSync(master, { encoding: "utf-8" });
@@ -32,7 +41,9 @@ function verifyResult(language, update) {
 	console.info("\n\nVerifying: " + language);
 
 	for (const key in dataMaster) {
-		if (!dataLanguage[key]) {
+		if (ignore.includes(key)) {
+
+		} else if (!dataLanguage[key]) {
 			console.info(key + " not in " + language);
 			dataLanguage[key] = key;
 			updateLanguage = true;

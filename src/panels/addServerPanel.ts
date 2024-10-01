@@ -119,7 +119,7 @@ export class AddServerPanel extends TdsPanel<TServerModel, TServerOptions> {
           data.model.includePaths = includePaths;
 
           if (alreadyExist) {
-            errors[`includePaths.${[index]}.path`] = { type: "validade", message: "Path already informed" };
+            errors[`includePaths.${[index]}.path`] = { type: "validade", message: vscode.l10n.t("Path already informed") };
           }
 
           this.sendUpdateModel(data.model, errors);
@@ -235,7 +235,7 @@ export class AddServerPanel extends TdsPanel<TServerModel, TServerOptions> {
     };
 
     model.includePaths.forEach((includePath: TIncludePath, index: number) => {
-      const checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/);
+      const checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/gi);
 
       if (checkedDir.length == 0) {
         errors[`includePaths.${index}.path`] = { type: "validate", message: vscode.l10n.t("Invalid folder or not contains definition files (.CH or .TH)") };
@@ -316,8 +316,7 @@ export class AddServerPanel extends TdsPanel<TServerModel, TServerOptions> {
       "Enter the folders where the definition files should be searched": vscode.l10n.t("Enter the folders where the definition files should be searched"),
       "May be informed later. If you do not inform, the global configuration will be used.": vscode.l10n.t("May be informed later. If you do not inform, the global configuration will be used."),
       "Enter the connection parameters to the Protheus server.": vscode.l10n.t("Enter the connection parameters to the Protheus server."),
-      "Select folder with define files": vscode.l10n.t("Select folder with define files"),
-      "Select a folder containing definition files": vscode.l10n.t("Select a folder containing definition files")
+      "Select folder with definition files": vscode.l10n.t("Select folder with definition files")
     }
   }
 

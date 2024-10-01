@@ -174,8 +174,8 @@ export default function AddServerView() {
             <VSCodeDataGridCell grid-column="2">
               <TdsSelectionFolderField
                 name={`btnSelectFolder`}
-                info={tdsVscode.l10n.t("Select a folder containing definition files")}
-                title={tdsVscode.l10n.t("Select folder with define files")}
+                info={tdsVscode.l10n.t("Select folder with definition files")}
+                title={tdsVscode.l10n.t("Select folder with definition files")}
               />
             </VSCodeDataGridCell>
           </VSCodeDataGridRow>
