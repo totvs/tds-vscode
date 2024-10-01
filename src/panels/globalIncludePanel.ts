@@ -132,7 +132,7 @@ export class GlobalIncludePanel extends TdsPanel<TGlobalIncludeModel> {
 
   protected validateModel(model: TGlobalIncludeModel, errors: TFieldErrors<TGlobalIncludeModel>): boolean {
     model.includePaths.forEach((includePath: TIncludePath, index: number) => {
-      const checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/);
+      const checkedDir: string = Utils.checkDir(includePath.path, /\.(ch|th|r)$/gi);
 
       if (checkedDir.length == 0) {
         errors[`includePaths.${index}.path`] = { type: "validate", message: vscode.l10n.t("Invalid folder or not contains definition files (.CH or .TH)") };
