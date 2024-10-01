@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import React from "react";
-import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
+import { sendValidateModel, TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsSimpleCheckBoxField, TdsForm, TdsTextField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionFileField } from "@totvs/tds-webtoolkit";
@@ -75,6 +75,7 @@ export default function CompileKeyView() {
         case CommonCommandEnum.UpdateModel:
           const model: TFields = command.data.model;
           const errors: TFields = command.data.errors;
+          console.log(">>>> errors", errors);
 
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);
@@ -114,8 +115,12 @@ export default function CompileKeyView() {
             name="path"
             label={tdsVscode.l10n.t("Compile Key File")}
             info={tdsVscode.l10n.t("Generated compilation key file (.AUT)")}
-            readOnly={true}
-            rules={{ required: false }}
+            rules={{
+              required: false,
+              onBlur: (e) => {
+                sendValidateModel(methods.getValues());
+              }
+            }}
           />
 
           <TdsSelectionFileField
@@ -150,13 +155,14 @@ export default function CompileKeyView() {
           info={tdsVscode.l10n.t("Token generated")}
           rules={{ required: true }}
         />
-
-        <TdsTextField
-          name="authorizationToken"
-          label={tdsVscode.l10n.t("Authorization Token")}
-          info={tdsVscode.l10n.t("Authorization Token")}
-          readOnly={true}
-        />
+        {
+          // <TdsTextField
+          //   name="authorizationToken"
+          //   label={tdsVscode.l10n.t("Authorization Token")}
+          //   info={tdsVscode.l10n.t("Authorization Token")}
+          //   readOnly={true}
+          // />
+        }
 
         <TdsSimpleCheckBoxField
           name={"canOverride"}

@@ -22,6 +22,7 @@ export enum CommonCommandFromWebViewEnum {
 	Save = "SAVE",
 	SaveAndClose = "SAVE_AND_CLOSE",
 	SelectResource = "SELECT_RESOURCE",
+	Validate = "VALIDATE",
 }
 
 export type CommonCommandFromWebView = CommonCommandFromWebViewEnum;

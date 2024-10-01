@@ -15,13 +15,14 @@ limitations under the License.
 */
 
 import * as vscode from "vscode";
-import { TCompileKeyModel, TCompileKey, TAuthorization } from "@tds-shared/index";
+import { TCompileKeyModel, TCompileKey, TAuthorization, TFieldError } from "@tds-shared/index";
 import { TFieldErrors, isErrors } from "@tds-shared/index";
 import { sendGetIdMessage, TValidKeyResult, sendValidKey } from "../protocolMessages";
 import { ServersConfig } from "../utils";
 import { CommonCommandFromWebViewEnum, ReceiveMessage } from "@tds-shared/index";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
 import { TdsPanel } from "./panel";
+import * as fse from "fs-extra";
 
 enum CompileKeyCommandEnum {
 }
@@ -108,8 +109,9 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
    * @param webview A reference to the extension webview
    */
   protected async panelListener(message: ReceiveMessage<CompileKeyCommand, TCompileKeyModel>, result: any): Promise<any> {
-    const command: CompileKeyCommand = message.command;
+    let command: CompileKeyCommand = message.command;
     const data = message.data;
+    let errors: TFieldErrors<TCompileKeyModel> = {};
 
     switch (command) {
       case CommonCommandFromWebViewEnum.Reset:
@@ -153,7 +155,7 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
 
         }
 
-        const errors: TFieldErrors<TCompileKeyModel> = {};
+        errors = {};
 
         if (!model.machineId) {
           errors.machineId = {
@@ -165,30 +167,31 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
         this.sendUpdateModel(model, undefined);
 
         break;
+
+      case CommonCommandFromWebViewEnum.Validate:
+        errors = {};
+
+        if (data.model.path.trim() == "") {
+          errors.path = {
+            type: "validate",
+            message: vscode.l10n.t("AUT file is required")
+          }
+          // } else if (!fse.existsSync(data.model.path)) {
+          //   errors.path = {
+          //     type: "validate",
+          //     message: vscode.l10n.t("File not found")
+          //   }
+        } else {
+          errors = await this.validateAuthorization(data.model.path, data.model);
+        }
+
+        this.sendUpdateModel(data.model, errors);
+        break;
+
       case CommonCommandFromWebViewEnum.AfterSelectResource:
         if (result && result.length > 0) {
           const selectedPath: string = (result[0] as vscode.Uri).fsPath;
-
-          const authorization: TAuthorization = ServersConfig.readCompileKeyFile(
-            selectedPath
-          );
-          const errors: TFieldErrors<TCompileKeyModel> = {};
-
-          if (authorization) {
-            data.model.path = selectedPath;
-            data.model.id = authorization.id.toUpperCase();
-            data.model.generation = authorization.generation;
-            data.model.validation = authorization.validation;
-            data.model.key = authorization.key;
-            data.model.canOverride = authorization.permission === "1";
-
-            await this.validateModel(data.model, errors);
-          } else {
-            errors.path = {
-              type: "validate",
-              message: vscode.l10n.t("Invalid compile key file")
-            };
-          }
+          errors = await this.validateAuthorization(selectedPath, data.model);
 
           this.sendUpdateModel(data.model, errors);
         }
@@ -205,12 +208,11 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
 
     if (validKey.buildType == -1) {
       errors.path = { type: "validate", message: vscode.l10n.t("Server refused compile key") };
-    }
-
-    if (validKey.authorizationToken == "") {
-      errors.authorizationToken = {
-        type: "validate", message: vscode.l10n.t("Invalid token")
-      };
+    } else if (validKey.authorizationToken == "") {
+      errors.path = { type: "validate", message: vscode.l10n.t("Invalid Token") };
+      // errors.authorizationToken = {
+      //   type: "validate", message: vscode.l10n.t("Invalid token")
+      // };
     }
 
     vscode.window.setStatusBarMessage("");
@@ -243,6 +245,32 @@ export class CompileKeyPanel extends TdsPanel<TCompileKeyModel> {
       "Authorization Token": vscode.l10n.t("Authorization Token"),
       "From **servers 7.00.210324p (Harpia)**, compilation keys should be replaced by _Token RPO_.": vscode.l10n.t("From **servers 7.00.210324p (Harpia)**, compilation keys should be replaced by _Token RPO_.")
     }
+  }
+
+  protected async validateAuthorization(autFile: string, model: TCompileKeyModel):
+    Promise<TFieldErrors<TCompileKeyModel>> {
+    const authorization: TAuthorization = ServersConfig.readCompileKeyFile(
+      autFile
+    );
+    let errors: TFieldErrors<TCompileKeyModel> = {};
+
+    if (authorization) {
+      model.path = autFile;
+      model.id = authorization.id.toUpperCase();
+      model.generation = authorization.generation;
+      model.validation = authorization.validation;
+      model.key = authorization.key;
+      model.canOverride = authorization.permission === "1";
+
+      await this.validateModel(model, errors);
+    } else {
+      errors.path = {
+        type: "validate",
+        message: vscode.l10n.t("Invalid compile key file")
+      };
+    }
+
+    return errors;
   }
 
 }
