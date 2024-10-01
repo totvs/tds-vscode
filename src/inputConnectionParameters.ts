@@ -173,9 +173,6 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 	}
 
 	async function getEnvironments(state: Partial<State>): Promise<QuickPickItem[]> {
-		// ...retrieve...
-		//await new Promise(resolve => setTimeout(resolve, VALIDADE_TIME_OUT));
-
 		let target;
 		if (state.server) {
 			target = ServersConfig.getServerById((typeof state.server !== 'string') ? (state.server.detail ? state.server.detail : "") : state.server);
@@ -192,13 +189,33 @@ export async function inputConnectionParameters(context: ExtensionContext, serve
 		const connectState = await collectConnectInputs();
 		const server = ServersConfig.getServerById((typeof connectState.server !== 'string') ? (connectState.server.detail ? connectState.server.detail : "") : connectState.server);
 
+		const isAlreadyConnected = (server: string, environment: string) => {
+			const currentServer = ServersConfig.getCurrentServer();
+
+			if (currentServer) {
+				if ((currentServer.name === server) && (currentServer.environment === environment)) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		if (connectState.reconnectionToken) {
 			const environmentName = (typeof connectState.environment === "string") ? connectState.environment : (connectState.environment as QuickPickItem).label;
-			reconnectServer(server, environmentName, connType);
+			if (isAlreadyConnected(server.name, environmentName)) {
+				vscode.window.showInformationMessage(vscode.l10n.t("The server selected is already connected."))
+			} else {
+				reconnectServer(server, environmentName, connType);
+			}
 		} else {
 			const environment = (typeof connectState.environment !== 'string') ? connectState.environment.label : connectState.environment;
-			server.name = server.name; //FIX: quebra-galho necessário para a árvore de servidores
-			connectServer(server, environment, connType);
+			if (isAlreadyConnected(server.name, environment)) {
+				vscode.window.showInformationMessage(vscode.l10n.t("The server selected is already connected."))
+			} else {
+				server.name = server.name; //FIX: quebra-galho necessário para a árvore de servidores
+				connectServer(server, environment, connType);
+			}
 		}
 	}
 
