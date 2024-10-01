@@ -64,9 +64,9 @@
     "publish": "npm run package && vsce publish",
     "publish-prerelease": "npm run package-prerelease && vsce publish --pre-release",
     "---MISC---": "",
-    "link": "npm link @totvs/tds-webtoolkit",
     "all-contributors:generate": "all-contributors generate",
-    "all-contributors:check": "all-contributors check"
+    "all-contributors:check": "all-contributors check",
+    "link": "npm link @totvs/tds-webtoolkit"
   },
   "dependencies": {
     "@totvs/tds-da": "^1.2.72",
@@ -82,6 +82,7 @@
     "del": "^7.1.0",
     "fs-extra": "^11.2.0",
     "ini": "^4.1.3",
+    "json5": "^2.2.3",
     "jszip": "^3.10.1",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
