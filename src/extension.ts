@@ -784,7 +784,7 @@ export function canDebug(): boolean {
   return result;
 }
 
-function checkServer(silent: boolean = false): boolean {
+export function checkServer(silent: boolean = false): boolean {
   let server = ServersConfig.getCurrentServer();
 
   if ((server == "") && !silent) {
@@ -794,7 +794,7 @@ function checkServer(silent: boolean = false): boolean {
     server = undefined;
   }
 
-  return server != undefined;
+  return (server !== undefined) && (server !== "");
 }
 
 export function checkDebug(silent: boolean = false): boolean {

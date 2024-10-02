@@ -16,8 +16,8 @@ limitations under the License.
 
 import "./patchEditor.css";
 import React from "react";
-import { TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsForm, TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
-import { useForm } from "react-hook-form";
+import { TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsForm, TdsPage, TdsProgressRing, tdsVscode } from "@totvs/tds-webtoolkit";
+import { useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { TPatchEditorModel } from "@tds-shared/index";
@@ -92,7 +92,7 @@ export default function PatchEditorView() {
     defaultValues: EMPTY_PATCH_EDITOR_MODEL(),
     mode: "all"
   })
-  const [dataSource, setDataSource] = React.useState<TPatchInfo[]>([]);
+  const [pathInfo, setPathInfo] = React.useState(undefined);
 
   React.useEffect(() => {
 
@@ -110,7 +110,8 @@ export default function PatchEditorView() {
 
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);
-          setDataSource(model.patchInfo);
+          setPathInfo(methods.getValues("patchInfo"));
+
           break;
         default:
           break;
@@ -139,24 +140,29 @@ export default function PatchEditorView() {
 
   return (
     <TdsPage>
-      <TdsForm
-        onSubmit={methods.handleSubmit(() => { })}
-        methods={methods}
-        description={tdsVscode.l10n.t("**File:** `{0}` **Size:** `{1} bytes (~{2} KBytes)`", methods.getValues("filename"),
-          tdsVscode.l10n.formatNumber(methods.getValues("lengthFile"), "int"),
-          tdsVscode.l10n.formatNumber(methods.getValues("lengthFile") / 1024, "float", 1))
-        }
-        actions={[]}
-      >
-        <TdsDataGrid
-          id="patchEditorGrid"
-          columnsDef={objectColumns()}
-          dataSource={dataSource}
-          options={{
-            bottomActions: bottomActions
-          }}
-        />
-      </TdsForm>
+      {!pathInfo ?
+        <TdsProgressRing size="full" />
+        : <TdsForm
+          key="form"
+          onSubmit={methods.handleSubmit(() => { })}
+          methods={methods}
+          description={tdsVscode.l10n.t("**File:** `{0}` **Size:** `~{2} KBytes ({1} Bytes)`", methods.getValues("filename"),
+            tdsVscode.l10n.formatNumber(methods.getValues("lengthFile"), "int"),
+            tdsVscode.l10n.formatNumber(methods.getValues("lengthFile") / 1024, "float", 1))
+          }
+          actions={[]}
+        >
+          <TdsDataGrid
+            key="dataGrid"
+            id="patchEditorGrid"
+            columnsDef={objectColumns()}
+            dataSource={pathInfo}
+            options={{
+              bottomActions: bottomActions
+            }}
+          />
+        </TdsForm>
+      }
     </TdsPage >
   );
 }

@@ -2,11 +2,11 @@ import * as path from "path";
 import * as vscode from "vscode";
 import { PatchEditorCommandEnum, TPatchEditorModel } from "@tds-shared/index";
 import { Disposable } from "./utilities/dispose";
-import { ServersConfig, formatDate, formatNumber } from "../utils";
+import { ServersConfig, formatDate, formatNumber, waitServerConnection } from "../utils";
 import { sendPatchInfo } from "../protocolMessages";
 import { CommonCommandFromWebViewEnum, CommonCommandToWebViewEnum } from "@tds-shared/index";
 import { getWebviewContent } from "./utilities/webview-utils";
-import { checkDebug } from "../extension";
+import { checkDebug, checkServer } from "../extension";
 
 interface PatchDocumentDelegate {
   getFileData(): Promise<TPatchEditorModel>;
@@ -26,6 +26,8 @@ class PatchDocument extends Disposable implements vscode.CustomDocument {
   }
 
   private static async readFile(uri: vscode.Uri): Promise<TPatchEditorModel> {
+    await waitServerConnection();
+
     const server = ServersConfig.getCurrentServer();
     const data: TPatchEditorModel = {
       filename: path.basename(uri.fsPath),
@@ -343,7 +345,7 @@ export class PatchEditorProvider //aka PatchEditorPanel
   protected getTranslations(): Record<string, string> {
     return {
       "Patch Objects": vscode.l10n.t("Patch Objects"),
-      "**File:** `{0}` **Size:** `{1} bytes (~{2} KBytes)`": vscode.l10n.t("**File:** `{0}` **Size:** `{1} bytes (~{2} KBytes)`"),
+      "**File:** `{0}` **Size:** `~{2} KBytes ({1} Bytes)`": vscode.l10n.t("**File:** `{0}` **Size:** `~{2} KBytes ({1} Bytes)`"),
       "Object Name": vscode.l10n.t("Object Name"),
       "Compile Date": vscode.l10n.t("Compile Date"),
       "Type": vscode.l10n.t("Type"),

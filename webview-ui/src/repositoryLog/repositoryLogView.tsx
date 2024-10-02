@@ -102,40 +102,39 @@ export default function RepositoryLogView() {
         onSubmit={onSubmit}
         methods={methods}
         actions={formActions}>
+        {rpoInfoWatch
+          ? <>
+            <section className="tds-row-container">
+              <TdsTextField
+                key={"serverName"}
+                name={"serverName"}
+                readOnly={true}
+                label={tdsVscode.l10n.t("Server")} />
+              <TdsTextField
+                key={"rpoVersion"}
+                name={"rpoVersion"}
+                readOnly={true}
+                label={tdsVscode.l10n.t("RPO Version")} />
+            </section>
 
-        <section className="tds-row-container">
-          <TdsTextField
-            key={"serverName"}
-            name={"serverName"}
-            readOnly={true}
-            label={tdsVscode.l10n.t("Server")} />
-          <TdsTextField
-            key={"rpoVersion"}
-            name={"rpoVersion"}
-            readOnly={true}
-            label={tdsVscode.l10n.t("RPO Version")} />
-        </section>
+            <section className="tds-row-container">
+              <TdsTextField
+                key={"environment"}
+                name={"environment"}
+                readOnly={true}
+                label={tdsVscode.l10n.t("Environment")} />
+              <TdsTextField
+                key={"dateGeneration"}
+                name={"dateGeneration"}
+                format={(value: string): string => {
+                  return tdsVscode.l10n.formatDate(new Date(value), "date");
+                }}
+                readOnly={true}
+                label={tdsVscode.l10n.t("Generation")}
+              />
+            </section>
 
-        <section className="tds-row-container">
-          <TdsTextField
-            key={"environment"}
-            name={"environment"}
-            readOnly={true}
-            label={tdsVscode.l10n.t("Environment")} />
-          <TdsTextField
-            key={"dateGeneration"}
-            name={"dateGeneration"}
-            format={(value: string): string => {
-              return tdsVscode.l10n.formatDate(new Date(value), "date");
-            }}
-            readOnly={true}
-            label={tdsVscode.l10n.t("Generation")}
-          />
-        </section>
-
-        <section className="tds-row-container" id="repositoryLog">
-          {rpoInfoWatch
-            ? <>
+            <section className="tds-row-container" id="repositoryLog">
               <section className="tds-row-container" id="rpoTree">
                 <TdsLabelField
                   key={"lbl_monthly"}
@@ -235,13 +234,13 @@ export default function RepositoryLogView() {
                       }} />
                   </section>
                 </section>
-                : <>{tdsVscode.l10n.t("Select the application date to see the details.")}.</>
+                : <>{tdsVscode.l10n.t("Select the application date to see the details.")}</>
               }
-            </>
-            :
-            <TdsProgressRing size="full" />
-          }
-        </section>
+            </section>
+          </>
+          :
+          <TdsProgressRing size="full" />
+        }
       </TdsForm>
     </TdsPage >
   );

@@ -33,6 +33,7 @@ import { EnvSection, ServerItem } from "./serverItem";
 import { TAuthorization, TCompileKey } from "@tds-shared/index";
 import { Logger } from "./logger";
 import { AuthSettings } from "./authSettings";
+import { checkServer } from "./extension";
 
 const homedir = require("os").homedir();
 
@@ -1804,4 +1805,35 @@ export function formatNumber(value: number, type: TNumberFormat, decimalsOrHexDi
   return result;
 }
 
+export async function waitServerConnection(waitTime: number = 30): Promise<boolean> {
+  let result: boolean = true;
 
+  if (!checkServer(true)) {
+    await vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: vscode.l10n.t(`Waiting server connection.`),
+        cancellable: true,
+      },
+      async (progress, token: vscode.CancellationToken) => {
+        //progress.report({ increment: 50 });
+        const timeout: number = Date.now() + waitTime*1000;
+
+        while (!checkServer(true) && (Date.now() < timeout)) {
+          progress.report({ message: `${(Math.ceil((timeout - Date.now())/1000))}s to timeout` })
+          await delay(1000);
+        }
+
+        if (!checkServer(true) || token.isCancellationRequested) {
+          result = false;
+        }
+      })
+
+    return result;
+  }
+}
+
+//TODO: Revisar o uso desta função. Definições em diversos font4es.
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
