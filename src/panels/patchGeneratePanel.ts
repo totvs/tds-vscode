@@ -416,6 +416,7 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
       "500 (slow render)": vscode.l10n.t("500 (slow render)"),
       "RPO Objects": vscode.l10n.t("RPO Objects"),
       "To patch": vscode.l10n.t("To patch"),
+      "Source Folder": vscode.l10n.t("Source Folder")
     }
   }
 }
