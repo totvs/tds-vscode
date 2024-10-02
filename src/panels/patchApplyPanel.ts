@@ -145,20 +145,18 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
               data.model.serverName = server.name;
               data.model.address = `${server.address}:${server.port}`;
               data.model.environment = server.environment;
-              data.model.patchFiles = this.files.sort((a: TPatchFileData, b: TPatchFileData) => a.uri.localeCompare(b.uri));
+              data.model.patchFiles = this.files.sort((a: TPatchFileData, b: TPatchFileData) => a.uri.localeCompare(b.uri))
+                .map((patchFileData: TPatchFileData) => {
+                  patchFileData.isProcessing = true;  //this._options.operation == OperationApplyPatchEnum.VALIDATE;
+                  return patchFileData;
+                });
 
               this.sendUpdateModel(data.model, undefined);
 
               progress.report({ increment: 100 });
 
-              if (this._options.operation == OperationApplyPatchEnum.VALIDATE) {
+              if (data.model.patchFiles.length > 0) { //(this._options.operation == OperationApplyPatchEnum.VALIDATE) {
                 const errors: TFieldErrors<TPatchFileData> = {};
-
-                data.model.patchFiles = data.model.patchFiles.map((patchFile: TPatchFileData) => {
-                  patchFile.isProcessing = true;
-                  return patchFile;
-                });
-                this.sendUpdateModel(data.model, errors);
 
                 this.validateModel(data.model, errors);
                 this.sendUpdateModel(data.model, errors);
@@ -261,10 +259,10 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
 
             await this.doValidatePatch(server, element, index, model.applyOldFiles, errors);
 
-            if (this._options.operation == OperationApplyPatchEnum.VALIDATE) {
-              element.isProcessing = false;
-              this.sendUpdateModel(model, errors);
-            }
+            //if (this._options.operation == OperationApplyPatchEnum.VALIDATE) {
+            element.isProcessing = false;
+            this.sendUpdateModel(model, errors);
+            //}
 
             if (token.isCancellationRequested) {
               break;
@@ -418,18 +416,22 @@ function getRecursiveFiles(targetList: vscode.Uri[]): vscode.Uri[] {
   const foundFiles: vscode.Uri[] = [];
 
   targetList.forEach((target: vscode.Uri) => {
-    ["ptm", "upd", "zip"].forEach((ext: string) => {
-      const files: string[] = glob.sync(`**/*.${ext}`, {
+    if (fse.statSync(target.fsPath).isDirectory()) {
+      const files: string[] = glob.sync("**/*.{ptm,upd,zip}", {
         cwd: target.fsPath,
         absolute: true,
-        ignore: ['**/node_modules/**']
+        //ignore: ['**/node_modules/**'],
+        //windowsPathsNoEscape: true,
+        //noCase: true
       });
 
       files.forEach((file: string) => {
         foundFiles.push(vscode.Uri.parse(`file:///${file}`));
       });
-    });
+    } else {
+      foundFiles.push(target);
+    }
   });
-
+  
   return foundFiles;
 }

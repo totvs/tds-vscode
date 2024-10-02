@@ -33,6 +33,16 @@ enum ReceiveCommandEnum {
 
 type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TApplyPatchModel>;
 
+let serverData: {
+  serverName: string;
+  address: string;
+  environment: string;
+} = {
+  serverName: "",
+  address: "",
+  environment: ""
+};
+
 export default function ApplyPatchView() {
   const methods = useForm<TApplyPatchModel>({
     defaultValues: EMPTY_APPLY_PATCH_MODEL(),
@@ -59,16 +69,20 @@ export default function ApplyPatchView() {
         case CommonCommandEnum.UpdateModel:
           const model: TApplyPatchModel = command.data.model;
           const errors: any = command.data.errors;
+          let haveOldSourceError: boolean = false;
 
           setDataModel<TApplyPatchModel>(methods.setValue, model);
           setErrorModel(methods.setError, errors);
 
-          let haveOldSourceError: boolean = false;
-          Object.keys(errors).forEach((key) => {
-            if (errors[key].message !== undefined) {
-              if (errors[key].message == tdsVscode.l10n.t("Source/resource files in patch older than RPO.")) {
-                haveOldSourceError = true;
-              }
+          serverData = {
+            serverName: model.serverName,
+            address: model.address,
+            environment: model.environment
+          }
+
+          model.patchFiles.forEach((patchFileData: TPatchFileData) => {
+            if (patchFileData.validation == tdsVscode.l10n.t("Source/resource files in patch older than RPO.")) {
+              haveOldSourceError = true;
             }
           });
 
@@ -86,6 +100,10 @@ export default function ApplyPatchView() {
       window.removeEventListener('message', listener);
     }
   }, []);
+
+  React.useEffect(() => {
+
+  }, [showOldFiles]);
 
   function removePatchFile(index: number) {
     remove(index);
@@ -113,6 +131,12 @@ export default function ApplyPatchView() {
     <TdsPage>
       <TdsForm<TApplyPatchModel> methods={methods}
         onSubmit={onSubmit}
+        onManualReset={() => {
+          methods.setValue("serverName", serverData.serverName);
+          methods.setValue("address", serverData.address);
+          methods.setValue("environment", serverData.environment);
+          setShowOldFiles(false);
+        }}
       >
 
         <section className="tds-row-container" >
@@ -236,6 +260,7 @@ export default function ApplyPatchView() {
                 methods.clearErrors(`patchFiles.${index}.name`);
               }
             })
+
           }}
         />
         }
