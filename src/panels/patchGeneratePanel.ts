@@ -18,7 +18,7 @@ import * as vscode from "vscode";
 import * as fse from "fs-extra";
 import * as path from "path";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import Utils, { ServersConfig, serverExceptionCodeToString } from "../utils";
+import Utils, { ServersConfig, loadFilenameList, serverExceptionCodeToString } from "../utils";
 import { IObjectData, IPatchResult, sendInspectorObjectsRequest, sendPatchGenerateMessage } from "../protocolMessages";
 import { ResponseError } from "vscode-languageclient";
 import { CommonCommandFromWebViewEnum, EMPTY_GENERATE_PATCH_FROM_RPO_MODEL, PatchGenerateCommand, PatchGenerateCommandEnum, ReceiveMessage, TFieldErrors, TGeneratePatchFromRpoModel, TInspectorObject, isErrors } from "@tds-shared/index";
@@ -284,14 +284,7 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
   }
 
   private async getDataFromFolder(model: TGeneratePatchFromRpoModel, includeTRes: boolean): Promise<TGeneratePatchFromRpoModel> {
-    const glob = require('glob');
-
-
-    const files: string[] = glob.sync(`**/*.*`, {
-      cwd: model.folder,
-      absolute: true,
-      ignore: ['**/node_modules/**']
-    });
+    const files: string[] = loadFilenameList(model.folder, `**/*.*`);
 
     model.objectsLeft = [];
     if (files) {

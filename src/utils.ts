@@ -1817,10 +1817,10 @@ export async function waitServerConnection(waitTime: number = 30): Promise<boole
       },
       async (progress, token: vscode.CancellationToken) => {
         //progress.report({ increment: 50 });
-        const timeout: number = Date.now() + waitTime*1000;
+        const timeout: number = Date.now() + waitTime * 1000;
 
         while (!checkServer(true) && (Date.now() < timeout)) {
-          progress.report({ message: `${(Math.ceil((timeout - Date.now())/1000))}s to timeout` })
+          progress.report({ message: `${(Math.ceil((timeout - Date.now()) / 1000))}s to timeout` })
           await delay(1000);
         }
 
@@ -1836,4 +1836,15 @@ export async function waitServerConnection(waitTime: number = 30): Promise<boole
 //TODO: Revisar o uso desta função. Definições em diversos font4es.
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function loadFilenameList(folder: string, selector: string): string[] {
+  const glob = require('glob');
+  const files: string[] = glob.globSync(selector, {
+    cwd: folder,
+    absolute: true,
+    //ignore: ['**/node_modules/**']
+  });
+
+  return files;
 }

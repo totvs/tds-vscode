@@ -18,7 +18,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as fse from "fs-extra";
 import { getExtraPanelConfigurations, getWebviewContent } from "./utilities/webview-utils";
-import { ServersConfig, pathErrorCodeToString } from "../utils";
+import { ServersConfig, loadFilenameList, pathErrorCodeToString } from "../utils";
 import { CommonCommandFromWebViewEnum, ReceiveMessage } from "@tds-shared/index";
 import { IPatchApplyResult, PathErrorCodes, sendApplyPatchRequest, sendValidatePatchRequest } from "../protocolMessages";
 import { TApplyPatchModel, TPatchFileData } from "@tds-shared/index";
@@ -412,18 +412,11 @@ export class ApplyPatchPanel extends TdsPanel<TApplyPatchModel, IApplyPatchOptio
 }
 
 function getRecursiveFiles(targetList: vscode.Uri[]): vscode.Uri[] {
-  const glob = require('glob');
   const foundFiles: vscode.Uri[] = [];
 
   targetList.forEach((target: vscode.Uri) => {
     if (fse.statSync(target.fsPath).isDirectory()) {
-      const files: string[] = glob.sync("**/*.{ptm,upd,zip}", {
-        cwd: target.fsPath,
-        absolute: true,
-        //ignore: ['**/node_modules/**'],
-        //windowsPathsNoEscape: true,
-        //noCase: true
-      });
+      const files: string[] = loadFilenameList(target.fsPath, "**/*.{ptm,upd,zip}");
 
       files.forEach((file: string) => {
         foundFiles.push(vscode.Uri.parse(`file:///${file}`));
@@ -432,6 +425,6 @@ function getRecursiveFiles(targetList: vscode.Uri[]): vscode.Uri[] {
       foundFiles.push(target);
     }
   });
-  
+
   return foundFiles;
 }
