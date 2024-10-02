@@ -141,8 +141,8 @@ export class BuildResultPanel extends TdsPanel<TBuildResultModel, BuildResultOpt
         vscode.window.withProgress(
           {
             location: vscode.ProgressLocation.Window,
-            title: `Export compilation result. Wait...`,
-            cancellable: true,
+            title: vscode.l10n.t(`Export compilation result. Wait...`),
+              cancellable: true,
           },
           async (progress, token: vscode.CancellationToken) => {
             progress.report({ increment: 0 });

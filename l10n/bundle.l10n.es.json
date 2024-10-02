@@ -1,6 +1,6 @@
 {
   "(initializing)": "(inicialización)",
-  "**File:** `{0}` **Size:** `{1} bytes (~{2} KBytes)`": "**Archivo:** `{0}` **Tamaño:** `{1} bytes (~{2} KBytes)`",
+  "**File:** `{0}` **Size:** `~{2} KBytes ({1} Bytes)`": "**Archivo:** `{0}` **Tamaño:** `~{2} KBytes ({1} Bytes)`",
   "--forceUtf8 deprecated. Setting will be ignored.": "--forceUtf8 en desuso. La configuración será ignorada.",
   "Environment": "Ambiente",
   "Generating Patch": "Parche generador",

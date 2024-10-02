@@ -192,8 +192,8 @@ export class InspectorObjectPanel extends TdsPanel<TInspectorObjectModel, IInspe
         vscode.window.withProgress(
           {
             location: vscode.ProgressLocation.Window,
-            title: `Export inspector information. Wait...`,
-            cancellable: true,
+            title: vscode.l10n.t(`Export inspector information. Wait...`),
+              cancellable: true,
           },
           async (progress, token: vscode.CancellationToken) => {
             progress.report({ increment: 0 });

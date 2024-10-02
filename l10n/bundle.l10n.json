@@ -135,7 +135,7 @@
   "PTM files cannot be saved by TDS-VSCode. Please build them using the command [TOTVS: Patch Generation].": "PTM files cannot be saved by TDS-VSCode. Please build them using the command [TOTVS: Patch Generation].",
   "Export Patch Information. Wait please...": "Export Patch Information. Wait please...",
   "Patch Objects": "Patch Objects",
-  "**File:** `{0}` **Size:** `{1} bytes (~{2} KBytes)`": "**File:** `{0}` **Size:** `{1} bytes (~{2} KBytes)`",
+  "**File:** `{0}` **Size:** `~{2} KBytes ({1} Bytes)`": "**File:** `{0}` **Size:** `~{2} KBytes ({1} Bytes)`",
   "Object Name": "Object Name",
   "Type": "Type",
   "Size": "Size",

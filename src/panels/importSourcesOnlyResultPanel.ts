@@ -110,7 +110,7 @@ export class ImportSourcesOnlyResultPanel extends TdsPanel<TImportSourcesOnlyRes
         vscode.window.withProgress(
           {
             location: vscode.ProgressLocation.Window,
-            title: `Export sources list. Wait...`,
+            title: vscode.l10n.t(`Export sources list. Wait...`),
             cancellable: true,
           },
           async (progress, token: vscode.CancellationToken) => {

@@ -212,7 +212,7 @@
   "PTM files cannot be saved by TDS-VSCode. Please build them using the command [TOTVS: Patch Generation].": "Файлы PTM не могут быть сохранены с помощью TDS-VSCODE. Пожалуйста, создайте их, используя команду [Totvs: Generation].",
   "Export Patch Information. Wait please...": "Информация об экспорте патча. Подожди, пожалуйста ...",
   "Patch Objects": "Исправления объектов",
-  "**File:** `{0}` **Size:** `{1} bytes (~{2} KBytes)`": "**Файл:** `{0}` **Размер:** `{1} bytes (~{2} KBytes)`",
+  "**File:** `{0}` **Size:** `~{2} KBytes ({1} Bytes)`": "**Файл:** `{0}` **Размер:** `~{2} KBytes ({1} Bytes)`",
   "Object Name": "Имя объекта",
   "Compile Date": "Компиляция даты",
   "Type": "Тип",
