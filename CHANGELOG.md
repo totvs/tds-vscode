@@ -75,7 +75,7 @@ Implementado tratamento específico para objetos JSON com array no 1o nível.
 Foi adicionado a possibilidade de passar parâmetros para o navegador a ser utilizado na depuração do tipo [`totvs_language_web_debug`](./docs/debugger.md#totvs-language-web-debug-html).
 
 ### Correções
-    
+
 #### Não exibe informações do Json ao depurar [#1090](https://github.com/totvs/tds-vscode/issues/1090)
 
 Implementado tratamento específico para objetos JSON com _array_ no 1º nível.

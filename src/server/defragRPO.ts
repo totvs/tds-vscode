@@ -40,6 +40,22 @@ export function defragRpo() {
       first = vscode.l10n.t("Yes and clear history"); // Confirmacao de defrag com limpeza do histórico
       second = vscode.l10n.t("Yes but keep history"); // Confirmacao de defrag sem limpeza do histórico
     }
+
+    var confirmCleanHistory = false;
+    if (Utils.isServerP20OrGreater(server)) {
+      authorizationToken = ServersConfig.getAuthorizationToken(server);
+      if (authorizationToken.length > 0) {
+        confirmCleanHistory = true;
+      }
+    } else {
+      packPatchInfo = true; // LG 19 e anteriores
+    }
+    var first = vscode.l10n.t("Yes"); // Confirmacao de defrag (sempre com limpeza do histórico - LG 19 e anteriores)
+    var second = undefined;
+    if (confirmCleanHistory) {
+      first = vscode.l10n.t("Yes and clear history"); // Confirmacao de defrag com limpeza do histórico
+      second = vscode.l10n.t("Yes but keep history"); // Confirmacao de defrag sem limpeza do histórico
+    }
     vscode.window
       .showWarningMessage(
         vscode.l10n.t("Are you sure you want to defragment the RPO? (This process may take some time)"),
