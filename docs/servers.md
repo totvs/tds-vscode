@@ -5,7 +5,7 @@
 > - servidor a ser utilizado ou registrado em execução
 >
 >   O servidor deve ser autônomo (_standalone_), ou seja, não pode estar em um contexto de balanceamento de carga ou _broker_.
->   Nesses casos, deve-se utilizar um dos servidores identificados como _slave_.
+>   Nesses casos, deve-se utilizar um dos servidores identificados como secundário.
 
 ## Registro de servidores
 
