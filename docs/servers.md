@@ -6,6 +6,8 @@
 >
 >   O servidor deve ser autônomo (_standalone_), ou seja, não pode estar em um contexto de balanceamento de carga ou _broker_.
 >   Nesses casos, deve-se utilizar um dos servidores identificados como secundário.
+>
+>   **Broker HTTP** não possui suporte a conexão via **TDS-VSCode**.
 
 ## Registro de servidores
 
