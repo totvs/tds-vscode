@@ -10,10 +10,15 @@ Em executores de depuração web (`totvs_language_web_debug`), a propriedade `sm
 
 Seu uso deve ser efetuado somente sob orientação. Caso não seja informado, a URL será montada utilizando os parâmetros atuais de conexão do servidor. Informe-a somente sob orientação.
 
+### Correções
+
+#### Ao abrir um fonte em um Mac Sequoia, era apresentado um erro (SIGSEGV) e não é mais possível usar as funcionalidades nesse SO.
+
+Corrigido problema interno no Servidor de Linguagem que causava queda
+
 ## Versão [2.0.9]
 
 ### Melhorias
-
 #### Adição de confirmação ao gerar patch da pasta
 
 Adição de confirmação de compilação de pasta ao gerar patch da pasta.
