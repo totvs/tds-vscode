@@ -3,6 +3,9 @@
 > Requisitos:
 >
 > - servidor a ser utilizado ou registrado em execução
+>
+>   O servidor deve ser autônomo (_standalone_), ou seja, não pode estar em um contexto de balanceamento de carga ou _broker_.
+>   Nesses casos, deve-se utilizar um dos servidores identificados como _slave_.
 
 ## Registro de servidores
 
@@ -26,14 +29,14 @@
 
 ## Configurações das definições
 
-As configurações com os registros dos servidores podem ser editados manualmente, desde que com cuidado e *nenhum* servidor conectado/selecionado, via editor de texto.
+As configurações com os registros dos servidores podem ser editados manualmente, desde que com cuidado e _nenhum_ servidor conectado/selecionado, via editor de texto.
 Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
 
 ![Edit file server](./gifs/serversEditFile.gif)
 
-## Estrutura do arquivo *servers.json*
+## Estrutura do arquivo _servers.json_
 
-> Recomenda-se que a edição seja efetuada com *nenhum* servidor conectado/selecionado.
+> Recomenda-se que a edição seja efetuada com _nenhum_ servidor conectado/selecionado.
 > Faça um cópia de segurança antes. Modificações erradas podem inviabilizar seu uso ou mesmo da extensão.
 
 ```json
@@ -96,9 +99,9 @@ Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
 | `configurations`     | Configurações de servidores registrados para uso.                                       |
 | `id`                 | Identificação única, gerada no momento de seu registro.                                 |
 | `type`               | Tipo do servidor, podem ser:                                                            |
-|                       | - *totvs_server_protheus*, para servidores com suporte a Adv/PL. (versão )                        |
-|                       | - *totvs_server_logix*, para servidores com suporte a Adv/PL e 4GL.                     |
-|                       | - *totvs_server_totvstec*, para servidores com suporte a Adv/PL e 4GL, versão iqual ao superior 7.00.210324P (*Harpia*) .                     |
+|                       | - _totvs_server_protheus_, para servidores com suporte a Adv/PL. (versão )                        |
+|                       | - _totvs_server_logix_, para servidores com suporte a Adv/PL e 4GL.                     |
+|                       | - _totvs_server_totvstec_, para servidores com suporte a Adv/PL e 4GL, versão iqual ao superior 7.00.210324P (_Harpia_) .                     |
 | `name`               | Identificação do servidor para humanos.                                                 |
 | `port`               | Porta de conexão.                                                                       |
 | `address`            | Endereço IP ou nome da estação do servidor.                                             |
@@ -117,7 +120,7 @@ Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
 |                       | token: código de acesso                                                                 |
 | `lastConnectedServer` | Último servidor utilizado e que será reconectado na próxima sessão de forma automática. |
 
-## Local de gravação de *servers.json*
+## Local de gravação de _servers.json_
 
 Por padrão, o arquivo com os registros de servidores é armazenado no arquivo `_servers.json_`, na área do usuário conforme o sistema operacional.
 
@@ -129,7 +132,7 @@ Caso deseje ter o registro de servidores por área de trabalho, ative a opção 
 
 ![Workspace Server Config](./images/workspaceServerConfig.png)
 
-Ou use a troca rápida disponível na barra de *status*.
+Ou use a troca rápida disponível na barra de _status_.
 
 ![Workspace Server Config](./gifs/toggleSaveLocation.gif)
 
@@ -137,11 +140,11 @@ Ou use a troca rápida disponível na barra de *status*.
 
 ## Sistema de Privilégios
 
-O **TDS-VSCode**, suporta um sistema simples de privilégios, baseada em configuração efetuada no arquivo *appServer.ini*, podendo-se configurar privilégios para determinadas operações e estações, através da adição de chaves na sessão `[TDS]`.
+O **TDS-VSCode**, suporta um sistema simples de privilégios, baseada em configuração efetuada no arquivo _appServer.ini_, podendo-se configurar privilégios para determinadas operações e estações, através da adição de chaves na sessão `[TDS]`.
 
-> Quando a conexão é local (*localhost*), não há restrições (sessão `[TDS]` é ignorada).
+> Quando a conexão é local (_localhost_), não há restrições (sessão `[TDS]` é ignorada).
 
-> Modificações na sessão `[TDS]` requer **reconexão** do *VS-Code*.
+> Modificações na sessão `[TDS]` requer **reconexão** do _VS-Code_.
 
 > Para manter o mesmo comportamento de ambientes com versões mais antigas, todas as operações vem liberadas por padrão na ausência da sessão `[TDS]` ou da chave da operação.
 
@@ -163,17 +166,17 @@ AllowApplyTemplate=<IP/name list>
 
 | Chave                    | Permissão                                 |
 | ------------------------ | ----------------------------------------- |
-| AllowApplyPatch          | Aplicar pacotes de atualização (*patchs*) |
-| AllowBuildPatch          | Gerar pacotes de atualização (*patchs*)   |
+| AllowApplyPatch          | Aplicar pacotes de atualização (_patchs_) |
+| AllowBuildPatch          | Gerar pacotes de atualização (_patchs_)   |
 | AllowCompile             | Compilar fontes e recursos                |
 | AllowMonitor             | Acesso ao monitor de conexões             |
 | EnableDisconnectUser     | Desconectar usuários                      |
 | EnableSendMessage        | Enviar mensagens                          |
 | EnableBlockNewConnection | Bloquear novas conexões                   |
-| EnableStopServer         | Encerrar o *appServer*                    |
+| EnableStopServer         | Encerrar o _appServer_                    |
 | AllowApplyTemplate       | Aplicar pacotes de amostras (\*.tpl)      |
 
-- `<IP/name list>` é a lista de estações com o privilégio liberado, identificadas pelo seu endereço IP ou nome (*host name*) e separadas por `,` (vírgula).
+- `<IP/name list>` é a lista de estações com o privilégio liberado, identificadas pelo seu endereço IP ou nome (_host name_) e separadas por `,` (vírgula).
 
 > Para liberar o privilégio a qualquer estação, coloque `*` (valor padrão).
 
@@ -203,4 +206,4 @@ Neste exemplo, temos:
 
 ![My privileges](./images/my-privileges.png)
 
-Passando o ponteiro do *mouse* sobre a indicação de servidor/ambiente selecionado (barra de status), lhe será apresentado os privilégios que lhe foram concedidos.
+Passando o ponteiro do _mouse_ sobre a indicação de servidor/ambiente selecionado (barra de status), lhe será apresentado os privilégios que lhe foram concedidos.
