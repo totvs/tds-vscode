@@ -18,9 +18,11 @@ export function processSelectResourceMessage(webview: vscode.Webview, message: a
 		const selectionProps: TSendSelectResourceOptions = message.data;
 		const filters = {};
 
-		selectionProps.accept.split(",").forEach((element: string) => {
-			filters[`*${element}`] = [`*${element}`];
-		});
+		if (selectionProps.accept) {
+			selectionProps.accept.split(",").forEach((element: string) => {
+				filters[`*${element}`] = [`*${element}`];
+			});
+		}
 
 		if (!filters["All files"]) {
 			filters["All files"] = ["*"];

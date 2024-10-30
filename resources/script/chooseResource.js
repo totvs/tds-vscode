@@ -37,18 +37,18 @@ function sendSelectResource(firedBy/*: string*/, options/*TSendSelectResourceOpt
 	vscode.postMessage(message);
   }
 
-function fireChooseFile(event, title, label, folder) {
+function fireChooseFile(event, title, label) {
 	event.preventDefault();
 	event.stopPropagation();
 
 	sendSelectResource(event.target.id || event.target.name,
 		{
 			canSelectMany: event.target.hasAttribute("multiple"),
-			canSelectFiles: !folder,
-			canSelectFolders: folder,
+			canSelectFiles: !(event.target.hasAttribute("webkitdirectory") || event.target.hasAttribute("directory")),
+			canSelectFolders: (event.target.hasAttribute("webkitdirectory") || event.target.hasAttribute("directory") ),
 			currentFolder: "",
 			title: title,
-			openLabel: label,
+			openLabel: label || "Select",
 			accept: event.target.getAttribute("accept")
 		}
 	)
