@@ -10,15 +10,17 @@
 <style>
 	${d.css}
 
-    #parent {
-      display: table;
-      width: 600px;
-      height: 300px;
-    }
-    #child {
-        display: table-cell;
-        vertical-align: middle;
+	#parent {
+		display: table;
+		width: 600px;
+		height: 300px;
 	}
+
+	#child {
+		display: table-cell;
+		vertical-align: middle;
+	}
+
 	#loading {
 		z-index: 20;
 		position: relative;
@@ -28,54 +30,69 @@
 
 	/* The Modal (background) */
 	.modal {
-	position: fixed; /* Stay in place */
-	z-index: 1; /* Sit on top */
-	padding-top: 100px; /* Location of the box */
-	left: 0;
-	top: 0;
-	width: 100%; /* Full width */
-	height: 100%; /* Full height */
-	overflow: auto; /* Enable scroll if needed */
-	background-color: rgb(0,0,0); /* Fallback color */
-	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+		position: fixed;
+		/* Stay in place */
+		z-index: 1;
+		/* Sit on top */
+		padding-top: 100px;
+		/* Location of the box */
+		left: 0;
+		top: 0;
+		width: 100%;
+		/* Full width */
+		height: 100%;
+		/* Full height */
+		overflow: auto;
+		/* Enable scroll if needed */
+		background-color: rgb(0, 0, 0);
+		/* Fallback color */
+		background-color: rgba(0, 0, 0, 0.4);
+		/* Black w/ opacity */
 	}
+
 	/* Modal Content */
 	.modal-content {
-	background-color: #f3f3f3;
-	margin: auto;
-	padding: 5px 15px;
-	border: 1px solid #888;
-	width: 80%;
+		background-color: #f3f3f3;
+		margin: auto;
+		padding: 5px 15px;
+		border: 1px solid #888;
+		width: 80%;
 	}
+
 	/* Modal Section */
 	/* .modal-section {
 	} */
 	.section-header {
 		margin-bottom: 10px;
 	}
+
 	.section-title {
 		padding: 0px;
 		margin: 0px;
 	}
+
 	.section-module {
 		padding: 0px;
 		margin: 0px;
 	}
+
 	/* The Close Button */
 	.close {
-	color: #aaaaaa;
-	float: right;
-	font-size: 28px;
-	font-weight: bold;
+		color: #aaaaaa;
+		float: right;
+		font-size: 28px;
+		font-weight: bold;
 	}
+
 	.close:hover,
 	.close:focus {
-	color: #000;
-	text-decoration: none;
-	cursor: pointer;
+		color: #000;
+		text-decoration: none;
+		cursor: pointer;
 	}
 </style>
 <!--<link rel="stylesheet" type="text/css" href="../../resources/css/table_materialize.css">-->
+</script>
 
 <body>
 	<div class="mainContainer">
@@ -124,8 +141,8 @@
 						</table>
 					</div>
 				</div>
-				<input class="inputText" type="file" accept='.ptm,.zip,.upd' id="btn-File" name="btn-File"
-					onchange="setTextArea(event)" multiple />
+				<input id="btn-File" name="btn-File" class="inputText" accept='.ptm,.zip,.upd' type="file"
+					onclick="fireChooseFile(event, 'Update package file')" multiple />
 
 				<div class="wrap-output">
 					<p id="ApplyOldOutputMessage"></p>
@@ -134,8 +151,7 @@
 				<div class="wrap-input" id="ApplyOldDiv" hidden>
 					<label for="ApplyOld">${d.localize["tds.webview.applyOld"]}</label>
 					<!--Apply fontes mais antigos -->
-					<input class="" type="checkbox" id="ApplyOldID" name="ApplyOld"
-						onclick="checkValidations()">
+					<input class="" type="checkbox" id="ApplyOldID" name="ApplyOld" onclick="checkValidations()">
 				</div>
 
 				<div class="wrap-output">
@@ -154,13 +170,14 @@
 				</div>
 
 				<div class="wrap-submit">
-					<input class="btn-submit" readonly style="cursor: pointer;" id="submitID" value="${d.localize['tds.webview.patch.apply.action']}"
-						onclick="patchApply(false);" disabled />
+					<input class="btn-submit" readonly style="cursor: pointer;" id="submitID"
+						value="${d.localize['tds.webview.patch.apply.action']}" onclick="patchApply(false);" disabled />
 				</div>
 
 				<div class="wrap-submit">
-					<input class="btn-submit" readonly style="cursor: pointer;" id="submitCloseID" value="${d.localize['tds.webview.patch.applyclose.action']}"
-						onclick="patchApply(true);" disabled />
+					<input class="btn-submit" readonly style="cursor: pointer;" id="submitCloseID"
+						value="${d.localize['tds.webview.patch.applyclose.action']}" onclick="patchApply(true);"
+						disabled />
 				</div>
 
 			</form>
@@ -169,41 +186,47 @@
 	<dialog id="tph_dialog" class="modal">
 		<!-- Modal content -->
 		<div class="modal-content">
-		  <span id="close" class="close" onClick="closeTph()">&times;</span>
-		  <p>${d.localize["tds.webview.patch.newest.located"]}</p>
-		  <hr class="solid">
-		  <div id="exp" class="modal-section" hidden>
-			<header class="section-header">
-			  <h3 class="section-title">${d.localize["tds.webview.patch.newest.exp"]}</h3>
-			  <p id="exp_module_section" class="section-module" hidden>${d.localize["tds.webview.patch.newest.module"]} <span id="exp_module"></span></p>
-			  <p class="section-module">${d.localize["tds.webview.patch.newest.generated"]} <time id="exp_generated"></time></p>
-			</header>
-			<p>${d.localize["tds.webview.patch.newest.description"]} <span id="exp_description"></span></p>
-			<p>${d.localize["tds.webview.patch.newest.summary"]} <span id="exp_summary"></span></p>
-			<p>${d.localize["tds.webview.patch.newest.link"]} <span id="exp_link_patch"></span></p>
-			<p>${d.localize["tds.webview.patch.newest.doc"]} <span id="exp_link_doc"></span></p>
-		  </div>
+			<span id="close" class="close" onClick="closeTph()">&times;</span>
+			<p>${d.localize["tds.webview.patch.newest.located"]}</p>
+			<hr class="solid">
+			<div id="exp" class="modal-section" hidden>
+				<header class="section-header">
+					<h3 class="section-title">${d.localize["tds.webview.patch.newest.exp"]}</h3>
+					<p id="exp_module_section" class="section-module" hidden>
+						${d.localize["tds.webview.patch.newest.module"]} <span id="exp_module"></span></p>
+					<p class="section-module">${d.localize["tds.webview.patch.newest.generated"]} <time
+							id="exp_generated"></time></p>
+				</header>
+				<p>${d.localize["tds.webview.patch.newest.description"]} <span id="exp_description"></span></p>
+				<p>${d.localize["tds.webview.patch.newest.summary"]} <span id="exp_summary"></span></p>
+				<p>${d.localize["tds.webview.patch.newest.link"]} <span id="exp_link_patch"></span></p>
+				<p>${d.localize["tds.webview.patch.newest.doc"]} <span id="exp_link_doc"></span></p>
+			</div>
 
-		  <hr id="sep" class="solid" hidden>
+			<hr id="sep" class="solid" hidden>
 
-		  <div id="ptm" class="modal-section" hidden>
-			<header class="section-header">
-				<h3 class="section-title">${d.localize["tds.webview.patch.newest.ptm"]}</h3>
-				<p id="ptm_module_section" class="section-module" hidden>${d.localize["tds.webview.patch.newest.module"]} <span id="ptm_module"></span></p>
-				<p class="section-module">${d.localize["tds.webview.patch.newest.generated"]} <time id="ptm_generated"></time></p>
-			</header>
-			<p>${d.localize["tds.webview.patch.newest.description"]} <span id="ptm_description"></span></p>
-			<p>${d.localize["tds.webview.patch.newest.summary"]} <span id="ptm_summary"></span></p>
-			<p>${d.localize["tds.webview.patch.newest.link"]} <span id="ptm_link_patch"></span></p>
-			<p>${d.localize["tds.webview.patch.newest.doc"]} <span id="ptm_link_doc"></span></p>
-		  </div>
+			<div id="ptm" class="modal-section" hidden>
+				<header class="section-header">
+					<h3 class="section-title">${d.localize["tds.webview.patch.newest.ptm"]}</h3>
+					<p id="ptm_module_section" class="section-module" hidden>
+						${d.localize["tds.webview.patch.newest.module"]} <span id="ptm_module"></span></p>
+					<p class="section-module">${d.localize["tds.webview.patch.newest.generated"]} <time
+							id="ptm_generated"></time></p>
+				</header>
+				<p>${d.localize["tds.webview.patch.newest.description"]} <span id="ptm_description"></span></p>
+				<p>${d.localize["tds.webview.patch.newest.summary"]} <span id="ptm_summary"></span></p>
+				<p>${d.localize["tds.webview.patch.newest.link"]} <span id="ptm_link_patch"></span></p>
+				<p>${d.localize["tds.webview.patch.newest.doc"]} <span id="ptm_link_doc"></span></p>
+			</div>
 
-		  <hr id="endsep" class="solid">
+			<hr id="endsep" class="solid">
 
 		</div>
 	</dialog>
 </body>
 <script>
+	${ d.chooseResourceScript }
+
 	${ d.script }
 	const vscode = acquireVsCodeApi();
 	var tableAPI = $('#tableInfos').dataTable({
@@ -296,7 +319,7 @@
 		for (var i = 0; i < patchs.length; i++) {
 			if (patchs[i][1] === "${d.localize['tds.webview.patch.validation.action.awaiting']}") {
 				completePaths.push(patchs[i][3]);
-				tableAPI.cell(i,1).data("${d.localize['tds.webview.patch.validation.action.validating']}");
+				tableAPI.cell(i, 1).data("${d.localize['tds.webview.patch.validation.action.validating']}");
 				tableAPI.draw();
 			}
 		};
@@ -312,6 +335,18 @@
 		const message = event.data; // The JSON data our extension sent
 		//console.log("formApplyPatch receive: " + message.command);
 		switch (message.command) {
+			case "AFTER_SELECT_RESOURCE":
+				const files = message.data.files;
+
+				for (var i = 0; i < files.length; i++) {
+					addFile(files[i]);
+				}
+
+				document.getElementById('ApplyOldID').checked = false;
+				document.getElementById('NewerPatchesID').checked = false;
+				patchValidate();
+
+				break;
 			case 'setCurrentServer':
 				const server = message.serverCurrent;
 				document.getElementById('serverNameID').value = server.name;
@@ -339,13 +374,13 @@
 							validationMessage = "${d.localize['tds.webview.patch.validation.error.denied']}"; //"Patch apply denied. Check Output for details.";
 						} else if (errorCode == 8) {
 							//console.log(validationMessage);
-							validationMessage = "${d.localize['tds.webview.patch.validation.error.newer']} <a href='#' onClick='showTphInfo("+i+")'>${d.localize['tds.webview.patch.validation.error.here']}</a> ${d.localize['tds.webview.patch.validation.error.details']}"; //"Newer patches available. Click <a href='#' onClick='showTphInfo("+i+")'>here</a> for details.";
+							validationMessage = "${d.localize['tds.webview.patch.validation.error.newer']} <a href='#' onClick='showTphInfo(" + i + ")'>${d.localize['tds.webview.patch.validation.error.here']}</a> ${d.localize['tds.webview.patch.validation.error.details']}"; //"Newer patches available. Click <a href='#' onClick='showTphInfo("+i+")'>here</a> for details.";
 							tphInfos.set(i, message.tphInfoRet);
 						}
 						//console.log("FOUND! "+message.message);
-						tableAPI.cell(i,1).data(validationMessage);
+						tableAPI.cell(i, 1).data(validationMessage);
 						//console.log("FOUND! "+message.errorCode);
-						tableAPI.cell(i,4).data(errorCode);
+						tableAPI.cell(i, 4).data(errorCode);
 						tableAPI.draw();
 					}
 				};
@@ -354,25 +389,9 @@
 		}
 	});
 
-	function setTextArea(event) {
-		//console.log("setTextArea: "+event);
-		const input = event.target;
-		const files = input.files;
-
-		for (var i = 0; i < files.length; i++) {
-			//console.log("files: "+files[i]);
-			addFile(files[i].path);
-		}
-
-		document.getElementById('ApplyOldID').checked = false;
-		document.getElementById('NewerPatchesID').checked = false;
-		patchValidate();
-
-		input.value = '';
-	}
-
 	function addFile(filePath) {
-		//console.log("addFile");
+		console.log("addFile");
+
 		const fnProc = function (filename, fullPath) {
 			if (!searchPatch(fullPath)) {
 				row = new Array('&#8942;', "${d.localize['tds.webview.patch.validation.action.awaiting']}", filename, fullPath, -1);
@@ -386,11 +405,8 @@
 		}
 
 		var fullPath = filePath;
-		//console.log("fullPath: "+fullPath);
 		var filename = getFilename(fullPath);
-		//console.log("filename: "+filename);
 		var ext = getExtension(filename);
-		//console.log("ext: "+ext);
 
 		fnProc(filename, fullPath);
 	}
@@ -417,7 +433,7 @@
 	}
 
 	function closeTph() {
-    	document.getElementById("tph_dialog").close("TPH Dialog");
+		document.getElementById("tph_dialog").close("TPH Dialog");
 	}
 
 	function showTphInfo(patchIdx) {
@@ -437,8 +453,8 @@
 			document.getElementById("exp_generated").innerHTML = tphInfo.exp.generated;
 			document.getElementById("exp_description").innerHTML = tphInfo.exp.description[language];
 			document.getElementById("exp_summary").innerHTML = tphInfo.exp.summary;
-			document.getElementById("exp_link_patch").innerHTML = '<a href="'+tphInfo.exp.link_patch+'" target="_blank">Patch EXP</a>';
-			document.getElementById("exp_link_doc").innerHTML = '<a href="'+tphInfo.exp.link_doc+'" target="_blank">Link</a>';
+			document.getElementById("exp_link_patch").innerHTML = '<a href="' + tphInfo.exp.link_patch + '" target="_blank">Patch EXP</a>';
+			document.getElementById("exp_link_doc").innerHTML = '<a href="' + tphInfo.exp.link_doc + '" target="_blank">Link</a>';
 		}
 		const ptm = document.getElementById("ptm");
 		ptm.hidden = true;
@@ -451,8 +467,8 @@
 			document.getElementById("ptm_generated").innerHTML = tphInfo.ptm.generated;
 			document.getElementById("ptm_description").innerHTML = tphInfo.ptm.description[language];
 			document.getElementById("ptm_summary").innerHTML = tphInfo.ptm.summary;
-			document.getElementById("ptm_link_patch").innerHTML = '<a href="'+tphInfo.ptm.link_patch+'" target="_blank">Patch PTM</a>';
-			document.getElementById("ptm_link_doc").innerHTML = '<a href="'+tphInfo.ptm.link_doc+'" target="_blank">Link</a>';
+			document.getElementById("ptm_link_patch").innerHTML = '<a href="' + tphInfo.ptm.link_patch + '" target="_blank">Patch PTM</a>';
+			document.getElementById("ptm_link_doc").innerHTML = '<a href="' + tphInfo.ptm.link_doc + '" target="_blank">Link</a>';
 		}
 		if (!exp.hidden && !ptm.hidden) {
 			const sep = document.getElementById("sep");
@@ -473,8 +489,8 @@
 		document.getElementById('ApplyOldDiv').hidden = true;
 		document.getElementById('NewerPatchesDiv').hidden = true;
 		document.getElementById('OutputMessage').innerHTML = "";
-		document.getElementById('submitID').setAttribute("disabled","disabled");
-		document.getElementById('submitCloseID').setAttribute("disabled","disabled");
+		document.getElementById('submitID').setAttribute("disabled", "disabled");
+		document.getElementById('submitCloseID').setAttribute("disabled", "disabled");
 		var patchs = tableAPI.data();
 		if (patchs.length == 0) {
 			return; // no action without patches
@@ -534,7 +550,7 @@
 		if (validationInProgress) {
 			document.getElementById('OutputMessage').style = "color: blue";
 			document.getElementById('OutputMessage').innerHTML = '${d.localize["tds.webview.patch.validation.inprogress"]}';
-		} else  if (criticalError) {
+		} else if (criticalError) {
 			document.getElementById('OutputMessage').style = "color: red";
 			document.getElementById('OutputMessage').innerHTML = '${d.localize["tds.webview.patch.validation.critical"]}';
 		} else {
