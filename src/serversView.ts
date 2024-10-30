@@ -20,6 +20,7 @@ import {
   ENABLE_CODE_PAGE,
 } from "./protocolMessages";
 import { EnvSection, ServerItem } from "./serverItem";
+import { processSelectResourceMessage } from "./utilities/processSelectResource";
 
 const compile = require("template-literal");
 
@@ -74,54 +75,56 @@ export class ServersExplorer {
 
         currentPanel.webview.onDidReceiveMessage(
           (message) => {
-            switch (message.command) {
-              case "checkDir":
-                let checkedDir = Utils.checkDir(message.selectedDir);
-                currentPanel.webview.postMessage({
-                  command: "checkedDir",
-                  checkedDir: checkedDir,
-                });
-                break;
-              case "saveServer":
-                if (message.serverName && message.port && message.address) {
-                  const serverId = createServer(
-                    message.serverType,
-                    message.serverName,
-                    message.port,
-                    message.address,
-                    0,
-                    "",
-                    true,
-                    message.includes
-                  );
-                  if (serverId !== undefined) {
-                    sendValidationRequest(message.address, message.port, message.serverType).then(
-                      (validInfoNode: IValidationInfo) => {
-                        ServersConfig.updateBuildVersion(
-                          serverId,
-                          validInfoNode.build,
-                          validInfoNode.secure
-                        );
+            if (!processSelectResourceMessage(currentPanel.webview, message)) {
+              switch (message.command) {
+                case "checkDir":
+                  let checkedDir = Utils.checkDir(message.selectedDir);
+                  currentPanel.webview.postMessage({
+                    command: "checkedDir",
+                    checkedDir: checkedDir,
+                  });
+                  break;
+                case "saveServer":
+                  if (message.serverName && message.port && message.address) {
+                    const serverId = createServer(
+                      message.serverType,
+                      message.serverName,
+                      message.port,
+                      message.address,
+                      0,
+                      "",
+                      true,
+                      message.includes
+                    );
+                    if (serverId !== undefined) {
+                      sendValidationRequest(message.address, message.port, message.serverType).then(
+                        (validInfoNode: IValidationInfo) => {
+                          ServersConfig.updateBuildVersion(
+                            serverId,
+                            validInfoNode.build,
+                            validInfoNode.secure
+                          );
 
-                        currentPanel?.dispose();
-                        return;
-                      },
-                      (err: ResponseError<object>) => {
-                        vscode.window.showErrorMessage(err.message);
-                      }
+                          currentPanel?.dispose();
+                          return;
+                        },
+                        (err: ResponseError<object>) => {
+                          vscode.window.showErrorMessage(err.message);
+                        }
+                      );
+                    }
+                  } else {
+                    vscode.window.showErrorMessage(
+                      vscode.l10n.t("Add Server Fail. Name, port and Address are need")
                     );
                   }
-                } else {
-                  vscode.window.showErrorMessage(
-                    vscode.l10n.t("Add Server Fail. Name, port and Address are need")
-                  );
-                }
 
-                if (currentPanel) {
-                  if (message.close) {
-                    currentPanel.dispose();
+                  if (currentPanel) {
+                    if (message.close) {
+                      currentPanel.dispose();
+                    }
                   }
-                }
+              }
             }
           },
           undefined,
@@ -313,6 +316,15 @@ export class ServersExplorer {
         path.join(context.extensionPath, "resources", "css", "form.css")
       );
 
+      const chooseResourcePath = vscode.Uri.file(
+        path.join(
+          context.extensionPath,
+          "resources",
+          "script",
+          "chooseResource.js"
+        )
+      );
+
       const htmlContent = fs.readFileSync(
         htmlOnDiskPath.with({ scheme: "vscode-resource" }).fsPath
       );
@@ -320,9 +332,17 @@ export class ServersExplorer {
         cssOnDIskPath.with({ scheme: "vscode-resource" }).fsPath
       );
 
+      const chooseResourceContent = fs.readFileSync(
+        chooseResourcePath.with({ scheme: "vscode-resource" }).fsPath
+      );
+
       let runTemplate = compile(htmlContent);
 
-      return runTemplate({ css: cssContent, localize: localizeHTML });
+      return runTemplate({
+        css: cssContent,
+        localize: localizeHTML,
+        chooseResourceScript: chooseResourceContent
+      });
     }
   }
 }
