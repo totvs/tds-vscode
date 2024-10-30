@@ -22,7 +22,7 @@
     "logix"
   ],
   "engines": {
-    "vscode": "^1.73.0"
+    "vscode": "^1.85.2"
   },
   "icon": "icons/totvs-developer-studio.png",
   "categories": [
