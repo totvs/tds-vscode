@@ -12,9 +12,15 @@ Seu uso deve ser efetuado somente sob orientação. Caso não seja informado, a 
 
 ### Correções
 
-#### Ao abrir um fonte em um Mac Sequoia, era apresentado um erro (SIGSEGV) e não é mais possível usar as funcionalidades nesse SO.
+#### Mac Sequoia: apresenta erro ``SIGSEGV`` (#1270)
 
-Corrigido problema interno no Servidor de Linguagem que causava queda
+Ao abrir um fonte em um Mac Sequoia, era apresentado um erro (``SIGSEGV``) e não é mais possível usar as funcionalidades nesse SO. Ocorrência corrigida no no Servidor de Linguagem, o qual causava o referido erro.
+
+## Correção
+
+### Aplicação de pacote de atualização(_patchs_) e outros (#1283 e outros)
+
+  A  versão **1.95** do **VS-Code**, gerou efeitos colaterais em todos os processos que envolvam seleção de arquivo/diretório. Os processos foram revisados  de forma a atender essa necessidade.
 
 ## Versão [2.0.9]
 

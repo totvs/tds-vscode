@@ -7,6 +7,7 @@ import { languageClient } from "../extension";
 import { ResponseError } from "vscode-languageclient";
 import JSZip = require("jszip");
 import { ServerItem } from "../serverItem";
+import { processSelectResourceMessage } from "../utilities/processSelectResource";
 
 const compile = require("template-literal");
 
@@ -101,154 +102,155 @@ export function patchApply(
 
         currentPanel.webview.onDidReceiveMessage(
           async (message) => {
-            switch (message.command) {
-              case "patchValidate":
-                if (message.patchFiles.length === 0) {
-                  vscode.window.showErrorMessage(
-                    vscode.l10n.t("Patch validate failed. Please input patch file.")
-                  );
-                } else {
-                  vscode.window
-                    .withProgress(
-                      {
-                        cancellable: false,
-                        location: vscode.ProgressLocation.Notification,
-                        title: vscode.l10n.t(`Validating patch`),
-                      },
-                      async (progress, token) => {
-                        let step: number = 100 / (message.patchFiles.length + 1);
-                        progress.report({ increment: step / 2 });
-                        let index: number = 0;
+            if (!processSelectResourceMessage(currentPanel.webview, message))
+              switch (message.command) {
+                case "patchValidate":
+                  if (message.patchFiles.length === 0) {
+                    vscode.window.showErrorMessage(
+                      vscode.l10n.t("Patch validate failed. Please input patch file.")
+                    );
+                  } else {
+                    vscode.window
+                      .withProgress(
+                        {
+                          cancellable: false,
+                          location: vscode.ProgressLocation.Notification,
+                          title: vscode.l10n.t(`Validating patch`),
+                        },
+                        async (progress, token) => {
+                          let step: number = 100 / (message.patchFiles.length + 1);
+                          progress.report({ increment: step / 2 });
+                          let index: number = 0;
 
-                        for await (const element of message.patchFiles) {
-                          index++;
+                          for await (const element of message.patchFiles) {
+                            index++;
+                            progress.report({
+                              increment: step,
+                              message: `(${index}/${message.patchFiles.length}) ${element}`,
+                            });
+
+                            await doValidatePatch(
+                              server,
+                              vscode.Uri.file(element).toString()
+                            ).then(
+                              () => { },
+                              (reason: any) => {
+                                languageClient.error(reason);
+                              }
+                            );
+                          }
+
                           progress.report({
-                            increment: step,
-                            message: `(${index}/${message.patchFiles.length}) ${element}`,
+                            increment: 100,
+                            message: vscode.l10n.t("Patchs validate ( files)"),
                           });
-
-                          await doValidatePatch(
-                            server,
-                            vscode.Uri.file(element).toString()
-                          ).then(
-                            () => { },
-                            (reason: any) => {
-                              languageClient.error(reason);
-                            }
-                          );
                         }
-
-                        progress.report({
-                          increment: 100,
-                          message: vscode.l10n.t("Patchs validate ( files)"),
-                        });
-                      }
-                    )
-                    .then(() => {
-                    });
-                }
-
-                break;
-
-              case "patchApply":
-                if (message.patchFile.length === 0) {
-                  vscode.window.showErrorMessage(
-                    vscode.l10n.t("Patch apply failed. Please input patch file.")
-                  );
-                } else {
-                  vscode.window
-                    .withProgress(
-                      {
-                        cancellable: false,
-                        location: vscode.ProgressLocation.Notification,
-                        title: vscode.l10n.t(`Applying patch`),
-                      },
-                      async (progress, token) => {
-                        let step: number = 100 / (message.patchFile.length + 1);
-                        progress.report({ increment: step / 2 });
-                        let index: number = 0;
-
-                        for await (const element of message.patchFile) {
-                          index++;
-                          progress.report({
-                            increment: step,
-                            message: `(${index}/${message.patchFile.length}) ${element}`,
-                          });
-
-                          await doApplyPatch(
-                            server,
-                            vscode.Uri.file(element).toString(),
-                            message.applyOld
-                          ).then(
-                            () => { },
-                            (reason: any) => {
-                              languageClient.error(reason);
-                            }
-                          );
-                        }
-
-                        progress.report({
-                          increment: 100,
-                          message: vscode.l10n.t("Patchs applied ( files)"),
-                        });
-                      }
-                    )
-                    .then(() => {
-                      if (currentPanel) {
-                        if (message.close) {
-                          currentPanel.dispose();
-                        }
-                      }
-                    });
-                }
-
-                if (currentPanel) {
-                  if (message.close) {
-                    currentPanel.dispose();
+                      )
+                      .then(() => {
+                      });
                   }
-                }
 
-                break;
+                  break;
 
-              case "showDuplicateWarning":
-                vscode.window.showWarningMessage(
-                  vscode.l10n.t("File already selected: {0}", message.filename)
-                );
-                break;
+                case "patchApply":
+                  if (message.patchFile.length === 0) {
+                    vscode.window.showErrorMessage(
+                      vscode.l10n.t("Patch apply failed. Please input patch file.")
+                    );
+                  } else {
+                    vscode.window
+                      .withProgress(
+                        {
+                          cancellable: false,
+                          location: vscode.ProgressLocation.Notification,
+                          title: vscode.l10n.t(`Applying patch`),
+                        },
+                        async (progress, token) => {
+                          let step: number = 100 / (message.patchFile.length + 1);
+                          progress.report({ increment: step / 2 });
+                          let index: number = 0;
 
-              case "patchValidateFile":
-                if (message.file) {
-                  vscode.window.showInformationMessage("PatchValidate");
-                  const validateArgs = {
-                    fsPath: message.file,
-                  };
-                  vscode.commands.executeCommand(
-                    "totvs-developer-studio.patchValidate.fromFile",
-                    validateArgs
-                  );
-                } else {
-                  vscode.window.showInformationMessage(
-                    vscode.l10n.t("Select a file for operation.")
-                  );
-                }
-                break;
+                          for await (const element of message.patchFile) {
+                            index++;
+                            progress.report({
+                              increment: step,
+                              message: `(${index}/${message.patchFile.length}) ${element}`,
+                            });
 
-              case "patchInfo":
-                if (message.file) {
-                  const args = {
-                    fsPath: message.file,
-                  };
-                  vscode.commands.executeCommand(
-                    "totvs-developer-studio.patchInfos.fromFile",
-                    args
+                            await doApplyPatch(
+                              server,
+                              vscode.Uri.file(element).toString(),
+                              message.applyOld
+                            ).then(
+                              () => { },
+                              (reason: any) => {
+                                languageClient.error(reason);
+                              }
+                            );
+                          }
+
+                          progress.report({
+                            increment: 100,
+                            message: vscode.l10n.t("Patchs applied ( files)"),
+                          });
+                        }
+                      )
+                      .then(() => {
+                        if (currentPanel) {
+                          if (message.close) {
+                            currentPanel.dispose();
+                          }
+                        }
+                      });
+                  }
+
+                  if (currentPanel) {
+                    if (message.close) {
+                      currentPanel.dispose();
+                    }
+                  }
+
+                  break;
+
+                case "showDuplicateWarning":
+                  vscode.window.showWarningMessage(
+                    vscode.l10n.t("File already selected: {0}", message.filename)
                   );
-                } else {
-                  vscode.window.showInformationMessage(
-                    vscode.l10n.t("Select a file for operation.")
-                  );
-                }
-                break;
-            }
+                  break;
+
+                case "patchValidateFile":
+                  if (message.file) {
+                    vscode.window.showInformationMessage("PatchValidate");
+                    const validateArgs = {
+                      fsPath: message.file,
+                    };
+                    vscode.commands.executeCommand(
+                      "totvs-developer-studio.patchValidate.fromFile",
+                      validateArgs
+                    );
+                  } else {
+                    vscode.window.showInformationMessage(
+                      vscode.l10n.t("Select a file for operation.")
+                    );
+                  }
+                  break;
+
+                case "patchInfo":
+                  if (message.file) {
+                    const args = {
+                      fsPath: message.file,
+                    };
+                    vscode.commands.executeCommand(
+                      "totvs-developer-studio.patchInfos.fromFile",
+                      args
+                    );
+                  } else {
+                    vscode.window.showInformationMessage(
+                      vscode.l10n.t("Select a file for operation.")
+                    );
+                  }
+                  break;
+              }
           },
           undefined,
           context.subscriptions
@@ -351,6 +353,7 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
   const htmlOnDiskPath = vscode.Uri.file(
     path.join(context.extensionPath, "src", "patch", "formApplyPatch.html")
   );
+
   const cssOnDIskPath = vscode.Uri.file(
     path.join(
       context.extensionPath,
@@ -359,12 +362,22 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
       "table_materialize.css"
     )
   );
+
   const tableScriptPath = vscode.Uri.file(
     path.join(
       context.extensionPath,
       "resources",
       "script",
       "table_materialize.js"
+    )
+  );
+
+  const chooseResourcePath = vscode.Uri.file(
+    path.join(
+      context.extensionPath,
+      "resources",
+      "script",
+      "chooseResource.js"
     )
   );
 
@@ -377,6 +390,9 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
   const scriptContent = fs.readFileSync(
     tableScriptPath.with({ scheme: "vscode-resource" }).fsPath
   );
+  const chooseResourceContent = fs.readFileSync(
+    chooseResourcePath.with({ scheme: "vscode-resource" }).fsPath
+  );
 
   let runTemplate = compile(htmlContent);
 
@@ -384,6 +400,7 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
     css: cssContent,
     localize: localizeHTML,
     script: scriptContent,
+    chooseResourceScript: chooseResourceContent
   });
 }
 
