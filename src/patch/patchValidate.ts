@@ -7,6 +7,7 @@ import { languageClient } from "../extension";
 const compile = require("template-literal");
 import { ResponseError } from "vscode-languageclient";
 import { _debugEvent } from "../debug";
+import { processSelectResourceMessage } from "../utilities/processSelectResource";
 
 let patchValidatesData: any;
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
@@ -64,7 +65,8 @@ export function patchValidates(context: vscode.ExtensionContext, args: any) {
 
       currentPanel.webview.onDidReceiveMessage(
         (message) => {
-          switch (message.command) {
+          if (!processSelectResourceMessage(currentPanel.webview, message)) {
+              switch (message.command) {
             case "patchValidate":
               vscode.window.setStatusBarMessage(
                 `$(gear~spin) ${vscode.l10n.t("Executing patch validation...")}`,
@@ -84,6 +86,7 @@ export function patchValidates(context: vscode.ExtensionContext, args: any) {
                 currentPanel.dispose();
               }
               break;
+            }
           }
         },
         undefined,
@@ -205,6 +208,14 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
     )
   );
   //const cssOnDIskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
+  const chooseResourcePath = vscode.Uri.file(
+    path.join(
+      context.extensionPath,
+      "resources",
+      "script",
+      "chooseResource.js"
+    )
+  );
 
   const htmlContent = fs.readFileSync(
     htmlOnDiskPath.with({ scheme: "vscode-resource" }).fsPath
@@ -215,6 +226,9 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
   const scriptContent = fs.readFileSync(
     tableScriptPath.with({ scheme: "vscode-resource" }).fsPath
   );
+  const chooseResourceContent = fs.readFileSync(
+    chooseResourcePath.with({ scheme: "vscode-resource" }).fsPath
+  );
 
   let runTemplate = compile(htmlContent);
 
@@ -222,5 +236,6 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
     css: cssContent,
     localize: localizeHTML,
     script: scriptContent,
+    chooseResourceScript: chooseResourceContent
   });
 }
