@@ -5,6 +5,7 @@ import { languageClient } from '../extension';
 import Utils, { ServersConfig } from '../utils';
 import { ResponseError } from 'vscode-languageclient';
 import { _debugEvent } from '../debug';
+import { processSelectResourceMessage } from '../utilities/processSelectResource';
 
 const compile = require('template-literal');
 
@@ -45,7 +46,8 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 			);
 
 			currentPanel.webview.onDidReceiveMessage(message => {
-				switch (message.command) {
+				if (!processSelectResourceMessage(currentPanel.webview, message)) {
+					switch (message.command) {
 					case 'checkDir':
 						let checkedDir = Utils.checkDir(message.selectedDir);
 						currentPanel.webview.postMessage({
@@ -94,6 +96,7 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 						});
 						return;
 				}
+				}
 			},
 				undefined,
 				context.subscriptions
@@ -119,11 +122,26 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 
 	const htmlOnDiskPath = vscode.Uri.file(path.join(context.extensionPath, 'src', 'WebService', 'generateWS.html'));
 	const cssOnDIskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
+	const chooseResourcePath = vscode.Uri.file(
+		path.join(
+		  context.extensionPath,
+		  "resources",
+		  "script",
+		  "chooseResource.js"
+		)
+	  );
 
 	const htmlContent = fs.readFileSync(htmlOnDiskPath.with({ scheme: 'vscode-resource' }).fsPath);
 	const cssContent = fs.readFileSync(cssOnDIskPath.with({ scheme: 'vscode-resource' }).fsPath);
+	const chooseResourceContent = fs.readFileSync(
+		chooseResourcePath.with({ scheme: "vscode-resource" }).fsPath
+	  );
 
 	let runTemplate = compile(htmlContent);
 
-	return runTemplate({ css: cssContent, localize: localizeHTML });
+	return runTemplate({
+		css: cssContent,
+		localize: localizeHTML,
+		chooseResourceScript: chooseResourceContent
+	});
 }
