@@ -40,8 +40,14 @@
 			<div class="wrap-input">
 				<label for="patchFile">Patch File: </label><!--Patch File-->
 				<input class="inputText" type="text" id="FilePatch" name="FilePatch" placeholder="Ex: C:/totvs/patchs/tttp120.ptm...">
-				<input class="inputText" type="file" accept='PatchFile/*.ptm' id="btn-File" name="btn-File"
-					onchange="setTextArea(event)" />
+				<input
+					class="inputText"
+					type="file"
+					accept='.ptm'
+					id="btn-File"
+					name="btn-File"
+					onclick="fireChooseFile(event, 'Update package file')"
+					 />
 			</div>
 			<div class="wrap-input">
 				<div class="material-table z-depth-3 hoverable">
@@ -72,7 +78,10 @@
 
 
 <script>
+	${ d.chooseResourceScript }
+
 	${ d.script }
+
 	const vscode = acquireVsCodeApi();
 
 	var tableAPI = $('#tableInfos').dataTable({
@@ -91,12 +100,7 @@
 		],
 	}).api();
 
-	function setTextArea(event) {
-		var input = event.target;
-		var files = input.files;
-
-		var fullPath = files[0].path;
-
+	function setTextArea(fullPath) {
 		document.getElementById('FilePatch').value = fullPath;
 
 		tableAPI.clear();
@@ -122,7 +126,15 @@
 
 	window.addEventListener('message', event => {
 		const message = event.data;
+
 		switch (message.command) {
+			case "AFTER_SELECT_RESOURCE":
+				const files = message.data.files;
+
+				if (files.length > 0) {
+					setTextArea(files[0]);
+				}
+				break;
 			case 'setPatchPath' :
 				document.getElementById('FilePatch').value = message.path;
 			case 'setData' :
