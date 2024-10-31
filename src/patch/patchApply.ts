@@ -102,7 +102,7 @@ export function patchApply(
 
         currentPanel.webview.onDidReceiveMessage(
           async (message) => {
-            if (!processSelectResourceMessage(currentPanel.webview, message))
+            if (!processSelectResourceMessage(currentPanel.webview, message)) {
               switch (message.command) {
                 case "patchValidate":
                   if (message.patchFiles.length === 0) {
@@ -251,6 +251,7 @@ export function patchApply(
                   }
                   break;
               }
+            }
           },
           undefined,
           context.subscriptions

@@ -21,7 +21,15 @@
 							<p>${d.localize["tds.webview.dir.include"]} <b>*${d.localize["tds.webview.dir.include2"]}</b></p><!--Includes directory:--><!--Allows multiple-->
 							<div class="wrap-input">
 								<textarea class="inputText" id="includePath" placeholder="Ex: C:/totvs/includes..."></textarea>
-								<input class="inputText" type="file" id="btn-FileInclude" name="btn-FileInclude" onchange='checkDir(event);' webkitdirectory directory/>
+								<input
+									class="inputText"
+									type="file"
+									id="btn-FileInclude"
+									name="btn-FileInclude"
+									webkitdirectory
+									directory
+									onclick="fireChooseFile(event, 'Update package file')"
+									/>
 							</div>
 
 							<div class="wrap-submit">
@@ -38,17 +46,15 @@
 </body>
 
 <script>
+	${ d.chooseResourceScript }
+
 	const vscode = acquireVsCodeApi();
 
-	function checkDir(event) {
-		var input = event.target;
-		if (input.files.length > 0) {
-			var selectedDir = input.files[0].path;
-			vscode.postMessage({
-				command: 'checkDir',
-				selectedDir: selectedDir
-			});
-		}
+	function checkDir(selectedDir) {
+		vscode.postMessage({
+			command: 'checkDir',
+			selectedDir: selectedDir
+		});
 	}
 
 	function save(close) {
@@ -69,6 +75,14 @@
 		const message = event.data; // The JSON data our extension sent
 
 		switch (message.command) {
+			case "AFTER_SELECT_RESOURCE":
+				const files = message.data.files;
+
+				for (var i = 0; i < files.length; i++) {
+					checkDir(files[i]);
+				}
+				break;
+
 			case 'checkedDir':
 				var checkedDir = message.checkedDir;
 				if (includePath.value == "")
