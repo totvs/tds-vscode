@@ -50,7 +50,14 @@
 				<div class="wrap-input">
 					<label for="smartClient">${d.localize["tds.webview.launcher.smartclient"]}</label><!--SmartClient:-->
 					<input class="inputText" type="text" id="SmartClientPath" name="SmartClientPath" placeholder="Ex: C:/totvs/smartclient/smartclient.exe...">
-					<input class="inputText" type="file" accept='.exe,application/exe,*.*'  id="smartClientID" name="smartClient" onchange="setTextArea()"/>
+					<input
+						class="inputText"
+						type="file"
+						accept='.exe,application/exe'
+						id="smartClientID"
+						name="smartClient"
+						onclick="fireChooseFile(event, 'Select SmartClient Desktop')"
+						/>
 				</div>
 
 				<div class="checkboxGroup">
@@ -116,30 +123,43 @@
 </body>
 
 <script>
+	${ d.chooseResourceScript }
+
 	let programArgumentIndex = 0;
 	const comboBox = getElementLauncherList();
 	// Handle the message inside the webview
 	window.addEventListener('message', event => {
-		const launchConfig = event.data; // The JSON data our extension sent
-		comboBox.innerText = null; //Zera o combo
-		updateElementProgramArguments([]);
-		launchConfig.forEach(element => {
-			if (element.type === "totvs_language_debug") {
-				let option = document.createElement("option");
-				option.text = element.name;
-				option.value = element.name;
-				option.data = element;
-				comboBox.appendChild(option);
-				if(getElementLauncherName().value === element.name) {
-					//Atualiza o elemento corrente caso ele ja esteja selecionado.
-					//Esse processo normalmente ocorre quando o usuario altera uma informação manualmente no json
-					//e a pagina ainda esta aberta, portanto é necessario atualizar os campos pois pode ocorrer
-					//do item que foi atualizado manualmente ser o mesmo do que estava previamente selecionado.
-					updateAllFields(element);
-				}
+		const message = event.data; // The JSON data our extension sent
+
+		if (message.command== "AFTER_SELECT_RESOURCE") {
+			const files = message.data.files;
+
+			if (files.length > 0) {
+				setTextArea(files[0]);
 			}
-		});
-		validateFields();
+		} else {
+			const launchConfig = event.data; // The JSON data our extension sent
+			comboBox.innerText = null; //Zera o combo
+
+			updateElementProgramArguments([]);
+			launchConfig.forEach(element => {
+				if (element.type === "totvs_language_debug") {
+					let option = document.createElement("option");
+					option.text = element.name;
+					option.value = element.name;
+					option.data = element;
+					comboBox.appendChild(option);
+					if(getElementLauncherName().value === element.name) {
+						//Atualiza o elemento corrente caso ele ja esteja selecionado.
+						//Esse processo normalmente ocorre quando o usuario altera uma informação manualmente no json
+						//e a pagina ainda esta aberta, portanto é necessario atualizar os campos pois pode ocorrer
+						//do item que foi atualizado manualmente ser o mesmo do que estava previamente selecionado.
+						updateAllFields(element);
+					}
+				}
+			});
+			validateFields();
+		}
 	});
 
 	function launcherChanged() {
@@ -365,13 +385,11 @@
 				currentArgumentsList.push(data);
 			}
 		});
-		console.log(currentArgumentsList);
+
 		return currentArgumentsList;
 	}
 
-	function setTextArea(){
-		var input = document.getElementById('smartClientID');
-		var filePath = input.files[0].path;
+	function setTextArea(filePath){
 		var textArea = getElementSmartclientBin().value = filePath;
 		validateFields();
 	}

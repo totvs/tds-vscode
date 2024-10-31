@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import { LaunchConfig } from "../utils";
 import * as fs from "fs";
+import { processSelectResourceMessage } from "../utilities/processSelectResource";
 
 const compile = require("template-literal");
 
@@ -87,12 +88,12 @@ export default class LauncherConfiguration {
         launcherConfiguration = LaunchConfig.getLaunchers();
         currentPanel.webview.postMessage(launcherConfiguration);
       } catch (e) {
-        //Utils.logInvalidLaunchJsonFile(e);
         launcherConfiguration = {};
       }
 
       currentPanel.webview.onDidReceiveMessage((message) => {
-        switch (message.command) {
+        if (!processSelectResourceMessage(currentPanel.webview, message)) {
+          switch (message.command) {
           case "saveLaunchConfig":
             const launcherName = message.launcherName;
             if (launcherConfiguration !== undefined) {
@@ -136,6 +137,7 @@ export default class LauncherConfiguration {
               }
             }
             return;
+          }
         }
       }, undefined);
     }
@@ -154,6 +156,14 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
   const cssOnDiskPath = vscode.Uri.file(
     path.join(context.extensionPath, "resources", "css", "form.css")
   );
+  const chooseResourcePath = vscode.Uri.file(
+    path.join(
+      context.extensionPath,
+      "resources",
+      "script",
+      "chooseResource.js"
+    )
+  );
 
   const htmlContent = fs.readFileSync(
     htmlOnDiskPath.with({ scheme: "vscode-resource" }).fsPath
@@ -161,10 +171,17 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
   const cssContent = fs.readFileSync(
     cssOnDiskPath.with({ scheme: "vscode-resource" }).fsPath
   );
+  const chooseResourceContent = fs.readFileSync(
+    chooseResourcePath.with({ scheme: "vscode-resource" }).fsPath
+  );
 
   let runTemplate = compile(htmlContent);
 
-  return runTemplate({ css: cssContent, localize: localizeHTML });
+  return runTemplate({
+    css: cssContent,
+    localize: localizeHTML,
+    chooseResourceScript: chooseResourceContent
+   });
 }
 
 function updateElement(element: any, message: any) {
