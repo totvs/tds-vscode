@@ -4,6 +4,7 @@ import * as fs from "fs";
 import { languageClient } from "../extension";
 import { ServersConfig } from "../utils";
 import { ResponseError } from "vscode-languageclient";
+import { processSelectResourceMessage } from "../utilities/processSelectResource";
 
 const compile = require("template-literal");
 const localizeHTML = {
@@ -94,56 +95,57 @@ function initializePage(context: vscode.ExtensionContext) {
 
   currentPanel.webview.onDidReceiveMessage(
     (message) => {
-      //console.log('onDidReceiveMessage: ' + message.command);
-      switch (message.command) {
-        case "saveKey":
-          if (message.token) {
-            validateKey(currentPanel, message, true);
-          }
-          if (message.close) {
-            currentPanel.dispose();
-          }
-          break;
-        case "readFile":
-          const authorization: Authorization = ServersConfig.readCompileKeyFile(
-            message.path
-          );
-          if (authorization) {
-            let canOverride: boolean = authorization.permission === "1";
-            setCurrentKey(
-              currentPanel,
-              message.path,
-              authorization.id,
-              authorization.generation,
-              authorization.validation,
-              authorization.key,
-              canOverride
+        if (!processSelectResourceMessage(currentPanel.webview, message)) {
+          switch (message.command) {
+          case "saveKey":
+            if (message.token) {
+              validateKey(currentPanel, message, true);
+            }
+            if (message.close) {
+              currentPanel.dispose();
+            }
+            break;
+          case "readFile":
+            const authorization: Authorization = ServersConfig.readCompileKeyFile(
+              message.path
             );
-            validateKey(
-              currentPanel,
-              {
-                id: authorization.id.toUpperCase(),
-                generated: authorization.generation,
-                expire: authorization.validation,
-                overwrite: canOverride,
-                token: authorization.key.toUpperCase(),
-              },
-              false
-            );
-          }
-          break;
-        case "validateKey":
-          if (message.token) {
-            validateKey(currentPanel, message, false);
-          } else {
-            vscode.window.showErrorMessage(
-              "All parameters are required for valid key"
-            );
-          }
-          break;
-        case "cleanKey":
-          ServersConfig.deletePermissionsInfos();
-          break;
+            if (authorization) {
+              let canOverride: boolean = authorization.permission === "1";
+              setCurrentKey(
+                currentPanel,
+                message.path,
+                authorization.id,
+                authorization.generation,
+                authorization.validation,
+                authorization.key,
+                canOverride
+              );
+              validateKey(
+                currentPanel,
+                {
+                  id: authorization.id.toUpperCase(),
+                  generated: authorization.generation,
+                  expire: authorization.validation,
+                  overwrite: canOverride,
+                  token: authorization.key.toUpperCase(),
+                },
+                false
+              );
+            }
+            break;
+          case "validateKey":
+            if (message.token) {
+              validateKey(currentPanel, message, false);
+            } else {
+              vscode.window.showErrorMessage(
+                "All parameters are required for valid key"
+              );
+            }
+            break;
+          case "cleanKey":
+            ServersConfig.deletePermissionsInfos();
+            break;
+        }
       }
     },
     undefined,
@@ -265,6 +267,14 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
   const cssOnDIskPath = vscode.Uri.file(
     path.join(context.extensionPath, "resources", "css", "form.css")
   );
+  const chooseResourcePath = vscode.Uri.file(
+    path.join(
+      context.extensionPath,
+      "resources",
+      "script",
+      "chooseResource.js"
+    )
+  );
 
   const htmlContent = fs.readFileSync(
     htmlOnDiskPath.with({ scheme: "vscode-resource" }).fsPath
@@ -273,7 +283,15 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
     cssOnDIskPath.with({ scheme: "vscode-resource" }).fsPath
   );
 
+  const chooseResourceContent = fs.readFileSync(
+    chooseResourcePath.with({ scheme: "vscode-resource" }).fsPath
+  );
+
   let runTemplate = compile(htmlContent);
 
-  return runTemplate({ css: cssContent, localize: localizeHTML });
+  return runTemplate({
+    css: cssContent,
+    localize: localizeHTML,
+    chooseResourceScript: chooseResourceContent
+  });
 }
