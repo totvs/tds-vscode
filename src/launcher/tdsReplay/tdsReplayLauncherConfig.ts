@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import { LaunchConfig } from "../../utils";
 import * as fs from "fs";
+import { processSelectResourceMessage } from "../../utilities/processSelectResource";
 
 const compile = require("template-literal");
 
@@ -80,51 +81,52 @@ export default class LauncherConfiguration {
       }
 
       currentPanel.webview.onDidReceiveMessage((message) => {
-        switch (message.command) {
-          case "saveLaunchConfig":
-            const launcherName = message.launcherName;
-            if (launcherConfiguration !== undefined) {
-              let updated: boolean = false;
-              for (let i = 0; i < launcherConfiguration.length; i++) {
-                let configElement = launcherConfiguration[i];
-                if (configElement.name === launcherName) {
-                  updateElement(configElement, message);
-                  LaunchConfig.updateConfiguration(launcherName, configElement)
-                  updated = true;
-                  break;
+        if (!processSelectResourceMessage(currentPanel.webview, message)) {
+          switch (message.command) {
+            case "saveLaunchConfig":
+              const launcherName = message.launcherName;
+              if (launcherConfiguration !== undefined) {
+                let updated: boolean = false;
+                for (let i = 0; i < launcherConfiguration.length; i++) {
+                  let configElement = launcherConfiguration[i];
+                  if (configElement.name === launcherName) {
+                    updateElement(configElement, message);
+                    LaunchConfig.updateConfiguration(launcherName, configElement)
+                    updated = true;
+                    break;
+                  }
+                }
+                if (!updated) {
+                  //saveNewLauncher(message, launcherConfiguration);
+                  replayLaunchInfo.name = message.launcherName;
+                  updateElement(replayLaunchInfo, message);
+                  //launcherConfiguration.push(replayLaunchInfo);
+                  LaunchConfig.saveNewConfiguration(replayLaunchInfo)
                 }
               }
-              if (!updated) {
-                //saveNewLauncher(message, launcherConfiguration);
-                replayLaunchInfo.name = message.launcherName;
-                updateElement(replayLaunchInfo, message);
-                //launcherConfiguration.push(replayLaunchInfo);
-                LaunchConfig.saveNewConfiguration(replayLaunchInfo)
+
+              //Utils.persistLaunchInfo(launcherConfig); // XXX
+              // currentLaunchersInfoContent = fs.readFileSync(
+              //   Utils.getLaunchConfigFile(),
+              //   "utf8"
+              // );
+
+              if (currentPanel !== undefined) {
+                currentPanel.webview.postMessage(launcherConfiguration);
               }
-            }
 
-            //Utils.persistLaunchInfo(launcherConfig); // XXX
-            // currentLaunchersInfoContent = fs.readFileSync(
-            //   Utils.getLaunchConfigFile(),
-            //   "utf8"
-            // );
+              vscode.window.showInformationMessage(
+                vscode.l10n.t("Launcher Configuration saved.")
+              );
 
-            if (currentPanel !== undefined) {
-              currentPanel.webview.postMessage(launcherConfiguration);
-            }
-
-            vscode.window.showInformationMessage(
-              vscode.l10n.t("Launcher Configuration saved.")
-            );
-
-            if (currentPanel) {
-              if (message.close) {
-                currentPanel.dispose();
+              if (currentPanel) {
+                if (message.close) {
+                  currentPanel.dispose();
+                }
               }
-            }
-            return;
-        }
-      }, undefined);
+              return;
+          }
+}      }, undefined);
     }
   }
 }
@@ -142,6 +144,14 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
   const cssOnDIskPath = vscode.Uri.file(
     path.join(context.extensionPath, "resources", "css", "form.css")
   );
+  const chooseResourcePath = vscode.Uri.file(
+    path.join(
+      context.extensionPath,
+      "resources",
+      "script",
+      "chooseResource.js"
+    )
+  );
 
   const htmlContent = fs.readFileSync(
     htmlOnDiskPath.with({ scheme: "vscode-resource" }).fsPath
@@ -149,10 +159,17 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
   const cssContent = fs.readFileSync(
     cssOnDIskPath.with({ scheme: "vscode-resource" }).fsPath
   );
+  const chooseResourceContent = fs.readFileSync(
+    chooseResourcePath.with({ scheme: "vscode-resource" }).fsPath
+  );
 
   let runTemplate = compile(htmlContent);
 
-  return runTemplate({ css: cssContent, localize: localizeHTML });
+  return runTemplate({
+    css: cssContent,
+    localize: localizeHTML,
+    chooseResourceScript: chooseResourceContent
+  });
 }
 
 function updateElement(configElement: any, message: any) {
