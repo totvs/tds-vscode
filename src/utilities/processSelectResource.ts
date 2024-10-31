@@ -19,8 +19,22 @@ export function processSelectResourceMessage(webview: vscode.Webview, message: a
 		const filters = {};
 
 		if (selectionProps.accept) {
+			filters["Accept files"] = [];
+
 			selectionProps.accept.split(",").forEach((element: string) => {
-				filters[`*${element}`] = [`*${element}`];
+				let key: string;
+				let value: string;
+
+				if (element.startsWith(".")) {
+					key = `*${element}`;
+					value = `${element.substring(1)}`;
+				} else {
+					key = `${element}`;
+					value = `${element}`;
+				}
+
+				filters[key] = [value];
+				filters["Accept files"].push(...filters[key]);
 			});
 		}
 
