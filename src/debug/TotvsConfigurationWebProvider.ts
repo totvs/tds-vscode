@@ -36,11 +36,12 @@ export class TotvsConfigurationWebProvider
 
     const connectedServerItem: ServerItem = serverProvider.connectedServerItem;
     if (!config.smartclientUrl) {
-      config.smartclientUrl = `${connectedServerItem.address}:${connectedServerItem.port}/webapp/`;
-      if (connectedServerItem.secure) {
-        config.smartclientUrl = `https://${config.smartclientUrl}`;
+      // if address do not start with http:// or https:// add scheme
+      if (!connectedServerItem.address.startsWith("http://") && !connectedServerItem.address.startsWith("https://")) {
+        let scheme = connectedServerItem.secure ? "https" : "http";
+        config.smartclientUrl = `${scheme}://${connectedServerItem.address}:${connectedServerItem.port}/webapp/`;
       } else {
-        config.smartclientUrl = `http://${config.smartclientUrl}`;
+        config.smartclientUrl = `${connectedServerItem.address}:${connectedServerItem.port}/webapp/`;
       }
     }
 
