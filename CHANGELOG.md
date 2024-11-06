@@ -1,5 +1,13 @@
 # Changelog
 
+## Versão [2.0.11]
+
+### Correções
+
+#### Montagem de URL no Debug - <https://https//> [#1288](https://github.com/totvs/tds-vscode/issues/1288)
+
+Ao montar a URL para o Debug, o protocolo http/https era adicionado duplicado se o AppServer já estiver com o protocolo no endereço, o que gerava erro na depuração.
+
 ## Versão [2.0.10]
 
 ### Correções
