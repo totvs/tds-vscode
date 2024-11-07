@@ -32,7 +32,7 @@
 								type="file"
 								id="btn-FilePath"
 								name="btn-FilePath"
-								onchange='checkDir(event);'
+								onclick="fireChooseFile(event, 'Select Folder')"
 								webkitdirectory directory
 								/>
 							</div>
@@ -59,7 +59,6 @@
 	const vscode = acquireVsCodeApi();
 
 	function checkDir(selectedDir) {
-		var selectedDir = input.files[0].path;
 		vscode.postMessage({
 			command: 'checkDir',
 			selectedDir: selectedDir
@@ -95,8 +94,7 @@
 		switch (message.command) {
 			case "AFTER_SELECT_RESOURCE":
 				const files = message.data.files;
-
-				if (files.length > 0 {
+				if (files.length > 0) {
 					checkDir(files[0]);
 				}
 			case 'checkedDir':
