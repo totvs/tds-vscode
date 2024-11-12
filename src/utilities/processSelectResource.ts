@@ -59,7 +59,7 @@ export function processSelectResourceMessage(webview: vscode.Webview, message: a
 					data: {
 						target: selectionProps.target,
 						files: fileUris.map((uri: vscode.Uri)=> {
-							if (uri.path.startsWith("/")) {
+							if (uri.path.startsWith("/") && uri.path.search(":")==2) {
 								return uri.path.substring(1).replace(/\//g, "\\");
 							}
 
