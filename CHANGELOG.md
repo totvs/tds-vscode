@@ -8,6 +8,10 @@
 
 Ao montar a URL para o Debug, o protocolo http/https era adicionado duplicado se o AppServer já estiver com o protocolo no endereço, o que gerava erro na depuração.
 
+#### Geração de WS não está funcionando
+
+Ao tentar gerar um WS, o tds-vscode não está gerando o arquivo corretamente.
+
 ## Versão [2.0.10]
 
 ### Correções
