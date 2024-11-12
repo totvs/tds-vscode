@@ -12,6 +12,10 @@ Ao montar a URL para o Debug, o protocolo http/https era adicionado duplicado se
 
 Ao tentar gerar um WS, o tds-vscode não está gerando o arquivo corretamente.
 
+#### Inclusão de arquivos e diretórios falhando no Linux
+
+No Linux a seleção de arquivos e diretórios falhava devido a falta de uma '/' no início dos paths.
+
 ## Versão [2.0.10]
 
 ### Correções
