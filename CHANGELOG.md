@@ -4,7 +4,7 @@
 
 ### Correções
 
-#### Montagem de URL no Debug - <https://https//> [#1288](https://github.com/totvs/tds-vscode/issues/1288)
+#### Montagem de URL no Debug [#1288](https://github.com/totvs/tds-vscode/issues/1288)
 
 Ao montar a URL para o Debug, o protocolo http/https era adicionado duplicado se o AppServer já estiver com o protocolo no endereço, o que gerava erro na depuração.
 
@@ -12,9 +12,13 @@ Ao montar a URL para o Debug, o protocolo http/https era adicionado duplicado se
 
 Ao tentar gerar um WS, o tds-vscode não está gerando o arquivo corretamente.
 
-#### Inclusão de arquivos e diretórios falhando no Linux
+#### Inclusão de arquivos e diretórios falhando no Linux/Mac
 
 No Linux a seleção de arquivos e diretórios falhava devido a falta de uma '/' no início dos paths.
+
+#### Patch validation in progress [#1290](https://github.com/totvs/tds-vscode/issues/1290)
+
+Após a validação do patch a ação de aplicar o patch não estava sendo liberada.
 
 ## Versão [2.0.10]
 
