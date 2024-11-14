@@ -1,5 +1,13 @@
 # Changelog
 
+## Versão [2.0.next]
+
+### Melhoria
+
+#### Seleção de navegador Web para depuração [DTCLIENT01-5236](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-5236)
+
+Adicionado processo de seleção de navegador, quando não previamente configurado, para depuração Web (executor `totvs_language_web_debug`). O navegador selecionado será salvo nas configurações do usuário, sob a propriedade `totvsLanguageServer.web.navigator`.
+
 ## Versão [2.0.11]
 
 ### Correções
