@@ -75,7 +75,7 @@ function configureWebNavigator() {
               webNavigator = fileUris[0].path;
             }
 
-            cfg.update("web.navigator", webNavigator).then(() => {
+            cfg.update("web.navigator", webNavigator, vscode.ConfigurationTarget.Global).then(() => {
               window.showInformationMessage(
                 vscode.l10n.t("Configuration saves in the user area. Restart debugger process."),
                 { modal: true })
