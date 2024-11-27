@@ -135,3 +135,11 @@ Localize a definição do servidor na sessão `configurations` e adicione/modifi
   ...
 }
 ```
+
+### Configuração de extensões de arquivo
+
+Por padrão, o tds-vscode usa uma lista de extensões de arquivos pré definida permitidas para serem compiladas no RPO. Caso necessite compilar um arquivo com uma extensão diferente das pré definidas, é possível adicionar a extensão desse arquivo nesta lista, para que este arquivo seja compilado no RPO como um recurso.
+
+Se quiser desabilitar por completo este filtro de extensões de arquivos, apenas desmarque a opção `Enable Extension Filter`.
+
+![image](https://github.com/user-attachments/assets/1efc020d-aef8-44b7-98a5-de01ccd9a7e6)
