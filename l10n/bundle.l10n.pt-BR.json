@@ -324,7 +324,7 @@
   "Could not reconnect to server {0}": "Não foi possível se reconectar ao servidor",
   "Disconnecting from the server [{0}]": "Desconectando do servidor [{0}]",
   "Rename the server": "Renomear o Servidor",
-  "Serve saved. Name: {0}": "Servidor salvo. Nome: {0}",
+  "Server saved. Name: {0}": "Servidor salvo. Nome: {0}",
   "The server selected is already connected.": "O servidor selecionado já está conectado.",
   "Connecting to the server {0}": "Conectando-se ao servidor {0}",
   "Authenticating user [{0}] in server [{1}]": "Autenticação do usuário [{0}] no servidor [{1}]",
