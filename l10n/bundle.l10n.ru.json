@@ -28,7 +28,7 @@
   "Could not reconnect to server {0}": "Не удалось повторно подключиться к серверу {0}.",
   "Disconnecting from the server [{0}]": "Отключение от сервера [{0}]",
   "Rename the server": "Переименуйте сервер",
-  "Serve saved. Name: {0}": "Подача сохранена. Имя: {0}",
+  "Server saved. Name: {0}": "Подача сохранена. Имя: {0}",
   "The server selected is already connected.": "Выбранный сервер уже подключен.",
   "Connecting to the server {0}": "Подключение к серверу {0}",
   "Authenticating user [{0}] in server [{1}]": "Аутентификация пользователя [{0}] на сервере [{1}]",
