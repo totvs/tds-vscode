@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "2.0.9",
+  "version": "2.0.11",
   "publisher": "TOTVS",
   "preview": true,
   "author": {
@@ -22,7 +22,7 @@
     "logix"
   ],
   "engines": {
-    "vscode": "^1.73.0"
+    "vscode": "^1.85.2"
   },
   "icon": "icons/totvs-developer-studio.png",
   "categories": [
@@ -69,7 +69,7 @@
     "export-i18n": "gulp export-i18n",
     "i18n-import": "gulp i18n-import",
     "---RELEASE---": "",
-    "release": "npx standard-version --skip.changelog --release-as 2.0.0-RC17",
+    "release": "npx -y standard-version --skip.changelog --release-as 2.0.10-RC1",
     "tag": "git push --follow-tags origin dev2",
     "package": "gulp package",
     "package-prerelease": "gulp package-prerelease",
@@ -86,7 +86,7 @@
     "@material-ui/data-grid": "4.0.0-alpha.2",
     "@material-ui/lab": "^4.11.3-deprecations.1",
     "@totvs/tds-da": "^1.2.72",
-    "@totvs/tds-ls": "^2.0.17",
+    "@totvs/tds-ls": "^2.0.18",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.63.1",
     "@vscode/debugadapter": "^1.51.1",
@@ -1363,8 +1363,7 @@
         "configurationAttributes": {
           "launch": {
             "required": [
-              "program",
-              "smartclientUrl"
+              "program"
             ],
             "properties": {
               "program": {
@@ -1380,7 +1379,8 @@
               "smartclientUrl": {
                 "type": "string",
                 "description": "%tds.package.properties.smartclientUrl.description%",
-                "default": "http://localhost:8080"
+                "default": "http://localhost:8080/webapp/",
+                "deprecationMessage": "Enter only under guidance. Upon not informed, the URL will be assembled using the current server connection parameters."
               },
               "cwb": {
                 "type": "string",
@@ -1468,8 +1468,6 @@
             "name": "%tds.package.totvs_language_debug%",
             "program": "${command:AskForProgramName}",
             "cwb": "${workspaceFolder}",
-            "environment": "environment",
-            "smartclientUrl": "http://localhost:8080",
             "isMultiSession": true,
             "enableTableSync": true
           }
@@ -1485,11 +1483,10 @@
             "body": {
               "type": "totvs_language_web_debug",
               "request": "launch",
-              "name": "${1:Smart Client Web Debug%}",
+              "name": "${1:Smart Client Web Debug}",
               "program": "^\"\\${command:AskForProgramName}\"",
               "isMultiSession": true,
-              "enableTableSync": true,
-              "smartclientUrl": "${2:http://localhost:8080}"
+              "enableTableSync": true
             }
           }
         ]

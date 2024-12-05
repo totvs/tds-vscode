@@ -1,5 +1,53 @@
 # Changelog
 
+## Versão [2.0.next]
+
+### Melhoria
+
+#### Seleção de navegador Web para depuração [DTCLIENT01-5236](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-5236)
+
+Adicionado processo de seleção de navegador, quando não previamente configurado, para depuração Web (executor `totvs_language_web_debug`). O navegador selecionado será salvo nas configurações do usuário, sob a propriedade `totvsLanguageServer.web.navigator`.
+
+## Versão [2.0.11]
+
+### Correções
+
+#### Montagem de URL no Debug [#1288](https://github.com/totvs/tds-vscode/issues/1288)
+
+Ao montar a URL para o Debug, o protocolo http/https era adicionado duplicado se o AppServer já estiver com o protocolo no endereço, o que gerava erro na depuração.
+
+#### Geração de WS não está funcionando
+
+Ao tentar gerar um WS, o tds-vscode não está gerando o arquivo corretamente.
+
+#### Inclusão de arquivos e diretórios falhando no Linux/Mac
+
+No Linux a seleção de arquivos e diretórios falhava devido a falta de uma '/' no início dos paths.
+
+#### Patch validation in progress [#1290](https://github.com/totvs/tds-vscode/issues/1290)
+
+Após a validação do patch a ação de aplicar o patch não estava sendo liberada.
+
+## Versão [2.0.10]
+
+### Correções
+
+#### Aplicação de pacote de atualização(_patchs_) e outros (#1283 e outros)
+
+A  versão **1.95** do **VS-Code**, gerou efeitos colaterais em todos os processos que envolvam seleção de arquivo/diretório. Os processos foram revisados  de forma a atender essa necessidade.
+
+#### Mac Sequoia: apresenta erro ``SIGSEGV`` (#1270)
+
+Ao abrir um fonte em um Mac Sequoia, era apresentado um erro (``SIGSEGV``) e não é mais possível usar as funcionalidades nesse SO. Ocorrência corrigida no no Servidor de Linguagem, o qual causava o referido erro.
+
+### Depreciado
+
+#### Propriedade `SmartClientURL`
+
+Em executores de depuração web (`totvs_language_web_debug`), a propriedade `smartClientURL` foi depreciada e deve ser removida da definição do executor.
+
+Seu uso deve ser efetuado somente sob orientação. Caso não seja informado, a URL será montada utilizando os parâmetros atuais de conexão do servidor. Informe-a somente sob orientação.
+
 ## Versão [2.0.9]
 
 ### Melhorias

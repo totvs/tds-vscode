@@ -7,6 +7,7 @@ import {
   IApplyTemplateResult,
   sendApplyTemplateRequest,
 } from "../../protocolMessages";
+import { processSelectResourceMessage } from "../../utilities/processSelectResource";
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
@@ -55,7 +56,8 @@ export function openTemplateApplyView(
 
       currentPanel.webview.onDidReceiveMessage(
         (message) => {
-          switch (message.command) {
+          if (!processSelectResourceMessage(currentPanel.webview, message)) {
+            switch (message.command) {
             case "templateApply":
               templateApply(message.templateFile);
               currentPanel.dispose();
@@ -64,6 +66,7 @@ export function openTemplateApplyView(
               currentPanel.dispose();
               break;
           }
+        }
         },
         undefined,
         context.subscriptions
@@ -106,6 +109,14 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
       "table_materialize.js"
     )
   );
+  const chooseResourcePath = vscode.Uri.file(
+    path.join(
+      context.extensionPath,
+      "resources",
+      "script",
+      "chooseResource.js"
+    )
+  );
 
   const htmlContent = fs.readFileSync(
     htmlOnDiskPath.with({ scheme: "vscode-resource" }).fsPath
@@ -116,6 +127,9 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
   const scriptContent = fs.readFileSync(
     tableScriptPath.with({ scheme: "vscode-resource" }).fsPath
   );
+  const chooseResourceContent = fs.readFileSync(
+    chooseResourcePath.with({ scheme: "vscode-resource" }).fsPath
+  );
 
   let runTemplate = compile(htmlContent);
 
@@ -123,6 +137,7 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
     css: cssContent,
     localize: localizeHTML,
     script: scriptContent,
+    chooseResourceScript: chooseResourceContent
   });
 }
 

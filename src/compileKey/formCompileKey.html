@@ -34,8 +34,13 @@
 					<!--Compile Key File-->
 					<input class="inputText" type="text" id="compileKeyFile" name="compileKeyFile"
 						placeholder="Ex: C:/compileKey.aut..." onblur="readFile()">
-					<input class="inputText" type="file" accept='.aut' id="btn-File" name="btn-File"
-						for="compileKeyFile" onchange="readFile()" />
+					<input class="inputText"
+						type="file"
+						accept='.aut'
+						id="btn-File"
+						name="btn-File"
+						onclick="fireChooseFile(event, 'Authorization File')"
+						/>
 				</div>
 
 				<div class="wrap-input">
@@ -104,6 +109,8 @@
 </body>
 
 <script>
+	${ d.chooseResourceScript }
+
 	const vscode = acquireVsCodeApi();
 	var defaultID;
 
@@ -228,6 +235,15 @@
 		const message = event.data; // The JSON data our extension sent
 
 		switch (message.command) {
+			case "AFTER_SELECT_RESOURCE":
+				const files = message.data.files;
+
+				if (files.length>0) {
+					document.getElementById("compileKeyFile").value = files[0];
+					readFile()
+				}
+
+				break;
 			case 'setCurrentKey':
 				var path = document.getElementById('compileKeyFile');
 				var id = document.getElementById('KeyID');

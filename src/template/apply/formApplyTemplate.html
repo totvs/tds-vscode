@@ -28,8 +28,14 @@
 					<!--Template File-->
 					<input class="inputText" type="text" id="FileTemplate" name="FileTemplate"
 						placeholder="Ex: C:/totvs/templates/modelo.tpl...">
-					<input class="inputText" type="file" accept='TemplateFile/*.tpl' id="btn-File" name="btn-File"
-						onchange="setTextArea(event)" />
+					<input
+						class="inputText"
+						type="file"
+						accept='TemplateFile/*.tpl'
+						id="btn-File"
+						name="btn-File"
+						onclick="fireChooseFile(event, 'Template file')"
+						/>
 				</div>
 
 				<div class="wrap-submit">
@@ -46,7 +52,10 @@
 </body>
 
 <script>
+	${ d.chooseResourceScript }
+
 	${ d.script }
+
 	const vscode = acquireVsCodeApi();
 
 	function templateApply(close) {
@@ -67,6 +76,13 @@
 	window.addEventListener('message', event => {
 		const message = event.data; // The JSON data our extension sent
 		switch (message.command) {
+			case "AFTER_SELECT_RESOURCE":
+				const files = message.data.files;
+
+				if (files.length > 0) {
+					setTextArea(files[0]);
+				}
+
 			case 'setTemplatePath':
 				document.getElementById('FileTemplate').value = message.path;
 				break;
@@ -76,12 +92,8 @@
 		}
 	});
 
-	function setTextArea(event) {
-		const input = event.target;
-		const files = input.files;
-		if (files.length == 1) {
-			document.getElementById('FileTemplate').value = files[0].path;
-		}
+	function setTextArea(fullPath) {
+		document.getElementById('FileTemplate').value = fullPath;
 	}
 </script>
 
