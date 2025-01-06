@@ -8,6 +8,11 @@
 
 Adicionado processo de seleção de navegador, quando não previamente configurado, para depuração Web (executor `totvs_language_web_debug`). O navegador selecionado será salvo nas configurações do usuário, sob a propriedade `totvsLanguageServer.web.navigator`.
 
+#### Importação de lista de fontes para geração de pacotes de atualização (_patch_) [#1229](https://github.com/totvs/tds-vscode/issues/1229)
+
+Adicionado processo de importação de lista de fontes para geração de pacotes de atualização (_patch_).
+O arquivo é no formato TXT, onde cada linha é um arquivo ou diretório. Os caminhos podem ser absolutos ou relativos ao diretório do arquivo sendo importado.
+
 ## Versão [2.0.11]
 
 ### Correções
