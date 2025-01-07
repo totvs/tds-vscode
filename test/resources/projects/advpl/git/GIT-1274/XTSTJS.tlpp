@@ -1,0 +1,46 @@
+#INCLUDE 'TOTVS.CH'
+#INCLUDE "tlpp-core.th"
+
+Class xTesteJson
+
+	Data cJson
+	public Data jTeste
+	Data aTeste
+
+	public method new(cCpfCnpj) constructor
+
+EndClass
+
+Method new(cCpfCnpj as Character) Class xTesteJson
+	::aTeste := {}
+	::cJson := readJson('json_teste.json')
+
+	::jTeste := JsonObject():New()
+	::jTeste:FromJson(::cJson)
+
+	::aTeste := ::jTeste
+
+Return
+
+User Function XTSTJS
+	Local oObject
+
+	oObject := xTesteJson():New()
+
+Return
+
+static function readJson(cFile)
+	local oFile := FwFileReader():New('W:\ws_tds_vscode\tds-vscode-dev2\test\resources\projects\advpl\git\GIT-1274\' + cFile)
+	local cJson := ''
+
+	If(oFile:Open())
+		aLines := oFile:GetAllLines()
+		oFile:Close()
+		aEval(aLines, { |x| cJson += x })
+	else
+		conout("Erro ao abrir arquivo: " + oFile:oErroLog:cDescription + ": " + oFile:oErroLog:message)
+
+		return
+	EndIf
+
+return cJson

@@ -7,16 +7,21 @@ User Function TSTADAP
 	Local oFile     := Nil
 	Local aLines    := {}
 
-	oFile := FwFileReader():New('W:\ws_tds_vscode\tds-vscode\test\resources\projects\advpl\files\json\jsonteste.json')
+	oFile := FwFileReader():New('W:\ws_tds_vscode\tds-vscode-dev2\test\resources\projects\advpl\files\json\jsonteste.json')
 	If(oFile:Open())
 		aLines := oFile:GetAllLines()
 		oFile:Close()
 		aEval(aLines, { |x| cJson += x })
+	else
+		conout("Erro ao abrir arquivo: " + oFile:oErroLog:cDescription + ": " + oFile:oErroLog:message)
+
+		return
 	EndIf
 	jTeste:FromJson(cJson)
 
+
 	cJson := ""
-	oFile := FwFileReader():New('W:\ws_tds_vscode\tds-vscode\test\resources\projects\advpl\files\json\jsonteste2.json')
+	oFile := FwFileReader():New('W:\ws_tds_vscode\tds-vscode-dev2\test\resources\projects\advpl\files\json\jsonteste2.json')
 	If(oFile:Open())
 		aLines := oFile:GetAllLines()
 		oFile:Close()
@@ -24,4 +29,6 @@ User Function TSTADAP
 	EndIf
 	jTeste2:FromJson(cJson)
 
+	private X__TDS___ARRAY := array(2)
+	aEval(X__TDS___ARRAY, {|e, i| conout(i, e, jTeste[i]), X__TDS___ARRAY[i] := jTeste[i]})
 Return
