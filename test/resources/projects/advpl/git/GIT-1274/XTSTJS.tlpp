@@ -3,22 +3,36 @@
 
 Class xTesteJson
 
-	Data cJson
-	public Data jTeste
+	//Data cJson
+	Data jTeste
+	Data jTeste2
 	Data aTeste
 
-	public method new(cCpfCnpj) constructor
+	//public method new(cCpfCnpj) constructor
+	public method new() constructor
 
 EndClass
 
-Method new(cCpfCnpj as Character) Class xTesteJson
-	::aTeste := {}
-	::cJson := readJson('json_teste.json')
+//Method new(cCpfCnpj as Character) Class xTesteJson
+Method new() Class xTesteJson
+	local i
+	//::cJson := readJson('json_teste.json')
+	private cJson := readJson('json_teste.json')
 
 	::jTeste := JsonObject():New()
-	::jTeste:FromJson(::cJson)
+	//::jTeste:FromJson(::cJson)
+	::jTeste:FromJson(cJson)
 
-	::aTeste := ::jTeste
+	::aTeste := {}
+	for i := 1 to len(::jTeste)
+		aAdd(::aTeste, ::jTeste[i])
+	next
+
+	cJson := readJson('json_teste2.json')
+
+	::jTeste2 := JsonObject():New()
+	//::jTeste2:FromJson(::cJson)
+	::jTeste2:FromJson(cJson)
 
 Return
 

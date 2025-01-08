@@ -3,9 +3,11 @@
 User Function TSTADAP
 	Local jTeste    := JsonObject():New()
 	Local jTeste2   := JsonObject():New()
+	Local jTeste3   := JsonObject():New()
 	Local cJson     := ''
 	Local oFile     := Nil
 	Local aLines    := {}
+	local i
 
 	oFile := FwFileReader():New('W:\ws_tds_vscode\tds-vscode-dev2\test\resources\projects\advpl\files\json\jsonteste.json')
 	If(oFile:Open())
@@ -29,6 +31,20 @@ User Function TSTADAP
 	EndIf
 	jTeste2:FromJson(cJson)
 
-	private X__TDS___ARRAY := array(2)
-	aEval(X__TDS___ARRAY, {|e, i| conout(i, e, jTeste[i]), X__TDS___ARRAY[i] := jTeste[i]})
+	aLines := {}
+	for i := 1 to len(jTeste)
+		aAdd(aLines, jTeste[i])
+	next
+
+	cJson := ""
+	oFile := FwFileReader():New('W:\ws_tds_vscode\tds-vscode-dev2\test\resources\projects\advpl\files\json\jsonteste3.json')
+	If(oFile:Open())
+		aLines := oFile:GetAllLines()
+		oFile:Close()
+		aEval(aLines, { |x| cJson += x })
+	EndIf
+	jTeste3:FromJson(cJson)
+
+	//private X__TDS___ARRAY := array(2)
+	//aEval(X__TDS___ARRAY, {|e, i| conout(i, e, jTeste[i]), X__TDS___ARRAY[i] := jTeste[i]})
 Return
