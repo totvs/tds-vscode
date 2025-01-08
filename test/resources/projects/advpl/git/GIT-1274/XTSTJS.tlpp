@@ -33,7 +33,7 @@ Method new() Class xTesteJson
 	::jTeste2 := JsonObject():New()
 	//::jTeste2:FromJson(::cJson)
 	::jTeste2:FromJson(cJson)
-
+ 
 Return
 
 User Function XTSTJS
