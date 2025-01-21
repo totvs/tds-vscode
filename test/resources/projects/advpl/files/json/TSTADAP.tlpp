@@ -4,10 +4,14 @@ User Function TSTADAP
 	Local jTeste    := JsonObject():New()
 	Local jTeste2   := JsonObject():New()
 	Local jTeste3   := JsonObject():New()
+	local jTeste4   := JsonObject():New()
 	Local cJson     := ''
 	Local oFile     := Nil
 	Local aLines    := {}
 	local i
+
+	cJson := '{"date":"13/01/2025","time":"11:18:35","servers":[{"server":"127.0.0.1:5001","connections":"0","quarantine":"-","standby":"0","usuarios":"0","threads":"17","memoria":"56020","cpu":"1"},{"server":"127.0.0.1:5002","connections":"0","quarantine":"-","standby":"0","usuarios":"0","threads":"17","memoria":"56356","cpu":"1"}],"total":{"sessoes":"0","usuarios":"0"}}'
+	jTeste4:FromJson(cJson)
 
 	oFile := FwFileReader():New('W:\ws_tds_vscode\tds-vscode-dev2\test\resources\projects\advpl\files\json\jsonteste.json')
 	If(oFile:Open())
