@@ -106,11 +106,15 @@ A definição de executores encontra-se no arquivo `.vscode/launch.json` que, no
 > A propriedade `smartclientUrl` passa a ser considerada obsoleta. Informe-a  apenas sob orientação.
 > Caso não seja informada, a URL será montada utilizando os parâmetros atuais de conexão do servidor.
 
-No caso de efetuar uma depuração via `SmartClient Html`, é necessário informar qual o navegador web será utilizado. Configure o caminho completo do navegador web através das preferências de usuário, clicando em `Arquivo > Preferências > Configurações` e procure por `Web: Navigator`. Note que existem duas seções distintas, a de `Usuário` e a de `Workspace`. Aconselhamos a utilizar as configurações de `Usuário` que será utilizada por todas as `Workspaces` do usuário. Caso seja necessária uma configuração específica e diferente em uma `Workspace`, configure na seção `Workspace` e neste caso apenas esta `Workspace` será afetada.
+Ao iniciar a depuração web, se a chaves `totvsLanguageServer.web.navigator` (ou `webNavigator`) não seja informada, será utilizado o navegador padrão do sistema operacional.
+
+Caso queira usar um navegador específico, é necessário informar qual será utilizado. Configure o caminho completo do navegador web através das preferências de usuário, clicando em `Arquivo > Preferências > Configurações` e procure por `Web: Navigator`. Note que existem duas seções distintas, a de `Usuário` e a de `Workspace`. Aconselhamos a utilizar as configurações de `Usuário` que será utilizada por todas as `Workspaces` do usuário. Caso seja necessária uma configuração específica e diferente em uma `Workspace`, configure na seção `Workspace` e neste caso apenas esta `Workspace` será afetada.
 
 ![Web Navigator](images/web-navigator.png)
 
-Caso queira modificar o comportamento do navegador no momento da sua inicialização, você pode informar uma lista de argumentos que serão passados para o navegador via linha de comandos. Por exemplo, para forçar a abertura de uma nova janela no `FireFox`, informe na lista `Web: Navigator Arguments` com o valor `["-new-window"]`. Para maiores detalhes, consulte a documentação do seu navegador.
+Caso queira modificar o comportamento do navegador no momento da sua inicialização, você pode informar uma lista de argumentos que serão passados para o navegador via linha de comandos. Por exemplo, para forçar a abertura de uma nova janela no `FireFox`, informe na lista `Web: Navigator Arguments` (ou `web.arguments` no executor) com o valor `["-new-window"]`. Para maiores detalhes, consulte a documentação do seu navegador.
+
+> Requer que a chave `totvsLanguageServer.web.navigator` ou `webNavigator` seja informada.
 
 ![Web Arguments](images/web-arguments.png)
 
