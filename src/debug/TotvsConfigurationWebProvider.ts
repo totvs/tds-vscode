@@ -20,13 +20,8 @@ export class TotvsConfigurationWebProvider
 
   protected finalize(config: DebugConfiguration) {
     const cfg = vscode.workspace.getConfiguration("totvsLanguageServer");
-    let webNavigator: string = cfg.get("web.navigator") || "";
-    const webNavigatorArgs: string[] = cfg.get("web.arguments") || [];
-
-    if (webNavigator === "") {
-      configureWebNavigator();
-      return undefined; //cancela a execução
-    }
+    let webNavigator: string = config["webNavigator"] || cfg.get("web.navigator") || "";
+    const webNavigatorArgs: string[] = config["web.arguments"] || cfg.get("web.arguments") || [];
 
     config.webNavigator = webNavigator;
     config.webNavigatorArgs = webNavigatorArgs;
@@ -48,42 +43,5 @@ export class TotvsConfigurationWebProvider
 
     return config;
   }
-}
-
-function configureWebNavigator() {
-  window.showErrorMessage(
-    vscode.l10n.t("Parameter WebNavigator not informed."),
-    { modal: true },
-    vscode.l10n.t("Select Browser")
-  ).then(async (response: string) => {
-    if (response && response == vscode.l10n.t("Select Browser")) {
-      const options: vscode.OpenDialogOptions = {
-        canSelectFiles: true,
-        title: vscode.l10n.t("Select Browser"),
-        openLabel: vscode.l10n.t("Select Browser")
-      };
-
-      vscode.window.showOpenDialog(options)
-        .then((fileUris: vscode.Uri[]) => {
-          if (fileUris && fileUris.length > 0) {
-            const cfg = vscode.workspace.getConfiguration("totvsLanguageServer");
-            let webNavigator: string = "";
-
-            if (fileUris[0].path.startsWith("/") && fileUris[0].path.search(":") == 2) {
-              webNavigator = fileUris[0].path.substring(1).replace(/\//g, "\\");
-            } else {
-              webNavigator = fileUris[0].path;
-            }
-
-            cfg.update("web.navigator", webNavigator, vscode.ConfigurationTarget.Global).then(() => {
-              window.showInformationMessage(
-                vscode.l10n.t("Configuration saves in the user area. Restart debugger process."),
-                { modal: true })
-            });
-          }
-        })
-    }
-  });
-
 }
 

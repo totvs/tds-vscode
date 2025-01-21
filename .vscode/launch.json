@@ -19,9 +19,9 @@
 			"name": "Extension",
 			"runtimeExecutable": "${execPath}",
 			"args": [
+				"${workspaceFolder}/test/resources/projects/advpl",
 				"--extensionDevelopmentPath=${workspaceFolder}",
-				"--inspect",
-				"${workspaceFolder}/test/resources/projects/advpl?files/tlpp"
+				"--inspect"
 			],
 			"outFiles": [
 				"${workspaceFolder}/out/**/*.js"
@@ -38,8 +38,9 @@
 			"name": "Extension WithoutCompile",
 			"runtimeExecutable": "${execPath}",
 			"args": [
-				"${workspaceFolder}/test/resources/projects/advpl/files/tlpp",
-				"--extensionDevelopmentPath=${workspaceFolder}"
+				"${workspaceFolder}/test/resources/projects/advpl",
+				"--extensionDevelopmentPath=${workspaceFolder}",
+				"--inspect"
 			],
 			"outFiles": [
 				"${workspaceFolder}/out/**/*.js"

@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "publisher": "TOTVS",
   "preview": true,
   "author": {
@@ -45,7 +45,7 @@
     "compile": "npm-run-all compile:*",
     "compile:parse_4gl": "pegjs -o ./src/parser/4gl-parser.js ./syntaxes/4gl.pegjs",
     "compile:extension": "tsc -p ./src",
-    "compile:views": "webpack --mode development",
+    "compile:views": "webpack --mode production",
     "compile:views-production": "webpack --mode production",
     "compile:esbuild": "node ./esbuild.js",
     "compile-test": "tsc -p ./test",
@@ -199,7 +199,7 @@
       },
       {
         "id": "terminal.ansiGreen",
-        "description": "Cor da identifcação do nível de mensagem 'Informação'.",
+        "description": "Cor da identificação do nível de mensagem 'Informação'.",
         "defaults": {
           "dark": "#5aa85a",
           "light": "#5aa85a",
@@ -208,7 +208,7 @@
       },
       {
         "id": "terminal.ansiYellow",
-        "description": "Cor da identifcação do nível de mensagem 'Aviso'.",
+        "description": "Cor da identificação do nível de mensagem 'Aviso'.",
         "defaults": {
           "dark": "#d8d53c",
           "light": "#d8d53c",
@@ -217,7 +217,7 @@
       },
       {
         "id": "terminal.ansiRed",
-        "description": "Cor da identifcação do nível de mensagem 'Erro'.",
+        "description": "Cor da identificação do nível de mensagem 'Erro'.",
         "defaults": {
           "dark": "#eb1313",
           "light": "#eb1313",
@@ -226,7 +226,7 @@
       },
       {
         "id": "terminal.ansiCyan",
-        "description": "Cor da identifcação da hora do evento.",
+        "description": "Cor da identificação da hora do evento.",
         "defaults": {
           "dark": "#11c9cf",
           "light": "#11c9cf",
@@ -1082,8 +1082,7 @@
         "configurationAttributes": {
           "launch": {
             "required": [
-              "program",
-              "smartclientBin"
+              "program"
             ],
             "properties": {
               "program": {
@@ -1397,6 +1396,14 @@
                 "description": "%tds.package.properties.webNavigator.description.web%",
                 "default": ""
               },
+              "web.arguments": {
+                "type": "array",
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "description": "%tds.package.web.arguments%"
+              },
               "enableMultiThread": {
                 "type": "boolean",
                 "description": "%tds.package.properties.enableMultiThread.description%",
@@ -1457,6 +1464,11 @@
                 "default": [
                   "${command:AskForProgramArguments}"
                 ]
+              },
+              "waitForAttach": {
+                "type": "number",
+                "description": "%tds.package.properties.waitForAttach.description%",
+                "default": 0
               }
             }
           }
