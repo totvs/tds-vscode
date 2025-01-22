@@ -12,6 +12,8 @@ Caso seja informado `totvsLanguageServer.web.arguments`, a especificação do na
 
 Caso as chaves `webNavigator` e/ou `web.arguments` sejam informadas no executor da depuração, estas se sobreporão ao definido em `totvsLanguageServer.web.navigator` e `totvsLanguageServer.web.arguments` respectivamente.
 
+> Linux: Antes de utilizar, verifique se `xdg-open` está instalado.
+
 #### Importação de lista de fontes para geração de pacotes de atualização (_patch_) [#1229](https://github.com/totvs/tds-vscode/issues/1229)
 
 Adicionado processo de importação de lista de fontes para geração de pacotes de atualização (_patch_).
