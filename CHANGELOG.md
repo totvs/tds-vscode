@@ -29,7 +29,7 @@ Adicionado tratamento de propriedades do tipo JSon, com conteúdo *array*.
 
 #### \[LINTER] - Problema com fontes que no seu path tem acentuação [#1263](https://github.com/totvs/tds-vscode/issues/1263)
 
-Adicionado tratamento para evitar dupla codificação nos nomes de arquivos (MacOS e Linux).
+Adicionado tratamento para correto tratamento de caminhos com acentuação (MacOS e Linux).
 
 ## Versão [2.0.11]
 
