@@ -68,6 +68,8 @@ import { registerWorkspace } from "./workspace";
 import { sendTelemetry } from "./protocolMessages";
 import { registerXRef } from "./xreferences";
 import { tlppTools } from "./tlpp-tools/tlppTools";
+import { AuthSettings } from "./authSettings";
+import { openExternalWebMonitorView, openMonitorView } from "./web-monitor";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -417,6 +419,25 @@ export function activate(context: ExtensionContext) {
     )
   );
 
+  //monitor
+  context.subscriptions.push(
+    vscode.commands.registerCommand("tds-monitor.open-monitor-view", () => {
+      vscode.window.setStatusBarMessage(
+        `$(gear~spin) ${vscode.l10n.t("Starting monitor...")}`,
+        Promise.resolve(openMonitorView(context))
+      );
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("tds-monitor.open-web-monitor-view", () => {
+      vscode.window.setStatusBarMessage(
+        `$(gear~spin) ${vscode.l10n.t("Starting Web monitor...")}`,
+        Promise.resolve(openExternalWebMonitorView(context))
+      );
+    })
+  );
+
   //rpo log
   context.subscriptions.push(
     vscode.commands.registerCommand(
@@ -598,6 +619,8 @@ export function activate(context: ExtensionContext) {
     }
   };
 
+  // Initialize AuthSettings
+  AuthSettings.init(context);
   window.showInformationMessage('"TDS-VSCode" is ready.');
 
   return exportedApi;

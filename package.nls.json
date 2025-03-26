@@ -128,6 +128,7 @@
   "tds.package.tdsreplay.configure.launcher.description": "Page to help on the TDS Replay launch configurations.",
   "tds.package.tdsreplay.debug": "TDS Replay Debug",
   "tds-monitor.open-monitor-view": "Open monitor view",
+  "tds-monitor.open-web-monitor-view": "Open Web monitor view",
   "tds.package.workspaceServerConfig": "Use the workspace to maintain server settings.",
   "tds.package.OpenTimeLineWebview": "Open TimeLine Webview",
   "tds.package.apply.formatting": "Applies formatting to TOTVS source files and their variations.",

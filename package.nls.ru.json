@@ -131,6 +131,7 @@
 	"tds.package.tdsreplay.configure.launcher.description": "Страница справки по настройкам запуска TDS Replay.",
 	"tds.package.tdsreplay.debug": "Отладка TDS Replay",
 	"tds-monitor.open-monitor-view": "Открыть просмотр монитора",
+	"tds-monitor.open-web-monitor-view": "Открыть вид веб-монитора",
 	"tds.package.workspaceServerConfig": "Использовать рабочее пространство для сохранения настроек сервера.",
 	"tds.package.OpenTimeLineWebview": "Открыть веб-просмотр графика",
 	"tds.package.apply.formatting": "Применяет форматирование к исходным файлам TOTVS и их вариантам.",

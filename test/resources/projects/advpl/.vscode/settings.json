@@ -2,27 +2,17 @@
     "totvsLanguageServer.welcomePage": false,
     "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes;m:\\protheus\\includes_tlpp",
     "totvsLanguageServer.editor.show.notification": "all",
-    "totvsLanguageServer.trace.debug": "off",
-    "totvsLanguageServer.trace.server": "off",
+    "totvsLanguageServer.trace.debug": "verbose",
+    "totvsLanguageServer.trace.server": "verbose",
     "totvsLanguageServer.launch.args": [
+        "--wait-for-attach=30",
         "--log-file=totvsls.log",
         "--verbose",
-        "--wait-for-attach=20",
         "--debug-ls",
-        "--trace-compile",
         "--log-file-append=totvsls2.log"
     ],
     "totvsLanguageServer.askCompileResult": false,
     "totvsLanguageServer.askEncodingChange": false,
     "totvsLanguageServer.editor.autocomplete": "Off",
-    "xeditor.semanticTokenColorCustomizations": {
-        "[Default Dark+]": {
-            "enabled": true,
-            "rules": {
-                "keyword": "#ff0000"
-            }
-        }
-    },
-    "totvsLanguageServer.compilation.generatePpoFile": false,
     "totvsLanguageServer.workspaceServerConfig": true
 }
