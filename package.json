@@ -1031,6 +1031,15 @@
         }
       },
       {
+        "command": "tds-monitor.open-web-monitor-view",
+        "title": "%tds-monitor.open-web-monitor-view%",
+        "category": "TOTVSMonitor",
+        "icon": {
+          "light": "resources/light/monitor.png",
+          "dark": "resources/dark/monitor.png"
+        }
+      },
+      {
         "command": "totvs-developer-studio.open-loadrpoinfo-view",
         "title": "%totvs-developer-studio.open-rpoinfo%",
         "category": "TOTVS",
@@ -1606,6 +1615,11 @@
           "group": "AAtotvsServer@3"
         },
         {
+          "command": "tds-monitor.open-web-monitor-view",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "AAtotvsServer@3"
+        },
+        {
           "command": "totvs-developer-studio.patchGenerate.fromRPO",
           "when": "view == totvs_server && viewItem == serverItem",
           "group": "CtotvsPatch@1"
@@ -1714,6 +1728,11 @@
         },
         {
           "command": "tds-monitor.open-monitor-view",
+          "when": "view == totvs_server",
+          "group": "navigation"
+        },
+        {
+          "command": "tds-monitor.open-web-monitor-view",
           "when": "view == totvs_server",
           "group": "navigation"
         },
