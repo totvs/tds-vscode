@@ -139,13 +139,14 @@ export default function PatchEditorView() {
   ];
 
   return (
-    <TdsPage>
+    <TdsPage id="pathEditorView">
       {!pathInfo ?
         <TdsProgressRing size="full" />
         : <TdsForm
           key="form"
+          name="frmPathEditor"
           onSubmit={methods.handleSubmit(() => { })}
-          methods={methods}
+
           description={tdsVscode.l10n.t("**File:** `{0}` **Size:** `~{2} KBytes ({1} Bytes)`", methods.getValues("filename"),
             tdsVscode.l10n.formatNumber(methods.getValues("lengthFile"), "int"),
             tdsVscode.l10n.formatNumber(methods.getValues("lengthFile") / 1024, "float", 1))

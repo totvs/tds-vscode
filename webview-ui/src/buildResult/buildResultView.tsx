@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import "./buildResult.css";
-import { IFormAction, TTdsDataGridColumnDef, TdsDataGrid, TdsFormActionsEnum, TdsPage, getCloseActionForm, getDefaultActionsForm } from "@totvs/tds-webtoolkit";
+import { TdsFormAction, TTdsDataGridColumnDef, TdsDataGrid, TdsPage, getCloseActionForm } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
@@ -128,23 +128,23 @@ export default function BuildResultView() {
   }
 
   //const model: TBuildResultModel = methods.getValues();
-  const formActions: IFormAction[] = [getCloseActionForm()];
+  const formActions: TdsFormAction[] = [getCloseActionForm()];
   formActions.push({
     id: "btnExportTxt",
     caption: tdsVscode.l10n.t("Export"),
     isProcessRing: true,
     type: "button",
-    onClick: () => {
-      sendExport(methods.getValues());
-    }
+    // onClick: () => {
+    //   sendExport(methods.getValues());
+    // }
   });
 
   return (
-    <TdsPage>
+    <TdsPage id="buildResultView">
       {model &&
         <TdsForm<TBuildResultModel>
-          methods={methods}
-          onSubmit={onSubmit}
+          name="frmBuildResult"
+          onSubmit={methods.handleSubmit(onSubmit)}
           actions={formActions}
           description={
             tdsVscode.l10n.t("Compilation results made at [{0}]", tdsVscode.l10n.formatDate(model.timeStamp)) +

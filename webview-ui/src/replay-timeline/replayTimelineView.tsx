@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import "./replayTimeline.css";
-import { IFormAction, TdsDataGrid, TdsDialog, TdsPage, TdsPaginator, TdsProgressRing, TdsTable, tdsVscode, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
+import { TdsFormAction, TdsDataGrid, TdsDialog, TdsPage, TdsPaginator, TdsProgressRing, TdsTable, tdsVscode, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
@@ -181,23 +181,23 @@ export default function ReplayTimelineView() {
     }
   };
 
-  const actions: IFormAction[] = [
+  const actions: TdsFormAction[] = [
     {
       id: "btnShowSources",
       caption: tdsVscode.l10n.t("Sources"),
       type: "button",
-      onClick: () => {
-        sendShowSources(methods.getValues());
-      }
+      // onClick: () => {
+      //   sendShowSources(methods.getValues());
+      // }
     },
     {
       id: "chkIgnoreNotFound",
       caption: tdsVscode.l10n.t("Ignore Sources not found"),
       type: "checkbox",
-      onClick: () => {
-        console.log("chkIgnoreNotFound");
-        sendIgnoreSourcesNotFound({ ...methods.getValues(), ignoresSourcesNotFound: !methods.getValues("ignoresSourcesNotFound") });
-      }
+      // onClick: () => {
+      //   console.log("chkIgnoreNotFound");
+      //   sendIgnoreSourcesNotFound({ ...methods.getValues(), ignoresSourcesNotFound: !methods.getValues("ignoresSourcesNotFound") });
+      // }
     }
   ]
 
@@ -253,44 +253,53 @@ export default function ReplayTimelineView() {
     )
   }
 
-  const dlgSourceActions: IFormAction[] = [
+  const dlgSourceActions: TdsFormAction[] = [
     {
       id: "btnCloseDialog",
       caption: tdsVscode.l10n.t("Close"),
       type: "button",
-      onClick: () => {
-        setOpenSourceDialog(false)
-      }
     },
     {
       id: "btnApplyDialog",
       caption: tdsVscode.l10n.t("Apply"),
       type: "button",
-      onClick: () => {
-        sendShowSources(methods.getValues());
-        setOpenSourceDialog(false)
-      }
     },
     {
       id: "btnResetDialog",
       caption: tdsVscode.l10n.t("Reset"),
       type: "button",
-      onClick: () => {
-        methods.getValues("sources").selected = [];
-      }
     },
 
   ];
 
   return (
-    <TdsPage>
+    <TdsPage id="replayTimelineView">
       {!timeline || timeline.length == 0
         ? <TdsProgressRing size="full" message={message} value={percent} />
         : <TdsForm<TReplayTimelineModel>
           id="frmReplayTimeline"
-          methods={methods}
-          onSubmit={onSubmit}
+          onSubmit={methods.handleSubmit(onSubmit)}
           actions={actions}
+          onActionEvent={(action: TdsFormAction) => {
+            switch (action.id) {
+              case "btnCloseDialog":
+                setOpenSourceDialog(false)
+                break;
+
+              case "btnApplyDialog":
+                sendShowSources(methods.getValues());
+                setOpenSourceDialog(false)
+                break;
+
+              case "btnResetDialog":
+                methods.getValues("sources").selected = [];
+                break;
+
+              default:
+                break;
+            }
+
+          }}
         >
           <TdsTable
             id={"tblTimeLine"}
@@ -299,7 +308,7 @@ export default function ReplayTimelineView() {
               { type: "string", name: "source", label: tdsVscode.l10n.t("Source"), width: "*fr" },
               { type: "number", name: "line", label: tdsVscode.l10n.t("Line"), width: "2fr" }
             ]}
-            dataSource={timeline}
+            rows={timeline}
             highlightRows={[paginator.currentLine]}
             highlightGroups={{
               "tds-source-not-found": timeline
@@ -339,8 +348,8 @@ export default function ReplayTimelineView() {
         }}
       >
         <TdsForm<TReplayTimelineModel>
-          methods={methods}
-          onSubmit={onSubmit}
+          id="frmReplayTimeline2"
+          onSubmit={methods.handleSubmit(onSubmit)}
           actions={dlgSourceActions}
         >
           {buildShowSourcesDialog()}

@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import "./repositoryLog.css";
-import { IFormAction, TdsDataGrid, TdsLabelField, TdsPage, TdsProgressRing, TdsTreeItem, TdsTreeView, getCloseActionForm } from "@totvs/tds-webtoolkit";
+import { TdsFormAction, TdsDataGrid, TdsLabelField, TdsPage, TdsProgressRing, getCloseActionForm } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
@@ -94,14 +94,15 @@ export default function RepositoryLogView() {
   }, []);
 
   const model: TRepositoryLogModel = methods.getValues();
-  const formActions: IFormAction[] = [getCloseActionForm()];
+  const formActions: TdsFormAction[] = [getCloseActionForm()];
 
   return (
-    <TdsPage>
+    <TdsPage id={"repositoryLogView"}>
       <TdsForm<TRepositoryLogModel>
-        onSubmit={onSubmit}
-        methods={methods}
-        actions={formActions}>
+        name="frmRepositoryLogView"
+        onSubmit={methods.handleSubmit(onSubmit)}
+        actions={formActions}
+      >
         {rpoInfoWatch
           ? <>
             <section className="tds-row-container">
@@ -142,7 +143,7 @@ export default function RepositoryLogView() {
                   label={tdsVscode.l10n.t("Applied in")}
                   className="tds-bold"
                 />
-                <TdsTreeView
+                {/* <TdsTree
                   className="tds-tree-view"
                   key={"tree_monthly"}
                 >
@@ -180,7 +181,7 @@ export default function RepositoryLogView() {
                         )
                       })
                   }
-                </TdsTreeView>
+                </TdsTree> */}
               </section>
 
               {currentPatch !== undefined

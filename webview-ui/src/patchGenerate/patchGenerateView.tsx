@@ -13,9 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
-
 import "./patchGenerate.css";
 import React from "react";
 import { TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsLabelField, TdsPage, TdsProgressRing, tdsVscode } from "@totvs/tds-webtoolkit";
@@ -23,35 +20,12 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsTextField, setDataModel, setErrorModel, TdsSelectionFolderField } from "@totvs/tds-webtoolkit";
 import { TGeneratePatchFromRpoModel, TInspectorObject, PatchGenerateCommandEnum, EMPTY_GENERATE_PATCH_FROM_RPO_MODEL } from "@tds-shared/index";
+import { useFieldArray } from 'react-hook-form';
 
 enum ReceiveCommandEnum {
-  MOVE_TO_LEFT = "moveToLeft",
-  MOVE_TO_RIGHT = "moveToRight"
 }
 
 type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TGeneratePatchFromRpoModel>;
-
-function sendToRight(model: any, selectedObject: TInspectorObject[]) {
-  tdsVscode.postMessage({
-    command: PatchGenerateCommandEnum.MoveElements,
-    data: {
-      model: model,
-      selectedObject: selectedObject,
-      direction: "right"
-    }
-  });
-}
-
-function sendToLeft(model: any, selectedObject: TInspectorObject[]) {
-  tdsVscode.postMessage({
-    command: PatchGenerateCommandEnum.MoveElements,
-    data: {
-      model: model,
-      selectedObject: selectedObject,
-      direction: "left"
-    }
-  });
-}
 
 interface IPatchGenerateViewProps {
   isServerP20OrGreater: boolean;
@@ -67,12 +41,22 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
   const methods = useForm<TGeneratePatchFromRpoModel>({
     defaultValues: EMPTY_GENERATE_PATCH_FROM_RPO_MODEL(),
     mode: "all",
-    // values: props.
   })
-  const watchObjectsLeft: any = methods.watch("objectsLeft");
+  //const watchObjectsLeft: any = methods.watch("objectsLeft");
   //const watchObjectsRight: any = methods.watch("objectsRight");
   // const [objectsLeft, setObjectsLeft]: any = React.useState<TInspectorObject[]>([]);
   // const [objectsRight, setObjectsRight]: any = React.useState<TInspectorObject[]>([]);
+  const { fields: fieldsLeft, insert: insertLeft, remove: removeLeft } = useFieldArray(
+    {
+      control: methods.control,
+      name: "objectsLeft"
+    });
+
+  const { fields: fieldsRight, append: appendRight, remove: removeRight } = useFieldArray(
+    {
+      control: methods.control,
+      name: "objectsRight"
+    });
 
   const onSubmit: SubmitHandler<TGeneratePatchFromRpoModel> = (data) => {
     data.objectsRight = data.objectsRight.filter((object: TInspectorObject) => object.source.length > 0);
@@ -183,7 +167,6 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
             array[index].checked = false;
           });
 
-          console.log(model);
           setDataModel(methods.setValue, model);
           setErrorModel(methods.setError, errors as any);
 
@@ -270,9 +253,10 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
   const model: TGeneratePatchFromRpoModel = methods.getValues();
 
   return (
-    <TdsPage>
-      <TdsForm methods={methods}
-        onSubmit={onSubmit}>
+    <TdsPage id="patchGenerateView">
+      <TdsForm
+        name="frmPatchGenerate"
+        onSubmit={methods.handleSubmit(onSubmit)}>
         {(!model.isReady) && <TdsProgressRing size="full" />}
         {(model.isReady) &&
           <>
@@ -305,15 +289,35 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
                 model.objectsLeft, topActionsLeft)}
 
               <section className="tds-row-container-column" id="directionButtons" >
-                <VSCodeButton appearance="icon" onClick={() => {
-                  console.log("MODEL", methods.getValues());
-                  const objects = methods.getValues("objectsLeft").filter((value) =>
-                    selectedObjects["objectsLeft"].indexOf(value.source) > -1);
+                {/* <VSCodeButton appearance="icon" onClick={() => {
+                  console.log(">> filtered",
+                    methods.getValues("objectsLeft").filter((value: TInspectorObject) => value.checked)
+                  );
+
+                  const objects: TInspectorObject[] = methods.getValues("objectsLeft").filter((value: TInspectorObject) =>
+                    selectedObjects["objectsLeft"].indexOf(value.source) > -1)
+                    .map((value: TInspectorObject) => {
+                      value.checked = false;
+                      return value;
+                    });
+
                   console.log(">>>> toRight", objects)
 
-                  sendToRight({
-                    ...methods.getValues()
-                  }, objects);
+                  appendRight(objects);
+
+                  const indexes: number[] = methods.getValues("objectsLeft").map((value: TInspectorObject, index: number) => {
+                    if (selectedObjects["objectsLeft"].indexOf(value.source) > -1) {
+                      return index;
+                    }
+
+                    return -1;
+                  }).filter((value: number) => value !== -1);
+
+                  console.log(">> to Del", indexes);
+                  removeLeft(indexes);
+
+                  selectedObjects["objectsLeft"] = [];
+
                 }} >
                   <span className="codicon codicon-arrow-right"></span>
                 </VSCodeButton>
@@ -322,12 +326,12 @@ export default function PatchGenerateView(props: IPatchGenerateViewProps) {
                     selectedObjects["objectsRight"].indexOf(value.source) > -1);
                   console.log(">>>> toLeft", objects)
 
-                  sendToLeft({
-                    ...methods.getValues()
-                  }, objects);
+                  // sendToLeft({
+                  //   ...methods.getValues()
+                  // }, objects);
                 }} >
                   <span className="codicon codicon-arrow-left"></span>
-                </VSCodeButton>
+                </VSCodeButton> */}
               </section>
 
               {selectResource("objectsRight", tdsVscode.l10n.t("To patch"),

@@ -1,5 +1,6 @@
 #selectGrid {
-  align-items: flex-start;
+  /* align-items: flex-start; */
+  align-items: stretch;
 }
 
 #selectGrid .select-resource-component {

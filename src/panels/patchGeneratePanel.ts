@@ -231,21 +231,6 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
         });
         break;
 
-      case PatchGenerateCommandEnum.MoveElements:
-        const selectedObject: TInspectorObject[] = data.selectedObject;
-        const direction: string = data.direction;
-
-        if (direction == "right") {
-          data.model.objectsLeft = data.model.objectsLeft.filter((x: TInspectorObject) => selectedObject.findIndex(y => x.source == y.source) == -1);
-          data.model.objectsRight.push(...selectedObject);
-        } else {
-          data.model.objectsRight = data.model.objectsRight.filter((x: TInspectorObject) => selectedObject.findIndex(y => x.source == y.source) == -1);
-          data.model.objectsLeft.push(...selectedObject.map((element: TInspectorObject) => { return { ...element, checked: false } }));
-        }
-
-        this.sendUpdateModel(data.model, undefined);
-
-        break;
       case CommonCommandFromWebViewEnum.AfterSelectResource:
         if (result && result.length > 0) {
           const selectedFile: string = (result[0] as vscode.Uri).fsPath;
@@ -284,46 +269,30 @@ export class PatchGenerateFromRpoPanel extends TdsPanel<TGeneratePatchFromRpoMod
   }
 
   private async getDataFromFolder(model: TGeneratePatchFromRpoModel, includeTRes: boolean): Promise<TGeneratePatchFromRpoModel> {
-    const files: string[] = loadFilenameList(model.folder, `**/*.*`);
+    let files: string[] = [];
+    let extensionsAllowed: string[];
+    const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
 
-    model.objectsLeft = [];
-    if (files) {
-      let extensionsAllowed: string[];
-      const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
-
-      if (configADVPL.get("folder.enableExtensionsFilter", true)) {
-        extensionsAllowed = configADVPL.get("folder.extensionsAllowed", []); // Le a chave especifica
-      }
-
-      files.forEach((resource: string) => {
-        const validFile: boolean = (extensionsAllowed.length == 0)
-          ? Utils.isAdvPlSource(resource) || Utils.is4glSource(resource) || Utils.isResource(resource)
-          : (extensionsAllowed.findIndex((ext: string) => resource.toLowerCase().endsWith(ext.toLowerCase())) > -1);
-
-        if (validFile) {
-          model.objectsRight.push({
-            source: path.basename(resource),
-            date: new Date(fse.lstatSync(resource).mtime),
-            source_status: "",
-            rpo_status: "",
-            function: "",
-            line: 0
-          });
-        }
-        // const lstat: fse.Stats = fse.lstatSync(resource);
-
-        // if (lstat.isFile()) {
-        //   model.objectsLeft.push({
-        //     source: path.basename(resource),
-        //     date: new Date(lstat.mtime),
-        //     source_status: "",
-        //     rpo_status: "",
-        //     function: "",
-        //     line: 0
-        //   });
-        // }
-      });
+    if (configADVPL.get("folder.enableExtensionsFilter", true)) {
+      extensionsAllowed = configADVPL.get("folder.extensionsAllowed", []); // Le a chave especifica
     }
+
+    if (extensionsAllowed.length > 0) {
+      files = loadFilenameList(model.folder, `**/*{${extensionsAllowed.join(",")}}`);
+    } else {
+      files = loadFilenameList(model.folder, `**/*.*`);
+    }
+
+    model.objectsLeft = files.map((resource: string) => {
+      return {
+        source: path.basename(resource),
+        date: new Date(fse.lstatSync(resource).mtime),
+        source_status: "",
+        rpo_status: "",
+        function: "",
+        line: 0
+      }
+    });
 
     model.objectsLeft = model.objectsLeft.sort((a: TInspectorObject, b: TInspectorObject) => a.source.localeCompare(b.source));
     model.objectsRight = model.objectsRight.sort((a: TInspectorObject, b: TInspectorObject) => a.source.localeCompare(b.source));

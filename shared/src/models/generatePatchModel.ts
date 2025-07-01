@@ -20,7 +20,6 @@ import { TInspectorObject } from "./inspectObjectModel";
 
 export enum PatchGenerateCommandEnum {
 	IncludeTRes = "INCLUDE_TRES",
-	MoveElements = "MOVE_ELEMENTS",
 	ImportTxt = "IMPORT_TXT",
 }
 

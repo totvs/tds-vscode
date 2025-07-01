@@ -1,10 +1,10 @@
 
 import "./generateWs.css";
-import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
+import { TdsCheckBoxField, TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
-import { TdsForm, TdsSelectionFileField, TdsSelectionFolderField, TdsSimpleCheckBoxField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
+import { TdsForm, TdsSelectionFileField, TdsSelectionFolderField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 
 enum ReceiveCommandEnum {
 }
@@ -58,9 +58,10 @@ export default function GenerateWsView() {
   }, []);
 
   return (
-    <TdsPage title="Generate Web Service Client">
-      <TdsForm<TFields> methods={methods}
-        onSubmit={onSubmit}
+    <TdsPage id="generateWsView" title="Generate Web Service Client">
+      <TdsForm<TFields>
+        name="frmGenerateWs"
+        onSubmit={methods.handleSubmit(onSubmit)}
       >
 
         <section className="tds-row-container" >
@@ -115,11 +116,12 @@ export default function GenerateWsView() {
             }} />
         </section>
 
-        <TdsSimpleCheckBoxField
+        <TdsCheckBoxField
           info=""
           name="overwrite"
           label={tdsVscode.l10n.t("If already exist, can overwrite")}
-        />
+          value={"overwrite"}
+          checked={false} />
 
       </TdsForm>
     </TdsPage>

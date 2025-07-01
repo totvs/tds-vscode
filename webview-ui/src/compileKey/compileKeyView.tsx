@@ -15,10 +15,10 @@ limitations under the License.
 */
 
 import React from "react";
-import { sendValidateModel, TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
+import { sendValidateModel, TdsCheckBoxField, TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
-import { TdsSimpleCheckBoxField, TdsForm, TdsTextField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionFileField } from "@totvs/tds-webtoolkit";
+import { TdsForm, TdsTextField, TdsLabelField, setDataModel, setErrorModel, TdsSelectionFileField } from "@totvs/tds-webtoolkit";
 
 import "./CompileKey.css";
 import { TAuthorization, TCompileKey } from "@tds-shared/index";
@@ -95,9 +95,10 @@ export default function CompileKeyView() {
   }, []);
 
   return (
-    <TdsPage>
-      <TdsForm<TFields> methods={methods}
-        onSubmit={onSubmit}
+    <TdsPage id="compileKeyView">
+      <TdsForm<TFields>
+        name="frmCompileKeyt"
+        onSubmit={methods.handleSubmit(onSubmit)}
         onManualReset={() => {
           methods.setValue("machineId", machineId)
         }}
@@ -117,9 +118,9 @@ export default function CompileKeyView() {
             info={tdsVscode.l10n.t("Generated compilation key file (.AUT)")}
             rules={{
               required: false,
-              onBlur: (e) => {
-                sendValidateModel(methods.getValues());
-              }
+              // onBlur: (e) => {
+              //   sendValidateModel(methods.getValues());
+              // }
             }}
           />
 
@@ -164,9 +165,12 @@ export default function CompileKeyView() {
           // />
         }
 
-        <TdsSimpleCheckBoxField
+        <TdsCheckBoxField
           name={"canOverride"}
-          label={tdsVscode.l10n.t("Allow override default")} />
+          label={tdsVscode.l10n.t("Allow override default")}
+          value={"canOverride"}
+          checked={false}
+        />
 
         <TdsLabelField
           name={"warningCompatibility"}

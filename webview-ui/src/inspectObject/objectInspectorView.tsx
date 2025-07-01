@@ -16,7 +16,7 @@ limitations under the License.
 
 import "./objectInspector.css";
 import React from "react";
-import { IFormAction, TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsForm, TdsFormActionsEnum, TdsPage, TdsProgressRing, getCloseActionForm, getDefaultActionsForm, tdsVscode } from "@totvs/tds-webtoolkit";
+import { TdsFormAction, TTdsDataGridAction, TTdsDataGridColumnDef, TdsDataGrid, TdsForm, TdsPage, TdsProgressRing, getCloseActionForm, getDefaultActionsForm, tdsVscode } from "@totvs/tds-webtoolkit";
 import { useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
 import { setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
@@ -218,7 +218,7 @@ export default function ObjectInspectorView(props: TInspectorObjectComponentProp
     }
   }, []);
 
-  const actions: IFormAction[] = [getCloseActionForm()];
+  const actions: TdsFormAction[] = [getCloseActionForm()];
 
   actions.push({
     id: "btnExportTxt",
@@ -226,9 +226,9 @@ export default function ObjectInspectorView(props: TInspectorObjectComponentProp
     isProcessRing: true,
     enabled: methods.formState.isValid,
     type: "button",
-    onClick: () => {
-      sendExport(methods.getValues(), "TXT");
-    }
+    // onClick: () => {
+    //   sendExport(methods.getValues(), "TXT");
+    // }
   });
   actions.push({
     id: "btnExportCsv",
@@ -236,9 +236,9 @@ export default function ObjectInspectorView(props: TInspectorObjectComponentProp
     isProcessRing: true,
     enabled: methods.formState.isValid,
     type: "button",
-    onClick: () => {
-      sendExport(methods.getValues(), "CSV");
-    }
+    // onClick: () => {
+    //   sendExport(methods.getValues(), "CSV");
+    // }
   });
 
   const topActions: TTdsDataGridAction[] = [{
@@ -258,10 +258,11 @@ export default function ObjectInspectorView(props: TInspectorObjectComponentProp
     : functionColumns(props.isServerP20OrGreater);
 
   return (
-    <TdsPage>
+    <TdsPage id="objectInspectorView">
       <TdsForm
+        name="frmObjectInspector"
         onSubmit={methods.handleSubmit(() => { })}
-        methods={methods}
+
         actions={actions}
       >
         {(dataSource.length == 0)

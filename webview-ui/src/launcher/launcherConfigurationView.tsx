@@ -16,13 +16,12 @@ limitations under the License.
 
 import "./launcherConfiguration.css";
 import React from "react";
-import { TdsSimpleCheckBoxField, TdsPage, TdsSelectionFileField, TdsSimpleTextField } from "@totvs/tds-webtoolkit";
+import { TdsCheckBox, TdsCheckBoxGroup, TdsPage, TdsSelectionFileField } from "@totvs/tds-webtoolkit";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsLabelField, TdsSelectionField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { tdsVscode } from '@totvs/tds-webtoolkit';
 import { EMPTY_DEBUG_CONFIGURATION, LauncherTypeEnum, TDebugConfigurationModel } from "@tds-shared/index";
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 import { LanguagesEnum } from '@tds-shared/index';
 
 enum ReceiveCommandEnum {
@@ -104,10 +103,10 @@ export default function LauncherConfigurationView() {
   const indexFirstArgFree: number = model.programArgs.findIndex((arg: { value: string }) => arg.value == "");
 
   return (
-    <TdsPage>
+    <TdsPage id="launcherConfigurationView">
       <TdsForm<TDebugConfigurationModel>
-        methods={methods}
-        onSubmit={onSubmit}
+        name="frmLauncherConfiguration"
+        onSubmit={methods.handleSubmit(onSubmit)}
         description={tdsVscode.l10n.t("Configure an launcher for debugging")}
       >
         <section className="tds-row-container" >
@@ -117,9 +116,9 @@ export default function LauncherConfigurationView() {
             info={tdsVscode.l10n.t("Select the launcher type to config")}
             rules={{ required: true }}
             options={[
-              { value: "totvs_language_debug", text: "TOTVS Language Debug" },
-              { value: "totvs_language_web_debug", text: "TOTVS Language Debug via Web App" },
-              { value: "totvs_tdsreplay_debug", text: "TDS Replay" },
+              { value: "totvs_language_debug", label: "TOTVS Language Debug" },
+              { value: "totvs_language_web_debug", label: "TOTVS Language Debug via Web App" },
+              { value: "totvs_tdsreplay_debug", label: "TDS Replay" },
             ]}
           />
           <TdsTextField
@@ -199,7 +198,7 @@ export default function LauncherConfigurationView() {
               info={tdsVscode.l10n.t("Enter the arguments for AdvPL function.")}
             />
 
-            <VSCodeDataGrid id="argumentsGrid" grid-template-columns="30px 1fr" >
+            {/* <VSCodeDataGrid id="argumentsGrid" grid-template-columns="30px 1fr" >
               {fields.map((field, index) => (
                 <VSCodeDataGridRow
                   key={`arguments_grid_${index}`}
@@ -257,42 +256,68 @@ export default function LauncherConfigurationView() {
                 </VSCodeDataGridRow>
               ))}
             </VSCodeDataGrid>
-
+ */}
           </div>
 
           <div id="scArgumentsOptions">
-            <TdsLabelField
+            <TdsCheckBoxGroup
               name={"argumentsLabel"}
               label={tdsVscode.l10n.t("Smart Client Arguments")}
               info={tdsVscode.l10n.t("Mark the arguments which will be passed to the SmartClient.")}
-            />
-            <TdsSimpleCheckBoxField
-              name={"multiSession"}
-              label={tdsVscode.l10n.t("`-M` Multiple sessions")} />
-            <TdsSimpleCheckBoxField
-              name={"accessibilityMode"}
-              label={tdsVscode.l10n.t("`-AC` Accessibility module")} />
-            <TdsSimpleCheckBoxField
-              name={"doNotShowSplash"}
-              label={tdsVscode.l10n.t("`-Q` Don't display 'splash'")} />
-            <TdsSimpleCheckBoxField
-              name={"openGlMode"}
-              label={tdsVscode.l10n.t("`-OPENGL` Enable OpenGL mode")} />
-            <TdsSimpleCheckBoxField
-              name={"dpiMode"}
-              label={tdsVscode.l10n.t("`-DPI` Enable DPI mode")} />
-            <TdsSimpleCheckBoxField
-              name={"oldDpiMode"}
-              label={tdsVscode.l10n.t("`-OLDDPI` Enable old DPI mode")} />
+            >
+              <TdsCheckBox
+                name="multiSession"
+                value={"multiSession"}
+                label={tdsVscode.l10n.t("`-M` Multiple sessions")}
+                checked={false}
+              />
+              <TdsCheckBox
+                name={"accessibilityMode"}
+                label={tdsVscode.l10n.t("`-AC` Accessibility module")}
+                value={"accessibilityMode"}
+                checked={false}
+              />
+              <TdsCheckBox
+                name={"doNotShowSplash"}
+                label={tdsVscode.l10n.t("`-Q` Don't display 'splash'")}
+                value={"accessibilityMode"}
+                checked={false}
+              />
+              <TdsCheckBox
+                name={"doNotShowSplash"}
+                label={tdsVscode.l10n.t("`-Q` Don't display 'splash'")}
+                value={"doNotShowSplash"}
+                checked={false}
+              />
+              <TdsCheckBox
+                name={"openGlMode"}
+                label={tdsVscode.l10n.t("`-OPENGL` Enable OpenGL mode")}
+                value={"openGlMode"}
+                checked={false}
+              />
+              <TdsCheckBox
+                name={"dpiMode"}
+                label={tdsVscode.l10n.t("`-DPI` Enable DPI mode")}
+                value={"dpiMode"}
+                checked={false}
+              />
+              <TdsCheckBox
+                name={"oldDpiMode"}
+                label={tdsVscode.l10n.t("`-OLDDPI` Enable old DPI mode")}
+                value={"oldDpiMode"}
+                checked={false}
+              />
+            </TdsCheckBoxGroup>
+
             <TdsSelectionField
               name={"language"}
               label={tdsVscode.l10n.t("Language")}
               options={[
-                { value: LanguagesEnum.DEFAULT, text: "Default" },
-                { value: LanguagesEnum.POR, text: "Português" },
-                { value: LanguagesEnum.SPA, text: "Español" },
-                { value: LanguagesEnum.ENG, text: "English" },
-                { value: LanguagesEnum.RUS, text: "Русский" }
+                { value: LanguagesEnum.DEFAULT, label: "Default" },
+                { value: LanguagesEnum.POR, label: "Português" },
+                { value: LanguagesEnum.SPA, label: "Español" },
+                { value: LanguagesEnum.ENG, label: "English" },
+                { value: LanguagesEnum.RUS, label: "Русский" }
               ]
               }
             />
@@ -300,24 +325,32 @@ export default function LauncherConfigurationView() {
           </div>
 
           <div id="debuggerOptions">
-            <TdsLabelField
+            <TdsCheckBoxGroup
               name={"debuggerOptionsLabel"}
               label={tdsVscode.l10n.t("Debugger Options")}
               info={tdsVscode.l10n.t("Mark the arguments which will be passed to the process of debugging.")}
-            />
+            >
+              <TdsCheckBox
+                name="enableMultiThread"
+                label={tdsVscode.l10n.t("Multi Thread")}
+                value="enableMultiThread"
+                checked={false}
+              />
 
-            <TdsSimpleCheckBoxField
-              name="enableMultiThread"
-              label={tdsVscode.l10n.t("Multi Thread")} />
+              <TdsCheckBox
+                name="enableProfile"
+                label={tdsVscode.l10n.t("Profile")}
+                value="enableProfile"
+                checked={false}
+              />
 
-            <TdsSimpleCheckBoxField
-              name="enableProfile"
-              label={tdsVscode.l10n.t("Profile")} />
-
-            <TdsSimpleCheckBoxField
-              name="ignoreFiles"
-              label={tdsVscode.l10n.t("Ignore files not found in WorkSpace (debugging)")} />
-
+              <TdsCheckBox
+                name="ignoreFiles"
+                label={tdsVscode.l10n.t("Ignore files not found in WorkSpace (debugging)")}
+                value="ignoreFiles"
+                checked={false}
+              />
+            </TdsCheckBoxGroup>
           </div>
 
         </section>

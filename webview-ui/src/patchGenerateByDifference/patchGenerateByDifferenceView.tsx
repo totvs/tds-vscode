@@ -75,9 +75,10 @@ export default function PatchGenerateByDifferenceView(props: IPatchGenerateByDif
   }, []);
 
   return (
-    <TdsPage>
-      <TdsForm methods={methods}
-        onSubmit={onSubmit}>
+    <TdsPage id="patchGenerateByDifferenceView">
+      <TdsForm
+        name="frmPatchGenerateByDifference"
+        onSubmit={methods.handleSubmit(onSubmit)}>
         <section className="tds-row-container">
           <TdsTextField
             name="rpoMasterFolder"

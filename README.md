@@ -1,5 +1,7 @@
 # TOTVS Developer Studio para VSCode
 
+https://github.com/alefragnani/vscode-whats-new
+
 <!--[![GitHub stars](https://img.shields.io/github/stars/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/stargazers)
 ![GitHub top language](https://img.shields.io/github/languages/top/totvs/tds-vscode)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/totvs/tds-vscode/Deploy%20Extension)

@@ -114,6 +114,16 @@ module.exports = (env, argv) => {
     },
     module: {
       rules: [
+        // {
+        //   test: /\.m?js/,
+        //   type: "javascript/auto",
+        // },
+        {
+          test: /\.m?js/,
+          resolve: {
+            fullySpecified: true,
+          },
+        },
         {
           test: /\.(ts|tsx)$/,
           use: [
@@ -128,7 +138,6 @@ module.exports = (env, argv) => {
       hints: "warning",
     }
   };
-
 
   /** @type WebpackConfig */
   const webviewConfig = {
@@ -176,10 +185,14 @@ module.exports = (env, argv) => {
         ".tsx",
         ".json",
         ".bundle.json",
+        ".bundle.*.json",
+        ".bundle.json",
         ".bundle.*.json"
       ],
       alias: {
         react: path.resolve('./node_modules/react'),
+        "react-hook-form": path.resolve('./node_modules/react-hook-form'),
+        "@vscode-elements": path.resolve('./node_modules/@vscode-elements'),
         "@tds-shared": path.resolve('./out/shared'),
       }
     },

@@ -1843,7 +1843,7 @@ export function loadFilenameList(folder: string, selector: string): string[] {
   const files: string[] = glob.globSync(selector, {
     cwd: folder,
     absolute: true,
-    //ignore: ['**/node_modules/**']
+    noCase: true,
   });
 
   return files;

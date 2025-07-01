@@ -16,15 +16,14 @@ limitations under the License.
 
 import "./applyPatch.css";
 import React from "react";
-import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
+import { TdsCheckBoxField, TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import {
-  TdsForm, TdsLabelField, TdsSelectionFileField, TdsSimpleCheckBoxField, TdsSimpleTextField,
-  TdsTextField, TdsProgressRing,
+  TdsForm, TdsLabelField,
+  TdsTextField,
   setDataModel, setErrorModel
 } from "@totvs/tds-webtoolkit";
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeTag } from "@vscode/webview-ui-toolkit/react";
 import { TApplyPatchModel, TPatchFileData } from "@tds-shared/index";
 import { ApplyPatchCommandEnum, EMPTY_APPLY_PATCH_MODEL, EMPTY_PATCH_FILE } from "@tds-shared/index";
 
@@ -128,9 +127,10 @@ export default function ApplyPatchView() {
   const isProcessing: boolean = model.patchFiles.filter((row: TPatchFileData) => row.isProcessing).length > 0;
 
   return (
-    <TdsPage>
-      <TdsForm<TApplyPatchModel> methods={methods}
-        onSubmit={onSubmit}
+    <TdsPage id="applyPatchView">
+      <TdsForm<TApplyPatchModel>
+        name="frmApplyPatch"
+        onSubmit={methods.handleSubmit(onSubmit)}
         onManualReset={() => {
           methods.setValue("serverName", serverData.serverName);
           methods.setValue("address", serverData.address);
@@ -168,7 +168,7 @@ export default function ApplyPatchView() {
         />
 
         <section className="tds-row-container" >
-          <VSCodeDataGrid id="patchGrid" grid-template-columns="90px 1fr 2fr">
+          {/* <VSCodeDataGrid id="patchGrid" grid-template-columns="90px 1fr 2fr">
             {model && model.patchFiles.map((row: TPatchFileData, index: number) => (
               <>
                 <VSCodeDataGridRow key={index}>
@@ -246,22 +246,24 @@ export default function ApplyPatchView() {
               </VSCodeDataGridCell>
             </VSCodeDataGridRow>
 
-          </VSCodeDataGrid>
+          </VSCodeDataGrid> */}
         </section>
 
-        {showOldFiles && <TdsSimpleCheckBoxField
+        {showOldFiles && <TdsCheckBoxField
           name="applyOldFiles"
           label={tdsVscode.l10n.t("Apply old files")}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             const patchFiles: TPatchFileData[] = methods.getValues("patchFiles");
             patchFiles.forEach((value: TPatchFileData, index: number) => {
-              const error: string = methods.getFieldState(`patchFiles.${index}.name`).error.message
+              const error: string = methods.getFieldState(`patchFiles.${index}.name`).error.message;
               if (error == tdsVscode.l10n.t("Source/resource files in patch older than RPO.")) {
                 methods.clearErrors(`patchFiles.${index}.name`);
               }
-            })
+            });
 
           }}
+          value={"applyOldFiles"}
+          checked={false}
         />
         }
       </TdsForm>

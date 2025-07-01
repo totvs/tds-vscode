@@ -17,10 +17,9 @@ limitations under the License.
 import "./addServer.css";
 import { TdsPage } from "@totvs/tds-webtoolkit";
 import React from "react";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { FormProvider, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
-import { TdsCheckBoxField, TdsForm, TdsLabelField, TdsNumericField, TdsSelectionField, TdsSelectionFolderField, TdsSimpleTextField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
+import { TdsCheckBoxField, TdsForm, TdsLabelField, TdsNumericField, TdsSelectionField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { tdsVscode } from '@totvs/tds-webtoolkit';
 import { EMPTY_SERVER_MODEL, TIncludePath, TServerModel } from "@tds-shared/index";
 
@@ -83,20 +82,21 @@ export default function AddServerView() {
   const model: TServerModel = methods.getValues();
 
   return (
-    <TdsPage>
-      <TdsForm<TServerModel> methods={methods}
-        onSubmit={onSubmit}
-        description={tdsVscode.l10n.t("Enter the connection parameters to the Protheus server.")}>
+    <TdsPage id="addServerView" title="Add Server" layoutControl={true}>
+      <FormProvider {...methods}>
+        <TdsForm<TServerModel>
+          name="frmAddServer"
+          onSubmit={methods.handleSubmit(onSubmit)}
+          description={tdsVscode.l10n.t("Enter the connection parameters to the Protheus server.")}>
 
-        <section className="tds-row-container" >
           <TdsSelectionField
             name="serverType"
             label={tdsVscode.l10n.t("Server Type")}
             info={tdsVscode.l10n.t("Select the Protheus server type")}
             options={[
-              { value: "totvs_server_protheus", text: "Protheus (Adv/PL)" },
-              { value: "totvs_server_logix", text: "Logix (4GL)" },
-              { value: "totvs_server_totvstec", text: "TOTVS Tec (Adv/PL e 4GL)" }
+              { value: "totvs_server_protheus", label: "Protheus (Adv/PL)" },
+              { value: "totvs_server_logix", label: "Logix (4GL)" },
+              { value: "totvs_server_totvstec", label: "TOTVS Tec (Adv/PL e 4GL)" }
             ]}
             rules={{ required: true }}
           />
@@ -105,20 +105,17 @@ export default function AddServerView() {
             info=""
             name="immediateConnection"
             label={tdsVscode.l10n.t("Connect immediately")}
+            value={"true"}
+            checked={false}
           />
 
-        </section>
-
-        <section className="tds-row-container" >
           <TdsTextField
             name="serverName"
             label={tdsVscode.l10n.t("Server name")}
             info={tdsVscode.l10n.t("Enter a name that helps you identify the server")}
             rules={{ required: true }}
           />
-        </section>
 
-        <section className="tds-row-container" >
           <TdsTextField
             name="address"
             label={tdsVscode.l10n.t("Address")}
@@ -135,19 +132,18 @@ export default function AddServerView() {
               min: { value: 1, message: tdsVscode.l10n.t("[Port] is not valid range. Min: 1 Max: 65535") },
               max: { value: 65535, message: tdsVscode.l10n.t("[Port] is not valid range. Min: 1 Max: 65535") }
             }} />
-        </section>
 
-        <TdsLabelField
-          name={"includeDirectoriesLabel"}
-          label={tdsVscode.l10n.t("Include directories")}
-          info={tdsVscode.l10n.t("Enter the folders where the definition files should be searched")} />
+          <TdsLabelField
+            name={"includeDirectoriesLabel"}
+            label={tdsVscode.l10n.t("Include directories")}
+            info={tdsVscode.l10n.t("Enter the folders where the definition files should be searched")} />
 
-        <TdsLabelField
-          name={"warningIncludeDirectoriesLabel"}
-          label={tdsVscode.l10n.t("May be informed later. If you do not inform, the global configuration will be used.")}
-          info={methods.getValues("globalIncludeDirectories")} />
+          <TdsLabelField
+            name={"warningIncludeDirectoriesLabel"}
+            label={tdsVscode.l10n.t("May be informed later. If you do not inform, the global configuration will be used.")}
+            info={methods.getValues("globalIncludeDirectories")} />
 
-        <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
+          {/* <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
           {fields.map((row, index: number) => (
             <VSCodeDataGridRow
               key={row.id}
@@ -180,8 +176,9 @@ export default function AddServerView() {
             </VSCodeDataGridCell>
           </VSCodeDataGridRow>
 
-        </VSCodeDataGrid>
-      </TdsForm>
+        </VSCodeDataGrid> */}
+        </TdsForm>
+      </FormProvider>
     </TdsPage>
   );
 }

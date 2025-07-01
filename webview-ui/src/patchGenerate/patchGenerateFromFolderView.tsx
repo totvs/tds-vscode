@@ -13,9 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
-
 import "./patchGenerate.css";
 import React from "react";
 import { TTdsDataGridColumnDef, TdsDataGrid, TdsLabelField, TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
@@ -25,33 +22,9 @@ import { TdsForm, TdsTextField, setDataModel, setErrorModel, TdsSelectionFolderF
 import { TGeneratePatchFromRpoModel, TInspectorObject, PatchGenerateCommandEnum, EMPTY_GENERATE_PATCH_FROM_RPO_MODEL } from "@tds-shared/index";
 
 enum ReceiveCommandEnum {
-  MOVE_TO_LEFT = "moveToLeft",
-  MOVE_TO_RIGHT = "moveToRight"
 }
 
 type ReceiveCommand = ReceiveMessage<CommonCommandEnum & ReceiveCommandEnum, TGeneratePatchFromRpoModel>;
-
-function sendToRight(model: any, selectedObject: TInspectorObject[]) {
-  tdsVscode.postMessage({
-    command: PatchGenerateCommandEnum.MoveElements,
-    data: {
-      model: model,
-      selectedObject: selectedObject,
-      direction: "right"
-    }
-  });
-}
-
-function sendToLeft(model: any, selectedObject: TInspectorObject[]) {
-  tdsVscode.postMessage({
-    command: PatchGenerateCommandEnum.MoveElements,
-    data: {
-      model: model,
-      selectedObject: selectedObject,
-      direction: "left"
-    }
-  });
-}
 
 interface IPatchGenerateViewProps {
   isServerP20OrGreater: boolean;
@@ -180,9 +153,10 @@ export default function PatchGenerateFromFolderView(props: IPatchGenerateViewPro
   }
 
   return (
-    <TdsPage>
-      <TdsForm methods={methods}
-        onSubmit={onSubmit}>
+    <TdsPage id="patchGenerateView">
+      <TdsForm
+        name="frmPatchGenerate"
+        onSubmit={methods.handleSubmit(onSubmit)}>
         <section className="tds-row-container">
           <TdsTextField
             name="patchDest"
@@ -229,11 +203,11 @@ export default function PatchGenerateFromFolderView(props: IPatchGenerateViewPro
             methods.getValues("objectsLeft"), "objectsLeft")}
 
           <section className="tds-row-container-column" id="directionButtons" >
-            <VSCodeButton appearance="icon" onClick={() => {
+            {/* <VSCodeButton appearance="icon" onClick={() => {
               const objects = methods.getValues("objectsLeft").filter((value) =>
                 selectedObjects["objects_left"].indexOf(value.source) > -1);
 
-              sendToRight(methods.getValues(), objects);
+              //sendToRight(methods.getValues(), objects);
             }} >
               <span className="codicon codicon-arrow-right"></span>
             </VSCodeButton>
@@ -241,10 +215,10 @@ export default function PatchGenerateFromFolderView(props: IPatchGenerateViewPro
               const objects = methods.getValues("objectsRight").filter((value) =>
                 selectedObjects["objects_right"].indexOf(value.source) > -1);
 
-              sendToLeft(methods.getValues(), objects);
+              //sendToLeft(methods.getValues(), objects);
             }} >
               <span className="codicon codicon-arrow-left"></span>
-            </VSCodeButton>
+            </VSCodeButton> */}
           </section>
 
           {watchObjectsRight && selectFolderResource("objects_right", tdsVscode.l10n.t("To patch"),

@@ -16,13 +16,12 @@ limitations under the License.
 
 import "./replayConfiguration.css";
 import React from "react";
-import { TdsCheckBoxField, TdsLabelField, TdsPage, TdsProgressRing, TdsSelectionFileField, TdsSimpleTextField } from "@totvs/tds-webtoolkit";
+import { TdsCheckBox, TdsCheckBoxGroup, TdsLabelField, TdsPage, TdsProgressRing, TdsSelectionFileField } from "@totvs/tds-webtoolkit";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { TdsForm, TdsSelectionField, TdsTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { tdsVscode } from '@totvs/tds-webtoolkit';
 import { EMPTY_REPLAY_CONFIGURATION, TReplayConfigurationModel } from "@tds-shared/index";
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
 
 enum ReceiveCommandEnum {
 }
@@ -104,72 +103,69 @@ export default function ReplayConfigurationView() {
       insert(fields.length, { value: "" });
     }
 
-    return (
-      <>
-        <VSCodeDataGrid id={`source_list_${fieldName}`} grid-template-columns="30px 1fr" >
-          {fields.map((field, index) => (
-            <VSCodeDataGridRow
-              key={`source_list_${fieldName}_${index}`}
-            >
-              {field.value !== "" &&
-                <>
-                  <VSCodeDataGridCell grid-column="1">
-                    <VSCodeButton appearance="icon"
-                      onClick={() => removeArgument(index)} >
-                      <span className="codicon codicon-close"></span>
-                      {index}
-                    </VSCodeButton>
-                  </VSCodeDataGridCell>
-                  <VSCodeDataGridCell grid-column="2">
-                    <TdsSimpleTextField
-                      key={field.id}
-                      name={`${fieldName}.${index}.value`}
-                      rules={{ required: true }}
-                    />
-                  </VSCodeDataGridCell>
-                </>
-              }
-              {((field.value == "") && (index < indexFirstArgFree)) &&
-                <>
-                  <VSCodeDataGridCell grid-column="1">
-                    &nbsp;
-                  </VSCodeDataGridCell>
-                  <VSCodeDataGridCell grid-column="2">
-                    <TdsSimpleTextField
-                      key={field.id}
-                      name={`${fieldName}.${index}.value`}
-                      info={tdsVscode.l10n.t("Enter the value of parameters.")}
-                    />
-                  </VSCodeDataGridCell>
-                </>
-              }
-              {(index === indexFirstArgFree) &&
-                <>
-                  <VSCodeDataGridCell grid-column="1">
-                    &nbsp;
-                  </VSCodeDataGridCell>
-                  <VSCodeDataGridCell grid-column="2">
-                    <VSCodeButton
-                      onClick={() => addIncludeArgument("*.*", index)}
-                    >
-                      {tdsVscode.l10n.t("Add Selector")}
-                    </VSCodeButton>
-                  </VSCodeDataGridCell>
-                </>
-              }
-            </VSCodeDataGridRow>
-          ))}
-        </VSCodeDataGrid>
-
-      </>
+    return (<></>
+      // <VSCodeDataGrid id={`source_list_${fieldName}`} grid-template-columns="30px 1fr" >
+      //   {fields.map((field, index) => (
+      //     <VSCodeDataGridRow
+      //       key={`source_list_${fieldName}_${index}`}
+      //     >
+      //       {field.value !== "" &&
+      //         <>
+      //           <VSCodeDataGridCell grid-column="1">
+      //             <VSCodeButton appearance="icon"
+      //               onClick={() => removeArgument(index)} >
+      //               <span className="codicon codicon-close"></span>
+      //               {index}
+      //             </VSCodeButton>
+      //           </VSCodeDataGridCell>
+      //           <VSCodeDataGridCell grid-column="2">
+      //             <TdsSimpleTextField
+      //               key={field.id}
+      //               name={`${fieldName}.${index}.value`}
+      //               rules={{ required: true }}
+      //             />
+      //           </VSCodeDataGridCell>
+      //         </>
+      //       }
+      //       {((field.value == "") && (index < indexFirstArgFree)) &&
+      //         <>
+      //           <VSCodeDataGridCell grid-column="1">
+      //             &nbsp;
+      //           </VSCodeDataGridCell>
+      //           <VSCodeDataGridCell grid-column="2">
+      //             <TdsSimpleTextField
+      //               key={field.id}
+      //               name={`${fieldName}.${index}.value`}
+      //               info={tdsVscode.l10n.t("Enter the value of parameters.")}
+      //             />
+      //           </VSCodeDataGridCell>
+      //         </>
+      //       }
+      //       {(index === indexFirstArgFree) &&
+      //         <>
+      //           <VSCodeDataGridCell grid-column="1">
+      //             &nbsp;
+      //           </VSCodeDataGridCell>
+      //           <VSCodeDataGridCell grid-column="2">
+      //             <VSCodeButton
+      //               onClick={() => addIncludeArgument("*.*", index)}
+      //             >
+      //               {tdsVscode.l10n.t("Add Selector")}
+      //             </VSCodeButton>
+      //           </VSCodeDataGridCell>
+      //         </>
+      //       }
+      //     </VSCodeDataGridRow>
+      //   ))}
+      // </VSCodeDataGrid>
     )
   }
 
   return (
-    <TdsPage>
+    <TdsPage id="replayConfigurationView">
       <TdsForm<TReplayConfigurationModel>
-        methods={methods}
-        onSubmit={onSubmit}
+        name="frmReplayConfiguration"
+        onSubmit={methods.handleSubmit(onSubmit)}
       >
         {(!model)
           ? <TdsProgressRing size="full" />
@@ -183,7 +179,7 @@ export default function ReplayConfigurationView() {
                 rules={{ required: true }}
                 readOnly={true}
                 options={[
-                  { value: "totvs_tdsreplay_debug", text: "TDS Replay" },
+                  { value: "totvs_tdsreplay_debug", label: "TDS Replay" },
                 ]}
               />
 
@@ -219,11 +215,23 @@ export default function ReplayConfigurationView() {
 
             <section className="tds-row-container" id="options">
               <div className="col-2">
-                <TdsLabelField
+                <TdsCheckBoxGroup
                   name="lblOptions"
-                  label={tdsVscode.l10n.t("**Options**")} />
-                <TdsCheckBoxField name={"ignoreFiles"} label={"Ignore files not found in WorkSpace"} />
-                <TdsCheckBoxField name={"importOnlySourcesInfo"} label={"Import only the sources information"} />
+                  label={tdsVscode.l10n.t("**Options**")}
+                >
+                  <TdsCheckBox
+                    name={"ignoreFiles"}
+                    label={"Ignore files not found in WorkSpace"}
+                    value="ignoreFiles"
+                    checked={false}
+                  />
+                  <TdsCheckBox
+                    name={"importOnlySourcesInfo"}
+                    label={"Import only the sources information"}
+                    value="importOnlySourcesInfo"
+                    checked={false}
+                  />
+                </TdsCheckBoxGroup>
               </div>
 
               <div>

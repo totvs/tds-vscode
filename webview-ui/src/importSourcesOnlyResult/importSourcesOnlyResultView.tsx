@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import "./importSourcesOnlyResult.css";
-import { getCloseActionForm, IFormAction, TdsDataGrid, TdsPage, TdsProgressRing, tdsVscode, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
+import { getCloseActionForm, TdsFormAction, TdsDataGrid, TdsPage, TdsProgressRing, tdsVscode, TTdsDataGridColumnDef } from "@totvs/tds-webtoolkit";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CommonCommandEnum, ReceiveMessage } from "@totvs/tds-webtoolkit";
@@ -106,34 +106,34 @@ export default function ImportSourcesOnlyResultView() {
     });
   }
 
-  const formActions: IFormAction[] = [getCloseActionForm()];
+  const formActions: TdsFormAction[] = [getCloseActionForm()];
 
   formActions.push({
     id: "btnExportTxt",
     caption: tdsVscode.l10n.t("Export (TXT)"),
     isProcessRing: true,
     type: "button",
-    onClick: () => {
-      sendExportTxt(methods.getValues());
-    }
+    // onClick: () => {
+    //   sendExportTxt(methods.getValues());
+    // }
   });
   formActions.push({
     id: "btnExportCsv",
     caption: tdsVscode.l10n.t("Export (CSV)"),
     isProcessRing: true,
     type: "button",
-    onClick: () => {
-      sendExportCsv(methods.getValues());
-    }
+    // onClick: () => {
+    //   sendExportCsv(methods.getValues());
+    // }
   });
 
   const model: TImportSourcesOnlyResultModel = methods.getValues();
 
   return (
-    <TdsPage title="TDS-Replay Sources Result">
+    <TdsPage id="importSourcesOnlyResultView" title="TDS-Replay Sources Result">
       <TdsForm<TImportSourcesOnlyResultModel>
-        methods={methods}
-        onSubmit={onSubmit}
+        name="frmImportSourcesOnlyResult"
+        onSubmit={methods.handleSubmit(onSubmit)}
         actions={formActions}
       >
         {model.sourceObj.length == 0

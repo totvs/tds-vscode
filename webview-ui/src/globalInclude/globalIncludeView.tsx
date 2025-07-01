@@ -14,13 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react";
-
 import "./globalInclude.css";
 import { TdsPage, tdsVscode } from "@totvs/tds-webtoolkit";
 import React from "react";
-import { FieldArrayWithId, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import { TdsForm, TdsLabelField, TdsSelectionFolderField, TdsSimpleTextField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { TdsForm, TdsLabelField, setDataModel, setErrorModel } from "@totvs/tds-webtoolkit";
 import { CommonCommandEnum, ReceiveMessage, sendSaveAndClose } from "@totvs/tds-webtoolkit";
 import { EMPTY_GLOBAL_INCLUDE_MODEL, TGlobalIncludeModel, TIncludePath } from "@tds-shared/index";
 
@@ -80,10 +78,10 @@ export default function GlobalIncludeView() {
   }
 
   return (
-    <TdsPage>
+    <TdsPage id="globalIncludeView">
       <TdsForm<TGlobalIncludeModel>
-        methods={methods}
-        onSubmit={onSubmit}
+        name="frmGlobalInclude"
+        onSubmit={methods.handleSubmit(onSubmit)}
         description={tdsVscode.l10n.t("The global search folder list is used when not specified in the server definition.")}>
 
         <section className="tds-row-container" >
@@ -93,7 +91,7 @@ export default function GlobalIncludeView() {
             info={tdsVscode.l10n.t("Enter the folders where the definition files should be searched")} />
         </section>
 
-        <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
+        {/* <VSCodeDataGrid id="includeGrid" grid-template-columns="30px">
           {fields.map((row, index: number) => (
             <VSCodeDataGridRow
               key={row.id}
@@ -126,7 +124,7 @@ export default function GlobalIncludeView() {
             </VSCodeDataGridCell>
           </VSCodeDataGridRow>
 
-        </VSCodeDataGrid>
+        </VSCodeDataGrid> */}
         {
           //TODO: melhorar e adicionar link (cuidado que pode ser por na área de trabalho)
           //servers.md#Local de gravação de *servers.json*
