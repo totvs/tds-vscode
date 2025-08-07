@@ -22,7 +22,7 @@
     "logix"
   ],
   "engines": {
-    "vscode": "^1.85.2"
+    "vscode": "^1.97.2"
   },
   "icon": "icons/totvs-developer-studio.png",
   "categories": [
@@ -85,10 +85,10 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/data-grid": "4.0.0-alpha.2",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@totvs/tds-da": "^1.2.72",
-    "@totvs/tds-ls": "^2.0.18",
+    "@totvs/tds-da": "^1.2.74",
+    "@totvs/tds-ls": "^2.0.20",
     "@types/react": "^16.14.20",
-    "@types/vscode": "^1.63.1",
+    "@types/vscode": "^1.97.2",
     "@vscode/debugadapter": "^1.51.1",
     "@vscode/l10n": "^0.0.16",
     "@vscode/webview-ui-toolkit": "^1.2.1",

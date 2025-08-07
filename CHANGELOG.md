@@ -1,6 +1,16 @@
 # Changelog
 
-## Versão [2.0.next]
+## Versão [2.0.12]
+
+### Correções
+
+#### Problema ao debugar propriedades que sejam array de Json [#1274](https://github.com/totvs/tds-vscode/issues/1274)
+
+Adicionado tratamento de propriedades do tipo JSon, com conteúdo *array*.
+
+#### \[LINTER] - Problema com fontes que no seu path tem acentuação [#1263](https://github.com/totvs/tds-vscode/issues/1263)
+
+Adicionado tratamento para correto tratamento de caminhos com acentuação (MacOS e Linux).
 
 ### Melhoria
 
@@ -9,6 +19,8 @@
 Caso `totvsLanguageServer.web.navigator` não tenha sido configurado o depurador será utilizado  o navegador padrão do sistema operacional para depuração Web (executor `totvs_language_web_debug`).
 
 Caso seja informado `totvsLanguageServer.web.arguments`, a especificação do navegador web a ser utilizado é obrigatória.
+
+#### Seleção de navegador Web para depuração [DTCLIENT01-5236](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-5236)
 
 Caso as chaves `webNavigator` e/ou `web.arguments` sejam informadas no executor da depuração, estas se sobreporão ao definido em `totvsLanguageServer.web.navigator` e `totvsLanguageServer.web.arguments` respectivamente.
 
@@ -20,16 +32,6 @@ Caso as chaves `webNavigator` e/ou `web.arguments` sejam informadas no executor 
 
 Adicionado processo de importação de lista de fontes para geração de pacotes de atualização (*patch*).
 O arquivo é no formato TXT, onde cada linha é um arquivo (fonte ou recurso).
-
-### Correções
-
-#### Problema ao debugar propriedades que sejam array de Json [#1274](https://github.com/totvs/tds-vscode/issues/1274)
-
-Adicionado tratamento de propriedades do tipo JSon, com conteúdo *array*.
-
-#### \[LINTER] - Problema com fontes que no seu path tem acentuação [#1263](https://github.com/totvs/tds-vscode/issues/1263)
-
-Adicionado tratamento para correto tratamento de caminhos com acentuação (MacOS e Linux).
 
 ## Versão [2.0.11]
 
