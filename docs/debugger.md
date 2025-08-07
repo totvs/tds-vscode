@@ -126,7 +126,11 @@ Caso queira modificar o comportamento do navegador no momento da sua inicializa�
 
 > Páginas acessadas em Maio/2024.
 
-| Devido a uma limitação na execução do navegador `Safari` por linha de comando, este navegador não é suportado para depuração via `SmartClient HTML`.
+> Devido a uma limitação na execução do navegador `Safari` por linha de comando, este navegador não é suportado para depuração via `SmartClient HTML`.
+>
+> Motivo pelo não suporte ao Safari, com base em informações colhidas na comunidade de suporte Apple.
+>
+> No Safari, não são aceitos argumentos de linha de comando principalmente porque este é um aplicativo Apple Cocoa, que não foi projetado para argumentos de linha de comando.
 
 ## SmartClient MacOS<a name="sc-macos"></a>
 

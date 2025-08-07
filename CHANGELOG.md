@@ -4,6 +4,10 @@
 
 ### Correções
 
+#### Debug travando appserver onde a cada erro o serviço precisa ser reiniciado [DTCLIENT01-5562](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-5562)
+
+Ajustado o comportamento quando solicitado "Parada (*Stop*) da depuração enquando há uma janela (*Dialog*) AdvPL.
+
 #### Problema ao debugar propriedades que sejam array de Json [#1274](https://github.com/totvs/tds-vscode/issues/1274)
 
 Adicionado tratamento de propriedades do tipo JSon, com conteúdo *array*.

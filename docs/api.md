@@ -1,14 +1,14 @@
 # Interface de Programação de Aplicação (API, _Application Programming Interface_)
 
-A API do **TDS-VSCode** fornece métodos para geração de PPOs (Programação de Programação de Objetos), manipulação de tokens RPO, registra uma nova conexão (servidor) e interação com ferramentas de TLPP.
+A _API_ do **TDS-VSCode** fornece métodos para geração de PPOs, manipulação de _tokens_ RPO, registrar uma nova conexão (servidor) e interação com ferramentas TLPP.
 
 > **ANTES DE USAR**
 >
-> Uma dessas funções da API, converse com a equipe de Tecnologia.
+> Antes de usar essa _API_, converse com a equipe de Tecnologia.
 
 ## Uso da API
 
-Segue exemplo de uso da API em TypeScript:
+Exemplo de uso da _API_ em TypeScript:
 
 ```typescript
 
