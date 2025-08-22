@@ -1115,11 +1115,6 @@
                 "description": "%tds.package.properties.waitForAttach.description%",
                 "default": 0
               },
-              "forceUtf8": {
-                "type": "boolean",
-                "description": "%tds.package.properties.forceUtf8.description%",
-                "default": false
-              },
               "enableProfile": {
                 "type": "boolean",
                 "description": "%tds.package.properties.enableProfile.description%",
@@ -1469,6 +1464,17 @@
                 "type": "number",
                 "description": "%tds.package.properties.waitForAttach.description%",
                 "default": 0
+              },
+              "extendFeatures": {
+                "type": "object",
+                "description": "%tds.package.debug.extend.features%",
+                "properties": {
+                  "charDetails": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "%tds.package.debug.extend.features.charDetails%"
+                  }
+                }
               }
             }
           }
@@ -1481,7 +1487,10 @@
             "program": "${command:AskForProgramName}",
             "cwb": "${workspaceFolder}",
             "isMultiSession": true,
-            "enableTableSync": true
+            "enableTableSync": true,
+            "extendFeatures": {
+              "charDetails": false
+            }
           }
         ],
         "variables": {
