@@ -16,6 +16,10 @@ Adicionado tratamento de propriedades do tipo JSon, com conteúdo *array*.
 
 Adicionado tratamento para correto tratamento de caminhos com acentuação (MacOS e Linux).
 
+#### Debugger retorna NIL ao inspecionar propriedades com :: no AdvPL [#1352](https://github.com/totvs/tds-vscode/issues/1352)
+
+Ajustado o tratamento de :: como sendo equivalente ao :self durante a depuração.
+
 ### Melhoria
 
 #### Uso do navegador padrão para depuração Web [DTCLIENT01-5330](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-5330)
