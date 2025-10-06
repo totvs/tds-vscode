@@ -17,7 +17,6 @@
     "4gl",
     "tds",
     "totvs",
-    "monitor",
     "protheus",
     "logix"
   ],
@@ -85,7 +84,7 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/data-grid": "4.0.0-alpha.2",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@totvs/tds-da": "^1.2.76",
+    "@totvs/tds-da": "^1.2.77",
     "@totvs/tds-ls": "^2.0.20",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.97.2",
@@ -1022,15 +1021,6 @@
         "category": "TDSReplay"
       },
       {
-        "command": "tds-monitor.open-monitor-view",
-        "title": "%tds-monitor.open-monitor-view%",
-        "category": "TOTVSMonitor",
-        "icon": {
-          "light": "resources/light/monitor.png",
-          "dark": "resources/dark/monitor.png"
-        }
-      },
-      {
         "command": "totvs-developer-studio.open-loadrpoinfo-view",
         "title": "%totvs-developer-studio.open-rpoinfo%",
         "category": "TOTVS",
@@ -1526,7 +1516,8 @@
       "totvs-plataform": [
         {
           "id": "totvs_server",
-          "name": "%tds.package.server.view%"
+          "name": "%tds.package.server.view%",
+          "icon": "icons/totvs24x24.png"
         }
       ]
     },
@@ -1608,11 +1599,6 @@
           "command": "totvs-developer-studio.disconnect",
           "when": "view == totvs_server && viewItem == serverItem",
           "group": "AAtotvsServer@2"
-        },
-        {
-          "command": "tds-monitor.open-monitor-view",
-          "when": "view == totvs_server && viewItem == serverItem",
-          "group": "AAtotvsServer@3"
         },
         {
           "command": "totvs-developer-studio.patchGenerate.fromRPO",
@@ -1718,11 +1704,6 @@
       "view/title": [
         {
           "command": "totvs-developer-studio.add",
-          "when": "view == totvs_server",
-          "group": "navigation"
-        },
-        {
-          "command": "tds-monitor.open-monitor-view",
           "when": "view == totvs_server",
           "group": "navigation"
         },
