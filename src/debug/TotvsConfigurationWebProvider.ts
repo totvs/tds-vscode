@@ -41,21 +41,6 @@ export class TotvsConfigurationWebProvider
       config.smartclientUrl = config.smartclientUrl + '/';
     }
 
-    const connectedServerItem: ServerItem = serverProvider.connectedServerItem;
-    if (!config.smartclientUrl) {
-      // if address do not start with http:// or https:// add scheme
-      if (!connectedServerItem.address.startsWith("http://") && !connectedServerItem.address.startsWith("https://")) {
-        let scheme = connectedServerItem.secure ? "https" : "http";
-        config.smartclientUrl = `${scheme}://${connectedServerItem.address}:${connectedServerItem.port}/webapp/`;
-      } else {
-        config.smartclientUrl = `${connectedServerItem.address}:${connectedServerItem.port}/webapp/`;
-      }
-    }
-
-    if (config.smartclientUrl && !config.smartclientUrl.endsWith("/")) {
-      config.smartclientUrl = config.smartclientUrl + '/';
-    }
-
     return config;
   }
 }
