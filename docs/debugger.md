@@ -230,7 +230,10 @@ user function startRest()
   //O nome do job REST e ambiente de execução dele, podem ser obtidos no arquivo
   //de configuração do _appServer_.
   //Detalhes da função em https://tdn.totvs.com/display/tec/StartJob
-  startjob("HTTP_START", "p12", .f.) //lwait, sempre dever ser false
+  local cJobName := "HTTP_START" //nome do job REST - geralmente é HTTP_START
+  local cEnv     := "nome_environment" //ambiente de execução do job
+  local lWait    := .f. //se true, aguarda o término do job - sempre dever ser false
+  startjob(cJobName, cEnv, lWait)
   sleep(15000) //aguarda o serviço ser inicializado. Ajuste o tempo se necessário.
   alert(">> Serviço REST inicializado. <<")
 return
