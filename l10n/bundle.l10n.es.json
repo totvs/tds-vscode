@@ -327,7 +327,7 @@
   "Could not reconnect to server {0}": "No se puede reconectar con el servidor Cloud",
   "Disconnecting from the server [{0}]": "Desconexión del servidor [{0}]",
   "Rename the server": "Renombrar el Servidor",
-  "Serve saved. Name: {0}": "Servidor grabado",
+  "Server saved. Name: {0}": "Servidor grabado",
   "The server selected is already connected.": "El servidor ya está conectado!",
   "Connecting to the server {0}": "Conectando al servidor {0}",
   "Authenticating user [{0}] in server [{1}]": "Usuario de autenticación [{0}] en el servidor [{1}]",

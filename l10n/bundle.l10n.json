@@ -28,7 +28,7 @@
   "Could not reconnect to server {0}": "Could not reconnect to server {0}",
   "Disconnecting from the server [{0}]": "Disconnecting from the server [{0}]",
   "Rename the server": "Rename the server",
-  "Serve saved. Name: {0}": "Serve saved. Name: {0}",
+  "Server saved. Name: {0}": "Server saved. Name: {0}",
   "The server selected is already connected.": "The server selected is already connected.",
   "Connecting to the server {0}": "Connecting to the server {0}",
   "Authenticating user [{0}] in server [{1}]": "Authenticating user [{0}] in server [{1}]",

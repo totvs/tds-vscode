@@ -73,7 +73,7 @@ export class WorkbenchPageObject {
   }
 
   async isSavedServer(): Promise<boolean> {
-    return await this.testNotification(/Serve saved/);
+    return await this.testNotification(/Server saved/);
   }
 
   async isLauncherSaved(): Promise<boolean> {

@@ -27,7 +27,7 @@ Quando estamos em uma depuração, pode ocorrer do VS-Code solicitar uma informa
 
 O _appServer_ também envia para o VS-Code algumas informações, tais como, "olha estou nesse fonte e nessa linha" e pergunta "O quê quer que eu faça?". Nesse ponto, pode ser necessário o usuário que está depurando, responda com acionamento de uma ação, como por exemplo, "vá para a próxima instrução" ou "execute esta função até terminar". Enquanto o _appServer_ aguarda a resposta do VS-Code, TODAS as _threads_ ficam congeladas. E você foi no banheiro naquele momento. Dentro de alguns minutos terá um enxurrada de reclamações que o servidor travou.
 
-Isso pode acontecer se tiver um, dez, cem, mil, usuários. Imagina o problema. Cresce exponencialmente ao número de usuários.>
+Isso pode acontecer se tiver um, dez, cem, mil, usuários. Imagina o problema. Cresce exponencialmente ao número de usuários.
 
 Outra razão, é que devido ao processo de depuração do _appServer_, normalmente é necessário que o processo de depuração seja o primeiro a ser inicializados, pois somente as _threads_ iniciadas após eles que serão passíveis de depuração e para garantir isso, é comum encerrar na "força" todas as _threads_ no ar, principalmente se a depuração for em _jobs_, _schedulers_, _rest_, e outros do tipo.
 
@@ -238,7 +238,10 @@ user function startRest()
   //O nome do job REST e ambiente de execução dele, podem ser obtidos no arquivo
   //de configuração do _appServer_.
   //Detalhes da função em https://tdn.totvs.com/display/tec/StartJob
-  startjob("HTTP_START", "p12", .f.) //lwait, sempre dever ser false
+  local cJobName := "HTTP_START" //nome do job REST - geralmente é HTTP_START
+  local cEnv     := "nome_environment" //ambiente de execução do job
+  local lWait    := .f. //se true, aguarda o término do job - sempre dever ser false
+  startjob(cJobName, cEnv, lWait)
   sleep(15000) //aguarda o serviço ser inicializado. Ajuste o tempo se necessário.
   alert(">> Serviço REST inicializado. <<")
 return

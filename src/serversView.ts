@@ -301,7 +301,7 @@ export class ServersExplorer {
 
       if (serverId !== undefined && showSucess) {
         vscode.window.showInformationMessage(
-          vscode.l10n.t("Serve saved. Name: {0}", serverName)
+          vscode.l10n.t("Server saved. Name: {0}", serverName)
         );
       }
 
