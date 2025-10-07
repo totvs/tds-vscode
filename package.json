@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "publisher": "TOTVS",
   "preview": true,
   "author": {
@@ -17,12 +17,11 @@
     "4gl",
     "tds",
     "totvs",
-    "monitor",
     "protheus",
     "logix"
   ],
   "engines": {
-    "vscode": "^1.85.2"
+    "vscode": "^1.97.2"
   },
   "icon": "icons/totvs-developer-studio.png",
   "categories": [
@@ -45,7 +44,7 @@
     "compile": "npm-run-all compile:*",
     "compile:parse_4gl": "pegjs -o ./src/parser/4gl-parser.js ./syntaxes/4gl.pegjs",
     "compile:extension": "tsc -p ./src",
-    "compile:views": "webpack --mode development",
+    "compile:views": "webpack --mode production",
     "compile:views-production": "webpack --mode production",
     "compile:esbuild": "node ./esbuild.js",
     "compile-test": "tsc -p ./test",
@@ -85,10 +84,10 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/data-grid": "4.0.0-alpha.2",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@totvs/tds-da": "^1.2.72",
-    "@totvs/tds-ls": "^2.0.18",
+    "@totvs/tds-da": "^1.2.77",
+    "@totvs/tds-ls": "^2.0.20",
     "@types/react": "^16.14.20",
-    "@types/vscode": "^1.63.1",
+    "@types/vscode": "^1.97.2",
     "@vscode/debugadapter": "^1.51.1",
     "@vscode/l10n": "^0.0.16",
     "@vscode/webview-ui-toolkit": "^1.2.1",
@@ -199,7 +198,7 @@
       },
       {
         "id": "terminal.ansiGreen",
-        "description": "Cor da identifcação do nível de mensagem 'Informação'.",
+        "description": "Cor da identificação do nível de mensagem 'Informação'.",
         "defaults": {
           "dark": "#5aa85a",
           "light": "#5aa85a",
@@ -208,7 +207,7 @@
       },
       {
         "id": "terminal.ansiYellow",
-        "description": "Cor da identifcação do nível de mensagem 'Aviso'.",
+        "description": "Cor da identificação do nível de mensagem 'Aviso'.",
         "defaults": {
           "dark": "#d8d53c",
           "light": "#d8d53c",
@@ -217,7 +216,7 @@
       },
       {
         "id": "terminal.ansiRed",
-        "description": "Cor da identifcação do nível de mensagem 'Erro'.",
+        "description": "Cor da identificação do nível de mensagem 'Erro'.",
         "defaults": {
           "dark": "#eb1313",
           "light": "#eb1313",
@@ -226,7 +225,7 @@
       },
       {
         "id": "terminal.ansiCyan",
-        "description": "Cor da identifcação da hora do evento.",
+        "description": "Cor da identificação da hora do evento.",
         "defaults": {
           "dark": "#11c9cf",
           "light": "#11c9cf",
@@ -1022,15 +1021,6 @@
         "category": "TDSReplay"
       },
       {
-        "command": "tds-monitor.open-monitor-view",
-        "title": "%tds-monitor.open-monitor-view%",
-        "category": "TOTVSMonitor",
-        "icon": {
-          "light": "resources/light/monitor.png",
-          "dark": "resources/dark/monitor.png"
-        }
-      },
-      {
         "command": "totvs-developer-studio.open-loadrpoinfo-view",
         "title": "%totvs-developer-studio.open-rpoinfo%",
         "category": "TOTVS",
@@ -1082,8 +1072,7 @@
         "configurationAttributes": {
           "launch": {
             "required": [
-              "program",
-              "smartclientBin"
+              "program"
             ],
             "properties": {
               "program": {
@@ -1115,11 +1104,6 @@
                 "type": "number",
                 "description": "%tds.package.properties.waitForAttach.description%",
                 "default": 0
-              },
-              "forceUtf8": {
-                "type": "boolean",
-                "description": "%tds.package.properties.forceUtf8.description%",
-                "default": false
               },
               "enableProfile": {
                 "type": "boolean",
@@ -1397,6 +1381,14 @@
                 "description": "%tds.package.properties.webNavigator.description.web%",
                 "default": ""
               },
+              "web.arguments": {
+                "type": "array",
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "description": "%tds.package.web.arguments%"
+              },
               "enableMultiThread": {
                 "type": "boolean",
                 "description": "%tds.package.properties.enableMultiThread.description%",
@@ -1457,6 +1449,22 @@
                 "default": [
                   "${command:AskForProgramArguments}"
                 ]
+              },
+              "waitForAttach": {
+                "type": "number",
+                "description": "%tds.package.properties.waitForAttach.description%",
+                "default": 0
+              },
+              "extendFeatures": {
+                "type": "object",
+                "description": "%tds.package.debug.extend.features%",
+                "properties": {
+                  "charDetails": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "%tds.package.debug.extend.features.charDetails%"
+                  }
+                }
               }
             }
           }
@@ -1469,7 +1477,10 @@
             "program": "${command:AskForProgramName}",
             "cwb": "${workspaceFolder}",
             "isMultiSession": true,
-            "enableTableSync": true
+            "enableTableSync": true,
+            "extendFeatures": {
+              "charDetails": false
+            }
           }
         ],
         "variables": {
@@ -1505,7 +1516,8 @@
       "totvs-plataform": [
         {
           "id": "totvs_server",
-          "name": "%tds.package.server.view%"
+          "name": "%tds.package.server.view%",
+          "icon": "icons/totvs24x24.png"
         }
       ]
     },
@@ -1587,11 +1599,6 @@
           "command": "totvs-developer-studio.disconnect",
           "when": "view == totvs_server && viewItem == serverItem",
           "group": "AAtotvsServer@2"
-        },
-        {
-          "command": "tds-monitor.open-monitor-view",
-          "when": "view == totvs_server && viewItem == serverItem",
-          "group": "AAtotvsServer@3"
         },
         {
           "command": "totvs-developer-studio.patchGenerate.fromRPO",
@@ -1697,11 +1704,6 @@
       "view/title": [
         {
           "command": "totvs-developer-studio.add",
-          "when": "view == totvs_server",
-          "group": "navigation"
-        },
-        {
-          "command": "tds-monitor.open-monitor-view",
           "when": "view == totvs_server",
           "group": "navigation"
         },

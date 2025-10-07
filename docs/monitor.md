@@ -1,5 +1,7 @@
 # TDS: Monitor
 
+> **OBSOLETO [DEPRECATED]**: O Monitor foi removido do tds-vscode e o [TOTVS | WebMonitor](https://tdn.totvs.com/display/tec/TOTVS+%7C+WebMonitor) deve ser usado em seu lugar.
+
 > Requisitos
 >
 > - servidor/ambiente conectado

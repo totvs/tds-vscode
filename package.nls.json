@@ -90,7 +90,7 @@
   "tds.package.totvs_language_debug_with_arguments": "TOTVS Language Debug with arguments",
   "tds.package.properties.program.description": "Program/Function name",
   "tds.package.properties.trace.description": "Enable logging of the Debug Adapter Protocol.",
-  "tds.package.properties.smartclientBin.description": "The SmartClient executable full path.",
+  "tds.package.properties.smartclientBin.description": "The SmartClient executable full path. If not informed, the one associated with the current server will be used.",
   "tds.package.properties.cwb.description": "Workspace Root Path",
   "tds.package.properties.enableMultiThread.description": "If the debug must enable multi thread execution",
   "tds.package.properties.enableProfile.description": "If the profile must be enabled",

@@ -88,7 +88,7 @@
 	"tds.package.totvs_language_debug_with_arguments": "Отладка языка TOTVS с аргументами",
 	"tds.package.properties.program.description": "Имя программы / функции",
 	"tds.package.properties.trace.description": "Включить ведение журнала для протокола адаптера отладки.",
-	"tds.package.properties.smartclientBin.description": "Полный путь к исполняемому файлу SmartClient.",
+	"tds.package.properties.smartclientBin.description": "Полный путь к исполняемому файлу SmartClient. Если не указано, будет использоваться тот, который связан с текущим сервером.",
 	"tds.package.properties.cwb.description": "Корневой путь к рабочему пространству",
 	"tds.package.properties.enableMultiThread.description": "Используется в случае, если отладка должна активировать многопоточное выполнение",
 	"tds.package.properties.enableProfile.description": "Используется для включения профиля",

@@ -88,7 +88,7 @@
 	"tds.package.totvs_language_debug_with_arguments": "TOTVS Language Debug with arguments",
 	"tds.package.properties.program.description": "Nome do programa/função",
 	"tds.package.properties.trace.description": "Habilitar o log do protocolo do adaptador de depuração.",
-	"tds.package.properties.smartclientBin.description": "O caminho completo executável do SmartClient.",
+	"tds.package.properties.smartclientBin.description": "O caminho completo executável do SmartClient. Se não informado será utilizado o associado ao server corrente.",
 	"tds.package.properties.cwb.description": "Caminho Raiz da Área de Trabalho",
 	"tds.package.properties.enableMultiThread.description": "Se a depuração precisar ativar a execução de vários threads",
 	"tds.package.properties.enableProfile.description": "Se o perfil precisar ser ativado",

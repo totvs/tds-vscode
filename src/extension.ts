@@ -52,7 +52,6 @@ import {
 } from "./formatter";
 import { register4glOutline } from "./outline";
 import { registerDebug, _debugEvent } from "./debug";
-import { openMonitorView } from "./monitor/monitorLoader";
 import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
 import { initStatusBarItems } from "./statusBar";
 import { PatchEditorProvider } from "./patch/inspect/patchEditor";
@@ -416,16 +415,6 @@ export function activate(context: ExtensionContext) {
         );
       }
     )
-  );
-
-  //monitor
-  context.subscriptions.push(
-    vscode.commands.registerCommand("tds-monitor.open-monitor-view", () => {
-      vscode.window.setStatusBarMessage(
-        `$(gear~spin) ${vscode.l10n.t("Starting monitor...")}`,
-        Promise.resolve(openMonitorView(context))
-      );
-    })
   );
 
   //rpo log

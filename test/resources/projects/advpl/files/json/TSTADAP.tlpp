@@ -1,27 +1,91 @@
 #INCLUDE 'TOTVS.CH'
 
 User Function TSTADAP
-	Local jTeste    := JsonObject():New()
-	Local jTeste2   := JsonObject():New()
-	Local cJson     := ''
-	Local oFile     := Nil
-	Local aLines    := {}
+	Local cJson := ""
+	local cRet := ""
+	local aNames
+	local jJson1
+	local jJson2
+	local jJson3
+	local jJson4
+	local jJson5
+	local jJson6
 
-	oFile := FwFileReader():New('W:\ws_tds_vscode\tds-vscode\test\resources\projects\advpl\files\json\jsonteste.json')
-	If(oFile:Open())
-		aLines := oFile:GetAllLines()
-		oFile:Close()
-		aEval(aLines, { |x| cJson += x })
-	EndIf
-	jTeste:FromJson(cJson)
+	//JSON com propriedades 1o nível
+	cJson := '{"date":"13/01/2025","time":"11:18:35","servers":[{"server":"127.0.0.1:5001","connections":"0","quarantine":"-","standby":"0","usuarios":"0","threads":"17","memoria":"56020","cpu":"1"},{"server":"127.0.0.1:5002","connections":"0","quarantine":"-","standby":"0","usuarios":"0","threads":"17","memoria":"56356","cpu":"1"}],"total":{"sessoes":"0","usuarios":"0"}}'
+	jJson1 := JsonObject():new()
+	cRet := jJson1:FromJson(cJson)
+	aNames := jJson1:GetNames()
+	conout("cRet:" + cvaltochar(cRet))
 
-	cJson := ""
-	oFile := FwFileReader():New('W:\ws_tds_vscode\tds-vscode\test\resources\projects\advpl\files\json\jsonteste2.json')
-	If(oFile:Open())
-		aLines := oFile:GetAllLines()
-		oFile:Close()
-		aEval(aLines, { |x| cJson += x })
-	EndIf
-	jTeste2:FromJson(cJson)
+	//JSON com 10 propriedades 1o nível e 2o nivel
+	cJson := createElement(10)
+	jJson2 := JsonObject():new()
+	cRet := jJson2:FromJson(cJson)
+	aNames := jJson2:GetNames()
+	conout("cRet:" + cvaltochar(cRet))
+
+	//JSON com 150 propriedades 1o nível e 2o nivel
+	cJson := createElement(150)
+	jJson3 := JsonObject():new()
+	cRet := jJson3:FromJson(cJson)
+	aNames := jJson3:GetNames()
+	conout("cRet:" + cvaltochar(cRet))
+
+	// JSON com dois elementos no 1o nível
+	cJson := readFile('W:\ws_tds_vscode\tds-vscode-dev2\test\resources\projects\advpl\files\json\cliente-2.json')
+	jJson4 := JsonObject():new()
+	cRet := jJson4:FromJson(cJson)
+	aNames := jJson4:GetNames()
+	conout("cRet:" + cvaltochar(cRet))
+
+	// JSON com nove elementos no 1o nível
+	cJson := readFile('W:\ws_tds_vscode\tds-vscode-dev2\test\resources\projects\advpl\files\json\jsonteste-9.json')
+	jJson5 := JsonObject():new()
+	cRet := jJson5:FromJson(cJson)
+	aNames := jJson5:GetNames()
+	conout("cRet:" + cvaltochar(cRet))
+
+	// JSON com 200 elementos no 1o nível
+	cJson := readFile('W:\ws_tds_vscode\tds-vscode-dev2\test\resources\projects\advpl\files\json\jsonteste-386.json')
+	jJson6 := JsonObject():new()
+	cRet := jJson6:FromJson(cJson)
+	aNames := jJson6:GetNames()
+	conout("cRet:" + cvaltochar(cRet))
 
 Return
+
+static function readFile(cFile)
+	Local cBuffer := ''
+	Local nH , nTam
+
+	nH := Fopen(cFile)
+	IF nH != -1
+		nTam := fSeek(nH,0,2)
+		fSeek(nH,0)
+		cBuffer := space(nTam)
+		fRead(nH,@cBuffer,nTam)
+		fClose(nH)
+	Else
+		MsgStop("Falha na abertura do arquivo ["+cFile+"]","FERROR "+cValToChar(Ferror()))
+	Endif
+
+Return cBuffer
+
+static function createElement(anQtde)
+	local cResult := ""
+	local i
+
+	for i := 1 to anQtde - 1
+		cResult += '"element_'+strZero(i,5)+'": {'
+		cResult += '"date": "13/01/2025",'
+		cResult += '"time": "11:18:35"'
+		cResult += '},'
+	next
+
+	cResult += '"element_'+strZero(anQtde,5)+'": {'
+	cResult += '"date": "13/01/2025",'
+	cResult += '"time": "11:18:35"'
+	cResult += '}'
+
+return "{" + cResult + "}"

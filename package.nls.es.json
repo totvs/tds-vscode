@@ -88,7 +88,7 @@
 	"tds.package.totvs_language_debug_with_arguments": "Depuración de lenguaje TOTVS con argumentos",
 	"tds.package.properties.program.description": "Nombre del programa / función",
 	"tds.package.properties.trace.description": "Habilite el registro del protocolo del adaptador de depuración.",
-	"tds.package.properties.smartclientBin.description": "La ruta completa ejecutable de SmartClient.",
+	"tds.package.properties.smartclientBin.description": "La ruta completa ejecutable de SmartClient. Si no se informa, se utilizará el asociado al servidor actual.",
 	"tds.package.properties.cwb.description": "Ruta raíz del espacio de trabajo",
 	"tds.package.properties.enableMultiThread.description": "Si la depuración debe habilitar la ejecución de subprocesos múltiples",
 	"tds.package.properties.enableProfile.description": "Si el perfil debe estar habilitado",
