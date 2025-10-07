@@ -195,8 +195,6 @@ Problemas na ferramenta TDS Replay
 
 ******************************************************
 
-
-&nbsp;
 # Gerando Informações sobre o Problema
 
 > ATENÇÃO: Não utilize ambientes, nem usuários/senhas reais de produção durante a geração de informações sobre o problema. Informações sensíveis podem ser gravadas nestes logs gerados.
@@ -285,6 +283,21 @@ O arquivo **"settings.json"** deve ficar como a seguir, observem a vírgula que 
 
 Os arquivos **"totvsls.log"**, **"totvsls_in.log"** e **"totvsls_out.log"** serão gerados na raiz do projeto aberto.
 
+Caso o problema no 'tds-vscode' esteja causando reinícios com a mensagem "Connection to server got closed. Server will restart." aparecendo no "Output", os logs acima não terão informações importantes sendo necessário adcionar uma linha conforme abaixo:
+```
+{
+    "totvsLanguageServer.launch.args": [
+        "--log-file=totvsls.log",
+        "--log-file-append=totvsls-full.log",
+        "--record=totvsls"
+    ],
+    "totvsLanguageServer.welcomePage": false,
+    "totvsLanguageServer.askCompileResult": true,
+    "totvsLanguageServer.askEncodingChange": false
+}
+```
+E neste caso nos envie o log completo **"totvsls-full.log"** que deve conter informações que possam ajudar a identificar o problema.
+
 Se o problema for relacionado a depuração, além dos logs **"Gerais"** deve ser gerado o log de **"Depuração"**. Adicione a linha abaixo, na seção _"configurations"_ em seu arquivo **"launch.json"** dentro da pasta _".vscode"_ de seu projeto aberto.
 ```
 "logFile": "${workspaceFolder}\\dap.log"
@@ -294,15 +307,13 @@ O arquivo **"launch.json"** deve ficar como a seguir, observem que uma vírgula 
 ...
 "configurations": [
  {
-  "type": "totvs_language_debug",
+  "type": "totvs_language_web_debug",
   "request": "launch",
-  "name": "Protheus 19 Debug",
+  "name": "Smart Client Webapp Debug",
   "program": "${command:AskForProgramName}",
   "cwb": "${workspaceFolder}",
-  "smartclientBin": "T:/servers/lg_191205_12.1.25/bin/smartclient/smartclient.exe",
   "isMultiSession": true,
   "enableTableSync": true,
-  "waitForAttach": 5,
   "logFile": "${workspaceFolder}\\dap.log"
  }
 ],
