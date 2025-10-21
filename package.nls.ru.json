@@ -21,6 +21,7 @@
 	"tds.package.compilation.tempDir": "временный каталог",
 	"tds.package.web.navigator.debug": "Веб-навигатор (отладка с помощью SmartClientHtml).",
 	"tds.package.web.arguments": "Аргументы веб-навигатора",
+	"tds.package.web.navigator.open.external": "Не показывать предупреждение об открытии внешнего браузера",
 	"tds.package.editor.notification.show": "Уровень уведомления будет отображаться во всплывающем окне",
 	"tds.package.editor.notification.show.none": "Нет",
 	"tds.package.editor.notification.show.only_errors": "Только ошибки",

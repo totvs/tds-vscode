@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "2.0.12",
+  "version": "2.0.13",
   "publisher": "TOTVS",
   "preview": true,
   "author": {
@@ -81,11 +81,11 @@
   },
   "dependencies": {
     "@material-ui/core": "4.12.4",
-    "@material-ui/icons": "^4.11.3",
     "@material-ui/data-grid": "4.0.0-alpha.2",
+    "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.11.3-deprecations.1",
     "@totvs/tds-da": "^1.2.77",
-    "@totvs/tds-ls": "^2.0.20",
+    "@totvs/tds-ls": "^2.0.23",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.97.2",
     "@vscode/debugadapter": "^1.51.1",
@@ -128,7 +128,7 @@
     "cleanup": "^0.3.0",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
-    "esbuild": "^0.16.17",
+    "esbuild": "^0.25.0",
     "eslint": "^8.23.1",
     "eslint-config-standard-with-typescript": "^23.0.0",
     "event-stream": "^4.0.1",
@@ -140,7 +140,6 @@
     "gulp-typescript": "^6.0.0-alpha.1",
     "gulp-util": "^3.0.8",
     "json-merger": "^1.1.7",
-    "lodash.template": ">=4.5.0",
     "mocha": "^9.1.3",
     "npm-run-all": "^4.1.5",
     "pegjs": "^0.10.0",
@@ -545,6 +544,11 @@
             "type": "string"
           },
           "description": "%tds.package.web.arguments%"
+        },
+        "totvsLanguageServer.web.navigator.open.external": {
+          "type": "boolean",
+          "default": false,
+          "description": "%tds.package.web.navigator.open.external%"
         },
         "totvsLanguageServer.editor.show.notification": {
           "scope": "window",
@@ -1019,6 +1023,15 @@
         "command": "totvs-developer-studio.tdsreplay.webview.timeLine",
         "title": "%tds.package.OpenTimeLineWebview%",
         "category": "TDSReplay"
+      },
+      {
+        "command": "tds-monitor.open-monitor-view",
+        "title": "%tds-monitor.open-monitor-view%",
+        "category": "TOTVSMonitor",
+        "icon": {
+          "light": "resources/light/monitor.png",
+          "dark": "resources/dark/monitor.png"
+        }
       },
       {
         "command": "totvs-developer-studio.open-loadrpoinfo-view",
@@ -1601,6 +1614,11 @@
           "group": "AAtotvsServer@2"
         },
         {
+          "command": "tds-monitor.open-monitor-view",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "AAtotvsServer@3"
+        },
+        {
           "command": "totvs-developer-studio.patchGenerate.fromRPO",
           "when": "view == totvs_server && viewItem == serverItem",
           "group": "CtotvsPatch@1"
@@ -1704,6 +1722,11 @@
       "view/title": [
         {
           "command": "totvs-developer-studio.add",
+          "when": "view == totvs_server",
+          "group": "navigation"
+        },
+        {
+          "command": "tds-monitor.open-monitor-view",
           "when": "view == totvs_server",
           "group": "navigation"
         },

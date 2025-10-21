@@ -1,5 +1,23 @@
 # Changelog
 
+## Versão [2.0.13]
+
+### Correções
+
+#### Queda do tds-vscode no Mac Tahoe [#1367](https://github.com/totvs/tds-vscode/issues/1367)
+
+Correção do erro no Linter que acometia apenas a versão atualizada do MacOS Tahoe.
+
+#### Debug Assertion Failed [#1369](https://github.com/totvs/tds-vscode/issues/1369)
+
+Durante edição de fontes com combinações de caracteres de encodings incompatíveis com CP1252 ocorria erro de "Debug Assertion Failed".
+
+### Melhoria
+
+#### Remoção de ação para abrir Monitor revertida
+
+Porém agora apenas abrimos o WebMonitor externamente. O Monitor 'embedded' foi substituido pela integração externa com o WebMonitor.
+
 ## Versão [2.0.12]
 
 ### Correções
