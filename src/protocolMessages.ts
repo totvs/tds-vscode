@@ -84,6 +84,17 @@ class DisconnectReturnInfo {
   message: string;
 }
 
+interface MntAuthNode {
+  id: any;
+  tokenJson: string;
+}
+
+export interface IMntAuthInfo {
+  sucess: boolean;
+  tokenJson: string;
+  error: string;
+}
+
 export function sendDisconnectRequest(
   connectedServerItem: ServerItem
 ): Thenable<ITokenInfo> {
@@ -272,6 +283,27 @@ export function sendValidationRequest(
     );
 }
 
+export function mntAuthenticateRequest(serverItem: ServerItem): Thenable<any> {
+  return languageClient
+    .sendRequest("$totvsmonitor/auth", {
+      authInfo: {
+        connectionToken: serverItem.token,
+      },
+    })
+    .then(
+      (mntAuthNode: MntAuthNode) => {
+        let tokenJson: string = mntAuthNode.tokenJson;
+        if (tokenJson) {
+          return { sucess: true, tokenJson: tokenJson };
+        } else {
+          return { sucess: false, tokenJson: "" };
+        }
+      },
+      (err: ResponseError<object>) => {
+        return { sucess: false, tokenJson: "", error: err.message };
+      }
+    );
+}
 
 export function sendGetUsersRequest(server: ServerItem): Thenable<any> {
   return languageClient

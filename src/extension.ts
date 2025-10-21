@@ -68,6 +68,7 @@ import { registerWorkspace } from "./workspace";
 import { sendTelemetry } from "./protocolMessages";
 import { registerXRef } from "./xreferences";
 import { tlppTools } from "./tlpp-tools/tlppTools";
+import { openWebMonitor } from "./monitor/monitorLoader";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -417,6 +418,13 @@ export function activate(context: ExtensionContext) {
     )
   );
 
+  //monitor
+  context.subscriptions.push(
+    vscode.commands.registerCommand("tds-monitor.open-monitor-view", () => {
+      openWebMonitor();
+    })
+  );
+
   //rpo log
   context.subscriptions.push(
     vscode.commands.registerCommand(
@@ -550,7 +558,7 @@ export function activate(context: ExtensionContext) {
   registerXRef(context);
 
   //Eventos e outros associados a vscode.workspace
-  registerWorkspace(context);
+  //registerWorkspace(context);
 
   //Capturador de logs.
   registerLog(context);

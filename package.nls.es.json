@@ -21,6 +21,7 @@
 	"tds.package.compilation.tempDir": "Directorio temporal",
 	"tds.package.web.navigator.debug": "Navegador web (depuración con SmartClientHtml).",
 	"tds.package.web.arguments": "Argumentos del navegador web",
+	"tds.package.web.navigator.open.external": "No mostrar advertencia de apertura del navegador externo",
 	"tds.package.editor.notification.show": "Nivel de notificación que se mostrará en 'popup'",
 	"tds.package.editor.notification.show.none": "Ninguna",
 	"tds.package.editor.notification.show.only_errors": "Solo errores",

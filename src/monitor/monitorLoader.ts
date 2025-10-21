@@ -11,6 +11,8 @@ import {
   sendIsLockServer,
   sendSetEnvEncodesRequest,
   IEnvEncode,
+  mntAuthenticateRequest,
+  IMntAuthInfo,
 } from "../protocolMessages";
 import { MonitorPanelAction, IMonitorPanelAction } from "./actions";
 import Utils, { ServersConfig, groupBy } from "../utils";
@@ -27,6 +29,65 @@ const DEFAULT_SPEED = 30;
 const WS_STATE_KEY = "MONITOR_TABLE";
 
 let monitorLoader: MonitorLoader = undefined;
+
+function openWebMonitorAction(connectedServerItem: ServerItem) {
+  // Tenta autenticar no monitor
+  let authenticate = mntAuthenticateRequest(connectedServerItem);
+  vscode.window.withProgress({
+    location: vscode.ProgressLocation.Notification,
+    title: `${vscode.l10n.t("Starting WebMonitor...")}`,
+    cancellable: false
+  }, () => {
+    return authenticate;
+  });
+  authenticate.then((result: IMntAuthInfo) => {
+    let urlToOpen = "";
+    let scheme = connectedServerItem.secure ? "https" : "http";
+    if (result.sucess) {
+      // Abre o monitor com token pre autenticado
+      let tokenJsonStr = result.tokenJson;
+      let tokenJson = JSON.parse(tokenJsonStr);
+      urlToOpen = `${scheme}://${connectedServerItem.address}:${connectedServerItem.port}/webmonitor/main?token=${tokenJson.token}`;
+    } else {
+      // Abre o monitor na tela de login
+      console.log(result.error)
+      urlToOpen = `${scheme}://${connectedServerItem.address}:${connectedServerItem.port}/webmonitor/`;
+    }
+    vscode.env.openExternal(vscode.Uri.parse(urlToOpen));
+  }, (error) => {
+    vscode.window.showErrorMessage(
+      vscode.l10n.t("It was not possible to authenticate to the monitor at [{0}].", connectedServerItem.name)
+    )
+    console.log(error)
+  });
+}
+
+export function openWebMonitor() {
+  const connectedServerItem = ServersConfig.getCurrentServer();
+  if (connectedServerItem === undefined || connectedServerItem === '') {
+    vscode.window.showWarningMessage(
+      vscode.l10n.t("No server selected. Please select a server to monitor.")
+    );
+    return;
+  }
+  const cfg = vscode.workspace.getConfiguration("totvsLanguageServer");
+  let webNavigatorOpenExternal: boolean = cfg.get("web.navigator.open.external") || false;
+  if (webNavigatorOpenExternal) { // skip warning
+    openWebMonitorAction(connectedServerItem);
+  } else {
+    vscode.window.showWarningMessage(
+      "This will redirect the WebMonitor to open in your default browser. Continue?", { modal: true }, "Yes", "Yes, do not show this again"
+    ).then((answer) => {
+      if (answer === "Yes, do not show this again") {
+        cfg.update("web.navigator.open.external", true); // vscode.ConfigurationTarget.Global);
+      }
+      if (answer === "Yes" || answer === "Yes, do not show this again") {
+        openWebMonitorAction(connectedServerItem);
+      }
+    });
+  }
+  return;
+}
 
 export function openMonitorView(context: vscode.ExtensionContext) {
   const server = ServersConfig.getCurrentServer();
