@@ -448,6 +448,37 @@ async function doValidatePatch(
           }
           if (response.errorCode == 5) { // Erro de patch com resources mais antigos que o do RPO
             // exibir os recursos mais antigos
+            if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
+              // use first workspace folder
+              const rootPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+              vscode.window
+              .showWarningMessage(
+                vscode.l10n.t("There are patches with sources/resources older than RPO. Check Output 'TOTVS Patch Validate' for details.")
+              );
+              let outputPatchValidateInfo = `Patch Validation problems for ${patchFilePath}\n`;
+              outputPatchValidateInfo += "-".repeat(100)+"\n";
+              outputPatchValidateInfo += `Patch Date          | RPO Date            | Filename\n`;
+              outputPatchValidateInfo += "-".repeat(100)+"\n";
+              response.patchValidates.forEach((patchValidateItem: any) => {
+                outputPatchValidateInfo += `${patchValidateItem.datePatch} | ${patchValidateItem.dateRpo} | ${patchValidateItem.file}\n`;
+              });
+              let pathFile = rootPath + `/patchValidate_${patchFilePath}.txt`;
+              if (fs.existsSync(pathFile)) {
+                let r = Math.random().toString(36).substring(7);
+                pathFile = rootPath + `/patchValidate_${patchFilePath}_${r}.txt`;
+              }
+              let setting: vscode.Uri = vscode.Uri.parse("untitled:" + pathFile);
+              vscode.workspace.openTextDocument(setting).then((a: vscode.TextDocument) => {
+                vscode.window.showTextDocument(a, 1, false).then(e => {
+                  e.edit(edit => {
+                    edit.insert(new vscode.Position(0, 0), outputPatchValidateInfo);
+                  });
+                });
+              }, (error: any) => {
+                console.error(error);
+                debugger;
+              });
+            }
           }
           if (response.errorCode == 8) { // Erro de TPH apenas ocorre se existem patches mais recentes que o validado
             // exibir mensagens e links para patches mais recentes
@@ -471,6 +502,7 @@ async function doValidatePatch(
           file: patchFilePath,
           message: retMessage,
           errorCode: response.errorCode,
+          patchValidates: response.patchValidates,
           language: vscode.env.language,
           tphInfoRet: tphInfoRet,
         });
