@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "2.0.13",
+  "version": "2.0.14",
   "publisher": "TOTVS",
   "preview": true,
   "author": {
@@ -84,7 +84,7 @@
     "@material-ui/data-grid": "4.0.0-alpha.2",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@totvs/tds-da": "^1.2.77",
+    "@totvs/tds-da": "^1.2.78",
     "@totvs/tds-ls": "^2.0.23",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.97.2",
@@ -532,6 +532,19 @@
           "default": "",
           "description": "%tds.package.compilation.tempDir%"
         },
+        "totvsLanguageServer.web-agent.agent": {
+          "type": "string",
+          "default": "",
+          "description": "%tds.package.web-agent.agent.debug%"
+        },
+        "totvsLanguageServer.web-agent.arguments": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "description": "%tds.package.web-agent.arguments%"
+        },
         "totvsLanguageServer.web.navigator": {
           "type": "string",
           "default": "",
@@ -545,10 +558,10 @@
           },
           "description": "%tds.package.web.arguments%"
         },
-        "totvsLanguageServer.web.navigator.open.external": {
+        "totvsLanguageServer.web.open.external": {
           "type": "boolean",
           "default": false,
-          "description": "%tds.package.web.navigator.open.external%"
+          "description": "%tds.package.web.open.external%"
         },
         "totvsLanguageServer.editor.show.notification": {
           "scope": "window",

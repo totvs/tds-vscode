@@ -22,9 +22,13 @@ export class TotvsConfigurationWebProvider
     const cfg = vscode.workspace.getConfiguration("totvsLanguageServer");
     let webNavigator: string = config["webNavigator"] || cfg.get("web.navigator") || "";
     const webNavigatorArgs: string[] = config["web.arguments"] || cfg.get("web.arguments") || [];
+    let webAgent: string = config["webAgent"] || cfg.get("web-agent.agent") || "";
+    const webAgentArgs: string[] = config["web-agent.arguments"] || cfg.get("web-agent.arguments") || [];
 
     config.webNavigator = webNavigator;
     config.webNavigatorArgs = webNavigatorArgs;
+    config.webAgent = webAgent;
+    config.webAgentArgs = webAgentArgs;
 
     const connectedServerItem: ServerItem = serverProvider.connectedServerItem;
     if (!config.smartclientUrl) {

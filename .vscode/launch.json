@@ -19,7 +19,6 @@
 			"name": "Extension",
 			"runtimeExecutable": "${execPath}",
 			"args": [
-				"${workspaceFolder}/test/resources/projects/advpl3-ação",
 				"--extensionDevelopmentPath=${workspaceFolder}",
 				"--inspect"
 			],

@@ -203,6 +203,7 @@
   "No server connected.": "No server connected.",
   "No validation errors": "No validation errors",
   "Patch validated.": "Patch validated.",
+  "There are patches with sources/resources older than RPO. Check Output 'TOTVS Patch Validate' for details.": "There are patches with sources/resources older than RPO. Check Output 'TOTVS Patch Validate' for details.",
   "Old files applied.": "Old files applied.",
   "Patch applied.": "Patch applied.",
   "Generate Patch": "Generate Patch",
