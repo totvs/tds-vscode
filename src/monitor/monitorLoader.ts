@@ -71,7 +71,7 @@ export function openWebMonitor() {
     return;
   }
   const cfg = vscode.workspace.getConfiguration("totvsLanguageServer");
-  let webNavigatorOpenExternal: boolean = cfg.get("web.navigator.open.external") || false;
+  let webNavigatorOpenExternal: boolean = cfg.get("web.open.external") || false;
   if (webNavigatorOpenExternal) { // skip warning
     openWebMonitorAction(connectedServerItem);
   } else {
@@ -79,7 +79,7 @@ export function openWebMonitor() {
       "This will redirect the WebMonitor to open in your default browser. Continue?", { modal: true }, "Yes", "Yes, do not show this again"
     ).then((answer) => {
       if (answer === "Yes, do not show this again") {
-        cfg.update("web.navigator.open.external", true); // vscode.ConfigurationTarget.Global);
+        cfg.update("web.open.external", true); // vscode.ConfigurationTarget.Global);
       }
       if (answer === "Yes" || answer === "Yes, do not show this again") {
         openWebMonitorAction(connectedServerItem);

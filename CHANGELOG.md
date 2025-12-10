@@ -1,5 +1,27 @@
 # Changelog
 
+## Versão [2.0.14]
+
+### Correções
+
+#### Erro de linter no MacOS [#1388](https://github.com/totvs/tds-vscode/issues/1388)
+
+Erros diversos no Linter que ocorriam apenas no Mac.
+
+#### C2090 File not Found std.ch [#1389](https://github.com/totvs/tds-vscode/issues/1389)
+
+Qualquer fonte aberto no Mac indicava o erro "C2090 File not Found std.ch" no Linter.
+
+### Melhoria
+
+#### Exibição de informação adicional na validação de patch desatualizados
+
+Ao validar um patch que já esteja desatualizado em relação ao RPO era exibida a mensagem "Resources in patch older than RPO", mas não informava quais arquivos estavam desatualizado. Agora uma nova aba com essas informações é exibida e pode ser salva e/ou manipulada pelo usuário.
+
+#### Adição de configuração opcional para depuração via launch do web-agent
+
+Caso informado um caminho válido de um web-agent, ou exista um web-agent no caminho padrão de instalação, a depuração será iniciada através do launch do web-agent.
+
 ## Versão [2.0.13]
 
 ### Correções
