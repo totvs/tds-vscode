@@ -300,7 +300,7 @@ E neste caso nos envie o log completo **"totvsls-full.log"** que deve conter inf
 
 Se o problema for relacionado a depuração, além dos logs **"Gerais"** deve ser gerado o log de **"Depuração"**. Adicione a linha abaixo, na seção _"configurations"_ em seu arquivo **"launch.json"** dentro da pasta _".vscode"_ de seu projeto aberto.
 ```
-"logFile": "${workspaceFolder}\\dap.log"
+"logFile": "${workspaceFolder}/dap.log"
 ```
 O arquivo **"launch.json"** deve ficar como a seguir, observem que uma vírgula foi adicionada a linha anterior, caso contrário o arquivo JSON acusará problema de parse:
 ```
@@ -314,7 +314,7 @@ O arquivo **"launch.json"** deve ficar como a seguir, observem que uma vírgula 
   "cwb": "${workspaceFolder}",
   "isMultiSession": true,
   "enableTableSync": true,
-  "logFile": "${workspaceFolder}\\dap.log"
+  "logFile": "${workspaceFolder}/dap.log"
  }
 ],
 ...
