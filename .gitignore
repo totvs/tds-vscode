@@ -21,3 +21,4 @@ syntaxes/build
 test/**/no_git
 test/**/fw/**
 test/**/.vscode
+.vscode/settings.json
