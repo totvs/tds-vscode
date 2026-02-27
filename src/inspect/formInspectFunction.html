@@ -127,7 +127,7 @@
     let lenQuery = query.length;
 
 		if (query === "") {
-			filterData = [ "<< ${tds.webview.functionsinspector.filter.functions']} >>" ];
+			filterData = [ "<< ${d.localize['tds.webview.functionsinspector.filter.functions']} >>" ];
 		} else if (query === "*"){
 			filterData = [...srcAll]; // Spread é a clonagem mais rapida de Arrays
 		}
