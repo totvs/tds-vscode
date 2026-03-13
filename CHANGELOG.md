@@ -1,5 +1,13 @@
 # Changelog
 
+## Versão [2.0.16]
+
+### Correções
+
+#### The TOTVS Language Server server crashed [#1429](https://github.com/totvs/tds-vscode/issues/1429)
+
+Criado mecanismo para interceptar "crash" ocasionado por fontes "problemáticos" durante a execução do Linter.
+
 ## Versão [2.0.15]
 
 ### Correções

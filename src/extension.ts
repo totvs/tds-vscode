@@ -558,7 +558,7 @@ export function activate(context: ExtensionContext) {
   registerXRef(context);
 
   //Eventos e outros associados a vscode.workspace
-  //registerWorkspace(context);
+  registerWorkspace(context);
 
   //Capturador de logs.
   registerLog(context);
