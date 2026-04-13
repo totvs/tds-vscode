@@ -3,7 +3,7 @@
     "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes;m:\\protheus\\includes_tlpp",
     "totvsLanguageServer.editor.show.notification": "all",
     "totvsLanguageServer.trace.debug": "off",
-    "totvsLanguageServer.trace.server": "off",
+    "totvsLanguageServer.trace.server": "verbose",
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
         "--verbose",
@@ -24,5 +24,7 @@
         }
     },
     "totvsLanguageServer.compilation.generatePpoFile": false,
-    "totvsLanguageServer.workspaceServerConfig": true
+    "totvsLanguageServer.workspaceServerConfig": false,
+    "totvsLanguageServer.editor.codeLens": false,
+    "totvsLanguageServer.editor.index.cache": "onDisk"
 }

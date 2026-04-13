@@ -19,6 +19,7 @@
 			"name": "Extension",
 			"runtimeExecutable": "${execPath}",
 			"args": [
+				"${workspaceFolder}/test/resources/projects/advpl",
 				"--extensionDevelopmentPath=${workspaceFolder}",
 				"--inspect",
 				"--user-data-dir=${env:USERPROFILE}/AppData/Roaming/Code"
@@ -38,7 +39,7 @@
 			"name": "Extension WithoutCompile",
 			"runtimeExecutable": "${execPath}",
 			"args": [
-				"C:\\Totvs\\Workspaces\\vscodewstests",
+				"${workspaceFolder}/test/resources/projects/advpl",
 				"--extensionDevelopmentPath=${workspaceFolder}",
 				"--inspect",
 				"--user-data-dir=${env:USERPROFILE}/AppData/Roaming/Code"

@@ -39,7 +39,8 @@
     "url": "https://github.com/totvs/tds-vscode.git"
   },
   "scripts": {
-    "clean2": "gulp clean",
+    "clean2": "npx rimraf out node_modukes",
+    "clean": "gulp clean",
     "clean-logs": "npx rimraf ./**/*.log ./**/*.dmp --verbose",
     "compile": "npm-run-all compile:*",
     "compile:parse_4gl": "pegjs -o ./src/parser/4gl-parser.js ./syntaxes/4gl.pegjs",
