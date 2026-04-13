@@ -1,3 +1,5 @@
+C:\Users\acandido\.vscode\extensions\totvs.tds-vscode-2.0.16\node_modules\@totvs\tds-ls\bin\windows\
+
 # TOTVS Developer Studio para VSCode
 
 <!--[![GitHub stars](https://img.shields.io/github/stars/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/stargazers)

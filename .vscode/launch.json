@@ -19,6 +19,7 @@
 			"name": "Extension",
 			"runtimeExecutable": "${execPath}",
 			"args": [
+				"${workspaceFolder}/test/resources/projects/advpl",
 				"--extensionDevelopmentPath=${workspaceFolder}",
 				"--inspect"
 			],
@@ -37,7 +38,7 @@
 			"name": "Extension WithoutCompile",
 			"runtimeExecutable": "${execPath}",
 			"args": [
-				"${workspaceFolder}/test/resources/projects/advpl3-ação",
+				"${workspaceFolder}/test/resources/projects/advpl",
 				"--extensionDevelopmentPath=${workspaceFolder}",
 				"--inspect"
 			],

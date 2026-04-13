@@ -1,0 +1,1 @@
+Sempre utilize as ferramentas de Language Server para responder perguntas sobre navegação de código.

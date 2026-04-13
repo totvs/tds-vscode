@@ -29,6 +29,8 @@ export function getLanguageClient(
     args = args.concat(notificationlevel);
   }
 
+  args.push("--wait-for-attach=30");
+
   args = args.concat(clientConfig["launchArgs"]);
 
   let env: any = {};
@@ -74,7 +76,7 @@ export function getLanguageClient(
       chmodSync(advpls, "755");
     }
   }
-  console.log("tempDir: "+tempDir);
+  console.log("tempDir: " + tempDir);
 
   let serverOptions: ServerOptions = {
     command: advpls,

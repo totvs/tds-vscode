@@ -7,6 +7,14 @@
 
 #include "totvs.ch"
 
+user function _index()
+
+return
+
+static function _index()
+
+return
+
 user function ;
 		array1()
 	local list_50   := array(50)
@@ -18,56 +26,58 @@ user function ;
 	local list_250  := array(250)
 	local list_500  := array(500)
 	local list_1000 := array(1000)
-	local _index    := 0
+	local _index    := 1
 
 	conout("start array")
 
+	u_index()
+
 	for _index := 1 TO 1000
 		if (_index < 51)
-		  list_50[_index] := _index
+			list_50[_index] := _index
 		endif
 
 		if (_index < 101)
-		  list_100[_index] := _index
+			list_100[_index] := _index
 		endif
 
 		if (_index < 102)
-		  list_101[_index] := _index
+			list_101[_index] := _index
 		endif
 
 		if (_index < 200)
-		  list_199[_index] := _index
+			list_199[_index] := _index
 		endif
 
 		if (_index < 201)
-		  list_200[_index] := _index
+			list_200[_index] := _index
 		endif
 
 		if (_index < 224)
-		  list_223[_index] := _index
+			list_223[_index] := _index
 		endif
 
 		if (_index < 251)
-		  list_250[_index] := _index
+			list_250[_index] := _index
 		endif
 
 		if (_index < 501)
-		  list_500[_index] := _index
+			list_500[_index] := _index
 		endif
 
 		list_1000[_index] := _index
 	next
 
 	conout("display com erro")
-   	conout( list_1000[2000])
-	
+	conout( list_1000[2000])
+
 	conout("depois do display com erro")
 
 return
 
 user function array2()
 	local list_200   := array(200)
-	local _index    := 0
+	local _index    := 2
 
 	conout("start array")
 
@@ -75,7 +85,7 @@ user function array2()
 
 		list_200[_index] := {}
 
-		while len(list_200[_index]) < 200 
+		while len(list_200[_index]) < 200
 			aAdd(list_200[_index], len(list_200[_index])+201)
 		enddo
 
