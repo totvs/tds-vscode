@@ -1,5 +1,21 @@
 # Changelog
 
+## Versão [2.0.16]
+
+### Correções
+
+#### The TOTVS Language Server server crashed [#1429](https://github.com/totvs/tds-vscode/issues/1429)
+
+Criado mecanismo para interceptar "crash" ocasionado por fontes "problemáticos" durante a execução do Linter.
+
+### Melhoria
+
+#### Sugestão de verificação da chave BuildKillUsers ao ocorrer erro COMPILEERROR-300
+
+Adição de mensagem quando ocorrer falha na obtenção de acesso exclusivo do RPO.
+
+> **Verify that you have the setting (BuildKillUsers = 1) defined in the [General] section of your AppServer.ini file**
+
 ## Versão [2.0.15]
 
 ### Correções

@@ -856,3 +856,12 @@ export function sendTelemetry(): Thenable<any> {
 export function sendDidChangeConfiguration(settings: any): Thenable<any> {
   return languageClient.sendNotification(DidChangeConfigurationNotification.type, { settings: settings });
 }
+
+export function sendDidSaveTextDocument(uri: string, text: string): Thenable<any> {
+  return languageClient.sendRequest("textDocument/didSave", {
+    textDocument: {
+      uri: uri
+    },
+    text: text
+  });
+}
