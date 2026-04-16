@@ -18,6 +18,20 @@ export interface IServerInformations {
   permissions: string[];
 }
 
+export class ServerGroupItem extends vscode.TreeItem {
+  constructor(
+    public readonly groupPath: string,
+    public readonly children: Array<ServerGroupItem | ServerItem | EnvSection> = [],
+    public collapsibleState: vscode.TreeItemCollapsibleState = vscode.TreeItemCollapsibleState.Collapsed
+  ) {
+    super(groupLabel(groupPath), collapsibleState);
+  }
+
+  iconPath = new vscode.ThemeIcon("folder");
+  tooltip = this.groupPath;
+  contextValue = "serverGroup";
+}
+
 export class ServerItem extends vscode.TreeItem {
   public environment: string = "";
   public username: string = "";
@@ -36,6 +50,7 @@ export class ServerItem extends vscode.TreeItem {
     public token: string,
     public environments?: Array<EnvSection>,
     public includes?: string[],
+    public readonly group?: string,
     public readonly command?: vscode.Command
   ) {
     super(name, collapsibleState);
@@ -58,8 +73,8 @@ export class ServerItem extends vscode.TreeItem {
   description = `${this.address}:${this.port}`;
   tooltip = `${serverTypeString(this.type)} ${this.buildVersion}`;
   iconPath = {
-    light: path.join(RESOURCE_LIGHT, serverTypeImage(this)),
-    dark: path.join(RESOURCE_DARK, serverTypeImage(this)),
+    light: vscode.Uri.file(path.join(RESOURCE_LIGHT, serverTypeImage(this))),
+    dark: vscode.Uri.file(path.join(RESOURCE_DARK, serverTypeImage(this))),
   };
 
   contextValue = this.isConnected ? "serverItem" : "serverItemNotConnected";
@@ -78,8 +93,8 @@ export class EnvSection extends vscode.TreeItem {
   }
 
   iconPath = {
-    light: path.join(RESOURCE_LIGHT, environmentTypeImage(this)),
-    dark: path.join(RESOURCE_DARK, environmentTypeImage(this)),
+    light: vscode.Uri.file(path.join(RESOURCE_LIGHT, environmentTypeImage(this))),
+    dark: vscode.Uri.file(path.join(RESOURCE_DARK, environmentTypeImage(this))),
   };
 
   tooltip = environmentTypeString(this);
@@ -132,3 +147,12 @@ function environmentTypeImage(environment: EnvSection): string {
 
   return `environment${sufix}.svg`;
 }
+
+function groupLabel(groupPath: string): string {
+  const normalized = groupPath.replace(/\\/g, "/");
+  const parts = normalized.split("/").filter(Boolean);
+
+  return parts.length > 0 ? parts[parts.length - 1] : groupPath;
+}
+
+export type ServerTreeItem = ServerGroupItem | ServerItem | EnvSection;

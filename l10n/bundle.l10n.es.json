@@ -379,5 +379,9 @@
   "The command to Disable/Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually": "El comando para deshabilitar/habilitar el sincronismo de la tabla necesita una sesión de depuración activa.Para una configuración inicial, cambie el archivo la launch.json manualmente",
   "Compile Key": "Compilar la llave",
   "from-to of count": "from-to el count",
-  "Debugging using SIGAMDI or SIGAADV may result in unexpected behavior, instead use the modules directly. Do you want to continue?": "La depuración mediante SIGAMDI o SIGAADV puede provocar un comportamiento inesperado; en su lugar, utilice los módulos directamente. ¿Quiere continuar?"
+  "Debugging using SIGAMDI or SIGAADV may result in unexpected behavior, instead use the modules directly. Do you want to continue?": "La depuración mediante SIGAMDI o SIGAADV puede provocar un comportamiento inesperado; en su lugar, utilice los módulos directamente. ¿Quiere continuar?",
+  "Folder/Group (optional)": "Carpeta/Grupo (opcional)",
+  "Examples: ERP, ERP/REST": "Ejemplos: ERP, ERP/REST",
+  "Move server to group": "Mover servidor al grupo",
+  "Use / to create subgroups. Leave empty to move the server to root.": "Use / para crear subgrupos. D?jelo vac?o para mover el servidor a la ra?z."
 }
