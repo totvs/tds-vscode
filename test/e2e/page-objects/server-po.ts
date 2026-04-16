@@ -17,6 +17,7 @@ export class ServerPageObject extends AbstractPageObject {
     await this.setValue("serverTypeID", data.serverType);
     await this.setValue("nameID", data.serverName);
     await this.setValue("addressID", data.address);
+    await this.setValue("groupID", data.group || "");
     await this.setValue("portID", data.port);
     await this.setValue("includePath", data.includePath.join(";"));
 

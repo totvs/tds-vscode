@@ -378,5 +378,9 @@
   "Message": "Сообщение",
   "Detail": "Деталь",
   "Path": "Путь",
-  "Debugging using SIGAMDI or SIGAADV may result in unexpected behavior, instead use the modules directly. Do you want to continue?": "Отладка с использованием SIGAMDI или SIGAADV может привести к неожиданному поведению. Вместо этого используйте модули напрямую. Продолжить?"
+  "Debugging using SIGAMDI or SIGAADV may result in unexpected behavior, instead use the modules directly. Do you want to continue?": "Отладка с использованием SIGAMDI или SIGAADV может привести к неожиданному поведению. Вместо этого используйте модули напрямую. Продолжить?",
+  "Folder/Group (optional)": "Folder/Group (optional)",
+  "Examples: ERP, ERP/REST": "Examples: ERP, ERP/REST",
+  "Move server to group": "Move server to group",
+  "Use / to create subgroups. Leave empty to move the server to root.": "Use / to create subgroups. Leave empty to move the server to root."
 }

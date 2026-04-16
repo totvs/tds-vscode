@@ -45,6 +45,15 @@
 				</div>
 
 				<div class="wrap-input">
+					<input class="inputText input-group" type="text" id="groupID" name="group"
+						placeholder="${d.localize['tds.webview.newServer.group']}">
+					<!--Folder/Group (optional)-->
+					<span class="focus-input fi-group">
+					</span>
+				</div>
+				<p class="fieldHint">${d.localize["tds.webview.newServer.group.examples"]}</p>
+
+				<div class="wrap-input">
 					<input class="inputText input-port" type="number" id="portID" name="port" pattern="[0-9]{5}"
 						placeholder="${d.localize['tds.webview.newServer.port']}" required>
 					<!--Port-->
@@ -99,6 +108,7 @@
 		const addressID = document.getElementById('addressID').value;
 		const serverNameID = document.getElementById('nameID').value;
 		const portID = document.getElementById('portID').value;
+		const groupID = document.getElementById('groupID').value;
 		const includePath = document.getElementById('includePath').value.split(";");
 		const serverType = document.getElementById('serverTypeID').value;
 
@@ -107,6 +117,7 @@
 			address: addressID,
 			serverName: serverNameID,
 			port: portID,
+			group: groupID,
 			'close': close,
 			includes: includePath,
 			serverType: serverType

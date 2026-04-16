@@ -232,6 +232,22 @@ export async function fillDebugConfig(title: string) {
   await delay();
 }
 
+export async function fillTextInput(value: string, title?: string) {
+  const pickBox = new InputBox();
+  await delay();
+  pickBox.wait();
+
+  if (title) {
+    const currentTitle = await pickBox.getTitle();
+    expect(currentTitle).is.equal(title);
+  }
+
+  await pickBox.setText(value);
+  await delay();
+  await pickBox.confirm();
+  await delay();
+}
+
 export async function fireContextMenuAction(
   element: ViewItem | ViewControl,
   name: string
