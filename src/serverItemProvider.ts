@@ -1,11 +1,17 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
-import { EnvSection, ServerItem, ServerType } from "./serverItem";
+import {
+  EnvSection,
+  ServerGroupItem,
+  ServerItem,
+  ServerTreeItem,
+  ServerType,
+} from "./serverItem";
 import Utils, { ServersConfig } from "./utils";
 import { updateStatusBarItems } from "./statusBar";
 
 class ServerItemProvider
-  implements vscode.TreeDataProvider<ServerItem | EnvSection>
+  implements vscode.TreeDataProvider<ServerTreeItem>
 {
   isConnected(server: ServerItem) {
     return (
@@ -21,13 +27,12 @@ class ServerItemProvider
     );
   }
 
-  private _onDidChangeTreeData: vscode.EventEmitter<
-    ServerItem | EnvSection | undefined
-  > = new vscode.EventEmitter<ServerItem | undefined>();
-  readonly onDidChangeTreeData: vscode.Event<
-    ServerItem | EnvSection | undefined
-  > = this._onDidChangeTreeData.event;
-  public localServerItems: Array<ServerItem>;
+  private _onDidChangeTreeData: vscode.EventEmitter<ServerTreeItem | undefined> =
+    new vscode.EventEmitter<ServerTreeItem | undefined>();
+  readonly onDidChangeTreeData: vscode.Event<ServerTreeItem | undefined> =
+    this._onDidChangeTreeData.event;
+  public localServerItems: Array<ServerItem> = [];
+  private rootItems: Array<ServerTreeItem> = [];
 
   private _connectedServerItem: ServerItem | undefined = undefined;
 
@@ -54,7 +59,7 @@ class ServerItemProvider
 
   }
 
-  refresh(element?: ServerItem): void {
+  refresh(element?: ServerTreeItem): void {
     this._onDidChangeTreeData.fire(element);
   }
 
@@ -87,64 +92,24 @@ class ServerItemProvider
     }
   }
 
-  getTreeItem(element: ServerItem | EnvSection): vscode.TreeItem {
+  getTreeItem(element: ServerTreeItem): vscode.TreeItem {
     return element;
   }
 
-  getChildren(element?: ServerItem): Thenable<ServerItem[] | EnvSection[]> {
-    if (element) {
-      if (element.environments) {
-        return Promise.resolve(element.environments);
-      } else {
-        const listOfEnvironments = ServersConfig.getServerById(element.id).environments;
-        if (listOfEnvironments.size > 0) {
-          this.localServerItems[element.id].environments =
-            listOfEnvironments.map(
-              (env) =>
-                new EnvSection(
-                  env,
-                  element,
-                )
-            );
-          this.localServerItems[element.id].collapsibleState =
-            vscode.TreeItemCollapsibleState.Expanded;
-          //Workaround: Bug que nao muda visualmente o collapsibleState se o label permanecer intalterado
-          this.localServerItems[element.id].label = this.localServerItems[
-            element.id
-          ].label.endsWith(" ")
-            ? this.localServerItems[element.id].label.trim()
-            : this.localServerItems[element.id].label + " ";
-          element.environments = listOfEnvironments;
-
-          Promise.resolve(
-            new EnvSection(
-              element.name,
-              element,
-            )
-          );
-        } else {
-          return Promise.resolve([]);
-        }
-      }
-    } else {
-      if (!this.localServerItems) {
-        this.localServerItems = this.setConfigWithServerConfig();
-      }
+  getChildren(element?: ServerTreeItem): Thenable<ServerTreeItem[]> {
+    if (element instanceof ServerGroupItem) {
+      return Promise.resolve(this.sortTreeItems(element.children));
     }
 
-    return Promise.resolve(
-      this.localServerItems.sort((srv1, srv2) => {
-        const label1 = srv1.name.toLowerCase();
-        const label2 = srv2.name.toLowerCase();
-        if (label1 > label2) {
-          return 1;
-        }
-        if (label1 < label2) {
-          return -1;
-        }
-        return 0;
-      })
-    );
+    if (element instanceof ServerItem) {
+      return Promise.resolve(element.environments ?? []);
+    }
+
+    if (this.rootItems.length === 0 && this.localServerItems.length === 0) {
+      this.rootItems = this.setConfigWithServerConfig();
+    }
+
+    return Promise.resolve(this.sortTreeItems(this.rootItems));
   }
 
   checkServersConfigListener(refresh: boolean): void {
@@ -162,7 +127,7 @@ class ServerItemProvider
       fs.watch(serversJson, { encoding: "buffer" }, (eventType, filename) => {
         if (filename && eventType === "change") {
           updateStatusBarItems();
-          this.localServerItems = this.setConfigWithServerConfig();
+          this.rootItems = this.setConfigWithServerConfig();
           this.refresh();
         }
       });
@@ -170,7 +135,7 @@ class ServerItemProvider
       this.configFilePath = serversJson;
 
       if (refresh) {
-        this.localServerItems = this.setConfigWithServerConfig();
+        this.rootItems = this.setConfigWithServerConfig();
         this.refresh();
       }
     }
@@ -192,7 +157,8 @@ class ServerItemProvider
       buildVersion: string,
       token: string,
       environments: Array<EnvSection>,
-      includes: string[]
+      includes: string[] | undefined,
+      group: string | undefined
     ): ServerItem => {
       return new ServerItem(
         serverItem,
@@ -205,34 +171,20 @@ class ServerItemProvider
         buildVersion,
         token,
         environments,
-        includes
+        includes,
+        group
       );
     };
     const listServer = new Array<ServerItem>();
+    const rootItems = new Array<ServerTreeItem>();
+    const groups = new Map<string, ServerGroupItem>();
 
     ServersConfig.getServers().forEach((element) => {
-      let environmentsServer = new Array<EnvSection>();
       let token: string = element.token ? element.token : "";
 
-      if (element.environments) {
-        element.environments.forEach((environment) => {
-          const env = new EnvSection(
-            environment,
-            element,
-          );
-
-          // // XXX porque? sao dois forEach (servidores e environments) mas token seria sobrescrito e guardaria apenas o ultimo???
-          // if (serverConfig.savedTokens) {
-          //   serverConfig.savedTokens.forEach((savedToken) => {
-          //     if (savedToken[0] === element.id + ":" + element.environment) {
-          //       token = savedToken[1].token;
-          //     }
-          //   });
-          // }
-          token = ServersConfig.getSavedTokens(element.id, element.environment);
-
-          environmentsServer.push(env);
-        });
+      if (element.environment) {
+        token =
+          ServersConfig.getSavedTokens(element.id, element.environment) ?? token;
       }
 
       const si: ServerItem = serverItem(
@@ -244,19 +196,154 @@ class ServerItemProvider
         element.id,
         element.buildVersion,
         token,
-        environmentsServer,
-        element.includes
+        [],
+        element.includes,
+        element.group
       );
+
+      const environmentsServer =
+        element.environments?.map(
+          (environment) =>
+            new EnvSection(
+              environment,
+              si
+            )
+        ) ?? [];
+
+      si.environments = environmentsServer;
+
       if (element.smartclientBin) {
         si.smartclientBin = element.smartclientBin;
       }
-      si.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+      si.collapsibleState =
+        environmentsServer.length > 0
+          ? vscode.TreeItemCollapsibleState.Collapsed
+          : vscode.TreeItemCollapsibleState.None;
       listServer.push(si);
+
+      this.attachServerToTree(rootItems, groups, si);
     });
 
-    return listServer;
+    this.localServerItems = listServer;
+
+    return rootItems;
+  }
+
+  private attachServerToTree(
+    rootItems: Array<ServerTreeItem>,
+    groups: Map<string, ServerGroupItem>,
+    serverItem: ServerItem
+  ) {
+    const segments = this.splitGroupPath(serverItem.group);
+
+    if (segments.length === 0) {
+      rootItems.push(serverItem);
+      return;
+    }
+
+    let currentChildren = rootItems;
+    let currentPath = "";
+
+    segments.forEach((segment) => {
+      currentPath = currentPath ? `${currentPath}/${segment}` : segment;
+
+      let group = groups.get(currentPath);
+      if (!group) {
+        group = new ServerGroupItem(currentPath);
+        groups.set(currentPath, group);
+        currentChildren.push(group);
+      }
+
+      currentChildren = group.children;
+    });
+
+    currentChildren.push(serverItem);
+  }
+
+  private splitGroupPath(group: string | undefined): string[] {
+    if (!group) {
+      return [];
+    }
+
+    return group
+      .split(/[\\/]+/)
+      .map((segment) => segment.trim())
+      .filter((segment) => segment.length > 0);
+  }
+
+  private sortTreeItems(items: Array<ServerTreeItem>): Array<ServerTreeItem> {
+    return [...items].sort((item1, item2) => {
+      const item1IsGroup = item1 instanceof ServerGroupItem;
+      const item2IsGroup = item2 instanceof ServerGroupItem;
+
+      if (item1IsGroup !== item2IsGroup) {
+        return item1IsGroup ? -1 : 1;
+      }
+
+      return this.getLabel(item1).localeCompare(this.getLabel(item2), undefined, {
+        sensitivity: "base",
+      });
+    });
+  }
+
+  private getLabel(item: ServerTreeItem): string {
+    return typeof item.label === "string" ? item.label : item.label?.label ?? "";
+  }
+}
+
+const SERVER_TREE_MIME = "application/vnd.code.tree.totvs_server";
+
+class ServerDragAndDropController
+  implements vscode.TreeDragAndDropController<ServerTreeItem>
+{
+  readonly dragMimeTypes = [SERVER_TREE_MIME];
+  readonly dropMimeTypes = [SERVER_TREE_MIME];
+
+  async handleDrag(
+    source: readonly ServerTreeItem[],
+    dataTransfer: vscode.DataTransfer
+  ): Promise<void> {
+    const serverIds = source
+      .filter((item): item is ServerItem => item instanceof ServerItem)
+      .map((item) => item.id);
+
+    if (serverIds.length > 0) {
+      dataTransfer.set(
+        SERVER_TREE_MIME,
+        new vscode.DataTransferItem(JSON.stringify({ serverIds }))
+      );
+    }
+  }
+
+  async handleDrop(
+    target: ServerTreeItem | undefined,
+    dataTransfer: vscode.DataTransfer
+  ): Promise<void> {
+    const transferItem = dataTransfer.get(SERVER_TREE_MIME);
+    if (!transferItem) {
+      return;
+    }
+
+    const payload = JSON.parse(await transferItem.asString());
+    const serverIds: string[] = payload.serverIds ?? [];
+
+    if (serverIds.length === 0) {
+      return;
+    }
+
+    const targetGroup =
+      target instanceof ServerGroupItem
+        ? target.groupPath
+        : target instanceof ServerItem
+          ? target.group
+          : undefined;
+
+    serverIds.forEach((serverId) => {
+      ServersConfig.updateServerGroup(serverId, targetGroup);
+    });
   }
 }
 
 const serverProvider = new ServerItemProvider();
+export const serverDragAndDropController = new ServerDragAndDropController();
 export default serverProvider;

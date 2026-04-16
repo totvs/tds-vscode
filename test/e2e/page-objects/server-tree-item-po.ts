@@ -2,6 +2,7 @@ import { By, TreeItem, ViewItemAction } from "vscode-extension-tester";
 import {
   delay,
   fillEnvironment,
+  fillTextInput,
   fillUserdata,
   fireContextMenuAction,
 } from "../helper";
@@ -116,6 +117,17 @@ export class ServerTreeItemPageObject {
     await this.select();
     await fireContextMenuAction(this.serverTreeItem, "Reconnect");
     // await delay();
+  }
+
+  async fireMoveToRootAction(): Promise<void> {
+    await this.select();
+    await fireContextMenuAction(this.serverTreeItem, "Move to root");
+  }
+
+  async fireMoveToGroupAction(groupPath: string): Promise<void> {
+    await this.select();
+    await fireContextMenuAction(this.serverTreeItem, "Move to group...");
+    await fillTextInput(groupPath, "Move server to group");
   }
 
   async fireAddServerAction(): Promise<void> {

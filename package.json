@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "2.0.14",
+  "version": "2.0.15",
   "publisher": "TOTVS",
   "preview": true,
   "author": {
@@ -84,8 +84,8 @@
     "@material-ui/data-grid": "4.0.0-alpha.2",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@totvs/tds-da": "^1.2.78",
-    "@totvs/tds-ls": "^2.0.23",
+    "@totvs/tds-da": "^1.3.2",
+    "@totvs/tds-ls": "^2.1.1",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.97.2",
     "@vscode/debugadapter": "^1.51.1",
@@ -882,6 +882,18 @@
       {
         "command": "totvs-developer-studio.rename",
         "title": "%tds.package.rename%"
+      },
+      {
+        "command": "totvs-developer-studio.moveToRoot",
+        "title": "%tds.package.moveToRoot%"
+      },
+      {
+        "command": "totvs-developer-studio.moveToGroup",
+        "title": "%tds.package.moveToGroup%"
+      },
+      {
+        "command": "totvs-developer-studio.removeGroup",
+        "title": "%tds.package.removeGroup%"
       },
       {
         "command": "totvs-developer-studio.disconnect",
@@ -1685,6 +1697,21 @@
           "command": "totvs-developer-studio.rename",
           "when": "view == totvs_server && viewItem == serverItem",
           "group": "ABtotvsServer@4"
+        },
+        {
+          "command": "totvs-developer-studio.moveToRoot",
+          "when": "view == totvs_server && (viewItem == serverItem || viewItem == serverItemNotConnected)",
+          "group": "ABtotvsServer@5"
+        },
+        {
+          "command": "totvs-developer-studio.moveToGroup",
+          "when": "view == totvs_server && (viewItem == serverItem || viewItem == serverItemNotConnected)",
+          "group": "ABtotvsServer@6"
+        },
+        {
+          "command": "totvs-developer-studio.removeGroup",
+          "when": "view == totvs_server && viewItem == serverGroup",
+          "group": "ABtotvsServer@7"
         },
         {
           "command": "totvs-developer-studio.compile.key",

@@ -21,6 +21,10 @@
 			"type": "string",
 			"description": "Server identification for humans."
 		},
+		"group": {
+			"type": "string",
+			"description": "Optional folder/group path used to organize servers in the tree view."
+		},
 		"port": {
 			"type": "integer",
 			"description": "Connection port."

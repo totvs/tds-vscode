@@ -614,7 +614,8 @@ export class ServersConfig {
     address,
     buildVersion,
     secure,
-    includes
+    includes,
+    group?: string
   ): string | undefined {
     this.createServerConfig();
     let serverConfig = getServersConfig();
@@ -644,6 +645,10 @@ export class ServersConfig {
             validate_includes.push(element);
           }
         });
+        const normalizedGroup =
+          typeof group === "string" && group.trim().length > 0
+            ? group.trim()
+            : undefined;
         const serverId: string = Utils.generateRandomID();
         servers.push({
           id: serverId,
@@ -654,6 +659,7 @@ export class ServersConfig {
           buildVersion: buildVersion,
           secure: secure,
           includes: validate_includes,
+          group: normalizedGroup,
         });
 
         persistServersInfo(serverConfig);
@@ -978,6 +984,64 @@ export class ServersConfig {
         result = true;
       }
     });
+
+    return result;
+  }
+
+  static updateServerGroup(id: string, newGroup?: string) {
+    let result = false;
+    if (!id) {
+      return result;
+    }
+
+    const normalizedGroup =
+      typeof newGroup === "string" && newGroup.trim().length > 0
+        ? newGroup.trim()
+        : undefined;
+    const serverConfig = getServersConfig();
+
+    serverConfig.configurations.forEach((element) => {
+      if (element.id === id) {
+        if (normalizedGroup) {
+          element.group = normalizedGroup;
+        } else {
+          delete element.group;
+        }
+        persistServersInfo(serverConfig);
+        result = true;
+      }
+    });
+
+    return result;
+  }
+
+  static clearGroup(groupPath: string) {
+    let result = false;
+    if (!groupPath || groupPath.trim().length === 0) {
+      return result;
+    }
+
+    const normalizedGroup = groupPath.trim().replace(/\\/g, "/");
+    const serverConfig = getServersConfig();
+
+    serverConfig.configurations.forEach((element) => {
+      const elementGroup =
+        typeof element.group === "string"
+          ? element.group.trim().replace(/\\/g, "/")
+          : "";
+
+      if (
+        elementGroup === normalizedGroup ||
+        elementGroup.startsWith(`${normalizedGroup}/`)
+      ) {
+        delete element.group;
+        result = true;
+      }
+    });
+
+    if (result) {
+      persistServersInfo(serverConfig);
+    }
 
     return result;
   }
