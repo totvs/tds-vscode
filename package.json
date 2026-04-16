@@ -725,6 +725,12 @@
     },
     "commands": [
       {
+        "command": "totvs-developer-studio.poc-login-oidc",
+        "title": "POC Login OIDC",
+        "description": "POC LOGIN OIDC",
+        "category": "TOTVS"
+      },
+      {
         "command": "totvs-developer-studio.getDAP",
         "title": "Get DAP"
       },

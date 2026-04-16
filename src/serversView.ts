@@ -21,6 +21,8 @@ import {
 } from "./protocolMessages";
 import { EnvSection, ServerItem } from "./serverItem";
 import { processSelectResourceMessage } from "./utilities/processSelectResource";
+import { languageClient } from "./extension";
+import { AuthUriHandler, OIDCLogin } from "./oidcauth/AuthHandler";
 
 const compile = require("template-literal");
 
@@ -592,6 +594,8 @@ async function doConnect(
         if (result.needAuthentication) {
           serverItem.token = result.token;
           inputAuthenticationParameters(serverItem, environment);
+        //} else if (result.needFluigAuthentication) {
+          //await authenticateWithFluig();
         } else {
           doFinishConnectProcess(serverItem, result.token, environment);
         }
@@ -602,6 +606,19 @@ async function doConnect(
       vscode.window.showErrorMessage(error);
     }
   );
+}
+
+async function authenticateWithFluig() {
+      const logger = languageClient?.outputChannel;
+      const uriHandler = new AuthUriHandler(logger);
+
+      try {
+          //await OIDCLogin(context, uriHandler, logger);
+      } catch (error) {
+          //logger.error(`Falha ao tentar fazer login: ${error}`);
+          logger.appendLine(`Falha ao tentar fazer login: ${error}`);
+          vscode.window.showErrorMessage("Falha ao tentar fazer login.");
+      }
 }
 
 export function createNewProtheusServer(
