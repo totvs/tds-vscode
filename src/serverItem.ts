@@ -58,8 +58,8 @@ export class ServerItem extends vscode.TreeItem {
   description = `${this.address}:${this.port}`;
   tooltip = `${serverTypeString(this.type)} ${this.buildVersion}`;
   iconPath = {
-    light: path.join(RESOURCE_LIGHT, serverTypeImage(this)),
-    dark: path.join(RESOURCE_DARK, serverTypeImage(this)),
+    light: vscode.Uri.parse(path.join(RESOURCE_LIGHT, serverTypeImage(this))),
+    dark: vscode.Uri.parse(path.join(RESOURCE_DARK, serverTypeImage(this))),
   };
 
   contextValue = this.isConnected ? "serverItem" : "serverItemNotConnected";
@@ -78,8 +78,8 @@ export class EnvSection extends vscode.TreeItem {
   }
 
   iconPath = {
-    light: path.join(RESOURCE_LIGHT, environmentTypeImage(this)),
-    dark: path.join(RESOURCE_DARK, environmentTypeImage(this)),
+    light: vscode.Uri.parse(path.join(RESOURCE_LIGHT, environmentTypeImage(this))),
+    dark: vscode.Uri.parse(path.join(RESOURCE_DARK, environmentTypeImage(this))),
   };
 
   tooltip = environmentTypeString(this);
