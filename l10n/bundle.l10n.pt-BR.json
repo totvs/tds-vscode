@@ -379,5 +379,9 @@
   "Compile Key": "Chave de compilação",
   "Drag headers ...": "Arrastar cabeçalhos...",
   "Capturing logs ... Click here to close.": "Capturando logs... Clique aqui para fechar.",
-  "Debugging using SIGAMDI or SIGAADV may result in unexpected behavior, instead use the modules directly. Do you want to continue?": "A depuração usando SIGAMDI ou SIGAADV pode resultar em comportamento inesperado; em vez disso, use os módulos diretamente. Deseja continuar?"
+  "Debugging using SIGAMDI or SIGAADV may result in unexpected behavior, instead use the modules directly. Do you want to continue?": "A depuração usando SIGAMDI ou SIGAADV pode resultar em comportamento inesperado; em vez disso, use os módulos diretamente. Deseja continuar?",
+  "Folder/Group (optional)": "Pasta/Grupo (opcional)",
+  "Examples: ERP, ERP/REST": "Exemplos: ERP, ERP/REST",
+  "Move server to group": "Mover servidor para o grupo",
+  "Use / to create subgroups. Leave empty to move the server to root.": "Use / para criar subgrupos. Deixe em branco para mover o servidor para a raiz."
 }

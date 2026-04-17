@@ -32,6 +32,10 @@ export interface IServerScenarioSchema {
    */
   port: number;
   /**
+   * Optional group path used to organize the server tree.
+   */
+  group?: string;
+  /**
    * AppServer runtime environment.
    */
   environment: string;

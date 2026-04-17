@@ -884,6 +884,18 @@
         "title": "%tds.package.rename%"
       },
       {
+        "command": "totvs-developer-studio.moveToRoot",
+        "title": "%tds.package.moveToRoot%"
+      },
+      {
+        "command": "totvs-developer-studio.moveToGroup",
+        "title": "%tds.package.moveToGroup%"
+      },
+      {
+        "command": "totvs-developer-studio.removeGroup",
+        "title": "%tds.package.removeGroup%"
+      },
+      {
         "command": "totvs-developer-studio.disconnect",
         "title": "%tds.package.disconnect%",
         "icon": {
@@ -1685,6 +1697,21 @@
           "command": "totvs-developer-studio.rename",
           "when": "view == totvs_server && viewItem == serverItem",
           "group": "ABtotvsServer@4"
+        },
+        {
+          "command": "totvs-developer-studio.moveToRoot",
+          "when": "view == totvs_server && (viewItem == serverItem || viewItem == serverItemNotConnected)",
+          "group": "ABtotvsServer@5"
+        },
+        {
+          "command": "totvs-developer-studio.moveToGroup",
+          "when": "view == totvs_server && (viewItem == serverItem || viewItem == serverItemNotConnected)",
+          "group": "ABtotvsServer@6"
+        },
+        {
+          "command": "totvs-developer-studio.removeGroup",
+          "when": "view == totvs_server && viewItem == serverGroup",
+          "group": "ABtotvsServer@7"
         },
         {
           "command": "totvs-developer-studio.compile.key",
