@@ -1,3 +1,5 @@
+//W:\tds\tds-vscode\node_modules\@totvs\tds-ls\bin\windows\
+//C:\Users\acandido\.vscode\extensions\totvs.tds-vscode-2.0.16\node_modules\@totvs\tds-ls\bin\windows\
 /*---------------------------------------------------------
  * Copyright (C) TOTVS S.A. All rights reserved.
  *--------------------------------------------------------*/
@@ -69,6 +71,7 @@ import { sendTelemetry } from "./protocolMessages";
 import { registerXRef } from "./xreferences";
 import { tlppTools } from "./tlpp-tools/tlppTools";
 import { openWebMonitor } from "./monitor/monitorLoader";
+import { Selection } from 'vscode';
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -78,10 +81,13 @@ export function parseUri(u): Uri {
 
 const LANG_ADVPL_ID = "advpl";
 
-export function activate(context: ExtensionContext) {
+export async function activate(context: ExtensionContext) {
   console.log(
     vscode.l10n.t('Congratulations, your extension "totvs-developer-studio" is now active!')
   );
+
+  prepareCopilotInstructions(context);
+  //await prepareCopilotInstructions(context);
 
   ServersConfig.createServerConfig();
   LaunchConfig.createLaunchConfig(undefined);
@@ -734,4 +740,92 @@ export function canDebug(): boolean {
   }
 
   return result;
+}
+
+async function prepareCopilotInstructions(context: vscode.ExtensionContext) {
+  const workspaceFolders = vscode.workspace.workspaceFolders;
+  if (!workspaceFolders) return;
+
+  const version: string = "1-0-2";
+  const rootPath: vscode.Uri = workspaceFolders[0].uri;
+  const githubFolderUri: vscode.Uri = vscode.Uri.joinPath(rootPath, '.github', "instructions");
+  const targetFileUri: vscode.Uri = vscode.Uri.joinPath(githubFolderUri, `tds-vscode-${version}.instructions.md`);
+
+  if (!fse.existsSync(targetFileUri.fsPath)) {
+    const templateUri: vscode.Uri = vscode.Uri.joinPath(context.extensionUri, 'resources', ".github", `tds-vscode-${version}.instructions.md.txt`);
+    const question: string = vscode.l10n.t("Do you want to configure Copilot instructions for this workspace (improves accuracy)?")
+    const yes: string = vscode.l10n.t("Yes")
+    const notNow: string = vscode.l10n.t("Not now")
+    const never: string = vscode.l10n.t("Never (don't ask again)")
+
+    const selection: string = await vscode.window.showInformationMessage(
+      question,
+      { modal: true },
+      yes,
+      notNow,
+      never
+    );
+
+    if ((selection === yes) || (selection === never)) {
+      try {
+        let templateData: Uint8Array;
+
+        if (selection === yes) {
+          templateData = await vscode.workspace.fs.readFile(templateUri);
+          templateData = new TextEncoder().encode(removeHtmlComments(new TextDecoder().decode(templateData)));
+        } else { // Se o usuário escolher "Nunca", é criado um arquivo vazio para evitar futuras perguntas
+          templateData = new Uint8Array();
+        }
+
+        await vscode.workspace.fs.createDirectory(githubFolderUri);
+        await removeInstructionsOldVersions(githubFolderUri);
+        await vscode.workspace.fs.writeFile(targetFileUri, templateData);
+
+        if (selection === yes) {
+          vscode.window.showInformationMessage("Contexto do LS TOTVS ativado para o Copilot.");
+        }
+      } catch (err) {
+        console.error("Erro ao ler o template ou salvar instruções:", err);
+        vscode.window.showErrorMessage("Falha ao configurar o contexto do LS TOTVS para o Copilot. Veja o console para detalhes.");
+      }
+    }
+  }
+}
+
+/**
+ * Remove arquivos que correspondem ao padrão tds-vscode*.md de uma pasta.
+ * @param folderUri O caminho da pasta de onde remover os arquivos.
+ */
+async function removeInstructionsOldVersions(folderUri: vscode.Uri): Promise<void> {
+  try {
+    // Lê o conteúdo da pasta
+    const entries = await vscode.workspace.fs.readDirectory(folderUri);
+
+    // Filtra arquivos que correspondem ao padrão tds-vscode*.md
+    const filesToRemove = entries.filter(([name, type]) => {
+      // type === 1 significa que é um arquivo (não é diretório)
+      return type === 1 && /^tds-vscode.*\\.instructions\.md$/.test(name);
+    });
+
+    // Remove cada arquivo encontrado
+    for (const [fileName] of filesToRemove) {
+      const fileUri = vscode.Uri.joinPath(folderUri, fileName);
+      try {
+        await vscode.workspace.fs.delete(fileUri);
+      } catch (err) {
+        console.error(`Erro ao remover arquivo ${fileName}:`, err);
+      }
+    }
+  } catch (err) {
+    console.error(`Erro ao ler a pasta ${folderUri}:`, err);
+  }
+}
+
+/**
+ * Remove todos os blocos de comentário <!-- --> de uma string.
+ * @param text O texto original contendo os comentários.
+ * @returns O texto limpo.
+ */
+function removeHtmlComments(text: string): string {
+  return text;  //text.replace(/<!--[\s\S]*?-->/g, '');
 }
