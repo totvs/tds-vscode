@@ -122,7 +122,7 @@
     "@types/react-dom": "^16.9.14",
     "@types/vscode": "^1.116.0",
     "@types/vscode-webview": "^1.57.0",
-    "@vscode/l10n-dev": "^0.0.30",
+    "@vscode/l10n-dev": "^0.0.16",
     "@vscode/vsce": "^2.18.0",
     "all-contributors-cli": "^6.20.0",
     "chai": "^4.3.7",
