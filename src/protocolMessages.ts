@@ -38,6 +38,10 @@ export interface IServerNotificationInfo {
   message: string;
 }
 
+export interface ILoginWithOIDCInfo {
+  oidcUrl: string;
+}
+
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
   CONNT_MONITOR = 13,

@@ -349,7 +349,7 @@ export class ServersExplorer {
   }
 }
 
-function doFinishConnectProcess(
+export function doFinishConnectProcess(
   serverItem: ServerItem,
   token: string,
   environment: string

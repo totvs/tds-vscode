@@ -1,8 +1,9 @@
 import * as vscode from "vscode";
 import { ServersConfig } from "./utils";
 import { MultiStepInput } from "./multiStepInput";
-import { authenticate } from "./serversView";
+import { authenticate, doFinishConnectProcess } from "./serversView";
 import { ServerItem } from "./serverItem";
+import { tryOidcAutoLogin, getStoredOidcTokenForUser } from "./oidcauth/AuthHandler";
 
 /**
  * Coleta os dados necessarios para logar a um servidor advpl/4gl.
@@ -29,6 +30,7 @@ export async function inputAuthenticationParameters(
     totalSteps: number;
     username: string;
     password: string;
+    oidcAutoLogin?: boolean;
   }
 
   async function collectAuthenticationInputs() {
@@ -59,6 +61,17 @@ export async function inputAuthenticationParameters(
       shouldResume: shouldResume,
       password: false,
     });
+
+    const storedToken = await getStoredOidcTokenForUser(state.username);
+    if (storedToken) {
+      const oidcResult = await tryOidcAutoLogin(serverItem, environment, state.username);
+      if (oidcResult.success) {
+        serverItem.username = state.username;
+        doFinishConnectProcess(serverItem, oidcResult.connectionToken, environment);
+        state.oidcAutoLogin = true;
+        return undefined;
+      }
+    }
 
     return (input: MultiStepInput) =>
       inputPassword(input, state);
@@ -105,12 +118,14 @@ export async function inputAuthenticationParameters(
 
   async function main() {
     const authState = await collectAuthenticationInputs();
-    authenticate(
-      serverItem,
-      environment,
-      authState.username,
-      authState.password
-    );
+    if (!authState.oidcAutoLogin) {
+      authenticate(
+        serverItem,
+        environment,
+        authState.username,
+        authState.password
+      );
+    }
   }
 
   main();

@@ -20,7 +20,8 @@
 			"runtimeExecutable": "${execPath}",
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}",
-				"--inspect"
+				"--inspect",
+				"--user-data-dir=${env:USERPROFILE}/AppData/Roaming/Code"
 			],
 			"outFiles": [
 				"${workspaceFolder}/out/**/*.js"
@@ -37,9 +38,10 @@
 			"name": "Extension WithoutCompile",
 			"runtimeExecutable": "${execPath}",
 			"args": [
-				"${workspaceFolder}/test/resources/projects/advpl3-ação",
+				"C:\\Totvs\\Workspaces\\vscodewstests",
 				"--extensionDevelopmentPath=${workspaceFolder}",
-				"--inspect"
+				"--inspect",
+				"--user-data-dir=${env:USERPROFILE}/AppData/Roaming/Code"
 			],
 			"outFiles": [
 				"${workspaceFolder}/out/**/*.js"
