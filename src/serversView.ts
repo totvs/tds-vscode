@@ -22,7 +22,7 @@ import {
 import { EnvSection, ServerItem } from "./serverItem";
 import { processSelectResourceMessage } from "./utilities/processSelectResource";
 import { languageClient } from "./extension";
-import { AuthUriHandler, OIDCLogin } from "./oidcauth/AuthHandler";
+import { OIDCAuthUriHandler } from "./oidcauth/OIDCAuthHandler";
 
 const compile = require("template-literal");
 
@@ -449,19 +449,24 @@ export function authenticate(
       )
         .then(
           (result: IAuthenticationInfo) => {
-            let token: string = result.token;
-            return result.sucess ? token : "";
+            //let token: string = result.token;
+            //return result.sucess ? token : "";
+            //return result;
+           if (!result.isOidcAuth && result.token) {
+            serverItem.username = username;
+            doFinishConnectProcess(serverItem, result.token, environment);
+          }
           },
           (error: any) => {
             vscode.window.showErrorMessage(error);
           }
-        )
-        .then((token: string) => {
-          if (token) {
-            serverItem.username = username;
-            doFinishConnectProcess(serverItem, token, environment);
-          }
-        });
+        );
+        // .then((result: IAuthenticationInfo) => {
+        //   if (!result.isOidcAuth && result.token) {
+        //     serverItem.username = username;
+        //     doFinishConnectProcess(serverItem, result.token, environment);
+        //   }
+        //});
 
       progress.report({ increment: 100 });
     }
@@ -606,19 +611,6 @@ async function doConnect(
       vscode.window.showErrorMessage(error);
     }
   );
-}
-
-async function authenticateWithFluig() {
-      const logger = languageClient?.outputChannel;
-      const uriHandler = new AuthUriHandler(logger);
-
-      try {
-          //await OIDCLogin(context, uriHandler, logger);
-      } catch (error) {
-          //logger.error(`Falha ao tentar fazer login: ${error}`);
-          logger.appendLine(`Falha ao tentar fazer login: ${error}`);
-          vscode.window.showErrorMessage("Falha ao tentar fazer login.");
-      }
 }
 
 export function createNewProtheusServer(

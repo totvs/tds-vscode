@@ -3,7 +3,7 @@ import { ServersConfig } from "./utils";
 import { MultiStepInput } from "./multiStepInput";
 import { authenticate, doFinishConnectProcess } from "./serversView";
 import { ServerItem } from "./serverItem";
-import { tryOidcAutoLogin, getStoredOidcTokenForUser } from "./oidcauth/AuthHandler";
+import { tryOidcAutoLogin, getStoredOidcTokenForUser, setPendingOidcAuthContext } from "./oidcauth/OIDCAuthHandler";
 
 /**
  * Coleta os dados necessarios para logar a um servidor advpl/4gl.
@@ -30,7 +30,7 @@ export async function inputAuthenticationParameters(
     totalSteps: number;
     username: string;
     password: string;
-    oidcAutoLogin?: boolean;
+    doAuthenticate?: boolean;
   }
 
   async function collectAuthenticationInputs() {
@@ -62,15 +62,20 @@ export async function inputAuthenticationParameters(
       password: false,
     });
 
-    const storedToken = await getStoredOidcTokenForUser(state.username);
-    if (storedToken) {
-      const oidcResult = await tryOidcAutoLogin(serverItem, environment, state.username);
+    setPendingOidcAuthContext(serverItem, environment);
+    const storedOidcToken = await getStoredOidcTokenForUser(serverItem.address, environment, state.username);
+    if (storedOidcToken) {
+      serverItem.hasOIDCToken = true;      
+      const oidcResult = await tryOidcAutoLogin(serverItem, storedOidcToken);
       if (oidcResult.success) {
         serverItem.username = state.username;
         doFinishConnectProcess(serverItem, oidcResult.connectionToken, environment);
-        state.oidcAutoLogin = true;
-        return undefined;
+        state.doAuthenticate = false;
+      } else {
+        state.doAuthenticate = true;
       }
+      //Ja retorna, pois nesse caso nao deve pedir a senha
+      return (input: MultiStepInput) => Promise.resolve();
     }
 
     return (input: MultiStepInput) =>
@@ -91,6 +96,7 @@ export async function inputAuthenticationParameters(
       shouldResume: shouldResume,
       password: true,
     });
+    state.doAuthenticate = true;
   }
 
   function shouldResume() {
@@ -118,7 +124,7 @@ export async function inputAuthenticationParameters(
 
   async function main() {
     const authState = await collectAuthenticationInputs();
-    if (!authState.oidcAutoLogin) {
+    if (authState && authState.doAuthenticate) {
       authenticate(
         serverItem,
         environment,

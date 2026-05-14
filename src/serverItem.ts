@@ -23,6 +23,7 @@ export class ServerItem extends vscode.TreeItem {
   public username: string = "";
   public smartclientBin: string = "";
   public informations: IServerInformations;
+  public hasOIDCToken: boolean = false;
 
   constructor(
     public name: string,
@@ -58,8 +59,8 @@ export class ServerItem extends vscode.TreeItem {
   description = `${this.address}:${this.port}`;
   tooltip = `${serverTypeString(this.type)} ${this.buildVersion}`;
   iconPath = {
-    light: vscode.Uri.parse(path.join(RESOURCE_LIGHT, serverTypeImage(this))),
-    dark: vscode.Uri.parse(path.join(RESOURCE_DARK, serverTypeImage(this))),
+    light: vscode.Uri.file(path.join(RESOURCE_LIGHT, serverTypeImage(this))),
+    dark: vscode.Uri.file(path.join(RESOURCE_DARK, serverTypeImage(this))),
   };
 
   contextValue = this.isConnected ? "serverItem" : "serverItemNotConnected";
@@ -78,8 +79,8 @@ export class EnvSection extends vscode.TreeItem {
   }
 
   iconPath = {
-    light: vscode.Uri.parse(path.join(RESOURCE_LIGHT, environmentTypeImage(this))),
-    dark: vscode.Uri.parse(path.join(RESOURCE_DARK, environmentTypeImage(this))),
+    light: vscode.Uri.file(path.join(RESOURCE_LIGHT, environmentTypeImage(this))),
+    dark: vscode.Uri.file(path.join(RESOURCE_DARK, environmentTypeImage(this))),
   };
 
   tooltip = environmentTypeString(this);
