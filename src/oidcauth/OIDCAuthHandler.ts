@@ -7,8 +7,6 @@ import {
   ENABLE_CODE_PAGE,
 } from "../protocolMessages";
 
-type LoggerType = vscode.OutputChannel & vscode.LogOutputChannel;
-
 let extensionContext: vscode.ExtensionContext;
 let pendingAuthContext: { serverAddr: string; environment: string } | undefined;
 let serverItemSelected: ServerItem | undefined;
@@ -118,7 +116,7 @@ async function sendOidcValidateTokenMsg(serverItem: ServerItem, oidcToken: strin
             environment: serverItem.environment,
             user: serverItem.username,
             connectionToken: serverItem.token,
-            oidcToken: oidcToken,
+            oidcJwtToken: oidcToken,
             enconding
         }
     }) as IOidcValidationResponse;
