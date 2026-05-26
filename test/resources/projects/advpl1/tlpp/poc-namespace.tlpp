@@ -1,0 +1,40 @@
+//#include 'tlpp_core_dev.th'
+
+namespace tlpp1
+
+/*/{Protheus.doc} a
+Funcao publica do namespace tlpp1.
+
+@type user function
+@sintax tlpp1.U_a() => nil
+@return nil
+/*/
+
+user function a()
+
+return
+
+//------------------------------
+/*/{Protheus.doc} calcFactorial
+Funcao publica para calcular o fatorial de um numero inteiro nao negativo.
+
+@type user function
+@sintax tlpp1.U_calcFactorial(anNumber) => nResult
+@param anNumber, numeric, numero inteiro nao negativo
+@return numeric, fatorial do numero informado
+/*/
+user function calcFactorial(anNumber)
+	local nResult := 1
+	local nIndex := 0
+
+	if ValType(anNumber) <> "N" .or. anNumber < 0
+		Return 0
+	endif
+
+	for nIndex := 2 to Int(anNumber)
+		nResult *= nIndex
+	next
+
+Return nResult
+
+

@@ -2,39 +2,7 @@
 #include "tlpp-core.th"
 #include "tlpp-rest.th"
 
-namespace Teste.Tlpp
-using namespace OtherSpace
-using namespace AnotherSpace
-using namespace AnotherSpace.subspace
 
-// -------------------------------------------
-// Annotation para uso em tlpp.probat.probatSources()
-// -------------------------------------------
-@annotation probatSources
-coverage     as character
-@end
-
-@annotation probatTest
-coverage     as character
-@end
-
-@annotation parametros
-nome as character
-tipoParametro as character
-tamanho as numeric default 10
-decimal as numeric default 0
-descricao as character
-@end
-
-@annotation classe
-nome as character
-descricao as character
-@end
-
-@classe (nome= "Pessoa", descricao= "Classe de pessoa")
-@parametros(nome = "cNome"      , tipoParametro="character" , tamanho=50, decimal=0, descricao="Nome da pessoa")
-@parametros(nome = "cSobrenome" , tipoParametro="character" , tamanho=50, decimal=0, descricao="Sobrenome da pessoa")
-@parametros(nome = "cCpf"       , tipoParametro="character" , tamanho=11, decimal=0, descricao="CPF da pessoa")
 class Pessoa
 
 	data cNome as character default "Sem nome"
@@ -60,7 +28,17 @@ Método construtor
 @param cSobrenome, character, sobrenome da pessoa
 @param cCpf, character, cpf da pessoa
 /*/
+static cCpf := 0 as numeric ,;
+	cNome := "Nome" as character ,;
+	cSobrenome := "Sobrenome" as character
+
+static cCpf2 := 0 as numeric
+
+
+
 method new(cNome, cSobrenome, cCpf) class Pessoa
+	static cCpf as character
+
 	self:cNome := cNome
 	self:cSobrenome := cSobrenome
 	self:cCpf := cCpf
