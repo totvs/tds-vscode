@@ -1,18 +1,45 @@
 #INCLUDE 'TOTVS.CH'
+#include "tlpp-core.th"
 
+/*/{Protheus.doc} xJson
+	Classe responsável por carregar conteúdo JSON de arquivo e converter para JsonObject.
+	@type Class
+	@version 1.0
+	@author exemplo
+	@since 06/05/2026
+/*/
 Class xJson
-
-	Data cJson
+	Data cJson as Character
 	Data jTeste
 	Data aTeste
 
-	method new(cCpfCnpj) Constructor
+	public data  p_publicAttribute as Character
+	private data  p_privateAttribute as Character		
+	protected data  p_protectedAttribute as Character
 
+	method new(cCpfCnpj) Constructor
+	public method m_publicMethod()
+	private method m_privateMethod() as Character
+	protected method m_protectedMethod()
+
+	method noAccessMethod() 
+	
 EndClass
 
+
+/*/{Protheus.doc} xJson:new
+	Método construtor da classe xJson.
+	@type Method
+	@version 1.0
+	@author exemplo
+	@since 06/05/2026
+	@param cCpfCnpj, character, Documento utilizado na inicialização da instância.
+	@return Array, Conteúdo convertido e atribuído no atributo aTeste.
+/*/
 Method new(cCpfCnpj as Character) Class xJson
 	local cRet := ""
 	local i
+
 
 	::aTeste := {}
 	for i:= 1 to 2
@@ -49,11 +76,13 @@ STATIC Function ReadFile(cFile)
 	Endif
 
 Return cBuffer
+
 User Function XTSTJS
 	Local oObject
 	local lJson := readFile('W:\ws_tds_vscode\tds-vscode-dev2\test\resources\projects\advpl\files\json\cliente-2.json')
 	local cRet
 
+	oObject := brgetddb():New()
 	oObject := JsonObject():New()
 	cRet := oObject:FromJson(lJson)
 	conout("cRet: " + cValToChar(cRet))
