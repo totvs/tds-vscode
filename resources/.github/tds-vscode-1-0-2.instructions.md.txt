@@ -14,7 +14,7 @@ AVISO para desenvolvedores Protheus:
 <!--
 AVISO para desenvolvedores da extensão:
      Manter a extensão `.md.txt` a fim de evitar a sua carga no desenvolvimento
-     da extesão, que caso ocorra pode interferir no ambiente.
+     da extensão, que caso ocorra pode interferir no ambiente.
 -->
 
 # Instruções
