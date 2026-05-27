@@ -541,7 +541,6 @@ export async function activate(context: ExtensionContext) {
     vscode.commands.registerCommand(
       "totvs-developer-studio.run.formatter",
       (args: any[]) => {
-        //console.log("formatador ativado");
         if (args === undefined) {
           let aeditor = vscode.window.activeTextEditor;
           if (aeditor !== undefined) {
@@ -752,7 +751,6 @@ async function prepareCopilotInstructions(context: vscode.ExtensionContext) {
   const targetFileUri: vscode.Uri = vscode.Uri.joinPath(githubFolderUri, `tds-vscode-${version}.instructions.md`);
 
   if (!fse.existsSync(targetFileUri.fsPath)) {
-    const templateUri: vscode.Uri = vscode.Uri.joinPath(context.extensionUri, 'resources', ".github", `tds-vscode-${version}.instructions.md.txt`);
     const question: string = vscode.l10n.t("Do you want to configure Copilot instructions for this workspace (improves accuracy)?")
     const yes: string = vscode.l10n.t("Yes")
     const notNow: string = vscode.l10n.t("Not now")
@@ -771,6 +769,13 @@ async function prepareCopilotInstructions(context: vscode.ExtensionContext) {
         let templateData: Uint8Array;
 
         if (selection === yes) {
+          const language: string = vscode.env.language;
+          let templateUri: vscode.Uri = vscode.Uri.joinPath(context.extensionUri, 'resources', ".github", `tds-vscode-${version}-${language}.instructions.md.txt`);
+
+          if (!fse.existsSync(templateUri.fsPath)) {
+            templateUri = vscode.Uri.joinPath(context.extensionUri, 'resources', ".github", `tds-vscode-${version}-en-us.instructions.md.txt`);
+          }
+
           templateData = await vscode.workspace.fs.readFile(templateUri);
           templateData = new TextEncoder().encode(removeHtmlComments(new TextDecoder().decode(templateData)));
         } else { // Se o usuário escolher "Nunca", é criado um arquivo vazio para evitar futuras perguntas
@@ -804,7 +809,7 @@ async function removeInstructionsOldVersions(folderUri: vscode.Uri): Promise<voi
     // Filtra arquivos que correspondem ao padrão tds-vscode*.md
     const filesToRemove = entries.filter(([name, type]) => {
       // type === 1 significa que é um arquivo (não é diretório)
-      return type === 1 && /^tds-vscode.*\\.instructions\.md$/.test(name);
+      return type === 1 && /^tds-vscode.*\.instructions\.md$/.test(name);
     });
 
     // Remove cada arquivo encontrado

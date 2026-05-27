@@ -1,7 +1,7 @@
 ---
 applyTo: "**/*.{.prw,.prx,.prg,.ppx,.ppp,.tlpp,.apw,.aph,.apl,.ahu,.th}"
 name: "AdvPL/TLPP LS-First"
-description: "English and LS priority"
+description: "LS priority"
 ---
 
 <!--
