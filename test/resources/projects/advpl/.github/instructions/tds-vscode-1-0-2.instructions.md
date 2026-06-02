@@ -1,34 +1,35 @@
 ---
 applyTo: "**/*.{.prw,.prx,.prg,.ppx,.ppp,.tlpp,.apw,.aph,.apl,.ahu,.th}"
 name: "AdvPL/TLPP LS-First"
-description: "PT-BR e prioridade ao LS"
+description: "LS priority"
 ---
 
 <!--
-AVISO para desenvolvedores Protheus:
-     Este arquivo de instruções foi gerado automaticamente.
-     Alterações são mantidas, pois este é gerado somente se não existir.
-     Caso não queira usá-lo, mantenha-o na pasta mas vazio.
+NOTICE for Protheus developers:
+     This instruction file was generated automatically.
+     Changes are preserved, as it is generated only if it does not exist.
+     If you do not want to use it, keep it in the folder but leave it empty.
 -->
 
 <!--
-AVISO para desenvolvedores da extensão:
-     Manter a extensão `.md.txt` a fim de evitar a sua carga no desenvolvimento
-     da extensão, que caso ocorra pode interferir no ambiente.
+NOTICE for extension developers:
+     Keep the `.md.txt` extension to prevent it from being loaded during
+     extension development, which could interfere with the environment.
 -->
 
-# Instruções
+# Instructions
 
-- Responda em Português do Brasil, de forma objetiva.
-- Regra mandatória LS-first: em qualquer tarefa de navegação, análise, correção ou refatoração, a primeira ação deve ser obrigatoriamente uma ferramenta LS.
-- Sequência obrigatória de navegação semântica:
+- Answer in English, objectively.
+- Mandatory LS-first rule: in any navigation, analysis, fix, or refactoring task, the first action must be an LS tool.
+- Mandatory semantic navigation sequence:
 
- 1) Localizar símbolo com `lsp_workspace_symbols`.
- 2) Confirmar definição com `lsp_definition`.
- 3) Mapear uso e impacto com `lsp_references`.
+ 1) Locate the symbol with `lsp_workspace_symbols`.
+ 2) Confirm the definition with `lsp_definition`.
+ 3) Map usage and impact with `lsp_references`.
 
-- Proibido iniciar com `grep_search`, `file_search`, `read_file` ou leitura manual quando LS estiver disponível.
-- Exceção controlada: usar busca textual ou leitura manual apenas se LS falhar, não retornar símbolo ou estiver sem cobertura.
-- Ao cair na exceção, registrar explicitamente na resposta: "LS indisponível/sem cobertura; seguindo com busca textual".
-- Critério de conformidade: informar, antes do resultado, qual ferramenta LS foi usada e o que ela retornou.
-- Regra de não conformidade: se não usar LS primeiro sem justificativa válida, considerar a execução fora do padrão e corrigir a abordagem na mesma resposta.
+- It is forbidden to start with `grep_search`, `file_search`, `read_file`, or manual reading when LS is available.
+- Controlled exception: use text search or manual reading only if LS fails, does not return the symbol, or lacks coverage.
+- When falling into the exception, explicitly state in the response: "LS unavailable/no coverage; proceeding with text search".
+- Compliance criterion: before the result, inform which LS tool was used and what it returned.
+- Non-compliance rule: if LS is not used first without valid justification, consider the execution out of standard and correct the approach in the same response.
+- Ao receber uma solicitação de compilação, usar o comando `totvs-developer-studio.rebuild.file`.

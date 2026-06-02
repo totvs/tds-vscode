@@ -25,3 +25,5 @@ test/**/.vscode
 .vscode/settings.json
 .vscode/.advpl/**
 .vscode/.cache
+!resources/.github/**/*
+/test/resources/projects/advpl0
