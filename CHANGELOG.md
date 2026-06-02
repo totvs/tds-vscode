@@ -4,18 +4,65 @@
 
 ### Novidades
 
+#### Pastas de buscas de arquvos de definição por área de trabalho
+
+Implementado a possibilidade de complementar a lista de pastas de buscas de arquivos
+de definição. Na pasta principal da área de trabalho, crie o arquivo `.include`, onde cada linha é uma especificação de pasta para busca de arquivos de definição.
+
+As pastas especificadas tem prioridade sobre a lista por servidor/global e usam o padrão `glob` e sempre relativas a pasta princial (_workspace_).
+
+Exemplo:
+
+```console
+/include
+/folder/include
+/**/include_dev
+#/commented/will be/ignored
+```
+
 #### Integração da extensão com o Copilot
 
+A integração do TDS-Code com o Copilot é utilizada para ajudar a IA a compreender melhor sua área de trabalho, tornando-a mais assertiva e rápida em questões relacionadas aos seus fontes.
+
+Recomenda-se o uso do VSCode versão 1.107.1 (11/2025) ou superior. Em versões anteriores, é obrigatório a instalação das extensões:
+
+- [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot)
+- [GitHub Copilot Chat](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat)
+
+Em qualquer versão do VSCode, instale também a extensão:
+
+- [Language Server tools for Copilot](https://marketplace.visualstudio.com/items?itemName=sehejjain.lsp-mcp-bridge)
+
+####
+
+Implementado ferramenta `@tds` que permitir executar operações direto no `chat`.
+
+- 
 #### Renomear elementos
 
-#### Ir para a implementação
+Adicionado suporte ao comando de renomeação de elementos, permitindo alterar identificadores com atualização consistente das ocorrências relacionadas no código.
+
+#### Navegação de elementos
+
+Adicionado suporte aos comandos de navegação, permitindo acessar rapidamente a definição concreta de métodos e símbolos no código.
+
+#### Busca de símbolos no espaço de trabalho (_Workspace symbol_, `Ctrl+T`)
+
+Permite a busca por símbolos, tais como:
+
+- Funções
+- Classes
+- Métodos
+- Propriedades
+- _Namespaces_
+- Variáveis de escopo não local
 
 ### Melhorias
 
 #### No DSS
 
 - Uso de memória
-Corrigido "vazamento de memória" (_memory leak_).
+Corrigido "vazamento de memória" (_memory leak_) e violações (_access violation_).
 
 - Suporte de TLPP
 Melhora do suporte a elementos de TLPP
