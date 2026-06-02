@@ -73,6 +73,7 @@ import { tlppTools } from "./tlpp-tools/tlppTools";
 import { openWebMonitor } from "./monitor/monitorLoader";
 import { activate as activateOidcAuth } from "./oidcauth/OIDCAuthHandler";
 
+import { registerChatTools } from './chatTools';
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -373,6 +374,7 @@ export async function activate(context: ExtensionContext) {
       (context) => patchGenerateFromFolder(context)
     )
   );
+
   //Valida o conteúdo de um patch pelo menu de contexto em arquivos de patch
   context.subscriptions.push(
     commands.registerCommand(
@@ -391,6 +393,7 @@ export async function activate(context: ExtensionContext) {
       }
     )
   );
+
   //Adiciona página de Includes
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.include", () =>
@@ -450,10 +453,13 @@ export async function activate(context: ExtensionContext) {
   //Mostra a pagina de Welcome.
   showWelcomePage(context, false);
 
+  //ServersConfig.loadLocalIncludes(true, context);
   ServersConfig.onDidSelectedServer((newServer: ServerItem) => {
     serverProvider.connectedServerItem = newServer;
-  })
-  serverProvider.checkServersConfigListener(true);
+    serverProvider.checkServersConfigListener(true);
+    //ServersConfig.loadLocalIncludes(true).then(() => {
+    //});
+  });
 
   //Abre uma caixa de informações para login no servidor protheus selecionado.
   context.subscriptions.push(
@@ -613,6 +619,9 @@ export async function activate(context: ExtensionContext) {
       return tlppTools(message);
     }
   };
+
+  //Registro de ferramentas de chat para o modelo de linguagem
+  registerChatTools(context);
 
   window.showInformationMessage('"TDS-VSCode" is ready.');
 
