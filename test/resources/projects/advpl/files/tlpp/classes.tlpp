@@ -39,6 +39,8 @@ static cCpf2 := 0 as numeric
 method new(cNome, cSobrenome, cCpf) class Pessoa
 	static cCpf as character
 
+	conout("Entrou no construtor da classe Pessoa")
+
 	self:cNome := cNome
 	self:cSobrenome := cSobrenome
 	self:cCpf := cCpf
