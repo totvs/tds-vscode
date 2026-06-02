@@ -43,7 +43,7 @@ function _getCompileOptionsDefault(): CompileOptions {
 }
 
 export function generatePpo(filePath: string, options?: any): Promise<string> {
-  return new Promise<string>((resolve, reject) => {
+  return new Promise<string>(async (resolve, reject) => {
     if (!filePath || filePath.length == 0) {
       reject(new Error("Undefined filePath."));
       return;
@@ -72,7 +72,7 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
       return;
     }
 
-    const includes = ServersConfig.getIncludes(true, serverItem) || [];
+    const includes = await ServersConfig.getFullIncludes(true, serverItem) || [];
     let includesUris: Array<string> = includes.map((include) => {
       return vscode.Uri.file(include).toString();
     });
@@ -171,7 +171,7 @@ export function buildFile(filename: string[], recompile: boolean) {
 /**
  * Build a file list.
  */
-async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
+function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
   const server = ServersConfig.getCurrentServer();
 
   const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
@@ -179,6 +179,7 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
   if (shouldClearConsole !== false) {
     languageClient.outputChannel.clear();
   }
+
   const showConsoleOnCompile = configADVPL.get("showConsoleOnCompile");
   if (showConsoleOnCompile !== false) {
     languageClient.outputChannel.show();
@@ -207,12 +208,13 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
       filesPaths.filter((file) => {
         return Utils.isAdvPlSource(file);
       }).length > 0;
-    //Pega os includes do servidor conectado
-    let includes: Array<string> = [];
-    includes = ServersConfig.getIncludes(true, server) || [];
+
+    //Pega os includes
+    let includes: Array<string> = ServersConfig.getFullIncludes(true, server) || [];
     if (!includes.toString()) {
       return;
     }
+
     //Converte os includes em URIs
     let includesUris: Array<string> = [];
     for (let idx = 0; idx < includes.length; idx++) {
@@ -224,6 +226,7 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
       });
       includesUris.push(...wp);
     }
+
     //Converte os arquivos a serem compilados para URIs
     let filesUris: Array<string> = [];
     filesPaths.forEach((file) => {
@@ -235,11 +238,13 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
         );
       }
     });
+
     //Obtem a lista de extensoes permitidas, se houver
     let extensionsAllowed: string[];
     if (configADVPL.get("folder.enableExtensionsFilter", true)) {
       extensionsAllowed = configADVPL.get("folder.extensionsAllowed", []); // Le a chave especifica
     }
+
     //Envia a mensagem de compilacao
     if (blockBuildCommands(true)) {
       sendCompilation(
