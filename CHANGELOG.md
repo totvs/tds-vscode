@@ -37,7 +37,10 @@ Em qualquer versão do VSCode, instale também a extensão:
 
 Implementado ferramenta `@tds` que permitir executar operações direto no `chat`.
 
-- 
+- compile: compila o fonte no editor ativo ou o informado.
+- recompile: recompila o fonte no editor ativo ou o informado.
+- syntaz-only: verifica a sintaxe (_linter_) do fonte no editor ativo ou o informado.
+
 #### Renomear elementos
 
 Adicionado suporte ao comando de renomeação de elementos, permitindo alterar identificadores com atualização consistente das ocorrências relacionadas no código.
