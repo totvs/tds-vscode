@@ -21,7 +21,7 @@
     "logix"
   ],
   "engines": {
-    "vscode": "^1.117.0"
+    "vscode": "^1.107.1"
   },
   "icon": "icons/totvs-developer-studio.png",
   "categories": [
@@ -45,8 +45,8 @@
     "compile": "npm-run-all compile:*",
     "compile:parse_4gl": "pegjs -o ./src/parser/4gl-parser.js ./syntaxes/4gl.pegjs",
     "compile:extension": "tsc -p ./src",
-    "compile:views": "webpack --mode production",
-    "compile:views-production": "webpack --mode production",
+    "compile:views": "webpack --mode development",
+    "compile:views-production": "webpack --mode development",
     "compile:esbuild": "node ./esbuild.js",
     "compile-test": "tsc -p ./test",
     "--LINT--": "",
@@ -120,7 +120,7 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.11.18",
     "@types/react-dom": "^16.9.14",
-    "@types/vscode": "^1.116.0",
+    "@types/vscode": "^1.107.1",
     "@types/vscode-webview": "^1.57.0",
     "@vscode/l10n-dev": "^0.0.16",
     "@vscode/vsce": "^2.18.0",
@@ -160,9 +160,47 @@
   "l10n": "./l10n",
   "activationEvents": [
     "workspaceContains:**/*.pr[wgx]",
-    "workspaceContains:**/*.tlpp"
+    "workspaceContains:**/*.tlpp",
+    "onLanguageModelTool:chat-tds-compiler",
+    "onChatParticipant:tds-vscode.tools"
   ],
   "contributes": {
+    "languageModelTools": [
+      {
+        "name": "chat-tds-compiler",
+        "toolReferenceName": "tds",
+        "displayName": "Compiler",
+        "when": "resourceLangId == advpl || resourceLangId == 4gl || resourceLangId == advpl-asp",
+        "modelDescription": "Triggers compilation of sources and resources."
+      }
+    ],
+    "chatParticipants": [
+      {
+        "id": "tds-vscode.tools",
+        "name": "tds",
+        "fullName": "TDS-VSCode Tools",
+        "description": "TDS-VSCode tools for use in chatbots.",
+        "isSticky": true,
+        "commands": [
+          {
+            "name": "compiler",
+            "description": "Compiles the current or informed context."
+          },
+          {
+            "name": "recompiler",
+            "description": "Recompiles the current or informed context."
+          },
+          {
+            "name": "syntax-only",
+            "description": "Checks the syntax of the current or informed context."
+          },
+          {
+            "name": "help",
+            "description": "Provides help information for the TDS-VSCode tools."
+          }
+        ]
+      }
+    ],
     "iconThemes": [
       {
         "id": "tds",

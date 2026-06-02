@@ -1,26 +1,23 @@
-import * as vscode from 'vscode';
-import * as fs from 'fs';
-import * as path from 'path';
+import * as vscode from "vscode";
+import * as fs from "fs";
+import * as path from "path";
 
-const COMPILER_TOOL_NAME = 'chat-tds-compiler';
-const COMPILER_PARTICIPANT_ID = 'tds-vscode.compiler';
-const COMPILER_COMMAND = 'chat-tds-compiler';
-const REBUILD_COMMAND = 'chat-tds-rebuild';
+const COMPILER_TOOL_NAME = "chat-tds-compiler";
+const COMPILER_PARTICIPANT_ID = "tds-vscode.tools";
+const COMPILER_COMMAND = "compiler";
+const REBUILD_COMMAND = "recompiler";
+const SYNTAX_ONLY_COMMAND = "syntax-only";
 
 const WORKSPACE_TARGET_ALIASES = new Set([
-	'workspace',
-	'projeto',
-	'ws',
-	'all'
+	"workspace",
+	"ws",
+	"all"
 ]);
 
 const CURRENT_EDITOR_TARGET_ALIASES = new Set([
-	'current',
-	'current-editor',
-	'editor',
-	'editor-atual',
-	'editor-corrente',
-	'arquivo-atual'
+	"current",
+	"editor",
+	"actual-file"
 ]);
 
 type ChatCompilerToolInput = {
@@ -35,10 +32,10 @@ type DiagnosticEntry = {
 };
 
 type DiagnosticFilterOptions = {
-	only: 'all' | 'error' | 'warning';
+	only: "all" | "error" | "warning";
 	max?: number;
 	source?: string;
-	sort: 'none' | 'file' | 'severity';
+	sort: "none" | "file" | "severity";
 	applied: string[];
 };
 
@@ -50,11 +47,12 @@ type DiagnosticsWaitResult = {
 
 const MAX_DIAGNOSTICS_TO_SHOW = 20;
 const DIAGNOSTIC_WAIT_TIMEOUT_MS = 12000;
-const DIAGNOSTIC_IDLE_WINDOW_MS = 900;
+const DIAGNOSTIC_WAIT_TIMEOUT_MS_FOLDER = 30000;
+const DIAGNOSTIC_IDLE_WINDOW_MS = 3000;
 
 const DEFAULT_DIAGNOSTIC_FILTER_OPTIONS: DiagnosticFilterOptions = {
-	only: 'all',
-	sort: 'none',
+	only: "all",
+	sort: "none",
 	applied: []
 };
 
@@ -65,7 +63,7 @@ const DEFAULT_DIAGNOSTIC_FILTER_OPTIONS: DiagnosticFilterOptions = {
  */
 function stripQuotes(value: string): string {
 	const trimmed = value.trim();
-	if ((trimmed.startsWith('"') && trimmed.endsWith('"')) || (trimmed.startsWith('\'') && trimmed.endsWith('\''))) {
+	if ((trimmed.startsWith("\"") && trimmed.endsWith("\"")) || (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
 		return trimmed.slice(1, -1).trim();
 	}
 
@@ -118,7 +116,7 @@ function looksLikePathOrTarget(value: string): boolean {
 		return true;
 	}
 
-	if (value.includes('\\') || value.includes('/')) {
+	if (value.includes("\\") || value.includes("/")) {
 		return true;
 	}
 
@@ -137,14 +135,14 @@ function looksLikePathOrTarget(value: string): boolean {
  */
 function extractTargetFromPrompt(prompt: string): string | undefined {
 	const directiveMatch = prompt.match(
-		/(?:^|\s)(?:target|arquivo|file|path|pasta|folder)\s*[:=]\s*("[^"]+"|'[^']+'|\S+)/i
+		/(?:^|\s)(?:target|arquivo|file|path|pasta|folder)\s*[:=]\s*("[^"]+"|"[^"]+"|\S+)/i
 	);
 	if (directiveMatch) {
 		return stripQuotes(directiveMatch[1]);
 	}
 
 	const value = stripQuotes(prompt);
-	if (!value.includes(' ') && looksLikePathOrTarget(value)) {
+	if (!value.includes(" ") && looksLikePathOrTarget(value)) {
 		return value;
 	}
 
@@ -161,12 +159,12 @@ function parseDiagnosticFilterOptions(flags: string[] | undefined): DiagnosticFi
 		return { ...DEFAULT_DIAGNOSTIC_FILTER_OPTIONS, applied: [] };
 	}
 
-	const joined = flags.join(' ');
+	const joined = flags.join(" ");
 	const options: DiagnosticFilterOptions = {
 		...DEFAULT_DIAGNOSTIC_FILTER_OPTIONS,
 		applied: []
 	};
-	const regex = /(only|max|source|sort)\s*[:=]\s*("[^"]+"|'[^']+'|\S+)/gi;
+	const regex = /(only|max|source|sort)\s*[:=]\s*("[^"]+"|"[^"]+"|\S+)/gi;
 	let match: RegExpExecArray | null;
 
 	while ((match = regex.exec(joined)) !== null) {
@@ -174,20 +172,20 @@ function parseDiagnosticFilterOptions(flags: string[] | undefined): DiagnosticFi
 		const rawValue = stripQuotes(match[2]);
 		const value = rawValue.toLowerCase();
 
-		if (key === 'only') {
-			if (value === 'error' || value === 'errors') {
-				options.only = 'error';
-				options.applied.push('only=error');
-			} else if (value === 'warning' || value === 'warnings' || value === 'warn') {
-				options.only = 'warning';
-				options.applied.push('only=warning');
-			} else if (value === 'all') {
-				options.only = 'all';
-				options.applied.push('only=all');
+		if (key === "only") {
+			if (value === "error" || value === "errors") {
+				options.only = "error";
+				options.applied.push("only=error");
+			} else if (value === "warning" || value === "warnings" || value === "warn") {
+				options.only = "warning";
+				options.applied.push("only=warning");
+			} else if (value === "all") {
+				options.only = "all";
+				options.applied.push("only=all");
 			}
 		}
 
-		if (key === 'max') {
+		if (key === "max") {
 			const max = Number.parseInt(value, 10);
 			if (!Number.isNaN(max) && max > 0) {
 				options.max = max;
@@ -195,15 +193,15 @@ function parseDiagnosticFilterOptions(flags: string[] | undefined): DiagnosticFi
 			}
 		}
 
-		if (key === 'source') {
+		if (key === "source") {
 			if (rawValue.trim()) {
 				options.source = rawValue.trim();
 				options.applied.push(`source=${rawValue.trim()}`);
 			}
 		}
 
-		if (key === 'sort') {
-			if (value === 'file' || value === 'severity' || value === 'none') {
+		if (key === "sort") {
+			if (value === "file" || value === "severity" || value === "none") {
 				options.sort = value;
 				options.applied.push(`sort=${value}`);
 			}
@@ -222,16 +220,16 @@ function resolveTarget(explicitTarget?: string): string {
 	if (explicitTarget?.trim()) {
 		const target = stripQuotes(explicitTarget);
 		if (isWorkspaceTargetAlias(target)) {
-			return 'workspace';
+			return "workspace";
 		}
 
 		if (isCurrentEditorTargetAlias(target)) {
 			const activeDocument = vscode.window.activeTextEditor?.document;
 			if (!activeDocument) {
-				return 'workspace';
+				return "workspace";
 			}
 
-			if (activeDocument.uri.scheme === 'file') {
+			if (activeDocument.uri.scheme === "file") {
 				return vscode.workspace.asRelativePath(activeDocument.uri, false);
 			}
 
@@ -243,10 +241,10 @@ function resolveTarget(explicitTarget?: string): string {
 
 	const activeDocument = vscode.window.activeTextEditor?.document;
 	if (!activeDocument) {
-		return 'workspace';
+		return "workspace";
 	}
 
-	if (activeDocument.uri.scheme === 'file') {
+	if (activeDocument.uri.scheme === "file") {
 		return vscode.workspace.asRelativePath(activeDocument.uri, false);
 	}
 
@@ -303,7 +301,7 @@ function uriEquals(left: vscode.Uri, right: vscode.Uri): boolean {
 		return true;
 	}
 
-	if (left.scheme === 'file' && right.scheme === 'file') {
+	if (left.scheme === "file" && right.scheme === "file") {
 		return left.fsPath.toLowerCase() === right.fsPath.toLowerCase();
 	}
 
@@ -316,7 +314,7 @@ function uriEquals(left: vscode.Uri, right: vscode.Uri): boolean {
  * @returns True quando a URI pertence ao workspace.
  */
 function isWorkspaceUri(uri: vscode.Uri): boolean {
-	if (uri.scheme !== 'file') {
+	if (uri.scheme !== "file") {
 		return false;
 	}
 
@@ -331,7 +329,7 @@ function isWorkspaceUri(uri: vscode.Uri): boolean {
  * @returns True quando targetUri está contida na pasta pai.
  */
 function isUriInsideFolder(parentFolder: vscode.Uri, targetUri: vscode.Uri): boolean {
-	if (parentFolder.scheme !== 'file' || targetUri.scheme !== 'file') {
+	if (parentFolder.scheme !== "file" || targetUri.scheme !== "file") {
 		return false;
 	}
 
@@ -351,7 +349,7 @@ function isUriInsideFolder(parentFolder: vscode.Uri, targetUri: vscode.Uri): boo
  * @returns True quando a URI é um diretório existente.
  */
 function isDirectoryUri(uri: vscode.Uri | undefined): boolean {
-	if (!uri || uri.scheme !== 'file') {
+	if (!uri || uri.scheme !== "file") {
 		return false;
 	}
 
@@ -414,21 +412,21 @@ function applyDiagnosticFilterOptions(
 ): DiagnosticEntry[] {
 	let result = entries.slice();
 
-	if (options.only === 'error') {
+	if (options.only === "error") {
 		result = result.filter((entry) => entry.diagnostic.severity === vscode.DiagnosticSeverity.Error);
-	} else if (options.only === 'warning') {
+	} else if (options.only === "warning") {
 		result = result.filter((entry) => entry.diagnostic.severity === vscode.DiagnosticSeverity.Warning);
 	}
 
 	if (options.source) {
 		const sourceFilter = options.source.toLowerCase();
-		result = result.filter((entry) => (entry.diagnostic.source ?? '').toLowerCase().includes(sourceFilter));
+		result = result.filter((entry) => (entry.diagnostic.source ?? "").toLowerCase().includes(sourceFilter));
 	}
 
-	if (options.sort === 'file') {
+	if (options.sort === "file") {
 		result.sort((a, b) => {
-			const pathA = a.uri.scheme === 'file' ? a.uri.fsPath.toLowerCase() : a.uri.toString(true).toLowerCase();
-			const pathB = b.uri.scheme === 'file' ? b.uri.fsPath.toLowerCase() : b.uri.toString(true).toLowerCase();
+			const pathA = a.uri.scheme === "file" ? a.uri.fsPath.toLowerCase() : a.uri.toString(true).toLowerCase();
+			const pathB = b.uri.scheme === "file" ? b.uri.fsPath.toLowerCase() : b.uri.toString(true).toLowerCase();
 			if (pathA < pathB) {
 				return -1;
 			}
@@ -440,7 +438,7 @@ function applyDiagnosticFilterOptions(
 			const lineB = b.diagnostic.range.start.line;
 			return lineA - lineB;
 		});
-	} else if (options.sort === 'severity') {
+	} else if (options.sort === "severity") {
 		result.sort((a, b) => {
 			const severityA = a.diagnostic.severity ?? vscode.DiagnosticSeverity.Hint;
 			const severityB = b.diagnostic.severity ?? vscode.DiagnosticSeverity.Hint;
@@ -448,8 +446,8 @@ function applyDiagnosticFilterOptions(
 				return severityA - severityB;
 			}
 
-			const pathA = a.uri.scheme === 'file' ? a.uri.fsPath.toLowerCase() : a.uri.toString(true).toLowerCase();
-			const pathB = b.uri.scheme === 'file' ? b.uri.fsPath.toLowerCase() : b.uri.toString(true).toLowerCase();
+			const pathA = a.uri.scheme === "file" ? a.uri.fsPath.toLowerCase() : a.uri.toString(true).toLowerCase();
+			const pathB = b.uri.scheme === "file" ? b.uri.fsPath.toLowerCase() : b.uri.toString(true).toLowerCase();
 			if (pathA < pathB) {
 				return -1;
 			}
@@ -472,15 +470,15 @@ function applyDiagnosticFilterOptions(
 function severityLabel(severity: vscode.DiagnosticSeverity): string {
 	switch (severity) {
 		case vscode.DiagnosticSeverity.Error:
-			return 'ERROR';
+			return "ERROR";
 		case vscode.DiagnosticSeverity.Warning:
-			return 'WARN';
+			return "WARN";
 		case vscode.DiagnosticSeverity.Information:
-			return 'INFO';
+			return "INFO";
 		case vscode.DiagnosticSeverity.Hint:
-			return 'HINT';
+			return "HINT";
 		default:
-			return 'UNKNOWN';
+			return "UNKNOWN";
 	}
 }
 
@@ -492,7 +490,7 @@ function severityLabel(severity: vscode.DiagnosticSeverity): string {
  * @returns Link markdown para localização do problema.
  */
 function toLocationLink(uri: vscode.Uri, relativePath: string, line: number): string {
-	if (uri.scheme !== 'file') {
+	if (uri.scheme !== "file") {
 		return `${relativePath}:${line}`;
 	}
 
@@ -514,55 +512,90 @@ function formatDiagnosticsSummary(
 ): string {
 	if (entries.length === 0) {
 		return [
-			'Compilation completed and no errors or warnings were found in Problems.',
+			"Compilation completed and no errors or warnings were found in Problems.",
 			`- target: ${targetLabel}`
-		].join('\n');
+		].join("\n");
 	}
 
 	const errors = entries.filter((entry) => entry.diagnostic.severity === vscode.DiagnosticSeverity.Error).length;
 	const warnings = entries.length - errors;
 	const details = entries.map((entry, index) => {
 		const relativePath =
-			entry.uri.scheme === 'file'
+			entry.uri.scheme === "file"
 				? vscode.workspace.asRelativePath(entry.uri, false)
 				: entry.uri.toString(true);
 		const line = entry.diagnostic.range.start.line + 1;
 		const locationLink = toLocationLink(entry.uri, relativePath, line);
 		const code =
-			typeof entry.diagnostic.code === 'string'
+			typeof entry.diagnostic.code === "string"
 				? entry.diagnostic.code
-				: entry.diagnostic.code && typeof entry.diagnostic.code === 'object'
+				: entry.diagnostic.code && typeof entry.diagnostic.code === "object"
 					? entry.diagnostic.code.value
 					: undefined;
-		const cleanMessage = entry.diagnostic.message.replace(/\s+/g, ' ').trim();
-		const source = entry.diagnostic.source ? ` (${entry.diagnostic.source})` : '';
-		const codeText = code ? ` [${code}]` : '';
+		const cleanMessage = entry.diagnostic.message.replace(/\s+/g, " ").trim();
+		const source = entry.diagnostic.source ? ` (${entry.diagnostic.source})` : "";
+		const codeText = code ? ` [${code}]` : "";
 
 		return `${index + 1}. ${severityLabel(entry.diagnostic.severity)} ${locationLink}${source}${codeText} - ${cleanMessage}`;
 	});
 
 	const lines = [
-		'Compilation finished with diagnostics:',
+		"Compilation finished with diagnostics:",
 		`- target: ${targetLabel}`,
 		`- errors: ${errors}`,
 		`- warnings: ${warnings}`,
-		'',
+		"",
 		...details
 	];
 
 	if (truncated) {
-		lines.push('', `Showing first ${MAX_DIAGNOSTICS_TO_SHOW} diagnostics.`);
+		lines.push("", `Showing first ${MAX_DIAGNOSTICS_TO_SHOW} diagnostics.`);
 	}
 
-	return lines.join('\n');
+	return lines.join("\n");
+}
+
+/**
+ * Gera o texto de ajuda com comandos e opcoes suportadas pelo chat.
+ * @returns Texto de help em markdown para o chat.
+ */
+function buildHelpText(): string {
+	return [
+		"Comandos disponiveis:",
+		`- /${COMPILER_COMMAND}: compila o target informado ou o editor atual.`,
+		`- /${REBUILD_COMMAND}: recompila o target informado ou o editor atual.`,
+		`- /${SYNTAX_ONLY_COMMAND}: compila e mostra apenas erros (only=error).`,
+		"",
+		"Targets suportados:",
+		"- editor atual: editor, current, current-editor, editor-atual, editor-corrente, arquivo-atual",
+		"- workspace: workspace, projeto, ws, all",
+		"- arquivo: caminho relativo ou absoluto (ex: src/meu.prw)",
+		"- pasta: caminho relativo ou absoluto (ex: src/modulo)",
+		"",
+		"Flags suportadas (use chave=valor ou chave:valor):",
+		"- only=all|error|warning",
+		"- max=N",
+		"- source=texto",
+		"- sort=none|file|severity",
+		"",
+		"Exemplos:",
+		`- /${COMPILER_COMMAND} target=src/modulo only=error sort=file`,
+		`- /${REBUILD_COMMAND} target=workspace only=warning max=50`,
+		`- /${SYNTAX_ONLY_COMMAND} target=editor`,
+		`- /${COMPILER_COMMAND} target=src/modulo source=advpl`
+	].join("\n");
 }
 
 /**
  * Aguarda estabilização dos diagnósticos após compilação para evitar leitura parcial.
  * @param token Token de cancelamento da invocação.
-	 * @returns Resultado da espera, incluindo mudança, timeout e cancelamento.
+ * @param timeoutMs Timeout em ms para aguardar mudança de diagnóstico.
+ * @returns Resultado da espera, incluindo mudança, timeout e cancelamento.
  */
-async function waitForDiagnosticsChange(token: vscode.CancellationToken): Promise<DiagnosticsWaitResult> {
+async function waitForDiagnosticsChange(
+	token: vscode.CancellationToken,
+	timeoutMs: number = DIAGNOSTIC_WAIT_TIMEOUT_MS
+): Promise<DiagnosticsWaitResult> {
 	return await new Promise<DiagnosticsWaitResult>((resolve) => {
 		let finished = false;
 		let idleTimer: NodeJS.Timeout | undefined;
@@ -607,7 +640,7 @@ async function waitForDiagnosticsChange(token: vscode.CancellationToken): Promis
 		const timeout = setTimeout(() => {
 			timedOut = true;
 			finish();
-		}, DIAGNOSTIC_WAIT_TIMEOUT_MS);
+		}, timeoutMs);
 	});
 }
 
@@ -655,7 +688,7 @@ class ChatCompiler implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 	): Promise<vscode.LanguageModelToolResult> {
 		if (token.isCancellationRequested) {
 			return new vscode.LanguageModelToolResult([
-				new vscode.LanguageModelTextPart('Compiler tool invocation canceled by user.')
+				new vscode.LanguageModelTextPart("Compiler tool invocation canceled by user.")
 			]);
 		}
 
@@ -663,11 +696,11 @@ class ChatCompiler implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 		const target = resolveTarget(input.target);
 		const targetUri = resolveTargetUri(input.target);
 		const filterOptions = parseDiagnosticFilterOptions(input.flags);
-		const flags = filterOptions.applied.length > 0 ? filterOptions.applied.join(', ') : 'none';
-		const isWorkspaceTarget = target === 'workspace' && !targetUri;
+		const flags = filterOptions.applied.length > 0 ? filterOptions.applied.join(", ") : "none";
+		const isWorkspaceTarget = target === "workspace" && !targetUri;
 		const commandId = isWorkspaceTarget
-			? (input.rebuild ? 'totvs-developer-studio.rebuild.workspace' : 'totvs-developer-studio.build.workspace')
-			: (input.rebuild ? 'totvs-developer-studio.rebuild.file' : 'totvs-developer-studio.build.file');
+			? (input.rebuild ? "totvs-developer-studio.rebuild.workspace" : "totvs-developer-studio.build.workspace")
+			: (input.rebuild ? "totvs-developer-studio.rebuild.file" : "totvs-developer-studio.build.file");
 
 		try {
 			if (isWorkspaceTarget) {
@@ -685,10 +718,13 @@ class ChatCompiler implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 			]);
 		}
 
-		const waitResult = await waitForDiagnosticsChange(token);
+		const diagnosticsTimeout = isDirectoryUri(targetUri)
+			? DIAGNOSTIC_WAIT_TIMEOUT_MS_FOLDER
+			: DIAGNOSTIC_WAIT_TIMEOUT_MS;
+		const waitResult = await waitForDiagnosticsChange(token, diagnosticsTimeout);
 		if (waitResult.canceled) {
 			return new vscode.LanguageModelToolResult([
-				new vscode.LanguageModelTextPart('Compiler tool invocation canceled by user.')
+				new vscode.LanguageModelTextPart("Compiler tool invocation canceled by user.")
 			]);
 		}
 
@@ -708,21 +744,21 @@ class ChatCompiler implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 		);
 
 		const summary = [
-			'Compiler tool executed successfully with:',
+			"Compiler tool executed successfully with:",
 			`- command: ${commandId}`,
 			`- target: ${target}`,
-			`- rebuild: ${input.rebuild ? 'true' : 'false'}`,
+			`- rebuild: ${input.rebuild ? "true" : "false"}`,
 			`- flags: ${flags}`,
-			`- diagnostics-updated: ${waitResult.changed ? 'true' : 'false'}`,
-			'',
+			`- diagnostics-updated: ${waitResult.changed ? "true" : "false"}`,
+			"",
 			...(waitResult.timedOut && !waitResult.changed
 				? [
-					'Diagnostics were not updated before timeout. Results below may reflect a previous compile.',
-					''
+					"Diagnostics were not updated before timeout. Results below may reflect a previous compile.",
+					""
 				]
 				: []),
 			diagnosticsSummary
-		].join('\n');
+		].join("\n");
 
 		return new vscode.LanguageModelToolResult([
 			new vscode.LanguageModelTextPart(summary)
@@ -744,11 +780,22 @@ async function compilerParticipantHandler(
 	stream: vscode.ChatResponseStream,
 	token: vscode.CancellationToken
 ): Promise<vscode.ChatResult | void> {
-	const isRebuild = request.command === REBUILD_COMMAND || request.command === 'rebuild';
+	if (request.prompt?.trim() === "/help" || request.command === "help") {
+		stream.markdown(buildHelpText());
+		return {
+			metadata: {
+				tool: COMPILER_TOOL_NAME,
+				command: "help"
+			}
+		};
+	}
+
+	const isSyntaxOnly = request.command === SYNTAX_ONLY_COMMAND || request.command === "syntax-only";
+	const isRebuild = request.command === REBUILD_COMMAND || request.command === "rebuild";
 
 	const input: ChatCompilerToolInput = {
 		target: resolveTarget(),
-		rebuild: isRebuild
+		rebuild: isSyntaxOnly ? false : isRebuild
 	};
 
 	if (request.prompt?.trim()) {
@@ -758,7 +805,15 @@ async function compilerParticipantHandler(
 			input.target = targetFromPrompt;
 		}
 
-		input.flags = [prompt];
+		const flags: string[] = [prompt];
+		const hasOnlyFlag = /(?:^|\s)only\s*[:=]/i.test(prompt);
+		if (isSyntaxOnly && !hasOnlyFlag) {
+			flags.push("only=error");
+		}
+
+		input.flags = flags;
+	} else if (isSyntaxOnly) {
+		input.flags = ["only=error"];
 	}
 
 	const result = await vscode.lm.invokeTool(
@@ -773,9 +828,9 @@ async function compilerParticipantHandler(
 	const text = result.content
 		.filter((part): part is vscode.LanguageModelTextPart => part instanceof vscode.LanguageModelTextPart)
 		.map((part) => part.value)
-		.join('\n');
+		.join("\n");
 
-	stream.markdown(text || 'Compiler tool invoked successfully.');
+	stream.markdown(text || "Compiler tool invoked successfully.");
 
 	return {
 		metadata: {
@@ -795,7 +850,7 @@ export function registerChatTools(context: vscode.ExtensionContext) {
 	);
 
 	const participant = vscode.chat.createChatParticipant(COMPILER_PARTICIPANT_ID, compilerParticipantHandler);
-	participant.iconPath = new vscode.ThemeIcon('tools');
+	participant.iconPath = new vscode.ThemeIcon("tools");
 
 	context.subscriptions.push(participant);
 }
