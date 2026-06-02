@@ -89,7 +89,6 @@ export async function activate(context: ExtensionContext) {
   );
 
   prepareCopilotInstructions(context);
-  //await prepareCopilotInstructions(context);
 
   ServersConfig.createServerConfig();
   LaunchConfig.createLaunchConfig(undefined);
@@ -100,86 +99,6 @@ export async function activate(context: ExtensionContext) {
 
   //Load Language Client and start Language Server
   languageClient = getLanguageClient(context);
-
-  //createTimeLineDataProvider();
-
-  // //General commands.
-  // (() => {
-  //   commands.registerCommand("advpl.freshenIndex", () => {
-  //     languageClient.sendNotification("$advpl/freshenIndex");
-  //   });
-  //   function makeRefHandler(methodName, autoGotoIfSingle = false) {
-  //     return () => {
-  //       let position;
-  //       let uri;
-  //       if (window.activeTextEditor !== undefined) {
-  //         position = window.activeTextEditor.selection.active;
-  //         uri = window.activeTextEditor.document.uri;
-  //       }
-  //       languageClient
-  //         .sendRequest(methodName, {
-  //           textDocument: {
-  //             uri: uri.toString(),
-  //           },
-  //           position: position,
-  //         })
-  //         .then((locations: Array<ls.Location>) => {
-  //           if (autoGotoIfSingle && locations.length === 1) {
-  //             let location = p2c.asLocation(locations[0]);
-  //             commands.executeCommand(
-  //               "advpl.goto",
-  //               location.uri,
-  //               location.range.start,
-  //               []
-  //             );
-  //           } else {
-  //             commands.executeCommand(
-  //               "editor.action.showReferences",
-  //               uri,
-  //               position,
-  //               locations.map(p2c.asLocation)
-  //             );
-  //           }
-  //         });
-  //     };
-  //   }
-  //   commands.registerCommand("advpl.vars", makeRefHandler("$advpl/vars"));
-  //   commands.registerCommand(
-  //     "advpl.callers",
-  //     makeRefHandler("$advpl/callers")
-  //   );
-  //   commands.registerCommand(
-  //     "advpl.base",
-  //     makeRefHandler("$advpl/base", true)
-  //   );
-  // })();
-
-  // The language client does not correctly deserialize arguments, so we have a
-  // wrapper command that does it for us.
-  // (() => {
-  //   commands.registerCommand(
-  //     "advpl.showReferences",
-  //     (uri: string, position: ls.Position, locations: ls.Location[]) => {
-  //       commands.executeCommand(
-  //         "editor.action.showReferences",
-  //         p2c.asUri(uri),
-  //         p2c.asPosition(position),
-  //         locations.map(p2c.asLocation)
-  //       );
-  //     }
-  //   );
-
-  //   commands.registerCommand(
-  //     "advpl.goto",
-  //     (uri: string, position: ls.Position, locations: ls.Location[]) => {
-  //       jumpToUriAtPosition(
-  //         p2c.asUri(uri),
-  //         p2c.asPosition(position),
-  //         false /*preserveFocus*/
-  //       );
-  //     }
-  //   );
-  // })();
 
   // Progress
   (() => {
