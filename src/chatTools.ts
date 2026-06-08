@@ -1,11 +1,10 @@
+import path from "path";
 import * as vscode from "vscode";
 import * as fs from "fs";
-import * as path from "path";
 
 const COMPILER_TOOL_NAME: string = "chat-tds-compiler";
 const COMPILER_PARTICIPANT_ID: string = "tds-vscode.tools";
 const COMPILER_COMMAND: string = "compiler";
-const REBUILD_COMMAND: string = "recompiler";
 const SYNTAX_ONLY_COMMAND: string = "syntax-only";
 
 const WORKSPACE_TARGET_ALIASES: Set<string> = new Set([
@@ -29,8 +28,8 @@ const OPEN_EDITORS_TARGET_ALIASES: Set<string> = new Set([
 ]);
 
 type ChatCompilerToolInput = {
+	syntaxOnly?: boolean;
 	target?: string;
-	rebuild?: boolean;
 	flags?: string[];
 };
 
@@ -43,6 +42,7 @@ type DiagnosticFilterOptions = {
 	only: "all" | "error" | "warning";
 	max?: number;
 	sort: "none" | "file" | "severity";
+	format: "markdown" | "json";
 	applied: string[];
 };
 
@@ -60,6 +60,7 @@ const DIAGNOSTIC_IDLE_WINDOW_MS: number = 3000;
 const DEFAULT_DIAGNOSTIC_FILTER_OPTIONS: DiagnosticFilterOptions = {
 	only: "all",
 	sort: "none",
+	format: "markdown",
 	applied: []
 };
 
@@ -199,7 +200,7 @@ function parseDiagnosticFilterOptions(flags: string[] | undefined): DiagnosticFi
 		...DEFAULT_DIAGNOSTIC_FILTER_OPTIONS,
 		applied: []
 	};
-	const regex: RegExp = /(only|max|sort)\s*[:=]\s*("[^"]+"|"[^"]+"|\S+)/gi;
+	const regex: RegExp = /(only|max|sort|format)\s*[:=]\s*("[^"]+"|"[^"]+"|\S+)/gi;
 	let match: RegExpExecArray | null;
 
 	while ((match = regex.exec(joined)) !== null) {
@@ -232,6 +233,13 @@ function parseDiagnosticFilterOptions(flags: string[] | undefined): DiagnosticFi
 			if (value === "file" || value === "severity" || value === "none") {
 				options.sort = value;
 				options.applied.push(`sort=${value}`);
+			}
+		}
+
+		if (key === "format") {
+			if (value === "markdown" || value === "json") {
+				options.format = value;
+				options.applied.push(`format=${value}`);
 			}
 		}
 	}
@@ -284,7 +292,7 @@ function resolveTarget(explicitTarget?: string): string {
 }
 
 /**
- * Resolves the target into a real URI used to run the build/rebuild command.
+ * Resolves the target into a real URI used to run the build command.
  * @param explicitTarget Target explicitly provided by the user.
  * @returns Resolved URI for execution, when applicable.
  */
@@ -435,7 +443,7 @@ function collectDiagnosticsForOpenEditors(): DiagnosticEntry[] {
 
 /**
  * Collects error/warning diagnostics for a file, folder, or workspace.
- * @param targetUri Target URI for build/rebuild.
+ * @param targetUri Target URI for build.
  * @param isWorkspaceTarget Indicates whether the build was requested for the entire workspace.
  * @returns List of diagnostics eligible for chat display.
  */
@@ -576,17 +584,50 @@ function toLocationLink(uri: vscode.Uri, relativePath: string, line: number): st
 function formatDiagnosticsSummary(
 	entries: DiagnosticEntry[],
 	targetLabel: string,
-	truncated: boolean
+	truncated: boolean,
+	outputFormat: "markdown" | "json"
 ): string {
+	const errors: number = entries.filter((entry) => entry.diagnostic.severity === vscode.DiagnosticSeverity.Error).length;
+	const warnings: number = entries.length - errors;
+
+	if (outputFormat === "json") {
+		const diagnostics = entries.map((entry) => {
+			const relativePath: string =
+				entry.uri.scheme === "file"
+					? vscode.workspace.asRelativePath(entry.uri, false)
+					: entry.uri.toString(true);
+			const code: string | number | undefined =
+				typeof entry.diagnostic.code === "string"
+					? entry.diagnostic.code
+					: entry.diagnostic.code && typeof entry.diagnostic.code === "object"
+						? entry.diagnostic.code.value
+						: undefined;
+			return {
+				severity: severityLabel(entry.diagnostic.severity),
+				message: entry.diagnostic.message.replace(/\s+/g, " ").trim(),
+				source: entry.diagnostic.source ?? null,
+				code: code ?? null,
+				line: entry.diagnostic.range.start.line + 1,
+				path: relativePath,
+				uri: entry.uri.toString(true)
+			};
+		});
+
+		return JSON.stringify({
+			target: targetLabel,
+			errors,
+			warnings,
+			truncated,
+			diagnostics
+		}, null, 2);
+	}
+
 	if (entries.length === 0) {
 		return [
 			"Compilation completed and no errors or warnings were found in Problems.",
 			`- target: ${targetLabel}`
 		].join("\n");
 	}
-
-	const errors: number = entries.filter((entry) => entry.diagnostic.severity === vscode.DiagnosticSeverity.Error).length;
-	const warnings: number = entries.length - errors;
 	const details: string[] = entries.map((entry, index) => {
 		const relativePath: string =
 			entry.uri.scheme === "file"
@@ -631,8 +672,8 @@ function buildHelpText(): string {
 	const lines: string[] = [
 		vscode.l10n.t("Available commands:"),
 		vscode.l10n.t("- /{0}: compiles the target (default: current editor).", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0}: recompiles the target (default: current editor).", REBUILD_COMMAND),
 		vscode.l10n.t("- /{0}: compiles and shows only errors (only=error).", SYNTAX_ONLY_COMMAND),
+		vscode.l10n.t("- /help: shows this help."),
 		"",
 		vscode.l10n.t("Supported targets:"),
 		vscode.l10n.t("- current editor: editor, current, current-editor, editor-atual, editor-corrente, arquivo-atual"),
@@ -642,19 +683,22 @@ function buildHelpText(): string {
 		vscode.l10n.t("- folder: relative or absolute path (ex: src/modulo)"),
 		"",
 		vscode.l10n.t("Note: if you provide only a single name (no spaces), it is treated as the target."),
+		vscode.l10n.t("Note: a command is required (use /help for details)."),
 		"",
 		vscode.l10n.t("Supported flags (use key=value or key:value):"),
 		vscode.l10n.t("- only=all|error|warning"),
 		vscode.l10n.t("- max=N"),
 		vscode.l10n.t("- sort=none|file|severity"),
+		vscode.l10n.t("- format=markdown|json"),
 		"",
 		vscode.l10n.t("Examples:"),
 		vscode.l10n.t("- /{0} target=src/modulo only=error sort=file", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0} target=workspace only=warning max=50", REBUILD_COMMAND),
 		vscode.l10n.t("- /{0} target=editor", SYNTAX_ONLY_COMMAND),
 		vscode.l10n.t("- /{0} target=open-editors", COMPILER_COMMAND),
 		vscode.l10n.t("- /{0} src/modulo", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0} only=error", COMPILER_COMMAND)];
+		vscode.l10n.t("- /{0} only=error", COMPILER_COMMAND),
+		vscode.l10n.t("- /{0} format=json", COMPILER_COMMAND)
+	];
 
 	return lines.join("\n");
 }
@@ -722,13 +766,12 @@ async function waitForDiagnosticsChange(
  *
  * Responsibilities:
  * - Resolve the compilation target (current editor, file, folder, or workspace).
- * - Execute the corresponding VS Code build/rebuild command.
+ * - Execute the corresponding VS Code build command.
  * - Wait for diagnostics to stabilize after compilation.
  * - Collect, filter, sort, and format errors/warnings for chat response.
  *
  * Input options:
  * - target: path/alias of the compilation target.
- * - rebuild: when true, runs rebuild instead of build.
  * - flags: text parameters for diagnostic filters (only, max, sort).
  */
 class ChatCompiler implements vscode.LanguageModelTool<ChatCompilerToolInput> {
@@ -750,8 +793,8 @@ class ChatCompiler implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 	}
 
 	/**
-	 * Executes build/rebuild, collects diagnostics, and returns the chat summary.
-	 * @param options Invocation options with target/rebuild/flags.
+	 * Executes build, collects diagnostics, and returns the chat summary.
+	 * @param options Invocation options with target/flags.
 	 * @param token Operation cancellation token.
 	 * @returns Text result for chat response.
 	 */
@@ -772,11 +815,12 @@ class ChatCompiler implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 		const flags: string = filterOptions.applied.length > 0 ? filterOptions.applied.join(", ") : "none";
 		const isOpenEditorsTarget: boolean = target === "open-editors";
 		const isWorkspaceTarget: boolean = target === "workspace" && !targetUri;
-		const commandId: string = isWorkspaceTarget
-			? (input.rebuild ? "totvs-developer-studio.rebuild.workspace" : "totvs-developer-studio.build.workspace")
+		const commandIdBase: string = isWorkspaceTarget
+			? "totvs-developer-studio.rebuild.workspace"
 			: isOpenEditorsTarget
-				? (input.rebuild ? "totvs-developer-studio.rebuild.openEditors" : "totvs-developer-studio.build.openEditors")
-				: (input.rebuild ? "totvs-developer-studio.rebuild.file" : "totvs-developer-studio.build.file");
+				? "totvs-developer-studio.rebuild.openEditors"
+				: "totvs-developer-studio.rebuild.file";
+		const commandId: string = input.syntaxOnly ? `totvs-developer-studio.syntax-only.file` : commandIdBase;
 
 		try {
 			if (isWorkspaceTarget || isOpenEditorsTarget) {
@@ -816,25 +860,36 @@ class ChatCompiler implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 		const diagnosticsSummary: string = formatDiagnosticsSummary(
 			displayedDiagnostics,
 			target,
-			diagnostics.length > displayedDiagnostics.length
+			diagnostics.length > displayedDiagnostics.length,
+			filterOptions.format
 		);
 
-		const summary: string = [
-			"Compiler tool executed successfully with:",
-			`- command: ${commandId}`,
-			`- target: ${target}`,
-			`- rebuild: ${input.rebuild ? "true" : "false"}`,
-			`- flags: ${flags}`,
-			`- diagnostics-updated: ${waitResult.changed ? "true" : "false"}`,
-			"",
-			...(waitResult.timedOut && !waitResult.changed
-				? [
-					"Diagnostics were not updated before timeout. Results below may reflect a previous compile.",
-					""
-				]
-				: []),
-			diagnosticsSummary
-		].join("\n");
+		const summary: string = filterOptions.format === "json"
+			? JSON.stringify({
+				command: commandId,
+				target,
+				syntaxOnly: input.syntaxOnly ?? false,
+				flags,
+				diagnosticsUpdated: waitResult.changed,
+				timedOut: waitResult.timedOut,
+				diagnostics: JSON.parse(diagnosticsSummary)
+			}, null, 2)
+			: [
+				"Compiler tool executed successfully with:",
+				//`- command: ${commandId}`,
+				`- target: ${target}`,
+				`- syntax-only: ${input.syntaxOnly ? "true" : "false"}`,
+				`- flags: ${flags}`,
+				`- diagnostics-updated: ${waitResult.changed ? "true" : "false"}`,
+				"",
+				...(waitResult.timedOut && !waitResult.changed
+					? [
+						"Diagnostics were not updated before timeout. Results below may reflect a previous compile.",
+						""
+					]
+					: []),
+				diagnosticsSummary
+			].join("\n");
 
 		return new vscode.LanguageModelToolResult([
 			new vscode.LanguageModelTextPart(summary)
@@ -856,7 +911,25 @@ async function compilerParticipantHandler(
 	stream: vscode.ChatResponseStream,
 	token: vscode.CancellationToken
 ): Promise<vscode.ChatResult | void> {
-	if (request.prompt?.trim() === "/help" || request.command === "help") {
+	const rawPrompt: string | undefined = request.prompt?.trim();
+	const command: string | undefined = request.command;
+	const isHelp: boolean = command === "help" || rawPrompt === "/help";
+	const allowedCommands: Set<string> = new Set([COMPILER_COMMAND, SYNTAX_ONLY_COMMAND, "help"]);
+	if (!command || !allowedCommands.has(command)) {
+		if (!isHelp) {
+			stream.markdown("Command not recognized. Use /help to see available commands.\n\n" + buildHelpText());
+		} else {
+			stream.markdown(buildHelpText());
+		}
+		return {
+			metadata: {
+				tool: COMPILER_TOOL_NAME,
+				command: "help"
+			}
+		};
+	}
+
+	if (isHelp) {
 		stream.markdown(buildHelpText());
 		return {
 			metadata: {
@@ -866,12 +939,10 @@ async function compilerParticipantHandler(
 		};
 	}
 
-	const isSyntaxOnly: boolean = request.command === SYNTAX_ONLY_COMMAND || request.command === "syntax-only";
-	const isRebuild: boolean = request.command === REBUILD_COMMAND || request.command === "rebuild";
-
+	const isSyntaxOnly: boolean = command === SYNTAX_ONLY_COMMAND;
 	const input: ChatCompilerToolInput = {
 		target: resolveTarget(),
-		rebuild: isSyntaxOnly ? false : isRebuild
+		syntaxOnly: isSyntaxOnly
 	};
 
 	if (request.prompt?.trim()) {
@@ -929,7 +1000,7 @@ export function registerChatTools(context: vscode.ExtensionContext) {
 		COMPILER_PARTICIPANT_ID,
 		compilerParticipantHandler
 	);
-	participant.iconPath = new vscode.ThemeIcon("tools");
+	participant.iconPath = vscode.Uri.file(context.asAbsolutePath("icons/totvs24x24.png"));
 
 	context.subscriptions.push(participant);
 }
