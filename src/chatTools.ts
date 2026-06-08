@@ -6,6 +6,8 @@ const COMPILER_TOOL_NAME: string = "chat-tds-compiler";
 const COMPILER_PARTICIPANT_ID: string = "tds-vscode.tools";
 const COMPILER_COMMAND: string = "compiler";
 const SYNTAX_ONLY_COMMAND: string = "syntax-only";
+const APPLY_PATCH_COMMAND: string = "apply-patch";
+const PATCH_APPLY_VSCODE_COMMAND: string = "totvs-developer-studio.patchApply.fromFile";
 
 const WORKSPACE_TARGET_ALIASES: Set<string> = new Set([
 	"workspace",
@@ -186,6 +188,40 @@ function extractTargetFromPrompt(prompt: string): string | undefined {
 }
 
 /**
+ * Extracts patch file path from prompt patterns like patch=..., file:..., path:...
+ * or from a standalone value.
+ * @param prompt Full prompt sent in the chat.
+ * @returns Extracted patch file path when found.
+ */
+function extractPatchFileFromPrompt(prompt: string): string | undefined {
+	const directiveMatch: RegExpMatchArray | null = prompt.match(
+		/(?:^|\s)(?:patch|patch-file|patchfile|arquivo|file|path)\s*[:=]\s*("[^"]+"|'[^']+'|\S+)/i
+	);
+	if (directiveMatch) {
+		return stripQuotes(directiveMatch[1]);
+	}
+
+	const value: string = stripQuotes(prompt);
+	if (!value) {
+		return undefined;
+	}
+
+	const quotedPrompt: string = prompt.trim();
+	if (
+		(quotedPrompt.startsWith("\"") && quotedPrompt.endsWith("\"")) ||
+		(quotedPrompt.startsWith("'") && quotedPrompt.endsWith("'"))
+	) {
+		return value;
+	}
+
+	if (!value.includes(" ")) {
+		return value;
+	}
+
+	return undefined;
+}
+
+/**
  * Parses diagnostic filter/sort flags from the prompt.
  * @param flags Raw list of flags received by the tool.
  * @returns Normalized filter/sort options and the list of applied flags.
@@ -332,6 +368,86 @@ function resolveTargetUri(explicitTarget?: string): vscode.Uri | undefined {
 	}
 
 	return vscode.window.activeTextEditor?.document.uri;
+}
+
+/**
+ * Resolves a patch file path to an absolute file-system path.
+ * @param explicitPath Path provided by prompt.
+ * @returns Absolute fsPath for patch file when resolvable.
+ */
+function resolvePatchFilePath(explicitPath: string): string | undefined {
+	const candidateUri: vscode.Uri | undefined = resolveTargetUri(explicitPath);
+
+	if (!candidateUri || candidateUri.scheme !== "file") {
+		return undefined;
+	}
+
+	return candidateUri.fsPath;
+}
+
+/**
+ * Validates if a file extension is supported by patch apply flow.
+ * @param filePath Candidate file path.
+ * @returns True when extension is accepted for patch apply.
+ */
+function isSupportedPatchFile(filePath: string): boolean {
+	const extension: string = path.extname(filePath).toLowerCase();
+	return extension === ".ptm" || extension === ".zip" || extension === ".upd";
+}
+
+/**
+ * Runs patch apply command from chat, validating prompt and file before execution.
+ * @param prompt Raw prompt text.
+ * @param token Request cancellation token.
+ * @returns Status text for chat output.
+ */
+async function handleApplyPatchCommand(
+	prompt: string | undefined,
+	token: vscode.CancellationToken
+): Promise<string> {
+	if (token.isCancellationRequested) {
+		return "Apply patch command canceled by user.";
+	}
+
+	const patchFromPrompt: string | undefined = prompt?.trim() ? extractPatchFileFromPrompt(prompt.trim()) : undefined;
+	if (!patchFromPrompt) {
+		return "Patch file path is required. Usage: /apply-patch path=<file.ptm|file.zip|file.upd>";
+	}
+
+	const patchFilePath: string | undefined = resolvePatchFilePath(patchFromPrompt);
+	if (!patchFilePath) {
+		return `Unable to resolve patch file path: ${patchFromPrompt}`;
+	}
+
+	if (!fs.existsSync(patchFilePath)) {
+		return `Patch file not found: ${patchFilePath}`;
+	}
+
+	let fileStats: fs.Stats;
+	try {
+		fileStats = fs.statSync(patchFilePath);
+	} catch (error) {
+		return `Unable to access patch file: ${error instanceof Error ? error.message : String(error)}`;
+	}
+
+	if (!fileStats.isFile()) {
+		return `Invalid patch path (not a file): ${patchFilePath}`;
+	}
+
+	if (!isSupportedPatchFile(patchFilePath)) {
+		return `Unsupported patch extension. Use .ptm, .zip, or .upd files: ${patchFilePath}`;
+	}
+
+	try {
+		await vscode.commands.executeCommand(PATCH_APPLY_VSCODE_COMMAND, {
+			path: patchFilePath
+		});
+	} catch (error) {
+		return `Apply patch command failed: ${error instanceof Error ? error.message : String(error)}`;
+	}
+
+	const relativePath: string = vscode.workspace.asRelativePath(patchFilePath, false);
+	return `Patch apply requested for ${relativePath}. Confirmations, if required, were shown in VS Code.`;
 }
 
 /**
@@ -673,6 +789,7 @@ function buildHelpText(): string {
 		vscode.l10n.t("Available commands:"),
 		vscode.l10n.t("- /{0}: compiles the target (default: current editor).", COMPILER_COMMAND),
 		vscode.l10n.t("- /{0}: compiles and shows only errors (only=error).", SYNTAX_ONLY_COMMAND),
+		vscode.l10n.t("- /{0}: applies a patch file (.ptm or .zip).", APPLY_PATCH_COMMAND),
 		vscode.l10n.t("- /help: shows this help."),
 		"",
 		vscode.l10n.t("Supported targets:"),
@@ -682,8 +799,9 @@ function buildHelpText(): string {
 		vscode.l10n.t("- file: relative or absolute path (ex: src/meu.prw)"),
 		vscode.l10n.t("- folder: relative or absolute path (ex: src/modulo)"),
 		"",
-		vscode.l10n.t("Note: if you provide only a single name (no spaces), it is treated as the target."),
-		vscode.l10n.t("Note: a command is required (use /help for details)."),
+		vscode.l10n.t("Notes:"),
+		vscode.l10n.t("- If you provide only a single name (no spaces), it is treated as the target."),
+		vscode.l10n.t("- The command is executed on the current server/environment."),
 		"",
 		vscode.l10n.t("Supported flags (use key=value or key:value):"),
 		vscode.l10n.t("- only=all|error|warning"),
@@ -697,7 +815,9 @@ function buildHelpText(): string {
 		vscode.l10n.t("- /{0} target=open-editors", COMPILER_COMMAND),
 		vscode.l10n.t("- /{0} src/modulo", COMPILER_COMMAND),
 		vscode.l10n.t("- /{0} only=error", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0} format=json", COMPILER_COMMAND)
+		vscode.l10n.t("- /{0} format=json", COMPILER_COMMAND),
+		vscode.l10n.t("- /{0} path=patches/fix.ptm (path is required)", APPLY_PATCH_COMMAND),
+		vscode.l10n.t("- /{0} c:/patches/fix.zip", APPLY_PATCH_COMMAND)
 	];
 
 	return lines.join("\n");
@@ -878,9 +998,9 @@ class ChatCompiler implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 				"Compiler tool executed successfully with:",
 				//`- command: ${commandId}`,
 				`- target: ${target}`,
-				`- syntax-only: ${input.syntaxOnly ? "true" : "false"}`,
+				input.syntaxOnly ? `- syntax-only: true` : `- compiler`,
 				`- flags: ${flags}`,
-				`- diagnostics-updated: ${waitResult.changed ? "true" : "false"}`,
+				//`- diagnostics-updated: ${waitResult.changed ? "true" : "false"}`,
 				"",
 				...(waitResult.timedOut && !waitResult.changed
 					? [
@@ -912,9 +1032,21 @@ async function compilerParticipantHandler(
 	token: vscode.CancellationToken
 ): Promise<vscode.ChatResult | void> {
 	const rawPrompt: string | undefined = request.prompt?.trim();
-	const command: string | undefined = request.command;
+	let command: string | undefined = request.command;
+	let commandPrompt: string | undefined = rawPrompt;
+
+	if (!command && rawPrompt) {
+		const promptCommandMatch: RegExpMatchArray | null = rawPrompt.match(
+			/^\/?(compiler|syntax-only|apply-patch|help)(?:\s+(.*))?$/i
+		);
+		if (promptCommandMatch) {
+			command = promptCommandMatch[1].toLowerCase();
+			commandPrompt = promptCommandMatch[2]?.trim();
+		}
+	}
+
 	const isHelp: boolean = command === "help" || rawPrompt === "/help";
-	const allowedCommands: Set<string> = new Set([COMPILER_COMMAND, SYNTAX_ONLY_COMMAND, "help"]);
+	const allowedCommands: Set<string> = new Set([COMPILER_COMMAND, SYNTAX_ONLY_COMMAND, APPLY_PATCH_COMMAND, "help"]);
 	if (!command || !allowedCommands.has(command)) {
 		if (!isHelp) {
 			stream.markdown("Command not recognized. Use /help to see available commands.\n\n" + buildHelpText());
@@ -939,14 +1071,25 @@ async function compilerParticipantHandler(
 		};
 	}
 
+	if (command === APPLY_PATCH_COMMAND) {
+		const applyPatchResult: string = await handleApplyPatchCommand(commandPrompt, token);
+		stream.markdown(applyPatchResult);
+		return {
+			metadata: {
+				tool: COMPILER_TOOL_NAME,
+				command: APPLY_PATCH_COMMAND
+			}
+		};
+	}
+
 	const isSyntaxOnly: boolean = command === SYNTAX_ONLY_COMMAND;
 	const input: ChatCompilerToolInput = {
 		target: resolveTarget(),
 		syntaxOnly: isSyntaxOnly
 	};
 
-	if (request.prompt?.trim()) {
-		const prompt: string = request.prompt.trim();
+	if (commandPrompt?.trim()) {
+		const prompt: string = commandPrompt.trim();
 		const targetFromPrompt: string | undefined = extractTargetFromPrompt(prompt);
 		if (targetFromPrompt) {
 			input.target = targetFromPrompt;
@@ -982,7 +1125,7 @@ async function compilerParticipantHandler(
 	return {
 		metadata: {
 			tool: COMPILER_TOOL_NAME,
-			command: request.command ?? COMPILER_COMMAND
+			command: command ?? COMPILER_COMMAND
 		}
 	};
 }
