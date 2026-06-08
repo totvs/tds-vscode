@@ -24,6 +24,7 @@ import {
   commandBuildFile,
   commandBuildWorkspace,
   commandBuildOpenEditors,
+  commandSyntaxOnlyFile,
   generatePpo,
 } from "./compile/tdsBuild";
 import { deleteFileFromRPO } from "./server/deleteFileFromRPO";
@@ -65,13 +66,12 @@ import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import { commandShowBuildTableResult } from "./compile/buildResult";
 import { ServerItem } from "./serverItem";
 import serverProvider from "./serverItemProvider";
-//import { ReplayRegisterCommands } from "./debug/tdsreplay/RegisterReplayCommands";
 import { registerWorkspace } from "./workspace";
 import { sendTelemetry } from "./protocolMessages";
 import { registerXRef } from "./xreferences";
 import { tlppTools } from "./tlpp-tools/tlppTools";
 import { openWebMonitor } from "./monitor/monitorLoader";
-import { registerChatTools } from './chatTools';
+import { registerChatTools } from "./chatTools";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -175,6 +175,13 @@ export async function activate(context: ExtensionContext) {
     commands.registerCommand(
       "totvs-developer-studio.build.file",
       (args, files) => commandBuildFile(args, false, files)
+    )
+  );
+  //Verifica somente a sintaxe dos fontes/recursos selecionados
+  context.subscriptions.push(
+    commands.registerCommand(
+      "totvs-developer-studio.syntax-only.file",
+      (args, files) => commandSyntaxOnlyFile(args, files)
     )
   );
   //Recompila os fontes/recursos selecionados

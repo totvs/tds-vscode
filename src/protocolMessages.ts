@@ -448,7 +448,8 @@ export function sendCompilation(
   filesUris: string[],
   compileOptions,
   extensionsAllowed: string[],
-  hasAdvplsource: boolean
+  hasAdvplsource: boolean,
+  syntaxOnly: boolean
 ): Thenable<CompileResult> {
   if (_debugEvent) {
     return Promise.reject(
@@ -466,6 +467,7 @@ export function sendCompilation(
       compileOptions: compileOptions,
       extensionsAllowed: extensionsAllowed,
       includeUrisRequired: hasAdvplsource,
+      syntaxOnly: syntaxOnly,
     },
   });
 }

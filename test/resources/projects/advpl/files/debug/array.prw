@@ -26,6 +26,7 @@ user function ;
 	local list_250  := array(250)
 	local list_500  := array(500)
 	local list_1000 := array(1000)
+	local list_1000 := array(1000)
 	local _index    := 1
 
 	conout("start array")
