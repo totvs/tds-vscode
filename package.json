@@ -170,8 +170,42 @@
         "name": "chat-tds-compiler",
         "toolReferenceName": "tds",
         "displayName": "Compiler",
+        "icon": "icons/totvs24x24.png",
         "when": "resourceLangId == advpl || resourceLangId == 4gl || resourceLangId == advpl-asp",
-        "modelDescription": "Triggers compilation of sources and resources."
+        "modelDescription": "Triggers compilation of sources and resources.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "string",
+              "description": "Compilation target alias or path."
+            },
+            "syntaxOnly": {
+              "type": "boolean",
+              "description": "When true, indicates a syntax-only invocation (diagnostics only)."
+            },
+            "flags": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^(only=(all|error|warning)|max=\\d+|source=.+|sort=(none|file|severity)|format=(markdown|json))$"
+              },
+              "description": "Text flags for diagnostic filters (only, max, source, sort, format).",
+              "examples": [
+                "only=all",
+                "only=error",
+                "only=warning",
+                "max=20",
+                "source=advpl",
+                "sort=none",
+                "sort=file",
+                "sort=severity",
+                "format=markdown",
+                "format=json"
+              ]
+            }
+          }
+        }
       }
     ],
     "chatParticipants": [
@@ -187,12 +221,12 @@
             "description": "Compiles the current or informed context."
           },
           {
-            "name": "recompiler",
-            "description": "Recompiles the current or informed context."
-          },
-          {
             "name": "syntax-only",
             "description": "Checks the syntax of the current or informed context."
+          },
+          {
+            "name": "apply-patch",
+            "description": "Applies a patch file (.ptm, .zip, .upd) to the RPO of the current server."
           },
           {
             "name": "help",
@@ -808,6 +842,12 @@
         "command": "totvs-developer-studio.revalidateRPO",
         "title": "%tds.package.revalidate.rpo.title%",
         "description": "%tds.package.revalidate.rpo.description%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.syntax-only.file",
+        "title": "%tds.package.syntaxOnly.syntax-only.title%",
+        "description": "%tds.package.syntaxOnly.file.description%",
         "category": "TOTVS"
       },
       {
