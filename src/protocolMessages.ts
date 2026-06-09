@@ -521,6 +521,80 @@ export function sendPatchInfo(
     );
 }
 
+export interface ValidResponse {
+  error: number;
+  errorCode: number;
+  message: string;
+  patchValidates: [];
+}
+
+export function sendPatchValidateRequest(
+  server: ServerItem,
+  patchUri: string
+): Thenable<ValidResponse> {
+  if (_debugEvent) {
+    return Promise.reject(
+      new Error("This operation is not allowed during a debug.")
+    );
+  }
+
+  return languageClient
+    .sendRequest("$totvsserver/patchApply", {
+      patchApplyInfo: {
+        connectionToken: server.token,
+        authorizationToken: ServersConfig.getAuthorizationToken(server),
+        environment: server.environment,
+        patchUri: patchUri,
+        isLocal: true,
+        isValidOnly: true,
+        applyScope: "none",
+      },
+    })
+    .then(
+      (response: ValidResponse) => {
+        return response;
+      },
+      (err: ResponseError<object>) => {
+        vscode.window.showErrorMessage(err.message);
+        return Promise.reject(err);
+      }
+    );
+}
+
+export function _sendPatchApplyRequest(
+  server: ServerItem,
+  patchUri: string,
+  applyOld: boolean
+): Thenable<ValidResponse> {
+  if (_debugEvent) {
+    return Promise.reject(
+      new Error("This operation is not allowed during a debug.")
+    );
+  }
+
+  return languageClient
+    .sendRequest("$totvsserver/patchApply", {
+      patchApplyInfo: {
+        connectionToken: server.token,
+        authorizationToken: ServersConfig.getAuthorizationToken(server),
+        environment: server.environment,
+        patchUri: patchUri,
+        isLocal: true,
+        isValidOnly: false,
+        applyScope: applyOld ? "all" : "only_new",
+      },
+    })
+    .then(
+      (response: ValidResponse) => {
+        return response;
+      },
+      (err: ResponseError<object>) => {
+        vscode.window.showErrorMessage(err.message);
+        return Promise.reject(err);
+      }
+    );
+}
+
 export interface IApplyTemplateResult {
   error: boolean;
   message: string;
