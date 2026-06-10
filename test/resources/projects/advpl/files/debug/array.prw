@@ -26,7 +26,6 @@ user function ;
 	local list_250  := array(250)
 	local list_500  := array(500)
 	local list_1000 := array(1000)
-	local list_1000 := array(1000)
 	local _index    := 1
 
 	conout("start array")
@@ -69,8 +68,7 @@ user function ;
 		list_1000[_index] := _index
 	next
 
-	conout("display com erro")
-	conout( list_1000[2000])
+	u_outArray(list_1000)
 
 	conout("depois do display com erro")
 
