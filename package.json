@@ -225,6 +225,10 @@
             "description": "Checks the syntax of the current or informed context."
           },
           {
+            "name": "validate-patch",
+            "description": "Validates a patch file (.ptm, .zip, .upd) against the RPO of the current server."
+          },
+          {
             "name": "apply-patch",
             "description": "Applies a patch file (.ptm, .zip, .upd) to the RPO of the current server."
           },
