@@ -5,7 +5,7 @@ import { ServersConfig } from "../utils";
 import { languageClient } from "../extension";
 import JSZip = require("jszip");
 import { processSelectResourceMessage } from "../utilities/processSelectResource";
-import { _sendPatchApplyRequest, sendPatchValidateRequest, ValidResponse } from "../protocolMessages";
+import { sendPatchApplyRequest, sendPatchValidateRequest, ValidResponse } from "../protocolMessages";
 
 const compile = require("template-literal");
 
@@ -177,7 +177,7 @@ export async function patchApply(
                               message: `(${index}/${message.patchFile.length}) ${element}`,
                             });
 
-                            await _sendPatchApplyRequest(
+                            await sendPatchApplyRequest(
                               server,
                               vscode.Uri.file(element).toString(),
                               message.applyOld
@@ -277,7 +277,7 @@ export async function patchApply(
               if (clicked === vscode.l10n.t("Yes")) {
                 const patchUri = vscode.Uri.file(patchFile).toString();
 
-                await _sendPatchApplyRequest(
+                await sendPatchApplyRequest(
                   server,
                   patchUri.toString(),
                   false

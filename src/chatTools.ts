@@ -1,14 +1,16 @@
 import path from "path";
 import * as vscode from "vscode";
 import * as fs from "fs";
-import { sendPatchValidateRequest, ValidResponse } from "./protocolMessages";
+import { sendPatchApplyRequest, sendPatchValidateRequest, ValidResponse } from "./protocolMessages";
 import { ServersConfig } from "./utils";
+import Stream from "stream";
 
 const COMPILER_TOOL_NAME: string = "chat-tds-compiler";
 const COMPILER_PARTICIPANT_ID: string = "tds-vscode.tools";
 const COMPILER_COMMAND: string = "compiler";
 const SYNTAX_ONLY_COMMAND: string = "syntax-only";
 const APPLY_PATCH_COMMAND: string = "apply-patch";
+const VALIDATE_PATCH_COMMAND: string = "validate-patch";
 const HELP_COMMAND: string = "help";
 
 const REBUILD_WORKSPACE_COMMAND: string = "totvs-developer-studio.rebuild.workspace";
@@ -38,9 +40,7 @@ const OPEN_EDITORS_TARGET_ALIASES: Set<string> = new Set([
 
 type ChatCompilerToolInput = {
 	command?: string;
-	syntaxOnly?: boolean;
 	target?: string;
-	patchPath?: string;
 	flags?: string[];
 };
 
@@ -49,11 +49,13 @@ type DiagnosticEntry = {
 	diagnostic: vscode.Diagnostic;
 };
 
-type DiagnosticFilterOptions = {
+type FlagOptions = {
 	only: "all" | "error" | "warning";
 	max?: number;
 	sort: "none" | "file" | "severity";
 	format: "markdown" | "json";
+	applyOld: boolean;
+	syntaxOnly?: boolean;
 	applied: string[];
 };
 
@@ -64,14 +66,16 @@ type DiagnosticsWaitResult = {
 };
 
 const MAX_DIAGNOSTICS_TO_SHOW: number = 20;
-const DIAGNOSTIC_WAIT_TIMEOUT_MS: number = 12000;
-const DIAGNOSTIC_WAIT_TIMEOUT_MS_FOLDER: number = 30000;
-const DIAGNOSTIC_IDLE_WINDOW_MS: number = 3000;
+const DIAGNOSTIC_WAIT_TIMEOUT_MS: number = 10000;
+const DIAGNOSTIC_WAIT_TIMEOUT_MS_FOLDER: number = 60000;
+const DIAGNOSTIC_IDLE_WINDOW_MS: number = 5000;
 
-const DEFAULT_DIAGNOSTIC_FILTER_OPTIONS: DiagnosticFilterOptions = {
+const DEFAULT_FLAG_OPTIONS: FlagOptions = {
 	only: "all",
 	sort: "none",
 	format: "markdown",
+	syntaxOnly: false,
+	applyOld: false,
 	applied: []
 };
 
@@ -228,23 +232,33 @@ function extractPatchFileFromPrompt(prompt: string): string | undefined {
  * @param flags Raw list of flags received by the tool.
  * @returns Normalized filter/sort options and the list of applied flags.
  */
-function parseDiagnosticFilterOptions(flags: string[] | undefined): DiagnosticFilterOptions {
+function parseFlagOptions(flags: string[] | undefined): FlagOptions {
 	if (!flags || flags.length === 0) {
-		return { ...DEFAULT_DIAGNOSTIC_FILTER_OPTIONS, applied: [] };
+		return { ...DEFAULT_FLAG_OPTIONS, applied: [] };
 	}
 
 	const joined: string = flags.join(" ");
-	const options: DiagnosticFilterOptions = {
-		...DEFAULT_DIAGNOSTIC_FILTER_OPTIONS,
+	const options: FlagOptions = {
+		...DEFAULT_FLAG_OPTIONS,
 		applied: []
 	};
-	const regex: RegExp = /(only|max|sort|format)\s*[:=]\s*("[^"]+"|"[^"]+"|\S+)/gi;
+	const regex: RegExp = /(syntaxOnly|only|max|sort|format|applyOld)\s*[:=]\s*("[^"]+"|"[^"]+"|\S+)/gi;
 	let match: RegExpExecArray | null;
 
 	while ((match = regex.exec(joined)) !== null) {
 		const key: string = match[1].toLowerCase();
 		const rawValue: string = stripQuotes(match[2]);
 		const value: string = rawValue.toLowerCase();
+
+		if (key === "syntaxonly") {
+			options.syntaxOnly = value === "true";
+			options.applied.push("syntaxOnly=true");
+		}
+
+		if (key === "applyold") {
+			options.applyOld = value === "true";
+			options.applied.push("applyOld=true");
+		}
 
 		if (key === "only") {
 			if (value === "error" || value === "errors") {
@@ -414,6 +428,69 @@ async function handleValidPatchCommand(
 	isError.value = true;
 
 	if (token.isCancellationRequested) {
+		return "Validate patch command canceled by user.";
+	}
+
+	const patchFromPrompt: string | undefined = prompt?.trim() ? extractPatchFileFromPrompt(prompt.trim()) : undefined;
+	if (!patchFromPrompt) {
+		return "Patch file is required. Usage: /validate-patch patches/fix.ptm or /validate-patch c:/patches/fix.zip";
+	}
+
+	const patchFilePath: string | undefined = resolvePatchFilePath(patchFromPrompt);
+	if (!patchFilePath) {
+		return `Unable to resolve patch file path: ${patchFromPrompt}`;
+	}
+
+	if (!fs.existsSync(patchFilePath)) {
+		return `Patch file not found: ${patchFilePath}`;
+	}
+
+	let fileStats: fs.Stats;
+	try {
+		fileStats = fs.statSync(patchFilePath);
+	} catch (error) {
+		return `Unable to access patch file: ${error instanceof Error ? error.message : String(error)}`;
+	}
+
+	if (!fileStats.isFile()) {
+		return `Invalid patch path (not a file): ${patchFilePath}`;
+	}
+
+	if (!isSupportedPatchFile(patchFilePath)) {
+		return `Unsupported patch extension. Use .ptm, .zip, or .upd files: ${patchFilePath}`;
+	}
+
+	try {
+		const server = ServersConfig.getCurrentServer();
+		const validationResult: ValidResponse = await sendPatchValidateRequest(server, patchFilePath);
+
+		if (validationResult.error !== 0) {
+			isError.value = true;
+			return [
+				`Patch validation failed for ${vscode.workspace.asRelativePath(patchFilePath, false)}.`,
+				`- Code: ${validationResult.errorCode}`,
+				`- Message: ${validationResult.message || "Unknown validation error."}`,
+				"",
+				"Check the selected server/environment and patch compatibility before retrying."
+			].join("\n");
+		}
+
+		return `Patch validated successfully: ${vscode.workspace.asRelativePath(patchFilePath, false)}.`;
+	} catch (error) {
+		isError.value = true;
+		return `Error during patch validation: ${error instanceof Error ? error.message : String(error)}`;
+	}
+}
+
+async function handleApplyPatchCommand(
+	prompt: string | undefined,
+	token: vscode.CancellationToken,
+	isError: { value: boolean },
+	applyOld: boolean
+): Promise<string> {
+	isError.value = true;
+
+	if (token.isCancellationRequested) {
 		return "Apply patch command canceled by user.";
 	}
 
@@ -448,7 +525,7 @@ async function handleValidPatchCommand(
 
 	try {
 		const server = ServersConfig.getCurrentServer();
-		const validationResult: ValidResponse = await sendPatchValidateRequest(server, patchFilePath);
+		const validationResult: ValidResponse = await sendPatchApplyRequest(server, patchFilePath, applyOld);
 
 		if (validationResult.error !== 0) {
 			isError.value = true;
@@ -623,7 +700,7 @@ function collectDiagnostics(targetUri: vscode.Uri | undefined, isWorkspaceTarget
  */
 function applyDiagnosticFilterOptions(
 	entries: DiagnosticEntry[],
-	options: DiagnosticFilterOptions
+	options: FlagOptions
 ): DiagnosticEntry[] {
 	let result: DiagnosticEntry[] = entries.slice();
 
@@ -806,14 +883,14 @@ function buildHelpText(): string {
 	const lines: string[] = [
 		vscode.l10n.t("Available commands:"),
 		vscode.l10n.t("- /{0}: compiles the target (default: current editor).", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0}: compiles and shows only errors (only=error).", SYNTAX_ONLY_COMMAND),
-		vscode.l10n.t("- /{0}: validates and applies a patch file (.ptm, .zip, .upd).", APPLY_PATCH_COMMAND),
+		vscode.l10n.t("- /{0}: compiles the target using syntax-only mode.", SYNTAX_ONLY_COMMAND),
+		vscode.l10n.t("- /{0}: validates a patch file (.ptm, .zip, .upd).", APPLY_PATCH_COMMAND),
 		vscode.l10n.t("- /help: shows this help."),
 		"",
 		vscode.l10n.t("Supported targets:"),
-		vscode.l10n.t("- current editor: editor, current, current-editor, editor-atual, editor-corrente, arquivo-atual"),
+		vscode.l10n.t("- current editor: editor, current"),
 		vscode.l10n.t("- open editors: open-files, open-editors, arquivos-abertos, fontes-abertos, arquivos abertos, fontes abertos"),
-		vscode.l10n.t("- workspace: workspace, projeto, ws, all"),
+		vscode.l10n.t("- workspace: workspace, ws, all"),
 		vscode.l10n.t("- file: relative or absolute path (ex: src/meu.prw)"),
 		vscode.l10n.t("- folder: relative or absolute path (ex: src/modulo)"),
 		"",
@@ -822,17 +899,19 @@ function buildHelpText(): string {
 		vscode.l10n.t("- The command is executed on the current server/environment."),
 		"",
 		vscode.l10n.t("Supported flags (use key=value or key:value):"),
+		vscode.l10n.t("- syntaxOnly=true|false"),
 		vscode.l10n.t("- only=all|error|warning"),
 		vscode.l10n.t("- max=N"),
 		vscode.l10n.t("- sort=none|file|severity"),
 		vscode.l10n.t("- format=markdown|json"),
 		"",
 		vscode.l10n.t("Examples:"),
-		vscode.l10n.t("- /{0} target=src/modulo only=error sort=file", COMPILER_COMMAND),
+		vscode.l10n.t("- /{0} target=src/modulo syntaxOnly=true only=error sort=file", COMPILER_COMMAND),
 		vscode.l10n.t("- /{0} target=editor", SYNTAX_ONLY_COMMAND),
 		vscode.l10n.t("- /{0} target=open-editors", COMPILER_COMMAND),
 		vscode.l10n.t("- /{0} src/modulo", COMPILER_COMMAND),
 		vscode.l10n.t("- /{0} only=error", COMPILER_COMMAND),
+		vscode.l10n.t("- /{0} syntaxOnly=true", COMPILER_COMMAND),
 		vscode.l10n.t("- /{0} format=json", COMPILER_COMMAND),
 		vscode.l10n.t("- /{0} patches/fix.ptm", APPLY_PATCH_COMMAND),
 		vscode.l10n.t("- /{0} c:/patches/fix.zip", APPLY_PATCH_COMMAND)
@@ -912,7 +991,7 @@ async function waitForDiagnosticsChange(
  * - target: path/alias of the compilation target.
  * - flags: text parameters for diagnostic filters (only, max, sort).
  */
-class ChatCompiler implements vscode.LanguageModelTool<ChatCompilerToolInput> {
+class ChatTdsTools implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 	/**
 	 * Prepares the invocation message shown before tool execution.
 	 * @param options Tool invocation options.
@@ -923,16 +1002,17 @@ class ChatCompiler implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 		options: vscode.LanguageModelToolInvocationPrepareOptions<ChatCompilerToolInput>,
 		_token: vscode.CancellationToken
 	): vscode.ProviderResult<vscode.PreparedToolInvocation> {
+		const target: string = resolveTarget(options.input?.target);
+		let invocationMessage: string = `Preparing compiler tool for ${target}`;
+
 		if (options.input?.command === APPLY_PATCH_COMMAND) {
-			return {
-				invocationMessage: "Preparing patch validation"
-			};
+			invocationMessage = `Preparing patch application tool for ${target}`;
+		} else if (options.input?.command === VALIDATE_PATCH_COMMAND) {
+			invocationMessage = `Preparing patch validation tool for ${target}`;
 		}
 
-		const target: string = resolveTarget(options.input?.target);
-
 		return {
-			invocationMessage: `Preparing compiler tool for ${target}`
+			invocationMessage
 		};
 	}
 
@@ -948,27 +1028,40 @@ class ChatCompiler implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 	): Promise<vscode.LanguageModelToolResult> {
 		if (token.isCancellationRequested) {
 			return new vscode.LanguageModelToolResult([
-				new vscode.LanguageModelTextPart("Compiler tool invocation canceled by user.")
+				new vscode.LanguageModelTextPart("TDS tool invocation canceled by user.")
 			]);
 		}
 
 		const input: ChatCompilerToolInput = options.input ?? {};
-		if (input.command === APPLY_PATCH_COMMAND) {
-			const isError: { value: boolean } = { value: false };
-			const validationResult: string = await handleValidPatchCommand(input.patchPath, token, isError);
-			let finalMessage: string = !isError.value
-				? `${validationResult}\nApplying the update package. This may take some time.`
-				: validationResult;
+		const target: string = resolveTarget(input.target);
+		const targetUri: vscode.Uri | undefined = resolveTargetUri(input.target);
+		const flagOptions: FlagOptions = parseFlagOptions(input.flags);
+		const flags: string = flagOptions.applied.length > 0 ? flagOptions.applied.join(", ") : "none";
 
+		if ((input.command === VALIDATE_PATCH_COMMAND) || (input.command === APPLY_PATCH_COMMAND)) {
+			const isError: { value: boolean } = { value: false };
+			const validationResult: string = await handleValidPatchCommand(input.target, token, isError);
+			let finalMessage: string = !isError.value
+				? `Validating the patch for ${resolveTarget(input.target)}.`
+				: validationResult;
 			return new vscode.LanguageModelToolResult([
 				new vscode.LanguageModelTextPart(finalMessage)
 			]);
 		}
 
-		const target: string = resolveTarget(input.target);
-		const targetUri: vscode.Uri | undefined = resolveTargetUri(input.target);
-		const filterOptions: DiagnosticFilterOptions = parseDiagnosticFilterOptions(input.flags);
-		const flags: string = filterOptions.applied.length > 0 ? filterOptions.applied.join(", ") : "none";
+		if (input.command === APPLY_PATCH_COMMAND) {
+			const isError: { value: boolean } = { value: false };
+			const validationResult: string = await handleApplyPatchCommand(input.target, token, isError, flagOptions.applyOld);
+			if (isError.value) {
+				let finalMessage: string = !isError.value
+					? `Applying the patch for ${resolveTarget(input.target)}.`
+					: validationResult;
+				return new vscode.LanguageModelToolResult([
+					new vscode.LanguageModelTextPart(finalMessage)
+				]);
+			}
+		}
+
 		const isOpenEditorsTarget: boolean = target === "open-editors";
 		const isWorkspaceTarget: boolean = target === "workspace" && !targetUri;
 		const commandIdBase: string = isWorkspaceTarget
@@ -976,7 +1069,7 @@ class ChatCompiler implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 			: isOpenEditorsTarget
 				? REBUILD_OPEN_EDITORS_COMMAND
 				: REBUILD_FILE_COMMAND;
-		const commandId: string = input.syntaxOnly ? SYNTAX_ONLY_FILE_COMMAND : commandIdBase;
+		const commandId: string = flagOptions.syntaxOnly ? SYNTAX_ONLY_FILE_COMMAND : commandIdBase;
 
 		try {
 			if (isWorkspaceTarget || isOpenEditorsTarget) {
@@ -989,7 +1082,7 @@ class ChatCompiler implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 		} catch (error) {
 			return new vscode.LanguageModelToolResult([
 				new vscode.LanguageModelTextPart(
-					`Compiler command failed (${commandId}): ${error instanceof Error ? error.message : String(error)}`
+					`TDS tool command failed (${commandId}): ${error instanceof Error ? error.message : String(error)}`
 				)
 			]);
 		}
@@ -1006,26 +1099,25 @@ class ChatCompiler implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 
 		const diagnostics: DiagnosticEntry[] = applyDiagnosticFilterOptions(
 			isOpenEditorsTarget ? collectDiagnosticsForOpenEditors() : collectDiagnostics(targetUri, isWorkspaceTarget),
-			filterOptions
+			flagOptions
 		);
 		const showAllDiagnostics: boolean = isDirectoryUri(targetUri);
-		const maxToShow: number = filterOptions.max && filterOptions.max > 0
-			? filterOptions.max
+		const maxToShow: number = flagOptions.max && flagOptions.max > 0
+			? flagOptions.max
 			: (showAllDiagnostics ? diagnostics.length : MAX_DIAGNOSTICS_TO_SHOW);
 		const displayedDiagnostics: DiagnosticEntry[] = diagnostics.slice(0, maxToShow);
 		const diagnosticsSummary: string = formatDiagnosticsSummary(
 			displayedDiagnostics,
 			target,
 			diagnostics.length > displayedDiagnostics.length,
-			filterOptions.format
+			flagOptions.format
 		);
 
-		const summary: string = filterOptions.format === "json"
+		const summary: string = flagOptions.format === "json"
 			? JSON.stringify({
 				command: commandId,
 				target,
-				syntaxOnly: input.syntaxOnly ?? false,
-				flags,
+				flags: flags,
 				diagnosticsUpdated: waitResult.changed,
 				timedOut: waitResult.timedOut,
 				diagnostics: JSON.parse(diagnosticsSummary)
@@ -1034,7 +1126,7 @@ class ChatCompiler implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 				"Compiler tool executed successfully with:",
 				//`- command: ${commandId}`,
 				`- target: ${target}`,
-				input.syntaxOnly ? `- syntax-only: true` : `- compiler`,
+				`- compiler`,
 				`- flags: ${flags}`,
 				//`- diagnostics-updated: ${waitResult.changed ? "true" : "false"}`,
 				"",
@@ -1073,7 +1165,7 @@ async function compilerParticipantHandler(
 
 	if (!command && rawPrompt) {
 		const promptCommandMatch: RegExpMatchArray | null = rawPrompt.match(
-			/^\/?(compiler|syntax-only|apply-patch|help)(?:\s+(.*))?$/i
+			/^\/?(compiler|syntax-only|apply-patch|validate-patch|help)(?:\s+(.*))?$/i
 		);
 		if (promptCommandMatch) {
 			command = promptCommandMatch[1].toLowerCase();
@@ -1086,6 +1178,7 @@ async function compilerParticipantHandler(
 		COMPILER_COMMAND,
 		SYNTAX_ONLY_COMMAND,
 		APPLY_PATCH_COMMAND,
+		VALIDATE_PATCH_COMMAND,
 		HELP_COMMAND
 	]);
 	if (!command || !allowedCommands.has(command)) {
@@ -1114,16 +1207,17 @@ async function compilerParticipantHandler(
 
 	const isSyntaxOnly: boolean = command === SYNTAX_ONLY_COMMAND;
 	const isApplyPatch: boolean = command === APPLY_PATCH_COMMAND;
+	const isValidatePatch: boolean = command === VALIDATE_PATCH_COMMAND;
 	const input: ChatCompilerToolInput = {
 		command,
 		target: resolveTarget(),
-		syntaxOnly: isSyntaxOnly
+		//syntaxOnly: isSyntaxOnly
 	};
 
 	if (isApplyPatch) {
-		input.patchPath = commandPrompt;
+		input.target = commandPrompt;
 		delete input.target;
-		delete input.syntaxOnly;
+		//delete input.syntaxOnly;
 	}
 
 	if (!isApplyPatch && commandPrompt?.trim()) {
@@ -1136,12 +1230,23 @@ async function compilerParticipantHandler(
 		const flags: string[] = [prompt];
 		const hasOnlyFlag: boolean = /(?:^|\s)only\s*[:=]/i.test(prompt);
 		if (isSyntaxOnly && !hasOnlyFlag) {
-			flags.push("only=error");
+			flags.push("only=all");
 		}
 
 		input.flags = flags;
 	} else if (!isApplyPatch && isSyntaxOnly) {
-		input.flags = ["only=error"];
+		input.flags = ["only=all"];
+	}
+
+	const resolvedTarget: string = resolveTarget(input.target);
+	if (isApplyPatch) {
+		stream.markdown("Validating patch package...\n\n");
+	} else if (isSyntaxOnly) {
+		stream.markdown(`Starting syntax-only compilation for ${resolvedTarget}...\n\n`);
+	} else if (isValidatePatch) {
+		stream.markdown("Validating patch...\n\n");
+	} else {
+		stream.markdown(`Starting compilation for ${resolvedTarget}...\n\n`);
 	}
 
 	const result: vscode.LanguageModelToolResult = await vscode.lm.invokeTool(
@@ -1152,6 +1257,14 @@ async function compilerParticipantHandler(
 		},
 		token
 	);
+
+	if (isApplyPatch) {
+		stream.markdown(`Patching complete for ${resolvedTarget}.\n\n`);
+	} else if (isValidatePatch) {
+		stream.markdown(`Patch validation complete for ${resolvedTarget}.\n\n`);
+	} else {
+		stream.markdown(`Compilation finished for ${resolvedTarget}.\n\n`);
+	}
 
 	const text: string = result.content
 		.filter((part): part is vscode.LanguageModelTextPart => part instanceof vscode.LanguageModelTextPart)
@@ -1174,7 +1287,7 @@ async function compilerParticipantHandler(
  */
 export function registerChatTools(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
-		vscode.lm.registerTool(COMPILER_TOOL_NAME, new ChatCompiler())
+		vscode.lm.registerTool(COMPILER_TOOL_NAME, new ChatTdsTools())
 	);
 
 	const participant: vscode.ChatParticipant = vscode.chat.createChatParticipant(

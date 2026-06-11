@@ -561,7 +561,7 @@ export function sendPatchValidateRequest(
     );
 }
 
-export function _sendPatchApplyRequest(
+export function sendPatchApplyRequest(
   server: ServerItem,
   patchUri: string,
   applyOld: boolean
