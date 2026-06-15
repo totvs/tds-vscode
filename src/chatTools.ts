@@ -3,9 +3,8 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import { sendPatchApplyRequest, sendPatchValidateRequest, ValidResponse } from "./protocolMessages";
 import { ServersConfig } from "./utils";
-import Stream from "stream";
 
-const COMPILER_TOOL_NAME: string = "chat-tds-compiler";
+const COMPILER_TOOL_NAME: string = "tds-lm-tools";
 const COMPILER_PARTICIPANT_ID: string = "tds-vscode.tools";
 const COMPILER_COMMAND: string = "compiler";
 const SYNTAX_ONLY_COMMAND: string = "syntax-only";
@@ -1285,8 +1284,12 @@ async function compilerParticipantHandler(
  * Registers the language model tool and chat participant for compilation.
  * @param context Extension context to register disposables.
  */
-export function registerChatTools(context: vscode.ExtensionContext) {
-	context.subscriptions.push(
+export function registerChatTools(): vscode.Disposable[] {
+	const disposables: vscode.Disposable[] = [];
+
+	console.warn(`Registering chat tools for TDS compilation...${COMPILER_TOOL_NAME}`);
+
+	disposables.push(
 		vscode.lm.registerTool(COMPILER_TOOL_NAME, new ChatTdsTools())
 	);
 
@@ -1294,7 +1297,8 @@ export function registerChatTools(context: vscode.ExtensionContext) {
 		COMPILER_PARTICIPANT_ID,
 		compilerParticipantHandler
 	);
-	participant.iconPath = vscode.Uri.file(context.asAbsolutePath("icons/totvs24x24.png"));
+	//participant.iconPath = vscode.Uri.file(context.asAbsolutePath("icons/totvs24x24.png"));
 
-	context.subscriptions.push(participant);
+	disposables.push(participant);
+	return disposables;
 }

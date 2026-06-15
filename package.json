@@ -161,17 +161,16 @@
   "activationEvents": [
     "workspaceContains:**/*.pr[wgx]",
     "workspaceContains:**/*.tlpp",
-    "onLanguageModelTool:chat-tds-compiler",
+    "onLanguageModelTool:tds-lm-tools",
     "onChatParticipant:tds-vscode.tools"
   ],
   "contributes": {
     "languageModelTools": [
       {
-        "name": "chat-tds-compiler",
+        "name": "tds-lm-tools",
         "toolReferenceName": "tds",
-        "displayName": "Compiler",
+        "displayName": "TDS Tools",
         "icon": "icons/totvs24x24.png",
-        "when": "resourceLangId == advpl || resourceLangId == 4gl || resourceLangId == advpl-asp",
         "modelDescription": "Triggers compilation of sources and resources.",
         "inputSchema": {
           "type": "object",
