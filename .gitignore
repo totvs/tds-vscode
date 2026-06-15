@@ -27,3 +27,4 @@ test/**/.vscode
 .vscode/.cache
 !resources/.github/**/*
 /test/resources/projects/advpl0
+/test/resources/projects/advpl/.kiro
