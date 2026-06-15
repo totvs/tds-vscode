@@ -513,6 +513,9 @@ export async function activate(context: ExtensionContext) {
   context.subscriptions.push(register4glFormatting());
   context.subscriptions.push(register4glOutline());
 
+  // Registro de ferramentas de chat para o modelo de linguagem
+  context.subscriptions.push(...registerChatTools());
+
   // Register custom editor for patch files
   context.subscriptions.push(PatchEditorProvider.register(context));
 
@@ -545,9 +548,6 @@ export async function activate(context: ExtensionContext) {
       return tlppTools(message);
     }
   };
-
-  //Registro de ferramentas de chat para o modelo de linguagem
-  registerChatTools(context);
 
   window.showInformationMessage('"TDS-VSCode" is ready.');
 
