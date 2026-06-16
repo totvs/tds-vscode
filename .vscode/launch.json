@@ -63,7 +63,7 @@
 				"${workspaceFolder}/out/**/*.js"
 			],
 			"sourceMaps": true,
-			"preLaunchTask": "npm: compile",
+			"preLaunchTask": "",
 			"env": {
 				"TOTVS_LS_LOG_FILE": "./TOTVS_LS_LOG_FILE.log"
 			}
@@ -82,7 +82,7 @@
 				"${workspaceFolder}/out/**/*.js"
 			],
 			"sourceMaps": true,
-			"preLaunchTask": "npm: compile",
+			"preLaunchTask": "",
 			"env": {
 				"TOTVS_LS_LOG_FILE": "./TOTVS_LS_LOG_FILE.log"
 			}

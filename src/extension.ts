@@ -69,9 +69,9 @@ import { sendTelemetry } from "./protocolMessages";
 import { registerXRef } from "./xreferences";
 import { tlppTools } from "./tlpp-tools/tlppTools";
 import { openWebMonitor } from "./monitor/monitorLoader";
-import { registerChatTools } from "./chatTools";
+import { registerChatTools } from "./chat/chatTools";
 import { TdsMcpServer } from "./mcp/mcpServer";
-import { registerLanguageModelTools } from "./mcp/languageModelTools";
+//import { registerLanguageModelTools } from "./mcp/languageModelTools";
 import { registerMcpServerProvider } from "./mcp/mcpServerProvider";
 import path from "path";
 
@@ -117,8 +117,8 @@ export async function activate(context: ExtensionContext) {
   mcpServer = new TdsMcpServer();
 
   // Register Language Model Tools for GitHub Copilot integration
-  const lmToolsDisposables = registerLanguageModelTools();
-  context.subscriptions.push(...lmToolsDisposables);
+  //  const lmToolsDisposables = registerLanguageModelTools();
+  // context.subscriptions.push(...lmToolsDisposables);
 
   // Register the MCP server provider so VS Code can auto-discover our server
   const mcpProviderDisposable = registerMcpServerProvider();
@@ -543,7 +543,7 @@ export async function activate(context: ExtensionContext) {
   context.subscriptions.push(register4glOutline());
 
   // Registro de ferramentas de chat para o modelo de linguagem
-  context.subscriptions.push(...registerChatTools());
+  context.subscriptions.push(...registerChatTools(context));
 
   // Register custom editor for patch files
   context.subscriptions.push(PatchEditorProvider.register(context));

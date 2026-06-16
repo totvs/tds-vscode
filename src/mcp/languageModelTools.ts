@@ -83,9 +83,32 @@ export function registerLanguageModelTools(): vscode.Disposable[] {
 
     // Register lsp_definition tool
     disposables.push(vscode.lm.registerTool('compiler', {
+        prepareInvocation: (options: vscode.LanguageModelToolInvocationPrepareOptions<ToolCompilerInput>, token: vscode.CancellationToken): vscode.ProviderResult<vscode.PreparedToolInvocation> => {
+            if (token.isCancellationRequested) {
+                return undefined;
+            }
+
+            const input: ToolCompilerInput | undefined = options.input;
+            const location: string = input?.uri
+                ? `${input.uri}:${(input.line ?? 0) + 1}:${(input.character ?? 0) + 1}`
+                : 'current location';
+
+            return {
+                invocationMessage: `Preparing compiler tool for ${location}`
+            };
+
+        },
         invoke: async (options: vscode.LanguageModelToolInvocationOptions<ToolCompilerInput>, _token: vscode.CancellationToken) => {
             const input = options.input;
 
+            // const result: vscode.LanguageModelToolResult = await vscode.lm.invokeTool(
+            //     COMPILER_TOOL_NAME,
+            //     {
+            //         input,
+            //         toolInvocationToken: request.toolInvocationToken
+            //     },
+            //     token
+            // );
             try {
 
                 const response = `Compiler result:\n\n`;
