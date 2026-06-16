@@ -22,5 +22,5 @@
         "~/.copilot/agents": true,
         ".agents/agents": true
     },
-    "totvsLanguageServer.editor.linter.includes": "${workspaceFolder}/includes_prw;${workspaceFolder}/includes_dev;${workspaceFolder}/src/tlpp/rest/includes_dev;${workspaceFolder}/includes;m:\\protheus\\INCLUDES;m:\\protheus\\INCLUDES_TLPP"
+    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\INCLUDES;m:\\protheus\\INCLUDES_TLPP"
 }
