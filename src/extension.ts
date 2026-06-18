@@ -1,9 +1,10 @@
 /*---------------------------------------------------------
- * Copyright (C) TOTVS S.A. All rights reserved.
- *--------------------------------------------------------*/
+* Copyright (C) TOTVS S.A. All rights reserved.
+*--------------------------------------------------------*/
 "use strict";
 import * as vscode from "vscode";
 import * as fse from "fs-extra";
+import path from "path";
 
 import {
   window,
@@ -72,13 +73,8 @@ import { openWebMonitor } from "./monitor/monitorLoader";
 import { activate as activateOidcAuth } from "./oidcauth/OIDCAuthHandler";
 
 import { registerChatTools } from "./chat/chatTools";
-import { TdsMcpServer } from "./mcp/mcpServer";
-//import { registerLanguageModelTools } from "./mcp/languageModelTools";
-import { registerMcpServerProvider } from "./mcp/mcpServerProvider";
-import path from "path";
 
 export let languageClient: TotvsLanguageClientA;
-let mcpServer: TdsMcpServer;
 
 export function parseUri(u): Uri {
   return Uri.parse(u);
@@ -86,45 +82,15 @@ export function parseUri(u): Uri {
 
 const LANG_ADVPL_ID = "advpl";
 
-function getEditorHost(): "kiro" | "vscode" | "unknown" {
-  const appName = vscode.env.appName.toLowerCase();
-
-  if (appName.includes("kiro")) {
-    return "kiro";
-  }
-
-  if (appName.includes("visual studio code") || appName.includes("vscode")) {
-    return "vscode";
-  }
-
-  return "unknown";
-}
-
 export async function activate(context: ExtensionContext) {
   console.log(
     vscode.l10n.t('Congratulations, your extension "totvs-developer-studio" is now active!')
   );
-  const editorHost = getEditorHost();
-
-  if (editorHost === "kiro") {
-    await prepareMCPBridgeServer(context);
-  }
 
   prepareInstructions(context);
 
   ServersConfig.createServerConfig();
   LaunchConfig.createLaunchConfig(undefined);
-
-  // Create and start the MCP server
-  mcpServer = new TdsMcpServer();
-
-  // Register Language Model Tools for GitHub Copilot integration
-  //  const lmToolsDisposables = registerLanguageModelTools();
-  // context.subscriptions.push(...lmToolsDisposables);
-
-  // Register the MCP server provider so VS Code can auto-discover our server
-  const mcpProviderDisposable = registerMcpServerProvider();
-  context.subscriptions.push(...mcpProviderDisposable);
 
   context.subscriptions.push(
     commands.registerCommand("tds.getDAP", () => getDAP())
@@ -599,8 +565,6 @@ function instanceOfUriArray(object: any): object is Uri[] {
 export function deactivate(): Thenable<void> | undefined {
   ServersConfig.deleteSelectServer();
 
-  mcpServer = undefined;
-
   return languageClient.stop(5000);
 }
 
@@ -808,132 +772,3 @@ async function removeInstructionsOldVersions(folderUri: vscode.Uri): Promise<voi
 function removeHtmlComments(text: string): string {
   return text;  //text.replace(/<!--[\s\S]*?-->/g, '');
 }
-
-function readKiroMcpConfigFromWorkspace(): Record<string, unknown> | undefined {
-  const workspaceFolders = vscode.workspace.workspaceFolders;
-  if (!workspaceFolders || workspaceFolders.length === 0) {
-    return undefined;
-  }
-
-  const mcpJsonPath = vscode.Uri.joinPath(workspaceFolders[0].uri, ".kiro", "mcp.json").fsPath;
-  if (!fse.existsSync(mcpJsonPath)) {
-    console.log(`[kiro] File not found: ${mcpJsonPath}`);
-    return undefined;
-  }
-
-  try {
-    const raw = fse.readFileSync(mcpJsonPath, "utf8");
-    return JSON.parse(raw) as Record<string, unknown>;
-  } catch (error) {
-    console.error(`[kiro] Failed to read/parse ${mcpJsonPath}:`, error);
-    return undefined;
-  }
-}
-
-async function ensureTdsMcpServerInWorkspaceMcpConfig(): Promise<Record<string, unknown> | undefined> {
-  const workspaceFolders = vscode.workspace.workspaceFolders;
-  if (!workspaceFolders || workspaceFolders.length === 0) {
-    return undefined;
-  }
-
-  const rootUri = workspaceFolders[0].uri;
-  const localKiroFolderPath = vscode.Uri.joinPath(rootUri, ".kiro").fsPath;
-  const localSettingsMcpJsonPath = vscode.Uri.joinPath(rootUri, ".kiro", "settings", "mcp.json").fsPath;
-
-  const userHomePath = process.env.USERPROFILE || process.env.HOME || "";
-  const globalSettingsMcpJsonPath = userHomePath ? path.join(userHomePath, ".kiro", "settings", "mcp.json") : "";
-
-  const localMcpJsonPath = fse.existsSync(localSettingsMcpJsonPath)
-    ? localSettingsMcpJsonPath
-    : "";
-
-  const globalMcpJsonPath = globalSettingsMcpJsonPath && fse.existsSync(globalSettingsMcpJsonPath)
-    ? globalSettingsMcpJsonPath
-    : "";
-
-  const mcpJsonPath = localMcpJsonPath || globalMcpJsonPath || localSettingsMcpJsonPath;
-  const targetIsLocal = !globalMcpJsonPath || !!localMcpJsonPath;
-
-  let mcpConfig: Record<string, unknown> = {};
-
-  if (fse.existsSync(mcpJsonPath)) {
-    try {
-      const raw = fse.readFileSync(mcpJsonPath, "utf8");
-      mcpConfig = JSON.parse(raw) as Record<string, unknown>;
-    } catch (error) {
-      console.error(`[kiro] Failed to read/parse ${mcpJsonPath}:`, error);
-      return undefined;
-    }
-  }
-
-  const existingMcpServers = mcpConfig["mcpServers"];
-  const mcpServers: Record<string, unknown> =
-    existingMcpServers && typeof existingMcpServers === "object" && !Array.isArray(existingMcpServers)
-      ? (existingMcpServers as Record<string, unknown>)
-      : {};
-
-  const extension = vscode.extensions.getExtension('TOTVS.tds-vscode');
-  if (!extension) {
-    throw new Error('Unable to resolve extension metadata for MCP stdio server definition.');
-  }
-  const stdioServerScript = path.join(extension.extensionPath, 'out', 'mcp', 'stdioServer.js');
-  let needUpdate: boolean = false;
-
-  if (!mcpServers["tds-mcp-server"]) {
-    mcpServers["tds-mcp-server"] = {
-      command: "node",
-      args: [stdioServerScript],
-      autoAptove: [
-        "help",
-        "compiler"
-      ]
-    };
-    needUpdate = true;
-  } else {
-    const serverConfig = mcpServers["tds-mcp-server"] as Record<string, unknown>;
-    const currentArgs = (Array.isArray(serverConfig["args"]) && (serverConfig["args"].length > 0)) ? String(serverConfig["args"][0]) : "";
-    if (!currentArgs.includes(stdioServerScript)) {
-      serverConfig["args"] = [stdioServerScript];
-      needUpdate = true;
-    }
-  }
-
-  if (needUpdate) {
-    const question: string = vscode.l10n.t("Necessary configuration for TDS MCP server was not found in workspace or need update arguments. Do you want to create/update it now?")
-    const yes: string = vscode.l10n.t("Yes")
-    const notNow: string = vscode.l10n.t("Not now")
-
-    const selection: string = await vscode.window.showInformationMessage(
-      question,
-      { modal: true },
-      yes,
-      notNow
-    );
-
-    if (selection === yes) {
-      mcpConfig["mcpServers"] = mcpServers;
-      if (targetIsLocal) {
-        fse.ensureDirSync(path.dirname(mcpJsonPath));
-        fse.ensureDirSync(localKiroFolderPath);
-      }
-      fse.writeFileSync(mcpJsonPath, `${JSON.stringify(mcpConfig, null, 2)}\n`, "utf8");
-    }
-
-    console.log(`[kiro] Added mcpServers.tds-mcp-server to ${mcpJsonPath}`);
-  }
-
-  return mcpConfig;
-}
-
-async function prepareMCPBridgeServer(context: vscode.ExtensionContext): Promise<void> {
-  const mcpConfig = await ensureTdsMcpServerInWorkspaceMcpConfig() ?? readKiroMcpConfigFromWorkspace();
-  if (!mcpConfig) {
-    return;
-  }
-
-  // Keep config available for future bridge setup/use.
-  void context.workspaceState.update("kiro.mcp.config", mcpConfig);
-  console.log("[kiro] Workspace MCP config loaded from .kiro/mcp.json");
-
-}
-

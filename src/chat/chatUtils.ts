@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as fs from "fs";
 import path from "path";
 
 export const COMPILER_TOOL_NAME: string = "tds-lm-tools";
@@ -8,11 +9,14 @@ export const SYNTAX_ONLY_COMMAND: string = "syntax-only";
 export const APPLY_PATCH_COMMAND: string = "apply-patch";
 export const VALIDATE_PATCH_COMMAND: string = "validate-patch";
 export const HELP_COMMAND: string = "help";
-
 export const REBUILD_WORKSPACE_COMMAND: string = "totvs-developer-studio.rebuild.workspace";
 export const REBUILD_OPEN_EDITORS_COMMAND: string = "totvs-developer-studio.rebuild.openEditors";
 export const REBUILD_FILE_COMMAND: string = "totvs-developer-studio.rebuild.file";
 export const SYNTAX_ONLY_FILE_COMMAND: string = "totvs-developer-studio.syntax-only.file";
+export const MAX_DIAGNOSTICS_TO_SHOW: number = 20;
+export const DIAGNOSTIC_WAIT_TIMEOUT_MS: number = 10000;
+export const DIAGNOSTIC_WAIT_TIMEOUT_MS_FOLDER: number = 60000;
+export const DIAGNOSTIC_IDLE_WINDOW_MS: number = 5000;
 
 export const WORKSPACE_TARGET_ALIASES: Set<string> = new Set([
 	"workspace",
@@ -27,20 +31,43 @@ export const CURRENT_EDITOR_TARGET_ALIASES: Set<string> = new Set([
 
 export const OPEN_EDITORS_TARGET_ALIASES: Set<string> = new Set([
 	"open-files",
-	"open-editors",
-	"arquivos-abertos",
-	"fontes-abertos",
-	"arquivos abertos",
-	"fontes abertos"
+	"open-editors"
 ]);
 
+export type ChatCompilerToolInput = {
+	command?: string;
+	target?: string;
+	flags?: string[];
+};
+
+export type DiagnosticEntry = {
+	uri: vscode.Uri;
+	diagnostic: vscode.Diagnostic;
+};
+
+export type FlagOptions = {
+	only: "all" | "error" | "warning";
+	max?: number;
+	sort: "none" | "file" | "severity";
+	format: "markdown" | "json";
+	applyOld: boolean;
+	syntaxOnly?: boolean;
+	applied: string[];
+};
+
+export type DiagnosticsWaitResult = {
+	changed: boolean;
+	timedOut: boolean;
+	canceled: boolean;
+};
+
 /**
- * Checks whether the value represents the workspace target.
+ * Checks whether the value represents the current editor target.
  * @param value Target value.
- * @returns True when the target represents the workspace.
+ * @returns True when the target represents the current editor.
  */
-function isWorkspaceTargetAlias(value: string): boolean {
-	return WORKSPACE_TARGET_ALIASES.has(normalizeTargetKeyword(value));
+export function isCurrentEditorTargetAlias(value: string): boolean {
+	return CURRENT_EDITOR_TARGET_ALIASES.has(normalizeTargetKeyword(value));
 }
 
 /**
@@ -48,8 +75,25 @@ function isWorkspaceTargetAlias(value: string): boolean {
  * @param value Target value.
  * @returns True when the target represents open editors.
  */
-function isOpenEditorsTargetAlias(value: string): boolean {
+export function isOpenEditorsTargetAlias(value: string): boolean {
 	return OPEN_EDITORS_TARGET_ALIASES.has(normalizeTargetKeyword(value));
+}
+
+/**
+ * Checks whether the value represents the workspace target.
+ * @param value Target value.
+ * @returns True when the target represents the workspace.
+ */
+export function isWorkspaceTargetAlias(value: string): boolean {
+	return WORKSPACE_TARGET_ALIASES.has(normalizeTargetKeyword(value));
+}
+
+export function normalizeCommand(value: string): string {
+	if (value.startsWith("/")) {
+		value = value.slice(1);
+	}
+
+	return value.trim().toLowerCase();
 }
 
 /**
@@ -57,39 +101,31 @@ function isOpenEditorsTargetAlias(value: string): boolean {
  * @param value Target value provided in the prompt.
  * @returns Target normalized to lowercase.
  */
-function normalizeTargetKeyword(value: string): string {
+export function normalizeTargetKeyword(value: string): string {
 	return value.trim().toLowerCase();
 }
 
 /**
- * Checks whether the value represents the current editor target.
- * @param value Target value.
- * @returns True when the target represents the current editor.
+ * Resolves a patch file path to an absolute file-system path.
+ * @param explicitPath Patch path provided by prompt.
+ * @returns Absolute fsPath for patch file when resolvable.
  */
-function isCurrentEditorTargetAlias(value: string): boolean {
-	return CURRENT_EDITOR_TARGET_ALIASES.has(normalizeTargetKeyword(value));
-}
+export function resolvePatchFilePath(explicitPath: string): string | undefined {
+	const candidateUri: vscode.Uri | undefined = resolveTargetUri(explicitPath);
 
-/**
- * Removes single/double quotes from the edges of the prompt value.
- * @param value Raw text provided by the user.
- * @returns Text without outer quotes.
- */
-function stripQuotes(value: string): string {
-	const trimmed: string = value.trim();
-	if ((trimmed.startsWith("\"") && trimmed.endsWith("\"")) || (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
-		return trimmed.slice(1, -1).trim();
+	if (!candidateUri || candidateUri.scheme !== "file") {
+		return undefined;
 	}
 
-	return trimmed;
+	return candidateUri.fsPath;
 }
 
 /**
  * Resolves the target label used in chat messages.
  * @param explicitTarget Target explicitly provided by the user.
  * @returns Resolved target label.
- */
-function resolveTarget(explicitTarget?: string): string {
+*/
+export function resolveTarget(explicitTarget?: string): string {
 	if (explicitTarget?.trim()) {
 		const target: string = stripQuotes(explicitTarget);
 		if (isWorkspaceTargetAlias(target)) {
@@ -99,7 +135,6 @@ function resolveTarget(explicitTarget?: string): string {
 		if (isOpenEditorsTargetAlias(target)) {
 			return "open-editors";
 		}
-
 		if (isCurrentEditorTargetAlias(target)) {
 			const activeDocument: vscode.TextDocument | undefined = vscode.window.activeTextEditor?.document;
 			if (!activeDocument) {
@@ -133,7 +168,7 @@ function resolveTarget(explicitTarget?: string): string {
  * @param explicitTarget Target explicitly provided by the user.
  * @returns Resolved URI for execution, when applicable.
  */
-function resolveTargetUri(explicitTarget?: string): vscode.Uri | undefined {
+export function resolveTargetUri(explicitTarget?: string): vscode.Uri | undefined {
 	const trimmedTarget: string | undefined = explicitTarget?.trim();
 	if (trimmedTarget) {
 		const target: string = stripQuotes(trimmedTarget);
@@ -172,16 +207,307 @@ function resolveTargetUri(explicitTarget?: string): vscode.Uri | undefined {
 }
 
 /**
- * Resolves a patch file path to an absolute file-system path.
- * @param explicitPath Patch path provided by prompt.
- * @returns Absolute fsPath for patch file when resolvable.
+ * Removes single/double quotes from the edges of the prompt value.
+ * @param value Raw text provided by the user.
+ * @returns Text without outer quotes.
  */
-function resolvePatchFilePath(explicitPath: string): string | undefined {
-	const candidateUri: vscode.Uri | undefined = resolveTargetUri(explicitPath);
-
-	if (!candidateUri || candidateUri.scheme !== "file") {
-		return undefined;
+export function stripQuotes(value: string): string {
+	const trimmed: string = value.trim();
+	if ((trimmed.startsWith("\"") && trimmed.endsWith("\"")) || (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
+		return trimmed.slice(1, -1).trim();
 	}
 
-	return candidateUri.fsPath;
+	return trimmed;
+}
+
+/**
+ * Checks whether the URI points to an existing directory on disk.
+ * @param uri Candidate URI.
+ * @returns True when the URI is an existing directory.
+ */
+export function isDirectoryUri(uri: vscode.Uri | undefined): boolean {
+	if (!uri || uri.scheme !== "file") {
+		return false;
+	}
+
+	try {
+		return fs.existsSync(uri.fsPath) && fs.statSync(uri.fsPath).isDirectory();
+	} catch {
+		return false;
+	}
+}
+
+/**
+ * Collects error/warning diagnostics for a file, folder, or workspace.
+ * @param targetUri Target URI for build.
+ * @param isWorkspaceTarget Indicates whether the build was requested for the entire workspace.
+ * @returns List of diagnostics eligible for chat display.
+ */
+export function collectDiagnostics(targetUri: vscode.Uri | undefined, isWorkspaceTarget: boolean): DiagnosticEntry[] {
+	const diagnosticsByUri: [vscode.Uri, vscode.Diagnostic[]][] = vscode.languages.getDiagnostics();
+	let filtered: [vscode.Uri, vscode.Diagnostic[]][] = diagnosticsByUri;
+
+	if (!isWorkspaceTarget && targetUri) {
+		if (isDirectoryUri(targetUri)) {
+			filtered = diagnosticsByUri.filter(([uri]) => isUriInsideFolder(targetUri, uri));
+		} else {
+			filtered = diagnosticsByUri.filter(([uri]) => uriEquals(uri, targetUri));
+		}
+
+		if (filtered.length === 0) {
+			filtered = diagnosticsByUri.filter(([uri]) => isWorkspaceUri(uri));
+		}
+	} else {
+		filtered = diagnosticsByUri.filter(([uri]) => isWorkspaceUri(uri));
+	}
+
+	const entries: DiagnosticEntry[] = [];
+	for (const [uri, diagnostics] of filtered) {
+		for (const diagnostic of diagnostics) {
+			if (
+				diagnostic.severity === vscode.DiagnosticSeverity.Error ||
+				diagnostic.severity === vscode.DiagnosticSeverity.Warning
+			) {
+				entries.push({ uri, diagnostic });
+			}
+		}
+	}
+
+	return entries;
+}
+
+
+/**
+ * Applies diagnostic filters and sorting based on provided flags.
+ * @param entries Collected diagnostics.
+ * @param options Filter/sort options.
+ * @returns Filtered and sorted diagnostics.
+ */
+export function applyDiagnosticFilterOptions(
+	entries: DiagnosticEntry[],
+	options: FlagOptions
+): DiagnosticEntry[] {
+	let result: DiagnosticEntry[] = entries.slice();
+
+	if (options.only === "error") {
+		result = result.filter((entry) => entry.diagnostic.severity === vscode.DiagnosticSeverity.Error);
+	} else if (options.only === "warning") {
+		result = result.filter((entry) => entry.diagnostic.severity === vscode.DiagnosticSeverity.Warning);
+	}
+
+	if (options.sort === "file") {
+		result.sort((a, b) => {
+			const pathA: string = a.uri.scheme === "file" ? a.uri.fsPath.toLowerCase() : a.uri.toString(true).toLowerCase();
+			const pathB: string = b.uri.scheme === "file" ? b.uri.fsPath.toLowerCase() : b.uri.toString(true).toLowerCase();
+			if (pathA < pathB) {
+				return -1;
+			}
+			if (pathA > pathB) {
+				return 1;
+			}
+
+			const lineA: number = a.diagnostic.range.start.line;
+			const lineB: number = b.diagnostic.range.start.line;
+			return lineA - lineB;
+		});
+	} else if (options.sort === "severity") {
+		result.sort((a, b) => {
+			const severityA: vscode.DiagnosticSeverity = a.diagnostic.severity ?? vscode.DiagnosticSeverity.Hint;
+			const severityB: vscode.DiagnosticSeverity = b.diagnostic.severity ?? vscode.DiagnosticSeverity.Hint;
+			if (severityA !== severityB) {
+				return severityA - severityB;
+			}
+
+			const pathA: string = a.uri.scheme === "file" ? a.uri.fsPath.toLowerCase() : a.uri.toString(true).toLowerCase();
+			const pathB: string = b.uri.scheme === "file" ? b.uri.fsPath.toLowerCase() : b.uri.toString(true).toLowerCase();
+			if (pathA < pathB) {
+				return -1;
+			}
+			if (pathA > pathB) {
+				return 1;
+			}
+
+			return a.diagnostic.range.start.line - b.diagnostic.range.start.line;
+		});
+	}
+
+	return result;
+}
+
+/**
+ * Returns a standardized label for diagnostic severity.
+ * @param severity Diagnostic severity.
+ * @returns Standardized text for chat display.
+ */
+export function severityLabel(severity: vscode.DiagnosticSeverity): string {
+	switch (severity) {
+		case vscode.DiagnosticSeverity.Error:
+			return "ERROR";
+		case vscode.DiagnosticSeverity.Warning:
+			return "WARN";
+		case vscode.DiagnosticSeverity.Information:
+			return "INFO";
+		case vscode.DiagnosticSeverity.Hint:
+			return "HINT";
+		default:
+			return "UNKNOWN";
+	}
+}
+
+/**
+ * Checks whether a URI is inside a parent folder (recursively).
+ * @param parentFolder Base folder URI.
+ * @param targetUri Resource URI to validate.
+ * @returns True when targetUri is contained within the parent folder.
+ */
+export function isUriInsideFolder(parentFolder: vscode.Uri, targetUri: vscode.Uri): boolean {
+	if (parentFolder.scheme !== "file" || targetUri.scheme !== "file") {
+		return false;
+	}
+
+	const parentPath: string = path.resolve(parentFolder.fsPath).toLowerCase();
+	const targetPath: string = path.resolve(targetUri.fsPath).toLowerCase();
+	if (parentPath === targetPath) {
+		return true;
+	}
+
+	const prefix: string = parentPath.endsWith(path.sep) ? parentPath : `${parentPath}${path.sep}`;
+	return targetPath.startsWith(prefix);
+}
+
+/**
+ * Compares two URIs, using case-insensitive comparison for file paths.
+ * @param left First URI.
+ * @param right Second URI.
+ * @returns True when the URIs represent the same resource.
+ */
+export function uriEquals(left: vscode.Uri, right: vscode.Uri): boolean {
+	if (left.toString() === right.toString()) {
+		return true;
+	}
+
+	if (left.scheme === "file" && right.scheme === "file") {
+		return left.fsPath.toLowerCase() === right.fsPath.toLowerCase();
+	}
+
+	return false;
+}
+
+/**
+ * Indicates whether the URI belongs to an open workspace folder.
+ * @param uri URI to validate.
+ * @returns True when the URI belongs to the workspace.
+ */
+function isWorkspaceUri(uri: vscode.Uri): boolean {
+	if (uri.scheme !== "file") {
+		return false;
+	}
+
+	const folder: vscode.WorkspaceFolder | undefined = vscode.workspace.getWorkspaceFolder(uri);
+	return !!folder;
+}
+
+/**
+ * Builds the final text with summary and diagnostics list for chat.
+ * @param entries Diagnostics to display.
+ * @param targetLabel Name/identifier of the compiled target.
+ * @param truncated Indicates whether the list was truncated by limit.
+ * @returns Final response text for chat.
+ */
+export function formatDiagnosticsSummary(
+	entries: DiagnosticEntry[],
+	targetLabel: string,
+	truncated: boolean,
+	outputFormat: "markdown" | "json"
+): string {
+	const errors: number = entries.filter((entry) => entry.diagnostic.severity === vscode.DiagnosticSeverity.Error).length;
+	const warnings: number = entries.length - errors;
+
+	if (outputFormat === "json") {
+		const diagnostics = entries.map((entry) => {
+			const relativePath: string =
+				entry.uri.scheme === "file"
+					? vscode.workspace.asRelativePath(entry.uri, false)
+					: entry.uri.toString(true);
+			const code: string | number | undefined =
+				typeof entry.diagnostic.code === "string"
+					? entry.diagnostic.code
+					: entry.diagnostic.code && typeof entry.diagnostic.code === "object"
+						? entry.diagnostic.code.value
+						: undefined;
+			return {
+				severity: severityLabel(entry.diagnostic.severity),
+				message: entry.diagnostic.message.replace(/\s+/g, " ").trim(),
+				source: entry.diagnostic.source ?? null,
+				code: code ?? null,
+				line: entry.diagnostic.range.start.line + 1,
+				path: relativePath,
+				uri: entry.uri.toString(true)
+			};
+		});
+
+		return JSON.stringify({
+			target: targetLabel,
+			errors,
+			warnings,
+			truncated,
+			diagnostics
+		}, null, 2);
+	}
+
+	if (entries.length === 0) {
+		return [
+			"Compilation completed and no errors or warnings were found in Problems.",
+		].join("\n");
+	}
+	const details: string[] = entries.map((entry, index) => {
+		const relativePath: string =
+			entry.uri.scheme === "file"
+				? vscode.workspace.asRelativePath(entry.uri, false)
+				: entry.uri.toString(true);
+		const line: number = entry.diagnostic.range.start.line + 1;
+		const locationLink: string = toLocationLink(entry.uri, relativePath, line);
+		const code: string | number | undefined =
+			typeof entry.diagnostic.code === "string"
+				? entry.diagnostic.code
+				: entry.diagnostic.code && typeof entry.diagnostic.code === "object"
+					? entry.diagnostic.code.value
+					: undefined;
+		const cleanMessage: string = entry.diagnostic.message.replace(/\s+/g, " ").trim();
+		const source: string = entry.diagnostic.source ? ` (${entry.diagnostic.source})` : "";
+		const codeText: string = code ? ` [${code}]` : "";
+
+		return `${index + 1}. ${severityLabel(entry.diagnostic.severity)} ${locationLink}${source}${codeText} - ${cleanMessage}`;
+	});
+
+	const lines: string[] = [
+		"Compilation finished with diagnostics:",
+		`- target: ${targetLabel}`,
+		`- errors: ${errors}`,
+		`- warnings: ${warnings}`,
+		"",
+		...details
+	];
+
+	if (truncated) {
+		lines.push("", `Showing first ${MAX_DIAGNOSTICS_TO_SHOW} diagnostics.`);
+	}
+
+	return lines.join("\n");
+}
+
+/**
+ * Generates a clickable Markdown link for a diagnostic file and line.
+ * @param uri Resource URI with the diagnostic.
+ * @param relativePath Relative path for display.
+ * @param line 1-based line for navigation.
+ * @returns Markdown link to the problem location.
+ */
+export function toLocationLink(uri: vscode.Uri, relativePath: string, line: number): string {
+	if (uri.scheme !== "file") {
+		return `${relativePath}:${line}`;
+	}
+
+	const locationUri: string = uri.with({ fragment: `L${line}` }).toString(true);
+	return `[${relativePath}:${line}](${locationUri})`;
 }

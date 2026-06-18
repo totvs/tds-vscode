@@ -99,13 +99,13 @@
     "ini": "^2.0.0",
     "jszip": "^3.10.1",
     "material-table": "1.69.3",
+    "@modelcontextprotocol/sdk": "^1.17.5",
     "prop-types": "^15.8.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "strip-json-comments": "^3.1.1",
     "template-literal": "^1.0.4",
     "tmp": "^0.2.5",
-    "typescript": "^6.0.3",
     "vscode-languageclient": "^8.0.2",
     "vscode-languageserver-types": "^3.17.5",
     "windows-1251": "^1.1.0",
@@ -149,7 +149,7 @@
     "style-loader": "^3.3.1",
     "terser-webpack-plugin": "^5.3.0",
     "ts-loader": "^9.2.6",
-    "typescript": "^4.8.2",
+    "typescript": "^5.6.3",
     "typescript-eslint": "^0.0.1-alpha.0",
     "vscode-extension-tester": "^5.8.0",
     "webpack": "^5.106.2",
@@ -171,26 +171,35 @@
         "toolReferenceName": "tds",
         "displayName": "TDS Tools",
         "icon": "icons/totvs24x24.png",
-        "modelDescription": "Triggers compilation of sources and resources.",
+        "modelDescription": "Triggers compilation, patch validation/application, and help commands.",
         "inputSchema": {
           "type": "object",
           "properties": {
+            "command": {
+              "type": "string",
+              "enum": [
+                "compiler",
+                "syntax-only",
+                "validate-patch",
+                "apply-patch",
+                "help"
+              ],
+              "description": "Tool command to execute."
+            },
             "target": {
               "type": "string",
-              "description": "Compilation target alias or path."
-            },
-            "syntaxOnly": {
-              "type": "boolean",
-              "description": "When true, indicates a syntax-only invocation (diagnostics only)."
+              "description": "Target alias/path for compile commands or patch file path for patch commands."
             },
             "flags": {
               "type": "array",
               "items": {
                 "type": "string",
-                "pattern": "^(only=(all|error|warning)|max=\\d+|source=.+|sort=(none|file|severity)|format=(markdown|json))$"
+                "pattern": "^(syntaxOnly=(true|false)|applyOld=(true|false)|only=(all|error|warning)|max=\\d+|source=.+|sort=(none|file|severity)|format=(markdown|json))$"
               },
-              "description": "Text flags for diagnostic filters (only, max, source, sort, format).",
+              "description": "Text flags for command options and diagnostic output.",
               "examples": [
+                "syntaxOnly=true",
+                "applyOld=true",
                 "only=all",
                 "only=error",
                 "only=warning",
