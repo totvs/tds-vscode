@@ -36,7 +36,7 @@
     "url": "https://github.com/totvs/tds-vscode.git"
   },
   "bugs": {
-    "url": "https://github.com/totvs/tds-vscode.git"
+    "url": "https://github.com/totvs/tds-vscode/issues"
   },
   "scripts": {
     "clean2": "npx rimraf out node_modukes",
