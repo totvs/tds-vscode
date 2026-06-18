@@ -3,39 +3,18 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import { sendPatchApplyRequest, sendPatchValidateRequest, ValidResponse } from "../protocolMessages";
 import { ServersConfig } from "../utils";
-import { APPLY_PATCH_COMMAND, COMPILER_COMMAND, COMPILER_PARTICIPANT_ID, COMPILER_TOOL_NAME, CURRENT_EDITOR_TARGET_ALIASES, HELP_COMMAND, OPEN_EDITORS_TARGET_ALIASES, REBUILD_FILE_COMMAND, REBUILD_OPEN_EDITORS_COMMAND, REBUILD_WORKSPACE_COMMAND, SYNTAX_ONLY_COMMAND, SYNTAX_ONLY_FILE_COMMAND, VALIDATE_PATCH_COMMAND, WORKSPACE_TARGET_ALIASES } from "./chatToolsConst";
-
-type ChatCompilerToolInput = {
-	command?: string;
-	target?: string;
-	flags?: string[];
-};
-
-type DiagnosticEntry = {
-	uri: vscode.Uri;
-	diagnostic: vscode.Diagnostic;
-};
-
-type FlagOptions = {
-	only: "all" | "error" | "warning";
-	max?: number;
-	sort: "none" | "file" | "severity";
-	format: "markdown" | "json";
-	applyOld: boolean;
-	syntaxOnly?: boolean;
-	applied: string[];
-};
-
-type DiagnosticsWaitResult = {
-	changed: boolean;
-	timedOut: boolean;
-	canceled: boolean;
-};
-
-const MAX_DIAGNOSTICS_TO_SHOW: number = 20;
-const DIAGNOSTIC_WAIT_TIMEOUT_MS: number = 10000;
-const DIAGNOSTIC_WAIT_TIMEOUT_MS_FOLDER: number = 60000;
-const DIAGNOSTIC_IDLE_WINDOW_MS: number = 5000;
+import {
+	APPLY_PATCH_COMMAND, COMPILER_COMMAND, COMPILER_PARTICIPANT_ID, COMPILER_TOOL_NAME,
+	ChatCompilerToolInput, DIAGNOSTIC_IDLE_WINDOW_MS, DIAGNOSTIC_WAIT_TIMEOUT_MS,
+	DIAGNOSTIC_WAIT_TIMEOUT_MS_FOLDER, DiagnosticEntry, DiagnosticsWaitResult,
+	FlagOptions, HELP_COMMAND, MAX_DIAGNOSTICS_TO_SHOW, REBUILD_FILE_COMMAND,
+	REBUILD_OPEN_EDITORS_COMMAND, REBUILD_WORKSPACE_COMMAND, SYNTAX_ONLY_COMMAND,
+	SYNTAX_ONLY_FILE_COMMAND, VALIDATE_PATCH_COMMAND, applyDiagnosticFilterOptions,
+	collectDiagnostics, formatDiagnosticsSummary, isCurrentEditorTargetAlias,
+	isDirectoryUri, isOpenEditorsTargetAlias, isWorkspaceTargetAlias, normalizeCommand,
+	normalizeTargetKeyword, resolvePatchFilePath, resolveTarget, resolveTargetUri,
+	stripQuotes
+} from "./chatUtils";
 
 const DEFAULT_FLAG_OPTIONS: FlagOptions = {
 	only: "all",
@@ -45,6 +24,24 @@ const DEFAULT_FLAG_OPTIONS: FlagOptions = {
 	applyOld: false,
 	applied: []
 };
+
+function isValidCommand(command: string | undefined, prompt: string | undefined): string {
+	let result: string = "";
+
+	const allowedCommands: Set<string> = new Set([
+		COMPILER_COMMAND,
+		SYNTAX_ONLY_COMMAND,
+		APPLY_PATCH_COMMAND,
+		VALIDATE_PATCH_COMMAND,
+		HELP_COMMAND
+	]);
+
+	if (!command || !allowedCommands.has(command)) {
+		result = "Command not recognized. Use /help to see available commands.";
+	}
+
+	return result;
+}
 
 /**
  * Heuristic to decide whether the text looks like a direct path/target.
@@ -361,80 +358,78 @@ async function handleApplyPatchCommand(
 }
 
 /**
- * Compares two URIs, using case-insensitive comparison for file paths.
- * @param left First URI.
- * @param right Second URI.
- * @returns True when the URIs represent the same resource.
+ * Waits for diagnostics to stabilize after compilation to avoid partial reads.
+ * @param token Invocation cancellation token.
+ * @param timeoutMs Timeout in ms to wait for diagnostic changes.
+ * @returns Wait result, including change, timeout, and cancellation.
  */
-function uriEquals(left: vscode.Uri, right: vscode.Uri): boolean {
-	if (left.toString() === right.toString()) {
-		return true;
-	}
+export async function waitForDiagnosticsChange(
+	token: vscode.CancellationToken,
+	timeoutMs: number = DIAGNOSTIC_WAIT_TIMEOUT_MS
+): Promise<DiagnosticsWaitResult> {
+	console.log(`[tds-chat-tools] waitForDiagnosticsChange: start timeoutMs=${timeoutMs}`);
+	return await new Promise<DiagnosticsWaitResult>((resolve) => {
+		let finished: boolean = false;
+		let idleTimer: NodeJS.Timeout | undefined;
+		let hasChange: boolean = false;
+		let timedOut: boolean = false;
+		let canceled: boolean = false;
+		let cancelDisposable: vscode.Disposable | undefined;
 
-	if (left.scheme === "file" && right.scheme === "file") {
-		return left.fsPath.toLowerCase() === right.fsPath.toLowerCase();
-	}
+		const scheduleIdleResolve: () => void = (): void => {
+			if (idleTimer) {
+				clearTimeout(idleTimer);
+			}
+			console.log("[tds-chat-tools] waitForDiagnosticsChange: diagnostics changed, scheduling idle resolve.");
 
-	return false;
-}
+			idleTimer = setTimeout(() => finish(), DIAGNOSTIC_IDLE_WINDOW_MS);
+		};
 
-/**
- * Indicates whether the URI belongs to an open workspace folder.
- * @param uri URI to validate.
- * @returns True when the URI belongs to the workspace.
- */
-function isWorkspaceUri(uri: vscode.Uri): boolean {
-	if (uri.scheme !== "file") {
-		return false;
-	}
+		const finish: () => void = (): void => {
+			if (finished) {
+				return;
+			}
+			finished = true;
+			disposable.dispose();
+			if (cancelDisposable) {
+				cancelDisposable.dispose();
+			}
+			if (idleTimer) {
+				clearTimeout(idleTimer);
+			}
+			clearTimeout(timeout);
+			console.log(`[tds-chat-tools] waitForDiagnosticsChange: finish changed=${hasChange} timedOut=${timedOut} canceled=${canceled}`);
+			resolve({
+				changed: hasChange,
+				timedOut,
+				canceled
+			});
+		};
 
-	const folder: vscode.WorkspaceFolder | undefined = vscode.workspace.getWorkspaceFolder(uri);
-	return !!folder;
-}
-
-/**
- * Checks whether a URI is inside a parent folder (recursively).
- * @param parentFolder Base folder URI.
- * @param targetUri Resource URI to validate.
- * @returns True when targetUri is contained within the parent folder.
- */
-function isUriInsideFolder(parentFolder: vscode.Uri, targetUri: vscode.Uri): boolean {
-	if (parentFolder.scheme !== "file" || targetUri.scheme !== "file") {
-		return false;
-	}
-
-	const parentPath: string = path.resolve(parentFolder.fsPath).toLowerCase();
-	const targetPath: string = path.resolve(targetUri.fsPath).toLowerCase();
-	if (parentPath === targetPath) {
-		return true;
-	}
-
-	const prefix: string = parentPath.endsWith(path.sep) ? parentPath : `${parentPath}${path.sep}`;
-	return targetPath.startsWith(prefix);
-}
-
-/**
- * Checks whether the URI points to an existing directory on disk.
- * @param uri Candidate URI.
- * @returns True when the URI is an existing directory.
- */
-function isDirectoryUri(uri: vscode.Uri | undefined): boolean {
-	if (!uri || uri.scheme !== "file") {
-		return false;
-	}
-
-	try {
-		return fs.existsSync(uri.fsPath) && fs.statSync(uri.fsPath).isDirectory();
-	} catch {
-		return false;
-	}
+		const disposable: vscode.Disposable = vscode.languages.onDidChangeDiagnostics(() => {
+			hasChange = true;
+			scheduleIdleResolve();
+		});
+		if (token) {
+			cancelDisposable = token.onCancellationRequested(() => {
+				console.warn("[tds-chat-tools] waitForDiagnosticsChange: canceled by token.");
+				canceled = true;
+				finish();
+			});
+		}
+		const timeout: NodeJS.Timeout = setTimeout(() => {
+			console.warn("[tds-chat-tools] waitForDiagnosticsChange: timeout reached.");
+			timedOut = true;
+			finish();
+		}, timeoutMs);
+	});
 }
 
 /**
  * Collects diagnostics only for open documents.
  * @returns List of diagnostics eligible for chat display.
  */
-function collectDiagnosticsForOpenEditors(): DiagnosticEntry[] {
+export function collectDiagnosticsForOpenEditors(): DiagnosticEntry[] {
 	const openDocumentKeys: Set<string> = new Set(
 		vscode.workspace.textDocuments.map((document) =>
 			document.uri.scheme === "file"
@@ -465,228 +460,6 @@ function collectDiagnosticsForOpenEditors(): DiagnosticEntry[] {
 	}
 
 	return entries;
-}
-
-/**
- * Collects error/warning diagnostics for a file, folder, or workspace.
- * @param targetUri Target URI for build.
- * @param isWorkspaceTarget Indicates whether the build was requested for the entire workspace.
- * @returns List of diagnostics eligible for chat display.
- */
-function collectDiagnostics(targetUri: vscode.Uri | undefined, isWorkspaceTarget: boolean): DiagnosticEntry[] {
-	const diagnosticsByUri: [vscode.Uri, vscode.Diagnostic[]][] = vscode.languages.getDiagnostics();
-	let filtered: [vscode.Uri, vscode.Diagnostic[]][] = diagnosticsByUri;
-
-	if (!isWorkspaceTarget && targetUri) {
-		if (isDirectoryUri(targetUri)) {
-			filtered = diagnosticsByUri.filter(([uri]) => isUriInsideFolder(targetUri, uri));
-		} else {
-			filtered = diagnosticsByUri.filter(([uri]) => uriEquals(uri, targetUri));
-		}
-
-		if (filtered.length === 0) {
-			filtered = diagnosticsByUri.filter(([uri]) => isWorkspaceUri(uri));
-		}
-	} else {
-		filtered = diagnosticsByUri.filter(([uri]) => isWorkspaceUri(uri));
-	}
-
-	const entries: DiagnosticEntry[] = [];
-	for (const [uri, diagnostics] of filtered) {
-		for (const diagnostic of diagnostics) {
-			if (
-				diagnostic.severity === vscode.DiagnosticSeverity.Error ||
-				diagnostic.severity === vscode.DiagnosticSeverity.Warning
-			) {
-				entries.push({ uri, diagnostic });
-			}
-		}
-	}
-
-	return entries;
-}
-
-
-/**
- * Applies diagnostic filters and sorting based on provided flags.
- * @param entries Collected diagnostics.
- * @param options Filter/sort options.
- * @returns Filtered and sorted diagnostics.
- */
-function applyDiagnosticFilterOptions(
-	entries: DiagnosticEntry[],
-	options: FlagOptions
-): DiagnosticEntry[] {
-	let result: DiagnosticEntry[] = entries.slice();
-
-	if (options.only === "error") {
-		result = result.filter((entry) => entry.diagnostic.severity === vscode.DiagnosticSeverity.Error);
-	} else if (options.only === "warning") {
-		result = result.filter((entry) => entry.diagnostic.severity === vscode.DiagnosticSeverity.Warning);
-	}
-
-	if (options.sort === "file") {
-		result.sort((a, b) => {
-			const pathA: string = a.uri.scheme === "file" ? a.uri.fsPath.toLowerCase() : a.uri.toString(true).toLowerCase();
-			const pathB: string = b.uri.scheme === "file" ? b.uri.fsPath.toLowerCase() : b.uri.toString(true).toLowerCase();
-			if (pathA < pathB) {
-				return -1;
-			}
-			if (pathA > pathB) {
-				return 1;
-			}
-
-			const lineA: number = a.diagnostic.range.start.line;
-			const lineB: number = b.diagnostic.range.start.line;
-			return lineA - lineB;
-		});
-	} else if (options.sort === "severity") {
-		result.sort((a, b) => {
-			const severityA: vscode.DiagnosticSeverity = a.diagnostic.severity ?? vscode.DiagnosticSeverity.Hint;
-			const severityB: vscode.DiagnosticSeverity = b.diagnostic.severity ?? vscode.DiagnosticSeverity.Hint;
-			if (severityA !== severityB) {
-				return severityA - severityB;
-			}
-
-			const pathA: string = a.uri.scheme === "file" ? a.uri.fsPath.toLowerCase() : a.uri.toString(true).toLowerCase();
-			const pathB: string = b.uri.scheme === "file" ? b.uri.fsPath.toLowerCase() : b.uri.toString(true).toLowerCase();
-			if (pathA < pathB) {
-				return -1;
-			}
-			if (pathA > pathB) {
-				return 1;
-			}
-
-			return a.diagnostic.range.start.line - b.diagnostic.range.start.line;
-		});
-	}
-
-	return result;
-}
-
-/**
- * Returns a standardized label for diagnostic severity.
- * @param severity Diagnostic severity.
- * @returns Standardized text for chat display.
- */
-function severityLabel(severity: vscode.DiagnosticSeverity): string {
-	switch (severity) {
-		case vscode.DiagnosticSeverity.Error:
-			return "ERROR";
-		case vscode.DiagnosticSeverity.Warning:
-			return "WARN";
-		case vscode.DiagnosticSeverity.Information:
-			return "INFO";
-		case vscode.DiagnosticSeverity.Hint:
-			return "HINT";
-		default:
-			return "UNKNOWN";
-	}
-}
-
-/**
- * Generates a clickable Markdown link for a diagnostic file and line.
- * @param uri Resource URI with the diagnostic.
- * @param relativePath Relative path for display.
- * @param line 1-based line for navigation.
- * @returns Markdown link to the problem location.
- */
-function toLocationLink(uri: vscode.Uri, relativePath: string, line: number): string {
-	if (uri.scheme !== "file") {
-		return `${relativePath}:${line}`;
-	}
-
-	const locationUri: string = uri.with({ fragment: `L${line}` }).toString(true);
-	return `[${relativePath}:${line}](${locationUri})`;
-}
-
-/**
- * Builds the final text with summary and diagnostics list for chat.
- * @param entries Diagnostics to display.
- * @param targetLabel Name/identifier of the compiled target.
- * @param truncated Indicates whether the list was truncated by limit.
- * @returns Final response text for chat.
- */
-function formatDiagnosticsSummary(
-	entries: DiagnosticEntry[],
-	targetLabel: string,
-	truncated: boolean,
-	outputFormat: "markdown" | "json"
-): string {
-	const errors: number = entries.filter((entry) => entry.diagnostic.severity === vscode.DiagnosticSeverity.Error).length;
-	const warnings: number = entries.length - errors;
-
-	if (outputFormat === "json") {
-		const diagnostics = entries.map((entry) => {
-			const relativePath: string =
-				entry.uri.scheme === "file"
-					? vscode.workspace.asRelativePath(entry.uri, false)
-					: entry.uri.toString(true);
-			const code: string | number | undefined =
-				typeof entry.diagnostic.code === "string"
-					? entry.diagnostic.code
-					: entry.diagnostic.code && typeof entry.diagnostic.code === "object"
-						? entry.diagnostic.code.value
-						: undefined;
-			return {
-				severity: severityLabel(entry.diagnostic.severity),
-				message: entry.diagnostic.message.replace(/\s+/g, " ").trim(),
-				source: entry.diagnostic.source ?? null,
-				code: code ?? null,
-				line: entry.diagnostic.range.start.line + 1,
-				path: relativePath,
-				uri: entry.uri.toString(true)
-			};
-		});
-
-		return JSON.stringify({
-			target: targetLabel,
-			errors,
-			warnings,
-			truncated,
-			diagnostics
-		}, null, 2);
-	}
-
-	if (entries.length === 0) {
-		return [
-			"Compilation completed and no errors or warnings were found in Problems.",
-		].join("\n");
-	}
-	const details: string[] = entries.map((entry, index) => {
-		const relativePath: string =
-			entry.uri.scheme === "file"
-				? vscode.workspace.asRelativePath(entry.uri, false)
-				: entry.uri.toString(true);
-		const line: number = entry.diagnostic.range.start.line + 1;
-		const locationLink: string = toLocationLink(entry.uri, relativePath, line);
-		const code: string | number | undefined =
-			typeof entry.diagnostic.code === "string"
-				? entry.diagnostic.code
-				: entry.diagnostic.code && typeof entry.diagnostic.code === "object"
-					? entry.diagnostic.code.value
-					: undefined;
-		const cleanMessage: string = entry.diagnostic.message.replace(/\s+/g, " ").trim();
-		const source: string = entry.diagnostic.source ? ` (${entry.diagnostic.source})` : "";
-		const codeText: string = code ? ` [${code}]` : "";
-
-		return `${index + 1}. ${severityLabel(entry.diagnostic.severity)} ${locationLink}${source}${codeText} - ${cleanMessage}`;
-	});
-
-	const lines: string[] = [
-		"Compilation finished with diagnostics:",
-		`- target: ${targetLabel}`,
-		`- errors: ${errors}`,
-		`- warnings: ${warnings}`,
-		"",
-		...details
-	];
-
-	if (truncated) {
-		lines.push("", `Showing first ${MAX_DIAGNOSTICS_TO_SHOW} diagnostics.`);
-	}
-
-	return lines.join("\n");
 }
 
 /**
@@ -738,64 +511,6 @@ function buildHelpText(): string {
 }
 
 /**
- * Waits for diagnostics to stabilize after compilation to avoid partial reads.
- * @param token Invocation cancellation token.
- * @param timeoutMs Timeout in ms to wait for diagnostic changes.
- * @returns Wait result, including change, timeout, and cancellation.
- */
-async function waitForDiagnosticsChange(
-	token: vscode.CancellationToken,
-	timeoutMs: number = DIAGNOSTIC_WAIT_TIMEOUT_MS
-): Promise<DiagnosticsWaitResult> {
-	return await new Promise<DiagnosticsWaitResult>((resolve) => {
-		let finished: boolean = false;
-		let idleTimer: NodeJS.Timeout | undefined;
-		let hasChange: boolean = false;
-		let timedOut: boolean = false;
-		let canceled: boolean = false;
-
-		const scheduleIdleResolve: () => void = (): void => {
-			if (idleTimer) {
-				clearTimeout(idleTimer);
-			}
-
-			idleTimer = setTimeout(() => finish(), DIAGNOSTIC_IDLE_WINDOW_MS);
-		};
-
-		const finish: () => void = (): void => {
-			if (finished) {
-				return;
-			}
-			finished = true;
-			disposable.dispose();
-			cancelDisposable.dispose();
-			if (idleTimer) {
-				clearTimeout(idleTimer);
-			}
-			clearTimeout(timeout);
-			resolve({
-				changed: hasChange,
-				timedOut,
-				canceled
-			});
-		};
-
-		const disposable: vscode.Disposable = vscode.languages.onDidChangeDiagnostics(() => {
-			hasChange = true;
-			scheduleIdleResolve();
-		});
-		const cancelDisposable: vscode.Disposable = token.onCancellationRequested(() => {
-			canceled = true;
-			finish();
-		});
-		const timeout: NodeJS.Timeout = setTimeout(() => {
-			timedOut = true;
-			finish();
-		}, timeoutMs);
-	});
-}
-
-/**
  * Implements the compiler tool used by the chat participant.
  *
  * Responsibilities:
@@ -843,13 +558,32 @@ class ChatTdsTools implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 		options: vscode.LanguageModelToolInvocationOptions<ChatCompilerToolInput>,
 		token: vscode.CancellationToken
 	): Promise<vscode.LanguageModelToolResult> {
+		console.log(`[tds-chat-tools] invoke: command='${options.input?.command ?? COMPILER_COMMAND}' target='${options.input?.target ?? "<default>"}' flags='${options.input?.flags?.join(",") ?? "none"}'`);
+
 		if (token.isCancellationRequested) {
+			console.warn("[tds-chat-tools] invoke: canceled before start.");
 			return new vscode.LanguageModelToolResult([
 				new vscode.LanguageModelTextPart("TDS tool invocation canceled by user.")
 			]);
 		}
-
 		const input: ChatCompilerToolInput = options.input ?? {};
+
+		const command: string | undefined = normalizeCommand(input.command);
+		const isValid: string = isValidCommand(command, command);
+
+		if (isValid !== "") {
+			return new vscode.LanguageModelToolResult([
+				new vscode.LanguageModelTextPart(isValid)
+			]);
+		}
+
+		const isHelp: boolean = command === HELP_COMMAND;
+		if (isHelp) {
+			return new vscode.LanguageModelToolResult([
+				new vscode.LanguageModelTextPart(buildHelpText())
+			]);
+		}
+
 		const target: string = resolveTarget(input.target);
 		const targetUri: vscode.Uri | undefined = resolveTargetUri(input.target);
 		const flagOptions: FlagOptions = parseFlagOptions(input.flags);
@@ -887,16 +621,21 @@ class ChatTdsTools implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 				? REBUILD_OPEN_EDITORS_COMMAND
 				: REBUILD_FILE_COMMAND;
 		const commandId: string = flagOptions.syntaxOnly ? SYNTAX_ONLY_FILE_COMMAND : commandIdBase;
+		console.log(`[tds-chat-tools] invoke: resolved target='${target}', commandId='${commandId}', targetUri='${targetUri?.toString(true) ?? "<none>"}'`);
 
 		try {
 			if (isWorkspaceTarget || isOpenEditorsTarget) {
+				console.log(`[tds-chat-tools] invoke: executing command '${commandId}' without explicit URI.`);
 				await vscode.commands.executeCommand(commandId);
 			} else if (targetUri) {
+				console.log(`[tds-chat-tools] invoke: executing command '${commandId}' with URI '${targetUri.toString(true)}'.`);
 				await vscode.commands.executeCommand(commandId, undefined, [targetUri]);
 			} else {
+				console.log(`[tds-chat-tools] invoke: executing command '${commandId}' fallback without URI.`);
 				await vscode.commands.executeCommand(commandId);
 			}
 		} catch (error) {
+			console.error(`[tds-chat-tools] invoke: command failed (${commandId}): ${error instanceof Error ? error.stack ?? error.message : String(error)}`);
 			return new vscode.LanguageModelToolResult([
 				new vscode.LanguageModelTextPart(
 					`TDS tool command failed (${commandId}): ${error instanceof Error ? error.message : String(error)}`
@@ -907,8 +646,10 @@ class ChatTdsTools implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 		const diagnosticsTimeout: number = isDirectoryUri(targetUri)
 			? DIAGNOSTIC_WAIT_TIMEOUT_MS_FOLDER
 			: DIAGNOSTIC_WAIT_TIMEOUT_MS;
+		console.log(`[tds-chat-tools] invoke: waiting diagnostics with timeout=${diagnosticsTimeout}`);
 		const waitResult: DiagnosticsWaitResult = await waitForDiagnosticsChange(token, diagnosticsTimeout);
 		if (waitResult.canceled) {
+			console.warn("[tds-chat-tools] invoke: canceled while waiting diagnostics.");
 			return new vscode.LanguageModelToolResult([
 				new vscode.LanguageModelTextPart("Compiler tool invocation canceled by user.")
 			]);
@@ -923,6 +664,7 @@ class ChatTdsTools implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 			? flagOptions.max
 			: (showAllDiagnostics ? diagnostics.length : MAX_DIAGNOSTICS_TO_SHOW);
 		const displayedDiagnostics: DiagnosticEntry[] = diagnostics.slice(0, maxToShow);
+		console.log(`[tds-chat-tools] invoke: diagnostics total=${diagnostics.length} displayed=${displayedDiagnostics.length} timedOut=${waitResult.timedOut} changed=${waitResult.changed}`);
 		const diagnosticsSummary: string = formatDiagnosticsSummary(
 			displayedDiagnostics,
 			target,
@@ -976,34 +718,17 @@ async function compilerParticipantHandler(
 	stream: vscode.ChatResponseStream,
 	token: vscode.CancellationToken
 ): Promise<vscode.ChatResult | void> {
+
 	const rawPrompt: string | undefined = request.prompt?.trim();
-	let command: string | undefined = request.command;
 	let commandPrompt: string | undefined = rawPrompt;
+	let command: string | undefined = normalizeCommand(request.command ?? commandPrompt);
+	console.log(`[tds-chat-tools] participant: received request prompt='${rawPrompt ?? ""}' command='${command ?? ""}'`);
+	const isValid: string = isValidCommand(command, commandPrompt);
 
-	if (!command && rawPrompt) {
-		const promptCommandMatch: RegExpMatchArray | null = rawPrompt.match(
-			/^\/?(compiler|syntax-only|apply-patch|validate-patch|help)(?:\s+(.*))?$/i
-		);
-		if (promptCommandMatch) {
-			command = promptCommandMatch[1].toLowerCase();
-			commandPrompt = promptCommandMatch[2]?.trim();
-		}
-	}
+	if (isValid !== "") {
+		console.error(`[tds-chat-tools] participant: invalid command '${command ?? "<undefined>"}'.`);
+		stream.markdown("Command not recognized. Use /help to see available commands.\n\n" + buildHelpText());
 
-	const isHelp: boolean = command === HELP_COMMAND || rawPrompt === "/help";
-	const allowedCommands: Set<string> = new Set([
-		COMPILER_COMMAND,
-		SYNTAX_ONLY_COMMAND,
-		APPLY_PATCH_COMMAND,
-		VALIDATE_PATCH_COMMAND,
-		HELP_COMMAND
-	]);
-	if (!command || !allowedCommands.has(command)) {
-		if (!isHelp) {
-			stream.markdown("Command not recognized. Use /help to see available commands.\n\n" + buildHelpText());
-		} else {
-			stream.markdown(buildHelpText());
-		}
 		return {
 			metadata: {
 				tool: COMPILER_TOOL_NAME,
@@ -1012,6 +737,7 @@ async function compilerParticipantHandler(
 		};
 	}
 
+	const isHelp: boolean = command === HELP_COMMAND || rawPrompt === "/help";
 	if (isHelp) {
 		stream.markdown(buildHelpText());
 		return {
@@ -1054,6 +780,7 @@ async function compilerParticipantHandler(
 	} else if (!isApplyPatch && isSyntaxOnly) {
 		input.flags = ["only=all"];
 	}
+	console.log(`[tds-chat-tools] participant: invoking tool command='${input.command ?? ""}' target='${input.target ?? "<default>"}' flags='${input.flags?.join(",") ?? "none"}'`);
 
 	const resolvedTarget: string = resolveTarget(input.target);
 	if (isApplyPatch) {
@@ -1074,6 +801,7 @@ async function compilerParticipantHandler(
 		},
 		token
 	);
+	console.log(`[tds-chat-tools] participant: tool invocation finished for target='${resolvedTarget}'`);
 
 	if (isApplyPatch) {
 		stream.markdown(`Patching complete for ${resolvedTarget}.\n\n`);
@@ -1089,6 +817,7 @@ async function compilerParticipantHandler(
 		.join("\n");
 
 	stream.markdown(text || "Compiler tool invoked successfully.");
+	console.log(`[tds-chat-tools] participant: streamed result length=${text.length}`);
 
 	return {
 		metadata: {
