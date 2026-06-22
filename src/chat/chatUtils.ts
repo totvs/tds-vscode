@@ -52,7 +52,7 @@ export const DEFAULT_FLAG_OPTIONS: FlagOptions = {
 export const DEFAULT_COMPILER_TOOL_INPUT: ChatCompilerToolInput = {
 	command: COMPILER_COMMAND,
 	target: "",
-	flags: { ...DEFAULT_FLAG_OPTIONS }
+	flags: structuredClone(DEFAULT_FLAG_OPTIONS)
 };
 
 export type DiagnosticEntry = {
@@ -67,7 +67,7 @@ export type FlagOptions = {
 	format: "markdown" | "json";
 	applyOld: boolean;
 	syntaxOnly?: boolean;
-	applied: string[];
+	applied?: string[];
 };
 
 export type DiagnosticsWaitResult = {

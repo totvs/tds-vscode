@@ -271,10 +271,16 @@ function formatDiagnosticsSummary(
 		return `${index + 1}. ${severityLabel(entry.diagnostic.severity)} ${locationLink}${source}${codeText} - ${cleanMessage}`;
 	});
 
+	if (!flags.applied) {
+		//Quando executado via Kiro, este atributo vem como undefined, então inicializamos aqui para evitar erros de acesso .
+		//Ocorre com frequência quando solicitado compileção de workspace.
+		flags.applied = [];
+	}
+
 	const lines: string[] = [
 		"Compilation finished with diagnostics:",
 		`- target: ${targetLabel}`,
-		'- flags: ' + (flags.applied.length > 0 ? flags.applied.join(", ") : "none"),
+		`- flags: ${flags.applied.join(", ")}`,
 		`- errors: ${errors}`,
 		`- warnings: ${warnings}`,
 		"",

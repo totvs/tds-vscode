@@ -4,7 +4,6 @@
 "use strict";
 import * as vscode from "vscode";
 import * as fse from "fs-extra";
-import path from "path";
 
 import {
   window,

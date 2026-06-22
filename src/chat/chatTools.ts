@@ -146,6 +146,10 @@ function parseFlagOptions(options: FlagOptions, key: string, value: string): voi
 			options.applied.push(`format=${value}`);
 		}
 	}
+
+	if (options.applied.length === 0) {
+		options.applied.push("(none)");
+	}
 }
 
 /**
@@ -158,7 +162,7 @@ export async function waitForDiagnosticsChange(
 	token: vscode.CancellationToken,
 	timeoutMs: number = DIAGNOSTIC_WAIT_TIMEOUT_MS
 ): Promise<DiagnosticsWaitResult> {
-	console.log(`[tds-chat-tools] [tds-chat-tools] waitForDiagnosticsChange: start timeoutMs=${timeoutMs}`);
+	console.log(`[tds-chat-tools waitForDiagnosticsChange: start timeoutMs=${timeoutMs}`);
 	return await new Promise<DiagnosticsWaitResult>((resolve) => {
 		let finished: boolean = false;
 		let idleTimer: NodeJS.Timeout | undefined;
@@ -171,7 +175,6 @@ export async function waitForDiagnosticsChange(
 			if (idleTimer) {
 				clearTimeout(idleTimer);
 			}
-			console.log("[tds-chat-tools] [tds-chat-tools] waitForDiagnosticsChange: diagnostics changed, scheduling idle resolve.");
 
 			idleTimer = setTimeout(() => finish(), DIAGNOSTIC_IDLE_WINDOW_MS);
 		};
@@ -189,7 +192,7 @@ export async function waitForDiagnosticsChange(
 				clearTimeout(idleTimer);
 			}
 			clearTimeout(timeout);
-			console.log(`[tds-chat-tools] [tds-chat-tools] waitForDiagnosticsChange: finish changed=${hasChange} timedOut=${timedOut} canceled=${canceled}`);
+			console.log(`[tds-chat-tools waitForDiagnosticsChange: finish changed=${hasChange} timedOut=${timedOut} canceled=${canceled}`);
 			resolve({
 				changed: hasChange,
 				timedOut,
@@ -346,10 +349,10 @@ class ChatTdsTools implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 	 * @returns Text result for chat response.
 	 */
 	async invoke(
-		options: vscode.LanguageModelToolInvocationOptions<ChatCompilerToolInput>,
+		_options: vscode.LanguageModelToolInvocationOptions<ChatCompilerToolInput>,
 		token: vscode.CancellationToken
 	): Promise<vscode.LanguageModelToolResult> {
-		console.log(`[tds-chat-tools] [tds-chat-tools] invoke: command='${options.input?.command ?? COMPILER_COMMAND}' target='${options.input?.target ?? "<default>"}' flags='${options.input?.flags.applied}']`);
+		console.log(`[tds-chat-tools invoke: command='${_options.input?.command ?? COMPILER_COMMAND}' target='${_options.input?.target ?? "<default>"}'`);
 
 		if (token.isCancellationRequested) {
 			console.warn("[tds-chat-tools] invoke: canceled before start.");
@@ -357,8 +360,12 @@ class ChatTdsTools implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 				new vscode.LanguageModelTextPart("TDS tool invocation canceled by user.")
 			]);
 		}
-		const command: string | undefined = normalizeCommand(options.input?.command);
-		const _input: ChatCompilerToolInput = options.input ?? DEFAULT_COMPILER_TOOL_INPUT;
+		const command: string | undefined = normalizeCommand(_options.input?.command);
+		const input: ChatCompilerToolInput = {
+			...structuredClone(DEFAULT_COMPILER_TOOL_INPUT),
+			...structuredClone(_options.input ?? {})
+		};
+
 		const isValid: string = isValidCommand(command, command);
 
 		if (isValid !== "") {
@@ -374,16 +381,14 @@ class ChatTdsTools implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 			]);
 		}
 
-		const target: string = resolveTarget(_input.target);
-		//const targetUri: vscode.Uri | undefined = resolveTargetUri(input.target);
-		const flagOptions: FlagOptions = _input.flags;  //parseFlagOptions(input.flags);
-		//const flags: string = flagOptions.applied.length > 0 ? flagOptions.applied.join(", ") : "none";
+		const target: string = resolveTarget(input.target);
+		const flagOptions: FlagOptions = input.flags;
 
-		if ((_input.command === VALIDATE_PATCH_COMMAND)) {
+		if ((input.command === VALIDATE_PATCH_COMMAND)) {
 			const isError: { value: boolean } = { value: false };
-			const validationResult: string = await handleValidPatchCommand(_input.target, token, isError);
+			const validationResult: string = await handleValidPatchCommand(input.target, token, isError);
 			let finalMessage: string = !isError.value
-				? `Validating the patch for ${resolveTarget(_input.target)}.`
+				? `Validating the patch for ${resolveTarget(input.target)}.`
 				: validationResult;
 			return new vscode.LanguageModelToolResult([
 				new vscode.LanguageModelTextPart(finalMessage)
@@ -392,10 +397,10 @@ class ChatTdsTools implements vscode.LanguageModelTool<ChatCompilerToolInput> {
 
 		const isError: { value: boolean } = { value: false };
 
-		if (_input.command === APPLY_PATCH_COMMAND) {
-			const validationResult: string = await handleApplyPatchCommand(_input.target, token, isError, flagOptions.applyOld);
+		if (input.command === APPLY_PATCH_COMMAND) {
+			const validationResult: string = await handleApplyPatchCommand(input.target, token, isError, flagOptions.applyOld);
 			let finalMessage: string = !isError.value
-				? `Applying the patch for ${resolveTarget(_input.target)}.`
+				? `Applying the patch for ${resolveTarget(input.target)}.`
 				: validationResult;
 
 			return new vscode.LanguageModelToolResult([
@@ -428,7 +433,7 @@ async function compilerParticipantHandler(
 	let commandPrompt: string | undefined = rawPrompt;
 	let command: string | undefined = normalizeCommand(request.command ?? commandPrompt);
 
-	console.log(`[tds-chat-tools] [tds-chat-tools] participant: received request prompt='${rawPrompt ?? ""}' command='${command ?? ""}'`);
+	console.log(`[tds-chat-tools participant: received request prompt='${rawPrompt ?? ""}' command='${command ?? ""}'`);
 	const isValid: string = isValidCommand(command, commandPrompt);
 
 	if (isValid !== "") {
@@ -459,30 +464,15 @@ async function compilerParticipantHandler(
 	const isValidatePatch: boolean = command === VALIDATE_PATCH_COMMAND;
 	const compilerToolInput: ChatCompilerToolInput = parserPrompt(command, commandPrompt);
 
-	// if (isApplyPatch) {
-	// 	input.target = commandPrompt;
-	// 	delete input.target;
-	// 	//delete input.syntaxOnly;
-	// }
-
-	// if (!isApplyPatch && commandPrompt?.trim()) {
-	// 	if (isSyntaxOnly && !compilerToolInput) {
-	// 		flags.push("only=all");
-	// 	}
-
-	// 	input.flags = flags;
-	// } else if (!isApplyPatch && isSyntaxOnly) {
-	// 	input.flags = ["only=all"];
-	// }
-	console.log(`[tds-chat-tools] [tds-chat-tools] participant: invoking tool command='${compilerToolInput.command ?? ""}' target='${compilerToolInput.target ?? "<default>"}' flags='${compilerToolInput.flags.applied}'`);
+	console.log(`[tds-chat-tools participant: invoking tool command='${compilerToolInput.command ?? ""}' target='${compilerToolInput.target ?? "<default>"}' flags='${compilerToolInput.flags.applied}'`);
 
 	const resolvedTarget: string = resolveTarget(compilerToolInput.target);
 	if (isApplyPatch) {
 		console.log("[tds-chat-tools] Validating patch package...\n\n");
 	} else if (isSyntaxOnly) {
-		console.log(`[tds-chat-tools] Starting syntax-only compilation for ${resolvedTarget}...\n\n`);
+		console.log(`[tds-chat-tools Starting syntax-only compilation for ${resolvedTarget}...\n\n`);
 	} else if (isValidatePatch) {
-		console.log("[tds-chat-tools] Validating patch...\n\n");
+		console.log("[tds-chat-tools] Validating patch...\	n\n");
 	} else {
 		console.log(`[tds-chat-tools] Starting compilation for ${resolvedTarget}...\n\n`);
 	}
@@ -495,14 +485,14 @@ async function compilerParticipantHandler(
 		},
 		token
 	);
-	console.log(`[tds-chat-tools] [tds-chat-tools] participant: tool invocation finished for target='${resolvedTarget}'`);
+	console.log(`[tds-chat-tools participant: tool invocation finished for target='${resolvedTarget}'`);
 
 	if (isApplyPatch) {
-		console.log(`[tds-chat-tools] Patching complete for ${resolvedTarget}.\n\n`);
+		console.log(`[tds-chat-tools Patching complete for ${resolvedTarget}.\n\n`);
 	} else if (isValidatePatch) {
-		console.log(`[tds-chat-tools] Patch validation complete for ${resolvedTarget}.\n\n`);
+		console.log(`[tds-chat-tools Patch validation complete for ${resolvedTarget}.\n\n`);
 	} else {
-		console.log(`[tds-chat-tools] Compilation finished for ${resolvedTarget}.\n\n`);
+		console.log(`[tds-chat-tools Compilation finished for ${resolvedTarget}.\n\n`);
 	}
 
 	const text: string = result.content
@@ -511,7 +501,7 @@ async function compilerParticipantHandler(
 		.join("\n");
 
 	stream.markdown(text || "Compiler tool invoked successfully.");
-	console.log(`[tds-chat-tools] [tds-chat-tools] participant: streamed result length=${text.length}`);
+	console.log(`[tds-chat-tools participant: streamed result length=${text.length}`);
 
 	return {
 		metadata: {
@@ -553,31 +543,32 @@ function parserPrompt(command: string, prompt: string): ChatCompilerToolInput {
 	const parts: string[] = prompt.split(/\s+/);
 	let isFirstPart: boolean = true;
 
-		for (const part of parts) {
-			const subPart: string[] = part.split(/[=\:]/);
+	for (const part of parts) {
+		const subPart: string[] = part.split(/[=\:]/);
 
-			if (subPart.length === 2) {
-				const key: string = subPart[0].toLowerCase();
-				const value: string = subPart[1];
+		if (subPart.length === 2) {
+			const key: string = subPart[0].toLowerCase();
+			const value: string = subPart[1];
 
-				if (key === "target") {
-					result.target = value;
-				} else {
-					parseFlagOptions(result.flags, key, value);
-				}
-			} else if (subPart.length === 1 && isFirstPart) {
-				result.target = subPart[0];
+			if (key === "target") {
+				result.target = value;
+			} else {
+				parseFlagOptions(result.flags, key, value);
 			}
-			isFirstPart = false;
+		} else if (subPart.length === 1 && isFirstPart) {
+			result.target = subPart[0];
 		}
+		isFirstPart = false;
+	}
 
 	if (result.target.length === 0) {
 		result.target = "current";
 	}
-
 	if (result.flags.applied.length === 0) {
 		result.flags.applied.push("(none)");
 	}
 
-	return result;
+	console.log(`parserPrompt: parsed input=${JSON.stringify(result)}`);
+
+	return structuredClone(result);
 }
