@@ -72,6 +72,13 @@ import { openWebMonitor } from "./monitor/monitorLoader";
 
 export let languageClient: TotvsLanguageClientA;
 
+let _onBeforeCompile: vscode.EventEmitter<string[]>;
+
+/** Dispara o evento onBeforeCompile. Uso interno — não chamar de fora do módulo de compilação. */
+export function fireBeforeCompile(files: string[]): void {
+  _onBeforeCompile?.fire([...files]);
+}
+
 export function parseUri(u): Uri {
   return Uri.parse(u);
 }
@@ -578,9 +585,11 @@ export function activate(context: ExtensionContext) {
 
   blockBuildCommands(false);
   showBanner();
+  _onBeforeCompile = new vscode.EventEmitter<string[]>();
+  context.subscriptions.push(_onBeforeCompile);
 
   // 'export' public api-surface
-  let exportedApi = {
+  const exportedApi = {
     generatePPO(filePath: string, options?: any): Promise<string> {
       return generatePpo(filePath, options);
     },
@@ -603,7 +612,8 @@ export function activate(context: ExtensionContext) {
     },
     apiTlppTools(message: string): Promise<string> {
       return tlppTools(message);
-    }
+    },
+    onBeforeCompile: _onBeforeCompile.event,
   };
 
   window.showInformationMessage('"TDS-VSCode" is ready.');
