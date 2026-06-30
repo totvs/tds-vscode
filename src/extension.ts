@@ -72,6 +72,7 @@ import { openWebMonitor } from "./monitor/monitorLoader";
 import { activate as activateOidcAuth } from "./oidcauth/OIDCAuthHandler";
 
 import { registerChatTools } from "./chat/chatTools";
+import { checkWhatsNew } from "./whatsNew";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -547,7 +548,7 @@ export async function activate(context: ExtensionContext) {
     }
   };
 
-  window.showInformationMessage('"TDS-VSCode" is ready.');
+  checkWhatsNew(context)
 
   return exportedApi;
 }
@@ -609,7 +610,7 @@ function registerLog(context: vscode.ExtensionContext) {
 let firstTime = true;
 
 function showBanner(force: boolean = false) {
-  if (firstTime) {
+  if (firstTime || force) {
     firstTime = false;
     const config = workspace.getConfiguration("totvsLanguageServer");
     const showBanner = config.get("showBanner", true);
@@ -617,34 +618,33 @@ function showBanner(force: boolean = false) {
 
     if (showBanner || force) {
       let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
-      // prettier-ignore
-      {
+      if (ext) {
+        appLine("");
         appLine("---------------------------v---------------------------------------------------");
-        appLine("   //////  ////    //////  |  TOTVS Developer Studio for VS-Code");
-        appLine("    //    //  //  //       |  Version " + ext.packageJSON["version"]);
+        appLine(`   //////  ////    //////  |  ${ext.packageJSON["displayName"]}`);
+        appLine(`    //    //  //  //       |  Version ${ext.packageJSON["version"]} BETA`);
         appLine("   //    //  //  //////    |  TOTVS Technology");
-        appLine("  //    //  //      //     |");
-        appLine(" //    ////    //////      |  https://github.com/totvs/tds-vscode");
+        appLine("  //    //  //      //     |  ");
+        appLine(` //    ////    //////      |  ${ext.packageJSON["repository"]["url"]}`);
         appLine("---------------------------^---------------------------------------------------");
         appLine("");
       }
-    }
-    // prettier-ignore
-    {
-      appLine("-------------------------------------------------------------------------------");
-      appLine("SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO                                   ");
-      appLine("");
-      appLine("As chaves de compilação ou tokens de compilação empregados na construção do    ");
-      appLine("Protheus e suas funcionalidades, são de uso restrito dos desenvolvedores de    ");
-      appLine("cada módulo.                                                                   ");
-      appLine("");
-      appLine("Em caso de mau uso destas chaves ou tokens, por qualquer outra parte, que não  ");
-      appLine("a referida acima, a mesma irá se responsabilizar, direta ou regressivamente,   ");
-      appLine("única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações,   ");
-      appLine("multas, condenações judiciais, arbitrais e administrativas e quaisquer outras  ");
-      appLine("despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros,   ");
-      appLine("eximindo a TOTVS de toda e qualquer responsabilidade.                          ");
-      appLine("-------------------------------------------------------------------------------");
+      {
+        appLine("-------------------------------------------------------------------------------");
+        appLine("SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO                                   ");
+        appLine("");
+        appLine("As chaves de compilação ou tokens de compilação empregados na construção do    ");
+        appLine("Protheus e suas funcionalidades, são de uso restrito dos desenvolvedores de    ");
+        appLine("cada módulo.                                                                   ");
+        appLine("");
+        appLine("Em caso de mau uso destas chaves ou tokens, por qualquer outra parte, que não  ");
+        appLine("a referida acima, a mesma irá se responsabilizar, direta ou regressivamente,   ");
+        appLine("única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações,   ");
+        appLine("multas, condenações judiciais, arbitrais e administrativas e quaisquer outras  ");
+        appLine("despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros,   ");
+        appLine("eximindo a TOTVS de toda e qualquer responsabilidade.                          ");
+        appLine("-------------------------------------------------------------------------------");
+      }
     }
   }
 }
