@@ -29,6 +29,8 @@
   "Validating server {0}": "Validating server {0}",
   "Could not reconnect to server {0}": "Could not reconnect to server {0}",
   "Disconnecting from the server [{0}]": "Disconnecting from the server [{0}]",
+  "Token Totvs Identity removido com sucesso para o servidor {0}.": "Token Totvs Identity removido com sucesso para o servidor {0}.",
+  "Nenhum token Totvs Identity encontrado para o servidor {0}.": "Nenhum token Totvs Identity encontrado para o servidor {0}.",
   "Rename the server": "Rename the server",
   "Move server to group": "Move server to group",
   "Use / to create subgroups. Leave empty to move the server to root.": "Use / to create subgroups. Leave empty to move the server to root.",

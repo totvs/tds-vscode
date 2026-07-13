@@ -69,6 +69,7 @@ import { sendTelemetry } from "./protocolMessages";
 import { registerXRef } from "./xreferences";
 import { tlppTools } from "./tlpp-tools/tlppTools";
 import { openWebMonitor } from "./monitor/monitorLoader";
+import { activate as activateOidcAuth } from "./oidcauth/OIDCAuthHandler";
 import { registerChatTools } from "./chat/chatTools";
 import { checkWhatsNew } from "./whatsNew";
 
@@ -168,6 +169,8 @@ export async function activate(context: ExtensionContext) {
       inspectFunctions(context)
     )
   );
+
+  activateOidcAuth(context);
 
   //Compila os fontes/recursos selecionados
   context.subscriptions.push(

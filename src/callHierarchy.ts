@@ -1,4 +1,4 @@
-import { Event, EventEmitter, Location, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
+import { Event, EventEmitter, Location, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
 import { LanguageClient } from 'vscode-languageclient/node';
 import { parseUri } from './extension';
 
@@ -70,7 +70,7 @@ export class CallHierarchyProvider implements TreeDataProvider<CallHierarchyNode
         title: 'Goto',
         arguments: [element, element.numChildren > 0]
       },
-      iconPath: light
+      iconPath: { light: Uri.parse(light), dark: Uri.parse(dark) }
     };
   }
 

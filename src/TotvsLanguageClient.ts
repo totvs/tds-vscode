@@ -11,7 +11,7 @@ import {
 import { chmodSync, statSync } from "fs";
 import { reconnectLastServer } from "./serversView";
 import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
-import { IServerNotificationInfo, IUsageStatusInfo } from './protocolMessages';
+import { IServerNotificationInfo, IUsageStatusInfo, ILoginWithOIDCInfo } from './protocolMessages';
 import { updateUsageBarItem } from "./statusBar";
 import { getLanguageServerSettings } from './server/languageServerSettings';
 
@@ -125,18 +125,20 @@ export function getLanguageClient(
   languageClient = new TotvsLanguageClientA(serverOptions, clientOptions);
   languageClient.registerProposedFeatures();
 
-  languageClient
-    .onNotification("$totvsserver/usageStatus", (params: IUsageStatusInfo) => {
+  languageClient.onNotification("$totvsserver/usageStatus", (params: IUsageStatusInfo) => {
       updateUsageBarItem(params);
     });
-  languageClient
-    .onNotification("$totvsserver/notification", (params: IServerNotificationInfo) => {
+  languageClient.onNotification("$totvsserver/notification", (params: IServerNotificationInfo) => {
       //vscode.window.showInformationMessage(params.code + params.message);
 
       //vscode.workspace.textDocuments.forEach((document: vscode.TextDocument) => {
       //TODO: forçar 'refresh' do editor corrente (references)
       //});
     });
+
+  languageClient.onNotification("$totvsserver/loginWithOIDC", (params: ILoginWithOIDCInfo) => {
+     loginWithOidc(params);
+  });
 
   languageClient.start()
     .then(async (disposable: any) => {
@@ -166,6 +168,16 @@ export function getLanguageClient(
     });
 
   return languageClient;
+}
+
+function loginWithOidc(params: ILoginWithOIDCInfo): void {
+  if(params !== undefined) {
+    vscode.commands.executeCommand("totvs-developer-studio.poc-login-oidc", params.oidcUrl)
+      .then(undefined, (reason: any) => {
+        console.error(reason);
+        vscode.window.showErrorMessage(`Falha ao executar login OIDC: ${reason}`);
+    });
+  }
 }
 
 //Internal Functions
@@ -213,3 +225,5 @@ function getClientConfig(context: vscode.ExtensionContext) {
 
   return clientConfig;
 }
+
+

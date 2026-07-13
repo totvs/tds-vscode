@@ -37,6 +37,7 @@ export class ServerItem extends vscode.TreeItem {
   public username: string = "";
   public smartclientBin: string = "";
   public informations: IServerInformations;
+  public hasOIDCToken: boolean = false;
 
   constructor(
     public name: string,

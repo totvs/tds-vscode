@@ -21,6 +21,7 @@ interface AuthenticationNode {
   id: any;
   osType: number;
   connectionToken: string;
+  isOidcAuth: boolean;
 }
 
 export interface IUsageStatusData {
@@ -38,6 +39,10 @@ export interface IServerNotificationInfo {
   message: string;
 }
 
+export interface ILoginWithOIDCInfo {
+  oidcUrl: string;
+}
+
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
   CONNT_MONITOR = 13,
@@ -52,6 +57,7 @@ export interface ITokenInfo {
 export interface IAuthenticationInfo {
   sucess: boolean;
   token: string;
+  isOidcAuth: boolean;
 }
 
 export interface IReconnectInfo {
@@ -206,13 +212,13 @@ export function sendAuthenticateRequest(
       (authenticationNode: AuthenticationNode) => {
         let token: string = authenticationNode.connectionToken;
         if (token) {
-          return { sucess: true, token: token };
+          return { sucess: true, token: token, isOidcAuth: authenticationNode.isOidcAuth };
         } else {
-          return { sucess: false, token: token };
+          return { sucess: false, token: token, isOidcAuth: authenticationNode.isOidcAuth };
         }
       },
       (err: ResponseError<object>) => {
-        return { sucess: false, token: "" };
+        return { sucess: false, token: "", isOidcAuth: false  };
       }
     );
 }
@@ -932,6 +938,13 @@ export function sendTelemetry(): Thenable<any> {
 export function sendDidChangeConfiguration(settings: any): Thenable<any> {
   return languageClient.sendNotification(DidChangeConfigurationNotification.type, { settings: settings });
 }
+
+
+export function sendLogMsg(message: string): void {
+  languageClient.sendNotification("$/logMessage", {
+        message: message,
+    });
+  }
 
 export function sendDidSaveTextDocument(uri: string, text: string): Thenable<any> {
   return languageClient.sendRequest("textDocument/didSave", {

@@ -811,6 +811,18 @@
     },
     "commands": [
       {
+        "command": "totvs-developer-studio.poc-login-oidc",
+        "title": "POC Login OIDC",
+        "description": "POC LOGIN OIDC",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.clear-oidc-token",
+        "title": "Limpar Token Totvs Identity",
+        "description": "Remove o token OIDC armazenado para o servidor.",
+        "category": "TOTVS"
+      },
+      {
         "command": "totvs-developer-studio.getDAP",
         "title": "Get DAP"
       },
@@ -1849,6 +1861,16 @@
           "command": "totvs-developer-studio.delete.file.fromRPO",
           "when": "view == totvs_server && viewItem == serverItem",
           "group": "EtotvsRPO@4"
+        },
+        {
+          "command": "totvs-developer-studio.clear-oidc-token",
+          "when": "view == totvs_server && viewItem == serverItem",
+          "group": "FtotvsOIDC@1"
+        },
+        {
+          "command": "totvs-developer-studio.clear-oidc-token",
+          "when": "view == totvs_server && viewItem == serverItemNotConnected",
+          "group": "FtotvsOIDC@1"
         }
       ],
       "view/title": [
