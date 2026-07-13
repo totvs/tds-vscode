@@ -20,8 +20,33 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
     super("TOTVS");
   }
 
-  async removeServer(serverName: string) {
-    const serverTreeItem: TreeItem = await this.getTreeItem([serverName]);
+  private getGroupSegments(group?: string): string[] {
+    if (!group) {
+      return [];
+    }
+
+    return group
+      .split(/[\\/]+/)
+      .map((segment) => segment.trim())
+      .filter((segment) => segment.length > 0);
+  }
+
+  private getServerPath(server: string | string[] | IServerData): string[] {
+    if (Array.isArray(server)) {
+      return server;
+    }
+
+    if (typeof server === "string") {
+      return [server];
+    }
+
+    return [...this.getGroupSegments(server.group), server.serverName];
+  }
+
+  async removeServer(server: string | string[] | IServerData) {
+    const serverTreeItem: TreeItem = await this.getTreeItem(
+      this.getServerPath(server)
+    );
     await delay();
 
     await serverTreeItem.select();
@@ -60,7 +85,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
     );
 
     if (!fse.existsSync(serverJsonFile)) {
-      this.addServer(data);
+      await this.addServer(data);
       await delay();
     } else {
       const servers: any = fse.readJSONSync(serverJsonFile);
@@ -78,6 +103,7 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
           address: data.address,
           includes: data.includePath,
           environments: data.environments,
+          group: data.group,
         },
       ];
 
@@ -86,29 +112,37 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
   }
 
   async getServer(data: IServerData) {
-    let serverTreeItem = await this.getTreeItem([data.serverName]);
+    const path = this.getServerPath(data);
+    let serverTreeItem = await this.getTreeItem(path);
 
     if (!serverTreeItem) {
       await this.registerServer(data);
-      serverTreeItem = await this.getTreeItem([data.serverName]);
+      serverTreeItem = await this.getTreeItem(path);
     }
 
     return serverTreeItem;
   }
 
   async connect(
-    serverName: string,
+    server: string | string[] | IServerData,
     environment: string,
     userdata: IUserData,
     validate: boolean = true
   ): Promise<ServerTreeItemPageObject> {
     const serverPO: ServerTreeItemPageObject = new ServerTreeItemPageObject(
-      await this.getTreeItem([serverName])
+      await this.getTreeItem(this.getServerPath(server))
     );
 
     await serverPO.connect(environment, userdata);
 
     if (validate) {
+      const serverName =
+        typeof server === "string"
+          ? server
+          : Array.isArray(server)
+            ? server[server.length - 1]
+            : server.serverName;
+
       expect(await this.workbenchPO.isConnected(serverName, environment)).is
         .true;
     }
@@ -117,14 +151,21 @@ export class ServerViewPageObject extends ViewPageObject<SideBarView> {
   }
 
   async changeEnvironment(
-      serverName: string,
+      server: string | string[] | IServerData,
     environment: string
     , userData: IUserData): Promise<ServerTreeItemPageObject> {
         const serverPO: ServerTreeItemPageObject = new ServerTreeItemPageObject(
-          await this.getTreeItem([serverName])
+          await this.getTreeItem(this.getServerPath(server))
         );
 
         await serverPO.changeEnvironment(environment, userData);
+
+        const serverName =
+          typeof server === "string"
+            ? server
+            : Array.isArray(server)
+              ? server[server.length - 1]
+              : server.serverName;
 
         expect(await this.workbenchPO.isConnected(serverName, environment)).is
             .true;

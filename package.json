@@ -130,7 +130,7 @@
     "copy-webpack-plugin": "^14.0.0",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
-    "esbuild": "^0.25.0",
+    "esbuild": "^0.28.1",
     "eslint": "^8.23.1",
     "eslint-config-standard-with-typescript": "^23.0.0",
     "event-stream": "^4.0.1",
@@ -976,6 +976,18 @@
         "title": "%tds.package.rename%"
       },
       {
+        "command": "totvs-developer-studio.moveToRoot",
+        "title": "%tds.package.moveToRoot%"
+      },
+      {
+        "command": "totvs-developer-studio.moveToGroup",
+        "title": "%tds.package.moveToGroup%"
+      },
+      {
+        "command": "totvs-developer-studio.removeGroup",
+        "title": "%tds.package.removeGroup%"
+      },
+      {
         "command": "totvs-developer-studio.disconnect",
         "title": "%tds.package.disconnect%",
         "icon": {
@@ -1777,6 +1789,21 @@
           "command": "totvs-developer-studio.rename",
           "when": "view == totvs_server && viewItem == serverItem",
           "group": "ABtotvsServer@4"
+        },
+        {
+          "command": "totvs-developer-studio.moveToRoot",
+          "when": "view == totvs_server && (viewItem == serverItem || viewItem == serverItemNotConnected)",
+          "group": "ABtotvsServer@5"
+        },
+        {
+          "command": "totvs-developer-studio.moveToGroup",
+          "when": "view == totvs_server && (viewItem == serverItem || viewItem == serverItemNotConnected)",
+          "group": "ABtotvsServer@6"
+        },
+        {
+          "command": "totvs-developer-studio.removeGroup",
+          "when": "view == totvs_server && viewItem == serverGroup",
+          "group": "ABtotvsServer@7"
         },
         {
           "command": "totvs-developer-studio.compile.key",
