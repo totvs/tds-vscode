@@ -37,8 +37,6 @@ function print4gl(path, options, print) {
     return path.map(print).concat();
   }
 
-  console.log(JSON.stringify(node));
-
   switch (node.type) {
     case "ws":
     case "nl":

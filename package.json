@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "2.0.15",
+  "version": "2.1.0",
   "publisher": "TOTVS",
   "preview": true,
   "author": {
@@ -21,7 +21,7 @@
     "logix"
   ],
   "engines": {
-    "vscode": "^1.97.2"
+    "vscode": "^1.107.1"
   },
   "icon": "icons/totvs-developer-studio.png",
   "categories": [
@@ -36,16 +36,17 @@
     "url": "https://github.com/totvs/tds-vscode.git"
   },
   "bugs": {
-    "url": "https://github.com/totvs/tds-vscode.git"
+    "url": "https://github.com/totvs/tds-vscode/issues"
   },
   "scripts": {
-    "clean2": "gulp clean",
+    "clean2": "npx rimraf out node_modukes",
+    "clean": "gulp clean",
     "clean-logs": "npx rimraf ./**/*.log ./**/*.dmp --verbose",
     "compile": "npm-run-all compile:*",
     "compile:parse_4gl": "pegjs -o ./src/parser/4gl-parser.js ./syntaxes/4gl.pegjs",
     "compile:extension": "tsc -p ./src",
-    "compile:views": "webpack --mode production",
-    "compile:views-production": "webpack --mode production",
+    "compile:views": "webpack --mode development",
+    "compile:views-production": "webpack --mode development",
     "compile:esbuild": "node ./esbuild.js",
     "compile-test": "tsc -p ./test",
     "--LINT--": "",
@@ -68,7 +69,7 @@
     "export-i18n": "gulp export-i18n",
     "i18n-import": "gulp i18n-import",
     "---RELEASE---": "",
-    "release": "npx -y standard-version --skip.changelog --release-as 2.0.10-RC1",
+    "release": "npx -y standard-version --skip.changelog --release-as 2.1.0",
     "tag": "git push --follow-tags origin dev2",
     "package": "gulp package",
     "package-prerelease": "gulp package-prerelease",
@@ -84,8 +85,8 @@
     "@material-ui/data-grid": "4.0.0-alpha.2",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@totvs/tds-da": "^1.3.2",
-    "@totvs/tds-ls": "^2.1.1",
+    "@totvs/tds-da": "1.3.4",
+    "@totvs/tds-ls": "2.1.2",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.97.2",
     "@vscode/debugadapter": "^1.51.1",
@@ -96,15 +97,15 @@
     "del": "^6.0.0",
     "fs-extra": "^10.1.0",
     "ini": "^2.0.0",
-    "jszip": "^3.7.1",
+    "jszip": "^3.10.1",
     "material-table": "1.69.3",
+    "@modelcontextprotocol/sdk": "^1.17.5",
     "prop-types": "^15.8.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "strip-json-comments": "^3.1.1",
     "template-literal": "^1.0.4",
-    "tmp": "^0.2.1",
-    "typescript": "^4.8.3",
+    "tmp": "^0.2.5",
     "vscode-languageclient": "^8.0.2",
     "vscode-languageserver-types": "^3.17.5",
     "windows-1251": "^1.1.0",
@@ -119,20 +120,21 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.11.18",
     "@types/react-dom": "^16.9.14",
-    "@types/vscode": "^1.63.1",
+    "@types/vscode": "^1.107.1",
     "@types/vscode-webview": "^1.57.0",
-    "@vscode/l10n-dev": "^0.0.30",
+    "@vscode/l10n-dev": "^0.0.16",
     "@vscode/vsce": "^2.18.0",
     "all-contributors-cli": "^6.20.0",
     "chai": "^4.3.7",
     "cleanup": "^0.3.0",
+    "copy-webpack-plugin": "^14.0.0",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
     "esbuild": "^0.28.1",
     "eslint": "^8.23.1",
     "eslint-config-standard-with-typescript": "^23.0.0",
     "event-stream": "^4.0.1",
-    "glob": "^10.3.12",
+    "glob": "^13.0.6",
     "gulp": "^4.0.2",
     "gulp-filter": "^7.0.0",
     "gulp-run": "^1.7.1",
@@ -147,10 +149,10 @@
     "style-loader": "^3.3.1",
     "terser-webpack-plugin": "^5.3.0",
     "ts-loader": "^9.2.6",
-    "typescript": "^4.5.4",
+    "typescript": "^5.6.3",
     "typescript-eslint": "^0.0.1-alpha.0",
     "vscode-extension-tester": "^5.8.0",
-    "webpack": "^5.74.0",
+    "webpack": "^5.106.2",
     "webpack-cli": "^4.10.0",
     "webpack-stream": "^7.0.0"
   },
@@ -158,9 +160,93 @@
   "l10n": "./l10n",
   "activationEvents": [
     "workspaceContains:**/*.pr[wgx]",
-    "workspaceContains:**/*.tlpp"
+    "workspaceContains:**/*.tlpp",
+    "onLanguageModelTool:tds-lm-tools",
+    "onChatParticipant:tds-vscode.tools"
   ],
   "contributes": {
+    "languageModelTools": [
+      {
+        "name": "tds-lm-tools",
+        "toolReferenceName": "tds",
+        "displayName": "TDS Tools",
+        "icon": "icons/totvs24x24.png",
+        "modelDescription": "Triggers compilation, patch validation/application, and help commands.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "enum": [
+                "compiler",
+                "syntax-only",
+                "validate-patch",
+                "apply-patch",
+                "help"
+              ],
+              "description": "Tool command to execute."
+            },
+            "target": {
+              "type": "string",
+              "description": "Target alias/path for compile commands or patch file path for patch commands."
+            },
+            "flags": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^(syntaxOnly=(true|false)|applyOld=(true|false)|only=(all|error|warning)|max=\\d+|source=.+|sort=(none|file|severity)|format=(markdown|json))$"
+              },
+              "description": "Text flags for command options and diagnostic output.",
+              "examples": [
+                "syntaxOnly=true",
+                "applyOld=true",
+                "only=all",
+                "only=error",
+                "only=warning",
+                "max=20",
+                "source=advpl",
+                "sort=none",
+                "sort=file",
+                "sort=severity",
+                "format=markdown",
+                "format=json"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "chatParticipants": [
+      {
+        "id": "tds-vscode.tools",
+        "name": "tds",
+        "fullName": "TDS-VSCode Tools",
+        "description": "TDS-VSCode tools for use in chatbots.",
+        "isSticky": true,
+        "commands": [
+          {
+            "name": "compiler",
+            "description": "Compiles the current or informed context."
+          },
+          {
+            "name": "syntax-only",
+            "description": "Checks the syntax of the current or informed context."
+          },
+          {
+            "name": "validate-patch",
+            "description": "Validates a patch file (.ptm, .zip, .upd) against the RPO of the current server."
+          },
+          {
+            "name": "apply-patch",
+            "description": "Applies a patch file (.ptm, .zip, .upd) to the RPO of the current server."
+          },
+          {
+            "name": "help",
+            "description": "Provides help information for the TDS-VSCode tools."
+          }
+        ]
+      }
+    ],
     "iconThemes": [
       {
         "id": "tds",
@@ -756,6 +842,12 @@
         "command": "totvs-developer-studio.revalidateRPO",
         "title": "%tds.package.revalidate.rpo.title%",
         "description": "%tds.package.revalidate.rpo.description%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.syntax-only.file",
+        "title": "%tds.package.syntaxOnly.syntax-only.title%",
+        "description": "%tds.package.syntaxOnly.file.description%",
         "category": "TOTVS"
       },
       {

@@ -70,7 +70,7 @@ export class CallHierarchyProvider implements TreeDataProvider<CallHierarchyNode
         title: 'Goto',
         arguments: [element, element.numChildren > 0]
       },
-      iconPath: { light: light, dark: dark }
+      iconPath: light
     };
   }
 

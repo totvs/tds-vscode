@@ -22,3 +22,6 @@ test/**/no_git
 test/**/fw/**
 test/**/.vscode
 .vscode/settings.json
+!resources/.github/**/*
+/test/resources/projects/advpl0
+/test/resources/projects/advpl/.kiro

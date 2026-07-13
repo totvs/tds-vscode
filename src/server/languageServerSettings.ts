@@ -88,7 +88,7 @@ export function getModifiedLanguageServerSettings(): any[] {
     }
   }
 
-  const includes: string = (ServersConfig.getIncludes(true, ServersConfig.getCurrentServer()) || []).join(";");
+  const includes: string = (ServersConfig.getFullIncludes(true, ServersConfig.getCurrentServer()) || []).join(";");
   if (isNewSettings("linter", "includes", includes)) {
     settings.push({
       scope: "linter",

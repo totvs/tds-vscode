@@ -19,6 +19,7 @@
 			"name": "Extension",
 			"runtimeExecutable": "${execPath}",
 			"args": [
+				"${workspaceFolder}/test/resources/projects/advpl",
 				"--extensionDevelopmentPath=${workspaceFolder}",
 				"--inspect"
 			],
@@ -37,13 +38,50 @@
 			"name": "Extension WithoutCompile",
 			"runtimeExecutable": "${execPath}",
 			"args": [
-				"${workspaceFolder}/test/resources/projects/advpl3-ação",
+				"${workspaceFolder}/test/resources/projects/advpl",
 				"--extensionDevelopmentPath=${workspaceFolder}",
 				"--inspect"
 			],
 			"outFiles": [
 				"${workspaceFolder}/out/**/*.js"
 			],
+			"env": {
+				"TOTVS_LS_LOG_FILE": "./TOTVS_LS_LOG_FILE.log"
+			}
+		},
+		{
+			"type": "extensionHost",
+			"request": "launch",
+			"name": "TLPP Core",
+			"runtimeExecutable": "${execPath}",
+			"args": [
+				"W:\\tlpp-core\\tlpp-core",
+				"--extensionDevelopmentPath=${workspaceFolder}",
+				"--inspect"
+			],
+			"outFiles": [
+				"${workspaceFolder}/out/**/*.js"
+			],
+			"sourceMaps": true,
+			"preLaunchTask": "",
+			"env": {
+				"TOTVS_LS_LOG_FILE": "./TOTVS_LS_LOG_FILE.log"
+			}
+		},
+		{
+			"type": "extensionHost",
+			"request": "launch",
+			"name": "Advpl0",
+			"runtimeExecutable": "${execPath}",
+			"args": [
+				"${workspaceFolder}/test/resources/projects/advpl0",
+				"--extensionDevelopmentPath=${workspaceFolder}",
+				"--inspect"
+			],
+			"outFiles": [
+				"${workspaceFolder}/out/**/*.js"
+			],
+			"sourceMaps": true,
 			"preLaunchTask": "",
 			"env": {
 				"TOTVS_LS_LOG_FILE": "./TOTVS_LS_LOG_FILE.log"
