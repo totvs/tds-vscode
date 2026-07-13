@@ -3,6 +3,7 @@
 *.vsix
 .editorconfig
 .vscode-test
+.continue
 ~/
 nls.*
 node_modules

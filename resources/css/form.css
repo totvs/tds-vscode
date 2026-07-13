@@ -53,6 +53,13 @@ textarea:focus, input:focus {
 	margin-bottom: 27px;
 }
 
+.fieldHint {
+	margin: -18px 0 22px 0;
+	font-size: 12px;
+	line-height: 1.4;
+	color: #666;
+}
+
 .inputText {
 	height: 45px;
 	display: block;

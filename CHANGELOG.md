@@ -1,6 +1,22 @@
 # Changelog
 
-## Versão [2.0.14]
+## Versão [2.0.16]
+
+### Correções
+
+#### The TOTVS Language Server server crashed [#1429](https://github.com/totvs/tds-vscode/issues/1429)
+
+Criado mecanismo para interceptar "crash" ocasionado por fontes "problemáticos" durante a execução do Linter.
+
+### Melhoria
+
+#### Sugestão de verificação da chave BuildKillUsers ao ocorrer erro COMPILEERROR-300
+
+Adição de mensagem quando ocorrer falha na obtenção de acesso exclusivo do RPO.
+
+> **Verify that you have the setting (BuildKillUsers = 1) defined in the [General] section of your AppServer.ini file**
+
+## Versão [2.0.15]
 
 ### Correções
 
@@ -11,6 +27,18 @@ Erros diversos no Linter que ocorriam apenas no Mac.
 #### C2090 File not Found std.ch [#1389](https://github.com/totvs/tds-vscode/issues/1389)
 
 Qualquer fonte aberto no Mac indicava o erro "C2090 File not Found std.ch" no Linter.
+
+#### Importação de TReplay não conclui
+
+Correção de um bug no processo de importação que causava a interrupção do processo antes de abrir as timelines.
+
+#### Erro de Inspetor de Função no AppServer Harpia (Logix)
+
+Ocorria falha na abertura do Inspetor de Funções em AppServer Harpia (Logix).
+
+#### O Debug não parava na próxima linha (F10 next)
+
+Em depurações multi-thread caso ocorresse uma ação interna em um fonte padrão, o debug não parava na próxima linha.
 
 ### Melhoria
 

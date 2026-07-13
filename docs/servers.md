@@ -53,6 +53,7 @@ Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
       "id": "pgfb077eunhkt1u2mu4794eqxtfvj",
       "type": "totvs_server_protheus",
       "name": "p20",
+      "group": "ERP/REST",
       "port": 2030,
       "address": "localhost",
       "buildVersion": "7.00.210324P",
@@ -105,6 +106,8 @@ Pode-se acessá-lo acionando o ícone semelhante a uma engrenagem.
 |                       | - _totvs_server_logix_, para servidores com suporte a Adv/PL e 4GL.                     |
 |                       | - _totvs_server_totvstec_, para servidores com suporte a Adv/PL e 4GL, versão iqual ao superior 7.00.210324P (_Harpia_) .                     |
 | `name`               | Identificação do servidor para humanos.                                                 |
+| `group`              | Caminho opcional de pasta/grupo para organizar a árvore de servidores.                  |
+|                       | Exemplos: `ERP`, `ERP/REST`, `Financeiro\Homologação`.                                 |
 | `port`               | Porta de conexão.                                                                       |
 | `address`            | Endereço IP ou nome da estação do servidor.                                             |
 | `buildVersion`       | Versão do servidor. Valor obtido automaticamente.                                       |

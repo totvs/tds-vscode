@@ -5,7 +5,7 @@ import Utils, { ServersConfig } from "./utils";
 import { inputConnectionParameters } from "./inputConnectionParameters";
 import { inputAuthenticationParameters } from "./inputAuthenticationParameters";
 import { ResponseError } from "vscode-languageclient";
-import serverProvider from "./serverItemProvider";
+import serverProvider, { serverDragAndDropController } from "./serverItemProvider";
 import {
   ConnTypeIds,
   sendValidationRequest,
@@ -20,7 +20,7 @@ import {
   ENABLE_CODE_PAGE,
   sendLogMsg,
 } from "./protocolMessages";
-import { EnvSection, ServerItem } from "./serverItem";
+import { EnvSection, ServerGroupItem, ServerItem, ServerTreeItem } from "./serverItem";
 import { processSelectResourceMessage } from "./utilities/processSelectResource";
 import { languageClient } from "./extension";
 import { clearOIDCToken } from "./oidcauth/OIDCAuthHandler";
@@ -32,6 +32,8 @@ const localizeHTML = {
   "tds.webview.newServer.name": vscode.l10n.t("Server Name"),
   "tds.webview.newServer.address": vscode.l10n.t("Address"),
   "tds.webview.newServer.port": vscode.l10n.t("Port"),
+  "tds.webview.newServer.group": vscode.l10n.t("Folder/Group (optional)"),
+  "tds.webview.newServer.group.examples": vscode.l10n.t("Examples: ERP, ERP/REST"),
   "tds.webview.newServer.save": vscode.l10n.t("Save"),
   "tds.webview.newServer.saveClose": vscode.l10n.t("Save/Close"),
   "tds.webview.newServer.secure": vscode.l10n.t("Secure(SSL)"),
@@ -97,7 +99,8 @@ export class ServersExplorer {
                       0,
                       "",
                       true,
-                      message.includes
+                      message.includes,
+                      message.group
                     );
                     if (serverId !== undefined) {
                       sendValidationRequest(message.address, message.port, message.serverType).then(
@@ -153,11 +156,14 @@ export class ServersExplorer {
       return;
     }
 
-    const options: vscode.TreeViewOptions<ServerItem | EnvSection> = {
+    const options: vscode.TreeViewOptions<ServerTreeItem> = {
       treeDataProvider: serverProvider,
+      dragAndDropController: serverDragAndDropController,
     };
-    vscode.window.createTreeView("totvs_server", options);
-    vscode.window.registerTreeDataProvider("totvs_server", serverProvider);
+    // Use only createTreeView here so the drag-and-drop controller remains active.
+    context.subscriptions.push(
+      vscode.window.createTreeView("totvs_server", options)
+    );
 
     vscode.commands.registerCommand(
       "totvs-developer-studio.connect",
@@ -301,6 +307,45 @@ export class ServersExplorer {
       }
     );
 
+    vscode.commands.registerCommand(
+      "totvs-developer-studio.moveToRoot",
+      (serverItem: ServerItem) => {
+        if (serverProvider.localServerItems.indexOf(serverItem) >= 0) {
+          ServersConfig.updateServerGroup(serverItem.id, undefined);
+        }
+      }
+    );
+
+    vscode.commands.registerCommand(
+      "totvs-developer-studio.moveToGroup",
+      async (serverItem: ServerItem) => {
+        if (serverProvider.localServerItems.indexOf(serverItem) >= 0) {
+          const newGroup = await vscode.window.showInputBox({
+            title: vscode.l10n.t("Move server to group"),
+            placeHolder: vscode.l10n.t("Folder/Group (optional)"),
+            prompt: vscode.l10n.t(
+              "Use / to create subgroups. Leave empty to move the server to root."
+            ),
+            value: serverItem.group ?? "",
+            ignoreFocusOut: true,
+          });
+
+          if (newGroup !== undefined) {
+            ServersConfig.updateServerGroup(serverItem.id, newGroup);
+          }
+        }
+      }
+    );
+
+    vscode.commands.registerCommand(
+      "totvs-developer-studio.removeGroup",
+      (groupItem: ServerGroupItem) => {
+        if (groupItem?.groupPath) {
+          ServersConfig.clearGroup(groupItem.groupPath);
+        }
+      }
+    );
+
     function createServer(
       typeServer: string,
       serverName: string,
@@ -309,7 +354,8 @@ export class ServersExplorer {
       secure: number,
       buildVersion: string,
       showSucess: boolean,
-      includes: string[]
+      includes: string[],
+      group?: string
     ): string | undefined {
       const serverId = ServersConfig.createNewServer(
         typeServer,
@@ -318,7 +364,8 @@ export class ServersExplorer {
         address,
         buildVersion,
         secure,
-        includes
+        includes,
+        group
       );
 
       if (serverId !== undefined && showSucess) {
@@ -649,7 +696,8 @@ export function createNewProtheusServer(
       address,
       buildVersion,
       secure,
-      []
+      [],
+      undefined
     );
     if (serverId !== undefined) {
       ServersConfig.saveServerEnvironmentUsername(serverId, environment, username);

@@ -869,3 +869,12 @@ export function sendLogMsg(message: string): void {
         message: message,
     });
   }
+
+export function sendDidSaveTextDocument(uri: string, text: string): Thenable<any> {
+  return languageClient.sendRequest("textDocument/didSave", {
+    textDocument: {
+      uri: uri
+    },
+    text: text
+  });
+}
