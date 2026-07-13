@@ -3,7 +3,8 @@ import { ServersConfig } from "./utils";
 import { MultiStepInput } from "./multiStepInput";
 import { authenticate, doFinishConnectProcess } from "./serversView";
 import { ServerItem } from "./serverItem";
-import { tryOidcAutoLogin, getStoredOidcTokenForUser, setPendingOidcAuthContext } from "./oidcauth/OIDCAuthHandler";
+import { tryOidcAutoLogin, getStoredOidcTokenForUser, setOidcAuthContext as setOidcAuthContext } from "./oidcauth/OIDCAuthHandler";
+import { sendLogMsg } from "./protocolMessages";
 
 /**
  * Coleta os dados necessarios para logar a um servidor advpl/4gl.
@@ -35,6 +36,7 @@ export async function inputAuthenticationParameters(
 
   async function collectAuthenticationInputs() {
     const state = {} as Partial<State>;
+    state.password = "";
 
     let target = ServersConfig.getServerById(serverItem.id);
     if (target) {
@@ -62,21 +64,24 @@ export async function inputAuthenticationParameters(
       password: false,
     });
 
-    setPendingOidcAuthContext(serverItem, environment);
+    setOidcAuthContext(serverItem, environment, state.username);
     const storedOidcToken = await getStoredOidcTokenForUser(serverItem.address, environment, state.username);
     if (storedOidcToken) {
-      serverItem.hasOIDCToken = true;      
-      const oidcResult = await tryOidcAutoLogin(serverItem, storedOidcToken);
-      if (oidcResult.success) {
-        serverItem.username = state.username;
-        doFinishConnectProcess(serverItem, oidcResult.connectionToken, environment);
-        state.doAuthenticate = false;
-      } else {
+      sendLogMsg(`Stored OIDC token encontrado para user ${state.username} e ambiente ${environment}.`);
+      serverItem.hasOIDCToken = true;
+      //const oidcResult = await tryOidcAutoLogin(serverItem,environment, state.username, storedOidcToken);
+      //if (oidcResult.success) {
+        //sendLogMsg(`Login automático com OIDC bem sucedido para user ${state.username} e ambiente ${environment}.`);
+        //serverItem.username = state.username;
+        //doFinishConnectProcess(serverItem, oidcResult.connectionToken, environment);
         state.doAuthenticate = true;
-      }
-      //Ja retorna, pois nesse caso nao deve pedir a senha
-      return (input: MultiStepInput) => Promise.resolve();
+        //Ja retorna, pois nesse caso nao deve pedir a senha
+        return (input: MultiStepInput) => Promise.resolve();
+      //}
     }
+    
+    state.doAuthenticate = true;
+    serverItem.hasOIDCToken = false;
 
     return (input: MultiStepInput) =>
       inputPassword(input, state);

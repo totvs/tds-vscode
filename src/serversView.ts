@@ -18,11 +18,12 @@ import {
   sendReconnectRequest,
   IReconnectInfo,
   ENABLE_CODE_PAGE,
+  sendLogMsg,
 } from "./protocolMessages";
 import { EnvSection, ServerItem } from "./serverItem";
 import { processSelectResourceMessage } from "./utilities/processSelectResource";
 import { languageClient } from "./extension";
-import { OIDCAuthUriHandler } from "./oidcauth/OIDCAuthHandler";
+import { clearOIDCToken } from "./oidcauth/OIDCAuthHandler";
 
 const compile = require("template-literal");
 
@@ -262,6 +263,25 @@ export class ServersExplorer {
     );
 
     vscode.commands.registerCommand(
+      "totvs-developer-studio.clear-oidc-token",
+      async (serverItem: ServerItem) => {
+        const environment = serverItem.environment;
+        const userName = serverItem.username;
+        languageClient.info(`Comando para limpar token OIDC chamado para server: ${serverItem.name}, environment: ${environment}, userName: ${userName}`);
+        const cleared = await clearOIDCToken(serverItem, serverItem.address, environment, userName);
+        if (cleared) {
+          vscode.window.showInformationMessage(
+            vscode.l10n.t("Token Totvs Identity removido com sucesso para o servidor {0}.", serverItem.name)
+          );
+        } else {
+          vscode.window.showWarningMessage(
+            vscode.l10n.t("Nenhum token Totvs Identity encontrado para o servidor {0}.", serverItem.name)
+          );
+        }
+      }
+    );
+
+    vscode.commands.registerCommand(
       "totvs-developer-studio.rename",
       (serverItem: ServerItem) => {
         let ix = serverProvider.localServerItems.indexOf(serverItem);
@@ -354,6 +374,7 @@ export function doFinishConnectProcess(
   token: string,
   environment: string
 ) {
+  sendLogMsg(`doFinishConnectProcess acionado`);
   ServersConfig.saveConnectionToken(serverItem.id, token, environment);
   ServersConfig.saveSelectServer(
     serverItem.id,
@@ -599,8 +620,6 @@ async function doConnect(
         if (result.needAuthentication) {
           serverItem.token = result.token;
           inputAuthenticationParameters(serverItem, environment);
-        //} else if (result.needFluigAuthentication) {
-          //await authenticateWithFluig();
         } else {
           doFinishConnectProcess(serverItem, result.token, environment);
         }

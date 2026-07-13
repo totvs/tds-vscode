@@ -3,76 +3,84 @@ import * as vscode from 'vscode';
 import { languageClient } from "../extension";
 import { ServerItem } from "../serverItem";
 import { doFinishConnectProcess } from '../serversView';
+import { sendLogMsg } from "../protocolMessages";
 import {
   ENABLE_CODE_PAGE,
 } from "../protocolMessages";
 
 let extensionContext: vscode.ExtensionContext;
-let pendingAuthContext: { serverAddr: string; environment: string } | undefined;
-let serverItemSelected: ServerItem | undefined;
+let authContext: { serverItem: ServerItem; environment: string, userName: string} | undefined;
 
 interface IOidcValidationResponse {
     sucess: boolean;
     authToken?: string;
 }
 
-function decodeJwtPayload(jwtToken: string): Record<string, unknown> | null {
-    try {
-        const parts = jwtToken.split('.');
-        if (parts.length !== 3) { return null; }
-        const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-        const json = Buffer.from(base64, 'base64').toString('utf-8');
-        return JSON.parse(json);
-    } catch {
-        return null;
-    }
+// function decodeJwtPayload(jwtToken: string): Record<string, unknown> | null {
+//     try {
+//         const parts = jwtToken.split('.');
+//         if (parts.length !== 3) { return null; }
+//         const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+//         const json = Buffer.from(base64, 'base64').toString('utf-8');
+//         return JSON.parse(json);
+//     } catch {
+//         return null;
+//     }
+// }
+
+// function isJwtExpired(jwtToken: string): boolean {
+//     const payload = decodeJwtPayload(jwtToken);
+//     if (!payload || typeof payload.exp !== 'number') { return true; }
+//     return Date.now() >= payload.exp * 1000;
+// }
+
+// function extractUsernameFromJwt(jwtToken: string): string {
+//     const payload = decodeJwtPayload(jwtToken);
+//     if (!payload) { return ''; }
+//     return (
+//         (payload.preferred_username as string) ||
+//         (payload.email as string) ||
+//         (payload.sub as string) ||
+//         ''
+//     );
+// }
+
+async function storeTokenForUser(serverAddress: string, environment: string, userName: string, token: string): Promise<void> {
+    await extensionContext.secrets.store(`oidc_token_${serverAddress}_${environment}_${userName}`, token);
 }
 
-function isJwtExpired(jwtToken: string): boolean {
-    const payload = decodeJwtPayload(jwtToken);
-    if (!payload || typeof payload.exp !== 'number') { return true; }
-    return Date.now() >= payload.exp * 1000;
-}
-
-function extractUsernameFromJwt(jwtToken: string): string {
-    const payload = decodeJwtPayload(jwtToken);
-    if (!payload) { return ''; }
-    return (
-        (payload.preferred_username as string) ||
-        (payload.email as string) ||
-        (payload.sub as string) ||
-        ''
-    );
-}
-
-async function storeTokenForUser(serverAddr: string, environment: string, username: string, token: string): Promise<void> {
-    await extensionContext.secrets.store(`oidc_token_${serverAddr}_${environment}_${username}`, token);
-}
-
-export async function getStoredOidcTokenForUser(serverAddr: string, environment: string, username: string): Promise<string | undefined> {
+export async function getStoredOidcTokenForUser(serverAddress: string, environment: string, userName: string): Promise<string | undefined> {
     if (!extensionContext) { return undefined; }
-    return extensionContext.secrets.get(`oidc_token_${serverAddr}_${environment}_${username}`);
+    return extensionContext.secrets.get(`oidc_token_${serverAddress}_${environment}_${userName}`);
 }
 
-export function setPendingOidcAuthContext(serverItem: ServerItem, environment: string): void {
-    pendingAuthContext = { serverAddr: serverItem.address, environment };
-    serverItemSelected = serverItem;
+export async function clearOIDCToken(serverItem: ServerItem, serverAddress: string, environment: string, userName: string): Promise<boolean> {
+    if (!extensionContext) { return false; }
+    const existing = await getStoredOidcTokenForUser(serverAddress, environment, userName);
+    if (!existing) { return false; }
+    await extensionContext.secrets.delete(`oidc_token_${serverAddress}_${environment}_${userName}`);
+    serverItem.hasOIDCToken = false;
+    return true;
 }
 
-export async function tryOidcAutoLogin( serverItem: ServerItem,  oidcToken: string): Promise<{ success: boolean; connectionToken: string }> {
-    if (!oidcToken) { return { success: false, connectionToken: '' }; }
+export function setOidcAuthContext(serverItem: ServerItem, environment: string, userName: string): void {
+    authContext = { serverItem: serverItem, environment: environment, userName:  userName };
+}
 
-    if (isJwtExpired(oidcToken)) {
-        // Token expired: return failure so the language server can re-send the OIDC URL notification
-        return { success: false, connectionToken: '' };
-    }
+export async function tryOidcAutoLogin( serverItem: ServerItem,  environment: string, userName: string, authHash: string): Promise<{ success: boolean; connectionToken: string }> {
+    if (!authHash) { return { success: false, connectionToken: '' }; }
+
+    // if (isJwtExpired(oidcToken)) {
+    //     // Token expired: return failure so the language server can re-send the OIDC URL notification
+    //     return { success: false, connectionToken: '' };
+    // }
 
     // Token still valid: send to language server for validation
     try {
-        const response = await sendOidcValidateTokenMsg(serverItemSelected, oidcToken);
+        const response = await sendOidcValidateTokenMsg(serverItem, environment, userName, authHash);
         return { success: response.sucess, connectionToken: serverItem.token };
     } catch {
-        return { success: false, connectionToken: serverItem.token };
+        return { success: false, connectionToken: ''};
     }
 }
 
@@ -89,34 +97,41 @@ export class OIDCAuthUriHandler implements vscode.UriHandler {
     handleUri(uri: vscode.Uri): void {
         //this.logger.append(`HANDLE URI do callback acionado: ${uri.toString()}`);
         //this.logger.appendLine(`URI Path: ${uri.path}`);
+        sendLogMsg(`HANDLE URI do callback acionado: ${uri.toString()}`);
+        sendLogMsg(`URI Path: ${uri.path}`);
+
+        //let decodedUri = decodeURI(uri.toString());
 
         if (uri.path.includes('callback')) {
             const queryParams = new URLSearchParams(uri.query);
+            //const queryParams = new URLSearchParams(decodedUri);
             let code = queryParams.get('code');
 
             if (code) {
                 //this.logger.appendLine(`Código recebido: ${code}`);
+                sendLogMsg(`Código recebido: ${code}`);
                 this._onDidAuthenticate.fire(code);
             } else {
                 //this.logger.appendLine(`Parâmetro ?code= não encontrado na URI!`);
+                sendLogMsg(`Parâmetro ?code= não encontrado na URI!`);
             }
         }
     }
 }
 
-async function sendOidcValidateTokenMsg(serverItem: ServerItem, oidcToken: string): Promise<IOidcValidationResponse | undefined> {
+async function sendOidcValidateTokenMsg(serverItem: ServerItem, environment: string, userName: string, authHash: string): Promise<IOidcValidationResponse | undefined> {
     const enconding: string =
         vscode.env.language === "ru"
           ? ENABLE_CODE_PAGE.CP1251
           : ENABLE_CODE_PAGE.CP1252;
 
     const response = await languageClient.sendRequest("$totvsserver/validOidcToken", {
-        //PS: Quando o nome do parametro é o mesmo da variavel, nao precisa fazer como oidcToken: oidcToken, pode ser só o nome mesmo
+        //PS: Quando o nome do parametro é o mesmo da variavel, nao precisa fazer como authHash: authHash, pode ser só o nome mesmo
        oidcTokenInfo: {
-            environment: serverItem.environment,
-            user: serverItem.username,
+            environment,
+            userName,
             connectionToken: serverItem.token,
-            oidcJwtToken: oidcToken,
+            authHash,
             enconding
         }
     }) as IOidcValidationResponse;
@@ -128,21 +143,25 @@ export async function OIDCLogin(
     uriHandler: OIDCAuthUriHandler,
     logger: vscode.OutputChannel,
     url: string,
-    serverAddr?: string,
-    environment?: string
+    serverItem: ServerItem,
+    environment: string,
+    userName: string
 ): Promise<IOidcValidationResponse | undefined> {
     const scheme = vscode.env.uriScheme;
     const extensionId = context.extension.id;
 
+    sendLogMsg(`OIDCLogin chamado.`);
+
     const redirectUri = `${scheme}://${extensionId}/callback`;
 
     //logger.appendLine(`redirect URI: ${redirectUri}`);
-
+    
     //const authUrlManual = `http://172.16.1.21:3000/auth?redirect_uri=${encodeURIComponent(redirectUri)}`;
     // A url abaixo, estou mandando sem o ? inicial pois deu problema quando o App do Frame recebeu esse char, 
     //entao combinamos que eles vai adicionar isso
     const authUrl = url + `redirect_uri=${encodeURIComponent(redirectUri)}`;
-
+    
+    sendLogMsg(`AuthUrl: ${authUrl}`);
     //logger.appendLine(`Url Manual: ${authUrlManual}`);
     //logger.appendLine(`Url Server: ${authUrl}`);
 
@@ -176,29 +195,32 @@ export async function OIDCLogin(
         return undefined;
     }
 
-    const jwtToken = await codePromise;
+    const authHash = decodeURIComponent(await codePromise);
 
-    if (!jwtToken) {
+    sendLogMsg(`authHash depois de decodeURI: ${authHash}`);
+
+    if (!authHash) {
         logger.appendLine('Timeout: a autenticação OIDC não foi concluída no tempo esperado.');
         vscode.window.showWarningMessage('Timeout: autenticação OIDC não concluída no tempo esperado.');
         return undefined;
     }
 
     //logger.appendLine(`Token recebido: ${jwtToken}`);
-     if (jwtToken) {
+     if (authHash) {
         
         //await storeToken(context, authCode);
         //vscode.window.showInformationMessage(`Token recebido e armazenado com sucesso! \n : ${authCode}`);
-        
-        const response = await sendOidcValidateTokenMsg(serverItemSelected, jwtToken);
+        sendLogMsg(`Enviando mensagem para LS para validar o token OIDC recebido.`);
+        const response = await sendOidcValidateTokenMsg(authContext.serverItem, environment, userName, authHash);
 
         if (response && response.sucess !== false) {
-            const username = extractUsernameFromJwt(jwtToken);
-            if (username && serverAddr && environment && serverItemSelected) {
-                await storeTokenForUser(serverAddr, environment, username, jwtToken);
-                serverItemSelected.token = response.authToken;
+            //const username = extractUsernameFromJwt(jwtToken);
+            sendLogMsg(`Retorno da msg para o LS: serverItem: ${serverItem} | userName: ${userName} | environment: ${environment} | authHash: ${authHash}`);
+            if (serverItem !== undefined && userName && serverItem.address && environment) {
+                await storeTokenForUser(serverItem.address, environment, userName, authHash);
+                authContext.serverItem.token = response.authToken;
 
-                await doFinishConnectProcess(serverItemSelected, serverItemSelected.token, environment);
+                await doFinishConnectProcess(authContext.serverItem, authContext.serverItem.token, environment);
 
                 //logger.appendLine(`Token OIDC armazenado para o usuário: ${username}`);
             }
@@ -222,6 +244,8 @@ export async function OIDCLogin(
 
 export function activate(context: vscode.ExtensionContext) {
     extensionContext = context;
+    sendLogMsg(`OIDCAuthHandler ativado.`);
+
     const logger = languageClient.outputChannel;
     const uriHandler = new OIDCAuthUriHandler(logger);
 
@@ -231,6 +255,8 @@ export function activate(context: vscode.ExtensionContext) {
         try {
 
             let url: string | undefined = oidcUrl;
+
+            sendLogMsg(`Comando de login por OIDC chamado. URL: ${url}`);
 
             if (!url || url.trim().length === 0) {
                 vscode.window.showWarningMessage('O servidor informou que deve realizar autenicação com Totvs Identity mas retornou uma url vazia.');
@@ -267,7 +293,7 @@ export function activate(context: vscode.ExtensionContext) {
            //     },
            //     async (progress) => {
             //        progress.report({ message: "Aguarde, o processo de autenticação pode demorar um pouco..." });
-                    await OIDCLogin(context, uriHandler, logger, url!, pendingAuthContext?.serverAddr, pendingAuthContext?.environment);
+                    await OIDCLogin(context, uriHandler, logger, url!, authContext?.serverItem, authContext?.environment!, authContext?.userName!);
             //    }
             //);
         } catch (error) {

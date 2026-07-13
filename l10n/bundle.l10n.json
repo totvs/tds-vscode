@@ -27,6 +27,8 @@
   "Validating server {0}": "Validating server {0}",
   "Could not reconnect to server {0}": "Could not reconnect to server {0}",
   "Disconnecting from the server [{0}]": "Disconnecting from the server [{0}]",
+  "Token Totvs Identity removido com sucesso para o servidor {0}.": "Token Totvs Identity removido com sucesso para o servidor {0}.",
+  "Nenhum token Totvs Identity encontrado para o servidor {0}.": "Nenhum token Totvs Identity encontrado para o servidor {0}.",
   "Rename the server": "Rename the server",
   "Server saved. Name: {0}": "Server saved. Name: {0}",
   "The server selected is already connected.": "The server selected is already connected.",

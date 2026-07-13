@@ -250,6 +250,12 @@ class ServerItemProvider
       if (element.smartclientBin) {
         si.smartclientBin = element.smartclientBin;
       }
+      if (element.username) {
+        si.username = element.username;
+      }
+      if (element.environment) {
+        si.environment = element.environment;
+      }
       si.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
       listServer.push(si);
     });

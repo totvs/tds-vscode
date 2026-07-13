@@ -862,3 +862,10 @@ export function sendTelemetry(): Thenable<any> {
 export function sendDidChangeConfiguration(settings: any): Thenable<any> {
   return languageClient.sendNotification(DidChangeConfigurationNotification.type, { settings: settings });
 }
+
+
+export function sendLogMsg(message: string): void {
+  languageClient.sendNotification("$/logMessage", {
+        message: message,
+    });
+  }
