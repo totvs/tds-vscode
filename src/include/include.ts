@@ -86,24 +86,24 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 	const cssOnDIskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
 	const chooseResourcePath = vscode.Uri.file(
 		path.join(
-		  context.extensionPath,
-		  "resources",
-		  "script",
-		  "chooseResource.js"
+			context.extensionPath,
+			"resources",
+			"script",
+			"chooseResource.js"
 		)
-	  );
+	);
 
 	const htmlContent = fs.readFileSync(htmlOnDiskPath.with({ scheme: 'vscode-resource' }).fsPath);
 	const cssContent = fs.readFileSync(cssOnDIskPath.with({ scheme: 'vscode-resource' }).fsPath);
 	const chooseResourceContent = fs.readFileSync(
 		chooseResourcePath.with({ scheme: "vscode-resource" }).fsPath
-	  );
+	);
 
 	let runTemplate = compile(htmlContent);
 
 	return runTemplate({
 		css: cssContent,
 		localize: localizeHTML,
-	    chooseResourceScript: chooseResourceContent
- });
+		chooseResourceScript: chooseResourceContent
+	});
 }
