@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { blockBuildCommands, languageClient } from "../extension";
+import { blockBuildCommands, languageClient, fireBeforeCompile } from "../extension";
 import * as fs from "fs";
 import Utils, { ServersConfig } from "../utils";
 
@@ -106,6 +106,7 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
     compileOptions.returnPpo = true;
 
     if (blockBuildCommands(true)) {
+      fireBeforeCompile(filesUris);
       sendCompilation(
         server,
         includesUris,
@@ -257,6 +258,7 @@ function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
 
     //Envia a mensagem de compilacao
     if (blockBuildCommands(true)) {
+      fireBeforeCompile(filesUris);
       sendCompilation(
         server,
         includesUris,
