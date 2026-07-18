@@ -179,6 +179,10 @@ class ServerItemProvider
     const rootItems = new Array<ServerTreeItem>();
     const groups = new Map<string, ServerGroupItem>();
 
+    ServersConfig.getGroups().forEach((groupPath) => {
+      this.attachGroupToTree(rootItems, groups, groupPath);
+    });
+
     ServersConfig.getServers().forEach((element) => {
       let token: string = element.token ? element.token : "";
 
@@ -258,6 +262,31 @@ class ServerItemProvider
     });
 
     currentChildren.push(serverItem);
+  }
+
+  private attachGroupToTree(
+    rootItems: Array<ServerTreeItem>,
+    groups: Map<string, ServerGroupItem>,
+    groupPath: string
+  ) {
+    const segments = this.splitGroupPath(groupPath);
+    if (segments.length === 0) return;
+
+    let currentChildren = rootItems;
+    let currentPath = "";
+
+    segments.forEach((segment) => {
+      currentPath = currentPath ? `${currentPath}/${segment}` : segment;
+
+      let group = groups.get(currentPath);
+      if (!group) {
+        group = new ServerGroupItem(currentPath);
+        groups.set(currentPath, group);
+        currentChildren.push(group);
+      }
+
+      currentChildren = group.children;
+    });
   }
 
   private splitGroupPath(group: string | undefined): string[] {

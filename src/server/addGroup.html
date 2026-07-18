@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>${d.localize["tds.webview.newGroup.title"]}</title>
+</head>
+<style>
+	${d.css}
+</style>
+
+<body>
+
+	<div class="mainContainer">
+		<div class="formWrap" style="background-image: none;">
+
+			<form class="formServer" name="form_group" id="form_group">
+
+				<div class="logo">
+					<span class="formTitle">${d.localize["tds.webview.newGroup.title"]}</span>
+				</div>
+
+				<div class="wrap-input">
+					<input class="inputText input-serverName" type="text" id="groupNameID" name="groupName"
+						placeholder="${d.localize['tds.webview.newGroup.name']}" required autofocus>
+					<span class="focus-input fi-serverName">
+					</span>
+				</div>
+				<p class="fieldHint">${d.localize["tds.webview.newGroup.hint"]}</p>
+
+				<div class="wrap-submit">
+					<input class="btn-submit" readonly id="submitID" type="button"
+						value="${d.localize['tds.webview.newGroup.create']}" onclick="createGroup()" />
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+
+<script>
+	const vscode = acquireVsCodeApi();
+
+	function createGroup() {
+		const groupName = document.getElementById('groupNameID').value.trim();
+		if (!groupName) {
+			document.getElementById('groupNameID').focus();
+			return;
+		}
+		vscode.postMessage({
+			command: 'createGroup',
+			groupPath: groupName
+		});
+	}
+
+	document.getElementById('groupNameID').addEventListener('keydown', function (e) {
+		if (e.key === 'Enter') {
+			createGroup();
+		}
+	});
+</script>
+
+</html>
