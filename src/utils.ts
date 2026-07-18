@@ -1113,6 +1113,27 @@ export class ServersConfig {
     return result;
   }
 
+  static addGroup(groupPath: string): boolean {
+    if (!groupPath || groupPath.trim().length === 0) {
+      return false;
+    }
+
+    const normalized = groupPath.trim().replace(/\\/g, "/");
+    const serverConfig = getServersConfig();
+
+    if (serverConfig.groups.includes(normalized)) {
+      return false;
+    }
+
+    serverConfig.groups.push(normalized);
+    persistServersInfo(serverConfig);
+    return true;
+  }
+
+  static getGroups(): string[] {
+    return getServersConfig().groups ?? [];
+  }
+
   static clearGroup(groupPath: string) {
     let result = false;
     if (!groupPath || groupPath.trim().length === 0) {
@@ -1136,6 +1157,16 @@ export class ServersConfig {
         result = true;
       }
     });
+
+    // remove o grupo e seus subgrupos do array explícito
+    const before = serverConfig.groups.length;
+    serverConfig.groups = serverConfig.groups.filter((g: string) => {
+      const norm = g.trim().replace(/\\/g, "/");
+      return norm !== normalizedGroup && !norm.startsWith(`${normalizedGroup}/`);
+    });
+    if (serverConfig.groups.length !== before) {
+      result = true;
+    }
 
     if (result) {
       persistServersInfo(serverConfig);
@@ -1271,6 +1302,9 @@ function getServersConfig() {
   }
   if (!config.includes) {
     config.includes = [];
+  }
+  if (!config.groups) {
+    config.groups = [];
   }
 
   //compatibilização com arquivos gravados com versão da extensão

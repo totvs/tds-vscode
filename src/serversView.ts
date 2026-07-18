@@ -41,102 +41,175 @@ const localizeHTML = {
   "tds.webview.dir.include2": vscode.l10n.t("Allow multiple directories"),
 };
 
+const localizeGroupHTML = {
+  "tds.webview.newGroup.title": vscode.l10n.t("New Group"),
+  "tds.webview.newGroup.name": vscode.l10n.t("Group Name"),
+  "tds.webview.newGroup.hint": vscode.l10n.t("Use / to create subgroups. Example: ERP/REST"),
+  "tds.webview.newGroup.create": vscode.l10n.t("Create Group"),
+};
+
 export class ServersExplorer {
   constructor(context: vscode.ExtensionContext) {
     let currentPanel: vscode.WebviewPanel | undefined = undefined;
+    let addGroupPanel: vscode.WebviewPanel | undefined = undefined;
+
+    function buildGroupOptions(): string {
+      const allGroups = new Set<string>([
+        ...ServersConfig.getGroups(),
+        ...ServersConfig.getServers()
+          .map((s: any) => s.group)
+          .filter(Boolean),
+      ]);
+      return Array.from(allGroups)
+        .sort()
+        .map((g) => `<option value="${g}">`)
+        .join("\n");
+    }
+
+    function openAddServerPanel(initialGroup?: string) {
+      if (currentPanel) {
+        currentPanel.dispose();
+      }
+
+      currentPanel = vscode.window.createWebviewPanel(
+        "totvs-developer-studio.add",
+        vscode.l10n.t("New Server"),
+        vscode.ViewColumn.One,
+        {
+          enableScripts: true,
+          localResourceRoots: [
+            vscode.Uri.file(path.join(context.extensionPath, "src", "server")),
+          ],
+          retainContextWhenHidden: true,
+        }
+      );
+
+      currentPanel.webview.html = getWebViewContent(context, localizeHTML, initialGroup);
+      currentPanel.onDidDispose(
+        () => { currentPanel = undefined; },
+        null,
+        context.subscriptions
+      );
+
+      currentPanel.webview.onDidReceiveMessage(
+        (message) => {
+          if (!processSelectResourceMessage(currentPanel.webview, message)) {
+            switch (message.command) {
+              case "checkDir":
+                let checkedDir = Utils.checkDir(message.selectedDir);
+                currentPanel.webview.postMessage({
+                  command: "checkedDir",
+                  checkedDir: checkedDir,
+                });
+                break;
+              case "saveServer":
+                if (message.serverName && message.port && message.address) {
+                  const serverId = createServer(
+                    message.serverType,
+                    message.serverName,
+                    message.port,
+                    message.address,
+                    0,
+                    "",
+                    true,
+                    message.includes,
+                    message.group
+                  );
+                  if (serverId !== undefined) {
+                    sendValidationRequest(message.address, message.port, message.serverType).then(
+                      (validInfoNode: IValidationInfo) => {
+                        ServersConfig.updateBuildVersion(
+                          serverId,
+                          validInfoNode.build,
+                          validInfoNode.secure
+                        );
+
+                        currentPanel?.dispose();
+                        return;
+                      },
+                      (err: ResponseError<object>) => {
+                        vscode.window.showErrorMessage(err.message);
+                      }
+                    );
+                  }
+                } else {
+                  vscode.window.showErrorMessage(
+                    vscode.l10n.t("Add Server Fail. Name, port and Address are need")
+                  );
+                }
+
+                if (currentPanel) {
+                  if (message.close) {
+                    currentPanel.dispose();
+                  }
+                }
+            }
+          }
+        },
+        undefined,
+        context.subscriptions
+      );
+    }
 
     vscode.commands.registerCommand("totvs-developer-studio.add", () => {
       if (vscode.workspace.workspaceFolders === undefined) {
         vscode.window.showErrorMessage("No folder opened.");
         return;
       }
+      openAddServerPanel();
+    });
 
-      if (currentPanel) {
-        currentPanel.reveal();
-      } else {
-        currentPanel = vscode.window.createWebviewPanel(
-          "totvs-developer-studio.add",
-          vscode.l10n.t("New Server"),
-          vscode.ViewColumn.One,
-          {
-            enableScripts: true,
-            localResourceRoots: [
-              vscode.Uri.file(
-                path.join(context.extensionPath, "src", "server")
-              ),
-            ],
-            retainContextWhenHidden: true,
-          }
-        );
-
-        currentPanel.webview.html = getWebViewContent(context, localizeHTML);
-        currentPanel.onDidDispose(
-          () => {
-            currentPanel = undefined;
-          },
-          null,
-          context.subscriptions
-        );
-
-        currentPanel.webview.onDidReceiveMessage(
-          (message) => {
-            if (!processSelectResourceMessage(currentPanel.webview, message)) {
-              switch (message.command) {
-                case "checkDir":
-                  let checkedDir = Utils.checkDir(message.selectedDir);
-                  currentPanel.webview.postMessage({
-                    command: "checkedDir",
-                    checkedDir: checkedDir,
-                  });
-                  break;
-                case "saveServer":
-                  if (message.serverName && message.port && message.address) {
-                    const serverId = createServer(
-                      message.serverType,
-                      message.serverName,
-                      message.port,
-                      message.address,
-                      0,
-                      "",
-                      true,
-                      message.includes,
-                      message.group
-                    );
-                    if (serverId !== undefined) {
-                      sendValidationRequest(message.address, message.port, message.serverType).then(
-                        (validInfoNode: IValidationInfo) => {
-                          ServersConfig.updateBuildVersion(
-                            serverId,
-                            validInfoNode.build,
-                            validInfoNode.secure
-                          );
-
-                          currentPanel?.dispose();
-                          return;
-                        },
-                        (err: ResponseError<object>) => {
-                          vscode.window.showErrorMessage(err.message);
-                        }
-                      );
-                    }
-                  } else {
-                    vscode.window.showErrorMessage(
-                      vscode.l10n.t("Add Server Fail. Name, port and Address are need")
-                    );
-                  }
-
-                  if (currentPanel) {
-                    if (message.close) {
-                      currentPanel.dispose();
-                    }
-                  }
-              }
-            }
-          },
-          undefined,
-          context.subscriptions
-        );
+    vscode.commands.registerCommand("totvs-developer-studio.addServerToGroup", (item: ServerGroupItem) => {
+      if (vscode.workspace.workspaceFolders === undefined) {
+        vscode.window.showErrorMessage("No folder opened.");
+        return;
       }
+      openAddServerPanel(item?.groupPath);
+    });
+
+    vscode.commands.registerCommand("totvs-developer-studio.addGroup", () => {
+      if (vscode.workspace.workspaceFolders === undefined) {
+        vscode.window.showErrorMessage("No folder opened.");
+        return;
+      }
+
+      if (addGroupPanel) {
+        addGroupPanel.reveal();
+        return;
+      }
+
+      addGroupPanel = vscode.window.createWebviewPanel(
+        "totvs-developer-studio.addGroup",
+        vscode.l10n.t("New Group"),
+        vscode.ViewColumn.One,
+        {
+          enableScripts: true,
+          localResourceRoots: [
+            vscode.Uri.file(path.join(context.extensionPath, "src", "server")),
+          ],
+          retainContextWhenHidden: true,
+        }
+      );
+
+      addGroupPanel.webview.html = getGroupWebViewContent(context, localizeGroupHTML);
+      addGroupPanel.onDidDispose(
+        () => { addGroupPanel = undefined; },
+        null,
+        context.subscriptions
+      );
+
+      addGroupPanel.webview.onDidReceiveMessage(
+        (message) => {
+          if (message.command === "createGroup") {
+            const groupPath = message.groupPath?.trim();
+            if (!groupPath) return;
+            ServersConfig.addGroup(groupPath);
+            addGroupPanel?.dispose();
+          }
+        },
+        undefined,
+        context.subscriptions
+      );
     });
 
     vscode.commands.registerCommand("totvs-developer-studio.config", () => {
@@ -377,7 +450,7 @@ export class ServersExplorer {
       return serverId;
     }
 
-    function getWebViewContent(context, localizeHTML) {
+    function getWebViewContent(context, localizeHTML, initialGroup?: string) {
       const htmlOnDiskPath = vscode.Uri.file(
         path.join(context.extensionPath, "src", "server", "addServer.html")
       );
@@ -410,7 +483,32 @@ export class ServersExplorer {
       return runTemplate({
         css: cssContent,
         localize: localizeHTML,
-        chooseResourceScript: chooseResourceContent
+        chooseResourceScript: chooseResourceContent,
+        initialGroup: initialGroup ?? "",
+        groupOptions: buildGroupOptions(),
+      });
+    }
+
+    function getGroupWebViewContent(context, localizeHTML) {
+      const htmlOnDiskPath = vscode.Uri.file(
+        path.join(context.extensionPath, "src", "server", "addGroup.html")
+      );
+      const cssOnDIskPath = vscode.Uri.file(
+        path.join(context.extensionPath, "resources", "css", "form.css")
+      );
+
+      const htmlContent = fs.readFileSync(
+        htmlOnDiskPath.with({ scheme: "vscode-resource" }).fsPath
+      );
+      const cssContent = fs.readFileSync(
+        cssOnDIskPath.with({ scheme: "vscode-resource" }).fsPath
+      );
+
+      let runTemplate = compile(htmlContent);
+
+      return runTemplate({
+        css: cssContent,
+        localize: localizeHTML,
       });
     }
   }

@@ -1029,6 +1029,21 @@
         "category": "TOTVS"
       },
       {
+        "command": "totvs-developer-studio.addServerToGroup",
+        "title": "%tds.package.add%",
+        "icon": {
+          "light": "resources/light/add.png",
+          "dark": "resources/dark/add.png"
+        },
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.addGroup",
+        "title": "%tds.package.addGroup%",
+        "icon": "$(new-folder)",
+        "category": "TOTVS"
+      },
+      {
         "command": "totvs-developer-studio.toggleTableSync",
         "title": "%tds.command.debug.toggleTableSync%",
         "category": "TOTVS"
@@ -1789,7 +1804,12 @@
         },
         {
           "command": "totvs-developer-studio.add",
-          "when": "view == totvs_server",
+          "when": "view == totvs_server && viewItem != serverGroup",
+          "group": "ABtotvsServer@3"
+        },
+        {
+          "command": "totvs-developer-studio.addServerToGroup",
+          "when": "view == totvs_server && viewItem == serverGroup",
           "group": "ABtotvsServer@3"
         },
         {
@@ -1876,6 +1896,11 @@
       "view/title": [
         {
           "command": "totvs-developer-studio.add",
+          "when": "view == totvs_server",
+          "group": "navigation"
+        },
+        {
+          "command": "totvs-developer-studio.addGroup",
           "when": "view == totvs_server",
           "group": "navigation"
         },
