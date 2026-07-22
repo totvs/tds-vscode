@@ -618,6 +618,20 @@
           "default": "",
           "description": "%tds.package.compilation.tempDir%"
         },
+        "totvsLanguageServer.compilation.ignorePatterns": {
+          "scope": "resource",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/.vscode/**",
+            "**/.git/**",
+            "**/*.md",
+            "**/*.tmp"
+          ],
+          "description": "Glob patterns for files and folders that must not be sent to compilation."
+        },
         "totvsLanguageServer.web-agent.agent": {
           "type": "string",
           "default": "",
