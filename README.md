@@ -1,3 +1,4 @@
+
 # TOTVS Developer Studio para VSCode
 
 <!--[![GitHub stars](https://img.shields.io/github/stars/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/stargazers)
@@ -7,19 +8,21 @@
 -->
 <!-- prettier-ignore-start -->
 [![GitHub license](https://img.shields.io/github/license/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/blob/master/LICENSE)
-![Version](https://img.shields.io/visual-studio-marketplace/v/TOTVS.tds-vscode)
-![Installs](https://img.shields.io/visual-studio-marketplace/i/TOTVS.tds-vscode)
-![Downloads](https://img.shields.io/visual-studio-marketplace/d/TOTVS.tds-vscode)
-![Rating](https://img.shields.io/visual-studio-marketplace/stars/TOTVS.tds-vscode)
 [![GitHub issues](https://img.shields.io/github/issues/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/issues)
 [![GitHub forks](https://img.shields.io/github/forks/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/network)
-![Visual Studio Marketplace Last Updated](https://img.shields.io/visual-studio-marketplace/last-updated/TOTVS.tds-vscode)
 <!-- markdownlint-disable -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- markdownlint-enabled -->
 <!-- prettier-ignore-end -->
+
+<!--
+![Version](https://img.shields.io/visual-studio-marketplace/v/TOTVS.tds-vscode)
+![Installs](https://img.shields.io/visual-studio-marketplace/i/TOTVS.tds-vscode)
+![Downloads](https://img.shields.io/visual-studio-marketplace/d/TOTVS.tds-vscode)
+![Rating](https://img.shields.io/visual-studio-marketplace/stars/TOTVS.tds-vscode)
+![Visual Studio Marketplace Last Updated](https://img.shields.io/visual-studio-marketplace/last-updated/TOTVS.tds-vscode) -->
 
 A extensão do **TOTVS Developer Studio for VS Code** disponibiliza uma suíte de desenvolvimento para o ecossistema **Protheus/Logix**.
 

@@ -54,7 +54,7 @@ class ServerItemProvider
     });
 
     vscode.workspace.onDidChangeConfiguration(() => {
-    this.checkServersConfigListener(true);
+      this.checkServersConfigListener(true);
     });
 
   }
@@ -71,22 +71,22 @@ class ServerItemProvider
     if (this._connectedServerItem !== server) {
       this._connectedServerItem = server;
 
-      let includes = ""; // XXX porque? apenas populando uma lista local e nao usa depois???
-      if (server === undefined) {
-        ServersConfig.clearConnectedServerConfig();
-        const serversIncludes = ServersConfig.getGlobalIncludes();
-        if (serversIncludes) {
-          serversIncludes.forEach((includeItem) => {
-            includes += includeItem + ";";
-          });
-        }
-      } else {
-        if (server.includes) {
-          server.includes.forEach((includeItem) => {
-            includes += includeItem + ";";
-          });
-        }
-      }
+      // let includes = ""; // XXX porque? apenas populando uma lista local e nao usa depois???
+      // if (server === undefined) {
+      //   ServersConfig.clearConnectedServerConfig();
+      //   const serversIncludes = ServersConfig._getGlobalIncludes();
+      //   if (serversIncludes) {
+      //     serversIncludes.forEach((includeItem) => {
+      //       includes += includeItem + ";";
+      //     });
+      //   }
+      // } else {
+      //   if (server.includes) {
+      //     server.includes.forEach((includeItem) => {
+      //       includes += includeItem + ";";
+      //     });
+      //   }
+      // }
 
       this.refresh();
     }

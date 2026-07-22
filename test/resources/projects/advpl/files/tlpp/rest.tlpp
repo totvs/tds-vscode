@@ -1,6 +1,7 @@
 #include "tlpp-core.th"
 #include "tlpp-rest.th"
 
+
 /*------------------------------------------------------------------
 Retorna dados de um usuário existente
 Parâmetros via [raw body]
@@ -9,6 +10,8 @@ Parâmetros via [raw body]
 function getBodyUser()
   local cUser := ''
   local jBody := ''
+
+  conout("getBodyUser called  - getting body")
 
   jBody := JsonObject():new()
   jBody:fromJson( oRest:GetBodyRequest() )

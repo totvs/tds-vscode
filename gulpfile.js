@@ -54,7 +54,7 @@ const internalCompileWebpack = function () {
 //Para desenvolvimento e debug, talvez seja melhor usar a opção comentada abaixo.
 const internalCompileEsBuildProd = function () {
   return run("cross-env NODE_ENV=production node esbuild.js").exec();
-  //return run("npm run compile::esbuild").exec();
+  //return run("cross-env NODE_ENV=debug node esbuild.js").exec();
 }
 
 const internalNlsCompileTask = function () {
