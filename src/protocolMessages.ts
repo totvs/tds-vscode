@@ -21,6 +21,7 @@ interface AuthenticationNode {
   id: any;
   osType: number;
   connectionToken: string;
+  isOidcAuth: boolean;
 }
 
 export interface IUsageStatusData {
@@ -38,6 +39,10 @@ export interface IServerNotificationInfo {
   message: string;
 }
 
+export interface ILoginWithOIDCInfo {
+  oidcUrl: string;
+}
+
 export enum ConnTypeIds {
   CONNT_DEBUGGER = 3,
   CONNT_MONITOR = 13,
@@ -52,6 +57,7 @@ export interface ITokenInfo {
 export interface IAuthenticationInfo {
   sucess: boolean;
   token: string;
+  isOidcAuth: boolean;
 }
 
 export interface IReconnectInfo {
@@ -206,13 +212,13 @@ export function sendAuthenticateRequest(
       (authenticationNode: AuthenticationNode) => {
         let token: string = authenticationNode.connectionToken;
         if (token) {
-          return { sucess: true, token: token };
+          return { sucess: true, token: token, isOidcAuth: authenticationNode.isOidcAuth };
         } else {
-          return { sucess: false, token: token };
+          return { sucess: false, token: token, isOidcAuth: authenticationNode.isOidcAuth };
         }
       },
       (err: ResponseError<object>) => {
-        return { sucess: false, token: "" };
+        return { sucess: false, token: "", isOidcAuth: false  };
       }
     );
 }
@@ -448,7 +454,8 @@ export function sendCompilation(
   filesUris: string[],
   compileOptions,
   extensionsAllowed: string[],
-  hasAdvplsource: boolean
+  hasAdvplsource: boolean,
+  syntaxOnly: boolean
 ): Thenable<CompileResult> {
   if (_debugEvent) {
     return Promise.reject(
@@ -466,6 +473,7 @@ export function sendCompilation(
       compileOptions: compileOptions,
       extensionsAllowed: extensionsAllowed,
       includeUrisRequired: hasAdvplsource,
+      syntaxOnly: syntaxOnly,
     },
   });
 }
@@ -515,6 +523,80 @@ export function sendPatchInfo(
       },
       (err: ResponseError<object>) => {
         vscode.window.showErrorMessage(err.message);
+      }
+    );
+}
+
+export interface ValidResponse {
+  error: number;
+  errorCode: number;
+  message: string;
+  patchValidates: [];
+}
+
+export function sendPatchValidateRequest(
+  server: ServerItem,
+  patchUri: string
+): Thenable<ValidResponse> {
+  if (_debugEvent) {
+    return Promise.reject(
+      new Error("This operation is not allowed during a debug.")
+    );
+  }
+
+  return languageClient
+    .sendRequest("$totvsserver/patchApply", {
+      patchApplyInfo: {
+        connectionToken: server.token,
+        authorizationToken: ServersConfig.getAuthorizationToken(server),
+        environment: server.environment,
+        patchUri: patchUri,
+        isLocal: true,
+        isValidOnly: true,
+        applyScope: "none",
+      },
+    })
+    .then(
+      (response: ValidResponse) => {
+        return response;
+      },
+      (err: ResponseError<object>) => {
+        vscode.window.showErrorMessage(err.message);
+        return Promise.reject(err);
+      }
+    );
+}
+
+export function sendPatchApplyRequest(
+  server: ServerItem,
+  patchUri: string,
+  applyOld: boolean
+): Thenable<ValidResponse> {
+  if (_debugEvent) {
+    return Promise.reject(
+      new Error("This operation is not allowed during a debug.")
+    );
+  }
+
+  return languageClient
+    .sendRequest("$totvsserver/patchApply", {
+      patchApplyInfo: {
+        connectionToken: server.token,
+        authorizationToken: ServersConfig.getAuthorizationToken(server),
+        environment: server.environment,
+        patchUri: patchUri,
+        isLocal: true,
+        isValidOnly: false,
+        applyScope: applyOld ? "all" : "only_new",
+      },
+    })
+    .then(
+      (response: ValidResponse) => {
+        return response;
+      },
+      (err: ResponseError<object>) => {
+        vscode.window.showErrorMessage(err.message);
+        return Promise.reject(err);
       }
     );
 }
@@ -855,4 +937,20 @@ export function sendTelemetry(): Thenable<any> {
 
 export function sendDidChangeConfiguration(settings: any): Thenable<any> {
   return languageClient.sendNotification(DidChangeConfigurationNotification.type, { settings: settings });
+}
+
+
+export function sendLogMsg(message: string): void {
+  languageClient.sendNotification("$/logMessage", {
+        message: message,
+    });
+  }
+
+export function sendDidSaveTextDocument(uri: string, text: string): Thenable<any> {
+  return languageClient.sendRequest("textDocument/didSave", {
+    textDocument: {
+      uri: uri
+    },
+    text: text
+  });
 }

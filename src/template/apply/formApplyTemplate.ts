@@ -58,15 +58,15 @@ export function openTemplateApplyView(
         (message) => {
           if (!processSelectResourceMessage(currentPanel.webview, message)) {
             switch (message.command) {
-            case "templateApply":
-              templateApply(message.templateFile);
-              currentPanel.dispose();
-              return;
-            case "close":
-              currentPanel.dispose();
-              break;
+              case "templateApply":
+                templateApply(message.templateFile);
+                currentPanel.dispose();
+                return;
+              case "close":
+                currentPanel.dispose();
+                break;
+            }
           }
-        }
         },
         undefined,
         context.subscriptions

@@ -1,5 +1,100 @@
 # Changelog
 
+## Versão [2.1.0]
+
+### Novidades
+
+#### Pastas de buscas de arquvos de definição por área de trabalho
+
+Implementado a possibilidade de complementar a lista de pastas de buscas de arquivos de definição. Na pasta principal da área de trabalho, crie o arquivo `.include`, onde cada linha é uma especificação de pasta para busca de arquivos de definição.
+
+As pastas especificadas tem prioridade sobre a lista por servidor/global e usam o padrão `glob` e sempre relativas a pasta princial (_workspace_).
+
+Exemplo:
+
+```console
+/include
+/folder/include
+/**/include_dev
+#/commented/will be/ignored
+```
+
+#### Integração da extensão com o Copilot
+
+A integração do TDS-Code com o Copilot é utilizada para ajudar a IA a compreender melhor sua área de trabalho, tornando-a mais assertiva e rápida em questões relacionadas aos seus fontes.
+
+Recomenda-se o uso do VSCode versão 1.107.1 (11/2025) ou superior. Em versões anteriores, é obrigatório a instalação das extensões:
+
+- [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot)
+- [GitHub Copilot Chat](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat)
+
+Em qualquer versão do VSCode, instale também a extensão:
+
+- [Language Server tools for Copilot](https://marketplace.visualstudio.com/items?itemName=sehejjain.lsp-mcp-bridge)
+
+#### Integração da extensão com o Kiro
+
+A integração do TDS-Code com o Kirot é utilizada para ajudar a IA a compreender melhor sua área de trabalho, tornando-a mais assertiva e rápida em questões relacionadas aos seus fontes.
+
+Recomenda-se o uso do Kiro versão ???? (??/????) ou superior.
+
+Em qualquer versão do Kiro, instale também a extensão:
+
+- [Kiro LSP MCP](https://open-vsx.org/extension/Rapdog/kiro-lsp-mcp)
+
+####
+
+Implementado ferramenta `@tds` que permitir executar operações direto no `chat`.
+
+- compile: compila o fonte no editor ativo ou o informado.
+- recompile: recompila o fonte no editor ativo ou o informado.
+- syntaz-only: verifica a sintaxe (_linter_) do fonte no editor ativo ou o informado.
+
+#### Renomear elementos
+
+Adicionado suporte ao comando de renomeação de elementos, permitindo alterar identificadores com atualização consistente das ocorrências relacionadas no código.
+
+#### Navegação de elementos
+
+Adicionado suporte aos comandos de navegação, permitindo acessar rapidamente a definição concreta de métodos e símbolos no código.
+
+#### Busca de símbolos no espaço de trabalho (_Workspace symbol_, `Ctrl+T`)
+
+Permite a busca por símbolos, tais como:
+
+- Funções
+- Classes
+- Métodos
+- Propriedades
+- _Namespaces_
+- Variáveis de escopo não local
+
+### Melhorias
+
+#### No DSS
+
+- Uso de memória
+Corrigido "vazamento de memória" (_memory leak_) e violações (_access violation_).
+
+- Suporte de TLPP
+Melhora do suporte a elementos de TLPP
+
+## Versão [2.0.16]
+
+### Correções
+
+#### The TOTVS Language Server server crashed [#1429](https://github.com/totvs/tds-vscode/issues/1429)
+
+Criado mecanismo para interceptar "crash" ocasionado por fontes "problemáticos" durante a execução do Linter.
+
+### Melhoria
+
+#### Sugestão de verificação da chave BuildKillUsers ao ocorrer erro COMPILEERROR-300
+
+Adição de mensagem quando ocorrer falha na obtenção de acesso exclusivo do RPO.
+
+> **Verify that you have the setting (BuildKillUsers = 1) defined in the [General] section of your AppServer.ini file**
+
 ## Versão [2.0.15]
 
 ### Correções
@@ -58,11 +153,11 @@ Porém agora apenas abrimos o WebMonitor externamente. O Monitor 'embedded' foi 
 
 #### Debug travando appserver onde a cada erro o serviço precisa ser reiniciado [DTCLIENT01-5562](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-5562)
 
-Ajustado o comportamento quando solicitado "Parada (*Stop*) da depuração enquando há uma janela (*Dialog*) AdvPL.
+Ajustado o comportamento quando solicitado "Parada (_Stop_) da depuração enquando há uma janela (_Dialog_) AdvPL.
 
 #### Problema ao debugar propriedades que sejam array de Json [#1274](https://github.com/totvs/tds-vscode/issues/1274)
 
-Adicionado tratamento de propriedades do tipo JSon, com conteúdo *array*.
+Adicionado tratamento de propriedades do tipo JSon, com conteúdo _array_.
 
 #### \[LINTER] - Problema com fontes que no seu path tem acentuação [#1263](https://github.com/totvs/tds-vscode/issues/1263)
 
@@ -88,9 +183,9 @@ Caso as chaves `webNavigator` e/ou `web.arguments` sejam informadas no executor 
 >
 > **Mac/OS:** O navegador padrão configurado não pode ser o Safari.
 
-#### Importação de lista de fontes para geração de pacotes de atualização (*patch*) [#1229](https://github.com/totvs/tds-vscode/issues/1229)
+#### Importação de lista de fontes para geração de pacotes de atualização (_patch_) [#1229](https://github.com/totvs/tds-vscode/issues/1229)
 
-Adicionado processo de importação de lista de fontes para geração de pacotes de atualização (*patch*).
+Adicionado processo de importação de lista de fontes para geração de pacotes de atualização (_patch_).
 O arquivo é no formato TXT, onde cada linha é um arquivo (fonte ou recurso).
 
 ## Versão [2.0.11]
@@ -117,7 +212,7 @@ Após a validação do patch a ação de aplicar o patch não estava sendo liber
 
 ### Correções
 
-#### Aplicação de pacote de atualização(*patchs*) e outros (#1283 e outros)
+#### Aplicação de pacote de atualização(_patchs_) e outros (#1283 e outros)
 
 A  versão **1.95** do **VS-Code**, gerou efeitos colaterais em todos os processos que envolvam seleção de arquivo/diretório. Os processos foram revisados  de forma a atender essa necessidade.
 
@@ -179,7 +274,7 @@ Ao acionar o "Patch Info" de um patch que se encontra em um caminho com acentua�
 
 #### Classe no TL++ [#1234](https://github.com/totvs/tds-vscode/issues/1234)
 
-Em estruturas sem a devida finalização, p.e. `class` e `end class`, poderia gerar lista de símbolos (visão *Outline*) incorreta e/ou gerar um erro no log.
+Em estruturas sem a devida finalização, p.e. `class` e `end class`, poderia gerar lista de símbolos (visão _Outline_) incorreta e/ou gerar um erro no log.
 Foi adicionado tratamento para esses blocos, de forma a evitar a ocorrência.
 
 #### Validações chave TDS [#1238](https://github.com/totvs/tds-vscode/issues/1238)
@@ -190,9 +285,9 @@ Ajuste na validação das chaves TDS.
 
 ### Correções
 
-#### Erro no *linter* [#1224](https://github.com/totvs/tds-vscode/issues/1224)
+#### Erro no _linter_ [#1224](https://github.com/totvs/tds-vscode/issues/1224)
 
-Em determinadas estruturas, p.e. `class` sem identificador, poderia ocorrer *crash* durante processos do *DSS*.
+Em determinadas estruturas, p.e. `class` sem identificador, poderia ocorrer _crash_ durante processos do _DSS_.
 
 #### Problema na paginação do TDS Replay
 
@@ -246,9 +341,9 @@ Demais funcionalidades continuam funcionando normalmente.
 > Fontes fora da área de trabalho receberá uma notificação na visão ``Problemas`` como uma informação.
 ![``Problema`` com informação de fora da área de trabalho](./docs/images/info-source-outside.png)
 
-#### Depuração com variáveis do tipo *string* (*character*)
+#### Depuração com variáveis do tipo _string_ (_character_)
 
-Variáveis do tipo  *character* (*string*), podem conter dados nos formatos CP1252/CP1251 ou UTF8, que podem ser diferenciadas pelo prefixo ``UTF8`` em seus valores nas visões ``Variables`` e ``Watches`` e ao passar o mouse sobre a variável. Também foi modificado a forma de apresentação.
+Variáveis do tipo  _character_ (_string_), podem conter dados nos formatos CP1252/CP1251 ou UTF8, que podem ser diferenciadas pelo prefixo ``UTF8`` em seus valores nas visões ``Variables`` e ``Watches`` e ao passar o mouse sobre a variável. Também foi modificado a forma de apresentação.
 
 Leia [Recursos Estendidos de Depuração](../docs/debugger.md#funcionalidades_estendidas_de_depuração) para maiores detalhes e como ativar/desativar.
 
@@ -296,7 +391,7 @@ Caso o usuário inicie uma depuração utilizando SIGAMDI/SIGAADV, será exibido
 
 #### Comando ``BeginContent`` passa a aceitar o tipo de conteúdo
 
-```
+```console
 beginContent var myVar [as <language: javascript | JS | html | json | xml | css | typeScript | TS>]
 ```
 
@@ -317,7 +412,7 @@ Foi implementado opção de [filtro nos fontes](https://github.com/totvs/tds-vsc
 
 A inicialização do `DSS` falhava (permissão) em sistemas MacOS, com erro:
 
-```
+```console
  (7.391s) [languageServer ] dbcode_manager.cpp:544 | Binary file error. Error: [/Users/XXXXXXXXXX/gitfolder/ma3-tmp/ma3/.vscode/.advpl/_binary_functions.prw] Permission denied
 ```
 
@@ -331,21 +426,21 @@ Em determinadas circunstâncias, ao renomear ou remover fontes, os processos pod
 >
 > Para garantir a interoperabilidade das áreas de trabalho entre os sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes, recomenda-se que pastas e arquivos não contenham caracteres especiais (exceto hífen e sublinhado) ou acentuados e sempre em minúsculas.
 >
-> Leia [Convenção para nomenclatura de *File System* em ambiente Linux](<https://tdn.totvs.com/x/h8BICw>).
+> Leia [Convenção para nomenclatura de _File System_ em ambiente Linux](<https://tdn.totvs.com/x/h8BICw>).
 
 ### Melhorias
 
 #### Assistente de assinatura de funções
 
-Adicionado assistente de assinatura de funções (*SignatureHelp*).
+Adicionado assistente de assinatura de funções (_SignatureHelp_).
 
 #### Informações sobre uso e outras informações
 
-BETA: Adicionado informações sobre o uso de funções (*CodeLens*).
+BETA: Adicionado informações sobre o uso de funções (_CodeLens_).
 
 #### Implementação de configuração para ignorar pastas e arquivos
 
-Efetuado a implementação de configuração para a extensão ignorar pastas e arquivos no processo de *Navegação em fontes* e recursos associados, através da existência do arquivo `.tdsignore`.
+Efetuado a implementação de configuração para a extensão ignorar pastas e arquivos no processo de _Navegação em fontes_ e recursos associados, através da existência do arquivo `.tdsignore`.
 
 Detalhes da implementação em [# TDS: Developer Support Subsystem](docs/dss.md#ignorar-pastas-e-arquivos).
 
@@ -354,10 +449,10 @@ Detalhes da implementação em [# TDS: Developer Support Subsystem](docs/dss.md#
 Efetuado a implementação de navegação em fontes, passagem de mouse e referências.
 Detalhes da implementação em [TDS: Developer Support Subsystem](docs/dss.md).
 
-> Os recursos aqui apresentados, podem ser influenciados devido ao *linter* ignorar o processamento de fontes configurado em [TDS: Linter -> Ignorar pastas e arquivos](docs/linter.md#tdsignore).
-> As informações sobre navegação, podem ou não ficar em [*cache*](docs/dss.md#cache).
+> Os recursos aqui apresentados, podem ser influenciados devido ao _linter_ ignorar o processamento de fontes configurado em [TDS: Linter -> Ignorar pastas e arquivos](docs/linter.md#tdsignore).
+> As informações sobre navegação, podem ou não ficar em [_cache_](docs/dss.md#cache).
 
-#### Visão *Estrutura*
+#### Visão _Estrutura_
 
 Apresenta alguns detalhes sobre o item de acordo com sua definição.
 
@@ -430,9 +525,9 @@ Corrigido problema de monitoramento de AppServer com Broker que exige uma conex�
 
 Corrigido erro de execução de navegador em ambientes Linux.
 
-#### *Logpoint* não resolve {variável}
+#### _Logpoint_ não resolve {variável}
 
-Corrigido erro de resolução de {variável} em *logpoints*.
+Corrigido erro de resolução de {variável} em _logpoints_.
 
 #### 'Command not found' ao clicar em um environment de um servidor [#1131](https://github.com/totvs/tds-vscode/issues/1131)
 
@@ -488,7 +583,7 @@ Adicionados tratamentos para substituir "::" por "self:" em situações específ
 
 #### Problema ao carregar snippets dentro do VSCode [#966](https://github.com/totvs/tds-vscode/issues/966)
 
-Ajustado processo de filtro na carga de *snippets*.
+Ajustado processo de filtro na carga de _snippets_.
 
 #### Erro formatação classes quando usa ponto e vírgula [#893](https://github.com/totvs/tds-vscode/issues/893)
 
@@ -538,7 +633,7 @@ Melhorado tratamento quando há linhas no código fonte iguais ou superiores a 4
 
 #### Exportação da lista de objetos (Harpia)
 
-Foi implementando opções de exportação em arquivos nos formatos [CSV\*](https://fileinfo.com/extension/csv) (*Comma Separated values File*) e [PDF](https://fileinfo.com/extension/pdf) (*Portable Document Format File*) [#967](https://github.com/totvs/tds-vscode/issues/967).
+Foi implementando opções de exportação em arquivos nos formatos [CSV\*](https://fileinfo.com/extension/csv) (_Comma Separated values File_) e [PDF](https://fileinfo.com/extension/pdf) (_Portable Document Format File_) [#967](https://github.com/totvs/tds-vscode/issues/967).
 
 | \* O arquivo CSV usa como separador o sinal ponto-e-virgúla entre valores e estes estão entre aspas.
 
@@ -551,30 +646,30 @@ Foi implementando opções de exportação em arquivos nos formatos [CSV\*](http
 |     | Agrupamemnto                                    |
 |     | Filtro por coluna                               |
 |     | Exportação em texto de largura fixa             |
-|     | *Reset* de configuração                         |
+|     | _Reset_ de configuração                         |
 
-#### Mensagem de *TimeLine* não encontrada para os pontos de parada existentes
+#### Mensagem de _TimeLine_ não encontrada para os pontos de parada existentes
 
-Ao executar um *Run* durante a execução do TDS Replay, caso não fosse encontrado nenhuma *TimeLine* correspondente aos pontos de parada existentes, era feito uma parada na última *TimeLine* da última página.
-Esse comportamento foi removido e implementando uma mensagem informativa. E a *TimeLine* de origem continuará selecionada.  [DTCLIENT01-3601](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3601)
+Ao executar um _Run_ durante a execução do TDS Replay, caso não fosse encontrado nenhuma _TimeLine_ correspondente aos pontos de parada existentes, era feito uma parada na última _TimeLine_ da última página.
+Esse comportamento foi removido e implementando uma mensagem informativa. E a _TimeLine_ de origem continuará selecionada.  [DTCLIENT01-3601](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3601)
 
-#### Validação de *patches* no Harpia
+#### Validação de _patches_ no Harpia
 
-Ajustes na validação de pacotes de atualização (*patches*) aplicados em *AppServer* Harpia.
+Ajustes na validação de pacotes de atualização (_patches_) aplicados em _AppServer_ Harpia.
 
 ### Correções
 
 #### Correção no tratamento da chave ``openglMode`` [DTCLIENT01-3702](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3702)
 
-Foi corrigido o tratamento da chave ``openglMode`` na definição de executores, onde a chave ``--openGL`` passa a ser informada ao *SmartClient* somente se esta estiver ligada.
+Foi corrigido o tratamento da chave ``openglMode`` na definição de executores, onde a chave ``--openGL`` passa a ser informada ao _SmartClient_ somente se esta estiver ligada.
 
 #### Erro ao tentar excluir um ambiente [#1022](https://github.com/totvs/tds-vscode/issues/1022)
 
 Corrigido problema ao tentar excluir um ambiente
 
-#### Unificação no tratamento do tipo *text* (4GL) com o *char* (AdvPL)
+#### Unificação no tratamento do tipo _text_ (4GL) com o _char_ (AdvPL)
 
-Foi unificado o tratamento do tipo *text* (4GL) que estava diferente do *char* (AdvPL).
+Foi unificado o tratamento do tipo _text_ (4GL) que estava diferente do _char_ (AdvPL).
 
 ## Versão [1.3.15]
 
@@ -589,31 +684,31 @@ Revisão geral da documentação da extensão.
 A configuração do rastreamento pode ser efetuado pela chave `totvsLanguageServer.trace.debug` na janela de `settings`.
 
 | Valor      | Nível                                                                         |
-| - | -- |
+| ---------- | ----------------------------------------------------------------------------- |
 | `off`      | Valor padrão, apresentando as mensagens habituais.                            |
 | `messages` | Além das habituais, apresenta as mensagens de comunicação.                    |
 | `verbose`  | Além das habituais, apresenta as mensagens de comunicação de forma detalhada. |
 
-#### Marcar *breakpoint* em múltiplas linhas [DTCLIENT01-346](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3435) [#995](https://github.com/totvs/tds-vscode/issues/995)
+#### Marcar _breakpoint_ em múltiplas linhas [DTCLIENT01-346](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3435) [#995](https://github.com/totvs/tds-vscode/issues/995)
 
 Ao iniciar a depuração, os pontos de paradas são avaliados:
 
 - linha em branco
 - linha de continuação, ajustando-a para a última linha do comando
 
-Em caso da avaliação modificar o ponto de parada, a mesma é indicada visualmente na visão de "Pontos de Parada" e ao passar o *mouse* sobre o ponto de parara é apresentado o motivo.
+Em caso da avaliação modificar o ponto de parada, a mesma é indicada visualmente na visão de "Pontos de Parada" e ao passar o _mouse_ sobre o ponto de parara é apresentado o motivo.
 
 #### Verificar pontos de parada e eliminar inválidos [DTCLIENT01-3435](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3435)
 
-Em determinadas situações, p.e. mover um fonte "por fora" do VS-Code e houver ponto de parada (*breakpoint*) já definido para este fonte, pode ocorrer erro no momento de depuração.
-Foi adicionado tratamento que ao identificar um ponto de parada inválido, o mesmo será removido da lista de pontos de paradas (*Breakpoints*) e o usuário será avisado sobre a ocorrência.
+Em determinadas situações, p.e. mover um fonte "por fora" do VS-Code e houver ponto de parada (_breakpoint_) já definido para este fonte, pode ocorrer erro no momento de depuração.
+Foi adicionado tratamento que ao identificar um ponto de parada inválido, o mesmo será removido da lista de pontos de paradas (_Breakpoints_) e o usuário será avisado sobre a ocorrência.
 
-#### Apresentação de listas (*array*) [DTCLIENT01-3354](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3354)
+#### Apresentação de listas (_array_) [DTCLIENT01-3354](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3354)
 
-- Listas (*arrays*) com mais de 100 elementos, passam a ser agrupados em blocos de 100, facilitando a visualização e o depurador passa a carregá-los sob solicitação.
+- Listas (_arrays_) com mais de 100 elementos, passam a ser agrupados em blocos de 100, facilitando a visualização e o depurador passa a carregá-los sob solicitação.
   ![Array Group](docs/images/debug-array-group.png)
 
-#### Configuração de código de página (*codePage*) por ambiente [DTCLIENT01-3410](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3410)
+#### Configuração de código de página (_codePage_) por ambiente [DTCLIENT01-3410](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3410)
 
 - No [Monitor](./docs/monitor.md#codepage), foi adicionado opção de configuração de código de página por ambiente.
 
@@ -621,7 +716,7 @@ Foi adicionado tratamento que ao identificar um ponto de parada inválido, o mes
 
 #### Gerando arquivos iniciado com "AP\_" na pasta do projeto [DTCLIENT01-3485](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3485) e [#990](https://github.com/totvs/tds-vscode/issues/990)
 
-Em ambientes linux/mac, o *linter* estava deixando arquivos de apoio no projeto do usuário.
+Em ambientes linux/mac, o _linter_ estava deixando arquivos de apoio no projeto do usuário.
 
 #### Monitor
 
@@ -629,7 +724,7 @@ Em ambientes linux/mac, o *linter* estava deixando arquivos de apoio no projeto 
 
 #### [4GL/Debug] Variáveis apresentam mensagem de erro de expressão [DTCLIENT01-3417](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3417)
 
-Em determinadas situações, o depurador do *appServer* em ambiente **Logix**, retorna como "tipo" uma *string* vazia, podendo cancelar/travar a depuração de código Adv/PL ou 4gl. Foi adicionado paliativo na extensão que indica o tipo como desconhecido (*unknow type*), apresenta o valor e permite continuar o processo de depuração.
+Em determinadas situações, o depurador do _appServer_ em ambiente **Logix**, retorna como "tipo" uma _string_ vazia, podendo cancelar/travar a depuração de código Adv/PL ou 4gl. Foi adicionado paliativo na extensão que indica o tipo como desconhecido (_unknow type_), apresenta o valor e permite continuar o processo de depuração.
 
 #### [4GL/Debug] Variáveis booleanas do ADVPL apresentam msg de erro de expressao [DTCLIENT01-3438](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3438)
 
@@ -655,7 +750,7 @@ Adicionado tratamento na pré-avaliação de expressões 4GL.
 
 #### Ao ocorrer uma exceção (error.log) o debugger no vscode cai com erro de sincronismo [DTCLIENT01-3344](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3344)
 
-Ajustado a comunicação entre o *DA* e o *appServer* quando há exceção na aplicação 4GL/AdvPL.
+Ajustado a comunicação entre o _DA_ e o _appServer_ quando há exceção na aplicação 4GL/AdvPL.
 
 #### Desfragmentação do RPO não remove histórico de aplicação de patches [#974](https://github.com/totvs/tds-vscode/issues/974)
 
@@ -675,7 +770,7 @@ Ajustado a comunicação entre o *DA* e o *appServer* quando há exceção na ap
 
 #### Array 4GL dinamico mostra SIZE incorreto no DEBUG via VSCODE
 
-- Correção na determinação e apresentação do tamanho de listas (*arrays*). [DTCLIENT01-3149](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3239)
+- Correção na determinação e apresentação do tamanho de listas (_arrays_). [DTCLIENT01-3149](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3239)
 
 #### Não é possível validar token no Linux
 
@@ -687,7 +782,7 @@ Ajustado a comunicação entre o *DA* e o *appServer* quando há exceção na ap
 
 #### Log de repositório com problemas no appserver Harpia
 
-- Adequação de informações retornadas pelo *appServer*. [DTCLIENT01-3239](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3239)
+- Adequação de informações retornadas pelo _appServer_. [DTCLIENT01-3239](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3239)
 
 ## Versão [1.3.11]
 
@@ -695,13 +790,13 @@ Ajustado a comunicação entre o *DA* e o *appServer* quando há exceção na ap
 
 - Implementação de [inspetor de objetos e funções para o Harpia ou superior](./docs/rpo-inspector.md#harpia). [DTCLIENT01-3147](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3147)
 
-- Validação do arquivo de servidores (*servers.json*).
+- Validação do arquivo de servidores (_servers.json_).
 
   Em caso de erros lhe será apresentado aviso na visão `Problemas`.
 
-- Depuração: Tratamento do tipo *JSON* em fontes *tlpp* [#886](https://github.com/totvs/tds-vscode/issues/886)
+- Depuração: Tratamento do tipo _JSON_ em fontes _tlpp_ [#886](https://github.com/totvs/tds-vscode/issues/886)
 
-  Durante a depuração de fontes *tlpp* com variáveis do tipo *JSON*, estas são apresentadas de forma hierárquica nas visões `Variáveis`, `Inspeção` e outras.
+  Durante a depuração de fontes _tlpp_ com variáveis do tipo _JSON_, estas são apresentadas de forma hierárquica nas visões `Variáveis`, `Inspeção` e outras.
 
 ### Removido
 
@@ -737,7 +832,7 @@ Ajustado a comunicação entre o *DA* e o *appServer* quando há exceção na ap
 
 - Implementação de depuração via SIGAPAF. [docs/debugger.md]
 
-- Adicionado confirmação na operação de *reset* de configuração no `Monitor`. [DTCLIENT01-2908](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2908)
+- Adicionado confirmação na operação de _reset_ de configuração no `Monitor`. [DTCLIENT01-2908](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2908)
 
 - Adicionado limite de tamanho em mensagens enviadas ao usuário via `Monitor`. [DTCLIENT01-2849](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2849)
 
@@ -753,7 +848,7 @@ Ajustado a comunicação entre o *DA* e o *appServer* quando há exceção na ap
 
 - Em determinadas situações, o usuário não era identificado corretamente.
 
-#### 4GL: correção na identificação de *snippets* de código de diretivas [DTCLIENT01-2904](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2904)
+#### 4GL: correção na identificação de _snippets_ de código de diretivas [DTCLIENT01-2904](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2904)
 
 - Ajustado identificação de diretivas.
 
@@ -769,25 +864,25 @@ Ajustado a comunicação entre o *DA* e o *appServer* quando há exceção na ap
 
 ### Melhorias
 
-- Tradução de *strings* em geral.
+- Tradução de _strings_ em geral.
 
 ### Correções
 
 #### Erro no Linter ao comparar programas fontes [#852](https://github.com/totvs/tds-vscode/issues/852) [DTCLIENT01-3100](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3100)
 
-Ao utilizar a opção de comparação do Controle de Versionamento em um arquivo fonte, o *Linter* indica um erro o arquivo original. A notificação de erro na visão *Problems* persiste mesmo após fechar a comparação.
+Ao utilizar a opção de comparação do Controle de Versionamento em um arquivo fonte, o _Linter_ indica um erro o arquivo original. A notificação de erro na visão _Problems_ persiste mesmo após fechar a comparação.
 
-- Adicionado tratamento no *linter* para ignorar arquivos de comparação.
+- Adicionado tratamento no _linter_ para ignorar arquivos de comparação.
 
 #### Erro na aplicação de patchs erp 12.1.33 [#850](https://github.com/totvs/tds-vscode/issues/850)
 
-- Correção no processo de aplicação de pacotes devido a mudanças de comportamento no *appServer*.
+- Correção no processo de aplicação de pacotes devido a mudanças de comportamento no _appServer_.
 
 ## Versão [1.3.5]
 
 ### Melhorias
 
-- Adição de nota sobre o uso de *token de RPO* e chaves de compilação (*banner* e documentação);
+- Adição de nota sobre o uso de _token de RPO_ e chaves de compilação (_banner_ e documentação);
 - Suporte a edição de arquivos de definições TLPP (.th);
 - Adição de tema de ícones;
 - Tratamento no monitor de dados em cirílico (CP1251).
@@ -812,11 +907,11 @@ Efetuada correção no tratamento de filtro `includeSource`.
 
 #### Processamento de listas no TDS-Replay [DTCLIENT01-3056](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3056)
 
-Ajustado tratamento de listas encadeadas (*arrays* dentro de *arrays*).
+Ajustado tratamento de listas encadeadas (_arrays_ dentro de _arrays_).
 
 #### AskForProgramName não funciona com debug WebApp [DTCLIENT01-3066](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3066)
 
-Ajustado tratamento do argumento *AskForProgramName*.
+Ajustado tratamento do argumento _AskForProgramName_.
 
 #### Validar Chave de compilação resulta em tela preta [DTCLIENT01-3072](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3072)
 
@@ -826,7 +921,7 @@ Ajustado propriedades dos botões.
 
 ### Melhorias
 
-- Documentação sobre a estrutura do arquivo *servers.json*.
+- Documentação sobre a estrutura do arquivo _servers.json_.
 
 ### Correções
 
@@ -854,7 +949,7 @@ Ajustado propriedades dos botões.
 
 ##### Problema
 
-- A definição de privilégios via as chaves da sessão \[TDS\], tratam somente endereços *IP´s*.
+- A definição de privilégios via as chaves da sessão \[TDS\], tratam somente endereços _IP´s_.
 
 ##### Solução
 
@@ -905,7 +1000,7 @@ Ajustado propriedades dos botões.
 
 ##### Problema
 
-- Mensagem de erro apresentada não codiz com o erro original que é aplicar pacote de atualização com serviço REST (HTTPV11) ou outro *job* em execução.
+- Mensagem de erro apresentada não codiz com o erro original que é aplicar pacote de atualização com serviço REST (HTTPV11) ou outro _job_ em execução.
 
 ##### Solução
 
@@ -929,7 +1024,7 @@ Ajustado propriedades dos botões.
 
 ##### Problema
 
-- A lista de exclusão de fontes não levava em consideração fontes que não existissem na área de trabalho. Dessa forma, a *TimeLine* é mostrada, sendo que deveria ser filtrada.
+- A lista de exclusão de fontes não levava em consideração fontes que não existissem na área de trabalho. Dessa forma, a _TimeLine_ é mostrada, sendo que deveria ser filtrada.
 
 ##### Solução
 
@@ -957,7 +1052,7 @@ Ajustado propriedades dos botões.
 
 ##### Problema
 
-- A lista de exclusão de fontes não levava em consideração fontes que não existissem na área de trabalho. Dessa forma, a *TimeLine* é mostrada, sendo que deveria ser filtrada.
+- A lista de exclusão de fontes não levava em consideração fontes que não existissem na área de trabalho. Dessa forma, a _TimeLine_ é mostrada, sendo que deveria ser filtrada.
 
 ##### Solução
 
@@ -1170,15 +1265,15 @@ Após atualização as tags Logix deixaram de ficar em caixa alta.
 
 ### Melhoria
 
-#### Geração de pacote de atualização (*patch*) por diferença
+#### Geração de pacote de atualização (_patch_) por diferença
 
 #### Novo Recurso
 
-- Liberado recurso para geração de pacotes (*patch*) por diferença. Este pode ser acessado via menu de contexto de um servidor na visão `Servidores` ou via paleta de comando `TOTVS: Generation patch (from difference).
+- Liberado recurso para geração de pacotes (_patch_) por diferença. Este pode ser acessado via menu de contexto de um servidor na visão `Servidores` ou via paleta de comando `TOTVS: Generation patch (from difference).
 
 #### [TOKEN RPO]
 
-- TokenRPO: implementado comando para remoção de token aplicado, via opção na barra de status ou via *api* `clearRPOToken`.
+- TokenRPO: implementado comando para remoção de token aplicado, via opção na barra de status ou via _api_ `clearRPOToken`.
 
 ### Correções
 
@@ -1236,7 +1331,7 @@ Após atualização as tags Logix deixaram de ficar em caixa alta.
 
 ### Correções
 
-#### [4GL][tdsvscode 1.2.1] Variáveis Array de Record não tem valores visualizados no DEBUG [Issue 590](https://github.com/totvs/tds-vscode/issues/590)
+#### \[4GL][tdsvscode 1.2.1] Variáveis Array de Record não tem valores visualizados no DEBUG [Issue 590](https://github.com/totvs/tds-vscode/issues/590)
 
 ##### Problema
 
@@ -1273,7 +1368,7 @@ Detalhes em
 
 - Código compatibilizado com o TS 4.1.
 
-#### Implementação do processo de validação de pacotes de atualização (*patch*)
+#### Implementação do processo de validação de pacotes de atualização (_patch_)
 
 ##### Problema
 
@@ -1429,7 +1524,7 @@ Detalhes em
 
 #### Correção na compilação 4GL quando há comando "globals \<arquivo\>"
 
-- Resolução do chamado interno [DTCLIENT01-2015](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2015). Requer atualização do *appServer*.
+- Resolução do chamado interno [DTCLIENT01-2015](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2015). Requer atualização do _appServer_.
 
 #### Monitoramento de servidores TOTVS (BETA)
 
@@ -1449,7 +1544,7 @@ Detalhes em
 - Monitoramento de conexões do servidor corrente
 - Envio de mensagens para um ou mais usuários
 - Bloqueio de novas conexões
-- Desconexão de um ou mais usuários ou de *jobs*
+- Desconexão de um ou mais usuários ou de _jobs_
 
 #### Revisão do processo de tradução
 
@@ -1503,7 +1598,7 @@ Detalhes em
 #### Recursos liberados
 
 - Sintaxe destacada conforme tipo (definição, palavra reservada, ...);
-- Árvore de estrutura (*outline*), a ser detalhada em liberações futuras.
+- Árvore de estrutura (_outline_), a ser detalhada em liberações futuras.
 
 #### Ajustes
 
@@ -1522,26 +1617,26 @@ Detalhes em
 
 Ao utilizar **TOTVS Server**, de versão igual ou anterior a 19.3.0.0 de 01/06/20, detectamos algumas inconsistências durante o processo de depuração:
 
-- Variáveis do tipo *text*, ao terem seus valores modificados por uma atribuição, pode ocasionar queda no processo;
-- Variáveis com valor *NIL* (nulo ou indefinido), podem apresentar resultados em formato diferente quando avaliados no *watch*, do apresentado no bloco do escopo;
+- Variáveis do tipo _text_, ao terem seus valores modificados por uma atribuição, pode ocasionar queda no processo;
+- Variáveis com valor _NIL_ (nulo ou indefinido), podem apresentar resultados em formato diferente quando avaliados no _watch_, do apresentado no bloco do escopo;
 
-#### [AdvPL] Árvore de estrutura (*outline*)
+#### [AdvPL] Árvore de estrutura (_outline_)
 
-- Árvore de estrutura (*outline*), a ser detalhada em liberações futuras.
+- Árvore de estrutura (_outline_), a ser detalhada em liberações futuras.
 
 #### Nomenclatura e ortografia
 
-- Padronização da nomenclatura de *AppSever* para *TOTVS Server*;
-- Padronização da identificação *AdvPL* para *AdvPL/4GL*, quando aplicada as duas linguagens;
-- Opção do console *Advpl*, na visão *Output*, alterada para *TOTVS LS*;
-- Na árvore da visão *settings*, identificação da extensão passou a ser *TOTVS*;
+- Padronização da nomenclatura de _AppSever_ para _TOTVS Server_;
+- Padronização da identificação _AdvPL_ para _AdvPL/4GL_, quando aplicada as duas linguagens;
+- Opção do console _Advpl_, na visão _Output_, alterada para _TOTVS LS_;
+- Na árvore da visão _settings_, identificação da extensão passou a ser _TOTVS_;
 - Correções ortográficas;
 
 ## Versão 1.0.4
 
 ### Correções
 
-#### Conexão com *TOTVS Server* com erro - Smartclient 19.3.0.5 (com SSL desligado) [Issue 390](https://github.com/totvs/tds-vscode/issues/390)
+#### Conexão com _TOTVS Server_ com erro - Smartclient 19.3.0.5 (com SSL desligado) [Issue 390](https://github.com/totvs/tds-vscode/issues/390)
 
 ##### Problema
 
@@ -1707,7 +1802,7 @@ Ao utilizar **TOTVS Server**, de versão igual ou anterior a 19.3.0.0 de 01/06/2
 
 ##### Problema
 
-- Se a variável utilizada na instrução `For` não estiver declarada como `Local` o *TOTVS Server* informa um 'warning', mas como a mensagem estava fora do padrão estabelecido, a mensagem se tornava um 'error'.
+- Se a variável utilizada na instrução `For` não estiver declarada como `Local` o _TOTVS Server_ informa um 'warning', mas como a mensagem estava fora do padrão estabelecido, a mensagem se tornava um 'error'.
 
 ##### Solução
 
@@ -2124,8 +2219,8 @@ Ao utilizar **TOTVS Server**, de versão igual ou anterior a 19.3.0.0 de 01/06/2
 ##### Solução
 
 - Implementado procedimentos na extensão:
-  1. Acione menu de contexto do editor, opção "*Format Document* (`SHIFT + ALT + F`)".
-  1. Menu de contexto de um recurso (arquivo fonte) ou pasta, opção "*Format*".
+  1. Acione menu de contexto do editor, opção "_Format Document_ (`SHIFT + ALT + F`)".
+  1. Menu de contexto de um recurso (arquivo fonte) ou pasta, opção "_Format_".
 
 #### Exibir tabelas e conteúdo: [Issue 20](https://github.com/totvs/tds-vscode/issues/20)
 
@@ -2235,7 +2330,7 @@ Ao utilizar **TOTVS Server**, de versão igual ou anterior a 19.3.0.0 de 01/06/2
 
 ##### Solução
 
-- Os caracteres "*" serão removidos do filtro, pois o componente utilizado entende como a pesquisa pelo caracter "*".
+- Os caracteres "_" serão removidos do filtro, pois o componente utilizado entende como a pesquisa pelo caracter "_".
 
 #### Inspetor de funções não mostra o arquivo: [Issue 73](https://github.com/totvs/tds-vscode/issues/73)
 
@@ -2245,7 +2340,7 @@ Ao utilizar **TOTVS Server**, de versão igual ou anterior a 19.3.0.0 de 01/06/2
 
 ##### Solução
 
-- Adicionada as informações de fonte e linha retornados pelo *TOTVS Server*.
+- Adicionada as informações de fonte e linha retornados pelo _TOTVS Server_.
 
 ## Versão 0.2.1
 
@@ -2332,6 +2427,7 @@ Ao utilizar **TOTVS Server**, de versão igual ou anterior a 19.3.0.0 de 01/06/2
 
 Em casos específicos, como na compilação de fontes em Cirílico (Russo), o encode poderá ser definido manualmente no arquivo settings.json de sua workspace, abaixo um exemplo de como usar o cirílico (Windows1251).
 
+```json
     {
     	"totvsLanguageServer.welcomePage": false,
     	"[advpl]": {
@@ -2339,6 +2435,7 @@ Em casos específicos, como na compilação de fontes em Cirílico (Russo), o en
     	},
     	"totvsLanguageServer.askEncodingChange": false
     }
+```
 
 #### Intelisense omite variáveis e funções locais: [Issue 8](https://github.com/totvs/tds-vscode/issues/8) relativo a [Issue 15](https://github.com/totvs/tds-vscode/issues/15)
 

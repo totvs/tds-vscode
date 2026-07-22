@@ -1,13 +1,11 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
-import * as os from "os";
 import { ServersConfig } from "../utils";
 import { languageClient } from "../extension";
-import { ResponseError } from "vscode-languageclient";
 import JSZip = require("jszip");
-import { ServerItem } from "../serverItem";
 import { processSelectResourceMessage } from "../utilities/processSelectResource";
+import { sendPatchApplyRequest, sendPatchValidateRequest, ValidResponse } from "../protocolMessages";
 
 const compile = require("template-literal");
 
@@ -54,11 +52,11 @@ const localizeHTML = {
   "tds.webview.patch.applyclose.action": vscode.l10n.t("Apply/Close"),
 };
 
-export function patchApply(
+export async function patchApply(
   context: any,
   isWorkspace: boolean,
   args?: any[]
-): void {
+): Promise<void> {
   if (currentPanel) {
     currentPanel.reveal();
   } else {
@@ -129,11 +127,13 @@ export function patchApply(
                               message: `(${index}/${message.patchFiles.length}) ${element}`,
                             });
 
-                            await doValidatePatch(
+                            await sendPatchValidateRequest(
                               server,
                               vscode.Uri.file(element).toString()
                             ).then(
-                              () => { },
+                              (response: ValidResponse) => {
+                                handlePatchValidateResponse(vscode.Uri.file(element).toString(), response);
+                              },
                               (reason: any) => {
                                 languageClient.error(reason);
                               }
@@ -177,12 +177,14 @@ export function patchApply(
                               message: `(${index}/${message.patchFile.length}) ${element}`,
                             });
 
-                            await doApplyPatch(
+                            await sendPatchApplyRequest(
                               server,
                               vscode.Uri.file(element).toString(),
                               message.applyOld
                             ).then(
-                              () => { },
+                              (response: any) => {
+                                handlePatchApplyResponse(response, message.applyOld);
+                              },
                               (reason: any) => {
                                 languageClient.error(reason);
                               }
@@ -271,44 +273,22 @@ export function patchApply(
               vscode.l10n.t("Yes"),
               vscode.l10n.t("No")
             )
-            .then((clicked) => {
+            .then(async (clicked) => {
               if (clicked === vscode.l10n.t("Yes")) {
                 const patchUri = vscode.Uri.file(patchFile).toString();
 
-                languageClient
-                  .sendRequest("$totvsserver/patchApply", {
-                    patchApplyInfo: {
-                      connectionToken: server.token,
-                      authorizationToken: ServersConfig.getAuthorizationToken(server),
-                      environment: server.environment,
-                      patchUri: patchUri,
-                      isLocal: true,
-                      isValidOnly: false,
-                      applyScope: "only_new",
-                    },
-                  })
-                  .then(
-                    (response: any) => {
-                      if ((response as PatchResult).returnCode === 40840) {
-                        // AuthorizationTokenExpiredError
-                        ServersConfig.removeExpiredAuthorization();
-                      }
-                      if (response.error == 1) {
-                        vscode.window.showErrorMessage(
-                          vscode.l10n.t("Patch contains files older than RPO. Patch will not be applied.")
-                        );
-                      }
-                      // const message: string  = response.message;
-                      // if(message == "Success"){
-                      // 	vscode.window.showInformationMessage(localize("tds.webview.patch.applied","Patch Applied!"));
-                      // }else {
-                      // 	vscode.window.showErrorMessage(message);
-                      // }
-                    },
-                    (err: ResponseError<object>) => {
-                      vscode.window.showErrorMessage(err.message);
-                    }
-                  );
+                await sendPatchApplyRequest(
+                  server,
+                  patchUri.toString(),
+                  false
+                ).then(
+                  (response: any) => {
+                    handlePatchApplyResponse(response, false);
+                  },
+                  (reason: any) => {
+                    languageClient.error(reason);
+                  }
+                );
               }
             });
         }
@@ -319,36 +299,36 @@ export function patchApply(
   }
 }
 
-function extractPatchsFiles(zipfilenames: string[]): Promise<string[]> {
-  return new Promise((resolve, reject) => {
-    let files: string[] = [];
-    const tmpPath = fs.mkdtempSync(path.join(os.tmpdir(), "tds-"));
+// function extractPatchsFiles(zipfilenames: string[]): Promise<string[]> {
+//   return new Promise((resolve, reject) => {
+//     let files: string[] = [];
+//     const tmpPath = fs.mkdtempSync(path.join(os.tmpdir(), "tds-"));
 
-    zipfilenames.forEach((zipfilename) => {
-      const zip: JSZip = new JSZip();
-      const data = fs.readFileSync(zipfilename);
+//     zipfilenames.forEach((zipfilename) => {
+//       const zip: JSZip = new JSZip();
+//       const data = fs.readFileSync(zipfilename);
 
-      zip.loadAsync(data).then(function (contents) {
-        Object.keys(contents.files).forEach(function (filename) {
-          if (filename.toLowerCase().endsWith("ptm")) {
-            const dest = path.join(tmpPath, filename);
-            files.push(dest);
-            zip
-              .file(filename)
-              .async("nodebuffer")
-              .then(function (content: any) {
-                fs.writeFileSync(dest, content);
-              })
-              .catch((reason: any) => {
-                reject(reason);
-              });
-          }
-        });
-        resolve(files);
-      });
-    });
-  });
-}
+//       zip.loadAsync(data).then(function (contents) {
+//         Object.keys(contents.files).forEach(function (filename) {
+//           if (filename.toLowerCase().endsWith("ptm")) {
+//             const dest = path.join(tmpPath, filename);
+//             files.push(dest);
+//             zip
+//               .file(filename)
+//               .async("nodebuffer")
+//               .then(function (content: any) {
+//                 fs.writeFileSync(dest, content);
+//               })
+//               .catch((reason: any) => {
+//                 reject(reason);
+//               });
+//           }
+//         });
+//         resolve(files);
+//       });
+//     });
+//   });
+// }
 
 function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
   const htmlOnDiskPath = vscode.Uri.file(
@@ -405,154 +385,146 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
   });
 }
 
-class PatchResult {
-  returnCode: number;
-}
+function handlePatchValidateResponse(patchUri: string, response: ValidResponse): void {
+  const patchFile = vscode.Uri.parse(patchUri);
+  //const patchFile = vscode.Uri.file(patchUri).toString();
+  let patchFilePath = patchFile.path;
+  let retMessage = vscode.l10n.t("No validation errors");
+  const tphInfoRet = { exp: undefined, ptm: undefined };
 
-async function doValidatePatch(
-  server: ServerItem,
-  patchUri: string
-) {
-  return languageClient
-    .sendRequest("$totvsserver/patchApply", {
-      patchApplyInfo: {
-        connectionToken: server.token,
-        authorizationToken: ServersConfig.getAuthorizationToken(server),
-        environment: server.environment,
-        patchUri: patchUri,
-        isLocal: true,
-        isValidOnly: true,
-        applyScope: "none",
-      },
-    })
-    .then(
-      (response: any) => {
-        const patchFile = vscode.Uri.parse(patchUri);
-        //const patchFile = vscode.Uri.file(patchUri).toString();
-        var patchFilePath = patchFile.path;
-        var retMessage = vscode.l10n.t("No validation errors");
-        var tphInfoRet = { exp: undefined, ptm: undefined };
-        if (patchFilePath.startsWith("/") && patchFilePath.length > 2 && patchFilePath.at(2) === ':') {
-          // se formato for windows /d:/totvs/patch/12.1.2210/expedicao_continua_12_1_2210_atf_tttm120_hp.ptm
-          // remove a / inicial
-          patchFilePath = patchFilePath.substring(1);
-        }
-        if (!response.error) {
-          vscode.window.showInformationMessage(vscode.l10n.t("Patch validated."))
-        } else {
-          retMessage = response.message
-          if (response.errorCode != 5 && response.errorCode != 7 && response.errorCode != 8) {
-            // ignore errorCode for apply_old, apply_denied and newer_patches
-            languageClient.error(retMessage);
-            vscode.window.showErrorMessage(retMessage);
-          }
-          if (response.errorCode == 5) { // Erro de patch com resources mais antigos que o do RPO
-            // exibir os recursos mais antigos
-            if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
-              // use first workspace folder
-              const rootPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-              vscode.window
-              .showWarningMessage(
-                vscode.l10n.t("There are patches with sources/resources older than RPO. Check Output 'TOTVS Patch Validate' for details.")
-              );
-              let outputPatchValidateInfo = `Patch Validation problems for ${patchFilePath}\n`;
-              outputPatchValidateInfo += "-".repeat(100)+"\n";
-              outputPatchValidateInfo += `Patch Date          | RPO Date            | Filename\n`;
-              outputPatchValidateInfo += "-".repeat(100)+"\n";
-              response.patchValidates.forEach((patchValidateItem: any) => {
-                outputPatchValidateInfo += `${patchValidateItem.datePatch} | ${patchValidateItem.dateRpo} | ${patchValidateItem.file}\n`;
-              });
-              let pathFile = rootPath + `/patchValidate_${patchFilePath}.txt`;
-              if (fs.existsSync(pathFile)) {
-                let r = Math.random().toString(36).substring(7);
-                pathFile = rootPath + `/patchValidate_${patchFilePath}_${r}.txt`;
-              }
-              let setting: vscode.Uri = vscode.Uri.parse("untitled:" + pathFile);
-              vscode.workspace.openTextDocument(setting).then((a: vscode.TextDocument) => {
-                vscode.window.showTextDocument(a, 1, false).then(e => {
-                  e.edit(edit => {
-                    edit.insert(new vscode.Position(0, 0), outputPatchValidateInfo);
-                  });
-                });
-              }, (error: any) => {
-                console.error(error);
-                debugger;
-              });
-            }
-          }
-          if (response.errorCode == 8) { // Erro de TPH apenas ocorre se existem patches mais recentes que o validado
-            // exibir mensagens e links para patches mais recentes
-            retMessage = "check tphInfoRet";
-            const tphInfo: any = JSON.parse(response.message);
-            const recommendedPatches = tphInfo.recommended;
-            if (recommendedPatches) {
-              if (recommendedPatches.exp) {
-                // exp
-                tphInfoRet.exp = recommendedPatches.exp;
-              }
-              if (recommendedPatches.ptm) {
-                // ptm
-                tphInfoRet.ptm = recommendedPatches.ptm;
-              }
-            }
-          }
-        }
-        currentPanel.webview.postMessage({
-          command: "patchValidationRet",
-          file: patchFilePath,
-          message: retMessage,
-          errorCode: response.errorCode,
-          patchValidates: response.patchValidates,
-          language: vscode.env.language,
-          tphInfoRet: tphInfoRet,
+  if (patchFilePath.startsWith("/") && patchFilePath.length > 2 && patchFilePath.at(2) === ':') {
+    // se formato for windows /d:/totvs/patch/12.1.2210/expedicao_continua_12_1_2210_atf_tttm120_hp.ptm
+    // remove a / inicial
+    patchFilePath = patchFilePath.substring(1);
+  }
+
+  if (!response.error) {
+    vscode.window.showInformationMessage(vscode.l10n.t("Patch validated."));
+  } else {
+    retMessage = response.message;
+    if (response.errorCode != 5 && response.errorCode != 7 && response.errorCode != 8) {
+      // ignore errorCode for apply_old, apply_denied and newer_patches
+      languageClient.error(retMessage);
+      vscode.window.showErrorMessage(retMessage);
+    }
+
+    if (response.errorCode == 5) { // Erro de patch com resources mais antigos que o do RPO
+      // exibir os recursos mais antigos
+      if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
+        // use first workspace folder
+        const rootPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+        vscode.window
+          .showWarningMessage(
+            vscode.l10n.t("There are patches with sources/resources older than RPO. Check Output 'TOTVS Patch Validate' for details.")
+          );
+        let outputPatchValidateInfo = `Patch Validation problems for ${patchFilePath}\n`;
+        outputPatchValidateInfo += "-".repeat(100) + "\n";
+        outputPatchValidateInfo += `Patch Date          | RPO Date            | Filename\n`;
+        outputPatchValidateInfo += "-".repeat(100) + "\n";
+        response.patchValidates.forEach((patchValidateItem: any) => {
+          outputPatchValidateInfo += `${patchValidateItem.datePatch} | ${patchValidateItem.dateRpo} | ${patchValidateItem.file}\n`;
         });
-      },
-      (err: ResponseError<object>) => {
-        vscode.window.showErrorMessage(err.message);
+        let pathFile = rootPath + `/patchValidate_${patchFilePath}.txt`;
+        if (fs.existsSync(pathFile)) {
+          const randomId = Math.random().toString(36).substring(7);
+          pathFile = rootPath + `/patchValidate_${patchFilePath}_${randomId}.txt`;
+        }
+        const setting: vscode.Uri = vscode.Uri.parse("untitled:" + pathFile);
+        vscode.workspace.openTextDocument(setting).then((a: vscode.TextDocument) => {
+          vscode.window.showTextDocument(a, 1, false).then(e => {
+            e.edit(edit => {
+              edit.insert(new vscode.Position(0, 0), outputPatchValidateInfo);
+            });
+          });
+        }, (error: any) => {
+          console.error(error);
+          debugger;
+        });
       }
-    );
+    }
+
+    if (response.errorCode == 8) { // Erro de TPH apenas ocorre se existem patches mais recentes que o validado
+      // exibir mensagens e links para patches mais recentes
+      retMessage = "check tphInfoRet";
+      const tphInfo: any = JSON.parse(response.message);
+      const recommendedPatches = tphInfo.recommended;
+      if (recommendedPatches) {
+        if (recommendedPatches.exp) {
+          // exp
+          tphInfoRet.exp = recommendedPatches.exp;
+        }
+        if (recommendedPatches.ptm) {
+          // ptm
+          tphInfoRet.ptm = recommendedPatches.ptm;
+        }
+      }
+    }
+  }
+
+  currentPanel.webview.postMessage({
+    command: "patchValidationRet",
+    file: patchFilePath,
+    message: retMessage,
+    errorCode: response.errorCode,
+    patchValidates: response.patchValidates,
+    language: vscode.env.language,
+    tphInfoRet: tphInfoRet,
+  });
 }
 
-async function doApplyPatch(
-  server: ServerItem,
-  patchUri: string,
-  applyOld: boolean
-) {
-  return languageClient
-    .sendRequest("$totvsserver/patchApply", {
-      patchApplyInfo: {
-        connectionToken: server.token,
-        authorizationToken: ServersConfig.getAuthorizationToken(server),
-        environment: server.environment,
-        patchUri: patchUri,
-        isLocal: true,
-        isValidOnly: false,
-        applyScope: applyOld ? "all" : "only_new",
-      },
-    })
-    .then(
-      (response: any) => {
-        if (response.returnCode === 40840) {
-          // AuthorizationTokenExpiredError
-          ServersConfig.removeExpiredAuthorization();
-        }
-        if (response.error == 1) {
-          if (response.errorCode > 1) {
-            languageClient.error(response.message);
-            vscode.window.showErrorMessage(response.message);
-          } else {
-            vscode.window.showErrorMessage(
-              vscode.l10n.t("Patch contains files older than RPO. Patch will not be applied.")
-            );
-          }
-        } else if (applyOld) {
-          vscode.window.showInformationMessage(vscode.l10n.t("Old files applied."));
-        } else {
-          vscode.window.showInformationMessage(vscode.l10n.t("Patch applied."));
-        }
-      },
-      (err: ResponseError<object>) => {
-        vscode.window.showErrorMessage(err.message);
-      }
-    );
+function handlePatchApplyResponse(response: any, applyOld: boolean): void {
+  if (response.returnCode === 40840) {
+    // AuthorizationTokenExpiredError
+    ServersConfig.removeExpiredAuthorization();
+  }
+
+  if (response.error == 1) {
+    if (response.errorCode > 1) {
+      languageClient.error(response.message);
+      vscode.window.showErrorMessage(response.message);
+    } else {
+      vscode.window.showErrorMessage(
+        vscode.l10n.t("Patch contains files older than RPO. Patch will not be applied.")
+      );
+    }
+  } else if (applyOld) {
+    vscode.window.showInformationMessage(vscode.l10n.t("Old files applied."));
+  } else {
+    vscode.window.showInformationMessage(vscode.l10n.t("Patch applied."));
+  }
 }
+
+// languageClient
+//   .sendRequest("$totvsserver/patchApply", {
+//     patchApplyInfo: {
+//       connectionToken: server.token,
+//       authorizationToken: ServersConfig.getAuthorizationToken(server),
+//       environment: server.environment,
+//       patchUri: patchUri,
+//       isLocal: true,
+//       isValidOnly: false,
+//       applyScope: "only_new",
+//     },
+//   })
+//   .then(
+//     (response: any) => {
+//       if ((response as PatchResult).returnCode === 40840) {
+//         // AuthorizationTokenExpiredError
+//         ServersConfig.removeExpiredAuthorization();
+//       }
+//       if (response.error == 1) {
+//         vscode.window.showErrorMessage(
+//           vscode.l10n.t("Patch contains files older than RPO. Patch will not be applied.")
+//         );
+//       }
+//       // const message: string  = response.message;
+//       // if(message == "Success"){
+//       // 	vscode.window.showInformationMessage(localize("tds.webview.patch.applied","Patch Applied!"));
+//       // }else {
+//       // 	vscode.window.showErrorMessage(message);
+//       // }
+//     },
+//     (err: ResponseError<object>) => {
+//       vscode.window.showErrorMessage(err.message);
+//     }
+//   );
