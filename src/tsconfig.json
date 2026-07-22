@@ -15,7 +15,7 @@
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "lib": [
-            "es2016",
+            "es2022",
             "dom"
         ],
         "jsx": "react",
@@ -24,6 +24,7 @@
         "strict": false, /* enable all strict type-checking options */
         "noUnusedParameters": false,
         "resolveJsonModule": true,
+        "skipLibCheck": true,
     },
     "exclude": [
         "node_modules/",

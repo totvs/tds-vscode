@@ -27,4 +27,23 @@
 	"markdownlint.run": "onSave",
 	"totvsLanguageServer.welcomePage": false,
 	"totvsLanguageServer.editor.linter.includes": "M:\\protheus\\includes;M:\\protheus\\includes_tlpp",
+	"chat.tools.terminal.autoApprove": {
+		"/^node \\./out-test/unit/runTest\\.js$/": {
+			"approve": true,
+			"matchCommandLine": true
+		},
+		"/^node -e \"require\\('\\./out-test/unit/suite/index'\\)\\.run\\(\\)\\.then\\(\\(\\)=>\\{console\\.log\\('unit suite ok'\\); process\\.exit\\(0\\);\\}\\)\\.catch\\(\\(e\\)=>\\{console\\.error\\(e\\); process\\.exit\\(1\\);\\}\\)\"$/": {
+			"approve": true,
+			"matchCommandLine": true
+		},
+		"npx extest": true,
+		"cheerio": true,
+		"core-js": true,
+		"ini": true,
+		"strip-json-comments": true,
+		"windows-1251": true,
+		"windows-1252": true,
+		"npm uninstall": true,
+		".0.0-alpha.61": true
+	}
 }

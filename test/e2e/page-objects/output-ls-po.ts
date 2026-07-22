@@ -84,7 +84,7 @@ export class OutputLsPageObject extends OutputPageObject {
       /(Start file recompile)/,
       /(Using Includes:)/,
       /(Start secure compiling.*1\/1)/,
-      /(\[FATAL\] Aborting/,
+      /(\[FATAL\] Aborting)/,
       /(Aborting end build)/,
       /(One or more files have errors)/,
       /(Recompile finished)/,

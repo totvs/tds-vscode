@@ -61,6 +61,7 @@ module.exports = (env, argv) => {
               loader: "ts-loader",
               options: {
                 configFile: path.join(REPLAY_PATH, "./app/tsconfig.json"),
+                transpileOnly: true,
               },
             },
           ],
@@ -73,6 +74,7 @@ module.exports = (env, argv) => {
               loader: "ts-loader",
               options: {
                 configFile: path.join(RPO_INFO_PATH, "./app/tsconfig.json"),
+                transpileOnly: true,
               },
             },
           ],
@@ -85,6 +87,7 @@ module.exports = (env, argv) => {
               loader: "ts-loader",
               options: {
                 configFile: path.join(MONITOR_PATH, "./app/tsconfig.json"),
+                transpileOnly: true,
               },
             },
           ],
@@ -97,6 +100,7 @@ module.exports = (env, argv) => {
               loader: "ts-loader",
               options: {
                 configFile: path.join(INSPECT_PATCH_PATH, "./app/tsconfig.json"),
+                transpileOnly: true,
               },
             },
           ],
@@ -109,6 +113,7 @@ module.exports = (env, argv) => {
               loader: "ts-loader",
               options: {
                 configFile: path.join(GENERATE_PATCH_PATH, "./app/tsconfig.json"),
+                transpileOnly: true,
               },
             },
           ],
@@ -121,6 +126,7 @@ module.exports = (env, argv) => {
               loader: "ts-loader",
               options: {
                 configFile: path.join(INSPECTOR_PATH, "./app/tsconfig.json"),
+                transpileOnly: true,
               },
             },
           ],

@@ -61,6 +61,10 @@ export class CallHierarchyProvider implements TreeDataProvider<CallHierarchyNode
       label += ` (${name}:${element.location.range.start.line + 1})`;
     }
 
+    const iconPath = (light && dark)
+      ? { light: parseUri(light), dark: parseUri(dark) }
+      : undefined;
+
     return {
       label: label,
       collapsibleState: collapseState,
@@ -70,7 +74,7 @@ export class CallHierarchyProvider implements TreeDataProvider<CallHierarchyNode
         title: 'Goto',
         arguments: [element, element.numChildren > 0]
       },
-      iconPath: { light: light, dark: dark }
+      iconPath: iconPath
     };
   }
 
