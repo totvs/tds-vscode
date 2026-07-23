@@ -11,8 +11,7 @@ import Utils, { ServersConfig } from "./utils";
 import { updateStatusBarItems } from "./statusBar";
 
 class ServerItemProvider
-  implements vscode.TreeDataProvider<ServerTreeItem>
-{
+  implements vscode.TreeDataProvider<ServerTreeItem> {
   isConnected(server: ServerItem) {
     return (
       this._connectedServerItem !== undefined &&
@@ -54,7 +53,7 @@ class ServerItemProvider
     });
 
     vscode.workspace.onDidChangeConfiguration(() => {
-    this.checkServersConfigListener(true);
+      this.checkServersConfigListener(true);
     });
 
   }
@@ -71,22 +70,22 @@ class ServerItemProvider
     if (this._connectedServerItem !== server) {
       this._connectedServerItem = server;
 
-      let includes = ""; // XXX porque? apenas populando uma lista local e nao usa depois???
-      if (server === undefined) {
-        ServersConfig.clearConnectedServerConfig();
-        const serversIncludes = ServersConfig.getGlobalIncludes();
-        if (serversIncludes) {
-          serversIncludes.forEach((includeItem) => {
-            includes += includeItem + ";";
-          });
-        }
-      } else {
-        if (server.includes) {
-          server.includes.forEach((includeItem) => {
-            includes += includeItem + ";";
-          });
-        }
-      }
+      // let includes = ""; // XXX porque? apenas populando uma lista local e nao usa depois???
+      // if (server === undefined) {
+      //   ServersConfig.clearConnectedServerConfig();
+      //   const serversIncludes = ServersConfig._getGlobalIncludes();
+      //   if (serversIncludes) {
+      //     serversIncludes.forEach((includeItem) => {
+      //       includes += includeItem + ";";
+      //     });
+      //   }
+      // } else {
+      //   if (server.includes) {
+      //     server.includes.forEach((includeItem) => {
+      //       includes += includeItem + ";";
+      //     });
+      //   }
+      // }
 
       this.refresh();
     }
@@ -298,8 +297,7 @@ class ServerItemProvider
 const SERVER_TREE_MIME = "application/vnd.code.tree.totvs_server";
 
 class ServerDragAndDropController
-  implements vscode.TreeDragAndDropController<ServerTreeItem>
-{
+  implements vscode.TreeDragAndDropController<ServerTreeItem> {
   readonly dragMimeTypes = [SERVER_TREE_MIME];
   readonly dropMimeTypes = [SERVER_TREE_MIME];
 

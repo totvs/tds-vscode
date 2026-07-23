@@ -1,13 +1,11 @@
 {
     "totvsLanguageServer.welcomePage": false,
-    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes;m:\\protheus\\includes_tlpp",
-    "totvsLanguageServer.editor.show.notification": "all",
     "totvsLanguageServer.trace.debug": "off",
-    "totvsLanguageServer.trace.server": "off",
+    "totvsLanguageServer.trace.server": "verbose",
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
         "--verbose",
-        "--wait-for-attach=20",
+        "--wait-for-attach=30",
         "--debug-ls",
         "--trace-compile",
         "--log-file-append=totvsls2.log"
@@ -15,14 +13,14 @@
     "totvsLanguageServer.askCompileResult": false,
     "totvsLanguageServer.askEncodingChange": false,
     "totvsLanguageServer.editor.autocomplete": "Off",
-    "xeditor.semanticTokenColorCustomizations": {
-        "[Default Dark+]": {
-            "enabled": true,
-            "rules": {
-                "keyword": "#ff0000"
-            }
-        }
+    "totvsLanguageServer.workspaceServerConfig": false,
+    "totvsLanguageServer.editor.codeLens": false,
+    "totvsLanguageServer.editor.index.cache": "onDisk",
+    "chat.agentFilesLocations": {
+        ".github/agents": true,
+        ".claude/agents": true,
+        "~/.copilot/agents": true,
+        ".agents/agents": true
     },
-    "totvsLanguageServer.compilation.generatePpoFile": false,
-    "totvsLanguageServer.workspaceServerConfig": true
+    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\INCLUDES;m:\\protheus\\INCLUDES_TLPP"
 }
