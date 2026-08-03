@@ -1,15 +1,41 @@
 import * as vscode from "vscode";
+import { languageClient } from "../extension";
 import Utils, { ServersConfig } from "../utils";
 
 const currentSettings: {} = {};
-let needRestart: boolean = false;
-let waitRestart: boolean = false;
+let _needRestart: boolean = false;
+let _waitRestart: boolean = false;
+
+function setNeedRestart(value: boolean) {
+  _needRestart = value;
+  //_waitRestart = value ? false : true;
+}
+
+function getFormatterKeysFromPackage(): Record<string, Record<string, any>> {
+  const ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
+  const properties = ext?.packageJSON?.contributes?.configuration?.properties || {};
+  const advplFormatterProperties = properties["advpl.formatter"]?.properties || {};
+  const fourglFormatterProperties = properties["4gl.formatter"]?.properties || {};
+  const defaultValues: Record<string, Record<string, any>> = {};
+  defaultValues["advpl"] = {};
+  defaultValues["4gl"] = {};
+
+  Object.entries(advplFormatterProperties).forEach(([key, config]: [string, any]) => {
+    defaultValues["advpl"][key] = config.default;
+  });
+
+  Object.entries(fourglFormatterProperties).forEach(([key, config]: [string, any]) => {
+    defaultValues["4gl"][key] = config.default;
+  });
+
+  return defaultValues;
+}
 
 function isNewSettings(scope: string, key: string, value: any): boolean {
   let result: boolean = true;
 
   if (currentSettings[scope]) {
-    if (currentSettings[scope][key]) {
+    if (currentSettings[scope][key] !== undefined) {
       if (Array.isArray(value)) {
         result = currentSettings[scope][key] !== value.join(";");
       } else {
@@ -35,12 +61,9 @@ export function getLanguageServerSettings(): any[] {
 
 export function getModifiedLanguageServerSettings(): any[] {
   let config = vscode.workspace.getConfiguration("totvsLanguageServer");
-  needRestart = false;
+  _needRestart = false;
 
   const settings: any[] = [];
-
-  let tmp = config.inspect("editor.linter");
-  console.log(tmp);
 
   if (config.has("editor.linter")) {
     let oldLinter = config.get("editor.linter");
@@ -108,7 +131,7 @@ export function getModifiedLanguageServerSettings(): any[] {
 
   const launchArgs = config.get("launch.args");
   if (isNewSettings("launch", "args", launchArgs)) {
-    needRestart = true;
+    setNeedRestart(true);
   }
 
   const indexCache: string = config.get("editor.index.cache");
@@ -118,7 +141,7 @@ export function getModifiedLanguageServerSettings(): any[] {
       key: "indexCache",
       value: indexCache
     });
-    needRestart = true;
+    setNeedRestart(true);
   }
 
   const codeLens = config.get("editor.codeLens");
@@ -128,7 +151,7 @@ export function getModifiedLanguageServerSettings(): any[] {
       key: "codeLens",
       value: String(codeLens)
     });
-    needRestart = true;
+    setNeedRestart(true);
   }
 
   const signatureHelp = config.get("editor.signatureHelp");
@@ -139,6 +162,7 @@ export function getModifiedLanguageServerSettings(): any[] {
       value: String(signatureHelp)
     });
   }
+
   const autocomplete = config.get("editor.autocomplete");
   if (isNewSettings("editor", "autocomplete", autocomplete)) {
     settings.push({
@@ -148,41 +172,54 @@ export function getModifiedLanguageServerSettings(): any[] {
     });
   }
 
+  const formatterKeysMap: Record<string, Record<string, any>> = getFormatterKeysFromPackage();
+  Object.entries(formatterKeysMap).forEach(([language, values]) => {
+    const formatterConfig: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration(`${language}.formatter`);
+
+    Object.entries(values).forEach(([key, defaultValue]) => {
+      const value: any = formatterConfig.get(key, defaultValue);
+
+      if (isNewSettings("formatter", `${language}.${key}`, value)) {
+        settings.push({
+          scope: "formatter",
+          key: `${language}.${key}`,
+          value: `${value}`
+        });
+      }
+    });
+  });
+
   if (settings.length > 0) {
     let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
     const version: string = ext.packageJSON["version"];
-    settings.push({
-      scope: "extension",
-      key: "tdsversion",
-      value: version
-    });
+    if (isNewSettings("extension", "tdsversion", version)) {
+      settings.push({
+        scope: "extension",
+        key: "tdsversion",
+        value: version
+      });
+    }
   }
 
   return settings;
 }
 
-export function confirmRestartNow(): boolean {
+export async function warningNeedRestart(): Promise<boolean> {
+  if (_needRestart) {
+    if (!_waitRestart) {
+      const message: string = "To make the change effective, it is necessary to restart TOTVS LS Server. Wait a moment.";
+      vscode.window.showInformationMessage(message);
+      languageClient.outputChannel.appendLine(message);
+      languageClient.outputChannel.show(true);
 
-  if (needRestart && !waitRestart) {
-    vscode.window.showInformationMessage(
-      "To make the change effective, it is necessary to restart VS-CODE.", { modal: true },
-      "Now", "Later").then((value: string) => {
-        waitRestart = true;
-        if (value == "Now") {
-          vscode.commands.executeCommand("workbench.action.reloadWindow");
-        } else if (value == "Later") {
-          setTimeout(() => {
-            needRestart = true;
-            waitRestart = false;
-            confirmRestartNow();
-          }, 60000);
-        } else {
-          needRestart = false;
-          waitRestart = false;
-        }
-      });
+      // Sleep para dar tempo ao LS processar antes de reiniciar
+      await new Promise(resolve => setTimeout(resolve, 5000));
+
+      //needRestart = false;
+      _waitRestart = true;
+    }
   }
 
-  return needRestart;
+  return _needRestart;
 }
 
