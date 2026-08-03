@@ -1,5 +1,8 @@
 import * as vscode from "vscode";
-import { sendDidSaveTextDocument } from "./protocolMessages";
+import { languageClient } from "./extension";
+import { sendDidChangeConfiguration, sendDidSaveTextDocument } from "./protocolMessages";
+import { warningNeedRestart, getModifiedLanguageServerSettings } from "./server/languageServerSettings";
+import { updateStatusBarItems } from "./statusBar";
 
 function updateOpenEditors() {
 	vscode.window.visibleTextEditors.forEach((element: vscode.TextEditor) => {
@@ -13,24 +16,30 @@ function updateOpenEditors() {
 
 export function registerWorkspace(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
-		// vscode.workspace.onDidChangeConfiguration((e: vscode.ConfigurationChangeEvent) => {
-		// 	if (e.affectsConfiguration("totvsLanguageServer")) {
-		// 		const settings: any[] = getModifiedLanguageServerSettings();
-		// 		if (settings.length > 0) {
-		// 			sendDidChangeConfiguration(settings).then(() => {
-		// 				updateStatusBarItems();
-		// 			});
-		// 		}
-		// 		if (!confirmRestartNow()) {
-		// 			updateOpenEditors();
-		// 		};
-		// 	}
-		// }),
-		vscode.workspace.onDidSaveTextDocument((e: vscode.TextDocument) => {
-			if (e.languageId == "advpl" || e.languageId == "4gl") {
-				sendDidSaveTextDocument(e.uri.toString(), e.getText());
+		vscode.workspace.onDidChangeConfiguration((e: vscode.ConfigurationChangeEvent) => {
+			if (e.affectsConfiguration("totvsLanguageServer") ||
+				e.affectsConfiguration("advpl.formatter") ||
+				e.affectsConfiguration("4gl.formatter") ||
+				e.affectsConfiguration("editor")
+			) {
+				const settings: any[] = getModifiedLanguageServerSettings();
+				if (settings.length > 0) {
+					sendDidChangeConfiguration(settings).then(() => {
+						updateStatusBarItems();
+					});
+				}
+				if (!warningNeedRestart()) {
+					languageClient.stop().then(() => {
+						languageClient.start();
+					});
+				};
 			}
 		}),
+		//vscode.workspace.onDidSaveTextDocument((e: vscode.TextDocument) => {
+		//	if (e.languageId == "advpl" || e.languageId == "4gl") {
+		//		sendDidSaveTextDocument(e.uri.toString(), e.getText());
+		//	}
+		//}),
 		// vscode.workspace.onDidChangeWorkspaceFolders((event: vscode.WorkspaceFoldersChangeEvent) => {
 		// 	console.dir(event);
 		// }),

@@ -46,11 +46,6 @@ import {
 } from "./debug/debugConfigs";
 import { createTimeLineWebView } from "./debug/debugEvents";
 import { patchValidates } from "./patch/patchValidate";
-import {
-  documentFormatting,
-  register4glFormatting,
-  registerAdvplFormatting,
-} from "./formatter";
 import { register4glOutline } from "./outline";
 import { registerDebug, _debugEvent } from "./debug";
 import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
@@ -72,6 +67,7 @@ import { openWebMonitor } from "./monitor/monitorLoader";
 import { activate as activateOidcAuth } from "./oidcauth/OIDCAuthHandler";
 import { registerChatTools } from "./chat/chatTools";
 import { checkWhatsNew } from "./whatsNew";
+import { documentFormatting } from "./formatter";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -491,6 +487,28 @@ export async function activate(context: ExtensionContext) {
       }
     )
   );
+  // context.subscriptions.push(
+  //   vscode.commands.registerCommand(
+  //     "totvs-developer-studio.run.formatter",
+  //     (args: any[]) => {
+  //       //console.log("formatador ativado");
+  //       if (args === undefined) {
+  //         let aeditor = vscode.window.activeTextEditor;
+  //         if (aeditor !== undefined) {
+  //           args = [aeditor.document.uri];
+  //         }
+  //       }
+  //       if (instanceOfUri(args)) {
+  //         documentFormatting([args.fsPath]);
+  //       } else if (instanceOfUriArray(args)) {
+  //         const map: string[] = args.map<string>((uri: Uri) => {
+  //           return uri.fsPath;
+  //         });
+  //         documentFormatting(map);
+  //       }
+  //     }
+  //   )
+  // );
 
   //Tratamento de XReference e similares
   registerXRef(context);
@@ -505,10 +523,10 @@ export async function activate(context: ExtensionContext) {
   registerDebug(context, languageClient);
 
   // Inicialização Adv/PL
-  context.subscriptions.push(registerAdvplFormatting());
+  //context.subscriptions.push(registerAdvplFormatting());
 
   // Inicialização 4GL
-  context.subscriptions.push(register4glFormatting());
+  //context.subscriptions.push(register4glFormatting());
   context.subscriptions.push(register4glOutline());
 
   // Registro de ferramentas de chat para o modelo de linguagem
