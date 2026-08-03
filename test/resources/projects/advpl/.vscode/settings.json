@@ -1,13 +1,13 @@
 {
     "totvsLanguageServer.welcomePage": false,
-    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes;m:\\protheus\\includes_tlpp",
+    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\INCLUDES;m:\\protheus\\INCLUDES_TLPP",
     "totvsLanguageServer.editor.show.notification": "all",
-    "totvsLanguageServer.trace.debug": "off",
-    "totvsLanguageServer.trace.server": "off",
+    "totvsLanguageServer.trace.debug": "messages",
+    "totvsLanguageServer.trace.server": "verbose",
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
         "--verbose",
-        "--wait-for-attach=20",
+        "--wait-for-attach=90",
         "--debug-ls",
         "--trace-compile",
         "--log-file-append=totvsls2.log"
@@ -15,14 +15,22 @@
     "totvsLanguageServer.askCompileResult": false,
     "totvsLanguageServer.askEncodingChange": false,
     "totvsLanguageServer.editor.autocomplete": "Off",
-    "xeditor.semanticTokenColorCustomizations": {
-        "[Default Dark+]": {
-            "enabled": true,
-            "rules": {
-                "keyword": "#ff0000"
-            }
-        }
-    },
     "totvsLanguageServer.compilation.generatePpoFile": false,
-    "totvsLanguageServer.workspaceServerConfig": true
+    "totvsLanguageServer.workspaceServerConfig": false,
+    "totvsLanguageServer.editor.hover": "off",
+    "editor.formatOnSave": false,
+    "advpl.formatter": {
+        "_maxConsecutiveBlankLines": 1,
+        "_xalignAssignments": true,
+        "_xmaxLineLength": 90,
+        "_xcommentReflow": true,
+        "_keywordsCase": "ignore",
+        "_stringStyle": "single-quotes",
+        "trimTrailingWhitespace": false,
+    },
+    "totvsLanguageServer.editor.signatureHelp": false,
+    "totvsLanguageServer.editor.codeLens": false,
+    "editor.codeLens": true,
+    "editor.signatureHelp.enabled": true,
+    "totvsLanguageServer.editor.codeActions": false,
 }
