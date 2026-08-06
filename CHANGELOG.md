@@ -1,5 +1,92 @@
 # Changelog
 
+## Versão [2.1.1]
+
+### Correções
+
+#### Não estabelecia conexão no Linux e MacOS
+
+Estava realizando conexões com o AppServer apenas no Windows, por conta de uma incompatibilidade de bibliotecas.
+
+## Versão [2.1.0]
+
+### Novidades
+
+#### Pastas de buscas de arquvos de definição por área de trabalho
+
+Implementado a possibilidade de complementar a lista de pastas de buscas de arquivos de definição. Na pasta principal da área de trabalho, crie o arquivo `.include`, onde cada linha é uma especificação de pasta para busca de arquivos de definição.
+
+As pastas especificadas tem prioridade sobre a lista por servidor/global e usam o padrão `glob` e sempre relativas a pasta princial (_workspace_).
+
+Exemplo:
+
+```console
+/include
+/folder/include
+/**/include_dev
+#/commented/will be/ignored
+```
+
+#### Integração da extensão com o Copilot
+
+A integração do TDS-Code com o Copilot é utilizada para ajudar a IA a compreender melhor sua área de trabalho, tornando-a mais assertiva e rápida em questões relacionadas aos seus fontes.
+
+Recomenda-se o uso do VSCode versão 1.107.1 (11/2025) ou superior. Em versões anteriores, é obrigatório a instalação das extensões:
+
+- [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot)
+- [GitHub Copilot Chat](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat)
+
+Em qualquer versão do VSCode, instale também a extensão:
+
+- [Language Server tools for Copilot](https://marketplace.visualstudio.com/items?itemName=sehejjain.lsp-mcp-bridge)
+
+#### Integração da extensão com o Kiro
+
+A integração do TDS-Code com o Kirot é utilizada para ajudar a IA a compreender melhor sua área de trabalho, tornando-a mais assertiva e rápida em questões relacionadas aos seus fontes.
+
+Recomenda-se o uso do Kiro versão ???? (??/????) ou superior.
+
+Em qualquer versão do Kiro, instale também a extensão:
+
+- [Kiro LSP MCP](https://open-vsx.org/extension/Rapdog/kiro-lsp-mcp)
+
+#### Melhoria na integração com o Copilot
+
+Implementado ferramenta `@tds` que permitir executar operações direto no `chat`.
+
+- compile: compila o fonte no editor ativo ou o informado.
+- recompile: recompila o fonte no editor ativo ou o informado.
+- syntaz-only: verifica a sintaxe (_linter_) do fonte no editor ativo ou o informado.
+
+#### Renomear elementos
+
+Adicionado suporte ao comando de renomeação de elementos, permitindo alterar identificadores com atualização consistente das ocorrências relacionadas no código.
+
+#### Navegação de elementos
+
+Adicionado suporte aos comandos de navegação, permitindo acessar rapidamente a definição concreta de métodos e símbolos no código.
+
+#### Busca de símbolos no espaço de trabalho (_Workspace symbol_, `Ctrl+T`)
+
+Permite a busca por símbolos, tais como:
+
+- Funções
+- Classes
+- Métodos
+- Propriedades
+- _Namespaces_
+- Variáveis de escopo não local
+
+### Melhorias
+
+#### No DSS
+
+- Uso de memória
+Corrigido "vazamento de memória" (_memory leak_) e violações (_access violation_).
+
+- Suporte de TLPP
+Melhora do suporte a elementos de TLPP
+
 ## Versão [2.0.16]
 
 ### Correções
