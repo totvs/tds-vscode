@@ -97,6 +97,15 @@ export function getModifiedLanguageServerSettings(): any[] {
     });
   }
 
+  const callTreeSitter = config.get("linter.callTreeSitter");
+  if (isNewSettings("linter", "callTreeSitter", callTreeSitter)) {
+    settings.push({
+      scope: "linter",
+      key: "callTreeSitter",
+      value: String(callTreeSitter)
+    });
+  }
+
   const hover: string = config.get("editor.hover");
   if (isNewSettings("editor", "hoverMode", hover)) {
     settings.push({

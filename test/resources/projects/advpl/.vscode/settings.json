@@ -25,4 +25,26 @@
     },
     "totvsLanguageServer.compilation.generatePpoFile": false,
     "totvsLanguageServer.workspaceServerConfig": true
+    "totvsLanguageServer.compilation.generatePpoFile": false,
+    "totvsLanguageServer.workspaceServerConfig": false,
+    "totvsLanguageServer.editor.hover": "off",
+    "editor.formatOnSave": false,
+    "advpl.formatter": {
+        "_maxConsecutiveBlankLines": 1,
+        "_xalignAssignments": true,
+        "_xmaxLineLength": 90,
+        "_xcommentReflow": true,
+        "_keywordsCase": "ignore",
+        "_stringStyle": "single-quotes",
+        "trimTrailingWhitespace": true,
+        "operatorSpacing": false,
+        "preserveSingleLineBlocks": false,
+        "spaceAfterComma": true
+    },
+    "totvsLanguageServer.editor.signatureHelp": false,
+    "totvsLanguageServer.editor.codeLens": false,
+    "editor.codeLens": true,
+    "totvsLanguageServer.linter.callTreeSitter": true,
+    "editor.signatureHelp.enabled": true,
+    "totvsLanguageServer.editor.codeActions": false,
 }

@@ -659,6 +659,15 @@
           "default": "",
           "description": "(Don't edit. It can be overwritten.)"
         },
+        "totvsLanguageServer.linter.callTreeSitter": {
+          "scope": "window",
+          "type": "boolean",
+          "default": false,
+          "tags": [
+            "experimental"
+          ],
+          "description": "Enable call to Tree-sitter for linter analysis. EXPERIMENTAL."
+        },
         "totvsLanguageServer.editor.index.cache": {
           "scope": "window",
           "type": "string",
@@ -718,6 +727,178 @@
               ],
               "default": "ignore",
               "description": "Indica como as _strings_ devem ser informadas."
+            },
+            "operatorSpacing": {
+              "type": "boolean",
+              "default": true,
+              "description": "Normaliza espaçamento em operadores."
+            },
+            "spaceAfterComma": {
+              "type": "boolean",
+              "default": true,
+              "description": "Garante espaço após vírgulas."
+            },
+            "spaceInsideParentheses": {
+              "type": "boolean",
+              "default": false,
+              "description": "Controla espaços dentro de parênteses."
+            },
+            "alignAssignments": {
+              "type": "boolean",
+              "default": false,
+              "description": "Alinha operadores de atribuição em blocos."
+            },
+            "normalizeCalls": {
+              "type": "boolean",
+              "default": false,
+              "description": "Normaliza chamadas removendo espaço entre identificador e parêntese de abertura."
+            },
+            "preserveSingleLineBlocks": {
+              "type": "boolean",
+              "default": false,
+              "description": "Preserva blocos de uma única linha."
+            },
+            "trimFinalNewlines": {
+              "type": "boolean",
+              "default": true,
+              "description": "Remove linhas em branco no final do arquivo."
+            },
+            "blankLinesBetweenTopLevelDeclarations": {
+              "type": "number",
+              "default": 1,
+              "description": "Quantidade de linhas em branco entre declarações de topo."
+            },
+            "commentReflow": {
+              "type": "boolean",
+              "default": false,
+              "description": "Permite reorganizar comentários longos."
+            },
+            "trimTrailingWhitespace": {
+              "type": "boolean",
+              "default": false,
+              "description": "Remove espaços em branco no final da linha."
+            }
+          }
+        },
+        "advpl.formatter": {
+          "type": "object",
+          "description": "Formatação AdvPL",
+          "properties": {
+            "maxConsecutiveBlankLines": {
+              "type": "number",
+              "default": 1,
+              "description": "Máximo de linhas em branco em sequência."
+            },
+            "maxLineLength": {
+              "type": "number",
+              "default": 120,
+              "description": "Largura máxima de linha para aplicar quebra automática."
+            },
+            "wrapParameters": {
+              "type": [
+                "string",
+                "boolean"
+              ],
+              "enum": [
+                "auto",
+                true,
+                false
+              ],
+              "default": "auto",
+              "description": "Controla quebra de linha de parâmetros."
+            },
+            "wrapArguments": {
+              "type": [
+                "string",
+                "boolean"
+              ],
+              "enum": [
+                "auto",
+                true,
+                false
+              ],
+              "default": "auto",
+              "description": "Controla quebra de linha de argumentos."
+            },
+            "keywordsCase": {
+              "type": "string",
+              "enum": [
+                "upper",
+                "lower",
+                "ignore"
+              ],
+              "enumDescriptions": [
+                "Em maiúsculas",
+                "Em minúsculas",
+                "Manter original"
+              ],
+              "default": "ignore",
+              "description": "Coloca as palavras chaves da linguagem na caixa indicada"
+            },
+            "stringStyle": {
+              "type": "string",
+              "enum": [
+                "double-quotes",
+                "single-quotes",
+                "ignore"
+              ],
+              "enumDescriptions": [
+                "Aspas duplas",
+                "Aspas Simples",
+                "Manter original"
+              ],
+              "default": "ignore",
+              "description": "Indica como as _strings_ devem ser informadas."
+            },
+            "operatorSpacing": {
+              "type": "boolean",
+              "default": true,
+              "description": "Normaliza espaçamento em operadores."
+            },
+            "spaceAfterComma": {
+              "type": "boolean",
+              "default": true,
+              "description": "Garante espaço após vírgulas."
+            },
+            "spaceInsideParentheses": {
+              "type": "boolean",
+              "default": false,
+              "description": "Controla espaços dentro de parênteses."
+            },
+            "alignAssignments": {
+              "type": "boolean",
+              "default": false,
+              "description": "Alinha operadores de atribuição em blocos."
+            },
+            "normalizeCalls": {
+              "type": "boolean",
+              "default": false,
+              "description": "Normaliza chamadas removendo espaço entre identificador e parêntese de abertura."
+            },
+            "preserveSingleLineBlocks": {
+              "type": "boolean",
+              "default": false,
+              "description": "Preserva blocos de uma única linha. Aplicável apenas a codeBlocks."
+            },
+            "trimFinalNewlines": {
+              "type": "boolean",
+              "default": true,
+              "description": "Remove linhas em branco no final do arquivo."
+            },
+            "blankLinesBetweenTopLevelDeclarations": {
+              "type": "number",
+              "default": 1,
+              "description": "Quantidade de linhas em branco entre declarações de topo."
+            },
+            "commentReflow": {
+              "type": "boolean",
+              "default": false,
+              "description": "Permite reorganizar comentários longos."
+            },
+            "trimTrailingWhitespace": {
+              "type": "boolean",
+              "default": false,
+              "description": "Remove espaços em branco no final da linha."
             }
           }
         }

@@ -74,7 +74,6 @@ export function getLanguageClient(
       chmodSync(advpls, "755");
     }
   }
-  console.log("tempDir: "+tempDir);
 
   let serverOptions: ServerOptions = {
     command: advpls,
@@ -126,18 +125,18 @@ export function getLanguageClient(
   languageClient.registerProposedFeatures();
 
   languageClient.onNotification("$totvsserver/usageStatus", (params: IUsageStatusInfo) => {
-      updateUsageBarItem(params);
-    });
+    updateUsageBarItem(params);
+  });
   languageClient.onNotification("$totvsserver/notification", (params: IServerNotificationInfo) => {
-      //vscode.window.showInformationMessage(params.code + params.message);
+    //vscode.window.showInformationMessage(params.code + params.message);
 
-      vscode.workspace.textDocuments.forEach((document: vscode.TextDocument) => {
-        //TODO: forçar 'refresh' do editor corrente (references)
-      });
+    vscode.workspace.textDocuments.forEach((document: vscode.TextDocument) => {
+      //TODO: forçar 'refresh' do editor corrente (references)
     });
+  });
 
   languageClient.onNotification("$totvsserver/loginWithOIDC", (params: ILoginWithOIDCInfo) => {
-     loginWithOidc(params);
+    loginWithOidc(params);
   });
 
   languageClient.start()
@@ -171,12 +170,12 @@ export function getLanguageClient(
 }
 
 function loginWithOidc(params: ILoginWithOIDCInfo): void {
-  if(params !== undefined) {
+  if (params !== undefined) {
     vscode.commands.executeCommand("totvs-developer-studio.poc-login-oidc", params.oidcUrl)
       .then(undefined, (reason: any) => {
         console.error(reason);
         vscode.window.showErrorMessage(`Falha ao executar login OIDC: ${reason}`);
-    });
+      });
   }
 }
 
