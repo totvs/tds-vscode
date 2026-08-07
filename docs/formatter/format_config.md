@@ -72,7 +72,6 @@ Chaves específicas para formatação de fontes 4GL e AdvPL.
 | spaceAfterComma (`boolean`)                            | Garante espaço após vírgulas. Padrão: true                        |
 | spaceInsideParentheses (`boolean`)                     | Controla espaços dentro de parênteses. Padrão: false              |
 | alignAssignments (`boolean`)                           | Alinha sinais de atribuição em blocos. Padrão: false              |
-| normalizeConditionSpacing (`boolean`)                  | Normaliza espaços em if/else/while/for. Padrão: true              |
 | normalizeCalls (`boolean`)                             | Remove espaços entre chamada e `(`. Padrão: false                 |
 | preserveSingleLineBlocks (`boolean`)                   | Preserva blocos de uma linha. Padrão: false                       |
 | blankLinesBetweenTopLevelDeclarations (`number`)       | Linhas em branco entre declarações de topo. Padrão: 1             |
@@ -117,7 +116,6 @@ Chaves específicas para formatação de fontes 4GL e AdvPL.
     "spaceAfterComma": true,
     "spaceInsideParentheses": false,
     "alignAssignments": false,
-    "normalizeConditionSpacing": true,
     "normalizeCalls": false,
     "preserveSingleLineBlocks": false,
     "blankLinesBetweenTopLevelDeclarations": 1,
@@ -135,7 +133,6 @@ Chaves específicas para formatação de fontes 4GL e AdvPL.
     "spaceAfterComma": true,
     "spaceInsideParentheses": false,
     "alignAssignments": false,
-    "normalizeConditionSpacing": true,
     "normalizeCalls": false,
     "preserveSingleLineBlocks": false,
     "blankLinesBetweenTopLevelDeclarations": 1,
