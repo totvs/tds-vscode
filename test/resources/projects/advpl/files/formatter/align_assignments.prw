@@ -8,5 +8,5 @@ user function alignAssignments()
 	n := 10
 	total := 20
 	x := 30
-
+	
 	return
