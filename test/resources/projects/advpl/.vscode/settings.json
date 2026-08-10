@@ -40,5 +40,5 @@
     "totvsLanguageServer.editor.signatureHelp": false,
     "editor.codeLens": true,
     "editor.signatureHelp.enabled": true,
-    "totvsLanguageServer.editor.codeActions": false,
+    "totvsLanguageServer.editor.codeActions": false
 }
