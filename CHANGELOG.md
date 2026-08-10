@@ -1,5 +1,14 @@
 # Changelog
 
+## Versão [2.0.X]
+
+### Melhorias
+
+#### Linter
+
+- Melhora na perfomance e consumo de recursos (CPU/Memória).
+- Indica todos os erros em única execução.
+
 ## Versão [2.0.16]
 
 ### Correções
