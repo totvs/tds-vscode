@@ -1,9 +1,8 @@
 {
     "totvsLanguageServer.welcomePage": false,
-    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\includes;m:\\protheus\\includes_tlpp",
+    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\INCLUDES;m:\\protheus\\INCLUDES_TLPP",
     "totvsLanguageServer.editor.show.notification": "all",
     "totvsLanguageServer.trace.debug": "off",
-    "totvsLanguageServer.trace.server": "off",
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
         "--verbose",
@@ -15,18 +14,6 @@
     "totvsLanguageServer.askCompileResult": false,
     "totvsLanguageServer.askEncodingChange": false,
     "totvsLanguageServer.editor.autocomplete": "Off",
-    "xeditor.semanticTokenColorCustomizations": {
-        "[Default Dark+]": {
-            "enabled": true,
-            "rules": {
-                "keyword": "#ff0000"
-            }
-        }
-    },
-    "totvsLanguageServer.compilation.generatePpoFile": false,
-    "totvsLanguageServer.workspaceServerConfig": true
-    "totvsLanguageServer.compilation.generatePpoFile": false,
-    "totvsLanguageServer.workspaceServerConfig": false,
     "totvsLanguageServer.editor.hover": "off",
     "editor.formatOnSave": false,
     "advpl.formatter": {
@@ -47,4 +34,5 @@
     "totvsLanguageServer.linter.callTreeSitter": true,
     "editor.signatureHelp.enabled": true,
     "totvsLanguageServer.editor.codeActions": false,
+    "totvsLanguageServer.trace.server": "verbose"
 }

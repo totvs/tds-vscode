@@ -906,6 +906,24 @@
     },
     "commands": [
       {
+        "command": "totvs-developer-studio.ast.sendSource.grapho",
+        "title": "Get AST (grapho)",
+        "description": "Sends the active editor content to AST analysis",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.ast.sendSource.json",
+        "title": "Get AST (json)",
+        "description": "Sends the active editor content to AST analysis",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.ast.sendSource.text",
+        "title": "Get AST (text)",
+        "description": "Sends the active editor content to AST analysis",
+        "category": "TOTVS"
+      },
+      {
         "command": "totvs-developer-studio.poc-login-oidc",
         "title": "POC Login OIDC",
         "description": "POC LOGIN OIDC",
@@ -1752,6 +1770,12 @@
         }
       ]
     },
+    "submenus": [
+      {
+        "id": "totvs-developer-studio.ast.submenu",
+        "label": "Get AST"
+      }
+    ],
     "menus": {
       "explorer/context": [
         {
@@ -1813,6 +1837,28 @@
           "when": "resourceLangId == 4gl",
           "command": "totvs-developer-studio.run.formatter",
           "group": "totvsSource@2"
+        }
+      ],
+      "editor/context": [
+        {
+          "when": "resourceLangId == advpl || resourceLangId == 4gl",
+          "submenu": "totvs-developer-studio.ast.submenu",
+          "group": "totvsSource@1"
+        }
+      ],
+      "totvs-developer-studio.ast.submenu": [
+        {
+          "command": "totvs-developer-studio.ast.sendSource.grapho",
+          "group": "ast@1"
+        },
+        {
+          "command": "totvs-developer-studio.ast.sendSource.json",
+          "group": "ast@2"
+        },
+        {
+          "command": "totvs-developer-studio.ast.sendSource.text",
+          "when": "resourceLangId == advpl",
+          "group": "ast@3"
         }
       ],
       "view/item/context": [

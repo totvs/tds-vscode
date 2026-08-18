@@ -65,7 +65,8 @@ import { ServerItem } from "./serverItem";
 import serverProvider from "./serverItemProvider";
 //import { ReplayRegisterCommands } from "./debug/tdsreplay/RegisterReplayCommands";
 import { registerWorkspace } from "./workspace";
-import { sendTelemetry } from "./protocolMessages";
+import { sendTelemetry, sendAst } from "./protocolMessages";
+import { showAstGraphView } from "./ast/astGraphView";
 import { registerXRef } from "./xreferences";
 import { tlppTools } from "./tlpp-tools/tlppTools";
 import { openWebMonitor } from "./monitor/monitorLoader";
@@ -579,6 +580,141 @@ export function activate(context: ExtensionContext) {
 
   // Register custom editor for patch files
   context.subscriptions.push(PatchEditorProvider.register(context));
+
+  // Envia o conteúdo do editor ativo para análise AST e exibe grafo
+  context.subscriptions.push(
+    commands.registerCommand("totvs-developer-studio.ast.sendSource.grapho", async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        vscode.window.showWarningMessage(
+          vscode.l10n.t("No active editor found.")
+        );
+        return;
+      }
+
+      const source = editor.document.getText();
+      if (!source || source.trim().length === 0) {
+        vscode.window.showWarningMessage(
+          vscode.l10n.t("The active editor is empty.")
+        );
+        return;
+      }
+
+      const fileName = editor.document.fileName
+        ? editor.document.fileName.replace(/^.*[\\/]/, "")
+        : "untitled";
+
+      try {
+        const result = await sendAst(fileName, source, "json");
+        if (result.sucess) {
+          showAstGraphView(result.ast, result.hasErrors, fileName);
+        } else {
+          vscode.window.showErrorMessage(
+            vscode.l10n.t("Failed to generate AST.")
+          );
+        }
+      } catch (error) {
+        vscode.window.showErrorMessage(
+          vscode.l10n.t("Error generating AST: {0}", error.message || String(error))
+        );
+      }
+    })
+  );
+
+  // Envia o conteúdo do editor ativo para análise AST e exibe JSON
+  context.subscriptions.push(
+    commands.registerCommand("totvs-developer-studio.ast.sendSource.json", async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        vscode.window.showWarningMessage(
+          vscode.l10n.t("No active editor found.")
+        );
+        return;
+      }
+
+      const source = editor.document.getText();
+      if (!source || source.trim().length === 0) {
+        vscode.window.showWarningMessage(
+          vscode.l10n.t("The active editor is empty.")
+        );
+        return;
+      }
+
+      const fileName = editor.document.fileName
+        ? editor.document.fileName.replace(/^.*[\\/]/, "")
+        : "untitled";
+
+      try {
+        const result = await sendAst(fileName, source, "json");
+        if (result.sucess) {
+          const astContent = JSON.stringify(result.ast, null, 2);
+          const doc = await vscode.workspace.openTextDocument({
+            content: astContent,
+            language: "json",
+          });
+          await vscode.window.showTextDocument(doc, {
+            viewColumn: vscode.ViewColumn.Beside,
+            preview: true,
+          });
+        } else {
+          vscode.window.showErrorMessage(
+            vscode.l10n.t("Failed to generate AST.")
+          );
+        }
+      } catch (error) {
+        vscode.window.showErrorMessage(
+          vscode.l10n.t("Error generating AST: {0}", error.message || String(error))
+        );
+      }
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("totvs-developer-studio.ast.sendSource.text", async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        vscode.window.showWarningMessage(
+          vscode.l10n.t("No active editor found.")
+        );
+        return;
+      }
+
+      const source = editor.document.getText();
+      if (!source || source.trim().length === 0) {
+        vscode.window.showWarningMessage(
+          vscode.l10n.t("The active editor is empty.")
+        );
+        return;
+      }
+
+      const fileName = editor.document.fileName
+        ? editor.document.fileName.replace(/^.*[\\/]/, "")
+        : "untitled";
+
+      try {
+        const result = await sendAst(fileName, source, "text");
+        if (result.sucess) {
+          const astContent = JSON.stringify(result.ast, null, 2);
+          const doc = await vscode.workspace.openTextDocument({
+            content: astContent,
+            language: "json",
+          });
+          await vscode.window.showTextDocument(doc, {
+            viewColumn: vscode.ViewColumn.Beside,
+            preview: true,
+          });
+        } else {
+          vscode.window.showErrorMessage(
+            vscode.l10n.t("Failed to generate AST.")
+          );
+        }
+      } catch (error) {
+        vscode.window.showErrorMessage(
+          vscode.l10n.t("Error generating AST: {0}", error.message || String(error))
+        );
+      }
+    })
+  );
 
   blockBuildCommands(false);
   showBanner();

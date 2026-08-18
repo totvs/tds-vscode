@@ -218,7 +218,7 @@ export function sendAuthenticateRequest(
         }
       },
       (err: ResponseError<object>) => {
-        return { sucess: false, token: "", isOidcAuth: false  };
+        return { sucess: false, token: "", isOidcAuth: false };
       }
     );
 }
@@ -866,9 +866,9 @@ export function sendDidChangeConfiguration(settings: any): Thenable<any> {
 
 export function sendLogMsg(message: string): void {
   languageClient.sendNotification("$/logMessage", {
-        message: message,
-    });
-  }
+    message: message,
+  });
+}
 
 export function sendDidSaveTextDocument(uri: string, text: string): Thenable<any> {
   return languageClient.sendRequest("textDocument/didSave", {
@@ -877,4 +877,51 @@ export function sendDidSaveTextDocument(uri: string, text: string): Thenable<any
     },
     text: text
   });
+}
+
+interface AstContentParams {
+  file: string;
+  format: string;
+  content: string;
+}
+
+interface AstInfoParams {
+  astInfo: AstContentParams;
+}
+
+type AstReturnInfo = {
+  ast: any;
+  hasErrors: boolean;
+};
+
+export function sendAst(
+  file: string,
+  source: string,
+  format: "json" | "text"
+): Thenable<any> {
+  const params: AstInfoParams = {
+    astInfo: {
+      file: file,
+      format: format,
+      content: source,
+    },
+  };
+
+  return languageClient
+    .sendRequest("$totvsserver/ast", params)
+    .then(
+      (astReturnInfo: AstReturnInfo) => {
+        return {
+          sucess: true,
+          ast: astReturnInfo.ast,
+          hasErrors: astReturnInfo.hasErrors,
+        };
+      },
+      (err: ResponseError<object>) => {
+        return {
+          sucess: false,
+          token: "",
+        };
+      }
+    );
 }
