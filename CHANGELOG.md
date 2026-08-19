@@ -9,6 +9,10 @@
 - Melhora na perfomance e consumo de recursos (CPU/Memória).
 - Indica todos os erros em única execução.
 
+#### Formatação de código AdvPL e 4GL
+
+Processo aprimorado com adição de opções para formatação mais refinada de códigos AdvPL e 4GL. [Detalhes em TDS: Formatação de Código Fonte](./docs/formatter/format_config.md).
+
 ## Versão [2.0.16]
 
 ### Correções

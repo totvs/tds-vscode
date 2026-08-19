@@ -45,11 +45,6 @@ import {
 } from "./debug/debugConfigs";
 import { createTimeLineWebView } from "./debug/debugEvents";
 import { patchValidates } from "./patch/patchValidate";
-import {
-  documentFormatting,
-  register4glFormatting,
-  registerAdvplFormatting,
-} from "./formatter";
 import { register4glOutline } from "./outline";
 import { registerDebug, _debugEvent } from "./debug";
 import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
@@ -536,28 +531,28 @@ export function activate(context: ExtensionContext) {
   //inicializa items da barra de status.
   initStatusBarItems(context);
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "totvs-developer-studio.run.formatter",
-      (args: any[]) => {
-        //console.log("formatador ativado");
-        if (args === undefined) {
-          let aeditor = vscode.window.activeTextEditor;
-          if (aeditor !== undefined) {
-            args = [aeditor.document.uri];
-          }
-        }
-        if (instanceOfUri(args)) {
-          documentFormatting([args.fsPath]);
-        } else if (instanceOfUriArray(args)) {
-          const map: string[] = args.map<string>((uri: Uri) => {
-            return uri.fsPath;
-          });
-          documentFormatting(map);
-        }
-      }
-    )
-  );
+  // context.subscriptions.push(
+  //   vscode.commands.registerCommand(
+  //     "totvs-developer-studio.run.formatter",
+  //     (args: any[]) => {
+  //       //console.log("formatador ativado");
+  //       if (args === undefined) {
+  //         let aeditor = vscode.window.activeTextEditor;
+  //         if (aeditor !== undefined) {
+  //           args = [aeditor.document.uri];
+  //         }
+  //       }
+  //       if (instanceOfUri(args)) {
+  //         documentFormatting([args.fsPath]);
+  //       } else if (instanceOfUriArray(args)) {
+  //         const map: string[] = args.map<string>((uri: Uri) => {
+  //           return uri.fsPath;
+  //         });
+  //         documentFormatting(map);
+  //       }
+  //     }
+  //   )
+  // );
 
   //Tratamento de XReference e similares
   registerXRef(context);
@@ -572,10 +567,10 @@ export function activate(context: ExtensionContext) {
   registerDebug(context, languageClient);
 
   // Inicialização Adv/PL
-  context.subscriptions.push(registerAdvplFormatting());
+  //context.subscriptions.push(registerAdvplFormatting());
 
   // Inicialização 4GL
-  context.subscriptions.push(register4glFormatting());
+  //context.subscriptions.push(register4glFormatting());
   context.subscriptions.push(register4glOutline());
 
   // Register custom editor for patch files

@@ -698,6 +698,42 @@
           "type": "object",
           "description": "Formatação 4GL",
           "properties": {
+            "maxConsecutiveBlankLines": {
+              "type": "number",
+              "default": 1,
+              "description": "Máximo de linhas em branco em sequência."
+            },
+            "maxLineLength": {
+              "type": "number",
+              "default": 120,
+              "description": "Largura máxima de linha para aplicar quebra automática."
+            },
+            "wrapParameters": {
+              "type": [
+                "string",
+                "boolean"
+              ],
+              "enum": [
+                "auto",
+                true,
+                false
+              ],
+              "default": "auto",
+              "description": "Controla quebra de linha de parâmetros."
+            },
+            "wrapArguments": {
+              "type": [
+                "string",
+                "boolean"
+              ],
+              "enum": [
+                "auto",
+                true,
+                false
+              ],
+              "default": "auto",
+              "description": "Controla quebra de linha de argumentos."
+            },
             "keywordsCase": {
               "type": "string",
               "enum": [
@@ -870,10 +906,10 @@
               "default": false,
               "description": "Alinha operadores de atribuição em blocos."
             },
-            "normalizeCalls": {
+            "normalizeConditionSpacing": {
               "type": "boolean",
-              "default": false,
-              "description": "Normaliza chamadas removendo espaço entre identificador e parêntese de abertura."
+              "default": true,
+              "description": "Normaliza espaçamento em estruturas condicionais."
             },
             "preserveSingleLineBlocks": {
               "type": "boolean",

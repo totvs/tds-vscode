@@ -58,18 +58,25 @@ Para sobrescrever os valores padrão, acione `Edit in settings.json`.
 
 ### Configurações `4gl.formatter` ou `advpl.formatter`
 
-#### AdvPL
-
-Não se aplica.
-
-#### 4GL
-
-Chaves específicas para formatação de fontes 4GL.
+Chaves específicas para formatação de fontes 4GL e AdvPL.
 
 | Chave                                                  | Uso                                                               |
 | ------------------------------------------------------ | ----------------------------------------------------------------- |
-| keywordsCase <upper \| lower \| ignore>                | Coloca palavras-chaves em maiúsculas ou minúsculas. Padrão: upper |
+| maxConsecutiveBlankLines (`number`)                    | Máximo de linhas em branco em sequência. Padrão: 1                |
+| maxLineLength (`number`)                               | Largura máxima de linha para quebra automática. Padrão: 120       |
+| wrapParameters (`auto` \| `true` \| `false`)      | Define quebra automática de parâmetros. Padrão: auto              |
+| wrapArguments (`auto` \| `true` \| `false`)       | Define quebra automática de argumentos. Padrão: auto              |
+| keywordsCase <upper \| lower \| ignore>                | Coloca palavras-chaves em maiúsculas ou minúsculas. Padrão: (4GL)upper (AdvPL)ignore |
 | stringStyle <double-quotes \| single-quotes \| ignore> | Usar aspas simples ou duplas em strings. Padrão: ignore           |
+| operatorSpacing (`boolean`)                            | Padroniza espaços em operadores. Padrão: true                     |
+| spaceAfterComma (`boolean`)                            | Garante espaço após vírgulas. Padrão: true                        |
+| spaceInsideParentheses (`boolean`)                     | Controla espaços dentro de parênteses. Padrão: false              |
+| alignAssignments (`boolean`)                           | Alinha sinais de atribuição em blocos. Padrão: false              |
+| normalizeCalls (`boolean`)                             | Remove espaços entre chamada e `(`. Padrão: false                 |
+| preserveSingleLineBlocks (`boolean`)                   | Preserva blocos de uma linha. Padrão: false                       |
+| blankLinesBetweenTopLevelDeclarations (`number`)       | Linhas em branco entre declarações de topo. Padrão: 1             |
+| commentReflow (`boolean`)                              | Reorganiza comentários longos. Padrão: false                      |
+| trimFinalNewlines(`boolean`)                              | Remove linhas em branco no final do arquivo. Padrão: true |
 
 ### Exemplo com os valores padrão
 
@@ -99,8 +106,38 @@ Chaves específicas para formatação de fontes 4GL.
     "files.trimTrailingWhitespace": false,
   },
   "4gl.formatter": {
+    "maxConsecutiveBlankLines": 1,
+    "maxLineLength": 120,
+    "wrapParameters": "auto",
+    "wrapArguments": "auto",
     "keywordsCase": "upper",
     "stringStyle": "ignore",
+    "operatorSpacing": true,
+    "spaceAfterComma": true,
+    "spaceInsideParentheses": false,
+    "alignAssignments": false,
+    "normalizeCalls": false,
+    "preserveSingleLineBlocks": false,
+    "blankLinesBetweenTopLevelDeclarations": 1,
+    "commentReflow": false,
+    "trimFinalNewlines": true
+  },
+  "advpl.formatter": {
+    "maxConsecutiveBlankLines": 1,
+    "maxLineLength": 120,
+    "wrapParameters": "auto",
+    "wrapArguments": "auto",
+    "keywordsCase": "ignore",
+    "stringStyle": "ignore",
+    "operatorSpacing": true,
+    "spaceAfterComma": true,
+    "spaceInsideParentheses": false,
+    "alignAssignments": false,
+    "normalizeCalls": false,
+    "preserveSingleLineBlocks": false,
+    "blankLinesBetweenTopLevelDeclarations": 1,
+    "commentReflow": false,
+    "trimFinalNewlines": true
   }
   ...,
 }

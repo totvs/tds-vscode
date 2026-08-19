@@ -23,9 +23,9 @@ export function registerWorkspace(context: vscode.ExtensionContext) {
 						updateStatusBarItems();
 					});
 				}
-				if (!confirmRestartNow()) {
-					updateOpenEditors();
-				};
+				//if (!confirmRestartNow()) {
+				//	updateOpenEditors();
+				//};
 			}
 		}),
 		vscode.workspace.onDidSaveTextDocument((e: vscode.TextDocument) => {
@@ -33,6 +33,11 @@ export function registerWorkspace(context: vscode.ExtensionContext) {
 				sendDidSaveTextDocument(e.uri.toString(), e.getText());
 			}
 		}),
+		//vscode.workspace.onDidSaveTextDocument((e: vscode.TextDocument) => {
+		//	if (e.languageId == "advpl" || e.languageId == "4gl") {
+		//		sendDidSaveTextDocument(e.uri.toString(), e.getText());
+		//	}
+		//}),
 		// vscode.workspace.onDidChangeWorkspaceFolders((event: vscode.WorkspaceFoldersChangeEvent) => {
 		// 	console.dir(event);
 		// }),
