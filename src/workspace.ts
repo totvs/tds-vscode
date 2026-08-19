@@ -1,5 +1,7 @@
 import * as vscode from "vscode";
-import { sendDidSaveTextDocument } from "./protocolMessages";
+import { sendDidChangeConfiguration, sendDidSaveTextDocument } from "./protocolMessages";
+import { getModifiedLanguageServerSettings, confirmRestartNow } from "./server/languageServerSettings";
+import { updateStatusBarItems } from "./statusBar";
 
 function updateOpenEditors() {
 	vscode.window.visibleTextEditors.forEach((element: vscode.TextEditor) => {
@@ -13,19 +15,19 @@ function updateOpenEditors() {
 
 export function registerWorkspace(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
-		// vscode.workspace.onDidChangeConfiguration((e: vscode.ConfigurationChangeEvent) => {
-		// 	if (e.affectsConfiguration("totvsLanguageServer")) {
-		// 		const settings: any[] = getModifiedLanguageServerSettings();
-		// 		if (settings.length > 0) {
-		// 			sendDidChangeConfiguration(settings).then(() => {
-		// 				updateStatusBarItems();
-		// 			});
-		// 		}
-		// 		if (!confirmRestartNow()) {
-		// 			updateOpenEditors();
-		// 		};
-		// 	}
-		// }),
+		vscode.workspace.onDidChangeConfiguration((e: vscode.ConfigurationChangeEvent) => {
+			if (e.affectsConfiguration("totvsLanguageServer")) {
+				const settings: any[] = getModifiedLanguageServerSettings();
+				if (settings.length > 0) {
+					sendDidChangeConfiguration(settings).then(() => {
+						updateStatusBarItems();
+					});
+				}
+				if (!confirmRestartNow()) {
+					updateOpenEditors();
+				};
+			}
+		}),
 		vscode.workspace.onDidSaveTextDocument((e: vscode.TextDocument) => {
 			if (e.languageId == "advpl" || e.languageId == "4gl") {
 				sendDidSaveTextDocument(e.uri.toString(), e.getText());

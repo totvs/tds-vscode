@@ -1,6 +1,4 @@
 #include "totvs.ch"
-
-#include	pp_include_directive //erro proposital para teste do parser
 #include "debug.ch"
 
 #define	pp_define_directive

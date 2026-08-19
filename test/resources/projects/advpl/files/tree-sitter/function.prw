@@ -1,9 +1,5 @@
 
 #include "totvs.ch"
-#include 'debug.ch'
-#include 'xxxx.ch
-#include "xxxx.ch
-
 
 xxxxxxxxxx function f1()
 	local list_50   := array(50)
@@ -22,6 +18,7 @@ main function main1()
 	local list_100  := array(100)
 	local list_101  := array(101)
 	local list_199  := array(199)
+
 
 pyme function pyme1()
 	local list_50   := array(50)
@@ -58,6 +55,7 @@ function f1()
 	local list_100  := array(100)
 	local list_101  := array(101)
 	local list_199  := array(199)
+
 
 binary function f1()
 	local list_50   := array(50)
