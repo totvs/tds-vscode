@@ -907,19 +907,19 @@
     "commands": [
       {
         "command": "totvs-developer-studio.ast.sendSource.grapho",
-        "title": "Get AST (grapho)",
+        "title": "Graphic",
         "description": "Sends the active editor content to AST analysis",
         "category": "TOTVS"
       },
       {
         "command": "totvs-developer-studio.ast.sendSource.json",
-        "title": "Get AST (json)",
+        "title": "JSON",
         "description": "Sends the active editor content to AST analysis",
         "category": "TOTVS"
       },
       {
         "command": "totvs-developer-studio.ast.sendSource.text",
-        "title": "Get AST (text)",
+        "title": "Text",
         "description": "Sends the active editor content to AST analysis",
         "category": "TOTVS"
       },
