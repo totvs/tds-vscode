@@ -701,12 +701,26 @@
             "maxConsecutiveBlankLines": {
               "type": "number",
               "default": 1,
-              "description": "Máximo de linhas em branco em sequência."
+              "oneOf": [
+                {
+                  "minimum": 1
+                }
+              ],
+              "description": "Máximo de linhas em branco em sequência. Valores válidos: 0 (desabilita) ou => 1."
             },
             "maxLineLength": {
               "type": "number",
+              "oneOf": [
+                {
+                  "const": 0
+                },
+                {
+                  "minimum": 30,
+                  "maximum": 120
+                }
+              ],
               "default": 120,
-              "description": "Largura máxima de linha para aplicar quebra automática."
+              "description": "Largura máxima de linha para aplicar quebra automática. Valores válidos: 0 (desabilita) ou de 30 a 120."
             },
             "wrapParameters": {
               "type": [
@@ -823,12 +837,26 @@
             "maxConsecutiveBlankLines": {
               "type": "number",
               "default": 1,
-              "description": "Máximo de linhas em branco em sequência."
+              "oneOf": [
+                {
+                  "minimum": 1
+                }
+              ],
+              "description": "Máximo de linhas em branco em sequência. Valores válidos: 0 (desabilita) ou => 1."
             },
             "maxLineLength": {
               "type": "number",
+              "oneOf": [
+                {
+                  "const": 0
+                },
+                {
+                  "minimum": 30,
+                  "maximum": 120
+                }
+              ],
               "default": 120,
-              "description": "Largura máxima de linha para aplicar quebra automática."
+              "description": "Largura máxima de linha para aplicar quebra automática. Valores válidos: 0 (desabilita) ou de 30 a 120."
             },
             "wrapParameters": {
               "type": [
