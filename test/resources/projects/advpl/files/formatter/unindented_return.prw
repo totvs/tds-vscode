@@ -1,15 +1,15 @@
 #include "protheus.ch"
 
 user function unindented()
-        if .t.
-    conout("a")
-	   return
+      if .t.
+  conout("a")
+    return
 endif
-  return
+return
 
 user function unindented()
-        if .t.
-    conout("a")
-	   return
+      if .t.
+  conout("a")
+    return
 endif
-  return
+return

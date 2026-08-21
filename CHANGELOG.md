@@ -4,10 +4,14 @@
 
 ### Melhorias
 
+#### Edição de código
+
+A edição passa a ser incremental. Em vez de reprocessar ou reanalisar o fonte inteiro a cada modificação, apenas o que foi modificado  será reprocessado ou reanalisado. Com isso, o tempo de resposta do `LS` torna-se mais rápido, evitando travamentos em fontes grandes e melhorando o consumo de recursos (CPU e memória).
+
 #### Linter
 
-- Melhora na perfomance e consumo de recursos (CPU/Memória).
-- Indica todos os erros em única execução.
+- Melhora na performance e consumo de recursos (CPU/Memória).
+- Indica todos os erros em única passagem.
 
 #### Formatação de código AdvPL e 4GL
 

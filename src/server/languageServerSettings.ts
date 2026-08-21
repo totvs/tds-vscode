@@ -60,10 +60,34 @@ export function getLanguageServerSettings(): any[] {
 }
 
 export function getModifiedLanguageServerSettings(): any[] {
-  let config = vscode.workspace.getConfiguration("totvsLanguageServer");
-  _needRestart = false;
-
   const settings: any[] = [];
+
+  let config = vscode.workspace.getConfiguration("[advpl]");
+
+  if (config) {
+    if (isNewSettings("[advpl]", "files.insertFinalNewline", config["files.insertFinalNewline"])) {
+      settings.push({
+        scope: "formatter",
+        key: "advpl.insertFinalNewline",
+        value: String(config["files.insertFinalNewline"]),
+      });
+    }
+  }
+
+  config = vscode.workspace.getConfiguration("[4gl]");
+
+  if (config) {
+    if (isNewSettings("[4gl]", "files.insertFinalNewline", config["files.insertFinalNewline"])) {
+      settings.push({
+        scope: "formatter",
+        key: "4gl.insertFinalNewline",
+        value: String(config["files.insertFinalNewline"]),
+      });
+    }
+  }
+
+  config = vscode.workspace.getConfiguration("totvsLanguageServer");
+  _needRestart = false;
 
   if (config.has("editor.linter")) {
     let oldLinter = config.get("editor.linter");

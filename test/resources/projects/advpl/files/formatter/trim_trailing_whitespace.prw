@@ -19,4 +19,3 @@ local x3 := 1
 local x4 := 1	
 
 // The line below ends with: \t\r\n
-	

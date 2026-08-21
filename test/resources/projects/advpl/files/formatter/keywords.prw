@@ -6,16 +6,16 @@ Local total := 2
 Local x := 3
 
 If n > 10
-	n := 10
-	return
+n := 10
+return
 endIf
 
 while total > 20
-	total--
+total--
 end Do
 
 While total > 20
-	total--
+total--
 end Do
 
 total := 20

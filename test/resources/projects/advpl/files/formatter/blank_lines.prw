@@ -7,7 +7,8 @@ user function blankLines()
 
 
 
-	conout(str(n))
+
+conout(str(n))
 
 
 
@@ -17,4 +18,3 @@ user function blankLines()
 
 
 	return
-	

@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { sendDidChangeConfiguration, sendDidSaveTextDocument } from "./protocolMessages";
-import { getModifiedLanguageServerSettings, confirmRestartNow } from "./server/languageServerSettings";
+import { getModifiedLanguageServerSettings } from "./server/languageServerSettings";
 import { updateStatusBarItems } from "./statusBar";
 
 function updateOpenEditors() {
@@ -16,8 +16,13 @@ function updateOpenEditors() {
 export function registerWorkspace(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.workspace.onDidChangeConfiguration((e: vscode.ConfigurationChangeEvent) => {
-			if (e.affectsConfiguration("totvsLanguageServer")) {
+			if (e.affectsConfiguration("totvsLanguageServer") ||
+				e.affectsConfiguration("advpl.formatter") ||
+				e.affectsConfiguration("4gl.formatter") ||
+				e.affectsConfiguration("[advpl]") ||
+				e.affectsConfiguration("[4gl]")) {
 				const settings: any[] = getModifiedLanguageServerSettings();
+
 				if (settings.length > 0) {
 					sendDidChangeConfiguration(settings).then(() => {
 						updateStatusBarItems();

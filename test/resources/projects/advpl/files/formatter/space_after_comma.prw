@@ -8,7 +8,7 @@ conout(1,   2,3)
 myFunc(x,y,z)
 
 if array[1] == 1 .and. aArray2[2] == 2
-    conout("Arrays are equal")
+conout("Arrays are equal")
 endif
 
 return
