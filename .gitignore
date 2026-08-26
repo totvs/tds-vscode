@@ -28,3 +28,4 @@ test/**/.vscode
 !resources/.github/**/*
 /test/resources/projects/advpl0
 /test/resources/projects/advpl/.kiro
+.vscode/settings.json

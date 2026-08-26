@@ -23,4 +23,6 @@
 		"editor.formatOnPaste": true
 	},
 	"markdownlint.run": "onSave",
+	"totvsLanguageServer.editor.linter.includes": "C:\\Totvs\\Workspaces\\vscodewstests\\includes\\;C:\\Totvs\\Servers\\Protheus\\includes\\;C:\\Totvs\\Workspaces\\vscodewstests\\Advpl\\TestesLeo;C:\\Totvs\\Workspaces\\vscodewstests\\FontesProtheus\\LibFw-20240806\\include;C:\\Totvs\\Workspaces\\vscodewstests\\FontesProtheus\\LibFw-20240806\\include-lib;C:\\Totvs\\Workspaces\\vscodewstests\\4gl\\includes\\include;C:\\Totvs\\Workspaces\\vscodewstests\\4gl\\includes\\include-lib;C:\\Totvs\\Workspaces\\vscodewstests\\4gl\\includes\\protheus-include\\include;C:\\Totvs\\Workspaces\\vscodewstests\\4gl\\includes\\protheus-include\\include-lib",
+	"totvsLanguageServer.welcomePage": false,
 }

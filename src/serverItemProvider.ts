@@ -93,6 +93,9 @@ class ServerItemProvider
   }
 
   getTreeItem(element: ServerTreeItem): vscode.TreeItem {
+    if (element instanceof ServerItem || element instanceof EnvSection) {
+      element.updateState();
+    }
     return element;
   }
 
