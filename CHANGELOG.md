@@ -1,8 +1,28 @@
 # Changelog
 
-## Versão [2.0.X]
+## Versão [2.1.X]
+
+### Novidades
+
+Troca do motor do `linter`, proporcionando diversas melhorias.
+
+Este processo é **experimental** e vem ativado por padrão. Caso tenha problemas com visão `Estrutura`, navegação ou `hover` em símbolos, favor abrir um chamado relatando-o e desative o novo motor colocando no `settings.json`:
+
+```json
+{
+  ...,
+  "totvsLanguageServer.linter.callTreeSitter": false
+}
+```
+
+Assim, o `linter` voltará a utilizar o motor original.
 
 ### Melhorias
+
+#### Visão "Estrutura" (*Outline*)
+
+- Padronização na visualização de informações sobre o símbolo.
+- Tratamento de erros no arquivo fonte.
 
 #### Edição de código
 
@@ -10,8 +30,9 @@ A edição passa a ser incremental. Em vez de reprocessar ou reanalisar o fonte 
 
 #### Linter
 
-- Melhora na performance e consumo de recursos (CPU/Memória).
-- Indica todos os erros em única passagem.
+- Performance e consumo de recursos (CPU/Memória).
+- Indica vários  erros em única passagem.
+- Tratamento de erros com correta visualização do código em `Problemas`.
 
 #### Formatação de código AdvPL e 4GL
 
