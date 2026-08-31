@@ -7,7 +7,7 @@
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
         "--verbose",
-        "--wait-for-attach=90",
+        "--wait-for-attach=20000",
         "--debug-ls",
         "--trace-compile",
         "--log-file-append=totvsls2.log"
@@ -27,7 +27,7 @@
         "editor.semanticHighlighting.enabled": true
     },
     "advpl.formatter": {
-        "maxConsecutiveBlankLines": 0,
+        "maxConsecutiveBlankLines": 1,
         "alignAssignments": true,
         "maxLineLength": 120,
         "commentReflow": true,
@@ -44,5 +44,6 @@
     "editor.codeLens": true,
     "totvsLanguageServer.linter.callTreeSitter": true,
     "editor.signatureHelp.enabled": true,
-    "totvsLanguageServer.editor.codeActions": false
+    "totvsLanguageServer.editor.codeActions": false,
+    "totvsLanguageServer.editor.index.cache": "onMemory"
 }
