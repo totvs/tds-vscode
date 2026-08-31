@@ -662,7 +662,7 @@
         "totvsLanguageServer.linter.callTreeSitter": {
           "scope": "window",
           "type": "boolean",
-          "default": false,
+          "default": true,
           "tags": [
             "experimental"
           ],
@@ -700,10 +700,10 @@
           "properties": {
             "maxConsecutiveBlankLines": {
               "type": "number",
-              "default": 1,
+              "default": 0,
               "oneOf": [
                 {
-                  "minimum": 1
+                  "minimum": 0
                 }
               ],
               "description": "Máximo de linhas em branco em sequência. Valores válidos: 0 (desabilita) ou => 1."
@@ -836,10 +836,10 @@
           "properties": {
             "maxConsecutiveBlankLines": {
               "type": "number",
-              "default": 1,
+              "default": 0,
               "oneOf": [
                 {
-                  "minimum": 1
+                  "minimum": 0
                 }
               ],
               "description": "Máximo de linhas em branco em sequência. Valores válidos: 0 (desabilita) ou => 1."
