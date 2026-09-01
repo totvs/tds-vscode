@@ -4,6 +4,16 @@
 
 ### Melhorias
 
+#### Motor de formatação LS
+
+Funcionalidade *experimental*, para ativá-la ajuste em `settings.josn` a chave:
+
+```json
+{
+  totvsLanguageServer.formatter.provider=ls
+}
+```
+
 #### Formatação de código AdvPL e 4GL
 
 Processo aprimorado com adição de opções para formatação mais refinada de códigos AdvPL e 4GL. [Detalhes em TDS: Formatação de Código Fonte](./docs/formatter/format_config.md).

@@ -627,6 +627,25 @@
           "default": "true",
           "description": "%tds.package.editor.codeLens%"
         },
+        "totvsLanguageServer.formatter.provider": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "ls",
+            "extension",
+            "off"
+          ],
+          "tags": [
+            "experimental"
+          ],
+          "enumDescriptions": [
+            "%tds.package.formatter.provider.ls%",
+            "%tds.package.formatter.provider.extension%",
+            "%tds.package.formatter.provider.off%"
+          ],
+          "default": "extension",
+          "description": "%tds.package.formatter.provider%"
+        },
         "totvsLanguageServer.workspaceServerConfig": {
           "type": "boolean",
           "default": false,

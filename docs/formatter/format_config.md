@@ -6,6 +6,15 @@
 
 ## Configuração
 
+> O motor de formatação, pode ser executado  na *extensão* ou no *LS*.
+> A formatação no LS é *experimental*. Por padrão está o motor é na executado na extensão. > Para usar o novo motor, ajuste em `settings.josn` a chave:
+
+```json
+{
+  totvsLanguageServer.formatter.provider=ls
+}
+```
+
 Por padrão, a formatação de código fonte vem **desligado**. Para ligá-lo acesse `File | Preferences | Settings` e localize `4gl` ou `advpl`, conforme a linguagem de programação que deseja configurar.
 
 Lhe será apresentado algo semelhante a:
@@ -14,7 +23,7 @@ Lhe será apresentado algo semelhante a:
 
 > Saiba mais sobre precedência de configurações em [User and Workspace Settings](https://vscode.readthedocs.io/en/latest/getstarted/settings/).
 
-O bloco `[4gl]` (ou `[advpl]`), são configurações ligadas a ativação dos processos pelo _VS-Code_ associadas ao editor da linguagem e `[4gl.formatter]` (ou `[advpl.formatter]`), são as opções de formatação específicas.
+O bloco `[4gl]` (ou `[advpl]`), são configurações ligadas a ativação dos processos pelo *VS-Code* associadas ao editor da linguagem e `[4gl.formatter]` (ou `[advpl.formatter]`), são as opções de formatação específicas.
 
 Para sobrescrever os valores padrão, acione `Edit in settings.json`.
 
@@ -26,7 +35,7 @@ Para sobrescrever os valores padrão, acione `Edit in settings.json`.
 
 - `"files.encoding": "windows1252" | "windows1251"`
 
-  Indica a codificação dos arquivos com código fonte. A codificação `windows1251` deve ser utilizada em fontes com _strings_ no alfabeto cirílico.
+  Indica a codificação dos arquivos com código fonte. A codificação `windows1251` deve ser utilizada em fontes com *strings* no alfabeto cirílico.
 
 - `"editor.formatOnType": true | false`
 

@@ -46,6 +46,11 @@ import {
 import { createTimeLineWebView } from "./debug/debugEvents";
 import { patchValidates } from "./patch/patchValidate";
 import { register4glOutline } from "./outline";
+import {
+  documentFormatting,
+  registerAdvplFormatting,
+  register4glFormatting,
+} from "./formatter";
 import { registerDebug, _debugEvent } from "./debug";
 import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
 import { initStatusBarItems } from "./statusBar";
@@ -68,6 +73,34 @@ import { activate as activateOidcAuth } from "./oidcauth/OIDCAuthHandler";
 
 
 export let languageClient: TotvsLanguageClientA;
+
+let extensionFormatters: vscode.Disposable | undefined;
+
+/**
+ * Aplica o modo de formatação configurado em
+ * `totvsLanguageServer.formatter.provider` (ls | extension | off).
+ *
+ * Garante exclusividade: os providers de formatação da extensão só são
+ * registrados no modo `extension`. Nos modos `ls` e `off` eles são
+ * desregistrados (o LS decide dinamicamente se anuncia a capability de
+ * formatação via register/unregisterCapability).
+ */
+export function applyFormattingMode(context: ExtensionContext) {
+  const mode = vscode.workspace
+    .getConfiguration("totvsLanguageServer")
+    .get<string>("formatter.provider", "ls");
+
+  extensionFormatters?.dispose();
+  extensionFormatters = undefined;
+
+  if (mode === "extension") {
+    extensionFormatters = vscode.Disposable.from(
+      registerAdvplFormatting(),
+      register4glFormatting()
+    );
+    context.subscriptions.push(extensionFormatters);
+  }
+}
 
 export function parseUri(u): Uri {
   return Uri.parse(u);
@@ -530,28 +563,28 @@ export function activate(context: ExtensionContext) {
   //inicializa items da barra de status.
   initStatusBarItems(context);
 
-  // context.subscriptions.push(
-  //   vscode.commands.registerCommand(
-  //     "totvs-developer-studio.run.formatter",
-  //     (args: any[]) => {
-  //       //console.log("formatador ativado");
-  //       if (args === undefined) {
-  //         let aeditor = vscode.window.activeTextEditor;
-  //         if (aeditor !== undefined) {
-  //           args = [aeditor.document.uri];
-  //         }
-  //       }
-  //       if (instanceOfUri(args)) {
-  //         documentFormatting([args.fsPath]);
-  //       } else if (instanceOfUriArray(args)) {
-  //         const map: string[] = args.map<string>((uri: Uri) => {
-  //           return uri.fsPath;
-  //         });
-  //         documentFormatting(map);
-  //       }
-  //     }
-  //   )
-  // );
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "totvs-developer-studio.run.formatter",
+      (args: any[]) => {
+        //console.log("formatador ativado");
+        if (args === undefined) {
+          let activeTextEditor = vscode.window.activeTextEditor;
+          if (activeTextEditor !== undefined) {
+            args = [activeTextEditor.document.uri];
+          }
+        }
+        if (instanceOfUri(args)) {
+          documentFormatting([args.fsPath]);
+        } else if (instanceOfUriArray(args)) {
+          const map: string[] = args.map<string>((uri: Uri) => {
+            return uri.fsPath;
+          });
+          documentFormatting(map);
+        }
+      }
+    )
+  );
 
   //Tratamento de XReference e similares
   registerXRef(context);
@@ -565,11 +598,8 @@ export function activate(context: ExtensionContext) {
   //debug
   registerDebug(context, languageClient);
 
-  // Inicialização Adv/PL
-  //context.subscriptions.push(registerAdvplFormatting());
-
-  // Inicialização 4GL
-  //context.subscriptions.push(register4glFormatting());
+  // Inicialização da formatação (LS x extensão) conforme configuração
+  applyFormattingMode(context);
   context.subscriptions.push(register4glOutline());
 
   // Register custom editor for patch files

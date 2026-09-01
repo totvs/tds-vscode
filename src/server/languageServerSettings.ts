@@ -172,6 +172,16 @@ export function getModifiedLanguageServerSettings(): any[] {
     });
   }
 
+  const formattingProvider = config.get("formatter.provider", "ls");
+  if (isNewSettings("formatter", "provider", formattingProvider)) {
+    settings.push({
+      scope: "formatter",
+      key: "provider",
+      value: String(formattingProvider)
+    });
+    // NÃO chamar setNeedRestart — o LS faz register/unregister dinâmico de textDocument/formatting
+  }
+
   const formatterKeysMap: Record<string, Record<string, any>> = getFormatterKeysFromPackage();
   Object.entries(formatterKeysMap).forEach(([language, values]) => {
     const formatterConfig: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration(`${language}.formatter`);
