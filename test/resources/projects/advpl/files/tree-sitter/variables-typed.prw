@@ -1,9 +1,9 @@
 #include "totvs.ch"
 
-private private1 := 0 as numeric
+//private private1 := 0 as numeric
 static static1  := 1 as string
-public public1  := 2 as object
-private private2  := 3 as codeblock
+//public public1  := 2 as object
+//private private2  := 3 as codeblock
 
 user function variables()
 	local list_50   := array(50)
