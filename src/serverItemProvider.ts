@@ -201,6 +201,10 @@ class ServerItemProvider
         element.group
       );
 
+      if (element.environment) {
+        si.environment = element.environment;
+      }
+
       const environmentsServer =
         element.environments?.map(
           (environment) =>

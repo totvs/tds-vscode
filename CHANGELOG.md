@@ -1,5 +1,13 @@
 # Changelog
 
+## Versão [2.1.1]
+
+### Correções
+
+#### Não estabelecia conexão no Linux e MacOS
+
+Estava realizando conexões com o AppServer apenas no Windows, por conta de uma incompatibilidade de bibliotecas.
+
 ## Versão [2.1.0]
 
 ### Novidades
@@ -42,7 +50,7 @@ Em qualquer versão do Kiro, instale também a extensão:
 
 - [Kiro LSP MCP](https://open-vsx.org/extension/Rapdog/kiro-lsp-mcp)
 
-####
+#### Melhoria na integração com o Copilot
 
 Implementado ferramenta `@tds` que permitir executar operações direto no `chat`.
 
