@@ -220,7 +220,7 @@ export default class Utils {
     );
   }
 
-  static getAllFilesRecursive(folders: Array<string>, checkCompileIgnore: boolean = false): string[] {
+  static getAllFilesRecursive(folders: string[], checkCompileIgnore: boolean = false): string[] {
     const files: string[] = [];
 
     folders.forEach((folder) => {
@@ -347,6 +347,7 @@ export default class Utils {
 }
 
 export class ServersConfig {
+  //static _localIncludes: string[] = [];
 
   /**
    * Subscrição para evento de seleção de servidor/ambiente.
@@ -752,13 +753,25 @@ export class ServersConfig {
   /**
    * Recupera a lista de includes do arquivod servers.json
    */
-  static getGlobalIncludes(): Array<string> {
-    let includes: Array<string>;
-    const servers = getServersConfig();
-    if (servers && servers.includes) {
-      includes = servers.includes as Array<string>;
-    }
-    return includes;
+  // static _getGlobalIncludes(): string[] {
+  //   let includes: string[];
+  //   const servers = getServersConfig();
+  //   if (servers && servers.includes) {
+  //     includes = servers.includes as string[];
+  //   }
+  //   return includes;
+  // }
+
+  static getFullIncludes(
+    absolutePath: boolean = false,
+    server: any = undefined
+  ): string[] {
+    const includes: string[] = ServersConfig.getIncludes(absolutePath, server);
+    const localIncludes: string[] = []; //ServersConfig._localIncludes;
+    const result: string[] = Array.from(new Set([...localIncludes, ...includes]));
+
+    console.log("Includes list: " + JSON.stringify(result));
+    return result;
   }
 
   /**
@@ -767,24 +780,35 @@ export class ServersConfig {
   static getIncludes(
     absolutePath: boolean = false,
     server: any = undefined
-  ): Array<string> {
-    let includes: Array<string>;
+  ): string[] {
+    let includes: string[];
+
     // se houver includes de servidor utiliza, caso contrario utiliza o global
     if (server && server.includes && server.includes.length > 0) {
-      includes = server.includes as Array<string>;
+      includes = server.includes as string[];
     } else {
       const servers = getServersConfig();
       if (servers.includes) {
-        includes = servers.includes as Array<string>;
+        includes = servers.includes as string[];
       } else {
         includes = [];
       }
     }
 
-    if (includes.length > 0) {
+    return ServersConfig.processIncludes(absolutePath, includes);
+  }
+
+  static processIncludes(absolutePath: boolean, _includes: string[]): string[] {
+    let finalIncludes: string[] = [];
+
+    if (_includes.length > 0) {
       if (absolutePath) {
         // resolve caminhos relativos ao workspace
-        let ws: string = vscode.workspace.rootPath;;
+        let ws: string = vscode.workspace.rootPath || process.cwd();
+
+        if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
+          ws = vscode.workspace.workspaceFolders[0].uri.fsPath;
+        }
 
         if (vscode.window.activeTextEditor) {
           const workspaceFolder: vscode.WorkspaceFolder =
@@ -796,16 +820,18 @@ export class ServersConfig {
           }
         }
 
-        includes.forEach((value, index, elements) => {
+        _includes.forEach((value: string) => {
           if (value.startsWith(".")) {
             value = path.resolve(ws, value);
           } else {
             value = path.resolve(value.replace("${workspaceFolder}", ws));
           }
-          elements[index] = value;
+
+          finalIncludes.push(value);
         });
+
         // filtra diretorios invalidos e nao encontrados
-        includes = includes.filter(function (value) {
+        finalIncludes = finalIncludes.filter(function (value) {
           try {
             const fi: fs.Stats = fs.lstatSync(value);
             if (!fi.isDirectory()) {
@@ -820,13 +846,86 @@ export class ServersConfig {
           }
           return true;
         });
+      } else {
+        finalIncludes = [..._includes];
       }
     } else {
-      vscode.window.showWarningMessage(
+      // vscode.window.showWarningMessage(
+      //   vscode.l10n.t("List of folders to search for definitions not configured.")
+      // );
+      console.warn(
         vscode.l10n.t("List of folders to search for definitions not configured.")
       );
     }
-    return includes;
+
+    return Array.from(new Set(finalIncludes));
+  }
+
+  static async _loadLocalIncludes(absolutePath: boolean, context?: vscode.ExtensionContext): Promise<void> {
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+
+    // se não houver nenhuma pasta aberta no VSCode ignora
+    if (!workspaceFolders || workspaceFolders.length === 0) {
+      return;
+    }
+
+    let includes: string[] = [];
+
+    for (const folder of workspaceFolders) {
+      const rootFolderUri: vscode.Uri = folder.uri;
+      const fileUri = vscode.Uri.joinPath(rootFolderUri, '.include');
+      let includeList: string[] = [];
+
+      try {
+        await vscode.workspace.fs.stat(fileUri);
+
+        const readData = await vscode.workspace.fs.readFile(fileUri);
+        includeList = Buffer.from(readData).toString().split(/\r?\n/)
+          .filter(line => (line.trim() !== '' && !line.trim().startsWith('#')));
+      } catch (error) {
+        if (error.code !== 'FileNotFound') {
+          vscode.window.showWarningMessage(
+            'Failed to process the .include file. See the log for more details.'
+          );
+          console.error('Error accessing the .include file:', error);
+        }
+      }
+
+      for (let include of includeList) {
+        include = include.trim().replace(/^\/+|\/+$/g, '');
+
+        const target: string = `${include}/*.{ch,th}`;
+        const result: vscode.Uri[] = await vscode.workspace.findFiles(target);
+
+        result.forEach(uri => {
+          includes.push(path.dirname(uri.fsPath));
+        });
+      }
+
+      if (context && fileUri) {
+        const watcher = vscode.workspace.createFileSystemWatcher(fileUri.fsPath);
+
+        watcher.onDidChange(() => {
+          ServersConfig._loadLocalIncludes(absolutePath);
+        });
+
+        watcher.onDidCreate(() => {
+          ServersConfig._loadLocalIncludes(absolutePath);
+        });
+
+        watcher.onDidDelete(() => {
+          //ServersConfig._localIncludes = []; // Limpa os includes locais se o arquivo for deletado
+          watcher.dispose(); // Limpa o watcher da memória
+        });
+
+        // 4. Registra o watcher no contexto da extensão para evitar vazamento de memória
+        context.subscriptions.push(watcher);
+      }
+    }
+
+    includes = Array.from(new Set(includes));
+
+    //ServersConfig._localIncludes = ServersConfig.processIncludes(absolutePath, includes);
   }
 
   /**
@@ -932,9 +1031,8 @@ export class ServersConfig {
   /**
    * Atualiza includes do linter.
    */
-  static updateLinterIncludes() {
-    const servers = getServersConfig();
-    const includes: string = servers.includes.join(";");
+  static async updateLinterIncludes() {
+    const includes: string = ServersConfig.getFullIncludes().join(";");
     const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("totvsLanguageServer");
 
     const includeLinter = config.get("editor.linter.includes", "");
@@ -1299,7 +1397,7 @@ export class LaunchConfig {
   }
 
   static lastProgramArguments() {
-    let lastProgramArguments: Array<string>;
+    let lastProgramArguments: string[];
     const launchConfig = getLaunchConfig();
     if (launchConfig && launchConfig.lastProgramArguments) {
       lastProgramArguments = launchConfig.lastProgramArguments;

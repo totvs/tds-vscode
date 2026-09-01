@@ -1,6 +1,6 @@
 /*---------------------------------------------------------
- * Copyright (C) TOTVS S.A. All rights reserved.
- *--------------------------------------------------------*/
+* Copyright (C) TOTVS S.A. All rights reserved.
+*--------------------------------------------------------*/
 "use strict";
 import * as vscode from "vscode";
 import * as fse from "fs-extra";
@@ -22,6 +22,7 @@ import {
   commandBuildFile,
   commandBuildWorkspace,
   commandBuildOpenEditors,
+  commandSyntaxOnlyFile,
   generatePpo,
 } from "./compile/tdsBuild";
 import { deleteFileFromRPO } from "./server/deleteFileFromRPO";
@@ -63,14 +64,14 @@ import { TotvsLanguageClientA } from "./TotvsLanguageClientA";
 import { commandShowBuildTableResult } from "./compile/buildResult";
 import { ServerItem } from "./serverItem";
 import serverProvider from "./serverItemProvider";
-//import { ReplayRegisterCommands } from "./debug/tdsreplay/RegisterReplayCommands";
 import { registerWorkspace } from "./workspace";
 import { sendTelemetry } from "./protocolMessages";
 import { registerXRef } from "./xreferences";
 import { tlppTools } from "./tlpp-tools/tlppTools";
 import { openWebMonitor } from "./monitor/monitorLoader";
 import { activate as activateOidcAuth } from "./oidcauth/OIDCAuthHandler";
-
+import { registerChatTools } from "./chat/chatTools";
+import { checkWhatsNew } from "./whatsNew";
 
 export let languageClient: TotvsLanguageClientA;
 
@@ -80,10 +81,12 @@ export function parseUri(u): Uri {
 
 const LANG_ADVPL_ID = "advpl";
 
-export function activate(context: ExtensionContext) {
+export async function activate(context: ExtensionContext) {
   console.log(
     vscode.l10n.t('Congratulations, your extension "totvs-developer-studio" is now active!')
   );
+
+  prepareInstructions(context);
 
   ServersConfig.createServerConfig();
   LaunchConfig.createLaunchConfig(undefined);
@@ -94,86 +97,6 @@ export function activate(context: ExtensionContext) {
 
   //Load Language Client and start Language Server
   languageClient = getLanguageClient(context);
-
-  //createTimeLineDataProvider();
-
-  // //General commands.
-  // (() => {
-  //   commands.registerCommand("advpl.freshenIndex", () => {
-  //     languageClient.sendNotification("$advpl/freshenIndex");
-  //   });
-  //   function makeRefHandler(methodName, autoGotoIfSingle = false) {
-  //     return () => {
-  //       let position;
-  //       let uri;
-  //       if (window.activeTextEditor !== undefined) {
-  //         position = window.activeTextEditor.selection.active;
-  //         uri = window.activeTextEditor.document.uri;
-  //       }
-  //       languageClient
-  //         .sendRequest(methodName, {
-  //           textDocument: {
-  //             uri: uri.toString(),
-  //           },
-  //           position: position,
-  //         })
-  //         .then((locations: Array<ls.Location>) => {
-  //           if (autoGotoIfSingle && locations.length === 1) {
-  //             let location = p2c.asLocation(locations[0]);
-  //             commands.executeCommand(
-  //               "advpl.goto",
-  //               location.uri,
-  //               location.range.start,
-  //               []
-  //             );
-  //           } else {
-  //             commands.executeCommand(
-  //               "editor.action.showReferences",
-  //               uri,
-  //               position,
-  //               locations.map(p2c.asLocation)
-  //             );
-  //           }
-  //         });
-  //     };
-  //   }
-  //   commands.registerCommand("advpl.vars", makeRefHandler("$advpl/vars"));
-  //   commands.registerCommand(
-  //     "advpl.callers",
-  //     makeRefHandler("$advpl/callers")
-  //   );
-  //   commands.registerCommand(
-  //     "advpl.base",
-  //     makeRefHandler("$advpl/base", true)
-  //   );
-  // })();
-
-  // The language client does not correctly deserialize arguments, so we have a
-  // wrapper command that does it for us.
-  // (() => {
-  //   commands.registerCommand(
-  //     "advpl.showReferences",
-  //     (uri: string, position: ls.Position, locations: ls.Location[]) => {
-  //       commands.executeCommand(
-  //         "editor.action.showReferences",
-  //         p2c.asUri(uri),
-  //         p2c.asPosition(position),
-  //         locations.map(p2c.asLocation)
-  //       );
-  //     }
-  //   );
-
-  //   commands.registerCommand(
-  //     "advpl.goto",
-  //     (uri: string, position: ls.Position, locations: ls.Location[]) => {
-  //       jumpToUriAtPosition(
-  //         p2c.asUri(uri),
-  //         p2c.asPosition(position),
-  //         false /*preserveFocus*/
-  //       );
-  //     }
-  //   );
-  // })();
 
   // Progress
   (() => {
@@ -254,6 +177,13 @@ export function activate(context: ExtensionContext) {
     commands.registerCommand(
       "totvs-developer-studio.build.file",
       (args, files) => commandBuildFile(args, false, files)
+    )
+  );
+  //Verifica somente a sintaxe dos fontes/recursos selecionados
+  context.subscriptions.push(
+    commands.registerCommand(
+      "totvs-developer-studio.syntax-only.file",
+      (args, files) => commandSyntaxOnlyFile(args, files)
     )
   );
   //Recompila os fontes/recursos selecionados
@@ -368,6 +298,7 @@ export function activate(context: ExtensionContext) {
       (context) => patchGenerateFromFolder(context)
     )
   );
+
   //Valida o conteúdo de um patch pelo menu de contexto em arquivos de patch
   context.subscriptions.push(
     commands.registerCommand(
@@ -386,6 +317,7 @@ export function activate(context: ExtensionContext) {
       }
     )
   );
+
   //Adiciona página de Includes
   context.subscriptions.push(
     commands.registerCommand("totvs-developer-studio.include", () =>
@@ -445,10 +377,13 @@ export function activate(context: ExtensionContext) {
   //Mostra a pagina de Welcome.
   showWelcomePage(context, false);
 
+  //ServersConfig.loadLocalIncludes(true, context);
   ServersConfig.onDidSelectedServer((newServer: ServerItem) => {
     serverProvider.connectedServerItem = newServer;
-  })
-  serverProvider.checkServersConfigListener(true);
+    serverProvider.checkServersConfigListener(true);
+    //ServersConfig.loadLocalIncludes(true).then(() => {
+    //});
+  });
 
   //Abre uma caixa de informações para login no servidor protheus selecionado.
   context.subscriptions.push(
@@ -539,7 +474,6 @@ export function activate(context: ExtensionContext) {
     vscode.commands.registerCommand(
       "totvs-developer-studio.run.formatter",
       (args: any[]) => {
-        //console.log("formatador ativado");
         if (args === undefined) {
           let aeditor = vscode.window.activeTextEditor;
           if (aeditor !== undefined) {
@@ -577,6 +511,9 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(register4glFormatting());
   context.subscriptions.push(register4glOutline());
 
+  // Registro de ferramentas de chat para o modelo de linguagem
+  context.subscriptions.push(...registerChatTools(context));
+
   // Register custom editor for patch files
   context.subscriptions.push(PatchEditorProvider.register(context));
 
@@ -610,7 +547,7 @@ export function activate(context: ExtensionContext) {
     }
   };
 
-  window.showInformationMessage('"TDS-VSCode" is ready.');
+  checkWhatsNew(context)
 
   return exportedApi;
 }
@@ -626,6 +563,7 @@ function instanceOfUriArray(object: any): object is Uri[] {
 // this method is called when your extension is deactivated
 export function deactivate(): Thenable<void> | undefined {
   ServersConfig.deleteSelectServer();
+
   return languageClient.stop(5000);
 }
 
@@ -671,7 +609,7 @@ function registerLog(context: vscode.ExtensionContext) {
 let firstTime = true;
 
 function showBanner(force: boolean = false) {
-  if (firstTime) {
+  if (firstTime || force) {
     firstTime = false;
     const config = workspace.getConfiguration("totvsLanguageServer");
     const showBanner = config.get("showBanner", true);
@@ -679,34 +617,33 @@ function showBanner(force: boolean = false) {
 
     if (showBanner || force) {
       let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
-      // prettier-ignore
-      {
+      if (ext) {
+        appLine("");
         appLine("---------------------------v---------------------------------------------------");
-        appLine("   //////  ////    //////  |  TOTVS Developer Studio for VS-Code");
-        appLine("    //    //  //  //       |  Version " + ext.packageJSON["version"]);
+        appLine(`   //////  ////    //////  |  ${ext.packageJSON["displayName"]}`);
+        appLine(`    //    //  //  //       |  Version ${ext.packageJSON["version"]} BETA`);
         appLine("   //    //  //  //////    |  TOTVS Technology");
-        appLine("  //    //  //      //     |");
-        appLine(" //    ////    //////      |  https://github.com/totvs/tds-vscode");
+        appLine("  //    //  //      //     |  ");
+        appLine(` //    ////    //////      |  ${ext.packageJSON["repository"]["url"]}`);
         appLine("---------------------------^---------------------------------------------------");
         appLine("");
       }
-    }
-    // prettier-ignore
-    {
-      appLine("-------------------------------------------------------------------------------");
-      appLine("SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO                                   ");
-      appLine("");
-      appLine("As chaves de compilação ou tokens de compilação empregados na construção do    ");
-      appLine("Protheus e suas funcionalidades, são de uso restrito dos desenvolvedores de    ");
-      appLine("cada módulo.                                                                   ");
-      appLine("");
-      appLine("Em caso de mau uso destas chaves ou tokens, por qualquer outra parte, que não  ");
-      appLine("a referida acima, a mesma irá se responsabilizar, direta ou regressivamente,   ");
-      appLine("única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações,   ");
-      appLine("multas, condenações judiciais, arbitrais e administrativas e quaisquer outras  ");
-      appLine("despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros,   ");
-      appLine("eximindo a TOTVS de toda e qualquer responsabilidade.                          ");
-      appLine("-------------------------------------------------------------------------------");
+      {
+        appLine("-------------------------------------------------------------------------------");
+        appLine("SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO                                   ");
+        appLine("");
+        appLine("As chaves de compilação ou tokens de compilação empregados na construção do    ");
+        appLine("Protheus e suas funcionalidades, são de uso restrito dos desenvolvedores de    ");
+        appLine("cada módulo.                                                                   ");
+        appLine("");
+        appLine("Em caso de mau uso destas chaves ou tokens, por qualquer outra parte, que não  ");
+        appLine("a referida acima, a mesma irá se responsabilizar, direta ou regressivamente,   ");
+        appLine("única e exclusivamente, por todos os prejuízos, perdas, danos, indenizações,   ");
+        appLine("multas, condenações judiciais, arbitrais e administrativas e quaisquer outras  ");
+        appLine("despesas relacionadas ao mau uso, causados tanto à TOTVS quanto a terceiros,   ");
+        appLine("eximindo a TOTVS de toda e qualquer responsabilidade.                          ");
+        appLine("-------------------------------------------------------------------------------");
+      }
     }
   }
 }
@@ -738,4 +675,98 @@ export function canDebug(): boolean {
   }
 
   return result;
+}
+
+async function prepareInstructions(context: vscode.ExtensionContext) {
+  const workspaceFolders = vscode.workspace.workspaceFolders;
+  if (!workspaceFolders) return;
+
+  const version: string = "1-0-2";
+  const rootPath: vscode.Uri = workspaceFolders[0].uri;
+  const githubFolderUri: vscode.Uri = vscode.Uri.joinPath(rootPath, '.github', "instructions");
+  const targetFileUri: vscode.Uri = vscode.Uri.joinPath(githubFolderUri, `tds-vscode-${version}.instructions.md`);
+
+  if (!fse.existsSync(targetFileUri.fsPath)) {
+    const question: string = vscode.l10n.t("Do you want to configure Copilot instructions for this workspace (improves accuracy)?")
+    const yes: string = vscode.l10n.t("Yes")
+    const notNow: string = vscode.l10n.t("Not now")
+    const never: string = vscode.l10n.t("Never (don't ask again)")
+
+    const selection: string = await vscode.window.showInformationMessage(
+      question,
+      { modal: true },
+      yes,
+      notNow,
+      never
+    );
+
+    if ((selection === yes) || (selection === never)) {
+      try {
+        let templateData: Uint8Array;
+
+        if (selection === yes) {
+          const language: string = vscode.env.language;
+          let templateUri: vscode.Uri = vscode.Uri.joinPath(context.extensionUri, 'resources', ".github", `tds-vscode-${version}-${language}.instructions.md.txt`);
+
+          if (!fse.existsSync(templateUri.fsPath)) {
+            templateUri = vscode.Uri.joinPath(context.extensionUri, 'resources', ".github", `tds-vscode-${version}-en-us.instructions.md.txt`);
+          }
+
+          templateData = await vscode.workspace.fs.readFile(templateUri);
+          templateData = new TextEncoder().encode(removeHtmlComments(new TextDecoder().decode(templateData)));
+        } else { // Se o usuário escolher "Nunca", é criado um arquivo vazio para evitar futuras perguntas
+          templateData = new Uint8Array();
+        }
+
+        await vscode.workspace.fs.createDirectory(githubFolderUri);
+        await removeInstructionsOldVersions(githubFolderUri);
+        await vscode.workspace.fs.writeFile(targetFileUri, templateData);
+
+        if (selection === yes) {
+          vscode.window.showInformationMessage("Contexto do LS TOTVS ativado para o Copilot.");
+        }
+      } catch (err) {
+        console.error("Erro ao ler o template ou salvar instruções:", err);
+        vscode.window.showErrorMessage("Falha ao configurar o contexto do LS TOTVS para o Copilot. Veja o console para detalhes.");
+      }
+    }
+  }
+}
+
+/**
+ * Remove arquivos que correspondem ao padrão tds-vscode*.md de uma pasta.
+ * @param folderUri O caminho da pasta de onde remover os arquivos.
+ */
+async function removeInstructionsOldVersions(folderUri: vscode.Uri): Promise<void> {
+  try {
+    // Lê o conteúdo da pasta
+    const entries = await vscode.workspace.fs.readDirectory(folderUri);
+
+    // Filtra arquivos que correspondem ao padrão tds-vscode*.md
+    const filesToRemove = entries.filter(([name, type]) => {
+      // type === 1 significa que é um arquivo (não é diretório)
+      return type === 1 && /^tds-vscode.*\.instructions\.md$/.test(name);
+    });
+
+    // Remove cada arquivo encontrado
+    for (const [fileName] of filesToRemove) {
+      const fileUri = vscode.Uri.joinPath(folderUri, fileName);
+      try {
+        await vscode.workspace.fs.delete(fileUri);
+      } catch (err) {
+        console.error(`Erro ao remover arquivo ${fileName}:`, err);
+      }
+    }
+  } catch (err) {
+    console.error(`Erro ao ler a pasta ${folderUri}:`, err);
+  }
+}
+
+/**
+ * Remove todos os blocos de comentário <!-- --> de uma string.
+ * @param text O texto original contendo os comentários.
+ * @returns O texto limpo.
+ */
+function removeHtmlComments(text: string): string {
+  return text;  //text.replace(/<!--[\s\S]*?-->/g, '');
 }

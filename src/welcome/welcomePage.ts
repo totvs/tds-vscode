@@ -55,25 +55,25 @@ export default class WelcomePage {
 			currentPanel.webview.onDidReceiveMessage(message => {
 				if (!processSelectResourceMessage(currentPanel.webview, message)) {
 					switch (message.command) {
-					case 'checkDir':
-						let checkedDir = Utils.checkDir(message.selectedDir);
-						currentPanel.webview.postMessage({
-							command: "checkedDir",
-							checkedDir: checkedDir
-						});
-						break;
-					case 'welcomeClose':
-						const smartClientBin = message.smartClientBin;
-						const includePath = message.includes;
+						case 'checkDir':
+							let checkedDir = Utils.checkDir(message.selectedDir);
+							currentPanel.webview.postMessage({
+								command: "checkedDir",
+								checkedDir: checkedDir
+							});
+							break;
+						case 'welcomeClose':
+							const smartClientBin = message.smartClientBin;
+							const includePath = message.includes;
 
-						ServersConfig.saveIncludePath(includePath);
-						LaunchConfig.saveSmartClientBin(smartClientBin);
-						if (currentPanel) {
-							if (message.close) {
-								currentPanel.dispose();
+							ServersConfig.saveIncludePath(includePath);
+							LaunchConfig.saveSmartClientBin(smartClientBin);
+							if (currentPanel) {
+								if (message.close) {
+									currentPanel.dispose();
+								}
 							}
-						}
-						return;
+							return;
 					}
 				}
 			},
@@ -91,27 +91,27 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 	const cssOnDIskPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'css', 'form.css'));
 	const chooseResourcePath = vscode.Uri.file(
 		path.join(
-		  context.extensionPath,
-		  "resources",
-		  "script",
-		  "chooseResource.js"
+			context.extensionPath,
+			"resources",
+			"script",
+			"chooseResource.js"
 		)
-	  );
+	);
 
 
 	const htmlContent = fs.readFileSync(htmlOnDiskPath.with({ scheme: 'vscode-resource' }).fsPath);
 	const cssContent = fs.readFileSync(cssOnDIskPath.with({ scheme: 'vscode-resource' }).fsPath);
 	const chooseResourceContent = fs.readFileSync(
 		chooseResourcePath.with({ scheme: "vscode-resource" }).fsPath
-	  );
+	);
 
 	let runTemplate = compile(htmlContent);
 
 	return runTemplate({
 		css: cssContent,
 		localize: localizeHTML,
-	    chooseResourceScript: chooseResourceContent
- });
+		chooseResourceScript: chooseResourceContent
+	});
 }
 
 export function showWelcomePage(context: ExtensionContext, forcedShow: boolean) {
