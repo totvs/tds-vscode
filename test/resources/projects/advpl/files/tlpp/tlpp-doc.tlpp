@@ -1,0 +1,34 @@
+namespace tlpp.doc
+using namespace tlpp.another
+
+static cInfo   := "[INFO ]"
+static cWar    := "[WARN ]"
+
+static cError  := "[ERROR]"
+
+static cHeader := "[TLPP  ][REST-DOC] "
+
+function cError( cMsg as character ) as character
+return cHeader + cError + " " + cMsg
+
+
+/* ------------------------------ */
+static function hToc( v as numeric, cError as character ) as character
+	local i as numeric
+	local cM := "" as character
+	private cError  := "local" as character
+
+
+	if ( v:vCount == 1 )
+		for i := 1 to v:vArgs[1]:vCount
+			cM += " " + cValtoChar( v:vArgs[1]:vArgs[i] )
+		next
+	endif
+
+
+	conout()
+	conout(cError)
+	cError( cM )
+	conout(tlpp.another.cError( cM ))
+	
+return cM
