@@ -39,6 +39,7 @@
     },
     "totvsLanguageServer.editor.signatureHelp": false,
     "editor.codeLens": true,
+    "totvsLanguageServer.formatter.provider": "ls",
     "editor.signatureHelp.enabled": true,
     "totvsLanguageServer.editor.codeActions": false
 }

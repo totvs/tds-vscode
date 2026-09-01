@@ -1,8 +1,30 @@
 import * as vscode from "vscode";
-import { languageClient } from "./extension";
+import { languageClient, applyFormattingMode } from "./extension";
 import { sendDidChangeConfiguration, sendDidSaveTextDocument } from "./protocolMessages";
 import { warningNeedRestart, getModifiedLanguageServerSettings } from "./server/languageServerSettings";
 import { updateStatusBarItems } from "./statusBar";
+
+/**
+ * Indica se alguma configuração de `totvsLanguageServer` mudou além do modo
+ * de formatação (`totvsLanguageServer.formatter.provider`).
+ *
+ * Como `affectsConfiguration` não enumera as chaves alteradas, considera-se
+ * que houve "outra" mudança quando a seção `totvsLanguageServer` foi afetada
+ * mas não exclusivamente a chave de formatação.
+ */
+function _isOtherTotvsLanguageServerChange(
+	e: vscode.ConfigurationChangeEvent
+): boolean {
+	if (!e.affectsConfiguration("totvsLanguageServer")) {
+		return false;
+	}
+	// A seção mudou; se a mudança de formatação não explica tudo, trata-se de
+	// outra configuração. Retornamos true de forma conservadora quando qualquer
+	// coisa em totvsLanguageServer muda sem ser a chave de formatação.
+	return !e.affectsConfiguration("totvsLanguageServer.formatter.provider")
+		? true
+		: false;
+}
 
 function updateOpenEditors() {
 	vscode.window.visibleTextEditors.forEach((element: vscode.TextEditor) => {
@@ -22,17 +44,32 @@ export function registerWorkspace(context: vscode.ExtensionContext) {
 				e.affectsConfiguration("4gl.formatter") ||
 				e.affectsConfiguration("editor")
 			) {
-				const settings: any[] = getModifiedLanguageServerSettings();
-				if (settings.length > 0) {
-					sendDidChangeConfiguration(settings).then(() => {
-						updateStatusBarItems();
-					});
+				if (e.affectsConfiguration("totvsLanguageServer.formatter.provider")) {
+					applyFormattingMode(context);
 				}
-				if (!warningNeedRestart()) {
-					languageClient.stop().then(() => {
-						languageClient.start();
-					});
-				};
+
+				// Detecta se alguma configuração relevante mudou.
+				const changed: boolean =
+					e.affectsConfiguration("advpl.formatter") ||
+					e.affectsConfiguration("4gl.formatter") ||
+					e.affectsConfiguration("editor") ||
+					e.affectsConfiguration("totvsLanguageServer");
+
+				if (changed) {
+					const settings: any[] = getModifiedLanguageServerSettings();
+
+					if (settings.length > 0) {
+						sendDidChangeConfiguration(settings).then(() => {
+							updateStatusBarItems();
+						});
+					}
+
+					if (!warningNeedRestart()) {
+						languageClient.stop().then(() => {
+							languageClient.start();
+						});
+					};
+				}
 			}
 		}),
 		//vscode.workspace.onDidSaveTextDocument((e: vscode.TextDocument) => {
