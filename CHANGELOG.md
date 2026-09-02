@@ -1,14 +1,6 @@
 # Changelog
 
-## Versão [2.1.1]
-
-### Correções
-
-#### Não estabelecia conexão no Linux e MacOS
-
-Estava realizando conexões com o AppServer apenas no Windows, por conta de uma incompatibilidade de bibliotecas.
-
-## Versão [2.1.0]
+## Versão [2.1.2]
 
 ### Novidades
 
