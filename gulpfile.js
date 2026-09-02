@@ -70,9 +70,11 @@ const addL10nTask = function () {
   //   .pipe(gulp.dest("."));
 };
 
-// Formata com Prettier os arquivos JSON gerados pelo @vscode/l10n-dev em ./l10n
+// Formata com Prettier os arquivos JSON gerados pelo @vscode/l10n-dev em ./l10n.
+// Delega ao script npm "l10n:format" para evitar problemas de resolução do
+// binário/glob quando executado via gulp-run (cmd.exe) no Windows.
 const formatL10nTask = function () {
-  return run('npx prettier --write "./l10n/*.json"', { verbosity: true }).exec();
+  return run('npm run l10n:format', { verbosity: true }).exec();
 };
 
 const buildTask = gulp.series(cleanTask, internalNlsCompileTask, addL10nTask, formatL10nTask, internalCompileWebpack, internalCompileEsBuildProd);
@@ -157,17 +159,9 @@ const internalImportXlf = function (translationFile) {
   return run('npx @vscode/l10n-dev import-xlf ' + translationFile, { verbosity: true }).exec();
 };
 
-gulp.task("export-l10n", (done) => {
-  return es.merge(
-    [""].map((ignore) => {
-      return gulp
-        .pipe(internalExportL10n())
-        .pipe(formatL10nTask())
-        .pipe(internalGenerateXlf())
-        .on("end", () => done());
-    })
-  )
-}
+gulp.task(
+  "export-l10n",
+  gulp.series(internalExportL10n, formatL10nTask, internalGenerateXlf)
 );
 
 gulp.task("l10n-import", (done) => {
