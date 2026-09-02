@@ -2,6 +2,8 @@
 {
 	"files.trimTrailingWhitespace": true,
 	"editor.insertSpaces": false,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.formatOnSave": false,
 	"json.schemas": [
 		{
 			"fileMatch": [
@@ -21,6 +23,5 @@
 	"[markdown]": {
 		"editor.formatOnSave": true,
 		"editor.formatOnPaste": true
-	},
-	"markdownlint.run": "onSave",
+	}
 }
