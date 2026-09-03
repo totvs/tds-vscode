@@ -6,7 +6,7 @@
 
 #### Motor de formatação LS
 
-Funcionalidade *experimental*, para ativá-la ajuste em `settings.josn` a chave:
+Funcionalidade _experimental_, para ativá-la ajuste em `settings.josn` a chave:
 
 ```json
 {
@@ -88,7 +88,7 @@ Em qualquer versão do VSCode, instale também a extensão:
 
 #### Integração da extensão com o Kiro
 
-A integração do TDS-Code com o Kirot é utilizada para ajudar a IA a compreender melhor sua área de trabalho, tornando-a mais assertiva e rápida em questões relacionadas aos seus fontes.
+A integração do TDS-Code com o Kiro é utilizada para ajudar a IA a compreender melhor sua área de trabalho, tornando-a mais assertiva e rápida em questões relacionadas aos seus fontes.
 
 Recomenda-se o uso do Kiro versão ???? (??/????) ou superior.
 
