@@ -3,7 +3,8 @@
         "incremental": true,
 		"experimentalDecorators": true,
         "module": "commonjs",
-        "target": "ES2016",
+        "target": "ES2022",
+        "useDefineForClassFields": false,
         "outDir": "../out",
         "sourceMap": true,
         "noImplicitAny": false,
@@ -16,7 +17,7 @@
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "lib": [
-            "es2016",
+            "ES2022",
             "dom"
         ],
         "jsx": "react",
