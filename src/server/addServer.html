@@ -46,7 +46,12 @@
 
 				<div class="wrap-input">
 					<input class="inputText input-group" type="text" id="groupID" name="group"
-						placeholder="${d.localize['tds.webview.newServer.group']}">
+						list="groupList"
+						placeholder="${d.localize['tds.webview.newServer.group']}"
+						value="${d.initialGroup}">
+					<datalist id="groupList">
+						${d.groupOptions}
+					</datalist>
 					<!--Folder/Group (optional)-->
 					<span class="focus-input fi-group">
 					</span>
@@ -141,6 +146,9 @@
 					includePath.value = checkedDir;
 				else
 					includePath.value = includePath.value + ";" + checkedDir;
+				break;
+			case 'prefillGroup':
+				document.getElementById('groupID').value = message.group;
 				break;
 		}
 	});

@@ -21,6 +21,14 @@
 			"type": "object",
 			"$ref": "./permissions.schema.json"
 		},
+		"groups": {
+			"type": "array",
+			"description": "Explicitly created server groups (folders). Allows empty groups.",
+			"default": [],
+			"items": {
+				"type": "string"
+			}
+		},
 		"configurations": {
 			"type": "array",
 			"description": "Registered server settings for use.",
