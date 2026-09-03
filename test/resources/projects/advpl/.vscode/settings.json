@@ -31,15 +31,17 @@
     "advpl.formatter": {
         "_maxConsecutiveBlankLines": 1,
         "_xalignAssignments": true,
-        "_xmaxLineLength": 90,
-        "_xcommentReflow": true,
+        "maxLineLength": 90,
+        "commentReflow": true,
         "_keywordsCase": "ignore",
         "_stringStyle": "single-quotes",
-        "trimTrailingWhitespace": false,
+        "_trimTrailingWhitespace": false,
+        "_wrapArguments": true,
     },
     "totvsLanguageServer.editor.signatureHelp": false,
     "editor.codeLens": true,
     "totvsLanguageServer.formatter.provider": "ls",
+    "totvsLanguageServer.editor.index.cache": "off",
     "editor.signatureHelp.enabled": true,
     "totvsLanguageServer.editor.codeActions": false
 }

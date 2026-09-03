@@ -1,3 +1,4 @@
+//Não enviar ao repositório se aplicar formatação
 #include "protheus.ch"
 #include 'protheus.ch'
 
@@ -21,4 +22,6 @@ user function stringStyle()
 	x5 := "ABC'DEF"
 	x6 := "'ABC'DEF'"
 	
+	conout("Para validação de encoding: não, é, ção")
+
 	return

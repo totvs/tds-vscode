@@ -22,7 +22,7 @@ export function getFormattingOptions(langId: string): FormattingOptions {
     maxConsecutiveBlankLines: getValue(langId, "maxConsecutiveBlankLines", 1),
     maxLineLength: getValue(langId, "maxLineLength", 120),
     wrapParameters: getValue(langId, "wrapParameters", "auto"),
-    wrapArguments: getValue(langId, "wrapArguments", "auto"),
+    wrapArguments: getValue(langId, "wrapArguments", false),
     formatNumber: getValue(langId, "formatNumber", false),
     operatorSpacing: getValue(langId, "operatorSpacing", true),
     spaceAfterComma: getValue(langId, "spaceAfterComma", true),
