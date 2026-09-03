@@ -1,3 +1,4 @@
+//Não enviar ao repositório se aplicar formatação
 #include "protheus.ch"
 
 user function spaceAfterComma(p1,     p2  , p3)
@@ -10,5 +11,7 @@ myFunc(x,y,z)
 if array[1] == 1 .and. aArray2[2] == 2
     conout("Arrays are equal")
 endif
+
+conout("Para validação de encoding: não, é, ção")
 
 return

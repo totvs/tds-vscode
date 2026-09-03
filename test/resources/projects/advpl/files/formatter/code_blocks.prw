@@ -1,3 +1,4 @@
+//Não enviar ao repositório se aplicar formatação
 #include "protheus.ch"
 
 user function codeBlocks()
@@ -22,4 +23,7 @@ conout(Eval(bCollapse, 1))
 					conout(x+y);
 					}
 endif
+
+conout("Para validação de encoding: não, é, ção")
+
 return

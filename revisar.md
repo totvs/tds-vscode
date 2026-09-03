@@ -67,7 +67,6 @@ são referenciadas em nenhuma regra de formatação (`advpl_formatting_rules.cpp
 ## Nunca lidas do settings e sem efeito na formatação (só existem como default na struct)
 
 - `wrapParameters` (default: `"auto"`)
-- `wrapArguments` (default: `"auto"`)
 - `spaceAfterComma` (default: `true`)
 - `spaceInsideParentheses` (default: `false`)
 - `normalizeCalls` (default: `false`)

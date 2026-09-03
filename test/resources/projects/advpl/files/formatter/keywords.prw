@@ -1,3 +1,4 @@
+//Não enviar ao repositório se aplicar formatação
 #include "protheus.ch"
 
 user FUNCtion keywords()
@@ -20,5 +21,7 @@ end Do
 
 total := 20
 x := 30
+
+conout("Para validação de encoding: não, é, ção")
 
 RETURN

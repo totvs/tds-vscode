@@ -831,7 +831,7 @@
                 true,
                 false
               ],
-              "default": "auto",
+              "default": false,
               "description": "Controla quebra de linha de argumentos."
             },
             "keywordsCase": {
@@ -958,7 +958,7 @@
                 true,
                 false
               ],
-              "default": "auto",
+              "default": false,
               "description": "Controla quebra de linha de argumentos."
             },
             "keywordsCase": {
