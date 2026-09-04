@@ -1,5 +1,11 @@
 # Changelog
 
+## Versão [2.1.?]
+
+### Correção
+
+- Corrigido queda do LS quando o arquivo-fonte encontrava-se com o atributo _Read Only_ ativado. [GITHUB 1505](https://github.com/totvs/tds-vscode/issues/1505) e [DTCLIENT01-7923](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-7923).
+
 ## Versão [2.1.2]
 
 ### Novidades
@@ -8,7 +14,7 @@
 
 Implementado a possibilidade de complementar a lista de pastas de buscas de arquivos de definição. Na pasta principal da área de trabalho, crie o arquivo `.include`, onde cada linha é uma especificação de pasta para busca de arquivos de definição.
 
-As pastas especificadas tem prioridade sobre a lista por servidor/global e usam o padrão `glob` e sempre relativas a pasta princial (_workspace_).
+As pastas especificadas tem prioridade sobre a lista por servidor/global e usam o padrão `glob` e sempre relativas a pasta principal (_workspace_).
 
 Exemplo:
 
@@ -74,10 +80,10 @@ Permite a busca por símbolos, tais como:
 #### No DSS
 
 - Uso de memória
-Corrigido "vazamento de memória" (_memory leak_) e violações (_access violation_).
+  Corrigido "vazamento de memória" (_memory leak_) e violações (_access violation_).
 
 - Suporte de TLPP
-Melhora do suporte a elementos de TLPP
+  Melhora do suporte a elementos de TLPP
 
 ## Versão [2.0.16]
 
@@ -171,7 +177,7 @@ Ajustado o tratamento de :: como sendo equivalente ao :self durante a depuraçã
 
 #### Uso do navegador padrão para depuração Web [DTCLIENT01-5330](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-5330)
 
-Caso `totvsLanguageServer.web.navigator` não tenha sido configurado o depurador será utilizado  o navegador padrão do sistema operacional para depuração Web (executor `totvs_language_web_debug`).
+Caso `totvsLanguageServer.web.navigator` não tenha sido configurado o depurador será utilizado o navegador padrão do sistema operacional para depuração Web (executor `totvs_language_web_debug`).
 
 Caso seja informado `totvsLanguageServer.web.arguments`, a especificação do navegador web a ser utilizado é obrigatória.
 
@@ -214,11 +220,11 @@ Após a validação do patch a ação de aplicar o patch não estava sendo liber
 
 #### Aplicação de pacote de atualização(_patchs_) e outros (#1283 e outros)
 
-A  versão **1.95** do **VS-Code**, gerou efeitos colaterais em todos os processos que envolvam seleção de arquivo/diretório. Os processos foram revisados  de forma a atender essa necessidade.
+A versão **1.95** do **VS-Code**, gerou efeitos colaterais em todos os processos que envolvam seleção de arquivo/diretório. Os processos foram revisados de forma a atender essa necessidade.
 
-#### Mac Sequoia: apresenta erro ``SIGSEGV`` (#1270)
+#### Mac Sequoia: apresenta erro `SIGSEGV` (#1270)
 
-Ao abrir um fonte em um Mac Sequoia, era apresentado um erro (``SIGSEGV``) e não é mais possível usar as funcionalidades nesse SO. Ocorrência corrigida no no Servidor de Linguagem, o qual causava o referido erro.
+Ao abrir um fonte em um Mac Sequoia, era apresentado um erro (`SIGSEGV`) e não é mais possível usar as funcionalidades nesse SO. Ocorrência corrigida no no Servidor de Linguagem, o qual causava o referido erro.
 
 ### Depreciado
 
@@ -299,7 +305,7 @@ Ao executar o TDS Replay, a paginação não estava funcionando corretamente.
 
 #### TDS Replay - Não exibe quantidade de linhas na linha do tempo [#1193](https://github.com/totvs/tds-vscode/issues/1193)
 
-Correção no tratamento de linhas quando opção ``ignoreSourcesNotFound`` ativa.
+Correção no tratamento de linhas quando opção `ignoreSourcesNotFound` ativa.
 
 #### Indexação DSS não respeitava configurações de cache
 
@@ -335,15 +341,15 @@ Adicionada uma configuração extra ("totvsLanguageServer.compilation.tempDir") 
 
 #### Fontes fora da área de trabalho
 
-Os fontes abertos fora da área de trabalho, não são mais processados para fins da visão ``Estrutura (_Outline_)`` e funcionalidades providas pelo [``DSS``](./docs/dss.md) e [``linter```](./docs/linter.md).
+Os fontes abertos fora da área de trabalho, não são mais processados para fins da visão `Estrutura (_Outline_)` e funcionalidades providas pelo [`DSS`](./docs/dss.md) e [``linter```](./docs/linter.md).
 Demais funcionalidades continuam funcionando normalmente.
 
-> Fontes fora da área de trabalho receberá uma notificação na visão ``Problemas`` como uma informação.
-![``Problema`` com informação de fora da área de trabalho](./docs/images/info-source-outside.png)
+> Fontes fora da área de trabalho receberá uma notificação na visão `Problemas` como uma informação.
+> ![``Problema`` com informação de fora da área de trabalho](./docs/images/info-source-outside.png)
 
 #### Depuração com variáveis do tipo _string_ (_character_)
 
-Variáveis do tipo  _character_ (_string_), podem conter dados nos formatos CP1252/CP1251 ou UTF8, que podem ser diferenciadas pelo prefixo ``UTF8`` em seus valores nas visões ``Variables`` e ``Watches`` e ao passar o mouse sobre a variável. Também foi modificado a forma de apresentação.
+Variáveis do tipo _character_ (_string_), podem conter dados nos formatos CP1252/CP1251 ou UTF8, que podem ser diferenciadas pelo prefixo `UTF8` em seus valores nas visões `Variables` e `Watches` e ao passar o mouse sobre a variável. Também foi modificado a forma de apresentação.
 
 Leia [Recursos Estendidos de Depuração](../docs/debugger.md#funcionalidades_estendidas_de_depuração) para maiores detalhes e como ativar/desativar.
 
@@ -389,7 +395,7 @@ Caso o usuário inicie uma depuração utilizando SIGAMDI/SIGAADV, será exibido
 
 ### Melhoria
 
-#### Comando ``BeginContent`` passa a aceitar o tipo de conteúdo
+#### Comando `BeginContent` passa a aceitar o tipo de conteúdo
 
 ```console
 beginContent var myVar [as <language: javascript | JS | html | json | xml | css | typeScript | TS>]
@@ -397,9 +403,9 @@ beginContent var myVar [as <language: javascript | JS | html | json | xml | css 
 
 Essa informação é utilizada apenas para fins visuais não sendo efetuado nenhum tipo de validação.
 
-#### Comandos ``BeginSql`` e ``EndSql``
+#### Comandos `BeginSql` e `EndSql`
 
-Ao utilizar o bloco de comandos ``BeginSql`` e ``EndSql``, o seu conteúdo será apresentado usando as configurações de destaque de sintaxe da linguagem SQL.
+Ao utilizar o bloco de comandos `BeginSql` e `EndSql`, o seu conteúdo será apresentado usando as configurações de destaque de sintaxe da linguagem SQL.
 Esse destaque é utilizada apenas para fins visuais não sendo afetado a funcionalidade do bloco.
 
 #### Filtro na Linha de Tempo do TDS Replay [#DTCLIENT01-2533](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2533)
@@ -418,7 +424,7 @@ A inicialização do `DSS` falhava (permissão) em sistemas MacOS, com erro:
 
 #### DSS: Corrigido processo de renomear e remover fontes
 
-Em determinadas circunstâncias, ao renomear ou remover fontes, os processos podiam deixar resíduos no cache, causando duplicidade de informação ou não ser finalizados, requerendo acionar a ação ``Cancelar`` no diálogo de notificação.
+Em determinadas circunstâncias, ao renomear ou remover fontes, os processos podiam deixar resíduos no cache, causando duplicidade de informação ou não ser finalizados, requerendo acionar a ação `Cancelar` no diálogo de notificação.
 
 ## Versão [2.0.0]
 
@@ -426,7 +432,7 @@ Em determinadas circunstâncias, ao renomear ou remover fontes, os processos pod
 >
 > Para garantir a interoperabilidade das áreas de trabalho entre os sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes, recomenda-se que pastas e arquivos não contenham caracteres especiais (exceto hífen e sublinhado) ou acentuados e sempre em minúsculas.
 >
-> Leia [Convenção para nomenclatura de _File System_ em ambiente Linux](<https://tdn.totvs.com/x/h8BICw>).
+> Leia [Convenção para nomenclatura de _File System_ em ambiente Linux](https://tdn.totvs.com/x/h8BICw).
 
 ### Melhorias
 
@@ -456,10 +462,10 @@ Detalhes da implementação em [TDS: Developer Support Subsystem](docs/dss.md).
 
 Apresenta alguns detalhes sobre o item de acordo com sua definição.
 
-#### Navegação em classes quando usado ``self`` e ``_Super``
+#### Navegação em classes quando usado `self` e `_Super`
 
-- Adicionado tratamento há herança de classe (``_Super``,  ``from``, ``inherited`` e ``of``)
-- Unificado tratamento de ``::`` e ``self``
+- Adicionado tratamento há herança de classe (`_Super`, `from`, `inherited` e `of`)
+- Unificado tratamento de `::` e `self`
 
 ## Versão [1.3.23]
 
@@ -639,19 +645,19 @@ Foi implementando opções de exportação em arquivos nos formatos [CSV\*](http
 
 ![Inspector tools bar](./docs/images/inspetor-tool-bar-harpia.png)
 
-|     | Descrição                                       |
-|  | -- |
-| D   | Barra de ferramentas (na ordem de apresentação) |
-|     | Exportação CSV ou PDF                           |
-|     | Agrupamemnto                                    |
-|     | Filtro por coluna                               |
-|     | Exportação em texto de largura fixa             |
-|     | _Reset_ de configuração                         |
+| | Descrição |
+| | -- |
+| D | Barra de ferramentas (na ordem de apresentação) |
+| | Exportação CSV ou PDF |
+| | Agrupamemnto |
+| | Filtro por coluna |
+| | Exportação em texto de largura fixa |
+| | _Reset_ de configuração |
 
 #### Mensagem de _TimeLine_ não encontrada para os pontos de parada existentes
 
 Ao executar um _Run_ durante a execução do TDS Replay, caso não fosse encontrado nenhuma _TimeLine_ correspondente aos pontos de parada existentes, era feito uma parada na última _TimeLine_ da última página.
-Esse comportamento foi removido e implementando uma mensagem informativa. E a _TimeLine_ de origem continuará selecionada.  [DTCLIENT01-3601](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3601)
+Esse comportamento foi removido e implementando uma mensagem informativa. E a _TimeLine_ de origem continuará selecionada. [DTCLIENT01-3601](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3601)
 
 #### Validação de _patches_ no Harpia
 
@@ -659,9 +665,9 @@ Ajustes na validação de pacotes de atualização (_patches_) aplicados em _App
 
 ### Correções
 
-#### Correção no tratamento da chave ``openglMode`` [DTCLIENT01-3702](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3702)
+#### Correção no tratamento da chave `openglMode` [DTCLIENT01-3702](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-3702)
 
-Foi corrigido o tratamento da chave ``openglMode`` na definição de executores, onde a chave ``--openGL`` passa a ser informada ao _SmartClient_ somente se esta estiver ligada.
+Foi corrigido o tratamento da chave `openglMode` na definição de executores, onde a chave `--openGL` passa a ser informada ao _SmartClient_ somente se esta estiver ligada.
 
 #### Erro ao tentar excluir um ambiente [#1022](https://github.com/totvs/tds-vscode/issues/1022)
 
@@ -1008,7 +1014,7 @@ Ajustado propriedades dos botões.
 
 ### Melhorias
 
-- Removido opcao de filtro de 1500 _TimeLine_s para facilitar calculo de paginação
+- Removido opcao de filtro de 1500 \_TimeLine_s para facilitar calculo de paginação
 
 #### Processamento de fluxo em um array complexo ([ISSUE 686](https://github.com/totvs/tds-vscode/issues/686)) ([DTCLIENT01-2784](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-2784))
 
@@ -1589,8 +1595,8 @@ Detalhes em
 ### Melhorias na visão "Servidores"
 
 - Adicionado os comandos abaixo, direto no nó do item:
-    - Servidor: Conexão
-    - Ambiente: Remoção
+  - Servidor: Conexão
+  - Ambiente: Remoção
 - Menu de contexto melhorado, apresentando opções conforme o estado do servidor
 
 #### [4GL] Liberação do editor para 4GL (BETA)
@@ -2428,13 +2434,13 @@ Ao utilizar **TOTVS Server**, de versão igual ou anterior a 19.3.0.0 de 01/06/2
 Em casos específicos, como na compilação de fontes em Cirílico (Russo), o encode poderá ser definido manualmente no arquivo settings.json de sua workspace, abaixo um exemplo de como usar o cirílico (Windows1251).
 
 ```json
-    {
-    	"totvsLanguageServer.welcomePage": false,
-    	"[advpl]": {
-    		"files.encoding": "windows1251"
-    	},
-    	"totvsLanguageServer.askEncodingChange": false
-    }
+{
+  "totvsLanguageServer.welcomePage": false,
+  "[advpl]": {
+    "files.encoding": "windows1251"
+  },
+  "totvsLanguageServer.askEncodingChange": false
+}
 ```
 
 #### Intelisense omite variáveis e funções locais: [Issue 8](https://github.com/totvs/tds-vscode/issues/8) relativo a [Issue 15](https://github.com/totvs/tds-vscode/issues/15)
@@ -2456,8 +2462,8 @@ Em casos específicos, como na compilação de fontes em Cirílico (Russo), o en
 ##### Solução
 
 - Implementado de opção para troca de comportamento do auto-complete:
-    - Acesse 'setttings', opção "TOTVS Language Server › Editor › Toggle: Autocomplete"
-    - No editor, acione o atalho ctrl+alt+space
+  - Acesse 'setttings', opção "TOTVS Language Server › Editor › Toggle: Autocomplete"
+  - No editor, acione o atalho ctrl+alt+space
 - Na barra de status será apresentado o comportamento atual, sendo:
   _Basic: executa o autocompletar padrão do VSCode.
   _ LS: inclui informações disponíveis no RPO padrão.
