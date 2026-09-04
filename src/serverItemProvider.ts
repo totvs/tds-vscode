@@ -99,6 +99,8 @@ class ServerItemProvider
           ? new vscode.ThemeColor("totvsServerExplorer.groupConnectedForeground")
           : undefined
       );
+    } else if (element instanceof ServerItem || element instanceof EnvSection) {
+      element.refreshState();
     }
 
     return element;
