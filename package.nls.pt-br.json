@@ -116,6 +116,7 @@
 	"tds.package.properties.extraParameters.description": "Usado para passar quaisquer parêmetros extras para o SC",
 	"tds.package.totvs.language.debug.web": "Depuração da Web no idioma TOTVS (HTML do SmartClient)",
 	"tds.package.server.view": "Servidores",
+	"tds.package.server.view.groupConnectedForeground": "Cor do ícone de um grupo de servidores que contém um ambiente conectado.",
 	"tds.package.properties.program.description.web": "Nome do programa/função",
 	"tds.package.properties.trace.description.web": "Habilitar o log do protocolo do adaptador de depuração.",
 	"tds.package.properties.smartclientUrl.description": "O URL HTML do SmartClient.",

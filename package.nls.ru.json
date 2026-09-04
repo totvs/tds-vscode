@@ -113,6 +113,7 @@
 	"tds.package.properties.extraParameters.description": "Used to pass any extra parameters to SC",
 	"tds.package.totvs.language.debug.web": "Веб-отладка TOTVS Language (SmartClient HTML)",
 	"tds.package.server.view": "Серверы",
+	"tds.package.server.view.groupConnectedForeground": "Цвет значка группы серверов, содержащей подключенную среду.",
 	"tds.package.properties.program.description.web": "Имя программы / функции",
 	"tds.package.properties.trace.description.web": "Включить ведение журнала для протокола адаптера отладки.",
 	"tds.package.properties.smartclientUrl.description": "URL-адрес SmartClient HTML.",

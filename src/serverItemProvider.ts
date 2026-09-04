@@ -92,6 +92,15 @@ class ServerItemProvider
   }
 
   getTreeItem(element: ServerTreeItem): vscode.TreeItem {
+    if (element instanceof ServerGroupItem) {
+      element.iconPath = new vscode.ThemeIcon(
+        "folder",
+        element.hasConnectedServer
+          ? new vscode.ThemeColor("totvsServerExplorer.groupConnectedForeground")
+          : undefined
+      );
+    }
+
     return element;
   }
 
