@@ -27,10 +27,11 @@
     },
     "totvsLanguageServer.compilation.generatePpoFile": false,
     "totvsLanguageServer.editor.hover": "off",
+    "totvsLanguageServer.editor.linter.behavior": "enable",
     "editor.formatOnSave": false,
     "advpl.formatter": {
         "_maxConsecutiveBlankLines": 1,
-        "_xalignAssignments": true,
+        "_alignAssignments": true,
         "maxLineLength": 90,
         "commentReflow": true,
         "_keywordsCase": "ignore",
