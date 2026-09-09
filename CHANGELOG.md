@@ -1,10 +1,10 @@
 # Changelog
 
-## Versão [2.1.0]
+## Versão [2.1.2]
 
 ### Novidades
 
-#### Pastas de buscas de arquvos de definição por área de trabalho
+#### Pastas de buscas de arquivos de definição por área de trabalho
 
 Implementado a possibilidade de complementar a lista de pastas de buscas de arquivos de definição. Na pasta principal da área de trabalho, crie o arquivo `.include`, onde cada linha é uma especificação de pasta para busca de arquivos de definição.
 
@@ -42,13 +42,13 @@ Em qualquer versão do Kiro, instale também a extensão:
 
 - [Kiro LSP MCP](https://open-vsx.org/extension/Rapdog/kiro-lsp-mcp)
 
-####
+#### Melhoria na integração com o Copilot
 
 Implementado ferramenta `@tds` que permitir executar operações direto no `chat`.
 
 - compile: compila o fonte no editor ativo ou o informado.
 - recompile: recompila o fonte no editor ativo ou o informado.
-- syntaz-only: verifica a sintaxe (_linter_) do fonte no editor ativo ou o informado.
+- syntax-only: verifica a sintaxe (_linter_) do fonte no editor ativo ou o informado.
 
 #### Renomear elementos
 

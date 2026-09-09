@@ -1,0 +1,1801 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file original="bundle" source-language="en" datatype="plaintext"><body>
+    <trans-unit id="++CODE++c5a08b168caf3ca9d23212f70250252e7ae827eae118ea622b4cc1a49c3c8cf1">
+      <source xml:lang="en"> (none thread)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++00c9aacf4810848aa6afd9c33dc553a80e46670d9c9fc910b56334ef5cc6fa6b">
+      <source xml:lang="en"> ({0} thread(s) in {1} server(s))</source>
+    </trans-unit>
+    <trans-unit id="++CODE++c6d9ebf23775b33af2c4445d799d76ae62dd549e75d9b7c6fb8c2fc163290267">
+      <source xml:lang="en">(-AC) Accessibility module</source>
+    </trans-unit>
+    <trans-unit id="++CODE++8d8e95e3166e2b53fafb2b1b79453bedf1c897ab951707a8e1df7f1956b0840e">
+      <source xml:lang="en">(-DPI) Enable DPI mode</source>
+    </trans-unit>
+    <trans-unit id="++CODE++5ce1339cb549c0070b5ab3c52ab80bd4d952123c67d03e6d1dcd1f183f551f3c">
+      <source xml:lang="en">(-M) Multiple sessions</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d02010a07585ca17b371252ddccc869cda6b1c6f4463cf555c0b53a6c6d4352a">
+      <source xml:lang="en">(-OLDDPI) Enable OLDDPI mode</source>
+    </trans-unit>
+    <trans-unit id="++CODE++4c8d28f8812f63c2eb0ba5b891a2c15da2c6f8af725682e89d94f28f13ce023b">
+      <source xml:lang="en">(-OPENGL) Enable OpenGL mode</source>
+    </trans-unit>
+    <trans-unit id="++CODE++6a39c67c30a26e7776e7cdacf965825428d7a41176bdb68fad1c451d3f7f05ea">
+      <source xml:lang="en">(-Q) Don&apos;t display &apos;splash&apos;</source>
+    </trans-unit>
+    <trans-unit id="++CODE++2a362952728a91b6b1e6b6d5dacc578c76b5f8d7e746ebd9cb4cca5da6f5fe8c">
+      <source xml:lang="en">(awaiting selection)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++fb53131d980496e0fe018bb021126923df2bc3181c11bfa9d5be0fdc2f984ce0">
+      <source xml:lang="en">(initializing)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++482e22db944ff5508e5a667a027af1e8fb8e4fc30bf7140fa406504fc687e520">
+      <source xml:lang="en">(long)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++89c1f4a5cd3e0326958b2e734411e7921578049e4c483d92d23519008aca953e">
+      <source xml:lang="en">(manual)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++e741a4a049a57879177c91741fb5fc9ee891de1a9507c90682dcba11f64fc6aa">
+      <source xml:lang="en">(normal)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++7d953b7831e5a3cca5d1525acb5fad806fb88e9d186be8c8a68bc254d55e7840">
+      <source xml:lang="en">(short)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ae6126b3bbadcd32bd3abf6d621e9a8b38216abaa5d96d3d25135487c7335c49">
+      <source xml:lang="en">* From 05/17/2019 all keys will have to be regenerated using the Machine ID shown above. This will allow compatibility with Linux and macOS.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++79d11b7949d4c4de30f72b44315b69af4b23f0f46ead44d9a2fc4bd3e4c18c0b">
+      <source xml:lang="en">- /help: shows this help.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++7c187b1d2e145252df5177b3950e792c132f9d9630eb3bd4d20ed273528ef1e1">
+      <source xml:lang="en">- /{0} c:/patches/fix.zip</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0b915763d4c37692846f47f10760e2015e8be1e1036ab0dc2d71f6b534967750">
+      <source xml:lang="en">- /{0} format=json</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0b21f411815fb3f424d0019454781b082d56b38f57407e8925af27e193c1cfe8">
+      <source xml:lang="en">- /{0} only=error</source>
+    </trans-unit>
+    <trans-unit id="++CODE++de830b61606624f648d39c8ab39af1c9940aeae67649ab8b14ae17fc55401be2">
+      <source xml:lang="en">- /{0} patches/fix.ptm</source>
+    </trans-unit>
+    <trans-unit id="++CODE++e25688af56e9ecad3716fe980a346219651135a1fc56af9944d54f85323cc72d">
+      <source xml:lang="en">- /{0} src/modulo</source>
+    </trans-unit>
+    <trans-unit id="++CODE++6b11e14a462633a6955da80af199592ee7f58fe5ab69c56b051312cacf100f04">
+      <source xml:lang="en">- /{0} syntaxOnly=true</source>
+    </trans-unit>
+    <trans-unit id="++CODE++7dcb68a77df66e2038fcaa0ac06740c72512899073f47abe29531dd8f0051f59">
+      <source xml:lang="en">- /{0} target=editor</source>
+    </trans-unit>
+    <trans-unit id="++CODE++117017628905ebdfa26be299aaa5790ac8a8a1741f71ede14b7f358dcb6703f9">
+      <source xml:lang="en">- /{0} target=open-editors</source>
+    </trans-unit>
+    <trans-unit id="++CODE++72d1c74e1d61cd4ad0d777d5ac397acc53886e9048204dafd86fbb05f6dabde1">
+      <source xml:lang="en">- /{0} target=src/modulo syntaxOnly=true only=error sort=file</source>
+    </trans-unit>
+    <trans-unit id="++CODE++f5be9cc2f8909aca5f6efd7d25f1d4d4476a9f1d42e734cfe08778b169b7f9fd">
+      <source xml:lang="en">- /{0}: applies a patch file (.ptm, .zip, .upd).</source>
+    </trans-unit>
+    <trans-unit id="++CODE++7ad8cf1e332e6f38465902cb2c9afd94c63b6cfbe49943c5a3679715430a92d6">
+      <source xml:lang="en">- /{0}: compiles the target (default: current editor).</source>
+    </trans-unit>
+    <trans-unit id="++CODE++18066db2c6f55090d029466b6381ab23a3e6970d35328f91a647d6b809d778a1">
+      <source xml:lang="en">- /{0}: compiles the target using syntax-only mode.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0cbc5de14021afbd0e1cccd7dd745dc21880b68196e2c578d7ddfef8daa9520c">
+      <source xml:lang="en">- /{0}: validates a patch file (.ptm, .zip, .upd).</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ff05af4c8317afc61256491d7fa2589411b724aa13f580d6a8fd4b21e143b1f6">
+      <source xml:lang="en">- If you provide only a single name (no spaces), it is treated as the target.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++e9a2a70b1c291950c7b585315ca3af592489aa0fa5bdd3306553be30a065b0da">
+      <source xml:lang="en">- The command is executed on the current server/environment.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++1673ab9b3c2d382ff3fdecba29d825dfc403dbc8813e8ea1d673e0489d92f433">
+      <source xml:lang="en">- current editor: editor, current (default)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++59ad1fa8cc2707e0183481f6b9ecf973f2497abf5c484121b3d3760772e0dc6f">
+      <source xml:lang="en">- file: relative or absolute path (ex: src/meu.prw)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++40ec0b71c4aef181b8d9adf50ab0dafb59c40980709947146028d3d8c453d376">
+      <source xml:lang="en">- folder: relative or absolute path (ex: src/modulo)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++504782201323aaeb0542670cf8907bf85f23551750c27a0ef1a052cc0eccfbca">
+      <source xml:lang="en">- format=markdown|json</source>
+    </trans-unit>
+    <trans-unit id="++CODE++3b11b52568dfdf7da5e72e105098060c7ef5ab4ce7d148708b878abd1e192fa9">
+      <source xml:lang="en">- max=N</source>
+    </trans-unit>
+    <trans-unit id="++CODE++b2af106e2e95db7d2d423196bb87d1cea6e43e70f8170a65a2d407f05dcb8a9b">
+      <source xml:lang="en">- only=all|error|warning</source>
+    </trans-unit>
+    <trans-unit id="++CODE++3b90f7abd9c015c69cd84c3d72148b67d6a5bcd2d5d8db7721da5507821cc4d7">
+      <source xml:lang="en">- open editors: open-files, open-editors, arquivos-abertos, fontes-abertos, arquivos abertos, fontes abertos</source>
+    </trans-unit>
+    <trans-unit id="++CODE++5c64a70edb641d14f24a87e10d9f9eb5f1e35369057e2c5718f79c13ce123b94">
+      <source xml:lang="en">- sort=none|file|severity</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0454e27b947c8ef4ccba075704ae91071f4113dd708eecd5a256e707724a0678">
+      <source xml:lang="en">- syntaxOnly=true|false</source>
+    </trans-unit>
+    <trans-unit id="++CODE++b16146c227c480d45593c91368bc5ea71ab07f20f228775faaa7ce40c1cc36d4">
+      <source xml:lang="en">- workspace: workspace, ws, all</source>
+    </trans-unit>
+    <trans-unit id="++CODE++91679387f4882822ba7da871bd0ee9069298d14e7eff27a70aaabca8ec73b4d4">
+      <source xml:lang="en">--forceUtf8 deprecated. Setting will be ignored.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++43b80f2d50527aba6790dab2e1eb06c3978d4a3949d04d34787f038dc53c469e">
+      <source xml:lang="en">. See log for details.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d3711f47b53cbbff701820ac079cd74e4ed557dcaa0755b975b8c016eb852efd">
+      <source xml:lang="en">...1 additional file not shown</source>
+    </trans-unit>
+    <trans-unit id="++CODE++e75869fbe8b1c0131ba14d717b8b6d04e3e75a6f1c9d50f310f0a8c099f6fe57">
+      <source xml:lang="en">...{0} additional files not shown</source>
+    </trans-unit>
+    <trans-unit id="++CODE++3dcd08164c33cab7518c900097d963d7094743a3df5e11ce8175b8025dac30f2">
+      <source xml:lang="en">Access password</source>
+    </trans-unit>
+    <trans-unit id="++CODE++9d12ee244af617d9f5d9f27822cd73efa1133de841b1164fc93f737e855510cd">
+      <source xml:lang="en">Action required. There are patches with validation problems.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ff8059dc6752afdd30d275932b1d5031a2ec854b387a8c57ecc6689915293a43">
+      <source xml:lang="en">Actions</source>
+    </trans-unit>
+    <trans-unit id="++CODE++b49c81b7b51d166831786c9457cfb4ffd561841be61244909d5768fbe55e927c">
+      <source xml:lang="en">Active:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d91ea6ff1b6bf7ecca3fe0f2f8a2c80bdb9d113228f6b45a5360d62cfd0a7d1c">
+      <source xml:lang="en">Add Server Fail. Name, port and Address are need</source>
+    </trans-unit>
+    <trans-unit id="++CODE++56ef8f20955f256423d328f65b62106005252551db25d660031887e421cb4684">
+      <source xml:lang="en">Address</source>
+    </trans-unit>
+    <trans-unit id="++CODE++af107e6f52e32071b8718ad56f10aa531b41d0da87dd9b426571f2211a6a051a">
+      <source xml:lang="en">Advpl: loading</source>
+    </trans-unit>
+    <trans-unit id="++CODE++6fdbc3859064d02162ad5549aac34c5e356580db980779057a9eb559da747ffc">
+      <source xml:lang="en">All Extensions:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++e4dff31c73225fac59098e3e41c103fd80e0fe01e335edce6543eb16dc122665">
+      <source xml:lang="en">Allow multiple directories</source>
+    </trans-unit>
+    <trans-unit id="++CODE++49672e27a6bb09845f99b083e134ae81a60d8dc8d903cec1da4c6714a43d5e6a">
+      <source xml:lang="en">Allow overwrite default</source>
+    </trans-unit>
+    <trans-unit id="++CODE++31e392d1c0378beca611de66c0f4c71cba29159905cc54242d9bddee5b23d851">
+      <source xml:lang="en">Apply</source>
+    </trans-unit>
+    <trans-unit id="++CODE++01bcfe7a9296b6d6b79c9c704b89cd2c04294989d1846726da26bd622eceab65">
+      <source xml:lang="en">Apply Patch</source>
+    </trans-unit>
+    <trans-unit id="++CODE++23febe05ea52c943813e703841f3799c49b8145936a4fe0fa262ab6ff5a0bff9">
+      <source xml:lang="en">Apply Template</source>
+    </trans-unit>
+    <trans-unit id="++CODE++bf59f45fbf50087cbd3167a072305a5f73b2063aa99b75fd293faa1d79f95b1a">
+      <source xml:lang="en">Apply old files</source>
+    </trans-unit>
+    <trans-unit id="++CODE++09c845ab8d7ae71f0ac488f923c4f5d115446f4bb3dd8975fa72c06f565194c0">
+      <source xml:lang="en">Apply outdated patches</source>
+    </trans-unit>
+    <trans-unit id="++CODE++038e4360af6d859d8d2f694e9fd5bf0ba6dabfda16e065a1d1c4fb7bd2965b8b">
+      <source xml:lang="en">Apply/Close</source>
+    </trans-unit>
+    <trans-unit id="++CODE++7b908657490f450642f1fa1f09678cda857663510ce24095dec99e06296f911e">
+      <source xml:lang="en">Applying patch</source>
+    </trans-unit>
+    <trans-unit id="++CODE++6084f58eefa92bfbb76daaa502c66ef4e4e43c8c4b8218a6605fc19036ce02ca">
+      <source xml:lang="en">Applying template</source>
+    </trans-unit>
+    <trans-unit id="++CODE++63075628ab6bb140f11a2da95c7156f2bfbcf3c4fafc2a975cda012a381fcacb">
+      <source xml:lang="en">Are you sure you want to apply patch file {0} in RPO?</source>
+    </trans-unit>
+    <trans-unit id="++CODE++71912ce2c9a3f1e9ebc3efb2a963e135c1e56b5f3b7403a5ed46d70e6cd806fe">
+      <source xml:lang="en">Are you sure you want to defrag the RPO? (This process may take some time)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a3086be25bb480178b435dca62a20d0259edd188548a6ed0cb2d5929282f7b66">
+      <source xml:lang="en">Are you sure you want to delete {0} files from RPO?</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ad64e33d253287920db96c476c2c4760c22f281197ff76af2ce4828d50c8734a">
+      <source xml:lang="en">Arguments (-A):</source>
+    </trans-unit>
+    <trans-unit id="++CODE++83e7dd079f469bcf1f9ee707377d07acbac09659b8d00dad3e31811e1d533f6b">
+      <source xml:lang="en">Authenticating user [{0}] in server [{1}]</source>
+    </trans-unit>
+    <trans-unit id="++CODE++66880d2d8216260d201917a72eb245440ef18ba9b54c070ee39aa4c343ae126f">
+      <source xml:lang="en">Authentication</source>
+    </trans-unit>
+    <trans-unit id="++CODE++2bcb5435984c0a99fc9c297d711da81ef793b7468f73ebf81f8224a0e01e0a81">
+      <source xml:lang="en">Automatic update stopped.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++43910082cfb39dc3f57932d89aa4a3ceae8ee6b1e497ab1ad34e925f517bd492">
+      <source xml:lang="en">Available commands:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++862654cbff13df4d13bc7f28b155214aa1b355883b88d164e9836e3699ea579e">
+      <source xml:lang="en">Awaiting validation</source>
+    </trans-unit>
+    <trans-unit id="++CODE++8234be50f52f3061db8092c68cae8b4addcf397a634b96629b39149f1bc416f2">
+      <source xml:lang="en">Block new connections?</source>
+    </trans-unit>
+    <trans-unit id="++CODE++c1e75128adb88b91b6fc72966dcd94bd3928ab5ccaf450ffcf95710affc4b82c">
+      <source xml:lang="en">Building...</source>
+    </trans-unit>
+    <trans-unit id="++CODE++fcb00325d81434ab1cfdb02aec352ced6809c52fcad438559fe5a00d33d88a8e">
+      <source xml:lang="en">CTree ID</source>
+    </trans-unit>
+    <trans-unit id="++CODE++19766ed6ccb2f4a32778eed80d1928d2c87a18d7c275ccb163ec6709d3eb2e27">
+      <source xml:lang="en">Cancel</source>
+    </trans-unit>
+    <trans-unit id="++CODE++b28855a36f60db379bf608364add98876ef8ac41cab5b96811b7b84f69374139">
+      <source xml:lang="en">Cancel Debug </source>
+    </trans-unit>
+    <trans-unit id="++CODE++f524a4e15bc7bb994291901467880c201dd51739636ec7bb387d71777d0afafe">
+      <source xml:lang="en">Canceled by user.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++20142435552e43f841ddc9ac3622f578b56d0bf7e0fa10c8ecef2d8c83e4b6cf">
+      <source xml:lang="en">Cannot find a program to debug</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ce9eeb210e10d9d61a40ae46ac00860154b33238ed2f0d8aa9fbb9bbcf3f17bb">
+      <source xml:lang="en">Capture Logs started. Reproduce the problem and close the grabber.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++b4dae6deb2cca2f6baaedf659398ce6f5b6944d25e0669a5e6366fc4019fc639">
+      <source xml:lang="en">Capturing logs ... Click here to close.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++fdb1a7759d1c378950eba94be74a23db7b434bfdde8b289413b473a39b0f5aee">
+      <source xml:lang="en">Change Environment Encoding</source>
+    </trans-unit>
+    <trans-unit id="++CODE++2ca91eb39a9993a9eb8581e996b6d33c6dc4dad39233a25c14b02171bd4f2bcc">
+      <source xml:lang="en">Checking syntax...</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d26b11ac3d4b88b63be25b77ad1449e42a7b066e551bf174e9d6df083626ccba">
+      <source xml:lang="en">Choose launcher:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++6c505c0f709f9f1d3aab14cf12c8f8e53339e8d82d85662e6a466f87b7def0ec">
+      <source xml:lang="en">Clean Key</source>
+    </trans-unit>
+    <trans-unit id="++CODE++30b97e5ebbf8af5d07bdcf3f43759b9f33ac37e561b6e76077d8b04ee69ed090">
+      <source xml:lang="en">Cleaning current database...</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ddceb7adfdb8816e4747bc48a2221702e830340e5596a701dc0993766eba5e60">
+      <source xml:lang="en">Clear All</source>
+    </trans-unit>
+    <trans-unit id="++CODE++b452ec0fe43bbaf6db6fdb94e4f8376addca3ea089590deebbb1f746d2f2bb1b">
+      <source xml:lang="en">Clear Compilation Token</source>
+    </trans-unit>
+    <trans-unit id="++CODE++460069313d6172f1943fac7121be173df7f98fbb268442bd70bd5a51f5ae8dc2">
+      <source xml:lang="en">Clear Selected</source>
+    </trans-unit>
+    <trans-unit id="++CODE++7d9eb7acb13e24625c404401d8e88b2350e32162455885f18276cf802f7701ed">
+      <source xml:lang="en">Close</source>
+    </trans-unit>
+    <trans-unit id="++CODE++41c2fee00db96602d59a047f0a7753f15df14f4449fa30f25d2a78ef1d089827">
+      <source xml:lang="en">Closes user connections</source>
+    </trans-unit>
+    <trans-unit id="++CODE++8fd3325a1beaca9ae90d4a1de4415d7753431d840ed4bc8b1b962745827c024a">
+      <source xml:lang="en">Closing connections.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a75d075ecf19f5e734c6484752a033162d33acdc959143995d4380d9c403327a">
+      <source xml:lang="en">Collection has already been started. Reproduce the problem and close the grabber.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++44f5e3fbec57be75ebfb2e42caf7f5ee1542f84748a0380b6f20238c4a257e1b">
+      <source xml:lang="en">Comment</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a2bb091d4ce1d4c4792295245cf3e27c068294ff233ddc4ce92c1cb18f4d49f8">
+      <source xml:lang="en">Compilation Result</source>
+    </trans-unit>
+    <trans-unit id="++CODE++1388bcd5cf7b893f1300265416359adddbfb8f5d4aea080815fe5da919b33dde">
+      <source xml:lang="en">Compile Key</source>
+    </trans-unit>
+    <trans-unit id="++CODE++e7038f9d9984bc996dd137de8e01eed288a4bd8ccbb14fbae4e684a8af84dee6">
+      <source xml:lang="en">Compile Key File</source>
+    </trans-unit>
+    <trans-unit id="++CODE++54b39860bb5a74bc265bf21b0147dca46f377d082145842673abe85003423a5f">
+      <source xml:lang="en">Compile Key ID</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a9a7ebcea1b5ec4dbcd1c8b71eb147b7d5c9e2924d9bb9d0c8c9310f79668b98">
+      <source xml:lang="en">Computer Name</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0b9606a2e8e59ca4d010c547d4728d1f29523d7fd242a7b1c6b59894b03362e6">
+      <source xml:lang="en">Confirm file deletion selecting the option &apos;YES&apos; in the form displayed on the bottom right corner.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++5b88e0012fe10ab2854cad91a54546844f811620a55f9f1d4f78b357bc32009f">
+      <source xml:lang="en">Confirm the server stop?</source>
+    </trans-unit>
+    <trans-unit id="++CODE++f36015c74a9879cb672315144f860146584ad59c8f3ff0f1c0007b0815bc83c2">
+      <source xml:lang="en">Congratulations, your extension &quot;totvs-developer-studio&quot; is now active!</source>
+    </trans-unit>
+    <trans-unit id="++CODE++dca4ea398cd28b447fe79e0465ab90db9cd60993b4a1677aea608b1cb97045c0">
+      <source xml:lang="en">Connecting to the server {0}</source>
+    </trans-unit>
+    <trans-unit id="++CODE++639a40e82b9a96f0cbeed5f006cf5634c8d1b990b3c83753c00a910fc268d2a6">
+      <source xml:lang="en">Connection</source>
+    </trans-unit>
+    <trans-unit id="++CODE++52a74e1ffc3f1baa685443bd9022d6e1a97711cb8cacfac1af79a747c7e81441">
+      <source xml:lang="en">Connection Type</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ebcc077200282a62b41f54504c43656a19bc0243ded794a19508c65eeb0c0599">
+      <source xml:lang="en">Content launch.json:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a7dff15edb85cec4ce64b87e318a6a8866abb18ae8e0cdf5dc3195877d5b687f">
+      <source xml:lang="en">Content servers.json:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0735d2d10f02562a7afa1cacdd8f02260cf3a70cc0a470f4d683a8505c7633f1">
+      <source xml:lang="en">Continuous Dispatch</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d85c66ff7539af49807c0a5dd3deeca0c8798d2c4deff2705a8a9aff0f1d8755">
+      <source xml:lang="en">Could not block new connections.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++7352b4355b3edd0a9fd89c635efbbaac0fa33f1d10d42dff1a536da255ac42b2">
+      <source xml:lang="en">Could not reconnect to server {0}</source>
+    </trans-unit>
+    <trans-unit id="++CODE++b6508d3bdf6354a6101be58377f34eebad0ba1ed4646e082c082fc25350f3e87">
+      <source xml:lang="en">Current database cleaned.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++1c835ad4fdb0ae2e4c7f568a28ec7e4ea619f1871b86e51d4a8afe545cb4925d">
+      <source xml:lang="en">Date Patch</source>
+    </trans-unit>
+    <trans-unit id="++CODE++f0173ebe6b7e7e9e1ddbd7f72d9fee2dacacb7b26312665a4552d6a88d696968">
+      <source xml:lang="en">Date Rpo</source>
+    </trans-unit>
+    <trans-unit id="++CODE++8d5a17af73c33aae04063a64c2767fd8097c3da7269e00c6c25376ffd98ac5d6">
+      <source xml:lang="en">Debugging using SIGAMDI or SIGAADV may result in unexpected behavior, instead use the modules directly. Do you want to continue?</source>
+    </trans-unit>
+    <trans-unit id="++CODE++b199d412c430ace1915a4da23de9cfa206ef499d2fc1fbf57c0d73b40a360757">
+      <source xml:lang="en">Defragmenting RPO (process may take some time)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++55226865458ec7d8a1d96632ad52956490a00b12fcf84cc83266d8f61e4ea440">
+      <source xml:lang="en">Delete File From RPO</source>
+    </trans-unit>
+    <trans-unit id="++CODE++6662750e03313bddfa42b765f5755e2eedd8f3b15020ae3551466c06053dde5e">
+      <source xml:lang="en">Delete Selected</source>
+    </trans-unit>
+    <trans-unit id="++CODE++12f823bdf10198697097ef83e7b6027f3ec714dd0c1dd26e3c55ef14a361103a">
+      <source xml:lang="en">Deleting source/resource from RPO</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0cf2814604b4c9ad9139ebf7792b197fa2072052a8d17467bb33abc6bdce7be4">
+      <source xml:lang="en">Description:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++fb5f27d5457c464102286366ef3827b11923e7f3aa1faa7eea95249e36a39abf">
+      <source xml:lang="en">Detail</source>
+    </trans-unit>
+    <trans-unit id="++CODE++24a4b4db6a7336b8d7f0958a743fd77a62cb4593ae60accaaaa6942d5073b0b1">
+      <source xml:lang="en">Disable Compilation Token</source>
+    </trans-unit>
+    <trans-unit id="++CODE++457d9ed6a6ff854eb4498ddabfb8f4bca6a621fee8d09268836cd4e4b4c76a55">
+      <source xml:lang="en">Disconnect all users</source>
+    </trans-unit>
+    <trans-unit id="++CODE++bc8480d21025a837983d9b44723d91ef80af39acfec00cfada25eaf32d58b645">
+      <source xml:lang="en">Disconnect selectd users</source>
+    </trans-unit>
+    <trans-unit id="++CODE++adc21f60d4c01605fed20f0364830d83b871c83cf4a2f81d34a3418c09f938c9">
+      <source xml:lang="en">Disconnecting [{0}] from the server </source>
+    </trans-unit>
+    <trans-unit id="++CODE++f04a16518165126f4bfea606b080d57da6cbe88e912d3abb69dde22f682da9d6">
+      <source xml:lang="en">Disconnecting from the server [{0}]</source>
+    </trans-unit>
+    <trans-unit id="++CODE++787254cf086dd887a5a92837c2e8a0b857ee8596bfce3bee0bc36fd3d603329b">
+      <source xml:lang="en">Disconnecting monitor from server [{0}]</source>
+    </trans-unit>
+    <trans-unit id="++CODE++700d1a9a7816fa8eb03c0380dc700eb212a72491d7127e794ade540cf85b9fab">
+      <source xml:lang="en">Do you want to configure Copilot instructions for this workspace (improves accuracy)?</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0e0b32d2f0e002c927f26686984dcdc2a13e83289fed86a5dccd3a36ec5c4a69">
+      <source xml:lang="en">Do you want to save the changes to the following {0} files?</source>
+    </trans-unit>
+    <trans-unit id="++CODE++af3eb91628925f8931a2679a83052705594c951e55237f481ec130d881f02624">
+      <source xml:lang="en">Do you want to save the changes you made to {0}?</source>
+    </trans-unit>
+    <trans-unit id="++CODE++e5d1b4559e2abe68f752c2772dbb2b48f779d44ce5203636152e99681040666f">
+      <source xml:lang="en">Don&apos;t ask again</source>
+    </trans-unit>
+    <trans-unit id="++CODE++2c2b92683864102b22faf34e446c872b9872ef4391df848391ad441ba0ac6507">
+      <source xml:lang="en">Don&apos;t save</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a597b4bf1f7dfbdce7570cfcb39bbc180c092063e95db988e0baa572710b64d1">
+      <source xml:lang="en">Download the patch from the Update Center:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++bb724e1be0ddb17f1a849f408ec8edd35d097964ef3c4e534c7b64bc2835514e">
+      <source xml:lang="en">Drag headers ...</source>
+    </trans-unit>
+    <trans-unit id="++CODE++4bbe728339ef4a3d8a4b1724a42cd507b57e7a48cd822da80150e748fabf436e">
+      <source xml:lang="en">Elapsed time</source>
+    </trans-unit>
+    <trans-unit id="++CODE++b775d3a6a7545a1515d569fa24cce21253b7129644c0f68ff56d81af8657f445">
+      <source xml:lang="en">Enable Compilation Token</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ffa02b59fd6676e8d224a743c75871117ef27ec071b761d5ec32b60ffd1ea492">
+      <source xml:lang="en">Enable Profile</source>
+    </trans-unit>
+    <trans-unit id="++CODE++eb154bb0f0ad66513852bd7c50ef57c3279aadd06fcaaa50c9546741a142c1bf">
+      <source xml:lang="en">Enable multiple threads</source>
+    </trans-unit>
+    <trans-unit id="++CODE++934d8c023febb9127100f49c01c4433a93281c0936ddf7c65bf4a8cd9a2841c5">
+      <source xml:lang="en">Ending log on </source>
+    </trans-unit>
+    <trans-unit id="++CODE++ba118bf7fc9c1aedc1edb28a0aa86e0b43b681f222af6616e13c43be87815b06">
+      <source xml:lang="en">English</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0f37e7f39229f8e570308c812d9ff7b1702b0add48fd196dcbecc8e7b4647e6e">
+      <source xml:lang="en">Enter comma-separated list of arguments</source>
+    </trans-unit>
+    <trans-unit id="++CODE++7794ce113952f97a68e6187a517d1e06bc060fd184f295a1053ef1c30edacf9f">
+      <source xml:lang="en">Enter the name of the environment</source>
+    </trans-unit>
+    <trans-unit id="++CODE++be6a7e9cfa5274b42636ec19bb36f62a9dba17870570a16a582204ae1568e56a">
+      <source xml:lang="en">Environemnt</source>
+    </trans-unit>
+    <trans-unit id="++CODE++9e471951a1b4106e54be128a21112b02914fe98cc79b2c92b49ee80c5464487c">
+      <source xml:lang="en">Environment</source>
+    </trans-unit>
+    <trans-unit id="++CODE++1889f03338b79bbad8bdcdc925ef5e83069569c17e433174ef9a49f62e7d5ee7">
+      <source xml:lang="en">Examples:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++6469d2d2266dc0ff0c6087fac078f9ea58d6d093245fcbd3c263cabd6dc217d1">
+      <source xml:lang="en">Examples: ERP, ERP/REST</source>
+    </trans-unit>
+    <trans-unit id="++CODE++e05615b7e2a6b9a881e5ff75f05249f497d1bbeb374030e4d0fd31c6ce9c1708">
+      <source xml:lang="en">Exclude Sources:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d8607ab734da29224059db79f89ee2a45696656a89d01c3132fd321cc9586afc">
+      <source xml:lang="en">Executing patch validation...</source>
+    </trans-unit>
+    <trans-unit id="++CODE++1c29efccf85b0d5c47a582dbaabeec29cf2644d060132a608fb718d02a104f0d">
+      <source xml:lang="en">Expire</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d1472624ad42d7f7cbb72e207d780cde9aa3dfb8a3d4deab7da348b5dc737546">
+      <source xml:lang="en">Expired authorization token deleted</source>
+    </trans-unit>
+    <trans-unit id="++CODE++515f8e2c40c80ab47a455f90d7e2ef6c5142c17521f5a5e93cfa2ec18c9b0dbd">
+      <source xml:lang="en">Export as Text</source>
+    </trans-unit>
+    <trans-unit id="++CODE++c725452e35633606cd0761b4cb5203f5c021a1d42bc58f70a010392c2d05852e">
+      <source xml:lang="en">Export filtered items to file</source>
+    </trans-unit>
+    <trans-unit id="++CODE++2025bd88aa6b1522d15e70faeb5b2ac94a5f08b7e3010fc7740239c29f30cd96">
+      <source xml:lang="en">Export to file</source>
+    </trans-unit>
+    <trans-unit id="++CODE++8a955bad94d98f085a43e6519931e0de08ee6554e6cdd9d8711e12c5306f2b58">
+      <source xml:lang="en">Exporting patch validation...</source>
+    </trans-unit>
+    <trans-unit id="++CODE++50009ce1da4d15e1c4a04024df691eed5f0d598e2c4c67092f205366d0adf99e">
+      <source xml:lang="en">File</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d9ecd986a01d2de1275f108c84d0a3697fad2d0698724170f62ecc07fb22eb00">
+      <source xml:lang="en">File Directory</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ca4c37cb4476ae2b0cba406f2d2ba86941c15e9d3a169ed2feb37fd0b9fe07b7">
+      <source xml:lang="en">File Name</source>
+    </trans-unit>
+    <trans-unit id="++CODE++f09560085a80aafa5fbf2408a7c77b1b25810a039cd48dd0aa4c7dd5b9bcab17">
+      <source xml:lang="en">File already selected: {0}</source>
+    </trans-unit>
+    <trans-unit id="++CODE++3efed3de9d4b5170f223c8abdeaafa7e9a9b8884ca0886bd44c6d3c3e72d4766">
+      <source xml:lang="en">File name</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ab63515e28450d60d6883d7396ab1a12c8bedf2931ad6bf82bada87ce3d2bae6">
+      <source xml:lang="en">File not found. File: {0}</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a9851625f41b8ac443dce37ab4fb8c37bd589f4f55e88bffc18283318feab8bd">
+      <source xml:lang="en">File/folder &apos;{0}&apos; was ignored.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++9395e29a927a3a4015df624055dec300a0c4d6244917950623224671960cf75f">
+      <source xml:lang="en">File:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ee9929f1f583e674bbf6c6040d083b304703bef2deef6cb0485aa43f95b23483">
+      <source xml:lang="en">Files saved successfully.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++638e249f4a15ebb84957da130701d138a6e06d88dceeaa2e6dcd91db70cc1381">
+      <source xml:lang="en">Filter</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ec8078871fbd34877507d8e16712caf4384a024a791f49a32e2240469c065bfc">
+      <source xml:lang="en">Filter, ex: MAT or * All (slow)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++80df88f839e8f0f8eecf8f8b38ebda2f661b5b4875245e0652920df1a85bda8d">
+      <source xml:lang="en">Filtering on/off</source>
+    </trans-unit>
+    <trans-unit id="++CODE++fca387c1a8d3dea2ced56f49774bbaaacf21427e12a2c63540e7a2675853fd35">
+      <source xml:lang="en">Find source/resource in workspace</source>
+    </trans-unit>
+    <trans-unit id="++CODE++8a04c8a8eb9526eb5ef59b61669bc54affe4e32c78ff8fce289fd892fb33a1da">
+      <source xml:lang="en">Finish log capture.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++787bd5ae3f4ed35f3eb82e05b972e5b7fdfdc741e27e80f755cc17123fee8fab">
+      <source xml:lang="en">Finished.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a151ceb1711aad529a7704248f03333990022ebbfa07a7f04c004d70c167919f">
+      <source xml:lang="en">First</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0bdbb750609ca61cb4a59ff84d565d437a5cd9a1abeb8abc0aaf243ceaec70b5">
+      <source xml:lang="en">First page</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0b70518b64c0ee12156b1fe46997f934026b8accb504638131de43fed475566d">
+      <source xml:lang="en">First start logging</source>
+    </trans-unit>
+    <trans-unit id="++CODE++3ece0b427ce4d896ea19efae409a7df690dc7a507b22fc1619a914164c57f813">
+      <source xml:lang="en">Folder not selected. The process will not continue.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++3a018bc37eb13bdd8b63405fb5642a84065cdb53fdeb5d4e841238adc4c78623">
+      <source xml:lang="en">Folder/Group (optional)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++90c36b5b3d371104734490a032da2593448c81c1f9d6f9fbaf938d1911d9252d">
+      <source xml:lang="en">Folders length:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++f8012df3331fa3e82a8ee6b8081459b2ab94ba2b9183fbdd437b1ebf6be1153c">
+      <source xml:lang="en">Functions Inspector</source>
+    </trans-unit>
+    <trans-unit id="++CODE++49e49bb4401e67bd54ffe1e9ab6c2af87ddad0cdc8ca1c84ba1b4e94234438ba">
+      <source xml:lang="en">Generate</source>
+    </trans-unit>
+    <trans-unit id="++CODE++5389c2cb1ba688c0c11118da2c4d0871a28a116f6e9ef5c4b8bb551ac6399bf4">
+      <source xml:lang="en">Generate Patch</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d5a64226f6cb7e5c35a12a4ff882b4594396d31e3b73a3a4e28e64aa639f87ac">
+      <source xml:lang="en">Generate WS</source>
+    </trans-unit>
+    <trans-unit id="++CODE++c39dd3ed1cc16f268d95cbf4b0cd8f6e68cf7272ae211e9ac9816ef39e3933f5">
+      <source xml:lang="en">Generate WS Protheus</source>
+    </trans-unit>
+    <trans-unit id="++CODE++c54030cbc1d9e57bf53d9d8cea69a935347366b49107556a0a1953e2254c5417">
+      <source xml:lang="en">Generate/Close</source>
+    </trans-unit>
+    <trans-unit id="++CODE++827ec8d9f99d052149cd4fce69d14f57563bd5c972074172777670c36907a5a7">
+      <source xml:lang="en">Generated</source>
+    </trans-unit>
+    <trans-unit id="++CODE++c7107175191436eb55e7271e43e636b598d8c80cbf2a9a32ac42bc03222f053c">
+      <source xml:lang="en">Generated:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++5ed2caf03a7a67751d10250f60e06e7a6068f79eba1141525b9debee2a2f55cf">
+      <source xml:lang="en">Generating Patch</source>
+    </trans-unit>
+    <trans-unit id="++CODE++f04b429a9e738cf69a22b0560d37da9c56f2535066221464881ee471f72b01e1">
+      <source xml:lang="en">Global Include</source>
+    </trans-unit>
+    <trans-unit id="++CODE++e897e4b19491681fac35a60fbd59718b233272166fe76575c8db7331761c2095">
+      <source xml:lang="en">Grouped by:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ed54726522531c78af146fa05b7e74568549f91c94b481fd76279712d36212eb">
+      <source xml:lang="en">Grouping on/off</source>
+    </trans-unit>
+    <trans-unit id="++CODE++5e0fb1d3a455c4ba51b194cfdb696d2c9b475408c685d177f16cdb07e00bcb02">
+      <source xml:lang="en">I authorize TOTVS to collect information from my development environment for technical support purposes</source>
+    </trans-unit>
+    <trans-unit id="++CODE++05559b81a86cd0df76492919d336c77f596b4c6d68edb4528757b0ee855e0125">
+      <source xml:lang="en">Idle time</source>
+    </trans-unit>
+    <trans-unit id="++CODE++bad5243e5cfbca3d7f2e87ee39094bbac550ff02e08ee87e85e81103d06b62b2">
+      <source xml:lang="en">Ignore files</source>
+    </trans-unit>
+    <trans-unit id="++CODE++12865ff5436fee25494ec723c7ed8f5e2c07dbeff5e2965e9971ad110db22433">
+      <source xml:lang="en">Ignore files not found in WorkSpace (debugging)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++2cff9baabf56ca002610e113bc94deb6ededddfc3c130365b6e88ed5195bf774">
+      <source xml:lang="en">Import</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0aa7e8216852896f9a4b85ea9053033e314c410c670ef44dc48476757ab7ad1a">
+      <source xml:lang="en">Import Text File</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ae90f988ae145ba2f8f821142d8133b073fa305cd02d9dbee63aea39d087918d">
+      <source xml:lang="en">Import only the sources information</source>
+    </trans-unit>
+    <trans-unit id="++CODE++3736d05c3306bcfbd853d920d855cd53015e865eb128e1f3e998c8fbef645504">
+      <source xml:lang="en">In order to delete a source/resource from RPO follow these steps:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++7285576bdacf86fe37274d3d0d399c29b4be2959005f60ac0729615d8fca9186">
+      <source xml:lang="en">Include</source>
+    </trans-unit>
+    <trans-unit id="++CODE++844a3aed6fd4542848922d90ef63fb8b93394ab55c7a756518e89a2a0ae3d51d">
+      <source xml:lang="en">Include Sources:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++f12472921ca1584423cb1cbbba6ba46502b79940b9582ef9152b25ebcc4daf39">
+      <source xml:lang="en">Includes directory</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0ba71e951cdf0415004e580fd34a6afda380436e080fe3fabf8555360b25d0a6">
+      <source xml:lang="en">Includes directory:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++5f5cc567ed63a7d2d99c7aaadb0a4d48502ed969f14a351adecf1b6454654a77">
+      <source xml:lang="en">Inform the Patch name or let empty to use the default name</source>
+    </trans-unit>
+    <trans-unit id="++CODE++3ad83ed2f0bb77c84bf89e880b46b429ae996a82e2f2820c762b92e5a79cb1b8">
+      <source xml:lang="en">Input Compilation Token</source>
+    </trans-unit>
+    <trans-unit id="++CODE++470f7ede50ee2113a8f6d30d7d72d294ec92088e2682ba17bcfa54ddf2f287d9">
+      <source xml:lang="en">Input RPO token</source>
+    </trans-unit>
+    <trans-unit id="++CODE++934652dce41d62d3c9ff34b2c5e44e3addaedc67d6137328a9fe75a63c51dbac">
+      <source xml:lang="en">Instructions</source>
+    </trans-unit>
+    <trans-unit id="++CODE++56f6469718034fe3045122c6a328218057c9170cbf17f777099137ea61471b4c">
+      <source xml:lang="en">Instructions/sec</source>
+    </trans-unit>
+    <trans-unit id="++CODE++3cb5b00d93daba29b5a97e153c7dd58d4754505808f3c7a70b37123b269e1214">
+      <source xml:lang="en">Interval between updates</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ee172faa9c17e8e5f4b63ef56d6d6863a48c223de152be43781305c99e143200">
+      <source xml:lang="en">Invalid key</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0b87760abf309085ade647a578bafaffc415dc8d5bb0c1311d9a27b0752cda49">
+      <source xml:lang="en">It was not possible to authenticate to the monitor at [{0}].</source>
+    </trans-unit>
+    <trans-unit id="++CODE++071f4f57e635b1891f66ef77aca9c4a279c23a9c1819c68bf9c1fc60a746a03a">
+      <source xml:lang="en">It was not possible to make the monitoring connection at [{0}].</source>
+    </trans-unit>
+    <trans-unit id="++CODE++fb8e7a1a3cb7b25d262793159145759e97eb540a2b61dbbdf8f58841a81cf1a8">
+      <source xml:lang="en">Items</source>
+    </trans-unit>
+    <trans-unit id="++CODE++66a549487683e1b1b70c1a5f23b61ca07594b49a991ebb70d6b50efaa32e5fd5">
+      <source xml:lang="en">Items showing</source>
+    </trans-unit>
+    <trans-unit id="++CODE++915b2c44485b906baef5d059aac6c846f1353f64ad9cd151bff9689e7b055ea9">
+      <source xml:lang="en">Key successfully validated</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0d109896b40761688131ac3226542a2c32251e29efdbaafde6a7b1e74fb55035">
+      <source xml:lang="en">Language (-L):</source>
+    </trans-unit>
+    <trans-unit id="++CODE++eb970eb0951c6cdeac1ec0cc723fc91e30b0c26ee6f3b5ee0e574db7f487dc55">
+      <source xml:lang="en">Last</source>
+    </trans-unit>
+    <trans-unit id="++CODE++4543708d11967ea1ab15c9a0f8a5be6168d6e896ab5423ded063052f6d65169b">
+      <source xml:lang="en">Last page</source>
+    </trans-unit>
+    <trans-unit id="++CODE++c96f69e4da8ec7ea7aac25d13dc1ef1ce0b5d1ba92ba73cea3b00f3680ac809f">
+      <source xml:lang="en">Launcher Config</source>
+    </trans-unit>
+    <trans-unit id="++CODE++525798fdefd9014026229d185ac34fe36b136e8e4a13e156f748d898de0782a8">
+      <source xml:lang="en">Launcher Configuration</source>
+    </trans-unit>
+    <trans-unit id="++CODE++5f80b47d8f855450bc8c70a6f1ddd74138d739f9d51d3ad63c07bcf23faf835a">
+      <source xml:lang="en">Launcher Configuration saved.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a49b6b478f14b2bbc3f42f530495e1ba4ee30b4d5ecbc65193d70018bee6f3a6">
+      <source xml:lang="en">Launcher config name not defined.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++67520b3eeacbc1aba53cd08109c70084ec5d3c46aab8b5431d175ff670056f58">
+      <source xml:lang="en">List of folders to search for definitions not configured.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++b9bdebf7173e3ed345d9feb6cffc25444ba17c950b2cb21d51743e374a19639f">
+      <source xml:lang="en">Loading RPO content...</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a675bc62c2bde7c59d23681452e6f045e338bf23d123d8cc0144c66fec5b173d">
+      <source xml:lang="en">Lock server</source>
+    </trans-unit>
+    <trans-unit id="++CODE++9cabc0f4ccd13824079e509f00adc4fa51337a6a478460b43db8b3f029375139">
+      <source xml:lang="en">Log file successfully generated in</source>
+    </trans-unit>
+    <trans-unit id="++CODE++fd21cbcc992d472dfa20734bd3ee9fd0f540bfb3cc4eac5d148026e15b40133c">
+      <source xml:lang="en">Memory in Use</source>
+    </trans-unit>
+    <trans-unit id="++CODE++2f77668a9dfbf8d5848b9eeb4a7145ca94c6ed9236e4a773f6dcafa5132b2f91">
+      <source xml:lang="en">Message</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d2fc53dc4ee8e4b9042d712a3c3ccd22d704aa32f25c6bb73df4a251df5a52c6">
+      <source xml:lang="en">Message Text</source>
+    </trans-unit>
+    <trans-unit id="++CODE++c3c2ff57e9973ed5d78fe2537e59eb74972a449f03d9ec71d6dab957a4a95cdb">
+      <source xml:lang="en">Message sending</source>
+    </trans-unit>
+    <trans-unit id="++CODE++18297b836e8ea091f2887e25fc86c22c12786300b09f00d7f43be08d684256a9">
+      <source xml:lang="en">Module:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++4c2e1df4570bebd69829cce149ba6421d1589b3d7cfab3c833e921b9da0798f2">
+      <source xml:lang="en">Monitor</source>
+    </trans-unit>
+    <trans-unit id="++CODE++948c046272d1a8ca83acd13eeddb5f9e143135dc0ad7aa7f445152fe820cc5f5">
+      <source xml:lang="en">Monitor paused: {0}</source>
+    </trans-unit>
+    <trans-unit id="++CODE++175821541f1002d7add3e2e3141204f91829250b0edaaf5c184f0280235da72a">
+      <source xml:lang="en">Monitor tab is not visible.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++86aff4e280140488062f8e376474887ede0457ef7f8704d894310de8417b6714">
+      <source xml:lang="en">Monitor: Updated as {0}.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++658638253b10f595fe504e60f338295bc81211565e45490f5a9679b3a3ada62d">
+      <source xml:lang="en">Move server to group</source>
+    </trans-unit>
+    <trans-unit id="++CODE++198e961af6968b9b8593248ebd1bcbd81c40c2eca6963ff0007504b4132f30b8">
+      <source xml:lang="en">Nenhum token Totvs Identity encontrado para o servidor {0}.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++001b9a58eabee00431c71e4ae93a9711c643542b05130e967081ad05965009e0">
+      <source xml:lang="en">Never (don&apos;t ask again)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++784388e5a9dfac39cd516f52c5afc9a14bd8609a51b08c3f03aa5c53db2e4308">
+      <source xml:lang="en">New Server</source>
+    </trans-unit>
+    <trans-unit id="++CODE++39fe4fa85dad7e251a6e719cbcf50aad758d6a2dffabb4821bc032019f1181af">
+      <source xml:lang="en">New environment</source>
+    </trans-unit>
+    <trans-unit id="++CODE++c4c2792294d4a70b03d901fba5eeb84b1f6c72de9673c3a01a70ed65e3a98300">
+      <source xml:lang="en">Newer patches available. Click</source>
+    </trans-unit>
+    <trans-unit id="++CODE++47a055dc66bd54745cf0ee2d9041106b39a74ab247db05eb3884a4d4132380ef">
+      <source xml:lang="en">Newer patches than those selected to be applied were found.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++1ff57a29d7c9d11bdf61c1b80f2b289b44c1ea844824d4b94a0d52b6ba5fc858">
+      <source xml:lang="en">Next</source>
+    </trans-unit>
+    <trans-unit id="++CODE++c08ac736a5e29c291b681cbdc15f06901a735f28d2e04645b92cf331861cb8c0">
+      <source xml:lang="en">Next page</source>
+    </trans-unit>
+    <trans-unit id="++CODE++1ea442a134b2a184bd5d40104401f2a37fbc09ccf3f4bc9da161c6099be3691d">
+      <source xml:lang="en">No</source>
+    </trans-unit>
+    <trans-unit id="++CODE++1b545483c23132de5682f8684d3b734b45f33903c616e04f7bdd553a351ab6fe">
+      <source xml:lang="en">No editor is active, cannot find current file to build.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++7c718faac86063890f0a4c396f88278162656a391b5be98bbfd2005d03d0fee2">
+      <source xml:lang="en">No editor is active, cannot find current file to check syntax.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++5b428863326e024cf79e0e4a892003f07b199d10f35de1430a3f188edfb37960">
+      <source xml:lang="en">No server connected</source>
+    </trans-unit>
+    <trans-unit id="++CODE++daf009c1e46c361d4b0de9155dc8146e4de9b9034d3372364c05538b75f1b0bd">
+      <source xml:lang="en">No server connected.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0b0a1f065b851c6fb34fd773c01fdc1e8b398ab72630e4b08bf480f004243a2a">
+      <source xml:lang="en">No server selected. Please select a server to monitor.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++418f989043a85f966216068abae250cb99d6f0f26ecd1b423c56f08112f727c0">
+      <source xml:lang="en">No servers connected</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ba0b03674b9cc43502d6f6105f57e8cf558b63b2386b2a2312ed155d2992b208">
+      <source xml:lang="en">No validation errors</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a0e63d7c7125d29af84d6919af5550529be77c327324940c98c4b2cb13a99c8c">
+      <source xml:lang="en">Not now</source>
+    </trans-unit>
+    <trans-unit id="++CODE++da4f7ea58d963b1a302b76b8fa5570190106c673b9cf2975468b8caea5e27384">
+      <source xml:lang="en">Notes:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++565339bc4d33d72817b583024112eb7f5cdf3e5eef0252d6ec1b9c9a94e12bb3">
+      <source xml:lang="en">OK</source>
+    </trans-unit>
+    <trans-unit id="++CODE++35345eb0d6e8b6abff981c40603cbbe3abff44e9506f67070f961e9a20978ce1">
+      <source xml:lang="en">Objects Inspector</source>
+    </trans-unit>
+    <trans-unit id="++CODE++3d5dfac4ccdda6e417729af780d996104a4a9829170797d795c8fa2a57dd8bab">
+      <source xml:lang="en">Old files applied.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++8e62a64bf665b31d1016cde1373bceef58b2e54c06994796d3bb699c1c26ee63">
+      <source xml:lang="en">Only DPI mode or OLDDPI mode must be selected.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++fac48dafa2f6ad99fb363754812b55bf5eaca89f3bf50aba24b763c17a40ec47">
+      <source xml:lang="en">Operation canceled because it is not possible to save edited files.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++fa5829376f09adc6da4bb13c7454d250b94dcb8a35b23dd7682eccfbaba5d0ae">
+      <source xml:lang="en">Output File Name</source>
+    </trans-unit>
+    <trans-unit id="++CODE++c706096cf63616a22c987e0a0ec56c070a543598c8fc2c709dc58d915d41a504">
+      <source xml:lang="en">Parameter CWB not informed. Setting to {0}</source>
+    </trans-unit>
+    <trans-unit id="++CODE++569b2482a687d9aa4dd67be6a8e4c171621dd01ac251455cfe56b2cc8d1b25d6">
+      <source xml:lang="en">Password:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++7e345470de240d118d52814a74f5c64fabae0f55b122ecb00ffa17a8889ebc7d">
+      <source xml:lang="en">Patch</source>
+    </trans-unit>
+    <trans-unit id="++CODE++dd09779b5c9e43eff4931661b95da298cca3183cdf29d68d9dbdfdb69327c35c">
+      <source xml:lang="en">Patch File</source>
+    </trans-unit>
+    <trans-unit id="++CODE++2953424d96b3f4ba972463093defffdac977bb5d7c792f4eef268048c50119c4">
+      <source xml:lang="en">Patch Full Path</source>
+    </trans-unit>
+    <trans-unit id="++CODE++8e052138899761099a0c5cbfaf000a30029f9687dd8c8c865228883157b51201">
+      <source xml:lang="en">Patch Generation</source>
+    </trans-unit>
+    <trans-unit id="++CODE++122a9c4ab1d9220ee82818fc25e484900128785627ed28c24057befd4a5f382c">
+      <source xml:lang="en">Patch Generation Directory</source>
+    </trans-unit>
+    <trans-unit id="++CODE++96ccf84da8ac964cd90de5a2fe9c904ec6d274b59421266f4f6adf89719532ad">
+      <source xml:lang="en">Patch Generation failed. Please check destination directory and sources/resources list.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++902847d9b7c8716f1d8048cc3bc4f6a9426e1876e345495ce5802eb0ec6b312a">
+      <source xml:lang="en">Patch Info</source>
+    </trans-unit>
+    <trans-unit id="++CODE++542c51d6edd1ccda4d77c8976b57021fff80953407eb1787f91510f87242c40c">
+      <source xml:lang="en">Patch Name</source>
+    </trans-unit>
+    <trans-unit id="++CODE++fb5b86e477fe0cd713d941ec865b25ebe7df36475525167d6e21782aeb076429">
+      <source xml:lang="en">Patch Validate</source>
+    </trans-unit>
+    <trans-unit id="++CODE++2f77dade39fb2400970a898f8f4a40b177c905b7a1fb4da0bb3960c306f66595">
+      <source xml:lang="en">Patch applied.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++b70cc1c1522ad83bb05902f0ec170ca689d8cd092772fe33f291340857ac8c45">
+      <source xml:lang="en">Patch apply denied. Check Output for details.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++937d8e105a2b070333bf892b8bb56652b428aa38904c340776aa947cf7fcabf5">
+      <source xml:lang="en">Patch apply failed. Please input patch file.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d3c3001a2807a7bdadd93fd6700be2df8585b735423f35ab9b8e4e13b3607631">
+      <source xml:lang="en">Patch contains files older than RPO. Patch will not be applied.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++78b3b329cdf167bdf2fb0808d5cd64844570e3ea85b82f8514a37ed59d0a4518">
+      <source xml:lang="en">Patch file generated</source>
+    </trans-unit>
+    <trans-unit id="++CODE++9c294168a725bd5fdafa9a2f652de33b74f29ecc0444a7ad1b73cbd001bc37dd">
+      <source xml:lang="en">Patch file name</source>
+    </trans-unit>
+    <trans-unit id="++CODE++1d662c5d5266ef28342aa6485509453670d87ab952ff293303ebe0d35a2d3ae7">
+      <source xml:lang="en">Patch validate failed. Please input patch file.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++28cd43b14f045addb200053236e76c497f78c83d7a9d008d5feb6a915c95b5bc">
+      <source xml:lang="en">Patch validated.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++67c62590daa9f641f50a9700af01e654ab3eda4687b599b20a40f54e726aba29">
+      <source xml:lang="en">Patch validation in progress.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++eee5b1ff525e22f9cd26e7bb551629f3d56ee4e092c3e143edc4d89473b8c523">
+      <source xml:lang="en">Patchs applied ( files)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++7b53101c9ddd761bab75ad02ff49cc8c9f2e74c993f275710dbf34dbcd1563a9">
+      <source xml:lang="en">Patchs validate ( files)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++62fa5a5b0d3c318835a213e22a4b335c42515443d598741d0413e8c47f9ecf67">
+      <source xml:lang="en">Path</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a9d57a78c8146b06a7a9fd5a04ef769be51c02c52ec9cb27b2f6d0139397060f">
+      <source xml:lang="en">Path launch.json:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++698dcfe773ba6347235cf0f92120c5d3655e93faced9389332c33c1eecbc5f64">
+      <source xml:lang="en">Path servers.json:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++435852d0063b5c8920d718a635784d505f7a510be3b75d1823d331cef4c91756">
+      <source xml:lang="en">Path to your SmartClient:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++437c061975c9ee584c61ecf488d49767602927ffc903be0514768315188b33a6">
+      <source xml:lang="en">Please click on [Update] to reactivate.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0bf3c775adde25a82c3e88e68557613f474116359dc7cc616a5b09d52f23f663">
+      <source xml:lang="en">Please enter the name of an AdvPL/4GL function</source>
+    </trans-unit>
+    <trans-unit id="++CODE++72e9a59f5a1d6289dbacb35df897d6c007c55a27e77018455c37e7b372668475">
+      <source xml:lang="en">Port</source>
+    </trans-unit>
+    <trans-unit id="++CODE++98b01b890687f9a075cb21e9b3015b56d14b05d582b4520105c26ab2e38b8970">
+      <source xml:lang="en">Portuguese</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a57b08a480b822a0a572b993391c292ede593bf8000b406675b180bbb16260fa">
+      <source xml:lang="en">Previous</source>
+    </trans-unit>
+    <trans-unit id="++CODE++1208ec01f223c616b981ee76749e4f435f9c6bc2998d6cc43a9f59d71bd6f697">
+      <source xml:lang="en">Previous page</source>
+    </trans-unit>
+    <trans-unit id="++CODE++cce92b5a9bbb8cd75f0c51e8a7c5e5ad15a6f4f18b039f99b962c528e62a4af7">
+      <source xml:lang="en">Processing... (may take several minutes)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++90920d93e2c7e6323a947c6edb0e31a9702002e329af32a67fea53f221983cb0">
+      <source xml:lang="en">Program</source>
+    </trans-unit>
+    <trans-unit id="++CODE++34a67b11fb2f3eddb350959f7a7b40e7340aedb8f4d45fd2db8be507c0142776">
+      <source xml:lang="en">Program not defined.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++c47b0d11df5ea4a2ce95a2b2d492d2913f61eef283f1234cc95489726f3df042">
+      <source xml:lang="en">Program:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++8ca5be08c5d74e201f18b6b19298deea0a9e64d463ecd300d75d52282868f4b1">
+      <source xml:lang="en">Progress...</source>
+    </trans-unit>
+    <trans-unit id="++CODE++4bb086714345cc5ad2d6e8ab2af0abadd3df2fd3ba4d88918c2b2436be35b9fa">
+      <source xml:lang="en">Read the documentation at:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++83198600a36bdfc8ac9a995e17df32e6c0462c410c847ce237060d11202745d2">
+      <source xml:lang="en">Reconnecting to the server {0}</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0e91610117029a62a478b7fa7df0b8598bebe3ab1e192d4b1882e310719c9671">
+      <source xml:lang="en">Refresh</source>
+    </trans-unit>
+    <trans-unit id="++CODE++894c866ae13774e42a3ad89e58c1e8a5872373cc0700db01bf45fb72e2a98271">
+      <source xml:lang="en">Refresh data</source>
+    </trans-unit>
+    <trans-unit id="++CODE++b5025c735015c2942556c84379ce0c3c4ea792d1fc7d9930a6d38a1ce11220a2">
+      <source xml:lang="en">Remarks</source>
+    </trans-unit>
+    <trans-unit id="++CODE++17ca68f8202d864417b6aa9e1cef07aa7b4a9cec25ac1eacaba7415239a68049">
+      <source xml:lang="en">Removed [{0}] invalid breakpoints.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++5a6e4a9348f40ddf6df26bd5879835be66d0d2fa2e90a28ff7ed5ef6fe3c62ee">
+      <source xml:lang="en">Removed [{0}] invalid breakpoints. See TOTVS LS console for details.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++455d3ed36aeaa082b9617914da5cb3e2dd8e672f04f725413cdbf971a579f941">
+      <source xml:lang="en">Rename the server</source>
+    </trans-unit>
+    <trans-unit id="++CODE++24981969eac6a3dc5916527e02a435800355bd8896be132da6883590c821b90b">
+      <source xml:lang="en">Repository Log</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d4ebeae0fa5cdf52378843e75216917b8f08119fe1c6d6429dd16ff53706e0e1">
+      <source xml:lang="en">Requesting data from the server [{0}]</source>
+    </trans-unit>
+    <trans-unit id="++CODE++3d53c7bc3455181a33fd7161368323d4bdc3b55d9ead347de95227981e3a9e49">
+      <source xml:lang="en">Required information</source>
+    </trans-unit>
+    <trans-unit id="++CODE++3af801caf52cde563ec65f733782da0f8d13572a123a2149e1eab5eac45f1c62">
+      <source xml:lang="en">Reset configurations</source>
+    </trans-unit>
+    <trans-unit id="++CODE++336f62aaa3b0bae6aacc1ef12b6986a871b1fda70e98baa58f58ae3eab089975">
+      <source xml:lang="en">Resource appears in the list of files to ignore. Resource: {0}</source>
+    </trans-unit>
+    <trans-unit id="++CODE++e89b30aa1dc30a6ad8c34610689bede83b3ef645a24c3a84a0990826687fb735">
+      <source xml:lang="en">Resources</source>
+    </trans-unit>
+    <trans-unit id="++CODE++1454fb02962b4594b659a6fa6117a5a0b6575ca8886bd1c7cd1e2037afca7716">
+      <source xml:lang="en">Resources in patch older than RPO. Check Output for details.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++5aac00df38a4b639a4037277abbedb77be2368180e19e17c1e579ea045e28cd1">
+      <source xml:lang="en">Restarting will only be possible by physically accessing the server.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++6e7d50e84f4731ef74187cf8cfa2672184eed8866b0b0074a772f4a64e0f4ba2">
+      <source xml:lang="en">Result</source>
+    </trans-unit>
+    <trans-unit id="++CODE++116fad0053c53a522ced5b7acd28d4e66e8646724608d663e5f41103a7593107">
+      <source xml:lang="en">Revalidating RPO</source>
+    </trans-unit>
+    <trans-unit id="++CODE++995471555d7d5b46ffc96e059173943de7735e8d69ffc37275fafd34c141883a">
+      <source xml:lang="en">Review the folder list in order to search for settings (.ch). Invalid folder: {0}</source>
+    </trans-unit>
+    <trans-unit id="++CODE++7e7f2596c44cb951438b38a91fece4583e91bb5da83421e241c1898e0c0f8658">
+      <source xml:lang="en">Review the folder list in order to search for settings (.ch). Not recognized as folder: {0}</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a310d1c35dec18a5275aaf7fbfc6a9f574052ca462cb342e7ed2bba7f6b05f96">
+      <source xml:lang="en">Root Path Workspace:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++5bcc40adf6e0a2a9c9317f9ac01481271b45ffdd5850d96b562752eee8167b85">
+      <source xml:lang="en">Russian</source>
+    </trans-unit>
+    <trans-unit id="++CODE++1ff3d5d384d8f1496ba048e4fc582fe0ad6f9441f54f08a39749dddd370529e1">
+      <source xml:lang="en">SID</source>
+    </trans-unit>
+    <trans-unit id="++CODE++1509f561f2416598629b886ad7d3c05a7e221e4e0675c84bbff4ee6d9e03913d">
+      <source xml:lang="en">Save</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d3c54e39f768fda85b5681f45846307c84df32568d38c6226ff1d6dc70c702a8">
+      <source xml:lang="en">Save All</source>
+    </trans-unit>
+    <trans-unit id="++CODE++567107bc702a32e2d6d4ea92d75ddabf7c38e6464261acc55d668a0f04b3fac2">
+      <source xml:lang="en">Save/Close</source>
+    </trans-unit>
+    <trans-unit id="++CODE++49c266baaaa70981ea188fa714d5c40cf13830d786a861c9943ae0d26a7f3fe9">
+      <source xml:lang="en">Search</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a265b313f1826fa1a07a5572153a591a6a3e081e8a16d93f005bf118edd5f121">
+      <source xml:lang="en">Search in all columns</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d9a02935e405ef115a557c5f8960e217036ecb45201ba67b37e594c3b1fd677d">
+      <source xml:lang="en">Secure(SSL)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++11062076838e48d8c1639ceb5975e1186def5e05bf051ec94e7f61aad93917af">
+      <source xml:lang="en">Select a file for operation.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++8ffa76d69ad76d491d36c6d0ec8a6814ffdad72f6454cfef64add22b6d6be277">
+      <source xml:lang="en">Select a server and environment in the server view</source>
+    </trans-unit>
+    <trans-unit id="++CODE++bedc68e3c795da4b915d6e9b43f29a6509630ff3d3d3407b25f11a63b9a675a2">
+      <source xml:lang="en">Select environment</source>
+    </trans-unit>
+    <trans-unit id="++CODE++2ed6bf93669da474bfe4a4ea5d3b29da49725e6327353408847be8d15e6e682e">
+      <source xml:lang="en">Select folder</source>
+    </trans-unit>
+    <trans-unit id="++CODE++dadcbdea0685dc637890672674f7d0cbc320a4d623babc6f5a0321c71e9c0557">
+      <source xml:lang="en">Select folder to save the Patch</source>
+    </trans-unit>
+    <trans-unit id="++CODE++794e6464828fd1f67be8803e25cc969707af6d785049841ad8789e081383fd00">
+      <source xml:lang="en">Select server</source>
+    </trans-unit>
+    <trans-unit id="++CODE++dd498251e8818a4851f70f3ad810c5afa3c975d56af2749cd31c350f31f9c540">
+      <source xml:lang="en">Select server/environment</source>
+    </trans-unit>
+    <trans-unit id="++CODE++32a309dfad108551ace9379122e21f213af7c6b4a16054f9fa91d5e5419cc59e">
+      <source xml:lang="en">Select source/resource with right mouse button</source>
+    </trans-unit>
+    <trans-unit id="++CODE++19e9d8f1be6ba8478a054f31ac2c8d9dc4a4a5f87e5075066202ec0f09678db4">
+      <source xml:lang="en">Select the option &apos;Delete source/resource from RPO&apos; on popup menu</source>
+    </trans-unit>
+    <trans-unit id="++CODE++fe1e01fcd7082a1ae1e0b2e4cf87fcfeba76baaeabde413d65d9d3a13cb3de2e">
+      <source xml:lang="en">Selected connections.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++85acb4af29102fb4bb1ddfc7df83ab725e2b18ac66e1443bacc0c126e377ef78">
+      <source xml:lang="en">Send message to all users</source>
+    </trans-unit>
+    <trans-unit id="++CODE++64a21d21bbfa1236d83231af573abe4b9b004dada119b251a008cc75b85c6f78">
+      <source xml:lang="en">Send message to selected users</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d46574f073f66db182779bc4d6f308e5376e922c369df70bca5c83933ec8f77e">
+      <source xml:lang="en">Sending #{0}/{1}</source>
+    </trans-unit>
+    <trans-unit id="++CODE++33ad077f71c326b2c2a338fa7e4609a6fcb25229ffe328c1e29c8d054b6742e0">
+      <source xml:lang="en">Sending message to users.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++aef7de28d52977f1b5cd0fecfdc151717610adf41e0aa33b4d9f7522a43337ef">
+      <source xml:lang="en">Server</source>
+    </trans-unit>
+    <trans-unit id="++CODE++bc4816425ebe8079c4f9aef802a1507b5c519d415762a5cb6549fc4c1cc6dee7">
+      <source xml:lang="en">Server Name</source>
+    </trans-unit>
+    <trans-unit id="++CODE++647eaf2715e4ddcebf40ae624da49831717a60838023c305e7def30e3810f186">
+      <source xml:lang="en">Server name already exists</source>
+    </trans-unit>
+    <trans-unit id="++CODE++c28cda73480e64183bb7cf3357ac5a7d4e2573583c86f48680af0d6e6e96d202">
+      <source xml:lang="en">Server saved. Name: {0}</source>
+    </trans-unit>
+    <trans-unit id="++CODE++1a6cf2e3a3f4563f0c262992d7057970893efb80baccf86a7367866f141f0db4">
+      <source xml:lang="en">Server with new connections blocked.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++44907283bd613ebb0690f8c1282ae9aa3bbe9c1b438e82d121700a2e3eb26614">
+      <source xml:lang="en">Setting server [{0}]...</source>
+    </trans-unit>
+    <trans-unit id="++CODE++66673c44e1cccd762b61684d69d49d52879384152d99f1c4d4372a044d0bba18">
+      <source xml:lang="en">Show Columns</source>
+    </trans-unit>
+    <trans-unit id="++CODE++b12d660f1c21ccedde17fe6843a50491b83eab74401c5d6ac795ba73ee5138fb">
+      <source xml:lang="en">Show table with compile results?</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0b344d7aeadcbe0b0f63bbedda093ad5e76c0bcf4fd82cfe35c695938f41a293">
+      <source xml:lang="en">Show/hide columns</source>
+    </trans-unit>
+    <trans-unit id="++CODE++e8dcb3d08aa7e78f302f425aba4551102f1eb40611b2781eca7553b4c0028466">
+      <source xml:lang="en">Shutting down #{0}/{1}</source>
+    </trans-unit>
+    <trans-unit id="++CODE++fa71f0f6c2ec4a70f549a2cad80223ea73a5a0b30b3307dfbc506c5ba00a6867">
+      <source xml:lang="en">SmartClient:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++555d49a4fe53cba6154f771244272017e1f22523a3a5e875567267667267936c">
+      <source xml:lang="en">Smartclient not defined.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++3a86d447c56c4ec4c9afbf2fa639ffb87e90e0b34866b2c6cb9fed1b976a68ec">
+      <source xml:lang="en">Some sources are not found in RPO. Please check the log file.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++29a48f16fab0c0597333e8350cf21fdb754c0685515842a82b9cdd9950bb51a8">
+      <source xml:lang="en">Source {0} ignored. Line: {1}</source>
+    </trans-unit>
+    <trans-unit id="++CODE++3a12ea5651aceaf99cb750c4add6dee1635df4ce6a85c12d291eba3c33c21653">
+      <source xml:lang="en">Source {0} not found in RPO. Line: {1}</source>
+    </trans-unit>
+    <trans-unit id="++CODE++3411059cb8e0660e29dd7a3737e65a28b08eb01524a8ebc3d4168932649f23e6">
+      <source xml:lang="en">Spanish</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a136b4f066018f2475f84e31c63bd85c50e42d3c8361af7fd0b3f824fdc3a6a8">
+      <source xml:lang="en">Starting Log on</source>
+    </trans-unit>
+    <trans-unit id="++CODE++1e45b6f93d1987de246123a1522230ab211464f7571e0db1d3e9e3a5c29ae492">
+      <source xml:lang="en">Starting RPO load information...</source>
+    </trans-unit>
+    <trans-unit id="++CODE++8301ac933327b6990957e32dabdf2ce11af8f9e2b9688efcc3702053f4a69405">
+      <source xml:lang="en">Starting WebMonitor...</source>
+    </trans-unit>
+    <trans-unit id="++CODE++c9fcfdaff9c6a503248ee4b14de4ff4978ed7e7bbb72ed93f7683610894aad46">
+      <source xml:lang="en">Starting package generation...</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ed32b76e74369dd038d4c56b8d1dcdc70ed1b957825fbb96d2506b94e007933b">
+      <source xml:lang="en">Starting patch application...</source>
+    </trans-unit>
+    <trans-unit id="++CODE++3c26db8519870933802a1e9320316cb2c47c249d18563703f11ac8ae4ba25ea7">
+      <source xml:lang="en">Starting template application...</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a21bf60530e857755114727f7d5cfda3a0dd2053d3735f33b199295886e6fa96">
+      <source xml:lang="en">Stop server</source>
+    </trans-unit>
+    <trans-unit id="++CODE++155f816c0407310c0dab222493370773e045ee7fe04e6c9a951b07f495531264">
+      <source xml:lang="en">Submit</source>
+    </trans-unit>
+    <trans-unit id="++CODE++23e0248aa91fc8c0f7a07b66f41a991d47df3bac3cc311508f9d0e82220df719">
+      <source xml:lang="en">Summary:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++6000b166f52bcc2c78d286829268329c2fa5a44ca734a66d3e071f9cac4dda8f">
+      <source xml:lang="en">Supported flags (use key=value or key:value):</source>
+    </trans-unit>
+    <trans-unit id="++CODE++f7b51d4f2ce8a84c50b4eb899d49f2ee2030aac01879375a942c11b968dcf0a5">
+      <source xml:lang="en">Supported targets:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++3987e7e0e929ef590ae48f75681bfa1643dc870b92ac39db3996d57ecb44eeb4">
+      <source xml:lang="en">TDS Replay Launcher Config</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a5d28337be3c6f32e255f7691e65b4e8fb00b567a67112e7a69b8736b25b44c8">
+      <source xml:lang="en">TDS Replay Launcher Configuration</source>
+    </trans-unit>
+    <trans-unit id="++CODE++48f91e7810da81b4bcb482bb74d10556535b5d472a4a34f520bad75bd25171bd">
+      <source xml:lang="en">TDS Replay file not informed</source>
+    </trans-unit>
+    <trans-unit id="++CODE++25b84c25240734f07f145ce39972dc313f33255a4e8cdf4b6d8aab885aba01ef">
+      <source xml:lang="en">TDS VSCode updated to v{0}. Check out what&apos;s new!</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a862f86b67494594bf47c037085f307fa5b27d43fe79a95df790a9f84440aa9d">
+      <source xml:lang="en">Tables synchronism disabled</source>
+    </trans-unit>
+    <trans-unit id="++CODE++fee5d65211c631c013f0d46814f7d7ce646ee25f2940e3d7e2ee521ecf675c34">
+      <source xml:lang="en">Tables synchronism enabled</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ba0ca0549aa089142cc430e093ee0490c204f569587acdaf2d56814d69917fbd">
+      <source xml:lang="en">Terminate connections immediately.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++c09f703ea6cf5fcadccadcdd5e0a2d88086367e07ec2daa587b07b643f1ed8a2">
+      <source xml:lang="en">The command to Disable/Enable the table synchronism needs an active debug session. For an initial configuration, please change the file launch.json manually</source>
+    </trans-unit>
+    <trans-unit id="++CODE++9a2e87e3e54e6c5f5400e448a2da9197039655cca504a72c5d736afb601e2003">
+      <source xml:lang="en">The filter informed is different from the last one. Do you wish to re-import using the current?</source>
+    </trans-unit>
+    <trans-unit id="++CODE++7259125da8a9a5cd0ebf1ed6d989ade1ed392051c735a3f6e8e3efd68e415054">
+      <source xml:lang="en">The generated patch is based on the files from RPO. Be sure that the included fonts are compiled.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++57e966ac37ccfdbbc92def67b56e55e3df306640e5c848747e26ee0057e554d2">
+      <source xml:lang="en">The next one will occur {0}.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++280eb43183c725ec9b649d2e548298d87146d319922ba694b001ef11a868fdea">
+      <source xml:lang="en">The next one will take place on request.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++b127041a9e8f7e465b1ed6dbc3a167dd6cd8d6ac9a4b873b2f28538e18d63a44">
+      <source xml:lang="en">The parameter &quot;forceImport&quot; is defined to &quot;true&quot;. Note that this will consume more disk space.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++65063cf75555f37e75f2b78756bdf903e8aa8a64549ca6a862743d02b6507a09">
+      <source xml:lang="en">The server could not be shut down. Return: {0}</source>
+    </trans-unit>
+    <trans-unit id="++CODE++38a2f0c2d7bd94262bc395d549e652057ed2828fe89535f1ad20f4bb8feab9bb">
+      <source xml:lang="en">The server selected is already connected.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++dd052e966c6c0b6226da2779d518e4f9a27cfc57f1a26642524a6c48a5bb8fda">
+      <source xml:lang="en">The users listed below will have their connections terminated.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ddc110e06c55cf7f141003c2ff64e491069d4466e9162082864e5efcd44c860d">
+      <source xml:lang="en">There are newer patches available at TOTVS Update Center.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++4efff4a6d628c1d502f4262bd26975d03738dc0e9fab4dbade5104dd3f8093ad">
+      <source xml:lang="en">There are no connections or they are not visible to the monitor.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++ed9e8958db183fe33c43a08c101d6ed786df4189973d5dba00000a5c5580b9af">
+      <source xml:lang="en">There are patches that cannot be applied and must be removed from the list. See log for details.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++cac101fda0cba8cf23e326dcfa58fac27ad69315a88525fd529a2fc34777ce08">
+      <source xml:lang="en">There are patches with sources/resources older than RPO.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++18cefa3dc90421be1c209e302f2b57869ac77fc6c2568de1b54aa15bf64dc49e">
+      <source xml:lang="en">There are patches with sources/resources older than RPO. Check Output &apos;TOTVS Patch Validate&apos; for details.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++7bf3c0f6737f3c34180cc7da329c49bd51a62bc67173a2ded509cb2e0fe702f0">
+      <source xml:lang="en">There is no information about the RPO.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++eaebee0093801fa689952b16a35711b3ee3a5cba5cdaf41ba9ae874b83877a83">
+      <source xml:lang="en">There is no server connected</source>
+    </trans-unit>
+    <trans-unit id="++CODE++b66c172868219aa21120cb14460c30fd7361686d96be39d7ec00eee3314c0442">
+      <source xml:lang="en">There is no server connected.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++8213efb7f4526892defc6234ebfe6a91b030a20483c618fc12e52a05192fe1b3">
+      <source xml:lang="en">These settings can also be changed in</source>
+    </trans-unit>
+    <trans-unit id="++CODE++731c0ee507ccd2e645a10d87a91eba4f20ee33473a2a6d87de00f861a41c6308">
+      <source xml:lang="en">This Machine ID</source>
+    </trans-unit>
+    <trans-unit id="++CODE++f1068172cc15d9460774266fdb4f3f503ec2fcf5f6012f29e3de6f01aa61358e">
+      <source xml:lang="en">This action will apply outdated patches.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++289a31ffd84c4bc04f921331940424cdabc35b0fee7378f2fbedb9c5b91c2866">
+      <source xml:lang="en">This action will overwrite newer sources/resources in the current RPO.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++daebc66dda5a56f7233bb46c74f76726b2c55ff860a9ab4afabaca067e4c3f30">
+      <source xml:lang="en">This config could be altered editing file</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0eec4a18848a993fab729d9db828a93bc8072505f671db0206662fd78b4d1b55">
+      <source xml:lang="en">ThreadID</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d2089be672953d1136faa84079af1b6f3967fed8932dabffba3032d30e3c0618">
+      <source xml:lang="en">Token</source>
+    </trans-unit>
+    <trans-unit id="++CODE++2e01e367e6bb2bf09cd229f5e012a5a8d7200df0af8fe00349e9cb982c43882a">
+      <source xml:lang="en">Token Totvs Identity removido com sucesso para o servidor {0}.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++df341dbc27580828561b390cf9bcbd8a34a6abccdff9a75d53c91b4f89bb39f7">
+      <source xml:lang="en">Tree server on/off</source>
+    </trans-unit>
+    <trans-unit id="++CODE++783944b9bf25073424bae3d9811917aae8407b2c285b78b145116c3e2ab5f312">
+      <source xml:lang="en">URL Web Service / WSDL FIle</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d2bdfb9af2cb1da67371acb76fb5d35f0a510541623f9ce2cdf10e4b3fd9a9be">
+      <source xml:lang="en">Undefined error. Check AppServer logs for more details.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++831716a8d98755cf46d5e3deedea3e1115d10fa3c0468a1fa03d2ba63736ec7b">
+      <source xml:lang="en">Unlock new connections?</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a6183a892fe9ff387ff406fbcf47f4444ed78e48f242738183e808734935774f">
+      <source xml:lang="en">Unlock server</source>
+    </trans-unit>
+    <trans-unit id="++CODE++2f672131703d6b59ddd9ee224dda71c8b36789a8097960ca84db40cd658c4145">
+      <source xml:lang="en">Update speed {0}</source>
+    </trans-unit>
+    <trans-unit id="++CODE++7eedb277fa1acbf1a6d8906b0030da362ee6b7b57d99fd07a4a9c080b59b2406">
+      <source xml:lang="en">Use / to create subgroups. Leave empty to move the server to root.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++01f4075745c2948a57d4afc8aece0bf5144d9111273c463c5da42e2d32557f37">
+      <source xml:lang="en">Use filter to display functions</source>
+    </trans-unit>
+    <trans-unit id="++CODE++fc67d3c3615300bc4114b8178fd8f3baa145d97965fdd4eb60563e623a5f8207">
+      <source xml:lang="en">Use filter to display objects</source>
+    </trans-unit>
+    <trans-unit id="++CODE++b512d97e7cbf97c273e4db073bbb547aa65a84589227f8f3d9e4a72b9372a24d">
+      <source xml:lang="en">User</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a969d04ec2d003299e81414a53a2c4079a10d8f181ff0a10505a33caef8f3af5">
+      <source xml:lang="en">User Name</source>
+    </trans-unit>
+    <trans-unit id="++CODE++aa68cfafcc83e65d00b894e6d556a60bb706828b6790e311e6af0590e9669500">
+      <source xml:lang="en">User identification</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d5d09dec647ff7135f4b640b35ef65a09985a2401f83610a90bd4296c0b42385">
+      <source xml:lang="en">VSCode Version:</source>
+    </trans-unit>
+    <trans-unit id="++CODE++6aee2575a3d81b9d8f4f039b9782e86f194d1f0fd3f04ee170e5ba9f4505719e">
+      <source xml:lang="en">Validate Key</source>
+    </trans-unit>
+    <trans-unit id="++CODE++5a1a167e3d90301d2ffc0568dd8903b17eff1b87fba42ce7a332d0aa2bf594d1">
+      <source xml:lang="en">Validating</source>
+    </trans-unit>
+    <trans-unit id="++CODE++4327385fce52c99b5eb6a4e6f85b21a5ded11c1c62ac91314bd6cf982394c8ed">
+      <source xml:lang="en">Validating patch</source>
+    </trans-unit>
+    <trans-unit id="++CODE++1927ca4959bfddd9b01e79e35f06bfe1a11505114ac2ed73c28c9337b1f782bf">
+      <source xml:lang="en">Validating server {0}</source>
+    </trans-unit>
+    <trans-unit id="++CODE++68e1ca575295bb5604fea711b5d2eff44006ce4bd985481083a76b71fce0daef">
+      <source xml:lang="en">Validation</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d8b7e86b452cf747ca3d6c7b4d9c2e6071a0f33a6d1fa8a91f7ab20739b898ca">
+      <source xml:lang="en">Waiting for export JSON file</source>
+    </trans-unit>
+    <trans-unit id="++CODE++94156edce071c95bc1473bc0e57ac0e007b8c93a012f6e5bdcedf0401515fa20">
+      <source xml:lang="en">Waiting for preview configuration changes.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++0e2226b5235f0ff94a276eb4d07a3bfea74b7e3b8b85e9efca6c18430f041bf8">
+      <source xml:lang="en">Welcome</source>
+    </trans-unit>
+    <trans-unit id="++CODE++2a83f334ac3d003974f843665b7d1a42b6aed01d029b297f5ba37ef0828e8ad1">
+      <source xml:lang="en">What&apos;s New</source>
+    </trans-unit>
+    <trans-unit id="++CODE++8f0797d00e5e590c400cbe4cc49c6a24fe4538dbc0693e8ea0a9d71827d9e8e3">
+      <source xml:lang="en">When confirming the blocking of new connections, no user can connect to that server.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++18bf6216cee68bf1b52aa82b4b6d093b637042063e3ce6ec6ebb92bf58e3c48c">
+      <source xml:lang="en">When confirming the release of new connections, users can connect to that server again.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++d691d9ce202d34a9573be8085f4807283877319f7acc2be5de65f6789e15b311">
+      <source xml:lang="en">When confirming the server stop, all connections (including this) will be closed, as well as other processes.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++af92ae8f02661a4db7c830875405c114aefca9760af1db0d11e3f5ca2c77d6df">
+      <source xml:lang="en">Would you like to compile all the files?</source>
+    </trans-unit>
+    <trans-unit id="++CODE++85a39ab345d672ff8ca9b9c6876f3adcacf45ee7c1e2dbd2408fd338bd55e07e">
+      <source xml:lang="en">Yes</source>
+    </trans-unit>
+    <trans-unit id="++CODE++a3d9c1e77f2dd5e5b2789e0f91a45280ba75096c37271265fb9756c90d9b4b42">
+      <source xml:lang="en">Yes and clear history</source>
+    </trans-unit>
+    <trans-unit id="++CODE++c6a4558da43e7b8682c52b971b394c2ed37786cd31b5a14ac70532cf7073c671">
+      <source xml:lang="en">Yes but keep history</source>
+    </trans-unit>
+    <trans-unit id="++CODE++2441e1b1bc4f213ee1c48a9ce863f63bb43e1c21d27df4ac6c27b1d79c5ee3c8">
+      <source xml:lang="en">advpl is loading project metadata (ie, compile_commands.json)</source>
+    </trans-unit>
+    <trans-unit id="++CODE++1e5fac867454a4fec29be85eea63d308abd770e42b169632817b0643b508877d">
+      <source xml:lang="en">connections</source>
+    </trans-unit>
+    <trans-unit id="++CODE++c14ed31f0bdf407b54d5074863c6ac679b898c5123e7d0a89c9d016215894177">
+      <source xml:lang="en">for details.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++9cf61597eb4bae40343174f8daac948d13a2763777c33b305954f9da9040ddba">
+      <source xml:lang="en">from-to de count</source>
+    </trans-unit>
+    <trans-unit id="++CODE++fcec91509759ad995c2cd14bcb26b2720993faf61c29d379b270d442d92290eb">
+      <source xml:lang="en">here</source>
+    </trans-unit>
+    <trans-unit id="++CODE++180ad4d43a8f45e7f603490d47ab530bf971fd6f3ac4c9a18370e93ca0599c26">
+      <source xml:lang="en">lines/p.</source>
+    </trans-unit>
+    <trans-unit id="++CODE++7175517a370b5cd2e664e3fd29c4ea9db5ce17058eb9772fe090a5485e49dad6">
+      <source xml:lang="en">or</source>
+    </trans-unit>
+    <trans-unit id="++CODE++fcaaeeb72e3be77d21bb918442d7d1a14652d68bae049cde891dcf2b7e0107bb">
+      <source xml:lang="en">{0} connections selected</source>
+    </trans-unit>
+    <trans-unit id="++CODE++e549e94bc93ccaf7a5a9c81955f15a453eb0b35a7239e3b97d89a972b12aaf17">
+      <source xml:lang="en">{0} seconds</source>
+    </trans-unit>
+  </body></file>
+  <file original="package" source-language="en" datatype="plaintext"><body>
+    <trans-unit id="tds.package.configurationSnippets.description.web">
+      <source xml:lang="en">A new configuration for &apos;debugging&apos; a user selected AdvPL/4GL file using SmartClient HTML.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.configurationSnippets.description">
+      <source xml:lang="en">A new configuration for &apos;debugging&apos; a user selected AdvPL/4GL file.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.add">
+      <source xml:lang="en">Add Server</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.notification.show.all">
+      <source xml:lang="en">All</source>
+    </trans-unit>
+    <trans-unit id="tds.package.folder.extensions.allowed">
+      <source xml:lang="en">Allowed extensions to compile list.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.apply.formatting">
+      <source xml:lang="en">Applies formatting to TOTVS source files and their variations.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.templateApply">
+      <source xml:lang="en">Apply Template</source>
+    </trans-unit>
+    <trans-unit id="tds.package.templateApply.fromFile">
+      <source xml:lang="en">Apply Template from file</source>
+    </trans-unit>
+    <trans-unit id="tds.package.args.for.lsp">
+      <source xml:lang="en">Array containing extra arguments to pass to the TOTVS Language Server binary</source>
+    </trans-unit>
+    <trans-unit id="tds.package.show.ask.encoding">
+      <source xml:lang="en">Ask for change encoding for Windows-1252</source>
+    </trans-unit>
+    <trans-unit id="tds.package.getProgramName.title">
+      <source xml:lang="en">Ask for program name</source>
+    </trans-unit>
+    <trans-unit id="tds.package.getProgramName.description">
+      <source xml:lang="en">Ask for program name.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.show.ask.compile.result">
+      <source xml:lang="en">Ask for show table with compile results</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.autocomplete.basic">
+      <source xml:lang="en">Basic (VS-Code mode).</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.index.cache">
+      <source xml:lang="en">Browsing cache persistence</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.index.cache.onMemory">
+      <source xml:lang="en">Caching is done on memory.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.rpo.check.integrity.description">
+      <source xml:lang="en">Check current RPO integrity</source>
+    </trans-unit>
+    <trans-unit id="tds.package.clearRpoToken">
+      <source xml:lang="en">Clear Compilation Token</source>
+    </trans-unit>
+    <trans-unit id="tds.package.clear.console.before.compile">
+      <source xml:lang="en">Clear console before compile</source>
+    </trans-unit>
+    <trans-unit id="tds.package.compilation.commit">
+      <source xml:lang="en">Commit compilation with errors/warnings</source>
+    </trans-unit>
+    <trans-unit id="tds.package.compilation.includes">
+      <source xml:lang="en">Compilation includes.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.build.workspace.title">
+      <source xml:lang="en">Compile All Workspace</source>
+    </trans-unit>
+    <trans-unit id="tds.package.build.file.title">
+      <source xml:lang="en">Compile File/Folder</source>
+    </trans-unit>
+    <trans-unit id="tds.package.compile.key">
+      <source xml:lang="en">Compile Key</source>
+    </trans-unit>
+    <trans-unit id="tds.package.build.openEditors.title">
+      <source xml:lang="en">Compile Open Editors</source>
+    </trans-unit>
+    <trans-unit id="tds.package.syntaxOnly.syntax-only.title">
+      <source xml:lang="en">Compile Syntax Only</source>
+    </trans-unit>
+    <trans-unit id="tds.package.build.file.description">
+      <source xml:lang="en">Compile a file/folder in TOTVS Servers</source>
+    </trans-unit>
+    <trans-unit id="tds.package.syntaxOnly.file.description">
+      <source xml:lang="en">Compile only the syntax of a file/folder in TOTVS Servers</source>
+    </trans-unit>
+    <trans-unit id="tds.package.build.workspace.description">
+      <source xml:lang="en">Compile the current workspace.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.build.openEditors.description">
+      <source xml:lang="en">Compile the files from all opened editors</source>
+    </trans-unit>
+    <trans-unit id="tds.package.configure.launcher.title">
+      <source xml:lang="en">Configure Launchers</source>
+    </trans-unit>
+    <trans-unit id="tds.package.config">
+      <source xml:lang="en">Configure Server View</source>
+    </trans-unit>
+    <trans-unit id="tds.package.connect">
+      <source xml:lang="en">Connect</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.hover">
+      <source xml:lang="en">Control how the presentation is displayed on hover.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.codeLens">
+      <source xml:lang="en">Controls activation of the CodeLens.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.signatureHelp">
+      <source xml:lang="en">Controls activation of the signature help.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.max.problems.server">
+      <source xml:lang="en">Controls the maximum number of problems produced by the server.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.logFile.description">
+      <source xml:lang="en">DAP logfile for troubleshooting only</source>
+    </trans-unit>
+    <trans-unit id="tds.package.defrag.rpo.title">
+      <source xml:lang="en">Defrag RPO</source>
+    </trans-unit>
+    <trans-unit id="tds.package.defrag.rpo.description">
+      <source xml:lang="en">Defrag current RPO</source>
+    </trans-unit>
+    <trans-unit id="tds.package.delete.file.fromRPO.title">
+      <source xml:lang="en">Delete File/Resource from RPO</source>
+    </trans-unit>
+    <trans-unit id="tds.package.delete">
+      <source xml:lang="en">Delete Server</source>
+    </trans-unit>
+    <trans-unit id="tds.package.delete.file.fromRPO.description">
+      <source xml:lang="en">Delete a file or resource from the current RPO</source>
+    </trans-unit>
+    <trans-unit id="tds.package.debug.extend.features.charDetails">
+      <source xml:lang="en">Details of [char (string)] types</source>
+    </trans-unit>
+    <trans-unit id="tds.package.selectRpoToken.disable">
+      <source xml:lang="en">Disable Compilation Token</source>
+    </trans-unit>
+    <trans-unit id="tds.package.disconnect">
+      <source xml:lang="en">Disconnect</source>
+    </trans-unit>
+    <trans-unit id="tds.package.trace.vscode.verbose">
+      <source xml:lang="en">Display detailed message.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.trace.vscode.messages">
+      <source xml:lang="en">Display summary message.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.show.banner">
+      <source xml:lang="en">Displays banner when starting</source>
+    </trans-unit>
+    <trans-unit id="tds.vscode.question.change.encoding">
+      <source xml:lang="en">Do you want to change the encoding to default TOTVS (Windows-1252)?</source>
+    </trans-unit>
+    <trans-unit id="tds.vscode.noAskAgain">
+      <source xml:lang="en">Don&apos;t ask again</source>
+    </trans-unit>
+    <trans-unit id="tds.package.web.open.external">
+      <source xml:lang="en">Don&apos;t show external browser opening warning</source>
+    </trans-unit>
+    <trans-unit id="tds.package.selectRpoToken.enable">
+      <source xml:lang="en">Enable Compilation Token</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.trace.description.web">
+      <source xml:lang="en">Enable logging of the Debug Adapter Protocol.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.trace.description">
+      <source xml:lang="en">Enable logging of the Debug Adapter Protocol.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.debug.extend.features">
+      <source xml:lang="en">Enables extended debugging functionality</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.toggleTableSync.description">
+      <source xml:lang="en">Enables or disables the tables sync with the server</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.notification.show.errors_warnings_and_infos">
+      <source xml:lang="en">Errors Warnings and Infos</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.notification.show.errors_and_warnings">
+      <source xml:lang="en">Errors and Warnings</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.waitForAttach.description">
+      <source xml:lang="en">For DAP debugging. DO NOT USE.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.forceUtf8.description">
+      <source xml:lang="en">Force the use of UTF-8 codepage.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.hover.markDown">
+      <source xml:lang="en">Formatted text (Markdown). Use PDoc if available.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.freshenIndex">
+      <source xml:lang="en">Freshen Index</source>
+    </trans-unit>
+    <trans-unit id="tds.package.inspector.function.description">
+      <source xml:lang="en">Functions Inspector</source>
+    </trans-unit>
+    <trans-unit id="tds.package.inspector.function.title">
+      <source xml:lang="en">Functions Inspector</source>
+    </trans-unit>
+    <trans-unit id="tds.package.generate.ppo">
+      <source xml:lang="en">Generate PPO file.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.ws.show">
+      <source xml:lang="en">Generate WS Protheus</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.dpiMode.description">
+      <source xml:lang="en">If the DPI mode must be enabled (-dpi)</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.olddpiMode.description">
+      <source xml:lang="en">If the OLDDPI mode must be enabled (-olddpi)</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.openglMode.description">
+      <source xml:lang="en">If the OpenGL mode must be enabled (-opengl)</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.isAccessibilityMode.description">
+      <source xml:lang="en">If the accessibility mode must be enabled (-AC)</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.enableMultiThread.description">
+      <source xml:lang="en">If the debug must enable multi thread execution</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.enableProfile.description">
+      <source xml:lang="en">If the profile must be enabled</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.doNotShowSplash.description">
+      <source xml:lang="en">If the splash screen must not show (-Q)</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.isMultiSession.description">
+      <source xml:lang="en">If this is a multisession execution (-M)</source>
+    </trans-unit>
+    <trans-unit id="tds.package.include">
+      <source xml:lang="en">Include</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.language.description">
+      <source xml:lang="en">Informs the language to start the execution (-L)</source>
+    </trans-unit>
+    <trans-unit id="tds.package.inputRpoToken">
+      <source xml:lang="en">Input Compilation Token</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.autocomplete.ls">
+      <source xml:lang="en">LS (run by LS).</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.linter">
+      <source xml:lang="en">Linter behavior</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.startJobList.description">
+      <source xml:lang="en">List of jobs to be started before debugging</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.ignoreFiles.description">
+      <source xml:lang="en">Make the debugger ignore break events in files not found in WorkSpace</source>
+    </trans-unit>
+    <trans-unit id="tds.package.moveToGroup">
+      <source xml:lang="en">Move to group...</source>
+    </trans-unit>
+    <trans-unit id="tds.package.moveToRoot">
+      <source xml:lang="en">Move to root</source>
+    </trans-unit>
+    <trans-unit id="tds.vscode.no">
+      <source xml:lang="en">No</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.notification.show.none">
+      <source xml:lang="en">None</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.notification.show">
+      <source xml:lang="en">Notification Level to be show in &apos;popup&apos;</source>
+    </trans-unit>
+    <trans-unit id="tds.package.inspector.object.description">
+      <source xml:lang="en">Objects Inspector</source>
+    </trans-unit>
+    <trans-unit id="tds.package.inspector.object.title">
+      <source xml:lang="en">Objects Inspector</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.hover.off">
+      <source xml:lang="en">Off</source>
+    </trans-unit>
+    <trans-unit id="tds.package.logger.off">
+      <source xml:lang="en">Off Logger Capture</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.autocomplete.off">
+      <source xml:lang="en">Off.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.logger.on">
+      <source xml:lang="en">On Logger Capture</source>
+    </trans-unit>
+    <trans-unit id="tds.package.folder.enable.extensions.filter">
+      <source xml:lang="en">Only compile files with allowed extensions.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.notification.show.only_errors">
+      <source xml:lang="en">Only errors</source>
+    </trans-unit>
+    <trans-unit id="tds.package.OpenTimeLineWebview">
+      <source xml:lang="en">Open TimeLine Webview</source>
+    </trans-unit>
+    <trans-unit id="tds-monitor.open-monitor-view">
+      <source xml:lang="en">Open monitor view</source>
+    </trans-unit>
+    <trans-unit id="tds.package.tdsreplay.configure.launcher.description">
+      <source xml:lang="en">Page to help on the TDS Replay launch configurations.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.configure.launcher.description">
+      <source xml:lang="en">Page to help on the launch configurations.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.patchApply">
+      <source xml:lang="en">Patch Apply</source>
+    </trans-unit>
+    <trans-unit id="tds.package.patchApply.fromFile">
+      <source xml:lang="en">Patch Apply from file</source>
+    </trans-unit>
+    <trans-unit id="tds.package.patchGenerate.byDifference">
+      <source xml:lang="en">Patch Generation (by Difference)</source>
+    </trans-unit>
+    <trans-unit id="tds.package.patchGenerate.fromFolder">
+      <source xml:lang="en">Patch Generation (from Folder)</source>
+    </trans-unit>
+    <trans-unit id="tds.package.patchGenerate.fromRPO">
+      <source xml:lang="en">Patch Generation (from RPO)</source>
+    </trans-unit>
+    <trans-unit id="tds.package.patchInfos.fromFile">
+      <source xml:lang="en">Patch Infos</source>
+    </trans-unit>
+    <trans-unit id="tds.package.inspector.patch.title">
+      <source xml:lang="en">Patch Infos</source>
+    </trans-unit>
+    <trans-unit id="tds.package.patchValidate.fromFile">
+      <source xml:lang="en">Patch Validate</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.workspaceFolders.description.web">
+      <source xml:lang="en">Paths in workspace</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.index.cache.onDisk">
+      <source xml:lang="en">Persist cache on disk.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.program.description.web">
+      <source xml:lang="en">Program/Function name</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.program.description">
+      <source xml:lang="en">Program/Function name</source>
+    </trans-unit>
+    <trans-unit id="tds.package.rpo.check.integrity.title">
+      <source xml:lang="en">RPO check integrity</source>
+    </trans-unit>
+    <trans-unit id="tds.package.rebuild.workspace.title">
+      <source xml:lang="en">Recompile All Workspace</source>
+    </trans-unit>
+    <trans-unit id="tds.package.rebuild.file.title">
+      <source xml:lang="en">Recompile File/Folder</source>
+    </trans-unit>
+    <trans-unit id="tds.package.rebuild.openEditors.title">
+      <source xml:lang="en">Recompile Open Editors</source>
+    </trans-unit>
+    <trans-unit id="tds.package.rebuild.file.description">
+      <source xml:lang="en">Recompile a file/folder in TOTVS Servers</source>
+    </trans-unit>
+    <trans-unit id="tds.package.rebuild.workspace.description">
+      <source xml:lang="en">Recompile the current workspace.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.rebuild.openEditors.description">
+      <source xml:lang="en">Recompile the files from all opened editors</source>
+    </trans-unit>
+    <trans-unit id="tds.package.reconnect">
+      <source xml:lang="en">Reconnect</source>
+    </trans-unit>
+    <trans-unit id="tds.package.reconnectLastServer">
+      <source xml:lang="en">Reconnect last connected server on startup.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.removeGroup">
+      <source xml:lang="en">Remove group</source>
+    </trans-unit>
+    <trans-unit id="tds.package.rename">
+      <source xml:lang="en">Rename</source>
+    </trans-unit>
+    <trans-unit id="totvs-developer-studio.open-rpoinfo">
+      <source xml:lang="en">Repository Log</source>
+    </trans-unit>
+    <trans-unit id="tds.package.revalidate.rpo.title">
+      <source xml:lang="en">Revalidate RPO</source>
+    </trans-unit>
+    <trans-unit id="tds.package.revalidate.rpo.description">
+      <source xml:lang="en">Revalidate current RPO</source>
+    </trans-unit>
+    <trans-unit id="tds.package.selectenv">
+      <source xml:lang="en">Select</source>
+    </trans-unit>
+    <trans-unit id="tds.package.permissions.selectAction">
+      <source xml:lang="en">Select Action</source>
+    </trans-unit>
+    <trans-unit id="tds.package.serverSelection">
+      <source xml:lang="en">Select Server</source>
+    </trans-unit>
+    <trans-unit id="tds.package.selectRpoToken">
+      <source xml:lang="en">Select action for Compilation Token</source>
+    </trans-unit>
+    <trans-unit id="tds.package.server.view">
+      <source xml:lang="en">Servers</source>
+    </trans-unit>
+    <trans-unit id="tds.package.filesystem.encoding">
+      <source xml:lang="en">Set file system encoding</source>
+    </trans-unit>
+    <trans-unit id="tds.package.show.welcome.first.initialize">
+      <source xml:lang="en">Show Welcome Page in First Initialize</source>
+    </trans-unit>
+    <trans-unit id="tds.package.show.console.on.compile">
+      <source xml:lang="en">Show console on compile</source>
+    </trans-unit>
+    <trans-unit id="tds.package.show.precompile">
+      <source xml:lang="en">Show pre compiler command.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.show.result.build.description">
+      <source xml:lang="en">Show table with compile results</source>
+    </trans-unit>
+    <trans-unit id="tds.package.show.result.build.title">
+      <source xml:lang="en">Show table with compile results</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.hover.plaintext">
+      <source xml:lang="en">Simple text</source>
+    </trans-unit>
+    <trans-unit id="tds.package.tdsreplay.debug">
+      <source xml:lang="en">TDS Replay Debug</source>
+    </trans-unit>
+    <trans-unit id="tds.package.tdsreplay.configure.launcher.title">
+      <source xml:lang="en">TDS Replay: Configure Launchers</source>
+    </trans-unit>
+    <trans-unit id="tds.package.description">
+      <source xml:lang="en">TOTVS Developer Studio for VSCode</source>
+    </trans-unit>
+    <trans-unit id="tds.package.totvs_language_debug">
+      <source xml:lang="en">TOTVS Language Debug</source>
+    </trans-unit>
+    <trans-unit id="tds.package.totvs_language_debug.web">
+      <source xml:lang="en">TOTVS Language Debug via Web App</source>
+    </trans-unit>
+    <trans-unit id="tds.package.totvs_language_debug_with_arguments">
+      <source xml:lang="en">TOTVS Language Debug with arguments</source>
+    </trans-unit>
+    <trans-unit id="tds.package.totvs.language.debug.web">
+      <source xml:lang="en">TOTVS Language Web Debug (SmartClient HTML)</source>
+    </trans-unit>
+    <trans-unit id="tds.package.compilation.tempDir">
+      <source xml:lang="en">Temporary directory</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.smartclientUrl.description">
+      <source xml:lang="en">The SmartClient HTML url.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.smartclientBin.description">
+      <source xml:lang="en">The SmartClient executable full path. If not informed, the one associated with the current server will be used.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.webNavigator.description.web">
+      <source xml:lang="en">The Web Navigator.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.autocomplete">
+      <source xml:lang="en">Toggle auto complete mode.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.toggleUsageInfo">
+      <source xml:lang="en">Toggle indication of use</source>
+    </trans-unit>
+    <trans-unit id="tds.package.toggleSaveLocation">
+      <source xml:lang="en">Toggle servers.json save location</source>
+    </trans-unit>
+    <trans-unit id="tds.command.debug.toggleTableSync">
+      <source xml:lang="en">Toggle table sync</source>
+    </trans-unit>
+    <trans-unit id="tds.package.trace.vscode.debug">
+      <source xml:lang="en">Traces the communication between VS Code and the Debug Adapter.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.trace.vscode.server">
+      <source xml:lang="en">Traces the communication between VS Code and the language server.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.trace.vscode.off">
+      <source xml:lang="en">Tracking off.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.editor.index.cache.off">
+      <source xml:lang="en">Turn off the cache. Some DSS features may become unavailable..</source>
+    </trans-unit>
+    <trans-unit id="tds.package.workspaceServerConfig">
+      <source xml:lang="en">Use the workspace to maintain server settings.</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.extraParameters.description">
+      <source xml:lang="en">Used to pass any extra parameters to SC</source>
+    </trans-unit>
+    <trans-unit id="tds.package.detailUsageInfo">
+      <source xml:lang="en">View telemetry details</source>
+    </trans-unit>
+    <trans-unit id="tds.package.web.navigator.debug">
+      <source xml:lang="en">Web navigator (debug with SmartClientHtml).</source>
+    </trans-unit>
+    <trans-unit id="tds.package.web.arguments">
+      <source xml:lang="en">Web navigator arguments</source>
+    </trans-unit>
+    <trans-unit id="tds.package.web-agent.agent.debug">
+      <source xml:lang="en">Web-agent executable</source>
+    </trans-unit>
+    <trans-unit id="tds.package.web-agent.arguments">
+      <source xml:lang="en">Web-agent extra arguments</source>
+    </trans-unit>
+    <trans-unit id="tds.package.welcomePage">
+      <source xml:lang="en">Welcome Page</source>
+    </trans-unit>
+    <trans-unit id="tds.package.properties.cwb.description">
+      <source xml:lang="en">Workspace Root Path</source>
+    </trans-unit>
+    <trans-unit id="tds.vscode.yes">
+      <source xml:lang="en">Yes</source>
+    </trans-unit>
+  </body></file>
+</xliff>
