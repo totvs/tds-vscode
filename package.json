@@ -90,7 +90,7 @@
     "@material-ui/lab": "^4.11.3-deprecations.1",
     "@modelcontextprotocol/sdk": "^1.17.5",
     "@totvs/tds-da": "1.4.1",
-    "@totvs/tds-ls": "2.2.4",
+    "@totvs/tds-ls": "2.2.6",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.97.2",
     "@vscode/debugadapter": "^1.51.1",
