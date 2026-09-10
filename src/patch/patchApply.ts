@@ -387,7 +387,9 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 
 function handlePatchValidateResponse(patchUri: string, response: ValidResponse): void {
   const patchFile = vscode.Uri.parse(patchUri);
-  //const patchFile = vscode.Uri.file(patchUri).toString();
+  const basename = path.basename(patchUri);
+  const extname = path.extname(patchUri);
+  const patchFileName = basename.substring(0, basename.length - extname.length);
   let patchFilePath = patchFile.path;
   let retMessage = vscode.l10n.t("No validation errors");
   const tphInfoRet = { exp: undefined, ptm: undefined };
@@ -412,11 +414,7 @@ function handlePatchValidateResponse(patchUri: string, response: ValidResponse):
       // exibir os recursos mais antigos
       if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
         // use first workspace folder
-        const rootPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-        vscode.window
-          .showWarningMessage(
-            vscode.l10n.t("There are patches with sources/resources older than RPO. Check Output 'TOTVS Patch Validate' for details.")
-          );
+        const rootPath = vscode.workspace.workspaceFolders[0].uri;
         let outputPatchValidateInfo = `Patch Validation problems for ${patchFilePath}\n`;
         outputPatchValidateInfo += "-".repeat(100) + "\n";
         outputPatchValidateInfo += `Patch Date          | RPO Date            | Filename\n`;
@@ -424,22 +422,18 @@ function handlePatchValidateResponse(patchUri: string, response: ValidResponse):
         response.patchValidates.forEach((patchValidateItem: any) => {
           outputPatchValidateInfo += `${patchValidateItem.datePatch} | ${patchValidateItem.dateRpo} | ${patchValidateItem.file}\n`;
         });
-        let pathFile = rootPath + `/patchValidate_${patchFilePath}.txt`;
-        if (fs.existsSync(pathFile)) {
+        let pathFile = vscode.Uri.joinPath(rootPath, `patchValidate_${patchFileName}.txt`);
+        if (fs.existsSync(pathFile.fsPath)) {
           const randomId = Math.random().toString(36).substring(7);
-          pathFile = rootPath + `/patchValidate_${patchFilePath}_${randomId}.txt`;
+          pathFile = vscode.Uri.joinPath(rootPath, `patchValidate_${patchFileName}_${randomId}.txt`);
         }
-        const setting: vscode.Uri = vscode.Uri.parse("untitled:" + pathFile);
-        vscode.workspace.openTextDocument(setting).then((a: vscode.TextDocument) => {
-          vscode.window.showTextDocument(a, 1, false).then(e => {
-            e.edit(edit => {
-              edit.insert(new vscode.Position(0, 0), outputPatchValidateInfo);
-            });
-          });
-        }, (error: any) => {
-          console.error(error);
-          debugger;
-        });
+        //let validateInfoFilePath = vscode.Uri.file(pathFile);
+        const writeData = Buffer.from(outputPatchValidateInfo, 'utf8');
+        vscode.workspace.fs.writeFile(pathFile, writeData).then();
+        vscode.window
+          .showWarningMessage(
+            vscode.l10n.t("There are patches with sources/resources older than RPO. Check file {0} for details.", pathFile.fsPath)
+          );
       }
     }
 

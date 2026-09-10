@@ -368,7 +368,7 @@
       <source xml:lang="en">Disconnect all users</source>
     </trans-unit>
     <trans-unit id="++CODE++bc8480d21025a837983d9b44723d91ef80af39acfec00cfada25eaf32d58b645">
-      <source xml:lang="en">Disconnect selectd users</source>
+      <source xml:lang="en">Disconnect selected users</source>
     </trans-unit>
     <trans-unit id="++CODE++adc21f60d4c01605fed20f0364830d83b871c83cf4a2f81d34a3418c09f938c9">
       <source xml:lang="en">Disconnecting [{0}] from the server </source>

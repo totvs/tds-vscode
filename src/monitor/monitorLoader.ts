@@ -778,7 +778,7 @@ function getTranslations() {
     "CONNECTION_TYPE ": vscode.l10n.t("Connection Type"),
     CTREE_ID: vscode.l10n.t("CTree ID"),
     DISCONNECT_ALL_USERS: vscode.l10n.t("Disconnect all users"),
-    DISCONNECT_SELECTD_USERS: vscode.l10n.t("Disconnect selectd users"),
+    DISCONNECT_SELECTD_USERS: vscode.l10n.t("Disconnect selected users"),
     DRAG_HEADERS: vscode.l10n.t("Drag headers ..."),
     ELAPSED_TIME: vscode.l10n.t("Elapsed time"),
     FILTER: vscode.l10n.t("Filter"),

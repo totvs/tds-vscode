@@ -77,8 +77,15 @@ export class ServerItem extends vscode.TreeItem {
     light: vscode.Uri.file(path.join(RESOURCE_LIGHT, serverTypeImage(this))),
     dark: vscode.Uri.file(path.join(RESOURCE_DARK, serverTypeImage(this))),
   };
-
   contextValue = this.isConnected ? "serverItem" : "serverItemNotConnected";
+
+  public updateState(): void {
+    this.iconPath = {
+      light: vscode.Uri.file(path.join(RESOURCE_LIGHT, serverTypeImage(this))),
+      dark: vscode.Uri.file(path.join(RESOURCE_DARK, serverTypeImage(this))),
+    };
+    this.contextValue = this.isConnected ? "serverItem" : "serverItemNotConnected";
+  }
 }
 
 export class EnvSection extends vscode.TreeItem {
@@ -99,8 +106,15 @@ export class EnvSection extends vscode.TreeItem {
   };
 
   tooltip = environmentTypeString(this);
-
   contextValue = this.isCurrent ? "envSection" : "envSectionNotCurrent";
+
+  public updateState(): void {
+    this.iconPath = {
+      light: vscode.Uri.file(path.join(RESOURCE_LIGHT, environmentTypeImage(this))),
+      dark: vscode.Uri.file(path.join(RESOURCE_DARK, environmentTypeImage(this))),
+    };
+    this.contextValue = this.isCurrent ? "envSection" : "envSectionNotCurrent";
+  }
 }
 
 function serverTypeString(type: ServerType): string {
