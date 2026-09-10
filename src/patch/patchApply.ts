@@ -387,7 +387,6 @@ function getWebViewContent(context: vscode.ExtensionContext, localizeHTML) {
 
 function handlePatchValidateResponse(patchUri: string, response: ValidResponse): void {
   const patchFile = vscode.Uri.parse(patchUri);
-  //const patchFile = vscode.Uri.file(patchUri).toString();
   const basename = path.basename(patchUri);
   const extname = path.extname(patchUri);
   const patchFileName = basename.substring(0, basename.length - extname.length);

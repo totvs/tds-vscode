@@ -12,6 +12,10 @@ Corrigida falha de conexão na release 12.1.2610.
 
 Corrigida falha que ocasionava crash em workspaces contendo arquivos read-only.
 
+#### Como desabilitar que TDS VScode mostre resumo dos fontes no patch validate [#1479](https://github.com/totvs/tds-vscode/issues/1479)
+
+Em vez de abrir um editor contendo o log com os fontes desatualizados, um arquivo será gerado na raiz do projeto.
+
 ## Versão [2.1.2]
 
 ### Novidades
