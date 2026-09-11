@@ -818,7 +818,7 @@
                 true,
                 false
               ],
-              "default": "auto",
+              "default": false,
               "description": "Controla quebra de linha de parâmetros."
             },
             "wrapArguments": {
@@ -945,7 +945,7 @@
                 true,
                 false
               ],
-              "default": "auto",
+              "default": false,
               "description": "Controla quebra de linha de parâmetros."
             },
             "wrapArguments": {

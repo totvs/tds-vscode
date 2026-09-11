@@ -73,7 +73,7 @@ Chaves específicas para formatação de fontes 4GL e AdvPL.
 | ------------------------------------------------------ | ----------------------------------------------------------------- |
 | maxConsecutiveBlankLines (`number`)                    | Máximo de linhas em branco em sequência. Padrão: 1                |
 | maxLineLength (`number`)                               | Largura máxima de linha para quebra automática. Padrão: 120       |
-| wrapParameters (`auto` \| `true` \| `false`)      | Define quebra automática de parâmetros. Padrão: auto              |
+| wrapParameters (`auto` \| `true` \| `false`)      | Define quebra automática de parâmetros. Padrão: false              |
 | wrapArguments (`auto` \| `true` \| `false`)       | Define quebra automática de argumentos. Padrão: false              |
 | keywordsCase <upper \| lower \| ignore>                | Coloca palavras-chaves em maiúsculas ou minúsculas. Padrão: (4GL)upper (AdvPL)ignore |
 | stringStyle <double-quotes \| single-quotes \| ignore> | Usar aspas simples ou duplas em strings. Padrão: ignore           |
@@ -134,8 +134,8 @@ Chaves específicas para formatação de fontes 4GL e AdvPL.
   "advpl.formatter": {
     "maxConsecutiveBlankLines": 1,
     "maxLineLength": 120,
-    "wrapParameters": "auto",
-    "wrapArguments": "auto",
+    "wrapParameters": "false",
+    "wrapArguments": "false",
     "keywordsCase": "ignore",
     "stringStyle": "ignore",
     "operatorSpacing": true,
