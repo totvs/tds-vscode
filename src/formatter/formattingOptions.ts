@@ -21,7 +21,7 @@ export function getFormattingOptions(langId: string): FormattingOptions {
     stringStyle: getValue(langId, "stringStyle", "ignore"),
     maxConsecutiveBlankLines: getValue(langId, "maxConsecutiveBlankLines", 1),
     maxLineLength: getValue(langId, "maxLineLength", 120),
-    wrapParameters: getValue(langId, "wrapParameters", "auto"),
+    wrapParameters: getValue(langId, "wrapParameters", false),
     wrapArguments: getValue(langId, "wrapArguments", false),
     formatNumber: getValue(langId, "formatNumber", false),
     operatorSpacing: getValue(langId, "operatorSpacing", true),
