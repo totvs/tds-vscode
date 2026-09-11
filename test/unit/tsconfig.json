@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "incremental": true,
         "module": "commonjs",
         "target": "ES2016",
         "outDir": "../../out/unit",

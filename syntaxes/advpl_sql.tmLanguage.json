@@ -11,7 +11,7 @@
 		"beginSql": {
 			"patterns": [
 				{
-					"comment":"Verificar a relacao entre \"Name\" e cores do tema (Ex: Dark Plus do VSC): https://github.com/Microsoft/vscode/blob/1.9.0/extensions/theme-defaults/themes/dark_plus.json",
+					"comment": "Verificar a relacao entre \"Name\" e cores do tema (Ex: Dark Plus do VSC): https://github.com/Microsoft/vscode/blob/1.9.0/extensions/theme-defaults/themes/dark_plus.json",
 					"begin": "(?i)\\b(beginsql\\s+alias)\\b",
 					"beginCaptures": {
 						"1": {

@@ -60,34 +60,10 @@ export function getLanguageServerSettings(): any[] {
 }
 
 export function getModifiedLanguageServerSettings(): any[] {
-  const settings: any[] = [];
-
-  let config = vscode.workspace.getConfiguration("[advpl]");
-
-  if (config) {
-    if (isNewSettings("[advpl]", "files.insertFinalNewline", config["files.insertFinalNewline"])) {
-      settings.push({
-        scope: "formatter",
-        key: "advpl.insertFinalNewline",
-        value: String(config["files.insertFinalNewline"]),
-      });
-    }
-  }
-
-  config = vscode.workspace.getConfiguration("[4gl]");
-
-  if (config) {
-    if (isNewSettings("[4gl]", "files.insertFinalNewline", config["files.insertFinalNewline"])) {
-      settings.push({
-        scope: "formatter",
-        key: "4gl.insertFinalNewline",
-        value: String(config["files.insertFinalNewline"]),
-      });
-    }
-  }
-
-  config = vscode.workspace.getConfiguration("totvsLanguageServer");
+  let config = vscode.workspace.getConfiguration("totvsLanguageServer");
   _needRestart = false;
+
+  const settings: any[] = [];
 
   if (config.has("editor.linter")) {
     let oldLinter = config.get("editor.linter");
@@ -135,7 +111,7 @@ export function getModifiedLanguageServerSettings(): any[] {
     }
   }
 
-  const includes: string = (ServersConfig.getIncludes(true, ServersConfig.getCurrentServer()) || []).join(";");
+  const includes: string = (ServersConfig.getFullIncludes(true, ServersConfig.getCurrentServer()) || []).join(";");
   if (isNewSettings("linter", "includes", includes)) {
     settings.push({
       scope: "linter",
@@ -203,6 +179,16 @@ export function getModifiedLanguageServerSettings(): any[] {
       key: "autocomplete",
       value: String(autocomplete)
     });
+  }
+
+  const formattingProvider = config.get("formatter.provider", "ls");
+  if (isNewSettings("formatter", "provider", formattingProvider)) {
+    settings.push({
+      scope: "formatter",
+      key: "provider",
+      value: String(formattingProvider)
+    });
+    // NÃO chamar setNeedRestart — o LS faz register/unregister dinâmico de textDocument/formatting
   }
 
   const formatterKeysMap: Record<string, Record<string, any>> = getFormatterKeysFromPackage();

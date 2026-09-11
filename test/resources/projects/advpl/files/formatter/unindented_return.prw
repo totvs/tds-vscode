@@ -1,15 +1,19 @@
+//Não enviar ao repositório se aplicar formatação
 #include "protheus.ch"
 
-user function unindented()
-      if .t.
-  conout("a")
-    return
+user function f1()
+        if .t.
+    conout("a")
+	   return
 endif
-return
 
-user function unindented()
-      if .t.
-  conout("a")
-    return
+conout("Para validação de encoding: não, é, ção")
+
+  return
+
+user function f2()
+        if .t.
+    conout("a")
+	   return
 endif
-return
+  return

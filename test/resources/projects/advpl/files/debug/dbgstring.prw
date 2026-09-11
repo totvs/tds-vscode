@@ -12,6 +12,7 @@ user function dbgstring()
 	local s100 := replicate(s10,10)
 	local s1000 := replicate(s100,10)
 	local s10000 := replicate(s1000,10)
+	local s10000 := replicate(s1000,10)
 
 	conout(s0)
 	conout(s10)

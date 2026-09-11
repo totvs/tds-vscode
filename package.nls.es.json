@@ -44,6 +44,8 @@
 	"tds.package.revalidate.rpo.title": "Revalidar RPO",
 	"tds.package.revalidate.rpo.description": "Revalidar RPO actual",
 	"tds.package.build.file.title": "Compilar archivo / carpeta",
+	"tds.package.syntaxOnly.syntax-only.title": "Compilar solo sintaxis",
+	"tds.package.syntaxOnly.file.description": "Compilar solo la sintaxis de un archivo / carpeta en los servidores TOTVS",
 	"tds.package.show.result.build.title": "Show table with compile results",
 	"tds.package.show.result.build.description": "Show table with compile results",
 	"tds.package.build.file.description": "Compilar un archivo / carpeta en servidores TOTVS",

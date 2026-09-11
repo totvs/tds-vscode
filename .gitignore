@@ -25,4 +25,8 @@ test/**/.vscode
 .vscode/settings.json
 .vscode/.advpl/**
 .vscode/.cache
+!resources/.github/**/*
+/test/resources/projects/advpl0
+/test/resources/projects/advpl/.kiro
+.vscode/settings.json
 /test/resources/projects/advpl/files/poc-advpl

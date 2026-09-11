@@ -1,3 +1,4 @@
+//Não enviar ao repositório se aplicar formatação
 #include "protheus.ch"
 
 user FUNCtion keywords()
@@ -6,19 +7,21 @@ Local total := 2
 Local x := 3
 
 If n > 10
-n := 10
-return
+	n := 10
+	return
 endIf
 
 while total > 20
-total--
+	total--
 end Do
 
 While total > 20
-total--
+	total--
 end Do
 
 total := 20
 x := 30
+
+conout("Para validação de encoding: não, é, ção")
 
 RETURN

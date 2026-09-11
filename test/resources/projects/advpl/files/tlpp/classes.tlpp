@@ -1,0 +1,93 @@
+#include "totvs.ch"
+#include "tlpp-core.th"
+#include "tlpp-rest.th"
+
+
+class Pessoa
+
+	data cNome as character default "Sem nome"
+	private data cSobrenome as character
+	protected data cCpf as character
+	data aArray as array
+
+	public method  new() constructor
+	method  getNome()
+	private method  getSobrenome()
+	protected method  getCpf()
+	method getArray()
+
+endClass
+
+/*/{Protheus.doc} Pessoa::new
+Método construtor
+@type method
+@version  1.0
+@author every system
+@since 20/05/2021
+@param cNome, character, nome da pessoa
+@param cSobrenome, character, sobrenome da pessoa
+@param cCpf, character, cpf da pessoa
+/*/
+static cCpf := 0 as numeric ,;
+	cNome := "Nome" as character ,;
+	cSobrenome := "Sobrenome" as character
+
+static cCpf2 := 0 as numeric
+
+
+
+method new(cNome, cSobrenome, cCpf) class Pessoa
+	static cCpf as character
+
+	conout("Entrou no construtor da classe Pessoa")
+
+	self:cNome := cNome
+	self:cSobrenome := cSobrenome
+	self:cCpf := cCpf
+return
+
+method getNome() class Pessoa
+
+return self:cNome
+
+method getSobrenome() class Pessoa
+return self:cSobrenome
+
+method getCpf() class Pessoa
+return self:cCpf
+
+
+user function testeReflection()
+	local aClasse as array
+	local aParams as array
+	//————————————————————————————————————————-
+	//Verificando todas as classes do namespace "OtherSpace" com a annotation "classe"
+	//———————————————————————————————————————–
+
+	aClasse := Reflection.getClassesByAnnotation("classe", "OtherSpace")
+	//—————————————————-
+	//Verificando os parâmetros da classe
+	//—————————————————-
+
+	aParams := Reflection.getClassAnnotationList(aClasse[1]:cClassName)
+	//———————————————–
+	//Atribuindo valores aos parâmetros
+	//———————————————–
+	&(aParams[2]["nome"]) := "João"
+	&(aParams[3]["nome"]) := "Amaro"
+
+	&(aParams[4]["nome"]) := "12345678911"
+	//—————————————–
+	//Instanciando a classe Pessoa
+	//—————————————–
+
+	oPessoa := aClasse[1]:CreateInstance(&(aParams[2]["nome"]), &(aParams[3]["nome"]), &(aParams[4]["nome"]))
+	//——————————————————
+	//Testando os métodos da classe Pessoa
+	//——————————————————-
+	conout(oPessoa:getNome())
+	conout(oPessoa:getSobrenome())
+
+	conout(oPessoa:getCpf())
+
+return

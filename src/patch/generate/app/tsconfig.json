@@ -1,6 +1,7 @@
 
 {
     "compilerOptions": {
+        "incremental": true,
         "module": "commonjs",
         "target": "ES2016",
         "moduleResolution": "node",

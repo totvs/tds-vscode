@@ -1,9 +1,15 @@
+// Não enviar ao repositório se aplicar formatação
 #include "protheus.ch"
 
 user function commentReflow()
-local n := 1
-// short comment that stays as a single line and would be a candidate for wrapping if commentReflow was implemented to reflow overly long comment lines
-/* this is a single line block comment that is also quite long and should be wrapped into multiple lines when commentReflow is enabled and left alone otherwise */
-conout(str(n))
+	local n := 1
+	// short comment that stays as a single line and would be a candidate for wrapping if commentReflow was implemented to reflow overly long comment lines
+
+	/*
+	 this is a single line block comment that is also quite long and should be wrapped into multiple lines when commentReflow is enabled and left alone otherwise
+	           */
+			   
+	conout(str(n))
+	conout("Para validação de encoding: não, é, ção")
 
 return

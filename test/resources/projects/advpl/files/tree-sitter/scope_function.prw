@@ -1,18 +1,18 @@
 #include "protheus.ch"
 
-static function f1()
+STATIC function f1()
 
-main function f2()
+MAIN function f2()
 
 user function f3()
 
-web function f4()
+WEB function f4()
 
-template function f5()
+TEMPLATE function f5()
 
-html function f6()
+HTML function f6()
 
-project function f7()
+PROJECT function f7()
 
 xxxx function f8()
 

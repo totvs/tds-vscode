@@ -29,6 +29,8 @@ export function getLanguageClient(
     args = args.concat(notificationlevel);
   }
 
+  //args.push("--wait-for-attach=30");
+
   args = args.concat(clientConfig["launchArgs"]);
 
   let env: any = {};
@@ -112,7 +114,6 @@ export function getLanguageClient(
     },
     // middleware: {
     //   provideCodeLenses: (doc, next, token) => {
-    //     console.log("xxxxxxxxxxx");
 
     //     return [];
     //   }
@@ -130,10 +131,10 @@ export function getLanguageClient(
   languageClient.onNotification("$totvsserver/notification", (params: IServerNotificationInfo) => {
     //vscode.window.showInformationMessage(params.code + params.message);
 
-    vscode.workspace.textDocuments.forEach((document: vscode.TextDocument) => {
+      //vscode.workspace.textDocuments.forEach((document: vscode.TextDocument) => {
       //TODO: forçar 'refresh' do editor corrente (references)
+      //});
     });
-  });
 
   languageClient.onNotification("$totvsserver/loginWithOIDC", (params: ILoginWithOIDCInfo) => {
     loginWithOidc(params);

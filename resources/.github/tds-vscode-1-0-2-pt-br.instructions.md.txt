@@ -1,0 +1,34 @@
+---
+applyTo: "**/*.{.prw,.prx,.prg,.ppx,.ppp,.tlpp,.apw,.aph,.apl,.ahu,.th}"
+name: "AdvPL/TLPP LS-First"
+description: "PT-BR e prioridade ao LS"
+---
+
+<!--
+AVISO para desenvolvedores Protheus:
+     Este arquivo de instruções foi gerado automaticamente.
+     Alterações são mantidas, pois este é gerado somente se não existir.
+     Caso não queira usá-lo, mantenha-o na pasta mas vazio.
+-->
+
+<!--
+AVISO para desenvolvedores da extensão:
+     Manter a extensão `.md.txt` a fim de evitar a sua carga no desenvolvimento
+     da extensão, que caso ocorra pode interferir no ambiente.
+-->
+
+# Instruções
+
+- Responda em Português do Brasil, de forma objetiva.
+- Regra mandatória LS-first: em qualquer tarefa de navegação, análise, correção ou refatoração, a primeira ação deve ser obrigatoriamente uma ferramenta LS.
+- Sequência obrigatória de navegação semântica:
+
+ 1) Localizar símbolo com `lsp_workspace_symbols`.
+ 2) Confirmar definição com `lsp_definition`.
+ 3) Mapear uso e impacto com `lsp_references`.
+
+- Proibido iniciar com `grep_search`, `file_search`, `read_file` ou leitura manual quando LS estiver disponível.
+- Exceção controlada: usar busca textual ou leitura manual apenas se LS falhar, não retornar símbolo ou estiver sem cobertura.
+- Ao cair na exceção, registrar explicitamente na resposta: "LS indisponível/sem cobertura; seguindo com busca textual".
+- Critério de conformidade: informar, antes do resultado, qual ferramenta LS foi usada e o que ela retornou.
+- Regra de não conformidade: se não usar LS primeiro sem justificativa válida, considerar a execução fora do padrão e corrigir a abordagem na mesma resposta.

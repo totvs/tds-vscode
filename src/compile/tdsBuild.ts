@@ -19,9 +19,13 @@ interface CompileOptions {
   priorVelocity: boolean;
   returnPpo: boolean;
   commitWithErrorOrWarning: boolean;
+  syntaxOnly: boolean;
 }
 
 //TODO: pegar as opções de compilação da configuração (talvez por server? ou workspace?)
+/**
+ * Returns the default compilation options based on current workspace settings.
+ */
 function _getCompileOptionsDefault(): CompileOptions {
   let config = vscode.workspace.getConfiguration("totvsLanguageServer");
   let generatePpoFile = config.get("compilation.generatePpoFile");
@@ -32,6 +36,7 @@ function _getCompileOptionsDefault(): CompileOptions {
 
   return {
     recompile: false,
+    syntaxOnly: false,
     debugAphInfo: true,
     gradualSending: true,
     generatePpoFile: generatePpoFile as boolean,
@@ -42,8 +47,12 @@ function _getCompileOptionsDefault(): CompileOptions {
   };
 }
 
+/**
+ * Requests PPO generation for a single AdvPL source file.
+ * Optionally converts the returned PPO content to the requested encoding.
+ */
 export function generatePpo(filePath: string, options?: any): Promise<string> {
-  return new Promise<string>((resolve, reject) => {
+  return new Promise<string>(async (resolve, reject) => {
     if (!filePath || filePath.length == 0) {
       reject(new Error("Undefined filePath."));
       return;
@@ -72,7 +81,7 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
       return;
     }
 
-    const includes = ServersConfig.getIncludes(true, serverItem) || [];
+    const includes = await ServersConfig.getFullIncludes(true, serverItem) || [];
     let includesUris: Array<string> = includes.map((include) => {
       return vscode.Uri.file(include).toString();
     });
@@ -103,7 +112,8 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
         filesUris,
         compileOptions,
         extensionsAllowed,
-        isAdvplsource
+        isAdvplsource,
+        false
       ).then(
         (response: CompileResult) => {
           blockBuildCommands(false);
@@ -160,7 +170,7 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
 }
 
 /**
- * Builds a file.
+ * Compiles one or more files with the given recompile option.
  */
 export function buildFile(filename: string[], recompile: boolean) {
   const compileOptions = _getCompileOptionsDefault();
@@ -169,9 +179,9 @@ export function buildFile(filename: string[], recompile: boolean) {
 }
 
 /**
- * Build a file list.
+ * Compiles a list of files with the provided compile options.
  */
-async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
+function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
   const server = ServersConfig.getCurrentServer();
 
   const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
@@ -179,6 +189,7 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
   if (shouldClearConsole !== false) {
     languageClient.outputChannel.clear();
   }
+
   const showConsoleOnCompile = configADVPL.get("showConsoleOnCompile");
   if (showConsoleOnCompile !== false) {
     languageClient.outputChannel.show();
@@ -207,12 +218,13 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
       filesPaths.filter((file) => {
         return Utils.isAdvPlSource(file);
       }).length > 0;
-    //Pega os includes do servidor conectado
-    let includes: Array<string> = [];
-    includes = ServersConfig.getIncludes(true, server) || [];
+
+    //Pega os includes
+    let includes: Array<string> = ServersConfig.getFullIncludes(true, server) || [];
     if (!includes.toString()) {
       return;
     }
+
     //Converte os includes em URIs
     let includesUris: Array<string> = [];
     for (let idx = 0; idx < includes.length; idx++) {
@@ -224,6 +236,7 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
       });
       includesUris.push(...wp);
     }
+
     //Converte os arquivos a serem compilados para URIs
     let filesUris: Array<string> = [];
     filesPaths.forEach((file) => {
@@ -235,11 +248,13 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
         );
       }
     });
+
     //Obtem a lista de extensoes permitidas, se houver
     let extensionsAllowed: string[];
     if (configADVPL.get("folder.enableExtensionsFilter", true)) {
       extensionsAllowed = configADVPL.get("folder.extensionsAllowed", []); // Le a chave especifica
     }
+
     //Envia a mensagem de compilacao
     if (blockBuildCommands(true)) {
       sendCompilation(
@@ -248,7 +263,8 @@ async function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
         filesUris,
         compileOptions,
         extensionsAllowed,
-        hasAdvplsource
+        hasAdvplsource,
+        compileOptions.syntaxOnly
       ).then(
         (response: CompileResult) => {
           blockBuildCommands(false);
@@ -320,6 +336,9 @@ function verifyCompileResult(response) {
   }
 }
 
+/**
+ * Command handler that compiles a selected file or provided file list.
+ */
 export function commandBuildFile(
   context: vscode.ExtensionContext,
   recompile: boolean,
@@ -355,6 +374,49 @@ export function commandBuildFile(
   );
 }
 
+/**
+ * Command handler that performs a syntax-only check on a file or file list.
+ */
+export function commandSyntaxOnlyFile(
+  context: vscode.ExtensionContext,
+  files
+) {
+  let editor: vscode.TextEditor | undefined;
+  let filename: string | undefined = undefined;
+
+  if (context === undefined) {
+    editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showInformationMessage(
+        vscode.l10n.t("No editor is active, cannot find current file to check syntax.")
+      );
+      return;
+    }
+    filename = editor.document.uri.fsPath;
+  }
+
+  vscode.window.setStatusBarMessage(
+    `$(gear~spin) ${vscode.l10n.t("Checking syntax...")}`,
+    new Promise((resolve, reject) => {
+      const compileOptions = _getCompileOptionsDefault();
+      compileOptions.syntaxOnly = true;
+      compileOptions.generatePpoFile = false;
+
+      if (files) {
+        const arrayFiles: string[] = changeToArrayString(files);
+        const allFiles = Utils.getAllFilesRecursive(arrayFiles, true);
+        buildCode(allFiles, compileOptions);
+      } else if (filename !== undefined) {
+        buildCode([filename], compileOptions);
+      }
+      resolve(true);
+    })
+  );
+}
+
+/**
+ * Normalizes the input list into a string array of file paths.
+ */
 function changeToArrayString(allFiles) {
   let arrayFiles: string[] = [];
 
@@ -371,6 +433,9 @@ function changeToArrayString(allFiles) {
   return arrayFiles;
 }
 
+/**
+ * Command handler that compiles all files in the current workspace.
+ */
 export function commandBuildWorkspace(recompile: boolean) {
   if (vscode.workspace.workspaceFolders) {
     let folders: string[] = [];
@@ -385,6 +450,9 @@ export function commandBuildWorkspace(recompile: boolean) {
   }
 }
 
+/**
+ * Command handler that compiles all files currently opened in editors.
+ */
 export async function commandBuildOpenEditors(recompile: boolean) {
   let delayNext = 250;
   let files: string[] = [];
@@ -458,10 +526,16 @@ export async function commandBuildOpenEditors(recompile: boolean) {
   }
 }
 
+/**
+ * Resolves after a short delay to allow editor switching to settle.
+ */
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/**
+ * Compares two editor instances and treats undefined values as equal.
+ */
 function sameEditor(editor: vscode.TextEditor, nextEditor: vscode.TextEditor) {
   if (editor === undefined && nextEditor === undefined) {
     return true;
