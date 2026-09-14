@@ -709,7 +709,7 @@ async function prepareInstructions(context: vscode.ExtensionContext) {
           let templateUri: vscode.Uri = vscode.Uri.joinPath(context.extensionUri, 'resources', ".github", `tds-vscode-${version}-${language}.instructions.md.txt`);
 
           if (!fse.existsSync(templateUri.fsPath)) {
-            templateUri = vscode.Uri.joinPath(context.extensionUri, 'resources', ".github", `tds-vscode-${version}-en-us.instructions.md.txt`);
+            templateUri = vscode.Uri.joinPath(context.extensionUri, 'resources', ".github", `tds-vscode-${version}-en.instructions.md.txt`);
           }
 
           templateData = await vscode.workspace.fs.readFile(templateUri);
