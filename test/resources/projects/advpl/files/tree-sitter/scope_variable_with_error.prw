@@ -6,4 +6,3 @@ user  function f1()
     static v3
     public v4   
     xxxx v5 
-    

@@ -28,7 +28,7 @@
     "totvsLanguageServer.editor.codeActions": false,
     "totvsLanguageServer.editor.codeLens": false,
     "totvsLanguageServer.editor.hover": "off",
-    "totvsLanguageServer.editor.index.cache": "onDisk",
+    "totvsLanguageServer.editor.index.cache": "onMemory",
     "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\INCLUDES;m:\\protheus\\INCLUDES_TLPP;W:\\tds\\tds-vscode\\test\\resources\\projects\\advpl0\\includes-protheus",
     "totvsLanguageServer.editor.show.notification": "all",
     "totvsLanguageServer.editor.signatureHelp": false,

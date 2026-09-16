@@ -1,6 +1,5 @@
 #include "totvs.ch"
 
-
 #ifdef	pp_ifdef_directive
 #endif
 
@@ -11,7 +10,7 @@
 
 #else	
 
-#endif	//pp_endif_directive
+#endif //pp_endif_directive
 
 
 user function main()
