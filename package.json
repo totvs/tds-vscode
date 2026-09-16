@@ -766,7 +766,8 @@
           "scope": "window",
           "type": "string",
           "default": "",
-          "description": "(Don't edit. It can be overwritten.)"
+          "description": "",
+          "markdownDeprecationMessage": "(Don't edit. It can be overwritten.)"
         },
         "totvsLanguageServer.linter.callTreeSitter": {
           "scope": "window",
@@ -889,12 +890,12 @@
             },
             "operatorSpacing": {
               "type": "boolean",
-              "default": true,
+              "default": false,
               "description": "Normaliza espaçamento em operadores."
             },
             "spaceAfterComma": {
               "type": "boolean",
-              "default": true,
+              "default": false,
               "description": "Garante espaço após vírgulas."
             },
             "spaceInsideParentheses": {
