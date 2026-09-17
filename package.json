@@ -39,7 +39,7 @@
     "url": "https://github.com/totvs/tds-vscode/issues"
   },
   "scripts": {
-    "clean2": "npx rimraf out node_modukes",
+    "clean2": "npx rimraf out node_modules",
     "clean": "gulp clean",
     "clean-logs": "npx rimraf ./**/*.log ./**/*.dmp --verbose",
     "compile": "npm-run-all compile:*",
