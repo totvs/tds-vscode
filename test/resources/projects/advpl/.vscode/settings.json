@@ -33,7 +33,8 @@
         "_trimTrailingWhitespace": false,
         "wrapArguments": false,
         "wrapParameters": false,
-        "operatorSpacing": true
+        "operatorSpacing": true,
+        "preserveSingleLineBlocks": true
     },
     "totvsLanguageServer.editor.signatureHelp": false,
     "editor.codeLens": true,
