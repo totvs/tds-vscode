@@ -2,11 +2,20 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import Utils from '../utils';
+import { getFormattingOptions } from './formattingOptions';
 
 export const documentFormatting = async (resources: string[]) => {
+  // Extensões que não devem ser formatadas (ex.: fontes TypeScript).
+  const ignoredExtensions: string[] = ['.ts', '.tsx'];
+
   const resourceList: string[] = getResourceList(resources).filter(
-    (resource: string) =>
-      Utils.isAdvPlSource(resource) || Utils.is4glSource(resource)
+    (resource: string) => {
+      const ext: string = path.extname(resource).toLocaleLowerCase();
+      if (ignoredExtensions.indexOf(ext) > -1) {
+        return false;
+      }
+      return Utils.isAdvPlSource(resource) || Utils.is4glSource(resource);
+    }
   );
 
   if (resourceList.length === 0) {
@@ -46,16 +55,28 @@ export const documentFormatting = async (resources: string[]) => {
           const document: vscode.TextDocument = await vscode.workspace.openTextDocument(
             uri
           );
-          const editor: vscode.TextEditor = await vscode.window.showTextDocument(
-            document,
-            { preview: false, preserveFocus: true }
+
+          const options: vscode.FormattingOptions = getFormattingOptions(
+            document.languageId
           );
 
-          // Formata o fonte usando o comando de formatação do editor,
-          // que aciona o provedor de formatação registrado (extensão ou LS).
-          await vscode.commands.executeCommand('editor.action.formatDocument');
-          await editor.document.save();
-          formatted++;
+          // Formata o fonte acionando o provedor de formatação registrado
+          // (extensão ou LS) sem precisar exibir o documento em uma aba.
+          const edits:
+            | vscode.TextEdit[]
+            | undefined = await vscode.commands.executeCommand<
+            vscode.TextEdit[]
+          >('vscode.executeFormatDocumentProvider', uri, options);
+
+          if (edits && edits.length > 0) {
+            const wsEdit: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
+            wsEdit.set(uri, edits);
+            const applied: boolean = await vscode.workspace.applyEdit(wsEdit);
+            if (applied) {
+              await document.save();
+              formatted++;
+            }
+          }
         } catch (reason) {
           vscode.window.showErrorMessage(
             `Formatting error (${uri.toString(false)}): ${reason}`
