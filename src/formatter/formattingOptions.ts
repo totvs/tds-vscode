@@ -28,7 +28,7 @@ export function getFormattingOptions(langId: string): FormattingOptions {
     spaceAfterComma: getValue(langId, "spaceAfterComma", true),
     spaceInsideParentheses: getValue(langId, "spaceInsideParentheses", false),
     alignAssignments: getValue(langId, "alignAssignments", false),
-    normalizeConditionSpacing: getValue(langId, "normalizeConditionSpacing", true),
+    //normalizeConditionSpacing: getValue(langId, "normalizeConditionSpacing", true),
     normalizeCalls: getValue(langId, "normalizeCalls", false),
     preserveSingleLineBlocks: getValue(langId, "preserveSingleLineBlocks", false),
     blankLinesBetweenTopLevelDeclarations: getValue(

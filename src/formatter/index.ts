@@ -1,20 +1,74 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { DocumentFormatting, resourceFormatting } from './documentFormatting';
-import { AdvplFormattingRules } from './advplFormattingRules';
+import * as vscode from 'vscode';
 import Utils from '../utils';
 
-export const documentFormatting = (resources: string[]) => {
-  const resourceList: string[] = getResourceList(resources);
-  const advplResources: string[] = resourceList.filter((resource: string) =>
-    Utils.isAdvPlSource(resource)
-  );
-  const fourglResources: string[] = resourceList.filter((resource: string) =>
-    Utils.is4glSource(resource)
+export const documentFormatting = async (resources: string[]) => {
+  const resourceList: string[] = getResourceList(resources).filter(
+    (resource: string) =>
+      Utils.isAdvPlSource(resource) || Utils.is4glSource(resource)
   );
 
-  // resourceFormatting(advplResources);
-  // resourceFormatting(fourglResources);
+  if (resourceList.length === 0) {
+    vscode.window.showInformationMessage('Nenhum recurso localizado.');
+    return;
+  }
+
+  await vscode.window.withProgress(
+    {
+      location: vscode.ProgressLocation.Notification,
+      title: 'Formatting',
+      cancellable: true,
+    },
+    async (progress, token) => {
+      token.onCancellationRequested(() => {
+        vscode.window.showWarningMessage('Resource formatting canceled.');
+      });
+
+      const total: number = resourceList.length;
+      const increment: number = 100 / total;
+      let formatted: number = 0;
+
+      for (let index = 0; index < total; index++) {
+        if (token.isCancellationRequested) {
+          break;
+        }
+
+        const resource: string = resourceList[index];
+        const uri: vscode.Uri = vscode.Uri.file(resource);
+
+        progress.report({
+          increment: increment,
+          message: `${uri.toString(false)} (${index + 1}/${total})`,
+        });
+
+        try {
+          const document: vscode.TextDocument = await vscode.workspace.openTextDocument(
+            uri
+          );
+          const editor: vscode.TextEditor = await vscode.window.showTextDocument(
+            document,
+            { preview: false, preserveFocus: true }
+          );
+
+          // Formata o fonte usando o comando de formatação do editor,
+          // que aciona o provedor de formatação registrado (extensão ou LS).
+          await vscode.commands.executeCommand('editor.action.formatDocument');
+          await editor.document.save();
+          formatted++;
+        } catch (reason) {
+          vscode.window.showErrorMessage(
+            `Formatting error (${uri.toString(false)}): ${reason}`
+          );
+          console.log(reason);
+        }
+      }
+
+      vscode.window.showInformationMessage(
+        `Formatting finished. ${formatted} of ${total} files have been processed.`
+      );
+    }
+  );
 };
 
 function getResourceList(resources: string[]): string[] {
