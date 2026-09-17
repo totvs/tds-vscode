@@ -72,20 +72,21 @@ Chaves específicas para formatação de fontes 4GL e AdvPL.
 | Chave                                                  | Uso                                                               |
 | ------------------------------------------------------ | ----------------------------------------------------------------- |
 | maxConsecutiveBlankLines (`number`)                    | Máximo de linhas em branco em sequência. Padrão: 1                |
-| maxLineLength (`number`)                               | Largura máxima de linha para quebra automática. Padrão: 120       |
-| wrapParameters (`auto` \| `true` \| `false`)      | Define quebra automática de parâmetros. Padrão: false              |
-| wrapArguments (`auto` \| `true` \| `false`)       | Define quebra automática de argumentos. Padrão: false              |
-| keywordsCase <upper \| lower \| ignore>                | Coloca palavras-chaves em maiúsculas ou minúsculas. Padrão: (4GL)upper (AdvPL)ignore |
-| stringStyle <double-quotes \| single-quotes \| ignore> | Usar aspas simples ou duplas em strings. Padrão: ignore           |
-| operatorSpacing (`boolean`)                            | Padroniza espaços em operadores. Padrão: true                     |
-| spaceAfterComma (`boolean`)                            | Garante espaço após vírgulas. Padrão: true                        |
+| maxLineLength (`number`)                               | Largura máxima de linha para aplicar quebra automática. Padrão: 120 |
+| wrapParameters (`auto` \| `true` \| `false`)           | Controla quebra de linha de parâmetros. Padrão: false             |
+| wrapArguments (`auto` \| `true` \| `false`)            | Controla quebra de linha de argumentos. Padrão: false             |
+| keywordsCase <upper \| lower \| upperCamel \| ignore>  | Coloca as palavras-chave da linguagem na caixa indicada. Padrão: (4GL) upper / (AdvPL) ignore |
+| stringStyle <double-quotes \| single-quotes \| ignore> | Indica como as _strings_ devem ser informadas. Padrão: ignore     |
+| operatorSpacing (`boolean`)                            | Normaliza espaçamento em operadores. Padrão: false                |
+| spaceAfterComma (`boolean`)                            | Garante espaço após vírgulas. Padrão: false                       |
 | spaceInsideParentheses (`boolean`)                     | Controla espaços dentro de parênteses. Padrão: false              |
 | alignAssignments (`boolean`)                           | Alinha operadores de atribuição (`:=`, `+=`, `-=`, `*=`, `/=`, `%=`) em blocos. Padrão: false |
-| normalizeCalls (`boolean`)                             | Remove espaços entre chamada e `(`. Padrão: false                 |
-| preserveSingleLineBlocks (`boolean`)                   | Preserva blocos de uma linha. Padrão: false                       |
-| blankLinesBetweenTopLevelDeclarations (`number`)       | Linhas em branco entre declarações de topo. Padrão: 1             |
-| commentReflow (`boolean`)                              | Reorganiza comentários longos. Padrão: false                      |
-| trimFinalNewlines(`boolean`)                              | Remove linhas em branco no final do arquivo. Padrão: true |
+| normalizeCalls (`boolean`)                             | Normaliza chamadas removendo espaço entre identificador e parêntese de abertura. Padrão: false |
+| preserveSingleLineBlocks (`boolean`)                   | Preserva blocos de uma única linha. Padrão: false                 |
+| blankLinesBetweenTopLevelDeclarations (`number`)       | Quantidade de linhas em branco entre declarações de topo. Padrão: 1 |
+| commentReflow (`boolean`)                              | Permite reorganizar comentários longos. Padrão: false             |
+| trimFinalNewlines (`boolean`)                          | Remove linhas em branco no final do arquivo. Padrão: true         |
+| trimTrailingWhitespace (`boolean`)                     | Remove espaços em branco no final da linha. Padrão: true          |
 
 ### Exemplo com os valores padrão
 
@@ -117,36 +118,38 @@ Chaves específicas para formatação de fontes 4GL e AdvPL.
   "4gl.formatter": {
     "maxConsecutiveBlankLines": 1,
     "maxLineLength": 120,
-    "wrapParameters": "auto",
-    "wrapArguments": "auto",
+    "wrapParameters": false,
+    "wrapArguments": false,
     "keywordsCase": "upper",
     "stringStyle": "ignore",
-    "operatorSpacing": true,
-    "spaceAfterComma": true,
+    "operatorSpacing": false,
+    "spaceAfterComma": false,
     "spaceInsideParentheses": false,
     "alignAssignments": false,
     "normalizeCalls": false,
     "preserveSingleLineBlocks": false,
+    "trimFinalNewlines": true,
     "blankLinesBetweenTopLevelDeclarations": 1,
     "commentReflow": false,
-    "trimFinalNewlines": true
+    "trimTrailingWhitespace": true
   },
   "advpl.formatter": {
     "maxConsecutiveBlankLines": 1,
     "maxLineLength": 120,
-    "wrapParameters": "false",
-    "wrapArguments": "false",
+    "wrapParameters": false,
+    "wrapArguments": false,
     "keywordsCase": "ignore",
     "stringStyle": "ignore",
-    "operatorSpacing": true,
-    "spaceAfterComma": true,
+    "operatorSpacing": false,
+    "spaceAfterComma": false,
     "spaceInsideParentheses": false,
     "alignAssignments": false,
     "normalizeCalls": false,
     "preserveSingleLineBlocks": false,
+    "trimFinalNewlines": true,
     "blankLinesBetweenTopLevelDeclarations": 1,
     "commentReflow": false,
-    "trimFinalNewlines": true
+    "trimTrailingWhitespace": true
   }
   ...,
 }
@@ -159,12 +162,6 @@ Chaves específicas para formatação de fontes 4GL e AdvPL.
 > efeito de **cada opção de `advpl.formatter` isoladamente**; em cada caso, as
 > demais opções estão nos valores padrão.
 >
-> **Atenção aos padrões:** os valores padrão efetivos no LS diferem de alguns
-> defaults exibidos no `package.json`. No LS: `operatorSpacing=false`,
-> `maxConsecutiveBlankLines=0`, `trimFinalNewlines=false`,
-> `trimTrailingWhitespace=false`, `spaceAfterComma=true`,
-> `spaceInsideParentheses=false`, `keywordsCase=ignore`, `stringStyle=ignore`,
-> `maxLineLength=120`, `tabSize=4`, `insertSpaces=false`.
 
 ### Reindentação por blocos (sempre aplicada)
 
@@ -275,7 +272,7 @@ Depois (com `false` — padrão —, remove espaço interno):
 nResultado := Calcula(nBase, nTaxa)
 ```
 
-### `keywordsCase` (`upper` \| `lower` \| `ignore`, padrão `ignore`)
+### `keywordsCase` (`upper` \| `lower` \| `upperCamel` \| `ignore`, padrão (4GL) `upper` / (AdvPL) `ignore`)
 
 Ajusta a caixa apenas das palavras-chave reconhecidas da linguagem. Comentários
 (`//`, `/* */`) e o conteúdo de *strings* são preservados.
@@ -306,8 +303,9 @@ FUNCTION Exemplo()
 RETURN
 ```
 
-> Com `lower`, as palavras-chave ficam em minúsculas. Com `ignore` (padrão), a
-> caixa original é mantida.
+> Com `lower`, as palavras-chave ficam em minúsculas. Com `upperCamel`, a
+> primeira letra fica em maiúscula e as demais em minúsculas. Com `ignore`, a
+> caixa original é mantida. O padrão é `upper` para 4GL e `ignore` para AdvPL.
 
 ### `stringStyle` (`double-quotes` \| `single-quotes` \| `ignore`, padrão `ignore`)
 

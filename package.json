@@ -791,7 +791,7 @@
             "cp1252",
             "cp1251"
           ],
-          "default": "cp1252",
+          "default": "cp1252",  
           "description": "%tds.package.filesystem.encoding%"
         },
         "4gl.formatter": {
@@ -839,11 +839,13 @@
               "enum": [
                 "upper",
                 "lower",
+                "upperCamel",
                 "ignore"
               ],
               "enumDescriptions": [
                 "Em maiúsculas",
                 "Em minúsculas",
+                "Em maiúsculas a primeira letra, demais em minúsculas",
                 "Manter original"
               ],
               "default": "upper",
@@ -866,12 +868,12 @@
             },
             "operatorSpacing": {
               "type": "boolean",
-              "default": true,
+              "default": false,
               "description": "Normaliza espaçamento em operadores."
             },
             "spaceAfterComma": {
               "type": "boolean",
-              "default": true,
+              "default": false,
               "description": "Garante espaço após vírgulas."
             },
             "spaceInsideParentheses": {
@@ -883,11 +885,6 @@
               "type": "boolean",
               "default": false,
               "description": "Alinha operadores de atribuição em blocos."
-            },
-            "normalizeConditionSpacing": {
-              "type": "boolean",
-              "default": true,
-              "description": "Normaliza espaçamento em estruturas condicionais."
             },
             "normalizeCalls": {
               "type": "boolean",
@@ -966,11 +963,13 @@
               "enum": [
                 "upper",
                 "lower",
+                "upperCamel",
                 "ignore"
               ],
               "enumDescriptions": [
                 "Em maiúsculas",
                 "Em minúsculas",
+                "Em maiúsculas a primeira letra, demais em minúsculas",
                 "Manter original"
               ],
               "default": "ignore",
@@ -993,12 +992,12 @@
             },
             "operatorSpacing": {
               "type": "boolean",
-              "default": true,
+              "default": false,
               "description": "Normaliza espaçamento em operadores."
             },
             "spaceAfterComma": {
               "type": "boolean",
-              "default": true,
+              "default": false,
               "description": "Garante espaço após vírgulas."
             },
             "spaceInsideParentheses": {
@@ -1010,11 +1009,6 @@
               "type": "boolean",
               "default": false,
               "description": "Alinha operadores de atribuição em blocos."
-            },
-            "normalizeConditionSpacing": {
-              "type": "boolean",
-              "default": true,
-              "description": "Normaliza espaçamento em estruturas condicionais."
             },
             "normalizeCalls": {
               "type": "boolean",

@@ -1,9 +1,9 @@
 {
     "totvsLanguageServer.welcomePage": false,
-    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\INCLUDES;m:\\protheus\\INCLUDES_TLPP",
+    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\INCLUDES;m:\\protheus\\INCLUDES_TLPP;W:\\tds\\tds-vscode\\test\\resources\\projects\\advpl0\\includes-protheus",
     "totvsLanguageServer.editor.show.notification": "all",
     "totvsLanguageServer.trace.debug": "messages",
-    "totvsLanguageServer.trace.server": "verbose",
+    "totvsLanguageServer.trace.server": "messages",
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
         "--verbose",
@@ -18,32 +18,26 @@
     "totvsLanguageServer.editor.autocomplete": "Off",
     "totvsLanguageServer.workspaceServerConfig": false,
     "totvsLanguageServer.editor.codeLens": false,
-    "totvsLanguageServer.editor.index.cache": "onDisk",
-    "chat.agentFilesLocations": {
-        ".github/agents": true,
-        ".claude/agents": true,
-        "~/.copilot/agents": true,
-        ".agents/agents": true
-    },
+    "totvsLanguageServer.editor.index.cache": "onMemory",
     "totvsLanguageServer.compilation.generatePpoFile": false,
     "totvsLanguageServer.editor.hover": "off",
     "editor.formatOnSave": false,
+    "editor.formatOnPaste": false,
     "advpl.formatter": {
         "_maxConsecutiveBlankLines": 1,
         "_alignAssignments": true,
         "_maxLineLength": 90,
         "commentReflow": true,
-        "_keywordsCase": "ignore",
+        "keywordsCase": "upperCamel",
         "_stringStyle": "single-quotes",
         "_trimTrailingWhitespace": false,
         "wrapArguments": false,
-        "wrapParameters": true,
-        "_operatorSpacing": false
+        "wrapParameters": false,
+        "operatorSpacing": true
     },
     "totvsLanguageServer.editor.signatureHelp": false,
     "editor.codeLens": true,
     "totvsLanguageServer.formatter.provider": "ls",
-    "totvsLanguageServer.editor.index.cache": "off",
     "editor.signatureHelp.enabled": true,
     "totvsLanguageServer.editor.codeActions": false
 }
