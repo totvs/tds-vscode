@@ -1,5 +1,13 @@
 # Changelog
 
+## Versão [2.1.4]
+
+### Correções
+
+#### Falha de conexão na depuração da release 12.1.2610
+
+Corrigida falha de conexão na depuração da release 12.1.2610.
+
 ## Versão [2.1.3]
 
 ### Correções
