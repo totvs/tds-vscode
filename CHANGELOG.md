@@ -12,7 +12,6 @@ Adicionado configuração de `steering` para o Kiro.
 
 Correção em mensagens que citam "Copilot".
 
-
 ## Versão [2.1.4]
 
 ### Correções
