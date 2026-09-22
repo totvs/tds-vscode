@@ -243,7 +243,7 @@ export async function activate(context: ExtensionContext) {
             createTimeLineWebView.reveal();
           }
         } else {
-          vscode.window.showErrorMessage("TDS Replay não iniciado.");
+          vscode.window.showErrorMessage(vscode.l10n.t("TDS Replay not started."));
         }
       }
     )
@@ -422,7 +422,7 @@ export async function activate(context: ExtensionContext) {
     commands.registerCommand("totvs-developer-studio.clearRpoToken", () => {
       saveRpoTokenString(undefined).then(
         () => {
-          vscode.window.showInformationMessage("RPO token clean");
+          vscode.window.showInformationMessage(vscode.l10n.t("RPO token clean"));
         },
         (error) => {
           vscode.window.showErrorMessage(error.message);
@@ -653,7 +653,7 @@ let canBuild: boolean = true;
 export function blockBuildCommands(block: boolean): boolean {
   if (!canBuild && block) {
     window.showInformationMessage(
-      `Request cancelled. Build process already in progress.`
+      vscode.l10n.t("Request cancelled. Build process already in progress.")
     );
     return false;
   }
@@ -670,7 +670,7 @@ export function canDebug(): boolean {
 
   if (!result) {
     vscode.window.showWarningMessage(
-      "Request cancelled. Build process in progress."
+      vscode.l10n.t("Request cancelled. Build process in progress.")
     );
   }
 
@@ -687,7 +687,7 @@ async function prepareInstructions(context: vscode.ExtensionContext) {
   const targetFileUri: vscode.Uri = vscode.Uri.joinPath(githubFolderUri, `tds-vscode-${version}.instructions.md`);
 
   if (!fse.existsSync(targetFileUri.fsPath)) {
-    const question: string = vscode.l10n.t("Do you want to configure Copilot instructions for this workspace (improves accuracy)?")
+    const question: string = vscode.l10n.t("Do you want to configure IA instructions for this workspace (improves accuracy)?")
     const yes: string = vscode.l10n.t("Yes")
     const notNow: string = vscode.l10n.t("Not now")
     const never: string = vscode.l10n.t("Never (don't ask again)")
@@ -723,11 +723,11 @@ async function prepareInstructions(context: vscode.ExtensionContext) {
         await vscode.workspace.fs.writeFile(targetFileUri, templateData);
 
         if (selection === yes) {
-          vscode.window.showInformationMessage("Contexto do LS TOTVS ativado para o Copilot.");
+          vscode.window.showInformationMessage(vscode.l10n.t("TOTVS LS context enabled for AI."));
         }
       } catch (err) {
         console.error("Erro ao ler o template ou salvar instruções:", err);
-        vscode.window.showErrorMessage("Falha ao configurar o contexto do LS TOTVS para o Copilot. Veja o console para detalhes.");
+        vscode.window.showErrorMessage(vscode.l10n.t("Failed to configure the TOTVS LS context for AI. See the console for details."));
       }
     }
   }
