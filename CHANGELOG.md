@@ -1,5 +1,17 @@
 # Changelog
 
+## Versão [2.1.5]
+
+### Melhorias
+
+Adicionado configuração de `steering` para o Kiro.
+
+### Correções
+
+#### Textos IA
+
+Correção em mensagens que citam "Copilot".
+
 ## Versão [2.1.4]
 
 ### Correções

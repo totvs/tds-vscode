@@ -1,0 +1,36 @@
+---
+inclusion: fileMatch
+fileMatchPattern: '**/*.{prw,prx,prg,ppx,ppp,tlpp,apw,aph,apl,ahu,ch,th}'
+---
+
+# AdvPL/TLPP — navegação LS-first
+
+Esta disciplina é ativada quando fontes AdvPL/TLPP estão no contexto. Ela se aplica a tarefas de navegação, análise, correção e refatoração.
+
+## Sequência semântica obrigatória
+
+Antes de busca textual ou leitura manual, use o Language Server nesta ordem:
+
+1. `lsp_workspace_symbols` — localizar o símbolo.
+2. `lsp_definition` — confirmar sua definição.
+3. `lsp_references` — mapear usos e impacto.
+
+A primeira ação de investigação deve usar uma ferramenta do Language Server. Não comece com `grep_search`, `file_search`, `read_file` ou leitura manual quando houver cobertura semântica disponível.
+
+## Exceção controlada
+
+Use busca textual ou leitura manual somente quando o Language Server estiver indisponível, falhar, não localizar o símbolo ou não oferecer cobertura para o arquivo. Antes de prosseguir, registre explicitamente:
+
+> LS indisponível/sem cobertura; prosseguindo com busca textual.
+
+Depois de localizar o código, valide APIs, assinaturas e metadados Protheus nos MCPs oficiais aplicáveis, conforme o `AGENTS.md`.
+
+## Evidência de conformidade
+
+Antes de concluir a tarefa:
+
+- informe qual ferramenta do Language Server foi utilizada;
+- resuma o resultado relevante retornado;
+- se a exceção foi necessária, informe a limitação encontrada e a busca alternativa utilizada.
+
+Se a investigação não começar pelo Language Server sem uma justificativa válida, corrija a abordagem na mesma execução antes de apresentar o resultado.

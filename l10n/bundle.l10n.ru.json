@@ -90,7 +90,7 @@
   "Starting patch application...": "Запуск приложения исправления...",
   "Starting template application...": "Запуск шаблонного приложения...",
   "Starting RPO load information...": "Начинаем загрузку информации RPO...",
-  "Do you want to configure Copilot instructions for this workspace (improves accuracy)?": "Хотите настроить инструкции Copilot для этой рабочей области (повышает точность)?",
+  "Do you want to configure AI instructions for this workspace (improves accuracy)?": "Хотите настроить инструкции IA для этой рабочей области (повышает точность)?",
   "Not now": "Не сейчас",
   "Never (don't ask again)": "Никогда (больше не спрашивать)",
   "Include": "Включать",
@@ -430,5 +430,11 @@
   "Path to your SmartClient:": "Путь к вашему SmartClient:",
   "or": "или",
   "TDS VSCode updated to v{0}. Check out what's new!": "TDS VSCode обновлен до v{0}. Ознакомьтесь с новинками!",
-  "What's New": "Что нового"
+  "What's New": "Что нового",
+  "TDS Replay not started.": "TDS Replay не запущен.",
+  "RPO token clean": "Токен RPO очищен",
+  "TOTVS LS context enabled for AI.": "Контекст LS TOTVS включён для ИИ.",
+  "Failed to configure the TOTVS LS context for AI. See the console for details.": "Не удалось настроить контекст LS TOTVS для ИИ. Подробности см. в консоли.",
+  "Request cancelled. Build process already in progress.": "Запрос отменён. Процесс сборки уже выполняется.",
+  "Request cancelled. Build process in progress.": "Запрос отменён. Процесс сборки выполняется."
 }
