@@ -90,7 +90,7 @@
   "Starting patch application...": "Запуск приложения исправления...",
   "Starting template application...": "Запуск шаблонного приложения...",
   "Starting RPO load information...": "Начинаем загрузку информации RPO...",
-  "Do you want to configure IA instructions for this workspace (improves accuracy)?": "Хотите настроить инструкции IA для этой рабочей области (повышает точность)?",
+  "Do you want to configure AI instructions for this workspace (improves accuracy)?": "Хотите настроить инструкции IA для этой рабочей области (повышает точность)?",
   "Not now": "Не сейчас",
   "Never (don't ask again)": "Никогда (больше не спрашивать)",
   "Include": "Включать",

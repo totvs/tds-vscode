@@ -94,7 +94,7 @@
   "RPO token clean": "RPO token clean",
   "Request cancelled. Build process already in progress.": "Request cancelled. Build process already in progress.",
   "Request cancelled. Build process in progress.": "Request cancelled. Build process in progress.",
-  "Do you want to configure IA instructions for this workspace (improves accuracy)?": "Do you want to configure IA instructions for this workspace (improves accuracy)?",
+  "Do you want to configure AI instructions for this workspace (improves accuracy)?": "Do you want to configure AI instructions for this workspace (improves accuracy)?",
   "Not now": "Not now",
   "Never (don't ask again)": "Never (don't ask again)",
   "TOTVS LS context enabled for AI.": "TOTVS LS context enabled for AI.",

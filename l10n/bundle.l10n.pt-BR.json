@@ -90,7 +90,7 @@
   "Starting patch application...": "Iniciando a aplicação de patch...",
   "Starting template application...": "Iniciando a aplicação de template...",
   "Starting RPO load information...": "Iniciando a carga de informações do RPO...",
-  "Do you want to configure IA instructions for this workspace (improves accuracy)?": "Deseja configurar as instruções de IA para este workspace (melhora a precisão)?",
+  "Do you want to configure AI instructions for this workspace (improves accuracy)?": "Deseja configurar as instruções de IA para este workspace (melhora a precisão)?",
   "Not now": "Agora não",
   "Never (don't ask again)": "Nunca (não perguntar novamente)",
   "Include": "Include",

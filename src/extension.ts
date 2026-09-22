@@ -700,7 +700,7 @@ async function prepareInstructions(context: vscode.ExtensionContext) {
   }
 
   if (!fse.existsSync(targetFileUri.fsPath)) {
-    const question: string = vscode.l10n.t("Do you want to configure IA instructions for this workspace (improves accuracy)?")
+    const question: string = vscode.l10n.t("Do you want to configure AI instructions for this workspace (improves accuracy)?")
     const yes: string = vscode.l10n.t("Yes")
     const notNow: string = vscode.l10n.t("Not now")
     const never: string = vscode.l10n.t("Never (don't ask again)")
@@ -758,7 +758,7 @@ async function prepareSteering(context: vscode.ExtensionContext) {
   const targetFileUri: vscode.Uri = vscode.Uri.joinPath(kiroFolderUri, `advpl-tlpp-ls-first-${version}.md`);
 
   if (!fse.existsSync(targetFileUri.fsPath)) {
-    const question: string = vscode.l10n.t("Do you want to configure IA instructions for this workspace (improves accuracy)?")
+    const question: string = vscode.l10n.t("Do you want to configure AI instructions for this workspace (improves accuracy)?")
     const yes: string = vscode.l10n.t("Yes")
     const notNow: string = vscode.l10n.t("Not now")
     const never: string = vscode.l10n.t("Never (don't ask again)")
