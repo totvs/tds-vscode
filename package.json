@@ -764,7 +764,7 @@
             "Applies only to files being edited.",
             "Disable the process."
           ],
-          "default": "enableOnlyOpenFiles",
+          "default": "enable",
           "description": "%tds.package.editor.linter%"
         },
         "totvsLanguageServer.editor.linter.includes": {
@@ -796,7 +796,7 @@
             "%tds.package.editor.index.cache.onMemory%",
             "%tds.package.editor.index.cache.onDisk%"
           ],
-          "default": "off",
+          "default": "onMemory",
           "description": "%tds.package.editor.index.cache%"
         },
         "totvsLanguageServer.filesystem.encoding": {

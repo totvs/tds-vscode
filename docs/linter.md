@@ -22,8 +22,8 @@ Para alterar o comportamento do _linter_, acesse as configurações da extensõe
 
 Onde:
 
-- ``enable``: habilita o processo em todos os fontes da área de trabalho.
-- ``enableOnlyOpenFiles``: habilita o processo somente nos arquivos em edição (padrão) e mantem o comportamento como nas versões anteriores.
+- ``enable``: habilita o processo em todos os fontes da área de trabalho (padrão).
+- ``enableOnlyOpenFiles``: habilita o processo somente nos arquivos em edição e mantem o comportamento como nas versões anteriores.
 - ``disable``: desabilita o processo.
 
 ## Includes

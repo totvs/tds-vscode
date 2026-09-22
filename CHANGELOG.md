@@ -2,6 +2,20 @@
 
 ## Versão [2.1.X]
 
+### Correções
+
+Devido a dependência da IA, as chaves abaixo tiverem seus valores padrões modificadas,
+para melhor acurácia desta.
+
+```json
+{
+  "totvsLanguageServer.editor.linter.behavior": "enable",
+  "totvsLanguageServer.editor.index.cache": "onMemory"
+}
+```
+
+> Ao desligar esses recursos, solicitações da IA podem perder acurácia e usar busca textual (_grep_, _read file_ e outras), que pode ser mais lentas.
+
 ### Novidades
 
 Troca do motor do `linter`, proporcionando diversas melhorias.
