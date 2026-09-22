@@ -1,5 +1,4 @@
 #include 'protheus.ch'
-*/
 
 User Function window()
 	local aOption := {;

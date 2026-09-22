@@ -83,6 +83,11 @@
     "all-contributors:generate": "all-contributors generate",
     "all-contributors:check": "all-contributors check"
   },
+  "allowScripts": {
+    "keytar": true,
+    "esbuild": true,
+    "@vscode/vsce-sign": true
+  },
   "dependencies": {
     "@material-ui/core": "4.12.4",
     "@material-ui/data-grid": "4.0.0-alpha.2",
@@ -1043,11 +1048,6 @@
               "type": "boolean",
               "default": false,
               "description": "Alinha operadores de atribuição em blocos."
-            },
-            "normalizeConditionSpacing": {
-              "type": "boolean",
-              "default": true,
-              "description": "Normaliza espaçamento em estruturas condicionais."
             },
             "normalizeCalls": {
               "type": "boolean",

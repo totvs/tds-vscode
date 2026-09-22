@@ -32,7 +32,7 @@
     "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\INCLUDES;m:\\protheus\\INCLUDES_TLPP;W:\\tds\\tds-vscode\\test\\resources\\projects\\advpl0\\includes-protheus",
     "totvsLanguageServer.editor.show.notification": "all",
     "totvsLanguageServer.editor.signatureHelp": false,
-    "totvsLanguageServer.formatter.provider": "ls",
+    "totvsLanguageServer.formatter.provider": "off",
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
         "--verbose",

@@ -19,20 +19,23 @@ Assim, o `linter` voltará a utilizar o motor original.
 
 ### Melhorias
 
-#### Visão "Estrutura" (*Outline*)
+#### Visão "Estrutura" (_Outline_)
 
 - Padronização na visualização de informações sobre o símbolo.
 - Tratamento de erros no arquivo fonte.
 
 #### Edição de código
 
-A edição passa a ser incremental. Em vez de reprocessar ou reanalisar o fonte inteiro a cada modificação, apenas o que foi modificado  será reprocessado ou reanalisado. Com isso, o tempo de resposta do `LS` torna-se mais rápido, evitando travamentos em fontes grandes e melhorando o consumo de recursos (CPU e memória).
+A edição passa a ser incremental. Em vez de reprocessar ou reanalisar o fonte inteiro a cada modificação, apenas o que foi modificado será reprocessado ou reanalisado. Com isso, o tempo de resposta do `LS` torna-se mais rápido, evitando travamentos em fontes grandes e melhorando o consumo de recursos (CPU e memória).
+
+Recurso perceptível em fontes médios e grandes (acima de 100K).
 
 #### Linter
 
 - Performance e consumo de recursos (CPU/Memória).
-- Indica vários  erros em única passagem.
+- Indica vários erros em única passagem.
 - Tratamento de erros com correta visualização do código em `Problemas`.
+
 ### Melhorias
 
 #### Motor de formatação LS

@@ -50,19 +50,6 @@ export class DocumentFormatting implements DocumentFormattingEditProvider {
     return { code: line, comment: "" };
   }
 
-  private normalizeConditionSpacing(code: string): string {
-    return code.replace(
-      /\b(if|elseif|while|for|do\s+while)\s*\(/gi,
-      (match, keyword) => {
-        if (keyword.toLowerCase() === "do while") {
-          return "do while (";
-        }
-
-        return `${keyword} (`;
-      }
-    );
-  }
-
   private normalizeCalls(code: string): string {
     // Normalizes call syntax by removing spaces between callee and opening parenthesis.
     return code.replace(/\b([a-z_][a-z0-9_]*)\s+\(/gi, (fullMatch, name) => {
@@ -106,10 +93,6 @@ export class DocumentFormatting implements DocumentFormattingEditProvider {
 
     const split = this.splitCodeAndComment(line);
     let code = split.code;
-
-    if ((options as any).normalizeConditionSpacing) {
-      code = this.normalizeConditionSpacing(code);
-    }
 
     if ((options as any).normalizeCalls) {
       code = this.normalizeCalls(code);

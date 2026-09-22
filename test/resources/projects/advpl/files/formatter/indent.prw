@@ -5,7 +5,6 @@ if .t.
 endif
 
 
-
 user function indent()
 local n := 1
 
