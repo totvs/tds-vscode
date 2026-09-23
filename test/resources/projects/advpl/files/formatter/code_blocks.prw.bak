@@ -24,6 +24,6 @@ conout(Eval(bCollapse, 1))
 					}
 endif
 
-conout("For encoding validation: não, é, ção")
+conout("Para validação de encoding: não, é, ção")
 
 return

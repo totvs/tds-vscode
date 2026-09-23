@@ -1,4 +1,6 @@
 //Este arquivo deve ser trabalhado como CP437 (DOS).
+//N„o enviar ao repositÛrio se aplicar formataÁ„o ou
+//efetuar a convers„o.
 
 /*
 ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹

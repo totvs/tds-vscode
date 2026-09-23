@@ -4,7 +4,7 @@
 user function blankLines()
 local n := 1
 
-conout("For encoding validation: não, é, ção")
+conout("Para validação de encoding: não, é, ção")
 
 
 
