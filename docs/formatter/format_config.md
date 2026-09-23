@@ -6,8 +6,9 @@
 
 ## Configuração
 
-> O motor de formatação, pode ser executado  na *extensão* ou no *LS*.
-> A formatação no LS é *experimental*. Por padrão está o motor é na executado na extensão. > Para usar o novo motor, ajuste em `settings.josn` a chave:
+> O motor de formatação, pode ser executado na _extensão_ ou no _LS_.
+>
+> A formatação no LS é _experimental_. Por padrão o motor é executado na extensão e para usar o novo motor, ajuste em `settings.josn` a chave:
 
 ```json
 {
@@ -23,7 +24,7 @@ Lhe será apresentado algo semelhante a:
 
 > Saiba mais sobre precedência de configurações em [User and Workspace Settings](https://vscode.readthedocs.io/en/latest/getstarted/settings/).
 
-O bloco `[4gl]` (ou `[advpl]`), são configurações ligadas a ativação dos processos pelo *VS-Code* associadas ao editor da linguagem e `[4gl.formatter]` (ou `[advpl.formatter]`), são as opções de formatação específicas.
+O bloco `[4gl]` (ou `[advpl]`), são configurações ligadas a ativação dos processos pelo _VS-Code_ associadas ao editor da linguagem e `[4gl.formatter]` (ou `[advpl.formatter]`), são as opções de formatação específicas.
 
 Para sobrescrever os valores padrão, acione `Edit in settings.json`.
 
@@ -31,11 +32,9 @@ Para sobrescrever os valores padrão, acione `Edit in settings.json`.
 
 ### Configurações `[4gl]` ou `[advpl]`
 
-> A formatação para AdvPL está parcialmente implementada.
-
 - `"files.encoding": "windows1252" | "windows1251"`
 
-  Indica a codificação dos arquivos com código fonte. A codificação `windows1251` deve ser utilizada em fontes com *strings* no alfabeto cirílico.
+  Indica a codificação dos arquivos com código fonte. A codificação `windows1251` deve ser utilizada em fontes com _strings_ no alfabeto cirílico.
 
 - `"editor.formatOnType": true | false`
 
@@ -69,24 +68,25 @@ Para sobrescrever os valores padrão, acione `Edit in settings.json`.
 
 Chaves específicas para formatação de fontes 4GL e AdvPL.
 
-| Chave                                                  | Uso                                                               |
-| ------------------------------------------------------ | ----------------------------------------------------------------- |
-| maxConsecutiveBlankLines (`number`)                    | Máximo de linhas em branco em sequência. Padrão: 1                |
-| maxLineLength (`number`)                               | Largura máxima de linha para aplicar quebra automática. Padrão: 120 |
-| wrapParameters (`auto` \| `true` \| `false`)           | Controla quebra de linha de parâmetros. Padrão: false             |
-| wrapArguments (`auto` \| `true` \| `false`)            | Controla quebra de linha de argumentos. Padrão: false             |
-| keywordsCase <upper \| lower \| upperCamel \| ignore>  | Coloca as palavras-chave da linguagem na caixa indicada. Padrão: (4GL) upper / (AdvPL) ignore |
-| stringStyle <double-quotes \| single-quotes \| ignore> | Indica como as _strings_ devem ser informadas. Padrão: ignore     |
-| operatorSpacing (`boolean`)                            | Normaliza espaçamento em operadores. Padrão: false                |
-| spaceAfterComma (`boolean`)                            | Garante espaço após vírgulas. Padrão: false                       |
-| spaceInsideParentheses (`boolean`)                     | Controla espaços dentro de parênteses. Padrão: false              |
-| alignAssignments (`boolean`)                           | Alinha operadores de atribuição (`:=`, `+=`, `-=`, `*=`, `/=`, `%=`) em blocos. Padrão: false |
+| Chave                                                  | Uso                                                                                            |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| alignAssignments (`boolean`)                           | Alinha operadores de atribuição (`:=`, `+=`, `-=`, `*=`, `/=`, `%=`) em blocos. Padrão: false  |
+| blankLinesBetweenTopLevelDeclarations (`number`)       | Quantidade de linhas em branco entre declarações de topo. Padrão: 1                            |
+| commentReflow (`boolean`)                              | Permite reorganizar comentários longos. Padrão: false                                          |
+| convertSemiGraphicsToChar (`boolean`)                  | Converte caracteres semi-gráficos (CP437) em caracteres ASCII equivalentes. Padrão: false      |
+| keywordsCase <upper \| lower \| upperCamel \| ignore>  | Coloca as palavras-chave da linguagem na caixa indicada. Padrão: (4GL) upper / (AdvPL) ignore  |
+| maxConsecutiveBlankLines (`number`)                    | Máximo de linhas em branco em sequência. Padrão: 1                                             |
+| maxLineLength (`number`)                               | Largura máxima de linha para aplicar quebra automática. Padrão: 120                            |
 | normalizeCalls (`boolean`)                             | Normaliza chamadas removendo espaço entre identificador e parêntese de abertura. Padrão: false |
-| preserveSingleLineBlocks (`boolean`)                   | Preserva blocos de uma única linha. Padrão: false                 |
-| blankLinesBetweenTopLevelDeclarations (`number`)       | Quantidade de linhas em branco entre declarações de topo. Padrão: 1 |
-| commentReflow (`boolean`)                              | Permite reorganizar comentários longos. Padrão: false             |
-| trimFinalNewlines (`boolean`)                          | Remove linhas em branco no final do arquivo. Padrão: true         |
-| trimTrailingWhitespace (`boolean`)                     | Remove espaços em branco no final da linha. Padrão: true          |
+| operatorSpacing (`boolean`)                            | Normaliza espaçamento em operadores. Padrão: false                                             |
+| preserveSingleLineBlocks (`boolean`)                   | Preserva blocos de uma única linha. Padrão: false                                              |
+| spaceAfterComma (`boolean`)                            | Garante espaço após vírgulas. Padrão: false                                                    |
+| spaceInsideParentheses (`boolean`)                     | Controla espaços dentro de parênteses. Padrão: false                                           |
+| stringStyle <double-quotes \| single-quotes \| ignore> | Indica como as _strings_ devem ser informadas. Padrão: ignore                                  |
+| trimFinalNewlines (`boolean`)                          | Remove linhas em branco no final do arquivo. Padrão: true                                      |
+| trimTrailingWhitespace (`boolean`)                     | Remove espaços em branco no final da linha. Padrão: true                                       |
+| wrapArguments (`auto` \| `true` \| `false`)            | Controla quebra de linha de argumentos. Padrão: false                                          |
+| wrapParameters (`auto` \| `true` \| `false`)           | Controla quebra de linha de parâmetros. Padrão: false                                          |
 
 ### Exemplo com os valores padrão
 
@@ -125,6 +125,7 @@ Chaves específicas para formatação de fontes 4GL e AdvPL.
     "operatorSpacing": false,
     "spaceAfterComma": false,
     "spaceInsideParentheses": false,
+    "convertSemiGraphicsToChar": false,
     "alignAssignments": false,
     "normalizeCalls": false,
     "preserveSingleLineBlocks": false,
@@ -143,6 +144,7 @@ Chaves específicas para formatação de fontes 4GL e AdvPL.
     "operatorSpacing": false,
     "spaceAfterComma": false,
     "spaceInsideParentheses": false,
+    "convertSemiGraphicsToChar": false,
     "alignAssignments": false,
     "normalizeCalls": false,
     "preserveSingleLineBlocks": false,
@@ -161,7 +163,6 @@ Chaves específicas para formatação de fontes 4GL e AdvPL.
 > (LS)**, ou seja, com `totvsLanguageServer.formatter.provider=ls`. Demonstram o
 > efeito de **cada opção de `advpl.formatter` isoladamente**; em cada caso, as
 > demais opções estão nos valores padrão.
->
 
 ### Reindentação por blocos (sempre aplicada)
 
@@ -197,159 +198,12 @@ Function Exemplo()
 Return
 ```
 
-### `operatorSpacing` (`boolean`, padrão `false` no LS)
-
-Normaliza o espaçamento ao redor de operadores compostos
-(`:=`, `+=`, `-=`, `*=`, `/=`, `==`, `!=`, `>=`, `<=`) e simples
-(`+`, `-`, `*`, `/`, `=`, `<`, `>`). Strings e comentários são preservados.
-
-```json
-{ "advpl.formatter": { "operatorSpacing": true } }
-```
-
-Antes:
-
-```advpl
-nTotal:=nQtd*nPreco
-If nSaldo>=0
-```
-
-Depois:
-
-```advpl
-nTotal := nQtd * nPreco
-If nSaldo >= 0
-```
-
-> Com `operatorSpacing: false` (padrão no LS), o espaçamento original é mantido.
-
-### `spaceAfterComma` (`boolean`, padrão `true`)
-
-Remove o espaço antes da vírgula e força exatamente um espaço após ela. Exceção:
-quando a vírgula é seguida de `;` (separador de comandos em *code block*), o
-espaço não é inserido. Vírgulas dentro de *strings*/comentários são preservadas.
-
-```json
-{ "advpl.formatter": { "spaceAfterComma": true } }
-```
-
-Antes:
-
-```advpl
-oObj:Metodo(cParam1 ,nParam2,lParam3)
-```
-
-Depois:
-
-```advpl
-oObj:Metodo(cParam1, nParam2, lParam3)
-```
-
-### `spaceInsideParentheses` (`boolean`, padrão `false`)
-
-Controla os espaços internos aos parênteses. Parênteses vazios `()` são
-preservados; conteúdo em *strings*/comentários é ignorado.
-
-```json
-{ "advpl.formatter": { "spaceInsideParentheses": true } }
-```
-
-Antes:
-
-```advpl
-nResultado := Calcula(nBase, nTaxa)
-```
-
-Depois (com `true`, adiciona espaço interno):
-
-```advpl
-nResultado := Calcula( nBase, nTaxa )
-```
-
-Depois (com `false` — padrão —, remove espaço interno):
-
-```advpl
-nResultado := Calcula(nBase, nTaxa)
-```
-
-### `keywordsCase` (`upper` \| `lower` \| `upperCamel` \| `ignore`, padrão (4GL) `upper` / (AdvPL) `ignore`)
-
-Ajusta a caixa apenas das palavras-chave reconhecidas da linguagem. Comentários
-(`//`, `/* */`) e o conteúdo de *strings* são preservados.
-
-```json
-{ "advpl.formatter": { "keywordsCase": "upper" } }
-```
-
-Antes:
-
-```advpl
-function Exemplo()
-    local nI := 0
-    if nI > 0
-        return .T.
-    endif
-return
-```
-
-Depois (com `upper`):
-
-```advpl
-FUNCTION Exemplo()
-    LOCAL nI := 0
-    IF nI > 0
-        RETURN .T.
-    ENDIF
-RETURN
-```
-
-> Com `lower`, as palavras-chave ficam em minúsculas. Com `upperCamel`, a
-> primeira letra fica em maiúscula e as demais em minúsculas. Com `ignore`, a
-> caixa original é mantida. O padrão é `upper` para 4GL e `ignore` para AdvPL.
-
-### `stringStyle` (`double-quotes` \| `single-quotes` \| `ignore`, padrão `ignore`)
-
-Normaliza o delimitador de *strings*. Aspas do mesmo tipo presentes no conteúdo
-são convertidas para concatenação com `chr()` (39 = `'`, 34 = `"`).
-
-```json
-{ "advpl.formatter": { "stringStyle": "double-quotes" } }
-```
-
-Antes:
-
-```advpl
-cMsg := 'Ola mundo'
-```
-
-Depois (com `double-quotes`):
-
-```advpl
-cMsg := "Ola mundo"
-```
-
-Exemplo com aspas aninhadas (com `double-quotes`):
-
-Antes:
-
-```advpl
-cSql := 'SELECT * FROM "SA1"'
-```
-
-Depois:
-
-```advpl
-cSql := "SELECT * FROM "+chr(34)+"SA1"+chr(34)+""
-```
-
-> Com `ignore` (padrão), o delimitador original é mantido.
-
 ### `alignAssignments` (`boolean`, padrão `false`)
 
 Alinha o operador de atribuição em grupos de duas ou mais linhas consecutivas
 com a mesma indentação. Os operadores reconhecidos são os de dois caracteres:
 `:=`, `+=`, `-=`, `*=`, `/=` e `%=`. **Cada linha mantém o seu próprio
-operador** — apenas a *coluna* do operador é alinhada, usando como referência o
+operador** — apenas a _coluna_ do operador é alinhada, usando como referência o
 maior lado esquerdo (LHS) do grupo. Após o LHS é inserido um espaço, o operador
 original e mais um espaço antes do valor.
 
@@ -377,9 +231,44 @@ nPerc  /= 2
 
 > O alinhamento considera apenas os operadores de atribuição de dois caracteres
 > (`:=`, `+=`, `-=`, `*=`, `/=`, `%=`); o operador `=` simples e comparadores não
-> disparam o alinhamento. Ocorrências dentro de *strings* são ignoradas. Linhas
+> disparam o alinhamento. Ocorrências dentro de _strings_ são ignoradas. Linhas
 > em branco, linhas sem operador de atribuição ou com indentação diferente
 > encerram o grupo.
+
+### `blankLinesBetweenTopLevelDeclarations` (`number`, padrão `1`)
+
+Normaliza a quantidade de linhas em branco imediatamente **antes** de cada
+declaração de topo (`Function`, `User Function`, `Static Function`, `Procedure`,
+`Method`, `Class`), ajustando para o valor configurado. Se houver linhas em
+branco a mais, elas são removidas; se houver a menos, são inseridas. A primeira
+declaração do arquivo não recebe linhas em branco antes dela.
+
+```json
+{ "advpl.formatter": { "blankLinesBetweenTopLevelDeclarations": 2 } }
+```
+
+Antes:
+
+```advpl
+Function Primeira()
+Return
+Function Segunda()
+Return
+```
+
+Depois (com `2`):
+
+```advpl
+Function Primeira()
+Return
+
+
+Function Segunda()
+Return
+```
+
+> Com `0`, as declarações de topo ficam sem linhas em branco entre elas. O padrão
+> é `1`.
 
 ### `commentReflow` (`boolean`, padrão `false`)
 
@@ -414,33 +303,77 @@ Bloco `/* ... */` é normalizado para o layout `/*` / `* texto` / `*/`.
 
 > Com `false` (padrão), os comentários são mantidos como estão.
 
-### `maxLineLength` (`number`, padrão `120`) — quebra de linhas longas
+### `convertSemiGraphicsToChar` (`boolean`, padrão `false`)
 
-Linhas de **código** mais longas que `maxLineLength` são quebradas no último
-espaço válido (fora de *strings*) antes do limite, juntando os segmentos com `;`
-(operador de continuação AdvPL). A continuação recebe indentação extra
-(`editor.tabSize`/`insertSpaces`). Linhas de comentário não são quebradas aqui
-(veja `commentReflow`).
+Converte caracteres semi-gráficos (desenho de caixa e blocos da página de código
+CP437) presentes no fonte em caracteres ASCII equivalentes durante a formatação.
+É útil em fontes legados que utilizam esses caracteres para molduras e que, ao
+serem regravados na codificação de trabalho (`windows1252`/`windows1251`), seriam
+degradados de forma inconsistente.
+
+O mapeamento aplicado é:
+
+- Linhas horizontais (`─ ━ ═` etc.) → `-`
+- Linhas verticais (`│ ┃ ║` etc.) → `|`
+- Cantos e junções (`┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ ╔ ╗ ╚ ╝` etc.) → `+`
+- Blocos e sombreamentos (`█ ▄ ▀ ░ ▒ ▓` etc.) → `#`
 
 ```json
-{ "advpl.formatter": { "maxLineLength": 40 } }
+{ "advpl.formatter": { "convertSemiGraphicsToChar": true } }
 ```
 
-Antes (linha com mais de 40 colunas):
+Antes:
 
 ```advpl
-oCliente:Gravar(cCodigo, cNome, cEndereco)
+// ┌───────────────┐
+// │ Cabeçalho     │
+// └───────────────┘
 ```
 
-Depois (quebra no último espaço antes de 40, com `;`):
+Depois (com `true`):
 
 ```advpl
-oCliente:Gravar(cCodigo, cNome,;
-    cEndereco)
+// +---------------+
+// | Cabeçalho     |
+// +---------------+
 ```
 
-> Quando não há espaço seguro antes do limite (ex.: um único identificador
-> muito longo), a linha é mantida sem quebra.
+> Com `false` (padrão), os caracteres semi-gráficos são mantidos como estão.
+
+### `keywordsCase` (`upper` \| `lower` \| `upperCamel` \| `ignore`, padrão (4GL) `upper` / (AdvPL) `ignore`)
+
+Ajusta a caixa apenas das palavras-chave reconhecidas da linguagem. Comentários
+(`//`, `/* */`) e o conteúdo de _strings_ são preservados.
+
+```json
+{ "advpl.formatter": { "keywordsCase": "upper" } }
+```
+
+Antes:
+
+```advpl
+function Exemplo()
+    local nI := 0
+    if nI > 0
+        return .T.
+    endif
+return
+```
+
+Depois (com `upper`):
+
+```advpl
+FUNCTION Exemplo()
+    LOCAL nI := 0
+    IF nI > 0
+        RETURN .T.
+    ENDIF
+RETURN
+```
+
+> Com `lower`, as palavras-chave ficam em minúsculas. Com `upperCamel`, a
+> primeira letra fica em maiúscula e as demais em minúsculas. Com `ignore`, a
+> caixa original é mantida. O padrão é `upper` para 4GL e `ignore` para AdvPL.
 
 ### `maxConsecutiveBlankLines` (`number`, padrão `0` no LS)
 
@@ -469,11 +402,65 @@ Local nX := 1
 Local nY := 2
 ```
 
+### `maxLineLength` (`number`, padrão `120`) — quebra de linhas longas
+
+Linhas de **código** mais longas que `maxLineLength` são quebradas no último
+espaço válido (fora de _strings_) antes do limite, juntando os segmentos com `;`
+(operador de continuação AdvPL). A continuação recebe indentação extra
+(`editor.tabSize`/`insertSpaces`). Linhas de comentário não são quebradas aqui
+(veja `commentReflow`).
+
+```json
+{ "advpl.formatter": { "maxLineLength": 40 } }
+```
+
+Antes (linha com mais de 40 colunas):
+
+```advpl
+oCliente:Gravar(cCodigo, cNome, cEndereco)
+```
+
+Depois (quebra no último espaço antes de 40, com `;`):
+
+```advpl
+oCliente:Gravar(cCodigo, cNome,;
+    cEndereco)
+```
+
+> Quando não há espaço seguro antes do limite (ex.: um único identificador
+> muito longo), a linha é mantida sem quebra.
+
+### `operatorSpacing` (`boolean`, padrão `false` no LS)
+
+Normaliza o espaçamento ao redor de operadores compostos
+(`:=`, `+=`, `-=`, `*=`, `/=`, `==`, `!=`, `>=`, `<=`) e simples
+(`+`, `-`, `*`, `/`, `=`, `<`, `>`). Strings e comentários são preservados.
+
+```json
+{ "advpl.formatter": { "operatorSpacing": true } }
+```
+
+Antes:
+
+```advpl
+nTotal:=nQtd*nPreco
+If nSaldo>=0
+```
+
+Depois:
+
+```advpl
+nTotal := nQtd * nPreco
+If nSaldo >= 0
+```
+
+> Com `operatorSpacing: false` (padrão no LS), o espaçamento original é mantido.
+
 ### `preserveSingleLineBlocks` (`boolean`, padrão `false`)
 
-Controla o tratamento de *code blocks* AdvPL (`{ |params| comando }`). Com
-`false` (padrão), um *code block* de linha única é **expandido** para a forma
-multilinha; com `true`, um *code block* já quebrado cujo corpo é um único
+Controla o tratamento de _code blocks_ AdvPL (`{ |params| comando }`). Com
+`false` (padrão), um _code block_ de linha única é **expandido** para a forma
+multilinha; com `true`, um _code block_ já quebrado cujo corpo é um único
 comando é **recolhido** de volta para uma linha.
 
 ```json
@@ -486,7 +473,7 @@ Antes:
 bAcao := { |oObj| oObj:Executar() }
 ```
 
-Depois (com `false`, expande o *code block*):
+Depois (com `false`, expande o _code block_):
 
 ```advpl
 bAcao := { |oObj|;
@@ -497,26 +484,91 @@ bAcao := { |oObj|;
 > Com `true`, a forma de linha única acima é preservada (e uma forma multilinha
 > de comando único é recolhida para uma linha).
 
-### `trimTrailingWhitespace` (`boolean`, padrão `false` no LS)
+### `spaceAfterComma` (`boolean`, padrão `true`)
 
-Remove espaços/tabulações não significativos ao final das linhas durante a
-formatação.
+Remove o espaço antes da vírgula e força exatamente um espaço após ela. Exceção:
+quando a vírgula é seguida de `;` (separador de comandos em _code block_), o
+espaço não é inserido. Vírgulas dentro de _strings_/comentários são preservadas.
 
 ```json
-{ "advpl.formatter": { "trimTrailingWhitespace": true } }
+{ "advpl.formatter": { "spaceAfterComma": true } }
 ```
 
-Antes (espaços ao final representados por `·`):
+Antes:
 
 ```advpl
-Local nX := 1····
+oObj:Metodo(cParam1 ,nParam2,lParam3)
 ```
 
 Depois:
 
 ```advpl
-Local nX := 1
+oObj:Metodo(cParam1, nParam2, lParam3)
 ```
+
+### `spaceInsideParentheses` (`boolean`, padrão `false`)
+
+Controla os espaços internos aos parênteses. Parênteses vazios `()` são
+preservados; conteúdo em _strings_/comentários é ignorado.
+
+```json
+{ "advpl.formatter": { "spaceInsideParentheses": true } }
+```
+
+Antes:
+
+```advpl
+nResultado := Calcula(nBase, nTaxa)
+```
+
+Depois (com `true`, adiciona espaço interno):
+
+```advpl
+nResultado := Calcula( nBase, nTaxa )
+```
+
+Depois (com `false` — padrão —, remove espaço interno):
+
+```advpl
+nResultado := Calcula(nBase, nTaxa)
+```
+
+### `stringStyle` (`double-quotes` \| `single-quotes` \| `ignore`, padrão `ignore`)
+
+Normaliza o delimitador de _strings_. Aspas do mesmo tipo presentes no conteúdo
+são convertidas para concatenação com `chr()` (39 = `'`, 34 = `"`).
+
+```json
+{ "advpl.formatter": { "stringStyle": "double-quotes" } }
+```
+
+Antes:
+
+```advpl
+cMsg := 'Ola mundo'
+```
+
+Depois (com `double-quotes`):
+
+```advpl
+cMsg := "Ola mundo"
+```
+
+Exemplo com aspas aninhadas (com `double-quotes`):
+
+Antes:
+
+```advpl
+cSql := 'SELECT * FROM "SA1"'
+```
+
+Depois:
+
+```advpl
+cSql := "SELECT * FROM "+chr(34)+"SA1"+chr(34)+""
+```
+
+> Com `ignore` (padrão), o delimitador original é mantido.
 
 ### `trimFinalNewlines` (`boolean`, padrão `false` no LS)
 
@@ -538,4 +590,25 @@ Depois:
 
 ```advpl
 Return
+```
+
+### `trimTrailingWhitespace` (`boolean`, padrão `false` no LS)
+
+Remove espaços/tabulações não significativos ao final das linhas durante a
+formatação.
+
+```json
+{ "advpl.formatter": { "trimTrailingWhitespace": true } }
+```
+
+Antes (espaços ao final representados por `·`):
+
+```advpl
+Local nX := 1····
+```
+
+Depois:
+
+```advpl
+Local nX := 1
 ```
