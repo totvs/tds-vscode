@@ -791,7 +791,7 @@
             "cp1252",
             "cp1251"
           ],
-          "default": "cp1252",  
+          "default": "cp1252",
           "description": "%tds.package.filesystem.encoding%"
         },
         "4gl.formatter": {
@@ -880,6 +880,11 @@
               "type": "boolean",
               "default": false,
               "description": "Controla espaços dentro de parênteses."
+            },
+            "convertSemiGraphicsToChar": {
+              "type": "boolean",
+              "default": false,
+              "description": "Converte caracteres semi-gráficos (CP437) em caracteres ASCII equivalentes durante a formatação."
             },
             "alignAssignments": {
               "type": "boolean",
@@ -1004,6 +1009,11 @@
               "type": "boolean",
               "default": false,
               "description": "Controla espaços dentro de parênteses."
+            },
+            "convertSemiGraphicsToChar": {
+              "type": "boolean",
+              "default": false,
+              "description": "Converte caracteres semi-gráficos (CP437) em caracteres ASCII equivalentes durante a formatação."
             },
             "alignAssignments": {
               "type": "boolean",

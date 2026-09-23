@@ -27,6 +27,11 @@ export function getFormattingOptions(langId: string): FormattingOptions {
     operatorSpacing: getValue(langId, "operatorSpacing", true),
     spaceAfterComma: getValue(langId, "spaceAfterComma", true),
     spaceInsideParentheses: getValue(langId, "spaceInsideParentheses", false),
+    convertSemiGraphicsToChar: getValue(
+      langId,
+      "convertSemiGraphicsToChar",
+      false
+    ),
     alignAssignments: getValue(langId, "alignAssignments", false),
     //normalizeConditionSpacing: getValue(langId, "normalizeConditionSpacing", true),
     normalizeCalls: getValue(langId, "normalizeCalls", false),
