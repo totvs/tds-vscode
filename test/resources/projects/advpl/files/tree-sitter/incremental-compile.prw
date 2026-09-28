@@ -1,182 +1,290 @@
-/*
-------------------------------------------------------------------------------
-==============================================================================
-==============================================================================
-===Fun�ao    = FINA085A = Autor = Bruno Sobieski         = Data = 23.02.99 ===
-==|==========|==========|=======|========================|======|==========?=
-===Descri��o = Generar Retensi de Impuestos y Calcular Ganncias para    ===
-===          = las facturas de Compras. (AutomaTica)                       ===
-==|==========|=============================================================?=
-===Uso       = Cobranzas                                                   ===
-==|==========|=============================================================?=
-=== ATUALIZACOES SOFRIDAS DESDE A CONSTRUCAO INICIAL.                      ===
-==|========================================================================?=
-=== PROGRAMADOR    = DATA   = BOPS =  MOTIVO DA ALTERACAO                  ===
-==|================|========|======|=======================================?=
-===Jose Aurelio    =21/11/01=11106 =Ajuste do ponto de entrada a085DEFS pa-===
-===                =        =      =ra que o mesmo trate o parametro "4".  ===
-===                =        =      =Dessa forma, esse ponto podera ser usa-===
-===                =        =      =do em DEFINE'S com Ordens de Pagamento ===
-===Jose Aurelio    =27/11/01=11714 =Desabilitacao do teste para, se SE2 for===
-===                =        =      =vazio, nao permite acesso aos cadastros===
-===Paulo Augusto   =17/07/02=QNC   =Substituida a Indregua pela FilBrowse  ===
-===                =        =      =para que seja possivel tirar o filtro  ===
-===                =        =      =na pesquisa dos titulos de abatimento, ===
-===                =        =      =para que os mesmos sejam baixados      ===
-===C. Denardi      =23/09/03=66.814=Filtrar titulos que nao foram liberados===
-===                =        =      =pela rotina FINA580 e quando o parame- ===
-===                =        =      =tro MV_CTLIPAG = .T.                   ===
-===Dixon           =24/11/04=      =Inclusao de FT no filtro.              ===
-===                  =        =      =                                      ===
-===Wagner Montenegro *08/06/10=      =Add campo Natureza e grava??o no SE2  ===
-===  Adicionado consistencia na sele??o de bancos X forma de pago.          ===
-===  Adicionado consistencia na tributa??o de ITF X bancos.                 ===
-===  Adicionado consistencia na sele??o de titulos X Natureza(Incidencia ITF)===
-===M. Camargo      =18/04/13=THCETX=Modificaci?? de la funci?? CalcRetIB   ===
-===				   =        =      =para que considere todos los           ===
-===                =        =      =registros del proveedor de la SFH      ===
-===M. Camargo      =07/05/13=TF2479=Se agrega c��culo 4xmil Para colombia  ===
-===				   =        =      =cuando es debido diferido y acredita-  ===
-===                =        =      =ci?? inmediata.                        ===
-===M. Camargo      =23/05/13=THKCZR=Modificaci?? de la funci?? CalcRetIva  ===
-===				   =23/05/13=THKCZR=para que considere el % de exenci?? de IVA===
-===L Samaniego     =17/01/14=THKIIM=Modificacion en la funcion CalcRetIVA  ===
-===                =        =      =para la exencion de IVA                ===
-===Laura Medina    =21/01/14=TIAGWQ=Se modifico el calculo de la retencion ===
-===                =        =      =cuando sea necesario desglosar la aliq ===
-===                =        =      =por separado (SFF).                    ===
-===EMANUEL V.V.    =13/02/14=THKIIM=Correcci?? en la funcion CalcRetIVA    ===
-===                =        =      =para la exencion de IVA                ===
-===Laura Medina    =26/02/14=TIHNR4=Se agrego un PE FI85ATCH para agregar  ===
-===                =        =      =columnas en la venta "Elija el Cheque" ===
-===                =        =      =en Pago Diferenciado.                  ===
-===Alfredo Medrano =06/09/16=TWFLBM=Se agrega registro PA en SE2 cuando es ===
-===                =        =      =Anticipo en func Fa085Grava.           ===
-===                =        =      =En func FA085SE2 Valida Anticipo en    ===
-===                =        =      =Pago Autom��ico. En Func Fa085Tela si  ===
-===                =        =      =es Anticipo se llena campo Modalidad   ===
-===                =        =      =En func a085aPagos se valida que la    ===
-===                =        =      =opci?? Pago Especial no este disponible===
-===                =        =      =para anticipos.                        ===
-===                =        =      =Los campos E2_NUM y E2_PREFIXO se llena===
-===                =        =      =con los campos correspondientes a Fac. ===
-===                =        =      =Anticipo. fVerifImp obtiene el impuesto===
-===                =        =      =de la Fac.Anticipo fRetParcel obtiene  ===
-===                =        =      =consecutivo para Parcela MEX           ===
-===                =        =      =No permita seleccionar registros tipo  ===
-===                =        =      =t�tulo PA con modalidad informada donde===
-===                =        =      =el ED_OPERADT=SI en Func a085aMark MEX ===
-===Jonathan Glez   =14/12/16=SERINN001=Elimina funciones FA085vlna, ajusaSx1,  ===
-===                =        =     -486=acertasx1, ajustasx3, fa085tudoOk y se  ===
-===                =        =         =eliminan los funciones de PUTHELP.      ===
-===Alf. Medrano    =31/01/17= MMI-4859=Merge 12.1.07 vs 12.1.14                ===
-===  Marco A. Glz  =27/04/17= MMI-194 =Se replica llamado(TWG704 - V11.8),     ===
-===                =        =         =Visualizar correctamente campo Modalidad===
-===                =        =         =en Orden de Pago, al existir punto      ===
-===                =        =         =de entrada A085ALNA. (MEX)              ===
-===Ivan Gomez      =01/11/17=DMICNS   =Se agrega la validaci?? correcta para   ===
-===                =        =-128     = que tome el valor SE2->E2_FILORIG en   ===
-===                =        =         = el campo SE5->E5_FILORIG cuando se     ===
-===                =        =         =realice la grabaci?? de la ord de pag   ===
-===M.Camargo       =11/04/18=DMINA-761=Func. AaddSE2: Se modifica valor de tasa===
-===                =        =         =de la moneda, cambio en llenado de array===
-===                =        =         =aSE2 _TXMOEDA(PER).                     ===
-===                =        =         =Se modifica la conversion de la tasa    ===
-===                =        =         =para los documentos tipo TX, en las     ===
-===                =        =         =Ordenes de Pago. El cambios se realiza  ===
-===                =        =         =en la funcion AddSE2(). (PER)           ===
-===                =        =         =Se agrega funcionalidad para poder com- ===
-===                =        =         =pensar titulos entre filiales. se crea  ===
-===                =        =         =la variable lConsFilial  y se modifica  ===
-===                =        =         =la funci?? Fa085Grava para posicionarse ===
-===                =        =         =en el titulo de la manera correcta.MEX  ===
-===M.Camargo       =14/07/18=DMINA-   =Grabar valor en campo SFE->FE_SERIE2    ===
-===                =        =3376     =a partir del par�metro MV_CRSERIE para  ===
-===                =        =         =PERU.                                   ===
-===M.Camargo       =15/10/18=DMINA-   =En Fun Fa085AtuVl, dentro del c��culo de===
-===                =        =4552     =total de orden de pago se redondea el   ===
-===                =        =         =valor de la NF MEX.                     ===
-===Alf. Medrano    =07/11/18=DMINA-   =En fun fa085Grava se asigna fil origen  ===
-===                =        =         =para descuentos, multas y intereses.    ===
-===                =        =         =en Fun GravaPagos se asigna fil origen  ===
-===                =        =         = para asignar a los pagos  MEX.         ===
-===Oscar G.        =19/12/18=DMINA-   =En Fun Fa085Alt se omite la alteracion  ===
-===                =        =5269     =de los val. a partir de un array temp.  ===
-===Ver??ica Flores =12/02/19=DMINA-   =Se realiza replica de DMINA-4053 v12.1.7===
-===                =        =5451     =En fun Fina085a se activa var lUUI si   ===
-===                =        =  	      =campo EK_UUID existe.En fun A085ApgAut  ===
-===                =        =     	  =se asigna valor a campo EK_UUID cuando  ===
-===                =        =         =es TB y PA.En fun GravaPagos se asigna  ===
-===                =        =         =valor a campo EK_UUID cuando es CT y CP ===
-===                =        =         =En fun Fa085Tela agrega campo EK_UUID   ===
-===                =        =         =a encabezado de la Orden Pag. En fun    ===
-===                =        =         =Fa085Alt en modif. de la Orden Pag se   ===
-===                =        =         =asigna campo F1_UUID al encabezado del  ===
-===                =        =         =detalle y se asigna informaci??. MEX    ===
-===                =        =         =En Fun A085ApgAut se asigna a __cUUID   ===
-===                =        =         =la longitud de campo EK_UUID solo si el ===
-===                =        =         =campo existe. MEX                       ===
-===M. Camargo      =23/05/13=DMINA-   =Modificaci?? de la funci?? Fa085Grv     ===
-===                =        =6478     =para que considere guardar campo E2_FIL-===
-===                =        =         =ORIG.                                   ===
-===Oscar G.        =05/02/20=DMINA-   =En FA085Alt() se valida aTits por error ===
-===                =        =8024     =log, en a085FldOk1() se modifica calculo===
-===                =        =         =del valor cuando se agrega descuento, en===
-===                =        =         =Fa085AtuVl() se abre tratamiento para NF===
-===                =        =         = y localizacion para PER. (PER)         ===
-===Eduardo Perez   =06/02/20=DMINA-   =Modificaci?? de la funci?? Fa085Tela    ===
-===                =        =7987     =para guardar el pais del proveedor y que===
-===                =        =         =realice la validacion del pais de forma ===
-===                =        =         =correcta                                ===
-===Eduardo Perez   =08/04/20=DMINA-   =Modificaci?? de la funci?? Fa085AtuVl   ===
-===                =        =8495     =para mostrar mensaje al usuario en      ===
-===                =        =         =de que la moneda selecciona para el pago===
-===                =        =         =no cuente con tipo de cambio del dia    ===
-===Oscar G.        =05/02/20=DMINA-   =En A085APgAut() se si titulo tiene blo- ===
-===                =        =8705     =queo por calendario contable. (MEX)     ===
-===Jos?Gonz��ez   =12/05/20=DMINA-   =Se agrega validaci?? en la funci??      ===
-===                =        =8992     =AtuaSaldos para cuando el valor a pagar ===
-===                =        =         =sea 0 no se realice actualizaci??(COL)  ===
-=== Marco A. Glez  =28/05/20=DMINA-   =Se agrega el grabado del campo EK_MSFIL ===
-===                =        =9118     =en los movimentos realizados en la tabla===
-===                =        =         =SEK (Filial Origen) - MEX               ===
-===Oscar G.        =27/05/20=DMINA-   =Se crea Fun. a085VldDsc() para manejo de===
-===                =        =9028     =descuentos globales, en fun. Fa085Alt se===
-===                =        =         =corrige ventana de Modificar. (COL)     ===
-===Alf. Medrano    =03/07/20=DMINA-   =Se modifica la fun Fa085AtuVl d??de se  ===
-===                =        =9446     =corrige c��culo de conversi?? de monedas===
-===                =        =         =(PER)                                   ===
-===Jos?Gonz��ez   =01/07/20=DMINA-   =Se agrega el guardado  campo EK_NATUREZ ===
-===                =        =8935     =en la funci?? a085aGravRet(PER)         ===
-===Eduardo Prez    =12/08/20=DMINA-   =Se modifica la fun Fa085Tela d??de se   ===
-===                =        =9530     =realiza la conversion del total a pagar ===
-===                =        =         =usando el tipo de cambio del dia(PER)   ===
-===Oscar G.        =14/09/20=DMINA-   =Se ajusta conversion de monedas en fun. ===
-===                =        =10068    =Fa085AtuVl(), se ajusta comportamiento  ===
-===                =        =         =de descuentos en fun. a085FldOk1().(PER)===
-===Cristian Franco =14/09/20=DMICNS-  =Se modifica la funcion Fa085Tela localiz===
-===                =        =9286     =aci?? ya que no mostraba correctamente  ===
-===                =        =         =los montos en el encabezado de OP       ===
-===Ver??ica Flores =04/02/21=DMINA-   =Se modifica la funcion Fa085AtuVl donde ===
-===                =        =10929    =realiza la conversi?? de la retenci??   ===
-===                =        =         =IR (PER).                               ===
-===Luis Enr�quez   =13/02/21=DMINA-   =Se elimina validaci?? de cheques para   ===
-===                =        =10663    =realiza la conversi?? de la retenci??   ===
-===Ver??ica Flores =26/02/21=DMINA-   =Se modifica el uso de la tasa en las    ===
-===                =        =11055    =detracciones "TX" sea usado el TC del   ===
-===                =        =         =documento (PER).                        ===
-=== Marco A. Glez  =17/04/21=DMINA-   =Se utiliza la posicion del tipo de titu-===
-===                =        =    12006=en el array para determinar el tipo de  ===
-===                =        =         =documento (PER).                        ===
-===Diego Rivera    =28/04/21=DMINA-   =Replica de DMINA-10663 para Ecuador     ===
-===                =        =11808    =Se elimina validaci?? de cheques para   ===
-===                =        =         =realizar la conversi?? de la retenci??  ===
-===Luis Enr�quez   =25/07/21=DMINA-   =Se utiliza la funci?? SomaAbat() para su===
-===                =        =13143    =mar de manera correcta las retenciones x===
-===                =        =         =t�tulo para c��culo de valor neto. (EQU)===
-==?===============|========|=========|========================================?=
-==================================================================================
-����������������������������������������������������������������������������������
+#Include "protheus.CH"        // incluido pelo assistente de conversao do AP5 IDE em 09/09/99
+#Include "FINA085A.CH"
+//#Include "FWLIBVERSION.CH"
+#Include "FWMVCDEF.CH"
+
+//Posicoes do Array  ASE2
+#DEFINE _FORNECE  1
+#DEFINE _LOJA     2
+#DEFINE _VALOR    3
+#DEFINE _MOEDA    4
+#DEFINE _SALDO    5
+#DEFINE _SALDO1   6
+#DEFINE _EMISSAO  7
+#DEFINE _VENCTO   8
+#DEFINE _PREFIXO  9
+#DEFINE _NUM     10
+#DEFINE _PARCELA 11
+#DEFINE _TIPO    12
+#DEFINE _RECNO   13
+#DEFINE _RETIVA  14
+#DEFINE _RETIB   15
+#DEFINE _NOME    16
+#DEFINE _JUROS   17
+#DEFINE _DESCONT 18
+#DEFINE _NATUREZ 19
+#DEFINE _ABATIM  20
+#DEFINE _PAGAR   21
+#DEFINE _MULTA   22
+#DEFINE _RETIRIC 23
+#DEFINE _RETSUSS 24
+#DEFINE _RETSLI  25
+#DEFINE _RETIR   26
+#DEFINE _RETIRC  27 //Portugal
+#DEFINE _RETISI  28
+#DEFINE _RETRIE  29 //Angola
+#DEFINE _RETIGV  30 //PERU
+#DEFINE _CBU     31 //Controle de CBU - Argentina
+#DEFINE _NRCHQ   32 //EQUADOR
+
+
+#DEFINE _CAJAME  33 //CAJAME
+#DEFINE _SERORI  34
+#DEFINE _CPR     35
+#DEFINE _TXMOEDA 36 //Taxa da moeda do título - Peru
+#DEFINE _FILORIG 37
+#DEFINE _FILIAL  38
+#DEFINE _ELEMEN  38 //indica o tamanho para o array ase2
+
+//Posicoes do ListBox
+
+#DEFINE H_OK		1
+#DEFINE H_FORNECE	2
+#DEFINE H_LOJA    	3
+#DEFINE H_NOME    	4
+#DEFINE H_NF      	5
+#DEFINE H_NCC_PA  	6
+#DEFINE H_TOTAL 	7
+
+//ARG
+#DEFINE H_RETGAN	8
+#DEFINE H_RETIB 	10
+#DEFINE H_RETSUSS	11
+#DEFINE H_RETSLI 	12
+#DEFINE H_RETISI	13
+#DEFINE H_CBU		14
+#DEFINE H_CAJAME	21
+#DEFINE H_CPR		22
+//URU
+#DEFINE H_RETIRIC   8 //Mesma posicao que as Ganancias pq so eh utilizado no Uruguai.
+#DEFINE H_RETIR    11 //Mesma posicao que as SUSS pq so eh utilizado no Uruguai.
+// INI Portugal
+#DEFINE H_RETIRC    8 //Mesma posicao que as Ganancias pq so eh utilizado EM portugal.
+#DEFINE H_RETIVA    9 //ARG Tambem
+#DEFINE H_DESPESAS 10
+//FIM PORTUGAL
+//ANGOLA
+#DEFINE H_RETRIE    8 //A confirmar - Posicao do imposto RIE de Angola
+//Fim Angola
+//PERU
+#DEFINE H_RETIGV    8 //A confirmar - Posicao do imposto IGV DO PERU
+//Fim PERU
+
+#DEFINE H_TOTALVL 	15
+#DEFINE H_PORDESC 	16
+#DEFINE H_TOTRET 	17
+#DEFINE H_DESCVL 	18
+#DEFINE H_EDITPA  	19
+#DEFINE H_VALORIG  	20
+#DEFINE H_MULTAS    21
+
+#DEFINE _PA_VLANT  01
+#DEFINE _PA_MOEANT 02
+#DEFINE _PA_VLATU  03
+#DEFINE _PA_MOEATU 04
+Static 	nPosTipo,nPosTpDoc,nPosMoeda,nPosNum,nPosBanco,nPosAge,nPosConta,nPosEmi,nPosVcto,nPosVlr,nPosParc
+Static lA085aTit,lA085aRet
+Static cAgente,nMVCUSTO
+Static nDel :=0
+Static lF085aChS := ExistBlock("F085aChS") .and. ExecBlock("F085aChS",.F.,.F.)
+Static lFWCodFil := FindFunction("FWCodFil")
+STATIC lMod2	 := FindFunction("FinModProc")
+Static lF085aBPg
+Static __lF085VLNAT
+Static _cTipo	:= ""
+Static nDescOP := 0
+Static cIDProc := ""
+// TRADUCAO DE CH'S PARA PORTUGAL
+
+/*/
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡„o    ³ FINA085A ³ Autor ³ Bruno Sobieski         ³ Data ³ 23.02.99 ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descriçào ³ Generar Retensión de Impuestos y Calcular Ganâncias para    ³±±
+±±³          ³ las facturas de Compras. (AutomaTica)                       ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Uso       ³ Cobranzas                                                   ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ ATUALIZACOES SOFRIDAS DESDE A CONSTRUCAO INICIAL.                      ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ PROGRAMADOR    ³ DATA   ³ BOPS ³  MOTIVO DA ALTERACAO                  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Jose Aurelio    ³21/11/01³11106 ³Ajuste do ponto de entrada a085DEFS pa-³±±
+±±³                ³        ³      ³ra que o mesmo trate o parametro "4".  ³±±
+±±³                ³        ³      ³Dessa forma, esse ponto podera ser usa-³±±
+±±³                ³        ³      ³do em DEFINE'S com Ordens de Pagamento ³±±
+±±³Jose Aurelio    ³27/11/01³11714 ³Desabilitacao do teste para, se SE2 for³±±
+±±³                ³        ³      ³vazio, nao permite acesso aos cadastros³±±
+±±³Paulo Augusto   ³17/07/02³QNC   ³Substituida a Indregua pela FilBrowse  ³±±
+±±³                ³        ³      ³para que seja possivel tirar o filtro  ³±±
+±±³                ³        ³      ³na pesquisa dos titulos de abatimento, ³±±
+±±³                ³        ³      ³para que os mesmos sejam baixados      ³±±
+±±³C. Denardi      ³23/09/03³66.814³Filtrar titulos que nao foram liberados³±±
+±±³                ³        ³      ³pela rotina FINA580 e quando o parame- ³±±
+±±³                ³        ³      ³tro MV_CTLIPAG = .T.                   ³±±
+±±³Dixon           ³24/11/04³      ³Inclusao de FT no filtro.              ³±±
+±±³                  ³        ³      ³                                      ³±±
+±±³Wagner Montenegro *08/06/10³      ³Add campo Natureza e gravação no SE2  ³±±
+±±³  Adicionado consistencia na seleção de bancos X forma de pago.          ³±±
+±±³  Adicionado consistencia na tributação de ITF X bancos.                 ³±±
+±±³  Adicionado consistencia na seleção de titulos X Natureza(Incidencia ITF)³±±
+±±³M. Camargo      ³18/04/13³THCETX³Modificación de la función CalcRetIB   ³±±
+±±³				   ³        ³      ³para que considere todos los           ³±±
+±±³                ³        ³      ³registros del proveedor de la SFH      ³±±
+±±³M. Camargo      ³07/05/13³TF2479³Se agrega cálculo 4xmil Para colombia  ³±±
+±±³				   ³        ³      ³cuando es debido diferido y acredita-  ³±±
+±±³                ³        ³      ³ción inmediata.                        ³±±
+±±³M. Camargo      ³23/05/13³THKCZR³Modificación de la función CalcRetIva  ³±±
+±±³				   ³23/05/13³THKCZR³para que considere el % de exención de IVA³±±
+±±³L Samaniego     ³17/01/14³THKIIM³Modificacion en la funcion CalcRetIVA  ³±±
+±±³                ³        ³      ³para la exencion de IVA                ³±±
+±±³Laura Medina    ³21/01/14³TIAGWQ³Se modifico el calculo de la retencion ³±±
+±±³                ³        ³      ³cuando sea necesario desglosar la aliq ³±±
+±±³                ³        ³      ³por separado (SFF).                    ³±±
+±±³EMANUEL V.V.    ³13/02/14³THKIIM³Corrección en la funcion CalcRetIVA    ³±±
+±±³                ³        ³      ³para la exencion de IVA                ³±±
+±±³Laura Medina    ³26/02/14³TIHNR4³Se agrego un PE FI85ATCH para agregar  ³±±
+±±³                ³        ³      ³columnas en la venta "Elija el Cheque" ³±±
+±±³                ³        ³      ³en Pago Diferenciado.                  ³±±
+±±³Alfredo Medrano ³06/09/16³TWFLBM³Se agrega registro PA en SE2 cuando es ³±±
+±±³                ³        ³      ³Anticipo en func Fa085Grava.           ³±±
+±±³                ³        ³      ³En func FA085SE2 Valida Anticipo en    ³±±
+±±³                ³        ³      ³Pago Automático. En Func Fa085Tela si  ³±±
+±±³                ³        ³      ³es Anticipo se llena campo Modalidad   ³±±
+±±³                ³        ³      ³En func a085aPagos se valida que la    ³±±
+±±³                ³        ³      ³opción Pago Especial no este disponible³±±
+±±³                ³        ³      ³para anticipos.                        ³±±
+±±³                ³        ³      ³Los campos E2_NUM y E2_PREFIXO se llena³±±
+±±³                ³        ³      ³con los campos correspondientes a Fac. ³±±
+±±³                ³        ³      ³Anticipo. fVerifImp obtiene el impuesto³±±
+±±³                ³        ³      ³de la Fac.Anticipo fRetParcel obtiene  ³±±
+±±³                ³        ³      ³consecutivo para Parcela MEX           ³±±
+±±³                ³        ³      ³No permita seleccionar registros tipo  ³±±
+±±³                ³        ³      ³título PA con modalidad informada donde³±±
+±±³                ³        ³      ³el ED_OPERADT=SI en Func a085aMark MEX ³±±
+±±³Jonathan Glez   ³14/12/16³SERINN001³Elimina funciones FA085vlna, ajusaSx1,  ³±±
+±±³                ³        ³     -486³acertasx1, ajustasx3, fa085tudoOk y se  ³±±
+±±³                ³        ³         ³eliminan los funciones de PUTHELP.      ³±±
+±±³Alf. Medrano    ³31/01/17³ MMI-4859³Merge 12.1.07 vs 12.1.14                ³±±
+±±³  Marco A. Glz  ³27/04/17³ MMI-194 ³Se replica llamado(TWG704 - V11.8),     ³±±
+±±³                ³        ³         ³Visualizar correctamente campo Modalidad³±±
+±±³                ³        ³         ³en Orden de Pago, al existir punto      ³±±
+±±³                ³        ³         ³de entrada A085ALNA. (MEX)              ³±±
+±±³Ivan Gomez      ³01/11/17³DMICNS   ³Se agrega la validación correcta para   ³±±
+±±³                ³        ³-128     ³ que tome el valor SE2->E2_FILORIG en   ³±±
+±±³                ³        ³         ³ el campo SE5->E5_FILORIG cuando se     ³±±
+±±³                ³        ³         ³realice la grabación de la ord de pag   ³±±
+±±³M.Camargo       ³11/04/18³DMINA-761³Func. AaddSE2: Se modifica valor de tasa³±±
+±±³                ³        ³         ³de la moneda, cambio en llenado de array³±±
+±±³                ³        ³         ³aSE2 _TXMOEDA(PER).                     ³±±
+±±³                ³        ³         ³Se modifica la conversion de la tasa    ³±±
+±±³                ³        ³         ³para los documentos tipo TX, en las     ³±±
+±±³                ³        ³         ³Ordenes de Pago. El cambios se realiza  ³±±
+±±³                ³        ³         ³en la funcion AddSE2(). (PER)           ³±±
+±±³                ³        ³         ³Se agrega funcionalidad para poder com- ³±±
+±±³                ³        ³         ³pensar titulos entre filiales. se crea  ³±±
+±±³                ³        ³         ³la variable lConsFilial  y se modifica  ³±±
+±±³                ³        ³         ³la función Fa085Grava para posicionarse ³±±
+±±³                ³        ³         ³en el titulo de la manera correcta.MEX  ³±±
+±±³M.Camargo       ³14/07/18³DMINA-   ³Grabar valor en campo SFE->FE_SERIE2    ³±±
+±±³                ³        ³3376     ³a partir del parámetro MV_CRSERIE para  ³±±
+±±³                ³        ³         ³PERU.                                   ³±±
+±±³M.Camargo       ³15/10/18³DMINA-   ³En Fun Fa085AtuVl, dentro del cálculo de³±±
+±±³                ³        ³4552     ³total de orden de pago se redondea el   ³±±
+±±³                ³        ³         ³valor de la NF MEX.                     ³±±
+±±³Alf. Medrano    ³07/11/18³DMINA-   ³En fun fa085Grava se asigna fil origen  ³±±
+±±³                ³        ³         ³para descuentos, multas y intereses.    ³±±
+±±³                ³        ³         ³en Fun GravaPagos se asigna fil origen  ³±±
+±±³                ³        ³         ³ para asignar a los pagos  MEX.         ³±±
+±±³Oscar G.        ³19/12/18³DMINA-   ³En Fun Fa085Alt se omite la alteracion  ³±±
+±±³                ³        ³5269     ³de los val. a partir de un array temp.  ³±±
+±±³Verónica Flores ³12/02/19³DMINA-   ³Se realiza replica de DMINA-4053 v12.1.7³±±
+±±³                ³        ³5451     ³En fun Fina085a se activa var lUUI si   ³±±
+±±³                ³        ³  	      ³campo EK_UUID existe.En fun A085ApgAut  ³±±
+±±³                ³        ³     	  ³se asigna valor a campo EK_UUID cuando  ³±±
+±±³                ³        ³         ³es TB y PA.En fun GravaPagos se asigna  ³±±
+±±³                ³        ³         ³valor a campo EK_UUID cuando es CT y CP ³±±
+±±³                ³        ³         ³En fun Fa085Tela agrega campo EK_UUID   ³±±
+±±³                ³        ³         ³a encabezado de la Orden Pag. En fun    ³±±
+±±³                ³        ³         ³Fa085Alt en modif. de la Orden Pag se   ³±±
+±±³                ³        ³         ³asigna campo F1_UUID al encabezado del  ³±±
+±±³                ³        ³         ³detalle y se asigna información. MEX    ³±±
+±±³                ³        ³         ³En Fun A085ApgAut se asigna a __cUUID   ³±±
+±±³                ³        ³         ³la longitud de campo EK_UUID solo si el ³±±
+±±³                ³        ³         ³campo existe. MEX                       ³±±
+±±³M. Camargo      ³23/05/13³DMINA-   ³Modificación de la función Fa085Grv     ³±±
+±±³                ³        ³6478     ³para que considere guardar campo E2_FIL-³±±
+±±³                ³        ³         ³ORIG.                                   ³±±
+±±³Oscar G.        ³05/02/20³DMINA-   ³En FA085Alt() se valida aTits por error ³±±
+±±³                ³        ³8024     ³log, en a085FldOk1() se modifica calculo³±±
+±±³                ³        ³         ³del valor cuando se agrega descuento, en³±±
+±±³                ³        ³         ³Fa085AtuVl() se abre tratamiento para NF³±±
+±±³                ³        ³         ³ y localizacion para PER. (PER)         ³±±
+±±³Eduardo Perez   ³06/02/20³DMINA-   ³Modificación de la función Fa085Tela    ³±±
+±±³                ³        ³7987     ³para guardar el pais del proveedor y que³±±
+±±³                ³        ³         ³realice la validacion del pais de forma ³±±
+±±³                ³        ³         ³correcta                                ³±±
+±±³Eduardo Perez   ³08/04/20³DMINA-   ³Modificación de la función Fa085AtuVl   ³±±
+±±³                ³        ³8495     ³para mostrar mensaje al usuario en      ³±±
+±±³                ³        ³         ³de que la moneda selecciona para el pago³±±
+±±³                ³        ³         ³no cuente con tipo de cambio del dia    ³±±
+±±³Oscar G.        ³05/02/20³DMINA-   ³En A085APgAut() se si titulo tiene blo- ³±±
+±±³                ³        ³8705     ³queo por calendario contable. (MEX)     ³±±
+±±³José González   ³12/05/20³DMINA-   ³Se agrega validación en la función      ³±±
+±±³                ³        ³8992     ³AtuaSaldos para cuando el valor a pagar ³±±
+±±³                ³        ³         ³sea 0 no se realice actualización(COL)  ³±±
+±±³ Marco A. Glez  ³28/05/20³DMINA-   ³Se agrega el grabado del campo EK_MSFIL ³±±
+±±³                ³        ³9118     ³en los movimentos realizados en la tabla³±±
+±±³                ³        ³         ³SEK (Filial Origen) - MEX               ³±±
+±±³Oscar G.        ³27/05/20³DMINA-   ³Se crea Fun. a085VldDsc() para manejo de³±±
+±±³                ³        ³9028     ³descuentos globales, en fun. Fa085Alt se³±±
+±±³                ³        ³         ³corrige ventana de Modificar. (COL)     ³±±
+±±³Alf. Medrano    ³03/07/20³DMINA-   ³Se modifica la fun Fa085AtuVl dónde se  ³±±
+±±³                ³        ³9446     ³corrige cálculo de conversión de monedas³±±
+±±³                ³        ³         ³(PER)                                   ³±±
+±±³José González   ³01/07/20³DMINA-   ³Se agrega el guardado  campo EK_NATUREZ ³±±
+±±³                ³        ³8935     ³en la función a085aGravRet(PER)         ³±±
+±±³Eduardo Prez    ³12/08/20³DMINA-   ³Se modifica la fun Fa085Tela dónde se   ³±±
+±±³                ³        ³9530     ³realiza la conversion del total a pagar ³±±
+±±³                ³        ³         ³usando el tipo de cambio del dia(PER)   ³±±
+±±³Oscar G.        ³14/09/20³DMINA-   ³Se ajusta conversion de monedas en fun. ³±±
+±±³                ³        ³10068    ³Fa085AtuVl(), se ajusta comportamiento  ³±±
+±±³                ³        ³         ³de descuentos en fun. a085FldOk1().(PER)³±±
+±±³Cristian Franco ³14/09/20³DMICNS-  ³Se modifica la funcion Fa085Tela localiz³±±
+±±³                ³        ³9286     ³ación ya que no mostraba correctamente  ³±±
+±±³                ³        ³         ³los montos en el encabezado de OP       ³±±
+±±³Verónica Flores ³04/02/21³DMINA-   ³Se modifica la funcion Fa085AtuVl donde ³±±
+±±³                ³        ³10929    ³realiza la conversión de la retención   ³±±
+±±³                ³        ³         ³IR (PER).                               ³±±
+±±³Luis Enríquez   ³13/02/21³DMINA-   ³Se elimina validación de cheques para   ³±±
+±±³                ³        ³10663    ³realiza la conversión de la retención   ³±±
+±±³Verónica Flores ³26/02/21³DMINA-   ³Se modifica el uso de la tasa en las    ³±±
+±±³                ³        ³11055    ³detracciones "TX" sea usado el TC del   ³±±
+±±³                ³        ³         ³documento (PER).                        ³±±
+±±³ Marco A. Glez  ³17/04/21³DMINA-   ³Se utiliza la posicion del tipo de titu-³±±
+±±³                ³        ³    12006³en el array para determinar el tipo de  ³±±
+±±³                ³        ³         ³documento (PER).                        ³±±
+±±³Diego Rivera    ³28/04/21³DMINA-   ³Replica de DMINA-10663 para Ecuador     ³±±
+±±³                ³        ³11808    ³Se elimina validación de cheques para   ³±±
+±±³                ³        ³         ³realizar la conversión de la retención  ³±±
+±±³Luis Enríquez   ³25/07/21³DMINA-   ³Se utiliza la función SomaAbat() para su³±±
+±±³                ³        ³13143    ³mar de manera correcta las retenciones x³±±
+±±³                ³        ³         ³título para cálculo de valor neto. (EQU)³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 /*/
 Function Fina085A(aCabOP,aDocPg,nOper,nModAuto)
 //Declaracao de variaveis  usadas na indregua
@@ -248,7 +356,7 @@ Private	cGrpSPA := ""
 Private	cGrpSF2 := ""
 Private nNumPa
 Private aCert   := {}
-Private aRetencao := {} //Array para exibi??o de impostos com base no Configurador de Imposto FRM X FRN
+Private aRetencao := {} //Array para exibição de impostos com base no Configurador de Imposto FRM X FRN
 Private nFlagMOD :=0
 Private nCtrlMOD :=0
 Private lFindITF := FindFunction("FinProcITF")
@@ -260,7 +368,7 @@ Private lMsfil:= (cPaisLoc $ "ARG|PAR") .And. SF1->(FieldPos("F1_MSFIL")) > 0 .A
 Private nTotBSUSS:= 0
 Private nLimiteSUSS:= 0
 Private aTotIva:= {}
-Private lEsRetAdc := .F. //Se debe generar una retenci?? adicional (TIAGWQ)
+Private lEsRetAdc := .F. //Se debe generar una retención adicional (TIAGWQ)
 Private lSFFOk 	  := .F.
 Private lExecFRet := FieldPos("CO_TPMINRE") > 0
 Private cPaisProv := ""
@@ -276,7 +384,7 @@ IF cPaisLoc=="PAR"
 	Private aPagosPar:={}	
 ENDIF
 
-/* Verifica??o do processo que est?configurado para ser utilizado no M�dulo Financeiro (Argentina) */
+/* Verificação do processo que está configurado para ser utilizado no Módulo Financeiro (Argentina) */
 if cPaisloc == "ARG"
 	Alert(STR0268)
 	Return()
@@ -307,13 +415,13 @@ EndIf
 
 
 /*
-//========================================================================
-//=A moeda 1 e tambem inclusa como um dummy, nao vai ter uso,            =
-//=mas simplifica todas as chamadas a funcao xMoeda, ja que posso        =
-//=passara a taxa usando a moeda como elemento do Array atxMoedas        =
-//=Exemplo xMoeda(E1_VALOR,E1_MOEDA,1,dDataBase,,aTxMoedas[E1_MOEDA][2]) =
-//=Bruno - Paraguay 25/07/2000                                           =
-//?=====================================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³A moeda 1 e tambem inclusa como um dummy, nao vai ter uso,            ³
+//³mas simplifica todas as chamadas a funcao xMoeda, ja que posso        ³
+//³passara a taxa usando a moeda como elemento do Array atxMoedas        ³
+//³Exemplo xMoeda(E1_VALOR,E1_MOEDA,1,dDataBase,,aTxMoedas[E1_MOEDA][2]) ³
+//³Bruno - Paraguay 25/07/2000                                           ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 */
 //Inicializar Array com as cotacoes e Nomes de Moedas segundo o arquivo SM2
 Aadd(aTxMoedas,{"",1,PesqPict("SM2","M2_MOEDA1")})
@@ -328,21 +436,21 @@ Next
 
 /*
 +-Preguntas---------------------------------+
-? Mv_par01    =Del Vencimiento   ?         ?
-? Mv_par02    =Hasta Vencimiento ?         ?
-? Mv_par03    =Del Proveedor     ?         ?
-? Mv_par04    =Hasta Proveedor   ?         ?
-? Mv_par05    =Exibir ?  Todas/Pre-Ordens  ?
-? Mv_par06    =Filtra Generadas  ?         ?
-? Mv_par07    =Muestra Asientos  ?         ?
-? Mv_par08    =Aglomera Asientos ?         ?
-? Mv_par09    =Asientos On-Line  ?         ?
-? Mv_par10    Agrupar OP's por             ?
-? Mv_par11    Para saldo gerar   ?         ?
-? Mv_par12    Imprime Comprovante? PER     ?
-? Mv_par12    Considerar filial  ?         ?
-? Mv_par13    Nome rotina comprovante?     ?
-? Mv_par14    Edita nro. comprovante?(PERU)?
+¦  Mv_par01    ¿Del Vencimiento   ?         ¦
+¦  Mv_par02    ¿Hasta Vencimiento ?         ¦
+¦  Mv_par03    ¿Del Proveedor     ?         ¦
+¦  Mv_par04    ¿Hasta Proveedor   ?         ¦
+¦  Mv_par05    ¿Exibir ?  Todas/Pre-Ordens  ¦
+¦  Mv_par06    ¿Filtra Generadas  ?         ¦
+¦  Mv_par07    ¿Muestra Asientos  ?         ¦
+¦  Mv_par08    ¿Aglomera Asientos ?         ¦
+¦  Mv_par09    ¿Asientos On-Line  ?         ¦
+¦  Mv_par10    Agrupar OP's por             ¦
+¦  Mv_par11    Para saldo gerar   ?         ¦
+¦  Mv_par12    Imprime Comprovante? PER     ¦
+¦  Mv_par12    Considerar filial  ?         ¦
+¦  Mv_par13    Nome rotina comprovante?     ¦
+¦  Mv_par14    Edita nro. comprovante?(PERU)¦
 +-------------------------------------------+
 */
 If !Pergunte(cPerg,.T.)
@@ -428,9 +536,9 @@ cChave := OemToAnsi(STR0004) //"Proveedor + Sucursal + Vencimiento"
 DbSelectArea("SE2")
 DbSetOrder(1)
 
-//========================================================================
-//= Processar filtro na MarkBrowse                                       =
-//?=====================================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Processar filtro na MarkBrowse                                       ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 Eval(bFiltraBrw)
 nSaveOrder:=indexord()
 
@@ -448,32 +556,32 @@ Else
 	A085APgAut(nFlagMOD,nCtrlMOD,aCabOP)
 
 EndIf
-//=========================================================================
-//= Desbloquear os registros locados pela sele??o do Usario no MarkBrowse =
-//?======================================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Desbloquear os registros locados pela seleção do Usario no MarkBrowse ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 DbSelectArea("SE2")
 dbSetOrder(1)
 
 DbUnlockAll()
-//========================================================================
-//= Limpa Filtro e reabre indices com RetIndex                           =
-//?=====================================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Limpa Filtro e reabre indices com RetIndex                           ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 EndFilBrw("SE2",aIndexADC)
 
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =A085aPgAut�Autor  =Bruno Sobieski      �Fecha =  01/16/01   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Geracao de ordem de pagamento multiple.                    ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP5                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³A085aPgAutºAutor  ³Bruno Sobieski      ºFecha ³  01/16/01   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Geracao de ordem de pagamento multiple.                    º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function A085APgAut(nFlagMOD,nCtrlMOD,aFormPag)        // incluido pelo assistente de conversao do AP5 IDE em 09/09/99
 Local aSE2  := {}
@@ -514,7 +622,7 @@ Private dDataVenc  := dDataBase
 Private dDataVenc1 := dDataBase
 Private cTes	   := Criavar("F4_CODIGO")
 Private aHeader1
-Private nBaseRet   := 0 //Base para reten??o de PA Automatico
+Private nBaseRet   := 0 //Base para retenção de PA Automatico
 
 Private nValSobra  := 0.00
 Private nTotPag    := 0.00
@@ -540,8 +648,8 @@ Next
 //Forco para que seja inclusao
 aRotina[3][4]	:=	3
 
-/*Essa variavel ?private, dessa forma, sempre quando for fazer um novo pagamento garantimos que ela est?sendo zerada.
-Problema identificado quando fazia um pagamento, e n|oo fechava a tela, o valor ficava carregado.
+/*Essa variavel é private, dessa forma, sempre quando for fazer um novo pagamento garantimos que ela está sendo zerada.
+Problema identificado quando fazia um pagamento, e nãoo fechava a tela, o valor ficava carregado.
 */
 nValRetn := 0 
 
@@ -556,9 +664,9 @@ If lF085AltSE2
 Endif
 
 If Len(aSE2) > 0
-	//=============================================================
-	//= Inicializa a gravacao dos lancamentos do SIGAPCO          =
-	//?==========================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Inicializa a gravacao dos lancamentos do SIGAPCO          ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	PcoIniLan("000313")
 
 	//Monta interface com o Usuario
@@ -582,7 +690,7 @@ If Len(aSE2) > 0
 		aRetIvAcm := Array(3)
 
 	Else
-		//Cancela as reten??os calculadas com base no Conf. de Impostos
+		//Cancela as retençãos calculadas com base no Conf. de Impostos
 		If cPaisLoc $ "COS|DOM"
 			F85aCanRet()
 		EndIf
@@ -601,9 +709,9 @@ If Len(aSE2) > 0
 		cConta:= aFormPag[5][2]
 		Processa({|| Fa085Grava(aSE2,,,,@nFlagMOD,@nCtrlMOD,@aCtrChEQU) })
 	EndIf
-	//==================================================
-	//= Finaliza a gravacao dos lancamentos do SIGAPCO =
-	//?===============================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Finaliza a gravacao dos lancamentos do SIGAPCO ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	PcoFinLan("000313")
 
 Endif
@@ -618,17 +726,17 @@ aRotina[3][4]	:=	2
 Return( .F. )        // incluido pelo assistente de conversao do AP5 IDE em 09/09/99
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =Fa085Grava�Autor  =Leonardo Gentile    �Fecha =  01/15/01   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Gravacao da orden de PAGO                                   ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP5                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³Fa085GravaºAutor  ³Leonardo Gentile    ºFecha ³  01/15/01   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Gravacao da orden de PAGO                                   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 STATIC Function Fa085Grava(aSE2,lPa,aRecAdt,lMonotrb,nFlagMOD,nCtrlMOD,aCtrChEQU)
 Local nA,nI,nJ,nK,nQ
@@ -689,7 +797,7 @@ Local lCertImp		:= ExistBlock("FA085CERT")
 Local lPERGenPA		:= .F.
 Local cIdMetRet		:= "financiero-protheus_cantidad-op-mod1-com-retenciones-registradas-por-pais-por-empresa_total"
 Local cSubRutina	:= ""
-Local lRutAutTIR	:= GetRemoteType() == 5 //Ejecuci?? realizada mediante versi?? web
+Local lRutAutTIR	:= GetRemoteType() == 5 //Ejecución realizada mediante versión web
 Local aRECSEKdiario := {}
 Local cFunName		:= FunName()
 Local cFilSE5		:= xFilial("SE5")
@@ -742,17 +850,17 @@ DEFAULT lMonotrb  := .F.
 DEFAULT aCtrChEQU :={}
 
 //+---------------------------------------------------------+
-//?Generar asientos contables                              ?
+//¦ Generar asientos contables                              ¦
 //+---------------------------------------------------------+
 If lGeraLanc
 	//+--------------------------------------------------------------+
-	//?Nao Gerar os lancamento Contabeis On-Line                    ?
+	//¦ Nao Gerar os lancamento Contabeis On-Line                    ¦
 	//+--------------------------------------------------------------+
 	lLancPad70 := VerPadrao("570")
 EndIf
 If lLancPad70
 	//+--------------------------------------------------------------+
-	//?Posiciona numero do Lote para Lancamentos do Financeiro      ?
+	//¦ Posiciona numero do Lote para Lancamentos do Financeiro      ¦
 	//+--------------------------------------------------------------+
 	dbSelectArea("SX5")
 	dbSeek(xFilial()+"09FIN")
@@ -791,8 +899,8 @@ For ni := 1 to Len(aPagos)
 	lEspR :=.T.
 	WHILE !LockByName("EK_Prs"+cFilAnt,.T.,!Empty(cFilAnt)) 
 		If !lAutoOP
-			//"Actualmente, el proceso de integraci?? de la Orden de Pago est?en uso. Al finalizar este proceso, se dar?inicio a esta petici??. "
-			//"=Desea esperar hasta que el proceso est?disponible? // Si se confirma y el proceso siguen en uso, este mensaje ser?mostrado nuevamente en 10 segundos."
+			//"Actualmente, el proceso de integración de la Orden de Pago está en uso. Al finalizar este proceso, se dará inicio a esta petición. "
+			//"¿Desea esperar hasta que el proceso esté disponible? // Si se confirma y el proceso siguen en uso, este mensaje será mostrado nuevamente en 10 segundos."
 			lEspR := MsgYesNo(STR0290 + CRLF + STR0291 + CRLF + CRLF + STR0292) 
 		EndIf
 		If lEspR
@@ -844,10 +952,10 @@ For ni := 1 to Len(aPagos)
 	cLiquid    	:= Soma1(GetMv("MV_NUMLIQ"),6)
 	lPagoInf	:=	.F.
 
-	//=================================================================
-	//=Determinar se o pago foi feito em uma unica moeda, para gravar =
-	//=todas as retencoes nessa moeda (BOPS 76135)                    =
-	//?==============================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³Determinar se o pago foi feito em uma unica moeda, para gravar ³
+	//³todas as retencoes nessa moeda (BOPS 76135)                    ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	nMoedaRet	:=	1
 
 	For nj := 1 to Len( aSE2[ni][1])
@@ -881,7 +989,7 @@ For ni := 1 to Len(aPagos)
 			cSeq:=FaNxtSeqBx("SE2")
 
 			//Gera a chave do titulo na FK7.
-			//Caso o titulo j?tenha cadastro no FK7, devolve a chave existente
+			//Caso o titulo já tenha cadastro no FK7, devolve a chave existente
 			cChaveFK7 := FINGRVFK7("SE2", cChaveTit)
 
 			nE5VlMoe2 := 0
@@ -890,7 +998,7 @@ For ni := 1 to Len(aPagos)
 
 			If 	cPaisLoc $ "DOM|COS"
 				If lPa	.And. !Empty(cNatureza)
-					//Gera??o das Reten��es de Impostos
+					//Geração das Retenções de Impostos
 					If 	!SE2->E2_TIPO $ "CH |PA "
 						fa085GerRet("9", cNatureza, aSE2[ni][1][nj][3], aSE2[ni][1][nj][_PREFIXO], aSE2[ni][1][nj][_NUM], aSE2[ni][1][nj][_FORNECE])
 					EndIf
@@ -902,7 +1010,7 @@ For ni := 1 to Len(aPagos)
 						aSE2[ni][1][nj][3] := aSE2[ni][1][nj][3] + nVlrRet
 					EndIf
 					If 	!SE2->E2_TIPO $ "CH |PA "
-						//Gera??o das Reten��es de Impostos
+						//Geração das Retenções de Impostos
 						fa085GerRet("2", aSE2[ni][1][nj][19], aSE2[ni][1][nj][3], aSE2[ni][1][nj][_PREFIXO], aSE2[ni][1][nj][_NUM], aSE2[ni][1][nj][_FORNECE])
                     EndIf
 				EndIf
@@ -1139,14 +1247,14 @@ For ni := 1 to Len(aPagos)
 			If ExistBlock("A085ATIT")
 				ExecBLock("A085ATIT",.F.,.F.)
 			Endif
-			//============================================================
-			//= Grava os lancamentos nas contas orcamentarias SIGAPCO    =
-			//?=========================================================?
+			//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+			//³ Grava os lancamentos nas contas orcamentarias SIGAPCO    ³
+			//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 			PcoDetLan("000313","01","FINA085A")
 			If cPaisLoc=="MEX" .And. SE2->(FieldPos("E2_VALIMP1"))>0 .And. SEK->(FieldPos("EK_VALIMP1"))>0
 				a085aGrRetMx(aSE2[ni][1][nj][_FILIAL])
 			EndIf
-			//Gravar reten�oes de IVA e Ingresos Brutos
+			//Gravar retençoes de IVA e Ingresos Brutos
 			a085aGravRet(aSE2[ni][1][nj],aPagos[ni][2],aPagos[ni][3],aSE2[ni][1][nj][_PARCELA],.F.,@aTitPags,nMoedaRet,,lCBU)
 		EndIf
 
@@ -1178,17 +1286,17 @@ For ni := 1 to Len(aPagos)
 			F085TitImp(aSE2[nI],cOrdPago)
 		Endif
     EndIf
-	//=============================================================
-	//=Verifico se houve pago diferenciado para esta ordem de pago=
-	//=Caso contrario, atualizo conforme escolhido por default    =
-	//?==========================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³Verifico se houve pago diferenciado para esta ordem de pago³
+	//³Caso contrario, atualizo conforme escolhido por default    ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	If aSE2[ni][3] == Nil   // default, sem pago diferenciado
 
-		//===========================================================
-		//=Ajuste utilizado para evitar que a conves|o da moeda 1   =
-		//=para outras moedas na tela (sele??o da moeda na 1a. aba  =
-		//=da ordem de pago) necessite de re-convers|o.             =
-		//?========================================================?
+		//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		//³Ajuste utilizado para evitar que a convesão da moeda 1   ³
+		//³para outras moedas na tela (seleção da moeda na 1a. aba  ³
+		//³da ordem de pago) necessite de re-conversão.             ³
+		//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 		SA6->(DbSeek(xFilial()+cBanco+cAgencia+cConta))
 		nMoedaPag	:= Iif(SA6->A6_MOEDAP>0,SA6->A6_MOEDAP,SA6->A6_MOEDA)
 		nMoedaBco	:= SA6->A6_MOEDA
@@ -1268,7 +1376,7 @@ For ni := 1 to Len(aPagos)
 
 	If cPaisLoc $ 'MEX|PER' .and. !lPa
 		lPERGenPA := cPaisLoc == "PER" .And. AllTrim(cDocCred) == "PA"
-		//Valida Modalidad de operaci??
+		//Valida Modalidad de operación
 		If POSICIONE("SED",1,xFilial("SED")+aSE2[ni][1][1][_NATUREZ],"ED_OPERADT") == '1'
 			nValImps:= fVerifImp(aSE2[ni][1][1][_NUM], aSE2[ni][1][1][_PREFIXO],aSE2[ni][1][1][_PARCELA],aSE2[ni][1][1][_TIPO],aPagos[ni][H_FORNECE],aPagos[ni][H_LOJA])  // retorna el valor del Impuesto
 			cParcLpa:= fRetParcel(aSE2[ni][1][1][_PREFIXO],aSE2[ni][1][1][_NUM],cDocCred,aPagos[ni][H_FORNECE],aPagos[ni][H_LOJA] )
@@ -1329,10 +1437,10 @@ For ni := 1 to Len(aPagos)
 		EndIf
 	EndIf
 
-	//=====================================================================
-	//=Compensar os valores recebidos em difernetes moedas com os valores =
-	//=escolhidos para baixa em diferentes moedas                         =
-	//?==================================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³Compensar os valores recebidos em difernetes moedas com os valores ³
+	//³escolhidos para baixa em diferentes moedas                         ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	If lPagoInf .Or.lPa
 		a085aCmpMoeds(@aTitPags)
 
@@ -1390,9 +1498,9 @@ For ni := 1 to Len(aPagos)
 				EndIf
             	F085AGrvTx()
 				MsUnlock()
-				//============================================================
-				//= Grava os lancamentos nas contas orcamentarias SIGAPCO    =
-				//?=========================================================?
+				//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+				//³ Grava os lancamentos nas contas orcamentarias SIGAPCO    ³
+				//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 				PcoDetLan("000313","02","FINA085A")
 				dbSelectArea("SE2")
 				RecLock("SE2",.T.)
@@ -1447,7 +1555,7 @@ For ni := 1 to Len(aPagos)
 				If !lUsaFlag
 					SE2->E2_LA        	:= "S"
 				EndIf
-				//Integra??o Protheus X TOP - Argentina  e Mexico
+				//Integração Protheus X TOP - Argentina  e Mexico
 				If !lMsgUnica
 					If nColig >0 .and. IntePMS() .and.  MsgYesNo(OemToAnsi(STR0247)+" "+"("+cDocCred+")"+" "+AllTrim(SE2->E2_NUM)+" " +OemToAnsi(STR0248)+" "+;
 					GetMv("MV_SIMB1")+" "+ AllTrim(Transform(SE2->E2_VLCRUZ,PesqPict("SE2","E2_VLCRUZ")))+ " " + OemToAnsi(STR0249))//"Deseja associar o  Titulo" "de valor" "a um projeto?"
@@ -1464,7 +1572,7 @@ For ni := 1 to Len(aPagos)
 					ExecBLock("A085ATIT",.F.,.F.)
 				Endif
 
-			ElseIf aTitPags[nA] > 0   // NEGATIVO - DIF. SER| PAGA DE FORMA DEFAULT
+			ElseIf aTitPags[nA] > 0   // NEGATIVO - DIF. SERÝ PAGA DE FORMA DEFAULT
 
 				GravaPagos( nPagar, cBanco, cAgencia, cConta,, aPagos[ni][H_FORNECE],;
 				aPagos[ni][H_LOJA],aPagos[ni][H_NOME], nA  , aTitPags[nA] ,;
@@ -1481,7 +1589,7 @@ For ni := 1 to Len(aPagos)
    		GravaDesp( aPagos[ni][H_FORNECE],aPagos[ni][H_LOJA],aSE2[nI][4] )
    	EndIf
 
-// Calculo e grava??o de Ganacias e Ingressos Brutos para os PA�s gerados devido a inser??o
+// Calculo e gravação de Ganacias e Ingressos Brutos para os PA´s gerados devido a inserção
 // de um valor maior do que do que o valor total da ordem de pago
 		If cPaisLoc=="ARG" .And. (SE2->E2_TIPO $ MVPAGANT) .And. lRetPA .And. !lPa
 			nTotal:= 0
@@ -1550,9 +1658,9 @@ For ni := 1 to Len(aPagos)
 			MsUnlock()
 
 		EndIf
-	//Ajuste de Valores para a Reten??o do PA
+	//Ajuste de Valores para a Retenção do PA
 	If cPaisLoc $ "DOM|COS"  .And. lPa .And. !Empty(cNatureza)
-		//Gera??o das Reten��es de Impostos
+		//Geração das Retenções de Impostos
 	    If SE2->E2_TIPO	<>	"CH"
 			fa085GerRet("9", cNatureza, SE2->E2_VALOR, SE2->E2_PREFIXO, SE2->E2_NUM, SE2->E2_FORNECE)
 		EndIf
@@ -1627,7 +1735,7 @@ For ni := 1 to Len(aPagos)
 	,aPagos[nI][H_FORNECE],aPagos[nI][H_LOJA],@nFlagMOD,@nCtrlMOD)
 
 	//+---------------------------------------------------------+
-	//?Atualiza parametro do Ultimo n=mero da Liquida?o...    ?
+	//¦ Atualiza parametro do Ultimo número da Liquidaçäo...    ¦
 	//+---------------------------------------------------------+
     PUTMV("MV_NUMLIQ", cLiquid )
 
@@ -1636,7 +1744,7 @@ For ni := 1 to Len(aPagos)
 	If nHdlPrv > 0 .and. lLancPad70
 
 		//+--------------------------------------------------+
-		//?Gera Lancamento Contab. para Orden de Pago.      ?
+		//¦ Gera Lancamento Contab. para Orden de Pago.      ¦
 		//+--------------------------------------------------+
 		If lLancPad70
 			SEK->(DbSetOrder(1))
@@ -1698,13 +1806,13 @@ For ni := 1 to Len(aPagos)
 		Endif
 
 		//+-----------------------------------------------------+
-		//?Envia para Lancamento Contabil, se gerado arquivo   ?
+		//¦ Envia para Lancamento Contabil, se gerado arquivo   ¦
 		//+-----------------------------------------------------+
 		RodaProva(  nHdlPrv,;
 					nTotalLanc )
 
 		//+-----------------------------------------------------+
-		//?Envia para Lancamento Contabil, se gerado arquivo   ?
+		//¦ Envia para Lancamento Contabil, se gerado arquivo   ¦
 		//+-----------------------------------------------------+
 		If ( FindFunction( "UsaSeqCor" ) .And. UsaSeqCor() )
 			aDiario := {}
@@ -1758,10 +1866,10 @@ For ni := 1 to Len(aPagos)
 
 	EndIf
 
-	//===================================================
-	//=Desmarca itens apos a finaliazacao da transacao  =
-	//=pois todos os registros foram deslocados         =
-	//?================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³Desmarca itens apos a finaliazacao da transacao  ³
+	//³pois todos os registros foram deslocados         ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	Eval(bFiltraBrw)
 	DbSelectArea('SE2')
 	For nA := 1 To Len(aRecNoSE2)
@@ -1769,7 +1877,7 @@ For ni := 1 to Len(aPagos)
 		If IsMark("E2_OK",cMarcaE2)
 			RecLock("SE2",.F.)
 			Replace E2_OK With "  "
-            nCtrlMOD-=1     //controle de sele??o no browse para Natureza/ITF
+            nCtrlMOD-=1     //controle de seleção no browse para Natureza/ITF
             If nCtrlMOD==0
                nFlagMOD:=0
             Endif
@@ -1789,9 +1897,9 @@ For ni := 1 to Len(aPagos)
 	End Transaction
 	UnLockByName("EK_Prs"+cFilAnt,.T.,!Empty(cFilAnt))
 	If nHdlPrv > 0 .and. lLancPad70
-		//=======================================================
-		//= Envia para Lancamento Contabil                      =
- 		//?====================================================?
+		//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		//³ Envia para Lancamento Contabil                      ³
+ 		//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 		lLanctOk := cA100Incl( 	cArquivo,;
 							nHdlPrv,;
 							3 /*nOpcx*/,;
@@ -1813,7 +1921,7 @@ For ni := 1 to Len(aPagos)
 Next
 
 If Len(aNums) > 0
-	If !lF085NoShw //Controle do usu�rio quanto a exibi??o da tela de confirma??o de oden de pago
+	If !lF085NoShw //Controle do usuário quanto a exibição da tela de confirmação de oden de pago
 		If !lAutomato
 			a085aShow(aNums,GetMBrowse())
 		EndIf
@@ -1824,7 +1932,7 @@ If ExistBlock("A085AFIM")
 	ExecBLock("A085AFIM",.F.,.F.,aNums)
 Endif
 
-//Gera diferen�a de cambio automatica
+//Gera diferença de cambio automatica
 If (SE2->(FieldPos('E2_CONVERT')) <> 0) .and. lEspR
 	If SE2->E2_CONVERT <> 'N' .And. cPaisLoc $ "ARG|BOL|URU" .And. lGeraDCam .And. lTemMon .And. !lPa
 		nI:=1
@@ -1906,7 +2014,7 @@ If !lEspR
 	Eval(bFiltraBrw)
 EndIf
 //************************
-// Retira sele??o do SE2 *
+// Retira seleção do SE2 *
 //************************/
 For nA := 1 To Len(aRecNoSE2)
 	MsGoTo(aRecNoSE2[nA][08])
@@ -1921,13 +2029,13 @@ aRecnoSE2	:=	{}
 Return
 
 /*
-����������������������������������������������������������������������������?
-��+-----------------------------------------------------------------------+��
-���Fun��o    ?ProcOrdPag Autor ?Bruno Sobieski        ?Data ?23.02.99 ��?
-��+----------+------------------------------------------------------------��?
-���Descri��o ?Funcion Ppal de generacion de orden de pago.               ��?
-��+-----------------------------------------------------------------------+��
-����������������������������������������������������������������������������?
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+°°+-----------------------------------------------------------------------+°°
+°°°Funçào    ° ProcOrdPag Autor ° Bruno Sobieski        ° Data ° 23.02.99 °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Descriçào ° Funcion Ppal de generacion de orden de pago.               °°°
+°°+-----------------------------------------------------------------------+°°
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 */
 Function FA085SE2(aSE2,lNaoMarca,lFinr995)
 Local nControl := 0
@@ -1966,7 +2074,7 @@ Local cChave	:= ""
 Local cFilterSE2:= ""
 Local nRecnoSE2	:= 0
 Local  nAliqigv := 0  //aliquota para calculo de retencao do igv
-Local aCalcigv  := {} //array para calculo do igv para compensa�ao
+Local aCalcigv  := {} //array para calculo do igv para compensaçao
 Local lSub      := .f.
 Local lSom      := .f.
 Local nBaseIGV  := 0
@@ -2019,8 +2127,8 @@ aSort(aRecNoSE2,,,{|x,y| x[1]+x[2]+x[3]+x[4]+x[5]+x[6]+x[7] < y[1]+y[2]+y[3]+y[4
 //Prepara o array aOrdPg para possam ser montadas as Ordens de Pago...
 aEval(aRecNoSE2,{|x,y| MArray(y,cFilSE2,nCondAgr,@aOrdPg)})
 
-//Verifica se existem faturas com e sem CBU em uma mesma sele??o.
-//Obs.: Os dados ser|o separados para que sejam geradas Ordens de Pago diferentes
+//Verifica se existem faturas com e sem CBU em uma mesma seleção.
+//Obs.: Os dados serão separados para que sejam geradas Ordens de Pago diferentes
 
 If Type("aRetIvAcm") <> "U"
 	aRetIvAcm := Array(3)
@@ -2032,7 +2140,7 @@ If cPaisLoc=='MEX'
 			DbSelectArea('SE2')
 			MsGoTo(aOrdPg[nLPs][4][nPs])
 			cTipOp:= POSICIONE("SED",1,xFilial("SED")+SE2->E2_NATUREZ ,"ED_OPERADT")
-			//Valida Modalidad de operaci??
+			//Valida Modalidad de operación
 			If cTipOp == '1'
 				nOpAnt++
 			EndIf
@@ -2114,7 +2222,7 @@ For nI := 1 To Len(aOrdPg)
 
 			If cPaisLoc == "PTG"
 				//+----------------------------------------------------------------+
-				//?Generar las Retenci?? de IVA.                                  ?
+				//° Generar las Retención de IVA.                                  °
 				//+----------------------------------------------------------------+
 				If (SE2->E2_TIPO $ MVPAGANT + "/"+ MV_CPNEG)
 					If lBxParc .and. SE2->E2_VLBXPAR >0      .And.  SE2->E2_VLBXPAR <=SE2->E2_SALDO
@@ -2134,7 +2242,7 @@ For nI := 1 To Len(aOrdPg)
 				Endif
 
 				//+----------------------------------------------------------------+
-				//?Generar las Retenci?? de IRC.                                  ?
+				//° Generar las Retención de IRC.                                  °
 				//+----------------------------------------------------------------+
 				If lBxParc .and. SE2->E2_VLBXPAR >0    .And.  SE2->E2_VLBXPAR <=SE2->E2_SALDO
 	   				aTmp	:=	CalcRetIRC(Iif(SE2->E2_TIPO $ MVPAGANT + "/"+ MV_CPNEG,-1,1),SE2->E2_VLBXPAR)
@@ -2149,7 +2257,7 @@ For nI := 1 To Len(aOrdPg)
 			//ANGOLA
 			If cPaisLoc == "ANG"
 				//+----------------------------------------------------------------+
-				//?Retencao do Imposto sobre Empreitadas                          ?
+				//° Retencao do Imposto sobre Empreitadas                          °
 				//+----------------------------------------------------------------+
 				If (SE2->E2_TIPO $ MVPAGANT + "/"+ MV_CPNEG)
 					If lBxParc .and. SE2->E2_VLBXPAR >0      .And.  SE2->E2_VLBXPAR <=SE2->E2_SALDO
@@ -2170,7 +2278,7 @@ For nI := 1 To Len(aOrdPg)
 			Endif
 			If cPaisLoc $ "URU|BOL" .And. !(SE2->E2_TIPO $ MVPAGANT + "/"+ MV_CPNEG)
 				//+----------------------------------------------------------------+
-				//?Generar las Retenci?? de IRIC.                                 ?
+				//° Generar las Retención de IRIC.                                 °
 				//+----------------------------------------------------------------+
 				If lBxParc .and. SE2->E2_VLBXPAR >0   .And.  SE2->E2_VLBXPAR <=SE2->E2_SALDO
 					aTmp :=	CalcRetIRIC(cAgente,nSigno,SE2->E2_VLBXPAR)
@@ -2224,9 +2332,9 @@ For nI := 1 To Len(aOrdPg)
 
 			EndIf
 			If cPaisLoc == "VEN"
-				// Gravar as reten��es de IVA e ISRL na tabela SFE, desde que gravados os abatimentos em Compras.
+				// Gravar as retenções de IVA e ISRL na tabela SFE, desde que gravados os abatimentos em Compras.
 			   	If SUBSTRING(cAgente,1,1) $ "S/s" .AND. SA2->A2_AGENRET $ '1|S'
-					// Pegar ou recalcular os valores da reten??o de IVA
+					// Pegar ou recalcular os valores da retenção de IVA
 					aTmp := CalcIVAVEN(SE2->E2_SALDO,nTotOrden)
 			   	Endif
 				If Len(aTmp) > 0
@@ -2278,7 +2386,7 @@ For nI := 1 To Len(aOrdPg)
 							AADD(aRetIva, {SE2->E2_NUM})							
 						EndIf													
 					Else	
-						//Foi necess�rio acrescentar essa valida��o ChkRetIVA, pois se tiver pagamento parcial, deve reter todo valor na primeira baixa.
+						//Foi necess�rio acrescentar essa valida��o ChkRetIVA, pois se tiver pagamento parcial, deve reter todo valor na primeira baixa.
 						nValRetn := ChkRetIVA()
 					   	aTmp	:=	CalcRetIVA(cAgente,nSigno,SE2->E2_SALDO,,,,nProp)
 					EndIf   
@@ -2293,7 +2401,7 @@ For nI := 1 To Len(aOrdPg)
 	If Len(aSE2[nControl][1]) == 0
 			nControl--
 	Endif
-	//Acumulado para a Reten??o de IVA
+	//Acumulado para a Retenção de IVA
 	If cPaisLoc == "PAR"
 		SetRetIVA(@aSE2, SA2->A2_COD, SA2->A2_LOJA)
 	EndIf	
@@ -2307,15 +2415,15 @@ Endif
 Return()
 
 /*
-����������������������������������������������������������������������������?
-��+-----------------------------------------------------------------------+��
-���Fun��o    ?CalcRetIVA ?Autor ?Jose Lucas          ?Data ?25.06.98 ��?
-��+----------+------------------------------------------------------------��?
-���Descri��o ?Calcular e Gerar Retencoes sobre IVA.                      ��?
-��+----------+------------------------------------------------------------��?
-���Uso       ?PAGO007                                                    ��?
-��+-----------------------------------------------------------------------+��
-����������������������������������������������������������������������������?
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+°°+-----------------------------------------------------------------------+°°
+°°°Funçào    ° CalcRetIVA ° Autor ° Jose Lucas          ° Data ° 25.06.98 °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Descriçào ° Calcular e Gerar Retencoes sobre IVA.                      °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Uso       ° PAGO007                                                    °°°
+°°+-----------------------------------------------------------------------+°°
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 */
 Static Function CalcRetIVA(cAgente,nSigno,nSaldo,lPa,cCF,nValor,nProp,cSerieNF)
 Local aConIva  := {}
@@ -2383,7 +2491,7 @@ If cPaisLoc=="PAR"
 EndIf											
 
 //+---------------------------------------------------------------------+
-//?Obter Impostos somente qdo a Empresa Usuario for Agente de Reten?o.?
+//° Obter Impostos somente qdo a Empresa Usuario for Agente de Retençäo.°
 //+---------------------------------------------------------------------+
 aArea:=GetArea()
 dbSelectArea("SF1")
@@ -2416,7 +2524,7 @@ Else
 	Else
 		SA2->( dbSeek(xFilial("SA2")+cFornece+cLoja) )
 	EndIf
-	// Tratamento do Reproweb - Situa??o igual a 0 n|o deve reter Resoluci?? General ( AFIP) 2226/07
+	// Tratamento do Reproweb - Situação igual a 0 não deve reter Resolución General ( AFIP) 2226/07
 EndIf
 
 If SA2->(FieldPos("A2_SITU")>0) .and. Alltrim(SA2->A2_SITU)$("0")
@@ -2427,9 +2535,9 @@ If cPaisLoc == "PTG"
 	SA2->( dbSetOrder(1) )
 	SA2->( dbSeek(xFilial("SA2")+SE2->E2_FORNECE+SE2->E2_LOJA) )
 
-	//=======================================================================
-	//= Fornecedor ? Reter IVA                                              =
-	//?====================================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Fornecedor ? Reter IVA                                              ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	If SA2->A2_RETIVA == "1"
 
 		While Alltrim(SF1->F1_ESPECIE) <> AllTrim(SE2->E2_TIPO).And.!EOF()
@@ -2466,9 +2574,9 @@ ElseIf (Subs(cAgente,2,1) == "S"  .Or. lCalRet .Or. lCalcAcm) .And. lCalcImp  .A
 	Else
 		SA2->( dbSeek(xFilial("SA2")+cFornece+cLoja) )
 	EndIf
-	//=======================================================================
-	//= Fornecedor ? Agente de Reten??o n?o Retem IVA.                      =
-	//?====================================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Fornecedor ? Agente de Reten??o n?o Retem IVA.                      ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	If (SA2->(FieldPos("A2_IVRVCOB")) >0  .And.  !Empty(SA2->A2_IVRVCOB) .And. SA2->A2_IVRVCOB > dDataBase)
 		lCalcVen:=Iif(!Empty(SA2->A2_IVPCCOB) .Or. !Empty(SA2->A2_IVPCCOB) ,.F.,.T.)
 	EndIf
@@ -2485,10 +2593,10 @@ ElseIf (Subs(cAgente,2,1) == "S"  .Or. lCalRet .Or. lCalcAcm) .And. lCalcImp  .A
 				Iif(lMsFil,SF1->F1_MSFIL,xFilial("SF1"))+SE2->E2_NUM+SE2->E2_PREFIXO+SE2->E2_FORNECE+SE2->E2_LOJA==;
 				SF1->F1_FILIAL+SF1->F1_DOC+SF1->F1_SERIE+SF1->F1_FORNECE+SF1->F1_LOJA
 
-				//==================================================================
-				//= Se esta definida uma retencao para uma serie especial, verifico=
-				//= antes de procurar no SD1.(Serie 'M' foi o primeiro caso).      =
-				//?===============================================================?
+				//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+				//³ Se esta definida uma retencao para uma serie especial, verifico³
+				//³ antes de procurar no SD1.(Serie 'M' foi o primeiro caso).      ³
+				//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 				SFF->(DbSetOrder(3))
 
 				If SFF->(DbSeek(xFilial("SFF")+"IVR"+SF1->F1_SERIE+"SER")) .And.  !lCalrtexp .And. !lCalcAcm
@@ -2531,10 +2639,10 @@ ElseIf (Subs(cAgente,2,1) == "S"  .Or. lCalRet .Or. lCalcAcm) .And. lCalcImp  .A
 					lRetSerie	:=	.T.
 
 				Else
-					//==================================================================
-					//= Obter o Valor do Imposto e Base baseando se no rateio do valor =
-					//= do titulo pelo total da Nota Fiscal.                           =
-					//?===============================================================?
+					//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+					//³ Obter o Valor do Imposto e Base baseando se no rateio do valor ³
+					//³ do titulo pelo total da Nota Fiscal.                           ³
+					//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 					SD1->(DbSetOrder(1))
 					If lMsFil
 						SD1->(DbSeek(SF1->F1_MSFIL+SF1->F1_DOC+SF1->F1_SERIE+SF1->F1_FORNECE+SF1->F1_LOJA))
@@ -2597,9 +2705,9 @@ ElseIf (Subs(cAgente,2,1) == "S"  .Or. lCalRet .Or. lCalcAcm) .And. lCalcImp  .A
 												EndDO
 
 												/************************************************
-												Verifica o acumulado para o c��culo do imposto
+												Verifica o acumulado para o cálculo do imposto
 												************************************************/
-												//caso seja branco ou n|o foi selecionado nenhum m�todo de acumulo
+												//caso seja branco ou não foi selecionado nenhum método de acumulo
 												If Type("aRetIvAcm") <> "A"
 													aRetIvAcm := Array(3)
 												EndIf
@@ -2647,7 +2755,7 @@ ElseIf (Subs(cAgente,2,1) == "S"  .Or. lCalRet .Or. lCalcAcm) .And. lCalcImp  .A
 														lRetIva := .T.
 													EndIf
 												Else
-													//Se n|o usa cumulatividade de IVA, calcula no m�todo antigo
+													//Se não usa cumulatividade de IVA, calcula no método antigo
 													lRetIva := .T.
 												EndIf
 
@@ -2718,7 +2826,7 @@ ElseIf (Subs(cAgente,2,1) == "S"  .Or. lCalRet .Or. lCalcAcm) .And. lCalcImp  .A
 										EndIf
 									Else
 										/*********************************************************************
-										IMPORTANTE: O c��culo de IVA cumulativo n|o contempla o m�todo antigo
+										IMPORTANTE: O cálculo de IVA cumulativo não contempla o método antigo
 										*********************************************************************/
 										If cPaisLoc <> "PAR"
 											SFH->(dbSetOrder(1))
@@ -2900,9 +3008,9 @@ ElseIf (Subs(cAgente,2,1) == "S"  .Or. lCalRet .Or. lCalcAcm) .And. lCalcImp  .A
 						EndDo
 					Endif
 				Endif
-				//==================================================================
-				//= Gravar Retenciones.                                            =
-				//?===============================================================?
+				//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+				//³ Gravar Retenciones.                                            ³
+				//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 				For nCount:=1  to Len(aConIva)
 					aConIva[nCount][2]   := Round(xMoeda(aConIva[nCount][2],SF1->F1_MOEDA,1,,5,aTxMoedas[Max(SF1->F1_MOEDA,1)][2]),MsDecimais(1))
 					aConIva[nCount][3]   := Round(xMoeda(aConIva[nCount][3],SF1->F1_MOEDA,1,,5,aTxMoedas[Max(SF1->F1_MOEDA,1)][2]),MsDecimais(1))
@@ -2937,17 +3045,17 @@ ElseIf (Subs(cAgente,2,1) == "S"  .Or. lCalRet .Or. lCalcAcm) .And. lCalcImp  .A
 					EndIf
 					aSFEIVA[Len(aSFEIVA)][5] := Iif(Alltrim(SF1->F1_SERIE)=="M",100,IIf(cPaisLoc=="PAR",nPerc,SA2->A2_PORIVA))      		//FE_PORCRET
 					aSFEIVA[Len(aSFEIVA)][6] := (aSFEIVA[Len(aSFEIVA)][4]) * (Iif(Alltrim(SF1->F1_SERIE)=="M",1,Iif(lCalRep .or. lCalcVen ,1, IIf(cPaisLoc=="PAR",nPerc,SA2->A2_PORIVA)/100) ))
-					aSFEIVA[Len(aSFEIVA)][9] := aConIva[nCount][1] // Gravar CFOP da opera??o
+					aSFEIVA[Len(aSFEIVA)][9] := aConIva[nCount][1] // Gravar CFOP da operação
 					If cPaisloc = "PAR"
 						aSFEIVA[Len(aSFEIVA)][10] := aConIva[nCount][4] // Gravar A PORCENTAGEM DA ALIQUOTA
 					Else
 						aSFEIVA[Len(aSFEIVA)][10] := aConIva[nCount][4]*100 // Gravar A PORCENTAGEM DA ALIQUOTA
 					EndIf
 					If LEN(aConIva[1])==4 //pROVISORIO, PARA QUE NO DE ERROR EN BASES DESACTUALIZADAS
-						//==========================================================================
-						//=Se se deve fazer retencao por serie, nao e necessario posicionar o SFF, =
-						//=pois ele ja esta posicionado                                            =
-						//?=======================================================================?
+						//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+						//³Se se deve fazer retencao por serie, nao e necessario posicionar o SFF, ³
+						//³pois ele ja esta posicionado                                            ³
+						//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 						If !lRetSerie
 							SFF->(DbSetOrder(5))
 							SFF->(DbSeek(xFilial("SFF")+"IVR"+aConIva[nCount][1]))
@@ -2972,15 +3080,15 @@ ElseIf (Subs(cAgente,2,1) == "S"  .Or. lCalRet .Or. lCalcAcm) .And. lCalcImp  .A
 									Else
 										//aSFEIVA[Len(aSFEIVA)][6] := (aSFEIVA[Len(aSFEIVA)][4]) *(SA2->A2_PORIVA/100)
 										//----------------------------------------------------------------------------
-										//==========================================================================
-										//=C��culo del % de Exenci?? del IVA									   =
-										//?=======================================================================?
-										///Se verifica si la fecha de generaci?? de la OP sea >= A2_IVPDCOB Y <= A2_IVPCCOB
+										//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+										//³Cálculo del % de Exención del IVA									   ³
+										//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+										///Se verifica si la fecha de generación de la OP sea >= A2_IVPDCOB Y <= A2_IVPCCOB
 										IF (SA2->A2_IVPCCOB <= ddatabase .and. SA2->A2_IVPCCOB >= ddatabase)
 											// Se descuenta el porcentaje de A2_PORIVA
 											aSFEIVA[Len(aSFEIVA)][6] := aSFEIVA[Len(aSFEIVA)][6]//aSFEIVA[Len(aSFEIVA)][4]- aSFEIVA[Len(aSFEIVA)][6]
 										Else
-											// Se realiza el c��culo normal
+											// Se realiza el cálculo normal
 											aSFEIVA[Len(aSFEIVA)][6] := aSFEIVA[Len(aSFEIVA)][4]
 										End IF
 
@@ -2993,15 +3101,15 @@ ElseIf (Subs(cAgente,2,1) == "S"  .Or. lCalRet .Or. lCalcAcm) .And. lCalcImp  .A
 									Exit
 								Else
 									//aSFEIVA[Len(aSFEIVA)][6] := aSFEIVA[Len(aSFEIVA)][4]
-									//==========================================================================
-									//=C��culo del % de Exenci?? del IVA									    =
-									//?=======================================================================?
-									///Se verifica si la fecha de generaci?? de la OP sea >= A2_IVPDCOB Y <= A2_IVPCCOB
+									//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+									//³Cálculo del % de Exención del IVA									    ³
+									//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+									///Se verifica si la fecha de generación de la OP sea >= A2_IVPDCOB Y <= A2_IVPCCOB
 									IF SA2->(FieldPos("A2_IVPDCOB")) > 0 .and. (SA2-> A2_IVPDCOB <= ddatabase .and. SA2->A2_IVPCCOB >= ddatabase)
 										// Se descuenta el porcentaje de A2_PORIVA
 										aSFEIVA[Len(aSFEIVA)][6] := aSFEIVA[Len(aSFEIVA)][6]//aSFEIVA[Len(aSFEIVA)][4]- aSFEIVA[Len(aSFEIVA)][6]
 									Else
-										// Se realiza el c��culo normal
+										// Se realiza el cálculo normal
 										aSFEIVA[Len(aSFEIVA)][6] := aSFEIVA[Len(aSFEIVA)][4]
 									End IF
 								EndIf
@@ -3032,7 +3140,7 @@ ElseIf (Subs(cAgente,2,1) == "S"  .Or. lCalRet .Or. lCalcAcm) .And. lCalcImp  .A
 							DEFINE MSDIALOG oDlg4 FROM 65,0 To 218,366 Title OemToAnsi(STR0074) Pixel //"Inconsistencia"
 							@ 2,3 To 51,180 Pixel of oDlg4
 							//"La actividad ", " de IVA no esta registrada en la Tabla SFF"
-							//"por lo tanto no se generara retenci�n de IVA. Si desea Continuar con la "
+							//"por lo tanto no se generara retenci¢n de IVA. Si desea Continuar con la "
 							//"Orden de Pago acepte, sino cancele. "
 							@ 10,004 SAY OemToAnsi(STR0050)+ Alltrim(aConIva[nCount][1]) +OemToAnsi(STR0051) PIXEL Of oDlg4
 							@ 23,004 SAY OemToAnsi(STR0052)	PIXEL Of oDlg4
@@ -3045,9 +3153,9 @@ ElseIf (Subs(cAgente,2,1) == "S"  .Or. lCalRet .Or. lCalcAcm) .And. lCalcImp  .A
 					Else
 						nTotRet += aSFEIVA[Len(aSFEIVA)][6]
 					Endif
-					//==================================================================
-					//= Generar Titulo de Impuesto no Contas a Pagar.                  =
-					//?===============================================================?
+					//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+					//³ Generar Titulo de Impuesto no Contas a Pagar.                  ³
+					//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 					If  lCalcNew
 						aSFEIVA[Len(aSFEIVA)][7] := nSaldo
 					Else
@@ -3148,11 +3256,11 @@ ElseIf (Subs(cAgente,2,1) == "S"  .Or. lCalRet .Or. lCalcAcm) .And. lCalcImp  .A
 					aSFEIVA[Len(aSFEIVA)][4] := 0	//FE_VALIMP
 					aSFEIVA[Len(aSFEIVA)][5] := SA2->A2_PORIVA   		//FE_PORCRET
 					aSFEIVA[Len(aSFEIVA)][6] := (aSFEIVA[Len(aSFEIVA)][3]) *(Iif(lCalRep .or. lCalcVen ,1, SA2->A2_PORIVA/100))
-					aSFEIVA[Len(aSFEIVA)][9] := cCF // Gravar CFOP da opera??o
+					aSFEIVA[Len(aSFEIVA)][9] := cCF // Gravar CFOP da operação
 					aSFEIVA[Len(aSFEIVA)][10] := nPercRet
 					If SA2->(FieldPos("A2_IVRVCOB")) > 0 .And. SA2->(FieldPos("A2_IVPCCOB")) > 0
 						If SA2->A2_PORIVA < 100.00 .And. (Empty(SA2->A2_IVPCCOB) .Or. Dtos(SA2->A2_IVPCCOB) < Dtos(dDataBase))
-							MsgAlert(OemToAnsi(STR0155)+SA2->A2_COD+OemToAnsi(STR0147)) //"La fecha de validad para la reducci?? del porcentaje de la retenci?? del IVA del proveedor ya se ha vencido. ". Ingrese una fecha valida para el proveedor en el archivo de proveedores."
+							MsgAlert(OemToAnsi(STR0155)+SA2->A2_COD+OemToAnsi(STR0147)) //"La fecha de validad para la reducción del porcentaje de la retención del IVA del proveedor ya se ha vencido. ". Ingrese una fecha valida para el proveedor en el archivo de proveedores."
 							//Zera o array das retencoes de IVA...
 							aSFEIVA := {}
 							//Sai do loop...
@@ -3198,7 +3306,7 @@ ElseIf (Subs(cAgente,2,1) == "S"  .Or. lCalRet .Or. lCalcAcm) .And. lCalcImp  .A
 
 					aSFEIVA[Len(aSFEIVA)][6]:=Iif(nRetTotal>0,((nRetTotal-nRetIva)*-1),nRetIva)
 
-					//Verifica se o valor a ser retido ?maior que o valor do PA
+					//Verifica se o valor a ser retido é maior que o valor do PA
 					If (IIF(cpaisloc=="PAR",nTotBasIV,nTotRet) )< aSFEIVA[Len(aSFEIVA)][6]
 						aSFEIVA[Len(aSFEIVA)][6]:= nValor
 					EndIF
@@ -3233,15 +3341,15 @@ RestArea(aArea)
 Return aSFEIVA
 
 /*
-����������������������������������������������������������������������������?
-��+-----------------------------------------------------------------------+��
-���Fun��o    ?CalcRetIB  ?Autor ?Jose Lucas          ?Data ?25.06.98 ��?
-��+----------+------------------------------------------------------------��?
-���Descri��o ?Calcular e Gerar Retencoes sobre IB Ingressos Brutos.      ��?
-��+----------+------------------------------------------------------------��?
-���Uso       ?PAGO011                                                    ��?
-��+-----------------------------------------------------------------------+��
-����������������������������������������������������������������������������?
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+°°+-----------------------------------------------------------------------+°°
+°°°Funçào    ° CalcRetIB  ° Autor ° Jose Lucas          ° Data ° 25.06.98 °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Descriçào ° Calcular e Gerar Retencoes sobre IB Ingressos Brutos.      °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Uso       ° PAGO011                                                    °°°
+°°+-----------------------------------------------------------------------+°°
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 */
  Static Function CalcRetIB(cAgente,nSigno,nSaldo,cCF,cProv,lPA,nPropImp,aConfProv)
 Local nRatValImp,nRateio,nValMerc,cZona,nJ,nPosIb,cEmpAct
@@ -3297,9 +3405,9 @@ Local cCond		:= 0
 DEFAULT nSigno	:=	1
 DEFAULT nPropImp :=1
 DEFAULT aConfProv := {}
-//=======================================================================
-//= Obter Impostos somente qdo a Empresa Usuario for Agente de Reten��o.=
-//?====================================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Obter Impostos somente qdo a Empresa Usuario for Agente de Reten‡„o.³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 lEsRetAdc := .F.
 aArea:=GetArea()
 If !Empty(GetMV("MV_AGIIBB",,"CF|BA|SF|SE|TU|SA|JU|SL|MI|FO|ME|ER|SJ|LR|CO|CB|CA|NE|LP|TF|CH|RN|CR")) .And. nSigno > 0
@@ -3313,11 +3421,11 @@ If !Empty(GetMV("MV_AGIIBB",,"CF|BA|SF|SE|TU|SA|JU|SL|MI|FO|ME|ER|SJ|LR|CO|CB|CA
 	Else
 		SA2->( dbSeek(xFilial("SA2")+cFornece+cLoja) )
 	Endif
-	//==================================================================
-	//= Generar las Retenci�n de Ingresos Brutos                       =
-	//= Reter Ingressos Brutos somente se valor total da Orden de Pago =
-	//= for igual ou maior que $400,00.                                =
-	//?===============================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Generar las Retenci¢n de Ingresos Brutos                       ³
+	//³ Reter Ingressos Brutos somente se valor total da Orden de Pago ³
+	//³ for igual ou maior que $400,00.                                ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 
 	If SA2->(FieldPos("A2_DTICALB")) > 0 .And. SA2->(FieldPos("A2_DTFCALB")) > 0 ;
 	   .And. !Empty(SA2->A2_DTICALB) .And. !Empty(SA2->A2_DTFCALB)
@@ -3350,7 +3458,7 @@ If !Empty(GetMV("MV_AGIIBB",,"CF|BA|SF|SE|TU|SA|JU|SL|MI|FO|ME|ER|SJ|LR|CO|CB|CA
 				If SM0->(FOUND()) .And. aConfProv[1] == SM0->M0_ESTENT
 					cProvEnt := SM0->M0_ESTENT
 				EndIf
-			//Por Inscri??o
+			//Por Inscrição
 			ElseIf aConfProv[2] == "1" .And. aConfProv[3] == "3"
 				cProvEnt := aConfProv[1]
 			Endif
@@ -3426,7 +3534,7 @@ If !Empty(GetMV("MV_AGIIBB",,"CF|BA|SF|SE|TU|SA|JU|SL|MI|FO|ME|ER|SJ|LR|CO|CB|CA
 							If SM0->(FOUND()) .And. aConfProv[1] == SM0->M0_ESTENT
 								cProvEnt := SM0->M0_ESTENT
 							EndIf
-						//Por Inscri??o
+						//Por Inscrição
 						ElseIf aConfProv[2] == "1" .And. aConfProv[3] == "3"
 							cProvEnt := aConfProv[1]
 						Endif
@@ -3581,7 +3689,7 @@ If !Empty(GetMV("MV_AGIIBB",,"CF|BA|SF|SE|TU|SA|JU|SL|MI|FO|ME|ER|SJ|LR|CO|CB|CA
 					SFF->(dbSetOrder(11))
 					SFF->(dbSeek(xFilial()+"IBR"+aZonaIb[nJ][1]))
 
-					//Array contendo todos os CFOs com a mesma classifica??o
+					//Array contendo todos os CFOs com a mesma classificação
 					While SFF->(!Eof()) .And. SFF->FF_IMPOSTO == "IBR"
 						If SFF->FF_TIPO == 'M' .And. SFF->FF_ITEM == cItem .And. SFF->FF_ZONFIS == cZona
 							If aScan(aCf,{|x| x[1] == SFF->FF_CFO_C}) == 0
@@ -3691,7 +3799,7 @@ If !Empty(GetMV("MV_AGIIBB",,"CF|BA|SF|SE|TU|SA|JU|SL|MI|FO|ME|ER|SJ|LR|CO|CB|CA
 						lRet := .T.
 					EndIF
 
-					If lRet .and. !lIsento .AND. nAliqAux <> 0	// Si se encontr?un registro y no es excento, se toma el valor de al�quota.
+					If lRet .and. !lIsento .AND. nAliqAux <> 0	// Si se encontró un registro y no es excento, se toma el valor de alíquota.
 						nAliq := nAliqAux
 					EndIf
 					//Aplica % de Reducao para Convenio Multilateral...
@@ -3763,15 +3871,15 @@ RestArea(aArea)
 Return aSFEIB
 
 /*
-����������������������������������������������������������������������������?
-��+-----------------------------------------------------------------------+��
-���Fun��o    ?CalcRetGN  ?Autor ?Jose Lucas          ?Data ?25.06.98 ��?
-��+----------+------------------------------------------------------------��?
-���Descri��o ?Calcular e Gerar Retencoes sobre Ganancias.                ��?
-��+----------+------------------------------------------------------------��?
-���Uso       ?PAGO011                                                    ��?
-��+-----------------------------------------------------------------------+��
-����������������������������������������������������������������������������?
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+°°+-----------------------------------------------------------------------+°°
+°°°Funçào    ° CalcRetGN  ° Autor ° Jose Lucas          ° Data ° 25.06.98 °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Descriçào ° Calcular e Gerar Retencoes sobre Ganancias.                °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Uso       ° PAGO011                                                    °°°
+°°+-----------------------------------------------------------------------+°°
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 */
 Static Function CalcRetGN(cAgente,nSigno,aConGan,cFornece,cLoja)
 Local nCount
@@ -3817,11 +3925,11 @@ For nCount:=1  to Len(aConGan)
 	aBasTtlRet[nPos,2] += aConGan[nCount][2]
 Next nCount
 
-//=======================================================================
-//= Obter Impostos somente qdo a Empresa Usuario for Agente de Reten?o =
-//= o el concepto sea =="07" donde siempre se debe retener,             =
-//= y el total dos titulos for maior que 0.00                           =
-//?====================================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Obter Impostos somente qdo a Empresa Usuario for Agente de Retençäo ³
+//³ o el concepto sea =="07" donde siempre se debe retener,             ³
+//³ y el total dos titulos for maior que 0.00                           ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 For nCount:=1  to Len(aConGan)
 	SA2->( dbSetOrder(1) )
 	If lMsFil .And. !Empty(xFilial("SA2")) .And. xFilial("SF1") == xFilial("SE2")
@@ -3862,9 +3970,9 @@ For nCount:=1  to Len(aConGan)
 			Return(aSFEGN)
 		EndIf
 
-		//===========================================================================
-		//= Varrer arquivo de Retencoes para obter acumulados do mes como condomino =
-		//?========================================================================?
+		//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		//³ Varrer arquivo de Retencoes para obter acumulados do mes como condomino ³
+		//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 		dbSelectArea("SFE")
 		dbSetOrder(5)
 		dbSeek(xFilial("SFE")+cFORNECE+cLOJA)
@@ -3910,11 +4018,11 @@ For nCount:=1  to Len(aConGan)
 			Enddo
 		EndIf
 
-		//==============================================================
-		//= Obter Base Atual para c�lculo da Gan�ncia.                 =
-		//= Base Atual := ( Base Acumulada do mes + Total das NFs -    =
-		//=                 Minimo disponivel mensal )                 =
-		//?===========================================================?
+		//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		//³ Obter Base Atual para c lculo da Ganƒncia.                 ³
+		//³ Base Atual := ( Base Acumulada do mes + Total das NFs -    ³
+		//³                 Minimo disponivel mensal )                 ³
+		//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 		nAliq      := 0.00
 		nDeduc     := 0.00
 		nImposto   := 0.00
@@ -3922,9 +4030,9 @@ For nCount:=1  to Len(aConGan)
 
 		nBaseAtual := ( nBasRetMes + aConGan[nCount][2]) * aGanComp[nCount]
 
-		//====================================================================
-		//= Buscar el Valor de Retencion Minima.                             =
-		//?=================================================================?
+		//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		//³ Buscar el Valor de Retencion Minima.                             ³
+		//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 		If cConcepto == '02' .And. !Empty(cConcepto2)
 			cConcAux := cConcepto2+Space(TamSx3("FF_NUM")[1] - TamSx3("FF_ITEM")[1])
 		Else
@@ -3961,10 +4069,10 @@ For nCount:=1  to Len(aConGan)
         EndIf
 		RestArea(aAreaAtu)
 		SA2->(RestArea(aAreaSA2))
-		//====================================================================
-		//= Verificar que ACTIVIDAD desempe�a el proveedor para la retencion =
-		//= de IG.                                                           =
-		//?=================================================================?
+		//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		//³ Verificar que ACTIVIDAD desempe¤a el proveedor para la retencion ³
+		//³ de IG.                                                           ³
+		//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 		dbSelectArea("SFF")
 		dbSetOrder(2)
 		If cConcepto == '02' .And. !Empty(cConcepto2)
@@ -3981,13 +4089,13 @@ For nCount:=1  to Len(aConGan)
 			Endif
 		Endif
 		If SFF->FF_ESCALA $ "D| "
-			//=================================================================
-			//= Posicionar no Item "06" da Tabela de Ganancias para Obter     =
-			//= os percentuais. (Item "06" Conceito):                         =
-			//= Venta de Bienes de Cambio, Bienes Muebles; Locaciones de Obra =
-			//= Y/O Servicios; Transferencia Definitiva de Llaves, Marcas,    =
-			//= Patentes de Invencion, Regalias, Concesion y Similares.       =
-			//?==============================================================?
+			//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+			//³ Posicionar no Item "06" da Tabela de Ganancias para Obter     ³
+			//³ os percentuais. (Item "06" Conceito):                         ³
+			//³ Venta de Bienes de Cambio, Bienes Muebles; Locaciones de Obra ³
+			//³ Y/O Servicios; Transferencia Definitiva de Llaves, Marcas,    ³
+			//³ Patentes de Invencion, Regalias, Concesion y Similares.       ³
+			//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 			dbSelectArea("SFF")
 			dbSetOrder(2)
 			If cConcepto == '02' .And. !Empty(cConcepto2)
@@ -4011,14 +4119,14 @@ For nCount:=1  to Len(aConGan)
 				nBasTtlRet := nBaseAtual
 			Endif
 			If ( nBasTtlRet > FF_IMPORTE ) .or.  SA2->A2_INSCGAN == "N"
-				//==============================================================
-				//= Calcular Gan�ncia baseando na Tabela de Gan�ncias.         =
-				//?===========================================================?
-				//=========================================================================
-				//= Calculo da Gan�ncia:                                                  =
-				//= Imposto := ( Retencao+Base de Calculo) * (Alquota Inscrito/100)       =
-				//= Imposto := Imposto Atual - Impostos ja retidos no m�s.                =
-				//?======================================================================?
+				//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+				//³ Calcular Ganƒncia baseando na Tabela de Ganƒncias.         ³
+				//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+				//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+				//³ Calculo da Ganƒncia:                                                  ³
+				//³ Imposto := ( Retencao+Base de Calculo) * (Alquota Inscrito/100)       ³
+				//³ Imposto := Imposto Atual - Impostos ja retidos no mˆs.                ³
+				//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 				If SA2->A2_INSCGAN == "S"
 					nAliq    := FF_ALQINSC
 
@@ -4047,9 +4155,9 @@ For nCount:=1  to Len(aConGan)
 						nAliq    := SFF->FF_ALQNOIN
 						nDeduc   := 0
 					Else
-						//==============================================================
-						//= Adotar a Escala Aplicable.                                 =
-						//?===========================================================?
+						//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+						//³ Adotar a Escala Aplicable.                                 ³
+						//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 						dbSelectArea("SFF")
 						dbSetOrder(2)
 						If "FF_IMPOSTO" $ IndexKey()
@@ -4058,11 +4166,11 @@ For nCount:=1  to Len(aConGan)
 							dbSeek(xFilial("SFF")+"13")
 						Endif
 						While !Eof()
-							//=========================================================================
-							//= Calculo da Gan�ncia:                                                  =
-							//= Imposto := Retencao+(Base de Calculo-Faixa Tabela) * (Percentual/100) =
-							//= Imposto := Imposto Atual - Impostos ja retidos no m�s.                =
-							//?======================================================================?
+							//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+							//³ Calculo da Ganƒncia:                                                  ³
+							//³ Imposto := Retencao+(Base de Calculo-Faixa Tabela) * (Percentual/100) ³
+							//³ Imposto := Imposto Atual - Impostos ja retidos no mˆs.                ³
+							//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 							If (nBaseAtual - nValImpor) < FF_FXATE
 								nImposto := (FF_RETENC + (nBaseAtual- nValImpor -FF_FXDE)* (FF_PERC/100))* Iif(lReduzGan,(SA2->A2_PORGAN/100),1)
 								nImpAtual := nImposto - nRetencMes
@@ -4081,20 +4189,20 @@ For nCount:=1  to Len(aConGan)
 					nAliq    := FF_ALQNOIN
 					nDeduc   := 0
 				Else
-					//==============================================================
-					//= Adotar a Escala Aplicable.                                 =
-					//?===========================================================?
+					//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+					//³ Adotar a Escala Aplicable.                                 ³
+					//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 					If "FF_IMPOSTO" $ IndexKey()
 						dbSeek(xFilial("SFF")+"13"+"GAN")
 					Else
 						dbSeek(xFilial("SFF")+"13")
 					Endif
 					While !Eof()
-						//=========================================================================
-						//= Calculo da Gan�ncia:                                                  =
-						//= Imposto := Retencao+(Base de Calculo-Faixa Tabela) * (Percentual/100) =
-						//= Imposto := Imposto Atual - Impostos ja retidos no m�s.                =
-						//?======================================================================?
+						//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+						//³ Calculo da Ganƒncia:                                                  ³
+						//³ Imposto := Retencao+(Base de Calculo-Faixa Tabela) * (Percentual/100) ³
+						//³ Imposto := Imposto Atual - Impostos ja retidos no mˆs.                ³
+						//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 						If (nBaseAtual - nValImpor) < FF_FXATE
 							nImposto := (FF_RETENC + (nBaseAtual- nValImpor -FF_FXDE)* (FF_PERC/100))* Iif(lReduzGan,(SA2->A2_PORGAN/100),1)
 							nImpAtual := nImposto - nRetencMes
@@ -4107,9 +4215,9 @@ For nCount:=1  to Len(aConGan)
 				EndIf
 			EndIf
 		EndIf
-		//==================================================================
-		//= Generar las Retenci�n de Gan�ncias                             =
-		//?===============================================================?
+		//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		//³ Generar las Retenci¢n de Ganƒncias                             ³
+		//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 		Aadd(aSFEGn,Array(12))
 		aSFEGn[Len(aSFEGn)][1] := ""
 		aSFEGn[Len(aSFEGn)][2] := IIf(aGanRet[3],nBaseAtual,aConGan[nCount][2]) // FE_VALBASE
@@ -4134,18 +4242,18 @@ RestArea(aArea)
 Return aSFEGN
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =FA085Tela �Autor  =Bruno Sobieski      ?Data =  18.10.00   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Monta a tela como os detalhes das ordens de pago calculadas ?=
-==?         = para o usuario confirmar ou modificar os dados gerados.    ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³FA085Tela ºAutor  ³Bruno Sobieski      º Data ³  18.10.00   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Monta a tela como os detalhes das ordens de pago calculadas º±±
+±±º          ³ para o usuario confirmar ou modificar os dados gerados.    º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function Fa085Tela(aSE2,nFlagMOD,nCtrlMOD,aCtrChEQU)
 //Variaveis da tela principal
@@ -4402,7 +4510,7 @@ For nA	:=	1	To Len(aSE2)
 
 
 		//************************************************************************
-		//Calculo cumulativo de IVA - reten??o de documentos que n|o s|o desta OP
+		//Calculo cumulativo de IVA - retenção de documentos que não são desta OP
 		//************************************************************************
 		F085DocIVA(aSE2[nA][1][1][_FORNECE],aSE2[nA][1][1][_LOJA])
 
@@ -4501,7 +4609,7 @@ For nA	:=	1	To Len(aSE2)
 		aPagos[nA][H_RETRIE]	:=	TransForm(aPagos[nA][H_RETRIE],Tm(aPagos[nA][H_RETRIE],16,nDecs))
 	ElseIf cPaisLoc $ "DOM|COS"
 
-		//Array aRetencao - Preenchido na fun??o fa050CalcRet() - C��culo de reten??o com Conf. de Impostos
+		//Array aRetencao - Preenchido na função fa050CalcRet() - Cálculo de retenção com Conf. de Impostos
 		If Len(aRetencao) > 0
 			For nX := 1 to Len(aRetencao)
 				If aRetencao[nX][6] == aPagos[nA][H_FORNECE ] .And. aRetencao[nX][7] == aPagos[nA][H_LOJA ]
@@ -4574,7 +4682,7 @@ For nA	:=	1	To Len(aSE2)
 	EndIf
 
 	If cPaisLoc $ "DOM|COS"
-		aPagos[nA][H_NF    ] 	+=  aPagos[nA][H_TOTRET] //Somo as reten��es j?descontadas
+		aPagos[nA][H_NF    ] 	+=  aPagos[nA][H_TOTRET] //Somo as retenções já descontadas
 	EndIf
 
 	If cPaisLoc <> "EQU"
@@ -4642,28 +4750,28 @@ If lF4
 Endif
 aSize := MSADVSIZE()
 
-//=================================================================
-//= Folder para o Titulos e forma de pagamento                    =
-//?==============================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Folder para o Titulos e forma de pagamento                    ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 If !lAutomato
-	DEFINE MSDIALOG oDlg FROM aSize[7],0 TO aSize[6],aSize[5] PIXEL TITLE OemToAnsi(STR0063) //"Representa??o gr�fica do Fluxo de Caixa"
+	DEFINE MSDIALOG oDlg FROM aSize[7],0 TO aSize[6],aSize[5] PIXEL TITLE OemToAnsi(STR0063) //"Representação gráfica do Fluxo de Caixa"
 
 	@00,01 FOLDER oFolder OF oDlg PROMPT OemToAnsi(STR0078),OemToAnsi(STR0079)  PIXEL SIZE x2-y1+15,185 //"Ordenes"###"Forma de pago"
 
 	oFolder:aDialogs[1]:oFont := oDlg:oFont
 	oFolder:aDialogs[2]:oFont := oDlg:oFont
 
-	//===========================
-	//=Folder das ordens de pago=
-	//?========================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³Folder das ordens de pago³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	oPanel := TPanel():New(0,0,'',oFolder:aDialogs[1],, .T., .T.,, ,50,50,.T.,.T. )
 	oPanel:Align := CONTROL_ALIGN_TOP
 	IIF(Alltrim(_cTipo)=="TX".And.cPaisLoc<> "PER",nValOrdens:=Round(nValOrdens,0),.T.)
 
 	@ 04,04 To (x1-4),nPos1 Pixel Of 	oFolder:aDialogs[1]
 
-	@ 13,006 SAY OemToAnsi(STR0064)  Size 70,08 	Pixel Of 	oPanel  //"�rdenes de Pago     : "
-	@ 14,100 SAY oNumOrdens Var nNumOrdens 		PIXEL OF 	oPanel COLOR CLR_BLUE//"�rdenes de Pago     : "
+	@ 13,006 SAY OemToAnsi(STR0064)  Size 70,08 	Pixel Of 	oPanel  //"Órdenes de Pago     : "
+	@ 14,100 SAY oNumOrdens Var nNumOrdens 		PIXEL OF 	oPanel COLOR CLR_BLUE//"Órdenes de Pago     : "
 
 	@ 21,006 SAY OemToAnsi(STR0065)  Size 70,08 Pixel Of 	oPanel   //"Total a Desembolsar : "
 	@ 21,075 SAY oValOrdens Var nValOrdens  Size 80,08 Pixel Of 	oPanel PICTURE PesqPict("SE2","E2_PAGAR",17,nDecs) COLOR CLR_BLUE //"Ordenes de Pago     : "
@@ -4679,9 +4787,9 @@ If !lAutomato
 	oLBx:SetArray(aPagos)
 	oLBx:bLDblClick	:= { || a085aOrdPg() }
 
-	//Se o ponto de entrada F085MDEM estiver no RPO for�o a atualiza??o dos valores
-	//desta forma ao carregar a tela de orden de pago as taxas j?estar|o preenchidas
-	//caso o t�tulo original esteja em moeda diferente de 1
+	//Se o ponto de entrada F085MDEM estiver no RPO forço a atualização dos valores
+	//desta forma ao carregar a tela de orden de pago as taxas já estarão preenchidas
+	//caso o título original esteja em moeda diferente de 1
 	If lF085MDEM
 		Fa085atuVl(@oValOrdens,@nValOrdens,@aPagos,aSE2)
 	EndIf
@@ -4732,15 +4840,15 @@ If !lAutomato
 
 	If cPaisLoc $ 'MEX|PER'
 		cTipOp:= POSICIONE("SED",1,xFilial("SED")+SE2->E2_NATUREZ ,"ED_OPERADT")
-		//Valida Modalidad de operaci??
+		//Valida Modalidad de operación
 		If cTipOp == '1'
 			cNatureza:= SE2->E2_NATUREZ
 			lWn := .F.
 		EndIf
 	EndIf
-	//===========================
-	//=Folder da forma de pago  =
-	//?========================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³Folder da forma de pago  ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 
 	//Valores a entregar
 	@ 003,004 To 030,nPos1 Pixel Of  oFolder:aDialogs[2]
@@ -4780,7 +4888,7 @@ If !lAutomato
 	@ 110,030 COMBOBOX oCBX1 VAR cDebMed ITEMS aDebMed SIZE 50,50 OF 	oFolder:aDialogs[2] PIXEL
 	@ 110,090 SAY oDataTxt2 VAR OemToAnsi(STR0088) SIZE 50,10 OF	oFolder:aDialogs[2] PIXEL //"Fecha para el debito "
 	@ 110,150 GET oDataVenc VAR dDataVenc Valid fa085DtVenc(dDataVenc)	SIZE 34,09 OF	oFolder:aDialogs[2] PIXEL
-	@ 115,200 CHECKBOX oChkBox Var lBaixaChq	PROMPT OemToAnsi(STR0090) SIZE 80,16 PIXEL When (dDataVenc==dDataBase) Of oFolder:aDialogs[2] //"?Debitar los titulos ahora ? "
+	@ 115,200 CHECKBOX oChkBox Var lBaixaChq	PROMPT OemToAnsi(STR0090) SIZE 80,16 PIXEL When (dDataVenc==dDataBase) Of oFolder:aDialogs[2] //"¨ Debitar los titulos ahora ? "
 
 	//Box para escolher o titulo de debito Inmediato
 	If cPaisLoc $ "DOM"
@@ -4829,21 +4937,21 @@ Endif
 Return (nOpc == 1)
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =A085aEnch �Autor  =Bruno Sobieski      ?Data =  08.01.01   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Validacao da tela principal.                                ?=
-==?         =Verifica a forma de pagamento dos titulos. Deve ser informada?=
-==?		 =uma forma de pagamento diferenciada para cada um dos titulos,?=
-==?		 =e ou um pagamento generico para um ou mais titulos que nao	?=
-==?		 =estiverem na condicao de pago diferenciado.                 	?=
-==�||||||||||�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                    ?=
-==�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³A085aEnch ºAutor  ³Bruno Sobieski      º Data ³  08.01.01   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Validacao da tela principal.                                º±±
+±±º          ³Verifica a forma de pagamento dos titulos. Deve ser informadaº±±
+±±º			 ³uma forma de pagamento diferenciada para cada um dos titulos,º±±
+±±º			 ³e ou um pagamento generico para um ou mais titulos que nao	º±±
+±±º			 ³estiverem na condicao de pago diferenciado.                 	º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                    º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function a085aEnch(nOpc,aSE2,cNatureza,aCtrChEQU,nValOrdens)
 Local lBcoOk := .T., lRet := .T.
@@ -4974,22 +5082,22 @@ If lRet .And. ExistBLock('A085TUDOK')
 	lRet	:=	ExecBlock('A085TUDOK',.F.,.F.,aClone(aSE2))
 Endif
 If lRet .and. cPaisLoc$"PER|DOM|COS" .and. Empty(cNatureza) .and. AllTrim(cCalcITF) == "1"
-   MsgAlert(STR0218)//"O campo Natureza ?obrigat�rio!"
+   MsgAlert(STR0218)//"O campo Natureza é obrigatório!"
    lRet	:=	.F.
 Endif
-//Validaci?? para verificar que se informe el campo de Naturaleza/ Modalidad en pa�ses Hub Sur
+//Validación para verificar que se informe el campo de Naturaleza/ Modalidad en países Hub Sur
 If lRet .And. Empty(cNatureza) .And. cPaisloc $ "PAR|URU|CHI|BOL"
 	For nA := 1 to Len(aPagos)
 		If aSE2[nA][3] <> Nil .and. lRet
-			MsgAlert(STR0218)//"O campo Natureza ?obrigat�rio!"
+			MsgAlert(STR0218)//"O campo Natureza é obrigatório!"
 			lRet := .F.
 			nA := Len(aPagos)
 		EndIf
 	Next
 EndIf
 
-// Valida a numera??o de certificados de reten??o de IVA. O numero do certificado dever?pertencer a um intervalo
-// cadastrado na tabela SFP(controle de formularios) e dever?ter data de vencimento v��ida
+// Valida a numeração de certificados de retenção de IVA. O numero do certificado deverá pertencer a um intervalo
+// cadastrado na tabela SFP(controle de formularios) e deverá ter data de vencimento válida
 If lRet .And. cPaisloc == "PAR"
 	aArea   := GetArea()
 	aSFP    := SFP->(GetArea())
@@ -5013,10 +5121,10 @@ If lRet .And. cPaisloc == "PAR"
 		Else
 			cNumCert := StrZero( Val( X5DESCRI() ) + 1, TamSX3( "FE_NROCERT" )[1] )
 		EndIf
-	//======================================================================================================
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
 
-		//= Busca posicao da descricao da especie da nota no combo da tabela SFP (1=NF;2=NCI;3=NDI;4=NCC;5=NDC)=
-		//?===================================================================================================?
+		//³ Busca posicao da descricao da especie da nota no combo da tabela SFP (1=NF;2=NCI;3=NDI;4=NCC;5=NDC)³
+		//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 
 		cEsCbox := Alltrim(GETSX3CACHE("FP_ESPECIE", "X3_CBOX"))
 		nPosIni	:= At(AllTrim(cEspecie),cEsCbox)
@@ -5088,10 +5196,10 @@ If lRet .And. (nPagar<=1 .And. cPaisLoc $ "DOM|EQU")
    Enddo
    If !lLckSEF
    	If Len(aCtrChEQU)>1
-   		MsgAlert(STR0225) //"N|o ha quantidade suficiente de cheques disponiveis para os pagamentos!"
+   		MsgAlert(STR0225) //"Não ha quantidade suficiente de cheques disponiveis para os pagamentos!"
    		SEF->(MsUnlock())
    	Else
-	   	MsgAlert(STR0226)  //"N|o foi encontrado cheque disponivel para este pagamento!"
+	   	MsgAlert(STR0226)  //"Não foi encontrado cheque disponivel para este pagamento!"
 	   Endif
    	TMPSEF->(DbCloseArea())
    	lRet:=.F.
@@ -5112,17 +5220,17 @@ EndIf
 Return lRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =A085aRefr �Autor  =Bruno Sobieski      ?Data =  18.10.00   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Atualiza os enable/disable dos objetos da tela              ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³A085aRefr ºAutor  ³Bruno Sobieski      º Data ³  18.10.00   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Atualiza os enable/disable dos objetos da tela              º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function A085aRefr(nPagar, oCbx1, oCbx2,  oDataVenc,  oDataVenc1, oChkBox, oDataTxt1, oDataTxt2, oTipo, oMsg, oSaldo,  oTxt1, oBAnco, oAgencia, oConta,nValor,oValor,nRet,oRet,nLiquido,oLiquido,oMsg1,oValorPg,oMoedaPA,oRetIB,nRetIB,oRetIVA,nRetIva,oRetSUSS,nRetSUSS,oAliqigv,nAliqIGV,nNulo,lPagAdi)
 Local lNulo
@@ -5410,17 +5518,17 @@ nNulo++
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =FA085Alt  �Autor  =Bruno Sobieski      ?Data =  18.10.00   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Altera os dados da Ordem de pago.                           ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³FA085Alt  ºAutor  ³Bruno Sobieski      º Data ³  18.10.00   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Altera os dados da Ordem de pago.                           º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function Fa085Alt(aTits,aGan,nPos,aSE2,oObj,aPagos,nValOrdens,oValOrdens,oLbx,nNumOrdens,oNumOrdens,aDesp)
 Local nX,nA,nP,nC,nY,nZ
@@ -5439,7 +5547,7 @@ Local nHdl
 Local lModi := .F.
 Local bZeraRets	:=	{|| A085AZeraRet(@nRetIva,@nRetGan,@nRetIB,@nRetIric,@nRetSUSS,@nRetSLI,oRetIVA,oRetGan,oRetIB,oRetIric,oRetSUSS,oRetSLI,@nRetIr,oRetIR,@nRetIrc,oRetIRC,oRetISI,@nRetIGV,oRetIGV,@nRetIR4)}
 Local aDescontos	:=	{} 	//Variavel para guardar os descontos por item se o campo
- 							//E2_DESCONT nao estiver em uso. O valor ?necessario
+ 							//E2_DESCONT nao estiver em uso. O valor é necessario
  							//PAra calculo de retencoes. BRuno
 Local nSalPos := 0, nPosVlr := 0
 Local aRateioGan :=	{}
@@ -5463,7 +5571,7 @@ Local cCampoX3:= ""
 Local nX3	  := 0
 
 
-//Estas vari�veis s|o STATIC para melhorar a performance, pois podem
+//Estas variáveis são STATIC para melhorar a performance, pois podem
 //ser carregadas so uma vez por sessao
 Static aGet
 Static nPosJuros	:=	0,	nPofasDesc	:=	0, nPosSaldo	:=	0, nPosMulta := 0,nPosDesc :=0
@@ -5479,9 +5587,9 @@ Private cCadastro := Upper(STR0008) //Modificar
 
 If cPaisLoc $ 'MEX|PER'
 	cTipOp:= POSICIONE("SED",1,xFilial("SED")+SE2->E2_NATUREZ ,"ED_OPERADT")
-	//Valida Modalidad de operaci??
+	//Valida Modalidad de operación
 	If cTipOp == '1'
-		MSGALERT(STR0262, "") //"No se pueden modificar las �rdenes de Pago de tipo Anticipo."
+		MSGALERT(STR0262, "") //"No se pueden modificar las Órdenes de Pago de tipo Anticipo."
 		Return
 	EndIf
 EndIf
@@ -5508,9 +5616,9 @@ ElseIf cPaisLoc $ "PER|EQU|DOM|COS"
 					   	/*@nRetIr*/,/*@oRetIr*/,/*@nRetIrc*/,/*@oRetIrc*/,/*nValDesp*/,nRetRIE,oRetRIE,@nRetIGV,oRetIGV,@nRetIR4)}
 
 Endif
-//==============================================
-//=Inicializar o aHeader e o aCols do folder 1.=
-//?===========================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Inicializar o aHeader e o aCols do folder 1.³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 
 For nA:= 1 To Len(aTits)
 	nX := ASCAN(aModAux,{|x|  x[1] == aTits[nA][1]+ aTits[nA][2] +aTits[nA][9] + aTits[nA][10] + aTits[nA][11] + aTits[nA][12] })
@@ -5531,7 +5639,7 @@ If aHeader1	==	Nil
 
 	cCampoX3:= "E2_PAGAR"
 	aProSX3 := LxfSX3Cach(cCampoX3) 
-	//aProSX3[x] -->  x = 1 Picture | x = 2 Tama�o | x = 3 Decimal | x = 4 Valid | x = 5 Usado | x = 6 Tipo | x = 7 Context | x = 8 F3 | x = 9 Arquivo | x = 10 Nivel | x = 11 cbox   
+	//aProSX3[x] -->  x = 1 Picture | x = 2 Tama�o | x = 3 Decimal | x = 4 Valid | x = 5 Usado | x = 6 Tipo | x = 7 Context | x = 8 F3 | x = 9 Arquivo | x = 10 Nivel | x = 11 cbox   
 	If len(aProSX3) > 0 .And. X3Uso(aProSX3[5])  .And. cNivel >= aProSX3[10] 
 		
 		AADD(aHeader1,{ Alltrim(FWX3Titulo(cCampoX3)), cCampoX3, aProSX3[1],;
@@ -5546,10 +5654,10 @@ If aHeader1	==	Nil
 
 		Aadd(aGet,"NVLMDINF")
 	Endif
-	//==================================
-	//=Ponto de entrada para customizar=
-	//=as colunas na opcao Modificar OP=
-	//?===============================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³Ponto de entrada para customizar³
+	//³as colunas na opcao Modificar OP³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	If ExistBlock("F085HEAD")
 		aCampos	:=	ExecBLock("F085HEAD",.F.,.F.)
 	Endif
@@ -5559,7 +5667,7 @@ If aHeader1	==	Nil
 		
 		cCampoX3:= Alltrim(aFields[nX3])
 		aProSX3 := LxfSX3Cach(cCampoX3)
-		//aProSX3[x] -->  x = 1 Picture | x = 2 Tama�o | x = 3 Decimal | x = 4 Valid | x = 5 Usado | x = 6 Tipo | x = 7 Context | x = 8 F3 | x = 9 Arquivo | x = 10 Nivel | x = 11 cbox  
+		//aProSX3[x] -->  x = 1 Picture | x = 2 Tama�o | x = 3 Decimal | x = 4 Valid | x = 5 Usado | x = 6 Tipo | x = 7 Context | x = 8 F3 | x = 9 Arquivo | x = 10 Nivel | x = 11 cbox  
 	
 		If (X3Uso(aProSX3[5]).And. cNivel >=  aProSX3[10] .And. cCampoX3 <> "E2_PAGAR" .And. (cPaisLoc == 'ARG' .Or. cCampoX3 != "E2_CODAPRO"));
 		 	.Or. cCampoX3 == "E2_MULTA" .Or. cCampoX3 == "E2_JUROS" .Or. cCampoX3 == "E2_DESCONT" .or. cCampoX3 == "E2_VLBXPAR" .Or. !Empty(AScan( aCampos, { |x| x == cCampoX3 } ))
@@ -5586,7 +5694,7 @@ If aHeader1	==	Nil
 	If cPaisLoc == 'MEX'
 		cCampoX3:= "F1_UUID"
 		aProSX3 := LxfSX3Cach(cCampoX3)
-		//aProSX3[x] -->  x = 1 Picture | x = 2 Tama�o | x = 3 Decimal | x = 4 Valid | x = 5 Usado | x = 6 Tipo | x = 7 Context | x = 8 F3 | x = 9 Arquivo | x = 10 Nivel | x = 11 cbox 
+		//aProSX3[x] -->  x = 1 Picture | x = 2 Tama�o | x = 3 Decimal | x = 4 Valid | x = 5 Usado | x = 6 Tipo | x = 7 Context | x = 8 F3 | x = 9 Arquivo | x = 10 Nivel | x = 11 cbox 
 		If len(aProSX3)>0 .And. X3Uso(aProSX3[5])  .And. cNivel >= aProSX3[10]
 			aAdd(aHeader1,{ Alltrim(FWX3Titulo(cCampoX3)), cCampoX3, aProSX3[1],aProSX3[2], aProSX3[3], aProSX3[4],aProSX3[5], aProSX3[6], aProSX3[9], aProSX3[7] })
 		EndIf
@@ -5772,9 +5880,9 @@ If cPaisLoc == "PTG"
 	Next
 Endif
 
-//================================================
-//=Soma no nValBrut o valor dos PAs se houverem  =
-//?=============================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Soma no nValBrut o valor dos PAs se houverem  ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 If aSE2TMP[3] <> Nil
 	If aSE2TMP[3][1] ==4 .And. aSE2TMP[3][6] > 0
 		aSE2TMP[3][6]	:=	0
@@ -5803,7 +5911,7 @@ Endif
 //Inicilaizo o aHeader
 Private aHeader	:=	aClone(aHeader1)
 
-//Inicializo as vari�veis de mem�ria para evitar erro na valida??o do X3_RELAC do campo E2_CODAPRO
+//Inicializo as variáveis de memória para evitar erro na validação do X3_RELAC do campo E2_CODAPRO
 RegToMemory("SE2",.F.)
 
 DEFINE MSDIALOG oDlg FROM 30,52  TO IIf(cPaisLoc=="ARG".Or. cPaisLoc $ "URU|BOL|PTG",450,380),633 TITLE OemToAnsi(STR0063+aPagos[nPos][H_NOME] ) Of oObj PIXEL  // "Orden de pago del proveedor "
@@ -6112,7 +6220,7 @@ If lConfirmo
 		aPagos[nPos][H_RETIVA]	:=	TransForm(aPagos[nPos][H_RETIVA]  ,Tm(aPagos[nPos][H_RETIVA ] ,16,nDecs))
 		aPagos[nPos][H_RETIR]	:=	TransForm(aPagos[nPos][H_RETIR],Tm(aPagos[nPos][H_RETIR],16,nDecs))
 	ElseIf cPaisLoc $ "COS|DOM"
-		//Array aRetencao - Preenchido na fun??o fa050CalcRet() - C��culo de reten??o com Conf. de Impostos
+		//Array aRetencao - Preenchido na função fa050CalcRet() - Cálculo de retenção com Conf. de Impostos
 		If Len(aRetencao) > 0
 			For nX := 1 to Len(aRetencao)
 				If aRetencao[nX][6] == aPagos[nPos][H_FORNECE ] .And. aRetencao[nX][7] == aPagos[nPos][H_LOJA ]
@@ -6159,11 +6267,11 @@ If lConfirmo
 	oLbx:Refresh()
 	oValOrdens:Refresh()
 
-	//=====================================================================
-	//=Se foi definido um pagamento diferenciado e modifico os valores das=
-	//=notas, chamo a fun??o do pagamento especial para atualizar os      =
-	//=valores e validar.                                                 =
-	//?==================================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³Se foi definido um pagamento diferenciado e modifico os valores das³
+	//³notas, chamo a função do pagamento especial para atualizar os      ³
+	//³valores e validar.                                                 ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	If aSE2[nPos][3] <> Nil .And. aSE2[nPos][3][1]	==	4
 		A085aPagos(aSE2[nPos][1],aSE2[nPos][2],nPos,@aSE2,oObj,.T.)
 	Endif
@@ -6177,17 +6285,17 @@ Endif
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =a085ATudok�Autor  =Bruno Sobieski      ?Data =  04/11/00   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Valida a digitacao dos titulos no pagamento parcial         ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP5                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³a085ATudokºAutor  ³Bruno Sobieski      º Data ³  04/11/00   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Valida a digitacao dos titulos no pagamento parcial         º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function A085aTudok(nOpc,nPagar,lPa,nLiquido,oObj,cNatureza,aCtrChEQU)
 Local lRet		:=	.T.
@@ -6237,9 +6345,9 @@ nValor := IIf( Type("NVALOR")=="U", 1, nValor)
 If lFINA999 .And. !lAutomato
 	lRet := VlTudoF999(.F.)
 EndIf
-//==================================================================
-//=Validacao da digitacao dos saldos a pagar dos titulos escolhidos=
-//?===============================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Validacao da digitacao dos saldos a pagar dos titulos escolhidos³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 If lRet .And. nValor <= 0
 	Help(" ",1,"VALNEG")
 	lRet := .F.
@@ -6258,9 +6366,9 @@ If lRet .And. Type("cFornece")<>"U" .and. Type("cLoja")<>"U"
 	EndIf
 EndIf
 
-//=========================================================================
-//= Validacao do preechimento dos dados para o calculo de rentencao no PA =
-//?======================================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Validacao do preechimento dos dados para o calculo de rentencao no PA ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 If (nOpc	==	2 .And. lRet .And. lPa .And. lRetPA .And. ((Substr(cAgente,2,1) == "S") .Or. (Substr(cAgente,3,1) == "S") .Or. (Substr(cAgente,6,1) == "S"))) .And. cPaisLoc == "ARG"
 
 	//Valor base para todos os impostos
@@ -6289,10 +6397,10 @@ If nOpc	==	1 .and. lRet
 		MsgAlert(STR0103) //"Escoja un valor mayor (o igual) que cero."
 		lRet	:=	.F.
 	Endif
-	//=============================================================
-	//=Validacao dos titulos entregues para o pago na seleccao de =
-	//=pagamento diferenciado.                                    =
-	//?==========================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³Validacao dos titulos entregues para o pago na seleccao de ³
+	//³pagamento diferenciado.                                    ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 ElseIf nOpc == 2 .and. lRet
 	If nPagar == 4
 		nLines	:=	0
@@ -6308,7 +6416,7 @@ ElseIf nOpc == 2 .and. lRet
 			lRet	:=	MsgYesNo(OemToAnsi(STR0104 + GetMv("MV_SIMB"+Alltrim(Str(nMoedaCor)))+ TransForm(aSaldos[Len(aSaldos)],Tm(aSaldos[Len(aSaldos)],18,nDecs)) +; //"Faltan "
 			STR0105+CHR(13)+CHR(10)+; //" o su equivalente en otra moneda, para pagar los titulos escogidos."
 			STR0106+CHR(13)+CHR(10)+; //"Si confirma, la diferencia sera paga de la forma escogida para el resto de las OP."
-			STR0107),OemToAnsi(STR0040)) //"?Desea confirmar ? "###"Confirmar"
+			STR0107),OemToAnsi(STR0040)) //"¨ Desea confirmar ? "###"Confirmar"
 		ElseIf  !lPa .And. aSaldos[Len(aSaldos)] < 0	.and. !lRetPA
 			If lF085ANOPA
 				lRet := ExecBlock("F085ANOPA",.F.,.F.,{aSaldos[Len(aSaldos)]})
@@ -6316,7 +6424,7 @@ ElseIf nOpc == 2 .and. lRet
 			lRet	:=	MsgYesNo(OemToAnsi(STR0109+ GetMv("MV_SIMB"+Alltrim(Str(nMoedaCor))) + TransForm(aSaldos[Len(aSaldos)]*-1,Tm(aSaldos[Len(aSaldos)],18,nDecs)) +; //"Sobran "
 			STR0110+CHR(13)+CHR(10)+; //" o sus equivalentes en otras monedas, para pagar los titulos escogidos."
 			STR0111+CHR(13)+CHR(10)+; //"Si confirma, seran generados PA por la diferencia "
-			STR0107),OemToAnsi(STR0108)) //"?Desea confirmar ? "###"Confirmar"
+			STR0107),OemToAnsi(STR0108)) //"¨ Desea confirmar ? "###"Confirmar"
 			Endif
 		ElseIf  !lPa .And. lRetPA .And. aSaldos[Len(aSaldos)] <> 0
 			For nX:=1 to Len(aCols)
@@ -6326,12 +6434,12 @@ ElseIf nOpc == 2 .and. lRet
 					lRet	:=	MsgYesNo(OemToAnsi(STR0109+ GetMv("MV_SIMB"+Alltrim(Str(nMoedaCor))) + TransForm(aSaldos[Len(aSaldos)]*-1,Tm(aSaldos[Len(aSaldos)],18,nDecs)) +; //"Sobran "
 					STR0110+CHR(13)+CHR(10)+; //" o sus equivalentes en otras monedas, para pagar los titulos escogidos."
 					STR0111+CHR(13)+CHR(10)+; //"Si confirma, seran generados PA por la diferencia "
-					STR0107),OemToAnsi(STR0108)) //"?Desea confirmar ? "###"Confirmar"
+					STR0107),OemToAnsi(STR0108)) //"¨ Desea confirmar ? "###"Confirmar"
                 ElseIf aSaldos[Len(aSaldos)] > 0
 					lRet	:=	MsgYesNo(OemToAnsi(STR0104 + GetMv("MV_SIMB"+Alltrim(Str(nMoedaCor)))+ TransForm(aSaldos[Len(aSaldos)],Tm(aSaldos[Len(aSaldos)],18,nDecs)) +; //"Faltan "
 					STR0105+CHR(13)+CHR(10)+; //" o su equivalente en otra moneda, para pagar los titulos escogidos."
 					STR0106+CHR(13)+CHR(10)+; //"Si confirma, la diferencia sera paga de la forma escogida para el resto de las OP."
-					STR0107),OemToAnsi(STR0040)) //"?Desea confirmar ? "###"Confirmar"
+					STR0107),OemToAnsi(STR0040)) //"¨ Desea confirmar ? "###"Confirmar"
 		       	   //	Aviso(STR0163, STR0162,{"OK"}  ) //" Valores dos titulos informados esta diferente do valor total da Op"###"Valor"
 		        	//lRet:=.F.
 		        EndIf
@@ -6356,11 +6464,11 @@ ElseIf nOpc == 2 .and. lRet
 			For nX	:=	1	To	Len(aRecChqTer)
 				//Se for um registro de cheque de terceiro e esta apagado, limpo ele
 				If  aCols[nX][Len(aCols[nX])]
-					//=================================================================
-					//=Marco o Acols com array zerado pra dar aDel e aSize na saida.  =
-					//=Se fazer um adel agora, perco a referencia direta entre o aCols=
-					//=e o aRecChqTer                                                 =
-					//?==============================================================?
+					//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+					//³Marco o Acols com array zerado pra dar aDel e aSize na saida.  ³
+					//³Se fazer um adel agora, perco a referencia direta entre o aCols³
+					//³e o aRecChqTer                                                 ³
+					//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 					aCols[nX]	:=	{}
 					If aRecChqTer[nX] > 0
 						SE1->(MsGoTo(aRecChqTer[nX]))
@@ -6434,18 +6542,18 @@ Endif
 Return lRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =a085FldOk1�Autor  =Bruno Sobieski      ?Data =  10/19/00   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Valida a digitacao do campo  e o total para a nova moeda dgi?=
-==?         = tada.                                                      ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP5                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³a085FldOk1ºAutor  ³Bruno Sobieski      º Data ³  10/19/00   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Valida a digitacao do campo  e o total para a nova moeda dgiº±±
+±±º          ³ tada.                                                      º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function a085FldOk1(bRecalc)
 Local cCampo	:=	ReadVar()
@@ -6519,7 +6627,7 @@ Else
 		Endif
 	Else
 		//Atualizar aCOLS , antes de acabar a validacao, para que seja recalculado o desconto
-		//de acordo com a Porcentagem do cabe�alho
+		//de acordo com a Porcentagem do cabeçalho
 		If Alltrim(cCampo) $"M->E2_PAGAR|M->NVLMDINF"
 			If Alltrim(cCampo)== "M->E2_PAGAR"
 			nDiff	:=	Round(xMoeda(M->E2_PAGAR 	,aCols[n][nPosMoeE2]	,nMoedaCor	,,5,aTxMoedas[aCols[n][nPosMoeE2]][2],	aTxMoedas[nMoedaCor][2]),MsDecimais(nMoedaCor))-;
@@ -6564,18 +6672,18 @@ oValBrut:Refresh()
 Return lRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =a085FldOk2�Autor  =Bruno Sobieski      ?Data =  10/19/00   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Valida a digitacao dos itens do aCols do pagamento diferenci?=
-==?         = ado de Ordens de Pago                                      ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP5                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³a085FldOk2ºAutor  ³Bruno Sobieski      º Data ³  10/19/00   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Valida a digitacao dos itens do aCols do pagamento diferenciº±±
+±±º          ³ ado de Ordens de Pago                                      º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function a085FldOk2(lPA)
 Local cCampo	:=	ReadVar()
@@ -6591,26 +6699,26 @@ If lPa
 	If lRet .and. cPaisLoc $ "DOM"
 		If lRet .and. cCampo == "M->EK_TIPO"
 			If RTRIM(M->EK_TIPO) == "EF" .and. aCols[n][nPosVlr] >= nFinLmCH
-            Help(" ",1,"HELP",STR0229,STR0230,1,0)//"FA085A - LIMITE ITF","Pagamento disponivel apenas com Cheque ou Transfer�ncia Banc�ria."
+            Help(" ",1,"HELP",STR0229,STR0230,1,0)//"FA085A - LIMITE ITF","Pagamento disponivel apenas com Cheque ou Transferência Bancária."
             lRet:=.F.
     		Endif
 	      If lRet .and. RTRIM(M->EK_TIPO) == "EF" .and. !Empty(aCols[n][nPosBco])
 	      	If !(aCols[n][nPosBco] $ (Left(GetMv("MV_CXFIN"),TamSX3("A6_COD")[1])+"/"+GetMv("MV_CARTEIR")) .or. !IsCaixaLoja(aCols[n][nPosBco]))
-					MsgAlert(STR0215+aCols[n][nPosBco]+STR0231)  //" n|o recebe lan�amento do tipo EF."
+					MsgAlert(STR0215+aCols[n][nPosBco]+STR0231)  //" não recebe lançamento do tipo EF."
 					lRet:=.F.
 				Endif
 			Endif
     	Endif
 		If lRet .and. cCampo == "M->EK_VALOR"
 			If M->EK_VALOR >= nFinLmCH .and. Rtrim(aCols[n][nPosTp]) == "EF"
-            Help(" ",1,"HELP",STR0229,STR0230,1,0) //"FA085A - LIMITE ITF","Pagamento disponivel apenas com Cheque ou Transfer�ncia Banc�ria."
+            Help(" ",1,"HELP",STR0229,STR0230,1,0) //"FA085A - LIMITE ITF","Pagamento disponivel apenas com Cheque ou Transferência Bancária."
             lRet:=.F.
     		Endif
     	Endif
 		If lRet .and. cCampo == "M->EK_BANCO"
 	      If !Empty(M->EK_BANCO) .and.  !(M->EK_BANCO $ (Left(GetMv("MV_CXFIN"),TamSX3("A6_COD")[1])+"/"+GetMv("MV_CARTEIR")) .or. IsCaixaLoja(M->EK_BANCO))
 	     		If Rtrim(aCols[n][nPosTp]) == "EF"
-					MsgAlert(STR0215+M->EK_BANCO+STR0231) //" n|o recebe lan�amento do tipo EF."
+					MsgAlert(STR0215+M->EK_BANCO+STR0231) //" não recebe lançamento do tipo EF."
 					lRet:=.F.
 				Endif
 			Endif
@@ -6634,26 +6742,26 @@ Else
 	If lRet .and. cPaisLoc $ "DOM"
 		If lRet .and. cCampo == "M->EK_TIPO"
 			If RTRIM(M->EK_TIPO) == "EF" .and. aCols[n][nPosVlr] >= nFinLmCH
-            Help(" ",1,"HELP",STR0229,STR0230,1,0) //"FA085A - LIMITE ITF","Pagamento disponivel apenas com Cheque ou Transfer�ncia Banc�ria."
+            Help(" ",1,"HELP",STR0229,STR0230,1,0) //"FA085A - LIMITE ITF","Pagamento disponivel apenas com Cheque ou Transferência Bancária."
             lRet:=.F.
     		Endif
 	      If lRet .and. RTRIM(M->EK_TIPO) == "EF" .and. !Empty(aCols[n][nPosBco])
 	      	If !(aCols[n][nPosBco] $ (Left(GetMv("MV_CXFIN"),TamSX3("A6_COD")[1])+"/"+GetMv("MV_CARTEIR")) .or. !IsCaixaLoja(aCols[n][nPosBco]))
-					MsgAlert(STR0215+aCols[n][nPosBco]+STR0231) //" n|o recebe lan�amento do tipo EF."
+					MsgAlert(STR0215+aCols[n][nPosBco]+STR0231) //" não recebe lançamento do tipo EF."
 					lRet:=.F.
 				Endif
 			Endif
     	Endif
 		If lRet .and. cCampo == "M->EK_VALOR"
 			If M->EK_VALOR >= nFinLmCH .and. Rtrim(aCols[n][nPosTp]) == "EF"
-            Help(" ",1,"HELP",STR0229,STR0230,1,0)//"FA085A - LIMITE ITF","Pagamento disponivel apenas com Cheque ou Transfer�ncia Banc�ria."
+            Help(" ",1,"HELP",STR0229,STR0230,1,0)//"FA085A - LIMITE ITF","Pagamento disponivel apenas com Cheque ou Transferência Bancária."
             lRet:=.F.
     		Endif
     	Endif
 		If lRet .and. cCampo == "M->EK_BANCO"
 	      If !Empty(M->EK_BANCO) .and.  !(M->EK_BANCO $ (Left(GetMv("MV_CXFIN"),TamSX3("A6_COD")[1])+"/"+GetMv("MV_CARTEIR")) .or. IsCaixaLoja(M->EK_BANCO))
 	     		If Rtrim(aCols[n][nPosTp]) == "EF"
-					MsgAlert(STR0215+M->EK_BANCO+STR0231) //" n|o recebe lan�amento do tipo EF."
+					MsgAlert(STR0215+M->EK_BANCO+STR0231) //" não recebe lançamento do tipo EF."
 					lRet:=.F.
 				Endif
 			Endif
@@ -6689,17 +6797,17 @@ EndIf
 Return	lRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =a085aRecal�Autor  =Bruno Sobieski      ?Data =  10/19/00   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Recalcula as retencoes                                      ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP5                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³a085aRecalºAutor  ³Bruno Sobieski      º Data ³  10/19/00   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Recalcula as retencoes                                      º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function a085aRecal(nPos,aSE2,nPosJuros,nPosDesc,nRetIva,oRetIva,nRetIB,;
 oRetIB,nRetGan,oRetGan,nRetISI,oRetISI,aDescontos,nRetIric,oRetIric,;
@@ -6722,7 +6830,7 @@ Local nValPag  	:= 0
 Local nOldIVA  	:= 0
 Local nTotImp 	:= 0
 Local nImpAux	:= 0
-Local nRedut	:= 1/(10^MsDecimais(nMoedaCor)) //valor redutor - diferen�a de centavos
+Local nRedut	:= 1/(10^MsDecimais(nMoedaCor)) //valor redutor - diferença de centavos
 Local aImpCalc	:= {}
 Local aSUSS		:= {}
 Local nBaseSUSS := 0
@@ -6750,7 +6858,7 @@ If cPaisLoc=="PAR"
    cTRetIva  := SuperGetMV("MV_TRETIVA",.F.,"2")
 EndIf
 
-//Verifica se o fornecedor ?monotributista
+//Verifica se o fornecedor é monotributista
 dbSelectArea("SA2")
 dbGoTop()
 dbSetOrder(1)
@@ -6807,7 +6915,7 @@ For nA:=1	To	Len(aSE2Tmp[1])
 	EndIf
 	If cPaisLoc == "PTG"
 		//+----------------------------------------------------------------+
-		//?Generar las Retenci?? de IVA.                                  ?
+		//° Generar las Retención de IVA.                                  °
 		//+----------------------------------------------------------------+
 		If (SE2->E2_TIPO $ MVPAGANT + "/"+ MV_CPNEG)
 			aTmp	:=	CalcRetIV2(cAgente,-1,aSE2Tmp[1][nA][_PAGAR ],nProp)
@@ -6819,7 +6927,7 @@ For nA:=1	To	Len(aSE2Tmp[1])
 		Endif
 
 		//+----------------------------------------------------------------+
-		//?Generar las Retenci?? de IRC.                                  ?
+		//° Generar las Retención de IRC.                                  °
 		//+----------------------------------------------------------------+
 		aTmp	:=	CalcRetIRC(Iif(SE2->E2_TIPO $ MVPAGANT + "/"+ MV_CPNEG,-1,1),aSE2Tmp[1][nA][_PAGAR  ])
 		If Len(aTmp) > 0
@@ -6829,7 +6937,7 @@ For nA:=1	To	Len(aSE2Tmp[1])
 	Endif
 	If cPaisLoc == "ANG"
 		//+----------------------------------------------------------------+
-		//?Retencoes de Imposto sobre Empreitadas	                      ?
+		//° Retencoes de Imposto sobre Empreitadas	                      °
 		//+----------------------------------------------------------------+
 		If (SE2->E2_TIPO $ MVPAGANT + "/"+ MV_CPNEG)
 			aTmp	:=	CalcRetRIE(aSE2Tmp[1][nA][_PAGAR ],.T.,-1)
@@ -6859,7 +6967,7 @@ For nA:=1	To	Len(aSE2Tmp[1])
 			Endif
 		EndIf				
    		//+----------------------------------------------------------------+
-		//?Generar las Retenci?? de IR.                                  ?
+		//° Generar las Retención de IR.                                  °
 		//+----------------------------------------------------------------+
 		aTmp:={}
 		If (SE2->E2_TIPO $ MVPAGANT + "/"+ MV_CPNEG)
@@ -7046,19 +7154,19 @@ lRetenc	:=	.T.
 Return aSE2TMP
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =a085aPagos�Autor  =Bruno Sobieski      ?Data =  10/19/00   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Permitir a escolha de outra forma de pagamento diferente a  ?=
-==?         = definida para todas as ordens de pagamento, para a orden de?=
-==?         = pago selecionada.                                          ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP5                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³a085aPagosºAutor  ³Bruno Sobieski      º Data ³  10/19/00   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Permitir a escolha de outra forma de pagamento diferente a  º±±
+±±º          ³ definida para todas as ordens de pagamento, para a orden deº±±
+±±º          ³ pago selecionada.                                          º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function a085aPagos(aTits,aGan,nPos,aSE2,oObj,lModif)
 Local aCpos	:=	{}
@@ -7103,10 +7211,10 @@ If lRetPA == Nil
 	lRetPA := (GetNewPar("MV_RETPA","N") == "S")
 EndIf
 
-//=================================================================
-//=Sao definidas como privates pois devem ser enxergadas desde as =
-//=funcooes de validacao e refresh. Bruno.                        =
-//?==============================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Sao definidas como privates pois devem ser enxergadas desde as ³
+//³funcooes de validacao e refresh. Bruno.                        ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 Private cBanco:=Criavar("A6_COD"),cAgencia	:=	Criavar("A6_AGENCIA"),cConta:=Criavar("A6_NUMCON")
 Private aDebMed:={},aDebInm:={}
 Private nPagar	:=If(!(cPaisLoc $ "EQU|DOM|COS"),1,0)
@@ -7124,19 +7232,19 @@ Endif
 
 If cPaisLoc $ 'MEX|PER'
 	cTipOp:= POSICIONE("SED",1,xFilial("SED")+SE2->E2_NATUREZ ,"ED_OPERADT")
-	//Valida Modalidad de operaci??
+	//Valida Modalidad de operación
 	If cTipOp == '1'
-		MSGALERT(STR0261, "") //Opci?? No disponible para Anticipos
+		MSGALERT(STR0261, "") //Opción No disponible para Anticipos
 		Return
 	EndIf
 EndIf
 aVlPA[_PA_MOEATU]:=1
 
-//============================================================================
-//=Carregar os tipos definidos no SES para a ordem de pago pelo campo        =
-//=ES_RCOPGER, que indica que tipo de movimento vai gerar o tipo (BANCARIO ou=
-//=TITULO A PAGAR)                                                           =
-//?=========================================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Carregar os tipos definidos no SES para a ordem de pago pelo campo        ³
+//³ES_RCOPGER, que indica que tipo de movimento vai gerar o tipo (BANCARIO ou³
+//³TITULO A PAGAR)                                                           ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 cTmp  := GetSESTipos({|| ES_RCOPGER == "1"},"2")
 While	!Empty(cTmp)
 	AAdd(aDebMed,Substr(cTmp,1,tamSx3("E2_TIPO")[1]))
@@ -7165,9 +7273,9 @@ If Len(aDebInm) ==	0
 Endif
 cDebInm	:=	aDebInm[1]
 
-//==============================================
-//=Inicializar o aHeader e o aCols.            =
-//?===========================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Inicializar o aHeader e o aCols.            ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 //Se o aHeader nao foi definido ainda, defino ele aqui SO UMA VEZ POR SESSAO. Bruno
 If aHeader2	==	Nil
 	aHeader2 	:=	{}
@@ -7176,7 +7284,7 @@ If aHeader2	==	Nil
 		aHeader2	:=	ExecBlock("A085CPOS",.F.,.F.)
 	Else
 
-		//aProSX3[x] -->  x = 1 Picture | x = 2 Tama�o | x = 3 Decimal | x = 4 Valid | x = 5 Usado | x = 6 Tipo | x = 7 Context | x = 8 F3 | x = 9 Arquivo | x = 10 Nivel | x = 11 cbox   	
+		//aProSX3[x] -->  x = 1 Picture | x = 2 Tama�o | x = 3 Decimal | x = 4 Valid | x = 5 Usado | x = 6 Tipo | x = 7 Context | x = 8 F3 | x = 9 Arquivo | x = 10 Nivel | x = 11 cbox   	
 		
 		aProSX3 := LxfSX3Cach("EK_TIPODOC")
 		Aadd(aHeader2,{Alltrim(FWX3Titulo("EK_TIPODOC")) ,"EK_TIPODOC"	,"9"		,aProSX3[2]	,aProSX3[3]	,'PERTENCE("123").And.A085aVlds()'	,aProSX3[5],"C","SEK"})
@@ -7210,10 +7318,10 @@ Endif
 aHeader	:=	aClone(aHeader2)
 nPosValor 	:=	 Ascan(aHeader,{|X| Alltrim(X[2]) == "EK_VALOR"})
 nPosMoe		:=	Ascan(aHeader,{|X| Alltrim(X[2]) == "EK_MOEDA"})
-//=====================================================================
-//=Se o tipo for 4 (Informado) e ja passou por esta rotina, carrego o =
-//=aCols que tinha sido escolhido.                                    =
-//?==================================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Se o tipo for 4 (Informado) e ja passou por esta rotina, carrego o ³
+//³aCols que tinha sido escolhido.                                    ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 If aSE2[nPos][3]==Nil .Or. (aSE2[nPos][3][1] <> 4 .and. !lF085aChS) .Or. (aSE2[nPos][3][1] <> 3 .and. lF085aChS)
 	aCols	:=	Array(1,Len(aHeader)+1)
 	For nA := 1 To Len(aHeader)
@@ -7251,10 +7359,10 @@ If aSE2[nPos][3] <> Nil
 Endif
 DEFINE FONT oFnt  NAME "Arial" SIZE 09,11 BOLD
 
-//==============================================================================
-//=Obter o total da OP moeda por moeda, para evitar problemas de arredondamento=
-//=na validacao dos valores ingresados para o pago e total da OP.              =
-//?===========================================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Obter o total da OP moeda por moeda, para evitar problemas de arredondamento³
+//³na validacao dos valores ingresados para o pago e total da OP.              ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 aSaldos	:=	Array(MoedFin()+1)
 aFill(aSaldos,0)
 For nX	:=	1	To	Len(aTits)
@@ -7269,9 +7377,9 @@ For nX	:=	1	To	Len(aTits)
 
 	EndIf
 
-	//======================================================
-	//=Tirar retencoes de ingresos Brutos e IVA (ARGENTINA)=
-	//?===================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³Tirar retencoes de ingresos Brutos e IVA (ARGENTINA)³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	If cPaisLoc $ "URU|BOL"
 		For nP	:=	1	To	Len(aTits[nX][_RETIRIC])
 			aSaldos[1]	-=	Round(aTits[nX][_RETIRIC ][nP][6],MsDecimais(nMoedaCor))
@@ -7330,15 +7438,15 @@ If cPaisLoc == "PTG"
 	Next
 EndIf
 
-//========================================
-//=Tirar retencao de ganacias (Argentina)=
-//?=====================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Tirar retencao de ganacias (Argentina)³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 
 
-//=============================================================
-//=Calculo o saldo total na moeda corrente e guardo na ultima =
-//=posicao do array de saldos                                 =
-//?==========================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Calculo o saldo total na moeda corrente e guardo na ultima ³
+//³posicao do array de saldos                                 ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 For nP	:=	1	To Len(aTxMoedas)
 	If cPaisLoc=="CHI"
 		aSaldos[Len(aSaldos)] += Round(aSaldos[nP],MsDecimais(nMoedaCor))
@@ -7357,9 +7465,9 @@ Endif
 
 DEFINE MSDIALOG oDlg FROM 30,40  TO 420,633 TITLE OemToAnsi(STR0063) Of oObj PIXEL  // "Ordenes de pago"
 
-//============================================================
-//=Informar o tipo de documento com que vamos pagar e o banco=
-//?=========================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Informar o tipo de documento com que vamos pagar e o banco³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 @ 17,004 To 100,290 Pixel Of  oDlg LABEL OemToAnsi(STR0083) //"Pagar con"
 If cPaisLoc $ "EQU|DOM|COS"
 	@ 25,006  RADIO oPagar VAR nXPagar 3D ;
@@ -7404,9 +7512,9 @@ Else
 	EndIf
 Endif
 
-//=================
-//=Digitar o banco=
-//?==============?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Digitar o banco³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 @ 25,160 To 68,285 Pixel Of  oDlg LABEL OemToAnsi(STR0091) //"Banco"
 
 @ 030,164 SAY OemToAnsi(STR0091) 		 SIZE 19, 7 OF oDlg PIXEL //"Banco"
@@ -7418,9 +7526,9 @@ Endif
 @ 038,225 MSGET oConta   VAR cConta		Picture "@S10"            Valid CarregaSa6(@cBanco,@cAgencia,@cConta,.F.)	.And. (ExistCpo("SA6",cBanco+cAgencia+cConta ).Or.Empty(cConta)) .And. If(CCBLOCKED(cBanco,cAgencia,cConta),.F.,.T.) SIZE 45, 10 OF oDlg PIXEL	WHEN nPagar<>4 .And. !(nPagar =3 .And. lF085aChs)
 
 @ 070,010 To 95,285 Pixel Of  oDlg LABEL OemToAnsi(STR0087) //"Datos del titulo de pago"
-//==============================================
-//=Escolher o vencimento do cheque pre-impresso=
-//?===========================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Escolher o vencimento do cheque pre-impresso³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 @ 080,015 SAY oDataTxt1 Var OemToAnsi(STR0088) SIZE 50,10 OF	oDlg PIXEL //"Fecha para el debito "
 @ 080,080 GET oDataVenc1 VAR dDataVenc1 Valid (dDataVenc1 >= dDataBase)	SIZE 34,09 OF	oDlg PIXEL
 
@@ -7428,12 +7536,12 @@ Endif
 
 @ 080,030 COMBOBOX oCBX1 VAR cDebMed ITEMS aDebMed VALID IF(lRetCkPG(0,cDebInm,cBanco,nPagar),.T.,.T.) SIZE 50,50 OF oDlg PIXEL
 
-//======================================
-//=Escolher o titulo de debito diferido=
-//?===================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Escolher o titulo de debito diferido³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 @ 080,090 SAY oDataTxt2 VAR OemToAnsi(STR0088) SIZE 50,10 OF	oDlg PIXEL //"Fecha para el debito "
 @ 080,150 GET oDataVenc VAR dDataVenc Valid (dDataVenc >= dDataBase)	SIZE 34,09 OF	oDlg PIXEL
-@ 075,200 CHECKBOX oChkBox Var lBaixaChq	PROMPT OemToAnsi(STR0090) SIZE 80,16 PIXEL When (dDataVenc==dDataBase) Of oDlg //"?Debitar los titulos ahora ? "
+@ 075,200 CHECKBOX oChkBox Var lBaixaChq	PROMPT OemToAnsi(STR0090) SIZE 80,16 PIXEL When (dDataVenc==dDataBase) Of oDlg //"¨ Debitar los titulos ahora ? "
 
 //Box para escolher o titulo de debito Inmediato
 @ 080,030 COMBOBOX oCBX2 VAR cDebInm ITEMS aDebInm VALID IF(lRetCkPG(0,cDebInm,cBanco,nPagar),.T.,.T.) SIZE 50,50  OF oDlg PIXEL When (nPagar==3 .Or. (nPagar == 2 .And. lF085aChs ))
@@ -7507,17 +7615,17 @@ Endif
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =a085aVlds �Autor  =Bruno Sobieski      ?Data =  10/17/00   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Validacoes da digitacao dos titulos usados para pagar       ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085a                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³a085aVlds ºAutor  ³Bruno Sobieski      º Data ³  10/17/00   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Validacoes da digitacao dos titulos usados para pagar       º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085a                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function a085aVlds(aDebMed,aDebInm,lPa)
 Local lRet		:=	.T.
@@ -7553,11 +7661,11 @@ If cVar	==	"M->EK_TIPO"
 		lRet	:=	.F.
 	Endif
 ElseIf cVar	==	"M->EK_TIPODOC"
-	//================================================================
-	//=Se for um cheque de terceiro vou abrir interface para escolher=
-	//=o cheque do SE1, senao for e o conteudo anterior da linha for =
-	//=um Cheque de terceiro, vou limpar o aCols                     =
-	//?=============================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³Se for um cheque de terceiro vou abrir interface para escolher³
+	//³o cheque do SE1, senao for e o conteudo anterior da linha for ³
+	//³um Cheque de terceiro, vou limpar o aCols                     ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	If M->EK_TIPODOC == "3"
 		aChq	:=	Fa085aTerc()
 		If Len(aChq) > 0
@@ -7641,17 +7749,17 @@ EndIf
 Return lRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =a085aLnOk �Autor  =Bruno Sobieski      ?Data =  10/17/00   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Linha OK   da digitacao dos titulos usados para pagar       ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085a                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³a085aLnOk ºAutor  ³Bruno Sobieski      º Data ³  10/17/00   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Linha OK   da digitacao dos titulos usados para pagar       º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085a                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function a085aLnOK(oSaldo,lPa)
 Local lRet		:=	.T.
@@ -7697,7 +7805,7 @@ If cPaisLoc $ "DOM|COS" .and. Len(aCols) > 1
    Next
    If Ascan(aCols,{|x| Rtrim(x[nPosTipo]) == "EF" .and. !x[nMx] }) > 0 .and. nSomaDom >= nFinLmCH
 		lRet	:=	.F.
-   	Help(" ",1,"HELP",STR0229,STR0230,1,0)//"FA085A - LIMITE ITF","Pagamento disponivel apenas com Cheque ou Transfer�ncia Banc�ria."
+   	Help(" ",1,"HELP",STR0229,STR0230,1,0)//"FA085A - LIMITE ITF","Pagamento disponivel apenas com Cheque ou Transferência Bancária."
    Endif
 Endif
 If nPagar == 4 .and. lRet
@@ -7770,7 +7878,7 @@ If nPagar == 4 .and. lRet
 	Endif
 Endif
 
-// Ponto de entrada para a valida??o do acols
+// Ponto de entrada para a validação do acols
 If lRet .And. ExistBlock("F085AVAL")
 	lRet:=ExecBlock("F085AVAL",.F.,.F.)
 EndIf
@@ -7778,17 +7886,17 @@ EndIf
 Return lRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�|||||||||||�|||||||�||||||||||||||||||||�||||||�||||||||||||?=
-==�Programa  =a085aSaldos�Autor  =Bruno Sobieski      ?Data =  10/17/00  ?=
-==�||||||||||�|||||||||||�||||||||||||||||||||||||||||�|||||||||||||||||||?=
-==�Desc.     =Linha OK   da digitacao dos titulos usados para pagar       ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085a                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³a085aSaldosºAutor  ³Bruno Sobieski      º Data ³  10/17/00  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Linha OK   da digitacao dos titulos usados para pagar       º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085a                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function a085aSaldos(nValor,nMoeda,nSinal,oSaldo,lPa)
 Local nPosMoe		:=	Ascan(aHeader,{|X| Alltrim(X[2]) == "EK_MOEDA"})
@@ -7818,18 +7926,18 @@ Endif
 Return .T.
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =Fa085AtuVl�Autor  =Bruno Sobieski      ?Data =  10/19/00   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Atualiza o Array do listbox e o total para a nova moeda digi?=
-==?         = tada.                                                      ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP5                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³Fa085AtuVlºAutor  ³Bruno Sobieski      º Data ³  10/19/00   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Atualiza o Array do listbox e o total para a nova moeda digiº±±
+±±º          ³ tada.                                                      º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function Fa085AtuVl(oValOrdens,nValOrdens,aPagos,aSE2)
 Local nA,nC,nP,nX,nY
@@ -8043,7 +8151,7 @@ For nA	:=	1	To Len(aSE2)
 		Next nC
 
 			//************************************************************************
-		//Calculo cumulativo de IVA - reten??o de documentos que n|o s|o desta OP
+		//Calculo cumulativo de IVA - retenção de documentos que não são desta OP
 		//************************************************************************
 		F085DocIVA(aSE2[nA][1][1][_FORNECE],aSE2[nA][1][1][_LOJA])
 
@@ -8128,7 +8236,7 @@ For nA	:=	1	To Len(aSE2)
 		aPagos[nA][H_RETIVA]	:=	TransForm(aPagos[nA][H_RETIVA]  ,Tm(aPagos[nA][H_RETIVA ] ,16,nDecs)) 
 		aPagos[nA][H_RETIR]	:=	TransForm(aPagos[nA][H_RETIR],Tm(aPagos[nA][H_RETIR] ,16,nDecs))
   	ElseIf cPaisLoc $ "COS|DOM"
-		//Array aRetencao - Preenchido na fun??o fa050CalcRet() - C��culo de reten??o com Conf. de Impostos
+		//Array aRetencao - Preenchido na função fa050CalcRet() - Cálculo de retenção com Conf. de Impostos
 		If Len(aRetencao) > 0
 			For nX := 1 to Len(aRetencao)
 				If aRetencao[nX][6] == aPagos[nA][H_FORNECE ] .And. aRetencao[nX][7] == aPagos[nA][H_LOJA ]
@@ -8149,10 +8257,10 @@ For nA	:=	1	To Len(aSE2)
     EndIf
 
 	/*
-	//===================================================================
-	//=Se o pagamento tem opcao de diferenciado, somar o total excedido =
-	//=(PA) no H_TOTALVL                                                =
-	//?================================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³Se o pagamento tem opcao de diferenciado, somar o total excedido ³
+	//³(PA) no H_TOTALVL                                                ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	*/
 	If aSE2[nA][3] <> Nil .And.  aSE2[nA][3][1] == 4
 		aPagos[nA][H_TOTALVL] 	+=	Round(xMoeda(aSE2[nA][3][6],aSE2[nA][3][7],nMoedaCor,,5,aTxMoedas[aSE2[nA][3][7]][2],aTxMoedas[nMoedaCor][2]),MsDecimais(nMoedaCor))
@@ -8189,17 +8297,17 @@ oValOrdens:refresh(.T.)
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =FA085SetMo�Autor  =Alexandre Silva     ?Data =  11.01.02   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Configura as taxas das moedas.                              ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³FA085SetMoºAutor  ³Alexandre Silva     º Data ³  11.01.02   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Configura as taxas das moedas.                              º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function Fa085SetMo()
 Local   lConfirmo   :=	 .F.
@@ -8256,17 +8364,17 @@ Endif
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =Fa085AcRet�Autor  =Microsiga           ?Data =  10/17/00   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Acumula os valores base de calculo de retencao por Conceito.?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = Fina085,FINA085a                                           ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³Fa085AcRetºAutor  ³Microsiga           º Data ³  10/17/00   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Acumula os valores base de calculo de retencao por Conceito.º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ Fina085,FINA085a                                           º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function Fa085AcRet(aConGanOri,nSigno,nSaldo,aRateioGan,lMonotrb)
 Local nRateio
@@ -8285,7 +8393,7 @@ Local aImpInf := {}
 DEFAULT nSigno	:=	1
 DEFAULT lMonotrb := .F.
 
-//As retencoes sao calculadas com a taxa do d�a e nao com a taxa variavel.... //Bruno.
+//As retencoes sao calculadas com a taxa do día e nao com a taxa variavel.... //Bruno.
 	If ExistBlock("F0851IMP")
 		lCalcGN:=ExecBlock("F0851IMP",.F.,.F.,{"GN"})
 	EndIf
@@ -8293,8 +8401,8 @@ DEFAULT lMonotrb := .F.
 If lCalcGN
 
 //+----------------------------------------------------------------+
-//?Obter o Valor do Imposto e Base baseando se no rateio do valor ?
-//?do titulo pelo total da Nota Fiscal.                           ?
+//° Obter o Valor do Imposto e Base baseando se no rateio do valor °
+//° do titulo pelo total da Nota Fiscal.                           °
 //+----------------------------------------------------------------+
 If !(SE2->E2_TIPO $ MV_CPNEG)
 	dbSelectArea("SF1")
@@ -8519,17 +8627,17 @@ EndIf
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =Fa085aVldP�Autor  =Bruno Sobieski      ?Data =  10/17/00   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Valida a digitacao do valor por pagar                       ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085a                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³Fa085aVldPºAutor  ³Bruno Sobieski      º Data ³  10/17/00   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Valida a digitacao do valor por pagar                       º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085a                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function Fa085aVldP()
 Local nPosValor	:=	Ascan(aHeader,{|x| Alltrim(X[2])=="E2_VALOR"})
@@ -8583,17 +8691,17 @@ EndIf
 Return( lRet )
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =Fa085aTerc�Autor  =Microsiga           ?Data =  11/21/00   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Permite escolher os cheques de terceiros                    ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP5                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³Fa085aTercºAutor  ³Microsiga           º Data ³  11/21/00   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Permite escolher os cheques de terceiros                    º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 STATIC Function Fa085aTerc()        // incluido pelo assistente de conversao do AP5 IDE em 09/09/99
 Local lTerceiro   := .F.
@@ -8620,7 +8728,7 @@ If Type("nValor")=="U"
 	nValor	:=	0
 EndIf
 //+---------------------------------------------------------------------+
-//?Criacao da Interface para pedir dados do cheque                     ?
+//¦ Criacao da Interface para pedir dados do cheque                     ¦
 //+---------------------------------------------------------------------+
 If ExistBlock("A85CHPDT")
    	aCheques	:=	ExecBlock("A85CHPDT",.F.,.F.)
@@ -8742,18 +8850,18 @@ If Len(aCheques) > 0
 	Aadd(aTits,Alltrim(FWX3Titulo("E1_EMISSAO")))
 	Aadd(aTits,Alltrim(FWX3Titulo("E1_VENCREA")))
 
-	//===========================================================
-	//=Ponto de entrada para modificar a ordem de apresentacao  =
-	//=dos cheques                       				        =
-	//?========================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³Ponto de entrada para modificar a ordem de apresentacao  ³
+	//³dos cheques                       				        ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	 IF ExistBlock("FI85ACH")
 		aCheques:= ExecBlock("FI85ACH",.F.,.F.,aCheques)
 	 Endif
 
-	//===========================================================
-	//=Ponto de entrada para agregar columnas al grid de la pan-=
-	//=talla "Elija cheque" - Pago con cheques a terceros.      =
-	//?========================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³Ponto de entrada para agregar columnas al grid de la pan-³
+	//³talla "Elija cheque" - Pago con cheques a terceros.      ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	bline1  := { || {IIf(aCheques[oLbx:nAt][1]$" 0",oOk,oNo),aCheques[oLbx:nAt][9],aCheques[oLbx:nAt][2],aCheques[oLbx:nAt][3],aCheques[oLbx:nAt][4],TransForm(aCheques[oLbx:nAt][5],TM(aCheques[oLbx:nAt][5],18,MsDecimais(aCheques[oLbx:nAt][6])) ),aCheques[oLbx:nAt][6],DTOC(aCheques[oLbx:nAt][7]),DTOC(aCheques[oLbx:nAt][8])}}
  	If  ExistBlock('FI85ATCH')
 		aDados	 := ExecBlock('FI85ATCH',.F.,.F.,{aTits,aCheques,blinePE})
@@ -8764,7 +8872,7 @@ If Len(aCheques) > 0
 	Endif
 
 	//+---------------------------------------------------------------------+
-	//?Criacao da Interface para escolher o Cheque                         ?
+	//¦ Criacao da Interface para escolher o Cheque                         ¦
 	//+---------------------------------------------------------------------+
 	Define MSDIALOG oDlg FROM 0,0 To 275,655 Title OemToAnsi(If(cPaisLoc=="PTG",STR0179,STR0112)) PIXEL //"Elija el cheque"
 	@ 001,001 To 133,295 OF oDlg PIXEL
@@ -8777,11 +8885,11 @@ If Len(aCheques) > 0
 	Activate MSDIALOG oDLG CENTERED
 	If nAtLbx	>	0
 		DbSelectArea("SE1")
-		//====================================================================
-		//=Se ja estava escolhido um cheque de terceiros nesta linha do acols=
-		//=o aRecChqTer vai conter o registro que estava lockeado,           =
-		//=Entao, se o escolhido agora for diferente daquele, deslockeio.    =
-		//?=================================================================?
+		//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		//³Se ja estava escolhido um cheque de terceiros nesta linha do acols³
+		//³o aRecChqTer vai conter o registro que estava lockeado,           ³
+		//³Entao, se o escolhido agora for diferente daquele, deslockeio.    ³
+		//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 		If Len(aRecChqTer) >= Len(aCols) .And. aRecChqTer[n] > 0 .And. aRecChqTer[n] <> aCheques[nAtLbx][Len(aCheques[nAtLbx])]
 			MsGoTo(aRecChqTer[n])
 			Replace	E1_OK	With "  "
@@ -8800,17 +8908,17 @@ Endif
 Return	aRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =Fa085aconf�Autor  =Microsiga           ?Data =  11/21/00   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Confirma a marcacao de um cheque de terceiros               ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP5                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³Fa085aconfºAutor  ³Microsiga           º Data ³  11/21/00   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Confirma a marcacao de um cheque de terceiros               º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function Fa085aConf(oLbx,aCheques)
 Local lRet	:= .F.
@@ -8829,7 +8937,7 @@ If SE1->E1_SITUACA $ " 0"
 			Endif
 		Next
 		If !lRet
-			MsgAlert(OemToAnsi(STR0113)) //"El cheque est?en uso y no puede ser marcado"
+			MsgAlert(OemToAnsi(STR0113)) //"El cheque est  en uso y no puede ser marcado"
 		Endif
 	Else
 		MsgAlert(OemToAnsi(STR0114+STRZERO(nPos,2))) //"El cheque fue marcado en el item "
@@ -8839,18 +8947,18 @@ Endif
 Return lRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =GravaPagos�Autor  =Leonardo Gentile    ?Data =  04/01/01   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Fazer todo o tratamento de gravacao dos registros referente ?=
-==?         =aos pagos (por default ou diferenciado)                     ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP5                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³GravaPagosºAutor  ³Leonardo Gentile    º Data ³  04/01/01   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Fazer todo o tratamento de gravacao dos registros referente º±±
+±±º          ³aos pagos (por default ou diferenciado)                     º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function GravaPagos( nPagar, cBanco, cAgencia, cConta, cNumChq, cFornece, cLoja, cNome,;
 nMoeda, nTotal, dDtEmis, dDtVcto, cDebMed, cDebInm, nRegSE1,cParcela,nBaseITF,aHdlPrv,lCBU,lPa,nRecEQU,cChqEQU,nValMoed1,nValMOrig)
@@ -8912,9 +9020,9 @@ If lF085aChS .and. nPagar==1
 	nPagar++
 Endif
 
-//=================================================================
-//=Pegar a numero que vou usar para numerar os documentos gerados.=
-//?==============================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Pegar a numero que vou usar para numerar os documentos gerados.³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 If (nPagar == 2 .Or. nPagar == 3 .OR. (nPagar ==1 .AND. cPaisLoc $ "EQU|DOM|COS")) .And. (Empty(cNumChq) .Or.Substr(cNumChq,1,1)=='*')
 	If ExistBlock("A085ANUM")
 		cNumChq	:=	ExecBlock("A085ANUM",.F.,.F.,{nPagar,cFornece,cLoja,dDtVcto})
@@ -8975,9 +9083,9 @@ If (nPagar == 2 .Or. nPagar == 3 .OR. (nPagar ==1 .AND. cPaisLoc $ "EQU|DOM|COS"
 	EndIf
 EndIf
 
-//=============================================================================
-//=Gravar os debitos inmediatos (Transferencias, Cash, Cartao de debito, etc).=
-//?==========================================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Gravar os debitos inmediatos (Transferencias, Cash, Cartao de debito, etc).³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 If 	nPagar == 3 .And. nTotal > 0
 	cFilOrE5  := IIF(cPaisLoc $ "ARG|PAR|MEX", cFilOrSe2, cFilSe2)
 	nE5Valor  := Round(xMoeda(nTotal, nMoeda, nMoedaBco, , 5, aTxMoedas[nMoeda][2], aTxMoedas[nMoedaBco][2]), MsDecimais(nMoedaBco))
@@ -9055,9 +9163,9 @@ If 	nPagar == 3 .And. nTotal > 0
 		//faco o lancamento do imposto ITF na movimentacao bancaria e retorno os dados para contabilizacao
 		FinProcITF( SE5->( RecNo() ), 3, nBaseITF , .F., aHdlPrv,  )
 	EndIf
-//============================================================================
-//=Gravar os debitos mediatos (Cheques, Letras, Etc), e os cheques "avulsos".=
-//?=========================================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Gravar os debitos mediatos (Cheques, Letras, Etc), e os cheques "avulsos".³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 ElseIf nPagar <> 4
    	If	( nPagar == 1 .Or. (nPagar	==	2	.And.	Trim(cDebMed) == Trim(MVCHEQUE)) ) .And. nTotal > 0
 		If cPaisLoc $ "DOM"
@@ -9065,9 +9173,9 @@ ElseIf nPagar <> 4
 			If SEF->(Recno()) == nRecEQU
 				RecLock("SEF",.F.)
 				SEF->EF_VALOR   := Round(xMoeda(nTotal,nMoeda,nMoedaBco,,5,aTxMoedas[nMoeda][2],aTxMoedas[nMoedaBco][2]),MsDecimais(nMoedaBco))
-				//==========================================================================
-				//=Grava o numero do cheque somente se for pagamento diferenciado          =
-				//?=======================================================================?
+				//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+				//³Grava o numero do cheque somente se for pagamento diferenciado          ³
+				//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 				SEF->EF_BENEF	:= cNome
 				SEF->EF_VENCTO	:= dDtVcto
 				SEF->EF_DATA	:= dDtEmis
@@ -9110,9 +9218,9 @@ ElseIf nPagar <> 4
 			RecLock("SEF",.T.)
 			SEF->EF_FILIAL 	:= xFilial("SEF")
 			SEF->EF_VALOR   := Round(xMoeda(nTotal,nMoeda,nMoedaBco,,5,aTxMoedas[nMoeda][2],aTxMoedas[nMoedaBco][2]),MsDecimais(nMoedaBco))
-			//==========================================================================
-			//=Grava o numero do cheque somente se for pagamento diferenciado          =
-			//?=======================================================================?
+			//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+			//³Grava o numero do cheque somente se for pagamento diferenciado          ³
+			//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 			If nPagar == 2 .And. Trim(cDebMed) == Trim(MVCHEQUE)
 				SEF->EF_NUM	:= cNumChq
 			EndIf
@@ -9282,9 +9390,9 @@ ElseIf nPagar <> 4
 		EndIf
 	EndIf
 Else
-	//====================================================
-	//=Baixar cheques de terceiros aplicados no pagamento=
-	//?=================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³Baixar cheques de terceiros aplicados no pagamento³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	If nRegSE1 # nil
 		SE1->( MsGoto( nRegSE1))
 		If !SE1->(Eof())
@@ -9371,9 +9479,9 @@ Else
 			EndIf
 			F085AGrvTx()
 			MsUnlock()
-			//============================================================
-			//= Grava os lancamentos nas contas orcamentarias SIGAPCO    =
-			//?=========================================================?
+			//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+			//³ Grava os lancamentos nas contas orcamentarias SIGAPCO    ³
+			//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 			PcoDetLan("000313","03","FINA085A")
 		EndIf
 	EndIf
@@ -9428,9 +9536,9 @@ If nPagar <> 4
 		IF (ExistBlock("F085GRA"))
 	       ExecBlock("F085GRA",.f.,.f.)
 	   Endif
-		//============================================================
-		//= Grava os lancamentos nas contas orcamentarias SIGAPCO    =
-		//?=========================================================?
+		//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		//³ Grava os lancamentos nas contas orcamentarias SIGAPCO    ³
+		//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 		PcoDetLan("000313","04","FINA085A")
 	EndIf
 EndIf
@@ -9442,17 +9550,17 @@ Endif
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =AtuaSaldos�Autor  =Leonardo Gentile    ?Data =  06/01/01   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Atualizacao dos saldos dos regs. do SE2, SE1, SA1, SA2      ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP5                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³AtuaSaldosºAutor  ³Leonardo Gentile    º Data ³  06/01/01   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Atualizacao dos saldos dos regs. do SE2, SE1, SA1, SA2      º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function	AtuaSaldos(aDocs, nValorFor,cFornece,cLoja,nFlagMOD,nCtrlMOD)
 Local nMVCusto	:=	Val(GetMv("MV_MCUSTO"))
@@ -9517,7 +9625,7 @@ For nX	:=	1	TO Len( aDocs[1] )
 		EndIf
 
 		//+--------------------------------------------------------------+
-		//?Baixar titulos de abatimento se for baixa total              ?
+		//¦ Baixar titulos de abatimento se for baixa total              ¦
 		//+--------------------------------------------------------------+
 			IF cPaisLoc $ "ARG|EQU|DOM|COS"
 			F085AtuAbt(cOrdPago)
@@ -9577,8 +9685,8 @@ If aDocs[3] <> Nil .And. aDocs[3][1] == 4
 			DbSelectArea("SE1")
 			MsGoTo(aDocs[3][3][nX])
 			//+--------------------------------------------------------------+
-			//?Gravar os campos E1_FORNECE e E1_LOJAFOR para criar um tipo  ?
-			//?de controle (rastro) para detectar de quem e o cheque...     ?
+			//¦ Gravar os campos E1_FORNECE e E1_LOJAFOR para criar um tipo  ¦
+			//¦ de controle (rastro) para detectar de quem e o cheque...     ¦
 			//+-Lucas, Argentina 11/2001 ------------------------------------+
 			RecLock("SE1",.F.)
 				E1_SALDO := 0
@@ -9618,18 +9726,18 @@ Endif
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�|||||||||||||�|||||||�|||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =a085aMarkAll �Autor  =Bruno Sobieski   �Fecha =  01/09/01   ?=
-==�||||||||||�|||||||||||||�|||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Funcao de marca Tudo definida aqui para usar a a085aMark    ?=
-==?         = e tratar os locks do SE2.                                  ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP5                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³a085aMarkAll ºAutor  ³Bruno Sobieski   ºFecha ³  01/09/01   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Funcao de marca Tudo definida aqui para usar a a085aMark    º±±
+±±º          ³ e tratar os locks do SE2.                                  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function A085aMarkAll(nFlagMOD,nCtrlMOD)
 Local nRecno	:=	REcno()
@@ -9643,17 +9751,17 @@ If cPaisLoc$"PER|DOM|COS"
    DBGOTOP()
    if nFlagMOD==0
       If lFindITF .And. FinProcITF( SE5->(RECNO()),1,,,,,SE2->E2_NATUREZ)
-         MsgAlert(STR0210)//"Ser?selecionado apenas Titulos sem incid�ncia de ITF.")
+         MsgAlert(STR0210)//"Será selecionado apenas Titulos sem incidência de ITF.")
        Else
-         MsgAlert(STR0209)//"Ser?selecionado apenas Titulos sem incid�ncia de ITF.")
+         MsgAlert(STR0209)//"Será selecionado apenas Titulos sem incidência de ITF.")
       Endif
      Else
       If nFlagMOD==1
          nFlagMOD:=22
-         MsgAlert(STR0209)//"Ser?selecionado apenas Titulos sem incid�ncia de ITF.")
+         MsgAlert(STR0209)//"Será selecionado apenas Titulos sem incidência de ITF.")
        Else
          nFlagMOD:=11
-         MsgAlert(STR0210)//"Ser?selecionado apenas Titulos com incid�ncia de ITF.")
+         MsgAlert(STR0210)//"Será selecionado apenas Titulos com incidência de ITF.")
       Endif
    Endif
 Endif
@@ -9680,18 +9788,18 @@ MsGoTo(nRecno)
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =a085aMark �Autor  =Bruno Sobieski      �Fecha =  01/09/01   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Funcao de marca da MarkBrowse, definida aqui para tratar os ?=
-==?         = locks do SE2 a efeitos ad concorrencia de processos.       ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP5                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³a085aMark ºAutor  ³Bruno Sobieski      ºFecha ³  01/09/01   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Funcao de marca da MarkBrowse, definida aqui para tratar os º±±
+±±º          ³ locks do SE2 a efeitos ad concorrencia de processos.       º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function a085aMark(lAll,nFlagMOD,nCtrlMOD)
 Local lRet	:=	.F.
@@ -9718,17 +9826,17 @@ Default nFlagMOD := 0
 lAll	:=	Iif(lAll==Nil,.F.,lAll)
 
 If cPaisLoc $ 'MEX|PER'
-	//Valida Modalidad de operaci??
+	//Valida Modalidad de operación
 	If SE2->E2_TIPO  == PADR('PA',TamSx3("E2_TIPO")[1]) .AND. POSICIONE("SED",1,xFilial("SED")+SE2->E2_NATUREZ ,"ED_OPERADT") == '1'
-		IF (!lAll, MSGALERT(STR0263, ""),) //"No es posible seleccionar registros de recepci?? anticipado que posean modalidad con operaci?? de anticipo habilitada."
+		IF (!lAll, MSGALERT(STR0263, ""),) //"No es posible seleccionar registros de recepción anticipado que posean modalidad con operación de anticipo habilitada."
 		Return
 	endif
 EndIf
 
-//==================================================================================
-//=O titulo que teve seu ajuste de saldo por dif. de cambio nao pode ser baixado em=
-//=data anterior ao ajuste, porque senao o ajuste feito seria sobre o saldo errado =
-//?===============================================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³O titulo que teve seu ajuste de saldo por dif. de cambio nao pode ser baixado em³
+//³data anterior ao ajuste, porque senao o ajuste feito seria sobre o saldo errado ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 If cPaisLoc $ "ARG|BOL|URU" .And. SE2->(FieldPos('E2_DTDIFCA'))>0
 	If SE2->E2_DTDIFCA>= dDataBase
 		If !lAll
@@ -9762,10 +9870,10 @@ EndIf
 DbSelectArea("SE2")
 
 //Nao usamos o lInvete pois tem problemas...
-//====================================================================================
-//= Caso esteja ligado o controle de solicitacao de notas de credito e exista alguma =
-//= pendencia para este titulo                                                       =
-//?=================================================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Caso esteja ligado o controle de solicitacao de notas de credito e exista alguma ³
+//³ pendencia para este titulo                                                       ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 SCU->(DbSetOrder(2))
 If cPaisloc <> "BRA" .And. SuperGetMv('MV_SOLNCP') .And. SE2->E2_TIPO == MVNOTAFIS;
 		.And. SCU->(MsSeek(xFilial()+SE2->E2_FORNECE+SE2->E2_LOJA+SE2->E2_NUM+SE2->E2_PREFIXO)).And. Empty(SCU->CU_NCRED)
@@ -9840,10 +9948,10 @@ Else
 					 Else
 					   IF CPAISLOC$"PER|DOM|COS"
 					      If nFlagMOD==1 .AND. !lAll
-				            MsgAlert(STR0211)//"Selecione apenas Titulos com incid�ncia de ITF.")
+				            MsgAlert(STR0211)//"Selecione apenas Titulos com incidência de ITF.")
 				         Endif
 					      If nFlagMOD==2 .AND. !lAll
-				            MsgAlert(STR0212)//"Selecione apenas Titulos sem incid�ncia de ITF.")
+				            MsgAlert(STR0212)//"Selecione apenas Titulos sem incidência de ITF.")
 				         Endif
 				   	 ENDIF
 				       EXIT
@@ -9853,7 +9961,7 @@ Else
 				Endif
 			Next
 			If !lRet .And. !lAll .AND. lMRet
-				MsgAlert(OemToAnsi(STR0130)) //"El titulo est?en uso y no puede ser marcado en este momento"
+				MsgAlert(OemToAnsi(STR0130)) //"El titulo est  en uso y no puede ser marcado en este momento"
 			Endif
 		EndIf
 	Endif
@@ -9977,18 +10085,18 @@ ENDIF
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =a085aCmpMo�Autor  =Bruno Sobieski      �Fecha =  01/10/01   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Funcao recursiva para aplicar os valores recebidos em moeda ?=
-==?         =diferente a dos titulos, nestes mesmos titulos.             ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP5                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³a085aCmpMoºAutor  ³Bruno Sobieski      ºFecha ³  01/10/01   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Funcao recursiva para aplicar os valores recebidos em moeda º±±
+±±º          ³diferente a dos titulos, nestes mesmos titulos.             º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 
 Static Function a085aCmpMo(aTitPags)
@@ -10022,17 +10130,17 @@ Next
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =a085aVldDe�Autor  =Microsiga           �Fecha =  01/12/01   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Valida a digitacao do % de desconto e do valor de desconto. ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP5                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³a085aVldDeºAutor  ³Microsiga           ºFecha ³  01/12/01   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Valida a digitacao do % de desconto e do valor de desconto. º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function a085aVldDe(nOpc,oPorDesc,nPorDesc,oValDesc,nValDesc,nValBrut,nValLiq,oValLiq,aDescontos,bZeraRets,oGetDad1,bRecalc,nValAdic)
 Local nPosTipE2	:=	Ascan(aHeader,{ |x| Alltrim(x[2])=="E2_TIPO"})
@@ -10065,9 +10173,9 @@ If nOpc	==	2	// Valor
 		If cPaisLoc == "ARG" .Or. cPaisLoc $ "URU|BOL"
 			Eval(bZeraRets)
 		Endif
-		//==============================================
-		//=Ratear o Total do desconto nas Notas Fiscais=
-		//?===========================================?
+		//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		//³Ratear o Total do desconto nas Notas Fiscais³
+		//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 		nPorDesc:=	(nValDesc * 100 ) / nValBrut
 		For nX:=1	To	Len(aCols)
 			nValOri	:=	(aCols[nX][nPosPagMo]+aCols[nX][nPosJurE2]+aCols[nX][nPosMulE2])
@@ -10195,17 +10303,17 @@ lRetenc	:=	.F.
 Return lRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =A085APgAdi�Autor  =Bruno Sobieski      �Fecha =  01/16/01   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Pagamento adiantado.                                        ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085a                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³A085APgAdiºAutor  ³Bruno Sobieski      ºFecha ³  01/16/01   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Pagamento adiantado.                                        º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085a                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function A085APgAdi(lIncAdt,cCodFor,cLojFor,aRecAdt)
 Local aCpos	:=	{}
@@ -10243,7 +10351,7 @@ Local aRotinaOld:= If(Type("aRotina")=="A",aClone(aRotina),{})
 Local aHeaderOld:= If(Type("aHeader")=="A",aClone(aHeader),{})
 Local aColsOld  := If(Type("aCols")=="A",aClone(aCols),{})
 Local nOld      := If(Type("n")=="N",n,1)
-Local nBaseIGV  := 0 // valor base para caculo da reten�ao do igv
+Local nBaseIGV  := 0 // valor base para caculo da retençao do igv
 Local nAliqIGV  := 0 // aliquota para calculo do valor do igv a ser retido
 Local aButtons	 := If(cPaisLoc=="ARG",	{ 	{"NOTE"   ,{||   F085ImpPA(,@aSE2,@cFor,@oFor,oRet,@nRet,nValor,@nLiquido,oLiquido,@nRetIb,oRetIb,@nRetIva,oRetIva,@nRetSuss,oRetSuss)},OemToAnsi(STR0189)}},{}); //,OemToAnsi(STR0008)}} //'Alterar OP' } //"Modificar"
 	   //	{'PRECO'    ,{|| A085aPagos(aSE2[oLBx:nAt][1],aSE2[oLBx:nAt][2],oLbx:nAt,@aSE2,oDlg),Fa085atuVl(@oValOrdens,@nValOrdens,@aPagos,aSE2)   },OemToAnsi(STR0077)} } //"Pago diferenciado"
@@ -10304,8 +10412,8 @@ If lF85NoInfo
 EndIf
 
 //ANGOLA - Inclusao de adiantamento para relacionar com pedido
-//Vari�veis Private declaradas no inicio do FINA085A e necess�rias para a
-//chamada direta desta fun??o.
+//Variáveis Private declaradas no inicio do FINA085A e necessárias para a
+//chamada direta desta função.
 //NAO TRASFORME EM LOCAL !!!!
 If lIncAdt
 	aTxMoedas	:= F085TxMoed()
@@ -10361,11 +10469,11 @@ nMoedaCor	:=	1
 //Forco para que seja inclusao
 aRotina[4][4]	:=	3
 
-//============================================================================
-//=Carregar os tipos definidos no SES para a ordem de pago pelo campo        =
-//=ES_RCOPGER, que indica que tipo de movimento vai gerar o tipo (BANCARIO ou=
-//=TITULO A PAGAR)                                                           =
-//?=========================================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Carregar os tipos definidos no SES para a ordem de pago pelo campo        ³
+//³ES_RCOPGER, que indica que tipo de movimento vai gerar o tipo (BANCARIO ou³
+//³TITULO A PAGAR)                                                           ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 cTmp  := GetSESTipos({|| ES_RCOPGER == "1"},"2")
 While	!Empty(cTmp)
 	AAdd(aDebMed,Substr(cTmp,1,tamSx3("E2_TIPO")[1]))
@@ -10400,9 +10508,9 @@ If cPaisLoc<>"PER"
    cDebInm	:=	aDebInm[1]
 Endif
 
-//==============================================
-//=Inicializar o aHeader e o aCols.            =
-//?===========================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Inicializar o aHeader e o aCols.            ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 //Se o aHeader nao foi definido ainda, defino ele aqui SO UMA VEZ POR SESSAO. Bruno
 If aHeader2	==	Nil
 	aHeader2 	:=	{}
@@ -10411,7 +10519,7 @@ If aHeader2	==	Nil
 		aHeader2	:=	ExecBlock("A085CPOS",.F.,.F.)
 	Else
 
-		//aProSX3[x] -->  x = 1 Picture | x = 2 Tama�o | x = 3 Decimal | x = 4 Valid | x = 5 Usado | x = 6 Tipo | x = 7 Context | x = 8 F3 | x = 9 Arquivo | x = 10 Nivel | x = 11 cbox   	
+		//aProSX3[x] -->  x = 1 Picture | x = 2 Tama�o | x = 3 Decimal | x = 4 Valid | x = 5 Usado | x = 6 Tipo | x = 7 Context | x = 8 F3 | x = 9 Arquivo | x = 10 Nivel | x = 11 cbox   	
 		
 		aProSX3 := LxfSX3Cach("EK_TIPODOC")
 		Aadd(aHeader2,{Alltrim(FWX3Titulo("EK_TIPODOC")) ,"EK_TIPODOC"	,"9"		,aProSX3[2]	,aProSX3[3]	,'PERTENCE("123").And.A085aVlds(Nil,Nil,.T.)' ,aProSX3[5],"C","SEK"})
@@ -10451,17 +10559,17 @@ Next nA
 aCols[1][Len(aCols[1])]	:=	.F.
 
 
-//=============================================================
-//= Inicializa a gravacao dos lancamentos do SIGAPCO          =
-//?==========================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Inicializa a gravacao dos lancamentos do SIGAPCO          ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 PcoIniLan("000313")
 DEFINE FONT oFnt  NAME "Arial" SIZE 09,11 BOLD
 
 DEFINE MSDIALOG oDlg FROM 30,40  TO 440,633 TITLE OemToAnsi(STR0137) Of oMainWnd PIXEL  // "Pagos Anticipados"
 
-//=========================================================================
-//=Informar el proveedor para el que ser?hecho el pago y el valor a pagar=
-//?======================================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Informar el proveedor para el que será hecho el pago y el valor a pagar³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 @ 33,004 To 65,290 Pixel Of  oDlg
 If cPaisLoc $ "COS|ARG"
 	@ 33,004 To 81,290 Pixel Of  oDlg
@@ -10505,9 +10613,9 @@ If cPaisLoc	==	"ANG"	.And. lRetPa
 	@ 33,225 SAY OemToAnsi(STR0194 ) SIZE 45, 7 OF oDlg PIXEL   //"Aliq. RIE"
 	@ 31,245 MSGET nAliqRIE Picture "@E 99.99" Valid (Positivo(nAliqRIE) .And. F085VldRet(1,cFornece,@cFor,oFor,oRet,@nRet,nValor,@nLiquido,oLiquido,@aSE2,cLoja,cCF,cProv,oRetIB,@nRetIB,cZnGeo,nGrpSus,nTotAnt,oRetIVA,@nRetIVA,oRetSUSS,@nRetSuss,nBaseRIE,nAliqRIE,nBaseIGV,nAliqIGV)) SIZE 15, 7 PIXEL OF oDlg // WHEN nPagar<>4
 Endif
-//============================================================
-//=Informar o tipo de documento com que vamos pagar e o banco=
-//?=========================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Informar o tipo de documento com que vamos pagar e o banco³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	@ 65,004 To 146,290 Pixel Of  oDlg LABEL OemToAnsi(STR0083) //"Pagar con"
 If cPaisLoc $ "EQU|DOM"
 	@ 71,006  RADIO oPagar VAR nXPagar 3D ;
@@ -10556,9 +10664,9 @@ If lRetPa
 		oPagar:Disable(4)
 	Endif
 Endif
-//=================
-//=Digitar o banco=
-//?==============?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Digitar o banco³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 
 @ 71,160 To 114,285 Pixel Of  oDlg LABEL OemToAnsi(STR0091) //"Banco"
 
@@ -10571,9 +10679,9 @@ Endif
 @ 088,240 MSGET oConta   VAR cConta		Picture "@S10"            Valid CarregaSa6(@cBanco,@cAgencia,@cConta,.F.)	.And. (ExistCpo("SA6",cBanco+cAgencia+cConta ).Or.Empty(cConta)) .And. If(CCBLOCKED(cBanco,cAgencia,cConta),.F.,.T.)	SIZE 45, 10 OF oDlg PIXEL	WHEN IIf(lF085aChs,nPagar <> 3,nPagar <> 4)
 
 @ 116,010 To 141,285 Pixel Of  oDlg LABEL OemToAnsi(STR0087) //"Datos del titulo de pago"
-//==============================================
-//=Escolher o vencimento do cheque pre-impresso=
-//?===========================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Escolher o vencimento do cheque pre-impresso³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 @ 126,015 SAY oDataTxt1 Var OemToAnsi(STR0088) SIZE 50,10 OF	oDlg PIXEL //"Fecha para el debito "
 @ 124,080 MSGET oDataVenc1 VAR dDataVenc1 Valid (dDataVenc1 >= dDataBase)	SIZE 44,09 OF	oDlg PIXEL HASBUTTON
 
@@ -10581,12 +10689,12 @@ Endif
 
 @ 124,030 COMBOBOX oCBX1 VAR cDebMed ITEMS aDebMed Valid IF(lRetCkPG(0,cDebInm,cBanco,nPagar),.T.,.T.)  SIZE 50,50 OF oDlg PIXEL
 
-//======================================
-//=Escolher o titulo de debito diferido=
-//?===================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Escolher o titulo de debito diferido³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 @ 126,090 SAY oDataTxt2 VAR OemToAnsi(STR0088) SIZE 50,10 OF	oDlg PIXEL //"Fecha para el debito "
 @ 126,150 MSGET oDataVenc VAR dDataVenc Valid (dDataVenc >= dDataBase)	SIZE 44,09 OF	oDlg PIXEL  HASBUTTON
-@ 124,200 CHECKBOX oChkBox Var lBaixaChq	PROMPT OemToAnsi(STR0090) SIZE 80,16 PIXEL When (dDataVenc==dDataBase) Of oDlg //"?Debitar los titulos ahora ? "
+@ 124,200 CHECKBOX oChkBox Var lBaixaChq	PROMPT OemToAnsi(STR0090) SIZE 80,16 PIXEL When (dDataVenc==dDataBase) Of oDlg //"¨ Debitar los titulos ahora ? "
 
 //Box para escolher o titulo de debito Inmediato
 @ 124,030 COMBOBOX oCBX2 VAR cDebInm ITEMS aDebInm Valid IF(lRetCkPG(0,cDebInm,cBanco,nPagar,nValor),.T.,.T.)  SIZE 50,50  OF oDlg PIXEL When (nPagar==3 .Or. (nPagar == 2 .And. lF085aChs))
@@ -10678,9 +10786,9 @@ ElseIf nPagar == 4
 	Next
 Endif
 
-//==================================================
-//= Finaliza a gravacao dos lancamentos do SIGAPCO =
-//?===============================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Finaliza a gravacao dos lancamentos do SIGAPCO ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 PcoFinLan("000313")
 aRotina:= aClone(aRotinaOld)
 aHeader:= aClone(aHeaderOld)
@@ -10690,18 +10798,18 @@ n	   := nOld
 Return( .F. )
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =a085aVldPA�Autor  =Bruno Sobieski      �Fecha =  01/17/01   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Valida o fornecedor na digitacao do Paganmento adiantado   ?=
-==?         = e atualiza os objetos referidos .                          ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP5                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³a085aVldPAºAutor  ³Bruno Sobieski      ºFecha ³  01/17/01   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Valida o fornecedor na digitacao do Paganmento adiantado   º±±
+±±º          ³ e atualiza os objetos referidos .                          º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function a085aVldPA(nOpc,cFornece,cFor,oFor,oRet,nRet,nValor,nLiquido,oLiquido,aSE2,cLoja,cCF,cProv,oRetIB,nRetIB,cZnGeo,nGrpSus,nTotAnt,oRetIVA,nRetIVA,oRetSUSS,nRetSuss)
 Local lRet		:= .F.
@@ -10735,18 +10843,18 @@ Endif
 Return lRet
 
 /*/
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  = ShowPO   ?Autor = Armando P. Waiteman?Data =  16/01/01   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Descri��o = Funcao para a geracao de tela com a lista de todas as      ?=
-==?         = ordens de pagto geradas.                                   ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³ ShowPO   º Autor ³ Armando P. Waitemanº Data ³  16/01/01   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDescri‡„o ³ Funcao para a geracao de tela com a lista de todas as      º±±
+±±º          ³ ordens de pagto geradas.                                   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 /*/
 Static Function a085aShow(aList,oBrw)
 Local oDlg,oLbx
@@ -10777,9 +10885,9 @@ Else
 Endif
 
 oLBx := TWBrowse():New( 07,07,270,120,,aHeader,aSize,oDlg,,,,,,,,,,,,.F.,,.T.,,.F.,,,)
-// Define o conte=do do listbox
+// Define o conteúdo do listbox
 oLbx:SetArray(aList)
-// Define as colunas que ser|o impressas e a ordem (Fixo para cinco colunas)
+// Define as colunas que serão impressas e a ordem (Fixo para cinco colunas)
 oLbx:bLine:={ || {aList[oLbx:nAt,1],aList[oLbx:nAt,2],aList[oLbx:nAt,3],aList[oLbx:nAt,4],TransForm(aList[oLbx:nAt,5],TM(aList[oLbx:nAt,5],19,MsDecimais(nMoedaCor))),Iif(aList[oLbx:nAt,6],STR0047,STR0048)} }
 @140,10 SAY OemToAnsi(STR0133) Size 60,10 PIXEL of oDlg FONT oFnt  //"Total Pago : "
 @140,75 SAY nTotalPago Picture	TM(nTotalPago,19,MsDecimais(nMoedaCor)) Size 80,10 Of oDlg PIXEL FONT oFnt
@@ -10798,17 +10906,17 @@ Activate Dialog oDlg CENTERED
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =AaddSE2   �Autor  =Bruno Sobieski      ?Data =  10/17/00   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Inclui um novo Item no array de notas para serem pagas      ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085a                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³AaddSE2   ºAutor  ³Bruno Sobieski      º Data ³  10/17/00   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Inclui um novo Item no array de notas para serem pagas      º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085a                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function AaddSE2(nControl,aSE2,lFake)
 Local x,y
@@ -10871,8 +10979,8 @@ If !lFake
    		aSE2[x][1][y][_FILIAL] := SE2->E2_FILIAL
 	EndIf
 	//Considero para moeda da orden de pago:
-	// 1 - Moeda da taxa modificada/digitada quando for diferente da cota??o do dia (significa que foi modificada)
-	// 2 - Taxa da inclus|o do t�tulo (E2_TXMOEDA)
+	// 1 - Moeda da taxa modificada/digitada quando for diferente da cotação do dia (significa que foi modificada)
+	// 2 - Taxa da inclusão do título (E2_TXMOEDA)
 	// 3 - Taxa do dia (SM2)
 	If aTxMoedas[SE2->E2_MOEDA][2] <> Round(RecMoeda(dDataBase,SE2->E2_MOEDA),TamSX3("M2_MOEDA"+ALLTRIM(STR(SE2->E2_MOEDA)))[2])
 		nTxMoeda := aTxMoedas[SE2->E2_MOEDA][2]
@@ -10893,14 +11001,14 @@ If !lFake
 			MsUnlock()
 			F085DelAbt(xFilial("SE2")+SE2->E2_FORNECE+SE2->E2_LOJA+SE2->E2_PREFIXO+SE2->E2_NUM)
 		EndIf
-		/* Gera??o das Reten��es de Impostos - Republica Dominicana */
+		/* Geração das Retenções de Impostos - Republica Dominicana */
 		/* Function fa050CalcRet(cCarteira, cFatoGerador)           */
 		/* 1-Contas a Pagar ou 3-Ambos e Fato Gerador 2-Baixa       */
 		If 	!SE2->E2_TIPO	$ 	"CH |PA "
 			fa050CalcRet("'1|3'", "2", SE2->E2_NATUREZA, SE2->E2_VALOR, SE2->E2_PREFIXO, SE2->E2_NUM, SE2->E2_FORNECE)
 		EndIf
 	EndIf
-	//Reten��es do Equador ocorrem na Origem
+	//Retenções do Equador ocorrem na Origem
 	If	cPaisLoc $ "DOM|COS|EQU|PER" //.Or. (cPaisLoc == "DOM" .And. SE2->E2_TIPO == MVPAGANT)
 		aSE2[x][1][y][_ABATIM ] := 0
 	Else
@@ -11005,17 +11113,17 @@ EndIf
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =A085FORN  �Autor  =Marcello Gabriel    ?Data =  22/03/01   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Cria uma janela com a lista de fornecedores                 ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085a                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³A085FORN  ºAutor  ³Marcello Gabriel    º Data ³  22/03/01   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Cria uma janela com a lista de fornecedores                 º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085a                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function A085AFORN(aSE2)
 Local ni,oCol,nTitulos,oForm ,oCBX, cIndice
@@ -11115,18 +11223,18 @@ dbSelectArea(cAlias)
 Return lRet
 
 /*/
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Fun��o    = GERATXT  ?Autor = Jose Novaes Romeu  ?Data =  05/06/01   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Descri��o = Gravacao de arquivo de LOG quando o saldo for maior que o  ?=
-==?         = valor do titulo a pagar. Somente para localizacao "POR".   ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºFun‡„o    ³ GERATXT  º Autor ³ Jose Novaes Romeu  º Data ³  05/06/01   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDescri‡„o ³ Gravacao de arquivo de LOG quando o saldo for maior que o  º±±
+±±º          ³ valor do titulo a pagar. Somente para localizacao "POR".   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 /*/
 Static Function GeraTxt(cPrefixo,cNum,cParcela,cTipo,cFornece,cLoja,cSaldoAnt,cSaldo)
 Local cArqTxt	:= "ERRORPAG.LOG"
@@ -11154,17 +11262,17 @@ EndIf
 Return
 
 /*/
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Fun��o    = GravaRet ?Autor = Bruno Sobieski     ?Data =  27/06/01   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Descri��o = Gravacao das retencoes de impostos  (argentina)            ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºFun‡„o    ³ GravaRet º Autor ³ Bruno Sobieski     º Data ³  27/06/01   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDescri‡„o ³ Gravacao das retencoes de impostos  (argentina)            º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 /*/
 Static Function a085aGravRet(aRets,cFornece,cLoja,cParcela,lGan,aTitPags,nMoedaRet,lGerPA,lCBU)
  Local nX	     := 0
@@ -11247,9 +11355,9 @@ If cPaisLoc $ "URU|BOL"
 				If lA085aRet
 					ExecBLock("A085ARET",.F.,.F.,"IRIC")
 				Endif
-				//============================================================
-				//= Grava os lancamentos nas contas orcamentarias SIGAPCO    =
-				//?=========================================================?
+				//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+				//³ Grava os lancamentos nas contas orcamentarias SIGAPCO    ³
+				//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 				PcoDetLan("000313","05","FINA085A")
 			EndIf
 		Next
@@ -11304,9 +11412,9 @@ If cPaisLoc $ "URU|BOL"
 				If lA085aRet
 					ExecBLock("A085ARET",.F.,.F.,"IRI")
 				Endif
-				//============================================================
-				//= Grava os lancamentos nas contas orcamentarias SIGAPCO    =
-				//?=========================================================?
+				//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+				//³ Grava os lancamentos nas contas orcamentarias SIGAPCO    ³
+				//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 				PcoDetLan("000313","05","FINA085A")
 			EndIf
 		Next
@@ -11971,17 +12079,17 @@ EndIf
 Return aCert
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||?=
-==�Programa  = GetCert    �Autor  =Microsiga           ?Data =    /  /   ?=
-==�||||||||||�||||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||?=
-==�Desc.     =Pega os numeros de certificados de retencao                 ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³ GetCert    ºAutor  ³Microsiga           º Data ³    /  /   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Pega os numeros de certificados de retencao                 º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function GetCert(cImposto,cChave,lReUsa)
 Local cNroCert   := ""
@@ -12000,10 +12108,10 @@ DEFAULT lReUsa	:=	.T.
 	Endif
 
 	If AllTrim(cImposto) $ "IGV"
-		cNroCert := SunatCert(cImposto,nTamCpoCer) //Conforme orienta??o da SUNAT, crio um registro de numera??o para cada filial dessa forma, cada filial pode gerar o recibo com sequencial pr�prio
+		cNroCert := SunatCert(cImposto,nTamCpoCer) //Conforme orientação da SUNAT, crio um registro de numeração para cada filial dessa forma, cada filial pode gerar o recibo com sequencial próprio
 	Else
 		aGetSx5 := FwGetSX5("99", cImposto)
-		IF Len(aGetSx5) == 0 //Caso no existe el registro est�ndar en la tabla SX5 para el impuesto especificado, se crea un registro nuevo
+		IF Len(aGetSx5) == 0 //Caso no existe el registro estándar en la tabla SX5 para el impuesto especificado, se crea un registro nuevo
 			cNroCert := StrZero(1,nTamCpoCer)
 		Else
 			cNroCert := StrZero(Val(aGetSx5[1][4])+1,nTamCpoCer)
@@ -12016,7 +12124,7 @@ DEFAULT lReUsa	:=	.T.
 Return cNroCert
 
 /*/{Protheus.doc} SunatCert
-Funci?? utilizada obtener el certificado para SUNAT por filial logeada
+Función utilizada obtener el certificado para SUNAT por filial logeada
 @author 	carlos.espinoza
 @since 		06/2025
 @version	12.1.2210 / Superior
@@ -12024,7 +12132,7 @@ Parametros
 	cImposto    - caracter - Impuesto
 @Return 
 	cNroCert    - caracter - Certificado para SUNAT
-	nTamCpoCer - num�rico - Tama�o del campo FE_NROCERT
+	nTamCpoCer - numérico - Tamaño del campo FE_NROCERT
 /*/
 Function SunatCert(cImposto,nTamCpoCer)
 Local aRet 		:= {}
@@ -12048,7 +12156,7 @@ Default nTamCpoCer := 0
 		SX5->X5_DESCENG 	:= cNroCert
 		SX5->(MsUnLock())
 	Else
-		cNroCert := StrZero(Val(X5DESCRI())+1,nTamCpoCer) //Se actualiza el certificado a la numeraci?? consecutiva
+		cNroCert := StrZero(Val(X5DESCRI())+1,nTamCpoCer) //Se actualiza el certificado a la numeración consecutiva
 		If mv_par14 == 1
 			aAdd(aParam,{1,STR0253,cNroCert,,,,,60,.T.})
 			If Parambox(aParam,STR0252,@aRet,,,.T.,,,,,.F.,.F.)
@@ -12068,18 +12176,18 @@ Default nTamCpoCer := 0
 Return cNroCert
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||?=
-==�Programa  =a085aZeraRet�Autor  =Bruno Sobieski      ?Data =  07/29/01 ?=
-==�||||||||||�||||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||?=
-==�Desc.     =Zera os valores de retencoes cuando ?mudado algum dado que ?=
-==?         =determina que as retencoes devem ser recalculadas           ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A (Argentina)                                       ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³a085aZeraRetºAutor  ³Bruno Sobieski      º Data ³  07/29/01 º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Zera os valores de retencoes cuando é mudado algum dado que º±±
+±±º          ³determina que as retencoes devem ser recalculadas           º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A (Argentina)                                       º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function A085AZeraRet(nRetIva,nRetGan,nRetIB,nRetIric,nRetSUS,nRetSLI,;
 oRetIVA,oRetGan,oRetIB,oRetIric,oRetSUSS,oRetSLI,nRetIr,oRetIr,nRetIRC,oRetIRC,oRetISI,nRetISI,oRetIGV,nRetIR4)
@@ -12124,17 +12232,17 @@ lRetenc	:=	.F.
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Program   =A085AORDPG�Author =Microsiga           ?Date =  08/02/01   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Atualiza os contadores de ordem de pago e a marca de selecao?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Use       = AP5                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºProgram   ³A085AORDPGºAuthor ³Microsiga           º Date ³  08/02/01   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Atualiza os contadores de ordem de pago e a marca de selecaoº±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUse       ³ AP5                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function a085aOrdPg()
 
@@ -12164,17 +12272,17 @@ aLinMoed[oBMoeda:nAT][2] := obMoeda:Aarray[oBMoeda:nAT][2]
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =F085MRKB  �Autor  =Sergio S. Fuzinaka  �Fecha =  20/01/03   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Validacion de proveedores Observados por DGI - MarkBrowse   ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       =FINA085A()                                                  ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³F085MRKB  ºAutor  ³Sergio S. Fuzinaka  ºFecha ³  20/01/03   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Validacion de proveedores Observados por DGI - MarkBrowse   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³FINA085A()                                                  º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function F085MRKB(lAll)
 Local aArea     := GetArea()
@@ -12223,17 +12331,17 @@ RestArea( aArea )
 Return( lRet )
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =F085VFOR  �Autor  =Sergio S. Fuzinaka  �Fecha =  20/01/03   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Validacion de proveedores Observados por DGI - MsGet        ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       =FINA085A()                                                  ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³F085VFOR  ºAutor  ³Sergio S. Fuzinaka  ºFecha ³  20/01/03   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Validacion de proveedores Observados por DGI - MsGet        º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³FINA085A()                                                  º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function F085VFOR(cFornece,cLoja)
 
@@ -12257,7 +12365,7 @@ If lExistCpo
 			lRet := .F.
 		Else
 			If SA2->A2_PORIVA < 100.00 .And. (Empty(SA2->A2_IVPCCOB) .Or. Dtos(SA2->A2_IVPCCOB) < Dtos(dDataBase))
-				MsgAlert( OemToAnsi(STR0155) + CRLF + CRLF + ; //"La fecha de validad para la reducci?? del porcentaje de la retenci?? del IVA del proveedor ya se ha vencido. "
+				MsgAlert( OemToAnsi(STR0155) + CRLF + CRLF + ; //"La fecha de validad para la reducción del porcentaje de la retención del IVA del proveedor ya se ha vencido. "
 				OemToAnsi(STR0147) )
 				lRet := .F.
 			EndIf
@@ -12277,15 +12385,15 @@ RestArea( aArea )
 Return( lRet )
 
 /*
-����������������������������������������������������������������������������?
-��+-----------------------------------------------------------------------+��
-���Fun��o    ?CalcRetIRIC?Autor ?Julio Cesar         ?Data ?22.01.03 ��?
-��+----------+------------------------------------------------------------��?
-���Descri��o ?Calcular e Gerar Retencoes de IRIC.                        ��?
-��+----------+------------------------------------------------------------��?
-���Uso       ?FINA085A                                                   ��?
-��+-----------------------------------------------------------------------+��
-����������������������������������������������������������������������������?
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+°°+-----------------------------------------------------------------------+°°
+°°°Funçào    ° CalcRetIRIC° Autor ° Julio Cesar         ° Data ° 22.01.03 °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Descriçào ° Calcular e Gerar Retencoes de IRIC.                        °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Uso       ° FINA085A                                                   °°°
+°°+-----------------------------------------------------------------------+°°
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 */
 Static Function CalcRetIRIC(cAgente,nSigno,nSaldo)
 Local nValBrut := 0
@@ -12351,7 +12459,7 @@ If cPaisLoc == "PAR"
 	EndIf
 	RestArea(aAreaSE2)
 //+---------------------------------------------------------------------+
-//?Obter Impostos somente qdo a Empresa Usuario for Agente de Reten?o.?
+//° Obter Impostos somente qdo a Empresa Usuario for Agente de Retençäo.°
 //+---------------------------------------------------------------------+
 ElseIf Subs(cAgente,1,1) == "S" .And. SA2->(FieldPos("A2_RETIRIC")) > 0 .And. SA2->(FieldPos("A2_PORIRIC")) > 0 .And. lCalcImp
 	SA2->( dbSetOrder(1) )
@@ -12361,13 +12469,13 @@ ElseIf Subs(cAgente,1,1) == "S" .And. SA2->(FieldPos("A2_RETIRIC")) > 0 .And. SA
 		SA2->( dbSeek(xFilial("SA2")+SE2->E2_FORNECE+SE2->E2_LOJA) )
 	Endif
 
-	//=======================================================================
-	//= Verifica se o fornecedor retem IRIC e se e estrangeiro              =
-	//?====================================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Verifica se o fornecedor retem IRIC e se e estrangeiro              ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	If SA2->A2_RETIRIC == "1" .And. SA2->A2_TIPO == "3"
-		//==================================================================
-		//= Calcula a retencao.                                            =
-		//?===============================================================?
+		//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		//³ Calcula a retencao.                                            ³
+		//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 		nValBrut := Round(xMoeda(nSaldo,SE2->E2_MOEDA,1,SE2->E2_EMISSAO,5,aTxMoedas[Max(SE2->E2_MOEDA,1)][2]),MsDecimais(1))
 
 		AAdd(aSFEIRIC,array(8))
@@ -12378,9 +12486,9 @@ ElseIf Subs(cAgente,1,1) == "S" .And. SA2->(FieldPos("A2_RETIRIC")) > 0 .And. SA
 		aSFEIRIC[Len(aSFEIRIC)][5] := SA2->A2_PORIRIC  //FE_PORCRET
 		aSFEIRIC[Len(aSFEIRIC)][6] := (aSFEIRIC[Len(aSFEIRIC)][4]*(SA2->A2_PORIRIC/100))
 
-		//==================================================================
-		//= Generar Titulo de Impuesto no Contas a Pagar.                  =
-		//?===============================================================?
+		//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		//³ Generar Titulo de Impuesto no Contas a Pagar.                  ³
+		//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 		aSFEIRIC[Len(aSFEIRIC)][7] := SE2->E2_VALOR
 		aSFEIRIC[Len(aSFEIRIC)][8] := SE2->E2_EMISSAO
 	EndIf
@@ -12389,30 +12497,30 @@ EndIf
 Return aSFEIRIC
 
 /*
-����������������������������������������������������������������������������?
-��+-----------------------------------------------------------------------+��
-���Fun��o    ?CalcRetSUSS?Autor ?Julio Cesar         ?Data ?30.01.03 ��?
-��+----------+------------------------------------------------------------��?
-���Descri��o ?Calcular e Gerar Retencoes de SUSS                         ��?
-��+----------+------------------------------------------------------------��?
-���Uso       ?FINA085A                                                   ��?
-��+-----------------------------------------------------------------------+��
-����������������������������������������������������������������������������?
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+°°+-----------------------------------------------------------------------+°°
+°°°Funçào    ° CalcRetSUSS° Autor ° Julio Cesar         ° Data ° 30.01.03 °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Descriçào ° Calcular e Gerar Retencoes de SUSS                         °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Uso       ° FINA085A                                                   °°°
+°°+-----------------------------------------------------------------------+°°
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 */
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =Fa085AcRe2�Autor  =Microsiga           ?Data =  10/17/00   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Acumula os valores base de calculo de retencao por Conceito.?=
-==?         =                                                            ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = Fina085,FINA085a                                           ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³Fa085AcRe2ºAutor  ³Microsiga           º Data ³  10/17/00   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Acumula os valores base de calculo de retencao por Conceito.º±±
+±±º          ³                                                            º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ Fina085,FINA085a                                           º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function Fa085AcRe2(aConGanOri,nSigno,nSaldo,aRateioGan,lPa,lMonotrb)
 Local nRateio
@@ -12436,8 +12544,8 @@ If lRetPA == Nil
 EndIf
 
 //+----------------------------------------------------------------+
-//?Obter o Valor do Imposto e Base baseando se no rateio do valor ?
-//?do titulo pelo total da Nota Fiscal.                           ?
+//° Obter o Valor do Imposto e Base baseando se no rateio do valor °
+//° do titulo pelo total da Nota Fiscal.                           °
 //+----------------------------------------------------------------+
 If ExistBlock("F0851IMP")
 	lCalcGan:=ExecBlock("F0851IMP",.F.,.F.,{"GN2"})
@@ -12677,15 +12785,15 @@ EndIf
 Return
 
 /*
-����������������������������������������������������������������������������?
-��+-----------------------------------------------------------------------+��
-���Fun��o    ?CalcRetIV2 ?Autor ?Jose Lucas          ?Data ?25.06.98 ��?
-��+----------+------------------------------------------------------------��?
-���Descri��o ?Calcular e Gerar Retencoes sobre IVA.                      ��?
-��+----------+------------------------------------------------------------��?
-���Uso       ?PAGO007                                                    ��?
-��+-----------------------------------------------------------------------+��
-����������������������������������������������������������������������������?
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+°°+-----------------------------------------------------------------------+°°
+°°°Funçào    ° CalcRetIV2 ° Autor ° Jose Lucas          ° Data ° 25.06.98 °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Descriçào ° Calcular e Gerar Retencoes sobre IVA.                      °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Uso       ° PAGO007                                                    °°°
+°°+-----------------------------------------------------------------------+°°
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 */
 Static Function CalcRetIV2(cAgente,nSigno,nSaldo,nProp)
 Local aConIva  := {}
@@ -12735,7 +12843,7 @@ DEFAULT nSigno	:=	-1
 DEFAULT nProp := 1
 
 //+---------------------------------------------------------------------+
-//?Obter Impostos somente qdo a Empresa Usuario for Agente de Reten?o.?
+//° Obter Impostos somente qdo a Empresa Usuario for Agente de Retençäo.°
 //+---------------------------------------------------------------------+
 dbSelectArea("SF2")
 dbSetOrder(1)
@@ -12754,7 +12862,7 @@ If ExistBlock("F0851IMP")
 	lCalcImp:=ExecBlock("F0851IMP",.F.,.F.,{"IV2"})
 EndIf
 
-// Tratamento do Reproweb - Situa??o igual a 0 n|o deve reter Resoluci?? General ( AFIP) 2226/07
+// Tratamento do Reproweb - Situação igual a 0 não deve reter Resolución General ( AFIP) 2226/07
 SA2->( dbSetOrder(1) )
 If lMsFil .And. !Empty(xFilial("SA2")) .And. xFilial("SF1") == xFilial("SE2")
 	SA2->(DbSeek(SE2->E2_MSFIL+SE2->E2_FORNECE+SE2->E2_LOJA) )
@@ -12770,9 +12878,9 @@ If cPaisLoc == "PTG"
 	SA2->( dbSetOrder(1) )
 	SA2->( dbSeek(xFilial("SA2")+SE2->E2_FORNECE+SE2->E2_LOJA) )
 
-	//=======================================================================
-	//= Fornecedor ? Reter IVA                                              =
-	//?====================================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Fornecedor ? Reter IVA                                              ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	If SA2->A2_RETIVA == "1"
 
 		While Alltrim(SF2->F2_ESPECIE)<>AllTrim(SE2->E2_TIPO).And.!EOF()
@@ -12806,9 +12914,9 @@ ElseIf (Subs(cAgente,2,1) == "S" .Or. lCalRet .Or. lCalcAcm)  .And.  lCalcImp  .
 		SA2->( dbSeek(xFilial("SA2")+SE2->E2_FORNECE+SE2->E2_LOJA) )
 	Endif
 
-	//=======================================================================
-	//= Fornecedor ? Agente de Reten??o n?o Retem IVA.                      =
-	//?====================================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Fornecedor ? Agente de Reten??o n?o Retem IVA.                      ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	If SA2->A2_AGENRET == "N" .Or. lCalRet
 
 		If (SA2->(FieldPos("A2_IVRVCOB")) >0  .And.  !Empty(SA2->A2_IVRVCOB) .And. SA2->A2_IVRVCOB > dDataBase)
@@ -12826,10 +12934,10 @@ ElseIf (Subs(cAgente,2,1) == "S" .Or. lCalRet .Or. lCalcAcm)  .And.  lCalcImp  .
 			Iif(lMsFil,SF2->F2_MSFIL,xFilial("SF2"))+SE2->E2_NUM+SE2->E2_PREFIXO+SE2->E2_FORNECE+SE2->E2_LOJA==;
 			F2_FILIAL+F2_DOC+F2_SERIE+F2_CLIENTE+F2_LOJA
 
-			//==================================================================
-			//= Obter o Valor do Imposto e Base baseando se no rateio do valor =
-			//= do titulo pelo total da Nota Fiscal.                           =
-			//?===============================================================?
+			//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+			//³ Obter o Valor do Imposto e Base baseando se no rateio do valor ³
+			//³ do titulo pelo total da Nota Fiscal.                           ³
+			//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 			SD2->(DbSetOrder(3))
 			If lMsFil
 				SD2->(DbSeek(SF2->F2_MSFIL+SF2->F2_DOC+SF2->F2_SERIE+SF2->F2_CLIENTE+SF2->F2_LOJA))
@@ -12890,9 +12998,9 @@ ElseIf (Subs(cAgente,2,1) == "S" .Or. lCalRet .Or. lCalcAcm)  .And.  lCalcImp  .
 											EndIf
 										EndDo
 										/*************************************************
-										//Verifica o acumulado para o c��culo do imposto
+										//Verifica o acumulado para o cálculo do imposto
 										//************************************************/
-										//caso seja branco ou n|o foi selecionado nenhum m�todo de acumulo
+										//caso seja branco ou não foi selecionado nenhum método de acumulo
 										If Type("aRetIvAcm") <> "A"
 											aRetIvAcm := Array(3)
 										EndIf
@@ -12939,7 +13047,7 @@ ElseIf (Subs(cAgente,2,1) == "S" .Or. lCalRet .Or. lCalcAcm)  .And.  lCalcImp  .
 											EndIf
 
 										Else
-											//Se n|o usa cumulatividade de IVA, calcula no m�todo antigo
+											//Se não usa cumulatividade de IVA, calcula no método antigo
 											lRetIva := .T.
 										EndIf
 										If  lCalrtexp  .And. lAchou
@@ -13101,9 +13209,9 @@ ElseIf (Subs(cAgente,2,1) == "S" .Or. lCalRet .Or. lCalcAcm)  .And.  lCalcImp  .
 				EndDo
 			Endif
 		Endif
-		//==================================================================
-		//= Gravar Retenciones.                                            =
-		//?===============================================================?
+		//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		//³ Gravar Retenciones.                                            ³
+		//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 		For nCount:=1  to Len(aConIva)
 			aConIva[nCount][2]   := Round(xMoeda(aConIva[nCount][2],SF2->F2_MOEDA,1,,5,aTxMoedas[Max(SF2->F2_MOEDA,1)][2]),MsDecimais(1))
 			aConIva[nCount][3]   := Round(xMoeda(aConIva[nCount][3],SF2->F2_MOEDA,1,,5,aTxMoedas[Max(SF2->F2_MOEDA,1)][2]),MsDecimais(1))
@@ -13122,7 +13230,7 @@ ElseIf (Subs(cAgente,2,1) == "S" .Or. lCalRet .Or. lCalcAcm)  .And.  lCalcImp  .
 				aSFEIVA[Len(aSFEIVA)][5] := Iif(lCalRet  .or.  lCalcVen,100,SA2->A2_PORIVA)      		//FE_PORCRET
 			EndIf
 			aSFEIVA[Len(aSFEIVA)][6] := 0
-			aSFEIVA[Len(aSFEIVA)][9] := aConIva[nCount][1]  // Gravar CFOP da opera??o
+			aSFEIVA[Len(aSFEIVA)][9] := aConIva[nCount][1]  // Gravar CFOP da operação
 			If cPaisloc = "PAR"
 				aSFEIVA[Len(aSFEIVA)][10]:= aConIva[nCount][4] // Gravar A PORCENTAGEM DA ALIQUOTA
 			Else
@@ -13136,7 +13244,7 @@ ElseIf (Subs(cAgente,2,1) == "S" .Or. lCalRet .Or. lCalcAcm)  .And.  lCalcImp  .
 				If SFF->(FOUND())
 					If SA2->(FieldPos("A2_IVRVCOB")) > 0 .And. SA2->(FieldPos("A2_IVPCCOB")) > 0
 						If SA2->A2_PORIVA < 100.00 .And. (Empty(SA2->A2_IVPCCOB) .Or. Dtos(SA2->A2_IVPCCOB) < Dtos(dDataBase))
-							MsgAlert(OemToAnsi(STR0154)+SA2->A2_COD+OemToAnsi(STR0146)) //"La fecha de validad para la reducci?? del porcentaje de la retenci?? del IVA del proveedor ya se ha vencido. ". Ingrese una fecha valida para el proveedor en el archivo de proveedores."
+							MsgAlert(OemToAnsi(STR0154)+SA2->A2_COD+OemToAnsi(STR0146)) //"La fecha de validad para la reducción del porcentaje de la retención del IVA del proveedor ya se ha vencido. ". Ingrese una fecha valida para el proveedor en el archivo de proveedores."
 							//Zera o array das retencoes de IVA...
 							aSFEIVA := {}
 							//Sai do loop...
@@ -13163,7 +13271,7 @@ ElseIf (Subs(cAgente,2,1) == "S" .Or. lCalRet .Or. lCalcAcm)  .And.  lCalcImp  .
 					DEFINE MSDIALOG oDlg4 FROM 65,0 To 218,312 Title OemToAnsi(STR0074) Pixel //"Inconsistencia"
 					@ 2,3 To 51,150 Pixel of oDlg4
 					//"La actividad ", " de IVA no esta registrada en la Tabla SFF"
-					//"por lo tanto no se generara retenci�n de IVA. Si desea Continuar con la "
+					//"por lo tanto no se generara retenci¢n de IVA. Si desea Continuar con la "
 					//"Orden de Pago acepte, sino cancele. "
 					@ 10,004 SAY OemToAnsi(STR0050)+ aConIva[nCount][1] +OemToAnsi(STR0051) PIXEL Of oDlg4
 					@ 23,004 SAY OemToAnsi(STR0052)	PIXEL Of oDlg4
@@ -13175,7 +13283,7 @@ ElseIf (Subs(cAgente,2,1) == "S" .Or. lCalRet .Or. lCalcAcm)  .And.  lCalcImp  .
 			Else
 				If SA2->(FieldPos("A2_IVRVCOB")) > 0 .And. SA2->(FieldPos("A2_IVPCCOB")) > 0
 					If SA2->A2_PORIVA < 100.00 .And. (Empty(SA2->A2_IVPCCOB) .Or. Dtos(SA2->A2_IVPCCOB) < Dtos(dDataBase))
-						MsgAlert(OemToAnsi(STR0154)+SA2->A2_COD+OemToAnsi(STR0146)) //"La fecha de validad para la reducci?? del porcentaje de la retenci?? del IVA del proveedor ya se ha vencido. ". Ingrese una fecha valida para el proveedor en el archivo de proveedores."
+						MsgAlert(OemToAnsi(STR0154)+SA2->A2_COD+OemToAnsi(STR0146)) //"La fecha de validad para la reducción del porcentaje de la retención del IVA del proveedor ya se ha vencido. ". Ingrese una fecha valida para el proveedor en el archivo de proveedores."
 						//Zera o array das retencoes de IVA...
 						aSFEIVA := {}
 						//Sai do loop...
@@ -13200,9 +13308,9 @@ ElseIf (Subs(cAgente,2,1) == "S" .Or. lCalRet .Or. lCalcAcm)  .And.  lCalcImp  .
 
 				EndIf
 			Endif
-			//==================================================================
-			//= Generar Titulo de Impuesto no Contas a Pagar.                  =
-			//?===============================================================?
+			//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+			//³ Generar Titulo de Impuesto no Contas a Pagar.                  ³
+			//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 			aSFEIVA[Len(aSFEIVA)][7] := SE2->E2_VALOR
 			aSFEIVA[Len(aSFEIVA)][8] := SE2->E2_EMISSAO
 		Next
@@ -13252,39 +13360,39 @@ EndIf
 Return aSFEIVA
 
 /*
-����������������������������������������������������������������������������?
-��+-----------------------------------------------------------------------+��
-���Fun��o    ?CalcRetSU2  ?Autor ?Julio Cesar         ?Data ?30.01.03 ��?
-��+----------+------------------------------------------------------------��?
-���Descri��o ?Calcular e Gerar Retencoes de SUSS                         ��?
-��+----------+------------------------------------------------------------��?
-���Uso       ?FINA085A                                                   ��?
-��+-----------------------------------------------------------------------+��
-����������������������������������������������������������������������������?
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+°°+-----------------------------------------------------------------------+°°
+°°°Funçào    ° CalcRetSU2  ° Autor ° Julio Cesar         ° Data ° 30.01.03 °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Descriçào ° Calcular e Gerar Retencoes de SUSS                         °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Uso       ° FINA085A                                                   °°°
+°°+-----------------------------------------------------------------------+°°
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 */
 
 /*
-����������������������������������������������������������������������������?
-��+-----------------------------------------------------------------------+��
-���Fun��o    ?CalcRetIB2 ?Autor ?Jose Lucas          ?Data ?25.06.98 ��?
-��+----------+------------------------------------------------------------��?
-���Descri��o ?Calcular e Gerar Retencoes sobre IB Ingressos Brutos.      ��?
-��+----------+------------------------------------------------------------��?
-���Uso       ?PAGO011                                                    ��?
-��+-----------------------------------------------------------------------+��
-����������������������������������������������������������������������������?
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+°°+-----------------------------------------------------------------------+°°
+°°°Funçào    ° CalcRetIB2 ° Autor ° Jose Lucas          ° Data ° 25.06.98 °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Descriçào ° Calcular e Gerar Retencoes sobre IB Ingressos Brutos.      °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Uso       ° PAGO011                                                    °°°
+°°+-----------------------------------------------------------------------+°°
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 */
 
 /*
-����������������������������������������������������������������������������?
-��+-----------------------------------------------------------------------+��
-��|Fun��o    | MArray     | Autor | Julio Cesar         | Data | 03.09.03 |��
-��+----------+-------------------------------------------------------------��
-��|Descricao | Monta o array com os registros utilizados na Ordem de Pago |��
-��+----------+------------------------------------------------------------|��
-��|Uso       | FINA085A                                                   |��
-��+-----------------------------------------------------------------------+��
-����������������������������������������������������������������������������?
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+°°+-----------------------------------------------------------------------+°°
+°°|Funçào    | MArray     | Autor | Julio Cesar         | Data | 03.09.03 |°°
+°°+----------+-------------------------------------------------------------°°
+°°|Descricao | Monta o array com os registros utilizados na Ordem de Pago |°°
+°°+----------+------------------------------------------------------------|°°
+°°|Uso       | FINA085A                                                   |°°
+°°+-----------------------------------------------------------------------+°°
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 */
 Static Function MArray(nI,cFilSE2,nCondAgr,aOrdPg)
 Local nX := 0
@@ -13314,15 +13422,15 @@ EndIf
 Return(Nil)
 
 /*
-����������������������������������������������������������������������������?
-��+-----------------------------------------------------------------------+��
-���Fun��o    ?CalcRetSLI ?Autor ?Julio Cesar         ?Data ?30.01.03 ��?
-��+----------+------------------------------------------------------------��?
-���Descri��o ?Calcular e Gerar Retencoes de Servico de Limpeza de Imoveis��?
-��+----------+------------------------------------------------------------��?
-���Uso       ?FINA085A                                                   ��?
-��+-----------------------------------------------------------------------+��
-����������������������������������������������������������������������������?
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+°°+-----------------------------------------------------------------------+°°
+°°°Funçào    ° CalcRetSLI ° Autor ° Julio Cesar         ° Data ° 30.01.03 °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Descriçào ° Calcular e Gerar Retencoes de Servico de Limpeza de Imoveis°°°
+°°+----------+------------------------------------------------------------°°°
+°°°Uso       ° FINA085A                                                   °°°
+°°+-----------------------------------------------------------------------+°°
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 */
 Static Function CalcRetSLI(cAgente,nSigno,nSaldo)
 Local aSFESLI  := {}
@@ -13337,7 +13445,7 @@ Local lCalcLimp	:=.T.
 
 DEFAULT nSigno	:=	1
 //+---------------------------------------------------------------------+
-//?Obter Impostos somente qdo a Empresa Usuario for Agente de Reten?o.?
+//° Obter Impostos somente qdo a Empresa Usuario for Agente de Retençäo.°
 //+---------------------------------------------------------------------+
 SA2->( dbSetOrder(1) )
 If SA2->(DbSeek(If(lMsFil .And. !Empty(xFilial("SA2")) .And. xFilial("SF1") == xFilial("SE2"),SE2->E2_MSFIL,xFilial("SA2"))+SE2->E2_FORNECE+SE2->E2_LOJA)) .And. SA2->(FieldPos("A2_DTICALL")) > 0 ;
@@ -13416,9 +13524,9 @@ If Subs(cAgente,7,1) == "S" .And. lCalcLimp
 			nVlrBase := (nVlrTotal * nRateio)
 			nValRet  := Round((nVlrBase*(nAliq/100))*nSigno,TamSX3("FE_VALIMP")[2])
 
-			//==================================================================
-			//= Gravar Retenciones.                                            =
-			//?===============================================================?
+			//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+			//³ Gravar Retenciones.                                            ³
+			//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 			AAdd(aSFESLI,array(6))
 			aSFESLI[Len(aSFESLI)][1] := SF1->F1_DOC   //FE_NFISCAL
 			aSFESLI[Len(aSFESLI)][2] := SF1->F1_SERIE //FE_SERIE
@@ -13433,15 +13541,15 @@ EndIf
 Return aSFESLI
 
 /*
-����������������������������������������������������������������������������?
-��+-----------------------------------------------------------------------+��
-���Fun��o    ?CalcRetSL2  ?Autor ?Julio Cesar        ?Data ?30.01.03 ��?
-��+----------+------------------------------------------------------------��?
-���Descri��o ?Calcular e Gerar Retencoes de Servico de Limpeza de Imoveis��?
-��+----------+------------------------------------------------------------��?
-���Uso       ?FINA085A                                                   ��?
-��+-----------------------------------------------------------------------+��
-����������������������������������������������������������������������������?
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+°°+-----------------------------------------------------------------------+°°
+°°°Funçào    ° CalcRetSL2  ° Autor ° Julio Cesar        ° Data ° 30.01.03 °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Descriçào ° Calcular e Gerar Retencoes de Servico de Limpeza de Imoveis°°°
+°°+----------+------------------------------------------------------------°°°
+°°°Uso       ° FINA085A                                                   °°°
+°°+-----------------------------------------------------------------------+°°
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 */
 Static Function CalcRetSL2(cAgente,nSigno,nSaldo)
 Local aSFESLI  := {}
@@ -13468,7 +13576,7 @@ If ExistBlock("F0851IMP")
 EndIf
 
 //+---------------------------------------------------------------------+
-//?Obter Impostos somente qdo a Empresa Usuario for Agente de Reten?o.?
+//° Obter Impostos somente qdo a Empresa Usuario for Agente de Retençäo.°
 //+---------------------------------------------------------------------+
 If Subs(cAgente,7,1) == "S"   .And. lCalcLimp
 
@@ -13537,9 +13645,9 @@ If Subs(cAgente,7,1) == "S"   .And. lCalcLimp
 			nVlrBase := (nVlrTotal * nRateio)
 			nValRet  := Round((nVlrBase*(nAliq/100))*nSigno,TamSX3("FE_VALIMP")[2])
 
-			//==================================================================
-			//= Gravar Retenciones.                                            =
-			//?===============================================================?
+			//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+			//³ Gravar Retenciones.                                            ³
+			//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 			AAdd(aSFESLI,array(6))
 			aSFESLI[Len(aSFESLI)][1] := SF2->F2_DOC   //FE_NFISCAL
 			aSFESLI[Len(aSFESLI)][2] := SF2->F2_SERIE //FE_SERIE
@@ -13554,18 +13662,18 @@ EndIf
 Return aSFESLI
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||?=
-==�Programa  =F085AGrvTx  �Autor  =Cristiano Denardi   ?Data =22.01.2004 ?=
-==�||||||||||�||||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||?=
-==�Desc.     =Grava taxa da Moeda em SEK para qdo existirem campos        ?=
-==�Desc.     =correspondentes ( da moeda 2 ate n informada)               ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³F085AGrvTx  ºAutor  ³Cristiano Denardi   º Data ³22.01.2004 º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Grava taxa da Moeda em SEK para qdo existirem campos        º±±
+±±ºDesc.     ³correspondentes ( da moeda 2 ate n informada)               º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function F085AGrvTx()
 Local nTx := 0
@@ -13579,20 +13687,20 @@ Next nTx
 Return NIL
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||?=
-==�Programa  =FA085Pesq   �Autor  =Paulo Augusto       ?Data =20.02.2004 ?=
-==�||||||||||�||||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||?=
-==�Desc.     =Pesquisa a tea de Fornecedor que e acionada via F4          ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Variaveis =lIndice: Se muda o Indice                                   ?=
-==?         =cPesq: Chave de Pesquisa ou indice selecionado              ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³FA085Pesq   ºAutor  ³Paulo Augusto       º Data ³20.02.2004 º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Pesquisa a tea de Fornecedor que e acionada via F4          º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºVariaveis ³lIndice: Se muda o Indice                                   º±±
+±±º          ³cPesq: Chave de Pesquisa ou indice selecionado              º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function FA085Pesq(lIndice,cPesq)
 Local nRec:=Sa2->(Recno())
@@ -13658,17 +13766,17 @@ EndIf
 Return lRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =FINA085A  �Autor  =Microsiga           �Fecha =  12-16-04   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =                                                            ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³FINA085A  ºAutor  ³Microsiga           ºFecha ³  12-16-04   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³                                                            º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function A085AWhen()
 Local lRet := .T.
@@ -13678,17 +13786,17 @@ Endif
 Return lRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =FINA085A  �Autor  =Bruno Sobieski      �Fecha =  12-16-04   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Retorna a moeda do pagamento                                ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP                                                         ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³FINA085A  ºAutor  ³Bruno Sobieski      ºFecha ³  12-16-04   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Retorna a moeda do pagamento                                º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP                                                         º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function GetMoedPag(aPgtos)
 Local aMoedas	:=	{}
@@ -13711,17 +13819,17 @@ EndIf
 Return aMoedas
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�|||||||||||�|||||||�||||||||||||||||||||�||||||�||||||||||||?=
-==�Programa  =a085aSaldVl�Autor  =Paulo Augusto       ?Data =  28/02/05  ?=
-==�||||||||||�|||||||||||�||||||||||||||||||||||||||||�|||||||||||||||||||?=
-==�Desc.     =Validacao da digitacao do valor informado                   ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085a                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³a085aSaldVlºAutor  ³Paulo Augusto       º Data ³  28/02/05  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Validacao da digitacao do valor informado                   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085a                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function a085aSaldVl(oSaldo,oVlPago,nVlPago,aSe2,nPos,oValorPg,lModif)
 Local aRateioGan :={}
@@ -13795,17 +13903,17 @@ Endif
 Return .T.
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�|||||||||||�|||||||�||||||||||||||||||||�||||||�||||||||||||?=
-==�Programa  =a085aSalPa �Autor  =Paulo Augusto       ?Data =  04/03/05  ?=
-==�||||||||||�|||||||||||�||||||||||||||||||||||||||||�|||||||||||||||||||?=
-==�Desc.     =Linha OK   da digitacao dos titulos usados para pagar       ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085a                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³a085aSalPa ºAutor  ³Paulo Augusto       º Data ³  04/03/05  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Linha OK   da digitacao dos titulos usados para pagar       º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085a                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function a085aSalPa(oSaldo,lPa)
 Local nPosMoe		:=	Ascan(aHeader,{|X| Alltrim(X[2]) == "EK_MOEDA"})
@@ -13849,17 +13957,17 @@ Endif
 Return .T.
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�|||||||||||�|||||||�||||||||||||||||||||�||||||�||||||||||||?=
-==�Programa  =F085CalRet �Autor  =Paulo Augusto       ?Data =  04/04/05  ?=
-==�||||||||||�|||||||||||�||||||||||||||||||||||||||||�|||||||||||||||||||?=
-==�Desc.     =Recalculo das Retencoes para Sujeitos Multiplos             ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085a                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³F085CalRet ºAutor  ³Paulo Augusto       º Data ³  04/04/05  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Recalculo das Retencoes para Sujeitos Multiplos             º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085a                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function F085CalRet(aRatCond,aRets)
 Local aRetCond := {}
@@ -13883,17 +13991,17 @@ Next
 Return(aRetCond)
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||||�|||||||�||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =Fa085RatSuss�Autor  =Paulo Augusto     �Fecha =  04/07/05   ?=
-==�||||||||||�||||||||||||�||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Rateio do SUSS Lei 1784                                    ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085a                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³Fa085RatSussºAutor  ³Paulo Augusto     ºFecha ³  04/07/05   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Rateio do SUSS Lei 1784                                    º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085a                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function Fa085RatSuss(cFornece,cLoja)
 Local aAreaSA2:= SA2->(GetArea())
@@ -13930,17 +14038,17 @@ RestArea(aAreaSA2)
 Return(aRateio)
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =Fa085VlM  �Autor  =Paulo Augusto       ?Data =  14/09/06   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Valida a digitacao do valor da moeda selecionada            ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085a                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³Fa085VlM  ºAutor  ³Paulo Augusto       º Data ³  14/09/06   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Valida a digitacao do valor da moeda selecionada            º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085a                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function Fa085VlM()
 Local nPosVl	:=Ascan(aHeader1,{|x| Alltrim(x[2])=="NVLMDINF"})
@@ -13989,34 +14097,34 @@ EndIf
 Return( lRet )
 
 /*/
----------------------------------------------------------------------------
-=============================================================================
-=============================================================================
-===Programa  =MenuDef   = Autor = Ana Paula N. Silva     = Data =21/11/06 ===
-==|==========|==========|=======|=======================|======|==========?=
-===Descri��o = Utilizacao de menu Funcional                               ===
-==|==========|============================================================?=
-===Retorno   =Array com opcoes da rotina.                                 ===
-==|==========|============================================================?=
-===Parametros=Parametros do array a Rotina:                               ===
-===          =1. Nome a aparecer no cabecalho                             ===
-===          =2. Nome da Rotina associada                                 ===
-===          =3. Reservado                                                ===
-===          =4. Tipo de Transa��o a ser efetuada:                        ===
-===          =		1 - Pesquisa e Posiciona em um Banco de Dados     ===
-===          =    2 - Simplesmente Mostra os Campos                       ===
-===          =    3 - Inclui registros no Bancos de Dados                 ===
-===          =    4 - Altera o registro corrente                          ===
-===          =    5 - Remove o registro corrente do Banco de Dados        ===
-===          =5. Nivel de acesso                                          ===
-===          =6. Habilita Menu Funcional                                  ===
-==|==========|============================================================?=
-===   DATA   = Programador   =Manutencao efetuada                         ===
-==|==========|===============|============================================?=
-===          =               =                                            ===
-==?=========|===============|============================================?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Programa  ³MenuDef   ³ Autor ³ Ana Paula N. Silva     ³ Data ³21/11/06 ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Utilizacao de menu Funcional                               ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Retorno   ³Array com opcoes da rotina.                                 ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Parametros³Parametros do array a Rotina:                               ³±±
+±±³          ³1. Nome a aparecer no cabecalho                             ³±±
+±±³          ³2. Nome da Rotina associada                                 ³±±
+±±³          ³3. Reservado                                                ³±±
+±±³          ³4. Tipo de Transa‡„o a ser efetuada:                        ³±±
+±±³          ³		1 - Pesquisa e Posiciona em um Banco de Dados     ³±±
+±±³          ³    2 - Simplesmente Mostra os Campos                       ³±±
+±±³          ³    3 - Inclui registros no Bancos de Dados                 ³±±
+±±³          ³    4 - Altera o registro corrente                          ³±±
+±±³          ³    5 - Remove o registro corrente do Banco de Dados        ³±±
+±±³          ³5. Nivel de acesso                                          ³±±
+±±³          ³6. Habilita Menu Funcional                                  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³   DATA   ³ Programador   ³Manutencao efetuada                         ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³          ³               ³                                            ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 /*/
 Static Function MenuDef(nFlagMOD,nCtrlMOD)
 Local lF085ABT := ExistBlock("F085ABT")
@@ -14028,7 +14136,7 @@ Local lF085ABT := ExistBlock("F085ABT")
 	AAdd(aRotina, { OemToAnsi(STR0136), 'A085APgAdi()', 0, 3})							// Generar PA
 	AAdd(aRotina, { OemToAnsi(STR0070), 'FA085SETMO()', 0, 3})							// Modificar tasas
 	If cPaisLoc=="PER"
-		AAdd(aRotina, {OemToAnsi(STR0274), 'F85aOPxTit(aRecNoSE2)', 0, 6, , .F.})		// Certificado de Percepci??
+		AAdd(aRotina, {OemToAnsi(STR0274), 'F85aOPxTit(aRecNoSE2)', 0, 6, , .F.})		// Certificado de Percepción
 	EndIf
 	AAdd(aRotina, { OemToAnsi(STR0239), 'fA085aLegenda()', 0, 6, , .F.})
 
@@ -14196,16 +14304,16 @@ If SE2->(MsSeek( cFilDoc + SEK->(EK_PREFIXO+EK_NUM+EK_PARCELA+EK_TIPO+EK_FORNECE
 		//verifica se o campo existe.
 		If (aGrvSE[nX,1])->(FieldPos(aGrvSE[nX,2]))> 0
 			RecLock(aGrvSE[nX,1], .F.)
-			//atribui??o de valor no campo, caso o mesmo exista.
+			//atribuição de valor no campo, caso o mesmo exista.
 			(aGrvSE[nX,1])->&(aGrvSE[nX,2]) := aGrvSE[nX,3]
 			MsUnlock()
 		Endif
 	Next nX
 
 	dbSelectArea("SEK")
-	//============================================================
-	//= Grava os lancamentos nas contas orcamentarias SIGAPCO    =
-	//?=========================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Grava os lancamentos nas contas orcamentarias SIGAPCO    ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	If SEK->EK_TIPODOC == "TB"
 		PcoDetLan("000313","01","FINA085A")
 
@@ -14230,15 +14338,15 @@ RestArea( aArea )
 RETURN .T.
 
 /*
-����������������������������������������������������������������������������?
-��+-----------------------------------------------------------------------+��
-���Fun��o    ?CalcRetIR?Autor ?Paulo Augusto       ?Data ?18.07.06 ��?
-��+----------+------------------------------------------------------------��?
-���Descri��o ?Calcular e Gerar Retencoes de IR .                        ��?
-��+----------+------------------------------------------------------------��?
-���Uso       ?FINA085A                                                   ��?
-��+-----------------------------------------------------------------------+��
-����������������������������������������������������������������������������?
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+°°+-----------------------------------------------------------------------+°°
+°°°Funçào    ° CalcRetIR° Autor ° Paulo Augusto       ° Data ° 18.07.06 °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Descriçào ° Calcular e Gerar Retencoes de IR .                        °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Uso       ° FINA085A                                                   °°°
+°°+-----------------------------------------------------------------------+°°
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 */
 Static Function CalcRetIR(cAgente,nSigno,nSaldo)
 Local nValBrut := 0
@@ -14310,7 +14418,7 @@ If cPaisLoc == "PAR"
 	EndIf
 	RestArea(aAreaSE2)
 //+---------------------------------------------------------------------+
-//?Obter Impostos somente qdo a Empresa Usuario for Agente de Reten?o.?
+//° Obter Impostos somente qdo a Empresa Usuario for Agente de Retençäo.°
 //+---------------------------------------------------------------------+
 ElseIf  SA2->(FieldPos("A2_RETIR"))>0
 
@@ -14325,19 +14433,19 @@ ElseIf  SA2->(FieldPos("A2_RETIR"))>0
 EndIf
 RestArea(aArea)
 //+---------------------------------------------------------------------+
-//?Obter Impostos somente qdo a Empresa Usuario for Agente de Reten?o.?
+//° Obter Impostos somente qdo a Empresa Usuario for Agente de Retençäo.°
 //+---------------------------------------------------------------------+
 If  SA2->(FieldPos("A2_RETIR"))>0 .And. lCalcula
 
 	SA2->( dbSetOrder(1) )
 	SA2->( dbSeek(xFilial("SA2")+SE2->E2_FORNECE+SE2->E2_LOJA) )
 
-	//==================================================================
-	//= Verifica se o fornecedor retem IR e se e estrangeiro              =
-	//?===============================================================?
-	//==================================================================
-	//= Calcula a retencao.                                            =
-	//?===============================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Verifica se o fornecedor retem IR e se e estrangeiro              ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Calcula a retencao.                                            ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	nValBrut := Round(xMoeda(nSaldo,SE2->E2_MOEDA,1,SE2->E2_EMISSAO,5,aTxMoedas[Max(SE2->E2_MOEDA,1)][2]),MsDecimais(1))
 
 	AAdd(aSFEIR,array(8))
@@ -14348,9 +14456,9 @@ If  SA2->(FieldPos("A2_RETIR"))>0 .And. lCalcula
 	aSFEIR[Len(aSFEIR)][5] := nAliq  //FE_PORCRET
 	aSFEIR[Len(aSFEIR)][6] := (aSFEIR[Len(aSFEIR)][4]*(nAliq/100))
 
-	//==================================================================
-	//= Generar Titulo de Impuesto no Contas a Pagar.                  =
-	//?===============================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Generar Titulo de Impuesto no Contas a Pagar.                  ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	aSFEIR[Len(aSFEIR)][7] := SE2->E2_VALOR
 	aSFEIR[Len(aSFEIR)][8] := SE2->E2_EMISSAO
 
@@ -14360,15 +14468,15 @@ Return aSFEIR
 
 
 /*
-����������������������������������������������������������������������������?
-��+-----------------------------------------------------------------------+��
-���Fun��o    ?CalcRetIRC ?Autor ?Bruno Sobieski      ?Data ?18.05.08 ��?
-��+----------+------------------------------------------------------------��?
-���Descri��o ?Calcular e Gerar Retencoes sobre IRC (Portugal)            ��?
-��+----------+------------------------------------------------------------��?
-���Uso       ?PAGO007                                                    ��?
-��+-----------------------------------------------------------------------+��
-����������������������������������������������������������������������������?
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+°°+-----------------------------------------------------------------------+°°
+°°°Funçào    ° CalcRetIRC ° Autor ° Bruno Sobieski      ° Data ° 18.05.08 °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Descriçào ° Calcular e Gerar Retencoes sobre IRC (Portugal)            °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Uso       ° PAGO007                                                    °°°
+°°+-----------------------------------------------------------------------+°°
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 */
 Static Function CalcRetIRC(nSigno,nSaldo)
 Local lCalcImp	:=	.T.
@@ -14381,9 +14489,9 @@ EndIf
 
 If lCalcImp
 	If nSigno == 1
-		//=======================================================================
-		//= Fornecedor ?Reter IRC                                              =
-		//?====================================================================?
+		//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		//³ Fornecedor ‚ Reter IRC                                              ³
+		//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 		If SA2->A2_RETIRC == "1"
 
 			While Alltrim(SF1->F1_ESPECIE) <> AllTrim(SE2->E2_TIPO).And.SF1->(!EOF())
@@ -14414,9 +14522,9 @@ If lCalcImp
 		SA2->( dbSetOrder(1) )
 		SA2->( dbSeek(xFilial("SA2")+SE2->E2_FORNECE+SE2->E2_LOJA) )
 
-		//=======================================================================
-		//= Fornecedor ?Reter IRC                                              =
-		//?====================================================================?
+		//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		//³ Fornecedor ‚ Reter IRC                                              ³
+		//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 		If SA2->A2_RETIRC == "1"
 
 			While Alltrim(SF2->F2_ESPECIE)<>AllTrim(SE2->E2_TIPO).And.!EOF()
@@ -14629,7 +14737,7 @@ Static aGet
 Private	oTotAnt,nValDesc	:=	0,nPorDesc	:=	0,nTotNCC:=0
 Private	oNumOp ,oPorDesc ,oValDesc ,oZnGeo,oGrpSus, oSerieNF
 
-//Verifica se o fornecedor atualizado ?monotributista
+//Verifica se o fornecedor atualizado é monotributista
 
 DEFINE MSDIALOG oDlg FROM 30,40  TO 300,550 TITLE OemToAnsi(STR0189) Of oObj PIXEL  // "Orden de pago del proveedor "
 
@@ -14671,9 +14779,9 @@ ACTIVATE MSDIALOG oDlg CENTERED ON INIT EnchoiceBar(oDlg,{||nOpca:=1,if(Fa085Tud
 
 Return .T.
 
-// Fun??o para verificar se ja exiuste o numero de operacao informado
-// caso exista o valor total da opera??o(valor utilizado ocmo base de calculo)
-// nao poder?ser diferente do valor da opera??o original.
+// Função para verificar se ja exiuste o numero de operacao informado
+// caso exista o valor total da operação(valor utilizado ocmo base de calculo)
+// nao poderá ser diferente do valor da operação original.
 Function F085NumOp()
 DbSelectArea("SEK")
 SEK->(dbSetOrder(2))
@@ -14689,18 +14797,18 @@ EndIf
 Return .T.
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =F085VldRet�Autor  =Ana PAula			 �Fecha =  10/12/08   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Calcula reten��es de IVA, SUSS, IB e Ganancias na incluss|o?=
-==?         = de pagamentos antecipados quando o parametro MV_RETPA=S    ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = Fina085a                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³F085VldRetºAutor  ³Ana PAula			 ºFecha ³  10/12/08   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Calcula retenções de IVA, SUSS, IB e Ganancias na inclussãoº±±
+±±º          ³ de pagamentos antecipados quando o parametro MV_RETPA=S    º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ Fina085a                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function F085VldRet(nOpc,cFornece,cFor,oFor,oRet,nRet,nValor,nLiquido,oLiquido,aSE2,cLoja,cCF,cProv,oRetIB,nRetIB,cZnGeo,nGrpSus,nTotAnt,oRetIVA,nRetIVA,oRetSUSS,nRetSuss,nBaseRIE,nAliqRIE,nAliqIGV,oAliqIGV,nBaseIGV,oSerieNF,cSerieNF)
 Local aConGan	:= {}
@@ -14808,17 +14916,17 @@ EndIf
 Return lRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =Fa085SegF2�Autor  = Acacio Egas        ?Data =  10/12/08   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Acumula os valores base de calculo de retencao por Conceito.?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = Fina085,FINA085a                                           ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³Fa085SegF2ºAutor  ³ Acacio Egas        º Data ³  10/12/08   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Acumula os valores base de calculo de retencao por Conceito.º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ Fina085,FINA085a                                           º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function Fa085SegF2(cAgente,nSigno,nSaldo)
 Local aSFEISI  := {}
@@ -14849,7 +14957,7 @@ If ExistBlock("F0851IMP")
 EndIf
 
 //+---------------------------------------------------------------------+
-//?Obter Impostos somente qdo a Empresa Usuario for Agente de Reten?o.?
+//° Obter Impostos somente qdo a Empresa Usuario for Agente de Retençäo.°
 //+---------------------------------------------------------------------+
 If Subs(cAgente,8,1) == "S"   .And. lCalcLimp
 
@@ -14919,7 +15027,7 @@ If Subs(cAgente,8,1) == "S"   .And. lCalcLimp
 				SFF->(DbSkip())
 			EndDo
 
-			// Verrica se encotrou SFF para o valor total e se o valor ?> 0
+			// Verrica se encotrou SFF para o valor total e se o valor é > 0
 			If nRecFF > 0 .and. aCF[nJ,2] > 0
 				SFF->(DbGoTo(nRecFF))
 
@@ -14944,13 +15052,13 @@ If Subs(cAgente,8,1) == "S"   .And. lCalcLimp
 				nVlrBase := (aCF[nJ,2] * nRateio)
 				nAliq	 :=  aCF[nJ,3] // Aliquota
 				nValRet  := Round((nVlrBase*(aCF[nJ,3]/100))*nSigno,TamSX3("FE_VALIMP")[2])
-				nValRet	 := (nValRet * nPercTot) // Redu??o de imposto
+				nValRet	 := (nValRet * nPercTot) // Redução de imposto
 				nValTot	 += nValRet
 				nValBasTot += nVlrBase
 			Next
-			//==================================================================
-			//= Gravar Retenciones.                                            =
-			//?===============================================================?
+			//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+			//³ Gravar Retenciones.                                            ³
+			//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 			AAdd(aSFEISI,array(8))
 			aSFEISI[Len(aSFEISI)][1] := SF2->F2_DOC   //FE_NFISCAL
 			aSFEISI[Len(aSFEISI)][2] := SF2->F2_SERIE //FE_SERIE
@@ -14967,17 +15075,17 @@ EndIf
 Return aSFEISI
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =Fa085SegF1 �Autor  = acrosiga          ?Data =  10/17/00   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Acumula os valores base de calculo de retencao por Conceito.?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = Fina085,FINA085a                                           ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³Fa085SegF1 ºAutor  ³ acrosiga          º Data ³  10/17/00   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Acumula os valores base de calculo de retencao por Conceito.º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ Fina085,FINA085a                                           º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function Fa085SegF1(cAgente,nSigno,nSaldo)
 Local aSFEISI  := {}
@@ -14999,7 +15107,7 @@ Local lCalcLimp	:=.F.
 
 DEFAULT nSigno	:=	1
 //+---------------------------------------------------------------------+
-//?Obter Impostos somente qdo a Empresa Usuario for Agente de Reten?o.?
+//° Obter Impostos somente qdo a Empresa Usuario for Agente de Retençäo.°
 //+---------------------------------------------------------------------+
 SA2->( dbSetOrder(1) )
 If lMsFil .And. !Empty(xFilial("SA2")) .And. xFilial("SF1") == xFilial("SE2")
@@ -15087,7 +15195,7 @@ If Subs(cAgente,8,1) == "S" .And. lCalcLimp
 				SFF->(DbSkip())
 			EndDo
 
-			// Verrica se encotrou SFF para o valor total e se o valor ?> 0
+			// Verrica se encotrou SFF para o valor total e se o valor é > 0
 			If nRecFF > 0 .and. aCF[nJ,2] > 0
 				SFF->(DbGoTo(nRecFF))
 				// ISI com controle de Aliq por parametro
@@ -15112,14 +15220,14 @@ If Subs(cAgente,8,1) == "S" .And. lCalcLimp
 				nVlrBase := (aCF[nJ,2] * nRateio)
 				nAliq	 :=  aCF[nJ,3] // Aliquota
 				nValRet  := Round((nVlrBase*(aCF[nJ,3]/100))*nSigno,TamSX3("FE_VALIMP")[2])
-				nValRet	 := (nValRet * nPercTot) // Redu??o de imposto
+				nValRet	 := (nValRet * nPercTot) // Redução de imposto
 				nValTot	 += nValRet
             nValBasTot += nVlrBase
 
 			Next
-			//==================================================================
-			//= Gravar Retenciones.                                            =
-			//?===============================================================?
+			//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+			//³ Gravar Retenciones.                                            ³
+			//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 			AAdd(aSFEISI,array(8))
 			aSFEISI[Len(aSFEISI)][1] := SF1->F1_DOC   //FE_NFISCAL
 			aSFEISI[Len(aSFEISI)][2] := SF1->F1_SERIE //FE_SERIE
@@ -15136,7 +15244,7 @@ EndIf
 
 Return aSFEISI
 
-// Proporcionaliza??o para reten��es de IVA e SUSS
+// Proporcionalização para retenções de IVA e SUSS
 Function F085PropIS(aOrdPg)
 Local nTotPA :=0
 Local nTotNF:=0
@@ -15168,18 +15276,18 @@ Next
 Return nProp
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =F085ImpTes�Autor  = Ana Paula          ?Data =  07/04/09   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Calcula base de calculo para PA automatico abatendo os      ?=
-==?         = impostos relacionados na TES informada                     ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085a                                           ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³F085ImpTesºAutor  ³ Ana Paula          º Data ³  07/04/09   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Calcula base de calculo para PA automatico abatendo os      º±±
+±±º          ³ impostos relacionados na TES informada                     º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085a                                           º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function F085ImpTes(nBaseImp,cFornece,cLoja)
 Local nTotImp := 0
@@ -15206,17 +15314,17 @@ Restarea(aArea)
 Return .T.
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||||�|||||||�||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =CalcRetGNMnt�Autor  =Marcos Berto      ?Data =  15/04/09   ?=
-==�||||||||||�||||||||||||�||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Calculo de Ganancia para monotributista.                   ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³CalcRetGNMntºAutor  ³Marcos Berto      º Data ³  15/04/09   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Calculo de Ganancia para monotributista.                   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function CalcRetGNMnt(cAgente,nSigno,aConGan,cFornece,cLoja,cDoc,cSerie,lPa,nTTit)
 Local nAliq
@@ -15298,20 +15406,20 @@ For nI := 1 to Len(aConGan)
 			dbSeek(xFilial("SFF")+aConGan[nI][1])
 
 			If ( nBaseAtual > SFF->FF_IMPORTE )
-				//==============================================================
-				//= Calcular Gan�ncia baseando na Tabela de Gan�ncias.         =
-				//?===========================================================?
-				//=========================================================================
-				//= Calculo da Gan�ncia:                                                  =
-				//= Imposto := ( Retencao+Base de Calculo) * (Alquota Inscrito/100)       =
-				//?======================================================================?
+				//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+				//³ Calcular Ganƒncia baseando na Tabela de Ganƒncias.         ³
+				//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+				//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+				//³ Calculo da Ganƒncia:                                                  ³
+				//³ Imposto := ( Retencao+Base de Calculo) * (Alquota Inscrito/100)       ³
+				//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 
 					nAliq    := SFF->FF_ALQNOIN
 					nImposto := ((nBaseAtual - SFF->FF_IMPORTE) * (nAliq/100))* Iif(lReduzGan,(SA2->A2_PORGAN/100),1) * aGanComp[nI]
 
-				//==================================================================
-				//= Generar las Retenci�n de Gan�ncias                             =
-				//?===============================================================?
+				//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+				//³ Generar las Retenci¢n de Ganƒncias                             ³
+				//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 				Aadd(aSFEGn,Array(12))
 				aSFEGn[Len(aSFEGn)][1] := ""
 				aSFEGn[Len(aSFEGn)][2] := aConGan[nI][2]                            // FE_VALBASE
@@ -15338,46 +15446,46 @@ RestArea(aArea)
 Return aSFEGN
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =CalcRetIM �Autor  =Marcos Berto        ?Data =  15/04/09   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Calculo de IVA para monotributista                         ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³CalcRetIM ºAutor  ³Marcos Berto        º Data ³  15/04/09   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Calculo de IVA para monotributista                         º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =CalcRetIM2�Autor  =Marcos Berto        ?Data =  15/04/09   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Calculo de IVA para monotributista - Nota de Cr�dito       ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³CalcRetIM2ºAutor  ³Marcos Berto        º Data ³  15/04/09   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Calculo de IVA para monotributista - Nota de Crédito       º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||||||�|||||||�||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =F085CheckLim  �Autor  =Bruno S./Marcos ?Data =  15/04/09   ?=
-==�||||||||||�||||||||||||||�||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Realizaza a verificacao das operacoes dos ultimos 12 meses,?=
-==?         = pagos ou n|o                                               ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³F085CheckLim  ºAutor  ³Bruno S./Marcos º Data ³  15/04/09   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Realizaza a verificacao das operacoes dos ultimos 12 meses,º±±
+±±º          ³ pagos ou não                                               º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function F085CheckLim(cConcepto,aCF,cFornece,nMinimo,cDoc,cSerie,nMinUnit,cImposto,lPa,nSD,cFilOr)
 Local cDataIni	:=	""
@@ -15409,7 +15517,7 @@ cDataFim := Dtos(dDataTmp)
 If cImposto == "IB"
 	dDataTmp++
 	cDataIni :=	Str(Year(dDataTmp)-1,4)+StrZero(Month(dDataTmp),2)+StrZero(Day(dDataTmp),2)
-Else // Para IVA e GN ser?considerado o mes da ordem de pago + os 11 meses anteiores
+Else // Para IVA e GN será considerado o mes da ordem de pago + os 11 meses anteiores
 	IF  (Month(dDataTmp) - 11) <= 0
 		cDataIni := Str(Year(dDataTmp)-1,4) + StrZero(Month(dDataTmp)+1,2)+ "01"
 	Else
@@ -15420,10 +15528,10 @@ EndIf
 #IFDEF TOP
 
 	/*
-	//=======================================================
-	//=	1a. Validacao                                       =
-	//=		Cosas muebles - Preco unitario superior a $870  =
-	//?====================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³	1a. Validacao                                       ³
+	//³		Cosas muebles - Preco unitario superior a $870  ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	*/
 	If (cConcepto == "G2" .Or. cConcepto == "I2" .Or. cConcepto == "B2") .And. !lPa
 
@@ -15545,11 +15653,11 @@ EndIf
 	Endif
 
 	/*
-	//===================================================================
-	//=	2a. Validacao                                                   =
-	//=		a. Locaciones - Soma superior a $72.000 (concepto = G1)     =
-	//=		b. Cosas muebles - Soma superior a $144.000 (concepto = G2) =
-	//?================================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³	2a. Validacao                                                   ³
+	//³		a. Locaciones - Soma superior a $72.000 (concepto = G1)     ³
+	//³		b. Cosas muebles - Soma superior a $144.000 (concepto = G2) ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	*/
 
 	If !lRet .And. (!cImposto == "IB" .Or. (cImposto == "IB" .And. cConcepto == "B2") )
@@ -15668,7 +15776,7 @@ EndIf
 		If cConcepto $ "G1|G2"
 			cQuery := " SELECT SUM(E2_VALOR) E2_VALOR, E2_MOEDA  FROM "+RetSqlName("SE2")+" SE2 ,"+RetSqlName("SA2")+" SA2 "
 			cQuery += " WHERE "
-			//se o SA2 ?exclusivo entao trabalho com as filiais normalmente
+			//se o SA2 é exclusivo entao trabalho com as filiais normalmente
 			If !EMPTY(xFilial('SA2'))
 				cQuery	+=	" E2_FILIAL = '"+xFilial("SE2")+"' AND "
 			Endif
@@ -15716,10 +15824,10 @@ EndIf
 #ELSE
 
 	/*
-	//=======================================================
-	//=	1a. Validacao                                       =
-	//=		Cosas muebles - Preco unitario superior a $870  =
-	//?====================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³	1a. Validacao                                       ³
+	//³		Cosas muebles - Preco unitario superior a $870  ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	*/
 	If (cConcepto == "G2" .Or. cConcepto == "I2" .Or. cConcepto == "B2") .And. !lPa
 		If nSD == 1	.And. cImposto == "IB"
@@ -15843,11 +15951,11 @@ EndIf
 	Endif
 
 	/*
-	//===================================================================
-	//=	2a. Validacao                                                   =
-	//=		a. Locaciones - Soma superior a $72.000 (concepto = G1)     =
-	//=		b. Cosas muebles - Soma superior a $144.000 (concepto = G2) =
-	//?================================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³	2a. Validacao                                                   ³
+	//³		a. Locaciones - Soma superior a $72.000 (concepto = G1)     ³
+	//³		b. Cosas muebles - Soma superior a $144.000 (concepto = G2) ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	*/
 	If !lRet .And. (!cImposto == "IB" .Or. (cImposto == "IB" .And. cConcepto == "B2") )
 
@@ -15993,18 +16101,18 @@ EndIf
 Return lRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�|||||||||||�|||||||�|||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =F085TxMoed �Autor  =Totvs              ?Data =  27/08/09   ?=
-==�||||||||||�|||||||||||�|||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Inicializar Array com as cotacoes e Nomes de Moedas segundo ?=
-==?         =o arquivo SM2                                               ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP                                                         ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³F085TxMoed ºAutor  ³Totvs              º Data ³  27/08/09   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Inicializar Array com as cotacoes e Nomes de Moedas segundo º±±
+±±º          ³o arquivo SM2                                               º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP                                                         º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function F085TxMoed()
 Local nC := MoedFin()
@@ -16013,13 +16121,13 @@ Local aTxMoedas := {}
 Local cMoedaTx	:= ""
 
 /*
-//========================================================================
-//=A moeda 1 e tambem inclusa como um dummy, nao vai ter uso,            =
-//=mas simplifica todas as chamadas a funcao xMoeda, ja que posso        =
-//=passara a taxa usando a moeda como elemento do Array atxMoedas        =
-//=Exemplo xMoeda(E1_VALOR,E1_MOEDA,1,dDataBase,,aTxMoedas[E1_MOEDA][2]) =
-//=Bruno - Paraguay 25/07/2000                                           =
-//?=====================================================================?
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³A moeda 1 e tambem inclusa como um dummy, nao vai ter uso,            ³
+//³mas simplifica todas as chamadas a funcao xMoeda, ja que posso        ³
+//³passara a taxa usando a moeda como elemento do Array atxMoedas        ³
+//³Exemplo xMoeda(E1_VALOR,E1_MOEDA,1,dDataBase,,aTxMoedas[E1_MOEDA][2]) ³
+//³Bruno - Paraguay 25/07/2000                                           ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 */
 //Inicializar Array com as cotacoes e Nomes de Moedas segundo o arquivo SM2
 Aadd(aTxMoedas,{"",1,PesqPict("SM2","M2_MOEDA1")})
@@ -16035,15 +16143,15 @@ Next
 Return aTxMoedas
 
 /*
-����������������������������������������������������������������������������?
-��+-----------------------------------------------------------------------+��
-���Fun��o    ?CalcRetRIE ?Autor ?Jose Lucas          ?Data ?25.06.98 ��?
-��+----------+------------------------------------------------------------��?
-���Descri��o ?Calcular e Gerar Retencoes sobre Imposto sobre Empreitada  ��?
-��+----------+------------------------------------------------------------��?
-���Uso       ?PAGO007                                                    ��?
-��+-----------------------------------------------------------------------+��
-����������������������������������������������������������������������������?
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+°°+-----------------------------------------------------------------------+°°
+°°°Funçào    ° CalcRetRIE ° Autor ° Jose Lucas          ° Data ° 25.06.98 °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Descriçào ° Calcular e Gerar Retencoes sobre Imposto sobre Empreitada  °°°
+°°+----------+------------------------------------------------------------°°°
+°°°Uso       ° PAGO007                                                    °°°
+°°+-----------------------------------------------------------------------+°°
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 */
 Static Function CalcRetRIE(nSaldo,lPa,nSigno)
 Local aSFERIE  	:= {}
@@ -16065,9 +16173,9 @@ If !lPa
 	SA2->( dbSetOrder(1) )
 	SA2->( dbSeek(xFilial("SA2")+SE2->E2_FORNECE+SE2->E2_LOJA) )
 
-	//=======================================================================
-	//= Retencao do Imposto sobre Empreitada                                =
-	//?====================================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Retencao do Imposto sobre Empreitada                                ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	While Alltrim(SF1->F1_ESPECIE) <> AllTrim(SE2->E2_TIPO).And.!EOF()
 		SF1->(DbSkip())
 		Loop
@@ -16124,9 +16232,9 @@ Else
 		SA2->( dbSetOrder(1) )
 		SA2->( dbSeek(xFilial("SA2")+SE2->E2_FORNECE+SE2->E2_LOJA) )
 
-		//=======================================================================
-		//= Retencao do Imposto sobre Empreitada                                =
-		//?====================================================================?
+		//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		//³ Retencao do Imposto sobre Empreitada                                ³
+		//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 		While Alltrim(SF2->F2_ESPECIE) <> AllTrim(SE2->E2_TIPO).And.!EOF()
 			SF2->(DbSkip())
 			Loop
@@ -16161,18 +16269,18 @@ RestArea(aArea)
 Return aSFERIE
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =CalcIGV   �Autor  =ROBERTO R.MEZZALIRA ?Data =  27/11/09   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Calculo de IGV 											  ?=
-==?         =                                                            ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³CalcIGV   ºAutor  ³ROBERTO R.MEZZALIRA º Data ³  27/11/09   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Calculo de IGV 											  º±±
+±±º          ³                                                            º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 STATIC FUNCTION CALCIGV(nVlr)
 Local nBaseIGV	:= 0
@@ -16181,7 +16289,7 @@ Local aSFEIGV	:= {}
 Local cNRetIGV	:= ""
 
 /* O parametro MV_NRETIGV indica quais comprovantes estao livres da retencao de igv. Nesse parametro devem ser
-informados os c�digos dos comprovantes segundo a tabela CCL (CCL_CODGOV) */
+informados os códigos dos comprovantes segundo a tabela CCL (CCL_CODGOV) */
 cNRetIGV := GetMV("MV_NRETIGV",.T.,"")
 SF2->(DbSetOrder(2))
 If SF2->(DbSeek(xFilial("SF2") + SE2->E2_FORNECE + SE2->E2_LOJA + SE2->E2_NUM + SE2->E2_PREFIXO))
@@ -16211,23 +16319,23 @@ Endif
 Return(Aclone(aSFEIGV))
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  = CalcRIR   ?Jos?Lucas				?Data =  17/09/10    ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Gera??o do array aRets com as reten��es de ISRL, conforme  ?=
-==?         = requerimentos para localiza??o Venezuela.                  ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Sintaxe   = ExpA := CalcRIR(ExpN1,ExpN2)                               ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Parametros= ExpN1 := nVlr := Valor do t�tulo (E2_VALOR).               ?=
-==?         = ExpN2 := nTotOrden := Total da Ordem de Pago.              ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³ CalcRIR   º José Lucas				º Data ³  17/09/10    º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Geração do array aRets com as retenções de ISRL, conforme  º±±
+±±º          ³ requerimentos para localização Venezuela.                  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºSintaxe   ³ ExpA := CalcRIR(ExpN1,ExpN2)                               º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºParametros³ ExpN1 := nVlr := Valor do título (E2_VALOR).               º±±
+±±º          ³ ExpN2 := nTotOrden := Total da Ordem de Pago.              º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function CALCRIR(nVlr,nTotOrden)
 Local aSavArea  := GetArea()
@@ -16243,7 +16351,7 @@ SFF->(dbSetOrder(14))
 SA2->(dbSetOrder(1))
 SA2->(dbSeek(xFilial("SA2")+SE2->E2_FORNECE+SE2->E2_LOJA))
 
-//Verificar se j?existe Reten��es geradas para o Documento NF/NDP/NCP
+//Verificar se já existe Retenções geradas para o Documento NF/NDP/NCP
 SFE->(dbSetOrder(4))
 If SFE->(dbSeek(xFilial("SFE")+SE2->E2_FORNECE+SE2->E2_LOJA+SE2->E2_NUM+SE2->E2_PREFIXO)) //Forncedor+Loja+NotaFisal+Serie
 	RestArea(aSavArea)
@@ -16271,7 +16379,7 @@ If SE2->E2_TIPO $ "NF |NDP"	//Nota Fiscal de Compras e Nota de Debito a Proveedo
                	    EndIf
 					nBaseRIR := SD1->D1_TOTAL
 				EndIf
-				//Inicializar array com as reten��es
+				//Inicializar array com as retenções
 				If nAliqRIR > 0 .and. nBaseRIR > 0 .and. fa085GetImpos("RIR","SD1")[3] > 0.00
 					nPosArray := Ascan(aSFERIR,{|x| AllTrim(x[14]) == AllTrim(SFF->FF_CONCEPT)})
 					If nPosArray == 0
@@ -16304,7 +16412,7 @@ If SE2->E2_TIPO $ "NF |NDP"	//Nota Fiscal de Compras e Nota de Debito a Proveedo
 			End
 		EndIf
 		If Len(aSFERIR) == 0
-			//Garantir que se houve abatimentos na gera??o da nota gravar as reten��es como gravado em Compras.
+			//Garantir que se houve abatimentos na geração da nota gravar as retenções como gravado em Compras.
 			If Select("QRYRET") > 0
 				dbSelectArea("QRYRET")
 				dbCloseArea()
@@ -16349,7 +16457,7 @@ If SE2->E2_TIPO $ "NF |NDP"	//Nota Fiscal de Compras e Nota de Debito a Proveedo
 								SB1->(dbSeek(xFilial("SB1")+SD1->D1_COD))
    								// Pegar a aliquota de RIR na tela de complemento de impostos RIR
 								SFF->(dbSeek(xFilial("SFF")+"RIR"+SA2->A2_GRTRIB+SB1->B1_GRTRIB))
- 								//Montar array para gravar as reten��es na tabela SFE
+ 								//Montar array para gravar as retenções na tabela SFE
 								nPosArray := Ascan(aSFERIR,{|x| AllTrim(x[14]) == AllTrim(SFF->FF_CONCEPT)})
 								If nPosArray == 0
 									AAdd(aSFERIR,{"","",0,0,0,0,0,CTOD(""),0,"","","","","",""})
@@ -16408,7 +16516,7 @@ ElseIf SE2->E2_TIPO $ "NCP"	//Nota de Credito de Proveedores.
                	    EndIf
 					nBaseRIR := SD2->D2_TOTAL
 				EndIf
-				//Inicializar array com as reten��es
+				//Inicializar array com as retenções
 				If nAliqRIR > 0 .and. nBaseRIR > 0 .and. fa085GetImpos("RIR","SD2")[3] > 0.00
 					nPosArray := Ascan(aSFERIR,{|x| AllTrim(x[14]) == AllTrim(SFF->FF_CONCEPT)})
 					If nPosArray == 0
@@ -16441,7 +16549,7 @@ ElseIf SE2->E2_TIPO $ "NCP"	//Nota de Credito de Proveedores.
 			End
 		EndIf
 		If Len(aSFERIR) == 0
-			//Garantir que se houve abatimentos na gera??o da nota gravar as reten��es como gravado em Compras.
+			//Garantir que se houve abatimentos na geração da nota gravar as retenções como gravado em Compras.
 			If Select("QRYRET") > 0
 				dbSelectArea("QRYRET")
 				dbCloseArea()
@@ -16486,7 +16594,7 @@ ElseIf SE2->E2_TIPO $ "NCP"	//Nota de Credito de Proveedores.
 								SB1->(dbSeek(xFilial("SB1")+SD1->D1_COD))
    								// Pegar a aliquota de RIR na tela de complemento de impostos RIR
 								SFF->(dbSeek(xFilial("SFF")+"RIR"+SA2->A2_GRTRIB+SB1->B1_GRTRIB))
- 								//Montar array para gravar as reten��es na tabela SFE
+ 								//Montar array para gravar as retenções na tabela SFE
 								nPosArray := Ascan(aSFERIR,{|x| AllTrim(x[14]) == AllTrim(SFF->FF_CONCEPT)})
 								If nPosArray == 0
 									AAdd(aSFERIR,{"","",0,0,0,0,0,CTOD(""),0,"","","","","",""})
@@ -16529,23 +16637,23 @@ RestArea(aSavArea)
 Return aSFERIR
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  = CalcIVAVEN  ?Jos?Lucas				?Data =  17/09/10    ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Gera??o do array aRets com as reten��es de IVA,  conforme  ?=
-==?         = requerimentos para localiza??o Venezuela.                  ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Sintaxe   = ExpA := CalcIVAVEN(ExpN1,ExpN2)                            ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Parametros= ExpN1 := nVlr := Valor do t�tulo (E2_VALOR).               ?=
-==?         = ExpN2 := nTotOrden := Total da Ordem de Pago.              ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³ CalcIVAVEN  º José Lucas				º Data ³  17/09/10    º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Geração do array aRets com as retenções de IVA,  conforme  º±±
+±±º          ³ requerimentos para localização Venezuela.                  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºSintaxe   ³ ExpA := CalcIVAVEN(ExpN1,ExpN2)                            º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºParametros³ ExpN1 := nVlr := Valor do título (E2_VALOR).               º±±
+±±º          ³ ExpN2 := nTotOrden := Total da Ordem de Pago.              º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function CalcIVAVEN(nVlr,nTotOrden)
 Local aSavArea    := GetArea()
@@ -16556,7 +16664,7 @@ Local nPosArray   := 0
 SA2->(dbSetOrder(1))
 SA2->(dbSeek(xFilial("SA2")+SE2->E2_FORNECE+SE2->E2_LOJA))
 
-//Verificar se j?existe Reten��es geradas para o Documento NF/NDP/NCP
+//Verificar se já existe Retenções geradas para o Documento NF/NDP/NCP
 SFE->(dbSetOrder(4))
 If SFE->(dbSeek(xFilial("SFE")+SE2->E2_FORNECE+SE2->E2_LOJA+SE2->E2_NUM+SE2->E2_PREFIXO)) //Forncedor+Loja+NotaFisal+Serie
 	RestArea(aSavArea)
@@ -16564,7 +16672,7 @@ If SFE->(dbSeek(xFilial("SFE")+SE2->E2_FORNECE+SE2->E2_LOJA+SE2->E2_NUM+SE2->E2_
 EndIf
 If SE2->E2_TIPO $ "NF |NDP"	//Nota Fiscal de Compras e Nota de Debito a Proveedores.
 
-	// Pesquisar nos documentos e verificar se possui itens com reten??o de IVA calculado.
+	// Pesquisar nos documentos e verificar se possui itens com retenção de IVA calculado.
 	dbSelectArea("SF1")
 	dbSetOrder(1)
 	If dbSeek(xFilial("SF1")+SE2->E2_NUM+SE2->E2_PREFIXO+SE2->E2_FORNECE+SE2->E2_LOJA)
@@ -16575,9 +16683,9 @@ If SE2->E2_TIPO $ "NF |NDP"	//Nota Fiscal de Compras e Nota de Debito a Proveedo
     		             .and. D1_SERIE == SE2->E2_PREFIXO .and. D1_FORNECE == SE2->E2_FORNECE;
     	    	         .and. D1_LOJA == SE2->E2_LOJA
 
-				//Verificar de existe reten??o de IVA calculada.
+				//Verificar de existe retenção de IVA calculada.
 				If fa085GetImpos("RV","SD1")[3] > 0
- 					//Montar array para gravar as reten��es na tabela SFE
+ 					//Montar array para gravar as retenções na tabela SFE
 					AAdd(aSFEIVAVEN,{"","",0,0,0,0,0,CTOD(""),0,"","","","","",""})
 					nPosArray := Len(aSFEIVAVEN)
 					aSFEIVAVEN[nPosArray][01] := SE2->E2_NUM
@@ -16597,7 +16705,7 @@ If SE2->E2_TIPO $ "NF |NDP"	//Nota Fiscal de Compras e Nota de Debito a Proveedo
 			End
 
 			If Len(aSFEIVAVEN) == 0
-				//Garantir que se houve abatimentos na gera??o da nota gravar as reten��es como gravado em Compras.
+				//Garantir que se houve abatimentos na geração da nota gravar as retenções como gravado em Compras.
 				If Select("QRYRET") > 0
 					dbSelectArea("QRYRET")
 					dbCloseArea()
@@ -16636,9 +16744,9 @@ If SE2->E2_TIPO $ "NF |NDP"	//Nota Fiscal de Compras e Nota de Debito a Proveedo
     	             					 .and. D1_SERIE == QRYRET->E2_PREFIXO .and. D1_FORNECE == QRYRET->E2_FORNECE;
     	             					 .and. D1_LOJA == QRYRET->E2_LOJA
 
-								//Verificar de existe reten??o de IVA calculada.
+								//Verificar de existe retenção de IVA calculada.
 								If fa085GetImpos("RV","SD1")[3] > 0
-									//Montar array para gravar as reten��es na tabela SFE
+									//Montar array para gravar as retenções na tabela SFE
  									AAdd(aSFEIVAVEN,{"","",0,0,0,0,0,CTOD(""),0,"","","","","",""})
 									nPosArray := Len(aSFEIVAVEN)
 									aSFEIVAVEN[nPosArray][01] := QRYRET->E2_NUM
@@ -16667,7 +16775,7 @@ If SE2->E2_TIPO $ "NF |NDP"	//Nota Fiscal de Compras e Nota de Debito a Proveedo
 
 ElseIf SE2->E2_TIPO $ "NCP"	//Nota de Credito de Proveedores.
 
-	// Pesquisar nos documentos e verificar se possui itens com reten??o de IVA calculado.
+	// Pesquisar nos documentos e verificar se possui itens com retenção de IVA calculado.
 	dbSelectArea("SF2")
 	dbSetOrder(1)
 	If dbSeek(xFilial("SF2")+SE2->E2_NUM+SE2->E2_PREFIXO+SE2->E2_FORNECE+SE2->E2_LOJA)
@@ -16678,9 +16786,9 @@ ElseIf SE2->E2_TIPO $ "NCP"	//Nota de Credito de Proveedores.
     		             .and. D2_SERIE == SE2->E2_PREFIXO .and. D2_CLIENTE == SE2->E2_FORNECE;
     	    	         .and. D2_LOJA == SE2->E2_LOJA
 
-				//Verificar de existe reten??o de IVA calculada.
+				//Verificar de existe retenção de IVA calculada.
 				If fa085GetImpos("RV","SD2")[3] > 0
- 					//Montar array para gravar as reten��es na tabela SFE
+ 					//Montar array para gravar as retenções na tabela SFE
 					AAdd(aSFEIVAVEN,{"","",0,0,0,0,0,CTOD(""),0,"","","","","",""})
 					nPosArray := Len(aSFEIVAVEN)
 					aSFEIVAVEN[nPosArray][01] := SE2->E2_NUM
@@ -16700,7 +16808,7 @@ ElseIf SE2->E2_TIPO $ "NCP"	//Nota de Credito de Proveedores.
 			End
 
 			If Len(aSFEIVAVEN) == 0
-				//Garantir que se houve abatimentos na gera??o da nota gravar as reten��es como gravado em Compras.
+				//Garantir que se houve abatimentos na geração da nota gravar as retenções como gravado em Compras.
 				If Select("QRYRET") > 0
 					dbSelectArea("QRYRET")
 					dbCloseArea()
@@ -16739,9 +16847,9 @@ ElseIf SE2->E2_TIPO $ "NCP"	//Nota de Credito de Proveedores.
     	             					 .and. D2_SERIE == QRYRET->E2_PREFIXO .and. D2_CLIENTE == QRYRET->E2_FORNECE;
     	             					 .and. D2_LOJA == QRYRET->E2_LOJA
 
-								//Verificar de existe reten??o de IVA calculada.
+								//Verificar de existe retenção de IVA calculada.
 								If fa085GetImpos("RV","SD2")[3] > 0
-									//Montar array para gravar as reten��es na tabela SFE
+									//Montar array para gravar as retenções na tabela SFE
  									AAdd(aSFEIVAVEN,{"","",0,0,0,0,0,CTOD(""),0,"","","","","",""})
 									nPosArray := Len(aSFEIVAVEN)
 									aSFEIVAVEN[nPosArray][01] := QRYRET->E2_NUM
@@ -16773,17 +16881,17 @@ RestArea(aSavArea)
 Return aSFEIVAVEN
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =CalcIGV2  �Autor  =ROBERTO R.MEZZALIRA ?Data =  27/11/09   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Calculo de IGV 											  ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³CalcIGV2  ºAutor  ³ROBERTO R.MEZZALIRA º Data ³  27/11/09   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Calculo de IGV 											  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 STATIC FUNCTION CALCIGV2(nVlr)
 Local nBaseIGV	:= 0
@@ -16796,15 +16904,15 @@ Local cNRetIGV	:= ""
 Local nTxMoeda  := 0
 
 /* O parametro MV_NRETIGV indica quais comprovantes estao livres da retencao de igv. Nesse parametro devem ser
-informados os c�digos dos comprovantes segundo a tabela CCL (CCL_CODGOV) */
+informados os códigos dos comprovantes segundo a tabela CCL (CCL_CODGOV) */
 cNRetIGV := GetMV("MV_NRETIGV",.T.,"")
 SF1->(DbSetOrder(1))
 If SF1->(DbSeek(xFilial("SF1") + SE2->E2_NUM + SE2->E2_PREFIXO + SE2->E2_FORNECE + SE2->E2_LOJA))
 	/* a retencao ocorre se nao houve detracao e se o tipo da fatura permitir */
 	If SF1->F1_BASIMP1 > 0 .And. SF1->F1_BASIMP5 == 0 .And. !(SF1->F1_TIPODOC $ cNRetIGV)
 		//Considero para moeda da orden de pago:
-		// 1 - Moeda da taxa modificada/digitada quando for diferente da cota??o do dia (significa que foi modificada)
-		// 2 - Taxa da inclus|o do t�tulo (E2_TXMOEDA)
+		// 1 - Moeda da taxa modificada/digitada quando for diferente da cotação do dia (significa que foi modificada)
+		// 2 - Taxa da inclusão do título (E2_TXMOEDA)
 		// 3 - Taxa do dia (SM2)
 		If aTxMoedas[SE2->E2_MOEDA][2] <> Round(RecMoeda(dDataBase,SE2->E2_MOEDA),MsDecimais(SE2->E2_MOEDA))
 			nTxMoeda := aTxMoedas[SE2->E2_MOEDA][2]
@@ -16861,17 +16969,17 @@ Endif
 Return(Aclone(aSFEIGV))
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =CALCRETIGV�Autor  =Microsiga           �Fecha = 27/02/2012  ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Calculo do valor da retencao sobr IGV - Peru               ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP                                                         ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³CALCRETIGVºAutor  ³Microsiga           ºFecha ³ 27/02/2012  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Calculo do valor da retencao sobr IGV - Peru               º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP                                                         º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function CalcRetIGV(aSE2,nInicio,nFim)
 Local nVlrPago	:= 0
@@ -17013,17 +17121,17 @@ Next
 Return()
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�|||||||||||||�|||||||�||||||||||||||||||||�||||||�||||||||||?=
-==�Programa  =CheckConfIB  �Autor  =Marcos Berto        ?Data =14/04/10  ?=
-==�||||||||||�|||||||||||||�||||||||||||||||||||||||||||�|||||||||||||||||?=
-==�Desc.     =Configura??o de calculo de IIBB - SFH - CCO                 ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³CheckConfIB  ºAutor  ³Marcos Berto        º Data ³14/04/10  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Configuração de calculo de IIBB - SFH - CCO                 º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function CheckConfIB(cFornecedor, cLoja, cProvincia,cFilFor)
 Local nI				:= 0
@@ -17056,29 +17164,29 @@ If AliasInDic("CCO") .And. CCO->(FieldPos("CCO_AGRET")) > 0 .And. CCO->(FieldPos
 
 			If nRegSFH > 0 .and. !Eof()
 				aConfProv[nI][1] := SFH->FH_ZONFIS //Provincia
-				aConfProv[nI][2] := CCO->CCO_AGRET //Agente de reten??o
-				aConfProv[nI][3] := CCO->CCO_TPRET //Tipo de reten??o
+				aConfProv[nI][2] := CCO->CCO_AGRET //Agente de retenção
+				aConfProv[nI][3] := CCO->CCO_TPRET //Tipo de retenção
 
 				If SFH->(FieldPos("FH_TIPO")) > 0 .And. !Empty(SFH->FH_TIPO) .And. Iif(!Empty(SFH->FH_INIVIGE),dDataBase>=SFH->FH_INIVIGE,.T.) .And. Iif(!Empty(SFH->FH_FIMVIGE),dDataBase<=SFH->FH_FIMVIGE,.T.)
 					cTipoForn := SFH->FH_TIPO
 				Else
-					//Caso o tipo n|o seja informado na amarra??o, o fornecedor deve ser tratado como No Inscripto (N)
+					//Caso o tipo não seja informado na amarração, o fornecedor deve ser tratado como No Inscripto (N)
 					cTipoForn := "N"
 				Endif
 
 				aConfProv[nI][4] := cTipoForn //Tipo
 			Else
 				aConfProv[nI][1] := CCO->CCO_CODPRO//Provincia
-				aConfProv[nI][2] := CCO->CCO_AGRET //Agente de reten??o
-				aConfProv[nI][3] := CCO->CCO_TPRET //Tipo de reten??o
-				aConfProv[nI][4] := "N" //Caso n|o exista a amarra??o de exce��es, o fornecedor deve ser tratado como No Inscripto (N)
+				aConfProv[nI][2] := CCO->CCO_AGRET //Agente de retenção
+				aConfProv[nI][3] := CCO->CCO_TPRET //Tipo de retenção
+				aConfProv[nI][4] := "N" //Caso não exista a amarração de exceções, o fornecedor deve ser tratado como No Inscripto (N)
 			Endif
 			nI++
 		CCO->(DbSkip())
 	EndDo
 Endif
 
-//Configura??o padr|o -> cadastro de Fornecedor - SA2
+//Configuração padrão -> cadastro de Fornecedor - SA2
 If Len(aConfProv) == 0
 	dbSelectArea("SA2")
 	SA2->(dbSetOrder(1))
@@ -17095,18 +17203,18 @@ Endif
 Return aConfProv
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�|||||||||||||�|||||||�||||||||||||||||||||�||||||�||||||||||?=
-==�Programa  =CheckCBU     �Autor  =Marcos Berto        ?Data =26/04/10  ?=
-==�||||||||||�|||||||||||||�||||||||||||||||||||||||||||�|||||||||||||||||?=
-==�Desc.     =Verifica os t�tulos gerados dentro do periodo de controle   ?=
-==?         =de CBU.                                                     ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³CheckCBU     ºAutor  ³Marcos Berto        º Data ³26/04/10  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Verifica os títulos gerados dentro do periodo de controle   º±±
+±±º          ³de CBU.                                                     º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function CheckCBU(aOrdPg)
 Local nI			:= 0
@@ -17235,7 +17343,7 @@ If nOpc	==	1 .and.	!Empty(cNatureza)
 		  If nFMOD==1
 		           MsgAlert(STR0213)//"Os Titulos selecionados incidem ITF, selecione uma Natureza com incidencia de ITF.")
 		  Else
-		           MsgAlert(STR0214)//"Os Titulos selecionados n|o incidem ITF, selecione uma Natureza sem incidencia de ITF.")
+		           MsgAlert(STR0214)//"Os Titulos selecionados não incidem ITF, selecione uma Natureza sem incidencia de ITF.")
 		  Endif
 		     Endif
 		  Endif
@@ -17248,14 +17356,14 @@ If nOpc	==	1 .and.	!Empty(cNatureza)
    Endif
 Endif
 If lRet .and. cPaisLoc$"PER|DOM|COS" .and. Empty(cNatureza) .and. AllTrim(cCalcITF) == "1"
-   MsgAlert(STR0218)//"O campo Natureza ?obrigat�rio!"
+   MsgAlert(STR0218)//"O campo Natureza é obrigatório!"
    lRet	:=	.F.
 Endif
 
 //294 - Natureza sintetica/Analitica
 If lRet .and. IIf(!__lF085VlNat,!FinVldNat( .F., cNatureza ),.F.)
 	lRet := .F.
-ElseIf __lF085VlNat //Fa�o a valida??o pelo ponto de entrada
+ElseIf __lF085VlNat //Faço a validação pelo ponto de entrada
 	lVldNat := ExecBlock("F085VLNAT",.F.,.F.,{cNatureza})
 	If ValType(lVldNat) == "L"
 		lRet := lVldNat
@@ -17335,7 +17443,7 @@ If cPaisLoc$"PER|DOM"
    If cPaisLoc$"DOM|COS" .and. n==0 .and. lRetCx //passa aqui tb no informar do pa
 		If !lF85ABCVLD
 	   	If nVlrDOM >= nFinLmCH .and. nPagar=3 .and. cDebInm="EF"
-	   		Help(" ",1,"HELP",STR0229,STR0230,1,0)//"FA085A - LIMITE ITF","Pagamento disponivel apenas com Cheque ou Transfer�ncia Banc�ria."
+	   		Help(" ",1,"HELP",STR0229,STR0230,1,0)//"FA085A - LIMITE ITF","Pagamento disponivel apenas com Cheque ou Transferência Bancária."
 	         lRetCx:=.F.
 	      Endif
 		Else
@@ -17385,7 +17493,7 @@ If (SED->(FieldPos("ED_IRALIQ")) > 0) .And. (SED->(FieldPos("ED_BASELIQ")) > 0) 
 
 				IF ExistBlock("F085ABIRF")
 				    nBasIr := ExecBlock("F085ABIRF",.f.,.f.)
-				    lCalcIR:= .T.  // Se existir o ponto de entrada n|o ser?verificado o Minimo para calculo do IR
+				    lCalcIR:= .T.  // Se existir o ponto de entrada não será verificado o Minimo para calculo do IR
 				    	IF valtype (nBasIr) <> "N"
 				            nBasIr := SED->ED_IRALIQ
 						EndIF
@@ -17396,7 +17504,7 @@ If (SED->(FieldPos("ED_IRALIQ")) > 0) .And. (SED->(FieldPos("ED_BASELIQ")) > 0) 
 						EndIf
 				EndIf
 
-				If lCalcIR .and. nBasIr > 0 // S?ser?gerado registro de reten??o se a aliquota for maior que zero.
+				If lCalcIR .and. nBasIr > 0 // Só será gerado registro de retenção se a aliquota for maior que zero.
 					Aadd(aRetIR,array(11))
 					nLenIR := Len(aRetIR)
 					If SED->ED_BASELIQ > 0
@@ -17424,34 +17532,34 @@ Endif
 Return(Aclone(aRetIR))
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  F085AtuSFF  �Autor  =Ana Paula	         ?Data =  22/05/10   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Chamada do assinante de certificado                         ?=
-==?         =                                                            ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  F085AtuSFF  ºAutor  ³Ana Paula	         º Data ³  22/05/10   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Chamada do assinante de certificado                         º±±
+±±º          ³                                                            º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  = fa085DtVenc  �Autor  = Jos?Lucas     ?Data =  01/12/10   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Validar a data de vencimento do cheque informado.          ?=
-==?         = Obs: Redefinir no cliente se ?permitido cheque com vencto ?=
-==?         =      futura.                                               ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³ fa085DtVenc  ºAutor  ³ José Lucas     º Data ³  01/12/10   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Validar a data de vencimento do cheque informado.          º±±
+±±º          ³ Obs: Redefinir no cliente se é permitido cheque com vencto º±±
+±±º          ³      futura.                                               º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function fa085DtVenc(dDataVenc)
 Local aArea := GetArea()
@@ -17472,18 +17580,18 @@ RestArea(aArea)
 Return lRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  F085AtuAbt  �Autor  =Paulo Leme         ?Data =  02/12/10   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Baixa de Abatimentos Localiza��es				          ?=
-==?         =                                                            ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  F085AtuAbt  ºAutor  ³Paulo Leme         º Data ³  02/12/10   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Baixa de Abatimentos Localizações				          º±±
+±±º          ³                                                            º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function F085AtuAbt(cOrdPago)
 Local aAreaAtu  := {}
@@ -17562,18 +17670,18 @@ RestArea(aAreaAtu)
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�|||||||||||||�|||||||�||||||||||||||||||�||||||�||||||||||||?=
-==�Programa  = A085aVigSFH ?Autor = Gustavo Henrique ?Data =  18/02/11  ?=
-==�||||||||||�|||||||||||||�||||||||||||||||||||||||||�|||||||||||||||||||?=
-==�Descricao = Faz a validacao de uma data com o periodo de vigencia      ?=
-==?         = de Ingressos Brutos                                        ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³ A085aVigSFH º Autor ³ Gustavo Henrique º Data ³  18/02/11  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDescricao ³ Faz a validacao de uma data com o periodo de vigencia      º±±
+±±º          ³ de Ingressos Brutos                                        º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function A085aVigSFH( dData )
 
@@ -17592,19 +17700,19 @@ EndIf
 Return lRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-=============================================================================
-===Fun��o	 = FA085ACITF = Autor = Wagner Montenegro	= Data = 11.05.11 ===
-==|==========|==========|=======|========================|======|==========?
-===Descri��o = Verifica a Natureza possui configura??o c/ Aliquota de ITF  ==
-==|==========|=============================================================?
-===Retorno	 = L�gico       											               ==
-==|==========|=============================================================?
-===Uso		 = Localiza??o Rep. Dominicana                                 ==
-==?=========|=============================================================?
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±
+±±³Fun‡…o	 ³ FA085ACITF ³ Autor ³ Wagner Montenegro	³ Data ³ 11.05.11 ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄ´±
+±±³Descri‡…o ³ Verifica a Natureza possui configuração c/ Aliquota de ITF  ³±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±
+±±³Retorno	 ³ Lógico       											               ³±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±
+±±³Uso		 ³ Localização Rep. Dominicana                                 ³±
+±±ÀÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 FUNCTION FA085ACITF(cNaureza)
 Local aAreaDOM 	:= GetArea()
@@ -17651,19 +17759,19 @@ RestArea(aAreaDOM)
 Return(If(nAliqITF>0,.T.,.F.))
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-=============================================================================
-===Fun��o	 = FA085ATOT = Autor = Wagner Montenegro	= Data = 11.05.11 ===
-==|==========|==========|=======|========================|======|==========?
-===Descri��o = Verifica se valor de pagto ?> que Limite p/ pgto em especie==
-==|==========|=============================================================?
-===Retorno	 = L�gico       											               ==
-==|==========|=============================================================?
-===Uso		 = Localiza??o Rep. Dominicana                                 ==
-==?=========|=============================================================?
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±
+±±³Fun‡…o	 ³ FA085ATOT ³ Autor ³ Wagner Montenegro	³ Data ³ 11.05.11 ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄ´±
+±±³Descri‡…o ³ Verifica se valor de pagto é > que Limite p/ pgto em especie³±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±
+±±³Retorno	 ³ Lógico       											               ³±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±
+±±³Uso		 ³ Localização Rep. Dominicana                                 ³±
+±±ÀÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 FUNCTION FA085ATOT(aPgs)
 Local lRet := .T.
@@ -17673,30 +17781,30 @@ For nX := 1 to Len(aPgs)
 	nSomaT+=DesTrans(aPgs[nX,7])
 Next
 If nSomaT >= nFinLmCH
-//	Help(" ",1,"HELP","FA085A - LIMITE ITF","Pagamento disponivel apenas com Cheque ou Transfer�ncia Banc�ria.",1,0)
+//	Help(" ",1,"HELP","FA085A - LIMITE ITF","Pagamento disponivel apenas com Cheque ou Transferência Bancária.",1,0)
 	lRet:=.F.
 Endif
 Return(lRet)
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-=============================================================================
-===Fun??o	 = fa085GetImpos= Autor = Jos?Lucas		= Data = 15.05.11 ===
-==|==========|==========|=======|========================|======|==========?
-===Descri��o = Retornar array com valor base, aliquota e imposto para as   ==
-===          = reten��es de IVA, ISRL ?partir dos valores gerados pela NF ==
-===          = de Compras.                                                 ==
-==|==========|=============================================================?
-===Parametros= ExpC1 := Sigla da reten??o definida na tabela SFB-Impostos  ==
-===          =          Exemplo: "RV", "RIR"                               ==
-==|==========|=============================================================?
-===Retorno	 = ExpA1 {Valor Base,Aliquota,Valor do Imposto}				   ==
-==|==========|=============================================================?
-===Uso		 = Localiza??o Venezuela                                       ==
-==?=========|=============================================================?
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±
+±±³Função	 ³ fa085GetImpos³ Autor ³ José Lucas		³ Data ³ 15.05.11 ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄ´±
+±±³Descri‡…o ³ Retornar array com valor base, aliquota e imposto para as   ³±
+±±³          ³ retenções de IVA, ISRL à partir dos valores gerados pela NF ³±
+±±³          ³ de Compras.                                                 ³±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±
+±±³Parametros³ ExpC1 := Sigla da retenção definida na tabela SFB-Impostos  ³±
+±±³          ³          Exemplo: "RV", "RIR"                               ³±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±
+±±³Retorno	 ³ ExpA1 {Valor Base,Aliquota,Valor do Imposto}				   ³±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±
+±±³Uso		 ³ Localização Venezuela                                       ³±
+±±ÀÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function fa085GetImpos(cSiglaImp,cAlias)
 LOCAL aSavArea  := GetArea()
@@ -17730,25 +17838,25 @@ RestArea(aSavArea)
 Return aImposto
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-=============================================================================
-===Fun??o	 = fa085GetConcept= Autor = Jos?Lucas		= Data = 15.05.11 ===
-==|==========|==========|=======|========================|======|==========?
-===Descri��o = Retornar o codigo do conceito de reten??o de ISRL ?partir  ==
-===          = do campo D1_CONCEPT do item da NF de Compras.               ==
-==|==========|=============================================================?
-===Parametros= ExpC1 := Numero da Nota Fiscal                              ==
-===          = ExpC2 := Serie da Nota Fiscal                               ==
-===          = ExpC3 := C�digo do Fornecedor                               ==
-===          = ExpC4 := Loja do Fornecedor                                 ==
-==|==========|=============================================================?
-===Retorno	 = ExpC5 := Conceito                        				   ==
-==|==========|=============================================================?
-===Uso		 = Localiza??o Venezuela                                       ==
-==?=========|=============================================================?
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±
+±±³Função	 ³ fa085GetConcept³ Autor ³ José Lucas		³ Data ³ 15.05.11 ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄ´±
+±±³Descri‡…o ³ Retornar o codigo do conceito de retenção de ISRL à partir  ³±
+±±³          ³ do campo D1_CONCEPT do item da NF de Compras.               ³±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±
+±±³Parametros³ ExpC1 := Numero da Nota Fiscal                              ³±
+±±³          ³ ExpC2 := Serie da Nota Fiscal                               ³±
+±±³          ³ ExpC3 := Código do Fornecedor                               ³±
+±±³          ³ ExpC4 := Loja do Fornecedor                                 ³±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±
+±±³Retorno	 ³ ExpC5 := Conceito                        				   ³±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±
+±±³Uso		 ³ Localização Venezuela                                       ³±
+±±ÀÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function fa085GetConcept(cNFiscal,cSerie,cFornece,cLoja)
 LOCAL aSavArea  := GetArea()
@@ -17768,22 +17876,22 @@ RestArea(aSavArea)
 Return cConceito
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�|||||||||||||�|||||||�||||||||||||||||||�||||||�||||||||||||?=
-==�Programa  = fa085GerRet ?Autor = Paulo Leme       ?Data =  05/04/11  ?=
-==�||||||||||�|||||||||||||�||||||||||||||||||||||||||�|||||||||||||||||||?=
-==�Descricao = //Gera??o das Reten��es de Impostos  - Republica Dominicana?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³ fa085GerRet º Autor ³ Paulo Leme       º Data ³  05/04/11  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDescricao ³ //Geração das Retenções de Impostos  - Republica Dominicanaº±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function fa085GerRet(cFatoGer, cNatur, nValor, cPrefixo, nNum, cFornec)
 
 
-/* Gera??o das Reten��es de Impostos - Republica Dominicana */
+/* Geração das Retenções de Impostos - Republica Dominicana */
 /* Function fa050CalcRet(cCarteira, cFatoGerador)           */
 /* 1-Contas a Pagar ou 3-Ambos e Fato Gerador 2-Baixa       */
  fa050CalcRet("'1|3'", cFatoGer, cNatur, nValor, cPrefixo, nNum, cFornec,.T.,cOrdPago)
@@ -17791,18 +17899,18 @@ Function fa085GerRet(cFatoGer, cNatur, nValor, cPrefixo, nNum, cFornec)
 Return .T.
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  F085PesAbt  �Autor  =Paulo Leme         ?Data =  05/04/11   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Pesquisa de Abatimentos Localiza��es				          ?=
-==?         =                                                            ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  F085PesAbt  ºAutor  ³Paulo Leme         º Data ³  05/04/11   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Pesquisa de Abatimentos Localizações				          º±±
+±±º          ³                                                            º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function F085PesAbt()
 Local aAreaAtu  := {}
@@ -17848,18 +17956,18 @@ RestArea(aAreaAtu)
 Return nVlrRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  F085AbtImp  �Autor  =Paulo Leme         ?Data =  05/04/11   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =  IDENTIFICA IMPOSTO - ITBIS - ISR - REP DOM                ?=
-==?         =                                                            ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  F085AbtImp  ºAutor  ³Paulo Leme         º Data ³  05/04/11   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³  IDENTIFICA IMPOSTO - ITBIS - ISR - REP DOM                º±±
+±±º          ³                                                            º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function F085AbtImp(cNatur, cTipo)
 Local lRet := .F.
@@ -17878,18 +17986,18 @@ EndIf
 Return lRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  F085DelAbt  �Autor  =Paulo Leme         ?Data =  25/05/11   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Deleta Abatimentos Localiza��es				          ?=
-==?         =                                                            ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  F085DelAbt  ºAutor  ³Paulo Leme         º Data ³  25/05/11   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Deleta Abatimentos Localizações				          º±±
+±±º          ³                                                            º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function F085DelAbt(cChaveSE2)
 Local aAreaAtu  := {}
@@ -17936,18 +18044,18 @@ RestArea(aAreaAtu)
 Return lRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  F085FatGer  �Autor  =Paulo Leme         ?Data =  25/05/11   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =  Identifica Fato Gerador da Reten??o 1-Emissao ou 2-Baixa  ?=
-==?         =                                                            ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  F085FatGer  ºAutor  ³Paulo Leme         º Data ³  25/05/11   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³  Identifica Fato Gerador da Retenção 1-Emissao ou 2-Baixa  º±±
+±±º          ³                                                            º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function F085FatGer(cNatur)
 Local cFatGer := "1"
@@ -17976,18 +18084,18 @@ EndIf
 Return cFatGer
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  |FA85AtuSFE�Autor  =Rodrigo Gimenes     ?Data =  29/07/11   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =  Quando for d�bito imediato, atualiza o campo com o n=mero ?=
-==?         =  da ordem de pago.                                         ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  |FA85AtuSFEºAutor  ³Rodrigo Gimenes     º Data ³  29/07/11   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³  Quando for débito imediato, atualiza o campo com o número º±±
+±±º          ³  da ordem de pago.                                         º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function FA85AtuSFE(cChave,cOrdPago)
 Local aAreaAtu  := {}
@@ -18012,16 +18120,16 @@ RestArea(aAreaAtu)
 Return()
 
 /*/
-=============================================================================
-=============================================================================
-===Fun��o    =fA085aLegenda Autor = Jose Lucas          = Data = 10.11.11 ===
-==|==========|============|=======|=====================|======|==========?=
-===Descri��o = Define a Legenda para os t�tulos do Contas a Pagar na      ===
-===          = Orden de Pago...                                           ===
-==|==========|============================================================?=
-=== Uso      = Fina085A                                                   ===
-==?=========|============================================================?=
-=============================================================================
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³fA085aLegenda Autor ³ Jose Lucas          ³ Data ³ 10.11.11 ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Define a Legenda para os títulos do Contas a Pagar na      ³±±
+±±³          ³ Orden de Pago...                                           ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Fina085A                                                   ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÝÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 /*/
 Function fA085aLegenda(cAlias, nReg)
 
@@ -18050,31 +18158,31 @@ If !Empty(GetMv("MV_APRPAG")) .or. GetMv("MV_CTLIPAG")
 	Aadd(uRetorno, { 'Empty(E2_BAIXA) .and. E2_SALDO == E2_VALOR .and. Empty(E2_DATALIB)', aLegenda[Len(aLegenda)][1] } )
 EndIf
 
-BrwLegenda(cCadastro, OemToAnsi(STR0240), aLegenda)      //Estado de Contas ?Pagar"
+BrwLegenda(cCadastro, OemToAnsi(STR0240), aLegenda)      //Estado de Contas à Pagar"
 
 Return uRetorno
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  = fA085GetRet   �Autor  = Jose Lucas     ?Data =  09/10/11  ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Retornar o valor das reten��es de IVA e IR separadamente   ?=
-==           = somente quando estas possuirem saldos.                     ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-===Sintaxe   = ExpN1 := fA085GetRet(ExpC,ExpA1,ExpA2)                     ===
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-===Parametros= ExpC  := Tipo da reten??o ("IV-" ou "IR-").			      ===
-===          = ExpA1 := Valor total de reten��es do titulo original.      ===
-===          = ExpA2 := Array dos Titulos selecionados na Ordem de Pago.  ===
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-===Retorno   = ExpN1 := Valor da reten??o.               			      ===
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA100                                                    ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³ fA085GetRet   ºAutor  ³ Jose Lucas     º Data ³  09/10/11  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Retornar o valor das retenções de IVA e IR separadamente   º±±
+±±           ³ somente quando estas possuirem saldos.                     º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±³Sintaxe   ³ ExpN1 := fA085GetRet(ExpC,ExpA1,ExpA2)                     ³±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±³Parametros³ ExpC  := Tipo da retenção ("IV-" ou "IR-").			      ³±±
+±±³          ³ ExpA1 := Valor total de retenções do titulo original.      ³±±
+±±³          ³ ExpA2 := Array dos Titulos selecionados na Ordem de Pago.  ³±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±³Retorno   ³ ExpN1 := Valor da retenção.               			      ³±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA100                                                    º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function fA085GetRet(cTipoRet,nTotalRet,aSE2,aPagos)
 Local aArea     := GetArea()
@@ -18157,18 +18265,18 @@ RestArea(aArea)
 Return nRetencao
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =FINA085A  �Autor  =Microsiga           ?Data =  01/06/12   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =                                                            ?=
-==?         =                                                            ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³FINA085A  ºAutor  ³Microsiga           º Data ³  01/06/12   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³                                                            º±±
+±±º          ³                                                            º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function F85aCanRet()
 Local nX := 0
@@ -18177,7 +18285,7 @@ Local nY := 0
 dbSelectArea("SE2")
 SE2->(dbSetOrder(1))
 
-//Array aRetencao - Preenchido na fun??o fa050CalcRet()
+//Array aRetencao - Preenchido na função fa050CalcRet()
 If Len(aRetencao) > 0
 	For nX := 1 to Len(aRetencao)
 		If SE2->(dbSeek(aRetencao[nX][1]+aRetencao[nX][2]+aRetencao[nX][3]+aRetencao[nX][4]+aRetencao[nX][5]+aRetencao[nX][6]+aRetencao[nX][7]))
@@ -18197,19 +18305,19 @@ EndIf
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =F085GeraVenc�Autor  =Ana Paula Nasci     Data =  01/09/10   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =Fun??o para gerar a data de vencimento dos titulos de       ?=
-==?         =reten??o de IVA para o Paraguai, segundo tabela oficial que ?=
-==?         =estabelece o dia de acordo com o ultimo digito do RUC       ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³F085GeraVencºAutor  ³Ana Paula Nasci     Data ³  01/09/10   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³Função para gerar a data de vencimento dos titulos de       º±±
+±±º          ³retenção de IVA para o Paraguai, segundo tabela oficial que º±±
+±±º          ³estabelece o dia de acordo com o ultimo digito do RUC       º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function F085GeraVenc(cPrefixo,cImp)
 Local nTamRuc		:= Len(SM0->M0_CGC)
@@ -18227,7 +18335,7 @@ If cPaisLoc == "PER"
 			/* procura por uma data especifica para o imposto */
 			cAux := FR0Chave("PE4",Substr(Dtos(dDataBase),1,6),cImp,"01")
 			If Empty(cAux)
-				/* se nao encontrar uma data especifica, procura por uma padr|o ("uso geral") */
+				/* se nao encontrar uma data especifica, procura por uma padrão ("uso geral") */
 				cAux := FR0Chave("PE4",Substr(Dtos(dDataBase),1,6),"","01")
 			Endif
 		Else
@@ -18275,20 +18383,20 @@ Endif
 Return(dDataVenc)
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =F085TITIMP�Autor  =Microsiga           �Fecha = 27/02/2012  ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Gera titulos no contas a pagar referentes aos impostos e   ?=
-==?         = retencoes.                                                 ?=
-==?         = Os titulos gerados tem o mesmo numero da ordem de pago,    ?=
-==?         = com as parcelas em sequencia crescente (1,2,3...)          ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP                                                         ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³F085TITIMPºAutor  ³Microsiga           ºFecha ³ 27/02/2012  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Gera titulos no contas a pagar referentes aos impostos e   º±±
+±±º          ³ retencoes.                                                 º±±
+±±º          ³ Os titulos gerados tem o mesmo numero da ordem de pago,    º±±
+±±º          ³ com as parcelas em sequencia crescente (1,2,3...)          º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP                                                         º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function F085TitImp(aSE2,cOrdPago)
 Local aTitulos	:= {}
@@ -18381,18 +18489,18 @@ Endif
 Return()
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =FINA085A  �Autor  =Microsiga           ?Data =  10/16/11   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =                                                            ?=
-==?         =                                                            ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³FINA085A  ºAutor  ³Microsiga           º Data ³  10/16/11   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³                                                            º±±
+±±º          ³                                                            º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function F085AcmIVA(cTpAcm,dDtRef,cFornece,cLoja)
 Local dDataIni	:=	""
@@ -18447,7 +18555,7 @@ Endif
 		cQuery	+=	" F1_ESPECIE 	= D1_ESPECIE AND "
 		cQuery	+=	" F1_LOJA 		= D1_LOJA AND "
 		cQuery	+=	" F1_FORNECE	= D1_FORNECE AND "
-		//Ajuste para a diferen�a de compartilhamento
+		//Ajuste para a diferença de compartilhamento
 		If !Empty(xFilial("SE2")) .And. !Empty(xFilial("SF1"))
 			cQuery	+=	" F1_FILIAL	= E2_FILIAL AND "
 		EndIf
@@ -18476,7 +18584,7 @@ Endif
 				If !Empty(F1_ORDPAGO)
 					cDoc := F1_DOC+F1_SERIE
 
-					//Valida se n|o foi reten??o parcial
+					//Valida se não foi retenção parcial
 					SFE->(dbSetOrder(4))
 					If SFE->(dbSeek(xFilial("SFE")+cFornece+cLoja+cDoc+"I"))
 				  	   	cChaveSFE := xFilial("SFE")+SFE->FE_FORNECE+SFE->FE_LOJA+SFE->FE_NFISCAL+SFE->FE_SERIE
@@ -18490,7 +18598,7 @@ Endif
 
 						If nValImp == nValRet
 				   			nTotOP += xMoeda(D1_TOTAL,F1_MOEDA,1,dDataBase)
-				   			lEmpty := .F. //N|o zero o numero da OP nos casos de baixas totais
+				   			lEmpty := .F. //Não zero o numero da OP nos casos de baixas totais
 				  		Else
 				  			lEmpty := .T. //Zero o numero da OP nos casos de baixas parciais
 				  			lValid := .T. //Recalcula os impostos para o saldo nas baixas parciais
@@ -18505,10 +18613,10 @@ Endif
 					lValid := .T.
 				EndIf
 			EndIf
-			//aDados - Dados adicionais do c��culo de cumulatividade
+			//aDados - Dados adicionais do cálculo de cumulatividade
 			//1 = Selecionado na OP - .T. ou .F.
 			//2 = Retido em alguma OP - campo F1_ORDPAGO
-			//3 = Recno da nota (SF1) - para grava??o do n?da OP para reten??o acumulada
+			//3 = Recno da nota (SF1) - para gravação do nº da OP para retenção acumulada
 			aAdd(aDados,{Iif(E2_OK == cMarcaE2,.T.,.F.),If(lEmpty,"",F1_ORDPAGO),F1_RECNO,"SF1"})
 			lEmpty := .F.
 			(cAlias)->(DbSkip())
@@ -18531,7 +18639,7 @@ Endif
 		cQuery	+=	" F2_ESPECIE 	= D2_ESPECIE AND "
 		cQuery	+=	" F2_LOJA 		= D2_LOJA AND "
 		cQuery	+=	" F2_CLIENTE	= D2_CLIENTE AND "
-		//Ajuste da diferen�a de compartilhamento
+		//Ajuste da diferença de compartilhamento
 		If !Empty(xFilial("SE2")) .And. !Empty(xFilial("SF2"))
 			cQuery	+=	" F2_FILIAL	= E2_FILIAL AND "
 		EndIf
@@ -18559,7 +18667,7 @@ Endif
 			If FieldPos("F2_ORDPAGO") > 0
 				If !Empty(F2_ORDPAGO)
 					cDoc := F2_DOC+F2_SERIE
-					//Valida se n|o foi reten??o parcial
+					//Valida se não foi retenção parcial
 					SFE->(dbSetOrder(4))
 					If SFE->(dbSeek(xFilial("SFE")+cFornece+cLoja+cDoc+"I"))
 				  	   	cChaveSFE := xFilial("SFE")+SFE->FE_FORNECE+SFE->FE_LOJA+SFE->FE_NFISCAL+SFE->FE_SERIE
@@ -18573,7 +18681,7 @@ Endif
 
 						If nValImp == nValRet
 				   			nTotOP -= xMoeda(D2_TOTAL,F2_MOEDA,1,dDataBase)
-				   			lEmpty := .F. //N|o zero o numero da OP nos casos de baixas totais
+				   			lEmpty := .F. //Não zero o numero da OP nos casos de baixas totais
 				  		Else
 				  			lEmpty := .T. //Zero o numero da OP nos casos de baixas parciais
 				  			lValid := .T. //Recalcula os impostos para o saldo nas baixas parciais
@@ -18589,10 +18697,10 @@ Endif
 				EndIf
 			EndIf
 
-			//aDados - Dados adicionais do c��culo de cumulatividade
+			//aDados - Dados adicionais do cálculo de cumulatividade
 			//1 = Selecionado na OP - .T. ou .F.
 			//2 = Retido em alguma OP - campo F1_ORDPAGO
-			//3 = Recno da nota (SF1) - para grava??o do n?da OP para reten??o acumulada
+			//3 = Recno da nota (SF1) - para gravação do nº da OP para retenção acumulada
 			aAdd(aDados,{Iif(E2_OK == cMarcaE2,.T.,.F.),Iif(lEmpty,"",F2_ORDPAGO),F2_RECNO,"SF2"})
 			(cAlias)->(DbSkip())
 		EndDo
@@ -18609,18 +18717,18 @@ Endif
 Return aRet
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =FINA085A  �Autor  =Microsiga           ?Data =  10/16/11   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = IVA acumulado de outros documentos					     ?=
-==?         =                                                            ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³FINA085A  ºAutor  ³Microsiga           º Data ³  10/16/11   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ IVA acumulado de outros documentos					     º±±
+±±º          ³                                                            º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function F085DocIVA(cFornece,cLoja)
 
@@ -18738,7 +18846,7 @@ If Len(aDocs) > 0 .And. Len(aConfIVA) > 0
 			aIVA[Len(aIVA)][4]  := (nValor*nAliq)*nSigno				//FE_VALIMP
 			aIVA[Len(aIVA)][5]  := nPorcIva*100    						//FE_PORCRET
 			aIVA[Len(aIVA)][6]  := (aIVA[Len(aIVA)][4] * nPorcIva)  	//FE_RETENC
-			aIVA[Len(aIVA)][9]  := (cAliasSD)->&(cCFO) 					//Gravar CFOP da opera??o
+			aIVA[Len(aIVA)][9]  := (cAliasSD)->&(cCFO) 					//Gravar CFOP da operação
 			aIVA[Len(aIVA)][10] := nAliq					            //Aliquota do imposto
 
 	        //Levanta quanto ja foi retido
@@ -18779,18 +18887,18 @@ SF2->(RestArea(aAreaSF2))
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =FINA085A  �Autor  =Microsiga           ?Data =  10/25/11   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     =                                                            ?=
-==?         =                                                            ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³FINA085A  ºAutor  ³Microsiga           º Data ³  10/25/11   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³                                                            º±±
+±±º          ³                                                            º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function F085PropIV(nValPag,nRetIva,aSE2TMP)
 
@@ -18803,7 +18911,7 @@ DEFAULT nValPag	  := 0
 DEFAULT nRetIVA	  := 0
 DEFAULT aSE2TMP   := {}
 
-//Proporcionaliza??o
+//Proporcionalização
 If nValPag < nRetIVA
 	nProp := nValPag/nRetIVA
 Else
@@ -18827,7 +18935,7 @@ If nProp < 1
 		Next nA
 	EndIf
 
-	//Ajusta os centavos no =ltimo t�tulo
+	//Ajusta os centavos no último título
 	If nSoma > nValPag .and. !(SE2->E2_TIPO $ MVPAGANT + "/" + MV_CPNEG)
 		If Len(aSE2TMP) > 0
 			If Len(aSE2TMP[1][Len(aSE2TMP[1])][_RETIVA]) > 0
@@ -18847,22 +18955,22 @@ EndIf
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =PMSFi085a �Autor  =Jandir Deodato      �Fecha = 04/09/12    ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Caso a integra??o com o Totvs Obras e Projetos esteja      ?=
-==?             ligada chama a tela de rateio do projeto.                ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP                                                         ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³PMSFi085a ºAutor  ³Jandir Deodato      ºFecha ³ 04/09/12    º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Caso a integração com o Totvs Obras e Projetos esteja      º±±
+±±º              ligada chama a tela de rateio do projeto.                º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP                                                         º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function PMSFi085a()
 Local aArea
-Local bPMSDlgF08	:= {||PmsDlgFI(3,SE2->E2_PREFIXO,SE2->E2_NUM,SE2->E2_PARCELA,SE2->E2_TIPO,SE2->E2_FORNECE,SE2->E2_LOJA)}//integra??o pms
+Local bPMSDlgF08	:= {||PmsDlgFI(3,SE2->E2_PREFIXO,SE2->E2_NUM,SE2->E2_PARCELA,SE2->E2_TIPO,SE2->E2_FORNECE,SE2->E2_LOJA)}//integração pms
 aArea:=GetArea()
 M->E2_NUM 		:= SE2->E2_NUM
 M->E2_PREFIXO := SE2->E2_PREFIXO
@@ -18878,33 +18986,33 @@ RestArea(aArea)
 Return
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =CalcRetCmr �Autor  =Marivaldo		     �Fecha = 25/03/13    ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Calcular e Gerar Retencoes sobre Caja Medica               ?=
-==?                          											  ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP                                                         ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³CalcRetCmr ºAutor  ³Marivaldo		     ºFecha ³ 25/03/13    º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Calcular e Gerar Retencoes sobre Caja Medica               º±±
+±±º                           											  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP                                                         º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =CalRetCmr2 �Autor  =Marivaldo		     �Fecha = 25/03/13    ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Calcular e Gerar Retencoes sobre Caja Medica               ?=
-==?                          											  ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP                                                         ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³CalRetCmr2 ºAutor  ³Marivaldo		     ºFecha ³ 25/03/13    º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Calcular e Gerar Retencoes sobre Caja Medica               º±±
+±±º                           											  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP                                                         º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function CalRetCmr2(cAgente,nSigno,nSaldo)
 
@@ -18925,7 +19033,7 @@ Local nAliqSFH:=0
 Local nValRet	:= 0
 DEFAULT nSigno	:=	1
 
-//As retencoes sao calculadas com a taxa do d�a e nao com a taxa variavel....
+//As retencoes sao calculadas com a taxa do día e nao com a taxa variavel....
 //Bruno.
 	If ExistBlock("F0851IMP")
 		lCalcGN:=ExecBlock("F0851IMP",.F.,.F.,{"GN"})
@@ -18939,8 +19047,8 @@ If Dbseek(xFilial("SFH")+SE2->E2_FORNECE+SE2->E2_LOJA+"CMR")
 EndIf
 
 //+----------------------------------------------------------------+
-//?Obter o Valor do Imposto e Base baseando se no rateio do valor ?
-//?do titulo pelo total da Nota Fiscal.                           ?
+//° Obter o Valor do Imposto e Base baseando se no rateio do valor °
+//° do titulo pelo total da Nota Fiscal.                           °
 //+----------------------------------------------------------------+
 If lCalcula .and. (SE2->E2_TIPO $ MV_CPNEG).and. A085aVigSFH()
    		DbSelectArea("SF2")
@@ -19063,18 +19171,18 @@ Endif
 Return aConCmrRat
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =CalcRetCPR �Autor  =Marivaldo		     �Fecha = 25/03/13    ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Calcular e Gerar Retencoes sobre CPR	                      ?=
-==?                          											  ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP                                                         ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³CalcRetCPR ºAutor  ³Marivaldo		     ºFecha ³ 25/03/13    º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Calcular e Gerar Retencoes sobre CPR	                      º±±
+±±º                           											  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP                                                         º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function CalcRetCpr(cAgente,nSigno,nSaldo)
 
@@ -19095,7 +19203,7 @@ Local nAliqSFH:=0
 Local nValRet	:= 0
 DEFAULT nSigno	:=	1
 
-//As retencoes sao calculadas com a taxa do d�a e nao com a taxa variavel....
+//As retencoes sao calculadas com a taxa do día e nao com a taxa variavel....
 //Bruno.
 	If ExistBlock("F0851IMP")
 		lCalcGN:=ExecBlock("F0851IMP",.F.,.F.,{"GN"})
@@ -19109,8 +19217,8 @@ If Dbseek(xFilial("SFH")+SE2->E2_FORNECE+SE2->E2_LOJA+"CPR")
 EndIf
 
 //+----------------------------------------------------------------+
-//?Obter o Valor do Imposto e Base baseando se no rateio do valor ?
-//?do titulo pelo total da Nota Fiscal.                           ?
+//° Obter o Valor do Imposto e Base baseando se no rateio do valor °
+//° do titulo pelo total da Nota Fiscal.                           °
 //+----------------------------------------------------------------+
 If lCalcula .and.  !(SE2->E2_TIPO $ MV_CPNEG) .and. A085aVigSFH()
 	dbSelectArea("SF1")
@@ -19236,18 +19344,18 @@ EndIf
 Return aConCprRat
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =CalRetCpr2 �Autor  =Marivaldo		     �Fecha = 25/03/13    ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Calcular e Gerar Retencoes sobre CPR			              ?=
-==?                          											  ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP                                                         ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³CalRetCpr2 ºAutor  ³Marivaldo		     ºFecha ³ 25/03/13    º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Calcular e Gerar Retencoes sobre CPR			              º±±
+±±º                           											  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP                                                         º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function CalRetCpr2(cAgente,nSigno,nSaldo)
 
@@ -19268,7 +19376,7 @@ Local nAliqSFH:=0
 Local nValRet	:= 0
 DEFAULT nSigno	:=	1
 
-//As retencoes sao calculadas com a taxa do d�a e nao com a taxa variavel....
+//As retencoes sao calculadas com a taxa do día e nao com a taxa variavel....
 //Bruno.
 	If ExistBlock("F0851IMP")
 		lCalcGN:=ExecBlock("F0851IMP",.F.,.F.,{"GN"})
@@ -19282,8 +19390,8 @@ If Dbseek(xFilial("SFH")+SE2->E2_FORNECE+SE2->E2_LOJA+"CPR")
 EndIf
 
 //+----------------------------------------------------------------+
-//?Obter o Valor do Imposto e Base baseando se no rateio do valor ?
-//?do titulo pelo total da Nota Fiscal.                           ?
+//° Obter o Valor do Imposto e Base baseando se no rateio do valor °
+//° do titulo pelo total da Nota Fiscal.                           °
 //+----------------------------------------------------------------+
 If lCalcula .and. (SE2->E2_TIPO $ MV_CPNEG).and. A085aVigSFH()
    		DbSelectArea("SF2")
@@ -19412,18 +19520,18 @@ EndIf
 Return aConCprRat
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =F085TotGan�Autor  = Pedro Pereira Lima ?Data =  08/02/12   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Verifica se o acumulado para o fornecedor ultrapassou o    ?=
-==?         = valor de 10.000.                                           ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = AP                                                        ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³F085TotGanºAutor  ³ Pedro Pereira Lima º Data ³  08/02/12   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Verifica se o acumulado para o fornecedor ultrapassou o    º±±
+±±º          ³ valor de 10.000.                                           º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ AP                                                        º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Function F085TotGan(cTpAcm,cFornece,cLoja,nLimite,nValBase)
 Local nTotPer   := 0
@@ -19442,13 +19550,13 @@ Static cQrySFE3	:= Nil
 If cTpAcm == "3" //Derechos de Autor
 	dDataIni := Ctod("01/01/"+Str(Year(dDataBase),4))
 	dDataFim := Ctod("31/12/"+Str(Year(dDataBase),4))
-ElseIf cTpAcm == "2" //N|o usado para Ganancias
+ElseIf cTpAcm == "2" //Não usado para Ganancias
 //	dDataIni := FirstDay(dDtRef)
 //	dDataFim := LastDay(dDtRef)
-ElseIf cTpAcm == "1" //N|o usado para Ganancias
+ElseIf cTpAcm == "1" //Não usado para Ganancias
 //	dDataIni := Ctod("01/01/"+Str(Year(dDtRef),4))
 //	dDataFim := Ctod("31/12/"+Str(Year(dDtRef),4))
-Else //N|o usado para Ganancias
+Else //Não usado para Ganancias
 //	dDataIni := dDtRef
 //	dDataFim := dDtRef
 Endif
@@ -19481,7 +19589,7 @@ nTotPer := oExec:ExecScalar("TOTRET")
 oExec:Destroy()
 oExec := Nil
 
-If (Empty(nTotPer) .And. nValBase <= nLimite) .Or. SA2->A2_TIPO <> "I" //N|o h?registro de movimento ainda
+If (Empty(nTotPer) .And. nValBase <= nLimite) .Or. SA2->A2_TIPO <> "I" //Não há registro de movimento ainda
 	Return aRetGan
 EndIf
 
@@ -19584,14 +19692,14 @@ nTotMes := oExec:ExecScalar("VALBASE")
 oExec:Destroy()
 oExec := Nil
 
-If nCertif == 0 //N|o foi feita nenhuma retencao (FE_NROCERT <> 'NORET')
+If nCertif == 0 //Não foi feita nenhuma retencao (FE_NROCERT <> 'NORET')
 	If (nTotPer + nValBase) > nLimite
-		aRetGan[1] := (nValBase + nTotPer) - nLimite	//Valor para reten??o j?descontando o limite
+		aRetGan[1] := (nValBase + nTotPer) - nLimite	//Valor para retenção já descontando o limite
 		aRetGan[2] := .T.
 		aRetGan[3] := .T.
 	EndIf
 Else
-	aRetGan[1] := nValBase + nTotMes	//Valor para reten??o j?descontando o limite
+	aRetGan[1] := nValBase + nTotMes	//Valor para retenção já descontando o limite
 	aRetGan[2] := .T.
 	aRetGan[3] := .F.
 EndIf
@@ -19599,20 +19707,20 @@ EndIf
 Return aRetGan
 
 /*
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  =Fa085aNFRA�Autor  =Laura Medina        ?Data =  11/10/13   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Caso a natureza do titulo seja de adiantamento ED_OPERADT=1?=
-==?         = gera o titulo do tipo RA (E2_TIPODOC) com base no titulo   ?=
-==?         = de adiantamento.                                           ?=
-==?         = Se realizo sin IGV el PA                                   ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = SIGAFIN - PERU                                             ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³Fa085aNFRAºAutor  ³Laura Medina        º Data ³  11/10/13   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Caso a natureza do titulo seja de adiantamento ED_OPERADT=1º±±
+±±º          ³ gera o titulo do tipo RA (E2_TIPODOC) com base no titulo   º±±
+±±º          ³ de adiantamento.                                           º±±
+±±º          ³ Se realizo sin IGV el PA                                   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ SIGAFIN - PERU                                             º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 Static Function Fa085aNFRA(nValBaixa,nValCzBai)
 Local cDocPA		:= Substr(MVPAGANT,1,3) //"PA" para Peru
@@ -19625,22 +19733,22 @@ Default nValBaixa	:= 0
 
 If SE2->(!EOF())
 
-	RegToMemory("SE2",.F.) //Carrega o titulo base na mem�ria
+	RegToMemory("SE2",.F.) //Carrega o titulo base na memória
 
-	//=========================================================
-	//= Caso o titulo do tipo RA ja exista (processo de baixa =
-	// =parcial) o campo E2_PARCELA eh incrementado.          =
-	//?======================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Caso o titulo do tipo RA ja exista (processo de baixa ³
+	// ³parcial) o campo E2_PARCELA eh incrementado.          ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	SE2->(DbSetOrder(1)) //E2_FILIAL+E2_PREFIXO+E2_NUM+E2_PARCELA+E2_TIPO
 	While  SE2->(DbSeek(XFilial("SE2")+M->E2_PREFIXO+M->E2_NUM+cParcSE2+cDocPA))
 		cParcSE2 := Soma1(cParcSE2)
 	SE2->(DbSkip())
 	EndDo
 
-	//=========================================================
-	//= Gera o novo titulo do tipo RA                         =
-	//= O conceito de criacao eh semelhante ao gerado na NCC. =
-	//?======================================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Gera o novo titulo do tipo RA                         ³
+	//³ O conceito de criacao eh semelhante ao gerado na NCC. ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	RecLock("SE2",.T.)
 	SE2->E2_FILIAL   	:= XFilial("SE2")
 	SE2->E2_PREFIXO  	:= M->E2_PREFIXO
@@ -19670,9 +19778,9 @@ If SE2->(!EOF())
 	Iif(SE2->(FieldPos("E2_CGC"))>0, SE2->E2_CGC := SA2->A2_CGC,Nil)
 	SE2->(MsUnlock())
 
-	//===========================================
-	//= Gera la OP del titulo PA generado arriba=
-	//?========================================?
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Gera la OP del titulo PA generado arriba³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 	RecLock("SEK",.T.)
 	EK_FILIAL   := XFilial("SEK")
 	EK_TIPODOC  := cDocPA
@@ -19704,19 +19812,19 @@ RestArea(aSaveArea)
 Return Nil
 
 /*/
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  = ObtDesgl �Autor  =Laura Medina        ?Data =  21/01/14   ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Funcion para obtener el desgloce de las alicuotas que      ?=
-==?         = existan para la provincia que se esta procesando.          ?=
-==?         =                                                            ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = SIGAFIN - PERU                                             ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³ ObtDesgl ºAutor  ³Laura Medina        º Data ³  21/01/14   º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Funcion para obtener el desgloce de las alicuotas que      º±±
+±±º          ³ existan para la provincia que se esta procesando.          º±±
+±±º          ³                                                            º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ SIGAFIN - PERU                                             º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 /*/
 Static Function ObtDesgl(cImpsto,cCodC,cZona,cTipo,cCodAdc,nAliqAdc)
 Local cTabTemp:= criatrab(nil,.F.)
@@ -19750,19 +19858,19 @@ Endif
 Return lRet
 
 /*/
----------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�||||||||||�|||||||�||||||||||||||||||||�||||||�|||||||||||||?=
-==�Programa  = FRetMiib �Autor  =	Bruno Schmidt     ?Data =  10/02/14  ?=
-==�||||||||||�||||||||||�||||||||||||||||||||||||||||�||||||||||||||||||||?=
-==�Desc.     = Projeto Em Implanta??o									  ?=
-==?         = 															  ?=
-==?         = 					                                          ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = SIGAFIN                                                    ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-��������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³ FRetMiib ºAutor  ³	Bruno Schmidt     º Data ³  10/02/14  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDesc.     ³ Projeto Em Implantação									  º±±
+±±º          ³ 															  º±±
+±±º          ³ 					                                          º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ SIGAFIN                                                    º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 /*/
 Static Function FRetMiib(aSE2,nA,nC,nP,lFRetMiib)
 Local cCOTPMINRE := ""
@@ -19780,10 +19888,10 @@ For nZ :=	1	To	Len(aSE2[nA][1])
 
 				If !Empty(aDup)//nPosProv > 0 .and. nPosTES > 0
 					If cCOTPMINRE = '1'
-						aDup[1][1] += aSE2[nA][1][nZ][15][nW][3] // Base Valor(Fixo por que n|o utilzia separa??o por TES aDup[nPosTES][1])
+						aDup[1][1] += aSE2[nA][1][nZ][15][nW][3] // Base Valor(Fixo por que não utilzia separação por TES aDup[nPosTES][1])
 						aDup[1][6] += aSE2[nA][1][nZ][15][nW][5]
 					Else
-						aDup[1][1] += aSE2[nA][1][nZ][15][nW][5]  // Valor Reais(Fixo por que n|o utilzia separa??o por TES aDup[nPosTES][1])
+						aDup[1][1] += aSE2[nA][1][nZ][15][nW][5]  // Valor Reais(Fixo por que não utilzia separação por TES aDup[nPosTES][1])
 					EndIf
 				Else
 					AAdd(aDup,{"","","","","",""})
@@ -19825,18 +19933,18 @@ lFRetMiib:= .T.
 Return Round(xMoeda(aDup[1][1],1,nMoedaCor,,5,,aTxMoedas[nMoedaCor][2]),MsDecimais(nMoedaCor))
 
 /*/
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�|||||||||||||�|||||||�||||||||||||||||||�||||||�||||||||||||?=
-==�Programa  = A085aVigSA2 ?Autor = Emanuel Villica�a?Data =  12/02/14  ?=
-==�||||||||||�|||||||||||||�||||||||||||||||||||||||||�|||||||||||||||||||?=
-==�Descricao = Validacion de periodo de SA2 para obtener el Porcentaje de ?=
-==?         = Exenci?? de Percepci?? y Retenci?? del IVA 		          ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³ A085aVigSA2 º Autor ³ Emanuel Villicañaº Data ³  12/02/14  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDescricao ³ Validacion de periodo de SA2 para obtener el Porcentaje de º±±
+±±º          ³ Exención de Percepción y Retención del IVA 		          º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 /*/
 Function A085aVigSA2( dData )
 
@@ -19855,17 +19963,17 @@ EndIf
 Return lRet
 
 /*/
------------------------------------------------------------------------------
-=============================================================================
-==�||||||||||�|||||||||||||�|||||||�||||||||||||||||||�||||||�||||||||||||?=
-==�Programa  = fVerifImp   ?Autor = Emanuel Villica�a?Data =  11/03/14  ?=
-==�||||||||||�|||||||||||||�||||||||||||||||||||||||||�|||||||||||||||||||?=
-==�Descricao = Obtiene el impuesto del Anticipo en cuentas por pagar      ?=
-==�||||||||||�||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-==�Uso       = FINA085A                                                   ?=
-==�|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||?=
-=============================================================================
-����������������������������������������������������������������������������?
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÝÝÝÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝËÝÝÝÝÝÝÑÝÝÝÝÝÝÝÝÝÝÝÝ»±±
+±±ºPrograma  ³ fVerifImp   º Autor ³ Emanuel Villicañaº Data ³  11/03/14  º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÊÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºDescricao ³ Obtiene el impuesto del Anticipo en cuentas por pagar      º±±
+±±ÌÝÝÝÝÝÝÝÝÝÝØÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¹±±
+±±ºUso       ³ FINA085A                                                   º±±
+±±ÈÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝÝ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 /*/
 //obtiene el impuesto del Anticipo en cuentas por pagar
 Static function fVerifImp(cNum,cPrefix,cParcela,cTipo,cFornc,cLoja)
@@ -19920,9 +20028,9 @@ Static Function fRetParcel(cPrefix,cNum,cTipo,cFornc, cLoja)
 Return cParcSE2
 
 /*
-���Fun��o    ?CalcRetIR?Autor ? 				       ?Data ?  	��?
-���Descri��o ?Calcular e Gerar Retencoes de IR .                     ��?
-���Uso       ?FINA085A                                               ��?
+°°°Funçào    ° CalcRetIR° Autor °  				       ° Data °   	°°°
+°°°Descriçào ° Calcular e Gerar Retencoes de IR .                     °°°
+°°°Uso       ° FINA085A                                               °°°
 */
 
 Static Function CalcRetIR2(cAgente,nSigno,nSaldo)
@@ -19993,9 +20101,9 @@ RestArea(aArea)
 Return aSFEIR
 
 /*
-==�Programa  = F085GravTX  ?Autor = TOTVS            ?Data =  13/05/14  ?=
-==�Descricao = Fun??o para gravar a reten??o do IR para Paraguai          ?=
-==�Uso       = FINA085A                                                   ?=
+±±ºPrograma  ³ F085GravTX  º Autor ³ TOTVS            º Data ³  13/05/14  º±±
+±±ºDescricao ³ Função para gravar a retenção do IR para Paraguai          º±±
+±±ºUso       ³ FINA085A                                                   º±±
 */
 
 Function F085GravTX(aRets,nMoedaRet,aPagos,cOrdPago,cFornece,cLoja)
@@ -20044,7 +20152,7 @@ ElseIf (Subs(cAgente,1,1) == "D")
 	cPrefixo:="DES"  // Agente Designado
 EndIf
 
-	//= Cria o fornecedor, caso nao exista			  =
+	//³ Cria o fornecedor, caso nao exista			  ³
 	aAreaSA2:=GetArea()
 	dbSelectArea("SA2")
 	If !(dbSeek(cFilial+GetMV("MV_UNIAO")))
@@ -20061,7 +20169,7 @@ EndIf
 		Replace A2_TIPO	With "J"
 		RestArea(aAreaSA2)
 	EndIf
-If nRetIva  > 0 	// Grava??o do titulo de reten??o de IVA no SE2 como titulo em aberto
+If nRetIva  > 0 	// Gravação do titulo de retenção de IVA no SE2 como titulo em aberto
 	nParcela		:= Soma1(nParcela)
 	RecLock("SE2",.T.)
 	SE2->E2_FILIAL 	:= xFilial("SE2")
@@ -20088,7 +20196,7 @@ If nRetIva  > 0 	// Grava??o do titulo de reten??o de IVA no SE2 como titulo em 
 
 	MsUnLock()
 EndIf
-If nRetIR  > 0 	// Grava??o do titulo de reten??o de IR no SE2 como titulo em aberto
+If nRetIR  > 0 	// Gravação do titulo de retenção de IR no SE2 como titulo em aberto
 	nParcela		:= Soma1(nParcela)
 	RecLock("SE2",.T.)
 	SE2->E2_FILIAL 	:= xFilial("SE2")
@@ -20132,12 +20240,12 @@ Calcula el valor del porcentaje global por porcentaje o por valor.
 @param nPorDesc, numerico, Porcentaje de descuento
 @param oValDesc, objeto, Objeto visual con el valor de decuento
 @param nValDesc, numerico, Valor de descuento
-@param nValBrut, numerico, Valor bruto de los t�tulos
+@param nValBrut, numerico, Valor bruto de los títulos
 @param nValLiq, numerico, Valor a pagar por los titulos
 @param oValLiq, objeto, Objeto visual con el valor a pagar por los titulos
 @param aDescontos, array, Array con el valor de descuentos para cada titulo
 @param bZeraRets, bloque, Bloque de codigo para retenciones
-@param oGetDad1, objeto, Objeto con el detalle de los t�tulos a pagar
+@param oGetDad1, objeto, Objeto con el detalle de los títulos a pagar
 @param bRecalc, bloque, Bloque de codigo para recalculo de valores de titulos
 @param nValAdic, numerico, Valor adicional al valor a liquidar
 @return lRet, Falso si no se cumple alguna validacion antes de calculo de descuentos
@@ -20219,8 +20327,8 @@ Static Function a085VldDsc(nOpc,oPorDesc,nPorDesc,oValDesc,nValDesc,nValBrut,nVa
 Return lRet
 
 /*/{Protheus.doc} VldLibMet
-Funci?? utilizada para validar si el ambiente tiene la libreria para
-utilizaci?? de Metr�cas Protheus.
+Función utilizada para validar si el ambiente tiene la libreria para
+utilización de Metrícas Protheus.
 
 @type  Static Function
 @author marco.rivera
@@ -20234,8 +20342,8 @@ Static Function VldLibMet()
 Return lRet
 
 /*/{Protheus.doc} ParcRetenc
-Funci?? que valida si la parcialidad inicial contiene retenciones,
-y gestiona la aprobaci??/prohibici?? de selecci?? de las parcialidades.
+Función que valida si la parcialidad inicial contiene retenciones,
+y gestiona la aprobación/prohibición de selección de las parcialidades.
 @type
 @author diego.rivera
 @since 14/10/2022
@@ -20246,7 +20354,7 @@ y gestiona la aprobaci??/prohibici?? de selecci?? de las parcialidades.
 @param cLoja , caracter , Tienda de la cuenta por pagar
 @param cParcela , caracter , Parcialidad de la cuenta por pagar
 
-@return lValidRet , L�gico.
+@return lValidRet , Lógico.
 @example
  ParcRetenc(cNumDoc,cSerie,cProvr,cLoja,cParcela)
 /*/
@@ -20374,16 +20482,16 @@ RestArea(aArea)
 Return lValidRet
 
 /*/{Protheus.doc} F85aMovFK
-	Funci?? para generaci?? de movimiento a FKs, retorna RECNO en SE5 para movimiento de tipo BA, VL
+	Función para generación de movimiento a FKs, retorna RECNO en SE5 para movimiento de tipo BA, VL
 	@type Function
 	@author oscar.lopez
 	@since 14/11/2022
 	@version 1.1
-	@param cModelo, caracter, Modelo a utilizar para generaci?? de movimiento y relacion a FKs
-	@param cCamposE5, caracter, Campos para generaci?? de informacion en SE5
-	@param aInfoFK2, arreglo, Arreglo con informaci?? de campos para relaci?? a FK2
-	@param aInfoFK5, arreglo, Arreglo con informaci?? de campos para relaci?? a FK5
-	@param aInfoFK6, arreglo, Arreglo con informaci?? de campos para relaci?? a FK6
+	@param cModelo, caracter, Modelo a utilizar para generación de movimiento y relacion a FKs
+	@param cCamposE5, caracter, Campos para generación de informacion en SE5
+	@param aInfoFK2, arreglo, Arreglo con información de campos para relación a FK2
+	@param aInfoFK5, arreglo, Arreglo con información de campos para relación a FK5
+	@param aInfoFK6, arreglo, Arreglo con información de campos para relación a FK6
 	@return nRet, numero, RECNO de movmiento BA VL en SE5 generado
 	@example
 		nRec := F85aMovFK(cModelo, cCamposE5, aInfoFK2, aInfoFK5, aInfoFK6)
@@ -20424,9 +20532,9 @@ Function F85aMovFK(cModelo, cCamposE5, aInfoFK2, aInfoFK5, aInfoFK6)
 		aArea := GetArea()
 		//Carrego model de Bx Pagar
 		oModel := FWLoadModel(cModelo)					//Model de Baja CxP # Model de Mov. Bco.
-		oModel:SetOperation( MODEL_OPERATION_INSERT )	//Inclusi??
+		oModel:SetOperation( MODEL_OPERATION_INSERT )	//Inclusión
 		oModel:Activate()
-		oModel:SetValue( "MASTER", "E5_GRV"		, .T. )		//Habilita gravaci?? de SE5
+		oModel:SetValue( "MASTER", "E5_GRV"		, .T. )		//Habilita gravación de SE5
 		oModel:SetValue( "MASTER", "NOVOPROC"	, .F. )		//Nuevo proceso
 		oModel:SetValue( "MASTER", "IDPROC"	    , cIDProc )		//ID Processo
 
@@ -20460,7 +20568,7 @@ Function F85aMovFK(cModelo, cCamposE5, aInfoFK2, aInfoFK5, aInfoFK6)
 			For nX := 1 To Len(aInfoFK6)
 				If !Empty(aInfoFK6[nX]) .And. oSubFKA:SeekLine({{'FKA_TABORI',"FK2"}})
 					If !oSubFK6:IsEmpty()
-						oSubFK6:AddLine() //Inclui a quantidade de linhas necess�rias
+						oSubFK6:AddLine() //Inclui a quantidade de linhas necessárias
 						oSubFK6:GoLine( oSubFK6:Length() ) //Vai para linha criada
 					EndIf
 					oSubFK6:SetValue( "FK6_IDORIG", cIdOrigFK2)
@@ -20471,9 +20579,9 @@ Function F85aMovFK(cModelo, cCamposE5, aInfoFK2, aInfoFK5, aInfoFK6)
 			Next nX
 		EndIf
 
-		//Informo que o model ativo ?o da baixa (j?carregado anteriormente0
+		//Informo que o model ativo é o da baixa (já carregado anteriormente0
 		FWModelActive(oModel)
-		oModel:SetValue( "MASTER", "E5_CAMPOS", cCamposE5 ) //Seto os campos do SE5 que n|o est|o nas FKs
+		oModel:SetValue( "MASTER", "E5_CAMPOS", cCamposE5 ) //Seto os campos do SE5 que não estão nas FKs
 
 		lValInc := oModel:VldData()
 		If lValInc
@@ -20502,13 +20610,13 @@ Function F85aMovFK(cModelo, cCamposE5, aInfoFK2, aInfoFK5, aInfoFK6)
 Return nRet
 
 /*/{Protheus.doc} F86aBasITF
-	Validaci?? para suma como parte de Base ITF
+	Validación para suma como parte de Base ITF
 	@type  Function
 	@author oscar.lopez
 	@since 15/11/2022
 	@version 1.0
 	@param cClvBusq, caracter, Llave de campos generados para movimiento de Orden de Pago
-	@return nBaseITF, numero, Valor a sumar a base para c��culo de ITF
+	@return nBaseITF, numero, Valor a sumar a base para cálculo de ITF
 	@example
 		nBaseITF += F86aBasITF(cClvBusq)
 	/*/
@@ -20526,7 +20634,7 @@ Static Function F86aBasITF(cClvBusq)
 	SE5->(MsSeek(cClvBusq))
 	While SE5->(!EoF()) .And. SE5->(E5_FILIAL+E5_PREFIXO+E5_NUMERO+E5_PARCELA+E5_TIPO+E5_CLIFOR+E5_LOJA+E5_SEQ) == cClvBusq
 		If AllTrim(SE5->E5_TIPODOC) $ "MT|JR|DC|BA"
-			lSumBase := (lFindITF .And. FinProcITF( SE5->( RecNo() ),1 ) .and. lRetCkPG(3,,SE5->E5_BANCO))//Comprueba si esta entrada debe componer la base de c��culo para el impuesto ITF
+			lSumBase := (lFindITF .And. FinProcITF( SE5->( RecNo() ),1 ) .and. lRetCkPG(3,,SE5->E5_BANCO))//Comprueba si esta entrada debe componer la base de cálculo para el impuesto ITF
 			nBaseITF += IIf(lSumBase, SE5->E5_VALOR, 0)
 		EndIf
 		SE5->(DbSkip())
@@ -20555,12 +20663,12 @@ Function F85aVldMrk()
 Return lRet
 
 /*/{Protheus.doc} F85aOPxTit
-	Muestra la ventana para a�adir certificados de tipo P relacionados a las OP del t�tulo
+	Muestra la ventana para añadir certificados de tipo P relacionados a las OP del título
 	@type Function
 	@author oscar.lopez
 	@since 09/11/2023
 	@version version
-	@param aRecNoSE2, arreglo, Arreglo con los t�tulos seleccionados para buscar las OP relacionadas
+	@param aRecNoSE2, arreglo, Arreglo con los títulos seleccionados para buscar las OP relacionadas
 	@return Nil
 	@example
 		F85aOPxTit(aRecNoSE2)
@@ -20580,7 +20688,7 @@ Function F85aOPxTit(aRecNoSE2)
 	Private aCols		:= {}
 
 	If F85aTabOPs(oTmpTable, cTmpOrd, aRecNoSE2, aHeader, aCols, aCposEdit)
-		DEFINE MSDIALOG oDlg TITLE STR0274 FROM 00,00 TO oSize:aWindSize[3],oSize:aWindSize[4] PIXEL //"Certificado de Percepci??"
+		DEFINE MSDIALOG oDlg TITLE STR0274 FROM 00,00 TO oSize:aWindSize[3],oSize:aWindSize[4] PIXEL //"Certificado de Percepción"
 		oGetDados := MsGetDados():New(aPosVent[1], aPosVent[2], aPosVent[3], aPosVent[4], 4, /*"LINHAOK"*/, /*"TUDOOK"*/, , , aCposEdit, , .F., 0, /*"FIELDOK"*/, /*"SUPERDEL"*/, , /*"DELOK"*/, oDlg)
 		DEFINE SBUTTON FROM aPosVent[3]+5,aPosVent[4]-60 TYPE 13 ENABLE OF oDlg ACTION (Processa({|| lGrvCer := F85aGrvCer(cTmpOrd, aHeader, aCols)}), IIf(lGrvCer, oDlg:End(), ))
 		DEFINE SBUTTON FROM aPosVent[3]+5,aPosVent[4]-30 TYPE 2 ENABLE OF oDlg ACTION (oDlg:End())
@@ -20596,7 +20704,7 @@ Function F85aOPxTit(aRecNoSE2)
 Return Nil
 
 /*/{Protheus.doc} F85aTabOPs
-	Creacion de tabla temporal con OPs relacioandas a t�tulos seleccionados.
+	Creacion de tabla temporal con OPs relacioandas a títulos seleccionados.
 	@type Function
 	@author oscar.lopez
 	@since 07/11/2023
@@ -20604,7 +20712,7 @@ Return Nil
 	@param cTmpOrd, caracter, Nombre de tabla temporal
 	@param aHeader, arreglo, Campos encabezado aCols
 	@param aCols, arreglo, aCols con registros de MsGetDados
-	@return lRet, l�gico, Retorna .T. si se encuentran registros, de lo contrario .F.
+	@return lRet, lógico, Retorna .T. si se encuentran registros, de lo contrario .F.
 	@example
 		F85aTabOPs(oTmpTable, cTmpOrd, aRecNoSE2, aHeader, aCols, aCposEdit)
 /*/
@@ -20639,7 +20747,7 @@ Function F85aTabOPs(oTmpTable, cTmpOrd, aRecNoSE2, aHeader, aCols, aCposEdit)
 
 	AAdd(aCposTrb, {STR0275, "FE_FILIAL",	.F.})	//"Sucursal"
 	AAdd(aCposTrb, {STR0276, "FE_ESPECIE",	.F.})	//"Tipo"
-	AAdd(aCposTrb, {STR0277, "FE_NFISCAL",	.F.})	//"N=mero"
+	AAdd(aCposTrb, {STR0277, "FE_NFISCAL",	.F.})	//"Número"
 	AAdd(aCposTrb, {STR0278, "FE_SERIE",	.F.})	//"Serie"
 	AAdd(aCposTrb, {STR0279, "FE_PARCELA",	.F.})	//"Parcialidad"
 	AAdd(aCposTrb, {STR0054, "FE_FORNECE",	.F.})	//"Proveedor"
@@ -20659,12 +20767,12 @@ Function F85aTabOPs(oTmpTable, cTmpOrd, aRecNoSE2, aHeader, aCols, aCposEdit)
 		If !Empty(aCposTrb[nItera][1])
 			nUsado++
 			AAdd(AHeader, {})
-			AAdd(aHeader[nUsado], aCposTrb[nItera][1])								//T�tulo
+			AAdd(aHeader[nUsado], aCposTrb[nItera][1])								//Título
 			AAdd(aHeader[nUsado], aCposTrb[nItera][2])								//Campo
 			AAdd(aHeader[nUsado], GetSx3Cache( aCposTrb[nItera][2], "X3_PICTURE" ))	//Picture
-			AAdd(aHeader[nUsado], GetSx3Cache( aCposTrb[nItera][2], "X3_TAMANHO" ))	//Tama�o
+			AAdd(aHeader[nUsado], GetSx3Cache( aCposTrb[nItera][2], "X3_TAMANHO" ))	//Tamaño
 			AAdd(aHeader[nUsado], GetSx3Cache( aCposTrb[nItera][2], "X3_DECIMAL" ))	//Decimal
-			AAdd(aHeader[nUsado], "")												//Validaci??
+			AAdd(aHeader[nUsado], "")												//Validación
 			AAdd(aHeader[nUsado], "")												//Reservado
 			AAdd(aHeader[nUsado], GetSx3Cache( aCposTrb[nItera][2], "X3_TIPO" ))	//Tipo
 			AAdd(aHeader[nUsado], "")												//Reservado
@@ -20683,12 +20791,12 @@ Function F85aTabOPs(oTmpTable, cTmpOrd, aRecNoSE2, aHeader, aCols, aCposEdit)
 	AAdd(aStruTRB, {"IMPORTE",	aStrValI[2], aStrValI[3], aStrValI[4]})
 	AAdd(aStruTRB, {"RECNOSFE",	"N", 10, 0})
 
-	//Creaci?? de tabla temporal
+	//Creación de tabla temporal
 	oTmpTable:SetFields( aStruTRB )
 	oTmpTable:AddIndex("I1", aOrdem1)
 	oTmpTable:AddIndex("I2", aOrdem2)
 
-	//Creaci?? de la tabla
+	//Creación de la tabla
 	oTmpTable:Create()
 
 	(cTmpOrd)->(DbSetOrder(1))
@@ -20784,7 +20892,7 @@ Function F85aTabOPs(oTmpTable, cTmpOrd, aRecNoSE2, aHeader, aCols, aCposEdit)
 Return lRet
 
 /*/{Protheus.doc} F85aGrvCer
-	Funcion para grabar certificado de percepci??
+	Funcion para grabar certificado de percepción
 	@type Function
 	@author oscar.lopez
 	@since 13/11/2023
@@ -20792,7 +20900,7 @@ Return lRet
 	@param cTmpOrd, caracter, Nombre de tabla temporal
 	@param aHeader, arreglo, Campos encabezado aCols
 	@param aCols, arreglo, aCols con registros de MsGetDados
-	@return lGravaOk, l�gico, .T. si se confirm?el grabado/actualizacion de los certificados, de lo contrario .F.
+	@return lGravaOk, lógico, .T. si se confirmó el grabado/actualizacion de los certificados, de lo contrario .F.
 	@example
 		F85aGrvCer(cTmpOrd, aHeader, aCols)
 	/*/
@@ -20825,7 +20933,7 @@ Function F85aGrvCer(cTmpOrd, aHeader, aCols)
 
 	For nItera := 1 To Len(aCols)
 		If !Empty(aCols[nItera][nPosNCer]) .And. (Empty(aCols[nItera][nPosEmis]) .Or. aCols[nItera][nPosAliq]<=0 .Or. aCols[nItera][nPosVImp]<=0)
-			lGravaOk := MsgYesNo( STR0288+CHR(13)+CHR(10)+STR0289 ) //"Existen registros con un Certificado informado..." # "=Desea continuar?"
+			lGravaOk := MsgYesNo( STR0288+CHR(13)+CHR(10)+STR0289 ) //"Existen registros con un Certificado informado..." # "¿Desea continuar?"
 		EndIf
 	Next nItera
 
@@ -20885,14 +20993,14 @@ Function F85aGrvCer(cTmpOrd, aHeader, aCols)
 Return lGravaOk
 
 /*/{Protheus.doc} F85AConsec
-	Determina =ltimo n=mero de OP asignado y lo incrementa
-	Si el consecutivo retornado por GetSxeNum() es m�s alto, asigna el determinado en esta funci??  
+	Determina último número de OP asignado y lo incrementa
+	Si el consecutivo retornado por GetSxeNum() es más alto, asigna el determinado en esta función  
 	@type  Static Function
 	@author ARodriguez
 	@since 22/08/2024
 	@version 1.0
-	@param cOrdPago, c, N=mero de orden de pago
-	@return cOrdPago, c, N=mero de orden de pago
+	@param cOrdPago, c, Número de orden de pago
+	@return cOrdPago, c, Número de orden de pago
 	@example
 	cOrdPago := F85AConsec(cOrdPago)
 /*/
@@ -20922,7 +21030,7 @@ Static Function F85AConsec(cOrdPago)
 
 	cConsec := oExec:ExecScalar("ORDENPAG") 
 	If !Empty(cConsec)
-		// Pr�ximo n=mero de OP
+		// Próximo número de OP
 		If cPaisLoc == 'PAR'
 			cConsec := Soma1(SubStr(cConsec,1,nTamOP),nTamOP)
 		Else
@@ -20941,13 +21049,13 @@ Return cOrdPago
 
 
 /*/{Protheus.doc} ChkRetIVA
-    Verifica se existe reten??o de IVA para o documento de entrada.
+    Verifica se existe retenção de IVA para o documento de entrada.
     @type Static Function
     @author alan.lunardi
     @since 09/06/2025
     @version 1.1
     @param nil
-    @return nRetIva, num�rico, valor da reten??o de IVA encontrada (0 se n|o encontrado)
+    @return nRetIva, numérico, valor da retenção de IVA encontrada (0 se não encontrado)
     @example nRetIva := ChkRetIVA()
 /*/
 Static Function ChkRetIVA()
@@ -21021,7 +21129,7 @@ Static Function SetRetIVA(aSE2, cFornece, cLoja)
 		For nZ := 1 To Len(aSE2[nX,1]) //Notas
 			//Apenas o Fornecedor Corrente
 			If aSE2[nX,1,nZ,_FORNECE] == cFornece .And. aSE2[nX,1,nZ,_LOJA] == cLoja 
-				//Reten??o do Fornecedor
+				//Retenção do Fornecedor
 				If lExSFE 
 					lExSFE := .F.
 					SFE->(DbSetOrder(3))
@@ -21034,7 +21142,7 @@ Static Function SetRetIVA(aSE2, cFornece, cLoja)
 						dDtPesq := dDtPesq+1
 					EndDo
 					If lAchou
-						//Periodos Retenc|o do IVA
+						//Periodos Retencão do IVA
 						While SFE->(!Eof()) .And. xFilial("SFE")+cFornece+cLoja == SFE->FE_FILIAL+SFE->FE_FORNECE+SFE->FE_LOJA
 							If SFE->FE_TIPO == "I" .And. SFE->FE_EMISSAO <= dDataFim
 								If SFE->FE_EMISSAO == dDataBase
@@ -21050,7 +21158,7 @@ Static Function SetRetIVA(aSE2, cFornece, cLoja)
 				//Soma Ret.IVA - _RETIVA [14] 
 				For nA := 1 To Len(aSE2[nX,1,nZ,_RETIVA])
 					If aSE2[nX,1,nZ,_RETIVA,nA,4] > 0
-						aAdd(aRet, {nX,1,nZ,_RETIVA,nA}) //Salva posic|o do array para validacao do limite
+						aAdd(aRet, {nX,1,nZ,_RETIVA,nA}) //Salva posicão do array para validacao do limite
 						nValor := Round((aSE2[nX,1,nZ,_RETIVA,nA,3]),MsDecimais(aSE2[nX][1][nZ][4]))      
 						nVlAcmPg += nValor 
 					Endif
@@ -21061,7 +21169,7 @@ Static Function SetRetIVA(aSE2, cFornece, cLoja)
 	
 	//Valida Limites do Fornecedor com a Ret. de IVA
 	If Len(aRet) > 0 .And. !(nVlAcmPg >= nVLRIVAT .Or. (nValAcDia + nVlAcmPg) >= nVLRIVAD .Or. (nValAcMes + nVlAcmPg) >= nVLRIVAM) .Or. nValorR <= 0 
-		For nA := 1 To Len(aRet) //N|o Reter
+		For nA := 1 To Len(aRet) //Não Reter
 			aSE2[aRet[nA,1],aRet[nA,2],aRet[nA,3],aRet[nA,4],aRet[nA,5],4] := 0
 			aSE2[aRet[nA,1],aRet[nA,2],aRet[nA,3],aRet[nA,4],aRet[nA,5],6] := 0
 		Next nA
@@ -21177,7 +21285,7 @@ Function ChkCT2SEK(cAsi,nRecno)
 				
 					oExec := FwExecStatement():New(cQuery)
 					oExec:SetString(1, xFilial("CT2"))
-					oExec:SetString(2, cData) //N�o processar toda a tabela (Lentidao muitos registros)		
+					oExec:SetString(2, cData) //N�o processar toda a tabela (Lentidao muitos registros)		
 					oExec:SetString(3, cLlave)
 					oExec:SetString(4, cAsi)			
 					oExec:SetString(5, ' ')
@@ -21280,20 +21388,20 @@ Return .T.
 /*/{Protheus.doc} ChkRetCam
     Devuelve el valor del cambio al retener el IVA del documento
     @type Static Function
-    @author Eduardo Ar�valo
+    @author Eduardo Arévalo
     @since 10/06/2026
     @version 1.3
     @param cFilDoc, caracter, Filial del documento
-	@param cFornece, caracter, C�digo de proveedor del documento		
-	@param cLoja, caracter, C�digo de tienda del documento
-	@param cNum, caracter, N=mero del documento		
+	@param cFornece, caracter, Código de proveedor del documento		
+	@param cLoja, caracter, Código de tienda del documento
+	@param cNum, caracter, Número del documento		
 	@param cPrefijo, caracter, Prefijo del documento	
     @param cOrdPago	, caracter, Orden de pago del documento
 	@param cTipo, caracter, Tipo del documento (NF, NC, etc)	
 	@param cTipoDoc, caracter, Tipo de documento (TB, etc)
 	@param cCancel, caracter, Indicador de cancelado (F o T)
 
-    @return nRetCam, num�rico, Devuelve el valor del cambio al retener el IVA del documento (0 s?no encontro)
+    @return nRetCam, numérico, Devuelve el valor del cambio al retener el IVA del documento (0 sí no encontro)
     @example nRetCam := ChkRetCam(xFilial("SFE"), SFE->FE_FORNECE, SFE->FE_LOJA, SFE->FE_NFISCAL, SFE->FE_SERIE, SFE->FE_ORDPAGO, 'NF', 'TB', 'F'))
 /*/
 Static Function ChkRetCam(cFilDoc, cFornece, cLoja, cNum, cPrefijo, cOrdPago, cTipo, cTipoDoc, cCancel)
@@ -21348,17 +21456,17 @@ Return nRetCam
 /*/{Protheus.doc} ChkRetDoc
     Devuelve el valor total retenido del IVA del documento actual
     @type Static Function
-    @author Eduardo Ar�valo
+    @author Eduardo Arévalo
     @since 10/06/2026
     @version 1.3
     @param cFilDoc, caracter, Filial del documento
-	@param cFornece, caracter, C�digo de proveedor del documento	
-	@param cLoja, caracter, C�digo de tienda del documento
-	@param cNum, caracter, N=mero del documento
+	@param cFornece, caracter, Código de proveedor del documento	
+	@param cLoja, caracter, Código de tienda del documento
+	@param cNum, caracter, Número del documento
 	@param cPrefijo, caracter, Prefijo del documento
 	@param nMoeda, number, Indicador de moneda (1 para moneda local, otro valor para moneda extranjera)
 		
-    @return nRetTot, num�rico, valor total retenido del IVA del documento actual (0 si no hubo retenci??).
+    @return nRetTot, numérico, valor total retenido del IVA del documento actual (0 si no hubo retención).
     @example nRetTot := ChkRetDoc(SF1->F1_FILIAL, SF1->F1_FORNECE, SF1->F1_LOJA, SF1->F1_DOC, SF1->F1_SERIE, SF1->F1_MOEDA)
 /*/
 Static Function ChkRetDoc(cFilDoc, cFornece, cLoja, cNum, cPrefijo, nMoeda)
@@ -21390,15 +21498,15 @@ Static Function ChkRetDoc(cFilDoc, cFornece, cLoja, cNum, cPrefijo, nMoeda)
 Return nRetTot				
 
 /*/{Protheus.doc} ChkOrdNeg
-    Calcula que el valor de la retenci?? no sea negativa.
+    Calcula que el valor de la retención no sea negativa.
     @type Static Function
-    @author Eduardo Ar�valo
+    @author Eduardo Arévalo
     @since 20/07/2026
     @version 1.0
     @param aSE2, array, Array de registros de pago/documento
 	@param cFornece, Codigo del proveedor
 	@param cLoja, Codigo de la tienda
-    @return nVlTret, numeric, total acumulado de retenci?? del IVA
+    @return nVlTret, numeric, total acumulado de retención del IVA
     @example nVlTret := ChkOrdNeg(aSE2,cFornece, cLoja)
 */
 Static Function ChkOrdNeg(aSE2,cFornece, cLoja)
