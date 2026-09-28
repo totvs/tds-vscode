@@ -946,14 +946,14 @@ export function sendLogMsg(message: string): void {
   });
 }
 
-export function sendDidSaveTextDocument(uri: string, text: string): Thenable<any> {
-  return languageClient.sendRequest("textDocument/didSave", {
-    textDocument: {
-      uri: uri
-    },
-    text: text
-  });
-}
+// export function sendDidSaveTextDocument(uri: string, text: string): Thenable<any> {
+//   return languageClient.sendRequest("textDocument/didSave", {
+//     textDocument: {
+//       uri: uri
+//     },
+//     text: text
+//   });
+// }
 
 interface AstContentParams {
   file: string;

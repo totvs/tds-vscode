@@ -1,31 +1,10 @@
 import * as vscode from "vscode";
 import { applyFormattingMode } from "./extension";
-import { sendDidChangeConfiguration, sendDidSaveTextDocument } from "./protocolMessages";
+import { sendDidChangeConfiguration } from "./protocolMessages";
 import { getModifiedLanguageServerSettings } from "./server/languageServerSettings";
 import { updateStatusBarItems } from "./statusBar";
 
-/**
- * Indica se alguma configuração de `totvsLanguageServer` mudou além do modo
- * de formatação (`totvsLanguageServer.formatter.provider`).
- *
- * Como `affectsConfiguration` não enumera as chaves alteradas, considera-se
- * que houve "outra" mudança quando a seção `totvsLanguageServer` foi afetada
- * mas não exclusivamente a chave de formatação.
- */
-function _isOtherTotvsLanguageServerChange(
-	e: vscode.ConfigurationChangeEvent
-): boolean {
-	if (!e.affectsConfiguration("totvsLanguageServer")) {
-		return false;
-	}
-	// A seção mudou; se a mudança de formatação não explica tudo, trata-se de
-	// outra configuração. Retornamos true de forma conservadora quando qualquer
-	// coisa em totvsLanguageServer muda sem ser a chave de formatação.
-	return !e.affectsConfiguration("totvsLanguageServer.formatter.provider")
-		? true
-		: false;
-}
-
+/*
 function updateOpenEditors() {
 	vscode.window.visibleTextEditors.forEach((element: vscode.TextEditor) => {
 		if ((!element.document.isUntitled) &&
@@ -35,6 +14,7 @@ function updateOpenEditors() {
 		}
 	});
 }
+*/
 
 export function registerWorkspace(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
