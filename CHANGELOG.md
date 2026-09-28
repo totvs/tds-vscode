@@ -14,7 +14,7 @@ para melhor acurácia desta.
 }
 ```
 
-> Ao desligar esses recursos, solicitações da IA podem perder acurácia e usar busca textual (_grep_, _read file_ e outras), que pode ser mais lentas.
+> Ao desligar esses recursos, solicitações da IA podem perder acurácia e usar busca textual (_grep_, _read file_ e outras), que podem ser mais lentas.
 
 ### Novidades
 
@@ -49,8 +49,6 @@ Recurso perceptível em fontes médios e grandes (acima de 100K).
 - Performance e consumo de recursos (CPU/Memória).
 - Indica vários erros em única passagem.
 - Tratamento de erros com correta visualização do código em `Problemas`.
-
-### Melhorias
 
 #### Motor de formatação LS
 
