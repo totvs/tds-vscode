@@ -33,7 +33,6 @@ export function getFormattingOptions(langId: string): FormattingOptions {
       false
     ),
     alignAssignments: getValue(langId, "alignAssignments", false),
-    //normalizeConditionSpacing: getValue(langId, "normalizeConditionSpacing", true),
     normalizeCalls: getValue(langId, "normalizeCalls", false),
     preserveSingleLineBlocks: getValue(langId, "preserveSingleLineBlocks", false),
     blankLinesBetweenTopLevelDeclarations: getValue(

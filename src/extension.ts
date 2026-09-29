@@ -79,10 +79,10 @@ let extensionFormatters: vscode.Disposable | undefined;
 
 /**
  * Aplica o modo de formatação configurado em
- * `totvsLanguageServer.formatter.provider` (ls | extension | off).
+ * `totvsLanguageServer.formatter.provider` (ls | extension).
  *
  * Garante exclusividade: os providers de formatação da extensão só são
- * registrados no modo `extension`. Nos modos `ls` e `off` eles são
+ * registrados no modo `extension`. No modo `ls` eles são
  * desregistrados (o LS decide dinamicamente se anuncia a capability de
  * formatação via register/unregisterCapability).
  */
