@@ -16,7 +16,7 @@
 }
 ```
 
-> Os únicos valores válidos para `totvsLanguageServer.formatter.provider` são
+> Os únicos valores válidos para [`totvsLanguageServer.formatter.provider`](../configuration.md#formatação) são
 > `extension` (padrão) e `ls`.
 
 Por padrão, a formatação de código fonte vem **desligado**. Para ligá-lo acesse `File | Preferences | Settings` e localize `4gl` ou `advpl`, conforme a linguagem de programação que deseja configurar.

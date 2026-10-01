@@ -18,6 +18,14 @@ Funcionalidade _experimental_, para ativá-la ajuste em `settings.josn` a chave:
 
 Processo aprimorado com adição de opções para formatação mais refinada de códigos AdvPL e 4GL. [Detalhes em TDS: Formatação de Código Fonte](./docs/formatter/format_config.md).
 
+#### Configurações
+
+Adicionada documentação de todas as configurações da extensão (chaves `totvsLanguageServer`), com tipo, valor padrão, descrição e exemplo com valores padrão. [Detalhes em TDS: Configurações](./docs/configuration.md).
+
+> Existe algumas combinações de configuração que modifica o comportamento de processos e mesmo outras configurações. [Detalhes](./docs/configuration.md#combinações-que-alteram-o-comportamento).
+
+Melhorado o tratamento de valores inválidos nas configurações. Quando for detectado algum erro de validação, será emitido uma mensagem no console do LS, semelhante a:
+
 ## Versão [2.1.5]
 
 ### Melhorias
