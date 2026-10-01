@@ -798,13 +798,25 @@
           "properties": {
             "maxConsecutiveBlankLines": {
               "type": "number",
-              "default": 1,
-              "description": "Máximo de linhas em branco em sequência."
+              "default": 0,
+              "minimum": 0,
+              "maximum": 5,
+              "description": "Máximo de linhas em branco em sequência. Valores aceitos: de 0 (ignora) a 5."
             },
             "maxLineLength": {
               "type": "number",
               "default": 120,
-              "description": "Largura máxima de linha para aplicar quebra automática."
+              "oneOf": [
+                {
+                  "const": 0,
+                  "description": "0 ignora o limite de largura de linha."
+                },
+                {
+                  "minimum": 30,
+                  "maximum": 120
+                }
+              ],
+              "description": "Largura máxima de linha para aplicar quebra automática. Valores aceitos: 0 (ignorar) ou de 30 a 120."
             },
             "wrapParameters": {
               "type": [
@@ -927,13 +939,25 @@
           "properties": {
             "maxConsecutiveBlankLines": {
               "type": "number",
-              "default": 1,
-              "description": "Máximo de linhas em branco em sequência."
+              "default": 0,
+              "minimum": 0,
+              "maximum": 5,
+              "description": "Máximo de linhas em branco em sequência. Valores aceitos: de 0 (ignora) a 5."
             },
             "maxLineLength": {
               "type": "number",
               "default": 120,
-              "description": "Largura máxima de linha para aplicar quebra automática."
+              "oneOf": [
+                {
+                  "const": 0,
+                  "description": "0 ignora o limite de largura de linha."
+                },
+                {
+                  "minimum": 30,
+                  "maximum": 120
+                }
+              ],
+              "description": "Largura máxima de linha para aplicar quebra automática. Valores aceitos: 0 (ignorar) ou de 30 a 120."
             },
             "wrapParameters": {
               "type": [
