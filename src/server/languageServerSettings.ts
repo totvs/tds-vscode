@@ -217,7 +217,7 @@ export function getModifiedLanguageServerSettings(): any[] {
 export async function warningNeedRestart(): Promise<boolean> {
   if (_needRestart) {
     if (!_waitRestart) {
-      const message: string = "To make the change effective, it is necessary to restart TOTVS LS Server. Wait a moment.";
+      const message: string = "To make the change effective, it is necessary to restart extension.";
       vscode.window.showInformationMessage(message);
       languageClient.outputChannel.appendLine(message);
       languageClient.outputChannel.show(true);
