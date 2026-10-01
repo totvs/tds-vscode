@@ -78,8 +78,8 @@ Chaves específicas para formatação de fontes 4GL e AdvPL.
 | commentReflow (`boolean`)                              | Permite reorganizar comentários longos. Padrão: false                                          |
 | convertSemiGraphicsToChar (`boolean`)                  | Converte caracteres semi-gráficos (CP437) em caracteres ASCII equivalentes. Padrão: false      |
 | keywordsCase <upper \| lower \| upperCamel \| ignore>  | Coloca as palavras-chave da linguagem na caixa indicada. Padrão: (4GL) upper / (AdvPL) ignore  |
-| maxConsecutiveBlankLines (`number`)                    | Máximo de linhas em branco em sequência. Padrão: 1                                             |
-| maxLineLength (`number`)                               | Largura máxima de linha para aplicar quebra automática. Padrão: 120                            |
+| maxConsecutiveBlankLines (`number`)                    | Máximo de linhas em branco em sequência. Valores aceitos: de 0 (ignora) a 5. Padrão: 0          |
+| maxLineLength (`number`)                               | Largura máxima de linha para aplicar quebra automática. Valores aceitos: 0 (ignorar) ou de 30 a 120. Padrão: 120 |
 | normalizeCalls (`boolean`)                             | Normaliza chamadas removendo espaço entre identificador e parêntese de abertura. Padrão: false |
 | operatorSpacing (`boolean`)                            | Normaliza espaçamento em operadores. Padrão: false                                             |
 | preserveSingleLineBlocks (`boolean`)                   | Preserva blocos de uma única linha. Padrão: false                                              |
@@ -119,7 +119,7 @@ Chaves específicas para formatação de fontes 4GL e AdvPL.
     "files.trimTrailingWhitespace": false,
   },
   "4gl.formatter": {
-    "maxConsecutiveBlankLines": 1,
+    "maxConsecutiveBlankLines": 0,
     "maxLineLength": 120,
     "wrapParameters": false,
     "wrapArguments": false,
@@ -138,7 +138,7 @@ Chaves específicas para formatação de fontes 4GL e AdvPL.
     "trimTrailingWhitespace": true
   },
   "advpl.formatter": {
-    "maxConsecutiveBlankLines": 1,
+    "maxConsecutiveBlankLines": 0,
     "maxLineLength": 120,
     "wrapParameters": false,
     "wrapArguments": false,
@@ -383,6 +383,8 @@ RETURN
 Limita as linhas em branco consecutivas. **Só atua quando o valor é maior que
 `0`**; com `0`, o LS não remove linhas em branco por esta regra.
 
+> Valores aceitos: de `0` a `5`. Valores fora dessa faixa são rejeitados na validação das configurações.
+
 ```json
 { "advpl.formatter": { "maxConsecutiveBlankLines": 1 } }
 ```
@@ -412,6 +414,8 @@ espaço válido (fora de _strings_) antes do limite, juntando os segmentos com `
 (operador de continuação AdvPL). A continuação recebe indentação extra
 (`editor.tabSize`/`insertSpaces`). Linhas de comentário não são quebradas aqui
 (veja `commentReflow`).
+
+> Valores aceitos: `0` (ignora o limite e desativa a quebra automática) ou de `30` a `120`. Valores fora dessa faixa são rejeitados na validação das configurações.
 
 ```json
 { "advpl.formatter": { "maxLineLength": 40 } }
