@@ -1,5 +1,31 @@
 # Changelog
 
+## Versão [2.1.X]
+
+### Melhorias
+
+#### Motor de formatação LS
+
+Funcionalidade _experimental_, para ativá-la ajuste em `settings.josn` a chave:
+
+```json
+{
+  totvsLanguageServer.formatter.provider=ls
+}
+```
+
+#### Formatação de código AdvPL e 4GL
+
+Processo aprimorado com adição de opções para formatação mais refinada de códigos AdvPL e 4GL. [Detalhes em TDS: Formatação de Código Fonte](./docs/formatter/format_config.md).
+
+#### Configurações
+
+Adicionada documentação de todas as configurações da extensão (chaves `totvsLanguageServer`), com tipo, valor padrão, descrição e exemplo com valores padrão. [Detalhes em TDS: Configurações](./docs/configuration.md).
+
+> Existe algumas combinações de configuração que modifica o comportamento de processos e mesmo outras configurações. [Detalhes](./docs/configuration.md#combinações-que-alteram-o-comportamento).
+
+Melhorado o tratamento de valores inválidos nas configurações. Quando for detectado algum erro de validação, será emitido uma mensagem no console do LS, semelhante a:
+
 ## Versão [2.1.5]
 
 ### Melhorias
@@ -70,7 +96,7 @@ Em qualquer versão do VSCode, instale também a extensão:
 
 #### Integração da extensão com o Kiro
 
-A integração do TDS-Code com o Kirot é utilizada para ajudar a IA a compreender melhor sua área de trabalho, tornando-a mais assertiva e rápida em questões relacionadas aos seus fontes.
+A integração do TDS-Code com o Kiro é utilizada para ajudar a IA a compreender melhor sua área de trabalho, tornando-a mais assertiva e rápida em questões relacionadas aos seus fontes.
 
 Recomenda-se o uso do Kiro versão ???? (??/????) ou superior.
 

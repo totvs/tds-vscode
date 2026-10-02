@@ -1,11 +1,14 @@
 {
     "totvsLanguageServer.welcomePage": false,
-    "totvsLanguageServer.trace.debug": "off",
-    "totvsLanguageServer.trace.server": "verbose",
+    "totvsLanguageServer.editor.linter.includes": "m:\\protheus\\INCLUDES;m:\\protheus\\INCLUDES_TLPP;W:\\tds\\tds-vscode\\test\\resources\\projects\\advpl0\\includes-protheus",
+    "totvsLanguageServer.editor.show.notification": "all",
+    "totvsLanguageServer.trace.debug": "messages",
+    "totvsLanguageServer.trace.server": "messages",
     "totvsLanguageServer.launch.args": [
         "--log-file=totvsls.log",
         "--verbose",
         "--wait-for-attach=30",
+        "--wait-for-attach=90",
         "--debug-ls",
         "--trace-compile",
         "--log-file-append=totvsls2.log"
@@ -15,12 +18,27 @@
     "totvsLanguageServer.editor.autocomplete": "Off",
     "totvsLanguageServer.workspaceServerConfig": false,
     "totvsLanguageServer.editor.codeLens": false,
-    "totvsLanguageServer.editor.index.cache": "onDisk",
-    "chat.agentFilesLocations": {
-        ".github/agents": true,
-        ".claude/agents": true,
-        "~/.copilot/agents": true,
-        ".agents/agents": true
+    "totvsLanguageServer.editor.index.cache": "onMemory",
+    "totvsLanguageServer.compilation.generatePpoFile": false,
+    "totvsLanguageServer.editor.hover": "off",
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false,
+    "advpl.formatter": {
+        "_maxConsecutiveBlankLines": 1,
+        "_alignAssignments": true,
+        "_maxLineLength": 90,
+        "commentReflow": true,
+        "keywordsCase": "upperCamel",
+        "_stringStyle": "single-quotes",
+        "_trimTrailingWhitespace": false,
+        "wrapArguments": false,
+        "wrapParameters": false,
+        "operatorSpacing": true,
+        "preserveSingleLineBlocks": true
     },
-    "totvsLanguageServer.editor.linter.includes": "C:\\Totvs\\Workspaces\\vscodewstests\\includes\\;C:\\Totvs\\Servers\\Protheus\\includes\\;C:\\Totvs\\Workspaces\\vscodewstests\\Advpl\\TestesLeo;C:\\Totvs\\Workspaces\\vscodewstests\\FontesProtheus\\LibFw-20240806\\include;C:\\Totvs\\Workspaces\\vscodewstests\\FontesProtheus\\LibFw-20240806\\include-lib;C:\\Totvs\\Workspaces\\vscodewstests\\4gl\\includes\\include;C:\\Totvs\\Workspaces\\vscodewstests\\4gl\\includes\\include-lib;C:\\Totvs\\Workspaces\\vscodewstests\\4gl\\includes\\protheus-include\\include;C:\\Totvs\\Workspaces\\vscodewstests\\4gl\\includes\\protheus-include\\include-lib"
+    "totvsLanguageServer.editor.signatureHelp": false,
+    "editor.codeLens": true,
+    "totvsLanguageServer.formatter.provider": "ls",
+    "editor.signatureHelp.enabled": true,
+    "totvsLanguageServer.editor.codeActions": false
 }

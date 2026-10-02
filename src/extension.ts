@@ -46,12 +46,12 @@ import {
 } from "./debug/debugConfigs";
 import { createTimeLineWebView } from "./debug/debugEvents";
 import { patchValidates } from "./patch/patchValidate";
+import { register4glOutline } from "./outline";
 import {
   documentFormatting,
-  register4glFormatting,
   registerAdvplFormatting,
+  register4glFormatting,
 } from "./formatter";
-import { register4glOutline } from "./outline";
 import { registerDebug, _debugEvent } from "./debug";
 import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
 import { initStatusBarItems } from "./statusBar";
@@ -74,6 +74,34 @@ import { registerChatTools } from "./chat/chatTools";
 import { checkWhatsNew } from "./whatsNew";
 
 export let languageClient: TotvsLanguageClientA;
+
+let extensionFormatters: vscode.Disposable | undefined;
+
+/**
+ * Aplica o modo de formatação configurado em
+ * `totvsLanguageServer.formatter.provider` (ls | extension).
+ *
+ * Garante exclusividade: os providers de formatação da extensão só são
+ * registrados no modo `extension`. No modo `ls` eles são
+ * desregistrados (o LS decide dinamicamente se anuncia a capability de
+ * formatação via register/unregisterCapability).
+ */
+export function applyFormattingMode(context: ExtensionContext) {
+  const mode = vscode.workspace
+    .getConfiguration("totvsLanguageServer")
+    .get<string>("formatter.provider", "ls");
+
+  extensionFormatters?.dispose();
+  extensionFormatters = undefined;
+
+  if (mode === "extension") {
+    extensionFormatters = vscode.Disposable.from(
+      registerAdvplFormatting(),
+      register4glFormatting()
+    );
+    context.subscriptions.push(extensionFormatters);
+  }
+}
 
 export function parseUri(u): Uri {
   return Uri.parse(u);
@@ -474,10 +502,11 @@ export async function activate(context: ExtensionContext) {
     vscode.commands.registerCommand(
       "totvs-developer-studio.run.formatter",
       (args: any[]) => {
+        //console.log("formatador ativado");
         if (args === undefined) {
-          let aeditor = vscode.window.activeTextEditor;
-          if (aeditor !== undefined) {
-            args = [aeditor.document.uri];
+          let activeTextEditor = vscode.window.activeTextEditor;
+          if (activeTextEditor !== undefined) {
+            args = [activeTextEditor.document.uri];
           }
         }
         if (instanceOfUri(args)) {
@@ -504,11 +533,8 @@ export async function activate(context: ExtensionContext) {
   //debug
   registerDebug(context, languageClient);
 
-  // Inicialização Adv/PL
-  context.subscriptions.push(registerAdvplFormatting());
-
-  // Inicialização 4GL
-  context.subscriptions.push(register4glFormatting());
+  // Inicialização da formatação (LS x extensão) conforme configuração
+  applyFormattingMode(context);
   context.subscriptions.push(register4glOutline());
 
   // Registro de ferramentas de chat para o modelo de linguagem

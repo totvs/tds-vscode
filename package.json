@@ -717,6 +717,23 @@
           "default": "true",
           "description": "%tds.package.editor.codeLens%"
         },
+        "totvsLanguageServer.formatter.provider": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "ls",
+            "extension"
+          ],
+          "tags": [
+            "experimental"
+          ],
+          "enumDescriptions": [
+            "%tds.package.formatter.provider.ls%",
+            "%tds.package.formatter.provider.extension%"
+          ],
+          "default": "extension",
+          "description": "%tds.package.formatter.provider%"
+        },
         "totvsLanguageServer.workspaceServerConfig": {
           "type": "boolean",
           "default": false,
@@ -779,16 +796,66 @@
           "type": "object",
           "description": "Formatação 4GL",
           "properties": {
+            "maxConsecutiveBlankLines": {
+              "type": "number",
+              "default": 0,
+              "minimum": 0,
+              "maximum": 5,
+              "description": "Máximo de linhas em branco em sequência. Valores aceitos: de 0 (ignora) a 5."
+            },
+            "maxLineLength": {
+              "type": "number",
+              "default": 120,
+              "oneOf": [
+                {
+                  "const": 0,
+                  "description": "0 ignora o limite de largura de linha."
+                },
+                {
+                  "minimum": 30,
+                  "maximum": 120
+                }
+              ],
+              "description": "Largura máxima de linha para aplicar quebra automática. Valores aceitos: 0 (ignorar) ou de 30 a 120."
+            },
+            "wrapParameters": {
+              "type": [
+                "string",
+                "boolean"
+              ],
+              "enum": [
+                "auto",
+                true,
+                false
+              ],
+              "default": false,
+              "description": "Controla quebra de linha de parâmetros."
+            },
+            "wrapArguments": {
+              "type": [
+                "string",
+                "boolean"
+              ],
+              "enum": [
+                "auto",
+                true,
+                false
+              ],
+              "default": false,
+              "description": "Controla quebra de linha de argumentos."
+            },
             "keywordsCase": {
               "type": "string",
               "enum": [
                 "upper",
                 "lower",
+                "upperCamel",
                 "ignore"
               ],
               "enumDescriptions": [
                 "Em maiúsculas",
                 "Em minúsculas",
+                "Em maiúsculas a primeira letra, demais em minúsculas",
                 "Manter original"
               ],
               "default": "upper",
@@ -808,6 +875,202 @@
               ],
               "default": "ignore",
               "description": "Indica como as _strings_ devem ser informadas."
+            },
+            "operatorSpacing": {
+              "type": "boolean",
+              "default": false,
+              "description": "Normaliza espaçamento em operadores."
+            },
+            "spaceAfterComma": {
+              "type": "boolean",
+              "default": false,
+              "description": "Garante espaço após vírgulas."
+            },
+            "spaceInsideParentheses": {
+              "type": "boolean",
+              "default": false,
+              "description": "Controla espaços dentro de parênteses."
+            },
+            "convertSemiGraphicsToChar": {
+              "type": "boolean",
+              "default": false,
+              "description": "Converte caracteres semi-gráficos (CP437) em caracteres ASCII equivalentes durante a formatação."
+            },
+            "alignAssignments": {
+              "type": "boolean",
+              "default": false,
+              "description": "Alinha operadores de atribuição em blocos."
+            },
+            "normalizeCalls": {
+              "type": "boolean",
+              "default": false,
+              "description": "Normaliza chamadas removendo espaço entre identificador e parêntese de abertura."
+            },
+            "preserveSingleLineBlocks": {
+              "type": "boolean",
+              "default": false,
+              "description": "Preserva blocos de uma única linha."
+            },
+            "trimFinalNewlines": {
+              "type": "boolean",
+              "default": true,
+              "description": "Remove linhas em branco no final do arquivo."
+            },
+            "blankLinesBetweenTopLevelDeclarations": {
+              "type": "number",
+              "default": 1,
+              "description": "Quantidade de linhas em branco entre declarações de topo."
+            },
+            "commentReflow": {
+              "type": "boolean",
+              "default": false,
+              "description": "Permite reorganizar comentários longos."
+            },
+            "trimTrailingWhitespace": {
+              "type": "boolean",
+              "default": true,
+              "description": "Remove espaços em branco no final da linha."
+            }
+          }
+        },
+        "advpl.formatter": {
+          "type": "object",
+          "description": "Formatação AdvPL",
+          "properties": {
+            "maxConsecutiveBlankLines": {
+              "type": "number",
+              "default": 0,
+              "minimum": 0,
+              "maximum": 5,
+              "description": "Máximo de linhas em branco em sequência. Valores aceitos: de 0 (ignora) a 5."
+            },
+            "maxLineLength": {
+              "type": "number",
+              "default": 120,
+              "oneOf": [
+                {
+                  "const": 0,
+                  "description": "0 ignora o limite de largura de linha."
+                },
+                {
+                  "minimum": 30,
+                  "maximum": 120
+                }
+              ],
+              "description": "Largura máxima de linha para aplicar quebra automática. Valores aceitos: 0 (ignorar) ou de 30 a 120."
+            },
+            "wrapParameters": {
+              "type": [
+                "string",
+                "boolean"
+              ],
+              "enum": [
+                "auto",
+                true,
+                false
+              ],
+              "default": false,
+              "description": "Controla quebra de linha de parâmetros."
+            },
+            "wrapArguments": {
+              "type": [
+                "string",
+                "boolean"
+              ],
+              "enum": [
+                "auto",
+                true,
+                false
+              ],
+              "default": false,
+              "description": "Controla quebra de linha de argumentos."
+            },
+            "keywordsCase": {
+              "type": "string",
+              "enum": [
+                "upper",
+                "lower",
+                "upperCamel",
+                "ignore"
+              ],
+              "enumDescriptions": [
+                "Em maiúsculas",
+                "Em minúsculas",
+                "Em maiúsculas a primeira letra, demais em minúsculas",
+                "Manter original"
+              ],
+              "default": "ignore",
+              "description": "Coloca as palavras chaves da linguagem na caixa indicada"
+            },
+            "stringStyle": {
+              "type": "string",
+              "enum": [
+                "double-quotes",
+                "single-quotes",
+                "ignore"
+              ],
+              "enumDescriptions": [
+                "Aspas duplas",
+                "Aspas Simples",
+                "Manter original"
+              ],
+              "default": "ignore",
+              "description": "Indica como as _strings_ devem ser informadas."
+            },
+            "operatorSpacing": {
+              "type": "boolean",
+              "default": false,
+              "description": "Normaliza espaçamento em operadores."
+            },
+            "spaceAfterComma": {
+              "type": "boolean",
+              "default": false,
+              "description": "Garante espaço após vírgulas."
+            },
+            "spaceInsideParentheses": {
+              "type": "boolean",
+              "default": false,
+              "description": "Controla espaços dentro de parênteses."
+            },
+            "convertSemiGraphicsToChar": {
+              "type": "boolean",
+              "default": false,
+              "description": "Converte caracteres semi-gráficos (CP437) em caracteres ASCII equivalentes durante a formatação."
+            },
+            "alignAssignments": {
+              "type": "boolean",
+              "default": false,
+              "description": "Alinha operadores de atribuição em blocos."
+            },
+            "normalizeCalls": {
+              "type": "boolean",
+              "default": false,
+              "description": "Normaliza chamadas removendo espaço entre identificador e parêntese de abertura."
+            },
+            "preserveSingleLineBlocks": {
+              "type": "boolean",
+              "default": false,
+              "description": "Preserva blocos de uma única linha."
+            },
+            "trimFinalNewlines": {
+              "type": "boolean",
+              "default": true,
+              "description": "Remove linhas em branco no final do arquivo."
+            },
+            "blankLinesBetweenTopLevelDeclarations": {
+              "type": "number",
+              "default": 1,
+              "description": "Quantidade de linhas em branco entre declarações de topo."
+            },
+            "commentReflow": {
+              "type": "boolean",
+              "default": false,
+              "description": "Permite reorganizar comentários longos."
+            },
+            "trimTrailingWhitespace": {
+              "type": "boolean",
+              "default": true,
+              "description": "Remove espaços em branco no final da linha."
             }
           }
         }

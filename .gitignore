@@ -31,3 +31,4 @@ test/**/.vscode
 /test/resources/projects/**/.kiro
 /test/resources/projects/**/.github
 .vscode/settings.json
+/test/resources/projects/advpl/files/poc-advpl

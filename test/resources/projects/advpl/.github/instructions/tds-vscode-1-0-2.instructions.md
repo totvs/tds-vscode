@@ -19,7 +19,7 @@ NOTICE for extension developers:
 
 # Instructions
 
-- Answer in Portuguese, objectively.
+- Answer in English, objectively.
 - Mandatory LS-first rule: in any navigation, analysis, fix, or refactoring task, the first action must be an LS tool.
 - Mandatory semantic navigation sequence:
 
@@ -32,3 +32,4 @@ NOTICE for extension developers:
 - When falling into the exception, explicitly state in the response: "LS unavailable/no coverage; proceeding with text search".
 - Compliance criterion: before the result, inform which LS tool was used and what it returned.
 - Non-compliance rule: if LS is not used first without valid justification, consider the execution out of standard and correct the approach in the same response.
+- Ao receber uma solicitação de compilação, usar o comando `totvs-developer-studio.rebuild.file`.
