@@ -1,4 +1,4 @@
-//Nï¿½o enviar ao repositï¿½rio se aplicar formataï¿½ï¿½o
+//Não enviar ao repositório se aplicar formatação
 #include "protheus.ch"
 
 user function alignAssignments()
@@ -10,6 +10,6 @@ n := 10
 	total := 20
 	x := 30
 
-conout("Para validaï¿½ï¿½o de encoding: nï¿½o, ï¿½, ï¿½ï¿½o")
+conout("For encoding validation: não, é, ção")
 
 return

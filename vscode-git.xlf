@@ -380,7 +380,7 @@
       <source xml:lang="en">Disconnecting monitor from server [{0}]</source>
     </trans-unit>
     <trans-unit id="++CODE++700d1a9a7816fa8eb03c0380dc700eb212a72491d7127e794ade540cf85b9fab">
-      <source xml:lang="en">Do you want to configure Copilot instructions for this workspace (improves accuracy)?</source>
+      <source xml:lang="en">Do you want to configure AI instructions for this workspace (improves accuracy)?</source>
     </trans-unit>
     <trans-unit id="++CODE++0e0b32d2f0e002c927f26686984dcdc2a13e83289fed86a5dccd3a36ec5c4a69">
       <source xml:lang="en">Do you want to save the changes to the following {0} files?</source>

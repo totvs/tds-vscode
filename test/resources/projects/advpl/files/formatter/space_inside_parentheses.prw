@@ -10,6 +10,6 @@ if (p1 == p2)
 	conout("value (with parens)", nValue)
 endif
 
-conout("Para validação de encoding: não, é, ção")
+conout("For encoding validation: não, é, ção")
 
 return

@@ -5,5 +5,5 @@ user function insertFinalNewLine()
         if .t.
     conout("a")
 	 endif
-conout("Para validação de encoding: não, é, ção")
+conout("For encoding validation: não, é, ção")
                   return

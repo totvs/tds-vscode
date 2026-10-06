@@ -22,6 +22,6 @@ user function stringStyle()
 	x5 := "ABC'DEF"
 	x6 := "'ABC'DEF'"
 	
-	conout("Para validação de encoding: não, é, ção")
+	conout("For encoding validation: não, é, ção")
 
 	return

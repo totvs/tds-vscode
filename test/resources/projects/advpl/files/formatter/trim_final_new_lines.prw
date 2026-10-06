@@ -4,7 +4,7 @@
 user function trimFinalNewLines()
 local n := 1
 
-conout("Para validação de encoding: não, é, ção")
+conout("For encoding validation: não, é, ção")
 
 	return
 

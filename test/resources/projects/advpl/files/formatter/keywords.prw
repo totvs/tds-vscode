@@ -22,6 +22,6 @@ end Do
 total := 20
 x := 30
 
-conout("Para validação de encoding: não, é, ção")
+conout("For encoding validation: não, é, ção")
 
 RETURN

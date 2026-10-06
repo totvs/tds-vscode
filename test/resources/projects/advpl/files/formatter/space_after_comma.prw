@@ -12,6 +12,6 @@ if array[1] == 1 .and. aArray2[2] == 2
     conout("Arrays are equal")
 endif
 
-conout("Para validação de encoding: não, é, ção")
+conout("For encoding validation: não, é, ção")
 
 return

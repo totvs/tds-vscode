@@ -19,7 +19,7 @@ local x3 := 1
 // The line below ends with: \t\r\n
 local x4 := 1	
 
-conout("Para validação de encoding: não, é, ção")
+conout("For encoding validation: não, é, ção")
 
 // The line below ends with: \t\r\n
 	

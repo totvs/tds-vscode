@@ -2,21 +2,9 @@
 
 ## Versão [2.1.X]
 
-### Correções
-
-Devido a dependência da IA, as chaves abaixo tiverem seus valores padrões modificadas,
-para melhor acurácia desta.
-
-```json
-{
-  "totvsLanguageServer.editor.linter.behavior": "enable",
-  "totvsLanguageServer.editor.index.cache": "onMemory"
-}
-```
-
-> Ao desligar esses recursos, solicitações da IA podem perder acurácia e usar busca textual (_grep_, _read file_ e outras), que podem ser mais lentas.
-
 ### Novidades
+
+#### `Linter`
 
 Troca do motor do `linter`, proporcionando diversas melhorias.
 
@@ -31,6 +19,12 @@ Este processo é **experimental** e vem ativado por padrão. Caso tenha problema
 
 Assim, o `linter` voltará a utilizar o motor original.
 
+Alguns ganhos:
+
+- Performance e consumo de recursos (CPU/Memória).
+- Indica vários erros em única passagem.
+- Tratamento de erros com correta visualização do código em `Problemas`.
+
 ### Melhorias
 
 #### Visão "Estrutura" (_Outline_)
@@ -44,11 +38,31 @@ A edição passa a ser incremental. Em vez de reprocessar ou reanalisar o fonte 
 
 Recurso perceptível em fontes médios e grandes (acima de 100K).
 
-#### Linter
+#### Formatação de código AdvPL e 4GL
 
-- Performance e consumo de recursos (CPU/Memória).
-- Indica vários erros em única passagem.
-- Tratamento de erros com correta visualização do código em `Problemas`.
+A formatação pode ser efetuada:
+
+- Fonte inteiro
+- Em bloco (_range_)
+- Durante a digitação
+
+### Correções
+
+Devido a dependência da IA, as chaves abaixo tiverem seus valores padrões modificadas,
+para melhor acurácia desta.
+
+```json
+{
+  "totvsLanguageServer.editor.linter.behavior": "enable",
+  "totvsLanguageServer.editor.index.cache": "onMemory"
+}
+```
+
+> Ao desligar esses recursos, solicitações da IA podem perder acurácia e usar busca textual (_grep_, _read file_ e outras), que podem ser mais lentas.
+
+## Versão [2.1.6]
+
+### Melhorias
 
 #### Motor de formatação LS
 
@@ -64,11 +78,33 @@ Funcionalidade _experimental_, para ativá-la ajuste em `settings.josn` a chave:
 
 Processo aprimorado com adição de opções para formatação mais refinada de códigos AdvPL e 4GL. [Detalhes em TDS: Formatação de Código Fonte](./docs/formatter/format_config.md).
 
-A formatação pode ser efetuada:
+#### Configurações
 
-- Fonte inteiro
-- Em bloco (_range_)
-- Durante a digitação
+Adicionada documentação de todas as configurações da extensão (chaves `totvsLanguageServer`), com tipo, valor padrão, descrição e exemplo com valores padrão. [Detalhes em TDS: Configurações](./docs/configuration.md).
+
+> Existe algumas combinações de configuração que modifica o comportamento de processos e mesmo outras configurações. [Detalhes](./docs/configuration.md#combinações-que-alteram-o-comportamento).
+
+Melhorado o tratamento de valores inválidos nas configurações. Quando for detectado algum erro de validação, será emitido uma mensagem no console do LS, semelhante a:
+
+## Versão [2.1.5]
+
+### Melhorias
+
+Adicionado configuração de `steering` para o Kiro.
+
+### Correções
+
+#### Textos IA
+
+Correção em mensagens que citam "Copilot".
+
+## Versão [2.1.4]
+
+### Correções
+
+#### Falha de conexão na depuração da release 12.1.2610
+
+Corrigida falha de conexão na depuração da release 12.1.2610.
 
 ## Versão [2.1.3]
 

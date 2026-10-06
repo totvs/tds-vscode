@@ -2,7 +2,7 @@
   "name": "tds-vscode",
   "displayName": "TOTVS Developer Studio for VSCode (AdvPL, TLPP e 4GL)",
   "description": "%tds.package.description%",
-  "version": "2.1.3",
+  "version": "2.1.5",
   "publisher": "TOTVS",
   "preview": true,
   "author": {
@@ -94,7 +94,7 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.11.3-deprecations.1",
     "@modelcontextprotocol/sdk": "^1.17.5",
-    "@totvs/tds-da": "1.4.1",
+    "@totvs/tds-da": "1.4.2",
     "@totvs/tds-ls": "2.2.6",
     "@types/react": "^16.14.20",
     "@types/vscode": "^1.97.2",
@@ -727,16 +727,14 @@
           "type": "string",
           "enum": [
             "ls",
-            "extension",
-            "off"
+            "extension"
           ],
           "tags": [
             "experimental"
           ],
           "enumDescriptions": [
             "%tds.package.formatter.provider.ls%",
-            "%tds.package.formatter.provider.extension%",
-            "%tds.package.formatter.provider.off%"
+            "%tds.package.formatter.provider.extension%"
           ],
           "default": "extension",
           "description": "%tds.package.formatter.provider%"
@@ -816,25 +814,23 @@
             "maxConsecutiveBlankLines": {
               "type": "number",
               "default": 0,
-              "oneOf": [
-                {
-                  "minimum": 0
-                }
-              ],
-              "description": "Máximo de linhas em branco em sequência. Valores válidos: 0 (desabilita) ou => 1."
+              "minimum": 0,
+              "maximum": 5,
+              "description": "Máximo de linhas em branco em sequência. Valores aceitos: de 0 (ignora) a 5."
             },
             "maxLineLength": {
               "type": "number",
+              "default": 120,
               "oneOf": [
                 {
-                  "const": 0
+                  "const": 0,
+                  "description": "0 ignora o limite de largura de linha."
                 },
                 {
                   "minimum": 30,
                   "maximum": 120
                 }
               ],
-              "default": 120,
               "description": "Largura máxima de linha para aplicar quebra automática. Valores válidos: 0 (desabilita) ou de 30 a 120."
             },
             "wrapParameters": {
@@ -868,11 +864,13 @@
               "enum": [
                 "upper",
                 "lower",
+                "upperCamel",
                 "ignore"
               ],
               "enumDescriptions": [
                 "Em maiúsculas",
                 "Em minúsculas",
+                "Em maiúsculas a primeira letra, demais em minúsculas",
                 "Manter original"
               ],
               "default": "upper",
@@ -907,6 +905,11 @@
               "type": "boolean",
               "default": false,
               "description": "Controla espaços dentro de parênteses."
+            },
+            "convertSemiGraphicsToChar": {
+              "type": "boolean",
+              "default": false,
+              "description": "Converte caracteres semi-gráficos (CP437) em caracteres ASCII equivalentes durante a formatação."
             },
             "alignAssignments": {
               "type": "boolean",
@@ -952,26 +955,24 @@
             "maxConsecutiveBlankLines": {
               "type": "number",
               "default": 0,
-              "oneOf": [
-                {
-                  "minimum": 0
-                }
-              ],
-              "description": "Máximo de linhas em branco em sequência. Valores válidos: 0 (desabilita) ou => 1."
+              "minimum": 0,
+              "maximum": 5,
+              "description": "Máximo de linhas em branco em sequência. Valores aceitos: de 0 (ignora) a 5."
             },
             "maxLineLength": {
               "type": "number",
+              "default": 120,
               "oneOf": [
                 {
-                  "const": 0
+                  "const": 0,
+                  "description": "0 ignora o limite de largura de linha."
                 },
                 {
                   "minimum": 30,
                   "maximum": 120
                 }
               ],
-              "default": 120,
-              "description": "Largura máxima de linha para aplicar quebra automática. Valores válidos: 0 (desabilita) ou de 30 a 120."
+              "description": "Largura máxima de linha para aplicar quebra automática. Valores aceitos: 0 (ignorar) ou de 30 a 120."
             },
             "wrapParameters": {
               "type": [
@@ -1004,11 +1005,13 @@
               "enum": [
                 "upper",
                 "lower",
+                "upperCamel",
                 "ignore"
               ],
               "enumDescriptions": [
                 "Em maiúsculas",
                 "Em minúsculas",
+                "Em maiúsculas a primeira letra, demais em minúsculas",
                 "Manter original"
               ],
               "default": "ignore",
@@ -1031,18 +1034,23 @@
             },
             "operatorSpacing": {
               "type": "boolean",
-              "default": true,
+              "default": false,
               "description": "Normaliza espaçamento em operadores."
             },
             "spaceAfterComma": {
               "type": "boolean",
-              "default": true,
+              "default": false,
               "description": "Garante espaço após vírgulas."
             },
             "spaceInsideParentheses": {
               "type": "boolean",
               "default": false,
               "description": "Controla espaços dentro de parênteses."
+            },
+            "convertSemiGraphicsToChar": {
+              "type": "boolean",
+              "default": false,
+              "description": "Converte caracteres semi-gráficos (CP437) em caracteres ASCII equivalentes durante a formatação."
             },
             "alignAssignments": {
               "type": "boolean",
