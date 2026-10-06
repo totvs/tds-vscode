@@ -31,3 +31,4 @@ test/**/.vscode
 /test/resources/projects/**/.kiro
 /test/resources/projects/**/.github
 /test/resources/projects/advpl/***/instructions
+/plans
