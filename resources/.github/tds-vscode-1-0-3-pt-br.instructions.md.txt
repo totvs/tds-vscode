@@ -32,3 +32,9 @@ AVISO para desenvolvedores da extensão:
 - Ao cair na exceção, registrar explicitamente na resposta: "LS indisponível/sem cobertura; seguindo com busca textual".
 - Critério de conformidade: informar, antes do resultado, qual ferramenta LS foi usada e o que ela retornou.
 - Regra de não conformidade: se não usar LS primeiro sem justificativa válida, considerar a execução fora do padrão e corrigir a abordagem na mesma resposta.
+
+- Requisito de encoding do projeto: este projeto deve usar a codepage Windows-1252 como codificação dos arquivos de origem.
+- Ao criar ou editar arquivos de origem AdvPL/TLPP, preserve a codificação Windows-1252.
+- Não converta arquivos de origem para UTF-8 ou outra codepage sem solicitação explícita do usuário.
+- Ao trabalhar com acentos, caracteres especiais ou símbolos, garanta compatibilidade com Windows-1252.
+- Em strings, comentários e identificadores, evite caracteres fora da faixa suportada pela Windows-1252.

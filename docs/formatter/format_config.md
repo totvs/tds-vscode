@@ -6,26 +6,20 @@
 
 ## Configuração
 
-> O motor de formatação, pode ser executado na _extensão_ ou no _LS_.
+> O motor de formatação pode ser executado na _extensão_ ou no _LS_,
+> controlado pela chave `totvsLanguageServer.formatter.provider`, que aceita
+> dois valores:
 >
-> A formatação no LS é _experimental_. Por padrão o motor é executado na extensão e para usar o novo motor, ajuste em `settings.josn` a chave:
+> - `extension` — formatação executada pela extensão (motor AdvPL/4GL). **Padrão.**
+> - `ls` — formatação executada pelo _Language Server_ (experimental).
+>
+> Para usar o motor do LS, ajuste em `settings.json`:
 
 ```json
 {
   totvsLanguageServer.formatter.provider=ls
 }
 ```
-
-> Os únicos valores válidos para [`totvsLanguageServer.formatter.provider`](../configuration.md#formatação) são
-> `extension` (padrão) e `ls`.
-
-Por padrão, a formatação de código fonte vem **desligado**. Para ligá-lo acesse `File | Preferences | Settings` e localize `4gl` ou `advpl`, conforme a linguagem de programação que deseja configurar.
-
-Lhe será apresentado algo semelhante a:
-
-![4GL settings](format_settings.png)
-
-> Saiba mais sobre precedência de configurações em [User and Workspace Settings](https://vscode.readthedocs.io/en/latest/getstarted/settings/).
 
 O bloco `[4gl]` (ou `[advpl]`), são configurações ligadas a ativação dos processos pelo _VS-Code_ associadas ao editor da linguagem e `[4gl.formatter]` (ou `[advpl.formatter]`), são as opções de formatação específicas.
 
@@ -71,25 +65,25 @@ Para sobrescrever os valores padrão, acione `Edit in settings.json`.
 
 Chaves específicas para formatação de fontes 4GL e AdvPL.
 
-| Chave                                                  | Uso                                                                                            |
-| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
-| alignAssignments (`boolean`)                           | Alinha operadores de atribuição (`:=`, `+=`, `-=`, `*=`, `/=`, `%=`) em blocos. Padrão: false  |
-| blankLinesBetweenTopLevelDeclarations (`number`)       | Quantidade de linhas em branco entre declarações de topo. Padrão: 1                            |
-| commentReflow (`boolean`)                              | Permite reorganizar comentários longos. Padrão: false                                          |
-| convertSemiGraphicsToChar (`boolean`)                  | Converte caracteres semi-gráficos (CP437) em caracteres ASCII equivalentes. Padrão: false      |
-| keywordsCase <upper \| lower \| upperCamel \| ignore>  | Coloca as palavras-chave da linguagem na caixa indicada. Padrão: (4GL) upper / (AdvPL) ignore  |
-| maxConsecutiveBlankLines (`number`)                    | Máximo de linhas em branco em sequência. Valores aceitos: de 0 (ignora) a 5. Padrão: 0          |
+| Chave                                                  | Uso                                                                                                              |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| alignAssignments (`boolean`)                           | Alinha operadores de atribuição (`:=`, `+=`, `-=`, `*=`, `/=`, `%=`) em blocos. Padrão: false                    |
+| blankLinesBetweenTopLevelDeclarations (`number`)       | Quantidade de linhas em branco entre declarações de topo. Padrão: 1                                              |
+| commentReflow (`boolean`)                              | Permite reorganizar comentários longos. Padrão: false                                                            |
+| convertSemiGraphicsToChar (`boolean`)                  | Converte caracteres semi-gráficos (CP437) em caracteres ASCII equivalentes. Padrão: false                        |
+| keywordsCase <upper \| lower \| upperCamel \| ignore>  | Coloca as palavras-chave da linguagem na caixa indicada. Padrão: (4GL) upper / (AdvPL) ignore                    |
+| maxConsecutiveBlankLines (`number`)                    | Máximo de linhas em branco em sequência. Valores aceitos: de 0 (ignora) a 5. Padrão: 0                           |
 | maxLineLength (`number`)                               | Largura máxima de linha para aplicar quebra automática. Valores aceitos: 0 (ignorar) ou de 30 a 120. Padrão: 120 |
-| normalizeCalls (`boolean`)                             | Normaliza chamadas removendo espaço entre identificador e parêntese de abertura. Padrão: false |
-| operatorSpacing (`boolean`)                            | Normaliza espaçamento em operadores. Padrão: false                                             |
-| preserveSingleLineBlocks (`boolean`)                   | Preserva blocos de uma única linha. Padrão: false                                              |
-| spaceAfterComma (`boolean`)                            | Garante espaço após vírgulas. Padrão: false                                                    |
-| spaceInsideParentheses (`boolean`)                     | Controla espaços dentro de parênteses. Padrão: false                                           |
-| stringStyle <double-quotes \| single-quotes \| ignore> | Indica como as _strings_ devem ser informadas. Padrão: ignore                                  |
-| trimFinalNewlines (`boolean`)                          | Remove linhas em branco no final do arquivo. Padrão: true                                      |
-| trimTrailingWhitespace (`boolean`)                     | Remove espaços em branco no final da linha. Padrão: true                                       |
-| wrapArguments (`auto` \| `true` \| `false`)            | Controla quebra de linha de argumentos. Padrão: false                                          |
-| wrapParameters (`auto` \| `true` \| `false`)           | Controla quebra de linha de parâmetros. Padrão: false                                          |
+| normalizeCalls (`boolean`)                             | Normaliza chamadas removendo espaço entre identificador e parêntese de abertura. Padrão: false                   |
+| operatorSpacing (`boolean`)                            | Normaliza espaçamento em operadores. Padrão: false                                                               |
+| preserveSingleLineBlocks (`boolean`)                   | Preserva blocos de uma única linha. Padrão: false                                                                |
+| spaceAfterComma (`boolean`)                            | Garante espaço após vírgulas. Padrão: false                                                                      |
+| spaceInsideParentheses (`boolean`)                     | Controla espaços dentro de parênteses. Padrão: false                                                             |
+| stringStyle <double-quotes \| single-quotes \| ignore> | Indica como as _strings_ devem ser informadas. Padrão: ignore                                                    |
+| trimFinalNewlines (`boolean`)                          | Remove linhas em branco no final do arquivo. Padrão: true                                                        |
+| trimTrailingWhitespace (`boolean`)                     | Remove espaços em branco no final da linha. Padrão: true                                                         |
+| wrapArguments (`auto` \| `true` \| `false`)            | Controla quebra de linha de argumentos. Padrão: false                                                            |
+| wrapParameters (`auto` \| `true` \| `false`)           | Controla quebra de linha de parâmetros. Padrão: false                                                            |
 
 ### Exemplo com os valores padrão
 
