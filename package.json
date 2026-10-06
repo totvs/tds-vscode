@@ -93,7 +93,7 @@
     "@material-ui/data-grid": "4.0.0-alpha.2",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@modelcontextprotocol/sdk": "^1.17.5",
+    "@modelcontextprotocol/sdk": "^1.32.1",
     "@totvs/tds-da": "1.4.2",
     "@totvs/tds-ls": "2.2.6",
     "@types/react": "^16.14.20",
