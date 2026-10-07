@@ -6,7 +6,7 @@
 
 #### Motor de formatação LS
 
-Funcionalidade _experimental_, para ativá-la ajuste em `settings.josn` a chave:
+Funcionalidade _experimental_, para ativá-la ajuste em `settings.json` a chave:
 
 ```json
 {
