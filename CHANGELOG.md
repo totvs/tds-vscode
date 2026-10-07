@@ -10,7 +10,7 @@ Funcionalidade _experimental_, para ativá-la ajuste em `settings.json` a chave:
 
 ```json
 {
-  totvsLanguageServer.formatter.provider=ls
+  "totvsLanguageServer.formatter.provider": "ls"
 }
 ```
 
