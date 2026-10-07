@@ -12,7 +12,7 @@
 
 ```json
 {
-  totvsLanguageServer.formatter.provider=ls
+  "totvsLanguageServer.formatter.provider": "ls"
 }
 ```
 
@@ -71,25 +71,25 @@ Para sobrescrever os valores padrão, acione `Edit in settings.json`.
 
 Chaves específicas para formatação de fontes 4GL e AdvPL.
 
-| Chave                                                  | Uso                                                                                            |
-| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
-| alignAssignments (`boolean`)                           | Alinha operadores de atribuição (`:=`, `+=`, `-=`, `*=`, `/=`, `%=`) em blocos. Padrão: false  |
-| blankLinesBetweenTopLevelDeclarations (`number`)       | Quantidade de linhas em branco entre declarações de topo. Padrão: 1                            |
-| commentReflow (`boolean`)                              | Permite reorganizar comentários longos. Padrão: false                                          |
-| convertSemiGraphicsToChar (`boolean`)                  | Converte caracteres semi-gráficos (CP437) em caracteres ASCII equivalentes. Padrão: false      |
-| keywordsCase <upper \| lower \| upperCamel \| ignore>  | Coloca as palavras-chave da linguagem na caixa indicada. Padrão: (4GL) upper / (AdvPL) ignore  |
-| maxConsecutiveBlankLines (`number`)                    | Máximo de linhas em branco em sequência. Valores aceitos: de 0 (ignora) a 5. Padrão: 0          |
+| Chave                                                  | Uso                                                                                                              |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| alignAssignments (`boolean`)                           | Alinha operadores de atribuição (`:=`, `+=`, `-=`, `*=`, `/=`, `%=`) em blocos. Padrão: false                    |
+| blankLinesBetweenTopLevelDeclarations (`number`)       | Quantidade de linhas em branco entre declarações de topo. Padrão: 1                                              |
+| commentReflow (`boolean`)                              | Permite reorganizar comentários longos. Padrão: false                                                            |
+| convertSemiGraphicsToChar (`boolean`)                  | Converte caracteres semi-gráficos (CP437) em caracteres ASCII equivalentes. Padrão: false                        |
+| keywordsCase <upper \| lower \| upperCamel \| ignore>  | Coloca as palavras-chave da linguagem na caixa indicada. Padrão: (4GL) upper / (AdvPL) ignore                    |
+| maxConsecutiveBlankLines (`number`)                    | Máximo de linhas em branco em sequência. Valores aceitos: de 0 (ignora) a 5. Padrão: 0                           |
 | maxLineLength (`number`)                               | Largura máxima de linha para aplicar quebra automática. Valores aceitos: 0 (ignorar) ou de 30 a 120. Padrão: 120 |
-| normalizeCalls (`boolean`)                             | Normaliza chamadas removendo espaço entre identificador e parêntese de abertura. Padrão: false |
-| operatorSpacing (`boolean`)                            | Normaliza espaçamento em operadores. Padrão: false                                             |
-| preserveSingleLineBlocks (`boolean`)                   | Preserva blocos de uma única linha. Padrão: false                                              |
-| spaceAfterComma (`boolean`)                            | Garante espaço após vírgulas. Padrão: false                                                    |
-| spaceInsideParentheses (`boolean`)                     | Controla espaços dentro de parênteses. Padrão: false                                           |
-| stringStyle <double-quotes \| single-quotes \| ignore> | Indica como as _strings_ devem ser informadas. Padrão: ignore                                  |
-| trimFinalNewlines (`boolean`)                          | Remove linhas em branco no final do arquivo. Padrão: true                                      |
-| trimTrailingWhitespace (`boolean`)                     | Remove espaços em branco no final da linha. Padrão: true                                       |
-| wrapArguments (`auto` \| `true` \| `false`)            | Controla quebra de linha de argumentos. Padrão: false                                          |
-| wrapParameters (`auto` \| `true` \| `false`)           | Controla quebra de linha de parâmetros. Padrão: false                                          |
+| normalizeCalls (`boolean`)                             | Normaliza chamadas removendo espaço entre identificador e parêntese de abertura. Padrão: false                   |
+| operatorSpacing (`boolean`)                            | Normaliza espaçamento em operadores. Padrão: false                                                               |
+| preserveSingleLineBlocks (`boolean`)                   | Preserva blocos de uma única linha. Padrão: false                                                                |
+| spaceAfterComma (`boolean`)                            | Garante espaço após vírgulas. Padrão: false                                                                      |
+| spaceInsideParentheses (`boolean`)                     | Controla espaços dentro de parênteses. Padrão: false                                                             |
+| stringStyle <double-quotes \| single-quotes \| ignore> | Indica como as _strings_ devem ser informadas. Padrão: ignore                                                    |
+| trimFinalNewlines (`boolean`)                          | Remove linhas em branco no final do arquivo. Padrão: true                                                        |
+| trimTrailingWhitespace (`boolean`)                     | Remove espaços em branco no final da linha. Padrão: true                                                         |
+| wrapArguments (`auto` \| `true` \| `false`)            | Controla quebra de linha de argumentos. Padrão: false                                                            |
+| wrapParameters (`auto` \| `true` \| `false`)           | Controla quebra de linha de parâmetros. Padrão: false                                                            |
 
 ### Exemplo com os valores padrão
 
@@ -163,7 +163,7 @@ Chaves específicas para formatação de fontes 4GL e AdvPL.
 ## Exemplos AdvPL por configuração
 
 > Os exemplos abaixo consideram a formatação executada pelo **Language Server
-> (LS)**, ou seja, com `totvsLanguageServer.formatter.provider=ls`. Demonstram o
+> (LS)**, ou seja, com `"totvsLanguageServer.formatter.provider": "ls"`. Demonstram o
 > efeito de **cada opção de `advpl.formatter` isoladamente**; em cada caso, as
 > demais opções estão nos valores padrão.
 
