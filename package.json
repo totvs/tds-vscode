@@ -775,7 +775,7 @@
         "totvsLanguageServer.linter.callTreeSitter": {
           "scope": "window",
           "type": "boolean",
-          "default": true,
+          "default": false,
           "tags": [
             "experimental"
           ],

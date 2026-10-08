@@ -20,7 +20,7 @@
     "totvsLanguageServer.editor.codeLens": false,
     "totvsLanguageServer.editor.index.cache": "onMemory",
     "totvsLanguageServer.compilation.generatePpoFile": false,
-    "totvsLanguageServer.editor.hover": "off",
+    "totvsLanguageServer.editor.hover": "markDown",
     "editor.formatOnSave": false,
     "editor.formatOnPaste": false,
     "advpl.formatter": {
@@ -36,9 +36,11 @@
         "operatorSpacing": true,
         "preserveSingleLineBlocks": true
     },
-    "totvsLanguageServer.editor.signatureHelp": false,
+    "totvsLanguageServer.editor.signatureHelp": true,
     "editor.codeLens": true,
     "totvsLanguageServer.formatter.provider": "ls",
+    "totvsLanguageServer.linter.callTreeSitter": true,
+    "totvsLanguageServer.editor.linter.behavior": "enable",
     "editor.signatureHelp.enabled": true,
     "totvsLanguageServer.editor.codeActions": false
 }
