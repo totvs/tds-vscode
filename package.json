@@ -739,23 +739,6 @@
           "default": "extension",
           "description": "%tds.package.formatter.provider%"
         },
-        "totvsLanguageServer.folding.provider": {
-          "scope": "window",
-          "type": "string",
-          "enum": [
-            "ls",
-            "extension"
-          ],
-          "tags": [
-            "experimental"
-          ],
-          "enumDescriptions": [
-            "%tds.package.folding.provider.ls%",
-            "%tds.package.folding.provider.extension%"
-          ],
-          "default": "extension",
-          "description": "%tds.package.folding.provider%"
-        },
         "totvsLanguageServer.workspaceServerConfig": {
           "type": "boolean",
           "default": false,

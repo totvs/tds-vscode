@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { applyFormattingMode } from "./extension";
+import { applyFormattingMode } from "./dynamic_register";
 import { sendDidChangeConfiguration } from "./protocolMessages";
 import { getModifiedLanguageServerSettings } from "./server/languageServerSettings";
 import { updateStatusBarItems } from "./statusBar";

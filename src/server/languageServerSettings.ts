@@ -60,34 +60,35 @@ export function getLanguageServerSettings(): any[] {
 }
 
 export function getModifiedLanguageServerSettings(): any[] {
-  let config = vscode.workspace.getConfiguration("totvsLanguageServer");
+  const configTls = vscode.workspace.getConfiguration("totvsLanguageServer");
+
   _needRestart = false;
 
   const settings: any[] = [];
 
-  if (config.has("editor.linter")) {
-    let oldLinter = config.get("editor.linter");
+  if (configTls.has("editor.linter")) {
+    let oldLinter = configTls.get("editor.linter");
     if (oldLinter !== Object(oldLinter)) {
       let newLinter = oldLinter ? "enabled" : "disabled";
-      config.update("editor.linter.behavior", newLinter);
-      config.update("editor.linter", undefined, vscode.ConfigurationTarget.Global);
-      config.update("editor.linter", undefined, vscode.ConfigurationTarget.Workspace);
+      configTls.update("editor.linter.behavior", newLinter);
+      configTls.update("editor.linter", undefined, vscode.ConfigurationTarget.Global);
+      configTls.update("editor.linter", undefined, vscode.ConfigurationTarget.Workspace);
     }
   }
 
-  if (isNewSettings("advpls", "fsencoding", config.get("filesystem.encoding"))) {
+  if (isNewSettings("advpls", "fsencoding", configTls.get("filesystem.encoding"))) {
     settings.push({
       scope: "advpls",
       key: "fsencoding",
-      value: config.get("filesystem.encoding"),
+      value: configTls.get("filesystem.encoding"),
     });
   }
 
-  if (isNewSettings("advpls", "notificationlevel", config.get("editor.show.notification"))) {
+  if (isNewSettings("advpls", "notificationlevel", configTls.get("editor.show.notification"))) {
     settings.push({
       scope: "advpls",
       key: "notificationlevel",
-      value: config.get("editor.show.notification")
+      value: configTls.get("editor.show.notification")
     });
   }
 
@@ -100,7 +101,7 @@ export function getModifiedLanguageServerSettings(): any[] {
     });
   }
 
-  let linterBehavior = config.get("editor.linter.behavior");
+  let linterBehavior = configTls.get("editor.linter.behavior");
   if (linterBehavior === String(linterBehavior)) { // proteção: só entra se behavior for um Object (evitar bug que pega informacao de editor.linter)
     if (isNewSettings("linter", "behavior", linterBehavior)) {
       settings.push({
@@ -120,7 +121,7 @@ export function getModifiedLanguageServerSettings(): any[] {
     });
   }
 
-  const callTreeSitter = config.get("linter.callTreeSitter");
+  const callTreeSitter = configTls.get("linter.callTreeSitter");
   if (isNewSettings("linter", "callTreeSitter", callTreeSitter)) {
     settings.push({
       scope: "linter",
@@ -129,7 +130,7 @@ export function getModifiedLanguageServerSettings(): any[] {
     });
   }
 
-  const hover: string = config.get("editor.hover");
+  const hover: string = configTls.get("editor.hover");
   if (isNewSettings("editor", "hoverMode", hover)) {
     settings.push({
       scope: "editor",
@@ -138,12 +139,29 @@ export function getModifiedLanguageServerSettings(): any[] {
     });
   }
 
-  const launchArgs = config.get("launch.args");
+  const foldingAdvPL = vscode.workspace
+    .getConfiguration("editor", { languageId: "advpl" })
+    .get<boolean>("folding");
+
+  const foldingStrategy = foldingAdvPL ? vscode.workspace
+    .getConfiguration("editor", { languageId: "advpl" })
+    .get("foldingStrategy") : "indentation";
+
+  if (isNewSettings("editor", "folding", foldingAdvPL)
+    || isNewSettings("editor", "foldingMode", foldingStrategy)) {
+    settings.push({
+      scope: "editor",
+      key: "foldingMode",
+      value: foldingStrategy
+    });
+  }
+
+  const launchArgs = configTls.get("launch.args");
   if (isNewSettings("launch", "args", launchArgs)) {
     setNeedRestart(true);
   }
 
-  const indexCache: string = config.get("editor.index.cache");
+  const indexCache: string = configTls.get("editor.index.cache");
   if (isNewSettings("editor", "index.cache", indexCache)) {
     settings.push({
       scope: "editor",
@@ -153,7 +171,7 @@ export function getModifiedLanguageServerSettings(): any[] {
     setNeedRestart(true);
   }
 
-  const codeLens = config.get("editor.codeLens");
+  const codeLens = configTls.get("editor.codeLens");
   if (isNewSettings("editor", "codeLens", codeLens)) {
     settings.push({
       scope: "editor",
@@ -163,7 +181,7 @@ export function getModifiedLanguageServerSettings(): any[] {
     setNeedRestart(true);
   }
 
-  const signatureHelp = config.get("editor.signatureHelp");
+  const signatureHelp = configTls.get("editor.signatureHelp");
   if (isNewSettings("editor", "signatureHelp", signatureHelp)) {
     settings.push({
       scope: "editor",
@@ -172,7 +190,7 @@ export function getModifiedLanguageServerSettings(): any[] {
     });
   }
 
-  const autocomplete = config.get("editor.autocomplete");
+  const autocomplete = configTls.get("editor.autocomplete");
   if (isNewSettings("editor", "autocomplete", autocomplete)) {
     settings.push({
       scope: "editor",
@@ -181,14 +199,13 @@ export function getModifiedLanguageServerSettings(): any[] {
     });
   }
 
-  const formattingProvider = config.get("formatter.provider", "ls");
+  const formattingProvider = configTls.get("formatter.provider", "extension");
   if (isNewSettings("formatter", "provider", formattingProvider)) {
     settings.push({
       scope: "formatter",
       key: "provider",
       value: String(formattingProvider)
     });
-    // NÃO chamar setNeedRestart — o LS faz register/unregister dinâmico de textDocument/formatting
   }
 
   const formatterKeysMap: Record<string, Record<string, any>> = getFormatterKeysFromPackage();
