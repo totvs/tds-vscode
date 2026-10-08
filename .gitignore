@@ -32,3 +32,4 @@ test/**/.vscode
 /test/resources/projects/**/.github
 .vscode/settings.json
 /test/resources/projects/advpl/files/poc-advpl
+/plans
