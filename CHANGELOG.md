@@ -1,5 +1,13 @@
 # Changelog
 
+## Versão [2.1.x]
+
+### Melhorias
+
+#### Atualização do "steering"
+
+Efetua atualização do "steering" para uso pelo Kiro.
+
 ## Versão [2.1.6]
 
 ### Melhorias
