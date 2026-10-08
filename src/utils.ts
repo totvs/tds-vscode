@@ -220,7 +220,11 @@ export default class Utils {
     );
   }
 
-  static getAllFilesRecursive(folders: string[], checkCompileIgnore: boolean = false): string[] {
+  static getAllFilesRecursive(
+    folders: Array<string>,
+    checkCompileIgnore: boolean = false,
+    ignoredByCompilationPatterns: string[] = []
+  ): string[] {
     const files: string[] = [];
 
     folders.forEach((folder) => {
@@ -228,14 +232,20 @@ export default class Utils {
         let ignoreFolder = checkCompileIgnore ? fs.existsSync(path.join(folder, ".tdscompileignore")) : false;
         if (!ignoreFolder) {
           fs.readdirSync(folder).forEach((file) => {
-            if (!Utils.ignoreResource(file)) {
-              const fn = path.join(folder, file);
+            const fn = path.join(folder, file);
+            if (!Utils.ignoreResource(fn)) {
               const ss = fs.statSync(fn);
               if (ss.isDirectory()) {
-                files.push(...Utils.getAllFilesRecursive([fn], checkCompileIgnore));
+                files.push(...Utils.getAllFilesRecursive(
+                  [fn],
+                  checkCompileIgnore,
+                  ignoredByCompilationPatterns
+                ));
               } else {
                 files.push(fn);
               }
+            } else if (Utils.isIgnoredByCompilationPattern(fn)) {
+              ignoredByCompilationPatterns.push(fn);
             } else {
               vscode.window.showWarningMessage(
                 "File/folder '" + file + "' was ignored."
@@ -252,7 +262,22 @@ export default class Utils {
   }
 
   static ignoreResource(fileName: string): boolean {
-    return processIgnoreList(ignoreListExpressions, path.basename(fileName));
+    if (processIgnoreList(ignoreListExpressions, path.basename(fileName))) {
+      return true;
+    }
+
+    return Utils.isIgnoredByCompilationPattern(fileName);
+  }
+
+  static isIgnoredByCompilationPattern(fileName: string): boolean {
+    const config = vscode.workspace.getConfiguration("totvsLanguageServer");
+    const patterns = config.get<string[]>("compilation.ignorePatterns", []);
+    const relativePath = vscode.workspace.asRelativePath(fileName, false)
+      .replace(/\\/g, "/");
+
+    return patterns.some((pattern) => {
+      return globPatternToRegExp(pattern).test(relativePath);
+    });
   }
 
   static checkDir(selectedDir: string): string {
@@ -1719,6 +1744,33 @@ function processIgnoreList(
   }
 
   return result;
+}
+
+function globPatternToRegExp(pattern: string): RegExp {
+  const normalizedPattern = pattern.replace(/\\/g, "/");
+  let expression = "";
+
+  for (let index = 0; index < normalizedPattern.length; index++) {
+    const character = normalizedPattern[index];
+
+    if (character === "*" && normalizedPattern[index + 1] === "*") {
+      if (normalizedPattern[index + 2] === "/") {
+        expression += "(?:.*/)?";
+        index += 2;
+      } else {
+        expression += ".*";
+        index++;
+      }
+    } else if (character === "*") {
+      expression += "[^/]*";
+    } else if (character === "?") {
+      expression += "[^/]";
+    } else {
+      expression += character.replace(/[|\\{}()[\]^$+?.]/g, "\\$&");
+    }
+  }
+
+  return new RegExp("^" + expression + "$", "i");
 }
 
 async function doUpdateInformations(element: any): Promise</*IServerInformations*/any> {
