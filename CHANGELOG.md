@@ -1,6 +1,6 @@
 # Changelog
 
-## Versão [2.1.6]
+## Versão [2.2.X]
 
 ### Novidades
 
@@ -24,6 +24,20 @@ Alguns ganhos:
 - Performance e consumo de recursos (CPU/Memória).
 - Indica vários erros em única passagem.
 - Tratamento de erros com correta visualização do código em `Problemas`.
+- Dobra de código (*folding*) mais assertivo.
+
+#### Dobra de código (*Folding*)
+
+A Dobra (*folding*) de fontes é controlado pelas configurações nativas do VS Code `editor.folding` (liga/desliga) e `editor.foldingStrategy` (`auto` | `indentation`), global ou  por linguagem (ex.: `"[advpl]"`). [Detalhes em TDS: Configurações](./docs/configuration.md).
+
+```json
+{
+  "editor.folding": true,
+  "editor.foldingStrategy": "auto"
+}
+```
+
+> O uso de `editor.foldingStrategy: "auto"` (folding provido pelo Language Server) é **experimental** para AdvPL/TLPP/4GL. Em caso de regiões incorretas, utilize `"indentation"`.
 
 ### Melhorias
 
