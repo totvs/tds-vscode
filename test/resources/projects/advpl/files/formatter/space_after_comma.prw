@@ -7,7 +7,7 @@ local aArray2 := {1, 2, 3}
 conout("a","b",  "c")
 conout(1,   2,3)
 myFunc(x,y,z)
-conout()
+
 if array[1] == 1 .and. aArray2[2] == 2
     conout("Arrays are equal")
 endif

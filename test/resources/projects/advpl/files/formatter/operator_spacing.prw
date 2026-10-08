@@ -2,37 +2,11 @@
 #include "protheus.ch"
 
 user function operatorSpacing()
-local nA := 10
-local nB := 3
-local nResult := 0
-local lFlag := .F.
-nResult := nA+nB
-nResult := nA-nB
-nResult := nA*nB
-nResult := nA/nB
-nResult += nA
-nResult -= nA
-nResult *= nA
-nResult /= nA
-nResult := nA	+nB
-nResult := nA	-nB
-nResult := nA	*      nB
-nResult := nA /	nB
-nResult += 	nA
-nResult -=    nA
-nResult *=  nA
-nResult /=    nA
-lFlag := nA == nB
-lFlag := nA != nB
-lFlag := nA >= nB
-lFlag := nA <= nB
-lFlag := nA > nB
-lFlag := nA < nB
-lFlag := nA = nB
-nResult++
-nResult--
-cCod := SA1->A1_COD
-(xtemp)->(dbskip())
+local nVal1   := 100
+local nTotal   += nVal1*2
+if nVal1   >= 50
+cMsg     :=     "a+b nao muda"
+endif
 
 conout("For encoding validation: não, é, ção")
 

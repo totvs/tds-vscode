@@ -1,3 +1,4 @@
+//Não enviar ao repositório se aplicar formatação
 #include "protheus.ch"
 // Funcao principal
 user function Alfa()
