@@ -23,6 +23,17 @@
     "totvsLanguageServer.editor.hover": "markDown",
     "editor.formatOnSave": false,
     "editor.formatOnPaste": false,
+    "_editor.folding": true,
+    "_editor.foldingStrategy": "auto",
+    "[advpl]": {
+        "files.encoding": "windows1252",
+        "files.insertFinalNewline": true,
+        "files.eol": "\r\n",
+        "editor.formatOnSaveMode": "file",
+        "editor.semanticHighlighting.enabled": true,
+    "editor.foldingStrategy": "auto",
+        "editor.folding": true
+    },
     "advpl.formatter": {
         "_maxConsecutiveBlankLines": 1,
         "_alignAssignments": true,
