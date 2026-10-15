@@ -1,0 +1,11 @@
+#include "tlpp-core.th"
+
+@annotation MyAnnotation
+  title as character
+  size as numeric default 10
+@end
+
+@MyAnnotation(title = "My Function", size = 20)
+function annotatedFn()
+  local cTitle := ""
+return
