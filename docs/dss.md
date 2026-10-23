@@ -101,7 +101,7 @@ hover-show-symbol
 
 **Acionamento:** Ativação efetuada pela configuração ``editor.codeLens``, sendo que o padrão é ativado.
 
-> Para configurar somente para fontes **TOTVS**, use a configuração ``totvsLanguageServer.editor.codeLens``.
+> Para configurar somente para fontes **TOTVS**, use a configuração [``totvsLanguageServer.editor.codeLens``](configuration.md#editor).
 
 ## (#cache)</a>Cache de navegação
 
@@ -110,7 +110,7 @@ hover-show-symbol
 Por padrão, a extensão utiliza um _cache_ em memória, que é gerado na inicialização da extensão.
 Em alguns casos, pode ser interessante manter esse _cache_ entre sessões, ou seja, ter um _cache_ persistente.
 
-Para ajustar o comportamento acesse ``File > Preference > Settings``, filtre por ``totvsLanguageServer.editor`` e localize ``Totvs Language Server › Editor › Index: Cache``, configurando o comportamento:
+Para ajustar o comportamento acesse ``File > Preference > Settings``, filtre por [``totvsLanguageServer.editor``](configuration.md#editor) e localize ``Totvs Language Server › Editor › Index: Cache``, configurando o comportamento:
 
 | Opção | Comportamento |
 | ----- | ------------- |

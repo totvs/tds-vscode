@@ -113,7 +113,7 @@ export function sendDisconnectRequest(
     })
     .then(
       (disconnectInfo: DisconnectReturnInfo) => {
-        if (disconnectInfo !== undefined && disconnectInfo.code === undefined) {
+        if (disconnectInfo === undefined || disconnectInfo.message !== "Success"/*&& disconnectInfo.code === undefined*/) { //O LS nao esta retornando esse code, portanto nao faz sentido usa-lo aqui.
           return {
             sucess: false,
             token: "",

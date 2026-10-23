@@ -100,9 +100,8 @@ class ServerItemProvider
           : undefined
       );
     } else if (element instanceof ServerItem || element instanceof EnvSection) {
-      element.refreshState();
+      element.updateState();
     }
-
     return element;
   }
 

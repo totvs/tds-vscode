@@ -96,21 +96,14 @@ export class ServerItem extends vscode.TreeItem {
     light: vscode.Uri.file(path.join(RESOURCE_LIGHT, serverTypeImage(this))),
     dark: vscode.Uri.file(path.join(RESOURCE_DARK, serverTypeImage(this))),
   };
-
   contextValue = this.isConnected ? "serverItem" : "serverItemNotConnected";
 
-  /**
-   * iconPath/contextValue above are only evaluated once, at construction
-   * time. Call this before handing the item back from getTreeItem() so a
-   * connect/disconnect that doesn't trigger a full tree rebuild is still
-   * reflected on the node itself, not just on its parent groups.
-   */
-  refreshState(): void {
-    this.contextValue = this.isConnected ? "serverItem" : "serverItemNotConnected";
+  public updateState(): void {
     this.iconPath = {
       light: vscode.Uri.file(path.join(RESOURCE_LIGHT, serverTypeImage(this))),
       dark: vscode.Uri.file(path.join(RESOURCE_DARK, serverTypeImage(this))),
     };
+    this.contextValue = this.isConnected ? "serverItem" : "serverItemNotConnected";
   }
 }
 
@@ -132,17 +125,14 @@ export class EnvSection extends vscode.TreeItem {
   };
 
   tooltip = environmentTypeString(this);
-
   contextValue = this.isCurrent ? "envSection" : "envSectionNotCurrent";
 
-  /** See ServerItem.refreshState(): keeps this node in sync outside a full tree rebuild. */
-  refreshState(): void {
-    this.contextValue = this.isCurrent ? "envSection" : "envSectionNotCurrent";
-    this.tooltip = environmentTypeString(this);
+  public updateState(): void {
     this.iconPath = {
       light: vscode.Uri.file(path.join(RESOURCE_LIGHT, environmentTypeImage(this))),
       dark: vscode.Uri.file(path.join(RESOURCE_DARK, environmentTypeImage(this))),
     };
+    this.contextValue = this.isCurrent ? "envSection" : "envSectionNotCurrent";
   }
 }
 
