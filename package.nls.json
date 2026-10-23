@@ -118,6 +118,7 @@
   "tds.package.properties.extraParameters.description": "Used to pass any extra parameters to SC",
   "tds.package.totvs.language.debug.web": "TOTVS Language Web Debug (SmartClient HTML)",
   "tds.package.server.view": "Servers",
+  "tds.package.server.view.groupConnectedForeground": "Foreground color of a server group icon that contains a connected environment.",
   "tds.package.properties.program.description.web": "Program/Function name",
   "tds.package.properties.trace.description.web": "Enable logging of the Debug Adapter Protocol.",
   "tds.package.properties.smartclientUrl.description": "The SmartClient HTML url.",

@@ -320,6 +320,16 @@
           "light": "#11c9cf",
           "highContrast": "#11c9cf"
         }
+      },
+      {
+        "id": "totvsServerExplorer.groupConnectedForeground",
+        "description": "%tds.package.server.view.groupConnectedForeground%",
+        "defaults": {
+          "dark": "#99ff55",
+          "light": "#99ff55",
+          "highContrast": "#99ff55",
+          "highContrastLight": "#99ff55"
+        }
       }
     ],
     "languages": [
