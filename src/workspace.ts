@@ -22,34 +22,28 @@ export function registerWorkspace(context: vscode.ExtensionContext) {
 			if (e.affectsConfiguration("totvsLanguageServer") ||
 				e.affectsConfiguration("advpl.formatter") ||
 				e.affectsConfiguration("4gl.formatter") ||
-				e.affectsConfiguration("editor")
+				e.affectsConfiguration("editor") ||
+				e.affectsConfiguration("[4gl]") ||
+				e.affectsConfiguration("[advpl]")
 			) {
 				if (e.affectsConfiguration("totvsLanguageServer.formatter.provider")) {
 					applyFormattingMode(context);
 				}
 
 				// Detecta se alguma configuração relevante mudou.
-				const changed: boolean =
-					e.affectsConfiguration("advpl.formatter") ||
-					e.affectsConfiguration("4gl.formatter") ||
-					e.affectsConfiguration("editor") ||
-					e.affectsConfiguration("totvsLanguageServer");
+				const settings: any[] = getModifiedLanguageServerSettings();
 
-				if (changed) {
-					const settings: any[] = getModifiedLanguageServerSettings();
-
-					if (settings.length > 0) {
-						sendDidChangeConfiguration(settings).then(() => {
-							updateStatusBarItems();
-						});
-					}
-
-					//if (!warningNeedRestart()) {
-					//	languageClient.stop().then(() => {
-					//		languageClient.start();
-					//	});
-					//};
+				if (settings.length > 0) {
+					sendDidChangeConfiguration(settings).then(() => {
+						updateStatusBarItems();
+					});
 				}
+
+				//if (!warningNeedRestart()) {
+				//	languageClient.stop().then(() => {
+				//		languageClient.start();
+				//	});
+				//};
 			}
 		}),
 		//vscode.workspace.onDidSaveTextDocument((e: vscode.TextDocument) => {

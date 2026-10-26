@@ -24,11 +24,11 @@ Alguns ganhos:
 - Performance e consumo de recursos (CPU/Memória).
 - Indica vários erros em única passagem.
 - Tratamento de erros com correta visualização do código em `Problemas`.
-- Dobra de código (*folding*) mais assertivo.
+- Dobra de código (_folding_) mais assertivo.
 
-#### Dobra de código (*Folding*)
+#### Dobra de código (_Folding_)
 
-A Dobra (*folding*) de fontes é controlado pelas configurações nativas do VS Code `editor.folding` (liga/desliga) e `editor.foldingStrategy` (`auto` | `indentation`), global ou  por linguagem (ex.: `"[advpl]"`). [Detalhes em TDS: Configurações](./docs/configuration.md).
+A dobra (_folding_) de código é controlado pelas configurações nativas do VS Code `editor.folding` (liga/desliga) e `editor.foldingStrategy` (`auto` | `indentation`), global ou por linguagem (ex.: `"[advpl]"`). [Detalhes em TDS: Configurações](./docs/configuration.md).
 
 ```json
 {
@@ -37,7 +37,7 @@ A Dobra (*folding*) de fontes é controlado pelas configurações nativas do VS 
 }
 ```
 
-> O uso de `editor.foldingStrategy: "auto"` (folding provido pelo Language Server) é **experimental** para AdvPL/TLPP/4GL. Em caso de regiões incorretas, utilize `"indentation"`.
+> O uso de `editor.foldingStrategy: "auto"` (_folding_ provido pelo Language Server) é **experimental** para AdvPL/TLPP. Em caso de regiões incorretas, utilize `"indentation"`.
 
 ### Melhorias
 
@@ -52,7 +52,7 @@ A edição passa a ser incremental. Em vez de reprocessar ou reanalisar o fonte 
 
 Recurso perceptível em fontes médios e grandes (acima de 100K).
 
-#### Formatação de código AdvPL e 4GL
+#### Formatação de código AdvPL
 
 A formatação pode ser efetuada:
 
@@ -73,6 +73,12 @@ para melhor acurácia desta.
 ```
 
 > Ao desligar esses recursos, solicitações da IA podem perder acurácia e usar busca textual (_grep_, _read file_ e outras), que podem ser mais lentas.
+
+### Correções
+
+#### Notificação de alterações nas configurações
+
+Algumas configurações não eram notificadas ao LS.
 
 ## Versão [2.1.6]
 

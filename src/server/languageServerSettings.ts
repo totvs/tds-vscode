@@ -225,6 +225,20 @@ export function getModifiedLanguageServerSettings(): any[] {
     });
   });
 
+  ["advpl", "4gl"].forEach((language) => {
+    const insertFinalNewline: boolean = vscode.workspace
+      .getConfiguration("files", { languageId: language })
+      .get<boolean>("insertFinalNewline", false);
+
+    if (isNewSettings("formatter", `${language}.insertFinalNewline`, insertFinalNewline)) {
+      settings.push({
+        scope: "formatter",
+        key: `${language}.insertFinalNewline`,
+        value: String(insertFinalNewline)
+      });
+    }
+  });
+
   if (settings.length > 0) {
     let ext = vscode.extensions.getExtension("TOTVS.tds-vscode");
     const version: string = ext.packageJSON["version"];
