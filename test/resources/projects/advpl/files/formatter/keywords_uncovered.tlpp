@@ -1,0 +1,85 @@
+// Fixture com palavras-chave da gramatica NAO tratadas pelo formatador padrao.
+// Usada por um teste XFAIL (QEXPECT_FAIL) que documenta que elas NAO sao
+// convertidas por keywordsCase (lista do formatador padrao nao as inclui).
+#include "protheus.ch"
+#include 'tlpp-core.th'
+
+class Teste
+	 protected data a 
+endclass
+
+
+user function uncovered()
+	local x := 0
+	
+	parameters a, b
+
+	x := operator
+	x := super
+	//x := hidden
+	x := template
+	x := init
+	x := beginwork
+	x := commitwork
+	x := rollbackwork
+	x := forread
+	x := forupdate
+	x := forupdateof
+	x := line
+	x := log
+	x := html
+	x := web
+	x := webuser
+	x := pyme
+return x
+
+User Function ExemploTlpp()
+Local oError as object
+
+
+try
+// Código que pode gerar um erro
+If ( AlgumaCondicaoDeErro() )
+	// Instancia a classe de erro nativa do Protheus
+	oError := ErrorClass():New()
+	oError:cDescription := "Ocorreu um erro customizado na validação."
+	oError:cError       := "ERRO_CUSTOM"
+	
+	// Dispara a exceção
+	throw oError
+EndIf
+
+catch oError
+// Captura o erro disparado pelo throw ou pelo próprio sistema
+FWAlertError("Erro capturado: " + oError:cDescription, "Atenção")
+endtry
+Return
+
+#Include "TOTVS.ch"
+
+User Function ExemploGetReadOnly()
+    Local oDlg
+    Local cCodigo  := "000001"          // Campo que ficará bloqueado
+    Local cDescri  := Space(40)         // Campo editável
+
+    // Cria a janela de diálogo (Dialog)
+    Define Dialog oDlg Title "Exemplo ReadOnly" From 0, 0 To 200, 400 Pixel
+
+    // Campo de Código - Apenas Leitura (READONLY)
+    @ 15, 20 Say "Código do Produto:" Of oDlg Pixel
+    @ 13, 80 Get cCodigo Size 80, 12 Of oDlg Pixel READONLY
+
+    // Campo de Descrição - Editável normalmente
+    @ 45, 20 Say "Descrição:" Of oDlg Pixel
+    @ 43, 80 Get cDescri Size 100, 12 Of oDlg Pixel
+
+    // Botão para fechar a tela
+    @ 70, 80 Button "Fechar" Size 50, 15 Of oDlg Pixel Action oDlg:End()
+
+   // Unindo PASSWORD (para ocultar com asteriscos) e READONLY (para bloquear digitação)
+    @ 13, 80 Get cSenhax Size 100, 12 Of oDlg Pixel PASSWORD READONLY
+
+    Activate Dialog oDlg Centered
+Return
+
+

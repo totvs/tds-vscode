@@ -1,0 +1,38 @@
+// Fixture de cobertura da instrucao foreach (gramatica tree-sitter-tlpp).
+// Formas incluidas: ForeachCursor simples; com using/into; cursorname(...)
+// com continueforeach/exitforeach; e fechamento "end foreach" separado.
+// A forma ABL (foreachabl ... dbname ...) NAO esta incluida.
+#include "protheus.ch"
+#include 'tlpp-core.th'
+
+user function foreachSamples()
+	local oItem
+	local oRow
+	local lSkip := .F.
+	local lStop := .F.
+
+	// 1) Forma simples (ForeachCursor, apenas o cursor)
+	foreach oItem
+		conout(oItem)
+	endforeach
+
+	// 2) Com using e into (ambos opcionais, aceitam lista)
+	foreach oRow using oA, oB into oX, oY
+		conout(oRow)
+	endforeach
+
+	// 3) cursorname(...) como cursor, com continueforeach/exitforeach
+	foreach cursorname(cCur)
+		if lSkip
+			continueforeach
+		endif
+		if lStop
+			exitforeach
+		endif
+	endforeach
+
+	// 4) Fechamento com "end foreach" separado
+	foreach oItem
+		conout(oItem)
+	end foreach
+return

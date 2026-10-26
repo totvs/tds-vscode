@@ -1,0 +1,148 @@
+// Fixture de cobertura de palavras-chave da gramatica tlpp (nos "kw_*").
+// Codigo SEM logica precisa: objetivo e exercitar o maior numero possivel de
+// palavras-chave em construcoes TLPP validas (parse sem ERROR), para os testes
+// de formatacao (keywordsCase, indentacao etc.).
+//
+// Observacao: varias palavras-chave da gramatica NAO sao alcancaveis como
+// no "kw_*" em codigo escrevivel e por isso nao aparecem aqui:
+//  - keywords de SQL embarcado (select/from/where/join/group by/order by/...):
+//    dentro de "beginsql ... endsql" o conteudo e capturado como texto cru
+//    ("beginsql_body"), nao como nos kw_*.
+//  - nos internos da gramatica (obj_new_class, obj_class_data, stk_var_def,
+//    annotation_decl/end, ...): representacoes internas, sem token literal.
+#include "protheus.ch"
+
+using namespace My.Space
+
+user function allKeywords()
+	local nX := 1
+	private nY := 2
+	public nZ := 3
+	static nW := 4
+	default nX := 10
+
+	if nX > 0 .and. nY < 10 .or. nZ == 3
+		nX := iif(nX > 0, 1, 2)
+	elseif nX < 0
+		nX := nil
+	else
+		nX := 0
+	endif
+
+	do case
+		case nX == 1
+			nX := 1
+		otherwise
+			nX := 2
+	endcase
+
+	while nX < 10
+		nX++
+		if nX == 5
+			loop
+		endif
+		if nX == 9
+			exit
+		endif
+	enddo
+
+	for nX := 1 to 10 step 2
+		nY := nX
+	next
+
+	// foreach nItem in aList
+	// 	if nItem == nil
+	// 		continueforeach
+	// 	endif
+	// 	if nItem > 100
+	// 		exitforeach
+	// 	endif
+	// endforeach
+
+	begin sequence
+		break
+	recover
+		nX := -1
+	end sequence
+
+	try
+		nX := 1
+	catch oErr
+		nX := 2
+	finally
+		nX := 3
+	endtry
+
+	begin work
+		nX := 1
+	commit work
+
+return nX
+
+static procedure doProc()
+	local nA := 1
+return
+
+// static function sqlStuff()
+// 	local cAls := ""
+// 	beginsql alias cAls
+// 		%exp:cAls%
+// 	endsql
+// return
+
+// interface IFoo
+// 	method bar()
+// endinterface
+
+// class Derived implements IFoo
+// 	data cName as character
+// 	method newObj() constructor
+// 	method doIt()
+// endclass
+
+method newObj() class Derived
+return self
+
+method doIt() class Derived
+return
+
+// wsrestful MyService
+// 	wsdata id as integer
+// 	wsmethod get doGet()
+// end wsrestful
+
+// wsmethod get doGet() wsrestful MyService
+// return
+
+User Function ExemploTran()
+    Local lOk := .T.
+
+    // Inicia a transação com o banco de dados
+    BEGIN TRANSACTION
+
+        // Exemplo de operação na tabela SB1 (Produtos)
+        RecLock("SB1", .F.)
+            SB1->B1_DESC := "NOVA DESCRICAO DO PRODUTO"
+        SB1->(MsUnLock())
+
+        // Simulando uma condição de erro
+        If /* alguma condição de falha */ .F.
+            lOk := .F.
+        EndIf
+
+        // Se ocorreu algum erro, desfaz as alterações (Rollback)
+        If !lOk
+            DisarmTransaction()
+            Break
+        EndIf
+
+    // Finaliza a transação
+    END TRANSACTION
+
+    If lOk
+        MsgInfo("Transação gravada com sucesso!", "Atenção")
+    Else
+        MsgStop("A transação foi desfeita devido a um erro.", "Erro")
+    EndIf
+
+Return

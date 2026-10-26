@@ -21,12 +21,13 @@
 ±±³              ³        ³      ³para no procesar los documentos con TRM ³±±
 ±±³              ³        ³      ³pactada. Cambios para Colombia          ³±±
 ±±³              ³        ³      ³Se elimina funcion ajustaSX1.           ³±±
-±±³Luis Enríquez ³30/12/16³SERINN001³Se realizó merge para hacer cambios  ³±±
+±±³Luis Enr¡quez ³30/12/16³SERINN001³Se realizó merge para hacer cambios  ³±±
 ±±³              ³        ³-201     ³para creacion de tablas temp. CTREE  ³±±
 ±±ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼±±
 ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
+
 user function cp437()
 
 	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿

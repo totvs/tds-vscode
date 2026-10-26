@@ -1,0 +1,21 @@
+#include "protheus.ch"
+
+static _n := 1
+	static _total := 2
+	static _x := 3
+
+user function blocksC()
+local n := 1
+try
+conout("try")
+catch oErr
+conout("catch")
+endtry
+return
+
+procedure blocksProc()
+local i := 0
+if i == 0
+conout("proc")
+endif
+return
