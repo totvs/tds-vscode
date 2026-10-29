@@ -16,10 +16,14 @@ Ajustado o valor padrão das configurações abaixo, para atender melhor os requ
 
 ```json
 {
-  "totvsLanguageServer.editor.linter.behavior": "enable",
+  "totvsLanguageServer.editor.linter.behavior": "enableOnlyOpenFiles",
   "totvsLanguageServer.editor.index.cache": "onMemory"
 }
 ```
+
+> IMPORTANTE:
+>
+> Devido ao comprtamento do linter ser padrão `enableOnlyOpenFiles`, o uso de IA pode ser limitado.
 
 ## Versão [2.1.6]
 

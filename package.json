@@ -757,7 +757,7 @@
             "Applies only to files being edited.",
             "Disable the process."
           ],
-          "default": "enable",
+          "default": "enableOnlyOpenFiles",
           "description": "%tds.package.editor.linter%"
         },
         "totvsLanguageServer.editor.linter.includes": {
