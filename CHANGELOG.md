@@ -8,6 +8,19 @@
 
 Efetua atualização do "steering" para uso pelo Kiro.
 
+### Correções
+
+#### Configuração padrão e validação
+
+Ajustado o valor padrão das configurações abaixo, para atender melhor os requisitos de IA e , também, validação que só é efetuada se houver alterações em uma dessas propriedades.
+
+```json
+{
+  "totvsLanguageServer.editor.linter.behavior": "enable",
+  "totvsLanguageServer.editor.index.cache": "onMemory"
+}
+```
+
 ## Versão [2.1.6]
 
 ### Melhorias
@@ -32,7 +45,7 @@ Adicionada documentação de todas as configurações da extensão (chaves `totv
 
 > Existe algumas combinações de configuração que modifica o comportamento de processos e mesmo outras configurações. [Detalhes](./docs/configuration.md#combinações-que-alteram-o-comportamento).
 
-Melhorado o tratamento de valores inválidos nas configurações. Quando for detectado algum erro de validação, será emitido uma mensagem no console do LS, semelhante a:
+Melhorado o tratamento de valores inválidos nas configurações. Quando for detectado algum erro de validação, será emitido uma mensagem no console do LS.
 
 ## Versão [2.1.5]
 

@@ -173,7 +173,7 @@ Quando desabilitado o processo do Linter, processos dependentes do Linter, tais 
 
 ```json
 {
-  totvsLanguageServer.editor.linter.behavior=enableOnlyOpenFiles
+  "totvsLanguageServer.editor.linter.behavior": "enableOnlyOpenFiles"
 }
 ```
 
@@ -183,10 +183,8 @@ Quando em `enableOnlyOpenFiles` o processo do Linter será executado somente nos
 
 ```json
 {
-  totvsLanguageServer.editor.index.cache=off
+  "totvsLanguageServer.editor.index.cache": "off"
 }
 ```
 
 Quando desligado o cache da indexação de símbolos, processos dependentes da indexação, tais como `Outline`, navegação, `hover`, podem não responder como esperado.
-
-Mesmo com o cache ligado (memória ou disco), aplica-se as restrições da chave `totvsLanguageServer.editor.index.cache`.
