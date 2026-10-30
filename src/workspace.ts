@@ -64,11 +64,13 @@ export function registerWorkspace(context: vscode.ExtensionContext) {
 						});
 					}
 
-					if (!warningNeedRestart()) {
-						languageClient.stop().then(() => {
-							languageClient.start();
-						});
-					};
+					// Processo sendo melhorado para não reiniciar o LS,
+					// mas sim, enviar as configurações alteradas sem a necessidade de reiniciar.
+					// if (!warningNeedRestart()) {
+					// 	 languageClient.stop().then(() => {
+					//	 	languageClient.start();
+					//	});
+					// };
 				}
 			}
 		}),

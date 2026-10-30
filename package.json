@@ -779,7 +779,7 @@
             "%tds.package.editor.index.cache.onMemory%",
             "%tds.package.editor.index.cache.onDisk%"
           ],
-          "default": "off",
+          "default": "onMemory",
           "description": "%tds.package.editor.index.cache%"
         },
         "totvsLanguageServer.filesystem.encoding": {
