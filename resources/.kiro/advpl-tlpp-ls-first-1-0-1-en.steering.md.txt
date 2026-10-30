@@ -1,0 +1,174 @@
+---
+inclusion: fileMatch
+fileMatchPattern: ['**/*.{prw,prx,prg,ppx,ppp,tlpp,apw,aph,apl,ahu,ch,th}', '**/*.{PRW,PRX,PRG,PPX,PPP,TLPP,APW,APH,APL,AHU,CH,TH}']
+---
+
+# AdvPL/TLPP — LS-first navigation and write encoding
+
+This discipline is activated when AdvPL/TLPP sources are in context. It applies to navigation, analysis, creation, correction, and refactoring tasks.
+
+## Mandatory semantic sequence
+
+Before any text search or manual reading, use the Language Server in this order:
+
+1. `lsp_workspace_symbols` — locate the symbol.
+2. `lsp_definition` — confirm its definition.
+3. `lsp_references` — map usages and impact.
+
+The first investigation action must use a Language Server tool. Do not start with `grep_search`, `file_search`, `read_file`, or manual reading when semantic coverage is available.
+
+## Controlled exception
+
+Use text search or manual reading only when the Language Server is unavailable, fails, cannot locate the symbol, or offers no coverage for the file. Before proceeding, explicitly log:
+
+> LS unavailable/no coverage; proceeding with text search.
+
+After locating the code, validate APIs, signatures, and Protheus metadata in the applicable official MCPs, as described in `AGENTS.md`.
+
+## Mandatory write encoding (Windows-1252 / Windows-1251)
+
+The agent's write tools (`fs_write`, `str_replace`, `fs_append`) write text in **UTF-8** and do **not** apply the `files.encoding` from `.vscode/settings.json`. The Protheus compiler only accepts sources in the environment codepage; UTF-8 corrupts accented strings, alters `Len()`/`SubStr()`, and causes a compilation error (SonarQube CA0000).
+
+Therefore, **every** AdvPL/TLPP file created or changed by the agent must end up written to disk in the codepage below. There is no exception.
+
+| Environment | Required codepage | `iconv` name | VS Code equivalent |
+| --- | --- | --- | --- |
+| Default (Brazil and other locales) | **Windows-1252** | `CP1252` | `"files.encoding": "windows1252"` |
+| Russian (Russia locale) | **Windows-1251** | `CP1251` | `"files.encoding": "windows1251"` |
+
+### How to decide the codepage (in this order)
+
+1. **Existing file:** preserve the codepage it already has. Never switch an existing source from 1252 to 1251 (or vice versa). The `file --mime-encoding` command reports `iso-8859-1`/`unknown-8bit` for both, so it only distinguishes UTF-8 from non-UTF-8. To tell 1252 from 1251 apart, decode a comment line both ways (`iconv -f CP1252 -t UTF-8` and `iconv -f CP1251 -t UTF-8`) and use whichever produces readable text (Portuguese vs. Russian).
+2. **Workspace configuration:** `files.encoding` (global or in the language scope, e.g., `"[advpl]"`) in `.vscode/settings.json`. `windows1251` indicates a Russian environment; `windows1252` indicates the default.
+3. **User or task declaration:** the user states that the environment is Russian or that the task belongs to the Russia locale.
+4. **No indication at all:** use **Windows-1252**.
+
+If the sources above conflict (e.g., a Russian task but `settings.json` with `windows1252`), stop and ask the user before writing.
+
+### Shell to use per operating system
+
+- **Linux/macOS:** Bash + `iconv` (the `bash` commands below).
+- **Windows:** try **PowerShell** first. If it does not work, use **CMD (`.bat`)**. Consider PowerShell to have "not worked" when:
+  - the `.ps1` is blocked by the execution policy (`running scripts is disabled on this system`);
+  - `powershell` is not recognized in the terminal, or the agent terminal is CMD;
+  - the command fails due to a PowerShell error itself (profile, host, syntax), not a file error.
+
+  The CMD commands below invoke `powershell.exe` inline with `-Command` from `cmd`, which does not depend on the `.ps1` execution policy. If not even `powershell.exe` exists, use the `iconv.exe` from Git for Windows (`"C:\Program Files\Git\usr\bin\iconv.exe"`) or the `bash` commands in Git Bash. If no path works, **stop and warn the user**: do not leave the source in UTF-8.
+
+Record in the compliance evidence which path was used (PowerShell, CMD, or fallback).
+
+### Mandatory workflow
+
+**New file or full rewrite** — write with the tool normally and then convert **in-place** (same name, same extension, no BOM):
+
+- **Windows-1252** — use the `utf8-to-cp1252-conversion` skill.
+
+  Linux/macOS:
+
+  ```bash
+  bash .kiro/skills/utf8-to-cp1252-conversion/scripts/convert-encoding.sh "<file>"
+  ```
+
+  Windows: the skill ships the script as `.bat` (there is no `.ps1`) and forbids manual conversion, so always use the `.bat`. In PowerShell, call it with `&`:
+
+  ```powershell
+  & .kiro\skills\utf8-to-cp1252-conversion\scripts\convert-encoding.bat "<file>"
+  ```
+
+  If PowerShell does not work, run it in CMD:
+
+  ```cmd
+  .kiro\skills\utf8-to-cp1252-conversion\scripts\convert-encoding.bat "<file>"
+  ```
+
+- **Windows-1251** — the skill scripts are hardcoded to CP1252 and do **not** serve this case.
+
+  Linux/macOS:
+
+  ```bash
+  tmp=$(mktemp) && sed '1s/^\xEF\xBB\xBF//' "<file>" | iconv -f UTF-8 -t CP1251 > "$tmp" && cat "$tmp" > "<file>"; rm -f "$tmp"
+  ```
+
+  Windows (PowerShell):
+
+  ```powershell
+  $p = "<file>"; $t = [IO.File]::ReadAllText($p, [Text.Encoding]::UTF8); [IO.File]::WriteAllBytes($p, [Text.Encoding]::GetEncoding(1251).GetBytes($t))
+  ```
+
+  Windows (CMD), if PowerShell does not work:
+
+  ```cmd
+  powershell -NoProfile -ExecutionPolicy Bypass -Command "$p='<file>'; $t=[IO.File]::ReadAllText($p,[Text.Encoding]::UTF8); [IO.File]::WriteAllBytes($p,[Text.Encoding]::GetEncoding(1251).GetBytes($t))"
+  ```
+
+  `ReadAllText` with UTF-8 already discards the BOM; `WriteAllBytes` writes without a BOM.
+
+**Existing file with bytes above `0x7F`** (accents, Cyrillic) — **never** use `str_replace`/`fs_write` directly on it: the tool decodes it as UTF-8 and replaces, across the whole file, every special character with `U+FFFD` irreversibly.
+
+- **Windows-1252** — use the `cp1252-safe-source-edit` skill.
+  - Linux/macOS: `bash .kiro/skills/cp1252-safe-source-edit/scripts/safe-replace.sh "<file>" old.txt new.txt 1`
+  - Windows (PowerShell): `powershell -NoProfile -File .kiro\skills\cp1252-safe-source-edit\scripts\safe-replace.ps1 -Path "<file>" -OldFile old.txt -NewFile new.txt -ExpectedCount 1`
+  - Windows (CMD), if PowerShell does not work (e.g., `.ps1` blocked):
+
+    ```cmd
+    powershell -NoProfile -ExecutionPolicy Bypass -File .kiro\skills\cp1252-safe-source-edit\scripts\safe-replace.ps1 -Path "<file>" -OldFile old.txt -NewFile new.txt -ExpectedCount 1
+    ```
+
+  The helper files `old.txt`/`new.txt` are temporary: delete them when finished.
+
+- **Windows-1251** — do an explicit round-trip: convert to UTF-8, edit with the tool, and convert back **before any other action**.
+
+  Linux/macOS:
+
+  ```bash
+  # 1. CP1251 -> UTF-8 (in-place)
+  tmp=$(mktemp) && iconv -f CP1251 -t UTF-8 "<file>" > "$tmp" && cat "$tmp" > "<file>"; rm -f "$tmp"
+  # 2. edit with str_replace
+  # 3. UTF-8 -> CP1251 (in-place)
+  tmp=$(mktemp) && iconv -f UTF-8 -t CP1251 "<file>" > "$tmp" && cat "$tmp" > "<file>"; rm -f "$tmp"
+  ```
+
+  Windows (PowerShell):
+
+  ```powershell
+  # 1. CP1251 -> UTF-8 (in-place, no BOM)
+  $p = "<file>"; $t = [IO.File]::ReadAllText($p, [Text.Encoding]::GetEncoding(1251)); [IO.File]::WriteAllText($p, $t, (New-Object Text.UTF8Encoding($false)))
+  # 2. edit with str_replace
+  # 3. UTF-8 -> CP1251 (in-place)
+  $p = "<file>"; $t = [IO.File]::ReadAllText($p, [Text.Encoding]::UTF8); [IO.File]::WriteAllBytes($p, [Text.Encoding]::GetEncoding(1251).GetBytes($t))
+  ```
+
+  Windows (CMD), if PowerShell does not work:
+
+  ```cmd
+  REM 1. CP1251 -> UTF-8 (in-place, no BOM)
+  powershell -NoProfile -ExecutionPolicy Bypass -Command "$p='<file>'; $t=[IO.File]::ReadAllText($p,[Text.Encoding]::GetEncoding(1251)); [IO.File]::WriteAllText($p,$t,(New-Object Text.UTF8Encoding($false)))"
+  REM 2. edit with str_replace
+  REM 3. UTF-8 -> CP1251 (in-place)
+  powershell -NoProfile -ExecutionPolicy Bypass -Command "$p='<file>'; $t=[IO.File]::ReadAllText($p,[Text.Encoding]::UTF8); [IO.File]::WriteAllBytes($p,[Text.Encoding]::GetEncoding(1251).GetBytes($t))"
+  ```
+
+In CMD, paths containing `%` must be escaped as `%%` inside a `.bat`. Use single quotes inside `-Command` and double quotes around it, as in the examples.
+
+A 100% ASCII file is compatible with both codepages; even so, run the conversion on new files (the skill script simply ignores it).
+
+### Verification before finishing
+
+- `file --mime-encoding "<file>"` must **not** return `utf-8` when the file has non-ASCII characters.
+- For an existing source, `git diff --stat -- "<file>"` must show only the intended lines. A mass diff indicates encoding corruption: revert with `git checkout -- "<file>"` and redo it through the safe path.
+- No artifacts may be left behind: no `.bak`, `.orig`, `.utf8`, `.cp1252`, `.tmp`, copies, or renames.
+- No BOM at the start of the file.
+- Only check syntax/compile **after** the conversion. Compiling a source still in UTF-8 proves nothing.
+
+This requirement applies only to the AdvPL/TLPP extensions of this steering. Files such as `.md`, `.json`, `.py`, `.yaml`, and the like remain in UTF-8.
+
+## Compliance evidence
+
+Before finishing the task:
+
+- state which Language Server tool was used;
+- summarize the relevant result returned;
+- if the exception was necessary, state the limitation found and the alternative search used;
+- state the codepage applied to each source created or changed (Windows-1252 or Windows-1251), the criterion used to decide, and the result of `file --mime-encoding`.
+
+If the investigation does not start with the Language Server without a valid justification, or if any source ends up written in UTF-8, fix it in the same run before presenting the result.

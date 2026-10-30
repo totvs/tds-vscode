@@ -2,9 +2,92 @@
 
 ## Versão [2.1.?]
 
-### Correção
+### Melhorias
+
+#### Atualização do "steering"
+
+Efetua atualização do "steering" para uso pelo Kiro.
+
+### Correções
 
 - Corrigido queda do LS quando o arquivo-fonte encontrava-se com o atributo _Read Only_ ativado. [GITHUB 1505](https://github.com/totvs/tds-vscode/issues/1505) e [DTCLIENT01-7923](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-7923).
+
+#### Configuração padrão e validação
+
+Ajustado o valor padrão das configurações abaixo, para atender melhor os requisitos de IA e , também, validação que só é efetuada se houver alterações em uma dessas propriedades.
+
+```json
+{
+  "totvsLanguageServer.editor.linter.behavior": "enableOnlyOpenFiles",
+  "totvsLanguageServer.editor.index.cache": "onMemory"
+}
+```
+
+> IMPORTANTE:
+>
+> Devido ao comprtamento do linter ser padrão `enableOnlyOpenFiles`, o uso de IA pode ser limitado.
+
+## Versão [2.1.6]
+
+### Melhorias
+
+#### Motor de formatação LS
+
+Funcionalidade _experimental_, para ativá-la ajuste em `settings.json` a chave:
+
+```json
+{
+  "totvsLanguageServer.formatter.provider": "ls"
+}
+```
+
+#### Formatação de código AdvPL e 4GL
+
+Processo aprimorado com adição de opções para formatação mais refinada de códigos AdvPL e 4GL. [Detalhes em TDS: Formatação de Código Fonte](./docs/formatter/format_config.md).
+
+#### Configurações
+
+Adicionada documentação de todas as configurações da extensão (chaves `totvsLanguageServer`), com tipo, valor padrão, descrição e exemplo com valores padrão. [Detalhes em TDS: Configurações](./docs/configuration.md).
+
+> Existe algumas combinações de configuração que modifica o comportamento de processos e mesmo outras configurações. [Detalhes](./docs/configuration.md#combinações-que-alteram-o-comportamento).
+
+Melhorado o tratamento de valores inválidos nas configurações. Quando for detectado algum erro de validação, será emitido uma mensagem no console do LS.
+
+## Versão [2.1.5]
+
+### Melhorias
+
+Adicionado configuração de `steering` para o Kiro.
+
+### Correções
+
+#### Textos IA
+
+Correção em mensagens que citam "Copilot".
+
+## Versão [2.1.4]
+
+### Correções
+
+#### Falha de conexão na depuração da release 12.1.2610
+
+Corrigida falha de conexão na depuração da release 12.1.2610.
+
+## Versão [2.1.3]
+
+### Correções
+
+#### Falha de conexão na release 12.1.2610 [#1506](https://github.com/totvs/tds-vscode/issues/1506)
+
+Corrigida falha de conexão na release 12.1.2610.
+
+#### Crash com arquivos read-only [#1505](https://github.com/totvs/tds-vscode/issues/1505)
+
+Corrigida falha que ocasionava crash em workspaces contendo arquivos read-only.
+
+#### Como desabilitar que TDS VScode mostre resumo dos fontes no patch validate [#1479](https://github.com/totvs/tds-vscode/issues/1479)
+
+Em vez de abrir um editor contendo o log com os fontes desatualizados, um arquivo será gerado na raiz do projeto.
 
 ## Versão [2.1.2]
 
@@ -40,7 +123,7 @@ Em qualquer versão do VSCode, instale também a extensão:
 
 #### Integração da extensão com o Kiro
 
-A integração do TDS-Code com o Kirot é utilizada para ajudar a IA a compreender melhor sua área de trabalho, tornando-a mais assertiva e rápida em questões relacionadas aos seus fontes.
+A integração do TDS-Code com o Kiro é utilizada para ajudar a IA a compreender melhor sua área de trabalho, tornando-a mais assertiva e rápida em questões relacionadas aos seus fontes.
 
 Recomenda-se o uso do Kiro versão ???? (??/????) ou superior.
 
