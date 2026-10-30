@@ -1,6 +1,6 @@
 # Changelog
 
-## Versão [2.1.x]
+## Versão [2.1.?]
 
 ### Melhorias
 
@@ -9,6 +9,8 @@
 Efetua atualização do "steering" para uso pelo Kiro.
 
 ### Correções
+
+- Corrigido queda do LS quando o arquivo-fonte encontrava-se com o atributo _Read Only_ ativado. [GITHUB 1505](https://github.com/totvs/tds-vscode/issues/1505) e [DTCLIENT01-7923](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-7923).
 
 #### Configuração padrão e validação
 
@@ -95,7 +97,7 @@ Em vez de abrir um editor contendo o log com os fontes desatualizados, um arquiv
 
 Implementado a possibilidade de complementar a lista de pastas de buscas de arquivos de definição. Na pasta principal da área de trabalho, crie o arquivo `.include`, onde cada linha é uma especificação de pasta para busca de arquivos de definição.
 
-As pastas especificadas tem prioridade sobre a lista por servidor/global e usam o padrão `glob` e sempre relativas a pasta princial (_workspace_).
+As pastas especificadas tem prioridade sobre a lista por servidor/global e usam o padrão `glob` e sempre relativas a pasta principal (_workspace_).
 
 Exemplo:
 

@@ -1,5 +1,9 @@
 #include "protheus.ch"
 
-user Function nomeFunction(param_name)
-    
-Return return_var
+User Function ReadOnly()
+	// Em vers�o 2.1.2 ocorria "crash" no LS
+	Local cMsg := "Arquivo fonte somente leitura."
+
+	ConOut(cMsg)
+
+Return Nil
