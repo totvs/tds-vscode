@@ -288,7 +288,7 @@ Antes:
 // Esta e uma linha de comentario bastante longa que ultrapassa o limite
 ```
 
-Depois (reflui como `//` respeitando 40 colunas):
+Depois (reorganiza como `//` respeitando 40 colunas):
 
 ```advpl
 // Esta e uma linha de comentario
@@ -297,6 +297,70 @@ Depois (reflui como `//` respeitando 40 colunas):
 ```
 
 Bloco `/* ... */` é normalizado para o layout `/*` / `* texto` / `*/`.
+
+#### Reflow por parágrafo
+
+O refluxo é feito **por parágrafo**, e não sobre o bloco de comentário inteiro.
+Cada parágrafo é refluído de forma independente; os separadores de parágrafo são
+preservados e nunca têm seu texto mesclado com as linhas vizinhas. Os delimitadores
+de parágrafo são:
+
+- Em blocos de comentário de linha (`//`), uma linha contendo **somente** `//`
+  (sem texto após as barras) indica o fim do parágrafo.
+- Em blocos `/* ... */`, uma **linha em branco** (ou linha com apenas `*`) indica
+  o fim do parágrafo.
+
+Isso permite preservar a estrutura do texto (listas, parágrafos distintos,
+separações visuais) enquanto apenas as linhas de texto corrido são reajustadas
+ao `maxLineLength`.
+
+##### Exemplo com `//` (dois parágrafos separados por `//` vazio)
+
+Antes (com `maxLineLength: 40`):
+
+```advpl
+// Primeiro paragrafo com um texto bastante longo que ultrapassa o limite de colunas
+//
+// Segundo paragrafo tambem longo que precisa ser reajustado de forma independente
+```
+
+Depois (cada parágrafo é refluído isoladamente; a linha `//` vazia é mantida):
+
+```advpl
+// Primeiro paragrafo com um texto
+// bastante longo que ultrapassa o
+// limite de colunas
+//
+// Segundo paragrafo tambem longo que
+// precisa ser reajustado de forma
+// independente
+```
+
+##### Exemplo com bloco `/* ... */` (linha em branco separa parágrafos)
+
+Antes (com `maxLineLength: 40`):
+
+```advpl
+/*
+Primeiro paragrafo com um texto bastante longo que ultrapassa o limite de colunas
+
+Segundo paragrafo tambem longo que precisa ser reajustado de forma independente
+*/
+```
+
+Depois (cada parágrafo é refluído isoladamente; a linha em branco é mantida):
+
+```advpl
+/*
+ * Primeiro paragrafo com um texto
+ * bastante longo que ultrapassa o
+ * limite de colunas
+ *
+ * Segundo paragrafo tambem longo que
+ * precisa ser reajustado de forma
+ * independente
+ */
+```
 
 > Com `false` (padrão), os comentários são mantidos como estão.
 
