@@ -3,9 +3,27 @@
 
 user function commentReflow()
 local n := 1
-	// short comment that stays as a single line and would be a candidate for wrapping if commentReflow was implemented to reflow overly long comment lines
-	/* this is a single line block comment that is also quite long and should be wrapped into multiple lines when commentReflow is enabled and left alone otherwise */
-	conout(str(n))
+
+// single line comment paragraph that is clearly longer than ninety columns so it must be wrapped into two lines
+
+// first paragraph of the line comment block long enough to exceed the configured maximum line length here
+//
+// second paragraph of the line comment block also long enough to exceed the configured maximum line length
+//
+// third paragraph of the line comment block again long enough to exceed the configured maximum line length too
+
+/* single line block comment paragraph that is also quite long and should be wrapped into multiple lines here */
+
+/* first block paragraph long enough to exceed the configured maximum line length and force a wrap here now
+
+second block paragraph also long enough to exceed the configured maximum line length and force a wrap too
+
+third block paragraph again long enough to exceed the configured maximum line length and force a wrap as well */
+
+conout(str(n))
 conout("For encoding validation: não, é, ção")
 
-	return
+if (n == 1)
+    conout("This is a very long line that should be wrapped into multiple lines by the
+
+return

@@ -1,0 +1,11 @@
+#include "protheus.ch"
+
+#xcommand SHOW <x> => Conout(<x>)
+
+user function xpto()
+  local x := 1
+  SHOW x
+return .T.
+
+MyScope function f1()
+Return .T.
