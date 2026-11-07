@@ -64,8 +64,9 @@ import { commandShowBuildTableResult } from "./compile/buildResult";
 import { ServerItem } from "./serverItem";
 import serverProvider from "./serverItemProvider";
 import { registerWorkspace } from "./workspace";
-import { sendTelemetry, sendAst } from "./protocolMessages";
-import { showAstGraphView } from "./ast/astGraphView";
+import { sendTelemetry, sendCst } from "./protocolMessages";
+import { showCstGraphView } from "./cst/cstGraphView";
+import { saveAndShowCst } from "./cst/cstFile";
 import { registerXRef } from "./xreferences";
 import { tlppTools } from "./tlpp-tools/tlppTools";
 import { openWebMonitor } from "./monitor/monitorLoader";
@@ -515,9 +516,9 @@ export async function activate(context: ExtensionContext) {
   // Register custom editor for patch files
   context.subscriptions.push(PatchEditorProvider.register(context));
 
-  // Envia o conteúdo do editor ativo para análise AST e exibe grafo
+  // Envia o conteúdo do editor ativo para análise CST e exibe grafo
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.ast.sendSource.grapho", async () => {
+    commands.registerCommand("totvs-developer-studio.cst.sendSource.grapho", async () => {
       const editor = vscode.window.activeTextEditor;
       if (!editor) {
         vscode.window.showWarningMessage(
@@ -539,17 +540,26 @@ export async function activate(context: ExtensionContext) {
         : "untitled";
 
       try {
-        const result = await sendAst(fileName, source, "json");
-        if (result.sucess) {
-          showAstGraphView(result.ast, result.hasErrors, fileName);
-        } else {
-          vscode.window.showErrorMessage(
-            vscode.l10n.t("Failed to generate AST.")
-          );
-        }
+        await vscode.window.withProgress(
+          {
+            location: vscode.ProgressLocation.Window,
+            title: `$(sync~spin) ${vscode.l10n.t("Generating CST for {0}...", fileName)}`,
+            cancellable: false,
+          },
+          async () => {
+            const result = await sendCst(fileName, source, "json");
+            if (result.sucess) {
+              showCstGraphView(result.ast, result.hasErrors, fileName);
+            } else {
+              vscode.window.showErrorMessage(
+                vscode.l10n.t("Failed to generate CST.")
+              );
+            }
+          }
+        );
       } catch (error) {
         vscode.window.showErrorMessage(
-          vscode.l10n.t("Error generating AST: {0}", error.message || String(error))
+          vscode.l10n.t("Error generating CST: {0}", error.message || String(error))
         );
       }
     })
@@ -557,7 +567,8 @@ export async function activate(context: ExtensionContext) {
 
   // Envia o conteúdo do editor ativo para análise AST e exibe JSON
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.ast.sendSource.json", async () => {
+    commands.registerCommand("totvs-developer-studio.cst.sendSource.json", async () => {
+
       const editor = vscode.window.activeTextEditor;
       if (!editor) {
         vscode.window.showWarningMessage(
@@ -579,32 +590,33 @@ export async function activate(context: ExtensionContext) {
         : "untitled";
 
       try {
-        const result = await sendAst(fileName, source, "json");
-        if (result.sucess) {
-          const astContent = JSON.stringify(result.ast, null, 2);
-          const doc = await vscode.workspace.openTextDocument({
-            content: astContent,
-            language: "json",
-          });
-          await vscode.window.showTextDocument(doc, {
-            viewColumn: vscode.ViewColumn.Beside,
-            preview: true,
-          });
-        } else {
-          vscode.window.showErrorMessage(
-            vscode.l10n.t("Failed to generate AST.")
-          );
-        }
+        await vscode.window.withProgress(
+          {
+            location: vscode.ProgressLocation.Window,
+            title: `$(sync~spin) ${vscode.l10n.t("Generating CST for {0}...", fileName)}`,
+            cancellable: false,
+          },
+          async () => {
+            const result = await sendCst(fileName, source, "json");
+            if (result.sucess) {
+              await saveAndShowCst(editor.document, result.cst, "json");
+            } else {
+              vscode.window.showErrorMessage(
+                vscode.l10n.t("Failed to generate CST.")
+              );
+            }
+          }
+        );
       } catch (error) {
         vscode.window.showErrorMessage(
-          vscode.l10n.t("Error generating AST: {0}", error.message || String(error))
+          vscode.l10n.t("Error generating CST: {0}", error.message || String(error))
         );
       }
     })
   );
 
   context.subscriptions.push(
-    commands.registerCommand("totvs-developer-studio.ast.sendSource.text", async () => {
+    commands.registerCommand("totvs-developer-studio.cst.sendSource.text", async () => {
       const editor = vscode.window.activeTextEditor;
       if (!editor) {
         vscode.window.showWarningMessage(
@@ -626,25 +638,26 @@ export async function activate(context: ExtensionContext) {
         : "untitled";
 
       try {
-        const result = await sendAst(fileName, source, "text");
-        if (result.sucess) {
-          const astContent = JSON.stringify(result.ast, null, 2);
-          const doc = await vscode.workspace.openTextDocument({
-            content: astContent,
-            language: "json",
-          });
-          await vscode.window.showTextDocument(doc, {
-            viewColumn: vscode.ViewColumn.Beside,
-            preview: true,
-          });
-        } else {
-          vscode.window.showErrorMessage(
-            vscode.l10n.t("Failed to generate AST.")
-          );
-        }
+        await vscode.window.withProgress(
+          {
+            location: vscode.ProgressLocation.Window,
+            title: `$(sync~spin) ${vscode.l10n.t("Generating CST for {0}...", fileName)}`,
+            cancellable: false,
+          },
+          async () => {
+            const result = await sendCst(fileName, source, "text");
+            if (result.sucess) {
+              await saveAndShowCst(editor.document, result.cst, "txt");
+            } else {
+              vscode.window.showErrorMessage(
+                vscode.l10n.t("Failed to generate CST.")
+              );
+            }
+          }
+        );
       } catch (error) {
         vscode.window.showErrorMessage(
-          vscode.l10n.t("Error generating AST: {0}", error.message || String(error))
+          vscode.l10n.t("Error generating CST: {0}", error.message || String(error))
         );
       }
     })

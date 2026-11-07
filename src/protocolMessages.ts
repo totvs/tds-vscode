@@ -946,28 +946,28 @@ export function sendLogMsg(message: string): void {
   });
 }
 
-interface AstContentParams {
+interface CstContentParams {
   file: string;
   format: string;
   content: string;
 }
 
-interface AstInfoParams {
-  astInfo: AstContentParams;
+interface CstInfoParams {
+  cstInfo: CstContentParams;
 }
 
-type AstReturnInfo = {
-  ast: any;
+type CstReturnInfo = {
+  cst: any;
   hasErrors: boolean;
 };
 
-export function sendAst(
+export function sendCst(
   file: string,
   source: string,
   format: "json" | "text"
 ): Thenable<any> {
-  const params: AstInfoParams = {
-    astInfo: {
+  const params: CstInfoParams = {
+    cstInfo: {
       file: file,
       format: format,
       content: source,
@@ -975,13 +975,13 @@ export function sendAst(
   };
 
   return languageClient
-    .sendRequest("$totvsserver/ast", params)
+    .sendRequest("$totvsserver/cst", params)
     .then(
-      (astReturnInfo: AstReturnInfo) => {
+      (cstReturnInfo: CstReturnInfo) => {
         return {
           sucess: true,
-          ast: astReturnInfo.ast,
-          hasErrors: astReturnInfo.hasErrors,
+          cst: cstReturnInfo.cst,
+          hasErrors: cstReturnInfo.hasErrors,
         };
       },
       (err: ResponseError<object>) => {

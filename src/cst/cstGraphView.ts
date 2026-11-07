@@ -3,17 +3,17 @@ import * as vscode from "vscode";
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
 /**
- * Abre uma webview com o grafo visual dos nós AST.
+ * Abre uma webview com o grafo visual dos nós CST.
  */
-export function showAstGraphView(ast: any, hasErrors: boolean, fileName: string) {
+export function showCstGraphView(cst: any, hasErrors: boolean, fileName: string) {
   const columnToShowIn = vscode.ViewColumn.Beside;
 
   if (currentPanel) {
     currentPanel.reveal(columnToShowIn);
   } else {
     currentPanel = vscode.window.createWebviewPanel(
-      "totvs-developer-studio.ast.graphView",
-      `AST: ${fileName}`,
+      "totvs-developer-studio.cst.graphView",
+      `CST: ${fileName}`,
       columnToShowIn,
       {
         enableScripts: true,
@@ -26,12 +26,12 @@ export function showAstGraphView(ast: any, hasErrors: boolean, fileName: string)
     });
   }
 
-  currentPanel.title = `AST: ${fileName}`;
-  currentPanel.webview.html = getAstGraphHtml(ast, hasErrors);
+  currentPanel.title = `CST: ${fileName}`;
+  currentPanel.webview.html = getCstGraphHtml(cst, hasErrors);
 }
 
-function getAstGraphHtml(ast: any, hasErrors: boolean): string {
-  const astJson = JSON.stringify(ast || {})
+function getCstGraphHtml(cst: any, hasErrors: boolean): string {
+  const cstJson = JSON.stringify(cst || {})
     .replace(/</g, "\\u003c")
     .replace(/>/g, "\\u003e")
     .replace(/&/g, "\\u0026");
@@ -41,7 +41,7 @@ function getAstGraphHtml(ast: any, hasErrors: boolean): string {
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AST Graph</title>
+  <title>CST Graph</title>
   <style>
     :root {
       --bg-color: var(--vscode-editor-background, #1e1e1e);
@@ -192,7 +192,7 @@ function getAstGraphHtml(ast: any, hasErrors: boolean): string {
     <button id="btn-expand-all" title="Expand All">Expand All</button>
     <button id="btn-collapse-all" title="Collapse All">Collapse All</button>
     <label class="chk-label"><input type="checkbox" id="chk-eol"/> eol</label>
-    ${hasErrors ? '<span class="error-badge">AST has errors</span>' : ""}
+    ${hasErrors ? '<span class="error-badge">CST has errors</span>' : ""}
     <span class="info" id="node-count"></span>
   </div>
   <div id="canvas-container">
@@ -201,9 +201,9 @@ function getAstGraphHtml(ast: any, hasErrors: boolean): string {
 
   <script>
     (function() {
-      var astData = ${astJson};
+      var cstData = ${cstJson};
 
-      // ===== Normalizar AST para formato de arvore =====
+      // ===== Normalizar CST para formato de arvore =====
       var IGNORED_TYPES = ['eol'];
       var POSITION_KEYS = ['startRow', 'startColumn', 'endRow', 'endColumn', 'isName'];
 
@@ -275,7 +275,7 @@ function getAstGraphHtml(ast: any, hasErrors: boolean): string {
       }
 
       function buildTree() {
-        var tree = normalizeNode(astData, 'root');
+        var tree = normalizeNode(cstData, 'root');
         if (tree === null) {
           tree = { type: 'root', value: '', children: [], pos: {} };
         }

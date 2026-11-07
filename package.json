@@ -1093,21 +1093,21 @@
     },
     "commands": [
       {
-        "command": "totvs-developer-studio.ast.sendSource.grapho",
+        "command": "totvs-developer-studio.cst.sendSource.grapho",
         "title": "Graphic",
-        "description": "Sends the active editor content to AST analysis",
+        "description": "Sends the active editor content to CST analysis",
         "category": "TOTVS"
       },
       {
-        "command": "totvs-developer-studio.ast.sendSource.json",
+        "command": "totvs-developer-studio.cst.sendSource.json",
         "title": "JSON",
-        "description": "Sends the active editor content to AST analysis",
+        "description": "Sends the active editor content to CST analysis",
         "category": "TOTVS"
       },
       {
-        "command": "totvs-developer-studio.ast.sendSource.text",
+        "command": "totvs-developer-studio.cst.sendSource.text",
         "title": "Text",
-        "description": "Sends the active editor content to AST analysis",
+        "description": "Sends the active editor content to CST analysis",
         "category": "TOTVS"
       },
       {
@@ -1965,8 +1965,8 @@
     },
     "submenus": [
       {
-        "id": "totvs-developer-studio.ast.submenu",
-        "label": "Get AST"
+        "id": "totvs-developer-studio.cst.submenu",
+        "label": "Get CST"
       }
     ],
     "menus": {
@@ -2035,23 +2035,23 @@
       "editor/context": [
         {
           "when": "resourceLangId == advpl || resourceLangId == 4gl",
-          "submenu": "totvs-developer-studio.ast.submenu",
+          "submenu": "totvs-developer-studio.cst.submenu",
           "group": "totvsSource@1"
         }
       ],
-      "totvs-developer-studio.ast.submenu": [
+      "totvs-developer-studio.cst.submenu": [
         {
-          "command": "totvs-developer-studio.ast.sendSource.grapho",
-          "group": "ast@1"
+          "command": "totvs-developer-studio.cst.sendSource.grapho",
+          "group": "cst@1"
         },
         {
-          "command": "totvs-developer-studio.ast.sendSource.json",
-          "group": "ast@2"
+          "command": "totvs-developer-studio.cst.sendSource.json",
+          "group": "cst@2"
         },
         {
-          "command": "totvs-developer-studio.ast.sendSource.text",
+          "command": "totvs-developer-studio.cst.sendSource.text",
           "when": "resourceLangId == advpl",
-          "group": "ast@3"
+          "group": "cst@3"
         }
       ],
       "view/item/context": [
