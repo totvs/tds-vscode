@@ -5,7 +5,6 @@
   size as numeric default 10
 @end
 
-@MyAnnotation(title = "My Function", size = 20)
 function annotatedFn()
   local cTitle := ""
 return

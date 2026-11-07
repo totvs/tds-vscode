@@ -7,7 +7,7 @@ user function exemplo()
         not_exist_function()
     catch oError
         if oError:description == "interfunctioncall: cannot find function chamadanaoexiste in appmap"
-            conout("erro n√£o encontrei esta fun√ß√£o chamadanaoexiste") 
+            conout("erro n„o encontrei esta funÁ„o chamadanaoexiste") 
         endif
     endtry
 return

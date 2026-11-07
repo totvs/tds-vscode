@@ -1,12 +1,12 @@
 #include "totvs.ch"
 
-class Carro
-  method novo()
-  method ligar()
+class Car
+  method create()
+  method start()
 endclass
 
-method novo() class Carro
+method create() class Car
   return self
 
-method ligar() class Carro
+method start() class Car
   return nil

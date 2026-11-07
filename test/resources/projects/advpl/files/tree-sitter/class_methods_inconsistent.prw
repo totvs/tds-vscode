@@ -1,12 +1,12 @@
 #include "totvs.ch"
 
 class Animal
-  method novo()
-  method falar()
+  method create()
+  method speak()
 endclass
 
-method novo() class Animal
+method create() class Animal
   return self
 
-method correr() class Animal
+method run() class Animal
   return nil

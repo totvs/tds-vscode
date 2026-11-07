@@ -1,19 +1,19 @@
 #include "protheus.ch"
 
 user function case()
-    local nDia := 3
-    local cNomeDia := ""
+    local nDay := 3
+    local cDayName := ""
 
     do case
-        case nDia == 1
-            cNomeDia := "Domingo"
-        case nDia == 2
-            cNomeDia := "Segunda-feira"
-        case nDia == 3
-            cNomeDia := "TerÃ§a-feira"
+        case nDay == 1
+            cDayName := "Domingo"
+        case nDay == 2
+            cDayName := "Segunda-feira"
+        case nDay == 3
+            cDayName := "Terça-feira"
         otherwise
-            cNomeDia := "Outro dia"
+            cDayName := "Outro dia"
 
 
-    msgInfo(cNomeDia)
+    msgInfo(cDayName)
 return

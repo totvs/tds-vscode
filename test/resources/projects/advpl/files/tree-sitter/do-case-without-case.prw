@@ -1,11 +1,11 @@
 #include "protheus.ch"
 
 user function case()
-    local nDia := 3
-    local cNomeDia := ""
+    local nDay := 3
+    local cDayName := ""
 
     do case
     end case
 
-    msgInfo(cNomeDia)
+    msgInfo(cDayName)
 return
