@@ -32,4 +32,9 @@ NOTICE for extension developers:
 - When falling into the exception, explicitly state in the response: "LS unavailable/no coverage; proceeding with text search".
 - Compliance criterion: before the result, inform which LS tool was used and what it returned.
 - Non-compliance rule: if LS is not used first without valid justification, consider the execution out of standard and correct the approach in the same response.
-- Ao receber uma solicitação de compilação, usar o comando `totvs-developer-studio.rebuild.file`.
+
+- Project encoding requirement: this project must use Windows-1252 as the source file codepage.
+- When creating or editing AdvPL/TLPP source files, preserve Windows-1252 encoding.
+- Do not convert source files to UTF-8 or other codepages unless the user explicitly requests it.
+- When working with accents, special characters, or symbols, ensure they are compatible with Windows-1252.
+- In strings, comments, and identifiers, avoid characters outside the supported range of Windows-1252.
