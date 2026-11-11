@@ -823,6 +823,14 @@ export function canDebug(): boolean {
   return result;
 }
 
+// AVISOS
+//  Desenvolvedores Protheus:
+//      Este arquivo de instruções foi gerado automaticamente.
+//      Alterações são mantidas, pois este é gerado somente se não existir.
+//      Caso não queira usá - lo, mantenha - o na pasta mas vazio.
+//  Desenvolvedores da extensão:
+//      Manter a extensão `.md.txt` a fim de evitar a sua carga no desenvolvimento
+//      da extensão, que caso ocorra pode interferir no ambiente.
 async function prepareInstructions(context: vscode.ExtensionContext) {
   const workspaceFolders = vscode.workspace.workspaceFolders;
   if (!workspaceFolders) return;

@@ -5,19 +5,6 @@ description: "LS priority"
 version: "1.0.4"
 ---
 
-<!--
-NOTICE for Protheus developers:
-     This instruction file was generated automatically.
-     Changes are preserved, as it is generated only if it does not exist.
-     If you do not want to use it, keep it in the folder but leave it empty.
--->
-
-<!--
-NOTICE for extension developers:
-     Keep the `.md.txt` extension to prevent it from being loaded during
-     extension development, which could interfere with the environment.
--->
-
 # Instructions
 
 - Answer in English, objectively.
