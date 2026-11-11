@@ -829,18 +829,26 @@ async function prepareInstructions(context: vscode.ExtensionContext) {
 
   const rootPath: vscode.Uri = workspaceFolders[0].uri;
   const language: string = vscode.env.language;
-  let version: string = "1-0-2";
+  let templateFolder: string = ".github";
+  let version: string = getLatestTemplateVersion(
+    vscode.Uri.joinPath(context.extensionUri, 'resources', templateFolder).fsPath,
+    /^tds-vscode-(\d+-\d+-\d+)-.+\.instructions\.md\.txt$/,
+    "1-0-2"
+  );
   let targetFolderUri: vscode.Uri = vscode.Uri.joinPath(rootPath, '.github', "instructions");
   let targetFileUri: vscode.Uri = vscode.Uri.joinPath(targetFolderUri, `tds-vscode-${version}.instructions.md`);
-  let templateFolder: string = ".github";
   let templateFile: string = `tds-vscode-${version}-${language}.instructions.md.txt`;
   let templateDefaultUri = vscode.Uri.joinPath(context.extensionUri, 'resources', templateFolder, `tds-vscode-${version}-en.instructions.md.txt`);
 
   if (vscode.env.appName.toLowerCase() == "kiro") {
-    version = "1-0-0";
+    templateFolder = ".kiro";
+    version = getLatestTemplateVersion(
+      vscode.Uri.joinPath(context.extensionUri, 'resources', templateFolder).fsPath,
+      /^advpl-tlpp-ls-first-(\d+-\d+-\d+)-.+\.steering\.md\.txt$/,
+      "1-0-0"
+    );
     targetFolderUri = vscode.Uri.joinPath(rootPath, '.kiro', "steering");
     targetFileUri = vscode.Uri.joinPath(targetFolderUri, `advpl-tlpp-ls-first-${version}.md`);
-    templateFolder  = ".kiro";
     templateFile = `advpl-tlpp-ls-first-${version}-${language}.steering.md.txt`;
     templateDefaultUri = vscode.Uri.joinPath(context.extensionUri, 'resources', templateFolder, `advpl-tlpp-ls-first-${version}-en.steering.md.txt`);
   }
@@ -892,6 +900,41 @@ async function prepareInstructions(context: vscode.ExtensionContext) {
       }
     }
   }
+}
+
+/**
+ * Retorna a versão (formato "major-minor-patch") mais recente dos templates
+ * encontrados na pasta, comparando semver numericamente.
+ * @param folderPath Pasta com os templates.
+ * @param pattern Regex com um grupo de captura para a versão (ex.: "1-0-2").
+ * @param fallback Versão usada caso nenhum template seja encontrado.
+ */
+function getLatestTemplateVersion(folderPath: string, pattern: RegExp, fallback: string): string {
+  let latest: number[] | undefined;
+
+  try {
+    for (const name of fse.readdirSync(folderPath)) {
+      const match = pattern.exec(name);
+      if (!match) continue;
+
+      const parts: number[] = match[1].split("-").map(Number);
+      if (!latest) {
+        latest = parts;
+        continue;
+      }
+
+      for (let i = 0; i < 3; i++) {
+        if (parts[i] !== latest[i]) {
+          if (parts[i] > latest[i]) latest = parts;
+          break;
+        }
+      }
+    }
+  } catch (err) {
+    console.error(`Erro ao ler a pasta de templates ${folderPath}:`, err);
+  }
+
+  return latest ? latest.join("-") : fallback;
 }
 
 async function prepareSteering(context: vscode.ExtensionContext) {

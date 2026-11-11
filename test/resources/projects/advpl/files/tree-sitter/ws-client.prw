@@ -13,7 +13,7 @@ WSDL Service WSFachadaWSSGSService
 ------------------------------------------------------------------------------- */
 
 WSCLIENT WSFachadaWSSGSService
-a
+
 	WSMETHOD NEW
 	WSMETHOD INIT
 	WSMETHOD RESET

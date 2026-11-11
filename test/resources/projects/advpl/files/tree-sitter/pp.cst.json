@@ -1,0 +1,728 @@
+{
+  "type": "source_file",
+  "startLine": 0,
+  "startColumn": 0,
+  "endLine": 15,
+  "endColumn": 0,
+  "isNamed": true,
+  "children": [
+    {
+      "type": "pp_include_directive",
+      "startLine": 0,
+      "startColumn": 0,
+      "endLine": 2,
+      "endColumn": 0,
+      "isNamed": true,
+      "children": [
+        {
+          "type": "include_name",
+          "fieldName": "name",
+          "startLine": 0,
+          "startColumn": 9,
+          "endLine": 0,
+          "endColumn": 22,
+          "isNamed": true,
+          "text": "\"protheus.ch\""
+        }
+      ]
+    },
+    {
+      "type": "pp_xcommand_directive",
+      "startLine": 2,
+      "startColumn": 0,
+      "endLine": 2,
+      "endColumn": 33,
+      "isNamed": true,
+      "children": [
+        {
+          "type": "left",
+          "fieldName": "left",
+          "startLine": 2,
+          "startColumn": 10,
+          "endLine": 2,
+          "endColumn": 19,
+          "isNamed": true,
+          "text": "SHOW <x> "
+        },
+        {
+          "type": "right",
+          "fieldName": "right",
+          "startLine": 2,
+          "startColumn": 22,
+          "endLine": 2,
+          "endColumn": 33,
+          "isNamed": true,
+          "text": "Conout(<x>)"
+        }
+      ]
+    },
+    {
+      "type": "line_comment",
+      "startLine": 3,
+      "startColumn": 0,
+      "endLine": 3,
+      "endColumn": 50,
+      "isNamed": true,
+      "text": "//#xcommand MyScope function <x> => function z_<x>"
+    },
+    {
+      "type": "FunctionDef",
+      "startLine": 5,
+      "startColumn": 0,
+      "endLine": 12,
+      "endColumn": 0,
+      "isNamed": true,
+      "children": [
+        {
+          "type": "kw_user",
+          "startLine": 5,
+          "startColumn": 0,
+          "endLine": 5,
+          "endColumn": 4,
+          "isNamed": true,
+          "text": "User"
+        },
+        {
+          "type": "kw_function",
+          "startLine": 5,
+          "startColumn": 5,
+          "endLine": 5,
+          "endColumn": 13,
+          "isNamed": true,
+          "text": "Function"
+        },
+        {
+          "type": "identifier",
+          "fieldName": "name",
+          "startLine": 5,
+          "startColumn": 14,
+          "endLine": 5,
+          "endColumn": 18,
+          "isNamed": true,
+          "text": "xpto"
+        },
+        {
+          "type": "parmDef",
+          "fieldName": "parameters",
+          "startLine": 5,
+          "startColumn": 18,
+          "endLine": 5,
+          "endColumn": 20,
+          "isNamed": true,
+          "text": "()"
+        },
+        {
+          "type": "function_body",
+          "fieldName": "body",
+          "startLine": 6,
+          "startColumn": 2,
+          "endLine": 12,
+          "endColumn": 0,
+          "isNamed": true,
+          "children": [
+            {
+              "type": "VarDefLocal",
+              "startLine": 6,
+              "startColumn": 2,
+              "endLine": 8,
+              "endColumn": 0,
+              "isNamed": true,
+              "children": [
+                {
+                  "type": "kw_local",
+                  "startLine": 6,
+                  "startColumn": 2,
+                  "endLine": 6,
+                  "endColumn": 7,
+                  "isNamed": true,
+                  "text": "Local"
+                },
+                {
+                  "type": "varDefList",
+                  "fieldName": "items",
+                  "startLine": 6,
+                  "startColumn": 8,
+                  "endLine": 6,
+                  "endColumn": 14,
+                  "isNamed": true,
+                  "children": [
+                    {
+                      "type": "varDefEle",
+                      "startLine": 6,
+                      "startColumn": 8,
+                      "endLine": 6,
+                      "endColumn": 14,
+                      "isNamed": true,
+                      "children": [
+                        {
+                          "type": "assignExpression",
+                          "startLine": 6,
+                          "startColumn": 8,
+                          "endLine": 6,
+                          "endColumn": 14,
+                          "isNamed": true,
+                          "children": [
+                            {
+                              "type": "identifier",
+                              "fieldName": "left",
+                              "startLine": 6,
+                              "startColumn": 8,
+                              "endLine": 6,
+                              "endColumn": 9,
+                              "isNamed": true,
+                              "text": "x"
+                            },
+                            {
+                              "type": "number",
+                              "fieldName": "right",
+                              "startLine": 6,
+                              "startColumn": 13,
+                              "endLine": 6,
+                              "endColumn": 14,
+                              "isNamed": true,
+                              "text": "1"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "MainExprStat",
+              "startLine": 8,
+              "startColumn": 2,
+              "endLine": 9,
+              "endColumn": 0,
+              "isNamed": true,
+              "children": [
+                {
+                  "type": "mainExpression",
+                  "startLine": 8,
+                  "startColumn": 2,
+                  "endLine": 8,
+                  "endColumn": 30,
+                  "isNamed": true,
+                  "children": [
+                    {
+                      "type": "assignExpression",
+                      "startLine": 8,
+                      "startColumn": 2,
+                      "endLine": 8,
+                      "endColumn": 30,
+                      "isNamed": true,
+                      "children": [
+                        {
+                          "type": "identifier",
+                          "fieldName": "left",
+                          "startLine": 8,
+                          "startColumn": 2,
+                          "endLine": 8,
+                          "endColumn": 4,
+                          "isNamed": true,
+                          "text": "De"
+                        },
+                        {
+                          "type": "IifExpr",
+                          "fieldName": "right",
+                          "startLine": 8,
+                          "startColumn": 8,
+                          "endLine": 8,
+                          "endColumn": 30,
+                          "isNamed": true,
+                          "children": [
+                            {
+                              "type": "kw_if",
+                              "fieldName": "keyword",
+                              "startLine": 8,
+                              "startColumn": 8,
+                              "endLine": 8,
+                              "endColumn": 10,
+                              "isNamed": true,
+                              "text": "t "
+                            },
+                            {
+                              "type": "mainExpression",
+                              "fieldName": "condition",
+                              "startLine": 8,
+                              "startColumn": 12,
+                              "endLine": 8,
+                              "endColumn": 21,
+                              "isNamed": true,
+                              "children": [
+                                {
+                                  "type": "Expression",
+                                  "startLine": 8,
+                                  "startColumn": 12,
+                                  "endLine": 8,
+                                  "endColumn": 21,
+                                  "isNamed": true,
+                                  "children": [
+                                    {
+                                      "type": "LogicalRel",
+                                      "startLine": 8,
+                                      "startColumn": 12,
+                                      "endLine": 8,
+                                      "endColumn": 21,
+                                      "isNamed": true,
+                                      "children": [
+                                        {
+                                          "type": "identifier",
+                                          "startLine": 8,
+                                          "startColumn": 12,
+                                          "endLine": 8,
+                                          "endColumn": 14,
+                                          "isNamed": true,
+                                          "text": " :"
+                                        },
+                                        {
+                                          "type": "nil",
+                                          "startLine": 8,
+                                          "startColumn": 18,
+                                          "endLine": 8,
+                                          "endColumn": 21,
+                                          "isNamed": true,
+                                          "children": [
+                                            {
+                                              "type": "kw_nil",
+                                              "startLine": 8,
+                                              "startColumn": 18,
+                                              "endLine": 8,
+                                              "endColumn": 21,
+                                              "isNamed": true,
+                                              "text": "\n  "
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "mainExpression",
+                              "fieldName": "then",
+                              "startLine": 8,
+                              "startColumn": 23,
+                              "endLine": 8,
+                              "endColumn": 24,
+                              "isNamed": true,
+                              "children": [
+                                {
+                                  "type": "Expression",
+                                  "startLine": 8,
+                                  "startColumn": 23,
+                                  "endLine": 8,
+                                  "endColumn": 24,
+                                  "isNamed": true,
+                                  "children": [
+                                    {
+                                      "type": "number",
+                                      "startLine": 8,
+                                      "startColumn": 23,
+                                      "endLine": 8,
+                                      "endColumn": 24,
+                                      "isNamed": true,
+                                      "text": "O"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "mainExpression",
+                              "fieldName": "else",
+                              "startLine": 8,
+                              "startColumn": 26,
+                              "endLine": 8,
+                              "endColumn": 28,
+                              "isNamed": true,
+                              "children": [
+                                {
+                                  "type": "Expression",
+                                  "startLine": 8,
+                                  "startColumn": 26,
+                                  "endLine": 8,
+                                  "endColumn": 28,
+                                  "isNamed": true,
+                                  "children": [
+                                    {
+                                      "type": "identifier",
+                                      "startLine": 8,
+                                      "startColumn": 26,
+                                      "endLine": 8,
+                                      "endColumn": 28,
+                                      "isNamed": true,
+                                      "text": "x\r"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "line_continuation",
+                  "startLine": 8,
+                  "startColumn": 31,
+                  "endLine": 9,
+                  "endColumn": 0,
+                  "isNamed": true,
+                  "text": "tu"
+                }
+              ]
+            },
+            {
+              "type": "MainExprStat",
+              "startLine": 9,
+              "startColumn": 2,
+              "endLine": 10,
+              "endColumn": 0,
+              "isNamed": true,
+              "children": [
+                {
+                  "type": "mainExpression",
+                  "startLine": 9,
+                  "startColumn": 2,
+                  "endLine": 9,
+                  "endColumn": 11,
+                  "isNamed": true,
+                  "children": [
+                    {
+                      "type": "Expression",
+                      "startLine": 9,
+                      "startColumn": 2,
+                      "endLine": 9,
+                      "endColumn": 11,
+                      "isNamed": true,
+                      "children": [
+                        {
+                          "type": "FunctionCall",
+                          "startLine": 9,
+                          "startColumn": 2,
+                          "endLine": 9,
+                          "endColumn": 11,
+                          "isNamed": true,
+                          "children": [
+                            {
+                              "type": "identifier",
+                              "fieldName": "function",
+                              "startLine": 9,
+                              "startColumn": 2,
+                              "endLine": 9,
+                              "endColumn": 8,
+                              "isNamed": true,
+                              "text": " .T.\r\n"
+                            },
+                            {
+                              "type": "parmList",
+                              "fieldName": "arguments",
+                              "startLine": 9,
+                              "startColumn": 8,
+                              "endLine": 9,
+                              "endColumn": 11,
+                              "isNamed": true,
+                              "children": [
+                                {
+                                  "type": "mainExpression",
+                                  "startLine": 9,
+                                  "startColumn": 9,
+                                  "endLine": 9,
+                                  "endColumn": 10,
+                                  "isNamed": true,
+                                  "children": [
+                                    {
+                                      "type": "Expression",
+                                      "startLine": 9,
+                                      "startColumn": 9,
+                                      "endLine": 9,
+                                      "endColumn": 10,
+                                      "isNamed": true,
+                                      "children": [
+                                        {
+                                          "type": "identifier",
+                                          "startLine": 9,
+                                          "startColumn": 9,
+                                          "endLine": 9,
+                                          "endColumn": 10,
+                                          "isNamed": true,
+                                          "text": "\n"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "Return1",
+              "startLine": 10,
+              "startColumn": 0,
+              "endLine": 12,
+              "endColumn": 0,
+              "isNamed": true,
+              "children": [
+                {
+                  "type": "kw_return",
+                  "startLine": 10,
+                  "startColumn": 0,
+                  "endLine": 10,
+                  "endColumn": 6,
+                  "isNamed": true,
+                  "text": "Scope "
+                },
+                {
+                  "type": "mainExpression",
+                  "startLine": 10,
+                  "startColumn": 7,
+                  "endLine": 10,
+                  "endColumn": 10,
+                  "isNamed": true,
+                  "children": [
+                    {
+                      "type": "Expression",
+                      "startLine": 10,
+                      "startColumn": 7,
+                      "endLine": 10,
+                      "endColumn": 10,
+                      "isNamed": true,
+                      "children": [
+                        {
+                          "type": "boolean",
+                          "startLine": 10,
+                          "startColumn": 7,
+                          "endLine": 10,
+                          "endColumn": 10,
+                          "isNamed": true,
+                          "text": "unc"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "InvalidFunctionDef",
+      "startLine": 12,
+      "startColumn": 0,
+      "endLine": 15,
+      "endColumn": 0,
+      "isNamed": true,
+      "children": [
+        {
+          "type": "identifier",
+          "fieldName": "invalid_modifier",
+          "startLine": 12,
+          "startColumn": 0,
+          "endLine": 12,
+          "endColumn": 7,
+          "isNamed": true,
+          "text": " f1(p1,"
+        },
+        {
+          "type": "kw_function",
+          "startLine": 12,
+          "startColumn": 8,
+          "endLine": 12,
+          "endColumn": 16,
+          "isNamed": true,
+          "text": "2)\r\nLoca"
+        },
+        {
+          "type": "identifier",
+          "fieldName": "name",
+          "startLine": 12,
+          "startColumn": 17,
+          "endLine": 12,
+          "endColumn": 19,
+          "isNamed": true,
+          "text": " x"
+        },
+        {
+          "type": "parmDef",
+          "fieldName": "parameters",
+          "startLine": 12,
+          "startColumn": 19,
+          "endLine": 12,
+          "endColumn": 26,
+          "isNamed": true,
+          "children": [
+            {
+              "type": "identList",
+              "startLine": 12,
+              "startColumn": 20,
+              "endLine": 12,
+              "endColumn": 25,
+              "isNamed": true,
+              "children": [
+                {
+                  "type": "identEle",
+                  "startLine": 12,
+                  "startColumn": 20,
+                  "endLine": 12,
+                  "endColumn": 22,
+                  "isNamed": true,
+                  "children": [
+                    {
+                      "type": "identifier",
+                      "startLine": 12,
+                      "startColumn": 20,
+                      "endLine": 12,
+                      "endColumn": 22,
+                      "isNamed": true,
+                      "text": "\nR"
+                    }
+                  ]
+                },
+                {
+                  "type": "identEle",
+                  "startLine": 12,
+                  "startColumn": 23,
+                  "endLine": 12,
+                  "endColumn": 25,
+                  "isNamed": true,
+                  "children": [
+                    {
+                      "type": "identifier",
+                      "startLine": 12,
+                      "startColumn": 23,
+                      "endLine": 12,
+                      "endColumn": 25,
+                      "isNamed": true,
+                      "text": "tu"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "function_body",
+          "fieldName": "body",
+          "startLine": 13,
+          "startColumn": 0,
+          "endLine": 15,
+          "endColumn": 0,
+          "isNamed": true,
+          "children": [
+            {
+              "type": "VarDefLocal",
+              "startLine": 13,
+              "startColumn": 0,
+              "endLine": 14,
+              "endColumn": 0,
+              "isNamed": true,
+              "children": [
+                {
+                  "type": "kw_local",
+                  "startLine": 13,
+                  "startColumn": 0,
+                  "endLine": 13,
+                  "endColumn": 5,
+                  "isNamed": true,
+                  "text": ".T.\r\n"
+                },
+                {
+                  "type": "varDefList",
+                  "fieldName": "items",
+                  "startLine": 13,
+                  "startColumn": 6,
+                  "endLine": 13,
+                  "endColumn": 7,
+                  "isNamed": true,
+                  "children": [
+                    {
+                      "type": "varDefEle",
+                      "startLine": 13,
+                      "startColumn": 6,
+                      "endLine": 13,
+                      "endColumn": 7,
+                      "isNamed": true,
+                      "children": [
+                        {
+                          "type": "identifier",
+                          "startLine": 13,
+                          "startColumn": 6,
+                          "endLine": 13,
+                          "endColumn": 7,
+                          "isNamed": true
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "Return1",
+              "startLine": 14,
+              "startColumn": 0,
+              "endLine": 15,
+              "endColumn": 0,
+              "isNamed": true,
+              "children": [
+                {
+                  "type": "kw_return",
+                  "startLine": 14,
+                  "startColumn": 0,
+                  "endLine": 14,
+                  "endColumn": 6,
+                  "isNamed": true
+                },
+                {
+                  "type": "mainExpression",
+                  "startLine": 14,
+                  "startColumn": 7,
+                  "endLine": 14,
+                  "endColumn": 10,
+                  "isNamed": true,
+                  "children": [
+                    {
+                      "type": "Expression",
+                      "startLine": 14,
+                      "startColumn": 7,
+                      "endLine": 14,
+                      "endColumn": 10,
+                      "isNamed": true,
+                      "children": [
+                        {
+                          "type": "boolean",
+                          "startLine": 14,
+                          "startColumn": 7,
+                          "endLine": 14,
+                          "endColumn": 10,
+                          "isNamed": true
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -37,7 +37,13 @@ A dobra (_folding_) de código é controlado pelas configurações nativas do VS
 }
 ```
 
-> O uso de `editor.foldingStrategy: "auto"` (_folding_ provido pelo Language Server) é **experimental** para AdvPL/TLPP. Em caso de regiões incorretas, utilize `"indentation"`.
+> O uso de `editor.foldingStrategy: "auto"` (_folding_ provido pelo Language Server) é **experimental** para AdvPL/TLPP. Em caso de regiões incorretas, favor abrir um (chamado)[https://github.com/totvs/tds-vscode/issues] e utilizar `"indentation"`.
+
+#### Sugestões de correções (_Fix_)
+
+Adicionado sugestões de correções para:
+
+- Variável não utilizada
 
 ### Melhorias
 
@@ -62,6 +68,8 @@ A formatação pode ser efetuada:
 
 ### Correções
 
+#### Valores padrão de `totvsLanguageServer.editor.linter.behavior` e `totvsLanguageServer.editor.index.cache`
+
 Devido a dependência da IA, as chaves abaixo tiverem seus valores padrões modificadas,
 para melhor acurácia desta.
 
@@ -74,11 +82,13 @@ para melhor acurácia desta.
 
 > Ao desligar esses recursos, solicitações da IA podem perder acurácia e usar busca textual (_grep_, _read file_ e outras), que podem ser mais lentas.
 
-### Correções
-
 #### Notificação de alterações nas configurações
 
 Algumas configurações não eram notificadas ao LS.
+
+#### Pasta de _cache_ criada indevidamente
+
+Em determinadas configurações da propriedade `totvsLanguageServer.editor.index.cache` a estrutura de pastas do _cache_ eram criadas indevidamente.
 
 ## Versão [2.1.6]
 
