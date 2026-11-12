@@ -81,7 +81,7 @@ Exemplos:
 
 Para que o assistente de IA tenha o melhor contexto da área de trabalho por meio do MCP, recomenda-se ajustar as seguintes configurações da extensão (chaves `totvsLanguageServer`):
 
-- **`totvsLanguageServer.editor.index.cache`** (cache de navegação): deve estar ligado, ao menos como `onMemory`. O valor padrão é `off`, o que pode deixar indisponíveis alguns recursos de navegação (DSS) usados pela IA. Valores possíveis:
+- **`totvsLanguageServer.editor.index.cache`** (cache de navegação): deve estar ligado, ao menos como `onMemory`. O valor padrão é `onMemory`; com `off`, alguns recursos de navegação (DSS) usados pela IA podem ficar indisponíveis. Valores possíveis:
 
   - `off`: desliga o cache (não recomendado para uso com IA).
   - `onMemory` (recomendado): cache mantido em memória.
