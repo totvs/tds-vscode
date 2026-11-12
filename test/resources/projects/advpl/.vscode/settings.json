@@ -18,7 +18,8 @@
     "totvsLanguageServer.editor.autocomplete": "Off",
     "totvsLanguageServer.workspaceServerConfig": false,
     "totvsLanguageServer.editor.codeLens": false,
-    "totvsLanguageServer.editor.index.cache": "onMemory",
+    "totvsLanguageServer.editor.index.cache": "onDisk",
+    "totvsLanguageServer.editor.linter.behavior": "enable",
     "totvsLanguageServer.compilation.generatePpoFile": false,
     "totvsLanguageServer.editor.hover": "off",
     "editor.formatOnSave": false,
@@ -40,5 +41,8 @@
     "editor.codeLens": true,
     "totvsLanguageServer.formatter.provider": "ls",
     "editor.signatureHelp.enabled": true,
-    "totvsLanguageServer.editor.codeActions": false
+    "totvsLanguageServer.editor.codeActions": false,
+    "totvsLanguageServer.mcp.enable": true,
+    "totvsLanguageServer.mcp.log": "message",
+    "totvsLanguageServer.mcp.logFile": "mco.log"    
 }

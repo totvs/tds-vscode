@@ -73,10 +73,10 @@
 		{
 			"type": "extensionHost",
 			"request": "launch",
-			"name": "Advpl0",
+			"name": "advpl",
 			"runtimeExecutable": "${execPath}",
 			"args": [
-				"${workspaceFolder}/test/resources/projects/advpl0",
+				"${workspaceFolder}/test/resources/projects/advpl",
 				"--extensionDevelopmentPath=${workspaceFolder}",
 				"--inspect"
 			],

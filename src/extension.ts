@@ -71,6 +71,7 @@ import { tlppTools } from "./tlpp-tools/tlppTools";
 import { openWebMonitor } from "./monitor/monitorLoader";
 import { activate as activateOidcAuth } from "./oidcauth/OIDCAuthHandler";
 import { registerChatTools } from "./chat/chatTools";
+import { registerMcpServer } from "./mcp";
 import { checkWhatsNew } from "./whatsNew";
 
 export let languageClient: TotvsLanguageClientA;
@@ -539,6 +540,9 @@ export async function activate(context: ExtensionContext) {
 
   // Registro de ferramentas de chat para o modelo de linguagem
   context.subscriptions.push(...registerChatTools(context));
+
+  // Servidor MCP embutido (habilitado por totvsLanguageServer.mcp.enable)
+  context.subscriptions.push(...registerMcpServer(context));
 
   // Register custom editor for patch files
   context.subscriptions.push(PatchEditorProvider.register(context));

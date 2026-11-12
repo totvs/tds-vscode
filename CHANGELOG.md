@@ -4,6 +4,11 @@
 
 ### Melhorias
 
+#### Pastas de trabalho
+
+As pastas `.cache`, `.advpl` e arquivos do *linter* agora ficam em `.tds` (antes `.vscode`).
+Caso seja detectado dentro da pastas `.vscode`, as pastas serão movidas para a nova localização.
+
 #### Atualização do "steering"
 
 Efetua atualização do "steering" para uso pelo Kiro.

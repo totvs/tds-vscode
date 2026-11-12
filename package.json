@@ -39,7 +39,7 @@
     "url": "https://github.com/totvs/tds-vscode/issues"
   },
   "scripts": {
-    "clean2": "npx rimraf out node_modukes",
+    "clean2": "npx rimraf out node_modules",
     "clean": "gulp clean",
     "clean-logs": "npx rimraf ./**/*.log ./**/*.dmp --verbose",
     "compile": "npm-run-all compile:*",
@@ -95,6 +95,7 @@
     "@types/vscode": "^1.97.2",
     "@vscode/debugadapter": "^1.51.1",
     "@vscode/l10n": "^0.0.16",
+    "zod": "4.6.2",
     "@vscode/webview-ui-toolkit": "^1.2.1",
     "cheerio": "1.0.0-rc.10",
     "core-js": "^3.25.2",
@@ -169,6 +170,12 @@
     "onChatParticipant:tds-vscode.tools"
   ],
   "contributes": {
+    "mcpServerDefinitionProviders": [
+      {
+        "id": "tds-vscode.mcp",
+        "label": "TDS-VSCode MCP"
+      }
+    ],
     "languageModelTools": [
       {
         "name": "tds-lm-tools",
@@ -496,6 +503,30 @@
       "type": "object",
       "title": "TOTVS",
       "properties": {
+        "totvsLanguageServer.mcp.enable": {
+          "scope": "window",
+          "type": "boolean",
+          "default": false,
+          "description": "Habilita o servidor MCP embutido da extensão TDS-VSCode (somente loopback, com token)."
+        },
+        "totvsLanguageServer.mcp.log": {
+          "scope": "window",
+          "type": "string",
+          "enum": ["off", "message", "verbose"],
+          "enumDescriptions": [
+            "Registra somente a inicialização e a finalização do servidor MCP.",
+            "Registra o cabeçalho de cada chamada (sem os dados de envio/retorno).",
+            "Registra tudo, incluindo argumentos, resultados e corpo das requisições."
+          ],
+          "default": "message",
+          "description": "Nível de log do servidor MCP (canal de saída 'TDS MCP')."
+        },
+        "totvsLanguageServer.mcp.logFile": {
+          "scope": "window",
+          "type": "string",
+          "default": "",
+          "description": "Arquivo para gravar o log do servidor MCP, sempre no nível 'verbose'. Se informar apenas o nome, usa a pasta raiz do projeto. Vazio desativa."
+        },
         "totvsLanguageServer.launch.args": {
           "type": "array",
           "default": [],
@@ -1077,6 +1108,21 @@
       }
     },
     "commands": [
+      {
+        "command": "totvs-developer-studio.mcp.start",
+        "title": "Iniciar servidor MCP",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.mcp.showLog",
+        "title": "Mostrar log do servidor MCP",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.mcp.stop",
+        "title": "Parar servidor MCP",
+        "category": "TOTVS"
+      },
       {
         "command": "totvs-developer-studio.poc-login-oidc",
         "title": "POC Login OIDC",
