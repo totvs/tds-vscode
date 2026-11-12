@@ -7,6 +7,10 @@ static cStaticCall := conout("static")
 user function uvfSingle()
   local cUnused
   local nUsed := 1
+
+  for i := 1 to 10
+    conout(i)
+  next
   conout(nUsed)
   conout(nStaticUsed)
 return
