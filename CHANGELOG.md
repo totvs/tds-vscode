@@ -44,6 +44,7 @@ A dobra (_folding_) de código é controlado pelas configurações nativas do VS
 Adicionado sugestões de correções para:
 
 - Variável não utilizada
+- Variável usada em comando FOR não local
 
 ### Melhorias
 
