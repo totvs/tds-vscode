@@ -364,7 +364,9 @@ export function commandBuildFile(
     new Promise((resolve, reject) => {
       if (files) {
         const arrayFiles: string[] = changeToArrayString(files);
-        let allFiles = Utils.getAllFilesRecursive(arrayFiles, true);
+        const ignoredResources: string[] = [];
+        let allFiles = Utils.getAllFilesRecursive(arrayFiles, true, ignoredResources);
+        showIgnoredCompilationResources(ignoredResources);
         buildFile(allFiles, recompile);
       } else if (filename !== undefined) {
         buildFile([filename], recompile);
@@ -444,10 +446,36 @@ export function commandBuildWorkspace(recompile: boolean) {
       folders.push(value.uri.fsPath);
     });
 
-    let allFiles = Utils.getAllFilesRecursive(folders, true);
+    const ignoredResources: string[] = [];
+    let allFiles = Utils.getAllFilesRecursive(folders, true, ignoredResources);
+    showIgnoredCompilationResources(ignoredResources);
 
     buildFile(allFiles, recompile);
   }
+}
+
+function showIgnoredCompilationResources(resources: string[]) {
+  if (resources.length === 0) {
+    return;
+  }
+
+  const showFiles = vscode.l10n.t("Show files");
+  const message = vscode.l10n.t(
+    "{0} file(s) ignored by compilation.ignorePatterns.",
+    resources.length
+  );
+
+  vscode.window.showInformationMessage(message, showFiles).then((selected) => {
+    if (selected === showFiles) {
+      const content = resources
+        .map((resource) => vscode.workspace.asRelativePath(resource, false))
+        .sort((left, right) => left.localeCompare(right))
+        .join("\n");
+
+      vscode.workspace.openTextDocument({ content, language: "plaintext" })
+        .then((document) => vscode.window.showTextDocument(document));
+    }
+  });
 }
 
 /**
