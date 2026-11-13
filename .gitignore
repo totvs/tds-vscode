@@ -30,6 +30,10 @@ test/**/.vscode
 /test/resources/projects/advpl0
 /test/resources/projects/**/.kiro
 /test/resources/projects/**/.github
+!/test/resources/projects/advpl/.github/
+!/test/resources/projects/advpl/.github/skills/
+!/test/resources/projects/advpl/.github/skills/totvs-mcp/
+!/test/resources/projects/advpl/.github/skills/totvs-mcp/SKILL.md
 .vscode/settings.json
 /test/resources/projects/advpl/files/poc-advpl
 /plans
