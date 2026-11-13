@@ -536,6 +536,8 @@ export async function activate(context: ExtensionContext) {
 
   // Inicialização da formatação (LS x extensão) conforme configuração
   applyFormattingMode(context);
+
+  // Inicialização do "outline"
   context.subscriptions.push(register4glOutline());
 
   // Registro de ferramentas de chat para o modelo de linguagem

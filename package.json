@@ -173,7 +173,7 @@
     "mcpServerDefinitionProviders": [
       {
         "id": "tds-vscode.mcp",
-        "label": "TDS-VSCode MCP"
+        "label": "TOTVS-Mcp"
       }
     ],
     "languageModelTools": [
@@ -519,7 +519,7 @@
             "Registra tudo, incluindo argumentos, resultados e corpo das requisições."
           ],
           "default": "message",
-          "description": "Nível de log do servidor MCP (canal de saída 'TDS MCP')."
+          "description": "Nível de log do servidor MCP (canal de saída 'TOTVS-Mcp')."
         },
         "totvsLanguageServer.mcp.logFile": {
           "scope": "window",

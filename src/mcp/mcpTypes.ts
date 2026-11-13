@@ -1,6 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-export const MCP_SERVER_NAME = "tds-vscode";
+export const MCP_SERVER_NAME = "TOTVS MCP (Exp)";
 export const MCP_SERVER_VERSION = "0.1.0";
 export const MCP_ENDPOINT_PATH = "/mcp";
 export const MCP_DEFAULT_HOST = "127.0.0.1";

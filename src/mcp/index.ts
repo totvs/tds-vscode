@@ -23,7 +23,7 @@ function errorText(e: unknown): string {
 
 /**
  * Registra o servidor MCP da extensão, o provider de definições para o VS Code
- * e os comandos de controle. As chamadas são registradas no Output Channel "TDS MCP",
+ * e os comandos de controle. As chamadas são registradas no Output Channel "TOTVS-Mcp",
  * conforme `totvsLanguageServer.mcp.log` (off | message | verbose).
  *
  * O servidor só é disponibilizado quando `totvsLanguageServer.mcp.enable` estiver ligado.
@@ -101,7 +101,7 @@ export function registerMcpServer(_context: vscode.ExtensionContext): vscode.Dis
 		mcpLog.message("command totvs-developer-studio.mcp.start");
 		try {
 			const info = await server.start();
-			vscode.window.showInformationMessage(`TDS MCP ativo em ${info.url}`);
+			vscode.window.showInformationMessage(`TOTVS-Mcp ativo em ${info.url}`);
 		} catch (e) {
 			mcpLog.error("command mcp.start falhou", errorText(e));
 			vscode.window.showErrorMessage(`Falha ao iniciar o servidor MCP: ${e instanceof Error ? e.message : e}`);
@@ -111,7 +111,7 @@ export function registerMcpServer(_context: vscode.ExtensionContext): vscode.Dis
 	const stop = vscode.commands.registerCommand("totvs-developer-studio.mcp.stop", async () => {
 		mcpLog.message("command totvs-developer-studio.mcp.stop");
 		await server.stop();
-		vscode.window.showInformationMessage("TDS MCP parado.");
+		vscode.window.showInformationMessage("TOTVS-Mcp parado.");
 	});
 
 	const showLog = vscode.commands.registerCommand("totvs-developer-studio.mcp.showLog", () => mcpLog.show(false));

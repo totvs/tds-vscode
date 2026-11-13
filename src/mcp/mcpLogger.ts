@@ -3,7 +3,7 @@ import * as path from "path";
 import * as vscode from "vscode";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-const CHANNEL_NAME = "TDS MCP";
+const CHANNEL_NAME = "TOTVS-Mcp";
 const CONFIG_SECTION = "totvsLanguageServer";
 const CONFIG_LOG = "mcp.log";
 const CONFIG_LOG_FILE = "mcp.logFile";
@@ -112,7 +112,7 @@ function emit(level: McpLogLevel, kind: "info" | "warn" | "error", msg: string, 
 	writeToFile(kind, text, args);
 }
 
-/** Logger do servidor MCP: Output Channel "TDS MCP" e, opcionalmente, arquivo. */
+/** Logger do servidor MCP: Output Channel "TOTVS-Mcp" e, opcionalmente, arquivo. */
 export const mcpLog = {
 	/** Inicialização/finalização: sempre registrado, inclusive com `mcp.log = off`. */
 	lifecycle: (msg: string, ...args: unknown[]) => emit("off", "info", msg, args),
