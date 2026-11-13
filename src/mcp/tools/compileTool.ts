@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import { z } from "zod";
 import { McpRegistrar } from "../mcpTypes";
-import { handleCompilerCommand } from "../../chat/handleCompileCommands";
-import { DEFAULT_FLAG_OPTIONS, FlagOptions, resolveTarget } from "../../chat/chatUtils";
+import { handleCompilerCommand } from "../handleCompileCommands";
+import { DEFAULT_FLAG_OPTIONS, FlagOptions, resolveTarget } from "../chatUtils";
 
 type CompileArgs = {
 	target?: string;

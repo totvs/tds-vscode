@@ -1,5 +1,5 @@
 import { McpRegistrar } from "../mcpTypes";
-import { buildHelpText } from "../../chat/chatTools";
+import { buildHelpText } from "../helpText";
 
 const MCP_TOOLS_HELP: string = [
 	"",

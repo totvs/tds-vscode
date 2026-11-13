@@ -2,7 +2,17 @@
 
 ## Versão [2.2.X]
 
+### Depreciado
+
+#### Ferramentas para _chat_ `@tds`
+
+As ferramentas de modelo de linguagem (\_LM Tools) foram removidas devido a descontinuação por parte da _Microsoft_. Em seu lugar, foi implementado o [_TOTVS MCP_](#servidor-totvs-mcp) que efetua as mesmas operações usando linguagem natural.
+
 ### Novidades
+
+#### Servidor TOTVS MCP
+
+Implementação do _TOTVS MCP_, um servidor [MCP](docs/mcp.md) (_Model Context Protocol_) embutido na extensão, que permite aos assistentes de IA (GitHub Copilot, Kiro etc.) operar sobre os fontes e o ambiente conectado, usando linguagem natural.
 
 #### `Linter`
 
@@ -10,7 +20,7 @@ Troca do motor do `linter`, proporcionando diversas melhorias.
 
 Este processo é **experimental** e vem ativado por padrão. Caso tenha problemas com visão `Estrutura`, navegação ou `hover` em símbolos, favor abrir um chamado relatando-o e desative o novo motor colocando no `settings.json`:
 
-```json
+````json
 {
   ...,
   "totvsLanguageServer.linter.callTreeSitter": false
@@ -39,7 +49,7 @@ Ajustado o valor padrão das configurações abaixo, para atender melhor os requ
 {
   "totvsLanguageServer.editor.linter.behavior": "enableOnlyOpenFiles"
 }
-```
+````
 
 Assim, o `linter` voltará a utilizar o motor original.
 

@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { z } from "zod";
 import { McpRegistrar } from "../mcpTypes";
-import { resolveTargetUri } from "../../chat/chatUtils";
+import { resolveTargetUri } from "../chatUtils";
 
 type PlainRange = { start: { line: number; character: number }; end: { line: number; character: number } };
 

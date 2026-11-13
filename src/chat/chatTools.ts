@@ -1,8 +1,7 @@
 import * as vscode from "vscode";
 import {
 	APPLY_PATCH_COMMAND, COMPILER_COMMAND, COMPILER_PARTICIPANT_ID, COMPILER_TOOL_NAME,
-	ChatCompilerToolInput, DEFAULT_COMPILER_TOOL_INPUT, DEFAULT_FLAG_OPTIONS, DIAGNOSTIC_IDLE_WINDOW_MS, DIAGNOSTIC_WAIT_TIMEOUT_MS,
-	DiagnosticEntry, DiagnosticsWaitResult,
+	ChatCompilerToolInput, DEFAULT_COMPILER_TOOL_INPUT, DEFAULT_FLAG_OPTIONS,
 	FlagOptions, HELP_COMMAND,
 	SYNTAX_ONLY_COMMAND,
 	VALIDATE_PATCH_COMMAND,
@@ -10,9 +9,10 @@ import {
 	isOpenEditorsTargetAlias, isWorkspaceTargetAlias, normalizeCommand,
 	normalizeTargetKeyword, resolveTarget,
 	stripQuotes
-} from "./chatUtils";
-import { handleApplyPatchCommand, handleValidPatchCommand } from "./handlePatchCommands";
-import { handleCompilerCommand } from "./handleCompileCommands";
+} from "../mcp/chatUtils";
+import { handleApplyPatchCommand, handleValidPatchCommand } from "../mcp/handlePatchCommands";
+import { handleCompilerCommand } from "../mcp/handleCompileCommands";
+import { buildHelpText } from "../mcp/helpText";
 
 function isValidCommand(command: string | undefined, prompt: string | undefined): string {
 	let result: string = "";
@@ -152,157 +152,6 @@ function parseFlagOptions(options: FlagOptions, key: string, value: string): voi
 	}
 }
 
-/**
- * Waits for diagnostics to stabilize after compilation to avoid partial reads.
- * @param token Invocation cancellation token.
- * @param timeoutMs Timeout in ms to wait for diagnostic changes.
- * @returns Wait result, including change, timeout, and cancellation.
- */
-export async function waitForDiagnosticsChange(
-	token: vscode.CancellationToken,
-	timeoutMs: number = DIAGNOSTIC_WAIT_TIMEOUT_MS
-): Promise<DiagnosticsWaitResult> {
-	console.log(`[tds-chat-tools waitForDiagnosticsChange: start timeoutMs=${timeoutMs}`);
-	return await new Promise<DiagnosticsWaitResult>((resolve) => {
-		let finished: boolean = false;
-		let idleTimer: NodeJS.Timeout | undefined;
-		let hasChange: boolean = false;
-		let timedOut: boolean = false;
-		let canceled: boolean = false;
-		let cancelDisposable: vscode.Disposable | undefined;
-
-		const scheduleIdleResolve: () => void = (): void => {
-			if (idleTimer) {
-				clearTimeout(idleTimer);
-			}
-
-			idleTimer = setTimeout(() => finish(), DIAGNOSTIC_IDLE_WINDOW_MS);
-		};
-
-		const finish: () => void = (): void => {
-			if (finished) {
-				return;
-			}
-			finished = true;
-			disposable.dispose();
-			if (cancelDisposable) {
-				cancelDisposable.dispose();
-			}
-			if (idleTimer) {
-				clearTimeout(idleTimer);
-			}
-			clearTimeout(timeout);
-			console.log(`[tds-chat-tools waitForDiagnosticsChange: finish changed=${hasChange} timedOut=${timedOut} canceled=${canceled}`);
-			resolve({
-				changed: hasChange,
-				timedOut,
-				canceled
-			});
-		};
-
-		const disposable: vscode.Disposable = vscode.languages.onDidChangeDiagnostics(() => {
-			hasChange = true;
-			scheduleIdleResolve();
-		});
-		if (token) {
-			cancelDisposable = token.onCancellationRequested(() => {
-				console.warn("[tds-chat-tools] waitForDiagnosticsChange: canceled by token.");
-				canceled = true;
-				finish();
-			});
-		}
-		const timeout: NodeJS.Timeout = setTimeout(() => {
-			console.warn("[tds-chat-tools] waitForDiagnosticsChange: timeout reached.");
-			timedOut = true;
-			finish();
-		}, timeoutMs);
-	});
-}
-
-/**
- * Collects diagnostics only for open documents.
- * @returns List of diagnostics eligible for chat display.
- */
-export function collectDiagnosticsForOpenEditors(): DiagnosticEntry[] {
-	const openDocumentKeys: Set<string> = new Set(
-		vscode.workspace.textDocuments.map((document) =>
-			document.uri.scheme === "file"
-				? `file:${document.uri.fsPath.toLowerCase()}`
-				: `uri:${document.uri.toString(true)}`
-		)
-	);
-
-	const diagnosticsByUri: [vscode.Uri, vscode.Diagnostic[]][] = vscode.languages.getDiagnostics();
-	const filtered: [vscode.Uri, vscode.Diagnostic[]][] = diagnosticsByUri.filter(([uri]) => {
-		if (uri.scheme === "file") {
-			return openDocumentKeys.has(`file:${uri.fsPath.toLowerCase()}`);
-		}
-
-		return openDocumentKeys.has(`uri:${uri.toString(true)}`);
-	});
-
-	const entries: DiagnosticEntry[] = [];
-	for (const [uri, diagnostics] of filtered) {
-		for (const diagnostic of diagnostics) {
-			if (
-				diagnostic.severity === vscode.DiagnosticSeverity.Error ||
-				diagnostic.severity === vscode.DiagnosticSeverity.Warning
-			) {
-				entries.push({ uri, diagnostic });
-			}
-		}
-	}
-
-	return entries;
-}
-
-/**
- * Generates help text with commands and options supported by chat.
- * @returns Help text in markdown for chat.
- */
-export function buildHelpText(): string {
-	const lines: string[] = [
-		vscode.l10n.t("Available commands:"),
-		vscode.l10n.t("- /{0}: compiles the target (default: current editor).", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0}: compiles the target using syntax-only mode.", SYNTAX_ONLY_COMMAND),
-		vscode.l10n.t("- /{0}: applies a patch file (.ptm, .zip, .upd).", APPLY_PATCH_COMMAND),
-		vscode.l10n.t("- /{0}: validates a patch file (.ptm, .zip, .upd).", VALIDATE_PATCH_COMMAND),
-		vscode.l10n.t("- /help: shows this help."),
-		"",
-		vscode.l10n.t("Supported targets:"),
-		vscode.l10n.t("- current editor: editor, current (default)"),
-		vscode.l10n.t("- open editors: open-files, open-editors, arquivos-abertos, fontes-abertos, arquivos abertos, fontes abertos"),
-		vscode.l10n.t("- workspace: workspace, ws, all"),
-		vscode.l10n.t("- file: relative or absolute path (ex: src/meu.prw)"),
-		vscode.l10n.t("- folder: relative or absolute path (ex: src/modulo)"),
-		"",
-		vscode.l10n.t("Notes:"),
-		vscode.l10n.t("- If you provide only a single name (no spaces), it is treated as the target."),
-		vscode.l10n.t("- The command is executed on the current server/environment."),
-		"",
-		vscode.l10n.t("Supported flags (use key=value or key:value):"),
-		vscode.l10n.t("- syntaxOnly=true|false"),
-		vscode.l10n.t("- only=all|error|warning"),
-		vscode.l10n.t("- max=N"),
-		vscode.l10n.t("- sort=none|file|severity"),
-		vscode.l10n.t("- format=markdown|json"),
-		"",
-		vscode.l10n.t("Examples:"),
-		vscode.l10n.t("- /{0} target=src/modulo syntaxOnly=true only=error sort=file", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0} target=editor", SYNTAX_ONLY_COMMAND),
-		vscode.l10n.t("- /{0} target=open-editors", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0} src/modulo", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0} only=error", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0} syntaxOnly=true", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0} format=json", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0} patches/fix.ptm", APPLY_PATCH_COMMAND),
-		vscode.l10n.t("- /{0} c:/patches/fix.zip", APPLY_PATCH_COMMAND),
-		vscode.l10n.t("- /{0} patches/fix.ptm", VALIDATE_PATCH_COMMAND),
-		vscode.l10n.t("- /{0} c:/patches/fix.zip", VALIDATE_PATCH_COMMAND)
-	];
-
-	return lines.join("\n");
-}
 
 /**
  * Implements the compiler tool used by the chat participant.
