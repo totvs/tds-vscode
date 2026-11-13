@@ -1,9 +1,12 @@
 import { McpRegistrar } from "../mcpTypes";
+import { registerCompilePrompts } from "./compilePrompts";
 
 /**
- * Ponto de registro de prompts MCP.
- * TODO: expor prompts reutilizáveis (ex.: revisão de fonte AdvPL/TLPP).
+ * Lista de registradores de prompts.
+ * Para adicionar um novo prompt: crie o arquivo em `prompts/` e inclua-o aqui.
  */
-export const registerPrompts: McpRegistrar = (_server) => {
-	// Nenhum prompt registrado ainda.
+const promptRegistrars: McpRegistrar[] = [registerCompilePrompts];
+
+export const registerPrompts: McpRegistrar = (server) => {
+	promptRegistrars.forEach((register) => register(server));
 };

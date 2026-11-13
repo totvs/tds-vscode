@@ -3,7 +3,7 @@ import * as path from "path";
 import * as vscode from "vscode";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-const CHANNEL_NAME = "TOTVS-Mcp";
+const CHANNEL_NAME = "TOTVS MCP";
 const CONFIG_SECTION = "totvsLanguageServer";
 const CONFIG_LOG = "mcp.log";
 const CONFIG_LOG_FILE = "mcp.logFile";
@@ -14,22 +14,23 @@ const MAX_FILE_LENGTH = 20000;
  * Níveis de log (`totvsLanguageServer.mcp.log`), aplicados ao Output Channel:
  * - off:     somente inicialização e finalização;
  * - message: cabeçalho de cada chamada (sem os dados de envio/retorno);
- * - verbose: tudo, incluindo argumentos, resultados e corpo das requisições.
+ * - verbose: tudo, incluindo argumentos, resultados e corpo das requisições;
+ * - debug:   verbose + mensagens técnicas (nomes de métodos/funções internas).
  *
  * Se `totvsLanguageServer.mcp.logFile` estiver preenchido, o arquivo sempre recebe o log
  * completo (verbose), independentemente do nível acima.
  */
-export type McpLogLevel = "off" | "message" | "verbose";
+export type McpLogLevel = "off" | "message" | "verbose" | "debug";
 
-const LEVEL_ORDER: Record<McpLogLevel, number> = { off: 0, message: 1, verbose: 2 };
+const LEVEL_ORDER: Record<McpLogLevel, number> = { off: 0, message: 1, verbose: 2, debug: 3 };
 
-let channel: vscode.LogOutputChannel | undefined;
+let channel: vscode.OutputChannel | undefined;
 let disposed = false;
 let lastFileError: string | undefined;
 
 export function getLogLevel(): McpLogLevel {
 	const value = vscode.workspace.getConfiguration(CONFIG_SECTION).get<string>(CONFIG_LOG, "message");
-	return value === "off" || value === "verbose" ? value : "message";
+	return value === "off" || value === "verbose" || value === "debug" ? value : "message";
 }
 
 /**
@@ -54,14 +55,27 @@ function enabledFor(level: McpLogLevel): boolean {
 	return LEVEL_ORDER[getLogLevel()] >= LEVEL_ORDER[level];
 }
 
-function getChannel(): vscode.LogOutputChannel | undefined {
+function getChannel(): vscode.OutputChannel | undefined {
 	if (disposed) {
 		return undefined;
 	}
 	if (!channel) {
-		channel = vscode.window.createOutputChannel(CHANNEL_NAME, { log: true });
+		// Canal simples (não "log"), para controlar o formato: somente a hora, sem a data.
+		channel = vscode.window.createOutputChannel(CHANNEL_NAME);
 	}
 	return channel;
+}
+
+/** Hora local no formato HH:mm:ss (sem a data). */
+function currentTime(): string {
+	const d = new Date();
+	const pad = (n: number, size = 2) => String(n).padStart(size, "0");
+	return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds(),2)}`;
+}
+
+/** Linha do Output Channel: `HH:mm:ss.SSS [nível] mensagem`. */
+function formatChannelLine(kind: string, text: string): string {
+	return `${currentTime()} [${kind}] ${text}`;
 }
 
 /** Serializa para log, truncando textos longos e tolerando referências circulares. */
@@ -91,7 +105,7 @@ function writeToFile(kind: string, msg: string, args: unknown[]): void {
 		const message = `Falha ao gravar o log MCP em '${file}': ${e instanceof Error ? e.message : String(e)}`;
 		if (message !== lastFileError) {
 			lastFileError = message;
-			getChannel()?.error(message);
+			getChannel()?.appendLine(formatChannelLine("error", message));
 		}
 	}
 }
@@ -101,18 +115,19 @@ function writeToFile(kind: string, msg: string, args: unknown[]): void {
  * @param level Nível mínimo configurado para a entrada aparecer no Output Channel.
  * @param verboseTag Marca a entrada como detalhe (prefixo `[verbose]`).
  */
-function emit(level: McpLogLevel, kind: "info" | "warn" | "error", msg: string, args: unknown[], verboseTag = false): void {
-	const text = verboseTag ? `[verbose] ${msg}` : msg;
+function emit(level: McpLogLevel, kind: "info" | "warn" | "error", msg: string, args: unknown[], tag?: "verbose" | "debug"): void {
+	const text = tag ? `[${tag}] ${msg}` : msg;
 
 	if (enabledFor(level)) {
-		getChannel()?.[kind](text, ...args.map((a) => stringify(a, MAX_CHANNEL_LENGTH)));
+		const line = [text, ...args.map((a) => stringify(a, MAX_CHANNEL_LENGTH))].join(" ");
+		getChannel()?.appendLine(formatChannelLine(kind, line));
 	}
 
 	// O arquivo recebe sempre o nível verbose (tudo).
 	writeToFile(kind, text, args);
 }
 
-/** Logger do servidor MCP: Output Channel "TOTVS-Mcp" e, opcionalmente, arquivo. */
+/** Logger do servidor MCP: Output Channel "TOTVS MCP" e, opcionalmente, arquivo. */
 export const mcpLog = {
 	/** Inicialização/finalização: sempre registrado, inclusive com `mcp.log = off`. */
 	lifecycle: (msg: string, ...args: unknown[]) => emit("off", "info", msg, args),
@@ -125,7 +140,10 @@ export const mcpLog = {
 	error: (msg: string, ...args: unknown[]) => emit("message", "error", msg, args),
 
 	/** Dados completos (argumentos, resultados, corpos): no canal, somente em `verbose`. */
-	verbose: (msg: string, ...args: unknown[]) => emit("verbose", "info", msg, args, true),
+	verbose: (msg: string, ...args: unknown[]) => emit("verbose", "info", msg, args, "verbose"),
+
+	/** Mensagens técnicas (nomes de métodos/funções): no canal, somente em `debug`. */
+	debug: (msg: string, ...args: unknown[]) => emit("debug", "info", msg, args, "debug"),
 
 	show: (preserveFocus = true) => getChannel()?.show(preserveFocus),
 	dispose: () => {
@@ -139,24 +157,41 @@ export const mcpLog = {
 	}
 };
 
+
+type CallKind = "tool" | "prompt" | "resource";
+
+const CALL_KIND_LABEL: Record<CallKind, string> = {
+	tool: "Ferramenta",
+	prompt: "Prompt",
+	resource: "Recurso"
+};
+
 /**
- * Executa `fn` registrando a chamada.
- * - message: cabeçalho de entrada/saída e duração (sem dados);
- * - verbose: acrescenta argumentos e resultado.
+ * Executa `fn` registrando a chamada de uma ferramenta, prompt ou recurso.
+ * - message: início, conclusão (com duração) ou falha, sem dados;
+ * - verbose: acrescenta parâmetros e resultado;
+ * - debug:   acrescenta as mensagens técnicas.
  */
-export async function logCall<T>(label: string, args: unknown, fn: () => Promise<T> | T): Promise<T> {
+export async function logCall<T>(kind: CallKind, name: string, args: unknown, fn: () => Promise<T> | T): Promise<T> {
+	const title = `${CALL_KIND_LABEL[kind]} '${name}'`;
 	const start = Date.now();
-	mcpLog.message(`→ ${label}`);
-	mcpLog.verbose(`→ ${label} args`, args);
+
+	mcpLog.message(`${title}: iniciada`);
+	mcpLog.verbose(`${title}: parâmetros`, args);
+	mcpLog.debug(`→ ${kind} ${name}`);
 	try {
 		const result = await fn();
-		mcpLog.message(`← ${label} ok (${Date.now() - start}ms)`);
-		mcpLog.verbose(`← ${label} resultado`, result);
+		const elapsed = Date.now() - start;
+		mcpLog.message(`${title}: concluída em ${elapsed}ms`);
+		mcpLog.verbose(`${title}: resultado`, result);
+		mcpLog.debug(`← ${kind} ${name} ok (${elapsed}ms)`);
 		return result;
 	} catch (e) {
+		const elapsed = Date.now() - start;
 		const message = e instanceof Error ? e.message : String(e);
-		mcpLog.error(`✗ ${label} falhou (${Date.now() - start}ms): ${message}`);
-		mcpLog.verbose(`✗ ${label} stack`, e instanceof Error ? e.stack ?? message : message);
+		mcpLog.error(`${title}: falhou em ${elapsed}ms — ${message}`);
+		mcpLog.verbose(`${title}: detalhes do erro`, e instanceof Error ? e.stack ?? message : message);
+		mcpLog.debug(`✗ ${kind} ${name} falhou (${elapsed}ms): ${message}`);
 		throw e;
 	}
 }
@@ -166,7 +201,7 @@ export async function logCall<T>(label: string, args: unknown, fn: () => Promise
  * Deve ser aplicado antes do registro das capacidades.
  */
 export function instrumentServer(server: McpServer): void {
-	const wrap = (method: "registerTool" | "registerResource" | "registerPrompt", kind: string) => {
+	const wrap = (method: "registerTool" | "registerResource" | "registerPrompt", kind: CallKind) => {
 		const original = (server as any)[method].bind(server);
 
 		(server as any)[method] = (...params: any[]) => {
@@ -178,11 +213,12 @@ export function instrumentServer(server: McpServer): void {
 				params[cbIndex] = (...cbArgs: any[]) => {
 					// Sem schema o callback recebe só `extra`; com schema, (args, extra).
 					const args = cbArgs.length > 1 ? cbArgs[0] : undefined;
-					return logCall(`${kind} ${name}`, args, () => callback(...cbArgs));
+					return logCall(kind, name, args, () => callback(...cbArgs));
 				};
 			}
 
-			mcpLog.verbose(`registrado ${kind}: ${name}`);
+			mcpLog.verbose(`${CALL_KIND_LABEL[kind]} '${name}' disponibilizada`);
+			mcpLog.debug(`registrado ${kind}: ${name}`);
 			return original(...params);
 		};
 	};
@@ -192,7 +228,7 @@ export function instrumentServer(server: McpServer): void {
 	wrap("registerPrompt", "prompt");
 }
 
-/** Extrai um resumo (métodos JSON-RPC) do corpo de uma requisição MCP. */
+/** Extrai um resumo técnico (métodos JSON-RPC) do corpo de uma requisição MCP. */
 export function describeRpcBody(body: unknown): string {
 	const messages = Array.isArray(body) ? body : [body];
 	return messages
@@ -204,4 +240,41 @@ export function describeRpcBody(body: unknown): string {
 			return `${m.method ?? "<resposta>"}${toolName}${m.id !== undefined ? `#${m.id}` : ""}`;
 		})
 		.join(", ");
+}
+
+/** Descreve em linguagem natural o que o cliente MCP está pedindo. */
+export function describeRpcFriendly(body: unknown): string {
+	const messages = Array.isArray(body) ? body : [body];
+	return messages
+		.map((m: any) => {
+			if (!m || typeof m !== "object") {
+				return "requisição vazia";
+			}
+			const name = m.params?.name ? ` '${m.params.name}'` : "";
+			switch (m.method) {
+				case "initialize":
+					return "o cliente iniciou a conexão";
+				case "notifications/initialized":
+					return "o cliente confirmou a conexão";
+				case "ping":
+					return "o cliente verificou se o servidor está ativo";
+				case "tools/list":
+					return "o cliente listou as ferramentas";
+				case "tools/call":
+					return `o cliente chamou a ferramenta${name}`;
+				case "prompts/list":
+					return "o cliente listou os prompts";
+				case "prompts/get":
+					return `o cliente obteve o prompt${name}`;
+				case "resources/list":
+					return "o cliente listou os recursos";
+				case "resources/read":
+					return "o cliente leu um recurso";
+				case undefined:
+					return "o cliente enviou uma resposta";
+				default:
+					return `o cliente enviou '${m.method}'`;
+			}
+		})
+		.join("; ");
 }

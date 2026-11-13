@@ -7,7 +7,7 @@
 
 #include "totvs.ch"
 
-user function _index()
+user function u_index()
 
 return
 
@@ -15,10 +15,15 @@ static function _index()
 
 return
 
+user function u_outArray(aArray)
+		if valtype(aArray) == "A"
+			conout("array len: " + cValToChar(len(aArray)))
+		endif
+
+return
+
 user function ;
 		array1()
-	local list_50   := array(50)
-	local list_100  := array(100)
 	local list_101  := array(101)
 	local list_199  := array(199)
 	local list_200  := array(200)
@@ -34,11 +39,11 @@ user function ;
 
 	for _index := 1 TO 1000
 		if (_index < 51)
-			list_50[_index] := _index
+//			list_50[_index] := _index
 		endif
 
 		if (_index < 101)
-			list_100[_index] := _index
+//			list_100[_index] := _index
 		endif
 
 		if (_index < 102)

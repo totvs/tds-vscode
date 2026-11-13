@@ -173,7 +173,7 @@
     "mcpServerDefinitionProviders": [
       {
         "id": "tds-vscode.mcp",
-        "label": "TOTVS-Mcp"
+        "label": "TOTVS MCP"
       }
     ],
     "languageModelTools": [
@@ -512,14 +512,15 @@
         "totvsLanguageServer.mcp.log": {
           "scope": "window",
           "type": "string",
-          "enum": ["off", "message", "verbose"],
+          "enum": ["off", "message", "verbose", "debug"],
           "enumDescriptions": [
             "Registra somente a inicialização e a finalização do servidor MCP.",
             "Registra o cabeçalho de cada chamada (sem os dados de envio/retorno).",
-            "Registra tudo, incluindo argumentos, resultados e corpo das requisições."
+            "Registra tudo, incluindo argumentos, resultados e corpo das requisições.",
+            "Registra tudo do nível 'verbose' e também as mensagens técnicas (nomes de métodos e funções internas)."
           ],
           "default": "message",
-          "description": "Nível de log do servidor MCP (canal de saída 'TOTVS-Mcp')."
+          "description": "Nível de log do servidor MCP (canal de saída 'TOTVS MCP')."
         },
         "totvsLanguageServer.mcp.logFile": {
           "scope": "window",

@@ -44,5 +44,6 @@
     "totvsLanguageServer.editor.codeActions": false,
     "totvsLanguageServer.mcp.enable": true,
     "totvsLanguageServer.mcp.log": "message",
-    "totvsLanguageServer.mcp.logFile": "mcp.log"    
+    "totvsLanguageServer.mcp.logFile": "mcp.log",    
+    "totvsLanguageServer.callTreeSitter": "true"    
 }

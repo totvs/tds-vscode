@@ -260,7 +260,7 @@ export function collectDiagnosticsForOpenEditors(): DiagnosticEntry[] {
  * Generates help text with commands and options supported by chat.
  * @returns Help text in markdown for chat.
  */
-function buildHelpText(): string {
+export function buildHelpText(): string {
 	const lines: string[] = [
 		vscode.l10n.t("Available commands:"),
 		vscode.l10n.t("- /{0}: compiles the target (default: current editor).", COMPILER_COMMAND),
