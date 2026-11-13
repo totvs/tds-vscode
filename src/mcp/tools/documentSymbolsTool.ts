@@ -1,13 +1,46 @@
 import * as vscode from "vscode";
 import { z } from "zod";
-import { DocumentSymbolRequest } from "vscode-languageclient";
 import { McpRegistrar } from "../mcpTypes";
-import { languageClient } from "../../extension";
 import { resolveTargetUri } from "../../chat/chatUtils";
 
+type PlainRange = { start: { line: number; character: number }; end: { line: number; character: number } };
+
+function toRange(range: vscode.Range): PlainRange {
+	return {
+		start: { line: range.start.line, character: range.start.character },
+		end: { line: range.end.line, character: range.end.character }
+	};
+}
+
+/** Converte DocumentSymbol/SymbolInformation do VS Code em objeto simples (JSON). */
+function toPlain(symbol: vscode.DocumentSymbol | vscode.SymbolInformation): any {
+	const base = {
+		name: symbol.name,
+		kind: symbol.kind,
+		kindName: vscode.SymbolKind[symbol.kind]
+	};
+
+	if ("location" in symbol) {
+		return {
+			...base,
+			containerName: symbol.containerName,
+			location: { uri: symbol.location.uri.toString(), range: toRange(symbol.location.range) }
+		};
+	}
+
+	return {
+		...base,
+		detail: symbol.detail,
+		range: toRange(symbol.range),
+		selectionRange: toRange(symbol.selectionRange),
+		children: symbol.children?.map(toPlain)
+	};
+}
+
 /**
- * Ferramenta `tds_document_symbols`: envia `textDocument/documentSymbol` diretamente
- * ao Language Server (TOTVS LS) e devolve a resposta LSP sem conversões.
+ * Ferramenta `tds_document_symbols`: obtém os símbolos do documento pelo comando
+ * `vscode.executeDocumentSymbolProvider`, que consulta os providers registrados no VS Code
+ * (incluindo o Language Server TOTVS), como faz a `sehejjain.lsp-mcp-bridge`.
  * Sem `file`, usa o fonte do editor ativo.
  */
 export const registerDocumentSymbolsTool: McpRegistrar = (server) => {
@@ -16,19 +49,18 @@ export const registerDocumentSymbolsTool: McpRegistrar = (server) => {
 		{
 			title: "TDS Document Symbols",
 			description:
-				"Retorna os símbolos (funções, classes, métodos, variáveis...) de um fonte AdvPL/TLPP/4GL " +
-				"consultando o Language Server (textDocument/documentSymbol). " +
-				"Se 'file' for omitido, usa o fonte do editor ativo.",
+				"Get a hierarchical outline of all symbols (functions, classes, methods, variables) of an AdvPL/TLPP/4GL source file, " +
+				"provided by the TOTVS Language Server (document symbols). " +
+				"Use this AUTOMATICALLY when the user asks about file structure, 'what's in this file?', needs an overview, " +
+				"wants the outline or the list of functions/classes of a .prw/.tlpp/.prx/.4gl source. " +
+				"Prefer this tool over generic document-symbol tools for TOTVS sources. " +
+				"If 'file' is omitted, uses the active editor.",
 			inputSchema: {
-				file: z.string().optional().describe("Caminho do fonte (absoluto ou relativo ao workspace). Padrão: editor ativo")
+				file: z.string().optional().describe("Source path (absolute, relative to the workspace) or file URI (e.g. file:///c:/src/a.prw). Default: active editor")
 			}
 		},
 		async ({ file }) => {
 			const fail = (text: string) => ({ content: [{ type: "text" as const, text }], isError: true });
-
-			if (!languageClient || !languageClient.isReady) {
-				return fail("O Language Server ainda não está pronto.");
-			}
 
 			const uri: vscode.Uri | undefined = resolveTargetUri(file || "current");
 			if (!uri) {
@@ -38,12 +70,13 @@ export const registerDocumentSymbolsTool: McpRegistrar = (server) => {
 			// Garante que o documento foi aberto (didOpen) e sincronizado com o LS.
 			await vscode.workspace.openTextDocument(uri);
 
-			const response = await languageClient.sendRequest(DocumentSymbolRequest.type, {
-				textDocument: { uri: uri.toString() }
-			});
+			const symbols = await vscode.commands.executeCommand<(vscode.DocumentSymbol | vscode.SymbolInformation)[]>(
+				"vscode.executeDocumentSymbolProvider",
+				uri
+			);
 
 			return {
-				content: [{ type: "text" as const, text: JSON.stringify(response ?? [], null, 2) }]
+				content: [{ type: "text" as const, text: JSON.stringify((symbols ?? []).map(toPlain), null, 2) }]
 			};
 		}
 	);
