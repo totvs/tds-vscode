@@ -1,4 +1,3 @@
-
 # TOTVS Developer Studio para VSCode
 
 <!--[![GitHub stars](https://img.shields.io/github/stars/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/stargazers)
@@ -52,6 +51,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 - [Navegação em código](docs/dss.md)
 - [Configurações](docs/configuration.md) da extensão (chaves `totvsLanguageServer`)
 - [API](docs/api.md)
+- [TOTVS MCP](docs/mcp.md)
 
 ## SOBRE O USO DE CHAVES E TOKENS DE COMPILAÇÃO
 
@@ -71,6 +71,7 @@ Para melhor interoperabilidade do ecosistema **Protheus** (áreas de trabalho, _
 > Veja os requisitos para uso do **VS Code** em [Requirements](https://code.visualstudio.com/docs/supporting/requirements).
 
 > **Nunca usei o VS Code**: Recomendamos a leitura de:
+>
 > - [User Interface](https://code.visualstudio.com/docs/getstarted/userinterface)
 > - [Multi-root Workspaces](https://code.visualstudio.com/docs/editor/multi-root-workspaces)
 > - [Settings](https://code.visualstudio.com/docs/getstarted/settings)
@@ -101,7 +102,7 @@ No primeiro uso da extensão em um projeto, lhe será apresentada as [Boas Vinda
 
 ### Acentuação e caracteres especiais nos códigos fontes
 
-Tivemos notificações de problemas de _encode_ abrindo fontes antes salvos no *TDS*, isso ocorre porque o _encode_ original do VSCode é UTF8 e o do **TDS-VSCode** é outro.
+Tivemos notificações de problemas de _encode_ abrindo fontes antes salvos no _TDS_, isso ocorre porque o _encode_ original do VSCode é UTF8 e o do **TDS-VSCode** é outro.
 Para garantir a compilação é necessário compatibilizar o _encode_ da seguinte maneira:
 
 - No estado original o fonte será mostrado desta maneira:<br/>

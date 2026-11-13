@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { McpRegistrar, MCP_SERVER_NAME } from "../mcpTypes";
-import { resolveTargetUri } from "../chatUtils";
+import { resolveTargetUri } from "../mcpUtils";
 import { mcpLog } from "../mcpLogger";
 
 const DEFAULT_MAX_DIAGNOSTICS = 10;

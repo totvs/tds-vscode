@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { z } from "zod";
 import { McpRegistrar } from "../mcpTypes";
 import { handleCompilerCommand } from "../handleCompileCommands";
-import { DEFAULT_FLAG_OPTIONS, FlagOptions, resolveTarget } from "../chatUtils";
+import { DEFAULT_FLAG_OPTIONS, FlagOptions, resolveTarget } from "../mcpUtils";
 
 type CompileArgs = {
 	target?: string;
@@ -14,7 +14,7 @@ type CompileArgs = {
 };
 
 /**
- * Executa o fluxo de compilação do chat (`@tds /compiler`) e converte o resultado para MCP.
+ * Executa o fluxo de compilação e converte o resultado para MCP.
  * Sem `target`, usa o fonte do editor ativo (contexto atual).
  */
 async function runCompile(args: CompileArgs, signal?: AbortSignal) {
@@ -60,7 +60,7 @@ const formatSchema = z.enum(["markdown", "json"]).optional().describe("Formato d
 
 /**
  * Ferramentas `tds_compile` e `tds_syntax_only`.
- * Reaproveitam o mesmo fluxo da ferramenta de chat `@tds /compiler` e `@tds /syntax-only`.
+ * Compilam (ou apenas verificam a sintaxe de) fontes e retornam os diagnósticos.
  */
 export const registerCompileTool: McpRegistrar = (server) => {
 	server.registerTool(

@@ -170,97 +170,13 @@
   "l10n": "./l10n",
   "activationEvents": [
     "workspaceContains:**/*.pr[wgx]",
-    "workspaceContains:**/*.tlpp",
-    "onLanguageModelTool:tds-lm-tools",
-    "onChatParticipant:tds-vscode.tools"
+    "workspaceContains:**/*.tlpp"
   ],
   "contributes": {
     "mcpServerDefinitionProviders": [
       {
         "id": "tds-vscode.mcp",
         "label": "TOTVS MCP"
-      }
-    ],
-    "languageModelTools": [
-      {
-        "name": "tds-lm-tools",
-        "toolReferenceName": "tds",
-        "displayName": "TDS Tools",
-        "icon": "icons/totvs24x24.png",
-        "modelDescription": "Triggers compilation, patch validation/application, and help commands.",
-        "inputSchema": {
-          "type": "object",
-          "properties": {
-            "command": {
-              "type": "string",
-              "enum": [
-                "compiler",
-                "syntax-only",
-                "validate-patch",
-                "apply-patch",
-                "help"
-              ],
-              "description": "Tool command to execute."
-            },
-            "target": {
-              "type": "string",
-              "description": "Target alias/path for compile commands or patch file path for patch commands."
-            },
-            "flags": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "pattern": "^(syntaxOnly=(true|false)|applyOld=(true|false)|only=(all|error|warning)|max=\\d+|source=.+|sort=(none|file|severity)|format=(markdown|json))$"
-              },
-              "description": "Text flags for command options and diagnostic output.",
-              "examples": [
-                "syntaxOnly=true",
-                "applyOld=true",
-                "only=all",
-                "only=error",
-                "only=warning",
-                "max=20",
-                "source=advpl",
-                "sort=none",
-                "sort=file",
-                "sort=severity",
-                "format=markdown",
-                "format=json"
-              ]
-            }
-          }
-        }
-      }
-    ],
-    "chatParticipants": [
-      {
-        "id": "tds-vscode.tools",
-        "name": "tds",
-        "fullName": "TDS-VSCode Tools",
-        "description": "TDS-VSCode tools for use in chatbots.",
-        "isSticky": true,
-        "commands": [
-          {
-            "name": "compiler",
-            "description": "Compiles the current or informed context."
-          },
-          {
-            "name": "syntax-only",
-            "description": "Checks the syntax of the current or informed context."
-          },
-          {
-            "name": "validate-patch",
-            "description": "Validates a patch file (.ptm, .zip, .upd) against the RPO of the current server."
-          },
-          {
-            "name": "apply-patch",
-            "description": "Applies a patch file (.ptm, .zip, .upd) to the RPO of the current server."
-          },
-          {
-            "name": "help",
-            "description": "Provides help information for the TDS-VSCode tools."
-          }
-        ]
       }
     ],
     "iconThemes": [

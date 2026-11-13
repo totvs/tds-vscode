@@ -2,13 +2,6 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import path from "path";
 
-export const COMPILER_TOOL_NAME: string = "tds-lm-tools";
-export const COMPILER_PARTICIPANT_ID: string = "tds-vscode.tools";
-export const COMPILER_COMMAND: string = "compiler";
-export const SYNTAX_ONLY_COMMAND: string = "syntax-only";
-export const APPLY_PATCH_COMMAND: string = "apply-patch";
-export const VALIDATE_PATCH_COMMAND: string = "validate-patch";
-export const HELP_COMMAND: string = "help";
 export const REBUILD_WORKSPACE_COMMAND: string = "totvs-developer-studio.rebuild.workspace";
 export const REBUILD_OPEN_EDITORS_COMMAND: string = "totvs-developer-studio.rebuild.openEditors";
 export const REBUILD_FILE_COMMAND: string = "totvs-developer-studio.rebuild.file";
@@ -34,12 +27,6 @@ export const OPEN_EDITORS_TARGET_ALIASES: Set<string> = new Set([
 	"open-editors"
 ]);
 
-export type ChatCompilerToolInput = {
-	command: string;
-	target: string;
-	flags: FlagOptions;
-};
-
 export const DEFAULT_FLAG_OPTIONS: FlagOptions = {
 	only: "all",
 	sort: "none",
@@ -47,12 +34,6 @@ export const DEFAULT_FLAG_OPTIONS: FlagOptions = {
 	syntaxOnly: false,
 	applyOld: false,
 	applied: []
-};
-
-export const DEFAULT_COMPILER_TOOL_INPUT: ChatCompilerToolInput = {
-	command: COMPILER_COMMAND,
-	target: "",
-	flags: structuredClone(DEFAULT_FLAG_OPTIONS)
 };
 
 export type DiagnosticEntry = {
@@ -101,14 +82,6 @@ export function isOpenEditorsTargetAlias(value: string): boolean {
  */
 export function isWorkspaceTargetAlias(value: string): boolean {
 	return WORKSPACE_TARGET_ALIASES.has(normalizeTargetKeyword(value));
-}
-
-export function normalizeCommand(value: string): string {
-	if (value.startsWith("/")) {
-		value = value.slice(1);
-	}
-
-	return value.trim().toLowerCase();
 }
 
 /**

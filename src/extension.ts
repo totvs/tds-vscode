@@ -71,7 +71,6 @@ import { registerXRef } from "./xreferences";
 import { tlppTools } from "./tlpp-tools/tlppTools";
 import { openWebMonitor } from "./monitor/monitorLoader";
 import { activate as activateOidcAuth } from "./oidcauth/OIDCAuthHandler";
-import { registerChatTools } from "./chat/chatTools";
 import { registerMcpServer } from "./mcp";
 import { checkWhatsNew } from "./whatsNew";
 
@@ -512,9 +511,6 @@ export async function activate(context: ExtensionContext) {
 
   // Inicialização do "outline"
   context.subscriptions.push(register4glOutline());
-
-  // Registro de ferramentas de chat para o modelo de linguagem
-  context.subscriptions.push(...registerChatTools(context));
 
   // Servidor MCP embutido (habilitado por totvsLanguageServer.mcp.enable)
   context.subscriptions.push(...registerMcpServer(context));

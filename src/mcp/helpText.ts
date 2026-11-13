@@ -1,49 +1,45 @@
-import * as vscode from "vscode";
-import { APPLY_PATCH_COMMAND, COMPILER_COMMAND, SYNTAX_ONLY_COMMAND, VALIDATE_PATCH_COMMAND } from "./chatUtils";
-
 /**
- * Generates help text with commands and options supported by chat.
- * @returns Help text in markdown for chat.
+ * Generates the help text of the TOTVS MCP tools (commands, targets, parameters and examples).
+ * @returns Help text in markdown.
  */
 export function buildHelpText(): string {
 	const lines: string[] = [
-		vscode.l10n.t("Available commands:"),
-		vscode.l10n.t("- /{0}: compiles the target (default: current editor).", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0}: compiles the target using syntax-only mode.", SYNTAX_ONLY_COMMAND),
-		vscode.l10n.t("- /{0}: applies a patch file (.ptm, .zip, .upd).", APPLY_PATCH_COMMAND),
-		vscode.l10n.t("- /{0}: validates a patch file (.ptm, .zip, .upd).", VALIDATE_PATCH_COMMAND),
-		vscode.l10n.t("- /help: shows this help."),
+		"Available tools:",
+		"- tds_compile: compiles the target (default: current editor) and returns errors and warnings.",
+		"- tds_syntax_only: checks the syntax of the target (linter), without generating code in the RPO.",
+		"- tds_fix: applies the quick fixes of the language server to the problems of a source. When there is more than one fix, asks which one to apply.",
+		"- tds_validate_patch: validates a patch file (.ptm, .zip, .upd) against the RPO of the current server.",
+		"- tds_apply_patch: applies a patch file (.ptm, .zip, .upd) to the RPO of the current server (changes the RPO).",
+		"- tds_document_symbols: outline (symbols) of a source file, provided by the language server.",
+		"- tds_help: shows this help.",
+		"- tds_ping: checks whether the TOTVS MCP server is active.",
 		"",
-		vscode.l10n.t("Supported targets:"),
-		vscode.l10n.t("- current editor: editor, current (default)"),
-		vscode.l10n.t("- open editors: open-files, open-editors, arquivos-abertos, fontes-abertos, arquivos abertos, fontes abertos"),
-		vscode.l10n.t("- workspace: workspace, ws, all"),
-		vscode.l10n.t("- file: relative or absolute path (ex: src/meu.prw)"),
-		vscode.l10n.t("- folder: relative or absolute path (ex: src/modulo)"),
+		"Supported targets (tds_compile, tds_syntax_only):",
+		"- current editor: current, editor (default)",
+		"- open editors: open-files, open-editors",
+		"- workspace: workspace, ws, all",
+		"- file: relative or absolute path (ex: src/meu.prw)",
+		"- folder: relative or absolute path (ex: src/modulo)",
 		"",
-		vscode.l10n.t("Notes:"),
-		vscode.l10n.t("- If you provide only a single name (no spaces), it is treated as the target."),
-		vscode.l10n.t("- The command is executed on the current server/environment."),
+		"Parameters (tds_compile, tds_syntax_only):",
+		"- target: target, as described above",
+		"- syntaxOnly=true|false (tds_compile only)",
+		"- only=all|error|warning",
+		"- max=N",
+		"- sort=none|file|severity",
+		"- format=markdown|json",
 		"",
-		vscode.l10n.t("Supported flags (use key=value or key:value):"),
-		vscode.l10n.t("- syntaxOnly=true|false"),
-		vscode.l10n.t("- only=all|error|warning"),
-		vscode.l10n.t("- max=N"),
-		vscode.l10n.t("- sort=none|file|severity"),
-		vscode.l10n.t("- format=markdown|json"),
+		"Notes:",
+		"- The tools are executed on the current server/environment.",
+		"- When the target/file is omitted, the source of the active editor is used.",
+		"- tds_fix works on the problems already reported; run tds_syntax_only first to refresh them.",
 		"",
-		vscode.l10n.t("Examples:"),
-		vscode.l10n.t("- /{0} target=src/modulo syntaxOnly=true only=error sort=file", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0} target=editor", SYNTAX_ONLY_COMMAND),
-		vscode.l10n.t("- /{0} target=open-editors", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0} src/modulo", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0} only=error", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0} syntaxOnly=true", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0} format=json", COMPILER_COMMAND),
-		vscode.l10n.t("- /{0} patches/fix.ptm", APPLY_PATCH_COMMAND),
-		vscode.l10n.t("- /{0} c:/patches/fix.zip", APPLY_PATCH_COMMAND),
-		vscode.l10n.t("- /{0} patches/fix.ptm", VALIDATE_PATCH_COMMAND),
-		vscode.l10n.t("- /{0} c:/patches/fix.zip", VALIDATE_PATCH_COMMAND)
+		"Examples:",
+		"- Compile the current source.",
+		"- Check the syntax of src/modulo, showing only errors.",
+		"- Fix the problems of this source.",
+		"- Validate the patch patches/fix.ptm and, if it is ok, apply it.",
+		"- Which functions exist in this source?"
 	];
 
 	return lines.join("\n");

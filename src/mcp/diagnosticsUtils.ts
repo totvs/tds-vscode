@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { DIAGNOSTIC_IDLE_WINDOW_MS, DIAGNOSTIC_WAIT_TIMEOUT_MS, DiagnosticEntry, DiagnosticsWaitResult } from "./chatUtils";
+import { DIAGNOSTIC_IDLE_WINDOW_MS, DIAGNOSTIC_WAIT_TIMEOUT_MS, DiagnosticEntry, DiagnosticsWaitResult } from "./mcpUtils";
 
 /**
  * Waits for diagnostics to stabilize after compilation to avoid partial reads.
@@ -11,7 +11,7 @@ export async function waitForDiagnosticsChange(
 	token: vscode.CancellationToken,
 	timeoutMs: number = DIAGNOSTIC_WAIT_TIMEOUT_MS
 ): Promise<DiagnosticsWaitResult> {
-	console.log(`[tds-chat-tools waitForDiagnosticsChange: start timeoutMs=${timeoutMs}`);
+	console.log(`[tds-mcp waitForDiagnosticsChange: start timeoutMs=${timeoutMs}`);
 	return await new Promise<DiagnosticsWaitResult>((resolve) => {
 		let finished: boolean = false;
 		let idleTimer: NodeJS.Timeout | undefined;
@@ -41,7 +41,7 @@ export async function waitForDiagnosticsChange(
 				clearTimeout(idleTimer);
 			}
 			clearTimeout(timeout);
-			console.log(`[tds-chat-tools waitForDiagnosticsChange: finish changed=${hasChange} timedOut=${timedOut} canceled=${canceled}`);
+			console.log(`[tds-mcp waitForDiagnosticsChange: finish changed=${hasChange} timedOut=${timedOut} canceled=${canceled}`);
 			resolve({
 				changed: hasChange,
 				timedOut,
@@ -55,13 +55,13 @@ export async function waitForDiagnosticsChange(
 		});
 		if (token) {
 			cancelDisposable = token.onCancellationRequested(() => {
-				console.warn("[tds-chat-tools] waitForDiagnosticsChange: canceled by token.");
+				console.warn("[tds-mcp] waitForDiagnosticsChange: canceled by token.");
 				canceled = true;
 				finish();
 			});
 		}
 		const timeout: NodeJS.Timeout = setTimeout(() => {
-			console.warn("[tds-chat-tools] waitForDiagnosticsChange: timeout reached.");
+			console.warn("[tds-mcp] waitForDiagnosticsChange: timeout reached.");
 			timedOut = true;
 			finish();
 		}, timeoutMs);

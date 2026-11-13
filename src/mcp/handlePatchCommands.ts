@@ -3,7 +3,7 @@ import * as fs from "fs";
 import path from "path";
 import { ValidResponse, sendPatchValidateRequest, sendPatchApplyRequest } from "../protocolMessages";
 import { ServersConfig } from "../utils";
-import { stripQuotes, resolvePatchFilePath } from "./chatUtils";
+import { stripQuotes, resolvePatchFilePath } from "./mcpUtils";
 
 /**
  * Extracts patch file path from a standalone prompt value.

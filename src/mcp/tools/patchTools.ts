@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { z } from "zod";
 import { McpRegistrar } from "../mcpTypes";
 import { handleApplyPatchCommand, handleValidPatchCommand } from "../handlePatchCommands";
-import { stripQuotes } from "../chatUtils";
+import { stripQuotes } from "../mcpUtils";
 
 const patchSchema = z.string().min(1).describe("Caminho do pacote de atualização (.ptm, .zip ou .upd), absoluto ou relativo ao workspace");
 

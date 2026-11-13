@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { REBUILD_WORKSPACE_COMMAND, DIAGNOSTIC_WAIT_TIMEOUT_MS, DIAGNOSTIC_WAIT_TIMEOUT_MS_FOLDER, DiagnosticEntry, DiagnosticsWaitResult, isDirectoryUri, MAX_DIAGNOSTICS_TO_SHOW, REBUILD_FILE_COMMAND, REBUILD_OPEN_EDITORS_COMMAND, SYNTAX_ONLY_FILE_COMMAND, FlagOptions, resolveTargetUri, isUriInsideFolder, severityLabel, toLocationLink, uriEquals, isWorkspaceUri } from "./chatUtils";
+import { REBUILD_WORKSPACE_COMMAND, DIAGNOSTIC_WAIT_TIMEOUT_MS, DIAGNOSTIC_WAIT_TIMEOUT_MS_FOLDER, DiagnosticEntry, DiagnosticsWaitResult, isDirectoryUri, MAX_DIAGNOSTICS_TO_SHOW, REBUILD_FILE_COMMAND, REBUILD_OPEN_EDITORS_COMMAND, SYNTAX_ONLY_FILE_COMMAND, FlagOptions, resolveTargetUri, isUriInsideFolder, severityLabel, toLocationLink, uriEquals, isWorkspaceUri } from "./mcpUtils";
 import { waitForDiagnosticsChange, collectDiagnosticsForOpenEditors } from "./diagnosticsUtils";
 
 /**
