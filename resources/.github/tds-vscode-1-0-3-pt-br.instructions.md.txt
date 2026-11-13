@@ -1,5 +1,5 @@
 ---
-applyTo: "**/*.{.prw,.prx,.prg,.ppx,.ppp,.tlpp,.apw,.aph,.apl,.ahu,.th}"
+applyTo: "**/*.{prw,prx,prg,ppx,ppp,tlpp,apw,aph,apl,ahu,th}"
 name: "AdvPL/TLPP LS-First"
 description: "PT-BR e prioridade ao LS"
 ---

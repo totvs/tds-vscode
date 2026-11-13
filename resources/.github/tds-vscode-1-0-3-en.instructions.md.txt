@@ -1,14 +1,15 @@
 ---
-applyTo: "**/*.{.prw,.prx,.prg,.ppx,.ppp,.tlpp,.apw,.aph,.apl,.ahu,.th}"
+applyTo: "**/*.{prw,prx,prg,ppx,ppp,tlpp,apw,aph,apl,ahu,th}"
 name: "AdvPL/TLPP LS-First"
 description: "LS priority"
-version: "1.0.3"
 ---
 
 # Instructions
 
 - Answer in English, objectively.
 - Mandatory LS-first rule: in any navigation, analysis, fix, or refactoring task, the first action must be an LS tool.
+- MCP-only rule for AdvPL/TLPP diagnostics and validation: when the task involves compile, syntax, warnings, errors, or validation, the first and only action must be a TOTVS MCP tool (`TOTVS-MCP--Exp--tds_compile`, `TOTVS-MCP--Exp--tds_syntax_only`, `TOTVS-MCP--Exp--tds_fix`, `TOTVS-MCP--Exp--tds_validate_patch`, or `tds` wrapper). Do not replace MCP results with local checks, guesses, or inferred diagnostics.
+- Failure handling: if the MCP tool fails, times out, or returns no usable result, notify the user explicitly and stop. Do not assume any fallback path, do not run local equivalents, and do not claim a result that the MCP did not provide.
 - Mandatory semantic navigation sequence:
 
  1) Locate the symbol with `lsp_workspace_symbols`.
