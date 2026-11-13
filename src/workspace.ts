@@ -1,31 +1,10 @@
 import * as vscode from "vscode";
-import { languageClient, applyFormattingMode } from "./extension";
-import { sendDidChangeConfiguration, sendDidSaveTextDocument } from "./protocolMessages";
-import { warningNeedRestart, getModifiedLanguageServerSettings } from "./server/languageServerSettings";
+import { applyFormattingMode } from "./dynamic_register";
+import { sendDidChangeConfiguration } from "./protocolMessages";
+import { getModifiedLanguageServerSettings } from "./server/languageServerSettings";
 import { updateStatusBarItems } from "./statusBar";
 
-/**
- * Indica se alguma configuração de `totvsLanguageServer` mudou além do modo
- * de formatação (`totvsLanguageServer.formatter.provider`).
- *
- * Como `affectsConfiguration` não enumera as chaves alteradas, considera-se
- * que houve "outra" mudança quando a seção `totvsLanguageServer` foi afetada
- * mas não exclusivamente a chave de formatação.
- */
-function _isOtherTotvsLanguageServerChange(
-	e: vscode.ConfigurationChangeEvent
-): boolean {
-	if (!e.affectsConfiguration("totvsLanguageServer")) {
-		return false;
-	}
-	// A seção mudou; se a mudança de formatação não explica tudo, trata-se de
-	// outra configuração. Retornamos true de forma conservadora quando qualquer
-	// coisa em totvsLanguageServer muda sem ser a chave de formatação.
-	return !e.affectsConfiguration("totvsLanguageServer.formatter.provider")
-		? true
-		: false;
-}
-
+/*
 function updateOpenEditors() {
 	vscode.window.visibleTextEditors.forEach((element: vscode.TextEditor) => {
 		if ((!element.document.isUntitled) &&
@@ -35,6 +14,7 @@ function updateOpenEditors() {
 		}
 	});
 }
+*/
 
 export function registerWorkspace(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
@@ -42,36 +22,36 @@ export function registerWorkspace(context: vscode.ExtensionContext) {
 			if (e.affectsConfiguration("totvsLanguageServer") ||
 				e.affectsConfiguration("advpl.formatter") ||
 				e.affectsConfiguration("4gl.formatter") ||
-				e.affectsConfiguration("editor")
+				e.affectsConfiguration("editor") ||
+				e.affectsConfiguration("[4gl]") ||
+				e.affectsConfiguration("[advpl]")
 			) {
 				if (e.affectsConfiguration("totvsLanguageServer.formatter.provider")) {
 					applyFormattingMode(context);
 				}
 
 				// Detecta se alguma configuração relevante mudou.
-				const changed: boolean =
-					e.affectsConfiguration("advpl.formatter") ||
-					e.affectsConfiguration("4gl.formatter") ||
-					e.affectsConfiguration("editor") ||
-					e.affectsConfiguration("totvsLanguageServer");
 
-				if (changed) {
-					const settings: any[] = getModifiedLanguageServerSettings();
+				const settings: any[] = getModifiedLanguageServerSettings();
 
-					if (settings.length > 0) {
-						sendDidChangeConfiguration(settings).then(() => {
-							updateStatusBarItems();
-						});
-					}
-
-					// Processo sendo melhorado para não reiniciar o LS,
-					// mas sim, enviar as configurações alteradas sem a necessidade de reiniciar.
-					// if (!warningNeedRestart()) {
-					// 	 languageClient.stop().then(() => {
-					//	 	languageClient.start();
-					//	});
-					// };
+				// Processo sendo melhorado para não reiniciar o LS,
+				// mas sim, enviar as configurações alteradas sem a necessidade de reiniciar.
+				// if (!warningNeedRestart()) {
+				// 	 languageClient.stop().then(() => {
+				//	 	languageClient.start();
+				//	});
+				// };
+				if (settings.length > 0) {
+					sendDidChangeConfiguration(settings).then(() => {
+						updateStatusBarItems();
+					});
 				}
+
+				//if (!warningNeedRestart()) {
+				//	languageClient.stop().then(() => {
+				//		languageClient.start();
+				//	});
+				//};
 			}
 		}),
 		//vscode.workspace.onDidSaveTextDocument((e: vscode.TextDocument) => {

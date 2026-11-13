@@ -83,12 +83,17 @@
     "all-contributors:generate": "all-contributors generate",
     "all-contributors:check": "all-contributors check"
   },
+  "allowScripts": {
+    "keytar": true,
+    "esbuild": true,
+    "@vscode/vsce-sign": true
+  },
   "dependencies": {
     "@material-ui/core": "4.12.4",
     "@material-ui/data-grid": "4.0.0-alpha.2",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.11.3-deprecations.1",
-    "@modelcontextprotocol/sdk": "^1.17.5",
+    "@modelcontextprotocol/sdk": "^1.32.1",
     "@totvs/tds-da": "1.4.2",
     "@totvs/tds-ls": "2.2.7",
     "@types/react": "^16.14.20",
@@ -789,14 +794,24 @@
             "Applies only to files being edited.",
             "Disable the process."
           ],
-          "default": "enableOnlyOpenFiles",
+          "default": "enable",
           "description": "%tds.package.editor.linter%"
         },
         "totvsLanguageServer.editor.linter.includes": {
           "scope": "window",
           "type": "string",
           "default": "",
-          "description": "(Don't edit. It can be overwritten.)"
+          "description": "",
+          "markdownDeprecationMessage": "(Don't edit. It can be overwritten.)"
+        },
+        "totvsLanguageServer.linter.callTreeSitter": {
+          "scope": "window",
+          "type": "boolean",
+          "default": false,
+          "tags": [
+            "experimental"
+          ],
+          "description": "Enable call to Tree-sitter for linter analysis. EXPERIMENTAL."
         },
         "totvsLanguageServer.editor.index.cache": {
           "scope": "window",
@@ -848,7 +863,7 @@
                   "maximum": 120
                 }
               ],
-              "description": "Largura máxima de linha para aplicar quebra automática. Valores aceitos: 0 (ignorar) ou de 30 a 120."
+              "description": "Largura máxima de linha para aplicar quebra automática. Valores válidos: 0 (desabilita) ou de 30 a 120."
             },
             "wrapParameters": {
               "type": [
@@ -1122,6 +1137,24 @@
       {
         "command": "totvs-developer-studio.mcp.stop",
         "title": "Parar servidor MCP",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.cst.sendSource.grapho",
+        "title": "Graphic",
+        "description": "Sends the active editor content to CST analysis",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.cst.sendSource.json",
+        "title": "JSON",
+        "description": "Sends the active editor content to CST analysis",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvs-developer-studio.cst.sendSource.text",
+        "title": "Text",
+        "description": "Sends the active editor content to CST analysis",
         "category": "TOTVS"
       },
       {
@@ -1977,6 +2010,12 @@
         }
       ]
     },
+    "submenus": [
+      {
+        "id": "totvs-developer-studio.cst.submenu",
+        "label": "Get CST"
+      }
+    ],
     "menus": {
       "explorer/context": [
         {
@@ -2038,6 +2077,28 @@
           "when": "resourceLangId == 4gl",
           "command": "totvs-developer-studio.run.formatter",
           "group": "totvsSource@2"
+        }
+      ],
+      "editor/context": [
+        {
+          "when": "resourceLangId == advpl || resourceLangId == 4gl",
+          "submenu": "totvs-developer-studio.cst.submenu",
+          "group": "totvsSource@1"
+        }
+      ],
+      "totvs-developer-studio.cst.submenu": [
+        {
+          "command": "totvs-developer-studio.cst.sendSource.grapho",
+          "group": "cst@1"
+        },
+        {
+          "command": "totvs-developer-studio.cst.sendSource.json",
+          "group": "cst@2"
+        },
+        {
+          "command": "totvs-developer-studio.cst.sendSource.text",
+          "when": "resourceLangId == advpl",
+          "group": "cst@3"
         }
       ],
       "view/item/context": [

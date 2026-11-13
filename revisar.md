@@ -7,6 +7,21 @@ servidor.
 
 ## Capabilities que checam `dynamicRegistration` (ativas)
 
+| Capability (`textDocument.*`) | Provider habilitado               | Observações                              |
+| ----------------------------- | --------------------------------- | ---------------------------------------- |
+| `documentSymbol`              | `documentSymbolProvider`          | Única checagem fora do bloco `isTDS_2()` |
+| `completion`                  | `completionProvider`              | Só dentro de `if (g_config->isTDS_2())`  |
+| `documentLink`                | `documentLinkProvider`            | Idem                                     |
+| `semanticTokens`              | `semanticTokensProvider`          | Idem                                     |
+| `definition`                  | `definitionProvider`              | Idem                                     |
+| `declaration`                 | `declarationProvider`             | Idem                                     |
+| `implementation`              | `implementationProvider`          | Idem                                     |
+| `references`                  | `referencesProvider`              | Idem                                     |
+| `hover`                       | `hoverProvider`                   | Idem                                     |
+| `codeLens`                    | `codeLensProvider`                | Exige também `resolveProvider`           |
+| `signatureHelp`               | `signatureHelpProvider`           | Exige também `contextSupport`            |
+| `formatting`                  | `documentFormattingProvider`      | Idem                                     |
+| `rangeFormatting`             | `documentRangeFormattingProvider` | Idem                                     |
 | Capability (`textDocument.*`) | Provider habilitado | Observações |
 | -------------------------------- | --------------------------------------------- | ------------- |
 | `documentSymbol` | `documentSymbolProvider` | Única checagem fora do bloco `isTDS_2()` |
@@ -47,6 +62,10 @@ Struct declarada em `totvsls/totvsls/formatter/formatting_options.hpp` e populad
 
 ## Já implementado (com efeito real na formatação)
 
+| Opção          | Onde é usada                 | Observação                                         |
+| -------------- | ---------------------------- | -------------------------------------------------- |
+| `insertSpaces` | `document_formatting.cpp:56` | Define se a indentação usa espaços ou tab          |
+| `tabSize`      | `document_formatting.cpp:56` | Tamanho da indentação quando `insertSpaces = true` |
 | Opção            | Onde é usada                                | Observação |
 |-------------------|----------------------------------------------|------------|
 | `insertSpaces`     | `document_formatting.cpp:56`                | Define se a indentação usa espaços ou tab |

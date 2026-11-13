@@ -49,9 +49,8 @@ import { patchValidates } from "./patch/patchValidate";
 import { register4glOutline } from "./outline";
 import {
   documentFormatting,
-  registerAdvplFormatting,
-  register4glFormatting,
 } from "./formatter";
+import { applyFormattingMode } from "./dynamic_register";
 import { registerDebug, _debugEvent } from "./debug";
 import { openRpoInfoView } from "./rpoInfo/rpoInfoLoader";
 import { initStatusBarItems } from "./statusBar";
@@ -65,7 +64,9 @@ import { commandShowBuildTableResult } from "./compile/buildResult";
 import { ServerItem } from "./serverItem";
 import serverProvider from "./serverItemProvider";
 import { registerWorkspace } from "./workspace";
-import { sendTelemetry } from "./protocolMessages";
+import { sendTelemetry, sendCst } from "./protocolMessages";
+import { showCstGraphView } from "./cst/cstGraphView";
+import { saveAndShowCst } from "./cst/cstFile";
 import { registerXRef } from "./xreferences";
 import { tlppTools } from "./tlpp-tools/tlppTools";
 import { openWebMonitor } from "./monitor/monitorLoader";
@@ -75,34 +76,6 @@ import { registerMcpServer } from "./mcp";
 import { checkWhatsNew } from "./whatsNew";
 
 export let languageClient: TotvsLanguageClientA;
-
-let extensionFormatters: vscode.Disposable | undefined;
-
-/**
- * Aplica o modo de formatação configurado em
- * `totvsLanguageServer.formatter.provider` (ls | extension).
- *
- * Garante exclusividade: os providers de formatação da extensão só são
- * registrados no modo `extension`. No modo `ls` eles são
- * desregistrados (o LS decide dinamicamente se anuncia a capability de
- * formatação via register/unregisterCapability).
- */
-export function applyFormattingMode(context: ExtensionContext) {
-  const mode = vscode.workspace
-    .getConfiguration("totvsLanguageServer")
-    .get<string>("formatter.provider", "ls");
-
-  extensionFormatters?.dispose();
-  extensionFormatters = undefined;
-
-  if (mode === "extension") {
-    extensionFormatters = vscode.Disposable.from(
-      registerAdvplFormatting(),
-      register4glFormatting()
-    );
-    context.subscriptions.push(extensionFormatters);
-  }
-}
 
 export function parseUri(u): Uri {
   return Uri.parse(u);
@@ -549,6 +522,153 @@ export async function activate(context: ExtensionContext) {
   // Register custom editor for patch files
   context.subscriptions.push(PatchEditorProvider.register(context));
 
+  // Envia o conteúdo do editor ativo para análise CST e exibe grafo
+  context.subscriptions.push(
+    commands.registerCommand("totvs-developer-studio.cst.sendSource.grapho", async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        vscode.window.showWarningMessage(
+          vscode.l10n.t("No active editor found.")
+        );
+        return;
+      }
+
+      const source = editor.document.getText();
+      if (!source || source.trim().length === 0) {
+        vscode.window.showWarningMessage(
+          vscode.l10n.t("The active editor is empty.")
+        );
+        return;
+      }
+
+      const fileName = editor.document.fileName
+        ? editor.document.fileName.replace(/^.*[\\/]/, "")
+        : "untitled";
+
+      try {
+        await vscode.window.withProgress(
+          {
+            location: vscode.ProgressLocation.Window,
+            title: `$(sync~spin) ${vscode.l10n.t("Generating CST for {0}...", fileName)}`,
+            cancellable: false,
+          },
+          async () => {
+            const result = await sendCst(fileName, source, "json");
+            if (result.sucess) {
+              showCstGraphView(result.ast, result.hasErrors, fileName);
+            } else {
+              vscode.window.showErrorMessage(
+                vscode.l10n.t("Failed to generate CST.")
+              );
+            }
+          }
+        );
+      } catch (error) {
+        vscode.window.showErrorMessage(
+          vscode.l10n.t("Error generating CST: {0}", error.message || String(error))
+        );
+      }
+    })
+  );
+
+  // Envia o conteúdo do editor ativo para análise AST e exibe JSON
+  context.subscriptions.push(
+    commands.registerCommand("totvs-developer-studio.cst.sendSource.json", async () => {
+
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        vscode.window.showWarningMessage(
+          vscode.l10n.t("No active editor found.")
+        );
+        return;
+      }
+
+      const source = editor.document.getText();
+      if (!source || source.trim().length === 0) {
+        vscode.window.showWarningMessage(
+          vscode.l10n.t("The active editor is empty.")
+        );
+        return;
+      }
+
+      const fileName = editor.document.fileName
+        ? editor.document.fileName.replace(/^.*[\\/]/, "")
+        : "untitled";
+
+      try {
+        await vscode.window.withProgress(
+          {
+            location: vscode.ProgressLocation.Window,
+            title: `$(sync~spin) ${vscode.l10n.t("Generating CST for {0}...", fileName)}`,
+            cancellable: false,
+          },
+          async () => {
+            const result = await sendCst(fileName, source, "json");
+            if (result.sucess) {
+              await saveAndShowCst(editor.document, result.cst, "json");
+            } else {
+              vscode.window.showErrorMessage(
+                vscode.l10n.t("Failed to generate CST.")
+              );
+            }
+          }
+        );
+      } catch (error) {
+        vscode.window.showErrorMessage(
+          vscode.l10n.t("Error generating CST: {0}", error.message || String(error))
+        );
+      }
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("totvs-developer-studio.cst.sendSource.text", async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        vscode.window.showWarningMessage(
+          vscode.l10n.t("No active editor found.")
+        );
+        return;
+      }
+
+      const source = editor.document.getText();
+      if (!source || source.trim().length === 0) {
+        vscode.window.showWarningMessage(
+          vscode.l10n.t("The active editor is empty.")
+        );
+        return;
+      }
+
+      const fileName = editor.document.fileName
+        ? editor.document.fileName.replace(/^.*[\\/]/, "")
+        : "untitled";
+
+      try {
+        await vscode.window.withProgress(
+          {
+            location: vscode.ProgressLocation.Window,
+            title: `$(sync~spin) ${vscode.l10n.t("Generating CST for {0}...", fileName)}`,
+            cancellable: false,
+          },
+          async () => {
+            const result = await sendCst(fileName, source, "text");
+            if (result.sucess) {
+              await saveAndShowCst(editor.document, result.cst, "txt");
+            } else {
+              vscode.window.showErrorMessage(
+                vscode.l10n.t("Failed to generate CST.")
+              );
+            }
+          }
+        );
+      } catch (error) {
+        vscode.window.showErrorMessage(
+          vscode.l10n.t("Error generating CST: {0}", error.message || String(error))
+        );
+      }
+    })
+  );
+
   blockBuildCommands(false);
   showBanner();
 
@@ -713,9 +833,8 @@ export function canDebug(): boolean {
 //  Desenvolvedores Protheus:
 //      Este arquivo de instruções foi gerado automaticamente.
 //      Alterações são mantidas, pois este é gerado somente se não existir.
-//      Caso não queira usá-lo, mantenha-o na pasta mas vazio.
-
-// Desenvolvedores da extensão:
+//      Caso não queira usá - lo, mantenha - o na pasta mas vazio.
+//  Desenvolvedores da extensão:
 //      Manter a extensão `.md.txt` a fim de evitar a sua carga no desenvolvimento
 //      da extensão, que caso ocorra pode interferir no ambiente.
 async function prepareInstructions(context: vscode.ExtensionContext) {

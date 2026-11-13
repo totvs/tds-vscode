@@ -4,7 +4,7 @@
 User Function MinhaFuncao()
 Local nRet := 0
 
-// A chamada abaixo esta em maiusculas e deve virar u_MinhaFuncao
+// A chamada abaixo esta em maiusculas e deve virar u MinhaFuncao
 u_MINHAFUNCAO()
 // A chamada abaixo esta em minusculas e deve virar u_Calcular
 nRet := U_calcular(10)

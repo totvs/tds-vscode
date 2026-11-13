@@ -1,0 +1,12 @@
+#include "tlpp-core.th"
+#include "tlpp-rest.th"
+
+wsrestful MyService description "svc"
+    wsdata id as integer
+    wsmethod GET description "g"
+end wsrestful
+
+wsmethod GET wsservice MyService
+    local x := 1
+return .T.
+endwsmethod

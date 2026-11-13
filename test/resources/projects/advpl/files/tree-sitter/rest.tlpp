@@ -1,0 +1,121 @@
+#include "tlpp-core.th"
+#include "tlpp-rest.th"
+
+/*------------------------------------------------------------------
+Retorna dados de um usuário existente
+Parâmetros via [raw body]
+------------------------------------------------------------------*/
+@get("sample/rest/crud/body")
+function getBodyUser()
+  local cUser := ''
+  local jBody := ''
+
+  jBody := JsonObject():new()
+  jBody:fromJson( oRest:GetBodyRequest() )
+
+  if ( jBody <> Nil )
+    cUser := jBody:GetJsonText("user")
+  endif
+
+  processGetUser( cUser )
+return
+
+/*------------------------------------------------------------------
+Retorna dados de um usuário existente
+Parâmetros via [querystring]
+------------------------------------------------------------------*/
+@Get("sample/rest/crud/query")
+function getQueryUser()
+  local cUser   := ''
+  local jQuery  := jsonObject():New()
+
+  jQuery := oRest:getQueryRequest()
+
+  if ( jQuery <> Nil )
+    cUser := jQuery[ 'user' ]
+  endif
+
+  processGetUser( cUser )
+return 
+
+
+/*------------------------------------------------------------------
+Retorna dados de um usuário existente
+Parâmetros via [pathstring]
+------------------------------------------------------------------*/
+@Get("sample/rest/crud/path/:user")
+function getPathUser()
+  local cUser := ''
+  local jPath := jsonObject():New()
+
+  jPath := oRest:getPathParamsRequest()
+
+  if (jPath <> Nil )
+    cUser := jPath[ 'user' ]
+  endif
+
+  processGetUser( cUser )
+return 
+
+@Post("sample/rest/crud/body")
+function postBodyUser()
+
+  local cUser := ''
+  local cName := ''
+  local cNick := ''
+  local cPass := ''
+  local jBody := ''
+
+  jBody := JsonObject():new()
+  jBody:fromJson( oRest:GetBodyRequest() )
+
+  if ( jBody <> Nil )
+    cUser := jBody:GetJsonText("user")
+    cName := jBody:GetJsonText("name")
+    cNick := jBody:GetJsonText("nick")
+    cPass := jBody:GetjSontext("password")
+  endif
+
+  processPostUser( cUser, cPass, cName, cNick )
+return
+
+// ------------------------------------------------------------------ //
+// ------------------------------------------------------------------ //
+static function processGetUser( cUser )
+
+  local cReturn := ''
+  local lOK     := .T.
+  local cMsg    := ''
+  local aUser   := {}
+  local cID     := ''
+  local cName   := ''
+  local cNick   := ''
+
+  // Valida campo chave de busca
+    if ( cUser == Nil .or. empty(cUser) )
+        cUser := ''
+        lOK   := .F.
+        cMsg  := 'invalid parameter: user'
+    endif
+
+  if ( lOK )
+    aUser := sampleCRUDtlppRestgetUser( cUser )
+
+    if ( len(aUser) == 4 )
+      lOK   := .T.
+      cMsg  := 'user found'
+      cID   := aUser[1]
+      cName := aUser[2]
+      cNick := aUser[3]
+      cUser := aUser[4]
+    else
+      lOK     := .F.
+      cMsg    := 'user could not found'
+    endif
+  endif
+
+  cReturn := '{ "SUCESS": "' + if(lOK,'yes','no') + '", "MESSAGE": "' + cMsg + '", "ID": "' + cID + '", "NAME": "' + cName + '", "NICK": "' + cNick + '", "USER": "' + cUser + '" }'
+
+  oRest:setResponse( cReturn )
+return
+

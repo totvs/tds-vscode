@@ -115,7 +115,7 @@ Para ajustar o comportamento acesse ``File > Preference > Settings``, filtre por
 | Opção | Comportamento |
 | ----- | ------------- |
 | `off` | O _cache_  desligado. |
-| `onMemory` | O _cache_ ligado e em memória. |
+| `onMemory` | O _cache_ ligado e em memória (padrão). |
 | `onDisk` | O _cache_ é armazenado em disco, para uso nas próximas sessões. |
 
 A opção ``off``, atuará somente nos fontes abertos para edição e o **DSS** terá  limitações em suas funcionalidades. A ``onMemory``, o _cache_ é mantido em memória, sendo recriado a cada nova sessão de uso do **VS-Code**, com o  **DSS** totalmente funcional, incluindo arquivos não abertos para edição. A opção ``onDisk``, persiste o _cache_ em disco, em diversos blocos (arquivos), procurando distribuir o custo de leitura/gravação (I/O) em disco e minimizando eventuais corrupções do _cache_.

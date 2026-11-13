@@ -1,0 +1,9 @@
+#include "totvs.ch"
+
+namespace App.Domain
+
+using namespace App.Shared
+
+user function main()
+    local a := 1
+return a

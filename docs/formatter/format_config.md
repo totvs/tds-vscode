@@ -6,26 +6,20 @@
 
 ## Configuração
 
-> O motor de formatação, pode ser executado na _extensão_ ou no _LS_.
+> O motor de formatação pode ser executado na _extensão_ ou no _LS_,
+> controlado pela chave `totvsLanguageServer.formatter.provider`, que aceita
+> dois valores:
 >
-> A formatação no LS é _experimental_. Por padrão o motor é executado na extensão e para usar o novo motor, ajuste em `settings.josn` a chave:
+> - `extension` — formatação executada pela extensão (motor AdvPL/4GL). **Padrão.**
+> - `ls` — formatação executada pelo _Language Server_ (experimental).
+>
+> Para usar o motor do LS, ajuste em `settings.json`:
 
 ```json
 {
   "totvsLanguageServer.formatter.provider": "ls"
 }
 ```
-
-> Os únicos valores válidos para [`totvsLanguageServer.formatter.provider`](../configuration.md#formatação) são
-> `extension` (padrão) e `ls`.
-
-Por padrão, a formatação de código fonte vem **desligado**. Para ligá-lo acesse `File | Preferences | Settings` e localize `4gl` ou `advpl`, conforme a linguagem de programação que deseja configurar.
-
-Lhe será apresentado algo semelhante a:
-
-![4GL settings](format_settings.png)
-
-> Saiba mais sobre precedência de configurações em [User and Workspace Settings](https://vscode.readthedocs.io/en/latest/getstarted/settings/).
 
 O bloco `[4gl]` (ou `[advpl]`), são configurações ligadas a ativação dos processos pelo _VS-Code_ associadas ao editor da linguagem e `[4gl.formatter]` (ou `[advpl.formatter]`), são as opções de formatação específicas.
 
@@ -294,7 +288,7 @@ Antes:
 // Esta e uma linha de comentario bastante longa que ultrapassa o limite
 ```
 
-Depois (reflui como `//` respeitando 40 colunas):
+Depois (reorganiza como `//` respeitando 40 colunas):
 
 ```advpl
 // Esta e uma linha de comentario
@@ -303,6 +297,70 @@ Depois (reflui como `//` respeitando 40 colunas):
 ```
 
 Bloco `/* ... */` é normalizado para o layout `/*` / `* texto` / `*/`.
+
+#### Reflow por parágrafo
+
+O refluxo é feito **por parágrafo**, e não sobre o bloco de comentário inteiro.
+Cada parágrafo é refluído de forma independente; os separadores de parágrafo são
+preservados e nunca têm seu texto mesclado com as linhas vizinhas. Os delimitadores
+de parágrafo são:
+
+- Em blocos de comentário de linha (`//`), uma linha contendo **somente** `//`
+  (sem texto após as barras) indica o fim do parágrafo.
+- Em blocos `/* ... */`, uma **linha em branco** (ou linha com apenas `*`) indica
+  o fim do parágrafo.
+
+Isso permite preservar a estrutura do texto (listas, parágrafos distintos,
+separações visuais) enquanto apenas as linhas de texto corrido são reajustadas
+ao `maxLineLength`.
+
+##### Exemplo com `//` (dois parágrafos separados por `//` vazio)
+
+Antes (com `maxLineLength: 40`):
+
+```advpl
+// Primeiro paragrafo com um texto bastante longo que ultrapassa o limite de colunas
+//
+// Segundo paragrafo tambem longo que precisa ser reajustado de forma independente
+```
+
+Depois (cada parágrafo é refluído isoladamente; a linha `//` vazia é mantida):
+
+```advpl
+// Primeiro paragrafo com um texto
+// bastante longo que ultrapassa o
+// limite de colunas
+//
+// Segundo paragrafo tambem longo que
+// precisa ser reajustado de forma
+// independente
+```
+
+##### Exemplo com bloco `/* ... */` (linha em branco separa parágrafos)
+
+Antes (com `maxLineLength: 40`):
+
+```advpl
+/*
+Primeiro paragrafo com um texto bastante longo que ultrapassa o limite de colunas
+
+Segundo paragrafo tambem longo que precisa ser reajustado de forma independente
+*/
+```
+
+Depois (cada parágrafo é refluído isoladamente; a linha em branco é mantida):
+
+```advpl
+/*
+ * Primeiro paragrafo com um texto
+ * bastante longo que ultrapassa o
+ * limite de colunas
+ *
+ * Segundo paragrafo tambem longo que
+ * precisa ser reajustado de forma
+ * independente
+ */
+```
 
 > Com `false` (padrão), os comentários são mantidos como estão.
 

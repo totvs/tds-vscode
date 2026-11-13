@@ -1,6 +1,20 @@
 # Changelog
 
-## Versão [2.1.?]
+## Versão [2.2.X]
+
+### Novidades
+
+#### `Linter`
+
+Troca do motor do `linter`, proporcionando diversas melhorias.
+
+Este processo é **experimental** e vem ativado por padrão. Caso tenha problemas com visão `Estrutura`, navegação ou `hover` em símbolos, favor abrir um chamado relatando-o e desative o novo motor colocando no `settings.json`:
+
+```json
+{
+  ...,
+  "totvsLanguageServer.linter.callTreeSitter": false
+}
 
 ### Melhorias
 
@@ -23,14 +37,86 @@ Ajustado o valor padrão das configurações abaixo, para atender melhor os requ
 
 ```json
 {
-  "totvsLanguageServer.editor.linter.behavior": "enableOnlyOpenFiles",
+  "totvsLanguageServer.editor.linter.behavior": "enableOnlyOpenFiles"
+}
+```
+
+Assim, o `linter` voltará a utilizar o motor original.
+
+Alguns ganhos:
+
+- Performance e consumo de recursos (CPU/Memória).
+- Indica vários erros em única passagem.
+- Tratamento de erros com correta visualização do código em `Problemas`.
+- Dobra de código (_folding_) mais assertivo.
+
+#### Dobra de código (_Folding_)
+
+A dobra (_folding_) de código é controlado pelas configurações nativas do VS Code `editor.folding` (liga/desliga) e `editor.foldingStrategy` (`auto` | `indentation`), global ou por linguagem (ex.: `"[advpl]"`). [Detalhes em TDS: Configurações](./docs/configuration.md).
+
+```json
+{
+  "editor.folding": true,
+  "editor.foldingStrategy": "auto"
+}
+```
+
+> O uso de `editor.foldingStrategy: "auto"` (_folding_ provido pelo Language Server) é **experimental** para AdvPL/TLPP. Em caso de regiões incorretas, favor abrir um (chamado)[https://github.com/totvs/tds-vscode/issues] e utilizar `"indentation"`.
+
+#### Sugestões de correções (_Fix_)
+
+Adicionado sugestões de correções para:
+
+- Variável não utilizada
+- Variável não local usada em comando FOR
+
+### Melhorias
+
+#### Visão "Estrutura" (_Outline_)
+
+- Padronização na visualização de informações sobre o símbolo.
+- Tratamento de erros no arquivo fonte.
+
+#### Edição de código
+
+A edição passa a ser incremental. Em vez de reprocessar ou reanalisar o fonte inteiro a cada modificação, apenas o que foi modificado será reprocessado ou reanalisado. Com isso, o tempo de resposta do `LS` torna-se mais rápido, evitando travamentos em fontes grandes e melhorando o consumo de recursos (CPU e memória).
+
+Recurso perceptível em fontes médios e grandes (acima de 100K).
+
+#### Formatação de código AdvPL
+
+A formatação pode ser efetuada:
+
+- Fonte inteiro
+- Em bloco (_range_)
+- Durante a digitação
+
+### Correções
+
+#### Valores padrão de `totvsLanguageServer.editor.linter.behavior` e `totvsLanguageServer.editor.index.cache`
+
+Devido a dependência da IA, as chaves abaixo tiverem seus valores padrões modificadas,
+para melhor acurácia desta.
+
+```json
+{
+  "totvsLanguageServer.editor.linter.behavior": "enable",
   "totvsLanguageServer.editor.index.cache": "onMemory"
 }
 ```
 
 > IMPORTANTE:
 >
-> Devido ao comprtamento do linter ser padrão `enableOnlyOpenFiles`, o uso de IA pode ser limitado.
+> Devido ao comportamento do linter ser padrão `enableOnlyOpenFiles`, o uso de IA pode ser limitado.
+> Ao desligar esses recursos, solicitações da IA podem perder acurácia e usar busca textual (_grep_, _read file_ e outras), que podem ser mais lentas.
+
+#### Notificação de alterações nas configurações
+
+Algumas configurações não eram notificadas ao LS.
+
+#### Pasta de _cache_ criada indevidamente
+
+Em determinadas configurações da propriedade `totvsLanguageServer.editor.index.cache` a estrutura de pastas do _cache_ eram criadas indevidamente.
 
 ## Versão [2.1.6]
 

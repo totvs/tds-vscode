@@ -1,0 +1,6 @@
+#include "tlpp-core.th"
+
+@annotation MyAnnotation
+  title as character
+  size as numeric default 10
+@end
