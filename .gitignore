@@ -25,9 +25,9 @@ test/**/.vscode
 .vscode/settings.json
 .vscode/.advpl/**
 .vscode/.cache
+.tds/
 !resources/.github/**/*
 !resources/.kiro/**/*
-/test/resources/projects/advpl0
 /test/resources/projects/**/.kiro
 /test/resources/projects/**/.github
 !/test/resources/projects/advpl/.github/
@@ -35,7 +35,9 @@ test/**/.vscode
 !/test/resources/projects/advpl/.github/skills/totvs-mcp/
 !/test/resources/projects/advpl/.github/skills/totvs-mcp/SKILL.md
 .vscode/settings.json
-/test/resources/projects/advpl/files/poc-advpl
-/test/resources/projects/advpl/***/instructions
+# Não permite pastas que não devem ser publicas
+/test/resources/projects/advpl0/
+/test/resources/projects/**/files/poc-advpl
+/test/resources/projects/**/instructions
 /plans
-/test/resources/projects/advpl/Adm
+/test/resources/projects/**/Adm

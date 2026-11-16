@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { REBUILD_WORKSPACE_COMMAND, DIAGNOSTIC_WAIT_TIMEOUT_MS, DIAGNOSTIC_WAIT_TIMEOUT_MS_FOLDER, DiagnosticEntry, DiagnosticsWaitResult, isDirectoryUri, MAX_DIAGNOSTICS_TO_SHOW, REBUILD_FILE_COMMAND, REBUILD_OPEN_EDITORS_COMMAND, SYNTAX_ONLY_FILE_COMMAND, FlagOptions, resolveTargetUri, isUriInsideFolder, severityLabel, toLocationLink, uriEquals, isWorkspaceUri } from "./mcpUtils";
+import { REBUILD_WORKSPACE_COMMAND, DIAGNOSTIC_WAIT_TIMEOUT_MS, DIAGNOSTIC_WAIT_TIMEOUT_MS_FOLDER, DiagnosticEntry, DiagnosticsWaitResult, isDirectoryUri, MAX_DIAGNOSTICS_TO_SHOW, REBUILD_FILE_COMMAND, REBUILD_OPEN_EDITORS_COMMAND, SYNTAX_ONLY_FILE_COMMAND, FlagOptions, resolveTargetUri, isUriInsideFolder, severityLabel, toLocationLink, uriEquals, isWorkspaceUri, isTotvsSourceUri, isExtensionAllowedUri, notTotvsSourceMessage } from "./mcpUtils";
 import { waitForDiagnosticsChange, collectDiagnosticsForOpenEditors } from "./diagnosticsUtils";
 
 /**
@@ -28,6 +28,15 @@ export async function handleCompilerCommand(
 			: REBUILD_FILE_COMMAND;
 	const commandId: string = flagOptions.syntaxOnly ? SYNTAX_ONLY_FILE_COMMAND : commandIdBase;
 	console.log(`[handleCompilerCommand] invoke: resolved target='${target}', commandId='${commandId}', targetUri='${targetUri?.toString(true) ?? "<none>"}'`);
+
+	// Alvo de arquivo único que não é fonte AdvPL/TLPP/4GL: ignora.
+	// Na compilação (não syntax-only), aceita também as extensões de `folder.extensionsAllowed` (ex.: recursos).
+	if (!isWorkspaceTarget && !isOpenEditorsTarget && targetUri && !isDirectoryUri(targetUri) && !isTotvsSourceUri(targetUri)
+		&& (flagOptions.syntaxOnly || !isExtensionAllowedUri(targetUri))) {
+		console.log(`[handleCompilerCommand] invoke: ignored, not an AdvPL/TLPP/4GL source: '${targetUri.toString(true)}'`);
+		isError.value = false;
+		return [notTotvsSourceMessage(targetUri)];
+	}
 
 	try {
 		if (isWorkspaceTarget || isOpenEditorsTarget) {

@@ -102,7 +102,7 @@ function writeToFile(kind: string, msg: string, args: unknown[]): void {
 		lastFileError = undefined;
 	} catch (e) {
 		// Avisa uma única vez por erro, para não poluir o canal.
-		const message = `Falha ao gravar o log MCP em '${file}': ${e instanceof Error ? e.message : String(e)}`;
+		const message = `Failed to write the MCP log to '${file}': ${e instanceof Error ? e.message : String(e)}`;
 		if (message !== lastFileError) {
 			lastFileError = message;
 			getChannel()?.appendLine(formatChannelLine("error", message));
@@ -161,9 +161,9 @@ export const mcpLog = {
 type CallKind = "tool" | "prompt" | "resource";
 
 const CALL_KIND_LABEL: Record<CallKind, string> = {
-	tool: "Ferramenta",
+	tool: "Tool",
 	prompt: "Prompt",
-	resource: "Recurso"
+	resource: "Resource"
 };
 
 /**
@@ -176,22 +176,22 @@ export async function logCall<T>(kind: CallKind, name: string, args: unknown, fn
 	const title = `${CALL_KIND_LABEL[kind]} '${name}'`;
 	const start = Date.now();
 
-	mcpLog.message(`${title}: iniciada`);
-	mcpLog.verbose(`${title}: parâmetros`, args);
+	mcpLog.message(`${title}: started`);
+	mcpLog.verbose(`${title}: parameters`, args);
 	mcpLog.debug(`→ ${kind} ${name}`);
 	try {
 		const result = await fn();
 		const elapsed = Date.now() - start;
-		mcpLog.message(`${title}: concluída em ${elapsed}ms`);
-		mcpLog.verbose(`${title}: resultado`, result);
+		mcpLog.message(`${title}: finished in ${elapsed}ms`);
+		mcpLog.verbose(`${title}: result`, result);
 		mcpLog.debug(`← ${kind} ${name} ok (${elapsed}ms)`);
 		return result;
 	} catch (e) {
 		const elapsed = Date.now() - start;
 		const message = e instanceof Error ? e.message : String(e);
-		mcpLog.error(`${title}: falhou em ${elapsed}ms — ${message}`);
-		mcpLog.verbose(`${title}: detalhes do erro`, e instanceof Error ? e.stack ?? message : message);
-		mcpLog.debug(`✗ ${kind} ${name} falhou (${elapsed}ms): ${message}`);
+		mcpLog.error(`${title}: failed in ${elapsed}ms — ${message}`);
+		mcpLog.verbose(`${title}: error details`, e instanceof Error ? e.stack ?? message : message);
+		mcpLog.debug(`✗ ${kind} ${name} failed (${elapsed}ms): ${message}`);
 		throw e;
 	}
 }
@@ -217,8 +217,8 @@ export function instrumentServer(server: McpServer): void {
 				};
 			}
 
-			mcpLog.verbose(`${CALL_KIND_LABEL[kind]} '${name}' disponibilizada`);
-			mcpLog.debug(`registrado ${kind}: ${name}`);
+			mcpLog.verbose(`${CALL_KIND_LABEL[kind]} '${name}' registered`);
+			mcpLog.debug(`registered ${kind}: ${name}`);
 			return original(...params);
 		};
 	};
@@ -234,10 +234,10 @@ export function describeRpcBody(body: unknown): string {
 	return messages
 		.map((m: any) => {
 			if (!m || typeof m !== "object") {
-				return "<vazio>";
+				return "<empty>";
 			}
 			const toolName = m.params?.name ? `(${m.params.name})` : "";
-			return `${m.method ?? "<resposta>"}${toolName}${m.id !== undefined ? `#${m.id}` : ""}`;
+			return `${m.method ?? "<response>"}${toolName}${m.id !== undefined ? `#${m.id}` : ""}`;
 		})
 		.join(", ");
 }
@@ -248,32 +248,32 @@ export function describeRpcFriendly(body: unknown): string {
 	return messages
 		.map((m: any) => {
 			if (!m || typeof m !== "object") {
-				return "requisição vazia";
+				return "empty request";
 			}
 			const name = m.params?.name ? ` '${m.params.name}'` : "";
 			switch (m.method) {
 				case "initialize":
-					return "o cliente iniciou a conexão";
+					return "the client started the connection";
 				case "notifications/initialized":
-					return "o cliente confirmou a conexão";
+					return "the client confirmed the connection";
 				case "ping":
-					return "o cliente verificou se o servidor está ativo";
+					return "the client checked whether the server is active";
 				case "tools/list":
-					return "o cliente listou as ferramentas";
+					return "the client listed the tools";
 				case "tools/call":
-					return `o cliente chamou a ferramenta${name}`;
+					return `the client called the tool${name}`;
 				case "prompts/list":
-					return "o cliente listou os prompts";
+					return "the client listed the prompts";
 				case "prompts/get":
-					return `o cliente obteve o prompt${name}`;
+					return `the client got the prompt${name}`;
 				case "resources/list":
-					return "o cliente listou os recursos";
+					return "the client listed the resources";
 				case "resources/read":
-					return "o cliente leu um recurso";
+					return "the client read a resource";
 				case undefined:
-					return "o cliente enviou uma resposta";
+					return "the client sent a response";
 				default:
-					return `o cliente enviou '${m.method}'`;
+					return `the client sent '${m.method}'`;
 			}
 		})
 		.join("; ");

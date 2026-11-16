@@ -70,18 +70,18 @@ export class TdsMcpServer implements vscode.Disposable {
 	/** Inicia o servidor em uma porta livre (ou na informada). */
 	async start(port: number = 0): Promise<McpServerInfo> {
 		if (this.info) {
-			mcpLog.verbose("O servidor MCP já está em execução", this.info.url);
-			mcpLog.debug("TdsMcpServer.start: já em execução", this.info.url);
+			mcpLog.verbose("The MCP server is already running", this.info.url);
+			mcpLog.debug("TdsMcpServer.start: already running", this.info.url);
 			return this.info;
 		}
-		mcpLog.lifecycle("Iniciando o servidor MCP...");
+		mcpLog.lifecycle("Starting the MCP server...");
 		mcpLog.debug("TdsMcpServer.start", { port });
 		const startedAt = Date.now();
 		const token = crypto.randomBytes(24).toString("hex");
 		const httpServer = http.createServer((req, res) => {
 			this.handleRequest(req, res, token).catch((e) => {
-				mcpLog.error(`Erro ao processar a requisição: ${e instanceof Error ? e.message : String(e)}`);
-				mcpLog.debug("erro na requisição HTTP", e instanceof Error ? e.stack ?? e.message : String(e));
+				mcpLog.error(`Error while handling the request: ${e instanceof Error ? e.message : String(e)}`);
+				mcpLog.debug("HTTP request error", e instanceof Error ? e.stack ?? e.message : String(e));
 				if (!res.headersSent) {
 					sendJson(res, 500, {
 						jsonrpc: "2.0",
@@ -96,8 +96,8 @@ export class TdsMcpServer implements vscode.Disposable {
 			httpServer.once("error", reject);
 			httpServer.listen(port, MCP_DEFAULT_HOST, () => resolve());
 		}).catch((e) => {
-			mcpLog.lifecycleError(`Não foi possível iniciar o servidor MCP: ${e instanceof Error ? e.message : String(e)}`);
-			mcpLog.debug("TdsMcpServer.start falhou", e instanceof Error ? e.message : String(e));
+			mcpLog.lifecycleError(`Could not start the MCP server: ${e instanceof Error ? e.message : String(e)}`);
+			mcpLog.debug("TdsMcpServer.start failed", e instanceof Error ? e.message : String(e));
 			throw e;
 		});
 
@@ -110,7 +110,7 @@ export class TdsMcpServer implements vscode.Disposable {
 			token
 		};
 
-		mcpLog.lifecycle(`Servidor MCP iniciado em ${this.info.url} (${Date.now() - startedAt}ms)`);
+		mcpLog.lifecycle(`MCP server started at ${this.info.url} (${Date.now() - startedAt}ms)`);
 		mcpLog.debug(`TdsMcpServer.start ok (${Date.now() - startedAt}ms)`);
 		mcpLog.debug(`MCP URL: ${this.info.url}`);
 
@@ -120,7 +120,7 @@ export class TdsMcpServer implements vscode.Disposable {
 	}
 
 	async stop(): Promise<void> {
-		mcpLog.lifecycle("Parando o servidor MCP...");
+		mcpLog.lifecycle("Stopping the MCP server...");
 		mcpLog.debug("TdsMcpServer.stop");
 		const httpServer = this.httpServer;
 		this.httpServer = undefined;
@@ -138,24 +138,24 @@ export class TdsMcpServer implements vscode.Disposable {
 
 	private async handleRequest(req: http.IncomingMessage, res: http.ServerResponse, token: string): Promise<void> {
 		const url = new URL(req.url ?? "/", `http://${MCP_DEFAULT_HOST}`);
-		mcpLog.message(`Requisição recebida: ${req.method} ${url.pathname}`);
+		mcpLog.message(`Request received: ${req.method} ${url.pathname}`);
 		mcpLog.debug(`HTTP ${req.method} ${url.pathname}`);
 
 		if (url.pathname !== MCP_ENDPOINT_PATH) {
-			mcpLog.warn(`Endereço não encontrado: ${req.method} ${url.pathname}`);
+			mcpLog.warn(`Path not found: ${req.method} ${url.pathname}`);
 			mcpLog.debug(`HTTP 404 ${req.method} ${url.pathname}`);
 			return sendJson(res, 404, { error: "Not found" });
 		}
 
 		if (req.headers.authorization !== `Bearer ${token}`) {
-			mcpLog.warn(`Acesso negado: token ausente ou inválido (${req.method} ${url.pathname})`);
-			mcpLog.debug(`HTTP 401 ${req.method} ${url.pathname}: token ausente/inválido`);
+			mcpLog.warn(`Access denied: missing or invalid token (${req.method} ${url.pathname})`);
+			mcpLog.debug(`HTTP 401 ${req.method} ${url.pathname}: missing/invalid token`);
 			return sendJson(res, 401, { error: "Unauthorized" });
 		}
 
 		// Modo stateless: sem sessões, somente POST é suportado.
 		if (req.method !== "POST") {
-			mcpLog.warn(`Método não permitido: ${req.method} ${url.pathname} (somente POST)`);
+			mcpLog.warn(`Method not allowed: ${req.method} ${url.pathname} (POST only)`);
 			mcpLog.debug(`HTTP 405 ${req.method} ${url.pathname}`);
 			res.setHeader("Allow", "POST");
 			return sendJson(res, 405, {
@@ -166,15 +166,15 @@ export class TdsMcpServer implements vscode.Disposable {
 		}
 
 		const body = await readBody(req);
-		mcpLog.message(`Pedido do cliente: ${describeRpcFriendly(body)}`);
-		mcpLog.verbose("Conteúdo do pedido", body);
-		mcpLog.debug(`RPC recebido: ${describeRpcBody(body)}`);
+		mcpLog.message(`Client: ${describeRpcFriendly(body)}`);
+		mcpLog.verbose("Request body", body);
+		mcpLog.debug(`RPC received: ${describeRpcBody(body)}`);
 		const server = createMcpServer();
 		const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
 
 		res.on("close", () => {
-			mcpLog.verbose("Resposta enviada ao cliente");
-			mcpLog.debug("HTTP resposta encerrada");
+			mcpLog.verbose("Response sent to the client");
+			mcpLog.debug("HTTP response closed");
 			void transport.close();
 			void server.close();
 		});

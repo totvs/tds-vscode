@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { McpRegistrar, MCP_SERVER_NAME } from "../mcpTypes";
-import { resolveTargetUri } from "../mcpUtils";
+import { isTotvsSourceUri, notTotvsSourceMessage, resolveTargetUri } from "../mcpUtils";
 import { mcpLog } from "../mcpLogger";
 
 const DEFAULT_MAX_DIAGNOSTICS = 10;
@@ -57,8 +57,8 @@ async function getQuickFixes(uri: vscode.Uri, diagnostic: vscode.Diagnostic): Pr
 
 	candidates
 		.filter((a) => !fixes.includes(a))
-		.forEach((a) => mcpLog.debug(`tds_fix: ação ignorada (não é do Language Server): '${a.title}'`, a.command?.command));
-	mcpLog.verbose(`Correções do Language Server para a linha ${diagnostic.range.start.line + 1}`, fixes.map((f) => f.title));
+		.forEach((a) => mcpLog.debug(`tds_fix: action ignored (not from the Language Server): '${a.title}'`, a.command?.command));
+	mcpLog.verbose(`Language Server fixes for line ${diagnostic.range.start.line + 1}`, fixes.map((f) => f.title));
 
 	return fixes;
 }
@@ -101,8 +101,8 @@ async function askWhichFix(
 			const index = labels.indexOf(String(result.content?.option));
 			return index >= 0 ? index : undefined;
 		} catch (e) {
-			mcpLog.warn("A pergunta pelo cliente MCP não funcionou; usando a janela do VS Code");
-			mcpLog.debug("tds_fix: elicitação falhou, usando QuickPick", e instanceof Error ? e.message : String(e));
+			mcpLog.warn("Asking through the MCP client did not work; using the VS Code window");
+			mcpLog.debug("tds_fix: elicitation failed, using QuickPick", e instanceof Error ? e.message : String(e));
 		}
 	}
 
@@ -156,6 +156,9 @@ export const registerFixTool: McpRegistrar = (server) => {
 			const uri: vscode.Uri | undefined = resolveTargetUri(file || "current");
 			if (!uri) {
 				return fail("Nenhum fonte informado e nenhum editor ativo.");
+			}
+			if (!isTotvsSourceUri(uri)) {
+				return { content: [{ type: "text" as const, text: notTotvsSourceMessage(uri) }] };
 			}
 
 			const document = await vscode.workspace.openTextDocument(uri);

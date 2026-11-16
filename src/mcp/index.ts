@@ -31,9 +31,9 @@ function errorText(e: unknown): string {
 export function registerMcpServer(_context: vscode.ExtensionContext): vscode.Disposable[] {
 	mcpLog.reset();
 	mcpLog.lifecycle(
-		`TOTVS MCP carregado (servidor ${isEnabled() ? "habilitado" : "desabilitado"}, nível de log: ${getLogLevel()}, arquivo de log: ${getLogFilePath() ?? "não configurado"})`
+		`TOTVS MCP loaded (server ${isEnabled() ? "enabled" : "disabled"}, log level: ${getLogLevel()}, log file: ${getLogFilePath() ?? "not configured"})`
 	);
-	mcpLog.debug(`registerMcpServer (enabled=${isEnabled()}, log=${getLogLevel()}, logFile=${getLogFilePath() ?? "<desativado>"})`);
+	mcpLog.debug(`registerMcpServer (enabled=${isEnabled()}, log=${getLogLevel()}, logFile=${getLogFilePath() ?? "<disabled>"})`);
 
 	const server = new TdsMcpServer();
 	const onDidChange = new vscode.EventEmitter<void>();
@@ -43,7 +43,7 @@ export function registerMcpServer(_context: vscode.ExtensionContext): vscode.Dis
 
 		provideMcpServerDefinitions: async () => {
 			const enabled = isEnabled();
-			mcpLog.message(`O VS Code consultou os servidores MCP disponíveis (servidor ${enabled ? "habilitado" : "desabilitado"})`);
+			mcpLog.message(`VS Code queried the available MCP servers (server ${enabled ? "enabled" : "disabled"})`);
 			mcpLog.debug(`provider.provideMcpServerDefinitions (enabled=${enabled})`);
 			if (!enabled) {
 				return [];
@@ -62,18 +62,18 @@ export function registerMcpServer(_context: vscode.ExtensionContext): vscode.Dis
 					)
 				];
 			} catch (e) {
-				mcpLog.lifecycleError(`Não foi possível iniciar o servidor MCP: ${e instanceof Error ? e.message : String(e)}`);
-				mcpLog.debug("provider.provideMcpServerDefinitions: falha ao iniciar", errorText(e));
+				mcpLog.lifecycleError(`Could not start the MCP server: ${e instanceof Error ? e.message : String(e)}`);
+				mcpLog.debug("provider.provideMcpServerDefinitions: start failed", errorText(e));
 				return [];
 			}
 		},
 
 		resolveMcpServerDefinition: async (definition) => {
-			mcpLog.message("O VS Code está preparando a conexão com o servidor MCP");
+			mcpLog.message("VS Code is preparing the connection to the MCP server");
 			mcpLog.debug("provider.resolveMcpServerDefinition", definition.label);
 			if (!isEnabled()) {
-				mcpLog.warn("O servidor MCP está desabilitado nas configurações");
-				mcpLog.debug("provider.resolveMcpServerDefinition: desabilitado por configuração");
+				mcpLog.warn("The MCP server is disabled in the settings");
+				mcpLog.debug("provider.resolveMcpServerDefinition: disabled by configuration");
 				return undefined;
 			}
 			const info = await server.start();
@@ -88,16 +88,16 @@ export function registerMcpServer(_context: vscode.ExtensionContext): vscode.Dis
 	const configListener = vscode.workspace.onDidChangeConfiguration(async (e) => {
 		if (e.affectsConfiguration(`${CONFIG_SECTION}.${CONFIG_LOG}`)) {
 			// Sempre registrado: é o próprio ajuste do nível de log.
-			mcpLog.lifecycle(`Nível de log alterado para '${getLogLevel()}'`);
+			mcpLog.lifecycle(`Log level changed to '${getLogLevel()}'`);
 		}
 
 		if (e.affectsConfiguration(`${CONFIG_SECTION}.${CONFIG_LOG_FILE}`)) {
-			mcpLog.lifecycle(`Arquivo de log alterado para '${getLogFilePath() ?? "não configurado"}'`);
+			mcpLog.lifecycle(`Log file changed to '${getLogFilePath() ?? "not configured"}'`);
 		}
 
 		if (e.affectsConfiguration(`${CONFIG_SECTION}.${CONFIG_ENABLE}`)) {
-			mcpLog.message(`O servidor MCP foi ${isEnabled() ? "habilitado" : "desabilitado"} nas configurações`);
-			mcpLog.debug(`configuração ${CONFIG_SECTION}.${CONFIG_ENABLE} alterada (enabled=${isEnabled()})`);
+			mcpLog.message(`The MCP server was ${isEnabled() ? "enabled" : "disabled"} in the settings`);
+			mcpLog.debug(`setting ${CONFIG_SECTION}.${CONFIG_ENABLE} changed (enabled=${isEnabled()})`);
 			if (!isEnabled()) {
 				await server.stop();
 			}
@@ -106,7 +106,7 @@ export function registerMcpServer(_context: vscode.ExtensionContext): vscode.Dis
 	});
 
 	const start = vscode.commands.registerCommand("totvs-developer-studio.mcp.start", async () => {
-		mcpLog.message("Comando 'Iniciar servidor MCP' executado");
+		mcpLog.message("Command 'Start MCP server' executed");
 		mcpLog.debug("command totvs-developer-studio.mcp.start");
 		try {
 			if (server.isRunning) {
@@ -116,14 +116,14 @@ export function registerMcpServer(_context: vscode.ExtensionContext): vscode.Dis
 			// A notificação de início é exibida pelo próprio servidor ao iniciar.
 			await server.start();
 		} catch (e) {
-			mcpLog.error(`Não foi possível iniciar o servidor MCP: ${e instanceof Error ? e.message : String(e)}`);
-			mcpLog.debug("command mcp.start falhou", errorText(e));
+			mcpLog.error(`Could not start the MCP server: ${e instanceof Error ? e.message : String(e)}`);
+			mcpLog.debug("command mcp.start failed", errorText(e));
 			vscode.window.showErrorMessage(`Falha ao iniciar o servidor MCP: ${e instanceof Error ? e.message : e}`);
 		}
 	});
 
 	const stop = vscode.commands.registerCommand("totvs-developer-studio.mcp.stop", async () => {
-		mcpLog.message("Comando 'Parar servidor MCP' executado");
+		mcpLog.message("Command 'Stop MCP server' executed");
 		mcpLog.debug("command totvs-developer-studio.mcp.stop");
 		await server.stop();
 		vscode.window.showInformationMessage("TOTVS MCP parado.");
@@ -133,8 +133,8 @@ export function registerMcpServer(_context: vscode.ExtensionContext): vscode.Dis
 
 	const logDisposable: vscode.Disposable = {
 		dispose: () => {
-			mcpLog.lifecycle("TOTVS MCP finalizado");
-			mcpLog.debug("registerMcpServer: finalizando");
+			mcpLog.lifecycle("TOTVS MCP finished");
+			mcpLog.debug("registerMcpServer: finishing");
 			mcpLog.dispose();
 		}
 	};

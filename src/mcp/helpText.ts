@@ -33,6 +33,8 @@ export function buildHelpText(): string {
 		"- The tools are executed on the current server/environment.",
 		"- When the target/file is omitted, the source of the active editor is used.",
 		"- tds_fix works on the problems already reported; run tds_syntax_only first to refresh them.",
+		"- tds_compile, tds_syntax_only, tds_fix and tds_document_symbols ignore files that are not AdvPL/TLPP/4GL sources.",
+		"- tds_compile also accepts files whose extension is in totvsLanguageServer.folder.extensionsAllowed (ex: resources).",
 		"",
 		"Examples:",
 		"- Compile the current source.",

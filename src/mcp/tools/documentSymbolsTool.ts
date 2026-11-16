@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { z } from "zod";
 import { McpRegistrar } from "../mcpTypes";
-import { resolveTargetUri } from "../mcpUtils";
+import { isTotvsSourceUri, notTotvsSourceMessage, resolveTargetUri } from "../mcpUtils";
 
 type PlainRange = { start: { line: number; character: number }; end: { line: number; character: number } };
 
@@ -65,6 +65,9 @@ export const registerDocumentSymbolsTool: McpRegistrar = (server) => {
 			const uri: vscode.Uri | undefined = resolveTargetUri(file || "current");
 			if (!uri) {
 				return fail("Nenhum fonte informado e nenhum editor ativo.");
+			}
+			if (!isTotvsSourceUri(uri)) {
+				return { content: [{ type: "text" as const, text: notTotvsSourceMessage(uri) }] };
 			}
 
 			// Garante que o documento foi aberto (didOpen) e sincronizado com o LS.

@@ -1,7 +1,6 @@
 #include "totvs.ch"
 
-class Vazia 
-endclass
+class Vazia endclass
 
 user function main()
   conout("x")

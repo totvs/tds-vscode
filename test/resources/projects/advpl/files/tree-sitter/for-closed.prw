@@ -7,9 +7,3 @@ user function main()
 		conout(x)
 	next
 return
-
-user function main2()
-	for x := 1 to 10
-		conout(x)
-	next
-return

@@ -194,6 +194,55 @@ export function resolveTargetUri(explicitTarget?: string): vscode.Uri | undefine
 	return vscode.window.activeTextEditor?.document.uri;
 }
 
+/** Extensões de fontes AdvPL/TLPP (mesma lista de `Utils.isAdvPlSource`). */
+const ADVPL_SOURCE_EXTENSIONS: Set<string> = new Set([
+	".th", ".ch", ".prw", ".prg", ".prx", ".ppx", ".ppp", ".tlpp", ".aph", ".ahu", ".apl", ".apw"
+]);
+
+/** Extensões de fontes 4GL/Logix (mesma lista de `Utils.is4glSource`). */
+const LOGIX_SOURCE_EXTENSIONS: Set<string> = new Set([".4gl", ".per"]);
+
+/**
+ * Indica se a URI aponta para um fonte AdvPL/TLPP/4GL (pela extensão).
+ * @param uri URI candidata.
+ * @returns True quando é um fonte AdvPL/TLPP/4GL.
+ */
+export function isTotvsSourceUri(uri: vscode.Uri): boolean {
+	const ext: string = path.extname(uri.path).toLowerCase();
+	return ADVPL_SOURCE_EXTENSIONS.has(ext) || LOGIX_SOURCE_EXTENSIONS.has(ext);
+}
+
+/**
+ * Indica se a extensão da URI consta em `totvsLanguageServer.folder.extensionsAllowed`
+ * (comparação sem diferenciar maiúsculas/minúsculas).
+ * @param uri URI candidata.
+ * @returns True quando a extensão está na lista de extensões permitidas.
+ */
+export function isExtensionAllowedUri(uri: vscode.Uri): boolean {
+	const ext: string = path.extname(uri.path).toLowerCase();
+	if (!ext) {
+		return false;
+	}
+
+	const allowed: string[] = vscode.workspace
+		.getConfiguration("totvsLanguageServer", uri)
+		.get<string[]>("folder.extensionsAllowed", []);
+	return allowed.some((item) => {
+		const value: string = item.trim().toLowerCase();
+		return (value.startsWith(".") ? value : `.${value}`) === ext;
+	});
+}
+
+/**
+ * Mensagem padrão das ferramentas tds_* quando o contexto não é um fonte AdvPL/TLPP/4GL.
+ * @param uri URI ignorada.
+ * @returns Texto para o resultado da ferramenta.
+ */
+export function notTotvsSourceMessage(uri: vscode.Uri): string {
+	const label: string = uri.scheme === "file" ? vscode.workspace.asRelativePath(uri, false) : uri.toString(true);
+	return `Ignored: '${label}' is not an AdvPL/TLPP/4GL source.`;
+}
+
 /**
  * Removes single/double quotes from the edges of the prompt value.
  * @param value Raw text provided by the user.
