@@ -10,3 +10,17 @@ method create() class Animal
 
 method run() class Animal
   return nil
+
+class Dog
+  method bark()
+end class
+
+class Cat
+  method meow()
+endclass
+
+method bark() class Dog
+  return nil
+
+method meow() class Cat
+  return nil
