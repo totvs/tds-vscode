@@ -27,6 +27,25 @@ export class ServerGroupItem extends vscode.TreeItem {
     super(groupLabel(groupPath), collapsibleState);
   }
 
+  /**
+   * A group is "connected" when it directly or indirectly (nested groups)
+   * contains the server that is currently connected, so the folder color
+   * can be extended up the whole path (Ediouro > Homologação > EDI_HOM).
+   */
+  public get hasConnectedServer(): boolean {
+    return this.children.some((child) => {
+      if (child instanceof ServerGroupItem) {
+        return child.hasConnectedServer;
+      }
+
+      if (child instanceof ServerItem) {
+        return child.isConnected;
+      }
+
+      return false;
+    });
+  }
+
   iconPath = new vscode.ThemeIcon("folder");
   tooltip = this.groupPath;
   contextValue = "serverGroup";
