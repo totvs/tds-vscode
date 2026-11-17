@@ -4,6 +4,7 @@ static nStaticUsed := 1
 static nStaticLiteral := 2
 static cStaticCall := conout("static")
 
+
 user function uvf2Single()
   local cUnused
   local nUsed := 1

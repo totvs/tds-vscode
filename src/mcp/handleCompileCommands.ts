@@ -1,11 +1,34 @@
 import * as vscode from "vscode";
-import { REBUILD_WORKSPACE_COMMAND, DIAGNOSTIC_WAIT_TIMEOUT_MS, DIAGNOSTIC_WAIT_TIMEOUT_MS_FOLDER, DiagnosticEntry, DiagnosticsWaitResult, isDirectoryUri, MAX_DIAGNOSTICS_TO_SHOW, REBUILD_FILE_COMMAND, REBUILD_OPEN_EDITORS_COMMAND, SYNTAX_ONLY_FILE_COMMAND, FlagOptions, resolveTargetUri, isUriInsideFolder, severityLabel, toLocationLink, uriEquals, isWorkspaceUri, isTotvsSourceUri, isExtensionAllowedUri, notTotvsSourceMessage } from "./mcpUtils";
-import { waitForDiagnosticsChange, collectDiagnosticsForOpenEditors } from "./diagnosticsUtils";
+import { REBUILD_WORKSPACE_COMMAND, isDirectoryUri, MAX_DIAGNOSTICS_TO_SHOW, REBUILD_FILE_COMMAND, REBUILD_OPEN_EDITORS_COMMAND, SYNTAX_ONLY_FILE_COMMAND, FlagOptions, resolveTargetUri, isTotvsSourceUri, isExtensionAllowedUri, notTotvsSourceMessage, toWorkspaceRelativePath } from "./mcpUtils";
+import type { BuildOutcome } from "../compile/tdsBuild";
+import { mcpLog } from "./mcpLogger";
+import type { CompileInfo } from "../compile/CompileInfo";
+
+type ResultSeverity = "ERROR" | "WARN" | "OTHER";
 
 /**
- * Runs compiler command from chat.
- * Validates prompt/path/extension and then requests server-side compilation.
- * @param prompt Raw prompt text.
+ * Classifies the status of a Language Server compile result.
+ * @param status Status reported by the Language Server (FATAL, ERROR, WARN, ...).
+ * @returns Severity used by the filters and counters.
+ */
+function classifyStatus(status: string | undefined): ResultSeverity {
+	switch ((status ?? "").toUpperCase()) {
+		case "FATAL":
+		case "ERROR":
+			return "ERROR";
+		case "WARN":
+			return "WARN";
+		default:
+			return "OTHER";
+	}
+}
+
+/**
+ * Runs the compile/syntax-only command and returns the result reported by the Language Server.
+ * The result comes from the Language Server response of the compilation request
+ * (`$totvsserver/compilation`), not from the Problems view.
+ * @param target Resolved target (file, folder, `workspace` or `open-editors`).
+ * @param flagOptions Filter/sort/format options.
  * @param cancelToken Request cancellation token.
  * @param isError Mutable wrapper used as out parameter.
  * The function updates `isError.value` to indicate whether the compilation flow ended with an error.
@@ -38,18 +61,23 @@ export async function handleCompilerCommand(
 		return [notTotvsSourceMessage(targetUri)];
 	}
 
+	if (cancelToken.isCancellationRequested) {
+		return ["Compiler tool invocation canceled by user."];
+	}
+
+	let outcome: BuildOutcome | undefined;
+	mcpLog.verbose("Sent to the Language Server (build command)", { command: commandId, target: targetUri ? toWorkspaceRelativePath(targetUri) : target });
 	try {
 		if (isWorkspaceTarget || isOpenEditorsTarget) {
 			console.log(`[handleCompilerCommand] invoke: executing command '${commandId}' without explicit URI.`);
-			await vscode.commands.executeCommand(commandId);
+			outcome = await vscode.commands.executeCommand<BuildOutcome | undefined>(commandId);
 		} else if (target) {
 			console.log(`[handleCompilerCommand] invoke: executing command '${commandId}' with URI '${targetUri.toString(true)}'.`);
-			await vscode.commands.executeCommand(commandId, undefined, [targetUri]);
+			outcome = await vscode.commands.executeCommand<BuildOutcome | undefined>(commandId, undefined, [targetUri]);
 		} else {
 			console.log(`[handleCompilerCommand] invoke: executing command '${commandId}' fallback without URI.`);
-			await vscode.commands.executeCommand(commandId);
+			outcome = await vscode.commands.executeCommand<BuildOutcome | undefined>(commandId);
 		}
-		isError.value = false;
 	} catch (error) {
 		console.error(`[handleCompilerCommand] invoke: command failed (${commandId}): ${error instanceof Error ? error.stack ?? error.message : String(error)}`);
 		return [
@@ -57,247 +85,108 @@ export async function handleCompilerCommand(
 		];
 	}
 
-	const diagnosticsTimeout: number = isDirectoryUri(targetUri)
-		? DIAGNOSTIC_WAIT_TIMEOUT_MS_FOLDER
-		: DIAGNOSTIC_WAIT_TIMEOUT_MS;
-	console.log(`[handleCompilerCommand] invoke: waiting diagnostics with timeout=${diagnosticsTimeout}`);
-	const waitResult: DiagnosticsWaitResult = await waitForDiagnosticsChange(cancelToken, diagnosticsTimeout);
-	if (waitResult.canceled) {
-		console.warn("[handleCompilerCommand] invoke: canceled while waiting diagnostics.");
-		return [
-			"Compiler tool invocation canceled by user."
-		];
+	mcpLog.verbose("Received from the Language Server (build result)", outcome);
+	if (!outcome || outcome.error || !outcome.result) {
+		const reason: string = outcome?.error ?? "The command returned no result.";
+		console.warn(`[handleCompilerCommand] invoke: build not completed: ${reason}`);
+		return [`Compilation was not completed: ${reason}`];
 	}
 
-	const diagnosticsCollected: DiagnosticEntry[] = isOpenEditorsTarget ? collectDiagnosticsForOpenEditors() : collectDiagnostics(targetUri, isWorkspaceTarget);
-	const diagnostics: DiagnosticEntry[] = applyDiagnosticFilterOptions(
-		diagnosticsCollected,
-		flagOptions
-	);
-	const showAllDiagnostics: boolean = isDirectoryUri(targetUri);
-	const maxToShow: number = flagOptions.max && flagOptions.max > 0
-		? flagOptions.max
-		: (showAllDiagnostics ? diagnostics.length : MAX_DIAGNOSTICS_TO_SHOW);
-	const displayedDiagnostics: DiagnosticEntry[] = diagnostics.slice(0, maxToShow);
+	if (cancelToken.isCancellationRequested) {
+		return ["Compiler tool invocation canceled by user."];
+	}
 
-	console.log(`[handleCompilerCommand] invoke: diagnostics total=${diagnostics.length} displayed=${displayedDiagnostics.length} timedOut=${waitResult.timedOut} changed=${waitResult.changed}`);
-
-	const diagnosticsSummary: string = formatDiagnosticsSummary(
-		displayedDiagnostics,
-		target,
-		diagnostics.length > displayedDiagnostics.length,
-		flagOptions
-	);
-
-	const summary: string[] = flagOptions.format === "json"
-		? [JSON.stringify({
-			command: commandId,
-			target,
-			flags: flagOptions,
-			diagnosticsUpdated: waitResult.changed,
-			timedOut: waitResult.timedOut,
-			diagnostics: JSON.parse(diagnosticsSummary)
-		}, null, 2)]
-		: [
-			...(waitResult.timedOut && !waitResult.changed
-				? [
-					"Diagnostics were not updated before timeout. Results below may reflect a previous compile.",
-					""
-				]
-				: []),
-			diagnosticsSummary
-		];
-
-	return summary;
+	isError.value = false;
+	return [formatResult(outcome.result.compileInfos ?? [], outcome.result.returnCode, commandId, targetUri ? toWorkspaceRelativePath(targetUri) : target, targetUri, flagOptions)];
 }
 
 /**
- * Collects error/warning diagnostics for a file, folder, or workspace.
- * @param targetUri Target URI for build.
- * @param isWorkspaceTarget Indicates whether the build was requested for the entire workspace.
- * @returns List of diagnostics eligible for chat display.
+ * Applies filters, sorting and limit to the results reported by the Language Server and formats them.
+ * @param infos Results of the compilation request.
+ * @param returnCode Return code of the compilation request.
+ * @param commandId Executed command.
+ * @param target Target label.
+ * @param targetUri Resolved target URI, when applicable.
+ * @param flags Filter/sort/format options.
+ * @returns Final text for the tool output.
  */
-function collectDiagnostics(targetUri: vscode.Uri | undefined, isWorkspaceTarget: boolean): DiagnosticEntry[] {
-	const diagnosticsByUri: [vscode.Uri, vscode.Diagnostic[]][] = vscode.languages.getDiagnostics();
-	let filtered: [vscode.Uri, vscode.Diagnostic[]][] = diagnosticsByUri;
-
-	if (!isWorkspaceTarget && targetUri) {
-		if (isDirectoryUri(targetUri)) {
-			filtered = diagnosticsByUri.filter(([uri]) => isUriInsideFolder(targetUri, uri));
-		} else {
-			filtered = diagnosticsByUri.filter(([uri]) => uriEquals(uri, targetUri));
-		}
-
-		if (filtered.length === 0) {
-			filtered = diagnosticsByUri.filter(([uri]) => isWorkspaceUri(uri));
-		}
-	} else {
-		filtered = diagnosticsByUri.filter(([uri]) => isWorkspaceUri(uri));
-	}
-
-	const entries: DiagnosticEntry[] = [];
-	for (const [uri, diagnostics] of filtered) {
-		for (const diagnostic of diagnostics) {
-			if (
-				diagnostic.severity === vscode.DiagnosticSeverity.Error ||
-				diagnostic.severity === vscode.DiagnosticSeverity.Warning
-			) {
-				entries.push({ uri, diagnostic });
-			}
-		}
-	}
-
-	return entries;
-}
-
-/**
- * Applies diagnostic filters and sorting based on provided flags.
- * @param entries Collected diagnostics.
- * @param options Filter/sort options.
- * @returns Filtered and sorted diagnostics.
- */
-function applyDiagnosticFilterOptions(
-	entries: DiagnosticEntry[],
-	options: FlagOptions
-): DiagnosticEntry[] {
-	let result: DiagnosticEntry[] = entries.slice();
-
-	if (options.only === "error") {
-		result = result.filter((entry) => entry.diagnostic.severity === vscode.DiagnosticSeverity.Error);
-	} else if (options.only === "warning") {
-		result = result.filter((entry) => entry.diagnostic.severity === vscode.DiagnosticSeverity.Warning);
-	}
-
-	if (options.sort === "file") {
-		result.sort((a, b) => {
-			const pathA: string = a.uri.scheme === "file" ? a.uri.fsPath.toLowerCase() : a.uri.toString(true).toLowerCase();
-			const pathB: string = b.uri.scheme === "file" ? b.uri.fsPath.toLowerCase() : b.uri.toString(true).toLowerCase();
-			if (pathA < pathB) {
-				return -1;
-			}
-			if (pathA > pathB) {
-				return 1;
-			}
-
-			const lineA: number = a.diagnostic.range.start.line;
-			const lineB: number = b.diagnostic.range.start.line;
-			return lineA - lineB;
-		});
-	} else if (options.sort === "severity") {
-		result.sort((a, b) => {
-			const severityA: vscode.DiagnosticSeverity = a.diagnostic.severity ?? vscode.DiagnosticSeverity.Hint;
-			const severityB: vscode.DiagnosticSeverity = b.diagnostic.severity ?? vscode.DiagnosticSeverity.Hint;
-			if (severityA !== severityB) {
-				return severityA - severityB;
-			}
-
-			const pathA: string = a.uri.scheme === "file" ? a.uri.fsPath.toLowerCase() : a.uri.toString(true).toLowerCase();
-			const pathB: string = b.uri.scheme === "file" ? b.uri.fsPath.toLowerCase() : b.uri.toString(true).toLowerCase();
-			if (pathA < pathB) {
-				return -1;
-			}
-			if (pathA > pathB) {
-				return 1;
-			}
-
-			return a.diagnostic.range.start.line - b.diagnostic.range.start.line;
-		});
-	}
-
-	return result;
-}
-
-/**
- * Builds the final text with summary and diagnostics list for chat.
- * @param entries Diagnostics to display.
- * @param targetLabel Name/identifier of the compiled target.
- * @param truncated Indicates whether the list was truncated by limit.
- * @returns Final response text for chat.
- */
-function formatDiagnosticsSummary(
-	entries: DiagnosticEntry[],
-	targetLabel: string,
-	truncated: boolean,
+function formatResult(
+	infos: CompileInfo[],
+	returnCode: number,
+	commandId: string,
+	target: string,
+	targetUri: vscode.Uri | undefined,
 	flags: FlagOptions
 ): string {
-	const errors: number = entries.filter((entry) => entry.diagnostic.severity === vscode.DiagnosticSeverity.Error).length;
-	const warnings: number = entries.length - errors;
+	const classified = infos.map((info) => ({ info, severity: classifyStatus(info.status), path: toWorkspaceRelativePath(info.filePath) }));
+	const errorsTotal: number = classified.filter((c) => c.severity === "ERROR").length;
+	const warningsTotal: number = classified.filter((c) => c.severity === "WARN").length;
+	const others: number = classified.length - errorsTotal - warningsTotal;
+
+	let entries = classified.filter((c) => c.severity !== "OTHER");
+	if (flags.only === "error") {
+		entries = entries.filter((c) => c.severity === "ERROR");
+	} else if (flags.only === "warning") {
+		entries = entries.filter((c) => c.severity === "WARN");
+	}
+
+	if (flags.sort === "file") {
+		entries.sort((a, b) => a.path.toLowerCase().localeCompare(b.path.toLowerCase()));
+	} else if (flags.sort === "severity") {
+		entries.sort((a, b) => (a.severity === b.severity ? 0 : a.severity === "ERROR" ? -1 : 1) || a.path.toLowerCase().localeCompare(b.path.toLowerCase()));
+	}
+
+	const maxToShow: number = flags.max && flags.max > 0
+		? flags.max
+		: (isDirectoryUri(targetUri) || target === "workspace" || target === "open-editors" ? entries.length : MAX_DIAGNOSTICS_TO_SHOW);
+	const displayed = entries.slice(0, maxToShow);
+	const truncated: boolean = entries.length > displayed.length;
+
+	console.log(`[handleCompilerCommand] invoke: results total=${infos.length} displayed=${displayed.length} returnCode=${returnCode}`);
 
 	if (flags.format === "json") {
-		const diagnostics = entries.map((entry) => {
-			const relativePath: string =
-				entry.uri.scheme === "file"
-					? vscode.workspace.asRelativePath(entry.uri, false)
-					: entry.uri.toString(true);
-			const code: string | number | undefined =
-				typeof entry.diagnostic.code === "string"
-					? entry.diagnostic.code
-					: entry.diagnostic.code && typeof entry.diagnostic.code === "object"
-						? entry.diagnostic.code.value
-						: undefined;
-			return {
-				severity: severityLabel(entry.diagnostic.severity),
-				message: entry.diagnostic.message.replace(/\s+/g, " ").trim(),
-				source: entry.diagnostic.source ?? null,
-				code: code ?? null,
-				line: entry.diagnostic.range.start.line + 1,
-				path: relativePath,
-				uri: entry.uri.toString(true)
-			};
-		});
-
 		return JSON.stringify({
-			target: targetLabel,
-			errors,
-			warnings,
+			command: commandId,
+			target,
+			flags,
+			returnCode,
+			errors: errorsTotal,
+			warnings: warningsTotal,
+			others,
 			truncated,
-			diagnostics
+			results: displayed.map((c) => ({
+				status: c.info.status,
+				path: c.path,
+				message: c.info.message ?? null,
+				detail: c.info.detail ?? null
+			}))
 		}, null, 2);
 	}
 
-	if (entries.length === 0) {
-		return [
-			"Compilation completed and no errors or warnings were found in Problems.",
-		].join("\n");
-	}
-	const details: string[] = entries.map((entry, index) => {
-		const relativePath: string =
-			entry.uri.scheme === "file"
-				? vscode.workspace.asRelativePath(entry.uri, false)
-				: entry.uri.toString(true);
-		const line: number = entry.diagnostic.range.start.line + 1;
-		const locationLink: string = toLocationLink(entry.uri, relativePath, line);
-		const code: string | number | undefined =
-			typeof entry.diagnostic.code === "string"
-				? entry.diagnostic.code
-				: entry.diagnostic.code && typeof entry.diagnostic.code === "object"
-					? entry.diagnostic.code.value
-					: undefined;
-		const cleanMessage: string = entry.diagnostic.message.replace(/\s+/g, " ").trim();
-		const source: string = entry.diagnostic.source ? ` (${entry.diagnostic.source})` : "";
-		const codeText: string = code ? ` [${code}]` : "";
-
-		return `${index + 1}. ${severityLabel(entry.diagnostic.severity)} ${locationLink}${source}${codeText} - ${cleanMessage}`;
-	});
-
-	if (!flags.applied) {
-		//Quando executado via Kiro, este atributo vem como undefined, então inicializamos aqui para evitar erros de acesso .
-		//Ocorre com frequência quando solicitado compileção de workspace.
-		flags.applied = [];
-	}
-
 	const lines: string[] = [
-		"Compilation finished with diagnostics:",
-		`- target: ${targetLabel}`,
-		`- flags: ${flags.applied.join(", ")}`,
-		`- errors: ${errors}`,
-		`- warnings: ${warnings}`,
-		"",
-		...details
+		errorsTotal + warningsTotal === 0
+			? "Compilation finished by the Language Server with no errors or warnings."
+			: "Compilation finished by the Language Server with errors or warnings:",
+		`- target: ${target}`,
+		`- return code: ${returnCode}`,
+		`- errors: ${errorsTotal}`,
+		`- warnings: ${warningsTotal}`
 	];
+	if (others > 0) {
+		lines.push(`- other results (no error/warning): ${others}`);
+	}
+
+	if (displayed.length > 0) {
+		lines.push("");
+		displayed.forEach((c, index) => {
+			const message: string = (c.info.message ?? "").replace(/\s+/g, " ").trim();
+			const detail: string = (c.info.detail ?? "").replace(/\s+/g, " ").trim();
+			lines.push(`${index + 1}. ${c.severity === "ERROR" ? "ERROR" : "WARN"} ${c.path}${message ? ` - ${message}` : ""}${detail ? ` (${detail})` : ""}`);
+		});
+	}
 
 	if (truncated) {
-		lines.push("", `Showing first ${MAX_DIAGNOSTICS_TO_SHOW} diagnostics.`);
+		lines.push("", `Showing first ${displayed.length} of ${entries.length} results.`);
 	}
 
 	return lines.join("\n");

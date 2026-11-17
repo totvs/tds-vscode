@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { McpRegistrar, MCP_SERVER_NAME } from "../mcpTypes";
-import { isTotvsSourceUri, notTotvsSourceMessage, resolveTargetUri } from "../mcpUtils";
+import { isTotvsSourceUri, notTotvsSourceMessage, resolveTargetUri, toWorkspaceRelativePath } from "../mcpUtils";
 import { mcpLog } from "../mcpLogger";
 
 const DEFAULT_MAX_DIAGNOSTICS = 10;
@@ -164,7 +164,7 @@ export const registerFixTool: McpRegistrar = (server) => {
 			const document = await vscode.workspace.openTextDocument(uri);
 			const shouldApply = apply ?? true;
 			const limit = max ?? DEFAULT_MAX_DIAGNOSTICS;
-			const relativePath = vscode.workspace.asRelativePath(uri, false);
+			const relativePath = toWorkspaceRelativePath(uri);
 
 			let diagnostics = vscode.languages
 				.getDiagnostics(uri)

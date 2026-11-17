@@ -172,8 +172,28 @@ export class TdsMcpServer implements vscode.Disposable {
 		const server = createMcpServer();
 		const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
 
+		// Captures what is sent to the client, to log it (verbose) when the response ends.
+		const sentChunks: Buffer[] = [];
+		const originalWrite = res.write.bind(res) as (...args: unknown[]) => boolean;
+		const originalEnd = res.end.bind(res) as (...args: unknown[]) => http.ServerResponse;
+		const capture = (chunk: unknown): void => {
+			if (typeof chunk === "string") {
+				sentChunks.push(Buffer.from(chunk));
+			} else if (Buffer.isBuffer(chunk) || chunk instanceof Uint8Array) {
+				sentChunks.push(Buffer.from(chunk));
+			}
+		};
+		res.write = ((chunk: unknown, ...rest: unknown[]) => {
+			capture(chunk);
+			return originalWrite(chunk, ...rest);
+		}) as typeof res.write;
+		res.end = ((chunk?: unknown, ...rest: unknown[]) => {
+			capture(chunk);
+			return originalEnd(chunk, ...rest);
+		}) as typeof res.end;
+
 		res.on("close", () => {
-			mcpLog.verbose("Response sent to the client");
+			mcpLog.verbose(`Response sent to the client (HTTP ${res.statusCode})`, Buffer.concat(sentChunks).toString("utf8"));
 			mcpLog.debug("HTTP response closed");
 			void transport.close();
 			void server.close();

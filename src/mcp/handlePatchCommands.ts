@@ -3,7 +3,8 @@ import * as fs from "fs";
 import path from "path";
 import { ValidResponse, sendPatchValidateRequest, sendPatchApplyRequest } from "../protocolMessages";
 import { ServersConfig } from "../utils";
-import { stripQuotes, resolvePatchFilePath } from "./mcpUtils";
+import { stripQuotes, resolvePatchFilePath, toWorkspaceRelativePath } from "./mcpUtils";
+import { mcpLog } from "./mcpLogger";
 
 /**
  * Extracts patch file path from a standalone prompt value.
@@ -43,6 +44,30 @@ function isSupportedPatchFile(filePath: string): boolean {
 }
 
 /**
+ * Formats the result reported by the Language Server for a patch request.
+ * @param action Action label (`validation` or `apply`).
+ * @param patchFilePath Patch file path.
+ * @param response Language Server response.
+ * @returns Text with code, message and the resources older than the RPO, when reported.
+ */
+function formatPatchFailure(action: string, patchFilePath: string, response: ValidResponse): string {
+	const lines: string[] = [
+		`Patch ${action} failed for ${toWorkspaceRelativePath(patchFilePath)}.`,
+		`- Code: ${response.errorCode}`,
+		`- Message: ${response.message || "Unknown error."}`
+	];
+
+	const items: any[] = Array.isArray(response.patchValidates) ? response.patchValidates : [];
+	if (items.length > 0) {
+		lines.push("", "Resources reported by the Language Server:", "Patch Date | RPO Date | Filename");
+		items.forEach((item: any) => lines.push(`${item.datePatch} | ${item.dateRpo} | ${item.file}`));
+	}
+
+	lines.push("", "Check the selected server/environment and patch compatibility before retrying.");
+	return lines.join("\n");
+}
+
+/**
  * Runs patch validation command from chat.
  * Validates prompt/path/extension and then requests server-side validation.
  * @param prompt Raw prompt text.
@@ -73,7 +98,7 @@ export async function handleValidPatchCommand(
 	}
 
 	if (!fs.existsSync(patchFilePath)) {
-		return `Patch file not found: ${patchFilePath}`;
+		return `Patch file not found: ${toWorkspaceRelativePath(patchFilePath)}`;
 	}
 
 	let fileStats: fs.Stats;
@@ -84,29 +109,26 @@ export async function handleValidPatchCommand(
 	}
 
 	if (!fileStats.isFile()) {
-		return `Invalid patch path (not a file): ${patchFilePath}`;
+		return `Invalid patch path (not a file): ${toWorkspaceRelativePath(patchFilePath)}`;
 	}
 
 	if (!isSupportedPatchFile(patchFilePath)) {
-		return `Unsupported patch extension. Use .ptm, .zip, or .upd files: ${patchFilePath}`;
+		return `Unsupported patch extension. Use .ptm, .zip, or .upd files: ${toWorkspaceRelativePath(patchFilePath)}`;
 	}
 
 	try {
 		const server = ServersConfig.getCurrentServer();
+		mcpLog.verbose("Sent to the Language Server (patch validation)", { patch: toWorkspaceRelativePath(patchFilePath) });
 		const validationResult: ValidResponse = await sendPatchValidateRequest(server, patchFilePath);
+		mcpLog.verbose("Received from the Language Server (patch validation)", validationResult);
 
 		if (validationResult.error !== 0) {
 			isError.value = true;
-			return [
-				`Patch validation failed for ${vscode.workspace.asRelativePath(patchFilePath, false)}.`,
-				`- Code: ${validationResult.errorCode}`,
-				`- Message: ${validationResult.message || "Unknown validation error."}`,
-				"",
-				"Check the selected server/environment and patch compatibility before retrying."
-			].join("\n");
+			return formatPatchFailure("validation", patchFilePath, validationResult);
 		}
 
-		return `Patch validated successfully: ${vscode.workspace.asRelativePath(patchFilePath, false)}.`;
+		isError.value = false;
+		return `Patch validated successfully: ${toWorkspaceRelativePath(patchFilePath)}.`;
 	} catch (error) {
 		isError.value = true;
 		return `Error during patch validation: ${error instanceof Error ? error.message : String(error)}`;
@@ -136,7 +158,7 @@ export async function handleApplyPatchCommand(
 	}
 
 	if (!fs.existsSync(patchFilePath)) {
-		return `Patch file not found: ${patchFilePath}`;
+		return `Patch file not found: ${toWorkspaceRelativePath(patchFilePath)}`;
 	}
 
 	let fileStats: fs.Stats;
@@ -147,31 +169,28 @@ export async function handleApplyPatchCommand(
 	}
 
 	if (!fileStats.isFile()) {
-		return `Invalid patch path (not a file): ${patchFilePath}`;
+		return `Invalid patch path (not a file): ${toWorkspaceRelativePath(patchFilePath)}`;
 	}
 
 	if (!isSupportedPatchFile(patchFilePath)) {
-		return `Unsupported patch extension. Use .ptm, .zip, or .upd files: ${patchFilePath}`;
+		return `Unsupported patch extension. Use .ptm, .zip, or .upd files: ${toWorkspaceRelativePath(patchFilePath)}`;
 	}
 
 	try {
 		const server = ServersConfig.getCurrentServer();
-		const validationResult: ValidResponse = await sendPatchApplyRequest(server, patchFilePath, applyOld);
+		mcpLog.verbose("Sent to the Language Server (patch apply)", { patch: toWorkspaceRelativePath(patchFilePath), applyOld });
+		const applyResult: ValidResponse = await sendPatchApplyRequest(server, patchFilePath, applyOld);
+		mcpLog.verbose("Received from the Language Server (patch apply)", applyResult);
 
-		if (validationResult.error !== 0) {
+		if (applyResult.error !== 0) {
 			isError.value = true;
-			return [
-				`Patch validation failed for ${vscode.workspace.asRelativePath(patchFilePath, false)}.`,
-				`- Code: ${validationResult.errorCode}`,
-				`- Message: ${validationResult.message || "Unknown validation error."}`,
-				"",
-				"Check the selected server/environment and patch compatibility before retrying."
-			].join("\n");
+			return formatPatchFailure("apply", patchFilePath, applyResult);
 		}
 
-		return `Patch validated successfully: ${vscode.workspace.asRelativePath(patchFilePath, false)}.`;
+		isError.value = false;
+		return `Patch applied successfully: ${toWorkspaceRelativePath(patchFilePath)}.`;
 	} catch (error) {
 		isError.value = true;
-		return `Error during patch validation: ${error instanceof Error ? error.message : String(error)}`;
+		return `Error during patch apply: ${error instanceof Error ? error.message : String(error)}`;
 	}
 }

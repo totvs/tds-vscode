@@ -7,7 +7,7 @@ const CHANNEL_NAME = "TOTVS MCP";
 const CONFIG_SECTION = "totvsLanguageServer";
 const CONFIG_LOG = "mcp.log";
 const CONFIG_LOG_FILE = "mcp.logFile";
-const MAX_CHANNEL_LENGTH = 2000;
+const MAX_CHANNEL_LENGTH = 20000;
 const MAX_FILE_LENGTH = 20000;
 
 /**

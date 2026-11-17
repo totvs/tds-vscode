@@ -70,11 +70,7 @@ export const registerPatchTools: McpRegistrar = (server) => {
 			withCancellation(extra?.signal, async (token) => {
 				const isError = { value: false };
 				const message = await handleApplyPatchCommand(quotePath(patch), token, isError, applyOld ?? false);
-
-				// O handler do chat devolve o texto de "validação" também em caso de sucesso.
-				return isError.value
-					? textResult(message, true)
-					: textResult(`Patch applied successfully: ${vscode.workspace.asRelativePath(stripQuotes(patch.trim()), false)}.`, false);
+				return textResult(message, isError.value);
 			})
 	);
 };

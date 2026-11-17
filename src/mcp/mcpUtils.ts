@@ -7,9 +7,6 @@ export const REBUILD_OPEN_EDITORS_COMMAND: string = "totvs-developer-studio.rebu
 export const REBUILD_FILE_COMMAND: string = "totvs-developer-studio.rebuild.file";
 export const SYNTAX_ONLY_FILE_COMMAND: string = "totvs-developer-studio.syntax-only.file";
 export const MAX_DIAGNOSTICS_TO_SHOW: number = 20;
-export const DIAGNOSTIC_WAIT_TIMEOUT_MS: number = 10000;
-export const DIAGNOSTIC_WAIT_TIMEOUT_MS_FOLDER: number = 60000;
-export const DIAGNOSTIC_IDLE_WINDOW_MS: number = 5000;
 
 export const WORKSPACE_TARGET_ALIASES: Set<string> = new Set([
 	"workspace",
@@ -36,11 +33,6 @@ export const DEFAULT_FLAG_OPTIONS: FlagOptions = {
 	applied: []
 };
 
-export type DiagnosticEntry = {
-	uri: vscode.Uri;
-	diagnostic: vscode.Diagnostic;
-};
-
 export type FlagOptions = {
 	only: "all" | "error" | "warning";
 	max?: number;
@@ -49,12 +41,6 @@ export type FlagOptions = {
 	applyOld: boolean;
 	syntaxOnly?: boolean;
 	applied?: string[];
-};
-
-export type DiagnosticsWaitResult = {
-	changed: boolean;
-	timedOut: boolean;
-	canceled: boolean;
 };
 
 /**
@@ -239,8 +225,31 @@ export function isExtensionAllowedUri(uri: vscode.Uri): boolean {
  * @returns Texto para o resultado da ferramenta.
  */
 export function notTotvsSourceMessage(uri: vscode.Uri): string {
-	const label: string = uri.scheme === "file" ? vscode.workspace.asRelativePath(uri, false) : uri.toString(true);
-	return `Ignored: '${label}' is not an AdvPL/TLPP/4GL source.`;
+	return `Ignored: '${toWorkspaceRelativePath(uri)}' is not an AdvPL/TLPP/4GL source.`;
+}
+
+/**
+ * Converts a file/folder (path, file URI or Uri) to the path relative to the workspace, with `/` separators.
+ * Resources outside the workspace keep their full path.
+ * @param value Path, URI text or Uri.
+ * @returns Workspace relative path (or the full path/URI when it is outside the workspace).
+ */
+export function toWorkspaceRelativePath(value: string | vscode.Uri | undefined): string {
+	if (!value) {
+		return "";
+	}
+
+	try {
+		let uri: vscode.Uri;
+		if (typeof value === "string") {
+			uri = /^[a-zA-Z][a-zA-Z\d+.-]+:\/\//.test(value) ? vscode.Uri.parse(value, true) : vscode.Uri.file(value);
+		} else {
+			uri = value;
+		}
+		return uri.scheme === "file" ? vscode.workspace.asRelativePath(uri, false).replace(/\\/g, "/") : uri.toString(true);
+	} catch {
+		return String(value);
+	}
 }
 
 /**
@@ -274,91 +283,3 @@ export function isDirectoryUri(uri: vscode.Uri | undefined): boolean {
 	}
 }
 
-/**
- * Checks whether a URI is inside a parent folder (recursively).
- * @param parentFolder Base folder URI.
- * @param targetUri Resource URI to validate.
- * @returns True when targetUri is contained within the parent folder.
- */
-export function isUriInsideFolder(parentFolder: vscode.Uri, targetUri: vscode.Uri): boolean {
-	if (parentFolder.scheme !== "file" || targetUri.scheme !== "file") {
-		return false;
-	}
-
-	const parentPath: string = path.resolve(parentFolder.fsPath).toLowerCase();
-	const targetPath: string = path.resolve(targetUri.fsPath).toLowerCase();
-	if (parentPath === targetPath) {
-		return true;
-	}
-
-	const prefix: string = parentPath.endsWith(path.sep) ? parentPath : `${parentPath}${path.sep}`;
-	return targetPath.startsWith(prefix);
-}
-
-/**
- * Compares two URIs, using case-insensitive comparison for file paths.
- * @param left First URI.
- * @param right Second URI.
- * @returns True when the URIs represent the same resource.
- */
-export function uriEquals(left: vscode.Uri, right: vscode.Uri): boolean {
-	if (left.toString() === right.toString()) {
-		return true;
-	}
-
-	if (left.scheme === "file" && right.scheme === "file") {
-		return left.fsPath.toLowerCase() === right.fsPath.toLowerCase();
-	}
-
-	return false;
-}
-
-/**
- * Indicates whether the URI belongs to an open workspace folder.
- * @param uri URI to validate.
- * @returns True when the URI belongs to the workspace.
- */
-export function isWorkspaceUri(uri: vscode.Uri): boolean {
-	if (uri.scheme !== "file") {
-		return false;
-	}
-
-	const folder: vscode.WorkspaceFolder | undefined = vscode.workspace.getWorkspaceFolder(uri);
-	return !!folder;
-}
-
-/**
- * Generates a clickable Markdown link for a diagnostic file and line.
- * @param uri Resource URI with the diagnostic.
- * @param relativePath Relative path for display.
- * @param line 1-based line for navigation.
- * @returns Markdown link to the problem location.
- */
-export function toLocationLink(uri: vscode.Uri, relativePath: string, line: number): string {
-	if (uri.scheme !== "file") {
-		return `${relativePath}:${line}`;
-	}
-
-	const locationUri: string = uri.with({ fragment: `L${line}` }).toString(true);
-	return `[${relativePath}:${line}](${locationUri})`;
-}
-
-/**
- * Returns a standardized label for diagnostic severity.
- * @param severity Diagnostic severity.
- * @returns Standardized text for chat display.
- */
-export function severityLabel(severity: vscode.DiagnosticSeverity): string {
-	switch (severity) {
-		case vscode.DiagnosticSeverity.Error:
-			return "ERROR";
-		case vscode.DiagnosticSeverity.Warning:
-			return "WARN";
-		case vscode.DiagnosticSeverity.Information:
-			return "INFO";
-		case vscode.DiagnosticSeverity.Hint:
-			return "HINT";
-		default:
-			return "UNKNOWN";
-	}
-}

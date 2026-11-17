@@ -170,18 +170,28 @@ export function generatePpo(filePath: string, options?: any): Promise<string> {
 }
 
 /**
+ * Result of a build request: the Language Server response or the reason why it failed/was not executed.
+ * Returned by the build commands so that callers (ex.: TOTVS MCP) can use the LS result.
+ */
+export interface BuildOutcome {
+  result?: CompileResult;
+  error?: string;
+}
+
+/**
  * Compiles one or more files with the given recompile option.
  */
-export function buildFile(filename: string[], recompile: boolean) {
+export function buildFile(filename: string[], recompile: boolean): Promise<BuildOutcome> {
   const compileOptions = _getCompileOptionsDefault();
   compileOptions.recompile = recompile;
-  buildCode(filename, compileOptions);
+  return buildCode(filename, compileOptions);
 }
 
 /**
  * Compiles a list of files with the provided compile options.
+ * @returns The Language Server response, or the reason why the build was not executed.
  */
-function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
+async function buildCode(filesPaths: string[], compileOptions: CompileOptions): Promise<BuildOutcome> {
   const server = ServersConfig.getCurrentServer();
 
   const configADVPL = vscode.workspace.getConfiguration("totvsLanguageServer");
@@ -204,7 +214,7 @@ function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
       vscode.window.showWarningMessage(
         vscode.l10n.t("Operation canceled because it is not possible to save edited files.")
       );
-      return;
+      return { error: "Operation canceled because it is not possible to save edited files." };
     }
     vscode.window.showWarningMessage(
       vscode.l10n.t("Files saved successfully.")
@@ -222,7 +232,7 @@ function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
     //Pega os includes
     let includes: Array<string> = ServersConfig.getFullIncludes(true, server) || [];
     if (!includes.toString()) {
-      return;
+      return { error: "Includes undefined. Check the includes configuration of the current server." };
     }
 
     //Converte os includes em URIs
@@ -256,8 +266,12 @@ function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
     }
 
     //Envia a mensagem de compilacao
-    if (blockBuildCommands(true)) {
-      sendCompilation(
+    if (!blockBuildCommands(true)) {
+      return { error: "Request cancelled. Build process already in progress." };
+    }
+
+    try {
+      const response: CompileResult = await sendCompilation(
         server,
         includesUris,
         filesUris,
@@ -265,47 +279,48 @@ function buildCode(filesPaths: string[], compileOptions: CompileOptions) {
         extensionsAllowed,
         hasAdvplsource,
         compileOptions.syntaxOnly
-      ).then(
-        (response: CompileResult) => {
-          blockBuildCommands(false);
-
-          if (response.returnCode === 40840) {
-            ServersConfig.removeExpiredAuthorization();
-          }
-          if (response.compileInfos.length > 0) {
-            // Exibe aba problems casa haja pelo menos um erro ou warning
-            let showProblems = false;
-            for (let index = 0; index < response.compileInfos.length; index++) {
-              const compileInfo = response.compileInfos[index];
-              if (
-                compileInfo.status === "FATAL" ||
-                compileInfo.status === "ERROR" ||
-                compileInfo.status === "WARN"
-              ) {
-                showProblems = true;
-                break;
-              }
-            }
-            if (showProblems) {
-              // focus
-              vscode.commands.executeCommand("workbench.action.problems.focus");
-            }
-            if (filesUris.length > 1) {
-              verifyCompileResult(response);
-            }
-          }
-        },
-        (err: ResponseError<object>) => {
-          blockBuildCommands(false);
-          languageClient.error(err.message, err);
-          vscode.window.showErrorMessage(err.message);
-        }
       );
+      blockBuildCommands(false);
+
+      if (response.returnCode === 40840) {
+        ServersConfig.removeExpiredAuthorization();
+      }
+      if (response.compileInfos.length > 0) {
+        // Exibe aba problems casa haja pelo menos um erro ou warning
+        let showProblems = false;
+        for (let index = 0; index < response.compileInfos.length; index++) {
+          const compileInfo = response.compileInfos[index];
+          if (
+            compileInfo.status === "FATAL" ||
+            compileInfo.status === "ERROR" ||
+            compileInfo.status === "WARN"
+          ) {
+            showProblems = true;
+            break;
+          }
+        }
+        if (showProblems) {
+          // focus
+          vscode.commands.executeCommand("workbench.action.problems.focus");
+        }
+        if (filesUris.length > 1) {
+          verifyCompileResult(response);
+        }
+      }
+
+      return { result: response };
+    } catch (e) {
+      const err = e as ResponseError<object>;
+      blockBuildCommands(false);
+      languageClient.error(err.message, err);
+      vscode.window.showErrorMessage(err.message);
+      return { error: err.message };
     }
   } else {
     vscode.window.showErrorMessage(
       vscode.l10n.t("No server connected")
     );
+    return { error: "No server connected" };
   }
 }
 
@@ -343,7 +358,7 @@ export function commandBuildFile(
   context: vscode.ExtensionContext,
   recompile: boolean,
   files
-) {
+): Promise<BuildOutcome | undefined> {
   let editor: vscode.TextEditor | undefined;
   let filename: string | undefined = undefined;
 
@@ -354,24 +369,26 @@ export function commandBuildFile(
       vscode.window.showInformationMessage(
         vscode.l10n.t("No editor is active, cannot find current file to build.")
       );
-      return;
+      return Promise.resolve({ error: "No editor is active, cannot find current file to build." });
     }
     filename = editor.document.uri.fsPath;
   }
 
+  let outcome: Promise<BuildOutcome | undefined> = Promise.resolve(undefined);
   vscode.window.setStatusBarMessage(
     `$(gear~spin) ${vscode.l10n.t("Building...")}`,
     new Promise((resolve, reject) => {
       if (files) {
         const arrayFiles: string[] = changeToArrayString(files);
         let allFiles = Utils.getAllFilesRecursive(arrayFiles, true);
-        buildFile(allFiles, recompile);
+        outcome = buildFile(allFiles, recompile);
       } else if (filename !== undefined) {
-        buildFile([filename], recompile);
+        outcome = buildFile([filename], recompile);
       }
       resolve(true);
     })
   );
+  return outcome;
 }
 
 /**
@@ -380,7 +397,7 @@ export function commandBuildFile(
 export function commandSyntaxOnlyFile(
   context: vscode.ExtensionContext,
   files
-) {
+): Promise<BuildOutcome | undefined> {
   let editor: vscode.TextEditor | undefined;
   let filename: string | undefined = undefined;
 
@@ -390,11 +407,12 @@ export function commandSyntaxOnlyFile(
       vscode.window.showInformationMessage(
         vscode.l10n.t("No editor is active, cannot find current file to check syntax.")
       );
-      return;
+      return Promise.resolve({ error: "No editor is active, cannot find current file to check syntax." });
     }
     filename = editor.document.uri.fsPath;
   }
 
+  let outcome: Promise<BuildOutcome | undefined> = Promise.resolve(undefined);
   vscode.window.setStatusBarMessage(
     `$(gear~spin) ${vscode.l10n.t("Checking syntax...")}`,
     new Promise((resolve, reject) => {
@@ -405,13 +423,14 @@ export function commandSyntaxOnlyFile(
       if (files) {
         const arrayFiles: string[] = changeToArrayString(files);
         const allFiles = Utils.getAllFilesRecursive(arrayFiles, true);
-        buildCode(allFiles, compileOptions);
+        outcome = buildCode(allFiles, compileOptions);
       } else if (filename !== undefined) {
-        buildCode([filename], compileOptions);
+        outcome = buildCode([filename], compileOptions);
       }
       resolve(true);
     })
   );
+  return outcome;
 }
 
 /**
@@ -436,7 +455,7 @@ function changeToArrayString(allFiles) {
 /**
  * Command handler that compiles all files in the current workspace.
  */
-export function commandBuildWorkspace(recompile: boolean) {
+export function commandBuildWorkspace(recompile: boolean): Promise<BuildOutcome | undefined> {
   if (vscode.workspace.workspaceFolders) {
     let folders: string[] = [];
 
@@ -446,14 +465,15 @@ export function commandBuildWorkspace(recompile: boolean) {
 
     let allFiles = Utils.getAllFilesRecursive(folders, true);
 
-    buildFile(allFiles, recompile);
+    return buildFile(allFiles, recompile);
   }
+  return Promise.resolve({ error: "No workspace folder is open." });
 }
 
 /**
  * Command handler that compiles all files currently opened in editors.
  */
-export async function commandBuildOpenEditors(recompile: boolean) {
+export async function commandBuildOpenEditors(recompile: boolean): Promise<BuildOutcome | undefined> {
   let delayNext = 250;
   let files: string[] = [];
   let filename: string | undefined = undefined;
@@ -463,7 +483,7 @@ export async function commandBuildOpenEditors(recompile: boolean) {
     vscode.window.showInformationMessage(
       vscode.l10n.t("No editor is active, cannot find current file to build.")
     );
-    return;
+    return { error: "No editor is active, cannot find current file to build." };
   }
   if (editor.viewColumn) {
     filename = editor.document.uri.fsPath;
@@ -520,9 +540,10 @@ export async function commandBuildOpenEditors(recompile: boolean) {
   if (files.length > 0) {
     const compileOptions = _getCompileOptionsDefault();
     compileOptions.recompile = recompile;
-    buildCode(files, compileOptions);
+    return buildCode(files, compileOptions);
   } else {
     vscode.window.showWarningMessage("There is nothing to compile");
+    return { error: "There is nothing to compile" };
   }
 }
 
