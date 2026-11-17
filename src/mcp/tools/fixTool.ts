@@ -1,13 +1,12 @@
 import * as vscode from "vscode";
 import { z } from "zod";
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { McpRegistrar, MCP_SERVER_NAME } from "../mcpTypes";
+import { McpRegistrar } from "../mcpTypes";
 import { isTotvsSourceUri, notTotvsSourceMessage, resolveTargetUri, toWorkspaceRelativePath } from "../mcpUtils";
 import { mcpLog } from "../mcpLogger";
 
 const DEFAULT_MAX_DIAGNOSTICS = 10;
 
-type FixOutcome = "applied" | "skipped" | "no-fix" | "failed";
+type FixOutcome = "applied" | "skipped" | "needs-choice" | "no-fix" | "failed";
 
 type FixReport = {
 	line: number;
@@ -63,56 +62,6 @@ async function getQuickFixes(uri: vscode.Uri, diagnostic: vscode.Diagnostic): Pr
 	return fixes;
 }
 
-/**
- * Pergunta ao usuário qual correção aplicar.
- * Usa elicitação do MCP quando o cliente suporta; caso contrário (ou se falhar), usa um QuickPick do VS Code.
- * @returns Índice da opção escolhida, ou undefined se o usuário recusou/cancelou.
- */
-async function askWhichFix(
-	server: McpServer,
-	requestId: string | number,
-	diagnostic: vscode.Diagnostic,
-	line: number,
-	titles: string[]
-): Promise<number | undefined> {
-	const labels = titles.map((t, i) => `${i + 1}. ${t}`);
-	const message = `Linha ${line}: ${diagnostic.message}\nExistem ${titles.length} correções possíveis. Qual deve ser aplicada?`;
-
-	if (server.server.getClientCapabilities()?.elicitation) {
-		try {
-			const result = await server.server.elicitInput(
-				{
-					mode: "form",
-					message,
-					requestedSchema: {
-						type: "object",
-						properties: {
-							option: { type: "string", title: "Correção", description: "Correção a aplicar", enum: labels }
-						},
-						required: ["option"]
-					}
-				},
-				{ relatedRequestId: requestId }
-			);
-
-			if (result.action !== "accept") {
-				return undefined;
-			}
-			const index = labels.indexOf(String(result.content?.option));
-			return index >= 0 ? index : undefined;
-		} catch (e) {
-			mcpLog.warn("Asking through the MCP client did not work; using the VS Code window");
-			mcpLog.debug("tds_fix: elicitation failed, using QuickPick", e instanceof Error ? e.message : String(e));
-		}
-	}
-
-	const picked = await vscode.window.showQuickPick(
-		labels.map((label, i) => ({ label, index: i })),
-		{ title: MCP_SERVER_NAME, placeHolder: message.replace(/\n/g, " — "), ignoreFocusOut: true }
-	);
-	return picked?.index;
-}
-
 /** Aplica uma code action (edição e/ou comando). */
 async function applyFix(action: vscode.CodeAction): Promise<void> {
 	if (action.edit) {
@@ -137,7 +86,8 @@ export const registerFixTool: McpRegistrar = (server) => {
 			title: "TDS Fix",
 			description:
 				"Applies the quick fixes (code actions) offered by the TOTVS Language Server to the errors/warnings of an AdvPL/TLPP/4GL source. " +
-				"When a problem has more than one possible fix, the user is asked which one to apply. " +
+				"When a problem has more than one possible fix, nothing is applied for it: the result lists the options (outcome 'needs-choice'). " +
+				"In that case ask the user, in the chat, which option to apply, then call this tool again with 'line' and 'choice' (option number). " +
 				"Use when the user asks to fix, correct or resolve the problems of a source. " +
 				"WARNING: modifies the file (left unsaved in the editor). With apply=false only lists the available fixes. " +
 				"If 'file' is omitted, uses the active editor.",
@@ -146,11 +96,12 @@ export const registerFixTool: McpRegistrar = (server) => {
 				line: z.number().int().positive().optional().describe("Only fix the problems of this line (1-based)"),
 				only: z.enum(["all", "error", "warning"]).optional().describe("Severity filter (default: all)"),
 				apply: z.boolean().optional().describe("Apply the fixes (default: true). When false, only lists the available fixes"),
-				max: z.number().int().positive().optional().describe(`Maximum number of problems handled (default: ${DEFAULT_MAX_DIAGNOSTICS})`)
+				max: z.number().int().positive().optional().describe(`Maximum number of problems handled (default: ${DEFAULT_MAX_DIAGNOSTICS})`),
+				choice: z.number().int().positive().optional().describe("Number (1-based) of the option to apply when a problem has more than one fix. Use together with 'line', after asking the user in the chat")
 			},
 			annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false }
 		},
-		async ({ file, line, only, apply, max }, extra) => {
+		async ({ file, line, only, apply, max, choice }) => {
 			const fail = (text: string) => ({ content: [{ type: "text" as const, text }], isError: true });
 
 			const uri: vscode.Uri | undefined = resolveTargetUri(file || "current");
@@ -206,14 +157,18 @@ export const registerFixTool: McpRegistrar = (server) => {
 
 					let chosen: vscode.CodeAction | undefined = fixes[0];
 					if (fixes.length > 1) {
-						const index = await askWhichFix(server, extra.requestId, diagnostic, diagLine, fixes.map((f) => f.title));
-						chosen = index === undefined ? undefined : fixes[index];
-					}
-
-					if (!chosen) {
-						report.outcome = "skipped";
-						report.detail = "Nenhuma correção escolhida pelo usuário.";
-						continue;
+						// A escolha é feita no chat: a ferramenta devolve as opções e o modelo pergunta ao usuário.
+						if (choice === undefined) {
+							report.outcome = "needs-choice";
+							report.detail = "More than one fix is available. Ask the user which option to apply and call tds_fix again with this line and 'choice'.";
+							continue;
+						}
+						if (choice > fixes.length) {
+							report.outcome = "failed";
+							report.detail = `Invalid choice ${choice}. Valid options: 1 to ${fixes.length}.`;
+							continue;
+						}
+						chosen = fixes[choice - 1];
 					}
 
 					await applyFix(chosen);
@@ -226,11 +181,19 @@ export const registerFixTool: McpRegistrar = (server) => {
 			}
 
 			const applied = reports.filter((r) => r.outcome === "applied").length;
+			const pending = reports.filter((r) => r.outcome === "needs-choice");
+			const notes: string[] = [];
+			if (applied > 0) {
+				notes.push("Fixes applied to the editor buffer; the file was not saved. Recompile to confirm.");
+			}
+			if (pending.length > 0) {
+				notes.push(`Lines ${pending.map((r) => r.line).join(", ")} have more than one fix. Ask the user which option to apply (see 'options') and call tds_fix again with 'line' and 'choice' (1-based option number).`);
+			}
 			const summary = {
 				file: relativePath,
 				applied,
 				unsaved: applied > 0 && document.isDirty,
-				note: applied > 0 ? "Fixes applied to the editor buffer; the file was not saved. Recompile to confirm." : undefined,
+				note: notes.length > 0 ? notes.join(" ") : undefined,
 				problems: reports
 			};
 

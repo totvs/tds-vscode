@@ -47,7 +47,6 @@
     "totvsLanguageServer.editor.signatureHelp": true,
     "editor.codeLens": true,
     "totvsLanguageServer.formatter.provider": "ls",
-    "totvsLanguageServer.linter.callTreeSitter": false,
     "totvsLanguageServer.editor.linter.behavior": "disable",
     "totvsLanguageServer.editor.index.cache": "onMemory",
     "editor.signatureHelp.enabled": true,
@@ -55,5 +54,5 @@
     "totvsLanguageServer.mcp.enable": true,
     "totvsLanguageServer.mcp.log": "verbose",
     "totvsLanguageServer.mcp.logFile": "mcp.log",
-    "totvsLanguageServer.callTreeSitter": "true",
+    "totvsLanguageServer.linter.callTreeSitter": true
 }

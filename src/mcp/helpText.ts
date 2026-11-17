@@ -7,7 +7,7 @@ export function buildHelpText(): string {
 		"Available tools:",
 		"- tds_compile: compiles the target (default: current editor) and returns errors and warnings.",
 		"- tds_syntax_only: checks the syntax of the target (linter), without generating code in the RPO.",
-		"- tds_fix: applies the quick fixes of the language server to the problems of a source. When there is more than one fix, asks which one to apply.",
+		"- tds_fix: applies the quick fixes of the language server to the problems of a source. When there is more than one fix, it lists the options so the user can choose in the chat (then call again with line and choice).",
 		"- tds_validate_patch: validates a patch file (.ptm, .zip, .upd) against the RPO of the current server.",
 		"- tds_apply_patch: applies a patch file (.ptm, .zip, .upd) to the RPO of the current server (changes the RPO).",
 		"- tds_document_symbols: outline (symbols) of a source file, provided by the language server.",
