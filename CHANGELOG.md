@@ -1,6 +1,6 @@
 # Changelog
 
-## Versão [2.1.?]
+## Versão [2.1.7]
 
 ### Melhorias
 
@@ -10,7 +10,9 @@ Efetua atualização do "steering" para uso pelo Kiro.
 
 ### Correções
 
-- Corrigido queda do LS quando o arquivo-fonte encontrava-se com o atributo _Read Only_ ativado. [GITHUB 1505](https://github.com/totvs/tds-vscode/issues/1505) e [DTCLIENT01-7923](https://jiraproducao.totvs.com.br/browse/DTCLIENT01-7923).
+#### Remoção de atraso na inicialização
+
+Removido o atraso que ocorria na inicialização do TDS.
 
 #### Configuração padrão e validação
 
