@@ -613,9 +613,11 @@ function handleError(nodeError: NodeError) {
 async function doDisconnect(serverItem: ServerItem) {
   await sendDisconnectRequest(serverItem).then(
     (ti: ITokenInfo) => {
-      if (!ti.sucess) {
-        serverProvider.connectedServerItem = undefined;
-      }
+      // Independente do resultado retornado pelo LS, no final do processo de
+      // desconexao o servidor deve ser considerado desconectado. Limpar o
+      // connectedServerItem dispara o refresh da tree view, atualizando icones
+      // e os contextValue usados nos "when" dos menus de contexto.
+      serverProvider.connectedServerItem = undefined;
 
       executeCommand("_totvs-developer-studio.clearMonitorPanel");
     },

@@ -11,8 +11,7 @@ import Utils, { ServersConfig } from "./utils";
 import { updateStatusBarItems } from "./statusBar";
 
 class ServerItemProvider
-  implements vscode.TreeDataProvider<ServerTreeItem>
-{
+  implements vscode.TreeDataProvider<ServerTreeItem> {
   isConnected(server: ServerItem) {
     return (
       this._connectedServerItem !== undefined &&
@@ -93,6 +92,9 @@ class ServerItemProvider
   }
 
   getTreeItem(element: ServerTreeItem): vscode.TreeItem {
+    if (element instanceof ServerItem || element instanceof EnvSection) {
+      element.updateState();
+    }
     return element;
   }
 
@@ -201,6 +203,10 @@ class ServerItemProvider
         element.group
       );
 
+      if (element.environment) {
+        si.environment = element.environment;
+      }
+
       const environmentsServer =
         element.environments?.map(
           (environment) =>
@@ -294,8 +300,7 @@ class ServerItemProvider
 const SERVER_TREE_MIME = "application/vnd.code.tree.totvs_server";
 
 class ServerDragAndDropController
-  implements vscode.TreeDragAndDropController<ServerTreeItem>
-{
+  implements vscode.TreeDragAndDropController<ServerTreeItem> {
   readonly dragMimeTypes = [SERVER_TREE_MIME];
   readonly dropMimeTypes = [SERVER_TREE_MIME];
 
