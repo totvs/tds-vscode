@@ -1,9 +1,12 @@
+// Do not submit this file to the repository if any corrections are made.
 #include "totvs.ch"
 
-#ifdef	not_closed
+#ifdef	not_closed_1
 
-#ifdef	pp_ifdef_directive
-#endif
+#ifdef	not_closed_2
+
+    #ifdef	pp_ifdef_directive
+    #endif
 
 user function main()
     local a, b, c

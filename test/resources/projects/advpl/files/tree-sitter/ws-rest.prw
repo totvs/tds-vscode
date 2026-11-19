@@ -1,3 +1,4 @@
+// Do not submit this file to the repository if any corrections are made.
 //Bibliotecas
 #Include "Totvs.ch"
 #Include "RESTFul.ch"

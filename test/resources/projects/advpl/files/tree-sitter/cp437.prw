@@ -1,3 +1,4 @@
+// Do not submit this file to the repository if any corrections are made.
 //Este arquivo deve ser trabalhado como CP437 (DOS).
 //Caso o LS n?o trate erros de convers?o de "code page"
 //o fonte trunca, podendo apresentar ou n?o erro de corrup‡?o.
