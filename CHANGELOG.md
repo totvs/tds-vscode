@@ -21,7 +21,7 @@ Foram incorporadas as ferramentas de linguagem `tds_definition`, `tds_references
 > **Descontinuado:** a extensão [Language Server tools for Copilot](https://marketplace.visualstudio.com/items?itemName=sehejjain.lsp-mcp-bridge) (`sehejjain.lsp-mcp-bridge`) não é mais necessária e seu uso foi descontinuado, pois suas funcionalidades agora fazem parte do _TOTVS MCP_. Caso a tenha instalado, desinstale-a para evitar ferramentas duplicadas no _chat_.
 
 #### `Linter` com _Tree-sitter_
-F
+
 Troca do motor do `linter`, que passa a utilizar o [_Tree-sitter_](https://tree-sitter.github.io/) e proporciona diversas melhorias.
 
 > **Recurso experimental, ativado por padrão.** Caso apresente problemas (por exemplo, na visão `Estrutura`, na navegação ou no `hover` em símbolos), abra um chamado relatando o ocorrido e desligue o _Tree-sitter_ definindo no `settings.json`:
@@ -78,7 +78,7 @@ A dobra (_folding_) de código é controlado pelas configurações nativas do VS
 }
 ```
 
-> O uso de `editor.foldingStrategy: "auto"` (_folding_ provido pelo Language Server) é **experimental** para AdvPL/TLPP. Em caso de regiões incorretas, favor abrir um (chamado)[https://github.com/totvs/tds-vscode/issues] e utilizar `"indentation"`.
+> O uso de `editor.foldingStrategy: "auto"` (_folding_ provido pelo Language Server) é **experimental** para AdvPL/TLPP. Em caso de regiões incorretas, favor abrir um [chamado](https://github.com/totvs/tds-vscode/issues) e utilizar `"indentation"`.
 
 #### Correção rápida (_quick fix_)
 
