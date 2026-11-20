@@ -5,7 +5,7 @@
 - projeto aberto
 - diretório de includes configurado
 
-> Recomenda-se que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em mínusculas de forma a manter a compatibildade entre os diversos sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes.
+> Recomenda-se que pastas e arquivos não contenham caracteres especiais e/ou acentuados e sempre em minúsculas de forma a manter a compatibilidade entre os diversos sistemas operacionais suportados pelo **TDS-VSCode** e seus componentes.
 > Leia [Convenção para nomenclatura de File System em ambiente Linux]<https://tdn.totvs.com/x/h8BICw>).
 
 O _Linter_ é um analisador de código estático que aponta erros de programação em seu código durante a edição ou em segundo plano. Ele apresenta os problemas encontrados no próprio editor e também na visão de _Problemas_.
@@ -16,25 +16,37 @@ Este recurso ajudará o desenvolvedor a identificar problemas antes de efetuar a
 
 ## Comportamento do _linter_
 
-Para alterar o comportamento do _linter_, acesse as configurações da extensões ([Settings](https://code.visualstudio.com/docs/getstarted/settings)), acessando na árvore da visão _settings_, ``extensions + TOTVS``.
+Para alterar o comportamento do _linter_, acesse as configurações da extensões ([Settings](https://code.visualstudio.com/docs/getstarted/settings)), acessando na árvore da visão _settings_, `extensions + TOTVS`.
 
 ![Comportamento do _linter_](./images/linter-settings.png)
 
 Onde:
 
-- ``enable``: habilita o processo em todos os fontes da área de trabalho (padrão).
-- ``enableOnlyOpenFiles``: habilita o processo somente nos arquivos em edição e mantem o comportamento como nas versões anteriores.
-- ``disable``: desabilita o processo.
+- `enable`: habilita o processo em todos os fontes da área de trabalho (padrão).
+- `enableOnlyOpenFiles`: habilita o processo somente nos arquivos em edição e mantém o comportamento como nas versões anteriores.
+- `disable`: desabilita o processo.
+
+## Análise com motor _Tree-sitter_
+
+O _Linter_ passou a contar com um novo motor de análise baseado no [_Tree-sitter_](https://tree-sitter.github.io/), habilitado pela propriedade `totvsLanguageServer.linter.callTreeSitter`.
+
+> **Recurso experimental, ativado por padrão.** Caso apresente problemas (por exemplo, na visão _Estrutura_, na navegação ou no _hover_ em símbolos), abra um chamado relatando o ocorrido e desligue o _Tree-sitter_ no `settings.json`:
+
+```json
+{
+  "totvsLanguageServer.linter.callTreeSitter": false
+}
+```
 
 ## Includes
 
-Como em qualquer compilação de um fonte AdvPL é necessário que o diretório de _Includes_ esteja configurado corretamente para que o processo funcione corretamente.
+Como em qualquer compilação de um fonte AdvPL/4GL é necessário que o diretório de _Includes_ esteja configurado corretamente para que o processo funcione como esperado.
 
-Caso ocorra o erro ``C2090  File not found PRTOPDEF.CH``, é provável que o diretório de _Includes_ não esteja configurado corretamente. Revise as configurações conforme indicado em [Configuração de Include](compilation.md#configura%C3%A7%C3%A3o-de-include-busca-de-arquivos-de-defini%C3%A7%C3%A3o).
+Caso ocorra o erro `C2090  File not found PRTOPDEF.CH`, é provável que o diretório de _Includes_ não esteja configurado corretamente. Revise as configurações conforme indicado em [Configuração de Include](compilation.md#configura%C3%A7%C3%A3o-de-include-busca-de-arquivos-de-defini%C3%A7%C3%A3o).
 
 > **Arquivos 4GL e PER (Logix):**
 >
-> Para a correta análise desses arquivos o _Linter_ necessita do arquivo ``.SCH`` (_Scheme_ do banco de dados, normalmente ``logix.sch``). A busca por esse(s) arquivo(s) é feita na(s) pasta(s) de include configurada(s).
+> Para a correta análise desses arquivos o _Linter_ necessita do arquivo `.SCH` (_Scheme_ do banco de dados, normalmente `logix.sch`). A busca por esse(s) arquivo(s) é feita na(s) pasta(s) de include configurada(s).
 
 ## Marcações
 

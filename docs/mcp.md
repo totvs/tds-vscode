@@ -98,6 +98,15 @@ Os parâmetros são sempre **opcionais**, exceto onde indicado. Nas ferramentas 
 | `tds_validate_patch`   | Valida um pacote de atualização contra o RPO atual.               | Não                         |
 | `tds_apply_patch`      | Aplica um pacote de atualização ao RPO atual.                     | Sim (atualiza o RPO)        |
 | `tds_document_symbols` | Estrutura (símbolos) de um fonte, obtida do LS.                   | Não                         |
+| `tds_definition`       | Definição do símbolo em uma posição do fonte.                     | Não                         |
+| `tds_references`       | Referências (usos) do símbolo em uma posição do fonte.            | Não                         |
+| `tds_hover`            | Documentação e tipo do símbolo em uma posição do fonte.           | Não                         |
+| `tds_completion`       | Sugestões de completação em uma posição do fonte.                 | Não                         |
+| `tds_workspace_symbols`| Busca símbolos por nome em toda a área de trabalho.               | Não                         |
+| `tds_signature_help`   | Assinatura e parâmetros da função/método em uma posição.          | Não                         |
+| `tds_code_actions`     | Lista as ações de código (correções e refatorações) de uma linha. | Não                         |
+| `tds_rename_symbol`    | Prévia das edições para renomear um símbolo (não aplica).         | Não                         |
+| `tds_format_document`  | Prévia das edições da formatação do fonte (não aplica).           | Não                         |
 | `tds_help`             | Ajuda com comandos, alvos e opções.                               | Não                         |
 | `tds_ping`             | Verifica se o servidor está ativo.                                | Não                         |
 
@@ -165,6 +174,23 @@ Retorna a estrutura hierárquica do fonte (funções, classes, métodos, variáv
 | `file`    | Caminho (absoluto ou relativo) ou URI do fonte. Padrão: editor ativo. |
 
 Cada símbolo traz `name`, `kind`, `kindName` (ex.: `Function`), `range`, `selectionRange`, `detail` e `children`. Se o LS ainda estiver iniciando, o resultado pode vir vazio; tente novamente em alguns instantes.
+
+### Ferramentas de linguagem
+
+Consultam o LS pelos comandos `vscode.execute*Provider` do VS Code e valem **somente para fontes AdvPL/TLPP/4GL** (os demais são ignorados). Todas são de leitura: renomear e formatar apenas devolvem uma prévia das edições, sem alterar arquivos. Para **aplicar** as correções dos problemas apontados, use `tds_fix`.
+
+| Ferramenta | Parâmetros |
+| ---------- | ---------- |
+| `tds_definition`, `tds_hover` | `file` (padrão: editor ativo), `line`, `character` (base 0) |
+| `tds_references` | `file`, `line`, `character`, `max` (padrão 100) |
+| `tds_completion` | `file`, `line`, `character`, `triggerCharacter`, `max` |
+| `tds_signature_help` | `file`, `line`, `character`, `triggerCharacter` |
+| `tds_workspace_symbols` | `query`, `max` |
+| `tds_rename_symbol` | `file`, `line`, `character`, `newName` |
+| `tds_code_actions` | `file`, `line`, `character`, `endLine`, `endCharacter` (sem `character`, considera a linha inteira) |
+| `tds_format_document` | `file`, `tabSize`, `insertSpaces`, `max` |
+
+> As posições (`line` e `character`) começam em 0, como nos resultados de `tds_document_symbols`.
 
 ### `tds_help` e `tds_ping`
 
@@ -237,7 +263,7 @@ As atividades são registradas na visão `Output`, seleção **TOTVS MCP** (ou c
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `off`              | Somente inicialização e finalização do servidor (inclui a URL).                                                                               |
 | `message` (padrão) | Acrescenta o cabeçalho de cada chamada: pedidos do cliente, início, conclusão (com duração) ou falha de cada ferramenta. Não mostra os dados. |
-| `verbose`          | Acrescenta os dados: parâmetros e resultado das ferramentas e conteúdo dos pedidos. Linhas com prefixo `[verbose]`.                           |
+| `verbose`          | Acrescenta os dados: parâmetros e resultado das ferramentas e conteúdo dos pedidos. Inclui o _profile_ (tempo em ms de cada etapa, como abrir o fonte, consulta ao LS, compilação ou aplicação, e o total) de cada ferramenta, inclusive quando falha. Linhas com prefixo `[verbose]`.                           |
 | `debug`            | Acrescenta as mensagens técnicas (nomes de métodos e funções internas). Linhas com prefixo `[debug]`.                                         |
 
 Exemplo (`message`):
@@ -293,13 +319,24 @@ Recomenda-se o **VSCode 1.107.1 (11/2025)** ou superior. Em versões anteriores,
 - [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot)
 - [GitHub Copilot Chat](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat)
 
-Em qualquer versão do VSCode, instale também a extensão:
-
-- [Language Server tools for Copilot](https://marketplace.visualstudio.com/items?itemName=sehejjain.lsp-mcp-bridge) (`sehejjain.lsp-mcp-bridge`)
-
 ### Kiro
 
-Em qualquer versão do Kiro, instale a extensão:
+O **Kiro** lê os servidores MCP do arquivo `.kiro/settings/mcp.json` e não consulta o provedor de servidores do VS Code. Por isso, no Kiro, com `totvsLanguageServer.mcp.enable` ligado, a extensão inicia o servidor ao abrir a área de trabalho e grava (ou atualiza) a entrada `totvs-mcp` nesse arquivo com a URL e o _token_ atuais. As demais entradas do arquivo são preservadas, e a entrada é removida quando o servidor é parado.
+
+```json
+{
+  "mcpServers": {
+    "totvs-mcp": {
+      "url": "http://127.0.0.1:<porta>/mcp",
+      "headers": { "Authorization": "Bearer <token>" }
+    }
+  }
+}
+```
+
+> **Atenção:** o arquivo contém o _token_ de acesso, que muda a cada início do servidor. **Não o versione** (inclua `.kiro/settings/mcp.json` no `.gitignore`). Se o arquivo não for um JSON válido, a extensão não o altera e registra o aviso no canal `TOTVS MCP`. Se o Kiro foi encerrado sem parar o servidor, a entrada pode ficar desatualizada até a próxima inicialização.
+
+Além disso, em qualquer versão do Kiro, pode-se instalar a extensão:
 
 - [Kiro LSP MCP](https://open-vsx.org/extension/Rapdog/kiro-lsp-mcp)
 

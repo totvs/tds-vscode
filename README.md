@@ -36,6 +36,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 - Sintaxe destacada
 - Comunicação baseada nos protocolos LSP/DAP
 - [Linter](docs/linter.md) para análise de código estático
+- [Correção rápida](docs/fix.md) (_quick fixes_) para problemas apontados pelo _Linter_
 - [Console](docs/console.md) informativo e notificações
 - [Edição](docs/edition.md), [Formatação](docs/formatter/format_config.md) e [Navegação](docs/dss.md) de arquivos fontes (AdvPL, TLPP, 4GL e variantes)
 - [Compilação](docs/compilation.md) de fontes, pastas e da área de trabalho

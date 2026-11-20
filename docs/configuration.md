@@ -75,7 +75,8 @@ Extensões permitidas padrão:
 | `totvsLanguageServer.editor.codeLens`          | boolean | `true`                | Controla a ativação do CodeLens.                                                                                                             |
 | `totvsLanguageServer.editor.linter.behavior`   | string  | `enableOnlyOpenFiles` | Habilitar o Linter. Valores: `enable` (todos os arquivos da área de trabalho), `enableOnlyOpenFiles` (apenas arquivos em edição), `disable`. |
 | `totvsLanguageServer.editor.linter.includes`   | string  | `""`                  | Não edite. Pode ser sobrescrito.                                                                                                             |
-| `totvsLanguageServer.editor.index.cache`       | string  | `off`                 | Persistência do cache de navegação. Valores: `off` (alguns recursos de DSS podem ficar indisponíveis), `onMemory`, `onDisk`.                 |
+| `totvsLanguageServer.linter.callTreeSitter`    | boolean | `true`                | **Experimental.** Novo motor de análise do Linter (_Tree-sitter_). Em caso de problemas, abra um chamado e desligue (`false`).               |
+| `totvsLanguageServer.editor.index.cache`       | string  | `onMemory`            | Persistência do cache de navegação. Valores: `off` (alguns recursos de DSS podem ficar indisponíveis), `onMemory`, `onDisk`.                 |
 
 ### Formatação
 
@@ -178,7 +179,7 @@ O bloco abaixo reproduz todas as configurações `totvsLanguageServer` com seus 
   "totvsLanguageServer.editor.codeLens": true,
   "totvsLanguageServer.editor.linter.behavior": "enableOnlyOpenFiles",
   "totvsLanguageServer.editor.linter.includes": "",
-  "totvsLanguageServer.editor.index.cache": "off",
+  "totvsLanguageServer.editor.index.cache": "onMemory",
   "totvsLanguageServer.formatter.provider": "extension",
   "totvsLanguageServer.filesystem.encoding": "cp1252",
   "totvsLanguageServer.workspaceServerConfig": false,

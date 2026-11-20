@@ -14,23 +14,30 @@ As ferramentas de modelo de linguagem (\_LM Tools) foram removidas devido a desc
 
 Implementação do _TOTVS MCP_, um servidor [MCP](docs/mcp.md) (_Model Context Protocol_) embutido na extensão, que permite aos assistentes de IA (GitHub Copilot, Kiro etc.) operar sobre os fontes e o ambiente conectado, usando linguagem natural.
 
-#### `Linter`
+Foram incorporadas as ferramentas de linguagem `tds_definition`, `tds_references`, `tds_hover`, `tds_completion`, `tds_workspace_symbols`, `tds_signature_help`, `tds_code_actions`, `tds_rename_symbol` (prévia) e `tds_format_document` (prévia), que se somam à `tds_document_symbols`. Elas valem somente para fontes AdvPL/TLPP/4GL. Veja detalhes em [TOTVS MCP](docs/mcp.md).
 
-Troca do motor do `linter`, proporcionando diversas melhorias.
+> **Kiro:** o Kiro lê os servidores MCP de `.kiro/settings/mcp.json`. Com `totvsLanguageServer.mcp.enable` ligado, a extensão inicia o servidor (porta livre) e grava a entrada `totvs-mcp` nesse arquivo, com a URL e o _token_ atuais, removendo-a ao parar o servidor. O arquivo contém o _token_: não o versione. Veja [TOTVS MCP](docs/mcp.md#kiro).
 
-Este processo é **experimental** e vem ativado por padrão. Caso tenha problemas com visão `Estrutura`, navegação ou `hover` em símbolos, favor abrir um chamado relatando-o e desative o novo motor colocando no `settings.json`:
+> **Descontinuado:** a extensão [Language Server tools for Copilot](https://marketplace.visualstudio.com/items?itemName=sehejjain.lsp-mcp-bridge) (`sehejjain.lsp-mcp-bridge`) não é mais necessária e seu uso foi descontinuado, pois suas funcionalidades agora fazem parte do _TOTVS MCP_. Caso a tenha instalado, desinstale-a para evitar ferramentas duplicadas no _chat_.
 
-````json
+#### `Linter` com _Tree-sitter_
+F
+Troca do motor do `linter`, que passa a utilizar o [_Tree-sitter_](https://tree-sitter.github.io/) e proporciona diversas melhorias.
+
+> **Recurso experimental, ativado por padrão.** Caso apresente problemas (por exemplo, na visão `Estrutura`, na navegação ou no `hover` em símbolos), abra um chamado relatando o ocorrido e desligue o _Tree-sitter_ definindo no `settings.json`:
+
+```json
 {
   ...,
   "totvsLanguageServer.linter.callTreeSitter": false
 }
+```
 
 ### Melhorias
 
 #### Pastas de trabalho
 
-As pastas `.cache`, `.advpl` e arquivos do *linter* agora ficam em `.tds` (antes `.vscode`).
+As pastas `.cache`, `.advpl` e arquivos do _linter_ agora ficam em `.tds` (antes `.vscode`).
 Caso seja detectado dentro da pastas `.vscode`, as pastas serão movidas para a nova localização.
 
 #### Atualização do "steering"
@@ -49,7 +56,7 @@ Ajustado o valor padrão das configurações abaixo, para atender melhor os requ
 {
   "totvsLanguageServer.editor.linter.behavior": "enableOnlyOpenFiles"
 }
-````
+```
 
 Assim, o `linter` voltará a utilizar o motor original.
 
@@ -73,12 +80,11 @@ A dobra (_folding_) de código é controlado pelas configurações nativas do VS
 
 > O uso de `editor.foldingStrategy: "auto"` (_folding_ provido pelo Language Server) é **experimental** para AdvPL/TLPP. Em caso de regiões incorretas, favor abrir um (chamado)[https://github.com/totvs/tds-vscode/issues] e utilizar `"indentation"`.
 
-#### Sugestões de correções (_Fix_)
+#### Correção rápida (_quick fix_)
 
-Adicionado sugestões de correções para:
+Adicionada [correção rápida](docs/fix.md) para diversos erros de compilação. Veja detalhes na documentação associada.
 
-- Variável não utilizada
-- Variável não local usada em comando FOR
+As correções podem ser aplicadas no problema sob o cursor ou [em todo o fonte](docs/fix.md#aplicar-em-todo-o-fonte), para os problemas do mesmo tipo.
 
 ### Melhorias
 
@@ -105,13 +111,12 @@ A formatação pode ser efetuada:
 
 #### Valores padrão de `totvsLanguageServer.editor.linter.behavior` e `totvsLanguageServer.editor.index.cache`
 
-Devido a dependência da IA, as chaves abaixo tiverem seus valores padrões modificadas,
-para melhor acurácia desta.
+Devido à dependência da IA, as chaves abaixo são o recomendado.
 
 ```json
 {
   "totvsLanguageServer.editor.linter.behavior": "enable",
-  "totvsLanguageServer.editor.index.cache": "onMemory"
+  "totvsLanguageServer.editor.index.cache": "onMemory" //ou onDisk
 }
 ```
 
