@@ -1,4 +1,3 @@
-// Do not submit this file to the repository if any corrections are made.
 #Include "PROTHEUS.CH"
 #Include "APWEBSRV.CH"
 

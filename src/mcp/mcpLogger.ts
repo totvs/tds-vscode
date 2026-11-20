@@ -158,6 +158,49 @@ export const mcpLog = {
 };
 
 
+/**
+ * Profile of a tool call: accumulates the time (ms) of each phase (e.g. open the document, request to
+ * the language server, apply) and logs it at the end, in the levels `verbose` and `debug`.
+ * The total time of the call is also logged by `logCall`.
+ */
+export class ToolProfile {
+	private readonly phases: Record<string, number> = {};
+	private readonly startedAt: number = Date.now();
+
+	/** Runs `fn` adding its duration to the phase `name`. */
+	async phase<T>(name: string, fn: () => PromiseLike<T> | T): Promise<T> {
+		const start = Date.now();
+		try {
+			return await fn();
+		} finally {
+			this.phases[name] = (this.phases[name] ?? 0) + (Date.now() - start);
+		}
+	}
+
+	/** Logs the profile (also when the call fails). */
+	log(tool: string, target: string, failed: boolean): void {
+		const total = Date.now() - this.startedAt;
+		mcpLog.verbose(`${tool}: profile (ms)`, { target, ...this.phases, total, failed });
+		const detail = Object.entries(this.phases)
+			.map(([name, ms]) => `${name}=${ms}ms`)
+			.join(" ");
+		mcpLog.debug(`profile ${tool} ${target}: ${detail ? detail + " " : ""}total=${total}ms${failed ? " (failed)" : ""}`);
+	}
+}
+
+/** Executes `fn` recording the profile of the tool call. */
+export async function profiled<T>(tool: string, target: string, fn: (profile: ToolProfile) => Promise<T> | T): Promise<T> {
+	const profile = new ToolProfile();
+	let failed = true;
+	try {
+		const result = await fn(profile);
+		failed = false;
+		return result;
+	} finally {
+		profile.log(tool, target, failed);
+	}
+}
+
 type CallKind = "tool" | "prompt" | "resource";
 
 const CALL_KIND_LABEL: Record<CallKind, string> = {

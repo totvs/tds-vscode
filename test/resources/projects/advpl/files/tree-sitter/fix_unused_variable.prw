@@ -1,12 +1,8 @@
-// Do not submit this file to the repository if any corrections are made.
 #include "totvs.ch"
 
 static nStaticUsed := 1
-static nStaticLiteral := 2
-static cStaticCall := conout("static")
 
 user function uvf2Single()
-  local cUnused
   local nUsed := 1
   conout(nUsed)
   conout(nStaticUsed)
@@ -49,7 +45,6 @@ user function uvfEdges()
   local nUsedG := 3, cUnusedNote // trailing note
   local nUnusedTyped := 1 as numeric
   LOCAL nUsedI := "a,b", cUnusedStr
-  static cUnusedStatic := conout("s")
   conout(nUsedE + nUsedF + nUsedG + nUsedI)
 return
 

@@ -1,10 +1,10 @@
 import { McpRegistrar } from "../mcpTypes";
 import { registerPingTool } from "./pingTool";
 import { registerCompileTool } from "./compileTool";
-import { registerDocumentSymbolsTool } from "./documentSymbolsTool";
 import { registerPatchTools } from "./patchTools";
 import { registerHelpTool } from "./helpTool";
 import { registerFixTool } from "./fixTool";
+import { registerLanguageFeaturesTools } from "./languageFeaturesTools";
 
 /**
  * Lista de registradores de ferramentas.
@@ -15,7 +15,7 @@ const toolRegistrars: McpRegistrar[] = [
 	registerCompileTool,
 	registerFixTool,
 	registerPatchTools,
-	registerDocumentSymbolsTool,
+	registerLanguageFeaturesTools,
 	registerHelpTool
 ];
 

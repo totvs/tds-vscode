@@ -1,4 +1,5 @@
 import { McpRegistrar } from "../mcpTypes";
+import { profiled } from "../mcpLogger";
 import { buildHelpText } from "../helpText";
 
 /**
@@ -14,8 +15,9 @@ export const registerHelpTool: McpRegistrar = (server) => {
 				"Use when the user asks what the TOTVS tools can do or how to use them.",
 			annotations: { readOnlyHint: true }
 		},
-		async () => ({
-			content: [{ type: "text" as const, text: buildHelpText() }]
-		})
+		async () =>
+			profiled("tds_help", "-", () => ({
+				content: [{ type: "text" as const, text: buildHelpText() }]
+			}))
 	);
 };

@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { z } from "zod";
 import { McpRegistrar } from "../mcpTypes";
 import { isTotvsSourceUri, notTotvsSourceMessage, resolveTargetUri, toWorkspaceRelativePath } from "../mcpUtils";
-import { mcpLog } from "../mcpLogger";
+import { mcpLog, profiled, ToolProfile } from "../mcpLogger";
 
 const DEFAULT_MAX_DIAGNOSTICS = 10;
 
@@ -101,7 +101,9 @@ export const registerFixTool: McpRegistrar = (server) => {
 			},
 			annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false }
 		},
-		async ({ file, line, only, apply, max, choice }) => {
+		(args) =>
+			profiled("tds_fix", args.file || "current", async (profile: ToolProfile) => {
+			const { file, line, only, apply, max, choice } = args;
 			const fail = (text: string) => ({ content: [{ type: "text" as const, text }], isError: true });
 
 			const uri: vscode.Uri | undefined = resolveTargetUri(file || "current");
@@ -112,7 +114,7 @@ export const registerFixTool: McpRegistrar = (server) => {
 				return { content: [{ type: "text" as const, text: notTotvsSourceMessage(uri) }] };
 			}
 
-			const document = await vscode.workspace.openTextDocument(uri);
+			const document = await profile.phase("open", () => vscode.workspace.openTextDocument(uri));
 			const shouldApply = apply ?? true;
 			const limit = max ?? DEFAULT_MAX_DIAGNOSTICS;
 			const relativePath = toWorkspaceRelativePath(uri);
@@ -143,7 +145,7 @@ export const registerFixTool: McpRegistrar = (server) => {
 				reports.push(report);
 
 				try {
-					const fixes = await getQuickFixes(uri, diagnostic);
+					const fixes = await profile.phase("quickFixes", () => getQuickFixes(uri, diagnostic));
 					report.options = fixes.map((f) => f.title);
 
 					if (fixes.length === 0) {
@@ -171,7 +173,7 @@ export const registerFixTool: McpRegistrar = (server) => {
 						chosen = fixes[choice - 1];
 					}
 
-					await applyFix(chosen);
+					await profile.phase("apply", () => applyFix(chosen));
 					report.outcome = "applied";
 					report.fix = chosen.title;
 				} catch (e) {
@@ -201,6 +203,6 @@ export const registerFixTool: McpRegistrar = (server) => {
 				content: [{ type: "text" as const, text: JSON.stringify(summary, null, 2) }],
 				isError: reports.length > 0 && reports.every((r) => r.outcome === "failed")
 			};
-		}
+		})
 	);
 };

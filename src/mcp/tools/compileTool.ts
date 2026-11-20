@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { z } from "zod";
 import { McpRegistrar } from "../mcpTypes";
+import { profiled } from "../mcpLogger";
 import { handleCompilerCommand } from "../handleCompileCommands";
 import { DEFAULT_FLAG_OPTIONS, FlagOptions, resolveTarget } from "../mcpUtils";
 
@@ -35,7 +36,9 @@ async function runCompile(args: CompileArgs, signal?: AbortSignal) {
 	try {
 		const isError = { value: false };
 		const resolvedTarget: string = resolveTarget(target);
-		const output: string[] = await handleCompilerCommand(resolvedTarget, flags, cancellation.token, isError);
+		const output: string[] = await profiled(syntaxOnly ? "tds_syntax_only" : "tds_compile", resolvedTarget, (profile) =>
+			profile.phase("compile", () => handleCompilerCommand(resolvedTarget, flags, cancellation.token, isError))
+		);
 
 		return {
 			content: [{ type: "text" as const, text: output.join("\n") }],

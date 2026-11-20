@@ -1,4 +1,3 @@
-// Do not submit this file to the repository if any corrections are made.
 #include "totvs.ch"
 
 //private private1 := 0 as numeric

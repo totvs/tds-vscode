@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { TdsMcpServer } from "./mcpServer";
 import { MCP_SERVER_NAME, MCP_SERVER_VERSION } from "./mcpTypes";
+import { isKiro } from "./kiroMcpConfig";
 import { getLogFilePath, getLogLevel, mcpLog } from "./mcpLogger";
 
 export { TdsMcpServer } from "./mcpServer";
@@ -83,6 +84,15 @@ export function registerMcpServer(_context: vscode.ExtensionContext): vscode.Dis
 		}
 	};
 
+	// Kiro does not query the provider (it reads .kiro/settings/mcp.json): start the server
+	// at once, so the entry (URL and token) is written to the file.
+	const startForKiro = (): void => {
+		if (isKiro() && isEnabled()) {
+			server.start().catch((e) => mcpLog.error(`Could not start the MCP server: ${errorText(e)}`));
+		}
+	};
+	startForKiro();
+
 	const providerRegistration = vscode.lm.registerMcpServerDefinitionProvider(PROVIDER_ID, provider);
 
 	const configListener = vscode.workspace.onDidChangeConfiguration(async (e) => {
@@ -100,6 +110,8 @@ export function registerMcpServer(_context: vscode.ExtensionContext): vscode.Dis
 			mcpLog.debug(`setting ${CONFIG_SECTION}.${CONFIG_ENABLE} changed (enabled=${isEnabled()})`);
 			if (!isEnabled()) {
 				await server.stop();
+			} else {
+				startForKiro();
 			}
 			onDidChange.fire();
 		}

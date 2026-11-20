@@ -14,6 +14,7 @@ import {
 import { registerTools } from "./tools";
 import { registerResources } from "./resources";
 import { registerPrompts } from "./prompts";
+import { isKiro, removeKiroMcpEntry, writeKiroMcpEntry } from "./kiroMcpConfig";
 import { describeRpcBody, describeRpcFriendly, instrumentServer, mcpLog } from "./mcpLogger";
 
 /** Cria uma instância de McpServer com todas as capacidades registradas. */
@@ -116,6 +117,11 @@ export class TdsMcpServer implements vscode.Disposable {
 
 		// Notificação somente quando o servidor realmente é iniciado (não em chamadas repetidas).
 		void vscode.window.showInformationMessage(`TOTVS MCP iniciado em ${this.info.url}`);
+
+		// Kiro reads the servers from .kiro/settings/mcp.json: keep it with the current URL/token.
+		if (isKiro()) {
+			await writeKiroMcpEntry(this.info);
+		}
 		return this.info;
 	}
 
@@ -125,6 +131,10 @@ export class TdsMcpServer implements vscode.Disposable {
 		const httpServer = this.httpServer;
 		this.httpServer = undefined;
 		this.info = undefined;
+
+		if (httpServer && isKiro()) {
+			await removeKiroMcpEntry();
+		}
 
 		if (httpServer) {
 			await new Promise<void>((resolve) => httpServer.close(() => resolve()));

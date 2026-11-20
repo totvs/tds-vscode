@@ -1,4 +1,3 @@
-// Do not submit this file to the repository if any corrections are made.
 #include "protheus.ch"
 
 User Function line1K(cRecno)

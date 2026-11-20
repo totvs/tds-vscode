@@ -41,3 +41,6 @@ test/**/.vscode
 /test/resources/projects/**/instructions
 /plans
 /test/resources/projects/**/Adm
+
+# Kiro MCP (contem o token de acesso do TOTVS MCP)
+.kiro/settings/mcp.json

@@ -8,7 +8,6 @@
 		"pflannery.vscode-versionlens",
 		"naumovs.color-highlight",
 		"compulim.vscode-mocha",
-		"pedro-w.tmlanguage",
-		//"sehejjain.lsp-mcp-bridge"
+		"pedro-w.tmlanguage"
 	]
 }

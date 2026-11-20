@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { z } from "zod";
 import { McpRegistrar } from "../mcpTypes";
+import { profiled } from "../mcpLogger";
 import { handleApplyPatchCommand, handleValidPatchCommand } from "../handlePatchCommands";
 import { stripQuotes } from "../mcpUtils";
 
@@ -48,7 +49,9 @@ export const registerPatchTools: McpRegistrar = (server) => {
 		async ({ patch }, extra) =>
 			withCancellation(extra?.signal, async (token) => {
 				const isError = { value: false };
-				const message = await handleValidPatchCommand(quotePath(patch), token, isError);
+				const message = await profiled("tds_validate_patch", patch, (profile) =>
+					profile.phase("validate", () => handleValidPatchCommand(quotePath(patch), token, isError))
+				);
 				return textResult(message, isError.value);
 			})
 	);
@@ -69,7 +72,9 @@ export const registerPatchTools: McpRegistrar = (server) => {
 		async ({ patch, applyOld }, extra) =>
 			withCancellation(extra?.signal, async (token) => {
 				const isError = { value: false };
-				const message = await handleApplyPatchCommand(quotePath(patch), token, isError, applyOld ?? false);
+				const message = await profiled("tds_apply_patch", patch, (profile) =>
+					profile.phase("apply", () => handleApplyPatchCommand(quotePath(patch), token, isError, applyOld ?? false))
+				);
 				return textResult(message, isError.value);
 			})
 	);
