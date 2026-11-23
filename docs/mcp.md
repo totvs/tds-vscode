@@ -195,7 +195,7 @@ Consultam o LS pelos comandos `vscode.execute*Provider` do VS Code e valem **som
 ### `tds_help` e `tds_ping`
 
 - `tds_help`: texto de ajuda com os comandos, alvos e opções, e a correspondência com as ferramentas MCP.
-- `tds_ping`: devolve nome e versão do servidor e o texto informado em `message` (opcional). Útil para testar a conexão.
+- `tds_ping`: devolve o nome do servidor, a versão da extensão (campo `version` do `package.json`) e o texto informado em `message` (opcional). Útil para testar a conexão.
 
 ## _Prompts_
 
@@ -301,7 +301,7 @@ Quando informado, o arquivo recebe **sempre o log completo** (equivalente a `deb
 | O modelo não usa a ferramenta                  | Cite o nome da ferramenta no pedido (ex.: "use `tds_document_symbols`"). Se houver outra extensão com ferramenta equivalente, desmarque-a. |
 | `tds_compile` não encontra o fonte             | Informe o caminho em `target`. O editor ativo pode não ser o esperado se o foco estiver no _chat_.                                         |
 | `tds_compile` retorna resultados antigos       | Veja o aviso "Diagnostics were not updated before timeout". Verifique a conexão com o servidor e tente novamente.                          |
-| `tds_fix` informa "Nenhum problema encontrado" | Execute antes `tds_syntax_only` (ou compile) para atualizar `Problemas`.                                                                   |
+| `tds_fix` informa "No problems found"         | Execute antes `tds_syntax_only` (ou compile) para atualizar `Problemas`.                                                                   |
 | `tds_fix` não oferece correções                | O LS pode não ter correção automática para aquele problema (`no-fix`). Use `apply=false` para listar o que existe.                         |
 | `tds_document_symbols` retorna lista vazia     | O LS ainda pode estar iniciando. Aguarde e tente novamente.                                                                                |
 | Erro `401` no _log_                            | O cliente está usando um _token_ antigo. Reinicie o servidor (`MCP: List Servers`) ou recarregue a janela.                                 |
