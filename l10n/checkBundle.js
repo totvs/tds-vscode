@@ -55,7 +55,7 @@ function verifyResult(language, update) {
 function main() {
 	console.log("Start check data files");
 
-	verifyResult("esn", true);
+	verifyResult("es", true);
 	verifyResult("rus", true);
 	verifyResult("pt-BR", true);
 
