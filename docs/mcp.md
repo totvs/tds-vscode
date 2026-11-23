@@ -25,7 +25,7 @@ Assim como os protocolos **LSP** (_Language Server Protocol_) e **DAP** (_Debug 
 - O servidor roda dentro da própria extensão (_extension host_) e usa o transporte **HTTP (_Streamable HTTP_)**, no endereço `http://127.0.0.1:<porta>/mcp`.
 - A porta é livre e escolhida a cada início. Cada janela do **VS Code/Kiro** possui o seu próprio servidor.
 - Atende **somente a máquina local** (_loopback_) e exige um **_token_** (`Authorization: Bearer ...`), gerado a cada início e entregue automaticamente ao **VS Code/Kiro**. O _token_ nunca é gravado no _log_.
-- O servidor **vem desligado**. Ao ligá-lo, a extensão se registra no VS Code como um provedor de servidores MCP (`**TOTVS MCP**`) e o servidor é iniciado quando o VS Code consulta os servidores disponíveis. Nesse momento é exibida a notificação `**TOTVS MCP** iniciado em http://127.0.0.1:<porta>/mcp`.
+- O servidor **vem ligado** (`totvsLanguageServer.mcp.enable` = `true`). A extensão se registra no VS Code como um provedor de servidores MCP (`**TOTVS MCP**`) e o servidor é iniciado quando o VS Code consulta os servidores disponíveis. No Kiro, o servidor é iniciado ao abrir a área de trabalho (veja [Kiro](#kiro)). Nesse momento é exibida a notificação `**TOTVS MCP** iniciado em http://127.0.0.1:<porta>/mcp`.
 - As ferramentas operam sobre o **servidor/ambiente atualmente conectado** e sobre o _Language Server_ (LS) da extensão. Portanto, para compilar ou aplicar _patch_, conecte-se antes a um servidor, como faria normalmente.
 
 ## Requisitos
@@ -36,7 +36,7 @@ Assim como os protocolos **LSP** (_Language Server Protocol_) e **DAP** (_Debug 
 
 ## Como habilitar
 
-1. No `settings.json`, ligue o servidor:
+1. O servidor já vem ligado. Se ele tiver sido desligado, volte a ligá-lo no `settings.json`:
 
    ```json
    {
@@ -61,14 +61,15 @@ Acessíveis pela paleta de comandos (`Ctrl+Shift+P`):
 | `TOTVS: Iniciar servidor MCP`        | Inicia o servidor, se ainda não estiver ativo. Exibe a notificação com a URL. |
 | `TOTVS: Parar servidor MCP`          | Finaliza o servidor.                                                          |
 | `TOTVS: Mostrar log do servidor MCP` | Abre o canal de saída `**TOTVS MCP**`.                                        |
+| `TOTVS: Reiniciar estado do contexto de IA (instruções e skill)` | Apaga o contexto de IA da área de trabalho (no Kiro: _steering_, _skill_ e a entrada `totvs-mcp` do `mcp.json`) e refaz as perguntas. Veja [Contexto de IA](#contexto-de-ia-instruções-e-skill). |
 
-Normalmente os comandos de iniciar e parar não são necessários: o servidor é iniciado pelo VS Code quando a configuração `mcp.enable` está ligada.
+Normalmente os comandos de iniciar e parar não são necessários: o servidor é iniciado automaticamente, pois a configuração `mcp.enable` vem ligada.
 
 ## Configurações
 
 | Configuração                      | Padrão    | Descrição                                                                                                     |
 | --------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------- |
-| `totvsLanguageServer.mcp.enable`  | `false`   | Habilita o servidor MCP embutido.                                                                             |
+| `totvsLanguageServer.mcp.enable`  | `true`    | Habilita o servidor MCP embutido.                                                                             |
 | `totvsLanguageServer.mcp.log`     | `message` | Nível de _log_ do canal de saída: `off`, `message`, `verbose` ou `debug`.                                     |
 | `totvsLanguageServer.mcp.logFile` | (vazio)   | Arquivo para gravar o _log_ completo. Se informar apenas o nome, usa a pasta raiz do projeto. Vazio desativa. |
 
@@ -290,7 +291,7 @@ Quando informado, o arquivo recebe **sempre o log completo** (equivalente a `deb
 - Somente o método `POST` no caminho `/mcp` é aceito.
 - O VS Code pede confirmação para confiar no servidor na primeira utilização.
 - Ferramentas que alteram dados (`tds_apply_patch`, `tds_fix`) são marcadas como destrutivas, para que o cliente solicite confirmação.
-- Mesmo assim, o servidor opera com as **suas** credenciais e conexões: ele pode compilar e aplicar _patch_ no ambiente em que você estiver conectado. Mantenha-o desligado quando não for utilizar e confira o ambiente antes de pedir operações que alteram o RPO.
+- Mesmo assim, o servidor opera com as **suas** credenciais e conexões: ele pode compilar e aplicar _patch_ no ambiente em que você estiver conectado. Como ele vem ligado, desligue-o (`totvsLanguageServer.mcp.enable` = `false`) quando não for utilizar e confira o ambiente antes de pedir operações que alteram o RPO.
 
 ## Solução de problemas
 
@@ -321,7 +322,7 @@ Recomenda-se o **VSCode 1.107.1 (11/2025)** ou superior. Em versões anteriores,
 
 ### Kiro
 
-O **Kiro** lê os servidores MCP do arquivo `.kiro/settings/mcp.json` e não consulta o provedor de servidores do VS Code. Por isso, no Kiro, com `totvsLanguageServer.mcp.enable` ligado, a extensão inicia o servidor ao abrir a área de trabalho e grava (ou atualiza) a entrada `totvs-mcp` nesse arquivo com a URL e o _token_ atuais. As demais entradas do arquivo são preservadas, e a entrada é removida quando o servidor é parado.
+O **Kiro** lê os servidores MCP do arquivo `.kiro/settings/mcp.json` e não consulta o provedor de servidores do VS Code. Por isso, no Kiro, com `totvsLanguageServer.mcp.enable` ligado (padrão), a extensão inicia o servidor ao abrir a área de trabalho e grava (ou atualiza) a entrada `totvs-mcp` nesse arquivo com a URL e o _token_ atuais. As demais entradas do arquivo são preservadas, e a entrada é removida quando o servidor é parado.
 
 ```json
 {
@@ -337,6 +338,45 @@ O **Kiro** lê os servidores MCP do arquivo `.kiro/settings/mcp.json` e não con
 > **Atenção:** o arquivo contém o _token_ de acesso, que muda a cada início do servidor. **Não o versione** (inclua `.kiro/settings/mcp.json` no `.gitignore`). Se o arquivo não for um JSON válido, a extensão não o altera e registra o aviso no canal `TOTVS MCP`. Se o Kiro foi encerrado sem parar o servidor, a entrada pode ficar desatualizada até a próxima inicialização.
 
 > Algumas dessas extensões possuem ferramentas equivalentes às do **TOTVS MCP** (por exemplo, símbolos de documento). Havendo duplicidade, o modelo escolhe uma delas; desmarque a que não deseja utilizar na lista de ferramentas do _chat_.
+
+### Contexto de IA (instruções e skill)
+
+Ao abrir a área de trabalho, a extensão oferece gravar arquivos de contexto que orientam o assistente de IA a usar o _Language Server_ e o **TOTVS MCP**:
+
+| Editor        | Arquivo gravado                                         |
+| ------------- | ------------------------------------------------------- |
+| **VS Code**   | `.github/instructions/tds-vscode-<versão>.instructions.md` |
+| **Kiro**      | `.kiro/steering/advpl-tlpp-ls-first-<versão>.md`        |
+| **Kiro**      | `.kiro/skills/totvs-mcp-first/SKILL.md`                 |
+
+A resposta a cada pergunta (**Sim**, **Agora não** ou **Nunca**) e a versão instalada ficam registradas no estado da área de trabalho. A pergunta é feita quando o arquivo não existe e o usuário não escolheu **Nunca**. Para a _skill_, também quando a extensão traz uma versão mais nova.
+
+#### Comando `TOTVS: Reiniciar estado do contexto de IA (instruções e skill)`
+
+Identificador: `totvsLanguageServer.iacontext.reset`.
+
+O comando pede confirmação e, sem reiniciar o editor:
+
+1. Apaga o estado registrado (respostas e versões instaladas).
+2. No **Kiro**, apaga também:
+   - os arquivos `.kiro/steering/advpl-tlpp-ls-first-*.md`;
+   - o arquivo `.kiro/skills/totvs-mcp-first/SKILL.md` (e a pasta, se ficar vazia);
+   - a entrada `totvs-mcp` de `.kiro/settings/mcp.json` e a decisão de liberar todas as ferramentas.
+3. Refaz as perguntas de instruções e de _skill_, gravando a versão atual da extensão para quem responder **Sim**.
+4. No **Kiro**, com o servidor em execução, grava de novo a entrada `totvs-mcp` (URL e _token_ atuais) e refaz a pergunta de liberação das ferramentas.
+
+No **VS Code**, as instruções do Copilot (`.github/instructions`) não são apagadas: se o arquivo existir, o estado é refeito a partir dele, sem perguntar.
+
+> **Atenção:** alterações feitas manualmente no _steering_ ou na _skill_ são perdidas. Se quiser preservá-las, copie os arquivos antes de executar o comando.
+
+Use o comando quando:
+
+- escolheu **Nunca** (ou **Perguntar a cada uso**, na liberação das ferramentas) e mudou de ideia;
+- quer substituir o _steering_ e a _skill_ pela versão da extensão, por exemplo após atualizá-la;
+- apagou um dos arquivos e quer gravá-lo de novo;
+- copiou ou clonou a área de trabalho e os arquivos de contexto não vieram junto;
+- a entrada `totvs-mcp` do `mcp.json` ficou inválida ou desatualizada;
+- está testando ou atualizando os modelos (_templates_) de instruções e _skill_.
 
 ### Configurações recomendadas
 

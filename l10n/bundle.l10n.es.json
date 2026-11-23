@@ -403,6 +403,9 @@
   "TDS Replay not started.": "TDS Replay no iniciado.",
   "RPO token clean": "Token de RPO limpiado",
   "TOTVS LS context enabled for AI.": "Contexto del LS TOTVS activado para IA.",
+  "Reset the AI context of this workspace?": "¿Restablecer el contexto de IA de esta carpeta de trabajo?",
+  "Removes .kiro/steering/advpl-tlpp-ls-first-*.md, .kiro/skills/totvs-mcp-first/SKILL.md and the totvs-mcp entry of .kiro/settings/mcp.json, then asks again.": "Elimina .kiro/steering/advpl-tlpp-ls-first-*.md, .kiro/skills/totvs-mcp-first/SKILL.md y la entrada totvs-mcp de .kiro/settings/mcp.json, y pregunta de nuevo.",
+  "The AI instructions will be checked again.": "Las instrucciones de IA se verificarán de nuevo.",
   "Failed to configure the TOTVS LS context for AI. See the console for details.": "Error al configurar el contexto del LS TOTVS para IA. Consulte la consola para más detalles.",
   "Request cancelled. Build process already in progress.": "Solicitud cancelada. El proceso de compilación ya está en curso.",
   "Request cancelled. Build process in progress.": "Solicitud cancelada. Proceso de compilación en curso."
