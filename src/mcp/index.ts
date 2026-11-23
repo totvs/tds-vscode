@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { TdsMcpServer } from "./mcpServer";
 import { MCP_SERVER_NAME, mcpServerVersion } from "./mcpTypes";
-import { isKiro } from "./kiroMcpConfig";
+import { isKiro, setKiroMcpState } from "./kiroMcpConfig";
 import { getLogFilePath, getLogLevel, mcpLog } from "./mcpLogger";
 
 export { TdsMcpServer } from "./mcpServer";
@@ -29,7 +29,8 @@ function errorText(e: unknown): string {
  *
  * O servidor só é disponibilizado quando `totvsLanguageServer.mcp.enable` estiver ligado.
  */
-export function registerMcpServer(_context: vscode.ExtensionContext): vscode.Disposable[] {
+export function registerMcpServer(context: vscode.ExtensionContext): vscode.Disposable[] {
+	setKiroMcpState(context.workspaceState);
 	mcpLog.reset();
 	mcpLog.lifecycle(
 		`TOTVS MCP loaded (server ${isEnabled() ? "enabled" : "disabled"}, log level: ${getLogLevel()}, log file: ${getLogFilePath() ?? "not configured"})`
