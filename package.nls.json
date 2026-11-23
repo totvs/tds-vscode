@@ -1,5 +1,6 @@
 {
-  "tds.package.description": "TOTVS Developer Studio for VSCode",
+  "tds.package.displayName": "TOTVS Developer Studio (AdvPL, TLPP and 4GL)",
+  "tds.package.description": "Development environment for TOTVS Protheus and Logix in VS Code and Kiro: AdvPL, TLPP and 4GL editing, compilation, debugging, RPO management, patches and tools for AI agents (MCP).",
   "tds.package.args.for.lsp": "Array containing extra arguments to pass to the TOTVS Language Server binary",
   "tds.package.max.problems.server": "Controls the maximum number of problems produced by the server.",
   "tds.package.trace.vscode.server": "Traces the communication between VS Code and the language server.",

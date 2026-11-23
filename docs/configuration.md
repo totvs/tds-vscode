@@ -30,8 +30,8 @@ Extensões permitidas padrão:
 
 | Configuração                       | Tipo   | Padrão | Descrição                                                                                          |
 | ---------------------------------- | ------ | ------ | -------------------------------------------------------------------------------------------------- |
-| `totvsLanguageServer.trace.server` | string | `off`  | Rastreia a comunicação entre o VS Code e o Language Server. Valores: `off`, `messages`, `verbose`. |
-| `totvsLanguageServer.trace.debug`  | string | `off`  | Rastreia a comunicação entre o VS Code e o Debug Adapter. Valores: `off`, `messages`, `verbose`.   |
+| `totvsLanguageServer.trace.server` | string | `off`  | Rastreia a comunicação entre o **VS Code/Kiro** e o Language Server. Valores: `off`, `messages`, `verbose`. |
+| `totvsLanguageServer.trace.debug`  | string | `off`  | Rastreia a comunicação entre o **VS Code/Kiro** e o Debug Adapter. Valores: `off`, `messages`, `verbose`.   |
 
 ### Interface e notificações
 
@@ -86,7 +86,7 @@ Extensões permitidas padrão:
 
 ### Dobra de código (*folding*)
 
-A Dobra de código (*folding*) em fontes AdvPL/TLPP/4GL é controlado pelas configurações **nativas do VS Code** (não há chave `totvsLanguageServer` específica para isso). As principais são:
+A Dobra de código (*folding*) em fontes AdvPL/TLPP/4GL é controlado pelas configurações **nativas do VS Code/Kiro** (não há chave `totvsLanguageServer` específica para isso). As principais são:
 
 | Configuração               | Tipo    | Padrão        | Descrição                                                                                                                      |
 | -------------------------- | ------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------ |
@@ -110,7 +110,7 @@ Ambas podem ser globais ou  por linguagem:
 > - Com `editor.folding: false`, não há _folding_, independentemente de qualquer provedor.
 > - Com `editor.foldingStrategy: "indentation"`, eventuais regiões fornecidas pelo Language Server são ignoradas; vale apenas a indentação.
 > - **O uso de `editor.foldingStrategy: "auto"` (folding provido pelo Language Server) é _experimental_ para AdvPL/TLPP/4GL.** Caso observe regiões incorretas, use `"indentation"`.
-> - Para AdvPL, sem provedor da linguagem ativo, o VS Code aplica o _folding_ por indentação, _brackets_ e comentários. Em 4GL há também marcadores de `FUNCTION`/`MAIN`/`#region` na configuração de linguagem.
+> - Para AdvPL, sem provedor da linguagem ativo, o **VS Code/Kiro** aplica o _folding_ por indentação, _brackets_ e comentários. Em 4GL há também marcadores de `FUNCTION`/`MAIN`/`#region` na configuração de linguagem.
 > - Configurações relacionadas: `editor.showFoldingControls` (`always`/`mouseover`/`never`), `editor.foldingHighlight`, `editor.foldingImportsByDefault`.
 
 ### Sistema de arquivos

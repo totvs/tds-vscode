@@ -36,6 +36,31 @@
 		{
 			"type": "extensionHost",
 			"request": "launch",
+			"name": "Extension + TDS Kiro",
+			"runtimeExecutable": "${execPath}",
+			"args": [
+				"${workspaceFolder}/test/resources/projects/advpl",
+				"--extensionDevelopmentPath=${workspaceFolder}",
+				"--extensionDevelopmentPath=w:\\tds\\tds-kiro",
+				"--inspect",
+				"--user-data-dir=${env:USERPROFILE}/AppData/Roaming/Code"
+			],
+			"outFiles": [
+				"${workspaceFolder}/out/**/*.js",
+				"w:/tds/tds-kiro/dist/**/*.js"
+			],
+			"sourceMapPathOverrides": {
+				"../src/*": "w:/tds/tds-kiro/src/*"
+			},
+			"sourceMaps": true,
+			"preLaunchTask": "compile: tds-vscode + tds-kiro",
+			"env": {
+				"TOTVS_LS_LOG_FILE": "./TOTVS_LS_LOG_FILE.log"
+			}
+		},
+		{
+			"type": "extensionHost",
+			"request": "launch",
 			"name": "Extension WithoutCompile",
 			"runtimeExecutable": "${execPath}",
 			"args": [

@@ -1,6 +1,6 @@
 # Servidor **TOTVS MCP**
 
-A extensão **TDS-VSCode** possui um servidor MCP embutido, o **TOTVS MCP**. Com ele, o assistente de IA pode, usando linguagem natural, **compilar** fontes, **corrigir** problemas, **validar e aplicar** pacotes de atualização e **consultar a estrutura** dos fontes, sempre sobre o ambiente que você já tem conectado no VS Code.
+A extensão **TDS-VSCode** possui um servidor MCP embutido, o **TOTVS MCP**. Com ele, o assistente de IA pode, usando linguagem natural, **compilar** fontes, **corrigir** problemas, **validar e aplicar** pacotes de atualização e **consultar a estrutura** dos fontes, sempre sobre o ambiente que você já tem conectado no **VS Code/Kiro**.
 
 > O **TOTVS MCP** é **experimental** (`**TOTVS MCP** (Exp)`). Ferramentas, parâmetros e mensagens podem mudar em versões futuras.
 
@@ -23,8 +23,8 @@ Assim como os protocolos **LSP** (_Language Server Protocol_) e **DAP** (_Debug 
 ## Como funciona
 
 - O servidor roda dentro da própria extensão (_extension host_) e usa o transporte **HTTP (_Streamable HTTP_)**, no endereço `http://127.0.0.1:<porta>/mcp`.
-- A porta é livre e escolhida a cada início. Cada janela do VS Code possui o seu próprio servidor.
-- Atende **somente a máquina local** (_loopback_) e exige um **_token_** (`Authorization: Bearer ...`), gerado a cada início e entregue automaticamente ao VS Code. O _token_ nunca é gravado no _log_.
+- A porta é livre e escolhida a cada início. Cada janela do **VS Code/Kiro** possui o seu próprio servidor.
+- Atende **somente a máquina local** (_loopback_) e exige um **_token_** (`Authorization: Bearer ...`), gerado a cada início e entregue automaticamente ao **VS Code/Kiro**. O _token_ nunca é gravado no _log_.
 - O servidor **vem desligado**. Ao ligá-lo, a extensão se registra no VS Code como um provedor de servidores MCP (`**TOTVS MCP**`) e o servidor é iniciado quando o VS Code consulta os servidores disponíveis. Nesse momento é exibida a notificação `**TOTVS MCP** iniciado em http://127.0.0.1:<porta>/mcp`.
 - As ferramentas operam sobre o **servidor/ambiente atualmente conectado** e sobre o _Language Server_ (LS) da extensão. Portanto, para compilar ou aplicar _patch_, conecte-se antes a um servidor, como faria normalmente.
 
@@ -149,7 +149,7 @@ Como funciona:
 3. Com **uma** correção, ela é aplicada. Com **mais de uma**, o usuário é **perguntado** sobre qual aplicar:
 
    - se o cliente MCP suporta _elicitation_, a pergunta aparece no próprio _chat_ (formulário com a lista numerada de opções);
-   - caso contrário, é exibida uma lista de seleção (_QuickPick_) no VS Code.
+   - caso contrário, é exibida uma lista de seleção (_QuickPick_) no **VS Code/Kiro**.
 
    Recusar ou cancelar a pergunta faz o problema ser ignorado.
 
@@ -335,10 +335,6 @@ O **Kiro** lê os servidores MCP do arquivo `.kiro/settings/mcp.json` e não con
 ```
 
 > **Atenção:** o arquivo contém o _token_ de acesso, que muda a cada início do servidor. **Não o versione** (inclua `.kiro/settings/mcp.json` no `.gitignore`). Se o arquivo não for um JSON válido, a extensão não o altera e registra o aviso no canal `TOTVS MCP`. Se o Kiro foi encerrado sem parar o servidor, a entrada pode ficar desatualizada até a próxima inicialização.
-
-Além disso, em qualquer versão do Kiro, pode-se instalar a extensão:
-
-- [Kiro LSP MCP](https://open-vsx.org/extension/Rapdog/kiro-lsp-mcp)
 
 > Algumas dessas extensões possuem ferramentas equivalentes às do **TOTVS MCP** (por exemplo, símbolos de documento). Havendo duplicidade, o modelo escolhe uma delas; desmarque a que não deseja utilizar na lista de ferramentas do _chat_.
 

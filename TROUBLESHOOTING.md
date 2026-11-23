@@ -13,7 +13,7 @@ Os problemas estão divididos em **"Gerais"** e **"Depuração"** então procure
 
 ## Problemas Gerais
 
-São problemas que ocorrem desde a inicialização do **TDS VS Code** até a operação normal do dia-a-dia como compilar, gerar e aplicar patches, etc. Excluindo-se apenas a Depuração que é tratada em outra seção.
+São problemas que ocorrem desde a inicialização do **TDS VS Code/Kiro** até a operação normal do dia-a-dia como compilar, gerar e aplicar patches, etc. Excluindo-se apenas a Depuração que é tratada em outra seção.
 
 ******************************************************
 ### Erro na aplicação de pacotes de atualização (_patchs_) em servidores com versão 19.3.1.7 ou anterior
@@ -38,15 +38,15 @@ São problemas que ocorrem desde a inicialização do **TDS VS Code** até a ope
 
  É sabido que no Windows o *case* (maiúsculas e minúsculas) não importa, mas no Linux e Mac, que são S.O. baseados no Unix, o *case* faz diferença. Devido ao uso de bibliotecas internas do **TOTVS Server**, o *case* do arquivos no Linux e Mac são convertidos para minúsculas sempre, causando problemas quando existem caracteres em letras maiúsculas.
 
- Solução: Utilize somente letras minúsculas em todo o caminho, inclusive no nome dos arquivos quando utilizar o **TDS VS Code** em Linux ou Mac.
+ Solução: Utilize somente letras minúsculas em todo o caminho, inclusive no nome dos arquivos quando utilizar o **TDS VS Code/Kiro** em Linux ou Mac.
 
 ******************************************************
 
 ### Falhas gerais na inicialização (command 'totvs-developer-studio.add' not found)
 
- Tivemos relatos de problemas de problemas ao utilizar o **TDS VS Code** sem uma pasta aberta (projeto/workspace).
+ Tivemos relatos de problemas de problemas ao utilizar o **TDS VS Code/Kiro** sem uma pasta aberta (projeto/workspace).
 
- Solução: Sempre abra um projeto/workspace ao utilizar o **TDS VS Code**.
+ Solução: Sempre abra um projeto/workspace ao utilizar o **TDS VS Code/Kiro**.
 
 ******************************************************
 
@@ -70,7 +70,7 @@ São problemas que ocorrem desde a inicialização do **TDS VS Code** até a ope
 
  Solução: Verifique as configurações de *includes* no arquivo "servers.json" (na pasta ".totvsls" em sua pasta de usuário). Os *includes* podem ser definidos por servidores (em "configurations") e no nível geral *includes*. Se não estiver definido no servidor o *includes* geral será utilizado. Note que os *includes* devem ser os diretórios onde os arquivos `.ch` estão localizados.
 
-> de qualquer formam, os erros ocorridos durante a compilação de um fonte devem aparecer na visão "Problems" do **TDS VS Code** ou exibidos na visão "Output - TOTVS". Se nenhuma informação sobre o erro for apresentada, crie uma nova "Issue".
+> de qualquer formam, os erros ocorridos durante a compilação de um fonte devem aparecer na visão "Problems" do **TDS VS Code/Kiro** ou exibidos na visão "Output - TOTVS". Se nenhuma informação sobre o erro for apresentada, crie uma nova "Issue".
 
 ******************************************************
 
@@ -128,7 +128,7 @@ São problemas que ocorrem desde a inicialização do **TDS VS Code** até a ope
 
 ### Windows Server
 
- Tivemos relatos de problemas na instalação do **TDS VS Code** em *S.O.* do tipo *Windows Server*. Nossas suspeitas são de que este tipos de *S.O.* não posssuem *DLLs*, que existem na distribuições voltadas para Desktops, e que são necessárias para o funcionamento do *VS Code*.
+ Tivemos relatos de problemas na instalação do **TDS VS Code/Kiro** em *S.O.* do tipo *Windows Server*. Nossas suspeitas são de que este tipos de *S.O.* não posssuem *DLLs*, que existem na distribuições voltadas para Desktops, e que são necessárias para o funcionamento do **VS Code/Kiro**.
 
  Solução: Utilize um *S.O.* diferente de *Windows Server*.
 
@@ -205,17 +205,17 @@ Se o seu problema não estiver listado acima então será preciso analisá-lo. P
 
 Para auxiliar na identificação de um problema, ao abrir uma nova **"Issue"** sempre informe:
 
-* Versão do **VS Code** e da extensão **tds-vscode**
+* Versão do **VS Code/Kiro** e da extensão **tds-vscode**
 
 E se o problema ocorrer com um servidor informe também:
 
 * Versão do **RPO (LIB)** e do **TOTVS Server**
 
-Se possível anexe os logs de apoio do **TDS VS Code**. Veja como gerar os logs a seguir em **"Gerando logs"**
+Se possível anexe os logs de apoio do **TDS VS Code/Kiro**. Veja como gerar os logs a seguir em **"Gerando logs"**
 
-#### Versão do **VS Code**
+#### Versão do **VS Code/Kiro**
 
-Para obter os dados do **VS Code** acione: `Help > About`
+Para obter os dados do **VS Code/Kiro** acione: `Help > About`
 ```
 Version: 1.44.0 (user setup)
 Commit: 2aae1f26c72891c399f860409176fe435a154b13
@@ -279,7 +279,7 @@ O arquivo **"settings.json"** deve ficar como a seguir, observem a vírgula que 
 }
 ```
 
-> Reinicie seu TDS VS Code após esta configuração para que surta efeito.
+> Reinicie seu TDS **VS Code/Kiro** após esta configuração para que surta efeito.
 
 Os arquivos **"totvsls.log"**, **"totvsls_in.log"** e **"totvsls_out.log"** serão gerados na raiz do projeto aberto.
 

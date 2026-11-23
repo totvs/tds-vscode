@@ -1,4 +1,4 @@
-# TOTVS Developer Studio para VSCode
+# TOTVS Developer Studio para VS Code/Kiro
 
 <!--[![GitHub stars](https://img.shields.io/github/stars/totvs/tds-vscode?style=plastic)](https://github.com/totvs/tds-vscode/stargazers)
 ![GitHub top language](https://img.shields.io/github/languages/top/totvs/tds-vscode)
@@ -27,7 +27,7 @@
 > - **VS-Code**, a partir da versão
 > - **Kiro**, a partir da vsersão
 
-A extensão do **TOTVS Developer Studio for VS Code** disponibiliza uma suíte de desenvolvimento para o ecossistema **Protheus/Logix**.
+A extensão do **TOTVS Developer Studio for VS Code/Kiro** disponibiliza uma suíte de desenvolvimento para o ecossistema **Protheus/Logix**.
 
 Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP (_Debug Adapter Protocol_), ambos amplamente utilizados e extensíveis à outras _IDEs_ de mercado, como Atom, Visual Studio, Eclipse, Eclipse Theia, Vim e Emacs.
 
@@ -52,7 +52,7 @@ Utilizando os protocolos de comunicação LSP (_Language Server Protocol_) e DAP
 - [Geração de cliente de serviço web](docs/ws-client-generation.md) (_Web Service_)
 - [Monitoramento](docs/monitor.md) de servidores
 - [RPO Seguro](docs/rpo.md#Token_de_RPO)
-- [TDS-Cli](https://github.com/totvs/tds-ls/blob/master/TDS-CLi.md) compilação por linha de comando. Da mesma forma que o Eclipse, essa extensão do VSCode possui uma ferramenta de compilação em linha de comando.
+- [TDS-Cli](https://github.com/totvs/tds-ls/blob/master/TDS-CLi.md) compilação por linha de comando. Da mesma forma que o Eclipse, essa extensão do **VS Code/Kiro** possui uma ferramenta de compilação em linha de comando.
 - [Navegação em código](docs/dss.md)
 - [Configurações](docs/configuration.md) da extensão (chaves `totvsLanguageServer`)
 - [API](docs/api.md)
@@ -72,10 +72,10 @@ Para melhor interoperabilidade do ecosistema **Protheus** (áreas de trabalho, _
 
 ## Guia rápido
 
-> O **VS Code** pode apresentar problemas em suas funcionalidades em sistemas operacionais da linha **Windows Server**.
-> Veja os requisitos para uso do **VS Code** em [Requirements](https://code.visualstudio.com/docs/supporting/requirements).
+> O **VS Code/Kiro** pode apresentar problemas em suas funcionalidades em sistemas operacionais da linha **Windows Server**.
+> Veja os requisitos para uso do **VS Code/Kiro** em [Requirements](https://code.visualstudio.com/docs/supporting/requirements).
 
-> **Nunca usei o VS Code**: Recomendamos a leitura de:
+> **Nunca usei o VS Code/Kiro**: Recomendamos a leitura de:
 >
 > - [User Interface](https://code.visualstudio.com/docs/getstarted/userinterface)
 > - [Multi-root Workspaces](https://code.visualstudio.com/docs/editor/multi-root-workspaces)
@@ -83,7 +83,7 @@ Para melhor interoperabilidade do ecosistema **Protheus** (áreas de trabalho, _
 > - [Basic Edition](https://code.visualstudio.com/docs/editor/codebasics)
 > - [Marketplace](https://code.visualstudio.com/docs/editor/extension-gallery)
 
-Ao iniciar o **VS Code** com a extensão **TDS-VSCode** instalada, abra (ou crie) a pasta principal que contém (ou conterá) seus arquivos fontes e de recursos. Essa pasta é denominada genericamente de `projeto`.
+Ao iniciar o **VS Code/Kiro** com a extensão **TDS-VSCode** instalada, abra (ou crie) a pasta principal que contém (ou conterá) seus arquivos fontes e de recursos. Essa pasta é denominada genericamente de `projeto`.
 
 No primeiro uso da extensão em um projeto, lhe será apresentada as [Boas Vindas](docs/welcome.md) com configurações mínimas necessárias. Faça-as.
 
@@ -107,7 +107,7 @@ No primeiro uso da extensão em um projeto, lhe será apresentada as [Boas Vinda
 
 ### Acentuação e caracteres especiais nos códigos fontes
 
-Tivemos notificações de problemas de _encode_ abrindo fontes antes salvos no _TDS_, isso ocorre porque o _encode_ original do VSCode é UTF8 e o do **TDS-VSCode** é outro.
+Tivemos notificações de problemas de _encode_ abrindo fontes antes salvos no _TDS_, isso ocorre porque o _encode_ original do **VS Code/Kiro** é UTF8 e o do **TDS-VSCode** é outro.
 Para garantir a compilação é necessário compatibilizar o _encode_ da seguinte maneira:
 
 - No estado original o fonte será mostrado desta maneira:<br/>

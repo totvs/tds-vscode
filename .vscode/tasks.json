@@ -27,6 +27,24 @@
 			]
 		},
 		{
+			"label": "tds-kiro: build",
+			"type": "shell",
+			"command": "npm run dev",
+			"options": {
+				"cwd": "w:/tds/tds-kiro"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "compile: tds-vscode + tds-kiro",
+			"dependsOn": [
+				"npm: compile",
+				"tds-kiro: build"
+			],
+			"dependsOrder": "parallel",
+			"problemMatcher": []
+		},
+		{
 			"type": "npm",
 			"script": "clean-logs",
 			"problemMatcher": [],

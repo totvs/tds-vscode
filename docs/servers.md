@@ -21,7 +21,7 @@
 ## Conexão com servidores
 
 - Após executar o cadastro de ao menos um servidor.
-- Vá para visão de servidores (Acesso pelo ícone da TOTVS na lateral esquerda do VSCode).
+- Vá para visão de servidores (Acesso pelo ícone da TOTVS na lateral esquerda do **VS Code/Kiro**).
 - Clique com o botão direito e selecione a opção `Connect`.
 - Informe `ambiente`, `usuário` e `senha` (pode ser "em branco") para prosseguir.
 - Aguarde o termino da conexão.
