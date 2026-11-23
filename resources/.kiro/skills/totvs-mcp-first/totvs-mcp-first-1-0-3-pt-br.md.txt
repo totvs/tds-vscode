@@ -1,0 +1,96 @@
+---
+name: totvs-mcp-first
+description: Obriga o uso das ferramentas do TOTVS MCP (tds_*) antes de qualquer alternativa (grep, leitura manual, edição manual) em tarefas com fontes AdvPL/TLPP/4GL (.prw, .prx, .prg, .ppx, .ppp, .tlpp, .apw, .aph, .apl, .ahu, .th, .4gl). Use em navegação, análise, verificação de sintaxe, compilação, correção de diagnósticos e refatoração.
+version: "1.0.3"
+---
+
+# TOTVS MCP primeiro
+
+Em qualquer tarefa com fonte AdvPL/TLPP/4GL, a primeira ação deve ser uma ferramenta do TOTVS MCP. Não comece por `grep_search`, `file_search`, `read_file` nem por edição manual quando existir uma ferramenta `tds_*` para a necessidade. O único uso permitido de `read_file` é o da regra 2.
+
+Se não tiver certeza do que está disponível, chame `tds_help`. Se as ferramentas `tds_*` não estiverem disponíveis na sessão, ou `tds_ping` falhar, siga a seção "Exceção registrada": avise o usuário e não presuma que o MCP funciona.
+
+Se o usuário não informar o `target`, use `current editor`.
+
+## Qual ferramenta usar
+
+| Necessidade | Ferramenta |
+| --- | --- |
+| Verificar a conexão com o MCP | `tds_ping` |
+| Localizar um símbolo no workspace | `tds_workspace_symbols` |
+| Listar símbolos de um arquivo | `tds_document_symbols` |
+| Ir para a definição | `tds_definition` |
+| Mapear usos e impacto | `tds_references` |
+| Ver tipo, assinatura ou documentação | `tds_hover`, `tds_signature_help`, `tds_completion` |
+| Verificar sintaxe (sem gerar RPO) | `tds_syntax_only` |
+| Compilar | `tds_compile` |
+| Listar ou aplicar as correções de um diagnóstico (altera o buffer do editor) | `tds_fix` (`apply=false` só lista) |
+| Prévia das edições de um rename (não altera arquivos) | `tds_rename_symbol` |
+| Prévia das edições do formatador (não altera arquivos) | `tds_format_document` |
+| Validar e aplicar patch | `tds_validate_patch`, depois `tds_apply_patch` |
+
+<!-- `tds_code_actions` está desativada no servidor MCP: `tds_fix` já lista as opções de correção. -->
+
+## Regras
+
+1. **Ordem para investigar:** `tds_workspace_symbols`, `tds_definition`, `tds_references`.
+2. **Leitura de código:** nenhuma ferramenta `tds_*` devolve o corpo de um fonte. Depois de localizar o símbolo com `tds_definition` ou `tds_workspace_symbols`, use `read_file` apenas no trecho localizado. Isso não é exceção e não precisa de aviso.
+3. **Ordem para corrigir um diagnóstico:** obtenha o diagnóstico com `tds_syntax_only` e depois chame `tds_fix`. O `tds_fix` só atua sobre diagnósticos já existentes.
+4. **Várias opções de correção:** quando `tds_fix` devolver `needs-choice`, apresente todas as opções ao usuário e aguarde a escolha. Não escolha por conta própria. Depois chame `tds_fix` de novo com o mesmo `line` e o `choice` escolhido (número a partir de 1).
+5. **Arquivos são salvos:** o `tds_fix` altera só o buffer do editor. O próximo `tds_syntax_only` ou `tds_compile` salva todos os arquivos abertos com alterações pendentes, inclusive edições do usuário em outros arquivos. Avise o usuário antes de rodar, se outros arquivos puderem ter alterações pendentes, e informe quais arquivos foram salvos.
+6. **Rename e format são prévias:** `tds_rename_symbol` e `tds_format_document` devolvem as edições e não alteram nada. Aplique-as com o procedimento de edição da seção "Encoding", uma edição por vez. Esse é o caminho esperado e não uma exceção.
+7. **Validar após alterar:** depois de `tds_fix`, `tds_apply_patch` ou de aplicar edições manualmente (inclusive as devolvidas por rename e format), rode `tds_syntax_only` e informe o resultado. A prévia sozinha não exige validação. Se a validação falhar, corrija e valide de novo, no máximo 3 vezes. Depois disso, informe ao usuário os diagnósticos restantes.
+8. **`tds_compile` exige servidor conectado:** se não houver conexão, informe ao usuário e use `tds_syntax_only`.
+9. **Edição manual só como exceção:** edite um fonte AdvPL/TLPP/4GL manualmente apenas depois de tentar a ferramenta TOTVS correspondente e ela devolver erro, resultado vazio ou "não suportado" para a operação. Use sempre o procedimento de edição da seção "Encoding".
+10. **Texto/grep só como exceção:** use busca por texto apenas quando a ferramenta TOTVS estiver indisponível, devolver erro, não devolver nada ou não cobrir o arquivo.
+
+## Exceção registrada
+
+Ao recorrer a uma alternativa, informe ao usuário, antes de seguir:
+
+> TOTVS MCP indisponível ou sem cobertura (`<ferramenta>`: `<erro>`); seguindo com `<alternativa>`.
+
+Não esconda a falha nem troque de abordagem sem avisar. Depois de uma edição manual, diga que as opções de correção do MCP não foram consultadas e por quê.
+
+## Encoding
+
+Os fontes AdvPL/TLPP/4GL usam Windows-1252 (cp1252). Nunca salve como UTF-8.
+
+**Não use `str_replace`, `fs_write` nem `fs_append` nesses fontes.** Em um teste, um único `str_replace` num arquivo cp1252 transformou todos os caracteres acentuados do arquivo, inclusive os fora da edição, nos bytes `EF BF BD` (U+FFFD). O `fs_append` fez o mesmo. O `fs_write` regrava o arquivo como UTF-8.
+
+O `tds_fix` é seguro: ele altera o buffer do editor, e o editor salva com a codificação configurada para o arquivo.
+
+**Procedimento de edição (PowerShell).** Leia e grave o arquivo como cp1252:
+
+```powershell
+$p = '<caminho absoluto>'
+$enc = [Text.Encoding]::GetEncoding(1252)
+$s = $enc.GetString([IO.File]::ReadAllBytes($p))
+$old = '<texto antigo>'
+if (-not $s.Contains($old)) { throw 'texto antigo não encontrado' }
+$s = $s.Replace($old, '<texto novo>')
+[IO.File]::WriteAllBytes($p, $enc.GetBytes($s))
+```
+
+- Escreva o texto novo só com ASCII. Quando o acento for inevitável, monte-o pelo código, por exemplo `[char]0xE7` para `ç` e `[char]0xE3` para `ã`. Não digite acentos no comando: o shell pode codificá-los como UTF-8.
+- Preserve as quebras de linha do arquivo (normalmente CRLF, `` `r`n ``).
+- Para criar um fonte novo, use `[IO.File]::WriteAllBytes($p, $enc.GetBytes($texto))`.
+
+**Verificação após toda edição manual:**
+
+```powershell
+$h = [BitConverter]::ToString([IO.File]::ReadAllBytes($p))
+$h -match 'EF-BF-BD|C3-[89AB][0-9A-F]'
+```
+
+`True` significa que o arquivo tem U+FFFD ou sequências de acento UTF-8. Restaure o arquivo e informe o usuário. O steering `AdvPL/TLPP MCP-First` traz a mesma regra.
+
+## Antes de concluir
+
+Informe:
+
+- quais ferramentas `tds_*` foram usadas e o resultado relevante;
+- o resultado do `tds_syntax_only` final;
+- se houve exceção, qual foi a falha e a alternativa usada;
+- quando o MCP devolveu várias opções, qual o usuário escolheu;
+- quais arquivos foram salvos pelo `tds_syntax_only` ou `tds_compile` e quais ficaram sem salvar.

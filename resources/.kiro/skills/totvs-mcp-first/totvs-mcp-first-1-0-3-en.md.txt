@@ -1,0 +1,96 @@
+---
+name: totvs-mcp-first
+description: Requires using the TOTVS MCP tools (tds_*) before any alternative (grep, manual reading, manual editing) in tasks involving AdvPL/TLPP/4GL sources (.prw, .prx, .prg, .ppx, .ppp, .tlpp, .apw, .aph, .apl, .ahu, .th, .4gl). Use for navigation, analysis, syntax checking, compilation, diagnostic fixing, and refactoring.
+version: "1.0.3"
+---
+
+# TOTVS MCP first
+
+In any task involving an AdvPL/TLPP/4GL source, the first action must be a TOTVS MCP tool. Do not start with `grep_search`, `file_search`, `read_file`, or manual editing when a `tds_*` tool exists for the need. The only allowed use of `read_file` is the one in rule 2.
+
+If you are not sure what is available, call `tds_help`. If the `tds_*` tools are not available in the session, or `tds_ping` fails, follow the "Logged exception" section: tell the user and do not assume the MCP works.
+
+If the user does not provide the `target`, use `current editor`.
+
+## Which tool to use
+
+| Need | Tool |
+| --- | --- |
+| Check the connection to the MCP | `tds_ping` |
+| Locate a symbol in the workspace | `tds_workspace_symbols` |
+| List the symbols of a file | `tds_document_symbols` |
+| Go to the definition | `tds_definition` |
+| Map usages and impact | `tds_references` |
+| View type, signature, or documentation | `tds_hover`, `tds_signature_help`, `tds_completion` |
+| Check syntax (without generating the RPO) | `tds_syntax_only` |
+| Compile | `tds_compile` |
+| List or apply the fixes of a diagnostic (changes the editor buffer) | `tds_fix` (`apply=false` only lists) |
+| Preview the edits of a rename (does not change files) | `tds_rename_symbol` |
+| Preview the edits of the formatter (does not change files) | `tds_format_document` |
+| Validate and apply a patch | `tds_validate_patch`, then `tds_apply_patch` |
+
+<!-- `tds_code_actions` is disabled in the MCP server: `tds_fix` already lists the fix options. -->
+
+## Rules
+
+1. **Order to investigate:** `tds_workspace_symbols`, `tds_definition`, `tds_references`.
+2. **Reading code:** no `tds_*` tool returns the body of a source. After locating the symbol with `tds_definition` or `tds_workspace_symbols`, use `read_file` only on the located range. This is not an exception and needs no notice.
+3. **Order to fix a diagnostic:** get the diagnostic with `tds_syntax_only`, then call `tds_fix`. `tds_fix` only works on diagnostics that already exist.
+4. **Multiple fix options:** when `tds_fix` returns `needs-choice`, present all options to the user and wait for their choice. Do not choose on your own. Then call `tds_fix` again with the same `line` and the chosen `choice` (1-based number).
+5. **Files get saved:** `tds_fix` changes only the editor buffer. The next `tds_syntax_only` or `tds_compile` saves every open file that has unsaved changes, including edits the user made on other files. Tell the user before running it if other files may have unsaved changes, and report which files were saved.
+6. **Rename and format are previews:** `tds_rename_symbol` and `tds_format_document` return the edits and change nothing. Apply them with the edit procedure in the "Encoding" section, one edit at a time. This is the expected path, not an exception.
+7. **Validate after changing:** after `tds_fix`, `tds_apply_patch`, or after applying edits by hand (including the edits returned by rename and format), run `tds_syntax_only` and report the result. A preview alone does not need validation. If validation fails, fix and validate again, at most 3 times. After that, report the remaining diagnostics to the user.
+8. **`tds_compile` needs a connected server:** if there is no connection, report it to the user and use `tds_syntax_only`.
+9. **Manual editing only as an exception:** edit an AdvPL/TLPP/4GL source by hand only after trying the corresponding TOTVS tool and it returns an error, an empty result, or "not supported" for the operation. Always use the edit procedure in the "Encoding" section.
+10. **Text search/grep only as an exception:** use text search only when the TOTVS tool is unavailable, returns an error, returns nothing, or does not cover the file.
+
+## Logged exception
+
+When falling back to an alternative, tell the user before proceeding:
+
+> TOTVS MCP unavailable or without coverage (`<tool>`: `<error>`); proceeding with `<alternative>`.
+
+Do not hide the failure or switch approaches without notice. After a manual edit, state that the MCP fix options were not consulted and why.
+
+## Encoding
+
+AdvPL/TLPP/4GL sources use Windows-1252 (cp1252). Never save them as UTF-8.
+
+**Do not use `str_replace`, `fs_write`, or `fs_append` on these sources.** In a test, a single `str_replace` on a cp1252 file turned every accented character in the file, including the ones outside the edit, into the bytes `EF BF BD` (U+FFFD). `fs_append` did the same. `fs_write` rewrites the file as UTF-8.
+
+`tds_fix` is safe: it changes the editor buffer, and the editor saves it with the encoding configured for the file.
+
+**Edit procedure (PowerShell).** Read and write the file as cp1252:
+
+```powershell
+$p = '<absolute path>'
+$enc = [Text.Encoding]::GetEncoding(1252)
+$s = $enc.GetString([IO.File]::ReadAllBytes($p))
+$old = '<old text>'
+if (-not $s.Contains($old)) { throw 'old text not found' }
+$s = $s.Replace($old, '<new text>')
+[IO.File]::WriteAllBytes($p, $enc.GetBytes($s))
+```
+
+- Write new text with ASCII only. When an accent is unavoidable, build it with its code, for example `[char]0xE7` for `ç` and `[char]0xE3` for `ã`. Do not type accents in the command: the shell may encode them as UTF-8.
+- Keep the line endings of the file (usually CRLF, `` `r`n ``).
+- To create a new source, use `[IO.File]::WriteAllBytes($p, $enc.GetBytes($text))`.
+
+**Check after every manual edit:**
+
+```powershell
+$h = [BitConverter]::ToString([IO.File]::ReadAllBytes($p))
+$h -match 'EF-BF-BD|C3-[89AB][0-9A-F]'
+```
+
+`True` means the file has U+FFFD or UTF-8 accent sequences. Restore the file and report it to the user. The `AdvPL/TLPP MCP-First` steering has the same rule.
+
+## Before finishing
+
+Report:
+
+- which `tds_*` tools were used and the relevant result;
+- the result of the final `tds_syntax_only`;
+- if there was an exception, what the failure was and which alternative was used;
+- when the MCP returned multiple options, which one the user chose;
+- which files were saved by `tds_syntax_only` or `tds_compile`, and which stayed unsaved.

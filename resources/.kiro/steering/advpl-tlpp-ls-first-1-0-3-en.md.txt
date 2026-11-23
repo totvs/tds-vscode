@@ -1,0 +1,22 @@
+---
+applyTo: "**/*.{prw,prx,prg,ppx,ppp,tlpp,apw,aph,apl,ahu,th,4gl}"
+name: "AdvPL/TLPP MCP-First"
+description: "TOTVS MCP priority and Windows-1252 encoding"
+version: "1.0.3"
+---
+
+# Instructions
+
+- Answer in English, objectively.
+- Mandatory MCP-first rule: in any navigation, analysis, syntax check, compilation, fix, or refactoring task on AdvPL/TLPP/4GL sources, the first action must be a TOTVS MCP tool (`tds_*`). The `totvs-mcp-first` skill has the tool for each case, the fix flow (including choosing between several fixes), validation with `tds_syntax_only`, and the final report.
+- It is forbidden to start with `grep_search`, `file_search`, or manual editing when a `tds_*` tool covers the need. No `tds_*` tool returns the body of a source, so `read_file` is allowed on a range already located with `tds_definition` or `tds_workspace_symbols`.
+- Controlled exception: use text search or manual editing only if the MCP tool is unavailable, returns an error, returns an empty result, or does not support the operation. Before proceeding, tell the user: "TOTVS MCP unavailable or without coverage (`<tool>`: `<error>`); proceeding with `<alternative>`."
+- `tds_syntax_only` and `tds_compile` save every open file with unsaved changes. Warn the user before running them if other files may have unsaved edits.
+- Before the result, inform which `tds_*` tools were used and what they returned. If the MCP was not used first without a valid justification, correct the approach in the same response.
+
+## Encoding
+
+- AdvPL/TLPP/4GL sources use Windows-1252 (cp1252). Never save them as UTF-8.
+- Do not use `str_replace`, `fs_write`, or `fs_append` on these sources. In a test, a single `str_replace` replaced every accented character in the file with the bytes `EF BF BD` (U+FFFD).
+- Edit them with PowerShell, reading and writing as cp1252: `$enc = [Text.Encoding]::GetEncoding(1252); $s = $enc.GetString([IO.File]::ReadAllBytes($p)); $s = $s.Replace($old, $new); [IO.File]::WriteAllBytes($p, $enc.GetBytes($s))`. Write new text with ASCII only. For an unavoidable accent, use its code, for example `[char]0xE7` for `ç`. The skill has the complete procedure and the check to run after each edit.
+- `tds_fix` is safe: it edits the editor buffer, which keeps the file encoding.

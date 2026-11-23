@@ -1,0 +1,22 @@
+---
+applyTo: "**/*.{prw,prx,prg,ppx,ppp,tlpp,apw,aph,apl,ahu,th,4gl}"
+name: "AdvPL/TLPP MCP-First"
+description: "PT-BR, prioridade ao TOTVS MCP e encoding Windows-1252"
+version: "1.0.3"
+---
+
+# Instruções
+
+- Responda em Português do Brasil, de forma objetiva.
+- Regra mandatória MCP-first: em qualquer tarefa de navegação, análise, verificação de sintaxe, compilação, correção ou refatoração em fontes AdvPL/TLPP/4GL, a primeira ação deve ser obrigatoriamente uma ferramenta do TOTVS MCP (`tds_*`). A skill `totvs-mcp-first` traz a ferramenta de cada caso, o fluxo de correção (inclusive a escolha entre várias correções), a validação com `tds_syntax_only` e o relatório final.
+- Proibido iniciar com `grep_search`, `file_search` ou edição manual quando uma ferramenta `tds_*` cobrir a necessidade. Nenhuma ferramenta `tds_*` devolve o corpo de um fonte, então `read_file` é permitido num trecho já localizado com `tds_definition` ou `tds_workspace_symbols`.
+- Exceção controlada: usar busca textual ou edição manual apenas se a ferramenta MCP estiver indisponível, devolver erro, devolver resultado vazio ou não suportar a operação. Antes de seguir, informe ao usuário: "TOTVS MCP indisponível ou sem cobertura (`<ferramenta>`: `<erro>`); seguindo com `<alternativa>`."
+- `tds_syntax_only` e `tds_compile` salvam todos os arquivos abertos com alterações pendentes. Avise o usuário antes de rodá-los se outros arquivos puderem ter edições sem salvar.
+- Antes do resultado, informe quais ferramentas `tds_*` foram usadas e o que elas retornaram. Se o MCP não foi usado primeiro sem justificativa válida, corrija a abordagem na mesma resposta.
+
+## Encoding
+
+- Os fontes AdvPL/TLPP/4GL usam Windows-1252 (cp1252). Nunca salve como UTF-8.
+- Não use `str_replace`, `fs_write` nem `fs_append` nesses fontes. Em um teste, um único `str_replace` trocou todos os caracteres acentuados do arquivo pelos bytes `EF BF BD` (U+FFFD).
+- Edite-os com PowerShell, lendo e gravando como cp1252: `$enc = [Text.Encoding]::GetEncoding(1252); $s = $enc.GetString([IO.File]::ReadAllBytes($p)); $s = $s.Replace($old, $new); [IO.File]::WriteAllBytes($p, $enc.GetBytes($s))`. Escreva o texto novo só com ASCII. Para um acento inevitável, use o código, por exemplo `[char]0xE7` para `ç`. A skill traz o procedimento completo e a verificação a rodar após cada edição.
+- O `tds_fix` é seguro: ele edita o buffer do editor, que mantém a codificação do arquivo.
