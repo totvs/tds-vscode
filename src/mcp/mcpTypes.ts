@@ -1,7 +1,19 @@
+import * as vscode from "vscode";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
 export const MCP_SERVER_NAME = "TOTVS MCP (Exp)";
-export const MCP_SERVER_VERSION = "0.1.0";
+
+/** Extension id (publisher.name in package.json). */
+export const EXTENSION_ID = "TOTVS.tds-vscode";
+
+/**
+ * Version announced by the MCP server: the extension version (field `version` of package.json).
+ * @returns Extension version, or `"unknown"` when the extension is not found.
+ */
+export function mcpServerVersion(): string {
+	return vscode.extensions.getExtension(EXTENSION_ID)?.packageJSON?.version ?? "unknown";
+}
+
 export const MCP_ENDPOINT_PATH = "/mcp";
 export const MCP_DEFAULT_HOST = "127.0.0.1";
 

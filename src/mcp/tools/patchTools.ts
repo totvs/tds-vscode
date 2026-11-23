@@ -1,33 +1,18 @@
-import * as vscode from "vscode";
 import { z } from "zod";
 import { McpRegistrar } from "../mcpTypes";
 import { profiled } from "../mcpLogger";
 import { handleApplyPatchCommand, handleValidPatchCommand } from "../handlePatchCommands";
 import { stripQuotes } from "../mcpUtils";
+import { textResult, withCancellation } from "./toolUtils";
 
-const patchSchema = z.string().min(1).describe("Caminho do pacote de atualização (.ptm, .zip ou .upd), absoluto ou relativo ao workspace");
-
-/** Executa `fn` com um token de cancelamento ligado ao `AbortSignal` da chamada MCP. */
-async function withCancellation<T>(signal: AbortSignal | undefined, fn: (token: vscode.CancellationToken) => Promise<T>): Promise<T> {
-	const cancellation = new vscode.CancellationTokenSource();
-	const onAbort = () => cancellation.cancel();
-	signal?.addEventListener("abort", onAbort);
-
-	try {
-		return await fn(cancellation.token);
-	} finally {
-		signal?.removeEventListener("abort", onAbort);
-		cancellation.dispose();
-	}
-}
+const patchSchema = z
+	.string()
+	.min(1)
+	.describe("Path of the update package (.ptm, .zip or .upd), absolute or relative to the workspace");
 
 /** Envolve o caminho em aspas, para suportar espaços no parser dos handlers do chat. */
 function quotePath(patch: string): string {
 	return `"${stripQuotes(patch.trim())}"`;
-}
-
-function textResult(text: string, isError: boolean) {
-	return { content: [{ type: "text" as const, text }], isError };
 }
 
 /**
@@ -41,8 +26,8 @@ export const registerPatchTools: McpRegistrar = (server) => {
 		{
 			title: "TDS Validate Patch",
 			description:
-				"Valida um pacote de atualização (.ptm, .zip, .upd) contra o RPO do servidor/ambiente atualmente conectado, " +
-				"sem alterar o RPO. Use antes de aplicar um patch.",
+				"Validates an update package (.ptm, .zip, .upd) against the RPO of the currently connected server/environment, " +
+				"without changing the RPO. Use it before applying a patch.",
 			inputSchema: { patch: patchSchema },
 			annotations: { readOnlyHint: true, destructiveHint: false }
 		},
@@ -61,11 +46,11 @@ export const registerPatchTools: McpRegistrar = (server) => {
 		{
 			title: "TDS Apply Patch",
 			description:
-				"ATENÇÃO: altera o RPO. Aplica um pacote de atualização (.ptm, .zip, .upd) ao RPO do servidor/ambiente atualmente conectado. " +
-				"Só use quando o usuário pedir explicitamente a aplicação do patch; valide antes com tds_validate_patch.",
+				"WARNING: changes the RPO. Applies an update package (.ptm, .zip, .upd) to the RPO of the currently connected server/environment. " +
+				"Only use it when the user explicitly asks to apply the patch; validate it first with tds_validate_patch.",
 			inputSchema: {
 				patch: patchSchema,
-				applyOld: z.boolean().optional().describe("Aplicar também recursos mais antigos que os existentes no RPO (padrão: false)")
+				applyOld: z.boolean().optional().describe("Also apply resources older than the ones in the RPO (default: false)")
 			},
 			annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false }
 		},

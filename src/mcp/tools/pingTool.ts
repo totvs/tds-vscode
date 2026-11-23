@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { McpRegistrar, MCP_SERVER_NAME, MCP_SERVER_VERSION } from "../mcpTypes";
+import { McpRegistrar, MCP_SERVER_NAME, mcpServerVersion } from "../mcpTypes";
 import { profiled } from "../mcpLogger";
 
 /**
@@ -10,8 +10,8 @@ export const registerPingTool: McpRegistrar = (server) => {
 		"tds_ping",
 		{
 			title: "TDS Ping",
-			description: "Verifica se o servidor MCP da extensão TDS-VSCode está ativo.",
-			inputSchema: { message: z.string().optional().describe("Texto opcional a ser devolvido") }
+			description: "Checks whether the MCP server of the TDS-VSCode extension is active.",
+			inputSchema: { message: z.string().optional().describe("Optional text to be returned") }
 		},
 		async ({ message }) =>
 			profiled("tds_ping", "-", () => ({
@@ -20,7 +20,7 @@ export const registerPingTool: McpRegistrar = (server) => {
 						type: "text",
 						text: JSON.stringify({
 							server: MCP_SERVER_NAME,
-							version: MCP_SERVER_VERSION,
+							version: mcpServerVersion(),
 							echo: message ?? null
 						})
 					}

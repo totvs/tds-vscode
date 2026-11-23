@@ -1,9 +1,9 @@
-import * as vscode from "vscode";
 import { z } from "zod";
 import { McpRegistrar } from "../mcpTypes";
 import { profiled } from "../mcpLogger";
 import { handleCompilerCommand } from "../handleCompileCommands";
 import { DEFAULT_FLAG_OPTIONS, FlagOptions, resolveTarget } from "../mcpUtils";
+import { errorMessage, fail, textResult, TextResult, withCancellation } from "./toolUtils";
 
 type CompileArgs = {
 	target?: string;
@@ -18,7 +18,7 @@ type CompileArgs = {
  * Executa o fluxo de compilação e converte o resultado para MCP.
  * Sem `target`, usa o fonte do editor ativo (contexto atual).
  */
-async function runCompile(args: CompileArgs, signal?: AbortSignal) {
+async function runCompile(args: CompileArgs, signal?: AbortSignal): Promise<TextResult> {
 	const { target, syntaxOnly, only, sort, max, format } = args;
 	const flags: FlagOptions = {
 		...structuredClone(DEFAULT_FLAG_OPTIONS),
@@ -29,37 +29,28 @@ async function runCompile(args: CompileArgs, signal?: AbortSignal) {
 		...(format && { format })
 	};
 
-	const cancellation = new vscode.CancellationTokenSource();
-	const onAbort = () => cancellation.cancel();
-	signal?.addEventListener("abort", onAbort);
-
 	try {
-		const isError = { value: false };
-		const resolvedTarget: string = resolveTarget(target);
-		const output: string[] = await profiled(syntaxOnly ? "tds_syntax_only" : "tds_compile", resolvedTarget, (profile) =>
-			profile.phase("compile", () => handleCompilerCommand(resolvedTarget, flags, cancellation.token, isError))
-		);
-
-		return {
-			content: [{ type: "text" as const, text: output.join("\n") }],
-			isError: isError.value
-		};
+		return await withCancellation(signal, async (token) => {
+			const isError = { value: false };
+			const resolvedTarget: string = resolveTarget(target);
+			const output: string[] = await profiled(syntaxOnly ? "tds_syntax_only" : "tds_compile", resolvedTarget, (profile) =>
+				profile.phase("compile", () => handleCompilerCommand(resolvedTarget, flags, token, isError))
+			);
+			return textResult(output.join("\n"), isError.value);
+		});
 	} catch (e) {
-		return {
-			content: [{ type: "text" as const, text: `Falha ao compilar: ${e instanceof Error ? e.message : String(e)}` }],
-			isError: true
-		};
-	} finally {
-		signal?.removeEventListener("abort", onAbort);
-		cancellation.dispose();
+		return fail(`Compilation failed: ${errorMessage(e)}`);
 	}
 }
 
-const targetSchema = z.string().optional().describe("Alvo: 'current' (padrão), 'open-editors', 'workspace' ou caminho de arquivo/pasta");
-const onlySchema = z.enum(["all", "error", "warning"]).optional().describe("Filtro de severidade");
-const sortSchema = z.enum(["none", "file", "severity"]).optional().describe("Ordenação do resultado");
-const maxSchema = z.number().int().positive().optional().describe("Máximo de diagnósticos retornados");
-const formatSchema = z.enum(["markdown", "json"]).optional().describe("Formato do resultado");
+const targetSchema = z
+	.string()
+	.optional()
+	.describe("Target: 'current' (default), 'open-editors', 'workspace' or the path of a file/folder");
+const onlySchema = z.enum(["all", "error", "warning"]).optional().describe("Severity filter");
+const sortSchema = z.enum(["none", "file", "severity"]).optional().describe("Sort order of the result");
+const maxSchema = z.number().int().positive().optional().describe("Maximum number of diagnostics returned");
+const formatSchema = z.enum(["markdown", "json"]).optional().describe("Format of the result");
 
 /**
  * Ferramentas `tds_compile` e `tds_syntax_only`.
@@ -71,12 +62,12 @@ export const registerCompileTool: McpRegistrar = (server) => {
 		{
 			title: "TDS Compile",
 			description:
-				"Compila o fonte AdvPL/TLPP/4GL informado e retorna os erros/avisos (Problems). " +
-				"Se 'target' for omitido, usa o fonte do editor ativo. " +
-				"Aceita também 'open-editors', 'workspace', ou caminho de arquivo/pasta (relativo ao workspace ou absoluto).",
+				"Compiles the AdvPL/TLPP/4GL source and returns the errors/warnings (Problems). " +
+				"If 'target' is omitted, uses the source of the active editor. " +
+				"Also accepts 'open-editors', 'workspace' or the path of a file/folder (relative to the workspace or absolute).",
 			inputSchema: {
 				target: targetSchema,
-				syntaxOnly: z.boolean().optional().describe("Somente verificar sintaxe (linter), sem gerar código no RPO"),
+				syntaxOnly: z.boolean().optional().describe("Only check the syntax (linter), without generating code in the RPO"),
 				only: onlySchema,
 				sort: sortSchema,
 				max: maxSchema,
@@ -91,8 +82,8 @@ export const registerCompileTool: McpRegistrar = (server) => {
 		{
 			title: "TDS Syntax Only",
 			description:
-				"Verifica a sintaxe (linter) do fonte AdvPL/TLPP/4GL informado, sem gerar código no RPO, e retorna os erros/avisos. " +
-				"Se 'target' for omitido, usa o fonte do editor ativo.",
+				"Checks the syntax (linter) of the AdvPL/TLPP/4GL source, without generating code in the RPO, and returns the errors/warnings. " +
+				"If 'target' is omitted, uses the source of the active editor.",
 			inputSchema: {
 				target: targetSchema,
 				only: onlySchema,

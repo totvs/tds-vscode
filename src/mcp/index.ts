@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { TdsMcpServer } from "./mcpServer";
-import { MCP_SERVER_NAME, MCP_SERVER_VERSION } from "./mcpTypes";
+import { MCP_SERVER_NAME, mcpServerVersion } from "./mcpTypes";
 import { isKiro } from "./kiroMcpConfig";
 import { getLogFilePath, getLogLevel, mcpLog } from "./mcpLogger";
 
@@ -59,7 +59,7 @@ export function registerMcpServer(_context: vscode.ExtensionContext): vscode.Dis
 						MCP_SERVER_NAME,
 						vscode.Uri.parse(info.url),
 						{ Authorization: `Bearer ${info.token}` },
-						MCP_SERVER_VERSION
+						mcpServerVersion()
 					)
 				];
 			} catch (e) {

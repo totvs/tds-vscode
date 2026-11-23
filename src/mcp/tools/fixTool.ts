@@ -1,8 +1,9 @@
 import * as vscode from "vscode";
 import { z } from "zod";
 import { McpRegistrar } from "../mcpTypes";
-import { isTotvsSourceUri, notTotvsSourceMessage, resolveTargetUri, toWorkspaceRelativePath } from "../mcpUtils";
+import { toWorkspaceRelativePath } from "../mcpUtils";
 import { mcpLog, profiled, ToolProfile } from "../mcpLogger";
+import { errorMessage, ok, resolveTotvsSource, textResult } from "./toolUtils";
 
 const DEFAULT_MAX_DIAGNOSTICS = 10;
 
@@ -65,9 +66,9 @@ async function getQuickFixes(uri: vscode.Uri, diagnostic: vscode.Diagnostic): Pr
 /** Aplica uma code action (edição e/ou comando). */
 async function applyFix(action: vscode.CodeAction): Promise<void> {
 	if (action.edit) {
-		const ok = await vscode.workspace.applyEdit(action.edit);
-		if (!ok) {
-			throw new Error("O VS Code não conseguiu aplicar a edição.");
+		const applied = await vscode.workspace.applyEdit(action.edit);
+		if (!applied) {
+			throw new Error("VS Code could not apply the edit.");
 		}
 	}
 	if (action.command) {
@@ -104,14 +105,10 @@ export const registerFixTool: McpRegistrar = (server) => {
 		(args) =>
 			profiled("tds_fix", args.file || "current", async (profile: ToolProfile) => {
 			const { file, line, only, apply, max, choice } = args;
-			const fail = (text: string) => ({ content: [{ type: "text" as const, text }], isError: true });
 
-			const uri: vscode.Uri | undefined = resolveTargetUri(file || "current");
+			const { uri, result } = resolveTotvsSource(file);
 			if (!uri) {
-				return fail("Nenhum fonte informado e nenhum editor ativo.");
-			}
-			if (!isTotvsSourceUri(uri)) {
-				return { content: [{ type: "text" as const, text: notTotvsSourceMessage(uri) }] };
+				return result;
 			}
 
 			const document = await profile.phase("open", () => vscode.workspace.openTextDocument(uri));
@@ -127,9 +124,7 @@ export const registerFixTool: McpRegistrar = (server) => {
 				.filter((d) => (line ? d.range.start.line + 1 === line : true));
 
 			if (diagnostics.length === 0) {
-				return {
-					content: [{ type: "text" as const, text: `Nenhum problema encontrado em ${relativePath}. Compile/verifique a sintaxe antes (tds_syntax_only) para atualizar os diagnósticos.` }]
-				};
+				return ok(`No problems found in ${relativePath}. Compile or check the syntax first (tds_syntax_only) to refresh the diagnostics.`);
 			}
 
 			// De baixo para cima: aplicar uma correção não desloca as posições das anteriores.
@@ -178,7 +173,7 @@ export const registerFixTool: McpRegistrar = (server) => {
 					report.fix = chosen.title;
 				} catch (e) {
 					report.outcome = "failed";
-					report.detail = e instanceof Error ? e.message : String(e);
+					report.detail = errorMessage(e);
 				}
 			}
 
@@ -199,10 +194,10 @@ export const registerFixTool: McpRegistrar = (server) => {
 				problems: reports
 			};
 
-			return {
-				content: [{ type: "text" as const, text: JSON.stringify(summary, null, 2) }],
-				isError: reports.length > 0 && reports.every((r) => r.outcome === "failed")
-			};
+			return textResult(
+				JSON.stringify(summary, null, 2),
+				reports.length > 0 && reports.every((r) => r.outcome === "failed")
+			);
 		})
 	);
 };

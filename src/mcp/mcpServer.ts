@@ -8,7 +8,7 @@ import {
 	MCP_DEFAULT_HOST,
 	MCP_ENDPOINT_PATH,
 	MCP_SERVER_NAME,
-	MCP_SERVER_VERSION,
+	mcpServerVersion,
 	McpServerInfo
 } from "./mcpTypes";
 import { registerTools } from "./tools";
@@ -19,7 +19,7 @@ import { describeRpcBody, describeRpcFriendly, instrumentServer, mcpLog } from "
 
 /** Cria uma instância de McpServer com todas as capacidades registradas. */
 function createMcpServer(): McpServer {
-	const server = new McpServer({ name: MCP_SERVER_NAME, version: MCP_SERVER_VERSION });
+	const server = new McpServer({ name: MCP_SERVER_NAME, version: mcpServerVersion() });
 
 	instrumentServer(server);
 	registerTools(server);

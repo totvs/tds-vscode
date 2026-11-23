@@ -4,7 +4,16 @@ import { registerCompileTool } from "./compileTool";
 import { registerPatchTools } from "./patchTools";
 import { registerHelpTool } from "./helpTool";
 import { registerFixTool } from "./fixTool";
-import { registerLanguageFeaturesTools } from "./languageFeaturesTools";
+import { registerDocumentSymbolsTool } from "./documentSymbolsTool";
+import { registerDefinitionTool } from "./definitionTool";
+import { registerReferencesTool } from "./referencesTool";
+import { registerHoverTool } from "./hoverTool";
+import { registerCompletionTool } from "./completionTool";
+import { registerWorkspaceSymbolsTool } from "./workspaceSymbolsTool";
+import { registerRenameSymbolTool } from "./renameSymbolTool";
+import { registerCodeActionsTool } from "./codeActionsTool";
+import { registerFormatDocumentTool } from "./formatDocumentTool";
+import { registerSignatureHelpTool } from "./signatureHelpTool";
 
 /**
  * Lista de registradores de ferramentas.
@@ -15,7 +24,16 @@ const toolRegistrars: McpRegistrar[] = [
 	registerCompileTool,
 	registerFixTool,
 	registerPatchTools,
-	registerLanguageFeaturesTools,
+	registerDocumentSymbolsTool,
+	registerDefinitionTool,
+	registerReferencesTool,
+	registerHoverTool,
+	registerCompletionTool,
+	registerWorkspaceSymbolsTool,
+	registerRenameSymbolTool,
+	registerCodeActionsTool,
+	registerFormatDocumentTool,
+	registerSignatureHelpTool,
 	registerHelpTool
 ];
 
