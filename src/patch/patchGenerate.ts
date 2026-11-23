@@ -312,7 +312,7 @@ export function patchGenerateFromFolder(context: any) {
             ).then(
               (result) => {
                 if (result === vscode.l10n.t("Yes")) {
-                  commandBuildFile(context, false, allFilesFullPath);
+                  commandBuildFile(false, allFilesFullPath);
                 }
                 let destFolder = fileUri[0].toString();
                 sendPatchGenerateMessage(

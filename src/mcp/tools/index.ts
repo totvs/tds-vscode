@@ -11,7 +11,8 @@ import { registerHoverTool } from "./hoverTool";
 import { registerCompletionTool } from "./completionTool";
 import { registerWorkspaceSymbolsTool } from "./workspaceSymbolsTool";
 import { registerRenameSymbolTool } from "./renameSymbolTool";
-import { registerCodeActionsTool } from "./codeActionsTool";
+// `tds_code_actions` desativada: `tds_fix` (com apply=false) já lista as opções de correção.
+// import { registerCodeActionsTool } from "./codeActionsTool";
 import { registerFormatDocumentTool } from "./formatDocumentTool";
 import { registerSignatureHelpTool } from "./signatureHelpTool";
 
@@ -31,7 +32,7 @@ const toolRegistrars: McpRegistrar[] = [
 	registerCompletionTool,
 	registerWorkspaceSymbolsTool,
 	registerRenameSymbolTool,
-	registerCodeActionsTool,
+	// registerCodeActionsTool,
 	registerFormatDocumentTool,
 	registerSignatureHelpTool,
 	registerHelpTool

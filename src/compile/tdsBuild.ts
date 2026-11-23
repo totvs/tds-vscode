@@ -352,17 +352,22 @@ function verifyCompileResult(response) {
 }
 
 /**
+ * Item of a file list received by the build commands: a `vscode.Uri`
+ * (explorer selection) or a file path.
+ */
+type FileInput = vscode.Uri | string;
+
+/**
  * Command handler that compiles a selected file or provided file list.
  */
 export function commandBuildFile(
-  context: vscode.ExtensionContext,
   recompile: boolean,
-  files
+  files?: FileInput[] | undefined
 ): Promise<BuildOutcome | undefined> {
   let editor: vscode.TextEditor | undefined;
   let filename: string | undefined = undefined;
 
-  if (context === undefined) {
+  if (!files || files.length === 0) {
     //A ação veio pelo ctrl+f9
     editor = vscode.window.activeTextEditor;
     if (!editor) {
@@ -378,7 +383,7 @@ export function commandBuildFile(
   vscode.window.setStatusBarMessage(
     `$(gear~spin) ${vscode.l10n.t("Building...")}`,
     new Promise((resolve, reject) => {
-      if (files) {
+      if (files && files.length > 0) {
         const arrayFiles: string[] = changeToArrayString(files);
         let allFiles = Utils.getAllFilesRecursive(arrayFiles, true);
         outcome = buildFile(allFiles, recompile);
@@ -395,13 +400,12 @@ export function commandBuildFile(
  * Command handler that performs a syntax-only check on a file or file list.
  */
 export function commandSyntaxOnlyFile(
-  context: vscode.ExtensionContext,
-  files
+  files?: FileInput[] | undefined
 ): Promise<BuildOutcome | undefined> {
   let editor: vscode.TextEditor | undefined;
   let filename: string | undefined = undefined;
 
-  if (context === undefined) {
+  if (!files || files.length === 0) {
     editor = vscode.window.activeTextEditor;
     if (!editor) {
       vscode.window.showInformationMessage(
@@ -420,7 +424,7 @@ export function commandSyntaxOnlyFile(
       compileOptions.syntaxOnly = true;
       compileOptions.generatePpoFile = false;
 
-      if (files) {
+      if (files && files.length > 0) {
         const arrayFiles: string[] = changeToArrayString(files);
         const allFiles = Utils.getAllFilesRecursive(arrayFiles, true);
         outcome = buildCode(allFiles, compileOptions);
@@ -436,16 +440,14 @@ export function commandSyntaxOnlyFile(
 /**
  * Normalizes the input list into a string array of file paths.
  */
-function changeToArrayString(allFiles) {
+function changeToArrayString(allFiles: FileInput[]): string[] {
   let arrayFiles: string[] = [];
 
   allFiles.forEach((element) => {
-    if (element.fsPath) {
+    if (typeof element !== "string") {
       arrayFiles.push(element.fsPath);
-    } else {
-      if (fs.existsSync(element)) {
-        arrayFiles.push(element);
-      }
+    } else if (fs.existsSync(element)) {
+      arrayFiles.push(element);
     }
   });
 

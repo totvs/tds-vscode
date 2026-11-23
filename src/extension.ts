@@ -87,7 +87,7 @@ export async function activate(context: ExtensionContext) {
     vscode.l10n.t('Congratulations, your extension "totvs-developer-studio" is now active!')
   );
 
-  prepareInstructions(context);
+  prepareInstructions(context).then(() => prepareSkill(context));
 
   ServersConfig.createServerConfig();
   LaunchConfig.createLaunchConfig(undefined);
@@ -177,21 +177,30 @@ export async function activate(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.build.file",
-      (args, files) => commandBuildFile(args, false, files)
+      (args, files) => {
+        console.log(args);
+        return commandBuildFile(false, files);
+      }
     )
   );
   //Verifica somente a sintaxe dos fontes/recursos selecionados
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.syntax-only.file",
-      (args, files) => commandSyntaxOnlyFile(args, files)
+      (args, files) => {
+        console.log(args);
+        return commandSyntaxOnlyFile(files);
+      }
     )
   );
   //Recompila os fontes/recursos selecionados
   context.subscriptions.push(
     commands.registerCommand(
       "totvs-developer-studio.rebuild.file",
-      (args, files) => commandBuildFile(args, true, files)
+      (args, files) => {
+        console.log(args);
+        return commandBuildFile(true, files);
+      }
     )
   );
 
@@ -851,16 +860,16 @@ async function prepareInstructions(context: vscode.ExtensionContext) {
   let templateDefaultUri = vscode.Uri.joinPath(context.extensionUri, 'resources', templateFolder, `tds-vscode-${version}-en.instructions.md.txt`);
 
   if (vscode.env.appName.toLowerCase() == "kiro") {
-    templateFolder = ".kiro";
+    templateFolder = ".kiro/steering";
     version = getLatestTemplateVersion(
       vscode.Uri.joinPath(context.extensionUri, 'resources', templateFolder).fsPath,
-      /^advpl-tlpp-ls-first-(\d+-\d+-\d+)-.+\.steering\.md\.txt$/,
-      "1-0-0"
+      /^advpl-tlpp-ls-first-(\d+-\d+-\d+)-.+\.md\.txt$/,
+      "1-0-3"
     );
     targetFolderUri = vscode.Uri.joinPath(rootPath, '.kiro', "steering");
     targetFileUri = vscode.Uri.joinPath(targetFolderUri, `advpl-tlpp-ls-first-${version}.md`);
-    templateFile = `advpl-tlpp-ls-first-${version}-${language}.steering.md.txt`;
-    templateDefaultUri = vscode.Uri.joinPath(context.extensionUri, 'resources', templateFolder, `advpl-tlpp-ls-first-${version}-en.steering.md.txt`);
+    templateFile = `advpl-tlpp-ls-first-${version}-${language}.md.txt`;
+    templateDefaultUri = vscode.Uri.joinPath(context.extensionUri, 'resources', templateFolder, `advpl-tlpp-ls-first-${version}-en.md.txt`);
   }
 
   if (!fse.existsSync(targetFileUri.fsPath)) {
@@ -947,62 +956,84 @@ function getLatestTemplateVersion(folderPath: string, pattern: RegExp, fallback:
   return latest ? latest.join("-") : fallback;
 }
 
-async function prepareSteering(context: vscode.ExtensionContext) {
+// Instala a skill `totvs-mcp-first` (Kiro exige pasta própria com SKILL.md).
+// A skill é atualizada quando a extensão traz uma versão mais nova.
+async function prepareSkill(context: vscode.ExtensionContext) {
+  if (vscode.env.appName.toLowerCase() != "kiro") return;
+
   const workspaceFolders = vscode.workspace.workspaceFolders;
   if (!workspaceFolders) return;
 
-  const version: string = "1-0-0";
-  const rootPath: vscode.Uri = workspaceFolders[0].uri;
-  const kiroFolderUri: vscode.Uri = vscode.Uri.joinPath(rootPath, '.kiro', "steering");
-  const targetFileUri: vscode.Uri = vscode.Uri.joinPath(kiroFolderUri, `advpl-tlpp-ls-first-${version}.md`);
+  const skillName: string = "totvs-mcp-first";
+  const stateKey: string = "tds.kiro.skill." + skillName;
+  const language: string = vscode.env.language;
+  const templateFolderUri: vscode.Uri = vscode.Uri.joinPath(context.extensionUri, 'resources', '.kiro', 'skills', skillName);
+  const version: string = getLatestTemplateVersion(
+    templateFolderUri.fsPath,
+    /^totvs-mcp-first-(\d+-\d+-\d+)-.+\.md\.txt$/,
+    "1-0-3"
+  );
+  const targetFolderUri: vscode.Uri = vscode.Uri.joinPath(workspaceFolders[0].uri, '.kiro', 'skills', skillName);
+  const targetFileUri: vscode.Uri = vscode.Uri.joinPath(targetFolderUri, "SKILL.md");
+  const installed: string | undefined = context.workspaceState.get<string>(stateKey);
 
-  if (!fse.existsSync(targetFileUri.fsPath)) {
-    const question: string = vscode.l10n.t("Do you want to configure AI instructions for this workspace (improves accuracy)?")
-    const yes: string = vscode.l10n.t("Yes")
-    const notNow: string = vscode.l10n.t("Not now")
-    const never: string = vscode.l10n.t("Never (don't ask again)")
+  if (installed === version) return;
+
+  const yes: string = vscode.l10n.t("Yes")
+  const notNow: string = vscode.l10n.t("Not now")
+
+  if (fse.existsSync(targetFileUri.fsPath)) {
+    // Arquivo existente: nunca sobrescreve sem perguntar. Arquivo vazio, ou sem versão
+    // registrada (criado pelo usuário), é respeitado e não é alterado.
+    if (fse.statSync(targetFileUri.fsPath).size === 0) return;
+    if (installed === undefined || installed === "never") return;
 
     const selection: string = await vscode.window.showInformationMessage(
-      question,
+      vscode.l10n.t("A newer version of the TOTVS LS skill for AI is available. Do you want to update it (replaces .kiro/skills/{0}/SKILL.md)?", skillName),
+      { modal: true },
+      yes,
+      notNow
+    );
+    if (selection !== yes) return;
+  } else {
+    // Diferente do steering (que grava um arquivo vazio), o "Never" da skill fica no
+    // workspaceState para não deixar um SKILL.md vazio e inválido para o Kiro.
+    if (installed === "never") return;
+
+    const never: string = vscode.l10n.t("Never (don't ask again)")
+    const selection: string = await vscode.window.showInformationMessage(
+      vscode.l10n.t("Do you want to configure AI instructions for this workspace (improves accuracy)?"),
       { modal: true },
       yes,
       notNow,
       never
     );
 
-    if ((selection === yes) || (selection === never)) {
-      try {
-        let templateData: Uint8Array;
-
-        if (selection === yes) {
-          const language: string = vscode.env.language;
-          let templateUri: vscode.Uri = vscode.Uri.joinPath(context.extensionUri, 'resources', ".github", `tds-vscode-${version}-${language}.instructions.md.txt`);
-
-          if (!fse.existsSync(templateUri.fsPath)) {
-            templateUri = vscode.Uri.joinPath(context.extensionUri, 'resources', ".github", `tds-vscode-${version}-en.instructions.md.txt`);
-          }
-
-          templateData = await vscode.workspace.fs.readFile(templateUri);
-          templateData = new TextEncoder().encode(removeHtmlComments(new TextDecoder().decode(templateData)));
-        } else { // Se o usuário escolher "Nunca", é criado um arquivo vazio para evitar futuras perguntas
-          templateData = new Uint8Array();
-        }
-
-        await vscode.workspace.fs.createDirectory(kiroFolderUri);
-        await removeInstructionsOldVersions(kiroFolderUri);
-        await vscode.workspace.fs.writeFile(targetFileUri, templateData);
-
-        if (selection === yes) {
-          vscode.window.showInformationMessage(vscode.l10n.t("TOTVS LS context enabled for AI."));
-        }
-      } catch (err) {
-        console.error("Erro ao ler o template ou salvar instruções:", err);
-        vscode.window.showErrorMessage(vscode.l10n.t("Failed to configure the TOTVS LS context for AI. See the console for details."));
-      }
+    if (selection === never) {
+      await context.workspaceState.update(stateKey, "never");
     }
+    if (selection !== yes) return;
+  }
+
+  try {
+    let templateUri: vscode.Uri = vscode.Uri.joinPath(templateFolderUri, `totvs-mcp-first-${version}-${language}.md.txt`);
+
+    if (!fse.existsSync(templateUri.fsPath)) {
+      templateUri = vscode.Uri.joinPath(templateFolderUri, `totvs-mcp-first-${version}-en.md.txt`);
+    }
+
+    const templateData: Uint8Array = await vscode.workspace.fs.readFile(templateUri);
+
+    await vscode.workspace.fs.createDirectory(targetFolderUri);
+    await vscode.workspace.fs.writeFile(targetFileUri, templateData);
+    await context.workspaceState.update(stateKey, version);
+
+    vscode.window.showInformationMessage(vscode.l10n.t("TOTVS LS context enabled for AI."));
+  } catch (err) {
+    console.error("Erro ao ler o template ou salvar a skill:", err);
+    vscode.window.showErrorMessage(vscode.l10n.t("Failed to configure the TOTVS LS context for AI. See the console for details."));
   }
 }
-
 /**
  * Remove arquivos que correspondem ao padrão tds-vscode*.md de uma pasta.
  * @param folderUri O caminho da pasta de onde remover os arquivos.

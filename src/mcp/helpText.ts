@@ -13,7 +13,7 @@ export function buildHelpText(): string {
 		"- tds_document_symbols: outline (symbols) of a source file, provided by the language server.",
 		"- tds_definition, tds_references, tds_hover, tds_completion, tds_signature_help: language server queries at a position (file, line, character; 0-based).",
 		"- tds_workspace_symbols: searches symbols by name across the workspace.",
-		"- tds_code_actions: lists the code actions of a line/range (to apply the fixes use tds_fix).",
+		// "- tds_code_actions: lists the code actions of a line/range (to apply the fixes use tds_fix).",
 		"- tds_rename_symbol, tds_format_document: preview of the edits (nothing is changed).",
 		"- tds_help: shows this help.",
 		"- tds_ping: checks whether the TOTVS MCP server is active.",
