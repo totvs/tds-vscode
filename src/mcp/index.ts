@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { TdsMcpServer } from "./mcpServer";
 import { MCP_SERVER_NAME, mcpServerVersion } from "./mcpTypes";
-import { isKiro, setKiroMcpState } from "./kiroMcpConfig";
+import { isKiro, removeKiroMcpEntry, resetKiroMcpState, setKiroMcpState, writeKiroMcpEntry } from "./kiroMcpConfig";
 import { getLogFilePath, getLogLevel, mcpLog } from "./mcpLogger";
 
 export { TdsMcpServer } from "./mcpServer";
@@ -29,6 +29,27 @@ function errorText(e: unknown): string {
  *
  * O servidor só é disponibilizado quando `totvsLanguageServer.mcp.enable` estiver ligado.
  */
+let activeServer: TdsMcpServer | undefined;
+
+/**
+ * Kiro: remove a entrada `totvs-mcp` de `.kiro/settings/mcp.json` e a decisão de liberar
+ * todas as ferramentas. Se o servidor estiver em execução, a entrada é gravada de novo
+ * (URL e token atuais) e a pergunta de liberação é refeita. Fora do Kiro, não faz nada.
+ */
+export async function resetKiroMcpEntry(): Promise<void> {
+	if (!isKiro()) {
+		return;
+	}
+
+	await resetKiroMcpState();
+	await removeKiroMcpEntry();
+
+	const info = activeServer?.isRunning ? activeServer.serverInfo : undefined;
+	if (info) {
+		await writeKiroMcpEntry(info);
+	}
+}
+
 export function registerMcpServer(context: vscode.ExtensionContext): vscode.Disposable[] {
 	setKiroMcpState(context.workspaceState);
 	mcpLog.reset();
@@ -38,6 +59,7 @@ export function registerMcpServer(context: vscode.ExtensionContext): vscode.Disp
 	mcpLog.debug(`registerMcpServer (enabled=${isEnabled()}, log=${getLogLevel()}, logFile=${getLogFilePath() ?? "<disabled>"})`);
 
 	const server = new TdsMcpServer();
+	activeServer = server;
 	const onDidChange = new vscode.EventEmitter<void>();
 
 	const provider: vscode.McpServerDefinitionProvider<vscode.McpHttpServerDefinition> = {

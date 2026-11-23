@@ -427,7 +427,8 @@
         "totvsLanguageServer.mcp.enable": {
           "scope": "window",
           "type": "boolean",
-          "default": false,
+          "default": true,
+          "tags": ["experimental"],
           "description": "Habilita o servidor MCP embutido da extensão TDS-VSCode (somente loopback, com token)."
         },
         "totvsLanguageServer.mcp.log": {
@@ -1374,6 +1375,11 @@
       {
         "command": "totvs-developer-studio.welcomePage",
         "title": "%tds.package.welcomePage%",
+        "category": "TOTVS"
+      },
+      {
+        "command": "totvsLanguageServer.iacontext.reset",
+        "title": "%tds.package.iacontext.reset%",
         "category": "TOTVS"
       },
       {

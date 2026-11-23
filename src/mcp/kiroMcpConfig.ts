@@ -88,6 +88,11 @@ export function setKiroMcpState(memento: vscode.Memento): void {
 	state = memento;
 }
 
+/** Forgets the auto-approve decision of the workspace (it is asked again on the next write). */
+export async function resetKiroMcpState(): Promise<void> {
+	await state?.update(AUTO_APPROVE_KEY, undefined);
+}
+
 /**
  * Asks the user whether Kiro may run all the TOTVS MCP tools without confirmation.
  * It does not block the server start: the entry is written first without `autoApprove`

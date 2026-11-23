@@ -71,7 +71,7 @@ import { registerXRef } from "./xreferences";
 import { tlppTools } from "./tlpp-tools/tlppTools";
 import { openWebMonitor } from "./monitor/monitorLoader";
 import { activate as activateOidcAuth } from "./oidcauth/OIDCAuthHandler";
-import { registerMcpServer } from "./mcp";
+import { registerMcpServer, resetKiroMcpEntry } from "./mcp";
 import { checkWhatsNew } from "./whatsNew";
 
 export let languageClient: TotvsLanguageClientA;
@@ -88,6 +88,10 @@ export async function activate(context: ExtensionContext) {
   );
 
   prepareInstructions(context).then(() => prepareSkill(context));
+
+  context.subscriptions.push(
+    commands.registerCommand("totvsLanguageServer.iacontext.reset", () => resetIAContextState(context))
+  );
 
   ServersConfig.createServerConfig();
   LaunchConfig.createLaunchConfig(undefined);
@@ -872,51 +876,68 @@ async function prepareInstructions(context: vscode.ExtensionContext) {
     templateDefaultUri = vscode.Uri.joinPath(context.extensionUri, 'resources', templateFolder, `advpl-tlpp-ls-first-${version}-en.md.txt`);
   }
 
-  if (!fse.existsSync(targetFileUri.fsPath)) {
-    const question: string = vscode.l10n.t("Do you want to configure AI instructions for this workspace (improves accuracy)?")
-    const yes: string = vscode.l10n.t("Yes")
-    const notNow: string = vscode.l10n.t("Not now")
-    const never: string = vscode.l10n.t("Never (don't ask again)")
+  // Estado (workspaceState) + existência do arquivo: o estado sozinho não basta
+  // (o arquivo pode ter sido apagado) e o arquivo sozinho também não ("Nunca").
+  const stateKey: string = "tds.instructions." + (templateFolder === ".github" ? "copilot" : "kiro");
+  const installed: string | undefined = context.workspaceState.get<string>(stateKey);
+  const exists: boolean = fse.existsSync(targetFileUri.fsPath);
 
-    const selection: string = await vscode.window.showInformationMessage(
-      question,
-      { modal: true },
-      yes,
-      notNow,
-      never
-    );
+  if (installed === "never") return;
+  if (exists) {
+    // Arquivo da versão atual já presente (inclusive criado antes do controle por estado).
+    // Arquivo vazio é o "Nunca" gravado pelas versões anteriores da extensão.
+    const current: string = fse.statSync(targetFileUri.fsPath).size === 0 ? "never" : version;
+    if (installed !== current) {
+      await context.workspaceState.update(stateKey, current);
+    }
+    return;
+  }
 
-    if ((selection === yes) || (selection === never)) {
-      try {
-        let templateData: Uint8Array;
+  const question: string = vscode.l10n.t("Do you want to configure AI instructions for this workspace (improves accuracy)?")
+  const yes: string = vscode.l10n.t("Yes")
+  const notNow: string = vscode.l10n.t("Not now")
+  const never: string = vscode.l10n.t("Never (don't ask again)")
 
-        if (selection === yes) {
-          let templateUri: vscode.Uri = vscode.Uri.joinPath(
-            context.extensionUri, 'resources',
-            templateFolder,
-            templateFile);
+  const selection: string = await vscode.window.showInformationMessage(
+    question,
+    { modal: true },
+    yes,
+    notNow,
+    never
+  );
 
-          if (!fse.existsSync(templateUri.fsPath)) {
-            templateUri = templateDefaultUri;
-          }
+  if ((selection === yes) || (selection === never)) {
+    try {
+      let templateData: Uint8Array;
 
-          templateData = await vscode.workspace.fs.readFile(templateUri);
-          templateData = new TextEncoder().encode(removeHtmlComments(new TextDecoder().decode(templateData)));
-        } else { // Se o usuário escolher "Nunca", é criado um arquivo vazio para evitar futuras perguntas
-          templateData = new Uint8Array();
+      if (selection === yes) {
+        let templateUri: vscode.Uri = vscode.Uri.joinPath(
+          context.extensionUri, 'resources',
+          templateFolder,
+          templateFile);
+
+        if (!fse.existsSync(templateUri.fsPath)) {
+          templateUri = templateDefaultUri;
         }
 
-        await vscode.workspace.fs.createDirectory(targetFolderUri);
-        await removeInstructionsOldVersions(targetFolderUri);
-        await vscode.workspace.fs.writeFile(targetFileUri, templateData);
-
-        if (selection === yes) {
-          vscode.window.showInformationMessage(vscode.l10n.t("TOTVS LS context enabled for AI."));
-        }
-      } catch (err) {
-        console.error("Erro ao ler o template ou salvar instruções:", err);
-        vscode.window.showErrorMessage(vscode.l10n.t("Failed to configure the TOTVS LS context for AI. See the console for details."));
+        templateData = await vscode.workspace.fs.readFile(templateUri);
+        templateData = new TextEncoder().encode(removeHtmlComments(new TextDecoder().decode(templateData)));
+      } else { // Se o usuário escolher "Nunca", é criado um arquivo vazio para evitar futuras perguntas
+        templateData = new Uint8Array();
       }
+
+      await vscode.workspace.fs.createDirectory(targetFolderUri);
+      await removeInstructionsOldVersions(targetFolderUri);
+      await vscode.workspace.fs.writeFile(targetFileUri, templateData);
+
+      await context.workspaceState.update(stateKey, selection === yes ? version : "never");
+
+      if (selection === yes) {
+        vscode.window.showInformationMessage(vscode.l10n.t("TOTVS LS context enabled for AI."));
+      }
+    } catch (err) {
+      console.error("Erro ao ler o template ou salvar instruções:", err);
+      vscode.window.showErrorMessage(vscode.l10n.t("Failed to configure the TOTVS LS context for AI. See the console for details."));
     }
   }
 }
@@ -956,6 +977,68 @@ function getLatestTemplateVersion(folderPath: string, pattern: RegExp, fallback:
   return latest ? latest.join("-") : fallback;
 }
 
+/** Chaves (workspaceState) das instruções e da skill de IA. */
+const IA_CONTEXT_STATE_KEYS: string[] = [
+  "tds.instructions.copilot",
+  "tds.instructions.kiro",
+  "tds.kiro.skill.totvs-mcp-first"
+];
+
+// Comando `totvsLanguageServer.iacontext.reset`: após confirmação, remove o estado das
+// instruções e da skill de IA, os arquivos de steering e da skill do Kiro e a entrada
+// `totvs-mcp` de .kiro/settings/mcp.json. Em seguida refaz a verificação na hora (mesmo
+// fluxo da inicialização). As instruções do Copilot (.github/instructions) são mantidas.
+async function resetIAContextState(context: vscode.ExtensionContext): Promise<void> {
+  const workspaceFolders = vscode.workspace.workspaceFolders;
+  if (!workspaceFolders) return;
+
+  const isKiro: boolean = vscode.env.appName.toLowerCase() == "kiro";
+  const yes: string = vscode.l10n.t("Yes");
+  const detail: string = isKiro
+    ? vscode.l10n.t("Removes .kiro/steering/advpl-tlpp-ls-first-*.md, .kiro/skills/totvs-mcp-first/SKILL.md and the totvs-mcp entry of .kiro/settings/mcp.json, then asks again.")
+    : vscode.l10n.t("The AI instructions will be checked again.");
+  const selection: string | undefined = await vscode.window.showWarningMessage(
+    vscode.l10n.t("Reset the AI context of this workspace?"),
+    { modal: true, detail: detail },
+    yes
+  );
+  if (selection !== yes) return;
+
+  for (const key of IA_CONTEXT_STATE_KEYS) {
+    await context.workspaceState.update(key, undefined);
+  }
+
+  if (isKiro) {
+    const rootUri: vscode.Uri = workspaceFolders[0].uri;
+    const steeringUri: vscode.Uri = vscode.Uri.joinPath(rootUri, ".kiro", "steering");
+    if (fse.existsSync(steeringUri.fsPath)) {
+      await removeInstructionsOldVersions(steeringUri);
+    }
+
+    const skillFolderUri: vscode.Uri = vscode.Uri.joinPath(rootUri, ".kiro", "skills", "totvs-mcp-first");
+    const skillFileUri: vscode.Uri = vscode.Uri.joinPath(skillFolderUri, "SKILL.md");
+    try {
+      if (fse.existsSync(skillFileUri.fsPath)) {
+        await vscode.workspace.fs.delete(skillFileUri);
+      }
+      if (fse.existsSync(skillFolderUri.fsPath) && fse.readdirSync(skillFolderUri.fsPath).length === 0) {
+        await vscode.workspace.fs.delete(skillFolderUri);
+      }
+    } catch (err) {
+      console.error("Erro ao remover a skill:", err);
+    }
+  }
+
+  await prepareInstructions(context);
+  await prepareSkill(context);
+
+  // Por último: com o servidor ativo, a entrada é regravada e a pergunta de liberação das
+  // ferramentas é refeita (evita duas perguntas modais ao mesmo tempo).
+  if (isKiro) {
+    await resetKiroMcpEntry();
+  }
+}
+
 // Instala a skill `totvs-mcp-first` (Kiro exige pasta própria com SKILL.md).
 // A skill é atualizada quando a extensão traz uma versão mais nova.
 async function prepareSkill(context: vscode.ExtensionContext) {
@@ -977,7 +1060,8 @@ async function prepareSkill(context: vscode.ExtensionContext) {
   const targetFileUri: vscode.Uri = vscode.Uri.joinPath(targetFolderUri, "SKILL.md");
   const installed: string | undefined = context.workspaceState.get<string>(stateKey);
 
-  if (installed === version) return;
+  // O estado só vale se o arquivo ainda existir: se o SKILL.md foi apagado, oferece de novo.
+  if (installed === version && fse.existsSync(targetFileUri.fsPath)) return;
 
   const yes: string = vscode.l10n.t("Yes")
   const notNow: string = vscode.l10n.t("Not now")
