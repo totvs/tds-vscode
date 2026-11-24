@@ -72,6 +72,7 @@
     "release": "npx -y standard-version --skip.changelog --release-as 2.1.0",
     "tag": "git push --follow-tags origin dev2",
     "package": "gulp package",
+    "package-debug": "gulp package-debug",
     "package-prerelease": "gulp package-prerelease",
     "publish": "gulp publish",
     "publish-prerelease": "gulp publish-prerelease",

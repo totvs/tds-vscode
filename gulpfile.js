@@ -57,6 +57,11 @@ const internalCompileEsBuildProd = function () {
   //return run("cross-env NODE_ENV=debug node esbuild.js").exec();
 }
 
+// Debug build: no minification, with sourcemaps (esbuild.js, NODE_ENV != production).
+const internalCompileEsBuildDebug = function () {
+  return run("cross-env NODE_ENV=debug node esbuild.js").exec();
+}
+
 const internalNlsCompileTask = function () {
   return doCompile(true);
 };
@@ -70,7 +75,14 @@ const addL10nTask = function () {
   //   .pipe(gulp.dest("."));
 };
 
-const buildTask = gulp.series(cleanTask, internalNlsCompileTask, addL10nTask, internalCompileWebpack, internalCompileEsBuildProd);
+// Gera src/parser/4gl-parser.js (ignorado pelo git) a partir de syntaxes/4gl.pegjs.
+const compileParser4glTask = function () {
+  return run('npm run compile:parse_4gl').exec();
+};
+
+const buildTask = gulp.series(cleanTask, compileParser4glTask, internalNlsCompileTask, addL10nTask, internalCompileWebpack, internalCompileEsBuildProd);
+
+const buildDebugTask = gulp.series(cleanTask, compileParser4glTask, internalNlsCompileTask, addL10nTask, internalCompileWebpack, internalCompileEsBuildDebug);
 
 const doCompile = function (buildNls) {
   var r = tsProject
@@ -115,11 +127,38 @@ const vscePublishPreReleaseTask = function (done) {
 };
 
 const vscePackageTask = function () {
-  return vsce.createVSIX();
+  return vsce.createVSIX().then(() => fixVsixPermissions(defaultVsixName()));
 };
 
 const vscePackagePreReleaseTask = function () {
-  return vsce.createVSIX({ 'preRelease': true });
+  return vsce.createVSIX({ 'preRelease': true }).then(() => fixVsixPermissions(defaultVsixName()));
+};
+
+const defaultVsixName = function () {
+  const pkg = require("./package.json");
+  return `${pkg.name}-${pkg.version}.vsix`;
+};
+
+// vsce em Windows grava os binarios Linux/Mac sem bit de execucao (0o666).
+// Reescreve o .vsix com 0o755 para os executaveis em bin/linux e bin/mac.
+const fixVsixPermissions = async function (vsixPath) {
+  const fs = require("fs");
+  const JSZip = require("jszip");
+  const zip = await JSZip.loadAsync(fs.readFileSync(vsixPath));
+  let count = 0;
+  zip.forEach((relPath, file) => {
+    if (!file.dir && /\/node_modules\/@totvs\/tds-(da|ls)\/bin\/(linux|mac)\//.test(relPath)) {
+      file.unixPermissions = 0o755;
+      count++;
+    }
+  });
+  const buffer = await zip.generateAsync({
+    type: "nodebuffer",
+    platform: "UNIX",
+    compression: "DEFLATE",
+  });
+  fs.writeFileSync(vsixPath, buffer);
+  log(`Permissao 755 aplicada a ${count} arquivo(s) em ${vsixPath}`);
 };
 
 gulp.task("publish", gulp.series(buildTask, vscePublishTask));
@@ -127,6 +166,17 @@ gulp.task("publish", gulp.series(buildTask, vscePublishTask));
 gulp.task("publish-prerelease", gulp.series(buildTask, vscePublishPreReleaseTask));
 
 gulp.task("package", gulp.series(buildTask, vscePackageTask));
+
+// Uses .vscodeignore.debug (same as .vscodeignore, but keeps *.map files).
+const vscePackageDebugTask = function () {
+  const version = require("./package.json").version;
+  return vsce.createVSIX({
+    ignoreFile: ".vscodeignore.debug",
+    packagePath: `tds-vscode-${version}-debug.vsix`,
+  }).then(() => fixVsixPermissions(`tds-vscode-${version}-debug.vsix`));
+};
+
+gulp.task("package-debug", gulp.series(buildDebugTask, vscePackageDebugTask));
 
 gulp.task("package-prerelease", gulp.series(buildTask, vscePackagePreReleaseTask));
 
