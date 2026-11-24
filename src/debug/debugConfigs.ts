@@ -22,6 +22,20 @@ const RESOURCES_FOLDER = path.join(__filename, "..", "..", "..", "resources");
 let debugSession: DebugSession | undefined;
 let dapArgs: string[] = [];
 
+function ensureExecutable(pathDAP: string) {
+  try {
+    if ((statSync(pathDAP).mode & 0o111) !== 0o111) {
+      chmodSync(pathDAP, "755");
+    }
+  } catch (e: any) {
+    Utils.logMessage(
+      `Debug adapter not executable or not found: ${pathDAP} (${e?.message ?? e})`,
+      MESSAGETYPE.Error,
+      true
+    );
+  }
+}
+
 export function getDAP() {
   let pathDAP = "";
   let ext = extensions.getExtension("TOTVS.tds-vscode");
@@ -36,18 +50,20 @@ export function getDAP() {
         ext.extensionPath,
         "/node_modules/@totvs/tds-da/bin/linux/debugAdapter"
       );
-      if (statSync(pathDAP).mode !== 33261) {
-        chmodSync(pathDAP, "755");
-      }
+      ensureExecutable(pathDAP);
     } else if (process.platform === "darwin") {
       pathDAP = path.join(
         ext.extensionPath,
         "/node_modules/@totvs/tds-da/bin/mac/debugAdapter"
       );
-      if (statSync(pathDAP).mode !== 33261) {
-        chmodSync(pathDAP, "755");
-      }
+      ensureExecutable(pathDAP);
     }
+  } else {
+    Utils.logMessage(
+      "Extension TOTVS.tds-vscode not found; cannot locate the debug adapter.",
+      MESSAGETYPE.Error,
+      true
+    );
   }
 
   return { command: pathDAP, args: dapArgs };
