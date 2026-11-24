@@ -504,7 +504,7 @@ export async function commandBuildOpenEditors(recompile: boolean): Promise<Build
         }
       } else {
         vscode.window.showWarningMessage(
-          "[SKIPPING] Editor file is not fully open"
+          vscode.l10n.t("[SKIPPING] Editor file is not fully open")
         );
       }
     }
@@ -530,7 +530,7 @@ export async function commandBuildOpenEditors(recompile: boolean): Promise<Build
         }
       } else {
         vscode.window.showWarningMessage(
-          "[SKIPPING] Editor file is not fully open"
+          vscode.l10n.t("[SKIPPING] Editor file is not fully open")
         );
       }
     } else {
@@ -544,7 +544,7 @@ export async function commandBuildOpenEditors(recompile: boolean): Promise<Build
     compileOptions.recompile = recompile;
     return buildCode(files, compileOptions);
   } else {
-    vscode.window.showWarningMessage("There is nothing to compile");
+    vscode.window.showWarningMessage(vscode.l10n.t("There is nothing to compile"));
     return { error: "There is nothing to compile" };
   }
 }

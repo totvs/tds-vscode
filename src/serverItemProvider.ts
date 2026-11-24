@@ -40,14 +40,14 @@ class ServerItemProvider
   constructor() {
     // check if there is an open folder
     if (vscode.workspace.workspaceFolders === undefined) {
-      vscode.window.showErrorMessage("No folder opened.");
+      vscode.window.showErrorMessage(vscode.l10n.t("No folder opened."));
       return;
     }
 
     vscode.workspace.workspaceFolders.forEach((folder) => {
       if (!fs.existsSync(folder.uri.fsPath)) {
         vscode.window.showWarningMessage(
-          `Folder not exist or access unavailable. Check it to avoid unwanted behavior. Path: ${folder.uri.fsPath}`
+          vscode.l10n.t("Folder does not exist or is not accessible. Check it to avoid unwanted behavior. Path: {0}", folder.uri.fsPath)
         );
       }
     });

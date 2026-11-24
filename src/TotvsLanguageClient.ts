@@ -175,7 +175,7 @@ function loginWithOidc(params: ILoginWithOIDCInfo): void {
     vscode.commands.executeCommand("totvs-developer-studio.poc-login-oidc", params.oidcUrl)
       .then(undefined, (reason: any) => {
         console.error(reason);
-        vscode.window.showErrorMessage(`Falha ao executar login OIDC: ${reason}`);
+        vscode.window.showErrorMessage(vscode.l10n.t("OIDC login failed: {0}", String(reason)));
       });
   }
 }

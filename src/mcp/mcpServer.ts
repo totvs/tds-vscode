@@ -116,7 +116,7 @@ export class TdsMcpServer implements vscode.Disposable {
 		mcpLog.debug(`MCP URL: ${this.info.url}`);
 
 		// Notificação somente quando o servidor realmente é iniciado (não em chamadas repetidas).
-		void vscode.window.showInformationMessage(`TOTVS MCP iniciado em ${this.info.url}`);
+		void vscode.window.showInformationMessage(vscode.l10n.t("TOTVS MCP started at {0}", this.info.url));
 
 		// Kiro reads the servers from .kiro/settings/mcp.json: keep it with the current URL/token.
 		if (isKiro()) {

@@ -58,11 +58,11 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 					case 'wsClose':
 						const extension: string = message.outputFileName.split('.').pop().toLowerCase();
 						if (extension !== "prw" && extension !== "prx" && extension !== "tlpp") {
-							vscode.window.showErrorMessage("The output file must have one of the following extensions: .prw, .prx or .tlpp");
+							vscode.window.showErrorMessage(vscode.l10n.t("The output file must have one of the following extensions: .prw, .prx or .tlpp"));
 							return;
 						}
 						if (_debugEvent) {
-							vscode.window.showWarningMessage("This operation is not allowed during a debug.")
+							vscode.window.showWarningMessage(vscode.l10n.t("This operation is not allowed during a debug."))
 							return;
 						}
 						server = ServersConfig.getCurrentServer();
@@ -77,8 +77,8 @@ export default function showWSPage(context: vscode.ExtensionContext) {
 							const pathFile = message.path + "//" + message.outputFileName;
 
 							if (fs.existsSync(pathFile)) {
-								vscode.window.showWarningMessage("The file exists. Would like overwrite? ", { modal: true }, 'Yes', 'No').then(clicked => {
-									if (clicked === 'Yes') {
+								vscode.window.showWarningMessage(vscode.l10n.t("The file already exists. Do you want to overwrite it?"), { modal: true }, vscode.l10n.t("Yes"), vscode.l10n.t("No")).then(clicked => {
+									if (clicked === vscode.l10n.t("Yes")) {
 										fs.unlinkSync(pathFile);
 										createAndWriteOpen(pathFile, response.content);
 									}
@@ -112,8 +112,8 @@ function createAndWriteOpen(filePath, content) {
 		vscode.window.showErrorMessage(err.message);
 	});
 
-	vscode.window.showInformationMessage("The file was successfully created. Would like open? ", { modal: true }, 'Yes', 'No').then(clicked => {
-		if (clicked === 'Yes') {
+	vscode.window.showInformationMessage(vscode.l10n.t("The file was created successfully. Do you want to open it?"), { modal: true }, vscode.l10n.t("Yes"), vscode.l10n.t("No")).then(clicked => {
+		if (clicked === vscode.l10n.t("Yes")) {
 			vscode.window.showTextDocument(vscode.Uri.file(filePath));
 		}
 	});

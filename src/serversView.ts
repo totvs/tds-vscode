@@ -47,7 +47,7 @@ export class ServersExplorer {
 
     vscode.commands.registerCommand("totvs-developer-studio.add", () => {
       if (vscode.workspace.workspaceFolders === undefined) {
-        vscode.window.showErrorMessage("No folder opened.");
+        vscode.window.showErrorMessage(vscode.l10n.t("No folder opened."));
         return;
       }
 
@@ -141,7 +141,7 @@ export class ServersExplorer {
 
     vscode.commands.registerCommand("totvs-developer-studio.config", () => {
       if (vscode.workspace.workspaceFolders === undefined) {
-        vscode.window.showErrorMessage("No folder opened.");
+        vscode.window.showErrorMessage(vscode.l10n.t("No folder opened."));
         return;
       }
       const servers = ServersConfig.getServerConfigFile();
@@ -152,7 +152,7 @@ export class ServersExplorer {
 
     // check if there is an open folder
     if (vscode.workspace.workspaceFolders === undefined) {
-      vscode.window.showErrorMessage("No folder opened.");
+      vscode.window.showErrorMessage(vscode.l10n.t("No folder opened."));
       return;
     }
 
@@ -277,11 +277,11 @@ export class ServersExplorer {
         const cleared = await clearOIDCToken(serverItem, serverItem.address, environment, userName);
         if (cleared) {
           vscode.window.showInformationMessage(
-            vscode.l10n.t("Token Totvs Identity removido com sucesso para o servidor {0}.", serverItem.name)
+            vscode.l10n.t("Totvs Identity token successfully removed for server {0}.", serverItem.name)
           );
         } else {
           vscode.window.showWarningMessage(
-            vscode.l10n.t("Nenhum token Totvs Identity encontrado para o servidor {0}.", serverItem.name)
+            vscode.l10n.t("No Totvs Identity token found for server {0}.", serverItem.name)
           );
         }
       }

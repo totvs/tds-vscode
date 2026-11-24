@@ -488,9 +488,9 @@ export async function resourceFormatting(
   const targetResources: string[] = resources;
 
   if (targetResources.length === 0) {
-    vscode.window.showInformationMessage("Nenhum recurso localizado.");
+    vscode.window.showInformationMessage(vscode.l10n.t("No resource found."));
   } else {
-    vscode.window.showInformationMessage("Formatação em lote iniciada.");
+    vscode.window.showInformationMessage(vscode.l10n.t("Batch formatting started."));
 
     let lc = await vscode.window.withProgress(
       {
@@ -502,7 +502,7 @@ export async function resourceFormatting(
         let lineCount = 0;
 
         token.onCancellationRequested(() => {
-          vscode.window.showWarningMessage("Resource formatting canceled.");
+          vscode.window.showWarningMessage(vscode.l10n.t("Resource formatting canceled."));
         });
         const total = targetResources.length;
         const increment: number = 100 / total;
@@ -538,7 +538,7 @@ export async function resourceFormatting(
                     (value: boolean) => { },
                     (reason) => {
                       vscode.window.showErrorMessage(
-                        `Formatting error: ${reason}`
+                        vscode.l10n.t("Formatting error: {0}", String(reason))
                       );
                       console.log(reason);
                     }
@@ -558,7 +558,7 @@ export async function resourceFormatting(
       }
     );
     vscode.window.showInformationMessage(
-      `Formatting finished. ${lc} lines have been processed in ${targetResources.length} files.`
+      vscode.l10n.t("Formatting finished. {0} lines have been processed in {1} files.", String(lc), targetResources.length)
     );
   }
 }

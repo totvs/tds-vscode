@@ -79,7 +79,7 @@ export function openTemplateApplyView(
       setTemplatePath(args.fsPath, currentPanel);
     }
   } else {
-    vscode.window.showErrorMessage("There is no server connected.");
+    vscode.window.showErrorMessage(vscode.l10n.t("There is no server connected."));
   }
 }
 
@@ -163,7 +163,7 @@ function templateApply(templateFile) {
     },
     async (progress, token) => {
       token.onCancellationRequested(() => {
-        vscode.window.showInformationMessage("User canceled the operation");
+        vscode.window.showInformationMessage(vscode.l10n.t("User canceled the operation"));
       });
 
       progress.report({

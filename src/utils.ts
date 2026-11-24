@@ -238,7 +238,7 @@ export default class Utils {
               }
             } else {
               vscode.window.showWarningMessage(
-                "File/folder '" + file + "' was ignored."
+                vscode.l10n.t("File/folder '{0}' was ignored.", file)
               );
             }
           });
@@ -491,7 +491,7 @@ export class ServersConfig {
     if (serverUpdated) {
       persistServersInfo(servers);
     } else {
-      vscode.window.showWarningMessage("No server was found with provided id.");
+      vscode.window.showWarningMessage(vscode.l10n.t("No server was found with provided id."));
     }
   }
 
@@ -885,7 +885,7 @@ export class ServersConfig {
       } catch (error) {
         if (error.code !== 'FileNotFound') {
           vscode.window.showWarningMessage(
-            'Failed to process the .include file. See the log for more details.'
+            vscode.l10n.t("Failed to process the .include file. See the log for more details.")
           );
           console.error('Error accessing the .include file:', error);
         }

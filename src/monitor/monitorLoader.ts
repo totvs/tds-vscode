@@ -75,13 +75,15 @@ export function openWebMonitor() {
   if (webNavigatorOpenExternal) { // skip warning
     openWebMonitorAction(connectedServerItem);
   } else {
+    const yes: string = vscode.l10n.t("Yes");
+    const yesDontShow: string = vscode.l10n.t("Yes, do not show this again");
     vscode.window.showWarningMessage(
-      "This will redirect the WebMonitor to open in your default browser. Continue?", { modal: true }, "Yes", "Yes, do not show this again"
+      vscode.l10n.t("This will redirect the WebMonitor to open in your default browser. Continue?"), { modal: true }, yes, yesDontShow
     ).then((answer) => {
-      if (answer === "Yes, do not show this again") {
+      if (answer === yesDontShow) {
         cfg.update("web.open.external", true); // vscode.ConfigurationTarget.Global);
       }
-      if (answer === "Yes" || answer === "Yes, do not show this again") {
+      if (answer === yes || answer === yesDontShow) {
         openWebMonitorAction(connectedServerItem);
       }
     });
@@ -232,7 +234,7 @@ export class MonitorLoader {
       monitorItem.name += "_monitor";
 
       vscode.window.setStatusBarMessage(
-        `Conectando monitor ao servidor [${serverItem.name}]`,
+        vscode.l10n.t("Connecting monitor to server [{0}]", serverItem.name),
         sendReconnectRequest(
           monitorItem,
           serverItem.token,

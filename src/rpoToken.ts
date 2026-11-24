@@ -151,7 +151,7 @@ export function rpoTokenInputBox() {
       if (rpoTokenString) {
         saveRpoTokenString(rpoTokenString.trim()).then(
           () => {
-            vscode.window.showInformationMessage('RPO token saved');
+            vscode.window.showInformationMessage(vscode.l10n.t("RPO token saved"));
           },
           (error: string) => {
             vscode.window.showErrorMessage(error);

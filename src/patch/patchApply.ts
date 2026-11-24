@@ -222,7 +222,7 @@ export async function patchApply(
 
                 case "patchValidateFile":
                   if (message.file) {
-                    vscode.window.showInformationMessage("PatchValidate");
+                    vscode.window.showInformationMessage(vscode.l10n.t("Validating patch..."));
                     const validateArgs = {
                       fsPath: message.file,
                     };

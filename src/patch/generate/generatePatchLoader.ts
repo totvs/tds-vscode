@@ -264,9 +264,9 @@ class GeneratePatchLoader {
       },
       async (progress, token) => {
         token.onCancellationRequested(() => {
-          vscode.window.showInformationMessage('User canceled the operation');
+          vscode.window.showInformationMessage(vscode.l10n.t("User canceled the operation"));
         });
-        progress.report({ increment: 0, message: 'Inicializando...' });
+        progress.report({ increment: 0, message: vscode.l10n.t("Initializing...") });
 
         sendPatchGenerateMessage(this.currentServer, rpoMaster,
           targetFolder, 3, targetFile, []).then((result) => {

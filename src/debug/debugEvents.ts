@@ -124,7 +124,7 @@ export function processDebugCustomEvent(event: DebugSessionCustomEvent) {
     } else if (event.event === "TDA/showSourcesView") {
       processShowSourcesView(event, debugConsole);
     } else {
-      window.showWarningMessage("Evento desconhecido: " + event.event);
+      window.showWarningMessage(l10n.t("Unknown event: {0}", event.event));
     }
   }
 }

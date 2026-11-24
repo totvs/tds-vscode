@@ -28,7 +28,7 @@
         "files.eol": "\r\n",
         "editor.formatOnSaveMode": "file",
         "editor.semanticHighlighting.enabled": true,
-    "editor.foldingStrategy": "auto",
+        "editor.foldingStrategy": "auto",
         "editor.folding": true
     },
     "advpl.formatter": {
@@ -54,5 +54,11 @@
     "totvsLanguageServer.mcp.enable": true,
     "totvsLanguageServer.mcp.log": "verbose",
     "totvsLanguageServer.mcp.logFile": "mcp.log",
-    "totvsLanguageServer.linter.callTreeSitter": true
+    "totvsLanguageServer.linter.callTreeSitter": true,
+    "_files.exclude": {
+        "**/.tds": true
+    },
+    "search.exclude": {
+        "**/.tds": true
+    }
 }

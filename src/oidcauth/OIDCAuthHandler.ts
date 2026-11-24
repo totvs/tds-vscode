@@ -191,7 +191,7 @@ export async function OIDCLogin(
         clearTimeout(timeoutHandle!);
         eventDisposable!.dispose();
         //logger.appendLine('Usuário cancelou a abertura do navegador externo.');
-        vscode.window.showWarningMessage('Autenticação cancelada: o navegador externo não foi aberto.');
+        vscode.window.showWarningMessage(vscode.l10n.t("Authentication canceled: the external browser was not opened."));
         return undefined;
     }
 
@@ -201,7 +201,7 @@ export async function OIDCLogin(
 
     if (!authHash) {
         logger.appendLine('Timeout: a autenticação OIDC não foi concluída no tempo esperado.');
-        vscode.window.showWarningMessage('Timeout: autenticação OIDC não concluída no tempo esperado.');
+        vscode.window.showWarningMessage(vscode.l10n.t("Timeout: the OIDC authentication was not completed in the expected time."));
         return undefined;
     }
 
@@ -224,10 +224,10 @@ export async function OIDCLogin(
 
                 //logger.appendLine(`Token OIDC armazenado para o usuário: ${username}`);
             }
-            vscode.window.showInformationMessage(`Autenticação OIDC concluída com sucesso.`);
+            vscode.window.showInformationMessage(vscode.l10n.t("OIDC authentication completed successfully."));
         } else {
             logger.appendLine(`Validação do token OIDC falhou no servidor.`);
-            vscode.window.showWarningMessage('Falha na validação do token OIDC pelo servidor.');
+            vscode.window.showWarningMessage(vscode.l10n.t("The server failed to validate the OIDC token."));
         }
         return response;
     }
@@ -259,7 +259,7 @@ export function activate(context: vscode.ExtensionContext) {
             sendLogMsg(`Comando de login por OIDC chamado. URL: ${url}`);
 
             if (!url || url.trim().length === 0) {
-                vscode.window.showWarningMessage('O servidor informou que deve realizar autenicação com Totvs Identity mas retornou uma url vazia.');
+                vscode.window.showWarningMessage(vscode.l10n.t("The server requires Totvs Identity authentication but returned an empty URL."));
                 return
                 //url = await vscode.window.showInputBox({
                 //        prompt: 'Informe a URL do servidor de autenticação', // O texto que explica o que você quer
@@ -299,7 +299,7 @@ export function activate(context: vscode.ExtensionContext) {
         } catch (error) {
             //logger.error(`Falha crítica: ${error}`);
             logger.appendLine(`Falha crítica: ${error}`);
-            vscode.window.showErrorMessage("Falha ao tentar fazer login.");
+            vscode.window.showErrorMessage(vscode.l10n.t("Failed to log in."));
         }
     });
 

@@ -145,7 +145,7 @@ export function registerMcpServer(context: vscode.ExtensionContext): vscode.Disp
 		mcpLog.debug("command totvs-developer-studio.mcp.start");
 		try {
 			if (server.isRunning) {
-				vscode.window.showInformationMessage(`TOTVS MCP já está em execução em ${server.serverInfo?.url}`);
+				vscode.window.showInformationMessage(vscode.l10n.t("TOTVS MCP is already running at {0}", server.serverInfo?.url ?? ""));
 				return;
 			}
 			// A notificação de início é exibida pelo próprio servidor ao iniciar.
@@ -153,7 +153,7 @@ export function registerMcpServer(context: vscode.ExtensionContext): vscode.Disp
 		} catch (e) {
 			mcpLog.error(`Could not start the MCP server: ${e instanceof Error ? e.message : String(e)}`);
 			mcpLog.debug("command mcp.start failed", errorText(e));
-			vscode.window.showErrorMessage(`Falha ao iniciar o servidor MCP: ${e instanceof Error ? e.message : e}`);
+			vscode.window.showErrorMessage(vscode.l10n.t("Could not start the MCP server: {0}", e instanceof Error ? e.message : String(e)));
 		}
 	});
 
@@ -161,7 +161,7 @@ export function registerMcpServer(context: vscode.ExtensionContext): vscode.Disp
 		mcpLog.message("Command 'Stop MCP server' executed");
 		mcpLog.debug("command totvs-developer-studio.mcp.stop");
 		await server.stop();
-		vscode.window.showInformationMessage("TOTVS MCP parado.");
+		vscode.window.showInformationMessage(vscode.l10n.t("TOTVS MCP stopped."));
 	});
 
 	const showLog = vscode.commands.registerCommand("totvs-developer-studio.mcp.showLog", () => mcpLog.show(false));

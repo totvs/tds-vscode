@@ -986,8 +986,9 @@ const IA_CONTEXT_STATE_KEYS: string[] = [
 
 // Comando `totvsLanguageServer.iacontext.reset`: após confirmação, remove o estado das
 // instruções e da skill de IA, os arquivos de steering e da skill do Kiro e a entrada
-// `totvs-mcp` de .kiro/settings/mcp.json. Em seguida refaz a verificação na hora (mesmo
-// fluxo da inicialização). As instruções do Copilot (.github/instructions) são mantidas.
+// `totvs-mcp` de .kiro/settings/mcp.json. No VS Code, remove as instruções do Copilot
+// (.github/instructions/tds-vscode-*.instructions.md). Em seguida refaz a verificação na
+// hora (mesmo fluxo da inicialização).
 async function resetIAContextState(context: vscode.ExtensionContext): Promise<void> {
   const workspaceFolders = vscode.workspace.workspaceFolders;
   if (!workspaceFolders) return;
@@ -996,7 +997,7 @@ async function resetIAContextState(context: vscode.ExtensionContext): Promise<vo
   const yes: string = vscode.l10n.t("Yes");
   const detail: string = isKiro
     ? vscode.l10n.t("Removes .kiro/steering/advpl-tlpp-ls-first-*.md, .kiro/skills/totvs-mcp-first/SKILL.md and the totvs-mcp entry of .kiro/settings/mcp.json, then asks again.")
-    : vscode.l10n.t("The AI instructions will be checked again.");
+    : vscode.l10n.t("Removes .github/instructions/tds-vscode-*.instructions.md, then asks again.");
   const selection: string | undefined = await vscode.window.showWarningMessage(
     vscode.l10n.t("Reset the AI context of this workspace?"),
     { modal: true, detail: detail },
@@ -1026,6 +1027,11 @@ async function resetIAContextState(context: vscode.ExtensionContext): Promise<vo
       }
     } catch (err) {
       console.error("Erro ao remover a skill:", err);
+    }
+  } else {
+    const instructionsUri: vscode.Uri = vscode.Uri.joinPath(workspaceFolders[0].uri, ".github", "instructions");
+    if (fse.existsSync(instructionsUri.fsPath)) {
+      await removeInstructionsOldVersions(instructionsUri);
     }
   }
 

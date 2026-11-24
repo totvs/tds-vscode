@@ -107,7 +107,7 @@ export function patchValidates(context: vscode.ExtensionContext, args: any) {
       }
     }
   } else {
-    vscode.window.showErrorMessage("There is no server connected.");
+    vscode.window.showErrorMessage(vscode.l10n.t("There is no server connected."));
   }
 }
 
@@ -147,7 +147,7 @@ function exportPatchValidate() {
 function sendPatchValidate(patchFile, server, currentPanel): Promise<any> {
   if (_debugEvent) {
     vscode.window.showWarningMessage(
-      "This operation is not allowed during a debug."
+      vscode.l10n.t("This operation is not allowed during a debug.")
     );
     return Promise.resolve();
   }
@@ -177,7 +177,7 @@ function sendPatchValidate(patchFile, server, currentPanel): Promise<any> {
           });
         } else {
           vscode.window.showInformationMessage(
-            "No validation issues detected."
+            vscode.l10n.t("No validation issues detected.")
           );
         }
       },

@@ -138,7 +138,7 @@ function initializePage(context: vscode.ExtensionContext) {
               validateKey(currentPanel, message, false);
             } else {
               vscode.window.showErrorMessage(
-                "All parameters are required for valid key"
+                vscode.l10n.t("All parameters are required for valid key")
               );
             }
             break;
@@ -182,7 +182,7 @@ function getId(currentPanel) {
           id: response.id,
         });
       } else {
-        vscode.window.showErrorMessage("Couldn't get [Machine ID].");
+        vscode.window.showErrorMessage(vscode.l10n.t("Couldn't get [Machine ID]."));
       }
     },
     (err: ResponseError<object>) => {
@@ -256,7 +256,7 @@ function validateKey(currentPanel, message, close: boolean) {
         }
       );
   } else {
-    vscode.window.showErrorMessage("Empty key");
+    vscode.window.showErrorMessage(vscode.l10n.t("Empty key"));
   }
 }
 

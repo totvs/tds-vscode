@@ -19,7 +19,7 @@ export const documentFormatting = async (resources: string[]) => {
   );
 
   if (resourceList.length === 0) {
-    vscode.window.showInformationMessage('Nenhum recurso localizado.');
+    vscode.window.showInformationMessage(vscode.l10n.t("No resource found."));
     return;
   }
 
@@ -31,7 +31,7 @@ export const documentFormatting = async (resources: string[]) => {
     },
     async (progress, token) => {
       token.onCancellationRequested(() => {
-        vscode.window.showWarningMessage('Resource formatting canceled.');
+        vscode.window.showWarningMessage(vscode.l10n.t("Resource formatting canceled."));
       });
 
       const total: number = resourceList.length;
@@ -79,14 +79,14 @@ export const documentFormatting = async (resources: string[]) => {
           }
         } catch (reason) {
           vscode.window.showErrorMessage(
-            `Formatting error (${uri.toString(false)}): ${reason}`
+            vscode.l10n.t("Formatting error ({0}): {1}", uri.toString(false), String(reason))
           );
           console.log(reason);
         }
       }
 
       vscode.window.showInformationMessage(
-        `Formatting finished. ${formatted} of ${total} files have been processed.`
+        vscode.l10n.t("Formatting finished. {0} of {1} files have been processed.", formatted, total)
       );
     }
   );

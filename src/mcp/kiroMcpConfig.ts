@@ -104,15 +104,16 @@ async function askAutoApprove(): Promise<void> {
 	}
 	askPending = true;
 	try {
-		const all: string = "Liberar todas";
-		const ask: string = "Perguntar a cada uso";
+		const all: string = vscode.l10n.t("Allow all");
+		const ask: string = vscode.l10n.t("Ask on each use");
 		const answer: string | undefined = await vscode.window.showWarningMessage(
-			"Deseja liberar todas as ferramentas do TOTVS MCP no Kiro, sem pedir confirmação a cada uso?",
+			vscode.l10n.t("Do you want to allow all TOTVS MCP tools in Kiro, without asking for confirmation on each use?"),
 			{
 				modal: true,
-				detail:
-					"Isso inclui tds_apply_patch (altera o RPO) e tds_fix (altera arquivos). " +
-					"Se você escolher 'Perguntar a cada uso', o Kiro pede confirmação antes de executar cada ferramenta."
+				detail: vscode.l10n.t(
+					"This includes tds_apply_patch (changes the RPO) and tds_fix (changes files). If you choose '{0}', Kiro asks for confirmation before running each tool.",
+					ask
+				)
 			},
 			all,
 			ask

@@ -195,7 +195,7 @@
     "customEditors": [
       {
         "viewType": "tds.patchView",
-        "displayName": "Patch file",
+        "displayName": "%tds.package.customEditor.patch%",
         "selector": [
           {
             "filenamePattern": "*.ptm"
@@ -206,7 +206,7 @@
     "colors": [
       {
         "id": "terminal.ansiBlack",
-        "description": "Cor de texto apresentado no console de depuração.",
+        "description": "%tds.package.colors.debugConsole.text%",
         "defaults": {
           "dark": "#CCCCCC",
           "light": "#555555",
@@ -215,7 +215,7 @@
       },
       {
         "id": "terminal.ansiGreen",
-        "description": "Cor da identificação do nível de mensagem 'Informação'.",
+        "description": "%tds.package.colors.debugConsole.info%",
         "defaults": {
           "dark": "#5aa85a",
           "light": "#5aa85a",
@@ -224,7 +224,7 @@
       },
       {
         "id": "terminal.ansiYellow",
-        "description": "Cor da identificação do nível de mensagem 'Aviso'.",
+        "description": "%tds.package.colors.debugConsole.warning%",
         "defaults": {
           "dark": "#d8d53c",
           "light": "#d8d53c",
@@ -233,7 +233,7 @@
       },
       {
         "id": "terminal.ansiRed",
-        "description": "Cor da identificação do nível de mensagem 'Erro'.",
+        "description": "%tds.package.colors.debugConsole.error%",
         "defaults": {
           "dark": "#eb1313",
           "light": "#eb1313",
@@ -242,7 +242,7 @@
       },
       {
         "id": "terminal.ansiCyan",
-        "description": "Cor da identificação da hora do evento.",
+        "description": "%tds.package.colors.debugConsole.time%",
         "defaults": {
           "dark": "#11c9cf",
           "light": "#11c9cf",
@@ -429,26 +429,26 @@
           "type": "boolean",
           "default": true,
           "tags": ["experimental"],
-          "description": "Habilita o servidor MCP embutido da extensão TDS-VSCode (somente loopback, com token)."
+          "description": "%tds.package.mcp.enable%"
         },
         "totvsLanguageServer.mcp.log": {
           "scope": "window",
           "type": "string",
           "enum": ["off", "message", "verbose", "debug"],
           "enumDescriptions": [
-            "Registra somente a inicialização e a finalização do servidor MCP.",
-            "Registra o cabeçalho de cada chamada (sem os dados de envio/retorno).",
-            "Registra tudo, incluindo argumentos, resultados e corpo das requisições.",
-            "Registra tudo do nível 'verbose' e também as mensagens técnicas (nomes de métodos e funções internas)."
+            "%tds.package.mcp.log.off%",
+            "%tds.package.mcp.log.message%",
+            "%tds.package.mcp.log.verbose%",
+            "%tds.package.mcp.log.debug%"
           ],
           "default": "message",
-          "description": "Nível de log do servidor MCP (canal de saída 'TOTVS MCP')."
+          "description": "%tds.package.mcp.log%"
         },
         "totvsLanguageServer.mcp.logFile": {
           "scope": "window",
           "type": "string",
           "default": "",
-          "description": "Arquivo para gravar o log do servidor MCP, sempre no nível 'verbose'. Se informar apenas o nome, usa a pasta raiz do projeto. Vazio desativa."
+          "description": "%tds.package.mcp.logFile%"
         },
         "totvsLanguageServer.launch.args": {
           "type": "array",
@@ -707,9 +707,9 @@
             "disable"
           ],
           "enumDescriptions": [
-            "Applies to all files on the workspace.",
-            "Applies only to files being edited.",
-            "Disable the process."
+            "%tds.package.editor.linter.behavior.enable%",
+            "%tds.package.editor.linter.behavior.enableOnlyOpenFiles%",
+            "%tds.package.editor.linter.behavior.disable%"
           ],
           "default": "enableOnlyOpenFiles",
           "description": "%tds.package.editor.linter%"
@@ -719,7 +719,7 @@
           "type": "string",
           "default": "",
           "description": "",
-          "markdownDeprecationMessage": "(Don't edit. It can be overwritten.)"
+          "markdownDeprecationMessage": "%tds.package.dontEdit%"
         },
         "totvsLanguageServer.linter.callTreeSitter": {
           "scope": "window",
@@ -728,7 +728,7 @@
           "tags": [
             "experimental"
           ],
-          "description": "Enable call to Tree-sitter for linter analysis. EXPERIMENTAL."
+          "description": "%tds.package.linter.callTreeSitter%"
         },
         "totvsLanguageServer.editor.index.cache": {
           "scope": "window",
@@ -758,14 +758,14 @@
         },
         "4gl.formatter": {
           "type": "object",
-          "description": "Formatação 4GL",
+          "description": "%tds.package.formatter.4gl%",
           "properties": {
             "maxConsecutiveBlankLines": {
               "type": "number",
               "default": 0,
               "minimum": 0,
               "maximum": 5,
-              "description": "Máximo de linhas em branco em sequência. Valores aceitos: de 0 (ignora) a 5."
+              "description": "%tds.package.formatter.maxConsecutiveBlankLines%"
             },
             "maxLineLength": {
               "type": "number",
@@ -773,14 +773,14 @@
               "oneOf": [
                 {
                   "const": 0,
-                  "description": "0 ignora o limite de largura de linha."
+                  "description": "%tds.package.formatter.maxLineLength.zero%"
                 },
                 {
                   "minimum": 30,
                   "maximum": 120
                 }
               ],
-              "description": "Largura máxima de linha para aplicar quebra automática. Valores válidos: 0 (desabilita) ou de 30 a 120."
+              "description": "%tds.package.formatter.maxLineLength%"
             },
             "wrapParameters": {
               "type": [
@@ -793,7 +793,7 @@
                 false
               ],
               "default": false,
-              "description": "Controla quebra de linha de parâmetros."
+              "description": "%tds.package.formatter.wrapParameters%"
             },
             "wrapArguments": {
               "type": [
@@ -806,7 +806,7 @@
                 false
               ],
               "default": false,
-              "description": "Controla quebra de linha de argumentos."
+              "description": "%tds.package.formatter.wrapArguments%"
             },
             "keywordsCase": {
               "type": "string",
@@ -817,13 +817,13 @@
                 "ignore"
               ],
               "enumDescriptions": [
-                "Em maiúsculas",
-                "Em minúsculas",
-                "Em maiúsculas a primeira letra, demais em minúsculas",
-                "Manter original"
+                "%tds.package.formatter.case.upper%",
+                "%tds.package.formatter.case.lower%",
+                "%tds.package.formatter.case.capitalize%",
+                "%tds.package.formatter.keepOriginal%"
               ],
               "default": "upper",
-              "description": "Coloca as palavras chaves da linguagem na caixa indicada"
+              "description": "%tds.package.formatter.keywordsCase%"
             },
             "stringStyle": {
               "type": "string",
@@ -833,80 +833,80 @@
                 "ignore"
               ],
               "enumDescriptions": [
-                "Aspas duplas",
-                "Aspas Simples",
-                "Manter original"
+                "%tds.package.formatter.quotes.double%",
+                "%tds.package.formatter.quotes.single%",
+                "%tds.package.formatter.keepOriginal%"
               ],
               "default": "ignore",
-              "description": "Indica como as _strings_ devem ser informadas."
+              "description": "%tds.package.formatter.stringStyle%"
             },
             "operatorSpacing": {
               "type": "boolean",
               "default": false,
-              "description": "Normaliza espaçamento em operadores."
+              "description": "%tds.package.formatter.operatorSpacing%"
             },
             "spaceAfterComma": {
               "type": "boolean",
               "default": false,
-              "description": "Garante espaço após vírgulas."
+              "description": "%tds.package.formatter.spaceAfterComma%"
             },
             "spaceInsideParentheses": {
               "type": "boolean",
               "default": false,
-              "description": "Controla espaços dentro de parênteses."
+              "description": "%tds.package.formatter.spaceInsideParentheses%"
             },
             "convertSemiGraphicsToChar": {
               "type": "boolean",
               "default": false,
-              "description": "Converte caracteres semi-gráficos (CP437) em caracteres ASCII equivalentes durante a formatação."
+              "description": "%tds.package.formatter.convertSemiGraphicsToChar%"
             },
             "alignAssignments": {
               "type": "boolean",
               "default": false,
-              "description": "Alinha operadores de atribuição em blocos."
+              "description": "%tds.package.formatter.alignAssignments%"
             },
             "normalizeCalls": {
               "type": "boolean",
               "default": false,
-              "description": "Normaliza chamadas removendo espaço entre identificador e parêntese de abertura."
+              "description": "%tds.package.formatter.normalizeCalls%"
             },
             "preserveSingleLineBlocks": {
               "type": "boolean",
               "default": false,
-              "description": "Preserva blocos de uma única linha."
+              "description": "%tds.package.formatter.preserveSingleLineBlocks%"
             },
             "trimFinalNewlines": {
               "type": "boolean",
               "default": true,
-              "description": "Remove linhas em branco no final do arquivo."
+              "description": "%tds.package.formatter.trimFinalNewlines%"
             },
             "blankLinesBetweenTopLevelDeclarations": {
               "type": "number",
               "default": 1,
-              "description": "Quantidade de linhas em branco entre declarações de topo."
+              "description": "%tds.package.formatter.blankLinesBetweenTopLevelDeclarations%"
             },
             "commentReflow": {
               "type": "boolean",
               "default": false,
-              "description": "Permite reorganizar comentários longos."
+              "description": "%tds.package.formatter.commentReflow%"
             },
             "trimTrailingWhitespace": {
               "type": "boolean",
               "default": true,
-              "description": "Remove espaços em branco no final da linha."
+              "description": "%tds.package.formatter.trimTrailingWhitespace%"
             }
           }
         },
         "advpl.formatter": {
           "type": "object",
-          "description": "Formatação AdvPL",
+          "description": "%tds.package.formatter.advpl%",
           "properties": {
             "maxConsecutiveBlankLines": {
               "type": "number",
               "default": 0,
               "minimum": 0,
               "maximum": 5,
-              "description": "Máximo de linhas em branco em sequência. Valores aceitos: de 0 (ignora) a 5."
+              "description": "%tds.package.formatter.maxConsecutiveBlankLines%"
             },
             "maxLineLength": {
               "type": "number",
@@ -914,14 +914,14 @@
               "oneOf": [
                 {
                   "const": 0,
-                  "description": "0 ignora o limite de largura de linha."
+                  "description": "%tds.package.formatter.maxLineLength.zero%"
                 },
                 {
                   "minimum": 30,
                   "maximum": 120
                 }
               ],
-              "description": "Largura máxima de linha para aplicar quebra automática. Valores aceitos: 0 (ignorar) ou de 30 a 120."
+              "description": "%tds.package.formatter.maxLineLength%"
             },
             "wrapParameters": {
               "type": [
@@ -934,7 +934,7 @@
                 false
               ],
               "default": false,
-              "description": "Controla quebra de linha de parâmetros."
+              "description": "%tds.package.formatter.wrapParameters%"
             },
             "wrapArguments": {
               "type": [
@@ -947,7 +947,7 @@
                 false
               ],
               "default": false,
-              "description": "Controla quebra de linha de argumentos."
+              "description": "%tds.package.formatter.wrapArguments%"
             },
             "keywordsCase": {
               "type": "string",
@@ -958,13 +958,13 @@
                 "ignore"
               ],
               "enumDescriptions": [
-                "Em maiúsculas",
-                "Em minúsculas",
-                "Em maiúsculas a primeira letra, demais em minúsculas",
-                "Manter original"
+                "%tds.package.formatter.case.upper%",
+                "%tds.package.formatter.case.lower%",
+                "%tds.package.formatter.case.capitalize%",
+                "%tds.package.formatter.keepOriginal%"
               ],
               "default": "ignore",
-              "description": "Coloca as palavras chaves da linguagem na caixa indicada"
+              "description": "%tds.package.formatter.keywordsCase%"
             },
             "stringStyle": {
               "type": "string",
@@ -974,67 +974,67 @@
                 "ignore"
               ],
               "enumDescriptions": [
-                "Aspas duplas",
-                "Aspas Simples",
-                "Manter original"
+                "%tds.package.formatter.quotes.double%",
+                "%tds.package.formatter.quotes.single%",
+                "%tds.package.formatter.keepOriginal%"
               ],
               "default": "ignore",
-              "description": "Indica como as _strings_ devem ser informadas."
+              "description": "%tds.package.formatter.stringStyle%"
             },
             "operatorSpacing": {
               "type": "boolean",
               "default": false,
-              "description": "Normaliza espaçamento em operadores."
+              "description": "%tds.package.formatter.operatorSpacing%"
             },
             "spaceAfterComma": {
               "type": "boolean",
               "default": false,
-              "description": "Garante espaço após vírgulas."
+              "description": "%tds.package.formatter.spaceAfterComma%"
             },
             "spaceInsideParentheses": {
               "type": "boolean",
               "default": false,
-              "description": "Controla espaços dentro de parênteses."
+              "description": "%tds.package.formatter.spaceInsideParentheses%"
             },
             "convertSemiGraphicsToChar": {
               "type": "boolean",
               "default": false,
-              "description": "Converte caracteres semi-gráficos (CP437) em caracteres ASCII equivalentes durante a formatação."
+              "description": "%tds.package.formatter.convertSemiGraphicsToChar%"
             },
             "alignAssignments": {
               "type": "boolean",
               "default": false,
-              "description": "Alinha operadores de atribuição em blocos."
+              "description": "%tds.package.formatter.alignAssignments%"
             },
             "normalizeCalls": {
               "type": "boolean",
               "default": false,
-              "description": "Normaliza chamadas removendo espaço entre identificador e parêntese de abertura."
+              "description": "%tds.package.formatter.normalizeCalls%"
             },
             "preserveSingleLineBlocks": {
               "type": "boolean",
               "default": false,
-              "description": "Preserva blocos de uma única linha."
+              "description": "%tds.package.formatter.preserveSingleLineBlocks%"
             },
             "trimFinalNewlines": {
               "type": "boolean",
               "default": true,
-              "description": "Remove linhas em branco no final do arquivo."
+              "description": "%tds.package.formatter.trimFinalNewlines%"
             },
             "blankLinesBetweenTopLevelDeclarations": {
               "type": "number",
               "default": 1,
-              "description": "Quantidade de linhas em branco entre declarações de topo."
+              "description": "%tds.package.formatter.blankLinesBetweenTopLevelDeclarations%"
             },
             "commentReflow": {
               "type": "boolean",
               "default": false,
-              "description": "Permite reorganizar comentários longos."
+              "description": "%tds.package.formatter.commentReflow%"
             },
             "trimTrailingWhitespace": {
               "type": "boolean",
               "default": true,
-              "description": "Remove espaços em branco no final da linha."
+              "description": "%tds.package.formatter.trimTrailingWhitespace%"
             }
           }
         }
@@ -1043,17 +1043,17 @@
     "commands": [
       {
         "command": "totvs-developer-studio.mcp.start",
-        "title": "Iniciar servidor MCP",
+        "title": "%tds.package.mcp.start%",
         "category": "TOTVS"
       },
       {
         "command": "totvs-developer-studio.mcp.showLog",
-        "title": "Mostrar log do servidor MCP",
+        "title": "%tds.package.mcp.showLog%",
         "category": "TOTVS"
       },
       {
         "command": "totvs-developer-studio.mcp.stop",
-        "title": "Parar servidor MCP",
+        "title": "%tds.package.mcp.stop%",
         "category": "TOTVS"
       },
       {
@@ -1082,8 +1082,8 @@
       },
       {
         "command": "totvs-developer-studio.clear-oidc-token",
-        "title": "Limpar Token Totvs Identity",
-        "description": "Remove o token OIDC armazenado para o servidor.",
+        "title": "%tds.package.oidc.clearToken%",
+        "description": "%tds.package.oidc.clearToken.description%",
         "category": "TOTVS"
       },
       {
@@ -1093,7 +1093,7 @@
       {
         "command": "totvs-developer-studio.inspectorFunctions",
         "title": "%tds.package.inspector.function.title%",
-        "description": "tds.package.inspector.function.description",
+        "description": "%tds.package.inspector.function.description%",
         "category": "TOTVS"
       },
       {
@@ -1187,8 +1187,8 @@
       },
       {
         "command": "totvs-developer-studio.getProgramArguments",
-        "title": "Argumentos",
-        "description": "Argumentos a serem repassados ao programa que será executado"
+        "title": "%tds.package.getProgramArguments%",
+        "description": "%tds.package.getProgramArguments.description%"
       },
       {
         "command": "totvs-developer-studio.connect",
@@ -1404,7 +1404,7 @@
       },
       {
         "command": "totvs-developer-studio.run.formatter",
-        "title": "Format",
+        "title": "%tds.package.run.formatter%",
         "description": "%tds.package.apply.formatting%",
         "category": "TOTVS",
         "icon": {
@@ -1572,7 +1572,7 @@
               },
               "programArguments": {
                 "type": "array",
-                "description": "Arguments that will be passed to the called program/function (through key -A)",
+                "description": "%tds.package.debug.programArguments%",
                 "default": "${command:AskForProgramArguments}"
               },
               "extraParameters": {
@@ -1616,7 +1616,7 @@
         "configurationSnippets": [
           {
             "label": "%tds.package.totvs_language_debug%",
-            "description": "Configuration for debugging a user selected AdvPL/4GL file using _SmartClient_.",
+            "description": "%tds.package.debug.snippet.selectedFile%",
             "body": {
               "type": "totvs_language_debug",
               "request": "launch",
@@ -1633,7 +1633,7 @@
           },
           {
             "label": "%tds.package.totvs_language_debug_with_arguments%",
-            "description": "Configuration for debugging a fixed AdvPL/4GL file and user arguments using _SmartClient_.",
+            "description": "%tds.package.debug.snippet.fixedFile%",
             "body": {
               "type": "totvs_language_debug",
               "request": "launch",
@@ -1669,7 +1669,7 @@
               },
               "tdsReplayFile": {
                 "type": "string",
-                "description": "The TDS Replay File recorder by the server.",
+                "description": "%tds.package.tdsreplay.file%",
                 "default": ""
               },
               "ignoreSourcesNotFound": {
@@ -1679,22 +1679,22 @@
               },
               "password": {
                 "type": "string",
-                "description": "The password of the TDS Replay File",
+                "description": "%tds.package.tdsreplay.password%",
                 "default": ""
               },
               "includeSources": {
                 "type": "string",
-                "description": "The sources that must be included when importing the information. WildCards (*) can be used.",
+                "description": "%tds.package.tdsreplay.includeSources%",
                 "default": "*"
               },
               "excludeSources": {
                 "type": "string",
-                "description": "The sources that must be excluded when importing the information. WildCards (*) can be used.",
+                "description": "%tds.package.tdsreplay.excludeSources%",
                 "default": ""
               },
               "selectedSources": {
                 "type": "array",
-                "description": "Source filter to be applied to the timeline.",
+                "description": "%tds.package.tdsreplay.selectedSources%",
                 "default": [],
                 "item": "string"
               },
@@ -1737,7 +1737,7 @@
         "configurationSnippets": [
           {
             "label": "%tds.package.tdsreplay.debug%",
-            "description": "A new configuration for debugging a TDS Replay file.",
+            "description": "%tds.package.tdsreplay.snippet%",
             "body": {
               "type": "totvs_tdsreplay_debug",
               "request": "launch",
@@ -1775,7 +1775,7 @@
                 "type": "string",
                 "description": "%tds.package.properties.smartclientUrl.description%",
                 "default": "http://localhost:8080/webapp/",
-                "deprecationMessage": "Enter only under guidance. Upon not informed, the URL will be assembled using the current server connection parameters."
+                "deprecationMessage": "%tds.package.debug.smartclientUrl.deprecation%"
               },
               "cwb": {
                 "type": "string",
@@ -1851,12 +1851,12 @@
               },
               "ignoreFiles": {
                 "type": "boolean",
-                "description": "Make the debugger ignore break events in files not found in WorkSpace",
+                "description": "%tds.package.debug.ignoreFiles%",
                 "default": false
               },
               "programArguments": {
                 "type": "array",
-                "description": "Arguments that will be passed to the called program / function (key -A)",
+                "description": "%tds.package.debug.programArguments%",
                 "default": [
                   "${command:AskForProgramArguments}"
                 ]

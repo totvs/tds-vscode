@@ -16,7 +16,7 @@ export function checkWhatsNew(context: vscode.ExtensionContext): void {
   const lastVersion = context.globalState.get<string>(LAST_VERSION_KEY)
 
   if (lastVersion === currentVersion) {
-    vscode.window.showInformationMessage('"TDS-VSCode" is ready.');
+    vscode.window.showInformationMessage(vscode.l10n.t('"TDS-VSCode" is ready.'));
     return
   }
 
@@ -26,7 +26,7 @@ export function checkWhatsNew(context: vscode.ExtensionContext): void {
   // Don't show on first install (no previous version stored)
   if (!lastVersion) {
     languageClient?.info(`First install detected (v${currentVersion}). Skipping What's New.`)
-    vscode.window.showInformationMessage('"TDS-VSCode" is ready.');
+    vscode.window.showInformationMessage(vscode.l10n.t('"TDS-VSCode" is ready.'));
     return
   }
 
