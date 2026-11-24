@@ -61,7 +61,7 @@ Acessíveis pela paleta de comandos (`Ctrl+Shift+P`):
 | `TOTVS: Iniciar servidor MCP`        | Inicia o servidor, se ainda não estiver ativo. Exibe a notificação com a URL. |
 | `TOTVS: Parar servidor MCP`          | Finaliza o servidor.                                                          |
 | `TOTVS: Mostrar log do servidor MCP` | Abre o canal de saída `**TOTVS MCP**`.                                        |
-| `TOTVS: Reiniciar estado do contexto de IA (instruções e skill)` | Apaga o contexto de IA da área de trabalho (no Kiro: _steering_, _skill_ e a entrada `totvs-mcp` do `mcp.json`) e refaz as perguntas. Veja [Contexto de IA](#contexto-de-ia-instruções-e-skill). |
+| `TOTVS: Reiniciar estado do contexto de IA (instruções e skill)` | Apaga o contexto de IA da área de trabalho (no VS Code: instruções do Copilot; no Kiro: _steering_, _skill_ e a entrada `totvs-mcp` do `mcp.json`) e refaz as perguntas. Veja [Contexto de IA](#contexto-de-ia-instruções-e-skill). |
 
 Normalmente os comandos de iniciar e parar não são necessários: o servidor é iniciado automaticamente, pois a configuração `mcp.enable` vem ligada.
 
@@ -358,21 +358,18 @@ Identificador: `totvsLanguageServer.iacontext.reset`.
 O comando pede confirmação e, sem reiniciar o editor:
 
 1. Apaga o estado registrado (respostas e versões instaladas).
-2. No **Kiro**, apaga também:
-   - os arquivos `.kiro/steering/advpl-tlpp-ls-first-*.md`;
-   - o arquivo `.kiro/skills/totvs-mcp-first/SKILL.md` (e a pasta, se ficar vazia);
-   - a entrada `totvs-mcp` de `.kiro/settings/mcp.json` e a decisão de liberar todas as ferramentas.
+2. Apaga os arquivos de contexto:
+   - no **VS Code**, os arquivos `.github/instructions/tds-vscode-*.instructions.md`;
+   - no **Kiro**, os arquivos `.kiro/steering/advpl-tlpp-ls-first-*.md`, o arquivo `.kiro/skills/totvs-mcp-first/SKILL.md` (e a pasta, se ficar vazia) e a entrada `totvs-mcp` de `.kiro/settings/mcp.json`, junto com a decisão de liberar todas as ferramentas.
 3. Refaz as perguntas de instruções e de _skill_, gravando a versão atual da extensão para quem responder **Sim**.
 4. No **Kiro**, com o servidor em execução, grava de novo a entrada `totvs-mcp` (URL e _token_ atuais) e refaz a pergunta de liberação das ferramentas.
 
-No **VS Code**, as instruções do Copilot (`.github/instructions`) não são apagadas: se o arquivo existir, o estado é refeito a partir dele, sem perguntar.
-
-> **Atenção:** alterações feitas manualmente no _steering_ ou na _skill_ são perdidas. Se quiser preservá-las, copie os arquivos antes de executar o comando.
+> **Atenção:** alterações feitas manualmente nas instruções, no _steering_ ou na _skill_ são perdidas. Se quiser preservá-las, copie os arquivos antes de executar o comando.
 
 Use o comando quando:
 
 - escolheu **Nunca** (ou **Perguntar a cada uso**, na liberação das ferramentas) e mudou de ideia;
-- quer substituir o _steering_ e a _skill_ pela versão da extensão, por exemplo após atualizá-la;
+- quer substituir as instruções, o _steering_ e a _skill_ pela versão da extensão, por exemplo após atualizá-la;
 - apagou um dos arquivos e quer gravá-lo de novo;
 - copiou ou clonou a área de trabalho e os arquivos de contexto não vieram junto;
 - a entrada `totvs-mcp` do `mcp.json` ficou inválida ou desatualizada;

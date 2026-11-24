@@ -71,6 +71,30 @@ O comando `TOTVS: Reiniciar estado do contexto de IA (instruções e skill)` (`t
 As pastas `.cache`, `.advpl` e arquivos do _linter_ agora ficam em `.tds` (antes `.vscode`).
 Caso seja detectado dentro das pastas `.vscode`, as pastas serão movidas para a nova localização.
 
+> Sugestão:
+>
+> Exclua da pesquisa a pasta de trabalho `.tds`, adicionando a chave abaixo em `settings.json`.
+
+```json
+{
+  ...
+  "search.exclude": {
+      "**/.tds": true
+  }
+}
+```
+
+> Caso queira esconder pasta de trabalho `.tds` da visão `Explorer`, adicione a chave abaixo em `settings.json`.
+
+```json
+{
+  ...
+  "files.exclude": {
+      "**/.tds": true
+  }
+}
+```
+
 #### Visão "Estrutura" (_Outline_)
 
 - Padronização na visualização de informações sobre o símbolo.
