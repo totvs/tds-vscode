@@ -1,4 +1,6 @@
-import { window, DebugConfiguration, DebugConfigurationProvider } from "vscode";
+import { existsSync } from "fs";
+import * as path from "path";
+import { DebugConfiguration, DebugConfigurationProvider } from "vscode";
 import * as vscode from "vscode";
 import { TotvsConfigurationProvider } from "./TotvsConfigurationProvider";
 import serverProvider from "../serverItemProvider";
@@ -20,10 +22,27 @@ export class TotvsConfigurationWebProvider
 
   protected finalize(config: DebugConfiguration) {
     const cfg = vscode.workspace.getConfiguration("totvsLanguageServer");
-    let webNavigator: string = config["webNavigator"] || cfg.get("web.navigator") || "";
+    const webNavigator: string = config["webNavigator"] || cfg.get("web.navigator") || "";
     const webNavigatorArgs: string[] = config["web.arguments"] || cfg.get("web.arguments") || [];
-    let webAgent: string = config["webAgent"] || cfg.get("web-agent.agent") || "";
+    let webAgent: string = config["webAgent"] || cfg.get<string>("web-agent.agent") || "";
     const webAgentArgs: string[] = config["web-agent.arguments"] || cfg.get("web-agent.arguments") || [];
+
+    if (process.platform === "win32") {
+      if (webAgent) {
+        webAgent = path.normalize(webAgent.replace(/%([^%]+)%/g, (reference, name) =>
+          process.env[name] ?? reference
+        ));
+      } else {
+        const localAppData = process.env.LOCALAPPDATA ||
+          (process.env.APPDATA && path.join(process.env.APPDATA, "..", "Local"));
+        if (localAppData) {
+          const defaultWebAgent = path.join(localAppData, "Programs", "web-agent", "web-agent.exe");
+          if (existsSync(defaultWebAgent)) {
+            webAgent = defaultWebAgent;
+          }
+        }
+      }
+    }
 
     config.webNavigator = webNavigator;
     config.webNavigatorArgs = webNavigatorArgs;

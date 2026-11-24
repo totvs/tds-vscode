@@ -106,7 +106,9 @@ A definição de executores encontra-se no arquivo `.vscode/launch.json` que, no
 > A propriedade `smartclientUrl` passa a ser considerada obsoleta. Informe-a  apenas sob orientação.
 > Caso não seja informada, a URL será montada utilizando os parâmetros atuais de conexão do servidor.
 
-Ao iniciar a depuração web, se a chaves `totvsLanguageServer.web.navigator` (ou `webNavigator`) não seja informada, será utilizado o navegador padrão do sistema operacional.
+No Windows, a depuração web usa o WebAgent instalado em `%LOCALAPPDATA%\Programs\web-agent\web-agent.exe` quando ele está disponível. Para escolher outro executável, defina `totvsLanguageServer.web-agent.agent` no `settings.json` ou `webAgent` no executor do `launch.json`. O caminho do executor tem prioridade. No Windows, os caminhos também aceitam variáveis como `%APPDATA%`.
+
+O adaptador passa ao WebAgent a URL da sessão de depuração e o navegador configurado em `totvsLanguageServer.web.navigator` (ou `webNavigator` no executor). Se não houver navegador configurado, é usado o navegador padrão do sistema operacional. Na ausência do WebAgent, o adaptador abre o navegador diretamente.
 
 Caso queira usar um navegador específico, é necessário informar qual será utilizado. Configure o caminho completo do navegador web através das preferências de usuário, clicando em `Arquivo > Preferências > Configurações` e procure por `Web: Navigator`. Note que existem duas seções distintas, a de `Usuário` e a de `Workspace`. Aconselhamos a utilizar as configurações de `Usuário` que será utilizada por todas as `Workspaces` do usuário. Caso seja necessária uma configuração específica e diferente em uma `Workspace`, configure na seção `Workspace` e neste caso apenas esta `Workspace` será afetada.
 

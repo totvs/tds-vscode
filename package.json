@@ -1537,6 +1537,10 @@
                 "description": "%tds.package.properties.webNavigator.description.web%",
                 "default": ""
               },
+              "webAgent": {
+                "type": "string",
+                "description": "%tds.package.web-agent.agent.debug%"
+              },
               "web.arguments": {
                 "type": "array",
                 "default": [],
