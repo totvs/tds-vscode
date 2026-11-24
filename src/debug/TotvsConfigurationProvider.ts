@@ -11,6 +11,11 @@ import { setDapArgs, ProgramArgs, extractProgramArgs } from "./debugConfigs";
 import serverProvider from "../serverItemProvider";
 import { canDebug } from "../extension";
 import { ServerItem } from "../serverItem";
+import Utils, { MESSAGETYPE } from "../utils";
+
+function debugLog(message: string, type: MESSAGETYPE = MESSAGETYPE.Info) {
+  Utils.logMessage(`[debug] ${message}`, type, false);
+}
 
 export class TotvsConfigurationProvider implements DebugConfigurationProvider {
   static _TYPE: string = "totvs_language_debug";
@@ -31,7 +36,25 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
     config: DebugConfiguration,
     token?: CancellationToken
   ): Promise<DebugConfiguration> {
+    try {
+      return await this.doResolveDebugConfiguration(folder, config, token);
+    } catch (e: any) {
+      debugLog(`resolveDebugConfiguration failed: ${e?.stack ?? e}`, MESSAGETYPE.Error);
+      throw e;
+    }
+  }
+
+  private async doResolveDebugConfiguration(
+    folder: WorkspaceFolder | undefined,
+    config: DebugConfiguration,
+    token?: CancellationToken
+  ): Promise<DebugConfiguration> {
+    debugLog(
+      `resolveDebugConfiguration: name="${config?.name}" type="${config?.type}" request="${config?.request}" folder="${folder?.uri.fsPath}"`
+    );
+
     if (!canDebug()) {
+      debugLog("Aborted: canDebug() is false (build in progress).", MESSAGETYPE.Warning);
       return undefined;
     }
 
@@ -104,9 +127,11 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
       }
 
       setDapArgs(setDapArgsArr);
+      debugLog(`DAP args: ${JSON.stringify(setDapArgsArr)} cwb="${config.cwb}"`);
 
       return Promise.resolve(config);
     } else {
+      debugLog("Aborted: no server connected.", MESSAGETYPE.Warning);
       window.showErrorMessage(
         vscode.l10n.t("No servers connected")
       );
@@ -130,12 +155,14 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
     token?: CancellationToken
   ): vscode.ProviderResult<DebugConfiguration> {
     if (token.isCancellationRequested) {
+      debugLog("Aborted: cancellation requested.", MESSAGETYPE.Warning);
       return undefined;
     }
 
     const programArgs: ProgramArgs = extractProgramArgs(
       debugConfiguration.program
     );
+    debugLog(`program="${debugConfiguration.program}"`);
     if (debugConfiguration.programArguments) {
       if (typeof debugConfiguration.programArguments === 'string') {
         debugConfiguration.programArguments = JSON.parse(debugConfiguration.programArguments);
@@ -149,6 +176,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
       programArgs.program == "<cancel>" ||
       programArgs.args?.includes("<cancel>")
     ) {
+      debugLog("Aborted: canceled by user.", MESSAGETYPE.Warning);
       window.showInformationMessage(
         vscode.l10n.t("Canceled by user.")
       );
@@ -156,6 +184,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
     }
 
     if (!debugConfiguration.program) {
+      debugLog("Aborted: no program to debug.", MESSAGETYPE.Warning);
       window.showInformationMessage(
         vscode.l10n.t("Cannot find a program to debug")
       );
@@ -164,6 +193,7 @@ export class TotvsConfigurationProvider implements DebugConfigurationProvider {
 
     debugConfiguration.program = programArgs.program;
     debugConfiguration.programArguments = programArgs.args;
+    debugLog("Configuration resolved; VS Code will request the debug adapter.");
 
     return this.finalize(debugConfiguration);
   }
