@@ -685,7 +685,7 @@
             "%tds.package.formatter.provider.ls%",
             "%tds.package.formatter.provider.extension%"
           ],
-          "default": "extension",
+          "default": "ls",
           "description": "%tds.package.formatter.provider%"
         },
         "totvsLanguageServer.workspaceServerConfig": {
