@@ -1033,11 +1033,29 @@ export class ServersConfig {
    */
   static async updateLinterIncludes() {
     const includes: string = ServersConfig.getFullIncludes().join(";");
-    const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("totvsLanguageServer");
+    const folder = vscode.workspace.workspaceFolders?.[0];
+    if (!folder || includes.length === 0) {
+      return;
+    }
 
-    const includeLinter = config.get("editor.linter.includes", "");
-    if ((includes.length > 0) && (includes != includeLinter)) {
-      config.update("editor.linter.includes", includes); //dispara onDidChangeConfiguration
+    // Gravado em .vscode/.linter (ignorado pelo git) e nao em .vscode/settings.json,
+    // para nao gerar alteracoes constantes em arquivo versionado.
+    const file = path.join(folder.uri.fsPath, ".vscode", ".linter", "linterSettings.json");
+    try {
+      // cria a pasta .linter caso o language server ainda nao a tenha criado
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+
+      const content = JSON.stringify(
+        { "totvsLanguageServer.editor.linter.includes": includes },
+        null,
+        2
+      );
+      const current = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "";
+      if (current !== content) {
+        fs.writeFileSync(file, content, "utf8");
+      }
+    } catch (e: any) {
+      console.error(`Could not write linter includes (${file}): ${e?.message ?? e}`);
     }
   }
 
