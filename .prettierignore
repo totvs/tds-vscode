@@ -1,0 +1,17 @@
+# Ignore build and compilation outputs
+dist/
+build/
+target/
+
+# Ignore dependency and package lockfiles
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Ignore code coverage reports
+coverage/
+
+# Ignore all HTML files
+*.html
+
+# Ignore specific files anywhere in the project

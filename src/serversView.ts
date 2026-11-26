@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
-import Utils, { ServersConfig } from "./utils";
+import Utils, { MESSAGETYPE, ServersConfig } from "./utils";
 import { inputConnectionParameters } from "./inputConnectionParameters";
 import { inputAuthenticationParameters } from "./inputAuthenticationParameters";
 import { ResponseError } from "vscode-languageclient";
@@ -192,6 +192,12 @@ export class ServersExplorer {
               }
             );
           }
+        } else {
+          Utils.logMessage(
+            `Connect ignored: server item not found in localServerItems (arg: ${serverItem ? `${serverItem.name} [${serverItem.id}]` : "undefined"}, list size: ${serverProvider.localServerItems.length}).`,
+            MESSAGETYPE.Warning,
+            true
+          );
         }
       }
     );
@@ -613,9 +619,11 @@ function handleError(nodeError: NodeError) {
 async function doDisconnect(serverItem: ServerItem) {
   await sendDisconnectRequest(serverItem).then(
     (ti: ITokenInfo) => {
-      if (!ti.sucess) {
-        serverProvider.connectedServerItem = undefined;
-      }
+      // Independente do resultado retornado pelo LS, no final do processo de
+      // desconexao o servidor deve ser considerado desconectado. Limpar o
+      // connectedServerItem dispara o refresh da tree view, atualizando icones
+      // e os contextValue usados nos "when" dos menus de contexto.
+      serverProvider.connectedServerItem = undefined;
 
       executeCommand("_totvs-developer-studio.clearMonitorPanel");
     },

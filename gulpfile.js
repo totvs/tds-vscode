@@ -75,14 +75,14 @@ const addL10nTask = function () {
   //   .pipe(gulp.dest("."));
 };
 
-// Gera src/parser/4gl-parser.js (ignorado pelo git) a partir de syntaxes/4gl.pegjs.
-const compileParser4glTask = function () {
-  return run('npm run compile:parse_4gl').exec();
+// Formata com Prettier os arquivos JSON gerados pelo @vscode/l10n-dev em ./l10n.
+// Delega ao script npm "l10n:format" para evitar problemas de resolução do
+// binário/glob quando executado via gulp-run (cmd.exe) no Windows.
+const formatL10nTask = function () {
+  return run('npm run l10n:format', { verbosity: true }).exec();
 };
 
-const buildTask = gulp.series(cleanTask, compileParser4glTask, internalNlsCompileTask, addL10nTask, internalCompileWebpack, internalCompileEsBuildProd);
-
-const buildDebugTask = gulp.series(cleanTask, compileParser4glTask, internalNlsCompileTask, addL10nTask, internalCompileWebpack, internalCompileEsBuildDebug);
+const buildTask = gulp.series(cleanTask, internalNlsCompileTask, addL10nTask, formatL10nTask, internalCompileWebpack, internalCompileEsBuildProd);
 
 const doCompile = function (buildNls) {
   var r = tsProject
@@ -202,16 +202,9 @@ const internalImportXlf = function (translationFile) {
   return run('npx @vscode/l10n-dev import-xlf ' + translationFile, { verbosity: true }).exec();
 };
 
-gulp.task("export-l10n", (done) => {
-  return es.merge(
-    [""].map((ignore) => {
-      return gulp
-        .pipe(internalExportL10n())
-        .pipe(internalGenerateXlf())
-        .on("end", () => done());
-    })
-  )
-}
+gulp.task(
+  "export-l10n",
+  gulp.series(internalExportL10n, formatL10nTask, internalGenerateXlf)
 );
 
 gulp.task("l10n-import", (done) => {
